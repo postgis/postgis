@@ -231,6 +231,8 @@ ERROR:  Adding line to topology requires creating more edges than the requested 
 ERROR:  Adding line to topology requires creating more edges than the requested limit of 1
 #5993.3|double-split-in-limit|1
 ERROR:  Adding line to topology requires creating more edges than the requested limit of 1
+#5864.face0|1
+#5864.face0_refs|4
 t6023.1|errors|
 t6023.2|errors|
 t6062.edges|t

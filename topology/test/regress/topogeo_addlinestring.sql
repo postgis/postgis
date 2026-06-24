@@ -582,6 +582,15 @@ SELECT '#5993.4', 'snap-split-off-limit', * FROM topology.TopoGeo_addLinestring(
 );
 SELECT NULL FROM topology.DropTopology ('t5993');
 
+-- See https://trac.osgeo.org/postgis/ticket/5864
+SELECT NULL FROM topology.CreateTopology ('t5864');
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t5864', 'LINESTRING(0 0,10 0)'::geometry);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t5864', 'LINESTRING(2 0,2 -5,8 -5,8 0)'::geometry);
+SELECT NULL FROM topology.TopoGeo_AddLinestring('t5864', 'LINESTRING(2 0,2 5,8 5,8 0)'::geometry);
+SELECT '#5864.face0', count(*) FROM t5864.face WHERE face_id = 0;
+SELECT '#5864.face0_refs', count(*) FROM t5864.edge WHERE left_face = 0 OR right_face = 0;
+SELECT '#5864.valid', * FROM topology.ValidateTopology('t5864');
+SELECT NULL FROM topology.DropTopology ('t5864');
 
 
 -- See https://trac.osgeo.org/postgis/ticket/6023
