@@ -1738,6 +1738,7 @@ Adds a linestring to an existing topology using a tolerance and possibly splitti
 						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 						<paramdef choice="opt"><type>int </type> <parameter>max_edges</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>snap_edges</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1767,6 +1768,12 @@ uncovered or resulting from split of existing edges) may be limited
 by the <varname>max_edges</varname> parameter.
                 </para>
 
+                <para>
+The <varname>snap_edges</varname> parameter may be set to true to
+snap existing edges to vertices of the input line before adding the
+line.
+                </para>
+
                 <note><para>
 Updating statistics about topologies being loaded via this function is
 up to caller, see <xref linkend="Topology_StatsManagement"/>.
@@ -1776,6 +1783,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
                 <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 added support for returning signed identifier.</para>
                 <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for limiting the number of new edges created in the topology.</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added support for snapping existing edges to input line vertices.</para>
 			</refsection>
 
 
