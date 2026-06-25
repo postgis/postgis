@@ -17,8 +17,8 @@ supported PostgreSQL versions.
   style.
 * [Dependency and support guards](dependencies/) explains dependency-version
   guards and the checklist for dropping PostgreSQL support.
-* [Regression harness roles](regression-roles/) explains sandboxed regression
-  roles used by CI and downstream builders.
+* [Testing and debugging](../testing/) explains sandboxed regression roles used
+  by CI and downstream builders.
 
 ## Quick Rules
 
