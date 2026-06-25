@@ -60,7 +60,7 @@ rather than PostGIS.
 | `PostGIS3`, `PostGIS20ReleaseAnnouncement`, `PostGISObsoleteVersionsMatrix`, `RCDownloads` | Archived in `doc/trac-wiki/project-history/`; maintained release workflow belongs in `doc/development/release-process/` |
 | `PostGISCodeSprint2018`, `PostGISCodeSprint2020`, `CodeSprintParis2012` | Archived in `doc/trac-wiki/project-history/` |
 | `PostGISExtensionPaths` | Archived in `doc/trac-wiki/project-history/PostGISExtensionPaths.tracwiki`; convert into current release or packaging docs only if it becomes maintained policy |
-| `HOWTO_RELEASE` | `doc/development/release-process/` |
+| `HOWTO_RELEASE` | `doc/development/release-process/`, `doc/development/release/versioning/`, `doc/development/release/deprecation/` |
 | `STYLE` | `doc/development/style/` |
 | `TODO` | Removed; live planning belongs in Trac roadmap, Trac tickets, and `NEWS` |
 | Trac `roadmap` and ticket reports | `doc/development/maintenance/`, `doc/development/release/`, and Trac itself for live planning |
