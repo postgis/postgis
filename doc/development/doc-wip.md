@@ -57,8 +57,6 @@ should leave draft state.
 
 ## User Manual Candidates
 
-* `PRRC_kwDOAEM_Wc7PP4bz`: batch shapefile loading on Windows needs comparison
-  with the current loader manual.
 * `PRRC_kwDOAEM_Wc7PP6Zj`: buffer-unbuffer coastline simplification may be worth
   a user-manual example after checking the referenced source.
 
