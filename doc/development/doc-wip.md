@@ -10,9 +10,11 @@ should leave draft state.
   material is now split under `environment/ubuntu/` and `environment/docker/`.
   Check whether the first-level directory should eventually be role-oriented,
   as suggested in the PR discussion by strk.
-* `PRRC_kwDOAEM_Wc7POmvr`: `workflow/`, root `CONTRIBUTING.md`, and maintainer
-  workflow still overlap. Decide whether contributor workflow should be one
-  page with role-specific anchors.
+* `PRRC_kwDOAEM_Wc7POmvr`: root `CONTRIBUTING.md` is now only a forge entry
+  point, contributor workflow has been flattened into
+  `doc/development/contributing.md`, and maintainer-only procedures remain
+  under `maintenance/`. Before publication, check whether the maintainer page
+  needs more role-specific anchors back to the contributor page.
 * `PRRC_kwDOAEM_Wc7PQ_kd`, `PRRC_kwDOAEM_Wc7PRB5P`: the current directory tree
   uses many `README.md` files. Decide whether to flatten this into files such as
   `building.md`, `testing.md`, and `release/versioning.md` before the PR leaves
