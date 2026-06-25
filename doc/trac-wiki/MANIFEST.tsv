@@ -2,11 +2,8 @@ category	page	source	file	bytes	lines
 topology	AddEdge	https://trac.osgeo.org/postgis/wiki/AddEdge	doc/trac-wiki/topology/AddEdge.tracwiki	47	0
 source-hosts	Codeberg	https://trac.osgeo.org/postgis/wiki/Codeberg	doc/trac-wiki/source-hosts/Codeberg.tracwiki	298	9
 development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/ContinuousIntegration	doc/trac-wiki/development/ContinuousIntegration.tracwiki	23846	119
-development	DevWikiMingW64_Setup	https://trac.osgeo.org/postgis/wiki/DevWikiMingW64_Setup	doc/trac-wiki/development/DevWikiMingW64_Setup.tracwiki	6201	153
 development	DevWikiNbEditor	https://trac.osgeo.org/postgis/wiki/DevWikiNbEditor	doc/trac-wiki/development/DevWikiNbEditor.tracwiki	0	0
 development	DevWikiPostGISCoding	https://trac.osgeo.org/postgis/wiki/DevWikiPostGISCoding	doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki	11023	149
-development	DevWikiWinMingW64	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingW64	doc/trac-wiki/development/DevWikiWinMingW64.tracwiki	19260	482
-development	DevWikiWinMingW64_21	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingW64_21	doc/trac-wiki/development/DevWikiWinMingW64_21.tracwiki	5181	124
 development	DevWikiWinMingWSys_20	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingWSys_20	doc/trac-wiki/development/DevWikiWinMingWSys_20.tracwiki	17837	449
 development	DevWikiWinMingWSys_20_MSVC	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingWSys_20_MSVC	doc/trac-wiki/development/DevWikiWinMingWSys_20_MSVC.tracwiki	11441	376
 development	DevWikiWinNSIS	https://trac.osgeo.org/postgis/wiki/DevWikiWinNSIS	doc/trac-wiki/development/DevWikiWinNSIS.tracwiki	1202	21
