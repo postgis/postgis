@@ -28,7 +28,7 @@ before retiring the source page.
 
 | Trac wiki page | Reason |
 |----------------|--------|
-| `DevWikiMain` | Superseded developer-wiki landing page. Maintained navigation now lives in `doc/development/README.md`, with topic pages under `workflow/`, `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `governance/`, `maintenance/`, `website/`, and `wiki/`. |
+| `DevWikiMain` | Superseded developer-wiki landing page. Maintained navigation now lives in `doc/development/README.md`, with contributor workflow in `doc/development/contributing.md` and topic pages under `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `governance/`, `maintenance/`, `website/`, and `wiki/`. |
 | `DevWikiWinMingWSys_14_15` | Obsolete Windows XP-era MinGW/MSYS recipe for building PostGIS 1.4/1.5 with PostgreSQL 8.3/8.4. Later Windows/MinGW pages cover the surviving toolchain caveats, while current build and test guidance belongs in the maintained development-environment and testing docs. |
 | `FAQ` | Superseded mixed user FAQ. Current manual pages cover SRID lookup, WKB input/output, `ST_` naming, and the remaining `ST_Intersects`/`ST_Intersection` precision caveat; the Windows Vista and PostGIS 1.x hard-upgrade notes are obsolete. |
 | `PostGIS3` | Completed PostGIS 3 planning scratch page. Current docs and code already cover the completed items such as `postgis_raster` split/upgrade handling, GeoJSON json/jsonb support, modern dependency baselines, and cluster window functions; still-open research themes were extracted into `doc/development/doc-wip.md`. |

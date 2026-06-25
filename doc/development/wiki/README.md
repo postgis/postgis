@@ -39,13 +39,13 @@ Trac or retired from the repository import are tracked in the
 | Trac wiki page | Repository home |
 |----------------|-----------------|
 | `WikiStart` | `README.md`, `CONTRIBUTING.md`, this directory, and `doc/trac-wiki/project-history/WikiStart.tracwiki` |
-| `DevWikiMain` | Retired from this repository import; replaced by `doc/development/README.md` and the topic indexes under `workflow/`, `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `governance/`, `maintenance/`, `website/`, and `wiki/` |
+| `DevWikiMain` | Retired from this repository import; replaced by `doc/development/README.md`, `doc/development/contributing.md`, and the topic indexes under `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `governance/`, `maintenance/`, `website/`, and `wiki/` |
 | `DevWikiGettingABackTrace` | `doc/development/testing/`, `doc/development/tools/` |
 | `DevWikiPGRegress` | `doc/development/testing/` |
 | `DevWikiCUnit` | `doc/development/testing/` |
-| `DevWikiDocNewFeature` | `doc/development/workflow/`, `doc/development/manual/` |
-| `DevWikiPatch` | `doc/development/style/`, `doc/development/workflow/`, `doc/development/testing/` |
-| `DevWikiMain/DevForDummy` | `doc/development/workflow/`, `doc/development/style/` |
+| `DevWikiDocNewFeature` | `doc/development/contributing.md`, `doc/development/manual/` |
+| `DevWikiPatch` | `doc/development/style/`, `doc/development/contributing.md`, `doc/development/testing/` |
+| `DevWikiMain/DevForDummy` | `doc/development/contributing.md`, `doc/development/style/` |
 | `DevWikiDockerTesting` | `doc/development/environment/docker/` |
 | `DevWikiRFC` | Retired from this repository import. Current governance material belongs in `doc/development/governance/`; historical RFC text remains in `doc/rfc/` and the published RFC pages. |
 | `DevWikiComitGuidelines` | `doc/development/maintenance/commit-guidelines/`, `doc/development/maintenance/`, `doc/development/governance/`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/> |
@@ -69,7 +69,7 @@ Trac or retired from the repository import are tracked in the
 | `DevCleanFromGEOS` | Archived in `doc/trac-wiki/development/DevCleanFromGEOS.tracwiki` |
 | `UsersWikiMakeCheckConsiderations` | `doc/development/environment/ubuntu/`, `doc/development/testing/` |
 | `ContinuousIntegration` | `ci/`, `doc/development/environment/ubuntu/`, and `doc/development/environment/docker/` |
-| `CodeRepository`, `CodeMirrors` | Consolidated into `doc/development/workflow/` and `doc/development/maintenance/`; the tiny Trac source pages are not kept separately. |
+| `CodeRepository`, `CodeMirrors` | Consolidated into `doc/development/contributing.md` and `doc/development/maintenance/`; the tiny Trac source pages are not kept separately. |
 | `PostGISDevelopment2021`, `PostGISDevelopment2022-1`, `PostGISDevelopment2023-1`, `PostGISDevelopment2026-1` | Archived in `doc/trac-wiki/project-history/`; current release-process actions belong in `doc/development/release-process/` |
 | `GoogleSeasonDocs2019` | Left on Trac; not-yet-done documentation ideas were extracted into `doc/development/doc-wip.md` |
 | `PostGIS3` | Retired from this repository import; open major-version research themes were extracted into `doc/development/doc-wip.md` |
@@ -83,14 +83,14 @@ Trac or retired from the repository import are tracked in the
 | `STYLE` | `doc/development/style/` |
 | `TODO` | Removed; live planning belongs in Trac roadmap, Trac tickets, and `NEWS` |
 | Trac `roadmap` and ticket reports | `doc/development/maintenance/`, `doc/development/release/`, and Trac itself for live planning |
-| Published RFC-5 contributor guidelines | `doc/development/workflow/`, `doc/development/maintenance/commit-guidelines/`, `doc/development/maintenance/`, `doc/development/governance/`, and <https://postgis.net/development/rfcs/> |
-| `postgis.net/development/source_code` | `doc/development/workflow/`, `doc/development/maintenance/` |
-| `postgis.net/development/getting_involved` | `doc/development/workflow/` |
-| `postgis.net/development/bug_reporting` | `doc/development/workflow/` |
+| Published RFC-5 contributor guidelines | `doc/development/contributing.md`, `doc/development/maintenance/commit-guidelines/`, `doc/development/maintenance/`, `doc/development/governance/`, and <https://postgis.net/development/rfcs/> |
+| `postgis.net/development/source_code` | `doc/development/contributing.md`, `doc/development/maintenance/` |
+| `postgis.net/development/getting_involved` | `doc/development/contributing.md` |
+| `postgis.net/development/bug_reporting` | `doc/development/contributing.md` |
 | `postgis.net/development/developer_docs` | `doc/development/manual/`, `doc/development/website/` |
 | `postgis.net/development/versions_eol` | `doc/development/release-process/`, `doc/development/release/` |
 | `postgis.net/development/rfcs/rfc01` | `doc/development/governance/` |
-| `postgis.net/community/mailinglists`, `postgis.net/community/chat` | `doc/development/workflow/` |
+| `postgis.net/community/mailinglists`, `postgis.net/community/chat` | `doc/development/contributing.md` |
 | `postgis.net/community/conduct` | `doc/development/governance/` |
 | `postgis.net/documentation/manual` | `doc/development/manual/` |
 | `postgis.net` Hugo repository README, Makefile, config, and release-check script | `doc/development/website/`, `doc/development/release-process/` |
