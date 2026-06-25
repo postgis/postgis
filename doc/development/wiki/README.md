@@ -53,7 +53,7 @@ Trac or retired from the repository import are tracked in the
 | `DevClusteringFunctions` | Retired from this repository import; current clustering functions are implemented and documented in the user manual. |
 | `DevCleanFromGEOS` | Retired from this repository import; the source page only contained a placeholder for a clean function API. |
 | `DevWikiProvenanceReview` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as a historical OSGeo incubation/provenance record rather than current contributor guidance |
-| `DevFOSS4GCodeSprintNotes` | Archived in `doc/trac-wiki/project-history/DevFOSS4GCodeSprintNotes.tracwiki` |
+| `DevFOSS4GCodeSprintNotes` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as historical sprint agenda/release-planning notes |
 | `DevWikiGardenTest` | `doc/development/testing/` |
 | `DevWikiMingW64_Setup`, `DevWikiWinMingW64`, `DevWikiWinMingW64_21`, `DevWikiWinMingWSys_14_15`, `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`, `DevWikiWinVC_15`, `DevWikiWinNSIS` | Archived in `doc/trac-wiki/development/`; current CI/build notes belong in `doc/development/environment/ubuntu/` and `ci/` |
 | `DevCleanFromGEOS` | Archived in `doc/trac-wiki/development/DevCleanFromGEOS.tracwiki` |
@@ -94,7 +94,7 @@ Imported corpus:
 | User wiki | 139 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
-| Project history | 21 | `doc/trac-wiki/project-history/` |
+| Project history | 20 | `doc/trac-wiki/project-history/` |
 | Source hosts | 5 | `doc/trac-wiki/source-hosts/` |
 
 TitleIndex groups intentionally not imported into the corpus:
