@@ -74,7 +74,8 @@ Patch submission basics:
   user-visible behavior.
 * For SQL API, upgrade, and release-policy changes, read
   [Release and upgrade rules](../release/) before opening a pull request.
-* Git patches sent by email are also accepted.
+* Git patches sent by email are also accepted; see
+  <https://git-send-email.io/> for a practical walkthrough.
 
 Bug reports for the raster extension should have a summary prefixed with
 `[raster]` and use the raster component. Include `gdalinfo` output when the bug
