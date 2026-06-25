@@ -81,3 +81,7 @@ Bug reports for the raster extension should have a summary prefixed with
 `[raster]` and use the raster component. Include `gdalinfo` output when the bug
 depends on a source raster. If the bug concerns `raster2pgsql`, include the
 loader command line.
+
+Bug reports for `postgis_sfcgal` should have a summary prefixed with
+`[sfcgal]`. Bug reports for `postgis_topology` should have a summary prefixed
+with `[topology]`.
