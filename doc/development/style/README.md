@@ -17,6 +17,17 @@ we can dream.
 If new functions follow this guideline, if we do a little renovation work
 from time to time, we will eventually get there.
 
+## Documentation Voice
+
+Write contributor documentation in plain, direct English. Prefer short
+sentences, concrete commands, and links to the maintained page for deeper
+context. Explain the purpose of a step before listing exceptions.
+
+Avoid preserving old wiki phrasing when it hides the current source of truth.
+When converting older notes, keep the useful idea and replace stale paths,
+release numbers, chat networks, or one-off examples with current repository
+links.
+
 ## Formatting
 
 Most C code should use an ANSI standard formatting with tabs for block

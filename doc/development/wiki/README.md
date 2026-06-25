@@ -36,7 +36,7 @@ rather than PostGIS.
 | `DevWikiCUnit` | `doc/development/testing/` |
 | `DevWikiDocNewFeature` | `doc/development/workflow/`, `doc/development/manual/` |
 | `DevWikiPatch` | `doc/development/style/`, `doc/development/workflow/`, `doc/development/testing/` |
-| `DevWikiMain/DevForDummy` | `doc/development/workflow/`, `environment/ubuntu/`, `testing/`, `manual/` |
+| `DevWikiMain/DevForDummy` | `doc/development/workflow/`, `doc/development/style/` |
 | `DevWikiDockerTesting` | `doc/development/environment/docker/` |
 | `DevWikiRFC` | Retired from this repository import. Current governance material belongs in `doc/development/governance/`; historical RFC text remains in `doc/rfc/` and the published RFC pages. |
 | `DevWikiComitGuidelines` | `doc/development/maintenance/commit-guidelines/`, `doc/development/maintenance/`, `doc/development/governance/`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/> |
@@ -87,7 +87,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 28 | `doc/trac-wiki/development/` |
+| Development | 27 | `doc/trac-wiki/development/` |
 | User wiki | 139 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
