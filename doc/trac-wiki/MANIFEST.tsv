@@ -3,7 +3,6 @@ development	3DDistancecalc	https://trac.osgeo.org/postgis/wiki/3DDistancecalc	do
 topology	AddEdge	https://trac.osgeo.org/postgis/wiki/AddEdge	doc/trac-wiki/topology/AddEdge.tracwiki	47	0
 source-hosts	Codeberg	https://trac.osgeo.org/postgis/wiki/Codeberg	doc/trac-wiki/source-hosts/Codeberg.tracwiki	298	9
 development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/ContinuousIntegration	doc/trac-wiki/development/ContinuousIntegration.tracwiki	23846	119
-development	DevCleanFromGEOS	https://trac.osgeo.org/postgis/wiki/DevCleanFromGEOS	doc/trac-wiki/development/DevCleanFromGEOS.tracwiki	71	3
 development	DevClusteringFunctions	https://trac.osgeo.org/postgis/wiki/DevClusteringFunctions	doc/trac-wiki/development/DevClusteringFunctions.tracwiki	1724	23
 project-history	DevFOSS4GCodeSprintNotes	https://trac.osgeo.org/postgis/wiki/DevFOSS4GCodeSprintNotes	doc/trac-wiki/project-history/DevFOSS4GCodeSprintNotes.tracwiki	3921	90
 development	DevGUC	https://trac.osgeo.org/postgis/wiki/DevGUC	doc/trac-wiki/development/DevGUC.tracwiki	475	11
