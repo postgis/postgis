@@ -125,8 +125,6 @@ become maintained developer documentation:
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
   on Trac or in history, but extract any not-yet-implemented ideas into a
   maintained list.
-* `PRRC_kwDOAEM_Wc7PPw2H`, `PRRC_kwDOAEM_Wc7PPyUi`: the obsolete versions matrix
-  needs either a clearer format or a generator/range-based compatibility view.
 
 ## Raster Deep Dives
 
