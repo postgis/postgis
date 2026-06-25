@@ -6,7 +6,6 @@ development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/Continuous
 project-history	DevFOSS4GCodeSprintNotes	https://trac.osgeo.org/postgis/wiki/DevFOSS4GCodeSprintNotes	doc/trac-wiki/project-history/DevFOSS4GCodeSprintNotes.tracwiki	3921	90
 development	DevGUC	https://trac.osgeo.org/postgis/wiki/DevGUC	doc/trac-wiki/development/DevGUC.tracwiki	475	11
 development	DevWikiAffineParameters	https://trac.osgeo.org/postgis/wiki/DevWikiAffineParameters	doc/trac-wiki/development/DevWikiAffineParameters.tracwiki	12154	222
-development	DevWikiCUnit	https://trac.osgeo.org/postgis/wiki/DevWikiCUnit	doc/trac-wiki/development/DevWikiCUnit.tracwiki	2736	52
 development	DevWikiComitGuidelines	https://trac.osgeo.org/postgis/wiki/DevWikiComitGuidelines	doc/trac-wiki/development/DevWikiComitGuidelines.tracwiki	12841	140
 development	DevWikiDocNewFeature	https://trac.osgeo.org/postgis/wiki/DevWikiDocNewFeature	doc/trac-wiki/development/DevWikiDocNewFeature.tracwiki	4221	76
 development	DevWikiDockerTesting	https://trac.osgeo.org/postgis/wiki/DevWikiDockerTesting	doc/trac-wiki/development/DevWikiDockerTesting.tracwiki	8288	203
