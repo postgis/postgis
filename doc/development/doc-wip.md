@@ -134,8 +134,6 @@ retiring that draft-comment page:
 
 ## Raster Deep Dives
 
-* `PRRC_kwDOAEM_Wc7PPzvo`: check whether `WKTRaster_Documentation01` was merged
-  into the raster manual before deciding whether to keep any source material.
 * `PRRC_kwDOAEM_Wc7PP04s`: the GDAL driver specification looks like useful
   raster deep-dive material, but it may belong in a future geometry/topology/
   raster deep-dive split rather than this broad migration commit.
