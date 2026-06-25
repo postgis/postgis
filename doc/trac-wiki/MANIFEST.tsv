@@ -4,7 +4,6 @@ topology	AddEdge	https://trac.osgeo.org/postgis/wiki/AddEdge	doc/trac-wiki/topol
 source-hosts	Codeberg	https://trac.osgeo.org/postgis/wiki/Codeberg	doc/trac-wiki/source-hosts/Codeberg.tracwiki	298	9
 development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/ContinuousIntegration	doc/trac-wiki/development/ContinuousIntegration.tracwiki	23846	119
 project-history	DevFOSS4GCodeSprintNotes	https://trac.osgeo.org/postgis/wiki/DevFOSS4GCodeSprintNotes	doc/trac-wiki/project-history/DevFOSS4GCodeSprintNotes.tracwiki	3921	90
-development	DevGUC	https://trac.osgeo.org/postgis/wiki/DevGUC	doc/trac-wiki/development/DevGUC.tracwiki	475	11
 development	DevWikiAffineParameters	https://trac.osgeo.org/postgis/wiki/DevWikiAffineParameters	doc/trac-wiki/development/DevWikiAffineParameters.tracwiki	12154	222
 development	DevWikiEmptyGeometry	https://trac.osgeo.org/postgis/wiki/DevWikiEmptyGeometry	doc/trac-wiki/development/DevWikiEmptyGeometry.tracwiki	7627	182
 development	DevWikiEvent	https://trac.osgeo.org/postgis/wiki/DevWikiEvent	doc/trac-wiki/development/DevWikiEvent.tracwiki	574	8
