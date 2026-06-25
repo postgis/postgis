@@ -3,6 +3,8 @@
 These pages describe repeatable environments for building and testing PostGIS.
 
 * [Ubuntu setup](ubuntu/) covers a local Ubuntu package-based environment.
+* [Windows setup](windows/) covers the current MSYS2 and Winnie MinGW build
+  surfaces.
 * [Docker setup](docker/) covers the OSGeo and `postgis-build-env` container
   workflows.
 

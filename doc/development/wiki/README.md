@@ -65,7 +65,8 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiProvenanceReview` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as a historical OSGeo incubation/provenance record rather than current contributor guidance |
 | `DevFOSS4GCodeSprintNotes` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as historical sprint agenda/release-planning notes |
 | `DevWikiGardenTest` | `doc/development/testing/` |
-| `DevWikiMingW64_Setup`, `DevWikiWinMingW64`, `DevWikiWinMingW64_21`, `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`, `DevWikiWinVC_15`, `DevWikiWinNSIS` | Archived in `doc/trac-wiki/development/`; current CI/build notes belong in `doc/development/environment/ubuntu/` and `ci/` |
+| `DevWikiMingW64_Setup` | Historical MinGW-w64/MSYS setup context folded into `doc/development/environment/windows/`; current behavior should be checked against `.github/workflows/msys.yml` and `ci/winnie/` |
+| `DevWikiWinMingW64`, `DevWikiWinMingW64_21`, `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`, `DevWikiWinVC_15`, `DevWikiWinNSIS` | Archived in `doc/trac-wiki/development/`; current Windows CI/build notes belong in `doc/development/environment/windows/` and `ci/` |
 | `DevWikiWinMingWSys_14_15` | Retired from this repository import; obsolete Windows XP/PostGIS 1.4 and 1.5 build notes are recorded in `doc/development/wiki/trac-cleanup.md` |
 | `DevCleanFromGEOS` | Archived in `doc/trac-wiki/development/DevCleanFromGEOS.tracwiki` |
 | `UsersWikiMakeCheckConsiderations` | `doc/development/environment/ubuntu/`, `doc/development/testing/` |
