@@ -179,7 +179,6 @@ topology	ValidateTopology	https://trac.osgeo.org/postgis/wiki/ValidateTopology	d
 raster	WKTRaster	https://trac.osgeo.org/postgis/wiki/WKTRaster	doc/trac-wiki/raster/WKTRaster.tracwiki	24838	225
 raster	WKTRaster/Documentation01	https://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01	doc/trac-wiki/raster/WKTRaster_Documentation01.tracwiki	35232	512
 raster	WKTRaster/FAQ	https://trac.osgeo.org/postgis/wiki/WKTRaster/FAQ	doc/trac-wiki/raster/WKTRaster_FAQ.tracwiki	6143	41
-raster	WKTRaster/GDALDriverSpecificationWorking	https://trac.osgeo.org/postgis/wiki/WKTRaster/GDALDriverSpecificationWorking	doc/trac-wiki/raster/WKTRaster_GDALDriverSpecificationWorking.tracwiki	12730	106
 raster	WKTRaster/PlanningAndFunding	https://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding	doc/trac-wiki/raster/WKTRaster_PlanningAndFunding.tracwiki	5484	71
 raster	WKTRaster/RFC/RFC1_V0SerialFormat	https://trac.osgeo.org/postgis/wiki/WKTRaster/RFC/RFC1_V0SerialFormat	doc/trac-wiki/raster/WKTRaster_RFC_RFC1_V0SerialFormat.tracwiki	8286	268
 raster	WKTRaster/RFC/RFC2_V0WKBFormat	https://trac.osgeo.org/postgis/wiki/WKTRaster/RFC/RFC2_V0WKBFormat	doc/trac-wiki/raster/WKTRaster_RFC_RFC2_V0WKBFormat.tracwiki	7595	146

@@ -19,6 +19,9 @@ PostGIS rather than only using the SQL API.
 * [Raster physical georeferencing parameters](raster-physical-parameters.md)
   covers the reverse calculation from stored affine coefficients back to pixel
   sizes, rotation, and basis-vector separation.
+* [PostGIS Raster and the GDAL driver](raster-gdal-driver.md) records the
+  boundary between PostGIS-maintained raster storage/catalog behavior and the
+  external GDAL `PostGISRaster` driver.
 * [2D and 3D distance internals](distance.md) covers how geometry distance
   functions dispatch 2D and 3D candidate checks, including segment-segment and
   surface cases.

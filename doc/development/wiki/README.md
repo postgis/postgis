@@ -55,6 +55,7 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiAffineParameters` | `doc/development/internals/raster-affine.md`; original images recovered under `doc/development/internals/images/raster-affine/` |
 | `DevWikiRealParameters` | `doc/development/internals/raster-physical-parameters.md`; original images recovered under `doc/development/internals/images/raster-physical-parameters/` |
 | `DevWikiSpatialCollectionTutorial` | `doc/development/internals/spatial-collections.md`; current code no longer has the old `SPATIAL_COLLECTION` API, so the maintained page records current geometry collection and raster/vector crossing paths |
+| `WKTRaster_GDALDriverSpecificationWorking` | `doc/development/internals/raster-gdal-driver.md`; the old GDAL driver working spec was compressed into the maintained boundary between PostGIS raster storage/catalog contracts and the external GDAL `PostGISRaster` driver |
 | `DevGUC` | `doc/development/release/api/` |
 | `DevelopmentDiscussion` | Left on Trac; still-open PostGIS 2.0 design themes were extracted into `doc/development/doc-wip.md` and archive-handling policy is recorded in `doc/development/wiki/trac-cleanup.md` |
 | `SomeSplitting` | Retired from this repository import; current manual/code already provide `ST_Subdivide`, `ST_Split`, `ST_Node`, `ST_Polygonize`, and topology edge/face-editing tools, while the still-open vertex-preserving `SplitToMaxN`-style partitioning idea was compressed into `doc/development/doc-wip.md` |
