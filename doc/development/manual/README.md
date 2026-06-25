@@ -85,6 +85,6 @@ When documenting optional arguments, follow nearby DocBook examples so generated
 signatures and comments remain stable.
 
 The public website also links training material, including the Introduction to
-PostGIS workshop. The workshop has its own upstream repository under the
-PostGIS umbrella; route workshop changes there instead of adding them to the
-core documentation tree.
+PostGIS workshop. The workshop has its own upstream repository under the PostGIS
+umbrella at <https://github.com/postgis/postgis-workshops>; route workshop
+changes there instead of adding them to the core documentation tree.
