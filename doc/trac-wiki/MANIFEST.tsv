@@ -54,7 +54,6 @@ user	UserWikiRandomPoint	https://trac.osgeo.org/postgis/wiki/UserWikiRandomPoint
 user	UserWikiRandomPoints	https://trac.osgeo.org/postgis/wiki/UserWikiRandomPoints	doc/trac-wiki/user/UserWikiRandomPoints.tracwiki	19	0
 user	UserWikiVariableBuffer	https://trac.osgeo.org/postgis/wiki/UserWikiVariableBuffer	doc/trac-wiki/user/UserWikiVariableBuffer.tracwiki	1264	43
 user	UsersWiki	https://trac.osgeo.org/postgis/wiki/UsersWiki	doc/trac-wiki/user/UsersWiki.tracwiki	20	0
-user	UsersWikiBatchLoadShapefilesForWindowsUsingShp2pgsql	https://trac.osgeo.org/postgis/wiki/UsersWikiBatchLoadShapefilesForWindowsUsingShp2pgsql	doc/trac-wiki/user/UsersWikiBatchLoadShapefilesForWindowsUsingShp2pgsql.tracwiki	3926	84
 user	UsersWikiBufferCoast	https://trac.osgeo.org/postgis/wiki/UsersWikiBufferCoast	doc/trac-wiki/user/UsersWikiBufferCoast.tracwiki	3166	63
 user	UsersWikiBuildPolygonsWithLines	https://trac.osgeo.org/postgis/wiki/UsersWikiBuildPolygonsWithLines	doc/trac-wiki/user/UsersWikiBuildPolygonsWithLines.tracwiki	3155	71
 user	UsersWikiCardinalDirection	https://trac.osgeo.org/postgis/wiki/UsersWikiCardinalDirection	doc/trac-wiki/user/UsersWikiCardinalDirection.tracwiki	1864	62
