@@ -1,8 +1,8 @@
-# Building PostGIS
+# Ubuntu Development Environment
 
-This document aims to get your development environment up as fast as possible so
-you can jump ahead into improving the PostGIS codebase.
-The package list below targets Ubuntu 24.04.
+This document aims to get an Ubuntu development environment ready quickly so you
+can build and test the PostGIS codebase. The package list below targets Ubuntu
+24.04.
 
 This repository does not ship ready-to-run binaries. Contributors are expected
 to build PostGIS and its extensions locally before submitting patches. The

@@ -1,4 +1,4 @@
-# Documentation Workflow
+# Manual Documentation Workflow
 
 PostGIS documentation is written in DocBook XML under `doc/`. The root file is
 `doc/postgis.xml`, which includes chapter and reference XML files. The same XML

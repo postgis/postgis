@@ -38,12 +38,12 @@ Website source content that overlaps with repository-maintained developer docs:
 | `content/development/source_code.md` | [Contributing workflow](../workflow/) and [Pull request and maintainer workflow](../maintenance/) |
 | `content/development/getting_involved.md` | [Contributing workflow](../workflow/) |
 | `content/development/bug_reporting.md` | [Contributing workflow](../workflow/) |
-| `content/development/developer_docs.md` | [Documentation workflow](../documentation/) and this `doc/development/` index |
+| `content/development/developer_docs.md` | [Documentation workflow](../manual/) and this `doc/development/` index |
 | `content/development/versions_eol.md` | [Release process](../release-process/) and [Release and upgrade rules](../release/) |
 | `content/development/rfcs/*.md` | [Governance notes](../governance/) and historical RFC pages |
 | `content/community/mailinglists.md` and `content/community/chat.md` | [Contributing workflow](../workflow/) |
 | `content/community/conduct.md` | [Governance notes](../governance/) |
-| `content/documentation/manual.md` | [Documentation workflow](../documentation/) |
+| `content/documentation/manual.md` | [Documentation workflow](../manual/) |
 | `content/documentation/training.md` | Public website; only the workshop repository is an umbrella project |
 
 The website declares its content license as CC BY-SA 4.0 in `config.toml`.
