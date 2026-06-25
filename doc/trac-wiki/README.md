@@ -11,6 +11,8 @@ current developer workflow. Maintained developer documentation lives in
 
 `MANIFEST.tsv` records the category, Trac page name, source URL, repository
 path, byte count, and line count for every imported page.
+Pages that reviewers classified as Trac-only, completed, or superseded are
+intentionally absent from this corpus and recorded in the migration map.
 
 Imported categories:
 
