@@ -51,6 +51,9 @@ license. Preserve existing copyright and license headers, mark code derived
 from other projects, and discuss unusual licensing situations with the PSC or
 OSGeo legal counsel before committing.
 
+For the maintained commit-message, branch-target, authorship, and post-push
+rules distilled from RFC-5, see [Commit and branch guidelines](commit-guidelines/).
+
 ## First Pass
 
 Before editing a public branch, public pull request body, or Trac ticket state,
@@ -78,6 +81,10 @@ merge state, checks, and active review threads. A green check belongs to the
 head commit that produced it, not to a later force-push.
 
 ## Commit Messages
+
+The maintained commit-message and branch-target rules live in
+[Commit and branch guidelines](commit-guidelines/). The short summary below is
+for common pull request landings.
 
 For a single-commit pull request that can be represented cleanly on the target
 branch, land one normal single-parent commit with the original author. Use a
