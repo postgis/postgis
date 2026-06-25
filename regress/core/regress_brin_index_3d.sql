@@ -28,6 +28,16 @@ $$;
 
 -- BRIN indexes
 
+SELECT 'brin_proc_12', opc.opcname, amp.amprocnum, pro.proname
+FROM pg_catalog.pg_opclass AS opc
+JOIN pg_catalog.pg_amproc AS amp
+  ON amp.amprocfamily = opc.opcfamily
+JOIN pg_catalog.pg_proc AS pro
+  ON pro.oid = amp.amproc
+WHERE opc.opcname IN ('brin_geometry_inclusion_ops_3d', 'brin_geometry_inclusion_ops_4d')
+  AND amp.amprocnum = 12
+ORDER BY opc.opcname;
+
 -- 2D
 CREATE INDEX brin_2d on test using brin (the_geom) WITH (pages_per_range = 10);
 
