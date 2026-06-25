@@ -53,8 +53,6 @@ should leave draft state.
 * `PRRC_kwDOAEM_Wc7PPIhX`, `PRRC_kwDOAEM_Wc7PPgkg`: Windows/MinGW setup needs a
   current development-environment section and deduplication against newer
   Windows notes.
-* `PRRC_kwDOAEM_Wc7PPjxk`: old MinGW/MSYS 1.4/1.5 material needs a uniqueness
-  audit before deciding whether to retire it.
 
 ## User Manual Candidates
 
