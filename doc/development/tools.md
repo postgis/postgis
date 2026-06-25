@@ -19,16 +19,16 @@ ulimit -c unlimited
 
 When running under constrained CI where you cannot change `kernel.core_pattern`,
 skip the `logbt` setup and use the manual `gdb` workflow in
-[Testing and debugging](../testing/#backtraces).
+[Testing and debugging](testing.md#backtraces).
 
 ## Formatting
 
-Use [Coding style](../style/) for `git clang-format`, comments, and source naming
+Use [Coding style](style.md) for `git clang-format`, comments, and source naming
 rules.
 
 ## Coverage
 
-Use the coverage workflow in [Testing and debugging](../testing/#coverage).
+Use the coverage workflow in [Testing and debugging](testing.md#coverage).
 
 ## Profiling
 

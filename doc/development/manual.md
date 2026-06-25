@@ -48,7 +48,7 @@ Set `POSTGIS_DOC_CONVERTER` when autodetection cannot find `gm`, `magick`, or
 `convert`.
 
 Garden checks combine documentation examples with behavior validation. Keep the
-command and review guidance in [Testing and debugging](../testing/#garden-checks)
+command and review guidance in [Testing and debugging](testing.md#garden-checks)
 and link back here when manual examples need attention.
 
 Generated Doxygen documentation for supported branches is linked from the

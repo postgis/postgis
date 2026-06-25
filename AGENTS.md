@@ -3,29 +3,29 @@
 For build, test, and contributor workflow instructions, use
 [`doc/development/`](doc/development/). In particular:
 
-* [`doc/development/environment/ubuntu/`](doc/development/environment/ubuntu/) covers local
+* [`doc/development/environment/ubuntu.md`](doc/development/environment/ubuntu.md) covers local
   dependencies, PostgreSQL setup, build commands, install steps, and cleanup.
-* [`doc/development/testing/`](doc/development/testing/) covers regression
+* [`doc/development/testing.md`](doc/development/testing.md) covers regression
   commands, CUnit tests, coverage, dependency guards, and backtraces.
-* [`doc/development/workflow/`](doc/development/workflow/) covers Trac,
+* [`doc/development/contributing.md`](doc/development/contributing.md) covers Trac,
   code mirrors, mailing lists, and patch submission.
-* [`doc/development/style/`](doc/development/style/) covers source formatting,
+* [`doc/development/style.md`](doc/development/style.md) covers source formatting,
   comments, Doxygen comments, and naming conventions.
-* [`doc/development/internals/`](doc/development/internals/) covers allocator
+* [`doc/development/internals.md`](doc/development/internals.md) covers allocator
   boundaries, PostgreSQL C API macros, detoasting, and geometry serialization
   structures.
-* [`doc/development/website/`](doc/development/website/) covers the `postgis.net`
+* [`doc/development/website.md`](doc/development/website.md) covers the `postgis.net`
   Hugo repository, website release pointers, and website validation.
-* [`doc/development/maintenance/`](doc/development/maintenance/) covers pull
+* [`doc/development/maintenance.md`](doc/development/maintenance.md) covers pull
   request landing, tracker trailers, `NEWS`, branch readback, and external
   service hygiene.
-* [`doc/development/governance/`](doc/development/governance/) covers the
+* [`doc/development/governance.md`](doc/development/governance.md) covers the
   current RFC-5 status, umbrella project list, and governance-documentation
   consolidation notes.
-* [`doc/development/release/`](doc/development/release/) covers SQL/C API
+* [`doc/development/release.md`](doc/development/release.md) covers SQL/C API
   compatibility, upgrade scripting, dependency guards, and support-window
   changes.
-* [`doc/development/release-process/`](doc/development/release-process/) covers
+* [`doc/development/release-process.md`](doc/development/release-process.md) covers
   release preparation, publishing, announcements, and opening the next
   development cycle.
 
