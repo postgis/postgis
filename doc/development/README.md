@@ -8,8 +8,10 @@ Modules:
 
 * [Contributing workflow](workflow/) explains Trac tickets, code mirrors,
   mailing lists, and patch submission.
-* [Building locally](building/) gives a practical Ubuntu setup, build commands,
-  installation into a test cluster, and cleanup.
+* [Development environments](environment/) links the Ubuntu and Docker setup
+  paths.
+* [Ubuntu setup](environment/ubuntu/) gives a practical package-based setup,
+  build commands, installation into a test cluster, and cleanup.
 * [Testing and debugging](testing/) explains SQL regression tests, CUnit,
   dependency guards, and backtraces.
 * [Coding style](style/) covers C formatting, comments, Doxygen comments, and
@@ -23,7 +25,7 @@ Modules:
 * [Release process](release-process/) covers version numbering, release
   preparation, publishing, announcements, and opening the next development
   cycle.
-* [Documentation workflow](documentation/) covers DocBook, generated comments,
+* [Manual documentation workflow](manual/) covers DocBook, generated comments,
   translated manuals, images, and Doxygen output.
 * [Website maintenance](website/) covers the `postgis.net` Hugo repository,
   public development pages, release pointer updates, and website validation.
@@ -31,7 +33,7 @@ Modules:
   branches, mirror PR handling, tracker trailers, `NEWS`, and public readback.
 * [Governance notes](governance/) records the current RFC-5 status, umbrella
   project list, and governance-documentation consolidation notes.
-* [Docker development](docker/) summarizes the development container options
+* [Docker setup](environment/docker/) summarizes the development container options
   historically documented on the Trac developer wiki.
 * [Wiki migration map](wiki/) records the Trac wiki pages that were inspected
   and the repository location that should now hold maintained content.

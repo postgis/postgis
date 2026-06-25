@@ -52,7 +52,7 @@ explicitly.
 ## Standard Test Runs
 
 Tests expect PostgreSQL to be running and the current user to be able to create
-databases. The setup in [Building PostGIS](../building/) configures a packaged
+databases. The setup in [Building PostGIS](../environment/ubuntu/) configures a packaged
 cluster for local testing.
 
 Export connection parameters so every helper uses the same cluster:
@@ -117,7 +117,7 @@ Open `coverage-html/index.html` in a browser or upload the report to CI
 artifacts to inspect missing lines.
 
 If you rely on the `ci/github/run_*.sh` wrappers, export `PGHOME` and `PGDATA`
-as described in [Building PostGIS](../building/) and replace
+as described in [Building PostGIS](../environment/ubuntu/) and replace
 `/usr/local/pgsql/bin/pg_ctl` in those scripts with the packaged location or
 create a symlink at `/usr/local/pgsql/bin` pointing to `${PGHOME}/bin`.
 

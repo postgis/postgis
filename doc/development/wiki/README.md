@@ -30,14 +30,14 @@ rather than PostGIS.
 | Trac wiki page | Repository home |
 |----------------|-----------------|
 | `WikiStart` | `README.md`, `CONTRIBUTING.md`, this directory, and `doc/trac-wiki/project-history/WikiStart.tracwiki` |
-| `DevWikiMain` | `doc/development/README.md`, `workflow/`, `building/`, `testing/`, `documentation/`, `style/`, `internals/`, `release/`, `release-process/`, `docker/`, `wiki/`; original source in `doc/trac-wiki/development/DevWikiMain.tracwiki` |
+| `DevWikiMain` | `doc/development/README.md`, `workflow/`, `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `wiki/`; original source in `doc/trac-wiki/development/DevWikiMain.tracwiki` |
 | `DevWikiGettingABackTrace` | `doc/development/testing/` |
 | `DevWikiPGRegress` | `doc/development/testing/` |
 | `DevWikiCUnit` | `doc/development/testing/` |
-| `DevWikiDocNewFeature` | `doc/development/documentation/` |
+| `DevWikiDocNewFeature` | `doc/development/manual/` |
 | `DevWikiPatch` | `doc/development/style/`, `doc/development/workflow/`, `doc/development/testing/` |
-| `DevWikiMain/DevForDummy` | `doc/development/workflow/`, `building/`, `testing/`, `documentation/` |
-| `DevWikiDockerTesting` | `doc/development/docker/` |
+| `DevWikiMain/DevForDummy` | `doc/development/workflow/`, `environment/ubuntu/`, `testing/`, `manual/` |
+| `DevWikiDockerTesting` | `doc/development/environment/docker/` |
 | `DevWikiRFC` | `doc/rfc/`, `doc/development/governance/`, plus published RFCs at <https://postgis.net/development/rfcs/> |
 | `DevWikiComitGuidelines` | `doc/development/maintenance/`, `doc/development/governance/`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/>; original source in `doc/trac-wiki/development/DevWikiComitGuidelines.tracwiki` |
 | `DevWikiEvent` | Archived in `doc/trac-wiki/development/DevWikiEvent.tracwiki`; convert only if it becomes current process documentation |
@@ -49,11 +49,11 @@ rather than PostGIS.
 | `DevelopmentDiscussion`, `DevWikiISO19125`, `DevGUC`, `ToleranceDiscussion`, `DevClusteringFunctions` | Archived in `doc/trac-wiki/development/` as historical design discussions |
 | `DevWikiProvenanceReview` | Archived in `doc/trac-wiki/development/DevWikiProvenanceReview.tracwiki` as historical OSGeo incubation/provenance record |
 | `DevFOSS4GCodeSprintNotes` | Archived in `doc/trac-wiki/project-history/DevFOSS4GCodeSprintNotes.tracwiki` |
-| `DevWikiGardenTest` | `doc/development/documentation/` |
-| `DevWikiMingW64_Setup`, `DevWikiWinMingW64`, `DevWikiWinMingW64_21`, `DevWikiWinMingWSys_14_15`, `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`, `DevWikiWinVC_15`, `DevWikiWinNSIS` | Archived in `doc/trac-wiki/development/`; current CI/build notes belong in `doc/development/building/` and `ci/` |
+| `DevWikiGardenTest` | `doc/development/manual/` |
+| `DevWikiMingW64_Setup`, `DevWikiWinMingW64`, `DevWikiWinMingW64_21`, `DevWikiWinMingWSys_14_15`, `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`, `DevWikiWinVC_15`, `DevWikiWinNSIS` | Archived in `doc/trac-wiki/development/`; current CI/build notes belong in `doc/development/environment/ubuntu/` and `ci/` |
 | `DevCleanFromGEOS` | Archived in `doc/trac-wiki/development/DevCleanFromGEOS.tracwiki` |
-| `UsersWikiMakeCheckConsiderations` | `doc/development/building/`, `doc/development/testing/` |
-| `ContinuousIntegration` | `ci/`, `doc/development/building/`, and `doc/development/docker/` |
+| `UsersWikiMakeCheckConsiderations` | `doc/development/environment/ubuntu/`, `doc/development/testing/` |
+| `ContinuousIntegration` | `ci/`, `doc/development/environment/ubuntu/`, and `doc/development/environment/docker/` |
 | `CodeRepository` | `doc/development/workflow/` |
 | `CodeMirrors` | `doc/development/workflow/` |
 | `PostGISDevelopment2021`, `PostGISDevelopment2022-1`, `PostGISDevelopment2023-1`, `PostGISDevelopment2026-1` | Archived in `doc/trac-wiki/project-history/`; current release-process actions belong in `doc/development/release-process/` |
@@ -68,12 +68,12 @@ rather than PostGIS.
 | `postgis.net/development/source_code` | `doc/development/workflow/`, `doc/development/maintenance/` |
 | `postgis.net/development/getting_involved` | `doc/development/workflow/` |
 | `postgis.net/development/bug_reporting` | `doc/development/workflow/` |
-| `postgis.net/development/developer_docs` | `doc/development/documentation/`, `doc/development/website/` |
+| `postgis.net/development/developer_docs` | `doc/development/manual/`, `doc/development/website/` |
 | `postgis.net/development/versions_eol` | `doc/development/release-process/`, `doc/development/release/` |
 | `postgis.net/development/rfcs/rfc01` | `doc/development/governance/` |
 | `postgis.net/community/mailinglists`, `postgis.net/community/chat` | `doc/development/workflow/` |
 | `postgis.net/community/conduct` | `doc/development/governance/` |
-| `postgis.net/documentation/manual` | `doc/development/documentation/` |
+| `postgis.net/documentation/manual` | `doc/development/manual/` |
 | `postgis.net` Hugo repository README, Makefile, config, and release-check script | `doc/development/website/`, `doc/development/release-process/` |
 | `UsersWikiPostgreSQLPostGIS` | Archived in `doc/trac-wiki/user/UsersWikiPostgreSQLPostGIS.tracwiki`; convert into release-support documentation only after reconciling with current supported versions |
 
