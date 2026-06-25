@@ -110,7 +110,7 @@ documentation -- that means having the required software:
   - Commit all changes
   - If this is a minor or major release (no branch exists):
 	   $ rel=x.x # replace x.x with minor version (e.g. 2.3)
-	   $ git checkout master; git checkout -b "stable-$rel"; git push -u osgeo stable-$rev
+	   $ git checkout master; git checkout -b "stable-$rel"; git push -u osgeo "stable-$rel"
 
 	   Go to: https://debbie.postgis.net and copy last branch version and make new job
 	   a) Replace PostGIS_* string params with new version
