@@ -38,7 +38,7 @@ rather than PostGIS.
 | `DevWikiPatch` | `doc/development/style/`, `doc/development/workflow/`, `doc/development/testing/` |
 | `DevWikiMain/DevForDummy` | `doc/development/workflow/`, `environment/ubuntu/`, `testing/`, `manual/` |
 | `DevWikiDockerTesting` | `doc/development/environment/docker/` |
-| `DevWikiRFC` | `doc/rfc/`, `doc/development/governance/`, plus published RFCs at <https://postgis.net/development/rfcs/> |
+| `DevWikiRFC` | Retired from this repository import. Current governance material belongs in `doc/development/governance/`; historical RFC text remains in `doc/rfc/` and the published RFC pages. |
 | `DevWikiComitGuidelines` | `doc/development/maintenance/`, `doc/development/governance/`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/>; original source in `doc/trac-wiki/development/DevWikiComitGuidelines.tracwiki` |
 | `DevWikiEvent` | Archived in `doc/trac-wiki/development/DevWikiEvent.tracwiki`; convert only if it becomes current process documentation |
 | `DevWikiPostGISCoding` | `doc/development/internals/postgresql/`, `doc/development/internals/memory/`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
@@ -58,7 +58,9 @@ rather than PostGIS.
 | `CodeMirrors` | `doc/development/workflow/` |
 | `PostGISDevelopment2021`, `PostGISDevelopment2022-1`, `PostGISDevelopment2023-1`, `PostGISDevelopment2026-1` | Archived in `doc/trac-wiki/project-history/`; current release-process actions belong in `doc/development/release-process/` |
 | `PostGIS3`, `PostGIS20ReleaseAnnouncement`, `PostGISObsoleteVersionsMatrix`, `RCDownloads` | Archived in `doc/trac-wiki/project-history/`; maintained release workflow belongs in `doc/development/release-process/` |
-| `PostGISCodeSprint2018`, `PostGISCodeSprint2020`, `CodeSprintParis2012` | Archived in `doc/trac-wiki/project-history/` |
+| `PostGISCodeSprint2018`, `PostGISCodeSprint2020` | Archived in `doc/trac-wiki/project-history/` |
+| `CodeSprintParis2012`, `GeospatialDataViewerInPgAdmin4ForPostGIS`, `GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport` | Left on Trac rather than imported; these are event or project-history records rather than maintained repository documentation. |
+| `ImplementSortingMethodsBeforeGistIndexBuilding`, `MoveToGit`, `UsersWikiCascadeUnion` | Retired from this repository import because the work is done or superseded by current built-in behavior. |
 | `PostGISExtensionPaths` | Archived in `doc/trac-wiki/project-history/PostGISExtensionPaths.tracwiki`; convert into current release or packaging docs only if it becomes maintained policy |
 | `HOWTO_RELEASE` | `doc/development/release-process/`, `doc/development/release/versioning/`, `doc/development/release/deprecation/` |
 | `STYLE` | `doc/development/style/` |
@@ -81,11 +83,11 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 45 | `doc/trac-wiki/development/` |
-| User wiki | 142 | `doc/trac-wiki/user/` |
+| Development | 40 | `doc/trac-wiki/development/` |
+| User wiki | 141 | `doc/trac-wiki/user/` |
 | Raster | 21 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
-| Project history | 22 | `doc/trac-wiki/project-history/` |
+| Project history | 21 | `doc/trac-wiki/project-history/` |
 | Source hosts | 5 | `doc/trac-wiki/source-hosts/` |
 
 TitleIndex groups intentionally not imported into the corpus:
