@@ -81,7 +81,6 @@ user	UsersWikiExamplesFindNearby	https://trac.osgeo.org/postgis/wiki/UsersWikiEx
 user	UsersWikiExamplesFindNearbyLatLon	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesFindNearbyLatLon	doc/trac-wiki/user/UsersWikiExamplesFindNearbyLatLon.tracwiki	1678	34
 user	UsersWikiExamplesInsidePolygon	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesInsidePolygon	doc/trac-wiki/user/UsersWikiExamplesInsidePolygon.tracwiki	1069	42
 user	UsersWikiExamplesInsidePolygon2	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesInsidePolygon2	doc/trac-wiki/user/UsersWikiExamplesInsidePolygon2.tracwiki	3010	104
-user	UsersWikiExamplesInterpolateWithOffset	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesInterpolateWithOffset	doc/trac-wiki/user/UsersWikiExamplesInterpolateWithOffset.tracwiki	1598	56
 user	UsersWikiExamplesJoinTables	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesJoinTables	doc/trac-wiki/user/UsersWikiExamplesJoinTables.tracwiki	732	22
 user	UsersWikiExamplesNetworkTopology	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesNetworkTopology	doc/trac-wiki/user/UsersWikiExamplesNetworkTopology.tracwiki	4535	126
 user	UsersWikiExamplesOverlayTables	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesOverlayTables	doc/trac-wiki/user/UsersWikiExamplesOverlayTables.tracwiki	5643	179
