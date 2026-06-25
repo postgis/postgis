@@ -48,7 +48,6 @@ topology	TopologyCopy	https://trac.osgeo.org/postgis/wiki/TopologyCopy	doc/trac-
 topology	TopologyTableLayer	https://trac.osgeo.org/postgis/wiki/TopologyTableLayer	doc/trac-wiki/topology/TopologyTableLayer.tracwiki	342	2
 topology	TopologyTableRelation	https://trac.osgeo.org/postgis/wiki/TopologyTableRelation	doc/trac-wiki/topology/TopologyTableRelation.tracwiki	430	2
 user	UserWiki	https://trac.osgeo.org/postgis/wiki/UserWiki	doc/trac-wiki/user/UserWiki.tracwiki	13	0
-user	UserWikiBufferMeters	https://trac.osgeo.org/postgis/wiki/UserWikiBufferMeters	doc/trac-wiki/user/UserWikiBufferMeters.tracwiki	1568	62
 user	UserWikiDotDensity	https://trac.osgeo.org/postgis/wiki/UserWikiDotDensity	doc/trac-wiki/user/UserWikiDotDensity.tracwiki	2532	66
 user	UserWikiRandomPoint	https://trac.osgeo.org/postgis/wiki/UserWikiRandomPoint	doc/trac-wiki/user/UserWikiRandomPoint.tracwiki	5618	175
 user	UserWikiRandomPoints	https://trac.osgeo.org/postgis/wiki/UserWikiRandomPoints	doc/trac-wiki/user/UserWikiRandomPoints.tracwiki	19	0
@@ -84,9 +83,6 @@ user	UsersWikiMakeCheckConsiderations	https://trac.osgeo.org/postgis/wiki/UsersW
 user	UsersWikiNbSqlFunctionsEditor	https://trac.osgeo.org/postgis/wiki/UsersWikiNbSqlFunctionsEditor	doc/trac-wiki/user/UsersWikiNbSqlFunctionsEditor.tracwiki	2395	60
 user	UsersWikiNearest	https://trac.osgeo.org/postgis/wiki/UsersWikiNearest	doc/trac-wiki/user/UsersWikiNearest.tracwiki	3351	82
 user	UsersWikiNewbieAddgeometrycolumn	https://trac.osgeo.org/postgis/wiki/UsersWikiNewbieAddgeometrycolumn	doc/trac-wiki/user/UsersWikiNewbieAddgeometrycolumn.tracwiki	635	13
-user	UsersWikiNewbieDistanceMeasurement	https://trac.osgeo.org/postgis/wiki/UsersWikiNewbieDistanceMeasurement	doc/trac-wiki/user/UsersWikiNewbieDistanceMeasurement.tracwiki	1819	43
-user	UsersWikiNewbieMeasurementInMeters	https://trac.osgeo.org/postgis/wiki/UsersWikiNewbieMeasurementInMeters	doc/trac-wiki/user/UsersWikiNewbieMeasurementInMeters.tracwiki	1397	36
-user	UsersWikiNewbiePostGISFunctionMeasurement	https://trac.osgeo.org/postgis/wiki/UsersWikiNewbiePostGISFunctionMeasurement	doc/trac-wiki/user/UsersWikiNewbiePostGISFunctionMeasurement.tracwiki	1493	22
 user	UsersWikiOGR	https://trac.osgeo.org/postgis/wiki/UsersWikiOGR	doc/trac-wiki/user/UsersWikiOGR.tracwiki	3520	110
 user	UsersWikiOGRExamples	https://trac.osgeo.org/postgis/wiki/UsersWikiOGRExamples	doc/trac-wiki/user/UsersWikiOGRExamples.tracwiki	3632	98
 user	UsersWikiPackages	https://trac.osgeo.org/postgis/wiki/UsersWikiPackages	doc/trac-wiki/user/UsersWikiPackages.tracwiki	2474	47
