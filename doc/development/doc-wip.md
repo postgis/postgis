@@ -77,6 +77,22 @@ should leave draft state.
   functions and mention that H3 support now lives in the `h3-pg` umbrella
   project.
 
+## Documentation Backlog
+
+The following ideas were extracted from `GoogleSeasonDocs2019` before leaving
+that historical planning page on Trac:
+
+* Review manual prose for consistent style, spelling, and function parameter
+  names.
+* Decide whether the core manual or workshop material needs workbook-style
+  paths for geometry/geography, topology, and raster workflows. Route workshop
+  changes to <https://github.com/postgis/postgis-workshops>.
+* Improve SQL example markup by separating SQL program listings from query
+  output where practical, so formatting and validation can treat them
+  differently.
+* Decide whether DocBook XML source formatting should have a stronger
+  line-width convention for cleaner diffs.
+
 ## Project History and Planning
 
 * `PRRC_kwDOAEM_Wc7POwKG`, `PRRC_kwDOAEM_Wc7PO3dX`: decide how historical
@@ -85,8 +101,6 @@ should leave draft state.
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
   on Trac or in history, but extract any not-yet-implemented ideas into a
   maintained list.
-* `PRRC_kwDOAEM_Wc7PPuRc`: Google Season of Docs notes should keep only
-  not-yet-done documentation ideas if anything remains current.
 * `PRRC_kwDOAEM_Wc7PPvW1`: `PostGIS3` should be pruned to ideas that were not
   completed.
 * `PRRC_kwDOAEM_Wc7PPw2H`, `PRRC_kwDOAEM_Wc7PPyUi`: the obsolete versions matrix
