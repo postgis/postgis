@@ -1,5 +1,12 @@
 # Trac Wiki Migration Map
 
+This is a draft-only migration workspace for ticket #5638. Do not treat it as
+the final developer-documentation structure or publish it as a maintained
+chapter. Once the remaining imported wiki pages are either folded into the
+topic pages under `doc/development/`, left as historical Trac context, or
+retired in the cleanup ledger, remove this map and keep only the maintained
+topic pages plus any necessary archive pointer.
+
 The PostGIS Trac wiki remains useful for tickets and live project discussion,
 but maintained developer documentation should live in this repository. This
 page records the wiki pages pulled while consolidating ticket #5638 and where
