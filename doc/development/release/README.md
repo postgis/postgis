@@ -7,10 +7,14 @@ supported PostgreSQL versions.
 
 ## Topics
 
-* [API compatibility](api/) explains version terminology, library naming, and
-  SQL/C API compatibility rules.
-* [SQL upgrade scripting](sql-scripting/) explains `Availability:`, `Changed:`,
-  `Replaces`, before/after upgrade hooks, and parser-sensitive SQL style.
+* [API compatibility](api/) indexes SQL/C API compatibility rules.
+* [Versioning policy](versioning/) explains version terminology, library naming,
+  and release-line compatibility constraints.
+* [Deprecating and removing API](deprecation/) explains SQL-visible object
+  removals and C API stubs for `pg_upgrade`.
+* [SQL upgrade and deprecation](sql-scripting/) explains `Availability:`,
+  `Changed:`, `Replaces`, before/after upgrade hooks, and parser-sensitive SQL
+  style.
 * [Dependency and support guards](dependencies/) explains dependency-version
   guards and the checklist for dropping PostgreSQL support.
 * [Regression harness roles](regression-roles/) explains sandboxed regression
