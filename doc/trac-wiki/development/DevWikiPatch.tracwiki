@@ -1,4 +1,0 @@
-== Preparing Patches for Inclusion ==
-1.  Before you even start programming refer to our [http://svn.osgeo.org/postgis/trunk/STYLE PostGIS coding Style Guide] to ensure your code meets our high standards of quality :).
-
-2.  Pay careful attention to how you comment functions.  This is important so the function descriptions get picked up by our Doxygen autodocumenter

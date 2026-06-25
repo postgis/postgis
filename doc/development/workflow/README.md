@@ -69,7 +69,8 @@ Patch submission basics:
 * Add regression or CUnit coverage for behavior changes.
 * Run the focused local validation described in [Ubuntu setup](../environment/ubuntu/)
   and [Testing and debugging](../testing/).
-* Follow [Coding style](../style/) for C naming and formatting.
+* Follow [Coding style](../style/) for C naming, formatting, and Doxygen
+  comments before writing or submitting source patches.
 * Add documentation in the same change when a feature adds or changes SQL
   user-visible behavior.
 * For SQL API, upgrade, and release-policy changes, read
