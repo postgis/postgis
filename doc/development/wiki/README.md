@@ -57,6 +57,7 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiSpatialCollectionTutorial` | `doc/development/internals/spatial-collections.md`; current code no longer has the old `SPATIAL_COLLECTION` API, so the maintained page records current geometry collection and raster/vector crossing paths |
 | `DevGUC` | `doc/development/release/api/` |
 | `DevelopmentDiscussion` | Left on Trac; still-open PostGIS 2.0 design themes were extracted into `doc/development/doc-wip.md` and archive-handling policy is recorded in `doc/development/wiki/trac-cleanup.md` |
+| `SomeSplitting` | Retired from this repository import; current manual/code already provide `ST_Subdivide`, `ST_Split`, `ST_Node`, `ST_Polygonize`, and topology edge/face-editing tools, while the still-open vertex-preserving `SplitToMaxN`-style partitioning idea was compressed into `doc/development/doc-wip.md` |
 | `ToleranceDiscussion` | Archived in `doc/trac-wiki/development/` as a historical design discussion |
 | `DevWikiISO19125` | Left on Trac; still-open standards-conformance themes were extracted into `doc/development/doc-wip.md` |
 | `DevClusteringFunctions` | Retired from this repository import; current clustering functions are implemented and documented in the user manual. |
