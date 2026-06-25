@@ -72,7 +72,6 @@ user	UsersWikiBatchLoadShapefilesForWindowsUsingShp2pgsql	https://trac.osgeo.org
 user	UsersWikiBufferCoast	https://trac.osgeo.org/postgis/wiki/UsersWikiBufferCoast	doc/trac-wiki/user/UsersWikiBufferCoast.tracwiki	3166	63
 user	UsersWikiBuildPolygonsWithLines	https://trac.osgeo.org/postgis/wiki/UsersWikiBuildPolygonsWithLines	doc/trac-wiki/user/UsersWikiBuildPolygonsWithLines.tracwiki	3155	71
 user	UsersWikiCardinalDirection	https://trac.osgeo.org/postgis/wiki/UsersWikiCardinalDirection	doc/trac-wiki/user/UsersWikiCardinalDirection.tracwiki	1864	62
-user	UsersWikiCheckInvalidGeometriesFromGeometryColumns	https://trac.osgeo.org/postgis/wiki/UsersWikiCheckInvalidGeometriesFromGeometryColumns	doc/trac-wiki/user/UsersWikiCheckInvalidGeometriesFromGeometryColumns.tracwiki	1495	39
 user	UsersWikiComputeMultiCentroid	https://trac.osgeo.org/postgis/wiki/UsersWikiComputeMultiCentroid	doc/trac-wiki/user/UsersWikiComputeMultiCentroid.tracwiki	837	30
 user	UsersWikiCoveragesAndPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiCoveragesAndPostgis	doc/trac-wiki/user/UsersWikiCoveragesAndPostgis.tracwiki	16366	94
 user	UsersWikiCreatingTopoGeometryObjects	https://trac.osgeo.org/postgis/wiki/UsersWikiCreatingTopoGeometryObjects	doc/trac-wiki/user/UsersWikiCreatingTopoGeometryObjects.tracwiki	1757	42

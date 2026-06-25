@@ -91,6 +91,7 @@ Trac or retired from the repository import are tracked in the
 | `UsersWikiPostGIS15Ubuntu1110pkg` | Retired from this repository import; obsolete Ubuntu 11.10/PostGIS 1.5 package setup is recorded in `doc/development/wiki/trac-cleanup.md` |
 | `UsersWikiCreateFishnet` | Retired from this repository import; current grid generation belongs to built-in functions such as `ST_SquareGrid` and `ST_HexagonGrid` in the user manual. |
 | `UsersWikiGenerateHexagonalGrid` | Retired from this repository import; current hexagon grid generation belongs to `ST_HexagonGrid` in the user manual, with H3 tiling routed to `h3-pg` |
+| `UsersWikiCheckInvalidGeometriesFromGeometryColumns` | Retired from this repository import; current registered-column validity scanning is documented in the `ST_IsValid` manual examples |
 | `UsersWikiCleanPolygons` | Retired from this repository import; current invalid-geometry repair guidance belongs with `ST_MakeValid` in the user manual. |
 | `WKTRaster_MapAlgebra` | Retired from this repository import; current raster map algebra functions are implemented and documented in the raster manual. |
 
@@ -99,7 +100,7 @@ Imported corpus:
 | Category | Pages | Location |
 |----------|-------|----------|
 | Development | 20 | `doc/trac-wiki/development/` |
-| User wiki | 137 | `doc/trac-wiki/user/` |
+| User wiki | 136 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
 | Project history | 17 | `doc/trac-wiki/project-history/` |
