@@ -54,8 +54,7 @@ rather than PostGIS.
 | `DevCleanFromGEOS` | Archived in `doc/trac-wiki/development/DevCleanFromGEOS.tracwiki` |
 | `UsersWikiMakeCheckConsiderations` | `doc/development/environment/ubuntu/`, `doc/development/testing/` |
 | `ContinuousIntegration` | `ci/`, `doc/development/environment/ubuntu/`, and `doc/development/environment/docker/` |
-| `CodeRepository` | `doc/development/workflow/` |
-| `CodeMirrors` | `doc/development/workflow/` |
+| `CodeRepository`, `CodeMirrors` | Consolidated into `doc/development/workflow/` and `doc/development/maintenance/`; the tiny Trac source pages are not kept separately. |
 | `PostGISDevelopment2021`, `PostGISDevelopment2022-1`, `PostGISDevelopment2023-1`, `PostGISDevelopment2026-1` | Archived in `doc/trac-wiki/project-history/`; current release-process actions belong in `doc/development/release-process/` |
 | `PostGIS3`, `PostGIS20ReleaseAnnouncement`, `PostGISObsoleteVersionsMatrix`, `RCDownloads` | Archived in `doc/trac-wiki/project-history/`; maintained release workflow belongs in `doc/development/release-process/` |
 | `PostGISCodeSprint2018`, `PostGISCodeSprint2020` | Archived in `doc/trac-wiki/project-history/` |
@@ -83,7 +82,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 40 | `doc/trac-wiki/development/` |
+| Development | 38 | `doc/trac-wiki/development/` |
 | User wiki | 141 | `doc/trac-wiki/user/` |
 | Raster | 21 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
