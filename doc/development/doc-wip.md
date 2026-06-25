@@ -32,9 +32,6 @@ should leave draft state.
   necessary archive pointer.
 
 ## Developer Deep Dives
-* `PRRC_kwDOAEM_Wc7PPc2J`: raster real-parameter notes look useful, but need
-  image recovery, Markdown conversion, and reconciliation with the current
-  reverse geotransform calculations.
 * `PRRC_kwDOAEM_Wc7PPfAw`: spatial collection material should probably become
   an advanced geometry deep dive after checking current behavior and examples.
 * `PRRC_kwDOAEM_Wc7PPpX5`, `PRRC_kwDOAEM_Wc7PPqUS`: distance-calculation pages
