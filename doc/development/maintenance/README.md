@@ -2,7 +2,7 @@
 
 This page collects maintainer-facing workflow notes for landing patches and
 pull requests. Contributor-facing setup and submission notes live in
-[Contributing workflow](../workflow/).
+[Contributing workflow](../contributing.md).
 
 ## Source of Truth
 

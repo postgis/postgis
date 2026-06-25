@@ -31,9 +31,9 @@ For pull-request routing, source-of-truth branches, and mirror handling, see
 | `postgis.net` website | Public website, release pointers, news, RFC pages, community pages, and documentation links | [PostGIS website maintenance](../website/) |
 | `postgis.net/stuff` | Release tarballs, checksums, and generated documentation artefacts | [Release process](../release-process/) |
 | Debbie build host and build jobs | Release builds, distribution checks, and build-bot jobs referenced during release work | [Release process](../release-process/) |
-| OSGeo Trac | Tickets, legacy wiki, roadmap, reports, and historical project records | [Contributing workflow](../workflow/) and [Wiki migration map](../wiki/) |
+| OSGeo Trac | Tickets, legacy wiki, roadmap, reports, and historical project records | [Contributing workflow](../contributing.md) and [Wiki migration map](../wiki/) |
 | Weblate | Translation repository maintenance for the PostGIS manual | [Pull request and maintainer workflow](../maintenance/) and [Manual documentation workflow](../manual/) |
-| Mailing lists and chat | Public development discussion, user support, and community coordination | [Contributing workflow](../workflow/) |
+| Mailing lists and chat | Public development discussion, user support, and community coordination | [Contributing workflow](../contributing.md) |
 
 Keep credentials, server-specific secrets, and deployment tokens out of this
 repository. Repository docs should name the service, source-of-truth repository,

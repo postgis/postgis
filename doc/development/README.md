@@ -6,7 +6,7 @@ live here so they are reviewed with code and branch changes.
 
 Modules:
 
-* [Contributing workflow](workflow/) explains Trac tickets, code mirrors,
+* [Contributing workflow](contributing.md) explains Trac tickets, code mirrors,
   mailing lists, and patch submission.
 * [Development environments](environment/) links the Ubuntu and Docker setup
   paths.

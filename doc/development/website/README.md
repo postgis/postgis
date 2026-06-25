@@ -35,13 +35,13 @@ Website source content that overlaps with repository-maintained developer docs:
 
 | Website source | Repository-maintained destination |
 |----------------|-----------------------------------|
-| `content/development/source_code.md` | [Contributing workflow](../workflow/) and [Pull request and maintainer workflow](../maintenance/) |
-| `content/development/getting_involved.md` | [Contributing workflow](../workflow/) |
-| `content/development/bug_reporting.md` | [Contributing workflow](../workflow/) |
+| `content/development/source_code.md` | [Contributing workflow](../contributing.md) and [Pull request and maintainer workflow](../maintenance/) |
+| `content/development/getting_involved.md` | [Contributing workflow](../contributing.md) |
+| `content/development/bug_reporting.md` | [Contributing workflow](../contributing.md) |
 | `content/development/developer_docs.md` | [Documentation workflow](../manual/) and this `doc/development/` index |
 | `content/development/versions_eol.md` | [Release process](../release-process/) and [Release and upgrade rules](../release/) |
 | `content/development/rfcs/*.md` | [Governance notes](../governance/) and historical RFC pages |
-| `content/community/mailinglists.md` and `content/community/chat.md` | [Contributing workflow](../workflow/) |
+| `content/community/mailinglists.md` and `content/community/chat.md` | [Contributing workflow](../contributing.md) |
 | `content/community/conduct.md` | [Governance notes](../governance/) |
 | `content/documentation/manual.md` | [Documentation workflow](../manual/) |
 | `content/documentation/training.md` | Public website; only the workshop repository is an umbrella project |
