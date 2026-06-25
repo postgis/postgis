@@ -66,18 +66,12 @@ core contributor work. Current project inventory and roster maintenance belong
 in the dedicated inventory and public project pages rather than in the
 historical RFC text.
 
-## Projects Under The PostGIS Umbrella
+## Project and Service Inventory
 
-The current umbrella projects are:
-
-| Project | Repository |
-|---------|------------|
-| Docker PostGIS | <https://github.com/postgis/docker-postgis> |
-| PostGIS Java | <https://github.com/postgis/postgis-java> |
-| PostGIS Workshop | <https://github.com/postgis/postgis-workshops> |
-| H3-pg | <https://github.com/postgis/h3-pg> |
-| `address_standardizer` | <https://github.com/postgis/address_standardizer> |
-| `postgis_tiger_geocoder` | <https://git.osgeo.org/gitea/postgis/postgis_tiger_geocoder> |
+Current umbrella projects, related repositories, and project-operated services
+are tracked in [PostGIS project inventory](project-inventory.md). Keep source
+routing and service ownership there, rather than mixing it into the PSC process
+or historical RFC notes.
 
 For source-of-truth rules when landing pull requests or routing component work,
 see [Pull request and maintainer workflow](../maintenance/).
