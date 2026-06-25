@@ -16,6 +16,8 @@ Modules:
   dependency guards, and backtraces.
 * [Coding style](style/) covers C formatting, comments, Doxygen comments, and
   source naming conventions.
+* [Developer tools](tools/) covers `logbt`, formatting, coverage, and profiling
+  entry points.
 * [Internals and PostgreSQL C API notes](internals/) covers allocator
   boundaries, PostgreSQL function macros, detoasting, and geometry
   serialization structures.

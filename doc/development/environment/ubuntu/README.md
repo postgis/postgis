@@ -87,25 +87,7 @@ If you prefer a completely isolated cluster, create an unprivileged build user
 and run `initdb` as in the upstream documentation. The remainder of this guide
 assumes the packaged cluster is used and listens on the default port 5432.
 
-## 3. Enable core dumps and logbt (optional but recommended)
-
-The `ci/github/logbt` helper captures backtraces from crashes. On Ubuntu you
-need elevated privileges once to reconfigure the kernel core pattern.
-
-```bash
-sudo ./ci/github/logbt --setup
-sudo sysctl kernel.core_pattern
-# Keep the directory writable:
-sudo mkdir -p /tmp/logbt-coredumps
-sudo chmod 1777 /tmp/logbt-coredumps
-ulimit -c unlimited
-```
-
-When running under constrained CI where you cannot change `kernel.core_pattern`,
-skip the `logbt` steps; the test suite still runs but you will not get automatic
-core backtraces.
-
-## 4. Build prerequisites
+## 3. Build prerequisites
 
 The following projects are detected automatically via `pkg-config` or helper
 scripts during `./configure`. After installing the Ubuntu packages you should
@@ -122,7 +104,7 @@ have:
 
 Verify their presence if `./configure` fails.
 
-## 5. Building PostGIS
+## 4. Building PostGIS
 
 ```bash
 ./autogen.sh
@@ -138,7 +120,7 @@ make -j"$(nproc)"
 When iterating repeatedly, `make clean` or `make distclean` may be necessary if
 you switch compilers or change major dependencies.
 
-## 6. Installing for tests
+## 5. Installing for tests
 
 Most regression tests expect the PostgreSQL cluster configured above to be
 running and the freshly built artifacts to be installed into that same
@@ -148,24 +130,24 @@ PostgreSQL instance:
 sudo make install
 ```
 
-See [Testing and debugging](../testing/) for regression commands, CUnit tests,
-coverage, dependency guards, and backtrace capture.
+See [Testing and debugging](../../testing/) for regression commands, CUnit
+tests, coverage, dependency guards, and backtrace capture. Optional tooling such
+as `logbt` setup lives in [Developer tools](../../tools/).
 
-## 7. Cleaning up
+## 6. Cleaning up
 
 To reclaim disk space:
 
 ```bash
 sudo -u postgres pg_ctlcluster "${PG_MAJOR}" main stop
-sudo rm -rf /tmp/logbt-coredumps
 ```
 
 If you created a private cluster instead of using the packaged one, stop it with
 `pg_ctl -D "$PGDATA" stop` and remove the data directory manually.
 
-## 8. Maintaining formatting
+## 7. Maintaining formatting
 
-Review [Coding style](../style/) for source-formatting preferences, including
+Review [Coding style](../../style/) for source-formatting preferences, including
 `git clang-format` usage for C and C++ changes. For release policies, upgrade
 implications, and naming conventions for new features, read
-[Release and upgrade rules](../release/).
+[Release and upgrade rules](../../release/).
