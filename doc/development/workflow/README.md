@@ -63,6 +63,11 @@ documentation correction, or test improvement builds reviewer trust faster than
 a large redesign. Discuss larger plans on `postgis-devel` before spending a lot
 of implementation time.
 
+New features target `master` and the next minor or major PostGIS release, not
+the next micro bugfix release. Bug fixes may be backpatched to maintained stable
+branches when they are appropriate for that release line; check the branch's
+`Version.config` and top `NEWS` section before preparing a backpatch.
+
 Patch submission basics:
 
 * Keep each patch focused on one ticket or reviewable topic.
