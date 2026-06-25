@@ -81,6 +81,7 @@ rather than PostGIS.
 | `UsersWikiPostgreSQLPostGIS` | Archived in `doc/trac-wiki/user/UsersWikiPostgreSQLPostGIS.tracwiki`; convert into release-support documentation only after reconciling with current supported versions |
 | `UsersWikiCreateFishnet` | Retired from this repository import; current grid generation belongs to built-in functions such as `ST_SquareGrid` and `ST_HexagonGrid` in the user manual. |
 | `UsersWikiCleanPolygons` | Retired from this repository import; current invalid-geometry repair guidance belongs with `ST_MakeValid` in the user manual. |
+| `WKTRaster_MapAlgebra` | Retired from this repository import; current raster map algebra functions are implemented and documented in the raster manual. |
 
 Imported corpus:
 
@@ -88,7 +89,7 @@ Imported corpus:
 |----------|-------|----------|
 | Development | 36 | `doc/trac-wiki/development/` |
 | User wiki | 139 | `doc/trac-wiki/user/` |
-| Raster | 21 | `doc/trac-wiki/raster/` |
+| Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
 | Project history | 21 | `doc/trac-wiki/project-history/` |
 | Source hosts | 5 | `doc/trac-wiki/source-hosts/` |
