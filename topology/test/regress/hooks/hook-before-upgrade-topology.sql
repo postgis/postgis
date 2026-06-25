@@ -261,7 +261,7 @@ CREATE DOMAIN upgrade_test.nested_topoelement AS topology.topoelement;
 ALTER DOMAIN upgrade_test.nested_topoelement
   SET DEFAULT '{91,92}'::topology.topoelement::upgrade_test.nested_topoelement;
 ALTER DOMAIN upgrade_test.nested_topoelement
-  ADD CONSTRAINT nested_topoelement_positive CHECK (VALUE::text !~ '^\{0,') NOT VALID;
+  ADD CONSTRAINT nested_topoelement_positive CHECK (VALUE::text !~ E'^\\{0,') NOT VALID;
 ALTER DOMAIN upgrade_test.nested_topoelement
   ADD CONSTRAINT nested_topoelement_array_carrier_validated CHECK (VALUE IS NULL OR VALUE IS NOT NULL) NOT VALID;
 UPDATE pg_catalog.pg_constraint
@@ -272,7 +272,7 @@ CREATE DOMAIN upgrade_test.nested_topoelementarray AS topology.topoelementarray;
 ALTER DOMAIN upgrade_test.nested_topoelementarray
   SET DEFAULT '{{93,94}}'::topology.topoelementarray::upgrade_test.nested_topoelementarray;
 ALTER DOMAIN upgrade_test.nested_topoelementarray
-  ADD CONSTRAINT nested_topoelementarray_positive CHECK (VALUE::text !~ '^\{\{0,') NOT VALID;
+  ADD CONSTRAINT nested_topoelementarray_positive CHECK (VALUE::text !~ E'^\\{\\{0,') NOT VALID;
 CREATE DOMAIN upgrade_test.unused_nested_topoelement AS topology.topoelement;
 CREATE DOMAIN upgrade_test.unused_nested_topoelementarray AS topology.topoelementarray;
 CREATE DOMAIN upgrade_test.nested_row_topoelement AS topology.topoelement;
