@@ -2178,6 +2178,26 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
   </para>
 
   <programlisting># shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb</programlisting>
+
+  <para>
+    To load a directory of Shapefiles, run the loader once per file and derive
+    the table name from the file name. On Windows <filename>cmd.exe</filename>,
+    use a single percent sign interactively and double percent signs in a batch
+    file:
+  </para>
+
+  <programlisting><![CDATA[
+REM In a .bat file, use %%F. At an interactive cmd.exe prompt, use %F.
+for %%F in ("C:\data\shapefiles\*.shp") do (
+  shp2pgsql -d -D -s 4269 -I -W UTF-8 "%%~fF" "myschema.%%~nF" | psql -d roadsdb
+)
+]]></programlisting>
+
+  <para>
+    If every Shapefile has the same attributes and data types and should be
+    appended into one table, create the table from the first file and use
+    <option>-a</option> for the remaining files.
+  </para>
 </section>
   </section>
 
