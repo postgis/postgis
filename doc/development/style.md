@@ -4,7 +4,7 @@ This page covers source formatting, comments, Doxygen comments, and naming
 conventions. For broader developer workflow notes, including release policy,
 SQL API upgrade rules, and the `Availability:`, `Changed:`, and `Replaces`
 comments parsed by the upgrade script generator, see
-[PostGIS Developer Documentation](../).
+[PostGIS Developer Documentation](README.md).
 
 ## Preamble
 

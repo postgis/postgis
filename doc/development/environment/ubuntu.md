@@ -130,9 +130,9 @@ PostgreSQL instance:
 sudo make install
 ```
 
-See [Testing and debugging](../../testing/) for regression commands, CUnit
+See [Testing and debugging](../testing.md) for regression commands, CUnit
 tests, coverage, dependency guards, and backtrace capture. Optional tooling such
-as `logbt` setup lives in [Developer tools](../../tools/).
+as `logbt` setup lives in [Developer tools](../tools.md).
 
 ## 6. Cleaning up
 
@@ -147,7 +147,7 @@ If you created a private cluster instead of using the packaged one, stop it with
 
 ## 7. Maintaining formatting
 
-Review [Coding style](../../style/) for source-formatting preferences, including
+Review [Coding style](../style.md) for source-formatting preferences, including
 `git clang-format` usage for C and C++ changes. For release policies, upgrade
 implications, and naming conventions for new features, read
-[Release and upgrade rules](../../release/).
+[Release and upgrade rules](../release.md).

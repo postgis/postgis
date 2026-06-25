@@ -2,7 +2,7 @@
 
 This page collects maintainer-facing workflow notes for landing patches and
 pull requests. Contributor-facing setup and submission notes live in
-[Contributing workflow](../contributing.md).
+[Contributing workflow](contributing.md).
 
 ## Source of Truth
 
@@ -36,9 +36,9 @@ Route new work there unless the target is an explicit in-tree backpatch:
 
 RFC-5, published at <https://postgis.net/development/rfcs/rfc05/>, records the
 core contributor guideline for commit practice, Trac references, `NEWS`, code
-provenance, and legal review. Use [Governance notes](../governance/) and the
-project inventory for current PSC process, repository routing, and service
-ownership.
+provenance, and legal review. Use [Governance notes](governance.md) and
+[PostGIS project inventory](governance/project-inventory.md) for current PSC
+process, repository routing, and service ownership.
 
 Write access to the canonical repository is granted by the Project Steering
 Committee. Core contributors are expected to understand the contribution
@@ -52,14 +52,14 @@ from other projects, and discuss unusual licensing situations with the PSC or
 OSGeo legal counsel before committing.
 
 For the maintained commit-message, branch-target, authorship, and post-push
-rules distilled from RFC-5, see [Commit and branch guidelines](commit-guidelines/).
+rules distilled from RFC-5, see [Commit and branch guidelines](maintenance/commit-guidelines.md).
 
 ## First Pass
 
 Before editing a public branch, public pull request body, or Trac ticket state,
 read the current source of truth:
 
-* `CONTRIBUTING.md`, [Coding style](../style/), and the relevant page under
+* `CONTRIBUTING.md`, [Coding style](style.md), and the relevant page under
   this directory.
 * The Trac ticket, including all comments, attachments, and linked context.
 * The pull request description, commits, diff, review threads, and CI state.
@@ -83,7 +83,7 @@ head commit that produced it, not to a later force-push.
 ## Commit Messages
 
 The maintained commit-message and branch-target rules live in
-[Commit and branch guidelines](commit-guidelines/). The short summary below is
+[Commit and branch guidelines](maintenance/commit-guidelines.md). The short summary below is
 for common pull request landings.
 
 For a single-commit pull request that can be represented cleanly on the target
@@ -161,4 +161,4 @@ work before merge or reset operations, and unlock when the repository is clean.
 For website maintenance, use the OSGeo Gitea `postgis/postgis.net` repository.
 The site is a Hugo project; update release pointers and news there during
 release work, run `make check`, and do not edit the vendored theme. See
-[PostGIS website maintenance](../website/).
+[PostGIS website maintenance](website.md).

@@ -15,10 +15,6 @@ should leave draft state.
   `doc/development/contributing.md`, and maintainer-only procedures remain
   under `maintenance/`. Before publication, check whether the maintainer page
   needs more role-specific anchors back to the contributor page.
-* `PRRC_kwDOAEM_Wc7PQ_kd`, `PRRC_kwDOAEM_Wc7PRB5P`: the current directory tree
-  uses many `README.md` files. Decide whether to flatten this into files such as
-  `building.md`, `testing.md`, and `release/versioning.md` before the PR leaves
-  draft.
 * `PRRC_kwDOAEM_Wc7POSzg`, `PRRC_kwDOAEM_Wc7POUBR`,
   `PRRC_kwDOAEM_Wc7POVRO`: governance still needs a final shape. The PSC
   process and core-contributor rules are now written as maintained governance
