@@ -20802,7 +20802,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a geometry representing the portions of geonetries A and B that do "
+"Returns a geometry representing the portions of geometries A and B that do "
 "not intersect. This is equivalent to <code>ST_Union(A,B) - "
 "ST_Intersection(A,B)</code>. It is called a symmetric difference because "
 "<code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>."
