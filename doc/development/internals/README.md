@@ -7,6 +7,9 @@ PostGIS rather than only using the SQL API.
 * [PostgreSQL internals for PostGIS developers](postgresql/) covers PostgreSQL
   C function macros, varlena detoasting, serialized geometry handling, and a
   typical SQL function flow.
+* [Empty geometry semantics](empty-geometry.md) covers how `EMPTY` differs
+  from SQL `NULL`, how empties are serialized and indexed, and how accessors,
+  measurements, predicates, and collections handle empty inputs.
 * [Raster affine georeferencing](raster-affine.md) covers the scale, skew,
   rotation, and upper-left coefficients used to convert raster cell
   coordinates into spatial coordinates.

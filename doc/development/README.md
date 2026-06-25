@@ -19,8 +19,8 @@ Modules:
 * [Developer tools](tools/) covers `logbt`, formatting, coverage, and profiling
   entry points.
 * [PostGIS internals](internals/) covers allocator boundaries, PostgreSQL
-  function macros, detoasting, geometry serialization structures, and raster
-  affine georeferencing.
+  function macros, detoasting, geometry serialization structures, empty
+  geometry semantics, and raster affine georeferencing.
 * [Release and upgrade rules](release/) indexes SQL/C API compatibility,
   upgrade scripting, dependency guards, regression roles, and support-window
   changes.
