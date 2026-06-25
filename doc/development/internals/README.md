@@ -13,6 +13,9 @@ PostGIS rather than only using the SQL API.
 * [Raster affine georeferencing](raster-affine.md) covers the scale, skew,
   rotation, and upper-left coefficients used to convert raster cell
   coordinates into spatial coordinates.
+* [Raster physical georeferencing parameters](raster-physical-parameters.md)
+  covers the reverse calculation from stored affine coefficients back to pixel
+  sizes, rotation, and basis-vector separation.
 * [2D and 3D distance internals](distance.md) covers how geometry distance
   functions dispatch 2D and 3D candidate checks, including segment-segment and
   surface cases.
