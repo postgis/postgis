@@ -32,8 +32,9 @@ should leave draft state.
   necessary archive pointer.
 
 ## Developer Deep Dives
-* `PRRC_kwDOAEM_Wc7POyT-`, `PRRC_kwDOAEM_Wc7PPc2J`: affine and raster real
-  parameter notes look useful, but need image recovery and Markdown conversion.
+* `PRRC_kwDOAEM_Wc7PPc2J`: raster real-parameter notes look useful, but need
+  image recovery, Markdown conversion, and reconciliation with the current
+  reverse geotransform calculations.
 * `PRRC_kwDOAEM_Wc7PO25O`, `PRRC_kwDOAEM_Wc7PPfAw`: empty-geometry and spatial
   collection material should probably become advanced geometry deep dives after
   checking current behavior and examples.
