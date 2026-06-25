@@ -69,9 +69,6 @@ should leave draft state.
 * `PRRC_kwDOAEM_Wc7PQBv7`: spike removal is not clearly equivalent to
   `ST_SimplifyVW`; compare against simplify and validity functions before
   retiring or rewriting.
-* `PRRC_kwDOAEM_Wc7PQCiO`: hex-grid notes should point to built-in grid
-  functions and mention that H3 support now lives in the `h3-pg` umbrella
-  project.
 
 ## Documentation Backlog
 
