@@ -390,19 +390,61 @@ closed AS (
 SELECT id, ST_Transform(ST_SimplifyPreserveTopology(geom, 50), 4326) AS geom
 FROM closed;</programlisting>
 
-                <para>The same technique is described in Paul Ramsey's
-                <link xlink:href="https://blog.cleverelephant.ca/2010/11/removing-complexities.html">Removing Complexities</link>.
-                The final simplification step is optional; use
-                <xref linkend="ST_SimplifyPreserveTopology"/> when polygonal validity matters,
-                and check the result against the cartographic or analytical tolerance required by
-                the application.</para>
-              </refsection>
+	                <para>The same technique is described in Paul Ramsey's
+	                <link xlink:href="https://blog.cleverelephant.ca/2010/11/removing-complexities.html">Removing Complexities</link>.
+	                The final simplification step is optional; use
+	                <xref linkend="ST_SimplifyPreserveTopology"/> when polygonal validity matters,
+	                and check the result against the cartographic or analytical tolerance required by
+	                the application.</para>
 
-              <refsection>
-                <title>See Also</title>
+	                <para>A variable-distance buffer can be approximated by buffering
+	                each vertex of a line by a distance interpolated along the line, building
+	                the convex hull for each consecutive pair of vertex buffers, and unioning
+	                the segment hulls. As with any geometry buffer, distances are in the units
+	                of the input SRS.</para>
 
-                <para><xref linkend="ST_Collect"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SimplifyPreserveTopology"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_MakeValid"/></para>
-              </refsection>
+<programlisting>-- Taper a line buffer from 5 to 25 units along the line.
+WITH line AS (
+  SELECT 'LINESTRING(0 0, 100 0, 160 40)'::geometry AS geom
+),
+vertices AS (
+  SELECT (dump).path[1] AS n,
+         (dump).geom AS geom,
+         line.geom AS line_geom
+  FROM line
+  CROSS JOIN LATERAL ST_DumpPoints(line.geom) AS dump
+),
+radii AS (
+  SELECT n,
+         geom,
+         5 + (25 - 5) * ST_LineLocatePoint(line_geom, geom) AS radius
+  FROM vertices
+),
+segments AS (
+  SELECT n,
+         geom,
+         radius,
+         lead(geom) OVER (ORDER BY n) AS next_geom,
+         lead(radius) OVER (ORDER BY n) AS next_radius
+  FROM radii
+)
+SELECT ST_Union(
+         ST_ConvexHull(
+           ST_Collect(
+             ST_Buffer(geom, radius),
+             ST_Buffer(next_geom, next_radius)
+           )
+         )
+       ) AS tapered_buffer
+FROM segments
+WHERE next_geom IS NOT NULL;</programlisting>
+	              </refsection>
+
+	              <refsection>
+	                <title>See Also</title>
+
+	                <para><xref linkend="ST_Collect"/>, <xref linkend="ST_ConvexHull"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_DumpPoints"/>, <xref linkend="ST_LineLocatePoint"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SimplifyPreserveTopology"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_MakeValid"/></para>
+	              </refsection>
         </refentry>
 
         <refentry xml:id="ST_BuildArea">
