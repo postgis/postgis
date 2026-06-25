@@ -25,7 +25,9 @@ This ticket moves maintained developer workflow material into
 `doc/development/` and imports the PostGIS-specific Trac wiki bodies into
 [`doc/trac-wiki/`](../../trac-wiki/) as an archival source corpus. Trac engine
 help and administration pages are not copied because they document Trac itself
-rather than PostGIS.
+rather than PostGIS. Pages inspected during migration but intentionally left on
+Trac or retired from the repository import are tracked in the
+[Trac cleanup ledger](trac-cleanup.md).
 
 | Trac wiki page | Repository home |
 |----------------|-----------------|
@@ -50,7 +52,7 @@ rather than PostGIS.
 | `DevelopmentDiscussion`, `DevWikiISO19125`, `ToleranceDiscussion` | Archived in `doc/trac-wiki/development/` as historical design discussions |
 | `DevClusteringFunctions` | Retired from this repository import; current clustering functions are implemented and documented in the user manual. |
 | `DevCleanFromGEOS` | Retired from this repository import; the source page only contained a placeholder for a clean function API. |
-| `DevWikiProvenanceReview` | Archived in `doc/trac-wiki/development/DevWikiProvenanceReview.tracwiki` as historical OSGeo incubation/provenance record |
+| `DevWikiProvenanceReview` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as a historical OSGeo incubation/provenance record rather than current contributor guidance |
 | `DevFOSS4GCodeSprintNotes` | Archived in `doc/trac-wiki/project-history/DevFOSS4GCodeSprintNotes.tracwiki` |
 | `DevWikiGardenTest` | `doc/development/testing/` |
 | `DevWikiMingW64_Setup`, `DevWikiWinMingW64`, `DevWikiWinMingW64_21`, `DevWikiWinMingWSys_14_15`, `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`, `DevWikiWinVC_15`, `DevWikiWinNSIS` | Archived in `doc/trac-wiki/development/`; current CI/build notes belong in `doc/development/environment/ubuntu/` and `ci/` |
@@ -88,7 +90,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 26 | `doc/trac-wiki/development/` |
+| Development | 25 | `doc/trac-wiki/development/` |
 | User wiki | 139 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
