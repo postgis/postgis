@@ -52,8 +52,6 @@ should leave draft state.
   current harness.
 * `PRRC_kwDOAEM_Wc7PO0mJ`: Docker testing should be folded into
   `environment/docker/` after checking it against current images.
-* `PRRC_kwDOAEM_Wc7PO38p`: garden testing is now linked from testing, but the
-  old Trac page still needs detail-by-detail reconciliation.
 * `PRRC_kwDOAEM_Wc7PO5Am`: backtrace notes should be reconciled with the new
   `tools/` `logbt` section.
 
