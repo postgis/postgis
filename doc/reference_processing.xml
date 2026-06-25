@@ -374,7 +374,8 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
                 noisy boundaries, such as simplifying a coastline by removing narrow inlets and
                 bays. The result intentionally changes the shape and area of the input, and the
                 distance must be chosen in the units of the input SRS. For data in a geographic
-                SRS, transform to a suitable projected SRS first.</para>
+                SRS, transform to a projected SRS suited to the operation first; for cartographic
+                visualization in Web Mercator, using that display SRS can be appropriate.</para>
 
 <programlisting>-- Smooth a coastline using a 1 km closing operation, then simplify the result.
 -- The example uses Massachusetts State Plane meter units for the operation.
