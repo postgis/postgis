@@ -4,6 +4,66 @@ This draft PR is still a migration workspace. The notes below track review
 comments that need more content work or a maintainer decision before the branch
 should leave draft state.
 
+## Remaining Corpus Sweep Plan
+
+The review comments establish a repeated cleanup pattern for the rest of the
+imported Trac corpus. For each remaining page family, do the full check rather
+than marking it done by adding a TODO: compare the old page with current
+source, current manual coverage, current website pages, and active component
+repositories; then make one atomic commit that either folds useful content into
+maintained docs, records a retirement reason in `wiki/trac-cleanup.md`, or
+extracts a design question below.
+
+Use these migration decisions as the source pattern:
+
+* Historical meeting, sprint, release-planning, GSoC, and provenance pages stay
+  as archive records unless they contain still-open technical work. Extract
+  those open items here or into Trac tickets before retiring the source page.
+* EOL install, package, upgrade, Windows, and platform recipes should usually
+  be retired after checking whether current `doc/development/environment*.md`,
+  release-support notes, CI, or packaging scripts need one small surviving
+  caveat.
+* User cookbook pages should be folded into the user manual only when the
+  pattern is still useful and can be expressed with current functions, safe SQL,
+  and current warnings. Otherwise record the obsolete or superseded reason in
+  the cleanup ledger.
+* Raster, topology, distance, precision, and other design/specification pages
+  should become concise internals notes only when they describe current code or
+  durable extension boundaries. Historical implementation proposals should be
+  compressed to explicit open design questions rather than republished as
+  current developer guidance.
+* External or component-owned topics should become boundary pointers, not copied
+  specs: GDAL driver behavior belongs upstream in GDAL docs, workshop tasks in
+  `postgis-workshops`, H3 tiling in `h3-pg`, and user-facing website/training
+  pages in the website repository.
+* The draft migration map in `wiki.md` is temporary. When every imported page
+  has one of the outcomes above, remove the map and leave maintained topic
+  pages plus the cleanup ledger/archive pointer.
+
+Batch the remaining sweep so each commit stays reviewable:
+
+* Development pages: audit the remaining CI, affine/real parameter, empty
+  geometry, coding, spatial collection, Windows/MinGW, NSIS, and VC pages
+  against the maintained developer docs and current source. Fold only material
+  that still describes current workflow or internals.
+* Raster legacy pages: audit the remaining `WKTRaster*`,
+  `PostGIS_Raster_SoC_Idea_2012/*`, and user raster pages against current
+  raster manual coverage, `raster2pgsql`, server-side GDAL configuration, and
+  current raster internals notes. Retire beta specs and old SoC implementation
+  dumps unless they expose a still-open design question.
+* Tool, integration, and service pages: audit OGR, QGIS, MapServer,
+  SpatiaLite, ArcGIS, PostgreSQL/PostGIS, tools-support, tutorial, wishlist,
+  and website-adjacent pages. Most should become external boundary pointers or
+  cleanup-ledger entries rather than maintained developer docs.
+* Remaining user cookbook pages: audit polygon construction, cardinal
+  direction, coverages, geography/linear-reference function notes,
+  `make check` considerations, and TIGER geocoder backlog material against the
+  maintained manual and component repositories.
+* Project-history pages: audit remaining release announcements, code sprint,
+  development-cycle, RFC, and extension-path pages for unresolved durable
+  decisions. Keep point-in-time records archived and move only live policy into
+  release, governance, or maintenance docs.
+
 ## Structure Questions
 
 * `PRRC_kwDOAEM_Wc7POEs0`, `PRRC_kwDOAEM_Wc7POIRS`: the development environment
