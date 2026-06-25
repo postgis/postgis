@@ -19,9 +19,9 @@ should leave draft state.
   draft.
 * `PRRC_kwDOAEM_Wc7POSzg`, `PRRC_kwDOAEM_Wc7POUBR`,
   `PRRC_kwDOAEM_Wc7POVRO`: governance still needs a final shape. The PSC
-  process is now written as maintained governance text instead of RFC-1
-  commentary; RFC-5 still needs the same treatment and the umbrella-service
-  inventory may need its own page.
+  process and core-contributor rules are now written as maintained governance
+  text instead of RFC-1/RFC-5 commentary; the umbrella project and service
+  inventory may still need its own page.
 * `PRRC_kwDOAEM_Wc7POljg`: the wiki migration map is intentionally temporary.
   When every useful page has a maintained home or a recorded retirement reason,
   flatten the map into the relevant topic pages or remove it.
