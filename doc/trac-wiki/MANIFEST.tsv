@@ -3,7 +3,6 @@ development	3DDistancecalc	https://trac.osgeo.org/postgis/wiki/3DDistancecalc	do
 topology	AddEdge	https://trac.osgeo.org/postgis/wiki/AddEdge	doc/trac-wiki/topology/AddEdge.tracwiki	47	0
 development	CodeMirrors	https://trac.osgeo.org/postgis/wiki/CodeMirrors	doc/trac-wiki/development/CodeMirrors.tracwiki	349	6
 development	CodeRepository	https://trac.osgeo.org/postgis/wiki/CodeRepository	doc/trac-wiki/development/CodeRepository.tracwiki	504	15
-project-history	CodeSprintParis2012	https://trac.osgeo.org/postgis/wiki/CodeSprintParis2012	doc/trac-wiki/project-history/CodeSprintParis2012.tracwiki	7235	188
 source-hosts	Codeberg	https://trac.osgeo.org/postgis/wiki/Codeberg	doc/trac-wiki/source-hosts/Codeberg.tracwiki	298	9
 development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/ContinuousIntegration	doc/trac-wiki/development/ContinuousIntegration.tracwiki	23846	119
 development	DevCleanFromGEOS	https://trac.osgeo.org/postgis/wiki/DevCleanFromGEOS	doc/trac-wiki/development/DevCleanFromGEOS.tracwiki	71	3
@@ -28,7 +27,6 @@ development	DevWikiPGRegress	https://trac.osgeo.org/postgis/wiki/DevWikiPGRegres
 development	DevWikiPatch	https://trac.osgeo.org/postgis/wiki/DevWikiPatch	doc/trac-wiki/development/DevWikiPatch.tracwiki	367	3
 development	DevWikiPostGISCoding	https://trac.osgeo.org/postgis/wiki/DevWikiPostGISCoding	doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki	11023	149
 development	DevWikiProvenanceReview	https://trac.osgeo.org/postgis/wiki/DevWikiProvenanceReview	doc/trac-wiki/development/DevWikiProvenanceReview.tracwiki	3563	51
-development	DevWikiRFC	https://trac.osgeo.org/postgis/wiki/DevWikiRFC	doc/trac-wiki/development/DevWikiRFC.tracwiki	1484	24
 development	DevWikiRealParameters	https://trac.osgeo.org/postgis/wiki/DevWikiRealParameters	doc/trac-wiki/development/DevWikiRealParameters.tracwiki	6364	86
 development	DevWikiSpatialCollectionTutorial	https://trac.osgeo.org/postgis/wiki/DevWikiSpatialCollectionTutorial	doc/trac-wiki/development/DevWikiSpatialCollectionTutorial.tracwiki	16067	194
 development	DevWikiWinMingW64	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingW64	doc/trac-wiki/development/DevWikiWinMingW64.tracwiki	19260	482
@@ -42,8 +40,6 @@ development	DevelopmentDiscussion	https://trac.osgeo.org/postgis/wiki/Developmen
 topology	EdgeStar	https://trac.osgeo.org/postgis/wiki/EdgeStar	doc/trac-wiki/topology/EdgeStar.tracwiki	140	1
 user	FAQ	https://trac.osgeo.org/postgis/wiki/FAQ	doc/trac-wiki/user/FAQ.tracwiki	4370	74
 user	GeographicLib	https://trac.osgeo.org/postgis/wiki/GeographicLib	doc/trac-wiki/user/GeographicLib.tracwiki	41	0
-development	GeospatialDataViewerInPgAdmin4ForPostGIS	https://trac.osgeo.org/postgis/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS	doc/trac-wiki/development/GeospatialDataViewerInPgAdmin4ForPostGIS.tracwiki	11274	150
-development	GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport	https://trac.osgeo.org/postgis/wiki/GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport	doc/trac-wiki/development/GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport.tracwiki	4906	51
 source-hosts	GitHub	https://trac.osgeo.org/postgis/wiki/GitHub	doc/trac-wiki/source-hosts/GitHub.tracwiki	432	9
 source-hosts	GitLab	https://trac.osgeo.org/postgis/wiki/GitLab	doc/trac-wiki/source-hosts/GitLab.tracwiki	292	9
 source-hosts	GiteaCom	https://trac.osgeo.org/postgis/wiki/GiteaCom	doc/trac-wiki/source-hosts/GiteaCom.tracwiki	292	8
@@ -54,9 +50,7 @@ project-history	GoogleSummerCode2018	https://trac.osgeo.org/postgis/wiki/GoogleS
 project-history	GoogleSummerCode2019	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2019	doc/trac-wiki/project-history/GoogleSummerCode2019.tracwiki	3951	54
 project-history	GoogleSummerCode2021	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2021	doc/trac-wiki/project-history/GoogleSummerCode2021.tracwiki	3504	51
 project-history	GoogleSummerCode2022	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2022	doc/trac-wiki/project-history/GoogleSummerCode2022.tracwiki	7222	125
-development	ImplementSortingMethodsBeforeGistIndexBuilding	https://trac.osgeo.org/postgis/wiki/ImplementSortingMethodsBeforeGistIndexBuilding	doc/trac-wiki/development/ImplementSortingMethodsBeforeGistIndexBuilding.tracwiki	7583	166
 user	MapServer	https://trac.osgeo.org/postgis/wiki/MapServer	doc/trac-wiki/user/MapServer.tracwiki	34	0
-development	MoveToGit	https://trac.osgeo.org/postgis/wiki/MoveToGit	doc/trac-wiki/development/MoveToGit.tracwiki	1784	26
 development	NewDistCalc	https://trac.osgeo.org/postgis/wiki/NewDistCalc	doc/trac-wiki/development/NewDistCalc.tracwiki	417	7
 development	NewDistCalcGeom2Geom	https://trac.osgeo.org/postgis/wiki/NewDistCalcGeom2Geom	doc/trac-wiki/development/NewDistCalcGeom2Geom.tracwiki	5057	48
 development	NewDistCalcSubGeom	https://trac.osgeo.org/postgis/wiki/NewDistCalcSubGeom	doc/trac-wiki/development/NewDistCalcSubGeom.tracwiki	2246	20
@@ -102,7 +96,6 @@ user	UsersWikiBatchLoadShapefilesForWindowsUsingShp2pgsql	https://trac.osgeo.org
 user	UsersWikiBufferCoast	https://trac.osgeo.org/postgis/wiki/UsersWikiBufferCoast	doc/trac-wiki/user/UsersWikiBufferCoast.tracwiki	3166	63
 user	UsersWikiBuildPolygonsWithLines	https://trac.osgeo.org/postgis/wiki/UsersWikiBuildPolygonsWithLines	doc/trac-wiki/user/UsersWikiBuildPolygonsWithLines.tracwiki	3155	71
 user	UsersWikiCardinalDirection	https://trac.osgeo.org/postgis/wiki/UsersWikiCardinalDirection	doc/trac-wiki/user/UsersWikiCardinalDirection.tracwiki	1864	62
-user	UsersWikiCascadeUnion	https://trac.osgeo.org/postgis/wiki/UsersWikiCascadeUnion	doc/trac-wiki/user/UsersWikiCascadeUnion.tracwiki	1682	44
 user	UsersWikiCheckInvalidGeometriesFromGeometryColumns	https://trac.osgeo.org/postgis/wiki/UsersWikiCheckInvalidGeometriesFromGeometryColumns	doc/trac-wiki/user/UsersWikiCheckInvalidGeometriesFromGeometryColumns.tracwiki	1495	39
 user	UsersWikiCleanPolygons	https://trac.osgeo.org/postgis/wiki/UsersWikiCleanPolygons	doc/trac-wiki/user/UsersWikiCleanPolygons.tracwiki	2741	87
 user	UsersWikiComputeMultiCentroid	https://trac.osgeo.org/postgis/wiki/UsersWikiComputeMultiCentroid	doc/trac-wiki/user/UsersWikiComputeMultiCentroid.tracwiki	837	30
