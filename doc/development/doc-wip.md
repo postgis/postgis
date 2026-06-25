@@ -55,11 +55,6 @@ should leave draft state.
   model for ordinary geometries; that needs a design ticket before becoming
   maintained documentation.
 
-## User Manual Candidates
-
-* `PRRC_kwDOAEM_Wc7PP6Zj`: buffer-unbuffer coastline simplification may be worth
-  a user-manual example after checking the referenced source.
-
 ## Documentation Backlog
 
 The following ideas were extracted from `GoogleSeasonDocs2019` before leaving
