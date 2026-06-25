@@ -44,12 +44,6 @@ should leave draft state.
 * `PRRC_kwDOAEM_Wc7PPr_S`: tolerance notes need comparison with current GEOS,
   MVT, and PostGIS tolerance behavior before conversion.
 
-## Testing, Tools, and CI
-
-* `PRRC_kwDOAEM_Wc7POtRS`: CI inventory standards now live in
-  `doc/development/testing/ci.md`. If a maintained badge inventory stays in
-  repo docs, update the associated scripts to check or regenerate it.
-
 ## Windows and Packaging
 
 * `PRRC_kwDOAEM_Wc7PPIhX`, `PRRC_kwDOAEM_Wc7PPgkg`: Windows/MinGW setup needs a
