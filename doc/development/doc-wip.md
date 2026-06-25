@@ -55,8 +55,6 @@ should leave draft state.
   Windows notes.
 * `PRRC_kwDOAEM_Wc7PPjxk`: old MinGW/MSYS 1.4/1.5 material needs a uniqueness
   audit before deciding whether to retire it.
-* `PRRC_kwDOAEM_Wc7PQEne`: old Ubuntu 11.10 package notes need an EOL audit and
-  should probably be retired unless a still-useful packaging pattern remains.
 
 ## User Manual Candidates
 
