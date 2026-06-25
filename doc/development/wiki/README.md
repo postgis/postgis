@@ -46,7 +46,8 @@ rather than PostGIS.
 | `NewDistCalc`, `NewDistCalcSubGeom`, `NewDistCalcGeom2Geom`, `3DDistancecalc` | Archived in `doc/trac-wiki/development/`; convert into maintained internals docs only after reconciling with current distance code |
 | `DevWikiAffineParameters`, `DevWikiRealParameters` | Archived in `doc/trac-wiki/development/`; convert into maintained algorithm docs only after checking current code |
 | `DevWikiSpatialCollectionTutorial` | Archived in `doc/trac-wiki/development/`; convert into user-facing documentation only after updating examples |
-| `DevelopmentDiscussion`, `DevWikiISO19125`, `DevGUC`, `ToleranceDiscussion`, `DevClusteringFunctions` | Archived in `doc/trac-wiki/development/` as historical design discussions |
+| `DevelopmentDiscussion`, `DevWikiISO19125`, `DevGUC`, `ToleranceDiscussion` | Archived in `doc/trac-wiki/development/` as historical design discussions |
+| `DevClusteringFunctions` | Retired from this repository import; current clustering functions are implemented and documented in the user manual. |
 | `DevCleanFromGEOS` | Retired from this repository import; the source page only contained a placeholder for a clean function API. |
 | `DevWikiProvenanceReview` | Archived in `doc/trac-wiki/development/DevWikiProvenanceReview.tracwiki` as historical OSGeo incubation/provenance record |
 | `DevFOSS4GCodeSprintNotes` | Archived in `doc/trac-wiki/project-history/DevFOSS4GCodeSprintNotes.tracwiki` |
@@ -83,7 +84,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 37 | `doc/trac-wiki/development/` |
+| Development | 36 | `doc/trac-wiki/development/` |
 | User wiki | 141 | `doc/trac-wiki/user/` |
 | Raster | 21 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
