@@ -32,7 +32,7 @@ Trac or retired from the repository import are tracked in the
 | Trac wiki page | Repository home |
 |----------------|-----------------|
 | `WikiStart` | `README.md`, `CONTRIBUTING.md`, this directory, and `doc/trac-wiki/project-history/WikiStart.tracwiki` |
-| `DevWikiMain` | `doc/development/README.md`, `workflow/`, `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `wiki/`; original source in `doc/trac-wiki/development/DevWikiMain.tracwiki` |
+| `DevWikiMain` | Retired from this repository import; replaced by `doc/development/README.md` and the topic indexes under `workflow/`, `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `governance/`, `maintenance/`, `website/`, and `wiki/` |
 | `DevWikiGettingABackTrace` | `doc/development/testing/`, `doc/development/tools/` |
 | `DevWikiPGRegress` | `doc/development/testing/` |
 | `DevWikiCUnit` | `doc/development/testing/` |
@@ -94,7 +94,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 24 | `doc/trac-wiki/development/` |
+| Development | 23 | `doc/trac-wiki/development/` |
 | User wiki | 138 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
