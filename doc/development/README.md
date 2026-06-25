@@ -37,13 +37,17 @@ Modules:
   consolidation notes.
 * [Docker setup](environment/docker/) summarizes the development container options
   historically documented on the Trac developer wiki.
-* [Wiki migration map](wiki/) records the Trac wiki pages that were inspected
-  and the repository location that should now hold maintained content.
 * [Documentation WIP](doc-wip.md) records open migration questions while this
   pull request remains draft.
-* [Trac wiki corpus](../trac-wiki/) archives the PostGIS-specific Trac wiki
-  source pages pulled during the migration.
 
 The generated Doxygen manuals are published at
 <https://postgis.net/docs/doxygen/>. User-facing manuals remain at
 <https://postgis.net/documentation/>.
+
+## Draft-Only Migration Workspace
+
+The [wiki migration map](wiki/) and [Trac wiki corpus](../trac-wiki/) are
+review aids for this draft pull request. They are not intended to become
+published developer documentation. Before this branch leaves draft, each useful
+wiki page should either be folded into the maintained topic pages above, left
+as historical Trac context, or retired through the cleanup ledger.
