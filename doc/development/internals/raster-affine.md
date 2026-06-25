@@ -17,7 +17,8 @@ see `rt_raster_get_geotransform_matrix()` and
 
 The old `DevWikiAffineParameters` page is still useful because it explains how
 the four linear coefficients can be derived from more physical raster-grid
-descriptors:
+descriptors. The reverse derivation is covered in
+[Raster physical georeferencing parameters](raster-physical-parameters.md).
 
 * `i_mag`: size of one pixel step along the transformed `i` axis.
 * `j_mag`: size of one pixel step along the transformed `j` axis.
