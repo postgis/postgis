@@ -1472,10 +1472,21 @@ FROM (
         10, 'endcap=round join=round') AS geom
 ) AS s;</programlisting>
             </para>
-<para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
-<programlisting>SELECT s.id, dp.path[1] AS pt_id, dp.geom
-FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
-        </refsection>
+	<para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
+	<programlisting>SELECT s.id, dp.path[1] AS pt_id, dp.geom
+	FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
+	<para>Generate dot-density points from a polygon table, using the absolute value of an attribute
+	as the number of points and keeping the sign of the attribute for styling.</para>
+	<programlisting>SELECT z.id,
+       CASE WHEN z.count_delta &lt; 0 THEN -1 ELSE 1 END AS sign,
+       dp.path[1] AS pt_id,
+       dp.geom
+FROM zones AS z
+CROSS JOIN LATERAL ST_DumpPoints(
+    ST_GeneratePoints(z.geom, abs(z.count_delta)::integer, z.id + 1)
+) AS dp
+WHERE z.count_delta &lt;&gt; 0;</programlisting>
+	        </refsection>
         <refsection>
           <title>See Also</title>
           <para><xref linkend="ST_DumpPoints"/></para>
