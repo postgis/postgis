@@ -49,7 +49,8 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiAffineParameters`, `DevWikiRealParameters` | Archived in `doc/trac-wiki/development/`; convert into maintained algorithm docs only after checking current code |
 | `DevWikiSpatialCollectionTutorial` | Archived in `doc/trac-wiki/development/`; convert into user-facing documentation only after updating examples |
 | `DevGUC` | `doc/development/release/api/` |
-| `DevelopmentDiscussion`, `DevWikiISO19125`, `ToleranceDiscussion` | Archived in `doc/trac-wiki/development/` as historical design discussions |
+| `DevelopmentDiscussion`, `ToleranceDiscussion` | Archived in `doc/trac-wiki/development/` as historical design discussions |
+| `DevWikiISO19125` | Left on Trac; still-open standards-conformance themes were extracted into `doc/development/doc-wip.md` |
 | `DevClusteringFunctions` | Retired from this repository import; current clustering functions are implemented and documented in the user manual. |
 | `DevCleanFromGEOS` | Retired from this repository import; the source page only contained a placeholder for a clean function API. |
 | `DevWikiProvenanceReview` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as a historical OSGeo incubation/provenance record rather than current contributor guidance |
@@ -94,7 +95,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 23 | `doc/trac-wiki/development/` |
+| Development | 22 | `doc/trac-wiki/development/` |
 | User wiki | 138 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
