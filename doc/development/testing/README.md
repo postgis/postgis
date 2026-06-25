@@ -113,6 +113,9 @@ Other useful targets:
   extension upgrade paths after `sudo make install`.
 * `make installcheck` runs tests against an installed copy after
   `sudo make install`.
+* [CI inventory standards](ci.md) describe how to keep build-bot and badge
+  inventories checkable instead of copying stale dashboard markup into
+  maintained prose.
 
 ## Garden Checks
 

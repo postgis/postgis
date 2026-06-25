@@ -46,9 +46,9 @@ should leave draft state.
 
 ## Testing, Tools, and CI
 
-* `PRRC_kwDOAEM_Wc7POtFt`, `PRRC_kwDOAEM_Wc7POtRS`: CI notes need a standards
-  decision. If a maintained CI inventory stays in repo docs, update the
-  associated scripts to check or regenerate it.
+* `PRRC_kwDOAEM_Wc7POtRS`: CI inventory standards now live in
+  `doc/development/testing/ci.md`. If a maintained badge inventory stays in
+  repo docs, update the associated scripts to check or regenerate it.
 
 ## Windows and Packaging
 

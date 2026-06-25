@@ -68,7 +68,7 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiWinMingWSys_14_15` | Retired from this repository import; obsolete Windows XP/PostGIS 1.4 and 1.5 build notes are recorded in `doc/development/wiki/trac-cleanup.md` |
 | `DevCleanFromGEOS` | Archived in `doc/trac-wiki/development/DevCleanFromGEOS.tracwiki` |
 | `UsersWikiMakeCheckConsiderations` | `doc/development/environment/ubuntu/`, `doc/development/testing/` |
-| `ContinuousIntegration` | `ci/`, `doc/development/environment/ubuntu/`, and `doc/development/environment/docker/` |
+| `ContinuousIntegration` | `ci/`, `doc/development/testing/ci.md`, `doc/development/environment/ubuntu/`, and `doc/development/environment/docker/` |
 | `CodeRepository`, `CodeMirrors` | Consolidated into `doc/development/contributing.md` and `doc/development/maintenance/`; the tiny Trac source pages are not kept separately. |
 | `PostGISDevelopment2021`, `PostGISDevelopment2022-1`, `PostGISDevelopment2023-1`, `PostGISDevelopment2026-1` | Archived in `doc/trac-wiki/project-history/`; current release-process actions belong in `doc/development/release-process/` |
 | `GoogleSeasonDocs2019` | Left on Trac; not-yet-done documentation ideas were extracted into `doc/development/doc-wip.md` |
