@@ -10,6 +10,9 @@ PostGIS rather than only using the SQL API.
 * [Empty geometry semantics](empty-geometry.md) covers how `EMPTY` differs
   from SQL `NULL`, how empties are serialized and indexed, and how accessors,
   measurements, predicates, and collections handle empty inputs.
+* [Spatial collections and raster/vector crossings](spatial-collections.md)
+  covers current geometry collection handling and explains how the retired
+  raster/vector spatial-collection abstraction relates to current code.
 * [Raster affine georeferencing](raster-affine.md) covers the scale, skew,
   rotation, and upper-left coefficients used to convert raster cell
   coordinates into spatial coordinates.
