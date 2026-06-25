@@ -28,6 +28,36 @@ not only vertices projected onto opposite segments. The 3D code also has
 surface candidates: a point or line segment can project onto the interior of a
 polygon or triangle, and a line segment can cross a surface.
 
+## Current 2D Flow
+
+The 2D minimum-distance entry points initialize a `DISTPTS` accumulator and call
+`lw_dist2d_comp`, which delegates to `lw_dist2d_recursive`. Recursion unwraps
+collections, skips empty children, adds missing bounding boxes, and then chooses
+between the fast path and primitive dispatch for each primitive pair.
+
+For non-overlapping line, polygon, and triangle pairs, the current code still
+uses the historical projection-sort idea described by `NewDistCalcGeom2Geom`.
+`lw_dist2d_distribute_fast` extracts the relevant point arrays and calls
+`lw_dist2d_fast_ptarray_ptarray`. That helper projects vertices onto an axis
+perpendicular to the line between the primitive bounding-box centers, sorts
+those projected measures, and narrows segment-pair checks once the current best
+distance proves that farther projected vertices cannot improve the answer.
+
+When primitive bounding boxes overlap, when the query is a maximum-distance
+query, or when a geometry type is outside that fast-path set, the code falls
+back to `lw_dist2d_distribute_bruteforce`. The primitive helpers then compare
+point-to-point, point-to-segment, segment-to-segment, arc, ring, and polygon
+containment cases, with early exit for minimum-distance tolerance checks once
+the accumulator is at or below tolerance.
+
+Repeated SQL distance calls can use a different acceleration layer. The
+`ST_DistanceRectTree` and `ST_DistanceRectTreeCached` wrappers in
+`postgis/lwgeom_rectree.c` build `RECT_NODE` trees and call
+`rect_tree_distance_tree`, with a PostgreSQL function-call cache for the stable
+argument in the cached variant. That rect-tree path is separate from the
+`lw_dist2d_fast_ptarray_ptarray` projection-sort path preserved in
+`liblwgeom/measures.c`.
+
 ## Current 3D Flow
 
 The SQL wrappers call `lwgeom_mindistance3d`,
@@ -74,3 +104,9 @@ description of plane normal averaging. The recovered diagrams now live beside
 this maintained note under `doc/development/internals/images/distance/`; the
 old narrative should not be treated as maintained text until it is checked
 against the current `define_plane` implementation.
+
+The old `NewDistCalcGeom2Geom` diagrams are also recovered under
+`doc/development/internals/images/distance/geom2geom/` and recorded in
+`doc/trac-wiki/ATTACHMENTS.tsv`. The maintained summary above keeps the part
+that still matches current code and leaves the step-by-step PostGIS 1.5 wiki
+walkthrough in the archive.

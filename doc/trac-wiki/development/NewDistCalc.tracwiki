@@ -1,7 +1,0 @@
-== Description of how new distance calculation works ==
-Those documents do an attempt to describe the ideas behind the new distance calculations.
-
-
- * [wiki:NewDistCalcSubGeom How the subgeometries is handled] (will have to wait til probably 2.0)
- * [wiki:NewDistCalcGeom2Geom How the distance calculations is done in PostGIS 1.5]
- * [wiki:3DDistancecalc A description of the 3D distance calculations in PostGIS 2.0]

@@ -52,7 +52,7 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiEvent` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as historical meeting/sprint navigation |
 | `DevWikiPostGISCoding` | `doc/development/internals/postgresql/`, `doc/development/internals/memory/`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
 | `DevWikiEmptyGeometry` | `doc/development/internals/empty-geometry.md`; current behavior was reconciled against code and regression tests |
-| `NewDistCalc`, `NewDistCalcSubGeom`, `NewDistCalcGeom2Geom` | Remaining distance-calculation pages stay archived in `doc/trac-wiki/development/` pending image recovery and code reconciliation |
+| `NewDistCalcSubGeom` | Archived in `doc/trac-wiki/development/`; reconcile with current collection and rect-tree distance code before moving into maintained internals docs |
 | `DevWikiAffineParameters` | `doc/development/internals/raster-affine.md`; original images recovered under `doc/development/internals/images/raster-affine/` |
 | `DevWikiRealParameters` | `doc/development/internals/raster-physical-parameters.md`; original images recovered under `doc/development/internals/images/raster-physical-parameters/` |
 | `DevWikiSpatialCollectionTutorial` | `doc/development/internals/spatial-collections.md`; current code no longer has the old `SPATIAL_COLLECTION` API, so the maintained page records current geometry collection and raster/vector crossing paths |
@@ -111,7 +111,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 19 | `doc/trac-wiki/development/` |
+| Development | 17 | `doc/trac-wiki/development/` |
 | User wiki | 133 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
