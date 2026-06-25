@@ -38,30 +38,21 @@ published at <https://postgis.net/development/rfcs/rfc01/>. Treat the
 repository governance page as the maintained home for this process once the PSC
 replaces or supersedes the old numbered RFC pages.
 
-## RFC-5 Status
+## Core Contributor Governance
 
-RFC-5, published at <https://postgis.net/development/rfcs/rfc05/>, is the
-historical PostGIS core contributor guideline. It is useful background for
-write access, commit practice, Trac references, `NEWS`, code provenance, and
-legal review.
+Core contributor governance covers write access, commit practice, Trac
+references, `NEWS`, code provenance, and legal review. Write access to the
+canonical repository is granted by the PSC, and contributors with write access
+are expected to understand the project process, stay subscribed to the
+development mailing list, and support the code they commit or delegate that
+support.
 
-The page is known to be stale in at least two ways:
-
-* its "Projects under PostGIS umbrella" section lists only the three older
-  projects;
-* it points the canonical PSC and core contributor lists at the XML manual.
-
-The PSC has discussed replacing the old RFC layout with a clearer governance
-page and moving canonical PSC/core contributor records out of the XML manual.
-Until that replacement is published, do not treat RFC-5 as a complete current
-inventory of PostGIS governance or subprojects.
-
-RFC-5 also documents maintainer expectations that are still relevant: keep
-commits meaningful, preserve contributor authorship, update `NEWS`, route new
-features to `master`, avoid new features on stable branches without release
-manager or PSC permission, discuss significant or backward-incompatible work on
-the development mailing list, avoid routine new branches in the official
-repository except short-lived `test/` branches for CI, and check build bots
+Maintainer expectations include keeping commits meaningful, preserving
+contributor authorship, updating `NEWS`, routing new features to `master`,
+avoiding new features on stable branches without release-manager or PSC
+permission, discussing significant or backward-incompatible work on the
+development mailing list, avoiding routine new branches in the official
+repository except short-lived `test/` branches for CI, and checking build bots
 after commits.
 
 Core contributors are the first provenance and license-review gate. They should
@@ -69,6 +60,11 @@ ensure contributors understand the project license, preserve copyright and
 license headers, mark code derived from other projects, add required license
 credits where appropriate, and ask the PSC or OSGeo legal counsel when a
 contribution has an unusual licensing situation.
+
+This section carries the RFC-5 maintainer and provenance rules that still guide
+core contributor work. Current project inventory and roster maintenance belong
+in the dedicated inventory and public project pages rather than in the
+historical RFC text.
 
 ## Projects Under The PostGIS Umbrella
 
