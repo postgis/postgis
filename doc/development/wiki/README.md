@@ -53,7 +53,8 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiPostGISCoding` | `doc/development/internals/postgresql/`, `doc/development/internals/memory/`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
 | `DevWikiEmptyGeometry` | Archived in `doc/trac-wiki/development/DevWikiEmptyGeometry.tracwiki`; reconcile with current behavior and tests before moving into maintained internals docs |
 | `NewDistCalc`, `NewDistCalcSubGeom`, `NewDistCalcGeom2Geom` | Remaining distance-calculation pages stay archived in `doc/trac-wiki/development/` pending image recovery and code reconciliation |
-| `DevWikiAffineParameters`, `DevWikiRealParameters` | Archived in `doc/trac-wiki/development/`; convert into maintained algorithm docs only after checking current code |
+| `DevWikiAffineParameters` | `doc/development/internals/raster-affine.md`; original images recovered under `doc/development/internals/images/raster-affine/` |
+| `DevWikiRealParameters` | Archived in `doc/trac-wiki/development/`; convert into maintained raster algorithm docs only after checking current code and recovering images |
 | `DevWikiSpatialCollectionTutorial` | Archived in `doc/trac-wiki/development/`; convert into user-facing documentation only after updating examples |
 | `DevGUC` | `doc/development/release/api/` |
 | `DevelopmentDiscussion` | Left on Trac; still-open PostGIS 2.0 design themes were extracted into `doc/development/doc-wip.md` and archive-handling policy is recorded in `doc/development/wiki/trac-cleanup.md` |
