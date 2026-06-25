@@ -7,6 +7,9 @@ PostGIS rather than only using the SQL API.
 * [PostgreSQL internals for PostGIS developers](postgresql/) covers PostgreSQL
   C function macros, varlena detoasting, serialized geometry handling, and a
   typical SQL function flow.
+* [Raster affine georeferencing](raster-affine.md) covers the scale, skew,
+  rotation, and upper-left coefficients used to convert raster cell
+  coordinates into spatial coordinates.
 * [2D and 3D distance internals](distance.md) covers how geometry distance
   functions dispatch 2D and 3D candidate checks, including segment-segment and
   surface cases.
