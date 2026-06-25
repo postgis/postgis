@@ -1,5 +1,4 @@
 category	page	source	file	bytes	lines
-development	3DDistancecalc	https://trac.osgeo.org/postgis/wiki/3DDistancecalc	doc/trac-wiki/development/3DDistancecalc.tracwiki	7130	194
 topology	AddEdge	https://trac.osgeo.org/postgis/wiki/AddEdge	doc/trac-wiki/topology/AddEdge.tracwiki	47	0
 source-hosts	Codeberg	https://trac.osgeo.org/postgis/wiki/Codeberg	doc/trac-wiki/source-hosts/Codeberg.tracwiki	298	9
 development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/ContinuousIntegration	doc/trac-wiki/development/ContinuousIntegration.tracwiki	23846	119
