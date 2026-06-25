@@ -11470,10 +11470,9 @@ msgid ""
 "cluster number that the geometry argument participates in, or zero if it is "
 "not part of the minimum tree."
 msgstr ""
-"入力ジオメトリの最小接続木 (Minimum Spanning Tree, MST)に基づいて"
-"ラインストリングの接続グラフを構築するウィンドウ関数です。返り値は、引数の"
-"ジオメトリーが参加しているクラスターの番号で、最小木を構成していない場合には0"
-"となります。"
+"入力ジオメトリの最小接続木 (Minimum Spanning Tree, MST)に基づいてラインストリ"
+"ングの接続グラフを構築するウィンドウ関数です。返り値は、引数のジオメトリーが"
+"参加しているクラスターの番号で、最小木を構成していない場合には0となります。"
 
 #. Tag: para
 #, no-c-format
@@ -11485,11 +11484,12 @@ msgid ""
 "between some geometries), it produces a Minimum Spanning Forest, and each "
 "connected component is assigned a unique tree ID."
 msgstr ""
-"<link xlink:href=\"https://en.wikipedia.org/wiki/Minimum_spanning_tree\">"
-"Minimum Spanning Tree</link> (最小全域木）はウィンドウ区画にある全ての"
-"ジオメトリーと接続していて、線長が最小となる木です。グラフが完全には接続され"
-"ていない (例: ジオメトリ間が無限距離になっている)場合には、最小全域フォレスト"
-"を生成します。これはそれぞれの接続要素に一意の木IDが付きます。"
+"<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Minimum_spanning_tree\">Minimum Spanning Tree</link> (最小全域木）はウィンド"
+"ウ区画にある全てのジオメトリーと接続していて、線長が最小となる木です。グラフ"
+"が完全には接続されていない (例: ジオメトリ間が無限距離になっている)場合には、"
+"最小全域フォレストを生成します。これはそれぞれの接続要素に一意の木IDが付きま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -13309,9 +13309,9 @@ msgid ""
 "coverage. A polygonal coverage is a set of non-overlapping polygons where "
 "adjacent polygons have matching vertices along shared edges."
 msgstr ""
-"ポリゴンカバレッジの重複の無いエッジをMULTILINESTRING表現で返します。"
-"ポリゴンカバレッジはオーバーラップが無いポリゴンの集合で、隣接するポリゴンは"
-"共有するエッジに沿って一致する頂点を持っています。"
+"ポリゴンカバレッジの重複の無いエッジをMULTILINESTRING表現で返します。ポリゴン"
+"カバレッジはオーバーラップが無いポリゴンの集合で、隣接するポリゴンは共有する"
+"エッジに沿って一致する頂点を持っています。"
 
 #. Tag: para
 #, no-c-format
@@ -13326,8 +13326,8 @@ msgstr ""
 #, no-c-format
 msgid "<emphasis role=\"bold\">0 (ALL)</emphasis> - all unique edges (default)"
 msgstr ""
-"<emphasis role=\"bold\">0 (ALL)</emphasis> - 全ての重複の無いエッジ "
-"(デフォルト)"
+"<emphasis role=\"bold\">0 (ALL)</emphasis> - 全ての重複の無いエッジ (デフォル"
+"ト)"
 
 #. Tag: para
 #, no-c-format
@@ -18099,11 +18099,10 @@ msgid ""
 "is Massachusetts State Plane Feet and transformed area is in square meters "
 "since EPSG:26986 is state plane Massachusetts meters."
 msgstr ""
-"平方フィートの面積を返し、平方メートルを得るためにメートル単位"
-"マサチューセッツ州平面 (EPSG:26986) に変換します。一つ目はEPSG:2249でフィート"
-"単位マサチューセッツ州平面なので平方フィートとなり、二つ目は変換後は"
-"EPSG:26986でメートル単位マサチューセッツ州平面なので平方メートルになるので、"
-"注意して下さい。"
+"平方フィートの面積を返し、平方メートルを得るためにメートル単位マサチューセッ"
+"ツ州平面 (EPSG:26986) に変換します。一つ目はEPSG:2249でフィート単位マサチュー"
+"セッツ州平面なので平方フィートとなり、二つ目は変換後はEPSG:26986でメートル単"
+"位マサチューセッツ州平面なので平方メートルになるので、注意して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -19011,8 +19010,8 @@ msgid ""
 "value as follows:"
 msgstr ""
 "回転楕円体面のジオメトリーの周囲長を計算します。ジオメトリーの座標が経度/緯度"
-"で、投影せずに周囲長を求めたい場合に使います。回転楕円体面は次のような"
-"テキスト値で指定します:"
+"で、投影せずに周囲長を求めたい場合に使います。回転楕円体面は次のようなテキス"
+"ト値で指定します:"
 
 #. Tag: para
 #, no-c-format
@@ -22965,8 +22964,8 @@ msgid ""
 "the same example using <xref linkend=\"ST_3DIntersection\"/>."
 msgstr ""
 "本当の3次元で見てインターセクトした箇所ではないことに注意して下さい。2.5次元"
-"ジオメトリーを使っています (Z値を持つジオメトリですが計算は2次元で行います)"
-"。<xref linkend=\"ST_3DIntersection\"/>を使った同じ例と比較して下さい。"
+"ジオメトリーを使っています (Z値を持つジオメトリですが計算は2次元で行います)。"
+"<xref linkend=\"ST_3DIntersection\"/>を使った同じ例と比較して下さい。"
 
 #. Tag: para
 #, no-c-format

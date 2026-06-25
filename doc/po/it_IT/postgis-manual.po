@@ -144,7 +144,8 @@ msgid ""
 "turn a database into a spatial one using the EXTENSION mechanism."
 msgstr ""
 "Se hai compilato ed installato il modulo extensions/postgis, puoi aggiungere "
-"il supporto spaziale in un database usando il meccanismo per le estensioni (EXTENSION)"
+"il supporto spaziale in un database usando il meccanismo per le estensioni "
+"(EXTENSION)"
 
 #. Tag: para
 #, no-c-format

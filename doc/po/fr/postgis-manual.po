@@ -345,9 +345,8 @@ msgid ""
 "Use the <xref linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade "
 "to the latest version you have installed."
 msgstr ""
-"Vous devez utiliser la fonction <xref "
-"linkend=\"PostGIS_Extensions_Upgrade\"/> pour passer à la dernière version "
-"que vous avez installée."
+"Vous devez utiliser la fonction <xref linkend=\"PostGIS_Extensions_Upgrade\"/"
+"> pour passer à la dernière version que vous avez installée."
 
 #. Tag: para
 #, no-c-format
@@ -359,10 +358,10 @@ msgid ""
 "extension."
 msgstr ""
 "Si vous mettez à jour une base de données reposant sur PostGIS 2.5, exécutez "
-"la commande <command>ALTER EXTENSION</command> suivi de <function>"
-"postgis_extensions_upgrade()</function> pour s'assurer que les objets "
-"<varname>postgis_raster</varname> hérités sont récupérés dans l'extension "
-"principale."
+"la commande <command>ALTER EXTENSION</command> suivi de "
+"<function>postgis_extensions_upgrade()</function> pour s'assurer que les "
+"objets <varname>postgis_raster</varname> hérités sont récupérés dans "
+"l'extension principale."
 
 #. Tag: para
 #, no-c-format
