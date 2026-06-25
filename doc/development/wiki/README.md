@@ -52,7 +52,7 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiEvent` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as historical meeting/sprint navigation |
 | `DevWikiPostGISCoding` | `doc/development/internals/postgresql/`, `doc/development/internals/memory/`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
 | `DevWikiEmptyGeometry` | Archived in `doc/trac-wiki/development/DevWikiEmptyGeometry.tracwiki`; reconcile with current behavior and tests before moving into maintained internals docs |
-| `NewDistCalc`, `NewDistCalcSubGeom`, `NewDistCalcGeom2Geom`, `3DDistancecalc` | Archived in `doc/trac-wiki/development/`; convert into maintained internals docs only after reconciling with current distance code |
+| `NewDistCalc`, `NewDistCalcSubGeom`, `NewDistCalcGeom2Geom` | Remaining distance-calculation pages stay archived in `doc/trac-wiki/development/` pending image recovery and code reconciliation |
 | `DevWikiAffineParameters`, `DevWikiRealParameters` | Archived in `doc/trac-wiki/development/`; convert into maintained algorithm docs only after checking current code |
 | `DevWikiSpatialCollectionTutorial` | Archived in `doc/trac-wiki/development/`; convert into user-facing documentation only after updating examples |
 | `DevGUC` | `doc/development/release/api/` |
@@ -109,7 +109,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 20 | `doc/trac-wiki/development/` |
+| Development | 19 | `doc/trac-wiki/development/` |
 | User wiki | 133 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
