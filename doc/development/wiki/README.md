@@ -39,7 +39,7 @@ rather than PostGIS.
 | `DevWikiMain/DevForDummy` | `doc/development/workflow/`, `environment/ubuntu/`, `testing/`, `manual/` |
 | `DevWikiDockerTesting` | `doc/development/environment/docker/` |
 | `DevWikiRFC` | Retired from this repository import. Current governance material belongs in `doc/development/governance/`; historical RFC text remains in `doc/rfc/` and the published RFC pages. |
-| `DevWikiComitGuidelines` | `doc/development/maintenance/`, `doc/development/governance/`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/>; original source in `doc/trac-wiki/development/DevWikiComitGuidelines.tracwiki` |
+| `DevWikiComitGuidelines` | `doc/development/maintenance/commit-guidelines/`, `doc/development/maintenance/`, `doc/development/governance/`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/> |
 | `DevWikiEvent` | Archived in `doc/trac-wiki/development/DevWikiEvent.tracwiki`; convert only if it becomes current process documentation |
 | `DevWikiPostGISCoding` | `doc/development/internals/postgresql/`, `doc/development/internals/memory/`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
 | `DevWikiEmptyGeometry` | Archived in `doc/trac-wiki/development/DevWikiEmptyGeometry.tracwiki`; reconcile with current behavior and tests before moving into maintained internals docs |
@@ -67,7 +67,7 @@ rather than PostGIS.
 | `STYLE` | `doc/development/style/` |
 | `TODO` | Removed; live planning belongs in Trac roadmap, Trac tickets, and `NEWS` |
 | Trac `roadmap` and ticket reports | `doc/development/maintenance/`, `doc/development/release/`, and Trac itself for live planning |
-| Published RFC-5 contributor guidelines | `doc/development/workflow/`, `doc/development/maintenance/`, `doc/development/governance/`, and <https://postgis.net/development/rfcs/> |
+| Published RFC-5 contributor guidelines | `doc/development/workflow/`, `doc/development/maintenance/commit-guidelines/`, `doc/development/maintenance/`, `doc/development/governance/`, and <https://postgis.net/development/rfcs/> |
 | `postgis.net/development/source_code` | `doc/development/workflow/`, `doc/development/maintenance/` |
 | `postgis.net/development/getting_involved` | `doc/development/workflow/` |
 | `postgis.net/development/bug_reporting` | `doc/development/workflow/` |
@@ -87,7 +87,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 36 | `doc/trac-wiki/development/` |
+| Development | 28 | `doc/trac-wiki/development/` |
 | User wiki | 139 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
