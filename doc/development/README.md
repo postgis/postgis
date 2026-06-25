@@ -33,7 +33,7 @@ Modules:
 * [Pull request and maintainer workflow](maintenance/) covers source-of-truth
   branches, mirror PR handling, tracker trailers, `NEWS`, and public readback.
 * [Governance notes](governance/) records PSC process, core-contributor
-  governance, the umbrella project list, and governance-documentation
+  governance, project/service inventory, and governance-documentation
   consolidation notes.
 * [Docker setup](environment/docker/) summarizes the development container options
   historically documented on the Trac developer wiki.
