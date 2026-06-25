@@ -67,7 +67,8 @@ Patch submission basics:
 
 * Keep each patch focused on one ticket or reviewable topic.
 * Add regression or CUnit coverage for behavior changes.
-* Run the focused local validation described in [Building and testing](../building/).
+* Run the focused local validation described in [Ubuntu setup](../environment/ubuntu/)
+  and [Testing and debugging](../testing/).
 * Follow [Coding style](../style/) for C naming and formatting.
 * Add documentation in the same change when a feature adds or changes SQL
   user-visible behavior.

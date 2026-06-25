@@ -3,7 +3,7 @@
 For build, test, and contributor workflow instructions, use
 [`doc/development/`](doc/development/). In particular:
 
-* [`doc/development/building/`](doc/development/building/) covers local
+* [`doc/development/environment/ubuntu/`](doc/development/environment/ubuntu/) covers local
   dependencies, PostgreSQL setup, build commands, install steps, and cleanup.
 * [`doc/development/testing/`](doc/development/testing/) covers regression
   commands, CUnit tests, coverage, dependency guards, and backtraces.
