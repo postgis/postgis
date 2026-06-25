@@ -55,7 +55,7 @@ Trac or retired from the repository import are tracked in the
 | `NewDistCalc`, `NewDistCalcSubGeom`, `NewDistCalcGeom2Geom` | Remaining distance-calculation pages stay archived in `doc/trac-wiki/development/` pending image recovery and code reconciliation |
 | `DevWikiAffineParameters` | `doc/development/internals/raster-affine.md`; original images recovered under `doc/development/internals/images/raster-affine/` |
 | `DevWikiRealParameters` | `doc/development/internals/raster-physical-parameters.md`; original images recovered under `doc/development/internals/images/raster-physical-parameters/` |
-| `DevWikiSpatialCollectionTutorial` | Archived in `doc/trac-wiki/development/`; convert into user-facing documentation only after updating examples |
+| `DevWikiSpatialCollectionTutorial` | `doc/development/internals/spatial-collections.md`; current code no longer has the old `SPATIAL_COLLECTION` API, so the maintained page records current geometry collection and raster/vector crossing paths |
 | `DevGUC` | `doc/development/release/api/` |
 | `DevelopmentDiscussion` | Left on Trac; still-open PostGIS 2.0 design themes were extracted into `doc/development/doc-wip.md` and archive-handling policy is recorded in `doc/development/wiki/trac-cleanup.md` |
 | `ToleranceDiscussion` | Archived in `doc/trac-wiki/development/` as a historical design discussion |
