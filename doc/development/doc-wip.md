@@ -111,6 +111,12 @@ become maintained developer documentation:
   validity-aware guarantees for predicates and overlays, fallback/retry across
   geometry backends, and empirical performance/cost frameworks for planner and
   regression testing.
+* Historical PostGIS 2.0 discussion themes that remain research topics rather
+  than current workflow docs: optional serialized metadata such as hash or
+  cached user-data areas, more complete and mutable `liblwgeom` collection and
+  point-array APIs, curve-completeness strategy, multidimensional indexing
+  syntax and implementation, and deeper 3D primitive support such as
+  polyhedral-surface validity, distance, centroid, volume, and interchange I/O.
 
 ## Standards Conformance Backlog
 
@@ -131,12 +137,12 @@ retiring that draft-comment page:
 
 ## Project History and Planning
 
-* `PRRC_kwDOAEM_Wc7POwKG`, `PRRC_kwDOAEM_Wc7PO3dX`: decide how historical
-  development discussions and meeting/event notes should be preserved if Trac is
-  eventually retired. A likely split is: active agenda/minutes stay on the live
-  planning surface, durable decisions move into maintained governance/release
-  docs, and historical meeting/sprint pages move into a website or Trac archive
-  rather than developer workflow pages.
+* `PRRC_kwDOAEM_Wc7PO3dX`: decide how historical meeting/event notes should be
+  preserved if Trac is eventually retired. The archive policy in
+  `doc/development/wiki/trac-cleanup.md` now covers historical discussion pages:
+  active work moves to tickets or maintained docs, unresolved technical ideas
+  are extracted before retirement, and the original discussion record stays in a
+  Trac or website archive.
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
   on Trac or in history, but extract any not-yet-implemented ideas into a
   maintained list.
