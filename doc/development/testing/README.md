@@ -86,11 +86,22 @@ make check RUNTESTFLAGS="--verbose --extension --raster --topology --sfcgal"
 
 Other useful targets:
 
-* `make garden` runs documentation and extra QA checks.
 * `make check RUNTESTFLAGS="--upgrade --extension --verbose"` exercises
   extension upgrade paths after `sudo make install`.
 * `make installcheck` runs tests against an installed copy after
   `sudo make install`.
+
+## Garden Checks
+
+Run garden checks with:
+
+```sh
+make garden
+```
+
+Garden tests exercise documentation examples and broader SQL behavior. They are
+useful before release work, when changing visible SQL behavior, and when manual
+examples are added or reorganized.
 
 ## Coverage
 

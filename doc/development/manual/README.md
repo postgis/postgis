@@ -47,14 +47,9 @@ canvas size, and passing a second filename overrides the default `.png` output.
 Set `POSTGIS_DOC_CONVERTER` when autodetection cannot find `gm`, `magick`, or
 `convert`.
 
-Run garden checks with:
-
-```sh
-make garden
-```
-
-Garden tests are extra documentation and behavior checks. They are useful
-before release work and when changing broad SQL behavior.
+Garden checks combine documentation examples with behavior validation. Keep the
+command and review guidance in [Testing and debugging](../testing/#garden-checks)
+and link back here when manual examples need attention.
 
 Generated Doxygen documentation for supported branches is linked from the
 public developer documentation page. Build local Doxygen output with:
