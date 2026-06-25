@@ -41,7 +41,7 @@ rather than PostGIS.
 | `DevWikiRFC` | `doc/rfc/`, `doc/development/governance/`, plus published RFCs at <https://postgis.net/development/rfcs/> |
 | `DevWikiComitGuidelines` | `doc/development/maintenance/`, `doc/development/governance/`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/>; original source in `doc/trac-wiki/development/DevWikiComitGuidelines.tracwiki` |
 | `DevWikiEvent` | Archived in `doc/trac-wiki/development/DevWikiEvent.tracwiki`; convert only if it becomes current process documentation |
-| `DevWikiPostGISCoding` | `doc/development/internals/`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
+| `DevWikiPostGISCoding` | `doc/development/internals/postgresql/`, `doc/development/internals/memory/`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
 | `DevWikiEmptyGeometry` | Archived in `doc/trac-wiki/development/DevWikiEmptyGeometry.tracwiki`; reconcile with current behavior and tests before moving into maintained internals docs |
 | `NewDistCalc`, `NewDistCalcSubGeom`, `NewDistCalcGeom2Geom`, `3DDistancecalc` | Archived in `doc/trac-wiki/development/`; convert into maintained internals docs only after reconciling with current distance code |
 | `DevWikiAffineParameters`, `DevWikiRealParameters` | Archived in `doc/trac-wiki/development/`; convert into maintained algorithm docs only after checking current code |

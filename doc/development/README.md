@@ -18,9 +18,8 @@ Modules:
   source naming conventions.
 * [Developer tools](tools/) covers `logbt`, formatting, coverage, and profiling
   entry points.
-* [Internals and PostgreSQL C API notes](internals/) covers allocator
-  boundaries, PostgreSQL function macros, detoasting, and geometry
-  serialization structures.
+* [PostGIS internals](internals/) covers allocator boundaries, PostgreSQL
+  function macros, detoasting, and geometry serialization structures.
 * [Release and upgrade rules](release/) indexes SQL/C API compatibility,
   upgrade scripting, dependency guards, regression roles, and support-window
   changes.
