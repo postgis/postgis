@@ -6,10 +6,18 @@ documentation. It is intended as the later cleanup checklist for Trac itself:
 each row says whether the page should stay as historical Trac context, be
 retired from Trac, or wait for a narrower follow-up.
 
+If Trac itself is retired later, do not turn historical discussion pages into
+current developer instructions. Preserve the original record in a static Trac
+or website archive with its original page name and links where practical, move
+durable decisions into maintained repository or website docs, and move still
+open work into Trac tickets, replacement issues, or `doc/development/doc-wip.md`
+before retiring the source page.
+
 ## Leave on Trac
 
 | Trac wiki page | Reason |
 |----------------|--------|
+| `DevelopmentDiscussion` | Historical PostGIS 2.0 discussion scratch page. Completed topics such as the raster merge and serialization migration are release history; still-open research themes were extracted into `doc/development/doc-wip.md`. Keep the original discussion record in the archive rather than republishing it as current developer guidance. |
 | `DevFOSS4GCodeSprintNotes` | Historical FOSS4G sprint agenda and release-planning notes. It contains point-in-time discussion about the PostGIS 2.0 cycle, raster/topology/geocoder planning, and old feature-freeze dates; keep it as Trac history rather than maintained developer documentation. |
 | `DevWikiEvent` | Historical Trac index for PostGIS meetings and code sprints. Individual meeting/sprint pages remain historical records, but this navigation page should stay with the Trac archive rather than become maintained developer workflow documentation. |
 | `DevWikiISO19125` | Historical draft-comment page for ISO19125 questions. Current manual and code carry OGC/SFS and SQL/MM conformance references; still-open standards-conformance themes were extracted into `doc/development/doc-wip.md`. |
