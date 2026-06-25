@@ -39,13 +39,6 @@ should leave draft state.
 * `PRRC_kwDOAEM_Wc7PPr_S`: tolerance notes need comparison with current GEOS,
   MVT, and PostGIS tolerance behavior before conversion.
 
-## Windows and Packaging
-
-* `PRRC_kwDOAEM_Wc7PPgkg`: Windows/MinGW notes still need deduplication against
-  `DevWikiWinMingW64` and the newer Windows build pages before deciding what
-  additional material, if any, belongs in the maintained Windows environment
-  page.
-
 ## User Manual Candidates
 
 * `PRRC_kwDOAEM_Wc7PP4bz`: batch shapefile loading on Windows needs comparison
