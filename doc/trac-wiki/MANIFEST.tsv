@@ -5,7 +5,6 @@ source-hosts	Codeberg	https://trac.osgeo.org/postgis/wiki/Codeberg	doc/trac-wiki
 development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/ContinuousIntegration	doc/trac-wiki/development/ContinuousIntegration.tracwiki	23846	119
 development	DevWikiAffineParameters	https://trac.osgeo.org/postgis/wiki/DevWikiAffineParameters	doc/trac-wiki/development/DevWikiAffineParameters.tracwiki	12154	222
 development	DevWikiEmptyGeometry	https://trac.osgeo.org/postgis/wiki/DevWikiEmptyGeometry	doc/trac-wiki/development/DevWikiEmptyGeometry.tracwiki	7627	182
-development	DevWikiEvent	https://trac.osgeo.org/postgis/wiki/DevWikiEvent	doc/trac-wiki/development/DevWikiEvent.tracwiki	574	8
 development	DevWikiISO19125	https://trac.osgeo.org/postgis/wiki/DevWikiISO19125	doc/trac-wiki/development/DevWikiISO19125.tracwiki	3162	59
 development	DevWikiMain	https://trac.osgeo.org/postgis/wiki/DevWikiMain	doc/trac-wiki/development/DevWikiMain.tracwiki	4725	89
 development	DevWikiMingW64_Setup	https://trac.osgeo.org/postgis/wiki/DevWikiMingW64_Setup	doc/trac-wiki/development/DevWikiMingW64_Setup.tracwiki	6201	153
