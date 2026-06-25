@@ -38,6 +38,8 @@ Modules:
   historically documented on the Trac developer wiki.
 * [Wiki migration map](wiki/) records the Trac wiki pages that were inspected
   and the repository location that should now hold maintained content.
+* [Documentation WIP](doc-wip.md) records open migration questions while this
+  pull request remains draft.
 * [Trac wiki corpus](../trac-wiki/) archives the PostGIS-specific Trac wiki
   source pages pulled during the migration.
 
