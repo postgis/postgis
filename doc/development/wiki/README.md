@@ -31,7 +31,7 @@ rather than PostGIS.
 |----------------|-----------------|
 | `WikiStart` | `README.md`, `CONTRIBUTING.md`, this directory, and `doc/trac-wiki/project-history/WikiStart.tracwiki` |
 | `DevWikiMain` | `doc/development/README.md`, `workflow/`, `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `wiki/`; original source in `doc/trac-wiki/development/DevWikiMain.tracwiki` |
-| `DevWikiGettingABackTrace` | `doc/development/testing/` |
+| `DevWikiGettingABackTrace` | `doc/development/testing/`, `doc/development/tools/` |
 | `DevWikiPGRegress` | `doc/development/testing/` |
 | `DevWikiCUnit` | `doc/development/testing/` |
 | `DevWikiDocNewFeature` | `doc/development/manual/` |
