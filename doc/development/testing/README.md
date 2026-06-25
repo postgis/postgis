@@ -189,7 +189,16 @@ make -C liblwgeom/cunit cu_tester
 For crashes, a backtrace from the PostgreSQL backend is usually the most useful
 diagnostic artifact.
 
-Build PostgreSQL and PostGIS with debug symbols when possible. In one terminal,
+Use `gdb` on Linux, BSD, macOS, Solaris, MSYS2, Cygwin, or similar POSIX-style
+environments. On Windows, install the MinGW/MSYS2 debugging tools first. Verify
+the debugger is available with:
+
+```sh
+gdb -v
+```
+
+Build PostgreSQL and PostGIS with debug symbols when possible; a PostgreSQL
+source build can use `CFLAGS=-O0 ./configure --enable-debug`. In one terminal,
 connect to a PostGIS-enabled database and get the backend PID:
 
 ```sql
@@ -219,3 +228,6 @@ psql postgis_reg
 
 Then get `pg_backend_pid()`, attach `gdb`, and rerun the failing SQL file inside
 that same database.
+
+Paste the `bt` output unchanged into the bug report or mailing-list thread so
+developers can see the original stack frames.
