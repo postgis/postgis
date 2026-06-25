@@ -54,7 +54,6 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiSpatialCollectionTutorial` | `doc/development/internals/spatial-collections.md`; current code no longer has the old `SPATIAL_COLLECTION` API, so the maintained page records current geometry collection and raster/vector crossing paths |
 | `WKTRaster_GDALDriverSpecificationWorking` | `doc/development/internals/raster-gdal-driver.md`; the old GDAL driver working spec was compressed into the maintained boundary between PostGIS raster storage/catalog contracts and the external GDAL `PostGISRaster` driver |
 | `DevGUC` | `doc/development/release/api.md` |
-| `ToleranceDiscussion` | `doc/development/internals/precision-tolerance.md`; current behavior was reconciled against GEOS-backed overlay `gridSize`, `ST_Snap`, topology precision/tolerance APIs, predicate distance arguments, coverage/triangulation tolerances, and MVT quantization, while the still-open global precision-model question remains in `doc/development/doc-wip.md` |
 | `DevWikiGardenTest` | `doc/development/testing.md` |
 | `UsersWikiMakeCheckConsiderations` | `doc/development/environment/ubuntu.md`, `doc/development/testing.md` |
 | `ContinuousIntegration` | `ci/`, `doc/development/testing/ci.md`, `doc/development/environment/ubuntu.md`, and `doc/development/environment/docker.md` |
@@ -77,7 +76,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 15 | `doc/trac-wiki/development/` |
+| Development | 14 | `doc/trac-wiki/development/` |
 | User wiki | 133 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Project history | 17 | `doc/trac-wiki/project-history/` |
