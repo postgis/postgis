@@ -79,13 +79,14 @@ rather than PostGIS.
 | `postgis.net/documentation/manual` | `doc/development/manual/` |
 | `postgis.net` Hugo repository README, Makefile, config, and release-check script | `doc/development/website/`, `doc/development/release-process/` |
 | `UsersWikiPostgreSQLPostGIS` | Archived in `doc/trac-wiki/user/UsersWikiPostgreSQLPostGIS.tracwiki`; convert into release-support documentation only after reconciling with current supported versions |
+| `UsersWikiCreateFishnet` | Retired from this repository import; current grid generation belongs to built-in functions such as `ST_SquareGrid` and `ST_HexagonGrid` in the user manual. |
 
 Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
 | Development | 36 | `doc/trac-wiki/development/` |
-| User wiki | 141 | `doc/trac-wiki/user/` |
+| User wiki | 140 | `doc/trac-wiki/user/` |
 | Raster | 21 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
 | Project history | 21 | `doc/trac-wiki/project-history/` |
