@@ -42,8 +42,14 @@ should leave draft state.
   `SplitToMaxN`-style, that returns area-covering polygon pieces below a
   max-vertex budget without adding segment split points. That needs a design
   ticket before becoming maintained developer documentation.
-* `PRRC_kwDOAEM_Wc7PPr_S`: tolerance notes need comparison with current GEOS,
-  MVT, and PostGIS tolerance behavior before conversion.
+* `PRRC_kwDOAEM_Wc7PPr_S`: `ToleranceDiscussion` was checked against current
+  GEOS-backed overlay `gridSize`, topology precision/tolerance APIs, snap
+  helpers, predicate distance arguments, coverage/triangulation tolerances, and
+  MVT tile quantization. The maintained behavior map now lives in
+  `internals/precision-tolerance.md`. The remaining open design question is
+  whether PostGIS should ever carry an inferred or metadata-backed precision
+  model for ordinary geometries; that needs a design ticket before becoming
+  maintained documentation.
 
 ## User Manual Candidates
 

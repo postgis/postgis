@@ -22,3 +22,6 @@ PostGIS rather than only using the SQL API.
 * [2D and 3D distance internals](distance.md) covers how geometry distance
   functions dispatch 2D and 3D candidate checks, including segment-segment and
   surface cases.
+* [Precision and tolerance internals](precision-tolerance.md) maps the current
+  GEOS grid-size, snap-tolerance, topology-precision, and MVT quantization
+  surfaces.
