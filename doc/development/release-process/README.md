@@ -49,8 +49,9 @@ them.
 The project generally supports each PostGIS minor release for two to four years
 after initial release and at least until the lowest PostgreSQL version
 supported by that PostGIS minor release reaches end of life. Check the
-PostgreSQL EOL policy and the PostGIS compatibility/support matrix before
-changing branch or announcement wording.
+PostgreSQL EOL policy and the
+[PostGIS compatibility/support matrix](https://postgis.net/development/versions_eol/)
+before changing branch or announcement wording.
 
 ## Requirements
 
