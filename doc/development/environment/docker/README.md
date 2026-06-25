@@ -44,6 +44,14 @@ make -j"$(nproc)"
 make check
 ```
 
+From the host, connect to the PostgreSQL version whose container port you
+exposed. For example, if PostgreSQL inside the container listens on `5436` and
+the host port mapping is `6436:5436`, use:
+
+```sh
+psql -U postgres -h localhost -p 6436
+```
+
 Stop and remove the container with:
 
 ```sh

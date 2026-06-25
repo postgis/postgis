@@ -8,7 +8,6 @@ development	DevGUC	https://trac.osgeo.org/postgis/wiki/DevGUC	doc/trac-wiki/deve
 development	DevWikiAffineParameters	https://trac.osgeo.org/postgis/wiki/DevWikiAffineParameters	doc/trac-wiki/development/DevWikiAffineParameters.tracwiki	12154	222
 development	DevWikiComitGuidelines	https://trac.osgeo.org/postgis/wiki/DevWikiComitGuidelines	doc/trac-wiki/development/DevWikiComitGuidelines.tracwiki	12841	140
 development	DevWikiDocNewFeature	https://trac.osgeo.org/postgis/wiki/DevWikiDocNewFeature	doc/trac-wiki/development/DevWikiDocNewFeature.tracwiki	4221	76
-development	DevWikiDockerTesting	https://trac.osgeo.org/postgis/wiki/DevWikiDockerTesting	doc/trac-wiki/development/DevWikiDockerTesting.tracwiki	8288	203
 development	DevWikiEmptyGeometry	https://trac.osgeo.org/postgis/wiki/DevWikiEmptyGeometry	doc/trac-wiki/development/DevWikiEmptyGeometry.tracwiki	7627	182
 development	DevWikiEvent	https://trac.osgeo.org/postgis/wiki/DevWikiEvent	doc/trac-wiki/development/DevWikiEvent.tracwiki	574	8
 development	DevWikiGardenTest	https://trac.osgeo.org/postgis/wiki/DevWikiGardenTest	doc/trac-wiki/development/DevWikiGardenTest.tracwiki	10554	164
