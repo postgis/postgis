@@ -2990,6 +2990,12 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;</programlisting>
          Use <xref linkend="ST_SimplifyPreserveTopology"/> to preserve topology and ensure validity.
          <xref linkend="ST_CoverageSimplify"/> also preserves topology and validity.
          </para></note>
+        <note><para>This is a general-purpose simplification function. It may
+         remove narrow polygon spikes when their effective area is below the
+         tolerance, but it is not a dedicated spike-removal or polygon-repair
+         operation. Use <xref linkend="ST_IsValid"/> to check the result and
+         <xref linkend="ST_MakeValid"/> to repair invalid polygonal output if
+         needed.</para></note>
         <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
         <note><para>This function handles 3D and the third dimension will affect the result.</para></note>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>

@@ -93,6 +93,7 @@ Trac or retired from the repository import are tracked in the
 | `UsersWikiGenerateHexagonalGrid` | Retired from this repository import; current hexagon grid generation belongs to `ST_HexagonGrid` in the user manual, with H3 tiling routed to `h3-pg` |
 | `UsersWikiCheckInvalidGeometriesFromGeometryColumns` | Retired from this repository import; current registered-column validity scanning is documented in the `ST_IsValid` manual examples |
 | `UsersWikiExamplesInterpolateWithOffset` | Retired from this repository import; current offset interpolation is documented with `ST_LineInterpolatePoint` and `ST_OffsetCurve` in the manual |
+| `UsersWikiExamplesSpikeRemover` | Retired from this repository import; `ST_SimplifyVW` is documented as a simplification tool rather than a dedicated spike-repair replacement |
 | `UsersWikiCleanPolygons` | Retired from this repository import; current invalid-geometry repair guidance belongs with `ST_MakeValid` in the user manual. |
 | `WKTRaster_MapAlgebra` | Retired from this repository import; current raster map algebra functions are implemented and documented in the raster manual. |
 
@@ -101,7 +102,7 @@ Imported corpus:
 | Category | Pages | Location |
 |----------|-------|----------|
 | Development | 20 | `doc/trac-wiki/development/` |
-| User wiki | 135 | `doc/trac-wiki/user/` |
+| User wiki | 134 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
 | Project history | 17 | `doc/trac-wiki/project-history/` |

@@ -62,9 +62,6 @@ should leave draft state.
   with the current loader manual.
 * `PRRC_kwDOAEM_Wc7PP6Zj`: buffer-unbuffer coastline simplification may be worth
   a user-manual example after checking the referenced source.
-* `PRRC_kwDOAEM_Wc7PQBv7`: spike removal is not clearly equivalent to
-  `ST_SimplifyVW`; compare against simplify and validity functions before
-  retiring or rewriting.
 
 ## Documentation Backlog
 
