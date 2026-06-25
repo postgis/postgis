@@ -63,6 +63,25 @@ documentation correction, or test improvement builds reviewer trust faster than
 a large redesign. Discuss larger plans on `postgis-devel` before spending a lot
 of implementation time.
 
+## First Contribution Path
+
+1. Fork a public mirror such as <https://github.com/postgis/postgis> or clone
+   the canonical OSGeo repository directly.
+2. Build the tree with the setup documented in [Ubuntu setup](../environment/ubuntu/)
+   or [Docker development environment](../environment/docker/).
+3. Create a branch with a name that describes the ticket, function, or topic.
+4. For a bug fix, find or create the matching Trac ticket before opening the
+   patch for review.
+5. For a larger feature, discuss the idea on `postgis-devel` before investing
+   heavily in implementation.
+6. Change the lowest layer that owns the behavior. SQL-visible behavior often
+   starts in the SQL declaration and reaches C entry points in `postgis/`,
+   `liblwgeom/`, raster, topology, or SFCGAL code.
+7. Add the matching test: CUnit for isolated `liblwgeom` behavior, SQL
+   regression tests for PostgreSQL-visible behavior, and documentation examples
+   for user-visible SQL features.
+8. Run focused validation before submitting the patch.
+
 New features target `master` and the next minor or major PostGIS release, not
 the next micro bugfix release. Bug fixes may be backpatched to maintained stable
 branches when they are appropriate for that release line; check the branch's
