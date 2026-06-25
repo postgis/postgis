@@ -51,7 +51,7 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiComitGuidelines` | `doc/development/maintenance/commit-guidelines/`, `doc/development/maintenance/`, `doc/development/governance/`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/> |
 | `DevWikiEvent` | Left on Trac; recorded in `doc/development/wiki/trac-cleanup.md` as historical meeting/sprint navigation |
 | `DevWikiPostGISCoding` | `doc/development/internals/postgresql/`, `doc/development/internals/memory/`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
-| `DevWikiEmptyGeometry` | Archived in `doc/trac-wiki/development/DevWikiEmptyGeometry.tracwiki`; reconcile with current behavior and tests before moving into maintained internals docs |
+| `DevWikiEmptyGeometry` | `doc/development/internals/empty-geometry.md`; current behavior was reconciled against code and regression tests |
 | `NewDistCalc`, `NewDistCalcSubGeom`, `NewDistCalcGeom2Geom` | Remaining distance-calculation pages stay archived in `doc/trac-wiki/development/` pending image recovery and code reconciliation |
 | `DevWikiAffineParameters` | `doc/development/internals/raster-affine.md`; original images recovered under `doc/development/internals/images/raster-affine/` |
 | `DevWikiRealParameters` | Archived in `doc/trac-wiki/development/`; convert into maintained raster algorithm docs only after checking current code and recovering images |

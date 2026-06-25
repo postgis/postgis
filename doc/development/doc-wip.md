@@ -35,9 +35,8 @@ should leave draft state.
 * `PRRC_kwDOAEM_Wc7PPc2J`: raster real-parameter notes look useful, but need
   image recovery, Markdown conversion, and reconciliation with the current
   reverse geotransform calculations.
-* `PRRC_kwDOAEM_Wc7PO25O`, `PRRC_kwDOAEM_Wc7PPfAw`: empty-geometry and spatial
-  collection material should probably become advanced geometry deep dives after
-  checking current behavior and examples.
+* `PRRC_kwDOAEM_Wc7PPfAw`: spatial collection material should probably become
+  an advanced geometry deep dive after checking current behavior and examples.
 * `PRRC_kwDOAEM_Wc7PPpX5`, `PRRC_kwDOAEM_Wc7PPqUS`: distance-calculation pages
   need image recovery and reconciliation with current distance code.
 * `PRRC_kwDOAEM_Wc7PPrPX`: `SomeSplitting` should be compressed to only ideas
