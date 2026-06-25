@@ -157,6 +157,8 @@ create a symlink at `/usr/local/pgsql/bin` pointing to `${PGHOME}/bin`.
 
 CUnit tests live in `liblwgeom/cunit`. Prefer them for low-level geometry
 library behavior because they are faster and easier to debug than SQL tests.
+The local `liblwgeom/cunit/README` is the source of truth for the current test
+harness details.
 
 To add a test:
 
@@ -167,6 +169,11 @@ To add a test:
 4. Register it in that module's suite.
 5. Include the Trac ticket number in a short comment when the test captures a
    ticket fix.
+
+When a change needs a new CUnit module, copy a nearby module and update
+`cu_tester.c` to include the new header and call the new `register_*_suite()`
+function. Keep module-level initialization minimal so tests can still be run or
+disabled independently while debugging.
 
 Run CUnit tests:
 
