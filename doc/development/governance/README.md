@@ -7,8 +7,7 @@ replaces or supersedes them.
 
 ## Project Steering Committee
 
-RFC-1, published at <https://postgis.net/development/rfcs/rfc01/>, describes
-the PostGIS Project Steering Committee as the body responsible for codebase
+The PostGIS Project Steering Committee is the body responsible for codebase
 control and for the public face of the project. Its responsibilities include
 quality-control mechanisms, legal compliance, release cycles, infrastructure,
 website maintenance, promotion, public relations, and relationships with
@@ -18,9 +17,9 @@ Project proposals are discussed on the development mailing list. Proposals with
 substantial technical detail may be written as RFCs. A proposal should remain
 available for review for at least two business days before a decision is made.
 PSC votes use the usual `+1`, `+0`, `0`, `-0`, and `-1` convention; a `-1`
-veto must include reasoning and an alternate path. RFC-1 says a proposal passes
-with `+2`, including the author, and no vetoes; an unresolved veto can be
-overridden only by a majority of all eligible PSC members.
+veto must include reasoning and an alternate path. A proposal passes with `+2`,
+including the author, and no vetoes; an unresolved veto can be overridden only
+by a majority of all eligible PSC members.
 
 Votes are required for committee membership changes, infrastructure changes,
 backward-compatibility breaks, substantial new code, inter-subsystem API or
@@ -33,6 +32,11 @@ events, mailing lists, chat, tickets, wiki, blogs, social media, and other
 community spaces. Serious or persistent conduct concerns may be reported to
 event staff, a forum leader, or the PSC; private PSC mail goes to
 `psc@postgis.net`.
+
+This section preserves the current PSC process from the historical RFC-1 text
+published at <https://postgis.net/development/rfcs/rfc01/>. Treat the
+repository governance page as the maintained home for this process once the PSC
+replaces or supersedes the old numbered RFC pages.
 
 ## RFC-5 Status
 
