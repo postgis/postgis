@@ -344,12 +344,39 @@ promisingcircle_pcount | lamecircle_pcount
 ST_Transform(ST_SetSRID(ST_Point(-71.063526, 42.35785),4269), 26986),
 100,2)) As octagon;</programlisting>
 <screen>POLYGON((236057.5905746494 900908.7599186979,236028.30125276805 900838.0492405792,235957.5905746494 900808.7599186979,235886.87989653074 900838.0492405792,235857.5905746494 900908.7599186979,235886.87989653074 900979.4705968165,235957.5905746494 901008.7599186979,236028.30125276805 900979.4705968165,236057.5905746494 900908.7599186979))</screen>
+
+                <para>Buffering a polygon by a positive distance and then by the same negative
+                distance is a morphological closing operation. It can be useful for smoothing
+                noisy boundaries, such as simplifying a coastline by removing narrow inlets and
+                bays. The result intentionally changes the shape and area of the input, and the
+                distance must be chosen in the units of the input SRS. For data in a geographic
+                SRS, transform to a suitable projected SRS first.</para>
+
+<programlisting>-- Smooth a coastline using a 1 km closing operation, then simplify the result.
+-- The example uses Massachusetts State Plane meter units for the operation.
+WITH projected AS (
+  SELECT id, ST_Transform(geom, 26986) AS geom
+  FROM coast
+),
+closed AS (
+  SELECT id, ST_Buffer(ST_Buffer(geom, 1000), -1000) AS geom
+  FROM projected
+)
+SELECT id, ST_Transform(ST_SimplifyPreserveTopology(geom, 50), 4326) AS geom
+FROM closed;</programlisting>
+
+                <para>The same technique is described in Paul Ramsey's
+                <link xlink:href="https://blog.cleverelephant.ca/2010/11/removing-complexities.html">Removing Complexities</link>.
+                The final simplification step is optional; use
+                <xref linkend="ST_SimplifyPreserveTopology"/> when polygonal validity matters,
+                and check the result against the cartographic or analytical tolerance required by
+                the application.</para>
               </refsection>
 
               <refsection>
                 <title>See Also</title>
 
-                <para><xref linkend="ST_Collect"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_MakeValid"/></para>
+                <para><xref linkend="ST_Collect"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SimplifyPreserveTopology"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_MakeValid"/></para>
               </refsection>
         </refentry>
 
