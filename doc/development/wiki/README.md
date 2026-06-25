@@ -34,7 +34,7 @@ rather than PostGIS.
 | `DevWikiGettingABackTrace` | `doc/development/testing/`, `doc/development/tools/` |
 | `DevWikiPGRegress` | `doc/development/testing/` |
 | `DevWikiCUnit` | `doc/development/testing/` |
-| `DevWikiDocNewFeature` | `doc/development/manual/` |
+| `DevWikiDocNewFeature` | `doc/development/workflow/`, `doc/development/manual/` |
 | `DevWikiPatch` | `doc/development/style/`, `doc/development/workflow/`, `doc/development/testing/` |
 | `DevWikiMain/DevForDummy` | `doc/development/workflow/`, `environment/ubuntu/`, `testing/`, `manual/` |
 | `DevWikiDockerTesting` | `doc/development/environment/docker/` |
@@ -51,7 +51,7 @@ rather than PostGIS.
 | `DevCleanFromGEOS` | Retired from this repository import; the source page only contained a placeholder for a clean function API. |
 | `DevWikiProvenanceReview` | Archived in `doc/trac-wiki/development/DevWikiProvenanceReview.tracwiki` as historical OSGeo incubation/provenance record |
 | `DevFOSS4GCodeSprintNotes` | Archived in `doc/trac-wiki/project-history/DevFOSS4GCodeSprintNotes.tracwiki` |
-| `DevWikiGardenTest` | `doc/development/manual/` |
+| `DevWikiGardenTest` | `doc/development/testing/` |
 | `DevWikiMingW64_Setup`, `DevWikiWinMingW64`, `DevWikiWinMingW64_21`, `DevWikiWinMingWSys_14_15`, `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`, `DevWikiWinVC_15`, `DevWikiWinNSIS` | Archived in `doc/trac-wiki/development/`; current CI/build notes belong in `doc/development/environment/ubuntu/` and `ci/` |
 | `DevCleanFromGEOS` | Archived in `doc/trac-wiki/development/DevCleanFromGEOS.tracwiki` |
 | `UsersWikiMakeCheckConsiderations` | `doc/development/environment/ubuntu/`, `doc/development/testing/` |
