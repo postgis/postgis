@@ -24,8 +24,10 @@ should leave draft state.
   inventory now has its own page. Before this PR leaves draft, decide whether
   these governance pages should replace the public RFC layout on the website.
 * `PRRC_kwDOAEM_Wc7POljg`: the wiki migration map is intentionally temporary.
-  When every useful page has a maintained home or a recorded retirement reason,
-  flatten the map into the relevant topic pages or remove it.
+  It is now separated from the durable module list as a draft-only migration
+  workspace. When every useful page has a maintained home or a recorded
+  retirement reason, remove the map and keep only the topic pages plus any
+  necessary archive pointer.
 
 ## Developer Deep Dives
 
