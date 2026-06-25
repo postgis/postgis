@@ -41,7 +41,6 @@ topology	PostgisTopology_Data_Model	https://trac.osgeo.org/postgis/wiki/PostgisT
 project-history	RCDownloads	https://trac.osgeo.org/postgis/wiki/RCDownloads	doc/trac-wiki/project-history/RCDownloads.tracwiki	262	3
 project-history	RFC/RFC-1	https://trac.osgeo.org/postgis/wiki/RFC/RFC-1	doc/trac-wiki/project-history/RFC_RFC-1.tracwiki	9135	142
 user	SpatiaLite	https://trac.osgeo.org/postgis/wiki/SpatiaLite	doc/trac-wiki/user/SpatiaLite.tracwiki	4311	79
-development	ToleranceDiscussion	https://trac.osgeo.org/postgis/wiki/ToleranceDiscussion	doc/trac-wiki/development/ToleranceDiscussion.tracwiki	3220	39
 topology	TopoElement	https://trac.osgeo.org/postgis/wiki/TopoElement	doc/trac-wiki/topology/TopoElement.tracwiki	67	0
 topology	TopoElementArray	https://trac.osgeo.org/postgis/wiki/TopoElementArray	doc/trac-wiki/topology/TopoElementArray.tracwiki	61	0
 topology	TopoGeometry	https://trac.osgeo.org/postgis/wiki/TopoGeometry	doc/trac-wiki/topology/TopoGeometry.tracwiki	45	0
