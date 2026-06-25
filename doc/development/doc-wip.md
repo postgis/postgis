@@ -95,7 +95,10 @@ that historical planning page on Trac:
 
 * `PRRC_kwDOAEM_Wc7POwKG`, `PRRC_kwDOAEM_Wc7PO3dX`: decide how historical
   development discussions and meeting/event notes should be preserved if Trac is
-  eventually retired.
+  eventually retired. A likely split is: active agenda/minutes stay on the live
+  planning surface, durable decisions move into maintained governance/release
+  docs, and historical meeting/sprint pages move into a website or Trac archive
+  rather than developer workflow pages.
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
   on Trac or in history, but extract any not-yet-implemented ideas into a
   maintained list.
