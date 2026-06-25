@@ -10,4 +10,5 @@ retired from Trac, or wait for a narrower follow-up.
 
 | Trac wiki page | Reason |
 |----------------|--------|
+| `DevFOSS4GCodeSprintNotes` | Historical FOSS4G sprint agenda and release-planning notes. It contains point-in-time discussion about the PostGIS 2.0 cycle, raster/topology/geocoder planning, and old feature-freeze dates; keep it as Trac history rather than maintained developer documentation. |
 | `DevWikiProvenanceReview` | Historical OSGeo incubation and provenance-review record. The page lists a point-in-time audit of vendored files and license notes; it should not be republished as current contributor guidance unless a fresh license/provenance audit is requested. |
