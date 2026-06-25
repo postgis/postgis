@@ -32,8 +32,16 @@ should leave draft state.
   necessary archive pointer.
 
 ## Developer Deep Dives
-* `PRRC_kwDOAEM_Wc7PPrPX`: `SomeSplitting` should be compressed to only ideas
-  not already implemented.
+* `PRRC_kwDOAEM_Wc7PPrPX`: `SomeSplitting` was checked against the current
+  split and subdivision APIs. `ST_Subdivide` covers the practical oversize
+  geometry subdivision case, including a grid-size argument for deterministic
+  grid-aligned output when inputs already lie on the grid; `ST_Split`,
+  `ST_Node`, `ST_Polygonize`, and topology edge/face-editing functions provide
+  the lower-level building blocks discussed on the old page. The remaining
+  not-yet-implemented idea is a vertex-preserving polygon partitioning API,
+  `SplitToMaxN`-style, that returns area-covering polygon pieces below a
+  max-vertex budget without adding segment split points. That needs a design
+  ticket before becoming maintained developer documentation.
 * `PRRC_kwDOAEM_Wc7PPr_S`: tolerance notes need comparison with current GEOS,
   MVT, and PostGIS tolerance behavior before conversion.
 
