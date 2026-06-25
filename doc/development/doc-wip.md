@@ -13,6 +13,10 @@ should leave draft state.
 * `PRRC_kwDOAEM_Wc7POmvr`: `workflow/`, root `CONTRIBUTING.md`, and maintainer
   workflow still overlap. Decide whether contributor workflow should be one
   page with role-specific anchors.
+* `PRRC_kwDOAEM_Wc7PQ_kd`, `PRRC_kwDOAEM_Wc7PRB5P`: the current directory tree
+  uses many `README.md` files. Decide whether to flatten this into files such as
+  `building.md`, `testing.md`, and `release/versioning.md` before the PR leaves
+  draft.
 * `PRRC_kwDOAEM_Wc7POSzg`, `PRRC_kwDOAEM_Wc7POUBR`,
   `PRRC_kwDOAEM_Wc7POVRO`: governance still needs a final shape. Current notes
   keep RFC-1/RFC-5 context, but the intended end state may be a governance page
