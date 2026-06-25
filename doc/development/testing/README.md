@@ -19,7 +19,9 @@ To add a new SQL regression:
    that matches local convention.
 2. Include stable labels in query output when a file covers several cases.
 3. Generate expected output through the regression harness, not by guessing
-   psql formatting.
+   psql formatting. A direct `psql -tXA` run can seed an `_expected` file, but
+   the committed result should match the output produced by `make check` after
+   the harness applies its substitutions.
 4. Add the test to the relevant `tests.mk.in` or subsystem makefile.
 5. Guard tests that require a dependency version newer than the release
    minimum.
