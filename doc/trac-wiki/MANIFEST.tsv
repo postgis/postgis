@@ -42,7 +42,6 @@ user	OpenStreetMap	https://trac.osgeo.org/postgis/wiki/OpenStreetMap	doc/trac-wi
 user	PieCrust	https://trac.osgeo.org/postgis/wiki/PieCrust	doc/trac-wiki/user/PieCrust.tracwiki	99	0
 user	PlanetPostgis	https://trac.osgeo.org/postgis/wiki/PlanetPostgis	doc/trac-wiki/user/PlanetPostgis.tracwiki	91	0
 project-history	PostGIS20ReleaseAnnouncement	https://trac.osgeo.org/postgis/wiki/PostGIS20ReleaseAnnouncement	doc/trac-wiki/project-history/PostGIS20ReleaseAnnouncement.tracwiki	1484	46
-project-history	PostGIS3	https://trac.osgeo.org/postgis/wiki/PostGIS3	doc/trac-wiki/project-history/PostGIS3.tracwiki	5110	52
 project-history	PostGISCodeSprint2018	https://trac.osgeo.org/postgis/wiki/PostGISCodeSprint2018	doc/trac-wiki/project-history/PostGISCodeSprint2018.tracwiki	1957	61
 project-history	PostGISCodeSprint2020	https://trac.osgeo.org/postgis/wiki/PostGISCodeSprint2020	doc/trac-wiki/project-history/PostGISCodeSprint2020.tracwiki	2260	57
 project-history	PostGISDevelopment2021	https://trac.osgeo.org/postgis/wiki/PostGISDevelopment2021	doc/trac-wiki/project-history/PostGISDevelopment2021.tracwiki	4666	121

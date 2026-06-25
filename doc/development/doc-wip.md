@@ -91,6 +91,29 @@ that historical planning page on Trac:
 * Decide whether DocBook XML source formatting should have a stronger
   line-width convention for cleaner diffs.
 
+## Major-Version Research Backlog
+
+The following still-open research themes came from `PostGIS3`. They need Trac
+tickets, architecture discussion, or focused design documents before they can
+become maintained developer documentation:
+
+* Geometry storage and serialization experiments: alternative coordinate
+  compression, sliceable headers, cached equality hashes, validity flags,
+  precision metadata, non-double coordinate storage, more than four dimensions,
+  and smaller typmod-only point storage.
+* Geography and indexing experiments: 3D-aware geography/cartesian conversion,
+  index tuples that can carry SRID or compact geometry summaries, S2/geography
+  indexing, and faster or better-clustered GiST builds where PostgreSQL core
+  support would be required.
+* Backend-library experiments: deeper GEOS memory/coordinate-sequence
+  integration, moving suitable algorithms to GEOS/SFCGAL/CGAL, and deciding
+  whether any internal code should use C++ or external geometry-library
+  adapters.
+* Topology and robustness experiments: OSM-to-topology import, stronger
+  validity-aware guarantees for predicates and overlays, fallback/retry across
+  geometry backends, and empirical performance/cost frameworks for planner and
+  regression testing.
+
 ## Project History and Planning
 
 * `PRRC_kwDOAEM_Wc7POwKG`, `PRRC_kwDOAEM_Wc7PO3dX`: decide how historical
@@ -102,8 +125,6 @@ that historical planning page on Trac:
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
   on Trac or in history, but extract any not-yet-implemented ideas into a
   maintained list.
-* `PRRC_kwDOAEM_Wc7PPvW1`: `PostGIS3` should be pruned to ideas that were not
-  completed.
 * `PRRC_kwDOAEM_Wc7PPw2H`, `PRRC_kwDOAEM_Wc7PPyUi`: the obsolete versions matrix
   needs either a clearer format or a generator/range-based compatibility view.
 
