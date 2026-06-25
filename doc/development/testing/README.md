@@ -122,9 +122,27 @@ Run garden checks with:
 make garden
 ```
 
-Garden tests exercise documentation examples and broader SQL behavior. They are
-useful before release work, when changing visible SQL behavior, and when manual
-examples are added or reorganized.
+Garden tests are generated from the DocBook reference through the XSL files in
+`doc/xsl/`. They exercise documented geometry, geography, raster, SFCGAL, and
+topology functions with broad input sets, including NULL and empty inputs, to
+catch crashes and surprising SQL behavior.
+
+The generated scripts write progress and output tables such as
+`postgis_garden_log`, `postgis_garden_log_output`, and raster-specific garden
+logs. If a run crashes before completion, inspect the highest `logid` to find
+the SQL statement that was running:
+
+```sql
+SELECT *
+FROM postgis_garden_log
+ORDER BY logid DESC
+LIMIT 1;
+```
+
+Use garden checks before release work, when changing visible SQL behavior, and
+when manual examples are added or reorganized. For focused checks of only a few
+functions, use the subset generator in
+`doc/xsl/postgis_gardentest_subset.sql.xsl` instead of running the full battery.
 
 ## Coverage
 
