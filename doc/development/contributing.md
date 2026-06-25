@@ -43,7 +43,7 @@ convenience. Pull requests on a mirror are welcome, but they are easier to miss
 unless they also have a matching Trac ticket.
 
 Maintainers landing mirror pull requests should follow the
-[Pull request and maintainer workflow](../maintenance/), including canonical
+[Pull request and maintainer workflow](maintenance.md), including canonical
 branch readback, tracker trailers, and `NEWS` conventions.
 
 Subscribe to the
@@ -67,8 +67,8 @@ of implementation time.
 
 1. Fork a public mirror such as <https://github.com/postgis/postgis> or clone
    the canonical OSGeo repository directly.
-2. Build the tree with the setup documented in [Ubuntu setup](../environment/ubuntu/)
-   or [Docker development environment](../environment/docker/).
+2. Build the tree with the setup documented in [Ubuntu setup](environment/ubuntu.md)
+   or [Docker development environment](environment/docker.md).
 3. Create a branch with a name that describes the ticket, function, or topic.
 4. For a bug fix, find or create the matching Trac ticket before opening the
    patch for review.
@@ -91,14 +91,14 @@ Patch submission basics:
 
 * Keep each patch focused on one ticket or reviewable topic.
 * Add regression or CUnit coverage for behavior changes.
-* Run the focused local validation described in [Ubuntu setup](../environment/ubuntu/)
-  and [Testing and debugging](../testing/).
-* Follow [Coding style](../style/) for C naming, formatting, and Doxygen
+* Run the focused local validation described in [Ubuntu setup](environment/ubuntu.md)
+  and [Testing and debugging](testing.md).
+* Follow [Coding style](style.md) for C naming, formatting, and Doxygen
   comments before writing or submitting source patches.
 * Add documentation in the same change when a feature adds or changes SQL
   user-visible behavior.
 * For SQL API, upgrade, and release-policy changes, read
-  [Release and upgrade rules](../release/) before opening a pull request.
+  [Release and upgrade rules](release.md) before opening a pull request.
 * Git patches sent by email are also accepted; see
   <https://git-send-email.io/> for a practical walkthrough.
 

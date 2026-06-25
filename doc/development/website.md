@@ -35,15 +35,15 @@ Website source content that overlaps with repository-maintained developer docs:
 
 | Website source | Repository-maintained destination |
 |----------------|-----------------------------------|
-| `content/development/source_code.md` | [Contributing workflow](../contributing.md) and [Pull request and maintainer workflow](../maintenance/) |
-| `content/development/getting_involved.md` | [Contributing workflow](../contributing.md) |
-| `content/development/bug_reporting.md` | [Contributing workflow](../contributing.md) |
-| `content/development/developer_docs.md` | [Documentation workflow](../manual/) and this `doc/development/` index |
-| `content/development/versions_eol.md` | [Release process](../release-process/) and [Release and upgrade rules](../release/) |
-| `content/development/rfcs/*.md` | [Governance notes](../governance/) and historical RFC pages |
-| `content/community/mailinglists.md` and `content/community/chat.md` | [Contributing workflow](../contributing.md) |
-| `content/community/conduct.md` | [Governance notes](../governance/) |
-| `content/documentation/manual.md` | [Documentation workflow](../manual/) |
+| `content/development/source_code.md` | [Contributing workflow](contributing.md) and [Pull request and maintainer workflow](maintenance.md) |
+| `content/development/getting_involved.md` | [Contributing workflow](contributing.md) |
+| `content/development/bug_reporting.md` | [Contributing workflow](contributing.md) |
+| `content/development/developer_docs.md` | [Documentation workflow](manual.md) and this `doc/development/` index |
+| `content/development/versions_eol.md` | [Release process](release-process.md) and [Release and upgrade rules](release.md) |
+| `content/development/rfcs/*.md` | [Governance notes](governance.md) and historical RFC pages |
+| `content/community/mailinglists.md` and `content/community/chat.md` | [Contributing workflow](contributing.md) |
+| `content/community/conduct.md` | [Governance notes](governance.md) |
+| `content/documentation/manual.md` | [Documentation workflow](manual.md) |
 | `content/documentation/training.md` | Public website; only the workshop repository is an umbrella project |
 
 The website declares its content license as CC BY-SA 4.0 in `config.toml`.
@@ -64,4 +64,4 @@ documentation artefacts exist:
 4. Push the website change to `https://gitea.osgeo.org/postgis/postgis.net` and
    wait for the website deployment.
 
-See [Release process](../release-process/) for the broader release checklist.
+See [Release process](release-process.md) for the broader release checklist.

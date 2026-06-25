@@ -2,7 +2,7 @@
 
 This page keeps the source-control practices from the historical RFC-5
 contributor guideline in a maintained form. Use it together with
-[Contributing workflow](../../contributing.md), [Coding style](../../style/), and the
+[Contributing workflow](../contributing.md), [Coding style](../style.md), and the
 release rules for the target branch.
 
 ## Commit Messages

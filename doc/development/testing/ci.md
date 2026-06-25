@@ -79,8 +79,8 @@ readback.
 
 ## Relationship To Other Docs
 
-Use [Testing and debugging](./) for test commands and local validation
-workflows. Use [Release process](../release-process/) for release-manager
+Use [Testing and debugging](../testing.md) for test commands and local validation
+workflows. Use [Release process](../release-process.md) for release-manager
 greenlight checks, Debbie release jobs, and branch-opening steps. Use
-[Website maintenance](../website/) and the public website compatibility matrix
+[Website maintenance](../website.md) and the public website compatibility matrix
 for user-facing support status.
