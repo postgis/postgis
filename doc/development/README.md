@@ -8,10 +8,12 @@ Modules:
 
 * [Contributing workflow](contributing.md) explains Trac tickets, code mirrors,
   mailing lists, and patch submission.
-* [Development environments](environment/) links the Ubuntu and Docker setup
-  paths.
+* [Development environments](environment/) links the Ubuntu, Windows, and Docker
+  setup paths.
 * [Ubuntu setup](environment/ubuntu/) gives a practical package-based setup,
   build commands, installation into a test cluster, and cleanup.
+* [Windows setup](environment/windows/) records the current MSYS2 and Winnie
+  MinGW build surfaces.
 * [Testing and debugging](testing/) explains SQL regression tests, CUnit,
   dependency guards, and backtraces.
 * [Coding style](style/) covers C formatting, comments, Doxygen comments, and
@@ -36,8 +38,8 @@ Modules:
 * [Governance notes](governance/) records PSC process, core-contributor
   governance, project/service inventory, and governance-documentation
   consolidation notes.
-* [Docker setup](environment/docker/) summarizes the development container options
-  historically documented on the Trac developer wiki.
+* [Docker setup](environment/docker/) summarizes the development container
+  options historically documented on the Trac developer wiki.
 * [Documentation WIP](doc-wip.md) records open migration questions while this
   pull request remains draft.
 

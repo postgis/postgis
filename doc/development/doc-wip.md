@@ -46,9 +46,10 @@ should leave draft state.
 
 ## Windows and Packaging
 
-* `PRRC_kwDOAEM_Wc7PPIhX`, `PRRC_kwDOAEM_Wc7PPgkg`: Windows/MinGW setup needs a
-  current development-environment section and deduplication against newer
-  Windows notes.
+* `PRRC_kwDOAEM_Wc7PPgkg`: Windows/MinGW notes still need deduplication against
+  `DevWikiWinMingW64` and the newer Windows build pages before deciding what
+  additional material, if any, belongs in the maintained Windows environment
+  page.
 
 ## User Manual Candidates
 
