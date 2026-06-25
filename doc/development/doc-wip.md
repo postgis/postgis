@@ -47,13 +47,6 @@ should leave draft state.
 * `PRRC_kwDOAEM_Wc7POtFt`, `PRRC_kwDOAEM_Wc7POtRS`: CI notes need a standards
   decision. If a maintained CI inventory stays in repo docs, update the
   associated scripts to check or regenerate it.
-* `PRRC_kwDOAEM_Wc7PO0A7`, `PRRC_kwDOAEM_Wc7PPTLQ`: CUnit and pg_regress pages
-  should be folded into the testing chapter after comparing details with the
-  current harness.
-* `PRRC_kwDOAEM_Wc7PO0mJ`: Docker testing should be folded into
-  `environment/docker/` after checking it against current images.
-* `PRRC_kwDOAEM_Wc7PO5Am`: backtrace notes should be reconciled with the new
-  `tools/` `logbt` section.
 
 ## Windows and Packaging
 
