@@ -63,7 +63,8 @@ Trac or retired from the repository import are tracked in the
 | `PostGISDevelopment2021`, `PostGISDevelopment2022-1`, `PostGISDevelopment2023-1`, `PostGISDevelopment2026-1` | Archived in `doc/trac-wiki/project-history/`; current release-process actions belong in `doc/development/release-process/` |
 | `GoogleSeasonDocs2019` | Left on Trac; not-yet-done documentation ideas were extracted into `doc/development/doc-wip.md` |
 | `PostGIS3` | Retired from this repository import; open major-version research themes were extracted into `doc/development/doc-wip.md` |
-| `PostGIS20ReleaseAnnouncement`, `PostGISObsoleteVersionsMatrix`, `RCDownloads` | Archived in `doc/trac-wiki/project-history/`; maintained release workflow belongs in `doc/development/release-process/` |
+| `PostGISObsoleteVersionsMatrix` | Retired from this repository import; support-matrix maintenance rules were folded into `doc/development/release/dependencies/` |
+| `PostGIS20ReleaseAnnouncement`, `RCDownloads` | Archived in `doc/trac-wiki/project-history/`; maintained release workflow belongs in `doc/development/release-process/` |
 | `PostGISCodeSprint2018`, `PostGISCodeSprint2020` | Archived in `doc/trac-wiki/project-history/` |
 | `CodeSprintParis2012`, `GeospatialDataViewerInPgAdmin4ForPostGIS`, `GeospatialDataViewerInPgAdmin4ForPostGIS_FinalReport` | Left on Trac rather than imported; these are event or project-history records rather than maintained repository documentation. |
 | `ImplementSortingMethodsBeforeGistIndexBuilding`, `MoveToGit`, `UsersWikiCascadeUnion` | Retired from this repository import because the work is done or superseded by current built-in behavior. |
@@ -97,7 +98,7 @@ Imported corpus:
 | User wiki | 138 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Topology | 10 | `doc/trac-wiki/topology/` |
-| Project history | 18 | `doc/trac-wiki/project-history/` |
+| Project history | 17 | `doc/trac-wiki/project-history/` |
 | Source hosts | 5 | `doc/trac-wiki/source-hosts/` |
 
 TitleIndex groups intentionally not imported into the corpus:
