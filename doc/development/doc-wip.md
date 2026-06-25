@@ -62,8 +62,6 @@ should leave draft state.
   with the current loader manual.
 * `PRRC_kwDOAEM_Wc7PP6Zj`: buffer-unbuffer coastline simplification may be worth
   a user-manual example after checking the referenced source.
-* `PRRC_kwDOAEM_Wc7PP8cp`: invalid-geometry table scanning is a user tip; decide
-  whether it belongs near validity functions rather than in the archive corpus.
 * `PRRC_kwDOAEM_Wc7PQAPn`: line interpolation with offset needs comparison with
   current linear-referencing examples.
 * `PRRC_kwDOAEM_Wc7PQBv7`: spike removal is not clearly equivalent to
