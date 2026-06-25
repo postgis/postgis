@@ -19,6 +19,7 @@ retired from Trac, or wait for a narrower follow-up.
 
 | Trac wiki page | Reason |
 |----------------|--------|
+| `DevWikiMain` | Superseded developer-wiki landing page. Maintained navigation now lives in `doc/development/README.md`, with topic pages under `workflow/`, `environment/`, `testing/`, `manual/`, `style/`, `internals/`, `release/`, `release-process/`, `governance/`, `maintenance/`, `website/`, and `wiki/`. |
 | `PostGIS3` | Completed PostGIS 3 planning scratch page. Current docs and code already cover the completed items such as `postgis_raster` split/upgrade handling, GeoJSON json/jsonb support, modern dependency baselines, and cluster window functions; still-open research themes were extracted into `doc/development/doc-wip.md`. |
 | `PostGISObsoleteVersionsMatrix` | Stale hand-maintained compatibility table for EOL PostGIS, PostgreSQL, GEOS, PROJ, and GDAL combinations. The current matrix belongs on the website; durable support-window and matrix-maintenance rules were folded into `doc/development/release/dependencies/`. |
 | `UsersWikiPostGIS15Ubuntu1110pkg` | Obsolete Ubuntu 11.10 package recipe for PostGIS 1.5.3 and PostgreSQL 9.1. Current installation docs cover supported PostgreSQL versions, source builds, pre-built package pointers, and extension-based database enablement; the old `template_postgis`/`postgis.sql` package commands should not be republished as current guidance. |
