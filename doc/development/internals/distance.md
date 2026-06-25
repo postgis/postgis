@@ -69,9 +69,8 @@ matches the input geometry order.
 
 ## What Stayed Archival
 
-The old Trac page included diagrams and a historical description of plane
-normal averaging. Those details should not be treated as maintained text until
-the missing images are recovered and the exact narrative is checked against the
-current `define_plane` implementation. The imported Trac page remains in
-`doc/trac-wiki/development/3DDistancecalc.tracwiki` while that image-recovery
-thread is still open.
+The old Trac page included plane-definition diagrams and a historical
+description of plane normal averaging. The recovered diagrams now live beside
+this maintained note under `doc/development/internals/images/distance/`; the
+old narrative should not be treated as maintained text until it is checked
+against the current `define_plane` implementation.
