@@ -7,10 +7,10 @@ geekdocHidden: false
 
 # Governance Notes
 
-This page records governance documentation that is maintained or being
-consolidated in the repository. Published governance pages on
-<https://postgis.net/development/> remain the public reference until the PSC
-replaces or supersedes them.
+This page is the maintained source for current PostGIS governance text in this
+repository. Published governance pages on <https://postgis.net/development/>
+remain the public reference until the PSC publishes this maintained structure
+on the website or otherwise supersedes the historical RFC pages.
 
 ## Project Steering Committee
 
@@ -41,9 +41,10 @@ event staff, a forum leader, or the PSC; private PSC mail goes to
 `psc@postgis.net`.
 
 This section preserves the current PSC process from the historical RFC-1 text
-published at <https://postgis.net/development/rfcs/rfc01/>. Treat the
-repository governance page as the maintained home for this process once the PSC
-replaces or supersedes the old numbered RFC pages.
+published at <https://postgis.net/development/rfcs/rfc01/>. Maintain future PSC
+process edits here, then publish the current text through the website
+governance pages while keeping the old numbered RFC page as historical
+provenance.
 
 ## Core Contributor Governance
 
