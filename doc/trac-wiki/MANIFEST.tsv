@@ -80,8 +80,6 @@ user	UsersWikiQGIS	https://trac.osgeo.org/postgis/wiki/UsersWikiQGIS	doc/trac-wi
 user	UsersWikiRasterNotes	https://trac.osgeo.org/postgis/wiki/UsersWikiRasterNotes	doc/trac-wiki/user/UsersWikiRasterNotes.tracwiki	6864	67
 user	UsersWikiSpatialAlgorithmWebSites	https://trac.osgeo.org/postgis/wiki/UsersWikiSpatialAlgorithmWebSites	doc/trac-wiki/user/UsersWikiSpatialAlgorithmWebSites.tracwiki	379	6
 user	UsersWikiSpatialEJB3	https://trac.osgeo.org/postgis/wiki/UsersWikiSpatialEJB3	doc/trac-wiki/user/UsersWikiSpatialEJB3.tracwiki	604	7
-user	UsersWikiSplitPolygonWithLineString	https://trac.osgeo.org/postgis/wiki/UsersWikiSplitPolygonWithLineString	doc/trac-wiki/user/UsersWikiSplitPolygonWithLineString.tracwiki	5275	175
-user	UsersWikiSplitPolygonWithPoints	https://trac.osgeo.org/postgis/wiki/UsersWikiSplitPolygonWithPoints	doc/trac-wiki/user/UsersWikiSplitPolygonWithPoints.tracwiki	2609	76
 user	UsersWikiSprint2009Notes	https://trac.osgeo.org/postgis/wiki/UsersWikiSprint2009Notes	doc/trac-wiki/user/UsersWikiSprint2009Notes.tracwiki	3237	112
 user	UsersWikiTIGERGeocoderToDo	https://trac.osgeo.org/postgis/wiki/UsersWikiTIGERGeocoderToDo	doc/trac-wiki/user/UsersWikiTIGERGeocoderToDo.tracwiki	1304	23
 user	UsersWikiToolsSupportPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiToolsSupportPostgis	doc/trac-wiki/user/UsersWikiToolsSupportPostgis.tracwiki	3022	54
