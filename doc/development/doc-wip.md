@@ -223,6 +223,17 @@ retiring that draft-comment page:
   active work moves to tickets or maintained docs, unresolved technical ideas
   are extracted before retirement, and the original discussion record stays in a
   Trac or website archive.
+* Follow up on live-looking items extracted from the June 16, 2026 development
+  meeting before removing draft status: whether `postgis_extensions_upgrade()`
+  should warn rather than fail when split component extensions such as
+  `address_standardizer` and `postgis_tiger_geocoder` are not installed; how
+  security-release advance warning and packager contact lists should be folded
+  into release docs; whether GEOS should expose a git hash for
+  `postgis_full_version()`; whether AI skills files belong in this repository
+  long term; and whether SFCGAL 2.3.0 Debian regressions from ticket #6081 were
+  fixed before the next alpha. The meeting notes also mixed PostGIS 3.7
+  and 3.17 release labels, so release planning should confirm the intended
+  numbering from `Version.config`, `NEWS`, and Trac milestones.
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
   on Trac or in history, but extract any not-yet-implemented ideas into a
   maintained list.

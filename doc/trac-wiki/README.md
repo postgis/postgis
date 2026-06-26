@@ -20,9 +20,8 @@ intentionally absent from this corpus and recorded in the migration map.
 
 Current imported category:
 
-* `project-history/` - RFCs, release planning, meeting notes, code sprints,
-  extension-path notes, release-announcement history, and the old wiki landing
-  page.
+* `project-history/` - RFCs, extension-path notes, release-announcement
+  history, and the old wiki landing page.
 
 Trac engine documentation and generic wiki help pages, such as `TracInstall`,
 `TracWorkflow`, `InterWiki`, and `WikiFormatting`, are not copied here because

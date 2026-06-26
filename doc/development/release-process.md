@@ -89,8 +89,8 @@ documentation -- that means having the required software:
 
   - Ensure all bots are green: https://trac.osgeo.org/postgis
   - Check no blockers on https://trac.osgeo.org/postgis/roadmap on version you're releasing.
-  - Check the current development meeting notes for release-line actions that
-    have not yet been folded into this checklist.
+  - Check `doc/development/doc-wip.md` and current Trac milestones for
+    release-line actions that have not yet been folded into this checklist.
 
 3. Reconcile done & planned.
 
