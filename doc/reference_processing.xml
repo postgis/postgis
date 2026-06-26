@@ -559,6 +559,25 @@ FROM (SELECT
     ST_Buffer('POINT(100 90)', 25) As inring,
     ST_Buffer('POINT(100 90)', 50) As outring) As t;
 </programlisting>
+<para>Input linework that crosses at non-endpoint intersections must be noded before building areas:</para>
+<programlisting>WITH lines(geom) AS (VALUES
+  ('LINESTRING(36 35,45 307)'::geometry),
+  ('LINESTRING(30 290,390 280)'::geometry),
+  ('LINESTRING(320 60,300 310)'::geometry),
+  ('LINESTRING(20 60,320 60)'::geometry),
+  ('LINESTRING(120 140,168 225)'::geometry),
+  ('LINESTRING(140 220,220 150,120 170)'::geometry)
+),
+noded AS (
+  SELECT ST_Node(ST_UnaryUnion(ST_Collect(geom))) AS geom FROM lines
+)
+SELECT ST_AsText(ST_BuildArea(geom), 1) AS area
+FROM noded;
+
+                                                area
+-----------------------------------------------------------------------------------------------------
+ POLYGON((320 60,36.8 60,44.4 289.6,302.2 282.4,320 60),(156.9 205.3,135.2 167,220 150,156.9 205.3))
+</programlisting>
 
           </refsection>
 
