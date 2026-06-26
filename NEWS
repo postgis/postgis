@@ -85,6 +85,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           GeometryCollections (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml
           (Darafei Praliaskouski)
+ - #1467, postgis_restore can optionally convert 2D constraint-based
+          geometry columns to typmod columns during restore
+          (Darafei Praliaskouski)
 
 * Bug Fixes *
 
