@@ -2,10 +2,10 @@
 
 This is a draft-only migration workspace for ticket #5638. Do not treat it as
 the final developer-documentation structure or publish it as a maintained
-chapter. Once the remaining imported wiki pages are either folded into the
-topic pages under `doc/development/`, left as historical Trac context, or
-retired in the cleanup ledger, remove this map and keep only the maintained
-topic pages plus any necessary archive pointer.
+chapter. All imported wiki pages have now been folded into maintained topic
+pages, left as historical Trac context, or retired in the cleanup ledger. Once
+this map has served review, remove it and keep only the maintained topic pages
+plus any necessary archive pointer.
 
 The PostGIS Trac wiki remains useful for tickets and live project discussion,
 but maintained developer documentation should live in this repository. This
@@ -38,7 +38,7 @@ Trac or retired from the repository import are tracked in the
 
 | Trac wiki page | Repository home |
 |----------------|-----------------|
-| `WikiStart` | `README.md`, `CONTRIBUTING.md`, this directory, and `doc/trac-wiki/project-history/WikiStart.tracwiki` |
+| `WikiStart` | `README.md`, `CONTRIBUTING.md`, this directory, and the cleanup ledger |
 | `DevWikiGettingABackTrace` | `doc/development/testing.md`, `doc/development/tools.md` |
 | `DevWikiPGRegress` | `doc/development/testing.md` |
 | `DevWikiCUnit` | `doc/development/testing.md` |
@@ -75,7 +75,7 @@ Imported corpus:
 | Development | 0 | none |
 | User wiki | 0 | none |
 | Raster | 0 | none |
-| Project history | 1 | `doc/trac-wiki/project-history/` |
+| Project history | 0 | none |
 
 TitleIndex groups intentionally not imported into the corpus:
 
