@@ -61,7 +61,9 @@ The project's website is [https://postgis.net]
    * Historical Google Summer of Code project-idea pages are recorded in the
      cleanup ledger; current mentorship planning should use live Trac tickets,
      mailing-list discussion, or the owning component repository.
-   * [DevWikiEvent Code Sprint and Dev Meetings]
+   * Historical code sprint and development meeting pages are recorded in the
+     cleanup ledger; live release planning belongs in Trac milestones,
+     `NEWS`, release docs, and `doc/development/doc-wip.md`.
    * [wiki:PostGIS3]
 
  * [wiki:FAQ FAQ]
