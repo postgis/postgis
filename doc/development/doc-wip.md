@@ -52,9 +52,8 @@ Batch the remaining sweep so each commit stays reviewable:
   current raster internals notes. Retire beta specs and old SoC implementation
   dumps unless they expose a still-open design question.
 * Remaining user cookbook pages: audit polygon construction, cardinal
-  direction, coverages, geography/linear-reference function notes, and TIGER
-  geocoder backlog material against the maintained manual and component
-  repositories.
+  direction, coverages, and TIGER geocoder backlog material against the
+  maintained manual and component repositories.
 * Remaining user landing and backlog pages: audit `UsersWikiMain`,
   `UsersWikiFeaturesOfPostgis`, and `UsersWikiWishList` for content that
   belongs in the manual, website, or replacement tickets before retiring them.
