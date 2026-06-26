@@ -43,7 +43,6 @@ project-history	RFC/RFC-1	https://trac.osgeo.org/postgis/wiki/RFC/RFC-1	doc/trac
 user	SpatiaLite	https://trac.osgeo.org/postgis/wiki/SpatiaLite	doc/trac-wiki/user/SpatiaLite.tracwiki	4311	79
 topology	TopoElement	https://trac.osgeo.org/postgis/wiki/TopoElement	doc/trac-wiki/topology/TopoElement.tracwiki	67	0
 topology	TopoElementArray	https://trac.osgeo.org/postgis/wiki/TopoElementArray	doc/trac-wiki/topology/TopoElementArray.tracwiki	61	0
-topology	TopoGeometry	https://trac.osgeo.org/postgis/wiki/TopoGeometry	doc/trac-wiki/topology/TopoGeometry.tracwiki	45	0
 topology	TopologyCopy	https://trac.osgeo.org/postgis/wiki/TopologyCopy	doc/trac-wiki/topology/TopologyCopy.tracwiki	3334	30
 topology	TopologyTableLayer	https://trac.osgeo.org/postgis/wiki/TopologyTableLayer	doc/trac-wiki/topology/TopologyTableLayer.tracwiki	342	2
 topology	TopologyTableRelation	https://trac.osgeo.org/postgis/wiki/TopologyTableRelation	doc/trac-wiki/topology/TopologyTableRelation.tracwiki	430	2
@@ -53,7 +52,6 @@ user	UsersWikiBuildPolygonsWithLines	https://trac.osgeo.org/postgis/wiki/UsersWi
 user	UsersWikiCardinalDirection	https://trac.osgeo.org/postgis/wiki/UsersWikiCardinalDirection	doc/trac-wiki/user/UsersWikiCardinalDirection.tracwiki	1864	62
 user	UsersWikiComputeMultiCentroid	https://trac.osgeo.org/postgis/wiki/UsersWikiComputeMultiCentroid	doc/trac-wiki/user/UsersWikiComputeMultiCentroid.tracwiki	837	30
 user	UsersWikiCoveragesAndPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiCoveragesAndPostgis	doc/trac-wiki/user/UsersWikiCoveragesAndPostgis.tracwiki	16366	94
-user	UsersWikiCreatingTopoGeometryObjects	https://trac.osgeo.org/postgis/wiki/UsersWikiCreatingTopoGeometryObjects	doc/trac-wiki/user/UsersWikiCreatingTopoGeometryObjects.tracwiki	1757	42
 user	UsersWikiDistanceInteriorPoint	https://trac.osgeo.org/postgis/wiki/UsersWikiDistanceInteriorPoint	doc/trac-wiki/user/UsersWikiDistanceInteriorPoint.tracwiki	359	8
 user	UsersWikiFeaturesOfPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiFeaturesOfPostgis	doc/trac-wiki/user/UsersWikiFeaturesOfPostgis.tracwiki	3613	48
 user	UsersWikiGallery	https://trac.osgeo.org/postgis/wiki/UsersWikiGallery	doc/trac-wiki/user/UsersWikiGallery.tracwiki	1065	11
@@ -72,7 +70,6 @@ user	UsersWikiPgRasterSqlInterface	https://trac.osgeo.org/postgis/wiki/UsersWiki
 user	UsersWikiPgRasterStorageModels	https://trac.osgeo.org/postgis/wiki/UsersWikiPgRasterStorageModels	doc/trac-wiki/user/UsersWikiPgRasterStorageModels.tracwiki	895	12
 user	UsersWikiPostGISConsulting	https://trac.osgeo.org/postgis/wiki/UsersWikiPostGISConsulting	doc/trac-wiki/user/UsersWikiPostGISConsulting.tracwiki	3285	42
 user	UsersWikiPostGISHosters	https://trac.osgeo.org/postgis/wiki/UsersWikiPostGISHosters	doc/trac-wiki/user/UsersWikiPostGISHosters.tracwiki	3949	37
-user	UsersWikiPostgisTopology	https://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology	doc/trac-wiki/user/UsersWikiPostgisTopology.tracwiki	5853	167
 user	UsersWikiPostgisarcgis	https://trac.osgeo.org/postgis/wiki/UsersWikiPostgisarcgis	doc/trac-wiki/user/UsersWikiPostgisarcgis.tracwiki	4851	66
 user	UsersWikiPostgreSQLCaseStudies	https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLCaseStudies	doc/trac-wiki/user/UsersWikiPostgreSQLCaseStudies.tracwiki	383	5
 user	UsersWikiPostgreSQLPostGIS	https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS	doc/trac-wiki/user/UsersWikiPostgreSQLPostGIS.tracwiki	5931	104
@@ -83,10 +80,6 @@ user	UsersWikiSpatialEJB3	https://trac.osgeo.org/postgis/wiki/UsersWikiSpatialEJ
 user	UsersWikiSprint2009Notes	https://trac.osgeo.org/postgis/wiki/UsersWikiSprint2009Notes	doc/trac-wiki/user/UsersWikiSprint2009Notes.tracwiki	3237	112
 user	UsersWikiTIGERGeocoderToDo	https://trac.osgeo.org/postgis/wiki/UsersWikiTIGERGeocoderToDo	doc/trac-wiki/user/UsersWikiTIGERGeocoderToDo.tracwiki	1304	23
 user	UsersWikiToolsSupportPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiToolsSupportPostgis	doc/trac-wiki/user/UsersWikiToolsSupportPostgis.tracwiki	3022	54
-user	UsersWikiTopoGeometry	https://trac.osgeo.org/postgis/wiki/UsersWikiTopoGeometry	doc/trac-wiki/user/UsersWikiTopoGeometry.tracwiki	1042	19
-user	UsersWikiTopologicalPrimitives	https://trac.osgeo.org/postgis/wiki/UsersWikiTopologicalPrimitives	doc/trac-wiki/user/UsersWikiTopologicalPrimitives.tracwiki	162	7
-user	UsersWikiTopologyEditing	https://trac.osgeo.org/postgis/wiki/UsersWikiTopologyEditing	doc/trac-wiki/user/UsersWikiTopologyEditing.tracwiki	1321	46
-user	UsersWikiTopologyExample	https://trac.osgeo.org/postgis/wiki/UsersWikiTopologyExample	doc/trac-wiki/user/UsersWikiTopologyExample.tracwiki	5982	169
 user	UsersWikiTutorials	https://trac.osgeo.org/postgis/wiki/UsersWikiTutorials	doc/trac-wiki/user/UsersWikiTutorials.tracwiki	4238	55
 user	UsersWikiWishList	https://trac.osgeo.org/postgis/wiki/UsersWikiWishList	doc/trac-wiki/user/UsersWikiWishList.tracwiki	7741	86
 user	UsersWikiplpgsqlfunctions	https://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions	doc/trac-wiki/user/UsersWikiplpgsqlfunctions.tracwiki	10740	282

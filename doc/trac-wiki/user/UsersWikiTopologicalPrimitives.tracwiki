@@ -1,8 +1,0 @@
-= Topological Primitives =
-
-Topological primitives are the smallest elements of a [wiki:UsersWikiPostgisTopology topology].
-
-These are:
- * Nodes
- * Edges
- * Faces
