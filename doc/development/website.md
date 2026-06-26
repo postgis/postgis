@@ -48,6 +48,13 @@ Website source content that overlaps with repository-maintained developer docs:
 
 The website declares its content license as CC BY-SA 4.0 in `config.toml`.
 
+The public support-policy page, `content/development/versions_eol.md`, is the
+website home for PostGIS, PostgreSQL, and dependency support status. If the
+project publishes a detailed compatibility matrix again, generate it or express
+it as version ranges from release and dependency metadata. Do not restore a
+hand-maintained Trac-style table in the manual or repository developer docs;
+keep repository guidance in [Dependency support](release/dependencies.md).
+
 ## Release Updates
 
 When publishing a PostGIS release, update the website after the source and

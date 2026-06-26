@@ -50,7 +50,7 @@ The project generally supports each PostGIS minor release for two to four years
 after initial release and at least until the lowest PostgreSQL version
 supported by that PostGIS minor release reaches end of life. Check the
 PostgreSQL EOL policy and the
-[PostGIS compatibility/support matrix](https://postgis.net/development/versions_eol/)
+[PostGIS Versioning & EOL page](https://postgis.net/development/versions_eol/)
 before changing branch or announcement wording.
 
 ## Requirements
@@ -127,7 +127,7 @@ documentation -- that means having the required software:
     coordination constraints allow it.
   - Avoid publishing on Friday. Monday morning in Europe is preferred for
     packager availability.
-  - Verify the support matrix is current before release announcements.
+  - Verify the website support policy is current before release announcements.
 
   - Tag branch:
      $ rev=x.x.x # replace x.x.x with micro version (e.g 2.3.1)

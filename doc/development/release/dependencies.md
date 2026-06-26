@@ -91,25 +91,25 @@ When dropping support for an older PostgreSQL major version:
 
 ## Support Matrix Maintenance
 
-The live support matrix belongs on the website at
+The public support-policy surface belongs on the website at
 <https://postgis.net/development/versions_eol/>. Keep repository docs focused
 on the rules for changing support, not on hand-maintained copies of old
 PostgreSQL, GEOS, PROJ, or GDAL version tables.
 
 When updating release or dependency support:
 
-1. Check the website matrix before changing branch, release, or announcement
-   wording.
+1. Check the website support policy before changing branch, release, or
+   announcement wording.
 2. Treat all rows marked EOL as historical context only. EOL PostGIS versions
    do not receive micro updates or security fixes.
 3. Distinguish "supported", "builds but not recommended", and "assumed to work
    but not tested" when writing release notes or compatibility text.
-4. Prefer a generated or range-based matrix over a manually edited table if the
-   compatibility data needs to move into this repository.
+4. Prefer a generated or range-based matrix over a manually edited table if
+   compatibility data needs to be published again.
 5. Remember the historical project rule of thumb: support at least two
    PostgreSQL major versions for each PostGIS release line, usually more when
    dependency requirements allow it, but rarely more than five.
 
 Old Trac compatibility tables are useful for archaeology, but do not copy them
 into current guidance without checking the release branch, dependency guards,
-CI matrix, and website support table.
+CI matrix, and website support policy.
