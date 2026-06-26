@@ -57,6 +57,7 @@ Website source content that overlaps with repository-maintained developer docs:
 | `content/development/developer_docs.md` | [Documentation workflow](manual.md) and this `doc/development/` index |
 | `content/development/versions_eol.md` | [Release process](release-process.md) and [Release and upgrade rules](release.md) |
 | `content/development/rfcs/*.md` | [Governance notes](governance.md) and historical RFC pages |
+| New governance pages outside `rfcs/` | [Governance notes](governance.md) and [PostGIS project inventory](governance/project-inventory.md) |
 | `content/community/mailinglists.md` and `content/community/chat.md` | [Contributing workflow](contributing.md) |
 | `content/community/conduct.md` | [Governance notes](governance.md) |
 | `content/documentation/manual.md` | [Documentation workflow](manual.md) |
@@ -70,6 +71,14 @@ project publishes a detailed compatibility matrix again, generate it or express
 it as version ranges from release and dependency metadata. Do not restore a
 hand-maintained Trac-style table in the manual or repository developer docs;
 keep repository guidance in [Dependency support](release/dependencies.md).
+
+The maintained governance text in this repository should publish to ordinary
+website governance pages instead of replacing the old numbered RFC files in
+place. Keep `content/development/rfcs/*.md` as historical RFC archives, and use
+the repository [Governance notes](governance.md) plus
+[PostGIS project inventory](governance/project-inventory.md) as the source for
+the current PSC process, core-contributor rules, umbrella projects, and project
+service inventory.
 
 ## Release Updates
 
