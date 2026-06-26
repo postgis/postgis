@@ -2538,6 +2538,43 @@ SELECT ST_AsText(ST_Polygonize(geom ))
 <screen>GEOMETRYCOLLECTION(POLYGON((180 40,30 20,20 90,70 70,80 130,160 160,180 40),(150 80,120 130,80 60,150 80)),POLYGON((80 60,120 130,150 80,80 60)),POLYGON((80 130,70 70,20 90,20 160,70 190,80 130)),POLYGON((160 160,80 130,70 190,160 160)))</screen>
 
 
+        <para>Polygonizing two polygon coverages and transferring attributes to the resultants:</para>
+<programlisting>WITH poly_a(id, geom) AS (VALUES
+  ('a1', 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry),
+  ('a2', 'POLYGON ((4 0, 8 0, 8 4, 4 4, 4 0))'::geometry)
+),
+poly_b(id, geom) AS (VALUES
+  ('b1', 'POLYGON ((0 0, 8 0, 8 2, 0 2, 0 0))'::geometry),
+  ('b2', 'POLYGON ((0 2, 8 2, 8 4, 0 4, 0 2))'::geometry)
+),
+lines AS (
+  SELECT ST_Boundary(geom) AS geom FROM poly_a
+  UNION ALL
+  SELECT ST_Boundary(geom) FROM poly_b
+),
+noded AS (
+  SELECT ST_UnaryUnion(ST_Collect(geom)) AS geom FROM lines
+),
+cells AS (
+  SELECT (ST_Dump(ST_Polygonize(geom))).geom AS geom FROM noded
+)
+SELECT a.id AS id_a,
+       b.id AS id_b,
+       ST_AsText(c.geom) AS geom
+FROM cells AS c
+LEFT JOIN poly_a AS a ON ST_Within(ST_PointOnSurface(c.geom), a.geom)
+LEFT JOIN poly_b AS b ON ST_Within(ST_PointOnSurface(c.geom), b.geom)
+WHERE a.id IS NOT NULL OR b.id IS NOT NULL
+ORDER BY id_a, id_b;
+
+ id_a | id_b |              geom
+------+------+--------------------------------
+ a1   | b1   | POLYGON((4 0,0 0,0 2,4 2,4 0))
+ a1   | b2   | POLYGON((4 4,4 2,0 2,0 4,4 4))
+ a2   | b1   | POLYGON((4 0,4 2,8 2,8 0,4 0))
+ a2   | b2   | POLYGON((4 2,4 4,8 4,8 2,4 2))
+</programlisting>
+
         <para>Polygonizing a table of linestrings:</para>
          <programlisting>
 SELECT ST_AsEWKT(ST_Polygonize(geom_4269)) As geomtextrep
@@ -2566,8 +2603,13 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
             <title>See Also</title>
             <para>
             <xref linkend="ST_BuildArea"/>,
+            <xref linkend="ST_Boundary"/>,
+            <xref linkend="ST_Collect"/>,
             <xref linkend="ST_Dump"/>,
-            <xref linkend="ST_Node"/>
+            <xref linkend="ST_Node"/>,
+            <xref linkend="ST_PointOnSurface"/>,
+            <xref linkend="ST_UnaryUnion"/>,
+            <xref linkend="ST_Within"/>
             </para>
         </refsection>
     </refentry>
