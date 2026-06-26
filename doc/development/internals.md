@@ -28,3 +28,5 @@ PostGIS rather than only using the SQL API.
 * [Precision and tolerance internals](internals/precision-tolerance.md) maps the current
   GEOS grid-size, snap-tolerance, topology-precision, and MVT quantization
   surfaces.
+* [Topology internals](internals/topology.md) covers internal topology
+  implementation helpers such as edge end stars.
