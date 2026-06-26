@@ -192,9 +192,7 @@ retiring that draft-comment page:
   into release docs; whether GEOS should expose a git hash for
   `postgis_full_version()`; whether AI skills files belong in this repository
   long term; and whether SFCGAL 2.3.0 Debian regressions from ticket #6081 were
-  fixed before the next alpha. The meeting notes also mixed PostGIS 3.7
-  and 3.17 release labels, so release planning should confirm the intended
-  numbering from `Version.config`, `NEWS`, and Trac milestones.
+  were fixed before the next alpha.
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
   on Trac or in history, but extract any not-yet-implemented ideas into a
   maintained list.
