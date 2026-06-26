@@ -23,7 +23,7 @@ GEOS is a C++ port of the [http://en.wikipedia.org/wiki/JTS_Topology_Suite JTS T
  * [http://www.ustream.tv/recorded/10667125 Foss4G JP 2010 State of PostGIS video] by Paul Ramsey
  * [http://2010.foss4g.org/presentations/3556.pdf PostGIS meets the 3rd Dimension] by Olivier Courtin
  * [http://blip.tv/file/2788616/ Foss4G 2009 State of PostGIS video] by Paul Ramsey
- * [http://wiki.postgresql.org/images/5/5e/Postgis_beyond_courtin_caveayland_pgdayEU2010.pdf PostGIS 1.5 and Beyond] PGDay EU 2010 talk by Mark Cave-Ayland and Olivier Coutin outlines the techical details of upcoming PostGIS 2.0 -- the new disc format, new geometry types etc.
+ * [http://wiki.postgresql.org/images/5/5e/Postgis_beyond_courtin_caveayland_pgdayEU2010.pdf PostGIS 1.5 and Beyond] PGDay EU 2010 talk by Mark Cave-Ayland and Olivier Coutin outlines the technical details of upcoming PostGIS 2.0 -- the new disc format, new geometry types etc.
  * [http://wiki.postgresql.org/images/5/5e/Postgis_beyond_courtin_caveayland_pgdayEU2010.pdf PostGIS 1.5 and Beyond] PGDay EU 2010 talk (more of a user perspective) by Vincent Picavet and Olivier Courtin
 
 
@@ -164,7 +164,6 @@ are porting from another/going to another and not sure the gotchas
 
  * [wiki:UsersWikiSpatialEJB3 PostGIS EJB3 Integration]
  * [wiki:UsersWikiPostgisTopology Postgis Topology] - to be moved somewhere else ;)
- * [wiki:UsersWikiRasterNotes Raster support]
   * [wiki:WKTRaster WKT Raster] - The new raster implementation in PostGIS
   * [http://simon.benjamin.free.fr/pgchip/ PGCHIP] - The GDAL Postgis driver for raster data - a corrected version can be found in current GDAL CVS
  * [wiki:pgRouting] routing with PostGIS

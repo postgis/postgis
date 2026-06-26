@@ -50,7 +50,7 @@ On Thursday, at 4 PM, Jorge Sanz and Ignacio Brodin will show how to <A href=htt
 
 <I>December 10, 2009</I><BR><B>Tyler Erickson speaks about his need for PostGIS WKT Raster at FOSS4G 2009</B><BR><A href=http://wiki.mtri.org/display/mtripub/tyler+erickson>Tyler Erickson</A>, Research Scientist at the Michigan Tech Research Institute <A href=http://download.osgeo.org/osgeo/foss4g/2009/SPREP/2Thu/Parkside%20GO4/1030/Thu%20G04%201130%20Erickson/Erickson_foss4g.ppt>presented his research project</A> at <A href=http://2009.foss4g.org/researchpapers/#researchpaper_5>FOSS4G 2009</A> in Sydney, Australia. Tyler uses <A href=http://geodjango.org/>GeoDjango</A> and PostGIS to visualise the results of CO2 simulation models directly in Google Earth. WKT Raster would enable him to easily do raster/vecter spatial analysis from his web application. Tyler's project was selected as one of the professional winners in Google’s 2009 KML in Research Competition.<BR><BR>
 
-<I>December 4, 2009</I><BR><B>Jorge Arevalo full time on WKT Raster!</B><BR>Jorge Arevalo who developped the first version of the GDAL WKT Raster driver during the summer of 2009 will be working for at least one year on WKT Raster. Jorge is working for <A href=http://www.deimos-space.com/UK/index.asp?lang=UK>DEIMOS Space</A>, a Spanish aerospace company leading the <A href=http://www.espanavirtual.org/?q=en>Espana virtual</A> project. Jorge's superior, Miguel Lizondo, confirmed that Jorge would be devoting most of his time to WKT Raster in the coming year. This commitment should normally be extended for a second year afterward.<BR><BR>Jorge will follow the planned roadmap and will be the main developper for the coming year. <A href=http://mateusz.loskot.net/>Mateuzs Loskot</A> will continue contribute his spare time to the project and <A href=http://www.cef-cfr.ca/index.php?n=Membres.PierreRacine>Pierre Racine</A> will help Jorge with the specifications and the general management of the project.<BR><BR>Welcome (back) Jorge!<BR><BR>
+<I>December 4, 2009</I><BR><B>Jorge Arevalo full time on WKT Raster!</B><BR>Jorge Arevalo who developed the first version of the GDAL WKT Raster driver during the summer of 2009 will be working for at least one year on WKT Raster. Jorge is working for <A href=http://www.deimos-space.com/UK/index.asp?lang=UK>DEIMOS Space</A>, a Spanish aerospace company leading the <A href=http://www.espanavirtual.org/?q=en>Espana virtual</A> project. Jorge's superior, Miguel Lizondo, confirmed that Jorge would be devoting most of his time to WKT Raster in the coming year. This commitment should normally be extended for a second year afterward.<BR><BR>Jorge will follow the planned roadmap and will be the main developer for the coming year. <A href=http://mateusz.loskot.net/>Mateuzs Loskot</A> will continue contribute his spare time to the project and <A href=http://www.cef-cfr.ca/index.php?n=Membres.PierreRacine>Pierre Racine</A> will help Jorge with the specifications and the general management of the project.<BR><BR>Welcome (back) Jorge!<BR><BR>
 
 
 <I>October 16, 2009</I><BR><B><A href=http://www.geomatique2009.com/fr/conferences/programme>PostGIS WKT Raster at Geomatique 2009 in Montréal</A>!</B><BR>Pierre Racine will present WKT Raster at Geomatique 2009 in Montréal on October 20. We hope we can get more people interested by the project! <A href=http://trac.osgeo.org/postgis/attachment/wiki/WKTRaster/WKTRasterIntro-Geomatique2009.pdf>See the presentation (PDF)!</A><BR><BR>
@@ -108,7 +108,7 @@ This year again every projects submitted by OSGeo to the Google Summer of Code w
 
  * '''Others'''[[BR]][[BR]]
    * [http://planet.postgis.net/ Planet PostGIS] is an excellent source of information about PostGIS Raster and PostGIS in general.
-   * [wiki:WKTRaster/SeamlessArchitecture Seamless Spatial Operations Architecture] provides a foundation to guide expectations of both implementors and users.
+   * [wiki:WKTRaster/SeamlessArchitecture Seamless Spatial Operations Architecture] provides a foundation to guide expectations of both implementers and users.
 
 == Development Info ==
 
@@ -150,8 +150,6 @@ FROM rastertable
 For more details and examples of application using PostGIS Raster:
 
    * Search for "raster" or "WKT Raster" in the [http://lists.osgeo.org/pipermail/postgis-users/ PostGIS mailing list archive] or in [http://www.nabble.com/forum/Search.jtp?forum=1221&local=y&query=%22wkt+raster%22 Nabble]
-
-   * PostGIS Raster has been designed following a thorough analysis of the numerous discussions about raster integration in PostGIS over the recent years. You can find most of the post to the PostGIS-users group related to raster integration [http://trac.osgeo.org/postgis/wiki/UsersWikiRasterNotes in this page].
 
    * Write to [http://www.cef-cfr.ca/index.php?n=Membres.PierreRacine Pierre Racine]
 
