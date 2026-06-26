@@ -150,8 +150,8 @@ from somegeogtable;</programlisting>
 			<para>The azimuth is a mathematical concept defined as the angle between a reference vector and a point, with angular units in radians.
 			The result value in radians can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.</para>
 
-			<para>Azimuth can be used in conjunction with <xref linkend="ST_Translate"/> to shift an object along its perpendicular axis. See
-				 the <varname>upgis_lineshift()</varname> function in the <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">PostGIS wiki</link> for an implementation of this.</para>
+				<para>For offsetting lines relative to their direction, use <xref linkend="ST_OffsetCurve"/>.
+					For projecting a point by distance and bearing, use <xref linkend="ST_Project"/>.</para>
 
 			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for geography was introduced.</para>
