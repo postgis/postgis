@@ -1,3 +1,10 @@
+---
+title: "PostGIS Website Maintenance"
+date: 2026-06-26
+weight: 110
+geekdocHidden: false
+---
+
 # PostGIS Website Maintenance
 
 The public website source lives in the OSGeo Gitea repository:
@@ -28,6 +35,15 @@ published release list from `config.toml`, downloads each non-development source
 tarball from `https://download.osgeo.org/postgis/source`, downloads the matching
 `.md5` file from `https://postgis.net/stuff`, and verifies the checksum. It
 uses `tomlq`, `curl`, and `md5sum`.
+
+## Developer Docs Front Matter
+
+Website content pages use YAML front matter. Developer documentation pages that
+may be copied into `postgis.net` content should include at least `title`,
+`date`, `weight`, and `geekdocHidden`. Section landing pages may also set
+`layout: toplevel`. Draft-only migration aids should set `draft: true`,
+`geekdocHidden: true`, and `geekdocHiddenTocTree: false` so normal Hugo builds
+do not publish them accidentally.
 
 ## Content Areas
 

@@ -1,3 +1,10 @@
+---
+title: "2D and 3D Distance Internals"
+date: 2026-06-26
+weight: 90
+geekdocHidden: false
+---
+
 # 2D and 3D Distance Internals
 
 This page is the maintained version of the useful design notes from the Trac

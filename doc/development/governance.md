@@ -1,3 +1,10 @@
+---
+title: "Governance Notes"
+date: 2026-06-26
+weight: 120
+geekdocHidden: false
+---
+
 # Governance Notes
 
 This page records governance documentation that is maintained or being

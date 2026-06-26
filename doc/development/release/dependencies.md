@@ -1,3 +1,10 @@
+---
+title: "Dependency and Support Guards"
+date: 2026-06-26
+weight: 50
+geekdocHidden: false
+---
+
 # Dependency and Support Guards
 
 This page explains how to guard functionality that depends on newer libraries

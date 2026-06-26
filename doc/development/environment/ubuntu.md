@@ -1,3 +1,10 @@
+---
+title: "Ubuntu Development Environment"
+date: 2026-06-26
+weight: 10
+geekdocHidden: false
+---
+
 # Ubuntu Development Environment
 
 This document aims to get an Ubuntu development environment ready quickly so you

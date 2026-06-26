@@ -1,3 +1,12 @@
+---
+title: "Documentation WIP"
+date: 2026-06-26
+weight: 900
+draft: true
+geekdocHidden: true
+geekdocHiddenTocTree: false
+---
+
 # Documentation WIP
 
 This draft PR is still a migration workspace. The notes below track review

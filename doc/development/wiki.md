@@ -1,3 +1,12 @@
+---
+title: "Trac Wiki Migration Map"
+date: 2026-06-26
+weight: 910
+draft: true
+geekdocHidden: true
+geekdocHiddenTocTree: false
+---
+
 # Trac Wiki Migration Map
 
 This is a draft-only migration workspace for ticket #5638. Do not treat it as

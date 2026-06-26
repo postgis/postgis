@@ -1,3 +1,10 @@
+---
+title: "SQL Upgrade and Deprecation"
+date: 2026-06-26
+weight: 40
+geekdocHidden: false
+---
+
 # SQL Upgrade and Deprecation
 
 This page covers SQL API changes, upgrade metadata comments, upgrade hooks, and

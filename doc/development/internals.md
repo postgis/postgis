@@ -1,3 +1,10 @@
+---
+title: "PostGIS Internals"
+date: 2026-06-26
+weight: 70
+geekdocHidden: false
+---
+
 # PostGIS Internals
 
 These notes cover implementation details that are useful when working inside

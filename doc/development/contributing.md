@@ -1,3 +1,10 @@
+---
+title: "Contributing Workflow"
+date: 2026-06-26
+weight: 20
+geekdocHidden: false
+---
+
 # Contributing Workflow
 
 PostGIS development planning happens in the

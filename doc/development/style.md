@@ -1,3 +1,10 @@
+---
+title: "Coding Style Guidelines"
+date: 2026-06-26
+weight: 60
+geekdocHidden: false
+---
+
 # Coding Style Guidelines
 
 This page covers source formatting, comments, Doxygen comments, and naming

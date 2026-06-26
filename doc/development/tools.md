@@ -1,3 +1,10 @@
+---
+title: "Developer Tools"
+date: 2026-06-26
+weight: 50
+geekdocHidden: false
+---
+
 # Developer Tools
 
 These tools support debugging, formatting, profiling, and coverage work. Install

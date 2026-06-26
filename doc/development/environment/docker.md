@@ -1,3 +1,10 @@
+---
+title: "Docker Development Environment"
+date: 2026-06-26
+weight: 30
+geekdocHidden: false
+---
+
 # Docker Development Environment
 
 PostGIS has two container families that are useful for development and testing.

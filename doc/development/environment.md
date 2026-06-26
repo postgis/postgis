@@ -1,3 +1,10 @@
+---
+title: "Development Environments"
+date: 2026-06-26
+weight: 30
+geekdocHidden: false
+---
+
 # Development Environments
 
 These pages describe repeatable environments for building and testing PostGIS.
