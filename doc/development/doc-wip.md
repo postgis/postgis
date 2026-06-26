@@ -87,7 +87,6 @@ Batch the remaining sweep so each commit stays reviewable:
   `internals/raster-gdal-driver.md`. Before publication, decide whether the
   growing internals material should be split into clearer geometry, topology,
   and raster sections or left as one cross-cutting internals chapter.
-
 ## Developer Deep Dives
 * `PRRC_kwDOAEM_Wc7PPrPX`: `SomeSplitting` was checked against the current
   split and subdivision APIs. `ST_Subdivide` covers the practical oversize
