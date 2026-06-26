@@ -39,7 +39,6 @@ topology	PostgisTopology_Data_Model	https://trac.osgeo.org/postgis/wiki/PostgisT
 project-history	RCDownloads	https://trac.osgeo.org/postgis/wiki/RCDownloads	doc/trac-wiki/project-history/RCDownloads.tracwiki	262	3
 project-history	RFC/RFC-1	https://trac.osgeo.org/postgis/wiki/RFC/RFC-1	doc/trac-wiki/project-history/RFC_RFC-1.tracwiki	9135	142
 user	SpatiaLite	https://trac.osgeo.org/postgis/wiki/SpatiaLite	doc/trac-wiki/user/SpatiaLite.tracwiki	4311	79
-topology	TopologyCopy	https://trac.osgeo.org/postgis/wiki/TopologyCopy	doc/trac-wiki/topology/TopologyCopy.tracwiki	3334	30
 user	UserWiki	https://trac.osgeo.org/postgis/wiki/UserWiki	doc/trac-wiki/user/UserWiki.tracwiki	13	0
 user	UsersWiki	https://trac.osgeo.org/postgis/wiki/UsersWiki	doc/trac-wiki/user/UsersWiki.tracwiki	20	0
 user	UsersWikiBuildPolygonsWithLines	https://trac.osgeo.org/postgis/wiki/UsersWikiBuildPolygonsWithLines	doc/trac-wiki/user/UsersWikiBuildPolygonsWithLines.tracwiki	3155	71
