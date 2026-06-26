@@ -6,8 +6,9 @@ developer documentation here should explain the boundary and the PostGIS-side
 contracts rather than republish old GDAL driver working notes as current code
 documentation.
 
-The old Trac `WKTRaster/GDALDriverSpecificationWorking` page is useful mostly
-as provenance for that boundary. Its current lessons are:
+The old Trac `WKTRaster/GDALDriverSpecificationWorking`,
+`WKTRaster/ThirdPartySupport`, and `WKTRasterGSoC` pages are useful mostly as
+provenance for that boundary. Their current lessons are:
 
 * GDAL opens PostGIS raster data through the external `PostGISRaster` driver,
   not through code maintained in this repository.
@@ -72,9 +73,10 @@ behavior belongs upstream in GDAL.
 
 ## Retired Trac Working-Spec Details
 
-Do not carry forward the 2012 working page as maintained instructions for
-current contributors. It references old GDAL 1.9/1.10 status, obsolete beta-era
-arrangement labels, tentative write support, hard-coded `rid` discussion, and
-implementation details of the external driver that are no longer owned here.
-Keep only the boundary checklist above unless a fresh design ticket needs a
-deeper GDAL/PostGIS integration proposal.
+Do not carry forward the 2012 working page, the incomplete third-party support
+outline, or the old GSoC write-support idea as maintained instructions for
+current contributors. They reference old GDAL 1.9/1.10 status, obsolete
+beta-era arrangement labels, tentative write support, hard-coded `rid`
+discussion, and implementation details of the external driver that are no
+longer owned here. Keep only the boundary checklist above unless a fresh design
+ticket needs a deeper GDAL/PostGIS integration proposal.
