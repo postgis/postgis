@@ -87,14 +87,6 @@ should leave draft state.
   `ST_VoronoiPolygons`, `ST_VoronoiLines`, topology import/export tools,
   `CopyTopology`, and normal loader/dumper usage, but these old project ideas
   are not maintained specifications.
-* Decide whether the RFC-7 extension-upgrade path reduction still needs a
-  current ticket or upstream PostgreSQL proposal. The retired draft discussed
-  replacing the growing matrix of extension upgrade scripts with an `ANY` or
-  wildcard-style upgrade path, or with tiny compatibility files, but also
-  recorded cloud-environment blockers around `postgis_extensions_upgrade()`.
-  Current release docs still require maintaining `extensions/upgradeable_versions.mk`
-  and testing generated upgrade scripts; the RFC draft is not itself a
-  maintained release procedure.
 
 ## Major-Version Research Backlog
 
