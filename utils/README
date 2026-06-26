@@ -12,3 +12,39 @@ create_upgrade.pl
 
 profile_intersects.pl
 	compares distance()=0 and intersects() timings.
+
+ci-status.py
+	Query repository-owned CI inventory from utils/ci-status.json and
+	print a compact status report.  It queries GitHub Actions, GitLab,
+	Woodpecker, and Jenkins JSON APIs directly.  The default command checks
+	the configured non-EOL branches:
+
+		python3 utils/ci-status.py
+
+	Use `--branch stable-3.6` to inspect one branch, `--format json` for
+	machine-readable output, `--format html` for static dashboard output,
+	`--verbose` when a passing-check matrix is useful, and `--include-eol` to
+	include configured EOL branches.  The default colored report summarizes
+	passing, failing, running, and unknown checks in a compact branch table,
+	but only expands non-OK details.  Use `--no-color` for plain logs.  HTTP
+	provider checks run concurrently by default through asyncio.
+	GitHub API access works without a token for light local use; frequent cron
+	jobs may set `GITHUB_TOKEN` or `GH_TOKEN` for higher rate limits.  If the
+	GitHub API is unavailable or rate-limited, GitHub workflow checks fall
+	back to the public SVG badge status for a fresher unauthenticated answer.
+	Problem-check detail headings include the provider link, using terminal
+	hyperlinks when available and plain URLs otherwise.
+
+	Generate the static dashboard for publishing with:
+
+		python3 utils/ci-status.py --format html --output-dir /var/www/postgis/ci
+
+	The script writes index.html and status.json atomically, so a publishing
+	job can run periodically without leaving a half-written page behind.  A
+	red CI status is valid page content and does not make HTML generation
+	fail.
+
+	Add new CI by adding a check object to utils/ci-status.json.  Retire old
+	CI by changing the check provider to `disabled`, setting `required` to
+	false, and recording the reason in `message`.  Mark unsupported release
+	branches with `"eol": true` so they stay out of the default report.

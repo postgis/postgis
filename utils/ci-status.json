@@ -1,0 +1,197 @@
+{
+  "stale_after_hours": 168,
+  "branches": [
+    { "name": "master", "label": "master", "eol": false, "version": "3.7" },
+    { "name": "stable-3.6", "label": "3.6", "eol": false, "version": "3.6" },
+    { "name": "stable-3.5", "label": "3.5", "eol": false, "version": "3.5" },
+    { "name": "stable-3.4", "label": "3.4", "eol": false, "version": "3.4" },
+    { "name": "stable-3.3", "label": "3.3", "eol": false, "version": "3.3" },
+    { "name": "stable-3.2", "label": "3.2", "eol": false, "version": "3.2" },
+    { "name": "stable-3.1", "label": "3.1", "eol": true, "version": "3.1" },
+    { "name": "stable-3.0", "label": "3.0", "eol": true, "version": "3.0" }
+  ],
+  "checks": [
+    {
+      "name": "GitHub Actions / Linux",
+      "provider": "github_actions",
+      "required": true,
+      "workflow": "ci.yml",
+      "url": "https://github.com/postgis/postgis/actions/workflows/ci.yml"
+    },
+    {
+      "name": "GitHub Actions / FreeBSD",
+      "provider": "github_actions",
+      "required": true,
+      "workflow": "ci-freebsd.yml",
+      "url": "https://github.com/postgis/postgis/actions/workflows/ci-freebsd.yml",
+      "branches": [
+        "master"
+      ]
+    },
+    {
+      "name": "GitHub Actions / FreeBSD (stable badge retired)",
+      "provider": "disabled",
+      "required": false,
+      "status": "disabled",
+      "url": "https://github.com/postgis/postgis/actions/workflows/ci-freebsd.yml?query=branch%3A${branch}",
+      "message": "The Trac badge inventory lists stable-branch FreeBSD badges, but ci-freebsd.yml is not present on supported stable branches.",
+      "branches": [
+        "stable-3.6",
+        "stable-3.5",
+        "stable-3.4"
+      ]
+    },
+    {
+      "name": "GitHub Actions / macOS",
+      "provider": "github_actions",
+      "required": true,
+      "workflow": "ci-macos.yml",
+      "url": "https://github.com/postgis/postgis/actions/workflows/ci-macos.yml",
+      "branches": [
+        "master"
+      ]
+    },
+    {
+      "name": "GitHub Actions / macOS (stable badge retired)",
+      "provider": "disabled",
+      "required": false,
+      "status": "disabled",
+      "url": "https://github.com/postgis/postgis/actions/workflows/ci-macos.yml?query=branch%3A${branch}",
+      "message": "The Trac badge inventory lists stable-branch macOS badges, but ci-macos.yml is not present on supported stable branches.",
+      "branches": [
+        "stable-3.6",
+        "stable-3.5",
+        "stable-3.4"
+      ]
+    },
+    {
+      "name": "GitHub Actions / MSYS2",
+      "provider": "github_actions",
+      "required": true,
+      "workflow": "msys.yml",
+      "url": "https://github.com/postgis/postgis/actions/workflows/msys.yml",
+      "branches": [
+        "master"
+      ]
+    },
+    {
+      "name": "GitHub Actions / Codespell",
+      "provider": "github_actions",
+      "required": true,
+      "workflow": "codespell.yml",
+      "url": "https://github.com/postgis/postgis/actions/workflows/codespell.yml",
+      "branches": [
+        "master"
+      ]
+    },
+    {
+      "name": "GitHub Actions / CodeQL",
+      "provider": "github_actions",
+      "required": true,
+      "workflow": "codeql.yml",
+      "url": "https://github.com/postgis/postgis/actions/workflows/codeql.yml",
+      "branches": [
+        "master",
+        "stable-3.6",
+        "stable-3.5"
+      ]
+    },
+    {
+      "name": "Woodpecker",
+      "provider": "woodpecker",
+      "required": true,
+      "api_url": "https://woodie.osgeo.org/api/repos/30/pipelines",
+      "web_url": "https://woodie.osgeo.org/repos/30",
+      "branches": [
+        "master"
+      ]
+    },
+    {
+      "name": "Jenkins / Debbie main",
+      "provider": "jenkins",
+      "required": true,
+      "job_url": "https://debbie.postgis.net/view/PostGIS/job/PostGIS_${version_or_trunk}/"
+    },
+    {
+      "name": "Jenkins / Make Dist",
+      "provider": "jenkins",
+      "required": true,
+      "job_url": "https://debbie.postgis.net/view/PostGIS/job/PostGIS_Make_Dist/label=debbie/",
+      "branch_parameter": "reference"
+    },
+    {
+      "name": "Jenkins / Winnie",
+      "provider": "jenkins",
+      "required": true,
+      "job_url": "https://winnie.postgis.net/view/PostGIS/job/PostGIS_${version_or_trunk}/"
+    },
+    {
+      "name": "Jenkins / Bessie",
+      "provider": "jenkins",
+      "required": true,
+      "job_url": "https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie/",
+      "branch_parameter": "reference"
+    },
+    {
+      "name": "Jenkins / Bessie32",
+      "provider": "jenkins",
+      "required": true,
+      "job_url": "https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie32/",
+      "branch_parameter": "reference"
+    },
+    {
+      "name": "Jenkins / Berrie",
+      "provider": "jenkins",
+      "required": true,
+      "job_url": "https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/",
+      "branch_parameter": "reference"
+    },
+    {
+      "name": "Jenkins / Berrie64",
+      "provider": "jenkins",
+      "required": true,
+      "job_url": "https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie64/",
+      "branch_parameter": "reference"
+    },
+    {
+      "name": "Cirrus CI",
+      "provider": "disabled",
+      "required": false,
+      "status": "retired",
+      "message": "Cirrus coverage was replaced by repository GitHub Actions FreeBSD and macOS workflows."
+    },
+    {
+      "name": "GitLab mirror",
+      "provider": "gitlab",
+      "required": true,
+      "api_url": "https://gitlab.com/api/v4",
+      "project": "postgis/postgis",
+      "web_url": "https://gitlab.com/postgis/postgis/-/commits/${branch}",
+      "branches": [
+        "master",
+        "stable-3.6",
+        "stable-3.5",
+        "stable-3.4",
+        "stable-3.3",
+        "stable-3.2"
+      ]
+    },
+    {
+      "name": "INAF GitLab mirror",
+      "provider": "gitlab",
+      "required": true,
+      "api_url": "https://www.ict.inaf.it/gitlab/api/v4",
+      "project": "postgis/postgis",
+      "web_url": "https://www.ict.inaf.it/gitlab/postgis/postgis/-/commits/${branch}",
+      "branches": [
+        "master",
+        "stable-3.6",
+        "stable-3.5",
+        "stable-3.4",
+        "stable-3.3",
+        "stable-3.2"
+      ],
+      "message": "The legacy Trac badges use release labels, but the INAF GitLab API exposes pipelines under stable-X.Y refs."
+    }
+  ]
+}
