@@ -28,7 +28,6 @@ user	UsersWikiBuildPolygonsWithLines	https://trac.osgeo.org/postgis/wiki/UsersWi
 user	UsersWikiCardinalDirection	https://trac.osgeo.org/postgis/wiki/UsersWikiCardinalDirection	doc/trac-wiki/user/UsersWikiCardinalDirection.tracwiki	1864	62
 user	UsersWikiCoveragesAndPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiCoveragesAndPostgis	doc/trac-wiki/user/UsersWikiCoveragesAndPostgis.tracwiki	16366	94
 user	UsersWikiFeaturesOfPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiFeaturesOfPostgis	doc/trac-wiki/user/UsersWikiFeaturesOfPostgis.tracwiki	3613	48
-user	UsersWikiGallery	https://trac.osgeo.org/postgis/wiki/UsersWikiGallery	doc/trac-wiki/user/UsersWikiGallery.tracwiki	1065	11
 user	UsersWikiGeographyFunctions	https://trac.osgeo.org/postgis/wiki/UsersWikiGeographyFunctions	doc/trac-wiki/user/UsersWikiGeographyFunctions.tracwiki	1261	31
 user	UsersWikiLinearRefFunctions	https://trac.osgeo.org/postgis/wiki/UsersWikiLinearRefFunctions	doc/trac-wiki/user/UsersWikiLinearRefFunctions.tracwiki	1959	57
 user	UsersWikiMain	https://trac.osgeo.org/postgis/wiki/UsersWikiMain	doc/trac-wiki/user/UsersWikiMain.tracwiki	12533	176
@@ -38,15 +37,10 @@ user	UsersWikiOGRExamples	https://trac.osgeo.org/postgis/wiki/UsersWikiOGRExampl
 user	UsersWikiPgRasterDesign	https://trac.osgeo.org/postgis/wiki/UsersWikiPgRasterDesign	doc/trac-wiki/user/UsersWikiPgRasterDesign.tracwiki	316	3
 user	UsersWikiPgRasterSqlInterface	https://trac.osgeo.org/postgis/wiki/UsersWikiPgRasterSqlInterface	doc/trac-wiki/user/UsersWikiPgRasterSqlInterface.tracwiki	15087	244
 user	UsersWikiPgRasterStorageModels	https://trac.osgeo.org/postgis/wiki/UsersWikiPgRasterStorageModels	doc/trac-wiki/user/UsersWikiPgRasterStorageModels.tracwiki	895	12
-user	UsersWikiPostGISConsulting	https://trac.osgeo.org/postgis/wiki/UsersWikiPostGISConsulting	doc/trac-wiki/user/UsersWikiPostGISConsulting.tracwiki	3285	42
-user	UsersWikiPostGISHosters	https://trac.osgeo.org/postgis/wiki/UsersWikiPostGISHosters	doc/trac-wiki/user/UsersWikiPostGISHosters.tracwiki	3949	37
 user	UsersWikiPostgisarcgis	https://trac.osgeo.org/postgis/wiki/UsersWikiPostgisarcgis	doc/trac-wiki/user/UsersWikiPostgisarcgis.tracwiki	4851	66
-user	UsersWikiPostgreSQLCaseStudies	https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLCaseStudies	doc/trac-wiki/user/UsersWikiPostgreSQLCaseStudies.tracwiki	383	5
 user	UsersWikiPostgreSQLPostGIS	https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS	doc/trac-wiki/user/UsersWikiPostgreSQLPostGIS.tracwiki	5931	104
 user	UsersWikiQGIS	https://trac.osgeo.org/postgis/wiki/UsersWikiQGIS	doc/trac-wiki/user/UsersWikiQGIS.tracwiki	6832	77
 user	UsersWikiRasterNotes	https://trac.osgeo.org/postgis/wiki/UsersWikiRasterNotes	doc/trac-wiki/user/UsersWikiRasterNotes.tracwiki	6864	67
-user	UsersWikiSpatialAlgorithmWebSites	https://trac.osgeo.org/postgis/wiki/UsersWikiSpatialAlgorithmWebSites	doc/trac-wiki/user/UsersWikiSpatialAlgorithmWebSites.tracwiki	379	6
-user	UsersWikiSpatialEJB3	https://trac.osgeo.org/postgis/wiki/UsersWikiSpatialEJB3	doc/trac-wiki/user/UsersWikiSpatialEJB3.tracwiki	604	7
 user	UsersWikiSprint2009Notes	https://trac.osgeo.org/postgis/wiki/UsersWikiSprint2009Notes	doc/trac-wiki/user/UsersWikiSprint2009Notes.tracwiki	3237	112
 user	UsersWikiTIGERGeocoderToDo	https://trac.osgeo.org/postgis/wiki/UsersWikiTIGERGeocoderToDo	doc/trac-wiki/user/UsersWikiTIGERGeocoderToDo.tracwiki	1304	23
 user	UsersWikiToolsSupportPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiToolsSupportPostgis	doc/trac-wiki/user/UsersWikiToolsSupportPostgis.tracwiki	3022	54
