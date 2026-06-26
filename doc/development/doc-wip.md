@@ -42,11 +42,11 @@ Use these migration decisions as the source pattern:
 
 Batch the remaining sweep so each commit stays reviewable:
 
-* Raster legacy pages: audit the remaining `WKTRaster*` and
+* Raster legacy pages: audit the remaining raster tutorial and
   `PostGIS_Raster_SoC_Idea_2012/*` pages against current raster manual
   coverage, `raster2pgsql`, server-side GDAL configuration, and current
-  raster internals notes. Retire beta specs and old SoC implementation dumps
-  unless they expose a still-open design question.
+  raster internals notes. Retire old implementation dumps unless they expose a
+  still-open design question.
 * Project-history pages: audit remaining release announcements, code sprint,
   development-cycle, RFC, and extension-path pages for unresolved durable
   decisions. Keep point-in-time records archived and move only live policy into
@@ -124,6 +124,15 @@ Batch the remaining sweep so each commit stays reviewable:
   properties, `relation`, `face`, `node`, and `edge_data`. Current manual text
   covers those tables and fields, but polished diagrams may still be useful as
   new maintained assets.
+* Decide whether the old WKT Raster future-spec ideas need fresh Trac tickets
+  or should stay closed as historical proposals: named raster bands/addressing
+  bands by name, SQL-created overview tables, raster coverage topology checks
+  such as gaps/overlaps/same-tile-size predicates, richer raster interpolation
+  from geometry layers, and internal sub-tiling for very large rasters. Current
+  code covers many adjacent pieces, including WKB/HexWKB, `ST_Tile`,
+  `ST_MakeEmptyCoverage`, map algebra, raster statistics aggregates,
+  `ST_IsEmpty`, `ST_HasNoBand`, and `ST_BandIsNoData`, but those old proposals
+  are not a maintained contract as written.
 
 The following ideas were extracted from `GoogleSeasonDocs2019` before leaving
 that historical planning page on Trac:
