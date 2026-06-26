@@ -197,7 +197,7 @@ retiring that draft-comment page:
   active work moves to tickets or maintained docs, unresolved technical ideas
   are extracted before retirement, and the original discussion record stays in a
   Trac or website archive.
-* Follow up on live-looking items extracted from the June 16, 2026 development
+* Follow up on live-looking items extracted from the June 16, 2026, development
   meeting before removing draft status: whether `postgis_extensions_upgrade()`
   should warn rather than fail when split component extensions such as
   `address_standardizer` and `postgis_tiger_geocoder` are not installed; how
