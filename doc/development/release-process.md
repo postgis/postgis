@@ -132,6 +132,10 @@ documentation -- that means having the required software:
   - Check that bots are still green on https://trac.osgeo.org/postgis
   - For security releases, warn packagers before publishing when embargo or
     coordination constraints allow it.
+  - Coordinate private packager advance notices through the security team
+    process in `SECURITY.md`. Keep any embargoed contact roster outside the
+    public repository and update it through the private security-maintainer
+    channel rather than this release checklist.
   - Avoid publishing on Friday. Monday morning in Europe is preferred for
     packager availability.
   - Verify the website support policy is current before release announcements.

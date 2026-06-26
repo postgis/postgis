@@ -185,9 +185,7 @@ retiring that draft-comment page:
   are extracted before retirement, and the original discussion record stays in a
   Trac or website archive.
 * Follow up on live-looking items extracted from the June 16, 2026, development
-  meeting before removing draft status: how security-release advance warning
-  and packager contact lists should be folded into release docs; whether GEOS
-  should expose a git hash for
+  meeting before removing draft status: whether GEOS should expose a git hash for
   `postgis_full_version()`; whether AI skills files belong in this repository
   long term.
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
