@@ -1,3 +1,10 @@
+---
+title: "PostGIS Project Inventory"
+date: 2026-06-26
+weight: 10
+geekdocHidden: false
+---
+
 # PostGIS Project Inventory
 
 This page records the project codebases and services that need governance or

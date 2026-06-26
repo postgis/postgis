@@ -1,3 +1,10 @@
+---
+title: "Topology Internals"
+date: 2026-06-26
+weight: 110
+geekdocHidden: false
+---
+
 # Topology Internals
 
 The topology extension has SQL-facing documentation in the user manual. This

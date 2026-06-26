@@ -1,3 +1,10 @@
+---
+title: "Raster storage and WKB"
+date: 2026-06-26
+weight: 70
+geekdocHidden: false
+---
+
 # Raster storage and WKB
 
 PostGIS Raster has three related representations that are easy to confuse:

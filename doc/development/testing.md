@@ -1,3 +1,10 @@
+---
+title: "Testing and Debugging"
+date: 2026-06-26
+weight: 40
+geekdocHidden: false
+---
+
 # Testing and Debugging
 
 PostGIS uses both SQL regression tests and CUnit tests. Choose the lowest layer

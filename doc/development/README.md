@@ -1,3 +1,11 @@
+---
+title: "PostGIS Developer Documentation"
+date: 2026-06-26
+weight: 10
+layout: toplevel
+geekdocHidden: false
+---
+
 # PostGIS Developer Documentation
 
 This directory is the repository home for PostGIS developer documentation.

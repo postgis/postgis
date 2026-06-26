@@ -1,3 +1,10 @@
+---
+title: "Release and Upgrade Rules"
+date: 2026-06-26
+weight: 80
+geekdocHidden: false
+---
+
 # Release and Upgrade Rules
 
 This directory collects release-policy and upgrade-safety rules consolidated

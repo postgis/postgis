@@ -1,3 +1,10 @@
+---
+title: "Empty geometry semantics"
+date: 2026-06-26
+weight: 30
+geekdocHidden: false
+---
+
 # Empty geometry semantics
 
 Empty geometries are valid geometry values with no coordinates. They are not
