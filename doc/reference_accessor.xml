@@ -2949,6 +2949,47 @@ SELECT ST_AsText(ST_StartPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));
 ------------
  POINT(0 0)
 </programlisting>
+
+<para>Build edge node references from the start and end points of a LineString
+table. The example uses exact endpoint equality, so linework with nearly
+coincident endpoints should be snapped or otherwise cleaned first.</para>
+<programlisting>WITH roads(road_id, geom) AS (
+  VALUES
+    (1, 'LINESTRING(0 0, 1 0)'::geometry),
+    (2, 'LINESTRING(1 0, 1 1)'::geometry),
+    (3, 'LINESTRING(1 0, 2 0)'::geometry)
+),
+endpoints AS (
+  SELECT road_id, 'from' AS end_name, ST_StartPoint(geom) AS geom,
+         ST_AsEWKB(ST_StartPoint(geom)) AS endpoint_key
+  FROM roads
+  UNION ALL
+  SELECT road_id, 'to' AS end_name, ST_EndPoint(geom) AS geom,
+         ST_AsEWKB(ST_EndPoint(geom)) AS endpoint_key
+  FROM roads
+),
+nodes AS (
+  SELECT dense_rank() OVER (ORDER BY ST_X(geom), ST_Y(geom), endpoint_key) AS node_id,
+         endpoint_key
+  FROM (
+    SELECT DISTINCT ON (endpoint_key) endpoint_key, geom
+    FROM endpoints
+    ORDER BY endpoint_key
+  ) AS distinct_endpoints
+)
+SELECT e.road_id,
+       max(n.node_id) FILTER (WHERE e.end_name = 'from') AS from_node,
+       max(n.node_id) FILTER (WHERE e.end_name = 'to') AS to_node
+FROM endpoints AS e
+JOIN nodes AS n USING (endpoint_key)
+GROUP BY e.road_id
+ORDER BY e.road_id;
+
+ road_id | from_node | to_node
+---------+-----------+---------
+       1 |         1 |       2
+       2 |         2 |       3
+       3 |         2 |       4</programlisting>
 	</refsection>
 
 	<refsection>
