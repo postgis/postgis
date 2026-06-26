@@ -31,7 +31,6 @@ GEOS is a C++ port of the [http://en.wikipedia.org/wiki/JTS_Topology_Suite JTS T
  * [wiki:UsersWikiPostgreSQLPostGIS PostgreSQL/PostGIS version support matrix]
  * [wiki:UsersWikiTutorials PostGIS Tutorials]
  * [http://postgis.net/documentation PostGIS Manuals]
- * [wiki:UsersWikiFeaturesOfPostgis Features of PostGIS]
  * [wiki:UsersWikiCoveragesAndPostgis Coverage Concepts and PostGIS]
  * [wiki:UsersWikiPostgreSQLPostGIS PostgreSQL/PostGIS GEOS GDAL /PostGIS version support matrix]
  * [http://www.postgresonline.com/journal/index.php?/archives/7-PostGIS-for-geospatial-analysis-and-mapping.html PostGIS as a part of PostgreSQL] (Article)]
