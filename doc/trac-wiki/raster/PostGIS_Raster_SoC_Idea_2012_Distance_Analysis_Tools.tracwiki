@@ -88,7 +88,7 @@ distance for moving through this cell.
 
 '''What did you get done this week?'''
  * Compiled PostGIS 2.0 sucessfully.
- * Loaded raster data into PostgreSQL and practiced some query by finishing the [http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01 raster/vector tutorial].
+ * Loaded raster data into PostgreSQL and practiced some queries by following the historical raster/vector tutorial.
  * Wrote an analysis of how Euclidean distance and Cost-weighted distance are computed in ArcGIS and GRASS.
  * Setup wiki page.
 
