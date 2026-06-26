@@ -40,7 +40,7 @@ The project's website is [https://postgis.net]
 == Bug Tracking ==
 
  * [/newticket Submit a new bug report] (you need to [http://trac.osgeo.org/postgis/login login] with an [http://www.osgeo.org/osgeo_userid OSGeo Userid]). If you need to reset your password use [https://id.osgeo.org/ldap/reset OSGeo profile reset password]
-  * Bug reports for the [wiki:WKTRaster PostGIS Raster] extension must have the summary prefixed with '''[raster]''' and the corresponding "raster" component assigned.
+  * Bug reports for the PostGIS Raster extension must have the summary prefixed with '''[raster]''' and the corresponding "raster" component assigned.
     * If possible, provide the output of gdalinfo run upon the source raster.
     * If the bug relates to the raster2pgsql loader, provide the command line parameters you are using.
  * [/report/3 List Open Bugs]
@@ -79,7 +79,7 @@ List of PostGIS extensions:
 
 ==== Obsolete
  * [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html PostGIS Raster Driver for GDAL] – Information about PostGIS Raster driver for GDAL
- * [wiki:WKTRaster PostGIS Raster] – Integration of a new raster type within PostGIS spec.
+ * PostGIS Raster – Integration of a new raster type within PostGIS spec.
  * [wiki:WKTRasterTutorial01 Raster Tutorial] – Demonstrates how to use Raster with vector geometries and install on windows.
 
 == Trac Documentation ==

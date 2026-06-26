@@ -4,7 +4,7 @@
 
 == Introduction ==
 
-This tutorial will show you how to do a very classical raster/vector overlay analysis with PostGIS WKT Raster. You will get more info on PostGIS WKT Raster [wiki:WKTRaster in this page] but we can say that WKT Raster...
+This tutorial will show you how to do a very classical raster/vector overlay analysis with PostGIS WKT Raster. The current PostGIS raster manual covers the maintained raster type, but we can say that WKT Raster...
 
  * is the raster format introduced by PostGIS
  * supports multiband, nodata value, georeference, overviews, overlapping tiles and non rectangular coverages
@@ -414,4 +414,4 @@ Finally if you want to export the resulting table to a CSV file you can do the f
 
 We have used the most powerful vector database engine around (PostGIS) to intersect our data buffers with a big raster datasets. For those who already know PostGIS, most of the queries are very familiar. For the newcomers, they might appear a bit complicated, but the speed at which we get the resulting table is worth the effort. The longuest step was to load the data. Once this is done, we can make as many quick queries as we wish. PostGIS with WKT Raster is a serious tool for accomplishing serious analysis work.
 
-You can find more info on PostGIS WKT Raster [wiki:WKTRaster in this page]. All the functions are documented in the [http://www.postgis.org/documentation/manual-svn/RT_reference.html WKT Raster Reference], [http://www.postgis.org/documentation/manual-svn/RT_FAQ.html WKT Raster FAQ Reference]
+The current PostGIS raster manual documents the maintained raster functions: [http://www.postgis.org/documentation/manual-svn/RT_reference.html WKT Raster Reference]
