@@ -92,6 +92,38 @@ Topology upgrade helpers added in 3.6.0 for data-type and table changes:
 * `_postgis_drop_cast_by_types`
 * `_postgis_add_column_to_table`
 
+## Extension Upgrade Paths
+
+PostGIS still needs explicit extension upgrade path coverage for every
+released version that can upgrade to the current extension version. Keep
+`extensions/upgradeable_versions.mk` current when opening a development cycle,
+cutting a release, or adding a supported upgrade source version.
+
+The build installs two kinds of upgrade helpers:
+
+* known-version upgrade scripts generated from `UPGRADEABLE_VERSIONS`
+* `ANY` helper paths from `extensions/upgrade-paths-rules.mk`, including the
+  current-version-to-`ANY` tag file and the `ANY`-to-current upgrade script
+
+This is the maintained successor to the old RFC-7 extension-path discussion.
+Do not revive the draft RFC as release procedure. The current rule is:
+
+1. Keep the explicit known-version matrix because PostgreSQL still discovers
+   extension paths from files visible in the extension directory.
+2. Keep the `ANY` helper path so `postgis_extensions_upgrade()` and regression
+   upgrade tests can exercise the reduced-path workflow where PostgreSQL and
+   the environment allow it.
+3. Treat a PostgreSQL-native wildcard or pattern-based extension upgrade path
+   as upstream PostgreSQL design work. If someone implements that direction,
+   start from a current PostgreSQL proposal and then update these rules after
+   PostGIS can depend on the new PostgreSQL behavior.
+
+Packaging or cloud-environment problems around
+`postgis_extensions_upgrade()` should be tracked as ordinary bugs against the
+specific environment and tested with `utils/check_all_upgrades.sh`,
+`regress/run_test.pl --upgrade-path`, or a focused extension-upgrade
+regression. They do not change the release rule by themselves.
+
 ## SQL Parser Rules
 
 Keep these rules when writing or editing SQL in `postgis/*.sql.in` and upgrade
