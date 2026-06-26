@@ -237,9 +237,15 @@ lwnurbscurve_clone_deep(const LWNURBSCURVE *curve)
 	GBOX *bbox = curve->bbox ? gbox_copy(curve->bbox) : NULL;
 
 	/* lwnurbscurve_construct will deep-copy weights and knots arrays */
-	return lwnurbscurve_construct(curve->srid, bbox, curve->degree, points,
+	LWNURBSCURVE *result = lwnurbscurve_construct(curve->srid, bbox, curve->degree, points,
 	                             curve->weights, curve->knots,
 	                             curve->nweights, curve->nknots);
+	if (!result)
+	{
+		ptarray_free(points);
+		if (bbox) lwfree(bbox);
+	}
+	return result;
 }
 
 LWNURBSCURVE *
@@ -255,9 +261,14 @@ lwnurbscurve_force_dims(const LWNURBSCURVE *curve, int hasz, int hasm, double zv
 
 	points = ptarray_force_dims(curve->points, hasz, hasm, zval, mval);
 
-	return lwnurbscurve_construct(curve->srid, NULL, curve->degree, points,
+	LWNURBSCURVE *result = lwnurbscurve_construct(curve->srid, NULL, curve->degree, points,
 	                              curve->weights, curve->knots,
 	                              curve->nweights, curve->nknots);
+	if (!result)
+	{
+		ptarray_free(points);
+	}
+	return result;
 }
 
 /**
