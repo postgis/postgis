@@ -51,14 +51,13 @@ Batch the remaining sweep so each commit stays reviewable:
   raster manual coverage, `raster2pgsql`, server-side GDAL configuration, and
   current raster internals notes. Retire beta specs and old SoC implementation
   dumps unless they expose a still-open design question.
-* Tool, integration, and service pages: audit OGR, QGIS, MapServer,
-  SpatiaLite, ArcGIS, PostgreSQL/PostGIS, tools-support, tutorial, wishlist,
-  and website-adjacent pages. Most should become external boundary pointers or
-  cleanup-ledger entries rather than maintained developer docs.
 * Remaining user cookbook pages: audit polygon construction, cardinal
   direction, coverages, geography/linear-reference function notes,
   `make check` considerations, and TIGER geocoder backlog material against the
   maintained manual and component repositories.
+* Remaining user landing and backlog pages: audit `UsersWikiMain`,
+  `UsersWikiFeaturesOfPostgis`, and `UsersWikiWishList` for content that
+  belongs in the manual, website, or replacement tickets before retiring them.
 * Project-history pages: audit remaining release announcements, code sprint,
   development-cycle, RFC, and extension-path pages for unresolved durable
   decisions. Keep point-in-time records archived and move only live policy into
