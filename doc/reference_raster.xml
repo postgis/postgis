@@ -13765,8 +13765,8 @@ FROM dummy_rast;</programlisting>
 
                 <refsection>
                     <title>Examples</title>
-                    <para>Refer to <link xlink:href="http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationWorking01">PostGIS Raster Specification</link> for a diagram of this.</para>
-                    <para>Note envelope and convexhull are more or less the same.</para>
+                    <para>See <filename>doc/development/internals/raster-affine.md</filename> for the scale, skew, and rotation terms that make the convex hull and envelope differ for skewed rasters.</para>
+                    <para>For regular non-skewed rasters, the envelope and convex hull are more or less the same.</para>
                     <programlisting>
 SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,
     ST_AsText(ST_Envelope(rast)) As env

@@ -19,6 +19,9 @@ PostGIS rather than only using the SQL API.
 * [Raster physical georeferencing parameters](internals/raster-physical-parameters.md)
   covers the reverse calculation from stored affine coefficients back to pixel
   sizes, rotation, and basis-vector separation.
+* [Raster storage and WKB](internals/raster-storage.md) covers the current
+  PostgreSQL varlena representation, Raster WKB/HexWKB paths, out-db band
+  storage, and raster catalog contracts.
 * [PostGIS Raster and the GDAL driver](internals/raster-gdal-driver.md) records the
   boundary between PostGIS-maintained raster storage/catalog behavior and the
   external GDAL `PostGISRaster` driver.

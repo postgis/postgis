@@ -22,8 +22,9 @@ Modules:
   entry points.
 * [PostGIS internals](internals.md) covers allocator boundaries, PostgreSQL
   function macros, detoasting, geometry serialization structures, empty
-  geometry semantics, spatial collections, raster affine georeferencing, and
-  raster physical georeferencing parameters.
+  geometry semantics, spatial collections, raster affine georeferencing,
+  raster physical georeferencing parameters, raster storage/WKB, and
+  raster/GDAL driver boundaries.
 * [Release and upgrade rules](release.md) indexes SQL/C API compatibility,
   upgrade scripting, dependency guards, regression roles, and support-window
   changes.
