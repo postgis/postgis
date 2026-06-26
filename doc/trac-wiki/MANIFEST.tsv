@@ -61,7 +61,6 @@ user	UsersWikiLineStringGeometry	https://trac.osgeo.org/postgis/wiki/UsersWikiLi
 user	UsersWikiLinearRefFunctions	https://trac.osgeo.org/postgis/wiki/UsersWikiLinearRefFunctions	doc/trac-wiki/user/UsersWikiLinearRefFunctions.tracwiki	1959	57
 user	UsersWikiMain	https://trac.osgeo.org/postgis/wiki/UsersWikiMain	doc/trac-wiki/user/UsersWikiMain.tracwiki	12533	176
 user	UsersWikiMakeCheckConsiderations	https://trac.osgeo.org/postgis/wiki/UsersWikiMakeCheckConsiderations	doc/trac-wiki/user/UsersWikiMakeCheckConsiderations.tracwiki	2637	53
-user	UsersWikiNbSqlFunctionsEditor	https://trac.osgeo.org/postgis/wiki/UsersWikiNbSqlFunctionsEditor	doc/trac-wiki/user/UsersWikiNbSqlFunctionsEditor.tracwiki	2395	60
 user	UsersWikiNewbieAddgeometrycolumn	https://trac.osgeo.org/postgis/wiki/UsersWikiNewbieAddgeometrycolumn	doc/trac-wiki/user/UsersWikiNewbieAddgeometrycolumn.tracwiki	635	13
 user	UsersWikiOGR	https://trac.osgeo.org/postgis/wiki/UsersWikiOGR	doc/trac-wiki/user/UsersWikiOGR.tracwiki	3520	110
 user	UsersWikiOGRExamples	https://trac.osgeo.org/postgis/wiki/UsersWikiOGRExamples	doc/trac-wiki/user/UsersWikiOGRExamples.tracwiki	3632	98
@@ -82,8 +81,6 @@ user	UsersWikiTIGERGeocoderToDo	https://trac.osgeo.org/postgis/wiki/UsersWikiTIG
 user	UsersWikiToolsSupportPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiToolsSupportPostgis	doc/trac-wiki/user/UsersWikiToolsSupportPostgis.tracwiki	3022	54
 user	UsersWikiTutorials	https://trac.osgeo.org/postgis/wiki/UsersWikiTutorials	doc/trac-wiki/user/UsersWikiTutorials.tracwiki	4238	55
 user	UsersWikiWishList	https://trac.osgeo.org/postgis/wiki/UsersWikiWishList	doc/trac-wiki/user/UsersWikiWishList.tracwiki	7741	86
-user	UsersWikiplpgsqlfunctions	https://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions	doc/trac-wiki/user/UsersWikiplpgsqlfunctions.tracwiki	10740	282
-user	UsersWikiplpgsqlfunctionsDistance	https://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance	doc/trac-wiki/user/UsersWikiplpgsqlfunctionsDistance.tracwiki	1865	65
 user	UsersWikiwktrasterfunctions	https://trac.osgeo.org/postgis/wiki/UsersWikiwktrasterfunctions	doc/trac-wiki/user/UsersWikiwktrasterfunctions.tracwiki	2191	48
 topology	ValidateTopology	https://trac.osgeo.org/postgis/wiki/ValidateTopology	doc/trac-wiki/topology/ValidateTopology.tracwiki	91	1
 raster	WKTRaster	https://trac.osgeo.org/postgis/wiki/WKTRaster	doc/trac-wiki/raster/WKTRaster.tracwiki	24838	225
