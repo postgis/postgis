@@ -470,6 +470,49 @@ CROSS JOIN LATERAL (
  C  | 0 | LINESTRING(0 200,50 200)
 </screen>
 
+<para>
+Split a LineString by points by locating the points along the line, adding the
+0 and 1 endpoints, and extracting substrings between adjacent locations.
+</para>
+<programlisting><![CDATA[
+WITH data AS (
+  SELECT 'LINESTRING(0 0, 10 0)'::geometry AS line,
+         'MULTIPOINT((2 0),(5 0),(8 0))'::geometry AS points
+),
+fractions AS (
+  SELECT 0.0 AS fraction
+  UNION ALL
+  SELECT 1.0
+  UNION ALL
+  SELECT ST_LineLocatePoint(line, (dp).geom)
+  FROM data
+  CROSS JOIN LATERAL ST_Dump(points) AS dp
+),
+ordered AS (
+  SELECT DISTINCT fraction
+  FROM fractions
+),
+segments AS (
+  SELECT fraction AS start_fraction,
+         lead(fraction) OVER (ORDER BY fraction) AS end_fraction
+  FROM ordered
+)
+SELECT row_number() OVER () AS segment_id,
+       ST_AsText(ST_LineSubstring(line, start_fraction, end_fraction)) AS geom
+FROM data
+CROSS JOIN segments
+WHERE end_fraction IS NOT NULL
+  AND start_fraction <> end_fraction
+ORDER BY start_fraction;
+
+ segment_id |         geom
+------------+----------------------
+          1 | LINESTRING(0 0,2 0)
+          2 | LINESTRING(2 0,5 0)
+          3 | LINESTRING(5 0,8 0)
+          4 | LINESTRING(8 0,10 0)
+]]></programlisting>
+
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
 <programlisting>SELECT ST_AsText(ST_LineSubstring(
     'LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geography,
@@ -504,7 +547,7 @@ CROSS JOIN LATERAL (
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Length"/>, <xref linkend="ST_LineExtend"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineMerge"/></para>
+			<para><xref linkend="ST_Length"/>, <xref linkend="ST_LineExtend"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineLocatePoint"/>, <xref linkend="ST_LineMerge"/>, <xref linkend="ST_Split"/></para>
 		  </refsection>
 	</refentry>
 
