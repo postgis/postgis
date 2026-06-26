@@ -73,7 +73,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 4 | `doc/trac-wiki/development/` |
+| Development | 0 | none |
 | User wiki | 0 | none |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Project history | 15 | `doc/trac-wiki/project-history/` |

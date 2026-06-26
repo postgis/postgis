@@ -42,9 +42,6 @@ Use these migration decisions as the source pattern:
 
 Batch the remaining sweep so each commit stays reviewable:
 
-* Development pages: audit the remaining Windows/MinGW, NSIS, and VC pages
-  against the maintained developer docs and current source. Fold only material
-  that still describes current workflow or internals.
 * Raster legacy pages: audit the remaining `WKTRaster*` and
   `PostGIS_Raster_SoC_Idea_2012/*` pages against current raster manual
   coverage, `raster2pgsql`, server-side GDAL configuration, and current
