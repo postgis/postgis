@@ -1,3 +1,10 @@
+---
+title: "PostGIS Raster And The GDAL Driver"
+date: 2026-06-26
+weight: 80
+geekdocHidden: false
+---
+
 # PostGIS Raster And The GDAL Driver
 
 The PostGIS Raster SQL type, loader, catalog views, and server-side GDAL use live

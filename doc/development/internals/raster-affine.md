@@ -1,3 +1,10 @@
+---
+title: "Raster affine georeferencing"
+date: 2026-06-26
+weight: 50
+geekdocHidden: false
+---
+
 # Raster affine georeferencing
 
 PostGIS raster stores the relationship between raster cell coordinates

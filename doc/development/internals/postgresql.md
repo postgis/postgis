@@ -1,3 +1,10 @@
+---
+title: "PostgreSQL Internals for PostGIS Developers"
+date: 2026-06-26
+weight: 20
+geekdocHidden: false
+---
+
 # PostgreSQL Internals for PostGIS Developers
 
 This page collects implementation notes for C code that crosses the PostgreSQL

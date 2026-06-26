@@ -1,3 +1,10 @@
+---
+title: "Commit and Branch Guidelines"
+date: 2026-06-26
+weight: 10
+geekdocHidden: false
+---
+
 # Commit and Branch Guidelines
 
 This page keeps the source-control practices from the historical RFC-5

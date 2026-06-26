@@ -1,3 +1,12 @@
+---
+title: "Trac Cleanup Ledger"
+date: 2026-06-26
+weight: 920
+draft: true
+geekdocHidden: true
+geekdocHiddenTocTree: false
+---
+
 # Trac Cleanup Ledger
 
 This ledger records Trac wiki pages that were inspected during the developer

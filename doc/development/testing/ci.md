@@ -1,3 +1,10 @@
+---
+title: "CI Inventory Standards"
+date: 2026-06-26
+weight: 10
+geekdocHidden: false
+---
+
 # CI Inventory Standards
 
 The old Trac `ContinuousIntegration` page is a useful warning: a build-badge

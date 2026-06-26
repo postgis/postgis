@@ -1,3 +1,10 @@
+---
+title: "Windows Development Environments"
+date: 2026-06-26
+weight: 20
+geekdocHidden: false
+---
+
 # Windows Development Environments
 
 PostGIS has two maintained Windows build surfaces:

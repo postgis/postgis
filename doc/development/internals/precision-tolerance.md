@@ -1,3 +1,10 @@
+---
+title: "Precision And Tolerance Internals"
+date: 2026-06-26
+weight: 100
+geekdocHidden: false
+---
+
 # Precision And Tolerance Internals
 
 PostGIS does not have one global tolerance model for all geometry operations.

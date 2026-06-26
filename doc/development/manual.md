@@ -1,3 +1,10 @@
+---
+title: "Manual Documentation Workflow"
+date: 2026-06-26
+weight: 100
+geekdocHidden: false
+---
+
 # Manual Documentation Workflow
 
 PostGIS documentation is written in DocBook XML under `doc/`. The root file is

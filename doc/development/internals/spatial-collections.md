@@ -1,3 +1,10 @@
+---
+title: "Spatial collections and raster/vector crossings"
+date: 2026-06-26
+weight: 40
+geekdocHidden: false
+---
+
 # Spatial collections and raster/vector crossings
 
 The historical `DevWikiSpatialCollectionTutorial` page described an internal

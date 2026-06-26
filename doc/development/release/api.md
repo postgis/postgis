@@ -1,3 +1,10 @@
+---
+title: "API Compatibility"
+date: 2026-06-26
+weight: 10
+geekdocHidden: false
+---
+
 # API Compatibility
 
 Use these pages when a patch changes user-visible SQL objects, C symbols,

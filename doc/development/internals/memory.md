@@ -1,3 +1,10 @@
+---
+title: "Memory Management"
+date: 2026-06-26
+weight: 10
+geekdocHidden: false
+---
+
 # Memory Management
 
 Use the allocator that matches the layer you are editing:

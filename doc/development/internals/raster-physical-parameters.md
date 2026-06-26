@@ -1,3 +1,10 @@
+---
+title: "Raster physical georeferencing parameters"
+date: 2026-06-26
+weight: 60
+geekdocHidden: false
+---
+
 # Raster physical georeferencing parameters
 
 PostGIS raster stores georeferencing as six affine coefficients, but some SQL
