@@ -95,3 +95,23 @@ The public website also links training material, including the Introduction to
 PostGIS workshop. The workshop has its own upstream repository under the PostGIS
 umbrella at <https://github.com/postgis/postgis-workshops>; route workshop
 changes there instead of adding them to the core documentation tree.
+
+## Review Style
+
+When reviewing manual changes, check prose, spelling, function names, argument
+names, and examples together. Keep parameter names consistent with the SQL
+signature and nearby reference entries, because `refpurpose`, signatures, and
+selected reference text are reused in generated indexes and SQL comments.
+
+Prefer focused examples that show the function contract directly. Put
+tutorial-style or workbook-style exercises in the workshop repository unless
+the material documents core function behavior that belongs in the manual.
+
+Separate SQL input from query output when practical. Use `programlisting` for
+commands or SQL fragments, and follow existing DocBook examples such as
+`screen` blocks when the rendered output needs to be distinguished from the
+query being run.
+
+Keep DocBook source readable in diffs by following the local shape of nearby
+XML: wrap long prose and SQL examples sensibly, preserve intentional indentation
+inside listings, and avoid reflowing unrelated entries in the same patch.
