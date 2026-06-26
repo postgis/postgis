@@ -103,20 +103,6 @@ should leave draft state.
   and testing generated upgrade scripts; the RFC draft is not itself a
   maintained release procedure.
 
-The following ideas were extracted from `GoogleSeasonDocs2019` before leaving
-that historical planning page on Trac:
-
-* Review manual prose for consistent style, spelling, and function parameter
-  names.
-* Decide whether the core manual or workshop material needs workbook-style
-  paths for geometry/geography, topology, and raster workflows. Route workshop
-  changes to <https://github.com/postgis/postgis-workshops>.
-* Improve SQL example markup by separating SQL program listings from query
-  output where practical, so formatting and validation can treat them
-  differently.
-* Decide whether DocBook XML source formatting should have a stronger
-  line-width convention for cleaner diffs.
-
 ## Major-Version Research Backlog
 
 The following still-open research themes came from `PostGIS3`. They need Trac
