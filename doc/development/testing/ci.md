@@ -62,12 +62,13 @@ Update the inventory when any of these change:
   should have badges.
 
 Use `utils/ci-trac-line.sh` when maintaining the Trac badge table or a copied
-badge inventory:
+badge inventory. Fetch or export the current Trac table into a temporary file
+before using `--check` or `--replace`:
 
 ```sh
 utils/ci-trac-line.sh 3.7
-utils/ci-trac-line.sh --check doc/trac-wiki/development/ContinuousIntegration.tracwiki 3.7
-utils/ci-trac-line.sh --replace doc/trac-wiki/development/ContinuousIntegration.tracwiki 3.7
+utils/ci-trac-line.sh --check /tmp/ContinuousIntegration.tracwiki 3.7
+utils/ci-trac-line.sh --replace /tmp/ContinuousIntegration.tracwiki 3.7
 ```
 
 The helper prints the expected row for a stable release branch, verifies that a
