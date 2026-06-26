@@ -82,6 +82,19 @@ function still needs to be exposed. It should report an error explaining which
 library version is required. The function must still exist in the C library, so
 guards are almost always on the C side and only rarely in SQL files.
 
+## Dependency Version Reporting
+
+`postgis_full_version()` should report dependency details that help reproduce
+bugs from package, source-build, and CI environments. When an upstream
+dependency exposes revision-level build information, prefer wiring that into
+the PostGIS version-reporting path instead of inventing a PostGIS-side parser
+for dependency source trees.
+
+For GEOS, revision-level runtime and header information is tracked upstream in
+<https://github.com/libgeos/geos/issues/1446>. Once GEOS exposes that data,
+PostGIS can decide how much of it belongs in `postgis_full_version()` and the
+GEOS version helper functions.
+
 ## Removing Support for PostgreSQL Versions
 
 When dropping support for an older PostgreSQL major version:
