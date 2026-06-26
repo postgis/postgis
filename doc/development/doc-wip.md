@@ -51,9 +51,8 @@ Batch the remaining sweep so each commit stays reviewable:
   coverage, `raster2pgsql`, server-side GDAL configuration, and current
   raster internals notes. Retire beta specs and old SoC implementation dumps
   unless they expose a still-open design question.
-* Remaining user landing and backlog pages: audit `UsersWikiMain` and
-  `UsersWikiWishList` for content that belongs in the manual, website, or
-  replacement tickets before retiring them.
+* Remaining user landing page: audit `UsersWikiMain` for content that belongs
+  in the manual, website, or replacement tickets before retiring it.
 * Project-history pages: audit remaining release announcements, code sprint,
   development-cycle, RFC, and extension-path pages for unresolved durable
   decisions. Keep point-in-time records archived and move only live policy into
@@ -174,6 +173,14 @@ become maintained developer documentation:
   point-array APIs, curve-completeness strategy, multidimensional indexing
   syntax and implementation, and deeper 3D primitive support such as
   polyhedral-surface validity, distance, centroid, volume, and interchange I/O.
+* Historical user-wishlist themes that remain research topics rather than
+  current user docs: schema relocation for core extensions, richer `ST_AsKML`
+  output metadata such as extrude/tessellate/altitude mode, E00/topology
+  import, GRASS-style raster/vector analysis bindings, database-resident
+  network-model primitives versus routing in `pgRouting`, streaming execution
+  for large noding, coverage, aggregate, and TIN workloads, point-cloud support
+  direction, and better selectivity or decomposition strategies for large sparse
+  polygons in containment queries.
 
 ## Standards Conformance Backlog
 
