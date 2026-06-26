@@ -4308,16 +4308,11 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
   LWT_TOPOLOGY *topo;
   FuncCallContext *funcctx;
   MemoryContext oldcontext, newcontext;
-  TupleDesc tupdesc;
   HeapTuple tuple;
-  AttInMetadata *attinmeta;
   FACEEDGESSTATE *state;
-  char buf[64];
-  char *values[2];
   Datum result;
-
-  values[0] = buf;
-  values[1] = &(buf[32]);
+  Datum ret[2];
+  bool isnull[2] = {0, 0};
 
   if (SRF_IS_FIRSTCALL())
   {
@@ -4373,17 +4368,10 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
     funcctx->user_fctx = state;
 
     /*
-     * Build a tuple description for a
-     * getfaceedges_returntype tuple
+     * Get tuple description for return type
      */
-    tupdesc = RelationNameGetTupleDesc("topology.getfaceedges_returntype");
-
-    /*
-     * generate attribute metadata needed later to produce
-     * tuples from raw C strings
-     */
-    attinmeta = TupleDescGetAttInMetadata(tupdesc);
-    funcctx->attinmeta = attinmeta;
+    get_call_result_type(fcinfo, 0, &funcctx->tuple_desc);
+    BlessTupleDesc(funcctx->tuple_desc);
 
     POSTGIS_DEBUG(1, "lwt_GetFaceEdges calling SPI_finish");
 
@@ -4409,22 +4397,11 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
     SRF_RETURN_DONE(funcctx);
   }
 
-  if ( snprintf(values[0], 32, "%d", state->curr+1) >= 32 )
-  {
-    lwerror("Face edge sequence number does not fit 32 chars ?!: %d",
-            state->curr+1);
-  }
-  if ( snprintf(values[1], 32, "%" LWTFMT_ELEMID,
-                state->elems[state->curr]) >= 32 )
-  {
-    lwerror("Signed edge identifier does not fit 32 chars ?!: %"
-            LWTFMT_ELEMID, state->elems[state->curr]);
-  }
+  POSTGIS_DEBUGF(1, "ST_GetFaceEdges: cur:%d, edge:%" LWTFMT_ELEMID, state->curr, state->elems[state->curr]);
 
-  POSTGIS_DEBUGF(1, "ST_GetFaceEdges: cur:%d, val0:%s, val1:%s",
-                 state->curr, values[0], values[1]);
-
-  tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
+  ret[0] = Int32GetDatum(state->curr + 1);
+  ret[1] = Int64GetDatum(state->elems[state->curr]);
+  tuple = heap_form_tuple(funcctx->tuple_desc, ret, isnull);
   result = HeapTupleGetDatum(tuple);
   state->curr++;
 

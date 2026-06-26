@@ -51,7 +51,7 @@ COMMENT ON DOMAIN topology.<xsl:value-of select="db:refnamediv/db:refname" /> IS
 	Do not output OUT params since they define output rather than act as input and do not put a comma after argument just before an OUT parameter -->
 		<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">
 COMMENT ON <xsl:choose><xsl:when test="contains(db:paramdef/db:type,' set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text></xsl:text> topology.<xsl:value-of select="db:funcdef/db:function" />(<xsl:for-each select="db:paramdef"><xsl:choose><xsl:when test="count(db:parameter) &gt; 0">
-<xsl:choose><xsl:when test="contains(db:parameter,'OUT')"></xsl:when><xsl:when test="contains(db:type,'topoelement set')">topoelement</xsl:when><xsl:otherwise><xsl:value-of select="db:type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last() and not(contains(db:parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if></xsl:when>
+<xsl:choose><xsl:when test="contains(db:parameter,'OUT')"></xsl:when><xsl:when test="contains(db:type,'topoelement set')">topoelement</xsl:when><xsl:otherwise><xsl:value-of select="db:type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last() and not(contains(db:parameter,'OUT')) and not(contains(following-sibling::db:paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if></xsl:when>
 </xsl:choose></xsl:for-each>) IS '<xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template> <xsl:value-of select='$comment' />';
 			</xsl:for-each>
 		</xsl:for-each>

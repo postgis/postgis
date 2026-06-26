@@ -109,7 +109,7 @@
 --    TODO: implement
 --
 -- TYPE GetFaceEdges_ReturnType
---    Complex type used to return tuples from ST_GetFaceEdges
+--    Legacy complex type formerly used by ST_GetFaceEdges
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
@@ -1405,7 +1405,6 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --  SQL/MM block
 #include "sql/sqlmm.sql.in"
 
--- The following files needs getfaceedges_returntype, defined in sqlmm.sql
 #include "sql/query/GetRingEdges.sql.in"
 #include "sql/query/GetNodeEdges.sql.in"
 

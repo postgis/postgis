@@ -22,14 +22,13 @@
 -- Changed: 3.6.0 uses bigint for IDs
 -- Replaces getnodeedges(varchar, integer) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.GetNodeEdges(atopology varchar, anode bigint)
-	RETURNS SETOF topology.GetFaceEdges_ReturnType
+	RETURNS TABLE(sequence integer, edge bigint)
 AS
 $BODY$
 DECLARE
   curedge bigint;
   nextedge bigint;
   rec RECORD;
-  retrec topology.GetFaceEdges_ReturnType;
   n int;
   sql text;
 BEGIN
@@ -73,9 +72,9 @@ BEGIN
     RAISE DEBUG 'Edge:% az:%', rec.edge_id, rec.az;
 #endif
     n := n + 1;
-    retrec.sequence := n;
-    retrec.edge := rec.edge_id;
-    RETURN NEXT retrec;
+    sequence := n;
+    edge := rec.edge_id;
+    RETURN NEXT;
   END LOOP; -- incident edges }
 
 END

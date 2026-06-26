@@ -44,7 +44,7 @@ CREATE TYPE topology.GetFaceEdges_ReturnType AS (
 -- Changed: 3.6.0 uses bigint for IDs
 -- Replaces st_getfaceedges(varchar, integer) deprecated in 3.6.0
 CREATE OR REPLACE FUNCTION topology.ST_GetFaceEdges(toponame varchar, face_id bigint)
-  RETURNS SETOF topology.GetFaceEdges_ReturnType AS
+  RETURNS TABLE(sequence integer, edge bigint) AS
 	'MODULE_PATHNAME', 'ST_GetFaceEdges'
   LANGUAGE 'c' STABLE;
 --} ST_GetFaceEdges
@@ -603,4 +603,3 @@ LANGUAGE 'plpgsql' VOLATILE;
 --} ST_CreateTopoGeo
 
 --=}  SQL/MM block
-

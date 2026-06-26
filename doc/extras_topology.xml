@@ -58,11 +58,11 @@ number and an edge number.
 		  <refsection>
 			<title>Description</title>
 			<para>
-A composite type that consists of a sequence number
-and an edge number.
-This is the return type for <varname>ST_GetFaceEdges</varname>
-and <varname>GetNodeEdges</varname> functions.
-			</para>
+				A composite type that consists of a sequence number
+				and an edge number.
+				This legacy type was used by <varname>ST_GetFaceEdges</varname>,
+				<varname>GetRingEdges</varname>, and <varname>GetNodeEdges</varname>.
+				</para>
 			<orderedlist>
 			  <listitem>
 				<para><varname>sequence</varname> is an integer:  Refers to a topology defined in the topology.topology table which defines the topology schema and srid.</para>
@@ -3084,9 +3084,11 @@ ERROR:  Two or more faces found</programlisting>
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>getfaceedges_returntype <function>ST_GetFaceEdges</function></funcdef>
-					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>aface</parameter></paramdef>
+						<funcdef>record <function>ST_GetFaceEdges</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>bigint </type> <parameter>aface</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>OUT sequence</parameter></paramdef>
+						<paramdef><type>bigint </type> <parameter>OUT edge</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3209,10 +3211,12 @@ a given edge side.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>getfaceedges_returntype <function>GetRingEdges</function></funcdef>
-					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>aring</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>max_edges=null</parameter></paramdef>
+						<funcdef>record <function>GetRingEdges</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>bigint </type> <parameter>aring</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>max_edges=null</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>OUT sequence</parameter></paramdef>
+						<paramdef><type>bigint </type> <parameter>OUT edge</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3271,9 +3275,11 @@ Returns an ordered set of edges incident to the given node.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>getfaceedges_returntype <function>GetNodeEdges</function></funcdef>
-					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>bigint </type> <parameter>anode</parameter></paramdef>
+						<funcdef>record <function>GetNodeEdges</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>bigint </type> <parameter>anode</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>OUT sequence</parameter></paramdef>
+						<paramdef><type>bigint </type> <parameter>OUT edge</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3306,9 +3312,8 @@ and is thus usable to build edge ring linking.
 			<refsection>
 				<title>See Also</title>
 				<para>
-<xref linkend="getfaceedges_returntype"/>,
-<xref linkend="GetRingEdges"/>,
-<xref linkend="ST_Azimuth"/>
+					<xref linkend="GetRingEdges"/>,
+					<xref linkend="ST_Azimuth"/>
 				</para>
 			</refsection>
 		</refentry>
