@@ -80,7 +80,7 @@ List of PostGIS extensions:
 ==== Obsolete
  * [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html PostGIS Raster Driver for GDAL] – Information about PostGIS Raster driver for GDAL
  * PostGIS Raster – Integration of a new raster type within PostGIS spec.
- * [wiki:WKTRasterTutorial01 Raster Tutorial] – Demonstrates how to use Raster with vector geometries and install on windows.
+ * Raster tutorial – historical 2010 raster/vector overlay walkthrough; current raster loading, catalog, and raster/vector operation docs live in the maintained manual.
 
 == Trac Documentation ==
 
