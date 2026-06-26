@@ -150,6 +150,13 @@ become maintained developer documentation:
   point-array APIs, curve-completeness strategy, multidimensional indexing
   syntax and implementation, and deeper 3D primitive support such as
   polyhedral-surface validity, distance, centroid, volume, and interchange I/O.
+* Historical FOSS4G sprint themes that remain research topics rather than
+  current workflow docs: a typed bounding-box or envelope API with clear SRID
+  and indexing semantics, raster casts or operators that can use that API for
+  indexing, weighted raster summary/statistics functions beyond the existing
+  map-algebra weighted masks and ordinary raster statistics aggregates, and 3D
+  visibility or line-of-sight APIs beyond the existing 2D visibility-polygon
+  support.
 * Historical user-wishlist themes that remain research topics rather than
   current user docs: schema relocation for core extensions, richer `ST_AsKML`
   output metadata such as extrude/tessellate/altitude mode, E00/topology
@@ -188,6 +195,3 @@ retiring that draft-comment page:
   meeting before removing draft status: whether GEOS should expose a git hash for
   `postgis_full_version()`; whether AI skills files belong in this repository
   long term.
-* `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
-  on Trac or in history, but extract any not-yet-implemented ideas into a
-  maintained list.
