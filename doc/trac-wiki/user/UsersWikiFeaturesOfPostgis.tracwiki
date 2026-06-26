@@ -26,7 +26,6 @@ PostGIS is not your standard spatial extension to a relational database... or is
    * [http://postgis.refractions.net/documentation/manual-svn/ch04.html#id2597816 EWKT and EWKT in PostGIS manual]
    * [http://en.wikipedia.org/wiki/Extended_Well-known_text EWKT on Wikipedia]
  * '''Other Types'''
-  * [wiki:UsersWikiRasterNotes Progress on Raster Support]
   * [http://www.foss4g2007.org/presentations/view.php?abstract_id=224 Proposed X3D types: TIN and COLLADA for Web Output]
 
 ==  PostGIS enables powerful spatial analysis and editing of geometries ==
