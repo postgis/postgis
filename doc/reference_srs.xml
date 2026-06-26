@@ -556,7 +556,7 @@ SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;
     <refsynopsisdiv>
         <funcsynopsis>
             <funcprototype>
-                <funcdef>setof record <function>postgis_srs</function></funcdef>
+                <funcdef>table(auth_name text, auth_srid text, srname text, srtext text, proj4text text, point_sw geometry, point_ne geometry) <function>postgis_srs</function></funcdef>
                 <paramdef><type>text </type> <parameter>auth_name</parameter></paramdef>
                 <paramdef><type>text </type> <parameter>auth_srid</parameter></paramdef>
             </funcprototype>
@@ -608,7 +608,7 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
     <refsynopsisdiv>
         <funcsynopsis>
             <funcprototype>
-                <funcdef>setof record <function>postgis_srs_all</function></funcdef>
+                <funcdef>table(auth_name text, auth_srid text, srname text, srtext text, proj4text text, point_sw geometry, point_ne geometry) <function>postgis_srs_all</function></funcdef>
                 <void/>
             </funcprototype>
         </funcsynopsis>
@@ -665,7 +665,7 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
     <refsynopsisdiv>
         <funcsynopsis>
             <funcprototype>
-                <funcdef>setof record <function>postgis_srs_search</function></funcdef>
+                <funcdef>table(auth_name text, auth_srid text, srname text, srtext text, proj4text text, point_sw geometry, point_ne geometry) <function>postgis_srs_search</function></funcdef>
                 <paramdef><type>geometry </type> <parameter>bounds</parameter></paramdef>
                 <paramdef choice="opt"><type>text </type> <parameter>auth_name=EPSG</parameter></paramdef>
             </funcprototype>

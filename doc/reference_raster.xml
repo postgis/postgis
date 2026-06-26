@@ -3830,12 +3830,12 @@ FROM dummy_rast;
             <refsynopsisdiv>
                 <funcsynopsis>
                   <funcprototype>
-                        <funcdef>(1) record <function>ST_BandMetaData</function></funcdef>
+                        <funcdef>table(pixeltype text, nodatavalue double precision, isoutdb boolean, path text, outdbbandnum integer, filesize bigint, filetimestamp bigint) <function>ST_BandMetaData</function></funcdef>
                         <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
                         <paramdef choice="opt"><type>integer </type><parameter>band=1</parameter></paramdef>
                   </funcprototype>
                   <funcprototype>
-                        <funcdef>(2) record <function>ST_BandMetaData</function></funcdef>
+                        <funcdef>table(bandnum integer, pixeltype text, nodatavalue double precision, isoutdb boolean, path text, outdbbandnum integer, filesize bigint, filetimestamp bigint) <function>ST_BandMetaData</function></funcdef>
                         <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
                         <paramdef choice="opt"><type>integer[] </type><parameter>band</parameter></paramdef>
                   </funcprototype>
@@ -4431,7 +4431,7 @@ WHERE rid=2;
             <refsynopsisdiv>
                 <funcsynopsis>
                   <funcprototype>
-                    <funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef>
+                    <funcdef>table(geom geometry, val double precision, x integer, y integer) <function>ST_PixelAsPolygons</function></funcdef>
                     <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                     <paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
                     <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
@@ -4559,7 +4559,7 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
             <refsynopsisdiv>
                 <funcsynopsis>
                     <funcprototype>
-                        <funcdef>setof record <function>ST_PixelAsPoints</function></funcdef>
+                        <funcdef>table(geom geometry, val double precision, x integer, y integer) <function>ST_PixelAsPoints</function></funcdef>
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
                         <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
@@ -4694,7 +4694,7 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
             <refsynopsisdiv>
                 <funcsynopsis>
                     <funcprototype>
-                        <funcdef>setof record <function>ST_PixelAsCentroids</function></funcdef>
+                        <funcdef>table(geom geometry, val double precision, x integer, y integer) <function>ST_PixelAsCentroids</function></funcdef>
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
                         <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
@@ -6114,7 +6114,7 @@ ORDER BY t1.rid, t2.gid, t3.gid;
             <refsynopsisdiv>
                 <funcsynopsis>
                     <funcprototype>
-                        <funcdef>setof record <function>ST_DumpValues</function></funcdef>
+                        <funcdef>table(nband integer, valarray double precision[][]) <function>ST_DumpValues</function></funcdef>
                         <paramdef>
                             <type>raster </type> <parameter>rast</parameter>
                         </paramdef>
@@ -6220,7 +6220,7 @@ FROM foo;
             <refsynopsisdiv>
                 <funcsynopsis>
                     <funcprototype>
-                        <funcdef>setof record <function>ST_PixelOfValue</function></funcdef>
+                        <funcdef>table(val double precision, x integer, y integer) <function>ST_PixelOfValue</function></funcdef>
                         <paramdef>
                             <type>raster </type> <parameter>rast</parameter>
                         </paramdef>
@@ -6235,7 +6235,7 @@ FROM foo;
                         </paramdef>
                     </funcprototype>
                     <funcprototype>
-                        <funcdef>setof record <function>ST_PixelOfValue</function></funcdef>
+                        <funcdef>table(val double precision, x integer, y integer) <function>ST_PixelOfValue</function></funcdef>
                         <paramdef>
                             <type>raster </type> <parameter>rast</parameter>
                         </paramdef>
@@ -6247,7 +6247,7 @@ FROM foo;
                         </paramdef>
                     </funcprototype>
                     <funcprototype>
-                        <funcdef>setof record <function>ST_PixelOfValue</function></funcdef>
+                        <funcdef>table(x integer, y integer) <function>ST_PixelOfValue</function></funcdef>
                         <paramdef>
                             <type>raster </type> <parameter>rast</parameter>
                         </paramdef>
@@ -6262,7 +6262,7 @@ FROM foo;
                         </paramdef>
                     </funcprototype>
                     <funcprototype>
-                        <funcdef>setof record <function>ST_PixelOfValue</function></funcdef>
+                        <funcdef>table(x integer, y integer) <function>ST_PixelOfValue</function></funcdef>
                         <paramdef>
                             <type>raster </type> <parameter>rast</parameter>
                         </paramdef>
@@ -13926,7 +13926,7 @@ GROUP BY t1.rast;
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>setof record <function>ST_Contour</function></funcdef>
+            <funcdef>table(geom geometry, id integer, value float8) <function>ST_Contour</function></funcdef>
             <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
             <paramdef choice="opt"><type>integer </type><parameter>bandnumber=1</parameter></paramdef>
             <paramdef choice="opt"><type>double precision </type><parameter>level_interval=100.0</parameter></paramdef>

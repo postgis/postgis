@@ -615,7 +615,7 @@ SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_co
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>setof record <function>Populate_Topology_Layer</function></funcdef>
+					<funcdef>table(schema_name text, table_name text, feature_column text) <function>Populate_Topology_Layer</function></funcdef>
 					<paramdef></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -1007,7 +1007,7 @@ face without edges |   1 |
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>setof record <function>ValidateTopologyRelation</function></funcdef>
+					<funcdef>table(error text, layer_id int, topogeo_id bigint, element_id bigint) <function>ValidateTopologyRelation</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -3325,7 +3325,7 @@ and is thus usable to build edge ring linking.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>setof record <function>FindVertexSegmentPairsBelowDistance</function></funcdef>
+					<funcdef>table(seg_edge int, segno int, vert_edge int, vertno int, vert_geom geometry) <function>FindVertexSegmentPairsBelowDistance</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
