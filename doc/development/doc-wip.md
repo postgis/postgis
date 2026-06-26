@@ -51,8 +51,6 @@ Batch the remaining sweep so each commit stays reviewable:
   coverage, `raster2pgsql`, server-side GDAL configuration, and current
   raster internals notes. Retire beta specs and old SoC implementation dumps
   unless they expose a still-open design question.
-* Remaining user landing page: audit `UsersWikiMain` for content that belongs
-  in the manual, website, or replacement tickets before retiring it.
 * Project-history pages: audit remaining release announcements, code sprint,
   development-cycle, RFC, and extension-path pages for unresolved durable
   decisions. Keep point-in-time records archived and move only live policy into

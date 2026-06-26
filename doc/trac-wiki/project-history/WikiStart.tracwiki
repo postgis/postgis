@@ -57,9 +57,6 @@ The project's website is [https://postgis.net]
 
 == Wiki ==
 
- * [UsersWikiMain Users Wiki]
-   * [wiki:UsersWikiInstall PostGIS Install and Compilation Guide] for different systems
-   * [wiki:UsersWikiPackages PostGIS Pre-Built Packages] for different systems
  * [DevWikiMain Developer Wiki]
    * [wiki:DevWikiDockerTesting Docker Testing]
    * [wiki:DevWikiRFC PostGIS RFCs]
@@ -86,10 +83,6 @@ List of PostGIS extensions:
  * [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html PostGIS Raster Driver for GDAL] – Information about PostGIS Raster driver for GDAL
  * [wiki:WKTRaster PostGIS Raster] – Integration of a new raster type within PostGIS spec.
  * [wiki:WKTRasterTutorial01 Raster Tutorial] – Demonstrates how to use Raster with vector geometries and install on windows.
-
-=== PostGIS Topology ===
-
- * [wiki:UsersWikiPostgisTopology PostGIS Topology]
 
 == Trac Documentation ==
 

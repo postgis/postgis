@@ -75,7 +75,7 @@ This year again every projects submitted by OSGeo to the Google Summer of Code w
 
 == Installation ==
 
- * '''Linux -''' [wiki:UsersWikiInstall Different repositories exist for binary versions of PostGIS]. If no repository is available for your Linux flavor, you will have to [wiki:DevWikiMain compile PostGIS yourself].
+ * '''Linux -''' Different repositories exist for binary versions of PostGIS. If no repository is available for your Linux flavor, you will have to [wiki:DevWikiMain compile PostGIS yourself].
 
  * '''Windows Binaries - ''' If you are running PostGIS on Windows, you can find fairly recent binaries of PostGIS 2.0 (including raster support) in the [http://postgis.net/windows_downloads Windows Experimental Builds section]. These are for PostgreSQL 8.4, 9.0, and upcoming 9.1. Note that development on the standalone wktraster project deployable on PostGIS 1.3-1.5 has stopped and all future versions and bug fixes of raster support will be packaged in the PostGIS 2.0 builds.  The last set of binaries for the wktraster stand-alone are also available on Windows experimental page for PostgreSQL 8.3,8.4,9.0 running for PostGIS 1.4-1.5.
 
