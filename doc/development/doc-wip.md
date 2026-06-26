@@ -122,6 +122,15 @@ Batch the remaining sweep so each commit stays reviewable:
 
 ## Documentation Backlog
 
+* Decide whether to create fresh topology data-model diagrams for the manual or
+  website. The old `PostgisTopology_Data_Model` page only pointed to ticket
+  #2578 attachments: 2013 slides for node/edge/face, TopoGeometry layer
+  stacking, relation-table mapping, and a schema overview, plus a PDF table
+  walkthrough of `topology.topology`, `topology.layer`, TopoGeometry
+  properties, `relation`, `face`, `node`, and `edge_data`. Current manual text
+  covers those tables and fields, but polished diagrams may still be useful as
+  new maintained assets.
+
 The following ideas were extracted from `GoogleSeasonDocs2019` before leaving
 that historical planning page on Trac:
 
