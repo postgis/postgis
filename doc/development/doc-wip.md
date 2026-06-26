@@ -26,10 +26,6 @@ should leave draft state.
   workspace. When every useful page has a maintained home or a recorded
   retirement reason, remove the map and keep only the topic pages plus any
   necessary archive pointer.
-* `PRRC_kwDOAEM_Wc7PP04s`: raster/GDAL driver boundary notes now live in
-  `internals/raster-gdal-driver.md`. Before publication, decide whether the
-  growing internals material should be split into clearer geometry, topology,
-  and raster sections or left as one cross-cutting internals chapter.
 ## Developer Deep Dives
 * `PRRC_kwDOAEM_Wc7PPrPX`: `SomeSplitting` was checked against the current
   split and subdivision APIs. `ST_Subdivide` covers the practical oversize
