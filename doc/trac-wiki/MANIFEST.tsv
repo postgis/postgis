@@ -48,9 +48,6 @@ topology	TopologyCopy	https://trac.osgeo.org/postgis/wiki/TopologyCopy	doc/trac-
 topology	TopologyTableLayer	https://trac.osgeo.org/postgis/wiki/TopologyTableLayer	doc/trac-wiki/topology/TopologyTableLayer.tracwiki	342	2
 topology	TopologyTableRelation	https://trac.osgeo.org/postgis/wiki/TopologyTableRelation	doc/trac-wiki/topology/TopologyTableRelation.tracwiki	430	2
 user	UserWiki	https://trac.osgeo.org/postgis/wiki/UserWiki	doc/trac-wiki/user/UserWiki.tracwiki	13	0
-user	UserWikiDotDensity	https://trac.osgeo.org/postgis/wiki/UserWikiDotDensity	doc/trac-wiki/user/UserWikiDotDensity.tracwiki	2532	66
-user	UserWikiRandomPoint	https://trac.osgeo.org/postgis/wiki/UserWikiRandomPoint	doc/trac-wiki/user/UserWikiRandomPoint.tracwiki	5618	175
-user	UserWikiRandomPoints	https://trac.osgeo.org/postgis/wiki/UserWikiRandomPoints	doc/trac-wiki/user/UserWikiRandomPoints.tracwiki	19	0
 user	UsersWiki	https://trac.osgeo.org/postgis/wiki/UsersWiki	doc/trac-wiki/user/UsersWiki.tracwiki	20	0
 user	UsersWikiBuildPolygonsWithLines	https://trac.osgeo.org/postgis/wiki/UsersWikiBuildPolygonsWithLines	doc/trac-wiki/user/UsersWikiBuildPolygonsWithLines.tracwiki	3155	71
 user	UsersWikiCardinalDirection	https://trac.osgeo.org/postgis/wiki/UsersWikiCardinalDirection	doc/trac-wiki/user/UsersWikiCardinalDirection.tracwiki	1864	62
