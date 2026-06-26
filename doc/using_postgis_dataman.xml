@@ -1521,7 +1521,7 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 	        and the 60 WGS84 UTM zones.
 			UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
 			For WGS84 longitude/latitude data, the UTM zone is
-			<varname>floor((longitude + 180) / 6) + 1</varname>; the EPSG code is
+			<varname>least(floor((longitude + 180) / 6) + 1, 60)</varname>; the EPSG code is
 			<varname>32600 + zone</varname> in the northern hemisphere or
 			<varname>32700 + zone</varname> in the southern hemisphere.
 		</para>
