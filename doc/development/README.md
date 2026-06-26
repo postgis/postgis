@@ -12,6 +12,11 @@ This directory is the repository home for PostGIS developer documentation.
 Trac remains the project issue tracker, but development workflow notes should
 live here so they are reviewed with code and branch changes.
 
+This subtree is organized for the developer and maintainer role. User-facing
+documentation remains in the DocBook manual and on the public website; pages
+such as [Manual documentation workflow](manual.md) describe how contributors
+maintain those user docs rather than forming a separate user-doc chapter here.
+
 Modules:
 
 * [Contributing workflow](contributing.md) explains Trac tickets, code mirrors,
