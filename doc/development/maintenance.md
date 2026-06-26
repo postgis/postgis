@@ -77,6 +77,21 @@ Later ticket comments often refine the real scope. Do not classify a ticket
 from the opening summary alone when later discussion names a concrete missing
 API, behavior change, or testable failure.
 
+## Contributor Handoff Points
+
+When a mirror pull request, mailing-list patch, or Trac ticket needs contributor
+follow-up instead of maintainer-side branch repair, point the contributor to the
+specific workflow section rather than sending them back to this maintainer page:
+
+* [Contributing workflow](contributing.md) for Trac tickets, mirror pull
+  requests, mailing lists, chat, and security reports.
+* [First contribution path](contributing.md#first-contribution-path) for a
+  small-patch checklist from fork through focused validation.
+* [Development environments](environment.md) and
+  [Testing and debugging](testing.md) for local build and regression setup.
+* [Release and upgrade rules](release.md) when a proposed change affects SQL
+  API compatibility, extension upgrades, dependency policy, or backpatch scope.
+
 ## Review and CI Readback
 
 Check inline review threads, not only aggregate review status. Each active

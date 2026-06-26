@@ -15,11 +15,6 @@ should leave draft state.
 
 ## Structure Questions
 
-* `PRRC_kwDOAEM_Wc7POmvr`: root `CONTRIBUTING.md` is now only a forge entry
-  point, contributor workflow has been flattened into
-  `doc/development/contributing.md`, and maintainer-only procedures remain
-  under `maintenance/`. Before publication, check whether the maintainer page
-  needs more role-specific anchors back to the contributor page.
 * `PRRC_kwDOAEM_Wc7POSzg`, `PRRC_kwDOAEM_Wc7POUBR`,
   `PRRC_kwDOAEM_Wc7POVRO`: governance still needs a final shape. The PSC
   process and core-contributor rules are now written as maintained governance
