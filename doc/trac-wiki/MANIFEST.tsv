@@ -7,7 +7,6 @@ development	DevWikiWinMingWSys_20	https://trac.osgeo.org/postgis/wiki/DevWikiWin
 development	DevWikiWinMingWSys_20_MSVC	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingWSys_20_MSVC	doc/trac-wiki/development/DevWikiWinMingWSys_20_MSVC.tracwiki	11441	376
 development	DevWikiWinNSIS	https://trac.osgeo.org/postgis/wiki/DevWikiWinNSIS	doc/trac-wiki/development/DevWikiWinNSIS.tracwiki	1202	21
 development	DevWikiWinVC_15	https://trac.osgeo.org/postgis/wiki/DevWikiWinVC_15	doc/trac-wiki/development/DevWikiWinVC_15.tracwiki	4118	70
-topology	EdgeStar	https://trac.osgeo.org/postgis/wiki/EdgeStar	doc/trac-wiki/topology/EdgeStar.tracwiki	140	1
 user	GeographicLib	https://trac.osgeo.org/postgis/wiki/GeographicLib	doc/trac-wiki/user/GeographicLib.tracwiki	41	0
 source-hosts	GitHub	https://trac.osgeo.org/postgis/wiki/GitHub	doc/trac-wiki/source-hosts/GitHub.tracwiki	432	9
 source-hosts	GitLab	https://trac.osgeo.org/postgis/wiki/GitLab	doc/trac-wiki/source-hosts/GitLab.tracwiki	292	9
