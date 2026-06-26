@@ -139,20 +139,3 @@ become maintained developer documentation:
   for large noding, coverage, aggregate, and TIN workloads, point-cloud support
   direction, and better selectivity or decomposition strategies for large sparse
   polygons in containment queries.
-
-## Standards Conformance Backlog
-
-The following still-open themes were extracted from `DevWikiISO19125` before
-retiring that draft-comment page:
-
-* Keep empty-geometry behavior documented and tested for constructors,
-  predicates, validity checks, and overlay functions.
-* Clarify when spatial predicates and overlays intentionally use 2D semantics
-  for higher-dimensional inputs, and where true 3D behavior needs separate
-  functions or documentation.
-* Keep validity and simplicity documentation explicit about geometry-type
-  criteria, repeated points, invalid input handling, and parser acceptance.
-* Track precision-model questions in current design work rather than old draft
-  standards notes.
-* When changing WKT/WKB parsing or output, check OGC/SFS, ISO, SQL/MM, EWKT,
-  EWKB, SRID, empty-geometry, and SQL/MM type-code compatibility together.
