@@ -26,7 +26,6 @@ project-history	RFC/RFC-1	https://trac.osgeo.org/postgis/wiki/RFC/RFC-1	doc/trac
 user	UsersWikiFeaturesOfPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiFeaturesOfPostgis	doc/trac-wiki/user/UsersWikiFeaturesOfPostgis.tracwiki	3613	48
 user	UsersWikiMain	https://trac.osgeo.org/postgis/wiki/UsersWikiMain	doc/trac-wiki/user/UsersWikiMain.tracwiki	12533	176
 user	UsersWikiSprint2009Notes	https://trac.osgeo.org/postgis/wiki/UsersWikiSprint2009Notes	doc/trac-wiki/user/UsersWikiSprint2009Notes.tracwiki	3237	112
-user	UsersWikiTIGERGeocoderToDo	https://trac.osgeo.org/postgis/wiki/UsersWikiTIGERGeocoderToDo	doc/trac-wiki/user/UsersWikiTIGERGeocoderToDo.tracwiki	1304	23
 user	UsersWikiWishList	https://trac.osgeo.org/postgis/wiki/UsersWikiWishList	doc/trac-wiki/user/UsersWikiWishList.tracwiki	7741	86
 raster	WKTRaster	https://trac.osgeo.org/postgis/wiki/WKTRaster	doc/trac-wiki/raster/WKTRaster.tracwiki	24838	225
 raster	WKTRaster/Documentation01	https://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01	doc/trac-wiki/raster/WKTRaster_Documentation01.tracwiki	35232	512

@@ -51,8 +51,6 @@ Batch the remaining sweep so each commit stays reviewable:
   coverage, `raster2pgsql`, server-side GDAL configuration, and current
   raster internals notes. Retire beta specs and old SoC implementation dumps
   unless they expose a still-open design question.
-* Remaining user cookbook pages: audit TIGER geocoder backlog material against
-  the maintained manual and component repositories.
 * Remaining user landing and backlog pages: audit `UsersWikiMain`,
   `UsersWikiFeaturesOfPostgis`, and `UsersWikiWishList` for content that
   belongs in the manual, website, or replacement tickets before retiring them.
@@ -118,6 +116,13 @@ Batch the remaining sweep so each commit stays reviewable:
 
 ## Documentation Backlog
 
+* Decide whether the component-owned TIGER geocoder ideas retired from
+  `UsersWikiTIGERGeocoderToDo` should become issues in
+  <https://git.osgeo.org/gitea/postgis/postgis_tiger_geocoder>. The split
+  repository already documents and tests `geocode_intersection()`, but the old
+  Trac page also listed no-address/block geocoding, street-type fallback when a
+  parsed type is wrong, and caller-selectable match-level requirements. Those
+  should not stay as core PostGIS docs, but may still deserve component tickets.
 * Decide whether to create fresh topology data-model diagrams for the manual or
   website. The old `PostgisTopology_Data_Model` page only pointed to ticket
   #2578 attachments: 2013 slides for node/edge/face, TopoGeometry layer
