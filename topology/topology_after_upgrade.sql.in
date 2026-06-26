@@ -26,9 +26,29 @@ BEGIN
       RETURNING *
     )
     SELECT * FROM updated
+    LOOP
+      -- NOTE: these notices will not be shown during extension upgrade
+      RAISE NOTICE 'Topology % had SRID<0, updated to the officially unknown SRID value 0', rec.name;
+    END LOOP;
+
+  FOR rec IN
+    SELECT name
+    FROM topology.topology
   LOOP
-    -- NOTE: these notices will not be shown during extension upgrade
-    RAISE NOTICE 'Topology % had SRID<0, updated to the officially unknown SRID value 0', rec.name;
+    IF to_regclass(format('%I.edge_data', rec.name)) IS NULL THEN
+      CONTINUE;
+    END IF;
+
+    EXECUTE format('DROP RULE IF EXISTS edge_insert_rule ON %I.edge', rec.name);
+    EXECUTE format('DROP TRIGGER IF EXISTS edge_data_abs_next_edges ON %I.edge_data', rec.name);
+    EXECUTE format(
+      'CREATE TRIGGER edge_data_abs_next_edges
+       BEFORE INSERT OR UPDATE OF next_left_edge, next_right_edge
+       ON %I.edge_data
+       FOR EACH ROW
+       EXECUTE FUNCTION topology._update_edge_data_abs_next_edges()',
+      rec.name
+    );
   END LOOP;
 END;
 $BODY$ LANGUAGE 'plpgsql';

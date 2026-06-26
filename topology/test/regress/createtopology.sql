@@ -3,6 +3,43 @@ set client_min_messages to WARNING;
 
 SELECT topology.CreateTopology('2d') > 0;
 SELECT topology.CreateTopology('2dLarge', 0, 0, false, 0, true) > 0;
+SELECT topology.CreateTopology('edgeTrigger') > 0;
+
+SELECT 'edge-insert-rule', count(*)
+FROM pg_rewrite
+WHERE ev_class = '"edgeTrigger".edge'::regclass
+AND rulename = 'edge_insert_rule';
+
+INSERT INTO "edgeTrigger".node(node_id, containing_face, geom)
+VALUES
+  (100, NULL, 'POINT(0 0)'::geometry),
+  (101, NULL, 'POINT(1 0)'::geometry),
+  (102, NULL, 'POINT(2 0)'::geometry);
+
+INSERT INTO "edgeTrigger".edge(edge_id, start_node, end_node, next_left_edge, next_right_edge, left_face, right_face, geom)
+VALUES (100, 100, 101, 100, -100, 0, 0, 'LINESTRING(0 0, 1 0)'::geometry);
+
+SELECT 'edge-view-insert', edge_id, next_left_edge, abs_next_left_edge, next_right_edge, abs_next_right_edge
+FROM "edgeTrigger".edge_data
+WHERE edge_id = 100;
+
+INSERT INTO "edgeTrigger".edge_data(edge_id, start_node, end_node, next_left_edge, abs_next_left_edge, next_right_edge, abs_next_right_edge, left_face, right_face, geom)
+VALUES (101, 101, 102, -101, 0, 101, 0, 0, 0, 'LINESTRING(1 0, 2 0)'::geometry);
+
+SELECT 'edge-data-insert', edge_id, next_left_edge, abs_next_left_edge, next_right_edge, abs_next_right_edge
+FROM "edgeTrigger".edge_data
+WHERE edge_id = 101;
+
+UPDATE "edgeTrigger".edge_data
+SET next_left_edge = -100,
+  next_right_edge = 100
+WHERE edge_id = 101;
+
+SELECT 'edge-data-update', edge_id, next_left_edge, abs_next_left_edge, next_right_edge, abs_next_right_edge
+FROM "edgeTrigger".edge_data
+WHERE edge_id = 101;
+
+SELECT topology.DropTopology('edgeTrigger');
 
 SELECT topology.CreateTopology('2dAgain', -1, 0, false) > 0;
 SELECT topology.CreateTopology('2dLarge.2', -1, 0, false, 0, true) > 0;
@@ -49,4 +86,3 @@ SELECT topology.DropTopology('3dLarge.2');
 -- Exceptions
 SELECT topology.CreateTopology('public');
 SELECT topology.CreateTopology('topology');
-

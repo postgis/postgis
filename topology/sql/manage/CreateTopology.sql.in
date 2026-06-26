@@ -24,6 +24,18 @@
 -- Availability: 3.6.0
 -- Replaces CreateTopology(varchar, integer, float8, boolean) deprecated in 3.6.0
 --
+CREATE OR REPLACE FUNCTION topology._update_edge_data_abs_next_edges()
+RETURNS trigger
+AS
+$BODY$
+BEGIN
+  NEW.abs_next_left_edge := abs(NEW.next_left_edge);
+  NEW.abs_next_right_edge := abs(NEW.next_right_edge);
+  RETURN NEW;
+END;
+$BODY$
+LANGUAGE 'plpgsql';
+
 CREATE OR REPLACE FUNCTION topology.CreateTopology(atopology name, srid integer DEFAULT 0, prec float8 DEFAULT 0, hasZ boolean DEFAULT false, topoid integer default 0, usesLargeIDs boolean default false)
 RETURNS integer
 AS
@@ -200,16 +212,11 @@ BEGIN
       COMMENT ON COLUMN %1$I.edge.geom IS
       'The geometry of the edge';
 
-      -- edge standard view (insert rule)
-      CREATE RULE edge_insert_rule AS
-      ON INSERT TO %1$I.edge
-      DO INSTEAD INSERT into %1$I.edge_data
-      VALUES (
-        NEW.edge_id, NEW.start_node, NEW.end_node,
-        NEW.next_left_edge, abs(NEW.next_left_edge),
-        NEW.next_right_edge, abs(NEW.next_right_edge),
-        NEW.left_face, NEW.right_face, NEW.geom
-      );
+      CREATE TRIGGER edge_data_abs_next_edges
+      BEFORE INSERT OR UPDATE OF next_left_edge, next_right_edge
+      ON %1$I.edge_data
+      FOR EACH ROW
+      EXECUTE FUNCTION topology._update_edge_data_abs_next_edges();
 
       ------- Add support indices supporting edge linking foreign keys
       ------- See https://trac.osgeo.org/postgis/ticket/2083#comment:20
