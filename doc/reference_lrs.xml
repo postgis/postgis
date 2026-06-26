@@ -546,7 +546,7 @@ segments AS (
          lead(fraction) OVER (ORDER BY fraction) AS end_fraction
   FROM ordered
 )
-SELECT row_number() OVER () AS segment_id,
+SELECT row_number() OVER (ORDER BY start_fraction) AS segment_id,
        ST_AsText(ST_LineSubstring(line, start_fraction, end_fraction)) AS geom
 FROM data
 CROSS JOIN segments
