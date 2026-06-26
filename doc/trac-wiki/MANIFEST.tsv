@@ -25,14 +25,10 @@ raster	PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test	https://trac.os
 project-history	RFC/RFC-1	https://trac.osgeo.org/postgis/wiki/RFC/RFC-1	doc/trac-wiki/project-history/RFC_RFC-1.tracwiki	9135	142
 user	UsersWikiFeaturesOfPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiFeaturesOfPostgis	doc/trac-wiki/user/UsersWikiFeaturesOfPostgis.tracwiki	3613	48
 user	UsersWikiMain	https://trac.osgeo.org/postgis/wiki/UsersWikiMain	doc/trac-wiki/user/UsersWikiMain.tracwiki	12533	176
-user	UsersWikiPgRasterDesign	https://trac.osgeo.org/postgis/wiki/UsersWikiPgRasterDesign	doc/trac-wiki/user/UsersWikiPgRasterDesign.tracwiki	316	3
-user	UsersWikiPgRasterSqlInterface	https://trac.osgeo.org/postgis/wiki/UsersWikiPgRasterSqlInterface	doc/trac-wiki/user/UsersWikiPgRasterSqlInterface.tracwiki	15087	244
-user	UsersWikiPgRasterStorageModels	https://trac.osgeo.org/postgis/wiki/UsersWikiPgRasterStorageModels	doc/trac-wiki/user/UsersWikiPgRasterStorageModels.tracwiki	895	12
 user	UsersWikiRasterNotes	https://trac.osgeo.org/postgis/wiki/UsersWikiRasterNotes	doc/trac-wiki/user/UsersWikiRasterNotes.tracwiki	6864	67
 user	UsersWikiSprint2009Notes	https://trac.osgeo.org/postgis/wiki/UsersWikiSprint2009Notes	doc/trac-wiki/user/UsersWikiSprint2009Notes.tracwiki	3237	112
 user	UsersWikiTIGERGeocoderToDo	https://trac.osgeo.org/postgis/wiki/UsersWikiTIGERGeocoderToDo	doc/trac-wiki/user/UsersWikiTIGERGeocoderToDo.tracwiki	1304	23
 user	UsersWikiWishList	https://trac.osgeo.org/postgis/wiki/UsersWikiWishList	doc/trac-wiki/user/UsersWikiWishList.tracwiki	7741	86
-user	UsersWikiwktrasterfunctions	https://trac.osgeo.org/postgis/wiki/UsersWikiwktrasterfunctions	doc/trac-wiki/user/UsersWikiwktrasterfunctions.tracwiki	2191	48
 raster	WKTRaster	https://trac.osgeo.org/postgis/wiki/WKTRaster	doc/trac-wiki/raster/WKTRaster.tracwiki	24838	225
 raster	WKTRaster/Documentation01	https://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01	doc/trac-wiki/raster/WKTRaster_Documentation01.tracwiki	35232	512
 raster	WKTRaster/FAQ	https://trac.osgeo.org/postgis/wiki/WKTRaster/FAQ	doc/trac-wiki/raster/WKTRaster_FAQ.tracwiki	6143	41
