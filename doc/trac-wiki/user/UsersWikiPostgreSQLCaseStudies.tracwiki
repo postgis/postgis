@@ -1,6 +1,0 @@
-= PostgreSQL Case Studies =
-
-This is a collection of links to papers and sites about implementations of PostgreSQL, not necessarily PostGIS.  I think it makes for interesting reading, since much of what one uses PostGIS for is tightly linked to PostgreSQL capabilities.
-
- * http://images.omniti.net/omniti.com/~jesus/misc/BBPostgres.pdf
- * http://www.postgresql.org/about/casestudies
