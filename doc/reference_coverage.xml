@@ -291,6 +291,10 @@ CREATE TABLE example_clean AS
 
       <para>To simplify only the "internal" edges of the coverage (those that are shared by two polygons) set the <parameter>simplifyBoundary</parameter> parameter to false.</para>
 
+      <para>Use this function to simplify adjacent polygon layers when shared boundaries must remain
+      edge-matched. For a single geometry where only self-intersection and ring validity matter, see
+      <xref linkend="ST_SimplifyPreserveTopology"/>.</para>
+
       <note><para>If the input is not a valid coverage there may be unexpected artifacts in the output (such as boundary intersections, or separated boundaries which appeared to be shared).
       Use <xref linkend="ST_CoverageInvalidEdges"/> to determine if a coverage is valid.
       </para></note>
