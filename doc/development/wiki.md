@@ -55,7 +55,6 @@ Trac or retired from the repository import are tracked in the
 | `WKTRaster_GDALDriverSpecificationWorking` | `doc/development/internals/raster-gdal-driver.md`; the old GDAL driver working spec was compressed into the maintained boundary between PostGIS raster storage/catalog contracts and the external GDAL `PostGISRaster` driver |
 | `DevGUC` | `doc/development/release/api.md` |
 | `DevWikiGardenTest` | `doc/development/testing.md` |
-| `UsersWikiMakeCheckConsiderations` | `doc/development/environment/ubuntu.md`, `doc/development/testing.md` |
 | `ContinuousIntegration` | `ci/`, `doc/development/testing/ci.md`, `doc/development/environment/ubuntu.md`, and `doc/development/environment/docker.md` |
 | `HOWTO_RELEASE` | `doc/development/release-process.md`, `doc/development/release/versioning.md`, `doc/development/release/deprecation.md` |
 | `STYLE` | `doc/development/style.md` |
