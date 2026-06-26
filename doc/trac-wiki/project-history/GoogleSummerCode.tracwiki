@@ -27,7 +27,7 @@ More information about GDAL PostGIS Raster driver [http://trac.osgeo.org/gdal/wi
 
     2) '''ST_AsDensity''' takes a point or line geometry coverage and first assign a count of those features to every pixels of a raster coverage and then apply a smoothing filter (using the existing one raster version of neighbour ST_MapAlgebra). [http://www.spatialanalysisonline.com/output/html/Pointdensity.html Density functions]  allow summarizing or simplifying a point or line dataset.
 
-    3) '''ST_Distance''' takes a point or a geometry coverage and compute a raster representing the distance to the nearest geometry. Another function ST_CostDistance() compute the smallest distance to the geometry following a cost raster. This project was [http://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools proposed by Qing Liu and accepted by the GSoC program].
+    3) '''ST_Distance''' would take a point or a geometry coverage and compute a raster representing the distance to the nearest geometry. Another function, ST_CostDistance(), would compute the smallest distance to the geometry following a cost raster. Qing Liu's 2012 GSoC project explored this raster distance-analysis idea; any future first-class nearest-source or cost-weighted distance raster API needs a fresh design ticket.
 
 == PostGIS geometry ==
 
@@ -124,7 +124,7 @@ Check #2045 for more information
 
 == PostGIS shp2pgsql /shp2pgsql-gui loader ==
 
-'''1) Modify shp2pgsql to emit DROP TABLE IF EXISTS insted of just DROP TABLE'''
+'''1) Modify shp2pgsql to emit DROP TABLE IF EXISTS instead of just DROP TABLE'''
 
 Mentor: Regina Obe[[BR]]
 
