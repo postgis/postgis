@@ -1,9 +1,0 @@
-
-= shp2pgsql Examples =
-
-
-shp2pgsql -s <SRID> shapefile nameoftable > sqlfileforimport.sql
-
-shp2pgsql -s 26986  cities tblcities > cities.sql
-
-In the above we are outputting an shp file called cities.shp to a table tblcities and dumping the sql insert statements to a file called cities.sql.  The Spatial Ref system is 26986 (which if you look in spatial_ref_sys is Massachusetts State Plane NAD 83 meters).
