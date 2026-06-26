@@ -55,7 +55,6 @@ Trac or retired from the repository import are tracked in the
 | `WKTRaster_GDALDriverSpecificationWorking` | `doc/development/internals/raster-gdal-driver.md`; the old GDAL driver working spec was compressed into the maintained boundary between PostGIS raster storage/catalog contracts and the external GDAL `PostGISRaster` driver |
 | `DevGUC` | `doc/development/release/api.md` |
 | `DevWikiGardenTest` | `doc/development/testing.md` |
-| `ContinuousIntegration` | `ci/`, `doc/development/testing/ci.md`, `doc/development/environment/ubuntu.md`, and `doc/development/environment/docker.md` |
 | `HOWTO_RELEASE` | `doc/development/release-process.md`, `doc/development/release/versioning.md`, `doc/development/release/deprecation.md` |
 | `STYLE` | `doc/development/style.md` |
 | Trac `roadmap` and ticket reports | `doc/development/maintenance.md`, `doc/development/release.md`, and Trac itself for live planning |
@@ -75,8 +74,8 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 13 | `doc/trac-wiki/development/` |
-| User wiki | 17 | `doc/trac-wiki/user/` |
+| Development | 5 | `doc/trac-wiki/development/` |
+| User wiki | 0 | none |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Project history | 15 | `doc/trac-wiki/project-history/` |
 
