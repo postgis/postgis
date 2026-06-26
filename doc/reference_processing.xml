@@ -713,13 +713,24 @@ POINT(0.5 1)
 SELECT ST_AsText(ST_Centroid(g))
 FROM  ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 2, -1 1,0 0),(0 0, 0.5 0, 1 0),CIRCULARSTRING( 1 0, 2 1, 1 2),(1 2, 0.5 2, 0 2))' ) AS g;
 ------------------------------------------
-POINT(0.5 1)</screen>
+POINT(0.5 1)
+
+-- Centroids of the parts of a MultiPolygon
+SELECT ST_AsText(ST_Collect(ST_Centroid(geom) ORDER BY path))
+FROM ST_Dump('MULTIPOLYGON (
+    ((0 0, 0 1, 1 1, 1 0, 0 0)),
+    ((2 2, 2 3, 3 3, 3 2, 2 2))
+  )'::geometry);
+--------------------------
+MULTIPOINT((0.5 0.5),(2.5 2.5))
+
+</screen>
     </refsection>
 
     <refsection>
       <title>See Also</title>
 
-      <para><xref linkend="ST_PointOnSurface"/>, <xref linkend="ST_GeometricMedian"/></para>
+      <para><xref linkend="ST_Collect"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_PointOnSurface"/>, <xref linkend="ST_GeometricMedian"/></para>
     </refsection>
   </refentry>
 
