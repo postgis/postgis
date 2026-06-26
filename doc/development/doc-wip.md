@@ -191,8 +191,7 @@ retiring that draft-comment page:
   security-release advance warning and packager contact lists should be folded
   into release docs; whether GEOS should expose a git hash for
   `postgis_full_version()`; whether AI skills files belong in this repository
-  long term; and whether SFCGAL 2.3.0 Debian regressions from ticket #6081 were
-  were fixed before the next alpha.
+  long term.
 * `PRRC_kwDOAEM_Wc7PPsd_`, `PRRC_kwDOAEM_Wc7PPtGb`: keep the FOSS4G sprint note
   on Trac or in history, but extract any not-yet-implemented ideas into a
   maintained list.
