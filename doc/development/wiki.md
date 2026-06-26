@@ -76,10 +76,10 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 14 | `doc/trac-wiki/development/` |
-| User wiki | 37 | `doc/trac-wiki/user/` |
+| Development | 13 | `doc/trac-wiki/development/` |
+| User wiki | 35 | `doc/trac-wiki/user/` |
 | Raster | 20 | `doc/trac-wiki/raster/` |
-| Project history | 17 | `doc/trac-wiki/project-history/` |
+| Project history | 15 | `doc/trac-wiki/project-history/` |
 
 TitleIndex groups intentionally not imported into the corpus:
 
