@@ -42,11 +42,6 @@ Use these migration decisions as the source pattern:
 
 Batch the remaining sweep so each commit stays reviewable:
 
-* Raster legacy pages: audit the remaining
-  `PostGIS_Raster_SoC_Idea_2012/*` pages against current raster manual
-  coverage, `raster2pgsql`, server-side GDAL configuration, and current
-  raster internals notes. Retire old implementation dumps unless they expose a
-  still-open design question.
 * Project-history pages: audit remaining release announcements, code sprint,
   development-cycle, RFC, and extension-path pages for unresolved durable
   decisions. Keep point-in-time records archived and move only live policy into
@@ -133,6 +128,14 @@ Batch the remaining sweep so each commit stays reviewable:
   `ST_MakeEmptyCoverage`, map algebra, raster statistics aggregates,
   `ST_IsEmpty`, `ST_HasNoBand`, and `ST_BandIsNoData`, but those old proposals
   are not a maintained contract as written.
+* Decide whether PostGIS should grow first-class raster distance-surface tools
+  or leave those workflows to map algebra, geometry KNN, `ST_InterpolateRaster`,
+  GDAL, and downstream processing. The retired 2012 raster SoC bundle proposed
+  `ST_EuclideanDistance` for nearest-source distance rasters and
+  `ST_CostDistance` for cost-weighted distance over a cost raster; current
+  raster docs cover interpolation, neighborhood callbacks such as
+  `ST_InvDistWeight4ma` and `ST_MinDist4ma`, and raster/vector conversion
+  pieces, but not a maintained Euclidean-distance or cost-distance raster API.
 
 The following ideas were extracted from `GoogleSeasonDocs2019` before leaving
 that historical planning page on Trac:
