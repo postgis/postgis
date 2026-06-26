@@ -58,6 +58,35 @@ argument in the cached variant. That rect-tree path is separate from the
 `lw_dist2d_fast_ptarray_ptarray` projection-sort path preserved in
 `liblwgeom/measures.c`.
 
+## Subgeometry Pruning
+
+The old `NewDistCalcSubGeom` note described flattening nested collections into
+subgeometry boxes, ordering candidate box pairs, and stopping once the next
+candidate box distance could no longer improve the best exact distance. That
+specific PostGIS 1.4-era workflow should not be republished as current code,
+but the pruning idea lives on in the rect-tree implementation.
+
+`rect_tree_from_lwgeom` builds a `RECT_NODE` tree for points, lines, polygons,
+curves, multis, collections, polyhedral surfaces, TINs, and triangles. Point
+arrays become one leaf per edge. Polygon rings and collection children become
+subtrees. Collection-like children are sorted by a z-order hash before merging
+so nearby boxes tend to live in nearby tree nodes.
+
+`rect_tree_distance_tree` checks area containment cases up front, initializes a
+global minimum and maximum distance state, and then recurses through tree node
+pairs. During recursion, `rect_node_min_distance` supplies a lower bound for a
+node pair and `rect_node_max_distance` can tighten the global upper bound. If a
+node pair's minimum possible distance is already greater than the current upper
+bound, that pair is pruned without descending to every segment. When both nodes
+are leaves, `rect_leaf_node_distance` runs the exact point, segment, or arc
+distance calculation.
+
+Before descending, `rect_tree_node_sort` orders child nodes by squared distance
+from the other node's center. That keeps promising child pairs earlier in the
+search, which helps tighten the global bounds sooner. This is the maintained
+successor to the old page's "sort subgeometries by bounding boxes, then stop
+when the boxes are too far away" idea.
+
 ## Current 3D Flow
 
 The SQL wrappers call `lwgeom_mindistance3d`,
@@ -110,3 +139,8 @@ The old `NewDistCalcGeom2Geom` diagrams are also recovered under
 `doc/trac-wiki/ATTACHMENTS.tsv`. The maintained summary above keeps the part
 that still matches current code and leaves the step-by-step PostGIS 1.5 wiki
 walkthrough in the archive.
+
+The old `NewDistCalcSubGeom` illustrations are recovered under
+`doc/development/internals/images/distance/subgeom/` and recorded in
+`doc/trac-wiki/ATTACHMENTS.tsv`. The maintained summary above maps the surviving
+subgeometry-pruning idea to the current rect-tree code.
