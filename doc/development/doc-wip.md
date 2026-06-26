@@ -110,6 +110,15 @@ Batch the remaining sweep so each commit stays reviewable:
   whether PostGIS should ever carry an inferred or metadata-backed precision
   model for ordinary geometries; that needs a design ticket before becoming
   maintained documentation.
+* `TopologyCopy`: current `CopyTopology` copies primitives, topology layers,
+  TopoGeometry sequences, and TopoGeometry definitions into a new topology
+  schema, using synthetic `topology.layer` schema/table/column values for
+  copied TopoGeometries that are not bound to user tables. The
+  `pgtopo_export`/`pgtopo_import` tools also cover dump/restore, layer skipping,
+  and layer-only relinking workflows. The old unimplemented idea that remains
+  is a first-class detached-layer API, with explicit attach/detach/drop
+  functions or normalized metadata for conceptual TopoGeometry layers. That
+  needs a design ticket before becoming maintained developer documentation.
 
 ## Documentation Backlog
 
