@@ -55,8 +55,6 @@ user	UsersWikiComputeMultiCentroid	https://trac.osgeo.org/postgis/wiki/UsersWiki
 user	UsersWikiCoveragesAndPostgis	https://trac.osgeo.org/postgis/wiki/UsersWikiCoveragesAndPostgis	doc/trac-wiki/user/UsersWikiCoveragesAndPostgis.tracwiki	16366	94
 user	UsersWikiCreatingTopoGeometryObjects	https://trac.osgeo.org/postgis/wiki/UsersWikiCreatingTopoGeometryObjects	doc/trac-wiki/user/UsersWikiCreatingTopoGeometryObjects.tracwiki	1757	42
 user	UsersWikiDistanceInteriorPoint	https://trac.osgeo.org/postgis/wiki/UsersWikiDistanceInteriorPoint	doc/trac-wiki/user/UsersWikiDistanceInteriorPoint.tracwiki	359	8
-user	UsersWikiExamplesInsidePolygon	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesInsidePolygon	doc/trac-wiki/user/UsersWikiExamplesInsidePolygon.tracwiki	1069	42
-user	UsersWikiExamplesInsidePolygon2	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesInsidePolygon2	doc/trac-wiki/user/UsersWikiExamplesInsidePolygon2.tracwiki	3010	104
 user	UsersWikiExamplesJoinTables	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesJoinTables	doc/trac-wiki/user/UsersWikiExamplesJoinTables.tracwiki	732	22
 user	UsersWikiExamplesNetworkTopology	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesNetworkTopology	doc/trac-wiki/user/UsersWikiExamplesNetworkTopology.tracwiki	4535	126
 user	UsersWikiExamplesOverlayTables	https://trac.osgeo.org/postgis/wiki/UsersWikiExamplesOverlayTables	doc/trac-wiki/user/UsersWikiExamplesOverlayTables.tracwiki	5643	179
