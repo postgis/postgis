@@ -49,11 +49,20 @@ under `PROJECTS`. Their durable value is the separation between a release
 packaging environment and a lightweight pull-request build, not the exact
 commands.
 
+The older `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`,
+`DevWikiWinVC_15`, and `DevWikiWinNSIS` notes were even more tightly bound to
+PostGIS 1.5 and 2.0, PostgreSQL 9.0/9.1, Windows XP, Visual Studio 2008/2010,
+SourceForge-era MinGW/MSYS installers, hand-edited dependency headers, and
+Stack Builder/NSIS packaging. Their surviving lesson is that Windows release
+packaging needs an explicit dependency bundle, installer payload list, and
+regression-test environment. In current repository terms, those responsibilities
+belong to Winnie and the MSYS2 workflow, not to standalone wiki recipes.
+
 Do not publish those steps as current instructions. The current analogue for
 prepared dependency bundles, `OS_BUILD`, `MINGHOST`, `GCC_TYPE`, and versioned
 dependency prefixes is Winnie, especially `ci/winnie/winnie_common.sh`. The
 current pull-request smoke build is the MSYS2 workflow, which installs
 dependencies from MSYS2 packages and should not copy source-build bootstrap
 steps from the old wiki pages. Current Windows fixes should update the relevant
-MSYS2 workflow, Winnie script, or shared build logic, then document any durable
-rule here.
+MSYS2 workflow, Winnie build/package/regression script, or shared build logic,
+then document any durable rule here.
