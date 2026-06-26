@@ -1,13 +1,11 @@
 category	page	source	file	bytes	lines
 development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/ContinuousIntegration	doc/trac-wiki/development/ContinuousIntegration.tracwiki	23846	119
-development	DevWikiNbEditor	https://trac.osgeo.org/postgis/wiki/DevWikiNbEditor	doc/trac-wiki/development/DevWikiNbEditor.tracwiki	0	0
 development	DevWikiPostGISCoding	https://trac.osgeo.org/postgis/wiki/DevWikiPostGISCoding	doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki	11023	149
 development	DevWikiWinMingWSys_20	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingWSys_20	doc/trac-wiki/development/DevWikiWinMingWSys_20.tracwiki	17837	449
 development	DevWikiWinMingWSys_20_MSVC	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingWSys_20_MSVC	doc/trac-wiki/development/DevWikiWinMingWSys_20_MSVC.tracwiki	11441	376
 development	DevWikiWinNSIS	https://trac.osgeo.org/postgis/wiki/DevWikiWinNSIS	doc/trac-wiki/development/DevWikiWinNSIS.tracwiki	1202	21
 development	DevWikiWinVC_15	https://trac.osgeo.org/postgis/wiki/DevWikiWinVC_15	doc/trac-wiki/development/DevWikiWinVC_15.tracwiki	4118	70
 project-history	GoogleSummerCode	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode	doc/trac-wiki/project-history/GoogleSummerCode.tracwiki	8944	159
-project-history	GoogleSummerCode2012	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2012	doc/trac-wiki/project-history/GoogleSummerCode2012.tracwiki	60	0
 project-history	GoogleSummerCode2018	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2018	doc/trac-wiki/project-history/GoogleSummerCode2018.tracwiki	1740	33
 project-history	GoogleSummerCode2019	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2019	doc/trac-wiki/project-history/GoogleSummerCode2019.tracwiki	3951	54
 project-history	GoogleSummerCode2021	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2021	doc/trac-wiki/project-history/GoogleSummerCode2021.tracwiki	3504	51
@@ -24,11 +22,8 @@ raster	PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools	https://trac.osgeo.o
 raster	PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/code	https://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/code	doc/trac-wiki/raster/PostGIS_Raster_SoC_Idea_2012_Distance_Analysis_Tools_code.tracwiki	51264	1127
 raster	PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/document	https://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/document	doc/trac-wiki/raster/PostGIS_Raster_SoC_Idea_2012_Distance_Analysis_Tools_document.tracwiki	21694	330
 raster	PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test	https://trac.osgeo.org/postgis/wiki/PostGIS_Raster_SoC_Idea_2012/Distance_Analysis_Tools/test	doc/trac-wiki/raster/PostGIS_Raster_SoC_Idea_2012_Distance_Analysis_Tools_test.tracwiki	25821	498
-project-history	RCDownloads	https://trac.osgeo.org/postgis/wiki/RCDownloads	doc/trac-wiki/project-history/RCDownloads.tracwiki	262	3
 project-history	RFC/RFC-1	https://trac.osgeo.org/postgis/wiki/RFC/RFC-1	doc/trac-wiki/project-history/RFC_RFC-1.tracwiki	9135	142
 user	SpatiaLite	https://trac.osgeo.org/postgis/wiki/SpatiaLite	doc/trac-wiki/user/SpatiaLite.tracwiki	4311	79
-user	UserWiki	https://trac.osgeo.org/postgis/wiki/UserWiki	doc/trac-wiki/user/UserWiki.tracwiki	13	0
-user	UsersWiki	https://trac.osgeo.org/postgis/wiki/UsersWiki	doc/trac-wiki/user/UsersWiki.tracwiki	20	0
 user	UsersWikiBuildPolygonsWithLines	https://trac.osgeo.org/postgis/wiki/UsersWikiBuildPolygonsWithLines	doc/trac-wiki/user/UsersWikiBuildPolygonsWithLines.tracwiki	3155	71
 user	UsersWikiCardinalDirection	https://trac.osgeo.org/postgis/wiki/UsersWikiCardinalDirection	doc/trac-wiki/user/UsersWikiCardinalDirection.tracwiki	1864	62
 user	UsersWikiComputeMultiCentroid	https://trac.osgeo.org/postgis/wiki/UsersWikiComputeMultiCentroid	doc/trac-wiki/user/UsersWikiComputeMultiCentroid.tracwiki	837	30
