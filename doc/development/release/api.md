@@ -34,3 +34,37 @@ documented SQL expression.
 When a setting is still the right interface, document the default, scope,
 supported values, and upgrade impact in the manual, and add regression coverage
 for the default behavior.
+
+## Standards Conformance
+
+When a patch changes constructors, parsers, serializers, predicates,
+measurements, validity, simplicity, overlay, or dimensional behavior, review
+the change against the standards and PostGIS extensions that define the
+current public contract.
+
+Check the user-visible behavior against the relevant OGC/SFS, ISO 19125,
+SQL/MM, WKT, WKB, EWKT, EWKB, SRID, and SQL/MM type-code expectations. PostGIS
+also has deliberate extensions and historical compatibility behavior, so do
+not normalize behavior only because one standard spelling exists. Document
+the chosen behavior in the manual when it can surprise users.
+
+Specific review points:
+
+* Keep empty-geometry behavior documented and tested for constructors,
+  predicates, validity checks, accessors, measurements, and overlay or
+  constructive functions. See
+  [Empty geometry semantics](../internals/empty-geometry.md) for the current
+  implementation map.
+* Be explicit when a spatial predicate, overlay, or measurement intentionally
+  uses 2D semantics for higher-dimensional input. Add or point to a separate
+  3D function when users need true 3D behavior.
+* Keep validity and simplicity documentation explicit about geometry-type
+  criteria, repeated points, invalid input handling, parser acceptance, and
+  repair guidance.
+* Treat precision-model changes as API changes. Current ordinary geometries do
+  not carry inferred precision metadata; explicit overlay grid size, topology
+  precision, MVT quantization, and tolerance arguments are separate API
+  surfaces. See
+  [Precision and tolerance internals](../internals/precision-tolerance.md).
+* When changing WKT/WKB parsing or output, test OGC, ISO, SQL/MM, EWKT, EWKB,
+  SRID, empty-geometry, dimensionality, and type-code compatibility together.
