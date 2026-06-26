@@ -47,7 +47,6 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiMain/DevForDummy` | `doc/development/contributing.md`, `doc/development/style.md` |
 | `DevWikiDockerTesting` | `doc/development/environment/docker.md` |
 | `DevWikiComitGuidelines` | `doc/development/maintenance/commit-guidelines.md`, `doc/development/maintenance.md`, `doc/development/governance.md`, plus published RFC-5 at <https://postgis.net/development/rfcs/rfc05/> |
-| `DevWikiPostGISCoding` | `doc/development/internals/postgresql.md`, `doc/development/internals/memory.md`; original source in `doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki` |
 | `DevWikiEmptyGeometry` | `doc/development/internals/empty-geometry.md`; current behavior was reconciled against code and regression tests |
 | `DevWikiAffineParameters` | `doc/development/internals/raster-affine.md`; original images recovered under `doc/development/internals/images/raster-affine/` |
 | `DevWikiRealParameters` | `doc/development/internals/raster-physical-parameters.md`; original images recovered under `doc/development/internals/images/raster-physical-parameters/` |
@@ -74,7 +73,7 @@ Imported corpus:
 
 | Category | Pages | Location |
 |----------|-------|----------|
-| Development | 5 | `doc/trac-wiki/development/` |
+| Development | 4 | `doc/trac-wiki/development/` |
 | User wiki | 0 | none |
 | Raster | 20 | `doc/trac-wiki/raster/` |
 | Project history | 15 | `doc/trac-wiki/project-history/` |
