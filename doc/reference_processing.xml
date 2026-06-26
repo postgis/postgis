@@ -397,6 +397,41 @@ FROM closed;</programlisting>
 	                and check the result against the cartographic or analytical tolerance required by
 	                the application.</para>
 
+                <para>A small negative buffer can also be used as a heuristic to
+                find narrow polygon spikes. The query below compares how much
+                area and perimeter remain after erosion. A large
+                <varname>erosion_index</varname> indicates that the perimeter
+                dropped proportionally more than the area. This is only a
+                preselection aid; the threshold and buffer distance must be
+                chosen for the data units and the kind of spike being checked.</para>
+
+<programlisting>WITH sample(id, geom) AS (
+  VALUES
+    ('plain', 'POLYGON((0 0,10 0,10 10,0 10,0 0))'::geometry),
+    ('spike', 'POLYGON((0 0,10 0,10 10,5.2 10,5 16,4.8 10,0 10,0 0))'::geometry)
+),
+eroded AS (
+  SELECT id, geom, ST_Buffer(geom, -0.5) AS eroded_geom
+  FROM sample
+),
+scored AS (
+  SELECT id,
+         round((
+           ST_Area(eroded_geom) / ST_Area(geom) /
+           NULLIF(ST_Perimeter(eroded_geom) / ST_Perimeter(geom), 0)
+         )::numeric, 3) AS erosion_index
+  FROM eroded
+  WHERE NOT ST_IsEmpty(eroded_geom)
+)
+SELECT id, erosion_index, erosion_index &gt; 1.1 AS possible_spike
+FROM scored
+ORDER BY id;
+
+  id   | erosion_index | possible_spike
+-------+---------------+----------------
+ plain |         0.900 | f
+ spike |         1.147 | t</programlisting>
+
 	                <para>A variable-distance buffer can be approximated by buffering
 	                each vertex of a line by a distance interpolated along the line, building
 	                the convex hull for each consecutive pair of vertex buffers, and unioning
