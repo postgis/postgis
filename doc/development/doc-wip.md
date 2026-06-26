@@ -21,11 +21,6 @@ should leave draft state.
   text instead of RFC-1/RFC-5 commentary, and the umbrella project/service
   inventory now has its own page. Before this PR leaves draft, decide whether
   these governance pages should replace the public RFC layout on the website.
-* `PRRC_kwDOAEM_Wc7POljg`: the wiki migration map is intentionally temporary.
-  It is now separated from the durable module list as a draft-only migration
-  workspace. When every useful page has a maintained home or a recorded
-  retirement reason, remove the map and keep only the topic pages plus any
-  necessary archive pointer.
 ## Developer Deep Dives
 * `PRRC_kwDOAEM_Wc7PPrPX`: `SomeSplitting` was checked against the current
   split and subdivision APIs. `ST_Subdivide` covers the practical oversize
