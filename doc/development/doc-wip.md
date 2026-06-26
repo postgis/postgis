@@ -32,8 +32,6 @@ should leave draft state.
   necessary archive pointer.
 
 ## Developer Deep Dives
-* `PRRC_kwDOAEM_Wc7PPqUS`: `NewDistCalcSubGeom` still needs image recovery and
-  reconciliation with the current collection and rect-tree distance paths.
 * `PRRC_kwDOAEM_Wc7PPrPX`: `SomeSplitting` should be compressed to only ideas
   not already implemented.
 * `PRRC_kwDOAEM_Wc7PPr_S`: tolerance notes need comparison with current GEOS,
