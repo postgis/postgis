@@ -105,7 +105,7 @@ BEGIN
         ORDER BY f_table_schema, f_table_name, f_geometry_column
     LOOP
         EXECUTE format(
-            'SELECT count(*) FROM %I.%I WHERE NOT ST_IsValid(%I)',
+            'SELECT count(*) FROM %I.%I WHERE NOT ST_IsValid(%I, 0)',
             rec.f_table_schema,
             rec.f_table_name,
             rec.f_geometry_column
