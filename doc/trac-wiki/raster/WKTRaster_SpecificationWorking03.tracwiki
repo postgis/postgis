@@ -15,7 +15,7 @@
 
 == !RoadMap (in order of importance)(not every items have a description below) ==
 
-1) Have a stable and fast GDAL driver (see [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html driver's page], [http://trac.osgeo.org/gdal/query?status=assigned&status=new&status=reopened&order=priority&col=id&col=summary&col=status&col=owner&col=type&col=priority&col=milestone&keywords=~postgis_raster open tickets] and [http://trac.osgeo.org/postgis/wiki/WKTRaster/GDALDriverSpecificationWorking working specifications page]).
+1) Have a stable and fast GDAL driver (see [http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html driver's page] and [http://trac.osgeo.org/gdal/query?status=assigned&status=new&status=reopened&order=priority&col=id&col=summary&col=status&col=owner&col=type&col=priority&col=milestone&keywords=~postgis_raster open tickets]).
 
 ~~2) Break up RASTER_mapAlgebra2 so that the main engine is in rt_core instead of rt_pg.  This is needed for C-based aggregate functions that run against ST_MapAlgebra.~~
 

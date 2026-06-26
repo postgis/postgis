@@ -51,7 +51,6 @@ Trac or retired from the repository import are tracked in the
 | `DevWikiAffineParameters` | `doc/development/internals/raster-affine.md`; original images recovered under `doc/development/internals/images/raster-affine/` |
 | `DevWikiRealParameters` | `doc/development/internals/raster-physical-parameters.md`; original images recovered under `doc/development/internals/images/raster-physical-parameters/` |
 | `DevWikiSpatialCollectionTutorial` | `doc/development/internals/spatial-collections.md`; current code no longer has the old `SPATIAL_COLLECTION` API, so the maintained page records current geometry collection and raster/vector crossing paths |
-| `WKTRaster_GDALDriverSpecificationWorking` | `doc/development/internals/raster-gdal-driver.md`; the old GDAL driver working spec was compressed into the maintained boundary between PostGIS raster storage/catalog contracts and the external GDAL `PostGISRaster` driver |
 | `DevGUC` | `doc/development/release/api.md` |
 | `DevWikiGardenTest` | `doc/development/testing.md` |
 | `HOWTO_RELEASE` | `doc/development/release-process.md`, `doc/development/release/versioning.md`, `doc/development/release/deprecation.md` |
@@ -75,7 +74,7 @@ Imported corpus:
 |----------|-------|----------|
 | Development | 0 | none |
 | User wiki | 0 | none |
-| Raster | 20 | `doc/trac-wiki/raster/` |
+| Raster | 18 | `doc/trac-wiki/raster/` |
 | Project history | 15 | `doc/trac-wiki/project-history/` |
 
 TitleIndex groups intentionally not imported into the corpus:

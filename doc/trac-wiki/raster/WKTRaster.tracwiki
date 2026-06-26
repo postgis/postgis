@@ -10,7 +10,6 @@
 <UL>
 <LI><A href=http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding>Planning & Funding</A></LI>
 
-<LI><A href=http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01>Beta Documentation</A></LI>
 <LI><A href=http://postgis.net/docs/manual-dev/RT_reference.html>Function Reference</A></LI>
 <LI><A href=http://trac.osgeo.org/postgis/wiki/WKTRaster/FAQ>FAQ</A></LI>
 <LI><A href=http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationWorking03>Working Specs for Future Versions</A></LI>
@@ -87,7 +86,6 @@ This year again every projects submitted by OSGeo to the Google Summer of Code w
 
  * '''Documentation'''[[BR]][[BR]]
    * [http://postgis.net/docs/manual-svn/RT_reference.htm Function Reference] document in detail every raster function. Find also some more useful functions [http://trac.osgeo.org/postgis/browser/trunk/raster/scripts/plpgsql in this page].
-   * [wiki:WKTRaster/Documentation01 PostGIS Raster Documentation] was a first draft of the documentation. It tells more about the rationale behind PostGIS Raster.
 
  * '''Tutorials'''[[BR]][[BR]]
    * [http://libregis.org/2011/03/10/how-to-install-and-configure-postgis-raster-on-windows/ How to install and configure PostGIS Raster on Windows]
@@ -122,7 +120,6 @@ This year again every projects submitted by OSGeo to the Google Summer of Code w
 svn checkout https://svn.osgeo.org/postgis/trunk postgis-svn
 }}}
    * You can also download the latest development snapshot from: http://postgis.net/download/ [[BR]][[BR]]
-   * Compilation instructions are availables in the [wiki:WKTRaster/Documentation01 Documentation].[[BR]][[BR]]
    * Doxygen API reference is available on [http://postgis.net/documentation/postgis-doxygen/dirs.html PostGIS Current Reference], [http://postgis.net/documentation/raster-doxygen/ Old WKTRaster standalone] pages.[[BR]][[BR]]
    * See report with [report:17 All tickets reported to PostGIS Raster]
 
