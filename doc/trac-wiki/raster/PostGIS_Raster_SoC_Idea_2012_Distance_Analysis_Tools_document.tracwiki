@@ -29,9 +29,9 @@
 
 '''Synopsis'''
 [[BR]]
- ST_EuclideanDistance(refrast raster,pixeltype text,sourceschema text,sourcetable text,sourcegeomcolumn text,double precision = -1);
+ ST_EuclideanDistance(refrast raster,pixeltype text,sourceschema text,sourcetable text,sourcegeomcolumn text,snaptocentroid boolean,double precision = -1);
 
- ST_EuclideanDistance(width integer,height integer,rastulx float8,rastuly float8,rastscalex float8,rastscaley float8,rastskewx float8,rastskewy float8,rastsrid integer,rastndv float8,pixeltype text,sourceschema text,sourcetable text,sourcegeomcolumn text,double precision = -1);
+ ST_EuclideanDistance(width integer,height integer,rastulx float8,rastuly float8,rastscalex float8,rastscaley float8,rastskewx float8,rastskewy float8,rastsrid integer,rastndv float8,pixeltype text,sourceschema text,sourcetable text,sourcegeomcolumn text,snaptocentroid boolean,double precision = -1);
 [[BR]]
 
 '''Description'''
@@ -45,7 +45,7 @@
 
  If pixeltype is passed in, then the new raster will have a band of that pixel type. If pixeltype is passed NULL, then the new raster band will have the same pixel type as the reference raster band.
 
- In the reference raster variant, it will use the same nodatavalue as the reference raster. In the raster specifications variant where no reference raster is provided, both nodatavalue and pixeltype have to be passed in with a NOT NULL value.
+ In the reference raster variant, it will use the same nodatavalue as the reference raster. In the raster specifications variant where no reference raster is provided, pixeltype must be passed as a valid pixel type; if nodatavalue is NULL or outside the pixel type range, the function falls back to ST_MinPossibleValue(pixeltype).
 
 ----
 === Objectives ===
