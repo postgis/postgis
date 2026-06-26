@@ -74,7 +74,7 @@ Imported corpus:
 |----------|-------|----------|
 | Development | 0 | none |
 | User wiki | 0 | none |
-| Raster | 16 | `doc/trac-wiki/raster/` |
+| Raster | 13 | `doc/trac-wiki/raster/` |
 | Project history | 15 | `doc/trac-wiki/project-history/` |
 
 TitleIndex groups intentionally not imported into the corpus:
