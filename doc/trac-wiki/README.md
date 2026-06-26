@@ -15,8 +15,9 @@ path, byte count, and line count for every imported page. It now has only the
 header row because no `.tracwiki` pages remain imported.
 `ATTACHMENTS.tsv` records recovered Trac attachments with source URL,
 repository path, byte count, checksum, and Trac `Last-Modified` value. The
-attachment files live under `attachments/` with paths mirroring the Trac
-raw-attachment URL.
+recovered files that remain useful now live beside the maintained developer
+notes that use them; their rows stay here as provenance rather than as a Trac
+attachment tree.
 Pages that reviewers classified as Trac-only, completed, or superseded are
 intentionally absent from this corpus and recorded in the cleanup ledger.
 

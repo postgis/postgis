@@ -129,5 +129,5 @@ binary if autodetection cannot find ``gm``, ``magick``, or ``convert`` in
 For contributor workflow, local testing, and garden checks, see
 ``doc/development/``.
 
-The imported PostGIS-specific Trac wiki source corpus lives in
+The audited Trac wiki migration record and recovered attachments live in
 ``doc/trac-wiki/``.
