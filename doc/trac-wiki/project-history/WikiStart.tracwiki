@@ -4,8 +4,6 @@
 
 [[br]]
 
-See ContinuousIntegration for build status badges
-
 [[TOC]]
 == About PostGIS ==
 PostGIS is a geospatial extension for PostgreSQL. It allows map data to be stored, queried and analyzed within the database.  It is an [http://www.osgeo.org OSGeo] project.
