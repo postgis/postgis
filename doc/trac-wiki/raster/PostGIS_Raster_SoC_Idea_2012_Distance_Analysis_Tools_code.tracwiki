@@ -735,7 +735,7 @@ CREATE OR REPLACE FUNCTION ST_CostDistance(width integer,
     RETURNS raster AS
     $$
     DECLARE
-    maxdist ALIAS FOR $7;
+    maxdist ALIAS FOR $16;
     newrast raster;
         newwidth integer;
         newheight integer;
@@ -802,16 +802,16 @@ CREATE OR REPLACE FUNCTION ST_CostDistance(width integer,
 
         -- Set the new pixeltype
         newpixeltype := pixeltype;
-    -- If pixeltype not specified then use the pixeltype of the reference raster
+    -- If pixeltype not specified then use the pixeltype of the cost raster
         IF newpixeltype IS NULL THEN
-            newpixeltype := ST_BandPixelType(refrast, band);
+            newpixeltype := ST_BandPixelType(costrast, band);
         ELSIF newpixeltype != '1BB' AND newpixeltype != '2BUI' AND newpixeltype != '4BUI' AND newpixeltype != '8BSI' AND newpixeltype != '8BUI' AND
                newpixeltype != '16BSI' AND newpixeltype != '16BUI' AND newpixeltype != '32BSI' AND newpixeltype != '32BUI' AND newpixeltype != '32BF' AND newpixeltype != '64BF' THEN
             RAISE EXCEPTION 'ST_CostDistance: Invalid pixeltype "%". Aborting.', newpixeltype;
         END IF;
 
         -- Check for notada value
-        newnodatavalue := ST_BandNodataValue(refrast, band);
+        newnodatavalue := rastndv;
         IF newnodatavalue IS NULL OR newnodatavalue < ST_MinPossibleValue(newpixeltype) OR newnodatavalue > (-ST_MinPossibleValue(newpixeltype) - 1) THEN
             RAISE NOTICE 'ST_CostDistance: Reference raster do not have a nodata value or is out of range for the new raster pixeltype, nodata value for new raster set to the min value possible';
             newnodatavalue := ST_MinPossibleValue(newpixeltype);
