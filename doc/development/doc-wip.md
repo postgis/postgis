@@ -136,6 +136,16 @@ Batch the remaining sweep so each commit stays reviewable:
   raster docs cover interpolation, neighborhood callbacks such as
   `ST_InvDistWeight4ma` and `ST_MinDist4ma`, and raster/vector conversion
   pieces, but not a maintained Euclidean-distance or cost-distance raster API.
+* Decide whether old GSoC core ideas need fresh Trac tickets or should remain
+  closed as historical project planning: raster density-surface generation,
+  topology-aware `shp2pgsql`/`pgsql2shp` loading and dumping, a
+  no-new-primitives mode for `toTopoGeom`, topology-aware
+  `ST_EstimatedExtent`, `pgsql2shp` query export without temporary-table
+  privileges, and GiST build pre-sorting for PostGIS operator classes. Current
+  docs already cover adjacent pieces such as `ST_Snap` before `ST_Split`,
+  `ST_VoronoiPolygons`, `ST_VoronoiLines`, topology import/export tools,
+  `CopyTopology`, and normal loader/dumper usage, but these old project ideas
+  are not maintained specifications.
 
 The following ideas were extracted from `GoogleSeasonDocs2019` before leaving
 that historical planning page on Trac:
