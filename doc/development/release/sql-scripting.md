@@ -12,7 +12,7 @@ SQL API definitions live in:
 
 | Extension | Relevant files |
 |-----------|----------------|
-| `postgis` | `postgis/postgis.sql.in`, `postgis/geography.sql.in`, `postgis/postgis_brin.sql.in`, `postgis/postgis_spgist.sql.in` |
+| `postgis` | `postgis/postgis.sql.in`, `postgis/geography.sql.in`, `postgis/postgis_brin.sql.in`, `postgis/geography_brin.sql.in`, `postgis/postgis_spgist.sql.in` |
 | `postgis_raster` | `raster/rt_pg/rtpostgis.sql.in` |
 | `postgis_sfcgal` | `sfcgal/sfcgal.sql.in` |
 | `postgis_topology` | `topology/sql/*.sql.in` |
