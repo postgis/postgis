@@ -85,6 +85,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           GeometryCollections (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml
           (Darafei Praliaskouski)
+ - #6087, Add a repository-owned CI status checker and static dashboard
+          generator (Darafei Praliaskouski)
 
 * Bug Fixes *
 
