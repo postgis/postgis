@@ -156,9 +156,3 @@ retiring that draft-comment page:
   standards notes.
 * When changing WKT/WKB parsing or output, check OGC/SFS, ISO, SQL/MM, EWKT,
   EWKB, SRID, empty-geometry, and SQL/MM type-code compatibility together.
-
-## Project History and Planning
-
-* Follow up on the live-looking AI-skills item extracted from the June 16, 2026,
-  development meeting before removing draft status: whether AI skills files
-  belong in this repository long term.
