@@ -39,6 +39,13 @@ Route new work there unless the target is an explicit in-tree backpatch:
 | `address_standardizer` | <https://github.com/postgis/address_standardizer> |
 | `postgis_tiger_geocoder` | <https://git.osgeo.org/gitea/postgis/postgis_tiger_geocoder> |
 
+When old Trac wiki pages contain backlog, examples, or design notes for a
+split component, do not carry that material into core PostGIS developer docs
+only because it was historically on the PostGIS wiki. Check the current
+component repository first. Completed or superseded ideas should be recorded in
+the Trac cleanup ledger; still-relevant component work belongs as issues,
+design notes, or documentation in that component repository.
+
 ## Core Contributor Guidelines
 
 RFC-5, published at <https://postgis.net/development/rfcs/rfc05/>, records the
