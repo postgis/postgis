@@ -1,8 +1,0 @@
-= PostGIS Install Guide =
-The following is a guideline to install PostGIS onto various operating systems from either prebuilt packages (where maintained) or source.
-
-See the [wiki:UsersWikiPostgreSQLPostGIS PostGIS/PostgreSQL and other dependency matrix] that defines recommended versions of core dependencies for each version of PostGIS.
-
-* [wiki:UsersWikiPostGIS3 PostGIS 3 Series Guides]
-* [wiki:UsersWikiPostGIS2 PostGIS 2 Series Guides]
-* [wiki:UsersWikiPostGIS1 PostGIS 1 Series Guides]

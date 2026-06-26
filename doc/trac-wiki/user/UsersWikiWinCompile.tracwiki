@@ -1,7 +1,0 @@
-  * [wiki:DevWikiWinMingWSys_14_15 Compiling PostGIS 1.4 and 1.5 under Windows 32-bit using MingGW/Msys]
-  * [wiki:DevWikiWinVC_15 Compiling PostGIS 1.5 under VC++ (Express or Studio) (work in progress)]
-  * [wiki:DevWikiWinMingWSys_20 Compiling PostGIS 2.0 under Windows 32-bit using MingGW/Msys PG 8.4-9.1)]
-  * [wiki:DevWikiWinMingWSys_20_MSVC Compiling PostGIS 2.0 under Windows 32-bit using MingGW/MSYS and Visual C++]
-  * [wiki:DevWikiWinMingW64 Compiling PostGIS 2.0 under Windows using Mingw64/Msys (for 64-bit PG (9.0+) and 32-bit PG9.2+)]
-  * [wiki:DevWikiWinMingW64_21 Compiling PostGIS 2.1 under Windows using MinGW64 (for 64-bit and 32-bit PG9.2+)) -- WORK IN PROGRESS]
-  * [https://github.com/pramsey/postgis-build-windows PostGIS Build Windows scripts and instructions] -- although specific to 32-bit mingw64, pretty much most applies for building with mingw-w64 64-bit chain
