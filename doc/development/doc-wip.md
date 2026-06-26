@@ -47,10 +47,10 @@ Batch the remaining sweep so each commit stays reviewable:
   against the maintained developer docs and current source. Fold only material
   that still describes current workflow or internals.
 * Raster legacy pages: audit the remaining `WKTRaster*`,
-  `PostGIS_Raster_SoC_Idea_2012/*`, and user raster pages against current
-  raster manual coverage, `raster2pgsql`, server-side GDAL configuration, and
-  current raster internals notes. Retire beta specs and old SoC implementation
-  dumps unless they expose a still-open design question.
+  `PostGIS_Raster_SoC_Idea_2012/*`, and raster notes index page against
+  current raster manual coverage, `raster2pgsql`, server-side GDAL
+  configuration, and current raster internals notes. Retire beta specs and old
+  SoC implementation dumps unless they expose a still-open design question.
 * Remaining user cookbook pages: audit TIGER geocoder backlog material against
   the maintained manual and component repositories.
 * Remaining user landing and backlog pages: audit `UsersWikiMain`,
