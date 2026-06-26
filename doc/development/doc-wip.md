@@ -180,12 +180,6 @@ retiring that draft-comment page:
 
 ## Project History and Planning
 
-* `PRRC_kwDOAEM_Wc7PO3dX`: decide how historical meeting/event notes should be
-  preserved if Trac is eventually retired. The archive policy in
-  `doc/development/wiki/trac-cleanup.md` now covers historical discussion pages:
-  active work moves to tickets or maintained docs, unresolved technical ideas
-  are extracted before retirement, and the original discussion record stays in a
-  Trac or website archive.
 * Follow up on live-looking items extracted from the June 16, 2026, development
   meeting before removing draft status: whether GEOS should expose a git hash for
   `postgis_full_version()`; whether AI skills files belong in this repository

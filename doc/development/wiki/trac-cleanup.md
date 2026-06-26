@@ -22,13 +22,19 @@ durable decisions into maintained repository or website docs, and move still
 open work into Trac tickets, replacement issues, or `doc/development/doc-wip.md`
 before retiring the source page.
 
+Historical meeting, sprint, and event pages follow that archive rule. Keep the
+original notes as dated project history, extract unresolved technical ideas into
+current planning surfaces, and keep recurring workflow instructions in the
+maintained developer documentation rather than maintaining meeting minutes as
+living docs.
+
 ## Leave on Trac
 
 | Trac wiki page | Reason |
 |----------------|--------|
 | `DevelopmentDiscussion` | Historical PostGIS 2.0 discussion scratch page. Completed topics such as the raster merge and serialization migration are release history; still-open research themes were extracted into `doc/development/doc-wip.md`. Keep the original discussion record in the archive rather than republishing it as current developer guidance. |
 | `DevFOSS4GCodeSprintNotes` | Historical FOSS4G sprint agenda and release-planning notes. Completed and superseded items were checked against current code and docs, including GML 3 output, `toTopoGeom`, the C `raster2pgsql` loader, raster SRID metadata detection, raster statistics aggregates, and current box/index internals. The remaining research ideas, covering typed bounding boxes or envelopes, raster indexing through such boxes, weighted raster summary/statistics functions, and 3D visibility or line-of-sight APIs, were extracted into `doc/development/doc-wip.md`; keep the original meeting record as Trac history rather than maintained developer documentation. |
-| `DevWikiEvent` | Historical Trac index for PostGIS meetings and code sprints. Individual meeting/sprint pages remain historical records, but this navigation page should stay with the Trac archive rather than become maintained developer workflow documentation. |
+| `DevWikiEvent` | Historical Trac index for PostGIS meetings and code sprints. Individual meeting/sprint pages remain dated project-history records; unresolved technical ideas should move to current planning surfaces, and recurring workflow instructions should move to maintained developer docs. This navigation page should stay with the Trac archive rather than become maintained developer workflow documentation. |
 | `DevWikiISO19125` | Historical draft-comment page for ISO19125 questions. Current manual and code carry OGC/SFS and SQL/MM conformance references; still-open standards-conformance themes were extracted into `doc/development/doc-wip.md`. |
 | `DevWikiProvenanceReview` | Historical OSGeo incubation and provenance-review record. The page lists a point-in-time audit of vendored files and license notes; it should not be republished as current contributor guidance unless a fresh license/provenance audit is requested. |
 | `GoogleSeasonDocs2019` | Historical Google Season of Docs planning page. The page records 2019 mentors, links, and project framing; still-useful documentation-improvement ideas were extracted into `doc/development/doc-wip.md`. |
