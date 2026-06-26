@@ -1,8 +1,4 @@
 category	page	source	file	bytes	lines
-development	DevWikiWinMingWSys_20	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingWSys_20	doc/trac-wiki/development/DevWikiWinMingWSys_20.tracwiki	17837	449
-development	DevWikiWinMingWSys_20_MSVC	https://trac.osgeo.org/postgis/wiki/DevWikiWinMingWSys_20_MSVC	doc/trac-wiki/development/DevWikiWinMingWSys_20_MSVC.tracwiki	11441	376
-development	DevWikiWinNSIS	https://trac.osgeo.org/postgis/wiki/DevWikiWinNSIS	doc/trac-wiki/development/DevWikiWinNSIS.tracwiki	1202	21
-development	DevWikiWinVC_15	https://trac.osgeo.org/postgis/wiki/DevWikiWinVC_15	doc/trac-wiki/development/DevWikiWinVC_15.tracwiki	4118	70
 project-history	GoogleSummerCode	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode	doc/trac-wiki/project-history/GoogleSummerCode.tracwiki	8944	159
 project-history	GoogleSummerCode2018	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2018	doc/trac-wiki/project-history/GoogleSummerCode2018.tracwiki	1740	33
 project-history	GoogleSummerCode2019	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2019	doc/trac-wiki/project-history/GoogleSummerCode2019.tracwiki	3951	54
