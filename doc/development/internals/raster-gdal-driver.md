@@ -6,7 +6,7 @@ developer documentation here should explain the boundary and the PostGIS-side
 contracts rather than republish old GDAL driver working notes as current code
 documentation.
 
-The old Trac `WKTRaster_GDALDriverSpecificationWorking` page is useful mostly
+The old Trac `WKTRaster/GDALDriverSpecificationWorking` page is useful mostly
 as provenance for that boundary. Its current lessons are:
 
 * GDAL opens PostGIS raster data through the external `PostGISRaster` driver,
