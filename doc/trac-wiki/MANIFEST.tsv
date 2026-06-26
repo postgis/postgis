@@ -78,8 +78,6 @@ user	UsersWikiPostgreSQLCaseStudies	https://trac.osgeo.org/postgis/wiki/UsersWik
 user	UsersWikiPostgreSQLPostGIS	https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS	doc/trac-wiki/user/UsersWikiPostgreSQLPostGIS.tracwiki	5931	104
 user	UsersWikiQGIS	https://trac.osgeo.org/postgis/wiki/UsersWikiQGIS	doc/trac-wiki/user/UsersWikiQGIS.tracwiki	6832	77
 user	UsersWikiRasterNotes	https://trac.osgeo.org/postgis/wiki/UsersWikiRasterNotes	doc/trac-wiki/user/UsersWikiRasterNotes.tracwiki	6864	67
-user	UsersWikiSimplifyPreserveTopology	https://trac.osgeo.org/postgis/wiki/UsersWikiSimplifyPreserveTopology	doc/trac-wiki/user/UsersWikiSimplifyPreserveTopology.tracwiki	10683	315
-user	UsersWikiSimplifyWithTopologyExt	https://trac.osgeo.org/postgis/wiki/UsersWikiSimplifyWithTopologyExt	doc/trac-wiki/user/UsersWikiSimplifyWithTopologyExt.tracwiki	3615	105
 user	UsersWikiSpatialAlgorithmWebSites	https://trac.osgeo.org/postgis/wiki/UsersWikiSpatialAlgorithmWebSites	doc/trac-wiki/user/UsersWikiSpatialAlgorithmWebSites.tracwiki	379	6
 user	UsersWikiSpatialEJB3	https://trac.osgeo.org/postgis/wiki/UsersWikiSpatialEJB3	doc/trac-wiki/user/UsersWikiSpatialEJB3.tracwiki	604	7
 user	UsersWikiSplitPolygonWithLineString	https://trac.osgeo.org/postgis/wiki/UsersWikiSplitPolygonWithLineString	doc/trac-wiki/user/UsersWikiSplitPolygonWithLineString.tracwiki	5275	175
