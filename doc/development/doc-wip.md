@@ -15,10 +15,6 @@ should leave draft state.
 
 ## Structure Questions
 
-* `PRRC_kwDOAEM_Wc7POEs0`, `PRRC_kwDOAEM_Wc7POIRS`: the development environment
-  material is now split under `environment/ubuntu/` and `environment/docker/`.
-  Check whether the first-level directory should eventually be role-oriented,
-  as suggested in the PR discussion by strk.
 * `PRRC_kwDOAEM_Wc7POmvr`: root `CONTRIBUTING.md` is now only a forge entry
   point, contributor workflow has been flattened into
   `doc/development/contributing.md`, and maintainer-only procedures remain
