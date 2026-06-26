@@ -13,15 +13,8 @@ This draft PR is still a migration workspace. The notes below track review
 comments that need more content work or a maintainer decision before the branch
 should leave draft state.
 
-## Structure Questions
-
-* `PRRC_kwDOAEM_Wc7POSzg`, `PRRC_kwDOAEM_Wc7POUBR`,
-  `PRRC_kwDOAEM_Wc7POVRO`: governance still needs a final shape. The PSC
-  process and core-contributor rules are now written as maintained governance
-  text instead of RFC-1/RFC-5 commentary, and the umbrella project/service
-  inventory now has its own page. Before this PR leaves draft, decide whether
-  these governance pages should replace the public RFC layout on the website.
 ## Developer Deep Dives
+
 * `PRRC_kwDOAEM_Wc7PPrPX`: `SomeSplitting` was checked against the current
   split and subdivision APIs. `ST_Subdivide` covers the practical oversize
   geometry subdivision case, including a grid-size argument for deterministic
