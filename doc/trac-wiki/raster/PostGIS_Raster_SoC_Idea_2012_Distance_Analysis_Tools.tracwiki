@@ -2,7 +2,7 @@
 [[BR]]
 {{{
 #!html
-<b>Student:</b>&nbsp;&nbsp;<a href="mailto:liu.qing.1984@gmail.com">Qing Liu</a>
+<b>Student:</b>&nbsp;&nbsp;Qing Liu
 }}}
 [[BR]]
 '''Mentor:'' [http://www.cef-cfr.ca/index.php?n=Membres.PierreRacine Pierre Racine]
@@ -558,7 +558,7 @@ Maybe those two problems can resume to one if we would build a Delauney triangul
 <hr/>
 <b>Comment from PostGIS-Devel:</b>
 <p>
-<a href="mailto:pramsey@opengeo.org ">Paul Ramsey</a> Wrote:<br>
+Paul Ramsey wrote:<br>
 On the algorithm side, the first case is "OK", though of limited value
 I would imagine (most use cases will involve multiple inputs, and not
 just points).
