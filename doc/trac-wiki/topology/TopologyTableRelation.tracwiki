@@ -1,3 +1,0 @@
-== Topology Relation Table ==
-
-Each PostGIS topology contains a "relation" table which defines the composition of every `TopoGeometry` bound to the topology. For each `TopoGeometry` you have a set of `element_type/element_id` components. Interpretation of "element_type" depends on [wiki:TopologyTableLayer layer] definition: it is 1:Node, 2:Edge, 3:Face for non-hierarchical layers and a layer identifier for hierarchical layers.
