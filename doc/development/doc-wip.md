@@ -45,13 +45,6 @@ should leave draft state.
 
 ## Documentation Backlog
 
-* Decide whether the component-owned TIGER geocoder ideas retired from
-  `UsersWikiTIGERGeocoderToDo` should become issues in
-  <https://git.osgeo.org/gitea/postgis/postgis_tiger_geocoder>. The split
-  repository already documents and tests `geocode_intersection()`, but the old
-  Trac page also listed no-address/block geocoding, street-type fallback when a
-  parsed type is wrong, and caller-selectable match-level requirements. Those
-  should not stay as core PostGIS docs, but may still deserve component tickets.
 * Decide whether to create fresh topology data-model diagrams for the manual or
   website. The old `PostgisTopology_Data_Model` page only pointed to ticket
   #2578 attachments: 2013 slides for node/edge/face, TopoGeometry layer
