@@ -18,18 +18,11 @@ raw-attachment URL.
 Pages that reviewers classified as Trac-only, completed, or superseded are
 intentionally absent from this corpus and recorded in the migration map.
 
-Imported categories:
+Current imported category:
 
-* `development/` - developer wiki pages, code repository notes, CI notes, and
-  historical design discussions.
-* `user/` - user wiki recipes, examples, install notes, package notes, and
-  support references.
-* `raster/` - WKT Raster and PostGIS Raster specifications, tutorials, and
-  historical design notes.
-* `topology/` - topology primitive and example pages.
 * `project-history/` - RFCs, release planning, meeting notes, code sprints,
-  GSoC pages, and the old wiki landing page.
-* `source-hosts/` - source hosting and mirror reference pages.
+  extension-path notes, release-announcement history, and the old wiki landing
+  page.
 
 Trac engine documentation and generic wiki help pages, such as `TracInstall`,
 `TracWorkflow`, `InterWiki`, and `WikiFormatting`, are not copied here because

@@ -58,11 +58,9 @@ The project's website is [https://postgis.net]
  * [DevWikiMain Developer Wiki]
    * [wiki:DevWikiDockerTesting Docker Testing]
    * [wiki:DevWikiRFC PostGIS RFCs]
-   * [wiki:GoogleSummerCode2022 Google Summer of Code 2022]
-   * [wiki:GoogleSummerCode2021 Google Summer Of Code 2021]
-   * [wiki:GoogleSummerCode2019 Google Summer Of Code 2019]
-   * [wiki:GoogleSummerCode2018 Google Summer Of Code 2018]
-   * [wiki:GoogleSummerCode Google Summer Of Code 2013]
+   * Historical Google Summer of Code project-idea pages are recorded in the
+     cleanup ledger; current mentorship planning should use live Trac tickets,
+     mailing-list discussion, or the owning component repository.
    * [DevWikiEvent Code Sprint and Dev Meetings]
    * [wiki:PostGIS3]
 
