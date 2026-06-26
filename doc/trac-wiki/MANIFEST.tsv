@@ -1,5 +1,4 @@
 category	page	source	file	bytes	lines
-source-hosts	Codeberg	https://trac.osgeo.org/postgis/wiki/Codeberg	doc/trac-wiki/source-hosts/Codeberg.tracwiki	298	9
 development	ContinuousIntegration	https://trac.osgeo.org/postgis/wiki/ContinuousIntegration	doc/trac-wiki/development/ContinuousIntegration.tracwiki	23846	119
 development	DevWikiNbEditor	https://trac.osgeo.org/postgis/wiki/DevWikiNbEditor	doc/trac-wiki/development/DevWikiNbEditor.tracwiki	0	0
 development	DevWikiPostGISCoding	https://trac.osgeo.org/postgis/wiki/DevWikiPostGISCoding	doc/trac-wiki/development/DevWikiPostGISCoding.tracwiki	11023	149
@@ -8,9 +7,6 @@ development	DevWikiWinMingWSys_20_MSVC	https://trac.osgeo.org/postgis/wiki/DevWi
 development	DevWikiWinNSIS	https://trac.osgeo.org/postgis/wiki/DevWikiWinNSIS	doc/trac-wiki/development/DevWikiWinNSIS.tracwiki	1202	21
 development	DevWikiWinVC_15	https://trac.osgeo.org/postgis/wiki/DevWikiWinVC_15	doc/trac-wiki/development/DevWikiWinVC_15.tracwiki	4118	70
 user	GeographicLib	https://trac.osgeo.org/postgis/wiki/GeographicLib	doc/trac-wiki/user/GeographicLib.tracwiki	41	0
-source-hosts	GitHub	https://trac.osgeo.org/postgis/wiki/GitHub	doc/trac-wiki/source-hosts/GitHub.tracwiki	432	9
-source-hosts	GitLab	https://trac.osgeo.org/postgis/wiki/GitLab	doc/trac-wiki/source-hosts/GitLab.tracwiki	292	9
-source-hosts	GiteaCom	https://trac.osgeo.org/postgis/wiki/GiteaCom	doc/trac-wiki/source-hosts/GiteaCom.tracwiki	292	8
 project-history	GoogleSummerCode	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode	doc/trac-wiki/project-history/GoogleSummerCode.tracwiki	8944	159
 project-history	GoogleSummerCode2012	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2012	doc/trac-wiki/project-history/GoogleSummerCode2012.tracwiki	60	0
 project-history	GoogleSummerCode2018	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2018	doc/trac-wiki/project-history/GoogleSummerCode2018.tracwiki	1740	33
@@ -18,7 +14,6 @@ project-history	GoogleSummerCode2019	https://trac.osgeo.org/postgis/wiki/GoogleS
 project-history	GoogleSummerCode2021	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2021	doc/trac-wiki/project-history/GoogleSummerCode2021.tracwiki	3504	51
 project-history	GoogleSummerCode2022	https://trac.osgeo.org/postgis/wiki/GoogleSummerCode2022	doc/trac-wiki/project-history/GoogleSummerCode2022.tracwiki	7222	125
 user	MapServer	https://trac.osgeo.org/postgis/wiki/MapServer	doc/trac-wiki/user/MapServer.tracwiki	34	0
-source-hosts	OSGeoGit	https://trac.osgeo.org/postgis/wiki/OSGeoGit	doc/trac-wiki/source-hosts/OSGeoGit.tracwiki	57	1
 user	OpenGeo	https://trac.osgeo.org/postgis/wiki/OpenGeo	doc/trac-wiki/user/OpenGeo.tracwiki	505	11
 user	OpenStreetMap	https://trac.osgeo.org/postgis/wiki/OpenStreetMap	doc/trac-wiki/user/OpenStreetMap.tracwiki	732	14
 user	PieCrust	https://trac.osgeo.org/postgis/wiki/PieCrust	doc/trac-wiki/user/PieCrust.tracwiki	99	0
