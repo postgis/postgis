@@ -273,7 +273,7 @@ CREATE TABLE test_eudist_2_a_3 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32
   * 2-a-4: Snap is False; Max distance is specified:
 {{{
 #!sql
-CREATE TABLE test_eudist_2_a_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_2','the_geom',False,) AS rast FROM test_ref_raster_2);
+CREATE TABLE test_eudist_2_a_4 AS (SELECT 1 AS rid,ST_EuclideanDistance(rast,'32BF','public','test_source_geometry_2','the_geom',False) AS rast FROM test_ref_raster_2);
 }}}
     result:[[BR]][[BR]]
     [[Image(test_eudist_2_a_4.gif)]][[BR]]
@@ -351,7 +351,7 @@ CREATE TABLE test_eudist_3_b_1 AS (SELECT 1 AS rid,ST_EuclideanDistance(300,300,
 {{{
 #!sql
 CREATE TABLE test_eudist_3_b_2 AS (
-..........SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_3','the_geom',True,12) AS rast FROM test_ref_raster_3);
+SELECT 1 AS rid,ST_EuclideanDistance(300,300,0,0,1,1,0,0,4326,NULL,'32BF','public','test_source_geometry_3','the_geom',True,12) AS rast FROM test_ref_raster_3);
 }}}
   * 3-b-3: Snap is False; Max distance NOT specified:
 {{{
