@@ -1,6 +1,0 @@
-= Line String Geometry =
-
-
-A !LineString is a 1-dimensional [wiki:UsersWikiGeometryType Geometry].
-It is defined by vertexes, containing at least 2 of them.
-It is also referred to as a '''Curve'''.
