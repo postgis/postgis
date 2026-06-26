@@ -42,7 +42,7 @@ Use these migration decisions as the source pattern:
 
 Batch the remaining sweep so each commit stays reviewable:
 
-* Raster legacy pages: audit the remaining raster tutorial and
+* Raster legacy pages: audit the remaining
   `PostGIS_Raster_SoC_Idea_2012/*` pages against current raster manual
   coverage, `raster2pgsql`, server-side GDAL configuration, and current
   raster internals notes. Retire old implementation dumps unless they expose a
