@@ -1101,6 +1101,100 @@ lwgeom_buildarea(const LWGEOM* geom)
 	return result;
 }
 
+LWGEOM *
+lwgeom_buildarea_polygonize_largest(const LWGEOM *geom)
+{
+	LWGEOM *result;
+	int32_t srid = RESULT_SRID(geom);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
+	const GEOSGeometry *polylines[1];
+	GEOSGeometry *g1, *g3;
+	const GEOSGeometry *candidate;
+	int numgeoms, i;
+	double largest_shell_area = -1;
+
+	if (srid == SRID_INVALID)
+		return NULL;
+
+	if (lwgeom_is_empty(geom))
+		return (LWGEOM *)lwpoly_construct_empty(srid, is3d, 0);
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX)))
+		GEOS_FAIL();
+
+	polylines[0] = g1;
+	g3 = GEOSPolygonize(polylines, 1);
+	if (!g3)
+		GEOS_FREE_AND_FAIL(g1);
+	GEOSSetSRID(g3, srid);
+
+	numgeoms = GEOSGetNumGeometries(g3);
+	if (numgeoms == 0)
+	{
+		GEOS_FREE(g1, g3);
+		return NULL;
+	}
+
+	result = NULL;
+	for (i = 0; i < numgeoms; i++)
+	{
+		double shell_area;
+		LWGEOM *candidate_lwgeom;
+		LWPOLY *candidate_poly;
+
+		candidate = GEOSGetGeometryN(g3, i);
+		if (!candidate)
+			continue;
+
+		if (!(candidate_lwgeom = GEOS2LWGEOM(candidate, is3d)))
+		{
+			if (result)
+				lwgeom_free(result);
+			GEOS_FREE(g1, g3);
+			return NULL;
+		}
+
+		candidate_poly = lwgeom_as_lwpoly(candidate_lwgeom);
+		if (!candidate_poly || candidate_poly->nrings == 0)
+		{
+			lwgeom_free(candidate_lwgeom);
+			continue;
+		}
+
+		/*
+		 * Polygonize emits both the shell-with-holes polygon and polygons
+		 * filling the holes. Select by shell footprint, not net polygon area,
+		 * so a large hole cannot outrank its containing face.
+		 */
+		shell_area = fabs(ptarray_signed_area(candidate_poly->rings[0]));
+		if (shell_area > largest_shell_area)
+		{
+			if (result)
+				lwgeom_free(result);
+			result = candidate_lwgeom;
+			largest_shell_area = shell_area;
+		}
+		else
+		{
+			lwgeom_free(candidate_lwgeom);
+		}
+	}
+
+	if (!result)
+	{
+		GEOS_FREE(g1, g3);
+		return NULL;
+	}
+
+	result->srid = srid;
+
+	GEOS_FREE(g1, g3);
+
+	return result;
+}
+
 /* ------------ end of BuildArea stuff ---------------------------------------------------------------------} */
 
 int
