@@ -50,6 +50,8 @@ Modules:
   public development pages, release pointer updates, and website validation.
 * [Pull request and maintainer workflow](maintenance.md) covers source-of-truth
   branches, mirror PR handling, tracker trailers, `NEWS`, and public readback.
+* [Backpatching fixes](maintenance/backpatching.md) covers supported-branch
+  fix propagation, commit provenance, `NEWS`, Trac follow-up, and CI readback.
 * [Governance notes](governance.md) records PSC process, core-contributor
   governance, project/service inventory, and governance-documentation
   consolidation notes.

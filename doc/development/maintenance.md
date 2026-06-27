@@ -67,6 +67,8 @@ OSGeo legal counsel before committing.
 
 For the maintained commit-message, branch-target, authorship, and post-push
 rules distilled from RFC-5, see [Commit and branch guidelines](maintenance/commit-guidelines.md).
+For supported-branch fix propagation, provenance, `NEWS`, and Trac follow-up
+rules, see [Backpatching fixes](maintenance/backpatching.md).
 
 ## First Pass
 
@@ -166,6 +168,9 @@ Before backpatching, confirm the target release line is open in `Version.config`
 and `NEWS`. Stable branches normally receive bug fixes, not new features. End of
 life branches should not receive new work without explicit release-manager
 direction.
+Use [Backpatching fixes](maintenance/backpatching.md) for the two-pass branch
+scan, one-to-one commit provenance, `NEWS` expectations, and per-ticket Trac
+follow-up wording.
 
 During pre-release code freeze, restrict commits to bug fixes unless the PSC or
 release manager approves otherwise. Significant changes, especially backward
