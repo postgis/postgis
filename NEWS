@@ -13,6 +13,8 @@ PostGIS 3.2.11
  - [address_standardizer] Avoid NULL dereferences, unsafe table-name handling,
    and out-of-bounds rule parsing
    (Maksim Korotkov, Paul Ramsey)
+ - [tiger_geocoder] Harden loader table references and dynamic table names
+   (Paul Ramsey)
  - #6044, Skip doc XML validation without DocBook XSL stylesheets (Regina Obe)
 
 
