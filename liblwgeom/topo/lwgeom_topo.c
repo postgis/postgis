@@ -545,6 +545,12 @@ lwt_LoadTopology( LWT_BE_IFACE *iface, const char *name )
   return topo;
 }
 
+int32_t
+lwt_GetTopologySRID(const LWT_TOPOLOGY *topo)
+{
+	return topo->srid;
+}
+
 void
 lwt_FreeTopology( LWT_TOPOLOGY* topo )
 {

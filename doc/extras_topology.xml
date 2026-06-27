@@ -1702,6 +1702,9 @@ Adds a point to an existing topology and returns its identifier.
 The given point will snap to existing nodes or edges within given tolerance.
 An existing edge may be split by the snapped point.
                 </para>
+                <para>
+The input point SRID must match the SRID of the topology.
+                </para>
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
@@ -1759,6 +1762,9 @@ Existing edges and faces may be split by the line.  New nodes and faces may be a
 The returned edge identifiers may be either existing edges or newly
 created edges as needed to fully represent the input line as closely
 as possible.
+                </para>
+                <para>
+The input line SRID must match the SRID of the topology.
                 </para>
 
 <para>
@@ -1818,6 +1824,9 @@ Adds a polygon to an existing topology and returns a set of face identifiers for
 The boundary of the given polygon will snap to existing nodes or edges within given tolerance.
 Existing edges and faces may be split by the boundary of the new polygon.
                 </para>
+                <para>
+The input polygon SRID must match the SRID of the topology.
+                </para>
 
                 <note><para>
 Updating statistics about topologies being loaded via this function is
@@ -1867,6 +1876,9 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
 Loads a geometry into an existing topology.
 The given geometry will snap to existing nodes or edges within given tolerance.
 Existing edges and faces may be split as a consequence of the load.
+                </para>
+                <para>
+The input geometry SRID must match the SRID of the topology.
                 </para>
 
                 <note><para>

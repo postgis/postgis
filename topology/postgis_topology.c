@@ -311,6 +311,18 @@ cb_topoHasZ(const LWT_BE_TOPOLOGY* topo)
   return topo->hasZ;
 }
 
+static void
+check_topology_srid(const GSERIALIZED *geom, const LWT_TOPOLOGY *topo)
+{
+	int geom_srid = gserialized_get_srid(geom);
+	int topo_srid = lwt_GetTopologySRID(topo);
+
+	if (geom_srid != topo_srid)
+	{
+		lwpgerror("Geometry SRID (%d) does not match topology SRID (%d)", geom_srid, topo_srid);
+	}
+}
+
 static double
 cb_topoGetPrecision(const LWT_BE_TOPOLOGY* topo)
 {
@@ -5214,6 +5226,7 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
     SPI_finish();
     PG_RETURN_NULL();
   }
+  check_topology_srid(geom, topo);
 
   POSTGIS_DEBUG(1, "Calling lwt_AddPoint");
   node_id = lwt_AddPoint(topo, pt, tol);
@@ -5290,14 +5303,6 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
       }
     }
-    /* Nothing to do if line is empty */
-    if ( lwline_is_empty(ln) )
-    {
-      lwgeom_free(lwgeom);
-      PG_FREE_IF_COPY(geom, 1);
-      PG_RETURN_NULL();
-    }
-
     tol = PG_GETARG_FLOAT8(2);
     if ( tol < -1 )
     {
@@ -5328,6 +5333,17 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
       /* should never reach this point, as lwerror would raise an exception */
       SPI_finish();
       PG_RETURN_NULL();
+    }
+    check_topology_srid(geom, topo);
+
+    /* Nothing to do if line is empty */
+    if (lwline_is_empty(ln))
+    {
+	    lwgeom_free(lwgeom);
+	    PG_FREE_IF_COPY(geom, 1);
+	    lwt_FreeTopology(topo);
+	    SPI_finish();
+	    PG_RETURN_NULL();
     }
 
     POSTGIS_DEBUG(1, "Calling lwt_AddLine");
@@ -5440,6 +5456,7 @@ Datum TopoGeo_AddLinestringNoFace(PG_FUNCTION_ARGS)
     SPI_finish();
     PG_RETURN_NULL();
   }
+  check_topology_srid(geom, topo);
 
   POSTGIS_DEBUG(1, "Calling lwt_AddLineNoFace");
   /* return discarded as we assume lwerror would raise an exception earlier
@@ -5537,6 +5554,7 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
       SPI_finish();
       PG_RETURN_NULL();
     }
+    check_topology_srid(geom, topo);
 
     POSTGIS_DEBUG(1, "Calling lwt_AddPolygon");
     elems = lwt_AddPolygon(topo, pol, tol, &nelems);
@@ -5881,6 +5899,7 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
     SPI_finish();
     PG_RETURN_NULL();
   }
+  check_topology_srid(geom, topo);
 
   /* Nothing to do if the input is empty */
   if (gserialized_is_empty(geom) != LW_TRUE)

@@ -18,6 +18,10 @@ $$ LANGUAGE 'sql';
 -- Null call
 SELECT 'null', topology.TopoGeo_LoadGeometry('t', NULL::geometry);
 
+-- SRID compatibility, including empty inputs
+SELECT 'srid_mismatch', topology.TopoGeo_LoadGeometry('t', 'SRID=4326;POINT(0 0)'::geometry);
+SELECT 'srid_mismatch_empty', topology.TopoGeo_LoadGeometry('t', 'SRID=4326;POINT EMPTY'::geometry);
+
 -- Empty
 SELECT 'empty', topology.TopoGeo_LoadGeometry('t', 'POINT EMPTY'::geometry);
 
