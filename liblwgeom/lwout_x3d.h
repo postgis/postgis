@@ -35,7 +35,8 @@
 static int lwgeom_to_x3d3_sb(const LWGEOM *geom, int precision, int opts, const char *defid, stringbuffer_t *sb);
 
 static int asx3d3_point_sb(const LWPOINT *point, int precision, int opts, const char *defid, stringbuffer_t *sb);
-static int asx3d3_line_sb(const LWLINE *line, int precision, int opts, const char *defid, stringbuffer_t *sb);
+static int
+asx3d3_line_sb(const LWLINE *line, int precision, int opts, const char *defid, int force_3d, stringbuffer_t *sb);
 
 static int
 asx3d3_triangle_sb(const LWTRIANGLE *triangle, int precision, int opts, const char *defid, stringbuffer_t *sb);
