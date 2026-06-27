@@ -149,6 +149,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #5948, [topology] Prevent MakeTopologyPrecise from erasing edges when
           grid size exceeds their extent (Darafei Praliaskouski)
+ - #5797, [topology] Preserve snapped edge endpoints when TopoGeo_addPoint
+          splits a nearby edge (Darafei Praliaskouski)
  - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
  - GH-901, Stop loader upgrade helper from marking postgis_tiger_geocoder
           for extension upgrade (Darafei Praliaskouski)
