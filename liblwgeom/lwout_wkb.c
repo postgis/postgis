@@ -29,8 +29,8 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
-static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
-static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
+uint8_t *lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
+size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
 
 /*
 * Look-up table for hex writer
@@ -944,7 +944,7 @@ static uint8_t* lwnurbscurve_to_wkb_buf(const LWNURBSCURVE *curve, uint8_t *buf,
  *        that control dimensionality, SRID inclusion, and encoding form.
  * @return Number of bytes required to encode `geom` under `variant`, or 0 on error.
  */
-static size_t
+size_t
 lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 {
 	size_t size = 0;
@@ -1027,7 +1027,8 @@ lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
  *         success; NULL (0) on unsupported/unknown geometry type or other error.
  */
 
-static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
+uint8_t *
+lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
 {
 
 	/* Do not simplify empties when outputting to canonical form */
