@@ -608,7 +608,11 @@ resolve_and_quote_tabname(const char *tabname)
     char     *relname;
     char     *nspname;
 
-    names = stringToQualifiedNameList(tabname);
+#if PG_VERSION_NUM >= 160000
+	names = stringToQualifiedNameList(tabname, NULL);
+#else
+	names = stringToQualifiedNameList(tabname);
+#endif
     if (!names)
         return NULL;
 
