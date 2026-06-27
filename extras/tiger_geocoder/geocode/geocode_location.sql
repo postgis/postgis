@@ -13,7 +13,7 @@ DECLARE
   var_debug boolean := false;
 BEGIN
 
-  in_statefp := statefp FROM state WHERE state.stusps = parsed.stateAbbrev;
+  in_statefp := statefp FROM tiger.state WHERE state.stusps = parsed.stateAbbrev;
 
   IF var_debug THEN
     RAISE NOTICE 'geocode_location starting: %', clock_timestamp();
@@ -22,13 +22,13 @@ BEGIN
     SELECT
         coalesce(zip.city)::varchar as place,
         zip.zip as zip,
-        ST_Centroid(zcta5.the_geom) as address_geom,
+        ST_Centroid(tiger.zcta5.the_geom) as address_geom,
         stusps as state,
         100::integer + coalesce( tiger.levenshtein_ignore_case(coalesce(zip.city), parsed.location),0) as in_rating
     FROM
-      zip_lookup_base zip
-      JOIN zcta5 ON (zip.zip = zcta5.zcta5ce AND zip.statefp = zcta5.statefp)
-      JOIN state ON (state.statefp=zip.statefp)
+      tiger.zip_lookup_base zip
+      JOIN tiger.zcta5 ON (zip.zip = tiger.zcta5.zcta5ce AND zip.statefp = tiger.zcta5.statefp)
+      JOIN tiger.state ON (state.statefp=zip.statefp)
     WHERE
       parsed.zip = zip.zip OR
       (soundex(zip.city) = soundex(parsed.location) and zip.statefp = in_statefp)
@@ -50,8 +50,8 @@ BEGIN
   END LOOP;
 
   IF parsed.location IS NULL THEN
-    parsed.location := city FROM zip_lookup_base WHERE zip_lookup_base.zip = parsed.zip ORDER BY zip_lookup_base.zip LIMIT 1;
-    in_statefp := statefp FROM zip_lookup_base WHERE zip_lookup_base.zip = parsed.zip ORDER BY zip_lookup_base.zip LIMIT 1;
+    parsed.location := city FROM tiger.zip_lookup_base WHERE tiger.zip_lookup_base.zip = parsed.zip ORDER BY tiger.zip_lookup_base.zip LIMIT 1;
+    in_statefp := statefp FROM tiger.zip_lookup_base WHERE tiger.zip_lookup_base.zip = parsed.zip ORDER BY tiger.zip_lookup_base.zip LIMIT 1;
   END IF;
 
   stmt := 'SELECT '
@@ -59,8 +59,8 @@ BEGIN
        || ' state.stusps as stateAbbrev, '
        || ' ST_Centroid(pl.the_geom) as address_geom, '
        || ' 100::integer + tiger.levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ') as in_rating '
-       || ' FROM (SELECT * FROM place WHERE statefp = ' ||  quote_literal(coalesce(in_statefp,'')) || ' ' || COALESCE(' AND ST_Intersects(' || quote_literal(restrict_geom::text) || '::geometry, the_geom)', '') || ') AS pl '
-       || ' INNER JOIN state ON(pl.statefp = state.statefp)'
+       || ' FROM (SELECT * FROM tiger.place WHERE statefp = ' ||  quote_literal(coalesce(in_statefp,'')) || ' ' || COALESCE(' AND ST_Intersects(' || quote_literal(restrict_geom::text) || '::geometry, the_geom)', '') || ') AS pl '
+       || ' INNER JOIN tiger.state ON(pl.statefp = state.statefp)'
        || ' WHERE soundex(pl.name) = soundex(' || quote_literal(coalesce(parsed.location,'')) || ') and pl.statefp = ' || quote_literal(COALESCE(in_statefp,''))
        || ' ORDER BY tiger.levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ');'
        ;

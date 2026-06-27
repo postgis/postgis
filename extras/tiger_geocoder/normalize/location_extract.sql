@@ -31,7 +31,7 @@ BEGIN
   ws := E'[ ,.\n\f\t]';
 
   IF stateAbbrev IS NOT NULL THEN
-    lstate := statefp FROM state_lookup WHERE abbrev = stateAbbrev;
+    lstate := statefp FROM tiger.state_lookup WHERE abbrev = stateAbbrev;
   END IF;
   lstate := COALESCE(lstate,'');
 
@@ -49,7 +49,7 @@ BEGIN
          || '   name,'
          || '   tiger.levenshtein_ignore_case(' || quote_literal(tempString) || ',name) as rating,'
          || '   length(name) as len'
-         || ' FROM place'
+         || ' FROM tiger.place'
          || ' WHERE ' || CASE WHEN stateAbbrev IS NOT NULL THEN 'statefp = ' || quote_literal(lstate) || ' AND ' ELSE '' END
          || '   @extschema:fuzzystrmatch@.soundex(' || quote_literal(tempString) || ') = @extschema:fuzzystrmatch@.soundex(name)'
          || '   AND tiger.levenshtein_ignore_case(' || quote_literal(tempString) || ',name) <= 2 '
@@ -58,7 +58,7 @@ BEGIN
          || '   name,'
          || '   tiger.levenshtein_ignore_case(' || quote_literal(tempString) || ',name) as rating,'
          || '   length(name) as len'
-         || ' FROM cousub'
+         || ' FROM tiger.cousub'
          || ' WHERE ' || CASE WHEN stateAbbrev IS NOT NULL THEN 'statefp = ' || quote_literal(lstate) || ' AND ' ELSE '' END
          || '   @extschema:fuzzystrmatch@.soundex(' || quote_literal(tempString) || ') = @extschema:fuzzystrmatch@.soundex(name)'
          || '   AND tiger.levenshtein_ignore_case(' || quote_literal(tempString) || ',name) <= 2 '
