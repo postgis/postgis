@@ -28,6 +28,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           both loaders accept long aliases for existing options, and
           --if-not-exists makes creation actions idempotent
           (Darafei Praliaskouski)
+ - #2103, shp2pgsql can load Shapefiles directly into TopoGeometry columns
+          (Darafei Praliaskouski)
  - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
           (Darafei Praliaskouski)
  - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)

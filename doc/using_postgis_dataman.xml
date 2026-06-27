@@ -1883,7 +1883,7 @@ COMMIT;</programlisting>
 
   <para>
     The <filename>shp2pgsql</filename> data loader converts Shapefiles into SQL suitable for
-    insertion into a PostGIS/PostgreSQL database either in geometry or geography format.
+    insertion into a PostGIS/PostgreSQL database in geometry, geography, or TopoGeometry format.
     The loader has several operating modes selected by command line flags.
   </para>
   <para>
@@ -1988,6 +1988,18 @@ COMMIT;</programlisting>
           Optionally specifies that the input shapefile uses the given
           FROM_SRID, in which case the geometries will be reprojected to the
           target SRID.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><option>-g &lt;column&gt;</option></term>
+      <listitem>
+        <para>
+          Specify the name of the geometry, geography, or TopoGeometry column.
+          This is mostly useful in append mode, or with
+          <option>--topology</option> when choosing the TopoGeometry column
+          name.
         </para>
       </listitem>
     </varlistentry>
@@ -2132,6 +2144,19 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
 		</para>
 	  </listitem>
 	</varlistentry>
+    <varlistentry>
+      <term><option>--topology &lt;topology&gt;</option></term>
+      <listitem>
+        <para>
+          Load shapes as TopoGeometry values in the named topology. The topology
+          must already exist in the target database and the
+          <filename>postgis_topology</filename> extension must be installed. Use
+          <option>-g</option> to set the TopoGeometry column name. This mode is
+          not compatible with <option>-D</option>, <option>-G</option>,
+          <option>-I</option>, or <option>-n</option>.
+        </para>
+      </listitem>
+    </varlistentry>
     <varlistentry>
       <term><option>-T &lt;tablespace&gt;</option></term>
       <listitem>
