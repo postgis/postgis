@@ -3375,13 +3375,19 @@ them is below the given tolerance.
 					<funcdef>text <function>Polygonize</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+					<funcdef>text <function>Polygonize</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>bbox</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
 			<refsection>
                 <title>Description</title>
 
-                <para>Registers all faces that can be built out a topology edge primitives.</para>
+                <para>Registers all faces that can be built out of topology edge primitives. When the optional <parameter>bbox</parameter> parameter is passed, only edge primitives whose bounding boxes intersect the given rectangle are considered, and only faces covered by that rectangle are registered.</para>
+                <para>The <parameter>bbox</parameter> value, when provided, must be a rectangular polygon.</para>
                 <para>The target topology is assumed to contain no self-intersecting edges.</para>
                 <note><para>Already known faces are recognized, so it is safe to call Polygonize multiple times on the same topology.</para></note>
 		<note><para>
@@ -3391,6 +3397,7 @@ This function does not use nor set the next_left_edge and next_right_edge fields
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added the ability to limit polygonization to faces covered by a rectangular bounding box.</para>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->

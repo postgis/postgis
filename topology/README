@@ -217,7 +217,9 @@ given Face on the left or right side. This reduces the number
 of SQL queries to 1, but makes it hard to detect any
 inconsistency in the underlying topology.
 Also, the polygonize() function does not use *any* of the
-metadata information in the Edge table, so replacing it
+metadata information in the Edge table. The SQL wrapper can
+restrict polygonization to faces covered by a rectangular
+bounding box, but replacing it
 with a more topology-aware function could speed it up.
 
 ==ValidateTopology() performance
@@ -234,4 +236,3 @@ be slower then overloading the predicates.
 In addition to the constraints defined in SQL/MM specification,
 this implementation adds constraints to enforce Node and Edge
 geometry types to be 'POINT' and 'LINESTRING' respectively.
-
