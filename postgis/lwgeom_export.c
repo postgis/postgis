@@ -18,11 +18,10 @@
  *
  **********************************************************************
  *
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright 2009-2011 Olivier Courtin <olivier.courtin@oslandia.com>
  *
  **********************************************************************/
-
-
 
 /** @file
  *  Commons functions for all export functions
@@ -32,7 +31,9 @@
 #include "catalog/pg_type.h" /* for INT4OID */
 #include "executor/spi.h"
 #include "utils/builtins.h"
+#include "utils/hsearch.h"
 #include "utils/jsonb.h"
+#include "utils/memutils.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
@@ -432,4 +433,141 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_TEXT_P(lwgeom_to_encoded_polyline(lwgeom, precision));
+}
+
+/******************************************************************************
+ * Private downstream accommodation.
+ *
+ * Some downstream extensions already call a small number of PostGIS internal
+ * helper symbols. These wrappers keep those names reachable from the final
+ * postgis module without exposing arbitrary liblwgeom or libpgcommon archive
+ * members.
+ *
+ * This is visibility plumbing, not a supported PostGIS C API. Downstreams that
+ * call these symbols own compatibility risk if PostGIS internals change.
+ ******************************************************************************/
+
+typedef struct {
+	FmgrInfo *flinfo;
+	int32_t srid;
+	uint8_t short_crs;
+	uint8_t padding[3];
+} FmgrSRSCacheKey;
+
+typedef struct {
+	FmgrSRSCacheKey key;
+	SRSDescCacheArgument arg;
+} FmgrSRSCacheEntry;
+
+typedef struct {
+	FmgrSRSCacheKey key;
+} FmgrSRSCacheCleanupArg;
+
+static HTAB *FmgrSRSCache = NULL;
+
+/*
+ * Do not store PostGIS cache state in fcinfo->flinfo->fn_extra here.
+ *
+ * For downstream calls, fcinfo->flinfo belongs to the caller extension, not
+ * PostGIS. PostgreSQL permits fn_extra sharing only when caller and callee
+ * agree on compatible use. This helper therefore keeps private storage keyed
+ * by the caller FmgrInfo and SRS lookup arguments, then removes those entries
+ * with the caller function memory context.
+ */
+static void
+fmgr_srs_cache_delete(void *ptr)
+{
+	FmgrSRSCacheCleanupArg *arg = (FmgrSRSCacheCleanupArg *)ptr;
+
+	if (FmgrSRSCache)
+		hash_search(FmgrSRSCache, &(arg->key), HASH_REMOVE, NULL);
+}
+
+static FmgrSRSCacheEntry *
+fmgr_srs_cache_get(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
+{
+	HASHCTL ctl;
+	bool found;
+	FmgrInfo *flinfo;
+	MemoryContext context;
+	FmgrSRSCacheKey key;
+	FmgrSRSCacheEntry *entry;
+
+	if (!fcinfo || !fcinfo->flinfo)
+		elog(ERROR, "%s: Could not find upper context", __func__);
+
+	if (!FmgrSRSCache)
+	{
+		memset(&ctl, 0, sizeof(ctl));
+		ctl.keysize = sizeof(FmgrSRSCacheKey);
+		ctl.entrysize = sizeof(FmgrSRSCacheEntry);
+		ctl.hcxt = TopMemoryContext;
+		FmgrSRSCache =
+		    hash_create("PostGIS FmgrInfo SRS cache", 128, &ctl, HASH_ELEM | HASH_BLOBS | HASH_CONTEXT);
+	}
+
+	flinfo = fcinfo->flinfo;
+	memset(&key, 0, sizeof(key));
+	key.flinfo = flinfo;
+	key.srid = srid;
+	key.short_crs = short_crs ? 1 : 0;
+
+	entry = (FmgrSRSCacheEntry *)hash_search(FmgrSRSCache, &key, HASH_FIND, NULL);
+	if (!entry)
+	{
+		MemoryContextCallback *callback;
+		FmgrSRSCacheCleanupArg *callback_arg;
+
+		context = PostgisCacheContext(fcinfo);
+
+		callback = MemoryContextAlloc(context, sizeof(MemoryContextCallback));
+		callback_arg = MemoryContextAlloc(context, sizeof(FmgrSRSCacheCleanupArg));
+		callback_arg->key = key;
+		callback->arg = callback_arg;
+		callback->func = fmgr_srs_cache_delete;
+		MemoryContextRegisterResetCallback(context, callback);
+
+		entry = (FmgrSRSCacheEntry *)hash_search(FmgrSRSCache, &key, HASH_ENTER, &found);
+		if (!found)
+		{
+			entry->key = key;
+			memset(&(entry->arg), 0, sizeof(entry->arg));
+		}
+	}
+	return entry;
+}
+
+POSTGIS_PRIVATE_EXPORT const char *
+getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
+{
+	FmgrSRSCacheEntry *entry = fmgr_srs_cache_get(fcinfo, srid, short_crs);
+	return SRSDescCacheGetBySRID(fcinfo, &(entry->arg), srid, short_crs);
+}
+
+POSTGIS_PRIVATE_EXPORT LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
+POSTGIS_PRIVATE_EXPORT size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
+POSTGIS_PRIVATE_EXPORT uint8_t *lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
+
+/*
+ * The spellings below are the existing downstream-facing symbol names. The
+ * liblwgeom entry points they call have narrower in-tree names so future
+ * maintainers can distinguish ordinary implementation helpers from this private
+ * visibility accommodation.
+ */
+POSTGIS_PRIVATE_EXPORT LWGEOM *
+parse_geojson(struct json_object *geojson, int *hasz)
+{
+	return lwgeom_from_geojson_object(geojson, hasz);
+}
+
+POSTGIS_PRIVATE_EXPORT size_t
+lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
+{
+	return lwgeom_to_wkb_size_full(geom, variant);
+}
+
+POSTGIS_PRIVATE_EXPORT uint8_t *
+lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
+{
+	return lwgeom_to_wkb_buf_direct(geom, buf, variant);
 }

@@ -20,11 +20,11 @@
  *
  * Copyright (C) 2011-2021 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2011 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2007-2008 Mark Cave-Ayland
  * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  **********************************************************************/
-
 
 #ifndef _LIBLWGEOM_INTERNAL_H
 #define _LIBLWGEOM_INTERNAL_H 1
@@ -528,5 +528,16 @@ int lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt);
 POINT4D* lwmpoint_extract_points_4d(const LWMPOINT* g, uint32_t* npoints, int* input_empty);
 char* lwstrdup(const char* a);
 void* lwalloc0(size_t sz);
+
+struct json_object;
+/*
+ * Module-level PostGIS shims expose the historical downstream names, while the
+ * liblwgeom routines below keep names that describe their in-tree role and
+ * avoid turning the static archive into the exported ABI.
+ */
+LWGEOM *lwgeom_from_geojson_object(struct json_object *geojson, int *hasz);
+
+size_t lwgeom_to_wkb_size_full(const LWGEOM *geom, uint8_t variant);
+uint8_t *lwgeom_to_wkb_buf_direct(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
 
 #endif /* _LIBLWGEOM_INTERNAL_H */

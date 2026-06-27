@@ -18,6 +18,10 @@
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
 
+#if HAVE_LIBJSON
+#include <json.h>
+#endif
+
 static void do_geojson_test(const char * exp, char * in, char * exp_srs)
 {
 	LWGEOM *g;
@@ -235,6 +239,33 @@ static void in_geojson_test_geoms(void)
 	    NULL);
 }
 
+#if HAVE_LIBJSON
+static void
+in_geojson_test_parse_geojson_contract(void)
+{
+	json_object *obj = json_tokener_parse("{\"type\":\"Point\",\"coordinates\":[1,2]}");
+	int hasz = LW_TRUE;
+	LWGEOM *geom = lwgeom_from_geojson_object(obj, &hasz);
+
+	CU_ASSERT_EQUAL(hasz, LW_FALSE);
+	CU_ASSERT_FALSE(FLAGS_GET_Z(geom->flags));
+
+	lwgeom_free(geom);
+	json_object_put(obj);
+
+	obj = json_tokener_parse(
+	    "{\"type\":\"GeometryCollection\",\"geometries\":[{\"type\":\"Point\",\"coordinates\":[1,2,3]},{\"type\":\"Point\",\"coordinates\":[4,5]}]}");
+	hasz = LW_FALSE;
+	geom = lwgeom_from_geojson_object(obj, &hasz);
+
+	CU_ASSERT_EQUAL(hasz, LW_TRUE);
+	CU_ASSERT_TRUE(FLAGS_GET_Z(geom->flags));
+
+	lwgeom_free(geom);
+	json_object_put(obj);
+}
+#endif
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -245,4 +276,7 @@ void in_geojson_suite_setup(void)
 	PG_ADD_TEST(suite, in_geojson_test_srid);
 	PG_ADD_TEST(suite, in_geojson_test_bbox);
 	PG_ADD_TEST(suite, in_geojson_test_geoms);
+#if HAVE_LIBJSON
+	PG_ADD_TEST(suite, in_geojson_test_parse_geojson_contract);
+#endif
 }
