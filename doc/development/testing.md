@@ -150,9 +150,10 @@ LIMIT 1;
 ```
 
 Use garden checks before release work, when changing visible SQL behavior, and
-when manual examples are added or reorganized. For focused checks of only a few
-functions, use the subset generator in
-`doc/xsl/postgis_gardentest_subset.sql.xsl` instead of running the full battery.
+when manual examples are added or reorganized. There is no maintained subset
+garden generator; for focused debugging, generate the relevant garden SQL and
+copy the statement for the target function from the generated script or from
+the matching garden log entry.
 
 ## Coverage
 
