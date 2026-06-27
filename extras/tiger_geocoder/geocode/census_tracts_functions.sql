@@ -36,7 +36,7 @@ BEGIN
 	IF var_debug THEN
 		RAISE NOTICE 'Get matching states start: %', clock_timestamp();
 	END IF;
-	SELECT statefp, stusps INTO var_state, var_stusps FROM state WHERE ST_Intersects(the_geom, var_loc_geom) LIMIT 1;
+	SELECT statefp, stusps INTO var_state, var_stusps FROM tiger.state WHERE ST_Intersects(the_geom, var_loc_geom) LIMIT 1;
 	IF var_debug THEN
 		RAISE NOTICE 'Get matching states end: % -  %', var_state, clock_timestamp();
 	END IF;
@@ -46,7 +46,7 @@ BEGIN
 		RETURN NULL;
 	END IF;
 	-- locate county
-	var_stmt := 'SELECT ' || quote_ident(output_field) || ' FROM tract WHERE statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
+	var_stmt := 'SELECT ' || quote_ident(output_field) || ' FROM tiger.tract WHERE statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
 	EXECUTE var_stmt INTO var_result USING var_state, var_loc_geom ;
 	RETURN var_result;
 END;
