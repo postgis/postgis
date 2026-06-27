@@ -1,7 +1,7 @@
 -- state_extract(addressStringLessZipCode)
 -- Extracts the state from end of the given string.
 --
--- This function uses the state_lookup table to determine which state
+-- This function uses the tiger.state_lookup table to determine which state
 -- the input string is indicating.  First, an exact match is pursued,
 -- and in the event of failure, a word-by-word fuzzy match is attempted.
 --
@@ -34,22 +34,22 @@ BEGIN
   -- been found.
   tempString := substring(tempString from ws || E'+([^ ,.\t\n\f\r0-9]*?)$');
   IF var_verbose THEN RAISE NOTICE 'state_extract rawInput: % tempString: %', rawInput, tempString; END IF;
-  SELECT INTO tempInt count(*) FROM (select distinct abbrev from state_lookup
+  SELECT INTO tempInt count(*) FROM (select distinct abbrev from tiger.state_lookup
       WHERE upper(abbrev) = upper(tempString)) as blah;
   IF tempInt = 1 THEN
     state := tempString;
     SELECT INTO stateAbbrev abbrev FROM (select distinct abbrev from
-        state_lookup WHERE upper(abbrev) = upper(tempString)) as blah;
+        tiger.state_lookup WHERE upper(abbrev) = upper(tempString)) as blah;
   ELSE
-    SELECT INTO tempInt count(*) FROM state_lookup WHERE upper(name)
+    SELECT INTO tempInt count(*) FROM tiger.state_lookup WHERE upper(name)
         like upper('%' || tempString);
     IF tempInt >= 1 THEN
-      FOR rec IN SELECT name from state_lookup WHERE upper(name)
+      FOR rec IN SELECT name from tiger.state_lookup WHERE upper(name)
           like upper('%' || tempString) LOOP
-        SELECT INTO test texticregexeq(rawInput, name) FROM state_lookup
+        SELECT INTO test texticregexeq(rawInput, name) FROM tiger.state_lookup
             WHERE rec.name = name;
         IF test THEN
-          SELECT INTO stateAbbrev abbrev FROM state_lookup
+          SELECT INTO stateAbbrev abbrev FROM tiger.state_lookup
               WHERE rec.name = name;
           state := substring(rawInput, '(?i)' || rec.name);
           EXIT;
@@ -57,13 +57,13 @@ BEGIN
       END LOOP;
     ELSE
       -- No direct match for state, so perform fuzzy match.
-      SELECT INTO tempInt count(*) FROM state_lookup
-          WHERE soundex(tempString) = end_soundex(name);
+      SELECT INTO tempInt count(*) FROM tiger.state_lookup
+          WHERE soundex(tempString) = tiger.end_soundex(name);
       IF tempInt >= 1 THEN
-        FOR rec IN SELECT name, abbrev FROM state_lookup
-            WHERE soundex(tempString) = end_soundex(name) LOOP
-          tempInt := count_words(rec.name);
-          tempString := get_last_words(rawInput, tempInt);
+        FOR rec IN SELECT name, abbrev FROM tiger.state_lookup
+            WHERE soundex(tempString) = tiger.end_soundex(name) LOOP
+          tempInt := tiger.count_words(rec.name);
+          tempString := tiger.get_last_words(rawInput, tempInt);
           test := TRUE;
           FOR i IN 1..tempInt LOOP
             IF soundex(split_part(tempString, ' ', i)) !=

@@ -14,7 +14,7 @@
 -- Two formats of zip code are acceptable: five digit, and five + 4.
 --
 -- The internal addressing indicators are looked up from the
--- secondary_unit_lookup table.  A following identifier is accepted
+-- tiger.secondary_unit_lookup table.  A following identifier is accepted
 -- but it must start with a digit.
 --
 -- The location is parsed from the string using other indicators, such
@@ -28,7 +28,7 @@
 --
 -- Zip codes and street names are not validated.
 --
--- Direction indicators are extracted by comparison with the direction_lookup
+-- Direction indicators are extracted by comparison with the tiger.direction_lookup
 -- table.
 --
 -- Street addresses are assumed to be a single word, starting with a number.
@@ -77,8 +77,8 @@ DECLARE
 BEGIN
   result.parsed := FALSE;
   IF use_pagc THEN
-  	result := pagc_normalize_address(in_rawinput);
-  	RETURN result;
+	result := pagc_normalize_address(in_rawinput);
+	RETURN result;
   END IF;
 
   rawInput := trim(in_rawInput);
@@ -141,7 +141,7 @@ BEGIN
 
   IF zipString IS NOT NULL THEN
     fullStreet := substring(rawInput from '(.*)'
-        || ws || '+' || cull_null(zipString) || '[- ]?([0-9]{4})?$');
+        || ws || '+' || tiger.cull_null(zipString) || '[- ]?([0-9]{4})?$');
     /** strip off any trailing  spaces or ,**/
     fullStreet :=  btrim(fullStreet, ' ,');
 
@@ -153,9 +153,9 @@ BEGIN
     raise notice '% fullStreet: %', clock_timestamp(), fullStreet;
   END IF;
 
-  -- FIXME: state_extract should probably be returning a record so we can
+  -- FIXME: tiger.state_extract should probably be returning a record so we can
   -- avoid having to parse the result from it.
-  tempString := state_extract(fullStreet);
+  tempString := tiger.state_extract(fullStreet);
   IF tempString IS NOT NULL THEN
     state := split_part(tempString, ':', 1);
     result.stateAbbrev := split_part(tempString, ':', 2);
@@ -178,7 +178,7 @@ BEGIN
   -- The first three are useful.
 
   tempString := substring(fullStreet, '(?i),' || ws || '+(.*?)(,?' || ws ||
-      '*' || cull_null(state) || '$)');
+      '*' || tiger.cull_null(state) || '$)');
   IF tempString = '' THEN tempString := NULL; END IF;
   IF tempString IS NOT NULL THEN
     IF tempString LIKE '%,%' THEN -- if it has a comma probably has suite, strip it from location
@@ -235,7 +235,7 @@ BEGIN
     END IF;
 
     -- A location can't be a street type, sorry.
-    IF lower(result.location) IN (SELECT lower(name) FROM street_type_lookup) THEN
+    IF lower(result.location) IN (SELECT lower(name) FROM tiger.street_type_lookup) THEN
         result.location := NULL;
     END IF;
 
@@ -254,14 +254,14 @@ BEGIN
   -- Determine if any internal address is included, such as apartment
   -- or suite number.
   -- this count is surprisingly slow by itself but much faster if you add an ILIKE AND clause
-  SELECT INTO tempInt count(*) FROM secondary_unit_lookup
+  SELECT INTO tempInt count(*) FROM tiger.secondary_unit_lookup
       WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name || '('
           || ws || '|$)');
   IF tempInt = 1 THEN
     result.internal := substring(fullStreet, '(?i)' || ws || '('
         || name ||  ws || '*#?' || ws
         || '*(?:[0-9][-0-9a-zA-Z]*)?' || ')(?:' || ws || '|$)')
-        FROM secondary_unit_lookup
+        FROM tiger.secondary_unit_lookup
         WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name || '('
         || ws || '|$)');
     ELSIF tempInt > 1 THEN
@@ -271,7 +271,7 @@ BEGIN
     FOR rec in SELECT trim(substring(fullStreet, '(?i)' || ws || '('
         || name || '(?:' || ws || '*#?' || ws
         || '*(?:[0-9][-0-9a-zA-Z]*)?)' || ws || '?|$)')) as value
-        FROM secondary_unit_lookup
+        FROM tiger.secondary_unit_lookup
         WHERE fullStreet ILIKE '%' || name || '%' AND  texticregexeq(fullStreet, '(?i)' || ws || name || '('
         || ws || '|$)') LOOP
       IF tempInt < position(rec.value in fullStreet) THEN
@@ -300,14 +300,14 @@ BEGIN
   -- Put a space in front to make regex easier can always count on it starting with space
   -- Reject all street types where the fullstreet name is equal to the name
   fullStreet := ' ' || trim(fullStreet);
-  tempInt := count(*) FROM street_type_lookup
+  tempInt := count(*) FROM tiger.street_type_lookup
       WHERE fullStreet ILIKE '%' || name || '%' AND
         trim(upper(fullStreet)) != name AND
         texticregexeq(fullStreet, '(?i)' || ws || '(' || name
       || ')(?:' || ws || '|$)');
   IF tempInt = 1 THEN
     SELECT INTO rec abbrev, substring(fullStreet, '(?i)' || ws || '('
-        || name || ')(?:' || ws || '|$)') AS given, is_hw FROM street_type_lookup
+        || name || ')(?:' || ws || '|$)') AS given, is_hw FROM tiger.street_type_lookup
         WHERE fullStreet ILIKE '%' || name || '%' AND
              trim(upper(fullStreet)) != name AND
             texticregexeq(fullStreet, '(?i)' || ws || '(' || name
@@ -316,18 +316,18 @@ BEGIN
     result.streetTypeAbbrev := rec.abbrev;
     isHighway :=  rec.is_hw;
     IF debug_flag THEN
-    	   RAISE NOTICE 'street Type: %, street Type abbrev: %', rec.given, rec.abbrev;
+	   RAISE NOTICE 'street Type: %, street Type abbrev: %', rec.given, rec.abbrev;
     END IF;
   ELSIF tempInt > 1 THEN
     tempInt := 0;
     -- the last matching abbrev in the string is the most likely one
     FOR rec IN SELECT * FROM
-    	(SELECT abbrev, name, substring(fullStreet, '(?i)' || ws || '?('
+	(SELECT abbrev, name, substring(fullStreet, '(?i)' || ws || '?('
         || name || ')(?:' || ws || '|$)') AS given, is_hw ,
-        		RANK() OVER( ORDER BY position(name IN upper(trim(fullStreet))) ) As n_start,
-        		RANK() OVER( ORDER BY position(name IN upper(trim(fullStreet))) + length(name) ) As n_end,
-        		COUNT(*) OVER() As nrecs, position(name IN upper(trim(fullStreet)))
-        		FROM street_type_lookup
+		RANK() OVER( ORDER BY position(name IN upper(trim(fullStreet))) ) As n_start,
+		RANK() OVER( ORDER BY position(name IN upper(trim(fullStreet))) + length(name) ) As n_end,
+		COUNT(*) OVER() As nrecs, position(name IN upper(trim(fullStreet)))
+		FROM tiger.street_type_lookup
         WHERE fullStreet ILIKE '%' || name || '%'  AND
             trim(upper(fullStreet)) != name AND
             (texticregexeq(fullStreet, '(?i)' || ws || '(' || name
@@ -358,7 +358,7 @@ BEGIN
         isHighway := rec.is_hw;
         tempInt := position(rec.given IN fullStreet);
         IF debug_flag THEN
-        	RAISE NOTICE 'street Type: %, street Type abbrev: %', rec.given, rec.abbrev;
+	RAISE NOTICE 'street Type: %, street Type abbrev: %', rec.given, rec.abbrev;
         END IF;
       END IF;
     END LOOP;
@@ -386,7 +386,7 @@ BEGIN
         reducedStreet := tempString;
         result.streetName := reducedStreet;
         IF debug_flag THEN
-        	RAISE NOTICE 'reduced Street: %', result.streetName;
+	RAISE NOTICE 'reduced Street: %', result.streetName;
         END IF;
         -- the post direction might be portion of fullStreet after reducedStreet and type
 		-- reducedStreet: 24  fullStreet: Country Road 24, N or fullStreet: Country Road 24 N
@@ -395,9 +395,9 @@ BEGIN
 			IF debug_flag THEN
 				RAISE NOTICE 'remove reduced street: % + streetType: % from fullstreet: %', reducedStreet, streetType, fullStreet;
 			END IF;
-			tempString := abbrev FROM direction_lookup WHERE
+			tempString := abbrev FROM tiger.direction_lookup WHERE
 			 tempString ILIKE '%' || name || '%'  AND texticregexeq(reducedStreet || ws || '+' || streetType, '(?i)(' || name || ')' || ws || '+|$')
-			 	ORDER BY length(name) DESC LIMIT 1;
+				ORDER BY length(name) DESC LIMIT 1;
 			IF tempString IS NOT NULL THEN
 				result.postDirAbbrev = trim(tempString);
 				IF debug_flag THEN
@@ -433,7 +433,7 @@ BEGIN
 		-- reducedStreet: Main  fullStreet: Main St, N or fullStreet: Main St N
 		tempString := trim(regexp_replace(fullStreet,  reducedStreet ||  ws || '+' || streetType,''));
 		IF tempString > '' THEN
-		  tempString := abbrev FROM direction_lookup WHERE
+		  tempString := abbrev FROM tiger.direction_lookup WHERE
 			 tempString ILIKE '%' || name || '%'
 			 AND texticregexeq(fullStreet || ' ', '(?i)' || reducedStreet || ws || '+' || streetType || ws || '+(' || name || ')' || ws || '+')
 			ORDER BY length(name) DESC LIMIT 1;
@@ -453,13 +453,13 @@ BEGIN
 		tempString := trim(regexp_replace(fullStreet,  ws || '+' || reducedStreet ||  ws || '+',''));
 		IF tempString > '' THEN
 			tempString := substring(reducedStreet, '(?i)(^' || name
-				|| ')' || ws) FROM direction_lookup WHERE
+				|| ')' || ws) FROM tiger.direction_lookup WHERE
 				 reducedStreet ILIKE '%' || name || '%'  AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
 				ORDER BY length(name) DESC LIMIT 1;
 		END IF;
 		IF tempString > '' THEN
 		  preDir := tempString;
-		  result.preDirAbbrev := abbrev FROM direction_lookup
+		  result.preDirAbbrev := abbrev FROM tiger.direction_lookup
 			  where reducedStreet ILIKE '%' || name '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
 			  ORDER BY length(name) DESC LIMIT 1;
 		  result.streetName := trim(substring(reducedStreet, '^' || preDir || ws || '(.*)'));
@@ -472,7 +472,7 @@ BEGIN
       -- location was given.  We still need to look for post direction.
       SELECT INTO rec abbrev,
           substring(result.location, '(?i)^(' || name || ')' || ws) as value
-          FROM direction_lookup
+          FROM tiger.direction_lookup
             WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)^'
           || name || ws) ORDER BY length(name) desc LIMIT 1;
       IF rec.value IS NOT NULL THEN
@@ -482,11 +482,11 @@ BEGIN
       result.location := null;
     ELSIF result.internal IS NULL THEN
       -- If no location is given, the location string will be the post direction
-      SELECT INTO tempInt count(*) FROM direction_lookup WHERE
+      SELECT INTO tempInt count(*) FROM tiger.direction_lookup WHERE
           upper(result.location) = upper(name);
       IF tempInt != 0 THEN
         postDir := result.location;
-        SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup WHERE
+        SELECT INTO result.postDirAbbrev abbrev FROM tiger.direction_lookup WHERE
             upper(postDir) = upper(name);
         result.location := NULL;
 
@@ -497,9 +497,9 @@ BEGIN
         -- postDirection is not equal location, but may be contained in it
         -- It is only considered a postDirection if it is not preceded by a ,
         SELECT INTO tempString substring(result.location, '(?i)(^' || name
-            || ')' || ws) FROM direction_lookup WHERE
+            || ')' || ws) FROM tiger.direction_lookup WHERE
             result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws)
-            	AND NOT  texticregexeq(rawInput, '(?i)(,' || ws || '+' || result.location || ')' || ws)
+	AND NOT  texticregexeq(rawInput, '(?i)(,' || ws || '+' || result.location || ')' || ws)
             ORDER BY length(name) desc LIMIT 1;
 
         IF debug_flag THEN
@@ -507,7 +507,7 @@ BEGIN
         END IF;
         IF tempString IS NOT NULL THEN
             postDir := tempString;
-            SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
+            SELECT INTO result.postDirAbbrev abbrev FROM tiger.direction_lookup
               WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws) ORDER BY length(name) DESC LIMIT 1;
               result.location := substring(result.location, '^' || postDir || ws || '+(.*)');
             IF debug_flag THEN
@@ -524,12 +524,12 @@ BEGIN
         END IF;
         SELECT INTO tempString substring(fullStreet, '(?i)' || streetType
           || ws || '+(' || name || ')' || ws || '+' || result.internal)
-          FROM direction_lookup
+          FROM tiger.direction_lookup
           WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)'
           || ws || name || ws || '+' || result.internal) ORDER BY length(name) desc LIMIT 1;
         IF tempString IS NOT NULL THEN
             postDir := tempString;
-            SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
+            SELECT INTO result.postDirAbbrev abbrev FROM tiger.direction_lookup
                 WHERE texticregexeq(fullStreet, '(?i)' || ws || name || ws);
         END IF;
     END IF;
@@ -541,46 +541,46 @@ BEGIN
     IF result.internal IS NOT NULL THEN
       reducedStreet := substring(fullStreet, '(?i)^(.*?)' || ws || '+'
                     || result.internal);
-      tempInt := count(*) FROM direction_lookup WHERE
+      tempInt := count(*) FROM tiger.direction_lookup WHERE
           reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)' || ws || name || '$');
       IF tempInt > 0 THEN
         postDir := substring(reducedStreet, '(?i)' || ws || '('
-            || name || ')' || '$') FROM direction_lookup
+            || name || ')' || '$') FROM tiger.direction_lookup
             WHERE reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)' || ws || name || '$');
-        result.postDirAbbrev := abbrev FROM direction_lookup
+        result.postDirAbbrev := abbrev FROM tiger.direction_lookup
             WHERE texticregexeq(reducedStreet, '(?i)' || ws || name || '$');
       END IF;
       tempString := substring(reducedStreet, '(?i)^(' || name
-          || ')' || ws) FROM direction_lookup WHERE
+          || ')' || ws) FROM tiger.direction_lookup WHERE
            reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)^(' || name || ')' || ws)
           ORDER BY length(name) DESC;
       IF tempString IS NOT NULL THEN
         preDir := tempString;
-        result.preDirAbbrev := abbrev FROM direction_lookup WHERE
+        result.preDirAbbrev := abbrev FROM tiger.direction_lookup WHERE
              reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
             ORDER BY length(name) DESC;
         result.streetName := substring(reducedStreet, '(?i)^' || preDir || ws
-                   || '+(.*?)(?:' || ws || '+' || cull_null(postDir) || '|$)');
+                   || '+(.*?)(?:' || ws || '+' || tiger.cull_null(postDir) || '|$)');
       ELSE
         result.streetName := substring(reducedStreet, '(?i)^(.*?)(?:' || ws
-                   || '+' || cull_null(postDir) || '|$)');
+                   || '+' || tiger.cull_null(postDir) || '|$)');
       END IF;
     ELSE
 
       -- If a post direction is given, then the location is everything after,
       -- the street name is everything before, less any pre direction.
       fullStreet := trim(fullStreet);
-      tempInt := count(*) FROM direction_lookup
+      tempInt := count(*) FROM tiger.direction_lookup
           WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name || '(?:'
               || ws || '|$)');
 
       IF tempInt = 1 THEN
         -- A single postDir candidate was found.  This makes it easier.
         postDir := substring(fullStreet, '(?i)' || ws || '('
-            || name || ')(?:' || ws || '|$)') FROM direction_lookup WHERE
+            || name || ')(?:' || ws || '|$)') FROM tiger.direction_lookup WHERE
              fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name || '(?:'
             || ws || '|$)');
-        result.postDirAbbrev := abbrev FROM direction_lookup
+        result.postDirAbbrev := abbrev FROM tiger.direction_lookup
             WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name
             || '(?:' || ws || '|$)');
         IF result.location IS NULL THEN
@@ -590,13 +590,13 @@ BEGIN
         reducedStreet := substring(fullStreet, '^(.*?)' || ws || '+'
                       || postDir);
         tempString := substring(reducedStreet, '(?i)(^' || name
-            || ')' || ws) FROM direction_lookup
+            || ')' || ws) FROM tiger.direction_lookup
             WHERE
                 reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
             ORDER BY length(name) DESC;
         IF tempString IS NOT NULL THEN
           preDir := tempString;
-          result.preDirAbbrev := abbrev FROM direction_lookup WHERE
+          result.preDirAbbrev := abbrev FROM tiger.direction_lookup WHERE
               reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
               ORDER BY length(name) DESC;
           result.streetName := trim(substring(reducedStreet, '^' || preDir || ws
@@ -616,7 +616,7 @@ BEGIN
         tempInt := 0;
         FOR rec IN SELECT abbrev, substring(fullStreet, '(?i)' || ws || '('
             || name || ')(?:' || ws || '|$)') AS value
-            FROM direction_lookup
+            FROM tiger.direction_lookup
             WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name
             || '(?:' || ws || '|$)')
             ORDER BY length(name) desc LOOP
@@ -640,12 +640,12 @@ BEGIN
         reducedStreet := substring(fullStreet, '(?i)^(.*?)' || ws || '+'
                       || postDir);
         SELECT INTO tempString substring(reducedStreet, '(?i)(^' || name
-            || ')' || ws) FROM direction_lookup WHERE
+            || ')' || ws) FROM tiger.direction_lookup WHERE
              reducedStreet ILIKE '%' || name || '%' AND  texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
             ORDER BY length(name) DESC;
         IF tempString IS NOT NULL THEN
           preDir := tempString;
-          SELECT INTO result.preDirAbbrev abbrev FROM direction_lookup WHERE
+          SELECT INTO result.preDirAbbrev abbrev FROM tiger.direction_lookup WHERE
               reducedStreet ILIKE '%' || name || '%' AND  texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
               ORDER BY length(name) DESC;
           result.streetName := substring(reducedStreet, '^' || preDir || ws
@@ -662,7 +662,7 @@ BEGIN
             raise notice 'fullStreet: %', fullStreet;
           END IF;
 
-          result.location := location_extract(fullStreet, result.stateAbbrev);
+          result.location := tiger.location_extract(fullStreet, result.stateAbbrev);
           -- If the location was found, remove it from fullStreet
           IF result.location IS NOT NULL THEN
             fullStreet := substring(fullStreet, '(?i)(.*),' || ws || '+' ||
@@ -672,12 +672,12 @@ BEGIN
 
         -- Check for a direction prefix.
         SELECT INTO tempString substring(fullStreet, '(?i)(^' || name
-            || ')' || ws) FROM direction_lookup WHERE
+            || ')' || ws) FROM tiger.direction_lookup WHERE
             texticregexeq(fullStreet, '(?i)(^' || name || ')' || ws)
             ORDER BY length(name);
         IF tempString IS NOT NULL THEN
           preDir := tempString;
-          SELECT INTO result.preDirAbbrev abbrev FROM direction_lookup WHERE
+          SELECT INTO result.preDirAbbrev abbrev FROM tiger.direction_lookup WHERE
               texticregexeq(fullStreet, '(?i)(^' || name || ')' || ws)
               ORDER BY length(name) DESC;
           IF result.location IS NOT NULL THEN

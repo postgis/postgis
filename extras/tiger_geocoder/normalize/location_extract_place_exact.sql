@@ -19,12 +19,12 @@ BEGIN
 
   -- Try for an exact match against places
   IF stateAbbrev IS NOT NULL THEN
-    lstate := statefp FROM state WHERE stusps = stateAbbrev;
-    SELECT INTO tempInt count(*) FROM place
-        WHERE place.statefp = lstate AND fullStreet ILIKE '%' || name || '%'
+    lstate := statefp FROM tiger.state WHERE stusps = stateAbbrev;
+    SELECT INTO tempInt count(*) FROM tiger.place
+        WHERE tiger.place.statefp = lstate AND fullStreet ILIKE '%' || name || '%'
         AND texticregexeq(fullStreet, '(?i)' || name || '$');
   ELSE
-    SELECT INTO tempInt count(*) FROM place
+    SELECT INTO tempInt count(*) FROM tiger.place
         WHERE fullStreet ILIKE '%' || name || '%' AND
         	texticregexeq(fullStreet, '(?i)' || name || '$');
   END IF;
@@ -33,8 +33,8 @@ BEGIN
     -- Some matches were found.  Look for the last one in the string.
     IF stateAbbrev IS NOT NULL THEN
       FOR rec IN SELECT substring(fullStreet, '(?i)('
-          || name || ')$') AS value, name FROM place
-          WHERE place.statefp = lstate AND fullStreet ILIKE '%' || name || '%'
+          || name || ')$') AS value, name FROM tiger.place
+          WHERE tiger.place.statefp = lstate AND fullStreet ILIKE '%' || name || '%'
           AND texticregexeq(fullStreet, '(?i)'
           || name || '$') ORDER BY length(name) DESC LOOP
         -- Since the regex is end of string, only the longest (first) result
@@ -44,7 +44,7 @@ BEGIN
       END LOOP;
     ELSE
       FOR rec IN SELECT substring(fullStreet, '(?i)('
-          || name || ')$') AS value, name FROM place
+          || name || ')$') AS value, name FROM tiger.place
           WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)'
           || name || '$') ORDER BY length(name) DESC LOOP
         -- Since the regex is end of string, only the longest (first) result
