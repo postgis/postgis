@@ -204,6 +204,8 @@ DELETE FROM t5548.edge;
 DELETE FROM t5548.node;
 SELECT '#5548.1', * FROM topology.ValidateTopology('t5548',
   ST_MakeEnvelope(2,2,4,4));
+SELECT '#1224', * FROM topology.ST_ValidateTopoGeo('t5548',
+  ST_MakeEnvelope(2,2,4,4));
 ROLLBACK;
 
 -- See https://trac.osgeo.org/postgis/ticket/5766
@@ -242,4 +244,3 @@ VALUES
 ( 4,1,4,-1,-2,1,2,'LINESTRING(17.42207545158684 69.11091383590066,17.42207570266477 69.11091383235974,17.422075702665087 69.11091383235977)' );
 SELECT '#6065', 'invalidities', * FROM topology.ValidateTopology('t6065');
 ROLLBACK;
-

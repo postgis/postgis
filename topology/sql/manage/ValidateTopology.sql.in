@@ -1127,3 +1127,17 @@ $$
 LANGUAGE 'plpgsql' VOLATILE; -- NOTE: we need VOLATILE to use SHOW
 --} ValidateTopology(toponame, bbox)
 
+--{
+--  ST_ValidateTopoGeo(toponame, [bbox])
+--
+--  SQL/MM standard entrypoint for topology validation.
+--
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION topology.ST_ValidateTopoGeo(toponame varchar, bbox geometry DEFAULT NULL)
+  RETURNS setof topology.ValidateTopology_ReturnType
+AS
+$$
+  SELECT * FROM topology.ValidateTopology(toponame, bbox);
+$$
+LANGUAGE 'sql' VOLATILE;
+--} ST_ValidateTopoGeo(toponame, bbox)
