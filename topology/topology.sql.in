@@ -880,8 +880,8 @@ $$ LANGUAGE 'sql' STABLE STRICT;
 --} GetTopologySRID(toponame)
 
 --{
--- GetTopoGeomElementArray(toponame, layer_id, topogeom_id)
--- GetTopoGeomElementArray(TopoGeometry)
+-- GetTopoGeomElementArray(toponame, layer_id, topogeom_id, include_signed)
+-- GetTopoGeomElementArray(TopoGeometry, include_signed)
 --
 -- Returns a set of element_id,element_type
 --
@@ -889,7 +889,12 @@ $$ LANGUAGE 'sql' STABLE STRICT;
 --
 -- Changed: 3.6.0 uses bigint for IDs
 -- Replaces gettopogeomelementarray(varchar, integer, integer) deprecated in 3.6.0
-CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(toponame varchar, layer_id integer, tgid bigint)
+-- Changed: 3.7.0 added include_signed parameter
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(
+    toponame varchar,
+    layer_id integer,
+    tgid bigint,
+    include_signed boolean)
   RETURNS topology.TopoElementArray
 AS
 $$
@@ -903,7 +908,8 @@ BEGIN
   query = 'SELECT * FROM topology.GetTopoGeomElements('
     || quote_literal(toponame) || ','
     || quote_literal(layer_id) || ','
-    || quote_literal(tgid)
+    || quote_literal(tgid) || ','
+    || quote_literal(include_signed)
     || ') as obj ORDER BY obj';
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -931,7 +937,17 @@ END;
 $$
 LANGUAGE 'plpgsql' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(tg topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(toponame varchar, layer_id integer, tgid bigint)
+  RETURNS topology.TopoElementArray
+AS
+$$
+  SELECT topology.GetTopoGeomElementArray($1, $2, $3, false);
+$$
+LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(
+    tg topology.TopoGeometry,
+    include_signed boolean)
   RETURNS topology.TopoElementArray
 AS
 $$
@@ -939,22 +955,35 @@ DECLARE
   toponame varchar;
 BEGIN
   toponame = topology.GetTopologyName(tg.topology_id);
-  RETURN topology.GetTopoGeomElementArray(toponame, tg.layer_id, tg.id);
+  RETURN topology.GetTopoGeomElementArray(toponame, tg.layer_id, tg.id, include_signed);
 END;
 $$
 LANGUAGE 'plpgsql' STABLE STRICT;
 
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(tg topology.TopoGeometry)
+  RETURNS topology.TopoElementArray
+AS
+$$
+  SELECT topology.GetTopoGeomElementArray($1, false);
+$$
+LANGUAGE 'sql' STABLE STRICT;
+
 --} GetTopoGeomElementArray()
 
 --{
--- GetTopoGeomElements(toponame, layer_id, topogeom_id)
--- GetTopoGeomElements(TopoGeometry)
+-- GetTopoGeomElements(toponame, layer_id, topogeom_id, include_signed)
+-- GetTopoGeomElements(TopoGeometry, include_signed)
 --
 -- Returns a set of element_id,element_type
 --
 -- Changed: 3.6.0 uses bigint for IDs
 -- Replaces gettopogeomelements(varchar, integer, integer) deprecated in 3.6.0
-CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(toponame varchar, layerid integer, tgid bigint)
+-- Changed: 3.7.0 added include_signed parameter
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(
+    toponame varchar,
+    layerid integer,
+    tgid bigint,
+    include_signed boolean)
   RETURNS SETOF topology.TopoElement
 AS
 $$
@@ -990,11 +1019,13 @@ BEGIN
     RAISE EXCEPTION 'Layer % does not exist', layerid;
   END IF;
 
-  query = 'SELECT abs(element_id) as element_id, element_type FROM '
+  query = 'SELECT '
+    || CASE WHEN include_signed THEN 'element_id' ELSE 'abs(element_id)' END
+    || ' as element_id, element_type FROM '
     || quote_ident(toponame) || '.relation WHERE '
        ' layer_id = ' || layerid
     || ' AND topogeo_id = ' || quote_literal(tgid)
-    || ' ORDER BY element_type, element_id';
+    || ' ORDER BY element_type, abs(element_id), element_id';
 
   --RAISE NOTICE 'Query: %', query;
 
@@ -1005,12 +1036,17 @@ BEGIN
         || quote_literal(toponame) || ','
         || rec.element_type
         || ','
-        || rec.element_id
+        || abs(rec.element_id) || ','
+        || quote_literal(include_signed)
         || ') as ret;';
       --RAISE NOTICE 'Query2: %', query2;
       FOR rec2 IN EXECUTE query2
       LOOP
-        RETURN NEXT rec2.ret;
+        ret = rec2.ret;
+        IF include_signed AND rec.element_id < 0 THEN
+          ret[1] = -ret[1];
+        END IF;
+        RETURN NEXT ret;
       END LOOP;
     ELSE
       ret = '{' || rec.element_id || ',' || rec.element_type || '}';
@@ -1024,7 +1060,17 @@ END;
 $$
 LANGUAGE 'plpgsql' STABLE STRICT;
 
-CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(tg topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(toponame varchar, layerid integer, tgid bigint)
+  RETURNS SETOF topology.TopoElement
+AS
+$$
+  SELECT * FROM topology.GetTopoGeomElements($1, $2, $3, false);
+$$
+LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(
+    tg topology.TopoGeometry,
+    include_signed boolean)
   RETURNS SETOF topology.TopoElement
 AS
 $$
@@ -1034,7 +1080,7 @@ DECLARE
 BEGIN
   toponame = topology.GetTopologyName(tg.topology_id);
   FOR rec IN SELECT * FROM topology.GetTopoGeomElements(toponame,
-    tg.layer_id,tg.id) as ret
+    tg.layer_id, tg.id, include_signed) as ret
   LOOP
     RETURN NEXT rec.ret;
   END LOOP;
@@ -1042,6 +1088,14 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(tg topology.TopoGeometry)
+  RETURNS SETOF topology.TopoElement
+AS
+$$
+  SELECT * FROM topology.GetTopoGeomElements($1, false);
+$$
+LANGUAGE 'sql' STABLE STRICT;
 
 --} GetTopoGeomElements()
 
