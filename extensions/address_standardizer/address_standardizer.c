@@ -203,7 +203,12 @@ debug_standardize_address(PG_FUNCTION_ARGS)
 
 	appendStringInfoString(result, ", \"rules\":[");
 	sql = makeStringInfo();
-	appendStringInfo(sql, "SELECT id, rule FROM %s ", quote_identifier(rultab));
+	{
+		char *safe_rultab = resolve_and_quote_tabname(rultab);
+		if (!safe_rultab)
+			elog(ERROR, "%s: rules table \"%s\" does not exist", __func__, rultab);
+		appendStringInfo(sql, "SELECT id, rule FROM %s ", safe_rultab);
+	}
 	appendStringInfoString(sql, "WHERE rule LIKE $1::varchar");
 	argtypes[0] = CSTRINGOID;
 
@@ -601,5 +606,4 @@ Datum standardize_address1(PG_FUNCTION_ARGS)
     DBG("returning standardized result");
     PG_RETURN_DATUM(result);
 }
-
 
