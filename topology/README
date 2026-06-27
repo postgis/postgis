@@ -212,13 +212,12 @@ being input has already been snapped by caller.
 ==ST_GetFaceGeometry() implementation
 
 The ST_GetFaceGeometry() function is currently implemented
-as a call to polygonize() receiving all edges with the
-given Face on the left or right side. This reduces the number
-of SQL queries to 1, but makes it hard to detect any
-inconsistency in the underlying topology.
-Also, the polygonize() function does not use *any* of the
-metadata information in the Edge table, so replacing it
-with a more topology-aware function could speed it up.
+by following next_left_edge/next_right_edge links from an edge
+known to reference the given Face on the left or right side.
+This uses Face labels to find a seed edge for each ring, but
+collects the boundary edge set from the topological linkage
+metadata rather than polygonizing only the edges labelled with
+the Face.
 
 ==ValidateTopology() performance
 
@@ -234,4 +233,3 @@ be slower then overloading the predicates.
 In addition to the constraints defined in SQL/MM specification,
 this implementation adds constraints to enforce Node and Edge
 geometry types to be 'POINT' and 'LINESTRING' respectively.
-
