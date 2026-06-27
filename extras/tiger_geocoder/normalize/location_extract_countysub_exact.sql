@@ -19,19 +19,19 @@ BEGIN
 
   -- No hope of determining the location from place. Try countysub.
   IF stateAbbrev IS NOT NULL THEN
-    lstate := statefp FROM state WHERE stusps = stateAbbrev;
-    SELECT INTO tempInt count(*) FROM cousub
+    lstate := statefp FROM tiger.state WHERE stusps = stateAbbrev;
+    SELECT INTO tempInt count(*) FROM tiger.cousub
         WHERE cousub.statefp = lstate
         AND texticregexeq(fullStreet, '(?i)' || name || '$');
   ELSE
-    SELECT INTO tempInt count(*) FROM cousub
+    SELECT INTO tempInt count(*) FROM tiger.cousub
         WHERE texticregexeq(fullStreet, '(?i)' || name || '$');
   END IF;
 
   IF tempInt > 0 THEN
     IF stateAbbrev IS NOT NULL THEN
       FOR rec IN SELECT substring(fullStreet, '(?i)('
-          || name || ')$') AS value, name FROM cousub
+          || name || ')$') AS value, name FROM tiger.cousub
           WHERE cousub.statefp = lstate
           AND texticregexeq(fullStreet, '(?i)' || ws || name ||
           '$') ORDER BY length(name) DESC LOOP
@@ -41,7 +41,7 @@ BEGIN
       END LOOP;
     ELSE
       FOR rec IN SELECT substring(fullStreet, '(?i)('
-          || name || ')$') AS value, name FROM cousub
+          || name || ')$') AS value, name FROM tiger.cousub
           WHERE texticregexeq(fullStreet, '(?i)' || ws || name ||
           '$') ORDER BY length(name) DESC LOOP
         -- again, only the first is needed.

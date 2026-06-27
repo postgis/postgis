@@ -24,8 +24,8 @@ DECLARE
   var_place varchar;
   var_county varchar;
   var_stmt text;
-  var_debug boolean =  get_geocode_setting('debug_reverse_geocode')::boolean;
-  var_rating_highway integer = COALESCE(get_geocode_setting('reverse_geocode_numbered_roads')::integer,0);/**0 no preference, 1 prefer highway number, 2 prefer local name **/
+  var_debug boolean =  tiger.get_geocode_setting('debug_reverse_geocode')::boolean;
+  var_rating_highway integer = COALESCE(tiger.get_geocode_setting('reverse_geocode_numbered_roads')::integer,0);/**0 no preference, 1 prefer highway number, 2 prefer local name **/
   var_zip varchar := NULL;
   var_primary_fullname varchar := '';
 BEGIN
@@ -46,7 +46,7 @@ BEGIN
 	IF var_debug THEN
 		RAISE NOTICE 'Get matching states start: %', clock_timestamp();
 	END IF;
-	SELECT statefp, stusps INTO var_state, var_stusps FROM state WHERE ST_Intersects(the_geom, var_pt) LIMIT 1;
+	SELECT statefp, stusps INTO var_state, var_stusps FROM tiger.state WHERE ST_Intersects(the_geom, var_pt) LIMIT 1;
 	IF var_debug THEN
 		RAISE NOTICE 'Get matching states end: % -  %', var_state, clock_timestamp();
 	END IF;
@@ -57,24 +57,24 @@ BEGIN
 	IF var_debug THEN
 		RAISE NOTICE 'Get matching counties start: %', clock_timestamp();
 	END IF;
-	-- locate county
-	var_stmt := 'SELECT countyfp, name  FROM  county WHERE  statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
+	-- locate tiger.county
+	var_stmt := 'SELECT countyfp, name  FROM  tiger.county WHERE  statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
 	EXECUTE var_stmt INTO var_countyfp, var_county USING var_state, var_pt ;
 
 	--locate zip
-	var_stmt := 'SELECT zcta5ce  FROM zcta5 WHERE statefp = $1 AND ST_Intersects(the_geom, $2)  LIMIT 1;';
+	var_stmt := 'SELECT zcta5ce  FROM tiger.zcta5 WHERE statefp = $1 AND ST_Intersects(the_geom, $2)  LIMIT 1;';
 	EXECUTE var_stmt INTO var_zip USING var_state, var_pt;
 	-- locate city
 	IF var_zip > '' THEN
 	      var_addy.zip := var_zip ;
 	END IF;
 
-	var_stmt := 'SELECT z.name  FROM place As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
+	var_stmt := 'SELECT z.name  FROM tiger.place As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
 	EXECUTE var_stmt INTO var_place USING var_state, var_pt ;
 	IF var_place > '' THEN
 			var_addy.location := var_place;
 	ELSE
-		var_stmt := 'SELECT z.name  FROM cousub As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
+		var_stmt := 'SELECT z.name  FROM tiger.cousub As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
 		EXECUTE var_stmt INTO var_place USING var_state, var_pt ;
 		IF var_place > '' THEN
 			var_addy.location := var_place;
@@ -88,37 +88,37 @@ BEGIN
 		RAISE NOTICE 'Get matching counties end: % - %',var_countyfp,  clock_timestamp();
 	END IF;
 	IF var_countyfp IS NULL THEN
-		-- We don't have any data for this county
+		-- We don't have any data for this tiger.county
 		RETURN;
 	END IF;
 
 	var_addy.stateAbbrev = var_stusps;
 
-	-- Find the street edges that this point is closest to with tolerance of 0.005 but only consider the edge if the point is contained in the right or left face
+	-- Find the street tiger.edges that this point is closest to with tolerance of 0.005 but only consider the edge if the point is contained in the right or left face
 	-- Then order addresses by proximity to road
 	IF var_debug THEN
-		RAISE NOTICE 'Get matching edges start: %', clock_timestamp();
+		RAISE NOTICE 'Get matching tiger.edges start: %', clock_timestamp();
 	END IF;
 
 	var_stmt := '
 	    WITH ref AS (
 	        SELECT ' || quote_literal(var_pt::text) || '::geometry As ref_geom ) ,
 			f AS
-			( SELECT faces.* FROM faces  CROSS JOIN ref
-			WHERE faces.statefp = ' || quote_literal(var_state) || ' AND faces.countyfp = ' || quote_literal(var_countyfp) || '
-				AND ST_Intersects(faces.the_geom, ref_geom)
+			( SELECT tiger.faces.* FROM tiger.faces  CROSS JOIN ref
+			WHERE tiger.faces.statefp = ' || quote_literal(var_state) || ' AND tiger.faces.countyfp = ' || quote_literal(var_countyfp) || '
+				AND ST_Intersects(tiger.faces.the_geom, ref_geom)
 				    ),
 			e AS
-			( SELECT edges.tlid , edges.statefp, edges.the_geom, CASE WHEN edges.tfidr = f.tfid THEN ''R'' WHEN edges.tfidl = f.tfid THEN ''L'' ELSE NULL END::varchar As eside,
-                    ST_ClosestPoint(edges.the_geom,ref_geom) As center_pt, ref_geom
-				FROM edges INNER JOIN f ON (f.statefp = edges.statefp AND (edges.tfidr = f.tfid OR edges.tfidl = f.tfid))
+			( SELECT tiger.edges.tlid , tiger.edges.statefp, tiger.edges.the_geom, CASE WHEN tiger.edges.tfidr = f.tfid THEN ''R'' WHEN tiger.edges.tfidl = f.tfid THEN ''L'' ELSE NULL END::varchar As eside,
+                    ST_ClosestPoint(tiger.edges.the_geom,ref_geom) As center_pt, ref_geom
+				FROM tiger.edges INNER JOIN f ON (f.statefp = tiger.edges.statefp AND (tiger.edges.tfidr = f.tfid OR tiger.edges.tfidl = f.tfid))
 				    CROSS JOIN ref
-			WHERE edges.statefp = ' || quote_literal(var_state) || ' AND edges.countyfp = ' || quote_literal(var_countyfp) || '
-				AND ST_DWithin(edges.the_geom, ref.ref_geom, 0.01) AND (edges.mtfcc LIKE ''S%'') --only consider streets and roads
+			WHERE tiger.edges.statefp = ' || quote_literal(var_state) || ' AND tiger.edges.countyfp = ' || quote_literal(var_countyfp) || '
+				AND ST_DWithin(tiger.edges.the_geom, ref.ref_geom, 0.01) AND (tiger.edges.mtfcc LIKE ''S%'') --only consider streets and roads
 				  )	,
 			ea AS
 			(SELECT e.statefp, e.tlid, a.fromhn, a.tohn, e.center_pt, ref_geom, a.zip, a.side, e.the_geom
-				FROM e LEFT JOIN addr As a ON (a.statefp = ' || quote_literal(var_state) || '  AND e.tlid = a.tlid and e.eside = a.side)
+				FROM e LEFT JOIN tiger.addr As a ON (a.statefp = ' || quote_literal(var_state) || '  AND e.tlid = a.tlid and e.eside = a.side)
 				)
 		SELECT *
 		FROM (SELECT DISTINCT ON(tlid,side)  foo.fullname, foo.predirabrv, foo.streetname, foo.sufdirabrv, foo.streettypeabbrev, foo.zip,  foo.center_pt,
@@ -129,8 +129,8 @@ BEGIN
 		      n.sufdirabrv, e.zip, e.side, e.fromhn, e.tohn , e.center_pt,
 		          ST_DistanceSphere(ST_SetSRID(e.center_pt,4326),ST_SetSRID(ref_geom,4326)) As dist
 				FROM ea AS e
-					LEFT JOIN (SELECT featnames.* FROM featnames
-			    WHERE featnames.statefp = ' || quote_literal(var_state) ||'   ) AS n ON (n.statefp =  e.statefp AND n.tlid = e.tlid)
+					LEFT JOIN (SELECT tiger.featnames.* FROM tiger.featnames
+			    WHERE tiger.featnames.statefp = ' || quote_literal(var_state) ||'   ) AS n ON (n.statefp =  e.statefp AND n.tlid = e.tlid)
 				ORDER BY dist LIMIT 50 ) As foo
 				ORDER BY foo.tlid, foo.side, ';
 
@@ -148,7 +148,7 @@ BEGIN
 
     FOR var_redge IN EXECUTE var_stmt USING var_rating_highway LOOP
         IF var_debug THEN
-            RAISE NOTICE 'Start Get matching edges loop: %,%', var_primary_line, clock_timestamp();
+            RAISE NOTICE 'Start Get matching tiger.edges loop: %,%', var_primary_line, clock_timestamp();
         END IF;
         IF var_primary_line IS NULL THEN --this is the first time in the loop and our primary guess
             var_primary_line := var_redge.line;
@@ -223,7 +223,7 @@ BEGIN
 				END IF;
 
 				IF var_debug THEN
-					RAISE NOTICE 'End Get matching edges loop: %', clock_timestamp();
+					RAISE NOTICE 'End Get matching tiger.edges loop: %', clock_timestamp();
 					RAISE NOTICE 'Final addresses: %, %', addy, clock_timestamp();
 				END IF;
 
