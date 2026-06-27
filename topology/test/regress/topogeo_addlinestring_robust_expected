@@ -1,2 +1,9 @@
 #5699|-checking-
 #5711|-checking-
+#5722|-checking-
+closed-node|1
+closed-addpolygon|t
+closed-valid|0
+closed-faces|1
+closed-edges|2|t
+Topology 'closed_polygon_tol' dropped

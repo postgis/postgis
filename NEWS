@@ -90,6 +90,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Bug Fixes *
 
+ - #5722, [topology] Use component-scale tolerance when adding
+          noded TopoGeo_AddLineString edges (Sandro Santilli)
  - #2807, [raster] Preserve missing NODATA values in ST_MapAlgebra outputs
           (Darafei Praliaskouski)
  - #2832, [raster] Avoid padding single-tile raster2pgsql overviews

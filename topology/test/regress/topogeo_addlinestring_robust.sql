@@ -181,4 +181,38 @@ SELECT * FROM runTest('#5711',
   0
 ) WHERE true ;
 
+-- See https://trac.osgeo.org/postgis/ticket/5722
+SELECT * FROM runTest('#5722',
+  ARRAY[
+    'LINESTRING(
+      -11.968112622212203 0.651457829865329,
+        8.13909499443551  0.334122751124234,
+      -11.964143711257549 0.31568377154268)'
+  ],
+  'LINESTRING(
+    -0.65145782986533 -11.968112622212203,
+    -0.159231454672685  8.13973141470126)',
+  0
+) WHERE true ;
+
+SELECT NULL FROM topology.CreateTopology('closed_polygon_tol');
+SELECT 'closed-node', topology.ST_AddIsoNode('closed_polygon_tol', 0, 'POINT(0.001 0)');
+SELECT 'closed-addpolygon', count(*) > 0
+FROM topology.TopoGeo_AddPolygon(
+  'closed_polygon_tol',
+  'POLYGON((0 0, 1000000000000 0, 1 1, 0 0))',
+  0
+);
+SELECT 'closed-valid', count(*)
+FROM topology.ValidateTopology('closed_polygon_tol');
+SELECT 'closed-faces', count(*)
+FROM closed_polygon_tol.face
+WHERE face_id > 0;
+SELECT 'closed-edges',
+  count(*),
+  bool_and(ST_IsClosed(geom) = (start_node = end_node))
+FROM closed_polygon_tol.edge
+WHERE edge_id > 0;
+SELECT topology.DropTopology('closed_polygon_tol');
+
 DROP FUNCTION runTest(text, geometry[], geometry, float8, bool);
