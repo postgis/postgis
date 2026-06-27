@@ -559,6 +559,48 @@ static void test_gdal_warp(void) {
 	cu_free_raster(raster);
 }
 
+static void
+test_gdal_warp_default_upperleft(void)
+{
+	rt_band band = NULL;
+	rt_raster raster = NULL;
+	rt_raster rast = NULL;
+	int width = 10;
+	int height = 10;
+	double ul_x = 0;
+	double ul_y = 0;
+
+	raster = rt_raster_new(width, height);
+	CU_ASSERT(raster != NULL);
+
+	band = cu_add_band(raster, PT_8BUI, 1, 0);
+	CU_ASSERT(band != NULL);
+
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &width,
+				   &height,
+				   &ul_x,
+				   &ul_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT(rast != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_width(rast), 10);
+	CU_ASSERT_EQUAL(rt_raster_get_height(rast), 10);
+	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_x_offset(rast), 0, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_y_offset(rast), 0, DBL_EPSILON);
+
+	cu_free_raster(rast);
+	cu_free_raster(raster);
+}
+
 static void test_gdal_warp_preserves_data(void) {
 	const char *filename = POSTGIS_TOP_SRC_DIR "/raster/test/regress/loader/Projected.tif";
 
@@ -638,6 +680,6 @@ void gdal_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_to_gdal);
 	PG_ADD_TEST(suite, test_gdal_to_raster);
 	PG_ADD_TEST(suite, test_gdal_warp);
+	PG_ADD_TEST(suite, test_gdal_warp_default_upperleft);
 	PG_ADD_TEST(suite, test_gdal_warp_preserves_data);
 }
-
