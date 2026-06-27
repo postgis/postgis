@@ -10,7 +10,8 @@ PostGIS 3.2.11
  - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
  - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
  - Avoid Inf loop in Geohash calculation (Paul Ramsey)
- - [address_standardizer] Avoid NULL dereferences and out-of-bounds rule parsing
+ - [address_standardizer] Avoid NULL dereferences, unsafe table-name handling,
+   and out-of-bounds rule parsing
    (Maksim Korotkov, Paul Ramsey)
  - #6044, Skip doc XML validation without DocBook XSL stylesheets (Regina Obe)
 

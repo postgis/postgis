@@ -4,3 +4,23 @@ SELECT '#2981' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules
 SELECT '#2978a' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10-20 DORRANCE ST PROVIDENCE RI' );
 SELECT '#2978b' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10 20 DORRANCE ST PROVIDENCE RI' );
 SELECT '#2978c' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10-20 DORRANCE ST, PROVIDENCE, RI');
+-- CVE: rule with >128 terms must be rejected gracefully, not crash (stack OOB write)
+CREATE TEMP TABLE t_overlong_rule(id serial, rule text);
+INSERT INTO t_overlong_rule(rule) SELECT string_agg('1', ' ') FROM generate_series(1, 130);
+DO $$
+BEGIN
+	PERFORM standardize_address('us_lex', 'us_gaz', 't_overlong_rule', '1 Main St', 'Boston, MA');
+EXCEPTION WHEN OTHERS THEN
+	RAISE NOTICE 'overlong-rule: %', SQLERRM;
+END
+$$;
+-- OOB read: rule missing type/weight tokens must be rejected, not read past array end
+CREATE TEMP TABLE t_short_rule(id serial, rule text);
+INSERT INTO t_short_rule(rule) VALUES ('1 -1 5 -1');
+DO $$
+BEGIN
+	PERFORM standardize_address('us_lex', 'us_gaz', 't_short_rule', '1 Main St', 'Boston, MA');
+EXCEPTION WHEN OTHERS THEN
+	RAISE NOTICE 'short-rule: %', SQLERRM;
+END
+$$;
