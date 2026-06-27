@@ -35,6 +35,20 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
+CREATE function print_primitive_stats(lbl text)
+ RETURNS table(olbl text, relname name, stats_updated boolean)
+AS $$
+BEGIN
+  RETURN QUERY
+    SELECT lbl::text, c.relname, c.reltuples >= 0
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 't'
+      AND c.relname IN ('edge_data', 'node', 'face')
+    ORDER BY c.relname;
+END;
+$$ LANGUAGE 'plpgsql';
+
 -- Invalid geometries
 select null from ( select topology.CreateTopology('t', 4326) > 0 ) as ct;
 select topology.st_createtopogeo('t', null); -- Invalid geometry
@@ -57,6 +71,7 @@ SELECT g, topology.st_createtopogeo('t', g) FROM ( SELECT
 'SRID=4326;LINESTRING(0 0, 8 -40)'
 ::geometry as g ) as i ) as j;
 select * from print_elements_count('T2');
+select * from print_primitive_stats('T2');
 select null from ( select topology.DropTopology('t') ) as dt;
 
 -- Single polygon with no holes
@@ -247,3 +262,4 @@ select null from ( select topology.DropTopology('t') ) as dt;
 -- clean up
 DROP FUNCTION print_isolated_nodes(text);
 DROP FUNCTION print_elements_count(text);
+DROP FUNCTION print_primitive_stats(text);
