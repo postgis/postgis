@@ -465,6 +465,50 @@ SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', 'tgeom');
 				<para><xref linkend="DropTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
+		<refentry xml:id="UpdateTopologySRID">
+			<refnamediv>
+				<refname>UpdateTopologySRID</refname>
+				<refpurpose>Updates the SRID of a topology and its primitive geometry columns</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>text <function>UpdateTopologySRID</function></funcdef>
+						<paramdef><type>name </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Updates the spatial reference identifier recorded in <varname>topology.topology</varname> and relabels the geometry columns in the topology <varname>face</varname>, <varname>node</varname>, and <varname>edge_data</varname> primitive tables. Returns a status message. This changes the SRID metadata with <xref linkend="ST_SetSRID"/>; it does not transform coordinates.
+		</para>
+
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<para>Relabel a topology from an unknown or incorrect SRID to WGS 84.</para>
+				<programlisting>SELECT topology.UpdateTopologySRID('ma_topo', 4326);</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+                    <xref linkend="CreateTopology"/>,
+                    <xref linkend="GetTopologySRID"/>,
+                    <xref linkend="ST_SetSRID"/>,
+                    <xref linkend="ST_Transform"/>,
+                    <xref linkend="UpdateGeometrySRID"/>
+                </para>
+			</refsection>
+		</refentry>
 		<refentry xml:id="RenameTopology">
 			<refnamediv>
 				<refname>RenameTopology</refname>

@@ -51,6 +51,10 @@
 --    Delete a topology removing reference from the
 --    topology.topology table
 --
+-- FUNCTION UpdateTopologySRID(name, srid)
+--    Update the spatial reference identifier of a topology and relabel
+--    geometries in the topology primitive tables.
+--
 -- FUNCTION GetTopologyId(name)
 -- FUNCTION GetTopologySRID(name)
 -- FUNCTION GetTopologyName(id)
@@ -1427,6 +1431,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/manage/MakeTopologyPrecise.sql.in"
 #include "sql/manage/TotalTopologySize.sql.in"
 #include "sql/manage/UpgradeTopology.sql.in"
+#include "sql/manage/UpdateTopologySRID.sql.in"
 
 -- Cleanup functions
 #include "sql/cleanup/RemoveUnusedPrimitives.sql.in"

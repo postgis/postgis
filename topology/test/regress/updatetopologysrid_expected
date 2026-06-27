@@ -1,0 +1,25 @@
+create|t
+node1|1
+node2|2
+edge|1
+layer|1
+before-topology|4326|4326
+before-primitives|4326|4326|4326
+before-typmods|geometry(Point,4326)|geometry(LineString,4326)|geometry(Polygon,4326)
+update|Topology 't5863' SRID changed to 3857
+after-topology|3857|3857
+after-primitives|3857|3857|3857
+after-typmods|geometry(Point,3857)|geometry(LineString,3857)|geometry(Polygon,3857)
+edge-grant|t
+edge-column-grant|f|t
+view-insert|2|3857|2|2
+create-z|t
+update-z|Topology 't5863z' SRID changed to 3857
+z-typmods|geometry(PointZ,3857)|geometry(LineStringZ,3857)|geometry(Polygon,3857)
+create-unknown|t
+ERROR:  invalid SRID: 999000 not found in spatial_ref_sys
+unknown-srid|Topology 't5863_unknown' SRID changed to 0
+after-unknown-srid|0
+Topology 't5863_unknown' dropped
+Topology 't5863z' dropped
+Topology 't5863' dropped
