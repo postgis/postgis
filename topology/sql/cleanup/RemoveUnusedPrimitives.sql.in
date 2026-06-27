@@ -34,6 +34,7 @@ DECLARE
   edgeMap JSONB := '{}';
   edge1 BIGINT;
   edge2 BIGINT;
+  sharedNodes BIGINT[];
   removedNode BIGINT;
   ok BOOLEAN;
   fixedLinks INT := 0;
@@ -671,16 +672,55 @@ BEGIN
     ok := false;
 
     BEGIN
+      IF bbox IS NOT NULL THEN
+        sql := format(
+          $$
+            SELECT array_agg(node_id)
+            FROM (
+              SELECT e1.start_node node_id
+              FROM %1$I.edge_data e1, %1$I.edge_data e2
+              WHERE e1.edge_id = $1
+                AND e2.edge_id = $2
+                AND e1.start_node IN (e2.start_node, e2.end_node)
+
+              UNION
+
+              SELECT e1.end_node node_id
+              FROM %1$I.edge_data e1, %1$I.edge_data e2
+              WHERE e1.edge_id = $1
+                AND e2.edge_id = $2
+                AND e1.end_node IN (e2.start_node, e2.end_node)
+            ) shared
+          $$,
+          topo.name
+        );
+        EXECUTE sql USING edge1, edge2 INTO sharedNodes;
+        IF sharedNodes IS NULL OR NOT (sharedNodes && rec.connecting_nodes::bigint[]) THEN
+          RAISE DEBUG 'Skipping stale bbox-limited heal of edges % and % currently joined by nodes % instead of candidate nodes %',
+            edge1, edge2, sharedNodes, rec.connecting_nodes;
+          CONTINUE;
+        END IF;
+      END IF;
+
       -- TODO: replace ST_ModEdgeHeal loop with a faster direct deletion and healing
       removedNode := topology.ST_ModEdgeHeal(topo.name, edge1, edge2);
-      IF NOT removedNode = ANY ( rec.connecting_nodes ) THEN
-        RAISE EXCEPTION 'Healing of edges % and % was reported '
-                        'to remove node % while we expected any of % instead',
-                        edge1, edge2, removedNode, rec.connecting_nodes;
+      IF bbox IS NOT NULL AND NOT removedNode = ANY ( rec.connecting_nodes ) THEN
+        RAISE EXCEPTION USING
+          ERRCODE = 'PT943',
+          MESSAGE = format(
+            'Skipping stale bbox-limited heal of edges %s and %s because it removed node %s instead of candidate nodes %s',
+            edge1, edge2, removedNode, rec.connecting_nodes
+          );
+      ELSIF NOT removedNode = ANY ( rec.connecting_nodes ) THEN
+        RAISE DEBUG 'Healing of edges % and % removed node % instead of one of stale candidate nodes %',
+          edge1, edge2, removedNode, rec.connecting_nodes;
       END IF;
       RAISE DEBUG 'Edge % merged into %, dropping node %', edge2, edge1, removedNode;
       ok := 1;
-    EXCEPTION WHEN OTHERS
+    EXCEPTION WHEN SQLSTATE 'PT943'
+    THEN
+      RAISE DEBUG '%', SQLERRM;
+    WHEN OTHERS
     THEN
       RAISE WARNING 'Edges % and % joined by node % could not be healed: %', edge1, edge2, rec.connecting_nodes, SQLERRM;
     END;
@@ -698,4 +738,3 @@ BEGIN
   RETURN deletedEdges + deletedNodes + deletedNodesDeg2;
 END;
 $BODY$ LANGUAGE 'plpgsql' VOLATILE;
-
