@@ -107,5 +107,6 @@ NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL War
 NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
 NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
 (0,0,5,5,2,-2,0,0,0,1)|(0,0,5,5,2,-2,0,0,0,1)
+#2800|t|4|4|0.600|0.600|-180.000|87.600
 t|t|f|NaN|t
 t|t
