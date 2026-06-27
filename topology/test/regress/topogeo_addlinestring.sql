@@ -582,6 +582,64 @@ SELECT '#5993.4', 'snap-split-off-limit', * FROM topology.TopoGeo_addLinestring(
 );
 SELECT NULL FROM topology.DropTopology ('t5993');
 
+-- See https://trac.osgeo.org/postgis/ticket/5990
+SELECT NULL FROM topology.CreateTopology ('t5990');
+WITH added AS (
+  SELECT NULL
+  FROM generate_series(1, 20) AS x
+  CROSS JOIN LATERAL topology.TopoGeo_AddLineString('t5990',
+    ST_MakeLine(ST_MakePoint(x, 0), ST_MakePoint(x, 1))) AS e
+)
+SELECT '#5990.0', 'nodes', count(*) FROM added;
+WITH inserted AS (
+  SELECT e, ord
+  FROM topology.TopoGeo_AddLineString('t5990',
+    ST_MakeLine(ST_MakePoint(0, 0), ST_MakePoint(21, 0))) WITH ORDINALITY AS inserted(e, ord)
+)
+SELECT '#5990.1', 'line-pieces', count(*), array_agg(e ORDER BY ord) FROM inserted;
+SELECT '#5990.2', 'valid', count(*) FROM topology.ValidateTopology('t5990');
+SELECT '#5990.3', 'edges', count(*) FROM t5990.edge_data;
+SELECT NULL FROM topology.DropTopology ('t5990');
+
+SELECT NULL FROM topology.CreateTopology ('t5990_closed');
+SELECT '#5990.4', 'node', topology.TopoGeo_AddPoint('t5990_closed', ST_MakePoint(1, 0));
+SELECT '#5990.5', 'node', topology.TopoGeo_AddPoint('t5990_closed', ST_MakePoint(1, 1));
+WITH inserted AS (
+  SELECT e, ord
+  FROM topology.TopoGeo_AddLineString('t5990_closed',
+    ST_GeomFromText('LINESTRING(0 0,2 0,2 1,0 1,0 0)')) WITH ORDINALITY AS inserted(e, ord)
+)
+SELECT '#5990.6', 'closed-line-pieces', count(*), array_agg(e ORDER BY ord) FROM inserted;
+SELECT '#5990.7', 'closed-line-geoms', array_agg(ST_AsText(geom) ORDER BY edge_id) FROM t5990_closed.edge_data;
+SELECT '#5990.8', 'valid', count(*) FROM topology.ValidateTopology('t5990_closed');
+SELECT NULL FROM topology.DropTopology ('t5990_closed');
+
+SELECT NULL FROM topology.CreateTopology ('t5990_snap_closed');
+SELECT '#5990.9', 'snapped-start', topology.TopoGeo_AddPoint('t5990_snap_closed', ST_MakePoint(0.1, 0));
+SELECT '#5990.10', 'split-node', topology.TopoGeo_AddPoint('t5990_snap_closed', ST_MakePoint(1, 0));
+WITH inserted AS (
+  SELECT e, ord
+  FROM topology.TopoGeo_AddLineString('t5990_snap_closed',
+    ST_GeomFromText('LINESTRING(0 0,2 0,2 1,0 1,0 0)'), tolerance => 0.2) WITH ORDINALITY AS inserted(e, ord)
+)
+SELECT '#5990.11', 'snap-closed-pieces', count(*), array_agg(e ORDER BY ord) FROM inserted;
+SELECT '#5990.12', 'snap-closed-geoms', array_agg(ST_AsText(geom) ORDER BY edge_id) FROM t5990_snap_closed.edge_data;
+SELECT '#5990.13', 'valid', count(*) FROM topology.ValidateTopology('t5990_snap_closed');
+SELECT NULL FROM topology.DropTopology ('t5990_snap_closed');
+
+SELECT NULL FROM topology.CreateTopology ('t5990_snap_split_closed');
+SELECT '#5990.14', 'snapped-start', topology.TopoGeo_AddPoint('t5990_snap_split_closed', ST_MakePoint(0.1, 0));
+SELECT '#5990.15', 'split-node', topology.TopoGeo_AddPoint('t5990_snap_split_closed', ST_MakePoint(1, 1));
+WITH inserted AS (
+  SELECT e, ord
+  FROM topology.TopoGeo_AddLineString('t5990_snap_split_closed',
+    ST_GeomFromText('LINESTRING(0 0,2 2,0 2,2 0,0 0)'), tolerance => 0.2) WITH ORDINALITY AS inserted(e, ord)
+)
+SELECT '#5990.16', 'snap-split-closed-pieces', count(*), array_agg(e ORDER BY ord) FROM inserted;
+SELECT '#5990.17', 'snap-split-closed-geoms', array_agg(ST_AsText(geom) ORDER BY edge_id) FROM t5990_snap_split_closed.edge_data;
+SELECT '#5990.18', 'valid', count(*) FROM topology.ValidateTopology('t5990_snap_split_closed');
+SELECT NULL FROM topology.DropTopology ('t5990_snap_split_closed');
+
 
 
 -- See https://trac.osgeo.org/postgis/ticket/6023

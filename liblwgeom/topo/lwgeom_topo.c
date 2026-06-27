@@ -7301,28 +7301,218 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   return id;
 }
 
-/* Simulate split-loop as it was implemented in pl/pgsql version
- * of TopoGeo_addLinestring */
-static LWGEOM *
-_lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
+/* Split by all nodes in one call rather than repeatedly splitting the
+ * growing output collection. */
+static double
+_lwt_locate_sort_point(const LWLINE *input_line, const POINT4D *p, const POINT4D *closed_start)
 {
-  LWCOLLECTION *col = lwgeom_as_lwcollection(nodes);
-  uint32_t i;
-  LWGEOM *bg;
+	if (closed_start && p->x == closed_start->x && p->y == closed_start->y)
+		return 0.0;
 
-  bg = lwgeom_clone_deep(g);
-  if ( ! col->ngeoms ) return bg;
+	return ptarray_locate_point(input_line->points, p, NULL, NULL);
+}
 
-  for (i=0; i<col->ngeoms; ++i)
-  {
-    LWGEOM *g2;
-    g2 = lwgeom_split(bg, col->geoms[i]);
-    lwgeom_free(bg);
-    bg = g2;
-  }
-  bg->srid = nodes->srid;
+static double
+_lwt_line_part_position(const LWGEOM *part, const LWLINE *input_line, const POINT4D *closed_start)
+{
+	LWLINE *part_line = lwgeom_as_lwline(part);
+	POINT4D p;
+	double start_pos;
+	double end_pos;
+	double part_pos = DBL_MAX;
+	double nonzero_pos = DBL_MAX;
 
-  return bg;
+	if (!part_line || !part_line->points->npoints)
+		return DBL_MAX;
+
+	getPoint4d_p(part_line->points, 0, &p);
+	start_pos = _lwt_locate_sort_point(input_line, &p, closed_start);
+
+	getPoint4d_p(part_line->points, part_line->points->npoints - 1, &p);
+	end_pos = _lwt_locate_sort_point(input_line, &p, closed_start);
+
+	for (uint32_t i = 0; i < part_line->points->npoints; i++)
+	{
+		double point_pos;
+
+		getPoint4d_p(part_line->points, i, &p);
+		point_pos = _lwt_locate_sort_point(input_line, &p, closed_start);
+
+		if (point_pos < part_pos)
+			part_pos = point_pos;
+		if (!FP_IS_ZERO(point_pos) && point_pos < nonzero_pos)
+			nonzero_pos = point_pos;
+	}
+
+	if (lwline_is_closed(input_line) && !FP_IS_ZERO(start_pos) && FP_IS_ZERO(end_pos) && nonzero_pos != DBL_MAX)
+		return nonzero_pos;
+
+	return part_pos;
+}
+
+static LWGEOM *
+_lwt_sort_line_parts_by_input(LWGEOM *g, const LWLINE *input_line, const POINT4D *closed_start)
+{
+	LWCOLLECTION *col = lwgeom_as_lwcollection(g);
+	double *part_positions;
+
+	if (!col || col->ngeoms < 2)
+		return (LWGEOM *)g;
+
+	part_positions = lwalloc(sizeof(double) * col->ngeoms);
+	for (uint32_t i = 0; i < col->ngeoms; i++)
+		part_positions[i] = _lwt_line_part_position(col->geoms[i], input_line, closed_start);
+
+	for (uint32_t i = 1; i < col->ngeoms; i++)
+	{
+		LWGEOM *part = col->geoms[i];
+		double part_pos = part_positions[i];
+		uint32_t j = i;
+
+		while (j > 0)
+		{
+			double prev_pos = part_positions[j - 1];
+
+			if (prev_pos <= part_pos)
+				break;
+
+			col->geoms[j] = col->geoms[j - 1];
+			part_positions[j] = prev_pos;
+			j--;
+		}
+
+		col->geoms[j] = part;
+		part_positions[j] = part_pos;
+	}
+
+	lwfree(part_positions);
+
+	return lwcollection_as_lwgeom(col);
+}
+
+static LWGEOM *
+_lwt_line_from_line_parts(const LWGEOM *g)
+{
+	LWCOLLECTION *col = lwgeom_as_lwcollection(g);
+	POINTARRAY *points = NULL;
+	int32_t srid = g->srid;
+
+	if (!col || !col->ngeoms)
+		return NULL;
+
+	for (uint32_t i = 0; i < col->ngeoms; i++)
+	{
+		LWLINE *part_line = lwgeom_as_lwline(col->geoms[i]);
+
+		if (!part_line || !part_line->points->npoints)
+			continue;
+
+		if (!points)
+		{
+			points = ptarray_construct_empty(
+			    FLAGS_GET_Z(part_line->flags), FLAGS_GET_M(part_line->flags), part_line->points->npoints);
+		}
+
+		for (uint32_t j = 0; j < part_line->points->npoints; j++)
+		{
+			POINT4D p;
+
+			getPoint4d_p(part_line->points, j, &p);
+			ptarray_append_point(points, &p, LW_FALSE);
+		}
+	}
+
+	if (!points || points->npoints < 2)
+	{
+		if (points)
+			ptarray_free(points);
+		return NULL;
+	}
+
+	return lwline_as_lwgeom(lwline_construct(srid, NULL, points));
+}
+
+static int
+_lwt_ptarray_has_point2d(const POINTARRAY *pa, const POINT4D *pt)
+{
+	for (uint32_t i = 0; i < pa->npoints; i++)
+	{
+		POINT4D p;
+
+		getPoint4d_p(pa, i, &p);
+		if (p.x == pt->x && p.y == pt->y)
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static int
+_lwt_closest_point_on_geom(const LWGEOM *g, POINT4D *pt)
+{
+	POINTARRAY *pa = ptarray_construct_empty(0, 0, 1);
+	LWPOINT *query_point;
+	LWGEOM *closest_geom;
+	LWPOINT *closest_point;
+
+	ptarray_append_point(pa, pt, LW_FALSE);
+	query_point = lwpoint_construct(g->srid, NULL, pa);
+	closest_geom = lwgeom_closest_point(g, lwpoint_as_lwgeom(query_point));
+	closest_point = lwgeom_as_lwpoint(closest_geom);
+
+	if (!closest_point)
+	{
+		lwgeom_free(closest_geom);
+		lwpoint_free(query_point);
+		return LW_FALSE;
+	}
+
+	lwpoint_getPoint4d_p(closest_point, pt);
+	lwgeom_free(closest_geom);
+	lwpoint_free(query_point);
+
+	return LW_TRUE;
+}
+
+static LWGEOM *
+_lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes, const LWLINE *input_line, const POINT4D *closed_start)
+{
+	LWCOLLECTION *col = lwgeom_as_lwcollection(nodes);
+	LWGEOM *sort_geom = NULL;
+	const LWLINE *sort_line;
+	LWGEOM *bg;
+
+	if (!col->ngeoms)
+	{
+		bg = lwgeom_clone_deep(g);
+	}
+	else
+	{
+		bg = lwgeom_split(g, nodes);
+		sort_line = lwgeom_as_lwline(g);
+		if (!sort_line)
+		{
+			sort_geom = lwgeom_linemerge(g);
+			sort_line = lwgeom_as_lwline(sort_geom);
+			if (!sort_line)
+			{
+				if (sort_geom)
+					lwgeom_free(sort_geom);
+				sort_geom = _lwt_line_from_line_parts(g);
+				sort_line = lwgeom_as_lwline(sort_geom);
+			}
+			if (closed_start && sort_geom && sort_line && lwline_is_closed(sort_line) &&
+			    _lwt_ptarray_has_point2d(sort_line->points, closed_start))
+				ptarray_scroll_in_place(sort_line->points, closed_start);
+		}
+		bg = _lwt_sort_line_parts_by_input(bg, sort_line ? sort_line : input_line, closed_start);
+		if (sort_geom)
+			lwgeom_free(sort_geom);
+	}
+
+	bg->srid = nodes->srid;
+
+	return bg;
 }
 
 static LWT_ELEMID*
@@ -7491,16 +7681,26 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Elements-snapped");
-    if ( input_was_closed )
-    {{
-      /* Recompute start point in case it moved */
-      LWLINE *scrolled = lwgeom_as_lwline(noded);
-      if (scrolled)
-      {
-        getPoint4d_p( scrolled->points, 0, &originalStartPoint);
-        LWDEBUGF(1, "Closed input line start point after snap %g,%g", originalStartPoint.x, originalStartPoint.y);
-      }
-    }}
+    if (input_was_closed)
+    {
+	    /* Recompute start point in case it moved */
+	    LWLINE *scrolled = lwgeom_as_lwline(noded);
+	    if (scrolled)
+	    {
+		    getPoint4d_p(scrolled->points, 0, &originalStartPoint);
+		    LWDEBUGF(1,
+			     "Closed input line start point after snap %g,%g",
+			     originalStartPoint.x,
+			     originalStartPoint.y);
+	    }
+	    else if (_lwt_closest_point_on_geom(noded, &originalStartPoint))
+	    {
+		    LWDEBUGF(1,
+			     "Closed input line start point after collection snap %g,%g",
+			     originalStartPoint.x,
+			     originalStartPoint.y);
+	    }
+    }
 
     /* will not release the geoms array */
     lwcollection_release(col);
@@ -7624,7 +7824,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
                              nearby + nearbyedgecount);
     LWGEOM *inodes = lwcollection_as_lwgeom(col);
     /* TODO: use lwgeom_split of lwgeom_union ... */
-    tmp = _lwt_split_by_nodes(noded, inodes);
+    tmp = _lwt_split_by_nodes(noded, inodes, line, input_was_closed ? &originalStartPoint : NULL);
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Node-split");
