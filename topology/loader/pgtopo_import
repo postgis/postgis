@@ -242,6 +242,7 @@ if test "$SKIP_LAYERS" = "no"; then # {
 DO \$BODY\$
 DECLARE
   t topology.topology;
+  topogeom_constraint name;
 BEGIN
   SELECT * FROM topology.topology
   WHERE name = '${TOPONAME}'
@@ -269,8 +270,30 @@ BEGIN
   FROM "${schema}"."${table}";
 
   -- drop-constraint (should we not restore them at all instead?)
-  ALTER TABLE "${schema}"."${table}"
-  DROP CONSTRAINT IF EXISTS "check_topogeom_${column}";
+  SELECT con.conname
+  FROM pg_catalog.pg_constraint con
+  JOIN pg_catalog.pg_class cls
+    ON cls.oid = con.conrelid
+  JOIN pg_catalog.pg_namespace nsp
+    ON nsp.oid = cls.relnamespace
+  JOIN pg_catalog.pg_attribute att
+    ON att.attrelid = cls.oid
+    AND att.attname = '${column}'
+  WHERE nsp.nspname = '${schema}'
+    AND cls.relname = '${table}'
+    AND con.contype = 'c'
+    AND con.conname LIKE 'check_topogeom_%'
+    AND ARRAY[att.attnum] <@ con.conkey
+  INTO topogeom_constraint;
+
+  IF topogeom_constraint IS NOT NULL THEN
+    EXECUTE format(
+      'ALTER TABLE %I.%I DROP CONSTRAINT %I',
+      '${schema}',
+      '${table}',
+      topogeom_constraint
+    );
+  END IF;
 
   -- update topology_id
   UPDATE "${schema}"."${table}"
