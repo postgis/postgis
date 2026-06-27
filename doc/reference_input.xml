@@ -1575,9 +1575,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para>GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS root node. If no srsName attribute available for the GML root node, the function throw an error.</para>
 
 		<para>ST_GeomFromGML function is not pedantic about an explicit GML namespace. You could avoid to mention it explicitly for common usages. But you need it if you want to use XLink feature inside GML.</para>
-		<note>
-			<para>ST_GeomFromGML function not support SQL/MM curves geometries.</para>
-		</note>
+		<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for GML ArcString and curved Ring and CurvePolygon geometries was introduced.</para>
 
 	  </refsection>
 
@@ -1863,10 +1861,11 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
 		</refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50.</para>
 			<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 1.6+</para>
 		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		        <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 default srid optional parameter added.</para>
+		        <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for GML ArcString and curved Ring and CurvePolygon geometries was introduced.</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
