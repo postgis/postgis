@@ -4376,6 +4376,40 @@ Refer to <xref linkend="toTopoGeom"/>.
 			</refsection>
 		</refentry>
 
+		<refentry xml:id="TG_ST_Extent">
+			<refnamediv>
+				<refname>ST_Extent</refname>
+				<refpurpose>Returns the bounding box of a set of topogeometries.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>box2d <function>ST_Extent</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>An aggregate function that returns a <xref linkend="box2d_type"/> bounding box containing a set of TopoGeometry values. The aggregate reads the topology primitive extents instead of converting each TopoGeometry value to a geometry.</para>
+				<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>SELECT topology.ST_Extent(topo) FROM parcels;</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_Extent"/>, <xref linkend="GetTopoGeomElements"/>, <xref linkend="topogeometry"/></para>
+			</refsection>
+		</refentry>
+
     <refentry xml:id="TG_ST_SRID">
 	  <refnamediv>
 		<refname>ST_SRID</refname>
