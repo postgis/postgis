@@ -34,7 +34,19 @@ ERROR:  Edge motion collision at POINT(49 10)
 T13.1|29
 T13.2|Edge 29 changed
 T13.3|26
-ERROR:  Edge motion collision at POINT(-1.1697 47.7825)
+T13.4|Edge 29 changed
 Topology 'city_data' dropped
 t5709|edge|1
 ERROR:  Edge ring changes winding
+#3508.1|1
+#3508.2|2
+#3508.3|3
+#3508.4|1
+#3508.5|Edge 1 changed
+#3508.7|1
+#3508.8|2
+#3508.9|3
+#3508.10|4
+#3508.11|1
+#3508.12|2
+ERROR:  SQL/MM Spatial exception - geometry crosses a node at POINT(5 5)

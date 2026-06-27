@@ -3465,6 +3465,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   POINT2D p1, p2, pt;
   uint64_t i;
   int isclosed = 0;
+  int is_universal_isolated_edge = 0;
   int leftRingIsCCW = -1;
 
   /* curve must be simple */
@@ -3569,6 +3570,9 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     }
   }
 
+  is_universal_isolated_edge = oldedge->face_left == 0 && oldedge->face_right == 0 &&
+			       oldedge->next_left == -oldedge->edge_id && oldedge->next_right == oldedge->edge_id;
+
   if ( _lwt_CheckEdgeCrossing(topo, oldedge->start_node,
                                     oldedge->end_node, geom, edge_id ) )
   {
@@ -3604,28 +3608,33 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     return -1;
   }
   // 3. if any node beside endnodes are found:
-  if ( numnodes > ( 1 + isclosed ? 0 : 1 ) )
-  {{
-    //   3.2. bail out if any node is in one and not the other
-    for (i=0; i<numnodes; ++i)
-    {
-      LWT_ISO_NODE *n = &(nodes[i]);
-      if ( n->node_id == oldedge->start_node ) continue;
-      if ( n->node_id == oldedge->end_node ) continue;
-      const POINT2D *pt = getPoint2d_cp(n->geom->point, 0);
-      int ocont = ptarray_contains_point_partial(oldedge->geom->points, pt, isclosed, NULL) == LW_INSIDE;
-      int ncont = ptarray_contains_point_partial(geom->points, pt, isclosed, NULL) == LW_INSIDE;
-      if (ocont != ncont)
-      {
-        size_t sz;
-        char *wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 15, &sz);
-        _lwt_release_nodes(nodes, numnodes);
-        lwerror("Edge motion collision at %s", wkt);
-        lwfree(wkt); /* would not necessarely reach this point */
-        return -1;
-      }
-    }
-  }}
+  if (numnodes > (1 + (isclosed ? 0 : 1)))
+  {
+	  //   3.2. bail out if any node is in one and not the other
+	  for (i = 0; i < numnodes; ++i)
+	  {
+		  LWT_ISO_NODE *n = &(nodes[i]);
+		  if (n->node_id == oldedge->start_node)
+			  continue;
+		  if (n->node_id == oldedge->end_node)
+			  continue;
+		  const POINT2D *pt = getPoint2d_cp(n->geom->point, 0);
+		  int ocont = ptarray_contains_point_partial(oldedge->geom->points, pt, isclosed, NULL) == LW_INSIDE;
+		  int ncont = ptarray_contains_point_partial(geom->points, pt, isclosed, NULL) == LW_INSIDE;
+		  if (ocont != ncont)
+		  {
+			  if (is_universal_isolated_edge && n->containing_face == 0)
+				  continue;
+
+			  size_t sz;
+			  char *wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 15, &sz);
+			  _lwt_release_nodes(nodes, numnodes);
+			  lwerror("Edge motion collision at %s", wkt);
+			  lwfree(wkt); /* would not necessarely reach this point */
+			  return -1;
+		  }
+	  }
+  }
   if ( numnodes ) _lwt_release_nodes(nodes, numnodes);
 
   LWDEBUG(1, "nodes containment check passed");
