@@ -21,6 +21,7 @@
 #include "lib/stringinfo.h"
 #include "access/htup_details.h" /* for heap_form_tuple() */
 #include "access/xact.h" /* for RegisterXactCallback */
+#include "executor/executor.h" /* for GetAttributeByName() */
 #include "funcapi.h" /* for FuncCallContext */
 #include "executor/spi.h" /* this is what you need to work with SPI */
 #include "inttypes.h" /* for PRId64 */
@@ -28,6 +29,7 @@
 
 #include "liblwgeom_internal.h" /* for gbox_clone */
 #include "topo/liblwgeom_topo.h"
+#include "topo/liblwgeom_topo_internal.h"
 
 /*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
@@ -95,6 +97,8 @@ struct LWT_BE_TOPOLOGY_T
   bool usesLargeIDs;
   Oid geometryOID;
 };
+
+static int cb_freeTopology(LWT_BE_TOPOLOGY *topo);
 
 /* utility funx */
 
@@ -297,6 +301,101 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   SPI_freetuptable(SPI_tuptable);
 
   return topo;
+}
+
+static LWT_TOPOLOGY *
+lwt_LoadTopologyByRecord(HeapTupleHeader rec)
+{
+	Datum dat;
+	bool isnull;
+	LWT_BE_TOPOLOGY *be_topo;
+	LWT_TOPOLOGY *topo;
+
+	be_topo = palloc0(sizeof(LWT_BE_TOPOLOGY));
+	be_topo->be_data = &be_data;
+
+	dat = GetAttributeByName(rec, "name", &isnull);
+	if (isnull)
+	{
+		pfree(be_topo);
+		lwpgerror("Topology record has null name");
+		return NULL;
+	}
+	be_topo->name = TextDatumGetCString(dat);
+
+	dat = GetAttributeByName(rec, "id", &isnull);
+	if (isnull)
+	{
+		char *toponame = pstrdup(be_topo->name);
+		cb_freeTopology(be_topo);
+		lwpgerror("Topology record \"%s\" has null identifier", toponame);
+		pfree(toponame);
+		return NULL;
+	}
+	be_topo->id = DatumGetInt32(dat);
+
+	dat = GetAttributeByName(rec, "srid", &isnull);
+	if (isnull)
+	{
+		char *toponame = pstrdup(be_topo->name);
+		cb_freeTopology(be_topo);
+		lwpgerror("Topology record \"%s\" has null SRID", toponame);
+		pfree(toponame);
+		return NULL;
+	}
+	be_topo->srid = DatumGetInt32(dat);
+	if (be_topo->srid < 0)
+	{
+		lwnotice(
+		    "Topology SRID value %d converted to "
+		    "the officially unknown SRID value %d",
+		    be_topo->srid,
+		    SRID_UNKNOWN);
+		be_topo->srid = SRID_UNKNOWN;
+	}
+
+	dat = GetAttributeByName(rec, "precision", &isnull);
+	if (isnull)
+	{
+		lwnotice("Topology record \"%s\" has null precision, taking as 0", be_topo->name);
+		be_topo->precision = 0;
+	}
+	else
+	{
+		be_topo->precision = DatumGetFloat8(dat);
+	}
+
+	dat = GetAttributeByName(rec, "hasz", &isnull);
+	if (!isnull)
+	{
+		be_topo->hasZ = DatumGetBool(dat);
+	}
+
+	dat = GetAttributeByName(rec, "useslargeids", &isnull);
+	if (!isnull)
+	{
+		be_topo->usesLargeIDs = DatumGetBool(dat);
+	}
+
+	postgis_initialize_cache();
+	be_topo->geometryOID = postgis_oid(GEOMETRYOID);
+
+	topo = lwalloc(sizeof(LWT_TOPOLOGY));
+	topo->be_iface = be_iface;
+	topo->be_topo = be_topo;
+	topo->srid = be_topo->srid;
+	topo->hasZ = be_topo->hasZ;
+	topo->precision = be_topo->precision;
+
+	POSTGIS_DEBUGF(1,
+		       "lwt_LoadTopologyByRecord: topo '%s' has "
+		       "id %d, srid %d, precision %g",
+		       be_topo->name,
+		       be_topo->id,
+		       be_topo->srid,
+		       be_topo->precision);
+
+	return topo;
 }
 
 static int
@@ -5147,10 +5246,8 @@ Datum GetFaceByPoint(PG_FUNCTION_ARGS)
   PG_RETURN_INT64(node_id);
 }
 
-/*  TopoGeo_AddPoint(atopology, point, tolerance) */
-Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(TopoGeo_AddPoint);
-Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
+static Datum
+TopoGeo_AddPoint_impl(FunctionCallInfo fcinfo, bool topology_record)
 {
   text* toponame_text;
   char* toponame;
@@ -5166,10 +5263,6 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
     lwpgerror("SQL/MM Spatial exception - null argument");
     PG_RETURN_NULL();
   }
-
-  toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text_to_cstring(toponame_text);
-  PG_FREE_IF_COPY(toponame_text, 0);
 
   geom = PG_GETARG_GSERIALIZED_P(1);
   lwgeom = lwgeom_from_gserialized(geom);
@@ -5204,10 +5297,20 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
   {
     int pre = be_data.topoLoadFailMessageFlavor;
     be_data.topoLoadFailMessageFlavor = 1;
-    topo = lwt_LoadTopology(be_iface, toponame);
+    if (topology_record)
+    {
+	    topo = lwt_LoadTopologyByRecord(PG_GETARG_HEAPTUPLEHEADER(0));
+    }
+    else
+    {
+	    toponame_text = PG_GETARG_TEXT_P(0);
+	    toponame = text_to_cstring(toponame_text);
+	    PG_FREE_IF_COPY(toponame_text, 0);
+	    topo = lwt_LoadTopology(be_iface, toponame);
+	    pfree(toponame);
+    }
     be_data.topoLoadFailMessageFlavor = pre;
   }
-  pfree(toponame);
   if ( ! topo )
   {
     /* should never reach this point, as lwerror would raise an exception */
@@ -5233,10 +5336,25 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
   PG_RETURN_INT64(node_id);
 }
 
-/*  TopoGeo_AddLinestring(atopology, point, tolerance) */
-Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(TopoGeo_AddLinestring);
-Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
+/*  TopoGeo_AddPoint(atopology, point, tolerance) */
+Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddPoint);
+Datum
+TopoGeo_AddPoint(PG_FUNCTION_ARGS)
+{
+	return TopoGeo_AddPoint_impl(fcinfo, false);
+}
+
+Datum TopoGeo_AddPointTopology(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddPointTopology);
+Datum
+TopoGeo_AddPointTopology(PG_FUNCTION_ARGS)
+{
+	return TopoGeo_AddPoint_impl(fcinfo, true);
+}
+
+static Datum
+TopoGeo_AddLinestring_impl(FunctionCallInfo fcinfo, bool topology_record)
 {
   text* toponame_text;
   char* toponame;
@@ -5270,10 +5388,6 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     {
       max_new_edges = PG_GETARG_INT32(3);
     }
-
-    toponame_text = PG_GETARG_TEXT_P(0);
-    toponame = text_to_cstring(toponame_text);
-    PG_FREE_IF_COPY(toponame_text, 0);
 
     geom = PG_GETARG_GSERIALIZED_P(1);
     lwgeom = lwgeom_from_gserialized(geom);
@@ -5318,11 +5432,21 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     {
       int pre = be_data.topoLoadFailMessageFlavor;
       be_data.topoLoadFailMessageFlavor = 1;
-      topo = lwt_LoadTopology(be_iface, toponame);
+      if (topology_record)
+      {
+	      topo = lwt_LoadTopologyByRecord(PG_GETARG_HEAPTUPLEHEADER(0));
+      }
+      else
+      {
+	      toponame_text = PG_GETARG_TEXT_P(0);
+	      toponame = text_to_cstring(toponame_text);
+	      PG_FREE_IF_COPY(toponame_text, 0);
+	      topo = lwt_LoadTopology(be_iface, toponame);
+	      pfree(toponame);
+      }
       be_data.topoLoadFailMessageFlavor = pre;
     }
-    oldcontext = MemoryContextSwitchTo( newcontext );
-    pfree(toponame);
+    oldcontext = MemoryContextSwitchTo(newcontext);
     if ( ! topo )
     {
       /* should never reach this point, as lwerror would raise an exception */
@@ -5381,6 +5505,23 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
   result = Int64GetDatum((int64)id);
 
   SRF_RETURN_NEXT(funcctx, result);
+}
+
+/*  TopoGeo_AddLinestring(atopology, point, tolerance) */
+Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddLinestring);
+Datum
+TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
+{
+	return TopoGeo_AddLinestring_impl(fcinfo, false);
+}
+
+Datum TopoGeo_AddLinestringTopology(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddLinestringTopology);
+Datum
+TopoGeo_AddLinestringTopology(PG_FUNCTION_ARGS)
+{
+	return TopoGeo_AddLinestring_impl(fcinfo, true);
 }
 
 /*  _TopoGeo_AddLinestringNoFace(atopology, point, tolerance) */
@@ -5457,10 +5598,8 @@ Datum TopoGeo_AddLinestringNoFace(PG_FUNCTION_ARGS)
   PG_RETURN_VOID();
 }
 
-/*  TopoGeo_AddPolygon(atopology, poly, tolerance) */
-Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(TopoGeo_AddPolygon);
-Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
+static Datum
+TopoGeo_AddPolygon_impl(FunctionCallInfo fcinfo, bool topology_record)
 {
   text* toponame_text;
   char* toponame;
@@ -5488,10 +5627,6 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
       lwpgerror("SQL/MM Spatial exception - null argument");
       PG_RETURN_NULL();
     }
-
-    toponame_text = PG_GETARG_TEXT_P(0);
-    toponame = text_to_cstring(toponame_text);
-    PG_FREE_IF_COPY(toponame_text, 0);
 
     geom = PG_GETARG_GSERIALIZED_P(1);
     lwgeom = lwgeom_from_gserialized(geom);
@@ -5526,11 +5661,21 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
     {
       int pre = be_data.topoLoadFailMessageFlavor;
       be_data.topoLoadFailMessageFlavor = 1;
-      topo = lwt_LoadTopology(be_iface, toponame);
+      if (topology_record)
+      {
+	      topo = lwt_LoadTopologyByRecord(PG_GETARG_HEAPTUPLEHEADER(0));
+      }
+      else
+      {
+	      toponame_text = PG_GETARG_TEXT_P(0);
+	      toponame = text_to_cstring(toponame_text);
+	      PG_FREE_IF_COPY(toponame_text, 0);
+	      topo = lwt_LoadTopology(be_iface, toponame);
+	      pfree(toponame);
+      }
       be_data.topoLoadFailMessageFlavor = pre;
     }
-    oldcontext = MemoryContextSwitchTo( newcontext );
-    pfree(toponame);
+    oldcontext = MemoryContextSwitchTo(newcontext);
     if ( ! topo )
     {
       /* should never reach this point, as lwerror would raise an exception */
@@ -5588,6 +5733,23 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
   result = Int64GetDatum((int64)id);
 
   SRF_RETURN_NEXT(funcctx, result);
+}
+
+/*  TopoGeo_AddPolygon(atopology, poly, tolerance) */
+Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddPolygon);
+Datum
+TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
+{
+	return TopoGeo_AddPolygon_impl(fcinfo, false);
+}
+
+Datum TopoGeo_AddPolygonTopology(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddPolygonTopology);
+Datum
+TopoGeo_AddPolygonTopology(PG_FUNCTION_ARGS)
+{
+	return TopoGeo_AddPolygon_impl(fcinfo, true);
 }
 
 /*  GetRingEdges(atopology, anedge, maxedges default null) */
@@ -5835,10 +5997,8 @@ Datum RegisterMissingFaces(PG_FUNCTION_ARGS)
   PG_RETURN_NULL();
 }
 
-/*  TopoGeo_LoadGeometry(atopology, geom, tolerance) */
-Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(TopoGeo_LoadGeometry);
-Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
+static Datum
+TopoGeo_LoadGeometry_impl(FunctionCallInfo fcinfo, bool topology_record)
 {
   text* toponame_text;
   char* toponame;
@@ -5852,10 +6012,6 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
     lwpgerror("SQL/MM Spatial exception - null argument");
     PG_RETURN_NULL();
   }
-
-  toponame_text = PG_GETARG_TEXT_P(0);
-  toponame = text_to_cstring(toponame_text);
-  PG_FREE_IF_COPY(toponame_text, 0);
 
   geom = PG_GETARG_GSERIALIZED_P(1);
 
@@ -5873,8 +6029,18 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
     PG_RETURN_NULL();
   }
 
-  topo = lwt_LoadTopology(be_iface, toponame);
-  pfree(toponame);
+  if (topology_record)
+  {
+	  topo = lwt_LoadTopologyByRecord(PG_GETARG_HEAPTUPLEHEADER(0));
+  }
+  else
+  {
+	  toponame_text = PG_GETARG_TEXT_P(0);
+	  toponame = text_to_cstring(toponame_text);
+	  PG_FREE_IF_COPY(toponame_text, 0);
+	  topo = lwt_LoadTopology(be_iface, toponame);
+	  pfree(toponame);
+  }
   if ( ! topo )
   {
     /* should never reach this point, as lwerror would raise an exception */
@@ -5900,6 +6066,23 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
   SPI_finish();
 
   PG_RETURN_VOID();
+}
+
+/*  TopoGeo_LoadGeometry(atopology, geom, tolerance) */
+Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_LoadGeometry);
+Datum
+TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
+{
+	return TopoGeo_LoadGeometry_impl(fcinfo, false);
+}
+
+Datum TopoGeo_LoadGeometryTopology(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_LoadGeometryTopology);
+Datum
+TopoGeo_LoadGeometryTopology(PG_FUNCTION_ARGS)
+{
+	return TopoGeo_LoadGeometry_impl(fcinfo, true);
 }
 
 /*  TopoGeo_LoadGeometry(atopology, geom, tolerance) */
