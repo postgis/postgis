@@ -1,0 +1,12 @@
+initial-topogeoms|25
+after-delete-summary|t
+drop-orphans|1
+after-drop-summary|f
+after-drop-topogeoms|24
+hier-child-protected|0
+hier-child-remains|1
+skip-missing-table|0
+skip-missing-column|0
+skip-unregistered-layer|0
+unregistered-remains|1
+Topology 'city_data' dropped
