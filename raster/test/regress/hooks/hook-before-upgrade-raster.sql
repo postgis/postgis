@@ -71,3 +71,33 @@ CREATE VIEW upgrade_test_raster_view_st_aspect AS
 SELECT
 	st_aspect(NULL::raster, NULL::int, NULL::raster) sig1,
 	st_aspect(NULL::raster) sig2;
+
+-- See https://trac.osgeo.org/postgis/ticket/2823
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_roles
+		WHERE rolname = 'upgrade_test_raster_acl_grantor'
+	) THEN
+		CREATE ROLE upgrade_test_raster_acl_grantor;
+	END IF;
+
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_roles
+		WHERE rolname = 'upgrade_test_raster_acl_user'
+	) THEN
+		CREATE ROLE upgrade_test_raster_acl_user;
+	END IF;
+
+	REVOKE ALL ON TABLE raster_columns FROM upgrade_test_raster_acl_user;
+	REVOKE ALL ON TABLE raster_columns FROM upgrade_test_raster_acl_grantor CASCADE;
+	REVOKE ALL ON TABLE raster_columns FROM public;
+	GRANT SELECT ON TABLE raster_columns TO upgrade_test_raster_acl_grantor WITH GRANT OPTION;
+	SET LOCAL ROLE upgrade_test_raster_acl_grantor;
+	GRANT SELECT ON TABLE raster_columns TO upgrade_test_raster_acl_user;
+	GRANT SELECT (r_table_name) ON TABLE raster_columns TO upgrade_test_raster_acl_user;
+	RESET ROLE;
+END
+$$;

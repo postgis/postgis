@@ -385,6 +385,38 @@ SELECT _rename_raster_tables();
 DROP FUNCTION _rename_raster_tables();
 
 -- inserted new column into view
+DO $postgis_upgrade$
+DECLARE
+	raster_columns_acl text;
+BEGIN
+	SELECT CASE
+			WHEN c.oid IS NULL THEN 'POSTGIS_MISSING'
+			ELSE json_build_object(
+				'relacl', c.relacl::text,
+				'attacl', COALESCE((
+					SELECT json_agg(json_build_object(
+						'attname', a.attname,
+						'attacl', a.attacl::text
+					) ORDER BY a.attnum)
+					FROM pg_catalog.pg_attribute a
+					WHERE a.attrelid = c.oid
+						AND a.attnum > 0
+						AND NOT a.attisdropped
+						AND a.attacl IS NOT NULL
+				), '[]'::json)
+			)::text
+		END INTO raster_columns_acl
+	FROM pg_catalog.pg_class c
+	WHERE c.oid = to_regclass('raster_columns')
+		AND c.relkind = 'v';
+
+	PERFORM set_config(
+		'postgis.restore_raster_columns_acl',
+		COALESCE(raster_columns_acl, 'POSTGIS_MISSING'),
+		true
+	);
+END
+$postgis_upgrade$;
 DROP VIEW IF EXISTS raster_columns;
 
 -- functions no longer supported

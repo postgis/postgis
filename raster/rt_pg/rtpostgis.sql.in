@@ -8934,4 +8934,71 @@ CREATE OR REPLACE FUNCTION postgis_noop(raster)
 -- make views public viewable --
 GRANT SELECT ON TABLE raster_columns TO public;
 GRANT SELECT ON TABLE raster_overviews TO public;
+DO LANGUAGE 'plpgsql' $$
+DECLARE
+	acl_payload json;
+	acl_payload_text text;
+	grant_sql text;
+	rec record;
+BEGIN
+	acl_payload_text := current_setting('postgis.restore_raster_columns_acl', true);
+
+	IF acl_payload_text IS NULL OR acl_payload_text = 'POSTGIS_MISSING' THEN
+		RETURN;
+	END IF;
+
+	acl_payload := acl_payload_text::json;
+
+	-- Replay saved grants under their original grantors so PostgreSQL also
+	-- restores pg_shdepend ACL dependencies for referenced roles.
+	REVOKE ALL PRIVILEGES ON TABLE raster_columns FROM public;
+
+	FOR rec IN
+		SELECT
+			NULL::text AS attname,
+			grantor,
+			grantee,
+			privilege_type,
+			is_grantable
+		FROM pg_catalog.aclexplode((acl_payload->>'relacl')::aclitem[])
+		UNION ALL
+		SELECT
+			att.value->>'attname' AS attname,
+			acl.grantor,
+			acl.grantee,
+			acl.privilege_type,
+			acl.is_grantable
+		FROM json_array_elements(acl_payload->'attacl') AS att(value)
+			CROSS JOIN pg_catalog.aclexplode((att.value->>'attacl')::aclitem[]) AS acl
+		ORDER BY is_grantable DESC
+	LOOP
+		IF rec.grantee = 0 THEN
+			grant_sql := 'public';
+		ELSE
+			grant_sql := quote_ident(pg_get_userbyid(rec.grantee));
+		END IF;
+
+		IF rec.attname IS NULL THEN
+			grant_sql := format(
+				'GRANT %s ON TABLE raster_columns TO %s%s',
+				rec.privilege_type,
+				grant_sql,
+				CASE WHEN rec.is_grantable THEN ' WITH GRANT OPTION' ELSE '' END
+			);
+		ELSE
+			grant_sql := format(
+				'GRANT %s (%I) ON TABLE raster_columns TO %s%s',
+				rec.privilege_type,
+				rec.attname,
+				grant_sql,
+				CASE WHEN rec.is_grantable THEN ' WITH GRANT OPTION' ELSE '' END
+			);
+		END IF;
+
+		EXECUTE format('SET LOCAL ROLE %I', pg_get_userbyid(rec.grantor));
+		EXECUTE grant_sql;
+		RESET ROLE;
+	END LOOP;
+END
+$$;
 COMMIT;
