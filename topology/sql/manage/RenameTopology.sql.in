@@ -35,6 +35,8 @@ BEGIN
   );
   EXECUTE sql;
 
+  PERFORM topology._install_edge_insert_trigger(new_name::name);
+
   RETURN new_name;
 END
 $BODY$

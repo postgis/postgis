@@ -18,6 +18,11 @@ layers|6
 "CITY_data_UP_down".topogeo_s_1|9|t
 "CITY_data_UP_down".topogeo_s_2|8|t
 "CITY_data_UP_down".topogeo_s_3|8|t
+#5119|1001|1001|1001|LINESTRING(1 1,2 2)
+#5119-returning|1002|LINESTRING(2 2,3 3)
+#5119-fake|topology._edge_insert() may only be used on registered topology edge views
+#5119-fake-edge-data|0
+#5119-security|ok
 #5298|t
 #2184.1|t
 #2184.2|1

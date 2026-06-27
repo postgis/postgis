@@ -81,3 +81,154 @@ SET search_path = pg_catalog, pg_temp
 LANGUAGE 'plpgsql' VOLATILE STRICT
 ;
 
+CREATE OR REPLACE FUNCTION topology._edge_insert()
+RETURNS trigger
+AS
+$BODY$
+BEGIN
+  RAISE EXCEPTION
+    'topology._edge_insert() may only be used on registered topology edge views';
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE
+SET search_path = pg_catalog, pg_temp
+;
+
+CREATE OR REPLACE FUNCTION topology._install_edge_insert_trigger(atopology name)
+RETURNS void
+AS
+$BODY$
+DECLARE
+  edge_view regclass;
+  edge_owner regrole;
+BEGIN
+  edge_view := to_regclass(format('%I.edge', atopology));
+
+  IF edge_view IS NULL
+  THEN
+    RAISE EXCEPTION 'Topology edge view %.edge does not exist', atopology;
+  END IF;
+
+  SELECT relowner
+  FROM pg_catalog.pg_class
+  WHERE oid = edge_view
+  INTO edge_owner;
+
+  -- Old upgrade scripts could have attached the local helper to the extension.
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_rewrite
+    WHERE ev_class = edge_view
+      AND rulename = 'edge_insert_rule'
+  )
+  THEN
+    EXECUTE format('DROP RULE edge_insert_rule ON %I.edge', atopology);
+  END IF;
+
+  -- CREATE FUNCTION inside ALTER EXTENSION UPDATE may attach the helper again.
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_trigger
+    WHERE tgrelid = edge_view
+      AND tgname = 'edge_insert'
+  )
+  THEN
+    EXECUTE format('DROP TRIGGER edge_insert ON %I.edge', atopology);
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_depend dep
+    JOIN pg_catalog.pg_extension ext
+      ON ext.oid = dep.refobjid
+    JOIN pg_catalog.pg_proc proc
+      ON proc.oid = dep.objid
+    JOIN pg_catalog.pg_namespace nsp
+      ON nsp.oid = proc.pronamespace
+    WHERE dep.classid = 'pg_catalog.pg_proc'::regclass
+      AND dep.deptype = 'e'
+      AND ext.extname = 'postgis_topology'
+      AND nsp.nspname = atopology
+      AND proc.proname = '_edge_insert'
+      AND proc.pronargs = 0
+  )
+  THEN
+    EXECUTE format('ALTER EXTENSION postgis_topology DROP FUNCTION %I._edge_insert()', atopology);
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_proc proc
+    JOIN pg_catalog.pg_namespace nsp ON nsp.oid = proc.pronamespace
+    WHERE nsp.nspname = atopology
+      AND proc.proname = '_edge_insert'
+      AND proc.pronargs = 0
+  )
+  THEN
+    EXECUTE format('DROP FUNCTION %I._edge_insert()', atopology);
+  END IF;
+
+  EXECUTE format(
+    'CREATE OR REPLACE ' ||
+    'FUNCTION %1$I._edge_insert()
+     RETURNS trigger
+     AS %2$L
+     LANG' || 'UAGE ''plpgsql'' VOLATILE
+     SECURITY DEFINER
+     SET search_path = pg_catalog, pg_temp',
+    atopology,
+    format(
+      'BEGIN
+        INSERT INTO %I.edge_data (
+          edge_id, start_node, end_node,
+          next_left_edge, abs_next_left_edge,
+          next_right_edge, abs_next_right_edge,
+          left_face, right_face, geom
+        ) VALUES (
+          NEW.edge_id, NEW.start_node, NEW.end_node,
+          NEW.next_left_edge, abs(NEW.next_left_edge),
+          NEW.next_right_edge, abs(NEW.next_right_edge),
+          NEW.left_face, NEW.right_face, NEW.geom
+        )
+      ' || chr(59) || '
+
+        RETURN NEW
+      ' || chr(59) || '
+      END',
+      atopology
+    )
+  );
+  IF EXISTS (
+    SELECT 1
+    FROM pg_catalog.pg_depend dep
+    JOIN pg_catalog.pg_extension ext
+      ON ext.oid = dep.refobjid
+    JOIN pg_catalog.pg_proc proc
+      ON proc.oid = dep.objid
+    JOIN pg_catalog.pg_namespace nsp
+      ON nsp.oid = proc.pronamespace
+    WHERE dep.classid = 'pg_catalog.pg_proc'::regclass
+      AND dep.deptype = 'e'
+      AND ext.extname = 'postgis_topology'
+      AND nsp.nspname = atopology
+      AND proc.proname = '_edge_insert'
+      AND proc.pronargs = 0
+  )
+  THEN
+    EXECUTE format('ALTER EXTENSION postgis_topology DROP FUNCTION %I._edge_insert()', atopology);
+  END IF;
+  EXECUTE format('ALTER FUNCTION %I._edge_insert() OWNER TO %s', atopology, edge_owner);
+  EXECUTE format('REVOKE ALL ON FUNCTION %I._edge_insert() FROM PUBLIC', atopology);
+
+  EXECUTE format(
+    'CREATE TRIGGER edge_insert
+     INSTEAD OF INSERT ON %I.edge
+     FOR EACH ROW
+     EXECUTE FUNCTION %I._edge_insert()',
+    atopology,
+    atopology
+  );
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT
+;

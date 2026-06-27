@@ -152,16 +152,8 @@ BEGIN
 		COMMENT ON COLUMN %1$I.edge.geom IS
 		'The geometry of the edge';
 
-		-- edge standard view (insert rule)
-		CREATE RULE edge_insert_rule AS
-		ON INSERT TO %1$I.edge
-		DO INSTEAD INSERT into %1$I.edge_data
-		VALUES (
-			NEW.edge_id, NEW.start_node, NEW.end_node,
-			NEW.next_left_edge, abs(NEW.next_left_edge),
-			NEW.next_right_edge, abs(NEW.next_right_edge),
-			NEW.left_face, NEW.right_face, NEW.geom
-		);
+		-- edge standard view (insert trigger)
+		SELECT topology._install_edge_insert_trigger(%1$L);
 
 		-- Upgrade the node table
 	  ALTER TABLE %1$I.node
@@ -205,4 +197,3 @@ BEGIN
   EXECUTE sql;
 END;
 $BODY$ LANGUAGE 'plpgsql' VOLATILE;
-
