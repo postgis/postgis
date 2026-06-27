@@ -608,7 +608,7 @@ resolve_and_quote_tabname(const char *tabname)
     char     *relname;
     char     *nspname;
 
-    names = stringToQualifiedNameList(tabname, NULL);
+    names = stringToQualifiedNameList(tabname);
     if (!names)
         return NULL;
 
