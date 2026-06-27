@@ -330,3 +330,20 @@ END
 $$ LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
 -- } AsTopoJSON(TopoGeometry, visited_table)
 
+--{
+--
+-- API FUNCTION
+--
+-- text AsTopoJSON(record, topogeom_column, edgeMapTable)
+--
+-- Similar to ST_AsGeoJSON(record), but delegates the selected TopoGeometry
+-- column to topology.AsTopoJSON(topogeometry, regclass).
+--
+CREATE OR REPLACE FUNCTION topology.AsTopoJSON(
+    r record,
+    topogeom_column text DEFAULT '',
+    edgeMapTable regclass DEFAULT NULL)
+  RETURNS text
+  AS 'MODULE_PATHNAME', 'AsTopoJSONRow'
+  LANGUAGE 'c' VOLATILE;
+-- } AsTopoJSON(record, topogeom_column, edgeMapTable)

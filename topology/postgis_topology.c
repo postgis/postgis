@@ -17,6 +17,7 @@
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for transaction contexts */
 #include "utils/array.h" /* for ArrayType */
+#include "utils/typcache.h" /* for lookup_rowtype_tupdesc */
 #include "catalog/pg_type.h" /* for INT4OID, TEXTOID */
 #include "lib/stringinfo.h"
 #include "access/htup_details.h" /* for heap_form_tuple() */
@@ -144,6 +145,144 @@ _lwtype_upper_name(int type, char *buf, size_t buflen)
     *ptr = toupper(*ptr);
     ++ptr;
   }
+}
+
+PG_FUNCTION_INFO_V1(AsTopoJSONRow);
+Datum
+AsTopoJSONRow(PG_FUNCTION_ARGS)
+{
+	Datum composite;
+	HeapTupleHeader td;
+	Oid tupType;
+	int32 tupTypmod;
+	TupleDesc tupdesc;
+	HeapTupleData tmptup;
+	HeapTuple tuple;
+	char *topogeom_column = NULL;
+	Oid topogeom_oid;
+	int topogeom_attnum = -1;
+	Datum topogeom;
+	Datum values[2];
+	Oid argtypes[2];
+	char nulls[3] = {' ', ' ', '\0'};
+	bool isnull;
+	int spi_result;
+	int i;
+	MemoryContext oldcontext = CurrentMemoryContext;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	composite = PG_GETARG_DATUM(0);
+	if (!PG_ARGISNULL(1))
+	{
+		topogeom_column = text_to_cstring(PG_GETARG_TEXT_PP(1));
+		if (!topogeom_column[0])
+			topogeom_column = NULL;
+	}
+
+	if (SPI_connect() != SPI_OK_CONNECT)
+		elog(ERROR, "could not connect to SPI manager");
+
+	spi_result = SPI_execute("SELECT 'topology.TopoGeometry'::regtype::oid", true, 1);
+	if (spi_result != SPI_OK_SELECT || SPI_processed != 1)
+		elog(ERROR, "could not resolve topology.TopoGeometry type");
+
+	topogeom_oid = DatumGetObjectId(SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull));
+	if (isnull)
+		elog(ERROR, "could not resolve topology.TopoGeometry type");
+
+	td = DatumGetHeapTupleHeader(composite);
+	tupType = HeapTupleHeaderGetTypeId(td);
+	tupTypmod = HeapTupleHeaderGetTypMod(td);
+	tupdesc = lookup_rowtype_tupdesc(tupType, tupTypmod);
+
+	tmptup.t_len = HeapTupleHeaderGetDatumLength(td);
+	tmptup.t_data = td;
+	tuple = &tmptup;
+
+	for (i = 0; i < tupdesc->natts; i++)
+	{
+		Form_pg_attribute att = TupleDescAttr(tupdesc, i);
+		char *attname;
+
+		if (att->attisdropped)
+			continue;
+
+		attname = NameStr(att->attname);
+		if (topogeom_column)
+		{
+			if (strcmp(attname, topogeom_column) != 0)
+				continue;
+
+			if (att->atttypid != topogeom_oid)
+			{
+				ReleaseTupleDesc(tupdesc);
+				SPI_finish();
+				ereport(
+				    ERROR,
+				    (errmsg("column \"%s\" is not of type topology.TopoGeometry", topogeom_column)));
+			}
+
+			topogeom_attnum = i + 1;
+			break;
+		}
+
+		if (att->atttypid == topogeom_oid)
+		{
+			topogeom_attnum = i + 1;
+			break;
+		}
+	}
+
+	if (topogeom_attnum < 0)
+	{
+		ReleaseTupleDesc(tupdesc);
+		SPI_finish();
+		if (topogeom_column)
+			ereport(ERROR, (errmsg("topology.TopoGeometry column \"%s\" does not exist", topogeom_column)));
+		ereport(ERROR, (errmsg("record contains no topology.TopoGeometry column")));
+	}
+
+	topogeom = heap_getattr(tuple, topogeom_attnum, tupdesc, &isnull);
+	ReleaseTupleDesc(tupdesc);
+
+	if (isnull)
+	{
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
+	values[0] = topogeom;
+	argtypes[0] = topogeom_oid;
+	argtypes[1] = REGCLASSOID;
+	if (PG_ARGISNULL(2))
+		nulls[1] = 'n';
+	else
+		values[1] = PG_GETARG_OID(2);
+
+	spi_result = SPI_execute_with_args("SELECT topology.AsTopoJSON($1, $2)", 2, argtypes, values, nulls, true, 1);
+	if (spi_result != SPI_OK_SELECT || SPI_processed != 1)
+	{
+		SPI_finish();
+		elog(ERROR, "unexpected return (%d) from topology.AsTopoJSON", spi_result);
+	}
+
+	topogeom = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
+	if (isnull)
+	{
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+	else
+	{
+		char *json = TextDatumGetCString(topogeom);
+		text *result;
+		MemoryContextSwitchTo(oldcontext);
+		result = cstring_to_text(json);
+		SPI_finish();
+		PG_RETURN_TEXT_P(result);
+	}
 }
 
 /* Return an lwalloc'ed geometrical representation of the box */
