@@ -104,6 +104,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #6083, Pass configured dependency include paths to fuzzer smoke builds
           (Darafei Praliaskouski)
+ - #6016, [topology] Rewrite existing topoelement domain columns while
+          upgrading them from integer arrays to bigint arrays
+          (Darafei Praliaskouski)
  - #3103, Add regression coverage for exact-schema find_srid and
           geometry_columns lookups (Darafei Praliaskouski)
  - #1705, Infer constraint metadata for direct view and materialized view

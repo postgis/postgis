@@ -177,33 +177,1945 @@ CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_domain_type(
 	deprecated_in_version text DEFAULT 'xxx'
 ) RETURNS void AS $$
 DECLARE
+	context TEXT;
 	detail TEXT;
+	domain_oid OID;
+	domain_array_oid OID;
+	domain_att_type_oids OID[];
+	nested_topology_type_oids OID[];
+	domain_schema TEXT := 'topology';
+	domain_constraint RECORD;
+	domain_constraint_defs JSONB := '[]'::JSONB;
+	domain_column RECORD;
+	domain_default_expr TEXT;
+	domain_default RECORD;
+	domain_generated_column RECORD;
+	domain_generated_source_column RECORD;
+	domain_skipped_column RECORD;
+	sql TEXT;
+	skipped_repair BOOLEAN := false;
+	skipped_domain_type_oids OID[] := ARRAY[]::OID[];
+	skipped_domain_constraint_oids OID[] := ARRAY[]::OID[];
+	restored_domain_array_columns BOOLEAN := false;
 	-- We need the base types of the old and new types - if multidimensional (int[][]), we need just one dimension at most
 	old_base_type TEXT := pg_catalog.regexp_replace(old_domain_type, E'(\\[\\])+$', '[]');
 	new_base_type TEXT := pg_catalog.regexp_replace(new_domain_type, E'(\\[\\])+$', '[]');
 	array_dims INT := (SELECT count(*) FROM pg_catalog.regexp_matches (old_domain_type, E'\\[\\]', 'g'));
+	marker_version TEXT := CASE
+		WHEN deprecated_in_version ~ '^[0-9]+[.][0-9]+'
+		THEN pg_catalog.concat(
+			pg_catalog.split_part(deprecated_in_version, '.', 1),
+			pg_catalog.lpad(pg_catalog.split_part(deprecated_in_version, '.', 2), 2, '0')
+		)
+		ELSE deprecated_in_version
+	END;
+	repair_marker TEXT := 'postgis-topology-domain-storage-repaired-' || marker_version;
+	constraint_not_valid_marker TEXT := 'postgis-topology-domain-constraint-not-valid-by-repair-' || marker_version;
 BEGIN
-	IF EXISTS (SELECT 1 FROM pg_catalog.pg_type AS t
-		WHERE  typnamespace::regnamespace::text = 'topology'
-		AND typname::text ILIKE domain_name
-		AND typbasetype::regtype::text ILIKE old_base_type
-    AND typndims = array_dims)
-  	THEN
+	SELECT
+		t.oid,
+		t.typarray,
+		CASE
+			WHEN t.typdefaultbin IS NOT NULL THEN pg_catalog.pg_get_expr(t.typdefaultbin, 0)
+			ELSE NULL
+		END
+	FROM pg_catalog.pg_type AS t
+	WHERE typnamespace::regnamespace::text = domain_schema
+	AND typname::text ILIKE domain_name
+	-- Databases upgraded by the broken 3.6 path can already have
+	-- the new catalog base type while old-width row values remain.
+	AND (
+		typbasetype = old_base_type::regtype::oid
+		OR (
+			typbasetype = new_base_type::regtype::oid
+			AND COALESCE(pg_catalog.obj_description(t.oid, 'pg_type'), '') NOT LIKE '%' || repair_marker || '%'
+		)
+	)
+	AND typndims = array_dims
+	INTO domain_oid, domain_array_oid, domain_default_expr;
+
+	IF domain_oid IS NOT NULL THEN
 		BEGIN
-			-- HACK: We need to swap out the base type and number of dimensions
+			domain_att_type_oids := pg_catalog.array_remove(ARRAY[domain_oid, domain_array_oid], 0::oid);
+
+			-- Generated expressions and user-visible container types can hide
+			-- topology domains behind a different atttypid. Use one recursive
+			-- closure so every dependency check reasons about the same set of
+			-- exact and nested domain-storage carriers.
+			WITH RECURSIVE nested_type(type_oid) AS (
+				SELECT pg_catalog.unnest(domain_att_type_oids)
+				UNION
+				SELECT nested_candidate.type_oid
+				FROM nested_type
+				JOIN LATERAL (
+					SELECT t.oid AS type_oid
+					FROM pg_catalog.pg_type AS t
+					WHERE t.typbasetype = nested_type.type_oid
+					OR t.typelem = nested_type.type_oid
+					UNION
+					SELECT ct.oid AS type_oid
+					FROM pg_catalog.pg_attribute AS ta
+					JOIN pg_catalog.pg_class AS tc
+						ON tc.oid = ta.attrelid
+						AND tc.relkind IN ('c', 'r', 'p')
+					JOIN pg_catalog.pg_type AS ct
+						ON ct.typrelid = tc.oid
+					WHERE ta.atttypid = nested_type.type_oid
+					AND ta.attnum > 0
+					AND NOT ta.attisdropped
+				) AS nested_candidate ON true
+			)
+			SELECT pg_catalog.array_agg(type_oid)
+			FROM nested_type
+				INTO nested_topology_type_oids;
+
+			FOR domain_default IN
+				SELECT
+					n.nspname AS domain_schema,
+					t.typname AS domain_name,
+					pg_catalog.pg_get_expr(t.typdefaultbin, 0) AS default_expr,
+					t.oid::regtype::text AS new_domain_type
+				FROM pg_catalog.pg_type AS t
+				JOIN pg_catalog.pg_namespace AS n
+					ON n.oid = t.typnamespace
+				WHERE t.typtype = 'd'
+				AND t.oid <> domain_oid
+				AND t.oid = ANY(nested_topology_type_oids)
+				AND t.typdefaultbin IS NOT NULL
+			LOOP
+				-- A user domain over the topology domain can have its own
+				-- default expression compiled against the old array storage.
+				-- Save it before the base domain catalog rewrite and restore it
+				-- through text after the new topology storage is in force.
+				CREATE TEMP TABLE IF NOT EXISTS pg_temp._postgis_topology_domain_defaults (
+					domain_schema TEXT,
+					domain_name TEXT,
+					default_expr TEXT,
+					new_domain_type TEXT
+				) ON COMMIT DROP;
+
+				sql := pg_catalog.format(
+					'ALTER DOMAIN %I.%I DROP DEFAULT',
+					domain_default.domain_schema,
+					domain_default.domain_name
+				);
+				EXECUTE sql;
+
+				INSERT INTO pg_temp._postgis_topology_domain_defaults
+					VALUES (
+						domain_default.domain_schema,
+						domain_default.domain_name,
+						domain_default.default_expr,
+						domain_default.new_domain_type
+					);
+			END LOOP;
+
+			FOR domain_constraint IN
+				SELECT
+					t.oid AS domain_oid,
+					n.nspname AS domain_schema,
+					t.typname AS domain_name,
+					con.conname,
+					pg_catalog.pg_get_constraintdef(con.oid) AS constraint_def,
+					con.convalidated,
+					pg_catalog.obj_description(con.oid, 'pg_constraint') LIKE '%' || constraint_not_valid_marker || '%' AS not_valid_by_repair
+				FROM pg_catalog.pg_constraint AS con
+				JOIN pg_catalog.pg_type AS t
+					ON t.oid = con.contypid
+					AND t.typtype = 'd'
+				JOIN pg_catalog.pg_namespace AS n
+					ON n.oid = t.typnamespace
+				WHERE con.contypid = ANY(nested_topology_type_oids)
+			LOOP
+				domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+					pg_catalog.jsonb_build_object(
+						'domain_oid', domain_constraint.domain_oid,
+						'domain_schema', domain_constraint.domain_schema,
+						'domain_name', domain_constraint.domain_name,
+						'name', domain_constraint.conname,
+						'definition', domain_constraint.constraint_def,
+						'convalidated', domain_constraint.convalidated,
+						'not_valid_by_repair', domain_constraint.not_valid_by_repair
+					)
+				);
+				sql := pg_catalog.format(
+					'ALTER DOMAIN %I.%I DROP CONSTRAINT IF EXISTS %I',
+					domain_constraint.domain_schema,
+					domain_constraint.domain_name,
+					domain_constraint.conname
+				);
+				EXECUTE sql;
+			END LOOP;
+
+			-- Older upgrade sources may not have constraints introduced after
+			-- the original domain was created.  Treat those canonical topology
+			-- constraints like captured constraints so incomplete repairs keep
+			-- them NOT VALID. Complete repairs install the fresh-domain
+			-- constraint set as validated unless rewritten domain-array
+			-- columns still depend on the domain and force NOT VALID restore.
+			IF pg_catalog.lower(domain_name) = 'topoelement' THEN
+				IF NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+					WHERE value->>'domain_schema' = domain_schema
+					AND value->>'domain_name' = domain_name
+					AND value->>'name' = 'dimensions'
+				) THEN
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'domain_schema', domain_schema,
+							'domain_name', domain_name,
+							'domain_oid', domain_oid,
+							'name', 'dimensions',
+							'definition', 'CHECK (array_upper(VALUE, 2) IS NULL AND array_upper(VALUE, 1) = 2)',
+							'convalidated', true,
+							'not_valid_by_repair', true
+						)
+					);
+				END IF;
+
+				IF NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+					WHERE value->>'domain_schema' = domain_schema
+					AND value->>'domain_name' = domain_name
+					AND value->>'name' = 'type_range'
+				) THEN
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'domain_schema', domain_schema,
+							'domain_name', domain_name,
+							'domain_oid', domain_oid,
+							'name', 'type_range',
+							'definition', 'CHECK (VALUE[2] > 0)',
+							'convalidated', true,
+							'not_valid_by_repair', true
+						)
+					);
+				END IF;
+
+				IF NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+					WHERE value->>'domain_schema' = domain_schema
+					AND value->>'domain_name' = domain_name
+					AND value->>'name' = 'lower_dimension'
+				) THEN
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'domain_schema', domain_schema,
+							'domain_name', domain_name,
+							'domain_oid', domain_oid,
+							'name', 'lower_dimension',
+							'definition', 'CHECK (array_lower(VALUE, 1) = 1)',
+							'convalidated', true,
+							'not_valid_by_repair', true
+						)
+					);
+				END IF;
+			ELSIF pg_catalog.lower(domain_name) = 'topoelementarray' THEN
+				IF NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+					WHERE value->>'domain_schema' = domain_schema
+					AND value->>'domain_name' = domain_name
+					AND value->>'name' = 'type_range'
+				) THEN
+					domain_constraint_defs := domain_constraint_defs || pg_catalog.jsonb_build_array(
+						pg_catalog.jsonb_build_object(
+							'domain_schema', domain_schema,
+							'domain_name', domain_name,
+							'domain_oid', domain_oid,
+							'name', 'type_range',
+							'definition', 'CHECK (array_upper(VALUE, 2) = 2 AND array_upper(VALUE, 3) IS NULL)',
+							'convalidated', true,
+							'not_valid_by_repair', true
+						)
+					);
+				END IF;
+			END IF;
+
 			UPDATE pg_catalog.pg_type
 			SET typbasetype = new_base_type::regtype::oid, typndims = array_dims
-			WHERE typnamespace::regnamespace::text = 'topology'
-			AND typname::text ILIKE domain_name
-			AND typbasetype::regtype::text ILIKE old_base_type
-			AND typndims = array_dims;
+			WHERE oid = domain_oid;
+
+			IF domain_default_expr IS NOT NULL THEN
+				sql := pg_catalog.format(
+					'ALTER DOMAIN %I.%I DROP DEFAULT',
+					domain_schema,
+					domain_name
+				);
+				EXECUTE sql;
+
+				CREATE TEMP TABLE IF NOT EXISTS pg_temp._postgis_topology_domain_defaults (
+					domain_schema TEXT,
+					domain_name TEXT,
+					default_expr TEXT,
+					new_domain_type TEXT
+				) ON COMMIT DROP;
+
+				INSERT INTO pg_temp._postgis_topology_domain_defaults
+					VALUES (
+						domain_schema,
+						domain_name,
+						domain_default_expr,
+						new_domain_type
+					);
+			END IF;
+
+			-- Rewrite-rule, row-level security policy, trigger,
+			-- SQL-function/procedure, publication-column, and
+			-- generated-expression dependencies make ALTER COLUMN TYPE fail.
+			-- Skip those columns and withhold the repair marker so a later
+			-- manual cleanup can retry instead of rolling back unrelated
+			-- domain repairs.
+			-- PostgreSQL 14 records generated-expression dependencies as
+			-- pg_class attribute dependencies; later releases also expose
+			-- pg_attrdef dependencies.
+			FOR domain_skipped_column IN
+				SELECT
+					a.attrelid,
+					a.attname,
+					c.relkind,
+					dependent_view.view_relid,
+					dependent_view.view_relkind,
+					dependent_view.rulename,
+					dependent_policy.policy_oid,
+					dependent_policy.policy_name,
+					dependent_trigger.trigger_oid,
+					dependent_trigger.trigger_name,
+					dependent_function.function_oid,
+					dependent_function.function_name,
+					dependent_publication.publication_relid,
+					dependent_publication.publication_name,
+					dependent_generated_column.attrelid AS generated_attrelid,
+					dependent_generated_column.attname AS generated_attname,
+					dependent_constraint.constraint_oid,
+					dependent_constraint.constraint_name,
+					dependent_index.index_oid,
+					dependent_index.index_name,
+					dependent_row_type_column.attrelid AS row_type_attrelid,
+					dependent_row_type_column.attname AS row_type_attname
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				LEFT JOIN LATERAL (
+					SELECT
+						vc.oid AS view_relid,
+						vc.relkind AS view_relkind,
+						rw.rulename
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_rewrite AS rw
+						ON rw.oid = dep.objid
+					JOIN pg_catalog.pg_class AS vc
+						ON vc.oid = rw.ev_class
+					WHERE dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					LIMIT 1
+				) AS dependent_view ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						p.oid AS policy_oid,
+						p.polname AS policy_name
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_policy AS p
+						ON p.oid = dep.objid
+					WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
+					AND dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					LIMIT 1
+				) AS dependent_policy ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						t.oid AS trigger_oid,
+						t.tgname AS trigger_name
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_trigger AS t
+						ON t.oid = dep.objid
+					WHERE dep.classid = 'pg_catalog.pg_trigger'::regclass
+					AND dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					LIMIT 1
+				) AS dependent_trigger ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						p.oid AS function_oid,
+						p.oid::regprocedure::text AS function_name
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_proc AS p
+						ON p.oid = dep.objid
+					WHERE dep.classid = 'pg_catalog.pg_proc'::regclass
+					AND dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					LIMIT 1
+				) AS dependent_function ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						pr.oid AS publication_relid,
+						pub.pubname AS publication_name
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_publication_rel AS pr
+						ON pr.oid = dep.objid
+					JOIN pg_catalog.pg_publication AS pub
+						ON pub.oid = pr.prpubid
+					WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
+					AND dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					LIMIT 1
+				) AS dependent_publication ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						generated_dependency.attrelid,
+						generated_dependency.attname
+					FROM (
+						SELECT
+							ga.attrelid,
+							ga.attname
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_attrdef AS gd
+							ON gd.oid = dep.objid
+						JOIN pg_catalog.pg_attribute AS ga
+							ON ga.attrelid = gd.adrelid
+							AND ga.attnum = gd.adnum
+						WHERE dep.classid = 'pg_catalog.pg_attrdef'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+						AND ga.attgenerated <> ''
+						UNION ALL
+						SELECT
+							ga.attrelid,
+							ga.attname
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_attribute AS ga
+							ON ga.attrelid = dep.objid
+							AND ga.attnum = dep.objsubid
+						WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+						AND ga.attgenerated <> ''
+					) AS generated_dependency
+					LIMIT 1
+				) AS dependent_generated_column ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						con.oid AS constraint_oid,
+						con.conname AS constraint_name
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_constraint AS con
+						ON con.oid = dep.objid
+					WHERE dep.classid = 'pg_catalog.pg_constraint'::regclass
+					AND dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					AND a.atttypid = domain_array_oid
+					LIMIT 1
+				) AS dependent_constraint ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						ic.oid AS index_oid,
+						ic.relname AS index_name
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_class AS ic
+						ON ic.oid = dep.objid
+					JOIN pg_catalog.pg_index AS ix
+						ON ix.indexrelid = ic.oid
+					WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+					AND dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+					AND ic.relkind IN ('i', 'I')
+					AND a.atttypid = domain_array_oid
+					LIMIT 1
+				) AS dependent_index ON true
+				LEFT JOIN LATERAL (
+					SELECT
+						ra.attrelid,
+						ra.attname
+					FROM pg_catalog.pg_type AS rt
+					JOIN pg_catalog.pg_attribute AS ra
+						ON ra.atttypid = rt.oid
+						AND ra.attnum > 0
+						AND NOT ra.attisdropped
+					JOIN pg_catalog.pg_class AS rc
+						ON rc.oid = ra.attrelid
+						AND rc.relkind IN ('r', 'p', 'm')
+					WHERE rt.typrelid = a.attrelid
+					LIMIT 1
+				) AS dependent_row_type_column ON true
+				WHERE a.atttypid = ANY(domain_att_type_oids)
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND (
+					c.relkind = 'm'
+					OR dependent_view.view_relid IS NOT NULL
+					OR dependent_policy.policy_oid IS NOT NULL
+					OR dependent_trigger.trigger_oid IS NOT NULL
+					OR dependent_function.function_oid IS NOT NULL
+					OR dependent_publication.publication_relid IS NOT NULL
+					OR dependent_generated_column.attrelid IS NOT NULL
+					OR dependent_constraint.constraint_oid IS NOT NULL
+					OR dependent_index.index_oid IS NOT NULL
+					OR dependent_row_type_column.attrelid IS NOT NULL
+				)
+			LOOP
+				skipped_repair := true;
+				skipped_domain_type_oids := pg_catalog.array_append(skipped_domain_type_oids, domain_oid);
+				IF domain_skipped_column.relkind = 'm' THEN
+					RAISE WARNING 'Could not rewrite materialized view column %.% for topology.%; refresh or recreate the materialized view after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name;
+				ELSIF domain_skipped_column.view_relkind = 'v' THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because view % depends on it; drop and recreate the view, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.view_relid::regclass;
+				ELSIF domain_skipped_column.view_relkind IN ('r', 'p') THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because rule % on % depends on it; drop and recreate the rule, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.rulename,
+						domain_skipped_column.view_relid::regclass;
+				ELSIF domain_skipped_column.policy_oid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because row-level security policy % depends on it; drop and recreate the policy, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.policy_name;
+				ELSIF domain_skipped_column.trigger_oid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because trigger % depends on it; drop and recreate the trigger, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.trigger_name;
+				ELSIF domain_skipped_column.function_oid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because function or procedure % depends on it; drop and recreate the routine, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.function_name;
+				ELSIF domain_skipped_column.publication_relid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because publication % depends on it; drop and recreate the publication relation entry, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.publication_name;
+				ELSIF domain_skipped_column.generated_attrelid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because generated column %.% depends on it; drop and recreate the generated column, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.generated_attrelid::regclass,
+						domain_skipped_column.generated_attname;
+				ELSIF domain_skipped_column.constraint_oid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because constraint % depends on its domain array type; drop and recreate the constraint, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.constraint_name;
+				ELSIF domain_skipped_column.index_oid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because index % depends on its domain array type; drop and recreate the index, then repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.index_name;
+				ELSIF domain_skipped_column.row_type_attrelid IS NOT NULL THEN
+					RAISE WARNING 'Could not rewrite %.% for topology.% because column %.% uses its table row type; move the dependent value through text into a freshly created type after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.row_type_attrelid::regclass,
+						domain_skipped_column.row_type_attname;
+				ELSE
+					RAISE WARNING 'Could not rewrite %.% for topology.% because materialized view % depends on it; refresh or recreate the materialized view and repair the column after upgrade',
+						domain_skipped_column.attrelid::regclass,
+						domain_skipped_column.attname,
+						domain_name,
+						domain_skipped_column.view_relid::regclass;
+				END IF;
+			END LOOP;
+
+			-- User domains and composite types can hide topology domains behind
+			-- another column type OID, so the exact-OID rewrite below cannot
+			-- prove that all old-width storage was repaired.
+			FOR domain_skipped_column IN
+				SELECT DISTINCT
+					a.atttypid AS nested_type_oid,
+					a.attrelid,
+					a.attname,
+					a.atttypid::regtype AS nested_type_name
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				JOIN pg_catalog.unnest(nested_topology_type_oids) AS nt(type_oid)
+					ON nt.type_oid = a.atttypid
+				WHERE a.atttypid <> ALL(domain_att_type_oids)
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND c.relkind IN ('r', 'p', 'm')
+			LOOP
+				skipped_repair := true;
+				skipped_domain_type_oids := pg_catalog.array_append(
+					skipped_domain_type_oids,
+					domain_skipped_column.nested_type_oid
+				);
+				RAISE WARNING 'Could not rewrite %.% for topology.% because its type % contains that domain; move the value through text into a freshly created type after upgrade',
+					domain_skipped_column.attrelid::regclass,
+					domain_skipped_column.attname,
+					domain_name,
+					domain_skipped_column.nested_type_name;
+			END LOOP;
+
+			FOR domain_generated_source_column IN
+				SELECT
+					a.attrelid,
+					a.attname,
+					generated_source.attrelid AS source_attrelid,
+					generated_source.attname AS source_attname
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				JOIN LATERAL (
+					SELECT
+						source_dependency.attrelid,
+						source_dependency.attname
+					FROM (
+						SELECT
+							sa.attrelid,
+							sa.attname
+						FROM pg_catalog.pg_attrdef AS gd
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.classid = 'pg_catalog.pg_attrdef'::regclass
+							AND dep.objid = gd.oid
+						JOIN pg_catalog.pg_attribute AS sa
+							ON sa.attrelid = dep.refobjid
+							AND sa.attnum = dep.refobjsubid
+						WHERE gd.adrelid = a.attrelid
+						AND gd.adnum = a.attnum
+						AND sa.atttypid = ANY(nested_topology_type_oids)
+						AND sa.attnum > 0
+						AND NOT sa.attisdropped
+						AND sa.attnum <> a.attnum
+						UNION ALL
+						SELECT
+							sa.attrelid,
+							sa.attname
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_attribute AS sa
+							ON sa.attrelid = dep.refobjid
+							AND sa.attnum = dep.refobjsubid
+						WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+						AND dep.objid = a.attrelid
+						AND dep.objsubid = a.attnum
+						AND sa.atttypid = ANY(nested_topology_type_oids)
+						AND sa.attnum > 0
+						AND NOT sa.attisdropped
+						AND sa.attnum <> a.attnum
+					) AS source_dependency
+					LIMIT 1
+				) AS generated_source ON true
+				WHERE a.atttypid = ANY(domain_att_type_oids)
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND a.attgenerated = 's'
+				AND c.relkind IN ('r', 'p')
+			LOOP
+				skipped_repair := true;
+				skipped_domain_type_oids := pg_catalog.array_append(skipped_domain_type_oids, domain_oid);
+				RAISE WARNING 'Could not rewrite generated column %.% for topology.% because it reads unrepaired column %.%; drop and recreate the generated column after repairing its source column',
+					domain_generated_source_column.attrelid::regclass,
+					domain_generated_source_column.attname,
+					domain_name,
+					domain_generated_source_column.source_attrelid::regclass,
+					domain_generated_source_column.source_attname;
+			END LOOP;
+
+			-- Some table columns cannot enter the row rewrite below, but their
+			-- defaults are independent pg_attrdef entries and can still be
+			-- rebuilt through the new array storage. Nested carrier defaults
+			-- need the same treatment so they do not keep creating old-width
+			-- topology domain values after their storage rewrite is skipped.
+			FOR domain_default IN
+				SELECT
+					a.attrelid,
+					a.attname,
+					pg_catalog.pg_get_expr(d.adbin, d.adrelid) AS default_expr,
+					CASE
+						WHEN a.atttypid = domain_array_oid THEN
+							pg_catalog.format('%I.%I[]', domain_schema, domain_name)
+						WHEN a.atttypid <> ALL(domain_att_type_oids) THEN
+							a.atttypid::regtype::text
+						ELSE
+							pg_catalog.format('%I.%I', domain_schema, domain_name)
+					END AS target_domain_type,
+					CASE
+						WHEN a.atttypid = domain_array_oid THEN
+							'pg_catalog.text[]'
+						WHEN ate.typtype = 'd'
+							AND at.typelem = ANY(nested_topology_type_oids)
+						THEN
+							'pg_catalog.text[]'
+						WHEN a.atttypid <> ALL(domain_att_type_oids) THEN
+							a.atttypid::regtype::text
+						ELSE
+							new_domain_type
+					END AS storage_cast_type
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				JOIN pg_catalog.pg_type AS at
+					ON at.oid = a.atttypid
+				LEFT JOIN pg_catalog.pg_type AS ate
+					ON ate.oid = at.typelem
+				JOIN pg_catalog.pg_attrdef AS d
+					ON d.adrelid = a.attrelid
+					AND d.adnum = a.attnum
+				WHERE (
+					a.atttypid = ANY(domain_att_type_oids)
+					OR (
+						a.atttypid = ANY(nested_topology_type_oids)
+						AND a.atttypid <> ALL(domain_att_type_oids)
+						AND at.typtype = 'd'
+					)
+					OR (
+						ate.typtype = 'd'
+						AND at.typelem = ANY(nested_topology_type_oids)
+						AND at.typelem <> ALL(domain_att_type_oids)
+					)
+				)
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND a.attgenerated = ''
+				AND c.relkind IN ('r', 'p')
+				AND (
+					(
+						a.atttypid = ANY(nested_topology_type_oids)
+						AND a.atttypid <> ALL(domain_att_type_oids)
+						AND at.typtype = 'd'
+					)
+					OR (
+						ate.typtype = 'd'
+						AND at.typelem = ANY(nested_topology_type_oids)
+						AND at.typelem <> ALL(domain_att_type_oids)
+					)
+					OR EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_rewrite AS rw
+							ON rw.oid = dep.objid
+						WHERE dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+						OR EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
+						OR EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							WHERE dep.classid = 'pg_catalog.pg_trigger'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
+						OR (
+							a.atttypid = domain_array_oid
+							AND EXISTS (
+								SELECT 1
+								FROM pg_catalog.pg_depend AS dep
+								WHERE dep.classid = 'pg_catalog.pg_constraint'::regclass
+								AND dep.refobjid = a.attrelid
+								AND dep.refobjsubid IN (0, a.attnum)
+							)
+						)
+						OR (
+							a.atttypid = domain_array_oid
+							AND EXISTS (
+								SELECT 1
+								FROM pg_catalog.pg_depend AS dep
+								JOIN pg_catalog.pg_class AS ic
+									ON ic.oid = dep.objid
+									AND ic.relkind IN ('i', 'I')
+								JOIN pg_catalog.pg_index AS ix
+									ON ix.indexrelid = ic.oid
+								WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+								AND dep.refobjid = a.attrelid
+								AND dep.refobjsubid IN (0, a.attnum)
+							)
+						)
+						OR EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_type AS rt
+							JOIN pg_catalog.pg_attribute AS ra
+								ON ra.atttypid = rt.oid
+								AND ra.attnum > 0
+								AND NOT ra.attisdropped
+							JOIN pg_catalog.pg_class AS rc
+								ON rc.oid = ra.attrelid
+								AND rc.relkind IN ('r', 'p', 'm')
+							WHERE rt.typrelid = a.attrelid
+						)
+						OR EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							WHERE dep.classid = 'pg_catalog.pg_proc'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
+						OR EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
+						OR EXISTS (
+							SELECT 1
+							FROM (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							JOIN pg_catalog.pg_attrdef AS gd
+								ON gd.oid = dep.objid
+							JOIN pg_catalog.pg_attribute AS ga
+								ON ga.attrelid = gd.adrelid
+								AND ga.attnum = gd.adnum
+							WHERE dep.classid = 'pg_catalog.pg_attrdef'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+							AND ga.attgenerated <> ''
+							UNION ALL
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							JOIN pg_catalog.pg_attribute AS ga
+								ON ga.attrelid = dep.objid
+								AND ga.attnum = dep.objsubid
+							WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+							AND ga.attgenerated <> ''
+						) AS generated_dependency
+					)
+						OR EXISTS (
+							WITH RECURSIVE inherited_relid(attrelid) AS (
+								SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							WHERE i.inhparent = a.attrelid
+							UNION ALL
+							SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							JOIN inherited_relid AS ir
+								ON ir.attrelid = i.inhparent
+						)
+						SELECT 1
+						FROM inherited_relid AS i
+							JOIN pg_catalog.pg_attribute AS ca
+								ON ca.attrelid = i.attrelid
+								AND ca.attname = a.attname
+								AND ca.atttypid = a.atttypid
+								AND ca.attnum > 0
+								AND NOT ca.attisdropped
+							JOIN pg_catalog.pg_depend AS dep
+								ON dep.refobjid = ca.attrelid
+								AND dep.refobjsubid IN (0, ca.attnum)
+							WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
+						)
+						OR EXISTS (
+							WITH RECURSIVE inherited_relid(attrelid) AS (
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								WHERE i.inhparent = a.attrelid
+								UNION ALL
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								JOIN inherited_relid AS ir
+									ON ir.attrelid = i.inhparent
+						)
+						SELECT 1
+						FROM inherited_relid AS i
+						JOIN pg_catalog.pg_attribute AS ca
+							ON ca.attrelid = i.attrelid
+							AND ca.attname = a.attname
+							AND ca.atttypid = a.atttypid
+							AND ca.attnum > 0
+							AND NOT ca.attisdropped
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.refobjid = ca.attrelid
+							AND (
+								(
+									dep.classid IN (
+										'pg_catalog.pg_publication_rel'::regclass
+									)
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_trigger'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_proc'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+							)
+					)
+						OR EXISTS (
+							WITH RECURSIVE inherited_relid(attrelid) AS (
+								SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							WHERE i.inhparent = a.attrelid
+							UNION ALL
+							SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							JOIN inherited_relid AS ir
+								ON ir.attrelid = i.inhparent
+						)
+						SELECT 1
+						FROM inherited_relid AS i
+						JOIN pg_catalog.pg_attribute AS ca
+							ON ca.attrelid = i.attrelid
+							AND ca.attname = a.attname
+							AND ca.atttypid = a.atttypid
+							AND ca.attnum > 0
+							AND NOT ca.attisdropped
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.refobjid = ca.attrelid
+							AND dep.refobjsubid IN (0, ca.attnum)
+						JOIN pg_catalog.pg_rewrite AS rw
+							ON rw.oid = dep.objid
+					)
+					OR EXISTS (
+						WITH RECURSIVE inherited_relid(attrelid) AS (
+							SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							WHERE i.inhparent = a.attrelid
+							UNION ALL
+							SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							JOIN inherited_relid AS ir
+								ON ir.attrelid = i.inhparent
+						)
+						SELECT 1
+						FROM inherited_relid AS i
+						JOIN pg_catalog.pg_attribute AS ca
+							ON ca.attrelid = i.attrelid
+							AND ca.attname = a.attname
+							AND ca.atttypid = a.atttypid
+							AND ca.attnum > 0
+							AND NOT ca.attisdropped
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.refobjid = ca.attrelid
+							AND dep.refobjsubid IN (0, ca.attnum)
+						JOIN pg_catalog.pg_attrdef AS gd
+							ON gd.oid = dep.objid
+						JOIN pg_catalog.pg_attribute AS ga
+							ON ga.attrelid = gd.adrelid
+							AND ga.attnum = gd.adnum
+						WHERE dep.classid = 'pg_catalog.pg_attrdef'::regclass
+						AND ga.attgenerated <> ''
+						UNION ALL
+						SELECT 1
+						FROM inherited_relid AS i
+						JOIN pg_catalog.pg_attribute AS ca
+							ON ca.attrelid = i.attrelid
+							AND ca.attname = a.attname
+							AND ca.atttypid = a.atttypid
+							AND ca.attnum > 0
+								AND NOT ca.attisdropped
+							JOIN pg_catalog.pg_depend AS dep
+								ON dep.refobjid = ca.attrelid
+								AND dep.refobjsubid IN (0, ca.attnum)
+							JOIN pg_catalog.pg_attribute AS ga
+								ON ga.attrelid = dep.objid
+								AND ga.attnum = dep.objsubid
+							WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+							AND ga.attgenerated <> ''
+						)
+						OR (
+							a.atttypid = domain_array_oid
+							AND EXISTS (
+								WITH RECURSIVE inherited_relid(attrelid) AS (
+									SELECT i.inhrelid
+									FROM pg_catalog.pg_inherits AS i
+									WHERE i.inhparent = a.attrelid
+									UNION ALL
+									SELECT i.inhrelid
+									FROM pg_catalog.pg_inherits AS i
+									JOIN inherited_relid AS ir
+										ON ir.attrelid = i.inhparent
+								)
+								SELECT 1
+								FROM inherited_relid AS i
+								JOIN pg_catalog.pg_attribute AS ca
+									ON ca.attrelid = i.attrelid
+									AND ca.attname = a.attname
+									AND ca.atttypid = a.atttypid
+									AND ca.attnum > 0
+									AND NOT ca.attisdropped
+								JOIN pg_catalog.pg_depend AS dep
+									ON dep.classid = 'pg_catalog.pg_constraint'::regclass
+									AND dep.refobjid = ca.attrelid
+									AND dep.refobjsubid IN (0, ca.attnum)
+							)
+						)
+						OR (
+							a.atttypid = domain_array_oid
+							AND EXISTS (
+								WITH RECURSIVE inherited_relid(attrelid) AS (
+									SELECT i.inhrelid
+									FROM pg_catalog.pg_inherits AS i
+									WHERE i.inhparent = a.attrelid
+									UNION ALL
+									SELECT i.inhrelid
+									FROM pg_catalog.pg_inherits AS i
+									JOIN inherited_relid AS ir
+										ON ir.attrelid = i.inhparent
+								)
+								SELECT 1
+								FROM inherited_relid AS i
+								JOIN pg_catalog.pg_attribute AS ca
+									ON ca.attrelid = i.attrelid
+									AND ca.attname = a.attname
+									AND ca.atttypid = a.atttypid
+									AND ca.attnum > 0
+									AND NOT ca.attisdropped
+								JOIN pg_catalog.pg_depend AS dep
+									ON dep.classid = 'pg_catalog.pg_class'::regclass
+									AND dep.refobjid = ca.attrelid
+									AND dep.refobjsubid IN (0, ca.attnum)
+								JOIN pg_catalog.pg_class AS ic
+									ON ic.oid = dep.objid
+									AND ic.relkind IN ('i', 'I')
+								JOIN pg_catalog.pg_index AS ix
+									ON ix.indexrelid = ic.oid
+							)
+						)
+						OR EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_inherits AS i
+							JOIN pg_catalog.pg_attribute AS pa
+								ON pa.attrelid = i.inhparent
+								AND pa.attname = a.attname
+								AND pa.atttypid = a.atttypid
+								AND pa.attnum > 0
+								AND NOT pa.attisdropped
+							WHERE i.inhrelid = a.attrelid
+						)
+				)
+			LOOP
+				sql := pg_catalog.format(
+					'ALTER TABLE %s ALTER COLUMN %I DROP DEFAULT',
+					domain_default.attrelid::regclass,
+					domain_default.attname
+				);
+				EXECUTE sql;
+
+				sql := pg_catalog.format(
+					'ALTER TABLE %s ALTER COLUMN %I SET DEFAULT ((%s)::text::%s::%s)',
+					domain_default.attrelid::regclass,
+					domain_default.attname,
+					domain_default.default_expr,
+					domain_default.storage_cast_type,
+					domain_default.target_domain_type
+				);
+				EXECUTE sql;
+			END LOOP;
+
+			-- Existing table rows are still physically stored with the old
+			-- array element width. Whole-array output can mask that fact, so
+			-- force every dependent table column through text into the new
+			-- array representation before the domain constraints are restored.
+			-- Roots with blocked children are skipped as a unit because
+			-- ALTER TABLE would recurse into those children and abort the
+			-- entire domain repair.
+			FOR domain_column IN
+				SELECT
+					a.attrelid,
+					a.attname,
+					pg_catalog.pg_get_expr(d.adbin, d.adrelid) AS default_expr,
+					CASE
+						WHEN a.atttypid = domain_array_oid THEN
+							pg_catalog.format('%I.%I[]', domain_schema, domain_name)
+						ELSE
+							pg_catalog.format('%I.%I', domain_schema, domain_name)
+					END AS target_domain_type,
+					CASE
+						WHEN a.atttypid = domain_array_oid THEN
+							'pg_catalog.text[]'
+						ELSE
+							new_domain_type
+					END AS storage_cast_type,
+					a.atttypid = domain_array_oid AS is_domain_array
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				LEFT JOIN pg_catalog.pg_attrdef AS d
+					ON d.adrelid = a.attrelid
+					AND d.adnum = a.attnum
+				WHERE a.atttypid = ANY(domain_att_type_oids)
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND a.attgenerated = ''
+				AND c.relkind IN ('r', 'p')
+				AND NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_rewrite AS rw
+						ON rw.oid = dep.objid
+					JOIN pg_catalog.pg_class AS mc
+						ON mc.oid = rw.ev_class
+					WHERE dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+				)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						WHERE dep.classid = 'pg_catalog.pg_trigger'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT (
+						a.atttypid = domain_array_oid
+						AND EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							WHERE dep.classid = 'pg_catalog.pg_constraint'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
+					)
+					AND NOT (
+						a.atttypid = domain_array_oid
+						AND EXISTS (
+							SELECT 1
+							FROM pg_catalog.pg_depend AS dep
+							JOIN pg_catalog.pg_class AS ic
+								ON ic.oid = dep.objid
+								AND ic.relkind IN ('i', 'I')
+							JOIN pg_catalog.pg_index AS ix
+								ON ix.indexrelid = ic.oid
+							WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+							AND dep.refobjid = a.attrelid
+							AND dep.refobjsubid IN (0, a.attnum)
+						)
+					)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						WHERE dep.classid = 'pg_catalog.pg_proc'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_attrdef AS gd
+							ON gd.oid = dep.objid
+						JOIN pg_catalog.pg_attribute AS ga
+							ON ga.attrelid = gd.adrelid
+							AND ga.attnum = gd.adnum
+						WHERE dep.classid = 'pg_catalog.pg_attrdef'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+						AND ga.attgenerated <> ''
+						UNION ALL
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_attribute AS ga
+							ON ga.attrelid = dep.objid
+							AND ga.attnum = dep.objsubid
+						WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+						AND ga.attgenerated <> ''
+					) AS generated_dependency
+				)
+					AND NOT EXISTS (
+						WITH RECURSIVE inherited_relid(attrelid) AS (
+							SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						WHERE i.inhparent = a.attrelid
+						UNION ALL
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						JOIN inherited_relid AS ir
+							ON ir.attrelid = i.inhparent
+					)
+					SELECT 1
+					FROM inherited_relid AS i
+						JOIN pg_catalog.pg_attribute AS ca
+							ON ca.attrelid = i.attrelid
+							AND ca.attname = a.attname
+							AND ca.atttypid = a.atttypid
+							AND ca.attnum > 0
+							AND NOT ca.attisdropped
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.refobjid = ca.attrelid
+							AND dep.refobjsubid IN (0, ca.attnum)
+						WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
+					)
+					AND NOT EXISTS (
+						WITH RECURSIVE inherited_relid(attrelid) AS (
+							SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							WHERE i.inhparent = a.attrelid
+							UNION ALL
+							SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							JOIN inherited_relid AS ir
+								ON ir.attrelid = i.inhparent
+						)
+						SELECT 1
+						FROM inherited_relid AS i
+						JOIN pg_catalog.pg_attribute AS ca
+							ON ca.attrelid = i.attrelid
+							AND ca.attname = a.attname
+							AND ca.atttypid = a.atttypid
+							AND ca.attnum > 0
+							AND NOT ca.attisdropped
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.refobjid = ca.attrelid
+							AND (
+								(
+									dep.classid IN (
+										'pg_catalog.pg_publication_rel'::regclass
+									)
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_trigger'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_proc'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+							)
+					)
+					AND NOT EXISTS (
+						WITH RECURSIVE inherited_relid(attrelid) AS (
+							SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						WHERE i.inhparent = a.attrelid
+						UNION ALL
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						JOIN inherited_relid AS ir
+							ON ir.attrelid = i.inhparent
+					)
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_depend AS dep
+						ON dep.refobjid = ca.attrelid
+						AND dep.refobjsubid IN (0, ca.attnum)
+					JOIN pg_catalog.pg_rewrite AS rw
+						ON rw.oid = dep.objid
+				)
+					AND NOT (
+						a.atttypid = domain_array_oid
+						AND EXISTS (
+							WITH RECURSIVE inherited_relid(attrelid) AS (
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								WHERE i.inhparent = a.attrelid
+								UNION ALL
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								JOIN inherited_relid AS ir
+									ON ir.attrelid = i.inhparent
+							)
+							SELECT 1
+							FROM inherited_relid AS i
+							JOIN pg_catalog.pg_attribute AS ca
+								ON ca.attrelid = i.attrelid
+								AND ca.attname = a.attname
+								AND ca.atttypid = a.atttypid
+								AND ca.attnum > 0
+								AND NOT ca.attisdropped
+							JOIN pg_catalog.pg_depend AS dep
+								ON dep.classid = 'pg_catalog.pg_constraint'::regclass
+								AND dep.refobjid = ca.attrelid
+								AND dep.refobjsubid IN (0, ca.attnum)
+						)
+					)
+					AND NOT (
+						a.atttypid = domain_array_oid
+						AND EXISTS (
+							WITH RECURSIVE inherited_relid(attrelid) AS (
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								WHERE i.inhparent = a.attrelid
+								UNION ALL
+								SELECT i.inhrelid
+								FROM pg_catalog.pg_inherits AS i
+								JOIN inherited_relid AS ir
+									ON ir.attrelid = i.inhparent
+							)
+							SELECT 1
+							FROM inherited_relid AS i
+							JOIN pg_catalog.pg_attribute AS ca
+								ON ca.attrelid = i.attrelid
+								AND ca.attname = a.attname
+								AND ca.atttypid = a.atttypid
+								AND ca.attnum > 0
+								AND NOT ca.attisdropped
+							JOIN pg_catalog.pg_depend AS dep
+								ON dep.classid = 'pg_catalog.pg_class'::regclass
+								AND dep.refobjid = ca.attrelid
+								AND dep.refobjsubid IN (0, ca.attnum)
+							JOIN pg_catalog.pg_class AS ic
+								ON ic.oid = dep.objid
+								AND ic.relkind IN ('i', 'I')
+							JOIN pg_catalog.pg_index AS ix
+								ON ix.indexrelid = ic.oid
+						)
+					)
+					AND NOT EXISTS (
+						WITH RECURSIVE inherited_relid(attrelid) AS (
+							SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						WHERE i.inhparent = a.attrelid
+						UNION ALL
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						JOIN inherited_relid AS ir
+							ON ir.attrelid = i.inhparent
+					)
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_depend AS dep
+						ON dep.refobjid = ca.attrelid
+						AND dep.refobjsubid IN (0, ca.attnum)
+					JOIN pg_catalog.pg_attrdef AS gd
+						ON gd.oid = dep.objid
+					JOIN pg_catalog.pg_attribute AS ga
+						ON ga.attrelid = gd.adrelid
+						AND ga.attnum = gd.adnum
+					WHERE dep.classid = 'pg_catalog.pg_attrdef'::regclass
+					AND ga.attgenerated <> ''
+					UNION ALL
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_depend AS dep
+						ON dep.refobjid = ca.attrelid
+						AND dep.refobjsubid IN (0, ca.attnum)
+					JOIN pg_catalog.pg_attribute AS ga
+						ON ga.attrelid = dep.objid
+						AND ga.attnum = dep.objsubid
+					WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+					AND ga.attgenerated <> ''
+					)
+				AND NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.pg_type AS rt
+					JOIN pg_catalog.pg_attribute AS ra
+						ON ra.atttypid = rt.oid
+						AND ra.attnum > 0
+						AND NOT ra.attisdropped
+					JOIN pg_catalog.pg_class AS rc
+						ON rc.oid = ra.attrelid
+						AND rc.relkind IN ('r', 'p', 'm')
+					WHERE rt.typrelid = a.attrelid
+				)
+				AND NOT EXISTS (
+					WITH RECURSIVE inherited_relid(attrelid) AS (
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						WHERE i.inhparent = a.attrelid
+						UNION ALL
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						JOIN inherited_relid AS ir
+							ON ir.attrelid = i.inhparent
+					)
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_type AS rt
+						ON rt.typrelid = ca.attrelid
+					JOIN pg_catalog.pg_attribute AS ra
+						ON ra.atttypid = rt.oid
+						AND ra.attnum > 0
+						AND NOT ra.attisdropped
+					JOIN pg_catalog.pg_class AS rc
+						ON rc.oid = ra.attrelid
+						AND rc.relkind IN ('r', 'p', 'm')
+				)
+				AND NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.pg_inherits AS i
+					JOIN pg_catalog.pg_attribute AS pa
+						ON pa.attrelid = i.inhparent
+						AND pa.attname = a.attname
+						AND pa.atttypid = a.atttypid
+						AND pa.attnum > 0
+						AND NOT pa.attisdropped
+					WHERE i.inhrelid = a.attrelid
+				)
+			LOOP
+				IF domain_column.default_expr IS NOT NULL THEN
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I DROP DEFAULT',
+						domain_column.attrelid::regclass,
+						domain_column.attname
+					);
+					EXECUTE sql;
+				END IF;
+
+				IF domain_column.is_domain_array THEN
+					CREATE TEMP TABLE IF NOT EXISTS pg_temp._postgis_topology_domain_array_columns (
+						attrelid OID,
+						attname NAME,
+						target_domain_type TEXT,
+						default_expr TEXT
+					) ON COMMIT DROP;
+
+					INSERT INTO pg_temp._postgis_topology_domain_array_columns
+						VALUES (
+							domain_column.attrelid,
+							domain_column.attname,
+							domain_column.target_domain_type,
+							domain_column.default_expr
+						);
+				END IF;
+
+				IF domain_column.is_domain_array THEN
+					-- text[] keeps NULL domain-array elements representable while
+					-- the column is detached from the topology domain.
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I TYPE pg_catalog.text[] USING (%I::pg_catalog.text[])',
+						domain_column.attrelid::regclass,
+						domain_column.attname,
+						domain_column.attname
+					);
+				ELSE
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I TYPE %s USING (%I::text::%s)',
+						domain_column.attrelid::regclass,
+						domain_column.attname,
+						domain_column.target_domain_type,
+						domain_column.attname,
+						domain_column.storage_cast_type
+					);
+				END IF;
+				EXECUTE sql;
+
+				IF domain_column.default_expr IS NOT NULL AND NOT domain_column.is_domain_array THEN
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I SET DEFAULT ((%s)::text::%s::%s)',
+						domain_column.attrelid::regclass,
+						domain_column.attname,
+						domain_column.default_expr,
+						domain_column.storage_cast_type,
+						domain_column.target_domain_type
+					);
+					EXECUTE sql;
+				END IF;
+			END LOOP;
+
+			-- PostgreSQL 17 can recompute stored generated columns without
+			-- dropping them. Older supported releases do not expose a safe
+			-- equivalent that preserves dependent objects and column metadata.
+			FOR domain_generated_column IN
+				SELECT
+					a.attrelid,
+					a.attname,
+					pg_catalog.pg_get_expr(d.adbin, d.adrelid) AS generation_expr
+				FROM pg_catalog.pg_attribute AS a
+				JOIN pg_catalog.pg_class AS c
+					ON c.oid = a.attrelid
+				JOIN pg_catalog.pg_attrdef AS d
+					ON d.adrelid = a.attrelid
+					AND d.adnum = a.attnum
+				WHERE a.atttypid = ANY(domain_att_type_oids)
+				AND a.attnum > 0
+				AND NOT a.attisdropped
+				AND a.attgenerated = 's'
+				AND c.relkind IN ('r', 'p')
+				AND NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.pg_depend AS dep
+					JOIN pg_catalog.pg_rewrite AS rw
+						ON rw.oid = dep.objid
+					JOIN pg_catalog.pg_class AS mc
+						ON mc.oid = rw.ev_class
+					WHERE dep.refobjid = a.attrelid
+					AND dep.refobjsubid IN (0, a.attnum)
+				)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						WHERE dep.classid = 'pg_catalog.pg_trigger'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						WHERE dep.classid = 'pg_catalog.pg_proc'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						WHERE dep.classid = 'pg_catalog.pg_publication_rel'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+					)
+					AND NOT EXISTS (
+						SELECT 1
+						FROM (
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_attrdef AS gd
+							ON gd.oid = dep.objid
+						JOIN pg_catalog.pg_attribute AS ga
+							ON ga.attrelid = gd.adrelid
+							AND ga.attnum = gd.adnum
+						WHERE dep.classid = 'pg_catalog.pg_attrdef'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+						AND ga.attgenerated <> ''
+						UNION ALL
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_attribute AS ga
+							ON ga.attrelid = dep.objid
+							AND ga.attnum = dep.objsubid
+						WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+						AND dep.refobjid = a.attrelid
+						AND dep.refobjsubid IN (0, a.attnum)
+						AND ga.attgenerated <> ''
+					) AS generated_dependency
+				)
+				AND NOT EXISTS (
+					SELECT 1
+					FROM (
+						SELECT 1
+						FROM pg_catalog.pg_attrdef AS gd
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.classid = 'pg_catalog.pg_attrdef'::regclass
+							AND dep.objid = gd.oid
+						JOIN pg_catalog.pg_attribute AS sa
+							ON sa.attrelid = dep.refobjid
+							AND sa.attnum = dep.refobjsubid
+						WHERE gd.adrelid = a.attrelid
+						AND gd.adnum = a.attnum
+						AND sa.atttypid = ANY(nested_topology_type_oids)
+						AND sa.attnum > 0
+						AND NOT sa.attisdropped
+						AND sa.attnum <> a.attnum
+						UNION ALL
+						SELECT 1
+						FROM pg_catalog.pg_depend AS dep
+						JOIN pg_catalog.pg_attribute AS sa
+							ON sa.attrelid = dep.refobjid
+							AND sa.attnum = dep.refobjsubid
+						WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+						AND dep.objid = a.attrelid
+						AND dep.objsubid = a.attnum
+						AND sa.atttypid = ANY(nested_topology_type_oids)
+						AND sa.attnum > 0
+						AND NOT sa.attisdropped
+						AND sa.attnum <> a.attnum
+					) AS generated_source_dependency
+				)
+				AND NOT EXISTS (
+					WITH RECURSIVE inherited_relid(attrelid) AS (
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						WHERE i.inhparent = a.attrelid
+						UNION ALL
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						JOIN inherited_relid AS ir
+							ON ir.attrelid = i.inhparent
+					)
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_depend AS dep
+						ON dep.refobjid = ca.attrelid
+						AND dep.refobjsubid IN (0, ca.attnum)
+					WHERE dep.classid = 'pg_catalog.pg_policy'::regclass
+				)
+					AND NOT EXISTS (
+						WITH RECURSIVE inherited_relid(attrelid) AS (
+							SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							WHERE i.inhparent = a.attrelid
+							UNION ALL
+							SELECT i.inhrelid
+							FROM pg_catalog.pg_inherits AS i
+							JOIN inherited_relid AS ir
+								ON ir.attrelid = i.inhparent
+						)
+						SELECT 1
+						FROM inherited_relid AS i
+						JOIN pg_catalog.pg_attribute AS ca
+							ON ca.attrelid = i.attrelid
+							AND ca.attname = a.attname
+							AND ca.atttypid = a.atttypid
+							AND ca.attnum > 0
+							AND NOT ca.attisdropped
+						JOIN pg_catalog.pg_depend AS dep
+							ON dep.refobjid = ca.attrelid
+							AND (
+								(
+									dep.classid IN (
+										'pg_catalog.pg_publication_rel'::regclass
+									)
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_trigger'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+								OR (
+									dep.classid = 'pg_catalog.pg_proc'::regclass
+									AND dep.refobjsubid IN (0, ca.attnum)
+								)
+							)
+					)
+					AND NOT EXISTS (
+						WITH RECURSIVE inherited_relid(attrelid) AS (
+							SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						WHERE i.inhparent = a.attrelid
+						UNION ALL
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						JOIN inherited_relid AS ir
+							ON ir.attrelid = i.inhparent
+					)
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_depend AS dep
+						ON dep.refobjid = ca.attrelid
+						AND dep.refobjsubid IN (0, ca.attnum)
+					JOIN pg_catalog.pg_rewrite AS rw
+						ON rw.oid = dep.objid
+				)
+				AND NOT EXISTS (
+					WITH RECURSIVE inherited_relid(attrelid) AS (
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						WHERE i.inhparent = a.attrelid
+						UNION ALL
+						SELECT i.inhrelid
+						FROM pg_catalog.pg_inherits AS i
+						JOIN inherited_relid AS ir
+							ON ir.attrelid = i.inhparent
+					)
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_depend AS dep
+						ON dep.refobjid = ca.attrelid
+						AND dep.refobjsubid IN (0, ca.attnum)
+					JOIN pg_catalog.pg_attrdef AS gd
+						ON gd.oid = dep.objid
+					JOIN pg_catalog.pg_attribute AS ga
+						ON ga.attrelid = gd.adrelid
+						AND ga.attnum = gd.adnum
+					WHERE dep.classid = 'pg_catalog.pg_attrdef'::regclass
+					AND ga.attgenerated <> ''
+					UNION ALL
+					SELECT 1
+					FROM inherited_relid AS i
+					JOIN pg_catalog.pg_attribute AS ca
+						ON ca.attrelid = i.attrelid
+						AND ca.attname = a.attname
+						AND ca.atttypid = a.atttypid
+						AND ca.attnum > 0
+						AND NOT ca.attisdropped
+					JOIN pg_catalog.pg_depend AS dep
+						ON dep.refobjid = ca.attrelid
+						AND dep.refobjsubid IN (0, ca.attnum)
+					JOIN pg_catalog.pg_attribute AS ga
+						ON ga.attrelid = dep.objid
+						AND ga.attnum = dep.objsubid
+					WHERE dep.classid = 'pg_catalog.pg_class'::regclass
+					AND ga.attgenerated <> ''
+				)
+				AND NOT EXISTS (
+					SELECT 1
+					FROM pg_catalog.pg_inherits AS i
+					JOIN pg_catalog.pg_attribute AS pa
+						ON pa.attrelid = i.inhparent
+						AND pa.attname = a.attname
+						AND pa.atttypid = a.atttypid
+						AND pa.attnum > 0
+						AND NOT pa.attisdropped
+					WHERE i.inhrelid = a.attrelid
+				)
+			LOOP
+				IF pg_catalog.current_setting('server_version_num')::int >= 170000 THEN
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I SET EXPRESSION AS (%s)',
+						domain_generated_column.attrelid::regclass,
+						domain_generated_column.attname,
+						domain_generated_column.generation_expr
+					);
+					EXECUTE sql;
+				ELSE
+					skipped_repair := true;
+					skipped_domain_type_oids := pg_catalog.array_append(skipped_domain_type_oids, domain_oid);
+					RAISE WARNING 'Could not rewrite stored generated column %.% for topology.% on PostgreSQL %, generated expression reset requires PostgreSQL 17 or later',
+						domain_generated_column.attrelid::regclass,
+						domain_generated_column.attname,
+						domain_name,
+						pg_catalog.current_setting('server_version');
+				END IF;
+				END LOOP;
+
+				-- Restore array-of-domain columns before re-adding domain
+				-- constraints. Recasting text[] after NOT VALID constraints are
+				-- back would validate each element as a new domain value, which
+				-- defeats the incomplete-repair path for grandfathered rows.
+				CREATE TEMP TABLE IF NOT EXISTS pg_temp._postgis_topology_domain_array_columns (
+					attrelid OID,
+					attname NAME,
+					target_domain_type TEXT,
+					default_expr TEXT
+				) ON COMMIT DROP;
+
+				FOR domain_column IN
+					SELECT *
+					FROM pg_temp._postgis_topology_domain_array_columns
+					WHERE target_domain_type = pg_catalog.format('%I.%I[]', domain_schema, domain_name)
+				LOOP
+					restored_domain_array_columns := true;
+					sql := pg_catalog.format(
+						'ALTER TABLE %s ALTER COLUMN %I TYPE %s USING (%I::%s)',
+						domain_column.attrelid::regclass,
+						domain_column.attname,
+						domain_column.target_domain_type,
+						domain_column.attname,
+						domain_column.target_domain_type
+					);
+					EXECUTE sql;
+
+					IF domain_column.default_expr IS NOT NULL THEN
+						sql := pg_catalog.format(
+							'ALTER TABLE %s ALTER COLUMN %I SET DEFAULT ((%s)::pg_catalog.text[]::%s)',
+							domain_column.attrelid::regclass,
+							domain_column.attname,
+							domain_column.default_expr,
+							domain_column.target_domain_type
+						);
+						EXECUTE sql;
+					END IF;
+				END LOOP;
+
+				DELETE FROM pg_temp._postgis_topology_domain_array_columns
+				WHERE target_domain_type = pg_catalog.format('%I.%I[]', domain_schema, domain_name);
+
+				-- Skipped carrier types may wrap topology domains through arrays,
+				-- user domains, composites, or table row types. Expose every
+				-- contained type OID before choosing validated restoration for the
+				-- saved domain constraints.
+				WITH RECURSIVE skipped_constraint_type(type_oid) AS (
+					SELECT skipped_type_oid
+					FROM pg_catalog.unnest(skipped_domain_type_oids) AS skipped_type(skipped_type_oid)
+					UNION
+					SELECT contained_type.type_oid
+					FROM skipped_constraint_type AS skipped_type
+					JOIN pg_catalog.pg_type AS t
+						ON t.oid = skipped_type.type_oid
+					JOIN LATERAL (
+						SELECT t.typelem AS type_oid
+						WHERE t.typelem <> 0::oid
+						UNION
+						SELECT t.typbasetype AS type_oid
+						WHERE t.typbasetype <> 0::oid
+						UNION
+						SELECT a.atttypid AS type_oid
+						FROM pg_catalog.pg_attribute AS a
+						WHERE a.attrelid = t.typrelid
+						AND a.attnum > 0
+						AND NOT a.attisdropped
+					) AS contained_type ON true
+				)
+				SELECT pg_catalog.array_agg(DISTINCT type_oid)
+				FROM skipped_constraint_type
+				INTO skipped_domain_constraint_oids;
+				skipped_domain_constraint_oids := COALESCE(
+					skipped_domain_constraint_oids,
+					ARRAY[]::OID[]
+				);
+
+				FOR domain_constraint IN
+					SELECT
+						(value->>'domain_oid')::oid AS domain_oid,
+						value->>'domain_schema' AS domain_schema,
+						value->>'domain_name' AS domain_name,
+						value->>'name' AS conname,
+						CASE
+							WHEN COALESCE((value->>'convalidated')::boolean, false)
+								OR (
+									COALESCE((value->>'not_valid_by_repair')::boolean, false)
+									AND (value->>'domain_oid')::oid <> ALL(skipped_domain_constraint_oids)
+								)
+							THEN pg_catalog.regexp_replace(
+								value->>'definition',
+								'[[:space:]]+NOT[[:space:]]+VALID[[:space:]]*$',
+								'',
+								'i'
+							)
+							ELSE pg_catalog.regexp_replace(
+								value->>'definition',
+								'[[:space:]]*$',
+								'',
+								'i'
+							)
+						END AS constraint_def,
+						COALESCE((value->>'not_valid_by_repair')::boolean, false) AS not_valid_by_repair
+					FROM pg_catalog.jsonb_array_elements(domain_constraint_defs) AS value
+				LOOP
+					-- If some old-width rows were intentionally skipped, restoring
+					-- constraints as validated would scan those rows and can abort
+					-- the whole repair. PostgreSQL also rejects validated domain
+					-- constraints while array/container columns still depend on the
+					-- domain, even after those columns have been rewritten. Mark only
+					-- constraints demoted by skipped storage as retry candidates; the
+					-- array-dependency case is structural, not evidence of old-width
+					-- storage left behind.
+					sql := pg_catalog.format(
+						'ALTER DOMAIN %I.%I ADD CONSTRAINT %I %s%s',
+						domain_constraint.domain_schema,
+						domain_constraint.domain_name,
+						domain_constraint.conname,
+						domain_constraint.constraint_def,
+						CASE
+							-- Array-of-domain columns force NOT VALID only for
+							-- the domain they directly depend on. Nested user
+							-- domains are restored from the same saved set, but
+							-- keeping their validated constraints validated avoids
+							-- silently weakening unrelated user checks.
+							WHEN (
+								(
+									skipped_repair
+									AND domain_constraint.domain_oid = ANY(skipped_domain_constraint_oids)
+								)
+								OR (
+									restored_domain_array_columns
+									AND domain_constraint.domain_schema = domain_schema
+									AND domain_constraint.domain_name = domain_name
+								)
+							)
+								AND domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
+							THEN ' NOT VALID'
+							ELSE ''
+						END
+					);
+					EXECUTE sql;
+					IF skipped_repair
+						AND domain_constraint.domain_oid = ANY(skipped_domain_constraint_oids)
+						AND (
+							domain_constraint.not_valid_by_repair
+							OR domain_constraint.constraint_def !~* '[[:space:]]NOT[[:space:]]+VALID[[:space:]]*$'
+						)
+					THEN
+						sql := pg_catalog.format(
+							'COMMENT ON CONSTRAINT %I ON DOMAIN %I.%I IS %L',
+							domain_constraint.conname,
+							domain_constraint.domain_schema,
+							domain_constraint.domain_name,
+							constraint_not_valid_marker
+						);
+						EXECUTE sql;
+					END IF;
+				END LOOP;
+
+			IF skipped_repair THEN
+				RAISE WARNING 'Topology.% domain storage repair was incomplete; repair marker was not written',
+					domain_name;
+			ELSE
+				sql := pg_catalog.format(
+					'COMMENT ON DOMAIN %I.%I IS %L',
+					domain_schema,
+					domain_name,
+					pg_catalog.concat_ws(
+						E'\n',
+						NULLIF(pg_catalog.obj_description(domain_oid, 'pg_type'), ''),
+						repair_marker
+					)
+				);
+				EXECUTE sql;
+			END IF;
 
 			RAISE INFO 'Upgraded % from % to %', domain_name, old_domain_type, new_domain_type;
 		EXCEPTION
 		WHEN others THEN
-			GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+			GET STACKED DIAGNOSTICS
+				context := PG_EXCEPTION_CONTEXT,
+				detail := PG_EXCEPTION_DETAIL;
 			RAISE WARNING 'Could not modify % from % to %, got % (%)',
-				domain_name, old_domain_type, new_domain_type, SQLERRM, SQLSTATE USING DETAIL = detail;
+				domain_name, old_domain_type, new_domain_type, SQLERRM, SQLSTATE USING DETAIL = detail, HINT = context;
 			RETURN;
 		END;
 	ELSE

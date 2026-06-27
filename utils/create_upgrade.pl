@@ -344,13 +344,21 @@ END IF;
 END
 \$postgis_domain_upgrade\$;\n
 EOF
-                    foreach my $c (@constraints) {
-                        my ($ctype, $cname, $cdef, $last_updated, $missing, $comment) = @$c;
-
+                    if ($schema eq 'topology' && ($name eq 'topoelement' || $name eq 'topoelementarray')) {
                         print <<"EOF";
+-- Constraints for ${schema}.${name} are restored by _postgis_topology_upgrade_domain_type
+-- so incomplete storage repairs can preserve NOT VALID state.
+
+EOF
+                    } else {
+                        foreach my $c (@constraints) {
+                            my ($ctype, $cname, $cdef, $last_updated, $missing, $comment) = @$c;
+
+                            print <<"EOF";
 ALTER DOMAIN ${schema}.${name} DROP CONSTRAINT IF EXISTS $cname;
 ALTER DOMAIN ${schema}.${name} ADD $cdef;\n
 EOF
+                        }
                     }
 
                 }
@@ -1067,4 +1075,3 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
-
