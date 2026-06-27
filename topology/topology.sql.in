@@ -641,6 +641,84 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --} DropTopoGeometryColumn
 
+--{
+--  DropTopoGeometryTable(schema, table)
+--
+--  Drop a table with TopoGeometry columns, unregistering its associated
+--  layers and cleaning topology relation records.
+--
+-- Availability: 3.7.0
+--
+CREATE OR REPLACE FUNCTION topology.DropTopoGeometryTable(schema varchar, tbl varchar)
+  RETURNS text
+AS
+$BODY$
+DECLARE
+  rec RECORD;
+  dependent_layer RECORD;
+  real_schema name;
+  sql TEXT;
+BEGIN
+  IF schema = '' THEN
+    real_schema := current_schema();
+  ELSE
+    real_schema := schema;
+  END IF;
+
+  SELECT parent_layer.topology_id, parent_layer.layer_id, parent_layer.schema_name,
+    parent_layer.table_name, parent_layer.feature_column, child_layer.layer_id AS child_layer_id
+  INTO dependent_layer
+  FROM topology.layer child_layer
+  JOIN topology.layer parent_layer
+    ON parent_layer.topology_id = child_layer.topology_id
+    AND parent_layer.child_id = child_layer.layer_id
+  WHERE child_layer.schema_name = real_schema
+    AND child_layer.table_name = tbl
+    AND NOT (
+      parent_layer.schema_name = real_schema
+      AND parent_layer.table_name = tbl
+    )
+  ORDER BY parent_layer.topology_id, parent_layer.layer_id
+  LIMIT 1;
+
+  IF FOUND THEN
+    RAISE EXCEPTION
+      'Cannot drop %.% because layer % is referenced by hierarchical layer % (%.%.%)',
+      real_schema, tbl, dependent_layer.child_layer_id, dependent_layer.layer_id,
+      dependent_layer.schema_name, dependent_layer.table_name,
+      dependent_layer.feature_column;
+  END IF;
+
+  FOR rec IN
+    SELECT feature_column
+    FROM topology.layer
+    WHERE schema_name = real_schema
+    AND table_name = tbl
+    ORDER BY layer_id DESC
+  LOOP
+    PERFORM topology.DropTopoGeometryColumn(real_schema::varchar, tbl, rec.feature_column::varchar);
+  END LOOP;
+
+  sql := format('DROP TABLE IF EXISTS %I.%I RESTRICT', real_schema, tbl);
+  EXECUTE sql;
+
+  RETURN format('%I.%I dropped.', real_schema, tbl);
+END;
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+
+--
+-- DropTopoGeometryTable(table)
+--
+CREATE OR REPLACE FUNCTION topology.DropTopoGeometryTable(tbl varchar)
+  RETURNS text
+AS
+$$
+  SELECT topology.DropTopoGeometryTable('', $1);
+$$ LANGUAGE 'sql' VOLATILE STRICT;
+--
+--} DropTopoGeometryTable
+
 --
 -- CreateTopoGeom(topology_name, topogeom_type, layer_id, elements, tg_id)
 --
