@@ -4762,6 +4762,54 @@ UNION ALL SELECT ']}'::text as t;
         </refsection>
       </refentry>
 
+      <refentry xml:id="TG_InteriorsIntersect">
+        <refnamediv>
+          <refname>InteriorsIntersect</refname>
+
+          <refpurpose>Returns true if two topogeometries have at least one point in common in their interiors.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+          <funcsynopsis>
+            <funcprototype>
+              <funcdef>boolean <function>InteriorsIntersect</function></funcdef>
+              <paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef>
+              <paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>
+            </funcprototype>
+          </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+          <title>Description</title>
+
+          <para>
+Returns true if two topogeometries have at least one point in common in
+their interiors. The relationship is evaluated using the
+<code>T********</code> DE-9IM intersection matrix pattern.
+          </para>
+
+          <note>
+            <para>This function can not compare topogeometries from different topologies.</para>
+          </note>
+
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0 </para>
+
+        <para>&Z_support;</para>
+        </refsection>
+
+        <refsection>
+          <title>Examples</title>
+
+          <programlisting><!--TODO: Need example --></programlisting>
+        </refsection>
+
+        <refsection>
+          <title>See Also</title>
+
+          <para><xref linkend="ST_Relate"/>, <xref linkend="TG_Intersects"/></para>
+        </refsection>
+      </refentry>
+
       <refentry xml:id="TG_Intersects">
         <refnamediv>
           <refname>Intersects</refname>

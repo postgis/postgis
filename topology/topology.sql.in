@@ -89,6 +89,7 @@
 -- Overloaded functions for TopoGeometry inputs
 --
 -- FUNCTION intersects(TopoGeometry, TopoGeometry)
+-- FUNCTION InteriorsIntersect(TopoGeometry, TopoGeometry)
 -- FUNCTION equals(TopoGeometry, TopoGeometry)
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
