@@ -3,3 +3,8 @@
 The result: public.test_pt dropped.
 #6038.after|0
 Unexistant: public.unexistent dropped.
+foreign before|2|0|GEOMETRY
+foreign typmod|1
+foreign after typmod|2|4326|POINT
+foreign constraints|1
+foreign after constraints|2|4326|POINT
