@@ -2338,10 +2338,18 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *in, *blade_in, *out;
 	LWGEOM *lwgeom_in, *lwblade_in, *lwgeom_out;
+	double tolerance = 0.0;
 
 	in = PG_GETARG_GSERIALIZED_P(0);
 	blade_in = PG_GETARG_GSERIALIZED_P(1);
 	gserialized_error_if_srid_mismatch(in, blade_in, __func__);
+
+	if (PG_NARGS() > 2)
+	{
+		tolerance = PG_GETARG_FLOAT8(2);
+		if (!isfinite(tolerance) || tolerance < 0.0)
+			lwpgerror("Tolerance must be finite and non-negative");
+	}
 
 	lwgeom_in = lwgeom_from_gserialized(in);
 	lwblade_in = lwgeom_from_gserialized(blade_in);
@@ -2358,8 +2366,7 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-
-	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
+	lwgeom_out = lwgeom_split_with_tolerance(lwgeom_in, lwblade_in, tolerance);
 	lwgeom_free(lwgeom_in);
 	lwgeom_free(lwblade_in);
 
