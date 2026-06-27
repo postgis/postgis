@@ -4256,6 +4256,57 @@ UPDATE mylayer SET tg_overall = TopoGeom_addTopogeom(
 			</refsection>
 		</refentry>
 
+    <refentry xml:id="Topology_ST_Union">
+			<refnamediv>
+				<refname>ST_Union</refname>
+				<refpurpose>Returns a TopoGeometry containing the union of a set of TopoGeometry objects.</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>ST_Union</function></funcdef>
+					<paramdef><type>topogeometry set</type> <parameter>tgfield</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Aggregate function that returns a new <xref linkend="topogeometry"/>
+containing all non-NULL input TopoGeometry elements. NULL values are
+ignored. If all inputs are NULL, the aggregate returns NULL.
+                </para>
+
+                <para>
+The first non-NULL input determines the output topology, layer, and
+TopoGeometry type. Later inputs are folded into the result with
+<xref linkend="TopoGeom_addTopoGeom"/>, so they must satisfy the same
+topology and compatibility rules.
+                </para>
+
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+        <programlisting>
+-- Build one TopoGeometry per region from parcel TopoGeometries
+SELECT region_id, topology.ST_Union(topo)
+FROM parcels
+GROUP BY region_id;
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+        <para>
+<xref linkend="TopoGeom_addTopoGeom"/>,
+<xref linkend="CreateTopoGeom"/>
+        </para>
+			</refsection>
+		</refentry>
+
     <refentry xml:id="toTopoGeom_editor_proxy">
 			<refnamediv>
         <refname>toTopoGeom</refname>

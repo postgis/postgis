@@ -1,0 +1,19 @@
+simple_puntual_layer|1
+simple_collection_layer|2
+hierarchical_puntual_layer|3
+hierarchical_puntual_collection_layer|4
+simple_lineal_layer|5
+simple_puntual_child_layer|6
+hierarchical_puntual_child_layer|7
+union.null-only|t
+union.points|MULTIPOINT((0 0),(1 1))
+source.point|1|MULTIPOINT((0 0))
+source.point|3|MULTIPOINT((1 1))
+union.collection|GEOMETRYCOLLECTION(LINESTRING(2 2,3 3),POINT(2 2))
+union.hierarchical.points|MULTIPOINT((0 0),(1 1))
+union.hierarchical.point-collection|1
+union.hierarchical.point-collection-update|1
+union.hierarchical.collection-point|4
+union.hierarchical.child-layer-points|1|MULTIPOINT((20 20),(21 21))
+union.reversed-line-edge.geometry|MULTILINESTRING((10 0,11 0))
+union.reversed-line-edge.components|{2}

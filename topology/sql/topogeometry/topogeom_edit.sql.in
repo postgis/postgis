@@ -144,13 +144,13 @@ BEGIN
   INTO tgtLayer;
 
   -- Check simple/hierarchical compatibility
-  IF srcLayer.child_id IS NULL THEN
+  IF tgtLayer.child_id IS NULL THEN
     IF srcLayer.child_id IS NOT NULL THEN
       RAISE EXCEPTION 'Cannot add components of hierarchical TopoGeometry to a non-hierarchical TopoGeometry';
     END IF;
-  ELSIF tgtLayer.child_id IS NULL THEN
+  ELSIF srcLayer.child_id IS NULL THEN
       RAISE EXCEPTION 'Cannot add components of non-hierarchical TopoGeometry to a hierarchical TopoGeometry';
-  ELSIF tgtLayer.child_id != srcLayer.childId THEN
+  ELSIF tgtLayer.child_id != srcLayer.child_id THEN
       RAISE EXCEPTION 'Cannot add components of hierarchical TopoGeometry to a hierarchical TopoGeometry based on different layer';
   END IF;
 
@@ -164,15 +164,36 @@ WITH inserted AS (
     element_id,
     element_type
   )
-  SELECT %2$s, %3$s, element_id, element_type
-  FROM %1$I.relation
-  WHERE topogeo_id = %4$L
-  AND layer_id = %5$L
-  EXCEPT
-  SELECT %2$s, %3$s, element_id, element_type
-  FROM %1$I.relation
-  WHERE topogeo_id = %2$L
-  AND layer_id = %3$L
+  SELECT %2$s, %3$s, source.element_id, source.element_type
+  FROM (
+    SELECT DISTINCT ON (
+      element_type,
+      CASE WHEN element_type = 2 THEN abs(element_id) ELSE element_id END
+    )
+      element_id,
+      element_type
+    FROM %1$I.relation
+    WHERE topogeo_id = %4$L
+    AND layer_id = %5$L
+    ORDER BY
+      element_type,
+      CASE WHEN element_type = 2 THEN abs(element_id) ELSE element_id END,
+      element_id DESC
+  ) source
+  WHERE NOT EXISTS (
+    SELECT 1
+    FROM %1$I.relation target
+    WHERE target.topogeo_id = %2$L
+    AND target.layer_id = %3$L
+    AND target.element_type = source.element_type
+    AND (
+      target.element_id = source.element_id
+      OR (
+        source.element_type = 2
+        AND abs(target.element_id) = abs(source.element_id)
+      )
+    )
+  )
   RETURNING element_type
 )
 SELECT array_agg(DISTINCT element_type) FROM inserted
@@ -199,7 +220,15 @@ SELECT array_agg(DISTINCT element_type) FROM inserted
   RAISE DEBUG 'Detected source element types: %', srcElementTypes;
 
   -- Check if target TopoGeometry type needs be changed
-  IF type(tgt) != 4 -- collection TopoGeometry accept anything
+  IF tgtLayer.child_id IS NOT NULL THEN
+    IF tgtLayer.feature_type = 4
+    AND type(tgt) != 4 -- collection TopoGeometry accept anything
+    AND type(src) != type(tgt)
+    THEN
+      RAISE DEBUG 'Changing target element type to collection';
+      tgt.type = 4;
+    END IF;
+  ELSIF type(tgt) != 4 -- collection TopoGeometry accept anything
   THEN
     IF array_upper(srcElementTypes, 1) > 1
     OR srcElementTypes[1] != tgt.type

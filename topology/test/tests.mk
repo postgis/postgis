@@ -85,6 +85,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/topogeo_loadgeometry.sql \
 	$(top_srcdir)/topology/test/regress/topogeom_addtopogeom.sql \
 	$(top_srcdir)/topology/test/regress/topogeom_edit.sql \
+	$(top_srcdir)/topology/test/regress/topogeom_union.sql \
 	$(top_srcdir)/topology/test/regress/topogeometry_srid.sql \
 	$(top_srcdir)/topology/test/regress/topogeometry_type.sql \
 	$(top_srcdir)/topology/test/regress/topojson.sql \
@@ -101,4 +102,3 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/verifylargeids.sql \
 	$(top_srcdir)/topology/test/regress/fix_topogeometry_columns.sql \
 	$(top_srcdir)/topology/test/regress/findvertexsegmentpairsbelowdistance.sql
-

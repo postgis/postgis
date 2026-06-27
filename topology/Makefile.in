@@ -158,6 +158,7 @@ topology.sql: \
 	sql/topogeometry/totopogeom.sql.in \
 	sql/topogeometry/cleartopogeom.sql.in \
 	sql/topogeometry/topogeom_edit.sql.in \
+	sql/topogeometry/topogeom_union.sql.in \
 	sql/topogeometry/simplify.sql.in \
 	sql/predicates.sql.in \
 	../postgis/sqldefines.h \
