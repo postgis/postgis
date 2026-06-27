@@ -23,6 +23,12 @@ SELECT 'L2-vanilla', feature_name, topology.AsTopoJSON(feature, NULL)
  WHERE feature_name IN ('R4', 'R1R2' )
  ORDER BY feature_name;
 
+--- Lineal smallest type
+SELECT 'L-smallest', feature_name, topology.AsTopoJSON(feature, NULL, true)
+ FROM features.big_streets
+ WHERE feature_name IN ('R4', 'R1R2' )
+ ORDER BY feature_name;
+
 --- Areal non-hierarchical
 SELECT 'A1-vanilla', feature_name, topology.AsTopoJSON(feature, NULL)
  FROM features.land_parcels
@@ -33,6 +39,17 @@ SELECT 'A1-vanilla', feature_name, topology.AsTopoJSON(feature, NULL)
 SELECT 'A2-vanilla', feature_name, topology.AsTopoJSON(feature, NULL)
  FROM features.big_parcels
  WHERE feature_name IN ('P1P2', 'P3P4')
+ ORDER BY feature_name;
+
+--- Areal smallest type
+SELECT 'A-smallest', feature_name, topology.AsTopoJSON(feature, NULL, true)
+ FROM features.land_parcels
+ WHERE feature_name IN ('P4', 'P5')
+ ORDER BY feature_name;
+
+SELECT 'A-smallest', feature_name, topology.AsTopoJSON(feature, NULL, true)
+ FROM features.big_parcels
+ WHERE feature_name IN ('P3P4')
  ORDER BY feature_name;
 
 -- Now again with edge mapping {
@@ -51,6 +68,13 @@ SELECT 'L2-edgemap', feature_name, topology.AsTopoJSON(feature, 'edgemap')
  WHERE feature_name IN ('R4', 'R1R2' )
  ORDER BY feature_name;
 
+--- Lineal smallest type
+TRUNCATE edgemap; SELECT NULLIF(setval('edgemap_arc_id_seq', 1, false), 1);
+SELECT 'L-edgemap-smallest', feature_name, topology.AsTopoJSON(feature, 'edgemap', true)
+ FROM features.big_streets
+ WHERE feature_name IN ('R4', 'R1R2' )
+ ORDER BY feature_name;
+
 --- Areal non-hierarchical
 TRUNCATE edgemap; SELECT NULLIF(setval('edgemap_arc_id_seq', 1, false), 1);
 SELECT 'A1-edgemap', feature_name, topology.AsTopoJSON(feature, 'edgemap')
@@ -63,6 +87,18 @@ TRUNCATE edgemap; SELECT NULLIF(setval('edgemap_arc_id_seq', 1, false), 1);
 SELECT 'A2-edgemap', feature_name, topology.AsTopoJSON(feature, 'edgemap')
  FROM features.big_parcels
  WHERE feature_name IN ('P1P2', 'P3P4')
+ ORDER BY feature_name;
+
+--- Areal smallest type
+TRUNCATE edgemap; SELECT NULLIF(setval('edgemap_arc_id_seq', 1, false), 1);
+SELECT 'A-edgemap-smallest', feature_name, topology.AsTopoJSON(feature, 'edgemap', true)
+ FROM features.land_parcels
+ WHERE feature_name IN ('P4', 'P5')
+ ORDER BY feature_name;
+
+SELECT 'A-edgemap-smallest', feature_name, topology.AsTopoJSON(feature, 'edgemap', true)
+ FROM features.big_parcels
+ WHERE feature_name IN ('P3P4')
  ORDER BY feature_name;
 
 DROP TABLE edgemap;
@@ -93,6 +129,11 @@ SELECT 'A3-vanilla', feature_name, topology.AsTopoJSON(feature, null)
  ORDER BY feature_name;
 
 SELECT 'P1-vanilla', feature_name, topology.AsTopoJSON(feature, null)
+ FROM features.traffic_signs
+ WHERE feature_name IN ('S2')
+ ORDER BY feature_name;
+
+SELECT 'P-smallest', feature_name, topology.AsTopoJSON(feature, null, true)
  FROM features.traffic_signs
  WHERE feature_name IN ('S2')
  ORDER BY feature_name;

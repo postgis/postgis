@@ -56,6 +56,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - GT-270, Add NURBSCurve (Loïc Bartoletti)
  - #2863, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers
           (Darafei Praliaskouski)
+ - #5204, [topology] Allow AsTopoJSON to emit the smallest geometry type
+          (Darafei Praliaskouski)
 
 * Enhancements *
 

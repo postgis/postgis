@@ -4611,6 +4611,12 @@ SELECT topology.AsGML(topo,'') As rdgml
                         <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
                         <paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></paramdef>
 					</funcprototype>
+					<funcprototype>
+                        <funcdef>text <function>AsTopoJSON</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>useSmallestType</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -4622,6 +4628,10 @@ SELECT topology.AsGML(topo,'') As rdgml
 
 <para>
 The table, if given, is expected to have an "arc_id" field of type "serial" and an "edge_id" of type integer; the code will query the table for "edge_id" so it is recommended to add an index on that field.
+</para>
+
+<para>
+If <varname>useSmallestType</varname> is true, simple puntal, lineal, and areal TopoGeometries are output as Point, LineString, or Polygon when a Multi* representation is not required.
 </para>
 
 		<note>
@@ -4640,6 +4650,7 @@ the actual arcs plus some headers. See the <link xlink:href="http://github.com/m
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.1.0">Availability: 2.1.0 </para>
                 <para role="enhanced" conformance="2.2.1">Enhanced: 2.2.1 added support for puntal inputs</para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added the <varname>useSmallestType</varname> parameter</para>
 			</refsection>
 
 
