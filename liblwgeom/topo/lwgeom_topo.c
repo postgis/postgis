@@ -7071,6 +7071,159 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
   return _lwt_AddPoint(topo, point, tol, 1, NULL, NULL);
 }
 
+static int
+_lwt_LineVertexLeavesEdge(const LWLINE *line, uint32_t vertex, const POINT2D *edgeStart, const POINT2D *edgeEnd)
+{
+	const int isClosed = lwline_is_closed(line);
+	const uint32_t npoints = line->points->npoints;
+	const POINT2D *prev = NULL;
+	const POINT2D *next = NULL;
+
+	if (vertex > 0)
+		prev = getPoint2d_cp(line->points, vertex - 1);
+	else if (isClosed && npoints > 2)
+		prev = getPoint2d_cp(line->points, npoints - 2);
+
+	if (vertex + 1 < npoints)
+		next = getPoint2d_cp(line->points, vertex + 1);
+	else if (isClosed && npoints > 2)
+		next = getPoint2d_cp(line->points, 1);
+
+	if (prev && lw_segment_side(edgeStart, edgeEnd, prev) != 0)
+		return 1;
+	if (next && lw_segment_side(edgeStart, edgeEnd, next) != 0)
+		return 1;
+
+	return 0;
+}
+
+static int
+_lwt_EdgeShouldSplitAtLineVertex(const LWT_ISO_EDGE *edge,
+				 const LWLINE *line,
+				 uint32_t vertex,
+				 const POINT2D *point,
+				 double tol)
+{
+	double dist;
+	double segLen2;
+	double location;
+	int closestSeg = ptarray_closest_segment_2d(edge->geom->points, point, &dist);
+	const POINT2D *segStart = getPoint2d_cp(edge->geom->points, closestSeg);
+	const POINT2D *segEnd = getPoint2d_cp(edge->geom->points, closestSeg + 1);
+
+	if (dist != 0 && dist >= tol)
+		return 0;
+
+	segLen2 = (segEnd->x - segStart->x) * (segEnd->x - segStart->x) +
+		  (segEnd->y - segStart->y) * (segEnd->y - segStart->y);
+	if (segLen2 == 0)
+		return 0;
+
+	location = ((point->x - segStart->x) * (segEnd->x - segStart->x) +
+		    (point->y - segStart->y) * (segEnd->y - segStart->y)) /
+		   segLen2;
+	/* Actual edge endpoints already have topology nodes; intermediate shape vertices do not. */
+	if (location <= 0 && closestSeg == 0)
+		return 0;
+	if (location >= 1 && (uint32_t)(closestSeg + 1) == edge->geom->points->npoints - 1)
+		return 0;
+
+	return _lwt_LineVertexLeavesEdge(line, vertex, segStart, segEnd);
+}
+
+static int
+_lwt_SplitEdgesByLineVertices(LWT_TOPOLOGY *topo, const LWLINE *line, double tol)
+{
+	int numSplitEdges = 0;
+	const int isClosed = lwline_is_closed(line);
+	uint32_t i;
+
+	for (i = 0; i < line->points->npoints; ++i)
+	{
+		LWPOINT *point;
+		LWGEOM *pointGeom;
+		const POINT2D *p2d;
+		double ptol;
+		double node_tol;
+		uint64_t numNodes = 0;
+		uint64_t numEdges = 0;
+		uint64_t n;
+		int pointIsExistingNode = 0;
+		LWT_ISO_NODE *nodes;
+		LWT_ISO_EDGE *edges;
+
+		if (isClosed && i == line->points->npoints - 1)
+			continue;
+		if (i != 0)
+			continue;
+
+		point = lwline_get_lwpoint(line, i);
+		pointGeom = lwpoint_as_lwgeom(point);
+		p2d = getPoint2d_cp(point->point, 0);
+		ptol = _lwt_minTolerance(pointGeom);
+		/* Match the later snap tolerance when deciding whether a pre-split
+		 * would duplicate an existing endpoint node. */
+		node_tol = FP_MAX(ptol, tol);
+
+		nodes = lwt_be_getNodeWithinDistance2D(
+		    topo, point, node_tol, &numNodes, LWT_COL_NODE_NODE_ID | LWT_COL_NODE_GEOM, 0);
+		if (numNodes == UINT64_MAX)
+		{
+			lwpoint_free(point);
+			PGTOPO_BE_ERROR();
+			return -1;
+		}
+		for (n = 0; n < numNodes; ++n)
+		{
+			LWGEOM *nodeGeom = lwpoint_as_lwgeom(nodes[n].geom);
+			double dist = lwgeom_mindistance2d(nodeGeom, pointGeom);
+			if (dist == 0 || dist < node_tol)
+			{
+				pointIsExistingNode = 1;
+				break;
+			}
+		}
+		if (numNodes)
+			_lwt_release_nodes(nodes, numNodes);
+		if (pointIsExistingNode)
+		{
+			lwpoint_free(point);
+			continue;
+		}
+
+		edges = lwt_be_getEdgeWithinDistance2D(topo, point, ptol, &numEdges, LWT_COL_EDGE_ALL, 0);
+		if (numEdges == UINT64_MAX)
+		{
+			lwpoint_free(point);
+			PGTOPO_BE_ERROR();
+			return -1;
+		}
+		for (n = 0; n < numEdges; ++n)
+		{
+			LWT_ELEMID id;
+			int moved = 0;
+
+			if (!_lwt_EdgeShouldSplitAtLineVertex(&(edges[n]), line, i, p2d, ptol))
+				continue;
+
+			id = _lwt_SplitAllEdgesToNewNode(topo, &(edges[n]), 1, point, ptol, &moved);
+			if (id == -1)
+			{
+				if (numEdges)
+					_lwt_release_edges(edges, numEdges);
+				lwpoint_free(point);
+				return -1;
+			}
+			++numSplitEdges;
+		}
+		if (numEdges)
+			_lwt_release_edges(edges, numEdges);
+		lwpoint_free(point);
+	}
+
+	return numSplitEdges;
+}
+
 /*
  * Add a pre-noded pre-split line edge. Used by lwt_AddLine
  * Return edge id, 0 if none added (empty edge), -1 on error
@@ -7343,6 +7496,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   GBOX qbox;
   int forward;
   int input_was_closed = 0;
+  double min_geometric_tol;
   POINT4D originalStartPoint;
 
   if ( lwline_is_empty(line) )
@@ -7362,8 +7516,24 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 
   /* Get tolerance, if 0 was given */
   if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)line );
+  min_geometric_tol = _lwt_minTolerance((LWGEOM *)line);
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
   LWDEBUGF(1, "Input line has srid=%d", line->srid);
+
+  if (tol <= min_geometric_tol)
+  {
+	  num_new_edges = _lwt_SplitEdgesByLineVertices(topo, line, tol);
+	  if (num_new_edges < 0)
+	  {
+		  return NULL;
+	  }
+	  if (maxNewEdges >= 0 && num_new_edges > maxNewEdges)
+	  {
+		  lwerror("Adding line to topology requires creating more edges than the requested limit of %d",
+			  maxNewEdges);
+		  return NULL;
+	  }
+  }
 
   /* Remove consecutive vertices below given tolerance upfront */
   if ( tol )
