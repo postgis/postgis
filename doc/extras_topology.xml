@@ -4376,6 +4376,56 @@ Refer to <xref linkend="toTopoGeom"/>.
 			</refsection>
 		</refentry>
 
+		<refentry xml:id="GetRelatedTopoGeom">
+			<refnamediv>
+				<refname>GetRelatedTopoGeom</refname>
+
+				<refpurpose>Returns TopoGeometry objects in a target layer that share at least one topology node with a given TopoGeometry.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof topogeometry <function>GetRelatedTopoGeom</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>layer_id</parameter></paramdef>
+					<paramdef><type>bigint</type> <parameter>tg_id</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>target_layer_id</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof topogeometry <function>GetRelatedTopoGeom</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>target_layer_id</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Returns TopoGeometry objects from <varname>target_layer_id</varname> in the same topology as the input TopoGeometry where the two objects share at least one topology node.  A TopoGeometry node footprint includes direct node elements, edge endpoints, and face boundary nodes.</para>
+				<para><varname>tg_id</varname> is the topogeometry id of the topogeometry object in the topology layer denoted by <varname>layer_id</varname>.</para>
+
+				<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.GetRelatedTopoGeom('city_data', 3, 1, 2);</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="GetTopoGeomElements"/>,
+					<xref linkend="GetTopoGeomElementArray"/>,
+					<xref linkend="topogeometry"/>
+				</para>
+			</refsection>
+		</refentry>
+
     <refentry xml:id="TG_ST_SRID">
 	  <refnamediv>
 		<refname>ST_SRID</refname>
