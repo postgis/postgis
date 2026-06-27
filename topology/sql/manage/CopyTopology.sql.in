@@ -11,12 +11,13 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 --{
--- CopyTopology(name_source, name_target)
+-- CopyTopology(name_source, name_target, copy_layers)
 --
--- Makes a copy of a topology (primitives + topogeometry collections) .
+-- Makes a copy of a topology.
+-- Optionally copies layer metadata and TopoGeometry definitions.
 -- Returns the new topology id.
 --
-CREATE OR REPLACE FUNCTION topology.CopyTopology(atopology varchar, newtopo varchar)
+CREATE OR REPLACE FUNCTION topology.CopyTopology(atopology varchar, newtopo varchar, copy_layers boolean DEFAULT true)
 RETURNS int
 AS
 $BODY$
@@ -82,46 +83,48 @@ BEGIN
   );
   EXECUTE sql;
 
-  -- Copy layers and their TopoGeometry sequences
-  -- and their TopoGeometry definitions, from primitives
-  -- to hierarchical
-  FOR rec IN
-    SELECT * FROM topology.layer
-    WHERE topology_id = oldtopo_id
-    ORDER BY COALESCE(child_id, 0), layer_id
-  LOOP
-    INSERT INTO topology.layer (topology_id, layer_id, feature_type,
-      level, child_id, schema_name, table_name, feature_column)
-      VALUES (newtopo_id, rec.layer_id, rec.feature_type,
-              rec.level, rec.child_id, newtopo,
-              'LAYER' ||  rec.layer_id, '');
+  IF copy_layers THEN
+    -- Copy layers and their TopoGeometry sequences
+    -- and their TopoGeometry definitions, from primitives
+    -- to hierarchical
+    FOR rec IN
+      SELECT * FROM topology.layer
+      WHERE topology_id = oldtopo_id
+      ORDER BY COALESCE(child_id, 0), layer_id
+    LOOP
+      INSERT INTO topology.layer (topology_id, layer_id, feature_type,
+        level, child_id, schema_name, table_name, feature_column)
+        VALUES (newtopo_id, rec.layer_id, rec.feature_type,
+                rec.level, rec.child_id, newtopo,
+                'LAYER' ||  rec.layer_id, '');
 
-    -- Create layer's TopoGeometry sequences
-    EXECUTE format(
-      $$
-        CREATE SEQUENCE %1$I.topogeo_s_%2$s;
-        SELECT setval(
-          '%1$I.topogeo_s_%2$s',
-          (SELECT last_value FROM %3$I.topogeo_s_%2$s)
-        );
-      $$,
-      newtopo,
-      rec.layer_id,
-      atopology
-    );
+      -- Create layer's TopoGeometry sequences
+      EXECUTE format(
+        $$
+          CREATE SEQUENCE %1$I.topogeo_s_%2$s;
+          SELECT setval(
+            '%1$I.topogeo_s_%2$s',
+            (SELECT last_value FROM %3$I.topogeo_s_%2$s)
+          );
+        $$,
+        newtopo,
+        rec.layer_id,
+        atopology
+      );
 
-    -- Copy TopoGeometry definitions
-    EXECUTE format(
-      $$
-        INSERT INTO %1$I.relation
-        SELECT * FROM %2$I.relation
-        WHERE layer_id = $1
-      $$,
-      newtopo,
-      atopology
-    ) USING rec.layer_id;
+      -- Copy TopoGeometry definitions
+      EXECUTE format(
+        $$
+          INSERT INTO %1$I.relation
+          SELECT * FROM %2$I.relation
+          WHERE layer_id = $1
+        $$,
+        newtopo,
+        atopology
+      ) USING rec.layer_id;
 
-  END LOOP;
+    END LOOP;
+  END IF;
 
   RETURN newtopo_id;
 END
