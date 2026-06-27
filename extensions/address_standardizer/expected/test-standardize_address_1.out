@@ -46,3 +46,27 @@ SELECT '#5299b' AS ticket, * FROM standardize_address('us_lex',  'us_gaz', 'us_r
  #5299b |          | 50        |        |      |         | GOLD PIECE | DRIVE   |        |            |       | BOSTON | MASSACHUSETTS |         | 02020    |     | 
 (1 row)
 
+-- CVE: rule with >128 terms must be rejected gracefully, not crash (stack OOB write)
+CREATE TEMP TABLE t_overlong_rule(id serial, rule text);
+INSERT INTO t_overlong_rule(rule) SELECT string_agg('1', ' ') FROM generate_series(1, 130);
+DO $$
+BEGIN
+	PERFORM standardize_address('us_lex', 'us_gaz', 't_overlong_rule', '1 Main St', 'Boston, MA');
+EXCEPTION WHEN OTHERS THEN
+	RAISE NOTICE 'overlong-rule: %', SQLERRM;
+END
+$$;
+NOTICE:  load_roles: rule exceeds 128 terms
+NOTICE:  overlong-rule: CreateStd: failed to load 't_overlong_rule' for rules
+-- OOB read: rule missing type/weight tokens must be rejected, not read past array end
+CREATE TEMP TABLE t_short_rule(id serial, rule text);
+INSERT INTO t_short_rule(rule) VALUES ('1 -1 5 -1');
+DO $$
+BEGIN
+	PERFORM standardize_address('us_lex', 'us_gaz', 't_short_rule', '1 Main St', 'Boston, MA');
+EXCEPTION WHEN OTHERS THEN
+	RAISE NOTICE 'short-rule: %', SQLERRM;
+END
+$$;
+NOTICE:  load_roles: failed to add rule 1 (6): 1 -1 5 -1
+NOTICE:  short-rule: CreateStd: failed to load 't_short_rule' for rules
