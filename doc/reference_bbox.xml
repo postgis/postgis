@@ -165,6 +165,12 @@ BOX3D(220227 150406 1,220268 150415 1)
             with INHERITS) if available. If <varname>parent_only</varname> is set to TRUE, only
             statistics for the given table are used and child tables are ignored.
         </para>
+        <para>
+            TopoGeometry columns are supported by reading the estimated extent
+            from the primitive tables for the layer's topology. Puntal layers
+            use node statistics, lineal and areal layers use edge statistics,
+            and mixed layers combine both.
+        </para>
 
         <para>For PostgreSQL &gt;= 8.0.0 statistics are gathered by VACUUM
         ANALYZE and the result extent will be about 95% of the actual one.
