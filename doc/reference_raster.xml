@@ -605,6 +605,9 @@ VALUES (1,
                 if the extent of your data has changed.
             </para>
         </note>
+        <note>
+            <para>To diagnose slow constraint inference, set <code>client_min_messages</code> to <code>debug</code> before calling this function to emit elapsed timing for each requested raster constraint.</para>
+        </note>
         <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
       </refsection>
 
