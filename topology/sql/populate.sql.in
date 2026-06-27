@@ -750,6 +750,92 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, ali
 --} TopoGeo_addLinestring
 
 --{
+--  TopoGeo_AddLineStringDetails(toponame, linegeom, tolerance)
+--
+--  Add a LineString into a topology and report inserted line edges and split
+--  side effects on pre-existing edges.
+--
+-- Availability: 3.7.0
+--
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLineStringDetails(atopology varchar, aline geometry, tolerance float8 DEFAULT -1, max_edges int DEFAULT -1)
+	RETURNS TABLE(event text, old_edge bigint, edge bigint, signed_edge bigint) AS
+$$
+DECLARE
+	sql text;
+	effective_tolerance float8;
+	candidate_tolerance float8;
+BEGIN
+	PERFORM 1 FROM topology.topology WHERE name = atopology;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION
+			'No topology with name "%" in topology.topology', atopology;
+	END IF;
+
+	IF tolerance = -1 THEN
+		effective_tolerance := topology._st_mintolerance(atopology, aline);
+	ELSE
+		effective_tolerance := tolerance;
+	END IF;
+	candidate_tolerance := GREATEST(
+		COALESCE(effective_tolerance, 0),
+		COALESCE(topology._st_mintolerance(ST_StartPoint(aline)), 0),
+		COALESCE(topology._st_mintolerance(ST_EndPoint(aline)), 0));
+
+	EXECUTE format('LOCK TABLE %I.edge_data IN SHARE ROW EXCLUSIVE MODE', atopology);
+
+	IF to_regclass('pg_temp.topogeo_addlinestringdetails_old_edges') IS NOT NULL THEN
+		DROP TABLE pg_temp.topogeo_addlinestringdetails_old_edges;
+	END IF;
+
+	sql := format(
+		'CREATE TEMP TABLE topogeo_addlinestringdetails_old_edges ON COMMIT DROP AS ' ||
+		'SELECT edge_id, geom FROM %I.edge_data ' ||
+		'WHERE geom && ST_Expand($1, $2)',
+		atopology);
+	EXECUTE sql USING aline, candidate_tolerance;
+
+	RETURN QUERY
+	SELECT 'input'::text, NULL::bigint, abs(inserted.edge_id)::bigint, inserted.edge_id::bigint
+	FROM topology.TopoGeo_AddLinestring(atopology, aline, tolerance, max_edges)
+		WITH ORDINALITY AS inserted(edge_id, ord)
+	ORDER BY inserted.ord;
+
+	sql := format($fmt$
+		WITH changed_old AS (
+			SELECT old.edge_id, old.geom
+			FROM pg_temp.topogeo_addlinestringdetails_old_edges old
+			JOIN %1$I.edge_data new USING (edge_id)
+			WHERE NOT ST_Equals(old.geom, new.geom)
+		),
+		split_edges AS (
+			SELECT DISTINCT old.edge_id AS old_edge, new.edge_id AS edge
+			FROM changed_old old
+			JOIN %1$I.edge_data new ON new.geom && ST_Expand(old.geom, $1)
+			                         AND ST_DWithin(new.geom, $2, $1)
+			                         AND (
+			                             ST_Covers(old.geom, new.geom)
+			                             OR ($1 > 0 AND ST_Covers(ST_Buffer(old.geom, $1), new.geom))
+			                         )
+		)
+		SELECT 'split'::text, s.old_edge::bigint, s.edge::bigint, NULL::bigint
+		FROM split_edges s
+		ORDER BY s.old_edge, s.edge
+	$fmt$, atopology);
+
+	RETURN QUERY EXECUTE sql USING candidate_tolerance, aline;
+
+	DROP TABLE pg_temp.topogeo_addlinestringdetails_old_edges;
+EXCEPTION WHEN OTHERS THEN
+	IF to_regclass('pg_temp.topogeo_addlinestringdetails_old_edges') IS NOT NULL THEN
+		DROP TABLE pg_temp.topogeo_addlinestringdetails_old_edges;
+	END IF;
+	RAISE;
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--} TopoGeo_AddLineStringDetails
+
+--{
 --  TopoGeo_AddPolygon(toponame, polygeom, tolerance)
 --
 --  Add a Polygon into a topology
