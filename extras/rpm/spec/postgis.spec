@@ -111,7 +111,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc COPYING CREDITS NEWS TODO README.%{name} TODO doc/html loader/README.* doc/%{name}.xml  doc/ZMSgeoms.txt
+%doc COPYING CREDITS NEWS README.%{name} doc/html loader/README.* doc/%{name}.xml  doc/ZMSgeoms.txt
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/pgsql/liblwgeom.so*
 %{_datadir}/pgsql/contrib/*.sql

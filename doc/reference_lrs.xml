@@ -94,14 +94,35 @@ SELECT ST_AsEWKT(  ST_LineInterpolatePoint('
  POINT(3.5 4.5 5.5)
 </programlisting>
 
-<para>The closest point on a line to a point:</para>
-<programlisting>
+	<para>The closest point on a line to a point:</para>
+	<programlisting>
 SELECT ST_AsText( ST_LineInterpolatePoint( line.geom,
-                      ST_LineLocatePoint( line.geom, 'POINT(4 3)')))
+	                      ST_LineLocatePoint( line.geom, 'POINT(4 3)')))
 FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
-------------
- POINT(3 4)
-</programlisting>
+	------------
+	 POINT(3 4)
+	</programlisting>
+	<para>An interpolated point can be offset to the left or right of a line by
+	using <xref linkend="ST_OffsetCurve"/> before interpolation. This is useful
+	for locating an address point beside a street centerline.</para>
+	<programlisting><![CDATA[
+WITH street AS (
+    SELECT 'LINESTRING(0 0, 10 0)'::geometry AS geom,
+           100 AS from_num,
+           200 AS to_num
+)
+SELECT ST_AsText(
+    ST_LineInterpolatePoint(
+        ST_OffsetCurve(geom, -2),
+        (160 - from_num)::float8 / (to_num - from_num)
+    )
+) AS interpolated_offset_point
+FROM street;
+
+ interpolated_offset_point
+---------------------------
+ POINT(6 -2)
+	]]></programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -109,10 +130,11 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="ST_LineInterpolatePoints"/>,
-				<xref linkend="ST_3DLineInterpolatePoint"/>,
-				<xref linkend="ST_LineLocatePoint"/>
-			</para>
+					<xref linkend="ST_LineInterpolatePoints"/>,
+					<xref linkend="ST_3DLineInterpolatePoint"/>,
+					<xref linkend="ST_LineLocatePoint"/>,
+					<xref linkend="ST_OffsetCurve"/>
+				</para>
 		  </refsection>
 		</refentry>
 
@@ -337,6 +359,32 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 ----------------
  POINT(3 4)
 
+-- locate the closest segment and point on a LineString
+WITH data AS (
+  SELECT
+    'LINESTRING (0 0, 10 10, 20 20, 30 30)'::geometry AS line,
+    'POINT(15 15.1)'::geometry AS pt
+),
+segments AS (
+  SELECT
+    s.i,
+    d.pt,
+    ST_MakeLine(ST_PointN(d.line, s.i), ST_PointN(d.line, s.i + 1)) AS segment
+  FROM data AS d
+  CROSS JOIN LATERAL generate_series(1, ST_NumPoints(d.line) - 1) AS s(i)
+)
+SELECT
+  i AS segment_number,
+  round(ST_Distance(segment, pt)::numeric, 3) AS distance,
+  ST_AsText(ST_ClosestPoint(segment, pt)) AS closest_point
+FROM segments
+ORDER BY ST_Distance(segment, pt)
+LIMIT 1;
+
+ segment_number | distance |   closest_point
+----------------+----------+--------------------
+              2 |    0.071 | POINT(15.05 15.05)
+
 </programlisting>
 		  </refsection>
 
@@ -344,7 +392,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Length2D"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineSubstring"/></para>
+			<para><xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_Length2D"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineSubstring"/></para>
 		  </refsection>
 		</refentry>
 
@@ -471,6 +519,49 @@ CROSS JOIN LATERAL (
 
 ]]></programlisting>
 
+<para>
+Split a LineString by points by locating the points along the line, adding the
+0 and 1 endpoints, and extracting substrings between adjacent locations.
+</para>
+<programlisting><![CDATA[
+WITH data AS (
+  SELECT 'LINESTRING(0 0, 10 0)'::geometry AS line,
+         'MULTIPOINT((2 0),(5 0),(8 0))'::geometry AS points
+),
+fractions AS (
+  SELECT 0.0 AS fraction
+  UNION ALL
+  SELECT 1.0
+  UNION ALL
+  SELECT ST_LineLocatePoint(line, (dp).geom)
+  FROM data
+  CROSS JOIN LATERAL ST_Dump(points) AS dp
+),
+ordered AS (
+  SELECT DISTINCT fraction
+  FROM fractions
+),
+segments AS (
+  SELECT fraction AS start_fraction,
+         lead(fraction) OVER (ORDER BY fraction) AS end_fraction
+  FROM ordered
+)
+SELECT row_number() OVER (ORDER BY start_fraction) AS segment_id,
+       ST_AsText(ST_LineSubstring(line, start_fraction, end_fraction)) AS geom
+FROM data
+CROSS JOIN segments
+WHERE end_fraction IS NOT NULL
+  AND start_fraction <> end_fraction
+ORDER BY start_fraction;
+
+ segment_id |         geom
+------------+----------------------
+          1 | LINESTRING(0 0,2 0)
+          2 | LINESTRING(2 0,5 0)
+          3 | LINESTRING(5 0,8 0)
+          4 | LINESTRING(8 0,10 0)
+]]></programlisting>
+
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
 <programlisting>
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geography, 0.333, 0.666),6) AS geog_sub
@@ -502,7 +593,7 @@ geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Length"/>, <xref linkend="ST_LineExtend"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineMerge"/></para>
+			<para><xref linkend="ST_Length"/>, <xref linkend="ST_LineExtend"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineLocatePoint"/>, <xref linkend="ST_LineMerge"/>, <xref linkend="ST_Split"/></para>
 		  </refsection>
 	</refentry>
 

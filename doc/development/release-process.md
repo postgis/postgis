@@ -1,9 +1,21 @@
-How to release
-~~~~~~~~~~~~~~
+---
+title: "Release Process"
+date: 2026-06-26
+weight: 90
+geekdocHidden: false
+---
+
+# Release Process
+
 Date: 2022-09-25
 
-Versioning Scheme
------------------
+## Versioning Scheme
+
+The public website describes PostGIS releases with semantic
+`MAJOR.MINOR.PATCH` version numbers. Major releases may include backward
+incompatibilities and require special upgrade procedures; minor releases may
+add functionality while preserving existing functionality; patch releases fix
+defects without adding, removing, or changing functionality.
 
 *PostGIS*
 
@@ -36,8 +48,19 @@ in Version.config.
 The liblwgeom versioning represents compatibility of the library
 within a PostGIS minor version.
 
-Requirements
-------------
+PostGIS normally aims to release a new minor version about once a year shortly
+before the PostgreSQL annual release, which is currently around early October.
+Patch releases happen as needed when the number or severity of fixes calls for
+them.
+
+The project generally supports each PostGIS minor release for two to four years
+after initial release and at least until the lowest PostgreSQL version
+supported by that PostGIS minor release reaches end of life. Check the
+PostgreSQL EOL policy and the
+[PostGIS Versioning & EOL page](https://postgis.net/development/versions_eol/)
+before changing branch or announcement wording.
+
+## Requirements
 
 In order to build a release, you will need to build PostGIS and the
 documentation -- that means having the required software:
@@ -57,9 +80,7 @@ documentation -- that means having the required software:
   - ImageMagic
   - DbLatex (for PDF)
 
-Release procedure
------------------
-
+## Release Procedure
 
 1. Check access.
 
@@ -75,6 +96,8 @@ Release procedure
 
   - Ensure all bots are green: https://trac.osgeo.org/postgis
   - Check no blockers on https://trac.osgeo.org/postgis/roadmap on version you're releasing.
+  - Check current Trac milestones for release-line actions that have not yet
+    been folded into this checklist.
 
 3. Reconcile done & planned.
 
@@ -95,7 +118,7 @@ Release procedure
   - Commit all changes
   - If this is a minor or major release (no branch exists):
 	   $ rel=x.x # replace x.x with minor version (e.g. 2.3)
-	   $ git checkout master; git checkout -b "stable-$rel"; git push -u osgeo stable-$rev
+	   $ git checkout master; git checkout -b "stable-$rel"; git push -u osgeo "stable-$rel"
 
 	   Go to: https://debbie.postgis.net and copy last branch version and make new job
 	   a) Replace PostGIS_* string params with new version
@@ -107,6 +130,15 @@ Release procedure
 5. Publish release
 
   - Check that bots are still green on https://trac.osgeo.org/postgis
+  - For security releases, warn packagers before publishing when embargo or
+    coordination constraints allow it.
+  - Coordinate private packager advance notices through the security team
+    process in `SECURITY.md`. Keep any embargoed contact roster outside the
+    public repository and update it through the private security-maintainer
+    channel rather than this release checklist.
+  - Avoid publishing on Friday. Monday morning in Europe is preferred for
+    packager availability.
+  - Verify the website support policy is current before release announcements.
 
   - Tag branch:
      $ rev=x.x.x # replace x.x.x with micro version (e.g 2.3.1)
@@ -163,12 +195,16 @@ Release procedure
 
   - Post on website:
       - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config.toml#L155
-        Fix latest version pointers.
+        Fix latest version pointers under `[params.postgis]` and
+        `[params.postgis.releases]`, including development, current, and EOL
+        markers.
       - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/content/news
         a) create a new Post for current year making sure the page name starts with mm-dd
           Since hugo move, the mm-dd isn't absolutely necessary anymore
           as it uses the slug or title and date to determine the permalink.  But for now lets keep the same convention.
-        b) commit and wait 5 minutes to see changes on website
+        b) run `make check` in the `postgis.net` checkout to verify source
+          tarball checksums against the website `.md5` files.
+        c) commit, push, and wait 5 minutes to see changes on website.
 
 6. Spread the word
 

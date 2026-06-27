@@ -8316,7 +8316,7 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 -- raster_columns
 --
 -- The metadata is documented in the PostGIS Raster specification:
--- http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationFinal01
+-- doc/development/internals/raster-storage.md
 ------------------------------------------------------------------------------
 -- Availability: 2.0.0
 -- Changed: 2.2.0
