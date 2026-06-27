@@ -1,0 +1,13 @@
+t
+f1|POINT(1 5)|t
+f2|POINT(5 5)|t
+f3|POINT(15 5)|t
+ERROR:  SQL/MM Spatial exception - universal face has no geometry
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - null argument
+ERROR:  SQL/MM Spatial exception - invalid topology name
+ERROR:  SQL/MM Spatial exception - invalid topology name
+ERROR:  SQL/MM Spatial exception - non-existent face.
+NOTICE:  Corrupted topology: face 4 could not be constructed only from edges knowing about it (like edge 4).
+POINT EMPTY
+Topology 'tt' dropped

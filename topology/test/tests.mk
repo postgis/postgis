@@ -38,6 +38,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/getnodebypoint.sql \
 	$(top_srcdir)/topology/test/regress/getnodeedges.sql \
 	$(top_srcdir)/topology/test/regress/getringedges.sql \
+	$(top_srcdir)/topology/test/regress/pointonface.sql \
 	$(top_srcdir)/topology/test/regress/gettopogeomelements.sql \
 	$(top_srcdir)/topology/test/regress/gettopogeomelements_large.sql \
 	$(top_srcdir)/topology/test/regress/gml.sql \

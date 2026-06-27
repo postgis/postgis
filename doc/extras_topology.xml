@@ -3192,7 +3192,49 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddFace"/></para>
+				<para>
+<xref linkend="AddFace"/>,
+<xref linkend="PointOnFace"/>
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry xml:id="PointOnFace">
+			<refnamediv>
+				<refname>PointOnFace</refname>
+
+				<refpurpose>Returns a point found on the interior of the given topology face.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>geometry <function>PointOnFace</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>bigint </type> <parameter>aface</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Returns a point found on the interior of the given topology face.
+The function is equivalent to calling <xref linkend="ST_PointOnSurface"/>
+on the face geometry, but computes the point directly from the topology face.
+		</para>
+
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0 </para>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="ST_GetFaceGeometry"/>,
+<xref linkend="GetFaceContainingPoint"/>,
+<xref linkend="ST_PointOnSurface"/>
+				</para>
 			</refsection>
 		</refentry>
 
