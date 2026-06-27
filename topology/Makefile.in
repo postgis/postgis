@@ -155,6 +155,7 @@ topology.sql: \
 	sql/manage/ValidateTopology.sql.in \
 	sql/topoelement/topoelement_agg.sql.in \
 	sql/topogeometry/type.sql.in \
+	sql/topogeometry/pointonsurface.sql.in \
 	sql/topogeometry/totopogeom.sql.in \
 	sql/topogeometry/cleartopogeom.sql.in \
 	sql/topogeometry/topogeom_edit.sql.in \
