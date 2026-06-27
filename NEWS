@@ -6,6 +6,8 @@ PostGIS 3.2.11
  - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
  - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
  - #5989, CurvePolygon distance corner case (Paul Ramsey)
+ - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
+ - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
 
 
 PostGIS 3.2.10
@@ -3207,4 +3209,3 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-
