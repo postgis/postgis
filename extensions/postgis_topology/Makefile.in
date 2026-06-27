@@ -69,10 +69,11 @@ sql/topology.sql: ../../topology/topology.sql | sql
 sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 	echo "-- Nothing to do here" > $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/topology_upgrade.sql Makefile | sql
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/topology_upgrade.sql sql_bits/mark_editable_objects.sql.in Makefile | sql
 	cat $< | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis_topology > $@
 	# Upgrade after packaging (TODO: use ANY--TARGET path?)
 	cat sql/topology_upgrade.sql >> $@
+	cat sql_bits/mark_editable_objects.sql.in >> $@
 
 #upgrade script should have everything but table, schema, type creation/alter
 #NOTE: we assume all object definitions end in ;

@@ -110,6 +110,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           geometry columns (Darafei Praliaskouski)
  - #6038, Avoid stale relation lookups in geometry_columns after topology
           objects are dropped (Darafei Praliaskouski)
+ - #2536, [topology] Mark editable catalog rows in unpackaged upgrade
+          scripts (Darafei Praliaskouski)
  - #5655, [doc] Skip XML validation during `make check` when xsltproc is
           unavailable (Darafei Praliaskouski)
  - #5487, Improve error detail for repeated upgrades after an incomplete
