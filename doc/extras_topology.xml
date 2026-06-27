@@ -4492,7 +4492,7 @@ Refer to <xref linkend="toTopoGeom"/>.
 			<refsection>
                 <title>Description</title>
 
-                <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space. The precision (default: 15) and options (default 1) parameters, if given, are passed untouched to the underlying call to ST_AsGML.</para>
+                <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space. The precision (default: 15) and options (default 1) parameters, if given, are passed untouched to the underlying call to ST_AsGML. Collection TopoGeometry values are represented as <code>gml:TopoComplex</code>.</para>
 
 		<para>
 The <varname>visitedTable</varname> parameter, if given, is used for keeping track of the visited Node and Edge elements so to use cross-references (xlink:xref) rather than duplicating definitions. The table is expected to have (at least) two integer fields: 'element_type' and 'element_id'. The calling user must have both read and write privileges on the given table.
@@ -4514,6 +4514,7 @@ CREATE TABLE visited (
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
+                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for collection TopoGeometry output as TopoComplex.</para>
 			</refsection>
 
 
