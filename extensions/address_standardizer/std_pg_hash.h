@@ -14,3 +14,9 @@ STANDARDIZER *GetStdFromStdCache(StdCache STDCache,  char *lextab, char *gaztab,
 */
 STANDARDIZER *GetStdUsingFCInfo(FunctionCallInfo fcinfo, char *lextab, char *gaztab, char *rultab);
 
+/*
+ * Resolve a user-supplied table name through the catalog and return a
+ * schema-qualified, properly-quoted identifier safe for embedding in SQL.
+ * Returns NULL if the relation does not exist.
+ */
+char *resolve_and_quote_tabname(const char *tabname);
