@@ -28,25 +28,25 @@ BEGIN
   END IF;
 
   IF stateAbbrev IS NOT NULL THEN
-    lstate := statefp FROM state WHERE stusps = stateAbbrev;
-    SELECT INTO tempInt count(*) FROM cousub
+    lstate := statefp FROM tiger.state WHERE stusps = stateAbbrev;
+    SELECT INTO tempInt count(*) FROM tiger.cousub
         WHERE cousub.statefp = lstate
-        AND @extschema:fuzzystrmatch@.soundex(tempString) = end_soundex(name);
+        AND @extschema:fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name);
   ELSE
-    SELECT INTO tempInt count(*) FROM cousub
-        WHERE @extschema:fuzzystrmatch@.soundex(tempString) = end_soundex(name);
+    SELECT INTO tempInt count(*) FROM tiger.cousub
+        WHERE @extschema:fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name);
   END IF;
 
   IF tempInt > 0 THEN
     tempInt := 50;
     -- Some potentials were found.  Begin a word-by-word soundex on each.
     IF stateAbbrev IS NOT NULL THEN
-      FOR rec IN SELECT name FROM cousub
+      FOR rec IN SELECT name FROM tiger.cousub
           WHERE cousub.statefp = lstate
-          AND @extschema:fuzzystrmatch@.soundex(tempString) = end_soundex(name) LOOP
-        word_count := count_words(rec.name);
+          AND @extschema:fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name) LOOP
+        word_count := tiger.count_words(rec.name);
         test := TRUE;
-        tempString := get_last_words(fullStreet, word_count);
+        tempString := tiger.get_last_words(fullStreet, word_count);
         FOR i IN 1..word_count LOOP
           IF @extschema:fuzzystrmatch@.soundex(split_part(tempString, ' ', i)) !=
             @extschema:fuzzystrmatch@.soundex(split_part(rec.name, ' ', i)) THEN
@@ -62,11 +62,11 @@ BEGIN
         END IF;
       END LOOP;
     ELSE
-      FOR rec IN SELECT name FROM cousub
-          WHERE @extschema:fuzzystrmatch@.soundex(tempString) = end_soundex(name) LOOP
-        word_count := count_words(rec.name);
+      FOR rec IN SELECT name FROM tiger.cousub
+          WHERE @extschema:fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name) LOOP
+        word_count := tiger.count_words(rec.name);
         test := TRUE;
-        tempString := get_last_words(fullStreet, word_count);
+        tempString := tiger.get_last_words(fullStreet, word_count);
         FOR i IN 1..word_count LOOP
           IF @extschema:fuzzystrmatch@.soundex(split_part(tempString, ' ', i)) !=
             @extschema:fuzzystrmatch@.soundex(split_part(rec.name, ' ', i)) THEN

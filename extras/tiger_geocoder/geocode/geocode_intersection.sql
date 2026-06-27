@@ -26,28 +26,28 @@ DECLARE
     var_sql text := '';
     var_zip varchar(5)[];
     in_statefp varchar(2) ;
-    var_debug boolean := get_geocode_setting('debug_geocode_intersection')::boolean;
+    var_debug boolean := tiger.get_geocode_setting('debug_geocode_intersection')::boolean;
     results record;
 BEGIN
     IF COALESCE(roadway1,'') = '' OR COALESCE(roadway2,'') = '' THEN
         -- not enough to give a result just return
         RETURN ;
     ELSE
-        var_na_road := normalize_address('0 ' || roadway1 || ', ' || COALESCE(in_city,'') || ', ' || in_state || ' ' || in_zip);
-        var_na_inter1  := normalize_address('0 ' || roadway2 || ', ' || COALESCE(in_city,'') || ', ' || in_state || ' ' || in_zip);
+        var_na_road := tiger.normalize_address('0 ' || roadway1 || ', ' || COALESCE(in_city,'') || ', ' || in_state || ' ' || in_zip);
+        var_na_inter1  := tiger.normalize_address('0 ' || roadway2 || ', ' || COALESCE(in_city,'') || ', ' || in_state || ' ' || in_zip);
     END IF;
-    in_statefp := statefp FROM state_lookup As s WHERE s.abbrev = upper(in_state);
+    in_statefp := statefp FROM tiger.state_lookup As s WHERE s.abbrev = upper(in_state);
     IF COALESCE(in_zip,'') > '' THEN -- limit search to 2 plus or minus the input zip
-        var_zip := zip_range(in_zip, -2,2);
+        var_zip := tiger.zip_range(in_zip, -2,2);
     END IF;
 
     IF var_zip IS NULL AND in_city > '' THEN
-        var_zip := array_agg(zip) FROM zip_lookup_base WHERE statefp = in_statefp AND lower(city) = lower(in_city);
+        var_zip := array_agg(zip) FROM tiger.zip_lookup_base WHERE statefp = in_statefp AND lower(city) = lower(in_city);
     END IF;
 
     -- if we don't have a city or zip, don't bother doing the zip check, just keep as null
     IF var_zip IS NULL AND in_city > '' THEN
-        var_zip := array_agg(zip) FROM zip_lookup_base WHERE statefp = in_statefp AND lower(city) LIKE lower(in_city) || '%'  ;
+        var_zip := array_agg(zip) FROM tiger.zip_lookup_base WHERE statefp = in_statefp AND lower(city) LIKE lower(in_city) || '%'  ;
     END IF;
     IF var_debug THEN
 		RAISE NOTICE 'var_zip: %, city: %', quote_nullable(var_zip), quote_nullable(in_city);
