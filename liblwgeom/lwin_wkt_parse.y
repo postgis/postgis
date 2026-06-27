@@ -111,6 +111,8 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, in
 
 #define WKT_ERROR() { if ( global_parser_result.errcode != 0 ) { YYERROR; } }
 
+typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
+
 struct WKT_NURBS_CONTROLPOINTS
 {
 	POINTARRAY *points;
@@ -247,10 +249,6 @@ wkt_parser_knot_list_add_repeated(POINTARRAY *knots, double value, double multip
 
 %}
 
-%code requires {
-typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
-}
-
 %locations
 
 %union {
@@ -260,7 +258,7 @@ typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
 	LWGEOM *geometryvalue;
 	POINT coordinatevalue;
 	POINTARRAY *ptarrayvalue;
-	WKT_NURBS_CONTROLPOINTS *nurbscontrolpointsvalue;
+	struct WKT_NURBS_CONTROLPOINTS *nurbscontrolpointsvalue;
 }
 
 %token POINT_TOK LINESTRING_TOK POLYGON_TOK
