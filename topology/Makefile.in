@@ -125,6 +125,7 @@ topology_upgrade.sql: ../postgis/common_before_upgrade.sql topology_before_upgra
 
 topology.sql: \
 	sql/cleanup/RemoveUnusedPrimitives.sql.in \
+	sql/cleanup/RecomputeEdgeLinking.sql.in \
 	sql/sqlmm.sql.in \
 	sql/populate.sql.in \
 	sql/polygonize.sql.in \

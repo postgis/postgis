@@ -1430,6 +1430,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 -- Cleanup functions
 #include "sql/cleanup/RemoveUnusedPrimitives.sql.in"
+#include "sql/cleanup/RecomputeEdgeLinking.sql.in"
 
 
 CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS text

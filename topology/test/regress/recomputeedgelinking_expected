@@ -1,0 +1,16 @@
+ERROR:  Could not find topology "non-existent"
+ERROR:  Could not find topology "<NULL>"
+#4942.full.before|8
+#4942.full.updated|6
+#4942.full.after|---||
+#4942.abs.before|9|f|t
+#4942.abs.before|19|t|f
+#4942.abs.updated|2
+#4942.abs.after|9|t|t
+#4942.abs.after|19|t|t
+#4942.bbox.updated|4
+#4942.bbox.remaining|---||
+#4942.bbox.remaining|invalid next_left_edge|3|-3
+#4942.bbox.remaining|invalid next_left_edge|25|-25
+#4942.bbox.remaining|invalid next_right_edge|3|2
+#4942.bbox.remaining|invalid next_right_edge|25|25

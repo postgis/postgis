@@ -51,6 +51,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/polygonize.sql \
 	$(top_srcdir)/topology/test/regress/populate_topology_layer.sql \
 	$(top_srcdir)/topology/test/regress/removeunusedprimitives.sql \
+	$(top_srcdir)/topology/test/regress/recomputeedgelinking.sql \
 	$(top_srcdir)/topology/test/regress/renametopogeometrycolumn.sql \
 	$(top_srcdir)/topology/test/regress/renametopology.sql \
 	$(top_srcdir)/topology/test/regress/share_sequences.sql \
