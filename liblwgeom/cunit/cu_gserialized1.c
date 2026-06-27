@@ -17,6 +17,7 @@
 #include "liblwgeom_internal.h"
 #include "gserialized1.c" /* for gserialized_peek_gbox_p */
 #include "cu_tester.h"
+#include "cu_standard_geoms.h"
 
 static void test_flags_macros(void)
 {
@@ -177,38 +178,14 @@ static void test_lwgeom_from_gserialized(void)
 {
 	LWGEOM *geom;
 	GSERIALIZED *g;
-	char *in_ewkt;
+	const char *in_ewkt;
 	char *out_ewkt;
 	size_t i = 0;
 
-	char *ewkt[] =
-	{
-		"POINT EMPTY",
-		"POINT(0 0.2)",
-		"LINESTRING EMPTY",
-		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
-		"MULTIPOINT EMPTY",
-		"MULTIPOINT(0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9)",
-		"SRID=1;MULTILINESTRING EMPTY",
-		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"POLYGON EMPTY",
-		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;POLYGON EMPTY",
-		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))",
-		"SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;MULTIPOLYGON EMPTY",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-		"SRID=4326;GEOMETRYCOLLECTION EMPTY",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT EMPTY,MULTIPOLYGON EMPTY)",
-		"MULTICURVE((5 5 1 3,3 5 2 2,3 3 3 1,0 3 1 1),CIRCULARSTRING(0 0 0 0,0.26794 1 3 -2,0.5857864 1.414213 1 2))",
-		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
-		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING EMPTY))",
-	};
+	const char **ewkt = cu_standard_geoms_serialized;
+	size_t ewkt_count = cu_standard_geoms_serialized_count;
 
-	for ( i = 0; i < (sizeof ewkt/sizeof(char*)); i++ )
+	for ( i = 0; i < ewkt_count; i++ )
 	{
 		LWGEOM* geom2;
 		size_t sz1, sz2;
