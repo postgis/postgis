@@ -13,6 +13,8 @@ PostGIS 3.5.7
   - Avoid Inf loop in Geohash calculation (Paul Ramsey)
   - [address_standardizer] Avoid unsafe table-name handling and out-of-bounds
     rule parsing (Paul Ramsey)
+  - [tiger_geocoder] Harden loader table references and dynamic table names
+    (Paul Ramsey)
   - #6081, Fix SFCGAL 2.3 regression tests (Darafei Praliaskouski)
   - GH-888, [sfcgal] Avoid stale detoasted geometry access in
     CG_Visibility empty-input handling for SFCGAL < 2.2
