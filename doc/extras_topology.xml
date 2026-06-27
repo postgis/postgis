@@ -4251,6 +4251,59 @@ UPDATE mylayer SET tg_overall = TopoGeom_addTopogeom(
         <para>
 <xref linkend="TopoGeom_addElement"/>,
 <xref linkend="clearTopoGeom"/>,
+<xref linkend="CreateTopoGeom"/>,
+<xref linkend="ST_Union_TopoGeometry"/>
+        </para>
+			</refsection>
+		</refentry>
+
+    <refentry xml:id="ST_Union_TopoGeometry">
+			<refnamediv>
+				<refname>ST_Union</refname>
+				<refpurpose>Returns the union of two TopoGeometry objects.</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>ST_Union</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef>
+                    <paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Returns a new <xref linkend="topogeometry"/> containing the elements of
+both inputs. The input TopoGeometry objects are not changed.
+                </para>
+
+                <para>
+The returned TopoGeometry is created in the topology and layer of
+<varname>tg1</varname>. The inputs must be defined against the same
+topology and must satisfy the same layer compatibility constraints as
+<xref linkend="TopoGeom_addTopoGeom"/>.
+                </para>
+
+                <!-- use this format if new function -->
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+        <programlisting>
+SELECT topology.ST_Union(a.tg, b.tg)
+FROM mylayer a, mylayer b
+WHERE a.id = 1 AND b.id = 2;
+				</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+        <para>
+<xref linkend="TopoGeom_addTopoGeom"/>,
 <xref linkend="CreateTopoGeom"/>
         </para>
 			</refsection>
