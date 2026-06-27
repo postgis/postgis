@@ -19,11 +19,14 @@
  **********************************************************************
  *
  * Copyright (C) 2024 Sam Peters <gluser1357@gmx.de>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
 #include "postgres.h"
 #include "funcapi.h"
+#include <math.h>
+#include <string.h>
 #include "utils/array.h"
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
@@ -224,6 +227,150 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 	}
 
 	// recompute bbox if computed previously (may result in NULL)
+	lwgeom_drop_bbox(geom);
+	lwgeom_add_bbox(geom);
+
+	serialized_out = gserialized_from_lwgeom(geom, 0);
+	lwgeom_free(geom);
+
+	PG_FREE_IF_COPY(serialized_in, 0);
+	PG_RETURN_POINTER(serialized_out);
+}
+
+static int
+lwpoly_filter_holes_by_area(LWPOLY *polygon, double min_area)
+{
+	uint32_t i, iw;
+
+	if (!polygon || polygon->nrings <= 1)
+		return LW_FALSE;
+
+	iw = 1;
+	for (i = 1; i < polygon->nrings; i++)
+	{
+		const double ring_area = fabs(ptarray_signed_area(polygon->rings[i]));
+
+		if (ring_area >= min_area)
+			polygon->rings[iw++] = polygon->rings[i];
+		else
+			ptarray_free(polygon->rings[i]);
+	}
+
+	if (iw == polygon->nrings)
+		return LW_FALSE;
+
+	polygon->nrings = iw;
+	return LW_TRUE;
+}
+
+static double
+lwcurvepoly_ring_area(const LWCURVEPOLY *curvepoly, LWGEOM *ring)
+{
+	LWGEOM *rings[1] = {ring};
+	LWCURVEPOLY ringpoly;
+
+	/*
+	 * Curved ring area is measured through the same stroking path as ST_Area,
+	 * so the filtering threshold has the same semantics users already see.
+	 */
+	memset(&ringpoly, 0, sizeof(LWCURVEPOLY));
+	ringpoly.type = CURVEPOLYTYPE;
+	ringpoly.flags = curvepoly->flags;
+	ringpoly.srid = curvepoly->srid;
+	ringpoly.nrings = 1;
+	ringpoly.maxrings = 1;
+	ringpoly.rings = rings;
+
+	return fabs(lwcurvepoly_area(&ringpoly));
+}
+
+static int
+lwcurvepoly_filter_holes_by_area(LWCURVEPOLY *curvepoly, double min_area)
+{
+	uint32_t i, iw;
+
+	if (!curvepoly || curvepoly->nrings <= 1)
+		return LW_FALSE;
+
+	iw = 1;
+	for (i = 1; i < curvepoly->nrings; i++)
+	{
+		const double ring_area = lwcurvepoly_ring_area(curvepoly, curvepoly->rings[i]);
+
+		if (ring_area >= min_area)
+			curvepoly->rings[iw++] = curvepoly->rings[i];
+		else
+			lwgeom_free(curvepoly->rings[i]);
+	}
+
+	if (iw == curvepoly->nrings)
+		return LW_FALSE;
+
+	curvepoly->nrings = iw;
+	return LW_TRUE;
+}
+
+static int
+lwgeom_filter_holes_by_area(LWGEOM *geom, double min_area)
+{
+	uint32_t i;
+	int changed = LW_FALSE;
+
+	if (!geom)
+		return LW_FALSE;
+
+	switch (geom->type)
+	{
+	case POLYGONTYPE:
+		return lwpoly_filter_holes_by_area((LWPOLY *)geom, min_area);
+	case CURVEPOLYTYPE:
+		return lwcurvepoly_filter_holes_by_area((LWCURVEPOLY *)geom, min_area);
+	default:
+		if (lwgeom_is_collection(geom))
+		{
+			LWCOLLECTION *collection = (LWCOLLECTION *)geom;
+			for (i = 0; i < collection->ngeoms; i++)
+				changed |= lwgeom_filter_holes_by_area(collection->geoms[i], min_area);
+		}
+		return changed;
+	}
+}
+
+PG_FUNCTION_INFO_V1(ST_FilterHolesByArea);
+Datum
+ST_FilterHolesByArea(PG_FUNCTION_ARGS)
+{
+	double min_area;
+	GSERIALIZED *serialized_in;
+	GSERIALIZED *serialized_out;
+	LWGEOM *geom;
+
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(1))
+		PG_RETURN_NULL();
+
+	min_area = PG_GETARG_FLOAT8(1);
+
+	/*
+	 * NaN would make every ring-area comparison false, removing all holes.
+	 * Infinite thresholds are rejected for the same reason: callers should use
+	 * a finite area cutoff whose comparison semantics are explicit.
+	 */
+	if (!isfinite(min_area))
+		elog(ERROR, "ST_FilterHolesByArea: area threshold must be finite");
+
+	serialized_in = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+
+	if (min_area <= 0)
+		PG_RETURN_POINTER(serialized_in);
+
+	geom = lwgeom_from_gserialized(serialized_in);
+
+	if (!lwgeom_filter_holes_by_area(geom, min_area))
+	{
+		lwgeom_free(geom);
+		PG_RETURN_POINTER(serialized_in);
+	}
+
 	lwgeom_drop_bbox(geom);
 	lwgeom_add_bbox(geom);
 
