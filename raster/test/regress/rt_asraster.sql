@@ -502,6 +502,50 @@ FROM (
 SELECT '#5084' As ticket, count(dp.geom)
 FROM ST_DumpAsPolygons(ST_AsRaster('LINESTRING(986015.7 6720291.2,986024.3 6720347,986028 6720417.4,986025.6 6720474.3)'::geometry, 2::double precision, 2, 0, 0)) AS dp;
 
+WITH cases(label, geom) AS (
+	VALUES
+	(
+		'#1168-CircularString',
+		'CIRCULARSTRING(0 0, 5 5, 10 0)'::geometry
+	),
+	(
+		'#1168-CompoundCurve',
+		'COMPOUNDCURVE((0 0, 2 0), CIRCULARSTRING(2 0, 4 2, 6 0))'::geometry
+	),
+	(
+		'#1168-CompoundCurveStraight',
+		'COMPOUNDCURVE((0 0, 4 0, 4 4))'::geometry
+	),
+	(
+		'#1168-CurvePolygon',
+		'CURVEPOLYGON(CIRCULARSTRING(0 0, 5 5, 10 0, 5 -5, 0 0))'::geometry
+	),
+	(
+		'#1168-CurvePolygonStraight',
+		'CURVEPOLYGON(COMPOUNDCURVE((0 0, 4 0, 4 4, 0 4, 0 0)))'::geometry
+	),
+	(
+		'#1168-GeometryCollectionCurveStraight',
+		'GEOMETRYCOLLECTION(COMPOUNDCURVE((0 0, 4 0, 4 4)))'::geometry
+	)
+), rasters AS (
+	SELECT
+		label,
+		ST_AsRaster(geom, 1.0, -1.0, '8BUI', 7, 0) AS curved_rast,
+		ST_AsRaster(ST_CurveToLine(geom), 1.0, -1.0, '8BUI', 7, 0) AS linear_rast
+	FROM cases
+), stats AS (
+	SELECT
+		label,
+		ST_SameAlignment(curved_rast, linear_rast) AS same_alignment,
+		(ST_MetaData(curved_rast)).width = (ST_MetaData(linear_rast)).width AS same_width,
+		(ST_MetaData(curved_rast)).height = (ST_MetaData(linear_rast)).height AS same_height,
+		(ST_SummaryStats(curved_rast)).count IS NOT DISTINCT FROM (ST_SummaryStats(linear_rast)).count AS same_count,
+		(ST_SummaryStats(curved_rast)).sum IS NOT DISTINCT FROM (ST_SummaryStats(linear_rast)).sum AS same_sum
+	FROM rasters
+)
+SELECT * FROM stats ORDER BY label;
+
 DELETE FROM "spatial_ref_sys" WHERE srid = 992163;
 DELETE FROM "spatial_ref_sys" WHERE srid = 993309;
 DELETE FROM "spatial_ref_sys" WHERE srid = 993310;

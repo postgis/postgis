@@ -59,6 +59,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Enhancements *
 
+ - #1168, [raster] Linearize curved geometry inputs before ST_AsRaster
+          rasterization (Darafei Praliaskouski)
  - #2045, pgsql2shp query dumps no longer require temporary table
           privileges (Darafei Praliaskouski)
  - #1577, [loader] Report unsupported .zip archive input before trying
