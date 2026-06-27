@@ -8,6 +8,10 @@ PostGIS 3.2.11
  - #5989, CurvePolygon distance corner case (Paul Ramsey)
  - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
  - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
+ - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
+ - Avoid Inf loop in Geohash calculation (Paul Ramsey)
+ - [address_standardizer] Avoid NULL dereferences and out-of-bounds rule parsing
+   (Maksim Korotkov, Paul Ramsey)
 
 
 PostGIS 3.2.10
