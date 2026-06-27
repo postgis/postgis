@@ -29,6 +29,8 @@ Modules:
   MinGW build surfaces.
 * [Testing and debugging](testing.md) explains SQL regression tests, CUnit,
   dependency guards, and backtraces.
+* [Development TODO](todo.md) records high-level future work ideas that are not
+  accepted designs or release blockers.
 * [Coding style](style.md) covers C formatting, comments, Doxygen comments, and
   source naming conventions.
 * [Developer tools](tools.md) covers `logbt`, formatting, coverage, and profiling
@@ -57,8 +59,6 @@ Modules:
   consolidation notes.
 * [Docker setup](environment/docker.md) summarizes the development container
   options historically documented on the Trac developer wiki.
-* [Documentation WIP](doc-wip.md) records open migration questions while this
-  pull request remains draft.
 
 The generated Doxygen manuals are published at
 <https://postgis.net/docs/doxygen/>. User-facing manuals remain at

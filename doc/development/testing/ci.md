@@ -24,8 +24,8 @@ service that owns the behavior:
 | CI surface | Source of truth |
 | ---------- | --------------- |
 | Linux Docker matrix on GitHub Actions | `.github/workflows/ci.yml` plus `ci/github/run_*.sh` |
-| FreeBSD GitHub Actions job | `.github/workflows/ci-freebsd.yml` |
-| macOS GitHub Actions job | `.github/workflows/ci-macos.yml` |
+| FreeBSD GitHub Actions job | `.github/workflows/ci-freebsd.yml`; see [FreeBSD development environment](../environment/freebsd.md) |
+| macOS GitHub Actions job | `.github/workflows/ci-macos.yml`; see [macOS development environment](../environment/macos.md) |
 | MSYS2/MinGW GitHub Actions job | `.github/workflows/msys.yml` |
 | GitHub CodeQL and codespell jobs | `.github/workflows/codeql.yml` and `.github/workflows/codespell.yml` |
 | Debbie build, docs, and release jobs | `ci/debbie/`, the Debbie Jenkins jobs, and release-process notes |
