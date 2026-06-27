@@ -15,10 +15,165 @@
 --
 --  Overloaded spatial predicates for TopoGeometry inputs
 --
+--   OPERATOR &&(TopoGeometry, TopoGeometry)
+--   FUNCTION overlaps(TopoGeometry, TopoGeometry)
 --   FUNCTION intersects(TopoGeometry, TopoGeometry)
 --   FUNCTION equals(TopoGeometry, TopoGeometry)
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+-- _bbox(TopoGeometry)
+--
+CREATE OR REPLACE FUNCTION topology._bbox(tg topology.TopoGeometry)
+  RETURNS geometry
+AS
+$$
+DECLARE
+  topology_info RECORD;
+  layer_info RECORD;
+  child_layer_info RECORD;
+  geom geometry;
+  query text;
+BEGIN
+  SELECT id, name, srid FROM topology.topology
+    INTO topology_info
+    WHERE id = tg.topology_id;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'No topology with id "%" in topology.topology', tg.topology_id;
+  END IF;
+
+  SELECT * FROM topology.layer
+    WHERE topology_id = tg.topology_id
+    AND layer_id = tg.layer_id
+    INTO layer_info;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Could not find TopoGeometry layer % in topology %', tg.layer_id, tg.topology_id;
+  END IF;
+
+  IF layer_info.level > 0 THEN
+    SELECT * FROM topology.layer
+      WHERE topology_id = tg.topology_id
+      AND layer_id = layer_info.child_id
+      INTO child_layer_info;
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'Invalid layer % in topology % (unexistent child layer %)', tg.layer_id, tg.topology_id, layer_info.child_id;
+    END IF;
+
+    query := format(
+      'SELECT ST_SetSRID(ST_Extent(topology._bbox(%1$I))::geometry, $1)
+       FROM %2$I.%3$I f, %4$I.relation pr
+       WHERE pr.topogeo_id = $2
+       AND pr.layer_id = $3
+       AND id(f.%1$I) = pr.element_id
+       AND layer_id(f.%1$I) = pr.element_type',
+      child_layer_info.feature_column,
+      child_layer_info.schema_name,
+      child_layer_info.table_name,
+      topology_info.name
+    );
+    EXECUTE query INTO geom USING topology_info.srid, tg.id, tg.layer_id;
+
+  ELSIF tg.type = 1 THEN
+    query := format(
+      'SELECT ST_SetSRID(ST_Extent(n.geom)::geometry, $1)
+       FROM %1$I.node n, %1$I.relation r
+       WHERE r.topogeo_id = $2
+       AND r.layer_id = $3
+       AND r.element_type = 1
+       AND r.element_id = n.node_id',
+      topology_info.name
+    );
+    EXECUTE query INTO geom USING topology_info.srid, tg.id, tg.layer_id;
+
+  ELSIF tg.type = 2 THEN
+    query := format(
+      'SELECT ST_SetSRID(ST_Extent(e.geom)::geometry, $1)
+       FROM %1$I.edge e, %1$I.relation r
+       WHERE r.topogeo_id = $2
+       AND r.layer_id = $3
+       AND r.element_type = 2
+       AND abs(r.element_id) = e.edge_id',
+      topology_info.name
+    );
+    EXECUTE query INTO geom USING topology_info.srid, tg.id, tg.layer_id;
+
+  ELSIF tg.type = 3 THEN
+    query := format(
+      'SELECT ST_SetSRID(ST_Extent(f.mbr)::geometry, $1)
+       FROM %1$I.face f, %1$I.relation r
+       WHERE r.topogeo_id = $2
+       AND r.layer_id = $3
+       AND r.element_type = 3
+       AND r.element_id = f.face_id',
+      topology_info.name
+    );
+    EXECUTE query INTO geom USING topology_info.srid, tg.id, tg.layer_id;
+
+  ELSIF tg.type = 4 THEN
+    query := format(
+      'WITH components AS (
+         SELECT n.geom
+         FROM %1$I.node n, %1$I.relation r
+         WHERE r.topogeo_id = $2
+         AND r.layer_id = $3
+         AND r.element_type = 1
+         AND r.element_id = n.node_id
+         UNION ALL
+         SELECT e.geom
+         FROM %1$I.edge e, %1$I.relation r
+         WHERE r.topogeo_id = $2
+         AND r.layer_id = $3
+         AND r.element_type = 2
+         AND abs(r.element_id) = e.edge_id
+         UNION ALL
+         SELECT f.mbr
+         FROM %1$I.face f, %1$I.relation r
+         WHERE r.topogeo_id = $2
+         AND r.layer_id = $3
+         AND r.element_type = 3
+         AND r.element_id = f.face_id
+       )
+       SELECT ST_SetSRID(ST_Extent(geom)::geometry, $1)
+       FROM components',
+      topology_info.name
+    );
+    EXECUTE query INTO geom USING topology_info.srid, tg.id, tg.layer_id;
+
+  ELSE
+    RAISE EXCEPTION 'Invalid TopoGeometries (unknown type %)', tg.type;
+  END IF;
+
+  RETURN geom;
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+--} _bbox(TopoGeometry)
+
+--{
+-- overlaps(TopoGeometry, TopoGeometry)
+--
+CREATE OR REPLACE FUNCTION topology.overlaps(tg1 topology.TopoGeometry, tg2 topology.TopoGeometry)
+  RETURNS bool
+AS
+$$
+  SELECT COALESCE(topology._bbox($1) && topology._bbox($2), false);
+$$
+LANGUAGE 'sql' VOLATILE STRICT;
+--} overlaps(TopoGeometry, TopoGeometry)
+
+--{
+-- &&(TopoGeometry, TopoGeometry)
+--
+-- Availability: 3.7.0
+--
+CREATE OPERATOR topology.&& (
+  LEFTARG = topology.TopoGeometry,
+  RIGHTARG = topology.TopoGeometry,
+  PROCEDURE = topology.overlaps,
+  COMMUTATOR = OPERATOR(topology.&&)
+);
+--} &&(TopoGeometry, TopoGeometry)
 
 --{
 -- intersects(TopoGeometry, TopoGeometry)
@@ -510,4 +665,3 @@ END
 $$
 LANGUAGE 'plpgsql' STABLE STRICT;
 --} equals(TopoGeometry, TopoGeometry)
-

@@ -704,6 +704,13 @@ EOF
     if (/^create operator\s+(\S+)\s*\(/i)
     {
         my $opname = $1;
+        my $opbasename = $opname;
+        my $opnamespace = '';
+        if ( $opname =~ /^(.+)\.([^.]+)$/ )
+        {
+            $opnamespace = $1;
+            $opbasename = $2;
+        }
         my $opleft = 'unknown';
         my $opright = 'unknown';
         my $def = $_;
@@ -718,8 +725,10 @@ EOF
             }
 
             $def .= $_;
-            $opleft = $1 if (/leftarg\s*=\s*(\w+)\s*,/i);
-            $opright = $1 if (/rightarg\s*=\s*(\w+)\s*,/i);
+            $opleft = lc($1) if (/leftarg\s*=\s*([\w\.]+)\s*,/i);
+            $opright = lc($1) if (/rightarg\s*=\s*([\w\.]+)\s*,/i);
+            $opleft =~ s/^.*\.//;
+            $opright =~ s/^.*\.//;
 
             # Support changing restrict selectivity at later versions
             if (/\s+(RESTRICT|JOIN)\s*=\s*([^,\n]+)/)
@@ -734,6 +743,11 @@ EOF
             last if /\);/;
         }
         my $opsig = $opleft . " " . $opname . " " . $opright;
+        my $namespace_check = "";
+        if ( $opnamespace )
+        {
+            $namespace_check = "AND o.oprnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = '$opnamespace')";
+        }
 
         my $last_updated = parse_last_updated($comment);
         if ( !$last_updated )
@@ -755,9 +769,10 @@ BEGIN
             o.oprleft = tl.oid AND
             o.oprright = tr.oid AND
             o.oprcode != 0 AND
-            o.oprname = '$opname' AND
+            o.oprname = '$opbasename' AND
             tl.typname = '$opleft' AND
             tr.typname = '$opright'
+            $namespace_check
     )
     THEN
 $def
@@ -1067,4 +1082,3 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
-

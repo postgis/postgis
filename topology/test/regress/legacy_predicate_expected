@@ -1,3 +1,10 @@
+TOPOGEOMETRY BBOX OVERLAPS
+point/point|t
+point/line|t
+line/polygon|t
+polygon/hierarchical polygon|t
+empty/point|f
+new point/existing point|t
 POINT/POINT INTERSECTS
 S1|N1N6N14
 S3|N1N6N14

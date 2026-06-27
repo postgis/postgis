@@ -263,7 +263,7 @@ foreach my $opc (@opcs)
 print "-- Register all operators.\n";
 foreach my $op (@ops)
 {
-	if ($op =~ /create operator ([^(]+)\s*\(.*LEFTARG\s*=\s*(\w+),\s*RIGHTARG\s*=\s*(\w+).*/ism )
+	if ($op =~ /create operator ([^(]+)\s*\(.*LEFTARG\s*=\s*([\w\.]+),\s*RIGHTARG\s*=\s*([\w\.]+).*/ism )
 	{
 		add_if_not_exists("OPERATOR $1 ($2,$3)");
 	}
