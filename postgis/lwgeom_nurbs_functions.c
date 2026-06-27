@@ -179,10 +179,10 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 	pcontrol_pts = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Optional parameters */
-	if (!PG_ARGISNULL(2)) {
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) {
 		weights_array = PG_GETARG_ARRAYTYPE_P(2);
 	}
-	if (!PG_ARGISNULL(3)) {
+	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) {
 		knots_array = PG_GETARG_ARRAYTYPE_P(3);
 	}
 
