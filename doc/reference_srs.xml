@@ -189,6 +189,78 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     </refsection>
   </refentry>
 
+  <refentry xml:id="postgis_transform_geometry">
+    <refnamediv>
+    <refname>postgis_transform_geometry</refname>
+
+    <refpurpose>Return a new geometry with coordinates transformed using
+      explicit source and destination PROJ.4 strings.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>geometry <function>postgis_transform_geometry</function></funcdef>
+          <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+          <paramdef><type>text </type> <parameter>from_proj</parameter></paramdef>
+          <paramdef><type>text </type> <parameter>to_proj</parameter></paramdef>
+          <paramdef><type>integer </type> <parameter>to_srid</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+      <para>Transforms the coordinates of a geometry from the coordinate
+        reference system defined by <varname>from_proj</varname> to the
+        coordinate reference system defined by <varname>to_proj</varname>.
+        The geometry SRID is set to <varname>to_srid</varname> after the
+        transformation. Pass zero for <varname>to_srid</varname> when the
+        destination coordinate reference system is not known to
+        <varname>spatial_ref_sys</varname>.</para>
+
+      <para>This is a low-level transformation function. For most use cases,
+        use <xref linkend="ST_Transform"/> instead, which chooses the input
+        and output coordinate reference systems from SRIDs and can
+        automatically select a suitable conversion pipeline.</para>
+
+      <note>
+        <para>Requires PostGIS be compiled with PROJ support. Use
+          <xref linkend="PostGIS_Full_Version"/> to confirm you have PROJ
+          support compiled in.</para>
+      </note>
+
+      <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
+      <para>&curve_support;</para>
+      <para>&P_support;</para>
+
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+
+      <programlisting>SELECT ST_AsEWKT(
+  postgis_transform_geometry(
+    ST_SetSRID(ST_Point(-71.104, 42.315), 4326),
+    '+proj=longlat +datum=WGS84 +no_defs',
+    '+proj=utm +zone=19 +datum=WGS84 +units=m +no_defs',
+    32619));
+
+                st_asewkt
+-----------------------------------------
+ SRID=32619;POINT(326610.0202377897 4686894.997199282)
+      </programlisting>
+
+    </refsection>
+
+    <refsection>
+    <title>See Also</title>
+
+      <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_TransformPipeline"/></para>
+    </refsection>
+  </refentry>
+
   <refentry xml:id="ST_Transform">
     <refnamediv>
     <refname>ST_Transform</refname>
@@ -351,7 +423,7 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SRID"/>, <xref linkend="UpdateGeometrySRID"/>, <xref linkend="ST_TransformPipeline"/></para>
+    <para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SRID"/>, <xref linkend="postgis_transform_geometry"/>, <xref linkend="UpdateGeometrySRID"/>, <xref linkend="ST_TransformPipeline"/></para>
     </refsection>
   </refentry>
 

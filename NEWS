@@ -73,6 +73,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           and pass callback call data as actual arguments (Darafei Praliaskouski)
  - #2898, Document SQL function cost tiers for contributors
           (Darafei Praliaskouski)
+ - #2207, Document postgis_transform_geometry (Darafei Praliaskouski)
  - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
  - #6065, Improved winding order computation robustness for rings having collapsed elements
           (Sandro Santilli)
