@@ -21,7 +21,7 @@ BEGIN
     END IF;
     RETURN NULL;
   END IF;
-  result := result + rate_attributes($1, $2, streetNameA, streetNameB, $5, $6, $7, $8,prequalabr);
+  result := result + tiger.rate_attributes($1, $2, streetNameA, streetNameB, $5, $6, $7, $8,prequalabr);
   RETURN result;
 END;
 $_$ LANGUAGE plpgsql IMMUTABLE;
