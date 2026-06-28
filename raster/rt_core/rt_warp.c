@@ -1084,9 +1084,7 @@ rt_raster rt_raster_gdal_warp(
 				arg->wopts->padfDstNoDataReal[i], arg->wopts->padfDstNoDataImag[i]
 			);
 		}
-#if POSTGIS_GDAL_VERSION < 311
 	}
-#endif
 
 	/* warp raster */
 	RASTER_DEBUG(3, "Warping raster");
