@@ -294,6 +294,10 @@ int rules_add_rule(RULES *rules, int num, int *rule) {
     keyw -> Output = rule_start ;
 
     /* -- classify the output -- */
+    if ( i + 2 >= num ) {
+        RET_ERR( "rules_add_rule: rule too short, missing type/weight tokens.",
+                 rules -> err_p, 6 ) ;
+    }
     i++ ;
     t = rule[i] ;
     i++ ;
@@ -946,4 +950,3 @@ int output_rule_statistics( RULE_PARAM *r_p ,
    }
    return TRUE ;
 }
-
