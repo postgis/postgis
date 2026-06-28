@@ -5019,6 +5019,7 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
     lwpgerror("Tolerance must be -1 or >=0 ");
     PG_RETURN_NULL();
   }
+  if ( tol == -1 ) tol = 0;
 
   if ( SPI_OK_CONNECT != SPI_connect() )
   {
@@ -5124,6 +5125,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
       lwpgerror("Tolerance must be -1 or >=0 ");
       PG_RETURN_NULL();
     }
+    if ( tol == -1 ) tol = 0;
 
     if ( SPI_OK_CONNECT != SPI_connect() )
     {
@@ -5256,6 +5258,7 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
       lwpgerror("Tolerance must be -1 or >=0 ");
       PG_RETURN_NULL();
     }
+    if ( tol == -1 ) tol = 0;
 
     if ( SPI_OK_CONNECT != SPI_connect() )
     {
