@@ -28,6 +28,19 @@ Confirm the current branch state before editing:
 GitHub pull requests are review surfaces. The canonical source branch remains
 the OSGeo Gitea branch.
 
+## Pull Request Family Shape
+
+Keep one pull request per target branch in a backpatch family: one common
+`master` pull request when the lineage still needs `master` work, plus one pull
+request for each supported `stable-*` branch that needs the fix. If several
+`master`-only follow-ups are found while repairing the family, fold them into
+the common `master` pull request instead of opening separate `master` pull
+requests by subtopic.
+
+Cross-link the common `master` pull request and the stable pull requests in
+their bodies. When a subtopic is intentionally `master`-only, say that in the
+stable pull-request bodies instead of creating a second `master` lane.
+
 ## First Pass: Older Fixes Missing From Newer Branches
 
 Before pushing changes from new branches to old branches, scan in the opposite
