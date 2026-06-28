@@ -224,9 +224,7 @@ def gdt2pt(gdt):
 
     if hasattr(gdalc, 'GDT_Int8'):
         pixtypes[gdalc.GDT_Int8] = { 'name': 'PT_8BSI',  'id':  3 }
-    if hasattr(gdalc, 'GDT_Float16'):
-        pixtypes[gdalc.GDT_Float16] = { 'name': 'PT_16BF', 'id': 9 }
-    
+
     # XXX: Uncomment these logs to debug types translation
     #logit('MSG: Input GDAL pixel type: %s (%d)\n' % (gdal.GetDataTypeName(gdt), gdt))
     #logit('MSG: Output WKTRaster pixel type: %(name)s (%(id)d)\n' % (pixtypes.get(gdt, 13)))

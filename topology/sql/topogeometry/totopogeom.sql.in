@@ -145,7 +145,7 @@ BEGIN
 #endif
 
   -- Get topology information
-  SELECT id, name FROM topology.topology
+  SELECT id, name, precision FROM topology.topology
     INTO topology_info
     WHERE id = topology_id(tg);
   IF NOT FOUND THEN
@@ -162,6 +162,8 @@ BEGIN
 
   IF atolerance = -1 THEN
     tolerance := topology._st_mintolerance(topology_info.name, ageom);
+  ELSIF atolerance = 0 THEN
+    tolerance := topology_info.precision;
   ELSE
     tolerance := atolerance;
   END IF;
