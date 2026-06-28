@@ -472,6 +472,7 @@ ERROR:  Geometry contains invalid coordinates
 #5604|2|POINT(0 0)|2|POINT(-2 0)
 #5647|intersects_empty false|within_empty false|contains_empty false|coveredby_empty false|covers_empty false|intersects_mixed_empty true|within_mixed_empty false|contains_mixed_empty false|coveredby_mixed_empty true|covers_mixed_empty true
 #5647|intersects_empty false|within_empty false|contains_empty false|coveredby_empty false|covers_empty false|intersects_mixed_empty true|within_mixed_empty false|contains_mixed_empty false|coveredby_mixed_empty true|covers_mixed_empty true
+#5855|Knosesmauet
 #5876|LINESTRING(1 1,2 2)
 #5082|t
 public.test5978.shape SRID:4326 TYPE:POINT DIMS:2 
