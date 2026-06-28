@@ -98,6 +98,7 @@ check-news:
 	$(top_srcdir)/utils/check_news.sh $(top_srcdir)
 
 check-unit check-regress: all
+
 ifeq (@RASTER@,raster)
 check-fuzzers: all
 	mkdir -p fuzzers

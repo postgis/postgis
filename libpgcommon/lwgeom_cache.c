@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -261,9 +262,14 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
  *
  * Could return SRS as short one (i.e EPSG:4326)
  * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
+ *
+ * This function intentionally performs only the SPI lookup and allocation in
+ * the caller's PostGIS cache context. Ordinary PostGIS callers layer the
+ * GenericCacheCollection policy on top of it, while exported module helpers use
+ * separate storage so they do not claim another extension's FmgrInfo.fn_extra.
  */
-static char *
-getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
+static const char *
+getSRSbySRID_uncached(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 {
 	static const uint16_t max_query_size = 512;
 	char query[512];
@@ -329,6 +335,20 @@ getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 	return srscopy;
 }
 
+const char *
+SRSDescCacheGetBySRID(FunctionCallInfo fcinfo, SRSDescCacheArgument *arg, int32_t srid, bool short_crs)
+{
+	if (arg->srid != srid || arg->short_mode != short_crs || !arg->srs)
+	{
+		arg->srid = srid;
+		arg->short_mode = short_crs;
+		if (arg->srs)
+			pfree(arg->srs);
+		arg->srs = (char *)getSRSbySRID_uncached(fcinfo, srid, short_crs);
+	}
+	return arg->srs;
+}
+
 static inline SRSDescCache *
 SRSDescCacheGet(FunctionCallInfo fcinfo)
 {
@@ -348,17 +368,7 @@ const char *
 GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 {
 	SRSDescCache *cache = SRSDescCacheGet(fcinfo);
-	SRSDescCacheArgument *arg = &(cache->arg[0]);
-
-	if (arg->srid != srid || arg->short_mode != short_crs || !arg->srs)
-	{
-		arg->srid = srid;
-		arg->short_mode = short_crs;
-		if (arg->srs)
-			pfree(arg->srs);
-		arg->srs = getSRSbySRID(fcinfo, srid, short_crs);
-	}
-	return arg->srs;
+	return SRSDescCacheGetBySRID(fcinfo, &(cache->arg[0]), srid, short_crs);
 }
 
 /*

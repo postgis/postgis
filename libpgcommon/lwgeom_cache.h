@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -18,6 +19,27 @@
 #include "liblwgeom.h"
 #include "lwgeodetic_tree.h"
 #include "lwgeom_pg.h"
+
+/*
+ * Visibility for selected internal helper symbols.
+ *
+ * This is not a supported PostGIS C API. These declarations exist only so the
+ * final postgis module can keep a small number of currently-used downstream
+ * internal-entry symbols reachable. Downstreams that call these symbols own
+ * compatibility risk when PostGIS internals change.
+ *
+ * Do not treat this macro as a promise to preserve signatures, semantics,
+ * memory ownership, or availability across releases.
+ */
+#ifndef POSTGIS_PRIVATE_EXPORT
+#ifdef _WIN32
+#define POSTGIS_PRIVATE_EXPORT __declspec(dllexport)
+#elif defined(__GNUC__) || defined(__clang__)
+#define POSTGIS_PRIVATE_EXPORT __attribute__((visibility("default")))
+#else
+#define POSTGIS_PRIVATE_EXPORT
+#endif
+#endif
 
 enum CacheEntryEnum {
 	TOAST_CACHE_ENTRY   = 0,
@@ -120,6 +142,7 @@ typedef struct {
 } SRSDescCache;
 
 const char *GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
+const char *SRSDescCacheGetBySRID(FunctionCallInfo fcinfo, SRSDescCacheArgument *arg, int32_t srid, bool short_crs);
 
 /******************************************************************************/
 
@@ -136,3 +159,5 @@ typedef struct {
 
 int32_t GetSRIDCacheBySRS(FunctionCallInfo fcinfo, const char *srs);
 
+POSTGIS_PRIVATE_EXPORT
+const char *getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);

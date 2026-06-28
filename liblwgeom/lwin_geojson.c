@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2019 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2019-2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright 2013 Sandro Santilli <strk@kbt.io>
  * Copyright 2011 Kashif Rasul <kashif.rasul@gmail.com>
  *
@@ -46,7 +46,7 @@
 #include <string.h>
 
 /* Prototype */
-static LWGEOM *parse_geojson(json_object *geojson, int *hasz);
+static LWGEOM *parse_geojson_geometry(json_object *geojson, int *hasz);
 
 static inline json_object *
 findMemberByName(json_object *poObj, const char *pszName)
@@ -328,6 +328,11 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz)
 	return geom;
 }
 
+/*
+ * GeoJSON collections use one dimensionality for the final LWGEOM. If any
+ * child has a Z coordinate, the whole collection must keep Z, so recursive
+ * parsing shares one hasz flag across all children.
+ */
 static inline LWGEOM *
 parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 {
@@ -345,7 +350,7 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 		for (int i = 0; i < nGeoms; ++i)
 		{
 			json_object *poObjGeom = json_object_array_get_idx(poObjGeoms, i);
-			LWGEOM *t = parse_geojson(poObjGeom, hasz);
+			LWGEOM *t = parse_geojson_geometry(poObjGeom, hasz);
 			if (t)
 				geom = (LWGEOM *)lwcollection_add_lwgeom((LWCOLLECTION *)geom, t);
 			else
@@ -359,8 +364,8 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 	return geom;
 }
 
-static inline LWGEOM *
-parse_geojson(json_object *geojson, int *hasz)
+static LWGEOM *
+parse_geojson_geometry(json_object *geojson, int *hasz)
 {
 	json_object *type = NULL;
 	const char *name;
@@ -405,7 +410,42 @@ parse_geojson(json_object *geojson, int *hasz)
 	return NULL; /* Never reach */
 }
 
+/*
+ * Entry point for callers that already own JSON parsing. It keeps the same
+ * dimensionality rule as lwgeom_from_geojson(): objects without any Z ordinate
+ * are normalized to 2D, while one Z anywhere in a collection preserves Z.
+ */
+LWGEOM *
+lwgeom_from_geojson_object(json_object *geojson, int *hasz)
+{
+	int local_hasz = LW_FALSE;
+	LWGEOM *geom;
+
+	if (hasz)
+		*hasz = LW_FALSE;
+
+	geom = parse_geojson_geometry(geojson, hasz ? hasz : &local_hasz);
+
+	if (geom && !*(hasz ? hasz : &local_hasz))
+	{
+		LWGEOM *tmp = lwgeom_force_2d(geom);
+		lwgeom_free(geom);
+		geom = tmp;
+	}
+
+	return geom;
+}
+
 #endif /* HAVE_LIBJSON */
+
+#if !defined(HAVE_LIBJSON)
+LWGEOM *
+lwgeom_from_geojson_object(struct json_object *geojson, int *hasz)
+{
+	lwerror("GeoJSON input requires JSON-C");
+	return NULL;
+}
+#endif
 
 LWGEOM *
 lwgeom_from_geojson(const char *geojson, char **srs)
@@ -455,17 +495,11 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	}
 
 	int hasz = LW_FALSE;
-	LWGEOM *lwgeom = parse_geojson(poObj, &hasz);
+	LWGEOM *lwgeom = lwgeom_from_geojson_object(poObj, &hasz);
 	json_object_put(poObj);
 	if (!lwgeom)
 		return NULL;
 
-	if (!hasz)
-	{
-		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
-		lwgeom_free(lwgeom);
-		lwgeom = tmp;
-	}
 	lwgeom_add_bbox(lwgeom);
 	return lwgeom;
 #endif /* HAVE_LIBJSON */
