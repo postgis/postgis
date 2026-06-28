@@ -155,6 +155,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #6080, Avoid out-of-bounds hex WKB lookup for high-bit input bytes
           (Darafei Praliaskouski)
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
+ - GH-1133, Bound Catmull-Rom smoothing output growth, ensure automatic
+          geohashes cover their input bounds, and clean up polygon orientation
+          wrapper inputs (Darafei Praliaskouski)
  - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
           selections (Darafei Praliaskouski)
  - GH-894, [raster] Fix Float16 import, mixed nodata warping,

@@ -189,15 +189,15 @@ do_test_catmull_rom_points(void)
 }
 
 static void
-do_test_catmull_rom_nsegments_cap(void)
+do_test_catmull_rom_collection_point_cap(void)
 {
 	LWGEOM *geom_in, *geom_out;
 
 	cu_error_msg_reset();
-	geom_in = lwgeom_from_wkt("LINESTRING(0 0,1 0,2 0,3 0)", LW_PARSER_CHECK_NONE);
-	geom_out = lwgeom_catmull_rom(geom_in, 101);
+	geom_in = lwgeom_from_wkt("MULTILINESTRING((0 0,1 0,2 0,3 0),(10 0,11 0,12 0,13 0))", LW_PARSER_CHECK_NONE);
+	geom_out = lwgeom_catmull_rom(geom_in, 166667);
 
-	ASSERT_STRING_EQUAL(cu_error_msg, "lwgeom_catmull_rom: nSegments must be <= 100");
+	ASSERT_STRING_EQUAL(cu_error_msg, "ptarray_catmull_rom: requested smoothing would generate too many points");
 
 	lwgeom_free(geom_in);
 	if (geom_out)
@@ -214,5 +214,5 @@ void catmullrom_suite_setup(void)
 	PG_ADD_TEST(suite, do_test_catmull_rom_polygons);
 	PG_ADD_TEST(suite, do_test_catmull_rom_zm);
 	PG_ADD_TEST(suite, do_test_catmull_rom_points);
-	PG_ADD_TEST(suite, do_test_catmull_rom_nsegments_cap);
+	PG_ADD_TEST(suite, do_test_catmull_rom_collection_point_cap);
 }

@@ -724,6 +724,24 @@ void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 	}
 }
 
+static int
+geohash_contains_gbox(lwvarlena_t *geohash, const GBOX *gbox)
+{
+	size_t precision = LWSIZE_GET(geohash->size) - LWVARHDRSZ;
+	char hash[GEOHASH_MAX_DOUBLE_PRECISION_CHARS + 1];
+	double lat[2];
+	double lon[2];
+
+	if (precision > GEOHASH_MAX_DOUBLE_PRECISION_CHARS)
+		return LW_FALSE;
+
+	memcpy(hash, geohash->data, precision);
+	hash[precision] = '\0';
+	decode_geohash_bbox(hash, lat, lon, (int)precision);
+
+	return lon[0] <= gbox->xmin && lon[1] >= gbox->xmax && lat[0] <= gbox->ymin && lat[1] >= gbox->ymax;
+}
+
 int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 {
 	double minx, miny, maxx, maxy;
@@ -839,6 +857,8 @@ lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	GBOX gbox_bounds = {0};
 	double lat, lon;
 	int result;
+	int auto_precision = precision <= 0;
+	lwvarlena_t *geohash = NULL;
 
 	gbox_init(&gbox);
 	gbox_init(&gbox_bounds);
@@ -870,5 +890,11 @@ lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	** extent of the bounds.
 	** Possible change: return the point at the center of the precision bounds?
 	*/
-	return geohash_point(lon, lat, precision);
+	geohash = geohash_point(lon, lat, precision);
+	while (auto_precision && precision > 0 && !geohash_contains_gbox(geohash, &gbox))
+	{
+		lwfree(geohash);
+		geohash = geohash_point(lon, lat, --precision);
+	}
+	return geohash;
 }

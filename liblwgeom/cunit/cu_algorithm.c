@@ -1030,12 +1030,37 @@ static void test_geohash_point(void)
 
 }
 
+static void
+assert_geohash_covers_wkt(const char *wkt, const GBOX *gbox)
+{
+	LWGEOM *lwgeom = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *geohash = lwgeom_geohash(lwgeom, 0);
+	size_t geohash_size = LWSIZE_GET(geohash->size) - LWVARHDRSZ;
+	char geohash_buf[21];
+	double lat[2];
+	double lon[2];
+
+	CU_ASSERT_FATAL(geohash_size <= 20);
+	memcpy(geohash_buf, geohash->data, geohash_size);
+	geohash_buf[geohash_size] = '\0';
+	decode_geohash_bbox(geohash_buf, lat, lon, (int)geohash_size);
+	CU_ASSERT(lon[0] <= gbox->xmin);
+	CU_ASSERT(lon[1] >= gbox->xmax);
+	CU_ASSERT(lat[0] <= gbox->ymin);
+	CU_ASSERT(lat[1] >= gbox->ymax);
+
+	lwgeom_free(lwgeom);
+	lwfree(geohash);
+}
+
 static void test_geohash(void)
 {
 	LWPOINT *lwpoint = NULL;
 	LWLINE *lwline = NULL;
 	LWMLINE *lwmline = NULL;
 	lwvarlena_t *geohash = NULL;
+	GBOX gbox;
+
 	lwpoint = (LWPOINT*)lwgeom_from_wkt("POINT(23.0 25.2)", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwpoint,0);
 	//printf("\ngeohash %s\n",geohash);
@@ -1070,6 +1095,20 @@ static void test_geohash(void)
 	ASSERT_VARLENA_EQUAL(geohash, "ss0");
 	lwmline_free(lwmline);
 	lwfree(geohash);
+
+	gbox.xmin = -72.70493954792298;
+	gbox.xmax = -72.70493954792298;
+	gbox.ymin = -89.90561212126683;
+	gbox.ymax = -89.90561212126681;
+	assert_geohash_covers_wkt(
+	    "LINESTRING(-72.70493954792298 -89.90561212126683,-72.70493954792298 -89.90561212126681)", &gbox);
+
+	gbox.xmin = 81.32848034782302;
+	gbox.xmax = 81.32848034782303;
+	gbox.ymin = -85.81053233670902;
+	gbox.ymax = -85.810532336709;
+	assert_geohash_covers_wkt("LINESTRING(81.32848034782302 -85.81053233670902,81.32848034782303 -85.810532336709)",
+				  &gbox);
 }
 
 static void test_isclosed(void)

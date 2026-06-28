@@ -27,6 +27,13 @@
 
 #include "liblwgeom_internal.h"
 
+#define CATMULL_ROM_MAX_OUTPUT_POINTS 1000000U
+
+typedef struct {
+	/* Bound one public smoothing call, not each recursive component separately. */
+	uint64_t output_points;
+} CatmullRomContext;
+
 
 /* ========================================================================
  * Chaikin smoothing
@@ -207,7 +214,7 @@ LWGEOM* lwgeom_chaikin(const LWGEOM *igeom, int n_iterations, int preserve_endpo
 
 
 /* Forward declaration needed by lwcollection_catmull_rom */
-LWGEOM *lwgeom_catmull_rom(const LWGEOM *igeom, int n_segments);
+static LWGEOM *lwgeom_catmull_rom_internal(const LWGEOM *igeom, int n_segments, CatmullRomContext *ctx);
 
 /* ========================================================================
  * Catmull-Rom spline smoothing
@@ -241,7 +248,7 @@ LWGEOM *lwgeom_catmull_rom(const LWGEOM *igeom, int n_segments);
  * Returns a newly allocated POINTARRAY; caller must free.
  */
 static POINTARRAY *
-ptarray_catmull_rom(const POINTARRAY *inpts, int n_segments, int isclosed)
+ptarray_catmull_rom(const POINTARRAY *inpts, int n_segments, int isclosed, CatmullRomContext *ctx)
 {
 	uint32_t ndims = 2 + ptarray_has_z(inpts) + ptarray_has_m(inpts);
 	uint32_t npoints = inpts->npoints;
@@ -258,7 +265,14 @@ ptarray_catmull_rom(const POINTARRAY *inpts, int n_segments, int isclosed)
 	uint32_t nspans = N - (isclosed ? 0 : 1);
 
 	/* Output size: nspans * n_segments + 1 (we always close with the last orig point) */
-	uint32_t out_cap = nspans * (uint32_t)n_segments + 1;
+	uint64_t out_cap64 = (uint64_t)nspans * (uint32_t)n_segments + 1;
+	if (out_cap64 > CATMULL_ROM_MAX_OUTPUT_POINTS || ctx->output_points > CATMULL_ROM_MAX_OUTPUT_POINTS - out_cap64)
+	{
+		lwerror("%s: requested smoothing would generate too many points", __func__);
+		return NULL;
+	}
+	ctx->output_points += out_cap64;
+	uint32_t out_cap = (uint32_t)out_cap64;
 	POINTARRAY *opts = ptarray_construct_empty(
 		FLAGS_GET_Z(inpts->flags), FLAGS_GET_M(inpts->flags), out_cap);
 
@@ -333,7 +347,7 @@ ptarray_catmull_rom(const POINTARRAY *inpts, int n_segments, int isclosed)
 
 
 static LWLINE *
-lwline_catmull_rom(const LWLINE *iline, int n_segments)
+lwline_catmull_rom(const LWLINE *iline, int n_segments, CatmullRomContext *ctx)
 {
 	if (lwline_is_empty(iline))
 		return lwline_clone(iline);
@@ -341,7 +355,9 @@ lwline_catmull_rom(const LWLINE *iline, int n_segments)
 	if (iline->points->npoints < 4)
 		return lwline_clone(iline);
 
-	POINTARRAY *pa = ptarray_catmull_rom(iline->points, n_segments, LW_FALSE);
+	POINTARRAY *pa = ptarray_catmull_rom(iline->points, n_segments, LW_FALSE, ctx);
+	if (!pa)
+		return NULL;
 	LWLINE *oline = lwline_construct(iline->srid, NULL, pa);
 	oline->type = iline->type;
 	return oline;
@@ -349,7 +365,7 @@ lwline_catmull_rom(const LWLINE *iline, int n_segments)
 
 
 static LWPOLY *
-lwpoly_catmull_rom(const LWPOLY *ipoly, int n_segments)
+lwpoly_catmull_rom(const LWPOLY *ipoly, int n_segments, CatmullRomContext *ctx)
 {
 	LWPOLY *opoly = lwpoly_construct_empty(
 		ipoly->srid, FLAGS_GET_Z(ipoly->flags), FLAGS_GET_M(ipoly->flags));
@@ -366,7 +382,9 @@ lwpoly_catmull_rom(const LWPOLY *ipoly, int n_segments)
 		if (ring->npoints - 1 < 4)
 			pa_out = ptarray_clone(ring);
 		else
-			pa_out = ptarray_catmull_rom(ring, n_segments, LW_TRUE);
+			pa_out = ptarray_catmull_rom(ring, n_segments, LW_TRUE, ctx);
+		if (!pa_out)
+			return NULL;
 
 		if (pa_out->npoints >= 4)
 		{
@@ -389,7 +407,7 @@ lwpoly_catmull_rom(const LWPOLY *ipoly, int n_segments)
 
 
 static LWCOLLECTION *
-lwcollection_catmull_rom(const LWCOLLECTION *igeom, int n_segments)
+lwcollection_catmull_rom(const LWCOLLECTION *igeom, int n_segments, CatmullRomContext *ctx)
 {
 	LWCOLLECTION *out = lwcollection_construct_empty(
 		igeom->type, igeom->srid,
@@ -400,7 +418,7 @@ lwcollection_catmull_rom(const LWCOLLECTION *igeom, int n_segments)
 
 	for (uint32_t i = 0; i < igeom->ngeoms; i++)
 	{
-		LWGEOM *ngeom = lwgeom_catmull_rom(igeom->geoms[i], n_segments);
+		LWGEOM *ngeom = lwgeom_catmull_rom_internal(igeom->geoms[i], n_segments, ctx);
 		if (ngeom)
 			out = lwcollection_add_lwgeom(out, ngeom);
 	}
@@ -409,29 +427,31 @@ lwcollection_catmull_rom(const LWCOLLECTION *igeom, int n_segments)
 }
 
 
-LWGEOM *
-lwgeom_catmull_rom(const LWGEOM *igeom, int n_segments)
+static LWGEOM *
+lwgeom_catmull_rom_internal(const LWGEOM *igeom, int n_segments, CatmullRomContext *ctx)
 {
-	if (n_segments > 100)
-	{
-		lwerror("lwgeom_catmull_rom: nSegments must be <= 100");
-		return NULL;
-	}
 	switch (igeom->type)
 	{
 	case POINTTYPE:
 	case MULTIPOINTTYPE:
 		return lwgeom_clone(igeom);
 	case LINETYPE:
-		return (LWGEOM *)lwline_catmull_rom((LWLINE *)igeom, n_segments);
+		return (LWGEOM *)lwline_catmull_rom((LWLINE *)igeom, n_segments, ctx);
 	case POLYGONTYPE:
-		return (LWGEOM *)lwpoly_catmull_rom((LWPOLY *)igeom, n_segments);
+		return (LWGEOM *)lwpoly_catmull_rom((LWPOLY *)igeom, n_segments, ctx);
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
-		return (LWGEOM *)lwcollection_catmull_rom((LWCOLLECTION *)igeom, n_segments);
+		return (LWGEOM *)lwcollection_catmull_rom((LWCOLLECTION *)igeom, n_segments, ctx);
 	default:
 		lwerror("lwgeom_catmull_rom: unsupported geometry type: %s", lwtype_name(igeom->type));
 	}
 	return NULL;
+}
+
+LWGEOM *
+lwgeom_catmull_rom(const LWGEOM *igeom, int n_segments)
+{
+	CatmullRomContext ctx = {0};
+	return lwgeom_catmull_rom_internal(igeom, n_segments, &ctx);
 }
