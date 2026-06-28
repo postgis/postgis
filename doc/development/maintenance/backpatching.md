@@ -63,6 +63,24 @@ Stop when the affected code path, SQL function, extension object, build target,
 or regression test does not exist on the older branch. Do not backport a new
 feature only to make a bug fix fit an older release line.
 
+Backport by branch capability, not by pull-request number range. For each
+source hunk, check that the target branch has the same API surface and test
+contract before carrying it over:
+
+* C enum values, pixel types, version macros, and generated lookup tables;
+* SQL wrappers versus C functions with planner support hooks;
+* function signatures, default arguments, and sentinel values;
+* build-system variables and recursive `make` entry points;
+* supported PostgreSQL and dependency versions in CI;
+* regression-test fixtures and expected output semantics.
+
+If a source test only proves behavior introduced on newer branches, omit or
+adapt that subtest on older branches. Keep the regression that protects the
+portable bug fix, but do not force an expected row only because it appeared in
+the newer branch. A missing expected row means: first inspect the SQL query and
+the target branch's function semantics, then decide whether the code or the
+test is non-portable.
+
 Record the stop reason in the pull request or maintainer handoff, for example:
 
 ```text
@@ -73,6 +91,12 @@ Stops at stable-3.3 because stable-3.2 does not have CG_AlphaShape.
 
 Prefer one source commit to one target commit. Clean cherry-picks should use
 `git cherry-pick -x` so the source commit hash is preserved.
+
+When cherry-picking a commit that is already a cherry-pick, keep only the
+provenance that helps reviewers trace the backpatch. Avoid stacking repeated
+`(cherry picked from commit ...)` lines mechanically; collapse noisy duplicate
+trailers into one clear source commit, or use a `Ported-from:` line for a manual
+port.
 
 When a clean cherry-pick is not possible, make the smallest faithful port and
 record the source in the commit body:
@@ -162,4 +186,3 @@ After merge: update https://trac.osgeo.org/postgis/ticket/6081 fixed version to 
 Use the target branch's next release version from `Version.config` and `NEWS`.
 If the same ticket lands on several branches, the follow-up should name the
 oldest supported release that contains the fix.
-
