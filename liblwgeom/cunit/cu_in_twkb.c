@@ -224,6 +224,72 @@ static void test_twkb_in_precision(void)
 
 
 
+static void
+test_twkb_in_coordinate_delta_overflow(void)
+{
+	const uint8_t twkb[] = {0x02, /* LINESTRING with default precision. */
+				0x00,
+				0x02, /* Two points. */
+				0xfe,
+				0xff,
+				0xff,
+				0xff,
+				0xff,
+				0xff, /* X = INT64_MAX. */
+				0xff,
+				0xff,
+				0xff,
+				0x01,
+				0x00, /* Y = 0. */
+				0x02, /* X delta = 1. */
+				0x00};
+	LWGEOM *geom;
+
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_twkb(twkb, sizeof(twkb), LW_PARSER_CHECK_NONE);
+
+	/* TWKB stores coordinate deltas as signed integers. Malformed or fuzzed
+	 * inputs can wrap the accumulated delta; the parser must make that wrap
+	 * explicit instead of relying on undefined signed-overflow behaviour.
+	 */
+	ASSERT_STRING_EQUAL(cu_error_msg, "");
+	CU_ASSERT_PTR_NOT_NULL(geom);
+	lwgeom_free(geom);
+}
+
+
+static void
+test_twkb_in_deep_collection(void)
+{
+	const size_t ngeoms = 201;
+	const size_t twkb_size = ngeoms * 3 + 2;
+	uint8_t *twkb = lwalloc(twkb_size);
+	LWGEOM *geom;
+	size_t i;
+
+	for (i = 0; i < ngeoms; i++)
+	{
+		/* GEOMETRYCOLLECTION with default precision and one child. */
+		twkb[3 * i] = 0x07;
+		twkb[3 * i + 1] = 0x00;
+		twkb[3 * i + 2] = 0x01;
+	}
+	twkb[3 * ngeoms] = 0x01;     /* POINT with default precision. */
+	twkb[3 * ngeoms + 1] = 0x10; /* Empty geometry. */
+
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_twkb(twkb, twkb_size, LW_PARSER_CHECK_NONE);
+
+	/* Recursive collection parsing must reject hostile nesting before the C
+	 * stack becomes the effective input validator.
+	 */
+	ASSERT_STRING_EQUAL(cu_error_msg, "Geometry has too many chained collections");
+	CU_ASSERT_PTR_NULL(geom);
+	lwfree(twkb);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -239,4 +305,6 @@ void twkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_twkb_in_multipolygon);
 	PG_ADD_TEST(suite, test_twkb_in_collection);
 	PG_ADD_TEST(suite, test_twkb_in_precision);
+	PG_ADD_TEST(suite, test_twkb_in_coordinate_delta_overflow);
+	PG_ADD_TEST(suite, test_twkb_in_deep_collection);
 }

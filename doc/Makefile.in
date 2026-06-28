@@ -35,6 +35,7 @@ endif
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
+srcdir = @srcdir@
 
 XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
@@ -166,6 +167,7 @@ XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
 XML_INPUTS_POT = $(XML_SOURCES:%.xml=po/templates/%.xml.pot)
 
 .PHONY: $(XML_INPUTS_POT)
+CAN_CHECK_XML = yes
 $(XML_INPUTS_POT): po/templates/%.xml.pot: %.xml
 	@if test -f $@; then \
 	  $(XML2POT) $< > $@.tmp; \
@@ -425,22 +427,36 @@ endif
 
 
 
+ifeq ($(XMLLINT),)
+check-xml: requirements_not_met_xmllint
+CAN_CHECK_XML = no
+endif
+
+ifeq ($(XSLBASE),)
+check-xml: requirements_not_met_xslbase
+CAN_CHECK_XML = no
+endif
+
+CHECK_UNIT_TARGET =
+
+ifeq ($(CAN_CHECK_XML),yes)
+CHECK_UNIT_TARGET = check-xml
+endif
+
+
+check-xml: $(XML_INPUTS)
+	$(XMLLINT) --loaddtd --path $(srcdir) --xinclude --valid postgis-out.xml --noout
+
 check: check-unit
 check-regress:
 
-ifeq ($(XMLLINT),)
-check-unit: requirements_not_met_xmllint
-else
-check-unit: $(XML_INPUTS)
-	$(XMLLINT) --loaddtd --xinclude --valid postgis-out.xml > /dev/null
-endif
+check-unit: $(CHECK_UNIT_TARGET)
 
 check-localized:
 	@for lang in $(translations); do \
     echo "Creating html for language $$lang..."; \
     $(MAKE) -C po/$$lang local-check; \
   done
-
 
 requirements_not_met_xsltproc:
 	@echo

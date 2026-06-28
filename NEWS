@@ -6,6 +6,16 @@ PostGIS 3.2.11
  - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
  - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
  - #5989, CurvePolygon distance corner case (Paul Ramsey)
+ - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
+ - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
+ - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
+ - Avoid Inf loop in Geohash calculation (Paul Ramsey)
+ - [address_standardizer] Avoid NULL dereferences, unsafe table-name handling,
+   and out-of-bounds rule parsing
+   (Maksim Korotkov, Paul Ramsey)
+ - [tiger_geocoder] Harden schema qualification and dynamic table names
+   (Paul Ramsey)
+ - #6044, Skip doc XML validation without DocBook XSL stylesheets (Regina Obe)
 
 
 PostGIS 3.2.10
@@ -3207,4 +3217,3 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-
