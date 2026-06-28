@@ -914,12 +914,6 @@ rt_band_set_pixel_line(
 			memcpy(ptr, vals, size * len);
 			break;
 		}
-		case PT_16BF: {
-			uint16_t *ptr = (uint16_t *) data;
-			ptr += offset;
-			memcpy(ptr, vals, (size_t)size * len);
-			break;
-		}
 		case PT_32BUI: {
 			uint32_t *ptr = (uint32_t *) data;
 			ptr += offset;
@@ -2086,4 +2080,3 @@ rt_band_corrected_clamped_value(
 
 	return ES_NONE;
 }
-
