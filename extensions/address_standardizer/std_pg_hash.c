@@ -9,7 +9,13 @@
 #include "access/hash.h"
 #include "utils/hsearch.h"
 #include "funcapi.h"
+#include "catalog/namespace.h"
 #include "catalog/pg_type.h"
+#include "utils/builtins.h"
+#include "utils/lsyscache.h"
+#if PG_VERSION_NUM >= 100000
+#include "utils/regproc.h"
+#endif
 
 /* standardizer headers */
 #undef DEBUG
@@ -102,7 +108,6 @@ static StdPortalCache *GetStdPortalCache(FunctionCallInfo fcinfo);
 static STANDARDIZER *CreateStd(char *lextab, char *gaztab, char *rultab);
 static int parse_rule(char *buf, int *rule);
 static int fetch_lex_columns(SPITupleTable *tuptable, lex_columns_t *lex_cols);
-static int tableNameOk(char *t);
 static int load_lex(LEXICON *lex, char *tabname);
 static int fetch_rules_columns(SPITupleTable *tuptable, rules_columns_t *rules_cols);
 static int load_rules(RULES *rules, char *tabname);
@@ -590,16 +595,42 @@ static int fetch_lex_columns(SPITupleTable *tuptable, lex_columns_t *lex_cols)
     return 0;
 }
 
-/* snitize table names, leave '.' for schema */
-
-static int tableNameOk(char *t)
+/*
+ * Resolve a user-supplied table name through PostgreSQL's catalog (respecting
+ * search_path, quoting rules, etc.) and return a schema-qualified, properly
+ * quoted identifier safe for embedding in SQL strings.  Returns NULL if the
+ * relation does not exist or the name cannot be parsed.
+ */
+char *
+resolve_and_quote_tabname(const char *tabname)
 {
-    while (*t != '\0') {
-        if (!(isalnum(*t) || *t == '_' || *t == '.' || *t == '"'))
-            return 0;
-        t++;
-    }
-    return 1;
+    List     *names;
+    RangeVar *rv;
+    Oid       relid;
+    char     *relname;
+    char     *nspname;
+
+#if PG_VERSION_NUM >= 160000
+	names = stringToQualifiedNameList(tabname, NULL);
+#else
+	names = stringToQualifiedNameList(tabname);
+#endif
+    if (!names)
+        return NULL;
+
+    rv    = makeRangeVarFromNameList(names);
+    relid = RangeVarGetRelid(rv, NoLock, true); /* missing_ok */
+
+    if (!OidIsValid(relid))
+        return NULL;
+
+    relname = get_rel_name(relid);
+    nspname = get_namespace_name(get_rel_namespace(relid));
+
+    if (!relname || !nspname)
+        return NULL;
+
+    return psprintf("%s.%s", quote_identifier(nspname), quote_identifier(relname));
 }
 
 static int load_lex(LEXICON *lex, char *tab)
@@ -628,29 +659,22 @@ static int load_lex(LEXICON *lex, char *tab)
     SET_TIME(t1);
 
     if (!tab || !strlen(tab)) {
-        elog(NOTICE, "load_lex: rules table is not usable");
+        elog(NOTICE, "load_lex: table name is empty");
         return -1;
     }
-    if (!tableNameOk(tab)) {
-        elog(NOTICE, "load_lex: lex and gaz table names may only be alphanum and '.\"_' characters (%s)", tab);
-        return -1;
+    {
+        char *safe_tab = resolve_and_quote_tabname(tab);
+        if (!safe_tab) {
+            elog(NOTICE, "load_lex: table \"%s\" does not exist", tab);
+            return -1;
+        }
+        sql = psprintf("select seq, word, stdword, token from %s order by id", safe_tab);
     }
-    sql = SPI_palloc(strlen(tab)+65);
-    strcpy(sql, "select seq, word, stdword, token from ");
-    strcat(sql, tab);
-    strcat(sql, " order by id ");
 
     /* get the sql for the lexicon records and prepare the query */
     SPIplan = SPI_prepare(sql, 0, NULL);
     if (SPIplan == NULL) {
         elog(NOTICE, "load_lex: couldn't create query plan for the lex data via SPI (%s)", sql);
-        return -1;
-    }
-
-    /* get the sql for the lexicon records and prepare the query */
-    SPIplan = SPI_prepare(sql, 0, NULL);
-    if (SPIplan == NULL) {
-        elog(NOTICE, "load_lex: couldn't create query plan for the lexicon data via SPI");
         return -1;
     }
 
@@ -754,17 +778,17 @@ static int load_rules(RULES *rules, char *tab)
     SET_TIME(t1);
 
     if (!tab || !strlen(tab)) {
-        elog(NOTICE, "load_rules: rules table is not usable");
+        elog(NOTICE, "load_rules: table name is empty");
         return -1;
     }
-    if (!tableNameOk(tab)) {
-        elog(NOTICE, "load_rules: rules table name may only be alphanum and '.\"_' characters (%s)", tab);
-        return -1;
+    {
+        char *safe_tab = resolve_and_quote_tabname(tab);
+        if (!safe_tab) {
+            elog(NOTICE, "load_rules: table \"%s\" does not exist", tab);
+            return -1;
+        }
+        sql = psprintf("select rule from %s order by id", safe_tab);
     }
-    sql = SPI_palloc(strlen(tab)+35);
-    strcpy(sql, "select rule from ");
-    strcat(sql, tab);
-    strcat(sql, " order by id ");
 
     /* get the sql for the lexicon records and prepare the query */
     SPIplan = SPI_prepare(sql, 0, NULL);
@@ -843,5 +867,3 @@ static int load_rules(RULES *rules, char *tab)
                          // must be after declaration to pet -Werror=declaration-after-statement
     return 0;
 }
-
-

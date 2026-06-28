@@ -1460,7 +1460,7 @@ void output_raw_elements( STAND_PARAM * __stand_param__ , ERR_PARAM *__err_param
 			}
 			else
 			{
-				sprintf( __err_param__->error_buf , "\t(%d) std: %s, tok: %d (%s)\n" , lex_pos , (( __def__->Protect )? __stand_param__->lex_vector[lex_pos].Text : __def__->Standard) , __def__->Type , in_symb_name( __def__->Type ));
+				snprintf( __err_param__->error_buf , MAXSTRLEN , "\t(%d) std: %s, tok: %d (%s)\n" , lex_pos , (( __def__->Protect )? __stand_param__->lex_vector[lex_pos].Text : __def__->Standard) , __def__->Type , in_symb_name( __def__->Type ));
 				register_error( __err_param__ ) ;
 			}
 		}
@@ -1490,7 +1490,7 @@ void output_raw_elements( STAND_PARAM * __stand_param__ , ERR_PARAM *__err_param
 			}
 			else
 			{
-				sprintf( __err_param__->error_buf , "\t(%d) Input %d (%s) text %s mapped to output %d (%s)\n" , lex_pos , __def__->Type , in_symb_name( __def__->Type ) , (( __def__->Protect )? __stand_param__->lex_vector[lex_pos].Text : __def__->Standard ) , k , (( k == FAIL )? "NONE" : out_symb_name( k ))) ;
+				snprintf( __err_param__->error_buf , MAXSTRLEN , "\t(%d) Input %d (%s) text %s mapped to output %d (%s)\n" , lex_pos , __def__->Type , in_symb_name( __def__->Type ) , (( __def__->Protect )? __stand_param__->lex_vector[lex_pos].Text : __def__->Standard ) , k , (( k == FAIL )? "NONE" : out_symb_name( k ))) ;
 				register_error( __err_param__ ) ;
 			}
 			if ( k == FAIL ) break ;
@@ -1498,4 +1498,3 @@ void output_raw_elements( STAND_PARAM * __stand_param__ , ERR_PARAM *__err_param
 	}
 	fflush( stdout ) ;
 }
-

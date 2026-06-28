@@ -3,6 +3,9 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #6042, Skip downgrade checks when source extension libraries cannot
+           be loaded in the current dependency environment
+           (Darafei Praliaskouski)
   - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
   - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
   - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
@@ -10,7 +13,13 @@ PostGIS 3.4.7
   - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
   - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
   - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
- - Avoid Inf loop in Geohash calculation (Paul Ramsey)
+  - Avoid Inf loop in Geohash calculation (Paul Ramsey)
+  - [address_standardizer] Avoid unsafe table-name handling and out-of-bounds
+    rule parsing (Paul Ramsey)
+  - [tiger_geocoder] Harden schema qualification and dynamic table names
+    (Paul Ramsey)
+  - #6046, Prefer GraphicsMagick for documentation image generation
+           (Darafei Praliaskouski)
 
 
 PostGIS 3.4.6
@@ -3429,4 +3438,3 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-
