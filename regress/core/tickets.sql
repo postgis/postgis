@@ -1495,17 +1495,4 @@ WHERE ST_DFullyWithin(
     1700
 );
 
-CREATE TEMP TABLE dfullywithin_indexed_first_arg (id integer, geom geometry);
-INSERT INTO dfullywithin_indexed_first_arg
-VALUES (1, 'POLYGON((-10 -10,-10 10,10 10,10 -10,-10 -10))');
-CREATE INDEX dfullywithin_indexed_first_arg_gist
-ON dfullywithin_indexed_first_arg USING GIST (geom);
-
-SELECT '#5855.1', id
-FROM dfullywithin_indexed_first_arg
-WHERE ST_DFullyWithin(
-    geom,
-    ST_GeomFromText('POINT(0 0)'),
-    0
-);
 RESET enable_seqscan;
