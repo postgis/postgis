@@ -1031,7 +1031,7 @@ rt_raster rt_raster_gdal_warp(
 	arg->wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 3);
 	arg->wopts->papszWarpOptions[0] = (char *) CPLMalloc(sizeof(char) * (strlen("INIT_DEST=NO_DATA") + 1));
 	strcpy(arg->wopts->papszWarpOptions[0], "INIT_DEST=NO_DATA");
-#if POSTGIS_GDAL_VERSION >= 30302
+#if POSTGIS_GDAL_VERSION >= 33
 	arg->wopts->papszWarpOptions[1] = (char *) CPLMalloc(sizeof(char) * (strlen("UNIFIED_SRC_NODATA=PARTIAL") + 1));
 	strcpy(arg->wopts->papszWarpOptions[1], "UNIFIED_SRC_NODATA=PARTIAL");
 #else

@@ -5,7 +5,7 @@ EXTDIR=`pg_config --sharedir`/extension/
 CTBDIR=`pg_config --sharedir`/contrib/
 TMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/check_all_upgrades.XXXXXX") || exit 1
 PGVER=`pg_config --version | awk '{print $2}'`
-PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
+PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\(alpha\|beta\|rc\).*//' | awk -F. '{ if ($1 == "9") print $1 "." $2; else print $1 }')
 SKIP_LABEL_REGEXP=
 SELFTEST=0
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
