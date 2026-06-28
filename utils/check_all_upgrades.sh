@@ -44,11 +44,6 @@ while test -n "$1"; do
   shift
 done
 
-if test -z "$to_version_param"; then
-  usage >&2
-  exit 1
-fi
-
 cleanup()
 {
   echo "Cleaning up"
