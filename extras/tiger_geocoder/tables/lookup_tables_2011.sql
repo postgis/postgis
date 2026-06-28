@@ -140,7 +140,7 @@ INSERT INTO tiger.state_lookup (name, abbrev, st_code) VALUES ('West Virginia', 
 INSERT INTO tiger.state_lookup (name, abbrev, st_code) VALUES ('Wisconsin', 'WI', '55');
 INSERT INTO tiger.state_lookup (name, abbrev, st_code) VALUES ('Wyoming', 'WY', '56');
 -- NOTE: fix later -- this is wrong for those - state code ones
-UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0');
+UPDATE tiger.state_lookup SET statefp = lpad(st_code::text,2,'0');
 
 -- Create street type lookup table
 DROP TABLE IF EXISTS tiger.street_type_lookup;
