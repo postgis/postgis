@@ -10,6 +10,11 @@ PostGIS 3.3.11
  - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
  - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
  - Avoid Inf loop in Geohash calculation (Paul Ramsey)
+ - [address_standardizer] Avoid unsafe table-name handling and out-of-bounds
+   rule parsing (Paul Ramsey)
+ - [tiger_geocoder] Harden schema qualification and dynamic table names
+   (Paul Ramsey)
+ - #6044, Skip doc XML validation without DocBook XSL stylesheets (Regina Obe)
 
 
 PostGIS 3.3.10
@@ -3402,4 +3407,3 @@ PostGIS 0.1
 - truely_inside()
 - rtree index support functions
 - gist index support functions
-

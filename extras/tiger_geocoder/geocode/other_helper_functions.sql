@@ -56,7 +56,7 @@ $$
 LANGUAGE sql STABLE;
 -- Generate script to create missing indexes in tiger tables.
 -- This will generate sql you can run to index commonly used join columns in geocoder for tiger and tiger_data schemas --
-CREATE OR REPLACE FUNCTION missing_indexes_generate_script()
+CREATE OR REPLACE FUNCTION tiger.missing_indexes_generate_script()
 RETURNS text AS
 $$
 SELECT array_to_string(ARRAY(
@@ -119,7 +119,7 @@ WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data')
     AND (c.table_name LIKE '%county%' OR c.table_name LIKE '%featnames' OR c.table_name  LIKE '%place' or c.table_name LIKE '%zip%' or c.table_name LIKE '%cousub')
 -- Least address index btree least_hn(fromhn, tohn)
 UNION ALL
-SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_least_address' || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(least_hn(fromhn, tohn));' As index
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_least_address' || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(tiger.least_hn(fromhn, tohn));' As index
 FROM (SELECT table_name, table_schema FROM
 	information_schema.tables WHERE table_type OPERATOR(pg_catalog.=) 'BASE TABLE' AND table_name LIKE '%addr' AND table_schema IN('tiger','tiger_data')) As t  INNER JOIN
 	(SELECT * FROM information_schema.columns WHERE column_name IN('fromhn') ) AS c
@@ -201,7 +201,7 @@ LANGUAGE sql VOLATILE;
 CREATE OR REPLACE FUNCTION install_missing_indexes() RETURNS boolean
 AS
 $$
-DECLARE var_sql text = missing_indexes_generate_script();
+DECLARE var_sql text = tiger.missing_indexes_generate_script();
 BEGIN
 	EXECUTE(var_sql);
 	RETURN true;
