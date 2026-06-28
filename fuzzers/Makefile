@@ -10,8 +10,9 @@ SEED_CORPORA := $(wildcard $(FUZZER_SRC_DIR)/*_seed_corpus.zip)
 # Makefile, so it must inherit the configured dependency include paths.
 POSTGIS_CONFIGURED_CPPFLAGS := $(shell sed -n 's/^CPPFLAGS = //p' $(POSTGIS_BUILD_DIR)/liblwgeom/Makefile 2>/dev/null | sed 's/$$(RYU_INCLUDE)//g; s/-I$$(builddir)//g; s/-I$$(srcdir)//g' | sed 1q)
 POSTGIS_CONFIGURED_LDFLAGS := $(shell sed -n 's/^LDFLAGS = //p' $(POSTGIS_BUILD_DIR)/liblwgeom/Makefile 2>/dev/null | sed 1q)
+POSTGIS_CONFIGURED_SANITIZE_FLAGS := $(shell cxx="$(CXX)"; set -- $$cxx; test "$$#" -gt 0 || set -- c++; sed -n 's/^CFLAGS = //p' $(POSTGIS_BUILD_DIR)/liblwgeom/Makefile 2>/dev/null | tr ' ' '\n' | awk '/^-fsanitize/ { print }' | while read flag; do printf 'int main(void){return 0;}\n' | "$$@" "$$flag" -x c++ -fsyntax-only - >/dev/null 2>&1 && printf "%s " "$$flag"; done)
 POSTGIS_FUZZER_CPPFLAGS = $(POSTGIS_CONFIGURED_CPPFLAGS) $(CPPFLAGS)
-POSTGIS_FUZZER_LDFLAGS = $(POSTGIS_CONFIGURED_LDFLAGS) $(LDFLAGS)
+POSTGIS_FUZZER_LDFLAGS = $(POSTGIS_CONFIGURED_SANITIZE_FLAGS) $(POSTGIS_CONFIGURED_LDFLAGS) $(LDFLAGS)
 
 .PHONY: clean dummyfuzzers check check-corpus
 
