@@ -74,6 +74,13 @@ contract before carrying it over:
 * supported PostgreSQL and dependency versions in CI;
 * regression-test fixtures and expected output semantics.
 
+Do not backpatch fuzzer harnesses, seed corpora, OSS-Fuzz input-target
+plumbing, or fuzzer-only CI repairs to stable branches unless that exact stable
+branch runs the fuzzer target. In the normal PostGIS branch layout, fuzzer
+target work is `master`-only; stable branches should receive the runtime fix and
+any ordinary regression coverage that exercises shipped code, not the fuzzer
+driver used to find or smoke-test it.
+
 If a source test only proves behavior introduced on newer branches, omit or
 adapt that subtest on older branches. Keep the regression that protects the
 portable bug fix, but do not force an expected row only because it appeared in
