@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - Qualify the TIGER rate_attributes helper (Darafei Praliaskouski)
   - Use current SFCGAL function names in regression tests (Loïc Bartoletti)
   - Correct spelling in the English function reference (Mike Taves)
   - Avoid an implicit dependency on Abseil in FlatGeobuf (Paul Ramsey)
