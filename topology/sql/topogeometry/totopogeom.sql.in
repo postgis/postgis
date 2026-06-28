@@ -162,7 +162,7 @@ BEGIN
 
   IF atolerance = -1 THEN
     tolerance := topology._st_mintolerance(topology_info.name, ageom);
-  ELSIF atolerance = 0 THEN
+  ELSIF atolerance IS NULL OR atolerance = 0 THEN
     tolerance := topology_info.precision;
   ELSE
     tolerance := atolerance;
