@@ -41,14 +41,14 @@ DECLARE
   typeWeight INTEGER := 5;
   var_verbose BOOLEAN := false;
 BEGIN
-  result := result + tiger.levenshtein_ignore_case(cull_null($1), cull_null($2)) * directionWeight;
+  result := result + tiger.levenshtein_ignore_case(tiger.cull_null($1), tiger.cull_null($2)) * directionWeight;
   IF var_verbose THEN
     RAISE NOTICE 'streetNameA: %, streetNameB: %', streetNameA, streetNameB;
   END IF;
   IF streetNameA IS NOT NULL AND streetNameB IS NOT NULL THEN
     -- We want to treat numeric streets that have numerics as equal
     -- and not penalize if they are spelled different e.g. have ND instead of TH
-    IF NOT numeric_streets_equal(streetNameA, streetNameB) THEN
+    IF NOT tiger.numeric_streets_equal(streetNameA, streetNameB) THEN
         IF prequalabr IS NOT NULL THEN
             -- If the reference address (streetNameB) has a prequalabr streetNameA (prequalabr) - note: streetNameB usually comes thru without prequalabr
             -- and the input street (streetNameA) is lacking the prequal -- only penalize a little
@@ -69,9 +69,9 @@ BEGIN
     END IF;
     RETURN NULL;
   END IF;
-  result := result + tiger.levenshtein_ignore_case(cull_null(streetTypeA), cull_null(streetTypeB)) *
+  result := result + tiger.levenshtein_ignore_case(tiger.cull_null(streetTypeA), tiger.cull_null(streetTypeB)) *
       typeWeight;
-  result := result + tiger.levenshtein_ignore_case(cull_null(dirsA), cull_null(dirsB)) *
+  result := result + tiger.levenshtein_ignore_case(tiger.cull_null(dirsA), tiger.cull_null(dirsB)) *
       directionWeight;
   return result;
 END;

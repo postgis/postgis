@@ -27,25 +27,25 @@ BEGIN
   END IF;
 
   IF stateAbbrev IS NOT NULL THEN
-    lstate := statefp FROM state WHERE stusps = stateAbbrev;
-    SELECT into tempInt count(*) FROM place
+    lstate := statefp FROM tiger.state WHERE stusps = stateAbbrev;
+    SELECT into tempInt count(*) FROM tiger.place
         WHERE place.statefp = lstate
-        AND soundex(tempString) = end_soundex(name);
+        AND soundex(tempString) = tiger.end_soundex(name);
   ELSE
-    SELECT into tempInt count(*) FROM place
-        WHERE soundex(tempString) = end_soundex(name);
+    SELECT into tempInt count(*) FROM tiger.place
+        WHERE soundex(tempString) = tiger.end_soundex(name);
   END IF;
 
   IF tempInt > 0 THEN
     -- Some potentials were found.  Begin a word-by-word soundex on each.
     tempInt := 50;
     IF stateAbbrev IS NOT NULL THEN
-      FOR rec IN SELECT name FROM place
+      FOR rec IN SELECT name FROM tiger.place
           WHERE place.statefp = lstate
-          AND soundex(tempString) = end_soundex(name) LOOP
-        word_count := count_words(rec.name);
+          AND soundex(tempString) = tiger.end_soundex(name) LOOP
+        word_count := tiger.count_words(rec.name);
         test := TRUE;
-        tempString := get_last_words(fullStreet, word_count);
+        tempString := tiger.get_last_words(fullStreet, word_count);
         FOR i IN 1..word_count LOOP
           IF soundex(split_part(tempString, ' ', i)) !=
             soundex(split_part(rec.name, ' ', i)) THEN
@@ -61,11 +61,11 @@ BEGIN
           END IF;
       END LOOP;
     ELSE
-      FOR rec IN SELECT name FROM place
-          WHERE soundex(tempString) = end_soundex(name) LOOP
-        word_count := count_words(rec.name);
+      FOR rec IN SELECT name FROM tiger.place
+          WHERE soundex(tempString) = tiger.end_soundex(name) LOOP
+        word_count := tiger.count_words(rec.name);
         test := TRUE;
-        tempString := get_last_words(fullStreet, word_count);
+        tempString := tiger.get_last_words(fullStreet, word_count);
         FOR i IN 1..word_count LOOP
           IF soundex(split_part(tempString, ' ', i)) !=
             soundex(split_part(rec.name, ' ', i)) THEN
