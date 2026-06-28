@@ -1334,7 +1334,7 @@ rt_raster_intersection_fractions(
 
 	/* Shallow clone a new raster with no bands */
 	rast_out = rt_raster_clone(rast_in, 0);
-	/* Add a float4 band to the empty raster */
+	/* Add a float4 band matching GEOSGridIntersectionFractions' float buffer */
 	band_num = rt_raster_generate_new_band(
 		rast_out, /* rast */
 		PT_32BF, /* pixel type */
@@ -1388,4 +1388,3 @@ rt_raster_intersection_fractions(
 	return rast_out; /* Return the newly created raster and band*/
 }
 #endif /* POSTGIS_GEOS_VERSION >= 31400 */
-

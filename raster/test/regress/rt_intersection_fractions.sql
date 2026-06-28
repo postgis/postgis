@@ -48,6 +48,14 @@ INSERT INTO raster_proportions_rast (name, rast) VALUES (
 	));
 
 SET extra_float_digits = -8;
+
+SELECT 'pixeltype', ST_BandPixelType(
+	ST_IntersectionFractions(
+		rast,
+		'POLYGON((5 0, 0 5, 5 10, 10 5, 5 0))'::geometry), 1)
+FROM raster_proportions_rast
+WHERE name = '2x2 raster covering 0,0 to 10,10';
+
 SELECT 'polygon', name, ST_DumpValues(
 	ST_IntersectionFractions(
 		rast,
