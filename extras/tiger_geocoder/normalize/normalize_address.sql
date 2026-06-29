@@ -228,7 +228,7 @@ BEGIN
     IF debug_flag THEN
       raise notice '% start location extract', clock_timestamp();
     END IF;
-    result.location := location_extract(fullStreet, result.stateAbbrev);
+    result.location := tiger.location_extract(fullStreet, result.stateAbbrev);
 
     IF debug_flag THEN
       raise notice '% end location extract', clock_timestamp();
