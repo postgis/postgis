@@ -77,7 +77,7 @@ DECLARE
 BEGIN
   result.parsed := FALSE;
   IF use_pagc THEN
-	result := pagc_normalize_address(in_rawinput);
+	result := tiger.pagc_normalize_address(in_rawinput);
 	RETURN result;
   END IF;
 

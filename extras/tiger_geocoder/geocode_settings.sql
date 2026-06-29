@@ -35,7 +35,7 @@ BEGIN
 	END IF;
 	--recreate defaults
 	TRUNCATE TABLE tiger.geocode_settings_default;
-	INSERT INTO geocode_settings_default(name,setting,unit,category,short_desc)
+	INSERT INTO tiger.geocode_settings_default(name,setting,unit,category,short_desc)
 		SELECT f.*
 		FROM
 		(VALUES ('debug_geocode_address', 'false', 'boolean','debug', 'outputs debug information in notice log such as queries when geocode_addresss is called if true')
