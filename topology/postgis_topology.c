@@ -4798,6 +4798,7 @@ Datum GetNodeByPoint(PG_FUNCTION_ARGS)
     lwpgerror("Tolerance must be -1 or >=0 ");
     PG_RETURN_NULL();
   }
+  if ( tol == -1 ) tol = 0;
 
   if ( SPI_OK_CONNECT != SPI_connect() )
   {
@@ -4869,6 +4870,7 @@ Datum GetEdgeByPoint(PG_FUNCTION_ARGS)
     lwpgerror("Tolerance must be -1 or >=0 ");
     PG_RETURN_NULL();
   }
+  if ( tol == -1 ) tol = 0;
 
   if ( SPI_OK_CONNECT != SPI_connect() )
   {
@@ -4942,6 +4944,7 @@ Datum GetFaceByPoint(PG_FUNCTION_ARGS)
     lwpgerror("Tolerance must be -1 or >=0 ");
     PG_RETURN_NULL();
   }
+  if ( tol == -1 ) tol = 0;
 
   if ( SPI_OK_CONNECT != SPI_connect() )
   {
@@ -5246,6 +5249,7 @@ Datum TopoGeo_AddLinestringNoFace(PG_FUNCTION_ARGS)
     lwpgerror("Tolerance must be -1 or >=0 ");
     PG_RETURN_NULL();
   }
+  if ( tol == -1 ) tol = 0;
 
   if ( SPI_OK_CONNECT != SPI_connect() )
   {
@@ -5685,6 +5689,7 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
     lwpgerror("Tolerance must be -1 or >=0 ");
     PG_RETURN_NULL();
   }
+  if ( tol == -1 ) tol = 0;
 
   if ( SPI_OK_CONNECT != SPI_connect() )
   {
