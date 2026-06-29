@@ -264,8 +264,6 @@ def pt2numpy(pt):
         }
     if hasattr(gdalc, 'GDT_Int8'):
         ptnumpy[gdalc.GDT_Int8] = numpy.int8
-    if hasattr(gdalc, 'GDT_Float16'):
-        ptnumpy[gdalc.GDT_Float16] = numpy.float16
     return ptnumpy.get(pt, numpy.uint8)
 
 def pt2fmt(pt):
