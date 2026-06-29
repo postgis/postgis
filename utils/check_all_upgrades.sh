@@ -44,7 +44,7 @@ while test -n "$1"; do
   shift
 done
 
-if test -z "$to_version_param"; then
+if test "${SELFTEST}" != 1 && test -z "$to_version_param"; then
   usage >&2
   exit 1
 fi
@@ -168,7 +168,7 @@ compatible_upgrade()
     return 1
   fi
 
-  if compatible_from $label $from; then
+  if compatible_from "$label" "$from"; then
     return 0
   else
     return 1
