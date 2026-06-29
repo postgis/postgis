@@ -20,7 +20,7 @@ BEGIN
   END IF;
 
   IF $2 IS NOT NULL AND $2 != '' THEN
-    result := levenshtein_ignore_case(given_string, $2);
+    result := tiger.levenshtein_ignore_case(given_string, $2);
   END IF;
 
   RETURN result;
