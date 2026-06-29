@@ -537,12 +537,14 @@ static int parse_rule(char *buf, int *rule)
     int *r = rule;
     char *p = buf;
     char *q;
+    int val;
 
 
     while (1) {
-        if (nr >= MAX_RULE_LENGTH) return -1;
-        *r = strtol( p, &q, 10 );
+        val = strtol( p, &q, 10 );
         if (p == q) break;
+        if (nr >= MAX_RULE_LENGTH) return -1;
+        *r = val;
         p = q;
         nr++;
         r++;
