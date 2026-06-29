@@ -242,6 +242,8 @@ def band2pt(band):
 
     if band_is_signed_byte(band):
         return { 'name': 'PT_8BSI', 'id': 3 }
+    if hasattr(gdalc, 'GDT_Float16') and band.DataType == gdalc.GDT_Float16:
+        raise RuntimeError('GDAL Float16 bands are not supported by this PostGIS branch')
     return gdt2pt(band.DataType)
 
 def band2numpy(band):
