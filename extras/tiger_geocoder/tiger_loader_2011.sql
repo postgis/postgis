@@ -55,8 +55,8 @@ SELECT array_to_string(array_agg('DROP TABLE ' || quote_ident(table_schema) || '
 $$
   LANGUAGE sql VOLATILE;
 
-DROP TABLE IF EXISTS loader_platform;
-CREATE TABLE loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
+DROP TABLE IF EXISTS tiger.loader_platform;
+CREATE TABLE tiger.loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
 GRANT SELECT ON TABLE tiger.loader_platform TO public;
 INSERT INTO tiger.loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql,path_sep,loader, environ_set_command, county_process_command)
 VALUES('windows', '%WGETTOOL%', '%PGBIN%',
@@ -107,14 +107,14 @@ ${PSQL} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}
 done');
 
 -- variables table
-DROP TABLE IF EXISTS loader_variables;
-CREATE TABLE loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
+DROP TABLE IF EXISTS tiger.loader_variables;
+CREATE TABLE tiger.loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
 INSERT INTO tiger.loader_variables(tiger_year, website_root , staging_fold, data_schema, staging_schema)
 	VALUES('2011', 'ftp://ftp2.census.gov/geo/tiger/TIGER2011', '/gisdata', 'tiger_data', 'tiger_staging');
 GRANT SELECT ON TABLE tiger.loader_variables TO public;
 
-DROP TABLE IF EXISTS loader_lookuptables;
-CREATE TABLE loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
+DROP TABLE IF EXISTS tiger.loader_lookuptables;
+CREATE TABLE tiger.loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
 		lookup_name text primary key,
 		table_name text, single_mode boolean NOT NULL DEFAULT true,
 		load boolean NOT NULL DEFAULT true,
