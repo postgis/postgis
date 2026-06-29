@@ -160,7 +160,7 @@ BEGIN
     RAISE EXCEPTION 'Tolerance must be -1 or >=0';
   END IF;
 
-  IF atolerance = -1 THEN
+  IF atolerance = -1 OR atolerance IS NULL OR atolerance = 0 THEN
     tolerance := topology._st_mintolerance(topology_info.name, ageom);
   ELSE
     tolerance := atolerance;
