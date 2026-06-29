@@ -159,7 +159,7 @@ for EXTNAME in $extensions_to_install; do
 	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
 		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
 		cp extensions//$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
-		cp extensions/$EXTNAME/sql/${EXTNAME}--TEMPLATED--TO--ANY.sql ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--$POSTGIS_MICRO_VER--ANY.sql;
+		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--$POSTGIS_MICRO_VER--ANY.sql;
 	fi
 
 	for OLD_VERSION in $UPGRADEABLE_VERSIONS; do \
