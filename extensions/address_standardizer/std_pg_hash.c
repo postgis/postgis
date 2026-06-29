@@ -11,6 +11,7 @@
 #include "funcapi.h"
 #include "catalog/namespace.h"
 #include "catalog/pg_type.h"
+#include "nodes/makefuncs.h"
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
 #if PG_VERSION_NUM >= 100000
