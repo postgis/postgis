@@ -100,10 +100,10 @@ BEGIN
                                 ST_StartPoint(ST_GeometryN(ST_Multi(e1.the_geom),1))
                              ELSE ST_EndPoint(ST_GeometryN(ST_Multi(e1.the_geom),1)) END AS geom ,
                                 CASE WHEN lower(p.name) = $3 THEN 0 ELSE 1 END
-                                + levenshtein_ignore_case(p.name, $3)
-                                + levenshtein_ignore_case(e1.name || COALESCE('' '' || e1.sufqualabr, ''''),$2) +
-                                CASE WHEN e1.fullname = $6 THEN 0 ELSE levenshtein_ignore_case(e1.fullname, $6) END +
-                                + levenshtein_ignore_case(e2.name || COALESCE('' '' || e2.sufqualabr, ''''),$4)
+                                + tiger.levenshtein_ignore_case(p.name, $3)
+                                + tiger.levenshtein_ignore_case(e1.name || COALESCE('' '' || e1.sufqualabr, ''''),$2) +
+                                CASE WHEN e1.fullname = $6 THEN 0 ELSE tiger.levenshtein_ignore_case(e1.fullname, $6) END +
+                                + tiger.levenshtein_ignore_case(e2.name || COALESCE('' '' || e2.sufqualabr, ''''),$4)
                                 AS a_rating
                     FROM e1
                             INNER JOIN e2 ON (
