@@ -77,6 +77,11 @@ fi
 
 #LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/lib" \
 
+SFCGAL_CONFIGURE_ARG=""
+if [ -n "${SFCGAL_VER:-}" ]; then
+  SFCGAL_CONFIGURE_ARG="--with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config"
+fi
+
 CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include" \
 LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/lib -L${PROJECTS}/zlib/rel-zlib-${ZLIB_VER}w${OS_BUILD}${GCC_TYPE}/lib" \
 ./configure \
@@ -85,7 +90,7 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/geos-config \
   --with-libiconv=${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE} \
   --with-gui --with-gettext=no \
-  --with-sfcgal=${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/sfcgal-config \
+  ${SFCGAL_CONFIGURE_ARG} \
   --prefix=${PROJECTS}/postgis/liblwgeom-${POSTGIS_VER}w${OS_BUILD}${GCC_TYPE}  \
   ${EXTRA_CONFIGURE_ARGS}
 
@@ -117,7 +122,9 @@ if [ "${MAKE_EXTENSION:-0}" == "1" ]; then
     cp -r topology/*.dll ${PGPATHEDB}/lib
  fi
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
- cp sfcgal/*.dll ${PGPATHEDB}/lib
+ if [ -n "${SFCGAL_VER:-}" ]; then
+    cp sfcgal/*.dll ${PGPATHEDB}/lib
+ fi
 
  if [ "${REGRESS_WITHOUT_RASTER:-0}" == "0" ]; then
     cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
@@ -135,7 +142,10 @@ value=${value//UPGRADEABLE_VERSIONS = /}
 #echo $value
 export UPGRADEABLE_VERSIONS=$value
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
-export extensions_to_install="postgis postgis_sfcgal"
+export extensions_to_install="postgis"
+if [ -n "${SFCGAL_VER:-}" ]; then
+  extensions_to_install="${extensions_to_install} postgis_sfcgal"
+fi
 
 if [ "${REGRESS_WITHOUT_TOPOLOGY:-0}" == "0" ]; then
   extensions_to_install="${extensions_to_install} postgis_topology"
