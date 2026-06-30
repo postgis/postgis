@@ -69,6 +69,8 @@ For the maintained commit-message, branch-target, authorship, and post-push
 rules distilled from RFC-5, see [Commit and branch guidelines](maintenance/commit-guidelines.md).
 For supported-branch fix propagation, provenance, `NEWS`, and Trac follow-up
 rules, see [Backpatching fixes](maintenance/backpatching.md).
+For labels, milestones, draft state, and mirror metadata on pull requests, see
+[Pull request metadata](maintenance/pull-request-metadata.md).
 
 ## First Pass
 

@@ -52,6 +52,8 @@ Modules:
   public development pages, release pointer updates, and website validation.
 * [Pull request and maintainer workflow](maintenance.md) covers source-of-truth
   branches, mirror PR handling, tracker trailers, `NEWS`, and public readback.
+* [Pull request metadata](maintenance/pull-request-metadata.md) covers labels,
+  milestones, draft state, and mirror metadata for PostGIS pull requests.
 * [Backpatching fixes](maintenance/backpatching.md) covers supported-branch
   fix propagation, commit provenance, `NEWS`, Trac follow-up, and CI readback.
 * [Governance notes](governance.md) records PSC process, core-contributor
