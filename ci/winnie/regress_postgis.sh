@@ -174,9 +174,9 @@ for EXTNAME in $extensions_to_install; do
 
 	for OLD_VERSION in $UPGRADEABLE_VERSIONS; do \
 		if [[ "$OLD_VERSION" > "2.5" ]] || [[ " $WIN_RELEASED_VERSIONS " == *" $OLD_VERSION "* ]]; then
-			cp extensions/$EXTNAME/sql/$EXTNAME--ANY--$POSTGIS_MICRO_VER.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
+			cp extensions/$EXTNAME/sql/$EXTNAME--ANY--$POSTGIS_MICRO_VER.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$OLD_VERSION--${POSTGIS_MICRO_VER}.sql; \
 			if test "$EXTNAME" = "address_standardizer"; then
-				cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
+				cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--$OLD_VERSION--${POSTGIS_MICRO_VER}.sql; \
 			fi
 		fi
 	done
