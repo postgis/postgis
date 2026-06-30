@@ -112,12 +112,23 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWGEOM* blade_in)
 	}
 
 
-	gdiff = GEOSDifference(g1,g2);
+#if POSTGIS_GEOS_VERSION >= 31500
+	/* GEOS 3.15 added an explicit splitter. Older GEOS relies on the
+	 * side-effect of GEOSDifference returning the input split at the
+	 * crossing points of the (non-overlapping) blade. */
+	gdiff = GEOSSplit(g1, g2);
+#else
+	gdiff = GEOSDifference(g1, g2);
+#endif
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 	if (gdiff == NULL)
 	{
+#if POSTGIS_GEOS_VERSION >= 31500
+		lwerror("GEOSSplit: %s", lwgeom_geos_errmsg);
+#else
 		lwerror("GEOSDifference: %s", lwgeom_geos_errmsg);
+#endif
 		return NULL;
 	}
 
@@ -353,6 +364,69 @@ lwline_split(const LWLINE* lwline_in, const LWGEOM* blade_in)
 static LWGEOM*
 lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 {
+#if POSTGIS_GEOS_VERSION >= 31500
+	/* GEOS 3.15 splits polygons directly, filtering out the pieces that
+	 * fall inside holes for us. On older GEOS we reproduce that logic by
+	 * polygonizing the boundary unioned with the blade and discarding the
+	 * pieces whose point-on-surface is not contained by the input (#else). */
+	LWGEOM* split;
+	LWCOLLECTION* out;
+	GEOSGeometry* g1;
+	GEOSGeometry* g2;
+	GEOSGeometry* gsplit;
+	int hasZ = FLAGS_GET_Z(lwpoly_in->flags);
+
+	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
+
+	g1 = LWGEOM2GEOS((LWGEOM*)lwpoly_in, 0);
+	if ( NULL == g1 )
+	{
+		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	g2 = LWGEOM2GEOS(blade_in, 0);
+	if ( NULL == g2 )
+	{
+		GEOSGeom_destroy(g1);
+		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	gsplit = GEOSSplit(g1, g2);
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+	if ( NULL == gsplit )
+	{
+		lwerror("GEOSSplit: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	split = GEOS2LWGEOM(gsplit, hasZ);
+	GEOSGeom_destroy(gsplit);
+	if ( NULL == split )
+	{
+		lwerror("GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	/* GEOSSplit always returns a collection, but wrap defensively */
+	out = lwgeom_as_lwcollection(split);
+	if ( ! out )
+	{
+		LWGEOM** components = lwalloc(sizeof(LWGEOM*));
+		components[0] = split;
+		out = lwcollection_construct(COLLECTIONTYPE, lwpoly_in->srid,
+		                             NULL, 1, components);
+	}
+	else
+	{
+		lwgeom_set_srid((LWGEOM*)out, lwpoly_in->srid);
+		out->type = COLLECTIONTYPE;
+	}
+
+	return (LWGEOM*)out;
+#else
 	LWCOLLECTION* out;
 	GEOSGeometry* g1;
 	GEOSGeometry* g2;
@@ -491,6 +565,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 	GEOSGeom_destroy(polygons);
 
 	return (LWGEOM*)out;
+#endif /* POSTGIS_GEOS_VERSION >= 31500 */
 }
 
 static LWGEOM*
