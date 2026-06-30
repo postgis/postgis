@@ -306,7 +306,7 @@ COMMIT;
 				<xsl:variable name='fndef'><xsl:value-of select="db:funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(db:paramdef/db:parameter)" /></xsl:variable>
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') ]) + count(db:paramdef/db:parameter[contains(text(),'WKT')]) + count(db:paramdef/db:parameter[contains(text(),'geomgml')])" /></xsl:variable>
-				<xsl:variable name='numparamrasts'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'raster') ] )" /></xsl:variable>
+				<xsl:variable name='numparamrasts'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'raster') or contains(text(),'rastbandarg') ] )" /></xsl:variable>
 				<xsl:variable name='log_label'><xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />) </xsl:variable>
 
 				<xsl:variable name="geoftype">
