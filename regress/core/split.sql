@@ -84,6 +84,25 @@ select '83', ST_AsEWKT(ST_Split(
   'SRID=3;MULTILINESTRING((10 0, 10 4),(-4 0, 4 0))'
 ));
 
+-- Split line by multiline with Z coordinates on the blade
+select '83.1', ST_NumGeometries(ST_Split(
+  'SRID=4326;LINESTRING(-11.1111111 40,-11.1111111 55)',
+  'SRID=4326;MULTILINESTRING Z((-10 40 1,-9 41 1),(-10 65 2,-8 67 2),(10 40 1,11 41 1),(10 65 2,12 67 2),(30 40 1,31 41 1),(30 65 2,32 67 2),(50 40 1,51 41 1),(50 65 2,52 67 2))'
+));
+
+-- Split polygon by multiline with Z coordinates on the blade
+select '83.2', ST_NumGeometries(ST_Split(foo1.the_geom, foo2.the_geom))
+from (
+  select ST_Buffer(ST_SetSRID(ST_Point(-11.1111111, 40), 4326), 40 * 0.05) as the_geom
+) as foo1
+cross join (
+  select ST_Multi(ST_Union(ST_SetSRID(ST_MakeLine(
+    ST_MakePoint(i, j, k), ST_MakePoint(i + k, j + k, k)), 4326))) as the_geom
+  from generate_series(-10, 50, 20) as i
+  cross join generate_series(40, 70, 25) as j
+  cross join generate_series(1, 2) as k
+) as foo2;
+
 -- Split line by polygon (boundary)
 select '84', ST_AsEWKT(ST_Split(
   'SRID=3;LINESTRING(1 -1,1 1)',
