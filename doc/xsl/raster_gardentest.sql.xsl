@@ -55,6 +55,7 @@
 	<xsl:variable name='var_overviewalgorithm'>'NearestNeighbour'</xsl:variable>
 	<xsl:variable name='var_pt'>ST_Centroid(rast1.rast::geometry)</xsl:variable>
 	<xsl:variable name='var_ext'>ST_MakeEnvelope(0, 0, 1, 1, 4326)</xsl:variable>
+	<xsl:variable name='var_ext_matching_srid'>ST_MakeEnvelope(0, 0, 1, 1, <xsl:value-of select="$var_srid" />)</xsl:variable>
 	<xsl:variable name='var_regclass'><xsl:value-of select="$var_rastertable" />::regclass</xsl:variable>
 	<xsl:variable name='var_overviewregclass'>'<xsl:value-of select="$var_overviewtable" />'::regclass</xsl:variable>
 	<xsl:variable name='var_addbandarg'>ROW(NULL, '8BUI', 255, 0)::addbandarg</xsl:variable>
@@ -551,6 +552,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'options')">
 						<xsl:value-of select="$var_options" />
+					</xsl:when>
+					<xsl:when test="normalize-space(db:parameter) = 'ext' and $func/db:funcdef/db:function = 'ST_Retile'">
+						<xsl:value-of select="$var_ext_matching_srid" />
 					</xsl:when>
 					<xsl:when test="normalize-space(db:parameter) = 'ext'">
 						<xsl:value-of select="$var_ext" />
