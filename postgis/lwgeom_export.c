@@ -49,6 +49,33 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
 Datum geometry_to_json(PG_FUNCTION_ARGS);
 Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
 
+struct json_object;
+
+LWGEOM *parse_geojson_internal(struct json_object *geojson, int *hasz);
+uint8_t *lwgeom_to_wkb_buf_internal(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
+size_t lwgeom_to_wkb_size_internal(const LWGEOM *geom, uint8_t variant);
+PGDLLEXPORT LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
+PGDLLEXPORT uint8_t *lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
+PGDLLEXPORT size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
+
+PGDLLEXPORT LWGEOM *
+parse_geojson(struct json_object *geojson, int *hasz)
+{
+	return parse_geojson_internal(geojson, hasz);
+}
+
+PGDLLEXPORT uint8_t *
+lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
+{
+	return lwgeom_to_wkb_buf_internal(geom, buf, variant);
+}
+
+PGDLLEXPORT size_t
+lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
+{
+	return lwgeom_to_wkb_size_internal(geom, variant);
+}
+
 /**
  * Encode feature in GML
  */
