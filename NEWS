@@ -26,6 +26,7 @@ PostGIS 3.2.11
    regressions (Darafei Praliaskouski)
  - GH-898, Fix ST_DFullyWithin indexed plans and large-coordinate
    ring-orientation precision regressions (Darafei Praliaskouski)
+ - Add missing upgrade targets from 2.5 (Regina Obe)
 
 
 PostGIS 3.2.10
