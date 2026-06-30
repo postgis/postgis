@@ -61,7 +61,23 @@ PGDLLEXPORT size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
 PGDLLEXPORT LWGEOM *
 parse_geojson(struct json_object *geojson, int *hasz)
 {
-	return parse_geojson_internal(geojson, hasz);
+	int local_hasz = LW_FALSE;
+	int *parsed_hasz = hasz ? hasz : &local_hasz;
+	LWGEOM *lwgeom;
+	*parsed_hasz = LW_FALSE;
+
+	lwgeom = parse_geojson_internal(geojson, parsed_hasz);
+	if (!lwgeom)
+		return NULL;
+
+	if (!*parsed_hasz)
+	{
+		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = tmp;
+	}
+
+	return lwgeom;
 }
 
 PGDLLEXPORT uint8_t *
