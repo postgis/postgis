@@ -51,7 +51,9 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
 
 struct json_object;
 
+#if defined(HAVE_LIBJSON)
 LWGEOM *parse_geojson_internal(struct json_object *geojson, int *hasz);
+#endif
 uint8_t *lwgeom_to_wkb_buf_internal(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
 size_t lwgeom_to_wkb_size_internal(const LWGEOM *geom, uint8_t variant);
 PGDLLEXPORT LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
@@ -61,6 +63,10 @@ PGDLLEXPORT size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
 PGDLLEXPORT LWGEOM *
 parse_geojson(struct json_object *geojson, int *hasz)
 {
+#if !defined(HAVE_LIBJSON)
+	lwerror("You need JSON-C for parse_geojson");
+	return NULL;
+#else
 	int local_hasz = LW_FALSE;
 	int *parsed_hasz = hasz ? hasz : &local_hasz;
 	LWGEOM *lwgeom;
@@ -78,6 +84,7 @@ parse_geojson(struct json_object *geojson, int *hasz)
 	}
 
 	return lwgeom;
+#endif
 }
 
 PGDLLEXPORT uint8_t *
