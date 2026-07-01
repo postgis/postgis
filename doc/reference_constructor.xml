@@ -384,22 +384,18 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
             <para>&Z_support;</para>
         </refsection>
 
-        <refsection>
-        <title>Examples</title>
-         <para>This example creates a point with an unknown SRID.</para>
-         <programlisting>
-SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);
-
--- Create a point in the WGS 84 geodetic CRS
-SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326);
-
--- Create a 3D point (e.g. has altitude)
-SELECT ST_MakePoint(1, 2,1.5);
-
--- Get z of point
-SELECT ST_Z(ST_MakePoint(1, 2,1.5));</programlisting>
-<screen>1.5</screen>
-        </refsection>
+	        <refsection>
+	        <title>Examples</title>
+	         <para>This example creates a point with an unknown SRID.</para>
+	         <programlisting>SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);</programlisting>
+	         <para>This example creates a point in the WGS 84 geodetic CRS.</para>
+<programlisting>SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326);</programlisting>
+	         <para>This example creates a 3D point with altitude.</para>
+<programlisting>SELECT ST_MakePoint(1, 2,1.5);</programlisting>
+	         <para>This example returns the Z coordinate of a point.</para>
+<programlisting>SELECT ST_Z(ST_MakePoint(1, 2,1.5));</programlisting>
+	<screen>1.5</screen>
+	        </refsection>
         <refsection>
             <title>See Also</title>
             <para>
@@ -1272,16 +1268,13 @@ has an unknown SRID (as is the case by default).</para>
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example creates a degree-2 NURBS curve with uniform weights.</para>
-			<programlisting>
-SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
-
--- Create a rational NURBS curve with custom weights
-SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);
-
--- Create a NURBS curve with custom weights and knots
-SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]);</programlisting>
+				<title>Examples</title>
+				<para>This example creates a degree-2 NURBS curve with uniform weights.</para>
+				<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);</programlisting>
+				<para>This example creates a rational NURBS curve with custom weights.</para>
+<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);</programlisting>
+				<para>This example creates a NURBS curve with custom weights and knots.</para>
+<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]);</programlisting>
 		</refsection>
 
 		<refsection>

@@ -3360,15 +3360,13 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example extracts control points from a NURBS curve.</para>
-			<programlisting>
-SELECT ST_AsText(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));
--- Result: MULTIPOINT((0 0),(5 10),(10 0))
-
--- Count the number of control points
-SELECT ST_NPoints(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));
--- Result: 3</programlisting>
+				<title>Examples</title>
+				<para>This example extracts control points from a NURBS curve.</para>
+				<programlisting>SELECT ST_AsText(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));</programlisting>
+<screen>MULTIPOINT((0 0),(5 10),(10 0))</screen>
+				<para>This example counts the control points.</para>
+<programlisting>SELECT ST_NPoints(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));</programlisting>
+<screen>3</screen>
 		</refsection>
 
 		<refsection>
@@ -3402,15 +3400,13 @@ SELECT ST_NPoints(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry)
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example returns the degree of a NURBS curve.</para>
-			<programlisting>
-SELECT ST_Degree('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
--- Result: 2
-
--- Check if a NURBS curve is cubic
-SELECT ST_Degree('NURBSCURVE(3, (0 0, 2 5, 5 8, 10 0))'::geometry) = 3;
--- Result: true</programlisting>
+				<title>Examples</title>
+				<para>This example returns the degree of a NURBS curve.</para>
+				<programlisting>SELECT ST_Degree('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
+<screen>2</screen>
+				<para>This example checks whether a NURBS curve is cubic.</para>
+<programlisting>SELECT ST_Degree('NURBSCURVE(3, (0 0, 2 5, 5 8, 10 0))'::geometry) = 3;</programlisting>
+<screen>t</screen>
 		</refsection>
 
 		<refsection>
@@ -3444,15 +3440,13 @@ SELECT ST_Degree('NURBSCURVE(3, (0 0, 2 5, 5 8, 10 0))'::geometry) = 3;
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example returns weights from a rational NURBS curve.</para>
-			<programlisting>
-SELECT ST_Weights(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]));
--- Result: {1,2,1}
-
--- Check if a curve has uniform weights
-SELECT ST_Weights('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
--- Result: NULL (non-rational curve)</programlisting>
+				<title>Examples</title>
+				<para>This example returns weights from a rational NURBS curve.</para>
+				<programlisting>SELECT ST_Weights(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]));</programlisting>
+<screen>{1,2,1}</screen>
+				<para>This example checks the weights of a non-rational curve.</para>
+<programlisting>SELECT ST_Weights('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
+<screen>null</screen>
 		</refsection>
 
 		<refsection>
@@ -3486,16 +3480,15 @@ SELECT ST_Weights('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example returns knots from a NURBS curve with a custom knot vector.</para>
-			<programlisting>
+				<title>Examples</title>
+				<para>This example returns knots from a NURBS curve with a custom knot vector.</para>
+				<programlisting>
 SELECT ST_Knots(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry,
-                 ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]));
--- Result: {0,0,0,1,1,1}
-
--- Check if a curve uses default knot vector
-SELECT ST_Knots('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
--- Result: NULL (uniform clamped knot vector)</programlisting>
+                 ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]));</programlisting>
+<screen>{0,0,0,1,1,1}</screen>
+				<para>This example checks the knots of a curve using the default knot vector.</para>
+<programlisting>SELECT ST_Knots('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
+<screen>null</screen>
 		</refsection>
 
 		<refsection>
@@ -3529,16 +3522,14 @@ SELECT ST_Knots('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example returns the number of control points.</para>
-			<programlisting>
-SELECT ST_NumControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
--- Result: 3
-
--- Verify curve has enough control points for its degree
-SELECT ST_NumControlPoints(curve) >= ST_Degree(curve) + 1 AS valid
-FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;
--- Result: true</programlisting>
+				<title>Examples</title>
+				<para>This example returns the number of control points.</para>
+				<programlisting>SELECT ST_NumControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
+<screen>3</screen>
+				<para>This example verifies that a curve has enough control points for its degree.</para>
+<programlisting>SELECT ST_NumControlPoints(curve) >= ST_Degree(curve) + 1 AS valid
+FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;</programlisting>
+<screen>t</screen>
 		</refsection>
 
 		<refsection>
@@ -3574,16 +3565,15 @@ FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example checks whether a curve is rational.</para>
-			<programlisting>
+				<title>Examples</title>
+				<para>This example checks whether a curve is rational.</para>
+				<programlisting>
 SELECT ST_NurbsCurveIsRational(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry,
-                                ARRAY[1.0, 2.0, 1.0]));
--- Result: true
-
--- Non-rational curve
-SELECT ST_NurbsCurveIsRational('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
--- Result: false</programlisting>
+                                ARRAY[1.0, 2.0, 1.0]));</programlisting>
+<screen>t</screen>
+				<para>This example checks a non-rational curve.</para>
+<programlisting>SELECT ST_NurbsCurveIsRational('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
+<screen>f</screen>
 		</refsection>
 
 		<refsection>
@@ -3617,15 +3607,13 @@ SELECT ST_NurbsCurveIsRational('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example checks whether a geometry is a NURBS curve.</para>
-			<programlisting>
-SELECT ST_IsNurbsCurve('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);
--- Result: true
-
--- Test a regular linestring
-SELECT ST_IsNurbsCurve('LINESTRING(0 0, 10 10)'::geometry);
--- Result: false</programlisting>
+				<title>Examples</title>
+				<para>This example checks whether a geometry is a NURBS curve.</para>
+				<programlisting>SELECT ST_IsNurbsCurve('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
+<screen>t</screen>
+				<para>This example tests a regular LineString.</para>
+<programlisting>SELECT ST_IsNurbsCurve('LINESTRING(0 0, 10 10)'::geometry);</programlisting>
+<screen>f</screen>
 		</refsection>
 
 		<refsection>
@@ -3660,15 +3648,13 @@ SELECT ST_IsNurbsCurve('LINESTRING(0 0, 10 10)'::geometry);
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example returns the midpoint of a NURBS curve.</para>
-			<programlisting>
-SELECT ST_AsText(ST_Evaluate('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 0.5));
-
--- Sample multiple points along a curve
-SELECT t, ST_AsText(ST_Evaluate(curve, t)) AS point
+				<title>Examples</title>
+				<para>This example returns the midpoint of a NURBS curve.</para>
+				<programlisting>SELECT ST_AsText(ST_Evaluate('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 0.5));</programlisting>
+				<para>This example samples multiple points along a curve.</para>
+<programlisting>SELECT t, ST_AsText(ST_Evaluate(curve, t)) AS point
 FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS c,
-     generate_series(0, 1, 0.25) AS t;</programlisting>
+	     generate_series(0, 1, 0.25) AS t;</programlisting>
 		</refsection>
 
 		<refsection>
@@ -3705,16 +3691,13 @@ FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS c,
 		</refsection>
 
 		<refsection>
-			<title>Examples</title>
-			<para>This example converts a NURBS curve to a LineString using the default quality.</para>
-			<programlisting>
-SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));
-
--- High-quality approximation with 64 segments
-SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 64));
-
--- Lower quality, faster conversion with 16 segments
-SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 16));</programlisting>
+				<title>Examples</title>
+				<para>This example converts a NURBS curve to a LineString using the default quality.</para>
+				<programlisting>SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));</programlisting>
+				<para>This example creates a high-quality approximation with 64 segments.</para>
+<programlisting>SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 64));</programlisting>
+				<para>This example creates a lower-quality, faster approximation with 16 segments.</para>
+<programlisting>SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 16));</programlisting>
 		</refsection>
 
 		<refsection>
