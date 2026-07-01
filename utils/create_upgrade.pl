@@ -427,8 +427,9 @@ EOF
         die "ERROR: ALTER DOMAIN command found for domain '${name}'\n";
     }
 
-    if (/^create or replace function/i)
+    if (/^create or replace (function|procedure)/i)
     {
+        my $routine_kind = lc($1);
         my $def .= $_;
         my @replaced_array = parse_replaces($comment);
         my $endfunc = 0;
@@ -440,6 +441,7 @@ EOF
         }
         foreach my $replaced (@replaced_array)
         {
+            next if $routine_kind ne 'function';
             my ($name, $args, $ver) = @$replaced;
             $name = lc($name); # lowercase the name
 

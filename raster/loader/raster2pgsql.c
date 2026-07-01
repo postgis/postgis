@@ -1281,7 +1281,7 @@ add_raster_constraints(
 	rtdealloc(_tmp);
 
 	sql = rtloader_alloc_sprintf(
-		"SELECT AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s);",
+		"CALL AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s,TRUE);",
 		(_schema != NULL ? _schema : ""),
 		_table,
 		_column,
