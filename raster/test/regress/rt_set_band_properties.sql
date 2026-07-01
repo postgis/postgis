@@ -274,6 +274,16 @@ SELECT
 FROM rt_band_properties_test
 WHERE id = 1;
 
+SELECT
+    id,
+    st_bandnodatavalue(rast, 1) AS band1_before,
+    st_bandnodatavalue(
+        st_setbandnodatavalue(rast, ARRAY[1, 999], ARRAY[15, 16]::double precision[]),
+        1
+    ) AS band1_after_invalid
+FROM rt_band_properties_test
+WHERE id = 1;
+
 SELECT st_setbandnodatavalue(rast, ARRAY[1, 2], ARRAY[10]::double precision[]) IS NULL
 FROM rt_band_properties_test
 WHERE id = 1;
