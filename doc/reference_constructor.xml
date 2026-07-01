@@ -92,7 +92,7 @@ SELECT ST_AsText(ST_Collect(
         <refsection>
 <title>Examples - Array variant</title>
 <para>Using an array constructor for a subquery.</para>
-<programlisting>SELECT ST_Collect(ARRAY( SELECT geom FROM sometable ) );</programlisting>
+<programlisting>SELECT ST_Collect(ARRAY(SELECT geom FROM sometable));</programlisting>
 <para>Using an array constructor for values.</para>
 <programlisting>
 SELECT ST_AsText(ST_Collect(
@@ -148,8 +148,7 @@ SELECT stusps, ST_Collect(f.geom) as geom
       <refsection>
         <title>Examples</title>
         <para>Create a 3D line string from a 3D MultiPoint</para>
-        <programlisting>
-SELECT ST_AsEWKT(ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  );</programlisting>
+        <programlisting>SELECT ST_AsEWKT(ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)'));</programlisting>
 <screen>LINESTRING(1 2 3,4 5 6,7 8 9)</screen>
       </refsection>
 
@@ -195,8 +194,7 @@ SELECT ST_AsEWKT(ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  );</p
 
         <refsection>
         <title>Example: Building a bounding box polygon</title>
-         <programlisting>
-SELECT ST_AsText(ST_MakeEnvelope(10, 10, 11, 11, 4326) );</programlisting>
+         <programlisting>SELECT ST_AsText(ST_MakeEnvelope(10, 10, 11, 11, 4326));</programlisting>
 <screen>POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))</screen>
         </refsection>
         <refsection>
@@ -264,18 +262,15 @@ SELECT ST_AsText(ST_MakeEnvelope(10, 10, 11, 11, 4326) );</programlisting>
             <title>Examples: Two-input variant</title>
 
 <para>Create a line composed of two points.</para>
-<programlisting>
-SELECT ST_AsText(ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );</programlisting>
+<programlisting>SELECT ST_AsText(ST_MakeLine(ST_Point(1,2), ST_Point(3,4)));</programlisting>
 <screen>LINESTRING(1 2,3 4)</screen>
 
 <para>Create a 3D line from two 3D points.</para>
-<programlisting>
-SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));</programlisting>
 <screen>LINESTRING(1 2 3,3 4 5)</screen>
 
 <para>Create a line from two disjoint LineStrings.</para>
-<programlisting>
- select ST_AsText(ST_MakeLine('LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)' ) );</programlisting>
+<programlisting>SELECT ST_AsText(ST_MakeLine('LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)'));</programlisting>
 <screen>LINESTRING(0 0,1 1,2 2,3 3)</screen>
         </refsection>
 
@@ -283,11 +278,10 @@ SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));</progr
             <title>Examples: Array variant</title>
 
         <para>Create a line from an array formed by a subquery with ordering.</para>
-<programlisting>SELECT ST_MakeLine(ARRAY( SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time) );</programlisting>
+<programlisting>SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time));</programlisting>
 
         <para>Create a 3D line from an array of 3D points</para>
-<programlisting>
-SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), ST_MakePoint(6,6,6) ]  ));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), ST_MakePoint(6,6,6)]));</programlisting>
 <screen>LINESTRING(1 2 3,3 4 5,6 6 6)</screen>
         </refsection>
 
@@ -447,18 +441,15 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
             because <xref linkend="ST_AsText"/> does not support M values.</para></note>
 
             <para>Create point with unknown SRID.</para>
-         <programlisting>
-SELECT ST_AsEWKT(ST_MakePointM(-71.1043443253471, 42.3150676015829, 10)  );</programlisting>
+         <programlisting>SELECT ST_AsEWKT(ST_MakePointM(-71.1043443253471, 42.3150676015829, 10));</programlisting>
 <screen>POINTM(-71.1043443253471 42.3150676015829 10)</screen>
 
 <para>Create point with a measure in the WGS 84 geodetic coordinate system.</para>
-<programlisting>
-SELECT ST_AsEWKT(ST_SetSRID(ST_MakePointM(-71.104, 42.315, 10),  4326));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_MakePointM(-71.104, 42.315, 10),  4326));</programlisting>
 <screen>SRID=4326;POINTM(-71.104 42.315 10)</screen>
 
 <para>Get measure of created point.</para>
-<programlisting>
-SELECT ST_M(ST_MakePointM(-71.104, 42.315, 10)  );</programlisting>
+<programlisting>SELECT ST_M(ST_MakePointM(-71.104, 42.315, 10));</programlisting>
 <screen>10</screen>
         </refsection>
         <refsection>
@@ -526,17 +517,14 @@ FROM (
 </programlisting>
 
 <para>Create a Polygon from a 3D LineString</para>
-<programlisting>
-SELECT ST_AsEWKT(ST_MakePolygon('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_MakePolygon('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));</programlisting>
 <screen>POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))</screen>
 <para>Create a Polygon from a LineString with measures</para>
-<programlisting>
-SELECT ST_AsEWKT(ST_MakePolygon('LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)' ));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_MakePolygon('LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)'));</programlisting>
 <screen>POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))</screen>
 
 <para>Create a CurvePolygon from a CircularString shell.</para>
-<programlisting>
-SELECT ST_AsText(ST_MakePolygon('CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0)' ));</programlisting>
+<programlisting>SELECT ST_AsText(ST_MakePolygon('CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0)'));</programlisting>
 <screen>CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0))</screen>
         </refsection>
         <refsection>
@@ -671,8 +659,7 @@ FROM provinces p;
 then they must be reprojected before casting to a geography.
 In this example a point in Pennsylvania State Plane feet (SRID 2273)
 is projected to WGS84 (SRID 4326).</para>
-<programlisting>
-SELECT ST_Transform(ST_Point(3637510, 3014852, 2273), 4326)::geography;</programlisting>
+<programlisting>SELECT ST_Transform(ST_Point(3637510, 3014852, 2273), 4326)::geography;</programlisting>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -841,12 +828,10 @@ SELECT ST_Transform(ST_Point(3637510, 3014852, 2273), 4326)::geography;</program
         <title>Examples</title>
 
 <para>Create a 2D polygon.</para>
-<programlisting>
-SELECT ST_AsText(ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::geometry, 4326) );</programlisting>
+<programlisting>SELECT ST_AsText(ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::geometry, 4326));</programlisting>
 <screen>POLYGON((75 29,77 29,77 29,75 29))</screen>
 <para>Create a 3D polygon.</para>
-<programlisting>
-SELECT ST_AsEWKT(ST_Polygon(ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, 77 29 3, 75 29 1)'), 4326) );</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_Polygon(ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, 77 29 3, 75 29 1)'), 4326));</programlisting>
 <screen>SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))</screen>
       </refsection>
 
@@ -908,9 +893,9 @@ SELECT ST_AsEWKT(ST_Polygon(ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, 77 29 
 
         <refsection>
         <title>Example: Building a tile envelope</title>
-         <programlisting>SELECT ST_AsText(ST_TileEnvelope(2, 1, 1) );</programlisting>
+         <programlisting>SELECT ST_AsText(ST_TileEnvelope(2, 1, 1));</programlisting>
 <screen>POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))</screen>
-<programlisting>SELECT ST_AsText(ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326) ) );</programlisting>
+<programlisting>SELECT ST_AsText(ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326)));</programlisting>
 <screen>POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))</screen>
         </refsection>
         <refsection>

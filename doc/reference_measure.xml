@@ -247,18 +247,15 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
 		<title>Examples</title>
 
         <para>Angle between three points</para>
-<programlisting>
-SELECT degrees(ST_Angle('POINT(0 0)', 'POINT(10 10)', 'POINT(20 0)') );</programlisting>
+<programlisting>SELECT degrees(ST_Angle('POINT(0 0)', 'POINT(10 10)', 'POINT(20 0)'));</programlisting>
 <screen>270</screen>
 
         <para>Angle between vectors defined by four points</para>
-<programlisting>
-SELECT degrees(ST_Angle('POINT (10 10)', 'POINT (0 0)', 'POINT(90 90)', 'POINT (100 80)') );</programlisting>
+<programlisting>SELECT degrees(ST_Angle('POINT (10 10)', 'POINT (0 0)', 'POINT(90 90)', 'POINT (100 80)'));</programlisting>
 <screen>269.9999999999999</screen>
 
         <para>Angle between vectors defined by the start and end points of lines</para>
-<programlisting>
-SELECT degrees(ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0.5, 1 0)') );</programlisting>
+<programlisting>SELECT degrees(ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0.5, 1 0)'));</programlisting>
 <screen>45</screen>
 
 		</refsection>
@@ -1563,8 +1560,7 @@ SELECT ST_3DMaxDistance(
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>
-SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');</programlisting>
+		<programlisting>SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');</programlisting>
 <screen>0.00032</screen>
 
 	  </refsection>

@@ -141,6 +141,10 @@ garden: staged-install
 		> sfcgal_garden_result.txt 2>&1 || { \
 		tail -n 20 sfcgal_garden_result.txt; false; }
 	tail -n 20 sfcgal_garden_result.txt
+	@echo '-------------------------------------------------'
+	@echo 'Manual example tests in progress'
+	@echo '-------------------------------------------------'
+	$(MAKE) exampletest-run
 
 exampletest: staged-install exampletest-run
 

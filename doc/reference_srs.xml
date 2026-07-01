@@ -67,8 +67,7 @@
 
     <para>GDA2020 example.</para>
     <para>This example uses ST_Transform with automatic selection of a conversion pipeline.</para>
-    <programlisting>
-SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
+    <programlisting>SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
 <screen>POINT(143.00000635638918 -36.999986706128176)</screen>
     </refsection>
 
@@ -120,10 +119,10 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
     <refsection>
       <title>Examples</title>
       <para>Mark a point as WGS 84 longitude/latitude.</para>
-      <programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326)) As wgs84long_lat;</programlisting>
+      <programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326)) AS wgs84long_lat;</programlisting>
 <screen>SRID=4326;POINT(-123.365556 48.428611)</screen>
       <para>Mark a point as WGS 84 longitude/latitude and then transform it to Web Mercator.</para>
-      <programlisting>SELECT ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785)) As sphere_merc;</programlisting>
+      <programlisting>SELECT ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785)) AS sphere_merc;</programlisting>
 <screen>SRID=3785;POINT(-13732990.8753491 6178458.96425423)</screen>
     </refsection>
 
@@ -422,8 +421,7 @@ CREATE INDEX idx_geom_26986_parcels
 
     <para>GDA2020 example.</para>
     <para>This example uses ST_Transform with automatic selection of a conversion pipeline.</para>
-    <programlisting>
-SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
+    <programlisting>SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
 <screen>POINT(143.00000635638918 -36.999986706128176)</screen>
 <para>Using a defined conversion (EPSG:8447)</para>
 <programlisting>SELECT ST_AsText(
@@ -484,8 +482,7 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
     <refsection>
       <title>Examples</title>
       <para>List the first ten codes associated with the EPSG authority.</para>
-      <programlisting>
-SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;</programlisting>
+      <programlisting>SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;</programlisting>
 <screen> 10156
  10157
  10158
@@ -588,8 +585,7 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
     <refsection>
       <title>Examples</title>
       <para>Get the first 10 metadata records from the Proj database.</para>
-      <programlisting>
-SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;</programlisting>
+      <programlisting>SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;</programlisting>
 <screen> auth_name | auth_srid |                                srname
 -----------+-----------+----------------------------------------------------------------------
  EPSG      | 10156     | ETRS89 + MSL UK &amp; Ireland VORF08 depth

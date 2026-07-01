@@ -357,7 +357,7 @@ Check constraints:
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');</programlisting>
+		<programlisting>SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');</programlisting>
 <screen>4269</screen>
 	  </refsection>
 

@@ -1856,9 +1856,7 @@ FROM
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>
-
-select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as equality;</programlisting>
+<programlisting>SELECT 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry AS equality;</programlisting>
 <screen>t</screen>
 		  </refsection>
 		  <refsection>

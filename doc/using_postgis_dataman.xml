@@ -680,23 +680,23 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 		<itemizedlist>
 		<listitem>
 		  <para>Create a table with 2D POINT geography with the default SRID 4326 (WGS84 long/lat):</para>
-		  <para><programlisting>CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT) );</programlisting></para>
+		  <para><programlisting>CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT));</programlisting></para>
 		</listitem>
 		<listitem>
 		  <para>Create a table with 2D POINT geography in NAD83 longlat:</para>
-		  <para><programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT,4269) );</programlisting></para>
+		  <para><programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT,4269));</programlisting></para>
 		</listitem>
 		<listitem>
 		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 4326:</para>
-		  <para><programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ,4326) );</programlisting></para>
+		  <para><programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ,4326));</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>Create a table with 2D LINESTRING geography with the default SRID 4326:</para>
-			<para><programlisting>CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING) );</programlisting></para>
+			<para><programlisting>CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING));</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>Create a table with 2D POLYGON geography with the SRID 4267 (NAD 1927 long lat):</para>
-			<para><programlisting>CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267) );</programlisting></para>
+			<para><programlisting>CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267));</programlisting></para>
 		</listitem>
 		<!-- TODO: Add other examples -->
         <!--
@@ -1591,23 +1591,23 @@ VALUES ( 990000,
 		<itemizedlist>
 		<listitem>
 		  <para>Create a table holding any kind of geometry with the default SRID:</para>
-		  <para><programlisting>CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry );</programlisting></para>
+		  <para><programlisting>CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry);</programlisting></para>
 		</listitem>
 		<listitem>
 		  <para>Create a table with 2D POINT geometry with the default SRID:</para>
-		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT) );</programlisting></para>
+		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT));</programlisting></para>
 		</listitem>
 		<listitem>
 		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 3005:</para>
-		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ,3005) );</programlisting></para>
+		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ,3005));</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>Create a table with 4D (XYZM) LINESTRING geometry with the default SRID:</para>
-			<para><programlisting>CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM) );</programlisting></para>
+			<para><programlisting>CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM));</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>Create a table with 2D POLYGON geometry with the SRID 4267 (NAD 1927 long lat):</para>
-			<para><programlisting>CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON,4267) );</programlisting></para>
+			<para><programlisting>CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON,4267));</programlisting></para>
 		</listitem>
 		</itemizedlist>
 
@@ -1735,7 +1735,7 @@ FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);</pro
 		<para>Manually register the new table's geometry column in <varname>geometry_columns</varname>. This also changes the underlying table structure to make the column typmod-based.</para>
 <programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass);</programlisting>
 		<para>To retain constraint-based definition behavior, such as for inherited tables where all children do not have the same type and SRID, set the optional <varname>use_typmod</varname> argument to false.</para>
-<programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass, false); </programlisting>
+<programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass, false);</programlisting>
 
 <para>Although the old constraint-based method is still supported, direct
 pass-through view columns register correctly in <varname>geometry_columns</varname>
@@ -2427,13 +2427,13 @@ pgsql2shp [<options>] <database> <query>
 	  <para>The syntax for building a GiST index on a "geometry" column is as
 	  follows:</para>
 
-	  <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] ); </programlisting></para>
+	  <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield]);</programlisting></para>
 
 	  <para>The above syntax will always build a 2D-index.  To get the an n-dimensional index for the geometry type, you can create one using this syntax:</para>
 	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] gist_geometry_ops_nd);</programlisting>
 
 	  <para>Building a spatial index is a computationally intensive exercise. It also blocks write access to your table for the time it creates, so on a production system you may want to do in in a slower CONCURRENTLY-aware way:</para>
-		<para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING GIST ( [geometryfield] ); </programlisting></para>
+		<para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING GIST ( [geometryfield]);</programlisting></para>
 
 		<para>After building an index, it is sometimes helpful to force PostgreSQL to collect
 		table statistics, which are used to optimize query plans:</para>
@@ -2513,7 +2513,7 @@ CLUSTER table USING idx_temp_geohash;
 
     <para>The syntax for building a BRIN index on a <code>geometry</code> column is:</para>
 
-    <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geome_col] ); </programlisting></para>
+    <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geome_col]);</programlisting></para>
 
     <para>The above syntax builds a 2D index.  To build a 3D-dimensional index, use this syntax:</para>
 
@@ -2542,7 +2542,7 @@ CLUSTER table USING idx_temp_geohash;
     <para>The <code>geography</code> datatype is supported for BRIN indexing. The
     syntax for building a BRIN index on a geography column is:</para>
 
-    <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geog_col] ); </programlisting></para>
+    <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geog_col]);</programlisting></para>
 
     <para>The above syntax builds a 2D-index for geospatial objects on the spheroid. </para>
 
@@ -2602,7 +2602,7 @@ CLUSTER table USING idx_temp_geohash;
 		may be used to speed up spatial searches of the data. The syntax for
 		building an SP-GiST index on a "geometry" column is as follows:</para>
 
-		<para><programlisting>CREATE INDEX [indexname] ON [tablename] USING SPGIST ( [geometryfield] ); </programlisting></para>
+		<para><programlisting>CREATE INDEX [indexname] ON [tablename] USING SPGIST ( [geometryfield]);</programlisting></para>
 
 		<para>The above syntax will build a 2-dimensional index. A 3-dimensional
 		index for the geometry type can be created using the 3D operator class:</para>
@@ -2613,7 +2613,7 @@ CLUSTER table USING idx_temp_geohash;
 		It also blocks write access to your table for the time it creates, so on a
 		production system you may want to do in in a slower CONCURRENTLY-aware way:</para>
 
-	  <para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST ( [geometryfield] ); </programlisting></para>
+	  <para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST ( [geometryfield]);</programlisting></para>
 
 		<para>After building an index, it is sometimes helpful to force PostgreSQL to
 		collect table statistics, which are used to optimize query plans:</para>

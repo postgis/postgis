@@ -53,6 +53,9 @@ jobs:
         set -e
         uname -a
         echo "FROM postgis/postgis-build-env:${{ matrix.ci.tag }}" > Dockerfile
+        if test "${{ matrix.ci.mode }}" = "garden"; then
+          echo "RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-lxml && rm -rf /var/lib/apt/lists/*" >> Dockerfile
+        fi
         echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
         echo "CMD bash ci/github/run_${{ matrix.ci.mode }}.sh" >> Dockerfile
         docker build -t pgtest .

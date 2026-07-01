@@ -984,8 +984,7 @@ will be used.
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
-SELECT PostGIS_GDAL_Version();</programlisting>
+                <programlisting>SELECT PostGIS_GDAL_Version();</programlisting>
 <screen>GDAL 1.11dev, released 2013/04/13</screen>
             </refsection>
 
@@ -1811,8 +1810,7 @@ FROM ST_BandMetaData(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)
                             </mediaobject>
                           </informalfigure></para>
                 <para>This example outputs a black circle occupying 150 by 150 pixels.</para>
-                <programlisting>
-SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
+                <programlisting>SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
 
  <para><informalfigure>
                             <mediaobject>
@@ -2619,8 +2617,7 @@ FROM dummy_rast;</programlisting>
       <refsection>
         <title>Examples</title>
 
-        <programlisting>
-        SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, '8BUI')) As rast_mem;</programlisting>
+        <programlisting>SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, '8BUI')) AS rast_mem;</programlisting>
 <screen>22568</screen>
       </refsection>
 
@@ -3175,7 +3172,7 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;</pro
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) as rot FROM dummy_rast;</programlisting>
+                <programlisting>SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) AS rot FROM dummy_rast;</programlisting>
 <screen> rid |        rot
 -----+-------------------
    1 | 0.785398163397448
@@ -4365,8 +4362,7 @@ ORDER BY (gv).x, (gv).y;</programlisting>
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
-SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;</programlisting>
+                <programlisting>SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;</programlisting>
 <screen>POINT(0.5 0.5)</screen>
             </refsection>
 
@@ -4422,8 +4418,7 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;</pr
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
-SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;</programlisting>
+                <programlisting>SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;</programlisting>
 <screen> x | y | val |          st_astext
 ---+---+-----+------------------------------
  1 | 1 | 253 | POINT(3427927.75 5793244)
@@ -4494,8 +4489,7 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FRO
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
-SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;</programlisting>
+                <programlisting>SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;</programlisting>
 <screen>POINT(1.5 2)</screen>
             </refsection>
 
@@ -6619,12 +6613,10 @@ FROM (
                     <para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
 
                     <para>This example returns the original raster pixel size.</para>
-                    <programlisting>
-SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width</programlisting>
+                    <programlisting>SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width</programlisting>
 <screen>0.001</screen>
 <para>This example returns the pixel size of the rescaled raster.</para>
-<programlisting>
-SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015)) width</programlisting>
+<programlisting>SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015)) width</programlisting>
 <screen>0.0015</screen>
             </refsection>
 
@@ -8441,8 +8433,7 @@ SELECT (ST_MetaData(ST_RastFromHexWKB('01000000000000000000000040000000000000084
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>
-SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;</programlisting>
+                    <programlisting>SELECT ST_AsBinary(rast) AS rastbin FROM dummy_rast WHERE rid=1;</programlisting>
 <screen>\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000</screen>
 
             </refsection>
@@ -8491,8 +8482,7 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;</programlisting
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>
-SELECT ST_AsHexWKB(rast) As rastbin FROM dummy_rast WHERE rid=1;</programlisting>
+                    <programlisting>SELECT ST_AsHexWKB(rast) AS rastbin FROM dummy_rast WHERE rid=1;</programlisting>
 <screen>010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400</screen>
 
             </refsection>
@@ -14662,8 +14652,7 @@ SELECT A.rid As a_rid, B.rid As b_rid, A.rast &> B.rast As overright
    1 |   2 | f</screen>
 
             <para>No band numbers specified.</para>
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;</programlisting>
 <screen> rid | rid | st_contains
 -----+-----+-------------
    1 |   1 | t
@@ -14752,8 +14741,7 @@ SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JO
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_containsproperly
 -----+-----+---------------------
    2 |   1 | f
@@ -14838,8 +14826,7 @@ SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM dummy_ra
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_covers
 -----+-----+-----------
    2 |   1 | f
@@ -14924,8 +14911,7 @@ SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROS
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_coveredby
 -----+-----+--------------
    2 |   1 | f
@@ -15019,8 +15005,7 @@ SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 C
    2 |   2 | f</screen>
 
             <para>This time, without specifying band numbers.</para>
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_disjoint
 -----+-----+-------------
    2 |   1 | t
@@ -15154,8 +15139,7 @@ SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JO
         <refsection>
             <title>Examples</title>
             <para>Different bands of same raster.</para>
-            <programlisting>
-SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;</programlisting>
+            <programlisting>SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;</programlisting>
 <screen>t</screen>
         </refsection>
 
@@ -15239,8 +15223,7 @@ SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;</programli
             <title>Examples</title>
 
             <para>Comparing different bands of same raster.</para>
-            <programlisting>
-SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;</programlisting>
+            <programlisting>SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;</programlisting>
 <screen>f</screen>
         </refsection>
         <refsection>
@@ -15321,8 +15304,7 @@ SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;</programlist
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_touches
 -----+-----+------------
    2 |   1 | f
@@ -15592,8 +15574,7 @@ SELECT
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_within
 -----+-----+-----------
    2 |   1 | f
@@ -15692,8 +15673,7 @@ SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROS
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_dwithin
 -----+-----+------------
    2 |   1 | f
@@ -15790,8 +15770,7 @@ SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast 
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+            <programlisting>SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_dfullywithin
 -----+-----+-----------------
    2 |   1 | f

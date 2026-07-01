@@ -168,13 +168,11 @@ SELECT ST_AsEWKT(ST_Affine(geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()),
 		<title>Examples</title>
 
 		<para>This example rotates a geometry by 180 degrees.</para>
-		<programlisting>
-SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()), 6);</programlisting>
+		<programlisting>SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()), 6);</programlisting>
 <screen>LINESTRING(-50 -160,-50 -50,-100 -50)</screen>
 
 		<para>This example rotates a geometry 30 degrees counter-clockwise around x=50, y=160.</para>
-		<programlisting>
-SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()/6, 50, 160), 6);</programlisting>
+		<programlisting>SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()/6, 50, 160), 6);</programlisting>
 <screen>LINESTRING(50 160,105 64.737206,148.30127 89.737206)</screen>
 
 		<para>This example rotates a geometry 60 degrees clockwise around its centroid.</para>
@@ -229,8 +227,7 @@ FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;</pr
 		<title>Examples</title>
 
 		<para>This example rotates a line 90 degrees around the X axis.</para>
-		<programlisting>
-SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
+		<programlisting>SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
 <screen>LINESTRING(1 -3 2,1 -1 1)</screen>
 	  </refsection>
 
@@ -281,8 +278,7 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 		<title>Examples</title>
 
 		<para>This example rotates a line 90 degrees around the Y axis.</para>
-		<programlisting>
- SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
+		<programlisting>SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
 <screen>LINESTRING(3 2 -1,1 1 -1)</screen>
 	  </refsection>
 
@@ -336,8 +332,7 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 		<title>Examples</title>
 
 		<para>This example rotates a line 90 degrees around the Z axis.</para>
-		<programlisting>
-SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
+		<programlisting>SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
 <screen>LINESTRING(-2 1 3,-1 1 1)</screen>
 <para>This example rotates a curved circle around the Z axis.</para>
 <programlisting>
@@ -431,12 +426,10 @@ point are equivalent to no scaling the corresponding dimension.
 		<title>Examples</title>
 
 		<para>This example scales X, Y, and Z values.</para>
-		<programlisting>
-SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));</programlisting>
+		<programlisting>SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));</programlisting>
 <screen>LINESTRING(0.5 1.5 2.4,0.5 0.75 0.8)</screen>
 <para>This example scales X and Y values.</para>
-<programlisting>
- SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75));</programlisting>
 <screen>LINESTRING(0.5 1.5 3,0.5 0.75 1)</screen>
 <para>This example scales X, Y, Z, and M values.</para>
 <programlisting>
@@ -444,8 +437,7 @@ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75
      ST_MakePoint(0.5, 0.75, 2, -1)));</programlisting>
 <screen>LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)</screen>
 <para>This example scales X and Y values using a false origin.</para>
-<programlisting>
-SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::geometry));</programlisting>
+<programlisting>SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::geometry));</programlisting>
 <screen>LINESTRING(1 1,3 3)</screen>
 	  </refsection>
 
@@ -500,14 +492,13 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 	  <refsection>
 		<title>Examples</title>
 		<para>Move a point 1 degree longitude</para>
-		<programlisting>
-	SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As wgs_transgeomtxt;</programlisting>
+		<programlisting>SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) AS wgs_transgeomtxt;</programlisting>
 <screen>POINT(-70.01 42.37)</screen>
 		<para>Move a linestring 1 degree longitude and 1/2 degree latitude</para>
-		<programlisting>SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;</programlisting>
+		<programlisting>SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) AS wgs_transgeomtxt;</programlisting>
 <screen>LINESTRING(-70.01 42.87,-70.11 42.88)</screen>
 		<para>Move a 3d point</para>
-		<programlisting>SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));</programlisting>
+		<programlisting>SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' AS geometry), 5, 12,3));</programlisting>
 <screen>POINT(5 12 3)</screen>
 		<para>Move points with a measure coordinate</para>
 		<programlisting>SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINTM(0 0 11)'), 5, 12));</programlisting>
@@ -571,8 +562,7 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 		<programlisting>SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));</programlisting>
 <screen>LINESTRING(1.5 6 3,1.5 4 1)</screen>
 <para>This example buffers a point to approximate a circle, converts it to a curve, translates it by 1,2, and scales it by 3,4.</para>
-<programlisting>
-  SELECT ST_AsText(ST_TransScale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));</programlisting>
+<programlisting>SELECT ST_AsText(ST_TransScale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));</programlisting>
 <screen>CURVEPOLYGON(CIRCULARSTRING(714 2276,696 2276,714 2276))</screen>
 	  </refsection>
 

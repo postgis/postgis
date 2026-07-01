@@ -232,10 +232,10 @@ being defined.
 		  </refsection>
             <refsection>
                 <title>Examples</title>
-                 <programlisting>SELECT '{{1,2},{4,3}}'::topology.topoelementarray As tea;</programlisting>
+                 <programlisting>SELECT '{{1,2},{4,3}}'::topology.topoelementarray AS tea;</programlisting>
 <screen>{{1,2},{4,3}}</screen>
                  <para>This is the more verbose equivalent.</para>
-                 <programlisting>SELECT ARRAY[ARRAY[1, 2], ARRAY[4, 3]]::topology.topoelementarray As tea;</programlisting>
+                 <programlisting>SELECT ARRAY[ARRAY[1, 2], ARRAY[4, 3]]::topology.topoelementarray AS tea;</programlisting>
 <screen>{{1,2},{4,3}}</screen>
                  <para>This example uses the array aggregate function packaged with topology.</para>
                  <programlisting>
@@ -243,7 +243,7 @@ SELECT topology.TopoElementArray_Agg(ARRAY[e, t] ORDER BY e, t) As tea
 FROM generate_series(1, 4) As e CROSS JOIN generate_series(1, 3) As t;
                  </programlisting>
 <screen>{{1,1},{1,2},{1,3},{2,1},{2,2},{2,3},{3,1},{3,2},{3,3},{4,1},{4,2},{4,3}}</screen>
-                 <programlisting>SELECT '{{1,2,4},{3,4,5}}'::topology.topoelementarray As tea;</programlisting>
+                 <programlisting>SELECT '{{1,2,4},{3,4,5}}'::topology.topoelementarray AS tea;</programlisting>
 <screen>ERROR:  value for domain topology.topoelementarray violates check constraint "dimensions"</screen>
             </refsection>
             <!-- Optionally add a "See Also" section -->
@@ -2315,10 +2315,10 @@ Returns the identifier of the newly added node.
 			<refsection>
 				<title>Examples</title>
 				<para>Add an edge to split.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227592 893910, 227600 893910)', 26986)) As edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227592 893910, 227600 893910)', 26986)) AS edgeid;</programlisting>
 <screen>3</screen>
 				<para>Split the edge with a new node.</para>
-<programlisting>SELECT topology.ST_ModEdgeSplit('ma_topo', 3, ST_SetSRID(ST_Point(227594, 893910), 26986)) As node_id;</programlisting>
+<programlisting>SELECT topology.ST_ModEdgeSplit('ma_topo', 3, ST_SetSRID(ST_Point(227594, 893910), 26986)) AS node_id;</programlisting>
 <screen>7</screen>
 			</refsection>
 
@@ -2475,10 +2475,10 @@ new location is in a different face (since 3.2.0) then an exception is thrown.
 			<refsection>
 				<title>Examples</title>
 				<para>Add an isolated node with no face.</para>
-				<programlisting>SELECT topology.ST_AddIsoNode('ma_topo', NULL, ST_GeomFromText('POINT(227579 893916)', 26986)) As nodeid;</programlisting>
+				<programlisting>SELECT topology.ST_AddIsoNode('ma_topo', NULL, ST_GeomFromText('POINT(227579 893916)', 26986)) AS nodeid;</programlisting>
 <screen>7</screen>
 				<para>Move the new node.</para>
-<programlisting>SELECT topology.ST_MoveIsoNode('ma_topo', 7, ST_GeomFromText('POINT(227579.5 893916.5)', 26986)) As descrip;</programlisting>
+<programlisting>SELECT topology.ST_MoveIsoNode('ma_topo', 7, ST_GeomFromText('POINT(227579.5 893916.5)', 26986)) AS descrip;</programlisting>
 <screen>Isolated Node 7 moved to location 227579.5,893916.5</screen>
 			</refsection>
 
@@ -2529,10 +2529,10 @@ Updates all existing joined edges and relationships accordingly.
 			<refsection>
 				<title>Examples</title>
 				<para>Add an edge to split.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575 893917, 227592 893900)', 26986)) As edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575 893917, 227592 893900)', 26986)) AS edgeid;</programlisting>
 <screen>2</screen>
 				<para>Split the new edge.</para>
-<programlisting>SELECT topology.ST_NewEdgesSplit('ma_topo', 2, ST_GeomFromText('POINT(227578.5 893913.5)', 26986)) As newnodeid;</programlisting>
+<programlisting>SELECT topology.ST_NewEdgesSplit('ma_topo', 2, ST_GeomFromText('POINT(227578.5 893913.5)', 26986)) AS newnodeid;</programlisting>
 <screen>6</screen>
 			</refsection>
 
@@ -2580,7 +2580,7 @@ Updates all existing joined edges and relationships accordingly.
 			<refsection>
 				<title>Examples</title>
 				<para>Remove an isolated node with no face.</para>
-				<programlisting>SELECT topology.ST_RemoveIsoNode('ma_topo', 7) As result;</programlisting>
+				<programlisting>SELECT topology.ST_RemoveIsoNode('ma_topo', 7) AS result;</programlisting>
 <screen>Isolated node 7 removed</screen>
 			</refsection>
 
@@ -2623,7 +2623,7 @@ Updates all existing joined edges and relationships accordingly.
 			<refsection>
 				<title>Examples</title>
 				<para>Remove an isolated edge with no face.</para>
-				<programlisting>SELECT topology.ST_RemoveIsoEdge('ma_topo', 7) As result;</programlisting>
+				<programlisting>SELECT topology.ST_RemoveIsoEdge('ma_topo', 7) AS result;</programlisting>
 <screen>Isolated edge 7 removed</screen>
 			</refsection>
 
@@ -2882,7 +2882,7 @@ FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;</programlis
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.GetTopologyID('ma_topo') As topo_id;</programlisting>
+				<programlisting>SELECT topology.GetTopologyID('ma_topo') AS topo_id;</programlisting>
 <screen>1</screen>
 			</refsection>
 
@@ -2925,7 +2925,7 @@ FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;</programlis
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.GetTopologySRID('ma_topo') As srid;</programlisting>
+				<programlisting>SELECT topology.GetTopologySRID('ma_topo') AS srid;</programlisting>
 <screen>4326</screen>
 			</refsection>
 
@@ -2968,7 +2968,7 @@ FROM ST_GeomFromEWKT('SRID=26986;POINT(227591.9 893900.4)') As geom;</programlis
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting role="requires-external-state">SELECT topology.GetTopologyName(1) As topo_name;</programlisting>
+				<programlisting role="requires-external-state">SELECT topology.GetTopologyName(1) AS topo_name;</programlisting>
 <screen>ma_topo</screen>
 			</refsection>
 
@@ -3081,7 +3081,7 @@ FROM topology.ST_GetFaceEdges('tt', 1) As t(seq, edge)
 			<refsection>
 				<title>Examples</title>
 				<para>This query returns the WKT of the polygon added with <xref linkend="AddFace"/>.</para>
-				<programlisting>SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;</programlisting>
+				<programlisting>SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) AS facegeomwkt;</programlisting>
 <screen>POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
 234872.5 899328.7,234891 899285.4,234992.5 899145,234890.6 899069,
 234755.2 899255.4,234612.7 899379.4,234776.9 899563.7))</screen>
@@ -3347,7 +3347,7 @@ get the correct containing face computed.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986)) As nodeid;</programlisting>
+				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986)) AS nodeid;</programlisting>
 <screen>4</screen>
 			</refsection>
 
@@ -3389,12 +3389,12 @@ get the correct containing face computed.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2, 227591.9 893900.4)', 26986)) As edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2, 227591.9 893900.4)', 26986)) AS edgeid;</programlisting>
 <screen>1</screen>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4, 227622.6 893844.2, 227641.6 893816.5, 227704.5 893778.5)', 26986)) As edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4, 227622.6 893844.2, 227641.6 893816.5, 227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
 <screen>2</screen>
 				<para>This query errors because the edge intersects an existing edge away from the endpoints.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900, 227591.9 893900.4, 227704.5 893778.5)', 26986)) As edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900, 227591.9 893900.4, 227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
 <screen>ERROR:  Edge intersects (not on endpoints) with existing edge 1</screen>
 			</refsection>
 
@@ -3694,9 +3694,7 @@ WHERE foo.gid = bg.gid;
 
 </programlisting>
 	<para>To convert the topogeometry back to a denormalized geometry aligned with faces and edges, cast the topogeometry to a geometry. The resulting geometries are aligned with the TIGER street centerlines.</para>
-<programlisting>
-UPDATE boston.blockgroups SET new_geom = topo::geometry;
-	</programlisting>
+<programlisting>UPDATE boston.blockgroups SET new_geom = topo::geometry;</programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -3789,7 +3787,7 @@ replace the old one see <xref linkend="clearTopoGeom"/>.
 				<para>Create a new table.</para>
 <programlisting>CREATE TABLE nei_topo(gid serial primary key, nei varchar(30));</programlisting>
 				<para>Add a topogeometry column to the new table.</para>
-<programlisting>SELECT topology.AddTopoGeometryColumn('topo_boston_test', 'public', 'nei_topo', 'topo', 'MULTIPOLYGON') As new_layer_id;</programlisting>
+<programlisting>SELECT topology.AddTopoGeometryColumn('topo_boston_test', 'public', 'nei_topo', 'topo', 'MULTIPOLYGON') AS new_layer_id;</programlisting>
 <screen>1</screen>
 				<para>Use the new layer identifier to populate the topogeometry column.</para>
 <programlisting>
@@ -4507,9 +4505,7 @@ the actual arcs plus some headers. See the <link xlink:href="http://github.com/m
             <refsection>
                 <title>Examples</title>
 				<para>Create a temporary edge map for the TopoJSON output.</para>
-<programlisting>
-CREATE TEMP TABLE edgemap(arc_id serial, edge_id int unique);
-</programlisting>
+<programlisting>CREATE TEMP TABLE edgemap(arc_id serial, edge_id int unique);</programlisting>
 				<para>Build the TopoJSON header, objects, arcs, and footer.</para>
 <programlisting>
 SELECT '{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {'

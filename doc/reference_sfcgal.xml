@@ -732,7 +732,7 @@
     <title>Geometry Examples</title>
     <programlisting>SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);</programlisting>
 <screen>f</screen>
-<programlisting>    SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);</programlisting>
+<programlisting>SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);</programlisting>
 <screen>t</screen>
     </refsection>
     <refsection>
@@ -1771,8 +1771,7 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
             </informaltable>
 
             <para>This example computes the projected medial axis with free endpoints extended to the polygon boundary.</para>
-            <programlisting>
-SELECT ST_AsText(CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true));</programlisting>
+            <programlisting>SELECT ST_AsText(CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true));</programlisting>
 <screen>MULTILINESTRING((0 0.5,0.5 0.5,1.5 0.5,2 0.5))</screen>
         </refsection>
 

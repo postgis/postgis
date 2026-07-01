@@ -336,8 +336,7 @@
 <screen>\x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
 00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000
 0000000000000000000000000000000000</screen>
-    <programlisting>
-      SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
+    <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
 <screen>\x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
 003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000
 0000000000000000000000000000000000</screen>
@@ -435,8 +434,7 @@
     <refsection>
     <title>Examples</title>
   <para>Basic </para>
-  <programlisting>
-  SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));</programlisting>
+  <programlisting>SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));</programlisting>
 <screen>  _p~iF~ps|U_ulLnnqC_mqNvxq`@
   </screen>
 
@@ -707,7 +705,7 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 <screen>{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}</screen>
 
 <para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
-    <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
+    <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) FROM fe_edges LIMIT 1;</programlisting>
 <screen>
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
@@ -716,7 +714,7 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 <programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
 <screen>{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
 <para>Options argument can be used to add BBOX and CRS in GeoJSON output:</para>
-<programlisting> SELECT ST_AsGeoJSON(ST_SetSRID('POINT(1 1)'::geometry, 4326), 9, 4|1);</programlisting>
+<programlisting>SELECT ST_AsGeoJSON(ST_SetSRID('POINT(1 1)'::geometry, 4326), 9, 4|1);</programlisting>
 <screen>
   {"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1.000000000,1.000000000,1.000000000,1.000000000],"coordinates":[1,1]}
 </screen>
@@ -1082,28 +1080,22 @@ SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
       <refsection>
       <title>Examples</title>
 <para>Default format.</para>
-<programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));</programlisting>
+<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));</programlisting>
 <screen>2°19'29.928"S 3°14'3.243"W</screen>
 <para>Providing a format (same as the default).</para>
-<programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));</programlisting>
+<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));</programlisting>
 <screen>2°19'29.928"S 3°14'3.243"W</screen>
 <para>Characters other than D, M, S, C and . are just passed through.</para>
-<programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));</programlisting>
+<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));</programlisting>
 <screen>2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W</screen>
 <para>Signed degrees instead of cardinal directions.</para>
-<programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));</programlisting>
+<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));</programlisting>
 <screen>-2°19'29.928" -3°14'3.243"</screen>
 <para>Decimal degrees.</para>
-<programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));</programlisting>
+<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));</programlisting>
 <screen>2.3250 degrees S 3.2342 degrees W</screen>
 <para>Excessively large values are normalized.</para>
-<programlisting>
-SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));</programlisting>
+<programlisting>SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));</programlisting>
 <screen>72°19'29.928"S 57°45'56.757"E</screen>
       </refsection>
 
@@ -1512,7 +1504,7 @@ FROM mvtgeom;
 <screen>M 0 0 L 0 -1 1 -1 1 0 Z</screen>
 
         <para>Circular string</para>
-    <programlisting>SELECT ST_AsSVG(ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );</programlisting>
+    <programlisting>SELECT ST_AsSVG(ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)'));</programlisting>
 <screen>M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</screen>
 
         <para>Multi-curve</para>
@@ -1576,13 +1568,11 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
 
       <refsection>
       <title>Examples</title>
-<programlisting>
-SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);</programlisting>
+<programlisting>SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);</programlisting>
 <screen>\x02000202020808</screen>
 <para>To create an aggregate TWKB object including identifiers aggregate the desired geometries and objects first, using "array_agg()", then call the appropriate TWKB function.
 </para>
-<programlisting>
-SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;</programlisting>
+<programlisting>SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;</programlisting>
 <screen>\x040402020400000202</screen>
 
       </refsection>
@@ -1863,13 +1853,12 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_GeoHash(ST_Point(-126,48) );</programlisting>
+    <programlisting>SELECT ST_GeoHash(ST_Point(-126,48));</programlisting>
 <screen>c0w3hf1s70w3hf1s70w3</screen>
 <programlisting>SELECT ST_GeoHash(ST_Point(-126,48), 5);</programlisting>
 <screen>c0w3h</screen>
 <para>This example shows that the GeoHash for a line containing a point is a prefix of the point code.</para>
-<programlisting>
-SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);</programlisting>
+<programlisting>SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);</programlisting>
 <screen>c0w3</screen>
     </refsection>
    <refsection>

@@ -978,8 +978,7 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
 <programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);</programlisting>
 <screen>t</screen>
 <para>This example looks up rows in a table; for faster lookup, the geometry column should have a GiST index.</para>
-<programlisting role="requires-external-state">
-SELECT id, name FROM cities WHERE ST_Intersects(geom, 'SRID=4326;POLYGON((28 53,27.707 52.293,27 52,26.293 52.293,26 53,26.293 53.707,27 54,27.707 53.707,28 53))');</programlisting>
+<programlisting role="requires-external-state">SELECT id, name FROM cities WHERE ST_Intersects(geom, 'SRID=4326;POLYGON((28 53,27.707 52.293,27 52,26.293 52.293,26 53,26.293 53.707,27 54,27.707 53.707,28 53))');</programlisting>
 <screen> id | name
 ----+-------
   2 | Minsk
@@ -1572,8 +1571,7 @@ SELECT ST_Relate(a_line, b_multiline, 1) AS bnr_mod2,
 
   <refsection>
     <title>Examples</title>
-    <programlisting>
-SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;</programlisting>
+    <programlisting>SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;</programlisting>
 <screen>t</screen>
     <para>Patterns for common spatial relationships
 matched against intersection matrix values,
