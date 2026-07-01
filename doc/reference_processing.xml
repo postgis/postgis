@@ -343,7 +343,7 @@ ST_Boundary(
                   </tgroup>
             </informaltable>
 
-<programlisting>--A buffered point approximates a circle
+<programlisting role="requires-external-state">--A buffered point approximates a circle
 -- A buffered point forcing approximation of (see diagram)
 -- 2 points per quarter circle is poly with 8 sides (see diagram)
 SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,
@@ -453,7 +453,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
       </tgroup>
     </informaltable>
 
-<programlisting role="example-test">WITH data(geom) AS (VALUES
+<programlisting>WITH data(geom) AS (VALUES
    ('LINESTRING (180 40, 30 20, 20 90)'::geometry)
   ,('LINESTRING (180 40, 160 160)'::geometry)
   ,('LINESTRING (160 160, 80 190, 80 120, 20 90)'::geometry)
@@ -621,7 +621,7 @@ FROM (SELECT
         </tgroup>
       </informaltable>
 
-      <programlisting role="example-test">SELECT ST_AsText(ST_Centroid('MULTIPOINT ( -1 0, -1 2, -1 3, -1 4, -1 7, 0 1, 0 3, 1 1, 2 0, 6 0, 7 8, 9 8, 10 6 )'));
+      <programlisting>SELECT ST_AsText(ST_Centroid('MULTIPOINT ( -1 0, -1 2, -1 3, -1 4, -1 7, 0 1, 0 3, 1 1, 2 0, 6 0, 7 8, 9 8, 10 6 )'));
                 st_astext
 ------------------------------------------
 POINT(2.307692307692308 3.307692307692308)
@@ -1383,7 +1383,7 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
           <refsection>
             <title>Examples</title>
             <para>A linestring is filtered</para>
-                <programlisting role="example-test">
+                <programlisting>
 SELECT ST_AsText(ST_FilterByM(geom,30)) simplified
 FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;
          simplified
@@ -1531,7 +1531,7 @@ FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
               </mediaobject>
         </informalfigure>
       </para>
-      <programlisting role="example-test">
+      <programlisting>
 WITH test AS (
 SELECT 'MULTIPOINT((10 10), (10 40), (40 10), (190 190))'::geometry geom)
 SELECT
@@ -1616,7 +1616,7 @@ FROM test;
               </mediaobject>
         </informalfigure>
       </para>
-			<programlisting role="example-test">SELECT ST_AsText(ST_LineMerge(
+			<programlisting>SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120))'
 		));
 --------------------------------------------
@@ -1639,7 +1639,7 @@ FROM test;
               </mediaobject>
         </informalfigure>
       </para>
-			<programlisting role="example-test">SELECT ST_AsText(ST_LineMerge(
+			<programlisting>SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120), (100 180, 120 140))'
 		));
 --------------------------------------------
@@ -1651,7 +1651,7 @@ FROM test;
   <title>Non-Touching Lines</title>
 <para>If merging is not possible due to non-touching lines,
 the original MultiLineString is returned.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 -32))'
 ));
@@ -1674,7 +1674,7 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 		</mediaobject>
 	</informalfigure>
 </para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((60 30, 10 70), (120 50, 60 30), (120 50, 180 30))',
 TRUE));
@@ -1685,7 +1685,7 @@ TRUE));
 
 <refsection>
 <title>Z-dimension Handling</title>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(ST_LineMerge(
       'MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))'
         ));
@@ -1746,7 +1746,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
         <caption><para>Maximum inscribed circle of a polygon. Center, nearest point, and radius are returned.</para></caption>
       </mediaobject>
     </informalfigure>
-<programlisting role="example-test">SELECT radius, ST_AsText(center) AS center, ST_AsText(nearest) AS nearest
+<programlisting>SELECT radius, ST_AsText(center) AS center, ST_AsText(nearest) AS nearest
     FROM ST_MaximumInscribedCircle(
         'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10, 70 40, 20 50, 40 180),
         (60 140, 50 90, 90 140, 60 140))');
@@ -1965,7 +1965,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
       <refsection>
         <title>Examples</title>
-<programlisting role="example-test">SELECT ST_AsText(center), radius FROM ST_MinimumBoundingRadius('POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))');
+<programlisting>SELECT ST_AsText(center), radius FROM ST_MinimumBoundingRadius('POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))');
 
                 st_astext                 |      radius
 ------------------------------------------+------------------
@@ -2013,7 +2013,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
         <refsection>
             <title>Examples</title>
-            <programlisting role="example-test">
+            <programlisting>
                 SELECT ST_AsText(ST_OrientedEnvelope('MULTIPOINT ((0 0), (-1 -1), (3 2))'));
 
                 st_astext
@@ -2029,7 +2029,7 @@ POLYGON((3 2,-1 -1,-1.12 -0.84,2.88 2.16,3 2))
         <caption><para>Oriented envelope of a point and linestring.</para></caption>
       </mediaobject>
     </informalfigure>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(ST_OrientedEnvelope(
         ST_Collect(
             ST_GeomFromText('LINESTRING(55 75,125 150)'),
@@ -2392,7 +2392,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
         </tgroup>
       </informaltable>
 
-        <programlisting>SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));
+        <programlisting role="requires-external-state">SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));
 ------------
  POINT(0 5)
 
@@ -2423,7 +2423,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
             </mediaobject>
             </informalfigure>
 
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
        ST_AsText(ST_Centroid(geom)) AS centroid
     FROM (SELECT 'POLYGON ((130 120, 120 190, 30 140, 50 20, 190 20,
@@ -2638,7 +2638,7 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));
+        <programlisting role="requires-external-state">SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));
     st_astext
 -----------------
  POINT(1.4 19.3)
@@ -2655,14 +2655,14 @@ SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
 </programlisting>
 
 <para>Precision reduction can reduce number of vertices</para>
-<programlisting role="example-test">SELECT ST_AsText(ST_ReducePrecision('LINESTRING (10 10, 19.6 30.1, 20 30, 20.3 30, 40 40)', 1));
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('LINESTRING (10 10, 19.6 30.1, 20 30, 20.3 30, 40 40)', 1));
   st_astext
 -------------
  LINESTRING (10 10, 20 30, 40 40)
 </programlisting>
 
 <para>Precision reduction splits polygons if needed to ensure validity</para>
-<programlisting role="example-test">SELECT ST_AsText(ST_ReducePrecision('POLYGON ((10 10, 60 60.1, 70 30, 40 40, 50 10, 10 10))', 10));
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('POLYGON ((10 10, 60 60.1, 70 30, 40 40, 50 10, 10 10))', 10));
   st_astext
 -------------
 MULTIPOLYGON(((40 40,50 10,10 10,40 40)),((60 60,70 30,40 40,60 60)))
@@ -2726,7 +2726,7 @@ MULTIPOLYGON(((40 40,50 10,10 10,40 40)),((60 60,70 30,40 40,60 60)))
                       <caption><para>The shared path of multilinestring and linestring overlaid with original geometries.</para></caption>
                     </mediaobject>
                   </informalfigure>
-                  <programlisting role="example-test">
+                  <programlisting>
  SELECT ST_AsText(
   ST_SharedPaths(
     ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
@@ -2832,7 +2832,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
           <refsection>
             <title>Examples</title>
             <para>A circle simplified with a medium tolerance becomes an octagon, and with a large tolerance disappears.</para>
-                <programlisting role="example-test">SELECT ST_Npoints(geom) AS np_before,
+                <programlisting>SELECT ST_Npoints(geom) AS np_before,
        ST_NPoints(ST_Simplify(geom, 0.1)) AS np01_notbadcircle,
        ST_NPoints(ST_Simplify(geom, 0.5)) AS np05_notquitecircle,
        ST_NPoints(ST_Simplify(geom, 1)) AS np1_octagon,
@@ -2929,7 +2929,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
           <refsection>
             <title>Examples</title>
             <para>For the same example as <xref linkend="ST_Simplify"/>, ST_SimplifyPreserveTopology prevents the geometry from disappearing.</para>
-                <programlisting role="example-test">
+                <programlisting>
 SELECT  ST_Npoints(geom) AS np_before, 
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.1)) AS np01_notbadcircle, 
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.5)) AS np05_notquitecircle,
@@ -3126,7 +3126,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
           <refsection>
             <title>Examples</title>
             <para>A LineString is simplified with a minimum-area tolerance of 30.</para>
-                <programlisting role="example-test">
+                <programlisting>
 SELECT ST_AsText(ST_SimplifyVW(geom,30)) simplified
   FROM (SELECT 'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry AS geom) AS t;
 
@@ -3223,7 +3223,7 @@ LINESTRING(5 2,7 25,10 10)
             <para>
                 Calculating the effective area of a LineString.  Because we use a threshold value of zero, all vertices in the input geometry are returned.
             </para>
-                <programlisting role="example-test">
+                <programlisting>
 
 select ST_AsText(ST_SetEffectiveArea(geom)) all_pts, ST_AsText(ST_SetEffectiveArea(geom,30) ) thrshld_30
 FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
@@ -3272,7 +3272,7 @@ FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
           <refsection>
             <title>Example</title>
             <para>Triangulation of a square.</para>
-                <programlisting role="example-test">
+                <programlisting>
 SELECT ST_AsText(
     ST_TriangulatePolygon('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'));
 
@@ -3408,7 +3408,7 @@ SELECT ST_AsText(
                 <caption><para>Voronoi diagram lines, with tolerance of 30 units</para></caption>
             </mediaobject>
         </informalfigure>
-        <programlisting>
+        <programlisting role="requires-external-state">
 SELECT ST_VoronoiLines(
             'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,
             30) AS geom;
@@ -3495,7 +3495,7 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
                 <caption><para>Points overlaid on top of Voronoi diagram</para></caption>
             </mediaobject>
         </informalfigure>
-<programlisting>
+<programlisting role="requires-external-state">
 SELECT ST_VoronoiPolygons(
                 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry
             ) AS geom;
@@ -3515,7 +3515,7 @@ POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 132.826086956522,100.5 270)
                 <caption><para>Voronoi diagram, with tolerance of 30 units</para></caption>
             </mediaobject>
             </informalfigure>
-<programlisting>
+<programlisting role="requires-external-state">
 SELECT ST_VoronoiPolygons(
             'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,
             30) AS geom;

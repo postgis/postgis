@@ -113,7 +113,7 @@ To obtain the actual points at the computed measure use <xref linkend="ST_Locate
 
       <refsection>
       <title>Examples</title>
-<programlisting role="example-test">
+<programlisting>
 -- Return the time in which two objects moving between 10:00 and 11:00
 -- are closest to each other and their distance at that point
 WITH inp AS ( SELECT
@@ -192,7 +192,7 @@ Null is returned if the trajectories do not overlap in their M ranges.
 
       <refsection>
       <title>Examples</title>
-<programlisting role="example-test">
+<programlisting>
 -- Return the minimum distance of two objects moving between 10:00 and 11:00
 WITH inp AS ( SELECT
   ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
@@ -263,7 +263,7 @@ False is returned if the trajectories do not overlap in their M ranges.
 
       <refsection>
       <title>Examples</title>
-<programlisting role="example-test">
+<programlisting>
 WITH inp AS ( SELECT
   ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
     extract(epoch from timestamp '2015-05-26 10:00' AT TIME ZONE 'UTC'),

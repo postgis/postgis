@@ -68,7 +68,7 @@
       <refsection>
         <title>Examples - Two-input variant</title>
         <para>Collect 2D points.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),
     ST_GeomFromText('POINT(-2 3)') ));
 
@@ -78,7 +78,7 @@ MULTIPOINT((1 2),(-2 3))
 </programlisting>
 
 <para>Collect 3D points.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),
         ST_GeomFromEWKT('POINT(1 2 4)') ) );
 
@@ -88,7 +88,7 @@ SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),
  </programlisting>
 
 <para>Collect curves.</para>
- <programlisting role="example-test">
+ <programlisting>
 SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 150505,220227 150406)',
         'CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));
 
@@ -105,7 +105,7 @@ MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
 SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );
 </programlisting>
 <para>Using an array constructor for values.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(  ST_Collect(
         ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),
             ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As wktcollect;
@@ -162,7 +162,7 @@ SELECT stusps, ST_Collect(f.geom) as geom
       <refsection>
         <title>Examples</title>
         <para>Create a 3D line string from a 3D MultiPoint</para>
-        <programlisting role="example-test">
+        <programlisting>
 SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  );
 
 --result--
@@ -212,7 +212,7 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 
         <refsection>
         <title>Example: Building a bounding box polygon</title>
-         <programlisting role="example-test">
+         <programlisting>
 SELECT ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) );
 
 st_asewkt
@@ -285,7 +285,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
             <title>Examples: Two-input variant</title>
 
 <para>Create a line composed of two points.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );
 
       st_astext
@@ -294,7 +294,7 @@ SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );
 </programlisting>
 
 <para>Create a 3D line from two 3D points.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));
 
         st_asewkt
@@ -303,7 +303,7 @@ SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));
 </programlisting>
 
 <para>Create a line from two disjoint LineStrings.</para>
-<programlisting role="example-test">
+<programlisting>
  select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)' ) );
 
           st_astext
@@ -321,7 +321,7 @@ SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations ORDER B
 </programlisting>
 
         <para>Create a 3D line from an array of 3D points</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsEWKT( ST_MakeLine(
           ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), ST_MakePoint(6,6,6) ]  ));
 
@@ -492,7 +492,7 @@ result
             because <xref linkend="ST_AsText"/> does not support M values.</para></note>
 
             <para>Create point with unknown SRID.</para>
-         <programlisting role="example-test">
+         <programlisting>
 SELECT ST_AsEWKT(  ST_MakePointM(-71.1043443253471, 42.3150676015829, 10)  );
 
                    st_asewkt
@@ -501,7 +501,7 @@ SELECT ST_AsEWKT(  ST_MakePointM(-71.1043443253471, 42.3150676015829, 10)  );
 </programlisting>
 
 <para>Create point with a measure in the WGS 84 geodetic coordinate system.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsEWKT( ST_SetSRID(  ST_MakePointM(-71.104, 42.315, 10),  4326));
 
                         st_asewkt
@@ -510,7 +510,7 @@ SRID=4326;POINTM(-71.104 42.315 10)
 </programlisting>
 
 <para>Get measure of created point.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_M(  ST_MakePointM(-71.104, 42.315, 10)  );
 
 result
@@ -585,7 +585,7 @@ FROM (
 </programlisting>
 
 <para>Create a Polygon from a 3D LineString</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));
 
 st_asewkt
@@ -593,7 +593,7 @@ st_asewkt
 POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
 </programlisting>
 <para>Create a Polygon from a LineString with measures</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)' ));
 
 st_asewkt
@@ -602,7 +602,7 @@ POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))
 </programlisting>
 
 <para>Create a CurvePolygon from a CircularString shell.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText( ST_MakePolygon( 'CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0)' ));
 
                      st_astext
@@ -911,14 +911,14 @@ SELECT ST_Transform( ST_Point( 3637510, 3014852, 2273), 4326)::geography;</progr
         <title>Examples</title>
 
 <para>Create a 2D polygon.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::geometry, 4326) );
 
 -- result --
 POLYGON((75 29,77 29,77 29,75 29))
 </programlisting>
 <para>Create a 3D polygon.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, 77 29 3, 75 29 1)'), 4326) );
 
 -- result --
@@ -984,7 +984,7 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 
         <refsection>
         <title>Example: Building a tile envelope</title>
-         <programlisting>SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );
+         <programlisting role="requires-external-state">SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );
 
  st_astext
 ------------------------------

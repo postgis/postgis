@@ -76,7 +76,7 @@
 				<caption><para>A LineString with the interpolated point at 20% position (0.20) </para></caption>
 			  </mediaobject>
 			</informalfigure>
-			<programlisting role="example-test">-- The point 20% along a line
+			<programlisting>-- The point 20% along a line
 
 SELECT ST_AsEWKT(  ST_LineInterpolatePoint(
         'LINESTRING(25 50, 100 125, 150 190)',
@@ -86,7 +86,7 @@ SELECT ST_AsEWKT(  ST_LineInterpolatePoint(
 </programlisting>
 
 <para>The mid-point of a 3D line:</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsEWKT(  ST_LineInterpolatePoint('
         LINESTRING(1 2 3, 4 5 6, 6 7 8)',
         0.5 ));
@@ -95,7 +95,7 @@ SELECT ST_AsEWKT(  ST_LineInterpolatePoint('
 </programlisting>
 
 <para>The closest point on a line to a point:</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText( ST_LineInterpolatePoint( line.geom,
                       ST_LineLocatePoint( line.geom, 'POINT(4 3)')))
 FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
@@ -158,7 +158,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 			<title>Examples</title>
 
 			<para>Return point 20% along 3D line</para>
-			<programlisting role="example-test">
+			<programlisting>
 SELECT ST_AsText(
     ST_3DLineInterpolatePoint('LINESTRING(25 50 70, 100 125 90, 150 190 200)',
         0.20));
@@ -306,7 +306,7 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting role="example-test">
+			<programlisting>
 --Rough approximation of finding the street number of a point along the street
 --Note the whole foo thing is just to generate dummy data that looks
 --like house centroids and street
@@ -331,7 +331,7 @@ WHERE ST_DWithin(street_line, house_loc, 0.2);
  POINT(3.03 4.12)  |         20
 </programlisting>
 
-<programlisting role="example-test">
+<programlisting>
 --find closest point on a line to a point or other geometry
 SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
 FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
@@ -419,7 +419,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 				<caption><para>A LineString seen with 1/3 midrange overlaid (0.333, 0.666) </para></caption>
 			  </mediaobject>
 			</informalfigure>
-	<programlisting role="example-test">
+	<programlisting>
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING (20 180, 50 20, 90 80, 120 40, 180 150)', 0.333, 0.666));
 ------------------------------------------------------------------------------------------------
 LINESTRING (45.17311810399485 45.74337011202746, 50 20, 90 80, 112.97593050157862 49.36542599789519)
@@ -428,7 +428,7 @@ LINESTRING (45.17311810399485 45.74337011202746, 50 20, 90 80, 112.9759305015786
 <para>
 If start and end locations are the same, the result is a POINT.
 </para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.333));
 ------------------------------------------
 POINT(69.28469348539744 94.28469348539744)
@@ -473,7 +473,7 @@ CROSS JOIN LATERAL (
 ]]></programlisting>
 
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geography, 0.333, 0.666),6) AS geog_sub
  , ST_AsText(ST_LineSubstring('LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geometry, 0.333, 0.666),6) AS geom_sub;
                         geog_sub                         |                         geom_sub
@@ -484,7 +484,7 @@ SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.36
 	<para>For geometry inputs, the fractional locations are based on the 2D
 	length of the line, even when the input has Z values. The resulting Z values
 	are interpolated along the selected 2D location.</para>
-	<programlisting role="example-test">
+	<programlisting>
 	WITH data AS (
 	  SELECT 'LINESTRING Z (0 0 0, 0 2 5, 0 10 10)'::geometry AS geom
 	)
@@ -551,7 +551,7 @@ SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.36
 
 	  <refsection>
 		<title>Examples</title>
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(
   ST_LocateAlong(
     'MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'::geometry,
@@ -615,7 +615,7 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>Examples</title>
 
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText(
   ST_LocateBetween(
        'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))':: geometry,
@@ -633,7 +633,7 @@ SELECT ST_AsText(
             </mediaobject>
         </informalfigure>
 
-<programlisting role="example-test">
+<programlisting>
 SELECT ST_AsText( ST_LocateBetween(
   ST_AddMeasure('LINESTRING (20 180, 50 20, 100 120, 180 20)', 0, 10),
   2, 8,
@@ -689,7 +689,7 @@ MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248
 	  <refsection>
 		<title>Examples</title>
 
-<programlisting>SELECT ST_AsText(
+<programlisting role="requires-external-state">SELECT ST_AsText(
   ST_LocateBetweenElevations(
     'LINESTRING(1 2 3, 4 5 6)'::geometry,
     2, 4 ));
@@ -751,7 +751,7 @@ SELECT ST_AsText(
         <refsection>
         <title>Examples</title>
 
-        <programlisting role="example-test">SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');
+        <programlisting>SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');
  ---------------------
          10
 	</programlisting>
@@ -803,7 +803,7 @@ SELECT ST_AsText(
         <refsection>
         <title>Examples</title>
 
-        <programlisting>-- Line rising diagonally in Z; point at the 3D midpoint
+        <programlisting role="requires-external-state">-- Line rising diagonally in Z; point at the 3D midpoint
 SELECT ST_3DInterpolatePoint(
     'LINESTRING ZM (0 0 0 0, 10 0 10 20)',
     'POINT Z (5 0 5)');
@@ -860,7 +860,7 @@ SELECT ST_3DInterpolatePoint(
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_AsText(ST_AddMeasure(
+		<programlisting role="requires-external-state">SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;
            ewelev
 --------------------------------

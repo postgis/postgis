@@ -77,8 +77,8 @@ Make targets
   updates to translation files (see ``make update-po``)
 
 ``make exampletest``
-  generates a SQL script that reruns manual examples explicitly marked with
-  ``role="example-test"``
+  generates a SQL script that reruns parseable manual examples unless they
+  are marked with ``role="requires-external-state"``
 
 ``make exampletest-report``
   prints approximate counts for manual examples that look runnable,
@@ -140,9 +140,12 @@ binary if autodetection cannot find ``gm``, ``magick``, or ``convert`` in
 To run garden tests against functions, follow these instructions on the PostGIS
 dev wiki: http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
 
-Manual example tests are opt-in. Add ``role="example-test"`` to a
-``programlisting`` only when the example is deterministic, self-contained, and
-returns a single output column. The generator accepts either in-listing psql
-output, such as ``-- result --`` followed by expected rows, or a following
-``screen`` element containing the expected output. Use ``make exampletest-report``
-to inspect the current manual before converting more examples.
+Manual example tests are opt-out. A parseable SQL ``programlisting`` with
+expected output is tested by default. Add ``role="requires-external-state"`` when
+the listing depends on database objects, files, installed driver/catalog state,
+prior manual setup, or other state outside the listing and outside the standard
+example-test database. Use ``role="example-test"`` only as an escape hatch to
+force a listing to run when the heuristics would otherwise skip it. The generator
+accepts either in-listing psql output, such as ``-- result --`` followed by
+expected rows, or a following ``screen`` element containing the expected output.
+Use ``make exampletest-report`` to inspect the current manual.

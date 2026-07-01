@@ -56,7 +56,7 @@
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <programlisting role="example-test">
+    <programlisting>
 -- Inverse direction
 SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;
@@ -68,7 +68,7 @@ SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.52
     </programlisting>
 
     <para>GDA2020 example.</para>
-    <programlisting role="example-test">
+    <programlisting>
 -- using ST_Transform with automatic selection of a conversion pipeline.
 SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
 
@@ -426,7 +426,7 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <programlisting role="example-test">
+    <programlisting>
 -- Forward direction
 SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;
@@ -447,7 +447,7 @@ SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.52
     </programlisting>
 
     <para>GDA2020 example.</para>
-    <programlisting role="example-test">
+    <programlisting>
 -- using ST_Transform with automatic selection of a conversion pipeline.
 SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
 
@@ -519,7 +519,7 @@ SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
     <refsection>
       <title>Examples</title>
       <para>List the first ten codes associated with the EPSG authority.</para>
-      <programlisting role="example-test">
+      <programlisting>
 SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;
 
  postgis_srs_codes
@@ -627,7 +627,7 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
     <refsection>
       <title>Examples</title>
       <para>Get the first 10 metadata records from the Proj database.</para>
-      <programlisting role="example-test">
+      <programlisting>
 SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;
 
  auth_name | auth_srid |                                srname

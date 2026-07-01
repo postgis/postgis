@@ -41,13 +41,13 @@
       <refsection>
         <title>Examples</title>
 
-<programlisting role="example-test">SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
+<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
 
 box2d
 ---------
 BOX(1 2,5 6)
 </programlisting>
-<programlisting role="example-test">
+<programlisting>
 SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
 
 box2d
@@ -95,13 +95,13 @@ BOX(220186.99512189245 150406,220288.24878054656 150506.12682932706)
       <refsection>
         <title>Examples</title>
 
-<programlisting role="example-test">SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
+<programlisting>SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
 
 Box3d
 ---------
 BOX3D(1 2 3,5 6 5)
 </programlisting>
-<programlisting role="example-test">
+<programlisting>
 SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
 
 Box3d
@@ -195,7 +195,7 @@ BOX3D(220186.99512189245 150406 1,220288.24878054656 150506.12682932706 1)
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
+        <programlisting role="requires-external-state">SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
 --result--
 BOX(-8877653 4912316,-8010225.5 5589284)
 
@@ -458,7 +458,7 @@ SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting role="requires-external-state">
 SELECT ST_3DExtent(foo.geom) As b3extent
 FROM (SELECT ST_MakePoint(x,y,z) As geom
     FROM generate_series(1,3) As x
@@ -569,7 +569,7 @@ WHERE geom && ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
       <refsection>
         <title>Examples</title>
 
-        <programlisting role="example-test">
+        <programlisting>
 SELECT ST_3DMakeBox(ST_MakePoint(-989502.1875, 528439.5625, 10),
     ST_MakePoint(-987121.375 ,529933.1875, 10)) As abb3d
 
@@ -1029,7 +1029,7 @@ st_zmin
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_XSize('BOX3D(1 2 3, 4 5 6)');
+        <programlisting role="requires-external-state">SELECT ST_XSize('BOX3D(1 2 3, 4 5 6)');
 st_xsize
 --------
 3
@@ -1082,7 +1082,7 @@ st_xsize
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_YSize('BOX3D(1 2 3, 4 5 6)');
+        <programlisting role="requires-external-state">SELECT ST_YSize('BOX3D(1 2 3, 4 5 6)');
 st_ysize
 --------
 3
@@ -1135,7 +1135,7 @@ st_ysize
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_ZSize('BOX3D(1 2 3, 4 5 6)');
+        <programlisting role="requires-external-state">SELECT ST_ZSize('BOX3D(1 2 3, 4 5 6)');
 st_zsize
 --------
 3
@@ -1181,7 +1181,7 @@ st_zsize
       <refsection>
         <title>Examples</title>
 
-        <programlisting role="example-test">SELECT ST_MMin('POINT M (1 2 3)');
+        <programlisting>SELECT ST_MMin('POINT M (1 2 3)');
 st_mmin
 -------
 3
@@ -1221,7 +1221,7 @@ st_mmin
 
       <refsection>
         <title>Examples</title>
-        <programlisting role="example-test">SELECT ST_MMax('POINT M (1 2 3)');
+        <programlisting>SELECT ST_MMax('POINT M (1 2 3)');
 st_mmax
 -------
 3       </programlisting>
@@ -1259,7 +1259,7 @@ st_mmax
 
       <refsection>
         <title>Examples</title>
-        <programlisting role="example-test">SELECT ST_MSize('LINESTRING M (1 2 3, 4 6 8)');
+        <programlisting>SELECT ST_MSize('LINESTRING M (1 2 3, 4 6 8)');
 st_msize
 --------
 5       </programlisting>

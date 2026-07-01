@@ -1585,7 +1585,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
             <refsection>
                 <title>Examples: Multiple New Bands</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 SELECT
     *
 FROM ST_BandMetadata(
@@ -1912,7 +1912,7 @@ geometries, each with its associated value.
 
             <refsection>
                 <title>Examples</title>
-                <programlisting role="example-test">
+                <programlisting>
 WITH inp(g,v) AS (
 	VALUES
 		( ST_Buffer(ST_MakePoint(10,0), 10), 1 ),
@@ -2111,7 +2111,7 @@ WHERE rid=35;
                   <refsection>
                     <title>Examples Basic</title>
                     <para>Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner (22, 77) to lower right corner (55, 33).</para>
-                    <programlisting role="example-test">SELECT (ST_MetaData(tile)).* FROM ST_MakeEmptyCoverage(1, 1, 4, 4, 22, 33, (55 - 22)/(4)::float, (33 - 77)/(4)::float, 0., 0., 4326) tile;
+                    <programlisting>SELECT (ST_MetaData(tile)).* FROM ST_MakeEmptyCoverage(1, 1, 4, 4, 22, 33, (55 - 22)/(4)::float, (33 - 77)/(4)::float, 0., 0., 4326) tile;
 
  upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -------------------------------------------------------------------------------------
@@ -2286,7 +2286,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '8BUI', 10, 0) AS rast UNION ALL
     SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, 0, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0), 2, '8BUI', 20, 0) AS rast UNION ALL
@@ -2331,7 +2331,7 @@ FROM baz;
 (18 rows)
                 </programlisting>
 
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '8BUI', 10, 0) AS rast UNION ALL
     SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, 0, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0), 2, '8BUI', 20, 0) AS rast UNION ALL
@@ -2632,7 +2632,7 @@ FROM dummy_rast;
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))
+                <programlisting role="requires-external-state">SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))
 st_isempty |
 -----------+
 f          |
@@ -2686,7 +2686,7 @@ t          |
       <refsection>
         <title>Examples</title>
 
-        <programlisting role="example-test">
+        <programlisting>
         SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, '8BUI')) As rast_mem;
 
         rast_mem
@@ -3466,7 +3466,7 @@ srid
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
+                <programlisting role="requires-external-state">
 SELECT ST_Summary(
     ST_AddBand(
         ST_AddBand(
@@ -4292,7 +4292,7 @@ WHERE rid = 2;
             <refsection>
                 <title>Examples</title>
 
-                    <programlisting>SELECT ST_MinPossibleValue('16BSI');
+                    <programlisting role="requires-external-state">SELECT ST_MinPossibleValue('16BSI');
 
  st_minpossiblevalue
 ---------------------
@@ -4466,7 +4466,7 @@ WHERE rid=2;
 
             <refsection>
                     <title>Examples</title>
-                    <programlisting role="example-test">
+                    <programlisting>
 -- get raster pixel polygon
 SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom
 FROM (SELECT ST_PixelAsPolygons(
@@ -5053,7 +5053,7 @@ WHERE
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 -- pixel 2x2 has value
 SELECT
     ST_Value(rast, 2, 2) AS value,
@@ -5086,7 +5086,7 @@ FROM (
      1 |            1
                 </programlisting>
 
-                <programlisting role="example-test">
+                <programlisting>
 -- pixel 2x3 is NODATA
 SELECT
     ST_Value(rast, 2, 3) AS value,
@@ -5356,7 +5356,7 @@ FROM test_raster
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 -- pixel 2x2 has value
 SELECT
     ST_Neighborhood(rast, 2, 2, 1, 1)
@@ -5383,7 +5383,7 @@ FROM (
 {{NULL,1,1},{1,1,1},{1,NULL,1}}
                 </programlisting>
 
-                <programlisting role="example-test">
+                <programlisting>
 -- pixel 2x3 is NODATA
 SELECT
     ST_Neighborhood(rast, 2, 3, 1, 1)
@@ -5410,7 +5410,7 @@ FROM (
  {{1,1,1},{1,NULL,1},{1,1,1}}
                 </programlisting>
 
-                <programlisting role="example-test">
+                <programlisting>
 -- pixel 3x3 has value
 -- exclude_nodata_value = FALSE
 SELECT
@@ -6153,7 +6153,7 @@ ORDER BY t1.rid, t2.gid, t3.gid;
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, '16BSI', 0, 0) AS rast
 )
@@ -6169,7 +6169,7 @@ FROM foo;
 (3 rows)
                 </programlisting>
 
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, '16BSI', 0, 0) AS rast
 )
@@ -6183,7 +6183,7 @@ FROM foo;
      1 | {{1,1,1},{1,1,1},{1,1,1}}
 (2 rows)
                 </programlisting>
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 1, 2, 5) AS rast
 )
@@ -6288,7 +6288,7 @@ FROM foo;
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 SELECT
     (pixels).*
 FROM (
@@ -6402,7 +6402,7 @@ FROM (
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0) AS rast
 )
@@ -6900,7 +6900,7 @@ FROM (
                     <title>Examples</title>
                     <para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
 
-                    <programlisting>-- the original raster pixel size
+                    <programlisting role="requires-external-state">-- the original raster pixel size
 SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width
 
    width
@@ -7153,7 +7153,7 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
             </refsection>
             <refsection>
                 <title>Examples</title>
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS(
 SELECT
     1 AS rid,
@@ -7333,7 +7333,7 @@ SELECT rid, (meta).* FROM bar
                 <title>Examples: Variant 3</title>
 
                 <para>The following shows the difference between using ST_Transform(raster, srid) and ST_Transform(raster, alignto)</para>
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 600000, 100, -100, 0, 0, 2163), 1, '16BUI', 1, 0) AS rast UNION ALL
     SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 600000, 100, -100, 0, 0, 2163), 1, '16BUI', 2, 0) AS rast UNION ALL
@@ -7860,7 +7860,7 @@ rid | exclude_nodata | include_nodata
 
             <refsection>
                 <title>Examples</title>
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT
         rast.rast
@@ -8361,7 +8361,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 
             <refsection>
                 <title>Examples</title>
-                <programlisting role="example-test">
+                <programlisting>
 WITH foo AS (
     SELECT
         rast.rast
@@ -8671,7 +8671,7 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 SELECT (ST_Metadata(
     ST_RastFromWKB(
         '\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000'::bytea
@@ -8724,7 +8724,7 @@ SELECT (ST_Metadata(
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="example-test">
+                <programlisting>
 SELECT (ST_Metadata(
     ST_RastFromHexWKB(
         '010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
@@ -9691,7 +9691,7 @@ FROM (
 ) AS shapes;
                     </programlisting>
 
-                    <programlisting>
+                    <programlisting role="requires-external-state">
 SELECT
     ST_NumBands(rast) As n_orig,
     ST_NumBands(ST_ColorMap(rast,1, 'greyscale')) As ngrey,
@@ -13314,7 +13314,7 @@ WHERE rid = 2;
 
                 <refsection>
                     <title>Examples: Variant 1</title>
-                    <programlisting role="example-test">
+                    <programlisting>
 WITH foo AS (
     SELECT ST_SetValues(
         ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
@@ -13462,7 +13462,7 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples: Variant 1</title>
-                    <programlisting role="example-test">
+                    <programlisting>
 WITH foo AS (
     SELECT ST_SetValues(
         ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
@@ -13643,7 +13643,7 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples: Variant 1</title>
-                    <programlisting role="example-test">
+                    <programlisting>
 WITH foo AS (
     SELECT ST_SetValues(
         ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
@@ -14295,7 +14295,7 @@ FROM dummy_rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting role="example-test">
+                    <programlisting>
 WITH foo AS (
     SELECT
         ST_SetValues(
@@ -15820,7 +15820,7 @@ SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CRO
           <refsection>
             <title>Examples: Rasters</title>
 
-            <programlisting role="example-test">SELECT ST_SameAlignment(
+            <programlisting>SELECT ST_SameAlignment(
     ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
     ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0)
 ) as sm;
@@ -15884,7 +15884,7 @@ NOTICE:  The two rasters provided have different SRIDs
 
             <refsection>
                 <title>Examples</title>
-                <programlisting role="example-test">
+                <programlisting>
 SELECT
     ST_SameAlignment(
         ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),

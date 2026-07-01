@@ -188,14 +188,14 @@ F000000000000000000000000000000000000000000000000');
 </screen>
 
 <para>Full precision output is the default.</para>
-      <programlisting role="example-test">SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry);
+      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry);
     st_astext
 ------------------------------
  POINT(111.1111111 1.1111111)
 </programlisting>
 
 <para>The <parameter>maxdecimaldigits</parameter> argument can be used to limit output precision.</para>
-      <programlisting role="example-test">SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry, 2);
+      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry, 2);
     st_astext
 --------------------
  POINT(111.11 1.11)
@@ -427,7 +427,7 @@ F000000000000000000000000000000000000000000000000');
 
     <refsection>
     <title>Examples</title>
-    <programlisting role="example-test">SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
     st_ashexewkb
     --------
     0103000020E6100000010000000500
@@ -476,7 +476,7 @@ F000000000000000000000000000000000000000000000000');
     <refsection>
     <title>Examples</title>
   <para>Basic </para>
-  <programlisting role="example-test">
+  <programlisting>
   SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
   --result--
   _p~iF~ps|U_ulLnnqC_mqNvxq`@
@@ -593,7 +593,7 @@ F000000000000000000000000000000000000000000000000');
 
     <refsection>
     <title>Examples</title>
-    <programlisting role="example-test">SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
+    <programlisting>SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
     FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;
  st_asgeobuf
 ----------------------------------
@@ -738,7 +738,7 @@ Conversely, passing the parameter will save column type lookups.
     <title>Examples</title>
 
 <para>Generate a FeatureCollection:</para>
-<programlisting>SELECT json_build_object(
+<programlisting role="requires-external-state">SELECT json_build_object(
     'type', 'FeatureCollection',
     'features', json_agg(ST_AsGeoJSON(t.*, id_column => 'id')::json)
     )
@@ -749,7 +749,7 @@ FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
 <screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "id": 2, "properties": {"name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "id": 3, "properties": {"name": "three"}}]}</screen>
 
 <para>Generate a Feature:</para>
-    <programlisting>SELECT ST_AsGeoJSON(t.*, id_column => 'id')
+    <programlisting role="requires-external-state">SELECT ST_AsGeoJSON(t.*, id_column => 'id')
 FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
 <screen>                                                  st_asgeojson
 -----------------------------------------------------------------------------------------------------------------
@@ -765,10 +765,10 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 [-89.734955999999997,31.492237999999997]]]}
 </screen>
 <para>3D geometries are supported:</para>
-<programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
+<programlisting role="requires-external-state">SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
 <screen>{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
 <para>Options argument can be used to add BBOX and CRS in GeoJSON output:</para>
-<programlisting> SELECT ST_AsGeoJSON(ST_SetSRID('POINT(1 1)'::geometry, 4326), 9, 4|1);</programlisting>
+<programlisting role="requires-external-state"> SELECT ST_AsGeoJSON(ST_SetSRID('POINT(1 1)'::geometry, 4326), 9, 4|1);</programlisting>
 <screen>
   {"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1.000000000,1.000000000,1.000000000,1.000000000],"coordinates":[1,1]}
 </screen>
@@ -911,7 +911,7 @@ SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
       st_asgml
       --------
-    <gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>
+    <gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">6.34535 5.23423</gml:pos></gml:Point>
 
 ]]></programlisting>
     <programlisting><![CDATA[
@@ -919,10 +919,7 @@ SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
     st_asgml
     --------
-  <gml:Envelope srsName="EPSG:4326">
-    <gml:lowerCorner>1 2</gml:lowerCorner>
-    <gml:upperCorner>10 20</gml:upperCorner>
-  </gml:Envelope>
+  <gml:Envelope srsName="EPSG:4326" srsDimension="2"><gml:lowerCorner>1 2</gml:lowerCorner><gml:upperCorner>10 20</gml:upperCorner></gml:Envelope>
 
 ]]></programlisting>
 
@@ -931,10 +928,7 @@ SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
   st_asgml
   --------
-<gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326">
-  <gml:lowerCorner>2 1</gml:lowerCorner>
-  <gml:upperCorner>20 10</gml:upperCorner>
-</gml:Envelope>
+  <gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326" srsDimension="2"><gml:lowerCorner>2 1</gml:lowerCorner><gml:upperCorner>20 10</gml:upperCorner></gml:Envelope>
 
 ]]></programlisting>
 
@@ -1136,42 +1130,42 @@ SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
       <refsection>
       <title>Examples</title>
 <para>Default format.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));
       st_aslatlontext
 ----------------------------
  2°19'29.928"S 3°14'3.243"W
 </programlisting>
 <para>Providing a format (same as the default).</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));
       st_aslatlontext
 ----------------------------
  2°19'29.928"S 3°14'3.243"W
 </programlisting>
 <para>Characters other than D, M, S, C and . are just passed through.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));
                                    st_aslatlontext
 --------------------------------------------------------------------------------------
  2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W
 </programlisting>
 <para>Signed degrees instead of cardinal directions.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));
       st_aslatlontext
 ----------------------------
  -2°19'29.928" -3°14'3.243"
 </programlisting>
 <para>Decimal degrees.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));
           st_aslatlontext
 -----------------------------------
  2.3250 degrees S 3.2342 degrees W
 </programlisting>
 <para>Excessively large values are normalized.</para>
-<programlisting role="example-test">
+<programlisting>
 SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
         st_aslatlontext
 -------------------------------
@@ -1393,7 +1387,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
     <refsection>
     <title>Examples</title>
-    <programlisting role="example-test">
+    <programlisting>
 SELECT ST_AsText(ST_AsMVTGeom(
   ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
   ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
@@ -1583,21 +1577,21 @@ FROM mvtgeom;
 
     <refsection>
     <title>Examples</title>
-    <programlisting role="example-test">SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);
+    <programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);
 
 st_assvg
 --------
 M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
 
         <para>Circular string</para>
-    <programlisting role="example-test">SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );
+    <programlisting>SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );
 
 st_assvg
 --------
 M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</programlisting>
 
         <para>Multi-curve</para>
-        <programlisting role="example-test">SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
+        <programlisting>SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
  CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);
  st_assvg
 ------------------------------------------------
@@ -1605,7 +1599,7 @@ M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</programlisting>
  </programlisting>
 
         <para>Multi-surface</para>
-        <programlisting role="example-test">SELECT ST_AsSVG('MULTISURFACE(
+        <programlisting>SELECT ST_AsSVG('MULTISURFACE(
 CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),
     (-1 0,0 0.5,1 0,0 1,-1 0)),
 ((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);
@@ -1863,16 +1857,14 @@ FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
     <programlisting><![CDATA[
 SELECT ST_AsX3D(
 ST_Translate(
-    ST_Force_3d(
+    ST_Force3D(
         ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
     3)
   ,6) As x3dfrag;
 
 x3dfrag
 --------
-<IndexedFaceSet coordIndex="0 1 2 3 4 5 6 7">
-    <Coordinate point="15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 " />
-</IndexedFaceSet>
+<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><Coordinate point='15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 ' /></IndexedFaceSet>
 ]]></programlisting>
     </refsection>
     <refsection>
@@ -1964,7 +1956,7 @@ SELECT ST_AsX3D(
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_GeoHash( ST_Point(-126,48) );
+    <programlisting role="requires-external-state">SELECT ST_GeoHash( ST_Point(-126,48) );
 
    st_geohash
 ----------------------
