@@ -1999,7 +1999,7 @@ FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As geom) As foo
 <screen>LINESTRING(-1 2 3,-1 3 4,-1 1 3)</screen>
 <programlisting language="sql">SELECT ST_AsText(ST_SetPoint(g, -3, p))
 FROM ST_GeomFromText('LINESTRING(0 0, 1 1, 2 2, 3 3, 4 4)') AS g
-	, ST_PointN(g,1) as p;</programlisting>
+	CROSS JOIN ST_PointN(g,1) as p;</programlisting>
 <screen>LINESTRING(0 0,1 1,0 0,3 3,4 4)</screen>
 		  </refsection>
 		  <refsection>

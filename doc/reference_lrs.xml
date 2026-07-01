@@ -455,9 +455,8 @@ CROSS JOIN LATERAL (
 ]]></programlisting>
 
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
-<programlisting>
-SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geography, 0.333, 0.666),6) AS geog_sub
- , ST_AsText(ST_LineSubstring('LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geometry, 0.333, 0.666),6) AS geom_sub;</programlisting>
+<programlisting>SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geography, 0.333, 0.666),6) AS geog_sub,
+ ST_AsText(ST_LineSubstring('LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geometry, 0.333, 0.666),6) AS geom_sub;</programlisting>
 <screen>                        geog_sub                         |                         geom_sub
 ---------------------------------------------------------+----------------------------------------------------------
  LINESTRING(-103.911641 38.931128,-87.941787 41.831072) | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)</screen>

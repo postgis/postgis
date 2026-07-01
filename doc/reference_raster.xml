@@ -3373,14 +3373,14 @@ FROM dummy_rast WHERE rid=1;</programlisting>
                 <programlisting>
 SELECT ST_Summary(
     ST_AddBand(
-        ST_AddBand(
             ST_AddBand(
-                ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)
-                , 1, '8BUI', 1, 0
-            )
-            , 2, '32BF', 0, -9999
-        )
-        , 3, '16BSI', 0, NULL
+            ST_AddBand(
+                ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+                1, '8BUI', 1, 0
+            ),
+            2, '32BF', 0, -9999
+        ),
+        3, '16BSI', 0, NULL
     )
 );</programlisting>
 <screen> Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)+
@@ -4727,8 +4727,8 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
 SELECT ST_AsText(ST_SetSRID(
     ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
         ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),
-        ST_SRID(rast))) As uplpt
-    , ST_Value(rast, 1, x, y) As b1val,
+        ST_SRID(rast))) As uplpt,
+    ST_Value(rast, 1, x, y) As b1val,
     ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
 FROM dummy_rast CROSS JOIN
 generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
@@ -4769,8 +4769,8 @@ WHERE
  MULTIPOLYGON(((3427928 5793243.9,3427928 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,
  3427927.95 5793243.95,3427928 5793243.95,3427928.05 5793243.95,3427928.05 5793243.9,3427928 5793243.9)),((3427927.95 5793243.9,3427927.95 579324
 3.85,3427927.9 5793243.85,3427927.85 5793243.85,3427927.85 5793243.9,3427927.9 5793243.9,3427927.9 5793243.95,
-3427927.95 5793243.95,3427927.95 5793243.9)),((3427927.85 5793243.75,3427927.85 5793243.7,3427927.8 5793243.7,3427927.8 5793243.75
-,3427927.8 5793243.8,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75)),
+3427927.95 5793243.95,3427927.95 5793243.9)),((3427927.85 5793243.75,3427927.85 5793243.7,3427927.8 5793243.7,3427927.8 5793243.75,
+3427927.8 5793243.8,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75)),
 ((3427928.05 5793243.75,3427928.05 5793243.7,3427928 5793243.7,3427927.95 5793243.7,3427927.95 5793243.75,3427927.95 5793243.8,3427
 927.95 5793243.85,3427928 5793243.85,3427928 5793243.8,3427928.05 5793243.8,
 3427928.05 5793243.75)),((3427927.95 5793243.75,3427927.95 5793243.7,3427927.9 5793243.7,3427927.85 5793243.7,
@@ -6098,8 +6098,8 @@ FROM (
                     4, 2, 0
                 ),
                 5, 4, 255
-            )
-        , 1, ARRAY[1, 255]) AS pixels
+            ),
+        1, ARRAY[1, 255]) AS pixels
 ) AS foo</programlisting>
 <screen> val | x | y
 -----+---+---
@@ -6925,28 +6925,28 @@ SELECT
     1 AS rid,
     ST_Resize(
         ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
-            , 1, '8BUI', 255, 0
-        )
-    , '50%', '500') AS rast
+            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+            1, '8BUI', 255, 0
+        ),
+    '50%', '500') AS rast
 UNION ALL
 SELECT
     2 AS rid,
     ST_Resize(
         ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
-            , 1, '8BUI', 255, 0
-        )
-    , 500, 100) AS rast
+            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+            1, '8BUI', 255, 0
+        ),
+    500, 100) AS rast
 UNION ALL
 SELECT
     3 AS rid,
     ST_Resize(
         ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
-            , 1, '8BUI', 255, 0
-        )
-    , 0.25, 0.9) AS rast
+            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+            1, '8BUI', 255, 0
+        ),
+    0.25, 0.9) AS rast
 ), bar AS (
     SELECT rid, ST_MetaData(rast) AS meta, rast FROM foo
 )
@@ -7045,8 +7045,8 @@ SELECT rid, (meta).* FROM bar</programlisting>
                     <programlisting>SELECT ST_Width(mass_stm) As w_before, ST_Width(wgs_84) As w_after,
   ST_Height(mass_stm) As h_before, ST_Height(wgs_84) As h_after
     FROM
-    ( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84
-  ,  ST_Transform(rast,4326, 'Bilinear') AS wgs_84_bilin
+    ( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84,
+  ST_Transform(rast,4326, 'Bilinear') AS wgs_84_bilin
         FROM aerials.o_2_boston
             WHERE ST_Intersects(rast,
                 ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986) )
@@ -7215,8 +7215,8 @@ UPDATE dummy_rast
         ST_SetBandNoDataValue(
             ST_SetBandNoDataValue(
                 ST_SetBandNoDataValue(
-                    rast,1, 254)
-                ,2,99),
+                    rast,1, 254),
+                2,99),
                 3,108)
         WHERE rid = 2;
 
@@ -7624,14 +7624,14 @@ WITH foo AS (
             ST_SetValue(
                 ST_SetValue(
                     ST_AddBand(
-                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
-                        , 1, '64BF', 0, 0
-                    )
-                    , 1, 1, 1, -10
-                )
-                , 1, 5, 4, 0
-            )
-            , 1, 5, 5, 3.14159
+                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0),
+                        1, '64BF', 0, 0
+                    ),
+                    1, 1, 1, -10
+                ),
+                1, 5, 4, 0
+            ),
+            1, 5, 5, 3.14159
         ) AS rast
     ) AS rast
     FULL JOIN (
@@ -7995,10 +7995,10 @@ FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,2,geom)) As stats
  ) As foo
  )
 -- finally summarize stats
-SELECT building_id, SUM(count) As num_pixels
-  , MIN(min) As min_pval
-  ,  MAX(max) As max_pval
-  , SUM(mean*count)/SUM(count) As avg_pval
+SELECT building_id, SUM(count) As num_pixels,
+  MIN(min) As min_pval,
+  MAX(max) As max_pval,
+  SUM(mean*count)/SUM(count) As avg_pval
     FROM b_stats
  WHERE count > 0
     GROUP BY building_id
@@ -8103,14 +8103,14 @@ WITH foo AS (
             ST_SetValue(
                 ST_SetValue(
                     ST_AddBand(
-                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
-                        , 1, '64BF', 0, 0
-                    )
-                    , 1, 1, 1, -10
-                )
-                , 1, 5, 4, 0
-            )
-            , 1, 5, 5, 3.14159
+                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0),
+                        1, '64BF', 0, 0
+                    ),
+                    1, 1, 1, -10
+                ),
+                1, 5, 4, 0
+            ),
+            1, 5, 5, 3.14159
         ) AS rast
     ) AS rast
     FULL JOIN (
@@ -9063,8 +9063,8 @@ FROM dummy_rast WHERE rid=2;
 FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
     INNER JOIN ST_GeomFromText('LINESTRING(0 1, 5 6, 10 10)') AS g(geom)
  ON ST_Intersects(r.rast,g.geom)
- , ST_Clip(r.rast, g.geom, touched => true) AS rast_touched
- , ST_Clip(r.rast, g.geom, touched => false) AS rast_not_touched;]]></programlisting>
+ CROSS JOIN ST_Clip(r.rast, g.geom, touched => true) AS rast_touched
+ CROSS JOIN ST_Clip(r.rast, g.geom, touched => false) AS rast_not_touched;]]></programlisting>
 <screen> count_pixels_in_orig | all_touched_pixels | default_clip
 ----------------------+--------------------+--------------
                  2605 |                 16 |           10
@@ -9984,9 +9984,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                                     Passing a <type>regprocedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:
                                 </para>
 
-                                    <programlisting>
-'sample_callbackfunc(double precision[], integer[], text[])'::regprocedure
-                                    </programlisting>
+                                    <programlisting>'sample_callbackfunc(double precision[], integer[], text[])'::regprocedure</programlisting>
 
                                 <para>
                                     Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.
@@ -11149,8 +11147,8 @@ GROUP BY geom)
 -- return our final raster which is the unioned shard with
 -- with the overlay of our parcel boundaries
 -- add first 2 bands, then mapalgebra of 3rd band + geometry
-SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2])
-    , ST_MapAlgebraExpr(ST_Band(clipped,3), ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
+SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2]),
+    ST_MapAlgebraExpr(ST_Band(clipped,3), ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
      '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') ) As rast
 FROM prunion;
                     </programlisting>
@@ -12328,9 +12326,7 @@ WHERE rid = 2;</programlisting>
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
--- NEEDS EXAMPLE
-                </programlisting>
+                <programlisting>-- NEEDS EXAMPLE</programlisting>
             </refsection>
 
             <refsection>
@@ -12503,8 +12499,8 @@ WHERE rid = 2;</programlisting>
                     <programlisting>SELECT
     rid,
     ST_Value(
-              ST_MapAlgebra(rast, 1, 'st_mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1)
-       ,  2, 2)
+              ST_MapAlgebra(rast, 1, 'st_mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1),
+       2, 2)
   FROM dummy_rast
    WHERE rid = 2;</programlisting>
 <screen> rid |     st_value
@@ -12656,9 +12652,7 @@ WHERE rid = 2;</programlisting>
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
--- NEEDS EXAMPLE
-                </programlisting>
+                <programlisting>-- NEEDS EXAMPLE</programlisting>
             </refsection>
 
             <refsection>
@@ -13154,8 +13148,8 @@ FROM foo
                                                                                                                        st_dumpvalues</programlisting>
 <screen>------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------
- (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,251.32763671875,220.749786376953,147.224319458008,NULL},{NULL,220.749786376953,180.312225341797,67.7497863769531,NULL},{NULL,147.224319458008
-,67.7497863769531,43.1210060119629,NULL},{NULL,NULL,NULL,NULL,NULL}}")
+ (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,251.32763671875,220.749786376953,147.224319458008,NULL},{NULL,220.749786376953,180.312225341797,67.7497863769531,NULL},{NULL,147.224319458008,
+67.7497863769531,43.1210060119629,NULL},{NULL,NULL,NULL,NULL,NULL}}")
 (1 row)</screen>
                 </refsection>
 
@@ -13234,9 +13228,7 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>
--- needs examples
-                    </programlisting>
+                    <programlisting>-- needs examples</programlisting>
               </refsection>
 
               <refsection>
@@ -13420,9 +13412,7 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>
--- needs examples
-                    </programlisting>
+                    <programlisting>-- needs examples</programlisting>
               </refsection>
 
               <refsection>
@@ -13473,9 +13463,7 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>
--- needs examples
-                    </programlisting>
+                    <programlisting>-- needs examples</programlisting>
               </refsection>
 
                 <refsection>
@@ -16021,9 +16009,7 @@ WantedBy=multi-user.target
                         After making the necessary systemd changes, make sure to reload the daemon
                     </para>
 
-                    <programlisting>
-systemctl daemon-reload
-</programlisting>
+                    <programlisting>systemctl daemon-reload</programlisting>
 
                 </section>
 

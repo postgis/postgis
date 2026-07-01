@@ -540,11 +540,11 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 
 		<refsection><title>Classic Explode a Table of LineStrings into nodes</title>
 			<programlisting>SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode
-FROM (SELECT 1 As edge_id
-	, ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS dp
+FROM (SELECT 1 As edge_id,
+	ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS dp
      UNION ALL
-     SELECT 2 As edge_id
-	, ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS dp
+     SELECT 2 As edge_id,
+	ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS dp
    ) As foo;</programlisting>
 <screen> edge_id | index |    wktnode
 ---------+-------+--------------
@@ -2572,7 +2572,7 @@ SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'), 2))
 <screen>POINT(3 2)</screen>
 <programlisting>SELECT ST_AsText(f)
 FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
-  ,ST_PointN(g, -2) AS f; -- 1 based index</programlisting>
+  CROSS JOIN ST_PointN(g, -2) AS f; -- 1 based index</programlisting>
 <screen>POINT Z (1 1 1)</screen>
 	  </refsection>
 

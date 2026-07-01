@@ -206,9 +206,7 @@ SET postgis.enable_outdb_rasters = False;
 
                 <para>Set for all new connections to a specific database</para>
 
-                <programlisting>
-ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;
-                </programlisting>
+                <programlisting>ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;</programlisting>
 
                 <para>Setting for whole database cluster. Requires super user access.
                     Also note that database, session, and user settings override this.</para>
@@ -252,14 +250,10 @@ SELECT pg_reload_conf();
                 <title>Examples</title>
                 <para>Set <varname>postgis.gdal_vsi_options</varname> for current session:</para>
 
-                <programlisting>
-SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
-                </programlisting>
+                <programlisting>SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';</programlisting>
 
                 <para>Set <varname>postgis.gdal_vsi_options</varname> just for the <emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> keyword:</para>
-                <programlisting>
-SET LOCAL postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
-                </programlisting>
+                <programlisting>SET LOCAL postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';</programlisting>
             </refsection>
 
             <refsection>

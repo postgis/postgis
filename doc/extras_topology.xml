@@ -3784,9 +3784,9 @@ SELECT topology.AddTopoGeometryColumn(
 -- update our column assuming
 -- everything is perfectly aligned with our edges
 UPDATE boston.blockgroups AS bg
-	SET topo = topology.CreateTopoGeom('topo_boston'
-        ,3,1
-        , foo.bfaces)
+	SET topo = topology.CreateTopoGeom('topo_boston',
+        3, 1,
+        foo.bfaces)
 FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
 	FROM boston.blockgroups As b
             INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
@@ -3800,9 +3800,9 @@ WHERE foo.gid = bg.gid;
 --count the face if 50% of it falls
 -- within what we think is our blockgroup boundary
 UPDATE boston.blockgroups AS bg
-	SET topo = topology.CreateTopoGeom('topo_boston'
-        ,3,1
-        , foo.bfaces)
+	SET topo = topology.CreateTopoGeom('topo_boston',
+        3, 1,
+        foo.bfaces)
 FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
 	FROM boston.blockgroups As b
             INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
@@ -4835,9 +4835,7 @@ In order to simplify export/restore of topologies a pair of
 executables are provided: <filename>pgtopo_export</filename>
 and <filename>pgtopo_import</filename>. Example usage:
     </para>
-<programlisting>
-pgtopo_export dev_db topo1 | pgtopo_import topo1 | psql staging_db
-</programlisting>
+<programlisting>pgtopo_export dev_db topo1 | pgtopo_import topo1 | psql staging_db</programlisting>
 
     <section xml:id="pgtopo_export">
         <title>Using the Topology exporter</title>

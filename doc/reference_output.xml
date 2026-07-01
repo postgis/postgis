@@ -1769,8 +1769,8 @@ SELECT ST_AsX3D(
 ST_Translate(
     ST_Force3D(
         ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
-    3)
-  ,6) As x3dfrag;
+    3),
+  6) As x3dfrag;
 ]]></programlisting>
 <screen><![CDATA[x3dfrag
 --------
