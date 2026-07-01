@@ -78,7 +78,7 @@
       <refsection>
       <title>Examples</title>
 
-      <programlisting>SELECT ST_AsEWKT('0103000020E61000000100000005000000000000
+      <screen>SELECT ST_AsEWKT('0103000020E61000000100000005000000000000
       000000000000000000000000000000000000000000000000000000
       F03F000000000000F03F000000000000F03F000000000000F03
       F000000000000000000000000000000000000000000000000'::geometry);
@@ -94,7 +94,7 @@ E20A4100000000305C02410000000000000840')
 
 --st_asewkt---
 CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
-</programlisting>
+</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -177,7 +177,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
       <refsection>
       <title>Examples</title>
 
-      <programlisting>SELECT ST_AsText('01030000000100000005000000000000000000
+      <screen>SELECT ST_AsText('01030000000100000005000000000000000000
 000000000000000000000000000000000000000000000000
 F03F000000000000F03F000000000000F03F000000000000F03
 F000000000000000000000000000000000000000000000000');
@@ -185,17 +185,17 @@ F000000000000000000000000000000000000000000000000');
     st_astext
 --------------------------------
  POLYGON((0 0,0 1,1 1,1 0,0 0))
-</programlisting>
+</screen>
 
 <para>Full precision output is the default.</para>
-      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'));
+      <programlisting role="example-test">SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry);
     st_astext
 ------------------------------
  POINT(111.1111111 1.1111111)
 </programlisting>
 
 <para>The <parameter>maxdecimaldigits</parameter> argument can be used to limit output precision.</para>
-      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'), 2);
+      <programlisting role="example-test">SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry, 2);
     st_astext
 --------------------
  POINT(111.11 1.11)
@@ -427,11 +427,7 @@ F000000000000000000000000000000000000000000000000');
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
-    which gives same answer as
-
-    SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;
-
+    <programlisting role="example-test">SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
     st_ashexewkb
     --------
     0103000020E6100000010000000500
@@ -439,6 +435,8 @@ F000000000000000000000000000000000000000000000000');
     00000000000000000000000000000000F03F
     000000000000F03F000000000000F03F000000000000F03
     F000000000000000000000000000000000000000000000000</programlisting>
+    <para>Which gives the same answer as:</para>
+    <programlisting>SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;</programlisting>
     </refsection>
   </refentry>
 
@@ -478,10 +476,10 @@ F000000000000000000000000000000000000000000000000');
     <refsection>
     <title>Examples</title>
   <para>Basic </para>
-  <programlisting>
+  <programlisting role="example-test">
   SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
   --result--
-  |_p~iF~ps|U_ulLnnqC_mqNvxq`@
+  _p~iF~ps|U_ulLnnqC_mqNvxq`@
   </programlisting>
 
   <para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
@@ -595,7 +593,7 @@ F000000000000000000000000000000000000000000000000');
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
+    <programlisting role="example-test">SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
     FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;
  st_asgeobuf
 ----------------------------------
@@ -1138,42 +1136,42 @@ SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
       <refsection>
       <title>Examples</title>
 <para>Default format.</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));
       st_aslatlontext
 ----------------------------
  2°19'29.928"S 3°14'3.243"W
 </programlisting>
 <para>Providing a format (same as the default).</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));
       st_aslatlontext
 ----------------------------
  2°19'29.928"S 3°14'3.243"W
 </programlisting>
 <para>Characters other than D, M, S, C and . are just passed through.</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));
                                    st_aslatlontext
 --------------------------------------------------------------------------------------
  2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W
 </programlisting>
 <para>Signed degrees instead of cardinal directions.</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));
       st_aslatlontext
 ----------------------------
  -2°19'29.928" -3°14'3.243"
 </programlisting>
 <para>Decimal degrees.</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));
           st_aslatlontext
 -----------------------------------
  2.3250 degrees S 3.2342 degrees W
 </programlisting>
 <para>Excessively large values are normalized.</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
         st_aslatlontext
 -------------------------------
@@ -1395,7 +1393,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
     <refsection>
     <title>Examples</title>
-    <programlisting>
+    <programlisting role="example-test">
 SELECT ST_AsText(ST_AsMVTGeom(
   ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
   ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
@@ -1585,21 +1583,21 @@ FROM mvtgeom;
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);
+    <programlisting role="example-test">SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);
 
 st_assvg
 --------
 M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
 
         <para>Circular string</para>
-    <programlisting>SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );
+    <programlisting role="example-test">SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );
 
 st_assvg
 --------
 M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</programlisting>
 
         <para>Multi-curve</para>
-        <programlisting>SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
+        <programlisting role="example-test">SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
  CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);
  st_assvg
 ------------------------------------------------
@@ -1607,7 +1605,7 @@ M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</programlisting>
  </programlisting>
 
         <para>Multi-surface</para>
-        <programlisting>SELECT ST_AsSVG('MULTISURFACE(
+        <programlisting role="example-test">SELECT ST_AsSVG('MULTISURFACE(
 CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),
     (-1 0,0 0.5,1 0,0 1,-1 0)),
 ((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);

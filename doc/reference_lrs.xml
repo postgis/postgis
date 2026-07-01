@@ -76,7 +76,7 @@
 				<caption><para>A LineString with the interpolated point at 20% position (0.20) </para></caption>
 			  </mediaobject>
 			</informalfigure>
-			<programlisting>-- The point 20% along a line
+			<programlisting role="example-test">-- The point 20% along a line
 
 SELECT ST_AsEWKT(  ST_LineInterpolatePoint(
         'LINESTRING(25 50, 100 125, 150 190)',
@@ -86,7 +86,7 @@ SELECT ST_AsEWKT(  ST_LineInterpolatePoint(
 </programlisting>
 
 <para>The mid-point of a 3D line:</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsEWKT(  ST_LineInterpolatePoint('
         LINESTRING(1 2 3, 4 5 6, 6 7 8)',
         0.5 ));
@@ -95,7 +95,7 @@ SELECT ST_AsEWKT(  ST_LineInterpolatePoint('
 </programlisting>
 
 <para>The closest point on a line to a point:</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText( ST_LineInterpolatePoint( line.geom,
                       ST_LineLocatePoint( line.geom, 'POINT(4 3)')))
 FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
@@ -158,14 +158,14 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 			<title>Examples</title>
 
 			<para>Return point 20% along 3D line</para>
-			<programlisting>
+			<programlisting role="example-test">
 SELECT ST_AsText(
     ST_3DLineInterpolatePoint('LINESTRING(25 50 70, 100 125 90, 150 190 200)',
         0.20));
 
    st_asetext
 ----------------
- POINT Z (59.0675892910822 84.0675892910822 79.0846904776219)
+POINT Z (59.06758929108215 84.06758929108216 79.0846904776219)
 </programlisting>
 		  </refsection>
 
@@ -306,7 +306,7 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>
+			<programlisting role="example-test">
 --Rough approximation of finding the street number of a point along the street
 --Note the whole foo thing is just to generate dummy data that looks
 --like house centroids and street
@@ -329,14 +329,15 @@ WHERE ST_DWithin(street_line, house_loc, 0.2);
  POINT(1.01 2.06)  |         10
  POINT(2.02 3.09)  |         15
  POINT(3.03 4.12)  |         20
+</programlisting>
 
- --find closest point on a line to a point or other geometry
- SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
+<programlisting role="example-test">
+--find closest point on a line to a point or other geometry
+SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
 FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
    st_astext
 ----------------
  POINT(3 4)
-
 </programlisting>
 		  </refsection>
 
@@ -418,7 +419,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 				<caption><para>A LineString seen with 1/3 midrange overlaid (0.333, 0.666) </para></caption>
 			  </mediaobject>
 			</informalfigure>
-	<programlisting>
+	<programlisting role="example-test">
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING (20 180, 50 20, 90 80, 120 40, 180 150)', 0.333, 0.666));
 ------------------------------------------------------------------------------------------------
 LINESTRING (45.17311810399485 45.74337011202746, 50 20, 90 80, 112.97593050157862 49.36542599789519)
@@ -427,10 +428,10 @@ LINESTRING (45.17311810399485 45.74337011202746, 50 20, 90 80, 112.9759305015786
 <para>
 If start and end locations are the same, the result is a POINT.
 </para>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.333));
 ------------------------------------------
- POINT(69.2846934853974 94.2846934853974)
+POINT(69.28469348539744 94.28469348539744)
 </programlisting>
 
 
@@ -472,18 +473,18 @@ CROSS JOIN LATERAL (
 ]]></programlisting>
 
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geography, 0.333, 0.666),6) AS geog_sub
  , ST_AsText(ST_LineSubstring('LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geometry, 0.333, 0.666),6) AS geom_sub;
----------------------------------------------------------------
-geog_sub | LINESTRING(-104.167064 38.854691,-87.674646 41.849854)
-geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
+                        geog_sub                         |                         geom_sub
+---------------------------------------------------------+----------------------------------------------------------
+ LINESTRING(-103.911641 38.931128,-87.941787 41.831072) | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
 </programlisting>
 
 	<para>For geometry inputs, the fractional locations are based on the 2D
 	length of the line, even when the input has Z values. The resulting Z values
 	are interpolated along the selected 2D location.</para>
-	<programlisting>
+	<programlisting role="example-test">
 	WITH data AS (
 	  SELECT 'LINESTRING Z (0 0 0, 0 2 5, 0 10 10)'::geometry AS geom
 	)
@@ -494,7 +495,7 @@ geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
 
 	 length_2d |    length_3d     |              substring
 	-----------+------------------+-------------------------------------
-	        10 | 14.8191459391911 | LINESTRING Z (0 0 0,0 2 5,0 5 6.875)
+	        10 | 14.819145939191106 | LINESTRING Z (0 0 0,0 2 5,0 5 6.875)
 	</programlisting>
 		  </refsection>
 
@@ -550,12 +551,13 @@ geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
 
 	  <refsection>
 		<title>Examples</title>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText(
   ST_LocateAlong(
     'MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'::geometry,
     3 ));
 
+             st_astext
 ----------------------------------
  MULTIPOINT M ((1 2 3),(9 4 3),(1 2 3))
 </programlisting>
@@ -613,7 +615,7 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>Examples</title>
 
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText(
   ST_LocateBetween(
        'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))':: geometry,
@@ -631,14 +633,14 @@ SELECT ST_AsText(
             </mediaobject>
         </informalfigure>
 
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText( ST_LocateBetween(
   ST_AddMeasure('LINESTRING (20 180, 50 20, 100 120, 180 20)', 0, 10),
   2, 8,
   20
 ));
 ------------------------------------------------------------------------
-MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248075654186,69.16695286779743 103.05526528559065,82.11145618000168 128.94427190999915,84.24893681714357 132.32493442618113,87.01636951231555 135.21267035596549,90.30307285299679 137.49198684843182,93.97759758337769 139.07172433557758,97.89298381958797 139.8887023914453,101.89263860095893 139.9102465862721,105.81659870902816 139.13549527600819,109.50792827749828 137.5954340631298,112.81899532549731 135.351656550512,115.6173761888606 132.49390095108848,145.31017306064817 95.37790486135405))
+MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248075654186,82.11145618000168 128.94427190999915,84.24893681714357 132.32493442618113,87.01636951231555 135.21267035596549,90.30307285299679 137.49198684843182,93.97759758337769 139.07172433557758,97.89298381958797 139.8887023914453,101.89263860095893 139.9102465862721,105.81659870902816 139.13549527600819,109.50792827749828 137.5954340631298,112.81899532549731 135.351656550512,115.6173761888606 132.49390095108848,145.31017306064817 95.37790486135405))
 </programlisting>
 
 	  </refsection>
@@ -749,7 +751,7 @@ SELECT ST_AsText(
         <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');
+        <programlisting role="example-test">SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');
  ---------------------
          10
 	</programlisting>

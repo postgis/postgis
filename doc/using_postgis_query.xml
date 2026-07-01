@@ -383,7 +383,7 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
           to do this:
           </para>
 
-          <programlisting>
+          <programlisting role="example-test">
 SELECT ST_Relate( 'LINESTRING (1 1, 5 5)',
                   'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );
 st_relate

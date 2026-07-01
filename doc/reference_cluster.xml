@@ -189,7 +189,7 @@ GROUP BY cid;
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting role="example-test">
 WITH testdata AS
   (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
            'LINESTRING (5 5, 4 4)'::geometry,
@@ -245,7 +245,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting role="example-test">
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
   VALUES  (1, 'LINESTRING (0 0, 1 1)'),
@@ -606,7 +606,7 @@ from
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting role="example-test">
 WITH testdata AS
   (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
 		       'LINESTRING (5 5, 4 4)'::geometry,
@@ -670,7 +670,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting role="example-test">
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
   VALUES  (1, 'LINESTRING (0 0, 1 1)'),

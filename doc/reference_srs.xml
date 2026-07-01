@@ -56,7 +56,7 @@
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <programlisting>
+    <programlisting role="example-test">
 -- Inverse direction
 SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;
@@ -68,7 +68,7 @@ SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.52
     </programlisting>
 
     <para>GDA2020 example.</para>
-    <programlisting>
+    <programlisting role="example-test">
 -- using ST_Transform with automatic selection of a conversion pipeline.
 SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
 
@@ -274,7 +274,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>Examples</title>
     <para>Change Massachusetts state plane US feet geometry to WGS 84 long lat</para>
-    <programlisting>
+    <screen>
 SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
   743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
 
@@ -294,7 +294,7 @@ SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2
  -71.1775844305465 42.3903826677917 3,
  -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)
 
-    </programlisting>
+    </screen>
     <para>Example of creating a partial functional index.  For tables where you are not sure all the geometries
       will be filled in, its best to use a partial index that leaves out null geometries which will both conserve space and make your index smaller and more efficient.</para>
     <programlisting>
@@ -306,7 +306,7 @@ CREATE INDEX idx_geom_26986_parcels
     </programlisting>
 
     <para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
-    <programlisting>
+    <screen>
 -- Find intersection of two polygons near the North pole, using a custom Gnomic projection
 -- See http://boundlessgeo.com/2012/02/flattening-the-peel/
  WITH data AS (
@@ -323,7 +323,7 @@ CREATE INDEX idx_geom_26986_parcels
                                           st_astext
  --------------------------------------------------------------------------------
   POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74.053793645338))
-    </programlisting>
+    </screen>
 
     </refsection>
     <refsection>
@@ -426,7 +426,7 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <programlisting>
+    <programlisting role="example-test">
 -- Forward direction
 SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;
@@ -447,7 +447,7 @@ SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.52
     </programlisting>
 
     <para>GDA2020 example.</para>
-    <programlisting>
+    <programlisting role="example-test">
 -- using ST_Transform with automatic selection of a conversion pipeline.
 SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
 
@@ -519,21 +519,21 @@ SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
     <refsection>
       <title>Examples</title>
       <para>List the first ten codes associated with the EPSG authority.</para>
-      <programlisting>
-SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;
+      <programlisting role="example-test">
+SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;
 
  postgis_srs_codes
 -------------------
- 2000
- 20004
- 20005
- 20006
- 20007
- 20008
- 20009
- 2001
- 20010
- 20011
+ 10156
+ 10157
+ 10158
+ 10160
+ 10162
+ 10163
+ 10164
+ 10165
+ 10166
+ 10167
     </programlisting>
     </refsection>
 
@@ -627,21 +627,21 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
     <refsection>
       <title>Examples</title>
       <para>Get the first 10 metadata records from the Proj database.</para>
-      <programlisting>
-SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
+      <programlisting role="example-test">
+SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;
 
- auth_name | auth_srid |                  srname
------------+-----------+------------------------------------------
- EPSG      | 2000      | Anguilla 1957 / British West Indies Grid
- EPSG      | 20004     | Pulkovo 1995 / Gauss-Kruger zone 4
- EPSG      | 20005     | Pulkovo 1995 / Gauss-Kruger zone 5
- EPSG      | 20006     | Pulkovo 1995 / Gauss-Kruger zone 6
- EPSG      | 20007     | Pulkovo 1995 / Gauss-Kruger zone 7
- EPSG      | 20008     | Pulkovo 1995 / Gauss-Kruger zone 8
- EPSG      | 20009     | Pulkovo 1995 / Gauss-Kruger zone 9
- EPSG      | 2001      | Antigua 1943 / British West Indies Grid
- EPSG      | 20010     | Pulkovo 1995 / Gauss-Kruger zone 10
- EPSG      | 20011     | Pulkovo 1995 / Gauss-Kruger zone 11    </programlisting>
+ auth_name | auth_srid |                                srname
+-----------+-----------+----------------------------------------------------------------------
+ EPSG      | 10156     | ETRS89 + MSL UK &amp; Ireland VORF08 depth
+ EPSG      | 10157     | ETRS89 + CD UK &amp; Ireland VORF08 depth
+ EPSG      | 10158     | S34J-IRF
+ EPSG      | 10160     | S34J reconstruction east-orientated
+ EPSG      | 10162     | JGD2011 / Japan Plane Rectangular CS I + JGD2011 (vertical) height
+ EPSG      | 10163     | JGD2011 / Japan Plane Rectangular CS II + JGD2011 (vertical) height
+ EPSG      | 10164     | JGD2011 / Japan Plane Rectangular CS III + JGD2011 (vertical) height
+ EPSG      | 10165     | JGD2011 / Japan Plane Rectangular CS IV + JGD2011 (vertical) height
+ EPSG      | 10166     | JGD2011 / Japan Plane Rectangular CS V + JGD2011 (vertical) height
+ EPSG      | 10167     | JGD2011 / Japan Plane Rectangular CS VI + JGD2011 (vertical) height    </programlisting>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->
@@ -688,7 +688,7 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
     <refsection>
       <title>Examples</title>
       <para>Search for projected coordinate systems in Louisiana.</para>
-      <programlisting>
+      <screen>
 SELECT auth_name, auth_srid, srname,
   ST_AsText(point_sw) AS point_sw,
   ST_AsText(point_ne) AS point_ne
@@ -700,7 +700,7 @@ LIMIT 3;
  EPSG      | 2801      | NAD83(HARN) / Louisiana South        | POINT(-93.94 28.85) | POINT(-88.75 31.07)
  EPSG      | 3452      | NAD83 / Louisiana South (ftUS)       | POINT(-93.94 28.85) | POINT(-88.75 31.07)
  EPSG      | 3457      | NAD83(HARN) / Louisiana South (ftUS) | POINT(-93.94 28.85) | POINT(-88.75 31.07)
-</programlisting>
+</screen>
 
       <para>Scan a table for max extent and find projected coordinate systems that might suit.</para>
 
