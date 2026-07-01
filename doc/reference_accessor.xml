@@ -3164,9 +3164,9 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 	  </refsection>
 	</refentry>
 
-	<refentry xml:id="ST_Zmflag">
+	<refentry xml:id="ST_ZMFlag">
 	  <refnamediv>
-		<refname>ST_Zmflag</refname>
+		<refname>ST_ZMFlag</refname>
 
 		<refpurpose>Returns a code indicating the ZM coordinate dimension of a geometry.</refpurpose>
 	  </refnamediv>
@@ -3174,7 +3174,7 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>smallint <function>ST_Zmflag</function></funcdef>
+			<funcdef>smallint <function>ST_ZMFlag</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -3195,13 +3195,13 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRING(1 2, 3 4)'));</programlisting>
+		<programlisting>SELECT ST_ZMFlag(ST_GeomFromEWKT('LINESTRING(1 2, 3 4)'));</programlisting>
 <screen>0</screen>
-<programlisting>SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRINGM(1 2 3, 3 4 3)'));</programlisting>
+<programlisting>SELECT ST_ZMFlag(ST_GeomFromEWKT('LINESTRINGM(1 2 3, 3 4 3)'));</programlisting>
 <screen>1</screen>
-<programlisting>SELECT ST_Zmflag(ST_GeomFromEWKT('CIRCULARSTRING(1 2 3, 3 4 3, 5 6 3)'));</programlisting>
+<programlisting>SELECT ST_ZMFlag(ST_GeomFromEWKT('CIRCULARSTRING(1 2 3, 3 4 3, 5 6 3)'));</programlisting>
 <screen>2</screen>
-<programlisting>SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));</programlisting>
+<programlisting>SELECT ST_ZMFlag(ST_GeomFromEWKT('POINT(1 2 3 4)'));</programlisting>
 <screen>3</screen>
 	  </refsection>
 
@@ -3255,7 +3255,7 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 
   <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_Zmflag"/></para>
+    <para><xref linkend="ST_ZMFlag"/></para>
     <para><xref linkend="ST_HasM"/></para>
   </refsection>
 </refentry>
@@ -3302,7 +3302,7 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 
   <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_Zmflag"/></para>
+    <para><xref linkend="ST_ZMFlag"/></para>
     <para><xref linkend="ST_HasZ"/></para>
   </refsection>
 </refentry>
