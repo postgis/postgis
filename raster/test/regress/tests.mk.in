@@ -66,6 +66,7 @@ RASTER_TEST_BANDPROPS = \
 	$(top_srcdir)/raster/test/regress/rt_setvalues_array \
 	$(top_srcdir)/raster/test/regress/rt_summarystats \
 	$(top_srcdir)/raster/test/regress/rt_count \
+	$(top_srcdir)/raster/test/regress/rt_parallel_agg \
 	$(top_srcdir)/raster/test/regress/rt_histogram \
 	$(top_srcdir)/raster/test/regress/rt_quantile \
 	$(top_srcdir)/raster/test/regress/rt_valuecount \
