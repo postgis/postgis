@@ -2072,11 +2072,13 @@ index.
 			<title>Examples</title>
 <para>This example orders stored trajectories by their distance from a literal query trajectory.</para>
 <programlisting role="requires-external-state">
+\set qt 'ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350, 300, 0), ST_MakePointM(-410, 490, 0)), 10, 20)'
+
 SELECT track_id, dist FROM (
   SELECT track_id,
-    ST_DistanceCPA(tr, ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),ST_MakePointM(-410,490,0)),10,20)) dist
+    ST_DistanceCPA(tr, :qt) dist
   FROM trajectories
-  ORDER BY tr |=| ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),ST_MakePointM(-410,490,0)),10,20)
+  ORDER BY tr |=| :qt
   LIMIT 5
 ) foo;</programlisting>
 <screen> track_id        dist
