@@ -15,9 +15,33 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 #include "styles.h"
 
+static bool
+equalsIgnoreCase(const char *a, const char *b)
+{
+	while (*a && *b)
+	{
+		if (tolower((unsigned char)*a) != tolower((unsigned char)*b))
+			return false;
+		a++;
+		b++;
+	}
+
+	return *a == *b;
+}
+
+static bool
+parseBool(const char *str)
+{
+	if (strcmp(str, "1") == 0 || equalsIgnoreCase(str, "true") || equalsIgnoreCase(str, "yes") ||
+	    equalsIgnoreCase(str, "on"))
+		return true;
+
+	return false;
+}
 
 void
 getStyles( const char *filename, LAYERSTYLE **headRef )
@@ -52,6 +76,8 @@ getStyles( const char *filename, LAYERSTYLE **headRef )
 			char *polygonFillColor = "Grey";
 			char *polygonStrokeColor = "Grey";
 			int polygonStrokeWidth = 0;
+			bool highlight = false;
+			bool dropShadow = false;
 
 			getResults = fgets ( line, sizeof line, pFile );
 			while ( (getResults != NULL) && (strncmp(line, "[Style]", 7) != 0) )
@@ -108,12 +134,33 @@ getStyles( const char *filename, LAYERSTYLE **headRef )
 						polygonStrokeWidth = atoi(ptr);
 						free(ptr);
 					}
+					else if (strncmp(line, "highlight", 9) == 0)
+					{
+						highlight = parseBool(ptr);
+						free(ptr);
+					}
+					else if (strncmp(line, "dropShadow", 10) == 0)
+					{
+						dropShadow = parseBool(ptr);
+						free(ptr);
+					}
 				}
 				getResults = fgets ( line, sizeof line, pFile );
 			}
-			addStyle(headRef, styleName, pointSize, pointColor,
-				lineWidth, lineColor, lineStartSize, lineEndSize, lineArrowSize,
-				polygonFillColor, polygonStrokeColor, polygonStrokeWidth);
+			addStyle(headRef,
+				 styleName,
+				 pointSize,
+				 pointColor,
+				 lineWidth,
+				 lineColor,
+				 lineStartSize,
+				 lineEndSize,
+				 lineArrowSize,
+				 polygonFillColor,
+				 polygonStrokeColor,
+				 polygonStrokeWidth,
+				 highlight,
+				 dropShadow);
 		}
 		getResults = fgets ( line, sizeof line, pFile );
 	}
@@ -142,17 +189,28 @@ freeStyles( LAYERSTYLE **headRef )
 	*headRef = NULL;
 }
 
-
 void
-addStyle(
-    LAYERSTYLE **headRef,
-    char* styleName,
-    int pointSize, char* pointColor,
-    int lineWidth, char* lineColor,
-	int lineStartSize, int lineEndSize, int lineArrowSize,
-    char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth)
+addStyle(LAYERSTYLE **headRef,
+	 char *styleName,
+	 int pointSize,
+	 char *pointColor,
+	 int lineWidth,
+	 char *lineColor,
+	 int lineStartSize,
+	 int lineEndSize,
+	 int lineArrowSize,
+	 char *polygonFillColor,
+	 char *polygonStrokeColor,
+	 int polygonStrokeWidth,
+	 bool highlight,
+	 bool dropShadow)
 {
 	LAYERSTYLE *style = malloc( sizeof(LAYERSTYLE) );
+	if (style == NULL)
+	{
+		perror("malloc");
+		return;
+	}
 
 	style->styleName = styleName;
 	style->pointSize = pointSize;
@@ -165,6 +223,8 @@ addStyle(
 	style->polygonFillColor = polygonFillColor;
 	style->polygonStrokeColor = polygonStrokeColor;
 	style->polygonStrokeWidth = polygonStrokeWidth;
+	style->highlight = highlight;
+	style->dropShadow = dropShadow;
 	style->next = *headRef;
 	*headRef = style;
 }

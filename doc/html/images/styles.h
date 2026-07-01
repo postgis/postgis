@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct layerStyle LAYERSTYLE;
 
@@ -34,14 +35,28 @@ struct layerStyle
 	char *polygonStrokeColor;
 	int   polygonStrokeWidth;
 
+	bool highlight;
+	bool dropShadow;
+
 	LAYERSTYLE *next;
 };
 
 void getStyles( const char *filename, LAYERSTYLE **headRef );
 void freeStyles( LAYERSTYLE **headRef );
-void addStyle( LAYERSTYLE **headRef, char* styleName, int pointSize, char* pointColor,
-	int lineWidth, char* lineColor, int lineStartSize, int lineEndSize, int lineArrowSize,
-	char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth );
+void addStyle(LAYERSTYLE **headRef,
+	      char *styleName,
+	      int pointSize,
+	      char *pointColor,
+	      int lineWidth,
+	      char *lineColor,
+	      int lineStartSize,
+	      int lineEndSize,
+	      int lineArrowSize,
+	      char *polygonFillColor,
+	      char *polygonStrokeColor,
+	      int polygonStrokeWidth,
+	      bool highlight,
+	      bool dropShadow);
 
 int length( LAYERSTYLE *headRef );
 LAYERSTYLE* getStyle( LAYERSTYLE *headRef, char* styleName );
