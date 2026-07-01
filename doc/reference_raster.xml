@@ -2632,7 +2632,7 @@ FROM dummy_rast;
             <refsection>
                 <title>Examples</title>
 
-                <programlisting role="requires-external-state">SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))
+                <programlisting>SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))
 st_isempty |
 -----------+
 f          |
@@ -3466,7 +3466,7 @@ srid
 
             <refsection>
                 <title>Examples</title>
-                <programlisting role="requires-external-state">
+                <programlisting>
 SELECT ST_Summary(
     ST_AddBand(
         ST_AddBand(
@@ -4292,7 +4292,7 @@ WHERE rid = 2;
             <refsection>
                 <title>Examples</title>
 
-                    <programlisting role="requires-external-state">SELECT ST_MinPossibleValue('16BSI');
+                    <programlisting>SELECT ST_MinPossibleValue('16BSI');
 
  st_minpossiblevalue
 ---------------------
@@ -6900,7 +6900,7 @@ FROM (
                     <title>Examples</title>
                     <para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
 
-                    <programlisting role="requires-external-state">-- the original raster pixel size
+                    <programlisting>-- the original raster pixel size
 SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width
 
    width
@@ -9691,7 +9691,7 @@ FROM (
 ) AS shapes;
                     </programlisting>
 
-                    <programlisting role="requires-external-state">
+                <programlisting role="requires-external-state">
 SELECT
     ST_NumBands(rast) As n_orig,
     ST_NumBands(ST_ColorMap(rast,1, 'greyscale')) As ngrey,

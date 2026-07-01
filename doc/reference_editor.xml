@@ -551,7 +551,7 @@ POINT(2 1)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+		<programlisting>SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 		st_asewkt
 -------------------------------------
 CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)
@@ -607,7 +607,7 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">
+		<programlisting>
 		--Nothing happens to an already 3D geometry
 		SELECT ST_AsEWKT(ST_Force3D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 				   st_asewkt
@@ -665,7 +665,7 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">
+		<programlisting>
 --Nothing happens to an already 3D geometry
 SELECT ST_AsEWKT(ST_Force3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 				   st_asewkt
@@ -721,7 +721,7 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">
+		<programlisting>
 --Nothing happens to an already 3D geometry
 SELECT ST_AsEWKT(ST_Force3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 				   st_asewkt
@@ -779,7 +779,7 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">
+		<programlisting>
 --Nothing happens to an already 3D geometry
 SELECT ST_AsEWKT(ST_Force4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 						st_asewkt
@@ -840,7 +840,7 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">
+		<programlisting>
 
 SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));
 
@@ -2160,7 +2160,7 @@ LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.8240934897
 
 		  <refsection>
 			<title>Examples</title>
-			<programlisting role="requires-external-state">
+			<programlisting>
 --Change first point in line string from -1 3 to -1 1
 SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)'));
 	   st_astext
@@ -2229,7 +2229,7 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
       <refsection>
         <title>Examples</title>
 
-        <programlisting role="requires-external-state">--single point forward transformation
+        <programlisting>--single point forward transformation
 SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;POINT(270 0)'::geometry))
 
 st_astext

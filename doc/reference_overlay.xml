@@ -247,7 +247,7 @@ Computes a geometry representing the shared portion of geometries A and B.
         </refsection>
         <refsection>
         <title>Examples</title>
-<programlisting role="requires-external-state">SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
+<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
  st_astext
 ---------------
 GEOMETRYCOLLECTION EMPTY
@@ -689,7 +689,7 @@ SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
                 <caption><para>Subdivided to maximum 10 vertices</para></caption>
             </mediaobject>
             </informalfigure>
-<programlisting role="requires-external-state">
+<programlisting>
 SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
     FROM (SELECT ST_SubDivide(
         'POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
@@ -698,11 +698,11 @@ SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
 </programlisting>
 <screen> rn │                                                      wkt
 ────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-  1 │ POLYGON((119 23,85 35,68 29,66 28,32 56,22 64,29.8260869565217 100,119 100,119 23))
-  2 │ POLYGON((132 10,119 23,119 56,186 56,186 52,178 34,168 18,147 13,132 10))
-  3 │ POLYGON((119 56,119 100,190 100,185 79,186 56,119 56))
-  4 │ POLYGON((29.8260869565217 100,32 110,40 119,36 150,57 158,75 171,92 182,114 184,114 100,29.8260869565217 100))
-  5 │ POLYGON((114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,114 100,114 184))
+  1 │ POLYGON((85 35,68 29,66 28,32 56,22 64,29.82608695652174 100,119 100,119 23,85 35))
+  2 │ POLYGON((186 52,178 34,168 18,147 13,132 10,119 23,119 56,186 56,186 52))
+  3 │ POLYGON((185 79,186 56,119 56,119 100,190 100,185 79))
+  4 │ POLYGON((40 119,36 150,57 158,75 171,92 182,114 184,114 100,29.82608695652174 100,32 110,40 119))
+  5 │ POLYGON((132 186,146 178,176 184,179 162,184 141,190 122,190 100,114 100,114 184,132 186))
   </screen>
 
         <para><emphasis role="bold">Example:</emphasis>
@@ -719,7 +719,7 @@ SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
                 <caption><para>The densified and split lines.</para></caption>
             </mediaobject>
             </informalfigure>
-<programlisting role="requires-external-state">
+<programlisting>
 SELECT ST_AsText( ST_Subdivide(
             ST_Segmentize('LINESTRING(0 0, 85 85)'::geography,
                           1200000)::geometry,    8));
@@ -1075,7 +1075,7 @@ FROM sometable f
 GROUP BY id;
               </programlisting>
         <para>Non-Aggregate example</para>
-            <programlisting role="requires-external-state">
+            <programlisting>
 select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(-2 3)' :: geometry))
 
 st_astext

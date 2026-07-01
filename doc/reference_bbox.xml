@@ -195,7 +195,7 @@ BOX3D(220186.99512189245 150406 1,220288.24878054656 150506.12682932706 1)
       <refsection>
         <title>Examples</title>
 
-        <programlisting role="requires-external-state">SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
+        <programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
 --result--
 BOX(-8877653 4912316,-8010225.5 5589284)
 
@@ -458,7 +458,7 @@ SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
 
       <refsection>
         <title>Examples</title>
-        <programlisting role="requires-external-state">
+        <programlisting>
 SELECT ST_3DExtent(foo.geom) As b3extent
 FROM (SELECT ST_MakePoint(x,y,z) As geom
     FROM generate_series(1,3) As x
@@ -1029,7 +1029,7 @@ st_zmin
       <refsection>
         <title>Examples</title>
 
-        <programlisting role="requires-external-state">SELECT ST_XSize('BOX3D(1 2 3, 4 5 6)');
+        <programlisting>SELECT ST_XSize('BOX3D(1 2 3, 4 5 6)');
 st_xsize
 --------
 3
@@ -1082,7 +1082,7 @@ st_xsize
       <refsection>
         <title>Examples</title>
 
-        <programlisting role="requires-external-state">SELECT ST_YSize('BOX3D(1 2 3, 4 5 6)');
+        <programlisting>SELECT ST_YSize('BOX3D(1 2 3, 4 5 6)');
 st_ysize
 --------
 3
@@ -1135,7 +1135,7 @@ st_ysize
       <refsection>
         <title>Examples</title>
 
-        <programlisting role="requires-external-state">SELECT ST_ZSize('BOX3D(1 2 3, 4 5 6)');
+        <programlisting>SELECT ST_ZSize('BOX3D(1 2 3, 4 5 6)');
 st_zsize
 --------
 3

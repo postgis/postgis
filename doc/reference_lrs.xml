@@ -689,7 +689,7 @@ MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248
 	  <refsection>
 		<title>Examples</title>
 
-<programlisting role="requires-external-state">SELECT ST_AsText(
+<programlisting>SELECT ST_AsText(
   ST_LocateBetweenElevations(
     'LINESTRING(1 2 3, 4 5 6)'::geometry,
     2, 4 ));
@@ -803,7 +803,7 @@ SELECT ST_AsText(
         <refsection>
         <title>Examples</title>
 
-        <programlisting role="requires-external-state">-- Line rising diagonally in Z; point at the 3D midpoint
+        <programlisting>-- Line rising diagonally in Z; point at the 3D midpoint
 SELECT ST_3DInterpolatePoint(
     'LINESTRING ZM (0 0 0 0, 10 0 10 20)',
     'POINT Z (5 0 5)');
@@ -860,7 +860,7 @@ SELECT ST_3DInterpolatePoint(
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">SELECT ST_AsText(ST_AddMeasure(
+		<programlisting>SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;
            ewelev
 --------------------------------
