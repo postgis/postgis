@@ -76,7 +76,43 @@ expected output is tested by default. Add ``role="requires-external-state"`` whe
 the listing depends on database objects, files, installed driver/catalog state,
 prior manual setup, or other state outside the listing and outside the standard
 example-test database. Use ``role="example-test"`` only as an escape hatch to
-force a listing to run when the heuristics would otherwise skip it. The generator
-accepts either in-listing psql output, such as ``-- result --`` followed by
-expected rows, or a following ``screen`` element containing the expected output.
+force a listing to run when the heuristics would otherwise skip it.
+
+Put executable SQL in ``programlisting`` and expected output in the immediately
+following ``screen`` element:
+
+```
+<programlisting>SELECT ST_AsText(ST_Point(1, 2));</programlisting>
+<screen>POINT(1 2)</screen>
+```
+
+Use ``screen`` for interactive terminal transcripts. If the prompt is important,
+mark it as ``prompt`` and the typed command as ``userinput``. Do not include shell
+or psql prompts in copy-paste SQL ``programlisting`` blocks.
+
+Example SQL formatting rules:
+
+* Keep SQL-only one-liners on one line with no newline after ``<programlisting>``.
+* Keep SQL keywords uppercase in touched examples.
+* Use the documented function-name casing used by the manual.
+* Do not put a space between a function name and ``(``.
+* Do not put spaces around PostgreSQL casts: use ``'POINT(1 2)'::geometry``.
+* Put a space after commas in SQL argument lists, unless preserving compact WKT
+  output in ``screen``.
+* For a multiline function call, either keep all arguments on one line, or put
+  the function call on its own line and list top-level arguments below it. Align
+  closing parentheses with the line that opened the call.
+* Move explanatory ``--`` comments out of SQL listings into full-sentence
+  ``para`` elements. Keep SQL comments only when they are part of the command.
+* Do not put expected output, psql column headers, row-count footers, or
+  ``-- result --`` markers inside ``programlisting``.
+* For one-column scalar output, omit the psql column header and separator in
+  ``screen`` unless the header is itself important to the example.
+* If a docs example intentionally uses psql variables or other psql meta-commands,
+  keep them in ``programlisting`` only when the listing is marked
+  ``role="requires-external-state"`` or is otherwise not auto-run.
+* Mark examples that require a newer GEOS/PROJ/GDAL feature than the default test
+  environment with ``role="requires-external-state"`` instead of adding runner
+  special cases.
+
 Use ``make exampletest-report`` to inspect the current manual.
