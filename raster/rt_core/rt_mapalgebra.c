@@ -1274,7 +1274,8 @@ rt_raster_iterator(
 				/* neighborhood */
 				npixels = NULL;
 				status = 0;
-				if (distancex > 0 && distancey > 0) {
+				if (distancex > 0 || distancey > 0)
+				{
 					RASTER_DEBUG(4, "getting neighborhood");
 
 					status = rt_band_get_nearest_pixel(
