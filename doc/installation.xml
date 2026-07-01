@@ -172,6 +172,14 @@ sh autogen.sh
 
     <listitem>
     <para>
+      Bison (<filename>bison</filename>) and Flex (<filename>flex</filename>)
+      are required when building from a git checkout. Release tarballs include
+      the generated WKT parser and lexer sources.
+    </para>
+    </listitem>
+
+    <listitem>
+    <para>
       Proj reprojection library. Proj 6.1 or above is required.
       The Proj library is used to provide coordinate reprojection support within
       PostGIS. Proj is available for download from
