@@ -16,6 +16,39 @@
   surfaces, networks), data source for desktop user interface tools for viewing and editing
   GIS data, and web-based access tools.</para>
 
+  <section xml:id="standards_support">
+	<title>Standards Support</title>
+
+	<para>This manual marks individual functions as compliant with spatial
+	standards so users can tell which behavior is portable and which behavior is
+	a PostGIS extension.  PostGIS implements the
+	<link xlink:href="https://www.ogc.org/standard/sfs/">OGC Simple Features
+	for SQL</link> model, including the geometry type, Well-Known Text (WKT),
+	Well-Known Binary (WKB), and the common spatial accessors, constructors,
+	predicates, and processing functions.  PostGIS also implements many
+	<link xlink:href="https://www.iso.org/standard/60343.html">SQL/MM Spatial</link>
+	types and functions.</para>
+
+	<para>PostGIS supports geometry families defined by later standards,
+	including SQL/MM curved geometry and OGC Simple Features Access 1.2
+	PolyhedralSurface, Triangle, and TIN.  Support for these geometry families
+	is function-specific, and each function page documents the supported input
+	types and conformance level.</para>
+
+	<para>PostGIS also includes widely used extensions and integrations.
+	Examples of PostGIS extensions include Extended WKT (EWKT), Extended WKB
+	(EWKB), SRID metadata in those extended formats, geography, and raster.
+	PostGIS also supports input and output exchange formats defined by other
+	standards, such as GeoJSON, GML, and KML.  These features are documented
+	individually and should not be read as OGC Simple Features or SQL/MM
+	requirements unless the specific function or format says so.</para>
+
+	<para>When the implementation intentionally differs from a standard, or when
+	a standard leaves behavior ambiguous, the relevant function page describes
+	the PostGIS behavior.  The <xref linkend="PostGIS_Special_Functions_Index"/>
+	chapter summarizes SQL/MM compliance and geometry-type support across
+	functions.</para>
+  </section>
 
   <section xml:id="psc">
 	<title>Project Steering Committee</title>
