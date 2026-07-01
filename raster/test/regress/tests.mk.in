@@ -11,6 +11,7 @@
 # **********************************************************************
 
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
+POSTGIS_GDAL_VERSION=@POSTGIS_GDAL_VERSION@
 
 override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
 
@@ -158,4 +159,9 @@ TESTS += $(RASTER_TESTS)
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31400),1)
     TESTS += \
         $(top_srcdir)/raster/test/regress/rt_intersection_fractions
+endif
+
+ifeq ($(shell expr "$(POSTGIS_GDAL_VERSION)" ">=" 30101),1)
+    TESTS += \
+        $(top_srcdir)/raster/test/regress/rt_isvisible
 endif
