@@ -970,22 +970,44 @@ RASTER_setBandNoDataValues(PG_FUNCTION_ARGS)
 	for (i = 0; i < band_count; i++)
 	{
 		int32_t bandindex = -1;
-		double nodata = 0;
 
 		if (band_nulls[i])
 		{
 			elog(NOTICE,
 			     "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
-			continue;
+			goto serialize;
 		}
 
 		bandindex = DatumGetInt32(band_values[i]);
+		if (bandindex < 1)
+		{
+			elog(NOTICE,
+			     "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
+			goto serialize;
+		}
+
+		if (!rt_raster_get_band(raster, bandindex - 1))
+		{
+			elog(
+			    NOTICE,
+			    "Could not find raster band of index %d when setting pixel value. Nodata value not set. Returning original raster",
+			    bandindex);
+			goto serialize;
+		}
+	}
+
+	for (i = 0; i < band_count; i++)
+	{
+		int32_t bandindex = DatumGetInt32(band_values[i]);
+		double nodata = 0;
+
 		if (!nodata_nulls[i])
 			nodata = DatumGetFloat8(nodata_values[i]);
 
 		rtpg_set_band_nodata_value(raster, bandindex, nodata_nulls[i], nodata, forcechecking);
 	}
 
+serialize:
 	pgrtn = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(nodata_array, 2);
