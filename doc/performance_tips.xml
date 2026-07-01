@@ -97,15 +97,15 @@ WHERE bbox && ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);
     GIST indices because GIST indices simply ignores NULL values, you get an
     error message like:</para>
 
-    <programlisting>lwgeom=# CLUSTER my_geom_index ON my_table;
-ERROR: cannot cluster when index access method does not handle null values
-HINT: You may be able to work around this by marking column "geom" NOT NULL.</programlisting>
+    <programlisting>CLUSTER my_geom_index ON my_table;</programlisting>
+<screen>ERROR: cannot cluster when index access method does not handle null values
+HINT: You may be able to work around this by marking column "geom" NOT NULL.</screen>
 
     <para>As the HINT message tells you, one can work around this deficiency
     by adding a "not null" constraint to the table:</para>
 
-    <programlisting>lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;
-ALTER TABLE</programlisting>
+    <programlisting>ALTER TABLE my_table ALTER COLUMN geom SET not null;</programlisting>
+<screen>ALTER TABLE</screen>
 
     <para>Of course, this will not work if you in fact need NULL values in
     your geometry column. Additionally, you must use the above method to add

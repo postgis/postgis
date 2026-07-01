@@ -46,21 +46,15 @@ like <xref linkend="ST_ClosestPointOfApproach"/>
 
       <refsection>
       <title>Examples</title>
-<programlisting>
--- A valid trajectory
-SELECT ST_IsValidTrajectory(ST_MakeLine(
-  ST_MakePointM(0,0,1),
-  ST_MakePointM(0,1,2))
-);
- t
+<para>This example constructs a valid trajectory.</para>
+<programlisting>SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0, 0, 1),
+    ST_MakePointM(0, 1, 2)));</programlisting>
+<screen>t</screen>
 
--- An invalid trajectory
-SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), ST_MakePointM(0,1,0)));
-NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
- st_isvalidtrajectory
-----------------------
- f
-</programlisting>
+<para>This example constructs an invalid trajectory.</para>
+<programlisting>SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0, 0, 1), ST_MakePointM(0, 1, 0)));</programlisting>
+<screen>NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
+f</screen>
       </refsection>
 
       <refsection>
@@ -135,12 +129,10 @@ WITH inp AS ( SELECT
 SELECT to_timestamp(m) AT TIME ZONE 'UTC' t,
        ST_3DDistance(pa,pb) distance,
        ST_AsText(pa, 2) AS pa, ST_AsText(pb, 2) AS pb
-FROM points, cpa;
-
-             t              |      distance      |                  pa                  |                   pb
+FROM points, cpa;</programlisting>
+<screen>             t              |      distance      |                  pa                  |                   pb
 ----------------------------+--------------------+--------------------------------------+----------------------------------------
- 2015-05-26 10:45:31.034483 | 1.9652147377620688 | POINT ZM (7.59 0 3.79 1432637131.03) | POINT ZM (9.1 1.24 3.93 1432637131.03)
- </programlisting>
+ 2015-05-26 10:45:31.034483 | 1.9652147377620688 | POINT ZM (7.59 0 3.79 1432637131.03) | POINT ZM (9.1 1.24 3.93 1432637131.03)</screen>
       </refsection>
 
       <refsection>
@@ -204,12 +196,8 @@ WITH inp AS ( SELECT
     extract(epoch from timestamp '2015-05-26 11:00' AT TIME ZONE 'UTC')
   ) b
 )
-SELECT ST_DistanceCPA(a,b) distance FROM inp;
-
-     distance
--------------------
-1.9652147377620688
-</programlisting>
+SELECT ST_DistanceCPA(a,b) distance FROM inp;</programlisting>
+<screen>1.9652147377620688</screen>
       </refsection>
 
       <refsection>
@@ -274,12 +262,10 @@ WITH inp AS ( SELECT
     extract(epoch from timestamp '2015-05-26 11:00' AT TIME ZONE 'UTC')
   ) b
 )
-SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;
-
- st_cpawithin |     distance
+SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;</programlisting>
+<screen> st_cpawithin |     distance
 --------------+------------------
- t            | 1.9652147377620688
-</programlisting>
+ t            | 1.9652147377620688</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->

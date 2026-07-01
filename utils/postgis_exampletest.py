@@ -13,12 +13,36 @@ DB = {"db": "http://docbook.org/ns/docbook"}
 XML_NS = "http://www.w3.org/XML/1998/namespace"
 FORCE_ROLE = "example-test"
 EXTERNAL_STATE_ROLE = "requires-external-state"
+ENVIRONMENT_CHECKS = (
+    {
+        "label": "PROJ grid au_icsm_GDA94_GDA2020_conformal_and_distortion.tif",
+        "query": """SELECT ST_AsText(ST_TransformPipeline(
+    'SRID=4939;POINT(143.0 -37.0)'::geometry,
+    'urn:ogc:def:coordinateOperation:EPSG::8447'
+))""",
+        "expected": [["POINT(143.0000063280214 -36.999986718287545)"]],
+        "hint": "Install the PROJ data package containing au_icsm_GDA94_GDA2020_conformal_and_distortion.tif, or fetch it with projsync so the PostgreSQL/PostGIS PROJ search path can find it.",
+    },
+)
 WKT_TYPES = (
     "POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|"
     "GEOMETRYCOLLECTION|CIRCULARSTRING|COMPOUNDCURVE|CURVEPOLYGON|"
     "MULTICURVE|MULTISURFACE|TIN|TRIANGLE|POLYHEDRALSURFACE"
 )
 DECIMAL_RE = re.compile(r"(?<![A-Za-z_])-?(?:\d+\.\d*|\.\d+)(?:[eE][+-]?\d+)?")
+VERSION_FUNCTION_RE = re.compile(
+    r"\b(?:"
+    r"PostGIS_Full_Version|postgis_full_version|PostGIS_GEOS_Version|"
+    r"PostGIS_GEOS_Compiled_Version|PostGIS_LibXML_Version|"
+    r"PostGIS_LibJSON_Version|PostGIS_PROJ_Version|"
+    r"PostGIS_PROJ_Compiled_Version|PostGIS_Wagyu_Version|"
+    r"PostGIS_Lib_Build_Date|PostGIS_Lib_Version|"
+    r"PostGIS_Scripts_Build_Date|PostGIS_Scripts_Installed|"
+    r"PostGIS_Scripts_Released|PostGIS_Version"
+    r")\s*\(",
+    re.I,
+)
+CATALOG_QUERY_RE = re.compile(r"\bpg_available_extensions\b", re.I)
 
 
 class ExampleTester:
@@ -39,10 +63,6 @@ class ExampleTester:
         return f"{label}:{node.sourceline or 'unknown'}"
 
     def obvious_skip_reason(self, text):
-        if re.search(r"^\s*\\\w+", text, re.M):
-            return "psql-meta"
-        if re.search(r"^\s*\w*[=>#]\s*(?:SELECT|WITH)\b", text, re.M | re.I):
-            return "psql-meta"
         if re.search(r"SELECT\s+'<\?xml", text, re.I):
             return "document-output"
         if re.search(
@@ -61,16 +81,10 @@ class ExampleTester:
         if re.search(
             r"\b(?:DropGeometryColumn|DropGeometryTable|Find_SRID|"
             r"ST_MinimumSpanningTree|PostGIS_Extensions_Upgrade|"
-            r"PostGIS_Full_Version|postgis_full_version|PostGIS_GEOS_Version|"
-            r"PostGIS_GEOS_Compiled_Version|PostGIS_LibXML_Version|"
-            r"PostGIS_LibJSON_Version|PostGIS_PROJ_Version|"
-            r"PostGIS_PROJ_Compiled_Version|PostGIS_Wagyu_Version|"
             r"PostGIS_GDAL_Version|PostGIS_Liblwgeom_Version|"
-            r"PostGIS_Lib_Build_Date|PostGIS_Lib_Version|"
             r"PostGIS_Raster_Lib_Build_Date|PostGIS_Raster_Lib_Version|"
-            r"PostGIS_Raster_Scripts_Installed|ST_GDALDrivers|ST_FromGDALRaster|ST_AsPNG|"
-            r"PostGIS_Scripts_Build_Date|PostGIS_Scripts_Installed|"
-            r"PostGIS_Scripts_Released|PostGIS_Version)\s*\(",
+            r"PostGIS_Raster_Scripts_Installed|ST_GDALDrivers|ST_FromGDALRaster|ST_AsPNG"
+            r")\s*\(",
             text,
             re.I,
         ):
@@ -100,7 +114,7 @@ class ExampleTester:
     def looks_query(self, text):
         return re.search(r"\b(SELECT|WITH)\b", text, re.I)
 
-    def has_inband_expected(self, text):
+    def has_legacy_inband_expected(self, text):
         return (
             re.search(r"--\s*(result|output|wkt collect)\s*--", text, re.I)
             or re.search(r"^\s*\S.*\n\s*[-+]{3,}\s*\n", text, re.S | re.M)
@@ -114,29 +128,6 @@ class ExampleTester:
         if sibling is not None and etree.QName(sibling).localname == "screen":
             return sibling
         return None
-
-    def parse_inband_example(self, text):
-        lines = text.split("\n")
-
-        for i, line in enumerate(lines):
-            if re.search(r"--\s*(result|output|wkt collect)\s*--", line, re.I):
-                query = "\n".join(lines[:i])
-                expected = [line for line in lines[i + 1 :] if re.search(r"\S", line)]
-                for j in range(len(expected) - 1):
-                    if re.match(r"^\s*[-+─┼]+\s*$", expected[j + 1]):
-                        return self.clean_example(query, self.expected_rows_from_psql_lines(expected))
-                return self.clean_example(query, self.expected_rows_from_plain_lines(expected))
-
-        for i in range(len(lines) - 1):
-            if not re.match(r"^\s*[-+]{3,}\s*$", lines[i + 1]):
-                continue
-            if re.search(r";\s*$", lines[i]):
-                query = "\n".join(lines[: i + 1])
-                return self.clean_example(query, self.expected_rows_from_plain_lines(lines[i + 2 :]))
-            query = "\n".join(lines[:i])
-            return self.clean_example(query, self.expected_rows_from_psql_lines(lines[i:]))
-
-        return None, None
 
     def parse_adjacent_example(self, query, screen):
         return self.clean_example(query, self.expected_rows_from_psql_lines(screen.split("\n")))
@@ -154,15 +145,39 @@ class ExampleTester:
             line = line.strip()
             if not line or re.match(r"^\(\d+ rows?\)$", line):
                 continue
-            if line == "ST_AsText output":
-                continue
             rows.append(self.split_psql_row(line) if re.search(r"│|\s+\|\s+", line) else [line])
         return rows
 
     def split_psql_row(self, line):
         if "│" in line:
             return [part.strip() for part in line.split("│")]
-        return [part.strip() for part in re.split(r"\s+\|\s+", line)]
+        parts = re.split(r"\s+\|\s+", line)
+        if len(parts) > 1 and parts[-1].endswith("|"):
+            parts[-1] = parts[-1][:-1]
+            parts.append("")
+        return [part.strip() for part in parts]
+
+    def psql_delimiter_positions(self, header, separator):
+        positions = [index for index, char in enumerate(header) if char in "|│"]
+        if not positions:
+            positions = [index for index, char in enumerate(separator) if char in "+┼"]
+        return positions
+
+    def split_psql_table_row(self, line, header, separator):
+        positions = self.psql_delimiter_positions(header, separator)
+        if not positions:
+            return [line.strip()]
+
+        values = []
+        start = 0
+        actual_delimiters = [index for index, char in enumerate(line) if char in "|│"]
+        for position in positions:
+            candidates = [candidate for candidate in actual_delimiters if candidate >= start]
+            delimiter = min(candidates, key=lambda candidate: abs(candidate - position)) if candidates else position
+            values.append(line[start:delimiter].strip())
+            start = delimiter + 1
+        values.append(line[start:].strip())
+        return values
 
     def expected_rows_from_psql_lines(self, lines):
         clean = [line.replace("\r\n", "\n").replace("\r", "\n") for line in lines if re.search(r"\S", line)]
@@ -178,7 +193,7 @@ class ExampleTester:
                     break
                 if re.match(r"^\s*[-+─┼]+\s*$", line):
                     continue
-                rows.append(self.split_psql_row(line))
+                rows.append(self.split_psql_table_row(line, clean[i], clean[i + 1]))
             if rows:
                 return rows
 
@@ -227,13 +242,25 @@ class ExampleTester:
                     return False
         return True
 
+    def version_rows_equal(self, actual, expected):
+        if len(actual) != len(expected):
+            return False
+        for actual_row, expected_row in zip(actual, expected):
+            if len(actual_row) != len(expected_row):
+                return False
+        return True
+
+    def catalog_rows_equal(self, actual, expected):
+        if not actual or not expected:
+            return False
+        expected_width = len(expected[0])
+        return all(len(row) == expected_width for row in actual)
+
     def rows_to_string(self, rows):
         return "\n".join(" | ".join(row) for row in rows)
 
     def parse_example_node(self, node):
         text = self.node_text(node)
-        if self.has_inband_expected(text):
-            return self.parse_inband_example(text)
         screen = self.following_screen(node)
         if screen is not None:
             return self.parse_adjacent_example(text, self.node_text(screen))
@@ -246,12 +273,24 @@ class ExampleTester:
             return False
         return query.count(";") <= 1
 
+    def query_is_version_example(self, query):
+        return query is not None and bool(VERSION_FUNCTION_RE.search(query))
+
+    def query_is_catalog_example(self, query):
+        return query is not None and bool(CATALOG_QUERY_RE.search(query))
+
     def expected_rows_are_auto_safe(self, expected):
         if not expected:
             return False
         for row in expected:
             for value in row:
                 if re.search(r"\b(?:SELECT|WITH)\b", value, re.I):
+                    return False
+                if (
+                    "..." in value
+                    or re.search(r"\.\.(?:[),]|\s*$)", value)
+                    or re.search(r"(?:AD INFINITUM|NOTICE:|ERROR:)", value, re.I)
+                ):
                     return False
         return True
 
@@ -279,6 +318,9 @@ class ExampleTester:
             "expected": expected,
             "valid": valid,
             "forced": forced,
+            "version": self.query_is_version_example(query),
+            "catalog": self.query_is_catalog_example(query),
+            "volatile": self.query_is_version_example(query) or self.query_is_catalog_example(query),
         }
 
     def examples(self):
@@ -294,8 +336,7 @@ class ExampleTester:
             "programlisting_total": 0,
             "sql_like": 0,
             "select_or_with": 0,
-            "inband_expected": 0,
-            "psql_meta": 0,
+            "legacy_inband_expected": 0,
             "external_context": 0,
             "placeholder_output": 0,
             "document_output": 0,
@@ -303,14 +344,15 @@ class ExampleTester:
             "notice_or_error": 0,
             "cleanish_runnable_query": 0,
             "obvious_not_runnable_query": 0,
-            "cleanish_inband_expected": 0,
-            "obvious_bad_inband_expected": 0,
+            "cleanish_legacy_inband_expected": 0,
+            "obvious_bad_legacy_inband_expected": 0,
             "adjacent_programlisting_screen": 0,
             "cleanish_adjacent_expected": 0,
             "obvious_bad_adjacent_expected": 0,
             "requires_external_state": 0,
             "auto_example_tests": 0,
             "forced_example_tests": 0,
+            "volatile_version_tests": 0,
         }
 
         for node in self.doc.xpath("//db:programlisting", namespaces=DB):
@@ -325,8 +367,6 @@ class ExampleTester:
             stats["select_or_with"] += 1
 
             reason = self.obvious_skip_reason(text)
-            if reason == "psql-meta":
-                stats["psql_meta"] += 1
             if reason == "external-context":
                 stats["external_context"] += 1
             if reason == "placeholder-output":
@@ -343,18 +383,18 @@ class ExampleTester:
             else:
                 stats["cleanish_runnable_query"] += 1
 
-            if self.has_inband_expected(text):
-                stats["inband_expected"] += 1
+            if self.has_legacy_inband_expected(text):
+                stats["legacy_inband_expected"] += 1
                 if reason:
-                    stats["obvious_bad_inband_expected"] += 1
+                    stats["obvious_bad_legacy_inband_expected"] += 1
                 else:
-                    stats["cleanish_inband_expected"] += 1
+                    stats["cleanish_legacy_inband_expected"] += 1
 
             screen = self.following_screen(node)
             if screen is not None:
                 stats["adjacent_programlisting_screen"] += 1
                 screen_text = self.node_text(screen)
-                bad_screen = re.search(r"\.\.\.|NOTICE:|ERROR:|ST_AsText output|Packaging extension", screen_text, re.I)
+                bad_screen = re.search(r"\.\.\.|NOTICE:|ERROR:", screen_text, re.I)
                 if reason or bad_screen:
                     stats["obvious_bad_adjacent_expected"] += 1
                 else:
@@ -363,6 +403,7 @@ class ExampleTester:
         examples = self.examples()
         stats["auto_example_tests"] = len([example for example in examples if not example["forced"]])
         stats["forced_example_tests"] = len([example for example in examples if example["forced"]])
+        stats["volatile_version_tests"] = len([example for example in examples if example["volatile"]])
         stats["example_tests"] = len(examples)
         stats["parseable_example_tests"] = len([example for example in examples if example["valid"]])
 
@@ -380,6 +421,9 @@ class ExampleTester:
 
     def generate_sql(self):
         examples = self.examples()
+        invalid = [example["label"] for example in examples if not example["valid"]]
+        if invalid:
+            raise RuntimeError("Could not parse manual example test(s) at: " + ", ".join(invalid))
 
         print("-- Generated by utils/postgis_exampletest.py. Do not edit by hand.")
         print("\\set ON_ERROR_STOP on")
@@ -395,25 +439,39 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
 \tactual text[][];
+\tcols text;
 BEGIN
+\tBEGIN
+\t\tDROP TABLE pg_temp._postgis_exampletest_rows;
+\tEXCEPTION WHEN undefined_table THEN
+\t\tNULL;
+\tEND;
+
+\tEXECUTE format('CREATE TEMP TABLE pg_temp._postgis_exampletest_rows ON COMMIT DROP AS %s', test_query);
+
+\tSELECT string_agg(
+\t\tCASE
+\t\t\tWHEN atttypid = 'boolean'::regtype THEN
+\t\t\t\tformat('CASE WHEN %1$I THEN ''t'' WHEN NOT %1$I THEN ''f'' ELSE NULL END', attname)
+\t\t\tELSE format('%I::text', attname)
+\t\tEND,
+\t\t', ' ORDER BY attnum)
+\tINTO cols
+\tFROM pg_attribute
+\tWHERE attrelid = 'pg_temp._postgis_exampletest_rows'::regclass
+\t\tAND attnum > 0
+\t\tAND NOT attisdropped;
+
 \tEXECUTE format(
-\t\t$fmt$
-\t\tWITH q AS (%s),
-\t\tnumbered AS (
-\t\t\tSELECT row_number() OVER () AS rn, q.* FROM q
-\t\t),
-\t\trows AS (
-\t\t\tSELECT rn, array_agg(value ORDER BY ord) AS vals
-\t\t\tFROM numbered
-\t\t\tCROSS JOIN LATERAL json_each_text(row_to_json(numbered)) WITH ORDINALITY AS e(key, value, ord)
-\t\t\tWHERE key <> 'rn'
-\t\t\tGROUP BY rn
-\t\t)
-\t\tSELECT coalesce(array_agg(vals ORDER BY rn), ARRAY[]::text[][])
-\t\tFROM rows
-\t\t$fmt$,
-\t\ttest_query
+\t\t'SELECT coalesce(array_agg(vals ORDER BY rn), ARRAY[]::text[][])
+\t\tFROM (
+\t\t\tSELECT row_number() OVER () AS rn, ARRAY[%s]::text[] AS vals
+\t\t\tFROM pg_temp._postgis_exampletest_rows
+\t\t) AS rows',
+\t\tcols
 \t) INTO actual;
+
+\tEXECUTE 'DROP TABLE pg_temp._postgis_exampletest_rows';
 
 \tIF actual IS DISTINCT FROM expected THEN
 \t\tRAISE EXCEPTION E'Example test failed: %\\nQuery: %\\nExpected: %\\nActual: %',
@@ -426,8 +484,8 @@ $$;
 
         emitted = 0
         for example in examples:
-            if not example["valid"]:
-                raise RuntimeError(f"Could not parse manual example test at {example['label']}")
+            if example["volatile"]:
+                continue
             emitted += 1
             print("SELECT pg_temp._postgis_exampletest_check(")
             print(f"\t{self.sql_quote(example['label'])},")
@@ -446,6 +504,8 @@ $$;
         return self.expected_rows_from_psql_lines(result.stdout.split("\n"))
 
     def run_examples(self, database):
+        self.check_environment(database)
+
         examples = self.examples()
         ran = 0
 
@@ -458,7 +518,13 @@ $$;
             except RuntimeError as exc:
                 raise RuntimeError(f"Example test failed to run: {example['label']}\n{exc}") from exc
 
-            if not self.rows_equal(actual, example["expected"]):
+            if example["catalog"]:
+                equal = self.catalog_rows_equal(actual, example["expected"])
+            elif example["version"]:
+                equal = self.version_rows_equal(actual, example["expected"])
+            else:
+                equal = self.rows_equal(actual, example["expected"])
+            if not equal:
                 raise RuntimeError(
                     f"Example test failed: {example['label']}\n"
                     f"Query:\n{example['query']}\n"
@@ -469,11 +535,29 @@ $$;
 
         print(f"manual example tests passed: {ran}")
 
+    def check_environment(self, database):
+        for check in ENVIRONMENT_CHECKS:
+            try:
+                actual = self.run_psql_query(database, check["query"])
+            except RuntimeError as exc:
+                raise RuntimeError(
+                    f"Manual example test environment check failed: {check['label']}\n"
+                    f"{check['hint']}\n{exc}"
+                ) from exc
+
+            if not self.rows_equal(actual, check["expected"]):
+                raise RuntimeError(
+                    f"Manual example test environment check failed: {check['label']}\n"
+                    f"{check['hint']}\n"
+                    f"Expected:\n{self.rows_to_string(check['expected'])}\n"
+                    f"Actual:\n{self.rows_to_string(actual)}"
+                )
+
+        print(f"manual example test environment checks passed: {len(ENVIRONMENT_CHECKS)}")
+
 
 def parse_source_example(body, screen_body=None):
     tester = ExampleTester.__new__(ExampleTester)
-    if tester.has_inband_expected(body):
-        return tester.parse_inband_example(body)
     if screen_body is not None:
         return tester.parse_adjacent_example(body, screen_body)
     return None, None
@@ -493,7 +577,8 @@ def auto_testable_programlisting(body, screen_body=None):
 
 
 def tag_has_role(tag, role):
-    return bool(re.search(rf"\brole\s*=\s*[\"'][^\"']*\b{re.escape(role)}\b", tag))
+    match = re.search(r'\brole\s*=\s*(["\'])(.*?)\1', tag)
+    return bool(match and role in match.group(2).split())
 
 
 def add_role(tag, role):
@@ -553,6 +638,7 @@ def mark_source_files(files):
                     screen_body = screen_match.group(1)
 
             was_forced = tag_has_role(opening, FORCE_ROLE)
+            was_external_state = tag_has_role(opening, EXTERNAL_STATE_ROLE)
             is_auto_testable = auto_testable_programlisting(body, screen_body)
             new_opening = remove_role(opening, FORCE_ROLE)
             if was_forced:
@@ -560,11 +646,10 @@ def mark_source_files(files):
                     new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
                 else:
                     new_opening = add_role(new_opening, FORCE_ROLE)
-                    new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
             elif is_auto_testable and migrating_from_opt_in:
                 new_opening = add_role(new_opening, EXTERNAL_STATE_ROLE)
-            else:
-                new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
+            elif was_external_state:
+                new_opening = opening
             if new_opening != opening:
                 changed += 1
             return new_opening + body + closing + (screen or "")
@@ -578,13 +663,14 @@ def mark_source_files(files):
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Report, generate, or run manual example tests.",
-        usage="%(prog)s --report|--generate-sql|--run [--database DB] <postgis-out.xml>\n"
+        usage="%(prog)s --report|--generate-sql|--run|--check-environment [--database DB] <postgis-out.xml>\n"
         "       %(prog)s --mark-source <xml-file> [<xml-file> ...]",
     )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--report", action="store_true")
     mode.add_argument("--generate-sql", action="store_true")
     mode.add_argument("--run", action="store_true")
+    mode.add_argument("--check-environment", action="store_true")
     mode.add_argument("--mark-source", action="store_true")
     parser.add_argument("--database")
     parser.add_argument("files", nargs="+")
@@ -611,6 +697,10 @@ def main():
             if not args.database:
                 raise RuntimeError("--database is required with --run")
             tester.run_examples(args.database)
+        elif args.check_environment:
+            if not args.database:
+                raise RuntimeError("--database is required with --check-environment")
+            tester.check_environment(args.database)
         return 0
     except Exception as exc:
         print(exc, file=sys.stderr)

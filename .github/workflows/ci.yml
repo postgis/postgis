@@ -53,6 +53,12 @@ jobs:
         set -e
         uname -a
         echo "FROM postgis/postgis-build-env:${{ matrix.ci.tag }}" > Dockerfile
+        if test "${{ matrix.ci.mode }}" = "garden"; then
+          echo "USER root" >> Dockerfile
+          echo "RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-lxml proj-bin && rm -rf /var/lib/apt/lists/*" >> Dockerfile
+          echo "RUN projsync --system-directory --file au_icsm_GDA94_GDA2020_conformal_and_distortion.tif" >> Dockerfile
+          echo "USER postgres" >> Dockerfile
+        fi
         echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
         echo "CMD bash ci/github/run_${{ matrix.ci.mode }}.sh" >> Dockerfile
         docker build -t pgtest .
