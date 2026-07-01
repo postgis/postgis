@@ -107,7 +107,7 @@ class ExampleTester:
     def looks_query(self, text):
         return re.search(r"\b(SELECT|WITH)\b", text, re.I)
 
-    def has_inband_expected(self, text):
+    def has_legacy_inband_expected(self, text):
         return (
             re.search(r"--\s*(result|output|wkt collect)\s*--", text, re.I)
             or re.search(r"^\s*\S.*\n\s*[-+]{3,}\s*\n", text, re.S | re.M)
@@ -121,29 +121,6 @@ class ExampleTester:
         if sibling is not None and etree.QName(sibling).localname == "screen":
             return sibling
         return None
-
-    def parse_inband_example(self, text):
-        lines = text.split("\n")
-
-        for i, line in enumerate(lines):
-            if re.search(r"--\s*(result|output|wkt collect)\s*--", line, re.I):
-                query = "\n".join(lines[:i])
-                expected = [line for line in lines[i + 1 :] if re.search(r"\S", line)]
-                for j in range(len(expected) - 1):
-                    if re.match(r"^\s*[-+─┼]+\s*$", expected[j + 1]):
-                        return self.clean_example(query, self.expected_rows_from_psql_lines(expected))
-                return self.clean_example(query, self.expected_rows_from_plain_lines(expected))
-
-        for i in range(len(lines) - 1):
-            if not re.match(r"^\s*[-+]{3,}\s*$", lines[i + 1]):
-                continue
-            if re.search(r";\s*$", lines[i]):
-                query = "\n".join(lines[: i + 1])
-                return self.clean_example(query, self.expected_rows_from_plain_lines(lines[i + 2 :]))
-            query = "\n".join(lines[:i])
-            return self.clean_example(query, self.expected_rows_from_psql_lines(lines[i:]))
-
-        return None, None
 
     def parse_adjacent_example(self, query, screen):
         return self.clean_example(query, self.expected_rows_from_psql_lines(screen.split("\n")))
@@ -237,8 +214,6 @@ class ExampleTester:
 
     def parse_example_node(self, node):
         text = self.node_text(node)
-        if self.has_inband_expected(text):
-            return self.parse_inband_example(text)
         screen = self.following_screen(node)
         if screen is not None:
             return self.parse_adjacent_example(text, self.node_text(screen))
@@ -305,7 +280,7 @@ class ExampleTester:
             "programlisting_total": 0,
             "sql_like": 0,
             "select_or_with": 0,
-            "inband_expected": 0,
+            "legacy_inband_expected": 0,
             "external_context": 0,
             "placeholder_output": 0,
             "document_output": 0,
@@ -313,8 +288,8 @@ class ExampleTester:
             "notice_or_error": 0,
             "cleanish_runnable_query": 0,
             "obvious_not_runnable_query": 0,
-            "cleanish_inband_expected": 0,
-            "obvious_bad_inband_expected": 0,
+            "cleanish_legacy_inband_expected": 0,
+            "obvious_bad_legacy_inband_expected": 0,
             "adjacent_programlisting_screen": 0,
             "cleanish_adjacent_expected": 0,
             "obvious_bad_adjacent_expected": 0,
@@ -351,12 +326,12 @@ class ExampleTester:
             else:
                 stats["cleanish_runnable_query"] += 1
 
-            if self.has_inband_expected(text):
-                stats["inband_expected"] += 1
+            if self.has_legacy_inband_expected(text):
+                stats["legacy_inband_expected"] += 1
                 if reason:
-                    stats["obvious_bad_inband_expected"] += 1
+                    stats["obvious_bad_legacy_inband_expected"] += 1
                 else:
-                    stats["cleanish_inband_expected"] += 1
+                    stats["cleanish_legacy_inband_expected"] += 1
 
             screen = self.following_screen(node)
             if screen is not None:
@@ -517,8 +492,6 @@ $$;
 
 def parse_source_example(body, screen_body=None):
     tester = ExampleTester.__new__(ExampleTester)
-    if tester.has_inband_expected(body):
-        return tester.parse_inband_example(body)
     if screen_body is not None:
         return tester.parse_adjacent_example(body, screen_body)
     return None, None

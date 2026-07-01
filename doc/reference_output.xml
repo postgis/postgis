@@ -443,9 +443,8 @@
   <para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
   <para>This example builds the SQL for a Boston-to-San-Francisco path with segments every 100 kilometers.</para>
   <programlisting>
-  SELECT ST_AsEncodedPolyline(
-    ST_Segmentize(
-      ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'),
+  SELECT ST_AsEncodedPolyline(ST_Segmentize(
+        ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'),
         100000)::geometry) As encodedFlightPath;</programlisting>
 
 
@@ -665,7 +664,7 @@ Conversely, passing the parameter will save column type lookups.
             The specification also requires that geometry be in the WGS84 coordinate system
             (SRID = 4326).
             If necessary geometry can be projected into WGS84 using <xref linkend="ST_Transform"/>:
-            <code>ST_Transform( geom, 4326 )</code>.
+            <code>ST_Transform(geom, 4326 )</code>.
             </para>
 
             <para>GeoJSON can be tested and viewed online at <link xlink:href="http://geojson.io/">geojson.io</link>
@@ -1323,9 +1322,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));</programlisting>
     <refsection>
     <title>Examples</title>
     <programlisting>
-SELECT ST_AsText(
-  ST_AsMVTGeom(
-    ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
+SELECT ST_AsText(ST_AsMVTGeom(ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
     4096, 0, false));</programlisting>
 <screen>MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
@@ -1334,8 +1331,7 @@ SELECT ST_AsText(
     </para>
     <programlisting><![CDATA[
 
-SELECT ST_AsMVTGeom(
-            ST_Transform( geom, 3857 ),
+SELECT ST_AsMVTGeom(ST_Transform(geom, 3857 ),
             ST_TileEnvelope(12, 513, 412),
             extent => 4096,
             buffer => 64) AS geom
@@ -1516,7 +1512,7 @@ FROM mvtgeom;
 <screen>M 0 0 L 0 -1 1 -1 1 0 Z</screen>
 
         <para>Circular string</para>
-    <programlisting>SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );</programlisting>
+    <programlisting>SELECT ST_AsSVG(ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );</programlisting>
 <screen>M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</screen>
 
         <para>Multi-curve</para>
@@ -1714,7 +1710,7 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
        <Appearance>
             <Material emissiveColor=''0 0 1''/>
        </Appearance> ' ||
-       ST_AsX3D( ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+       ST_AsX3D(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ||
@@ -1770,10 +1766,7 @@ FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
      <refsection>
     <title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
     <programlisting><![CDATA[
-SELECT ST_AsX3D(
-ST_Translate(
-    ST_Force3D(
-        ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
+SELECT ST_AsX3D(ST_Translate(ST_Force3D(ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
     3),
   6) As x3dfrag;
 ]]></programlisting>
@@ -1806,8 +1799,7 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
     <refsection>
     <title>Example: Closed multilinestring (the boundary of a polygon with holes)</title>
     <programlisting><![CDATA[
-SELECT ST_AsX3D(
-        ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
+SELECT ST_AsX3D(ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
   (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')
 ) As x3dfrag;
 ]]></programlisting>
@@ -1871,9 +1863,9 @@ SELECT ST_AsX3D(
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_GeoHash( ST_Point(-126,48) );</programlisting>
+    <programlisting>SELECT ST_GeoHash(ST_Point(-126,48) );</programlisting>
 <screen>c0w3hf1s70w3hf1s70w3</screen>
-<programlisting>SELECT ST_GeoHash( ST_Point(-126,48), 5);</programlisting>
+<programlisting>SELECT ST_GeoHash(ST_Point(-126,48), 5);</programlisting>
 <screen>c0w3h</screen>
 <para>This example shows that the GeoHash for a line containing a point is a prefix of the point code.</para>
 <programlisting>

@@ -784,10 +784,10 @@ comes to Reykjavik (POINT(-21.96 64.15))
 between Reykjavik and the great circle flight path between Seattle and London.</para>
 
 <programlisting>-- Distance calculation using GEOGRAPHY
-SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);
-   st_distance
+SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);</programlisting>
+<screen>   st_distance
 -----------------
- 122235.23815667</programlisting>
+ 122235.23815667</screen>
 
 <para>
 The geometry type calculates a meaningless cartesian distance between Reykjavik
@@ -797,11 +797,10 @@ but the result doesn't correspond to any true angular difference between the poi
 so even calling them "degrees" is inaccurate.</para>
 
 <programlisting>-- Distance calculation using GEOMETRY
-SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);
-      st_distance
+SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);</programlisting>
+<screen>      st_distance
 --------------------
- 13.342271221453624
-</programlisting>
+ 13.342271221453624</screen>
 
 	</section>
 
@@ -1037,15 +1036,12 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
     <para>To test if a geometry is simple
 	use the <xref linkend="ST_IsSimple"/> function:</para>
 
-	  <programlisting>
-SELECT
+	  <programlisting>SELECT
    ST_IsSimple('LINESTRING(0 0, 100 100)') AS straight,
-   ST_IsSimple('LINESTRING(0 0, 100 100, 100 0, 0 100)') AS crossing;
-
- straight | crossing
+   ST_IsSimple('LINESTRING(0 0, 100 100, 100 0, 0 100)') AS crossing;</programlisting>
+<screen> straight | crossing
 ----------+----------
- t        | f
-</programlisting>
+ t        | f</screen>
 
     <para>Generally, PostGIS functions do not require geometric arguments to be simple.
 	Simplicity is primarily used as a basis for defining geometric validity.
@@ -1252,16 +1248,13 @@ SELECT
     Note that non-simple (self-intersecting) lines are valid.
     </para>
 
-<programlisting>
-SELECT
+<programlisting>SELECT
    ST_IsValid('LINESTRING(0 0, 1 1)') AS len_nonzero,
    ST_IsValid('LINESTRING(0 0, 0 0, 0 0)') AS len_zero,
-   ST_IsValid('LINESTRING(10 10, 150 150, 180 50, 20 130)') AS self_int;
-
- len_nonzero | len_zero | self_int
+   ST_IsValid('LINESTRING(10 10, 150 150, 180 50, 20 130)') AS self_int;</programlisting>
+<screen> len_nonzero | len_zero | self_int
 -------------+----------+----------
- t           | f        | t
-</programlisting>
+ t           | f        | t</screen>
 
     <para><varname>POINT</varname> and <varname>MULTIPOINT</varname> geometries
     have no validity rules.
@@ -1307,22 +1300,16 @@ SELECT
 	  <para>To test if a geometry is valid use the
 	  <xref linkend="ST_IsValid"/> function:
       </para>
-<programlisting>
-SELECT ST_IsValid('POLYGON ((20 180, 180 180, 180 20, 20 20, 20 180))');
------------------
- t
-</programlisting>
+<programlisting>SELECT ST_IsValid('POLYGON ((20 180, 180 180, 180 20, 20 20, 20 180))');</programlisting>
+<screen> t</screen>
 	  <para>Information about the nature and location of an geometry invalidity are provided by
 	  the <xref linkend="ST_IsValidDetail"/> function:
       </para>
-<programlisting>
-SELECT valid, reason, ST_AsText(location) AS location
-    FROM ST_IsValidDetail('POLYGON ((20 20, 120 190, 50 190, 170 50, 20 20))') AS t;
-
- valid |      reason       |                  location
+<programlisting>SELECT valid, reason, ST_AsText(location) AS location
+    FROM ST_IsValidDetail('POLYGON ((20 20, 120 190, 50 190, 170 50, 20 20))') AS t;</programlisting>
+<screen> valid |      reason       |                  location
 -------+-------------------+---------------------------------------------
- f     | Self-intersection | POINT(91.51162790697674 141.56976744186048)
-</programlisting>
+ f     | Self-intersection | POINT(91.51162790697674 141.56976744186048)</screen>
 
 	  <para>In some situations it is desirable to correct invalid geometry automatically.
 	  Use the <xref linkend="ST_MakeValid"/> function to do this.
@@ -2183,9 +2170,8 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
         to define the data set to be extracted
         and dump the resulting columns into a parsable text file:</para>
 
-	  <programlisting role="requires-external-state">SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;
-
-road_id | geom                                    | road_name
+	  <programlisting role="requires-external-state">SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;</programlisting>
+<screen>road_id | geom                                    | road_name
 --------+-----------------------------------------+-----------
 	  1 | LINESTRING(191232 243118,191108 243242) | Jeff Rd
 	  2 | LINESTRING(189141 244158,189265 244817) | Geordie Rd
@@ -2194,7 +2180,7 @@ road_id | geom                                    | road_name
 	  5 | LINESTRING(190131 224148,190871 228134) | Phil Tce
 	  6 | LINESTRING(198231 263418,198213 268322) | Dave Cres
 	  7 | LINESTRING(218421 284121,224123 241231) | Chris Way
-(6 rows)</programlisting>
+(6 rows)</screen>
 
 	  <para>There will be times when some kind of restriction is
 	  necessary to cut down the number of records returned. In the case of
@@ -2527,7 +2513,7 @@ CREATE TABLE table_sorted AS
 
     <para><programlisting>
 CREATE INDEX idx_temp_geohash ON table
-    USING btree (ST_GeoHash( ST_Transform( geom, 4326 ), 20));
+    USING btree (ST_GeoHash(ST_Transform(geom, 4326 ), 20));
 CLUSTER table USING idx_temp_geohash;
 </programlisting></para>
 

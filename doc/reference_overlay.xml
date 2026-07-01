@@ -135,17 +135,14 @@
     </tgroup>
 </informaltable>
 <para>The difference of 2D linestrings.</para>
-<programlisting>SELECT ST_AsText(
-    ST_Difference(
-            'LINESTRING(50 100, 50 200)'::geometry,
+<programlisting>SELECT ST_AsText(ST_Difference('LINESTRING(50 100, 50 200)'::geometry,
             'LINESTRING(50 50, 50 150)'::geometry
         )
     );</programlisting>
 <screen>LINESTRING(50 150,50 200)</screen>
 
 <para>The difference of 3D points.</para>
-<programlisting>SELECT ST_AsEWKT( ST_Difference(
-                   'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
+<programlisting>SELECT ST_AsEWKT(ST_Difference('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
                    'POINT(-118.614 38.281 5)' :: geometry
                   ) );</programlisting>
 <screen>MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</screen>
@@ -257,9 +254,7 @@ where ST_Dimension(clipped.clipped_geom) = 1;</programlisting>
 <para>For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0 except a polygon results in an empty geometry collection.
 (So a geometry collection containing polys, lines and points buffered by 0.0 would only leave the polygons and dissolve the collection shell.)</para>
 <programlisting>select poly.gid,
-    ST_Multi(
-        ST_Buffer(
-            ST_Intersection(country.geom, poly.geom),
+    ST_Multi(ST_Buffer(ST_Intersection(country.geom, poly.geom),
             0.0
         )
     ) clipped_geom
@@ -402,16 +397,14 @@ This may cause the resulting linestrings to have a different order and direction
         <title>Examples</title>
         <para>Noding a 3D LineString which self-intersects</para>
         <programlisting>
-SELECT ST_AsText(
-        ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
+SELECT ST_AsText(ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
     ) As  output;</programlisting>
 <screen>MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))</screen>
 
         <para>Noding two LineStrings which share common linework.
         Note that the result linework is dissolved.</para>
         <programlisting>
-SELECT ST_AsText(
-        ST_Node('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))'::geometry)
+SELECT ST_AsText(ST_Node('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))'::geometry)
     ) As  output;</programlisting>
 <screen>MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))</screen>
 
@@ -507,8 +500,7 @@ SELECT ST_AsText(
                 </tgroup>
             </informaltable>
             <programlisting>
-SELECT ST_AsText( ST_Split(
-                ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50), -- circle
+SELECT ST_AsText(ST_Split(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50), -- circle
                 ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) -- line
     ));</programlisting>
 <screen> GEOMETRYCOLLECTION(
@@ -550,8 +542,7 @@ SELECT ST_AsText( ST_Split(
                 </tgroup>
             </informaltable>
             <programlisting>
-SELECT ST_AsText(ST_Split(
-    'MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))',
+SELECT ST_AsText(ST_Split('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))',
     ST_Point(30,30)));</programlisting>
 <screen>GEOMETRYCOLLECTION(
     LINESTRING(10 10,30 30),
@@ -568,8 +559,8 @@ WITH data AS (SELECT
   'LINESTRING(0 0, 100 100)'::geometry AS line,
   'POINT(51 50)':: geometry AS point
 )
-SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
-       ST_AsText( ST_Split(line, point)) AS not_snapped_not_split
+SELECT ST_AsText(ST_Split(ST_Snap(line, point, 1), point)) AS snapped_split,
+       ST_AsText(ST_Split(line, point)) AS not_snapped_not_split
        FROM data;</programlisting>
 <screen>                            snapped_split                            |            not_snapped_not_split
 ---------------------------------------------------------------------+---------------------------------------------
@@ -658,8 +649,7 @@ SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
             </informalfigure>
 <programlisting>
 SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
-    FROM (SELECT ST_Subdivide(
-        'POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
+    FROM (SELECT ST_Subdivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
         57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 122,
         190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::geometry,10))  AS f(geom);
 </programlisting>
@@ -687,8 +677,7 @@ SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
             </mediaobject>
             </informalfigure>
 <programlisting>
-SELECT ST_AsText( ST_Subdivide(
-            ST_Segmentize('LINESTRING(0 0, 85 85)'::geography,
+SELECT ST_AsText(ST_Subdivide(ST_Segmentize('LINESTRING(0 0, 85 85)'::geography,
                           1200000)::geometry,    8));
 </programlisting>
 <screen>
@@ -827,9 +816,7 @@ CREATE TABLE subdivided_geoms AS
 </informaltable>
 <para>This example shows a 2D-safe symmetric difference of two LineStrings.</para>
 <programlisting>
-SELECT ST_AsText(
-    ST_SymDifference(
-        ST_GeomFromText('LINESTRING(50 100, 50 200)'),
+SELECT ST_AsText(ST_SymDifference(ST_GeomFromText('LINESTRING(50 100, 50 200)'),
         ST_GeomFromText('LINESTRING(50 50, 50 150)')
     )
 );</programlisting>

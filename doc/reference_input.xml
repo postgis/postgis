@@ -379,8 +379,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
             <programlisting language="sql"><![CDATA[
 
                 SELECT
-                ST_AsText(
-                    ST_GeomFromMARC21('
+                ST_AsText(ST_GeomFromMARC21('
                         <record xmlns="http://www.loc.gov/MARC21/slim">
                             <leader>00000nz a2200000nc 4500</leader>
                             <controlfield tag="001">040277569</controlfield>
@@ -400,8 +399,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 
 
                 SELECT
-                ST_AsText(
-                    ST_GeomFromMARC21('
+                ST_AsText(ST_GeomFromMARC21('
                         <record xmlns="http://www.loc.gov/MARC21/slim">
                             <leader>01062cem a2200241 a 4500</leader>
                             <controlfield tag="001">   84696781 </controlfield>
@@ -423,8 +421,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 
 
                 SELECT
-                ST_AsText(
-                    ST_GeomFromMARC21('
+                ST_AsText(ST_GeomFromMARC21('
                 <record xmlns="http://www.loc.gov/MARC21/slim">
                     <datafield tag="034" ind1="1" ind2=" ">
                         <subfield code="a">a</subfield>
@@ -999,8 +996,7 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 
 		<para>Although bytea rep contains single \, these need to be escaped when inserting into a table.</para>
 		<programlisting language="sql">
-SELECT ST_AsText(
-ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@')
+SELECT ST_AsText(ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@')
 );</programlisting>
 <screen>LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 	  </refsection>
@@ -1108,14 +1104,11 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 
 		<para>Although bytea rep contains single \, these need to be escaped when inserting into a table. Unless standard_conforming_strings is set to on.</para>
 		<programlisting language="sql">
-SELECT ST_AsEWKT(
-ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
+SELECT ST_AsEWKT(ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
 );</programlisting>
 <screen>SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 <programlisting language="sql">SELECT
-  ST_AsText(
-	ST_GeomFromWKB(
-	  ST_AsEWKB('POINT(2 5)'::geometry)
+  ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 	)
   );</programlisting>
 <screen>POINT(2 5)</screen>
@@ -1257,11 +1250,9 @@ LINESTRING(1 2,3 4)  | t
 		<title>Examples</title>
 
 		<programlisting language="sql">SELECT
-  ST_AsText(ST_LinestringFromWKB(
-	ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
+  ST_AsText(ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
   )) AS aline,
-  ST_LinestringFromWKB(
-	ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
+  ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
   ) IS NULL AS null_return;</programlisting>
 		<screen>
 aline                 | null_return
@@ -1321,16 +1312,12 @@ LINESTRING(1 2,3 4)  | t</screen>
 		<title>Examples</title>
 
 		<programlisting language="sql">SELECT
-  ST_AsText(
-	ST_PointFromWKB(
-	  ST_AsEWKB('POINT(2 5)'::geometry)
+  ST_AsText(ST_PointFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 	)
   );</programlisting>
 <screen>POINT(2 5)</screen>
 <programlisting language="sql">SELECT
-  ST_AsText(
-	ST_PointFromWKB(
-	  ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
+  ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
 	)
   );</programlisting>
 <screen>null</screen>
@@ -1754,8 +1741,7 @@ $$);
 		<programlisting language="sql">
 SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometry)));</programlisting>
 <screen>LINESTRING(126 34, 127 35)</screen>
-<programlisting language="sql">SELECT ST_AsEWKT(
-  ST_GeomFromTWKB(E'\\x620002f7f40dbce4040105')
+<programlisting language="sql">SELECT ST_AsEWKT(ST_GeomFromTWKB(E'\\x620002f7f40dbce4040105')
 );</programlisting>
 <screen>LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 	  </refsection>

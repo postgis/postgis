@@ -870,14 +870,12 @@ parameters are omitted, the first table found scanning the
 
         <programlisting>
 CREATE TABLE res1 AS SELECT
-ST_AddBand(
-  ST_MakeEmptyRaster(1000, 1000, 0, 0, 2),
+ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 2),
   1, '8BSI'::text, -129, NULL
 ) r1;
 
 CREATE TABLE res2 AS SELECT
-ST_AddBand(
-  ST_MakeEmptyRaster(500, 500, 0, 0, 4),
+ST_AddBand(ST_MakeEmptyRaster(500, 500, 0, 0, 4),
   1, '8BSI'::text, -129, NULL
 ) r2;
 
@@ -1567,9 +1565,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
                 <programlisting>
 SELECT
     *
-FROM ST_BandMetaData(
-    ST_AddBand(
-        ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+FROM ST_BandMetaData(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
         ARRAY[
             ROW(NULL, '8BUI', 255, 0),
             ROW(NULL, '16BUI', 1, 2),
@@ -1601,9 +1597,7 @@ GROUP BY mouse;
                 <programlisting>
 SELECT
     *
-FROM ST_BandMetaData(
-    ST_AddBand(
-        ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+FROM ST_BandMetaData(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
         '/home/raster/mytestraster.tif'::text, NULL::int[]
     ),
     ARRAY[]::integer[]
@@ -1832,10 +1826,7 @@ SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlist
 
                 <para>This example maps bands to RGB channels, producing the teal value (118,154,118).</para>
                 <programlisting>
-SELECT ST_AsPNG(
-    ST_AsRaster(
-        ST_Buffer(
-            ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), 10,'join=bevel'),
+SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), 10,'join=bevel'),
             200,200,ARRAY['8BUI', '8BUI', '8BUI'], ARRAY[118,154,118], ARRAY[0,0,0]));</programlisting>
 
             </refsection>
@@ -2161,7 +2152,7 @@ WHERE rid=35;
 
                     <programlisting>
 INSERT INTO dummy_rast(rid,rast)
-VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
+VALUES(3, ST_MakeEmptyRaster(100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
 
 --use an existing raster as template for new raster
 INSERT INTO dummy_rast(rid,rast)
@@ -3368,11 +3359,7 @@ FROM dummy_rast WHERE rid=1;</programlisting>
             <refsection>
                 <title>Examples</title>
                 <programlisting>
-SELECT ST_Summary(
-    ST_AddBand(
-            ST_AddBand(
-            ST_AddBand(
-                ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+SELECT ST_Summary(ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             2, '32BF', 0, -9999
@@ -3782,8 +3769,7 @@ WITH foo AS (
 )
 SELECT
     *
-FROM ST_BandMetaData(
-    (SELECT rast FROM foo),
+FROM ST_BandMetaData((SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
 );</programlisting>
 <screen> bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum  | filesize | filetimestamp |
@@ -4326,8 +4312,7 @@ WHERE rid=2;</programlisting>
                     <para>This example returns a raster pixel polygon.</para>
                     <programlisting>
 SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom
-FROM (SELECT ST_PixelAsPolygons(
-                 ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 0.001, -0.001, 0.001, 0.001, 4269),
+FROM (SELECT ST_PixelAsPolygons(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 0.001, -0.001, 0.001, 0.001, 4269),
                                                     '8BUI'::text, 1, 0),
                                          2, 2, 10),
                              1, 1, NULL)
@@ -4722,8 +4707,7 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
                 <programlisting>
 <![CDATA[
 
-SELECT ST_AsText(ST_SetSRID(
-    ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
+SELECT ST_AsText(ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
         ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),
         ST_SRID(rast))) As uplpt,
     ST_Value(rast, 1, x, y) As b1val,
@@ -4745,8 +4729,7 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
 --- Get a polygon formed by union of all pixels
     that fall in a particular value range and intersect particular polygon --
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
-FROM (SELECT ST_Translate(ST_MakeEnvelope(
-        ST_UpperLeftX(rast), ST_UpperLeftY(rast),
+FROM (SELECT ST_Translate(ST_MakeEnvelope(ST_UpperLeftX(rast), ST_UpperLeftY(rast),
             ST_UpperLeftX(rast) + ST_ScaleX(rast),
             ST_UpperLeftY(rast) + ST_ScaleY(rast), 0
             ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y
@@ -4783,8 +4766,7 @@ WHERE
 
 
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
-FROM (SELECT ST_Translate(ST_MakeEnvelope(
-        ST_UpperLeftX(rast), ST_UpperLeftY(rast),
+FROM (SELECT ST_Translate(ST_MakeEnvelope(ST_UpperLeftX(rast), ST_UpperLeftY(rast),
             ST_UpperLeftX(rast) + ST_ScaleX(rast)*2,
             ST_UpperLeftY(rast) + ST_ScaleY(rast)*2, 0
             ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y
@@ -4901,13 +4883,7 @@ SELECT
     ST_NearestValue(rast, 2, 2) AS nearestvalue
 FROM (
     SELECT
-        ST_SetValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_SetValue(
-                        ST_SetValue(
-                            ST_AddBand(
-                                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                                 '8BUI'::text, 1, 0
                             ),
                             1, 1, 0.
@@ -4932,13 +4908,7 @@ SELECT
     ST_NearestValue(rast, 2, 3) AS nearestvalue
 FROM (
     SELECT
-        ST_SetValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_SetValue(
-                        ST_SetValue(
-                            ST_AddBand(
-                                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                                 '8BUI'::text, 1, 0
                             ),
                             1, 1, 0.
@@ -5002,8 +4972,8 @@ FROM (
 WITH test_raster AS (
 SELECT
 ST_SetValues(
-  ST_AddBand(
-    ST_MakeEmptyRaster(
+ST_AddBand(
+ST_MakeEmptyRaster(
       width =&gt; 2,
       height =&gt; 2,
       upperleftx =&gt; 0,
@@ -5016,15 +4986,15 @@ ST_SetValues(
     index =&gt; 1,
     pixeltype =&gt; '16BSI',
     initialvalue =&gt; 0,
-    nodataval =&gt; -999),
+    nodataval =&gt; -999
+),
   1,
   1,
   1,
   newvalueset =&gt; ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
 )
 SELECT
-ST_AsText(
-  ST_SetZ(
+ST_AsText(ST_SetZ(
     rast,
     band =&gt; 1,
     geom =&gt; 'SRID=4326;LINESTRING(1.0 1.9, 1.0 0.2)'::geometry,
@@ -5079,8 +5049,8 @@ FROM test_raster</programlisting>
 WITH test_raster AS (
 SELECT
 ST_SetValues(
-  ST_AddBand(
-    ST_MakeEmptyRaster(
+ST_AddBand(
+ST_MakeEmptyRaster(
       width =&gt; 2,
       height =&gt; 2,
       upperleftx =&gt; 0,
@@ -5093,15 +5063,15 @@ ST_SetValues(
     index =&gt; 1,
     pixeltype =&gt; '16BSI',
     initialvalue =&gt; 0,
-    nodataval =&gt; -999),
+    nodataval =&gt; -999
+),
   1,
   1,
   1,
   newvalueset =&gt; ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
 )
 SELECT
-ST_AsText(
-  ST_SetM(
+ST_AsText(ST_SetM(
     rast,
     band =&gt; 1,
     geom =&gt; 'SRID=4326;LINESTRING(1.0 1.9, 1.0 0.2)'::geometry,
@@ -5203,9 +5173,7 @@ SELECT
     ST_Neighborhood(rast, 2, 2, 1, 1)
 FROM (
     SELECT
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                 '8BUI'::text, 1, 0
             ),
             1, 1, 1, ARRAY[
@@ -5226,9 +5194,7 @@ SELECT
     ST_Neighborhood(rast, 2, 3, 1, 1)
 FROM (
     SELECT
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                 '8BUI'::text, 1, 0
             ),
             1, 1, 1, ARRAY[
@@ -5247,9 +5213,7 @@ FROM (
                 <programlisting>
 SELECT
     ST_Neighborhood(rast, 3, 3, 1, 1, false)
-FROM ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+FROM ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                 '8BUI'::text, 1, 0
             ),
             1, 1, 1, ARRAY[
@@ -5337,8 +5301,7 @@ FROM ST_SetValues(
 <![CDATA[
 
                 SELECT (foo.geomval).val, ST_AsText(ST_Union((foo.geomval).geom))
-FROM (SELECT ST_DumpAsPolygons(
-        ST_SetValue(
+FROM (SELECT ST_DumpAsPolygons(ST_SetValue(
             rast,
             1,
             ST_Point(3427927.75, 5793243.95),
@@ -5490,10 +5453,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 2, 2, ARRAY[[9, 9], [9, 9]]::double precision[][]
@@ -5535,10 +5495,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 1, 1, ARRAY[[9, 9, 9], [9, NULL, 9], [9, 9, 9]]::double precision[][]
@@ -5579,10 +5536,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 1, 1,
@@ -5622,11 +5576,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_SetValue(
-                ST_AddBand(
-                    ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                     1, '8BUI', 1, 0
                 ),
                 1, 1, 1, NULL
@@ -5674,10 +5624,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 1, 1, ARRAY[[-1, -1, -1], [-1, 9, 9], [-1, 9, 9]]::double precision[][], -1
@@ -5717,10 +5664,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 1, 1, ARRAY[[NULL, NULL, NULL], [NULL, 9, 9], [NULL, 9, 9]]::double precision[][], NULL::double precision
@@ -5763,10 +5707,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 2, 2, 2, 2, 9
@@ -5804,11 +5745,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_SetValue(
-                ST_AddBand(
-                    ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                     1, '8BUI', 1, 0
                 ),
                 1, 2, 2, NULL
@@ -6097,14 +6034,7 @@ SELECT
     (pixels).*
 FROM (
     SELECT
-        ST_PixelOfValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_SetValue(
-                        ST_SetValue(
-                            ST_SetValue(
-                                ST_AddBand(
-                                    ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_PixelOfValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                                     '8BUI'::text, 1, 0
                                 ),
                                 1, 1, 0
@@ -6604,8 +6534,7 @@ FROM (
     FROM aerials.boston
     WHERE ST_Intersects(
         rast,
-        ST_Transform(
-            ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),
+        ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),
             26986)
     )
     LIMIT 1
@@ -6939,27 +6868,21 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 WITH foo AS(
 SELECT
     1 AS rid,
-    ST_Resize(
-        ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+    ST_Resize(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
             1, '8BUI', 255, 0
         ),
     '50%', '500') AS rast
 UNION ALL
 SELECT
     2 AS rid,
-    ST_Resize(
-        ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+    ST_Resize(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
             1, '8BUI', 255, 0
         ),
     500, 100) AS rast
 UNION ALL
 SELECT
     3 AS rid,
-    ST_Resize(
-        ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+    ST_Resize(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
             1, '8BUI', 255, 0
         ),
     0.25, 0.9) AS rast
@@ -7066,8 +6989,7 @@ SELECT rid, (meta).* FROM bar</programlisting>
         FROM aerials.o_2_boston
             WHERE ST_Intersects(
                 rast,
-                ST_Transform(
-                    ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),
+                ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),
                     26986) )
         LIMIT 1) As foo;</programlisting>
 <screen> w_before | w_after | h_before | h_after
@@ -7231,10 +7153,7 @@ WHERE rid = 2;
 -- change no data band value of bands 1,2,3
 UPDATE dummy_rast
     SET rast =
-        ST_SetBandNoDataValue(
-            ST_SetBandNoDataValue(
-                ST_SetBandNoDataValue(
-                    rast,1, 254),
+        ST_SetBandNoDataValue(ST_SetBandNoDataValue(ST_SetBandNoDataValue(rast,1, 254),
                 2,99),
                 3,108)
         WHERE rid = 2;
@@ -7397,19 +7316,16 @@ WITH foo AS (
 SELECT
     1 AS query,
     *
-FROM ST_BandMetaData(
-    (SELECT rast FROM foo),
+FROM ST_BandMetaData((SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
 )
 UNION ALL
 SELECT
     2,
     *
-FROM ST_BandMetaData(
-    (
+FROM ST_BandMetaData((
         SELECT
-            <emphasis role="strong">ST_SetBandPath(
-                rast,
+            <emphasis role="strong">ST_SetBandPath(rast,
                 2,
                 '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif',
                 1
@@ -7487,19 +7403,16 @@ WITH foo AS (
 SELECT
     1 AS query,
     *
-FROM ST_BandMetaData(
-    (SELECT rast FROM foo),
+FROM ST_BandMetaData((SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
 )
 UNION ALL
 SELECT
     2,
     *
-FROM ST_BandMetaData(
-    (
+FROM ST_BandMetaData((
         SELECT
-            <emphasis role="strong">ST_SetBandIndex(
-                rast,
+            <emphasis role="strong">ST_SetBandIndex(rast,
                 2,
                 1
             )</emphasis> AS rast
@@ -7640,11 +7553,7 @@ WITH foo AS (
     SELECT
         rast.rast
     FROM (
-        SELECT ST_SetValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_AddBand(
-                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0),
+        SELECT ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0),
                         1, '64BF', 0, 0
                     ),
                     1, 1, 1, -10
@@ -8120,11 +8029,7 @@ WITH foo AS (
     SELECT
         rast.rast
     FROM (
-        SELECT ST_SetValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_AddBand(
-                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0),
+        SELECT ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0),
                         1, '64BF', 0, 0
                     ),
                     1, 1, 1, -10
@@ -8418,9 +8323,7 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
                 <title>Examples</title>
 
                 <programlisting>
-SELECT (ST_MetaData(
-    ST_RastFromWKB(
-        '\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000'::bytea
+SELECT (ST_MetaData(ST_RastFromWKB('\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000'::bytea
     )
 )).* AS metadata;</programlisting>
 <screen> upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
@@ -8469,9 +8372,7 @@ SELECT (ST_MetaData(
                 <title>Examples</title>
 
                 <programlisting>
-SELECT (ST_MetaData(
-    ST_RastFromHexWKB(
-        '010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
+SELECT (ST_MetaData(ST_RastFromHexWKB('010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
     )
 )).* AS metadata;</programlisting>
 <screen> upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
@@ -9407,16 +9308,13 @@ CREATE TABLE funky_shapes(rast raster);
 
 INSERT INTO funky_shapes(rast)
 WITH ref AS (
-    SELECT ST_MakeEmptyRaster( 200, 200, 0, 200, 1, -1, 0, 0) AS rast
+    SELECT ST_MakeEmptyRaster(200, 200, 0, 200, 1, -1, 0, 0) AS rast
 )
 SELECT
     ST_Union(rast)
 FROM (
     SELECT
-        ST_AsRaster(
-            ST_Rotate(
-                ST_Buffer(
-                    ST_GeomFromText('LINESTRING(0 2,50 50,150 150,125 50)'),
+        ST_AsRaster(ST_Rotate(ST_Buffer(ST_GeomFromText('LINESTRING(0 2,50 50,150 150,125 50)'),
                     i*2
                 ),
                 pi() * i * 0.125, ST_Point(50,50)
@@ -9638,8 +9536,7 @@ SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SET postgis.enable_outdb_rasters = True;
 
 WITH apple AS (
-    SELECT ST_AddBand(
-        ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_AddBand(ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
         '/tmp/apple.png'::text,
         NULL::int[]
     ) AS rast
@@ -9697,16 +9594,14 @@ SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SET postgis.enable_outdb_rasters = True;
 
 WITH apple AS (
-    SELECT ST_AddBand(
-        ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_AddBand(ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
         '/tmp/apple.png'::text,
         NULL::int[]
     ) AS rast
 )
 SELECT
     ST_AsPNG(rast) AS original_png,
-    ST_AsPNG(ST_Grayscale(
-        ARRAY[
+    ST_AsPNG(ST_Grayscale(ARRAY[
             ROW(rast, 1)::rastbandarg, -- red
             ROW(rast, 2)::rastbandarg, -- green
             ROW(rast, 3)::rastbandarg, -- blue
@@ -10136,8 +10031,7 @@ WITH foo AS (
     SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast
 )
 SELECT
-    ST_MapAlgebra(
-        ARRAY[ROW(rast, 1)]::rastbandarg[],
+    ST_MapAlgebra(ARRAY[ROW(rast, 1)]::rastbandarg[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo
@@ -10149,8 +10043,7 @@ WITH foo AS (
     SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast
 )
 SELECT
-    ST_MapAlgebra(
-        ARRAY[ROW(rast, 3), ROW(rast, 1), ROW(rast, 3), ROW(rast, 2)]::rastbandarg[],
+    ST_MapAlgebra(ARRAY[ROW(rast, 3), ROW(rast, 1), ROW(rast, 3), ROW(rast, 2)]::rastbandarg[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo
@@ -10163,8 +10056,7 @@ WITH foo AS (
     SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
 )
 SELECT
-    ST_MapAlgebra(
-        ARRAY[ROW(t1.rast, 3), ROW(t2.rast, 1), ROW(t2.rast, 3), ROW(t1.rast, 2)]::rastbandarg[],
+    ST_MapAlgebra(ARRAY[ROW(t1.rast, 3), ROW(t2.rast, 1), ROW(t2.rast, 3), ROW(t1.rast, 2)]::rastbandarg[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo t1
@@ -10190,8 +10082,7 @@ WITH foo AS (
 )
 SELECT
     t1.rid,
-    ST_MapAlgebra(
-        ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
+    ST_MapAlgebra(ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure,
         '32BUI',
         'CUSTOM', t1.rast,
@@ -10233,8 +10124,7 @@ WITH foo AS (
 ), bar AS (
     SELECT
         t1.rid,
-        ST_MapAlgebra(
-            ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
+        ST_MapAlgebra(ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
             'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
             '32BUI',
             'CUSTOM', t1.rast,
@@ -10263,7 +10153,8 @@ WITH foo AS (
 )
 SELECT
     ST_MapAlgebra(
-        rast, ARRAY[3, 1, 3, 2]::integer[],
+        rast,
+        ARRAY[3, 1, 3, 2]::integer[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo
@@ -10276,7 +10167,8 @@ WITH foo AS (
 )
 SELECT
     ST_MapAlgebra(
-        rast, 2,
+        rast,
+        2,
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo
@@ -10294,8 +10186,10 @@ WITH foo AS (
 )
 SELECT
     ST_MapAlgebra(
-        t1.rast, 2,
-        t2.rast, 1,
+        t1.rast,
+        2,
+        t2.rast,
+        1,
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo t1
@@ -10310,10 +10204,7 @@ WHERE t1.rid = 1
                     <title>Examples: Using Masks</title>
                     <programlisting>
 WITH foo AS (SELECT
-   ST_SetBandNoDataValue(
-ST_SetValue(ST_SetValue(ST_AsRaster(
-        ST_Buffer(
-            ST_GeomFromText('LINESTRING(50 50,100 90,100 50)'), 5,'join=bevel'),
+   ST_SetBandNoDataValue(ST_SetValue(ST_SetValue(ST_AsRaster(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,100 90,100 50)'), 5,'join=bevel'),
             200,200,ARRAY['8BUI'], ARRAY[100], ARRAY[0]), ST_Buffer('POINT(70 70)'::geometry,10,'quad_segs=1') ,50),
   'LINESTRING(20 20, 100 100, 150 98)'::geometry,1),0)  AS rast )
 SELECT 'original' AS title, rast
@@ -10649,8 +10540,10 @@ WITH foo AS (
 )
 SELECT
     ST_MapAlgebra(
-        t1.rast, 2,
-        t2.rast, 1,
+        t1.rast,
+        2,
+        t2.rast,
+        1,
         '([rast2] + [rast1.val]) / 2'
     ) AS rast
 FROM foo t1
@@ -10817,10 +10710,7 @@ WHERE rid = 2;</programlisting>
                     <para>Create a new 3 band raster same pixel type from our original 3 band raster with first band altered by map algebra and remaining 2 bands unaltered.</para>
                     <programlisting>
 SELECT
-    ST_AddBand(
-        ST_AddBand(
-            ST_AddBand(
-                ST_MakeEmptyRaster(rast_view),
+    ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(rast_view),
                 ST_MapAlgebraExpr(rast_view,1,NULL,'tan([rast])*[rast]')
             ),
             ST_Band(rast_view,2)
@@ -11001,18 +10891,15 @@ SELECT 'area' AS fun_name, ST_AsRaster(ST_Buffer(ST_SetSRID(ST_Point(236229, 900
 FROM ref
 UNION ALL
 SELECT 'rand bubbles',
-            ST_AsRaster(
-            (SELECT ST_Collect(geom)
+            ST_AsRaster((SELECT ST_Collect(geom)
     FROM (SELECT ST_Buffer(ST_SetSRID(ST_Point(236229 + i*random()*100, 900930 + j*random()*100),26986), random()*20) As geom
             FROM generate_series(1,10) As i, generate_series(1,10) As j
             ) As foo ), ref.rast,'8BUI', 200, 0)
 FROM ref;
 
 --map them -
-SELECT  ST_MapAlgebraExpr(
-        area.rast, bub.rast, '[rast2.val]', '8BUI', 'INTERSECTION', '[rast2.val]', '[rast1.val]') As interrast,
-        ST_MapAlgebraExpr(
-            area.rast, bub.rast, '[rast2.val]', '8BUI', 'UNION', '[rast2.val]', '[rast1.val]') As unionrast
+SELECT  ST_MapAlgebraExpr(area.rast, bub.rast, '[rast2.val]', '8BUI', 'INTERSECTION', '[rast2.val]', '[rast1.val]') As interrast,
+        ST_MapAlgebraExpr(area.rast, bub.rast, '[rast2.val]', '8BUI', 'UNION', '[rast2.val]', '[rast1.val]') As unionrast
 FROM
   (SELECT rast FROM fun_shapes WHERE
  fun_name = 'area') As area
@@ -11095,8 +10982,7 @@ WITH mygeoms
                 FROM mygeoms AS m CROSS JOIN canvas
                 ORDER BY m.bnum) As rasts
                 )
-          SELECT rasts[1] As rast1 , rasts[2] As rast2, rasts[3] As rast3, ST_AddBand(
-                    ST_AddBand(rasts[1],rasts[2]), rasts[3]) As final_rast
+          SELECT rasts[1] As rast1 , rasts[2] As rast2, rasts[3] As rast3, ST_AddBand(ST_AddBand(rasts[1],rasts[2]), rasts[3]) As final_rast
             FROM rbands;
                     </programlisting>
 
@@ -11190,9 +11076,16 @@ GROUP BY geom)
 -- return our final raster which is the unioned shard with
 -- with the overlay of our parcel boundaries
 -- add first 2 bands, then mapalgebra of 3rd band + geometry
-SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2]),
-    ST_MapAlgebraExpr(ST_Band(clipped,3), ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
-     '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') ) As rast
+SELECT ST_AddBand(
+    ST_Band(clipped,ARRAY[1,2]),
+    ST_MapAlgebraExpr(
+     ST_Band(clipped,3),
+     ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
+     '[rast2.val]',
+     '8BUI',
+     'FIRST',
+     '[rast2.val]',
+     '[rast1.val]') ) As rast
 FROM prunion;
                     </programlisting>
 
@@ -11468,10 +11361,7 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
-SELECT ST_AddBand(
-    ST_AddBand(
-        ST_AddBand(
-            ST_MakeEmptyRaster(rast_view),
+SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(rast_view),
             ST_MapAlgebraFct(rast_view,1,NULL,'rast_plus_tan(float,integer[],text[])'::regprocedure)
         ),
         ST_Band(rast_view,2)
@@ -12105,10 +11995,7 @@ CREATE TABLE reclassexact (
 -- [3  4]
 --
 INSERT INTO reclassexact (id, rast)
-SELECT 1, ST_SetValues(
-    ST_AddBand(
-      ST_MakeEmptyRaster(
-        2,    -- width in pixels
+SELECT 1, ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(2,    -- width in pixels
         2,    -- height in pixels
         0,    -- upper-left x-coordinate
         0,    -- upper-left y-coordinate
@@ -12134,8 +12021,7 @@ SELECT 1, ST_SetValues(
 -- Reclass the values to new values
 -- and dump the values of the new raster for display
 WITH rc AS (
-  SELECT ST_ReclassExact(
-    rast,                -- input raster
+  SELECT ST_ReclassExact(rast,                -- input raster
     ARRAY[4,3,2,1],      -- input map
     ARRAY[14,13,12,11],  -- output map
     1,                   -- band number to remap
@@ -12315,8 +12201,7 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 
                     <programlisting>SELECT
     rid,
-    ST_Value(
-        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12395,8 +12280,7 @@ WHERE rid = 2;</programlisting>
             <refsection>
                 <title>Examples</title>
                 <programlisting>WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', NULL::double precision, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', NULL::double precision, -9999),
         1, 1, 1, ARRAY[
             [10, 10, 10],
             [10, NULL, 20],
@@ -12406,9 +12290,14 @@ WHERE rid = 2;</programlisting>
 )
 SELECT ST_Value(
     ST_MapAlgebra(
-        rast, 1,
+        rast,
+        1,
         'ST_InvDistWeight4ma(double precision[][][],integer[][],text[])'::regprocedure,
-        '32BF', 'FIRST', NULL, 1, 1
+        '32BF',
+        'FIRST',
+        NULL,
+        1,
+        1
     ),
     2, 2
 ) AS interpolated_value
@@ -12483,8 +12372,7 @@ FROM foo;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    ST_Value(
-        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Max4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Max4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12568,8 +12456,7 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    ST_Value(
-        ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_Mean4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_Mean4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12586,8 +12473,9 @@ WHERE rid = 2;</programlisting>
                     <programlisting>SELECT
     rid,
     ST_Value(
-              ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1),
-       2, 2)
+        ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1),
+        2,
+        2)
   FROM dummy_rast
    WHERE rid = 2;</programlisting>
 <screen> rid |     st_value
@@ -12676,8 +12564,7 @@ WHERE rid = 2;</programlisting>
                 <programlisting>
 SELECT
     rid,
-    ST_Value(
-        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12740,8 +12627,7 @@ WHERE rid = 2;</programlisting>
             <refsection>
                 <title>Examples</title>
                 <programlisting>WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', NULL::double precision, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', NULL::double precision, -9999),
         1, 1, 1, ARRAY[
             [10, 10, 10],
             [10, NULL, 20],
@@ -12751,9 +12637,14 @@ WHERE rid = 2;</programlisting>
 )
 SELECT ST_Value(
     ST_MapAlgebra(
-        rast, 1,
+        rast,
+        1,
         'ST_MinDist4ma(double precision[][][],integer[][],text[])'::regprocedure,
-        '32BF', 'FIRST', NULL, 1, 1
+        '32BF',
+        'FIRST',
+        NULL,
+        1,
+        1
     ),
     2, 2
 ) AS min_distance
@@ -12828,8 +12719,7 @@ FROM foo;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    ST_Value(
-        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Range4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Range4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12909,8 +12799,7 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    ST_Value(
-        ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_StdDev4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_StdDev4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12994,8 +12883,7 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    ST_Value(
-        ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_Sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_Sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -13090,8 +12978,7 @@ WHERE rid = 2;</programlisting>
                     <title>Examples: Variant 1</title>
                     <programlisting>
 WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 1, 1, 1],
             [1, 2, 2, 2, 1],
@@ -13120,10 +13007,7 @@ FROM foo
 
                     <programlisting>
 WITH foo AS (
-    SELECT ST_Tile(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_Tile(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
                 1, '32BF', 0, -9999
             ),
             1, 1, 1, ARRAY[
@@ -13236,8 +13120,7 @@ GROUP BY t1.rast;
                     <title>Examples: Variant 1</title>
                     <programlisting>
 WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 1, 1, 1],
             [1, 2, 2, 2, 1],
@@ -13266,10 +13149,7 @@ FROM foo
 
                     <programlisting>
 WITH foo AS (
-    SELECT ST_Tile(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_Tile(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
                 1, '32BF', 0, -9999
             ),
             1, 1, 1, ARRAY[
@@ -13335,8 +13215,7 @@ GROUP BY t1.rast;
                 <refsection>
                     <title>Examples</title>
                     <programlisting>WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 2, 3, 3],
             [1, 2, 4, 15, 3],
@@ -13427,8 +13306,7 @@ FROM foo;</programlisting>
                     <title>Examples: Variant 1</title>
                     <programlisting>
 WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 1, 1, 1],
             [1, 2, 2, 2, 1],
@@ -13459,10 +13337,7 @@ FROM foo
 
                     <programlisting>
 WITH foo AS (
-    SELECT ST_Tile(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_Tile(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
                 1, '32BF', 0, -9999
             ),
             1, 1, 1, ARRAY[
@@ -13533,8 +13408,7 @@ GROUP BY t1.rast;
                 <refsection>
                     <title>Examples</title>
                     <programlisting>WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 2, 3, 3],
             [1, 2, 4, 15, 3],
@@ -13598,8 +13472,7 @@ FROM foo;</programlisting>
                 <refsection>
                     <title>Examples</title>
                     <programlisting>WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 2, 3, 3],
             [1, 2, 4, 15, 3],
@@ -13702,8 +13575,7 @@ FROM foo;</programlisting>
       <refsection>
         <title>Example</title>
 
-<programlisting>SELECT ST_InterpolateRaster(
-    'MULTIPOINT(10.5 9.5 1000, 11.5 8.5 1000, 10.5 8.5 500, 11.5 9.5 500)'::geometry,
+<programlisting>SELECT ST_InterpolateRaster('MULTIPOINT(10.5 9.5 1000, 11.5 8.5 1000, 10.5 8.5 500, 11.5 9.5 500)'::geometry,
     'invdist:smoothing:2.0',
     ST_AddBand(ST_MakeEmptyRaster(200, 400, 10, 10, 0.01, -0.005, 0, 0), '16BSI')
 )</programlisting>
@@ -14092,9 +13964,7 @@ FROM dummy_rast;</programlisting>
                     <programlisting>
 WITH foo AS (
     SELECT
-        ST_SetValues(
-            ST_SetValues(
-                ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(9, 9, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0), 2, '8BUI', 1, 0),
+        ST_SetValues(ST_SetValues(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(9, 9, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0), 2, '8BUI', 1, 0),
                 1, 1, 1,
                 ARRAY[
                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -14191,9 +14061,7 @@ WHERE rid = 2;</programlisting>
 <para>Or if you want the no data value different for just one time.</para>
 <programlisting>
 
-SELECT ST_AsText(
-    ST_Polygon(
-        ST_SetBandNoDataValue(rast,1,252)
+SELECT ST_AsText(ST_Polygon(ST_SetBandNoDataValue(rast,1,252)
         )
     ) As geomwkt
 FROM dummy_rast
@@ -14242,8 +14110,7 @@ CREATE TABLE raster_proportions_rast (
 
 INSERT INTO raster_proportions_rast (name, rast) VALUES (
   '2x2 raster covering 0,0 to 10,10',
-  ST_MakeEmptyRaster(
-    2,  2,   -- raster width/height in pixels
+  ST_MakeEmptyRaster(2,  2,   -- raster width/height in pixels
     0, 10,   -- upper-left corner x/y coordinates
     5, -5,   -- pixel width/height in ground units
     0,  0,   -- skew x/y
@@ -14257,7 +14124,8 @@ INSERT INTO raster_proportions_rast (name, rast) VALUES (
 SELECT name, ST_DumpValues(
     ST_IntersectionFractions(
         rast,
-        'POLYGON((5 0, 0 5, 5 10, 10 5, 5 0))'::geometry),1)
+        'POLYGON((5 0, 0 5, 5 10, 10 5, 5 0))'::geometry),
+    1)
 FROM raster_proportions_rast;</programlisting>
 <screen> 2x2 raster covering 0,0 to 10,10
 ---------------------------------
@@ -15575,8 +15443,7 @@ SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CRO
           <refsection>
             <title>Examples: Rasters</title>
 
-            <programlisting>SELECT ST_SameAlignment(
-    ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+            <programlisting>SELECT ST_SameAlignment(ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
     ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0)
 ) as sm;</programlisting>
 <screen>t</screen>
@@ -15634,12 +15501,10 @@ NOTICE:  The two rasters provided have different SRIDs</programlisting>
                 <title>Examples</title>
                 <programlisting>
 SELECT
-    ST_SameAlignment(
-        ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+    ST_SameAlignment(ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
         ST_MakeEmptyRaster(1, 1, 0, 0, 1.1, 1.1, 0, 0)
     ),
-    ST_NotSameAlignmentReason(
-        ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+    ST_NotSameAlignmentReason(ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
         ST_MakeEmptyRaster(1, 1, 0, 0, 1.1, 1.1, 0, 0)
     )
 ;</programlisting>

@@ -99,7 +99,8 @@ WHERE name > '' AND building > ''
 	AND ST_DWithin(
         geom,
         ST_Transform(
-            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),
+            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326),
+            26986),
         500
     );
 ]]></programlisting>
@@ -193,7 +194,8 @@ GROUP BY cid;
         <title>Examples</title>
         <programlisting>
 WITH testdata AS
-  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
+  (SELECT unnest(
+           ARRAY['LINESTRING (0 0, 1 1)'::geometry,
            'LINESTRING (5 5, 4 4)'::geometry,
            'LINESTRING (6 6, 7 7)'::geometry,
            'LINESTRING (0 0, -1 -1)'::geometry,
@@ -468,8 +470,11 @@ SELECT id, ST_AsText(geom), ST_MinimumSpanningTree(geom) OVER () AS msp
 SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,
 ('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As type
 FROM
-    ST_Subdivide(ST_Buffer('SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 90)'::geometry,
-    40, 'endcap=square'),12) As geom;
+    ST_Subdivide(
+        ST_Buffer(
+            'SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 90)'::geometry,
+            40, 'endcap=square'),
+        12) As geom;
 </programlisting>
 
         <para><informalfigure>

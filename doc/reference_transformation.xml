@@ -440,9 +440,7 @@ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75
 <screen>LINESTRING(0.5 1.5 3,0.5 0.75 1)</screen>
 <para>This example scales X, Y, Z, and M values.</para>
 <programlisting>
- SELECT ST_AsEWKT(
-   ST_Scale(
-     ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),
+ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),
      ST_MakePoint(0.5, 0.75, 2, -1)));</programlisting>
 <screen>LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)</screen>
 <para>This example scales X and Y values using a false origin.</para>

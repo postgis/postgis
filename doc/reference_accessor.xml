@@ -451,7 +451,7 @@ SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt
 SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
   FROM
     (SELECT
-       ST_Dump( ST_GeomFromEWKT('TIN (((
+       ST_Dump(ST_GeomFromEWKT('TIN (((
                 0 0 0,
                 0 0 1,
                 0 1 0,
@@ -663,7 +663,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
   FROM
     (SELECT
-       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((
+       ST_DumpPoints(ST_GeomFromEWKT('TRIANGLE ((
                 0 0,
                 0 9,
                 9 0,
@@ -681,7 +681,7 @@ SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
 SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
   FROM
     (SELECT
-       ST_DumpPoints( ST_GeomFromEWKT('TIN (((
+       ST_DumpPoints(ST_GeomFromEWKT('TIN (((
                 0 0 0,
                 0 0 1,
                 0 1 0,
@@ -873,7 +873,7 @@ FROM (
 
 		<note><para>This only works for POLYGON geometries, not MULTIPOLYGONs.
 		Use <xref linkend="ST_Dump"/> to extract polygon elements from polygonal geometries:
-		<code>ST_DumpRings( (ST_Dump(geom)).geom )</code>
+		<code>ST_DumpRings((ST_Dump(geom)).geom )</code>
 		</para></note>
 
 		<para role="availability" conformance="1.1.3.">Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
@@ -890,8 +890,7 @@ FROM polyTable
 </programlisting>
         <para>Extracting shell and holes from a polygon.</para>
 <programlisting>SELECT path, ST_AsText(geom) As geom
-	FROM ST_DumpRings(
-		    'POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 2, 2 3, 3 3, 3 2, 2 2), (4 2, 4 4, 6 4, 6 2, 4 2))');</programlisting>
+	FROM ST_DumpRings('POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 2, 2 3, 3 3, 3 2, 2 2), (4 2, 4 4, 6 4, 6 2, 4 2))');</programlisting>
 <screen> path |              geom
 ------+--------------------------------
  {0}  | POLYGON((1 9,9 9,9 1,1 1,1 9))
@@ -1044,11 +1043,10 @@ SELECT ST_AsText(ST_EndPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));</prog
 	  </mediaobject>
 	</informalfigure>
 <programlisting>
-SELECT ST_AsText(ST_Envelope(
-		ST_Collect(
+SELECT ST_AsText(ST_Envelope(ST_Collect(
 			ST_GeomFromText('LINESTRING(55 75,125 150)'),
-				ST_Point(20, 80))
-				)) As wktenv;</programlisting>
+			ST_Point(20, 80)
+			))) As wktenv;</programlisting>
 <screen>POLYGON((20 75,20 150,125 150,125 75,20 75))</screen>
 	  </refsection>
 	  <refsection>
@@ -1107,8 +1105,7 @@ SELECT gid, ST_Collect(ST_ExteriorRing(geom)) AS erings
 GROUP BY gid;
 
 --3d Example
-SELECT ST_AsEWKT(
-	ST_ExteriorRing(
+SELECT ST_AsEWKT(ST_ExteriorRing(
 	ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 1, 1 2 1, 1 1 1, 0 0 1))')
 	)
 );</programlisting>
@@ -1397,8 +1394,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 
 		<programlisting>
 SELECT ST_AsText(ST_InteriorRingN(geom, 1)) As geom
-FROM (SELECT ST_BuildArea(
-		ST_Collect(
+FROM (SELECT ST_BuildArea(ST_Collect(
 			ST_Buffer(ST_Point(1,2), 20,3),
 			ST_Buffer(ST_Point(1, 2), 10,3))) As geom
 		)  as foo;
@@ -1497,8 +1493,7 @@ SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
         <title>Examples</title>
 
         <programlisting>
-SELECT ST_AsText(
-  ST_CurveN(
+SELECT ST_AsText(ST_CurveN(
   'COMPOUNDCURVE(
     (2 2, 2.5 2.5),
     CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
@@ -2543,8 +2538,7 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 
 		<para>This example extracts all POINT geometries from a LineString.</para>
 		<programlisting>
-SELECT ST_AsText(
-   ST_PointN(
+SELECT ST_AsText(ST_PointN(
 	  column1,
 	  generate_series(1, ST_NPoints(column1))
    ))
@@ -3461,8 +3455,7 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 				<title>Examples</title>
 				<para>This example returns knots from a NURBS curve with a custom knot vector.</para>
 				<programlisting>
-SELECT ST_Knots(
-	ST_MakeNurbsCurve(
+SELECT ST_Knots(ST_MakeNurbsCurve(
 		2,
 		'LINESTRING(0 0, 5 10, 10 0)'::geometry,
 		ARRAY[1.0, 2.0, 1.0],
@@ -3550,8 +3543,7 @@ FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;</progr
 				<title>Examples</title>
 				<para>This example checks whether a curve is rational.</para>
 				<programlisting>
-SELECT ST_NurbsCurveIsRational(
-	ST_MakeNurbsCurve(
+SELECT ST_NurbsCurveIsRational(ST_MakeNurbsCurve(
 		2,
 		'LINESTRING(0 0, 5 10, 10 0)'::geometry,
 		ARRAY[1.0, 2.0, 1.0]));</programlisting>

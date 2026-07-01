@@ -193,18 +193,17 @@ being defined.
 		  </refsection>
             <refsection>
                 <title>Examples</title>
-                 <programlisting>
-SELECT te[1] AS id, te[2] AS type FROM
-( SELECT ARRAY[1,2]::topology.topoelement AS te ) f;
- id | type
+                 <programlisting>SELECT te[1] AS id, te[2] AS type FROM
+( SELECT ARRAY[1,2]::topology.topoelement AS te ) f;</programlisting>
+<screen> id | type
 ----+------
   1 |    2
-                 </programlisting>
-                 <programlisting>SELECT ARRAY[1,2]::topology.topoelement;
-  te
+                 </screen>
+                 <programlisting>SELECT ARRAY[1,2]::topology.topoelement;</programlisting>
+<screen>  te
 -------
  {1,2}
-                 </programlisting>
+                 </screen>
                  <programlisting>
 --Example of what happens when you try to case a 3 element array to topoelement
 -- NOTE: topoement has to be a 2 element array so fails dimension check
@@ -1635,7 +1634,8 @@ Adds a collection of geometries to a given empty topology and returns a message 
 -- Populate topology --
 SELECT topology.ST_CreateTopoGeo(
  'ri_topo',
- ST_GeomFromText('MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,
+ ST_GeomFromText(
+  'MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,
   384844 236882,384866 236881,384879 236883,384954 236898,385087 236932,385117 236938,
   385167 236938,385203 236941,385224 236946,385233 236950,385241 236956,385254 236971,
   385260 236979,385268 236999,385273 237018,385273 237037,385271 237047,385267 237057,
@@ -1644,7 +1644,8 @@ SELECT topology.ST_CreateTopoGeo(
   385237 237383,385238 237399,385236 237407,385227 237419,385213 237430,385193 237439,
   385174 237451,385170 237455,385169 237460,385171 237475,385181 237503,385190 237521,
   385200 237533,385206 237538,385213 237541,385221 237542,385235 237540,385242 237541,
-  385249 237544,385260 237555,385270 237570,385289 237584,385292 237589,385291 237596,385284 237630))',3438)
+  385249 237544,385260 237555,385270 237570,385289 237584,385292 237589,385291 237596,385284 237630))',
+  3438)
   );
 
       st_createtopogeo
@@ -2310,7 +2311,9 @@ an error is thrown.
 				<programlisting>SELECT topology.ST_ChangeEdgeGeom(
     'ma_topo',
     1,
-    ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6, 227704.5 893778.5)', 26986)
+    ST_GeomFromText(
+        'LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6, 227704.5 893778.5)',
+        26986)
 );
  ----
  Edge 1 changed</programlisting>
@@ -3613,9 +3616,11 @@ SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom
 
 SELECT topology.AddFace(
     'ma_topo',
-    ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
+    ST_GeomFromText(
+    'POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
     234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
-    234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) ) As faceid;
+    234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))',
+    26986) ) As faceid;
 faceid
 --------
  1
@@ -3993,10 +3998,10 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
-  FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;
-  tea
+  FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;</programlisting>
+<screen>  tea
 --------------------------------------------------------------------------
-{{1,1},{1,2},{1,3},{1,4},{2,1},{2,2},{2,3},{2,4},{3,1},{3,2},{3,3},{3,4}}</programlisting>
+{{1,1},{1,2},{1,3},{1,4},{2,1},{2,2},{2,3},{2,4},{3,1},{3,2},{3,3},{3,4}}</screen>
 			</refsection>
 			<refsection>
 				<title>See Also</title>
@@ -4670,7 +4675,7 @@ WITH edges AS (
   ON ( p1.arc_id = p2.arc_id AND p2.path[1] = p1.path[1]+1 )
   ORDER BY arc_id, p2.path
 ), arcsdump AS (
-  SELECT arc_id, (regexp_matches( ST_AsGeoJSON(geom), '\[.*\]'))[1] as t
+  SELECT arc_id, (regexp_matches(ST_AsGeoJSON(geom), '\[.*\]'))[1] as t
   FROM compare
 ), arcs AS (
   SELECT arc_id, '[' || array_to_string(array_agg(t), ',') || ']' as a FROM arcsdump
