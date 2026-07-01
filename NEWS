@@ -99,6 +99,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #2838, Emit valid X3D Coordinate nodes for 2D polygon output
           (Darafei Praliaskouski)
+ - #4502, [raster] Make ST_SameAlignment symmetric for nearly equal
+          geotransforms (Darafei Praliaskouski)
  - Fix WKB and TWKB parser resource exhaustion on malformed input
           (Darafei Praliaskouski)
  - #2850, Preserve pgsql2shp numeric precision and scale in DBF metadata
