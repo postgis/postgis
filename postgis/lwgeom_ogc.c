@@ -32,8 +32,11 @@
 
 #include "access/gist.h"
 #include "access/itup.h"
+#include "catalog/pg_type_d.h"
 
 #include "fmgr.h"
+#include "funcapi.h"
+#include "utils/array.h"
 #include "utils/builtins.h"
 #include "utils/elog.h"
 
@@ -59,6 +62,7 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS);
 Datum LWGEOM_numpatches(PG_FUNCTION_ARGS);
 /* ---- GeometryN(geometry, integer) */
 Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS);
+Datum LWGEOM_geometryn_collection_array(PG_FUNCTION_ARGS);
 /* ---- PatchN(geometry, integer) */
 Datum LWGEOM_patchn(PG_FUNCTION_ARGS);
 /* ---- Dimension(geometry) */
@@ -67,10 +71,12 @@ Datum LWGEOM_dimension(PG_FUNCTION_ARGS);
 Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS);
 /* ---- InteriorRingN(geometry, integer) */
 Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS);
+Datum LWGEOM_interiorringn_polygon_array(PG_FUNCTION_ARGS);
 /* ---- NumInteriorRings(geometry) */
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS);
 /* ---- PointN(geometry, integer) */
 Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS);
+Datum LWGEOM_pointn_linestring_array(PG_FUNCTION_ARGS);
 /* ---- X(geometry) */
 Datum LWGEOM_x_point(PG_FUNCTION_ARGS);
 /* ---- Y(geometry) */
@@ -452,6 +458,86 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+typedef struct {
+	LWGEOM *lwgeom;
+	Datum *indices;
+	bool *nulls;
+	int nelems;
+	int i;
+} AccessorArrayState;
+
+PG_FUNCTION_INFO_V1(LWGEOM_geometryn_collection_array);
+Datum
+LWGEOM_geometryn_collection_array(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	AccessorArrayState *state;
+
+	if (SRF_IS_FIRSTCALL())
+	{
+		ArrayType *array;
+		GSERIALIZED *geom;
+		MemoryContext oldcontext;
+
+		funcctx = SRF_FIRSTCALL_INIT();
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		geom = PG_GETARG_GSERIALIZED_P_COPY(0);
+		array = PG_GETARG_ARRAYTYPE_P(1);
+
+		state = palloc0(sizeof(AccessorArrayState));
+		state->lwgeom = lwgeom_from_gserialized(geom);
+		deconstruct_array(
+		    array, INT4OID, sizeof(int32), true, 'i', &state->indices, &state->nulls, &state->nelems);
+		funcctx->user_fctx = state;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	funcctx = SRF_PERCALL_SETUP();
+	state = funcctx->user_fctx;
+
+	while (state->i < state->nelems)
+	{
+		LWGEOM *subgeom;
+		LWGEOM *geom_to_serialize;
+		GSERIALIZED *result;
+		int32 idx;
+
+		if (state->nulls[state->i])
+		{
+			state->i++;
+			fcinfo->isnull = true;
+			SRF_RETURN_NEXT(funcctx, (Datum)0);
+		}
+
+		idx = DatumGetInt32(state->indices[state->i++]);
+		subgeom = lwgeom_extract_geometry_n(state->lwgeom, idx, false);
+		if (!subgeom)
+		{
+			fcinfo->isnull = true;
+			SRF_RETURN_NEXT(funcctx, (Datum)0);
+		}
+
+		geom_to_serialize = subgeom;
+		if (subgeom != state->lwgeom)
+		{
+			geom_to_serialize = lwgeom_clone_deep(subgeom);
+			geom_to_serialize->srid = state->lwgeom->srid;
+			if (state->lwgeom->bbox)
+				lwgeom_add_bbox(geom_to_serialize);
+		}
+
+		result = geometry_serialize(geom_to_serialize);
+		if (geom_to_serialize != subgeom)
+			lwgeom_free(geom_to_serialize);
+		fcinfo->isnull = false;
+		SRF_RETURN_NEXT(funcctx, PointerGetDatum(result));
+	}
+
+	SRF_RETURN_DONE(funcctx);
+}
+
 /** 1-based offset */
 PG_FUNCTION_INFO_V1(LWGEOM_patchn);
 Datum LWGEOM_patchn(PG_FUNCTION_ARGS)
@@ -742,6 +828,122 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+static GSERIALIZED *
+lwgeom_interiorringn(LWGEOM *lwgeom, int32 wanted_index)
+{
+	LWCURVEPOLY *curvepoly = NULL;
+	LWPOLY *poly = NULL;
+	POINTARRAY *ring;
+	LWLINE *line;
+	GSERIALIZED *result;
+	GBOX *bbox = NULL;
+	int type = lwgeom->type;
+
+	if (wanted_index < 1)
+		return NULL;
+
+	if ((type != POLYGONTYPE) && (type != CURVEPOLYTYPE))
+		return NULL;
+
+	if (lwgeom_is_empty(lwgeom))
+		return NULL;
+
+	if (type == POLYGONTYPE)
+	{
+		poly = lwgeom_as_lwpoly(lwgeom);
+
+		if (wanted_index >= (int32)poly->nrings)
+			return NULL;
+
+		ring = poly->rings[wanted_index];
+
+		if (poly->bbox)
+		{
+			bbox = lwalloc(sizeof(GBOX));
+			ptarray_calculate_gbox_cartesian(ring, bbox);
+		}
+
+		line = lwline_construct(poly->srid, bbox, ring);
+		result = geometry_serialize((LWGEOM *)line);
+		lwline_release(line);
+	}
+	else
+	{
+		LWGEOM *ring_to_serialize;
+		curvepoly = lwgeom_as_lwcurvepoly(lwgeom);
+
+		if (wanted_index >= (int32)curvepoly->nrings)
+			return NULL;
+
+		ring_to_serialize = lwgeom_clone_deep(curvepoly->rings[wanted_index]);
+		ring_to_serialize->srid = curvepoly->srid;
+		if (curvepoly->bbox)
+			lwgeom_add_bbox(ring_to_serialize);
+		result = geometry_serialize(ring_to_serialize);
+		lwgeom_free(ring_to_serialize);
+	}
+
+	return result;
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_interiorringn_polygon_array);
+Datum
+LWGEOM_interiorringn_polygon_array(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	AccessorArrayState *state;
+
+	if (SRF_IS_FIRSTCALL())
+	{
+		ArrayType *array;
+		GSERIALIZED *geom;
+		MemoryContext oldcontext;
+
+		funcctx = SRF_FIRSTCALL_INIT();
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		geom = PG_GETARG_GSERIALIZED_P_COPY(0);
+		array = PG_GETARG_ARRAYTYPE_P(1);
+
+		state = palloc0(sizeof(AccessorArrayState));
+		state->lwgeom = lwgeom_from_gserialized(geom);
+		deconstruct_array(
+		    array, INT4OID, sizeof(int32), true, 'i', &state->indices, &state->nulls, &state->nelems);
+		funcctx->user_fctx = state;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	funcctx = SRF_PERCALL_SETUP();
+	state = funcctx->user_fctx;
+
+	while (state->i < state->nelems)
+	{
+		GSERIALIZED *result;
+		int32 idx;
+
+		if (state->nulls[state->i])
+		{
+			state->i++;
+			fcinfo->isnull = true;
+			SRF_RETURN_NEXT(funcctx, (Datum)0);
+		}
+
+		idx = DatumGetInt32(state->indices[state->i++]);
+		result = lwgeom_interiorringn(state->lwgeom, idx);
+		if (!result)
+		{
+			fcinfo->isnull = true;
+			SRF_RETURN_NEXT(funcctx, (Datum)0);
+		}
+
+		fcinfo->isnull = false;
+		SRF_RETURN_NEXT(funcctx, PointerGetDatum(result));
+	}
+
+	SRF_RETURN_DONE(funcctx);
+}
+
 /**
  * PointN(GEOMETRY,INTEGER) -- find the first linestring in GEOMETRY,
  * @return the point at index INTEGER (1 is 1st point).  Return NULL if
@@ -789,6 +991,94 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(lwpoint)));
+}
+
+static LWPOINT *
+lwgeom_pointn(LWGEOM *lwgeom, int where)
+{
+	LWPOINT *lwpoint = NULL;
+	int type = lwgeom->type;
+	int count = -1;
+
+	if (type == LINETYPE || type == CIRCSTRINGTYPE || type == COMPOUNDTYPE)
+		count = lwgeom_count_vertices(lwgeom);
+
+	if (where < 1)
+	{
+		if (count > 0)
+			where = where + count + 1;
+		if (where < 1)
+			return NULL;
+	}
+	if (count > 0 && where > count)
+		return NULL;
+
+	if (type == LINETYPE || type == CIRCSTRINGTYPE)
+		lwpoint = lwline_get_lwpoint((LWLINE *)lwgeom, where - 1);
+	else if (type == COMPOUNDTYPE)
+		lwpoint = lwcompound_get_lwpoint((LWCOMPOUND *)lwgeom, where - 1);
+
+	return lwpoint;
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_pointn_linestring_array);
+Datum
+LWGEOM_pointn_linestring_array(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	AccessorArrayState *state;
+
+	if (SRF_IS_FIRSTCALL())
+	{
+		ArrayType *array;
+		GSERIALIZED *geom;
+		MemoryContext oldcontext;
+
+		funcctx = SRF_FIRSTCALL_INIT();
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		geom = PG_GETARG_GSERIALIZED_P_COPY(0);
+		array = PG_GETARG_ARRAYTYPE_P(1);
+
+		state = palloc0(sizeof(AccessorArrayState));
+		state->lwgeom = lwgeom_from_gserialized(geom);
+		deconstruct_array(
+		    array, INT4OID, sizeof(int32), true, 'i', &state->indices, &state->nulls, &state->nelems);
+		funcctx->user_fctx = state;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	funcctx = SRF_PERCALL_SETUP();
+	state = funcctx->user_fctx;
+
+	while (state->i < state->nelems)
+	{
+		LWPOINT *lwpoint;
+		GSERIALIZED *result;
+		int32 idx;
+
+		if (state->nulls[state->i])
+		{
+			state->i++;
+			fcinfo->isnull = true;
+			SRF_RETURN_NEXT(funcctx, (Datum)0);
+		}
+
+		idx = DatumGetInt32(state->indices[state->i++]);
+		lwpoint = lwgeom_pointn(state->lwgeom, idx);
+		if (!lwpoint)
+		{
+			fcinfo->isnull = true;
+			SRF_RETURN_NEXT(funcctx, (Datum)0);
+		}
+
+		result = geometry_serialize(lwpoint_as_lwgeom(lwpoint));
+		fcinfo->isnull = false;
+		SRF_RETURN_NEXT(funcctx, PointerGetDatum(result));
+	}
+
+	SRF_RETURN_DONE(funcctx);
 }
 
 /**
