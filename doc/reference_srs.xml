@@ -648,10 +648,12 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, a
     <refsection>
       <title>Examples</title>
       <para>Search for projected coordinate systems in Louisiana.</para>
-      <programlisting language="sql" role="requires-external-state">SELECT auth_name, auth_srid, srname,
+      <programlisting language="sql">SELECT auth_name, auth_srid, srname,
   ST_AsText(point_sw) AS point_sw,
   ST_AsText(point_ne) AS point_ne
 FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30, -91 31)')
+WHERE srname LIKE '%Louisiana%'
+ORDER BY auth_name, auth_srid::integer
 LIMIT 3;</programlisting>
       <screen> auth_name | auth_srid |                srname                |      point_sw       |      point_ne
 -----------+-----------+--------------------------------------+---------------------+---------------------
