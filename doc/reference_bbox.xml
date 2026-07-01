@@ -180,11 +180,9 @@ SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220
         <title>Examples</title>
 
         <programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
---result--
 BOX(-8877653 4912316,-8010225.5 5589284)
 
 SELECT ST_EstimatedExtent('feature_poly', 'geom');
---result--
 BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
         </programlisting>
       </refsection>

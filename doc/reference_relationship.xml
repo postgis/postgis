@@ -268,8 +268,7 @@ SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
      ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
 FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
        ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
-
--- Result</programlisting>
+</programlisting>
 <screen>  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
  f                | t                | t                | t          | t        | f</screen>
@@ -367,8 +366,7 @@ ST_Point      | t          | t              | f           | f
   ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
   ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
   FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
-  --Result</programlisting>
+  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;</programlisting>
 <screen>  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
  f                     | t                    | f                    | t          | t                 | f</screen>
@@ -472,8 +470,7 @@ SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,
   ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,
   ST_Within(ST_ExteriorRing(bigc),bigc) As exeriorwithinbig
 FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
-  --Result</programlisting>
+  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;</programlisting>
 <screen> smallinsmall | smallcoveredbybig | exteriorcoveredbybig | exeriorwithinbig
 --------------+-------------------+----------------------+------------------
  t            | t                 | t                    | f
@@ -569,8 +566,7 @@ SELECT ST_Covers(smallc,smallc) As smallinsmall,
   ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
   ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
 FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
-  --Result</programlisting>
+  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;</programlisting>
 <screen> smallinsmall | smallcoversbig | bigcoversexterior | bigcontainsexterior
 --------------+----------------+-------------------+---------------------
  t            | f              | t                 | f
@@ -1854,8 +1850,7 @@ SELECT ST_Within(smallc,smallc) As smallinsmall,
 FROM
 (
 SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
-  ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;
---Result</programlisting>
+  ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;</programlisting>
 <screen> smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
 --------------+------------+------------+------------+------------+------------
  t            | t          | f          | t          | t          | t

@@ -1545,8 +1545,7 @@ INSERT INTO dummy_rast(rid,rast)
 -- output meta data of raster bands to verify all is right --
 SELECT  (bmd).*
 FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd
-    FROM dummy_rast WHERE rid = 10) AS foo;
- --result --</programlisting>
+    FROM dummy_rast WHERE rid = 10) AS foo;</programlisting>
 <screen> pixeltype | nodatavalue | isoutdb | path
 -----------+----------------+-------------+---------+------
  1BB       |             | f       |
@@ -1555,8 +1554,7 @@ FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd
 <programlisting>
 SELECT  (rmd).width, (rmd).height, (rmd).numbands
 FROM (SELECT ST_MetaData(rast) As rmd
-    FROM dummy_rast WHERE rid = 10) AS foo;
--- result --</programlisting>
+    FROM dummy_rast WHERE rid = 10) AS foo;</programlisting>
 <screen> upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ------------+------------+-------+--------+------------+------------+-------+-------+------+----------
           0 |          0 |   100 |    100 |      1 |     -1 |     0 |     0 |   0 |        2
@@ -2175,8 +2173,7 @@ SELECT rid, (md).*
 FROM (SELECT rid, ST_MetaData(rast) As md
     FROM dummy_rast
     WHERE rid IN(3,4)) As foo;
-
--- output --</programlisting>
+</programlisting>
 <screen> rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -----+------------+------------+-------+--------+------------+------------+-------+-------+------+----------
    3 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |    0  |     0 | 4326 |        0
@@ -6772,13 +6769,11 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
                     <programlisting>
 SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
 
--- result
 0
 
 -- the reskewed raster raster rotation
 SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));
 
--- result
 -0.982793723247329</programlisting>
 
             </refsection>
@@ -6860,13 +6855,11 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
                     <para>This example returns the upper-left X coordinate of the original raster.</para>
                     <programlisting>
 SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
--- result
 0
 
 -- the upper left of raster after snapping
 SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));
 
---result
 -0.0008</programlisting>
 
             </refsection>

@@ -166,7 +166,6 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
     <title>Examples</title>
 
     <programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
-    --result
     4326
     </programlisting>
     </refsection>

@@ -1820,8 +1820,8 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
 
             <para>This example computes the projected medial axis with free endpoints extended to the polygon boundary.</para>
             <programlisting>
-SELECT CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true);
--- Result: MULTILINESTRING((0 0.5,2 0.5))</programlisting>
+SELECT ST_AsText(CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true));</programlisting>
+<screen>MULTILINESTRING((0 0.5,0.5 0.5,1.5 0.5,2 0.5))</screen>
         </refsection>
 
         <refsection>
@@ -3489,8 +3489,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
     </refsection>
     <refsection>
         <title>Examples</title>
-        <programlisting>SELECT ST_AsText(CG_StraightSkeletonPartition('POLYGON((0 0, 4 0, 2 2, 0 0))', true));
--- Result: MULTIPOLYGON(((0 0,2 0.83,2 2)),((4 0,2 0.83,0 0)),((2 2,2 0.83,4 0)))</programlisting>
+        <programlisting>SELECT ST_AsText(CG_StraightSkeletonPartition('POLYGON((0 0, 4 0, 2 2, 0 0))', true));</programlisting>
+<screen>POLYHEDRALSURFACE(((0 0,2 0.82842712474619,2 2)),((4 0,2 0.82842712474619,0 0)),((2 2,2 0.82842712474619,4 0)))</screen>
 
         <programlisting>SELECT CG_StraightSkeletonPartition(
             ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20,
@@ -3561,8 +3561,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_3DBuffer('POINT(0 0 0)', 1, 8, 0));
--- Result: POLYHEDRALSURFACE Z (((0 0 1, 0.5 -0.5 0.71, 0 -0.71 0.71, 0 0 1)), ... )</programlisting>
+       <programlisting>SELECT ST_AsText(CG_3DBuffer('POINT(0 0 0)', 1, 8, 0));</programlisting>
+<screen>POLYHEDRALSURFACE Z (((0 0 1, 0.5 -0.5 0.71, 0 -0.71 0.71, 0 0 1)), ... )</screen>
 
        <para>The following images were rendered pasting the output of the ST_AsX3D query into <link xlink:href="https://postgis.net/docs/support/viewers/x3d_viewer.htm">X3D Viewer</link>.</para>
        <programlisting><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(cgbuffer3d_output)  || '<Appearance>
@@ -3664,8 +3664,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Rotate('LINESTRING(1 0, 0 1)', pi()/2));
--- Result: LINESTRING(0 1, -1 0)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_Rotate('LINESTRING(1 0, 0 1)', pi()/2));</programlisting>
+<screen>LINESTRING(6.123233995736766e-17 1,-1 6.123233995736766e-17)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3699,8 +3699,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_2DRotate('POINT(1 0)', pi()/2, 1, 1));
--- Result: POINT(2 1)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_2DRotate('POINT(1 0)', pi()/2, 1, 1));</programlisting>
+<screen>POINT(2 1)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3735,8 +3735,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_3DRotate('POINT(1 0 0)', pi()/2, 0, 0, 1));
--- Result: POINT(0 1 0)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_3DRotate('POINT(1 0 0)', pi()/2, 0, 0, 1));</programlisting>
+<screen>POINT Z (6.123233995736766e-17 1 0)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3768,8 +3768,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_RotateX('POINT(0 1 0)', pi()/2));
--- Result: POINT(0 0 1)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_RotateX('POINT(0 1 0)', pi()/2));</programlisting>
+<screen>POINT Z (0 6.123233995736766e-17 1)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3801,8 +3801,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_RotateY('POINT(1 0 0)', pi()/2));
--- Result: POINT(0 0 -1)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_RotateY('POINT(1 0 0)', pi()/2));</programlisting>
+<screen>POINT Z (6.123233995736766e-17 0 -1)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3834,8 +3834,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_RotateZ('POINT(1 0 0)', pi()/2));
--- Result: POINT(0 1 0)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_RotateZ('POINT(1 0 0)', pi()/2));</programlisting>
+<screen>POINT Z (6.123233995736766e-17 1 0)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3866,8 +3866,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Scale('LINESTRING(1 1, 2 2)', 2));
--- Result: LINESTRING(2 2, 4 4)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_Scale('LINESTRING(1 1, 2 2)', 2));</programlisting>
+<screen>LINESTRING(2 2,4 4)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3901,8 +3901,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_3DScale('POINT(1 1 1)', 2, 3, 4));
--- Result: POINT(2 3 4)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_3DScale('POINT(1 1 1)', 2, 3, 4));</programlisting>
+<screen>POINT Z (2 3 4)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3938,8 +3938,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_3DScaleAroundCenter('POINT(2 2 2)', 0.5, 0.5, 0.5, 1, 1, 1));
--- Result: POINT(1.5 1.5 1.5)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_3DScaleAroundCenter('POINT(2 2 2)', 0.5, 0.5, 0.5, 1, 1, 1));</programlisting>
+<screen>POINT Z (1.5 1.5 1.5)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -3971,8 +3971,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_Translate('LINESTRING(1 1, 2 2)', 1, -1));
--- Result: LINESTRING(2 0, 3 1)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_Translate('LINESTRING(1 1, 2 2)', 1, -1));</programlisting>
+<screen>LINESTRING(2 0,3 1)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -4005,8 +4005,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting>SELECT ST_AsText(CG_3DTranslate('POINT(1 1 1)', 1, -1, 2));
--- Result: POINT(2 0 3)</programlisting>
+       <programlisting>SELECT ST_AsText(CG_3DTranslate('POINT(1 1 1)', 1, -1, 2));</programlisting>
+<screen>POINT Z (2 0 3)</screen>
    </refsection>
    <refsection>
        <title>See Also</title>

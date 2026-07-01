@@ -2592,7 +2592,6 @@ Updates all existing joined edges and relationships accordingly.
 				<programlisting>
 -- Add an edge  --
 SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575 893917,227592 893900)', 26986) ) As edgeid;
--- result-
 edgeid
 ------
 	2
@@ -3112,7 +3111,6 @@ Order of edges follows a left-hand-rule (bound face is on the left of each direc
 				<programlisting>
 -- Returns the edges bounding face 1
 SELECT (topology.ST_GetFaceEdges('tt', 1)).*;
--- result --
  sequence | edge
 ----------+------
         1 |   -4
@@ -3179,7 +3177,6 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 				<programlisting>
 -- Returns the wkt of the polygon added with AddFace
 SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
--- result --
                facegeomwkt
 
 --------------------------------------------------------------------------------
@@ -3450,7 +3447,6 @@ get the correct containing face computed.
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986) ) As nodeid;
--- result --
 nodeid
 --------
  4
@@ -3497,14 +3493,12 @@ nodeid
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2,227591.9 893900.4)', 26986) ) As edgeid;
--- result-
 edgeid
 --------
  1
 
 SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,
  227704.5 893778.5)', 26986) ) As edgeid;
--- result --
 edgeid
 --------
  2
@@ -3602,7 +3596,6 @@ SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom
                 234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) )  As geom
             )  As geoms) As facen CROSS JOIN generate_series(1,10000) As i
          WHERE i < npt;
--- result --
  edgeid
 --------
       3
@@ -3623,7 +3616,6 @@ SELECT topology.AddFace(
     ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
     234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
     234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) ) As faceid;
--- result --
 faceid
 --------
  1
@@ -4410,7 +4402,6 @@ Refer to <xref linkend="toTopoGeom"/>.
 		<title>Examples</title>
 
 		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
-		--result
 		4326
 		</programlisting>
 	  </refsection>
@@ -4692,7 +4683,6 @@ SELECT array_to_string(array_agg(a), E',\n') from arcs
 -- footer
 UNION ALL SELECT ']}'::text as t;
 
--- Result:
 { "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {
 "P3P4": { "type": "MultiPolygon", "arcs": [[[-1]],[[6,5,-5,-4,-3,1]]]}
 }, "arcs": [

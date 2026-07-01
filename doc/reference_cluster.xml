@@ -200,8 +200,7 @@ WITH testdata AS
            'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
 
 SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
-
---result</programlisting>
+</programlisting>
 <screen>GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
 GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
       </refsection>
@@ -605,8 +604,7 @@ WITH testdata AS
 		       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
 
 SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
-
---result</programlisting>
+</programlisting>
 <screen>GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
 GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
       </refsection>
