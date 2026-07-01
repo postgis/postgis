@@ -4602,11 +4602,16 @@ UNION ALL SELECT ']}'::text as t;
         </refsection>
 
 
-	        <refsection>
-	          <title>Examples</title>
+        <refsection>
+          <title>Examples</title>
 
-	          <para>No example is currently provided.</para>
-	        </refsection>
+          <para>The following example uses the <varname>nei_topo</varname> table created in the <xref linkend="toTopoGeom"/> examples.</para>
+          <programlisting language="sql" role="requires-external-state">SELECT topology.Equals(a.topo, b.topo)
+FROM nei_topo AS a
+JOIN nei_topo AS b ON b.gid = a.gid
+WHERE a.gid = 1;</programlisting>
+          <screen>t</screen>
+        </refsection>
 
         <!-- Optionally add a "See Also" section -->
         <refsection>
@@ -4655,11 +4660,16 @@ two topogeometries intersect.
         </refsection>
 
 
-	        <refsection>
-	          <title>Examples</title>
+        <refsection>
+          <title>Examples</title>
 
-	          <para>No example is currently provided.</para>
-	        </refsection>
+          <para>The following example uses the <varname>nei_topo</varname> table created in the <xref linkend="toTopoGeom"/> examples.</para>
+          <programlisting language="sql" role="requires-external-state">SELECT topology.Intersects(a.topo, b.topo)
+FROM nei_topo AS a
+JOIN nei_topo AS b ON b.gid = a.gid
+WHERE a.gid = 1;</programlisting>
+          <screen>t</screen>
+        </refsection>
 
         <!-- Optionally add a "See Also" section -->
         <refsection>
