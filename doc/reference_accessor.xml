@@ -146,13 +146,10 @@
 							  <caption><para>Linestring with boundary points overlaid</para></caption>
 							</mediaobject>
 						  </informalfigure>
-				<programlisting>SELECT ST_AsText(ST_Boundary(geom))
+				<programlisting language="sql">SELECT ST_AsText(ST_Boundary(geom))
 FROM (SELECT 'LINESTRING(100 150,50 60, 70 80, 160 170)'::geometry As geom) As f;
 				</programlisting>
 <screen>
-<lineannotation>
-ST_AsText output
-</lineannotation>
 MULTIPOINT((100 150),(160 170))
 </screen>
 						  </para></entry>
@@ -165,15 +162,12 @@ MULTIPOINT((100 150),(160 170))
 							  <caption><para>polygon holes with boundary multilinestring</para></caption>
 							</mediaobject>
 						  </informalfigure>
-				<programlisting>SELECT ST_AsText(ST_Boundary(geom))
+				<programlisting language="sql">SELECT ST_AsText(ST_Boundary(geom))
 FROM (SELECT
 'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 130 ),
 	( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) As f;
 				</programlisting>
 <screen>
-<lineannotation>
-ST_AsText output
-</lineannotation>
 MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),
 	(70 40,100 50,120 80,80 110,50 90,70 40))
 </screen>

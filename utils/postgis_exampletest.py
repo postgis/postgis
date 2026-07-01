@@ -71,7 +71,7 @@ class ExampleTester:
             re.I,
         ):
             return "external-context"
-        if re.search(r"^\s*\\(?!x[0-9A-Fa-f])\w+", text, re.M):
+        if re.search(r"^\s*\\\w+", text, re.M):
             return "psql-meta"
         if re.search(r"^\s*\w*[=>#]\s*(?:SELECT|WITH)\b", text, re.M | re.I):
             return "psql-meta"
@@ -153,8 +153,6 @@ class ExampleTester:
         for line in lines:
             line = line.strip()
             if not line or re.match(r"^\(\d+ rows?\)$", line):
-                continue
-            if line == "ST_AsText output":
                 continue
             rows.append(self.split_psql_row(line) if re.search(r"│|\s+\|\s+", line) else [line])
         return rows
@@ -252,6 +250,8 @@ class ExampleTester:
         for row in expected:
             for value in row:
                 if re.search(r"\b(?:SELECT|WITH)\b", value, re.I):
+                    return False
+                if "..." in value or re.search(r"(?:AD INFINITUM|NOTICE:|ERROR:)", value, re.I):
                     return False
         return True
 
@@ -354,7 +354,7 @@ class ExampleTester:
             if screen is not None:
                 stats["adjacent_programlisting_screen"] += 1
                 screen_text = self.node_text(screen)
-                bad_screen = re.search(r"\.\.\.|NOTICE:|ERROR:|ST_AsText output|Packaging extension", screen_text, re.I)
+                bad_screen = re.search(r"\.\.\.|NOTICE:|ERROR:", screen_text, re.I)
                 if reason or bad_screen:
                     stats["obvious_bad_adjacent_expected"] += 1
                 else:

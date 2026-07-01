@@ -2804,13 +2804,13 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
       <refsection>
         <title>Description</title>
         <para>Computes a simplified representation of a geometry using the
-            <link xlink:href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Douglas-Peucker algorithm</link>. 
+            <link xlink:href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Douglas-Peucker algorithm</link>.
             The simplification <varname>tolerance</varname> is a distance value, in the units of the input SRS.
             Simplification removes vertices which are within the tolerance distance of the simplified linework.
             The result may not be valid even if the input is.
             </para>
           <para>
-            The function can be called with any kind of geometry (including GeometryCollections), 
+            The function can be called with any kind of geometry (including GeometryCollections),
             but only line and polygon elements are simplified.
             Endpoints of linear geometry are preserved.
             </para>
@@ -2821,8 +2821,8 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
           This flag is useful for rendering purposes, to prevent
           very small features disappearing from a map.</para>
 
-        <note><para>The returned geometry may lose its simplicity (see <xref linkend="ST_IsSimple"/>), 
-         topology may not be preserved, and polygonal results may be invalid (see <xref linkend="ST_IsValid"/>).  
+        <note><para>The returned geometry may lose its simplicity (see <xref linkend="ST_IsSimple"/>),
+         topology may not be preserved, and polygonal results may be invalid (see <xref linkend="ST_IsValid"/>).
          Use <xref linkend="ST_SimplifyPreserveTopology"/> to preserve topology and ensure validity.</para></note>
         <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
 
@@ -2903,15 +2903,15 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
       <refsection>
         <title>Description</title>
         <para>Computes a simplified representation of a geometry using a variant of the
-            <link xlink:href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Douglas-Peucker algorithm</link> 
-            which limits simplification to ensure the result has the same topology as the input.  
+            <link xlink:href="https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Douglas-Peucker algorithm</link>
+            which limits simplification to ensure the result has the same topology as the input.
             The simplification <varname>tolerance</varname> is a distance value, in the units of the input SRS.
             Simplification removes vertices which are within the tolerance distance
             of the simplified linework, as long as topology is preserved.
             The result will be valid and simple if the input is.
             </para>
           <para>
-            The function can be called with any kind of geometry (including GeometryCollections), 
+            The function can be called with any kind of geometry (including GeometryCollections),
             but only line and polygon elements are simplified.
             For polygonal inputs, the result will have the same number of rings (shells and holes),
             and the rings will not cross.  Ring endpoints may be simplified.
@@ -2930,10 +2930,10 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
             <title>Examples</title>
             <para>For the same example as <xref linkend="ST_Simplify"/>, ST_SimplifyPreserveTopology prevents the geometry from disappearing.</para>
                 <programlisting>
-SELECT  ST_Npoints(geom) AS np_before, 
-        ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.1)) AS np01_notbadcircle, 
+SELECT  ST_Npoints(geom) AS np_before,
+        ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.1)) AS np01_notbadcircle,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.5)) AS np05_notquitecircle,
-        ST_NPoints(ST_SimplifyPreserveTopology(geom, 1))   AS np1_octagon, 
+        ST_NPoints(ST_SimplifyPreserveTopology(geom, 1))   AS np1_octagon,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 10))  AS np10_minimal,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 100)) AS np100_minimal
 FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
@@ -2973,7 +2973,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
 
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Simplify"/>, 
+            <para><xref linkend="ST_Simplify"/>,
               <xref linkend="ST_SimplifyVW"/>,
               <xref linkend="ST_CoverageSimplify"/></para>
           </refsection>
@@ -3101,20 +3101,20 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
 
       <refsection>
         <title>Description</title>
-        <para> Returns a simplified representation of a geometry using the 
+        <para> Returns a simplified representation of a geometry using the
         <link xlink:href="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam-Whyatt algorithm</link>.
             The simplification <varname>tolerance</varname> is an area value, in the units of the input SRS.
             Simplification removes vertices which form "corners" with area less than the tolerance.
             The result may not be valid even if the input is.
             </para>
           <para>
-            The function can be called with any kind of geometry (including GeometryCollections), 
+            The function can be called with any kind of geometry (including GeometryCollections),
             but only line and polygon elements are simplified.
             Endpoints of linear geometry are preserved.
             </para>
 
-        <note><para>The returned geometry may lose its simplicity (see <xref linkend="ST_IsSimple"/>), 
-         topology may not be preserved, and polygonal results may be invalid (see <xref linkend="ST_IsValid"/>).  
+        <note><para>The returned geometry may lose its simplicity (see <xref linkend="ST_IsSimple"/>),
+         topology may not be preserved, and polygonal results may be invalid (see <xref linkend="ST_IsValid"/>).
          Use <xref linkend="ST_SimplifyPreserveTopology"/> to preserve topology and ensure validity.
          <xref linkend="ST_CoverageSimplify"/> also preserves topology and validity.
          </para></note>
@@ -3164,9 +3164,9 @@ LINESTRING(5 2,7 25,10 10)
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_SetEffectiveArea"/>, 
-            <xref linkend="ST_Simplify"/>, 
-            <xref linkend="ST_SimplifyPreserveTopology"/>, 
+            <para><xref linkend="ST_SetEffectiveArea"/>,
+            <xref linkend="ST_Simplify"/>,
+            <xref linkend="ST_SimplifyPreserveTopology"/>,
             <xref linkend="ST_CoverageSimplify"/>,
             Topology <xref linkend="TP_ST_Simplify"/></para>
           </refsection>
@@ -3298,10 +3298,9 @@ SELECT ST_AsText(
             </informalfigure>
         </refsection>
         <refsection><title>Same example as ST_Tesselate</title>
-            <programlisting>SELECT ST_TriangulatePolygon(
+            <programlisting language="sql">SELECT ST_AsText(ST_TriangulatePolygon(
                 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry
-                );</programlisting>
-<para>ST_AsText output</para>
+                ));</programlisting>
 <screen>GEOMETRYCOLLECTION(POLYGON((50 160,120 190,120 160,50 160))
     ,POLYGON((10 70,80 130,80 70,10 70))
     ,POLYGON((50 160,10 70,10 190,50 160))
@@ -3408,13 +3407,12 @@ SELECT ST_AsText(
                 <caption><para>Voronoi diagram lines, with tolerance of 30 units</para></caption>
             </mediaobject>
         </informalfigure>
-        <programlisting>
+        <programlisting language="sql">
 SELECT ST_AsText(ST_VoronoiLines(
             'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,
             30)) AS geom;
 </programlisting>
-<screen><lineannotation>ST_AsText output</lineannotation>
-MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.8181818181818 92.2727272727273,-110 43.3333333333333),(230 -45.7142857142858,36.8181818181818 92.2727272727273))
+<screen>MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.8181818181818 92.2727272727273,-110 43.3333333333333),(230 -45.7142857142858,36.8181818181818 92.2727272727273))
 </screen>
 
       </refsection>
@@ -3495,13 +3493,12 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
                 <caption><para>Points overlaid on top of Voronoi diagram</para></caption>
             </mediaobject>
         </informalfigure>
-<programlisting>
+<programlisting language="sql">
 SELECT ST_AsText(ST_VoronoiPolygons(
                 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry
             )) AS geom;
 </programlisting>
-<screen><lineannotation>ST_AsText output</lineannotation>
-GEOMETRYCOLLECTION(POLYGON((-110 270,100.5 270,59.34782608695652 132.82608695652175,36.81818181818182 92.27272727272727,-110 43.33333333333332,-110 270)),
+<screen>GEOMETRYCOLLECTION(POLYGON((-110 270,100.5 270,59.34782608695652 132.82608695652175,36.81818181818182 92.27272727272727,-110 43.33333333333332,-110 270)),
 POLYGON((-110 -90,-110 43.33333333333332,36.81818181818182 92.27272727272727,55 79.28571428571429,55 -90,-110 -90)),
 POLYGON((230 -20.71428571428572,55 79.28571428571429,36.81818181818182 92.27272727272727,59.34782608695652 132.82608695652175,230 47.50000000000001,230 -20.71428571428572)),POLYGON((230 -90,55 -90,55 79.28571428571429,230 -20.71428571428572,230 -90)),
 POLYGON((230 270,230 47.50000000000001,59.34782608695652 132.82608695652175,100.5 270,230 270)))
@@ -3515,13 +3512,12 @@ POLYGON((230 270,230 47.50000000000001,59.34782608695652 132.82608695652175,100.
                 <caption><para>Voronoi diagram, with tolerance of 30 units</para></caption>
             </mediaobject>
             </informalfigure>
-<programlisting>
+<programlisting language="sql">
 SELECT ST_AsText(ST_VoronoiPolygons(
             'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::geometry,
             30)) AS geom;
 </programlisting>
-<screen><lineannotation>ST_AsText output</lineannotation>
-GEOMETRYCOLLECTION(POLYGON((-110 270,135.55555555555557 270,36.81818181818182 92.27272727272727,-110 43.33333333333332,-110 270)),
+<screen>GEOMETRYCOLLECTION(POLYGON((-110 270,135.55555555555557 270,36.81818181818182 92.27272727272727,-110 43.33333333333332,-110 270)),
 POLYGON((230 270,230 -45.71428571428574,36.81818181818182 92.27272727272727,135.55555555555557 270,230 270)),
 POLYGON((230 -90,-110 -90,-110 43.33333333333332,36.81818181818182 92.27272727272727,230 -45.71428571428574,230 -90)))
 </screen>

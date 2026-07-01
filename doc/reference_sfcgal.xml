@@ -3187,11 +3187,10 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                             </informalfigure></para>
                         </entry>
                         <entry><para>
-                                <programlisting>SELECT CG_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+                                <programlisting language="sql">SELECT CG_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                                 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
                                 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
                                 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting></para>
-                        <para>ST_AsText output:</para>
                         <screen>TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),
                         ((0 0 0,0 1 0,1 1 0,0 0 0)),
                         ((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),
@@ -3212,7 +3211,7 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
 
             <row>
                 <entry><para>
-                        <programlisting>SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry;</programlisting>
+                        <programlisting language="sql">SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry;</programlisting>
                         <informalfigure>
                             <mediaobject>
                                 <imageobject>
@@ -3223,10 +3222,9 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                     </informalfigure></para>
                 </entry>
                 <entry><para>
-                        <programlisting>SELECT
+                        <programlisting language="sql">SELECT
                         CG_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);</programlisting>
                 </para>
-                <para>ST_AsText output</para>
                 <screen>TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),
                 ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),
                 ((120 190,10 190,50 160,120 190)))</screen>
