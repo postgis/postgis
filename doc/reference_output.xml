@@ -451,7 +451,7 @@
   </screen>
 
   <para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
-  <para>The SQL for Boston to San Francisco, segments every 100 KM.</para>
+  <para>This example builds the SQL for a Boston-to-San-Francisco path with segments every 100 kilometers.</para>
   <programlisting>
   SELECT ST_AsEncodedPolyline(
     ST_Segmentize(
@@ -894,7 +894,7 @@ SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
 
 ]]></programlisting>
 
-    <para>Polyhedral Example.</para>
+    <para>This example uses a PolyhedralSurface.</para>
     <programlisting>
 <![CDATA[
 SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
@@ -1884,7 +1884,7 @@ SELECT ST_AsX3D(
 <screen>c0w3hf1s70w3hf1s70w3</screen>
 <programlisting>SELECT ST_GeoHash( ST_Point(-126,48), 5);</programlisting>
 <screen>c0w3h</screen>
-<para>This line contains the point, so the GeoHash is a prefix of the point code.</para>
+<para>This example shows that the GeoHash for a line containing a point is a prefix of the point code.</para>
 <programlisting>
 SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);</programlisting>
 <screen>c0w3</screen>

@@ -292,11 +292,11 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 --10 meter expanded box around bbox of a linestring
 SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,2312892 110714)', 2163),10) As box2d);</programlisting>
 <screen>BOX(2312882 110666,2312990 110724)</screen>
-<para>10 meter expanded 3D box of a 3D box.</para>
+<para>This example expands a 3D box by 10 meters.</para>
 <programlisting>
 SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As box3d),10)</programlisting>
 <screen>BOX3D(778773 2951731 -9,794885 2970052.61545891 20)</screen>
-<para>10 meter geometry astext rep of a expand box around a point geometry.</para>
+<para>This example renders the text representation of a 10-meter expanded box around a point geometry.</para>
 <programlisting>
  SELECT ST_AsEWKT(ST_Expand(ST_GeomFromEWKT('SRID=2163;POINT(2312980 110676)'),10));</programlisting>
 <screen>SRID=2163;POLYGON((2312970 110666,2312970 110686,2312990 110686,2312990 110666,2312970 110666))</screen>
@@ -365,7 +365,7 @@ GROUP BY category ORDER BY category;</programlisting>
  BOX(778783.5625 2951741.25,794875.8125 2970042.75) | A
  BOX(751315.8125 2919164.75,765202.6875 2935417.25) | B
  BOX(739651.875 2917394.75,756688.375 2935866)      | C</screen>
-<para>Force back into a geometry. And render the extended text representation of that geometry.</para>
+<para>This example converts the extent back into a geometry and renders its extended text representation.</para>
 <programlisting>
 SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;</programlisting>
 <screen>                bextent
@@ -430,7 +430,7 @@ FROM (SELECT ST_MakePoint(x,y,z) As geom
         CROSS JOIN generate_series(1,2) As y
         CROSS JOIN generate_series(0,2) As Z) As foo;</programlisting>
 <screen>BOX3D(1 1 0,3 2 2)</screen>
-<para>Get the extent of various elevated circular strings.</para>
+<para>This example returns the extent of several elevated CircularStrings.</para>
 <programlisting>
 SELECT ST_3DExtent(foo.geom) As b3extent
 FROM (SELECT ST_Translate(ST_Force3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1))),0,0,z) As geom

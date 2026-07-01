@@ -983,7 +983,7 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 			<programlisting>SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 2967450,743265 2967450,
 743265.625 2967416,743238 2967416)',2249));</programlisting>
 <screen>122.63074400009504</screen>
-<para>Transforming WGS 84 LineString to Massachusetts state plane meters.</para>
+<para>This example transforms a WGS 84 LineString to Massachusetts State Plane meters.</para>
 <programlisting>
 SELECT ST_Length(
 	ST_Transform(
@@ -996,7 +996,7 @@ SELECT ST_Length(
 		  <refsection>
 			<title>Geography Examples</title>
 			<para>Return length of WGS 84 geography line</para>
-			<para>The default calculation uses a spheroid.</para>
+			<para>This example uses the default spheroid calculation.</para>
 			<programlisting>
 SELECT ST_Length(the_geog) As length_spheroid,  ST_Length(the_geog,false) As length_sphere
 FROM (SELECT ST_GeographyFromText(
@@ -1142,7 +1142,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 <screen>	tot_len      |    len_line1     |    len_line2
 ------------------+------------------+------------------
  85204.52077117894 | 13986.87252824332 | 71217.64824293563</screen>
-<para>3D.</para>
+<para>This example uses 3D input.</para>
 <programlisting>
 SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,
 ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
@@ -1685,7 +1685,7 @@ FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766
 <screen>   per_meters    |      per_ft
 -----------------+------------------
 37.37904625414049 | 122.63466618812497</screen>
-<para>MultiPolygon example.</para>
+<para>This example uses a MultiPolygon.</para>
 <programlisting>
 SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog,false) As per_sphere_meters,  ST_Perimeter(geog)/0.3048 As per_ft
 FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.1044542869917 42.3406744369506,

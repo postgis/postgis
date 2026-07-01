@@ -390,7 +390,7 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 
         <refsection>
         <title>Examples</title>
-         <para>Create a point with unknown SRID.</para>
+         <para>This example creates a point with an unknown SRID.</para>
          <programlisting>
 SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);
 
@@ -1279,7 +1279,7 @@ has an unknown SRID (as is the case by default).</para>
 
 		<refsection>
 			<title>Examples</title>
-			<para>Create a degree-2 NURBS curve with uniform weights.</para>
+			<para>This example creates a degree-2 NURBS curve with uniform weights.</para>
 			<programlisting>
 SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
 

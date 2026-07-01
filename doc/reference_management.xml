@@ -128,7 +128,7 @@
 	  <refsection>
 		<title>Examples</title>
 
-		<para>Create schema to hold data.</para>
+		<para>This example creates a schema to hold data.</para>
 		<programlisting>
 CREATE SCHEMA my_schema;
 -- Create a new simple PostgreSQL table

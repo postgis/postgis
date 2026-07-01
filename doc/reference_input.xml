@@ -133,7 +133,7 @@
 
 		 <refsection>
 			<title>Examples</title>
-			<para>Converting lon lat coords to geography.</para>
+			<para>This example converts longitude/latitude coordinates to geography.</para>
 			<programlisting language="sql">
 ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
 UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');
@@ -299,7 +299,7 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 <programlisting language="sql">
 SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');
 </programlisting>
-<para>Polyhedral Surface example.</para>
+<para>This example uses a PolyhedralSurface.</para>
 <programlisting language="sql">
 SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
@@ -1656,7 +1656,7 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 		<title>Examples</title>
 		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) As wkt;</programlisting>
 <screen>POINT(-48.23456 20.12345)</screen>
-<para>A 3D linestring.</para>
+<para>This example creates a 3D LineString.</para>
 <programlisting language="sql">
 SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3],[4,5,6],[7,8,9]]}')) As wkt;</programlisting>
 <screen>LINESTRING Z (1 2 3,4 5 6,7 8 9)</screen>
@@ -1830,11 +1830,11 @@ SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometr
     <refsection>
     <title>Examples</title>
 
-    <para>Create a line string from a polyline.</para>
+    <para>This example creates a LineString from a polyline.</para>
     <programlisting language="sql">
 SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));</programlisting>
 <screen>SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)</screen>
-<para>Select different precision that was used for polyline encoding.</para>
+<para>This example selects a different precision than the one used for polyline encoding.</para>
 <programlisting language="sql">
 SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@',6));</programlisting>
 <screen>SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)

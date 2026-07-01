@@ -151,7 +151,7 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 	  <refsection>
 		<title>Examples</title>
 
-		<para>First 3 Rejects from a successful quintuplet experiment.</para>
+		<para>This example returns the first three rejects from a successful quintuplet experiment.</para>
 		<programlisting>
 <![CDATA[
 
@@ -241,13 +241,13 @@ Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDeta
 	  <refsection>
 		<title>Examples</title>
 
-        <para>Invalid bow-tie polygon.</para>
+        <para>This example uses an invalid bow-tie polygon.</para>
         <programlisting>
 SELECT ST_IsValidReason(
     'POLYGON ((100 200, 100 100, 200 200,
      200 100, 100 200))'::geometry) as validity_info;</programlisting>
 <screen>Self-intersection[150 150]</screen>
-		<para>First 3 Rejects from a successful quintuplet experiment.</para>
+		<para>This example returns the first three rejects from a successful quintuplet experiment.</para>
 		<programlisting>
 <![CDATA[
 

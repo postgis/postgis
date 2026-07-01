@@ -1769,7 +1769,7 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
                 </tgroup>
             </informaltable>
 
-            <para>Projected medial axis: free endpoints extended to polygon boundary.</para>
+            <para>This example computes the projected medial axis with free endpoints extended to the polygon boundary.</para>
             <programlisting>
 SELECT CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true);
 -- Result: MULTILINESTRING((0 0.5,2 0.5))</programlisting>
@@ -2043,7 +2043,7 @@ SELECT CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true);
                     <tbody>
                         <row>
                             <entry>
-                                <para>Height 2.0 -> 6 patches.</para>
+                                <para>This example uses height 2.0 and returns 6 patches.</para>
                                 <programlisting>
 SELECT ST_NumPatches(
   CG_GenerateSkillionRoof(
@@ -2189,7 +2189,7 @@ SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'FLAT', 2.0))
 
         <refsection>
             <title>Examples</title>
-            <para>Repair a bowtie (self-intersecting) polygon.</para>
+            <para>This example repairs a bowtie self-intersecting polygon.</para>
             <programlisting>
 SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))'));
 -- MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))
@@ -4023,7 +4023,7 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
 
   <refsection>
     <title>Examples</title>
-    <para>Simplify a polygon with a threshold of 0.5.</para>
+    <para>This example simplifies a polygon with a threshold of 0.5.</para>
     <programlisting>SELECT ST_AsText(CG_Simplify(ST_GeomFromText('POLYGON((0 0, 0 1, 0.1 1, 0.2 1, 0.3 1, 0.4 1, 0.5 1, 1 1, 1 0, 0 0))'), 0.5));</programlisting>
     <para>Simplify a 3D terrain geometry while preserving topology and Z values.</para>
     <programlisting>SELECT ST_AsText(CG_Simplify(ST_GeomFromText('LINESTRING Z(0 0 0, 0 1 1, 0.1 1 1, 0.2 1 1, 0.3 1 1, 1 1 2)'), 0.2, true));</programlisting>
@@ -4216,7 +4216,7 @@ SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
 
     <refsection>
         <title>Examples</title>
-        <para>Create a smooth curve interpolating through 5 points.</para>
+        <para>This example creates a smooth curve interpolating through five points.</para>
         <programlisting>
 SELECT CG_NurbsCurveInterpolate(
     'LINESTRING(0 0, 1 2, 3 3, 5 1, 6 0)'::geometry,
@@ -4275,7 +4275,7 @@ SELECT CG_NurbsCurveInterpolate(
 
     <refsection>
         <title>Examples</title>
-        <para>Approximate noisy data with tolerance.</para>
+        <para>This example approximates noisy data using a tolerance.</para>
         <programlisting>
 SELECT CG_NurbsCurveApproximate(
     'LINESTRING(0 0, 1 2.1, 2 1.9, 3 3.2, 4 2.8, 5 1)'::geometry,
@@ -4342,7 +4342,7 @@ SELECT CG_NurbsCurveApproximate(
 
     <refsection>
         <title>Examples</title>
-        <para>Get tangent vector at curve midpoint.</para>
+        <para>This example returns the tangent vector at the curve midpoint.</para>
         <programlisting>
 WITH nurbs AS (
     SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry) AS geom

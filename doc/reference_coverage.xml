@@ -94,7 +94,7 @@ SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
   3 | LINESTRING (140 80, 140 190)
   4 | null</screen>
 
-      <para>Test entire table for coverage validity.</para>
+      <para>This example tests the entire table for coverage validity.</para>
       <programlisting>
 SELECT true = ALL (
     SELECT ST_CoverageInvalidEdges(geom) OVER () IS NULL
@@ -191,7 +191,7 @@ SELECT true = ALL (
     <refsection>
       <title>Examples</title>
 
-      <para>Populate input table.</para>
+      <para>This example populates the input table.</para>
       <programlisting>
 CREATE TABLE example AS SELECT * FROM (VALUES
   (1, 'POLYGON ((10 190, 30 160, 27 134.5, 40 110, 122 47, 120 10, 10 10, 10 190))'::geometry),
@@ -210,7 +210,7 @@ CREATE TABLE example AS SELECT * FROM (VALUES
         </mediaobject>
       </informalfigure>
 
-<para>Show it is an invalid coverage.</para>
+<para>This example shows that the coverage is invalid.</para>
 <programlisting>
 SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
   FROM example;
@@ -225,7 +225,7 @@ SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
         </mediaobject>
       </informalfigure>
 
-<para>Clean the coverage, merging gaps with width &lt;= 1.</para>
+<para>This example cleans the coverage by merging gaps with width less than or equal to 1.</para>
 <programlisting>
 CREATE TABLE example_clean AS
   SELECT id, ST_CoverageClean(geom, 1) OVER () AS GEOM
@@ -403,7 +403,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
 
     <refsection>
       <title>Examples</title>
-      <para>Get all unique edges of a coverage.</para>
+      <para>This example returns all unique edges of a coverage.</para>
       <programlisting>
 SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))')));
 --------------------------------------

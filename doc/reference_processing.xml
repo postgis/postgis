@@ -1069,7 +1069,7 @@ SELECT  ST_ConcaveHull( geom,            0.1) AS polygon_hull,
 
 <para>Using with ST_Collect to compute the concave hull of a geometry set.</para>
 
-<para>Compute estimate of infected area based on point observations.</para>
+<para>This example estimates an infected area from point observations.</para>
 <programlisting>
 SELECT disease_type,
     ST_ConcaveHull( ST_Collect(obs_pnt), 0.3 ) AS geom
@@ -1153,7 +1153,7 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 
 <para>Using with ST_Collect to compute the convex hulls of geometry sets.</para>
 
-<para>Get estimate of infected area based on point observations.</para>
+<para>This example returns an estimated infected area from point observations.</para>
 <programlisting>
 SELECT d.disease_type,
     ST_ConvexHull(ST_Collect(d.geom)) As geom

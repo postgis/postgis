@@ -56,14 +56,14 @@
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <para>Inverse direction.</para>
+    <para>This example transforms in the inverse direction.</para>
     <programlisting>
 SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
 <screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
-    <para>Using ST_Transform with automatic selection of a conversion pipeline.</para>
+    <para>This example uses ST_Transform with automatic selection of a conversion pipeline.</para>
     <programlisting>
 SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
 <screen>POINT(143.00000635638918 -36.999986706128176)</screen>
@@ -403,19 +403,19 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <para>Forward direction.</para>
+    <para>This example transforms in the forward direction.</para>
     <programlisting>
 SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;</programlisting>
 <screen>POINT(426857.9877165967 5427937.523342293)</screen>
-<para>Inverse direction.</para>
+<para>This example transforms in the inverse direction.</para>
 <programlisting>
 SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
 <screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
-    <para>Using ST_Transform with automatic selection of a conversion pipeline.</para>
+    <para>This example uses ST_Transform with automatic selection of a conversion pipeline.</para>
     <programlisting>
 SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
 <screen>POINT(143.00000635638918 -36.999986706128176)</screen>
@@ -424,7 +424,7 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
 SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;</programlisting>
 <screen>POINT(143.0000063280214 -36.999986718287545)</screen>
-<para>Using a PROJ pipeline definition matching EPSG:8447, as returned from. 'projinfo -s EPSG:4939 -t EPSG:7844'. Note that any 'axisswap' steps must be removed.</para>
+<para>This example uses a PROJ pipeline definition matching EPSG:8447, as returned from projinfo. Any axisswap steps must be removed.</para>
 <programlisting>
 SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
   '+proj=pipeline

@@ -258,7 +258,7 @@
       </tgroup>
     </informaltable>
 
-      <para>A circle within a circle.</para>
+      <para>This example tests a circle within another circle.</para>
       <programlisting>
 SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
      ST_Contains(bigc,smallc) As bigcontainssmall,
@@ -273,7 +273,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 <screen>  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
  f                | t                | t                | t          | t        | f</screen>
-<para>Example demonstrating difference between contains and contains properly.</para>
+<para>This example demonstrates the difference between contains and contains-properly predicates.</para>
 <programlisting>
 SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
    ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
@@ -358,7 +358,7 @@ ST_Point      | t          | t              | f           | f
 
     <refsection>
     <title>Examples</title>
-      <para>A circle within a circle.</para>
+      <para>This example tests a circle within another circle.</para>
       <programlisting>
   SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
   ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,
@@ -372,7 +372,7 @@ ST_Point      | t          | t              | f           | f
 <screen>  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
  f                     | t                    | f                    | t          | t                 | f</screen>
-<para>Example demonstrating difference between contains and contains properly.</para>
+<para>This example demonstrates the difference between contains and contains-properly predicates.</para>
 <programlisting>
  SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
  ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
@@ -465,7 +465,7 @@ ST_Point      | t          | t              | f           | f
 
     <refsection>
     <title>Examples</title>
-      <para>A circle coveredby a circle.</para>
+      <para>This example tests a circle covered by another circle.</para>
       <programlisting>
 SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,
   ST_CoveredBy(smallc, bigc) As smallcoveredbybig,
@@ -562,7 +562,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
     <refsection>
     <title>Examples</title>
       <para> Geometry example </para>
-      <para>A circle covering a circle.</para>
+      <para>This example tests a circle covering another circle.</para>
       <programlisting>
 SELECT ST_Covers(smallc,smallc) As smallinsmall,
   ST_Covers(smallc, bigc) As smallcoversbig,
@@ -576,7 +576,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
  t            | f              | t                 | f
 (1 row) </screen>
     <para>Geeography Example</para>
-    <para>A point with a 300 meter buffer compared to a point, a point and its 10 meter buffer.</para>
+    <para>This example compares a point with a 300-meter buffer against a point and against a 10-meter buffer around that point.</para>
     <programlisting>
 SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
   ST_Covers(ST_Buffer(geog_pt,10), geog_pt) As buff_10m_covers_cent
@@ -981,7 +981,7 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
 <screen>f</screen>
 <programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);</programlisting>
 <screen>t</screen>
-<para>Look up in table. Make sure table has a GiST index on geometry column for faster lookup.</para>
+<para>This example looks up rows in a table; for faster lookup, the geometry column should have a GiST index.</para>
 <programlisting role="requires-external-state">
 SELECT id, name FROM cities WHERE ST_Intersects(geom, 'SRID=4326;POLYGON((28 53,27.707 52.293,27 52,26.293 52.293,26 53,26.293 53.707,27 54,27.707 53.707,28 53))');</programlisting>
 <screen> id | name
@@ -1843,7 +1843,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
 
     <refsection>
     <title>Examples</title>
-      <para>A circle within a circle.</para>
+      <para>This example tests a circle within another circle.</para>
       <programlisting>
 SELECT ST_Within(smallc,smallc) As smallinsmall,
   ST_Within(smallc, bigc) As smallinbig,

@@ -1198,7 +1198,7 @@ WHERE short_name = 'JPEG') As g;</programlisting>
  THUMBNAIL_HEIGHT   | int     | Forced thumbnail height
 (9 rows)</screen>
 
-<para>Raw xml output for creator options for GeoTiff.</para>
+<para>This example returns raw XML output for GeoTIFF creator options.</para>
 <programlisting>
 <![CDATA[
 
@@ -1524,7 +1524,7 @@ constraints enforced.
             <refsection>
                 <title>Examples: Single New Band</title>
 
-                <para>Add another band of type 8 bit unsigned integer with pixels initialized to 200.</para>
+                <para>This example adds another 8-bit unsigned integer band with pixels initialized to 200.</para>
                 <programlisting>
 UPDATE dummy_rast
     SET rast = ST_AddBand(rast,'8BUI'::text,200)
@@ -1551,7 +1551,7 @@ FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd
 -----------+----------------+-------------+---------+------
  1BB       |             | f       |
  4BUI      |             | f       |</screen>
-<para>Output metadata for the raster.</para>
+<para>This example outputs metadata for the raster.</para>
 <programlisting>
 SELECT  (rmd).width, (rmd).height, (rmd).numbands
 FROM (SELECT ST_MetaData(rast) As rmd
@@ -1819,7 +1819,7 @@ FROM ST_BandMetadata(
                               <caption><para>black circle</para></caption>
                             </mediaobject>
                           </informalfigure></para>
-                <para>This will output a black circle taking up 150 x 150 pixels.</para>
+                <para>This example outputs a black circle occupying 150 by 150 pixels.</para>
                 <programlisting>
 SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
 
@@ -1832,7 +1832,7 @@ SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlist
                             </mediaobject>
                           </informalfigure></para>
 
-                <para>The bands map to RGB bands - the value (118,154,118) - teal.</para>
+                <para>This example maps bands to RGB channels, producing the teal value (118,154,118).</para>
                 <programlisting>
 SELECT ST_AsPNG(
     ST_AsRaster(
@@ -1971,7 +1971,7 @@ FROM agg;</programlisting>
                 <refsection>
                     <title>Examples</title>
 
-                    <para>Make 2 new rasters: 1 containing band 1 of dummy, second containing band 2 of dummy and then reclassified as a 2BUI.</para>
+                    <para>This example creates two rasters: one containing band 1 of dummy_rast, and one containing band 2 reclassified as 2BUI.</para>
                     <programlisting>
 SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1,
  ST_NumBands(rast2) As numb2,  ST_BandPixelType(rast2) As pix2
@@ -2980,7 +2980,7 @@ FROM dummy_rast;</programlisting>
             <refsection>
                 <title>Examples</title>
 
-                    <para>Non-skewed raster.</para>
+                    <para>This example uses a non-skewed raster.</para>
                     <programlisting>
 SELECT
     rid,
@@ -2992,7 +2992,7 @@ FROM dummy_rast</programlisting>
    1 |        0.5 |      0.5 |       2.5 |        3.5
    2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95</screen>
 
-                    <para>Skewed raster.</para>
+                    <para>This example uses a skewed raster.</para>
                     <programlisting>
 SELECT
     rid,
@@ -3064,7 +3064,7 @@ FROM (
                 <refsection>
                     <title>Examples</title>
 
-                    <para>Non-skewed raster providing column is sufficient.</para>
+                    <para>This example shows that providing a column is sufficient for a non-skewed raster.</para>
                     <programlisting>
 SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord,
     ST_RasterToWorldCoordX(rast,2) As x2coord,
@@ -3896,7 +3896,7 @@ WHERE rid = 2;</programlisting>
                 <refsection>
                     <title>Examples</title>
 
-                    <para>Create dummy table with one raster column.</para>
+                    <para>This example creates a dummy table with one raster column.</para>
                     <programlisting>
 create table dummy_rast (rid integer, rast raster);
 
@@ -4259,7 +4259,7 @@ FROM dummy_rast;</programlisting>
 
             <refsection>
                     <title>Examples</title>
-                    <para>Get raster pixel polygon.</para>
+                    <para>This example returns a raster pixel polygon.</para>
                     <programlisting>
 SELECT i,j, ST_AsText(ST_PixelAsPolygon(foo.rast, i,j)) As b1pgeom
 FROM dummy_rast As foo
@@ -4331,7 +4331,7 @@ WHERE rid=2;</programlisting>
 
             <refsection>
                     <title>Examples</title>
-                    <para>Get raster pixel polygon.</para>
+                    <para>This example returns a raster pixel polygon.</para>
                     <programlisting>
 SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom
 FROM (SELECT ST_PixelAsPolygons(
@@ -4576,7 +4576,7 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;<
 
             <refsection>
                 <title>Examples</title>
-                <para>Uses LATERAL syntax.</para>
+                <para>This example uses LATERAL syntax.</para>
                 <programlisting>
 SELECT x, y, val, ST_AsText(geom)
     FROM (SELECT dp.* FROM dummy_rast, LATERAL ST_PixelAsCentroids(rast, 1) AS dp WHERE rid = 2) foo;</programlisting>
@@ -4902,7 +4902,7 @@ WHERE
             <refsection>
                 <title>Examples</title>
 
-                <para>Pixel 2x2 has value.</para>
+                <para>This example reads a value from pixel 2x2.</para>
                 <programlisting>
 SELECT
     ST_Value(rast, 2, 2) AS value,
@@ -4933,7 +4933,7 @@ FROM (
 -------+--------------
      1 |            1</screen>
 
-                <para>Pixel 2x3 is NODATA.</para>
+                <para>This example reads a NODATA value from pixel 2x3.</para>
                 <programlisting>
 SELECT
     ST_Value(rast, 2, 3) AS value,
@@ -5187,7 +5187,7 @@ FROM test_raster</programlisting>
             <refsection>
                 <title>Examples</title>
 
-                <para>Pixel 2x2 has value.</para>
+                <para>This example reads a value from pixel 2x2.</para>
                 <programlisting>
 SELECT
     ST_Neighborhood(rast, 2, 2, 1, 1)
@@ -5210,7 +5210,7 @@ FROM (
 ) AS foo</programlisting>
 <screen>{{NULL,1,1},{1,1,1},{1,NULL,1}}</screen>
 
-                <para>Pixel 2x3 is NODATA.</para>
+                <para>This example reads a NODATA value from pixel 2x3.</para>
                 <programlisting>
 SELECT
     ST_Neighborhood(rast, 2, 3, 1, 1)
@@ -5322,7 +5322,7 @@ FROM ST_SetValues(
             <refsection>
                 <title>Examples</title>
 
-                <para>Geometry example.</para>
+                <para>This example uses geometry input.</para>
                 <programlisting>
 <![CDATA[
 
@@ -5345,7 +5345,7 @@ GROUP BY (foo.geomval).val;
 
 ]]></programlisting>
 
-                <para>Store the changed raster.</para>
+                <para>This example stores the changed raster.</para>
                 <programlisting>
     UPDATE dummy_rast SET rast = ST_SetValue(rast,1, ST_Point(3427927.75, 5793243.95),100)
         WHERE rid = 2   ;
@@ -6368,7 +6368,7 @@ WHERE rid = 2;</programlisting>
                 <refsection>
                     <title>Examples</title>
 
-                    <para>Example 1.</para>
+                    <para>This is the first example.</para>
                     <programlisting>
 UPDATE dummy_rast SET rast = ST_SetSkew(rast,1,2) WHERE rid = 1;
 SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,
@@ -6383,7 +6383,7 @@ FROM dummy_rast WHERE rid = 1;</programlisting>
                     : 0.5000000000
                     : 0.5000000000</screen>
 
-                <para>Example 2 set both to same number:</para>
+                <para>This second example sets both values to the same number.</para>
                 <programlisting>
 UPDATE dummy_rast SET rast = ST_SetSkew(rast,0) WHERE rid = 1;
 SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,
@@ -6676,11 +6676,11 @@ FROM (
                     <title>Examples</title>
                     <para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
 
-                    <para>The original raster pixel size.</para>
+                    <para>This example returns the original raster pixel size.</para>
                     <programlisting>
 SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width</programlisting>
 <screen>0.001</screen>
-<para>The rescaled raster raster pixel size.</para>
+<para>This example returns the pixel size of the rescaled raster.</para>
 <programlisting>
 SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015)) width</programlisting>
 <screen>0.0015</screen>
@@ -6751,7 +6751,7 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
                     <title>Examples</title>
                     <para>A simple example reskewing a raster from a skew of 0.0 to a skew of 0.0015.</para>
 
-                    <para>The original raster non-rotated.</para>
+                    <para>This example uses the original non-rotated raster.</para>
                     <programlisting>
 SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
 
@@ -6840,7 +6840,7 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
                     <title>Examples</title>
                     <para>A simple example snapping a raster to a slightly different grid.</para>
 
-                    <para>The original raster upper left X.</para>
+                    <para>This example returns the upper-left X coordinate of the original raster.</para>
                     <programlisting>
 SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
 -- result
@@ -7209,7 +7209,7 @@ FROM baz</programlisting>
                 <refsection>
                     <title>Examples</title>
 
-                    <para>Change just first band no data value.</para>
+                    <para>This example changes only the first band NODATA value.</para>
                     <programlisting>
 UPDATE dummy_rast
     SET rast = ST_SetBandNoDataValue(rast,1, 254)
@@ -7271,7 +7271,7 @@ WHERE rid = 2;
                 <refsection>
                     <title>Examples</title>
 
-                    <para>Create dummy table with one raster column.</para>
+                    <para>This example creates a dummy table with one raster column.</para>
                     <programlisting>
 create table dummy_rast (rid integer, rast raster);
 
@@ -8020,7 +8020,7 @@ SELECT building_id, SUM(count) As num_pixels
 
             <refsection>
                 <title>Example: Raster coverage</title>
-                <para>Stats for each band.</para>
+                <para>This example returns statistics for each band.</para>
                 <programlisting>
 SELECT band, (stats).*
 FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band) As stats
