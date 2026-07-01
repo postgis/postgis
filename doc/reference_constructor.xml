@@ -984,7 +984,7 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 
         <refsection>
         <title>Example: Building a tile envelope</title>
-         <programlisting role="requires-external-state">SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );
+         <programlisting>SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );
 
  st_astext
 ------------------------------

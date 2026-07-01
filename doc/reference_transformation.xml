@@ -357,7 +357,7 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">
+		<programlisting>
 --Rotate a line 90 degrees along z-axis
 SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
 		 st_asewkt
@@ -459,7 +459,7 @@ point are equivalent to no scaling the corresponding dimension.
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">--Version 1: scale X, Y, Z
+		<programlisting>--Version 1: scale X, Y, Z
 SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));
 			  st_asewkt
 --------------------------------------
@@ -558,7 +558,7 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 	POINT(5 12 3)
 		</programlisting>
 		<para>Move points with a measure coordinate</para>
-		<programlisting role="requires-external-state">SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINTM(0 0 11)'), 5, 12));
+		<programlisting>SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINTM(0 0 11)'), 5, 12));
 	st_asewkt
 	---------
 	POINTM(5 12 11)
@@ -625,7 +625,7 @@ SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINT(0 0 7 11)'), 5, 12, 3));
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));
+		<programlisting>SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));
 		  st_asewkt
 -----------------------------
  LINESTRING(1.5 6 3,1.5 4 1)

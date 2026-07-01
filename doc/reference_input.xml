@@ -1442,7 +1442,7 @@ SELECT
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting role="requires-external-state">SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');
+		<programlisting>SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');
 
                 st_geomfromgeohash
 --------------------------------------------------
@@ -1500,7 +1500,7 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting role="requires-external-state">SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+		<programlisting>SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
                                                         st_astext
 --------------------------------------------------------------------------------------------------------------------------
  POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646))
@@ -1905,7 +1905,7 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
     <refsection>
     <title>Examples</title>
 
-    <programlisting role="requires-external-state">
+    <programlisting>
 -- Create a line string from a polyline
 SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));
 -- result --
@@ -1958,7 +1958,7 @@ SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting role="requires-external-state">SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+		<programlisting>SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
           st_astext
 ------------------------------
  POINT(-115.172816 36.114646)

@@ -236,7 +236,7 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
 		  </refsection>
             <refsection>
                 <title>Examples</title>
-                 <programlisting role="requires-external-state">SELECT '{{1,2},{4,3}}'::topology.topoelementarray As tea;
+                 <programlisting>SELECT '{{1,2},{4,3}}'::topology.topoelementarray As tea;
   tea
 -------
 {{1,2},{4,3}}
@@ -1635,7 +1635,7 @@ Adds a collection of geometries to a given empty topology and returns a message 
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting role="requires-external-state">
+				<programlisting>
 -- Populate topology --
 SELECT topology.ST_CreateTopoGeo('ri_topo',
  ST_GeomFromText('MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,

@@ -75,6 +75,15 @@ class ExampleTester:
             re.I,
         ):
             return "external-context"
+        if re.search(
+            r"\b(?:CG_3DIntersection|CG_3DConvexHull|CG_AlphaShape|"
+            r"CG_ApproxConvexPartition|CG_ExtrudeStraightSkeleton|"
+            r"CG_GreeneApproxConvexPartition|CG_OptimalAlphaShape|"
+            r"CG_OptimalConvexPartition|CG_YMonotonePartition)\s*\(",
+            text,
+            re.I,
+        ):
+            return "unstable-output"
         if (
             "..." in text
             or re.search(r"\.\.(?:[),]|\s*$)", text, re.M)
@@ -144,6 +153,8 @@ class ExampleTester:
         for line in lines:
             line = line.strip()
             if not line or re.match(r"^\(\d+ rows?\)$", line):
+                continue
+            if line == "ST_AsText output":
                 continue
             rows.append(self.split_psql_row(line) if re.search(r"│|\s+\|\s+", line) else [line])
         return rows
@@ -288,6 +299,7 @@ class ExampleTester:
             "external_context": 0,
             "placeholder_output": 0,
             "document_output": 0,
+            "unstable_output": 0,
             "notice_or_error": 0,
             "cleanish_runnable_query": 0,
             "obvious_not_runnable_query": 0,
@@ -321,6 +333,8 @@ class ExampleTester:
                 stats["placeholder_output"] += 1
             if reason == "document-output":
                 stats["document_output"] += 1
+            if reason == "unstable-output":
+                stats["unstable_output"] += 1
             if reason == "notice-or-error":
                 stats["notice_or_error"] += 1
 

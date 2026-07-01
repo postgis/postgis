@@ -403,7 +403,7 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
 
     <refsection>
       <title>Examples</title>
-      <programlisting role="requires-external-state">
+      <programlisting>
 -- Get all unique edges of a coverage
 SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))')));
 --------------------------------------

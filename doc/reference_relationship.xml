@@ -261,7 +261,7 @@
       </tgroup>
     </informaltable>
 
-      <programlisting role="requires-external-state">
+      <programlisting>
 -- A circle within a circle
 SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
      ST_Contains(bigc,smallc) As bigcontainssmall,
@@ -362,7 +362,7 @@ ST_Point      | t          | t              | f           | f
 
     <refsection>
     <title>Examples</title>
-      <programlisting role="requires-external-state">
+      <programlisting>
   --a circle within a circle
   SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
   ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,
@@ -1218,7 +1218,7 @@ WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
     <refsection>
     <title>Examples</title>
 
-    <programlisting role="requires-external-state">SELECT ST_OrderingEquals(
+    <programlisting>SELECT ST_OrderingEquals(
   'LINESTRING(0 0, 10 10)',
   'LINESTRING(0 0, 5 5, 10 10)');
 
@@ -1533,7 +1533,7 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
     <title>Examples</title>
 
         <para>Using the boolean-valued function to test spatial relationships.</para>
-    <programlisting role="requires-external-state">
+    <programlisting>
 SELECT ST_Relate('POINT(1 2)', ST_Buffer( 'POINT(1 2)', 2), '0FFFFF212');
 st_relate
 -----------
@@ -1558,7 +1558,7 @@ SELECT c.* , p.name As poly_name
 </programlisting>
 
          <para>Computing the intersection matrix for spatial relationships.</para>
-    <programlisting role="requires-external-state">
+    <programlisting>
 SELECT ST_Relate( 'POINT(1 2)',
                   ST_Buffer( 'POINT(1 2)', 2));
 -----------
