@@ -836,13 +836,20 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
 -- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_Difference(geography, geography)
 	RETURNS geography
-	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Difference(@extschema@.ST_Transform(@extschema@.geometry($1), COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1))), @extschema@.ST_Transform(@extschema@.geometry($2), COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1)))), @extschema@.ST_SRID($1)))'
+	AS $$ SELECT CASE
+		WHEN @extschema@.ST_IsEmpty(@extschema@.geometry($1)) OR @extschema@.ST_IsEmpty(@extschema@.geometry($2)) THEN $1
+		ELSE @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Difference(@extschema@.ST_Transform(@extschema@.geometry($1), COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1))), @extschema@.ST_Transform(@extschema@.geometry($2), COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1)))), @extschema@.ST_SRID($1)))
+	END; $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_Union(geography, geography)
 	RETURNS geography
-	AS 'SELECT @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Union(@extschema@.ST_Transform(@extschema@.geometry($1), COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1))), @extschema@.ST_Transform(@extschema@.geometry($2), COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1)))), @extschema@.ST_SRID($1)))'
+	AS $$ SELECT CASE
+		WHEN @extschema@.ST_IsEmpty(@extschema@.geometry($1)) THEN $2
+		WHEN @extschema@.ST_IsEmpty(@extschema@.geometry($2)) THEN $1
+		ELSE @extschema@.geography(@extschema@.ST_Transform(@extschema@.ST_Union(@extschema@.ST_Transform(@extschema@.geometry($1), COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1))), @extschema@.ST_Transform(@extschema@.geometry($2), COALESCE(@extschema@._ST_BestSRID($1, $2), @extschema@.ST_SRID($1)))), @extschema@.ST_SRID($1)))
+	END; $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
