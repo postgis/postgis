@@ -39,10 +39,6 @@ class ExampleTester:
         return f"{label}:{node.sourceline or 'unknown'}"
 
     def obvious_skip_reason(self, text):
-        if re.search(r"^\s*\\\w+", text, re.M):
-            return "psql-meta"
-        if re.search(r"^\s*\w*[=>#]\s*(?:SELECT|WITH)\b", text, re.M | re.I):
-            return "psql-meta"
         if re.search(r"SELECT\s+'<\?xml", text, re.I):
             return "document-output"
         if re.search(
@@ -75,6 +71,10 @@ class ExampleTester:
             re.I,
         ):
             return "external-context"
+        if re.search(r"^\s*\\(?!x[0-9A-Fa-f])\w+", text, re.M):
+            return "psql-meta"
+        if re.search(r"^\s*\w*[=>#]\s*(?:SELECT|WITH)\b", text, re.M | re.I):
+            return "psql-meta"
         if re.search(
             r"\b(?:CG_3DIntersection|CG_3DConvexHull|CG_AlphaShape|"
             r"CG_ApproxConvexPartition|CG_ExtrudeStraightSkeleton|"

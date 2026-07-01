@@ -634,11 +634,13 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_LineFromText('LINESTRING(1 2, 3 4)') AS aline, ST_LineFromText('POINT(1 2)') AS null_return;
-aline                            | null_return
-------------------------------------------------
-010200000002000000000000000000F ... | t
-		</programlisting>
+		<programlisting>SELECT ST_AsText(ST_LineFromText('LINESTRING(1 2, 3 4)')) AS aline,
+       ST_LineFromText('POINT(1 2)') IS NULL AS null_return;</programlisting>
+		<screen>
+aline                 | null_return
+------------------------------------
+LINESTRING(1 2,3 4)  | t
+		</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1218,12 +1220,13 @@ SELECT
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) AS aline,
-		ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;
-aline                            | null_return
-------------------------------------------------
-010200000002000000000000000000F ... | t
-		</programlisting>
+		<programlisting>SELECT ST_AsText(ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)')))) AS aline,
+       ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;</programlisting>
+		<screen>
+aline                 | null_return
+------------------------------------
+LINESTRING(1 2,3 4)  | t
+		</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1288,15 +1291,16 @@ aline                            | null_return
 		<title>Examples</title>
 
 		<programlisting>SELECT
-  ST_LineStringFromWKB(
+  ST_AsText(ST_LineStringFromWKB(
 	ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
-  ) AS aline,
+  )) AS aline,
   ST_LinestringFromWKB(
 	ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
-  ) IS NULL AS null_return;
-   aline                            | null_return
-------------------------------------------------
-010200000002000000000000000000F ... | t</programlisting>
+  ) IS NULL AS null_return;</programlisting>
+		<screen>
+aline                 | null_return
+------------------------------------
+LINESTRING(1 2,3 4)  | t</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->

@@ -82,6 +82,7 @@ check: check-unit docs-check check-lint check-spell
 
 ifeq (@SUPPORT_POSTGRESQL@,yes)
 check: check-regress
+check: check-exampletest
 endif
 ifeq (@RASTER@,raster)
 check: check-fuzzers
@@ -93,6 +94,15 @@ check-lint: check-no-trailing-blanks check-news check-tests-enabled check-lang-e
 
 staged-install: all
 	$(MAKE) -C regress staged-install
+
+check-exampletest: staged-install
+	@if test x"@RASTER@" = xraster && \
+		test x"@TOPOLOGY@" = xtopology && \
+		test x"@SFCGAL@" != x; then \
+		$(MAKE) -C regress exampletest-run; \
+	else \
+		echo "Skipping manual example tests (requires raster, topology, and SFCGAL)"; \
+	fi
 
 check-news:
 	$(top_srcdir)/utils/check_news.sh $(top_srcdir)

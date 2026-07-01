@@ -142,7 +142,9 @@ garden: staged-install
 		tail -n 20 sfcgal_garden_result.txt; false; }
 	tail -n 20 sfcgal_garden_result.txt
 
-exampletest: staged-install
+exampletest: staged-install exampletest-run
+
+exampletest-run:
 	$(MAKE) -C ../doc postgis-out.xml
 	dropdb --if-exists $(EXAMPLETESTDB)
 	createdb $(EXAMPLETESTDB)
