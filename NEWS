@@ -103,6 +103,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #2850, Preserve pgsql2shp numeric precision and scale in DBF metadata
           (Darafei Praliaskouski)
+ - #5796, Stop using PGXS rules to install generated extension SQL bundles
+          (Darafei Praliaskouski)
  - #6083, Pass configured dependency include paths to fuzzer smoke builds
           (Darafei Praliaskouski)
  - #3103, Add regression coverage for exact-schema find_srid and

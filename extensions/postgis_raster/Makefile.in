@@ -123,8 +123,6 @@ distclean: clean
 	rm -f Makefile
 
 PG_CONFIG := @PG_CONFIG@
-PGXS := @PGXS@
-include $(PGXS)
 PERL = @PERL@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -137,3 +135,5 @@ VPATH = @srcdir@
 top_srcdir = @top_srcdir@
 top_builddir = @top_builddir@
 abs_topbuilddir=$(abspath $(top_builddir))
+
+include @srcdir@/../extension-no-pgxs.mk
