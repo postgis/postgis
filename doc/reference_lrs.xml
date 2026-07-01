@@ -293,7 +293,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;</pro
 		  <refsection>
 			<title>Examples</title>
 
-			<para>Rough approximation of finding the street number of a point along the street. Note the whole foo thing is just to generate dummy data that looks. Like house centroids and street. We use ST_DWithin to exclude. Houses too far away from the street to be considered on the street.</para>
+			<para>This example approximates the street number of a house by locating the closest point on a street line. The subquery generates sample house and street data, and <function>ST_DWithin</function> excludes houses that are too far from the street.</para>
 			<programlisting>SELECT ST_AsText(house_loc) As as_text_house_loc,
 	startstreet_num +
 		CAST( (endstreet_num - startstreet_num)
