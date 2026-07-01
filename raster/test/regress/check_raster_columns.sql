@@ -74,9 +74,7 @@ SELECT make_test_raster(2, 2, 2, 1, -1, 0, 0, 3);
 SELECT make_test_raster(3, 2, 2, 1, 1, 0, 0, 4);
 SELECT make_test_raster(4, 2, 2, 2, 2, 0, 0, 5);
 
-SET client_min_messages TO debug;
-SELECT AddRasterConstraints('test_raster_columns', 'rast'::name, 'srid'::text);
-SET client_min_messages TO warning;
+CALL AddRasterConstraints('test_raster_columns'::name, 'rast'::name, FALSE, 'srid'::text);
 SELECT DropRasterConstraints('test_raster_columns', 'rast'::name, 'srid'::text);
 
 SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name);

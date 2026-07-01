@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-06-12 20:29+0000\n"
-"PO-Revision-Date: 2026-06-22 06:39+0000\n"
+"PO-Revision-Date: 2026-07-01 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -4021,18 +4021,20 @@ msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 msgstr ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 
 #. Tag: refpurpose
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Find pairs of topology vertex/segment that are closer than tolerated distance"
-msgstr ""
+msgstr "許容距離内にあるトポロジーの頂点/辺の組を検索します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns a relation in which each tuple is a pair of vertex/segment where the "
 "vertex is NOT an endpoint of the segment but the distance between them is "
 "below the given tolerance."
 msgstr ""
+"個々のタプルが頂点/辺の組合せで、頂点は辺の終端でなく、かつ頂点と辺の間の距離"
+"が指定した許容値より小さくなるリレーションを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -24161,15 +24163,25 @@ msgid ""
 "original vertices, <varname>nSegments</varname> - 1 new intermediate points "
 "are inserted."
 msgstr ""
+"<link xlink:href=\"https://ja.wikipedia.org/wiki/Catmull-"
+"Rom%E3%82%B9%E3%83%97%E3%83%A9%E3%82%A4%E3%83%B3%E6%9B%B2%E7%B7%9A\">Catmull-"
+"Romスプライン</link>アルゴリズムを用いた、ラインまたはポリゴンジオメトリーの"
+"平滑化を行います。<xref linkend=\"ST_ChaikinSmoothing\"/>と違い、これ"
+"は<emphasis>補間</emphasis> スプラインで、出力曲線は元の頂点の全てを通ります"
+"。連続する頂点の間には<varname>nSegments</varname> - 1個の補間ポイントが挿入"
+"されます。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>nSegments</varname> parameter controls the density of the "
 "output. With <varname>nSegments</varname> = 5 (the default), each original "
 "span is divided into 5 sub-segments (inserting 4 new points per span). The "
 "minimum value is 2."
 msgstr ""
+"<varname>nSegments</varname>パラメーターで出力の密度を制御します。<varname>"
+"nSegments</varname> = 5 (デフォルト)では、スパンごとに5個の辺に分かれます "
+"(スパンごとに4個のポイントが新設されます)。最小値は2です。"
 
 #. Tag: para
 #, no-c-format
@@ -24178,6 +24190,9 @@ msgid ""
 "fewer vertices are returned unchanged. Points and multipoints are always "
 "returned unchanged."
 msgstr ""
+"平滑化には少なくとも4個の頂点が必要です。頂点数が少ないジオメトリーが与えられ"
+"ると変更せずに返します。ポイントとマルチポイントが与えられると、常に変更せず"
+"に返します。"
 
 #. Tag: para
 #, no-c-format
@@ -24190,31 +24205,37 @@ msgid ""
 "linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
 "linkend=\"ST_SimplifyVW\"/>)."
 msgstr ""
+"出力曲線の頂点数は、閉じていないラインストリングの場合は<literal>1 + (N-1) * "
+"nSegments</literal>で、閉じてリングになっている場合には <literal>1 + N * "
+"nSegments</literal>です。ここでNは入力頂点数です。大きなジオメトリの場合には"
+"、ポイント数を減らすために結果に対して単純化を施します (<xref "
+"linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_SimplifyPreserveTopology\"/>, "
+"<xref linkend=\"ST_SimplifyVW\"/>を参照して下さい)。"
 
 #. Tag: para
 #, no-c-format
 msgid "Smoothing a 4-point collinear line with default nSegments=5:"
-msgstr ""
+msgstr "4点が共線であるラインストリングの平滑化 (nSegments=5):"
 
 #. Tag: para
 #, no-c-format
 msgid "Smoothing a Polygon using nSegments = 5 and 10:"
-msgstr ""
+msgstr "ポリゴンの平滑化 (nSegments = 5 と 10):"
 
 #. Tag: para
 #, no-c-format
 msgid "nSegments = 5"
-msgstr ""
+msgstr "nSegments = 5"
 
 #. Tag: para
 #, no-c-format
 msgid "nSegments = 10"
-msgstr ""
+msgstr "nSegments = 10"
 
 #. Tag: para
 #, no-c-format
 msgid "Smoothing a LineString using nSegments = 5 and 10:"
-msgstr ""
+msgstr "ラインストリングの平滑化 (nSegments = 5 と 10):"
 
 #. Tag: para
 #, no-c-format
@@ -24222,6 +24243,8 @@ msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref "
 "linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
 msgstr ""
+", <xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37806,6 +37829,10 @@ msgid ""
 "version, a notice is emitted and the non-projected result is returned "
 "instead."
 msgstr ""
+"<varname>projected</varname>が<varname>true</varname>の場合には、中心軸の自由"
+"端点がポリゴン境界に届くよう延長されます (投影中心軸)。SFCGAL 2.3.0以上が必要"
+"です。古いバージョンのSFCGALでビルドされている場合には、通知が出され、非投影"
+"の結果が返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -37814,6 +37841,9 @@ msgid ""
 "SFCGAL &gt;= 2.3.0 for projected result; falls back to non-projected with a "
 "notice on older versions."
 msgstr ""
+"Availability: 3.7.0 - <varname>projected</varname>パラメーター。投影された結"
+"果を得るには SFCGAL &gt;= 2.3.0 が必要。古いバージョンでは通知が出力され、非"
+"投影の結果になります。"
 
 #. Tag: para
 #, no-c-format
@@ -37828,7 +37858,7 @@ msgstr ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Generate a flat (box) roof from a footprint polygon."
-msgstr ""
+msgstr "接地部ポリゴンから平らな (箱の)屋根を生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -37837,11 +37867,14 @@ msgid ""
 "varname> from a 2D footprint polygon. The roof height above the ground plane "
 "is given by <varname>height</varname> (default 3.0)."
 msgstr ""
+"2次元接地部ポリゴンから平らな (箱状の)屋根を3次元 <varname>PolyhedralSurface "
+"Z</varname>で生成します。屋根の高さは地平面から <varname>height</varname>で指"
+"定した値です (デフォルト 3.0)。"
 
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0."
-msgstr ""
+msgstr "Availability: 3.7.0 - SFCGAL &gt;= 2.3.0 が必要。"
 
 #. Tag: para
 #, no-c-format
@@ -37849,11 +37882,13 @@ msgid ""
 ", <xref linkend=\"CG_GenerateGableRoof\"/>, <xref "
 "linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
 msgstr ""
+", <xref linkend=\"CG_GenerateGableRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Generate a hipped roof from a footprint polygon."
-msgstr ""
+msgstr "接地部ポリゴンから寄棟屋根を生成する。"
 
 #. Tag: para
 #, no-c-format
@@ -37862,11 +37897,14 @@ msgid ""
 "2D footprint polygon. All sides slope upward to meet at a ridge or apex. The "
 "roof height is given by <varname>height</varname> (default 3.0)."
 msgstr ""
+"2次元接地部ポリゴンから寄棟屋根を3次元 <varname>PolyhedralSurface Z</varname>"
+"で生成します。全側面の傾斜は頂部が合うように上がります。屋根の高さは地平面か"
+"ら <varname>height</varname>で指定した値です (デフォルト 3.0)。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Generate a gable roof from a footprint polygon."
-msgstr ""
+msgstr "接地部ポリゴンから切妻屋根を生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -37878,6 +37916,12 @@ msgid ""
 "varname> controls the pitch in degrees (default 30.0). The SRID of the input "
 "geometry is preserved."
 msgstr ""
+"2次元接地部ポリゴンから切妻屋根を3次元 <varname>PolyhedralSurface Z</varname>"
+"で生成します。一方の対辺は棟に対して垂直になっている終端です。もう一方の対辺"
+"は棟に平行に上がっていきます。屋根の高さは地平面から <varname>height</"
+"varname>で指定した値です (デフォルト 3.0)。<varname>slope_angle</varname>で仰"
+"角を度単位で指定します (デフォルト 30.0)。入力ジオメトリーのSRIDは保存されま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -37885,6 +37929,8 @@ msgid ""
 ", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
 "linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
 msgstr ""
+", <xref linkend=\"CG_GenerateHippedRoof\"/>, <xref "
+"linkend=\"CG_GenerateSkillionRoof\"/>, <xref linkend=\"CG_GenerateRoof\"/>"
 
 #. Tag: refpurpose
 #, no-c-format

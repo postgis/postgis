@@ -1004,7 +1004,6 @@ sub run_simple_test
 		$lines[$i] =~ s/Self-intersection .*/Self-intersection/;
 		$lines[$i] =~ s/^ROLLBACK/COMMIT/;
 		$lines[$i] =~ s/^psql.*(NOTICE|WARNING|ERROR|DEBUG):/\1:/g;
-		$lines[$i] =~ s/^DEBUG:\s+Finished raster constraint "([^"]+)" in .*/DEBUG:  Finished raster constraint "$1" in <elapsed>/;
 	}
 
 	# Write out output file

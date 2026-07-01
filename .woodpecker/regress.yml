@@ -70,6 +70,15 @@ steps:
       - <<: *steps-env
       - <<: *steps-pg-build
 
+  build-pg16:
+    image: *test-image
+    depends_on: autogen
+    environment:
+      PGVER: 16
+    commands:
+      - <<: *steps-env
+      - <<: *steps-pg-build
+
   build-pg18:
     image: *test-image
     depends_on: autogen
@@ -110,6 +119,17 @@ steps:
       - <<: *steps-pg-install
       - <<: *steps-pg-test-install
 
+  installcheck-pg16:
+    image: *test-image
+    depends_on: build-pg16
+    environment:
+      PGVER: 16
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - <<: *steps-pg-install
+      - <<: *steps-pg-test-install
+
   installcheck-pg18:
     image: *test-image
     depends_on: build-pg18
@@ -121,11 +141,11 @@ steps:
       - <<: *steps-pg-install
       - <<: *steps-pg-test-install
 
-  upgradecheck-pg14:
+  upgradecheck-pg16:
     image: *test-image
-    depends_on: installcheck-pg14
+    depends_on: installcheck-pg16
     environment:
-      PGVER: 14
+      PGVER: 16
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
