@@ -147,8 +147,8 @@ sh autogen.sh
       </link>18
       .
     </para>
-    <para>For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support matrix refer to
-      <link xlink:href="https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS">https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</link>
+    <para>For current release-line support and end-of-life policy, see
+      <link xlink:href="https://postgis.net/development/versions_eol/">https://postgis.net/development/versions_eol/</link>
     </para>
     </listitem>
 

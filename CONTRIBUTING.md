@@ -1,19 +1,11 @@
-PostGIS development planning happens via a [Trac instance](https://trac.osgeo.org/postgis/).
+# Contributing to PostGIS
 
-In order for proper scheduling of contributions acceptance/merging it
-is recommended to file a ticket there and add your patch or a link
-to a patch or to a public git branch where your development is ongoing.
+GitHub and other forge mirrors look for `CONTRIBUTING.md` in the repository
+root, so this file remains as the stable entry point.
 
-Filing a ticket requires setting up an OSGeo account, which lets you
-contribute to every project of the [Open Source Geospatial Foundation](http://www.osgeo.org/).
+The maintained contribution workflow lives in
+[doc/development/contributing.md](doc/development/contributing.md). It covers Trac tickets,
+OSGeo accounts, source repositories and mirrors, mailing lists, patch basics,
+and raster bug-report conventions.
 
-As we understand you might not want to setup a new account, simply
-filing a pull request on one of the [PostGIS code mirrors](https://trac.osgeo.org/postgis/wiki/CodeMirrors) is also welcome,
-but it is easier for such contributions to miss our radars unless
-it _also_ has a matching Trac ticket.
-
-If you intend to be involved for more than an occasional patch we
-recommend you to subscribe to the [development mailing list](https://lists.osgeo.org/mailman/listinfo/postgis-devel).
-
-Note that We also welcome
-[git patches via email](https://git-send-email.io)
+Broader developer documentation lives in [doc/development/](doc/development/).
