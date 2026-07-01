@@ -1233,7 +1233,7 @@ CURVEPOLYGON(CIRCULARSTRING(4 3,3.12132034355964 0.878679656440359, | POLYGON((4
                                                                     |  --ETC-- ,3.94235584120969 3.58527096604839,4 3))
 </programlisting>
 
-<programlisting>
+<programlisting language="sql">
 --3D example
 SELECT ST_AsText(ST_LineToCurve(geom)) As curved, ST_AsText(geom) AS not_curved
 FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2))),0,0,3) AS geom) AS foo;</programlisting>
