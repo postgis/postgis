@@ -1633,7 +1633,8 @@ Adds a collection of geometries to a given empty topology and returns a message 
 				<title>Examples</title>
 				<programlisting>
 -- Populate topology --
-SELECT topology.ST_CreateTopoGeo('ri_topo',
+SELECT topology.ST_CreateTopoGeo(
+ 'ri_topo',
  ST_GeomFromText('MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,
   384844 236882,384866 236881,384879 236883,384954 236898,385087 236932,385117 236938,
   385167 236938,385203 236941,385224 236946,385233 236950,385241 236956,385254 236971,
@@ -2306,8 +2307,11 @@ an error is thrown.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.ST_ChangeEdgeGeom('ma_topo', 1,
-		ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6, 227704.5 893778.5)', 26986) );
+				<programlisting>SELECT topology.ST_ChangeEdgeGeom(
+    'ma_topo',
+    1,
+    ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6, 227704.5 893778.5)', 26986)
+);
  ----
  Edge 1 changed</programlisting>
 			</refsection>
@@ -3614,7 +3618,8 @@ SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom
 (10 rows)
 -- then add the face -
 
-SELECT topology.AddFace('ma_topo',
+SELECT topology.AddFace(
+    'ma_topo',
     ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
     234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
     234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) ) As faceid;
@@ -3784,7 +3789,8 @@ SELECT topology.AddTopoGeometryColumn(
 -- update our column assuming
 -- everything is perfectly aligned with our edges
 UPDATE boston.blockgroups AS bg
-	SET topo = topology.CreateTopoGeom('topo_boston',
+	SET topo = topology.CreateTopoGeom(
+        'topo_boston',
         3, 1,
         foo.bfaces)
 FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
@@ -3800,7 +3806,8 @@ WHERE foo.gid = bg.gid;
 --count the face if 50% of it falls
 -- within what we think is our blockgroup boundary
 UPDATE boston.blockgroups AS bg
-	SET topo = topology.CreateTopoGeom('topo_boston',
+	SET topo = topology.CreateTopoGeom(
+        'topo_boston',
         3, 1,
         foo.bfaces)
 FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces

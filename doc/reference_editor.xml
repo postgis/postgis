@@ -138,22 +138,25 @@ Given a geometry collection, returns a multi-geometry containing only elements o
 			<title>Examples</title>
 <para>Extract highest-dimension type:</para>
 <programlisting language="sql">
-SELECT ST_AsText(ST_CollectionExtract(
-        'GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(1 1, 2 2) )'));</programlisting>
+SELECT ST_AsText(
+	ST_CollectionExtract(
+		'GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(1 1, 2 2) )'));</programlisting>
 <screen>MULTILINESTRING((1 1, 2 2))</screen>
 
 <para>Extract points (type 1 == POINT):</para>
 <programlisting language="sql">
-SELECT ST_AsText(ST_CollectionExtract(
-        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',
-        1 ));</programlisting>
+SELECT ST_AsText(
+	ST_CollectionExtract(
+		'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',
+		1));</programlisting>
 <screen>MULTIPOINT((0 0))</screen>
 
 <para>Extract lines (type 2 == LINESTRING):</para>
 <programlisting language="sql">
-SELECT ST_AsText(ST_CollectionExtract(
-        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))',
-        2 ));</programlisting>
+SELECT ST_AsText(
+	ST_CollectionExtract(
+		'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))',
+		2));</programlisting>
 <screen>MULTILINESTRING((0 0, 1 1), (2 2, 3 3))</screen>
 		</refsection>
 		<refsection>
@@ -363,11 +366,12 @@ SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,22
  220197.12195122 150425.12195122,220227 150406)</screen>
 <para>Ensure approximated line is no further than 20 units away from. Original curve, and make the result direction-neutral.</para>
 <programlisting language="sql">
-SELECT ST_AsText(ST_CurveToLine(
- 'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,
-    20, -- Tolerance
-    1, -- Above is max distance between curve and line
-    1  -- Symmetric flag
+SELECT ST_AsText(
+	ST_CurveToLine(
+		'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,
+		20, -- Tolerance
+		1, -- Above is max distance between curve and line
+		1  -- Symmetric flag
 ));</programlisting>
 <screen>LINESTRING(0 0,49.99999999999996 -86.60254037844383,149.99999999999994 -86.6025403784439,200 0)</screen>
       </refsection>
@@ -1924,15 +1928,18 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)</screen>
 			<title>Examples</title>
 
             <para>Segmentizing a line.  Long segments are split evenly, and short segments are not split.</para>
-			<programlisting language="sql">SELECT ST_AsText(ST_Segmentize(
-    'MULTILINESTRING((0 0, 0 1, 0 9),(1 10, 1 18))'::geometry,
-	5 ) );</programlisting>
+			<programlisting language="sql">SELECT ST_AsText(
+	ST_Segmentize(
+		'MULTILINESTRING((0 0, 0 1, 0 9),(1 10, 1 18))'::geometry,
+		5));</programlisting>
 <screen>MULTILINESTRING((0 0,0 1,0 5,0 9),(1 10,1 14,1 18))</screen>
 
             <para>Segmentizing a polygon:</para>
 <programlisting language="sql">
 SELECT ST_AsText(
-        ST_Segmentize(('POLYGON((0 0, 0 8, 30 0, 0 0))'::geometry), 10));</programlisting>
+	ST_Segmentize(
+		'POLYGON((0 0, 0 8, 30 0, 0 0))'::geometry,
+		10));</programlisting>
 <screen>POLYGON((0 0,0 8,7.5 6,15 4,22.5 2,30 0,20 0,10 0,0 0))</screen>
 
             <para>Segmentizing a geographic line, using a maximum segment length of 2000 kilometers.
@@ -2222,18 +2229,19 @@ select ST_WrapX(geom, -30, 360);
 UPDATE mytable
    SET geom = ST_SnapToGrid(geom, 0.001);
 
-SELECT ST_AsText(ST_SnapToGrid(
-			ST_GeomFromText('LINESTRING(1.1115678 2.123, 4.111111 3.2374897, 4.11112 3.23748667)'),
-			0.001)
-		);</programlisting>
+SELECT ST_AsText(
+	ST_SnapToGrid(
+		ST_GeomFromText('LINESTRING(1.1115678 2.123, 4.111111 3.2374897, 4.11112 3.23748667)'),
+		0.001));</programlisting>
 <screen>LINESTRING(1.112 2.123,4.111 3.237)</screen>
 <para>This example snaps a 4D geometry.</para>
 <programlisting language="sql">
-SELECT ST_AsEWKT(ST_SnapToGrid(
-	ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 2.3456 1.11111,
+SELECT ST_AsEWKT(
+	ST_SnapToGrid(
+		ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 2.3456 1.11111,
 		4.111111 3.2374897 3.1234 1.1111, -1.11111112 2.123 2.3456 1.1111112)'),
- ST_GeomFromEWKT('POINT(1.12 2.22 3.2 4.4444)'),
- 0.1, 0.1, 0.1, 0.01) );</programlisting>
+		ST_GeomFromEWKT('POINT(1.12 2.22 3.2 4.4444)'),
+		0.1, 0.1, 0.1, 0.01));</programlisting>
 <screen>LINESTRING(-1.08 2.12 2.3 1.1144,4.12 3.22 3.1 1.1144,-1.08 2.12 2.3 1.1144)</screen>
 <para>With a 4D geometry - the ST_SnapToGrid(geom,size) only touches x and y coords but keeps m and z the same.</para>
 <programlisting language="sql">

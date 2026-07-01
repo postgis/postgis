@@ -96,10 +96,12 @@
 SELECT name, ST_ClusterDBSCAN(geom, eps => 50, minpoints => 2) over () AS cid
 FROM boston_polys
 WHERE name > '' AND building > ''
-	AND ST_DWithin(geom,
+	AND ST_DWithin(
+        geom,
         ST_Transform(
             ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),
-           500);
+        500
+    );
 ]]></programlisting>
 						  </para></entry>
 

@@ -721,8 +721,11 @@ public class TestRaster : IHttpHandler
                         ) As new_rast
                         FROM aerials.boston
 	                        WHERE
-	                            ST_Intersects(rast,
-                                    ST_Transform(ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),26986) )";
+	                            ST_Intersects(
+                                    rast,
+                                    ST_Transform(
+                                        ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),
+                                        26986) )";
 			    command = new NpgsqlCommand(sql, conn);
                 command.Parameters.Add(new NpgsqlParameter("input_srid", input_srid));
 

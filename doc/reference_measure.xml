@@ -1129,8 +1129,10 @@ SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">SELECT ST_LengthSpheroid( geometry_column,
-			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
+		<programlisting role="requires-external-state">SELECT ST_LengthSpheroid(
+			  geometry_column,
+			  'SPHEROID["GRS_1980",6378137,298.257222101]'
+              )
 			  FROM geometry_table;</programlisting>
 
 <programlisting>SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,

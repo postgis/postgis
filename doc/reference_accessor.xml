@@ -1409,7 +1409,8 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 		<programlisting>
 SELECT ST_AsText(ST_InteriorRingN(geom, 1)) As geom
 FROM (SELECT ST_BuildArea(
-		ST_Collect(ST_Buffer(ST_Point(1,2), 20,3),
+		ST_Collect(
+			ST_Buffer(ST_Point(1,2), 20,3),
 			ST_Buffer(ST_Point(1, 2), 10,3))) As geom
 		)  as foo;
 		</programlisting>
@@ -1507,11 +1508,14 @@ SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
         <title>Examples</title>
 
         <programlisting>
-SELECT ST_AsText(ST_CurveN('COMPOUNDCURVE(
+SELECT ST_AsText(
+  ST_CurveN(
+  'COMPOUNDCURVE(
     (2 2, 2.5 2.5),
     CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
     (3.5 3.5, 2.5 4.5, 3 5, 2 2)
-  )', 1));
+  )',
+  1));
         </programlisting>
       </refsection>
 
@@ -3479,8 +3483,12 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 				<title>Examples</title>
 				<para>This example returns knots from a NURBS curve with a custom knot vector.</para>
 				<programlisting>
-SELECT ST_Knots(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry,
-                 ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]));</programlisting>
+SELECT ST_Knots(
+	ST_MakeNurbsCurve(
+		2,
+		'LINESTRING(0 0, 5 10, 10 0)'::geometry,
+		ARRAY[1.0, 2.0, 1.0],
+		ARRAY[0,0,0,1,1,1]));</programlisting>
 <screen>{0,0,0,1,1,1}</screen>
 				<para>This example checks the knots of a curve using the default knot vector.</para>
 <programlisting>SELECT ST_Knots('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
@@ -3564,8 +3572,11 @@ FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;</progr
 				<title>Examples</title>
 				<para>This example checks whether a curve is rational.</para>
 				<programlisting>
-SELECT ST_NurbsCurveIsRational(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry,
-                                ARRAY[1.0, 2.0, 1.0]));</programlisting>
+SELECT ST_NurbsCurveIsRational(
+	ST_MakeNurbsCurve(
+		2,
+		'LINESTRING(0 0, 5 10, 10 0)'::geometry,
+		ARRAY[1.0, 2.0, 1.0]));</programlisting>
 <screen>t</screen>
 				<para>This example checks a non-rational curve.</para>
 <programlisting>SELECT ST_NurbsCurveIsRational('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>

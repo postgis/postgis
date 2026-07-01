@@ -58,8 +58,10 @@
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
     <para>This example transforms in the inverse direction.</para>
     <programlisting>
-SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
+SELECT ST_AsText(
+  ST_InverseTransformPipeline(
+    'POINT(426857.9877165967 5427937.523342293)'::geometry,
+    'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
 <screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
@@ -260,14 +262,20 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
     <refsection>
     <title>Examples</title>
     <para>Change Massachusetts state plane US feet geometry to WGS 84 long lat</para>
-    <programlisting language="sql">SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-  743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
+    <programlisting language="sql">SELECT ST_AsText(
+  ST_Transform(
+    ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+  743265 2967450,743265.625 2967416,743238 2967416))',2249),
+    4326)) As wgs_geom;
 </programlisting>
     <screen>POLYGON((-71.1776848522251 42.3902896512903,-71.17768437663261 42.390382947801015,-71.17758443054647 42.390382667791854,-71.17758259272304 42.390289364798825,-71.1776848522251 42.3902896512903))</screen>
 
 <para>3D Circular String example.</para>
 <programlisting language="sql">
-SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));</programlisting>
+SELECT ST_AsEWKT(
+  ST_Transform(
+    ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),
+    4326));</programlisting>
 
     <screen> SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
  -71.1775844305465 42.3903826677917 3,
@@ -403,13 +411,17 @@ CREATE INDEX idx_geom_26986_parcels
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
     <para>This example transforms in the forward direction.</para>
     <programlisting>
-SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;</programlisting>
+SELECT ST_AsText(
+  ST_TransformPipeline(
+    'SRID=4326;POINT(2 49)'::geometry,
+    'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;</programlisting>
 <screen>POINT(426857.9877165967 5427937.523342293)</screen>
 <para>This example transforms in the inverse direction.</para>
 <programlisting>
-SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
+SELECT ST_AsText(
+  ST_InverseTransformPipeline(
+    'POINT(426857.9877165967 5427937.523342293)'::geometry,
+    'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
 <screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
@@ -419,13 +431,17 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
 <screen>POINT(143.00000635638918 -36.999986706128176)</screen>
 <para>Using a defined conversion (EPSG:8447)</para>
 <programlisting>
-SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;</programlisting>
+SELECT ST_AsText(
+  ST_TransformPipeline(
+    'SRID=4939;POINT(143.0 -37.0)'::geometry,
+    'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;</programlisting>
 <screen>POINT(143.0000063280214 -36.999986718287545)</screen>
 <para>This example uses a PROJ pipeline definition matching EPSG:8447, as returned from projinfo. Any axisswap steps must be removed.</para>
 <programlisting>
-SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
-  '+proj=pipeline
+SELECT ST_AsText(
+  ST_TransformPipeline(
+    'SRID=4939;POINT(143.0 -37.0)'::geometry,
+    '+proj=pipeline
    +step +proj=unitconvert +xy_in=deg +xy_out=rad
    +step +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif
    +step +proj=unitconvert +xy_in=rad +xy_out=deg')) AS gda2020_pipeline;</programlisting>

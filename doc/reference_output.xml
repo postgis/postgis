@@ -885,7 +885,9 @@ SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
     <para>This example uses a PolyhedralSurface.</para>
     <programlisting>
 <![CDATA[
-SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+SELECT ST_AsGML(
+3,
+ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
@@ -1321,10 +1323,11 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));</programlisting>
     <refsection>
     <title>Examples</title>
     <programlisting>
-SELECT ST_AsText(ST_AsMVTGeom(
-  ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
-  ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
-  4096, 0, false));</programlisting>
+SELECT ST_AsText(
+  ST_AsMVTGeom(
+    ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
+    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
+    4096, 0, false));</programlisting>
 <screen>MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
 
     <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry. This assumes the data.geom column has srid of 4326.
@@ -1333,7 +1336,9 @@ SELECT ST_AsText(ST_AsMVTGeom(
 
 SELECT ST_AsMVTGeom(
             ST_Transform( geom, 3857 ),
-            ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom
+            ST_TileEnvelope(12, 513, 412),
+            extent => 4096,
+            buffer => 64) AS geom
   FROM data
   WHERE geom && ST_Transform(ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096)),4326)
 

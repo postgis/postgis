@@ -2125,8 +2125,10 @@ LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,
                             </mediaobject>
                           </informalfigure>
                 <programlisting>
-SELECT ST_AsText(ST_OffsetCurve(geom,
-    -15, 'quad_segs=4 join=round')) As notsocurvy
+SELECT ST_AsText(ST_OffsetCurve(
+    geom,
+    -15,
+    'quad_segs=4 join=round')) As notsocurvy
     FROM ST_GeomFromText(
 'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
@@ -2149,8 +2151,13 @@ LINESTRING(31 195,31 31,164 31)
                             </mediaobject>
                           </informalfigure>
                 <programlisting>
-SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,
-    -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As morecurvy
+SELECT ST_AsText(ST_OffsetCurve(
+    ST_OffsetCurve(
+        geom,
+        -30,
+        'quad_segs=4 join=round'),
+    -15,
+    'quad_segs=4 join=round')) As morecurvy
     FROM ST_GeomFromText(
 'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
@@ -2174,9 +2181,14 @@ LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,
                           </informalfigure>
                 <programlisting>SELECT ST_AsText(ST_Collect(
     ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'),
-    ST_OffsetCurve(ST_OffsetCurve(geom,
-    -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')
-    )
+    ST_OffsetCurve(
+        ST_OffsetCurve(
+            geom,
+            -30,
+            'quad_segs=4 join=round'),
+        -15,
+        'quad_segs=4 join=round')
+)
 ) As parallel_curves
     FROM ST_GeomFromText(
 'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
