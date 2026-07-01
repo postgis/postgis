@@ -42,6 +42,26 @@ AND proconfig = ARRAY[
 	'search_path=' || pg_catalog.quote_ident(pg_catalog.current_schema()) || ', pg_catalog'
 ];
 
+SELECT 'legacy_pg_upgrade_c_symbols', count(*)
+FROM pg_catalog.pg_proc
+JOIN pg_catalog.pg_language ON pg_language.oid = pg_proc.prolang
+WHERE pg_proc.oid IN (
+	'st_asbinary(geometry)'::regprocedure,
+	'st_asbinary(geometry,text)'::regprocedure,
+	'st_astext(geometry)'::regprocedure,
+	'st_ndims(geometry)'::regprocedure,
+	'st_setsrid(geometry,integer)'::regprocedure,
+	'st_srid(geometry)'::regprocedure
+)
+AND pg_language.lanname = 'c'
+AND prosrc IN (
+	'LWGEOM_asBinary',
+	'LWGEOM_asText',
+	'LWGEOM_ndims',
+	'LWGEOM_set_srid',
+	'LWGEOM_get_srid'
+);
+
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
 SELECT 'Setting up the data table...';
