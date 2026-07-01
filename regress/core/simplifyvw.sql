@@ -19,3 +19,8 @@ WITH geom AS
     SELECT ST_Simplifyvw('MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 5 6, 6 6, 8 5, 5 5)),((100 100, 100 130, 130 130, 130 131, 130 130, 130 100, 100 100)))', 200) AS g
 )
 SELECT '13', ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
+
+SELECT '14', ST_AsText(ST_SetEffectiveArea('POLYGON((0 50,0 0,10 0,10 10,0 10,0 50))', 1::float8, 0));
+SELECT '15', ST_AsText(ST_SetEffectiveArea('POLYGON((0 50,0 0,10 0,10 10,0 10,0 50))', 1::float8, 0, false));
+SELECT '16', ST_AsText(ST_SetEffectiveArea('POLYGON((0 0,10 0,10 10,0 10,0 0),(1 1,1 2,2 2,2 1,1 1))', 10::float8, 0, false));
+SELECT '17', ST_AsEWKT(ST_SetEffectiveArea('POLYGON M((0 50 1,0 0 2,10 0 3,10 10 4,0 10 5,0 50 6))', 1::float8, 0, false));
