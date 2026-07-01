@@ -1176,8 +1176,8 @@ ORDER BY short_name;</programlisting>
  ZMap            | ZMap Plus Grid                                              | t</screen>
 </refsection>
 <refsection><title>Example: List of options for each driver</title>
-<programlisting>-- Output the create options XML column of JPEG as a table  --
--- Note you can use these creator options in ST_AsGDALRaster options argument
+<para>Output the create options XML column of JPEG as a table. These creator options can be used in the ST_AsGDALRaster options argument.</para>
+<programlisting>
 SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@type', g.opt))[1]::text As otype,
        (xpath('@description', g.opt))[1]::text As descrip
@@ -1198,9 +1198,10 @@ WHERE short_name = 'JPEG') As g;</programlisting>
  THUMBNAIL_HEIGHT   | int     | Forced thumbnail height
 (9 rows)</screen>
 
-<programlisting><![CDATA[
+<para>Raw xml output for creator options for GeoTiff.</para>
+<programlisting>
+<![CDATA[
 
--- raw xml output for creator options for GeoTiff --
 SELECT create_options
 FROM st_gdaldrivers()
 WHERE short_name = 'GTiff';
@@ -1523,15 +1524,15 @@ constraints enforced.
             <refsection>
                 <title>Examples: Single New Band</title>
 
+                <para>Add another band of type 8 bit unsigned integer with pixels initialized to 200.</para>
                 <programlisting>
--- Add another band of type 8 bit unsigned integer with pixels initialized to 200
 UPDATE dummy_rast
     SET rast = ST_AddBand(rast,'8BUI'::text,200)
 WHERE rid = 1;
                 </programlisting>
 
-                <programlisting>-- Create an empty raster 100x100 units, with upper left  right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15)
--- uses addbandargs
+                <para>Create an empty raster 100x100 units, with upper left right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15) Uses addbandargs.</para>
+                <programlisting>
 INSERT INTO dummy_rast(rid,rast)
     VALUES(10, ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, 0),
     ARRAY[
@@ -1550,7 +1551,8 @@ FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd
 -----------+----------------+-------------+---------+------
  1BB       |             | f       |
  4BUI      |             | f       |</screen>
-<programlisting>-- output meta data of raster -
+<para>Output metadata for the raster.</para>
+<programlisting>
 SELECT  (rmd).width, (rmd).height, (rmd).numbands
 FROM (SELECT ST_MetaData(rast) As rmd
     FROM dummy_rast WHERE rid = 10) AS foo;
@@ -1586,12 +1588,8 @@ FROM ST_BandMetadata(
        3 | 32BUI     |          12 | f       | null |         null |     null |          null
        4 | 16BUI     |           2 | f       | null |         null |     null |          null</screen>
 
+                <para>Aggregate the 1st band of a table of like rasters into a single raster. With as many bands as there are test_types and as many rows (new rasters) as there are mice. Note that The ORDER BY test_type clause relies on aggregate ORDER BY support. The resulting raster will have a band for each test_type alphabetical by test_type. For mouse lovers: No mice were harmed in this exercise.</para>
                 <programlisting>
--- Aggregate the 1st band of a table of like rasters into a single raster
--- with as many bands as there are test_types and as many rows (new rasters) as there are mice
--- NOTE: The ORDER BY test_type clause relies on aggregate ORDER BY support.
--- The resulting raster will have a band for each test_type alphabetical by test_type
--- For mouse lovers: No mice were harmed in this exercise
 SELECT
     mouse,
     ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1) As rast
@@ -1821,8 +1819,8 @@ FROM ST_BandMetadata(
                               <caption><para>black circle</para></caption>
                             </mediaobject>
                           </informalfigure></para>
+                <para>This will output a black circle taking up 150 x 150 pixels.</para>
                 <programlisting>
--- this will output a black circle taking up 150 x 150 pixels --
 SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
 
  <para><informalfigure>
@@ -1834,7 +1832,8 @@ SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlist
                             </mediaobject>
                           </informalfigure></para>
 
-                <programlisting>-- the bands map to RGB bands - the value (118,154,118) - teal  --
+                <para>The bands map to RGB bands - the value (118,154,118) - teal.</para>
+                <programlisting>
 SELECT ST_AsPNG(
     ST_AsRaster(
         ST_Buffer(
@@ -1972,7 +1971,8 @@ FROM agg;</programlisting>
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>-- Make 2 new rasters: 1 containing band 1 of dummy, second containing band 2 of dummy and then reclassified as a 2BUI
+                    <para>Make 2 new rasters: 1 containing band 1 of dummy, second containing band 2 of dummy and then reclassified as a 2BUI.</para>
+                    <programlisting>
 SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1,
  ST_NumBands(rast2) As numb2,  ST_BandPixelType(rast2) As pix2
 FROM (
@@ -1983,19 +1983,17 @@ FROM (
 -------+------+-------+------
      1 | 8BUI |     1 | 2BUI</screen>
 
-                    <programlisting>-- Return bands 2 and 3. Using array cast syntax
-SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands
+                    <para>Return bands 2 and 3 using array cast syntax.</para>
+                    <programlisting>SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands
     FROM dummy_rast WHERE rid=2;
-
-num_bands
-----------
-2
-
--- Return bands 2 and 3. Use array to define bands
-SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands
+</programlisting>
+<screen>2</screen>
+                    <para>Return bands 2 and 3 using array syntax.</para>
+                    <programlisting>SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands
     FROM dummy_rast
 WHERE rid=2;
                     </programlisting>
+<screen>2</screen>
 <informaltable>
   <tgroup cols="3">
     <tbody>
@@ -2982,8 +2980,8 @@ FROM dummy_rast;</programlisting>
             <refsection>
                 <title>Examples</title>
 
+                    <para>Non-skewed raster.</para>
                     <programlisting>
--- non-skewed raster
 SELECT
     rid,
     (ST_RasterToWorldCoord(rast,1, 1)).*,
@@ -2994,8 +2992,8 @@ FROM dummy_rast</programlisting>
    1 |        0.5 |      0.5 |       2.5 |        3.5
    2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95</screen>
 
+                    <para>Skewed raster.</para>
                     <programlisting>
--- skewed raster
 SELECT
     rid,
     (ST_RasterToWorldCoord(rast, 1, 1)).*,
@@ -3066,8 +3064,8 @@ FROM (
                 <refsection>
                     <title>Examples</title>
 
+                    <para>Non-skewed raster providing column is sufficient.</para>
                     <programlisting>
--- non-skewed raster providing column is sufficient
 SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord,
     ST_RasterToWorldCoordX(rast,2) As x2coord,
     ST_ScaleX(rast) As pixelx
@@ -3077,8 +3075,8 @@ FROM dummy_rast;</programlisting>
    1 |        0.5 |       2.5 |      2
    2 | 3427927.75 | 3427927.8 |   0.05</screen>
 
+                    <para>For fun let's skew it.</para>
                     <programlisting>
--- for fun lets skew it
 SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord,
     ST_RasterToWorldCoordX(rast, 2, 3) As x2coord,
     ST_ScaleX(rast) As pixelx
@@ -3138,8 +3136,8 @@ FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;</p
                 <refsection>
                     <title>Examples</title>
 
+                    <para>Non-skewed raster providing row is sufficient.</para>
                     <programlisting>
--- non-skewed raster providing row is sufficient
 SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord,
     ST_RasterToWorldCoordY(rast,3) As y2coord,
     ST_ScaleY(rast) As pixely
@@ -3149,8 +3147,8 @@ FROM dummy_rast;</programlisting>
    1 |     0.5 |       6.5 |      3
    2 | 5793244 | 5793243.9 |  -0.05</screen>
 
+                    <para>For fun let's skew it.</para>
                     <programlisting>
--- for fun lets skew it
 SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord,
     ST_RasterToWorldCoordY(rast,2,3) As y2coord,
     ST_ScaleY(rast) As pixely
@@ -3898,8 +3896,8 @@ WHERE rid = 2;</programlisting>
                 <refsection>
                     <title>Examples</title>
 
+                    <para>Create dummy table with one raster column.</para>
                     <programlisting>
--- Create dummy table with one raster column
 create table dummy_rast (rid integer, rast raster);
 
 -- Add raster with two bands, one pixel/band. In the first band, nodatavalue = pixel value = 3.
@@ -4261,8 +4259,8 @@ FROM dummy_rast;</programlisting>
 
             <refsection>
                     <title>Examples</title>
+                    <para>Get raster pixel polygon.</para>
                     <programlisting>
--- get raster pixel polygon
 SELECT i,j, ST_AsText(ST_PixelAsPolygon(foo.rast, i,j)) As b1pgeom
 FROM dummy_rast As foo
     CROSS JOIN generate_series(1,2) As i
@@ -4333,8 +4331,8 @@ WHERE rid=2;</programlisting>
 
             <refsection>
                     <title>Examples</title>
+                    <para>Get raster pixel polygon.</para>
                     <programlisting>
--- get raster pixel polygon
 SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom
 FROM (SELECT ST_PixelAsPolygons(
                  ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 0.001, -0.001, 0.001, 0.001, 4269),
@@ -4578,7 +4576,8 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;<
 
             <refsection>
                 <title>Examples</title>
-                <programlisting> -- Uses LATERAL syntax
+                <para>Uses LATERAL syntax.</para>
+                <programlisting>
 SELECT x, y, val, ST_AsText(geom)
     FROM (SELECT dp.* FROM dummy_rast, LATERAL ST_PixelAsCentroids(rast, 1) AS dp WHERE rid = 2) foo;</programlisting>
 <screen> x | y | val |           st_astext
@@ -4678,9 +4677,8 @@ SELECT x, y, val, ST_AsText(geom)
 
                 <refsection>
                     <title>Examples</title>
+                    <para>Get raster values at particular postgis geometry points. The srid of your geometry should be same as for your raster.</para>
                     <programlisting>
--- get raster values at particular postgis geometry points
--- the srid of your geometry should be same as for your raster
 SELECT rid, ST_Value(rast, foo.pt_geom) As b1pval, ST_Value(rast, 2, foo.pt_geom) As b2pval
 FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77, 5793243.76), 0) As pt_geom) As foo
 WHERE rid=2;
@@ -4704,9 +4702,10 @@ WHERE rid=2;</programlisting>
 -----+--------+--------+--------
    2 |    253 |     78 |     70</screen>
 
-                <programlisting><![CDATA[
+                <para>Get all values in bands 1,2,3 of each pixel.</para>
+                <programlisting>
+<![CDATA[
 
---- Get all values in bands 1,2,3 of each pixel --
 SELECT x, y, ST_Value(rast, 1, x, y) As b1val,
     ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
 FROM dummy_rast CROSS JOIN
@@ -4727,9 +4726,10 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
 
 ]]></programlisting>
 
-                <programlisting><![CDATA[
+                <para>Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel.</para>
+                <programlisting>
+<![CDATA[
 
---- Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel --
 SELECT ST_AsText(ST_SetSRID(
     ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
         ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),
@@ -4785,13 +4785,10 @@ WHERE
 
 ]]></programlisting>
 
-                <programlisting><![CDATA[
+                <para>Checking all the pixels of a large raster tile can take a long time. You can dramatically improve speed at some lose of precision by orders of magnitude. By sampling pixels using the step optional parameter of generate_series. This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked. Putting in the checked pixel as the value for subsequent 4.</para>
+                <programlisting>
+<![CDATA[
 
---- Checking all the pixels of a large raster tile can take a long time.
---- You can dramatically improve speed at some lose of precision by orders of magnitude
---  by sampling pixels using the step optional parameter of generate_series.
---  This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked
---  putting in the checked pixel as the value for subsequent 4
 
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
 FROM (SELECT ST_Translate(ST_MakeEnvelope(
@@ -4905,8 +4902,8 @@ WHERE
             <refsection>
                 <title>Examples</title>
 
+                <para>Pixel 2x2 has value.</para>
                 <programlisting>
--- pixel 2x2 has value
 SELECT
     ST_Value(rast, 2, 2) AS value,
     ST_NearestValue(rast, 2, 2) AS nearestvalue
@@ -4936,8 +4933,8 @@ FROM (
 -------+--------------
      1 |            1</screen>
 
+                <para>Pixel 2x3 is NODATA.</para>
                 <programlisting>
--- pixel 2x3 is NODATA
 SELECT
     ST_Value(rast, 2, 3) AS value,
     ST_NearestValue(rast, 2, 3) AS nearestvalue
@@ -5008,12 +5005,8 @@ FROM (
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>--
--- 2x2 test raster with values
---
--- 10 50
--- 40 20
---
+                    <para>2x2 test raster with values. 10 50. 40 20.</para>
+                    <programlisting>
 WITH test_raster AS (
 SELECT
 ST_SetValues(
@@ -5080,12 +5073,8 @@ FROM test_raster</programlisting>
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>--
--- 2x2 test raster with values
---
--- 10 50
--- 40 20
---
+                    <para>2x2 test raster with values. 10 50. 40 20.</para>
+                    <programlisting>
 WITH test_raster AS (
 SELECT
 ST_SetValues(
@@ -5198,8 +5187,8 @@ FROM test_raster</programlisting>
             <refsection>
                 <title>Examples</title>
 
+                <para>Pixel 2x2 has value.</para>
                 <programlisting>
--- pixel 2x2 has value
 SELECT
     ST_Neighborhood(rast, 2, 2, 1, 1)
 FROM (
@@ -5221,8 +5210,8 @@ FROM (
 ) AS foo</programlisting>
 <screen>{{NULL,1,1},{1,1,1},{1,NULL,1}}</screen>
 
+                <para>Pixel 2x3 is NODATA.</para>
                 <programlisting>
--- pixel 2x3 is NODATA
 SELECT
     ST_Neighborhood(rast, 2, 3, 1, 1)
 FROM (
@@ -5244,9 +5233,8 @@ FROM (
 ) AS foo</programlisting>
 <screen>{{1,1,1},{1,NULL,1},{1,1,1}}</screen>
 
+                <para>Pixel 3x3 has value. Exclude_nodata_value = FALSE.</para>
                 <programlisting>
--- pixel 3x3 has value
--- exclude_nodata_value = FALSE
 SELECT
     ST_Neighborhood(rast, 3, 3, 1, 1, false)
 FROM ST_SetValues(
@@ -5334,10 +5322,11 @@ FROM ST_SetValues(
             <refsection>
                 <title>Examples</title>
 
-                <programlisting><![CDATA[
+                <para>Geometry example.</para>
+                <programlisting>
+<![CDATA[
 
-                -- Geometry example
-SELECT (foo.geomval).val, ST_AsText(ST_Union((foo.geomval).geom))
+                SELECT (foo.geomval).val, ST_AsText(ST_Union((foo.geomval).geom))
 FROM (SELECT ST_DumpAsPolygons(
         ST_SetValue(rast,1,
                 ST_Point(3427927.75, 5793243.95),
@@ -5356,8 +5345,8 @@ GROUP BY (foo.geomval).val;
 
 ]]></programlisting>
 
+                <para>Store the changed raster.</para>
                 <programlisting>
--- Store the changed raster --
     UPDATE dummy_rast SET rast = ST_SetValue(rast,1, ST_Point(3427927.75, 5793243.95),100)
         WHERE rid = 2   ;
 
@@ -6379,8 +6368,8 @@ WHERE rid = 2;</programlisting>
                 <refsection>
                     <title>Examples</title>
 
+                    <para>Example 1.</para>
                     <programlisting>
--- Example 1
 UPDATE dummy_rast SET rast = ST_SetSkew(rast,1,2) WHERE rid = 1;
 SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,
     ST_GeoReference(rast) as georef
@@ -6394,8 +6383,8 @@ FROM dummy_rast WHERE rid = 1;</programlisting>
                     : 0.5000000000
                     : 0.5000000000</screen>
 
+                <para>Example 2 set both to same number:</para>
                 <programlisting>
--- Example 2 set both to same number:
 UPDATE dummy_rast SET rast = ST_SetSkew(rast,0) WHERE rid = 1;
 SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,
     ST_GeoReference(rast) as georef
@@ -6687,10 +6676,12 @@ FROM (
                     <title>Examples</title>
                     <para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
 
-                    <programlisting>-- the original raster pixel size
+                    <para>The original raster pixel size.</para>
+                    <programlisting>
 SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width</programlisting>
 <screen>0.001</screen>
-<programlisting>-- the rescaled raster raster pixel size
+<para>The rescaled raster raster pixel size.</para>
+<programlisting>
 SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015)) width</programlisting>
 <screen>0.0015</screen>
             </refsection>
@@ -6760,7 +6751,8 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
                     <title>Examples</title>
                     <para>A simple example reskewing a raster from a skew of 0.0 to a skew of 0.0015.</para>
 
-                    <programlisting>-- the original raster non-rotated
+                    <para>The original raster non-rotated.</para>
+                    <programlisting>
 SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
 
 -- result
@@ -6848,7 +6840,8 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
                     <title>Examples</title>
                     <para>A simple example snapping a raster to a slightly different grid.</para>
 
-                    <programlisting>-- the original raster upper left X
+                    <para>The original raster upper left X.</para>
+                    <programlisting>
 SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
 -- result
 0
@@ -7216,7 +7209,8 @@ FROM baz</programlisting>
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>-- change just first band no data value
+                    <para>Change just first band no data value.</para>
+                    <programlisting>
 UPDATE dummy_rast
     SET rast = ST_SetBandNoDataValue(rast,1, 254)
 WHERE rid = 2;
@@ -7277,8 +7271,8 @@ WHERE rid = 2;
                 <refsection>
                     <title>Examples</title>
 
+                    <para>Create dummy table with one raster column.</para>
                     <programlisting>
--- Create dummy table with one raster column
 create table dummy_rast (rid integer, rast raster);
 
 -- Add raster with two bands, one pixel/band. In the first band, nodatavalue = pixel value = 3.
@@ -7559,8 +7553,8 @@ ORDER BY 1, 2;</programlisting>
             <refsection>
                 <title>Examples</title>
                 <!-- TODO: Fix once we confirm the right behavior -->
+                <para>Example will count all pixels not 249 and one will count all pixels.</para>
                 <programlisting>
---example will count all pixels not 249 and one will count all pixels.  --
 SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata,
         ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata
     FROM dummy_rast WHERE rid=2;</programlisting>
@@ -7779,7 +7773,8 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats
  195.333333 | 224.666667 |     1 |    0.04
  224.666667 |        254 |     5 |     0.2
 (6 rows)</screen>
-<programlisting>-- Same as previous but we explicitly control the pixel value range of each bin.
+<para>Same as previous but we explicitly control the pixel value range of each bin.</para>
+<programlisting>
 SELECT (stats).*
 FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
     FROM dummy_rast
@@ -7890,8 +7885,8 @@ FROM (SELECT ST_Quantile(rast, ARRAY[0.25,0.75]) As pvq
 <programlisting>SELECT ST_Quantile(rast, 0.75) As value
     FROM dummy_rast WHERE rid=2;</programlisting>
 <screen>254</screen>
+<para>Real live example. Quantile of all pixels in band 2 intersecting a geometry.</para>
 <programlisting>
---real live example.  Quantile of all pixels in band 2 intersecting a geometry
 SELECT rid, (ST_Quantile(rast,2)).* As pvc
     FROM o_4_boston
         WHERE ST_Intersects(rast,
@@ -8025,7 +8020,8 @@ SELECT building_id, SUM(count) As num_pixels
 
             <refsection>
                 <title>Example: Raster coverage</title>
-                <programlisting>-- stats for each band --
+                <para>Stats for each band.</para>
+                <programlisting>
 SELECT band, (stats).*
 FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band) As stats
     FROM generate_series(1,3) As band) As foo;</programlisting>
@@ -8034,8 +8030,8 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band) As stats
     1 | 8450000 | 725799 | 82.7064349112426 | 45.6800222638537 |   0 | 255
     2 | 8450000 | 700487 | 81.4197705325444 | 44.2161184161765 |   0 | 255
     3 | 8450000 | 575943 |  74.682739408284 | 44.2143885481407 |   0 | 255</screen>
-<programlisting>-- For a table -- will get better speed if set sampling to less than 100%
--- Here we set to 25% and get a much faster answer
+<para>For a table -- will get better speed if set sampling to less than 100%. Here we set to 25% and get a much faster answer.</para>
+<programlisting>
 SELECT band, (stats).*
 FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
     FROM generate_series(1,3) As band) As foo;</programlisting>
@@ -8301,7 +8297,8 @@ FROM (SELECT ST_ValueCount(rast) As pvc
    252 |     2
    253 |     6
    254 |    12</screen>
-<programlisting>-- Example will coount all pixels of band 1 including 249 --
+<para>Example will coount all pixels of band 1 including 249.</para>
+<programlisting>
 SELECT (pvc).*
 FROM (SELECT ST_ValueCount(rast,1,false) As pvc
     FROM dummy_rast WHERE rid=2) As foo
@@ -8314,7 +8311,8 @@ FROM (SELECT ST_ValueCount(rast,1,false) As pvc
    252 |     2
    253 |     6
    254 |    12</screen>
-<programlisting>-- Example will count only non-nodata value pixels of band 2
+<para>Example will count only non-nodata value pixels of band 2.</para>
+<programlisting>
 SELECT (pvc).*
 FROM (SELECT ST_ValueCount(rast,2) As pvc
     FROM dummy_rast WHERE rid=2) As foo
@@ -8333,9 +8331,8 @@ FROM (SELECT ST_ValueCount(rast,2) As pvc
 :
 
                 </screen>
+<para>Real live example. Count all the pixels in an aerial raster tile band 2 intersecting a geometry. And return only the pixel band values that have a count &gt; 500.</para>
 <programlisting>
---real live example.  Count all the pixels in an aerial raster tile band 2 intersecting a geometry
--- and return only the pixel band values that have a count &gt; 500
 SELECT (pvc).value, SUM((pvc).count) As total
 FROM (SELECT ST_ValueCount(rast,2) As pvc
     FROM o_4_boston
@@ -8351,8 +8348,8 @@ FROM (SELECT ST_ValueCount(rast,2) As pvc
     51 | 502
     54 | 521</screen>
 
+<para>Just return count of pixels in each raster tile that have value of 100 of tiles that intersect a specific geometry.</para>
 <programlisting>
--- Just return count of pixels in each raster tile that have value of 100 of tiles that intersect  a specific geometry --
 SELECT rid, ST_ValueCount(rast,2,100) As count
     FROM o_4_boston
         WHERE ST_Intersects(rast,
@@ -8772,16 +8769,16 @@ FROM dummy_rast WHERE rid=2;
                 <refsection>
                     <title>Examples: Output</title>
 
-                    <programlisting>-- output first 3 bands 75% quality
-SELECT ST_AsJPEG(rast) As rastjpg
+                    <para>Output the first three bands at 75 percent quality.</para>
+                    <programlisting>SELECT ST_AsJPEG(rast) As rastjpg
     FROM dummy_rast WHERE rid=2;
-
--- output only first band as 90% quality
-SELECT ST_AsJPEG(rast,1,90) As rastjpg
+</programlisting>
+                    <para>Output only the first band at 90 percent quality.</para>
+                    <programlisting>SELECT ST_AsJPEG(rast,1,90) As rastjpg
     FROM dummy_rast WHERE rid=2;
-
--- output first 3 bands (but make band 2 Red, band 1 green, and band 3 blue, progressive and 90% quality
-SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rastjpg
+</programlisting>
+                    <para>Output the first three bands, mapping band 2 to red, band 1 to green, and band 3 to blue, using progressive encoding at 90 percent quality.</para>
+                    <programlisting>SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rastjpg
     FROM dummy_rast WHERE rid=2;</programlisting>
 
             </refsection>
@@ -9081,18 +9078,16 @@ FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
                 </refsection>
                 <refsection>
                     <title>Examples: 1 band clipping (not touched)</title>
+                    <para>Clip the first band of an aerial tile by a 20 meter buffer.</para>
                     <programlisting>
--- Clip the first band of an aerial tile by a 20 meter buffer.
 SELECT ST_Clip(rast, 1,
         ST_Buffer(ST_Centroid(ST_Envelope(rast)),20)
     ) from aerials.boston
 WHERE rid = 4;
                     </programlisting>
 
+                    <para>Demonstrate effect of crop on final dimensions of raster. Note how final extent is clipped to that of the geometry. If crop = true.</para>
                     <programlisting>
--- Demonstrate effect of crop on final dimensions of raster
--- Note how final extent is clipped to that of the geometry
--- if crop = true
 SELECT ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, true))) As xmax_w_trim,
     ST_XMax(clipper) As xmax_clipper,
     ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, false))) As xmax_wo_trim,
@@ -9145,9 +9140,8 @@ WHERE rid = 6) As foo;</programlisting>
                 <refsection>
                     <title>Examples: 1 band clipping with no crop and add back other bands unchanged</title>
 
+                    <para>Same example as before, but we need to set crop to false to be able to use ST_AddBand. Because ST_AddBand requires all bands be the same Width and height.</para>
                     <programlisting>
--- Same example as before, but we need to set crop to false to be able to use ST_AddBand
--- because ST_AddBand requires all bands be the same Width and height
 SELECT ST_AddBand(ST_Clip(rast, 1,
         ST_Buffer(ST_Centroid(ST_Envelope(rast)),20),false
     ), ARRAY[ST_Band(rast,2),ST_Band(rast,3)] ) from aerials.boston
@@ -9195,10 +9189,8 @@ WHERE rid = 6;
                 <refsection>
                     <title>Examples: Clip all bands</title>
 
+                    <para>Clip all bands of an aerial tile by a 20 meter buffer. Only difference is we don't specify a specific band to clip. So all bands are clipped.</para>
                     <programlisting>
--- Clip all bands of an aerial tile by a 20 meter buffer.
--- Only difference is we don't specify a specific band to clip
--- so all bands are clipped
 SELECT ST_Clip(rast,
       ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20),
       false
@@ -9379,8 +9371,8 @@ nv 0 0 0 0
                     <title>Examples</title>
                     <para>This is a junk table to play with</para>
 
+                    <para>Setup test raster table.</para>
                     <programlisting>
--- setup test raster table --
 DROP TABLE IF EXISTS funky_shapes;
 CREATE TABLE funky_shapes(rast raster);
 
@@ -10966,8 +10958,8 @@ WHERE rid=167;
                     <title>Example: 2 Band Intersection and Union</title>
 
                     <para>Create a new 1 band raster from our original that is  a function of modulo 2 of the original raster band.</para>
+                    <para>Create a cool set of rasters.</para>
                     <programlisting>
---Create a cool set of rasters --
 DROP TABLE IF EXISTS fun_shapes;
 CREATE TABLE fun_shapes(rid serial PRIMARY KEY, fun_name text, rast raster);
 
@@ -11042,8 +11034,8 @@ FROM fun_shapes WHERE
 
                 <refsection>
                     <title>Example: Overlaying rasters on a canvas as separate bands</title>
+                    <para>We use ST_AsPNG to render the image so all single band ones look grey.</para>
                     <programlisting>
--- we use ST_AsPNG to render the image so all single band ones look grey --
 WITH mygeoms
     AS ( SELECT 2 As bnum, ST_Buffer(ST_Point(1,5),10) As geom
             UNION ALL
@@ -11142,8 +11134,8 @@ WITH mygeoms
                 <refsection>
                     <title>Example: Overlay 2 meter boundary of select parcels over an aerial imagery</title>
 
-                    <programlisting>-- Create new 3 band raster composed of first 2 clipped bands, and overlay of 3rd band with our geometry
--- This query took 3.6 seconds on PostGIS windows 64-bit install
+                    <para>Create new 3 band raster composed of first 2 clipped bands, and overlay of 3rd band with our geometry. This query took 3.6 seconds on PostGIS windows 64-bit install.</para>
+                    <programlisting>
 WITH pr AS
 -- Note the order of operation: we clip all the rasters to dimensions of our region
 (SELECT ST_Clip(rast,ST_Expand(geom,50) ) As rast, g.geom
@@ -11552,9 +11544,10 @@ Note that the argument contains the name of the function, the types of the funct
 
                 <refsection>
                     <title>Example: Overlaying rasters on a canvas as separate bands</title>
-                    <programlisting><![CDATA[
+                    <para>Define our user defined function.</para>
+                    <programlisting>
+<![CDATA[
 
--- define our user defined function --
 CREATE OR REPLACE FUNCTION raster_mapalgebra_union(
     rast1 double precision,
     rast2 double precision,
@@ -11781,10 +11774,8 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 
                     <para>Examples utilize the katrina raster loaded as a single tile described in <link xlink:href="https://gdal.org/user/drivers/raster/postgisraster.html">https://gdal.org/user/drivers/raster/postgisraster.html</link> and then prepared in the <xref linkend="RT_ST_Rescale"/> examples </para>
 
+                    <para>A simple 'callback' user function that averages up all the values in a neighborhood.</para>
                     <programlisting>
---
--- A simple 'callback' user function that averages up all the values in a neighborhood.
---
 CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic args text[])
     RETURNS float AS
     $$
@@ -12165,9 +12156,8 @@ FROM rc;
                 </refsection>
                 <refsection>
                     <title>Examples: Reconstitute a single band chunked raster tile</title>
+                    <para>This creates a single band from first band of raster tiles. That form the original file system tile.</para>
                     <programlisting>
--- this creates a single band from first band of raster tiles
--- that form the original file system tile
 SELECT filename, ST_Union(rast,1) As file_rast
 FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;
                     </programlisting>
@@ -12175,11 +12165,8 @@ FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;
 
                 <refsection>
                     <title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
+                    <para>This creates a multi band raster collecting all the tiles that intersect a line. Note that In 2.0, this would have just returned a single band raster. , new union works on all bands by default. This is equivalent to unionarg: ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[].</para>
                     <programlisting>
--- this creates a multi band raster collecting all the tiles that intersect a line
--- Note: In 2.0, this would have just returned a single band raster
--- , new union works on all bands by default
--- this is equivalent to unionarg: ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[]
 SELECT ST_Union(rast)
 FROM aerials.boston
 WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );
@@ -12188,8 +12175,8 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
                 <refsection>
                     <title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
                     <para>Here we use the longer syntax if we only wanted a subset of bands or we want to change order of bands</para>
+                    <para>This creates a multi band raster collecting all the tiles that intersect a line.</para>
                     <programlisting>
--- this creates a multi band raster collecting all the tiles that intersect a line
 SELECT ST_Union(rast,ARRAY[ROW(2, 'LAST'), ROW(1, 'LAST'), ROW(3, 'LAST')]::unionarg[])
 FROM aerials.boston
 WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );
@@ -13784,17 +13771,16 @@ FROM dummy_rast;</programlisting>
                 <refsection>
                     <title>Examples</title>
                     <para>Refer to <link xlink:href="http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationWorking01">PostGIS Raster Specification</link> for a diagram of this.</para>
+                    <para>Note envelope and convexhull are more or less the same.</para>
                     <programlisting>
--- Note envelope and convexhull are more or less the same
 SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,
     ST_AsText(ST_Envelope(rast)) As env
 FROM dummy_rast WHERE rid=1;</programlisting>
 <screen>                        convhull                        |                env
 --------------------------------------------------------+------------------------------------
  POLYGON((0.5 0.5,20.5 0.5,20.5 60.5,0.5 60.5,0.5 0.5)) | POLYGON((0 0,20 0,20 60,0 60,0 0))</screen>
+                <para>Now we skew the raster. Note how the convex hull and envelope are now different.</para>
                 <programlisting>
--- now we skew the raster
--- note how the convex hull and envelope are now different
 SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,
     ST_AsText(ST_Envelope(rast)) As env
 FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
@@ -13857,7 +13843,8 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
 
               <refsection>
                     <title>Examples</title>
-                    <programlisting> -- this syntax uses a LATERAL join
+                    <para>This syntax uses a LATERAL join.</para>
+                    <programlisting>
 SELECT val, ST_AsText(geom) As geomwkt
 FROM (
 SELECT dp.*
@@ -14053,12 +14040,14 @@ FROM foo</programlisting>
 
             <refsection>
                     <title>Examples</title>
-                    <programlisting>-- by default no data band value is 0 or not set, so polygon will return a square polygon
+                    <para>By default no data band value is 0 or not set, so polygon will return a square polygon.</para>
+                    <programlisting>
 SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
 <screen>MULTIPOLYGON(((3427927.75 5793244,3427928 5793244,3427928 5793243.75,3427927.75 5793243.75,3427927.75 5793244)))</screen>
-<programlisting>-- now we change the no data value of first band
+<para>Now we change the no data value of first band.</para>
+<programlisting>
 UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,1,254)
 WHERE rid = 2;
 SELECt rid, ST_BandNoDataValue(rast)
@@ -14069,7 +14058,8 @@ SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
 <screen>MULTIPOLYGON(((3427927.9 5793243.95,3427927.85 5793243.95,3427927.85 5793244,3427927.9 5793244,3427927.9 5793243.95)),((3427928 5793243.85,3427928 5793243.8,3427927.95 5793243.8,3427927.95 5793243.85,3427927.9 5793243.85,3427927.9 5793243.9,3427927.9 5793243.95,3427927.95 5793243.95,3427928 5793243.95,3427928 5793243.85)),((3427927.8 5793243.75,3427927.75 5793243.75,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.8 5793243.9,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75,3427927.8 5793243.75)))</screen>
-<programlisting>-- Or if you want the no data value different for just one time
+<para>Or if you want the no data value different for just one time.</para>
+<programlisting>
 
 SELECT ST_AsText(
     ST_Polygon(
@@ -14666,8 +14656,8 @@ SELECT A.rid As a_rid, B.rid As b_rid, A.rast &> B.rast As overright
         <refsection>
             <title>Examples</title>
 
+            <para>Specified band numbers.</para>
             <programlisting>
--- specified band numbers
 SELECT r1.rid, r2.rid, ST_Contains(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;
 
 NOTICE:  The first raster provided has no bands</programlisting>
@@ -14676,8 +14666,8 @@ NOTICE:  The first raster provided has no bands</programlisting>
    1 |   1 |
    1 |   2 | f</screen>
 
+            <para>No band numbers specified.</para>
             <programlisting>
--- no band numbers specified
 SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;</programlisting>
 <screen> rid | rid | st_contains
 -----+-----+-------------
@@ -15025,8 +15015,8 @@ SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 C
         <refsection>
             <title>Examples</title>
 
+            <para>Rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint.</para>
             <programlisting>
--- rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint
 SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
 
 NOTICE:  The second raster provided has no bands</programlisting>
@@ -15035,8 +15025,8 @@ NOTICE:  The second raster provided has no bands</programlisting>
    2 |   1 |
    2 |   2 | f</screen>
 
+            <para>This time, without specifying band numbers.</para>
             <programlisting>
--- this time, without specifying band numbers
 SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
 <screen> rid | rid | st_disjoint
 -----+-----+-------------
@@ -15170,8 +15160,8 @@ SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JO
 
         <refsection>
             <title>Examples</title>
+            <para>Different bands of same raster.</para>
             <programlisting>
--- different bands of same raster
 SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;</programlisting>
 <screen>t</screen>
         </refsection>
@@ -15255,8 +15245,8 @@ SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;</programli
         <refsection>
             <title>Examples</title>
 
+            <para>Comparing different bands of same raster.</para>
             <programlisting>
--- comparing different bands of same raster
 SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;</programlisting>
 <screen>f</screen>
         </refsection>

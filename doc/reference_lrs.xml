@@ -76,7 +76,8 @@
 				<caption><para>A LineString with the interpolated point at 20% position (0.20) </para></caption>
 			  </mediaobject>
 			</informalfigure>
-			<programlisting>-- The point 20% along a line
+			<para>The point 20% along a line.</para>
+			<programlisting>
 
 SELECT ST_AsEWKT(  ST_LineInterpolatePoint(
         'LINESTRING(25 50, 100 125, 150 190)',
@@ -296,12 +297,8 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 		  <refsection>
 			<title>Examples</title>
 
+			<para>Rough approximation of finding the street number of a point along the street. Note the whole foo thing is just to generate dummy data that looks. Like house centroids and street. We use ST_DWithin to exclude. Houses too far away from the street to be considered on the street.</para>
 			<programlisting>
---Rough approximation of finding the street number of a point along the street
---Note the whole foo thing is just to generate dummy data that looks
---like house centroids and street
---We use ST_DWithin to exclude
---houses too far away from the street to be considered on the street
 SELECT ST_AsText(house_loc) As as_text_house_loc,
 	startstreet_num +
 		CAST( (endstreet_num - startstreet_num)
@@ -319,8 +316,8 @@ WHERE ST_DWithin(street_line, house_loc, 0.2);</programlisting>
  POINT(2.02 3.09)  |         15
  POINT(3.03 4.12)  |         20</screen>
 
+<para>Find closest point on a line to a point or other geometry.</para>
 <programlisting>
---find closest point on a line to a point or other geometry
 SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
 FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;</programlisting>
 <screen>POINT(3 4)</screen>
@@ -768,7 +765,8 @@ SELECT ST_AsText( ST_LocateBetween(
         <refsection>
         <title>Examples</title>
 
-        <programlisting>-- Line rising diagonally in Z; point at the 3D midpoint
+        <para>Line rising diagonally in Z; point at the 3D midpoint.</para>
+        <programlisting>
 SELECT ST_3DInterpolatePoint(
     'LINESTRING ZM (0 0 0 0, 10 0 10 20)',
     'POINT Z (5 0 5)');

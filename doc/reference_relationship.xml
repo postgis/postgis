@@ -258,7 +258,8 @@
       </tgroup>
     </informaltable>
 
-      <programlisting>-- A circle within a circle
+      <para>A circle within a circle.</para>
+      <programlisting>
 SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
      ST_Contains(bigc,smallc) As bigcontainssmall,
      ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,
@@ -272,7 +273,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 <screen>  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
  f                | t                | t                | t          | t        | f</screen>
-<programlisting>-- Example demonstrating difference between contains and contains properly
+<para>Example demonstrating difference between contains and contains properly.</para>
+<programlisting>
 SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
    ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
 FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
@@ -356,7 +358,8 @@ ST_Point      | t          | t              | f           | f
 
     <refsection>
     <title>Examples</title>
-      <programlisting>  --a circle within a circle
+      <para>A circle within a circle.</para>
+      <programlisting>
   SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
   ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,
   ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as bigcontainspropunion,
@@ -369,7 +372,8 @@ ST_Point      | t          | t              | f           | f
 <screen>  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
  f                     | t                    | f                    | t          | t                 | f</screen>
-<programlisting> --example demonstrating difference between contains and contains properly
+<para>Example demonstrating difference between contains and contains properly.</para>
+<programlisting>
  SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
  ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
  FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
@@ -461,8 +465,8 @@ ST_Point      | t          | t              | f           | f
 
     <refsection>
     <title>Examples</title>
+      <para>A circle coveredby a circle.</para>
       <programlisting>
-  --a circle coveredby a circle
 SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,
   ST_CoveredBy(smallc, bigc) As smallcoveredbybig,
   ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,
@@ -558,8 +562,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
     <refsection>
     <title>Examples</title>
       <para> Geometry example </para>
+      <para>A circle covering a circle.</para>
       <programlisting>
-  --a circle covering a circle
 SELECT ST_Covers(smallc,smallc) As smallinsmall,
   ST_Covers(smallc, bigc) As smallcoversbig,
   ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
@@ -572,8 +576,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
  t            | f              | t                 | f
 (1 row) </screen>
     <para>Geeography Example</para>
+    <para>A point with a 300 meter buffer compared to a point, a point and its 10 meter buffer.</para>
     <programlisting>
--- a point with a 300 meter buffer compared to a point, a point and its 10 meter buffer
 SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
   ST_Covers(ST_Buffer(geog_pt,10), geog_pt) As buff_10m_covers_cent
   FROM (SELECT ST_Buffer(ST_GeogFromText('SRID=4326;POINT(-99.327 31.4821)'), 300) As geog_poly,
@@ -977,7 +981,8 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
 <screen>f</screen>
 <programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting role="requires-external-state">-- Look up in table. Make sure table has a GiST index on geometry column for faster lookup.
+<para>Look up in table. Make sure table has a GiST index on geometry column for faster lookup.</para>
+<programlisting role="requires-external-state">
 SELECT id, name FROM cities WHERE ST_Intersects(geom, 'SRID=4326;POLYGON((28 53,27.707 52.293,27 52,26.293 52.293,26 53,26.293 53.707,27 54,27.707 53.707,28 53))');</programlisting>
 <screen> id | name
 ----+-------
@@ -1475,8 +1480,8 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
 
         <para>Testing a custom spatial relationship pattern as a query condition,
         with <code>&amp;&amp;</code> to enable using a spatial index.</para>
+    <para>Find compounds that properly intersect (not just touch) a poly (Interior Intersects)</para>
     <programlisting>
--- Find compounds that properly intersect (not just touch) a poly (Interior Intersects)
 
 SELECT c.* , p.name As poly_name
     FROM polys AS p
@@ -1838,8 +1843,8 @@ SELECT pat.name AS relationship, pat.val AS pattern,
 
     <refsection>
     <title>Examples</title>
+      <para>A circle within a circle.</para>
       <programlisting>
---a circle within a circle
 SELECT ST_Within(smallc,smallc) As smallinsmall,
   ST_Within(smallc, bigc) As smallinbig,
   ST_Within(bigc,smallc) As biginsmall,
@@ -1921,9 +1926,8 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
     <refsection>
     <title>Examples</title>
 
+    <para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
     <programlisting>
--- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
--- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
 SELECT ST_3DDWithin(
       ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
       ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
@@ -1994,9 +1998,8 @@ ST_DWithin(
 
     <refsection>
     <title>Examples</title>
+    <para>This compares the difference between fully within and distance within as well. As the distance fully within for the 2D footprint of the line/point vs. the 3D fully within.</para>
     <programlisting>
-    -- This compares the difference between fully within and distance within as well
-    -- as the distance fully within for the 2D footprint of the line/point vs. the 3d fully within
     SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as D3DFullyWithin10, ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10,
   ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,
   ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from
@@ -2152,12 +2155,8 @@ FROM (VALUES
 
     <refsection>
     <title>Examples</title>
+      <para>Find the nearest hospital to each school. That is within 3000 units of the school. We do an ST_DWithin search to utilize indexes to limit our search list. That the non-indexable ST_Distance needs to process. If the units of the spatial reference is meters then units would be meters.</para>
       <programlisting>
--- Find the nearest hospital to each school
--- that is within 3000 units of the school.
---  We do an ST_DWithin search to utilize indexes to limit our search list
---  that the non-indexable ST_Distance needs to process
--- If the units of the spatial reference is meters then units would be meters
 SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.geom, h.hospital_name
   FROM schools s
     LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)

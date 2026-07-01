@@ -45,8 +45,8 @@
 
       <refsection>
         <title>Examples</title>
+            <para>Rely on implicit cast from geometry to box2d for the second parameter.</para>
             <programlisting>
--- Rely on implicit cast from geometry to box2d for the second parameter
 SELECT ST_ClipByBox2D(geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
       </programlisting>
       </refsection>
@@ -829,8 +829,8 @@ CREATE TABLE subdivided_geoms AS
         </tbody>
     </tgroup>
 </informaltable>
+<para>Safe for 2D - symmetric difference of 2 linestrings.</para>
 <programlisting>
---Safe for 2d - symmetric difference of 2 linestrings
 SELECT ST_AsText(
     ST_SymDifference(
         ST_GeomFromText('LINESTRING(50 100, 50 200)'),

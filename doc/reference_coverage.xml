@@ -94,7 +94,8 @@ SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
   3 | LINESTRING (140 80, 140 190)
   4 | null</screen>
 
-      <programlisting>-- Test entire table for coverage validity
+      <para>Test entire table for coverage validity.</para>
+      <programlisting>
 SELECT true = ALL (
     SELECT ST_CoverageInvalidEdges(geom) OVER () IS NULL
     FROM coverage
@@ -190,7 +191,8 @@ SELECT true = ALL (
     <refsection>
       <title>Examples</title>
 
-      <programlisting>-- Populate input table
+      <para>Populate input table.</para>
+      <programlisting>
 CREATE TABLE example AS SELECT * FROM (VALUES
   (1, 'POLYGON ((10 190, 30 160, 27 134.5, 40 110, 122 47, 120 10, 10 10, 10 190))'::geometry),
   (2, 'POLYGON ((150 190, 10 190, 30 160, 50 140, 40 110, 50 80, 130 70, 135 111, 140 130, 140 160, 150 190))'::geometry),
@@ -208,7 +210,8 @@ CREATE TABLE example AS SELECT * FROM (VALUES
         </mediaobject>
       </informalfigure>
 
-<programlisting>-- Show it is an invalid coverage
+<para>Show it is an invalid coverage.</para>
+<programlisting>
 SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
   FROM example;
 </programlisting>
@@ -222,7 +225,8 @@ SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
         </mediaobject>
       </informalfigure>
 
-<programlisting>-- Clean the coverage, merging gaps with width &lt;= 1
+<para>Clean the coverage, merging gaps with width &lt;= 1.</para>
+<programlisting>
 CREATE TABLE example_clean AS
   SELECT id, ST_CoverageClean(geom, 1) OVER () AS GEOM
   FROM example;
@@ -399,8 +403,8 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
 
     <refsection>
       <title>Examples</title>
+      <para>Get all unique edges of a coverage.</para>
       <programlisting>
--- Get all unique edges of a coverage
 SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))')));
 --------------------------------------
 MULTILINESTRING((0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 10 10), (10 10, 0 10), (0 10, 0 0), (10 0, 10 10))

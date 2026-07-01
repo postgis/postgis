@@ -46,8 +46,8 @@ like <xref linkend="ST_ClosestPointOfApproach"/>
 
       <refsection>
       <title>Examples</title>
+<para>A valid trajectory.</para>
 <programlisting>
--- A valid trajectory
 SELECT ST_IsValidTrajectory(ST_MakeLine(
   ST_MakePointM(0,0,1),
   ST_MakePointM(0,1,2))

@@ -56,15 +56,15 @@
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
+    <para>Inverse direction.</para>
     <programlisting>
--- Inverse direction
 SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
 <screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
+    <para>Using ST_Transform with automatic selection of a conversion pipeline.</para>
     <programlisting>
--- using ST_Transform with automatic selection of a conversion pipeline.
 SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
 <screen>POINT(143.00000635638918 -36.999986706128176)</screen>
     </refsection>
@@ -116,16 +116,12 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
 
     <refsection>
       <title>Examples</title>
-      <para>-- Mark a point as WGS 84 long lat --</para>
-      <programlisting>SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;
--- the ewkt representation (wrap with ST_AsEWKT) -
-SRID=4326;POINT(-123.365556 48.428611)
-      </programlisting>
-      <para>-- Mark a point as WGS 84 long lat and then transform to web mercator (Spherical Mercator) --</para>
-      <programlisting>SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;
--- the ewkt representation (wrap with ST_AsEWKT) -
-SRID=3785;POINT(-13732990.8753491 6178458.96425423)
-      </programlisting>
+      <para>Mark a point as WGS 84 longitude/latitude.</para>
+      <programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326)) As wgs84long_lat;</programlisting>
+<screen>SRID=4326;POINT(-123.365556 48.428611)</screen>
+      <para>Mark a point as WGS 84 longitude/latitude and then transform it to Web Mercator.</para>
+      <programlisting>SELECT ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785)) As sphere_merc;</programlisting>
+<screen>SRID=3785;POINT(-13732990.8753491 6178458.96425423)</screen>
     </refsection>
 
     <refsection>
@@ -269,7 +265,8 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 </programlisting>
     <screen>POLYGON((-71.1776848522251 42.3902896512903,-71.17768437663261 42.390382947801015,-71.17758443054647 42.390382667791854,-71.17758259272304 42.390289364798825,-71.1776848522251 42.3902896512903))</screen>
 
-<programlisting language="sql">--3D Circular String example
+<para>3D Circular String example.</para>
+<programlisting language="sql">
 SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));</programlisting>
 
     <screen>         st_asewkt
@@ -290,8 +287,8 @@ CREATE INDEX idx_geom_26986_parcels
     </programlisting>
 
     <para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
-    <programlisting language="sql">-- Find intersection of two polygons near the North pole, using a custom Gnomic projection
--- See http://boundlessgeo.com/2012/02/flattening-the-peel/
+    <para>Find intersection of two polygons near the North pole, using a custom Gnomic projection. See http://boundlessgeo.com/2012/02/flattening-the-peel/.</para>
+    <programlisting language="sql">
  WITH data AS (
    SELECT
      ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', 4326) AS p1,
@@ -406,26 +403,29 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <programlisting>-- Forward direction
+    <para>Forward direction.</para>
+    <programlisting>
 SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;</programlisting>
 <screen>POINT(426857.9877165967 5427937.523342293)</screen>
-<programlisting>-- Inverse direction
+<para>Inverse direction.</para>
+<programlisting>
 SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
 <screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
-    <programlisting>-- using ST_Transform with automatic selection of a conversion pipeline.
+    <para>Using ST_Transform with automatic selection of a conversion pipeline.</para>
+    <programlisting>
 SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
 <screen>POINT(143.00000635638918 -36.999986706128176)</screen>
-<programlisting>-- using a defined conversion (EPSG:8447)
+<para>Using a defined conversion (EPSG:8447)</para>
+<programlisting>
 SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
   'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;</programlisting>
 <screen>POINT(143.0000063280214 -36.999986718287545)</screen>
-<programlisting>-- using a PROJ pipeline definition matching EPSG:8447, as returned from
--- 'projinfo -s EPSG:4939 -t EPSG:7844'.
--- NOTE: any 'axisswap' steps must be removed.
+<para>Using a PROJ pipeline definition matching EPSG:8447, as returned from. 'projinfo -s EPSG:4939 -t EPSG:7844'. Note that any 'axisswap' steps must be removed.</para>
+<programlisting>
 SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
   '+proj=pipeline
    +step +proj=unitconvert +xy_in=deg +xy_out=rad

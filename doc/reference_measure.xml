@@ -603,9 +603,8 @@ FROM (SELECT
 	  <refsection>
 		<title>Examples</title>
 
+		<para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
 		<programlisting>
--- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
--- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
 SELECT ST_3DDistance(
 			ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
 			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
@@ -617,9 +616,8 @@ SELECT ST_3DDistance(
 <screen>     dist_3d      |     dist_2d
 ------------------+-----------------
  127.295059324629 | 126.66425605671</screen>
+<para>Multilinestring and polygon both 3D and 2D distance. Same example as 3D closest point example.</para>
 <programlisting>
--- Multilinestring and polygon both 3d and 2d distance
--- Same example as 3D closest point example
 SELECT ST_3DDistance(poly, mline) As dist3d,
     ST_Distance(poly, mline) As dist2d
         FROM (SELECT  'POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))'::geometry as poly,
@@ -985,7 +983,8 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 			<programlisting>SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 2967450,743265 2967450,
 743265.625 2967416,743238 2967416)',2249));</programlisting>
 <screen>122.63074400009504</screen>
-<programlisting>--Transforming WGS 84 LineString to Massachusetts state plane meters
+<para>Transforming WGS 84 LineString to Massachusetts state plane meters.</para>
+<programlisting>
 SELECT ST_Length(
 	ST_Transform(
 		ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)'),
@@ -997,8 +996,8 @@ SELECT ST_Length(
 		  <refsection>
 			<title>Geography Examples</title>
 			<para>Return length of WGS 84 geography line</para>
+			<para>The default calculation uses a spheroid.</para>
 			<programlisting>
--- the default calculation uses a spheroid
 SELECT ST_Length(the_geog) As length_spheroid,  ST_Length(the_geog,false) As length_sphere
 FROM (SELECT ST_GeographyFromText(
 'SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)') As the_geog)
@@ -1143,7 +1142,8 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 <screen>	tot_len      |    len_line1     |    len_line2
 ------------------+------------------+------------------
  85204.52077117894 | 13986.87252824332 | 71217.64824293563</screen>
-<programlisting> --3D
+<para>3D.</para>
+<programlisting>
 SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,
 ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
 ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
@@ -1471,9 +1471,8 @@ SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry);
 	  <refsection>
 		<title>Examples</title>
 
+		<para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
 		<programlisting>
--- Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line)
--- Note: currently no vertical datum support so Z is not transformed and assumed to be same units as final.
 SELECT ST_3DMaxDistance(
 			ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 10000)'),2163),
 			ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163)
@@ -1686,7 +1685,8 @@ FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766
 <screen>   per_meters    |      per_ft
 -----------------+------------------
 37.37904625414049 | 122.63466618812497</screen>
-<programlisting>-- MultiPolygon example --
+<para>MultiPolygon example.</para>
+<programlisting>
 SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog,false) As per_sphere_meters,  ST_Perimeter(geog)/0.3048 As per_ft
 FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.1044542869917 42.3406744369506,
 -71.1044553562977 42.340673886454,-71.1044543107478 42.340674480411)),

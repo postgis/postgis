@@ -138,8 +138,8 @@ SET postgis.gdal_enabled_drivers = default;
                 <para>Setting for whole database cluster to enable all drivers. Requires super user access.
                     Also note that database, session, and user settings override this.</para>
 
+                <para>Writes to postgres.auto.conf.</para>
                 <programlisting>
- --writes to postgres.auto.conf
 ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
  --Reloads postgres conf
 SELECT pg_reload_conf();
@@ -212,8 +212,8 @@ ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;
 
                 <para>Setting for whole database cluster. Requires super user access.
                     Also note that database, session, and user settings override this.</para>
+                <para>Writes to postgres.auto.conf.</para>
                 <programlisting>
- --writes to postgres.auto.conf
 ALTER SYSTEM SET postgis.enable_outdb_rasters = true;
  --Reloads postgres conf
 SELECT pg_reload_conf();

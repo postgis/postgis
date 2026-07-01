@@ -89,7 +89,8 @@ z' = z </programlisting> This method is a subcase of the 3D method
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>--Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for doing ST_Rotate();
+		<para>Rotate a 3D line 180 degrees about the z axis. Note this is long-hand for doing ST_Rotate();</para>
+		<programlisting>
  SELECT ST_AsEWKT(ST_Affine(geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,
 	 ST_AsEWKT(ST_Rotate(geom, pi())) As using_rotate
 	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As geom) As foo;</programlisting>
@@ -97,7 +98,8 @@ z' = z </programlisting> This method is a subcase of the 3D method
 -----------------------------+-----------------------------
  LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)
 (1 row)</screen>
-<programlisting>--Rotate a 3d line 180 degrees in both the x and z axis
+<para>Rotate a 3D line 180 degrees in both the x and z axis.</para>
+<programlisting>
 SELECT ST_AsEWKT(ST_Affine(geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))
 	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As geom) As foo;</programlisting>
 <screen>LINESTRING(-1 -2 -3,-1 -4 -3)</screen>
@@ -165,18 +167,18 @@ SELECT ST_AsEWKT(ST_Affine(geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()),
 	  <refsection>
 		<title>Examples</title>
 
+		<para>Rotate 180 degrees.</para>
 		<programlisting>
---Rotate 180 degrees
 SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()), 6);</programlisting>
 <screen>LINESTRING(-50 -160,-50 -50,-100 -50)</screen>
 
+		<para>Rotate 30 degrees counter-clockwise at x=50, y=160.</para>
 		<programlisting>
---Rotate 30 degrees counter-clockwise at x=50, y=160
 SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()/6, 50, 160), 6);</programlisting>
 <screen>LINESTRING(50 160,105 64.737206,148.30127 89.737206)</screen>
 
+		<para>Rotate 60 degrees clockwise from centroid.</para>
 		<programlisting>
---Rotate 60 degrees clockwise from centroid
 SELECT ST_AsText(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)), 4)
 FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;</programlisting>
 <screen>LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)</screen>
@@ -226,8 +228,8 @@ FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;</pr
 	  <refsection>
 		<title>Examples</title>
 
+		<para>Rotate a line 90 degrees along x-axis.</para>
 		<programlisting>
---Rotate a line 90 degrees along x-axis
 SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
 <screen>LINESTRING(1 -3 2,1 -1 1)</screen>
 	  </refsection>
@@ -278,8 +280,8 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	  <refsection>
 		<title>Examples</title>
 
+		<para>Rotate a line 90 degrees along y-axis.</para>
 		<programlisting>
---Rotate a line 90 degrees along y-axis
  SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
 <screen>LINESTRING(3 2 -1,1 1 -1)</screen>
 	  </refsection>
@@ -333,10 +335,12 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>--Rotate a line 90 degrees along z-axis
+		<para>Rotate a line 90 degrees along z-axis.</para>
+		<programlisting>
 SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));</programlisting>
 <screen>LINESTRING(-2 1 3,-1 1 1)</screen>
-<programlisting> --Rotate a curved circle around z-axis
+<para>Rotate a curved circle around z-axis.</para>
+<programlisting>
 SELECT ST_AsEWKT(ST_RotateZ(geom, pi()/2))
 FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As geom) As foo;</programlisting>
 <screen>CURVEPOLYGON(CIRCULARSTRING(-567 237.00000000000003,-567 231.00000000000003,-567 237.00000000000003))</screen>
@@ -426,17 +430,21 @@ point are equivalent to no scaling the corresponding dimension.
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>--Version 1: scale X, Y, Z
+		<para>Version 1: scale X, Y, Z.</para>
+		<programlisting>
 SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));</programlisting>
 <screen>LINESTRING(0.5 1.5 2.4,0.5 0.75 0.8)</screen>
-<programlisting>--Version 2: Scale X Y
+<para>Version 2: Scale X Y.</para>
+<programlisting>
  SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75));</programlisting>
 <screen>LINESTRING(0.5 1.5 3,0.5 0.75 1)</screen>
-<programlisting>--Version 3: Scale X Y Z M
+<para>Version 3: Scale X Y Z M.</para>
+<programlisting>
  SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),
    ST_MakePoint(0.5, 0.75, 2, -1)));</programlisting>
 <screen>LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)</screen>
-<programlisting>--Version 4: Scale X Y using false origin
+<para>Version 4: Scale X Y using false origin.</para>
+<programlisting>
 SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::geometry));</programlisting>
 <screen>LINESTRING(1 1,3 3)</screen>
 	  </refsection>
@@ -562,7 +570,8 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 
 		<programlisting>SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));</programlisting>
 <screen>LINESTRING(1.5 6 3,1.5 4 1)</screen>
-<programlisting>--Buffer a point to get an approximation of a circle, convert to curve and then translate 1,2 and scale it 3,4
+<para>Buffer a point to get an approximation of a circle, convert to curve and then translate 1,2 and scale it 3,4.</para>
+<programlisting>
   SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));</programlisting>
 <screen>CURVEPOLYGON(CIRCULARSTRING(714 2276,696 2276,714 2276))</screen>
 	  </refsection>

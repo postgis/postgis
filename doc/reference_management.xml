@@ -128,7 +128,8 @@
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>-- Create schema to hold data
+		<para>Create schema to hold data.</para>
+		<programlisting>
 CREATE SCHEMA my_schema;
 -- Create a new simple PostgreSQL table
 CREATE TABLE my_schema.my_spatial_table (id serial);
@@ -494,8 +495,8 @@ SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programli
  gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
  geom   | geometry(LineString,4326) |</screen>
 
-		<programlisting>-- This will change the geometry columns to use constraints if they are not typmod or have constraints already.
---For this to work, there must exist data
+		<para>This will change the geometry columns to use constraints if they are not typmod or have constraints already. For this to work, there must exist data.</para>
+		<programlisting>
 CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
 INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
 SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);</programlisting>

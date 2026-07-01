@@ -133,8 +133,8 @@
 
 		 <refsection>
 			<title>Examples</title>
+			<para>Converting lon lat coords to geography.</para>
 			<programlisting language="sql">
---- converting lon lat coords to geography
 ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
 UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');
 
@@ -295,12 +295,12 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 ((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
 -71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))');
 </programlisting>
+<para>3D circular string.</para>
 <programlisting language="sql">
---3d circular string
 SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');
 </programlisting>
+<para>Polyhedral Surface example.</para>
 <programlisting language="sql">
---Polyhedral Surface example
 SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -999,7 +999,8 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">--Although bytea rep contains single \, these need to be escaped when inserting into a table
+		<para>Although bytea rep contains single \, these need to be escaped when inserting into a table.</para>
+		<programlisting language="sql">
 SELECT ST_AsText(
 ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@')
 );</programlisting>
@@ -1107,8 +1108,8 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">--Although bytea rep contains single \, these need to be escaped when inserting into a table
-		-- unless standard_conforming_strings is set to on.
+		<para>Although bytea rep contains single \, these need to be escaped when inserting into a table. Unless standard_conforming_strings is set to on.</para>
+		<programlisting language="sql">
 SELECT ST_AsEWKT(
 ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
 );</programlisting>
@@ -1655,7 +1656,8 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 		<title>Examples</title>
 		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) As wkt;</programlisting>
 <screen>POINT(-48.23456 20.12345)</screen>
-<programlisting language="sql">-- a 3D linestring
+<para>A 3D linestring.</para>
+<programlisting language="sql">
 SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3],[4,5,6],[7,8,9]]}')) As wkt;</programlisting>
 <screen>LINESTRING Z (1 2 3,4 5 6,7 8 9)</screen>
 	  </refsection>
@@ -1828,11 +1830,12 @@ SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometr
     <refsection>
     <title>Examples</title>
 
+    <para>Create a line string from a polyline.</para>
     <programlisting language="sql">
--- Create a line string from a polyline
 SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));</programlisting>
 <screen>SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)</screen>
-<programlisting language="sql">-- Select different precision that was used for polyline encoding
+<para>Select different precision that was used for polyline encoding.</para>
+<programlisting language="sql">
 SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@',6));</programlisting>
 <screen>SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
 
