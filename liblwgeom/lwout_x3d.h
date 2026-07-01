@@ -24,9 +24,9 @@
  **********************************************************************/
 
 /**
-* @file X3D output routines.
-*
-**********************************************************************/
+ * @file X3D output routines.
+ *
+ **********************************************************************/
 #include <string.h>
 #include "liblwgeom_internal.h"
 #include "stringbuffer.h"
@@ -41,6 +41,8 @@ static int
 asx3d3_triangle_sb(const LWTRIANGLE *triangle, int precision, int opts, const char *defid, stringbuffer_t *sb);
 
 static int asx3d3_multi_sb(const LWCOLLECTION *col, int precision, int opts, const char *defid, stringbuffer_t *sb);
+static int
+asx3d3_nurbscurve_sb(const LWNURBSCURVE *curve, int precision, int opts, const char *defid, stringbuffer_t *sb);
 static int asx3d3_psurface_sb(const LWPSURFACE *psur, int precision, int opts, const char *defid, stringbuffer_t *sb);
 static int asx3d3_tin_sb(const LWTIN *tin, int precision, int opts, const char *defid, stringbuffer_t *sb);
 
