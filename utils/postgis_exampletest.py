@@ -30,6 +30,18 @@ WKT_TYPES = (
     "MULTICURVE|MULTISURFACE|TIN|TRIANGLE|POLYHEDRALSURFACE"
 )
 DECIMAL_RE = re.compile(r"(?<![A-Za-z_])-?(?:\d+\.\d*|\.\d+)(?:[eE][+-]?\d+)?")
+VERSION_FUNCTION_RE = re.compile(
+    r"\b(?:"
+    r"PostGIS_Full_Version|postgis_full_version|PostGIS_GEOS_Version|"
+    r"PostGIS_GEOS_Compiled_Version|PostGIS_LibXML_Version|"
+    r"PostGIS_LibJSON_Version|PostGIS_PROJ_Version|"
+    r"PostGIS_PROJ_Compiled_Version|PostGIS_Wagyu_Version|"
+    r"PostGIS_Lib_Build_Date|PostGIS_Lib_Version|"
+    r"PostGIS_Scripts_Build_Date|PostGIS_Scripts_Installed|"
+    r"PostGIS_Scripts_Released|PostGIS_Version"
+    r")\s*\(",
+    re.I,
+)
 
 
 class ExampleTester:
@@ -68,16 +80,10 @@ class ExampleTester:
         if re.search(
             r"\b(?:DropGeometryColumn|DropGeometryTable|Find_SRID|"
             r"ST_MinimumSpanningTree|PostGIS_Extensions_Upgrade|"
-            r"PostGIS_Full_Version|postgis_full_version|PostGIS_GEOS_Version|"
-            r"PostGIS_GEOS_Compiled_Version|PostGIS_LibXML_Version|"
-            r"PostGIS_LibJSON_Version|PostGIS_PROJ_Version|"
-            r"PostGIS_PROJ_Compiled_Version|PostGIS_Wagyu_Version|"
             r"PostGIS_GDAL_Version|PostGIS_Liblwgeom_Version|"
-            r"PostGIS_Lib_Build_Date|PostGIS_Lib_Version|"
             r"PostGIS_Raster_Lib_Build_Date|PostGIS_Raster_Lib_Version|"
-            r"PostGIS_Raster_Scripts_Installed|ST_GDALDrivers|ST_FromGDALRaster|ST_AsPNG|"
-            r"PostGIS_Scripts_Build_Date|PostGIS_Scripts_Installed|"
-            r"PostGIS_Scripts_Released|PostGIS_Version)\s*\(",
+            r"PostGIS_Raster_Scripts_Installed|ST_GDALDrivers|ST_FromGDALRaster|ST_AsPNG"
+            r")\s*\(",
             text,
             re.I,
         ):
@@ -209,6 +215,14 @@ class ExampleTester:
                     return False
         return True
 
+    def version_rows_equal(self, actual, expected):
+        if len(actual) != len(expected):
+            return False
+        for actual_row, expected_row in zip(actual, expected):
+            if len(actual_row) != len(expected_row):
+                return False
+        return True
+
     def rows_to_string(self, rows):
         return "\n".join(" | ".join(row) for row in rows)
 
@@ -225,6 +239,9 @@ class ExampleTester:
         if not re.search(r"^\s*(?:--[^\n]*\n\s*)*(?:SELECT|WITH)\b", query, re.I):
             return False
         return query.count(";") <= 1
+
+    def query_is_version_example(self, query):
+        return query is not None and bool(VERSION_FUNCTION_RE.search(query))
 
     def expected_rows_are_auto_safe(self, expected):
         if not expected:
@@ -265,6 +282,7 @@ class ExampleTester:
             "expected": expected,
             "valid": valid,
             "forced": forced,
+            "version": self.query_is_version_example(query),
         }
 
     def examples(self):
@@ -296,6 +314,7 @@ class ExampleTester:
             "requires_external_state": 0,
             "auto_example_tests": 0,
             "forced_example_tests": 0,
+            "volatile_version_tests": 0,
         }
 
         for node in self.doc.xpath("//db:programlisting", namespaces=DB):
@@ -346,6 +365,7 @@ class ExampleTester:
         examples = self.examples()
         stats["auto_example_tests"] = len([example for example in examples if not example["forced"]])
         stats["forced_example_tests"] = len([example for example in examples if example["forced"]])
+        stats["volatile_version_tests"] = len([example for example in examples if example["version"]])
         stats["example_tests"] = len(examples)
         stats["parseable_example_tests"] = len([example for example in examples if example["valid"]])
 
@@ -426,6 +446,8 @@ $$;
 
         emitted = 0
         for example in examples:
+            if example["version"]:
+                continue
             emitted += 1
             print("SELECT pg_temp._postgis_exampletest_check(")
             print(f"\t{self.sql_quote(example['label'])},")
@@ -458,7 +480,12 @@ $$;
             except RuntimeError as exc:
                 raise RuntimeError(f"Example test failed to run: {example['label']}\n{exc}") from exc
 
-            if not self.rows_equal(actual, example["expected"]):
+            equal = (
+                self.version_rows_equal(actual, example["expected"])
+                if example["version"]
+                else self.rows_equal(actual, example["expected"])
+            )
+            if not equal:
                 raise RuntimeError(
                     f"Example test failed: {example['label']}\n"
                     f"Query:\n{example['query']}\n"

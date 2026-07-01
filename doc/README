@@ -114,5 +114,8 @@ Example SQL formatting rules:
 * Mark examples that require a newer GEOS/PROJ/GDAL feature than the default test
   environment with ``role="requires-external-state"`` instead of adding runner
   special cases.
+* Version-reporting examples are run, but their version/build strings are treated
+  as volatile; the tester checks that the query runs and returns the documented
+  row and column shape.
 
 Use ``make exampletest-report`` to inspect the current manual.
