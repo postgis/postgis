@@ -10,6 +10,7 @@
 			using a garden variety of rasters.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
+	<xsl:param name="raster_garden_outdbfile" />
 	<xsl:variable name='testversion'>3.7.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddRasterColumn AddRasterConstraints DropRasterConstraints DropRasterColumn DropRasterTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
@@ -58,6 +59,7 @@
 	<xsl:variable name='var_ext_matching_srid'>ST_MakeEnvelope(0, 0, 1, 1, <xsl:value-of select="$var_srid" />)</xsl:variable>
 	<xsl:variable name='var_regclass'><xsl:value-of select="$var_rastertable" />::regclass</xsl:variable>
 	<xsl:variable name='var_overviewregclass'>'<xsl:value-of select="$var_overviewtable" />'::regclass</xsl:variable>
+	<xsl:variable name='var_outdbfile'>'<xsl:value-of select="$raster_garden_outdbfile" />'</xsl:variable>
 	<xsl:variable name='var_addbandarg'>ROW(NULL, '8BUI', 255, 0)::addbandarg</xsl:variable>
 	<xsl:variable name='var_addbandargset'>ARRAY[ROW(1, '1BB'::text, 0, NULL),ROW(2, '4BUI'::text, 0, NULL)]::addbandarg[]</xsl:variable>
 	<xsl:variable name='var_rastbandargset'>ARRAY[ROW(rast1.rast, 1), ROW(rast1.rast, 1), ROW(rast1.rast, 1)]::rastbandarg[]</xsl:variable>
@@ -151,9 +153,11 @@
 	</pgis:pixeltypes>
         <!-- We deal only with the reference chapter -->
         <xsl:template match="/">
-<!-- Create logging table -->
-<!-- Create logging tables -->
-DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
+	<!-- Create logging table -->
+	<!-- Create logging tables -->
+	SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
+	SET postgis.enable_outdb_rasters = true;
+	DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
 CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
@@ -229,7 +233,7 @@ COMMIT;
 	DROP TABLE IF EXISTS <xsl:value-of select="$var_overviewtable" />;
 	CREATE TABLE <xsl:value-of select="$var_overviewtable" />(rid serial PRIMARY KEY, rast raster);
 	INSERT INTO <xsl:value-of select="$var_overviewtable" />(rast)
-	SELECT rast FROM pgis_rgarden_1bb;
+	SELECT rast FROM pgis_rgarden_1bb ORDER BY rid LIMIT 1;
 	SELECT AddRasterConstraints(CAST(lower('<xsl:value-of select="$var_overviewtable" />') AS name), CAST('rast' AS name));
 
 	DROP TABLE IF EXISTS <xsl:value-of select="$var_overviewtable_schema" />;
@@ -478,13 +482,13 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:parameter, 'georefcoords')">
 						<xsl:value-of select="$var_georefcoords" />
 					</xsl:when>
-					<xsl:when test="normalize-space(db:type) = 'integer[]'">
+					<xsl:when test="normalize-space(db:type) = 'integer[]' or normalize-space(db:type) = 'int[]'">
 						ARRAY[<xsl:value-of select="$var_integer1" />]
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'rastbandargset')">
 						<xsl:value-of select="$var_rastbandargset" />
 					</xsl:when>
-					<xsl:when test="contains(db:parameter, 'nbands') and normalize-space(db:type) = 'integer[]'">
+					<xsl:when test="contains(db:parameter, 'nbands') and (normalize-space(db:type) = 'integer[]' or normalize-space(db:type) = 'int[]')">
 						ARRAY[<xsl:value-of select="$var_integer1" />]
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'nbands') and normalize-space(db:type) = 'text'">
@@ -672,6 +676,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:type, 'spheroid')">
 						<xsl:value-of select="$var_spheroid" />
 					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'outdbfile')">
+						<xsl:value-of select="$var_outdbfile" />
+					</xsl:when>
 					<xsl:when test="contains(db:type, 'integer') and position() = 2">
 						<xsl:value-of select="$var_integer1" />
 					</xsl:when>
@@ -684,10 +691,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:type, 'character')">
 						<xsl:value-of select="$var_delimiter" />
 					</xsl:when>
-					<xsl:when test="contains(db:type,'reclassarg')">
+					<xsl:when test="contains(db:type, 'reclassarg')">
 						<xsl:value-of select="$var_reclassarg" />
 					</xsl:when>
-
 					<xsl:when test="contains(db:type, 'text')">
 						<xsl:value-of select="$var_text" />
 					</xsl:when>
