@@ -274,21 +274,18 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>Examples</title>
     <para>Change Massachusetts state plane US feet geometry to WGS 84 long lat</para>
-    <screen>
-SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+    <programlisting language="sql">SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
   743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
-
- wgs_geom
+</programlisting>
+    <screen> wgs_geom
 ---------------------------
- POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
--71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.177684
-8522251 42.3902896512902));
-(1 row)
+ POLYGON((-71.1776848522251 42.3902896512903,-71.17768437663261 42.390382947801015,-71.17758443054647 42.390382667791854,-71.17758259272304 42.390289364798825,-71.1776848522251 42.3902896512903))
+(1 row)</screen>
 
---3D Circular String example
-SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));
+<programlisting language="sql">--3D Circular String example
+SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));</programlisting>
 
-         st_asewkt
+    <screen>         st_asewkt
 --------------------------------------------------------------------------------------
  SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
  -71.1775844305465 42.3903826677917 3,
@@ -306,8 +303,7 @@ CREATE INDEX idx_geom_26986_parcels
     </programlisting>
 
     <para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
-    <screen>
--- Find intersection of two polygons near the North pole, using a custom Gnomic projection
+    <programlisting language="sql">-- Find intersection of two polygons near the North pole, using a custom Gnomic projection
 -- See http://boundlessgeo.com/2012/02/flattening-the-peel/
  WITH data AS (
    SELECT
@@ -319,10 +315,10 @@ CREATE INDEX idx_geom_26986_parcels
    ST_Transform(
      ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),
    gnom, 4326))
- FROM data;
-                                          st_astext
+ FROM data;</programlisting>
+    <screen>                                          st_astext
  --------------------------------------------------------------------------------
-  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74.053793645338))
+  POLYGON((-140.9999840290591 73.42768865981984,-141 68,-170 68,-170.0000026915361 74.05492179637055,-140.9999840290591 73.42768865981984))
     </screen>
 
     </refsection>
@@ -688,14 +684,12 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, a
     <refsection>
       <title>Examples</title>
       <para>Search for projected coordinate systems in Louisiana.</para>
-      <screen>
-SELECT auth_name, auth_srid, srname,
+      <programlisting language="sql" role="requires-external-state">SELECT auth_name, auth_srid, srname,
   ST_AsText(point_sw) AS point_sw,
   ST_AsText(point_ne) AS point_ne
 FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30, -91 31)')
-LIMIT 3;
-
- auth_name | auth_srid |                srname                |      point_sw       |      point_ne
+LIMIT 3;</programlisting>
+      <screen> auth_name | auth_srid |                srname                |      point_sw       |      point_ne
 -----------+-----------+--------------------------------------+---------------------+---------------------
  EPSG      | 2801      | NAD83(HARN) / Louisiana South        | POINT(-93.94 28.85) | POINT(-88.75 31.07)
  EPSG      | 3452      | NAD83 / Louisiana South (ftUS)       | POINT(-93.94 28.85) | POINT(-88.75 31.07)
