@@ -634,11 +634,10 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 INSERT INTO myrasters2(rast)
 SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
 
-SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');
--- get notice--
-NOTICE:  Adding regular blocking constraint
+SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');</programlisting>
+<screen>NOTICE:  Adding regular blocking constraint
 NOTICE:  Adding blocksize-X constraint
-NOTICE:  Adding blocksize-Y constraint</programlisting>
+NOTICE:  Adding blocksize-Y constraint</screen>
       </refsection>
 
       <refsection>
@@ -14655,11 +14654,9 @@ SELECT A.rid As a_rid, B.rid As b_rid, A.rast &> B.rast As overright
             <title>Examples</title>
 
             <para>Specified band numbers.</para>
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Contains(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;
-
-NOTICE:  The first raster provided has no bands</programlisting>
-<screen> rid | rid | st_contains
+            <programlisting>SELECT r1.rid, r2.rid, ST_Contains(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;</programlisting>
+<screen>NOTICE:  The first raster provided has no bands
+ rid | rid | st_contains
 -----+-----+-------------
    1 |   1 |
    1 |   2 | f</screen>
@@ -15014,11 +15011,9 @@ SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 C
             <title>Examples</title>
 
             <para>Rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint.</para>
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
-NOTICE:  The second raster provided has no bands</programlisting>
-<screen> rid | rid | st_disjoint
+            <programlisting>SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen>NOTICE:  The second raster provided has no bands
+ rid | rid | st_disjoint
 -----+-----+-------------
    2 |   1 |
    2 |   2 | f</screen>
@@ -15447,13 +15442,11 @@ SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CRO
     ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0)
 ) as sm;</programlisting>
 <screen>t</screen>
-<programlisting>
-SELECT ST_SameAlignment(A.rast,b.rast)
- FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;
-
- NOTICE:  The two rasters provided have different SRIDs
-NOTICE:  The two rasters provided have different SRIDs</programlisting>
-<screen> t
+<programlisting>SELECT ST_SameAlignment(A.rast,b.rast)
+ FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;</programlisting>
+<screen>NOTICE:  The two rasters provided have different SRIDs
+NOTICE:  The two rasters provided have different SRIDs
+ t
  f
  f
  f</screen>

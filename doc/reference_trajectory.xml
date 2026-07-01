@@ -47,15 +47,14 @@ like <xref linkend="ST_ClosestPointOfApproach"/>
       <refsection>
       <title>Examples</title>
 <para>This example constructs a valid trajectory.</para>
-<programlisting>
-SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1),
-    ST_MakePointM(0,1,2)));
- t
+<programlisting>SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0, 0, 1),
+    ST_MakePointM(0, 1, 2)));</programlisting>
+<screen>t</screen>
 
--- An invalid trajectory
-SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), ST_MakePointM(0,1,0)));
-NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)</programlisting>
-<screen>f</screen>
+<para>This example constructs an invalid trajectory.</para>
+<programlisting>SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0, 0, 1), ST_MakePointM(0, 1, 0)));</programlisting>
+<screen>NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
+f</screen>
       </refsection>
 
       <refsection>
