@@ -1751,9 +1751,9 @@ FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);</pro
 <programlisting>CREATE INDEX my_special_pois_geom_gist_nd
 	ON my_special_pois USING gist(geom gist_geometry_ops_nd);</programlisting>
 		<para>Manually register the new table's geometry column in <varname>geometry_columns</varname>. This also changes the underlying table structure to make the column typmod-based.</para>
-<programlisting>SELECT populate_geometry_columns('myschema.my_special_pois'::regclass);</programlisting>
+<programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass);</programlisting>
 		<para>To retain constraint-based definition behavior, such as for inherited tables where all children do not have the same type and SRID, set the optional <varname>use_typmod</varname> argument to false.</para>
-<programlisting>SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false); </programlisting>
+<programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass, false); </programlisting>
 
 <para>Although the old constraint-based method is still supported, direct
 pass-through view columns register correctly in <varname>geometry_columns</varname>
