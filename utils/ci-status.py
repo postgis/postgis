@@ -608,6 +608,11 @@ def jenkins_revision(build):
         sha1 = revision.get("SHA1")
         if sha1:
             return sha1
+    params = jenkins_parameters(build)
+    for name in ("after", "BRANCH", "commit", "GIT_COMMIT"):
+        value = params.get(name)
+        if value and len(value) == 40 and all(ch in "0123456789abcdefABCDEF" for ch in value):
+            return value
     return None
 
 
@@ -787,16 +792,26 @@ def stale_after_hours(config, check):
 
 
 def apply_staleness(result, config, check):
+    threshold = stale_after_hours(config, check)
+    distance_count, distance_ref = None, None
+    if result["status"] != IN_PROGRESS:
+        distance_count, distance_ref = result_revision_distance(config, result)
+    if result["status"] not in (IN_PROGRESS, SUCCESS) and distance_count and distance_count > 0:
+        stale = dict(result)
+        stale["revision_commits_behind"] = distance_count
+        stale["revision_compare_ref"] = distance_ref
+        stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
+        stale["status"] = STALE
+        stale["message"] = f"{result.get('message', 'CI run')} ({stale['revision_distance']})"
+        return stale
     if result["status"] != SUCCESS:
         return result
-    threshold = stale_after_hours(config, check)
     completed_at = parse_time(result.get("completed_at"))
     if threshold is None or completed_at is None:
         return result
     age = utc_now() - completed_at
     if age.total_seconds() <= threshold * 3600:
         return result
-    distance_count, distance_ref = result_revision_distance(config, result)
     if distance_count == 0:
         return result
     stale = dict(result)
