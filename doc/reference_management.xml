@@ -139,11 +139,11 @@
 --------+---------+-------------------------------------------------------------------------
  id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)</screen>
 			<para>Add a spatial column to the table.</para>
-<programlisting>SELECT AddGeometryColumn ('my_schema','my_spatial_table','geom',4326,'POINT',2);</programlisting>
+<programlisting>SELECT AddGeometryColumn('my_schema', 'my_spatial_table', 'geom', 4326, 'POINT', 2);</programlisting>
 			<para>Add a point column using the old constraint-based behavior.</para>
-<programlisting>SELECT AddGeometryColumn ('my_schema','my_spatial_table','geom_c',4326,'POINT',2, false);</programlisting>
+<programlisting>SELECT AddGeometryColumn('my_schema', 'my_spatial_table', 'geom_c', 4326, 'POINT', 2, false);</programlisting>
 			<para>Add a CurvePolygon column using the old constraint-based behavior.</para>
-<programlisting role="requires-external-state">SELECT AddGeometryColumn ('my_schema','my_spatial_table','geomcp_c',4326,'CURVEPOLYGON',2, false);</programlisting>
+<programlisting role="requires-external-state">SELECT AddGeometryColumn('my_schema', 'my_spatial_table', 'geomcp_c', 4326, 'CURVEPOLYGON', 2, false);</programlisting>
 <screen>my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2</screen>
 			<para>Describe the table again to see the new geometry columns.</para>
 <screen>\d my_schema.my_spatial_table
