@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-06-12 20:29+0000\n"
-"PO-Revision-Date: 2026-06-22 06:39+0000\n"
+"PO-Revision-Date: 2026-07-01 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -4027,12 +4027,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns a relation in which each tuple is a pair of vertex/segment where the "
 "vertex is NOT an endpoint of the segment but the distance between them is "
 "below the given tolerance."
 msgstr ""
+"個々のタプルが頂点/辺の組合せで、頂点は辺の終端でなく、かつ頂点と辺の間の距離"
+"が指定した許容値より小さくなるリレーションを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -24163,13 +24165,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>nSegments</varname> parameter controls the density of the "
 "output. With <varname>nSegments</varname> = 5 (the default), each original "
 "span is divided into 5 sub-segments (inserting 4 new points per span). The "
 "minimum value is 2."
 msgstr ""
+"<varname>nSegments</varname>パラメーターで出力の密度を制御します。<varname>"
+"nSegments</varname> = 5 (デフォルト)では、スパンごとに5個の辺に分かれます "
+"(スパンごとに4個のポイントが新設されます)。最小値は2です。"
 
 #. Tag: para
 #, no-c-format
