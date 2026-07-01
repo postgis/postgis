@@ -12326,7 +12326,26 @@ WHERE rid = 2;</programlisting>
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>-- NEEDS EXAMPLE</programlisting>
+                <programlisting>WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', NULL::double precision, -9999),
+        1, 1, 1, ARRAY[
+            [10, 10, 10],
+            [10, NULL, 20],
+            [20, 20, 20]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(
+    ST_MapAlgebra(
+        rast, 1,
+        'st_invdistweight4ma(double precision[][][],integer[][],text[])'::regprocedure,
+        '32BF', 'FIRST', NULL, 1, 1
+    ),
+    2, 2
+) AS interpolated_value
+FROM foo;</programlisting>
+<screen>15</screen>
             </refsection>
 
             <refsection>
@@ -12652,7 +12671,26 @@ WHERE rid = 2;</programlisting>
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>-- NEEDS EXAMPLE</programlisting>
+                <programlisting>WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', NULL::double precision, -9999),
+        1, 1, 1, ARRAY[
+            [10, 10, 10],
+            [10, NULL, 20],
+            [20, 20, 20]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(
+    ST_MapAlgebra(
+        rast, 1,
+        'st_mindist4ma(double precision[][][],integer[][],text[])'::regprocedure,
+        '32BF', 'FIRST', NULL, 1, 1
+    ),
+    2, 2
+) AS min_distance
+FROM foo;</programlisting>
+<screen>1</screen>
             </refsection>
 
             <refsection>
@@ -13228,7 +13266,21 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>-- needs examples</programlisting>
+                    <programlisting>WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 2, 3, 3],
+            [1, 2, 4, 15, 3],
+            [2, 4, 10, 7, 5],
+            [3, 5, 7, 6, 4],
+            [3, 3, 5, 4, 4]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(ST_Roughness(rast, 1, '32BF'), 3, 3) AS roughness
+FROM foo;</programlisting>
+<screen>13</screen>
               </refsection>
 
               <refsection>
@@ -13412,7 +13464,21 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>-- needs examples</programlisting>
+                    <programlisting>WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 2, 3, 3],
+            [1, 2, 4, 15, 3],
+            [2, 4, 10, 7, 5],
+            [3, 5, 7, 6, 4],
+            [3, 3, 5, 4, 4]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(ST_TPI(rast, 1, '32BF'), 3, 3) AS tpi
+FROM foo;</programlisting>
+<screen>3.75</screen>
               </refsection>
 
               <refsection>
@@ -13463,7 +13529,21 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>-- needs examples</programlisting>
+                    <programlisting>WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 2, 3, 3],
+            [1, 2, 4, 15, 3],
+            [2, 4, 10, 7, 5],
+            [3, 5, 7, 6, 4],
+            [3, 3, 5, 4, 4]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(ST_TRI(rast, 1, '32BF'), 3, 3) AS tri
+FROM foo;</programlisting>
+<screen>5</screen>
               </refsection>
 
                 <refsection>
