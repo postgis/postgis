@@ -2966,6 +2966,44 @@ CREATE OR REPLACE FUNCTION st_sum4ma(value double precision[][][], pos integer[]
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION st_convolution(
+	rast raster,
+	matrix double precision[][],
+	pixeltype text DEFAULT '32BF'
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		width integer;
+		height integer;
+	BEGIN
+		IF rast IS NULL OR matrix IS NULL THEN
+			RETURN NULL;
+		END IF;
+
+		IF array_ndims(matrix) != 2 THEN
+			RAISE EXCEPTION 'Convolution matrix must be a two-dimensional array';
+		END IF;
+
+		height := array_length(matrix, 1);
+		width := array_length(matrix, 2);
+
+		IF NOT (width = 1 AND height = 1) AND NOT (width = 3 AND height = 3) THEN
+			RAISE EXCEPTION 'Convolution matrix must be 1x1 or 3x3';
+		END IF;
+
+		RETURN @extschema@.ST_MapAlgebra(
+			rast,
+			1,
+			'@extschema@.st_sum4ma(double precision[][][], integer[][], text[])'::regprocedure,
+			matrix,
+			true,
+			pixeltype
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
 CREATE OR REPLACE FUNCTION st_mean4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
