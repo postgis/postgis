@@ -8781,10 +8781,10 @@ BEGIN
       --RAISE DEBUG 'sfx/sfy: %, %', sfx, sfy;
       --RAISE DEBUG 'tile extent %', te;
       sql := 'SELECT count(*),  @extschema@.ST_Clip(  @extschema@.ST_Union(  @extschema@.ST_SnapToGrid(  @extschema@.ST_Rescale(  @extschema@.ST_Clip(' || quote_ident(col)
-          || ',  @extschema@.ST_Expand($3, greatest($1,$2))),$1, $2, $6), $4, $5, $1, $2)), $3) g FROM ' || tab::text
+          || ',  @extschema@.ST_Expand($3, greatest($1,$2))),$1, $2, $6), $4, $5, $1, $2)),  @extschema@.ST_Intersection($3,  @extschema@.ST_Expand($7, greatest(abs($1), abs($2)) / 2.0))) g FROM ' || tab::text
           || ' WHERE  @extschema@.ST_Intersects(' || quote_ident(col) || ', $3)';
       --RAISE DEBUG 'SQL: %', sql;
-      FOR rec IN EXECUTE sql USING sfx, sfy, te, ipx, ipy, algo LOOP
+      FOR rec IN EXECUTE sql USING sfx, sfy, te, ipx, ipy, algo, ext LOOP
         --RAISE DEBUG '% source tiles intersect target tile %,% with extent %', rec.count, tx, ty, te::@extschema@.box2d;
         IF rec.g IS NULL THEN
           RAISE WARNING 'No source tiles cover target tile %,% with extent %',
