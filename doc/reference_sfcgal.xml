@@ -319,7 +319,7 @@
     <refnamediv>
         <refname>CG_Volume</refname>
 
-        <refpurpose>Computes the volume of a 3D solid. If applied to surface (even closed) geometries will return 0.</refpurpose>
+        <refpurpose>Computes the volume of a 3D geometry. Closed surfaces can have non-zero volume.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -593,7 +593,7 @@
     <refnamediv>
         <refname>ST_Volume</refname>
 
-        <refpurpose>Computes the volume of a 3D solid. If applied to surface (even closed) geometries will return 0.</refpurpose>
+        <refpurpose>Computes the volume of a 3D geometry. Closed surfaces can have non-zero volume.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>

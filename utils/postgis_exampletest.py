@@ -607,13 +607,10 @@ def mark_source_files(files):
                     new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
                 else:
                     new_opening = add_role(new_opening, FORCE_ROLE)
-                    new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
             elif is_auto_testable and migrating_from_opt_in:
                 new_opening = add_role(new_opening, EXTERNAL_STATE_ROLE)
-            elif is_auto_testable and was_external_state:
+            elif was_external_state:
                 new_opening = opening
-            else:
-                new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
             if new_opening != opening:
                 changed += 1
             return new_opening + body + closing + (screen or "")
