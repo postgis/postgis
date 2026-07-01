@@ -552,10 +552,8 @@ SELECT ST_AsText( ST_Split(
             <programlisting>
 SELECT ST_AsText(ST_Split(
     'MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))',
-    ST_Point(30,30))) As split;</programlisting>
-<screen>split
-------
-GEOMETRYCOLLECTION(
+    ST_Point(30,30)));</programlisting>
+<screen>GEOMETRYCOLLECTION(
     LINESTRING(10 10,30 30),
     LINESTRING(30 30,190 190),
     LINESTRING(15 15,30 30),

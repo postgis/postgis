@@ -262,15 +262,11 @@
       <title>Examples</title>
 
       <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
-<screen>       st_asbinary
---------------------------------
-\x01030000000100000005000000000000000000000000000000000000000000000000000000000000
+<screen>\x01030000000100000005000000000000000000000000000000000000000000000000000000000000
 000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000
 00000000000000000000000000</screen>
       <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
-<screen>       st_asbinary
---------------------------------
-\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
+<screen>\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
 00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
 00000000000000000000000000</screen>
       </refsection>
@@ -337,16 +333,12 @@
       <title>Examples</title>
 
       <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
-<screen>       st_asewkb
---------------------------------
-\x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
+<screen>\x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
 00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000
 0000000000000000000000000000000000</screen>
     <programlisting>
       SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
-<screen>       st_asewkb
---------------------------------
-\x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
+<screen>\x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
 003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000
 0000000000000000000000000000000000</screen>
       </refsection>
@@ -397,9 +389,7 @@
     <refsection>
     <title>Examples</title>
     <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
-<screen>    st_ashexewkb
-    --------
-    0103000020E6100000010000000500
+<screen>    0103000020E6100000010000000500
     00000000000000000000000000000000
     00000000000000000000000000000000F03F
     000000000000F03F000000000000F03F000000000000F03
@@ -719,9 +709,7 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 
 <para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
     <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
-<screen>             st_asgeojson
------------------------------------------------------------------------------------------------------------
-
+<screen>
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
 </screen>
@@ -1536,9 +1524,7 @@ FROM mvtgeom;
 CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),
     (-1 0,0 0.5,1 0,0 1,-1 0)),
 ((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);</programlisting>
-<screen>st_assvg
----------------------------------------------------------
-M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z
+<screen>M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z
 M -1 0 L 0 -0.5 1 0 0 -1 -1 0 Z
 M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     </refsection>

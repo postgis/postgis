@@ -269,9 +269,7 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
 <programlisting language="sql">
 SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));</programlisting>
 
-    <screen>         st_asewkt
---------------------------------------------------------------------------------------
- SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
+    <screen> SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
  -71.1775844305465 42.3903826677917 3,
  -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)
 
@@ -474,9 +472,7 @@ SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
       <para>List the first ten codes associated with the EPSG authority.</para>
       <programlisting>
 SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;</programlisting>
-<screen> postgis_srs_codes
--------------------
- 10156
+<screen> 10156
  10157
  10158
  10160

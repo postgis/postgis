@@ -2671,10 +2671,8 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
        (51 150,101 150,76 175,51 150))'),
     ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')
     )
-  ) As wkt</programlisting>
-<screen>                                wkt
--------------------------------------------------------------
-GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),
+  )</programlisting>
+<screen>GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),
  (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)</screen>
             </para>
             </entry>
@@ -2691,10 +2689,8 @@ SELECT ST_AsText(
    ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
        (51 150,101 150,76 175,51 150))')
     )
-  ) As wkt</programlisting>
-<screen>                                wkt
--------------------------------------------------------------
-GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,
+  )</programlisting>
+<screen>GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,
 MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))</screen>
             </para>
             </entry>

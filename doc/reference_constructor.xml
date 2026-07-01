@@ -83,9 +83,7 @@ SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),
  <programlisting>
 SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 150505,220227 150406)',
         'CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));</programlisting>
-<screen>        st_astext
-------------------------------------------------------------------------------------
-MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
+<screen>MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
  CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
         </refsection>
         <refsection>

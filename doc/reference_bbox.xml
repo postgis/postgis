@@ -368,9 +368,7 @@ GROUP BY category ORDER BY category;</programlisting>
 <para>This example converts the extent back into a geometry and renders its extended text representation.</para>
 <programlisting>
 SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;</programlisting>
-<screen>                bextent
---------------------------------------------------------------------------------
- SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
+<screen> SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
  794875.8125 2908247.25,739651.875 2908247.25))
         </screen>
       </refsection>
@@ -530,10 +528,8 @@ WHERE geom && ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
 
         <programlisting>
 SELECT ST_3DMakeBox(ST_MakePoint(-989502.1875, 528439.5625, 10),
-    ST_MakePoint(-987121.375 ,529933.1875, 10)) As abb3d</programlisting>
-<screen>--bb3d--
---------
-BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)</screen>
+    ST_MakePoint(-987121.375 ,529933.1875, 10))</programlisting>
+<screen>BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
