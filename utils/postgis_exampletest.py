@@ -42,6 +42,7 @@ VERSION_FUNCTION_RE = re.compile(
     r")\s*\(",
     re.I,
 )
+CATALOG_QUERY_RE = re.compile(r"\bpg_available_extensions\b", re.I)
 
 
 class ExampleTester:
@@ -150,7 +151,33 @@ class ExampleTester:
     def split_psql_row(self, line):
         if "│" in line:
             return [part.strip() for part in line.split("│")]
-        return [part.strip() for part in re.split(r"\s+\|\s+", line)]
+        parts = re.split(r"\s+\|\s+", line)
+        if len(parts) > 1 and parts[-1].endswith("|"):
+            parts[-1] = parts[-1][:-1]
+            parts.append("")
+        return [part.strip() for part in parts]
+
+    def psql_delimiter_positions(self, header, separator):
+        positions = [index for index, char in enumerate(header) if char in "|│"]
+        if not positions:
+            positions = [index for index, char in enumerate(separator) if char in "+┼"]
+        return positions
+
+    def split_psql_table_row(self, line, header, separator):
+        positions = self.psql_delimiter_positions(header, separator)
+        if not positions:
+            return [line.strip()]
+
+        values = []
+        start = 0
+        actual_delimiters = [index for index, char in enumerate(line) if char in "|│"]
+        for position in positions:
+            candidates = [candidate for candidate in actual_delimiters if candidate >= start]
+            delimiter = min(candidates, key=lambda candidate: abs(candidate - position)) if candidates else position
+            values.append(line[start:delimiter].strip())
+            start = delimiter + 1
+        values.append(line[start:].strip())
+        return values
 
     def expected_rows_from_psql_lines(self, lines):
         clean = [line.replace("\r\n", "\n").replace("\r", "\n") for line in lines if re.search(r"\S", line)]
@@ -166,7 +193,7 @@ class ExampleTester:
                     break
                 if re.match(r"^\s*[-+─┼]+\s*$", line):
                     continue
-                rows.append(self.split_psql_row(line))
+                rows.append(self.split_psql_table_row(line, clean[i], clean[i + 1]))
             if rows:
                 return rows
 
@@ -223,6 +250,12 @@ class ExampleTester:
                 return False
         return True
 
+    def catalog_rows_equal(self, actual, expected):
+        if not actual or not expected:
+            return False
+        expected_width = len(expected[0])
+        return all(len(row) == expected_width for row in actual)
+
     def rows_to_string(self, rows):
         return "\n".join(" | ".join(row) for row in rows)
 
@@ -242,6 +275,9 @@ class ExampleTester:
 
     def query_is_version_example(self, query):
         return query is not None and bool(VERSION_FUNCTION_RE.search(query))
+
+    def query_is_catalog_example(self, query):
+        return query is not None and bool(CATALOG_QUERY_RE.search(query))
 
     def expected_rows_are_auto_safe(self, expected):
         if not expected:
@@ -283,6 +319,8 @@ class ExampleTester:
             "valid": valid,
             "forced": forced,
             "version": self.query_is_version_example(query),
+            "catalog": self.query_is_catalog_example(query),
+            "volatile": self.query_is_version_example(query) or self.query_is_catalog_example(query),
         }
 
     def examples(self):
@@ -365,7 +403,7 @@ class ExampleTester:
         examples = self.examples()
         stats["auto_example_tests"] = len([example for example in examples if not example["forced"]])
         stats["forced_example_tests"] = len([example for example in examples if example["forced"]])
-        stats["volatile_version_tests"] = len([example for example in examples if example["version"]])
+        stats["volatile_version_tests"] = len([example for example in examples if example["volatile"]])
         stats["example_tests"] = len(examples)
         stats["parseable_example_tests"] = len([example for example in examples if example["valid"]])
 
@@ -446,7 +484,7 @@ $$;
 
         emitted = 0
         for example in examples:
-            if example["version"]:
+            if example["volatile"]:
                 continue
             emitted += 1
             print("SELECT pg_temp._postgis_exampletest_check(")
@@ -480,11 +518,12 @@ $$;
             except RuntimeError as exc:
                 raise RuntimeError(f"Example test failed to run: {example['label']}\n{exc}") from exc
 
-            equal = (
-                self.version_rows_equal(actual, example["expected"])
-                if example["version"]
-                else self.rows_equal(actual, example["expected"])
-            )
+            if example["catalog"]:
+                equal = self.catalog_rows_equal(actual, example["expected"])
+            elif example["version"]:
+                equal = self.version_rows_equal(actual, example["expected"])
+            else:
+                equal = self.rows_equal(actual, example["expected"])
             if not equal:
                 raise RuntimeError(
                     f"Example test failed: {example['label']}\n"
