@@ -425,8 +425,9 @@ ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int avoid_collaps, int
 	int *prev;
 	int *next;
 	int *active;
-	double *area;
+	areanode *arealist;
 	double *res_area;
+	MINHEAP tree;
 	POINTARRAY *opts;
 
 	if (set_area)
@@ -439,8 +440,9 @@ ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int avoid_collaps, int
 	prev = lwalloc(sizeof(int) * unique_points);
 	next = lwalloc(sizeof(int) * unique_points);
 	active = lwalloc(sizeof(int) * unique_points);
-	area = lwalloc(sizeof(double) * unique_points);
+	arealist = lwalloc(sizeof(areanode) * unique_points);
 	res_area = lwalloc(sizeof(double) * unique_points);
+	tree = initiate_minheap(unique_points);
 
 	for (p = 0; p < unique_points; p++)
 	{
@@ -448,26 +450,24 @@ ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int avoid_collaps, int
 		next[p] = (p == unique_points - 1) ? 0 : p + 1;
 		active[p] = LW_TRUE;
 		res_area[p] = FLT_MAX;
+		tree.key_array[p] = arealist + p;
 	}
 
 	for (p = 0; p < unique_points; p++)
-		area[p] = ptarray_calc_cyclic_area(inpts, prev, next, p);
+		arealist[p].area = ptarray_calc_cyclic_area(inpts, prev, next, p);
+
+	tree.usedSize = unique_points;
+	qsort(tree.key_array, unique_points, sizeof(void *), cmpfunc);
+
+	for (p = 0; p < unique_points; p++)
+		((areanode *)tree.key_array[p])->treeindex = p;
 
 	while (remaining_points > 3)
 	{
-		int current = -1;
-		double min_area = FLT_MAX;
+		int current = minheap_pop(&tree, arealist) - arealist;
+		double min_area = arealist[current].area;
 
-		for (p = 0; p < unique_points; p++)
-		{
-			if (active[p] && area[p] < min_area)
-			{
-				min_area = area[p];
-				current = p;
-			}
-		}
-
-		if (current < 0 || (!set_area && min_area >= trshld))
+		if (!set_area && min_area >= trshld)
 			break;
 
 		min_area = FP_MAX(min_area, check_order_min_area);
@@ -478,19 +478,17 @@ ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int avoid_collaps, int
 
 		next[prev[current]] = next[current];
 		prev[next[current]] = prev[current];
-		area[prev[current]] = FP_MAX(ptarray_calc_cyclic_area(inpts, prev, next, prev[current]), min_area);
-		area[next[current]] = FP_MAX(ptarray_calc_cyclic_area(inpts, prev, next, next[current]), min_area);
+		arealist[prev[current]].area =
+		    FP_MAX(ptarray_calc_cyclic_area(inpts, prev, next, prev[current]), min_area);
+		arealist[next[current]].area =
+		    FP_MAX(ptarray_calc_cyclic_area(inpts, prev, next, next[current]), min_area);
+		minheap_update(&tree, arealist, arealist[prev[current]].treeindex);
+		minheap_update(&tree, arealist, arealist[next[current]].treeindex);
 	}
 
 	if (avoid_collaps == 0 && remaining_points == 3)
 	{
-		double min_area = FLT_MAX;
-
-		for (p = 0; p < unique_points; p++)
-		{
-			if (active[p] && area[p] < min_area)
-				min_area = area[p];
-		}
+		double min_area = tree.usedSize ? ((areanode *)tree.key_array[0])->area : FLT_MAX;
 		min_area = FP_MAX(min_area, check_order_min_area);
 
 		if (set_area || min_area < trshld)
@@ -520,10 +518,11 @@ ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int avoid_collaps, int
 		ptarray_append_point(opts, &first_point, LW_TRUE);
 	}
 
+	destroy_minheap(tree);
 	lwfree(prev);
 	lwfree(next);
 	lwfree(active);
-	lwfree(area);
+	lwfree(arealist);
 	lwfree(res_area);
 
 	return opts;
