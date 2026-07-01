@@ -306,6 +306,8 @@ ERROR:  invalid KML representation
 #3627a|o}~~|AdshNoSsBgd@eGoBlm@wKhj@~@?
 #3627b|t
 #3704|t
+#1332a|<IndexedFaceSet  convex='false' coordIndex='0 1 2 3'><Coordinate point='2 7 0 2 11 0 10 11 0 10 7 0 ' /></IndexedFaceSet>
+#1332b|<IndexedFaceSet  convex='false' coordIndex='0 1 2 3'><Coordinate point='7 2 0 11 2 0 11 10 0 7 10 0 ' /></IndexedFaceSet>
 #3709|t
 NOTICE:  Hole lies outside shell at or near point 25495368.044100001 6671726.9312000005
 #3719a|f
