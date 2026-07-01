@@ -72,6 +72,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks
           and pass callback call data as actual arguments (Darafei Praliaskouski)
  - #2898, Document SQL function cost tiers for contributors
+ - #4253, Add GiST 2D index regression coverage for containment operators
           (Darafei Praliaskouski)
  - #3340, Add regression coverage for Populate_Geometry_Columns on
           foreign tables (Darafei Praliaskouski)
