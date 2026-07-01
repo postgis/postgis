@@ -5,6 +5,7 @@
  *
  * Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2008 Paul Ramsey
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -14,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "CUnit/Basic.h"
 #include "CUnit/CUnit.h"
 
@@ -338,6 +340,168 @@ static void test_ptarray_signed_area(void)
 	ASSERT_DOUBLE_EQUAL_TOLERANCE(area, -4.0, 0.0000001);
 	lwline_free(line);
 
+	/* Preserve small residuals through cancellation in the area sum. */
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,10000000000000000 0,1 -1,10000000000000000 -1,0 0)"));
+	area = ptarray_signed_area(line->points);
+	ASSERT_DOUBLE_EQUAL_TOLERANCE(area, 0.5, 0.0000001);
+	lwline_free(line);
+
+	/* Preserve determinant tails when later large determinants cancel. */
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,10000000000000000 1,1 1,10000000000000000 0,0 0)"));
+	area = ptarray_signed_area(line->points);
+	ASSERT_DOUBLE_EQUAL_TOLERANCE(area, 0.5, 0.0000001);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
+	lwline_free(line);
+
+	/* Preserve residual tails when large product tails cancel. */
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(1.9029580275885475e-13 2.1370106480605854e-89,"
+					      "2.5163957753386382e-93 -3002966181.933756,"
+					      "4.77621563620871e-75 -1e-100,"
+					      "-3.7953949389104665e74 -1e200,"
+					      "-2.0800734986321869e-60 2.051992028072436e-55,"
+					      "3.38586824330807e73 -7.962294473171359e74,"
+					      "1.9029580275885475e-13 2.1370106480605854e-89)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(area > 1e140);
+	CU_ASSERT(area < 2e140);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
+	lwline_free(line);
+
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(1.9029580275885475e-13 2.1370106480605854e-89,"
+					      "3.38586824330807e73 -7.962294473171359e74,"
+					      "-2.0800734986321869e-60 2.051992028072436e-55,"
+					      "-3.7953949389104665e74 -1e200,"
+					      "4.77621563620871e-75 -1e-100,"
+					      "2.5163957753386382e-93 -3002966181.933756,"
+					      "1.9029580275885475e-13 2.1370106480605854e-89)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(area < -1e140);
+	CU_ASSERT(area > -2e140);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 1);
+	lwline_free(line);
+
+	/* Preserve residual tails when scaled large product tails cancel. */
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(1.9029580275885475e47 2.1370106480605854e-29,"
+					      "2.5163957753386382e-33 -3.002966181933756e69,"
+					      "4.77621563620871e-15 -1e-40,"
+					      "-3.7953949389104665e134 -1e260,"
+					      "-2.0800734986321869 2.051992028072436e5,"
+					      "3.38586824330807e133 -7.962294473171359e134,"
+					      "1.9029580275885475e47 2.1370106480605854e-29)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(area > 1e260);
+	CU_ASSERT(area < 2e260);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
+	lwline_free(line);
+
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(1.9029580275885475e47 2.1370106480605854e-29,"
+					      "3.38586824330807e133 -7.962294473171359e134,"
+					      "-2.0800734986321869 2.051992028072436e5,"
+					      "-3.7953949389104665e134 -1e260,"
+					      "4.77621563620871e-15 -1e-40,"
+					      "2.5163957753386382e-33 -3.002966181933756e69,"
+					      "1.9029580275885475e47 2.1370106480605854e-29)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(area < -1e260);
+	CU_ASSERT(area > -2e260);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 1);
+	lwline_free(line);
+
+	/* Preserve product tails when determinant products nearly cancel. */
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(10000000000000276 10000000000000280,"
+					      "59999999999999680 59999999999999672,"
+					      "89999999999999360 89999999999999360,"
+					      "90000000000000112 90000000000000128,"
+					      "90000000000000704 90000000000000704,"
+					      "10000000000000276 10000000000000280)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(area < 0.0);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 1);
+	lwline_free(line);
+
+	/* Preserve subtraction tails when the origin shift hides unit-scale offsets. */
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-10000000000000000 -10000000000000000,"
+					      "1 -1,1 0,1 1,-1 0,"
+					      "-10000000000000000 -10000000000000000)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(area < -1e16);
+	CU_ASSERT(area > -2e16);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 1);
+	lwline_free(line);
+
+	/* Overflowed determinants should remain infinite, not poison the sum with NaN. */
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 1e200,1e200 1e200,1e200 0,0 0)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(isinf(area) && area > 0);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
+	lwline_free(line);
+
+	/* Rescale overflowing fan products when the determinant itself is finite. */
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,1 1e155,1e155 1e155,"
+					      "1e155 1.0000000000000001e155,"
+					      "1 1.0000000000000001e155,0 0)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(isfinite(area));
+	CU_ASSERT(area < -1e294);
+	CU_ASSERT(area > -2e294);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 1);
+	lwline_free(line);
+
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,1 1.0000000000000001e155,"
+					      "1e155 1.0000000000000001e155,"
+					      "1e155 1e155,1 1e155,0 0)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(isfinite(area));
+	CU_ASSERT(area > 1e294);
+	CU_ASSERT(area < 2e294);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
+	lwline_free(line);
+
+	/* Preserve tiny finite products beside unrelated huge coordinates. */
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,1e-200 0,1e300 1e300,0 0)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(area < -4e99);
+	CU_ASSERT(area > -6e99);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 1);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,1e300 1e300,1e-200 0,0 0)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(area > 4e99);
+	CU_ASSERT(area < 6e99);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
+	lwline_free(line);
+
+	/* Detect residual tails after scaled determinant cancellation. */
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(3e120 1.0000000000000002e220,"
+					      "3e155 -1e-50,3e155 -1.0000000000000003e140,"
+					      "3e120 1.0000000000000002e220)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(isfinite(area));
+	CU_ASSERT(area > 1e295);
+	CU_ASSERT(area < 2e295);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 0);
+	lwline_free(line);
+
+	line =
+	    lwgeom_as_lwline(lwgeom_from_text("LINESTRING(3e120 1.0000000000000002e220,"
+					      "3e155 -1.0000000000000003e140,3e155 -1e-50,"
+					      "3e120 1.0000000000000002e220)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT(isfinite(area));
+	CU_ASSERT(area < -1e295);
+	CU_ASSERT(area > -2e295);
+	CU_ASSERT_EQUAL(ptarray_isccw(line->points), 1);
+	lwline_free(line);
 }
 
 static void test_ptarray_contains_point(void)
