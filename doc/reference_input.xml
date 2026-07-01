@@ -394,12 +394,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
                             </datafield>
                         </record>'));
 ]]></programlisting>
-<screen>                st_astext
-                -------------------
-                POINT(-4.5 54.25)
-                (1 row)
-
-            </screen>
+<screen>POINT(-4.5 54.25)</screen>
 
             <para>Converting MARC21/XML geographic data containing a single <varname>POLYGON</varname> encoded as <varname>hdddmmss</varname></para>
 
@@ -422,12 +417,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
                             </datafield>
                         </record>'));
 ]]></programlisting>
-<screen>                st_astext
-                -----------------------------------------------------------------------------------------------------------------------
-                POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65))
-                (1 row)
-
-            </screen>
+<screen>POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65))</screen>
 
             <para>Converting MARC21/XML geographic data containing a <varname>POLYGON</varname> and a <varname>POINT</varname>:</para>
 
@@ -454,11 +444,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
                     </datafield>
                 </record>'));
 ]]></programlisting>
-<screen>                                                                                        st_astext
-                -------------------------------------------------------------------------------------------------------------------------------------------------------------
-                GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))
-                (1 row)
-            </screen>
+<screen>GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))</screen>
 
         </refsection>
 
@@ -938,13 +924,9 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 
 		<programlisting language="sql">SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
 -71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');</programlisting>
-<screen>st_polygonfromtext
-------------------
-010300000001000000050000006...</screen>
+<screen>010300000001000000050000006...</screen>
 <programlisting language="sql">SELECT ST_PolygonFromText('POINT(1 2)') IS NULL as point_is_notpoly;</programlisting>
-<screen>point_is_not_poly
-----------
-t</screen>
+<screen>t</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1021,10 +1003,7 @@ t</screen>
 SELECT ST_AsText(
 ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@')
 );</programlisting>
-<screen>					  st_astext
-------------------------------------------------------
- LINESTRING(-113.98 39.198,-113.981 39.195)
-(1 row)</screen>
+<screen>LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 	  </refsection>
 	   <refsection>
 		<title>See Also</title>
@@ -1133,20 +1112,14 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 SELECT ST_AsEWKT(
 ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
 );</programlisting>
-<screen>					  st_asewkt
-------------------------------------------------------
- SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)
-(1 row)</screen>
+<screen>SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 <programlisting language="sql">SELECT
   ST_AsText(
 	ST_GeomFromWKB(
 	  ST_AsEWKB('POINT(2 5)'::geometry)
 	)
   );</programlisting>
-<screen> st_astext
-------------
- POINT(2 5)
-(1 row)</screen>
+<screen>POINT(2 5)</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1354,20 +1327,14 @@ LINESTRING(1 2,3 4)  | t</screen>
 	  ST_AsEWKB('POINT(2 5)'::geometry)
 	)
   );</programlisting>
-<screen> st_astext
-------------
- POINT(2 5)
-(1 row)</screen>
+<screen>POINT(2 5)</screen>
 <programlisting language="sql">SELECT
   ST_AsText(
 	ST_PointFromWKB(
 	  ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
 	)
   );</programlisting>
-<screen> st_astext
------------
- null
-(1 row)</screen>
+<screen>null</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1440,19 +1407,11 @@ LINESTRING(1 2,3 4)  | t</screen>
 	  <refsection>
 		<title>Examples</title>
 		<programlisting language="sql">SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');</programlisting>
-<screen>                st_geomfromgeohash
---------------------------------------------------
- BOX(-115.172816 36.114646,-115.172816 36.114646)</screen>
+<screen>BOX(-115.172816 36.114646,-115.172816 36.114646)</screen>
 <programlisting language="sql">SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);</programlisting>
-<screen> st_box2dfromgeohash
-----------------------
- BOX(-180 -90,180 90)</screen>
+<screen>BOX(-180 -90,180 90)</screen>
 <programlisting language="sql"> SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10);</programlisting>
-<screen>                            st_box2dfromgeohash
----------------------------------------------------------------------------
- BOX(-115.17282128334 36.1146408319473,-115.172810554504 36.1146461963654)
-
-		</screen>
+<screen>BOX(-115.17282128334 36.1146408319473,-115.172810554504 36.1146461963654)</screen>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
@@ -1494,19 +1453,11 @@ LINESTRING(1 2,3 4)  | t</screen>
 	  <refsection>
 		<title>Examples</title>
 		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));</programlisting>
-<screen>                                                        st_astext
---------------------------------------------------------------------------------------------------------------------------
- POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646))</screen>
+<screen>POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646))</screen>
 <programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));</programlisting>
-<screen>                                                          st_astext
-------------------------------------------------------------------------------------------------------------------------------
- POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625))</screen>
+<screen>POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625))</screen>
 <programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));</programlisting>
-<screen>                                                                                       st_astext
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- POLYGON((-115.17282128334 36.1146408319473,-115.17282128334 36.1146461963654,-115.172810554504 36.1146461963654,-115.172810554504 36.1146408319473,-115.17282128334 36.1146408319473))
-
-		</screen>
+<screen>POLYGON((-115.17282128334 36.1146408319473,-115.17282128334 36.1146461963654,-115.172810554504 36.1146461963654,-115.172810554504 36.1146408319473,-115.17282128334 36.1146408319473))</screen>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
@@ -1705,14 +1656,10 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 	 <refsection>
 		<title>Examples</title>
 		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) As wkt;</programlisting>
-<screen>wkt
-------
-POINT(-48.23456 20.12345)</screen>
+<screen>POINT(-48.23456 20.12345)</screen>
 <programlisting language="sql">-- a 3D linestring
 SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3],[4,5,6],[7,8,9]]}')) As wkt;</programlisting>
-<screen>wkt
--------------------
-LINESTRING Z (1 2 3,4 5 6,7 8 9)</screen>
+<screen>LINESTRING Z (1 2 3,4 5 6,7 8 9)</screen>
 	  </refsection>
 
 
@@ -1808,17 +1755,11 @@ $$);
 
 		<programlisting language="sql">
 SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometry)));</programlisting>
-<screen>         st_astext
------------------------------
- LINESTRING(126 34, 127 35)
-(1 row)</screen>
+<screen>LINESTRING(126 34, 127 35)</screen>
 <programlisting language="sql">SELECT ST_AsEWKT(
   ST_GeomFromTWKB(E'\\x620002f7f40dbce4040105')
 );</programlisting>
-<screen>					  st_asewkt
-------------------------------------------------------
-LINESTRING(-113.98 39.198,-113.981 39.195)
-(1 row)</screen>
+<screen>LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 	  </refsection>
 	   <refsection>
 		<title>See Also</title>
@@ -1940,19 +1881,11 @@ SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@',6));</
 	  <refsection>
 		<title>Examples</title>
 		<programlisting language="sql">SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));</programlisting>
-<screen>          st_astext
-------------------------------
- POINT(-115.172816 36.114646)</screen>
+<screen>POINT(-115.172816 36.114646)</screen>
 <programlisting language="sql">SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));</programlisting>
-<screen>             st_astext
------------------------------------
- POINT(-115.13671875 36.123046875)</screen>
+<screen>POINT(-115.13671875 36.123046875)</screen>
 <programlisting language="sql">SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));</programlisting>
-<screen>                 st_astext
--------------------------------------------
- POINT(-115.172815918922 36.1146435141563)
-
-		</screen>
+<screen>POINT(-115.172815918922 36.1146435141563)</screen>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>

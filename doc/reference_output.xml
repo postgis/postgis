@@ -79,16 +79,10 @@
       <title>Examples</title>
 
       <programlisting language="sql">SELECT ST_AsEWKT('0103000020e61000000100000005000000000000000000000000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f000000000000f03f000000000000000000000000000000000000000000000000'::geometry);</programlisting>
-<screen>       st_asewkt
---------------------------------
-SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
-(1 row)</screen>
+<screen>SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
 
 <programlisting language="sql">SELECT ST_AsEWKT('0108000080030000000000000060E30A4100000000785C0241000000000000F03F0000000018E20A4100000000485F024100000000000000400000000018E20A4100000000305C02410000000000000840');</programlisting>
-<screen>st_asewkt
-----------
-CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
-</screen>
+<screen>CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -172,10 +166,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
       <title>Examples</title>
 
       <programlisting language="sql">SELECT ST_AsText('01030000000100000005000000000000000000000000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f000000000000f03f000000000000000000000000000000000000000000000000');</programlisting>
-<screen>    st_astext
---------------------------------
- POLYGON((0 0,0 1,1 1,1 0,0 0))
-</screen>
+<screen>POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
 
 <para>Full precision output is the default.</para>
       <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry);
@@ -741,10 +732,7 @@ FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
 <para>Generate a Feature:</para>
     <programlisting>SELECT ST_AsGeoJSON(t.*, id_column => 'id')
 FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
-<screen>                                                  st_asgeojson
------------------------------------------------------------------------------------------------------------------
- {"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}
-</screen>
+<screen>{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}</screen>
 
 <para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
     <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
