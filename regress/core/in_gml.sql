@@ -97,6 +97,21 @@ SELECT 'curve_14', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineS
 SELECT 'curve_15', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">1 2 3 4 5 6</gml:posList></gml:LineStringSegment><gml:LineStringSegment><gml:posList srsDimension="2">4 5 7 8</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>'));
 SELECT 'curve_16', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="2">1 2 3 4</gml:posList></gml:LineStringSegment><gml:LineStringSegment><gml:posList srsDimension="3">3 4 5 6 7 8</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>'));
 
+-- ArcString
+SELECT 'curve_17', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1 2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve>'));
+SELECT 'curve_18', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>0 0 1 0</gml:posList></gml:LineStringSegment><gml:ArcString><gml:posList>1 0 2 1 3 0</gml:posList></gml:ArcString></gml:segments></gml:Curve>'));
+
+-- ERROR malformed ArcString
+SELECT 'curve_19', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1</gml:posList></gml:ArcString></gml:segments></gml:Curve>'));
+
+-- ERROR disjoint compound curve components
+SELECT 'curve_20', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>0 0 1 0</gml:posList></gml:LineStringSegment><gml:ArcString><gml:posList>2 0 3 1 4 0</gml:posList></gml:ArcString></gml:segments></gml:Curve>'));
+
+SELECT 'curve_21', ST_AsEWKT(ST_GeomFromGML('<gml:Curve srsName="urn:ogc:def:crs:EPSG::4326"><gml:segments><gml:ArcString><gml:posList>1 2 3 4 5 6</gml:posList></gml:ArcString></gml:segments></gml:Curve>'));
+
+-- ERROR mismatched Z compound curve components
+SELECT 'curve_22', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">0 0 0 1 0 0</gml:posList></gml:LineStringSegment><gml:ArcString><gml:posList srsDimension="3">1 0 99 2 1 99 3 0 99</gml:posList></gml:ArcString></gml:segments></gml:Curve>'));
+
 --
 -- Polygon
 --
@@ -149,6 +164,15 @@ SELECT 'polygon_17', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:L
 -- Mixed dimension in rings
 SELECT 'polygon_18', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">10 11 12 13 14 15 10 11</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>'));
 SELECT 'polygon_19', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>'));
+
+-- GML 3.2 Ring with curve members
+SELECT 'polygon_20', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"><gml:exterior><gml:Ring><gml:curveMember><gml:LineString><gml:posList>0 0 1 0</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>1 0 2 1 3 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:LineString><gml:posList>3 0 0 0</gml:posList></gml:LineString></gml:curveMember></gml:Ring></gml:exterior><gml:interior><gml:LinearRing><gml:posList>0.5 0.1 0.75 0.2 0.5 0.3 0.5 0.1</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>'));
+SELECT 'polygon_21', ST_AsEWKT(ST_GeomFromGML('<gml:CurvePolygon xmlns:gml="http://www.opengis.net/gml/3.2"><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1 2 0 1 -1 0 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:CurvePolygon>'));
+SELECT 'polygon_24', ST_AsEWKT(ST_GeomFromGML('<gml:CurvePolygon xmlns:gml="http://www.opengis.net/gml/3.2"><gml:exterior><gml:Ring><gml:curveMember><gml:LineString><gml:posList>0 0 1 0</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>1 0 2 0</gml:posList></gml:LineStringSegment><gml:ArcString><gml:posList>2 0 3 1 4 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:LineString><gml:posList>4 0 0 0</gml:posList></gml:LineString></gml:curveMember></gml:Ring></gml:exterior></gml:CurvePolygon>'));
+
+-- ERROR open curved ring
+SELECT 'polygon_22', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1 2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:Polygon>'));
+SELECT 'polygon_23', ST_AsEWKT(ST_GeomFromGML('<gml:CurvePolygon xmlns:gml="http://www.opengis.net/gml/3.2" srsName="urn:ogc:def:crs:EPSG::4326"><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>1 2 3 4 5 6 7 8 1 2</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:CurvePolygon>'));
 
 --
 -- LinearRing
@@ -368,6 +392,11 @@ SELECT 'mcurve_11', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMembers>
 
 SELECT 'mcurve_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMembers></gml:curveMembers></gml:MultiCurve>'));
 
+SELECT 'mcurve_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1 2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>'));
+
+WITH g AS (SELECT ST_GeomFromGML('<gml:MultiCurve srsName="EPSG:27582"><gml:curveMember><gml:Curve srsName="EPSG:27562"><gml:segments><gml:ArcString><gml:coordinates>400000,5000000 400010,5000010 400020,5000000</gml:coordinates></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>') as g)
+SELECT 'mcurve_14', ST_SRID(g.g), ST_AsText(g.g, 8) FROM g;
+
 --
 -- MultiPolygon
 --
@@ -432,6 +461,8 @@ SELECT 'msurface_11', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMe
 
 -- Empty surfaceMembers
 SELECT 'msurface_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMembers></gml:surfaceMembers></gml:MultiSurface>'));
+
+SELECT 'msurface_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml/3.2"><gml:surfaceMember><gml:CurvePolygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1 2 0 1 -1 0 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:CurvePolygon></gml:surfaceMember></gml:MultiSurface>'));
 
 --
 -- PolyhedralSurface
