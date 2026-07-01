@@ -28,6 +28,7 @@ POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 #    make garden GARDENDB=custom_db_name
 #
 GARDENDB=postgis_garden
+EXAMPLETESTDB=postgis_exampletest
 
 # Where we put our regression installation
 # See https://trac.osgeo.org/postgis/ticket/5066
@@ -140,3 +141,15 @@ garden: staged-install
 		> sfcgal_garden_result.txt 2>&1 || { \
 		tail -n 20 sfcgal_garden_result.txt; false; }
 	tail -n 20 sfcgal_garden_result.txt
+
+exampletest: staged-install-core
+	$(MAKE) -C ../doc exampletest
+	dropdb --if-exists $(EXAMPLETESTDB)
+	createdb $(EXAMPLETESTDB)
+	psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql
+	psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql
+	psql -X -d $(EXAMPLETESTDB) < \
+		../doc/postgis_exampletest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql \
+		> postgis_exampletest_result.txt 2>&1 || { \
+		tail -n 20 postgis_exampletest_result.txt; false; }
+	tail -n 20 postgis_exampletest_result.txt

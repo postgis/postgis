@@ -40,6 +40,9 @@ To generate and manage the translated XML files:
  * poxml - https://github.com/KDE/poxml
  * gettext - https://www.gnu.org/software/gettext/
 
+To generate and report on manual example tests:
+ * Perl XML::LibXML module
+
 To generate the localized PDFs:
  * fonts-ipafont-gothic
  * fonts-ipafont-mincho
@@ -67,3 +70,10 @@ binary if autodetection cannot find ``gm``, ``magick``, or ``convert`` in
 
 To run garden tests against functions, follow these instructions on the PostGIS
 dev wiki: http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
+
+Manual example tests are opt-in. Add ``role="example-test"`` to a
+``programlisting`` only when the example is deterministic, self-contained, and
+returns a single output column. The generator accepts either in-listing psql
+output, such as ``-- result --`` followed by expected rows, or a following
+``screen`` element containing the expected output. Use ``make exampletest-report``
+to inspect the current manual before converting more examples.
