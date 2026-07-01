@@ -5,6 +5,7 @@
  *
  * Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2008 Paul Ramsey
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -212,6 +213,92 @@ static void test_ptarray_append_ptarray(void)
 	FLAGS_SET_READONLY(line1->points->flags, 0); /* for lwline_free */
 	lwline_free(line1);
 
+}
+
+static void
+test_ptarray_substring_3d(void)
+{
+	LWLINE *line;
+	LWLINE *subline;
+	POINTARRAY *subpa;
+	POINT4D pt;
+	char *wkt;
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING Z (0 0 0,0 2 5,0 10 10)"));
+	subpa = ptarray_substring_3d(line->points, 0.0, 0.5, 0.0);
+	subline = lwline_construct(line->srid, NULL, subpa);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(subline));
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING Z (0 0 0,0 2 5,0 3.71669469 6.07293418)");
+	lwfree(wkt);
+	lwline_free(subline);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING ZM (0 0 0 0,0 0 4 8)"));
+	subpa = ptarray_substring_3d(line->points, 0.25, 0.75, 0.0);
+	subline = lwline_construct(line->srid, NULL, subpa);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(subline));
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING ZM (0 0 1 2,0 0 3 6)");
+	lwfree(wkt);
+	lwline_free(subline);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING (0 0,0 4)"));
+	subpa = ptarray_substring_3d(line->points, 0.25, 0.75, 0.0);
+	subline = lwline_construct(line->srid, NULL, subpa);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(subline));
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 1,0 3)");
+	lwfree(wkt);
+	lwline_free(subline);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING Z (0 0 0,0 0 1,0 0 2)"));
+	subpa = ptarray_substring_3d(line->points, 0.5, 0.5, 0.0);
+	CU_ASSERT_EQUAL(subpa->npoints, 1);
+	getPoint4d_p(subpa, 0, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.z, 1.0, 0.0);
+	ptarray_free(subpa);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING ZM (0 0 0 0,1 0 0 1,1 0 0 5)"));
+	subpa = ptarray_substring_3d(line->points, 1.0, 1.0, 0.0);
+	CU_ASSERT_EQUAL(subpa->npoints, 1);
+	getPoint4d_p(subpa, 0, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 1.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.z, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.m, 5.0, 0.0);
+	ptarray_free(subpa);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING ZM (0 0 0 0,0 0 0 5,0 0 1 6)"));
+	subpa = ptarray_substring_3d(line->points, 0.0, 1.0, 0.0);
+	subline = lwline_construct(line->srid, NULL, subpa);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(subline));
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING ZM (0 0 0 0,0 0 0 5,0 0 1 6)");
+	lwfree(wkt);
+	lwline_free(subline);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING ZM (0 0 0 0,0 0 1 5,1 0 2 6)"));
+	subpa = ptarray_substring(line->points, 0.0, 1.0, 0.0);
+	subline = lwline_construct(line->srid, NULL, subpa);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(subline));
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING ZM (0 0 0 0,0 0 1 5,1 0 2 6)");
+	lwfree(wkt);
+	lwline_free(subline);
+	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING Z (0 0 0,0 0 1)"));
+	subpa = ptarray_substring(line->points, 1.0, 1.0, 0.0);
+	CU_ASSERT_EQUAL(subpa->npoints, 1);
+	getPoint4d_p(subpa, 0, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(pt.z, 1.0, 0.0);
+	ptarray_free(subpa);
+	lwline_free(line);
 }
 
 static void test_ptarray_locate_point(void)
@@ -853,6 +940,7 @@ void ptarray_suite_setup(void)
 	CU_pSuite suite = CU_add_suite("ptarray", NULL, NULL);
 	PG_ADD_TEST(suite, test_ptarray_append_point);
 	PG_ADD_TEST(suite, test_ptarray_append_ptarray);
+	PG_ADD_TEST(suite, test_ptarray_substring_3d);
 	PG_ADD_TEST(suite, test_ptarray_locate_point);
 	PG_ADD_TEST(suite, test_ptarray_isccw);
 	PG_ADD_TEST(suite, test_ptarray_signed_area);

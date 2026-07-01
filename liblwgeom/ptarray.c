@@ -20,7 +20,7 @@
  *
  * Copyright (C) 2012-2021 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2001-2006 Refractions Research Inc.
- * Copyright 2026 Darafei Praliaskouski
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -1143,8 +1143,8 @@ ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm, double zval, double
 	return pa_out;
 }
 
-POINTARRAY *
-ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
+static POINTARRAY *
+ptarray_substring_in_metric(POINTARRAY *ipa, double from, double to, double tolerance, int use_3d)
 {
 	POINTARRAY *dpa;
 	POINT4D pt;
@@ -1152,7 +1152,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 	POINT4D *p1ptr=&p1; /* don't break strict-aliasing rule */
 	POINT4D *p2ptr=&p2;
 	int nsegs, i;
+	int hasz = FLAGS_GET_Z(ipa->flags);
 	double length, slength, tlength;
+	double from_fraction = from;
 	int state = 0; /* 0=before, 1=inside */
 
 	/*
@@ -1161,9 +1163,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 	 */
 	dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), ipa->npoints);
 
-	/* Compute total line length */
-	length = ptarray_length_2d(ipa);
-
+	/* Keep the existing 2D fraction contract while allowing 3D LRS callers
+	 * to use the same clipping logic with 3D arc length. */
+	length = use_3d ? ptarray_length(ipa) : ptarray_length_2d(ipa);
 
 	LWDEBUGF(3, "Total length: %g", length);
 
@@ -1175,6 +1177,63 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 
 	LWDEBUGF(3, "From/To: %g/%g", from, to);
 
+	if (fabs(from - to) <= tolerance)
+	{
+		tlength = 0;
+		getPoint4d_p(ipa, 0, &p1);
+
+		if (length <= tolerance)
+		{
+			if (fabs(from_fraction - 1.0) <= tolerance)
+				getPoint4d_p(ipa, ipa->npoints - 1, &p1);
+			ptarray_append_point(dpa, &p1, LW_FALSE);
+			return dpa;
+		}
+
+		if (fabs(from) <= tolerance)
+		{
+			ptarray_append_point(dpa, &p1, LW_FALSE);
+			return dpa;
+		}
+
+		/* Preserve endpoint ordinates from trailing zero-length segments. */
+		if (fabs(from - length) <= tolerance)
+		{
+			getPoint4d_p(ipa, ipa->npoints - 1, &p2);
+			ptarray_append_point(dpa, &p2, LW_FALSE);
+			return dpa;
+		}
+
+		nsegs = ipa->npoints - 1;
+		for (i = 0; i < nsegs; i++)
+		{
+			double dseg;
+
+			getPoint4d_p(ipa, i + 1, &p2);
+
+			if (use_3d && hasz)
+				slength = distance3d_pt_pt((POINT3D *)p1ptr, (POINT3D *)p2ptr);
+			else
+				slength = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
+
+			if (fabs(from - (tlength + slength)) <= tolerance)
+			{
+				ptarray_append_point(dpa, &p2, LW_FALSE);
+				return dpa;
+			}
+
+			if (from < tlength + slength)
+			{
+				dseg = (from - tlength) / slength;
+				interpolate_point4d(&p1, &p2, &pt, dseg);
+				ptarray_append_point(dpa, &pt, LW_FALSE);
+				return dpa;
+			}
+
+			tlength += slength;
+			memcpy(&p1, &p2, sizeof(POINT4D));
+		}
+	}
 
 	tlength = 0;
 	getPoint4d_p(ipa, 0, &p1);
@@ -1191,17 +1250,27 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 
 
 		/* Find the length of this segment */
-		slength = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
+		if (use_3d && hasz)
+			slength = distance3d_pt_pt((POINT3D *)p1ptr, (POINT3D *)p2ptr);
+		else
+			slength = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
 
 		/*
 		 * We are before requested start.
 		 */
-		if ( state == 0 ) /* before */
+		if (state == 0) /* before */
 		{
 
 			LWDEBUG(3, " Before start");
 
-			if ( fabs ( from - ( tlength + slength ) ) <= tolerance )
+			if (slength <= tolerance && fabs(from - tlength) <= tolerance)
+			{
+				LWDEBUG(3, "  Zero-length segment starts at our start");
+
+				ptarray_append_point(dpa, &p1, LW_FALSE);
+				state = 1;
+			}
+			else if (fabs(from - (tlength + slength)) <= tolerance)
 			{
 
 				LWDEBUG(3, "  Second point is our start");
@@ -1334,6 +1403,18 @@ END:
 	LWDEBUGF(3, "Out of loop, ptarray has %d points", dpa->npoints);
 
 	return dpa;
+}
+
+POINTARRAY *
+ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
+{
+	return ptarray_substring_in_metric(ipa, from, to, tolerance, LW_FALSE);
+}
+
+POINTARRAY *
+ptarray_substring_3d(POINTARRAY *ipa, double from, double to, double tolerance)
+{
+	return ptarray_substring_in_metric(ipa, from, to, tolerance, LW_TRUE);
 }
 
 /*
