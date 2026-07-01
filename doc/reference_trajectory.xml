@@ -46,21 +46,15 @@ like <xref linkend="ST_ClosestPointOfApproach"/>
 
       <refsection>
       <title>Examples</title>
-<programlisting>
--- A valid trajectory
-SELECT ST_IsValidTrajectory(ST_MakeLine(
-  ST_MakePointM(0,0,1),
-  ST_MakePointM(0,1,2))
-);
- t
+<para>This example constructs a valid trajectory.</para>
+<programlisting>SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0, 0, 1),
+    ST_MakePointM(0, 1, 2)));</programlisting>
+<screen>t</screen>
 
--- An invalid trajectory
-SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), ST_MakePointM(0,1,0)));
-NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
- st_isvalidtrajectory
-----------------------
- f
-</programlisting>
+<para>This example constructs an invalid trajectory.</para>
+<programlisting>SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0, 0, 1), ST_MakePointM(0, 1, 0)));</programlisting>
+<screen>NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
+f</screen>
       </refsection>
 
       <refsection>
@@ -118,12 +112,12 @@ To obtain the actual points at the computed measure use <xref linkend="ST_Locate
 -- are closest to each other and their distance at that point
 WITH inp AS ( SELECT
   ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
-    extract(epoch from '2015-05-26 10:00'::timestamptz),
-    extract(epoch from '2015-05-26 11:00'::timestamptz)
+    extract(epoch from timestamp '2015-05-26 10:00' AT TIME ZONE 'UTC'),
+    extract(epoch from timestamp '2015-05-26 11:00' AT TIME ZONE 'UTC')
   ) a,
   ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
-    extract(epoch from '2015-05-26 10:00'::timestamptz),
-    extract(epoch from '2015-05-26 11:00'::timestamptz)
+    extract(epoch from timestamp '2015-05-26 10:00' AT TIME ZONE 'UTC'),
+    extract(epoch from timestamp '2015-05-26 11:00' AT TIME ZONE 'UTC')
   ) b
 ), cpa AS (
   SELECT ST_ClosestPointOfApproach(a,b) m FROM inp
@@ -132,15 +126,13 @@ WITH inp AS ( SELECT
          ST_GeometryN(ST_LocateAlong(b,m),1) pb
   FROM inp, cpa
 )
-SELECT to_timestamp(m) t,
+SELECT to_timestamp(m) AT TIME ZONE 'UTC' t,
        ST_3DDistance(pa,pb) distance,
        ST_AsText(pa, 2) AS pa, ST_AsText(pb, 2) AS pb
-FROM points, cpa;
-
-               t               |      distance      |                  pa                  |                   pb                   
--------------------------------+--------------------+--------------------------------------+----------------------------------------
- 2015-05-26 10:45:31.034483-07 | 1.9652147377620688 | POINT ZM (7.59 0 3.79 1432662331.03) | POINT ZM (9.1 1.24 3.93 1432662331.03)
- </programlisting>
+FROM points, cpa;</programlisting>
+<screen>             t              |      distance      |                  pa                  |                   pb
+----------------------------+--------------------+--------------------------------------+----------------------------------------
+ 2015-05-26 10:45:31.034483 | 1.9652147377620688 | POINT ZM (7.59 0 3.79 1432637131.03) | POINT ZM (9.1 1.24 3.93 1432637131.03)</screen>
       </refsection>
 
       <refsection>
@@ -196,20 +188,16 @@ Null is returned if the trajectories do not overlap in their M ranges.
 -- Return the minimum distance of two objects moving between 10:00 and 11:00
 WITH inp AS ( SELECT
   ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
-    extract(epoch from '2015-05-26 10:00'::timestamptz),
-    extract(epoch from '2015-05-26 11:00'::timestamptz)
+    extract(epoch from timestamp '2015-05-26 10:00' AT TIME ZONE 'UTC'),
+    extract(epoch from timestamp '2015-05-26 11:00' AT TIME ZONE 'UTC')
   ) a,
   ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
-    extract(epoch from '2015-05-26 10:00'::timestamptz),
-    extract(epoch from '2015-05-26 11:00'::timestamptz)
+    extract(epoch from timestamp '2015-05-26 10:00' AT TIME ZONE 'UTC'),
+    extract(epoch from timestamp '2015-05-26 11:00' AT TIME ZONE 'UTC')
   ) b
 )
-SELECT ST_DistanceCPA(a,b) distance FROM inp;
-
-     distance
--------------------
- 1.965214737762069
-</programlisting>
+SELECT ST_DistanceCPA(a,b) distance FROM inp;</programlisting>
+<screen>1.9652147377620688</screen>
       </refsection>
 
       <refsection>
@@ -266,20 +254,18 @@ False is returned if the trajectories do not overlap in their M ranges.
 <programlisting>
 WITH inp AS ( SELECT
   ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
-    extract(epoch from '2015-05-26 10:00'::timestamptz),
-    extract(epoch from '2015-05-26 11:00'::timestamptz)
+    extract(epoch from timestamp '2015-05-26 10:00' AT TIME ZONE 'UTC'),
+    extract(epoch from timestamp '2015-05-26 11:00' AT TIME ZONE 'UTC')
   ) a,
   ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
-    extract(epoch from '2015-05-26 10:00'::timestamptz),
-    extract(epoch from '2015-05-26 11:00'::timestamptz)
+    extract(epoch from timestamp '2015-05-26 10:00' AT TIME ZONE 'UTC'),
+    extract(epoch from timestamp '2015-05-26 11:00' AT TIME ZONE 'UTC')
   ) b
 )
-SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;
-
- st_cpawithin |     distance
+SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;</programlisting>
+<screen> st_cpawithin |     distance
 --------------+------------------
- t            | 1.96521473776207
-</programlisting>
+ t            | 1.9652147377620688</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->

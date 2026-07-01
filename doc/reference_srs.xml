@@ -56,27 +56,19 @@
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <programlisting>
--- Inverse direction
-SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;
-
-          wgs_geom
-----------------------------
- POINT(2 48.99999999999999)
-(1 row)
-    </programlisting>
+    <para>This example transforms in the inverse direction.</para>
+    <programlisting>SELECT ST_AsText(
+    ST_InverseTransformPipeline(
+        'POINT(426857.9877165967 5427937.523342293)'::geometry,
+        'urn:ogc:def:coordinateOperation:EPSG::16031'
+    )
+) AS wgs_geom;</programlisting>
+<screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
-    <programlisting>
--- using ST_Transform with automatic selection of a conversion pipeline.
-SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
-
-                 gda2020_auto
------------------------------------------------
- POINT(143.00000635638918 -36.999986706128176)
-(1 row)
-    </programlisting>
+    <para>This example uses ST_Transform with automatic selection of a conversion pipeline.</para>
+    <programlisting>SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
+<screen>POINT(143.00000635638918 -36.999986706128176)</screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->
@@ -126,16 +118,12 @@ SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) A
 
     <refsection>
       <title>Examples</title>
-      <para>-- Mark a point as WGS 84 long lat --</para>
-      <programlisting>SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;
--- the ewkt representation (wrap with ST_AsEWKT) -
-SRID=4326;POINT(-123.365556 48.428611)
-      </programlisting>
-      <para>-- Mark a point as WGS 84 long lat and then transform to web mercator (Spherical Mercator) --</para>
-      <programlisting>SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;
--- the ewkt representation (wrap with ST_AsEWKT) -
-SRID=3785;POINT(-13732990.8753491 6178458.96425423)
-      </programlisting>
+      <para>Mark a point as WGS 84 longitude/latitude.</para>
+      <programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326)) AS wgs84long_lat;</programlisting>
+<screen>SRID=4326;POINT(-123.365556 48.428611)</screen>
+      <para>Mark a point as WGS 84 longitude/latitude and then transform it to Web Mercator.</para>
+      <programlisting>SELECT ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785)) AS sphere_merc;</programlisting>
+<screen>SRID=3785;POINT(-13732990.8753491 6178458.96425423)</screen>
     </refsection>
 
     <refsection>
@@ -178,7 +166,6 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <title>Examples</title>
 
     <programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
-    --result
     4326
     </programlisting>
     </refsection>
@@ -274,27 +261,22 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
     <refsection>
     <title>Examples</title>
     <para>Change Massachusetts state plane US feet geometry to WGS 84 long lat</para>
-    <programlisting>
-SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-  743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
+    <programlisting language="sql">SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+  743265 2967450,743265.625 2967416,743238 2967416))',2249),
+    4326)) As wgs_geom;
+</programlisting>
+    <screen>POLYGON((-71.1776848522251 42.3902896512903,-71.17768437663261 42.390382947801015,-71.17758443054647 42.390382667791854,-71.17758259272304 42.390289364798825,-71.1776848522251 42.3902896512903))</screen>
 
- wgs_geom
----------------------------
- POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
--71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.177684
-8522251 42.3902896512902));
-(1 row)
+<para>3D Circular String example.</para>
+<programlisting language="sql">
+SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),
+    4326));</programlisting>
 
---3D Circular String example
-SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));
-
-         st_asewkt
---------------------------------------------------------------------------------------
- SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
+    <screen> SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
  -71.1775844305465 42.3903826677917 3,
  -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)
 
-    </programlisting>
+    </screen>
     <para>Example of creating a partial functional index.  For tables where you are not sure all the geometries
       will be filled in, its best to use a partial index that leaves out null geometries which will both conserve space and make your index smaller and more efficient.</para>
     <programlisting>
@@ -306,24 +288,18 @@ CREATE INDEX idx_geom_26986_parcels
     </programlisting>
 
     <para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
-    <programlisting>
--- Find intersection of two polygons near the North pole, using a custom Gnomic projection
--- See http://boundlessgeo.com/2012/02/flattening-the-peel/
+    <para>Find intersection of two polygons near the North pole, using a custom Gnomic projection. See http://boundlessgeo.com/2012/02/flattening-the-peel/.</para>
+    <programlisting language="sql">
  WITH data AS (
    SELECT
      ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', 4326) AS p1,
      ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', 4326) AS p2,
      '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom
  )
- SELECT ST_AsText(
-   ST_Transform(
-     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),
+ SELECT ST_AsText(ST_Transform(ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),
    gnom, 4326))
- FROM data;
-                                          st_astext
- --------------------------------------------------------------------------------
-  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74.053793645338))
-    </programlisting>
+ FROM data;</programlisting>
+    <screen>POLYGON((-140.9999840290591 73.42768865981984,-141 68,-170 68,-170.0000026915361 74.05492179637055,-140.9999840290591 73.42768865981984))</screen>
 
     </refsection>
     <refsection>
@@ -426,59 +402,46 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <programlisting>
--- Forward direction
-SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;
-
-                  utm_geom
---------------------------------------------
- POINT(426857.9877165967 5427937.523342293)
-(1 row)
-
--- Inverse direction
-SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;
-
-          wgs_geom
-----------------------------
- POINT(2 48.99999999999999)
-(1 row)
-    </programlisting>
+    <para>This example transforms in the forward direction.</para>
+    <programlisting>SELECT ST_AsText(
+    ST_TransformPipeline(
+        'SRID=4326;POINT(2 49)'::geometry,
+        'urn:ogc:def:coordinateOperation:EPSG::16031'
+    )
+) AS utm_geom;</programlisting>
+<screen>POINT(426857.9877165967 5427937.523342293)</screen>
+<para>This example transforms in the inverse direction.</para>
+<programlisting>SELECT ST_AsText(
+    ST_InverseTransformPipeline(
+        'POINT(426857.9877165967 5427937.523342293)'::geometry,
+        'urn:ogc:def:coordinateOperation:EPSG::16031'
+    )
+) AS wgs_geom;</programlisting>
+<screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
-    <programlisting>
--- using ST_Transform with automatic selection of a conversion pipeline.
-SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
-
-                 gda2020_auto
------------------------------------------------
- POINT(143.00000635638918 -36.999986706128176)
-(1 row)
-
--- using a defined conversion (EPSG:8447)
-SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;
-
-                   gda2020_code
-----------------------------------------------
- POINT(143.0000063280214 -36.999986718287545)
-(1 row)
-
--- using a PROJ pipeline definition matching EPSG:8447, as returned from
--- 'projinfo -s EPSG:4939 -t EPSG:7844'.
--- NOTE: any 'axisswap' steps must be removed.
-SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
-  '+proj=pipeline
+    <para>This example uses ST_Transform with automatic selection of a conversion pipeline.</para>
+    <programlisting>SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
+<screen>POINT(143.00000635638918 -36.999986706128176)</screen>
+<para>Using a defined conversion (EPSG:8447)</para>
+<programlisting>SELECT ST_AsText(
+    ST_TransformPipeline(
+        'SRID=4939;POINT(143.0 -37.0)'::geometry,
+        'urn:ogc:def:coordinateOperation:EPSG::8447'
+    )
+) AS gda2020_code;</programlisting>
+<screen>POINT(143.0000063280214 -36.999986718287545)</screen>
+<para>This example uses a PROJ pipeline definition matching EPSG:8447, as returned from projinfo. Any axisswap steps must be removed.</para>
+<programlisting>SELECT ST_AsText(
+    ST_TransformPipeline(
+        'SRID=4939;POINT(143.0 -37.0)'::geometry,
+        '+proj=pipeline
    +step +proj=unitconvert +xy_in=deg +xy_out=rad
    +step +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif
-   +step +proj=unitconvert +xy_in=rad +xy_out=deg')) AS gda2020_pipeline;
-
-                   gda2020_pipeline
-----------------------------------------------
- POINT(143.0000063280214 -36.999986718287545)
-(1 row)
-    </programlisting>
+   +step +proj=unitconvert +xy_in=rad +xy_out=deg'
+    )
+) AS gda2020_pipeline;</programlisting>
+<screen>POINT(143.0000063280214 -36.999986718287545)</screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->
@@ -519,22 +482,17 @@ SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
     <refsection>
       <title>Examples</title>
       <para>List the first ten codes associated with the EPSG authority.</para>
-      <programlisting>
-SELECT * FROM postgis_srs_codes('EPSG') LIMIT 10;
-
- postgis_srs_codes
--------------------
- 2000
- 20004
- 20005
- 20006
- 20007
- 20008
- 20009
- 2001
- 20010
- 20011
-    </programlisting>
+      <programlisting>SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;</programlisting>
+<screen> 10156
+ 10157
+ 10158
+ 10160
+ 10162
+ 10163
+ 10164
+ 10165
+ 10166
+ 10167</screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->
@@ -627,21 +585,19 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
     <refsection>
       <title>Examples</title>
       <para>Get the first 10 metadata records from the Proj database.</para>
-      <programlisting>
-SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
-
- auth_name | auth_srid |                  srname
------------+-----------+------------------------------------------
- EPSG      | 2000      | Anguilla 1957 / British West Indies Grid
- EPSG      | 20004     | Pulkovo 1995 / Gauss-Kruger zone 4
- EPSG      | 20005     | Pulkovo 1995 / Gauss-Kruger zone 5
- EPSG      | 20006     | Pulkovo 1995 / Gauss-Kruger zone 6
- EPSG      | 20007     | Pulkovo 1995 / Gauss-Kruger zone 7
- EPSG      | 20008     | Pulkovo 1995 / Gauss-Kruger zone 8
- EPSG      | 20009     | Pulkovo 1995 / Gauss-Kruger zone 9
- EPSG      | 2001      | Antigua 1943 / British West Indies Grid
- EPSG      | 20010     | Pulkovo 1995 / Gauss-Kruger zone 10
- EPSG      | 20011     | Pulkovo 1995 / Gauss-Kruger zone 11    </programlisting>
+      <programlisting role="requires-external-state">SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;</programlisting>
+<screen> auth_name | auth_srid |                                srname
+-----------+-----------+----------------------------------------------------------------------
+ EPSG      | 10156     | ETRS89 + MSL UK &amp; Ireland VORF08 depth
+ EPSG      | 10157     | ETRS89 + CD UK &amp; Ireland VORF08 depth
+ EPSG      | 10158     | S34J-IRF
+ EPSG      | 10160     | S34J reconstruction east-orientated
+ EPSG      | 10162     | JGD2011 / Japan Plane Rectangular CS I + JGD2011 (vertical) height
+ EPSG      | 10163     | JGD2011 / Japan Plane Rectangular CS II + JGD2011 (vertical) height
+ EPSG      | 10164     | JGD2011 / Japan Plane Rectangular CS III + JGD2011 (vertical) height
+ EPSG      | 10165     | JGD2011 / Japan Plane Rectangular CS IV + JGD2011 (vertical) height
+ EPSG      | 10166     | JGD2011 / Japan Plane Rectangular CS V + JGD2011 (vertical) height
+ EPSG      | 10167     | JGD2011 / Japan Plane Rectangular CS VI + JGD2011 (vertical) height    </screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->
@@ -688,19 +644,19 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() LIMIT 10;
     <refsection>
       <title>Examples</title>
       <para>Search for projected coordinate systems in Louisiana.</para>
-      <programlisting>
-SELECT auth_name, auth_srid, srname,
+      <programlisting language="sql">SELECT auth_name, auth_srid, srname,
   ST_AsText(point_sw) AS point_sw,
   ST_AsText(point_ne) AS point_ne
 FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30, -91 31)')
-LIMIT 3;
-
- auth_name | auth_srid |                srname                |      point_sw       |      point_ne
+WHERE srname LIKE '%Louisiana%'
+ORDER BY auth_name, auth_srid::integer
+LIMIT 3;</programlisting>
+      <screen> auth_name | auth_srid |                srname                |      point_sw       |      point_ne
 -----------+-----------+--------------------------------------+---------------------+---------------------
  EPSG      | 2801      | NAD83(HARN) / Louisiana South        | POINT(-93.94 28.85) | POINT(-88.75 31.07)
  EPSG      | 3452      | NAD83 / Louisiana South (ftUS)       | POINT(-93.94 28.85) | POINT(-88.75 31.07)
  EPSG      | 3457      | NAD83(HARN) / Louisiana South (ftUS) | POINT(-93.94 28.85) | POINT(-88.75 31.07)
-</programlisting>
+</screen>
 
       <para>Scan a table for max extent and find projected coordinate systems that might suit.</para>
 

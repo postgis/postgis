@@ -105,12 +105,8 @@ NOTICE:  Extension postgis_topology is not available or not packagable for some 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Full_Version();
-							   postgis_full_version
-----------------------------------------------------------------------------------
-POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0dev-CAPI-1.18.0" SFCGAL="1.3.8" PROJ="7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db" GDAL="GDAL 3.2.2, released 2021/03/05" LIBXML="2.9.10" LIBJSON="0.15" LIBPROTOBUF="1.3.3" WAGYU="0.5.0 (Internal)" TOPOLOGY RASTER
-(1 row)
-</programlisting>
+		<programlisting>SELECT PostGIS_Full_Version();</programlisting>
+<screen>POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0dev-CAPI-1.18.0" SFCGAL="1.3.8" PROJ="7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db" GDAL="GDAL 3.2.2, released 2021/03/05" LIBXML="2.9.10" LIBJSON="0.15" LIBPROTOBUF="1.3.3" WAGYU="0.5.0 (Internal)" TOPOLOGY RASTER</screen>
 	  </refsection>
 
 	  <refsection>
@@ -156,11 +152,8 @@ POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0d
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_GEOS_Version();
- postgis_geos_version
-----------------------
-3.12.0dev-CAPI-1.18.0
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_GEOS_Version();</programlisting>
+<screen>3.12.0dev-CAPI-1.18.0</screen>
 	  </refsection>
 
 	  <refsection>
@@ -200,11 +193,8 @@ POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0d
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_GEOS_Compiled_Version();
- postgis_geos_compiled_version
--------------------------------
- 3.12.0
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_GEOS_Compiled_Version();</programlisting>
+<screen>3.12.0</screen>
 	  </refsection>
 
 	  <refsection>
@@ -244,11 +234,8 @@ POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0d
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Liblwgeom_Version();
-postgis_liblwgeom_version
---------------------------
-3.4.0dev 3.3.0rc2-993-g61bdf43a7
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_Liblwgeom_Version();</programlisting>
+<screen>3.4.0dev 3.3.0rc2-993-g61bdf43a7</screen>
 	  </refsection>
 
 	  <refsection>
@@ -286,11 +273,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_LibXML_Version();
- postgis_libxml_version
-----------------------
- 2.9.10
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_LibXML_Version();</programlisting>
+<screen>2.9.10</screen>
 	  </refsection>
 
 	  <refsection>
@@ -326,10 +310,8 @@ postgis_liblwgeom_version
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT PostGIS_LibJSON_Version();
- postgis_libjson_version
--------------------------
- 0.17</programlisting>
+        <programlisting>SELECT PostGIS_LibJSON_Version();</programlisting>
+<screen>0.17</screen>
       </refsection>
 
       <refsection>
@@ -365,11 +347,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Lib_Build_Date();
- postgis_lib_build_date
-------------------------
- 2023-06-22 03:56:11
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_Lib_Build_Date();</programlisting>
+<screen>2023-06-22 03:56:11</screen>
 	  </refsection>
 	</refentry>
 
@@ -400,11 +379,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Lib_Version();
- postgis_lib_version
----------------------
- 3.4.0dev
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_Lib_Version();</programlisting>
+<screen>3.4.0dev</screen>
 	  </refsection>
 
 	  <refsection>
@@ -443,11 +419,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_PROJ_Version();
-  postgis_proj_version
--------------------------
-7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_PROJ_Version();</programlisting>
+<screen>7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db</screen>
 	  </refsection>
 
 	  <refsection>
@@ -493,11 +466,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_PROJ_Compiled_Version();
- postgis_proj_compiled_version
--------------------------------
- 9.1.1
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_PROJ_Compiled_Version();</programlisting>
+<screen>9.1.1</screen>
 	  </refsection>
 
 	  <refsection>
@@ -538,11 +508,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Wagyu_Version();
- postgis_wagyu_version
------------------------
- 0.5.0 (Internal)
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_Wagyu_Version();</programlisting>
+<screen>0.5.0 (Internal)</screen>
 	  </refsection>
 
 	  <refsection>
@@ -580,11 +547,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Scripts_Build_Date();
-  postgis_scripts_build_date
--------------------------
- 2023-06-22 03:56:11
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_Scripts_Build_Date();</programlisting>
+<screen>2023-06-22 03:56:11</screen>
 	  </refsection>
 
 	  <refsection>
@@ -632,11 +596,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Scripts_Installed();
-  postgis_scripts_installed
--------------------------
- 3.4.0dev 3.3.0rc2-993-g61bdf43a7
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_Scripts_Installed();</programlisting>
+<screen>3.4.0dev 3.3.0rc2-993-g61bdf43a7</screen>
 	  </refsection>
 
 	  <refsection>
@@ -682,11 +643,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Scripts_Released();
-  postgis_scripts_released
--------------------------
- 3.4.0dev 3.3.0rc2-993-g61bdf43a7
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_Scripts_Released();</programlisting>
+<screen>3.4.0dev 3.3.0rc2-993-g61bdf43a7</screen>
 	  </refsection>
 
 	  <refsection>
@@ -723,11 +681,8 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Version();
-			postgis_version
----------------------------------------
- 3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
-(1 row)</programlisting>
+		<programlisting>SELECT PostGIS_Version();</programlisting>
+<screen>3.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1</screen>
 	  </refsection>
 
 	  <refsection>

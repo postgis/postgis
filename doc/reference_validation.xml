@@ -79,13 +79,11 @@ for ST_IsValid. The flag is a PostGIS extension.
 		<title>Examples</title>
 
 		<programlisting>SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
-	ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
---results
-NOTICE:  Self-intersection at or near point 0 0
+	ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly;</programlisting>
+<screen>NOTICE:  Self-intersection at or near point 0 0
  good_line | bad_poly
 -----------+----------
- t         | f
-</programlisting>
+ t         | f</screen>
 	  </refsection>
 
 	  <refsection>
@@ -152,9 +150,10 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting><![CDATA[
+		<para>This example returns the first three rejects from a successful quintuplet experiment.</para>
+		<programlisting>
+<![CDATA[
 
---First 3 Rejects from a successful quintuplet experiment
 SELECT gid, reason(ST_IsValidDetail(geom)), ST_AsText(location(ST_IsValidDetail(geom))) as location
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
@@ -241,17 +240,16 @@ Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDeta
 	  <refsection>
 		<title>Examples</title>
 
-        <programlisting>-- invalid bow-tie polygon
+        <para>This example uses an invalid bow-tie polygon.</para>
+        <programlisting>
 SELECT ST_IsValidReason(
     'POLYGON ((100 200, 100 100, 200 200,
-     200 100, 100 200))'::geometry) as validity_info;
-validity_info
---------------------------
-Self-intersection[150 150]
-        </programlisting>
-		<programlisting><![CDATA[
+     200 100, 100 200))'::geometry) as validity_info;</programlisting>
+<screen>Self-intersection[150 150]</screen>
+		<para>This example returns the first three rejects from a successful quintuplet experiment.</para>
+		<programlisting>
+<![CDATA[
 
---First 3 Rejects from a successful quintuplet experiment
 SELECT gid, ST_IsValidReason(geom) as validity_info
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
@@ -476,21 +474,13 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
 <programlisting>SELECT ST_AsText(ST_MakeValid(
     'LINESTRING(0 0, 0 0)',
     'method=structure keepcollapsed=true'
-    ));
-
- st_astext
-------------
- POINT(0 0)
-
-
-SELECT ST_AsText(ST_MakeValid(
+    ));</programlisting>
+<screen>POINT(0 0)</screen>
+<programlisting>SELECT ST_AsText(ST_MakeValid(
     'LINESTRING(0 0, 0 0)',
     'method=structure keepcollapsed=false'
-    ));
-
-    st_astext
-------------------
- LINESTRING EMPTY</programlisting>
+    ));</programlisting>
+<screen>LINESTRING EMPTY</screen>
 </refsection>
           <refsection>
             <title>See Also</title>

@@ -40,6 +40,9 @@ To generate and manage the translated XML files:
  * poxml - https://github.com/KDE/poxml
  * gettext - https://www.gnu.org/software/gettext/
 
+To generate and report on manual example tests:
+ * Python 3 with lxml
+
 To generate the localized PDFs:
  * fonts-ipafont-gothic
  * fonts-ipafont-mincho
@@ -67,3 +70,57 @@ binary if autodetection cannot find ``gm``, ``magick``, or ``convert`` in
 
 To run garden tests against functions, follow these instructions on the PostGIS
 dev wiki: http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
+
+Manual example tests are opt-out. A parseable SQL ``programlisting`` with
+expected output is tested by default. Add ``role="requires-external-state"`` when
+the listing depends on database objects, files, installed driver/catalog state,
+prior manual setup, or other state outside the listing and outside the standard
+example-test database. Use ``role="example-test"`` only as an escape hatch to
+force a listing to run when the heuristics would otherwise skip it.
+
+Put executable SQL in ``programlisting`` and expected output in the immediately
+following ``screen`` element:
+
+```
+<programlisting>SELECT ST_AsText(ST_Point(1, 2));</programlisting>
+<screen>POINT(1 2)</screen>
+```
+
+Use ``screen`` for interactive terminal transcripts. If the prompt is important,
+mark it as ``prompt`` and the typed command as ``userinput``. Do not include shell
+or psql prompts in copy-paste SQL ``programlisting`` blocks.
+
+Example SQL formatting rules:
+
+* SQL-only examples may be split across XML lines for diff-friendly editing,
+  including a newline after ``<programlisting>`` or before ``</programlisting>``.
+  The example tester trims surrounding XML whitespace before running them.
+* Keep SQL keywords uppercase in touched examples.
+* Use the documented function-name casing used by the manual.
+* Prefer no space between a function name and ``(`` as documentation style only.
+  The example tester accepts whitespace there.
+* Do not put spaces around PostgreSQL casts: use ``'POINT(1 2)'::geometry``.
+* Put a space after commas in SQL argument lists, unless preserving compact WKT
+  output in ``screen``.
+* For a multiline function call, either keep all arguments on one line, or put
+  the function call on its own line and list top-level arguments below it. Align
+  closing parentheses with the line that opened the call.
+* Move explanatory ``--`` comments out of SQL listings into full-sentence
+  ``para`` elements. Keep SQL comments only when they are part of the command.
+* Do not put expected output, psql column headers, row-count footers, or
+  ``-- result --`` markers inside ``programlisting``.
+* For one-column scalar output, omit the psql column header and separator in
+  ``screen`` unless the header is itself important to the example.
+* If a docs example intentionally uses psql variables or other psql meta-commands,
+  keep them in ``programlisting`` only when the listing is marked
+  ``role="requires-external-state"`` or is otherwise not auto-run.
+* Mark examples that require a newer GEOS/PROJ/GDAL feature than the default test
+  environment with ``role="requires-external-state"`` instead of adding runner
+  special cases.
+* Version-reporting and extension-catalog examples are run, but their
+  version/build strings and optional extension rows are treated as volatile.
+  The tester checks that the query runs and returns the documented column shape.
+
+Use ``make exampletest-report`` to inspect the current manual. Use
+``make -C regress exampletest-unit`` to run fast unit tests for the manual
+example parser and comparison logic.

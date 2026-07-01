@@ -632,6 +632,9 @@ endif
 %_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/%_gardentest.sql.xsl postgis-out.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
+exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py ## Report manual examples selected, parseable, or skipped for known reasons
+	$(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
+
 check: check-unit ## Check structural correctness of XML documentation with DocBook DTD, RelaxNG, and XMLSchema validation
 check-localized: ## Check structural correctness of localized (translated) XML documentation.
 

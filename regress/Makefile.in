@@ -28,6 +28,7 @@ POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 #    make garden GARDENDB=custom_db_name
 #
 GARDENDB=postgis_garden
+EXAMPLETESTDB=postgis_exampletest
 
 # Where we put our regression installation
 # See https://trac.osgeo.org/postgis/ticket/5066
@@ -140,3 +141,35 @@ garden: staged-install
 		> sfcgal_garden_result.txt 2>&1 || { \
 		tail -n 20 sfcgal_garden_result.txt; false; }
 	tail -n 20 sfcgal_garden_result.txt
+	@echo '-------------------------------------------------'
+	@echo 'Manual example tests in progress'
+	@echo '-------------------------------------------------'
+	$(MAKE) exampletest-run
+
+exampletest: staged-install exampletest-run
+
+exampletest-unit:
+	python3 $(top_srcdir)/utils/test_postgis_exampletest.py
+
+exampletest-run: exampletest-unit
+	$(MAKE) -C ../doc postgis-out.xml
+	dropdb --if-exists $(EXAMPLETESTDB)
+	createdb $(EXAMPLETESTDB)
+	psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql
+	psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql
+	@if test x"@RASTER@" != x; then \
+		psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql; \
+	fi
+	@if test x"@TOPOLOGY@" != x; then \
+		psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/topology.sql; \
+	fi
+	@if test x"@SFCGAL@" != x; then \
+		psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/sfcgal.sql; \
+	fi
+	$(top_srcdir)/utils/postgis_exampletest.py --check-environment --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
+		> postgis_exampletest_environment.txt 2>&1 || { \
+		cat postgis_exampletest_environment.txt; false; }
+	$(top_srcdir)/utils/postgis_exampletest.py --run --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
+		> postgis_exampletest_result.txt 2>&1 || { \
+		tail -n 20 postgis_exampletest_result.txt; false; }
+	tail -n 20 postgis_exampletest_result.txt

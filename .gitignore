@@ -187,6 +187,7 @@ regress/real/load_data.sql
 regress/sfcgal/Makefile
 regress/postgis.sql
 regress/postgis_garden_result.txt
+regress/postgis_exampletest_result.txt
 regress/raster_garden_result.txt
 regress/topology_garden_result.txt
 sfcgal/Makefile

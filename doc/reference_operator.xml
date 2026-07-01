@@ -1266,12 +1266,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;
-
- is_contained
---------------
- t
-(1 row)</programlisting>
+			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;</programlisting>
+<screen>t</screen>
 		  </refsection>
 
 		  <refsection>
@@ -1332,12 +1328,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;
-
- is_contained
---------------
- t
-(1 row)</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;</programlisting>
+<screen>t</screen>
 		  </refsection>
 
 		  <refsection>
@@ -1398,12 +1390,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;
-
- is_contained
---------------
- t
-(1 row)</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;</programlisting>
+<screen>t</screen>
 		  </refsection>
 
 		  <refsection>
@@ -1545,14 +1533,13 @@ FROM
   ( VALUES
 	(2, 'LINESTRING (0 0, 4 2)'::geometry),
 	(3, 'LINESTRING (6 1, 6 5)'::geometry),
-	(4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;
-
- column1 | column1 | above
+	(4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;</programlisting>
+<screen> column1 | column1 | above
 ---------+---------+-------
 	   1 |       2 | t
 	   1 |       3 | f
 	   1 |       4 | f
-(3 rows)</programlisting>
+(3 rows)</screen>
 		  </refsection>
 
 		  <refsection>
@@ -1612,14 +1599,13 @@ FROM
   ( VALUES
 	(2, 'LINESTRING (0 0, 4 4)'::geometry),
 	(3, 'LINESTRING (1 1, 2 2)'::geometry),
-	(4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;
-
- column1 | column1 | contains
+	(4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;</programlisting>
+<screen> column1 | column1 | contains
 ---------+---------+----------
 	   1 |       2 | f
 	   1 |       3 | t
 	   1 |       4 | t
-(3 rows)</programlisting>
+(3 rows)</screen>
 		  </refsection>
 
 		  <refsection>
@@ -1672,12 +1658,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;
-
- contains
-----------
- t
-(1 row)</programlisting>
+			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;</programlisting>
+<screen>t</screen>
 		  </refsection>
 
 		  <refsection>
@@ -1738,12 +1720,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;
-
- contains
-----------
- t
-(1 row)</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;</programlisting>
+<screen>t</screen>
 		  </refsection>
 
 		  <refsection>
@@ -1804,12 +1782,8 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) AS contains;
-
- contains
-----------
- t
-(1 row)</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) AS contains;</programlisting>
+<screen>t</screen>
 		  </refsection>
 
 		  <refsection>
@@ -1882,13 +1856,8 @@ FROM
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>
-
-select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as equality;
- equality   |
------------------+
-          t    |
-			</programlisting>
+<programlisting>SELECT 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry AS equality;</programlisting>
+<screen>t</screen>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -1973,9 +1942,8 @@ and distance on the sphere for geographies.
 			<title>Examples</title>
 <programlisting>SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
 FROM va2005
-ORDER BY d limit 10;
-
-        d         | edabbr | vaabbr
+ORDER BY d limit 10;</programlisting>
+<screen>        d         | edabbr | vaabbr
 ------------------+--------+--------
                 0 | ALQ    | 128
  5541.57712511724 | ALQ    | 129A
@@ -1987,13 +1955,12 @@ ORDER BY d limit 10;
  9564.24289057111 | ALQ    | 130
   12089.665931705 | ALQ    | 127
  18472.5531479404 | ALQ    | 002
-(10 rows)
-</programlisting>
+(10 rows)</screen>
 <para>
 Then the KNN raw answer:
 </para>
 <programlisting><![CDATA[
-SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
 FROM va2005
 ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;
 
@@ -2101,25 +2068,25 @@ index.
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>
--- Save a literal query trajectory in a psql variable...
-\set qt 'ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),ST_MakePointM(-410,490,0)),10,20)'
--- Run the query !
+<para>This example orders stored trajectories by their distance from a literal query trajectory.</para>
+<programlisting role="requires-external-state">
+\set qt 'ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350, 300, 0), ST_MakePointM(-410, 490, 0)), 10, 20)'
+
 SELECT track_id, dist FROM (
-  SELECT track_id, ST_DistanceCPA(tr,:qt) dist
+  SELECT track_id,
+    ST_DistanceCPA(tr, :qt) dist
   FROM trajectories
   ORDER BY tr |=| :qt
   LIMIT 5
-) foo;
- track_id        dist
+) foo;</programlisting>
+<screen> track_id        dist
 ----------+-------------------
       395 | 0.576496831518066
       380 |  5.06797130410151
       390 |  7.72262293958322
       385 |   9.8004461358071
       405 |  10.9534397988433
-(5 rows)
-</programlisting>
+(5 rows)</screen>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -2176,7 +2143,7 @@ Returns the 2D distance between A and B bounding boxes.
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting><![CDATA[
+<programlisting role="requires-external-state"><![CDATA[
 SELECT *
 FROM (
 SELECT b.tlid, b.mtfcc,

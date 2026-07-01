@@ -124,26 +124,24 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 
             <refsection>
                 <title>Examples</title>
-                <para>To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current session</para>
+                <para>Set and reset <varname>postgis.gdal_enabled_drivers</varname> for the current session.</para>
 
                 <programlisting>
 SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SET postgis.gdal_enabled_drivers = default;
                 </programlisting>
 
-                <para>Set for all new connections to a specific database to specific drivers</para>
+                <para>Set specific drivers for all new connections to a database.</para>
 
                 <programlisting>ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';</programlisting>
 
-                <para>Setting for whole database cluster to enable all drivers. Requires super user access.
+                <para>Set the default for the whole database cluster to enable all drivers. This requires superuser access.
                     Also note that database, session, and user settings override this.</para>
 
-                <programlisting>
- --writes to postgres.auto.conf
-ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
- --Reloads postgres conf
-SELECT pg_reload_conf();
-                </programlisting>
+                <para>This example writes the setting to postgres.auto.conf.</para>
+                <programlisting>ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';</programlisting>
+                <para>Reload the PostgreSQL configuration so the changed setting is applied.</para>
+                <programlisting>SELECT pg_reload_conf();</programlisting>
             </refsection>
 
             <refsection>
@@ -195,7 +193,7 @@ SELECT pg_reload_conf();
 
             <refsection>
                 <title>Examples</title>
-                <para>Set and reset <varname>postgis.enable_outdb_rasters</varname> for current session</para>
+                <para>Set and reset <varname>postgis.enable_outdb_rasters</varname> for the current session.</para>
 
                 <programlisting>
 SET postgis.enable_outdb_rasters TO True;
@@ -204,20 +202,16 @@ SET postgis.enable_outdb_rasters = True;
 SET postgis.enable_outdb_rasters = False;
                 </programlisting>
 
-                <para>Set for all new connections to a specific database</para>
+                <para>Set the default for all new connections to a database.</para>
 
-                <programlisting>
-ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;
-                </programlisting>
+                <programlisting>ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;</programlisting>
 
-                <para>Setting for whole database cluster. Requires super user access.
+                <para>Set the default for the whole database cluster. This requires superuser access.
                     Also note that database, session, and user settings override this.</para>
-                <programlisting>
- --writes to postgres.auto.conf
-ALTER SYSTEM SET postgis.enable_outdb_rasters = true;
- --Reloads postgres conf
-SELECT pg_reload_conf();
-                </programlisting>
+                <para>This example writes the setting to postgres.auto.conf.</para>
+                <programlisting>ALTER SYSTEM SET postgis.enable_outdb_rasters = true;</programlisting>
+                <para>Reload the PostgreSQL configuration so the changed setting is applied.</para>
+                <programlisting>SELECT pg_reload_conf();</programlisting>
             </refsection>
 
             <refsection>
@@ -252,14 +246,10 @@ SELECT pg_reload_conf();
                 <title>Examples</title>
                 <para>Set <varname>postgis.gdal_vsi_options</varname> for current session:</para>
 
-                <programlisting>
-SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
-                </programlisting>
+                <programlisting>SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';</programlisting>
 
                 <para>Set <varname>postgis.gdal_vsi_options</varname> just for the <emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> keyword:</para>
-                <programlisting>
-SET LOCAL postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
-                </programlisting>
+                <programlisting>SET LOCAL postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';</programlisting>
             </refsection>
 
             <refsection>
