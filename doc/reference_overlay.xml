@@ -46,9 +46,7 @@
       <refsection>
         <title>Examples</title>
             <para>This example relies on the implicit cast from geometry to box2d for the second parameter.</para>
-            <programlisting>
-SELECT ST_ClipByBox2D(geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
-      </programlisting>
+            <programlisting>SELECT ST_ClipByBox2D(geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;</programlisting>
       </refsection>
       <refsection>
         <title>See Also</title>

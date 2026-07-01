@@ -410,9 +410,7 @@ ensuring metadata information about it is updated accordingly.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>
-SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', 'tgeom');
-                </programlisting>
+				<programlisting>SELECT topology.RenameTopoGeometryColumn('public.parcels', 'topogeom', 'tgeom');</programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -1371,9 +1369,7 @@ The function upgrades the following:
 
             <refsection>
 				<title>Examples</title>
-<programlisting>
-SELECT topology.upgradetopology('city_data');
-</programlisting>
+<programlisting>SELECT topology.upgradetopology('city_data');</programlisting>
             </refsection>
         </refentry>
 	</section>

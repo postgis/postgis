@@ -91,9 +91,7 @@ MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
         <refsection>
 <title>Examples - Array variant</title>
 <para>Using an array constructor for a subquery.</para>
-<programlisting>
-SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );
-</programlisting>
+<programlisting>SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );</programlisting>
 <para>Using an array constructor for values.</para>
 <programlisting>
 SELECT ST_AsText(  ST_Collect(
@@ -284,9 +282,7 @@ SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));</prog
             <title>Examples: Array variant</title>
 
         <para>Create a line from an array formed by a subquery with ordering.</para>
-<programlisting>
-SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time) );
-</programlisting>
+<programlisting>SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time) );</programlisting>
 
         <para>Create a 3D line from an array of 3D points</para>
 <programlisting>
@@ -523,9 +519,7 @@ SELECT ST_M(  ST_MakePointM(-71.104, 42.315, 10)  );</programlisting>
         <refsection>
         <title>Examples: Single input variant</title>
         <para>Create a Polygon from a 2D LineString.</para>
-         <programlisting>
-SELECT ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)'));
-</programlisting>
+         <programlisting>SELECT ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)'));</programlisting>
 
 <para>Create a Polygon from an open LineString,
 using <xref linkend="ST_StartPoint"/> and <xref linkend="ST_AddPoint"/> to close it.</para>

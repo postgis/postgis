@@ -296,9 +296,7 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 -71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))');
 </programlisting>
 <para>3D circular string.</para>
-<programlisting language="sql">
-SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');
-</programlisting>
+<programlisting language="sql">SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');</programlisting>
 <para>This example uses a PolyhedralSurface.</para>
 <programlisting language="sql">
 SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
