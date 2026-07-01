@@ -379,6 +379,26 @@ WHERE (
 AND prosecdef
 ORDER BY oid;
 
+SELECT 'leakproof_compare_support', count(*)
+FROM pg_proc
+WHERE oid IN (
+	'geometry_lt(geometry,geometry)'::regprocedure,
+	'geometry_le(geometry,geometry)'::regprocedure,
+	'geometry_gt(geometry,geometry)'::regprocedure,
+	'geometry_ge(geometry,geometry)'::regprocedure,
+	'geometry_eq(geometry,geometry)'::regprocedure,
+	'geometry_neq(geometry,geometry)'::regprocedure,
+	'geometry_cmp(geometry,geometry)'::regprocedure,
+	'geometry_hash(geometry)'::regprocedure,
+	'geography_lt(geography,geography)'::regprocedure,
+	'geography_le(geography,geography)'::regprocedure,
+	'geography_gt(geography,geography)'::regprocedure,
+	'geography_ge(geography,geography)'::regprocedure,
+	'geography_eq(geography,geography)'::regprocedure,
+	'geography_cmp(geography,geography)'::regprocedure
+)
+AND proleakproof;
+
 SELECT 'UNEXPECTED', postgis_full_version()
 	WHERE postgis_full_version() LIKE '%UNPACKAGED%'
 	   OR postgis_full_version() LIKE '%need upgrade%';
