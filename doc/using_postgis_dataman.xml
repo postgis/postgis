@@ -2197,7 +2197,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
         to define the data set to be extracted
         and dump the resulting columns into a parsable text file:</para>
 
-	  <programlisting>db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;
+	  <programlisting role="requires-external-state">SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;
 
 road_id | geom                                    | road_name
 --------+-----------------------------------------+-----------

@@ -135,7 +135,7 @@ CREATE SCHEMA my_schema;
 CREATE TABLE my_schema.my_spatial_table (id serial);
 
 -- Describing the table shows a simple table with a single "id" column.
-postgis=# \d my_schema.my_spatial_table
+\d my_schema.my_spatial_table
 							 Table "my_schema.my_spatial_table"
  Column |  Type   |                                Modifiers
 --------+---------+-------------------------------------------------------------------------

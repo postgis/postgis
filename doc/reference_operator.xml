@@ -2070,14 +2070,13 @@ index.
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>
--- Save a literal query trajectory in a psql variable...
-\set qt 'ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),ST_MakePointM(-410,490,0)),10,20)'
--- Run the query !
+<para>This example orders stored trajectories by their distance from a literal query trajectory.</para>
+<programlisting role="requires-external-state">
 SELECT track_id, dist FROM (
-  SELECT track_id, ST_DistanceCPA(tr,:qt) dist
+  SELECT track_id,
+    ST_DistanceCPA(tr, ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),ST_MakePointM(-410,490,0)),10,20)) dist
   FROM trajectories
-  ORDER BY tr |=| :qt
+  ORDER BY tr |=| ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),ST_MakePointM(-410,490,0)),10,20)
   LIMIT 5
 ) foo;</programlisting>
 <screen> track_id        dist

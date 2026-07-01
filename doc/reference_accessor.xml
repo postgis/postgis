@@ -957,7 +957,7 @@ FROM polyTable
 		<title>Examples</title>
 
 <para>End point of a LineString</para>
-		<programlisting>postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::geometry));</programlisting>
+		<programlisting>SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::geometry));</programlisting>
 <screen>POINT(3 3)</screen>
 
 <para>End point of a non-LineString is NULL</para>
@@ -1571,15 +1571,15 @@ SELECT ST_AsText(ST_CurveN('COMPOUNDCURVE(
 	  <refsection>
 		<title>Line String and Point Examples</title>
 
-		<programlisting>postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);</programlisting>
+		<programlisting>SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);</programlisting>
 <screen>f</screen>
-<programlisting>postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 0 1, 1 1, 0 0)'::geometry);</programlisting>
+<programlisting>SELECT ST_IsClosed('LINESTRING(0 0, 0 1, 1 1, 0 0)'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>postgis=# SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 1))'::geometry);</programlisting>
+<programlisting>SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 1))'::geometry);</programlisting>
 <screen>f</screen>
-<programlisting>postgis=# SELECT ST_IsClosed('POINT(0 0)'::geometry);</programlisting>
+<programlisting>SELECT ST_IsClosed('POINT(0 0)'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);</programlisting>
+<programlisting>SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);</programlisting>
 <screen>t</screen>
 	  </refsection>
 
@@ -1652,15 +1652,15 @@ SELECT ST_AsText(ST_CurveN('COMPOUNDCURVE(
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>postgis=# SELECT ST_IsCollection('LINESTRING(0 0, 1 1)'::geometry);</programlisting>
+		<programlisting>SELECT ST_IsCollection('LINESTRING(0 0, 1 1)'::geometry);</programlisting>
 <screen>f</screen>
-<programlisting>postgis=# SELECT ST_IsCollection('MULTIPOINT EMPTY'::geometry);</programlisting>
+<programlisting>SELECT ST_IsCollection('MULTIPOINT EMPTY'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>postgis=# SELECT ST_IsCollection('MULTIPOINT((0 0))'::geometry);</programlisting>
+<programlisting>SELECT ST_IsCollection('MULTIPOINT((0 0))'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>postgis=# SELECT ST_IsCollection('MULTIPOINT((0 0), (42 42))'::geometry);</programlisting>
+<programlisting>SELECT ST_IsCollection('MULTIPOINT((0 0), (42 42))'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);</programlisting>
+<programlisting>SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);</programlisting>
 <screen>t</screen>
 	  </refsection>
 
@@ -3009,28 +3009,22 @@ SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry,
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-=# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,
-        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) geog;
-            geom             |          geog
+		<programlisting>SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,
+        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) geog;</programlisting>
+<screen>            geom             |          geog
 -----------------------------+--------------------------
  LineString[B] with 2 points | Polygon[BGS] with 1 rings
                              | ring 0 has 5 points
                              :
-(1 row)
-
-
-=# SELECT ST_Summary(ST_GeogFromText('LINESTRING(0 0 1, 1 1 1)')) As geog_line,
-        ST_Summary(ST_GeomFromText('SRID=4326;POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As geom_poly;
-;
-           geog_line             |        geom_poly
+(1 row)</screen>
+<programlisting>SELECT ST_Summary(ST_GeogFromText('LINESTRING(0 0 1, 1 1 1)')) As geog_line,
+        ST_Summary(ST_GeomFromText('SRID=4326;POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As geom_poly;</programlisting>
+<screen>          geog_line             |        geom_poly
 -------------------------------- +--------------------------
  LineString[ZBGS] with 2 points | Polygon[ZBS] with 1 rings
                                 :    ring 0 has 5 points
                                 :
-(1 row)
-
-</programlisting>
+(1 row)</screen>
 	  </refsection>
 
 	  <refsection>

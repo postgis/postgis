@@ -82,10 +82,6 @@ class ExampleTester:
             re.I,
         ):
             return "external-context"
-        if re.search(r"^\s*\\\w+", text, re.M):
-            return "psql-meta"
-        if re.search(r"^\s*\w*[=>#]\s*(?:SELECT|WITH)\b", text, re.M | re.I):
-            return "psql-meta"
         if re.search(
             r"\b(?:CG_3DIntersection|CG_3DConvexHull|CG_AlphaShape|"
             r"CG_ApproxConvexPartition|CG_ExtrudeStraightSkeleton|"
@@ -310,7 +306,6 @@ class ExampleTester:
             "sql_like": 0,
             "select_or_with": 0,
             "inband_expected": 0,
-            "psql_meta": 0,
             "external_context": 0,
             "placeholder_output": 0,
             "document_output": 0,
@@ -340,8 +335,6 @@ class ExampleTester:
             stats["select_or_with"] += 1
 
             reason = self.obvious_skip_reason(text)
-            if reason == "psql-meta":
-                stats["psql_meta"] += 1
             if reason == "external-context":
                 stats["external_context"] += 1
             if reason == "placeholder-output":

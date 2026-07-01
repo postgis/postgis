@@ -805,7 +805,7 @@ The smaller densifyFrac we specify, the more accurate Fréchet distance we get. 
 
 	  <refsection>
 		<title>Examples</title>
-			<programlisting>postgres=# SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry);</programlisting>
+			<programlisting>SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry);</programlisting>
 <screen>70.7106781186548</screen>
 			<programlisting>SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry, 0.5);</programlisting>
 <screen>50</screen>
