@@ -298,6 +298,34 @@ SELECT 'T6', id, scalex, scaley, skewx, skewy,
     FROM rt_properties_test
     WHERE id > 100;
 
+WITH before_after AS (
+    SELECT
+        label,
+        ST_Geotransform(rast) AS before_gt,
+        ST_Geotransform(ST_SetRotation(rast, pi() / 4)) AS after_gt
+    FROM (
+        VALUES
+            (
+                'positive-scale',
+                ST_MakeEmptyRaster(1, 1, 0, 0, 5, 5, 3, 7, 0)
+            ),
+            (
+                'north-up-scale',
+                ST_MakeEmptyRaster(1, 1, 0, 0, 2, -3, 0.5, 0.75, 0)
+            )
+    ) AS v(label, rast)
+)
+SELECT
+    '#1554',
+    label,
+    round((before_gt).theta_ij::numeric, 12),
+    round((after_gt).theta_ij::numeric, 12),
+    round((before_gt).imag::numeric, 12) = round((after_gt).imag::numeric, 12),
+    round((before_gt).jmag::numeric, 12) = round((after_gt).jmag::numeric, 12),
+    round((before_gt).theta_ij::numeric, 12) = round((after_gt).theta_ij::numeric, 12)
+FROM before_after
+ORDER BY label;
+
 DELETE FROM rt_properties_test
     WHERE id > 100;
 
