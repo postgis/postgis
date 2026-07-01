@@ -257,11 +257,8 @@
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting>SELECT CG_Area('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (3 3, 4 3, 4 4, 3 4, 3 3))');
-                cg_area
-                --------
-                23
-                (1 row)</programlisting>
+                <programlisting>SELECT CG_Area('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (3 3, 4 3, 4 4, 3 4, 3 3))');</programlisting>
+<screen>23</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -305,11 +302,10 @@
             ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
             ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
             ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-            ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
-
-            cube_surface_area | solid_surface_area
+            ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
+<screen>            cube_surface_area | solid_surface_area
             -------------------+--------------------
-            6 |                  0    </programlisting>
+            6 |                  0    </screen>
 
     </refsection>
     <refsection>
@@ -356,12 +352,10 @@
     ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
     ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
     ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
-
-    cube_surface_vol | solid_surface_vol
+    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
+<screen>    cube_surface_vol | solid_surface_vol
     ------------------+-------------------
-    1 |                 1
-</programlisting>
+    1 |                 1</screen>
     </refsection>
 
     <refsection>
@@ -582,11 +576,10 @@
         ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
         ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
         ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-        ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
-
-        cube_surface_area | solid_surface_area
+        ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
+<screen>        cube_surface_area | solid_surface_area
         -------------------+--------------------
-        6 |                  0    </programlisting>
+        6 |                  0    </screen>
 
 </refsection>
 <refsection>
@@ -639,12 +632,10 @@
     ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
     ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
     ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
-
-    cube_surface_vol | solid_surface_vol
+    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
+<screen>    cube_surface_vol | solid_surface_vol
     ------------------+-------------------
-    1 |                 1
-</programlisting>
+    1 |                 1</screen>
     </refsection>
 
     <refsection>
@@ -691,11 +682,8 @@
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting>SELECT ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));
-                cg_intersection
-                -----------------
-                POINT(2.5 2.5)
-                (1 row)</programlisting>
+                <programlisting>SELECT ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));</programlisting>
+<screen>POINT(2.5 2.5)</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -742,17 +730,10 @@
 </refsection>
 <refsection>
     <title>Geometry Examples</title>
-    <programlisting>SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
-    cg_intersects
-    ---------------
-    f
-    (1 row)
-    SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
-    cg_intersects
-    ---------------
-    t
-    (1 row)
-</programlisting>
+    <programlisting>SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);</programlisting>
+<screen>f</screen>
+<programlisting>    SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);</programlisting>
+<screen>t</screen>
     </refsection>
     <refsection>
         <title>See Also</title>
@@ -794,12 +775,8 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting>SELECT CG_3DIntersects('POINT(1.2 0.1 0)','POLYHEDRALSURFACE(((0 0 0,0.5 0.5 0,1 0 0,1 1 0,0 1 0,0 0 0)),((1 0 0,2 0 0,2 1 0,1 1 0,1 0 0),(1.2 0.2 0,1.2 0.8 0,1.8 0.8 0,1.8 0.2 0,1.2 0.2 0)))');
-        cg_3dintersects
-        ---------------
-        t
-        (1 row)
-    </programlisting>
+        <programlisting>SELECT CG_3DIntersects('POINT(1.2 0.1 0)','POLYHEDRALSURFACE(((0 0 0,0.5 0.5 0,1 0 0,1 1 0,0 1 0,0 0 0)),((1 0 0,2 0 0,2 1 0,1 1 0,1 0 0),(1.2 0.2 0,1.2 0.8 0,1.8 0.8 0,1.8 0.2 0,1.2 0.2 0)))');</programlisting>
+<screen>t</screen>
 </refsection>
 <refsection>
     <title>See Also</title>
@@ -842,11 +819,8 @@
 </refsection>
 <refsection>
     <title>Geometry Examples</title>
-    <programlisting>SELECT ST_AsText(CG_Difference('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'LINESTRING(0 0, 2 2)'::geometry));
-    cg_difference
-    ---------------
-    POLYGON((0 0,1 0,1 1,0 1,0 0))
-    (1 row)</programlisting>
+    <programlisting>SELECT ST_AsText(CG_Difference('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'LINESTRING(0 0, 2 2)'::geometry));</programlisting>
+<screen>POLYGON((0 0,1 0,1 1,0 1,0 0))</screen>
     </refsection>
     <refsection>
         <title>See Also</title>
@@ -1009,11 +983,8 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting>SELECT CG_Distance('LINESTRING(0.0 0.0,-1.0 -1.0)', 'LINESTRING(3.0 4.0,4.0 5.0)');
-        cg_distance
-        -------------
-        5
-        (1 row)</programlisting>
+        <programlisting>SELECT CG_Distance('LINESTRING(0.0 0.0,-1.0 -1.0)', 'LINESTRING(3.0 4.0,4.0 5.0)');</programlisting>
+<screen>5</screen>
 </refsection>
 <refsection>
     <title>See Also</title>
@@ -1055,11 +1026,8 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting>SELECT CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');
-        cg_3ddistance
-        ----------------
-        1
-        (1 row)</programlisting>
+        <programlisting>SELECT CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');</programlisting>
+<screen>1</screen>
 </refsection>
 <refsection>
     <title>See Also</title>
@@ -1263,12 +1231,8 @@
     <para>3D linestrings and polygons</para>
     <programlisting>	SELECT ST_AsText(CG_3DIntersection(linestring, polygon)) As wkt
     FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
-    CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
-
-    wkt
-    --------------------------------
-    LINESTRING Z (1 1 8,0.5 0.5 8)
-</programlisting>
+    CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;</programlisting>
+<screen>LINESTRING Z (1 1 8,0.5 0.5 8)</screen>
 
 <para>Cube (closed Polyhedral Surface) and Polygon Z</para>
 <programlisting>SELECT ST_AsText(CG_3DIntersection(
@@ -1333,11 +1297,8 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting>SELECT ST_AsText(CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)'));
-                st_astext
-                ----------
-                LINESTRING(-1 0,0.5 0,1 0)
-                (1 row)</programlisting>
+                <programlisting>SELECT ST_AsText(CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)'));</programlisting>
+<screen>LINESTRING(-1 0,0.5 0,1 0)</screen>
         </refsection>
         <refsection>
             <title>See Also</title>

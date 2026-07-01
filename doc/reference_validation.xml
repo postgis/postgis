@@ -81,11 +81,10 @@ for ST_IsValid. The flag is a PostGIS extension.
 		<programlisting>SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
 	ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
 --results
-NOTICE:  Self-intersection at or near point 0 0
- good_line | bad_poly
+NOTICE:  Self-intersection at or near point 0 0</programlisting>
+<screen> good_line | bad_poly
 -----------+----------
- t         | f
-</programlisting>
+ t         | f</screen>
 	  </refsection>
 
 	  <refsection>
@@ -244,11 +243,8 @@ Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDeta
         <programlisting>-- invalid bow-tie polygon
 SELECT ST_IsValidReason(
     'POLYGON ((100 200, 100 100, 200 200,
-     200 100, 100 200))'::geometry) as validity_info;
-validity_info
---------------------------
-Self-intersection[150 150]
-        </programlisting>
+     200 100, 100 200))'::geometry) as validity_info;</programlisting>
+<screen>Self-intersection[150 150]</screen>
 		<programlisting><![CDATA[
 
 --First 3 Rejects from a successful quintuplet experiment
@@ -476,21 +472,13 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
 <programlisting>SELECT ST_AsText(ST_MakeValid(
     'LINESTRING(0 0, 0 0)',
     'method=structure keepcollapsed=true'
-    ));
-
- st_astext
-------------
- POINT(0 0)
-
-
-SELECT ST_AsText(ST_MakeValid(
+    ));</programlisting>
+<screen>POINT(0 0)</screen>
+<programlisting>SELECT ST_AsText(ST_MakeValid(
     'LINESTRING(0 0, 0 0)',
     'method=structure keepcollapsed=false'
-    ));
-
-    st_astext
-------------------
- LINESTRING EMPTY</programlisting>
+    ));</programlisting>
+<screen>LINESTRING EMPTY</screen>
 </refsection>
           <refsection>
             <title>See Also</title>

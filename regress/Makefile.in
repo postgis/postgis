@@ -159,6 +159,9 @@ exampletest-run:
 	@if test x"@SFCGAL@" != x; then \
 		psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/sfcgal.sql; \
 	fi
+	$(top_srcdir)/utils/postgis_exampletest.py --check-environment --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
+		> postgis_exampletest_environment.txt 2>&1 || { \
+		cat postgis_exampletest_environment.txt; false; }
 	$(top_srcdir)/utils/postgis_exampletest.py --run --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
 		> postgis_exampletest_result.txt 2>&1 || { \
 		tail -n 20 postgis_exampletest_result.txt; false; }

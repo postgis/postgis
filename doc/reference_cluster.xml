@@ -199,13 +199,11 @@ WITH testdata AS
 
 SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
 
---result
-
-st_astext
+--result</programlisting>
+<screen>st_astext
 ---------
 GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
-GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
-        </programlisting>
+GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -257,17 +255,14 @@ WITH testdata AS (
 SELECT id,
   ST_AsText(geom),
   ST_ClusterIntersectingWin(geom) OVER () AS cluster
-FROM testdata;
-
- id |           st_astext            | cluster
+FROM testdata;</programlisting>
+<screen> id |           st_astext            | cluster
 ----+--------------------------------+---------
   1 | LINESTRING(0 0,1 1)            |       0
   2 | LINESTRING(5 5,4 4)            |       0
   3 | LINESTRING(6 6,7 7)            |       1
   4 | LINESTRING(0 0,-1 -1)          |       0
-  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0
-
-        </programlisting>
+  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -339,17 +334,15 @@ INSERT INTO clusterrelate (geom)
 SELECT id,
   ST_AsText(geom),
   ST_ClusterRelateWin(geom, '****0****') OVER () AS cluster
-FROM clusterrelate;
-
- id |          st_astext          | cluster
+FROM clusterrelate;</programlisting>
+<screen> id |          st_astext          | cluster
 ----+-----------------------------+---------
   1 | LINESTRING(0 0,1 1)         |       0
   2 | LINESTRING(2 2,1 1)         |       0
   3 | LINESTRING(0 1,1 0)         |       1
   4 | LINESTRING(0 1,0 4)         |       1
   5 | LINESTRING(2 2,2 4)         |       0
-  6 | LINESTRING(1.5 2.5,2.5 3.5) |       2
-        </programlisting>
+  6 | LINESTRING(1.5 2.5,2.5 3.5) |       2</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -400,18 +393,15 @@ SELECT id, ST_AsText(geom), ST_MinimumSpanningTree(geom) OVER () AS msp
     (4, 'LINESTRING(1 1,1 0)'::geometry),
     (5, 'LINESTRING(0 0,1 1)'::geometry),
     (6, 'LINESTRING(1 0,0 1)'::geometry)
-) AS t(id, geom);
-
-
- id |      st_astext      | msp
+) AS t(id, geom);</programlisting>
+<screen> id |      st_astext      | msp
 ----+---------------------+-----
   1 | LINESTRING(0 0,1 0) |   1
   2 | LINESTRING(0 0,0 1) |   1
   3 | LINESTRING(1 1,0 1) |   1
   4 | LINESTRING(1 1,1 0) |   0
   5 | LINESTRING(0 0,1 1) |   0
-  6 | LINESTRING(1 0,0 1) |   0
-        </programlisting>
+  6 | LINESTRING(1 0,0 1) |   0</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -616,13 +606,11 @@ WITH testdata AS
 
 SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
 
---result
-
-st_astext
+--result</programlisting>
+<screen>st_astext
 ---------
 GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
-GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
-        </programlisting>
+GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -682,18 +670,14 @@ WITH testdata AS (
 SELECT id,
   ST_AsText(geom),
   ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster
-FROM testdata;
-
-
- id |           st_astext            | cluster
+FROM testdata;</programlisting>
+<screen> id |           st_astext            | cluster
 ----+--------------------------------+---------
   1 | LINESTRING(0 0,1 1)            |       0
   2 | LINESTRING(5 5,4 4)            |       0
   3 | LINESTRING(6 6,7 7)            |       1
   4 | LINESTRING(0 0,-1 -1)          |       0
-  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0
-
-        </programlisting>
+  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0</screen>
       </refsection>
       <refsection>
         <title>See Also</title>

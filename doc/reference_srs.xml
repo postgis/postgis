@@ -59,24 +59,14 @@
     <programlisting>
 -- Inverse direction
 SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;
-
-          wgs_geom
-----------------------------
- POINT(2 48.99999999999999)
-(1 row)
-    </programlisting>
+  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
+<screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
     <programlisting>
 -- using ST_Transform with automatic selection of a conversion pipeline.
-SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
-
-                 gda2020_auto
------------------------------------------------
- POINT(143.00000635638918 -36.999986706128176)
-(1 row)
-    </programlisting>
+SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
+<screen>POINT(143.00000635638918 -36.999986706128176)</screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->
@@ -416,59 +406,32 @@ CREATE INDEX idx_geom_26986_parcels
     <refsection>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
-    <programlisting>
--- Forward direction
+    <programlisting>-- Forward direction
 SELECT ST_AsText(ST_TransformPipeline('SRID=4326;POINT(2 49)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;
-
-                  utm_geom
---------------------------------------------
- POINT(426857.9877165967 5427937.523342293)
-(1 row)
-
--- Inverse direction
+  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS utm_geom;</programlisting>
+<screen>POINT(426857.9877165967 5427937.523342293)</screen>
+<programlisting>-- Inverse direction
 SELECT ST_AsText(ST_InverseTransformPipeline('POINT(426857.9877165967 5427937.523342293)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;
-
-          wgs_geom
-----------------------------
- POINT(2 48.99999999999999)
-(1 row)
-    </programlisting>
+  'urn:ogc:def:coordinateOperation:EPSG::16031')) AS wgs_geom;</programlisting>
+<screen>POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
-    <programlisting>
--- using ST_Transform with automatic selection of a conversion pipeline.
-SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;
-
-                 gda2020_auto
------------------------------------------------
- POINT(143.00000635638918 -36.999986706128176)
-(1 row)
-
--- using a defined conversion (EPSG:8447)
+    <programlisting>-- using ST_Transform with automatic selection of a conversion pipeline.
+SELECT ST_AsText(ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844)) AS gda2020_auto;</programlisting>
+<screen>POINT(143.00000635638918 -36.999986706128176)</screen>
+<programlisting>-- using a defined conversion (EPSG:8447)
 SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
-  'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;
-
-                   gda2020_code
-----------------------------------------------
- POINT(143.0000063280214 -36.999986718287545)
-(1 row)
-
--- using a PROJ pipeline definition matching EPSG:8447, as returned from
+  'urn:ogc:def:coordinateOperation:EPSG::8447')) AS gda2020_code;</programlisting>
+<screen>POINT(143.0000063280214 -36.999986718287545)</screen>
+<programlisting>-- using a PROJ pipeline definition matching EPSG:8447, as returned from
 -- 'projinfo -s EPSG:4939 -t EPSG:7844'.
 -- NOTE: any 'axisswap' steps must be removed.
 SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
   '+proj=pipeline
    +step +proj=unitconvert +xy_in=deg +xy_out=rad
    +step +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif
-   +step +proj=unitconvert +xy_in=rad +xy_out=deg')) AS gda2020_pipeline;
-
-                   gda2020_pipeline
-----------------------------------------------
- POINT(143.0000063280214 -36.999986718287545)
-(1 row)
-    </programlisting>
+   +step +proj=unitconvert +xy_in=rad +xy_out=deg')) AS gda2020_pipeline;</programlisting>
+<screen>POINT(143.0000063280214 -36.999986718287545)</screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->
@@ -510,9 +473,8 @@ SELECT ST_AsText(ST_TransformPipeline('SRID=4939;POINT(143.0 -37.0)'::geometry,
       <title>Examples</title>
       <para>List the first ten codes associated with the EPSG authority.</para>
       <programlisting>
-SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;
-
- postgis_srs_codes
+SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;</programlisting>
+<screen> postgis_srs_codes
 -------------------
  10156
  10157
@@ -523,8 +485,7 @@ SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;
  10164
  10165
  10166
- 10167
-    </programlisting>
+ 10167</screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->
@@ -618,9 +579,8 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
       <title>Examples</title>
       <para>Get the first 10 metadata records from the Proj database.</para>
       <programlisting>
-SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;
-
- auth_name | auth_srid |                                srname
+SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;</programlisting>
+<screen> auth_name | auth_srid |                                srname
 -----------+-----------+----------------------------------------------------------------------
  EPSG      | 10156     | ETRS89 + MSL UK &amp; Ireland VORF08 depth
  EPSG      | 10157     | ETRS89 + CD UK &amp; Ireland VORF08 depth
@@ -631,7 +591,7 @@ SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, a
  EPSG      | 10164     | JGD2011 / Japan Plane Rectangular CS III + JGD2011 (vertical) height
  EPSG      | 10165     | JGD2011 / Japan Plane Rectangular CS IV + JGD2011 (vertical) height
  EPSG      | 10166     | JGD2011 / Japan Plane Rectangular CS V + JGD2011 (vertical) height
- EPSG      | 10167     | JGD2011 / Japan Plane Rectangular CS VI + JGD2011 (vertical) height    </programlisting>
+ EPSG      | 10167     | JGD2011 / Japan Plane Rectangular CS VI + JGD2011 (vertical) height    </screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->

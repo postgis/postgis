@@ -379,11 +379,8 @@ DROP TABLE my_schema.my_spatial_table;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');
-find_srid
-----------
-4269
-</programlisting>
+		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');</programlisting>
+<screen>4269</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -480,13 +477,11 @@ find_srid
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-CREATE TABLE public.myspatial_table(gid serial, geom geometry);
+		<programlisting>CREATE TABLE public.myspatial_table(gid serial, geom geometry);
 INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
 -- This will now use typ modifiers.  For this to work, there must exist data
-SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);
-
-populate_geometry_columns
+SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programlisting>
+<screen>populate_geometry_columns
 --------------------------
                         1
 
@@ -497,15 +492,14 @@ populate_geometry_columns
  Column |           Type            |                           Modifiers
 --------+---------------------------+---------------------------------------------------------------
  gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
- geom   | geometry(LineString,4326) |
-</programlisting>
+ geom   | geometry(LineString,4326) |</screen>
 
 		<programlisting>-- This will change the geometry columns to use constraints if they are not typmod or have constraints already.
 --For this to work, there must exist data
 CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
 INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
-SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);
-populate_geometry_columns
+SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);</programlisting>
+<screen>populate_geometry_columns
 --------------------------
                         1
 \d myspatial_table_cs
@@ -518,7 +512,7 @@ populate_geometry_columns
 Check constraints:
     "enforce_dims_geom" CHECK (st_ndims(geom) = 2)
     "enforce_geotype_geom" CHECK (geometrytype(geom) = 'LINESTRING'::text OR geom IS NULL)
-    "enforce_srid_geom" CHECK (st_srid(geom) = 4326)</programlisting>
+    "enforce_srid_geom" CHECK (st_srid(geom) = 4326)</screen>
 	  </refsection>
 
 <!--

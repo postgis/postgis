@@ -86,15 +86,13 @@
   (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::geometry)
 )
 SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
-  FROM coverage;
-
- id |               st_astext
+  FROM coverage;</programlisting>
+<screen> id |               st_astext
 ----+---------------------------------------
   1 | LINESTRING (40 110, 100 70)
   2 | MULTILINESTRING ((100 130, 140 120, 140 160, 100 190), (40 110, 50 80, 74 110.5))
   3 | LINESTRING (140 80, 140 190)
-  4 | null
-      </programlisting>
+  4 | null</screen>
 
       <programlisting>-- Test entire table for coverage validity
 SELECT true = ALL (
@@ -335,15 +333,13 @@ CREATE TABLE example_clean AS
   (4, 'POLYGON ((160 150, 150 120, 160 90, 160 50, 110 130, 160 150))'::geometry)
 )
 SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
-  FROM coverage;
-
- id |               st_astext
+  FROM coverage;</programlisting>
+<screen> id |               st_astext
 ----+---------------------------------------
   1 | POLYGON ((160 150, 110 130, 50 10, 10 60, 20 170, 90 190, 160 150), (40 160, 66 125, 90 170, 40 160))
   2 | POLYGON ((40 160, 66 125, 90 170, 40 160))
   3 | POLYGON ((110 130, 160 50, 50 10, 110 130))
-  4 | POLYGON ((160 150, 160 50, 110 130, 160 150))
-      </programlisting>
+  4 | POLYGON ((160 150, 160 50, 110 130, 160 150))</screen>
     </refsection>
 
     <refsection>
@@ -499,12 +495,8 @@ MULTILINESTRING((10 0, 10 10))
   (5, 'POLYGON ((180 160, 170 140, 140 130, 160 150, 140 190, 180 160))'::geometry)
 )
 SELECT ST_AsText(ST_CoverageUnion(geom)) AS wkt
-  FROM coverage;
-
-                                                                        wkt
----------------------------------------------------------------------------------------------------------------------------------------------------
-MULTIPOLYGON(((10 150,80 190,110 150,140 80,120 10,10 10,10 150),(50 60,100 70,40 110,50 60)),((120 170,140 190,180 160,170 140,140 130,120 170)))
-      </programlisting>
+  FROM coverage;</programlisting>
+<screen>MULTIPOLYGON(((10 150,80 190,110 150,140 80,120 10,10 10,10 150),(50 60,100 70,40 110,50 60)),((120 170,140 190,180 160,170 140,140 130,120 170)))</screen>
     </refsection>
 
     <refsection>

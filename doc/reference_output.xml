@@ -169,18 +169,12 @@
 <screen>POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
 
 <para>Full precision output is the default.</para>
-      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry);
-    st_astext
-------------------------------
- POINT(111.1111111 1.1111111)
-</programlisting>
+      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry);</programlisting>
+<screen>POINT(111.1111111 1.1111111)</screen>
 
 <para>The <parameter>maxdecimaldigits</parameter> argument can be used to limit output precision.</para>
-      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry, 2);
-    st_astext
---------------------
- POINT(111.11 1.11)
-</programlisting>
+      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry, 2);</programlisting>
+<screen>POINT(111.11 1.11)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -267,21 +261,18 @@
       <refsection>
       <title>Examples</title>
 
-      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
-
-       st_asbinary
+      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+<screen>       st_asbinary
 --------------------------------
 \x01030000000100000005000000000000000000000000000000000000000000000000000000000000
 000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000
-00000000000000000000000000
-</programlisting>
-      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
-       st_asbinary
+00000000000000000000000000</screen>
+      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
+<screen>       st_asbinary
 --------------------------------
 \x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
 00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
-00000000000000000000000000
-</programlisting>
+00000000000000000000000000</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -345,22 +336,19 @@
       <refsection>
       <title>Examples</title>
 
-      <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
-
-       st_asewkb
+      <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+<screen>       st_asewkb
 --------------------------------
 \x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
 00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000
-0000000000000000000000000000000000
-</programlisting>
+0000000000000000000000000000000000</screen>
     <programlisting>
-      SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
-       st_asewkb
+      SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
+<screen>       st_asewkb
 --------------------------------
 \x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
 003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000
-0000000000000000000000000000000000
-    </programlisting>
+0000000000000000000000000000000000</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -408,14 +396,14 @@
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
-    st_ashexewkb
+    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+<screen>    st_ashexewkb
     --------
     0103000020E6100000010000000500
     00000000000000000000000000000000
     00000000000000000000000000000000F03F
     000000000000F03F000000000000F03F000000000000F03
-    F000000000000000000000000000000000000000000000000</programlisting>
+    F000000000000000000000000000000000000000000000000</screen>
     <para>Which gives the same answer as:</para>
     <programlisting>SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;</programlisting>
     </refsection>
@@ -458,10 +446,9 @@
     <title>Examples</title>
   <para>Basic </para>
   <programlisting>
-  SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
-  --result--
-  _p~iF~ps|U_ulLnnqC_mqNvxq`@
-  </programlisting>
+  SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));</programlisting>
+<screen>  _p~iF~ps|U_ulLnnqC_mqNvxq`@
+  </screen>
 
   <para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
   <programlisting>-- the SQL for Boston to San Francisco, segments every 100 KM
@@ -575,13 +562,8 @@
     <refsection>
     <title>Examples</title>
     <programlisting>SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
-    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;
- st_asgeobuf
-----------------------------------
- GAAiEAoOCgwIBBoIAAAAAgIAAAE=
-
-
-    </programlisting>
+    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;</programlisting>
+<screen>GAAiEAoOCgwIBBoIAAAAAgIAAAE=</screen>
     </refsection>
   </refentry>
 
@@ -1109,46 +1091,28 @@ SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
       <title>Examples</title>
 <para>Default format.</para>
 <programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));
-      st_aslatlontext
-----------------------------
- 2°19'29.928"S 3°14'3.243"W
-</programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));</programlisting>
+<screen>2°19'29.928"S 3°14'3.243"W</screen>
 <para>Providing a format (same as the default).</para>
 <programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));
-      st_aslatlontext
-----------------------------
- 2°19'29.928"S 3°14'3.243"W
-</programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));</programlisting>
+<screen>2°19'29.928"S 3°14'3.243"W</screen>
 <para>Characters other than D, M, S, C and . are just passed through.</para>
 <programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));
-                                   st_aslatlontext
---------------------------------------------------------------------------------------
- 2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W
-</programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));</programlisting>
+<screen>2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W</screen>
 <para>Signed degrees instead of cardinal directions.</para>
 <programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));
-      st_aslatlontext
-----------------------------
- -2°19'29.928" -3°14'3.243"
-</programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));</programlisting>
+<screen>-2°19'29.928" -3°14'3.243"</screen>
 <para>Decimal degrees.</para>
 <programlisting>
-SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));
-          st_aslatlontext
------------------------------------
- 2.3250 degrees S 3.2342 degrees W
-</programlisting>
+SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));</programlisting>
+<screen>2.3250 degrees S 3.2342 degrees W</screen>
 <para>Excessively large values are normalized.</para>
 <programlisting>
-SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
-        st_aslatlontext
--------------------------------
- 72°19'29.928"S 57°45'56.757"E
-</programlisting>
+SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));</programlisting>
+<screen>72°19'29.928"S 57°45'56.757"E</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -1369,11 +1333,8 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 SELECT ST_AsText(ST_AsMVTGeom(
   ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
   ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
-  4096, 0, false));
-                              st_astext
---------------------------------------------------------------------
- MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))
-    </programlisting>
+  4096, 0, false));</programlisting>
+<screen>MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
 
     <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry. This assumes the data.geom column has srid of 4326.
     </para>
@@ -1555,39 +1516,28 @@ FROM mvtgeom;
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);
-
-st_assvg
---------
-M 0 0 L 0 -1 1 -1 1 0 Z</programlisting>
+    <programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);</programlisting>
+<screen>M 0 0 L 0 -1 1 -1 1 0 Z</screen>
 
         <para>Circular string</para>
-    <programlisting>SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );
-
-st_assvg
---------
-M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</programlisting>
+    <programlisting>SELECT ST_AsSVG( ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)') );</programlisting>
+<screen>M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</screen>
 
         <para>Multi-curve</para>
         <programlisting>SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
- CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);
- st_assvg
-------------------------------------------------
- M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2
- </programlisting>
+ CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);</programlisting>
+<screen>M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2</screen>
 
         <para>Multi-surface</para>
         <programlisting>SELECT ST_AsSVG('MULTISURFACE(
 CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),
     (-1 0,0 0.5,1 0,0 1,-1 0)),
-((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);
-
-st_assvg
+((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);</programlisting>
+<screen>st_assvg
 ---------------------------------------------------------
 M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z
 M -1 0 L 0 -0.5 1 0 0 -1 -1 0 Z
-M 7 -8 L 10 -10 6 -14 4 -11 Z
- </programlisting>
+M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     </refsection>
   </refentry>
     <refentry xml:id="ST_AsTWKB">
@@ -1637,20 +1587,13 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z
       <refsection>
       <title>Examples</title>
 <programlisting>
-SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);
-                 st_astwkb
---------------------------------------------
-\x02000202020808
-
-</programlisting>
+SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);</programlisting>
+<screen>\x02000202020808</screen>
 <para>To create an aggregate TWKB object including identifiers aggregate the desired geometries and objects first, using "array_agg()", then call the appropriate TWKB function.
 </para>
 <programlisting>
-SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
-                 st_astwkb
---------------------------------------------
-\x040402020400000202
-</programlisting>
+SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;</programlisting>
+<screen>\x040402020400000202</screen>
 
       </refsection>
 
@@ -1785,8 +1728,8 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
     </Transform>
   </Scene>
 </X3D>' As x3ddoc;
-
-    x3ddoc
+]]></programlisting>
+<screen><![CDATA[    x3ddoc
     --------
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
@@ -1804,7 +1747,7 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
     </Transform>
   </Scene>
 </X3D>
-]]></programlisting>
+]]></screen>
     </refsection>
       <refsection>
          <title>PostGIS buildings</title>
@@ -1839,11 +1782,11 @@ ST_Translate(
         ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
     3)
   ,6) As x3dfrag;
-
-x3dfrag
+]]></programlisting>
+<screen><![CDATA[x3dfrag
 --------
 <IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><Coordinate point='15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 ' /></IndexedFaceSet>
-]]></programlisting>
+]]></screen>
     </refsection>
     <refsection>
     <title>Example: TIN</title>
@@ -1860,11 +1803,11 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
                 0 0 0
             ))
             )')) As x3dfrag;
-
-    x3dfrag
+]]></programlisting>
+<screen><![CDATA[    x3dfrag
     --------
 <IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>
-]]></programlisting>
+]]></screen>
     </refsection>
     <refsection>
     <title>Example: Closed multilinestring (the boundary of a polygon with holes)</title>
@@ -1873,13 +1816,13 @@ SELECT ST_AsX3D(
         ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
   (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')
 ) As x3dfrag;
-
-    x3dfrag
+]]></programlisting>
+<screen><![CDATA[    x3dfrag
     --------
 <IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'>
     <Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' />
  </IndexedLineSet>
-]]></programlisting>
+]]></screen>
     </refsection>
   </refentry>
 
@@ -1934,26 +1877,13 @@ SELECT ST_AsX3D(
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_GeoHash( ST_Point(-126,48) );
-
-   st_geohash
-----------------------
- c0w3hf1s70w3hf1s70w3
-
-SELECT ST_GeoHash( ST_Point(-126,48), 5);
-
- st_geohash
-------------
- c0w3h
-
--- This line contains the point, so the GeoHash is a prefix of the point code
-SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);
-
- st_geohash
-------------
- c0w3
-
-    </programlisting>
+    <programlisting>SELECT ST_GeoHash( ST_Point(-126,48) );</programlisting>
+<screen>c0w3hf1s70w3hf1s70w3</screen>
+<programlisting>SELECT ST_GeoHash( ST_Point(-126,48), 5);</programlisting>
+<screen>c0w3h</screen>
+<programlisting>-- This line contains the point, so the GeoHash is a prefix of the point code
+SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);</programlisting>
+<screen>c0w3</screen>
     </refsection>
    <refsection>
     <title>See Also</title>

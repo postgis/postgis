@@ -80,28 +80,22 @@
 
 SELECT ST_AsEWKT(  ST_LineInterpolatePoint(
         'LINESTRING(25 50, 100 125, 150 190)',
-        0.2 ));
-----------------
- POINT(51.5974135047432 76.5974135047432)
-</programlisting>
+        0.2 ));</programlisting>
+<screen>POINT(51.5974135047432 76.5974135047432)</screen>
 
 <para>The mid-point of a 3D line:</para>
 <programlisting>
 SELECT ST_AsEWKT(  ST_LineInterpolatePoint('
         LINESTRING(1 2 3, 4 5 6, 6 7 8)',
-        0.5 ));
---------------------
- POINT(3.5 4.5 5.5)
-</programlisting>
+        0.5 ));</programlisting>
+<screen>POINT(3.5 4.5 5.5)</screen>
 
 <para>The closest point on a line to a point:</para>
 <programlisting>
 SELECT ST_AsText( ST_LineInterpolatePoint( line.geom,
                       ST_LineLocatePoint( line.geom, 'POINT(4 3)')))
-FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
-------------
- POINT(3 4)
-</programlisting>
+FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;</programlisting>
+<screen>POINT(3 4)</screen>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -161,12 +155,8 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 			<programlisting>
 SELECT ST_AsText(
     ST_3DLineInterpolatePoint('LINESTRING(25 50 70, 100 125 90, 150 190 200)',
-        0.20));
-
-   st_asetext
-----------------
-POINT Z (59.06758929108215 84.06758929108216 79.0846904776219)
-</programlisting>
+        0.20));</programlisting>
+<screen>POINT Z (59.06758929108215 84.06758929108216 79.0846904776219)</screen>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -322,23 +312,18 @@ FROM
 		20 As endstreet_num
 FROM generate_series(1,3) x CROSS JOIN generate_series(2,4) As y)
 As foo
-WHERE ST_DWithin(street_line, house_loc, 0.2);
-
- as_text_house_loc | street_num
+WHERE ST_DWithin(street_line, house_loc, 0.2);</programlisting>
+<screen> as_text_house_loc | street_num
 -------------------+------------
  POINT(1.01 2.06)  |         10
  POINT(2.02 3.09)  |         15
- POINT(3.03 4.12)  |         20
-</programlisting>
+ POINT(3.03 4.12)  |         20</screen>
 
 <programlisting>
 --find closest point on a line to a point or other geometry
 SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
-FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
-   st_astext
-----------------
- POINT(3 4)
-</programlisting>
+FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;</programlisting>
+<screen>POINT(3 4)</screen>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -475,11 +460,10 @@ CROSS JOIN LATERAL (
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
 <programlisting>
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geography, 0.333, 0.666),6) AS geog_sub
- , ST_AsText(ST_LineSubstring('LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geometry, 0.333, 0.666),6) AS geom_sub;
-                        geog_sub                         |                         geom_sub
+ , ST_AsText(ST_LineSubstring('LINESTRING(-118.2436 34.0522, -71.0570 42.3611)'::geometry, 0.333, 0.666),6) AS geom_sub;</programlisting>
+<screen>                        geog_sub                         |                         geom_sub
 ---------------------------------------------------------+----------------------------------------------------------
- LINESTRING(-103.911641 38.931128,-87.941787 41.831072) | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)
-</programlisting>
+ LINESTRING(-103.911641 38.931128,-87.941787 41.831072) | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)</screen>
 
 	<para>For geometry inputs, the fractional locations are based on the 2D
 	length of the line, even when the input has Z values. The resulting Z values
@@ -491,12 +475,10 @@ SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.36
 	SELECT ST_Length(geom) AS length_2d,
 	       ST_3DLength(geom) AS length_3d,
 	       ST_AsText(ST_LineSubstring(geom, 0, 0.5)) AS substring
-	FROM data;
-
-	 length_2d |    length_3d     |              substring
+	FROM data;</programlisting>
+<screen>	 length_2d |    length_3d     |              substring
 	-----------+------------------+-------------------------------------
-	        10 | 14.819145939191106 | LINESTRING Z (0 0 0,0 2 5,0 5 6.875)
-	</programlisting>
+	        10 | 14.819145939191106 | LINESTRING Z (0 0 0,0 2 5,0 5 6.875)</screen>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -555,12 +537,8 @@ SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(-118.2436 34.0522, -71.0570 42.36
 SELECT ST_AsText(
   ST_LocateAlong(
     'MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'::geometry,
-    3 ));
-
-             st_astext
-----------------------------------
- MULTIPOINT M ((1 2 3),(9 4 3),(1 2 3))
-</programlisting>
+    3 ));</programlisting>
+<screen>MULTIPOINT M ((1 2 3),(9 4 3),(1 2 3))</screen>
 	  </refsection>
 
 	  <refsection>
@@ -619,10 +597,8 @@ SELECT ST_AsText(
 SELECT ST_AsText(
   ST_LocateBetween(
        'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))':: geometry,
-       1.5, 3 ));
-------------------------------------------------------------------------
- GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))
-</programlisting>
+       1.5, 3 ));</programlisting>
+<screen>GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))</screen>
 
         <informalfigure>
             <mediaobject>
@@ -637,11 +613,8 @@ SELECT ST_AsText(
 SELECT ST_AsText( ST_LocateBetween(
   ST_AddMeasure('LINESTRING (20 180, 50 20, 100 120, 180 20)', 0, 10),
   2, 8,
-  20
-));
-------------------------------------------------------------------------
-MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248075654186,82.11145618000168 128.94427190999915,84.24893681714357 132.32493442618113,87.01636951231555 135.21267035596549,90.30307285299679 137.49198684843182,93.97759758337769 139.07172433557758,97.89298381958797 139.8887023914453,101.89263860095893 139.9102465862721,105.81659870902816 139.13549527600819,109.50792827749828 137.5954340631298,112.81899532549731 135.351656550512,115.6173761888606 132.49390095108848,145.31017306064817 95.37790486135405))
-</programlisting>
+  20));</programlisting>
+<screen>MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248075654186,82.11145618000168 128.94427190999915,84.24893681714357 132.32493442618113,87.01636951231555 135.21267035596549,90.30307285299679 137.49198684843182,93.97759758337769 139.07172433557758,97.89298381958797 139.8887023914453,101.89263860095893 139.9102465862721,105.81659870902816 139.13549527600819,109.50792827749828 137.5954340631298,112.81899532549731 135.351656550512,115.6173761888606 132.49390095108848,145.31017306064817 95.37790486135405))</screen>
 
 	  </refsection>
 
@@ -692,21 +665,13 @@ MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248
 <programlisting>SELECT ST_AsText(
   ST_LocateBetweenElevations(
     'LINESTRING(1 2 3, 4 5 6)'::geometry,
-    2, 4 ));
-
-             st_astext
------------------------------------
- MULTILINESTRING Z ((1 2 3,2 3 4))
-
-SELECT ST_AsText(
+    2, 4 ));</programlisting>
+<screen>MULTILINESTRING Z ((1 2 3,2 3 4))</screen>
+<programlisting>SELECT ST_AsText(
     ST_LocateBetweenElevations(
       'LINESTRING(1 2 6, 4 5 -1, 7 8 9)',
-      6, 9)) As ewelev;
-
-                                ewelev
------------------------------------------------------------------------
- GEOMETRYCOLLECTION Z (POINT Z (1 2 6),LINESTRING Z (6.1 7.1 6,7 8 9))
-</programlisting>
+      6, 9)) As ewelev;</programlisting>
+<screen>GEOMETRYCOLLECTION Z (POINT Z (1 2 6),LINESTRING Z (6.1 7.1 6,7 8 9))</screen>
 	  </refsection>
 
 	  <refsection>
@@ -861,29 +826,17 @@ SELECT ST_3DInterpolatePoint(
 		<title>Examples</title>
 
 		<programlisting>SELECT ST_AsText(ST_AddMeasure(
-ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;
-           ewelev
---------------------------------
- LINESTRINGM(1 0 1,2 0 2,4 0 4)
-
-SELECT ST_AsText(ST_AddMeasure(
-ST_GeomFromEWKT('LINESTRING(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
-                 ewelev
-----------------------------------------
- LINESTRING(1 0 4 10,2 0 4 20,4 0 4 40)
-
-SELECT ST_AsText(ST_AddMeasure(
-ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
-                 ewelev
-----------------------------------------
- LINESTRINGM(1 0 10,2 0 20,4 0 40)
-
-SELECT ST_AsText(ST_AddMeasure(
-ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))'),10,70)) As ewelev;
-                             ewelev
------------------------------------------------------------------
- MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))
-</programlisting>
+ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;</programlisting>
+<screen>LINESTRING M (1 0 1,2 0 2,4 0 4)</screen>
+<programlisting>SELECT ST_AsText(ST_AddMeasure(
+ST_GeomFromEWKT('LINESTRING(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;</programlisting>
+<screen>LINESTRING ZM (1 0 4 10,2 0 4 20,4 0 4 40)</screen>
+<programlisting>SELECT ST_AsText(ST_AddMeasure(
+ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;</programlisting>
+<screen>LINESTRING M (1 0 10,2 0 20,4 0 40)</screen>
+<programlisting>SELECT ST_AsText(ST_AddMeasure(
+ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))'),10,70)) As ewelev;</programlisting>
+<screen>MULTILINESTRING M ((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))</screen>
 	  </refsection>
 
 	</refentry>

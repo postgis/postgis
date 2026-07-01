@@ -461,12 +461,8 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
   ,('LINESTRING (80 60, 150 80)'::geometry)
 )
 SELECT ST_AsText( ST_BuildArea( ST_Collect( geom ))) AS wkt
-    FROM data;
-
-                                                 wkt
------------------------------------------------------------------------------------------------------
- POLYGON((180 40,30 20,20 90,80 120,80 190,160 160,180 40),(150 80,120 130,80 60,150 80))
-</programlisting>
+    FROM data;</programlisting>
+<screen>POLYGON((180 40,30 20,20 90,80 120,80 190,160 160,180 40),(150 80,120 130,80 60,150 80))</screen>
 
     <informalfigure>
         <mediaobject>
@@ -1385,11 +1381,8 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
             <para>A linestring is filtered</para>
                 <programlisting>
 SELECT ST_AsText(ST_FilterByM(geom,30)) simplified
-FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;
-         simplified
-----------------------------
- LINESTRING(5 2,7 25,10 10)
-                </programlisting>
+FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;</programlisting>
+<screen>LINESTRING(5 2,7 25,10 10)</screen>
           </refsection>
           <refsection>
             <title>See Also</title>
@@ -1537,13 +1530,11 @@ SELECT 'MULTIPOINT((10 10), (10 40), (40 10), (190 190))'::geometry geom)
 SELECT
   ST_AsText(ST_Centroid(geom)) centroid,
   ST_AsText(ST_GeometricMedian(geom)) median
-FROM test;
-
-      centroid      |                 median
+FROM test;</programlisting>
+<screen>      centroid      |                 median
 --------------------+----------------------------------------
    POINT(62.5 62.5) | POINT(25.01778421249728 25.01778421249728)
-(1 row)
-      </programlisting>
+(1 row)</screen>
     </refsection>
 
     <refsection>
@@ -1618,10 +1609,8 @@ FROM test;
       </para>
 			<programlisting>SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120))'
-		));
---------------------------------------------
- LINESTRING(10 160,60 120,120 140,180 120)
-</programlisting>
+		));</programlisting>
+<screen>LINESTRING(10 160,60 120,120 140,180 120)</screen>
 </refsection>
 <refsection>
 <title>Cardinality 3 or More</title>
@@ -1641,10 +1630,8 @@ FROM test;
       </para>
 			<programlisting>SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120), (100 180, 120 140))'
-		));
---------------------------------------------
- MULTILINESTRING((10 160,60 120,120 140),(100 180,120 140),(120 140,180 120))
-</programlisting>
+		));</programlisting>
+<screen>MULTILINESTRING((10 160,60 120,120 140),(100 180,120 140),(120 140,180 120))</screen>
 </refsection>
 
 <refsection>
@@ -1654,10 +1641,8 @@ the original MultiLineString is returned.</para>
 <programlisting>
 SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 -32))'
-));
-----------------
-MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
-</programlisting>
+));</programlisting>
+<screen>MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))</screen>
 </refsection>
 
 <refsection>
@@ -1677,10 +1662,8 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 <programlisting>
 SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((60 30, 10 70), (120 50, 60 30), (120 50, 180 30))',
-TRUE));
--------------------------------------------------------
- MULTILINESTRING((120 50,60 30,10 70),(120 50,180 30))
-</programlisting>
+TRUE));</programlisting>
+<screen>MULTILINESTRING((120 50,60 30,10 70),(120 50,180 30))</screen>
 </refsection>
 
 <refsection>
@@ -1688,10 +1671,8 @@ TRUE));
 <programlisting>
 SELECT ST_AsText(ST_LineMerge(
       'MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))'
-        ));
----------------------------------------------------------------------------------
-LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11)
-</programlisting>
+        ));</programlisting>
+<screen>LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11)</screen>
 </refsection>
 		</refsection>
 		<refsection>
@@ -1749,12 +1730,10 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 <programlisting>SELECT radius, ST_AsText(center) AS center, ST_AsText(nearest) AS nearest
     FROM ST_MaximumInscribedCircle(
         'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10, 70 40, 20 50, 40 180),
-        (60 140, 50 90, 90 140, 60 140))');
-
-     radius      |           center           |    nearest
+        (60 140, 50 90, 90 140, 60 140))');</programlisting>
+<screen>     radius      |           center           |    nearest
 -----------------+----------------------------+---------------
-45.18896951053177 | POINT(96.9287109375 76.3232421875) | POINT(61.64205411585366 104.55256764481707)
-</programlisting>
+45.18896951053177 | POINT(96.9287109375 76.3232421875) | POINT(61.64205411585366 104.55256764481707)</screen>
 
     <informalfigure>
       <mediaobject>
@@ -1958,12 +1937,10 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 
       <refsection>
         <title>Examples</title>
-<programlisting>SELECT ST_AsText(center), radius FROM ST_MinimumBoundingRadius('POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))');
-
-                st_astext                 |      radius
+<programlisting>SELECT ST_AsText(center), radius FROM ST_MinimumBoundingRadius('POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))');</programlisting>
+<screen>                st_astext                 |      radius
 ------------------------------------------+------------------
- POINT(26284.84180271327 65267.114509082545) | 247.43604559140655
-</programlisting>
+ POINT(26284.84180271327 65267.114509082545) | 247.43604559140655</screen>
       </refsection>
 
       <refsection>
@@ -2007,12 +1984,8 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
         <refsection>
             <title>Examples</title>
             <programlisting>
-                SELECT ST_AsText(ST_OrientedEnvelope('MULTIPOINT ((0 0), (-1 -1), (3 2))'));
-
-                st_astext
-                ------------------------------------------------
-POLYGON((3 2,-1 -1,-1.12 -0.84,2.88 2.16,3 2))
-            </programlisting>
+                SELECT ST_AsText(ST_OrientedEnvelope('MULTIPOINT ((0 0), (-1 -1), (3 2))'));</programlisting>
+<screen>POLYGON((3 2,-1 -1,-1.12 -0.84,2.88 2.16,3 2))</screen>
 
     <informalfigure>
       <mediaobject>
@@ -2027,11 +2000,8 @@ SELECT ST_AsText(ST_OrientedEnvelope(
         ST_Collect(
             ST_GeomFromText('LINESTRING(55 75,125 150)'),
                 ST_Point(20, 80))
-                )) As wktenv;
-wktenv
------------
-POLYGON((20 80,125 150,138.0769230769241 130.38461538461573,33.07692307692291 60.384615384615195,20 80))
-</programlisting>
+                )) As wktenv;</programlisting>
+<screen>POLYGON((20 80,125 150,138.0769230769241 130.38461538461573,33.07692307692291 60.384615384615195,20 80))</screen>
 
         </refsection>
 
@@ -2420,12 +2390,10 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
        ST_AsText(ST_Centroid(geom)) AS centroid
     FROM (SELECT 'POLYGON ((130 120, 120 190, 30 140, 50 20, 190 20,
-                      170 100, 90 60, 90 130, 130 120))'::geometry AS geom) AS t;
-
-   pt_on_surf    |                  centroid
+                      170 100, 90 60, 90 130, 130 120))'::geometry AS geom) AS t;</programlisting>
+<screen>   pt_on_surf    |                  centroid
 -----------------+---------------------------------------------
- POINT(62.5 110) | POINT(100.18264840182648 85.11415525114155)
-</programlisting>
+ POINT(62.5 110) | POINT(100.18264840182648 85.11415525114155)</screen>
       </refsection>
 
       <refsection>
@@ -2624,35 +2592,20 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));
-    st_astext
------------------
- POINT(1.4 19.3)
-
-SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 1.0));
-  st_astext
--------------
- POINT(1 19)
-
-SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
-  st_astext
--------------
- POINT(0 20)
-</programlisting>
+        <programlisting>SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));</programlisting>
+<screen>POINT(1.4 19.3)</screen>
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 1.0));</programlisting>
+<screen>POINT(1 19)</screen>
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));</programlisting>
+<screen>POINT(0 20)</screen>
 
 <para>Precision reduction can reduce number of vertices</para>
-<programlisting>SELECT ST_AsText(ST_ReducePrecision('LINESTRING (10 10, 19.6 30.1, 20 30, 20.3 30, 40 40)', 1));
-  st_astext
--------------
- LINESTRING (10 10, 20 30, 40 40)
-</programlisting>
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('LINESTRING (10 10, 19.6 30.1, 20 30, 20.3 30, 40 40)', 1));</programlisting>
+<screen>LINESTRING (10 10, 20 30, 40 40)</screen>
 
 <para>Precision reduction splits polygons if needed to ensure validity</para>
-<programlisting>SELECT ST_AsText(ST_ReducePrecision('POLYGON ((10 10, 60 60.1, 70 30, 40 40, 50 10, 10 10))', 10));
-  st_astext
--------------
-MULTIPOLYGON(((40 40,50 10,10 10,40 40)),((60 60,70 30,40 40,60 60)))
-</programlisting>
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('POLYGON ((10 10, 60 60.1, 70 30, 40 40, 50 10, 10 10))', 10));</programlisting>
+<screen>MULTIPOLYGON(((40 40,50 10,10 10,40 40)),((60 60,70 30,40 40,60 60)))</screen>
       </refsection>
 
       <refsection>
@@ -2719,13 +2672,11 @@ MULTIPOLYGON(((40 40,50 10,10 10,40 40)),((60 60,70 30,40 40,60 60)))
        (51 150,101 150,76 175,51 150))'),
     ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')
     )
-  ) As wkt
-
-                                wkt
+  ) As wkt</programlisting>
+<screen>                                wkt
 -------------------------------------------------------------
 GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),
- (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)
-              </programlisting>
+ (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)</screen>
             </para>
             </entry>
         </row>
@@ -2741,13 +2692,11 @@ SELECT ST_AsText(
    ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
        (51 150,101 150,76 175,51 150))')
     )
-  ) As wkt
-
-                                wkt
+  ) As wkt</programlisting>
+<screen>                                wkt
 -------------------------------------------------------------
 GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,
-MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
-              </programlisting>
+MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))</screen>
             </para>
             </entry>
         </row>
@@ -2824,12 +2773,10 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
        ST_NPoints(ST_Simplify(geom, 1)) AS np1_octagon,
        ST_NPoints(ST_Simplify(geom, 10)) AS np10_gone,
        (ST_Simplify(geom, 100) is null) AS  np100_geometrygoesaway
-  FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) AS t;
-
- np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_gone | np100_geometrygoesaway
+  FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) AS t;</programlisting>
+<screen> np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_gone | np100_geometrygoesaway
 -----------+-------------------+---------------------+-------------+-----------+------------------------
-        49 |                33 |                  17 |           9 |      null | t
-</programlisting>
+        49 |                33 |                  17 |           9 |      null | t</screen>
 
     <para>Simplifying a set of lines.  Lines may intersect after simplification.</para>
     <informalfigure>
@@ -2922,12 +2869,10 @@ SELECT  ST_Npoints(geom) AS np_before,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 1))   AS np1_octagon,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 10))  AS np10_minimal,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 100)) AS np100_minimal
-FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
-
- np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_minimal | np100_minimal
+FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;</programlisting>
+<screen> np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_minimal | np100_minimal
 -----------+-------------------+---------------------+-------------+--------------+---------------
-        49 |                33 |                  17 |           9 |            4 |             4
-</programlisting>
+        49 |                33 |                  17 |           9 |            4 |             4</screen>
 
     <para>Simplifying a set of lines, preserving topology of non-intersecting lines.</para>
     <informalfigure>
@@ -3114,12 +3059,8 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;
             <para>A LineString is simplified with a minimum-area tolerance of 30.</para>
                 <programlisting>
 SELECT ST_AsText(ST_SimplifyVW(geom,30)) simplified
-  FROM (SELECT 'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry AS geom) AS t;
-
- simplified
-------------------------------
-LINESTRING(5 2,7 25,10 10)
-</programlisting>
+  FROM (SELECT 'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry AS geom) AS t;</programlisting>
+<screen>LINESTRING(5 2,7 25,10 10)</screen>
 
     <para>Simplifying a line.</para>
     <informalfigure>
@@ -3212,13 +3153,11 @@ LINESTRING(5 2,7 25,10 10)
                 <programlisting>
 
 select ST_AsText(ST_SetEffectiveArea(geom)) all_pts, ST_AsText(ST_SetEffectiveArea(geom,30) ) thrshld_30
-FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
-                                            all_pts                                             |                                   thrshld_30
+FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;</programlisting>
+<screen>                                            all_pts                                             |                                   thrshld_30
 ------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------
  LINESTRING M (5 2 3.402823466385289e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.402823466385289e+38) | LINESTRING M (5 2 3.402823466385289e+38,7 25 49.5,10 10 3.402823466385289e+38)
-(1 row)
-
-                </programlisting>
+(1 row)</screen>
           </refsection>
           <refsection>
             <title>See Also</title>
@@ -3260,12 +3199,8 @@ FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
             <para>Triangulation of a square.</para>
                 <programlisting>
 SELECT ST_AsText(
-    ST_TriangulatePolygon('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'));
-
-                                 st_astext
----------------------------------------------------------------------------
- GEOMETRYCOLLECTION(POLYGON((0 0,0 1,1 1,0 0)),POLYGON((1 1,1 0,0 0,1 1)))
-                </programlisting>
+    ST_TriangulatePolygon('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'));</programlisting>
+<screen>GEOMETRYCOLLECTION(POLYGON((0 0,0 1,1 1,0 0)),POLYGON((1 1,1 0,0 0,1 1)))</screen>
           </refsection>
       <refsection>
             <title>Example</title>

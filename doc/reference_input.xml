@@ -1596,15 +1596,13 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
   </gml:PolygonPatch>
 </gml:polygonPatches>
 </gml:PolyhedralSurface>'));
-
--- result --
- POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+]]></programlisting>
+<screen> POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
  ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
  ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
  ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
  ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
- ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))
-		]]></programlisting>
+ ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))</screen>
 	  </refsection>
 
 

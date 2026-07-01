@@ -13,6 +13,17 @@ DB = {"db": "http://docbook.org/ns/docbook"}
 XML_NS = "http://www.w3.org/XML/1998/namespace"
 FORCE_ROLE = "example-test"
 EXTERNAL_STATE_ROLE = "requires-external-state"
+ENVIRONMENT_CHECKS = (
+    {
+        "label": "PROJ grid au_icsm_GDA94_GDA2020_conformal_and_distortion.tif",
+        "query": """SELECT ST_AsText(ST_TransformPipeline(
+    'SRID=4939;POINT(143.0 -37.0)'::geometry,
+    'urn:ogc:def:coordinateOperation:EPSG::8447'
+))""",
+        "expected": [["POINT(143.0000063280214 -36.999986718287545)"]],
+        "hint": "Install the PROJ data package containing au_icsm_GDA94_GDA2020_conformal_and_distortion.tif, or fetch it with projsync so the PostgreSQL/PostGIS PROJ search path can find it.",
+    },
+)
 WKT_TYPES = (
     "POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|"
     "GEOMETRYCOLLECTION|CIRCULARSTRING|COMPOUNDCURVE|CURVEPOLYGON|"
@@ -251,7 +262,11 @@ class ExampleTester:
             for value in row:
                 if re.search(r"\b(?:SELECT|WITH)\b", value, re.I):
                     return False
-                if "..." in value or re.search(r"(?:AD INFINITUM|NOTICE:|ERROR:)", value, re.I):
+                if (
+                    "..." in value
+                    or re.search(r"\.\.(?:[),]|\s*$)", value)
+                    or re.search(r"(?:AD INFINITUM|NOTICE:|ERROR:)", value, re.I)
+                ):
                     return False
         return True
 
@@ -461,6 +476,8 @@ $$;
         return self.expected_rows_from_psql_lines(result.stdout.split("\n"))
 
     def run_examples(self, database):
+        self.check_environment(database)
+
         examples = self.examples()
         ran = 0
 
@@ -483,6 +500,26 @@ $$;
             ran += 1
 
         print(f"manual example tests passed: {ran}")
+
+    def check_environment(self, database):
+        for check in ENVIRONMENT_CHECKS:
+            try:
+                actual = self.run_psql_query(database, check["query"])
+            except RuntimeError as exc:
+                raise RuntimeError(
+                    f"Manual example test environment check failed: {check['label']}\n"
+                    f"{check['hint']}\n{exc}"
+                ) from exc
+
+            if not self.rows_equal(actual, check["expected"]):
+                raise RuntimeError(
+                    f"Manual example test environment check failed: {check['label']}\n"
+                    f"{check['hint']}\n"
+                    f"Expected:\n{self.rows_to_string(check['expected'])}\n"
+                    f"Actual:\n{self.rows_to_string(actual)}"
+                )
+
+        print(f"manual example test environment checks passed: {len(ENVIRONMENT_CHECKS)}")
 
 
 def parse_source_example(body, screen_body=None):
@@ -597,13 +634,14 @@ def mark_source_files(files):
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Report, generate, or run manual example tests.",
-        usage="%(prog)s --report|--generate-sql|--run [--database DB] <postgis-out.xml>\n"
+        usage="%(prog)s --report|--generate-sql|--run|--check-environment [--database DB] <postgis-out.xml>\n"
         "       %(prog)s --mark-source <xml-file> [<xml-file> ...]",
     )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--report", action="store_true")
     mode.add_argument("--generate-sql", action="store_true")
     mode.add_argument("--run", action="store_true")
+    mode.add_argument("--check-environment", action="store_true")
     mode.add_argument("--mark-source", action="store_true")
     parser.add_argument("--database")
     parser.add_argument("files", nargs="+")
@@ -630,6 +668,10 @@ def main():
             if not args.database:
                 raise RuntimeError("--database is required with --run")
             tester.run_examples(args.database)
+        elif args.check_environment:
+            if not args.database:
+                raise RuntimeError("--database is required with --check-environment")
+            tester.check_environment(args.database)
         return 0
     except Exception as exc:
         print(exc, file=sys.stderr)
