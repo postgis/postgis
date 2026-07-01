@@ -68,7 +68,7 @@
       <refsection>
         <title>Examples - Two-input variant</title>
         <para>Collect 2D points.</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),
     ST_GeomFromText('POINT(-2 3)') ));
 
@@ -78,7 +78,7 @@ MULTIPOINT((1 2),(-2 3))
 </programlisting>
 
 <para>Collect 3D points.</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),
         ST_GeomFromEWKT('POINT(1 2 4)') ) );
 
@@ -105,7 +105,7 @@ MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
 SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );
 </programlisting>
 <para>Using an array constructor for values.</para>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText(  ST_Collect(
         ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),
             ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As wktcollect;
@@ -911,11 +911,11 @@ SELECT ST_Transform( ST_Point( 3637510, 3014852, 2273), 4326)::geography;</progr
         <title>Examples</title>
 
 <para>Create a 2D polygon.</para>
-        <programlisting>
+<programlisting role="example-test">
 SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::geometry, 4326) );
 
 -- result --
-POLYGON((75 29, 77 29, 77 29, 75 29))
+POLYGON((75 29,77 29,77 29,75 29))
 </programlisting>
 <para>Create a 3D polygon.</para>
 <programlisting>

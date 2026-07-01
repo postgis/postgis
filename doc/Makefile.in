@@ -261,6 +261,8 @@ GENERATED_CHEATSHEET_FILES = $(patsubst \
 	$(wildcard $(abs_srcdir)/xsl/*_cheatsheet.html.xsl) \
 )
 
+EXAMPLETEST_SQL = postgis_exampletest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
+
 VPATH = $(srcdir)
 
 
@@ -526,6 +528,7 @@ clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean clean-pot
 	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f sfcgal_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 	rm -f topology_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
+	rm -f $(EXAMPLETEST_SQL)
 	rm -f *.tmp
 	$(MAKE) clean-localized
 
@@ -618,6 +621,14 @@ endif
 
 %_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/%_gardentest.sql.xsl postgis-out.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
+
+exampletest: $(EXAMPLETEST_SQL)
+
+$(EXAMPLETEST_SQL): postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.pl
+	$(PERL) $(abs_top_srcdir)/utils/postgis_exampletest.pl --generate-sql $< > $@
+
+exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.pl
+	$(PERL) $(abs_top_srcdir)/utils/postgis_exampletest.pl --report $<
 
 check: check-unit
 check-regress:
