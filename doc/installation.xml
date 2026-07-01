@@ -982,7 +982,7 @@ All 2 tests passed.
 
     <listitem>
     <para>If your upgrade fails, make sure you are restoring into a database that already has PostGIS installed.</para>
-    <programlisting>SELECT postgis_full_version();</programlisting>
+    <programlisting>SELECT PostGIS_Full_Version();</programlisting>
     </listitem>
   </orderedlist>
 

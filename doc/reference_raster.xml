@@ -1117,7 +1117,7 @@ SELECT PostGIS_GDAL_Version();</programlisting>
 
         <programlisting>SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SELECT short_name, long_name, can_write
-FROM st_gdaldrivers()
+FROM ST_GDALDrivers()
 ORDER BY short_name;</programlisting>
 <screen>   short_name    |                          long_name                          | can_write
 -----------------+-------------------------------------------------------------+-----------
@@ -1182,7 +1182,7 @@ SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@type', g.opt))[1]::text As otype,
        (xpath('@description', g.opt))[1]::text As descrip
 FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As opt
-FROM  st_gdaldrivers()
+FROM  ST_GDALDrivers()
 WHERE short_name = 'JPEG') As g;</programlisting>
 <screen>       oname        |  otype  |      descrip
 --------------------+---------+-------------------------------------------------
@@ -1203,7 +1203,7 @@ WHERE short_name = 'JPEG') As g;</programlisting>
 <![CDATA[
 
 SELECT create_options
-FROM st_gdaldrivers()
+FROM ST_GDALDrivers()
 WHERE short_name = 'GTiff';
 
 <CreationOptionList>
@@ -1273,7 +1273,7 @@ SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@description', g.opt))[1]::text As descrip,
        array_to_string(xpath('Value/text()', g.opt),', ') As vals
 FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As opt
-FROM  st_gdaldrivers()
+FROM  ST_GDALDrivers()
 WHERE short_name = 'GTiff') As g;
 
        oname        |     otype     |                               descrip                                |                                   vals
@@ -1569,7 +1569,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
                 <programlisting>
 SELECT
     *
-FROM ST_BandMetadata(
+FROM ST_BandMetaData(
     ST_AddBand(
         ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
         ARRAY[
@@ -1603,7 +1603,7 @@ GROUP BY mouse;
                 <programlisting>
 SELECT
     *
-FROM ST_BandMetadata(
+FROM ST_BandMetaData(
     ST_AddBand(
         ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
         '/home/raster/mytestraster.tif'::text, NULL::int[]
@@ -2439,7 +2439,7 @@ bar AS (
 )
 SELECT
     rid,
-    ST_Metadata(rast) AS metadata,
+    ST_MetaData(rast) AS metadata,
     ST_SummaryStats(rast, 1) AS stats1,
     ST_SummaryStats(rast, 2) AS stats2,
     ST_SummaryStats(rast, 3) AS stats3
@@ -2772,7 +2772,7 @@ FROM dummy_rast;</programlisting>
                 <programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,
  ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
         ST_SkewY(rast) As skewy
-FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast
+FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast
         FROM dummy_rast) As skewed;</programlisting>
 <screen>rastheight |     pixheight     | scalex | scaley | skewx | skewy
 -----------+-------------------+--------+--------+-------+----------
@@ -3791,7 +3791,7 @@ WITH foo AS (
 )
 SELECT
     *
-FROM ST_BandMetadata(
+FROM ST_BandMetaData(
     (SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
 );</programlisting>
@@ -3946,8 +3946,8 @@ insert into dummy_rast values(1,
 )::raster
 );
 
-select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
-select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
+select ST_BandIsNoData(rast, 1) from dummy_rast where rid = 1; -- Expected true
+select ST_BandIsNoData(rast, 2) from dummy_rast where rid = 1; -- Expected false
             </programlisting>
 
             </refsection>
@@ -6197,19 +6197,19 @@ WITH foo AS (
     SELECT ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0) AS rast
 )
 SELECT
-    0 AS rid, (ST_Metadata(rast)).*
+    0 AS rid, (ST_MetaData(rast)).*
 FROM foo
 UNION ALL
 SELECT
-    1, (ST_Metadata(ST_SetGeoReference(rast, '10 0 0 -10 0.1 0.1', 'GDAL'))).*
+    1, (ST_MetaData(ST_SetGeoReference(rast, '10 0 0 -10 0.1 0.1', 'GDAL'))).*
 FROM foo
 UNION ALL
 SELECT
-    2, (ST_Metadata(ST_SetGeoReference(rast, '10 0 0 -10 5.1 -4.9', 'ESRI'))).*
+    2, (ST_MetaData(ST_SetGeoReference(rast, '10 0 0 -10 5.1 -4.9', 'ESRI'))).*
 FROM foo
 UNION ALL
 SELECT
-    3, (ST_Metadata(ST_SetGeoReference(rast, 1, 1, 10, -10, 0.001, 0.001))).*
+    3, (ST_MetaData(ST_SetGeoReference(rast, 1, 1, 10, -10, 0.001, 0.001))).*
 FROM foo</programlisting>
 <screen> rid |     upperleftx     |     upperlefty     | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -----+--------------------+--------------------+-------+--------+--------+--------+-------+-------+------+----------
@@ -6954,7 +6954,7 @@ SELECT
         )
     , 0.25, 0.9) AS rast
 ), bar AS (
-    SELECT rid, ST_Metadata(rast) AS meta, rast FROM foo
+    SELECT rid, ST_MetaData(rast) AS meta, rast FROM foo
 )
 SELECT rid, (meta).* FROM bar</programlisting>
 <screen> rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
@@ -7321,14 +7321,14 @@ insert into dummy_rast values(1,
 )::raster
 );
 
-select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected false
-select st_bandisnodata(rast, 1, TRUE) from dummy_rast where rid = 1; -- Expected true
+select ST_BandIsNoData(rast, 1) from dummy_rast where rid = 1; -- Expected false
+select ST_BandIsNoData(rast, 1, TRUE) from dummy_rast where rid = 1; -- Expected true
 
 -- The isnodata flag is dirty. We are going to set it to true
-update dummy_rast set rast = st_setbandisnodata(rast, 1) where rid = 1;
+update dummy_rast set rast = ST_SetBandIsNoData(rast, 1) where rid = 1;
 
 
-select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
+select ST_BandIsNoData(rast, 1) from dummy_rast where rid = 1; -- Expected true
 
                     </programlisting>
 
@@ -7383,7 +7383,7 @@ WITH foo AS (
 SELECT
     1 AS query,
     *
-FROM ST_BandMetadata(
+FROM ST_BandMetaData(
     (SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
 )
@@ -7391,7 +7391,7 @@ UNION ALL
 SELECT
     2,
     *
-FROM ST_BandMetadata(
+FROM ST_BandMetaData(
     (
         SELECT
             <emphasis role="strong">ST_SetBandPath(
@@ -7473,7 +7473,7 @@ WITH foo AS (
 SELECT
     1 AS query,
     *
-FROM ST_BandMetadata(
+FROM ST_BandMetaData(
     (SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
 )
@@ -7481,7 +7481,7 @@ UNION ALL
 SELECT
     2,
     *
-FROM ST_BandMetadata(
+FROM ST_BandMetaData(
     (
         SELECT
             <emphasis role="strong">ST_SetBandIndex(
@@ -8401,7 +8401,7 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
                 <title>Examples</title>
 
                 <programlisting>
-SELECT (ST_Metadata(
+SELECT (ST_MetaData(
     ST_RastFromWKB(
         '\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000'::bytea
     )
@@ -8452,7 +8452,7 @@ SELECT (ST_Metadata(
                 <title>Examples</title>
 
                 <programlisting>
-SELECT (ST_Metadata(
+SELECT (ST_MetaData(
     ST_RastFromHexWKB(
         '010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
     )
@@ -10219,8 +10219,8 @@ WITH foo AS (
 )
 SELECT
     rid,
-    (ST_Metadata(rast)),
-    (ST_BandMetadata(rast, 1)),
+    (ST_MetaData(rast)),
+    (ST_BandMetaData(rast, 1)),
     ST_Value(rast, 1, 1, 1)
 FROM bar;
                     </programlisting>
@@ -12255,8 +12255,8 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(
+        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12406,8 +12406,8 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_max4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(
+        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_max4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12491,8 +12491,8 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_mean4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(
+        ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'st_mean4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12508,7 +12508,7 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    st_value(
+    ST_Value(
               ST_MapAlgebra(rast, 1, 'st_mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1)
        ,  2, 2)
   FROM dummy_rast
@@ -12599,8 +12599,8 @@ WHERE rid = 2;</programlisting>
                 <programlisting>
 SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(
+        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12734,8 +12734,8 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_range4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(
+        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_range4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12815,8 +12815,8 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_stddev4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(
+        ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'st_stddev4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -12900,8 +12900,8 @@ WHERE rid = 2;</programlisting>
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(
+        ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'st_sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -13154,7 +13154,7 @@ WITH foo AS (
     ) AS rast
 )
 SELECT
-    ST_DumpValues(ST_Hillshade(rast, 1, '32BF'))
+    ST_DumpValues(ST_HillShade(rast, 1, '32BF'))
 FROM foo
 
                                                                                                                        st_dumpvalues</programlisting>
@@ -13192,7 +13192,7 @@ WITH foo AS (
 )
 SELECT
     t1.rast,
-    ST_Hillshade(ST_Union(t2.rast), 1, t1.rast)
+    ST_HillShade(ST_Union(t2.rast), 1, t1.rast)
 FROM foo t1
 CROSS JOIN foo t2
 WHERE ST_Intersects(t1.rast, t2.rast)
@@ -13673,7 +13673,7 @@ GROUP BY t1.rast;
 SELECT (ST_Contour(rast, 1, fixed_levels =&gt; ARRAY[100.0, 200.0, 300.0])).*
 FROM dem_grid WHERE rid = 1
 )
-SELECT st_astext(geom), id, value
+SELECT ST_AsText(geom), id, value
 FROM c;</programlisting>
 
     </refsection>

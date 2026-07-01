@@ -697,7 +697,7 @@ FROM topology.layer;
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.topologysummary('city_data');
+				<programlisting>SELECT topology.TopologySummary('city_data');
                     topologysummary
 --------------------------------------------------------
  Topology city_data (329), SRID 4326, precision: 0
@@ -1207,7 +1207,7 @@ a topology-related object and returns a topology.topology record.</para>
 			<refsection>
 				<title>Examples</title>
 <programlisting>
-SELECT name(findTopology('features.land_parcels', 'feature'));
+SELECT name(FindTopology('features.land_parcels', 'feature'));
    name
 -----------
  city_data
@@ -1268,7 +1268,7 @@ a topology-related object and returns a topology.layer record.</para>
 			<refsection>
 				<title>Examples</title>
 <programlisting>
-SELECT layer_id(findLayer('features.land_parcels', 'feature'));
+SELECT layer_id(FindLayer('features.land_parcels', 'feature'));
  layer_id
 ----------
         1
@@ -1314,7 +1314,7 @@ disk space used by all its tables, including indexes and TOAST data.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.topologysummary('city_data');
+				<programlisting>SELECT topology.TopologySummary('city_data');
                     topologysummary
 --------------------------------------------------------
  Topology city_data (329), SRID 4326, precision: 0
@@ -1369,7 +1369,7 @@ The function upgrades the following:
 
             <refsection>
 				<title>Examples</title>
-<programlisting>SELECT topology.upgradetopology('city_data');</programlisting>
+<programlisting>SELECT topology.UpgradeTopology('city_data');</programlisting>
             </refsection>
         </refentry>
 	</section>
@@ -4231,7 +4231,7 @@ of the same child layer.
         <programlisting>
 -- Set an "overall" TopoGeometry value to be composed by all
 -- elements of specific TopoGeometry values
-UPDATE mylayer SET tg_overall = TopoGeom_addTopogeom(
+UPDATE mylayer SET tg_overall = TopoGeom_addTopoGeom(
     TopoGeom_addTopoGeom(
         clearTopoGeom(tg_overall),
         tg_specific1
@@ -4662,7 +4662,7 @@ WITH edges AS (
   SELECT m.arc_id, e.geom FROM edgemap m, city_data.edge e
   WHERE e.edge_id = m.edge_id
 ), points AS (
-  SELECT arc_id, (st_dumppoints(geom)).* FROM edges
+  SELECT arc_id, (ST_DumpPoints(geom)).* FROM edges
 ), compare AS (
   SELECT p2.arc_id,
          CASE WHEN p1.path IS NULL THEN p2.geom

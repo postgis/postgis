@@ -1962,7 +1962,7 @@ ORDER BY d limit 10;</programlisting>
 Then the KNN raw answer:
 </para>
 <programlisting><![CDATA[
-SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
 FROM va2005
 ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;
 

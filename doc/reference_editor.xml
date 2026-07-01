@@ -2004,7 +2004,7 @@ SELECT ST_AsEWKT(ST_SetPoint(foo.geom, ST_NumPoints(foo.geom) - 1, ST_GeomFromEW
 FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As geom) As foo;</programlisting>
 <screen>LINESTRING(-1 2 3,-1 3 4,-1 1 3)</screen>
 <programlisting language="sql">SELECT ST_AsText(ST_SetPoint(g, -3, p))
-FROM ST_GEomFromText('LINESTRING(0 0, 1 1, 2 2, 3 3, 4 4)') AS g
+FROM ST_GeomFromText('LINESTRING(0 0, 1 1, 2 2, 3 3, 4 4)') AS g
 	, ST_PointN(g,1) as p;</programlisting>
 <screen>LINESTRING(0 0,1 1,0 0,3 3,4 4)</screen>
 		  </refsection>

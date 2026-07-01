@@ -622,13 +622,13 @@ FROM (SELECT
 POINT(2.307692307692308 3.307692307692308)
 (1 row)
 
-SELECT ST_AsText(ST_centroid(g))
+SELECT ST_AsText(ST_Centroid(g))
 FROM  ST_GeomFromText('CIRCULARSTRING(0 2, -1 1,0 0, 0.5 0, 1 0, 2 1, 1 2, 0.5 2, 0 2)')  AS g ;
 ------------------------------------------
 POINT(0.5 1)
 
 
-SELECT ST_AsText(ST_centroid(g))
+SELECT ST_AsText(ST_Centroid(g))
 FROM  ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 2, -1 1,0 0),(0 0, 0.5 0, 1 0),CIRCULARSTRING( 1 0, 2 1, 1 2),(1 2, 0.5 2, 0 2))' ) AS g;
 ------------------------------------------
 POINT(0.5 1)
@@ -2766,7 +2766,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))</screen>
           <refsection>
             <title>Examples</title>
             <para>A circle simplified with a medium tolerance becomes an octagon, and with a large tolerance disappears.</para>
-                <programlisting>SELECT ST_Npoints(geom) AS np_before,
+                <programlisting>SELECT ST_NPoints(geom) AS np_before,
        ST_NPoints(ST_Simplify(geom, 0.1)) AS np01_notbadcircle,
        ST_NPoints(ST_Simplify(geom, 0.5)) AS np05_notquitecircle,
        ST_NPoints(ST_Simplify(geom, 1)) AS np1_octagon,
@@ -2862,7 +2862,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))</screen>
             <title>Examples</title>
             <para>For the same example as <xref linkend="ST_Simplify"/>, ST_SimplifyPreserveTopology prevents the geometry from disappearing.</para>
                 <programlisting>
-SELECT  ST_Npoints(geom) AS np_before,
+SELECT  ST_NPoints(geom) AS np_before,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.1)) AS np01_notbadcircle,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 0.5)) AS np05_notquitecircle,
         ST_NPoints(ST_SimplifyPreserveTopology(geom, 1))   AS np1_octagon,

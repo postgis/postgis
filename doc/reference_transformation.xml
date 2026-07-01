@@ -572,7 +572,7 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 <screen>LINESTRING(1.5 6 3,1.5 4 1)</screen>
 <para>This example buffers a point to approximate a circle, converts it to a curve, translates it by 1,2, and scales it by 3,4.</para>
 <programlisting>
-  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));</programlisting>
+  SELECT ST_AsText(ST_TransScale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));</programlisting>
 <screen>CURVEPOLYGON(CIRCULARSTRING(714 2276,696 2276,714 2276))</screen>
 	  </refsection>
 
