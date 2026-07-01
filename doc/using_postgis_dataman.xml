@@ -1647,8 +1647,8 @@ VALUES ( 990000,
       This ensures that the spatial metadata information is always consistent with the currently defined tables and views.
 	  The view structure is:</para>
 
-	  <programlisting>\d geometry_columns</programlisting>
-<screen>             View "public.geometry_columns"
+	  <screen>\d geometry_columns
+             View "public.geometry_columns"
       Column       |          Type          | Modifiers
 -------------------+------------------------+-----------
  f_table_catalog   | character varying(256) |
@@ -1726,47 +1726,34 @@ VALUES ( 990000,
 		Note, if your column is typmod based, the creation process would register it correctly, so no need to do anything.
 		Also views that have no spatial function applied to the geometry will register the same as the underlying table geometry column.</para>
 
-		<programlisting>-- Lets say you have a view created like this
-CREATE VIEW public.vwmytablemercator AS
+		<para>For example, suppose you have a view created like this.</para>
+		<programlisting>CREATE VIEW public.vwmytablemercator AS
 	SELECT gid, ST_Transform(geom, 3395) As geom, f_name
-	FROM public.mytable;
-
--- For it to register correctly
--- You need to cast the geometry
---
-DROP VIEW public.vwmytablemercator;
+	FROM public.mytable;</programlisting>
+		<para>To register the geometry column correctly, cast the transformed geometry.</para>
+<programlisting>DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
 	SELECT gid, ST_Transform(geom, 3395)::geometry(Geometry, 3395) As geom, f_name
-	FROM public.mytable;
-
--- If you know the geometry type for sure is a 2D POLYGON then you could do
-DROP VIEW public.vwmytablemercator;
+	FROM public.mytable;</programlisting>
+		<para>If the geometry type is known to be a 2D Polygon, specify it in the cast.</para>
+<programlisting>DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
 	SELECT gid, ST_Transform(geom,3395)::geometry(Polygon, 3395) As geom, f_name
 	FROM public.mytable;</programlisting>
-		<programlisting>--Lets say you created a derivative table by doing a bulk insert
-SELECT poi.gid, poi.geom, citybounds.city_name
+		<para>For a derivative table created by a bulk insert, create the table first.</para>
+		<programlisting>SELECT poi.gid, poi.geom, citybounds.city_name
 INTO myschema.my_special_pois
-FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);
-
--- Create 2D index on new table
-CREATE INDEX idx_myschema_myspecialpois_geom_gist
-  ON myschema.my_special_pois USING gist(geom);
-
--- If your points are 3D points or 3M points,
--- then you might want to create an nd index instead of a 2D index
-CREATE INDEX my_special_pois_geom_gist_nd
-	ON my_special_pois USING gist(geom gist_geometry_ops_nd);
-
--- To manually register this new table's geometry column in geometry_columns.
--- Note it will also change the underlying structure of the table to
--- to make the column typmod based.
-SELECT populate_geometry_columns('myschema.my_special_pois'::regclass);
-
--- To retain the constraint-based definition behavior
--- (such as case of inherited tables where all children do not have the same type and srid)
--- set optional use_typmod argument to false
-SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false); </programlisting>
+FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);</programlisting>
+		<para>Create a 2D spatial index on the new table.</para>
+<programlisting>CREATE INDEX idx_myschema_myspecialpois_geom_gist
+  ON myschema.my_special_pois USING gist(geom);</programlisting>
+		<para>If the points are 3D or measured, an n-D index may be more appropriate.</para>
+<programlisting>CREATE INDEX my_special_pois_geom_gist_nd
+	ON my_special_pois USING gist(geom gist_geometry_ops_nd);</programlisting>
+		<para>Manually register the new table's geometry column in <varname>geometry_columns</varname>. This also changes the underlying table structure to make the column typmod-based.</para>
+<programlisting>SELECT populate_geometry_columns('myschema.my_special_pois'::regclass);</programlisting>
+		<para>To retain constraint-based definition behavior, such as for inherited tables where all children do not have the same type and SRID, set the optional <varname>use_typmod</varname> argument to false.</para>
+<programlisting>SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false); </programlisting>
 
 <para>Although the old constraint-based method is still supported, direct
 pass-through view columns register correctly in <varname>geometry_columns</varname>
@@ -1774,10 +1761,9 @@ for both typmod-based and constraint-based source columns. In this example we
 define a column using typmod and another using constraints.</para>
 <programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT,4326));
 SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
-<para>If we run in psql</para>
-<programlisting>\d pois_ny;</programlisting>
-<para>We observe they are defined differently -- one is typmod, one is constraint</para>
-<screen>                                  Table "public.pois_ny"
+<para>If we run <command>\d pois_ny</command> in psql, we observe they are defined differently -- one is typmod, one is constraint.</para>
+<screen>\d pois_ny
+                                  Table "public.pois_ny"
   Column   |         Type          |                       Modifiers
 
 -----------+-----------------------+------------------------------------------------------
