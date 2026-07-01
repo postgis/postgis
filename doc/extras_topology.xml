@@ -193,14 +193,14 @@ being defined.
 		  </refsection>
             <refsection>
                 <title>Examples</title>
-                 <programlisting>
+                 <programlisting role="example-test">
 SELECT te[1] AS id, te[2] AS type FROM
 ( SELECT ARRAY[1,2]::topology.topoelement AS te ) f;
  id | type
 ----+------
   1 |    2
                  </programlisting>
-                 <programlisting>SELECT ARRAY[1,2]::topology.topoelement;
+                 <programlisting role="example-test">SELECT ARRAY[1,2]::topology.topoelement;
   te
 -------
  {1,2}
@@ -3997,7 +3997,7 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
+				<programlisting role="example-test">SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
   FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;
   tea
 --------------------------------------------------------------------------

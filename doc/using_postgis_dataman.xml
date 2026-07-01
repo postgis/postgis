@@ -482,7 +482,7 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
         <para>For example this statement creates a geometry by casting from an EWKT text value,
         and outputs it using the canonical form of HEXEWKB:</para>
 
-	  <programlisting>SELECT 'SRID=4;POINT(0 0)'::geometry;
+	  <programlisting role="example-test">SELECT 'SRID=4;POINT(0 0)'::geometry;
   geometry
   ----------------------------------------------------
   01010000200400000000000000000000000000000000000000
@@ -748,14 +748,14 @@ INSERT INTO global_points (name, location) VALUES ('London', 'SRID=4326;POINT(0 
 Non-geodetic coordinate systems raise an error if used.
 </para>
 
-<programlisting>-- NAD 83 lon/lat
+<programlisting role="example-test">-- NAD 83 lon/lat
 SELECT 'SRID=4269;POINT(-123 34)'::geography;
                     geography
 ----------------------------------------------------
  0101000020AD1000000000000000C05EC00000000000004140
 </programlisting>
 
-<programlisting>-- NAD27 lon/lat
+<programlisting role="example-test">-- NAD27 lon/lat
 SELECT 'SRID=4267;POINT(-123 34)'::geography;
                     geography
 ----------------------------------------------------
@@ -783,7 +783,7 @@ comes to Reykjavik (POINT(-21.96 64.15))
 <para>The geography type calculates the true shortest distance of 122.235 km over the sphere
 between Reykjavik and the great circle flight path between Seattle and London.</para>
 
-<programlisting>-- Distance calculation using GEOGRAPHY
+<programlisting role="example-test">-- Distance calculation using GEOGRAPHY
 SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);
    st_distance
 -----------------
@@ -796,7 +796,7 @@ The nominal units of the result is "degrees",
 but the result doesn't correspond to any true angular difference between the points,
 so even calling them "degrees" is inaccurate.</para>
 
-<programlisting>-- Distance calculation using GEOMETRY
+<programlisting role="example-test">-- Distance calculation using GEOMETRY
 SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);
       st_distance
 --------------------
@@ -1037,7 +1037,7 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
     <para>To test if a geometry is simple
 	use the <xref linkend="ST_IsSimple"/> function:</para>
 
-	  <programlisting>
+	  <programlisting role="example-test">
 SELECT
    ST_IsSimple('LINESTRING(0 0, 100 100)') AS straight,
    ST_IsSimple('LINESTRING(0 0, 100 100, 100 0, 0 100)') AS crossing;
@@ -1252,7 +1252,7 @@ SELECT
     Note that non-simple (self-intersecting) lines are valid.
     </para>
 
-<programlisting>
+<programlisting role="example-test">
 SELECT
    ST_IsValid('LINESTRING(0 0, 1 1)') AS len_nonzero,
    ST_IsValid('LINESTRING(0 0, 0 0, 0 0)') AS len_zero,
@@ -1307,7 +1307,7 @@ SELECT
 	  <para>To test if a geometry is valid use the
 	  <xref linkend="ST_IsValid"/> function:
       </para>
-<programlisting>
+<programlisting role="example-test">
 SELECT ST_IsValid('POLYGON ((20 180, 180 180, 180 20, 20 20, 20 180))');
 -----------------
  t
@@ -1315,13 +1315,13 @@ SELECT ST_IsValid('POLYGON ((20 180, 180 180, 180 20, 20 20, 20 180))');
 	  <para>Information about the nature and location of an geometry invalidity are provided by
 	  the <xref linkend="ST_IsValidDetail"/> function:
       </para>
-<programlisting>
+<programlisting role="example-test">
 SELECT valid, reason, ST_AsText(location) AS location
     FROM ST_IsValidDetail('POLYGON ((20 20, 120 190, 50 190, 170 50, 20 20))') AS t;
 
  valid |      reason       |                  location
 -------+-------------------+---------------------------------------------
- f     | Self-intersection | POINT(91.51162790697674 141.56976744186045)
+ f     | Self-intersection | POINT(91.51162790697674 141.56976744186048)
 </programlisting>
 
 	  <para>In some situations it is desirable to correct invalid geometry automatically.

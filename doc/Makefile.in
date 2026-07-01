@@ -624,11 +624,11 @@ endif
 
 exampletest: $(EXAMPLETEST_SQL)
 
-$(EXAMPLETEST_SQL): postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.pl
-	$(PERL) $(abs_top_srcdir)/utils/postgis_exampletest.pl --generate-sql $< > $@
+$(EXAMPLETEST_SQL): postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py
+	$(abs_top_srcdir)/utils/postgis_exampletest.py --generate-sql $< > $@
 
-exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.pl
-	$(PERL) $(abs_top_srcdir)/utils/postgis_exampletest.pl --report $<
+exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py
+	$(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
 
 check: check-unit
 check-regress:

@@ -1266,7 +1266,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;
+			<programlisting role="example-test">SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;
 
  is_contained
 --------------
@@ -1332,7 +1332,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;
+			<programlisting role="example-test">SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;
 
  is_contained
 --------------
@@ -1398,7 +1398,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;
+			<programlisting role="example-test">SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;
 
  is_contained
 --------------
@@ -1605,7 +1605,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains
+			<programlisting role="example-test">SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains
 FROM
   ( VALUES
 	(1, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl1,
@@ -1672,7 +1672,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;
+			<programlisting role="example-test">SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;
 
  contains
 ----------
@@ -1738,7 +1738,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;
+			<programlisting role="example-test">SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;
 
  contains
 ----------
@@ -1804,7 +1804,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) AS contains;
+			<programlisting role="example-test">SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) AS contains;
 
  contains
 ----------
@@ -1882,12 +1882,12 @@ FROM
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>
+<programlisting role="example-test">
 
 select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as equality;
- equality   |
------------------+
-          t    |
+ equality
+----------
+ t
 			</programlisting>
 		  </refsection>
 		  <refsection>

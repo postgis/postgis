@@ -257,10 +257,10 @@
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting>SELECT CG_Area('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (3 3, 4 3, 4 4, 3 4, 3 3))');
+                <programlisting role="example-test">SELECT CG_Area('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (3 3, 4 3, 4 4, 3 4, 3 3))');
                 cg_area
                 --------
-                25
+                23
                 (1 row)</programlisting>
         </refsection>
         <refsection>
@@ -298,7 +298,7 @@
 
         <refsection><title>Examples</title>
             <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
-            <programlisting>SELECT CG_3DArea(geom) As cube_surface_area,
+            <programlisting role="example-test">SELECT CG_3DArea(geom) As cube_surface_area,
             CG_3DArea(CG_MakeSolid(geom)) As solid_surface_area
             FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -348,9 +348,8 @@
 
     <refsection>
         <title>Example</title>
-        <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="CG_MakeSolid"/>.
-        Areal geometries have no volume.  Here is an example to demonstrate.</para>
-    <programlisting>SELECT CG_Volume(geom) As cube_surface_vol,
+        <para>A closed polyhedral surface has volume.  <xref linkend="CG_MakeSolid"/> makes the solid representation explicit.</para>
+    <programlisting role="example-test">SELECT CG_Volume(geom) As cube_surface_vol,
     CG_Volume(CG_MakeSolid(geom)) As solid_surface_vol
     FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
     ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -361,7 +360,7 @@
 
     cube_surface_vol | solid_surface_vol
     ------------------+-------------------
-    0 |                 1
+    1 |                 1
 </programlisting>
     </refsection>
 
@@ -576,7 +575,7 @@
 
     <refsection><title>Examples</title>
         <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
-        <programlisting>SELECT ST_3DArea(geom) As cube_surface_area,
+        <programlisting role="example-test">SELECT ST_3DArea(geom) As cube_surface_area,
         ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area
         FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -632,9 +631,8 @@
 
     <refsection>
         <title>Example</title>
-        <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="ST_MakeSolid"/>.
-        Areal geometries have no volume.  Here is an example to demonstrate.</para>
-    <programlisting>SELECT ST_Volume(geom) As cube_surface_vol,
+        <para>A closed polyhedral surface has volume.  <xref linkend="ST_MakeSolid"/> makes the solid representation explicit.</para>
+    <programlisting role="example-test">SELECT ST_Volume(geom) As cube_surface_vol,
     ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
     FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
     ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -645,7 +643,7 @@
 
     cube_surface_vol | solid_surface_vol
     ------------------+-------------------
-    0 |                 1
+    1 |                 1
 </programlisting>
     </refsection>
 
@@ -693,7 +691,7 @@
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting>SELECT ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));
+                <programlisting role="example-test">SELECT ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));
                 cg_intersection
                 -----------------
                 POINT(2.5 2.5)
@@ -796,7 +794,7 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting>SELECT CG_3DIntersects('POINT(1.2 0.1 0)','POLYHEDRALSURFACE(((0 0 0,0.5 0.5 0,1 0 0,1 1 0,0 1 0,0 0 0)),((1 0 0,2 0 0,2 1 0,1 1 0,1 0 0),(1.2 0.2 0,1.2 0.8 0,1.8 0.8 0,1.8 0.2 0,1.2 0.2 0)))');
+        <programlisting role="example-test">SELECT CG_3DIntersects('POINT(1.2 0.1 0)','POLYHEDRALSURFACE(((0 0 0,0.5 0.5 0,1 0 0,1 1 0,0 1 0,0 0 0)),((1 0 0,2 0 0,2 1 0,1 1 0,1 0 0),(1.2 0.2 0,1.2 0.8 0,1.8 0.8 0,1.8 0.2 0,1.2 0.2 0)))');
         cg_3dintersects
         ---------------
         t
@@ -844,7 +842,7 @@
 </refsection>
 <refsection>
     <title>Geometry Examples</title>
-    <programlisting>SELECT ST_AsText(CG_Difference('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'LINESTRING(0 0, 2 2)'::geometry));
+    <programlisting role="example-test">SELECT ST_AsText(CG_Difference('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'LINESTRING(0 0, 2 2)'::geometry));
     cg_difference
     ---------------
     POLYGON((0 0,1 0,1 1,0 1,0 0))
@@ -1011,10 +1009,10 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting>SELECT CG_Distance('LINESTRING(0.0 0.0,-1.0 -1.0)', 'LINESTRING(3.0 4.0,4.0 5.0)');
+        <programlisting role="example-test">SELECT CG_Distance('LINESTRING(0.0 0.0,-1.0 -1.0)', 'LINESTRING(3.0 4.0,4.0 5.0)');
         cg_distance
         -------------
-        2.0
+        5
         (1 row)</programlisting>
 </refsection>
 <refsection>
@@ -1057,7 +1055,7 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting>SELECT CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');
+        <programlisting role="example-test">SELECT CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');
         cg_3ddistance
         ----------------
         1
@@ -1263,7 +1261,7 @@
     </informaltable>
 
     <para>3D linestrings and polygons</para>
-    <programlisting>	SELECT ST_AsText(CG_3DIntersection(linestring, polygon)) As wkt
+    <programlisting role="example-test">	SELECT ST_AsText(CG_3DIntersection(linestring, polygon)) As wkt
     FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
     CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
 
@@ -1335,9 +1333,9 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting>SELECT CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)');
-                cg_union
-                -----------
+                <programlisting role="example-test">SELECT ST_AsText(CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)'));
+                st_astext
+                ----------
                 LINESTRING(-1 0,0.5 0,1 0)
                 (1 row)</programlisting>
         </refsection>
@@ -3284,9 +3282,9 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting>SELECT CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))');
-                cg_triangulate
-                ----------------
+                <programlisting role="example-test">SELECT ST_AsText(CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))'));
+                st_astext
+                ----------
                 TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.8 0.2,1 1)),((0 1,0 0,0.2 0.2,0 1)),((0 1,0.2 0.8,1 1,0 1)),((0 1,0.2 0.2,0.2 0.8,0 1)),((0.2 0.8,0.8 0.8,1 1,0.2 0.8)),((0.2 0.8,0.2 0.2,0.8 0.2,0.2 0.8)),((1 1,0.8 0.2,1 0,1 1)),((0.8 0.8,0.2 0.8,0.8 0.2,0.8 0.8)))
 
                 (1 row)</programlisting>
