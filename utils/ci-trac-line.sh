@@ -44,7 +44,11 @@ check_row()
 	file="$1"
 	ver="$2"
 	block="$(generate_row "$ver")"
-	BLOCK="$block" perl -0ne 'exit(index($_, $ENV{BLOCK}) >= 0 ? 0 : 1)' "$file"
+	BLOCK="$block" perl -0e '
+		local $/;
+		my $content = <>;
+		exit(defined($content) && length($content) && index($content, $ENV{BLOCK}) >= 0 ? 0 : 1);
+	' "$file"
 }
 
 replace_row()
@@ -57,7 +61,7 @@ replace_row()
 	BLOCK="$block" VER="$ver" perl -0ne '
 		my $ver = quotemeta($ENV{VER});
 		my $block = $ENV{BLOCK};
-		my $changed = s/\|\|= \x27\x27\x27$ver\x27\x27\x27 =\|\| \\\n.*?(?=\|\|= \x27\x27\x27\d+\.\d+\x27\x27\x27 =\|\| \\\n|\}\}\})/$block\n/s;
+		my $changed = s/\|\|= \x27\x27\x27$ver\x27\x27\x27 =\|\| \\\n.*?(?=\|\|= \x27\x27\x27\d+\.\d+\x27\x27\x27 =\|\| \\\n|\}\}\}|\z)/$block\n/s;
 		print;
 		exit($changed ? 0 : 2);
 	' "$file" > "$tmp" || {
