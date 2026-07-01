@@ -11,6 +11,8 @@ from lxml import etree
 
 DB = {"db": "http://docbook.org/ns/docbook"}
 XML_NS = "http://www.w3.org/XML/1998/namespace"
+FORCE_ROLE = "example-test"
+EXTERNAL_STATE_ROLE = "requires-external-state"
 WKT_TYPES = (
     "POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|"
     "GEOMETRYCOLLECTION|CIRCULARSTRING|COMPOUNDCURVE|CURVEPOLYGON|"
@@ -39,6 +41,10 @@ class ExampleTester:
     def obvious_skip_reason(self, text):
         if re.search(r"^\s*\\\w+", text, re.M):
             return "psql-meta"
+        if re.search(r"^\s*\w*[=>#]\s*(?:SELECT|WITH)\b", text, re.M | re.I):
+            return "psql-meta"
+        if re.search(r"SELECT\s+'<\?xml", text, re.I):
+            return "document-output"
         if re.search(
             r"\b(sometable|gps_points|boston_polys|trajectories|fe_edges|"
             r"mytable|myrasters|mytestraster|dummy_rast|Projected\.tif|/home/raster|"
@@ -213,29 +219,63 @@ class ExampleTester:
     def rows_to_string(self, rows):
         return "\n".join(" | ".join(row) for row in rows)
 
-    def opt_in_examples(self):
+    def parse_example_node(self, node):
+        text = self.node_text(node)
+        if self.has_inband_expected(text):
+            return self.parse_inband_example(text)
+        screen = self.following_screen(node)
+        if screen is not None:
+            return self.parse_adjacent_example(text, self.node_text(screen))
+        return None, None
+
+    def query_is_auto_safe(self, query):
+        if query is None:
+            return False
+        if not re.search(r"^\s*(?:--[^\n]*\n\s*)*(?:SELECT|WITH)\b", query, re.I):
+            return False
+        return query.count(";") <= 1
+
+    def expected_rows_are_auto_safe(self, expected):
+        if not expected:
+            return False
+        for row in expected:
+            for value in row:
+                if re.search(r"\b(?:SELECT|WITH)\b", value, re.I):
+                    return False
+        return True
+
+    def example_for_node(self, node):
+        text = self.node_text(node)
+        forced = self.has_role(node, FORCE_ROLE)
+        if self.has_role(node, EXTERNAL_STATE_ROLE) and not forced:
+            return None
+        if not forced:
+            if not self.looks_query(text):
+                return None
+            if self.obvious_skip_reason(text):
+                return None
+
+        query, expected = self.parse_example_node(node)
+        valid = query is not None and expected is not None
+        if not forced and (
+            not valid or not self.query_is_auto_safe(query) or not self.expected_rows_are_auto_safe(expected)
+        ):
+            return None
+
+        return {
+            "label": self.source_label(node),
+            "query": query,
+            "expected": expected,
+            "valid": valid,
+            "forced": forced,
+        }
+
+    def examples(self):
         examples = []
-        nodes = self.doc.xpath(
-            "//db:programlisting[contains(concat(' ', normalize-space(@role), ' '), ' example-test ')]",
-            namespaces=DB,
-        )
-        for node in nodes:
-            text = self.node_text(node)
-            query, expected = None, None
-            if self.has_inband_expected(text):
-                query, expected = self.parse_inband_example(text)
-            else:
-                screen = self.following_screen(node)
-                if screen is not None:
-                    query, expected = self.parse_adjacent_example(text, self.node_text(screen))
-            examples.append(
-                {
-                    "label": self.source_label(node),
-                    "query": query,
-                    "expected": expected,
-                    "valid": query is not None and expected is not None,
-                }
-            )
+        for node in self.doc.xpath("//db:programlisting", namespaces=DB):
+            example = self.example_for_node(node)
+            if example is not None:
+                examples.append(example)
         return examples
 
     def print_report(self):
@@ -247,6 +287,7 @@ class ExampleTester:
             "psql_meta": 0,
             "external_context": 0,
             "placeholder_output": 0,
+            "document_output": 0,
             "notice_or_error": 0,
             "cleanish_runnable_query": 0,
             "obvious_not_runnable_query": 0,
@@ -255,11 +296,16 @@ class ExampleTester:
             "adjacent_programlisting_screen": 0,
             "cleanish_adjacent_expected": 0,
             "obvious_bad_adjacent_expected": 0,
+            "requires_external_state": 0,
+            "auto_example_tests": 0,
+            "forced_example_tests": 0,
         }
 
         for node in self.doc.xpath("//db:programlisting", namespaces=DB):
             text = self.node_text(node)
             stats["programlisting_total"] += 1
+            if self.has_role(node, EXTERNAL_STATE_ROLE):
+                stats["requires_external_state"] += 1
             if self.looks_sql(text):
                 stats["sql_like"] += 1
             if not self.looks_query(text):
@@ -273,6 +319,8 @@ class ExampleTester:
                 stats["external_context"] += 1
             if reason == "placeholder-output":
                 stats["placeholder_output"] += 1
+            if reason == "document-output":
+                stats["document_output"] += 1
             if reason == "notice-or-error":
                 stats["notice_or_error"] += 1
 
@@ -298,9 +346,11 @@ class ExampleTester:
                 else:
                     stats["cleanish_adjacent_expected"] += 1
 
-        examples = self.opt_in_examples()
-        stats["opt_in_example_tests"] = len(examples)
-        stats["opt_in_parseable_example_tests"] = len([example for example in examples if example["valid"]])
+        examples = self.examples()
+        stats["auto_example_tests"] = len([example for example in examples if not example["forced"]])
+        stats["forced_example_tests"] = len([example for example in examples if example["forced"]])
+        stats["example_tests"] = len(examples)
+        stats["parseable_example_tests"] = len([example for example in examples if example["valid"]])
 
         for key in sorted(stats):
             print(f"{key}={stats[key]}")
@@ -315,7 +365,7 @@ class ExampleTester:
         return "ARRAY[" + ", ".join(self.sql_array(row) for row in rows) + "]::text[][]"
 
     def generate_sql(self):
-        examples = self.opt_in_examples()
+        examples = self.examples()
 
         print("-- Generated by utils/postgis_exampletest.py. Do not edit by hand.")
         print("\\set ON_ERROR_STOP on")
@@ -363,7 +413,7 @@ $$;
         emitted = 0
         for example in examples:
             if not example["valid"]:
-                raise RuntimeError(f"Could not parse example-test at {example['label']}")
+                raise RuntimeError(f"Could not parse manual example test at {example['label']}")
             emitted += 1
             print("SELECT pg_temp._postgis_exampletest_check(")
             print(f"\t{self.sql_quote(example['label'])},")
@@ -382,12 +432,12 @@ $$;
         return self.expected_rows_from_psql_lines(result.stdout.split("\n"))
 
     def run_examples(self, database):
-        examples = self.opt_in_examples()
+        examples = self.examples()
         ran = 0
 
         for example in examples:
             if not example["valid"]:
-                raise RuntimeError(f"Could not parse example-test at {example['label']}")
+                raise RuntimeError(f"Could not parse manual example test at {example['label']}")
 
             try:
                 actual = self.run_psql_query(database, example["query"])
@@ -406,59 +456,60 @@ $$;
         print(f"manual example tests passed: {ran}")
 
 
-def markable_programlisting(body):
+def parse_source_example(body, screen_body=None):
+    tester = ExampleTester.__new__(ExampleTester)
+    if tester.has_inband_expected(body):
+        return tester.parse_inband_example(body)
+    if screen_body is not None:
+        return tester.parse_adjacent_example(body, screen_body)
+    return None, None
+
+
+def auto_testable_programlisting(body, screen_body=None):
     tester = ExampleTester.__new__(ExampleTester)
     if not tester.looks_query(body):
         return False
-    if not tester.has_inband_expected(body):
-        return False
     if tester.obvious_skip_reason(body):
         return False
-    if "postgis=#" in body:
-        return False
 
-    query, expected = tester.parse_inband_example(body)
+    query, expected = parse_source_example(body, screen_body)
     if query is None or not expected:
         return False
-    for row in expected:
-        for value in row:
-            if re.search(r"\b(?:SELECT|WITH)\b", value, re.I):
-                return False
-    if not re.search(r"^\s*(?:--[^\n]*\n\s*)*(?:SELECT|WITH)\b", query, re.I):
-        return False
-    if query.count(";") > 1:
-        return False
-    return True
+    return tester.query_is_auto_safe(query) and tester.expected_rows_are_auto_safe(expected)
 
 
-def add_example_test_role(tag):
-    if re.search(r"\brole\s*=\s*[\"'][^\"']*\bexample-test\b", tag):
+def tag_has_role(tag, role):
+    return bool(re.search(rf"\brole\s*=\s*[\"'][^\"']*\b{re.escape(role)}\b", tag))
+
+
+def add_role(tag, role):
+    if tag_has_role(tag, role):
         return tag
     match = re.search(r'\brole\s*=\s*"([^"]*)"', tag)
     if match:
-        roles = (match.group(1) + " example-test").strip()
+        roles = (match.group(1) + f" {role}").strip()
         return re.sub(r'\brole\s*=\s*"[^"]*"', f'role="{roles}"', tag, count=1)
     match = re.search(r"\brole\s*=\s*'([^']*)'", tag)
     if match:
-        roles = (match.group(1) + " example-test").strip()
+        roles = (match.group(1) + f" {role}").strip()
         return re.sub(r"\brole\s*=\s*'[^']*'", f'role="{roles}"', tag, count=1)
-    return re.sub(r">", ' role="example-test">', tag, count=1)
+    return re.sub(r">", f' role="{role}">', tag, count=1)
 
 
-def remove_example_test_role(tag):
+def remove_role(tag, role):
     if not re.search(r"\brole\s*=", tag):
         return tag
 
     double_match = re.search(r'\brole\s*=\s*"([^"]*)"', tag)
     if double_match:
-        roles = [role for role in double_match.group(1).split() if role != "example-test"]
+        roles = [item for item in double_match.group(1).split() if item != role]
         if roles:
             return re.sub(r'\brole\s*=\s*"[^"]*"', f'role="{" ".join(roles)}"', tag, count=1)
         return re.sub(r'\s+\brole\s*=\s*"[^"]*"', "", tag, count=1)
 
     single_match = re.search(r"\brole\s*=\s*'([^']*)'", tag)
     if single_match:
-        roles = [role for role in single_match.group(1).split() if role != "example-test"]
+        roles = [item for item in single_match.group(1).split() if item != role]
         if roles:
             return re.sub(r"\brole\s*=\s*'[^']*'", f'role="{" ".join(roles)}"', tag, count=1)
         return re.sub(r"\s+\brole\s*=\s*'[^']*'", "", tag, count=1)
@@ -467,22 +518,42 @@ def remove_example_test_role(tag):
 
 
 def mark_source_files(files):
-    listing_re = re.compile(r"(<programlisting\b[^>]*>)(.*?)(</programlisting>)", re.S)
+    listing_re = re.compile(
+        r"(<programlisting\b[^>]*>)(.*?)(</programlisting>)"
+        r"((?:\s|<!--.*?-->)*<screen\b[^>]*>.*?</screen>)?",
+        re.S,
+    )
     for filename in files:
         path = Path(filename)
         content = path.read_text(encoding="utf-8")
+        migrating_from_opt_in = FORCE_ROLE in content
         changed = 0
 
         def replace(match):
             nonlocal changed
-            opening, body, closing = match.groups()
-            if markable_programlisting(body):
-                new_opening = add_example_test_role(opening)
+            opening, body, closing, screen = match.groups()
+            screen_body = None
+            if screen is not None:
+                screen_match = re.search(r"<screen\b[^>]*>(.*?)</screen>", screen, re.S)
+                if screen_match:
+                    screen_body = screen_match.group(1)
+
+            was_forced = tag_has_role(opening, FORCE_ROLE)
+            is_auto_testable = auto_testable_programlisting(body, screen_body)
+            new_opening = remove_role(opening, FORCE_ROLE)
+            if was_forced:
+                if is_auto_testable:
+                    new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
+                else:
+                    new_opening = add_role(new_opening, FORCE_ROLE)
+                    new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
+            elif is_auto_testable and migrating_from_opt_in:
+                new_opening = add_role(new_opening, EXTERNAL_STATE_ROLE)
             else:
-                new_opening = remove_example_test_role(opening)
+                new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
             if new_opening != opening:
                 changed += 1
-            return new_opening + body + closing
+            return new_opening + body + closing + (screen or "")
 
         new_content = listing_re.sub(replace, content)
         if changed:
@@ -492,7 +563,7 @@ def mark_source_files(files):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Report, generate, or run opt-in manual example tests.",
+        description="Report, generate, or run manual example tests.",
         usage="%(prog)s --report|--generate-sql|--run [--database DB] <postgis-out.xml>\n"
         "       %(prog)s --mark-source <xml-file> [<xml-file> ...]",
     )

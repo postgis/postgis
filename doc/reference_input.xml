@@ -1018,7 +1018,7 @@ t
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="example-test">--Although bytea rep contains single \, these need to be escaped when inserting into a table
+		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table
 SELECT ST_AsText(
 ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@')
 );
@@ -1131,7 +1131,7 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="example-test">--Although bytea rep contains single \, these need to be escaped when inserting into a table
+		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table
 		-- unless standard_conforming_strings is set to on.
 SELECT ST_AsEWKT(
 ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
@@ -1350,7 +1350,7 @@ aline                            | null_return
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="example-test">SELECT
+		<programlisting>SELECT
   ST_AsText(
 	ST_PointFromWKB(
 	  ST_AsEWKB('POINT(2 5)'::geometry)
@@ -1442,7 +1442,7 @@ SELECT
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');
+		<programlisting role="requires-external-state">SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');
 
                 st_geomfromgeohash
 --------------------------------------------------
@@ -1500,7 +1500,7 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+		<programlisting role="requires-external-state">SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
                                                         st_astext
 --------------------------------------------------------------------------------------------------------------------------
  POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646))
@@ -1713,12 +1713,12 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 
 	 <refsection>
 		<title>Examples</title>
-		<programlisting role="example-test">SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) As wkt;
+		<programlisting>SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) As wkt;
 wkt
 ------
 POINT(-48.23456 20.12345)
 </programlisting>
-<programlisting role="example-test">-- a 3D linestring
+<programlisting>-- a 3D linestring
 SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3],[4,5,6],[7,8,9]]}')) As wkt;
 
 wkt
@@ -1818,7 +1818,7 @@ $$);
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="example-test">
+		<programlisting>
 SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometry)));
 
          st_astext
@@ -1905,7 +1905,7 @@ LINESTRING(-113.98 39.198,-113.981 39.195)
     <refsection>
     <title>Examples</title>
 
-    <programlisting>
+    <programlisting role="requires-external-state">
 -- Create a line string from a polyline
 SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));
 -- result --
@@ -1958,7 +1958,7 @@ SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+		<programlisting role="requires-external-state">SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
           st_astext
 ------------------------------
  POINT(-115.172816 36.114646)

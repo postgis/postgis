@@ -257,7 +257,7 @@
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting role="example-test">SELECT CG_Area('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (3 3, 4 3, 4 4, 3 4, 3 3))');
+                <programlisting>SELECT CG_Area('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (3 3, 4 3, 4 4, 3 4, 3 3))');
                 cg_area
                 --------
                 23
@@ -298,7 +298,7 @@
 
         <refsection><title>Examples</title>
             <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
-            <programlisting role="example-test">SELECT CG_3DArea(geom) As cube_surface_area,
+            <programlisting>SELECT CG_3DArea(geom) As cube_surface_area,
             CG_3DArea(CG_MakeSolid(geom)) As solid_surface_area
             FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -349,7 +349,7 @@
     <refsection>
         <title>Example</title>
         <para>A closed polyhedral surface has volume.  <xref linkend="CG_MakeSolid"/> makes the solid representation explicit.</para>
-    <programlisting role="example-test">SELECT CG_Volume(geom) As cube_surface_vol,
+    <programlisting>SELECT CG_Volume(geom) As cube_surface_vol,
     CG_Volume(CG_MakeSolid(geom)) As solid_surface_vol
     FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
     ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -575,7 +575,7 @@
 
     <refsection><title>Examples</title>
         <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
-        <programlisting role="example-test">SELECT ST_3DArea(geom) As cube_surface_area,
+        <programlisting>SELECT ST_3DArea(geom) As cube_surface_area,
         ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area
         FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -632,7 +632,7 @@
     <refsection>
         <title>Example</title>
         <para>A closed polyhedral surface has volume.  <xref linkend="ST_MakeSolid"/> makes the solid representation explicit.</para>
-    <programlisting role="example-test">SELECT ST_Volume(geom) As cube_surface_vol,
+    <programlisting>SELECT ST_Volume(geom) As cube_surface_vol,
     ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
     FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
     ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
@@ -691,7 +691,7 @@
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting role="example-test">SELECT ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));
+                <programlisting>SELECT ST_AsText(CG_Intersection('LINESTRING(0 0, 5 5)', 'LINESTRING(5 0, 0 5)'));
                 cg_intersection
                 -----------------
                 POINT(2.5 2.5)
@@ -742,7 +742,7 @@
 </refsection>
 <refsection>
     <title>Geometry Examples</title>
-    <programlisting>SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+    <programlisting role="requires-external-state">SELECT CG_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
     cg_intersects
     ---------------
     f
@@ -794,7 +794,7 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting role="example-test">SELECT CG_3DIntersects('POINT(1.2 0.1 0)','POLYHEDRALSURFACE(((0 0 0,0.5 0.5 0,1 0 0,1 1 0,0 1 0,0 0 0)),((1 0 0,2 0 0,2 1 0,1 1 0,1 0 0),(1.2 0.2 0,1.2 0.8 0,1.8 0.8 0,1.8 0.2 0,1.2 0.2 0)))');
+        <programlisting>SELECT CG_3DIntersects('POINT(1.2 0.1 0)','POLYHEDRALSURFACE(((0 0 0,0.5 0.5 0,1 0 0,1 1 0,0 1 0,0 0 0)),((1 0 0,2 0 0,2 1 0,1 1 0,1 0 0),(1.2 0.2 0,1.2 0.8 0,1.8 0.8 0,1.8 0.2 0,1.2 0.2 0)))');
         cg_3dintersects
         ---------------
         t
@@ -842,7 +842,7 @@
 </refsection>
 <refsection>
     <title>Geometry Examples</title>
-    <programlisting role="example-test">SELECT ST_AsText(CG_Difference('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'LINESTRING(0 0, 2 2)'::geometry));
+    <programlisting>SELECT ST_AsText(CG_Difference('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'LINESTRING(0 0, 2 2)'::geometry));
     cg_difference
     ---------------
     POLYGON((0 0,1 0,1 1,0 1,0 0))
@@ -1009,7 +1009,7 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting role="example-test">SELECT CG_Distance('LINESTRING(0.0 0.0,-1.0 -1.0)', 'LINESTRING(3.0 4.0,4.0 5.0)');
+        <programlisting>SELECT CG_Distance('LINESTRING(0.0 0.0,-1.0 -1.0)', 'LINESTRING(3.0 4.0,4.0 5.0)');
         cg_distance
         -------------
         5
@@ -1055,7 +1055,7 @@
     </refsection>
     <refsection>
         <title>Geometry Examples</title>
-        <programlisting role="example-test">SELECT CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');
+        <programlisting>SELECT CG_3DDistance('LINESTRING(-1.0 0.0 2.0,1.0 0.0 3.0)', 'TRIANGLE((-4.0 0.0 1.0,4.0 0.0 1.0,0.0 4.0 1.0,-4.0 0.0 1.0))');
         cg_3ddistance
         ----------------
         1
@@ -1128,7 +1128,7 @@
 
     <refsection>
         <title>Examples</title>
-        <programlisting>SELECT ST_AsText(CG_3DConvexHull('LINESTRING Z(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)'::geometry));</programlisting>
+        <programlisting role="requires-external-state">SELECT ST_AsText(CG_3DConvexHull('LINESTRING Z(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)'::geometry));</programlisting>
         <screen>POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
 
         <programlisting>WITH f AS (SELECT i, CG_Extrude(geom, 0,0, i ) AS geom
@@ -1261,7 +1261,7 @@
     </informaltable>
 
     <para>3D linestrings and polygons</para>
-    <programlisting role="example-test">	SELECT ST_AsText(CG_3DIntersection(linestring, polygon)) As wkt
+    <programlisting>	SELECT ST_AsText(CG_3DIntersection(linestring, polygon)) As wkt
     FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
     CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
 
@@ -1271,7 +1271,7 @@
 </programlisting>
 
 <para>Cube (closed Polyhedral Surface) and Polygon Z</para>
-<programlisting>SELECT ST_AsText(CG_3DIntersection(
+<programlisting role="requires-external-state">SELECT ST_AsText(CG_3DIntersection(
 ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
@@ -1280,7 +1280,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             <screen>TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
 
             <para>Intersection of 2 solids that result in volumetric intersection is also a solid (ST_Dimension returns 3)</para>
-            <programlisting>SELECT ST_AsText(CG_3DIntersection( CG_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),
+            <programlisting role="requires-external-state">SELECT ST_AsText(CG_3DIntersection( CG_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),
             CG_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));</programlisting>
         <screen>POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),
         ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
@@ -1333,7 +1333,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting role="example-test">SELECT ST_AsText(CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)'));
+                <programlisting>SELECT ST_AsText(CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)'));
                 st_astext
                 ----------
                 LINESTRING(-1 0,0.5 0,1 0)
@@ -1598,7 +1598,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                 <caption><para>Alpha-shape of a MultiPoint (same example As <xref linkend="CG_OptimalAlphaShape"/>)</para></caption>
             </mediaobject>
         </informalfigure>
-        <programlisting>SELECT ST_AsText(CG_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+        <programlisting role="requires-external-state">SELECT ST_AsText(CG_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
         (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
         (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
         (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
@@ -1616,7 +1616,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="CG_OptimalAlphaShape"/>)</para></caption>
         </mediaobject>
     </informalfigure>
-    <programlisting>SELECT ST_AsText(CG_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+    <programlisting role="requires-external-state">SELECT ST_AsText(CG_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
     (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
     (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
     (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
@@ -1633,7 +1633,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                         <caption><para>Alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="ST_ConcaveHull"/>)</para></caption>
                     </mediaobject>
                 </informalfigure>
-                <programlisting>SELECT ST_AsText(CG_AlphaShape(
+                <programlisting role="requires-external-state">SELECT ST_AsText(CG_AlphaShape(
                 'MULTIPOINT ((132 64), (114 64), (99 64), (81 64), (63 64), (57 49), (52 36), (46 20), (37 20), (26 20), (32 36), (39 55), (43 69), (50 84), (57 100), (63 118), (68 133), (74 149), (81 164), (88 180), (101 180), (112 180), (119 164), (126 149), (132 131), (139 113), (143 100), (150 84), (157 69), (163 51), (168 36), (174 20), (163 20), (150 20), (143 36), (139 49), (132 64), (99 151), (92 138), (88 124), (81 109), (74 93), (70 82), (83 82), (99 82), (112 82), (126 82), (121 96), (114 109), (110 122), (103 138), (99 151), (34 27), (43 31), (48 44), (46 58), (52 73), (63 73), (61 84), (72 71), (90 69), (101 76), (123 71), (141 62), (166 27), (150 33), (159 36), (146 44), (154 53), (152 62), (146 73), (134 76), (143 82), (141 91), (130 98), (126 104), (132 113), (128 127), (117 122), (112 133), (119 144), (108 147), (119 153), (110 171), (103 164), (92 171), (86 160), (88 142), (79 140), (72 124), (83 131), (79 118), (68 113), (63 102), (68 93), (35 45))'::geometry,102.2, true));</programlisting>
             <screen>MULTIPOLYGON(((168 36,163 51,157 69,150 84,143 100,139 113,132 131,126 149,119 164,112 180,101 180,88 180,81 164,74 149,68 133,63 118,57 100,50 84,43 69,39 55,35 45,32 36,26 20,37 20,46 20,52 36,57 49,63 64,81 64,90 69,99 64,114 64,132 64,139 49,143 36,150 20,163 20,174 20,168 36),(81 109,88 124,92 138,103 138,110 122,114 109,121 96,112 82,99 82,83 82,74 93,81 109)))</screen>
     </para>
@@ -1689,7 +1689,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                         <caption><para>Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
                     </mediaobject>
                 </informalfigure>
-                <programlisting>SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+                <programlisting role="requires-external-state">SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
                 <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
             </para>
         </refsection>
@@ -2538,7 +2538,7 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
         <refsection>
             <title>Examples</title>
             <para>
-                <programlisting>SELECT ST_AsText(CG_ExtrudeStraightSkeleton('POLYGON (( 0 0, 5 0, 5 5, 4 5, 4 4, 0 4, 0 0 ), (1 1, 1 2,2 2, 2 1, 1 1))', 3.0, 2.0));</programlisting>
+                <programlisting role="requires-external-state">SELECT ST_AsText(CG_ExtrudeStraightSkeleton('POLYGON (( 0 0, 5 0, 5 5, 4 5, 4 4, 0 4, 0 0 ), (1 1, 1 2,2 2, 2 1, 1 1))', 3.0, 2.0));</programlisting>
                 <screen>POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 5 0,5 5 0,5 0 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 5 2,4 5 0,4 4 0)),((4 5 0,4 5 2,5 5 2,5 5 0,4 5 0)),((5 5 0,5 5 2,5 0 2,5 0 0,5 5 0)),((5 0 0,5 0 2,0 0 2,0 0 0,5 0 0)),((1 1 0,1 1 2,2 1 2,2 1 0,1 1 0)),((2 1 0,2 1 2,2 2 2,2 2 0,2 1 0)),((2 2 0,2 2 2,1 2 2,1 2 0,2 2 0)),((1 2 0,1 2 2,1 1 2,1 1 0,1 2 0)),((0 4 2,0 0 2,0.5 0.5 2.5,0.5 2.5 2.5,1 3 3,0 4 2)),((0 0 2,5 0 2,3.5 1.5 3.5,2.5 0.5 2.5,0.5 0.5 2.5,0 0 2)),((5 0 2,5 5 2,4.5 4.5 2.5,4.5 3.5 2.5,3.5 2.5 3.5,3.5 1.5 3.5,5 0 2)),((5 5 2,4 5 2,4.5 4.5 2.5,5 5 2)),((4 5 2,4 4 2,4.5 3.5 2.5,4.5 4.5 2.5,4 5 2)),((4 4 2,0 4 2,1 3 3,3 3 3,3.5 2.5 3.5,4.5 3.5 2.5,4 4 2)),((2 1 2,1 1 2,0.5 0.5 2.5,2.5 0.5 2.5,2 1 2)),((1 1 2,1 2 2,0.5 2.5 2.5,0.5 0.5 2.5,1 1 2)),((1 2 2,2 2 2,3 3 3,1 3 3,0.5 2.5 2.5,1 2 2)),((2 2 2,2 1 2,2.5 0.5 2.5,3.5 1.5 3.5,3.5 2.5 3.5,3 3 3,2 2 2)))</screen>
             </para>
         </refsection>
@@ -2593,7 +2593,7 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
                     <caption><para>Greene Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
                 </mediaobject>
             </informalfigure>
-            <programlisting>SELECT ST_AsText(CG_GreeneApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+            <programlisting role="requires-external-state">SELECT ST_AsText(CG_GreeneApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
             <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
         </para>
     </refsection>
@@ -2867,7 +2867,7 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
                     <caption><para>Optimal alpha-shape of a MultiPoint (same example as <xref linkend="CG_AlphaShape"/>)</para></caption>
                 </mediaobject>
             </informalfigure>
-            <programlisting>SELECT ST_AsText(CG_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+            <programlisting role="requires-external-state">SELECT ST_AsText(CG_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
             (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
             (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
             (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
@@ -2886,7 +2886,7 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
             <caption><para>Optimal alpha-shape of a MultiPoint, allowing holes (same example as <xref linkend="CG_AlphaShape"/>)</para></caption>
         </mediaobject>
     </informalfigure>
-    <programlisting>SELECT ST_AsText(CG_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+    <programlisting role="requires-external-state">SELECT ST_AsText(CG_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
     (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
     (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
     (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
@@ -2946,7 +2946,7 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
                         <caption><para>Optimal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_GreeneApproxConvexPartition" />)</para></caption>
                     </mediaobject>
                 </informalfigure>
-                <programlisting>SELECT ST_AsText(CG_OptimalConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+                <programlisting role="requires-external-state">SELECT ST_AsText(CG_OptimalConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
                 <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
             </para>
         </refsection>
@@ -3282,7 +3282,7 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting role="example-test">SELECT ST_AsText(CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))'));
+                <programlisting>SELECT ST_AsText(CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))'));
                 st_astext
                 ----------
                 TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.8 0.2,1 1)),((0 1,0 0,0.2 0.2,0 1)),((0 1,0.2 0.8,1 1,0 1)),((0 1,0.2 0.2,0.2 0.8,0 1)),((0.2 0.8,0.8 0.8,1 1,0.2 0.8)),((0.2 0.8,0.2 0.2,0.8 0.2,0.2 0.8)),((1 1,0.8 0.2,1 0,1 1)),((0.8 0.8,0.2 0.8,0.8 0.2,0.8 0.8)))
@@ -3434,7 +3434,7 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                     </tbody>
                 </tgroup>
             </informaltable>
-            <programlisting>SELECT ST_AsText(CG_YMonotonePartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
+            <programlisting role="requires-external-state">SELECT ST_AsText(CG_YMonotonePartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
             <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
         </para>
     </refsection>

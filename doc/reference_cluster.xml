@@ -189,7 +189,7 @@ GROUP BY cid;
 
       <refsection>
         <title>Examples</title>
-        <programlisting role="example-test">
+        <programlisting>
 WITH testdata AS
   (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
            'LINESTRING (5 5, 4 4)'::geometry,
@@ -245,7 +245,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
       <refsection>
         <title>Examples</title>
-        <programlisting role="example-test">
+        <programlisting>
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
   VALUES  (1, 'LINESTRING (0 0, 1 1)'),
@@ -491,7 +491,7 @@ FROM
                 <caption><para>Parcels color-coded by cluster number (cid)</para></caption>
             </mediaobject>
             </informalfigure>
-<programlisting>
+<programlisting role="requires-external-state">
 SELECT ST_ClusterKMeans(geom, 3) OVER() AS cid, parcel_id, geom
     FROM parcels;</programlisting>
 <screen> cid | parcel_id |   geom
@@ -507,7 +507,7 @@ SELECT ST_ClusterKMeans(geom, 3) OVER() AS cid, parcel_id, geom
         </para>
 
         <para>Partitioning parcel clusters by type:</para>
-<programlisting>
+<programlisting role="requires-external-state">
 SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, type
     FROM parcels;</programlisting>
 <screen> cid | parcel_id |    type
@@ -606,7 +606,7 @@ from
 
       <refsection>
         <title>Examples</title>
-        <programlisting role="example-test">
+        <programlisting>
 WITH testdata AS
   (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
 		       'LINESTRING (5 5, 4 4)'::geometry,
@@ -670,7 +670,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
       <refsection>
         <title>Examples</title>
-        <programlisting role="example-test">
+        <programlisting>
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
   VALUES  (1, 'LINESTRING (0 0, 1 1)'),

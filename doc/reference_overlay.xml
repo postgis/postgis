@@ -137,7 +137,7 @@ SELECT ST_ClipByBox2D(geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
     </tgroup>
 </informaltable>
 <para>The difference of 2D linestrings.</para>
-<programlisting role="example-test">SELECT ST_AsText(
+<programlisting>SELECT ST_AsText(
     ST_Difference(
             'LINESTRING(50 100, 50 200)'::geometry,
             'LINESTRING(50 50, 50 150)'::geometry
@@ -150,7 +150,7 @@ LINESTRING(50 150,50 200)
 </programlisting>
 
 <para>The difference of 3D points.</para>
-<programlisting role="example-test">SELECT ST_AsEWKT( ST_Difference(
+<programlisting>SELECT ST_AsEWKT( ST_Difference(
                    'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
                    'POINT(-118.614 38.281 5)' :: geometry
                   ) );
@@ -247,7 +247,7 @@ Computes a geometry representing the shared portion of geometries A and B.
         </refsection>
         <refsection>
         <title>Examples</title>
-<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
+<programlisting role="requires-external-state">SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
  st_astext
 ---------------
 GEOMETRYCOLLECTION EMPTY
@@ -286,7 +286,7 @@ where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));<
         <refsection>
         <title>Examples: 2.5D geometries</title>
         <para>Note this is not a true 3D intersection. It uses 2.5D geometries (geometries with Z ordinates, but where calculations are performed in 2D). Compare to the same example using <xref linkend="ST_3DIntersection"/>.</para>
-        <programlisting role="example-test">
+        <programlisting>
 select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
 from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
  CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
@@ -420,7 +420,7 @@ This may cause the resulting linestrings to have a different order and direction
       <refsection>
         <title>Examples</title>
         <para>Noding a 3D LineString which self-intersects</para>
-        <programlisting role="example-test">
+        <programlisting>
 SELECT ST_AsText(
         ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
     ) As  output;
@@ -431,7 +431,7 @@ MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10
 
         <para>Noding two LineStrings which share common linework.
         Note that the result linework is dissolved.</para>
-        <programlisting role="example-test">
+        <programlisting>
 SELECT ST_AsText(
         ST_Node('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))'::geometry)
     ) As  output;
@@ -576,7 +576,7 @@ SELECT ST_AsText( ST_Split(
                     </tbody>
                 </tgroup>
             </informaltable>
-            <programlisting role="example-test">
+            <programlisting>
 SELECT ST_AsText(ST_Split(
     'MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))',
     ST_Point(30,30))) As split;
@@ -594,7 +594,7 @@ GEOMETRYCOLLECTION(
         <para>Split a LineString by a Point, where the point does not lie exactly on the line.
         Shows using <xref linkend="ST_Snap"/> to snap the line to the point to allow it to be split.
         </para>
-        <programlisting role="example-test">
+        <programlisting>
 WITH data AS (SELECT
   'LINESTRING(0 0, 100 100)'::geometry AS line,
   'POINT(51 50)':: geometry AS point
@@ -689,7 +689,7 @@ SELECT ST_AsText( ST_Split( ST_Snap(line, point, 1), point)) AS snapped_split,
                 <caption><para>Subdivided to maximum 10 vertices</para></caption>
             </mediaobject>
             </informalfigure>
-<programlisting>
+<programlisting role="requires-external-state">
 SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
     FROM (SELECT ST_SubDivide(
         'POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
@@ -719,7 +719,7 @@ SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
                 <caption><para>The densified and split lines.</para></caption>
             </mediaobject>
             </informalfigure>
-<programlisting>
+<programlisting role="requires-external-state">
 SELECT ST_AsText( ST_Subdivide(
             ST_Segmentize('LINESTRING(0 0, 85 85)'::geography,
                           1200000)::geometry,    8));
@@ -858,7 +858,7 @@ CREATE TABLE subdivided_geoms AS
         </tbody>
     </tgroup>
 </informaltable>
-<programlisting role="example-test">
+<programlisting>
 --Safe for 2d - symmetric difference of 2 linestrings
 SELECT ST_AsText(
     ST_SymDifference(
@@ -872,7 +872,7 @@ st_astext
 MULTILINESTRING((50 150,50 200),(50 50,50 100))
 </programlisting>
 
-<programlisting role="example-test">
+<programlisting>
 
 --When used in 3d doesn't quite do the right thing
 SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 2)'),
@@ -1075,7 +1075,7 @@ FROM sometable f
 GROUP BY id;
               </programlisting>
         <para>Non-Aggregate example</para>
-            <programlisting>
+            <programlisting role="requires-external-state">
 select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(-2 3)' :: geometry))
 
 st_astext
@@ -1088,7 +1088,7 @@ st_astext
 ----------
 POINT(1 2)</programlisting>
 <para>3D example - sort of supports 3D (and with mixed geometry types!)</para>
-<programlisting role="example-test">select ST_AsEWKT(ST_Union(geom))
+<programlisting>select ST_AsEWKT(ST_Union(geom))
 from (
          select 'POLYGON Z((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5, -7 4.2 5))'::geometry geom
          union all

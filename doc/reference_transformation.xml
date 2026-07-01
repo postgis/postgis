@@ -89,7 +89,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="example-test">
+		<programlisting>
 --Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for doing ST_Rotate();
  SELECT ST_AsEWKT(ST_Affine(geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,
 	 ST_AsEWKT(ST_Rotate(geom, pi())) As using_rotate
@@ -171,7 +171,7 @@ SELECT ST_AsEWKT(ST_Affine(geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()),
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="example-test">
+		<programlisting>
 --Rotate 180 degrees
 SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()), 6);
                st_astext
@@ -180,7 +180,7 @@ SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi())
 (1 row)
 </programlisting>
 
-		<programlisting role="example-test">
+		<programlisting>
 --Rotate 30 degrees counter-clockwise at x=50, y=160
 SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()/6, 50, 160), 6);
                       st_astext
@@ -189,7 +189,7 @@ SELECT ST_AsText(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)'::geometry, pi()/
 (1 row)
 </programlisting>
 
-		<programlisting role="example-test">
+		<programlisting>
 --Rotate 60 degrees clockwise from centroid
 SELECT ST_AsText(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)), 4)
 FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
@@ -244,7 +244,7 @@ FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="example-test">
+		<programlisting>
 --Rotate a line 90 degrees along x-axis
 SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
 		 st_asewkt
@@ -299,7 +299,7 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="example-test">
+		<programlisting>
 --Rotate a line 90 degrees along y-axis
  SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
 		 st_asewkt
@@ -357,7 +357,7 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
+		<programlisting role="requires-external-state">
 --Rotate a line 90 degrees along z-axis
 SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
 		 st_asewkt
@@ -459,7 +459,7 @@ point are equivalent to no scaling the corresponding dimension.
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>--Version 1: scale X, Y, Z
+		<programlisting role="requires-external-state">--Version 1: scale X, Y, Z
 SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));
 			  st_asewkt
 --------------------------------------
@@ -538,7 +538,7 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 	  <refsection>
 		<title>Examples</title>
 		<para>Move a point 1 degree longitude</para>
-		<programlisting role="example-test">
+		<programlisting>
 	SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As wgs_transgeomtxt;
 
 	wgs_transgeomtxt
@@ -546,19 +546,19 @@ SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::ge
 	POINT(-70.01 42.37)
 		</programlisting>
 		<para>Move a linestring 1 degree longitude and 1/2 degree latitude</para>
-		<programlisting role="example-test">SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;
+		<programlisting>SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;
 		   wgs_transgeomtxt
 	---------------------------------------
 	LINESTRING(-70.01 42.87,-70.11 42.88)
 		</programlisting>
 		<para>Move a 3d point</para>
-		<programlisting role="example-test">SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));
+		<programlisting>SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));
 	st_asewkt
 	---------
 	POINT(5 12 3)
 		</programlisting>
 		<para>Move points with a measure coordinate</para>
-		<programlisting>SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINTM(0 0 11)'), 5, 12));
+		<programlisting role="requires-external-state">SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINTM(0 0 11)'), 5, 12));
 	st_asewkt
 	---------
 	POINTM(5 12 11)
@@ -569,7 +569,7 @@ SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINT(0 0 7 11)'), 5, 12, 3));
 	POINT(5 12 10 11)
 		</programlisting>
 		<para>Move a curve and a point</para>
-<programlisting role="example-test">SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));
+<programlisting>SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));
 														 st_astext
 ------------------------------------------------------------------------------------------------------------
  GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 7.1213,7 9,9 11,5 5)),POINT(2 5))
@@ -625,7 +625,7 @@ SELECT ST_AsEWKT(ST_Translate(ST_GeomFromEWKT('POINT(0 0 7 11)'), 5, 12, 3));
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));
+		<programlisting role="requires-external-state">SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));
 		  st_asewkt
 -----------------------------
  LINESTRING(1.5 6 3,1.5 4 1)

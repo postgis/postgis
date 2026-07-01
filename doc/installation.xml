@@ -648,7 +648,7 @@ make check RUNTESTFLAGS=--extension</programlisting>
    </itemizedlist>
    <para>Once you do that, you should see <varname>postgis</varname>, <varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; extensions.</para>
    <para>If you are using psql, you can verify that the extensions are installed by running this query:</para>
-   <programlisting>SELECT name, default_version, installed_version
+   <programlisting role="requires-external-state">SELECT name, default_version, installed_version
 FROM pg_available_extensions WHERE name LIKE 'postgis%';
 
              name             | default_version | installed_version
