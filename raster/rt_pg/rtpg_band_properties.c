@@ -61,6 +61,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS);
 /* Set all the properties of a raster band */
 Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS);
 Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS);
+Datum RASTER_setBandNoDataValues(PG_FUNCTION_ARGS);
 Datum RASTER_setBandPath(PG_FUNCTION_ARGS);
 Datum RASTER_setBandIndex(PG_FUNCTION_ARGS);
 
@@ -792,6 +793,45 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	}
 }
 
+static void
+rtpg_set_band_nodata_value(rt_raster raster, int32_t bandindex, bool nodata_is_null, double nodata, bool forcechecking)
+{
+	rt_band band = NULL;
+
+	if (bandindex < 1)
+	{
+		elog(NOTICE, "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
+		return;
+	}
+
+	/* Fetch requested band */
+	band = rt_raster_get_band(raster, bandindex - 1);
+	if (!band)
+	{
+		elog(
+		    NOTICE,
+		    "Could not find raster band of index %d when setting pixel value. Nodata value not set. Returning original raster",
+		    bandindex);
+		return;
+	}
+
+	if (nodata_is_null)
+	{
+		/* Set the hasnodata flag to FALSE */
+		rt_band_set_hasnodata_flag(band, FALSE);
+		POSTGIS_RT_DEBUGF(3, "Raster band %d does not have a nodata value", bandindex);
+	}
+	else
+	{
+		/* Set the band's nodata value */
+		rt_band_set_nodata(band, nodata, NULL);
+
+		/* Recheck all pixels if requested */
+		if (forcechecking)
+			rt_band_check_is_nodata(band);
+	}
+}
+
 /**
  * Set the nodata value of the specified band of raster.
  */
@@ -801,11 +841,9 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 	rt_pgraster *pgraster = NULL;
 	rt_pgraster *pgrtn = NULL;
 	rt_raster raster = NULL;
-	rt_band band = NULL;
-	double nodata;
+	double nodata = 0;
 	int32_t bandindex;
 	bool forcechecking = FALSE;
-	bool skipset = FALSE;
 
 	/* Deserialize raster */
 	if (PG_ARGISNULL(0))
@@ -817,10 +855,6 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 		bandindex = -1;
 	else
 		bandindex = PG_GETARG_INT32(1);
-	if (bandindex < 1) {
-		elog(NOTICE, "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
-		skipset = TRUE;
-	}
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
@@ -829,37 +863,155 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (!skipset) {
-		/* Fetch requested band */
-		band = rt_raster_get_band(raster, bandindex - 1);
-		if (!band) {
-			elog(NOTICE, "Could not find raster band of index %d when setting pixel value. Nodata value not set. Returning original raster", bandindex);
-		}
-		else {
-			if (!PG_ARGISNULL(3))
-				forcechecking = PG_GETARG_BOOL(3);
+	if (!PG_ARGISNULL(3))
+		forcechecking = PG_GETARG_BOOL(3);
 
-			if (PG_ARGISNULL(2)) {
-				/* Set the hasnodata flag to FALSE */
-				rt_band_set_hasnodata_flag(band, FALSE);
-				POSTGIS_RT_DEBUGF(3, "Raster band %d does not have a nodata value", bandindex);
-			}
-			else {
-				/* Get the nodata value */
-				nodata = PG_GETARG_FLOAT8(2);
+	if (!PG_ARGISNULL(2))
+		nodata = PG_GETARG_FLOAT8(2);
 
-				/* Set the band's nodata value */
-				rt_band_set_nodata(band, nodata, NULL);
-
-				/* Recheck all pixels if requested */
-				if (forcechecking)
-					rt_band_check_is_nodata(band);
-			}
-		}
-	}
+	rtpg_set_band_nodata_value(raster, bandindex, PG_ARGISNULL(2), nodata, forcechecking);
 
 	pgrtn = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+	if (!pgrtn)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrtn, pgrtn->size);
+	PG_RETURN_POINTER(pgrtn);
+}
+
+/**
+ * Set nodata values for the specified bands of raster.
+ */
+PG_FUNCTION_INFO_V1(RASTER_setBandNoDataValues);
+Datum
+RASTER_setBandNoDataValues(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_pgraster *pgrtn = NULL;
+	rt_raster raster = NULL;
+	ArrayType *band_array = NULL;
+	ArrayType *nodata_array = NULL;
+	Datum *band_values = NULL;
+	Datum *nodata_values = NULL;
+	bool *band_nulls = NULL;
+	bool *nodata_nulls = NULL;
+	int band_count = 0;
+	int nodata_count = 0;
+	int i = 0;
+	bool forcechecking = FALSE;
+
+	/* Deserialize raster */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	if (PG_ARGISNULL(1) || PG_ARGISNULL(2))
+	{
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_setBandNoDataValues: band and nodatavalue arrays cannot be NULL");
+		PG_RETURN_NULL();
+	}
+
+	band_array = PG_GETARG_ARRAYTYPE_P(1);
+	nodata_array = PG_GETARG_ARRAYTYPE_P(2);
+
+	if (ARR_ELEMTYPE(band_array) != INT4OID)
+	{
+		PG_FREE_IF_COPY(nodata_array, 2);
+		PG_FREE_IF_COPY(band_array, 1);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_setBandNoDataValues: Invalid data type for band number(s)");
+		PG_RETURN_NULL();
+	}
+
+	if (ARR_ELEMTYPE(nodata_array) != FLOAT8OID)
+	{
+		PG_FREE_IF_COPY(nodata_array, 2);
+		PG_FREE_IF_COPY(band_array, 1);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_setBandNoDataValues: Invalid data type for nodata value(s)");
+		PG_RETURN_NULL();
+	}
+
+	deconstruct_array(band_array, INT4OID, 4, true, 'i', &band_values, &band_nulls, &band_count);
+	deconstruct_array(nodata_array,
+			  FLOAT8OID,
+			  sizeof(float8),
+			  FLOAT8PASSBYVAL,
+			  'd',
+			  &nodata_values,
+			  &nodata_nulls,
+			  &nodata_count);
+
+	if (band_count != nodata_count)
+	{
+		PG_FREE_IF_COPY(nodata_array, 2);
+		PG_FREE_IF_COPY(band_array, 1);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_setBandNoDataValues: band and nodatavalue arrays must have the same length");
+		PG_RETURN_NULL();
+	}
+
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster)
+	{
+		PG_FREE_IF_COPY(nodata_array, 2);
+		PG_FREE_IF_COPY(band_array, 1);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_setBandNoDataValues: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	if (!PG_ARGISNULL(3))
+		forcechecking = PG_GETARG_BOOL(3);
+
+	for (i = 0; i < band_count; i++)
+	{
+		int32_t bandindex = -1;
+
+		if (band_nulls[i])
+		{
+			elog(NOTICE,
+			     "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
+			goto serialize;
+		}
+
+		bandindex = DatumGetInt32(band_values[i]);
+		if (bandindex < 1)
+		{
+			elog(NOTICE,
+			     "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
+			goto serialize;
+		}
+
+		if (!rt_raster_get_band(raster, bandindex - 1))
+		{
+			elog(
+			    NOTICE,
+			    "Could not find raster band of index %d when setting pixel value. Nodata value not set. Returning original raster",
+			    bandindex);
+			goto serialize;
+		}
+	}
+
+	for (i = 0; i < band_count; i++)
+	{
+		int32_t bandindex = DatumGetInt32(band_values[i]);
+		double nodata = 0;
+
+		if (!nodata_nulls[i])
+			nodata = DatumGetFloat8(nodata_values[i]);
+
+		rtpg_set_band_nodata_value(raster, bandindex, nodata_nulls[i], nodata, forcechecking);
+	}
+
+serialize:
+	pgrtn = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(nodata_array, 2);
+	PG_FREE_IF_COPY(band_array, 1);
 	PG_FREE_IF_COPY(pgraster, 0);
 	if (!pgrtn)
 		PG_RETURN_NULL();
