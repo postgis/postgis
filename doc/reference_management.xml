@@ -126,38 +126,29 @@
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
+			<title>Examples</title>
 
-		<programlisting>-- Create schema to hold data
-CREATE SCHEMA my_schema;
--- Create a new simple PostgreSQL table
-CREATE TABLE my_schema.my_spatial_table (id serial);
-
--- Describing the table shows a simple table with a single "id" column.
-postgis=# \d my_schema.my_spatial_table
+			<para>This example creates a schema to hold data.</para>
+			<programlisting>CREATE SCHEMA my_schema;</programlisting>
+			<para>Create a simple PostgreSQL table in the schema.</para>
+<programlisting>CREATE TABLE my_schema.my_spatial_table (id serial);</programlisting>
+			<para>Describing the table shows a single <varname>id</varname> column.</para>
+<screen>\d my_schema.my_spatial_table
 							 Table "my_schema.my_spatial_table"
  Column |  Type   |                                Modifiers
 --------+---------+-------------------------------------------------------------------------
- id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
-
--- Add a spatial column to the table
-SELECT AddGeometryColumn ('my_schema','my_spatial_table','geom',4326,'POINT',2);
-
--- Add a point using the old constraint based behavior
-SELECT AddGeometryColumn ('my_schema','my_spatial_table','geom_c',4326,'POINT',2, false);
-
---Add a curvepolygon using old constraint behavior
-SELECT AddGeometryColumn ('my_schema','my_spatial_table','geomcp_c',4326,'CURVEPOLYGON',2, false);
-
--- Describe the table again reveals the addition of a new geometry columns.
-\d my_schema.my_spatial_table
-                            addgeometrycolumn
--------------------------------------------------------------------------
- my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2
-(1 row)
-
+ id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)</screen>
+			<para>Add a spatial column to the table.</para>
+<programlisting>SELECT AddGeometryColumn('my_schema', 'my_spatial_table', 'geom', 4326, 'POINT', 2);</programlisting>
+			<para>Add a point column using the old constraint-based behavior.</para>
+<programlisting>SELECT AddGeometryColumn('my_schema', 'my_spatial_table', 'geom_c', 4326, 'POINT', 2, false);</programlisting>
+			<para>Add a CurvePolygon column using the old constraint-based behavior.</para>
+<programlisting role="requires-external-state">SELECT AddGeometryColumn('my_schema', 'my_spatial_table', 'geomcp_c', 4326, 'CURVEPOLYGON', 2, false);</programlisting>
+<screen>my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2</screen>
+			<para>Describe the table again to see the new geometry columns.</para>
+<screen>\d my_schema.my_spatial_table
                                     Table "my_schema.my_spatial_table"
-  Column  |         Type         |                                Modifiers
+ Column  |         Type         |                                Modifiers
 ----------+----------------------+-------------------------------------------------------------------------
  id       | integer              | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
  geom     | geometry(Point,4326) |
@@ -169,19 +160,16 @@ Check constraints:
     "enforce_geotype_geom_c" CHECK (geometrytype(geom_c) = 'POINT'::text OR geom_c IS NULL)
     "enforce_geotype_geomcp_c" CHECK (geometrytype(geomcp_c) = 'CURVEPOLYGON'::text OR geomcp_c IS NULL)
     "enforce_srid_geom_c" CHECK (st_srid(geom_c) = 4326)
-    "enforce_srid_geomcp_c" CHECK (st_srid(geomcp_c) = 4326)
-
--- geometry_columns view also registers the new columns --
-SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
+    "enforce_srid_geomcp_c" CHECK (st_srid(geomcp_c) = 4326)</screen>
+			<para>The <varname>geometry_columns</varname> view also registers the new columns.</para>
+<programlisting role="requires-external-state">SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
     FROM geometry_columns
-    WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';
-
- col_name |     type     | srid | ndims
+    WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';</programlisting>
+<screen> col_name |     type     | srid | ndims
 ----------+--------------+------+-------
  geom     | Point        | 4326 |     2
  geom_c   | Point        | 4326 |     2
- geomcp_c | CurvePolygon | 4326 |     2
-</programlisting>
+ geomcp_c | CurvePolygon | 4326 |     2</screen>
 	  </refsection>
 
 	  <refsection>
@@ -260,17 +248,10 @@ SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-			SELECT DropGeometryColumn ('my_schema','my_spatial_table','geom');
-			----RESULT output ---
-			                  dropgeometrycolumn
-------------------------------------------------------
- my_schema.my_spatial_table.geom effectively removed.
-
--- The above is also equivalent to the standard
--- ALTER TABLE command.  Both will deregister from geometry_columns
-ALTER TABLE my_schema.my_spatial_table DROP column geom;
-		</programlisting>
+			<programlisting role="requires-external-state">SELECT DropGeometryColumn ('my_schema','my_spatial_table','geom');</programlisting>
+<screen>my_schema.my_spatial_table.geom effectively removed.</screen>
+			<para>The above is also equivalent to the standard <command>ALTER TABLE</command> command. Both deregister the column from <varname>geometry_columns</varname>.</para>
+<programlisting>ALTER TABLE my_schema.my_spatial_table DROP column geom;</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -334,13 +315,10 @@ ALTER TABLE my_schema.my_spatial_table DROP column geom;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT DropGeometryTable ('my_schema','my_spatial_table');
-----RESULT output ---
-my_schema.my_spatial_table dropped.
-
--- The above is now equivalent to --
-DROP TABLE my_schema.my_spatial_table;
-		</programlisting>
+			<programlisting role="requires-external-state">SELECT DropGeometryTable ('my_schema','my_spatial_table');</programlisting>
+<screen>my_schema.my_spatial_table dropped.</screen>
+			<para>The above is now equivalent to the standard <command>DROP TABLE</command> command.</para>
+<programlisting>DROP TABLE my_schema.my_spatial_table;</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -379,11 +357,8 @@ DROP TABLE my_schema.my_spatial_table;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');
-find_srid
-----------
-4269
-</programlisting>
+		<programlisting>SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');</programlisting>
+<screen>4269</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -480,15 +455,11 @@ find_srid
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-CREATE TABLE public.myspatial_table(gid serial, geom geometry);
+			<para>This example populates geometry column metadata using typmod behavior. For this to work, there must be existing data.</para>
+			<programlisting>CREATE TABLE public.myspatial_table(gid serial, geom geometry);
 INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
--- This will now use typ modifiers.  For this to work, there must exist data
-SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);
-
-populate_geometry_columns
---------------------------
-                        1
+SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programlisting>
+<screen>                        1
 
 
 \d myspatial_table
@@ -497,17 +468,14 @@ populate_geometry_columns
  Column |           Type            |                           Modifiers
 --------+---------------------------+---------------------------------------------------------------
  gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
- geom   | geometry(LineString,4326) |
-</programlisting>
+ geom   | geometry(LineString,4326) |</screen>
 
-		<programlisting>-- This will change the geometry columns to use constraints if they are not typmod or have constraints already.
---For this to work, there must exist data
+			<para>This example changes the geometry columns to use constraints if they are not typmod or already constrained. For this to work, there must be existing data.</para>
+		<programlisting>
 CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
 INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
-SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);
-populate_geometry_columns
---------------------------
-                        1
+SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);</programlisting>
+<screen>                        1
 \d myspatial_table_cs
 
                           Table "public.myspatial_table_cs"
@@ -518,7 +486,7 @@ populate_geometry_columns
 Check constraints:
     "enforce_dims_geom" CHECK (st_ndims(geom) = 2)
     "enforce_geotype_geom" CHECK (geometrytype(geom) = 'LINESTRING'::text OR geom IS NULL)
-    "enforce_srid_geom" CHECK (st_srid(geom) = 4326)</programlisting>
+    "enforce_srid_geom" CHECK (st_srid(geom) = 4326)</screen>
 	  </refsection>
 
 <!--

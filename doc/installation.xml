@@ -649,15 +649,15 @@ make check RUNTESTFLAGS=--extension</programlisting>
    <para>Once you do that, you should see <varname>postgis</varname>, <varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; extensions.</para>
    <para>If you are using psql, you can verify that the extensions are installed by running this query:</para>
    <programlisting>SELECT name, default_version, installed_version
-FROM pg_available_extensions WHERE name LIKE 'postgis%';
-
-             name             | default_version | installed_version
+FROM pg_available_extensions
+WHERE name LIKE 'postgis%'
+ORDER BY name;</programlisting>
+<screen>             name             | default_version | installed_version
 ------------------------------+-----------------+-------------------
  postgis                      | &last_release_version;         | &last_release_version;
  postgis_raster               | &last_release_version;         | &last_release_version;
  postgis_sfcgal               | &last_release_version;         |
- postgis_topology             | &last_release_version;         |
-(6 rows)</programlisting>
+ postgis_topology             | &last_release_version;         |</screen>
 
 <para>If you have the extension installed in the database you are querying, you'll see mention in the <varname>installed_version</varname> column.
 If you get no records back, it means you don't have postgis extensions installed on the server at all.  PgAdmin III 1.14+ will also provide this information
@@ -982,7 +982,7 @@ All 2 tests passed.
 
     <listitem>
     <para>If your upgrade fails, make sure you are restoring into a database that already has PostGIS installed.</para>
-    <programlisting>SELECT postgis_full_version();</programlisting>
+    <programlisting>SELECT PostGIS_Full_Version();</programlisting>
     </listitem>
   </orderedlist>
 

@@ -86,17 +86,16 @@
   (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::geometry)
 )
 SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
-  FROM coverage;
-
- id |               st_astext
+  FROM coverage;</programlisting>
+<screen> id |               st_astext
 ----+---------------------------------------
   1 | LINESTRING (40 110, 100 70)
   2 | MULTILINESTRING ((100 130, 140 120, 140 160, 100 190), (40 110, 50 80, 74 110.5))
   3 | LINESTRING (140 80, 140 190)
-  4 | null
-      </programlisting>
+  4 | null</screen>
 
-      <programlisting>-- Test entire table for coverage validity
+      <para>This example tests the entire table for coverage validity.</para>
+      <programlisting>
 SELECT true = ALL (
     SELECT ST_CoverageInvalidEdges(geom) OVER () IS NULL
     FROM coverage
@@ -192,7 +191,8 @@ SELECT true = ALL (
     <refsection>
       <title>Examples</title>
 
-      <programlisting>-- Populate input table
+      <para>This example populates the input table.</para>
+      <programlisting>
 CREATE TABLE example AS SELECT * FROM (VALUES
   (1, 'POLYGON ((10 190, 30 160, 27 134.5, 40 110, 122 47, 120 10, 10 10, 10 190))'::geometry),
   (2, 'POLYGON ((150 190, 10 190, 30 160, 50 140, 40 110, 50 80, 130 70, 135 111, 140 130, 140 160, 150 190))'::geometry),
@@ -210,7 +210,8 @@ CREATE TABLE example AS SELECT * FROM (VALUES
         </mediaobject>
       </informalfigure>
 
-<programlisting>-- Show it is an invalid coverage
+<para>This example shows that the coverage is invalid.</para>
+<programlisting>
 SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
   FROM example;
 </programlisting>
@@ -224,7 +225,8 @@ SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
         </mediaobject>
       </informalfigure>
 
-<programlisting>-- Clean the coverage, merging gaps with width &lt;= 1
+<para>This example cleans the coverage by merging gaps with width less than or equal to 1.</para>
+<programlisting>
 CREATE TABLE example_clean AS
   SELECT id, ST_CoverageClean(geom, 1) OVER () AS GEOM
   FROM example;
@@ -335,15 +337,13 @@ CREATE TABLE example_clean AS
   (4, 'POLYGON ((160 150, 150 120, 160 90, 160 50, 110 130, 160 150))'::geometry)
 )
 SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
-  FROM coverage;
-
- id |               st_astext
+  FROM coverage;</programlisting>
+<screen> id |               st_astext
 ----+---------------------------------------
   1 | POLYGON ((160 150, 110 130, 50 10, 10 60, 20 170, 90 190, 160 150), (40 160, 66 125, 90 170, 40 160))
   2 | POLYGON ((40 160, 66 125, 90 170, 40 160))
   3 | POLYGON ((110 130, 160 50, 50 10, 110 130))
-  4 | POLYGON ((160 150, 160 50, 110 130, 160 150))
-      </programlisting>
+  4 | POLYGON ((160 150, 160 50, 110 130, 160 150))</screen>
     </refsection>
 
     <refsection>
@@ -403,17 +403,13 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
 
     <refsection>
       <title>Examples</title>
-      <programlisting>
--- Get all unique edges of a coverage
-SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))')));
---------------------------------------
-MULTILINESTRING((0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 10 10), (10 10, 0 10), (0 10, 0 0), (10 0, 10 10))
+      <para>This example returns all unique edges of a coverage.</para>
+      <programlisting role="requires-external-state">SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))')));</programlisting>
+<screen>MULTILINESTRING((0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 10 10), (10 10, 0 10), (0 10, 0 0), (10 0, 10 10))</screen>
 
--- Get only interior (shared) edges
-SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))'), 2));
---------------------------------------
-MULTILINESTRING((10 0, 10 10))
-      </programlisting>
+      <para>This example returns only the interior shared edges of a coverage.</para>
+      <programlisting role="requires-external-state">SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))'), 2));</programlisting>
+<screen>MULTILINESTRING((10 0, 10 10))</screen>
     </refsection>
 
     <refsection>
@@ -498,12 +494,9 @@ MULTILINESTRING((10 0, 10 10))
   (4, 'POLYGON ((140 190, 120 170, 140 130, 160 150, 140 190))'::geometry),
   (5, 'POLYGON ((180 160, 170 140, 140 130, 160 150, 140 190, 180 160))'::geometry)
 )
-SELECT ST_AsText(ST_CoverageUnion(geom))
-  FROM coverage;
-
---------------------------------------
-MULTIPOLYGON (((10 150, 80 190, 110 150, 140 80, 120 10, 10 10, 10 150), (50 60, 100 70, 40 110, 50 60)), ((120 170, 140 190, 180 160, 170 140, 140 130, 120 170)))
-      </programlisting>
+SELECT ST_AsText(ST_CoverageUnion(geom)) AS wkt
+  FROM coverage;</programlisting>
+<screen>MULTIPOLYGON(((10 150,80 190,110 150,140 80,120 10,10 10,10 150),(50 60,100 70,40 110,50 60)),((120 170,140 190,180 160,170 140,140 130,120 170)))</screen>
     </refsection>
 
     <refsection>

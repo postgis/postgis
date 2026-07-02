@@ -41,19 +41,10 @@
       <refsection>
         <title>Examples</title>
 
-<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
-
-box2d
----------
-BOX(1 2,5 6)
-</programlisting>
-<programlisting>
-SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
-
-box2d
---------
-BOX(220186.984375 150406,220288.25 150506.140625)
-</programlisting>
+<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));</programlisting>
+<screen>BOX(1 2,5 6)</screen>
+<programlisting>SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));</programlisting>
+<screen>BOX(220186.99512189245 150406,220288.24878054656 150506.12682932706)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -95,19 +86,10 @@ BOX(220186.984375 150406,220288.25 150506.140625)
       <refsection>
         <title>Examples</title>
 
-<programlisting>SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
-
-Box3d
----------
-BOX3D(1 2 3,5 6 5)
-</programlisting>
-<programlisting>
-SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
-
-Box3d
---------
-BOX3D(220227 150406 1,220268 150415 1)
-</programlisting>
+<programlisting>SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));</programlisting>
+<screen>BOX3D(1 2 3,5 6 5)</screen>
+<programlisting>SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));</programlisting>
+<screen>BOX3D(220186.99512189245 150406 1,220288.24878054656 150506.12682932706 1)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -196,11 +178,9 @@ BOX3D(220227 150406 1,220268 150415 1)
         <title>Examples</title>
 
         <programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
---result--
 BOX(-8877653 4912316,-8010225.5 5589284)
 
 SELECT ST_EstimatedExtent('feature_poly', 'geom');
---result--
 BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
         </programlisting>
       </refsection>
@@ -304,27 +284,16 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
       <refsection>
         <title>Examples</title>
         <note><para>Examples below use US National Atlas Equal Area (SRID=2163) which is a meter projection</para></note>
-        <programlisting>
-        <!-- TODO: fix results of documentation to reflect new behavior -->
+        <programlisting>        <!-- TODO: fix results of documentation to reflect new behavior -->
 --10 meter expanded box around bbox of a linestring
-SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,2312892 110714)', 2163),10) As box2d);
-                     st_expand
-------------------------------------
- BOX(2312882 110666,2312990 110724)
-
---10 meter expanded 3D box of a 3D box
-SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As box3d),10)
-                              st_expand
------------------------------------------------------
- BOX3D(778773 2951731 -9,794885 2970052.61545891 20)
-
- --10 meter geometry astext rep of a expand box around a point geometry
- SELECT ST_AsEWKT(ST_Expand(ST_GeomFromEWKT('SRID=2163;POINT(2312980 110676)'),10));
-                                            st_asewkt
--------------------------------------------------------------------------------------------------
- SRID=2163;POLYGON((2312970 110666,2312970 110686,2312990 110686,2312990 110666,2312970 110666))
-
-        </programlisting>
+SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,2312892 110714)', 2163),10) As box2d);</programlisting>
+<screen>BOX(2312882 110666,2312990 110724)</screen>
+<para>This example expands a 3D box by 10 meters.</para>
+<programlisting>SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' AS box3d),10)</programlisting>
+<screen>BOX3D(778773 2951731 -9,794885 2970052.61545891 20)</screen>
+<para>This example renders the text representation of a 10-meter expanded box around a point geometry.</para>
+<programlisting>SELECT ST_AsEWKT(ST_Expand(ST_GeomFromEWKT('SRID=2163;POINT(2312980 110676)'),10));</programlisting>
+<screen>SRID=2163;POLYGON((2312970 110666,2312970 110686,2312990 110686,2312990 110666,2312970 110666))</screen>
       </refsection>
 
       <refsection>
@@ -379,34 +348,22 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
       <refsection>
         <title>Examples</title>
         <note><para>Examples below use Massachusetts State Plane ft (SRID=2249)</para></note>
-        <programlisting>
-
-SELECT ST_Extent(geom) as bextent FROM sometable;
-                     st_bextent
-------------------------------------
-BOX(739651.875 2908247.25,794875.8125 2970042.75)
-
-
---Return extent of each category of geometries
+        <programlisting>SELECT ST_Extent(geom) AS bextent FROM sometable;</programlisting>
+<screen>BOX(739651.875 2908247.25,794875.8125 2970042.75)</screen>
+<programlisting>--Return extent of each category of geometries
 SELECT ST_Extent(geom) as bextent
 FROM sometable
-GROUP BY category ORDER BY category;
-
-                      bextent                       |         name
+GROUP BY category ORDER BY category;</programlisting>
+<screen>                      bextent                       |         name
 ----------------------------------------------------+----------------
  BOX(778783.5625 2951741.25,794875.8125 2970042.75) | A
  BOX(751315.8125 2919164.75,765202.6875 2935417.25) | B
- BOX(739651.875 2917394.75,756688.375 2935866)      | C
-
- --Force back into a geometry
- -- and render the extended text representation of that geometry
-SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
-
-                bextent
---------------------------------------------------------------------------------
- SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
+ BOX(739651.875 2917394.75,756688.375 2935866)      | C</screen>
+<para>This example converts the extent back into a geometry and renders its extended text representation.</para>
+<programlisting>SELECT ST_SetSRID(ST_Extent(geom),2249) AS bextent FROM sometable;</programlisting>
+<screen> SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
  794875.8125 2908247.25,739651.875 2908247.25))
-        </programlisting>
+        </screen>
       </refsection>
 
       <refsection>
@@ -458,27 +415,20 @@ SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
-SELECT ST_3DExtent(foo.geom) As b3extent
+        <programlisting>SELECT ST_3DExtent(foo.geom) As b3extent
 FROM (SELECT ST_MakePoint(x,y,z) As geom
     FROM generate_series(1,3) As x
         CROSS JOIN generate_series(1,2) As y
-        CROSS JOIN generate_series(0,2) As Z) As foo;
-      b3extent
---------------------
- BOX3D(1 1 0,3 2 2)
-
---Get the extent of various elevated circular strings
+        CROSS JOIN generate_series(0,2) As Z) As foo;</programlisting>
+<screen>BOX3D(1 1 0,3 2 2)</screen>
+<para>This example returns the extent of several elevated CircularStrings.</para>
+<programlisting>
 SELECT ST_3DExtent(foo.geom) As b3extent
-FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1))),0,0,z) As geom
+FROM (SELECT ST_Translate(ST_Force3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1))),0,0,z) As geom
     FROM generate_series(1,3) As x
         CROSS JOIN generate_series(1,2) As y
-        CROSS JOIN generate_series(0,2) As Z) As foo;
-
-    b3extent
---------------------
- BOX3D(1 0 0,4 2 2)
-        </programlisting>
+        CROSS JOIN generate_series(0,2) As Z) As foo;</programlisting>
+<screen>BOX3D(0 0 0,4 3 2)</screen>
       </refsection>
 
       <refsection>
@@ -571,12 +521,8 @@ WHERE geom && ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
 
         <programlisting>
 SELECT ST_3DMakeBox(ST_MakePoint(-989502.1875, 528439.5625, 10),
-    ST_MakePoint(-987121.375 ,529933.1875, 10)) As abb3d
-
---bb3d--
---------
-BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
-    </programlisting>
+    ST_MakePoint(-987121.375 ,529933.1875, 10))</programlisting>
+<screen>BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -621,30 +567,17 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');
-st_xmax
--------
-4
-
-SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
-st_xmax
--------
-5
-
-SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));
-st_xmax
--------
-3
---Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
-SELECT ST_XMax('LINESTRING(1 3, 5 6)');
-
---ERROR:  BOX3D parser - doesn't start with BOX3D(
-
-SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
-st_xmax
---------
-220288.248780547
-        </programlisting>
+        <programlisting>SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>4</screen>
+<programlisting>SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));</programlisting>
+<screen>5</screen>
+<programlisting>SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' AS box2d));</programlisting>
+<screen>3</screen>
+<para>Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D.</para>
+<programlisting>SELECT ST_XMax('LINESTRING(1 3, 5 6)');</programlisting>
+<screen>ERROR: BOX3D parser - doesn't start with BOX3D(</screen>
+<programlisting>SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));</programlisting>
+<screen>220288.248780547</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -689,30 +622,17 @@ st_xmax
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');
-st_xmin
--------
-1
-
-SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
-st_xmin
--------
-1
-
-SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));
-st_xmin
--------
--3
---Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
-SELECT ST_XMin('LINESTRING(1 3, 5 6)');
-
---ERROR:  BOX3D parser - doesn't start with BOX3D(
-
-SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
-st_xmin
---------
-220186.995121892
-        </programlisting>
+        <programlisting>SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>1</screen>
+<programlisting>SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));</programlisting>
+<screen>1</screen>
+<programlisting>SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' AS box2d));</programlisting>
+<screen>-3</screen>
+<para>Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D.</para>
+<programlisting>SELECT ST_XMin('LINESTRING(1 3, 5 6)');</programlisting>
+<screen>ERROR: BOX3D parser - doesn't start with BOX3D(</screen>
+<programlisting>SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));</programlisting>
+<screen>220186.995121892</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -757,30 +677,17 @@ st_xmin
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');
-st_ymax
--------
-5
-
-SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
-st_ymax
--------
-6
-
-SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));
-st_ymax
--------
-4
---Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
-SELECT ST_YMax('LINESTRING(1 3, 5 6)');
-
---ERROR:  BOX3D parser - doesn't start with BOX3D(
-
-SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
-st_ymax
---------
-150506.126829327
-        </programlisting>
+        <programlisting>SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>5</screen>
+<programlisting>SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));</programlisting>
+<screen>6</screen>
+<programlisting>SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' AS box2d));</programlisting>
+<screen>4</screen>
+<para>Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D.</para>
+<programlisting>SELECT ST_YMax('LINESTRING(1 3, 5 6)');</programlisting>
+<screen>ERROR: BOX3D parser - doesn't start with BOX3D(</screen>
+<programlisting>SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));</programlisting>
+<screen>150506.126829327</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -825,30 +732,17 @@ st_ymax
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');
-st_ymin
--------
-2
-
-SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));
-st_ymin
--------
-3
-
-SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));
-st_ymin
--------
-2
---Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
-SELECT ST_YMin('LINESTRING(1 3, 5 6)');
-
---ERROR:  BOX3D parser - doesn't start with BOX3D(
-
-SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
-st_ymin
---------
-150406
-        </programlisting>
+        <programlisting>SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>2</screen>
+<programlisting>SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));</programlisting>
+<screen>3</screen>
+<programlisting>SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' AS box2d));</programlisting>
+<screen>2</screen>
+<para>Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D.</para>
+<programlisting>SELECT ST_YMin('LINESTRING(1 3, 5 6)');</programlisting>
+<screen>ERROR: BOX3D parser - doesn't start with BOX3D(</screen>
+<programlisting>SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));</programlisting>
+<screen>150406</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -893,30 +787,17 @@ st_ymin
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_ZMax('BOX3D(1 2 3, 4 5 6)');
-st_zmax
--------
-6
-
-SELECT ST_ZMax(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));
-st_zmax
--------
-7
-
-SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)' );
-st_zmax
--------
-1
---Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
-SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');
-
---ERROR:  BOX3D parser - doesn't start with BOX3D(
-
-SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
-st_zmax
---------
-3
-        </programlisting>
+        <programlisting>SELECT ST_ZMax('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>6</screen>
+<programlisting>SELECT ST_ZMax(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));</programlisting>
+<screen>7</screen>
+<programlisting>SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)');</programlisting>
+<screen>1</screen>
+<para>Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D.</para>
+<programlisting>SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');</programlisting>
+<screen>ERROR: BOX3D parser - doesn't start with BOX3D(</screen>
+<programlisting>SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));</programlisting>
+<screen>3</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -961,30 +842,17 @@ st_zmax
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');
-st_zmin
--------
-3
-
-SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));
-st_zmin
--------
-4
-
-SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );
-st_zmin
--------
-1
---Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
-SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');
-
---ERROR:  BOX3D parser - doesn't start with BOX3D(
-
-SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));
-st_zmin
---------
-1
-        </programlisting>
+        <programlisting>SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>3</screen>
+<programlisting>SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));</programlisting>
+<screen>4</screen>
+<programlisting>SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)');</programlisting>
+<screen>1</screen>
+<para>Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D.</para>
+<programlisting>SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');</programlisting>
+<screen>ERROR: BOX3D parser - doesn't start with BOX3D(</screen>
+<programlisting>SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));</programlisting>
+<screen>1</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -1029,16 +897,10 @@ st_zmin
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_XSize('BOX3D(1 2 3, 4 5 6)');
-st_xsize
---------
-3
-
-SELECT ST_XSize(ST_GeomFromText('LINESTRING(1 3, 5 6)'));
-st_xsize
---------
-4
-        </programlisting>
+        <programlisting>SELECT ST_XSize('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>3</screen>
+<programlisting>SELECT ST_XSize(ST_GeomFromText('LINESTRING(1 3, 5 6)'));</programlisting>
+<screen>4</screen>
       </refsection>
 
       <refsection>
@@ -1082,16 +944,10 @@ st_xsize
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_YSize('BOX3D(1 2 3, 4 5 6)');
-st_ysize
---------
-3
-
-SELECT ST_YSize(ST_GeomFromText('LINESTRING(1 3, 5 6)'));
-st_ysize
---------
-3
-        </programlisting>
+        <programlisting>SELECT ST_YSize('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>3</screen>
+<programlisting>SELECT ST_YSize(ST_GeomFromText('LINESTRING(1 3, 5 6)'));</programlisting>
+<screen>3</screen>
       </refsection>
 
       <refsection>
@@ -1135,16 +991,10 @@ st_ysize
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_ZSize('BOX3D(1 2 3, 4 5 6)');
-st_zsize
---------
-3
-
-SELECT ST_ZSize(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));
-st_zsize
---------
-3
-        </programlisting>
+        <programlisting>SELECT ST_ZSize('BOX3D(1 2 3, 4 5 6)');</programlisting>
+<screen>3</screen>
+<programlisting>SELECT ST_ZSize(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));</programlisting>
+<screen>3</screen>
       </refsection>
 
       <refsection>
@@ -1181,11 +1031,8 @@ st_zsize
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_MMin('POINT M (1 2 3)');
-st_mmin
--------
-3
-        </programlisting>
+        <programlisting>SELECT ST_MMin('POINT M (1 2 3)');</programlisting>
+<screen>3</screen>
       </refsection>
 
       <refsection>
@@ -1221,10 +1068,8 @@ st_mmin
 
       <refsection>
         <title>Examples</title>
-        <programlisting>SELECT ST_MMax('POINT M (1 2 3)');
-st_mmax
--------
-3       </programlisting>
+        <programlisting>SELECT ST_MMax('POINT M (1 2 3)');</programlisting>
+<screen>3</screen>
       </refsection>
 
       <refsection>
@@ -1259,10 +1104,8 @@ st_mmax
 
       <refsection>
         <title>Examples</title>
-        <programlisting>SELECT ST_MSize('LINESTRING M (1 2 3, 4 6 8)');
-st_msize
---------
-5       </programlisting>
+        <programlisting>SELECT ST_MSize('LINESTRING M (1 2 3, 4 6 8)');</programlisting>
+<screen>5</screen>
       </refsection>
 
       <refsection>

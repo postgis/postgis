@@ -621,12 +621,10 @@ SELECT AddRasterConstraints('myrasters'::name, 'rast'::name);
 -- verify if registered correctly in the raster_columns view --
 SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
     FROM raster_columns
-    WHERE r_table_name = 'myrasters';
-
- srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
+    WHERE r_table_name = 'myrasters';</programlisting>
+<screen> srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
 ------+---------+---------+-------------+-------------+-----------+-------------+---------------
- 4326 |       2 |       2 |        1000 |        1000 |         1 | {8BSI}      | {0}
-        </programlisting>
+ 4326 |       2 |       2 |        1000 |        1000 |         1 | {8BSI}      | {0}</screen>
       </refsection>
 
        <refsection>
@@ -636,11 +634,10 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 INSERT INTO myrasters2(rast)
 SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
 
-SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');
--- get notice--
-NOTICE:  Adding regular blocking constraint
+SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');</programlisting>
+<screen>NOTICE:  Adding regular blocking constraint
 NOTICE:  Adding blocksize-X constraint
-NOTICE:  Adding blocksize-Y constraint</programlisting>
+NOTICE:  Adding blocksize-Y constraint</screen>
       </refsection>
 
       <refsection>
@@ -790,12 +787,10 @@ t
 -- verify change in raster_columns --
 SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
     FROM raster_columns
-    WHERE r_table_name = 'myrasters';
-
- srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
+    WHERE r_table_name = 'myrasters';</programlisting>
+<screen> srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
 ------+---------+---------+-------------+-------------+-----------+-------------+---------------
-    0 |         |         |             |             |           |             |
-        </programlisting>
+    0 |         |         |             |             |           |             |</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -874,14 +869,12 @@ parameters are omitted, the first table found scanning the
 
         <programlisting>
 CREATE TABLE res1 AS SELECT
-ST_AddBand(
-  ST_MakeEmptyRaster(1000, 1000, 0, 0, 2),
+ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 2),
   1, '8BSI'::text, -129, NULL
 ) r1;
 
 CREATE TABLE res2 AS SELECT
-ST_AddBand(
-  ST_MakeEmptyRaster(500, 500, 0, 0, 4),
+ST_AddBand(ST_MakeEmptyRaster(500, 500, 0, 0, 4),
   1, '8BSI'::text, -129, NULL
 ) r2;
 
@@ -891,12 +884,11 @@ SELECT AddOverviewConstraints('res2', 'r2', 'res1', 'r1', 2);
 SELECT o_table_name ot, o_raster_column oc,
        r_table_name rt, r_raster_column rc,
        overview_factor f
-FROM raster_overviews WHERE o_table_name = 'res2';
-  ot  | oc |  rt  | rc | f
+FROM raster_overviews WHERE o_table_name = 'res2';</programlisting>
+<screen>  ot  | oc |  rt  | rc | f
 ------+----+------+----+---
  res2 | r2 | res1 | r1 | 2
-(1 row)
-        </programlisting>
+(1 row)</screen>
       </refsection>
 
       <refsection>
@@ -992,12 +984,8 @@ will be used.
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
-SELECT PostGIS_GDAL_Version();
-       postgis_gdal_version
------------------------------------
- GDAL 1.11dev, released 2013/04/13
-                </programlisting>
+                <programlisting>SELECT PostGIS_GDAL_Version();</programlisting>
+<screen>GDAL 1.11dev, released 2013/04/13</screen>
             </refsection>
 
             <refsection>
@@ -1034,11 +1022,8 @@ SELECT PostGIS_GDAL_Version();
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT PostGIS_Raster_Lib_Build_Date();
-postgis_raster_lib_build_date
------------------------------
-2010-04-28 21:15:10
-</programlisting>
+        <programlisting>SELECT PostGIS_Raster_Lib_Build_Date();</programlisting>
+<screen>2010-04-28 21:15:10</screen>
       </refsection>
 
       <refsection>
@@ -1076,11 +1061,8 @@ postgis_raster_lib_build_date
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT PostGIS_Raster_Lib_Version();
-postgis_raster_lib_version
------------------------------
- 2.0.0
-</programlisting>
+        <programlisting>SELECT PostGIS_Raster_Lib_Version();</programlisting>
+<screen>2.0.0</screen>
       </refsection>
 
       <refsection>
@@ -1131,10 +1113,9 @@ postgis_raster_lib_version
 
         <programlisting>SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SELECT short_name, long_name, can_write
-FROM st_gdaldrivers()
-ORDER BY short_name;
-
-   short_name    |                          long_name                          | can_write
+FROM ST_GDALDrivers()
+ORDER BY short_name;</programlisting>
+<screen>   short_name    |                          long_name                          | can_write
 -----------------+-------------------------------------------------------------+-----------
  AAIGrid         | Arc/Info ASCII Grid                                         | t
  ACE2            | ACE2                                                        | f
@@ -1188,20 +1169,18 @@ ORDER BY short_name;
  WMTS            | OGC Web Map Tile Service                                    | t
  XPM             | X11 PixMap Format                                           | t
  XYZ             | ASCII Gridded XYZ                                           | t
- ZMap            | ZMap Plus Grid                                              | t
-</programlisting>
+ ZMap            | ZMap Plus Grid                                              | t</screen>
 </refsection>
 <refsection><title>Example: List of options for each driver</title>
-<programlisting>-- Output the create options XML column of JPEG as a table  --
--- Note you can use these creator options in ST_AsGDALRaster options argument
+<para>Output the create options XML column of JPEG as a table. These creator options can be used in the ST_AsGDALRaster options argument.</para>
+<programlisting>
 SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@type', g.opt))[1]::text As otype,
        (xpath('@description', g.opt))[1]::text As descrip
 FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As opt
-FROM  st_gdaldrivers()
-WHERE short_name = 'JPEG') As g;
-
-       oname        |  otype  |      descrip
+FROM  ST_GDALDrivers()
+WHERE short_name = 'JPEG') As g;</programlisting>
+<screen>       oname        |  otype  |      descrip
 --------------------+---------+-------------------------------------------------
  PROGRESSIVE        | boolean | whether to generate a progressive JPEG
  QUALITY            | int     | good=100, bad=0, default=75
@@ -1213,14 +1192,14 @@ WHERE short_name = 'JPEG') As g;
                                 By default its max dimension will be 128
  THUMBNAIL_WIDTH    | int     | Forced thumbnail width
  THUMBNAIL_HEIGHT   | int     | Forced thumbnail height
-(9 rows)
-</programlisting>
+(9 rows)</screen>
 
-<programlisting><![CDATA[
+<para>This example returns raw XML output for GeoTIFF creator options.</para>
+<programlisting>
+<![CDATA[
 
--- raw xml output for creator options for GeoTiff --
 SELECT create_options
-FROM st_gdaldrivers()
+FROM ST_GDALDrivers()
 WHERE short_name = 'GTiff';
 
 <CreationOptionList>
@@ -1290,7 +1269,7 @@ SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@description', g.opt))[1]::text As descrip,
        array_to_string(xpath('Value/text()', g.opt),', ') As vals
 FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As opt
-FROM  st_gdaldrivers()
+FROM  ST_GDALDrivers()
 WHERE short_name = 'GTiff') As g;
 
        oname        |     otype     |                               descrip                                |                                   vals
@@ -1541,16 +1520,15 @@ constraints enforced.
             <refsection>
                 <title>Examples: Single New Band</title>
 
+                <para>This example adds another 8-bit unsigned integer band with pixels initialized to 200.</para>
                 <programlisting>
--- Add another band of type 8 bit unsigned integer with pixels initialized to 200
 UPDATE dummy_rast
     SET rast = ST_AddBand(rast,'8BUI'::text,200)
 WHERE rid = 1;
                 </programlisting>
 
+                <para>Create an empty raster 100x100 units, with upper left right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15) Uses addbandargs.</para>
                 <programlisting>
--- Create an empty raster 100x100 units, with upper left  right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15)
--- uses addbandargs
 INSERT INTO dummy_rast(rid,rast)
     VALUES(10, ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, 0),
     ARRAY[
@@ -1563,23 +1541,20 @@ INSERT INTO dummy_rast(rid,rast)
 -- output meta data of raster bands to verify all is right --
 SELECT  (bmd).*
 FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd
-    FROM dummy_rast WHERE rid = 10) AS foo;
- --result --
- pixeltype | nodatavalue | isoutdb | path
+    FROM dummy_rast WHERE rid = 10) AS foo;</programlisting>
+<screen> pixeltype | nodatavalue | isoutdb | path
 -----------+----------------+-------------+---------+------
  1BB       |             | f       |
- 4BUI      |             | f       |
-
-
--- output meta data of raster -
+ 4BUI      |             | f       |</screen>
+<para>This example outputs metadata for the raster.</para>
+<programlisting>
 SELECT  (rmd).width, (rmd).height, (rmd).numbands
 FROM (SELECT ST_MetaData(rast) As rmd
-    FROM dummy_rast WHERE rid = 10) AS foo;
--- result --
- upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+    FROM dummy_rast WHERE rid = 10) AS foo;</programlisting>
+<screen> upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ------------+------------+-------+--------+------------+------------+-------+-------+------+----------
           0 |          0 |   100 |    100 |      1 |     -1 |     0 |     0 |   0 |        2
-                </programlisting>
+                </screen>
             </refsection>
 
             <refsection>
@@ -1588,9 +1563,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
                 <programlisting>
 SELECT
     *
-FROM ST_BandMetadata(
-    ST_AddBand(
-        ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+FROM ST_BandMetaData(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
         ARRAY[
             ROW(NULL, '8BUI', 255, 0),
             ROW(NULL, '16BUI', 1, 2),
@@ -1599,22 +1572,16 @@ FROM ST_BandMetadata(
         ]::addbandarg[]
     ),
     ARRAY[]::integer[]
-);
+);</programlisting>
+<screen> bandnum | pixeltype | nodatavalue | isoutdb | path | outdbbandnum | filesize | filetimestamp
+---------+-----------+-------------+---------+------+--------------+----------+---------------
+       1 | 8BUI      |           0 | f       | null |         null |     null |          null
+       2 | 32BF      |          -1 | f       | null |         null |     null |          null
+       3 | 32BUI     |          12 | f       | null |         null |     null |          null
+       4 | 16BUI     |           2 | f       | null |         null |     null |          null</screen>
 
- bandnum | pixeltype | nodatavalue | isoutdb | path
----------+-----------+-------------+---------+------
-       1 | 8BUI      |           0 | f       |
-       2 | 32BF      |          -1 | f       |
-       3 | 32BUI     |          12 | f       |
-       4 | 16BUI     |           2 | f       |
-                </programlisting>
-
+                <para>Aggregate the 1st band of a table of like rasters into a single raster. With as many bands as there are test_types and as many rows (new rasters) as there are mice. Note that The ORDER BY test_type clause relies on aggregate ORDER BY support. The resulting raster will have a band for each test_type alphabetical by test_type. For mouse lovers: No mice were harmed in this exercise.</para>
                 <programlisting>
--- Aggregate the 1st band of a table of like rasters into a single raster
--- with as many bands as there are test_types and as many rows (new rasters) as there are mice
--- NOTE: The ORDER BY test_type clause relies on aggregate ORDER BY support.
--- The resulting raster will have a band for each test_type alphabetical by test_type
--- For mouse lovers: No mice were harmed in this exercise
 SELECT
     mouse,
     ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1) As rast
@@ -1628,20 +1595,16 @@ GROUP BY mouse;
                 <programlisting>
 SELECT
     *
-FROM ST_BandMetadata(
-    ST_AddBand(
-        ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+FROM ST_BandMetaData(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
         '/home/raster/mytestraster.tif'::text, NULL::int[]
     ),
     ARRAY[]::integer[]
-);
-
- bandnum | pixeltype | nodatavalue | isoutdb | path
+);</programlisting>
+<screen> bandnum | pixeltype | nodatavalue | isoutdb | path
 ---------+-----------+-------------+---------+------
        1 | 8BUI      |             | t       | /home/raster/mytestraster.tif
        2 | 8BUI      |             | t       | /home/raster/mytestraster.tif
-       3 | 8BUI      |             | t       | /home/raster/mytestraster.tif
-                </programlisting>
+       3 | 8BUI      |             | t       | /home/raster/mytestraster.tif</screen>
             </refsection>
 
             <refsection>
@@ -1846,9 +1809,8 @@ FROM ST_BandMetadata(
                               <caption><para>black circle</para></caption>
                             </mediaobject>
                           </informalfigure></para>
-                <programlisting>
--- this will output a black circle taking up 150 x 150 pixels --
-SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
+                <para>This example outputs a black circle occupying 150 by 150 pixels.</para>
+                <programlisting>SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlisting>
 
  <para><informalfigure>
                             <mediaobject>
@@ -1859,11 +1821,9 @@ SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150));</programlist
                             </mediaobject>
                           </informalfigure></para>
 
-                <programlisting>-- the bands map to RGB bands - the value (118,154,118) - teal  --
-SELECT ST_AsPNG(
-    ST_AsRaster(
-        ST_Buffer(
-            ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), 10,'join=bevel'),
+                <para>This example maps bands to RGB channels, producing the teal value (118,154,118).</para>
+                <programlisting>
+SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), 10,'join=bevel'),
             200,200,ARRAY['8BUI', '8BUI', '8BUI'], ARRAY[118,154,118], ARRAY[0,0,0]));</programlisting>
 
             </refsection>
@@ -1936,12 +1896,11 @@ SELECT
 	ST_Value(r,'POINT(5 0)') v5_0,
 	ST_Value(r,'POINT(15 0)') v15_0,
 	ST_Value(r,'POINT(25 0)') v25_0
-FROM agg;
- w  | h  | v5_0 | v15_0 | v25_0
+FROM agg;</programlisting>
+<screen> w  | h  | v5_0 | v15_0 | v25_0
 ----+----+------+-------+-------
  30 | 20 |    1 |     3 |     2
-(1 row)
-                </programlisting>
+(1 row)</screen>
             </refsection>
 
             <refsection>
@@ -1998,32 +1957,29 @@ FROM agg;
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>-- Make 2 new rasters: 1 containing band 1 of dummy, second containing band 2 of dummy and then reclassified as a 2BUI
+                    <para>This example creates two rasters: one containing band 1 of dummy_rast, and one containing band 2 reclassified as 2BUI.</para>
+                    <programlisting>
 SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1,
  ST_NumBands(rast2) As numb2,  ST_BandPixelType(rast2) As pix2
 FROM (
     SELECT ST_Band(rast) As rast1, ST_Reclass(ST_Band(rast,3), '100-200):1, [200-254:2', '2BUI') As rast2
         FROM dummy_rast
-        WHERE rid = 2) As foo;
-
- numb1 | pix1 | numb2 | pix2
+        WHERE rid = 2) As foo;</programlisting>
+<screen> numb1 | pix1 | numb2 | pix2
 -------+------+-------+------
-     1 | 8BUI |     1 | 2BUI
-                    </programlisting>
+     1 | 8BUI |     1 | 2BUI</screen>
 
-                    <programlisting>-- Return bands 2 and 3. Using array cast syntax
-SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands
+                    <para>Return bands 2 and 3 using array cast syntax.</para>
+                    <programlisting>SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands
     FROM dummy_rast WHERE rid=2;
-
-num_bands
-----------
-2
-
--- Return bands 2 and 3. Use array to define bands
-SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands
+</programlisting>
+<screen>2</screen>
+                    <para>Return bands 2 and 3 using array syntax.</para>
+                    <programlisting>SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands
     FROM dummy_rast
 WHERE rid=2;
                     </programlisting>
+<screen>2</screen>
 <informaltable>
   <tgroup cols="3">
     <tbody>
@@ -2111,9 +2067,8 @@ WHERE rid=35;
                   <refsection>
                     <title>Examples Basic</title>
                     <para>Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner (22, 77) to lower right corner (55, 33).</para>
-                    <programlisting>SELECT (ST_MetaData(tile)).* FROM ST_MakeEmptyCoverage(1, 1, 4, 4, 22, 33, (55 - 22)/(4)::float, (33 - 77)/(4)::float, 0., 0., 4326) tile;
-
- upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+                    <programlisting>SELECT (ST_MetaData(tile)).* FROM ST_MakeEmptyCoverage(1, 1, 4, 4, 22, 33, (55 - 22)/(4)::float, (33 - 77)/(4)::float, 0., 0., 4326) tile;</programlisting>
+<screen> upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -------------------------------------------------------------------------------------
          22 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
       30.25 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
@@ -2130,7 +2085,7 @@ WHERE rid=35;
          22 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
       30.25 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
        38.5 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
-      46.75 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0</programlisting>
+      46.75 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0</screen>
                   </refsection>
 
                   <refsection>
@@ -2194,7 +2149,7 @@ WHERE rid=35;
 
                     <programlisting>
 INSERT INTO dummy_rast(rid,rast)
-VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
+VALUES(3, ST_MakeEmptyRaster(100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
 
 --use an existing raster as template for new raster
 INSERT INTO dummy_rast(rid,rast)
@@ -2206,13 +2161,11 @@ SELECT rid, (md).*
 FROM (SELECT rid, ST_MetaData(rast) As md
     FROM dummy_rast
     WHERE rid IN(3,4)) As foo;
-
--- output --
- rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+</programlisting>
+<screen> rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -----+------------+------------+-------+--------+------------+------------+-------+-------+------+----------
    3 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |    0  |     0 | 4326 |        0
-   4 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |    0  |     0 | 4326 |        0
-                </programlisting>
+   4 |     0.0005 |     0.0005 |   100 |    100 |          1 |          1 |    0  |     0 | 4326 |        0</screen>
 
             </refsection>
 
@@ -2306,11 +2259,8 @@ WITH foo AS (
 )
 SELECT
     ST_DumpValues(rast)
-FROM baz;
-
-              st_dumpvalues
-------------------------------------------
- (1,"{{1,1,1},{1,1,1},{1,1,1}}")
+FROM baz;</programlisting>
+<screen> (1,"{{1,1,1},{1,1,1},{1,1,1}}")
  (2,"{{10,10,10},{10,10,10},{10,10,10}}")
  (1,"{{2,2,2},{2,2,2},{2,2,2}}")
  (2,"{{20,20,20},{20,20,20},{20,20,20}}")
@@ -2328,8 +2278,7 @@ FROM baz;
  (2,"{{80,80,80},{80,80,80},{80,80,80}}")
  (1,"{{9,9,9},{9,9,9},{9,9,9}}")
  (2,"{{90,90,90},{90,90,90},{90,90,90}}")
-(18 rows)
-                </programlisting>
+(18 rows)</screen>
 
                 <programlisting>
 WITH foo AS (
@@ -2347,15 +2296,12 @@ WITH foo AS (
 ), bar AS (
     SELECT ST_Union(rast) AS rast FROM foo
 ), baz AS (
-    SELECT ST_Tile(rast, 3, 3, 2) AS rast FROM bar
+    SELECT ST_Tile(rast, ARRAY[2], 3, 3) AS rast FROM bar
 )
 SELECT
     ST_DumpValues(rast)
-FROM baz;
-
-              st_dumpvalues
-------------------------------------------
- (1,"{{10,10,10},{10,10,10},{10,10,10}}")
+FROM baz;</programlisting>
+<screen> (1,"{{10,10,10},{10,10,10},{10,10,10}}")
  (1,"{{20,20,20},{20,20,20},{20,20,20}}")
  (1,"{{30,30,30},{30,30,30},{30,30,30}}")
  (1,"{{40,40,40},{40,40,40},{40,40,40}}")
@@ -2364,8 +2310,7 @@ FROM baz;
  (1,"{{70,70,70},{70,70,70},{70,70,70}}")
  (1,"{{80,80,80},{80,80,80},{80,80,80}}")
  (1,"{{90,90,90},{90,90,90},{90,90,90}}")
-(9 rows)
-                </programlisting>
+(9 rows)</screen>
 
             </refsection>
 
@@ -2475,19 +2420,17 @@ bar AS (
 )
 SELECT
     rid,
-    ST_Metadata(rast) AS metadata,
+    ST_MetaData(rast) AS metadata,
     ST_SummaryStats(rast, 1) AS stats1,
     ST_SummaryStats(rast, 2) AS stats2,
     ST_SummaryStats(rast, 3) AS stats3
 FROM bar
-ORDER BY rid;
-
- rid |         metadata          |    stats1     |    stats2     |     stats3
+ORDER BY rid;</programlisting>
+<screen> rid |         metadata          |    stats1     |    stats2     |     stats3
 -----+---------------------------+---------------+---------------+----------------
    1 | (0,0,2,2,1,-1,0,0,0,3)    | (4,4,1,0,1,1) | (4,8,2,0,2,2) | (4,12,3,0,3,3)
    2 | (0,0,2,2,1,-1,0,0,3310,3) | (4,4,1,0,1,1) | (4,8,2,0,2,2) | (4,12,3,0,3,3)
-(2 rows)
-                </programlisting>
+(2 rows)</screen>
 
             </refsection>
 
@@ -2546,17 +2489,15 @@ upperlefty + scaley*0.5</programlisting></para>
                 <title>Examples</title>
 
                 <programlisting>SELECT ST_GeoReference(rast, 'ESRI') As esri_ref, ST_GeoReference(rast, 'GDAL') As gdal_ref
- FROM dummy_rast WHERE rid=1;
-
-   esri_ref   |   gdal_ref
+ FROM dummy_rast WHERE rid=1;</programlisting>
+<screen>   esri_ref   |   gdal_ref
 --------------+--------------
  2.0000000000 | 2.0000000000
  0.0000000000 : 0.0000000000
  0.0000000000 : 0.0000000000
  3.0000000000 : 3.0000000000
  1.5000000000 : 0.5000000000
- 2.0000000000 : 0.5000000000
-                </programlisting>
+ 2.0000000000 : 0.5000000000</screen>
             </refsection>
 
             <refsection>
@@ -2590,13 +2531,11 @@ upperlefty + scaley*0.5</programlisting></para>
                     <title>Examples</title>
 
                     <programlisting>SELECT rid, ST_Height(rast) As rastheight
-FROM dummy_rast;
-
- rid | rastheight
+FROM dummy_rast;</programlisting>
+<screen> rid | rastheight
 -----+------------
    1 |         20
-   2 |          5
-                </programlisting>
+   2 |          5</screen>
 
             </refsection>
 
@@ -2632,18 +2571,10 @@ FROM dummy_rast;
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))
-st_isempty |
------------+
-f          |
-
-
-SELECT ST_IsEmpty(ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0))
-st_isempty |
------------+
-t          |
-
-                </programlisting>
+                <programlisting>SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))</programlisting>
+<screen>f</screen>
+<programlisting>SELECT ST_IsEmpty(ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0))</programlisting>
+<screen>t</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -2686,13 +2617,8 @@ t          |
       <refsection>
         <title>Examples</title>
 
-        <programlisting>
-        SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, '8BUI')) As rast_mem;
-
-        rast_mem
-        --------
-        22568
-    </programlisting>
+        <programlisting>SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, '8BUI')) AS rast_mem;</programlisting>
+<screen>22568</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -2730,13 +2656,11 @@ t          |
 
                 <programlisting>SELECT rid, (foo.md).*
  FROM (SELECT rid, ST_MetaData(rast) As md
-FROM dummy_rast) As foo;
-
- rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+FROM dummy_rast) As foo;</programlisting>
+<screen> rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
  ----+------------+------------+-------+--------+--------+-----------+-------+-------+------+-------
    1 |        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |    0 |        0
-   2 | 3427927.75 |    5793244 |     5 |      5 |   0.05 |  -0.05 |     0 |     0 |    0 |        3
-                </programlisting>
+   2 | 3427927.75 |    5793244 |     5 |      5 |   0.05 |  -0.05 |     0 |     0 |    0 |        3</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -2771,13 +2695,11 @@ FROM dummy_rast) As foo;
                 <title>Examples</title>
 
                 <programlisting>SELECT rid, ST_NumBands(rast) As numbands
-FROM dummy_rast;
-
-rid | numbands
+FROM dummy_rast;</programlisting>
+<screen>rid | numbands
 ----+----------
   1 |        0
-  2 |        3
-                </programlisting>
+  2 |        3</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -2816,13 +2738,11 @@ rid | numbands
                 <programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,
  ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
         ST_SkewY(rast) As skewy
-FROM dummy_rast;
-
- rastheight | pixheight | scalex | scaley | skewx | skewy
+FROM dummy_rast;</programlisting>
+<screen> rastheight | pixheight | scalex | scaley | skewx | skewy
 ------------+-----------+--------+--------+-------+----------
          20 |         3 |      2 |      3 |     0 |        0
-          5 |      0.05 |   0.05 |  -0.05 |     0 |        0
-            </programlisting>
+          5 |      0.05 |   0.05 |  -0.05 |     0 |        0</screen>
 
         </refsection>
 
@@ -2832,14 +2752,12 @@ FROM dummy_rast;
                 <programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,
  ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
         ST_SkewY(rast) As skewy
-FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast
-        FROM dummy_rast) As skewed;
-
-rastheight |     pixheight     | scalex | scaley | skewx | skewy
+FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast
+        FROM dummy_rast) As skewed;</programlisting>
+<screen>rastheight |     pixheight     | scalex | scaley | skewx | skewy
 -----------+-------------------+--------+--------+-------+----------
         20 |  3.04138126514911 |      2 |      3 |   0.5 |      0.5
-         5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5
-            </programlisting>
+         5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5</screen>
 
         </refsection>
 
@@ -2895,13 +2813,11 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
             <programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,
     ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
     ST_SkewY(rast) As skewy
-    FROM dummy_rast;
-
-    rastwidth | pixwidth | scalex | scaley | skewx | skewy
+    FROM dummy_rast;</programlisting>
+<screen>    rastwidth | pixwidth | scalex | scaley | skewx | skewy
     -----------+----------+--------+--------+-------+----------
     10 |        2 |      2 |      3 |     0 |        0
-     5 |     0.05 |   0.05 |  -0.05 |     0 |        0
-        </programlisting>
+     5 |     0.05 |   0.05 |  -0.05 |     0 |        0</screen>
 
     </refsection>
 
@@ -2912,13 +2828,11 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
     ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
     ST_SkewY(rast) As skewy
     FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast
-    FROM dummy_rast) As skewed;
-
-    rastwidth |     pixwidth      | scalex | scaley | skewx | skewy
+    FROM dummy_rast) As skewed;</programlisting>
+<screen>    rastwidth |     pixwidth      | scalex | scaley | skewx | skewy
     -----------+-------------------+--------+--------+-------+----------
     10 |  2.06155281280883 |      2 |      3 |   0.5 |      0.5
-     5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5
-        </programlisting>
+     5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5</screen>
 
     </refsection>
 
@@ -2956,13 +2870,11 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
                     <title>Examples</title>
 
                     <programlisting>SELECT rid, ST_ScaleX(rast) As rastpixwidth
-FROM dummy_rast;
-
- rid | rastpixwidth
+FROM dummy_rast;</programlisting>
+<screen> rid | rastpixwidth
 -----+--------------
    1 |            2
-   2 |         0.05
-                </programlisting>
+   2 |         0.05</screen>
 
             </refsection>
 
@@ -3001,13 +2913,11 @@ FROM dummy_rast;
                     <title>Examples</title>
 
                     <programlisting>SELECT rid, ST_ScaleY(rast) As rastpixheight
-FROM dummy_rast;
-
- rid | rastpixheight
+FROM dummy_rast;</programlisting>
+<screen> rid | rastpixheight
 -----+---------------
    1 |             3
-   2 |         -0.05
-                </programlisting>
+   2 |         -0.05</screen>
 
             </refsection>
 
@@ -3050,22 +2960,20 @@ FROM dummy_rast;
             <refsection>
                 <title>Examples</title>
 
+                    <para>This example uses a non-skewed raster.</para>
                     <programlisting>
--- non-skewed raster
 SELECT
     rid,
     (ST_RasterToWorldCoord(rast,1, 1)).*,
     (ST_RasterToWorldCoord(rast,2, 2)).*
-FROM dummy_rast
-
- rid | longitude  | latitude | longitude |  latitude
+FROM dummy_rast</programlisting>
+<screen> rid | longitude  | latitude | longitude |  latitude
 -----+------------+----------+-----------+------------
    1 |        0.5 |      0.5 |       2.5 |        3.5
-   2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95
-                </programlisting>
+   2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95</screen>
 
+                    <para>This example uses a skewed raster.</para>
                     <programlisting>
--- skewed raster
 SELECT
     rid,
     (ST_RasterToWorldCoord(rast, 1, 1)).*,
@@ -3075,13 +2983,11 @@ FROM (
         rid,
         ST_SetSkew(rast, 100.5, 0) As rast
     FROM dummy_rast
-) As foo
-
- rid | longitude  | latitude | longitude | latitude
+) As foo</programlisting>
+<screen> rid | longitude  | latitude | longitude | latitude
 -----+------------+----------+-----------+-----------
    1 |        0.5 |      0.5 |     203.5 |       6.5
-   2 | 3427927.75 |  5793244 | 3428128.8 | 5793243.9
-                </programlisting>
+   2 | 3427927.75 |  5793244 | 3428128.8 | 5793243.9</screen>
 
             </refsection>
 
@@ -3138,31 +3044,27 @@ FROM (
                 <refsection>
                     <title>Examples</title>
 
+                    <para>This example shows that providing a column is sufficient for a non-skewed raster.</para>
                     <programlisting>
--- non-skewed raster providing column is sufficient
 SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord,
     ST_RasterToWorldCoordX(rast,2) As x2coord,
     ST_ScaleX(rast) As pixelx
-FROM dummy_rast;
-
- rid |  x1coord   |  x2coord  | pixelx
+FROM dummy_rast;</programlisting>
+<screen> rid |  x1coord   |  x2coord  | pixelx
 -----+------------+-----------+--------
    1 |        0.5 |       2.5 |      2
-   2 | 3427927.75 | 3427927.8 |   0.05
-                </programlisting>
+   2 | 3427927.75 | 3427927.8 |   0.05</screen>
 
+                    <para>For fun let's skew it.</para>
                     <programlisting>
--- for fun lets skew it
 SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord,
     ST_RasterToWorldCoordX(rast, 2, 3) As x2coord,
     ST_ScaleX(rast) As pixelx
-FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
-
- rid |  x1coord   |  x2coord  | pixelx
+FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;</programlisting>
+<screen> rid |  x1coord   |  x2coord  | pixelx
 -----+------------+-----------+--------
    1 |        0.5 |     203.5 |      2
-   2 | 3427927.75 | 3428128.8 |   0.05
-                </programlisting>
+   2 | 3427927.75 | 3428128.8 |   0.05</screen>
 
             </refsection>
 
@@ -3214,31 +3116,27 @@ FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
                 <refsection>
                     <title>Examples</title>
 
+                    <para>Non-skewed raster providing row is sufficient.</para>
                     <programlisting>
--- non-skewed raster providing row is sufficient
 SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord,
     ST_RasterToWorldCoordY(rast,3) As y2coord,
     ST_ScaleY(rast) As pixely
-FROM dummy_rast;
-
- rid | y1coord |  y2coord  | pixely
+FROM dummy_rast;</programlisting>
+<screen> rid | y1coord |  y2coord  | pixely
 -----+---------+-----------+--------
    1 |     0.5 |       6.5 |      3
-   2 | 5793244 | 5793243.9 |  -0.05
-                </programlisting>
+   2 | 5793244 | 5793243.9 |  -0.05</screen>
 
+                    <para>For fun let's skew it.</para>
                     <programlisting>
--- for fun lets skew it
 SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord,
     ST_RasterToWorldCoordY(rast,2,3) As y2coord,
     ST_ScaleY(rast) As pixely
-FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
-
- rid | y1coord |  y2coord  | pixely
+FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;</programlisting>
+<screen> rid | y1coord |  y2coord  | pixely
 -----+---------+-----------+--------
    1 |     0.5 |       107 |      3
-   2 | 5793244 | 5793344.4 |  -0.05
-                </programlisting>
+   2 | 5793244 | 5793344.4 |  -0.05</screen>
 
             </refsection>
 
@@ -3274,13 +3172,11 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) as rot FROM dummy_rast;
-
- rid |        rot
+                <programlisting>SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) AS rot FROM dummy_rast;</programlisting>
+<screen> rid |        rot
 -----+-------------------
    1 | 0.785398163397448
-   2 | 0.785398163397448
-                </programlisting>
+   2 | 0.785398163397448</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -3317,9 +3213,8 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
 
                     <programlisting>SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,
     ST_GeoReference(rast) as georef
-FROM dummy_rast;
-
- rid | skewx | skewy |       georef
+FROM dummy_rast;</programlisting>
+<screen> rid | skewx | skewy |       georef
 -----+-------+-------+--------------------
    1 |     0 |     0 | 2.0000000000
                      : 0.0000000000
@@ -3333,8 +3228,7 @@ FROM dummy_rast;
                      : 0.0000000000
                      : -0.0500000000
                      : 3427927.7500000000
-                     : 5793244.0000000000
-                </programlisting>
+                     : 5793244.0000000000</screen>
 
             </refsection>
 
@@ -3372,9 +3266,8 @@ FROM dummy_rast;
 
                     <programlisting>SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,
     ST_GeoReference(rast) as georef
-FROM dummy_rast;
-
- rid | skewx | skewy |       georef
+FROM dummy_rast;</programlisting>
+<screen> rid | skewx | skewy |       georef
 -----+-------+-------+--------------------
    1 |     0 |     0 | 2.0000000000
                      : 0.0000000000
@@ -3388,8 +3281,7 @@ FROM dummy_rast;
                      : 0.0000000000
                      : -0.0500000000
                      : 3427927.7500000000
-                     : 5793244.0000000000
-                </programlisting>
+                     : 5793244.0000000000</screen>
 
             </refsection>
 
@@ -3426,12 +3318,8 @@ FROM dummy_rast;
                 <title>Examples</title>
 
                 <programlisting>SELECT ST_SRID(rast) As srid
-FROM dummy_rast WHERE rid=1;
-
-srid
-----------------
-0
-                </programlisting>
+FROM dummy_rast WHERE rid=1;</programlisting>
+<screen>0</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -3467,27 +3355,19 @@ srid
             <refsection>
                 <title>Examples</title>
                 <programlisting>
-SELECT ST_Summary(
-    ST_AddBand(
-        ST_AddBand(
-            ST_AddBand(
-                ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)
-                , 1, '8BUI', 1, 0
-            )
-            , 2, '32BF', 0, -9999
-        )
-        , 3, '16BSI', 0, NULL
+SELECT ST_Summary(ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+                1, '8BUI', 1, 0
+            ),
+            2, '32BF', 0, -9999
+        ),
+        3, '16BSI', 0, NULL
     )
-);
-
-                            st_summary
-------------------------------------------------------------------
- Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)+
+);</programlisting>
+<screen> Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)+
      band 1 of pixtype 8BUI is in-db with NODATA value of 0      +
      band 2 of pixtype 32BF is in-db with NODATA value of -9999  +
      band 3 of pixtype 16BSI is in-db with no NODATA value
-(1 row)
-                </programlisting>
+(1 row)</screen>
             </refsection>
 
             <refsection>
@@ -3527,13 +3407,11 @@ SELECT ST_Summary(
 
                     <programlisting>
 SELECt rid, ST_UpperLeftX(rast) As ulx
-FROM dummy_rast;
-
- rid |    ulx
+FROM dummy_rast;</programlisting>
+<screen> rid |    ulx
 -----+------------
    1 |        0.5
-   2 | 3427927.75
-                </programlisting>
+   2 | 3427927.75</screen>
 
             </refsection>
 
@@ -3569,13 +3447,11 @@ FROM dummy_rast;
 
                     <programlisting>
 SELECT rid, ST_UpperLeftY(rast) As uly
-FROM dummy_rast;
-
- rid |   uly
+FROM dummy_rast;</programlisting>
+<screen> rid |   uly
 -----+---------
    1 |     0.5
-   2 | 5793244
-                </programlisting>
+   2 | 5793244</screen>
 
             </refsection>
 
@@ -3610,12 +3486,8 @@ FROM dummy_rast;
                     <title>Examples</title>
 
                     <programlisting>SELECT ST_Width(rast) As rastwidth
-FROM dummy_rast WHERE rid=1;
-
-rastwidth
-----------------
-10
-                </programlisting>
+FROM dummy_rast WHERE rid=1;</programlisting>
+<screen>10</screen>
 
             </refsection>
 
@@ -3671,13 +3543,11 @@ SELECT
     rid,
     (ST_WorldToRasterCoord(rast,3427927.8,20.5)).*,
     (ST_WorldToRasterCoord(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast)))).*
-FROM dummy_rast;
-
- rid | columnx |   rowy    | columnx |   rowy
+FROM dummy_rast;</programlisting>
+<screen> rid | columnx |   rowy    | columnx |   rowy
 -----+---------+-----------+---------+-----------
    1 | 1713964 |         7 | 1713964 |         7
-   2 |       2 | 115864471 |       2 | 115864471
-                </programlisting>
+   2 |       2 | 115864471 |       2 | 115864471</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -3737,13 +3607,11 @@ FROM dummy_rast;
                 <programlisting>SELECT rid, ST_WorldToRasterCoordX(rast,3427927.8) As xcoord,
         ST_WorldToRasterCoordX(rast,3427927.8,20.5) As xcoord_xwyw,
         ST_WorldToRasterCoordX(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast))) As ptxcoord
-FROM dummy_rast;
-
- rid | xcoord  |  xcoord_xwyw   | ptxcoord
+FROM dummy_rast;</programlisting>
+<screen> rid | xcoord  |  xcoord_xwyw   | ptxcoord
 -----+---------+---------+----------
    1 | 1713964 | 1713964 |  1713964
-   2 |       1 |       1 |        1
-                </programlisting>
+   2 |       1 |       1 |        1</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -3801,13 +3669,11 @@ FROM dummy_rast;
                 <programlisting>SELECT rid, ST_WorldToRasterCoordY(rast,20.5) As ycoord,
         ST_WorldToRasterCoordY(rast,3427927.8,20.5) As ycoord_xwyw,
         ST_WorldToRasterCoordY(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast))) As ptycoord
-FROM dummy_rast;
-
- rid |  ycoord   | ycoord_xwyw | ptycoord
+FROM dummy_rast;</programlisting>
+<screen> rid |  ycoord   | ycoord_xwyw | ptycoord
 -----+-----------+-------------+-----------
    1 |         7 |           7 |         7
-   2 | 115864471 |   115864471 | 115864471
-                </programlisting>
+   2 | 115864471 |   115864471 | 115864471</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -3899,17 +3765,14 @@ WITH foo AS (
 )
 SELECT
     *
-FROM ST_BandMetadata(
-    (SELECT rast FROM foo),
+FROM ST_BandMetaData((SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
-);
-
- bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum  | filesize | filetimestamp |
+);</programlisting>
+<screen> bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum  | filesize | filetimestamp |
 ---------+-----------+-------------+---------+--------------------------------------------------------------------------------+---------------+----------+---------------+-
        1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1  |    12345 |    1521807257 |
        3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3  |    12345 |    1521807257 |
-       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2  |    12345 |    1521807257 |
-                </programlisting>
+       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2  |    12345 |    1521807257 |</screen>
 
             </refsection>
 
@@ -3948,12 +3811,10 @@ FROM ST_BandMetadata(
                     <programlisting>SELECT ST_BandNoDataValue(rast,1) As bnval1,
     ST_BandNoDataValue(rast,2) As bnval2, ST_BandNoDataValue(rast,3) As bnval3
 FROM dummy_rast
-WHERE rid = 2;
-
- bnval1 | bnval2 | bnval3
+WHERE rid = 2;</programlisting>
+<screen> bnval1 | bnval2 | bnval3
 --------+--------+--------
-      0 |      0 |      0
-                </programlisting>
+      0 |      0 |      0</screen>
 
             </refsection>
 
@@ -4000,21 +3861,22 @@ WHERE rid = 2;
                 <note>
                     <para>If the flag is dirty (this is, the result is different
                     using TRUE as last parameter and not using it) you should
-                    update the raster to set this flag to true, by using ST_SetBandIsNodata(),
-                    or ST_SetBandNodataValue() with TRUE as last argument. See <xref linkend="RT_ST_SetBandIsNoData"/>.</para>
+                    update the raster to set this flag to true, by using ST_SetBandIsNoData(),
+                    or ST_SetBandNoDataValue() with TRUE as last argument. See <xref linkend="RT_ST_SetBandIsNoData"/>.</para>
                 </note>
             </refsection>
 
                 <refsection>
                     <title>Examples</title>
 
+                    <para>This example creates a dummy table with one raster column.</para>
                     <programlisting>
--- Create dummy table with one raster column
 create table dummy_rast (rid integer, rast raster);
 
 -- Add raster with two bands, one pixel/band. In the first band, nodatavalue = pixel value = 3.
 -- In the second band, nodatavalue = 13, pixel value = 4
-insert into dummy_rast values(1,
+insert into dummy_rast values(
+1,
 (
 '01' -- little endian (uint8 ndr)
 ||
@@ -4058,8 +3920,8 @@ insert into dummy_rast values(1,
 )::raster
 );
 
-select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
-select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
+select ST_BandIsNoData(rast, 1) from dummy_rast where rid = 1; -- Expected true
+select ST_BandIsNoData(rast, 2) from dummy_rast where rid = 1; -- Expected false
             </programlisting>
 
             </refsection>
@@ -4136,12 +3998,8 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
                         <refsection>
                                 <title>Examples</title>
 
-                                <programlisting>SELECT ST_BandFileSize(rast,1) FROM dummy_rast WHERE rid = 1;
-
- st_bandfilesize
------------------
-          240574
-                </programlisting>
+                                <programlisting>SELECT ST_BandFileSize(rast,1) FROM dummy_rast WHERE rid = 1;</programlisting>
+<screen>240574</screen>
 
             </refsection>
 
@@ -4176,12 +4034,8 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
                         <refsection>
                                 <title>Examples</title>
 
-                                <programlisting>SELECT ST_BandFileTimestamp(rast,1) FROM dummy_rast WHERE rid = 1;
-
- st_bandfiletimestamp
-----------------------
-           1521807257
-                </programlisting>
+                                <programlisting>SELECT ST_BandFileTimestamp(rast,1) FROM dummy_rast WHERE rid = 1;</programlisting>
+<screen>1521807257</screen>
 
             </refsection>
         </refentry>
@@ -4254,12 +4108,10 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
                     <programlisting>SELECT ST_BandPixelType(rast,1) As btype1,
     ST_BandPixelType(rast,2) As btype2, ST_BandPixelType(rast,3) As btype3
 FROM dummy_rast
-WHERE rid = 2;
-
- btype1 | btype2 | btype3
+WHERE rid = 2;</programlisting>
+<screen> btype1 | btype2 | btype3
 --------+--------+--------
- 8BUI   | 8BUI   | 8BUI
-                </programlisting>
+ 8BUI   | 8BUI   | 8BUI</screen>
 
             </refsection>
 
@@ -4292,19 +4144,10 @@ WHERE rid = 2;
             <refsection>
                 <title>Examples</title>
 
-                    <programlisting>SELECT ST_MinPossibleValue('16BSI');
-
- st_minpossiblevalue
----------------------
-              -32768
-
-
-SELECT ST_MinPossibleValue('8BUI');
-
- st_minpossiblevalue
----------------------
-                   0
-                </programlisting>
+                    <programlisting>SELECT ST_MinPossibleValue('16BSI');</programlisting>
+<screen>-32768</screen>
+<programlisting>SELECT ST_MinPossibleValue('8BUI');</programlisting>
+<screen>0</screen>
 
             </refsection>
 
@@ -4343,13 +4186,11 @@ SELECT ST_MinPossibleValue('8BUI');
 
                 <programlisting>SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2,
 ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands
-FROM dummy_rast;
-
-rid | hb1 | hb2 | hb4 | numbands
+FROM dummy_rast;</programlisting>
+<screen>rid | hb1 | hb2 | hb4 | numbands
 -----+-----+-----+-----+----------
 1 | t   | t   | t   |        0
-2 | f   | f   | t   |        3
-            </programlisting>
+2 | f   | f   | t   |        3</screen>
 
             </refsection>
 
@@ -4392,19 +4233,17 @@ rid | hb1 | hb2 | hb4 | numbands
 
             <refsection>
                     <title>Examples</title>
+                    <para>This example returns a raster pixel polygon.</para>
                     <programlisting>
--- get raster pixel polygon
 SELECT i,j, ST_AsText(ST_PixelAsPolygon(foo.rast, i,j)) As b1pgeom
 FROM dummy_rast As foo
     CROSS JOIN generate_series(1,2) As i
     CROSS JOIN generate_series(1,1) As j
-WHERE rid=2;
-
- i | j |                                                    b1pgeom
+WHERE rid=2;</programlisting>
+<screen> i | j |                                                    b1pgeom
 ---+---+-----------------------------------------------------------------------------
  1 | 1 | POLYGON((3427927.75 5793244,3427927.8 5793244,3427927.8 5793243.95,...
- 2 | 1 | POLYGON((3427927.8 5793244,3427927.85 5793244,3427927.85 5793243.95, ..
-  </programlisting>
+ 2 | 1 | POLYGON((3427927.8 5793244,3427927.85 5793244,3427927.85 5793243.95, ..</screen>
             </refsection>
 
             <refsection>
@@ -4466,24 +4305,21 @@ WHERE rid=2;
 
             <refsection>
                     <title>Examples</title>
+                    <para>This example returns a raster pixel polygon.</para>
                     <programlisting>
--- get raster pixel polygon
 SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom
-FROM (SELECT ST_PixelAsPolygons(
-                 ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 0.001, -0.001, 0.001, 0.001, 4269),
+FROM (SELECT ST_PixelAsPolygons(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 0.001, -0.001, 0.001, 0.001, 4269),
                                                     '8BUI'::text, 1, 0),
                                          2, 2, 10),
                              1, 1, NULL)
 ) gv
-) foo;
-
- x | y | val |                geom
+) foo
+ORDER BY (gv).x, (gv).y;</programlisting>
+<screen> x | y | val |                geom
 ---+---+-----------------------------------------------------------------------------
- 1 | 1 |     | POLYGON((0 0,0.001 0.001,0.002 0,0.001 -0.001,0 0))
  1 | 2 |   1 | POLYGON((0.001 -0.001,0.002 0,0.003 -0.001,0.002 -0.002,0.001 -0.001))
  2 | 1 |   1 | POLYGON((0.001 0.001,0.002 0.002,0.003 0.001,0.002 0,0.001 0.001))
- 2 | 2 |  10 | POLYGON((0.002 0,0.003 0.001,0.004 0,0.003 -0.001,0.002 0))
-  </programlisting>
+ 2 | 2 |  10 | POLYGON((0.002 0,0.003 0.001,0.004 0,0.003 -0.001,0.002 0))</screen>
             </refsection>
 
             <refsection>
@@ -4526,13 +4362,8 @@ FROM (SELECT ST_PixelAsPolygons(
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
-SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
-
-   st_astext
-----------------
- POINT(0.5 0.5)
-                </programlisting>
+                <programlisting>SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;</programlisting>
+<screen>POINT(0.5 0.5)</screen>
             </refsection>
 
             <refsection>
@@ -4587,10 +4418,8 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
-SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;
-
- x | y | val |          st_astext
+                <programlisting>SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;</programlisting>
+<screen> x | y | val |          st_astext
 ---+---+-----+------------------------------
  1 | 1 | 253 | POINT(3427927.75 5793244)
  2 | 1 | 254 | POINT(3427927.8 5793244)
@@ -4616,8 +4445,7 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FRO
  2 | 5 | 250 | POINT(3427927.8 5793243.8)
  3 | 5 | 254 | POINT(3427927.85 5793243.8)
  4 | 5 | 254 | POINT(3427927.9 5793243.8)
- 5 | 5 | 254 | POINT(3427927.95 5793243.8)
-                </programlisting>
+ 5 | 5 | 254 | POINT(3427927.95 5793243.8)</screen>
             </refsection>
 
             <refsection>
@@ -4661,13 +4489,8 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FRO
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
-SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
-
-  st_astext
---------------
- POINT(1.5 2)
-                </programlisting>
+                <programlisting>SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;</programlisting>
+<screen>POINT(1.5 2)</screen>
             </refsection>
 
             <refsection>
@@ -4723,10 +4546,11 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 
             <refsection>
                 <title>Examples</title>
-                <programlisting> -- Uses LATERAL syntax
+                <para>This example uses LATERAL syntax.</para>
+                <programlisting>
 SELECT x, y, val, ST_AsText(geom)
-    FROM (SELECT dp.* FROM dummy_rast, LATERAL ST_PixelAsCentroids(rast, 1) AS dp WHERE rid = 2) foo;
- x | y | val |           st_astext
+    FROM (SELECT dp.* FROM dummy_rast, LATERAL ST_PixelAsCentroids(rast, 1) AS dp WHERE rid = 2) foo;</programlisting>
+<screen> x | y | val |           st_astext
 ---+---+-----+--------------------------------
  1 | 1 | 253 | POINT(3427927.775 5793243.975)
  2 | 1 | 254 | POINT(3427927.825 5793243.975)
@@ -4752,8 +4576,7 @@ SELECT x, y, val, ST_AsText(geom)
  2 | 5 | 250 | POINT(3427927.825 5793243.775)
  3 | 5 | 254 | POINT(3427927.875 5793243.775)
  4 | 5 | 254 | POINT(3427927.925 5793243.775)
- 5 | 5 | 254 | POINT(3427927.975 5793243.775)
-                </programlisting>
+ 5 | 5 | 254 | POINT(3427927.975 5793243.775)</screen>
             </refsection>
 
             <refsection>
@@ -4824,9 +4647,8 @@ SELECT x, y, val, ST_AsText(geom)
 
                 <refsection>
                     <title>Examples</title>
+                    <para>Get raster values at particular postgis geometry points. The srid of your geometry should be same as for your raster.</para>
                     <programlisting>
--- get raster values at particular postgis geometry points
--- the srid of your geometry should be same as for your raster
 SELECT rid, ST_Value(rast, foo.pt_geom) As b1pval, ST_Value(rast, 2, foo.pt_geom) As b2pval
 FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77, 5793243.76), 0) As pt_geom) As foo
 WHERE rid=2;
@@ -4845,16 +4667,15 @@ WHERE ST_Intersects(rast,sometable.geom);
 SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval,
     ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval
 FROM dummy_rast
-WHERE rid=2;
-
- rid | b1pval | b2pval | b3pval
+WHERE rid=2;</programlisting>
+<screen> rid | b1pval | b2pval | b3pval
 -----+--------+--------+--------
-   2 |    253 |     78 |     70
-                </programlisting>
+   2 |    253 |     78 |     70</screen>
 
-                <programlisting><![CDATA[
+                <para>Get all values in bands 1,2,3 of each pixel.</para>
+                <programlisting>
+<![CDATA[
 
---- Get all values in bands 1,2,3 of each pixel --
 SELECT x, y, ST_Value(rast, 1, x, y) As b1val,
     ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
 FROM dummy_rast CROSS JOIN
@@ -4875,14 +4696,14 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
 
 ]]></programlisting>
 
-                <programlisting><![CDATA[
+                <para>Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel.</para>
+                <programlisting>
+<![CDATA[
 
---- Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel --
-SELECT ST_AsText(ST_SetSRID(
-    ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
+SELECT ST_AsText(ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
         ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),
-        ST_SRID(rast))) As uplpt
-    , ST_Value(rast, 1, x, y) As b1val,
+        ST_SRID(rast))) As uplpt,
+    ST_Value(rast, 1, x, y) As b1val,
     ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
 FROM dummy_rast CROSS JOIN
 generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
@@ -4901,8 +4722,7 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
 --- Get a polygon formed by union of all pixels
     that fall in a particular value range and intersect particular polygon --
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
-FROM (SELECT ST_Translate(ST_MakeEnvelope(
-        ST_UpperLeftX(rast), ST_UpperLeftY(rast),
+FROM (SELECT ST_Translate(ST_MakeEnvelope(ST_UpperLeftX(rast), ST_UpperLeftY(rast),
             ST_UpperLeftX(rast) + ST_ScaleX(rast),
             ST_UpperLeftY(rast) + ST_ScaleY(rast), 0
             ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y
@@ -4923,8 +4743,8 @@ WHERE
  MULTIPOLYGON(((3427928 5793243.9,3427928 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,
  3427927.95 5793243.95,3427928 5793243.95,3427928.05 5793243.95,3427928.05 5793243.9,3427928 5793243.9)),((3427927.95 5793243.9,3427927.95 579324
 3.85,3427927.9 5793243.85,3427927.85 5793243.85,3427927.85 5793243.9,3427927.9 5793243.9,3427927.9 5793243.95,
-3427927.95 5793243.95,3427927.95 5793243.9)),((3427927.85 5793243.75,3427927.85 5793243.7,3427927.8 5793243.7,3427927.8 5793243.75
-,3427927.8 5793243.8,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75)),
+3427927.95 5793243.95,3427927.95 5793243.9)),((3427927.85 5793243.75,3427927.85 5793243.7,3427927.8 5793243.7,3427927.8 5793243.75,
+3427927.8 5793243.8,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75)),
 ((3427928.05 5793243.75,3427928.05 5793243.7,3427928 5793243.7,3427927.95 5793243.7,3427927.95 5793243.75,3427927.95 5793243.8,3427
 927.95 5793243.85,3427928 5793243.85,3427928 5793243.8,3427928.05 5793243.8,
 3427928.05 5793243.75)),((3427927.95 5793243.75,3427927.95 5793243.7,3427927.9 5793243.7,3427927.85 5793243.7,
@@ -4933,17 +4753,13 @@ WHERE
 
 ]]></programlisting>
 
-                <programlisting><![CDATA[
+                <para>Checking all the pixels of a large raster tile can take a long time. You can dramatically improve speed at some lose of precision by orders of magnitude. By sampling pixels using the step optional parameter of generate_series. This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked. Putting in the checked pixel as the value for subsequent 4.</para>
+                <programlisting>
+<![CDATA[
 
---- Checking all the pixels of a large raster tile can take a long time.
---- You can dramatically improve speed at some lose of precision by orders of magnitude
---  by sampling pixels using the step optional parameter of generate_series.
---  This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked
---  putting in the checked pixel as the value for subsequent 4
 
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
-FROM (SELECT ST_Translate(ST_MakeEnvelope(
-        ST_UpperLeftX(rast), ST_UpperLeftY(rast),
+FROM (SELECT ST_Translate(ST_MakeEnvelope(ST_UpperLeftX(rast), ST_UpperLeftY(rast),
             ST_UpperLeftX(rast) + ST_ScaleX(rast)*2,
             ST_UpperLeftY(rast) + ST_ScaleY(rast)*2, 0
             ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y
@@ -5053,20 +4869,14 @@ WHERE
             <refsection>
                 <title>Examples</title>
 
+                <para>This example reads a value from pixel 2x2.</para>
                 <programlisting>
--- pixel 2x2 has value
 SELECT
     ST_Value(rast, 2, 2) AS value,
     ST_NearestValue(rast, 2, 2) AS nearestvalue
 FROM (
     SELECT
-        ST_SetValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_SetValue(
-                        ST_SetValue(
-                            ST_AddBand(
-                                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                                 '8BUI'::text, 1, 0
                             ),
                             1, 1, 0.
@@ -5079,27 +4889,19 @@ FROM (
             ),
             5, 4, 0.
         ) AS rast
-) AS foo
-
- value | nearestvalue
+) AS foo</programlisting>
+<screen> value | nearestvalue
 -------+--------------
-     1 |            1
-                </programlisting>
+     1 |            1</screen>
 
+                <para>This example reads a NODATA value from pixel 2x3.</para>
                 <programlisting>
--- pixel 2x3 is NODATA
 SELECT
     ST_Value(rast, 2, 3) AS value,
     ST_NearestValue(rast, 2, 3) AS nearestvalue
 FROM (
     SELECT
-        ST_SetValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_SetValue(
-                        ST_SetValue(
-                            ST_AddBand(
-                                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                                 '8BUI'::text, 1, 0
                             ),
                             1, 1, 0.
@@ -5112,12 +4914,10 @@ FROM (
             ),
             5, 4, 0.
         ) AS rast
-) AS foo
-
- value | nearestvalue
+) AS foo</programlisting>
+<screen> value | nearestvalue
 -------+--------------
-       |            1
-                </programlisting>
+       |            1</screen>
 
             </refsection>
 
@@ -5160,39 +4960,41 @@ FROM (
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>--
--- 2x2 test raster with values
---
--- 10 50
--- 40 20
---
+                    <para>2x2 test raster with values. 10 50. 40 20.</para>
+                    <programlisting>
 WITH test_raster AS (
 SELECT
 ST_SetValues(
-  ST_AddBand(
-    ST_MakeEmptyRaster(width =&gt; 2, height =&gt; 2,
-      upperleftx =&gt; 0, upperlefty =&gt; 2,
-      scalex =&gt; 1.0, scaley =&gt; -1.0,
-      skewx =&gt; 0, skewy =&gt; 0, srid =&gt; 4326),
-    index =&gt; 1, pixeltype =&gt; '16BSI',
+ST_AddBand(
+ST_MakeEmptyRaster(
+      width =&gt; 2,
+      height =&gt; 2,
+      upperleftx =&gt; 0,
+      upperlefty =&gt; 2,
+      scalex =&gt; 1.0,
+      scaley =&gt; -1.0,
+      skewx =&gt; 0,
+      skewy =&gt; 0,
+      srid =&gt; 4326),
+    index =&gt; 1,
+    pixeltype =&gt; '16BSI',
     initialvalue =&gt; 0,
-    nodataval =&gt; -999),
-  1,1,1,
-  newvalueset =&gt;ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
+    nodataval =&gt; -999
+),
+  1,
+  1,
+  1,
+  newvalueset =&gt; ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
 )
 SELECT
-ST_AsText(
-  ST_SetZ(
+ST_AsText(ST_SetZ(
     rast,
     band =&gt; 1,
     geom =&gt; 'SRID=4326;LINESTRING(1.0 1.9, 1.0 0.2)'::geometry,
     resample =&gt; 'bilinear'
 ))
-FROM test_raster
-
-            st_astext
-----------------------------------
- LINESTRING Z (1 1.9 38,1 0.2 27)</programlisting>
+FROM test_raster</programlisting>
+<screen>LINESTRING Z (1 1.9 38,1 0.2 27)</screen>
 
             </refsection>
 
@@ -5235,39 +5037,41 @@ FROM test_raster
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>--
--- 2x2 test raster with values
---
--- 10 50
--- 40 20
---
+                    <para>2x2 test raster with values. 10 50. 40 20.</para>
+                    <programlisting>
 WITH test_raster AS (
 SELECT
 ST_SetValues(
-  ST_AddBand(
-    ST_MakeEmptyRaster(width =&gt; 2, height =&gt; 2,
-      upperleftx =&gt; 0, upperlefty =&gt; 2,
-      scalex =&gt; 1.0, scaley =&gt; -1.0,
-      skewx =&gt; 0, skewy =&gt; 0, srid =&gt; 4326),
-    index =&gt; 1, pixeltype =&gt; '16BSI',
+ST_AddBand(
+ST_MakeEmptyRaster(
+      width =&gt; 2,
+      height =&gt; 2,
+      upperleftx =&gt; 0,
+      upperlefty =&gt; 2,
+      scalex =&gt; 1.0,
+      scaley =&gt; -1.0,
+      skewx =&gt; 0,
+      skewy =&gt; 0,
+      srid =&gt; 4326),
+    index =&gt; 1,
+    pixeltype =&gt; '16BSI',
     initialvalue =&gt; 0,
-    nodataval =&gt; -999),
-  1,1,1,
-  newvalueset =&gt;ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
+    nodataval =&gt; -999
+),
+  1,
+  1,
+  1,
+  newvalueset =&gt; ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
 )
 SELECT
-ST_AsText(
-  ST_SetM(
+ST_AsText(ST_SetM(
     rast,
     band =&gt; 1,
     geom =&gt; 'SRID=4326;LINESTRING(1.0 1.9, 1.0 0.2)'::geometry,
     resample =&gt; 'bilinear'
 ))
-FROM test_raster
-
-            st_astext
-----------------------------------
- LINESTRING M (1 1.9 38,1 0.2 27)</programlisting>
+FROM test_raster</programlisting>
+<screen>LINESTRING M (1 1.9 38,1 0.2 27)</screen>
 
             </refsection>
 
@@ -5356,15 +5160,13 @@ FROM test_raster
             <refsection>
                 <title>Examples</title>
 
+                <para>This example reads a value from pixel 2x2.</para>
                 <programlisting>
--- pixel 2x2 has value
 SELECT
     ST_Neighborhood(rast, 2, 2, 1, 1)
 FROM (
     SELECT
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                 '8BUI'::text, 1, 0
             ),
             1, 1, 1, ARRAY[
@@ -5376,22 +5178,16 @@ FROM (
             ]::double precision[],
             1
         ) AS rast
-) AS foo
+) AS foo</programlisting>
+<screen>{{NULL,1,1},{1,1,1},{1,NULL,1}}</screen>
 
-         st_neighborhood
----------------------------------
-{{NULL,1,1},{1,1,1},{1,NULL,1}}
-                </programlisting>
-
+                <para>This example reads a NODATA value from pixel 2x3.</para>
                 <programlisting>
--- pixel 2x3 is NODATA
 SELECT
     ST_Neighborhood(rast, 2, 3, 1, 1)
 FROM (
     SELECT
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                 '8BUI'::text, 1, 0
             ),
             1, 1, 1, ARRAY[
@@ -5403,21 +5199,14 @@ FROM (
             ]::double precision[],
             1
         ) AS rast
-) AS foo
+) AS foo</programlisting>
+<screen>{{1,1,1},{1,NULL,1},{1,1,1}}</screen>
 
-       st_neighborhood
-------------------------------
- {{1,1,1},{1,NULL,1},{1,1,1}}
-                </programlisting>
-
+                <para>Pixel 3x3 has value. Exclude_nodata_value = FALSE.</para>
                 <programlisting>
--- pixel 3x3 has value
--- exclude_nodata_value = FALSE
 SELECT
     ST_Neighborhood(rast, 3, 3, 1, 1, false)
-FROM ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+FROM ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                 '8BUI'::text, 1, 0
             ),
             1, 1, 1, ARRAY[
@@ -5428,12 +5217,8 @@ FROM ST_SetValues(
                 [1, 1, 0, 1, 1]
             ]::double precision[],
             1
-        ) AS rast
-
-      st_neighborhood
----------------------------
-{{1,1,0},{0,1,1},{1,1,1}}
-                </programlisting>
+        ) AS rast</programlisting>
+<screen>{{1,1,0},{0,1,1},{1,1,1}}</screen>
 
             </refsection>
 
@@ -5504,14 +5289,16 @@ FROM ST_SetValues(
             <refsection>
                 <title>Examples</title>
 
-                <programlisting><![CDATA[
+                <para>This example uses geometry input.</para>
+                <programlisting>
+<![CDATA[
 
-                -- Geometry example
-SELECT (foo.geomval).val, ST_AsText(ST_Union((foo.geomval).geom))
-FROM (SELECT ST_DumpAsPolygons(
-        ST_SetValue(rast,1,
-                ST_Point(3427927.75, 5793243.95),
-                50)
+                SELECT (foo.geomval).val, ST_AsText(ST_Union((foo.geomval).geom))
+FROM (SELECT ST_DumpAsPolygons(ST_SetValue(
+            rast,
+            1,
+            ST_Point(3427927.75, 5793243.95),
+            50)
             ) As geomval
 FROM dummy_rast
 where rid = 2) As foo
@@ -5526,8 +5313,8 @@ GROUP BY (foo.geomval).val;
 
 ]]></programlisting>
 
+                <para>This example stores the changed raster.</para>
                 <programlisting>
--- Store the changed raster --
     UPDATE dummy_rast SET rast = ST_SetValue(rast,1, ST_Point(3427927.75, 5793243.95),100)
         WHERE rid = 2   ;
 
@@ -5659,10 +5446,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 2, 2, ARRAY[[9, 9], [9, 9]]::double precision[][]
@@ -5704,10 +5488,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 1, 1, ARRAY[[9, 9, 9], [9, NULL, 9], [9, 9, 9]]::double precision[][]
@@ -5748,10 +5529,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 1, 1,
@@ -5760,9 +5538,8 @@ SELECT
         )
     ) AS poly
 ) foo
-ORDER BY 1, 2;
-
- x | y | val
+ORDER BY 1, 2;</programlisting>
+<screen> x | y | val
 ---+---+-----
  1 | 1 |   9
  1 | 2 |   1
@@ -5772,8 +5549,7 @@ ORDER BY 1, 2;
  2 | 3 |   9
  3 | 1 |   9
  3 | 2 |   9
- 3 | 3 |   9
-                </programlisting>
+ 3 | 3 |   9</screen>
 
                 <programlisting>
 /*
@@ -5793,11 +5569,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_SetValue(
-                ST_AddBand(
-                    ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                     1, '8BUI', 1, 0
                 ),
                 1, 1, 1, NULL
@@ -5809,9 +5581,8 @@ SELECT
         )
     ) AS poly
 ) foo
-ORDER BY 1, 2;
-
- x | y | val
+ORDER BY 1, 2;</programlisting>
+<screen> x | y | val
 ---+---+-----
  1 | 1 |
  1 | 2 |   1
@@ -5821,8 +5592,7 @@ ORDER BY 1, 2;
  2 | 3 |   9
  3 | 1 |   9
  3 | 2 |   9
- 3 | 3 |   9
-                </programlisting>
+ 3 | 3 |   9</screen>
 
             </refsection>
 
@@ -5847,19 +5617,15 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 1, 1, ARRAY[[-1, -1, -1], [-1, 9, 9], [-1, 9, 9]]::double precision[][], -1
         )
     ) AS poly
 ) foo
-ORDER BY 1, 2;
-
- x | y | val
+ORDER BY 1, 2;</programlisting>
+<screen> x | y | val
 ---+---+-----
  1 | 1 |   1
  1 | 2 |   1
@@ -5869,8 +5635,7 @@ ORDER BY 1, 2;
  2 | 3 |   9
  3 | 1 |   1
  3 | 2 |   9
- 3 | 3 |   9
-                </programlisting>
+ 3 | 3 |   9</screen>
 
                 <programlisting>
 /*
@@ -5892,19 +5657,15 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 1, 1, ARRAY[[NULL, NULL, NULL], [NULL, 9, 9], [NULL, 9, 9]]::double precision[][], NULL::double precision
         )
     ) AS poly
 ) foo
-ORDER BY 1, 2;
-
- x | y | val
+ORDER BY 1, 2;</programlisting>
+<screen> x | y | val
 ---+---+-----
  1 | 1 |   1
  1 | 2 |   1
@@ -5914,8 +5675,7 @@ ORDER BY 1, 2;
  2 | 3 |   9
  3 | 1 |   1
  3 | 2 |   9
- 3 | 3 |   9
-                </programlisting>
+ 3 | 3 |   9</screen>
 
             </refsection>
 
@@ -5940,19 +5700,15 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                 1, '8BUI', 1, 0
             ),
             1, 2, 2, 2, 2, 9
         )
     ) AS poly
 ) foo
-ORDER BY 1, 2;
-
- x | y | val
+ORDER BY 1, 2;</programlisting>
+<screen> x | y | val
 ---+---+-----
  1 | 1 |   1
  1 | 2 |   1
@@ -5962,8 +5718,7 @@ ORDER BY 1, 2;
  2 | 3 |   9
  3 | 1 |   1
  3 | 2 |   9
- 3 | 3 |   9
-                </programlisting>
+ 3 | 3 |   9</screen>
 
                 <programlisting>
 /*
@@ -5983,11 +5738,7 @@ SELECT
     (poly).val
 FROM (
 SELECT
-    ST_PixelAsPolygons(
-        ST_SetValues(
-            ST_SetValue(
-                ST_AddBand(
-                    ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+    ST_PixelAsPolygons(ST_SetValues(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
                     1, '8BUI', 1, 0
                 ),
                 1, 2, 2, NULL
@@ -5996,9 +5747,8 @@ SELECT
         )
     ) AS poly
 ) foo
-ORDER BY 1, 2;
-
- x | y | val
+ORDER BY 1, 2;</programlisting>
+<screen> x | y | val
 ---+---+-----
  1 | 1 |   1
  1 | 2 |   1
@@ -6008,8 +5758,7 @@ ORDER BY 1, 2;
  2 | 3 |   9
  3 | 1 |   1
  3 | 2 |   9
- 3 | 3 |   9
-                </programlisting>
+ 3 | 3 |   9</screen>
 
             </refsection>
 
@@ -6029,16 +5778,14 @@ SELECT
     rid, gid, ST_DumpValues(ST_SetValue(rast, 1, geom, gid))
 FROM foo t1
 CROSS JOIN bar t2
-ORDER BY rid, gid;
-
- rid | gid |                                                                st_dumpvalues
+ORDER BY rid, gid;</programlisting>
+<screen> rid | gid |                                                                st_dumpvalues
 -----+-----+---------------------------------------------------------------------------------------------------------------------------------------------
    1 |   1 | (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,1,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL}}")
    1 |   2 | (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},{NULL,2,2,2,NULL},{NULL,2,2,2,NULL},{NULL,NULL,NULL,NULL,NULL}}")
    1 |   3 | (1,"{{3,3,3,3,3},{3,NULL,NULL,NULL,NULL},{3,NULL,NULL,NULL,NULL},{3,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL}}")
    1 |   4 | (1,"{{4,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,4}}")
-(4 rows)
-                </programlisting>
+(4 rows)</screen>
 
                 <para>The following shows that geomvals later in the array can overwrite prior geomvals</para>
                 <programlisting>
@@ -6057,13 +5804,11 @@ CROSS JOIN bar t2
 CROSS JOIN bar t3
 WHERE t2.gid = 1
     AND t3.gid = 2
-ORDER BY t1.rid, t2.gid, t3.gid;
-
- rid | gid | gid |                                                    st_dumpvalues
+ORDER BY t1.rid, t2.gid, t3.gid;</programlisting>
+<screen> rid | gid | gid |                                                    st_dumpvalues
 -----+-----+-----+---------------------------------------------------------------------------------------------------------------------
    1 |   1 |   2 | (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},{NULL,2,2,2,NULL},{NULL,2,2,2,NULL},{NULL,NULL,NULL,NULL,NULL}}")
-(1 row)
-                </programlisting>
+(1 row)</screen>
 
                 <para>This example is the opposite of the prior example</para>
                 <programlisting>
@@ -6082,13 +5827,11 @@ CROSS JOIN bar t2
 CROSS JOIN bar t3
 WHERE t2.gid = 2
     AND t3.gid = 1
-ORDER BY t1.rid, t2.gid, t3.gid;
-
- rid | gid | gid |                                                    st_dumpvalues
+ORDER BY t1.rid, t2.gid, t3.gid;</programlisting>
+<screen> rid | gid | gid |                                                    st_dumpvalues
 -----+-----+-----+---------------------------------------------------------------------------------------------------------------------
    1 |   2 |   1 | (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},{NULL,2,1,2,NULL},{NULL,2,2,2,NULL},{NULL,NULL,NULL,NULL,NULL}}")
-(1 row)
-                </programlisting>
+(1 row)</screen>
 
             </refsection>
 
@@ -6159,15 +5902,13 @@ WITH foo AS (
 )
 SELECT
     (ST_DumpValues(rast)).*
-FROM foo;
-
- nband |                       valarray
+FROM foo;</programlisting>
+<screen> nband |                       valarray
 -------+------------------------------------------------------
      1 | {{1,1,1},{1,1,1},{1,1,1}}
      2 | {{3,3,3},{3,3,3},{3,3,3}}
      3 | {{NULL,NULL,NULL},{NULL,NULL,NULL},{NULL,NULL,NULL}}
-(3 rows)
-                </programlisting>
+(3 rows)</screen>
 
                 <programlisting>
 WITH foo AS (
@@ -6175,27 +5916,20 @@ WITH foo AS (
 )
 SELECT
     (ST_DumpValues(rast, ARRAY[3, 1])).*
-FROM foo;
-
- nband |                       valarray
+FROM foo;</programlisting>
+<screen> nband |                       valarray
 -------+------------------------------------------------------
      3 | {{NULL,NULL,NULL},{NULL,NULL,NULL},{NULL,NULL,NULL}}
      1 | {{1,1,1},{1,1,1},{1,1,1}}
-(2 rows)
-                </programlisting>
+(2 rows)</screen>
                 <programlisting>
 WITH foo AS (
     SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 1, 2, 5) AS rast
 )
 SELECT
     (ST_DumpValues(rast, 1))[2][1]
-FROM foo;
-
- st_dumpvalues
----------------
-             5
-(1 row)
-                </programlisting>
+FROM foo;</programlisting>
+<screen>5</screen>
             </refsection>
 
             <refsection>
@@ -6293,14 +6027,7 @@ SELECT
     (pixels).*
 FROM (
     SELECT
-        ST_PixelOfValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_SetValue(
-                        ST_SetValue(
-                            ST_SetValue(
-                                ST_AddBand(
-                                    ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+        ST_PixelOfValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                                     '8BUI'::text, 1, 0
                                 ),
                                 1, 1, 0
@@ -6312,11 +6039,10 @@ FROM (
                     4, 2, 0
                 ),
                 5, 4, 255
-            )
-        , 1, ARRAY[1, 255]) AS pixels
-) AS foo
-
- val | x | y
+            ),
+        1, ARRAY[1, 255]) AS pixels
+) AS foo</programlisting>
+<screen> val | x | y
 -----+---+---
    1 | 1 | 2
    1 | 1 | 3
@@ -6338,8 +6064,7 @@ FROM (
    1 | 5 | 2
    1 | 5 | 3
  255 | 5 | 4
-   1 | 5 | 5
-                </programlisting>
+   1 | 5 | 5</screen>
             </refsection>
 
         </refentry>
@@ -6407,28 +6132,26 @@ WITH foo AS (
     SELECT ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0) AS rast
 )
 SELECT
-    0 AS rid, (ST_Metadata(rast)).*
+    0 AS rid, (ST_MetaData(rast)).*
 FROM foo
 UNION ALL
 SELECT
-    1, (ST_Metadata(ST_SetGeoReference(rast, '10 0 0 -10 0.1 0.1', 'GDAL'))).*
+    1, (ST_MetaData(ST_SetGeoReference(rast, '10 0 0 -10 0.1 0.1', 'GDAL'))).*
 FROM foo
 UNION ALL
 SELECT
-    2, (ST_Metadata(ST_SetGeoReference(rast, '10 0 0 -10 5.1 -4.9', 'ESRI'))).*
+    2, (ST_MetaData(ST_SetGeoReference(rast, '10 0 0 -10 5.1 -4.9', 'ESRI'))).*
 FROM foo
 UNION ALL
 SELECT
-    3, (ST_Metadata(ST_SetGeoReference(rast, 1, 1, 10, -10, 0.001, 0.001))).*
-FROM foo
-
- rid |     upperleftx     |     upperlefty     | width | height | scalex | scaley | skewx | skewy | srid | numbands
+    3, (ST_MetaData(ST_SetGeoReference(rast, 1, 1, 10, -10, 0.001, 0.001))).*
+FROM foo</programlisting>
+<screen> rid |     upperleftx     |     upperlefty     | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -----+--------------------+--------------------+-------+--------+--------+--------+-------+-------+------+----------
    0 |                  0 |                  0 |     5 |      5 |      1 |     -1 |     0 |     0 |    0 |        0
    1 |                0.1 |                0.1 |     5 |      5 |     10 |    -10 |     0 |     0 |    0 |        0
    2 | 0.0999999999999996 | 0.0999999999999996 |     5 |      5 |     10 |    -10 |     0 |     0 |    0 |        0
-   3 |                  1 |                  1 |     5 |      5 |     10 |    -10 | 0.001 | 0.001 |    0 |        0
-                </programlisting>
+   3 |                  1 |                  1 |     5 |      5 |     10 |    -10 | 0.001 | 0.001 |    0 |        0</screen>
             </refsection>
 
             <refsection>
@@ -6467,12 +6190,11 @@ FROM foo
   ST_ScaleX(rast2), ST_ScaleY(rast2), ST_SkewX(rast2), ST_SkewY(rast2)
 FROM (
   SELECT ST_SetRotation(rast, 15) AS rast1, rast as rast2 FROM dummy_rast
-) AS foo;
-      st_scalex      |      st_scaley      |      st_skewx      |      st_skewy      | st_scalex | st_scaley | st_skewx | st_skewy
+) AS foo;</programlisting>
+<screen>      st_scalex      |      st_scaley      |      st_skewx      |      st_skewy      | st_scalex | st_scaley | st_skewx | st_skewy
 ---------------------+---------------------+--------------------+--------------------+-----------+-----------+----------+----------
    -1.51937582571764 |   -2.27906373857646 |   1.95086352047135 |   1.30057568031423 |         2 |         3 |        0 |        0
- -0.0379843956429411 | -0.0379843956429411 | 0.0325143920078558 | 0.0325143920078558 |      0.05 |     -0.05 |        0 |        0
-                </programlisting>
+ -0.0379843956429411 | -0.0379843956429411 | 0.0325143920078558 | 0.0325143920078558 |      0.05 |     -0.05 |        0 |        0</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -6526,24 +6248,20 @@ WHERE rid = 2;
 
 SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box3D(rast) As newbox
 FROM dummy_rast
-WHERE rid = 2;
-
- pixx | pixy |                    newbox
+WHERE rid = 2;</programlisting>
+<screen> pixx | pixy |                    newbox
 ------+------+----------------------------------------------
-  1.5 |  1.5 | BOX(3427927.75 5793244 0, 3427935.25 5793251.5 0)
-                </programlisting>
+  1.5 |  1.5 | BOX(3427927.75 5793244 0, 3427935.25 5793251.5 0)</screen>
                 <programlisting>UPDATE dummy_rast
     SET rast = ST_SetScale(rast, 1.5, 0.55)
 WHERE rid = 2;
 
 SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box3D(rast) As newbox
 FROM dummy_rast
-WHERE rid = 2;
-
- pixx | pixy |                   newbox
+WHERE rid = 2;</programlisting>
+<screen> pixx | pixy |                   newbox
 ------+------+--------------------------------------------
-  1.5 | 0.55 | BOX(3427927.75 5793244 0,3427935.25 5793247 0)
-                </programlisting>
+  1.5 | 0.55 | BOX(3427927.75 5793244 0,3427935.25 5793247 0)</screen>
 
             </refsection>
 
@@ -6585,40 +6303,35 @@ WHERE rid = 2;
                 <refsection>
                     <title>Examples</title>
 
+                    <para>This is the first example.</para>
                     <programlisting>
--- Example 1
 UPDATE dummy_rast SET rast = ST_SetSkew(rast,1,2) WHERE rid = 1;
 SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,
     ST_GeoReference(rast) as georef
-FROM dummy_rast WHERE rid = 1;
-
-rid | skewx | skewy |    georef
+FROM dummy_rast WHERE rid = 1;</programlisting>
+<screen>rid | skewx | skewy |    georef
 ----+-------+-------+--------------
   1 |     1 |     2 | 2.0000000000
                     : 2.0000000000
                     : 1.0000000000
                     : 3.0000000000
                     : 0.5000000000
-                    : 0.5000000000
+                    : 0.5000000000</screen>
 
-                </programlisting>
-
+                <para>This second example sets both values to the same number.</para>
                 <programlisting>
--- Example 2 set both to same number:
 UPDATE dummy_rast SET rast = ST_SetSkew(rast,0) WHERE rid = 1;
 SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,
     ST_GeoReference(rast) as georef
-FROM dummy_rast WHERE rid = 1;
-
- rid | skewx | skewy |    georef
+FROM dummy_rast WHERE rid = 1;</programlisting>
+<screen> rid | skewx | skewy |    georef
 -----+-------+-------+--------------
    1 |     0 |     0 | 2.0000000000
                      : 0.0000000000
                      : 0.0000000000
                      : 3.0000000000
                      : 0.5000000000
-                     : 0.5000000000
-                </programlisting>
+                     : 0.5000000000</screen>
 
             </refsection>
 
@@ -6812,17 +6525,16 @@ FROM (
         rast AS orig,
         ST_Resample(rast,100,100) AS reduce_100
     FROM aerials.boston
-    WHERE ST_Intersects(rast,
-        ST_Transform(
-            ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986)
+    WHERE ST_Intersects(
+        rast,
+        ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),
+            26986)
     )
     LIMIT 1
-) AS foo;
-
- orig_width | new_width
+) AS foo;</programlisting>
+<screen> orig_width | new_width
 ------------+-------------
-        200 |         100
-                </programlisting>
+        200 |         100</screen>
             </refsection>
 
             <refsection>
@@ -6900,20 +6612,12 @@ FROM (
                     <title>Examples</title>
                     <para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
 
-                    <programlisting>-- the original raster pixel size
-SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width
-
-   width
-----------
-0.001
-
--- the rescaled raster raster pixel size
-SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015)) width
-
-   width
-----------
-0.0015
-</programlisting>
+                    <para>This example returns the original raster pixel size.</para>
+                    <programlisting>SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width</programlisting>
+<screen>0.001</screen>
+<para>This example returns the pixel size of the rescaled raster.</para>
+<programlisting>SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015)) width</programlisting>
+<screen>0.0015</screen>
             </refsection>
 
             <refsection>
@@ -6981,16 +6685,15 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
                     <title>Examples</title>
                     <para>A simple example reskewing a raster from a skew of 0.0 to a skew of 0.0015.</para>
 
-                    <programlisting>-- the original raster non-rotated
+                    <para>This example uses the original non-rotated raster.</para>
+                    <programlisting>
 SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
 
--- result
 0
 
 -- the reskewed raster raster rotation
 SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));
 
--- result
 -0.982793723247329</programlisting>
 
             </refsection>
@@ -7069,15 +6772,14 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
                     <title>Examples</title>
                     <para>A simple example snapping a raster to a slightly different grid.</para>
 
-                    <programlisting>-- the original raster upper left X
+                    <para>This example returns the upper-left X coordinate of the original raster.</para>
+                    <programlisting>
 SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
--- result
 0
 
 -- the upper left of raster after snapping
 SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));
 
---result
 -0.0008</programlisting>
 
             </refsection>
@@ -7157,42 +6859,34 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 WITH foo AS(
 SELECT
     1 AS rid,
-    ST_Resize(
-        ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
-            , 1, '8BUI', 255, 0
-        )
-    , '50%', '500') AS rast
+    ST_Resize(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+            1, '8BUI', 255, 0
+        ),
+    '50%', '500') AS rast
 UNION ALL
 SELECT
     2 AS rid,
-    ST_Resize(
-        ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
-            , 1, '8BUI', 255, 0
-        )
-    , 500, 100) AS rast
+    ST_Resize(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+            1, '8BUI', 255, 0
+        ),
+    500, 100) AS rast
 UNION ALL
 SELECT
     3 AS rid,
-    ST_Resize(
-        ST_AddBand(
-            ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
-            , 1, '8BUI', 255, 0
-        )
-    , 0.25, 0.9) AS rast
+    ST_Resize(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0),
+            1, '8BUI', 255, 0
+        ),
+    0.25, 0.9) AS rast
 ), bar AS (
-    SELECT rid, ST_Metadata(rast) AS meta, rast FROM foo
+    SELECT rid, ST_MetaData(rast) AS meta, rast FROM foo
 )
-SELECT rid, (meta).* FROM bar
-
- rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+SELECT rid, (meta).* FROM bar</programlisting>
+<screen> rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -----+------------+------------+-------+--------+--------+--------+-------+-------+------+----------
-   1 |          0 |          0 |   500 |    500 |      1 |     -1 |     0 |     0 |    0 |        1
-   2 |          0 |          0 |   500 |    100 |      1 |     -1 |     0 |     0 |    0 |        1
-   3 |          0 |          0 |   250 |    900 |      1 |     -1 |     0 |     0 |    0 |        1
-(3 rows)
-                </programlisting>
+   1 |          0 |          0 |   500 |    500 |      2 |     -2 |     0 |     0 |    0 |        1
+   2 |          0 |          0 |   500 |    100 |      2 |    -10 |     0 |     0 |    0 |        1
+   3 |          0 |          0 |   250 |    900 |      4 | -1.1111111111111112 |     0 |     0 |    0 |        1
+(3 rows)</screen>
             </refsection>
 
             <refsection>
@@ -7281,17 +6975,17 @@ SELECT rid, (meta).* FROM bar
                     <programlisting>SELECT ST_Width(mass_stm) As w_before, ST_Width(wgs_84) As w_after,
   ST_Height(mass_stm) As h_before, ST_Height(wgs_84) As h_after
     FROM
-    ( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84
-  ,  ST_Transform(rast,4326, 'Bilinear') AS wgs_84_bilin
+    ( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84,
+  ST_Transform(rast,4326, 'Bilinear') AS wgs_84_bilin
         FROM aerials.o_2_boston
-            WHERE ST_Intersects(rast,
-                ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986) )
-        LIMIT 1) As foo;
-
- w_before | w_after | h_before | h_after
+            WHERE ST_Intersects(
+                rast,
+                ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),
+                    26986) )
+        LIMIT 1) As foo;</programlisting>
+<screen> w_before | w_after | h_before | h_after
 ----------+---------+----------+---------
-      200 |     228 |      200 |     170
-                    </programlisting>
+      200 |     228 |      200 |     170</screen>
 <informaltable>
   <tgroup cols="3">
     <tbody>
@@ -7364,12 +7058,10 @@ SELECT
     ST_SameAlignment(rast) AS rast,
     ST_SameAlignment(not_aligned) AS not_aligned,
     ST_SameAlignment(aligned) AS aligned
-FROM baz
-
- rast | not_aligned | aligned
+FROM baz</programlisting>
+<screen> rast | not_aligned | aligned
 ------+-------------+---------
- t    | f           | t
-                </programlisting>
+ t    | f           | t</screen>
                 <informaltable>
                   <tgroup cols="2">
                     <tbody>
@@ -7443,7 +7135,8 @@ FROM baz
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>-- change just first band no data value
+                    <para>This example changes only the first band NODATA value.</para>
+                    <programlisting>
 UPDATE dummy_rast
     SET rast = ST_SetBandNoDataValue(rast,1, 254)
 WHERE rid = 2;
@@ -7451,11 +7144,8 @@ WHERE rid = 2;
 -- change no data band value of bands 1,2,3
 UPDATE dummy_rast
     SET rast =
-        ST_SetBandNoDataValue(
-            ST_SetBandNoDataValue(
-                ST_SetBandNoDataValue(
-                    rast,1, 254)
-                ,2,99),
+        ST_SetBandNoDataValue(ST_SetBandNoDataValue(ST_SetBandNoDataValue(rast,1, 254),
+                2,99),
                 3,108)
         WHERE rid = 2;
 
@@ -7504,13 +7194,14 @@ WHERE rid = 2;
                 <refsection>
                     <title>Examples</title>
 
+                    <para>This example creates a dummy table with one raster column.</para>
                     <programlisting>
--- Create dummy table with one raster column
 create table dummy_rast (rid integer, rast raster);
 
 -- Add raster with two bands, one pixel/band. In the first band, nodatavalue = pixel value = 3.
 -- In the second band, nodatavalue = 13, pixel value = 4
-insert into dummy_rast values(1,
+insert into dummy_rast values(
+1,
 (
 '01' -- little endian (uint8 ndr)
 ||
@@ -7554,14 +7245,14 @@ insert into dummy_rast values(1,
 )::raster
 );
 
-select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected false
-select st_bandisnodata(rast, 1, TRUE) from dummy_rast where rid = 1; -- Expected true
+select ST_BandIsNoData(rast, 1) from dummy_rast where rid = 1; -- Expected false
+select ST_BandIsNoData(rast, 1, TRUE) from dummy_rast where rid = 1; -- Expected true
 
 -- The isnodata flag is dirty. We are going to set it to true
-update dummy_rast set rast = st_setbandisnodata(rast, 1) where rid = 1;
+update dummy_rast set rast = ST_SetBandIsNoData(rast, 1) where rid = 1;
 
 
-select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
+select ST_BandIsNoData(rast, 1) from dummy_rast where rid = 1; -- Expected true
 
                     </programlisting>
 
@@ -7616,19 +7307,16 @@ WITH foo AS (
 SELECT
     1 AS query,
     *
-FROM ST_BandMetadata(
-    (SELECT rast FROM foo),
+FROM ST_BandMetaData((SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
 )
 UNION ALL
 SELECT
     2,
     *
-FROM ST_BandMetadata(
-    (
+FROM ST_BandMetaData((
         SELECT
-            <emphasis role="strong">ST_SetBandPath(
-                rast,
+            <emphasis role="strong">ST_SetBandPath(rast,
                 2,
                 '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif',
                 1
@@ -7637,17 +7325,15 @@ FROM ST_BandMetadata(
     ),
     ARRAY[1,3,2]::int[]
 )
-ORDER BY 1, 2;
-
- query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
+ORDER BY 1, 2;</programlisting>
+<screen> query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
 -------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
      1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
      1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
      1 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
      2 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
 <emphasis role="strong">     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif      |            1</emphasis>
-     2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
-                </programlisting>
+     2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3</screen>
             </refsection>
 
             <refsection>
@@ -7708,19 +7394,16 @@ WITH foo AS (
 SELECT
     1 AS query,
     *
-FROM ST_BandMetadata(
-    (SELECT rast FROM foo),
+FROM ST_BandMetaData((SELECT rast FROM foo),
     ARRAY[1,3,2]::int[]
 )
 UNION ALL
 SELECT
     2,
     *
-FROM ST_BandMetadata(
-    (
+FROM ST_BandMetaData((
         SELECT
-            <emphasis role="strong">ST_SetBandIndex(
-                rast,
+            <emphasis role="strong">ST_SetBandIndex(rast,
                 2,
                 1
             )</emphasis> AS rast
@@ -7728,17 +7411,15 @@ FROM ST_BandMetadata(
     ),
     ARRAY[1,3,2]::int[]
 )
-ORDER BY 1, 2;
-
- query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
+ORDER BY 1, 2;</programlisting>
+<screen> query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
 -------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
      1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
      1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
      1 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
      2 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
 <emphasis role="strong">     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1</emphasis>
-     2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
-                </programlisting>
+     2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3</screen>
             </refsection>
 
             <refsection>
@@ -7790,16 +7471,14 @@ ORDER BY 1, 2;
             <refsection>
                 <title>Examples</title>
                 <!-- TODO: Fix once we confirm the right behavior -->
+                <para>Example will count all pixels not 249 and one will count all pixels.</para>
                 <programlisting>
---example will count all pixels not 249 and one will count all pixels.  --
 SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata,
         ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata
-    FROM dummy_rast WHERE rid=2;
-
-rid | exclude_nodata | include_nodata
+    FROM dummy_rast WHERE rid=2;</programlisting>
+<screen>rid | exclude_nodata | include_nodata
 -----+----------------+----------------
-   2 |             23 |             25
-                </programlisting>
+   2 |             23 |             25</screen>
             </refsection>
 
             <refsection>
@@ -7865,18 +7544,14 @@ WITH foo AS (
     SELECT
         rast.rast
     FROM (
-        SELECT ST_SetValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_AddBand(
-                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
-                        , 1, '64BF', 0, 0
-                    )
-                    , 1, 1, 1, -10
-                )
-                , 1, 5, 4, 0
-            )
-            , 1, 5, 5, 3.14159
+        SELECT ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0),
+                        1, '64BF', 0, 0
+                    ),
+                    1, 1, 1, -10
+                ),
+                1, 5, 4, 0
+            ),
+            1, 5, 5, 3.14159
         ) AS rast
     ) AS rast
     FULL JOIN (
@@ -7886,13 +7561,8 @@ WITH foo AS (
 )
 SELECT
     ST_CountAgg(rast, 1, TRUE)
-FROM foo;
-
- st_countagg
--------------
-          20
-(1 row)
-                </programlisting>
+FROM foo;</programlisting>
+<screen>20</screen>
             </refsection>
 
             <refsection>
@@ -7982,9 +7652,8 @@ FROM foo;
                 <programlisting>SELECT band, (stats).*
 FROM (SELECT rid, band, ST_Histogram(rast, band) As stats
     FROM dummy_rast CROSS JOIN generate_series(1,3) As band
-     WHERE rid=2) As foo;
-
- band |  min  |  max  | count | percent
+     WHERE rid=2) As foo;</programlisting>
+<screen> band |  min  |  max  | count | percent
 ------+-------+-------+-------+---------
     1 |   249 |   250 |     2 |    0.08
     1 |   250 |   251 |     2 |    0.08
@@ -8000,7 +7669,7 @@ FROM (SELECT rid, band, ST_Histogram(rast, band) As stats
     3 | 100.4 | 138.8 |     5 |     0.2
     3 | 138.8 | 177.2 |     4 |    0.16
     3 | 177.2 | 215.6 |     1 |    0.04
-    3 | 215.6 |   254 |     4 |    0.16</programlisting>
+    3 | 215.6 |   254 |     4 |    0.16</screen>
             </refsection>
 
             <refsection>
@@ -8008,9 +7677,8 @@ FROM (SELECT rid, band, ST_Histogram(rast, band) As stats
                 <programlisting>SELECT (stats).*
 FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats
     FROM dummy_rast
-     WHERE rid=2) As foo;
-
-    min     |    max     | count | percent
+     WHERE rid=2) As foo;</programlisting>
+<screen>    min     |    max     | count | percent
 ------------+------------+-------+---------
          78 | 107.333333 |     9 |    0.36
  107.333333 | 136.666667 |     6 |    0.24
@@ -8018,15 +7686,14 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats
         166 | 195.333333 |     4 |    0.16
  195.333333 | 224.666667 |     1 |    0.04
  224.666667 |        254 |     5 |     0.2
-(6 rows)
-
--- Same as previous but we explicitly control the pixel value range of each bin.
+(6 rows)</screen>
+<para>Same as previous but we explicitly control the pixel value range of each bin.</para>
+<programlisting>
 SELECT (stats).*
 FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
     FROM dummy_rast
-     WHERE rid=2) As foo;
-
-  min  |  max  | count | percent
+     WHERE rid=2) As foo;</programlisting>
+<screen>  min  |  max  | count | percent
 -------+-------+-------+----------
     78 |  78.5 |     1 |     0.08
   78.5 |  79.5 |     1 |     0.04
@@ -8034,7 +7701,7 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
   83.5 | 183.5 |    17 |   0.0068
  183.5 | 188.5 |     0 |        0
  188.5 |   254 |     6 | 0.003664
-(6 rows)</programlisting>
+(6 rows)</screen>
             </refsection>
 
             <refsection>
@@ -8118,39 +7785,31 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>
-UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;
+                <programlisting>UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;
 --Example will consider only pixels of band 1 that are not 249 and in named quantiles --
 
 SELECT (pvq).*
 FROM (SELECT ST_Quantile(rast, ARRAY[0.25,0.75]) As pvq
     FROM dummy_rast WHERE rid=2) As foo
-    ORDER BY (pvq).quantile;
-
- quantile | value
+    ORDER BY (pvq).quantile;</programlisting>
+<screen> quantile | value
 ----------+-------
      0.25 |   253
-     0.75 |   254
-
-SELECT ST_Quantile(rast, 0.75) As value
-    FROM dummy_rast WHERE rid=2;
-
-value
-------
-  254
-</programlisting>
+     0.75 |   254</screen>
+<programlisting>SELECT ST_Quantile(rast, 0.75) As value
+    FROM dummy_rast WHERE rid=2;</programlisting>
+<screen>254</screen>
+<para>Real live example. Quantile of all pixels in band 2 intersecting a geometry.</para>
 <programlisting>
---real live example.  Quantile of all pixels in band 2 intersecting a geometry
 SELECT rid, (ST_Quantile(rast,2)).* As pvc
     FROM o_4_boston
-        WHERE ST_Intersects(rast,
+        WHERE ST_Intersects(
+            rast,
             ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 892200,224706 892151,224486 892151))',26986)
             )
 ORDER BY value, quantile,rid
-;
-
-
- rid | quantile | value
+;</programlisting>
+<screen> rid | quantile | value
 -----+----------+-------
    1 |        0 |     0
    2 |        0 |     0
@@ -8171,8 +7830,7 @@ ORDER BY value, quantile,rid
   14 |        1 |   199
    1 |        1 |   244
    2 |        1 |   255
-  15 |        1 |   255
-</programlisting>
+  15 |        1 |   255</screen>
             </refsection>
 
             <refsection>
@@ -8229,14 +7887,12 @@ ORDER BY value, quantile,rid
 SELECT rid, band, (stats).*
 FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats
     FROM dummy_rast CROSS JOIN generate_series(1,3) As band
-     WHERE rid=2) As foo;
-
- rid | band | count | sum  |    mean    |  stddev   | min | max
+     WHERE rid=2) As foo;</programlisting>
+<screen> rid | band | count | sum  |    mean    |  stddev   | min | max
 -----+------+-------+------+------------+-----------+-----+-----
    2 |    1 |    23 | 5821 | 253.086957 |  1.248061 | 250 | 254
    2 |    2 |    25 | 3682 |     147.28 | 59.862188 |  78 | 254
-   2 |    3 |    25 | 3290 |      131.6 | 61.647384 |  62 | 254
-                </programlisting>
+   2 |    3 |    25 | 3290 |      131.6 | 61.647384 |  62 | 254</screen>
             </refsection>
 
             <refsection>
@@ -8260,48 +7916,46 @@ FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,2,geom)) As stats
  ) As foo
  )
 -- finally summarize stats
-SELECT building_id, SUM(count) As num_pixels
-  , MIN(min) As min_pval
-  ,  MAX(max) As max_pval
-  , SUM(mean*count)/SUM(count) As avg_pval
+SELECT building_id, SUM(count) As num_pixels,
+  MIN(min) As min_pval,
+  MAX(max) As max_pval,
+  SUM(mean*count)/SUM(count) As avg_pval
     FROM b_stats
  WHERE count > 0
     GROUP BY building_id
     ORDER BY building_id;
- building_id | num_pixels | min_pval | max_pval |     avg_pval
--------------+------------+----------+----------+------------------
-         100 |       1090 |        1 |      255 | 61.0697247706422
-         103 |        655 |        7 |      182 | 70.5038167938931
-         150 |        895 |        2 |      252 | 185.642458100559
 ]]></programlisting>
+<screen> building_id | num_pixels | min_pval | max_pval |     avg_pval
+-------------+------------+----------+----------+------------------
+        100 |       1090 |        1 |      255 | 61.0697247706422
+        103 |        655 |        7 |      182 | 70.5038167938931
+        150 |        895 |        2 |      252 | 185.642458100559
+</screen>
             </refsection>
 
             <refsection>
                 <title>Example: Raster coverage</title>
+                <para>This example returns statistics for each band.</para>
                 <programlisting>
--- stats for each band --
 SELECT band, (stats).*
 FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band) As stats
-    FROM generate_series(1,3) As band) As foo;
-
- band |  count  |  sum   |       mean       |      stddev      | min | max
+    FROM generate_series(1,3) As band) As foo;</programlisting>
+<screen> band |  count  |  sum   |       mean       |      stddev      | min | max
 ------+---------+--------+------------------+------------------+-----+-----
     1 | 8450000 | 725799 | 82.7064349112426 | 45.6800222638537 |   0 | 255
     2 | 8450000 | 700487 | 81.4197705325444 | 44.2161184161765 |   0 | 255
-    3 | 8450000 | 575943 |  74.682739408284 | 44.2143885481407 |   0 | 255
-
--- For a table -- will get better speed if set sampling to less than 100%
--- Here we set to 25% and get a much faster answer
+    3 | 8450000 | 575943 |  74.682739408284 | 44.2143885481407 |   0 | 255</screen>
+<para>For a table -- will get better speed if set sampling to less than 100%. Here we set to 25% and get a much faster answer.</para>
+<programlisting>
 SELECT band, (stats).*
 FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
-    FROM generate_series(1,3) As band) As foo;
-
- band |  count  |  sum   |       mean       |      stddev      | min | max
+    FROM generate_series(1,3) As band) As foo;</programlisting>
+<screen> band |  count  |  sum   |       mean       |      stddev      | min | max
 ------+---------+--------+------------------+------------------+-----+-----
     1 | 2112500 | 180686 | 82.6890480473373 | 45.6961043857248 |   0 | 255
     2 | 2112500 | 174571 |  81.448503668639 | 44.2252623171821 |   0 | 255
     3 | 2112500 | 144364 | 74.6765884023669 | 44.2014869384578 |   0 | 255
-                </programlisting>
+                </screen>
             </refsection>
 
             <refsection>
@@ -8366,18 +8020,14 @@ WITH foo AS (
     SELECT
         rast.rast
     FROM (
-        SELECT ST_SetValue(
-            ST_SetValue(
-                ST_SetValue(
-                    ST_AddBand(
-                        ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
-                        , 1, '64BF', 0, 0
-                    )
-                    , 1, 1, 1, -10
-                )
-                , 1, 5, 4, 0
-            )
-            , 1, 5, 5, 3.14159
+        SELECT ST_SetValue(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0),
+                        1, '64BF', 0, 0
+                    ),
+                    1, 1, 1, -10
+                ),
+                1, 5, 4, 0
+            ),
+            1, 5, 5, 3.14159
         ) AS rast
     ) AS rast
     FULL JOIN (
@@ -8396,13 +8046,11 @@ FROM (
     SELECT
         ST_SummaryStatsAgg(rast, 1, TRUE, 1) AS stats
     FROM foo
-) bar;
-
- count |  round  | round  | round |  round  | round
+) bar;</programlisting>
+<screen> count |  round  | round  | round |  round  | round
 -------+---------+--------+-------+---------+-------
     20 | -68.584 | -3.429 | 6.571 | -10.000 | 3.142
-(1 row)
-                </programlisting>
+(1 row)</screen>
             </refsection>
 
             <refsection>
@@ -8546,44 +8194,41 @@ FROM (
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>
-UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;
+                <programlisting>UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;
 --Example will count only pixels of band 1 that are not 249. --
 
 SELECT (pvc).*
 FROM (SELECT ST_ValueCount(rast) As pvc
     FROM dummy_rast WHERE rid=2) As foo
-    ORDER BY (pvc).value;
-
- value | count
+    ORDER BY (pvc).value;</programlisting>
+<screen> value | count
 -------+-------
    250 |     2
    251 |     1
    252 |     2
    253 |     6
-   254 |    12
-
--- Example will coount all pixels of band 1 including 249 --
+   254 |    12</screen>
+<para>Example will coount all pixels of band 1 including 249.</para>
+<programlisting>
 SELECT (pvc).*
 FROM (SELECT ST_ValueCount(rast,1,false) As pvc
     FROM dummy_rast WHERE rid=2) As foo
-    ORDER BY (pvc).value;
-
- value | count
+    ORDER BY (pvc).value;</programlisting>
+<screen> value | count
 -------+-------
    249 |     2
    250 |     2
    251 |     1
    252 |     2
    253 |     6
-   254 |    12
-
--- Example will count only non-nodata value pixels of band 2
+   254 |    12</screen>
+<para>Example will count only non-nodata value pixels of band 2.</para>
+<programlisting>
 SELECT (pvc).*
 FROM (SELECT ST_ValueCount(rast,2) As pvc
     FROM dummy_rast WHERE rid=2) As foo
-    ORDER BY (pvc).value;
- value | count
+    ORDER BY (pvc).value;</programlisting>
+<screen> value | count
 -------+-------
     78 |     1
     79 |     1
@@ -8596,42 +8241,39 @@ FROM (SELECT ST_ValueCount(rast,2) As pvc
    112 |     2
 :
 
-                </programlisting>
+                </screen>
+<para>Real live example. Count all the pixels in an aerial raster tile band 2 intersecting a geometry. And return only the pixel band values that have a count &gt; 500.</para>
 <programlisting>
---real live example.  Count all the pixels in an aerial raster tile band 2 intersecting a geometry
--- and return only the pixel band values that have a count &gt; 500
 SELECT (pvc).value, SUM((pvc).count) As total
 FROM (SELECT ST_ValueCount(rast,2) As pvc
     FROM o_4_boston
-        WHERE ST_Intersects(rast,
+        WHERE ST_Intersects(
+            rast,
             ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 892200,224706 892151,224486 892151))',26986)
              )
         ) As foo
     GROUP BY (pvc).value
     HAVING SUM((pvc).count) &gt; 500
-    ORDER BY (pvc).value;
-
- value | total
+    ORDER BY (pvc).value;</programlisting>
+<screen> value | total
 -------+-----
     51 | 502
-    54 | 521
-</programlisting>
+    54 | 521</screen>
 
+<para>Just return count of pixels in each raster tile that have value of 100 of tiles that intersect a specific geometry.</para>
 <programlisting>
--- Just return count of pixels in each raster tile that have value of 100 of tiles that intersect  a specific geometry --
 SELECT rid, ST_ValueCount(rast,2,100) As count
     FROM o_4_boston
-        WHERE ST_Intersects(rast,
+        WHERE ST_Intersects(
+            rast,
             ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 892200,224706 892151,224486 892151))',26986)
-             ) ;
-
- rid | count
+             ) ;</programlisting>
+<screen> rid | count
 -----+-------
    1 |    56
    2 |    95
   14 |    37
-  15 |    64
-</programlisting>
+  15 |    64</screen>
             </refsection>
 
             <refsection>
@@ -8672,16 +8314,12 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
                 <title>Examples</title>
 
                 <programlisting>
-SELECT (ST_Metadata(
-    ST_RastFromWKB(
-        '\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000'::bytea
+SELECT (ST_MetaData(ST_RastFromWKB('\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000'::bytea
     )
-)).* AS metadata;
-
- upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+)).* AS metadata;</programlisting>
+<screen> upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ------------+------------+-------+--------+--------+--------+-------+-------+------+----------
-        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
-                </programlisting>
+        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0</screen>
 
             </refsection>
 
@@ -8725,16 +8363,12 @@ SELECT (ST_Metadata(
                 <title>Examples</title>
 
                 <programlisting>
-SELECT (ST_Metadata(
-    ST_RastFromHexWKB(
-        '010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
+SELECT (ST_MetaData(ST_RastFromHexWKB('010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400'
     )
-)).* AS metadata;
-
- upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+)).* AS metadata;</programlisting>
+<screen> upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ------------+------------+-------+--------+--------+--------+-------+-------+------+----------
-        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0
-                </programlisting>
+        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |   10 |        0</screen>
 
             </refsection>
 
@@ -8799,13 +8433,8 @@ SELECT (ST_Metadata(
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>
-SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
-
-                     rastbin
----------------------------------------------------------------------------------
-\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000
-                </programlisting>
+                    <programlisting>SELECT ST_AsBinary(rast) AS rastbin FROM dummy_rast WHERE rid=1;</programlisting>
+<screen>\001\000\000\000\000\000\000\000\000\000\000\000@\000\000\000\000\000\000\010@\000\000\000\000\000\000\340?\000\000\000\000\000\000\340?\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\012\000\000\000\012\000\024\000</screen>
 
             </refsection>
 
@@ -8853,13 +8482,8 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>
-SELECT ST_AsHexWKB(rast) As rastbin FROM dummy_rast WHERE rid=1;
-
-                                                        st_ashexwkb
-----------------------------------------------------------------------------------------------------------------------------
- 010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400
-                </programlisting>
+                    <programlisting>SELECT ST_AsHexWKB(rast) AS rastbin FROM dummy_rast WHERE rid=1;</programlisting>
+<screen>010000000000000000000000400000000000000840000000000000E03F000000000000E03F000000000000000000000000000000000A0000000A001400</screen>
 
             </refsection>
 
@@ -8938,7 +8562,8 @@ WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);
 DROP TABLE IF EXISTS tmp_out ;
 
 CREATE TABLE tmp_out AS
-SELECT lo_from_bytea(0,
+SELECT lo_from_bytea(
+       0,
        ST_AsGDALRaster(ST_Union(rast), 'JPEG', ARRAY['QUALITY=50'])
         ) AS loid
   FROM dummy_rast
@@ -8959,7 +8584,9 @@ SELECT lo_unlink(loid)
 FROM dummy_rast WHERE rid=2;
 
 -- Out GeoTiff with jpeg compression, 90% quality
-SELECT ST_AsGDALRaster(rast, 'GTiff',
+SELECT ST_AsGDALRaster(
+  rast,
+  'GTiff',
   ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'],
   4269) As rasttiff
 FROM dummy_rast WHERE rid=2;
@@ -9052,16 +8679,16 @@ FROM dummy_rast WHERE rid=2;
                 <refsection>
                     <title>Examples: Output</title>
 
-                    <programlisting>-- output first 3 bands 75% quality
-SELECT ST_AsJPEG(rast) As rastjpg
+                    <para>Output the first three bands at 75 percent quality.</para>
+                    <programlisting>SELECT ST_AsJPEG(rast) As rastjpg
     FROM dummy_rast WHERE rid=2;
-
--- output only first band as 90% quality
-SELECT ST_AsJPEG(rast,1,90) As rastjpg
+</programlisting>
+                    <para>Output only the first band at 90 percent quality.</para>
+                    <programlisting>SELECT ST_AsJPEG(rast,1,90) As rastjpg
     FROM dummy_rast WHERE rid=2;
-
--- output first 3 bands (but make band 2 Red, band 1 green, and band 3 blue, progressive and 90% quality
-SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rastjpg
+</programlisting>
+                    <para>Output the first three bands, mapping band 2 to red, band 1 to green, and band 3 to blue, using progressive encoding at 90 percent quality.</para>
+                    <programlisting>SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rastjpg
     FROM dummy_rast WHERE rid=2;</programlisting>
 
             </refsection>
@@ -9352,41 +8979,37 @@ FROM dummy_rast WHERE rid=2;
 FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
     INNER JOIN ST_GeomFromText('LINESTRING(0 1, 5 6, 10 10)') AS g(geom)
  ON ST_Intersects(r.rast,g.geom)
- , ST_Clip(r.rast, g.geom, touched => true) AS rast_touched
- , ST_Clip(r.rast, g.geom, touched => false) AS rast_not_touched;]]>
-
- count_pixels_in_orig | all_touched_pixels | default_clip
+ CROSS JOIN ST_Clip(r.rast, g.geom, touched => true) AS rast_touched
+ CROSS JOIN ST_Clip(r.rast, g.geom, touched => false) AS rast_not_touched;]]></programlisting>
+<screen> count_pixels_in_orig | all_touched_pixels | default_clip
 ----------------------+--------------------+--------------
                  2605 |                 16 |           10
-(1 row)
- </programlisting>
+(1 row)</screen>
                 </refsection>
                 <refsection>
                     <title>Examples: 1 band clipping (not touched)</title>
+                    <para>Clip the first band of an aerial tile by a 20 meter buffer.</para>
                     <programlisting>
--- Clip the first band of an aerial tile by a 20 meter buffer.
-SELECT ST_Clip(rast, 1,
+SELECT ST_Clip(
+        rast,
+        1,
         ST_Buffer(ST_Centroid(ST_Envelope(rast)),20)
     ) from aerials.boston
 WHERE rid = 4;
                     </programlisting>
 
+                    <para>Demonstrate effect of crop on final dimensions of raster. Note how final extent is clipped to that of the geometry. If crop = true.</para>
                     <programlisting>
--- Demonstrate effect of crop on final dimensions of raster
--- Note how final extent is clipped to that of the geometry
--- if crop = true
 SELECT ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, true))) As xmax_w_trim,
     ST_XMax(clipper) As xmax_clipper,
     ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, false))) As xmax_wo_trim,
     ST_XMax(ST_Envelope(rast)) As xmax_rast_orig
 FROM (SELECT rast, ST_Buffer(ST_Centroid(ST_Envelope(rast)),6) As clipper
     FROM aerials.boston
-WHERE rid = 6) As foo;
-
-   xmax_w_trim    |   xmax_clipper   |   xmax_wo_trim   |  xmax_rast_orig
+WHERE rid = 6) As foo;</programlisting>
+<screen>   xmax_w_trim    |   xmax_clipper   |   xmax_wo_trim   |  xmax_rast_orig
 ------------------+------------------+------------------+------------------
- 230657.436173996 | 230657.436173996 | 230666.436173996 | 230666.436173996
-                    </programlisting>
+ 230657.436173996 | 230657.436173996 | 230666.436173996 | 230666.436173996</screen>
 
                     <informaltable>
                         <tgroup cols="2">
@@ -9429,12 +9052,17 @@ WHERE rid = 6) As foo;
                 <refsection>
                     <title>Examples: 1 band clipping with no crop and add back other bands unchanged</title>
 
+                    <para>Same example as before, but we need to set crop to false to be able to use ST_AddBand. Because ST_AddBand requires all bands be the same Width and height.</para>
                     <programlisting>
--- Same example as before, but we need to set crop to false to be able to use ST_AddBand
--- because ST_AddBand requires all bands be the same Width and height
-SELECT ST_AddBand(ST_Clip(rast, 1,
-        ST_Buffer(ST_Centroid(ST_Envelope(rast)),20),false
-    ), ARRAY[ST_Band(rast,2),ST_Band(rast,3)] ) from aerials.boston
+SELECT ST_AddBand(
+    ST_Clip(
+        rast,
+        1,
+        ST_Buffer(ST_Centroid(ST_Envelope(rast)),20),
+        false
+    ),
+    ARRAY[ST_Band(rast,2),ST_Band(rast,3)]
+) from aerials.boston
 WHERE rid = 6;
                     </programlisting>
 
@@ -9479,11 +9107,10 @@ WHERE rid = 6;
                 <refsection>
                     <title>Examples: Clip all bands</title>
 
+                    <para>Clip all bands of an aerial tile by a 20 meter buffer. Only difference is we don't specify a specific band to clip. So all bands are clipped.</para>
                     <programlisting>
--- Clip all bands of an aerial tile by a 20 meter buffer.
--- Only difference is we don't specify a specific band to clip
--- so all bands are clipped
-SELECT ST_Clip(rast,
+SELECT ST_Clip(
+      rast,
       ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20),
       false
     ) from aerials.boston
@@ -9663,23 +9290,20 @@ nv 0 0 0 0
                     <title>Examples</title>
                     <para>This is a junk table to play with</para>
 
+                    <para>Setup test raster table.</para>
                     <programlisting>
--- setup test raster table --
 DROP TABLE IF EXISTS funky_shapes;
 CREATE TABLE funky_shapes(rast raster);
 
 INSERT INTO funky_shapes(rast)
 WITH ref AS (
-    SELECT ST_MakeEmptyRaster( 200, 200, 0, 200, 1, -1, 0, 0) AS rast
+    SELECT ST_MakeEmptyRaster(200, 200, 0, 200, 1, -1, 0, 0) AS rast
 )
 SELECT
     ST_Union(rast)
 FROM (
     SELECT
-        ST_AsRaster(
-            ST_Rotate(
-                ST_Buffer(
-                    ST_GeomFromText('LINESTRING(0 2,50 50,150 150,125 50)'),
+        ST_AsRaster(ST_Rotate(ST_Buffer(ST_GeomFromText('LINESTRING(0 2,50 50,150 150,125 50)'),
                     i*2
                 ),
                 pi() * i * 0.125, ST_Point(50,50)
@@ -9691,7 +9315,7 @@ FROM (
 ) AS shapes;
                     </programlisting>
 
-                    <programlisting>
+                <programlisting role="requires-external-state">
 SELECT
     ST_NumBands(rast) As n_orig,
     ST_NumBands(ST_ColorMap(rast,1, 'greyscale')) As ngrey,
@@ -9901,8 +9525,7 @@ SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SET postgis.enable_outdb_rasters = True;
 
 WITH apple AS (
-    SELECT ST_AddBand(
-        ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_AddBand(ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
         '/tmp/apple.png'::text,
         NULL::int[]
     ) AS rast
@@ -9960,16 +9583,14 @@ SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SET postgis.enable_outdb_rasters = True;
 
 WITH apple AS (
-    SELECT ST_AddBand(
-        ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_AddBand(ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
         '/tmp/apple.png'::text,
         NULL::int[]
     ) AS rast
 )
 SELECT
     ST_AsPNG(rast) AS original_png,
-    ST_AsPNG(ST_Grayscale(
-        ARRAY[
+    ST_AsPNG(ST_Grayscale(ARRAY[
             ROW(rast, 1)::rastbandarg, -- red
             ROW(rast, 2)::rastbandarg, -- green
             ROW(rast, 3)::rastbandarg, -- blue
@@ -10130,9 +9751,8 @@ FROM (
             (3, ST_GeomFromText('LINESTRING(1 2, 3 4)'))
     ) As g(gid,geom)
     WHERE A.rid = 2
-) As foo;
-
- rid | gid |      geomwkt                                               | val
+) As foo;</programlisting>
+<screen> rid | gid |      geomwkt                                               | val
 -----+-----+---------------------------------------------------------------------------------------------
    2 |   1 | POINT(3427928 5793243.85)                                  | 249
    2 |   1 | POINT(3427928 5793243.85)                                  | 253
@@ -10141,8 +9761,7 @@ FROM (
    2 |   2 | POINT(3427927.8 5793243.8)                                 | 253
    2 |   2 | LINESTRING(3427927.8 5793243.75,3427927.8 5793243.8)   | 252
    2 |   2 | MULTILINESTRING((3427927.8 5793243.8,3427927.8 5793243.75),...) | 250
-   2 |   3 | GEOMETRYCOLLECTION EMPTY
-                    </programlisting>
+   2 |   3 | GEOMETRYCOLLECTION EMPTY</screen>
                 </refsection>
 
                 <refsection>
@@ -10284,9 +9903,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                                     Passing a <type>regprocedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:
                                 </para>
 
-                                    <programlisting>
-'sample_callbackfunc(double precision[], integer[], text[])'::regprocedure
-                                    </programlisting>
+                                    <programlisting>'sample_callbackfunc(double precision[], integer[], text[])'::regprocedure</programlisting>
 
                                 <para>
                                     Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.
@@ -10403,8 +10020,7 @@ WITH foo AS (
     SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast
 )
 SELECT
-    ST_MapAlgebra(
-        ARRAY[ROW(rast, 1)]::rastbandarg[],
+    ST_MapAlgebra(ARRAY[ROW(rast, 1)]::rastbandarg[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo
@@ -10416,8 +10032,7 @@ WITH foo AS (
     SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast
 )
 SELECT
-    ST_MapAlgebra(
-        ARRAY[ROW(rast, 3), ROW(rast, 1), ROW(rast, 3), ROW(rast, 2)]::rastbandarg[],
+    ST_MapAlgebra(ARRAY[ROW(rast, 3), ROW(rast, 1), ROW(rast, 3), ROW(rast, 2)]::rastbandarg[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo
@@ -10430,8 +10045,7 @@ WITH foo AS (
     SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
 )
 SELECT
-    ST_MapAlgebra(
-        ARRAY[ROW(t1.rast, 3), ROW(t2.rast, 1), ROW(t2.rast, 3), ROW(t1.rast, 2)]::rastbandarg[],
+    ST_MapAlgebra(ARRAY[ROW(t1.rast, 3), ROW(t2.rast, 1), ROW(t2.rast, 3), ROW(t1.rast, 2)]::rastbandarg[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo t1
@@ -10457,8 +10071,7 @@ WITH foo AS (
 )
 SELECT
     t1.rid,
-    ST_MapAlgebra(
-        ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
+    ST_MapAlgebra(ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure,
         '32BUI',
         'CUSTOM', t1.rast,
@@ -10500,8 +10113,7 @@ WITH foo AS (
 ), bar AS (
     SELECT
         t1.rid,
-        ST_MapAlgebra(
-            ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
+        ST_MapAlgebra(ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
             'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
             '32BUI',
             'CUSTOM', t1.rast,
@@ -10513,8 +10125,8 @@ WITH foo AS (
 )
 SELECT
     rid,
-    (ST_Metadata(rast)),
-    (ST_BandMetadata(rast, 1)),
+    (ST_MetaData(rast)),
+    (ST_BandMetaData(rast, 1)),
     ST_Value(rast, 1, 1, 1)
 FROM bar;
                     </programlisting>
@@ -10530,7 +10142,8 @@ WITH foo AS (
 )
 SELECT
     ST_MapAlgebra(
-        rast, ARRAY[3, 1, 3, 2]::integer[],
+        rast,
+        ARRAY[3, 1, 3, 2]::integer[],
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo
@@ -10543,7 +10156,8 @@ WITH foo AS (
 )
 SELECT
     ST_MapAlgebra(
-        rast, 2,
+        rast,
+        2,
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo
@@ -10561,8 +10175,10 @@ WITH foo AS (
 )
 SELECT
     ST_MapAlgebra(
-        t1.rast, 2,
-        t2.rast, 1,
+        t1.rast,
+        2,
+        t2.rast,
+        1,
         'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
     ) AS rast
 FROM foo t1
@@ -10577,24 +10193,21 @@ WHERE t1.rid = 1
                     <title>Examples: Using Masks</title>
                     <programlisting>
 WITH foo AS (SELECT
-   ST_SetBandNoDataValue(
-ST_SetValue(ST_SetValue(ST_AsRaster(
-        ST_Buffer(
-            ST_GeomFromText('LINESTRING(50 50,100 90,100 50)'), 5,'join=bevel'),
+   ST_SetBandNoDataValue(ST_SetValue(ST_SetValue(ST_AsRaster(ST_Buffer(ST_GeomFromText('LINESTRING(50 50,100 90,100 50)'), 5,'join=bevel'),
             200,200,ARRAY['8BUI'], ARRAY[100], ARRAY[0]), ST_Buffer('POINT(70 70)'::geometry,10,'quad_segs=1') ,50),
   'LINESTRING(20 20, 100 100, 150 98)'::geometry,1),0)  AS rast )
 SELECT 'original' AS title, rast
 FROM foo
 UNION ALL
-SELECT 'no mask mean value' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure) AS rast
+SELECT 'no mask mean value' AS title, ST_MapAlgebra(rast,1,'ST_Mean4ma(double precision[], int[], text[])'::regprocedure) AS rast
 FROM foo
 UNION ALL
-SELECT 'mask only consider neighbors, exclude center' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure,
+SELECT 'mask only consider neighbors, exclude center' AS title, ST_MapAlgebra(rast,1,'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
     '{{1,1,1}, {1,0,1}, {1,1,1}}'::double precision[], false) As rast
 FROM foo
 
 UNION ALL
-SELECT 'mask weighted only consider neighbors, exclude center multi other pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure,
+SELECT 'mask weighted only consider neighbors, exclude center multi other pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
     '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast
 FROM foo;
                     </programlisting>
@@ -10916,8 +10529,10 @@ WITH foo AS (
 )
 SELECT
     ST_MapAlgebra(
-        t1.rast, 2,
-        t2.rast, 1,
+        t1.rast,
+        2,
+        t2.rast,
+        1,
         '([rast2] + [rast1.val]) / 2'
     ) AS rast
 FROM foo t1
@@ -11004,9 +10619,8 @@ SELECT
 FROM dummy_rast
 CROSS JOIN generate_series(1, 3) AS i
 CROSS JOIN generate_series(1,3) AS j
-WHERE rid = 2;
-
- origval | mapval
+WHERE rid = 2;</programlisting>
+<screen> origval | mapval
 ---------+--------
      253 |      1
      254 |      0
@@ -11016,8 +10630,7 @@ WHERE rid = 2;
      254 |      0
      250 |      0
      254 |      0
-     254 |      0
-                    </programlisting>
+     254 |      0</screen>
 
                     <para>Create a new 1 band raster of pixel-type 2BUI from our original that is reclassified and set the nodata value to be 0.</para>
                     <programlisting>ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;
@@ -11031,26 +10644,20 @@ SELECT DISTINCT
 FROM dummy_rast
 CROSS JOIN generate_series(1, 5) AS i
 CROSS JOIN generate_series(1,5) AS j
-WHERE rid = 2;
-
- origval | mapval
+WHERE rid = 2;</programlisting>
+<screen> origval | mapval
 ---------+--------
      249 |      1
      250 |      1
      251 |
      252 |      2
      253 |      3
-     254 |      3
-
-SELECT
+     254 |      3</screen>
+<programlisting>SELECT
     ST_BandPixelType(map_rast2) As b1pixtyp
 FROM dummy_rast
-WHERE rid = 2;
-
- b1pixtyp
-----------
- 2BUI
-                    </programlisting>
+WHERE rid = 2;</programlisting>
+<screen>2BUI</screen>
 
                     <informaltable>
                         <tgroup cols="2">
@@ -11092,10 +10699,7 @@ WHERE rid = 2;
                     <para>Create a new 3 band raster same pixel type from our original 3 band raster with first band altered by map algebra and remaining 2 bands unaltered.</para>
                     <programlisting>
 SELECT
-    ST_AddBand(
-        ST_AddBand(
-            ST_AddBand(
-                ST_MakeEmptyRaster(rast_view),
+    ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(rast_view),
                 ST_MapAlgebraExpr(rast_view,1,NULL,'tan([rast])*[rast]')
             ),
             ST_Band(rast_view,2)
@@ -11260,8 +10864,8 @@ WHERE rid=167;
                     <title>Example: 2 Band Intersection and Union</title>
 
                     <para>Create a new 1 band raster from our original that is  a function of modulo 2 of the original raster band.</para>
+                    <para>Create a cool set of rasters.</para>
                     <programlisting>
---Create a cool set of rasters --
 DROP TABLE IF EXISTS fun_shapes;
 CREATE TABLE fun_shapes(rid serial PRIMARY KEY, fun_name text, rast raster);
 
@@ -11276,18 +10880,15 @@ SELECT 'area' AS fun_name, ST_AsRaster(ST_Buffer(ST_SetSRID(ST_Point(236229, 900
 FROM ref
 UNION ALL
 SELECT 'rand bubbles',
-            ST_AsRaster(
-            (SELECT ST_Collect(geom)
+            ST_AsRaster((SELECT ST_Collect(geom)
     FROM (SELECT ST_Buffer(ST_SetSRID(ST_Point(236229 + i*random()*100, 900930 + j*random()*100),26986), random()*20) As geom
             FROM generate_series(1,10) As i, generate_series(1,10) As j
             ) As foo ), ref.rast,'8BUI', 200, 0)
 FROM ref;
 
 --map them -
-SELECT  ST_MapAlgebraExpr(
-        area.rast, bub.rast, '[rast2.val]', '8BUI', 'INTERSECTION', '[rast2.val]', '[rast1.val]') As interrast,
-        ST_MapAlgebraExpr(
-            area.rast, bub.rast, '[rast2.val]', '8BUI', 'UNION', '[rast2.val]', '[rast1.val]') As unionrast
+SELECT  ST_MapAlgebraExpr(area.rast, bub.rast, '[rast2.val]', '8BUI', 'INTERSECTION', '[rast2.val]', '[rast1.val]') As interrast,
+        ST_MapAlgebraExpr(area.rast, bub.rast, '[rast2.val]', '8BUI', 'UNION', '[rast2.val]', '[rast1.val]') As unionrast
 FROM
   (SELECT rast FROM fun_shapes WHERE
  fun_name = 'area') As area
@@ -11336,8 +10937,8 @@ FROM fun_shapes WHERE
 
                 <refsection>
                     <title>Example: Overlaying rasters on a canvas as separate bands</title>
+                    <para>We use ST_AsPNG to render the image so all single band ones look grey.</para>
                     <programlisting>
--- we use ST_AsPNG to render the image so all single band ones look grey --
 WITH mygeoms
     AS ( SELECT 2 As bnum, ST_Buffer(ST_Point(1,5),10) As geom
             UNION ALL
@@ -11349,21 +10950,28 @@ WITH mygeoms
             ),
    -- define our canvas to be 1 to 1 pixel to geometry
    canvas
-    AS (SELECT ST_AddBand(ST_MakeEmptyRaster(200,
-        200,
-        ST_XMin(e)::integer, ST_YMax(e)::integer, 1, -1, 0, 0) , '8BUI'::text,0) As rast
+    AS (SELECT ST_AddBand(
+        ST_MakeEmptyRaster(
+            200,
+            200,
+            ST_XMin(e)::integer,
+            ST_YMax(e)::integer,
+            1, -1, 0, 0),
+        '8BUI'::text,
+        0) As rast
         FROM (SELECT ST_Extent(geom) As e,
                     Max(ST_SRID(geom)) As srid
                     from mygeoms
                     ) As foo
             ),
-   rbands AS (SELECT ARRAY(SELECT ST_MapAlgebraExpr(canvas.rast, ST_AsRaster(m.geom, canvas.rast, '8BUI', 100),
+   rbands AS (SELECT ARRAY(SELECT ST_MapAlgebraExpr(
+                canvas.rast,
+                ST_AsRaster(m.geom, canvas.rast, '8BUI', 100),
                  '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') As rast
                 FROM mygeoms AS m CROSS JOIN canvas
                 ORDER BY m.bnum) As rasts
                 )
-          SELECT rasts[1] As rast1 , rasts[2] As rast2, rasts[3] As rast3, ST_AddBand(
-                    ST_AddBand(rasts[1],rasts[2]), rasts[3]) As final_rast
+          SELECT rasts[1] As rast1 , rasts[2] As rast2, rasts[3] As rast3, ST_AddBand(ST_AddBand(rasts[1],rasts[2]), rasts[3]) As final_rast
             FROM rbands;
                     </programlisting>
 
@@ -11436,8 +11044,8 @@ WITH mygeoms
                 <refsection>
                     <title>Example: Overlay 2 meter boundary of select parcels over an aerial imagery</title>
 
-                    <programlisting>-- Create new 3 band raster composed of first 2 clipped bands, and overlay of 3rd band with our geometry
--- This query took 3.6 seconds on PostGIS windows 64-bit install
+                    <para>Create new 3 band raster composed of first 2 clipped bands, and overlay of 3rd band with our geometry. This query took 3.6 seconds on PostGIS windows 64-bit install.</para>
+                    <programlisting>
 WITH pr AS
 -- Note the order of operation: we clip all the rasters to dimensions of our region
 (SELECT ST_Clip(rast,ST_Expand(geom,50) ) As rast, g.geom
@@ -11457,9 +11065,16 @@ GROUP BY geom)
 -- return our final raster which is the unioned shard with
 -- with the overlay of our parcel boundaries
 -- add first 2 bands, then mapalgebra of 3rd band + geometry
-SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2])
-    , ST_MapAlgebraExpr(ST_Band(clipped,3), ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
-     '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') ) As rast
+SELECT ST_AddBand(
+    ST_Band(clipped,ARRAY[1,2]),
+    ST_MapAlgebraExpr(
+     ST_Band(clipped,3),
+     ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
+     '[rast2.val]',
+     '8BUI',
+     'FIRST',
+     '[rast2.val]',
+     '[rast1.val]') ) As rast
 FROM prunion;
                     </programlisting>
 
@@ -11637,9 +11252,8 @@ UPDATE dummy_rast SET map_rast = ST_MapAlgebraFct(rast,NULL,'mod_fct(float,integ
 
 SELECT ST_Value(rast,1,i,j) As origval, ST_Value(map_rast, 1, i, j) As mapval
 FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN generate_series(1,3) AS j
-WHERE rid = 2;
-
- origval | mapval
+WHERE rid = 2;</programlisting>
+<screen> origval | mapval
 ---------+--------
      253 |      1
      254 |      0
@@ -11649,8 +11263,7 @@ WHERE rid = 2;
      254 |      0
      250 |      0
      254 |      0
-     254 |      0
-                    </programlisting>
+     254 |      0</screen>
 
                     <para>Create a new 1 band raster of pixel-type 2BUI from our original that is reclassified and set the nodata value to a passed parameter to the user function (0).</para>
                     <programlisting><![CDATA[
@@ -11737,10 +11350,7 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
-SELECT ST_AddBand(
-    ST_AddBand(
-        ST_AddBand(
-            ST_MakeEmptyRaster(rast_view),
+SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(rast_view),
             ST_MapAlgebraFct(rast_view,1,NULL,'rast_plus_tan(float,integer[],text[])'::regprocedure)
         ),
         ST_Band(rast_view,2)
@@ -11848,9 +11458,10 @@ Note that the argument contains the name of the function, the types of the funct
 
                 <refsection>
                     <title>Example: Overlaying rasters on a canvas as separate bands</title>
-                    <programlisting><![CDATA[
+                    <para>Define our user defined function.</para>
+                    <programlisting>
+<![CDATA[
 
--- define our user defined function --
 CREATE OR REPLACE FUNCTION raster_mapalgebra_union(
     rast1 double precision,
     rast2 double precision,
@@ -11891,9 +11502,15 @@ WITH mygeoms
             ),
    -- define our canvas to be 1 to 1 pixel to geometry
    canvas
-    AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(250,
-        250,
-        ST_XMin(e)::integer, ST_YMax(e)::integer, 1, -1, 0, 0 ) , '8BUI'::text,0) As rast
+    AS ( SELECT ST_AddBand(
+        ST_MakeEmptyRaster(
+            250,
+            250,
+            ST_XMin(e)::integer,
+            ST_YMax(e)::integer,
+            1, -1, 0, 0),
+        '8BUI'::text,
+        0) As rast
         FROM (SELECT ST_Extent(geom) As e,
                     Max(ST_SRID(geom)) As srid
                     from mygeoms
@@ -11909,8 +11526,12 @@ FROM canvas;
 -- Map algebra on single band rasters and then collect with ST_AddBand
 INSERT INTO map_shapes(rast,bnum,descrip)
 SELECT ST_AddBand(ST_AddBand(rasts[1], rasts[2]),rasts[3]), 4, 'map bands overlay fct union (canvas)'
-    FROM (SELECT ARRAY(SELECT ST_MapAlgebraFct(m1.rast, m2.rast,
-            'raster_mapalgebra_union(double precision, double precision, integer[], text[])'::regprocedure, '8BUI', 'FIRST')
+    FROM (SELECT ARRAY(SELECT ST_MapAlgebraFct(
+            m1.rast,
+            m2.rast,
+            'raster_mapalgebra_union(double precision, double precision, integer[], text[])'::regprocedure,
+            '8BUI',
+            'FIRST')
                 FROM map_shapes As m1 CROSS JOIN map_shapes As m2
     WHERE m1.descrip = 'canvas' AND m2.descrip <> 'canvas' ORDER BY m2.bnum) As rasts) As foo;
 
@@ -11966,9 +11587,15 @@ CREATE OR REPLACE FUNCTION raster_mapalgebra_userargs(
     END;
     $$ LANGUAGE 'plpgsql' VOLATILE COST 1000;
 
-SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
-            'raster_mapalgebra_userargs(double precision, double precision, integer[], text[])'::regprocedure,
-                '8BUI', 'INTERSECT', '100','200','200','0')
+SELECT ST_MapAlgebraFct(
+    m1.rast,
+    1,
+    m1.rast,
+    3,
+    'raster_mapalgebra_userargs(double precision, double precision, integer[], text[])'::regprocedure,
+    '8BUI',
+    'INTERSECT',
+    '100','200','200','0')
                 FROM map_shapes As m1
     WHERE m1.descrip = 'map bands overlay fct union (canvas)';
                     </programlisting>
@@ -12077,10 +11704,8 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 
                     <para>Examples utilize the katrina raster loaded as a single tile described in <link xlink:href="https://gdal.org/user/drivers/raster/postgisraster.html">https://gdal.org/user/drivers/raster/postgisraster.html</link> and then prepared in the <xref linkend="RT_ST_Rescale"/> examples </para>
 
+                    <para>A simple 'callback' user function that averages up all the values in a neighborhood.</para>
                     <programlisting>
---
--- A simple 'callback' user function that averages up all the values in a neighborhood.
---
 CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic args text[])
     RETURNS float AS
     $$
@@ -12105,8 +11730,15 @@ CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic 
 LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
 
 -- now we apply to our raster averaging pixels within 2 pixels of each other in X and Y direction --
-SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
-        'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', NULL) As nn_with_border
+SELECT ST_MapAlgebraFctNgb(
+        rast,
+        1,
+        '8BUI',
+        4,
+        4,
+        'rast_avg(float[][], text, text[])'::regprocedure,
+        'NULL',
+        NULL) As nn_with_border
     FROM katrinas_rescaled
     limit 1;
                     </programlisting>
@@ -12220,9 +11852,8 @@ SELECT i as col, j as row, ST_Value(rast,2,i,j) As origval,
     ST_Value(reclass_rast, 2, i, j) As reclassval,
     ST_Value(reclass_rast, 2, i, j, false) As reclassval_include_nodata
 FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN generate_series(1,3) AS j
-WHERE rid = 2;
-
- col | row | origval | reclassval | reclassval_include_nodata
+WHERE rid = 2;</programlisting>
+<screen> col | row | origval | reclassval | reclassval_include_nodata
 -----+-----+---------+------------+---------------------------
    1 |   1 |      78 |          9 |                         9
    2 |   1 |      98 |         14 |                        14
@@ -12232,8 +11863,7 @@ WHERE rid = 2;
    3 |   2 |     180 |            |                         0
    1 |   3 |      99 |         15 |                        15
    2 |   3 |     112 |            |                         0
-   3 |   3 |     169 |            |                         0
-                    </programlisting>
+   3 |   3 |     169 |            |                         0</screen>
                 </refsection>
 
                 <refsection>
@@ -12242,7 +11872,8 @@ WHERE rid = 2;
                     <para>Create a new raster from the original where band 1,2,3 is converted to 1BB,4BUI, 4BUI respectively and reclassified. Note this uses the variadic <varname>reclassarg</varname> argument which can take as input an indefinite number of reclassargs (theoretically as many bands as you have) </para>
                     <programlisting>
 UPDATE dummy_rast SET reclass_rast =
-    ST_Reclass(rast,
+    ST_Reclass(
+        rast,
         ROW(2,'0-87]:1-10, (87-100]:11-15, (101-254]:0-0', '4BUI',NULL)::reclassarg,
         ROW(1,'0-253]:1, 254:0', '1BB', NULL)::reclassarg,
         ROW(3,'0-70]:1, (70-86:2, [86-150):3, [150-255:4', '4BUI', NULL)::reclassarg
@@ -12252,9 +11883,8 @@ SELECT i as col, j as row,ST_Value(rast,1,i,j) As ov1,  ST_Value(reclass_rast, 1
     ST_Value(rast,2,i,j) As ov2, ST_Value(reclass_rast, 2, i, j) As rv2,
     ST_Value(rast,3,i,j) As ov3, ST_Value(reclass_rast, 3, i, j) As rv3
 FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN generate_series(1,3) AS j
-WHERE rid = 2;
-
-col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
+WHERE rid = 2;</programlisting>
+<screen>col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
 ----+-----+-----+-----+-----+-----+-----+-----
   1 |   1 | 253 |   1 |  78 |   9 |  70 |   1
   2 |   1 | 254 |   0 |  98 |  14 |  86 |   3
@@ -12264,8 +11894,7 @@ col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
   3 |   2 | 254 |   0 | 180 |   0 | 162 |   4
   1 |   3 | 250 |   1 |  99 |  15 |  90 |   3
   2 |   3 | 254 |   0 | 112 |   0 | 108 |   3
-  3 |   3 | 254 |   0 | 169 |   0 | 175 |   4
-                    </programlisting>
+  3 |   3 | 254 |   0 | 169 |   0 | 175 |   4</screen>
                 </refsection>
 
                 <refsection>
@@ -12274,7 +11903,8 @@ col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
                     <programlisting>
 ALTER TABLE wind ADD COLUMN rast_view raster;
 UPDATE wind
-    set rast_view = ST_AddBand( NULL,
+    set rast_view = ST_AddBand(
+        NULL,
         ARRAY[
     ST_Reclass(rast, 1,'0.1-10]:1-10,9-10]:11,(11-33:0'::text, '8BUI'::text,0),
     ST_Reclass(rast,1, '11-33):0-255,[0-32:0,(34-1000:0'::text, '8BUI'::text,0),
@@ -12354,10 +11984,7 @@ CREATE TABLE reclassexact (
 -- [3  4]
 --
 INSERT INTO reclassexact (id, rast)
-SELECT 1, ST_SetValues(
-    ST_AddBand(
-      ST_MakeEmptyRaster(
-        2,    -- width in pixels
+SELECT 1, ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(2,    -- width in pixels
         2,    -- height in pixels
         0,    -- upper-left x-coordinate
         0,    -- upper-left y-coordinate
@@ -12383,8 +12010,7 @@ SELECT 1, ST_SetValues(
 -- Reclass the values to new values
 -- and dump the values of the new raster for display
 WITH rc AS (
-  SELECT ST_ReclassExact(
-    rast,                -- input raster
+  SELECT ST_ReclassExact(rast,                -- input raster
     ARRAY[4,3,2,1],      -- input map
     ARRAY[14,13,12,11],  -- output map
     1,                   -- band number to remap
@@ -12465,9 +12091,8 @@ FROM rc;
                 </refsection>
                 <refsection>
                     <title>Examples: Reconstitute a single band chunked raster tile</title>
+                    <para>This creates a single band from first band of raster tiles. That form the original file system tile.</para>
                     <programlisting>
--- this creates a single band from first band of raster tiles
--- that form the original file system tile
 SELECT filename, ST_Union(rast,1) As file_rast
 FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;
                     </programlisting>
@@ -12475,11 +12100,8 @@ FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;
 
                 <refsection>
                     <title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
+                    <para>This creates a multi band raster collecting all the tiles that intersect a line. Note that In 2.0, this would have just returned a single band raster. , new union works on all bands by default. This is equivalent to unionarg: ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[].</para>
                     <programlisting>
--- this creates a multi band raster collecting all the tiles that intersect a line
--- Note: In 2.0, this would have just returned a single band raster
--- , new union works on all bands by default
--- this is equivalent to unionarg: ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[]
 SELECT ST_Union(rast)
 FROM aerials.boston
 WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );
@@ -12488,8 +12110,8 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
                 <refsection>
                     <title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
                     <para>Here we use the longer syntax if we only wanted a subset of bands or we want to change order of bands</para>
+                    <para>This creates a multi band raster collecting all the tiles that intersect a line.</para>
                     <programlisting>
--- this creates a multi band raster collecting all the tiles that intersect a line
 SELECT ST_Union(rast,ARRAY[ROW(2, 'LAST'), ROW(1, 'LAST'), ROW(3, 'LAST')]::unionarg[])
 FROM aerials.boston
 WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );
@@ -12568,16 +12190,14 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
-WHERE rid = 2;
- rid | st_value
+WHERE rid = 2;</programlisting>
+<screen> rid | st_value
 -----+----------
    2 |        3
-(1 row)
-                </programlisting>
+(1 row)</screen>
 
             </refsection>
 
@@ -12648,9 +12268,30 @@ WHERE rid = 2;
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
--- NEEDS EXAMPLE
-                </programlisting>
+                <programlisting>WITH foo AS (
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', NULL::double precision, -9999),
+        1, 1, 1, ARRAY[
+            [10, 10, 10],
+            [10, NULL, 20],
+            [20, 20, 20]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(
+    ST_MapAlgebra(
+        rast,
+        1,
+        'ST_InvDistWeight4ma(double precision[][][],integer[][],text[])'::regprocedure,
+        '32BF',
+        'FIRST',
+        NULL,
+        1,
+        1
+    ),
+    2, 2
+) AS interpolated_value
+FROM foo;</programlisting>
+<screen>15</screen>
             </refsection>
 
             <refsection>
@@ -12720,16 +12361,14 @@ WHERE rid = 2;
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_max4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Max4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
-WHERE rid = 2;
- rid | st_value
+WHERE rid = 2;</programlisting>
+<screen> rid | st_value
 -----+----------
    2 |      254
-(1 row)
-                </programlisting>
+(1 row)</screen>
 
             </refsection>
 
@@ -12806,16 +12445,14 @@ WHERE rid = 2;
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_mean4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_Mean4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
-WHERE rid = 2;
- rid |     st_value
+WHERE rid = 2;</programlisting>
+<screen> rid |     st_value
 -----+------------------
    2 | 253.222229003906
-(1 row)
-                </programlisting>
+(1 row)</screen>
 
             </refsection>
 
@@ -12824,15 +12461,16 @@ WHERE rid = 2;
 
                     <programlisting>SELECT
     rid,
-    st_value(
-              ST_MapAlgebra(rast, 1, 'st_mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1)
-       ,  2, 2)
+    ST_Value(
+        ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1),
+        2,
+        2)
   FROM dummy_rast
-   WHERE rid = 2;
- rid |     st_value
+   WHERE rid = 2;</programlisting>
+<screen> rid |     st_value
 -----+------------------
    2 | 253.222229003906
-(1 row)</programlisting>
+(1 row)</screen>
 
             </refsection>
 
@@ -12915,16 +12553,14 @@ WHERE rid = 2;
                 <programlisting>
 SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
-WHERE rid = 2;
- rid | st_value
+WHERE rid = 2;</programlisting>
+<screen> rid | st_value
 -----+----------
    2 |      250
-(1 row)
-                </programlisting>
+(1 row)</screen>
             </refsection>
 
             <refsection>
@@ -12979,9 +12615,30 @@ WHERE rid = 2;
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
--- NEEDS EXAMPLE
-                </programlisting>
+                <programlisting>WITH foo AS (
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', NULL::double precision, -9999),
+        1, 1, 1, ARRAY[
+            [10, 10, 10],
+            [10, NULL, 20],
+            [20, 20, 20]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(
+    ST_MapAlgebra(
+        rast,
+        1,
+        'ST_MinDist4ma(double precision[][][],integer[][],text[])'::regprocedure,
+        '32BF',
+        'FIRST',
+        NULL,
+        1,
+        1
+    ),
+    2, 2
+) AS min_distance
+FROM foo;</programlisting>
+<screen>1</screen>
             </refsection>
 
             <refsection>
@@ -13051,16 +12708,14 @@ WHERE rid = 2;
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_range4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Range4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
-WHERE rid = 2;
- rid | st_value
+WHERE rid = 2;</programlisting>
+<screen> rid | st_value
 -----+----------
    2 |        4
-(1 row)
-                </programlisting>
+(1 row)</screen>
 
             </refsection>
 
@@ -13133,16 +12788,14 @@ WHERE rid = 2;
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_stddev4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_StdDev4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
-WHERE rid = 2;
- rid |     st_value
+WHERE rid = 2;</programlisting>
+<screen> rid |     st_value
 -----+------------------
    2 | 1.30170822143555
-(1 row)
-                </programlisting>
+(1 row)</screen>
 
             </refsection>
 
@@ -13219,16 +12872,14 @@ WHERE rid = 2;
 
                     <programlisting>SELECT
     rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_Value(ST_MapAlgebraFctNgb(rast, 1, '32BF', 1, 1, 'ST_Sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     )
 FROM dummy_rast
-WHERE rid = 2;
- rid | st_value
+WHERE rid = 2;</programlisting>
+<screen> rid | st_value
 -----+----------
    2 |     2279
-(1 row)
-                </programlisting>
+(1 row)</screen>
 
             </refsection>
 
@@ -13316,8 +12967,7 @@ WHERE rid = 2;
                     <title>Examples: Variant 1</title>
                     <programlisting>
 WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 1, 1, 1],
             [1, 2, 2, 2, 1],
@@ -13331,14 +12981,12 @@ SELECT
     ST_DumpValues(ST_Aspect(rast, 1, '32BF'))
 FROM foo
 
-                                                                                                    st_dumpvalues
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                                    st_dumpvalues</programlisting>
+<screen>------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------
  (1,"{{315,341.565063476562,0,18.4349479675293,45},{288.434936523438,315,0,45,71.5650482177734},{270,270,-1,90,90},{251.565048217773,225,180,135,108.434951782227},{225,198.43495178
 2227,180,161.565048217773,135}}")
-(1 row)
-                    </programlisting>
+(1 row)</screen>
                 </refsection>
 
                 <refsection>
@@ -13348,10 +12996,7 @@ FROM foo
 
                     <programlisting>
 WITH foo AS (
-    SELECT ST_Tile(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_Tile(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
                 1, '32BF', 0, -9999
             ),
             1, 1, 1, ARRAY[
@@ -13464,8 +13109,7 @@ GROUP BY t1.rast;
                     <title>Examples: Variant 1</title>
                     <programlisting>
 WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 1, 1, 1],
             [1, 2, 2, 2, 1],
@@ -13476,17 +13120,15 @@ WITH foo AS (
     ) AS rast
 )
 SELECT
-    ST_DumpValues(ST_Hillshade(rast, 1, '32BF'))
+    ST_DumpValues(ST_HillShade(rast, 1, '32BF'))
 FROM foo
 
-                                                                                                                       st_dumpvalues
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                                                       st_dumpvalues</programlisting>
+<screen>------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------
- (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,251.32763671875,220.749786376953,147.224319458008,NULL},{NULL,220.749786376953,180.312225341797,67.7497863769531,NULL},{NULL,147.224319458008
-,67.7497863769531,43.1210060119629,NULL},{NULL,NULL,NULL,NULL,NULL}}")
-(1 row)
-                    </programlisting>
+ (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,251.32763671875,220.749786376953,147.224319458008,NULL},{NULL,220.749786376953,180.312225341797,67.7497863769531,NULL},{NULL,147.224319458008,
+67.7497863769531,43.1210060119629,NULL},{NULL,NULL,NULL,NULL,NULL}}")
+(1 row)</screen>
                 </refsection>
 
                 <refsection>
@@ -13496,10 +13138,7 @@ FROM foo
 
                     <programlisting>
 WITH foo AS (
-    SELECT ST_Tile(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_Tile(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
                 1, '32BF', 0, -9999
             ),
             1, 1, 1, ARRAY[
@@ -13516,7 +13155,7 @@ WITH foo AS (
 )
 SELECT
     t1.rast,
-    ST_Hillshade(ST_Union(t2.rast), 1, t1.rast)
+    ST_HillShade(ST_Union(t2.rast), 1, t1.rast)
 FROM foo t1
 CROSS JOIN foo t2
 WHERE ST_Intersects(t1.rast, t2.rast)
@@ -13564,9 +13203,20 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>
--- needs examples
-                    </programlisting>
+                    <programlisting>WITH foo AS (
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 2, 3, 3],
+            [1, 2, 4, 15, 3],
+            [2, 4, 10, 7, 5],
+            [3, 5, 7, 6, 4],
+            [3, 3, 5, 4, 4]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(ST_Roughness(rast, 1, '32BF'), 3, 3) AS roughness
+FROM foo;</programlisting>
+<screen>13</screen>
               </refsection>
 
               <refsection>
@@ -13645,8 +13295,7 @@ GROUP BY t1.rast;
                     <title>Examples: Variant 1</title>
                     <programlisting>
 WITH foo AS (
-    SELECT ST_SetValues(
-        ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
         1, 1, 1, ARRAY[
             [1, 1, 1, 1, 1],
             [1, 2, 2, 2, 1],
@@ -13660,16 +13309,14 @@ SELECT
     ST_DumpValues(ST_Slope(rast, 1, '32BF'))
 FROM foo
 
-                            st_dumpvalues
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            st_dumpvalues</programlisting>
+<screen>------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------
  (1,"{{10.0249881744385,21.5681285858154,26.5650520324707,21.5681285858154,10.0249881744385},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},
 {26.5650520324707,36.8698959350586,0,36.8698959350586,26.5650520324707},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},{10.0249881744385,21.
 5681285858154,26.5650520324707,21.5681285858154,10.0249881744385}}")
-(1 row)
-                    </programlisting>
+(1 row)</screen>
                 </refsection>
 
                 <refsection>
@@ -13679,10 +13326,7 @@ FROM foo
 
                     <programlisting>
 WITH foo AS (
-    SELECT ST_Tile(
-        ST_SetValues(
-            ST_AddBand(
-                ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+    SELECT ST_Tile(ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
                 1, '32BF', 0, -9999
             ),
             1, 1, 1, ARRAY[
@@ -13752,9 +13396,20 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>
--- needs examples
-                    </programlisting>
+                    <programlisting>WITH foo AS (
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 2, 3, 3],
+            [1, 2, 4, 15, 3],
+            [2, 4, 10, 7, 5],
+            [3, 5, 7, 6, 4],
+            [3, 3, 5, 4, 4]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(ST_TPI(rast, 1, '32BF'), 3, 3) AS tpi
+FROM foo;</programlisting>
+<screen>3.75</screen>
               </refsection>
 
               <refsection>
@@ -13805,9 +13460,20 @@ GROUP BY t1.rast;
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>
--- needs examples
-                    </programlisting>
+                    <programlisting>WITH foo AS (
+    SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 2, 3, 3],
+            [1, 2, 4, 15, 3],
+            [2, 4, 10, 7, 5],
+            [3, 5, 7, 6, 4],
+            [3, 3, 5, 4, 4]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(ST_TRI(rast, 1, '32BF'), 3, 3) AS tri
+FROM foo;</programlisting>
+<screen>5</screen>
               </refsection>
 
                 <refsection>
@@ -13898,8 +13564,7 @@ GROUP BY t1.rast;
       <refsection>
         <title>Example</title>
 
-<programlisting>SELECT ST_InterpolateRaster(
-    'MULTIPOINT(10.5 9.5 1000, 11.5 8.5 1000, 10.5 8.5 500, 11.5 9.5 500)'::geometry,
+<programlisting>SELECT ST_InterpolateRaster('MULTIPOINT(10.5 9.5 1000, 11.5 8.5 1000, 10.5 8.5 500, 11.5 9.5 500)'::geometry,
     'invdist:smoothing:2.0',
     ST_AddBand(ST_MakeEmptyRaster(200, 400, 10, 10, 0.01, -0.005, 0, 0), '16BSI')
 )</programlisting>
@@ -13999,7 +13664,7 @@ GROUP BY t1.rast;
 SELECT (ST_Contour(rast, 1, fixed_levels =&gt; ARRAY[100.0, 200.0, 300.0])).*
 FROM dem_grid WHERE rid = 1
 )
-SELECT st_astext(geom), id, value
+SELECT ST_AsText(geom), id, value
 FROM c;</programlisting>
 
     </refsection>
@@ -14050,13 +13715,11 @@ FROM c;</programlisting>
 SELECT
     rid,
     Box3D(rast) AS rastbox
-FROM dummy_rast;
-
-rid |        rastbox
+FROM dummy_rast;</programlisting>
+<screen>rid |        rastbox
 ----+-------------------------------------------------
 1   | BOX3D(0.5 0.5 0,20.5 60.5 0)
-2   | BOX3D(3427927.75 5793243.5 0,3427928 5793244 0)
-                    </programlisting>
+2   | BOX3D(3427927.75 5793243.5 0,3427928 5793244 0)</screen>
                 </refsection>
 
                 <refsection>
@@ -14099,28 +13762,23 @@ rid |        rastbox
                 <refsection>
                     <title>Examples</title>
                     <para>Refer to <link xlink:href="http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationWorking01">PostGIS Raster Specification</link> for a diagram of this.</para>
+                    <para>Note envelope and convexhull are more or less the same.</para>
                     <programlisting>
--- Note envelope and convexhull are more or less the same
 SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,
     ST_AsText(ST_Envelope(rast)) As env
-FROM dummy_rast WHERE rid=1;
-
-                        convhull                        |                env
+FROM dummy_rast WHERE rid=1;</programlisting>
+<screen>                        convhull                        |                env
 --------------------------------------------------------+------------------------------------
- POLYGON((0.5 0.5,20.5 0.5,20.5 60.5,0.5 60.5,0.5 0.5)) | POLYGON((0 0,20 0,20 60,0 60,0 0))
-                </programlisting>
+ POLYGON((0.5 0.5,20.5 0.5,20.5 60.5,0.5 60.5,0.5 0.5)) | POLYGON((0 0,20 0,20 60,0 60,0 0))</screen>
+                <para>Now we skew the raster. Note how the convex hull and envelope are now different.</para>
                 <programlisting>
--- now we skew the raster
--- note how the convex hull and envelope are now different
 SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,
     ST_AsText(ST_Envelope(rast)) As env
 FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
-    FROM dummy_rast WHERE rid=1) As foo;
-
-                        convhull                        |                env
+    FROM dummy_rast WHERE rid=1) As foo;</programlisting>
+<screen>                        convhull                        |                env
 --------------------------------------------------------+------------------------------------
- POLYGON((0.5 0.5,20.5 1.5,22.5 61.5,2.5 60.5,0.5 0.5)) | POLYGON((0 0,22 0,22 61,0 61,0 0))
-                    </programlisting>
+ POLYGON((0.5 0.5,20.5 1.5,22.5 61.5,2.5 60.5,0.5 0.5)) | POLYGON((0 0,22 0,22 61,0 61,0 0))</screen>
                 </refsection>
 
                 <!-- Optionally add a "See Also" section -->
@@ -14176,7 +13834,8 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
 
               <refsection>
                     <title>Examples</title>
-                    <programlisting> -- this syntax uses a LATERAL join
+                    <para>This syntax uses a LATERAL join.</para>
+                    <programlisting>
 SELECT val, ST_AsText(geom) As geomwkt
 FROM (
 SELECT dp.*
@@ -14184,9 +13843,8 @@ FROM dummy_rast, LATERAL ST_DumpAsPolygons(rast) AS dp
 WHERE rid = 2
 ) As foo
 WHERE val BETWEEN 249 and 251
-ORDER BY val;
-
- val |                                                       geomwkt
+ORDER BY val;</programlisting>
+<screen> val |                                                       geomwkt
 -----+--------------------------------------------------------------------------
  249 | POLYGON((3427927.95 5793243.95,3427927.95 5793243.85,3427928 5793243.85,
         3427928 5793243.95,3427927.95 5793243.95))
@@ -14195,8 +13853,7 @@ ORDER BY val;
  250 | POLYGON((3427927.8 5793243.8,3427927.8 5793243.75,3427927.85 5793243.75,
         3427927.85 5793243.8, 3427927.8 5793243.8))
  251 | POLYGON((3427927.75 5793243.85,3427927.75 5793243.8,3427927.8 5793243.8,
-        3427927.8 5793243.85,3427927.75 5793243.85))
-                    </programlisting>
+        3427927.8 5793243.85,3427927.75 5793243.85))</screen>
               </refsection>
 
                 <refsection>
@@ -14245,14 +13902,12 @@ ORDER BY val;
 
                     <programlisting>
 SELECT rid, ST_AsText(ST_Envelope(rast)) As envgeomwkt
-FROM dummy_rast;
-
- rid |                                         envgeomwkt
+FROM dummy_rast;</programlisting>
+<screen> rid |                                         envgeomwkt
 -----+--------------------------------------------------------------------
    1 | POLYGON((0 0,20 0,20 60,0 60,0 0))
    2 | POLYGON((3427927 5793243,3427928 5793243,
-        3427928 5793244,3427927 5793244, 3427927 5793243))
-                    </programlisting>
+        3427928 5793244,3427927 5793244, 3427927 5793243))</screen>
                 </refsection>
 
                 <refsection>
@@ -14298,9 +13953,7 @@ FROM dummy_rast;
                     <programlisting>
 WITH foo AS (
     SELECT
-        ST_SetValues(
-            ST_SetValues(
-                ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(9, 9, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0), 2, '8BUI', 1, 0),
+        ST_SetValues(ST_SetValues(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(9, 9, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0), 2, '8BUI', 1, 0),
                 1, 1, 1,
                 ARRAY[
                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -14333,12 +13986,10 @@ SELECT
     ST_AsText(ST_MinConvexHull(rast)) AS mhull,
     ST_AsText(ST_MinConvexHull(rast, 1)) AS mhull_1,
     ST_AsText(ST_MinConvexHull(rast, 2)) AS mhull_2
-FROM foo
-
-               hull               |                mhull                |               mhull_1               |               mhull_2
+FROM foo</programlisting>
+<screen>               hull               |                mhull                |               mhull_1               |               mhull_2
 ----------------------------------+-------------------------------------+-------------------------------------+-------------------------------------
- POLYGON((0 0,9 0,9 -9,0 -9,0 0)) | POLYGON((0 -3,9 -3,9 -9,0 -9,0 -3)) | POLYGON((3 -3,9 -3,9 -6,3 -6,3 -3)) | POLYGON((0 -3,6 -3,6 -9,0 -9,0 -3))
-                    </programlisting>
+ POLYGON((0 0,9 0,9 -9,0 -9,0 0)) | POLYGON((0 -3,9 -3,9 -9,0 -9,0 -3)) | POLYGON((3 -3,9 -3,9 -6,3 -6,3 -3)) | POLYGON((0 -3,6 -3,6 -9,0 -9,0 -3))</screen>
                 </refsection>
 
                 <refsection>
@@ -14378,18 +14029,14 @@ FROM foo
 
             <refsection>
                     <title>Examples</title>
+                    <para>By default no data band value is 0 or not set, so polygon will return a square polygon.</para>
                     <programlisting>
--- by default no data band value is 0 or not set, so polygon will return a square polygon
 SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
 FROM dummy_rast
-WHERE rid = 2;
-
-geomwkt
---------------------------------------------
-MULTIPOLYGON(((3427927.75 5793244,3427928 5793244,3427928 5793243.75,3427927.75 5793243.75,3427927.75 5793244)))
-
-
--- now we change the no data value of first band
+WHERE rid = 2;</programlisting>
+<screen>MULTIPOLYGON(((3427927.75 5793244,3427928 5793244,3427928 5793243.75,3427927.75 5793243.75,3427927.75 5793244)))</screen>
+<para>Now we change the no data value of first band.</para>
+<programlisting>
 UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,1,254)
 WHERE rid = 2;
 SELECt rid, ST_BandNoDataValue(rast)
@@ -14398,26 +14045,17 @@ from dummy_rast where rid = 2;
 -- ST_Polygon excludes the pixel value 254 and returns a multipolygon
 SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
 FROM dummy_rast
-WHERE rid = 2;
+WHERE rid = 2;</programlisting>
+<screen>MULTIPOLYGON(((3427927.9 5793243.95,3427927.85 5793243.95,3427927.85 5793244,3427927.9 5793244,3427927.9 5793243.95)),((3427928 5793243.85,3427928 5793243.8,3427927.95 5793243.8,3427927.95 5793243.85,3427927.9 5793243.85,3427927.9 5793243.9,3427927.9 5793243.95,3427927.95 5793243.95,3427928 5793243.95,3427928 5793243.85)),((3427927.8 5793243.75,3427927.75 5793243.75,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.8 5793243.9,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75,3427927.8 5793243.75)))</screen>
+<para>Or if you want the no data value different for just one time.</para>
+<programlisting>
 
-geomwkt
----------------------------------------------------------
-MULTIPOLYGON(((3427927.9 5793243.95,3427927.85 5793243.95,3427927.85 5793244,3427927.9 5793244,3427927.9 5793243.95)),((3427928 5793243.85,3427928 5793243.8,3427927.95 5793243.8,3427927.95 5793243.85,3427927.9 5793243.85,3427927.9 5793243.9,3427927.9 5793243.95,3427927.95 5793243.95,3427928 5793243.95,3427928 5793243.85)),((3427927.8 5793243.75,3427927.75 5793243.75,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.8 5793243.9,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75,3427927.8 5793243.75)))
-
--- Or if you want the no data value different for just one time
-
-SELECT ST_AsText(
-    ST_Polygon(
-        ST_SetBandNoDataValue(rast,1,252)
+SELECT ST_AsText(ST_Polygon(ST_SetBandNoDataValue(rast,1,252)
         )
     ) As geomwkt
 FROM dummy_rast
-WHERE rid =2;
-
-geomwkt
----------------------------------
-MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.85 5793244,3427927.9 5793244,3427928 5793244,3427928 5793243.95,3427928 5793243.85),(3427927.9 5793243.9,3427927.9 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,3427927.9 5793243.9)))
-                    </programlisting>
+WHERE rid =2;</programlisting>
+<screen>MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.85 5793244,3427927.9 5793244,3427928 5793244,3427928 5793243.95,3427928 5793243.85),(3427927.9 5793243.9,3427927.9 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,3427927.9 5793243.9)))</screen>
                 </refsection>
 
                 <refsection>
@@ -14461,8 +14099,7 @@ CREATE TABLE raster_proportions_rast (
 
 INSERT INTO raster_proportions_rast (name, rast) VALUES (
   '2x2 raster covering 0,0 to 10,10',
-  ST_MakeEmptyRaster(
-    2,  2,   -- raster width/height in pixels
+  ST_MakeEmptyRaster(2,  2,   -- raster width/height in pixels
     0, 10,   -- upper-left corner x/y coordinates
     5, -5,   -- pixel width/height in ground units
     0,  0,   -- skew x/y
@@ -14476,14 +14113,12 @@ INSERT INTO raster_proportions_rast (name, rast) VALUES (
 SELECT name, ST_DumpValues(
     ST_IntersectionFractions(
         rast,
-        'POLYGON((5 0, 0 5, 5 10, 10 5, 5 0))'::geometry),1)
-FROM raster_proportions_rast;
-
-
- 2x2 raster covering 0,0 to 10,10
+        'POLYGON((5 0, 0 5, 5 10, 10 5, 5 0))'::geometry),
+    1)
+FROM raster_proportions_rast;</programlisting>
+<screen> 2x2 raster covering 0,0 to 10,10
 ---------------------------------
- {{0.5,0.5},{0.5,0.5}}
-</programlisting>
+ {{0.5,0.5},{0.5,0.5}}</screen>
                 </refsection>
 
                 <refsection>
@@ -14561,14 +14196,12 @@ FROM raster_proportions_rast;
             <title>Examples</title>
 
             <programlisting>SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&amp; B.rast As intersect
- FROM dummy_rast AS A CROSS JOIN dummy_rast AS B LIMIT 3;
-
- a_rid | b_rid | intersect
+ FROM dummy_rast AS A CROSS JOIN dummy_rast AS B LIMIT 3;</programlisting>
+<screen> a_rid | b_rid | intersect
 -------+-------+---------
      2 |     2 | t
      2 |     3 | f
-     2 |     1 | f
-</programlisting>
+     2 |     1 | f</screen>
           </refsection>
          </refentry>
 
@@ -15010,25 +14643,20 @@ SELECT A.rid As a_rid, B.rid As b_rid, A.rast &> B.rast As overright
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
--- specified band numbers
-SELECT r1.rid, r2.rid, ST_Contains(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;
-
-NOTICE:  The first raster provided has no bands
+            <para>Specified band numbers.</para>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Contains(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;</programlisting>
+<screen>NOTICE:  The first raster provided has no bands
  rid | rid | st_contains
 -----+-----+-------------
    1 |   1 |
-   1 |   2 | f
-            </programlisting>
+   1 |   2 | f</screen>
 
-            <programlisting>
--- no band numbers specified
-SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;
- rid | rid | st_contains
+            <para>No band numbers specified.</para>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;</programlisting>
+<screen> rid | rid | st_contains
 -----+-----+-------------
    1 |   1 | t
-   1 |   2 | f
-            </programlisting>
+   1 |   2 | f</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -15113,14 +14741,11 @@ SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JO
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
- rid | rid | st_containsproperly
+            <programlisting>SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen> rid | rid | st_containsproperly
 -----+-----+---------------------
    2 |   1 | f
-   2 |   2 | f
-            </programlisting>
+   2 |   2 | f</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -15201,14 +14826,11 @@ SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM dummy_ra
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
- rid | rid | st_covers
+            <programlisting>SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen> rid | rid | st_covers
 -----+-----+-----------
    2 |   1 | f
-   2 |   2 | t
-            </programlisting>
+   2 |   2 | t</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -15289,14 +14911,11 @@ SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROS
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
- rid | rid | st_coveredby
+            <programlisting>SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen> rid | rid | st_coveredby
 -----+-----+--------------
    2 |   1 | f
-   2 |   2 | t
-            </programlisting>
+   2 |   2 | t</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -15377,26 +14996,20 @@ SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 C
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
--- rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint
-SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
-NOTICE:  The second raster provided has no bands
+            <para>Rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint.</para>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen>NOTICE:  The second raster provided has no bands
  rid | rid | st_disjoint
 -----+-----+-------------
    2 |   1 |
-   2 |   2 | f
-            </programlisting>
+   2 |   2 | f</screen>
 
-            <programlisting>
--- this time, without specifying band numbers
-SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
- rid | rid | st_disjoint
+            <para>This time, without specifying band numbers.</para>
+            <programlisting>SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen> rid | rid | st_disjoint
 -----+-----+-------------
    2 |   1 | t
-   2 |   2 | f
-            </programlisting>
+   2 |   2 | f</screen>
 
         </refsection>
         <refsection>
@@ -15525,14 +15138,9 @@ SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JO
 
         <refsection>
             <title>Examples</title>
-            <programlisting>
--- different bands of same raster
-SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;
-
- st_intersects
----------------
- t
-            </programlisting>
+            <para>Different bands of same raster.</para>
+            <programlisting>SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;</programlisting>
+<screen>t</screen>
         </refsection>
 
         <refsection>
@@ -15614,14 +15222,9 @@ SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
--- comparing different bands of same raster
-SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;
-
- st_overlaps
--------------
- f
-            </programlisting>
+            <para>Comparing different bands of same raster.</para>
+            <programlisting>SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;</programlisting>
+<screen>f</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -15701,14 +15304,11 @@ SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
- rid | rid | st_touches
+            <programlisting>SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen> rid | rid | st_touches
 -----+-----+------------
    2 |   1 | f
-   2 |   2 | f
-            </programlisting>
+   2 |   2 | f</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -15820,28 +15420,18 @@ SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CRO
           <refsection>
             <title>Examples: Rasters</title>
 
-            <programlisting>SELECT ST_SameAlignment(
-    ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+            <programlisting>SELECT ST_SameAlignment(ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
     ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0)
-) as sm;
-
-sm
-----
-t
-</programlisting>
-<programlisting>
-SELECT ST_SameAlignment(A.rast,b.rast)
- FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;
-
- NOTICE:  The two rasters provided have different SRIDs
+) as sm;</programlisting>
+<screen>t</screen>
+<programlisting>SELECT ST_SameAlignment(A.rast,b.rast)
+ FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;</programlisting>
+<screen>NOTICE:  The two rasters provided have different SRIDs
 NOTICE:  The two rasters provided have different SRIDs
- st_samealignment
-------------------
  t
  f
  f
- f
-</programlisting>
+ f</screen>
           </refsection>
             <refsection>
                 <title>See Also</title>
@@ -15886,21 +15476,17 @@ NOTICE:  The two rasters provided have different SRIDs
                 <title>Examples</title>
                 <programlisting>
 SELECT
-    ST_SameAlignment(
-        ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+    ST_SameAlignment(ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
         ST_MakeEmptyRaster(1, 1, 0, 0, 1.1, 1.1, 0, 0)
     ),
-    ST_NotSameAlignmentReason(
-        ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+    ST_NotSameAlignmentReason(ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
         ST_MakeEmptyRaster(1, 1, 0, 0, 1.1, 1.1, 0, 0)
     )
-;
-
- st_samealignment |            st_notsamealignmentreason
+;</programlisting>
+<screen> st_samealignment |            st_notsamealignmentreason
 ------------------+-------------------------------------------------
  f                | The rasters have different scales on the X axis
-(1 row)
-                </programlisting>
+(1 row)</screen>
             </refsection>
 
             <refsection>
@@ -15988,14 +15574,11 @@ SELECT
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
- rid | rid | st_within
+            <programlisting>SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen> rid | rid | st_within
 -----+-----+-----------
    2 |   1 | f
-   2 |   2 | t
-            </programlisting>
+   2 |   2 | t</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -16090,14 +15673,11 @@ SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROS
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
- rid | rid | st_dwithin
+            <programlisting>SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen> rid | rid | st_dwithin
 -----+-----+------------
    2 |   1 | f
-   2 |   2 | t
-            </programlisting>
+   2 |   2 | t</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -16190,14 +15770,11 @@ SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast 
         <refsection>
             <title>Examples</title>
 
-            <programlisting>
-SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
-
- rid | rid | st_dfullywithin
+            <programlisting>SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;</programlisting>
+<screen> rid | rid | st_dfullywithin
 -----+-----+-----------------
    2 |   1 | f
-   2 |   2 | t
-            </programlisting>
+   2 |   2 | t</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -16417,9 +15994,7 @@ WantedBy=multi-user.target
                         After making the necessary systemd changes, make sure to reload the daemon
                     </para>
 
-                    <programlisting>
-systemctl daemon-reload
-</programlisting>
+                    <programlisting>systemctl daemon-reload</programlisting>
 
                 </section>
 

@@ -383,13 +383,10 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
           to do this:
           </para>
 
-          <programlisting>
-SELECT ST_Relate( 'LINESTRING (1 1, 5 5)',
-                  'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );
-st_relate
------------
-1010F0212
-</programlisting>
+          <programlisting>SELECT ST_Relate(
+    'LINESTRING (1 1, 5 5)',
+    'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );</programlisting>
+<screen>1010F0212</screen>
 
         <para>To test a particular spatial relationship,
           an <emphasis role="bold">intersection matrix pattern</emphasis> is used.
@@ -484,7 +481,7 @@ WHERE a.geom && b.geom
 	  <programlisting><![CDATA[
 SELECT geom
 FROM geom_table
-WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) < 100
+WHERE ST_Distance(geom, 'SRID=312;POINT(100000 200000)') < 100
 ]]></programlisting>
 
     <para>This query selects all the geometries in <code>geom_table</code> which are
@@ -499,8 +496,7 @@ WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) < 100
 
 	  <programlisting>SELECT geom
 FROM geom_table
-WHERE ST_DWithin( geom, 'SRID=312;POINT(100000 200000)', 100 )
-</programlisting>
+WHERE ST_DWithin(geom, 'SRID=312;POINT(100000 200000)', 100)</programlisting>
 
     <para>This query selects the same geometries, but it does it in a more
     efficient way.
