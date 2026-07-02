@@ -158,8 +158,10 @@ endif
 
 
 # TODO: add "html" to the BUILD_TARGET if it can be built
+all: $(BUILD_TARGET) ## Build any buildable documentation assets except html (comments, pdf, epub)
 
-all: $(BUILD_TARGET) ## Build all buildable documentation
+help: ## Print this help message
+	@grep -E '^[a-zA-Z._-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 XML_SOURCES = \
 	administration.xml \
@@ -415,10 +417,7 @@ $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile
 		$<
 
 html: $(html_builddir)/postgis$(DOCSUFFIX).html ## Generate a single-file html/postgis-en.html
-
 html-localized: ## Generate a single-file html/postgis-<lang>.html for supported languages
-pdf-localized: ## Generate a postgis-<version>-<lang>.pdf for supported languages
-check-localized: ## Check structural correctness of localized (translated) XML documentation.
 
 %-localized:
 	rule=$(patsubst %-localized,%,$@); \
@@ -487,9 +486,11 @@ epub-install: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGI
 epub-uninstall:
 	rm -f $(DESTDIR)$(docdir)/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
 
-epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
+epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub ## Generate postgis-<version>-en.epub
+pdf-localized: ## Generate a postgis-<version>-<lang>.epub for supported languages
 
 pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf ## Generate postgis-<version>-en.pdf
+pdf-localized: ## Generate a postgis-<version>-<lang>.pdf for supported languages
 
 doxygen.cfg: doxygen.cfg.in
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@
@@ -632,6 +633,8 @@ endif
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
 check: check-unit ## Check structural correctness of XML documentation with DocBook DTD, RelaxNG, and XMLSchema validation
+check-localized: ## Check structural correctness of localized (translated) XML documentation.
+
 check-regress:
 
 check-unit: $(CHECK_UNIT_TARGET)
@@ -715,6 +718,3 @@ requirements_not_met_xml2pot:
 	@echo "configure was unable to find the 'xml2pot' utility program."
 	@echo "To update the translation templates, install poxml and then re-run configure."
 	@echo
-
-help: ## Print this help message
-	@grep -E '^[a-zA-Z._-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
