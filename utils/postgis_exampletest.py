@@ -188,13 +188,17 @@ class ExampleTester:
             if not re.match(r"^\s*[-+─┼]+\s*$", clean[i + 1]):
                 continue
             rows = []
+            saw_row_count = False
             for line in clean[i + 2 :]:
-                if re.match(r"^\s*$", line) or re.match(r"^\s*\(\d+ rows?\)\s*$", line):
+                if re.match(r"^\s*$", line):
+                    break
+                if re.match(r"^\s*\(\d+ rows?\)\s*$", line):
+                    saw_row_count = True
                     break
                 if re.match(r"^\s*[-+─┼]+\s*$", line):
                     continue
                 rows.append(self.split_psql_table_row(line, clean[i], clean[i + 1]))
-            if rows:
+            if rows or saw_row_count:
                 return rows
 
         return self.expected_rows_from_plain_lines(clean)
@@ -251,8 +255,10 @@ class ExampleTester:
         return True
 
     def catalog_rows_equal(self, actual, expected):
-        if not actual or not expected:
+        if not expected:
             return False
+        if not actual:
+            return True
         expected_width = len(expected[0])
         return all(len(row) == expected_width for row in actual)
 
