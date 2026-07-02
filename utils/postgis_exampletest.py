@@ -4,7 +4,6 @@ import argparse
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 from lxml import etree
 
@@ -587,116 +586,17 @@ def parse_source_example(body, screen_body=None):
     return None, None
 
 
-def auto_testable_programlisting(body, screen_body=None):
-    tester = ExampleTester.__new__(ExampleTester)
-    if not tester.looks_query(body):
-        return False
-    if tester.obvious_skip_reason(body):
-        return False
-
-    query, expected = parse_source_example(body, screen_body)
-    if query is None or not expected:
-        return False
-    return tester.query_is_auto_safe(query) and tester.expected_rows_are_auto_safe(expected)
-
-
-def tag_has_role(tag, role):
-    match = re.search(r'\brole\s*=\s*(["\'])(.*?)\1', tag)
-    return bool(match and role in match.group(2).split())
-
-
-def add_role(tag, role):
-    if tag_has_role(tag, role):
-        return tag
-    match = re.search(r'\brole\s*=\s*"([^"]*)"', tag)
-    if match:
-        roles = (match.group(1) + f" {role}").strip()
-        return re.sub(r'\brole\s*=\s*"[^"]*"', f'role="{roles}"', tag, count=1)
-    match = re.search(r"\brole\s*=\s*'([^']*)'", tag)
-    if match:
-        roles = (match.group(1) + f" {role}").strip()
-        return re.sub(r"\brole\s*=\s*'[^']*'", f'role="{roles}"', tag, count=1)
-    return re.sub(r">", f' role="{role}">', tag, count=1)
-
-
-def remove_role(tag, role):
-    if not re.search(r"\brole\s*=", tag):
-        return tag
-
-    double_match = re.search(r'\brole\s*=\s*"([^"]*)"', tag)
-    if double_match:
-        roles = [item for item in double_match.group(1).split() if item != role]
-        if roles:
-            return re.sub(r'\brole\s*=\s*"[^"]*"', f'role="{" ".join(roles)}"', tag, count=1)
-        return re.sub(r'\s+\brole\s*=\s*"[^"]*"', "", tag, count=1)
-
-    single_match = re.search(r"\brole\s*=\s*'([^']*)'", tag)
-    if single_match:
-        roles = [item for item in single_match.group(1).split() if item != role]
-        if roles:
-            return re.sub(r"\brole\s*=\s*'[^']*'", f'role="{" ".join(roles)}"', tag, count=1)
-        return re.sub(r"\s+\brole\s*=\s*'[^']*'", "", tag, count=1)
-
-    return tag
-
-
-def mark_source_files(files):
-    listing_re = re.compile(
-        r"(<programlisting\b[^>]*>)(.*?)(</programlisting>)"
-        r"((?:\s|<!--.*?-->)*<screen\b[^>]*>.*?</screen>)?",
-        re.S,
-    )
-    for filename in files:
-        path = Path(filename)
-        content = path.read_text(encoding="utf-8")
-        migrating_from_opt_in = FORCE_ROLE in content
-        changed = 0
-
-        def replace(match):
-            nonlocal changed
-            opening, body, closing, screen = match.groups()
-            screen_body = None
-            if screen is not None:
-                screen_match = re.search(r"<screen\b[^>]*>(.*?)</screen>", screen, re.S)
-                if screen_match:
-                    screen_body = screen_match.group(1)
-
-            was_forced = tag_has_role(opening, FORCE_ROLE)
-            was_external_state = tag_has_role(opening, EXTERNAL_STATE_ROLE)
-            is_auto_testable = auto_testable_programlisting(body, screen_body)
-            new_opening = remove_role(opening, FORCE_ROLE)
-            if was_forced:
-                if is_auto_testable:
-                    new_opening = remove_role(new_opening, EXTERNAL_STATE_ROLE)
-                else:
-                    new_opening = add_role(new_opening, FORCE_ROLE)
-            elif is_auto_testable and migrating_from_opt_in:
-                new_opening = add_role(new_opening, EXTERNAL_STATE_ROLE)
-            elif was_external_state:
-                new_opening = opening
-            if new_opening != opening:
-                changed += 1
-            return new_opening + body + closing + (screen or "")
-
-        new_content = listing_re.sub(replace, content)
-        if changed:
-            path.write_text(new_content, encoding="utf-8")
-        print(f"{filename}: marked {changed} examples")
-
-
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Report or run manual example tests.",
-        usage="%(prog)s --report|--run|--check-environment [--database DB] <postgis-out.xml>\n"
-        "       %(prog)s --mark-source <xml-file> [<xml-file> ...]",
+        usage="%(prog)s --report|--run|--check-environment [--database DB] <postgis-out.xml>",
     )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--report", action="store_true")
     mode.add_argument("--run", action="store_true")
     mode.add_argument("--check-environment", action="store_true")
-    mode.add_argument("--mark-source", action="store_true")
     parser.add_argument("--database")
-    parser.add_argument("files", nargs="+")
+    parser.add_argument("xml_file")
     return parser.parse_args()
 
 
@@ -704,13 +604,7 @@ def main():
     args = parse_args()
 
     try:
-        if args.mark_source:
-            mark_source_files(args.files)
-            return 0
-
-        if len(args.files) != 1:
-            raise RuntimeError("exactly one XML file is required")
-        tester = ExampleTester(args.files[0])
+        tester = ExampleTester(args.xml_file)
 
         if args.report:
             tester.print_report()
