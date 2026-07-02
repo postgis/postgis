@@ -92,10 +92,12 @@ or psql prompts in copy-paste SQL ``programlisting`` blocks.
 
 Example SQL formatting rules:
 
-* Keep SQL-only one-liners on one line with no newline after ``<programlisting>``.
+* Keep short SQL examples compact, but split them across XML lines when that
+  makes future diffs easier to review.
 * Keep SQL keywords uppercase in touched examples.
 * Use the documented function-name casing used by the manual.
-* Do not put a space between a function name and ``(``.
+* Prefer no space between a function name and ``(``, but the example tester
+  accepts either spelling.
 * Do not put spaces around PostgreSQL casts: use ``'POINT(1 2)'::geometry``.
 * Put a space after commas in SQL argument lists, unless preserving compact WKT
   output in ``screen``.
