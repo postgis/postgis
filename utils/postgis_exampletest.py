@@ -436,6 +436,42 @@ class ExampleTester:
         stats["volatile_version_tests"] = len([example for example in examples if example["volatile"]])
         stats["example_tests"] = len(examples)
         stats["parseable_example_tests"] = len([example for example in examples if example["valid"]])
+        stats["generated_sql_tests"] = len([example for example in examples if example["valid"] and not example["volatile"]])
+
+        invalid_tests = stats["example_tests"] - stats["parseable_example_tests"]
+        skipped_query_candidates = stats["select_or_with"] - stats["example_tests"]
+        if invalid_tests:
+            status = f"ERROR: {invalid_tests} selected example test(s) could not be parsed."
+        elif stats["example_tests"] == 0:
+            status = "WARNING: no manual example tests were selected."
+        else:
+            status = "OK: selected manual example tests are parseable."
+
+        print("Manual example test report")
+        print(f"Status: {status}")
+        print("")
+        print("Selected tests:")
+        print(f"  {stats['example_tests']} total examples selected for --run")
+        print(f"  {stats['parseable_example_tests']} parseable examples")
+        print(f"  {stats['generated_sql_tests']} emitted by --generate-sql")
+        print(f"  {stats['volatile_version_tests']} version/catalog examples checked only by --run")
+        print(f"  {stats['forced_example_tests']} forced by role=\"{FORCE_ROLE}\"")
+        print("")
+        print("Skipped by design:")
+        print(f"  {stats['requires_external_state']} marked role=\"{EXTERNAL_STATE_ROLE}\"")
+        print(f"  {skipped_query_candidates} SELECT/WITH program listings not selected")
+        print(f"  {stats['external_context']} need tables, files, topology state, or other external context")
+        print(f"  {stats['placeholder_output']} have placeholder output")
+        print(f"  {stats['unstable_output']} have intentionally unstable output")
+        print(f"  {stats['notice_or_error']} show NOTICE/ERROR output")
+        print("")
+        print("Document scan:")
+        print(f"  {stats['programlisting_total']} programlisting blocks")
+        print(f"  {stats['sql_like']} SQL-like blocks")
+        print(f"  {stats['select_or_with']} SELECT/WITH query blocks")
+        print(f"  {stats['adjacent_programlisting_screen']} query blocks with adjacent <screen> output")
+        print("")
+        print("Raw counters:")
 
         for key in sorted(stats):
             print(f"{key}={stats[key]}")
