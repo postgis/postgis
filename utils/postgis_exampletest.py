@@ -301,10 +301,10 @@ class ExampleTester:
     def rows_equal(self, left, right):
         if len(left) == 1 and len(left[0]) == 1 and len(right) > 1:
             if all(len(row) == 1 for row in right):
-                actual = self.comparable_value(left[0][0])
-                if actual == self.comparable_value("".join(row[0] for row in right)):
+                actual = left[0][0]
+                if self.values_equal(actual, "".join(row[0] for row in right)):
                     return True
-                if actual == self.comparable_value(" ".join(row[0] for row in right)):
+                if self.values_equal(actual, " ".join(row[0] for row in right)):
                     return True
 
         if len(left) != len(right):
