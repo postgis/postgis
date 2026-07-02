@@ -238,12 +238,48 @@ class ExampleTester:
         rings = match.group(1).split("),(")
         return "POLYGON((" + "),(".join(self.canonical_ring(ring) for ring in rings) + "))"
 
+    def split_wkt_parts(self, value):
+        parts = []
+        depth = 0
+        start = 0
+        for index, char in enumerate(value):
+            if char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+            elif char == "," and depth == 0:
+                parts.append(value[start:index])
+                start = index + 1
+        parts.append(value[start:])
+        return [part.strip() for part in parts if part.strip()]
+
+    def canonical_multipolygon_wkt(self, value):
+        match = re.match(r"^(?:SRID=\d+;)?MULTIPOLYGON\((.*)\)$", value, re.I)
+        if not match:
+            return value
+
+        polygons = []
+        for polygon in self.split_wkt_parts(match.group(1)):
+            polygon_match = re.match(r"^\(\((.*)\)\)$", polygon)
+            if not polygon_match:
+                return value
+            rings = polygon_match.group(1).split("),(")
+            polygons.append("((" + "),(".join(self.canonical_ring(ring) for ring in rings) + "))")
+
+        return "MULTIPOLYGON(" + ",".join(sorted(polygons)) + ")"
+
+    def canonical_geometry_wkt(self, value):
+        polygon = self.canonical_polygon_wkt(value)
+        if polygon != value:
+            return polygon
+        return self.canonical_multipolygon_wkt(value)
+
     def values_equal(self, left, right):
         left_value = self.comparable_value(left)
         right_value = self.comparable_value(right)
         if left_value == right_value:
             return True
-        if self.canonical_polygon_wkt(left_value) == self.canonical_polygon_wkt(right_value):
+        if self.canonical_geometry_wkt(left_value) == self.canonical_geometry_wkt(right_value):
             return True
         if re.match(r"^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$", left_value) and re.match(
             r"^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$", right_value
