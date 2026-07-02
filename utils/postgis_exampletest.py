@@ -232,7 +232,7 @@ class ExampleTester:
         return ",".join(points + [points[0]])
 
     def canonical_polygon_wkt(self, value):
-        match = re.match(r"^(?:SRID=\d+;)?POLYGON\(\((.*)\)\)$", value, re.I)
+        match = re.match(r"^(?:SRID=\d+;)?POLYGON\(\((.*)\)\)$", value, re.I | re.S)
         if not match:
             return value
         rings = match.group(1).split("),(")
@@ -254,7 +254,7 @@ class ExampleTester:
         return [part.strip() for part in parts if part.strip()]
 
     def canonical_multipolygon_wkt(self, value):
-        match = re.match(r"^(?:SRID=\d+;)?MULTIPOLYGON\((.*)\)$", value, re.I)
+        match = re.match(r"^(?:SRID=\d+;)?MULTIPOLYGON\((.*)\)$", value, re.I | re.S)
         if not match:
             return value
 
@@ -268,11 +268,22 @@ class ExampleTester:
 
         return "MULTIPOLYGON(" + ",".join(sorted(polygons)) + ")"
 
+    def canonical_geometrycollection_wkt(self, value):
+        match = re.match(r"^(?:SRID=\d+;)?GEOMETRYCOLLECTION\((.*)\)$", value, re.I | re.S)
+        if not match:
+            return value
+
+        geometries = [self.canonical_geometry_wkt(part) for part in self.split_wkt_parts(match.group(1))]
+        return "GEOMETRYCOLLECTION(" + ",".join(sorted(geometries)) + ")"
+
     def canonical_geometry_wkt(self, value):
         polygon = self.canonical_polygon_wkt(value)
         if polygon != value:
             return polygon
-        return self.canonical_multipolygon_wkt(value)
+        multipolygon = self.canonical_multipolygon_wkt(value)
+        if multipolygon != value:
+            return multipolygon
+        return self.canonical_geometrycollection_wkt(value)
 
     def values_equal(self, left, right):
         left_value = self.comparable_value(left)
