@@ -585,7 +585,7 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
     <refsection>
       <title>Examples</title>
       <para>Get the first 10 metadata records from the Proj database.</para>
-      <programlisting>SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;</programlisting>
+      <programlisting role="requires-external-state">SELECT auth_name, auth_srid, srname FROM postgis_srs_all() ORDER BY auth_name, auth_srid LIMIT 10;</programlisting>
 <screen> auth_name | auth_srid |                                srname
 -----------+-----------+----------------------------------------------------------------------
  EPSG      | 10156     | ETRS89 + MSL UK &amp; Ireland VORF08 depth
