@@ -7,9 +7,9 @@ In language subdirectories, run ``make`` to build localized manual and
 comments, ``make local-pdf`` for the pdf.
 
 In parent directory (doc), run ``make update-po`` to update the translation
-files to be in sync with the source code, ``make html-localized`` or
-``make pdf-localized`` to build the localized html or pdf manual for
-all enabled languages
+files to be in sync with the source code, ``make check-localized`` to verify
+structural correctness, ``make html-localized`` or ``make pdf-localized``
+to build the localized html or pdf manual for all enabled languages
 
 Adding languages
 ----------------
@@ -28,7 +28,7 @@ Adding new languages implies (relative to doc/ dir):
   - Running `make update-po`
 
   - Check the new language works:
-    make -C po/<newlanguage>
+    make -C po/<newlanguage> local-check html pdf
 
   - Add to the git repository the changes in the Makefile.in
     and all the new files in the po/<newlanguage>/

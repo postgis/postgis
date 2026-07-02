@@ -159,7 +159,7 @@ endif
 
 # TODO: add "html" to the BUILD_TARGET if it can be built
 
-all: $(BUILD_TARGET)
+all: $(BUILD_TARGET) ## Build all buildable documentation
 
 XML_SOURCES = \
 	administration.xml \
@@ -351,7 +351,7 @@ $(XML_UNIFIED_POT): $(XML_SOURCE_POTS)
   fi;
 
 # Creates or updates translation files
-update-po: $(PO_FILES)
+update-po: $(PO_FILES) ## Update translation files to be in sync with the source XML files (see check-localized)
 
 $(PO_FILES): $(XML_UNIFIED_POT)
 	@mkdir -p `dirname $@`
@@ -403,6 +403,8 @@ postgis-out.xml: postgis.xml Makefile $(XML_INPUTS) Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@.in
 	$(XMLLINT) $(XSLTPROC_PATH_OPT) --noent -o $@ $@.in
 
+chunked-html: ## Generate multi-file html in html/postgis-en/
+
 chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
 $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
@@ -412,7 +414,11 @@ $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
-html: $(html_builddir)/postgis$(DOCSUFFIX).html
+html: $(html_builddir)/postgis$(DOCSUFFIX).html ## Generate a single-file html/postgis-en.html
+
+html-localized: ## Generate a single-file html/postgis-<lang>.html for supported languages
+pdf-localized: ## Generate a postgis-<version>-<lang>.pdf for supported languages
+check-localized: ## Check structural correctness of localized (translated) XML documentation.
 
 %-localized:
 	rule=$(patsubst %-localized,%,$@); \
@@ -483,13 +489,15 @@ epub-uninstall:
 
 epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
 
-pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
+pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf ## Generate postgis-<version>-en.pdf
 
 doxygen.cfg: doxygen.cfg.in
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@
 
-doxygen: doxygen.cfg
+doxygen: doxygen.cfg ## Generate developer's documentation using Doxygen
 	doxygen $<
+
+images: ## Generate images used in html and pdf targets
 
 images images-install images-uninstall images-clean:
 	$(MAKE) -C $(images_builddir) $@
@@ -515,7 +523,7 @@ cheatsheet-install: $(GENERATED_CHEATSHEET_FILES)
 cheatsheet-clean:
 	rm -f $(GENERATED_CHEATSHEET_FILES)
 
-clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean clean-pot
+clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean clean-pot ## Remove generated files except comments
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f postgis-nospecial.xml postgis-nospecial.xml.in
@@ -537,8 +545,10 @@ distclean: clean
 	$(MAKE) distclean-localized
 	rm -f Makefile Makefile.comments
 
-maintainer-clean: distclean
+maintainer-clean: distclean ## Remove all generated files (including comments)
 	rm -f $(GENERATED_COMMENT_FILES)
+
+comments: ## Generate SQL scripts that add COMMENTs for every function (derived from the documentation)
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments:
@@ -547,6 +557,8 @@ comments: $(GENERATED_COMMENT_FILES)
 endif
 
 cheatsheets: $(GENERATED_CHEATSHEET_FILES)
+
+comments-install: ## Install the SQL comment scripts to the PostgreSQL contrib directory
 
 ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments-install:
@@ -561,7 +573,7 @@ comments-install: comments
 	$(MAKE) -f Makefile.comments install
 endif
 
-comments-uninstall:
+comments-uninstall: ## Removes the SQL comment scripts from the PostgreSQL contrib directory
 	$(MAKE) -f Makefile.comments uninstall
 
 man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/raster2pgsql.1 man/pgtopo_export.1 man/pgtopo_import.1 man/postgis.1 man/postgis_restore.1
@@ -606,9 +618,9 @@ docs-install: html-install html-assets-install
 docs-uninstall: html-uninstall html-assets-uninstall
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
-install: comments-install man-install
+install: comments-install man-install ## Install sql comments and man pages
 
-uninstall: comments-uninstall man-uninstall
+uninstall: comments-uninstall man-uninstall ## Uninstall sql comments and man pages
 
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
@@ -619,7 +631,7 @@ endif
 %_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/%_gardentest.sql.xsl postgis-out.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
-check: check-unit
+check: check-unit ## Check structural correctness of XML documentation with DocBook DTD, RelaxNG, and XMLSchema validation
 check-regress:
 
 check-unit: $(CHECK_UNIT_TARGET)
@@ -703,3 +715,6 @@ requirements_not_met_xml2pot:
 	@echo "configure was unable to find the 'xml2pot' utility program."
 	@echo "To update the translation templates, install poxml and then re-run configure."
 	@echo
+
+help: ## Print this help message
+	@grep -E '^[a-zA-Z._-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
