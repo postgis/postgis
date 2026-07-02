@@ -216,10 +216,34 @@ class ExampleTester:
         value = DECIMAL_RE.sub(lambda match: f"{float(match.group(0)):.12g}", value)
         return value
 
+    def canonical_ring(self, ring):
+        points = ring.split(",")
+        if len(points) > 1 and points[0] == points[-1]:
+            points = points[:-1]
+        if not points:
+            return ring
+
+        rotations = []
+        for candidate in (points, list(reversed(points))):
+            for index in range(len(candidate)):
+                rotated = candidate[index:] + candidate[:index]
+                rotations.append(rotated)
+        points = min(rotations)
+        return ",".join(points + [points[0]])
+
+    def canonical_polygon_wkt(self, value):
+        match = re.match(r"^(?:SRID=\d+;)?POLYGON\(\((.*)\)\)$", value, re.I)
+        if not match:
+            return value
+        rings = match.group(1).split("),(")
+        return "POLYGON((" + "),(".join(self.canonical_ring(ring) for ring in rings) + "))"
+
     def values_equal(self, left, right):
         left_value = self.comparable_value(left)
         right_value = self.comparable_value(right)
         if left_value == right_value:
+            return True
+        if self.canonical_polygon_wkt(left_value) == self.canonical_polygon_wkt(right_value):
             return True
         if re.match(r"^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$", left_value) and re.match(
             r"^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$", right_value
