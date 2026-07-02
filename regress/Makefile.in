@@ -148,7 +148,10 @@ garden: staged-install
 
 exampletest: staged-install exampletest-run
 
-exampletest-run:
+exampletest-unit:
+	python3 $(top_srcdir)/utils/test_postgis_exampletest.py
+
+exampletest-run: exampletest-unit
 	$(MAKE) -C ../doc postgis-out.xml
 	dropdb --if-exists $(EXAMPLETESTDB)
 	createdb $(EXAMPLETESTDB)
