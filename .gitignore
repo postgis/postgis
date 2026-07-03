@@ -59,7 +59,6 @@ doc/postgis_comments.sql
 doc/postgis-out.xml
 doc/postgis-out.xml.in
 doc/raster_comments.sql
-doc/postgis_exampletest_*.sql
 doc/postgis_gardentest_*.sql
 doc/raster_gardentest_*.sql
 doc/sfcgal_gardentest_*.sql

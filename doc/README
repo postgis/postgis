@@ -41,7 +41,7 @@ To generate and manage the translated XML files:
  * gettext - https://www.gnu.org/software/gettext/
 
 To generate and report on manual example tests:
- * Perl XML::LibXML module
+ * Python 3 with lxml
 
 To generate the localized PDFs:
  * fonts-ipafont-gothic
@@ -121,4 +121,6 @@ Example SQL formatting rules:
   version/build strings and optional extension rows are treated as volatile.
   The tester checks that the query runs and returns the documented column shape.
 
-Use ``make exampletest-report`` to inspect the current manual.
+Use ``make exampletest-report`` to inspect the current manual. Use
+``make -C regress exampletest-unit`` to run fast unit tests for the manual
+example parser and comparison logic.
