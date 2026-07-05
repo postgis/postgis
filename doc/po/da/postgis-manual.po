@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-06-12 20:29+0000\n"
+"POT-Creation-Date: 2026-07-05 04:20+0000\n"
 "PO-Revision-Date: 2025-04-02 23:47+0000\n"
 "Last-Translator: Kristian Thy <thy@42.dk>\n"
 "Language-Team: Danish <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -1218,6 +1218,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This example shows what happens when casting a three-element array to "
+"<type>topology.topoelement</type>. The domain requires a two-element array, "
+"so the dimension check fails."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>, "
 "<xref linkend=\"TopoGeom_addElement\"/>, <xref "
 "linkend=\"TopoGeom_remElement\"/>"
@@ -1233,6 +1241,16 @@ msgstr ""
 msgid ""
 "An array of 1 or more TopoElement objects, generally used to pass around "
 "components of TopoGeometry objects."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This is the more verbose equivalent."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses the array aggregate function packaged with topology."
 msgstr ""
 
 #. Tag: para
@@ -1304,6 +1322,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example creates the new table in the <varname>ma_topo</varname> schema. "
+"The table could be created in a different schema, in which case "
+"<varname>topology_name</varname> and <varname>schema_name</varname> would be "
+"different."
 msgstr ""
 
 #. Tag: para
@@ -1455,6 +1482,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.3.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This query returns no records because the feature is already registered."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Rebuild the topology layer catalog."
 msgstr ""
 
 #. Tag: refpurpose
@@ -2207,6 +2245,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Populate the topology."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Create the tables and topogeometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
 "linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
@@ -2685,6 +2733,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Add an edge to split."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Split the edge with a new node."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ModEdgeHeal\"/>, <xref linkend=\"ST_NewEdgeHeal\"/>, "
 "<xref linkend=\"AddEdge\"/>"
@@ -2764,6 +2822,16 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X.3.2"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "Add an isolated node with no face."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Move the new node."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -2797,6 +2865,11 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM: Topo-Net Routines: X.3.8"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "Split the new edge."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -2819,6 +2892,11 @@ msgid ""
 "&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details: X+1.3.3"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "Remove an isolated node with no face."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
@@ -2831,6 +2909,11 @@ msgstr ""
 msgid ""
 "<para>Removes an isolated edge and returns description of action. If the "
 "edge is not isolated, then an exception is thrown.</para>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Remove an isolated edge with no face."
 msgstr ""
 
 #. Tag: title
@@ -2886,6 +2969,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This query errors because two or more edges are found."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"GetNodeByPoint\"/>, <xref linkend=\"GetFaceByPoint\"/>"
 msgstr ""
@@ -2925,6 +3013,11 @@ msgstr ""
 msgid ""
 "Enhanced: 3.2.0 more efficient implementation and clearer contract, stops "
 "working with invalid topologies."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This query errors because two or more faces are found."
 msgstr ""
 
 #. Tag: para
@@ -2985,6 +3078,11 @@ msgstr ""
 msgid ""
 "If use tolerance &gt; 0 and there is more than one node near the point then "
 "an exception is thrown."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This query errors because the tolerance matches two or more nodes."
 msgstr ""
 
 #. Tag: para
@@ -3083,6 +3181,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This query returns the edges that bound face 1."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This query returns the sequence, edge identifier, and geometry of the edges "
+"that bound face 1. Use <xref linkend=\"ST_GetFaceGeometry\"/> if only the "
+"geometry and sequence are needed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"AddFace\"/>, <xref linkend=\"ST_GetFaceGeometry\"/>"
 msgstr ""
 
@@ -3102,6 +3213,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This query returns the WKT of the polygon added with <xref "
+"linkend=\"AddFace\"/>."
 msgstr ""
 
 #. Tag: refpurpose
@@ -3324,6 +3442,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This query errors because the edge intersects an existing edge away from the "
+"endpoints."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
 
@@ -3382,6 +3507,19 @@ msgid ""
 "The <varname>apolygon</varname> geometry must have the same <varname>srid</"
 "varname> as defined for the topology otherwise an invalid spatial reference "
 "sys error will be thrown."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"First add the edges using <function>generate_series</function> as an "
+"iterator. This query only works for polygons with fewer than 10000 points "
+"because of the maximum value in <function>generate_series</function>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Then add the face."
 msgstr ""
 
 #. Tag: refpurpose
@@ -3530,6 +3668,32 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Create the topogeometry column."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Update the column assuming everything is perfectly aligned with the edges."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The world is rarely perfect, so this version allows some error. It counts a "
+"face if 50 percent of it falls within the expected block group boundary."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"To convert the topogeometry back to a denormalized geometry aligned with "
+"faces and edges, cast the topogeometry to a geometry. The resulting "
+"geometries are aligned with the TIGER street centerlines."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"toTopoGeom\"/> <xref linkend=\"ST_CreateTopoGeo\"/>, <xref "
 "linkend=\"ST_GetFaceGeometry\"/>, <xref linkend=\"topoelementarray\"/>, "
@@ -3606,6 +3770,43 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Create the topology without allowing any tolerance."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Create a new table."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Add a topogeometry column to the new table."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Use the new layer identifier to populate the topogeometry column."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Verify what happened."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Shrink all TopoGeometry polygons by 10 meters."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Find faces that are left without any TopoGeometry reference after the shrink "
+"operation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"AddTopoGeometryColumn\"/>, <xref "
 "linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, <xref "
@@ -3641,6 +3842,16 @@ msgstr ""
 msgid ""
 "Converts a <xref linkend=\"topogeometry\"/> to a <xref "
 "linkend=\"topoelement\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Return the TopoElement representation of each topogeometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Use a cast to aggregate topogeometries into a TopoElementArray."
 msgstr ""
 
 #. Tag: para
@@ -3698,6 +3909,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Add edge 5 to TopoGeometry <varname>tg</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"CreateTopoGeom\"/>"
 msgstr ""
 
@@ -3711,6 +3927,11 @@ msgstr ""
 msgid ""
 "Removes a <xref linkend=\"topoelement\"/> from the definition of a "
 "TopoGeometry object."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Remove face 43 from TopoGeometry <varname>tg</varname>."
 msgstr ""
 
 #. Tag: refpurpose
@@ -3738,6 +3959,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.2"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Set an overall TopoGeometry value to be composed of all elements from "
+"specific TopoGeometry values."
 msgstr ""
 
 #. Tag: para
@@ -3948,6 +4176,16 @@ msgstr ""
 msgid "Enhanced: 2.2.1 added support for puntal inputs"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "Create a temporary edge map for the TopoJSON output."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Build the TopoJSON header, objects, arcs, and footer."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Topology Spatial Relationships"
@@ -3985,6 +4223,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&Z_support;"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The following example uses the <varname>nei_topo</varname> table created in "
+"the <xref linkend=\"toTopoGeom\"/> examples."
 msgstr ""
 
 #. Tag: para
@@ -4401,6 +4646,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"The GNU Multiple Precision Arithmetic Library (libgmp). Used to control "
+"precision of math operations in PostGIS Topology. GMP is available for "
+"download from <link xlink:href=\"https://gmplib.org/\">https://gmplib.org/</"
+"link>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "GDAL, version 3+ is preferred. This is required for raster support. <link "
 "xlink:href=\"https://gdal.org/download.html\">https://gdal.org/"
 "download.html</link>."
@@ -4437,17 +4691,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"SFCGAL, 1.4.1 or higher is required and 2.1+ is needed to be able to use all "
+"SFCGAL, 1.4.1 or higher is required, 2.3+ is needed to be able to use all "
 "functionality. SFCGAL can be used to provide additional 2D and 3D advanced "
-"analysis functions to PostGIS cf <xref linkend=\"reference_sfcgal\"/>. And "
-"also allow to use SFCGAL rather than GEOS for some 2D functions provided by "
-"both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL "
-"configuration variable <code>postgis.backend</code> allow end user to "
-"control which backend he want to use if SFCGAL is installed (GEOS by "
-"default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: "
-"<link xlink:href=\"https://sfcgal.org\">https://sfcgal.org</link>) <link "
-"xlink:href=\"https://gitlab.com/sfcgal/SFCGAL/\">https://gitlab.com/sfcgal/"
-"SFCGAL/</link>."
+"analysis functions to PostGIS cf <xref linkend=\"reference_sfcgal\"/>. <link "
+"xlink:href=\"https://sfcgal.gitlab.io/sfcgal/\">https://sfcgal.gitlab.io/"
+"sfcgal/</link>."
 msgstr ""
 
 #. Tag: para
@@ -7122,6 +7370,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example uses a 3D polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses a 3D MultiLineString."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
@@ -7173,6 +7431,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&M_support;"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example returns the minimum X coordinate of a buffer around a point."
 msgstr ""
 
 #. Tag: para
@@ -7297,6 +7561,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example breaks a PolyhedralSurface into its faces."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses a TIN geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
@@ -7359,6 +7633,16 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Standard Geometry Examples"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses a cube represented as a PolyhedralSurface."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses a Triangle geometry."
 msgstr ""
 
 #. Tag: para
@@ -7449,7 +7733,7 @@ msgstr ""
 msgid ""
 "This only works for POLYGON geometries, not MULTIPOLYGONs. Use <xref "
 "linkend=\"ST_Dump\"/> to extract polygon elements from polygonal geometries: "
-"<code>ST_DumpRings( (ST_Dump(geom)).geom )</code>"
+"<code>ST_DumpRings((ST_Dump(geom)).geom )</code>"
 msgstr ""
 
 #. Tag: para
@@ -7477,16 +7761,18 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Returns the last point of a LineString or CircularLineString."
+msgid ""
+"Returns the last point of a LineString, CircularLineString, or NURBSCurve."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the last point of a <varname>LINESTRING</varname> or "
-"<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</"
-"varname>. Returns <varname>NULL</varname> if the input is not a "
-"<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
+"Returns the last point of a <varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> "
+"geometry as a <varname>POINT</varname>. Returns <varname>NULL</varname> if "
+"the input is not a <varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>."
 msgstr ""
 
 #. Tag: para
@@ -7522,7 +7808,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "3D endpoint."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "End point of a CircularString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "End point of a NURBSCurve"
 msgstr ""
 
 #. Tag: para
@@ -7615,6 +7911,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example extracts exterior rings from a table of polygons."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
@@ -7656,6 +7957,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.5"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Extracting a subset of points from a 3D multipoint."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Output:"
 msgstr ""
 
 #. Tag: para
@@ -7804,6 +8115,16 @@ msgstr ""
 msgid "Polyhedral Surface Examples"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "This example uses a cube."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses the same cube with one side missing."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if a geometry is a geometry collection type."
@@ -7944,7 +8265,7 @@ msgstr ""
 msgid ""
 "Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
 "both <xref linkend=\"ST_IsClosed\"/> (<code>ST_StartPoint(g) ~= "
-"ST_Endpoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
+"ST_EndPoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
 
@@ -8139,6 +8460,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example returns 1; prior versions would have returned NULL."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_Multi\"/>"
 msgstr ""
 
@@ -8164,6 +8490,11 @@ msgstr ""
 msgid ""
 "Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, "
 "returning the number of interior rings of first POLYGON."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example counts the interior rings of a polygon."
 msgstr ""
 
 #. Tag: para
@@ -8246,6 +8577,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Extract the 2nd face of the polyhedral surface."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -8301,6 +8637,16 @@ msgstr ""
 msgid "Changed: 2.3.0 : negative indexing available (-1 is last point)"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "This example extracts all POINT geometries from a LineString."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses a CircularString."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a MultiPoint containing the coordinates of a geometry."
@@ -8334,16 +8680,17 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Returns the first point of a LineString."
+msgid ""
+"Returns the first point of a LineString, CircularLineString, or NURBSCurve."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the first point of a <varname>LINESTRING</varname> or "
-"<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</"
-"varname>. Returns <varname>NULL</varname> if the input is not a "
-"<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
+"Returns the first point of a <varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> "
+"geometry as a <varname>POINT</varname>. For other geometries, returns the "
+"first point in coordinate order."
 msgstr ""
 
 #. Tag: para
@@ -8376,7 +8723,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Start point of a non-LineString is NULL"
+msgid "Start point of a Point is the Point itself"
 msgstr ""
 
 #. Tag: para
@@ -8391,7 +8738,179 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Start point of a NURBSCurve"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_PointN\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns the M coordinate of the first point of a LineString, "
+"CircularLineString, or NURBSCurve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the M coordinate of the first point of a <varname>LINESTRING</"
+"varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</"
+"varname> geometry. Returns <varname>NULL</varname> if the input geometry "
+"does not have an M dimension or is not a <varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Start M value of a LineString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Start M value of a CircularString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Start M value of a NURBSCurve"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Geometry without M dimension returns NULL"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_SetStartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Returns the M coordinate of the last point of a LineString, "
+"CircularLineString, or NURBSCurve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the M coordinate of the last point of a <varname>LINESTRING</"
+"varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</"
+"varname> geometry. Returns <varname>NULL</varname> if the input geometry "
+"does not have an M dimension or is not a <varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "End M value of a LineString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "End M value of a CircularString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "End M value of a NURBSCurve"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_SetEndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Sets the M coordinate of the first point of a LineString, "
+"CircularLineString, or NURBSCurve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a copy of the input <varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> "
+"geometry with the M coordinate of the first point set to the specified "
+"value. If the input geometry does not have an M dimension, it will be added. "
+"Returns <varname>NULL</varname> if the input is not a <varname>LINESTRING</"
+"varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</"
+"varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Set start M value of a LineString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Add M dimension and set start M value"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Set start M value of a CircularString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Set start M value of a NURBSCurve"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_StartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Sets the M coordinate of the last point of a LineString, CircularLineString, "
+"or NURBSCurve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a copy of the input <varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> "
+"geometry with the M coordinate of the last point set to the specified value. "
+"If the input geometry does not have an M dimension, it will be added. "
+"Returns <varname>NULL</varname> if the input is not a <varname>LINESTRING</"
+"varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</"
+"varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Set end M value of a LineString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Add M dimension and set end M value"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Set end M value of a CircularString"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Set end M value of a NURBSCurve"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_EndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -8640,6 +9159,339 @@ msgid ""
 "information."
 msgstr ""
 
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the control points of a NURBS curve as a MULTIPOINT geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Extracts the control points from a NURBS curve and returns them as a "
+"MULTIPOINT geometry. Control points define the control polygon that "
+"influences the shape of the NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function raises an error if the input is not a NURBS curve. Returns NULL "
+"if the input is NULL."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example extracts control points from a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example counts the control points."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_NumControlPoints\"/>, <xref linkend=\"ST_Weights\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the polynomial degree of a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the polynomial degree of a NURBS curve as an integer. The degree "
+"determines the curve's smoothness and flexibility. Higher degrees produce "
+"smoother curves but require more control points."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns the degree of a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example checks whether a NURBS curve is cubic."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_NumControlPoints\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the weight array of a rational NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the weight values of a rational NURBS curve as an array of double "
+"precision values. Weights control the influence of each control point on the "
+"curve shape. Higher weights pull the curve closer to the corresponding "
+"control point."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns NULL if the curve has no weights (non-rational B-spline) or if the "
+"input is NULL. Raises an error if the input is not a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns weights from a rational NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example checks the weights of a non-rational curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_NurbsCurveIsRational\"/>, <xref "
+"linkend=\"ST_ControlPoints\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the knot vector of a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the knot vector of a NURBS curve as an array of double precision "
+"values. The knot vector defines the parameter space and controls where and "
+"how the control points affect the curve. It must be a non-decreasing "
+"sequence with length equal to (number of control points + degree + 1)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns NULL if the curve uses the default uniform clamped knot vector or if "
+"the input is NULL. Raises an error if the input is not a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example returns knots from a NURBS curve with a custom knot vector."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example checks the knots of a curve using the default knot vector."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Degree\"/>, <xref linkend=\"ST_NumControlPoints\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the number of control points in a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the number of control points in a NURBS curve. The number of control "
+"points must be at least (degree + 1) for a valid NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Raises an error if the input is not a NURBS curve. Returns NULL if the input "
+"is NULL."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns the number of control points."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example verifies that a curve has enough control points for its degree."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_ControlPoints\"/>, <xref linkend=\"ST_Degree\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Checks if a NURBS curve is rational (has weights)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns TRUE if the NURBS curve has weights assigned to its control points "
+"(rational NURBS), FALSE if it uses uniform weights (non-rational B-spline)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rational NURBS curves provide more flexibility in curve shape control "
+"through variable weights. Non-rational B-splines use uniform weights and are "
+"a special case of NURBS curves."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example checks whether a curve is rational."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example checks a non-rational curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Weights\"/>, <xref linkend=\"ST_IsNurbsCurve\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Checks if a geometry is a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns TRUE if the geometry is a NURBS curve, FALSE otherwise. This "
+"function can be used to test geometry types before applying NURBS-specific "
+"functions."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Returns NULL if the input is NULL."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example checks whether a geometry is a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example tests a regular LineString."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_GeometryType\"/>, <xref "
+"linkend=\"ST_NurbsCurveIsRational\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Evaluates a NURBS curve at a specific parameter value and returns the "
+"resulting point."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Evaluates a NURBS curve at the specified parameter value and returns a POINT "
+"geometry representing the position on the curve. The parameter typically "
+"ranges from 0.0 (start of curve) to 1.0 (end of curve), though the actual "
+"range depends on the knot vector."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Raises an error if the input is not a NURBS curve or if evaluation fails. "
+"Returns NULL if either input is NULL."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns the midpoint of a NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example samples multiple points along a curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_NurbsToLineString\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Converts a NURBS curve to a LINESTRING by uniform sampling."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Converts a NURBS curve to a LINESTRING geometry by creating a piecewise "
+"linear approximation. The curve is sampled at uniformly distributed "
+"parameter values and the resulting points are connected with straight line "
+"segments."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The optional <varname>num_segments</varname> parameter specifies the number "
+"of line segments in the output (default: 32, range: 2-10000). Higher values "
+"produce smoother approximations but increase geometry complexity."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example converts a NURBS curve to a LineString using the default "
+"quality."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a high-quality approximation with 64 segments."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example creates a lower-quality, faster approximation with 16 segments."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Evaluate\"/>, <xref linkend=\"ST_Segmentize\"/>"
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Bounding Box Functions"
@@ -8823,6 +9675,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example expands a 3D box by 10 meters."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example renders the text representation of a 10-meter expanded box "
+"around a point geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ""
 
@@ -8873,6 +9737,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"This example converts the extent back into a geometry and renders its "
+"extended text representation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
@@ -8891,6 +9762,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Extent3D"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns the extent of several elevated CircularStrings."
 msgstr ""
 
 #. Tag: para
@@ -8955,6 +9831,13 @@ msgid ""
 "Although this function is only defined for box3d, it also works for box2d "
 "and geometry values due to automatic casting. However, it will not accept a "
 "geometry or box2d text representation, since those do not auto-cast."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Observe THIS DOES NOT WORK because it will try to auto-cast the string "
+"representation to a BOX3D."
 msgstr ""
 
 #. Tag: para
@@ -9075,13 +9958,70 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Returns the X size of a 2D or 3D bounding box or a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the X size of a 2D or 3D bounding box or a geometry, computed as "
+"<code>ST_XMax(aGeomorBox2DorBox3D) - ST_XMin(aGeomorBox2DorBox3D)</code>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YSize\"/>, <xref "
+"linkend=\"ST_ZSize\"/>, <xref linkend=\"ST_MSize\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the Y size of a 2D or 3D bounding box or a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the Y size of a 2D or 3D bounding box or a geometry, computed as "
+"<code>ST_YMax(aGeomorBox2DorBox3D) - ST_YMin(aGeomorBox2DorBox3D)</code>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_XSize\"/>, <xref "
+"linkend=\"ST_ZSize\"/>, <xref linkend=\"ST_MSize\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the Z size of a 2D or 3D bounding box or a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the Z size of a 2D or 3D bounding box or a geometry, computed as "
+"<code>ST_ZMax(aGeomorBox2DorBox3D) - ST_ZMin(aGeomorBox2DorBox3D)</code>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_XSize\"/>, <xref "
+"linkend=\"ST_YSize\"/>, <xref linkend=\"ST_MSize\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "Returns the M minima of a geometry."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the M minima of a geometry, or null of the geometry lacks M values."
+"Returns the M minima of a geometry, or null if the geometry lacks M values."
 msgstr ""
 
 #. Tag: para
@@ -9089,7 +10029,19 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMax\"/>"
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMax\"/>, <xref "
+"linkend=\"ST_MSize\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the M maxima of a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the M maxima of a geometry, or null if the geometry lacks M values."
 msgstr ""
 
 #. Tag: para
@@ -9097,7 +10049,27 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
 "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMin\"/>, <xref "
-"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>"
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_MMin\"/>, <xref "
+"linkend=\"ST_MSize\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid "Returns the M size of a geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns the M size of a geometry, computed as <code>ST_MMax(geom) - "
+"ST_MMin(geom)</code>, or null if the geometry lacks M values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_MMax\"/>, <xref linkend=\"ST_XSize\"/>, <xref "
+"linkend=\"ST_YSize\"/>, <xref linkend=\"ST_ZSize\"/>"
 msgstr ""
 
 #. Tag: title
@@ -9254,11 +10226,6 @@ msgid ""
 "relationship with another member of the cluster. With this function it is "
 "possible to build a cluster of all objects that touch at boundaries, but "
 "exclude those that merely overlap."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.7.0"
 msgstr ""
 
 #. Tag: para
@@ -9826,6 +10793,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example creates a point with an unknown SRID."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a point in the WGS 84 geodetic CRS."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a 3D point with altitude."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns the Z coordinate of a point."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
 "<xref linkend=\"ST_MakePointM\"/>, <xref linkend=\"ST_Point\"/>, <xref "
@@ -9884,28 +10871,30 @@ msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
-msgid "Creates a Polygon from a shell and optional list of holes."
+msgid ""
+"Creates a Polygon or CurvePolygon from a shell and optional list of holes."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Creates a Polygon formed by the given shell and optional array of holes. "
-"Input geometries must be closed LineStrings (rings)."
+"Creates a Polygon or CurvePolygon formed by the given shell and optional "
+"array of holes. Input geometries must be closed LineStrings, "
+"CircularStrings, CompoundCurves, or NURBSCurves (rings). If any input ring "
+"is curved, the result is a CurvePolygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<emphasis role=\"bold\">Variant 1:</emphasis> Accepts one shell ring."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">Variant 1:</emphasis> Accepts one shell LineString."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<emphasis role=\"bold\">Variant 2:</emphasis> Accepts a shell LineString and "
-"an array of inner (hole) LineStrings. A geometry array can be constructed "
-"using the PostgreSQL array_agg(), ARRAY[] or ARRAY() constructs."
+"<emphasis role=\"bold\">Variant 2:</emphasis> Accepts a shell ring and an "
+"array of inner (hole) rings. A geometry array can be constructed using the "
+"PostgreSQL array_agg(), ARRAY[] or ARRAY() constructs."
 msgstr ""
 
 #. Tag: para
@@ -9914,6 +10903,11 @@ msgid ""
 "This function does not accept MultiLineStrings. Use <xref "
 "linkend=\"ST_LineMerge\"/> to generate a LineString, or <xref "
 "linkend=\"ST_Dump\"/> to extract LineStrings."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.7.0 - Support for curved input rings was introduced."
 msgstr ""
 
 #. Tag: title
@@ -9941,6 +10935,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a Polygon from a LineString with measures"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Create a CurvePolygon from a CircularString shell."
 msgstr ""
 
 #. Tag: title
@@ -10500,6 +11499,74 @@ msgstr ""
 msgid ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>"
 msgstr ""
 
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Creates a NURBS (Non-Uniform Rational B-Spline) curve from control points, "
+"optional weights, and optional knot vector."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Creates a NURBS (Non-Uniform Rational B-Spline) curve geometry from the "
+"specified parameters. NURBS curves are smooth parametric curves that provide "
+"precise control over curve shape through control points, weights, and knot "
+"values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>degree</varname> parameter specifies the polynomial degree of "
+"the curve (must be between 1 and 10). Higher degrees produce smoother curves."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>control_points</varname> must be a LINESTRING geometry defining "
+"the control polygon. The number of control points must be at least "
+"<varname>degree</varname> + 1."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The optional <varname>weights</varname> array assigns a weight to each "
+"control point. All weights must be positive. If NULL or omitted, uniform "
+"weights (1.0) are used, resulting in a non-rational B-spline."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The optional <varname>knots</varname> array defines the parameter space. If "
+"NULL or omitted, a uniform clamped knot vector is automatically generated. "
+"If provided, the knot vector must have exactly (<varname>npoints</varname> + "
+"<varname>degree</varname> + 1) elements and must be non-decreasing."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a degree-2 NURBS curve with uniform weights."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a rational NURBS curve with custom weights."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a NURBS curve with custom weights and knots."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_Evaluate\"/>, <xref linkend=\"ST_ControlPoints\"/>"
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Coverages"
@@ -10585,6 +11652,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Invalid edges caused by overlap and non-matching vertices"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example tests the entire table for coverage validity."
 msgstr ""
 
 #. Tag: para
@@ -10699,12 +11771,29 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example populates the input table."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Polygons with overlaps and gaps"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example shows that the coverage is invalid."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Invalid coverage edges"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example cleans the coverage by merging gaps with width less than or "
+"equal to 1."
 msgstr ""
 
 #. Tag: para
@@ -10814,6 +11903,16 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">2 (INTERIOR)</emphasis> - only interior edges "
 "(shared)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns all unique edges of a coverage."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns only the interior shared edges of a coverage."
 msgstr ""
 
 #. Tag: para
@@ -11159,6 +12258,23 @@ msgstr ""
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.7"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "This example uses 3D input."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Use only 2 segments to approximate quarter circle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Ensure approximated line is no further than 20 units away from. Original "
+"curve, and make the result direction-neutral."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Change start point of a closed LineString."
@@ -11233,6 +12349,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying a non-zero Z value."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Nothing happens to an already 3D geometry."
 msgstr ""
 
 #. Tag: para
@@ -11341,6 +12462,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses a PolyhedralSurface."
 msgstr ""
 
 #. Tag: refpurpose
@@ -11473,6 +12599,11 @@ msgstr ""
 msgid ""
 "If the input LINESTRING/POLYGON is not curved enough to clearly represent a "
 "curve, the function will return the same input geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses 2D input."
 msgstr ""
 
 #. Tag: refpurpose
@@ -12100,6 +13231,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Change first point in line string from -1 3 to -1 1."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Change last point in a line string (let's play with 3D linestring this time)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref "
 "linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
@@ -12144,6 +13286,23 @@ msgstr ""
 msgid "NOTE: this function was renamed from \"ST_Shift_Longitude\" in 2.2.0"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "This example performs a forward longitude shift on a single point."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example performs a reverse longitude shift on a single point."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example shows that LineStrings are shifted only where coordinates "
+"require it."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Wrap a geometry around an X value."
@@ -12168,6 +13327,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.3.0 requires GEOS"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Move all components of the given geometries whose bounding box. Falls "
+"completely on the left of x=0 to +360."
 msgstr ""
 
 #. Tag: refpurpose
@@ -12217,6 +13383,23 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.0 - Z and M support"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example snaps geometries to a precision grid of 10^-3."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example snaps a 4D geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"With a 4D geometry - the ST_SnapToGrid(geom,size) only touches x and y "
+"coords but keeps m and z the same."
 msgstr ""
 
 #. Tag: para
@@ -12316,6 +13499,11 @@ msgstr ""
 msgid ""
 "The <varname>ords</varname> parameter is a 2-characters string naming the "
 "ordinates to swap. Valid names are: x,y,z and m."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example scales the M value by 2."
 msgstr ""
 
 #. Tag: title
@@ -12572,21 +13760,31 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"To set and reset <varname>postgis.gdal_enabled_drivers</varname> for current "
-"session"
+"Set and reset <varname>postgis.gdal_enabled_drivers</varname> for the "
+"current session."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set for all new connections to a specific database to specific drivers"
+msgid "Set specific drivers for all new connections to a database."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Setting for whole database cluster to enable all drivers. Requires super "
-"user access. Also note that database, session, and user settings override "
-"this."
+"Set the default for the whole database cluster to enable all drivers. This "
+"requires superuser access. Also note that database, session, and user "
+"settings override this."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example writes the setting to postgres.auto.conf."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Reload the PostgreSQL configuration so the changed setting is applied."
 msgstr ""
 
 #. Tag: para
@@ -12637,20 +13835,20 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Set and reset <varname>postgis.enable_outdb_rasters</varname> for current "
-"session"
+"Set and reset <varname>postgis.enable_outdb_rasters</varname> for the "
+"current session."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Set for all new connections to a specific database"
+msgid "Set the default for all new connections to a database."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Setting for whole database cluster. Requires super user access. Also note "
-"that database, session, and user settings override this."
+"Set the default for the whole database cluster. This requires superuser "
+"access. Also note that database, session, and user settings override this."
 msgstr ""
 
 #. Tag: refpurpose
@@ -12794,6 +13992,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example converts longitude/latitude coordinates to geography."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_GeographyFromText\"/>"
 msgstr ""
 
@@ -12865,6 +14068,11 @@ msgstr ""
 msgid ""
 "The EWKT format is not an OGC standard, but an PostGIS specific format that "
 "includes the spatial reference system (SRID) identifier"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "3D circular string."
 msgstr ""
 
 #. Tag: refpurpose
@@ -13227,6 +14435,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Although bytea rep contains single \\, these need to be escaped when "
+"inserting into a table."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_AsBinary\"/>"
 msgstr ""
 
@@ -13312,6 +14527,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.41"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Although bytea rep contains single \\, these need to be escaped when "
+"inserting into a table. Unless standard_conforming_strings is set to on."
 msgstr ""
 
 #. Tag: para
@@ -13657,6 +14879,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example creates a 3D LineString."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
 "linkend=\"installation_configuration\"/>"
@@ -13763,6 +14990,18 @@ msgstr ""
 msgid ""
 "See http://developers.google.com/maps/documentation/utilities/"
 "polylinealgorithm"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a LineString from a polyline."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example selects a different precision than the one used for polyline "
+"encoding."
 msgstr ""
 
 #. Tag: refpurpose
@@ -13914,6 +15153,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example returns the point 20 percent along a line."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "The mid-point of a 3D line:"
 msgstr ""
 
@@ -13992,6 +15236,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"This example returns points every 20 percent along a two-dimensional line."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
 
@@ -14030,6 +15280,21 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This example approximates the street number of a house by locating the "
+"closest point on a street line. The subquery generates sample house and "
+"street data, and <function>ST_DWithin</function> excludes houses that are "
+"too far from the street."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example finds the closest point on a line to a point or other geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
 ">, <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
@@ -14045,8 +15310,9 @@ msgid ""
 "Computes the line which is the section of the input line starting and ending "
 "at the given fractional locations. The first argument must be a LINESTRING. "
 "The second and third arguments are values in the range [0, 1] representing "
-"the start and end locations as fractions of line length. The Z and M values "
-"are interpolated for added endpoints if present."
+"the start and end locations. For geometry inputs, the fractions are measured "
+"in 2D line length. The Z and M values are interpolated for added endpoints "
+"if present."
 msgstr ""
 
 #. Tag: para
@@ -14108,6 +15374,14 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Geography implementation measures along a spheroid, geometry along a line"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For geometry inputs, the fractional locations are based on the 2D length of "
+"the line, even when the input has Z values. The resulting Z values are "
+"interpolated along the selected 2D location."
 msgstr ""
 
 #. Tag: para
@@ -14298,6 +15572,20 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This example interpolates on a line rising diagonally in Z, using a point at "
+"the 3D midpoint."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example uses a vertical line with zero XY extent, where 3D projection "
+"works but 2D projection does not."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_AddMeasure\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
 "<xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
@@ -14384,6 +15672,47 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example creates a schema to hold data."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Create a simple PostgreSQL table in the schema."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Describing the table shows a single <varname>id</varname> column."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Add a spatial column to the table."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Add a point column using the old constraint-based behavior."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Add a CurvePolygon column using the old constraint-based behavior."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Describe the table again to see the new geometry columns."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <varname>geometry_columns</varname> view also registers the new columns."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/"
 ">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
@@ -14414,6 +15743,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"The above is also equivalent to the standard <command>ALTER TABLE</command> "
+"command. Both deregister the column from <varname>geometry_columns</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
 msgstr ""
 
@@ -14437,6 +15773,13 @@ msgid ""
 "that since geometry_columns is now a view against the system catalogs, you "
 "can drop a table with geometry columns like any other table using <code>DROP "
 "TABLE</code>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The above is now equivalent to the standard <command>DROP TABLE</command> "
+"command."
 msgstr ""
 
 #. Tag: para
@@ -14558,6 +15901,20 @@ msgid ""
 "Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was "
 "introduced that allows controlling if columns are created with typmodifiers "
 "or with check constraints."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example populates geometry column metadata using typmod behavior. For "
+"this to work, there must be existing data."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example changes the geometry columns to use constraints if they are not "
+"typmod or already constrained. For this to work, there must be existing data."
 msgstr ""
 
 #. Tag: refpurpose
@@ -15083,6 +16440,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) "
+"(3D point and line compared 2D point and line) Note that currently no "
+"vertical datum support so Z is not transformed and assumed to be same units "
+"as final."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Multilinestring and polygon both 3D and 2D distance. Same example as 3D "
+"closest point example."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_3DClosestPoint\"/>, <xref linkend=\"ST_3DDWithin\"/>, "
 "<xref linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_3DShortestLine\"/>, "
 "<xref linkend=\"ST_Transform\"/>"
@@ -15337,7 +16710,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"This example transforms a WGS 84 LineString to Massachusetts State Plane "
+"meters."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Return length of WGS 84 geography line"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses the default spheroid calculation."
 msgstr ""
 
 #. Tag: para
@@ -15457,9 +16842,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If g1 and g2 are the same geometry, returns the line between the two "
-"vertices farthest apart in the geometry. The endpoints of the line lie on "
-"the circle computed by <xref linkend=\"ST_MinimumBoundingCircle\"/>."
+"If only one geometry is provided, or g1 and g2 are the same geometry, "
+"returns the line between the two vertices farthest apart in the geometry. "
+"The endpoints of the line lie on the circle computed by <xref "
+"linkend=\"ST_MinimumBoundingCircle\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Enhanced: 3.7.0 - support for a single geometry input."
 msgstr ""
 
 #. Tag: para
@@ -15541,8 +16932,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If g1 and g2 are the same geometry, returns the distance between the two "
-"vertices farthest apart in that geometry."
+"If only one geometry is provided, or g1 and g2 are the same geometry, "
+"returns the distance between the two vertices farthest apart in that "
+"geometry."
 msgstr ""
 
 #. Tag: para
@@ -15725,6 +17117,11 @@ msgstr ""
 msgid ""
 "Return perimeter in meters and feet for Polygon and MultiPolygon. Note this "
 "is geography (WGS 84 long lat)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses a MultiPolygon."
 msgstr ""
 
 #. Tag: para
@@ -16693,6 +18090,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This example orders stored trajectories by their distance from a literal "
+"query trajectory."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
 "linkend=\"ST_IsValidTrajectory\"/>"
 msgstr ""
@@ -16985,7 +18389,7 @@ msgstr ""
 msgid ""
 "Changed: 2.0.0 Inputs to this function can not be unknown -- must be "
 "geometry. Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no "
-"longer valid and you will get an <code>n st_asbinary(unknown) is not unique "
+"longer valid and you will get an <code>n ST_AsBinary(unknown) is not unique "
 "error</code>. Code like that needs to be changed to "
 "<code>ST_AsBinary('POINT(1 2)'::geometry);</code>. If that is not possible, "
 "then install <filename>legacy.sql</filename>."
@@ -17055,6 +18459,11 @@ msgid ""
 "used."
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "Which gives the same answer as:"
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns an Encoded Polyline from a LineString geometry."
@@ -17078,6 +18487,13 @@ msgstr ""
 msgid ""
 "Use in conjunction with geography linestring and geography segmentize, and "
 "put on google maps"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example builds the SQL for a Boston-to-San-Francisco path with segments "
+"every 100 kilometers."
 msgstr ""
 
 #. Tag: para
@@ -17244,7 +18660,7 @@ msgid ""
 "using <xref linkend=\"ST_ForcePolygonCCW\"/>. The specification also "
 "requires that geometry be in the WGS84 coordinate system (SRID = 4326). If "
 "necessary geometry can be projected into WGS84 using <xref "
-"linkend=\"ST_Transform\"/>: <code>ST_Transform( geom, 4326 )</code>."
+"linkend=\"ST_Transform\"/>: <code>ST_Transform(geom, 4326 )</code>."
 msgstr ""
 
 #. Tag: para
@@ -17445,6 +18861,11 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Examples: Version 3"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Flip coordinates and output extended EPSG (16 | 1)"
 msgstr ""
 
 #. Tag: refpurpose
@@ -17699,6 +19120,18 @@ msgstr ""
 msgid ""
 "The function attempts to preserve geometry validity, and corrects it if "
 "needed. This may cause the result geometry to collapse to a lower dimension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function performs geometry simplification appropriate to the integer "
+"tile coordinate space. After transforming to tile coordinates it snaps "
+"coordinates to the integer grid, removes repeated points, and removes points "
+"that lie on straight lines. It does not perform general-purpose, scale-"
+"dependent simplification such as <xref linkend=\"ST_Simplify\"/>. To reduce "
+"detail before tile conversion, simplify the geometry in map coordinates "
+"before calling <function>ST_AsMVTGeom</function>."
 msgstr ""
 
 #. Tag: para
@@ -18307,6 +19740,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This example shows that the GeoHash for a line containing a point is a "
+"prefix of the point code."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_PointFromGeoHash\"/>, <xref "
 "linkend=\"ST_Box2dFromGeoHash\"/>"
 msgstr ""
@@ -18336,6 +19776,13 @@ msgid ""
 "way. Topologically invalid input geometries do not result in exceptions "
 "being thrown. The output geometry is not guaranteed to be valid (in "
 "particular, self-intersections for a polygon may be introduced)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example relies on the implicit cast from geometry to box2d for the "
+"second parameter."
 msgstr ""
 
 #. Tag: para
@@ -18850,6 +20297,11 @@ msgstr ""
 msgid "The symmetric difference of the two linestrings"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "This example shows a 2D-safe symmetric difference of two LineStrings."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the union of the components of a single geometry."
@@ -19006,12 +20458,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "3D example - sort of supports 3D (and with mixed dimensions!)"
+msgid "3D example - sort of supports 3D (and with mixed geometry types!)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "3d example not mixing dimensions"
+msgid "This 3D example does not mix dimensions."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example unions an array built from a query."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example unions an array of linestrings."
 msgstr ""
 
 #. Tag: para
@@ -19227,6 +20689,29 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "right-hand-winding, polygon boundary side=right"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A buffered point approximates a circle. A buffered point forcing "
+"approximation of (see diagram) 2 points per quarter circle is poly with 8 "
+"sides (see diagram)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A lighter, less smooth circle using only 2 points per quarter circle is an "
+"octagon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The following example creates a 100 meter octagon in NAD83 longitude/"
+"latitude by transforming to the Massachusetts state plane meter projection "
+"and then buffering."
 msgstr ""
 
 #. Tag: para
@@ -19613,7 +21098,7 @@ msgstr ""
 msgid ""
 "This is not an aggregate function. To compute the concave hull of a set of "
 "geometries use <xref linkend=\"ST_Collect\"/> (e.g. "
-"<code>ST_ConcaveHull( ST_Collect( geom ), 0.80)</code>."
+"<code>ST_ConcaveHull(ST_Collect(geom ), 0.80)</code>."
 msgstr ""
 
 #. Tag: para
@@ -19642,6 +21127,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Using with ST_Collect to compute the concave hull of a geometry set."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example estimates an infected area from point observations."
 msgstr ""
 
 #. Tag: para
@@ -19707,6 +21197,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This example returns an estimated infected area from point observations."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_ConcaveHull\"/>, <xref "
 "linkend=\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
@@ -19757,12 +21253,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "-- delaunay triangles as multilinestring"
+msgid "Delaunay triangles as a MultiLineString"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "-- delaunay triangles of 45 points as 55 triangle polygons"
+msgid "Delaunay triangles of 45 points as 55 triangle polygons"
 msgstr ""
 
 #. Tag: para
@@ -20646,7 +22142,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A circle simplified too much becomes a triangle, medium an octagon,"
+msgid ""
+"A circle simplified with a medium tolerance becomes an octagon, and with a "
+"large tolerance disappears."
 msgstr ""
 
 #. Tag: para
@@ -20708,8 +22206,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For the same example as <xref linkend=\"ST_Simplify\"/>, "
-"ST_SimplifyPreserveTopology prevents oversimplification. The circle can at "
-"most become a square."
+"ST_SimplifyPreserveTopology prevents the geometry from disappearing."
 msgstr ""
 
 #. Tag: para
@@ -20972,11 +22469,6 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Same example as ST_Tesselate"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "ST_AsText output"
 msgstr ""
 
 #. Tag: para
@@ -21709,6 +23201,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"Output the create options XML column of JPEG as a table. These creator "
+"options can be used in the ST_AsGDALRaster options argument."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns raw XML output for GeoTIFF creator options."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"postgis_gdal_enabled_drivers\"/>"
 msgstr ""
@@ -21848,9 +23352,40 @@ msgstr ""
 msgid "Examples: Single New Band"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example adds another 8-bit unsigned integer band with pixels "
+"initialized to 200."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Create an empty raster 100x100 units, with upper left right at 0, add 2 "
+"bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15) Uses "
+"addbandargs."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example outputs metadata for the raster."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Examples: Multiple New Bands"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Aggregate the 1st band of a table of like rasters into a single raster. With "
+"as many bands as there are test_types and as many rows (new rasters) as "
+"there are mice. Note that The ORDER BY test_type clause relies on aggregate "
+"ORDER BY support. The resulting raster will have a band for each test_type "
+"alphabetical by test_type. For mouse lovers: No mice were harmed in this "
+"exercise."
 msgstr ""
 
 #. Tag: title
@@ -21981,7 +23516,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example outputs a black circle occupying 150 by 150 pixels."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "example from buffer rendered with just PostGIS"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example maps bands to RGB channels, producing the teal value "
+"(118,154,118)."
 msgstr ""
 
 #. Tag: para
@@ -22038,6 +23585,23 @@ msgid ""
 "strongly suggest you use the array form of this function e.g. "
 "<code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> "
 "list of bands form may be removed in future versions of PostGIS."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example creates two rasters: one containing band 1 of dummy_rast, and "
+"one containing band 2 reclassified as 2BUI."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Return bands 2 and 3 using array cast syntax."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Return bands 2 and 3 using array syntax."
 msgstr ""
 
 #. Tag: para
@@ -22476,6 +24040,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example uses a non-skewed raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses a skewed raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>"
@@ -22516,6 +24090,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This example shows that providing a column is sufficient for a non-skewed "
+"raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For fun let's skew it."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"RT_ST_RasterToWorldCoordY\"/>, <xref "
 "linkend=\"RT_ST_SetSkew\"/>, <xref linkend=\"RT_ST_SkewX\"/>"
 msgstr ""
@@ -22550,6 +24136,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordY"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Non-skewed raster providing row is sufficient."
 msgstr ""
 
 #. Tag: para
@@ -22864,8 +24455,13 @@ msgstr ""
 msgid ""
 "If the flag is dirty (this is, the result is different using TRUE as last "
 "parameter and not using it) you should update the raster to set this flag to "
-"true, by using ST_SetBandIsNodata(), or ST_SetBandNodataValue() with TRUE as "
+"true, by using ST_SetBandIsNoData(), or ST_SetBandNoDataValue() with TRUE as "
 "last argument. See <xref linkend=\"RT_ST_SetBandIsNoData\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a dummy table with one raster column."
 msgstr ""
 
 #. Tag: para
@@ -23055,6 +24651,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example returns a raster pixel polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_PixelAsPolygons\"/>, <xref "
 "linkend=\"RT_ST_PixelAsPoint\"/>, <xref linkend=\"RT_ST_PixelAsPoints\"/>, "
@@ -23214,6 +24815,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example uses LATERAL syntax."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_PixelAsPolygon\"/>, <xref "
 "linkend=\"RT_ST_PixelAsPolygons\"/>, <xref linkend=\"RT_ST_PixelAsPoint\"/>, "
@@ -23253,10 +24859,20 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The allowed values of the <varname>resample</varname> parameter are "
-"\"nearest\" which performs the default nearest-neighbor resampling, and "
+"\"nearest\" which performs the default nearest-neighbor resampling, "
 "\"bilinear\" which performs a <link xlink:href=\"https://en.wikipedia.org/"
 "wiki/Bilinear_interpolation\">bilinear interpolation</link> to estimate the "
-"value between pixel centers."
+"value between pixel centers, and the nearest-neighbor boundary options "
+"\"nearest-UL\", \"nearest-UR\", \"nearest-LL\", and \"nearest-LR\". Boundary "
+"options choose which pixel is returned when the point lies on a horizontal "
+"or vertical pixel boundary, including corner intersections."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Enhanced: 3.7.0 resample accepts nearest-neighbor boundary options \"nearest-"
+"UL\", \"nearest-UR\", \"nearest-LL\", and \"nearest-LR\"."
 msgstr ""
 
 #. Tag: para
@@ -23267,6 +24883,36 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 exclude_nodata_value optional argument was added."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Get raster values at particular postgis geometry points. The srid of your "
+"geometry should be same as for your raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Get all values in bands 1,2,3 of each pixel."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Get all values in bands 1,2,3 of each pixel same as above but returning the "
+"upper left point point of each pixel."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Checking all the pixels of a large raster tile can take a long time. You can "
+"dramatically improve speed at some lose of precision by orders of magnitude. "
+"By sampling pixels using the step optional parameter of generate_series. "
+"This next example does the same as previous but by checking 1 for every 4 "
+"(2x2) pixels and putting in the last checked. Putting in the checked pixel "
+"as the value for subsequent 4."
 msgstr ""
 
 #. Tag: para
@@ -23317,6 +24963,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example reads a value from pixel 2x2."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example reads a NODATA value from pixel 2x3."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"RT_ST_Value\"/>"
 msgstr ""
 
@@ -23344,6 +25000,11 @@ msgid ""
 "<link xlink:href=\"https://en.wikipedia.org/wiki/"
 "Bilinear_interpolation\">bilinear interpolation</link> to calculate a value "
 "that takes neighboring cells into account also."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "2x2 test raster with values. 10 50. 40 20."
 msgstr ""
 
 #. Tag: para
@@ -23413,6 +25074,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Pixel 3x3 has value. Exclude_nodata_value = FALSE."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Min4ma\"/>, <xref linkend=\"RT_ST_Max4ma\"/>, <xref "
 "linkend=\"RT_ST_Sum4ma\"/>, <xref linkend=\"RT_ST_Mean4ma\"/>, <xref "
@@ -23442,6 +25108,16 @@ msgid ""
 "Enhanced: 2.1.0 Geometry variant of ST_SetValue() now supports any geometry "
 "type, not just point. The geometry variant is a wrapper around the geomval[] "
 "variant of ST_SetValues()"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses geometry input."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example stores the changed raster."
 msgstr ""
 
 #. Tag: para
@@ -23692,6 +25368,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This is the first example."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This second example sets both values to the same number."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SetGeoReference\"/>, <xref linkend=\"RT_ST_SkewX\"/"
 ">, <xref linkend=\"RT_ST_SkewY\"/>"
@@ -23904,6 +25590,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example returns the original raster pixel size."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns the pixel size of the rescaled raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Resample\"/>, <xref linkend=\"RT_ST_SetScale\"/>, "
 "<xref linkend=\"RT_ST_ScaleX\"/>, <xref linkend=\"RT_ST_ScaleY\"/>, <xref "
@@ -23968,6 +25664,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example uses the original non-rotated raster."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Rescale\"/>, <xref linkend=\"RT_ST_SetSkew\"/>, "
 "<xref linkend=\"RT_ST_SetRotation\"/>, <xref linkend=\"RT_ST_SkewX\"/>, "
@@ -24019,6 +25720,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "A simple example snapping a raster to a slightly different grid."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example returns the upper-left X coordinate of the original raster."
 msgstr ""
 
 #. Tag: para
@@ -24205,6 +25912,11 @@ msgid ""
 "functions."
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "This example changes only the first band NODATA value."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Sets the isnodata flag of the band to TRUE."
@@ -24324,6 +26036,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Example will count all pixels not 249 and one will count all pixels."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
 "linkend=\"RT_ST_SetBandNoDataValue\"/>"
@@ -24433,6 +26150,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"Same as previous but we explicitly control the pixel value range of each bin."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"RT_ST_SummaryStats\"/>, <xref "
 "linkend=\"RT_ST_SummaryStatsAgg\"/>"
 msgstr ""
@@ -24463,6 +26186,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Changed: 3.1.0 Removed ST_Quantile(table_name, column_name) variant."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Real live example. Quantile of all pixels in band 2 intersecting a geometry."
 msgstr ""
 
 #. Tag: para
@@ -24536,6 +26265,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example returns statistics for each band."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For a table -- will get better speed if set sampling to less than 100%. Here "
+"we set to 25% and get a much faster answer."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_SummaryStatsAgg\"/>, <xref linkend=\"RT_ST_Count\"/"
 ">, <xref linkend=\"RT_ST_Clip\"/>"
@@ -24597,6 +26338,31 @@ msgid ""
 "found in the raster or raster coverage. If one searchvalue is given, will "
 "return an integer instead of records denoting the count of pixels having "
 "that pixel band value"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Example will coount all pixels of band 1 including 249."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Example will count only non-nodata value pixels of band 2."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Real live example. Count all the pixels in an aerial raster tile band 2 "
+"intersecting a geometry. And return only the pixel band values that have a "
+"count &gt; 500."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Just return count of pixels in each raster tile that have value of 100 of "
+"tiles that intersect a specific geometry."
 msgstr ""
 
 #. Tag: para
@@ -24853,6 +26619,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Output the first three bands at 75 percent quality."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Output only the first band at 90 percent quality."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Output the first three bands, mapping band 2 to red, band 1 to green, and "
+"band 3 to blue, using progressive encoding at 90 percent quality."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_GDALDrivers\"/>, <xref "
 "linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsPNG\"/>, <xref "
@@ -25061,6 +26844,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Clip the first band of an aerial tile by a 20 meter buffer."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Demonstrate effect of crop on final dimensions of raster. Note how final "
+"extent is clipped to that of the geometry. If crop = true."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Full raster tile before clipping"
 msgstr ""
 
@@ -25077,12 +26872,27 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Same example as before, but we need to set crop to false to be able to use "
+"ST_AddBand. Because ST_AddBand requires all bands be the same Width and "
+"height."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "After Clipping - surreal"
 msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "Examples: Clip all bands"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Clip all bands of an aerial tile by a 20 meter buffer. Only difference is we "
+"don't specify a specific band to clip. So all bands are clipped."
 msgstr ""
 
 #. Tag: para
@@ -25220,6 +27030,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This is a junk table to play with"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Setup test raster table."
 msgstr ""
 
 #. Tag: title
@@ -25476,18 +27291,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <varname>callbackfunc</varname> must have three arguments: a 3-dimension "
-"double precision array, a 2-dimension integer array and a variadic 1-"
-"dimension text array. The first argument <varname>value</varname> is the set "
-"of values (as double precision) from all input rasters. The three dimensions "
-"(where indexes are 1-based) are: raster #, row y, column x. The second "
-"argument <varname>position</varname> is the set of pixel positions from the "
-"output raster and input rasters. The outer dimension (where indexes are 0-"
-"based) is the raster #. The position at outer dimension index 0 is the "
-"output raster's pixel position. For each outer dimension, there are two "
-"elements in the inner dimension for X and Y. The third argument "
-"<varname>userargs</varname> is for passing through any user-specified "
-"arguments."
+"The <varname>callbackfunc</varname> must have two or three arguments: a 3-"
+"dimension double precision array, a 2-dimension integer array and, "
+"optionally, a variadic 1-dimension text array. The first argument "
+"<varname>value</varname> is the set of values (as double precision) from all "
+"input rasters. The three dimensions (where indexes are 1-based) are: raster "
+"#, row y, column x. The second argument <varname>position</varname> is the "
+"set of pixel positions from the output raster and input rasters. The outer "
+"dimension (where indexes are 0-based) is the raster #. The position at outer "
+"dimension index 0 is the output raster's pixel position. For each outer "
+"dimension, there are two elements in the inner dimension for X and Y. The "
+"optional third argument <varname>userargs</varname> is for passing through "
+"any user-specified arguments."
 msgstr ""
 
 #. Tag: para
@@ -25576,10 +27391,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The third argument to the <varname>callbackfunc</varname> is a "
-"<type>variadic text</type> array. All trailing text arguments are passed "
-"through to the specified <varname>callbackfunc</varname>, and are contained "
-"in the <varname>userargs</varname> argument."
+"If the <varname>callbackfunc</varname> declares a third argument, that "
+"argument is a <type>variadic text</type> array. All trailing text arguments "
+"are passed through to the specified <varname>callbackfunc</varname>, and are "
+"contained in the <varname>userargs</varname> argument."
 msgstr ""
 
 #. Tag: para
@@ -25589,14 +27404,6 @@ msgid ""
 "PostgreSQL documentation and the \"SQL Functions with Variable Numbers of "
 "Arguments\" section of <link xlink:href=\"http://www.postgresql.org/docs/"
 "current/static/xfunc-sql.html\">Query Language (SQL) Functions</link>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <type>text[]</type> argument to the <varname>callbackfunc</varname> is "
-"required, regardless of whether you choose to pass any arguments to the "
-"callback function for processing or not."
 msgstr ""
 
 #. Tag: para
@@ -26044,6 +27851,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Create a cool set of rasters."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "mapalgebra intersection"
 msgstr ""
 
@@ -26055,6 +27867,11 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Example: Overlaying rasters on a canvas as separate bands"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "We use ST_AsPNG to render the image so all single band ones look grey."
 msgstr ""
 
 #. Tag: para
@@ -26081,6 +27898,14 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Example: Overlay 2 meter boundary of select parcels over an aerial imagery"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Create new 3 band raster composed of first 2 clipped bands, and overlay of "
+"3rd band with our geometry. This query took 3.6 seconds on PostGIS windows "
+"64-bit install."
 msgstr ""
 
 #. Tag: para
@@ -26260,6 +28085,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Define our user defined function."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "map bands overlay (canvas) (R: small road, G: circle, B: big road)"
 msgstr ""
 
@@ -26374,6 +28204,13 @@ msgid ""
 "postgisraster.html\">https://gdal.org/user/drivers/raster/"
 "postgisraster.html</link> and then prepared in the <xref "
 "linkend=\"RT_ST_Rescale\"/> examples"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A simple 'callback' user function that averages up all the values in a "
+"neighborhood."
 msgstr ""
 
 #. Tag: para
@@ -26569,6 +28406,13 @@ msgstr ""
 msgid "Examples: Reconstitute a single band chunked raster tile"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"This creates a single band from first band of raster tiles. That form the "
+"original file system tile."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid ""
@@ -26579,8 +28423,24 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This creates a multi band raster collecting all the tiles that intersect a "
+"line. Note that In 2.0, this would have just returned a single band "
+"raster. , new union works on all bands by default. This is equivalent to "
+"unionarg: ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[]."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Here we use the longer syntax if we only wanted a subset of bands or we want "
 "to change order of bands"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This creates a multi band raster collecting all the tiles that intersect a "
+"line."
 msgstr ""
 
 #. Tag: para
@@ -27319,6 +29179,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Note envelope and convexhull are more or less the same."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Now we skew the raster. Note how the convex hull and envelope are now "
+"different."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_MinConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/"
 ">, <xref linkend=\"ST_AsText\"/>"
@@ -27386,6 +29258,11 @@ msgstr ""
 msgid ""
 "This is different than ST_PixelAsPolygons where one geometry is returned for "
 "each pixel regardless of pixel value."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This syntax uses a LATERAL join."
 msgstr ""
 
 #. Tag: para
@@ -27467,6 +29344,23 @@ msgstr ""
 msgid ""
 "Changed: 2.1.0 In prior versions would sometimes return a polygon, changed "
 "to always return multipolygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default no data band value is 0 or not set, so polygon will return a "
+"square polygon."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Now we change the no data value of first band."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Or if you want the no data value different for just one time."
 msgstr ""
 
 #. Tag: refpurpose
@@ -27689,6 +29583,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Specified band numbers."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "No band numbers specified."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"RT_ST_Within\"/>"
 msgstr ""
 
@@ -27810,6 +29714,17 @@ msgid ""
 "on the raster, e.g. ST_Disjoint(ST_Polygon(raster), geometry)."
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"Rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This time, without specifying band numbers."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return true if raster rastA spatially intersects raster rastB."
@@ -27834,6 +29749,11 @@ msgstr ""
 msgid ""
 "Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants "
 "changed to match that of ST_Intersects(geometry, raster)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Different bands of same raster."
 msgstr ""
 
 #. Tag: para
@@ -27863,6 +29783,11 @@ msgstr ""
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
 "on the raster, e.g. ST_Overlaps(ST_Polygon(raster), geometry)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Comparing different bands of same raster."
 msgstr ""
 
 #. Tag: refpurpose
@@ -28471,6 +30396,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example tests a circle within another circle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example demonstrates the difference between contains and contains-"
+"properly predicates."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, "
 "<xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
@@ -28590,6 +30527,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example tests a circle covered by another circle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_Within\"/>"
@@ -28658,7 +30600,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example tests a circle covering another circle."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Geeography Example"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example compares a point with a 300-meter buffer against a point and "
+"against a 10-meter buffer around that point."
 msgstr ""
 
 #. Tag: para
@@ -28960,6 +30914,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.27"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example looks up rows in a table; for faster lookup, the geometry "
+"column should have a GiST index."
 msgstr ""
 
 #. Tag: para
@@ -29324,6 +31285,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Find compounds that properly intersect (not just touch) a poly (Interior "
+"Intersects)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Computing the intersection matrix for spatial relationships."
 msgstr ""
 
@@ -29590,6 +31558,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"This compares the difference between fully within and distance within as "
+"well. As the distance fully within for the 2D footprint of the line/point "
+"vs. the 3D fully within."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
 "linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
@@ -29681,6 +31657,15 @@ msgid ""
 "with &amp;&amp; and ST_Distance to test for distance, and in pre-1.3.4 this "
 "function used that logic. From 1.3.4, ST_DWithin uses a faster short-circuit "
 "distance function."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Find the nearest hospital to each school. That is within 3000 units of the "
+"school. We do an ST_DWithin search to utilize indexes to limit our search "
+"list. That the non-indexable ST_Distance needs to process. If the units of "
+"the spatial reference is meters then units would be meters."
 msgstr ""
 
 #. Tag: para
@@ -29891,8 +31876,8 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Computes the volume of a 3D solid. If applied to surface (even closed) "
-"geometries will return 0."
+"Computes the volume of a 3D geometry. Closed surfaces can have non-zero "
+"volume."
 msgstr ""
 
 #. Tag: para
@@ -29903,10 +31888,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"When closed surfaces are created with WKT, they are treated as areal rather "
-"than solid. To make them solid, you need to use <xref "
-"linkend=\"CG_MakeSolid\"/>. Areal geometries have no volume. Here is an "
-"example to demonstrate."
+"A closed polyhedral surface has volume. <xref linkend=\"CG_MakeSolid\"/> "
+"makes the solid representation explicit."
 msgstr ""
 
 #. Tag: para
@@ -29973,10 +31956,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"When closed surfaces are created with WKT, they are treated as areal rather "
-"than solid. To make them solid, you need to use <xref "
-"linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
-"example to demonstrate."
+"A closed polyhedral surface has volume. <xref linkend=\"ST_MakeSolid\"/> "
+"makes the solid representation explicit."
 msgstr ""
 
 #. Tag: para
@@ -30457,6 +32438,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"This example computes the projected medial axis with free endpoints extended "
+"to the polygon boundary."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"CG_StraightSkeletonPartition\"/>"
 msgstr ""
 
@@ -30555,6 +32543,11 @@ msgid ""
 "Height 2.0 produces 6 faces (all walls present); height 4.0 produces 5 faces "
 "(one side wall is filtered out because the slope reaches the far edge before "
 "the full height)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses height 2.0 and returns 6 patches."
 msgstr ""
 
 #. Tag: para
@@ -30662,6 +32655,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0 and CGAL &gt;= 6.0."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example repairs a bowtie self-intersecting polygon."
 msgstr ""
 
 #. Tag: para
@@ -31025,11 +33023,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Original Cube"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "ST_AsText output:"
 msgstr ""
 
 #. Tag: para
@@ -31475,6 +33468,34 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example simplifies a polygon with a threshold of 0.5."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplify a 3D terrain geometry while preserving topology and Z values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Simplify a geometry with both Z and M values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Simplify two geometries together, preserving Z and M values without "
+"preserving topology."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Simplify two geometries together, preserving Z and M values and topology."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Originals geometries"
 msgstr ""
 
@@ -31548,6 +33569,153 @@ msgid ""
 "to 20 significantly improves the precision and granularity of the result."
 msgstr ""
 
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Creates an interpolating NURBS curve passing through all given data points"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Creates a NURBS curve that interpolates through all provided data points. "
+"The resulting curve passes exactly through each point in the input geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Parameters:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>data_points</varname> - A LINESTRING geometry containing the points "
+"to interpolate through."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>degree</varname> - Polynomial degree of the NURBS curve (typically "
+"2 or 3)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example creates a smooth curve interpolating through five points."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeNurbsCurve\"/>"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Creates an approximating NURBS curve fitting data points within a tolerance"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Creates a NURBS curve that approximates the given data points within the "
+"specified tolerance. Unlike interpolation, the curve does not necessarily "
+"pass through all points but provides a smooth fit with fewer control points."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>data_points</varname> - A LINESTRING geometry containing the points "
+"to approximate."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>degree</varname> - Polynomial degree of the NURBS curve."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>tolerance</varname> - Maximum allowed distance between the curve "
+"and data points."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>max_control_points</varname> - Optional maximum number of control "
+"points (default: 100). Limits curve complexity."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example approximates noisy data using a tolerance."
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
+msgid ""
+"Computes the derivative (tangent, curvature) of a NURBS curve at a given "
+"parameter"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Computes the derivative of a NURBS curve at a specific parameter value. The "
+"derivative represents the rate of change at that point:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Order 1: Tangent vector (direction and speed)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Order 2: Curvature vector (how the tangent changes)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Order 3: Third-order derivative (supported maximum)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<varname>nurbscurve</varname> - A NURBS curve geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>parameter</varname> - Parameter value for evaluation (typically 0.0 "
+"to 1.0)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<varname>derivative_order</varname> - Order of derivative to compute (1, 2, "
+"or 3)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a POINT geometry representing the derivative vector at the specified "
+"parameter."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example returns the tangent vector at the curve midpoint."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Spatial Reference System Functions"
@@ -31610,7 +33778,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example transforms in the inverse direction."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "GDA2020 example."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example uses ST_Transform with automatic selection of a conversion "
+"pipeline."
 msgstr ""
 
 #. Tag: para
@@ -31641,14 +33821,14 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "-- Mark a point as WGS 84 long lat --"
+msgid "Mark a point as WGS 84 longitude/latitude."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"-- Mark a point as WGS 84 long lat and then transform to web mercator "
-"(Spherical Mercator) --"
+"Mark a point as WGS 84 longitude/latitude and then transform it to Web "
+"Mercator."
 msgstr ""
 
 #. Tag: para
@@ -31747,6 +33927,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "3D Circular String example."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 "Example of creating a partial functional index. For tables where you are not "
 "sure all the geometries will be filled in, its best to use a partial index "
@@ -31758,6 +33943,13 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Examples of using PROJ.4 text to transform with custom spatial references."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Find intersection of two polygons near the North pole, using a custom Gnomic "
+"projection. See http://boundlessgeo.com/2012/02/flattening-the-peel/."
 msgstr ""
 
 #. Tag: title
@@ -31874,6 +34066,23 @@ msgid ""
 "the pipeline is executed in a forward direction. Using <xref "
 "linkend=\"ST_InverseTransformPipeline\"/> the pipeline is executed in the "
 "inverse direction."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example transforms in the forward direction."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Using a defined conversion (EPSG:8447)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example uses a PROJ pipeline definition matching EPSG:8447, as returned "
+"from projinfo. Any axisswap steps must be removed."
 msgstr ""
 
 #. Tag: para
@@ -32039,6 +34248,16 @@ msgid ""
 "<xref linkend=\"ST_ClosestPointOfApproach\"/>"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid "This example constructs a valid trajectory."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example constructs an invalid trajectory."
+msgstr ""
+
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a measure at the closest point of approach of two trajectories."
@@ -32186,6 +34405,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"Rotate a 3D line 180 degrees about the z axis. Note this is long-hand for "
+"doing ST_Rotate();"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Rotate a 3D line 180 degrees in both the x and z axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
 "linkend=\"ST_TransScale\"/>"
 msgstr ""
@@ -32214,6 +34445,24 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example rotates a geometry by 180 degrees."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example rotates a geometry 30 degrees counter-clockwise around x=50, "
+"y=160."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example rotates a geometry 60 degrees clockwise around its centroid."
 msgstr ""
 
 #. Tag: para
@@ -32248,6 +34497,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example rotates a line 90 degrees around the X axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 msgstr ""
 
@@ -32272,6 +34526,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example rotates a line 90 degrees around the Y axis."
 msgstr ""
 
 #. Tag: para
@@ -32305,6 +34564,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example rotates a line 90 degrees around the Z axis."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example rotates a curved circle around the Z axis."
 msgstr ""
 
 #. Tag: para
@@ -32364,6 +34633,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example scales X, Y, and Z values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example scales X and Y values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example scales X, Y, Z, and M values."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example scales X and Y values using a false origin."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_TransScale\"/>"
 msgstr ""
 
@@ -32377,7 +34666,7 @@ msgstr ""
 msgid ""
 "Returns a new geometry whose coordinates are translated delta x,delta "
 "y,delta z units. Units are based on the units defined in spatial reference "
-"(SRID) for this geometry."
+"(SRID) for this geometry. M coordinates are preserved."
 msgstr ""
 
 #. Tag: para
@@ -32393,6 +34682,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Move a 3d point"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Move points with a measure coordinate"
 msgstr ""
 
 #. Tag: para
@@ -32423,6 +34717,13 @@ msgid ""
 "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is short-"
 "hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
 "deltaX*XFactor, deltaY*YFactor, 0)</code>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example buffers a point to approximate a circle, converts it to a "
+"curve, translates it by 1,2, and scales it by 3,4."
 msgstr ""
 
 #. Tag: title
@@ -32794,6 +35095,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"This example returns the first three rejects from a successful quintuplet "
+"experiment."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ", <xref linkend=\"ST_IsValidReason\"/>"
 msgstr ""
 
@@ -32826,6 +35134,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Availability: 2.0 version taking flags."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This example uses an invalid bow-tie polygon."
 msgstr ""
 
 #. Tag: para
@@ -34493,6 +36806,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"NAD83 UTM zone meters fails because it is a meter-based planar projection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Query and measurement functions use units of meters. So distance parameters "
 "should be expressed in meters, and return values should be expected in "
 "meters (or square meters for areas)."
@@ -34855,6 +37174,15 @@ msgstr ""
 msgid ""
 "the polygon interior is simply connected (i.e. the rings must not touch in a "
 "way that splits the polygon into more than one part)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Consecutive repeated points in a polygon boundary ring are treated as "
+"redundant vertices, and do not make the polygon invalid. Repeated points "
+"that cause the boundary to self-intersect, self-touch, or collapse still "
+"violate the validity rules."
 msgstr ""
 
 #. Tag: emphasis
@@ -35463,22 +37791,67 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Although the old-constraint based method is still supported, a constraint-"
-"based geometry column used directly in a view, will not register correctly "
-"in geometry_columns, as will a typmod one. In this example we define a "
-"column using typmod and another using constraints."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "If we run in psql"
+msgid "For example, suppose you have a view created like this."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"We observe they are defined differently -- one is typmod, one is constraint"
+"To register the geometry column correctly, cast the transformed geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If the geometry type is known to be a 2D Polygon, specify it in the cast."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For a derivative table created by a bulk insert, create the table first."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Create a 2D spatial index on the new table."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If the points are 3D or measured, an n-D index may be more appropriate."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Manually register the new table's geometry column in "
+"<varname>geometry_columns</varname>. This also changes the underlying table "
+"structure to make the column typmod-based."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"To retain constraint-based definition behavior, such as for inherited tables "
+"where all children do not have the same type and SRID, set the optional "
+"<varname>use_typmod</varname> argument to false."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Although the old constraint-based method is still supported, direct pass-"
+"through view columns register correctly in <varname>geometry_columns</"
+"varname> for both typmod-based and constraint-based source columns. In this "
+"example we define a column using typmod and another using constraints."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If we run <command>\\d pois_ny</command> in psql, we observe they are "
+"defined differently -- one is typmod, one is constraint."
 msgstr ""
 
 #. Tag: para
@@ -35494,15 +37867,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The typmod based geom view column registers correctly, but the constraint "
-"based one does not."
+"Both the typmod based geom view column and the direct constraint based view "
+"column register correctly."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"This may change in future versions of PostGIS, but for now to force the "
-"constraint-based view column to register correctly, you need to do this:"
+"If the view applies a spatial function to the geometry, such as "
+"<function>ST_Transform</function>, you still need to cast the transformed "
+"column explicitly so the view can expose the correct type and SRID:"
 msgstr ""
 
 #. Tag: title
@@ -35557,6 +37931,15 @@ msgid ""
 "suitable for insertion into a PostGIS/PostgreSQL database either in geometry "
 "or geography format. The loader has several operating modes selected by "
 "command line flags."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The input must be an unpacked shapefile path. The loader does not read "
+"<filename>.zip</filename> archives directly; unpack the <filename>.shp</"
+"filename>, <filename>.shx</filename>, and <filename>.dbf</filename> files "
+"before loading."
 msgstr ""
 
 #. Tag: para
@@ -35619,6 +38002,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"Specify the name of the feature id column. The default is <literal>gid</"
+"literal>. The value must be a simple PostgreSQL identifier and cannot use a "
+"PostgreSQL system column name."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Creates and populates the geometry tables with the specified SRID. "
 "Optionally specifies that the input shapefile uses the given FROM_SRID, in "
 "which case the geometries will be reprojected to the target SRID."
@@ -35641,6 +38032,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a GiST index on the geometry column."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Create the target table as <literal>UNLOGGED</literal>. This can speed up "
+"loading transient staging data, but PostgreSQL does not preserve unlogged "
+"table contents after a crash or unclean shutdown."
 msgstr ""
 
 #. Tag: para
@@ -37184,6 +39583,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"Long options that take values also accept the <option>--option=value</"
+"option> spelling."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Display help screen. Help will also display if you don't pass in any "
 "arguments."
 msgstr ""
@@ -37215,6 +39621,35 @@ msgstr ""
 msgid "Prepare mode, only create the table."
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"Use <literal>IF NOT EXISTS</literal> for table creation in <option>-c</"
+"option> and <option>-p</option> modes. When <option>-I</option> or <option>--"
+"create-index</option> is also specified, use <literal>IF NOT EXISTS</"
+"literal> for index creation too. This option cannot be used with <option>-d</"
+"option>. Append mode requires an explicit creation action."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Atomic loader actions"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The short modes are presets over explicit actions. The equivalent long "
+"options are <option>--drop-table</option>, <option>--create-table</option>, "
+"<option>--load-data</option>, <option>--create-index</option>, <option>--add-"
+"constraints</option>, <option>--vacuum</option>, <option>--analyze</option>, "
+"and <option>--no-transaction</option>. Add <option>--if-not-exists</option> "
+"to make active creation actions use <literal>IF NOT EXISTS</literal>. "
+"<option>--drop-table</option> emits <literal>DROP TABLE IF EXISTS</literal> "
+"before the selected actions. With no mode specified, the default create/load "
+"actions still apply."
+msgstr ""
+
 #. Tag: term
 #, no-c-format
 msgid ""
@@ -37232,15 +39667,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Disable setting the max extent constraint. Only applied if -C flag is also "
-"used."
+"Disable setting the max extent constraint. Only applied if -C or --add-"
+"constraints is also used."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Set the constraints (spatially unique and coverage tile) for regular "
-"blocking. Only applied if -C flag is also used."
+"blocking. Only applied if -C or --add-constraints is also used."
 msgstr ""
 
 #. Tag: term
@@ -37253,8 +39688,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Assign output raster with specified SRID. If not provided or is zero, "
-"raster's metadata will be checked to determine an appropriate SRID."
+"Assign the output raster to the specified SRID. When FROM_SRID is also "
+"provided, raster2pgsql marks the input raster with FROM_SRID and emits SQL "
+"that reprojects the raster to the target SRID. If the source SRID is omitted "
+"or is zero, the raster metadata will be checked to determine an appropriate "
+"source SRID. Reprojection cannot be used with copy mode."
 msgstr ""
 
 #. Tag: para
@@ -37300,9 +39738,10 @@ msgid ""
 "comma(,). Overview table name follows the pattern o_<varname>overview "
 "factor</varname>_<varname>table</varname>, where <varname>overview factor</"
 "varname> is a placeholder for numerical overview factor and <varname>table</"
-"varname> is replaced with the base table name. Created overview is stored in "
-"the database and is not affected by -R. Note that your generated sql file "
-"will contain both the main table and overview tables."
+"varname> is replaced with the base table name. If a source raster already "
+"has an overview with matching dimensions, that overview is reused. Created "
+"overview is stored in the database and is not affected by -R. Note that your "
+"generated sql file will contain both the main table and overview tables."
 msgstr ""
 
 #. Tag: para
@@ -37337,7 +39776,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Create a GiST index on the raster column."
+msgid "Alias for <option>--create-index</option>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Create a GiST index on the raster column at the end of this raster2pgsql "
+"run. With repeated <option>-a</option> append runs, create the index on the "
+"final run or after loading; add <option>--if-not-exists</option> to make "
+"reruns tolerate an existing index."
 msgstr ""
 
 #. Tag: para
