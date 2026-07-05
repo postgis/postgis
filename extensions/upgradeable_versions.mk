@@ -128,4 +128,4 @@ UPGRADEABLE_VERSIONS = \
 	3.6.2 \
 	3.6.3 \
 	3.6.4 \
-	3.7.0dev
+	3.7.0alpha1
