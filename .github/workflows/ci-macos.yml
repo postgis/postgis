@@ -40,6 +40,8 @@ jobs:
             proj protobuf-c sfcgal cunit \
             docbook docbook-xsl \
             postgresql@${PG} gettext
+          pg_version="$(brew info --json=v2 "postgresql@${PG}" | python3 -c 'import json,sys; data=json.load(sys.stdin); print(data["formulae"][0]["installed"][0]["version"])')"
+          ln -sfn "${HOMEBREW_PREFIX}/Cellar/postgresql@${PG}/${pg_version}/share/postgresql@${PG}" "${HOMEBREW_PREFIX}/share/postgresql@${PG}"
           brew link --force gettext
           ccache --max-size="${CCACHE_MAXSIZE}"
           sudo ln -sfn "${HOMEBREW_PREFIX}/opt/postgresql@${PG}/bin/postgres" /usr/local/bin/postgres
