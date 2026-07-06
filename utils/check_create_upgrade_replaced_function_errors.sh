@@ -2,10 +2,8 @@
 
 set -e
 
-TMPDIR="${TMPDIR:-/tmp}/check_create_upgrade_replaced_function_errors.$$"
+TMPDIR="$(mktemp -d "${TMPDIR:-/tmp}/check_create_upgrade_replaced_function_errors.XXXXXX")"
 trap 'rm -rf "${TMPDIR}"' EXIT
-
-mkdir -p "${TMPDIR}"
 
 cat > "${TMPDIR}/postgis.sql" <<'SQL'
 -- INSTALL VERSION: 3.7.0dev
