@@ -24,7 +24,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
 
 
-PostGIS 3.7.0beta1
+PostGIS 3.7.0alpha1
 2026/07/05
 
 This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp.
