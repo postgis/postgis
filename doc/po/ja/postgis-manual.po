@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-06 08:39+0000\n"
+"PO-Revision-Date: 2026-07-06 10:15+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -4624,7 +4624,7 @@ msgstr "トポジオメトリーカラムを追加します。"
 #, no-c-format
 msgid ""
 "Update the column assuming everything is perfectly aligned with the edges."
-msgstr ""
+msgstr "全てが完全にエッジに沿っていると仮定されるカラムの更新。"
 
 #. Tag: para
 #, no-c-format
@@ -4642,6 +4642,9 @@ msgid ""
 "faces and edges, cast the topogeometry to a geometry. The resulting "
 "geometries are aligned with the TIGER street centerlines."
 msgstr ""
+"エッジやフェイスに沿ったトポジオメトリーをトポジオメトリーでないジオメトリー"
+"に戻すには、トポジオメトリーをジオメトリーにキャストします。結果ジオメトリー"
+"はTIGERのストリートの中心線に沿います。"
 
 #. Tag: para
 #, no-c-format
@@ -4960,6 +4963,8 @@ msgid ""
 "Set an overall TopoGeometry value to be composed of all elements from "
 "specific TopoGeometry values."
 msgstr ""
+"指定したトポジオメトリー値の全ての要素から構成されるよう全体の"
+"トポジオメトリー値を設定する。"
 
 #. Tag: para
 #, no-c-format
@@ -9573,6 +9578,11 @@ msgid ""
 "the input is not a <varname>LINESTRING</varname>, "
 "<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>."
 msgstr ""
+"<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
+"<varname>NURBSCURVE</varname> の最後のポイントを<varname>POINT</varname>で返"
+"します。入力が<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</"
+"varname>, <varname>NURBSCURVE</varname>のいずれでもない場合には <varname>"
+"NULL</varname>を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9614,7 +9624,7 @@ msgstr "3次元ラインストリングの終端ポイント"
 #. Tag: para
 #, no-c-format
 msgid "3D endpoint."
-msgstr ""
+msgstr "3次元終端。"
 
 #. Tag: para
 #, no-c-format
@@ -9624,7 +9634,7 @@ msgstr "CIRCULARSTRINGの終端ポイント"
 #. Tag: para
 #, no-c-format
 msgid "End point of a NURBSCurve"
-msgstr ""
+msgstr "NURBSCURVEの終端"
 
 #. Tag: para
 #, no-c-format
@@ -9731,7 +9741,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
 #. Tag: para
 #, no-c-format
 msgid "This example extracts exterior rings from a table of polygons."
-msgstr ""
+msgstr "この例では、外側リングをポリゴンのテーブルから抽出します。"
 
 #. Tag: para
 #, no-c-format
@@ -9791,12 +9801,12 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.5"
 #. Tag: para
 #, no-c-format
 msgid "Extracting a subset of points from a 3D multipoint."
-msgstr ""
+msgstr "3次元MULTIPOINTからポイントの部分集合の抽出。"
 
 #. Tag: para
 #, no-c-format
 msgid "Output:"
-msgstr ""
+msgstr "出力:"
 
 #. Tag: para
 #, no-c-format
@@ -9970,12 +9980,12 @@ msgstr "多面体サーフェスの例"
 #. Tag: para
 #, no-c-format
 msgid "This example uses a cube."
-msgstr ""
+msgstr "この例では立方体を使います。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example uses the same cube with one side missing."
-msgstr ""
+msgstr "この例では、同じ立方体だけれども一面が抜けているものを使います。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10147,6 +10157,9 @@ msgid ""
 "ST_EndPoint(g)</code>) and <xref linkend=\"ST_IsSimple\"/> (does not self "
 "intersect)."
 msgstr ""
+"<varname>TRUE</varname>となるのは <varname>LINESTRING</varname> が<xref "
+"linkend=\"ST_IsClosed\"/> (<code>ST_StartPoint(g) ~= ST_EndPoint(g)</code>)か"
+"つ <xref linkend=\"ST_IsSimple\"/> (事故接触していない)の場合です。"
 
 #. Tag: para
 #, no-c-format
@@ -10379,7 +10392,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 #. Tag: para
 #, no-c-format
 msgid "This example returns 1; prior versions would have returned NULL."
-msgstr ""
+msgstr "この例では1を返します。前のバージョンではNULLを返しました。"
 
 #. Tag: para
 #, no-c-format
@@ -10417,7 +10430,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example counts the interior rings of a polygon."
-msgstr ""
+msgstr "この例ではポリゴンの内側リングの個数を数えます。"
 
 #. Tag: para
 #, no-c-format
@@ -10515,7 +10528,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Extract the 2nd face of the polyhedral surface."
-msgstr ""
+msgstr "多面体サーフェスの2番目のフェイスを抽出します。"
 
 #. Tag: para
 #, no-c-format
@@ -10593,12 +10606,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example extracts all POINT geometries from a LineString."
-msgstr ""
+msgstr "この例では一つのLINESTRINGから全てのPOINTジオメトリーを抽出します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example uses a CircularString."
-msgstr ""
+msgstr "この例ではCIRBULARSTRINGを使います。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -10640,7 +10653,7 @@ msgstr ", <xref linkend=\"ST_DumpPoints\"/>"
 #, no-c-format
 msgid ""
 "Returns the first point of a LineString, CircularLineString, or NURBSCurve."
-msgstr ""
+msgstr "LINESTRING, CIRCULARSTRING, NURBSCURVE の最初のポイントを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10650,6 +10663,10 @@ msgid ""
 "geometry as a <varname>POINT</varname>. For other geometries, returns the "
 "first point in coordinate order."
 msgstr ""
+"<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
+"<varname>NURBSCURVE</varname>ジオメトリーの最初のポイントを<varname>POINT</"
+"varname>で返します。他のジオメトリーを与えた場合には、座標の並び順で最初の"
+"ポイントを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10690,7 +10707,7 @@ msgstr "ラインストリングの始端ポイント"
 #. Tag: para
 #, no-c-format
 msgid "Start point of a Point is the Point itself"
-msgstr ""
+msgstr "ポイントの始端ポイントはそのポイント自体です"
 
 #. Tag: para
 #, no-c-format
@@ -10705,7 +10722,7 @@ msgstr "CIRCULARSTRINGの始端ポイント"
 #. Tag: para
 #, no-c-format
 msgid "Start point of a NURBSCurve"
-msgstr ""
+msgstr "NURBSCURVEの始端ポイント"
 
 #. Tag: para
 #, no-c-format
@@ -10717,7 +10734,7 @@ msgstr ", <xref linkend=\"ST_PointN\"/>"
 msgid ""
 "Returns the M coordinate of the first point of a LineString, "
 "CircularLineString, or NURBSCurve."
-msgstr ""
+msgstr "LINESTRING, CIRCULARLINESTRING, NURBSCURVE の最初のポイントのM値を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10728,38 +10745,43 @@ msgid ""
 "does not have an M dimension or is not a <varname>LINESTRING</varname>, "
 "<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>."
 msgstr ""
+"<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
+"<varname>NURBSCURVE</varname>ジオメトリーの最初のポイントのM値を返します。入"
+"力ジオメトリーがM値を持っていないか、<varname>LINESTRING</varname>, <varname>"
+"CIRCULARLINESTRING</varname>, <varname>NURBSCURVE</varname>のいずれえでもない"
+"場合には、 <varname>NULL</varname>が返ります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Start M value of a LineString"
-msgstr ""
+msgstr "LINESTRINGの最初のM値"
 
 #. Tag: para
 #, no-c-format
 msgid "Start M value of a CircularString"
-msgstr ""
+msgstr "CIRCULARSTRINGの最初のM値"
 
 #. Tag: para
 #, no-c-format
 msgid "Start M value of a NURBSCurve"
-msgstr ""
+msgstr "NURBSCURVEの最初のM値"
 
 #. Tag: para
 #, no-c-format
 msgid "Geometry without M dimension returns NULL"
-msgstr ""
+msgstr "M値を持たないジオメトリーについてはNULLを返します"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_SetStartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SetStartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns the M coordinate of the last point of a LineString, "
 "CircularLineString, or NURBSCurve."
-msgstr ""
+msgstr "LINESTRING, CIRCULARSTRING, NURBSCURVEの最後のポイントのM値を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10770,33 +10792,38 @@ msgid ""
 "does not have an M dimension or is not a <varname>LINESTRING</varname>, "
 "<varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname>."
 msgstr ""
+"<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
+"<varname>NURBSCURVE</varname>ジオメトリーの最後のポイントのM値を返します。M値"
+"を持たないか、<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</"
+"varname>, <varname>NURBSCURVE</varname>のいずれでもない場合には<varname>"
+"NULL</varname>を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "End M value of a LineString"
-msgstr ""
+msgstr "LINERSTRINGの終端のM値"
 
 #. Tag: para
 #, no-c-format
 msgid "End M value of a CircularString"
-msgstr ""
+msgstr "CIRCULARRSTRINGの終端のM値"
 
 #. Tag: para
 #, no-c-format
 msgid "End M value of a NURBSCurve"
-msgstr ""
+msgstr "NURBSCURVEの終端のM値"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_SetEndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SetEndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Sets the M coordinate of the first point of a LineString, "
 "CircularLineString, or NURBSCurve."
-msgstr ""
+msgstr "LINESTRING, CIRCULARSTRING, NURBSCURVEの最初のポイントのM値を設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -10809,38 +10836,44 @@ msgid ""
 "varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</"
 "varname>."
 msgstr ""
+"<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
+"<varname>NURBSCURVE</varname>の入力ジオメトリーに対して、最初のポイントに指定"
+"したM値を設定した複製を返します。入力ジオメトリーがM値を持っていない場合には"
+"、M軸を追加します。 入力ジオメトリーが<varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, <varname>NURBSCURVE</varname>でない場"
+"合には、<varname>NULL</varname>を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Set start M value of a LineString"
-msgstr ""
+msgstr "LINESTRINGの始端のM値を設定します"
 
 #. Tag: para
 #, no-c-format
 msgid "Add M dimension and set start M value"
-msgstr ""
+msgstr "M軸を追加して始端にM値を設定します"
 
 #. Tag: para
 #, no-c-format
 msgid "Set start M value of a CircularString"
-msgstr ""
+msgstr "CIRCULARSTRINGの始端のM値を設定します"
 
 #. Tag: para
 #, no-c-format
 msgid "Set start M value of a NURBSCurve"
-msgstr ""
+msgstr "NURBSCURVEの始端のM値を設定します"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_StartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_StartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Sets the M coordinate of the last point of a LineString, CircularLineString, "
 "or NURBSCurve."
-msgstr ""
+msgstr "LINESTRING, CIRCULARSTRING, NURBSCURVEの終端のM値を設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -10853,31 +10886,37 @@ msgid ""
 "varname>, <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</"
 "varname>."
 msgstr ""
+"<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
+"<varname>NURBSCURVE</varname>の入力ジオメトリーに対して、最後のポイントに指定"
+"したM値を設定した複製を返します。入力ジオメトリーがM値を持っていない場合には"
+"、M軸を追加します。 入力ジオメトリーが<varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, <varname>NURBSCURVE</varname>でない場"
+"合には、<varname>NULL</varname>を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Set end M value of a LineString"
-msgstr ""
+msgstr "LINESTRINGの終端のM値を設定します"
 
 #. Tag: para
 #, no-c-format
 msgid "Add M dimension and set end M value"
-msgstr ""
+msgstr "M軸を追加して終端のM値を設定します"
 
 #. Tag: para
 #, no-c-format
 msgid "Set end M value of a CircularString"
-msgstr ""
+msgstr "CIRCULARSTRINGの終端のM値を設定します"
 
 #. Tag: para
 #, no-c-format
 msgid "Set end M value of a NURBSCurve"
-msgstr ""
+msgstr "NURBSCURVEの終端のM値を設定します"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_EndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_EndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
