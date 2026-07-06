@@ -11,10 +11,14 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           ring-orientation precision regressions (Darafei Praliaskouski)
  - GH-1143, [topology] Clean up TopoRingIsCCW early returns
           (Darafei Praliaskouski)
+ - GH-1146, Reset interrupt callbacks when PostgreSQL clears
+          cancellation state (Darafei Praliaskouski)
  - GH-1147, [doc] Fix localized EPUB help target (Darafei Praliaskouski)
  - GH-1148, [utils] Create upgrade-check tempdir safely
           (Darafei Praliaskouski)
  - GH-1149, [topology] Fix corrupt column fallback variables
+          (Darafei Praliaskouski)
+ - GH-1150, Free polygon orientation inputs in ST_IsPolygonCW/CCW
           (Darafei Praliaskouski)
  - GH-1153, [topology] Preserve large ids from edge wrappers
           (Darafei Praliaskouski)
