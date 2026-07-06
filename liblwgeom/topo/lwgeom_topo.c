@@ -7119,7 +7119,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     lwnotice("Empty component of noded line");
     return 0; /* must be empty */
   }
-  endpoint_tol = tol == 0 ? 0 : _lwt_minTolerance(lwpoint_as_lwgeom(start_point));
+  endpoint_tol = _lwt_minTolerance(lwpoint_as_lwgeom(start_point));
   nid[0] = _lwt_AddPoint( topo, start_point,
                           endpoint_tol,
                           handleFaceSplit, &mm, &pointSplitEdges );
@@ -7137,7 +7137,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
             "after successfully getting first point !?");
     return -1;
   }
-  endpoint_tol = tol == 0 ? 0 : _lwt_minTolerance(lwpoint_as_lwgeom(end_point));
+  endpoint_tol = _lwt_minTolerance(lwpoint_as_lwgeom(end_point));
   nid[1] = _lwt_AddPoint( topo, end_point,
                           endpoint_tol,
                           handleFaceSplit, &mm, &pointSplitEdges );
