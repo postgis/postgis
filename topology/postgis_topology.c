@@ -5917,7 +5917,9 @@ Datum TopoRingIsCCW(PG_FUNCTION_ARGS)
 
   if ( lwgeom_is_empty(lwgeom) )
   {
-    PG_RETURN_BOOL(false);
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 0);
+	  PG_RETURN_BOOL(false);
   }
 
   if (lwgeom->type == POLYGONTYPE)
@@ -5930,8 +5932,10 @@ Datum TopoRingIsCCW(PG_FUNCTION_ARGS)
   }
   else
   {
-    lwpgerror("Unsupported geometry type passed to TopoRingIsCCW");
-    PG_RETURN_NULL();
+	  lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 0);
+	  lwpgerror("Unsupported geometry type passed to TopoRingIsCCW");
+	  PG_RETURN_NULL();
   }
 
   isCCW = lwt_IsTopoRingCCW(pa);
