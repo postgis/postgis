@@ -47,6 +47,11 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
             (Bas Couwenberg)
 
 * Enhancements *
+* New Features *
+
+ - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
+          (Darafei Praliaskouski)
+
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
@@ -116,8 +121,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #4398, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul Ramsey)
  - #4560, ST_3DInterpolatePoint for M interpolation from XYZ inputs (Paul Ramsey)
  - #1291, ST_MakePolygon support for curved rings (Darafei Praliaskouski)
- - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
-          (Darafei Praliaskouski)
  - GT-270, Add NURBSCurve (Loïc Bartoletti)
  - #2863, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers
           (Darafei Praliaskouski)
