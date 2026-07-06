@@ -7684,22 +7684,27 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
 
     forward = -1; /* will be set to either 0 or 1 if the edge already existed */
     id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit, &forward, &edgeNewEdges );
-    num_new_edges += edgeNewEdges;
-    /* if forward is still == -1 this was NOT an existing edge ? */
-    if ( forward == -1 )
-    {
-      ++num_new_edges;
-    }
-
-    LWDEBUGF(1, "_lwt_AddLineEdge returned %" LWTFMT_ELEMID
-      " (forward ? %d), reported to create %d new edges (total new edges: %d)",
-      id, forward, edgeNewEdges, num_new_edges);
-    if ( id < 0 )
+    if (id < 0)
     {
       lwgeom_free(noded);
       lwfree(ids);
       return NULL;
     }
+
+    num_new_edges += edgeNewEdges;
+    /* if forward is still == -1 this was NOT an existing edge ? */
+    if ( id && forward == -1 )
+    {
+      ++num_new_edges;
+    }
+
+    LWDEBUGF(1,
+	     "_lwt_AddLineEdge returned %" LWTFMT_ELEMID
+	     " (forward ? %d), reported to create %d new edges (total new edges: %d)",
+	     id,
+	     forward,
+	     edgeNewEdges,
+	     num_new_edges);
 
     if ( maxNewEdges >= 0 && num_new_edges > maxNewEdges )
     {
