@@ -7692,11 +7692,6 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     }
 
     num_new_edges += edgeNewEdges;
-    /* if forward is still == -1 this was NOT an existing edge ? */
-    if ( id && forward == -1 )
-    {
-      ++num_new_edges;
-    }
 
     LWDEBUGF(1,
 	     "_lwt_AddLineEdge returned %" LWTFMT_ELEMID
