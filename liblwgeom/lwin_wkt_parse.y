@@ -111,6 +111,8 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, const char *wktstr, in
 
 #define WKT_ERROR() { if ( global_parser_result.errcode != 0 ) { YYERROR; } }
 
+#define WKT_NURBS_MAX_KNOT_COUNT 10000
+
 struct WKT_NURBS_CONTROLPOINTS
 {
 	POINTARRAY *points;
@@ -226,6 +228,7 @@ wkt_parser_knot_list_add_repeated(POINTARRAY *knots, double value, double multip
 	uint32_t repeat_count;
 
 	if (!isfinite(value) || !isfinite(multiplicity) || multiplicity < 1.0 ||
+	    multiplicity > WKT_NURBS_MAX_KNOT_COUNT ||
 	    fabs(multiplicity - round(multiplicity)) >= 1e-10)
 	{
 		if (knots)
@@ -235,6 +238,13 @@ wkt_parser_knot_list_add_repeated(POINTARRAY *knots, double value, double multip
 	}
 
 	repeat_count = (uint32_t)round(multiplicity);
+	if (knots && knots->npoints > WKT_NURBS_MAX_KNOT_COUNT - repeat_count)
+	{
+		ptarray_free(knots);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
 	for (uint32_t i = 0; i < repeat_count; i++)
 	{
 		POINT knot = wkt_parser_coord_2(value, 0);
