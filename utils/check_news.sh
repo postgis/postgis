@@ -38,6 +38,15 @@ fi
 
 cd ${RD}
 
+# Check that release headings are unique. Rebase mistakes can otherwise
+# turn the previous release section into a second copy of the current one.
+duplicate_release=$(grep '^PostGIS [0-9]' NEWS | sort | uniq -d | head -1)
+if test -n "${duplicate_release}"; then
+  echo "FAIL: NEWS file has duplicate release heading: ${duplicate_release}"
+  exit 1
+fi
+echo "PASS: NEWS file release headings are unique"
+
 # Extract dates from NEWS file and check they
 # are sorted correctly
 pdate=$(date '+%Y/%m/%d') # most recent timestamp
