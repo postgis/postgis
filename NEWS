@@ -50,6 +50,10 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
+ - #398, pgsql2shp prompts for a password when required
+          (Darafei Praliaskouski)
+
+
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
  - #3676, Mark geometry and geography btree comparison support functions
@@ -128,8 +132,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - #2045, pgsql2shp query dumps no longer require temporary table
           privileges (Darafei Praliaskouski)
- - #398, pgsql2shp prompts for a password when required
-          (Darafei Praliaskouski)
  - #1577, [loader] Report unsupported .zip archive input before trying
           to open shapefile sidecar files (Darafei Praliaskouski)
  - #3158, Move geometry and geography typmod bit helpers out of the
