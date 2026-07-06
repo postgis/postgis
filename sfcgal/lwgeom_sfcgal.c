@@ -2148,7 +2148,7 @@ sfcgal_generate_roof(PG_FUNCTION_ARGS)
 	geom = POSTGIS2SFCGALGeometry(input);
 	PG_FREE_IF_COPY(input, 0);
 
-	result = sfcgal_geometry_generate_roof(geom, roof_type, slope_angle, height, (size_t)primary_edge_index);
+	result = sfcgal_geometry_generate_roof(geom, roof_type, height, slope_angle, (size_t)primary_edge_index);
 	sfcgal_geometry_delete(geom);
 
 	output = SFCGALGeometry2POSTGIS(result, 1, srid);
