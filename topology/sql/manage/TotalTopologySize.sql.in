@@ -24,12 +24,15 @@ BEGIN
   sql := format(
     $$
 SELECT
-pg_catalog.pg_total_relation_size('%1$I.edge_data') +
-pg_catalog.pg_total_relation_size('%1$I.node') +
-pg_catalog.pg_total_relation_size('%1$I.face') +
-pg_catalog.pg_total_relation_size('%1$I.relation')
+pg_catalog.pg_total_relation_size(%1$L) +
+pg_catalog.pg_total_relation_size(%2$L) +
+pg_catalog.pg_total_relation_size(%3$L) +
+pg_catalog.pg_total_relation_size(%4$L)
     $$,
-    toponame
+    format('%I.edge_data', toponame),
+    format('%I.node', toponame),
+    format('%I.face', toponame),
+    format('%I.relation', toponame)
   );
 
   EXECUTE sql INTO total_size;
