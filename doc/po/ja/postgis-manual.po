@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-01 10:39+0000\n"
+"PO-Revision-Date: 2026-07-06 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -1584,6 +1584,9 @@ msgid ""
 "<type>topology.topoelement</type>. The domain requires a two-element array, "
 "so the dimension check fails."
 msgstr ""
+"この例では3要素配列を <type>topology.topoelement</type>へのキャストで発生する"
+"ことを示しています。ここでは2要素配列が求められるので次元チェックに失敗します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -1613,12 +1616,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This is the more verbose equivalent."
-msgstr ""
+msgstr "次に、等価だけれどもより冗長なものを示します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example uses the array aggregate function packaged with topology."
-msgstr ""
+msgstr "この例ではトポロジーに入っている配列集約関数を使っています。"
 
 #. Tag: para
 #, no-c-format
@@ -1719,6 +1722,9 @@ msgid ""
 "<varname>topology_name</varname> and <varname>schema_name</varname> would be "
 "different."
 msgstr ""
+"この例では、<varname>ma_topo</varname>の新しいテーブルを生成しています。異な"
+"るスキーマでテーブルを作ることができ、この場合、<varname>topology_name</"
+"varname>と<varname>schema_name</varname> は異なります。"
 
 #. Tag: para
 #, no-c-format
@@ -1915,12 +1921,12 @@ msgstr "Availability: 2.3.0"
 #, no-c-format
 msgid ""
 "This query returns no records because the feature is already registered."
-msgstr ""
+msgstr "弧のクエリーでは、地物が既に登録されているのでレコードが返りません。"
 
 #. Tag: para
 #, no-c-format
 msgid "Rebuild the topology layer catalog."
-msgstr ""
+msgstr "トポロジーのレイヤーのカタログを再構築します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -2821,12 +2827,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Populate the topology."
-msgstr ""
+msgstr "トポロジーを投入します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create the tables and topogeometries."
-msgstr ""
+msgstr "テーブルとトポジオメトリーを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -3460,12 +3466,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Add an edge to split."
-msgstr ""
+msgstr "分割するためのエッジを追加します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Split the edge with a new node."
-msgstr ""
+msgstr "新しいノードでエッジを分割します。"
 
 #. Tag: para
 #, no-c-format
@@ -3578,12 +3584,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Add an isolated node with no face."
-msgstr ""
+msgstr "フェイスに属さない孤立ノードを追加します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Move the new node."
-msgstr ""
+msgstr "新しいノードを異動させます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3635,7 +3641,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Split the new edge."
-msgstr ""
+msgstr "新しいエッジを分割します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3668,7 +3674,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Remove an isolated node with no face."
-msgstr ""
+msgstr "フェイスに属していない孤立ノードを削除します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -3691,7 +3697,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Remove an isolated edge with no face."
-msgstr ""
+msgstr "フェイスに属さない孤立エッジを削除します。"
 
 #. Tag: title
 #, no-c-format
@@ -3755,7 +3761,7 @@ msgstr "本例では<xref linkend=\"AddEdge\"/>で作ったエッジを使いま
 #. Tag: para
 #, no-c-format
 msgid "This query errors because two or more edges are found."
-msgstr ""
+msgstr "このクエリーは二つ以上のエッジが発見されるのでエラーになります。"
 
 #. Tag: para
 #, no-c-format
@@ -3811,7 +3817,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This query errors because two or more faces are found."
-msgstr ""
+msgstr "このクエリーは二つ以上のフェイスが発見されるのでエラーになります。"
 
 #. Tag: para
 #, no-c-format
@@ -3886,7 +3892,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This query errors because the tolerance matches two or more nodes."
-msgstr ""
+msgstr "このクエリーは二つ以上のノードが許容範囲内にあるのでエラーになります。"
 
 #. Tag: para
 #, no-c-format
@@ -4008,7 +4014,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This query returns the edges that bound face 1."
-msgstr ""
+msgstr "このクエリーは1番フェイスの境界となるエッジ群を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -4017,6 +4023,9 @@ msgid ""
 "that bound face 1. Use <xref linkend=\"ST_GetFaceGeometry\"/> if only the "
 "geometry and sequence are needed."
 msgstr ""
+"このクエリーは、1番フェイスの境界となる順序番号、エッジ識別子、エッジの"
+"ジオメトリーを返します。ジオメトリーと順序番号だけが必要な場合には<xref "
+"linkend=\"ST_GetFaceGeometry\"/>を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -4051,7 +4060,7 @@ msgstr ""
 msgid ""
 "This query returns the WKT of the polygon added with <xref "
 "linkend=\"AddFace\"/>."
-msgstr ""
+msgstr "このクエリーは <xref linkend=\"AddFace\"/>で追加したポリゴンのWKTを返します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4329,6 +4338,8 @@ msgid ""
 "This query errors because the edge intersects an existing edge away from the "
 "endpoints."
 msgstr ""
+"このクエリーはエッジが既存のエッジと終端以外の場所でインタセクトするため"
+"エラーになります。"
 
 #. Tag: para
 #, no-c-format
@@ -4421,11 +4432,14 @@ msgid ""
 "iterator. This query only works for polygons with fewer than 10000 points "
 "because of the maximum value in <function>generate_series</function>."
 msgstr ""
+"まず<function>generate_series</function>を使って内側リングとしてエッジを追加"
+"します。このクエリーは <function>generate_series</function>の最大値である"
+"10000より小さいポイント数のポリゴンでだけ動作します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Then add the face."
-msgstr ""
+msgstr "その後、フェイスを追加します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4604,7 +4618,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create the topogeometry column."
-msgstr ""
+msgstr "トポジオメトリーカラムを追加します。"
 
 #. Tag: para
 #, no-c-format
@@ -4618,6 +4632,8 @@ msgid ""
 "The world is rarely perfect, so this version allows some error. It counts a "
 "face if 50 percent of it falls within the expected block group boundary."
 msgstr ""
+"世界が完璧であることはほぼありません。そこで誤差が許されるものを示します。"
+"50%が期待したブロックグループ境界に落ちる場合には数えるようにしています。"
 
 #. Tag: para
 #, no-c-format
@@ -4726,39 +4742,39 @@ msgstr "これは完全に全て揃ったワークフローです。"
 #. Tag: para
 #, no-c-format
 msgid "Create the topology without allowing any tolerance."
-msgstr ""
+msgstr "許容値を許さないトポロジーを生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a new table."
-msgstr ""
+msgstr "新しいテーブルを生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Add a topogeometry column to the new table."
-msgstr ""
+msgstr "新しいテーブルにトポジオメトリーカラムを追加します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Use the new layer identifier to populate the topogeometry column."
-msgstr ""
+msgstr "新しいレイヤーの識別子を使ってトポジオメトリーカラムを投入します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Verify what happened."
-msgstr ""
+msgstr "何が起こったかを確認します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Shrink all TopoGeometry polygons by 10 meters."
-msgstr ""
+msgstr "全てのTopoGeometryポリゴンを10メートル後退させます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Find faces that are left without any TopoGeometry reference after the shrink "
 "operation."
-msgstr ""
+msgstr "後退処理後にTopoGeometry参照が全くないフェイスを探索します。"
 
 #. Tag: para
 #, no-c-format
@@ -4811,12 +4827,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Return the TopoElement representation of each topogeometry."
-msgstr ""
+msgstr "個々のトポジオメトリーのTopoElement表現を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Use a cast to aggregate topogeometries into a TopoElementArray."
-msgstr ""
+msgstr "キャストを使ってトポジオメトリをTopoElementArrayに集約します。"
 
 #. Tag: para
 #, no-c-format
@@ -4879,7 +4895,7 @@ msgstr "Availability: 2.3"
 #. Tag: para
 #, no-c-format
 msgid "Add edge 5 to TopoGeometry <varname>tg</varname>."
-msgstr ""
+msgstr "5番エッジをTopoGeometry <varname>tg</varname>に追加します。"
 
 #. Tag: para
 #, no-c-format
@@ -4903,7 +4919,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Remove face 43 from TopoGeometry <varname>tg</varname>."
-msgstr ""
+msgstr "43番フェイスをTopoGeometry <varname>tg</varname>から削除します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -5213,12 +5229,12 @@ msgstr "Enhanced: 2.2.1 点入力に対応するようになりました"
 #. Tag: para
 #, no-c-format
 msgid "Create a temporary edge map for the TopoJSON output."
-msgstr ""
+msgstr "TopoJSON出力用に一時的なエッジ地図を生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Build the TopoJSON header, objects, arcs, and footer."
-msgstr ""
+msgstr "TopoJSONのヘッダー、オブジェクト、アーク、フッターを構築します。"
 
 #. Tag: title
 #, no-c-format
@@ -5272,6 +5288,8 @@ msgid ""
 "The following example uses the <varname>nei_topo</varname> table created in "
 "the <xref linkend=\"toTopoGeom\"/> examples."
 msgstr ""
+"次の例では<varname>nei_topo</varname>を使っていますが、このテーブルは <xref "
+"linkend=\"toTopoGeom\"/>の例で作られています。"
 
 #. Tag: para
 #, no-c-format
@@ -5830,6 +5848,10 @@ msgid ""
 "download from <link xlink:href=\"https://gmplib.org/\">https://gmplib.org/</"
 "link>."
 msgstr ""
+"GNU多倍長精度演算ライブラリー (Multiple Precision Arithmetic Library, libgmp)"
+"。PostGISトポロジーの数学演算の精度制御に使います。GMPは<link "
+"xlink:href=\"https://gmplib.org/\">https://gmplib.org/</link>からダウンロード"
+"できます。"
 
 #. Tag: para
 #, no-c-format
@@ -5888,6 +5910,10 @@ msgid ""
 "xlink:href=\"https://sfcgal.gitlab.io/sfcgal/\">https://sfcgal.gitlab.io/"
 "sfcgal/</link>."
 msgstr ""
+"SFCGAL, 1.4.1以上が必要で、全ての機能が使用可能になるのは2.3以上が必要です。"
+"SFCGALは、PostGISに追加的な2次元、3次元の高度な解析機能を提供します。<xref "
+"linkend=\"reference_sfcgal\"/>を参照して下さい。<link xlink:href=\"https://"
+"sfcgal.gitlab.io/sfcgal/\">https://sfcgal.gitlab.io/sfcgal/</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -9048,12 +9074,12 @@ msgstr "境界マルチラインストリングを重ねたポリゴンの穴"
 #. Tag: para
 #, no-c-format
 msgid "This example uses a 3D polygon."
-msgstr ""
+msgstr "この例では3次元ポリゴンを使用しています。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example uses a 3D MultiLineString."
-msgstr ""
+msgstr "この例では3次元マルチラインストリングを使用しています。"
 
 #. Tag: para
 #, no-c-format
@@ -9127,7 +9153,7 @@ msgstr "&M_support;"
 #, no-c-format
 msgid ""
 "This example returns the minimum X coordinate of a buffer around a point."
-msgstr ""
+msgstr "この例では、ポイントをバッファーで広げたときのminimum X座標が返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -9277,12 +9303,12 @@ msgstr "多面体サーフェス、TIN、三角形の例"
 #. Tag: para
 #, no-c-format
 msgid "This example breaks a PolyhedralSurface into its faces."
-msgstr ""
+msgstr "この例では、多面体サーフェスをフェイスに分解します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example uses a TIN geometry."
-msgstr ""
+msgstr "この例ではTINジオメトリーを使います。"
 
 #. Tag: para
 #, no-c-format
@@ -9373,12 +9399,12 @@ msgstr "標準的な例"
 #. Tag: para
 #, no-c-format
 msgid "This example uses a cube represented as a PolyhedralSurface."
-msgstr ""
+msgstr "この例では多面体サーフェスで表現した立方体を使います。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example uses a Triangle geometry."
-msgstr ""
+msgstr "この例ではTRIANGLEジオメトリーを使います。"
 
 #. Tag: para
 #, no-c-format
@@ -9501,6 +9527,10 @@ msgid ""
 "linkend=\"ST_Dump\"/> to extract polygon elements from polygonal geometries: "
 "<code>ST_DumpRings((ST_Dump(geom)).geom )</code>"
 msgstr ""
+"これはPOLYGONジオメトリーでだけ動作します。MULTIPOLYGONでは動作しません。"
+"ポリゴン系ジオメトリーからポリゴン要素を抽出するには<xref "
+"linkend=\"ST_Dump\"/>を使います: <code>ST_DumpRings((ST_Dump(geom)).geom )</"
+"code>"
 
 #. Tag: para
 #, no-c-format
@@ -9532,7 +9562,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the last point of a LineString, CircularLineString, or NURBSCurve."
-msgstr ""
+msgstr "LINESTRING, CIRCULARLINESTRING, NURMSCURVE の最後のポイントを返します。"
 
 #. Tag: para
 #, no-c-format
