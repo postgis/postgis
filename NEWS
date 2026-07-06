@@ -89,6 +89,10 @@ These are only changes since 3.7.0alpha1.
             (Bas Couwenberg)
 
 * Enhancements *
+* New Features *
+
+ - #2598, [raster] Add ST_Blur Gaussian convolution filter (Darafei Praliaskouski)
+
 
  - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
           (Darafei Praliaskouski)
@@ -157,7 +161,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
  - #5109, Document the meaning of topology.next_left_edge and topology.next_right_edge links (Darafei Praliaskouski)
  - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
- - #2598, [raster] Add ST_Blur Gaussian convolution filter (Darafei Praliaskouski)
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
  - #6022, Document ST_AsMVTGeom tile-coordinate simplification (Darafei Praliaskouski)
  - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
