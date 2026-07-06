@@ -24,8 +24,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
 
 
-PostGIS 3.7.0alpha1
-2026/07/05
+PostGIS 3.7.0dev
+2026/xx/xx
 
 This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp.
 To take advantage of all features postgis extension features, GEOS 3.15+ is needed.
@@ -144,37 +144,31 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           by enforcing verbatim CSS (Darafei Praliaskouski)
  - #1408, Docs: flatten transparent manual images onto white backgrounds for
           PDF builds while keeping HTML images transparent (Darafei Praliaskouski)
+ - #2838, Emit valid X3D Coordinate nodes for 2D polygon output
+          (Darafei Praliaskouski)
+ - #1705, Infer constraint metadata for direct view and materialized view
+          geometry columns (Darafei Praliaskouski)
+ - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL
+          progress callbacks (Darafei Praliaskouski)
+ - #6073, #6074, Stabilize geography LRS endpoint interpolation and pole
+          centroid regressions on 32-bit systems (Darafei Praliaskouski)
+ - #2583, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN
+          (Darafei Praliaskouski)
 
 * Bug Fixes *
 
  - #4616, Detect pgsql2shp query keywords case-insensitively
           (Darafei Praliaskouski)
- - #2838, Emit valid X3D Coordinate nodes for 2D polygon output
-          (Darafei Praliaskouski)
  - Fix WKB and TWKB parser resource exhaustion on malformed input
           (Darafei Praliaskouski)
- - #6083, Pass configured dependency include paths to fuzzer smoke builds
-          (Darafei Praliaskouski)
- - #3103, Add regression coverage for exact-schema find_srid and
-          geometry_columns lookups (Darafei Praliaskouski)
- - #1705, Infer constraint metadata for direct view and materialized view
-          geometry columns (Darafei Praliaskouski)
  - #6038, Avoid stale relation lookups in geometry_columns after topology
           objects are dropped (Darafei Praliaskouski)
- - #5655, [doc] Skip XML validation during `make check` when xsltproc is
-          unavailable (Darafei Praliaskouski)
  - #5487, Improve error detail for repeated upgrades after an incomplete
           deprecated-function cleanup (Darafei Praliaskouski)
- - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL
-          progress callbacks (Darafei Praliaskouski)
  - #5975, Initialize skipped union-find cluster ids deterministically
           (Darafei Praliaskouski)
  - #5904, [topology] Avoid MinGW format warnings when logging topology ids
           (Darafei Praliaskouski)
- - GH-885, [topology] Avoid GMP overflow in ring orientation for very large
-          finite coordinates (Darafei Praliaskouski)
- - #6073, #6074, Stabilize geography LRS endpoint interpolation and pole
-          centroid regressions on 32-bit systems (Darafei Praliaskouski)
  - #6082, Fix Japanese PDF build by avoiding non-ASCII arrows in SQL
           program listings (Darafei Praliaskouski)
  - GH-888, [sfcgal] Avoid stale detoasted geometry access in
@@ -190,12 +184,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           short DE-9IM patterns (Darafei Praliaskouski)
  - GH-890, Avoid GIDX BRIN summary merges across mismatched dimensions
           (Darafei Praliaskouski)
- - #5948, [topology] Prevent MakeTopologyPrecise from erasing edges when
-          grid size exceeds their extent (Darafei Praliaskouski)
  - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
  - #6080, Avoid out-of-bounds hex WKB lookup for high-bit input bytes
-          (Darafei Praliaskouski)
- - GH-895, Qualify pg_class lookup during SRID/PROJ validation
           (Darafei Praliaskouski)
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
  - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
@@ -203,10 +193,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - GH-894, [raster] Fix Float16 import, mixed nodata warping,
           band replacement cleanup, GDAL credential redaction, and Python
           GDAL compatibility (Darafei Praliaskouski)
- - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
- - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
- - #2583, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN
-          (Darafei Praliaskouski)
 
 
 PostGIS 3.6.0
