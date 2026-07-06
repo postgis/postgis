@@ -901,12 +901,18 @@ PG_FUNCTION_INFO_V1(ST_IsPolygonCW);
 Datum ST_IsPolygonCW(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED* geom;
+	LWGEOM *lwgeom;
+	bool is_cw;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	PG_RETURN_BOOL(lwgeom_has_orientation(lwgeom_from_gserialized(geom), LW_CLOCKWISE));
+	lwgeom = lwgeom_from_gserialized(geom);
+	is_cw = lwgeom_has_orientation(lwgeom, LW_CLOCKWISE);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_BOOL(is_cw);
 }
 
 /**********************************************************************
@@ -919,12 +925,16 @@ PG_FUNCTION_INFO_V1(ST_IsPolygonCCW);
 Datum ST_IsPolygonCCW(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED* geom;
+	LWGEOM *lwgeom;
+	bool is_ccw;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	geom = PG_GETARG_GSERIALIZED_P(0);
-	PG_RETURN_BOOL(lwgeom_has_orientation(lwgeom_from_gserialized(geom), LW_COUNTERCLOCKWISE));
+	lwgeom = lwgeom_from_gserialized(geom);
+	is_ccw = lwgeom_has_orientation(lwgeom, LW_COUNTERCLOCKWISE);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_BOOL(is_ccw);
 }
-
