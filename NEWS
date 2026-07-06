@@ -50,6 +50,10 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
+ - #3044, [raster] Add raster2pgsql tile origin alignment option
+          (Darafei Praliaskouski)
+
+
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
  - #3676, Mark geometry and geography btree comparison support functions
@@ -150,8 +154,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           reprojection support and clarify index creation timing for append loads
           (Darafei Praliaskouski)
  - #2137, [raster] Reuse matching source raster overviews in raster2pgsql -l
-          (Darafei Praliaskouski)
- - #3044, [raster] Add raster2pgsql tile origin alignment option
           (Darafei Praliaskouski)
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections (Darafei Praliaskouski)
