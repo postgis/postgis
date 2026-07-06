@@ -50,6 +50,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
+ - #4565, Add geography support for ST_AddMeasure (Darafei Praliaskouski)
+
+
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
  - #3676, Mark geometry and geography btree comparison support functions
@@ -134,7 +137,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           public liblwgeom header (Darafei Praliaskouski)
  - #4678, [raster] Move st_sum4ma neighborhood callback to C
           (Darafei Praliaskouski)
- - #4565, Add geography support for ST_AddMeasure (Darafei Praliaskouski)
  - #2116, [raster] Add ST_Value nearest-neighbor boundary options
           (Darafei Praliaskouski)
  - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks
