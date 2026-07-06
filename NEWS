@@ -50,6 +50,11 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
+ - #1467, postgis_restore can optionally convert 2D constraint-based
+          geometry columns to typmod columns during restore
+          (Darafei Praliaskouski)
+
+
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
  - #3676, Mark geometry and geography btree comparison support functions
@@ -154,9 +159,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml
-          (Darafei Praliaskouski)
- - #1467, postgis_restore can optionally convert 2D constraint-based
-          geometry columns to typmod columns during restore
           (Darafei Praliaskouski)
  - #6087, Add a repository-owned CI status checker and static dashboard
           generator (Darafei Praliaskouski)
