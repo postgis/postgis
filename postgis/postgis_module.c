@@ -63,6 +63,10 @@ static void interrupt_geos_callback(void)
 	{
 		GEOS_interruptRequest();
 	}
+	else
+	{
+		GEOS_interruptCancel();
+	}
 }
 
 static void interrupt_liblwgeom_callback(void)
@@ -81,6 +85,10 @@ static void interrupt_liblwgeom_callback(void)
 	if (QueryCancelPending || ProcDiePending)
 	{
 		lwgeom_request_interrupt();
+	}
+	else
+	{
+		lwgeom_cancel_interrupt();
 	}
 }
 
@@ -132,5 +140,4 @@ _PG_fini(void)
 {
 	elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
 }
-
 
