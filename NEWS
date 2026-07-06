@@ -1,3 +1,14 @@
+PostGIS 3.5.8
+2026/xx/xx
+
+* Bug Fixes *
+
+  - GH-897, [topology] Harden topology helper functions and
+    maintenance SQL against identifier, tolerance, bigint, and cleanup
+    regressions (Darafei Praliaskouski)
+  - GH-898, Fix ST_DFullyWithin indexed plans and large-coordinate
+    ring-orientation precision regressions (Darafei Praliaskouski)
+
 PostGIS 3.5.7
 2026/06/10
 
@@ -28,12 +39,6 @@ PostGIS 3.5.7
     GDAL compatibility (Darafei Praliaskouski)
   - GH-895, Qualify pg_class lookup during SRID/PROJ validation
     (Darafei Praliaskouski)
-  - GH-897, [topology] Harden topology helper functions and
-    maintenance SQL against identifier, tolerance, bigint, and cleanup
-    regressions (Darafei Praliaskouski)
-  - GH-898, Fix ST_DFullyWithin indexed plans and large-coordinate
-    ring-orientation precision regressions (Darafei Praliaskouski)
-
 
 PostGIS 3.5.6
 2026/04/14
