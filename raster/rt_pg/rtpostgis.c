@@ -159,6 +159,8 @@ rtpg_interrupt_liblwgeom_callback(void)
 #endif
 	if (QueryCancelPending || ProcDiePending)
 		lwgeom_request_interrupt();
+	else
+		lwgeom_cancel_interrupt();
 }
 
 static lwinterrupt_callback *prev_liblwgeom_interrupt_callback = NULL;
