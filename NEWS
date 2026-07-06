@@ -62,6 +62,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 PostGIS 3.7.0dev
 2026/xx/xx
+ - #2800, [raster] Make ST_Rescale expand output to cover input extent (Darafei Praliaskouski)
+PostGIS 3.7.0alpha1
+2026/07/05
 
 This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp.
 To take advantage of all features postgis extension features, GEOS 3.15+ is needed.
@@ -228,7 +231,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #6080, Avoid out-of-bounds hex WKB lookup for high-bit input bytes
           (Darafei Praliaskouski)
  - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
- - #2800, [raster] Make ST_Rescale expand output to cover input extent (Darafei Praliaskouski)
  - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
           selections (Darafei Praliaskouski)
  - GH-894, [raster] Fix Float16 import, mixed nodata warping,
