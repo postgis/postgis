@@ -72,10 +72,10 @@ WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
 	     l.feature_type
 	   )::topogeometry
 	   FROM topology.layer AS l
-	 WHERE  l.topology_id = (%3$I).topology_id AND l.layer_id =  (%3$I).layer_id AND (%3$I).type <> l.feature_type  ', topo_schema, topo_table, topo_column);
+	 WHERE  l.topology_id = (%3$I).topology_id AND l.layer_id =  (%3$I).layer_id AND (%3$I).type <> l.feature_type  ', layerSchema, layerTable, layerColumn);
 	 EXECUTE var_sql;
 	 GET DIAGNOSTICS var_row_count = ROW_COUNT;
-	 result = result || format('%s rows updated for %s.%s.%s column back to integer id type', var_row_count, topo_schema, topo_table, topo_column);
+	 result = result || format('%s rows updated for %s.%s.%s column back to integer id type', var_row_count, layerSchema, layerTable, layerColumn);
   END IF;
   RETURN result;
 END
