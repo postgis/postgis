@@ -13,7 +13,7 @@ jobs:
     name: "macOS"
     runs-on: macos-latest
     env:
-      PG: "17"
+      PG: "18"
       HOMEBREW_PREFIX: "/opt/homebrew"
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
       CCACHE_MAXSIZE: "1G"
