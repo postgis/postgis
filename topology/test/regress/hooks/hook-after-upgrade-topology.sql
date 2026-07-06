@@ -1,6 +1,7 @@
 SELECT * FROM topology.layer;
 \d upgrade_test.feature
 -- https://trac.osgeo.org/postgis/ticket/5983
+DROP INDEX upgrade_test.upgrade_test_feature_tg_id_idx;
 SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_column)
     FROM topology.layer;
 
@@ -22,4 +23,3 @@ INSERT INTO upgrade_test.domain_test values (
 
 SELECT topology.DropTopology('upgrade_test');
 SELECT topology.DropTopology('upgrade_test_copy');
-
