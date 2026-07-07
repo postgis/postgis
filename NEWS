@@ -34,6 +34,8 @@ PostGIS 3.6.5
   cancellation state (Darafei Praliaskouski)
 - #5948, [topology] Prevent MakeTopologyPrecise from erasing edges when
           grid size exceeds their extent (Darafei Praliaskouski)
+- #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
+  with standard_conforming_strings off (Darafei Praliaskouski)
 
 
 PostGIS 3.6.4
