@@ -346,9 +346,8 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
 		<note>
 		  <para>
-			<xref linkend="ST_Dimension"/> follows the SQL-MM topological dimension
-			contract.  A <varname>TIN</varname>, including a closed TIN surface,
-			is a surface geometry and has dimension 2.  Use
+			A <varname>TIN</varname>, including a closed TIN surface, is a
+			surface geometry and has dimension 2.  Use
 			<xref linkend="CG_MakeSolid"/> to make the solid representation
 			explicit; the resulting solid has dimension 3.  Solid geometry
 			semantics, such as volume, are handled separately by the SQL/MM 3D
