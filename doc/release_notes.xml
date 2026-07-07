@@ -3,8 +3,8 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <section xml:id="release_notes_3_7_0">
-    <title>PostGIS 3.7.0alpha1</title>
-    <subtitle>2026/07/05</subtitle>
+    <title>PostGIS 3.7.0</title>
+    <subtitle>2026/xx/xx</subtitle>
     <para>This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp. To take advantage of all features postgis extension features, GEOS 3.15+ is needed. To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.</para>
      <simplesect>
       <title>Breaking Changes</title>
@@ -74,39 +74,9 @@
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5593">#5593</link>, Docs: render manual images with GraphicsMagick without temporary files, enabling parallel builds, keeping ImageMagick fallbacks working, and documenting the generator workflow for contributors (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5645">#5645</link>, Docs: keep code operators (&quot;=&gt;&quot;) intact in translated manuals by enforcing verbatim CSS (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/1408">#1408</link>, Docs: flatten transparent manual images onto white backgrounds for PDF builds while keeping HTML images transparent (Darafei Praliaskouski)</para>
-    </simplesect>
-    <simplesect>
-      <title>Bug Fixes</title>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/4616">#4616</link>, Detect pgsql2shp query keywords case-insensitively (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/2838">#2838</link>, Emit valid X3D Coordinate nodes for 2D polygon output (Darafei Praliaskouski)</para>
-      <para>Fix WKB and TWKB parser resource exhaustion on malformed input (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6083">#6083</link>, Pass configured dependency include paths to fuzzer smoke builds (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3103">#3103</link>, Add regression coverage for exact-schema find_srid and geometry_columns lookups (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/1705">#1705</link>, Infer constraint metadata for direct view and materialized view geometry columns (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6038">#6038</link>, Avoid stale relation lookups in geometry_columns after topology objects are dropped (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5655">#5655</link>, [doc] Skip XML validation during `make check` when xsltproc is unavailable (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5487">#5487</link>, Improve error detail for repeated upgrades after an incomplete deprecated-function cleanup (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://github.com/postgis/postgis/pull/899">GH-899</link>, [raster] Honor PostgreSQL interrupts in long-running GDAL progress callbacks (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5975">#5975</link>, Initialize skipped union-find cluster ids deterministically (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5904">#5904</link>, [topology] Avoid MinGW format warnings when logging topology ids (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://github.com/postgis/postgis/pull/885">GH-885</link>, [topology] Avoid GMP overflow in ring orientation for very large finite coordinates (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6073">#6073</link>, <link xlink:href="https://trac.osgeo.org/postgis/ticket/6074">#6074</link>, Stabilize geography LRS endpoint interpolation and pole centroid regressions on 32-bit systems (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6082">#6082</link>, Fix Japanese PDF build by avoiding non-ASCII arrows in SQL program listings (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://github.com/postgis/postgis/pull/888">GH-888</link>, [sfcgal] Avoid stale detoasted geometry access in CG_Visibility empty-input handling for SFCGAL &lt; 2.2 (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/3179">#3179</link>, Mark truncated libpgcommon PostgreSQL messages instead of silently dropping the tail (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6003">#6003</link>, Avoid size_t formats in liblwgeom logging/error wrappers for MinGW builds (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://github.com/postgis/postgis/pull/886">GH-886</link>, ST_ClusterRelateWin validates NULL relate matrices before detoasting them (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://github.com/postgis/postgis/pull/889">GH-889</link>, ST_Relate pattern inversion avoids out-of-bounds access on short DE-9IM patterns (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://github.com/postgis/postgis/pull/890">GH-890</link>, Avoid GIDX BRIN summary merges across mismatched dimensions (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5948">#5948</link>, [topology] Prevent MakeTopologyPrecise from erasing edges when grid size exceeds their extent (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5959">#5959</link>, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6080">#6080</link>, Avoid out-of-bounds hex WKB lookup for high-bit input bytes (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://github.com/postgis/postgis/pull/895">GH-895</link>, Qualify pg_class lookup during SRID/PROJ validation (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/4828">#4828</link>, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/6048">#6048</link>, [raster] ST_Clip no longer crashes when clipping sparse band selections (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://github.com/postgis/postgis/pull/894">GH-894</link>, [raster] Fix Float16 import, mixed nodata warping, band replacement cleanup, GDAL credential redaction, and Python GDAL compatibility (Darafei Praliaskouski)</para>
-      <para>Flatgeobuf schema mismatch vulnerability (NeuroWinter)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5899">#5899</link>, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)</para>
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/2583">#2583</link>, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN (Darafei Praliaskouski)</para>
     </simplesect>
   </section>
