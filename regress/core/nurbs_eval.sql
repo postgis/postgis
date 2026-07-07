@@ -162,10 +162,24 @@ SELECT 'NURBS_CURVETOLINE_TOLERANCE_2',
     ST_GeometryType(ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.01, 2)),
     ST_NPoints(ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.01, 2));
 
+SELECT 'NURBS_CURVETOLINE_SEGMENT_CAP',
+    ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 2501, 0);
+
+SELECT 'NURBS_CURVETOLINE_MAX_DEVIATION_CAP',
+    ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.0001, 1);
+
+SELECT 'NURBS_CURVETOLINE_MAX_ANGLE_CAP',
+    ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.0001, 2);
+
 SELECT 'NURBS_CURVETOLINE_3',
     ST_AsEWKT(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry)),
     ST_Zmflag(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry)),
     ST_SRID(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry));
+
+SELECT 'NURBS_CURVETOLINE_4',
+    ST_AsEWKT(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry, 0.0001, 2)),
+    ST_Zmflag(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry, 0.0001, 2)),
+    ST_SRID(ST_CurveToLine('SRID=4326;NURBSCURVE Z EMPTY'::geometry, 0.0001, 2));
 
 SELECT 'NURBS_LENGTH_1', ST_Length('MULTICURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::geometry) > 0;
 

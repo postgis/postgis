@@ -48,7 +48,7 @@ LWGEOM* lwgeom_unstroke(const LWGEOM *geom);
 static LWLINE* lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol, LW_LINEARIZE_TOLERANCE_TYPE tolerance_type, int flags);
 
 #define NURBS_MIN_LINEARIZE_SEGMENTS 8
-
+#define NURBS_MAX_LINEARIZE_SEGMENTS 10000
 
 /*
  * Determines (recursively in the case of collections) whether the geometry
@@ -912,6 +912,9 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 		return NULL;
 	}
 
+	if (!curve->points || curve->points->npoints == 0)
+		return lwnurbscurve_to_linestring(curve, NURBS_MIN_LINEARIZE_SEGMENTS);
+
 	switch (tolerance_type)
 	{
 	case LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD:
@@ -920,7 +923,7 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 			lwerror("%s: segs-per-quad must be an integer, got %.15g", __func__, tol);
 			return NULL;
 		}
-		if (tol > ((double)UINT32_MAX / 4.0))
+		if (tol > ((double)NURBS_MAX_LINEARIZE_SEGMENTS / 4.0))
 		{
 			lwerror("%s: segs-per-quad is too large, got %.15g", __func__, tol);
 			return NULL;
@@ -934,9 +937,6 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 		double depth = 0.0;
 		double diagonal = 0.0;
 		double segments_required;
-
-		if (!curve->points || curve->points->npoints == 0)
-			return lwnurbscurve_to_linestring(curve, NURBS_MIN_LINEARIZE_SEGMENTS);
 
 		if (ptarray_calculate_gbox_cartesian(curve->points, &box) == LW_SUCCESS)
 		{
@@ -971,6 +971,11 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 
 	if (num_segments < NURBS_MIN_LINEARIZE_SEGMENTS)
 		num_segments = NURBS_MIN_LINEARIZE_SEGMENTS;
+	if (num_segments > NURBS_MAX_LINEARIZE_SEGMENTS)
+	{
+		lwerror("%s: requested too many segments, got %u", __func__, (unsigned int)num_segments);
+		return NULL;
+	}
 
 	(void)flags; /* Currently unused for NURBS linearization */
 
