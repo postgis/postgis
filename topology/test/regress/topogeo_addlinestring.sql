@@ -496,6 +496,41 @@ TopoGeo_addLinestring('b5234',
   'LINESTRING(10 10 3, 5 0 0.8)', 0);
 ROLLBACK;
 
+-- Original endpoints must remain exact with explicit zero tolerance,
+-- even where coordinate scale would allow a nearby machine-tolerance snap.
+BEGIN;
+SELECT NULL FROM topology.createtopology('gh1151_endpoint_zero', 0, 0, FALSE);
+SELECT 'gh1151.endpoint-zero.near-node', topology.ST_AddIsoNode('gh1151_endpoint_zero', 0, 'POINT(0 0.000001)');
+SELECT 'gh1151.endpoint-zero.near-end', topology.ST_AddIsoNode('gh1151_endpoint_zero', 0, 'POINT(1000000000 0.000001)');
+SELECT 'gh1151.endpoint-zero.addline', count(*) FROM
+TopoGeo_addLinestring('gh1151_endpoint_zero',
+  'LINESTRING(0 0, 1000000000 0)', 0);
+SELECT 'gh1151.endpoint-zero.start-exact', count(*) FROM gh1151_endpoint_zero.node
+  WHERE ST_Equals(geom, 'POINT(0 0)'::geometry);
+SELECT 'gh1151.endpoint-zero.start-near', count(*) FROM gh1151_endpoint_zero.node
+  WHERE ST_Equals(geom, 'POINT(0 0.000001)'::geometry);
+SELECT 'gh1151.endpoint-zero.end-exact', count(*) FROM gh1151_endpoint_zero.node
+  WHERE ST_Equals(geom, 'POINT(1000000000 0)'::geometry);
+SELECT 'gh1151.endpoint-zero.end-near', count(*) FROM gh1151_endpoint_zero.node
+  WHERE ST_Equals(geom, 'POINT(1000000000 0.000001)'::geometry);
+ROLLBACK;
+
+-- Original endpoints must also remain exact near existing edges with
+-- explicit zero tolerance.
+BEGIN;
+SELECT NULL FROM topology.createtopology('gh1151_endpoint_zero_edge', 0, 0, FALSE);
+SELECT 'gh1151.endpoint-zero-edge.seed', count(*) FROM
+TopoGeo_addLinestring('gh1151_endpoint_zero_edge',
+  'LINESTRING(999999999 0.000001, 1000000001 0.000001)', 0);
+SELECT 'gh1151.endpoint-zero-edge.addline', count(*) FROM
+TopoGeo_addLinestring('gh1151_endpoint_zero_edge',
+  'LINESTRING(0 0, 1000000000 0)', 0);
+SELECT 'gh1151.endpoint-zero-edge.end-exact', count(*) FROM gh1151_endpoint_zero_edge.node
+  WHERE ST_Equals(geom, 'POINT(1000000000 0)'::geometry);
+SELECT 'gh1151.endpoint-zero-edge.end-projected', count(*) FROM gh1151_endpoint_zero_edge.node
+  WHERE ST_Equals(geom, 'POINT(1000000000 0.000001)'::geometry);
+ROLLBACK;
+
 -- See https://trac.osgeo.org/postgis/ticket/5568
 BEGIN;
 SELECT NULL FROM topology.CreateTopology ('t5568');
