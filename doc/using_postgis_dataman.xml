@@ -1083,10 +1083,12 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
         </orderedlist>
 
       <para>
-        Consecutive repeated points in a polygon boundary ring are treated as
-        redundant vertices, and do not make the polygon invalid. Repeated points
-        that cause the boundary to self-intersect, self-touch, or collapse
-        still violate the validity rules.
+        Consecutive repeated points in a polygon boundary ring do not make the
+        ring non-simple. Under the SFS curve model, a curve is interpreted by a
+        continuous parameterization; consecutive equal coordinates are
+        topologically indistinguishable from a single vertex. PostGIS therefore
+        treats them as redundant vertices, so they do not make an otherwise valid
+        polygon invalid.
       </para>
 
 	  <informaltable frame="none">
