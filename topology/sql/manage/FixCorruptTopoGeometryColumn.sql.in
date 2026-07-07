@@ -21,6 +21,33 @@ $$
 DECLARE var_sql text; var_row_count bigint; result text; var_create_index_sql text; var_drop_index_sql text;
 BEGIN
     result = '';
+    EXECUTE format('LOCK TABLE %1$I.%2$I IN SHARE ROW EXCLUSIVE MODE', layerSchema, layerTable);
+
+    IF EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_inherits inherited
+        JOIN pg_catalog.pg_class tbl ON tbl.oid = inherited.inhparent
+        JOIN pg_catalog.pg_namespace nsp ON nsp.oid = tbl.relnamespace
+        WHERE nsp.nspname = layerSchema
+          AND tbl.relname = layerTable
+    ) THEN
+        RAISE EXCEPTION 'Cannot safely repair %.% while inheritance or partition child tables exist; repair each table separately',
+            layerSchema, layerTable;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_index i
+        JOIN pg_catalog.pg_class tbl ON tbl.oid = i.indrelid
+        JOIN pg_catalog.pg_namespace nsp ON nsp.oid = tbl.relnamespace
+        WHERE nsp.nspname = layerSchema
+          AND tbl.relname = layerTable
+          AND (i.indexprs IS NOT NULL OR i.indpred IS NOT NULL)
+    ) THEN
+        RAISE EXCEPTION 'Cannot safely repair %.% while expression or partial indexes exist; drop or rebuild those indexes manually',
+            layerSchema, layerTable;
+    END IF;
+
 	-- if topogeometry is bigint, then fix damaged integer, need to upgrade to bigint
 	IF EXISTS ( SELECT 1
 		FROM  pg_catalog.pg_type AS pg_type
@@ -31,12 +58,27 @@ WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
 			AND
 		pg_type.typnamespace::regnamespace::text = 'topology' AND  pga.atttypid::regtype::text = 'bigint' ) THEN
 
-    -- generate index scripts to create and drop indexes that are based on the column
-    IF EXISTS( SELECT 1 FROM pg_indexes WHERE schemaname = layerSchema AND tablename = layerTable AND indexdef LIKE '%(' || layerColumn || ')%' ) THEN
-        SELECT string_agg(indexdef, ';'),  string_agg('DROP INDEX ' || quote_ident(schemaname) || '.' || quote_ident(indexname), ';')  INTO var_create_index_sql, var_drop_index_sql
-            FROM pg_indexes
-             WHERE schemaname = layerSchema
-                AND tablename = layerTable AND indexdef LIKE ('%(' || layerColumn || ')%');
+    -- generate scripts for plain indexes that directly include the column
+    IF EXISTS (
+        SELECT 1
+        FROM pg_catalog.pg_index i
+        JOIN pg_catalog.pg_class tbl ON tbl.oid = i.indrelid
+        JOIN pg_catalog.pg_namespace nsp ON nsp.oid = tbl.relnamespace
+        JOIN pg_catalog.pg_attribute att ON att.attrelid = tbl.oid AND att.attnum = ANY(string_to_array(i.indkey::text, ' ')::int2[])
+        WHERE nsp.nspname = layerSchema
+          AND tbl.relname = layerTable
+          AND att.attname = layerColumn
+    ) THEN
+        SELECT string_agg(pg_catalog.pg_get_indexdef(i.indexrelid), ';'),
+               string_agg('DROP INDEX ' || i.indexrelid::regclass::text, ';')
+        INTO var_create_index_sql, var_drop_index_sql
+        FROM pg_catalog.pg_index i
+        JOIN pg_catalog.pg_class tbl ON tbl.oid = i.indrelid
+        JOIN pg_catalog.pg_namespace nsp ON nsp.oid = tbl.relnamespace
+        JOIN pg_catalog.pg_attribute att ON att.attrelid = tbl.oid AND att.attnum = ANY(string_to_array(i.indkey::text, ' ')::int2[])
+        WHERE nsp.nspname = layerSchema
+          AND tbl.relname = layerTable
+          AND att.attname = layerColumn;
     END IF;
 
     IF var_drop_index_sql > '' THEN
@@ -44,7 +86,7 @@ WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
     END IF;
 
     -- correct any corrupt topogeometries and fix
-	 var_sql =  format('UPDATE %1$I.%2$I
+	 var_sql =  format('UPDATE ONLY %1$I.%2$I
 	 	SET
 	   %3$I = (
 	     (%3$I).topology_id,
@@ -63,7 +105,7 @@ WHERE pg_type.typname = 'topogeometry' AND pga.attname = 'id'
     END IF;
 	result = result || E'\n' || format('%s rows updated for %s.%s.%s column to bigint id type', var_row_count, layerSchema, layerTable, layerColumn);
   ELSE --we are coming from bigint and going back to integer
-  	var_sql =  format('UPDATE %1$I.%2$I
+	var_sql =  format('UPDATE ONLY %1$I.%2$I
 	 	SET
 	   %3$I = (
 	     (%3$I).topology_id,

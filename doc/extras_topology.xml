@@ -563,6 +563,7 @@ Rename a topology from <varname>topo_stage</varname> to <varname>topo_prod</varn
 When upgrading from PostGIS topology &lt;3.6.0 to version &gt;3.6.0+, the topogeometry column definition was changed.
 This caused corruption in topogeometries created before the upgrade. This function fixes this corruption in affected tables.
                 </para>
+                <para>The function refuses to process tables with expression or partial indexes; drop or rebuild those indexes manually around the repair.</para>
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="3.6.1">Availability: 3.6.1</para>
