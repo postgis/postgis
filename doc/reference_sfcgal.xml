@@ -319,7 +319,7 @@
     <refnamediv>
         <refname>CG_Volume</refname>
 
-        <refpurpose>Computes the volume of a 3D geometry. Closed surfaces can have non-zero volume.</refpurpose>
+        <refpurpose>Computes the volume of a 3D solid. If applied to surface geometries, even closed surfaces, returns 0.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -340,11 +340,15 @@
         <para>&P_support;</para>
         <para>&T_support;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)</para>
+        <para>Closed surface geometries are still surfaces by default. Use
+        <xref linkend="CG_MakeSolid"/> to make the solid representation explicit
+        before computing volume.</para>
     </refsection>
 
     <refsection>
         <title>Example</title>
-        <para>A closed polyhedral surface has volume.  <xref linkend="CG_MakeSolid"/> makes the solid representation explicit.</para>
+        <para>A closed polyhedral surface can be converted to a solid with
+        <xref linkend="CG_MakeSolid"/> before computing volume.</para>
     <programlisting>SELECT CG_Volume(geom) As cube_surface_vol,
     CG_Volume(CG_MakeSolid(geom)) As solid_surface_vol
     FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
@@ -593,7 +597,7 @@
     <refnamediv>
         <refname>ST_Volume</refname>
 
-        <refpurpose>Computes the volume of a 3D geometry. Closed surfaces can have non-zero volume.</refpurpose>
+        <refpurpose>Computes the volume of a 3D solid. If applied to surface geometries, even closed surfaces, returns 0.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -620,11 +624,15 @@
         <para>&P_support;</para>
         <para>&T_support;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)</para>
+        <para>Closed surface geometries are still surfaces by default. Use
+        <xref linkend="ST_MakeSolid"/> to make the solid representation explicit
+        before computing volume.</para>
     </refsection>
 
     <refsection>
         <title>Example</title>
-        <para>A closed polyhedral surface has volume.  <xref linkend="ST_MakeSolid"/> makes the solid representation explicit.</para>
+        <para>A closed polyhedral surface can be converted to a solid with
+        <xref linkend="ST_MakeSolid"/> before computing volume.</para>
     <programlisting>SELECT ST_Volume(geom) As cube_surface_vol,
     ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
     FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
