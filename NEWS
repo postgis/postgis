@@ -26,6 +26,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           proximity helper (Darafei Praliaskouski)
  - GH-1140, [liblwgeom] Cap NURBS WKT knot multiplicity
           (Darafei Praliaskouski)
+ - GH-1141, [liblwgeom] Reject overflowing NURBS linearization
+          segment counts (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0dev

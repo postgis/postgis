@@ -899,6 +899,7 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
                         int flags)
 {
 	uint32_t num_segments;
+	const double max_segments = (double)UINT32_MAX - 1.0;
 
 	LWDEBUG(2, "lwnurbscurve_linearize called.");
 
@@ -926,13 +927,13 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 		}
 		num_segments = (uint32_t)(tol * 4);
 		break;
-	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION:
-	{
+	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION: {
 		GBOX box;
 		double width = 0.0;
 		double height = 0.0;
 		double depth = 0.0;
 		double diagonal = 0.0;
+		double segments_required;
 
 		if (!curve->points || curve->points->npoints == 0)
 			return lwnurbscurve_to_linestring(curve, NURBS_MIN_LINEARIZE_SEGMENTS);
@@ -946,16 +947,17 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 			diagonal = sqrt(width * width + height * height + depth * depth);
 		}
 
-		if (diagonal > tol * UINT32_MAX)
+		segments_required = diagonal / tol;
+		if (!isfinite(segments_required) || segments_required > max_segments)
 		{
 			lwerror("%s: max deviation is too small, got %.15g", __func__, tol);
 			return NULL;
 		}
-		num_segments = diagonal > 0.0 ? (uint32_t)ceil(diagonal / tol) : NURBS_MIN_LINEARIZE_SEGMENTS;
+		num_segments = diagonal > 0.0 ? (uint32_t)ceil(segments_required) : NURBS_MIN_LINEARIZE_SEGMENTS;
 		break;
 	}
 	case LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE:
-		if (tol < (2.0 * M_PI) / UINT32_MAX)
+		if (tol < (2.0 * M_PI) / max_segments)
 		{
 			lwerror("%s: max angle is too small, got %.15g", __func__, tol);
 			return NULL;
