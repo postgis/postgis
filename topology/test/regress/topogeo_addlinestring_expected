@@ -224,6 +224,17 @@ b5081|dangling_edges|1
 b5081|faces|1
 b5234.0|1
 b5234.1|1
+gh1151.endpoint-zero.near-node|1
+gh1151.endpoint-zero.near-end|2
+gh1151.endpoint-zero.addline|1
+gh1151.endpoint-zero.start-exact|1
+gh1151.endpoint-zero.start-near|1
+gh1151.endpoint-zero.end-exact|1
+gh1151.endpoint-zero.end-near|1
+gh1151.endpoint-zero-edge.seed|1
+gh1151.endpoint-zero-edge.addline|1
+gh1151.endpoint-zero-edge.end-exact|1
+gh1151.endpoint-zero-edge.end-projected|0
 t5568|invalidities at start|
 t5568|invalidities at end|
 #5993.0|existing-data|1

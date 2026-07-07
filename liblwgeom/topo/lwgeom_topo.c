@@ -6724,7 +6724,8 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
     /* TODO: use square distance */
     dist = lwgeom_mindistance2d(lwline_as_lwgeom(edges[i].geom), lwpoint_as_lwgeom(point));
     LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " distance: %.15g", e->edge_id, dist);
-    if ( dist >= tol ) continue;
+    if (dist && dist >= tol)
+	    continue;
     sorted[j].edge = e;
     sorted[j++].score = dist;
   }
@@ -6935,6 +6936,8 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
 }
 
 /*
+ * @param nodeTol node snapping tolerance, or -1 for automatic computation
+ * @param edgeTol edge splitting tolerance, or -1 for automatic computation
  * @param findFace if non-zero the code will determine which face
  *        contains the given point (unless it is known to be NOT
  *        isolated)
@@ -6944,8 +6947,13 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY* topo, LWT_ISO_EDGE *edges, uint64_t nu
  *                      split by this point.
  */
 static LWT_ELEMID
-_lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
-              findFace, int *moved, int *numSplitEdges)
+_lwt_AddPoint(LWT_TOPOLOGY *topo,
+	      LWPOINT *point,
+	      double nodeTol,
+	      double edgeTol,
+	      int findFace,
+	      int *moved,
+	      int *numSplitEdges)
 {
   uint64_t num, i;
   double mindist = FLT_MAX;
@@ -6956,9 +6964,11 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   int flds;
   LWT_ELEMID id = 0;
 
-  /* Get tolerance, if 0 was given */
-  if ( tol == -1 )
-    tol = _LWT_MINTOLERANCE(topo, pt);
+  /* Get tolerance, if -1 was given */
+  if (nodeTol == -1)
+	  nodeTol = _LWT_MINTOLERANCE(topo, pt);
+  if (edgeTol == -1)
+	  edgeTol = _LWT_MINTOLERANCE(topo, pt);
 
   LWDEBUGG(1, pt, "Adding point");
 
@@ -6968,7 +6978,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   TODO: use WithinBox2D
   */
   flds = LWT_COL_NODE_NODE_ID | LWT_COL_NODE_GEOM;
-  nodes = lwt_be_getNodeWithinDistance2D(topo, point, tol, &num, flds, 0);
+  nodes = lwt_be_getNodeWithinDistance2D(topo, point, nodeTol, &num, flds, 0);
   if (num == UINT64_MAX)
   {
     PGTOPO_BE_ERROR();
@@ -6979,28 +6989,32 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
 
   if ( num )
   {
-    LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " nodes", tol, num);
-    /* Order by distance if there are more than a single return */
-    if ( num > 1 )
-    {{
-		    sorted = lwalloc(sizeof(scored_node) * num);
-		    for (i = 0; i < num; ++i)
-		    {
-			    sorted[i].node = nodes + i;
-			    sorted[i].score = lwgeom_mindistance2d(lwpoint_as_lwgeom(nodes[i].geom), pt);
-			    LWDEBUGF(
-				1, "Node %" LWTFMT_ELEMID " distance: %.15g", sorted[i].node->node_id, sorted[i].score);
-		    }
-		    qsort(sorted, num, sizeof(scored_node), compare_scored_node);
-		    nodes2 = lwalloc(sizeof(LWT_ISO_NODE) * num);
-		    for (i = 0; i < num; ++i)
-		    {
-			    nodes2[i] = *sorted[i].node;
-		    }
-      lwfree(sorted);
-      lwfree(nodes);
-      nodes = nodes2;
-    }}
+	  LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " nodes", nodeTol, num);
+	  /* Order by distance if there are more than a single return */
+	  if (num > 1)
+	  {
+		  {
+			  sorted = lwalloc(sizeof(scored_node) * num);
+			  for (i = 0; i < num; ++i)
+			  {
+				  sorted[i].node = nodes + i;
+				  sorted[i].score = lwgeom_mindistance2d(lwpoint_as_lwgeom(nodes[i].geom), pt);
+				  LWDEBUGF(1,
+					   "Node %" LWTFMT_ELEMID " distance: %.15g",
+					   sorted[i].node->node_id,
+					   sorted[i].score);
+			  }
+			  qsort(sorted, num, sizeof(scored_node), compare_scored_node);
+			  nodes2 = lwalloc(sizeof(LWT_ISO_NODE) * num);
+			  for (i = 0; i < num; ++i)
+			  {
+				  nodes2[i] = *sorted[i].node;
+			  }
+			  lwfree(sorted);
+			  lwfree(nodes);
+			  nodes = nodes2;
+		  }
+	  }
 
     for ( i=0; i<num; ++i )
     {
@@ -7009,7 +7023,8 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
       double dist = lwgeom_mindistance2d(g, pt);
       /* TODO: move this check in the previous sort scan ... */
       /* must be closer than tolerated, unless distance is zero */
-      if ( dist && dist >= tol ) continue;
+      if (dist && dist >= nodeTol)
+	      continue;
       if ( ! id || dist < mindist )
       {
         id = n->node_id;
@@ -7033,18 +7048,19 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   TODO: use WithinBox2D
   */
   flds = LWT_COL_EDGE_ALL; /* EDGE_ID|LWT_COL_EDGE_GEOM;*/
-  edges = lwt_be_getEdgeWithinDistance2D(topo, point, tol, &num, flds, 0);
+  edges = lwt_be_getEdgeWithinDistance2D(topo, point, edgeTol, &num, flds, 0);
   if (num == UINT64_MAX)
   {
     PGTOPO_BE_ERROR();
     return -1;
   }
-  LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " edges", tol, num);
+  LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " edges", edgeTol, num);
   if ( num )
   {
-    id = _lwt_SplitAllEdgesToNewNode(topo, edges, num, lwgeom_as_lwpoint(pt), tol, moved);
-    _lwt_release_edges(edges, num);
-    if ( numSplitEdges ) *numSplitEdges = num;
+	  id = _lwt_SplitAllEdgesToNewNode(topo, edges, num, lwgeom_as_lwpoint(pt), edgeTol, moved);
+	  _lwt_release_edges(edges, num);
+	  if (numSplitEdges)
+		  *numSplitEdges = num;
   }
 
   if ( id == 0 )
@@ -7068,7 +7084,23 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
 LWT_ELEMID
 lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 {
-  return _lwt_AddPoint(topo, point, tol, 1, NULL, NULL);
+	return _lwt_AddPoint(topo, point, tol, tol, 1, NULL, NULL);
+}
+
+static double
+_lwt_AddLineEndpointRepairTol(LWPOINT *point, int exactNodeSnap)
+{
+	double tol = _lwt_minTolerance(lwpoint_as_lwgeom(point));
+
+	/*
+	 * Explicit-zero caller endpoints must not use coordinate-scale repair
+	 * tolerance. Keep only the library-wide floating point tolerance so old
+	 * robust cases with machine-scale drift can still split intended edges.
+	 */
+	if (exactNodeSnap && tol > FP_TOLERANCE)
+		return FP_TOLERANCE;
+
+	return tol;
 }
 
 /*
@@ -7090,11 +7122,21 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
  *                    the number of new edges resulting from this
  *                    incoming new edge, taking into account edges
  *                    created due to splitting of existing edges.
+ * @param startExactNodeSnap if non-zero, insert the start endpoint with
+ *                           exact node tolerance.
+ * @param endExactNodeSnap if non-zero, insert the end endpoint with
+ *                         exact node tolerance.
  *
  */
 static LWT_ELEMID
-_lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
-                  int handleFaceSplit, int *forward, int *numNewEdges )
+_lwt_AddLineEdge(LWT_TOPOLOGY *topo,
+		 LWLINE *edge,
+		 double tol,
+		 int startExactNodeSnap,
+		 int endExactNodeSnap,
+		 int handleFaceSplit,
+		 int *forward,
+		 int *numNewEdges)
 {
   LWCOLLECTION *col;
   LWPOINT *start_point, *end_point;
@@ -7106,7 +7148,8 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   uint64_t nn, i;
   int moved=0, mm;
   int pointSplitEdges = -666;
-  double endpoint_tol;
+  double endpoint_node_tol;
+  double endpoint_edge_tol;
 
   if ( numNewEdges ) *numNewEdges = 0;
 
@@ -7119,8 +7162,19 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     lwnotice("Empty component of noded line");
     return 0; /* must be empty */
   }
-  endpoint_tol = tol == 0.0 ? 0.0 : _lwt_minTolerance(lwpoint_as_lwgeom(start_point));
-  nid[0] = _lwt_AddPoint(topo, start_point, endpoint_tol, handleFaceSplit, &mm, &pointSplitEdges);
+  /*
+   * Endpoint insertion repairs already-noded components. Original input
+   * endpoints keep exact node tolerance when the caller requested zero
+   * line-body tolerance. They still get a bounded edge-repair tolerance so
+   * machine-scale drift can split an intended existing edge without projecting
+   * the endpoint to a coordinate-scale nearby edge. Noding-derived endpoints
+   * use local tolerance for both so GEOS intersection coordinates can rejoin
+   * existing topology nodes.
+   */
+  endpoint_edge_tol = _lwt_AddLineEndpointRepairTol(start_point, startExactNodeSnap);
+  endpoint_node_tol = startExactNodeSnap ? 0.0 : endpoint_edge_tol;
+  nid[0] =
+      _lwt_AddPoint(topo, start_point, endpoint_node_tol, endpoint_edge_tol, handleFaceSplit, &mm, &pointSplitEdges);
   lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[0] == -1 ) return -1; /* lwerror should have been called */
   if ( numNewEdges ) *numNewEdges += pointSplitEdges;
@@ -7135,8 +7189,9 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
             "after successfully getting first point !?");
     return -1;
   }
-  endpoint_tol = tol == 0.0 ? 0.0 : _lwt_minTolerance(lwpoint_as_lwgeom(end_point));
-  nid[1] = _lwt_AddPoint(topo, end_point, endpoint_tol, handleFaceSplit, &mm, &pointSplitEdges);
+  endpoint_edge_tol = _lwt_AddLineEndpointRepairTol(end_point, endExactNodeSnap);
+  endpoint_node_tol = endExactNodeSnap ? 0.0 : endpoint_edge_tol;
+  nid[1] = _lwt_AddPoint(topo, end_point, endpoint_node_tol, endpoint_edge_tol, handleFaceSplit, &mm, &pointSplitEdges);
   lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
   if ( nid[1] == -1 ) return -1; /* lwerror should have been called */
   if ( numNewEdges ) *numNewEdges += pointSplitEdges;
@@ -7342,7 +7397,10 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   GBOX qbox;
   int forward;
   int input_was_closed = 0;
+  int input_tol_was_zero = (tol == 0.0);
   POINT4D originalStartPoint;
+  const POINT2D *original_start = NULL;
+  const POINT2D *original_end = NULL;
 
   if ( lwline_is_empty(line) )
   {
@@ -7356,6 +7414,8 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     getPoint4d_p( line->points, 0, &originalStartPoint);
     LWDEBUGF(1, "Input line is closed, original point is %g,%g", originalStartPoint.x, originalStartPoint.y);
   }
+  original_start = getPoint2d_cp(line->points, 0);
+  original_end = getPoint2d_cp(line->points, line->points->npoints - 1);
 
   *nedges = -1; /* error condition, by default */
 
@@ -7670,6 +7730,9 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     int edgeNewEdges;
     LWT_ELEMID id;
     LWGEOM *g = geoms[i];
+    const LWLINE *edge_line = lwgeom_as_lwline(g);
+    int startExactNodeSnap = 0;
+    int endExactNodeSnap = 0;
     g->srid = noded->srid;
 
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -7681,8 +7744,17 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     }
 #endif
 
+    if (input_tol_was_zero && edge_line && edge_line->points->npoints > 0)
+    {
+	    const POINT2D *start = getPoint2d_cp(edge_line->points, 0);
+	    const POINT2D *end = getPoint2d_cp(edge_line->points, edge_line->points->npoints - 1);
+	    startExactNodeSnap = p2d_same(start, original_start) || p2d_same(start, original_end);
+	    endExactNodeSnap = p2d_same(end, original_start) || p2d_same(end, original_end);
+    }
+
     forward = -1; /* will be set to either 0 or 1 if the edge already existed */
-    id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit, &forward, &edgeNewEdges );
+    id = _lwt_AddLineEdge(
+	topo, lwgeom_as_lwline(g), tol, startExactNodeSnap, endExactNodeSnap, handleFaceSplit, &forward, &edgeNewEdges);
     if (id < 0)
     {
       lwgeom_free(noded);
@@ -7743,7 +7815,7 @@ lwt_AddLineNoFace(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 static void
 lwt_LoadPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 {
-  _lwt_AddPoint(topo, point, tol, 1, NULL, NULL);
+	_lwt_AddPoint(topo, point, tol, tol, 1, NULL, NULL);
 }
 
 static void
