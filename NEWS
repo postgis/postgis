@@ -28,6 +28,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - GH-1141, [liblwgeom] Reject overflowing NURBS linearization
           segment counts (Darafei Praliaskouski)
+ - GH-1151, [topology] Preserve exact zero tolerance in
+          TopoGeometry construction (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0dev

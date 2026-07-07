@@ -156,8 +156,8 @@ BEGIN
   alayer := layer_id(tg);
   atopology := topology_info.name;
 
-  -- Get tolerance, if 0 was given
-  tolerance := COALESCE( NULLIF(atolerance, 0), topology._st_mintolerance(topology_info.name, ageom) );
+  -- Preserve exact and automatic tolerance semantics for each dumped component.
+  tolerance := atolerance;
 
   -- Get layer information
   BEGIN
