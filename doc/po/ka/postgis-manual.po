@@ -35652,12 +35652,12 @@ msgstr "გამოცემის შენიშვნები"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.7.0alpha1"
+msgid "PostGIS 3.7.0"
 msgstr ""
 
 #. Tag: subtitle
 #, no-c-format
-msgid "2026/07/05"
+msgid "2026/xx/xx"
 msgstr ""
 
 #. Tag: para
@@ -36160,48 +36160,12 @@ msgid ""
 "PDF builds while keeping HTML images transparent (Darafei Praliaskouski)"
 msgstr ""
 
-#. Tag: title
-#, no-c-format
-msgid "Bug Fixes"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4616\">#4616</"
-"link>, Detect pgsql2shp query keywords case-insensitively (Darafei "
-"Praliaskouski)"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2838\">#2838</"
 "link>, Emit valid X3D Coordinate nodes for 2D polygon output (Darafei "
 "Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Fix WKB and TWKB parser resource exhaustion on malformed input (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6083\">#6083</"
-"link>, Pass configured dependency include paths to fuzzer smoke builds "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3103\">#3103</"
-"link>, Add regression coverage for exact-schema find_srid and "
-"geometry_columns lookups (Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -36215,191 +36179,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6038\">#6038</"
-"link>, Avoid stale relation lookups in geometry_columns after topology "
-"objects are dropped (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5655\">#5655</"
-"link>, [doc] Skip XML validation during `make check` when xsltproc is "
-"unavailable (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5487\">#5487</"
-"link>, Improve error detail for repeated upgrades after an incomplete "
-"deprecated-function cleanup (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/899\">GH-899</"
 "link>, [raster] Honor PostgreSQL interrupts in long-running GDAL progress "
 "callbacks (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5975\">#5975</"
-"link>, Initialize skipped union-find cluster ids deterministically (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5904\">#5904</"
-"link>, [topology] Avoid MinGW format warnings when logging topology ids "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/885\">GH-885</"
-"link>, [topology] Avoid GMP overflow in ring orientation for very large "
-"finite coordinates (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6073\">#6073</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
-"6074\">#6074</link>, Stabilize geography LRS endpoint interpolation and pole "
-"centroid regressions on 32-bit systems (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6082\">#6082</"
-"link>, Fix Japanese PDF build by avoiding non-ASCII arrows in SQL program "
-"listings (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/888\">GH-888</"
-"link>, [sfcgal] Avoid stale detoasted geometry access in CG_Visibility empty-"
-"input handling for SFCGAL &lt; 2.2 (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3179\">#3179</"
-"link>, Mark truncated libpgcommon PostgreSQL messages instead of silently "
-"dropping the tail (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6003\">#6003</"
-"link>, Avoid size_t formats in liblwgeom logging/error wrappers for MinGW "
-"builds (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/886\">GH-886</"
-"link>, ST_ClusterRelateWin validates NULL relate matrices before detoasting "
-"them (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/889\">GH-889</"
-"link>, ST_Relate pattern inversion avoids out-of-bounds access on short "
-"DE-9IM patterns (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/890\">GH-890</"
-"link>, Avoid GIDX BRIN summary merges across mismatched dimensions (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5948\">#5948</"
-"link>, [topology] Prevent MakeTopologyPrecise from erasing edges when grid "
-"size exceeds their extent (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5959\">#5959</"
-"link>, Prevent histogram target overflow when analysing massive tables "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6080\">#6080</"
-"link>, Avoid out-of-bounds hex WKB lookup for high-bit input bytes (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/895\">GH-895</"
-"link>, Qualify pg_class lookup during SRID/PROJ validation (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4828\">#4828</"
-"link>, geometry_columns handles NOT VALID SRID checks without errors "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6048\">#6048</"
-"link>, [raster] ST_Clip no longer crashes when clipping sparse band "
-"selections (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/894\">GH-894</"
-"link>, [raster] Fix Float16 import, mixed nodata warping, band replacement "
-"cleanup, GDAL credential redaction, and Python GDAL compatibility (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Flatgeobuf schema mismatch vulnerability (NeuroWinter)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5899\">#5899</"
-"link>, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)"
 msgstr ""
 
 #. Tag: para

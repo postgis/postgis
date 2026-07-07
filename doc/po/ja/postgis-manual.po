@@ -1585,8 +1585,8 @@ msgid ""
 "so the dimension check fails."
 msgstr ""
 "この例では3要素配列を <type>topology.topoelement</type>へのキャストで発生する"
-"ことを示しています。ここでは2要素配列が求められるので次元チェックに失敗します"
-"。"
+"ことを示しています。ここでは2要素配列が求められるので次元チェックに失敗しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -4023,8 +4023,8 @@ msgid ""
 "that bound face 1. Use <xref linkend=\"ST_GetFaceGeometry\"/> if only the "
 "geometry and sequence are needed."
 msgstr ""
-"このクエリーは、1番フェイスの境界となる順序番号、エッジ識別子、エッジの"
-"ジオメトリーを返します。ジオメトリーと順序番号だけが必要な場合には<xref "
+"このクエリーは、1番フェイスの境界となる順序番号、エッジ識別子、エッジのジオメ"
+"トリーを返します。ジオメトリーと順序番号だけが必要な場合には<xref "
 "linkend=\"ST_GetFaceGeometry\"/>を使います。"
 
 #. Tag: para
@@ -4060,7 +4060,8 @@ msgstr ""
 msgid ""
 "This query returns the WKT of the polygon added with <xref "
 "linkend=\"AddFace\"/>."
-msgstr "このクエリーは <xref linkend=\"AddFace\"/>で追加したポリゴンのWKTを返します。"
+msgstr ""
+"このクエリーは <xref linkend=\"AddFace\"/>で追加したポリゴンのWKTを返します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -4338,8 +4339,8 @@ msgid ""
 "This query errors because the edge intersects an existing edge away from the "
 "endpoints."
 msgstr ""
-"このクエリーはエッジが既存のエッジと終端以外の場所でインタセクトするため"
-"エラーになります。"
+"このクエリーはエッジが既存のエッジと終端以外の場所でインタセクトするためエ"
+"ラーになります。"
 
 #. Tag: para
 #, no-c-format
@@ -4632,8 +4633,8 @@ msgid ""
 "The world is rarely perfect, so this version allows some error. It counts a "
 "face if 50 percent of it falls within the expected block group boundary."
 msgstr ""
-"世界が完璧であることはほぼありません。そこで誤差が許されるものを示します。"
-"50%が期待したブロックグループ境界に落ちる場合には数えるようにしています。"
+"世界が完璧であることはほぼありません。そこで誤差が許されるものを示します。50%"
+"が期待したブロックグループ境界に落ちる場合には数えるようにしています。"
 
 #. Tag: para
 #, no-c-format
@@ -4963,8 +4964,8 @@ msgid ""
 "Set an overall TopoGeometry value to be composed of all elements from "
 "specific TopoGeometry values."
 msgstr ""
-"指定したトポジオメトリー値の全ての要素から構成されるよう全体の"
-"トポジオメトリー値を設定する。"
+"指定したトポジオメトリー値の全ての要素から構成されるよう全体のトポジオメト"
+"リー値を設定する。"
 
 #. Tag: para
 #, no-c-format
@@ -5853,8 +5854,8 @@ msgid ""
 "download from <link xlink:href=\"https://gmplib.org/\">https://gmplib.org/</"
 "link>."
 msgstr ""
-"GNU多倍長精度演算ライブラリー (Multiple Precision Arithmetic Library, libgmp)"
-"。PostGISトポロジーの数学演算の精度制御に使います。GMPは<link "
+"GNU多倍長精度演算ライブラリー (Multiple Precision Arithmetic Library, "
+"libgmp)。PostGISトポロジーの数学演算の精度制御に使います。GMPは<link "
 "xlink:href=\"https://gmplib.org/\">https://gmplib.org/</link>からダウンロード"
 "できます。"
 
@@ -9158,7 +9159,8 @@ msgstr "&M_support;"
 #, no-c-format
 msgid ""
 "This example returns the minimum X coordinate of a buffer around a point."
-msgstr "この例では、ポイントをバッファーで広げたときのminimum X座標が返されます。"
+msgstr ""
+"この例では、ポイントをバッファーで広げたときのminimum X座標が返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -9532,10 +9534,9 @@ msgid ""
 "linkend=\"ST_Dump\"/> to extract polygon elements from polygonal geometries: "
 "<code>ST_DumpRings((ST_Dump(geom)).geom )</code>"
 msgstr ""
-"これはPOLYGONジオメトリーでだけ動作します。MULTIPOLYGONでは動作しません。"
-"ポリゴン系ジオメトリーからポリゴン要素を抽出するには<xref "
-"linkend=\"ST_Dump\"/>を使います: <code>ST_DumpRings((ST_Dump(geom)).geom )</"
-"code>"
+"これはPOLYGONジオメトリーでだけ動作します。MULTIPOLYGONでは動作しません。ポリ"
+"ゴン系ジオメトリーからポリゴン要素を抽出するには<xref linkend=\"ST_Dump\"/>を"
+"使います: <code>ST_DumpRings((ST_Dump(geom)).geom )</code>"
 
 #. Tag: para
 #, no-c-format
@@ -9567,7 +9568,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the last point of a LineString, CircularLineString, or NURBSCurve."
-msgstr "LINESTRING, CIRCULARLINESTRING, NURMSCURVE の最後のポイントを返します。"
+msgstr ""
+"LINESTRING, CIRCULARLINESTRING, NURMSCURVE の最後のポイントを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9581,8 +9583,8 @@ msgstr ""
 "<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
 "<varname>NURBSCURVE</varname> の最後のポイントを<varname>POINT</varname>で返"
 "します。入力が<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</"
-"varname>, <varname>NURBSCURVE</varname>のいずれでもない場合には <varname>"
-"NULL</varname>を返します。"
+"varname>, <varname>NURBSCURVE</varname>のいずれでもない場合には "
+"<varname>NULL</varname>を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10665,8 +10667,8 @@ msgid ""
 msgstr ""
 "<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
 "<varname>NURBSCURVE</varname>ジオメトリーの最初のポイントを<varname>POINT</"
-"varname>で返します。他のジオメトリーを与えた場合には、座標の並び順で最初の"
-"ポイントを返します。"
+"varname>で返します。他のジオメトリーを与えた場合には、座標の並び順で最初のポ"
+"イントを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10734,7 +10736,8 @@ msgstr ", <xref linkend=\"ST_PointN\"/>"
 msgid ""
 "Returns the M coordinate of the first point of a LineString, "
 "CircularLineString, or NURBSCurve."
-msgstr "LINESTRING, CIRCULARLINESTRING, NURBSCURVE の最初のポイントのM値を返します。"
+msgstr ""
+"LINESTRING, CIRCULARLINESTRING, NURBSCURVE の最初のポイントのM値を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10747,9 +10750,9 @@ msgid ""
 msgstr ""
 "<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
 "<varname>NURBSCURVE</varname>ジオメトリーの最初のポイントのM値を返します。入"
-"力ジオメトリーがM値を持っていないか、<varname>LINESTRING</varname>, <varname>"
-"CIRCULARLINESTRING</varname>, <varname>NURBSCURVE</varname>のいずれえでもない"
-"場合には、 <varname>NULL</varname>が返ります。"
+"力ジオメトリーがM値を持っていないか、<varname>LINESTRING</varname>, "
+"<varname>CIRCULARLINESTRING</varname>, <varname>NURBSCURVE</varname>のいずれ"
+"えでもない場合には、 <varname>NULL</varname>が返ります。"
 
 #. Tag: para
 #, no-c-format
@@ -10781,7 +10784,8 @@ msgstr ", <xref linkend=\"ST_SetStartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
 msgid ""
 "Returns the M coordinate of the last point of a LineString, "
 "CircularLineString, or NURBSCurve."
-msgstr "LINESTRING, CIRCULARSTRING, NURBSCURVEの最後のポイントのM値を返します。"
+msgstr ""
+"LINESTRING, CIRCULARSTRING, NURBSCURVEの最後のポイントのM値を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10795,8 +10799,8 @@ msgstr ""
 "<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
 "<varname>NURBSCURVE</varname>ジオメトリーの最後のポイントのM値を返します。M値"
 "を持たないか、<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</"
-"varname>, <varname>NURBSCURVE</varname>のいずれでもない場合には<varname>"
-"NULL</varname>を返します。"
+"varname>, <varname>NURBSCURVE</varname>のいずれでもない場合には"
+"<varname>NULL</varname>を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -10823,7 +10827,8 @@ msgstr ", <xref linkend=\"ST_SetEndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
 msgid ""
 "Sets the M coordinate of the first point of a LineString, "
 "CircularLineString, or NURBSCurve."
-msgstr "LINESTRING, CIRCULARSTRING, NURBSCURVEの最初のポイントのM値を設定します。"
+msgstr ""
+"LINESTRING, CIRCULARSTRING, NURBSCURVEの最初のポイントのM値を設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -10838,8 +10843,8 @@ msgid ""
 msgstr ""
 "<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
 "<varname>NURBSCURVE</varname>の入力ジオメトリーに対して、最初のポイントに指定"
-"したM値を設定した複製を返します。入力ジオメトリーがM値を持っていない場合には"
-"、M軸を追加します。 入力ジオメトリーが<varname>LINESTRING</varname>, "
+"したM値を設定した複製を返します。入力ジオメトリーがM値を持っていない場合に"
+"は、M軸を追加します。 入力ジオメトリーが<varname>LINESTRING</varname>, "
 "<varname>CIRCULARLINESTRING</varname>, <varname>NURBSCURVE</varname>でない場"
 "合には、<varname>NULL</varname>を返します。"
 
@@ -10888,8 +10893,8 @@ msgid ""
 msgstr ""
 "<varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname>, "
 "<varname>NURBSCURVE</varname>の入力ジオメトリーに対して、最後のポイントに指定"
-"したM値を設定した複製を返します。入力ジオメトリーがM値を持っていない場合には"
-"、M軸を追加します。 入力ジオメトリーが<varname>LINESTRING</varname>, "
+"したM値を設定した複製を返します。入力ジオメトリーがM値を持っていない場合に"
+"は、M軸を追加します。 入力ジオメトリーが<varname>LINESTRING</varname>, "
 "<varname>CIRCULARLINESTRING</varname>, <varname>NURBSCURVE</varname>でない場"
 "合には、<varname>NULL</varname>を返します。"
 
@@ -11350,14 +11355,15 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This example returns knots from a NURBS curve with a custom knot vector."
-msgstr "この例では独自のノットベクトルを持つNURBS曲線からノットベクトルを返します。"
+msgstr ""
+"この例では独自のノットベクトルを持つNURBS曲線からノットベクトルを返します。"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "This example checks the knots of a curve using the default knot vector."
 msgstr ""
-"この例ではデフォルトのノットベクトルを使って曲線のノットベクトルを確認します"
-"。"
+"この例ではデフォルトのノットベクトルを使って曲線のノットベクトルを確認しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -11456,8 +11462,9 @@ msgid ""
 "function can be used to test geometry types before applying NURBS-specific "
 "functions."
 msgstr ""
-"ジオメトリーがNURBS曲線である場合にはTRUEを返し、それ以外ではFALSEを返します"
-"。ｋの関数はNURBS専用関数を適用する前にジオメトリタイプを調べるのに使えます。"
+"ジオメトリーがNURBS曲線である場合にはTRUEを返し、それ以外ではFALSEを返しま"
+"す。ｋの関数はNURBS専用関数を適用する前にジオメトリタイプを調べるのに使えま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -11498,9 +11505,9 @@ msgid ""
 "ranges from 0.0 (start of curve) to 1.0 (end of curve), though the actual "
 "range depends on the knot vector."
 msgstr ""
-"NURBS曲線を指定したパラメーター値で評価し、曲線上の位置を表現するPOINT"
-"ジオメトリーを返します。パラメーターは通常は 0.0 (曲線の始端)から1.0 (曲線の"
-"終端)の範囲になりますが、実際の範囲はノットベクトルに依存します。"
+"NURBS曲線を指定したパラメーター値で評価し、曲線上の位置を表現するPOINTジオメ"
+"トリーを返します。パラメーターは通常は 0.0 (曲線の始端)から1.0 (曲線の終端)の"
+"範囲になりますが、実際の範囲はノットベクトルに依存します。"
 
 #. Tag: para
 #, no-c-format
@@ -11539,8 +11546,8 @@ msgid ""
 "parameter values and the resulting points are connected with straight line "
 "segments."
 msgstr ""
-"NURBS曲線を区分線形近似によってLINESTRINGに変換します。曲線は一様分布した"
-"パラメーター値でポイントを抽出して、結果ポイントを線分で結びます。"
+"NURBS曲線を区分線形近似によってLINESTRINGに変換します。曲線は一様分布したパラ"
+"メーター値でポイントを抽出して、結果ポイントを線分で結びます。"
 
 #. Tag: para
 #, no-c-format
@@ -11812,7 +11819,8 @@ msgstr "この例では3次元ボックスを10m拡張します。"
 msgid ""
 "This example renders the text representation of a 10-meter expanded box "
 "around a point geometry."
-msgstr "この例ではポイントジオメトリーを10m拡張したボックスの文字表現を示します。"
+msgstr ""
+"この例ではポイントジオメトリーを10m拡張したボックスの文字表現を示します。"
 
 #. Tag: para
 #, no-c-format
@@ -43634,12 +43642,12 @@ msgstr "リリースノート"
 
 #. Tag: title
 #, no-c-format
-msgid "PostGIS 3.7.0alpha1"
+msgid "PostGIS 3.7.0"
 msgstr ""
 
 #. Tag: subtitle
 #, no-c-format
-msgid "2026/07/05"
+msgid "2026/xx/xx"
 msgstr ""
 
 #. Tag: para
@@ -44142,48 +44150,12 @@ msgid ""
 "PDF builds while keeping HTML images transparent (Darafei Praliaskouski)"
 msgstr ""
 
-#. Tag: title
-#, no-c-format
-msgid "Bug Fixes"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4616\">#4616</"
-"link>, Detect pgsql2shp query keywords case-insensitively (Darafei "
-"Praliaskouski)"
-msgstr ""
-
 #. Tag: para
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2838\">#2838</"
 "link>, Emit valid X3D Coordinate nodes for 2D polygon output (Darafei "
 "Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Fix WKB and TWKB parser resource exhaustion on malformed input (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6083\">#6083</"
-"link>, Pass configured dependency include paths to fuzzer smoke builds "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3103\">#3103</"
-"link>, Add regression coverage for exact-schema find_srid and "
-"geometry_columns lookups (Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -44197,191 +44169,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6038\">#6038</"
-"link>, Avoid stale relation lookups in geometry_columns after topology "
-"objects are dropped (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5655\">#5655</"
-"link>, [doc] Skip XML validation during `make check` when xsltproc is "
-"unavailable (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5487\">#5487</"
-"link>, Improve error detail for repeated upgrades after an incomplete "
-"deprecated-function cleanup (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/899\">GH-899</"
 "link>, [raster] Honor PostgreSQL interrupts in long-running GDAL progress "
 "callbacks (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5975\">#5975</"
-"link>, Initialize skipped union-find cluster ids deterministically (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5904\">#5904</"
-"link>, [topology] Avoid MinGW format warnings when logging topology ids "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/885\">GH-885</"
-"link>, [topology] Avoid GMP overflow in ring orientation for very large "
-"finite coordinates (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6073\">#6073</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
-"6074\">#6074</link>, Stabilize geography LRS endpoint interpolation and pole "
-"centroid regressions on 32-bit systems (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6082\">#6082</"
-"link>, Fix Japanese PDF build by avoiding non-ASCII arrows in SQL program "
-"listings (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/888\">GH-888</"
-"link>, [sfcgal] Avoid stale detoasted geometry access in CG_Visibility empty-"
-"input handling for SFCGAL &lt; 2.2 (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3179\">#3179</"
-"link>, Mark truncated libpgcommon PostgreSQL messages instead of silently "
-"dropping the tail (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6003\">#6003</"
-"link>, Avoid size_t formats in liblwgeom logging/error wrappers for MinGW "
-"builds (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/886\">GH-886</"
-"link>, ST_ClusterRelateWin validates NULL relate matrices before detoasting "
-"them (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/889\">GH-889</"
-"link>, ST_Relate pattern inversion avoids out-of-bounds access on short "
-"DE-9IM patterns (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/890\">GH-890</"
-"link>, Avoid GIDX BRIN summary merges across mismatched dimensions (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5948\">#5948</"
-"link>, [topology] Prevent MakeTopologyPrecise from erasing edges when grid "
-"size exceeds their extent (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5959\">#5959</"
-"link>, Prevent histogram target overflow when analysing massive tables "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6080\">#6080</"
-"link>, Avoid out-of-bounds hex WKB lookup for high-bit input bytes (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/895\">GH-895</"
-"link>, Qualify pg_class lookup during SRID/PROJ validation (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4828\">#4828</"
-"link>, geometry_columns handles NOT VALID SRID checks without errors "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6048\">#6048</"
-"link>, [raster] ST_Clip no longer crashes when clipping sparse band "
-"selections (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://github.com/postgis/postgis/pull/894\">GH-894</"
-"link>, [raster] Fix Float16 import, mixed nodata warping, band replacement "
-"cleanup, GDAL credential redaction, and Python GDAL compatibility (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Flatgeobuf schema mismatch vulnerability (NeuroWinter)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5899\">#5899</"
-"link>, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)"
 msgstr ""
 
 #. Tag: para
