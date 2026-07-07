@@ -11,6 +11,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           preprocessed with AltiVec vector macros (Darafei Praliaskouski)
  - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
           with standard_conforming_strings off (Darafei Praliaskouski)
+ - #5423, Use a DTD-free expanded DocBook input for EPUB builds so
+          out-of-tree builds do not need dbtoepub entity path support
+          (Darafei Praliaskouski)
  - GH-898, Fix ST_DFullyWithin indexed plans and large-coordinate
           ring-orientation precision regressions (Darafei Praliaskouski)
  - GH-1143, [topology] Clean up TopoRingIsCCW early returns
@@ -45,11 +48,12 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
-
-* Enhancements *
-
  - #3676, Mark geometry and geography btree comparison support functions
           as leakproof (Darafei Praliaskouski)
+ - GH-875, Allow ST_OrderingEquals joins to use hash and merge join plans
+          (Darafei Praliaskouski)
+ - #2557, #2805, Document ST_MapAlgebra callback argument
+          signatures and return semantics (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0dev
@@ -97,8 +101,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #5992, Optimize GiST index for repeated edge subdivision in topology (Darafei Praliaskouski)
  - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
  - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
- - #2557, #2805, Document ST_MapAlgebra callback argument
-          signatures and return semantics (Darafei Praliaskouski)
  - #5950, Document POSTGIS_REGRESS_DB_OWNER for sandboxed regression roles (Darafei Praliaskouski)
  - #4332, Clarify the scope of several Function Reference categories (Darafei Praliaskouski)
  - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
@@ -133,9 +135,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks
           and pass callback call data as actual arguments (Darafei Praliaskouski)
  - #2898, Document SQL function cost tiers for contributors
-          (Darafei Praliaskouski)
- - GH-875, Allow ST_OrderingEquals joins to use hash and merge join plans
-          (Darafei Praliaskouski)
  - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
  - #6065, Improved winding order computation robustness for rings having collapsed elements
           (Sandro Santilli)
