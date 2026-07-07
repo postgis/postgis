@@ -449,6 +449,7 @@ surface_dimension(void)
 	check_solid_st_dimension(
 	    "TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))",
 	    3);
+	check_solid_st_dimension("TIN(((0 0,0 1,1 0,0 0)))", 2);
 }
 
 
