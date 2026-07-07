@@ -7,6 +7,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Bug Fixes *
 
+ - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
+          with standard_conforming_strings off (Darafei Praliaskouski)
  - GH-898, Fix ST_DFullyWithin indexed plans and large-coordinate
           ring-orientation precision regressions (Darafei Praliaskouski)
  - GH-1143, [topology] Clean up TopoRingIsCCW early returns
