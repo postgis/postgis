@@ -392,6 +392,7 @@ equals213|t
 #4749.covers|t|t|f
 #4749.coveredby|t|t|f
 #4749.intersects|t|t|t
+#4749.disjoint|f|f|f|t
 #4299|t
 #4304|t|t|t
 ERROR:  BOX3D_construct: args can not be empty points
