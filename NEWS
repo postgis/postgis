@@ -30,6 +30,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           segment counts (Darafei Praliaskouski)
  - GH-1151, [topology] Preserve exact zero tolerance in
           TopoGeometry construction (Darafei Praliaskouski)
+ - GH-1152, [topology] Enforce max edge limits from reported
+          TopoGeo_AddLinestring edge creation (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0dev
