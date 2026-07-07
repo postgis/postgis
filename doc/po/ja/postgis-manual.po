@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-06 10:15+0000\n"
+"PO-Revision-Date: 2026-07-07 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -11138,7 +11138,7 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry has a Z dimension."
-msgstr "ジオメトリがZ値を持っているかどうかを確認します。"
+msgstr "ジオメトリがZ値を持っているかどうかを調べます。"
 
 #. Tag: para
 #, no-c-format
@@ -11147,8 +11147,8 @@ msgid ""
 "If the geometry has a Z dimension, it returns true; otherwise, it returns "
 "false."
 msgstr ""
-"入力ジオメトリがZ値を持っているかどうかを確認して、真偽値を返します。ジオメト"
-"リがZ値を持っている場合にはTRUEを返し、そうでない場合にはFALSEを返します。"
+"入力ジオメトリがZ値を持っているかどうかを調べて真偽値を返します。ジオメトリが"
+"Z値を持っている場合にはTRUEを返し、そうでない場合にはFALSEを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11171,7 +11171,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry has an M (measure) dimension."
-msgstr "ジオメトリがM値をもっているかどうかを確認します。"
+msgstr "ジオメトリがM値をもっているかどうかを調べます。"
 
 #. Tag: para
 #, no-c-format
@@ -11180,8 +11180,8 @@ msgid ""
 "boolean value. If the geometry has an M dimension, it returns true; "
 "otherwise, it returns false."
 msgstr ""
-"入力ジオメトリがM値を持っているかどうかを確認して、真偽値を返します。ジオメト"
-"リがM値を持っている場合にはTRUEを返し、そうでない場合にはFALSEを返します。"
+"入力ジオメトリがM値を持っているかどうかを調べて真偽値を返します。ジオメトリが"
+"M値を持っている場合にはTRUEを返し、そうでない場合にはFALSEを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11203,7 +11203,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the control points of a NURBS curve as a MULTIPOINT geometry."
-msgstr ""
+msgstr "NURBS曲線から制御点をMULTIPOINTで返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11212,6 +11212,8 @@ msgid ""
 "MULTIPOINT geometry. Control points define the control polygon that "
 "influences the shape of the NURBS curve."
 msgstr ""
+"NURBS曲線から制御点を抽出してMULTIPOINTで返します。制御点はNURMS曲線の形状に"
+"影響を与える制御ポリゴンを定義します。"
 
 #. Tag: para
 #, no-c-format
@@ -11219,6 +11221,8 @@ msgid ""
 "The function raises an error if the input is not a NURBS curve. Returns NULL "
 "if the input is NULL."
 msgstr ""
+"入力がNURBS曲線でない場合にはエラーが発生します。入力がNULLの場合にはNULLを返"
+"します。"
 
 #. Tag: para
 #, no-c-format
@@ -11228,23 +11232,24 @@ msgstr "Availability: 3.7.0"
 #. Tag: para
 #, no-c-format
 msgid "This example extracts control points from a NURBS curve."
-msgstr ""
+msgstr "この例ではNURBS曲線から制御点を抽出します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example counts the control points."
-msgstr ""
+msgstr "この例では制御点数を数えます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_NumControlPoints\"/>, <xref linkend=\"ST_Weights\"/>"
 msgstr ""
+", <xref linkend=\"ST_NumControlPoints\"/>, <xref linkend=\"ST_Weights\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the polynomial degree of a NURBS curve."
-msgstr ""
+msgstr "NURBS曲線の多項式次数を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11253,26 +11258,29 @@ msgid ""
 "determines the curve's smoothness and flexibility. Higher degrees produce "
 "smoother curves but require more control points."
 msgstr ""
+"NURBS曲線の多項式次数を整数で返します。次数で曲線の滑らかさと柔軟性が決まりま"
+"す。次数が高いほどより滑らかな曲線になりますが、より多くの制御点が必要となり"
+"ます。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example returns the degree of a NURBS curve."
-msgstr ""
+msgstr "この例ではNURBS曲線の次数を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example checks whether a NURBS curve is cubic."
-msgstr ""
+msgstr "この例ではNURBS曲線が3次かどうかを調べます。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_NumControlPoints\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_NumControlPoints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the weight array of a rational NURBS curve."
-msgstr ""
+msgstr "有理NURBS曲線の重み配列を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11282,23 +11290,26 @@ msgid ""
 "curve shape. Higher weights pull the curve closer to the corresponding "
 "control point."
 msgstr ""
+"有理NURBS曲線の重み値を倍精度浮動小数点数配列で返します。重みによって曲線上の"
+"制御点がそれぞれ与える影響を制御します。重みが大きいほど曲線が対応する制御点"
+"に近くなります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Returns NULL if the curve has no weights (non-rational B-spline) or if the "
 "input is NULL. Raises an error if the input is not a NURBS curve."
-msgstr ""
+msgstr "曲線に重みが無い場合 (非有理Bスプラインである場合)にはNULLを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example returns weights from a rational NURBS curve."
-msgstr ""
+msgstr "この例では有理NURBS曲線から重みを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example checks the weights of a non-rational curve."
-msgstr ""
+msgstr "この例では非有理曲線の重みを調べます。"
 
 #. Tag: para
 #, no-c-format
@@ -11306,11 +11317,13 @@ msgid ""
 ", <xref linkend=\"ST_NurbsCurveIsRational\"/>, <xref "
 "linkend=\"ST_ControlPoints\"/>"
 msgstr ""
+", <xref linkend=\"ST_NurbsCurveIsRational\"/>, <xref "
+"linkend=\"ST_ControlPoints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the knot vector of a NURBS curve."
-msgstr ""
+msgstr "NURBS曲線のノットベクトル (knot vector)を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11320,6 +11333,9 @@ msgid ""
 "how the control points affect the curve. It must be a non-decreasing "
 "sequence with length equal to (number of control points + degree + 1)."
 msgstr ""
+"NURBS曲線のノットベクトル (knot vector)を倍精度浮動小数点数配列で返します。"
+"ノットベクトルはパラメーター空間を決め、制御点が曲線に影響を与える場所と強さ"
+"を制御します。返り値は必ず (制御点数+次数+1)に等しい長さで、昇順になります。"
 
 #. Tag: para
 #, no-c-format
@@ -11327,28 +11343,33 @@ msgid ""
 "Returns NULL if the curve uses the default uniform clamped knot vector or if "
 "the input is NULL. Raises an error if the input is not a NURBS curve."
 msgstr ""
+"曲線がデフォルトの開一様ノットベクトルを使う場合、または入力がNULLの場合には"
+"NULLを返します。入力がNURBS曲線でない場合にはエラーが発生します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example returns knots from a NURBS curve with a custom knot vector."
-msgstr ""
+msgstr "この例では独自のノットベクトルを持つNURBS曲線からノットベクトルを返します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "This example checks the knots of a curve using the default knot vector."
 msgstr ""
+"この例ではデフォルトのノットベクトルを使って曲線のノットベクトルを確認します"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Degree\"/>, <xref linkend=\"ST_NumControlPoints\"/>"
 msgstr ""
+", <xref linkend=\"ST_Degree\"/>, <xref linkend=\"ST_NumControlPoints\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the number of control points in a NURBS curve."
-msgstr ""
+msgstr "NURBS曲線内の制御点の数を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11356,6 +11377,8 @@ msgid ""
 "Returns the number of control points in a NURBS curve. The number of control "
 "points must be at least (degree + 1) for a valid NURBS curve."
 msgstr ""
+"NURBS曲線内の制御点の数を返します。妥当なNURBS曲線では制御点数は少なくとも "
+"(次数+1)個あります。"
 
 #. Tag: para
 #, no-c-format
@@ -11363,27 +11386,29 @@ msgid ""
 "Raises an error if the input is not a NURBS curve. Returns NULL if the input "
 "is NULL."
 msgstr ""
+"入力がNURBS曲線でない場合にはエラーが発生します。入力がNULLの場合にはNULLを返"
+"します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example returns the number of control points."
-msgstr ""
+msgstr "この例では制御点数を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example verifies that a curve has enough control points for its degree."
-msgstr ""
+msgstr "この例では曲線が次数に対して十分な制御点を持っているかを確認します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_ControlPoints\"/>, <xref linkend=\"ST_Degree\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_ControlPoints\"/>, <xref linkend=\"ST_Degree\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a NURBS curve is rational (has weights)."
-msgstr ""
+msgstr "NURBS曲線が有理である (重みをもつ)かを調べます。"
 
 #. Tag: para
 #, no-c-format
@@ -11391,6 +11416,8 @@ msgid ""
 "Returns TRUE if the NURBS curve has weights assigned to its control points "
 "(rational NURBS), FALSE if it uses uniform weights (non-rational B-spline)."
 msgstr ""
+"NURBS曲線がその制御点に重みが割り当てられている場合にはTRUEを返します。一様の"
+"重みが使われている場合 (非有理Bスプラインの場合)にはFALSEを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11399,26 +11426,28 @@ msgid ""
 "through variable weights. Non-rational B-splines use uniform weights and are "
 "a special case of NURBS curves."
 msgstr ""
+"有理NURBS曲線は、曲線形状で可変の重み付けによって、より柔軟になります。非有理"
+"Bスプラインでは一様の重みを使うもので、NURBS曲線の特別な場合です。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example checks whether a curve is rational."
-msgstr ""
+msgstr "この例では曲線が有理であるかどうかを調べます。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example checks a non-rational curve."
-msgstr ""
+msgstr "この例では非有利な曲線を調べます。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Weights\"/>, <xref linkend=\"ST_IsNurbsCurve\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Weights\"/>, <xref linkend=\"ST_IsNurbsCurve\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Checks if a geometry is a NURBS curve."
-msgstr ""
+msgstr "ジオメトリーがNURBS曲線であるかどうかを調べます。"
 
 #. Tag: para
 #, no-c-format
@@ -11427,21 +11456,23 @@ msgid ""
 "function can be used to test geometry types before applying NURBS-specific "
 "functions."
 msgstr ""
+"ジオメトリーがNURBS曲線である場合にはTRUEを返し、それ以外ではFALSEを返します"
+"。ｋの関数はNURBS専用関数を適用する前にジオメトリタイプを調べるのに使えます。"
 
 #. Tag: para
 #, no-c-format
 msgid "Returns NULL if the input is NULL."
-msgstr ""
+msgstr "入力がNULLの場合にはNULLを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example checks whether a geometry is a NURBS curve."
-msgstr ""
+msgstr "この例ではジオメトリーがNURBS曲線かどうかを調べます。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example tests a regular LineString."
-msgstr ""
+msgstr "この例では通常のLINESTRINGを調べます。"
 
 #. Tag: para
 #, no-c-format
@@ -11449,6 +11480,8 @@ msgid ""
 ", <xref linkend=\"ST_GeometryType\"/>, <xref "
 "linkend=\"ST_NurbsCurveIsRational\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeometryType\"/>, <xref "
+"linkend=\"ST_NurbsCurveIsRational\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
