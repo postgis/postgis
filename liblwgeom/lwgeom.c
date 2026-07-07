@@ -1636,8 +1636,8 @@ int lwgeom_dimension(const LWGEOM *geom)
 	case MULTIPOLYGONTYPE:
 		return 2;
 	case TINTYPE:
-		/* A closed TIN surface is not a solid unless cast with MakeSolid. */
-		return 2;
+		/* A TIN surface is dimension 2 unless it carries an explicit solid flag. */
+		return FLAGS_GET_SOLID(geom->flags) ? 3 : 2;
 	case POLYHEDRALSURFACETYPE:
 	{
 		/* A closed polyhedral surface contains a volume. */
