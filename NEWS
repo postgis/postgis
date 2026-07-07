@@ -46,6 +46,11 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
 
+* Enhancements *
+
+ - #3676, Mark geometry and geography btree comparison support functions
+          as leakproof (Darafei Praliaskouski)
+
 
 PostGIS 3.7.0dev
 2026/xx/xx
