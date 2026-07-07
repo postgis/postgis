@@ -728,7 +728,7 @@ BEGIN
         new_ver_int := pg_catalog.string_to_array(
             pg_catalog.regexp_replace(
                 new_scripts,
-                '[^\d.].*',
+                E'[^\\d.].*',
                 ''
             ),
             '.'
@@ -741,7 +741,7 @@ BEGIN
         old_ver_int := pg_catalog.string_to_array(
             pg_catalog.regexp_replace(
                 old_scripts,
-                '[^\d.].*',
+                E'[^\\d.].*',
                 ''
             ),
             '.'
@@ -777,11 +777,11 @@ BEGIN
     ) SELECT
       upgraded as scripts_upgraded,
       installed as scripts_installed,
-      pg_catalog.substring(upgraded, '([0-9]+)\.')::int * 100 +
-      pg_catalog.substring(upgraded, '[0-9]+\.([0-9]+)(\.|$)')::int
+      pg_catalog.substring(upgraded, E'([0-9]+)\\.')::int * 100 +
+      pg_catalog.substring(upgraded, E'[0-9]+\\.([0-9]+)(\\.|$)')::int
         as version_to_num,
-      pg_catalog.substring(installed, '([0-9]+)\.')::int * 100 +
-      pg_catalog.substring(installed, '[0-9]+\.([0-9]+)(\.|$)')::int
+      pg_catalog.substring(installed, E'([0-9]+)\\.')::int * 100 +
+      pg_catalog.substring(installed, E'[0-9]+\\.([0-9]+)(\\.|$)')::int
         as version_from_num,
       installed ~ 'dev|alpha|beta'
         as version_from_isdev
@@ -816,4 +816,3 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
-
