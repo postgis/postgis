@@ -1636,11 +1636,8 @@ int lwgeom_dimension(const LWGEOM *geom)
 	case MULTIPOLYGONTYPE:
 		return 2;
 	case TINTYPE:
-	{
-		/* A closed tin surface contains a volume. */
-		int closed = lwtin_is_closed((LWTIN*)geom);
-		return ( closed ? 3 : 2 );
-	}
+		/* A 3D TIN surface is dimension 3 only when explicitly marked solid. */
+		return (FLAGS_GET_SOLID(geom->flags) && FLAGS_GET_Z(geom->flags)) ? 3 : 2;
 	case POLYHEDRALSURFACETYPE:
 	{
 		/* A closed polyhedral surface contains a volume. */
@@ -1746,11 +1743,17 @@ static int lwcollection_dimensionality(const LWCOLLECTION *col)
  * - 0 for points and multipoints,
  * - 1 for linear/curve types (lines, circular strings, compound/multi-curves, NURBS),
  * - 2 for polygonal/surface types,
- * - 3 for polyhedral surfaces or TINs that are closed (otherwise 2).
+ * Closure-aware dimensionality used by internal validity/repair checks.
+ *
+ * This is intentionally not the same contract as lwgeom_dimension(), which
+ * backs ST_Dimension.  Closed polyhedral surfaces and TINs are reported as 3
+ * here so callers that reason about solid-like inputs keep their legacy
+ * behavior.
+ *
  * For COLLECTIONTYPE the result is the maximum dimensionality of its members.
  *
  * @param geom Geometry to inspect (must be non-NULL).
- * @return The topological dimension (0..3). On unsupported types the function logs an error and returns 0.
+ * @return The closure-aware dimensionality (0..3). On unsupported types the function logs an error and returns 0.
  */
 extern int lwgeom_dimensionality(const LWGEOM *geom)
 {

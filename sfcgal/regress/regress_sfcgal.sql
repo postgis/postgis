@@ -107,3 +107,17 @@ SELECT
     'CG_IsSolid',
     CG_IsSolid(geom)
 FROM solid;
+WITH geom AS (
+    SELECT
+        'TIN Z (((0 0 0,0 0 1,0 1 0,0 0 0)),
+                ((0 0 0,0 1 0,1 0 0,0 0 0)),
+                ((0 0 0,1 0 0,0 0 1,0 0 0)),
+                ((1 0 0,0 1 0,0 0 1,1 0 0)))'::geometry AS tin_z,
+        'TIN (((0 0,0 1,1 0,0 0)))'::geometry AS tin
+)
+SELECT
+    'CG_MakeSolid TIN ST_Dimension',
+    ST_Dimension(tin_z),
+    ST_Dimension(CG_MakeSolid(tin_z)),
+    ST_Dimension(CG_MakeSolid(tin))
+FROM geom;

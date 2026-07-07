@@ -404,6 +404,29 @@ check_dimension(char *ewkt, int dim)
 	lwgeom_free(geom);
 }
 
+static void
+check_st_dimension(char *ewkt, int dim)
+{
+	LWGEOM *geom;
+
+	geom = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_dimension(geom), dim);
+	lwgeom_free(geom);
+}
+
+static void
+check_solid_st_dimension(char *ewkt, int dim)
+{
+	LWGEOM *geom;
+
+	geom = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	FLAGS_SET_SOLID(geom->flags, 1);
+	CU_ASSERT_EQUAL(lwgeom_dimension(geom), dim);
+	lwgeom_free(geom);
+}
+
 void
 surface_dimension(void)
 {
@@ -418,6 +441,15 @@ surface_dimension(void)
 	/* Tetrahedron */
 	check_dimension("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", 3);
 	check_dimension("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", 3);
+
+	/* ST_Dimension follows surface/solid type semantics. */
+	check_st_dimension(
+	    "TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))",
+	    2);
+	check_solid_st_dimension(
+	    "TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))",
+	    3);
+	check_solid_st_dimension("TIN(((0 0,0 1,1 0,0 0)))", 2);
 }
 
 

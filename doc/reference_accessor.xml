@@ -344,6 +344,16 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 		</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.2</para>
+		<note>
+		  <para>
+			A <varname>TIN</varname>, including a closed TIN surface, is a
+			surface geometry and has dimension 2.  Use
+			<xref linkend="CG_MakeSolid"/> to make the solid representation
+			explicit; the resulting 3D solid has dimension 3.  Solid geometry
+			semantics, such as volume, are handled separately by the SQL/MM 3D
+			solid functions (SQL-MM IEC 13249-3: 9.1).
+		  </para>
+		</note>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No longer throws an exception if given empty geometry.</para>
 		<note> <para>Prior to 2.0.0, this function throws an exception if used with empty geometry. </para></note>
 		<para>&P_support;</para>
@@ -355,11 +365,13 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 
 		 <programlisting>SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))');</programlisting>
 <screen>1</screen>
+		 <programlisting>SELECT ST_Dimension('TIN Z (((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))');</programlisting>
+<screen>2</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_NDims"/></para>
+			<para><xref linkend="ST_NDims"/>, <xref linkend="CG_MakeSolid"/>, <xref linkend="CG_Volume"/></para>
 		</refsection>
 	</refentry>
 

@@ -2,11 +2,11 @@
 SELECT 'dimension_01', ST_Dimension('TIN(((0 0,1 1,0 1,0 0)))'::geometry);
 SELECT 'dimension_02', ST_Dimension('GEOMETRYCOLLECTION(TIN(((0 0,1 1,0 1,0 0))))'::geometry);
 
--- ST_Dimension on 3D: closed
+-- ST_Dimension on 3D: closed surface, not solid
 SELECT 'dimension_03', ST_Dimension('TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))'::geometry);
 SELECT 'dimension_04', ST_Dimension('GEOMETRYCOLLECTION(TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0))))'::geometry);
 
--- ST_Dimension on 4D: closed
+-- ST_Dimension on 4D: closed surface, not solid
 SELECT 'dimension_05', ST_Dimension('TIN(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))'::geometry);
 SELECT 'dimension_06', ST_Dimension('GEOMETRYCOLLECTION(TIN(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0))))'::geometry);
 

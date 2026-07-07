@@ -340,6 +340,9 @@
         <para>&P_support;</para>
         <para>&T_support;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as CG_3DVolume)</para>
+        <para>Closed surface geometries can have non-zero volume. Use
+        <xref linkend="CG_MakeSolid"/> when the geometry value itself must carry
+        the solid flag.</para>
     </refsection>
 
     <refsection>
@@ -620,6 +623,9 @@
         <para>&P_support;</para>
         <para>&T_support;</para>
         <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)</para>
+        <para>Closed surface geometries can have non-zero volume. Use
+        <xref linkend="ST_MakeSolid"/> when the geometry value itself must carry
+        the solid flag.</para>
     </refsection>
 
     <refsection>
