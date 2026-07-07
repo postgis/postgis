@@ -22,6 +22,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - GH-1153, [topology] Preserve large ids from edge wrappers
           (Darafei Praliaskouski)
+ - GH-1139, [topology] Preserve large edge ids from vertex-segment
+          proximity helper (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0dev

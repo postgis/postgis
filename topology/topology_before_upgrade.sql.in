@@ -46,3 +46,18 @@ SELECT _postgis_topology_upgrade_domain_type('topoelement','integer[]','bigint[]
 SELECT _postgis_topology_upgrade_domain_type('topoelementarray','integer[][]','bigint[][]','3.6.0');
 SELECT _postgis_add_column_to_table('topology.topology', 'useslargeids', 'BOOLEAN', true, 'false','3.6.0');
 
+-- 3.7.0
+-- Return edge identifiers as bigint instead of integer
+DO $postgis_upgrade$
+DECLARE
+	old_result text;
+BEGIN
+	old_result := pg_get_function_result('topology.findVertexSegmentPairsBelowDistance(varchar, float8)'::regprocedure);
+	IF old_result LIKE '%seg_edge integer%' AND old_result LIKE '%vert_edge integer%' THEN
+		PERFORM _postgis_drop_function_by_signature('topology.findVertexSegmentPairsBelowDistance(varchar, float8)', '3.7.0');
+	END IF;
+EXCEPTION
+	WHEN undefined_function THEN
+		NULL;
+END
+$postgis_upgrade$;
