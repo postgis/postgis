@@ -34,6 +34,7 @@
 #include "nodes/nodeFuncs.h"
 #include "nodes/makefuncs.h"
 #include "optimizer/optimizer.h"
+#include "parser/parse_oper.h"
 #include "parser/parse_func.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
@@ -327,6 +328,55 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 	 * is installed is part of the search path (Trac #4739)
 	 */
 	postgis_initialize_cache();
+
+	if (IsA(rawreq, SupportRequestSimplify))
+	{
+		SupportRequestSimplify *req = (SupportRequestSimplify *)rawreq;
+		FuncExpr *clause = req->fcall;
+		IndexableFunction idxfn = {NULL, 0, 0, 0, 0};
+
+		if (needsSpatialIndex(clause->funcid, &idxfn) && idxfn.index == ST_ORDERINGEQUALS_IDX &&
+		    list_length(clause->args) == 2)
+		{
+			Node *leftarg = linitial(clause->args);
+			Node *rightarg = lsecond(clause->args);
+			Oid leftdatatype = exprType(leftarg);
+			Oid rightdatatype = exprType(rightarg);
+			Oid eqoproid = InvalidOid;
+			bool hashable = false;
+
+			if (leftdatatype != rightdatatype)
+				PG_RETURN_POINTER((Node *)NULL);
+
+			/* Keep constant predicates on the spatial index support path below. */
+			if (!contain_var_clause(leftarg) || !contain_var_clause(rightarg))
+				PG_RETURN_POINTER((Node *)NULL);
+
+			if (contain_volatile_functions(leftarg) || contain_volatile_functions(rightarg))
+				PG_RETURN_POINTER((Node *)NULL);
+
+			/* ST_OrderingEquals uses the same gserialized_cmp equality as the = operator. */
+			get_sort_group_operators(leftdatatype, false, true, false, NULL, &eqoproid, NULL, &hashable);
+
+			if (!OidIsValid(eqoproid))
+				PG_RETURN_POINTER((Node *)NULL);
+
+			/*
+			 * Do not add a bbox-equality conjunct here. Exact serialized equality can
+			 * match non-finite coordinates that box2df equality rejects, so adding ~=
+			 * would make the simplification narrower than ST_OrderingEquals.
+			 */
+			ret = (Node *)make_opclause(eqoproid,
+						    BOOLOID,
+						    false,
+						    (Expr *)leftarg,
+						    (Expr *)rightarg,
+						    InvalidOid,
+						    clause->inputcollid);
+
+			PG_RETURN_POINTER(ret);
+		}
+	}
 
 	if (IsA(rawreq, SupportRequestSelectivity))
 	{
