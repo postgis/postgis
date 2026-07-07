@@ -28,6 +28,7 @@ ERROR:  lwnurbscurve_linearize: segs-per-quad is too large, got 2501
 ERROR:  lwnurbscurve_linearize: requested too many segments, got 22361
 ERROR:  lwnurbscurve_linearize: requested too many segments, got 62832
 NURBS_CURVETOLINE_3|SRID=4326;LINESTRING EMPTY|2|4326
+NURBS_CURVETOLINE_4|SRID=4326;LINESTRING EMPTY|2|4326
 NURBS_LENGTH_1|t
 NURBS_CURVEPOLY_1|t
 NURBS_CURVEPOLY_2|ST_Polygon

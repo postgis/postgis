@@ -911,6 +911,9 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 		return NULL;
 	}
 
+	if (!curve->points || curve->points->npoints == 0)
+		return lwnurbscurve_to_linestring(curve, NURBS_MIN_LINEARIZE_SEGMENTS);
+
 	switch (tolerance_type)
 	{
 	case LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD:
@@ -933,9 +936,6 @@ lwnurbscurve_linearize(const LWNURBSCURVE *curve, double tol,
 		double height = 0.0;
 		double depth = 0.0;
 		double diagonal = 0.0;
-
-		if (!curve->points || curve->points->npoints == 0)
-			return lwnurbscurve_to_linestring(curve, NURBS_MIN_LINEARIZE_SEGMENTS);
 
 		if (ptarray_calculate_gbox_cartesian(curve->points, &box) == LW_SUCCESS)
 		{
