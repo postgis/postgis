@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-07 01:39+0000\n"
+"PO-Revision-Date: 2026-07-07 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -11484,11 +11484,11 @@ msgstr ""
 "linkend=\"ST_NurbsCurveIsRational\"/>"
 
 #. Tag: refpurpose
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Evaluates a NURBS curve at a specific parameter value and returns the "
 "resulting point."
-msgstr ""
+msgstr "NURBS曲線を指定したパラメーター値で評価し、結果ポイントを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -11498,6 +11498,9 @@ msgid ""
 "ranges from 0.0 (start of curve) to 1.0 (end of curve), though the actual "
 "range depends on the knot vector."
 msgstr ""
+"NURBS曲線を指定したパラメーター値で評価し、曲線上の位置を表現するPOINT"
+"ジオメトリーを返します。パラメーターは通常は 0.0 (曲線の始端)から1.0 (曲線の"
+"終端)の範囲になりますが、実際の範囲はノットベクトルに依存します。"
 
 #. Tag: para
 #, no-c-format
@@ -11505,26 +11508,28 @@ msgid ""
 "Raises an error if the input is not a NURBS curve or if evaluation fails. "
 "Returns NULL if either input is NULL."
 msgstr ""
+"入力がNURBS曲線でない場合や評価が失敗した場合にはエラーが発生します。入力が"
+"NULLの場合にはNULLを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example returns the midpoint of a NURBS curve."
-msgstr ""
+msgstr "この例ではNURBS曲線の中央点を返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example samples multiple points along a curve."
-msgstr ""
+msgstr "この例では曲線に沿った複数のポイントを出します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_NurbsToLineString\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_NurbsToLineString\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Converts a NURBS curve to a LINESTRING by uniform sampling."
-msgstr ""
+msgstr "一様抽出によってNURBS曲線をLINESTRINGに変換します。"
 
 #. Tag: para
 #, no-c-format
@@ -11534,6 +11539,8 @@ msgid ""
 "parameter values and the resulting points are connected with straight line "
 "segments."
 msgstr ""
+"NURBS曲線を区分線形近似によってLINESTRINGに変換します。曲線は一様分布した"
+"パラメーター値でポイントを抽出して、結果ポイントを線分で結びます。"
 
 #. Tag: para
 #, no-c-format
@@ -11542,29 +11549,32 @@ msgid ""
 "of line segments in the output (default: 32, range: 2-10000). Higher values "
 "produce smoother approximations but increase geometry complexity."
 msgstr ""
+"任意パラメーター<varname>num_segments</varname>によって、出力の線分数を決定し"
+"ます (デフォルト: 32, 指定可能範囲: 2-10000)。この数値が大きくなるほど、近似"
+"ラインストリングの滑らかさが増しすがジオメトリーがより複雑になります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example converts a NURBS curve to a LineString using the default "
 "quality."
-msgstr ""
+msgstr "この例ではNURBS曲線をデフォルト品質でLINESTRINGに変換します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example creates a high-quality approximation with 64 segments."
-msgstr ""
+msgstr "この例では線分数64で高品質の近似を生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example creates a lower-quality, faster approximation with 16 segments."
-msgstr ""
+msgstr "この例では線分数16で低品質の近似を生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Evaluate\"/>, <xref linkend=\"ST_Segmentize\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Evaluate\"/>, <xref linkend=\"ST_Segmentize\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -11795,14 +11805,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example expands a 3D box by 10 meters."
-msgstr ""
+msgstr "この例では3次元ボックスを10m拡張します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example renders the text representation of a 10-meter expanded box "
 "around a point geometry."
-msgstr ""
+msgstr "この例ではポイントジオメトリーを10m拡張したボックスの文字表現を示します。"
 
 #. Tag: para
 #, no-c-format
