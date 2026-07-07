@@ -4,9 +4,9 @@
 --   degree: Polynomial degree (1-10), higher = smoother
 --   control_points: LINESTRING geometry defining curve shape
 --   weights: Optional array of positive weights, one per control point (NULL for uniform weights)
---   knots: Optional knot vector defining parameter space (NULL for uniform clamped spacing)
+--   knots: Optional knot sequence defining parameter space (NULL for uniform clamped spacing)
 -- Returns: NURBS curve geometry
--- Note: Knot vector must have (npoints + degree + 1) elements and be non-decreasing
+-- Note: Knot sequence must have (npoints + degree + 1) elements and be non-decreasing
 -- Examples:
 --   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);
 --   SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);
@@ -58,7 +58,7 @@ CREATE OR REPLACE FUNCTION ST_Weights(nurbscurve geometry)
     COST 25;
 
 -- ST_Knots(nurbscurve)
--- Extracts the knot vector defining parameter space
+-- Extracts the knot sequence defining parameter space
 -- Parameters:
 --   nurbscurve: Input NURBS curve geometry
 -- Returns: Array of knot values, NULL for uniform parameterization
