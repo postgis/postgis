@@ -20,7 +20,7 @@ clean:
 	$(RM) -f *.o *.a
 
 fuzzingengine.o: $(FUZZER_SRC_DIR)/fuzzingengine.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 dummyfuzzers: fuzzingengine.o
 	mkdir -p "$(FUZZER_OUT)"
