@@ -7,6 +7,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Bug Fixes *
 
+ - #6093, Fix SQL generation on ppc64el when NURBS comments are
+          preprocessed with AltiVec vector macros (Darafei Praliaskouski)
  - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
           with standard_conforming_strings off (Darafei Praliaskouski)
  - GH-898, Fix ST_DFullyWithin indexed plans and large-coordinate
