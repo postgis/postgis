@@ -62,8 +62,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           rasterization (Darafei Praliaskouski)
 
 
-PostGIS 3.7.0alpha1
-2026/07/05
+PostGIS 3.7.0dev
+2026/xx/xx
 
 This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp.
 To take advantage of all features postgis extension features, GEOS 3.15+ is needed.

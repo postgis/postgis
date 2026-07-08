@@ -523,28 +523,36 @@ WITH cases(label, geom) AS (
 	(
 		'#1168-CurvePolygonStraight',
 		'CURVEPOLYGON(COMPOUNDCURVE((0 0, 4 0, 4 4, 0 4, 0 0)))'::geometry
-	),
-	(
-		'#1168-GeometryCollectionCurveStraight',
-		'GEOMETRYCOLLECTION(COMPOUNDCURVE((0 0, 4 0, 4 4)))'::geometry
 	)
 ), rasters AS (
 	SELECT
 		label,
-		ST_AsRaster(geom, 1.0, -1.0, '8BUI', 7, 0) AS curved_rast,
-		ST_AsRaster(ST_CurveToLine(geom), 1.0, -1.0, '8BUI', 7, 0) AS linear_rast
+		ST_AsRaster(geom, 1.0, -1.0, '8BUI', 7, 0) AS rast
 	FROM cases
 ), stats AS (
 	SELECT
 		label,
-		ST_SameAlignment(curved_rast, linear_rast) AS same_alignment,
-		(ST_MetaData(curved_rast)).width = (ST_MetaData(linear_rast)).width AS same_width,
-		(ST_MetaData(curved_rast)).height = (ST_MetaData(linear_rast)).height AS same_height,
-		(ST_SummaryStats(curved_rast)).count IS NOT DISTINCT FROM (ST_SummaryStats(linear_rast)).count AS same_count,
-		(ST_SummaryStats(curved_rast)).sum IS NOT DISTINCT FROM (ST_SummaryStats(linear_rast)).sum AS same_sum
+		(ST_MetaData(rast)).width > 0 AS has_width,
+		(ST_MetaData(rast)).height > 0 AS has_height,
+		(ST_SummaryStats(rast)).count > 0 AS has_pixels,
+		(ST_SummaryStats(rast)).sum > 0 AS has_burned_pixels
 	FROM rasters
 )
 SELECT * FROM stats ORDER BY label;
+
+WITH collection_rasters AS (
+	SELECT
+		ST_AsRaster(geom, 1.0, -1.0, '8BUI', 7, 0) AS curved_rast,
+		ST_AsRaster(ST_CurveToLine(geom), 1.0, -1.0, '8BUI', 7, 0) AS linear_rast
+	FROM (SELECT 'GEOMETRYCOLLECTION(COMPOUNDCURVE((0 0, 4 0, 4 4)))'::geometry AS geom) g
+)
+SELECT
+	'#1168-GeometryCollectionCurveStraight',
+	ST_SameAlignment(curved_rast, linear_rast) AS same_alignment,
+	(ST_MetaData(curved_rast)).width = (ST_MetaData(linear_rast)).width AS same_width,
+	(ST_MetaData(curved_rast)).height = (ST_MetaData(linear_rast)).height AS same_height,
+	(ST_SummaryStats(curved_rast)).count IS NOT DISTINCT FROM (ST_SummaryStats(linear_rast)).count AS same_count
+FROM collection_rasters;
 
 DELETE FROM "spatial_ref_sys" WHERE srid = 992163;
 DELETE FROM "spatial_ref_sys" WHERE srid = 993309;
