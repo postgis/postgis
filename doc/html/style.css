@@ -175,6 +175,72 @@ pre,
     overflow: auto;
 }
 
+.postgis-example-block {
+    border-color: #9aa;
+    border-style: solid;
+    border-width: 1px 1px 1px 0.35em;
+    border-radius: 0.75em;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    overflow: hidden;
+    background: #f7f9fb;
+}
+
+.postgis-example-block pre {
+    border-radius: 0;
+    margin: 0;
+}
+
+.postgis-example-label {
+    border-bottom: 1px solid #ccd;
+    display: block;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 0.8em;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    padding: 0.35em 1em;
+    text-transform: uppercase;
+}
+
+.postgis-example-code {
+    border-left-color: #468;
+}
+
+.postgis-example-code .postgis-example-label {
+    background: #e6eef7;
+    color: #234;
+}
+
+.postgis-example-code pre.programlisting {
+    background: #f7fbff;
+}
+
+.postgis-example-output {
+    border-left-color: #666;
+}
+
+.postgis-example-output .postgis-example-label {
+    background: #eee;
+    color: #222;
+}
+
+.postgis-example-output pre.screen {
+    background: #fafafa;
+}
+
+@media print {
+    .postgis-example-block {
+        background: #fff;
+        border-color: #000;
+        break-inside: avoid;
+    }
+    .postgis-example-label {
+        background: #fff !important;
+        border-bottom-color: #000;
+        color: #000 !important;
+    }
+}
+
 :lang(zh) pre,
 :lang(zh-CN) pre,
 :lang(zh-Hans) pre,

@@ -109,6 +109,7 @@ XSLTPROC_COMMONOPTS= \
 	--param footer.rule 0 \
 	--param table.borders.with.css 1 \
 	--stringparam docbook.css.source "" \
+	--stringparam postgis.block.label.language $(patsubst -%,%,$(DOCSUFFIX)) \
 	--stringparam html.ext .html \
 	--stringparam saxon.character.representation decimal \
 	$(XSLTPROCFLAGS)
@@ -120,8 +121,9 @@ XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css
 
-HTML_DOCBOOK_XSL=$(XSLBASE)/xhtml5/docbook.xsl
-CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/xhtml5/chunk.xsl
+HTML_DOCBOOK_XSL=$(builddir)/postgis-html.xsl
+CHUNK_HTML_DOCBOOK_XSL=$(builddir)/postgis-chunk-html.xsl
+POSTGIS_HTML_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-html-block-labels.xsl
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
@@ -328,7 +330,7 @@ endif
 CHECK_UNIT_TARGET =
 
 ifeq ($(CAN_CHECK_XML),yes)
-CHECK_UNIT_TARGET = check-xml
+CHECK_UNIT_TARGET = check-xml check-docbook-markup check-html-block-labels
 endif
 
 
@@ -412,7 +414,10 @@ postgis-out-epub.xml: postgis-out.xml Makefile
 chunked-html: ## Generate multi-file html in html/postgis-en/
 
 chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
-$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile
+$(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/%.in $(POSTGIS_HTML_BLOCK_LABELS_XSL) Makefile
+	$(PERL) -pe "s!\@\@XSLBASE\@\@!$(XSLBASE)!g; s!\@\@ABS_SRCDIR\@\@!$(abs_srcdir)!g;" $< > $@
+
+$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		$(XSLTPROCFLAGS) \
@@ -433,7 +438,7 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
@@ -533,6 +538,7 @@ cheatsheet-clean:
 
 clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean clean-pot ## Remove generated files except comments
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
+	rm -f $(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL)
 	rm -f postgis-out-epub.xml
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f postgis-nospecial.xml postgis-nospecial.xml.in
@@ -643,12 +649,25 @@ endif
 exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py ## Report manual examples selected, parseable, or skipped for known reasons
 	$(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
 
-check: check-unit ## Check structural correctness of XML documentation with DocBook DTD, RelaxNG, and XMLSchema validation
+check: check-unit ## Check structural correctness of XML documentation and generated HTML block labels
 check-localized: ## Check structural correctness of localized (translated) XML documentation.
 
 check-regress:
 
 check-unit: $(CHECK_UNIT_TARGET)
+
+DOCBOOK_BLOCK_LABEL_CHECK_PAGES = \
+	$(html_builddir)/postgis$(DOCSUFFIX)/is_contained_geometry_box2df.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsKML.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsLatLonText.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/ST_MakeValid.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/geometry_overlaps.html
+
+check-html-block-labels: $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/check_docbook_block_labels.py
+	$(abs_top_srcdir)/utils/check_docbook_block_labels.py $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
+
+check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/check_docbook_markup.py
+	$(abs_top_srcdir)/utils/check_docbook_markup.py --max-warnings 25 $<
 
 check-xml: postgis-out.xml
 	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch
