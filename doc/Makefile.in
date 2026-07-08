@@ -130,6 +130,7 @@ POSTGIS_BLOCK_LABELS_COMMON_XSL=$(abs_srcdir)/xsl/postgis-block-labels-common.xs
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
+PYTHON3 ?= $(shell command -v python3 2>/dev/null)
 
 # Gettext for translated documentation
 MSGCAT=@MSGCAT@
@@ -655,7 +656,11 @@ endif
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
 exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py ## Report manual examples selected, parseable, or skipped for known reasons
-	$(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
+ifeq ($(PYTHON3),)
+	@echo "Skipping $@: python3 is not available."
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
+endif
 
 check: check-unit ## Check structural correctness of XML documentation and generated HTML block labels
 check-localized: ## Check structural correctness of localized (translated) XML documentation.
@@ -674,10 +679,18 @@ DOCBOOK_BLOCK_LABEL_CHECK_PAGES = \
 	$(html_builddir)/postgis$(DOCSUFFIX)/geometry_overlaps.html
 
 check-html-block-labels: $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/check_docbook_block_labels.py
-	$(abs_top_srcdir)/utils/check_docbook_block_labels.py $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
+ifeq ($(PYTHON3),)
+	@echo "Skipping $@: python3 is not available."
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_block_labels.py $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
+endif
 
 check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/check_docbook_markup.py
-	$(abs_top_srcdir)/utils/check_docbook_markup.py --fail-on error --max-warnings 25 $<
+ifeq ($(PYTHON3),)
+	@echo "Skipping $@: python3 is not available."
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_markup.py --fail-on error --max-warnings 25 $<
+endif
 
 check-xml: postgis-out.xml
 	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch
