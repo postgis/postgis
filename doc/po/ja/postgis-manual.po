@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-08 03:39+0000\n"
+"PO-Revision-Date: 2026-07-08 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -15401,7 +15401,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example uses 2D input."
-msgstr ""
+msgstr "この例では2次元入力を使っています。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16167,13 +16167,13 @@ msgstr "Updated 2.3.0 : 添え字の負数"
 #. Tag: para
 #, no-c-format
 msgid "Change first point in line string from -1 3 to -1 1."
-msgstr ""
+msgstr "始端点を (-1 3)から (-1 1)に変更します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Change last point in a line string (let's play with 3D linestring this time)"
-msgstr ""
+msgstr "終端点を変更します (今回は3次元ラインストリングでやってみます)"
 
 #. Tag: para
 #, no-c-format
@@ -16371,6 +16371,8 @@ msgid ""
 "With a 4D geometry - the ST_SnapToGrid(geom,size) only touches x and y "
 "coords but keeps m and z the same."
 msgstr ""
+"4次元ジオメトリーへの適用 - ST_SnapToGrid(geom,size)はX軸とY軸のみを操作して"
+"、M値とZ値は値を変更しません。"
 
 #. Tag: para
 #, no-c-format
@@ -16505,7 +16507,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example scales the M value by 2."
-msgstr ""
+msgstr "この例ではM値を2倍にしています。"
 
 #. Tag: title
 #, no-c-format
@@ -16841,11 +16843,13 @@ msgid ""
 "Set and reset <varname>postgis.gdal_enabled_drivers</varname> for the "
 "current session."
 msgstr ""
+"現在のセッションでの<varname>postgis.gdal_enabled_drivers</varname>の設定と解"
+"除を行います。"
 
 #. Tag: para
 #, no-c-format
 msgid "Set specific drivers for all new connections to a database."
-msgstr ""
+msgstr "データベースへの新しい接続全てに特定のドライバーを設定します。"
 
 #. Tag: para
 #, no-c-format
