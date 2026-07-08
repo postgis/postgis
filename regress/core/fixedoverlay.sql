@@ -13,14 +13,26 @@ SELECT 'symdifference', ST_AsText(ST_SymDifference(
 	'LINESTRING(7 0, 13.2 0)'::geometry,
 2));
 
-SELECT 'union', ST_AsText(ST_Union(
+WITH result AS (SELECT ST_Union(
 	'LINESTRING(0.5 0, 9 0)'::geometry,
 	'LINESTRING(7 0, 13.2 0)'::geometry,
- 2));
+ 2) AS geom)
+SELECT 'union', ST_AsText(geom) = CASE
+    WHEN split_part(postgis_geos_version(), '.', 1)::integer * 100
+         + split_part(postgis_geos_version(), '.', 2)::integer >= 315
+    THEN 'LINESTRING(0 0,8 0,10 0,14 0)'
+    ELSE 'MULTILINESTRING((0 0,8 0),(8 0,10 0),(10 0,14 0))'
+END FROM result;
 
-SELECT 'unaryunion', ST_AsText(ST_UnaryUnion(
+WITH result AS (SELECT ST_UnaryUnion(
 	'GEOMETRYCOLLECTION(LINESTRING(0.5 0, 9 0), LINESTRING(7 0, 13.2 0))'::geometry,
-2));
+2) AS geom)
+SELECT 'unaryunion', ST_AsText(geom) = CASE
+    WHEN split_part(postgis_geos_version(), '.', 1)::integer * 100
+         + split_part(postgis_geos_version(), '.', 2)::integer >= 315
+    THEN 'LINESTRING(0 0,8 0,10 0,14 0)'
+    ELSE 'MULTILINESTRING((0 0,8 0),(8 0,10 0),(10 0,14 0))'
+END FROM result;
 
 WITH n AS (SELECT geom
 FROM ST_Subdivide(
