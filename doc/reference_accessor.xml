@@ -1224,22 +1224,20 @@ VALUES (ST_GeomFromEWKT('MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))') ),
 	)As foo(geom)
 	CROSS JOIN generate_series(1,100) n
 WHERE n <= ST_NumGeometries(geom);
-
- n |               geomewkt
+]]></programlisting>
+<screen><![CDATA[ n |               geomewkt
 ---+-----------------------------------------
  1 | POINT(1 2 7)
  2 | POINT(3 4 7)
  3 | POINT(5 6 7)
  4 | POINT(8 9 10)
  1 | CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5)
- 2 | LINESTRING(10 11,12 11)
+ 2 | LINESTRING(10 11,12 11)]]></screen>
 
-
---Extracting all geometries (useful when you want to assign an id)
-SELECT gid, n, ST_GeometryN(geom, n)
+<para>Extracting all geometries (useful when you want to assign an id).</para>
+<programlisting><![CDATA[SELECT gid, n, ST_GeometryN(geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
-WHERE n <= ST_NumGeometries(geom);
-]]></programlisting>
+WHERE n <= ST_NumGeometries(geom);]]></programlisting>
 	  </refsection>
 
 <refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
