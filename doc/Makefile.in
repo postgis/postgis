@@ -332,9 +332,18 @@ $(XML_SOURCE_POTS): requirements_not_met_xml2pot
 endif
 
 CHECK_UNIT_TARGET =
+CHECK_HTML_BLOCK_LABELS_DEPS =
 
 ifeq ($(CAN_CHECK_XML),yes)
-CHECK_UNIT_TARGET = check-xml check-docbook-markup check-html-block-labels
+CHECK_UNIT_TARGET = check-xml check-docbook-markup
+ifneq ($(PYTHON3),)
+ifneq ($(XSLTPROC),)
+ifneq ($(XSLBASE),)
+CHECK_UNIT_TARGET += check-html-block-labels
+CHECK_HTML_BLOCK_LABELS_DEPS = $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/check_docbook_block_labels.py
+endif
+endif
+endif
 endif
 
 
@@ -691,9 +700,13 @@ DOCBOOK_BLOCK_LABEL_CHECK_PAGES = \
 	$(html_builddir)/postgis$(DOCSUFFIX)/ST_MakeValid.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/geometry_overlaps.html
 
-check-html-block-labels: $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/check_docbook_block_labels.py
+check-html-block-labels: $(CHECK_HTML_BLOCK_LABELS_DEPS)
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
+else ifeq ($(XSLTPROC),)
+	@echo "Skipping $@: xsltproc is not available."
+else ifeq ($(XSLBASE),)
+	@echo "Skipping $@: DocBook XSL stylesheets are not available."
 else
 	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_block_labels.py $(html_builddir)/postgis$(DOCSUFFIX)/*.html
 	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_block_labels.py --require-kinds programlisting,screen $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
