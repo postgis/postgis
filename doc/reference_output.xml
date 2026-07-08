@@ -990,18 +990,12 @@ ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             </para>
       </warning>
 
-    <note>
-      <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version"/> to confirm you have proj support compiled in.</para>
-    </note>
+    <para role="availability" conformance="1.2.2">Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
+    <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - Add prefix namespace, use default and named args</para>
+    <para role="changed" conformance="3.0.0">Changed: 3.0.0 - Removed the "versioned" variant signature</para>
 
     <note>
-      <para role="availability" conformance="1.2.2">Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
-    </note>
-    <note>
-      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - Add prefix namespace, use default and named args</para>
-    </note>
-    <note>
-      <para role="changed" conformance="3.0.0">Changed: 3.0.0 - Removed the "versioned" variant signature</para>
+      <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version"/> to confirm you have proj support compiled in.</para>
     </note>
 
     <note>
@@ -1013,19 +1007,12 @@ ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 
     <refsection>
     <title>Examples</title>
-    <programlisting><![CDATA[
-SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+    <programlisting>SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+    <screen><![CDATA[<Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>]]></screen>
 
-    st_askml
-    --------
-    <Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>
-
-    --3d linestring
-    SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
-    <LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>
-
-
-]]></programlisting>
+    <para>This example outputs a 3D LineString.</para>
+    <programlisting>SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');</programlisting>
+    <screen><![CDATA[<LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>]]></screen>
     </refsection>
    <refsection>
     <title>See Also</title>

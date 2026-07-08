@@ -510,7 +510,7 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
 </informaltable>
 </refsection>
 <refsection>
-<title>Examples</title>
+<title>Collapsed Geometry Examples</title>
 <programlisting>SELECT ST_AsText(ST_MakeValid(
     'LINESTRING(0 0, 0 0)',
     'method=structure keepcollapsed=true'

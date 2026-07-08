@@ -83,13 +83,12 @@ FROM ( VALUES
 	(2, 'LINESTRING(0 1, 0 5)'::geometry)) AS tbl1,
 ( VALUES
 	(3, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
-
- column1 | column1 | overlaps
+]]></programlisting>
+<screen><![CDATA[ column1 | column1 | overlaps
 ---------+---------+----------
 	   1 |       3 | t
 	   2 |       3 | f
-(2 rows)
-]]></programlisting>
+(2 rows)]]></screen>
 <!-- TODO Add geography examples -->
 		  </refsection>
 
