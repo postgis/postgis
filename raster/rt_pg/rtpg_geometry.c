@@ -59,6 +59,28 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS);
 /* rasterize a geometry */
 Datum RASTER_asRaster(PG_FUNCTION_ARGS);
 
+static int
+rtpg_lwgeom_needs_curve_linearize(const LWGEOM *geom)
+{
+	uint32_t i;
+	const LWCOLLECTION *collection;
+
+	if (lwgeom_type_arc(geom))
+		return LW_TRUE;
+
+	if (!lwgeom_is_collection(geom))
+		return LW_FALSE;
+
+	collection = (const LWCOLLECTION *)geom;
+	for (i = 0; i < collection->ngeoms; i++)
+	{
+		if (rtpg_lwgeom_needs_curve_linearize(collection->geoms[i]))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
 /* ---------------------------------------------------------------- */
 /*  Raster envelope                                                 */
 /* ---------------------------------------------------------------- */
@@ -1124,11 +1146,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		geom = geom2d;
 	}
 
-	/*
-	 * Follow the same liblwgeom path as ST_CurveToLine. It returns a
-	 * cloned geometry for already-linear inputs, and recursively handles
-	 * curved members inside geometry collections before WKB serialization.
-	 */
+	if (rtpg_lwgeom_needs_curve_linearize(geom))
 	{
 		LWGEOM *linearized = lwcurve_linearize(geom, 32, LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD, 0);
 		if (linearized == NULL)
