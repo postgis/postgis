@@ -59,6 +59,34 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS);
 /* rasterize a geometry */
 Datum RASTER_asRaster(PG_FUNCTION_ARGS);
 
+static bool
+rtpg_lwgeom_is_curve_type(const LWGEOM *geom)
+{
+	uint32_t i;
+
+	switch (geom->type)
+	{
+	case CIRCSTRINGTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case NURBSCURVETYPE:
+		return true;
+	case COLLECTIONTYPE: {
+		const LWCOLLECTION *collection = (const LWCOLLECTION *)geom;
+		for (i = 0; i < collection->ngeoms; i++)
+		{
+			if (rtpg_lwgeom_is_curve_type(collection->geoms[i]))
+				return true;
+		}
+		return false;
+	}
+	default:
+		return false;
+	}
+}
+
 /* ---------------------------------------------------------------- */
 /*  Raster envelope                                                 */
 /* ---------------------------------------------------------------- */
@@ -1051,7 +1079,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	rt_pgraster *pgrast = NULL;
 
 	lwvarlena_t *wkb;
-	unsigned char variant = WKB_ISO;
+	unsigned char variant = WKB_SFSQL;
 
 	double scale[2] = {0};
 	double *scale_x = NULL;
@@ -1122,6 +1150,20 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		LWGEOM *geom2d = lwgeom_force_2d(geom);
 		lwgeom_free(geom);
 		geom = geom2d;
+	}
+
+	if (lwgeom_has_arc(geom) || rtpg_lwgeom_is_curve_type(geom))
+	{
+		LWGEOM *linearized = lwcurve_linearize(geom, 32, LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD, 0);
+		if (linearized == NULL)
+		{
+			lwgeom_free(geom);
+			PG_FREE_IF_COPY(gser, 0);
+			elog(ERROR, "RASTER_asRaster: Could not linearize geometry");
+			PG_RETURN_NULL();
+		}
+		lwgeom_free(geom);
+		geom = linearized;
 	}
 
 	/* empty geometry, return empty raster */

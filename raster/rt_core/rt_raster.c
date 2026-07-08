@@ -2319,23 +2319,6 @@ rt_raster_gdal_rasterize(
 		return NULL;
 	}
 
-	if (OGR_G_HasCurveGeometry(src_geom, FALSE)) {
-		/*
-		 * GDAL can read curved OGR geometries, but GDALRasterizeGeometries()
-		 * does not burn direct curve inputs reliably without an explicit
-		 * linearization step.
-		 */
-		OGRGeometryH linearized_geom = OGR_G_GetLinearGeometry(src_geom, 0.0, NULL);
-		if (linearized_geom == NULL) {
-			OGR_G_DestroyGeometry(src_geom);
-			_rti_rasterize_arg_destroy(arg);
-			rterror("rt_raster_gdal_rasterize: Could not linearize OGR Geometry");
-			return NULL;
-		}
-		OGR_G_DestroyGeometry(src_geom);
-		src_geom = linearized_geom;
-	}
-
 	/* OGR Geometry is empty */
 	if (OGR_G_IsEmpty(src_geom)) {
 		rtinfo("Geometry provided is empty. Returning empty raster");

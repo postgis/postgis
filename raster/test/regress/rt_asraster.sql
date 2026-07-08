@@ -523,6 +523,10 @@ WITH cases(label, geom) AS (
 	(
 		'#1168-CurvePolygonStraight',
 		'CURVEPOLYGON(COMPOUNDCURVE((0 0, 4 0, 4 4, 0 4, 0 0)))'::geometry
+	),
+	(
+		'#1168-NURBSCurve',
+		ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry)
 	)
 ), rasters AS (
 	SELECT
@@ -540,19 +544,31 @@ WITH cases(label, geom) AS (
 )
 SELECT * FROM stats ORDER BY label;
 
-WITH collection_rasters AS (
+WITH linearized_rasters(label, geom) AS (
+	VALUES
+	(
+		'#1168-GeometryCollectionCurveStraight',
+		'GEOMETRYCOLLECTION(COMPOUNDCURVE((0 0, 4 0, 4 4)))'::geometry
+	),
+	(
+		'#1168-NURBSCurveMatchesCurveToLine',
+		ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry)
+	)
+), rasters AS (
 	SELECT
+		label,
 		ST_AsRaster(geom, 1.0, -1.0, '8BUI', 7, 0) AS curved_rast,
 		ST_AsRaster(ST_CurveToLine(geom), 1.0, -1.0, '8BUI', 7, 0) AS linear_rast
-	FROM (SELECT 'GEOMETRYCOLLECTION(COMPOUNDCURVE((0 0, 4 0, 4 4)))'::geometry AS geom) g
+	FROM linearized_rasters
 )
 SELECT
-	'#1168-GeometryCollectionCurveStraight',
+	label,
 	ST_SameAlignment(curved_rast, linear_rast) AS same_alignment,
 	(ST_MetaData(curved_rast)).width = (ST_MetaData(linear_rast)).width AS same_width,
 	(ST_MetaData(curved_rast)).height = (ST_MetaData(linear_rast)).height AS same_height,
 	(ST_SummaryStats(curved_rast)).count IS NOT DISTINCT FROM (ST_SummaryStats(linear_rast)).count AS same_count
-FROM collection_rasters;
+FROM rasters
+ORDER BY label;
 
 DELETE FROM "spatial_ref_sys" WHERE srid = 992163;
 DELETE FROM "spatial_ref_sys" WHERE srid = 993309;

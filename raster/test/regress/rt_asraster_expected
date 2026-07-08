@@ -68,4 +68,6 @@ NOTICE:  The rasters have different scales on the X axis
 #1168-CompoundCurveStraight|t|t|t|t
 #1168-CurvePolygon|t|t|t|t
 #1168-CurvePolygonStraight|t|t|t|t
+#1168-NURBSCurve|t|t|t|t
 #1168-GeometryCollectionCurveStraight|t|t|t|t
+#1168-NURBSCurveMatchesCurveToLine|t|t|t|t
