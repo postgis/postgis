@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-08 01:39+0000\n"
+"PO-Revision-Date: 2026-07-08 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -10563,7 +10563,7 @@ msgstr ""
 "ストリングが無い場合には、NULLを返します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
 "(negative index) is not in OGC. Previous versions implemented this as 0-"
@@ -10775,7 +10775,7 @@ msgid "Geometry without M dimension returns NULL"
 msgstr "M値を持たないジオメトリーについてはNULLを返します"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_SetStartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
 msgstr ", <xref linkend=\"ST_SetStartM\"/>, <xref linkend=\"ST_StartPoint\"/>"
 
@@ -10818,7 +10818,7 @@ msgid "End M value of a NURBSCurve"
 msgstr "NURBSCURVEの終端のM値"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_SetEndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
 msgstr ", <xref linkend=\"ST_SetEndM\"/>, <xref linkend=\"ST_EndPoint\"/>"
 
@@ -11359,10 +11359,10 @@ msgstr ""
 "この例では独自のノットベクトルを持つNURBS曲線からノットベクトルを返します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "This example checks the knots of a curve using the default knot vector."
 msgstr ""
-"この例ではデフォルトのノットベクトルを使って曲線のノットベクトルを確認しま"
+"この例ではデフォルトのノットベクトルを使っている曲線のノットベクトルを調べま"
 "す。"
 
 #. Tag: para
@@ -11491,11 +11491,11 @@ msgstr ""
 "linkend=\"ST_NurbsCurveIsRational\"/>"
 
 #. Tag: refpurpose
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Evaluates a NURBS curve at a specific parameter value and returns the "
 "resulting point."
-msgstr "NURBS曲線を指定したパラメーター値で評価し、結果ポイントを返します。"
+msgstr "NURBS曲線を指定したパラメーター値の位置で評価し、結果ポイントを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -14110,6 +14110,8 @@ msgid ""
 "the control polygon. The number of control points must be at least "
 "<varname>degree</varname> + 1."
 msgstr ""
+"<varname>control_points</varname>は制御ポリゴンを定義するLINESTRINGでなければ"
+"なりません。制御点の数は最低でも<varname>degree</varname> + 1個が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -14118,6 +14120,9 @@ msgid ""
 "control point. All weights must be positive. If NULL or omitted, uniform "
 "weights (1.0) are used, resulting in a non-rational B-spline."
 msgstr ""
+"任意パラメーター<varname>weights</varname>配列は制御点ごとの重みを割り当てる"
+"ものです。全ての重みは正の数である必要があります。NULLまたは省略された場合に"
+"は重みは一様に 1.0 が使われるので、非有理のBスプラインになります。"
 
 #. Tag: para
 #, no-c-format
@@ -14127,26 +14132,31 @@ msgid ""
 "If provided, the knot vector must have exactly (<varname>npoints</varname> + "
 "<varname>degree</varname> + 1) elements and must be non-decreasing."
 msgstr ""
+"任意パラメーター<varname>knots</varname>配列はパラメーター空間を定義します。"
+"NULLまたは省略された場合には、クランプされた一様のノットベクトルが自動的に生"
+"成されます。ノットベクトルを与えた場合には、(<varname>npoints</varname> + "
+"<varname>degree</varname> + 1)を確実に持たなければならず、かつ降順であっては"
+"なりません。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example creates a degree-2 NURBS curve with uniform weights."
-msgstr ""
+msgstr "この例では次数2のNURBS曲線を一様の重みで生成しています。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example creates a rational NURBS curve with custom weights."
-msgstr ""
+msgstr "この例では有理のNURBS曲線を独自の重みを指定して生成しています。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example creates a NURBS curve with custom weights and knots."
-msgstr ""
+msgstr "この例ではNURBS曲線を独自の重みとノットベクトルとを指定して生成しています。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Evaluate\"/>, <xref linkend=\"ST_ControlPoints\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Evaluate\"/>, <xref linkend=\"ST_ControlPoints\"/>"
 
 #. Tag: title
 #, no-c-format
@@ -14261,7 +14271,7 @@ msgstr "オーバラップと頂点不一致により発生した不正エッジ
 #. Tag: para
 #, no-c-format
 msgid "This example tests the entire table for coverage validity."
-msgstr ""
+msgstr "この例ではテーブル全体のカバレッジ妥当性について調べます。"
 
 #. Tag: para
 #, no-c-format
@@ -14403,7 +14413,7 @@ msgstr "Availability: 3.6.0 - GEOS &gt;= 3.14.0が必要です"
 #. Tag: para
 #, no-c-format
 msgid "This example populates the input table."
-msgstr ""
+msgstr "この例では入力テーブルにジオメトリーを投入します。"
 
 #. Tag: para
 #, no-c-format
@@ -14413,7 +14423,7 @@ msgstr "重複部と隙間があるポリゴン"
 #. Tag: para
 #, no-c-format
 msgid "This example shows that the coverage is invalid."
-msgstr ""
+msgstr "この例ではカバレッジが妥当でないことを示しています。"
 
 #. Tag: para
 #, no-c-format
@@ -14425,7 +14435,7 @@ msgstr "不正なカバレッジのエッジ"
 msgid ""
 "This example cleans the coverage by merging gaps with width less than or "
 "equal to 1."
-msgstr ""
+msgstr "この例では幅が1以下の隙間をマージすることでカバレッジをきれいにします。"
 
 #. Tag: para
 #, no-c-format
@@ -14568,12 +14578,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example returns all unique edges of a coverage."
-msgstr ""
+msgstr "この例ではカバレッジの全ての一意のエッジを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example returns only the interior shared edges of a coverage."
-msgstr ""
+msgstr "この例ではカバレッジの内部の共有エッジだけを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -14995,12 +15005,12 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
 #. Tag: para
 #, no-c-format
 msgid "This example uses 3D input."
-msgstr ""
+msgstr "この例では3次元入力を使っています。"
 
 #. Tag: para
 #, no-c-format
 msgid "Use only 2 segments to approximate quarter circle."
-msgstr ""
+msgstr "二つの曲線区間だけを使って四分円を近似します。"
 
 #. Tag: para
 #, no-c-format
@@ -15008,6 +15018,8 @@ msgid ""
 "Ensure approximated line is no further than 20 units away from. Original "
 "curve, and make the result direction-neutral."
 msgstr ""
+"近似線が元の曲線から20単位を超えて離れないことを確実にします。方向中立の結果"
+"を得るようにします。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15097,7 +15109,7 @@ msgstr "Changed: 3.1.0. 0でないZ値を指定できるようになりました
 #. Tag: para
 #, no-c-format
 msgid "Nothing happens to an already 3D geometry."
-msgstr ""
+msgstr "既に3次元になっているジオメトリーでは何も起こりません。"
 
 #. Tag: para
 #, no-c-format
@@ -15227,7 +15239,7 @@ msgstr "Changed: 2.1.0 2.0.xの間はST_Force_Collectionと呼ばれていまし
 #. Tag: para
 #, no-c-format
 msgid "This example uses a PolyhedralSurface."
-msgstr ""
+msgstr "この例では多面体サーフェスを使います。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19000,7 +19012,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AddMeasure\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
 "<xref linkend=\"ST_LocateBetween\"/>"
