@@ -126,6 +126,7 @@ CHUNK_HTML_DOCBOOK_XSL=$(builddir)/postgis-chunk-html.xsl
 POSTGIS_HTML_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-html-block-labels.xsl
 POSTGIS_DBLATEX_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-dblatex-block-labels.xsl
 POSTGIS_BLOCK_LABELS_COMMON_XSL=$(abs_srcdir)/xsl/postgis-block-labels-common.xsl
+HTML_REF_INDEX=$(html_builddir)/postgis-ref-index.json
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
@@ -420,7 +421,16 @@ chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
 $(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/%.in $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) Makefile
 	$(PERL) -pe "s!\@\@XSLBASE\@\@!$(XSLBASE)!g; s!\@\@ABS_SRCDIR\@\@!$(abs_srcdir)!g;" $< > $@
 
-$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL)
+$(HTML_REF_INDEX): postgis-out.xml Makefile $(abs_top_srcdir)/utils/build_docbook_ref_index.py
+	mkdir -p $(html_builddir)
+ifeq ($(PYTHON3),)
+	@echo "Skipping rich PostGIS reference index: python3 is not available."
+	@printf '{"functions":{},"operators":{}}\n' > $@
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/build_docbook_ref_index.py $< $@
+endif
+
+$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		$(XSLTPROCFLAGS) \
@@ -441,7 +451,7 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL)
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
 		--stringparam html.script copy-code.js \
@@ -625,13 +635,15 @@ chunked-html-install: chunked-html
 chunked-html-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX)/
 
-html-assets-install: images-install
+html-assets-install: images-install $(HTML_REF_INDEX)
 	$(INSTALL_DATA) $(abs_srcdir)/html/style.css $(DESTDIR)$(htmldir)/
 	$(INSTALL_DATA) $(abs_srcdir)/html/copy-code.js $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(HTML_REF_INDEX) $(DESTDIR)$(htmldir)/
 
 html-assets-uninstall: images-install
 	rm -f $(DESTDIR)$(htmldir)/style.css
 	rm -f $(DESTDIR)$(htmldir)/copy-code.js
+	rm -f $(DESTDIR)$(htmldir)/postgis-ref-index.json
 
 docs-install: html-install html-assets-install
 	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis

@@ -2,6 +2,8 @@
   'use strict';
 
   var resetTimers = new WeakMap();
+  var scriptElement = document.currentScript;
+  var emptyRefIndex = { functions: {}, operators: {} };
   var sqlKeywords = {
     'ADD': true,
     'ALTER': true,
@@ -102,6 +104,90 @@
     });
   }
 
+  function escapeAttribute(text) {
+    return String(text).replace(/[&<>"]/g, function (character) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;'
+      }[character];
+    });
+  }
+
+  function escapeRegExp(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function safeHref(href) {
+    if (/^#[A-Za-z0-9_.:-]+$/.test(href) || /^[A-Za-z0-9_.:-]+\.html$/.test(href)) {
+      return href;
+    }
+    return '';
+  }
+
+  function currentPageId() {
+    var filename = window.location.pathname.split('/').pop() || '';
+    return filename.replace(/\.html$/, '');
+  }
+
+  function refHref(ref) {
+    if (ref.id && document.getElementById(ref.id)) {
+      return '#' + ref.id;
+    }
+    return ref.href || '';
+  }
+
+  function linkedToken(token, tokenClass, ref) {
+    var href = safeHref(refHref(ref));
+    var title = ref.title ? ref.label + ': ' + ref.title : ref.label;
+    if (!href) {
+      return '<span class="' + tokenClass + '">' + escapeHtml(token) + '</span>';
+    }
+    return '<a class="' + tokenClass + ' postgis-sql-link" href="' + escapeAttribute(href) + '" title="' +
+      escapeAttribute(title) + '" aria-label="' + escapeAttribute(title) + '">' + escapeHtml(token) + '</a>';
+  }
+
+  function lookupFunction(token, refIndex) {
+    return refIndex.functions && refIndex.functions[token.toUpperCase()];
+  }
+
+  function lookupOperator(token, refIndex) {
+    var entries = refIndex.operators && refIndex.operators[token];
+    var pageId = currentPageId();
+    var i;
+    if (!entries) {
+      return null;
+    }
+    if (!Array.isArray(entries)) {
+      return entries;
+    }
+    for (i = 0; i < entries.length; i += 1) {
+      if (entries[i].id === pageId) {
+        return entries[i];
+      }
+    }
+    for (i = 0; i < entries.length; i += 1) {
+      if (entries[i].id && document.getElementById(entries[i].id)) {
+        return entries[i];
+      }
+    }
+    return entries[0];
+  }
+
+  function operatorPattern(refIndex) {
+    var operators = Object.keys(refIndex.operators || {}).filter(function (operator) {
+      return operator.length > 0;
+    });
+    if (operators.length === 0) {
+      return '';
+    }
+    operators.sort(function (left, right) {
+      return right.length - left.length || left.localeCompare(right);
+    });
+    return operators.map(escapeRegExp).join('|');
+  }
+
   function sqlTokenClass(token) {
     var upper = token.toUpperCase();
     if (token.slice(0, 2) === '--' || token.slice(0, 2) === '/*') {
@@ -122,28 +208,74 @@
     return '';
   }
 
-  function highlightSql(text) {
-    var tokenPattern = /(--[^\n\r]*|\/\*[\s\S]*?\*\/|\$\$[\s\S]*?\$\$|'(?:''|[^'])*'|"(?:""|[^"])*"|\bST_[A-Za-z0-9_]+\b|\b[A-Za-z_][A-Za-z0-9_]*\b|\b\d+(?:\.\d+)?\b)/g;
+  function highlightedToken(token, refIndex) {
+    var tokenClass = sqlTokenClass(token);
+    var ref = lookupFunction(token, refIndex);
+    if (ref) {
+      return linkedToken(token, 'postgis-sql-function', ref);
+    }
+    ref = lookupOperator(token, refIndex);
+    if (ref) {
+      return linkedToken(token, 'postgis-sql-operator', ref);
+    }
+    if (tokenClass) {
+      return '<span class="' + tokenClass + '">' + escapeHtml(token) + '</span>';
+    }
+    return escapeHtml(token);
+  }
+
+  function highlightSql(text, refIndex) {
+    var operators = operatorPattern(refIndex);
+    var parts = [
+      '--[^\\n\\r]*',
+      '\\/\\*[\\s\\S]*?\\*\\/',
+      '\\$\\$[\\s\\S]*?\\$\\$',
+      "\'(?:\'\'|[^\'])*\'",
+      '"(?:""|[^"])*"'
+    ];
+    if (operators) {
+      parts.push(operators);
+    }
+    parts.push('\\b[A-Za-z_][A-Za-z0-9_]*\\b');
+    parts.push('\\b\\d+(?:\\.\\d+)?\\b');
+
+    var tokenPattern = new RegExp('(' + parts.join('|') + ')', 'g');
     var highlighted = '';
     var lastIndex = 0;
     var match;
-    var tokenClass;
 
     while ((match = tokenPattern.exec(text)) !== null) {
       highlighted += escapeHtml(text.slice(lastIndex, match.index));
-      tokenClass = sqlTokenClass(match[0]);
-      if (tokenClass) {
-        highlighted += '<span class="' + tokenClass + '">' + escapeHtml(match[0]) + '</span>';
-      } else {
-        highlighted += escapeHtml(match[0]);
-      }
+      highlighted += highlightedToken(match[0], refIndex);
       lastIndex = tokenPattern.lastIndex;
     }
     highlighted += escapeHtml(text.slice(lastIndex));
     return highlighted;
   }
 
-  function applySyntaxHighlighting() {
+  function refIndexUrl() {
+    if (!scriptElement || !scriptElement.src) {
+      return null;
+    }
+    return new URL('postgis-ref-index.json', scriptElement.src).toString();
+  }
+
+  function loadRefIndex() {
+    var url = refIndexUrl();
+    if (!url || !window.fetch) {
+      return Promise.resolve(emptyRefIndex);
+    }
+    return window.fetch(url, { credentials: 'same-origin' }).then(function (response) {
+      if (!response.ok) {
+        return emptyRefIndex;
+      }
+      return response.json();
+    }).catch(function () {
+      return emptyRefIndex;
+    });
+  }
+
+  function applySyntaxHighlighting(refIndex) {
     var blocks = document.querySelectorAll('.postgis-example-code pre.programlisting[data-postgis-language="sql"]');
     for (var i = 0; i < blocks.length; i += 1) {
       if (blocks[i].getAttribute('data-postgis-highlighted') === 'sql') {
@@ -152,7 +284,7 @@
       if (blocks[i].children.length !== 0) {
         continue;
       }
-      blocks[i].innerHTML = highlightSql(blocks[i].textContent);
+      blocks[i].innerHTML = highlightSql(blocks[i].textContent, refIndex || emptyRefIndex);
       blocks[i].setAttribute('data-postgis-highlighted', 'sql');
     }
   }
@@ -185,10 +317,14 @@
     return fallbackCopy(text);
   }
 
+  function highlightWhenReady() {
+    loadRefIndex().then(applySyntaxHighlighting);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applySyntaxHighlighting);
+    document.addEventListener('DOMContentLoaded', highlightWhenReady);
   } else {
-    applySyntaxHighlighting();
+    highlightWhenReady();
   }
 
   document.addEventListener('click', function (event) {

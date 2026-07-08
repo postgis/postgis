@@ -191,6 +191,9 @@ pre,
 .postgis-example-block pre {
     border-radius: 0;
     margin: 0;
+    overflow: visible;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
 }
 
 .postgis-example-code:has(+ .postgis-example-output) {
@@ -200,6 +203,7 @@ pre,
 }
 
 .postgis-example-code + .postgis-example-output {
+    border-left-color: #468;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     border-top-width: 0;
@@ -264,8 +268,19 @@ pre,
     font-weight: 600;
 }
 
-.postgis-sql-function {
+.postgis-sql-function,
+.postgis-sql-operator {
     color: #7a3e00;
+}
+
+.postgis-sql-link {
+    text-decoration: underline dotted;
+    text-underline-offset: 0.15em;
+}
+
+.postgis-sql-link:hover,
+.postgis-sql-link:focus {
+    text-decoration-style: solid;
 }
 
 .postgis-sql-string {
@@ -310,6 +325,7 @@ pre,
     }
     .postgis-sql-keyword,
     .postgis-sql-function,
+    .postgis-sql-operator,
     .postgis-sql-string,
     .postgis-sql-number,
     .postgis-sql-comment {
