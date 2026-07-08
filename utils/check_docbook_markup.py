@@ -20,7 +20,7 @@ try:
     from lxml import etree
 except ImportError as exc:  # pragma: no cover - dependency issue is environmental
     print(f"check_docbook_markup.py: lxml is required: {exc}", file=sys.stderr)
-    raise SystemExit(2)
+    raise SystemExit(2) from None
 
 NS = {"d": "http://docbook.org/ns/docbook", "xml": "http://www.w3.org/XML/1998/namespace"}
 ADMONITIONS = {"note", "tip", "important", "warning", "caution"}
@@ -37,7 +37,8 @@ PSQL_MESSAGE_RE = re.compile(r"(?m)^\s*(?:ERROR|NOTICE|WARNING|DETAIL|HINT|CONTE
 
 
 @dataclass(frozen=True)
-class WarningItem:
+class Finding:
+    severity: str
     code: str
     location: str
     message: str
@@ -78,8 +79,8 @@ def first_matching(pattern: re.Pattern[str], text: str) -> str | None:
     return match.group(0).strip()
 
 
-def find_mixed_programlisting_warnings(path: Path, root: etree._Element) -> list[WarningItem]:
-    warnings: list[WarningItem] = []
+def find_mixed_programlisting_warnings(path: Path, root: etree._Element) -> list[Finding]:
+    warnings: list[Finding] = []
     for node in root.xpath("//d:programlisting", namespaces=NS):
         text = block_text(node)
         if not SQL_STATEMENT_RE.search(text):
@@ -97,7 +98,8 @@ def find_mixed_programlisting_warnings(path: Path, root: etree._Element) -> list
 
         if markers:
             warnings.append(
-                WarningItem(
+                Finding(
+                    "warning",
                     "mixed-programlisting-output",
                     location(path, node),
                     "programlisting appears to contain SQL input plus output markers; "
@@ -108,13 +110,14 @@ def find_mixed_programlisting_warnings(path: Path, root: etree._Element) -> list
     return warnings
 
 
-def find_screen_sql_warnings(path: Path, root: etree._Element) -> list[WarningItem]:
-    warnings: list[WarningItem] = []
+def find_screen_sql_warnings(path: Path, root: etree._Element) -> list[Finding]:
+    warnings: list[Finding] = []
     for node in root.xpath("//d:screen", namespaces=NS):
         text = block_text(node)
         if SQL_START_RE.search(text) and ";" in text:
             warnings.append(
-                WarningItem(
+                Finding(
+                    "warning",
                     "screen-contains-sql",
                     location(path, node),
                     "screen block looks like it contains SQL input; use programlisting for input and screen for output",
@@ -123,8 +126,8 @@ def find_screen_sql_warnings(path: Path, root: etree._Element) -> list[WarningIt
     return warnings
 
 
-def find_duplicate_section_warnings(path: Path, root: etree._Element) -> list[WarningItem]:
-    warnings: list[WarningItem] = []
+def find_duplicate_section_warnings(path: Path, root: etree._Element) -> list[Finding]:
+    warnings: list[Finding] = []
     section_xpath = "./d:refsection|./d:section|./d:sect1"
     for refentry in root.xpath("//d:refentry", namespaces=NS):
         seen: dict[str, etree._Element] = {}
@@ -137,7 +140,8 @@ def find_duplicate_section_warnings(path: Path, root: etree._Element) -> list[Wa
                 continue
             if title in seen:
                 warnings.append(
-                    WarningItem(
+                    Finding(
+                        "error",
                         "duplicate-refsection-title",
                         location(path, title_nodes[0]),
                         f"refentry has more than one {title!r} section; first one is at line {seen[title].sourceline}",
@@ -148,14 +152,15 @@ def find_duplicate_section_warnings(path: Path, root: etree._Element) -> list[Wa
     return warnings
 
 
-def find_metadata_note_warnings(path: Path, root: etree._Element) -> list[WarningItem]:
-    warnings: list[WarningItem] = []
+def find_metadata_note_warnings(path: Path, root: etree._Element) -> list[Finding]:
+    warnings: list[Finding] = []
     xpath = "//d:para[@role='availability' or @role='enhanced' or @role='changed']"
     for node in root.xpath(xpath, namespaces=NS):
         role = node.get("role") or "<missing>"
         if any(local_name(ancestor) in ADMONITIONS for ancestor in node.iterancestors()):
             warnings.append(
-                WarningItem(
+                Finding(
+                    "warning",
                     "metadata-role-in-admonition",
                     location(path, node),
                     f"metadata para role={role!r} is nested inside an admonition; prefer a plain role para in Description",
@@ -174,9 +179,15 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help="maximum individual warnings to print before the summary (default: 50)",
     )
     parser.add_argument(
+        "--fail-on",
+        choices=("none", "error", "warning"),
+        default="none",
+        help="finding severity that returns non-zero: none, error, or warning (default: none)",
+    )
+    parser.add_argument(
         "--fail-on-warning",
         action="store_true",
-        help="return non-zero if any warning is found; default is report-only",
+        help="deprecated alias for --fail-on warning",
     )
     return parser.parse_args(argv)
 
@@ -186,27 +197,35 @@ def main(argv: list[str]) -> int:
     parser = etree.XMLParser(resolve_entities=False, load_dtd=False, no_network=True)
     root = etree.parse(str(args.xml), parser).getroot()
 
-    warnings: list[WarningItem] = []
-    warnings.extend(find_mixed_programlisting_warnings(args.xml, root))
-    warnings.extend(find_screen_sql_warnings(args.xml, root))
-    warnings.extend(find_duplicate_section_warnings(args.xml, root))
-    warnings.extend(find_metadata_note_warnings(args.xml, root))
+    findings: list[Finding] = []
+    findings.extend(find_mixed_programlisting_warnings(args.xml, root))
+    findings.extend(find_screen_sql_warnings(args.xml, root))
+    findings.extend(find_duplicate_section_warnings(args.xml, root))
+    findings.extend(find_metadata_note_warnings(args.xml, root))
 
-    for item in warnings[: max(args.max_warnings, 0)]:
-        print(f"WARNING {item.code}: {item.location}: {item.message}")
-    if args.max_warnings >= 0 and len(warnings) > args.max_warnings:
-        print(f"... {len(warnings) - args.max_warnings} additional warnings suppressed by --max-warnings")
+    for item in findings[: max(args.max_warnings, 0)]:
+        print(f"{item.severity.upper()} {item.code}: {item.location}: {item.message}")
+    if args.max_warnings >= 0 and len(findings) > args.max_warnings:
+        print(f"... {len(findings) - args.max_warnings} additional findings suppressed by --max-warnings")
 
-    counts = Counter(item.code for item in warnings)
-    if counts:
-        summary = ", ".join(f"{code}={count}" for code, count in sorted(counts.items()))
-        print(f"DocBook markup checker summary: {len(warnings)} warning(s): {summary}")
-        if not args.fail_on_warning:
-            print("DocBook markup checker is report-only by default; use --fail-on-warning to make warnings fatal.")
+    severity_counts = Counter(item.severity for item in findings)
+    code_counts = Counter(item.code for item in findings)
+    if code_counts:
+        severity_summary = ", ".join(f"{severity}={count}" for severity, count in sorted(severity_counts.items()))
+        code_summary = ", ".join(f"{code}={count}" for code, count in sorted(code_counts.items()))
+        print(f"DocBook markup checker summary: {len(findings)} finding(s): {severity_summary}; {code_summary}")
     else:
         print("DocBook markup checker summary: no suspicious DocBook example markup found.")
 
-    return 1 if warnings and args.fail_on_warning else 0
+    fail_on = "warning" if args.fail_on_warning else args.fail_on
+    should_fail = (
+        (fail_on == "warning" and bool(findings))
+        or (fail_on == "error" and any(item.severity == "error" for item in findings))
+    )
+    if not should_fail and findings:
+        print(f"DocBook markup checker did not fail because --fail-on={fail_on}.")
+
+    return 1 if should_fail else 0
 
 
 if __name__ == "__main__":

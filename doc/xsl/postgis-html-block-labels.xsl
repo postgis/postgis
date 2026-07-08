@@ -11,76 +11,102 @@
   generated block so code/input and output remain distinguishable without
   relying on color or CSS-generated content.
 -->
-<xsl:param name="postgis.block.label.language" select="'en'"/>
+<xsl:include href="postgis-block-labels-common.xsl"/>
 
-<xsl:template name="postgis-localized-block-label">
-  <xsl:param name="kind"/>
-  <xsl:variable name="lang"
-                select="translate($postgis.block.label.language,
-                                  '-ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                                  '_abcdefghijklmnopqrstuvwxyz')"/>
+<!--
+  DocBook XSL serializes external <script> links as self-closing XHTML.
+  The published manual is commonly served as text/html, where a self-closing
+  script tag swallows the body in browsers. Emit an explicit closing tag.
+-->
+<xsl:template name="make.script.link">
+  <xsl:param name="script.filename" select="''"/>
 
-  <xsl:choose>
-    <xsl:when test="$kind = 'output'">
-      <xsl:choose>
-        <xsl:when test="$lang = 'be'">Вывад</xsl:when>
-        <xsl:when test="$lang = 'br' or $lang = 'pt_br'">Saída</xsl:when>
-        <xsl:when test="$lang = 'da'">Uddata</xsl:when>
-        <xsl:when test="$lang = 'de'">Ausgabe</xsl:when>
-        <xsl:when test="$lang = 'es'">Salida</xsl:when>
-        <xsl:when test="$lang = 'fr'">Sortie</xsl:when>
-        <xsl:when test="$lang = 'it' or $lang = 'it_it'">Risultato</xsl:when>
-        <xsl:when test="$lang = 'ja'">出力</xsl:when>
-        <xsl:when test="$lang = 'ka'">შედეგი</xsl:when>
-        <xsl:when test="$lang = 'ko' or $lang = 'ko_kr'">출력</xsl:when>
-        <xsl:when test="$lang = 'pl'">Wynik</xsl:when>
-        <xsl:when test="$lang = 'ro'">Ieșire</xsl:when>
-        <xsl:when test="$lang = 'ru'">Вывод</xsl:when>
-        <xsl:when test="$lang = 'sv'">Utdata</xsl:when>
-        <xsl:when test="$lang = 'uk'">Вивід</xsl:when>
-        <xsl:when test="$lang = 'zh' or $lang = 'zh_hans'">输出</xsl:when>
-        <xsl:otherwise>Output</xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:choose>
-        <xsl:when test="$lang = 'be'">Код</xsl:when>
-        <xsl:when test="$lang = 'br' or $lang = 'pt_br'">Código</xsl:when>
-        <xsl:when test="$lang = 'da'">Kode</xsl:when>
-        <xsl:when test="$lang = 'de'">Code</xsl:when>
-        <xsl:when test="$lang = 'es'">Código</xsl:when>
-        <xsl:when test="$lang = 'fr'">Code</xsl:when>
-        <xsl:when test="$lang = 'it' or $lang = 'it_it'">Codice</xsl:when>
-        <xsl:when test="$lang = 'ja'">コード</xsl:when>
-        <xsl:when test="$lang = 'ka'">კოდი</xsl:when>
-        <xsl:when test="$lang = 'ko' or $lang = 'ko_kr'">코드</xsl:when>
-        <xsl:when test="$lang = 'pl'">Kod</xsl:when>
-        <xsl:when test="$lang = 'ro'">Cod</xsl:when>
-        <xsl:when test="$lang = 'ru'">Код</xsl:when>
-        <xsl:when test="$lang = 'sv'">Kod</xsl:when>
-        <xsl:when test="$lang = 'uk'">Код</xsl:when>
-        <xsl:when test="$lang = 'zh' or $lang = 'zh_hans'">代码</xsl:when>
-        <xsl:otherwise>Code</xsl:otherwise>
-      </xsl:choose>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:variable name="src">
+    <xsl:call-template name="relative.path.link">
+      <xsl:with-param name="target.pathname" select="$script.filename"/>
+    </xsl:call-template>
+  </xsl:variable>
+
+  <xsl:if test="string-length($script.filename) != 0">
+    <script>
+      <xsl:attribute name="src">
+        <xsl:value-of select="$src"/>
+      </xsl:attribute>
+      <xsl:attribute name="type">
+        <xsl:value-of select="$html.script.type"/>
+      </xsl:attribute>
+      <xsl:call-template name="other.script.attributes">
+        <xsl:with-param name="script.filename" select="$script.filename"/>
+      </xsl:call-template>
+      <xsl:text> </xsl:text>
+    </script>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="d:programlisting">
   <xsl:param name="suppress-numbers" select="'0'"/>
   <xsl:variable name="label.id" select="concat('postgis-block-label-', generate-id())"/>
+  <xsl:variable name="copy.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'copy'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="copied.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'copied'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="copy.failed.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'copy-failed'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="has.legacy.output"
+                select="contains(., '---+')
+                        or contains(., '&#10;--------')
+                        or contains(., '&#10;    --------')
+                        or contains(., ' row)')
+                        or contains(., ' rows)')
+                        or contains(., 'ERROR:')
+                        or contains(., 'NOTICE:')
+                        or contains(., 'WARNING:')"/>
 
   <div class="postgis-example-block postgis-example-code" role="group" data-postgis-block="code">
     <xsl:attribute name="aria-labelledby">
       <xsl:value-of select="$label.id"/>
     </xsl:attribute>
-    <div class="postgis-example-label">
-      <xsl:attribute name="id">
-        <xsl:value-of select="$label.id"/>
-      </xsl:attribute>
-      <xsl:call-template name="postgis-localized-block-label">
-        <xsl:with-param name="kind" select="'code'"/>
-      </xsl:call-template>
+    <xsl:if test="$has.legacy.output">
+      <xsl:attribute name="data-postgis-copyable">false</xsl:attribute>
+    </xsl:if>
+    <div class="postgis-example-header">
+      <div class="postgis-example-label">
+        <xsl:attribute name="id">
+          <xsl:value-of select="$label.id"/>
+        </xsl:attribute>
+        <xsl:call-template name="postgis-localized-block-label">
+          <xsl:with-param name="kind" select="'code'"/>
+        </xsl:call-template>
+      </div>
+      <xsl:if test="not($has.legacy.output)">
+        <button class="postgis-copy-button" type="button" data-postgis-copy="code">
+          <xsl:attribute name="aria-label">
+            <xsl:value-of select="$copy.label"/>
+          </xsl:attribute>
+          <xsl:attribute name="title">
+            <xsl:value-of select="$copy.label"/>
+          </xsl:attribute>
+          <xsl:attribute name="data-copy-label">
+            <xsl:value-of select="$copy.label"/>
+          </xsl:attribute>
+          <xsl:attribute name="data-copied-label">
+            <xsl:value-of select="$copied.label"/>
+          </xsl:attribute>
+          <xsl:attribute name="data-copy-failed-label">
+            <xsl:value-of select="$copy.failed.label"/>
+          </xsl:attribute>
+          <xsl:value-of select="$copy.label"/>
+        </button>
+      </xsl:if>
     </div>
     <xsl:apply-imports/>
   </div>
@@ -94,13 +120,15 @@
     <xsl:attribute name="aria-labelledby">
       <xsl:value-of select="$label.id"/>
     </xsl:attribute>
-    <div class="postgis-example-label">
-      <xsl:attribute name="id">
-        <xsl:value-of select="$label.id"/>
-      </xsl:attribute>
-      <xsl:call-template name="postgis-localized-block-label">
-        <xsl:with-param name="kind" select="'output'"/>
-      </xsl:call-template>
+    <div class="postgis-example-header">
+      <div class="postgis-example-label">
+        <xsl:attribute name="id">
+          <xsl:value-of select="$label.id"/>
+        </xsl:attribute>
+        <xsl:call-template name="postgis-localized-block-label">
+          <xsl:with-param name="kind" select="'output'"/>
+        </xsl:call-template>
+      </div>
     </div>
     <xsl:apply-imports/>
   </div>

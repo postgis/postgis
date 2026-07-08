@@ -119,11 +119,14 @@ XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam chunker.output.indent yes \
 	--stringparam admon.graphics.path ../images/ \
 	--stringparam img.src.path ../ \
-	--stringparam html.stylesheet ../style.css
+	--stringparam html.stylesheet ../style.css \
+	--stringparam html.script ../copy-code.js
 
 HTML_DOCBOOK_XSL=$(builddir)/postgis-html.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(builddir)/postgis-chunk-html.xsl
 POSTGIS_HTML_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-html-block-labels.xsl
+POSTGIS_DBLATEX_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-dblatex-block-labels.xsl
+POSTGIS_BLOCK_LABELS_COMMON_XSL=$(abs_srcdir)/xsl/postgis-block-labels-common.xsl
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
@@ -414,7 +417,7 @@ postgis-out-epub.xml: postgis-out.xml Makefile
 chunked-html: ## Generate multi-file html in html/postgis-en/
 
 chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
-$(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/%.in $(POSTGIS_HTML_BLOCK_LABELS_XSL) Makefile
+$(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/%.in $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) Makefile
 	$(PERL) -pe "s!\@\@XSLBASE\@\@!$(XSLBASE)!g; s!\@\@ABS_SRCDIR\@\@!$(abs_srcdir)!g;" $< > $@
 
 $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL)
@@ -441,12 +444,13 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
 $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
+		--stringparam html.script copy-code.js \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty | images pdf-images
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty $(POSTGIS_DBLATEX_BLOCK_LABELS_XSL) $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) | images pdf-images
 ifeq ($(DBLATEX),)
 	@echo
 	@echo "configure was unable to find the 'dblatex' utility program."
@@ -455,6 +459,8 @@ ifeq ($(DBLATEX),)
 	@false
 else
 	$(DBLATEX) -T native -t pdf \
+		 -p "$(POSTGIS_DBLATEX_BLOCK_LABELS_XSL)" \
+		 -P postgis.block.label.language=$(patsubst -%,%,$(DOCSUFFIX)) \
 		 -x "--path $(XSLT_PATH)" \
 		 -I "$(abs_builddir)/pdf" \
 		 -P doc.collab.show=0 \
@@ -622,9 +628,11 @@ chunked-html-uninstall:
 
 html-assets-install: images-install
 	$(INSTALL_DATA) $(abs_srcdir)/html/style.css $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(abs_srcdir)/html/copy-code.js $(DESTDIR)$(htmldir)/
 
 html-assets-uninstall: images-install
 	rm -f $(DESTDIR)$(htmldir)/style.css
+	rm -f $(DESTDIR)$(htmldir)/copy-code.js
 
 docs-install: html-install html-assets-install
 	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
@@ -659,7 +667,9 @@ check-unit: $(CHECK_UNIT_TARGET)
 DOCBOOK_BLOCK_LABEL_CHECK_PAGES = \
 	$(html_builddir)/postgis$(DOCSUFFIX)/is_contained_geometry_box2df.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsKML.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsGML.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsLatLonText.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/ST_GeometryN.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/ST_MakeValid.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/geometry_overlaps.html
 
@@ -667,7 +677,7 @@ check-html-block-labels: $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_t
 	$(abs_top_srcdir)/utils/check_docbook_block_labels.py $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
 
 check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/check_docbook_markup.py
-	$(abs_top_srcdir)/utils/check_docbook_markup.py --max-warnings 25 $<
+	$(abs_top_srcdir)/utils/check_docbook_markup.py --fail-on error --max-warnings 25 $<
 
 check-xml: postgis-out.xml
 	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch

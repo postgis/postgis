@@ -33,10 +33,14 @@ def element_id(node: ET.Element) -> str:
 
 
 def find_label(parent: ET.Element, label_id: str) -> ET.Element | None:
-    for child in list(parent):
-        if child.get("id") == label_id and "postgis-example-label" in class_tokens(child):
+    for child in parent.iter():
+        if child is not parent and child.get("id") == label_id and "postgis-example-label" in class_tokens(child):
             return child
     return None
+
+
+def copy_buttons(parent: ET.Element) -> list[ET.Element]:
+    return [node for node in parent.iter() if "postgis-copy-button" in class_tokens(node)]
 
 
 def check_file(path: Path) -> list[str]:
@@ -92,12 +96,28 @@ def check_file(path: Path) -> list[str]:
                 f"expected {expected_english_label!r}"
             )
 
+        buttons = copy_buttons(parent)
+        if block_class == "programlisting":
+            copyable = parent.get("data-postgis-copyable") != "false"
+            expected_buttons = 1 if copyable else 0
+            if len(buttons) != expected_buttons:
+                errors.append(
+                    f"{path}: code block {element_id(pre)} has {len(buttons)} copy buttons, expected {expected_buttons}"
+                )
+            elif buttons:
+                button = buttons[0]
+                if button.get("type") != "button":
+                    errors.append(f"{path}: code block {element_id(pre)} copy button lacks type=button")
+                if not (button.get("aria-label") and button.get("title")):
+                    errors.append(f"{path}: code block {element_id(pre)} copy button lacks accessible label/title")
         if block_class == "screen":
             forbidden = tokens & FORBIDDEN_SCREEN_CLASSES
             if forbidden:
                 errors.append(
                     f"{path}: screen/output block {element_id(pre)} has code/highlight class tokens {sorted(forbidden)}"
                 )
+            if buttons:
+                errors.append(f"{path}: screen/output block {element_id(pre)} unexpectedly has a copy button")
 
     for block_class, count in counts.items():
         if count == 0:
