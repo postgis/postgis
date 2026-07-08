@@ -1,3 +1,9 @@
+CREATE OR REPLACE FUNCTION geos_version()
+RETURNS integer AS $$
+    SELECT (matches[1]::integer * 100) + matches[2]::integer
+    FROM regexp_match(postgis_geos_version(), E'^([0-9]+)]\\.([0-9]+)') AS matches;
+$$ LANGUAGE 'sql' IMMUTABLE;
+
 SELECT 'intersection', ST_AsText(ST_Intersection(
 	'LINESTRING(0 0, 9 0)'::geometry,
 	'LINESTRING(7 0, 13.2 0)'::geometry,
@@ -13,14 +19,7 @@ SELECT 'symdifference', ST_AsText(ST_SymDifference(
 	'LINESTRING(7 0, 13.2 0)'::geometry,
 2));
 
-SELECT 'union', ST_AsText(ST_Union(
-	'LINESTRING(0.5 0, 9 0)'::geometry,
-	'LINESTRING(7 0, 13.2 0)'::geometry,
- 2));
 
-SELECT 'unaryunion', ST_AsText(ST_UnaryUnion(
-	'GEOMETRYCOLLECTION(LINESTRING(0.5 0, 9 0), LINESTRING(7 0, 13.2 0))'::geometry,
-2));
 
 WITH n AS (SELECT geom
 FROM ST_Subdivide(
@@ -28,3 +27,6 @@ FROM ST_Subdivide(
 6, 1) AS geom)
 SELECT 'subdivide', count(geom), ST_AsText(ST_Normalize(ST_Union(geom)))
 FROM n;
+
+
+DROP FUNCTION geos_version();

@@ -83,9 +83,11 @@ static void test_lwgeom_wrapx(void)
 	lwgeom_free(tmp);
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
-	tmp = lwgeom_from_wkt(
-					"MULTILINESTRING((0 0,8 0),(-2 0,0 0))",
-					LW_PARSER_CHECK_NONE);
+#if POSTGIS_GEOS_VERSION < 31500
+	tmp = lwgeom_from_wkt("MULTILINESTRING((0 0,8 0),(-2 0,0 0))",LW_PARSER_CHECK_NONE);
+#else
+	tmp = lwgeom_from_wkt("LINESTRING(-2 0,0 0,8 0)",LW_PARSER_CHECK_NONE);
+#endif
 	tmp2 = lwgeom_normalize(tmp);
 	lwgeom_free(tmp);
 	exp_wkt = lwgeom_to_ewkt(tmp2);
