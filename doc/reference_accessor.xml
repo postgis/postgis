@@ -1219,11 +1219,13 @@ SELECT ST_AsEWKT(ST_ExteriorRing(
 <![CDATA[
 SELECT n, ST_AsEWKT(ST_GeometryN(geom, n)) As geomewkt
 FROM (
-VALUES (ST_GeomFromEWKT('MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))') ),
-( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
-	)As foo(geom)
+VALUES
+    (1, ST_GeomFromEWKT('MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))') ),
+    (2, ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
+	) As foo(id, geom)
 	CROSS JOIN generate_series(1,100) n
-WHERE n <= ST_NumGeometries(geom);
+WHERE n <= ST_NumGeometries(geom)
+ORDER BY id, n;
 ]]></programlisting>
 <screen><![CDATA[ n |               geomewkt
 ---+-----------------------------------------
