@@ -129,7 +129,6 @@
                 select="translate(normalize-space(@language), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ ', 'abcdefghijklmnopqrstuvwxyz-')"/>
   <xsl:variable name="effective.language">
     <xsl:choose>
-      <xsl:when test="$has.legacy.output"/>
       <xsl:when test="$declared.language != ''">
         <xsl:value-of select="$declared.language"/>
       </xsl:when>
@@ -158,6 +157,7 @@
     </xsl:attribute>
     <xsl:if test="$has.legacy.output">
       <xsl:attribute name="data-postgis-copyable">false</xsl:attribute>
+      <xsl:attribute name="data-postgis-legacy-output">true</xsl:attribute>
     </xsl:if>
     <div class="postgis-example-header">
       <div class="postgis-example-label">

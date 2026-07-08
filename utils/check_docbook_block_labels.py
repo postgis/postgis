@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -63,7 +64,7 @@ def copy_buttons(parent: ET.Element) -> list[ET.Element]:
     return [node for node in parent.iter() if "postgis-copy-button" in class_tokens(node)]
 
 
-def check_file(path: Path) -> list[str]:
+def check_file(path: Path, required_kinds: set[str]) -> list[str]:
     errors: list[str] = []
     tree = ET.parse(path)
     root = tree.getroot()
@@ -157,25 +158,43 @@ def check_file(path: Path) -> list[str]:
             if buttons:
                 errors.append(f"{path}: screen/output block {element_id(pre)} unexpectedly has a copy button")
 
-    for block_class, count in counts.items():
-        if count == 0:
+    for block_class in required_kinds:
+        if counts.get(block_class, 0) == 0:
             errors.append(f"{path}: no generated {block_class} blocks found")
 
     return errors
 
 
+def parse_required_kinds(value: str) -> set[str]:
+    if not value:
+        return set()
+    kinds = {item.strip() for item in value.split(",") if item.strip()}
+    unknown = kinds - set(BLOCK_KINDS)
+    if unknown:
+        raise argparse.ArgumentTypeError(f"unknown block kind(s): {', '.join(sorted(unknown))}")
+    return kinds
+
+
 def main(argv: list[str]) -> int:
-    if not argv:
-        print("usage: check_docbook_block_labels.py GENERATED_PAGE.html ...", file=sys.stderr)
-        return 2
+    parser = argparse.ArgumentParser(
+        description="Check generated manual HTML labels DocBook code and output blocks."
+    )
+    parser.add_argument(
+        "--require-kinds",
+        type=parse_required_kinds,
+        default=set(),
+        help="comma-separated block kinds that every input page must contain, for focused fixtures",
+    )
+    parser.add_argument("pages", nargs="+", metavar="GENERATED_PAGE.html")
+    args = parser.parse_args(argv)
 
     errors: list[str] = []
-    for arg in argv:
+    for arg in args.pages:
         path = Path(arg)
         if not path.exists():
             errors.append(f"{path}: file does not exist")
             continue
-        errors.extend(check_file(path))
+        errors.extend(check_file(path, args.require_kinds))
 
     if errors:
         print("DocBook block label check failed:", file=sys.stderr)

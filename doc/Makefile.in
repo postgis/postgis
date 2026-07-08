@@ -681,6 +681,9 @@ check-unit: $(CHECK_UNIT_TARGET)
 
 DOCBOOK_BLOCK_LABEL_CHECK_PAGES = \
 	$(html_builddir)/postgis$(DOCSUFFIX)/is_contained_geometry_box2df.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/overlaps_geometry_box2df.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/overlaps_box2df_geometry.html \
+	$(html_builddir)/postgis$(DOCSUFFIX)/overlaps_box2df_box2df.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsKML.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsGML.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsLatLonText.html \
@@ -692,7 +695,8 @@ check-html-block-labels: $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_t
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_block_labels.py $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
+	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_block_labels.py $(html_builddir)/postgis$(DOCSUFFIX)/*.html
+	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_block_labels.py --require-kinds programlisting,screen $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
 endif
 
 check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/check_docbook_markup.py

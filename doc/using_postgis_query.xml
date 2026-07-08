@@ -712,17 +712,16 @@ kilometers
 		  </question>
 
 		  <answer>
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT gid, name, ST_Area(geom) AS area
 FROM bc_municipality
 WHERE ST_NRings(geom) > 1
 ORDER BY area DESC LIMIT 1;
-
-gid  | name         | area
+]]></programlisting>
+<screen><![CDATA[gid  | name         | area
 -----+--------------+------------------
 12   | SPALLUMCHEEN | 257374619.430216
-
-]]></programlisting>
+]]></screen>
 		  </answer>
 		</qandaentry>
 	  </qandaset>
