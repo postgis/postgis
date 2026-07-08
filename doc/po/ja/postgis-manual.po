@@ -51736,3 +51736,28 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#. Tag: para
+#, no-c-format
+msgid "Code"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Output"
+msgstr "出力:"
+
+#. Tag: para
+#, no-c-format
+msgid "Copy"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Copied"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Failed"
+msgstr ""

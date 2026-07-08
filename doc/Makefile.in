@@ -109,7 +109,6 @@ XSLTPROC_COMMONOPTS= \
 	--param footer.rule 0 \
 	--param table.borders.with.css 1 \
 	--stringparam docbook.css.source "" \
-	--stringparam postgis.block.label.language $(patsubst -%,%,$(DOCSUFFIX)) \
 	--stringparam html.ext .html \
 	--stringparam saxon.character.representation decimal \
 	$(XSLTPROCFLAGS)
@@ -461,7 +460,6 @@ ifeq ($(DBLATEX),)
 else
 	$(DBLATEX) -T native -t pdf \
 		 -p "$(POSTGIS_DBLATEX_BLOCK_LABELS_XSL)" \
-		 -P postgis.block.label.language=$(patsubst -%,%,$(DOCSUFFIX)) \
 		 -x "--path $(XSLT_PATH)" \
 		 -I "$(abs_builddir)/pdf" \
 		 -P doc.collab.show=0 \

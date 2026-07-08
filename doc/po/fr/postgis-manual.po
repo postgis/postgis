@@ -53065,3 +53065,28 @@ msgstr "Support 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Prise en charge du type geography"
+
+#. Tag: para
+#, no-c-format
+msgid "Code"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Output"
+msgstr "Export de raster"
+
+#. Tag: para
+#, no-c-format
+msgid "Copy"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Copied"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Failed"
+msgstr ""

@@ -168,6 +168,14 @@
         </para>
     </tags>
 
+    <block_labels>
+        <label role="code"><para>Code</para></label>
+        <label role="output"><para>Output</para></label>
+        <label role="copy"><para>Copy</para></label>
+        <label role="copied"><para>Copied</para></label>
+        <label role="copy-failed"><para>Failed</para></label>
+    </block_labels>
+
     <cheatsheets>
         <para role="new_in_release">
             New in this release
