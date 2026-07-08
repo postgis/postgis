@@ -257,6 +257,28 @@ pre,
     background: #f7fbff;
 }
 
+.postgis-sql-keyword {
+    color: #003f7f;
+    font-weight: 600;
+}
+
+.postgis-sql-function {
+    color: #7a3e00;
+}
+
+.postgis-sql-string {
+    color: #146000;
+}
+
+.postgis-sql-number {
+    color: #5c3a9f;
+}
+
+.postgis-sql-comment {
+    color: #666;
+    font-style: italic;
+}
+
 .postgis-example-output {
     border-left-color: #666;
 }
@@ -283,6 +305,19 @@ pre,
     }
     .postgis-copy-button {
         display: none;
+    }
+    .postgis-sql-keyword,
+    .postgis-sql-function,
+    .postgis-sql-string,
+    .postgis-sql-number,
+    .postgis-sql-comment {
+        color: #000;
+    }
+    .postgis-sql-keyword {
+        font-weight: 600;
+    }
+    .postgis-sql-comment {
+        font-style: italic;
     }
 }
 

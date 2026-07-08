@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:d="http://docbook.org/ns/docbook"
+                xmlns:exsl="http://exslt.org/common"
+                xmlns:h="http://www.w3.org/1999/xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
-                exclude-result-prefixes="d"
+                exclude-result-prefixes="d exsl h"
                 version="1.0">
 
 <!--
@@ -12,6 +14,42 @@
   relying on color or CSS-generated content.
 -->
 <xsl:include href="postgis-block-labels-common.xsl"/>
+
+<xsl:template match="@*|node()" mode="postgis-code-block-html">
+  <xsl:param name="language"/>
+  <xsl:copy>
+    <xsl:apply-templates select="@*|node()" mode="postgis-code-block-html">
+      <xsl:with-param name="language" select="$language"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="@*" mode="postgis-code-block-html">
+  <xsl:param name="language"/>
+  <xsl:copy/>
+</xsl:template>
+
+<xsl:template match="pre[contains(concat(' ', @class, ' '), ' programlisting ')] | h:pre[contains(concat(' ', @class, ' '), ' programlisting ')]" mode="postgis-code-block-html">
+  <xsl:param name="language"/>
+  <xsl:copy>
+    <xsl:copy-of select="@*[name() != 'class' and name() != 'data-postgis-language']"/>
+    <xsl:attribute name="class">
+      <xsl:value-of select="normalize-space(@class)"/>
+      <xsl:if test="$language != ''">
+        <xsl:text> language-</xsl:text>
+        <xsl:value-of select="$language"/>
+      </xsl:if>
+    </xsl:attribute>
+    <xsl:if test="$language != ''">
+      <xsl:attribute name="data-postgis-language">
+        <xsl:value-of select="$language"/>
+      </xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates select="node()" mode="postgis-code-block-html">
+      <xsl:with-param name="language" select="$language"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
 
 <!--
   DocBook XSL serializes external <script> links as self-closing XHTML.
@@ -70,8 +108,51 @@
                         or contains(., 'ERROR:')
                         or contains(., 'NOTICE:')
                         or contains(., 'WARNING:')"/>
+  <xsl:variable name="code.text" select="normalize-space(.)"/>
+  <xsl:variable name="code.text.upper"
+                select="translate($code.text, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
+  <xsl:variable name="looks.like.sql"
+                select="starts-with($code.text.upper, 'SELECT ')
+                        or starts-with($code.text.upper, 'WITH ')
+                        or starts-with($code.text.upper, 'VALUES ')
+                        or starts-with($code.text.upper, 'INSERT ')
+                        or starts-with($code.text.upper, 'UPDATE ')
+                        or starts-with($code.text.upper, 'DELETE ')
+                        or starts-with($code.text.upper, 'CREATE ')
+                        or starts-with($code.text.upper, 'ALTER ')
+                        or starts-with($code.text.upper, 'DROP ')
+                        or starts-with($code.text.upper, 'EXPLAIN ')
+                        or starts-with($code.text.upper, 'DO ')
+                        or starts-with($code.text.upper, 'BEGIN;')
+                        or starts-with($code.text.upper, 'COMMIT;')"/>
+  <xsl:variable name="declared.language"
+                select="translate(normalize-space(@language), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ ', 'abcdefghijklmnopqrstuvwxyz-')"/>
+  <xsl:variable name="effective.language">
+    <xsl:choose>
+      <xsl:when test="$has.legacy.output"/>
+      <xsl:when test="$declared.language != ''">
+        <xsl:value-of select="$declared.language"/>
+      </xsl:when>
+      <xsl:when test="$looks.like.sql">sql</xsl:when>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="rendered.block">
+    <xsl:apply-imports/>
+  </xsl:variable>
 
-  <div class="postgis-example-block postgis-example-code" role="group" data-postgis-block="code">
+  <div role="group" data-postgis-block="code">
+    <xsl:attribute name="class">
+      <xsl:text>postgis-example-block postgis-example-code</xsl:text>
+      <xsl:if test="$effective.language != ''">
+        <xsl:text> postgis-example-language-</xsl:text>
+        <xsl:value-of select="$effective.language"/>
+      </xsl:if>
+    </xsl:attribute>
+    <xsl:if test="$effective.language != ''">
+      <xsl:attribute name="data-postgis-language">
+        <xsl:value-of select="$effective.language"/>
+      </xsl:attribute>
+    </xsl:if>
     <xsl:attribute name="aria-labelledby">
       <xsl:value-of select="$label.id"/>
     </xsl:attribute>
@@ -108,7 +189,9 @@
         </button>
       </xsl:if>
     </div>
-    <xsl:apply-imports/>
+    <xsl:apply-templates select="exsl:node-set($rendered.block)/node()" mode="postgis-code-block-html">
+      <xsl:with-param name="language" select="$effective.language"/>
+    </xsl:apply-templates>
   </div>
 </xsl:template>
 

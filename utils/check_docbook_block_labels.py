@@ -11,7 +11,22 @@ BLOCK_KINDS = {
     "programlisting": ("postgis-example-code", "code", "Code"),
     "screen": ("postgis-example-output", "output", "Output"),
 }
-FORBIDDEN_SCREEN_CLASSES = {"programlisting", "sql", "language-sql", "hljs", "highlight"}
+FORBIDDEN_SCREEN_CLASSES = {"programlisting", "sql", "hljs", "highlight"}
+SQL_STARTERS = (
+    "SELECT ",
+    "WITH ",
+    "VALUES ",
+    "INSERT ",
+    "UPDATE ",
+    "DELETE ",
+    "CREATE ",
+    "ALTER ",
+    "DROP ",
+    "EXPLAIN ",
+    "DO ",
+    "BEGIN;",
+    "COMMIT;",
+)
 
 
 def local_name(tag: str) -> str:
@@ -30,6 +45,11 @@ def text_content(node: ET.Element) -> str:
 
 def element_id(node: ET.Element) -> str:
     return node.get("id") or "<no id>"
+
+
+def looks_like_sql_input(text: str) -> bool:
+    normalized = " ".join(text.split()).upper()
+    return normalized.startswith(SQL_STARTERS)
 
 
 def find_label(parent: ET.Element, label_id: str) -> ET.Element | None:
@@ -100,6 +120,7 @@ def check_file(path: Path) -> list[str]:
         if block_class == "programlisting":
             copyable = parent.get("data-postgis-copyable") != "false"
             expected_buttons = 1 if copyable else 0
+            language = pre.get("data-postgis-language") or parent.get("data-postgis-language")
             if len(buttons) != expected_buttons:
                 errors.append(
                     f"{path}: code block {element_id(pre)} has {len(buttons)} copy buttons, expected {expected_buttons}"
@@ -110,12 +131,29 @@ def check_file(path: Path) -> list[str]:
                     errors.append(f"{path}: code block {element_id(pre)} copy button lacks type=button")
                 if not (button.get("aria-label") and button.get("title")):
                     errors.append(f"{path}: code block {element_id(pre)} copy button lacks accessible label/title")
+
+            if language:
+                expected_token = f"language-{language}"
+                expected_wrapper_token = f"postgis-example-language-{language}"
+                if pre.get("data-postgis-language") != language:
+                    errors.append(f"{path}: code block {element_id(pre)} lacks pre data-postgis-language={language!r}")
+                if parent.get("data-postgis-language") != language:
+                    errors.append(f"{path}: code block {element_id(pre)} lacks wrapper data-postgis-language={language!r}")
+                if expected_token not in tokens:
+                    errors.append(f"{path}: code block {element_id(pre)} lacks {expected_token!r} class")
+                if expected_wrapper_token not in parent_tokens:
+                    errors.append(f"{path}: code block {element_id(pre)} lacks {expected_wrapper_token!r} wrapper class")
+            elif copyable and looks_like_sql_input(text_content(pre)):
+                errors.append(f"{path}: SQL-looking code block {element_id(pre)} lacks data-postgis-language='sql'")
         if block_class == "screen":
-            forbidden = tokens & FORBIDDEN_SCREEN_CLASSES
+            forbidden = (tokens & FORBIDDEN_SCREEN_CLASSES) | {token for token in tokens if token.startswith("language-")}
             if forbidden:
                 errors.append(
                     f"{path}: screen/output block {element_id(pre)} has code/highlight class tokens {sorted(forbidden)}"
                 )
+            for attr in ("data-postgis-language", "data-postgis-highlighted"):
+                if pre.get(attr) is not None or parent.get(attr) is not None:
+                    errors.append(f"{path}: screen/output block {element_id(pre)} unexpectedly has {attr}")
             if buttons:
                 errors.append(f"{path}: screen/output block {element_id(pre)} unexpectedly has a copy button")
 
