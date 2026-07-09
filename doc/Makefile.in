@@ -716,7 +716,7 @@ check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/check_docbook_mark
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_markup.py --fail-on error --max-warnings 25 $<
+	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_markup.py --fail-on warning --max-warnings 0 $<
 endif
 
 check-xml: postgis-out.xml
