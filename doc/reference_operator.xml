@@ -1064,8 +1064,10 @@ GROUP BY column1;]]></programlisting>
 			<programlisting><![CDATA[-- In versions prior to 2.0, this used to return true --
  SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
 	ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;]]></programlisting>
-<screen><![CDATA[--pt_intersect --
-f]]></screen>
+<screen><![CDATA[ pt_intersect
+--------------
+ f
+(1 row)]]></screen>
 		  </refsection>
 
 		  <refsection>

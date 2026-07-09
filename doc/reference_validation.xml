@@ -191,7 +191,7 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 		<title>Examples</title>
 
 		<para>This example returns the first three rejects from a successful quintuplet experiment.</para>
-		<programlisting><![CDATA[SELECT gid, reason(ST_IsValidDetail(geom)), ST_AsText(location(ST_IsValidDetail(geom))) as location
+		<programlisting role="requires-external-state"><![CDATA[SELECT gid, reason(ST_IsValidDetail(geom)), ST_AsText(location(ST_IsValidDetail(geom))) as location
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
 FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
@@ -279,7 +279,7 @@ SELECT ST_IsValidReason(
      200 100, 100 200))'::geometry) as validity_info;</programlisting>
 <screen>Self-intersection[150 150]</screen>
 		<para>This example returns the first three rejects from a successful quintuplet experiment.</para>
-		<programlisting><![CDATA[SELECT gid, ST_IsValidReason(geom) as validity_info
+		<programlisting role="requires-external-state"><![CDATA[SELECT gid, ST_IsValidReason(geom) as validity_info
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
 FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
