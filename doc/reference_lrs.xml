@@ -111,11 +111,10 @@ SELECT ST_AsText(
     )
 ) AS interpolated_offset_point
 FROM street;
-
- interpolated_offset_point
----------------------------
- POINT(6 -2)
 	]]></programlisting>
+<screen> interpolated_offset_point
+---------------------------
+ POINT(6 -2)</screen>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -529,14 +528,13 @@ CROSS JOIN segments
 WHERE end_fraction IS NOT NULL
   AND start_fraction <> end_fraction
 ORDER BY start_fraction;
-
- segment_id |         geom
+]]></programlisting>
+<screen> segment_id |         geom
 ------------+----------------------
           1 | LINESTRING(0 0,2 0)
           2 | LINESTRING(2 0,5 0)
           3 | LINESTRING(5 0,8 0)
-          4 | LINESTRING(8 0,10 0)
-]]></programlisting>
+          4 | LINESTRING(8 0,10 0)</screen>
 
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
 <programlisting>SELECT ST_AsText(ST_LineSubstring(

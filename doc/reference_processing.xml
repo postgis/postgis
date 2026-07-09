@@ -401,12 +401,11 @@ scored AS (
 )
 SELECT id, erosion_index, erosion_index &gt; 1.1 AS possible_spike
 FROM scored
-ORDER BY id;
-
-  id   | erosion_index | possible_spike
+ORDER BY id;</programlisting>
+<screen>  id   | erosion_index | possible_spike
 -------+---------------+----------------
  plain |         0.900 | f
- spike |         1.147 | t</programlisting>
+ spike |         1.147 | t</screen>
 
 	                <para>A variable-distance buffer can be approximated by buffering
 	                each vertex of a line by a distance interpolated along the line, building
@@ -2630,15 +2629,14 @@ FROM cells AS c
 LEFT JOIN poly_a AS a ON ST_Within(ST_PointOnSurface(c.geom), a.geom)
 LEFT JOIN poly_b AS b ON ST_Within(ST_PointOnSurface(c.geom), b.geom)
 WHERE a.id IS NOT NULL OR b.id IS NOT NULL
-ORDER BY id_a, id_b;
-
- id_a | id_b |              geom
+ORDER BY id_a, id_b;</programlisting>
+<screen> id_a | id_b |              geom
 ------+------+--------------------------------
  a1   | b1   | POLYGON((4 0,0 0,0 2,4 2,4 0))
  a1   | b2   | POLYGON((4 4,4 2,0 2,0 4,4 4))
  a2   | b1   | POLYGON((4 0,4 2,8 2,8 0,4 0))
  a2   | b2   | POLYGON((4 2,4 4,8 4,8 2,4 2))
-</programlisting>
+</screen>
 
         <para>Polygonizing a table of linestrings:</para>
          <programlisting>

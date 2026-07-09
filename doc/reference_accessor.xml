@@ -2764,13 +2764,12 @@ SELECT e.road_id,
 FROM endpoints AS e
 JOIN nodes AS n USING (endpoint_key)
 GROUP BY e.road_id
-ORDER BY e.road_id;
-
- road_id | from_node | to_node
+ORDER BY e.road_id;</programlisting>
+<screen> road_id | from_node | to_node
 ---------+-----------+---------
      1 |         1 |       2
      2 |         2 |       3
-     3 |         2 |       4</programlisting>
+     3 |         2 |       4</screen>
 		</refsection>
 
 	<refsection>
