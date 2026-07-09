@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-08 06:39+0000\n"
+"PO-Revision-Date: 2026-07-09 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -16858,16 +16858,20 @@ msgid ""
 "requires superuser access. Also note that database, session, and user "
 "settings override this."
 msgstr ""
+"データベースクラスター全体のデフォルトを全ドライバ利用可能に設定します。この"
+"操作にはスーパーユーザー権限が必要です。また、データベース設定、セッション設"
+"定、ユーザー設定の方がここで設定したものよりも優先されることに注意して下さい"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example writes the setting to postgres.auto.conf."
-msgstr ""
+msgstr "この例では設定をpostgres.auto.confに書き込みます。"
 
 #. Tag: para
 #, no-c-format
 msgid "Reload the PostgreSQL configuration so the changed setting is applied."
-msgstr ""
+msgstr "PostgreSQL設定を再読み込みして設定変更を適用します。"
 
 #. Tag: para
 #, no-c-format
@@ -16937,11 +16941,13 @@ msgid ""
 "Set and reset <varname>postgis.enable_outdb_rasters</varname> for the "
 "current session."
 msgstr ""
+"現在のセッションの<varname>postgis.enable_outdb_rasters</varname>を設定したり"
+"リセットしたりします。"
 
 #. Tag: para
 #, no-c-format
 msgid "Set the default for all new connections to a database."
-msgstr ""
+msgstr "特定のデータベースへの新規接続全てのデフォルトを設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -16949,6 +16955,9 @@ msgid ""
 "Set the default for the whole database cluster. This requires superuser "
 "access. Also note that database, session, and user settings override this."
 msgstr ""
+"データベースクラスター全体のデフォルトを設定します。この操作には"
+"スーパーユーザー権限が必要です。また、データベース設定、セッション設定、"
+"ユーザー設定の方がここで設定したものよりも優先されることに注意して下さい。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17127,7 +17136,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example converts longitude/latitude coordinates to geography."
-msgstr ""
+msgstr "この例では経度/緯度座標をジオグラフィーに変換します。"
 
 #. Tag: para
 #, no-c-format
@@ -17219,7 +17228,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "3D circular string."
-msgstr ""
+msgstr "3次元曲線ストリング。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17666,6 +17675,8 @@ msgid ""
 "Although bytea rep contains single \\, these need to be escaped when "
 "inserting into a table."
 msgstr ""
+"bytea表現は単一の \\ を含みますが、これらはテーブルに入れるときにエスケープす"
+"る必要があります。"
 
 #. Tag: para
 #, no-c-format
@@ -17782,6 +17793,8 @@ msgid ""
 "Although bytea rep contains single \\, these need to be escaped when "
 "inserting into a table. Unless standard_conforming_strings is set to on."
 msgstr ""
+"bytea表現は単一の \\ を含みますが、standard_conforming_stringsがonになってい"
+"ない場合には、これらはテーブルに入れるときにエスケープする必要があります。"
 
 #. Tag: para
 #, no-c-format
@@ -18200,7 +18213,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example creates a 3D LineString."
-msgstr ""
+msgstr "この例では3次元ラインストリングを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -18337,14 +18350,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example creates a LineString from a polyline."
-msgstr ""
+msgstr "この例ではポリラインからラインストリングを生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example selects a different precision than the one used for polyline "
 "encoding."
-msgstr ""
+msgstr "この例ではポリライン符号化の精度と違う精度を選択しています。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18523,7 +18536,7 @@ msgstr "ラインストリングの20% (0.20)位置の補完ポイント"
 #. Tag: para
 #, no-c-format
 msgid "This example returns the point 20 percent along a line."
-msgstr ""
+msgstr "この例ではラインに沿って20%のポイントを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -18623,7 +18636,7 @@ msgstr "20%刻みで補間されたポイントを持つラインストリング
 #, no-c-format
 msgid ""
 "This example returns points every 20 percent along a two-dimensional line."
-msgstr ""
+msgstr "この例では2次元ラインに沿って20%ごとにポイントを生成して返します。"
 
 #. Tag: para
 #, no-c-format
@@ -18677,12 +18690,18 @@ msgid ""
 "street data, and <function>ST_DWithin</function> excludes houses that are "
 "too far from the street."
 msgstr ""
+"この例ではストリートのラインに最も近いポイントの位置を得ることによって、家の"
+"ストリート番号を近似しています。サブクエリーによってサンプルの家とストリート"
+"のデータが作られ、<function>ST_DWithin</function>によってストリートから十分に"
+"遠い家を除きます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example finds the closest point on a line to a point or other geometry."
 msgstr ""
+"この例ではポイントや他のジオメトリから最も近いライン上のポイントを探索します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -18708,6 +18727,11 @@ msgid ""
 "in 2D line length. The Z and M values are interpolated for added endpoints "
 "if present."
 msgstr ""
+"与えられた割合位置を開始点と終了点とした、入力ラインの一部を計算します。一つ"
+"目の引数はLINESTRINGでなければなりません。二つ目と三つ目の引数は[0, 1]の範囲"
+"内で、開始点と終了点の、ライン長に対する割合の位置です。ジオメトリー入力に対"
+"する割合は2次元長で計算されます。Z値とM値が存在する場合には、追加された端点に"
+"対して補間計算を行います。"
 
 #. Tag: para
 #, no-c-format
@@ -18788,6 +18812,8 @@ msgid ""
 "the line, even when the input has Z values. The resulting Z values are "
 "interpolated along the selected 2D location."
 msgstr ""
+"ジオメトリー入力の場合には、割合による位置はZ値を持っていてもラインの2次元長"
+"を基に計算します。結果のZ値は選択した2次元位置に沿って補間しています。"
 
 #. Tag: para
 #, no-c-format
@@ -44789,7 +44815,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "CircularString"
-msgstr "曲線ストリング (CircularStringCircularString)"
+msgstr "曲線ストリング (CircularString)"
 
 #. Tag: para
 #, no-c-format
