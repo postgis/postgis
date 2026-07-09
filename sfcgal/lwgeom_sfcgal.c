@@ -2148,6 +2148,8 @@ sfcgal_generate_roof(PG_FUNCTION_ARGS)
 	geom = POSTGIS2SFCGALGeometry(input);
 	PG_FREE_IF_COPY(input, 0);
 
+	/* SFCGAL's generic C API orders slope_angle before height, unlike
+	 * PostGIS SQL and the specialized roof wrappers. */
 	result = sfcgal_geometry_generate_roof(geom, roof_type, slope_angle, height, (size_t)primary_edge_index);
 	sfcgal_geometry_delete(geom);
 

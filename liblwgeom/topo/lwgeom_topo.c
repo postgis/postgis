@@ -7422,9 +7422,9 @@ _lwt_overlay_split_points(const LWGEOM *xset)
     lwgeom_free(bnd);
   }
 
-  lwcollection_release(epoints);
-  lwcollection_release(lines);
-  lwgeom_release(multi);
+  lwcollection_free(epoints);
+  lwcollection_free(lines);
+  lwgeom_free(multi);
 
   points->srid = xset->srid;
   return lwcollection_as_lwgeom(points);

@@ -1334,7 +1334,8 @@ rt_raster_intersection_fractions(
 
 	/* Shallow clone a new raster with no bands */
 	rast_out = rt_raster_clone(rast_in, 0);
-	/* Add a float4 band matching GEOSGridIntersectionFractions' float buffer */
+	/* GEOSGridIntersectionFractions writes float values into float* buf,
+	 * so the output band must stay PT_32BF rather than PT_64BF. */
 	band_num = rt_raster_generate_new_band(
 		rast_out, /* rast */
 		PT_32BF, /* pixel type */

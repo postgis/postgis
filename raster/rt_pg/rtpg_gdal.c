@@ -1171,6 +1171,8 @@ ogrErrorHandler(CPLErr eErrClass, int err_no, const char* msg)
     const char* gdalErrType = "unknown type";
     char *redacted = pstrdup(msg ? msg : "");
 
+    /* GDAL debug/error text can include VSI URLs, headers, or tokens.
+     * Always redact before forwarding messages to PostgreSQL clients/logs. */
     rtpg_gdal_redact_message(redacted);
 
     if (err_no >= 0 && err_no < gdalErrorTypesSize)
