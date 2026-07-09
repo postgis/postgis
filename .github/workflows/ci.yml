@@ -75,3 +75,22 @@ jobs:
       if: ${{ success() }}
       run: |
         docker rm pgtest-${GITHUB_RUN_NUMBER}
+
+  docs-check:
+    name: "DocBook QA"
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Check Out'
+      uses: actions/checkout@v6
+    - name: 'Install dependencies'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          libxml2-utils python3 python3-lxml
+    - name: 'DocBook QA unit tests'
+      run: |
+        python3 utils/test_docbook_qa.py
+    - name: 'DocBook source lint'
+      run: |
+        xmllint --xinclude --noent doc/postgis.xml > postgis-out.xml 2>/dev/null
+        python3 utils/docbook_qa.py lint-source --fail-on warning --max-warnings 0 postgis-out.xml
