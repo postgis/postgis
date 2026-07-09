@@ -15,7 +15,7 @@ $$ LANGUAGE 'plpgsql';
 CREATE OR REPLACE FUNCTION geos_version()
 RETURNS integer AS $$
     SELECT (matches[1]::integer * 100) + matches[2]::integer
-    FROM regexp_match(postgis_geos_version(), E'^([0-9]+)]\\.([0-9]+)') AS matches;
+    FROM regexp_match(postgis_geos_version(), E'^([0-9]+)\\.([0-9]+)') AS matches;
 $$ LANGUAGE 'sql' IMMUTABLE;
 
 
