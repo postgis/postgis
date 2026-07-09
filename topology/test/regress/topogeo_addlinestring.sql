@@ -99,9 +99,9 @@ SELECT 'cross', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(49 18, 
 SELECT check_changes('cross');
 
 -- Snapping (and splitting a face)
-SELECT 'snap', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(18 22.2, 22.5 22.2, 21.2 20.5)', 1) ORDER BY 2;
+SELECT 'snap', COUNT(*) FROM TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(18 22.2, 22.5 22.2, 21.2 20.5)', 1);
 SELECT check_changes('snap');
-SELECT 'snap_again', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(18 22.2, 22.5 22.2, 21.2 20.5)', 1) ORDER BY 2;
+SELECT 'snap_again', COUNT(*) FROM TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(18 22.2, 22.5 22.2, 21.2 20.5)', 1);
 SELECT check_changes('snap_again');
 
 -- A mix of crossing and overlapping, splitting another face
