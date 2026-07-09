@@ -42,34 +42,20 @@ Use Winnie when the question is about release packaging, dependency bundles, or
 the Windows jobs represented on the project CI inventory. Use the MSYS2 GitHub
 Actions workflow when the question is about the lightweight pull-request build.
 
-## Historical MinGW Packaging Notes
+## Historical Windows Packaging Notes
 
-`DevWikiMingW64_Setup` described MinGW-w64 and MSYS 1.x setup by downloading
-old SourceForge toolchain zips, selecting GCC 4.5-era packages, copying DLL
-import libraries by hand, and compiling build tools and CUnit manually.
+Older Windows build notes in the retired Trac wiki covered MinGW-w64,
+MSYS 1.x, MSVC, and NSIS packaging for the PostGIS 1.x and 2.x release era.
+They assumed SourceForge-era toolchain archives, PostgreSQL 9.x, GCC 4.x,
+GDAL 1.x, GEOS 3.3/3.4, PROJ 4.x, DocBook XSL 1.76, source-built
+dependency prefixes, and hand-maintained installer payloads.
 
-`DevWikiWinMingW64` and `DevWikiWinMingW64_21` are the matching full PostGIS
-2.0 and 2.1 packaging recipes. They assume prepared `ming64.zip`, `ming32.zip`,
-or `ming64gcc48.zip` build environments, PostgreSQL 9.x, GCC 4.x, GDAL 1.x,
-GEOS 3.3/3.4, PROJ 4.x, DocBook XSL 1.76, and source-built dependency prefixes
-under `PROJECTS`. Their durable value is the separation between a release
-packaging environment and a lightweight pull-request build, not the exact
-commands.
+Those details are historical context, not current setup guidance. Their
+durable lesson is that Windows release packaging needs an explicit dependency
+bundle, installer payload list, and regression-test environment. In the current
+repository, those responsibilities belong to Winnie and the MSYS2 workflow,
+not to standalone wiki recipes.
 
-The older `DevWikiWinMingWSys_20`, `DevWikiWinMingWSys_20_MSVC`,
-`DevWikiWinVC_15`, and `DevWikiWinNSIS` notes were even more tightly bound to
-PostGIS 1.5 and 2.0, PostgreSQL 9.0/9.1, Windows XP, Visual Studio 2008/2010,
-SourceForge-era MinGW/MSYS installers, hand-edited dependency headers, and
-Stack Builder/NSIS packaging. Their surviving lesson is that Windows release
-packaging needs an explicit dependency bundle, installer payload list, and
-regression-test environment. In current repository terms, those responsibilities
-belong to Winnie and the MSYS2 workflow, not to standalone wiki recipes.
-
-Do not publish those steps as current instructions. The current analogue for
-prepared dependency bundles, `OS_BUILD`, `MINGHOST`, `GCC_TYPE`, and versioned
-dependency prefixes is Winnie, especially `ci/winnie/winnie_common.sh`. The
-current pull-request smoke build is the MSYS2 workflow, which installs
-dependencies from MSYS2 packages and should not copy source-build bootstrap
-steps from the old wiki pages. Current Windows fixes should update the relevant
-MSYS2 workflow, Winnie build/package/regression script, or shared build logic,
-then document any durable rule here.
+Do not republish the old commands as current instructions. Current Windows
+fixes should update the relevant MSYS2 workflow, Winnie build/package/regression
+script, or shared build logic, then document any durable rule here.
