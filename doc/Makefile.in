@@ -119,7 +119,7 @@ XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam admon.graphics.path ../images/ \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css \
-	--stringparam html.script ../copy-code.js
+	--stringparam html.script ../example-blocks.js
 
 HTML_DOCBOOK_XSL=$(builddir)/postgis-html.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(builddir)/postgis-chunk-html.xsl
@@ -434,7 +434,7 @@ $(HTML_REF_INDEX): postgis-out.xml Makefile $(abs_top_srcdir)/utils/docbook_qa.p
 	mkdir -p $(html_builddir)
 ifeq ($(PYTHON3),)
 	@echo "Skipping rich PostGIS reference index: python3 is not available."
-	@printf '{"functions":{},"operators":{}}\n' > $@
+	@printf '{"functions":{},"operators":{},"keywords":[]}\n' > $@
 else
 	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py ref-index $< $@
 endif
@@ -463,7 +463,7 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
 $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
-		--stringparam html.script copy-code.js \
+		--stringparam html.script example-blocks.js \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
@@ -646,12 +646,12 @@ chunked-html-uninstall:
 
 html-assets-install: images-install $(HTML_REF_INDEX)
 	$(INSTALL_DATA) $(abs_srcdir)/html/style.css $(DESTDIR)$(htmldir)/
-	$(INSTALL_DATA) $(abs_srcdir)/html/copy-code.js $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(abs_srcdir)/html/example-blocks.js $(DESTDIR)$(htmldir)/
 	$(INSTALL_DATA) $(HTML_REF_INDEX) $(DESTDIR)$(htmldir)/
 
 html-assets-uninstall: images-install
 	rm -f $(DESTDIR)$(htmldir)/style.css
-	rm -f $(DESTDIR)$(htmldir)/copy-code.js
+	rm -f $(DESTDIR)$(htmldir)/example-blocks.js
 	rm -f $(DESTDIR)$(htmldir)/postgis-ref-index.json
 
 docs-install: html-install html-assets-install

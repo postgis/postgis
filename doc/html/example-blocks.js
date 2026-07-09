@@ -3,96 +3,58 @@
 
   var resetTimers = new WeakMap();
   var scriptElement = document.currentScript;
-  var emptyRefIndex = { functions: {}, operators: {} };
-  var sqlKeywords = {
-    'ADD': true,
-    'ALTER': true,
-    'AND': true,
-    'AS': true,
-    'ASC': true,
-    'BEGIN': true,
-    'BY': true,
-    'CASE': true,
-    'CAST': true,
-    'COMMIT': true,
-    'CREATE': true,
-    'CROSS': true,
-    'DELETE': true,
-    'DESC': true,
-    'DISTINCT': true,
-    'DO': true,
-    'DROP': true,
-    'ELSE': true,
-    'END': true,
-    'EXCEPT': true,
-    'EXPLAIN': true,
-    'FALSE': true,
-    'FROM': true,
-    'FULL': true,
-    'GROUP': true,
-    'HAVING': true,
-    'IN': true,
-    'INNER': true,
-    'INSERT': true,
-    'INTERSECT': true,
-    'INTO': true,
-    'IS': true,
-    'JOIN': true,
-    'LEFT': true,
-    'LIMIT': true,
-    'NOT': true,
-    'NULL': true,
-    'OFFSET': true,
-    'ON': true,
-    'OR': true,
-    'ORDER': true,
-    'OUTER': true,
-    'OVER': true,
-    'RETURNING': true,
-    'RIGHT': true,
-    'SELECT': true,
-    'SET': true,
-    'THEN': true,
-    'TRUE': true,
-    'UNION': true,
-    'UPDATE': true,
-    'USING': true,
-    'VALUES': true,
-    'WHEN': true,
-    'WHERE': true,
-    'WITH': true
-  };
+  var emptyRefIndex = { functions: {}, operators: {}, keywords: [] };
 
-  function buttonLabel(button, key, fallback) {
-    return button.getAttribute(key) || fallback;
-  }
+  // ---------------------------------------------------------------------------
+  // Reference-index loading
+  // ---------------------------------------------------------------------------
 
-  function setButtonState(button, label) {
-    button.textContent = label;
-    button.setAttribute('aria-label', label);
-    button.setAttribute('title', label);
-  }
-
-  function resetButtonLater(button) {
-    var oldTimer = resetTimers.get(button);
-    if (oldTimer) {
-      window.clearTimeout(oldTimer);
+  function refIndexUrl() {
+    if (!scriptElement || !scriptElement.src) {
+      return null;
     }
-    var timer = window.setTimeout(function () {
-      setButtonState(button, buttonLabel(button, 'data-copy-label', 'Copy'));
-      resetTimers.delete(button);
-    }, 1800);
-    resetTimers.set(button, timer);
+    return new URL('postgis-ref-index.json', scriptElement.src).toString();
   }
 
-  function codeText(pre) {
-    var clone = pre.cloneNode(true);
-    var ignored = clone.querySelectorAll('.linenumber, .line-number, .ln, .co, .callout, .callout-bug');
-    for (var i = 0; i < ignored.length; i += 1) {
-      ignored[i].remove();
+  function keywordMap(keywords) {
+    var map = {};
+    if (!Array.isArray(keywords)) {
+      return map;
     }
-    return clone.textContent;
+    for (var i = 0; i < keywords.length; i += 1) {
+      map[String(keywords[i]).toUpperCase()] = true;
+    }
+    return map;
   }
+
+  function normalizeRefIndex(refIndex) {
+    refIndex = refIndex || emptyRefIndex;
+    return {
+      functions: refIndex.functions || {},
+      operators: refIndex.operators || {},
+      keywords: Array.isArray(refIndex.keywords) ? refIndex.keywords : [],
+      keywordMap: keywordMap(refIndex.keywords)
+    };
+  }
+
+  function loadRefIndex() {
+    var url = refIndexUrl();
+    if (!url || !window.fetch) {
+      return Promise.resolve(normalizeRefIndex(emptyRefIndex));
+    }
+    return window.fetch(url, { credentials: 'same-origin' }).then(function (response) {
+      if (!response.ok) {
+        return emptyRefIndex;
+      }
+      return response.json();
+    }).catch(function () {
+      return emptyRefIndex;
+    }).then(normalizeRefIndex);
+  }
+
+  // ---------------------------------------------------------------------------
+  // SQL tokenizer, highlighting, and reference linking
+  // ---------------------------------------------------------------------------
 
   function escapeHtml(text) {
     return text.replace(/[&<>]/g, function (character) {
@@ -188,7 +150,7 @@
     return operators.map(escapeRegExp).join('|');
   }
 
-  function sqlTokenClass(token) {
+  function sqlTokenClass(token, refIndex) {
     var upper = token.toUpperCase();
     if (token.slice(0, 2) === '--' || token.slice(0, 2) === '/*') {
       return 'postgis-sql-comment';
@@ -202,14 +164,14 @@
     if (/^ST_[A-Z0-9_]+$/i.test(token)) {
       return 'postgis-sql-function';
     }
-    if (sqlKeywords[upper]) {
+    if (refIndex.keywordMap[upper]) {
       return 'postgis-sql-keyword';
     }
     return '';
   }
 
   function highlightedToken(token, refIndex) {
-    var tokenClass = sqlTokenClass(token);
+    var tokenClass = sqlTokenClass(token, refIndex);
     var ref = lookupFunction(token, refIndex);
     if (ref) {
       return linkedToken(token, 'postgis-sql-function', ref);
@@ -230,7 +192,7 @@
       '--[^\\n\\r]*',
       '\\/\\*[\\s\\S]*?\\*\\/',
       '\\$\\$[\\s\\S]*?\\$\\$',
-      "\'(?:\'\'|[^\'])*\'",
+      "'(?:''|[^'])*'",
       '"(?:""|[^"])*"'
     ];
     if (operators) {
@@ -253,30 +215,12 @@
     return highlighted;
   }
 
-  function refIndexUrl() {
-    if (!scriptElement || !scriptElement.src) {
-      return null;
-    }
-    return new URL('postgis-ref-index.json', scriptElement.src).toString();
-  }
-
-  function loadRefIndex() {
-    var url = refIndexUrl();
-    if (!url || !window.fetch) {
-      return Promise.resolve(emptyRefIndex);
-    }
-    return window.fetch(url, { credentials: 'same-origin' }).then(function (response) {
-      if (!response.ok) {
-        return emptyRefIndex;
-      }
-      return response.json();
-    }).catch(function () {
-      return emptyRefIndex;
-    });
-  }
-
   function applySyntaxHighlighting(refIndex) {
-    var blocks = document.querySelectorAll('.postgis-example-code pre.programlisting[data-postgis-language="sql"]');
+    var blocks;
+    if (!refIndex.keywords.length) {
+      return;
+    }
+    blocks = document.querySelectorAll('.postgis-example-code pre.programlisting[data-postgis-language="sql"]');
     for (var i = 0; i < blocks.length; i += 1) {
       if (blocks[i].getAttribute('data-postgis-highlighted') === 'sql') {
         continue;
@@ -284,9 +228,44 @@
       if (blocks[i].children.length !== 0) {
         continue;
       }
-      blocks[i].innerHTML = highlightSql(blocks[i].textContent, refIndex || emptyRefIndex);
+      blocks[i].innerHTML = highlightSql(blocks[i].textContent, refIndex);
       blocks[i].setAttribute('data-postgis-highlighted', 'sql');
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Copy button
+  // ---------------------------------------------------------------------------
+
+  function buttonLabel(button, key, fallback) {
+    return button.getAttribute(key) || fallback;
+  }
+
+  function setButtonState(button, label) {
+    button.textContent = label;
+    button.setAttribute('aria-label', label);
+    button.setAttribute('title', label);
+  }
+
+  function resetButtonLater(button) {
+    var oldTimer = resetTimers.get(button);
+    if (oldTimer) {
+      window.clearTimeout(oldTimer);
+    }
+    var timer = window.setTimeout(function () {
+      setButtonState(button, buttonLabel(button, 'data-copy-label', 'Copy'));
+      resetTimers.delete(button);
+    }, 1800);
+    resetTimers.set(button, timer);
+  }
+
+  function codeText(pre) {
+    var clone = pre.cloneNode(true);
+    var ignored = clone.querySelectorAll('.linenumber, .line-number, .ln, .co, .callout, .callout-bug');
+    for (var i = 0; i < ignored.length; i += 1) {
+      ignored[i].remove();
+    }
+    return clone.textContent;
   }
 
   function fallbackCopy(text) {
@@ -317,24 +296,16 @@
     return fallbackCopy(text);
   }
 
-  function highlightWhenReady() {
-    loadRefIndex().then(applySyntaxHighlighting);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', highlightWhenReady);
-  } else {
-    highlightWhenReady();
-  }
-
-  document.addEventListener('click', function (event) {
+  function handleCopyClick(event) {
     var button = event.target.closest && event.target.closest('.postgis-copy-button');
+    var block;
+    var pre;
     if (!button) {
       return;
     }
 
-    var block = button.closest('.postgis-example-code');
-    var pre = block && block.querySelector('pre.programlisting');
+    block = button.closest('.postgis-example-code');
+    pre = block && block.querySelector('pre.programlisting');
     if (!pre) {
       return;
     }
@@ -346,5 +317,21 @@
       setButtonState(button, buttonLabel(button, 'data-copy-failed-label', 'Failed'));
       resetButtonLater(button);
     });
-  });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Bootstrapping
+  // ---------------------------------------------------------------------------
+
+  function highlightWhenReady() {
+    loadRefIndex().then(applySyntaxHighlighting);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', highlightWhenReady);
+  } else {
+    highlightWhenReady();
+  }
+
+  document.addEventListener('click', handleCopyClick);
 }());

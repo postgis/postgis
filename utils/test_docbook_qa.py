@@ -4,12 +4,21 @@ from __future__ import annotations
 
 import contextlib
 import io
-import json
 import tempfile
 import unittest
 from pathlib import Path
 
-from docbook_qa import add_source_findings, build_index, check_html_file, load_xml, main
+from docbook_qa import (
+    SQL_BLOCK_STARTER_EXTRAS,
+    SQL_HIGHLIGHT_KEYWORDS,
+    SQL_STARTERS,
+    SQL_STATEMENT_START_KEYWORDS,
+    add_source_findings,
+    build_index,
+    check_html_file,
+    load_xml,
+    main,
+)
 
 DOCBOOK_OPEN = '<book xmlns="http://docbook.org/ns/docbook" xmlns:xml="http://www.w3.org/XML/1998/namespace">'
 DOCBOOK_CLOSE = '</book>'
@@ -62,6 +71,35 @@ class DocBookSourceLintTest(unittest.TestCase):
             '<para role="availability">Availability: 3.7</para></refsection></refentry>',
             set(),
         )
+
+    def test_sql_token_data_drives_all_source_detectors(self):
+        self.assertTrue(set(SQL_STATEMENT_START_KEYWORDS).issubset(SQL_HIGHLIGHT_KEYWORDS))
+        self.assertTrue(set(SQL_BLOCK_STARTER_EXTRAS).issubset(SQL_HIGHLIGHT_KEYWORDS))
+        for keyword in SQL_STATEMENT_START_KEYWORDS:
+            self.assertCategories(
+                f'<refentry xml:id="f"><programlisting>{keyword} 1;\n(1 row)</programlisting></refentry>',
+                {"mixed-programlisting-output"},
+            )
+            self.assertCategories(
+                f'<refentry xml:id="f"><screen>{keyword} 1;</screen></refentry>',
+                {"screen-contains-sql"},
+            )
+        for starter in SQL_STARTERS:
+            body = starter if starter.endswith(";") else starter + "1;"
+            findings = self.html_findings_for_sql_probe(body)
+            self.assertTrue(any("lacks data-postgis-language='sql'" in finding.location for finding in findings), body)
+
+    def html_findings_for_sql_probe(self, text: str):
+        path = write_tmp(
+            "-en.html",
+            '<html><body>'
+            '<div class="postgis-example-block postgis-example-code" role="group" data-postgis-block="code" aria-labelledby="l1">'
+            '<span id="l1" class="postgis-example-label">Code</span>'
+            '<button class="postgis-copy-button" type="button" aria-label="Copy" title="Copy"></button>'
+            f'<pre id="p1" class="programlisting">{text}</pre></div>'
+            '</body></html>',
+        )
+        return check_html_file(path, set())
 
 
 class DocBookHtmlLintTest(unittest.TestCase):
@@ -179,8 +217,10 @@ class DocBookRefIndexTest(unittest.TestCase):
         index = build_index(path)
         self.assertEqual("ST_Point", index["functions"]["ST_POINT"]["label"])
         self.assertEqual("geometry_overlaps", index["operators"]["&&"][0]["id"])
+        self.assertEqual(list(SQL_HIGHLIGHT_KEYWORDS), index["keywords"])
+        self.assertIn("SELECT", index["keywords"])
         empty_path = write_tmp(".xml", DOCBOOK_OPEN + DOCBOOK_CLOSE)
-        self.assertEqual({"functions": {}, "operators": {}}, build_index(empty_path))
+        self.assertEqual({"functions": {}, "operators": {}, "keywords": list(SQL_HIGHLIGHT_KEYWORDS)}, build_index(empty_path))
 
 
 if __name__ == "__main__":

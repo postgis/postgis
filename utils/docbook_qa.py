@@ -25,11 +25,80 @@ DB = f"{{{DOCBOOK_NS}}}"
 XML_ID = f"{{{XML_NS}}}id"
 
 ADMONITIONS = {"note", "tip", "important", "warning", "caution"}
-SQL_START_RE = re.compile(
-    r"(?im)^\s*(?:--\s*)?(?:SELECT|WITH|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|EXPLAIN|VALUES)\b"
+SQL_KEYWORD_DATA = (
+    # keyword, starts a semicolon-terminated SQL statement, starts an example code block
+    ("ADD", False, False),
+    ("ALTER", True, True),
+    ("AND", False, False),
+    ("AS", False, False),
+    ("ASC", False, False),
+    ("BEGIN", False, True),
+    ("BY", False, False),
+    ("CASE", False, False),
+    ("CAST", False, False),
+    ("COMMIT", False, True),
+    ("CREATE", True, True),
+    ("CROSS", False, False),
+    ("DELETE", True, True),
+    ("DESC", False, False),
+    ("DISTINCT", False, False),
+    ("DO", False, True),
+    ("DROP", True, True),
+    ("ELSE", False, False),
+    ("END", False, False),
+    ("EXCEPT", False, False),
+    ("EXPLAIN", True, True),
+    ("FALSE", False, False),
+    ("FROM", False, False),
+    ("FULL", False, False),
+    ("GROUP", False, False),
+    ("HAVING", False, False),
+    ("IN", False, False),
+    ("INNER", False, False),
+    ("INSERT", True, True),
+    ("INTERSECT", False, False),
+    ("INTO", False, False),
+    ("IS", False, False),
+    ("JOIN", False, False),
+    ("LEFT", False, False),
+    ("LIMIT", False, False),
+    ("NOT", False, False),
+    ("NULL", False, False),
+    ("OFFSET", False, False),
+    ("ON", False, False),
+    ("OR", False, False),
+    ("ORDER", False, False),
+    ("OUTER", False, False),
+    ("OVER", False, False),
+    ("RETURNING", False, False),
+    ("RIGHT", False, False),
+    ("SELECT", True, True),
+    ("SET", False, False),
+    ("THEN", False, False),
+    ("TRUE", False, False),
+    ("UNION", False, False),
+    ("UPDATE", True, True),
+    ("USING", False, False),
+    ("VALUES", True, True),
+    ("WHEN", False, False),
+    ("WHERE", False, False),
+    ("WITH", True, True),
 )
+SQL_HIGHLIGHT_KEYWORDS = tuple(keyword for keyword, _statement, _block in SQL_KEYWORD_DATA)
+SQL_STATEMENT_START_KEYWORDS = tuple(keyword for keyword, statement, _block in SQL_KEYWORD_DATA if statement)
+SQL_BLOCK_STARTER_KEYWORDS = tuple(keyword for keyword, _statement, block in SQL_KEYWORD_DATA if block)
+SQL_BLOCK_STARTER_EXTRAS = tuple(
+    keyword for keyword in SQL_BLOCK_STARTER_KEYWORDS if keyword not in SQL_STATEMENT_START_KEYWORDS
+)
+
+
+def keyword_pattern(keywords: Iterable[str]) -> str:
+    return "|".join(re.escape(keyword) for keyword in keywords)
+
+
+SQL_START_RE = re.compile(rf"(?im)^\s*(?:--\s*)?(?:{keyword_pattern(SQL_STATEMENT_START_KEYWORDS)})\b")
 SQL_STATEMENT_RE = re.compile(
-    r"(?ims)^\s*(?:--[^\n]*\n\s*)*(?:SELECT|WITH|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|EXPLAIN|VALUES)\b.*;"
+    rf"(?ims)^\s*(?:--[^\n]*\n\s*)*(?:{keyword_pattern(SQL_STATEMENT_START_KEYWORDS)})\b.*;"
 )
 PSQL_ROW_COUNT_RE = re.compile(r"(?m)^\s*\(\d+\s+rows?\)\s*$")
 PSQL_TABLE_SEPARATOR_RE = re.compile(r"(?m)^\s*[-+]{3,}(?:\s*\+\s*[-+]{2,})+\s*$")
@@ -40,20 +109,8 @@ BLOCK_KINDS = {
     "screen": ("postgis-example-output", "output", "Output"),
 }
 FORBIDDEN_SCREEN_CLASSES = {"programlisting", "sql", "hljs", "highlight"}
-SQL_STARTERS = (
-    "SELECT ",
-    "WITH ",
-    "VALUES ",
-    "INSERT ",
-    "UPDATE ",
-    "DELETE ",
-    "CREATE ",
-    "ALTER ",
-    "DROP ",
-    "EXPLAIN ",
-    "DO ",
-    "BEGIN;",
-    "COMMIT;",
+SQL_STARTERS = tuple(
+    f"{keyword} " if keyword not in {"BEGIN", "COMMIT"} else f"{keyword};" for keyword in SQL_BLOCK_STARTER_KEYWORDS
 )
 
 IDENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
@@ -459,7 +516,7 @@ def build_index(input_path: Path) -> dict[str, Any]:
             elif OPERATOR_RE.match(bare):
                 add_operator(operators, bare, bare, entry_id, purpose)
 
-    return {"functions": functions, "operators": operators}
+    return {"functions": functions, "operators": operators, "keywords": list(SQL_HIGHLIGHT_KEYWORDS)}
 
 
 def should_fail(findings: Iterable[Finding], fail_on: str) -> bool:
@@ -521,8 +578,9 @@ def command_ref_index(args: argparse.Namespace) -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(index, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n")
     print(
-        f"wrote {args.output} with {len(index['functions'])} functions and "
-        f"{sum(len(entries) for entries in index['operators'].values())} operator pages",
+        f"wrote {args.output} with {len(index['functions'])} functions, "
+        f"{sum(len(entries) for entries in index['operators'].values())} operator pages, and "
+        f"{len(index['keywords'])} SQL keywords",
         file=sys.stderr,
     )
     return 0
