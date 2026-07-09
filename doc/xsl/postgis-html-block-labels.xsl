@@ -24,10 +24,6 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="@*" mode="postgis-code-block-html">
-  <xsl:param name="language"/>
-  <xsl:copy/>
-</xsl:template>
 
 <xsl:template match="pre[contains(concat(' ', @class, ' '), ' programlisting ')] | h:pre[contains(concat(' ', @class, ' '), ' programlisting ')]" mode="postgis-code-block-html">
   <xsl:param name="language"/>
