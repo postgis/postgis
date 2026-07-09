@@ -2192,12 +2192,18 @@ fulltable_size geomsize  pergeom
 		<refsection>
 			<title>Examples</title>
 
-<programlisting>SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
-4
+<programlisting>SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));</programlisting>
+<screen> st_npoints
+------------
+          4
+(1 row)</screen>
 
---Polygon in 3D space
-SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))
-4</programlisting>
+<programlisting>--Polygon in 3D space
+SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))</programlisting>
+<screen> st_npoints
+------------
+          4
+(1 row)</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -2287,15 +2293,20 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 
 <para>This example returns 1; prior versions would have returned NULL.</para>
 <programlisting>
-SELECT ST_NumGeometries(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
-1
+SELECT ST_NumGeometries(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));</programlisting>
+<screen> st_numgeometries
+------------------
+                1
+(1 row)</screen>
 
---Geometry Collection Example - multis count as one geom in a collection
+<programlisting>--Geometry Collection Example - multis count as one geom in a collection
 SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT((-2 3),(-2 2)),
 LINESTRING(5 5 ,10 10),
-POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
-3
-</programlisting>
+POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));</programlisting>
+<screen> st_numgeometries
+------------------
+                3
+(1 row)</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -2408,11 +2419,13 @@ GROUP BY gid, field1,field2;
 		<title>Examples</title>
 
 		<programlisting>SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
-		6
-		</programlisting>
+			((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+			((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+			((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting>
+<screen> st_numpatches
+---------------
+             6
+(1 row)</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -2452,9 +2465,11 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
-		4
-		</programlisting>
+		<programlisting>SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));</programlisting>
+<screen> st_numpoints
+--------------
+            4
+(1 row)</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>

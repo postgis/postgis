@@ -165,9 +165,11 @@
     <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
+    <programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));</programlisting>
+<screen> st_srid
+---------
     4326
-    </programlisting>
+(1 row)</screen>
     </refsection>
     <refsection>
     <title>See Also</title>

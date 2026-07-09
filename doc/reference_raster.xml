@@ -780,11 +780,13 @@ NOTICE:  Adding blocksize-Y constraint</screen>
         <title>Examples</title>
 
         <programlisting>
-SELECT DropRasterConstraints ('myrasters','rast');
-----RESULT output ---
-t
+SELECT DropRasterConstraints ('myrasters','rast');</programlisting>
+<screen> droprasterconstraints
+-----------------------
+ t
+(1 row)</screen>
 
--- verify change in raster_columns --
+<programlisting>-- verify change in raster_columns --
 SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
     FROM raster_columns
     WHERE r_table_name = 'myrasters';</programlisting>
@@ -6661,14 +6663,18 @@ FROM (
 
                     <para>This example uses the original non-rotated raster.</para>
                     <programlisting>
-SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
+SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));</programlisting>
+<screen> st_rotation
+-------------
+           0
+(1 row)</screen>
 
-0
-
--- the reskewed raster raster rotation
-SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));
-
--0.982793723247329</programlisting>
+<programlisting>-- the reskewed raster raster rotation
+SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));</programlisting>
+<screen>    st_rotation
+------------------
+ -0.982793723247329
+(1 row)</screen>
 
             </refsection>
 
@@ -6748,13 +6754,18 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 
                     <para>This example returns the upper-left X coordinate of the original raster.</para>
                     <programlisting>
-SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
-0
+SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));</programlisting>
+<screen> st_upperleftx
+---------------
+             0
+(1 row)</screen>
 
--- the upper left of raster after snapping
-SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));
-
--0.0008</programlisting>
+<programlisting>-- the upper left of raster after snapping
+SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));</programlisting>
+<screen> st_upperleftx
+---------------
+       -0.0008
+(1 row)</screen>
 
             </refsection>
 

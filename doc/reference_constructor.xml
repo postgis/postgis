@@ -1159,9 +1159,11 @@ has an unknown SRID (as is the case by default).</para>
 
         <refsection>
         <title>Example: Creating a square at the origin</title>
-         <programlisting>SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857));
-
- POLYGON((0 0,0 1,1 1,1 0,0 0))</programlisting>
+         <programlisting>SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857));</programlisting>
+<screen>              st_astext
+-------------------------------------
+ POLYGON((0 0,0 1,1 1,1 0,0 0))
+(1 row)</screen>
         </refsection>
         <refsection>
             <title>See Also</title>

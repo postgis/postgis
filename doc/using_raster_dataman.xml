@@ -854,8 +854,7 @@ $$ LANGUAGE plpythonu;</programlisting>
  FROM
  ( VALUES (lo_create(0),
    ST_AsPNG((SELECT rast FROM aerials.boston WHERE rid=1) )
-  ) ) As v(oid,png);
--- you'll get an output something like --</programlisting>
+  ) ) As v(oid,png);</programlisting>
 <screen>   oid   | num_bytes
 ---------+-----------
  2630819 |     74860</screen>

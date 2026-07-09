@@ -177,12 +177,17 @@
       <refsection>
         <title>Examples</title>
 
-        <programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
-BOX(-8877653 4912316,-8010225.5 5589284)
+        <programlisting role="requires-external-state">SELECT ST_EstimatedExtent('ny', 'edges', 'geom');</programlisting>
+<screen>                st_estimatedextent
+--------------------------------------------------
+ BOX(-8877653 4912316,-8010225.5 5589284)
+(1 row)</screen>
 
-SELECT ST_EstimatedExtent('feature_poly', 'geom');
-BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
-        </programlisting>
+<programlisting role="requires-external-state">SELECT ST_EstimatedExtent('feature_poly', 'geom');</programlisting>
+<screen>                         st_estimatedextent
+---------------------------------------------------------------------
+ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
+(1 row)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->

@@ -957,10 +957,11 @@ SELECT ST_ChaikinSmoothing('LINESTRING (10 140, 80 130, 100 190, 190 150, 140 20
         <title>Examples</title>
         <para>Smoothing a 4-point collinear line with default nSegments=5:</para>
         <programlisting>
-SELECT ST_AsText(ST_CatmullRomSmoothing('LINESTRING(0 0, 5 0, 10 0, 15 0)'));
-
+SELECT ST_AsText(ST_CatmullRomSmoothing('LINESTRING(0 0, 5 0, 10 0, 15 0)'));</programlisting>
+<screen>                                                st_astext
+---------------------------------------------------------------------------------------------------------
  LINESTRING(0 0,1 0,2 0,3 0,4 0,5 0,6 0,7 0,8 0,9 0,10 0,11 0,12 0,13 0,14 0,15 0)
-</programlisting>
+(1 row)</screen>
 
     <para>Smoothing a Polygon using nSegments = 5 and 10:</para>
     <informaltable>
