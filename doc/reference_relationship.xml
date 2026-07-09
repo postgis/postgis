@@ -126,9 +126,7 @@
     <para>Performed by the GEOS module</para>
     <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <important>
       <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
@@ -345,9 +343,7 @@ ST_Point      | t          | t              | f           | f
     <para>Performed by the GEOS module.</para>
     <para role="availability" conformance="1.4.0">Availability: 1.4.0</para>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <important>
       <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
@@ -445,9 +441,7 @@ ST_Point      | t          | t              | f           | f
     <note><para>&index_aware;
          To avoid index use, use the function <function>_ST_CoveredBy</function>.</para></note>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <important>
       <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
@@ -536,9 +530,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
     <note><para>&index_aware;
          To avoid index use, use the function <function>_ST_Covers</function>.</para></note>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <important>
       <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
@@ -651,9 +643,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 
   <note><para>&index_aware;</para></note>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
   <para>&sfs_compliant; s2.1.13.3</para>
   <para>&sqlmm_compliant; SQL-MM 3: 5.1.29</para>
@@ -792,9 +782,7 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <para>In mathematical terms:
     <emphasis>ST_Disjoint(A, B) ⇔ A ⋂ B = ∅ </emphasis></para>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
       <para>Performed by the GEOS module</para>
       <note>
@@ -861,9 +849,7 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <para>The following relation holds:
     <emphasis>ST_Equals(A, B) ⇔ ST_Within(A,B) ∧ ST_Within(B,A) </emphasis></para>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <para>&sfs_compliant; s2.1.1.2</para>
     <para>&sqlmm_compliant; SQL-MM 3: 5.1.24</para>
@@ -1225,9 +1211,7 @@ WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
 
     <para>Performed by the GEOS module</para>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <para>NOTE: this is the "allowable" version that returns a
       boolean, not an integer.</para>
@@ -1453,9 +1437,7 @@ FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
       <para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
       <para>Performed by the GEOS module</para>
       <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - added support for specifying boundary node rule.</para>
-      <important>
-        <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-      </important>
+      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     </refsection>
 
@@ -1665,9 +1647,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
         To avoid using an index, use <function>_ST_Touches</function> instead.</para>
     </note>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
     <para>&sqlmm_compliant; SQL-MM 3: 5.1.28</para>
@@ -1810,9 +1790,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
 
     <para role="enhanced" conformance="2.3.0">Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
-    <important>
-      <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-    </important>
+    <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <important>
       <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
