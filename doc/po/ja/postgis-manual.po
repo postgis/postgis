@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-09 07:39+0000\n"
+"PO-Revision-Date: 2026-07-09 09:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -19033,6 +19033,8 @@ msgid ""
 "This example interpolates on a line rising diagonally in Z, using a point at "
 "the 3D midpoint."
 msgstr ""
+"この例ではZ値が斜めに上がっているラインの3次元の中間点での補間を行っています"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -19040,6 +19042,8 @@ msgid ""
 "This example uses a vertical line with zero XY extent, where 3D projection "
 "works but 2D projection does not."
 msgstr ""
+"この例ではXとYの幅がゼロの垂直ラインを使います。3次元上では動作し、2次元に投"
+"影すると動作しません。"
 
 #. Tag: para
 #, no-c-format
@@ -19159,43 +19163,43 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example creates a schema to hold data."
-msgstr ""
+msgstr "この例ではデータを保持するスキーマーを生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a simple PostgreSQL table in the schema."
-msgstr ""
+msgstr "スキーマー内に単純なPostgreSQLテーブルを生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Describing the table shows a single <varname>id</varname> column."
-msgstr ""
+msgstr "テーブルの詳細情報で<varname>id</varname>カラムを出力します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Add a spatial column to the table."
-msgstr ""
+msgstr "空間ラカムをテーブルに追加します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Add a point column using the old constraint-based behavior."
-msgstr ""
+msgstr "古い制約を基にした手法でポイントを追加します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Add a CurvePolygon column using the old constraint-based behavior."
-msgstr ""
+msgstr "古い制約を基にした手法で曲線ポリゴンを追加します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Describe the table again to see the new geometry columns."
-msgstr ""
+msgstr "新しいカラムについてみるためにテーブルの詳細情報を見ます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The <varname>geometry_columns</varname> view also registers the new columns."
-msgstr ""
+msgstr "<varname>geometry_columns</varname>ビューは新しいカラムを登録しています。"
 
 #. Tag: para
 #, no-c-format
@@ -19240,6 +19244,8 @@ msgid ""
 "The above is also equivalent to the standard <command>ALTER TABLE</command> "
 "command. Both deregister the column from <varname>geometry_columns</varname>."
 msgstr ""
+"上の例は標準的な<command>ALTER TABLE</command>コマンドと等価です。両方とも"
+"カラムの登録を<varname>geometry_columns</varname>から除外します。"
 
 #. Tag: para
 #, no-c-format
@@ -19280,7 +19286,7 @@ msgstr ""
 msgid ""
 "The above is now equivalent to the standard <command>DROP TABLE</command> "
 "command."
-msgstr ""
+msgstr "今は上の例と標準的な<command>DROP TABLE</command>コマンドとは等価です。"
 
 #. Tag: para
 #, no-c-format
@@ -19450,6 +19456,8 @@ msgid ""
 "This example populates geometry column metadata using typmod behavior. For "
 "this to work, there must be existing data."
 msgstr ""
+"この例ではtypmodを使法手法でジオメトリーカラムにメタデータを投入します。これ"
+"が動作するにはデータが存在する必要があります。"
 
 #. Tag: para
 #, no-c-format
@@ -20116,6 +20124,10 @@ msgid ""
 "vertical datum support so Z is not transformed and assumed to be same units "
 "as final."
 msgstr ""
+"ジオメトリーの例 - メートル単位 (SRID: 2163 米国ナショナルアトラス正積図法)(3"
+"次元ポイントとラインと比較で2次元ポイントとライン)。現在は鉛直データムに対応"
+"していません。Z値は変換されず、かつ単位が同じであると仮定されるので注意して下"
+"さい。"
 
 #. Tag: para
 #, no-c-format
@@ -20123,6 +20135,8 @@ msgid ""
 "Multilinestring and polygon both 3D and 2D distance. Same example as 3D "
 "closest point example."
 msgstr ""
+"MULTILINESTRINGとPOLYGONで3次元距離と2次元距離を測ります。3次元最近ポイントの"
+"例と同じです。"
 
 #. Tag: para
 #, no-c-format
@@ -20456,6 +20470,8 @@ msgid ""
 "This example transforms a WGS 84 LineString to Massachusetts State Plane "
 "meters."
 msgstr ""
+"この例ではWGS84 LINESTRINGからメートル単位のマサチューセッツ平面に変換してい"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -20465,7 +20481,7 @@ msgstr "WGS84ジオグラフィのラインの長さを返します。"
 #. Tag: para
 #, no-c-format
 msgid "This example uses the default spheroid calculation."
-msgstr ""
+msgstr "この例ではデフォルトの回転楕円体計算を使っています。"
 
 #. Tag: para
 #, no-c-format
@@ -20611,11 +20627,14 @@ msgid ""
 "The endpoints of the line lie on the circle computed by <xref "
 "linkend=\"ST_MinimumBoundingCircle\"/>."
 msgstr ""
+"一つのジオメトリーだけが与えられるか、g1とg2が同じジオメトリーである場合には"
+"、ジオメトリーで最も離れた二つの頂点からなるラインが返ります。ラインの端点は "
+"<xref linkend=\"ST_MinimumBoundingCircle\"/>で計算される円の上になります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 3.7.0 - support for a single geometry input."
-msgstr ""
+msgstr "Enhanced: 3.7.0 - 単一ジオメトリー入力に対応しました。"
 
 #. Tag: para
 #, no-c-format
@@ -20712,6 +20731,8 @@ msgid ""
 "returns the distance between the two vertices farthest apart in that "
 "geometry."
 msgstr ""
+"一つのジオメトリーだけが与えられるか、g1とg2が同じジオメトリーである場合には"
+"、ジオメトリーで最も離れた二つの頂点間の距離を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -20942,7 +20963,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example uses a MultiPolygon."
-msgstr ""
+msgstr "この例ではMULTIPOLYGONを使っています。"
 
 #. Tag: para
 #, no-c-format
@@ -22739,6 +22760,8 @@ msgid ""
 "This example builds the SQL for a Boston-to-San-Francisco path with segments "
 "every 100 kilometers."
 msgstr ""
+"この例ではボストン-サンフランシスコ間を100kmごとに区分したSQLをビルドしていま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -49410,6 +49433,10 @@ msgid ""
 "final run or after loading; add <option>--if-not-exists</option> to make "
 "reruns tolerate an existing index."
 msgstr ""
+"このraster2pgsqlの実行が終わる時にラスターカラムのGiSTインデックスを生成しま"
+"す。<option>-a</option>による追加実行を繰り返しても、最後の実行またはロード後"
+"にインデックスを生成します。 <option>--if-not-exists</option>でインデックスの"
+"存在を許容します。"
 
 #. Tag: para
 #, no-c-format
