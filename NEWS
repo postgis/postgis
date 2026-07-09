@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - GH-1160, [topology] Preserve overlay junctions when noding lines
+   with GEOS 3.15 and later (Darafei Praliaskouski)
  - [tiger_geocoder] Resolve the fuzzy location helper in the tiger schema
    (Regina Obe)
  - #6160, Clarify the vector tile format schema license (Bas Couwenberg)
