@@ -1056,9 +1056,9 @@ FROM (
 <para>This example unions an array of linestrings.</para>
 <programlisting>SELECT ST_AsText(ST_Union(ARRAY[
     ST_GeomFromText('LINESTRING(1 2, 3 4)'),
-    ST_GeomFromText('LINESTRING(3 4, 4 5)')
+    ST_GeomFromText('LINESTRING(4 5, 5 6)')
 ])) As wktunion;</programlisting>
-<screen>MULTILINESTRING((1 2,3 4),(3 4,4 5))</screen>
+<screen>MULTILINESTRING((1 2,3 4),(4 5,5 6))</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
