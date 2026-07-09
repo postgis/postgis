@@ -95,15 +95,6 @@
       <xsl:with-param name="kind" select="'copy-failed'"/>
     </xsl:call-template>
   </xsl:variable>
-  <xsl:variable name="has.legacy.output"
-                select="contains(., '---+')
-                        or contains(., '&#10;--------')
-                        or contains(., '&#10;    --------')
-                        or contains(., ' row)')
-                        or contains(., ' rows)')
-                        or contains(., 'ERROR:')
-                        or contains(., 'NOTICE:')
-                        or contains(., 'WARNING:')"/>
   <xsl:variable name="code.text" select="normalize-space(.)"/>
   <xsl:variable name="code.text.upper"
                 select="translate($code.text, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
@@ -151,10 +142,6 @@
     <xsl:attribute name="aria-labelledby">
       <xsl:value-of select="$label.id"/>
     </xsl:attribute>
-    <xsl:if test="$has.legacy.output">
-      <xsl:attribute name="data-postgis-copyable">false</xsl:attribute>
-      <xsl:attribute name="data-postgis-legacy-output">true</xsl:attribute>
-    </xsl:if>
     <div class="postgis-example-header">
       <div class="postgis-example-label">
         <xsl:attribute name="id">
@@ -164,8 +151,7 @@
           <xsl:with-param name="kind" select="'code'"/>
         </xsl:call-template>
       </div>
-      <xsl:if test="not($has.legacy.output)">
-        <button class="postgis-copy-button" type="button" data-postgis-copy="code">
+      <button class="postgis-copy-button" type="button" data-postgis-copy="code">
           <xsl:attribute name="aria-label">
             <xsl:value-of select="$copy.label"/>
           </xsl:attribute>
@@ -182,8 +168,7 @@
             <xsl:value-of select="$copy.failed.label"/>
           </xsl:attribute>
           <xsl:value-of select="$copy.label"/>
-        </button>
-      </xsl:if>
+      </button>
     </div>
     <xsl:apply-templates select="exsl:node-set($rendered.block)/node()" mode="postgis-code-block-html">
       <xsl:with-param name="language" select="$effective.language"/>

@@ -119,12 +119,10 @@ def check_file(path: Path, required_kinds: set[str]) -> list[str]:
 
         buttons = copy_buttons(parent)
         if block_class == "programlisting":
-            copyable = parent.get("data-postgis-copyable") != "false"
-            expected_buttons = 1 if copyable else 0
             language = pre.get("data-postgis-language") or parent.get("data-postgis-language")
-            if len(buttons) != expected_buttons:
+            if len(buttons) != 1:
                 errors.append(
-                    f"{path}: code block {element_id(pre)} has {len(buttons)} copy buttons, expected {expected_buttons}"
+                    f"{path}: code block {element_id(pre)} has {len(buttons)} copy buttons, expected 1"
                 )
             elif buttons:
                 button = buttons[0]
@@ -144,7 +142,7 @@ def check_file(path: Path, required_kinds: set[str]) -> list[str]:
                     errors.append(f"{path}: code block {element_id(pre)} lacks {expected_token!r} class")
                 if expected_wrapper_token not in parent_tokens:
                     errors.append(f"{path}: code block {element_id(pre)} lacks {expected_wrapper_token!r} wrapper class")
-            elif copyable and looks_like_sql_input(text_content(pre)):
+            elif looks_like_sql_input(text_content(pre)):
                 errors.append(f"{path}: SQL-looking code block {element_id(pre)} lacks data-postgis-language='sql'")
         if block_class == "screen":
             forbidden = (tokens & FORBIDDEN_SCREEN_CLASSES) | {token for token in tokens if token.startswith("language-")}
