@@ -526,37 +526,51 @@ class ExampleTester:
             raise RuntimeError(f"psql failed for query:\n{query}\n{result.stdout}{result.stderr}")
         return self.expected_rows_from_psql_lines(result.stdout.split("\n"))
 
-    def run_examples(self, database):
+    def run_examples(self, database, keep_going=False):
         self.check_environment(database)
 
         examples = self.examples()
+        failures = []
         ran = 0
 
         for example in examples:
-            if not example["valid"]:
-                raise RuntimeError(f"Could not parse manual example test at {example['label']}")
-
             try:
-                actual = self.run_psql_query(database, example["query"])
+                self.run_one_example(database, example)
             except RuntimeError as exc:
-                raise RuntimeError(f"Example test failed to run: {example['label']}\n{exc}") from exc
-
-            if example["catalog"]:
-                equal = self.catalog_rows_equal(actual, example["expected"])
-            elif example["version"]:
-                equal = self.version_rows_equal(actual, example["expected"])
-            else:
-                equal = self.rows_equal(actual, example["expected"])
-            if not equal:
-                raise RuntimeError(
-                    f"Example test failed: {example['label']}\n"
-                    f"Query:\n{example['query']}\n"
-                    f"Expected:\n{self.rows_to_string(example['expected'])}\n"
-                    f"Actual:\n{self.rows_to_string(actual)}"
-                )
+                if not keep_going:
+                    raise
+                print(exc, file=sys.stderr)
+                failures.append(example["label"])
+                continue
             ran += 1
 
+        if failures:
+            raise RuntimeError(f"FAILED {len(failures)} example(s): {', '.join(failures)}")
+
         print(f"manual example tests passed: {ran}")
+
+    def run_one_example(self, database, example):
+        if not example["valid"]:
+            raise RuntimeError(f"Could not parse manual example test at {example['label']}")
+
+        try:
+            actual = self.run_psql_query(database, example["query"])
+        except RuntimeError as exc:
+            raise RuntimeError(f"Example test failed to run: {example['label']}\n{exc}") from exc
+
+        if example["catalog"]:
+            equal = self.catalog_rows_equal(actual, example["expected"])
+        elif example["version"]:
+            equal = self.version_rows_equal(actual, example["expected"])
+        else:
+            equal = self.rows_equal(actual, example["expected"])
+        if not equal:
+            raise RuntimeError(
+                f"Example test failed: {example['label']}\n"
+                f"Query:\n{example['query']}\n"
+                f"Expected:\n{self.rows_to_string(example['expected'])}\n"
+                f"Actual:\n{self.rows_to_string(actual)}"
+            )
 
     def check_environment(self, database):
         for check in ENVIRONMENT_CHECKS:
@@ -589,13 +603,14 @@ def parse_source_example(body, screen_body=None):
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Report or run manual example tests.",
-        usage="%(prog)s --report|--run|--check-environment [--database DB] <postgis-out.xml>",
+        usage="%(prog)s --report|--run|--check-environment [--database DB] [--keep-going] <postgis-out.xml>",
     )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--report", action="store_true")
     mode.add_argument("--run", action="store_true")
     mode.add_argument("--check-environment", action="store_true")
     parser.add_argument("--database")
+    parser.add_argument("--keep-going", action="store_true", help="run all examples before failing")
     parser.add_argument("xml_file")
     return parser.parse_args()
 
@@ -611,7 +626,7 @@ def main():
         elif args.run:
             if not args.database:
                 raise RuntimeError("--database is required with --run")
-            tester.run_examples(args.database)
+            tester.run_examples(args.database, keep_going=args.keep_going)
         elif args.check_environment:
             if not args.database:
                 raise RuntimeError("--database is required with --check-environment")

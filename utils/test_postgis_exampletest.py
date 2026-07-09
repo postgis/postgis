@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import contextlib
+import io
 import unittest
 
 from postgis_exampletest import ExampleTester, parse_source_example
@@ -98,6 +100,65 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertTrue(self.tester.catalog_rows_equal([], expected))
         self.assertTrue(self.tester.catalog_rows_equal([["postgis", "3.7.0dev", "null"]], expected))
         self.assertFalse(self.tester.catalog_rows_equal([["postgis", "3.7.0dev"]], expected))
+
+
+class ExampleTestRunnerTest(unittest.TestCase):
+    def make_runner(self, actual_rows):
+        tester = ExampleTester.__new__(ExampleTester)
+        examples = []
+        for label, query, expected in (
+            ("first:1", "SELECT 1", [["1"]]),
+            ("second:2", "SELECT 2", [["2"]]),
+            ("third:3", "SELECT 3", [["3"]]),
+        ):
+            examples.append(
+                {
+                    "label": label,
+                    "query": query,
+                    "expected": expected,
+                    "valid": True,
+                    "catalog": False,
+                    "version": False,
+                }
+            )
+        tester.examples = lambda: examples
+        tester.check_environment = lambda database: None
+        tester.run_psql_query = lambda database, query: actual_rows[query]
+        return tester
+
+    def test_run_examples_keep_going_reports_all_failures(self):
+        tester = self.make_runner(
+            {
+                "SELECT 1": [["bad"]],
+                "SELECT 2": [["2"]],
+                "SELECT 3": [["also bad"]],
+            }
+        )
+
+        stderr = io.StringIO()
+        with self.assertRaisesRegex(RuntimeError, r"FAILED 2 example\(s\): first:1, third:3"):
+            with contextlib.redirect_stderr(stderr):
+                tester.run_examples("exampletest", keep_going=True)
+
+        output = stderr.getvalue()
+        self.assertIn("Example test failed: first:1", output)
+        self.assertIn("Example test failed: third:3", output)
+        self.assertIn("Actual:\nbad", output)
+        self.assertIn("Actual:\nalso bad", output)
+
+    def test_run_examples_without_keep_going_still_fails_fast(self):
+        tester = self.make_runner(
+            {
+                "SELECT 1": [["bad"]],
+                "SELECT 2": [["wrong but not reached"]],
+                "SELECT 3": [["also not reached"]],
+            }
+        )
+
+        with self.assertRaisesRegex(RuntimeError, "Example test failed: first:1") as raised:
+            tester.run_examples("exampletest")
+
+        self.assertNotIn("second:2", str(raised.exception))
 
 
 if __name__ == "__main__":
