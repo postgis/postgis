@@ -331,16 +331,16 @@ ifeq ($(XML2POT),)
 $(XML_SOURCE_POTS): requirements_not_met_xml2pot
 endif
 
-CHECK_UNIT_TARGET =
+CHECK_UNIT_TARGET = check-docbook-qa-unit
 CHECK_HTML_BLOCK_LABELS_DEPS =
 
 ifeq ($(CAN_CHECK_XML),yes)
-CHECK_UNIT_TARGET = check-xml check-docbook-markup
+CHECK_UNIT_TARGET += check-xml check-docbook-markup
 ifneq ($(PYTHON3),)
 ifneq ($(XSLTPROC),)
 ifneq ($(XSLBASE),)
 CHECK_UNIT_TARGET += check-html-block-labels
-CHECK_HTML_BLOCK_LABELS_DEPS = $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/check_docbook_block_labels.py
+CHECK_HTML_BLOCK_LABELS_DEPS = $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/docbook_qa.py
 endif
 endif
 endif
@@ -430,13 +430,13 @@ chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
 $(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/%.in $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) Makefile
 	$(PERL) -pe "s!\@\@XSLBASE\@\@!$(XSLBASE)!g; s!\@\@ABS_SRCDIR\@\@!$(abs_srcdir)!g;" $< > $@
 
-$(HTML_REF_INDEX): postgis-out.xml Makefile $(abs_top_srcdir)/utils/build_docbook_ref_index.py
+$(HTML_REF_INDEX): postgis-out.xml Makefile $(abs_top_srcdir)/utils/docbook_qa.py
 	mkdir -p $(html_builddir)
 ifeq ($(PYTHON3),)
 	@echo "Skipping rich PostGIS reference index: python3 is not available."
 	@printf '{"functions":{},"operators":{}}\n' > $@
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/build_docbook_ref_index.py $< $@
+	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py ref-index $< $@
 endif
 
 $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX)
@@ -688,6 +688,13 @@ check-regress:
 
 check-unit: $(CHECK_UNIT_TARGET)
 
+check-docbook-qa-unit: $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/test_docbook_qa.py
+ifeq ($(PYTHON3),)
+	@echo "Skipping $@: python3 is not available."
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/test_docbook_qa.py
+endif
+
 DOCBOOK_BLOCK_LABEL_CHECK_PAGES = \
 	$(html_builddir)/postgis$(DOCSUFFIX)/is_contained_geometry_box2df.html \
 	$(html_builddir)/postgis$(DOCSUFFIX)/overlaps_geometry_box2df.html \
@@ -708,15 +715,15 @@ else ifeq ($(XSLTPROC),)
 else ifeq ($(XSLBASE),)
 	@echo "Skipping $@: DocBook XSL stylesheets are not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_block_labels.py $(html_builddir)/postgis$(DOCSUFFIX)/*.html
-	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_block_labels.py --require-kinds programlisting,screen $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
+	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html $(html_builddir)/postgis$(DOCSUFFIX)/*.html
+	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html --require-kinds programlisting,screen $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
 endif
 
-check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/check_docbook_markup.py
+check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/check_docbook_markup.py --fail-on warning --max-warnings 0 $<
+	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-source --fail-on warning --max-warnings 0 $<
 endif
 
 check-xml: postgis-out.xml
