@@ -84,7 +84,47 @@ for ST_IsValid. The flag is a PostGIS extension.
  good_line | bad_poly
 -----------+----------
  t         | f</screen>
-	  </refsection>
+
+	<programlisting><![CDATA[
+-- Find tables with invalid geometries in registered geometry columns
+CREATE TEMP TABLE invalid_geometry_columns (
+    table_name text,
+    column_name text,
+    invalid_count bigint
+);
+
+DO $$
+DECLARE
+    rec record;
+    invalid_count bigint;
+BEGIN
+    FOR rec IN
+        SELECT f_table_schema, f_table_name, f_geometry_column
+        FROM geometry_columns
+        ORDER BY f_table_schema, f_table_name, f_geometry_column
+    LOOP
+        EXECUTE format(
+            'SELECT count(*) FROM %I.%I WHERE NOT ST_IsValid(%I, 0)',
+            rec.f_table_schema,
+            rec.f_table_name,
+            rec.f_geometry_column
+        ) INTO invalid_count;
+
+        IF invalid_count > 0 THEN
+            INSERT INTO invalid_geometry_columns
+            VALUES (
+                format('%I.%I', rec.f_table_schema, rec.f_table_name),
+                rec.f_geometry_column,
+                invalid_count
+            );
+        END IF;
+    END LOOP;
+END;
+$$;
+
+SELECT * FROM invalid_geometry_columns;
+	]]></programlisting>
+		  </refsection>
 
 	  <refsection>
 		<title>See Also</title>

@@ -150,8 +150,8 @@ from somegeogtable;</programlisting>
 			<para>The azimuth is a mathematical concept defined as the angle between a reference vector and a point, with angular units in radians.
 			The result value in radians can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.</para>
 
-			<para>Azimuth can be used in conjunction with <xref linkend="ST_Translate"/> to shift an object along its perpendicular axis. See
-				 the <varname>upgis_lineshift()</varname> function in the <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">PostGIS wiki</link> for an implementation of this.</para>
+				<para>For offsetting lines relative to their direction, use <xref linkend="ST_OffsetCurve"/>.
+					For projecting a point by distance and bearing, use <xref linkend="ST_Project"/>.</para>
 
 			<para role="availability" conformance="1.1.0">Availability: 1.1.0</para>
 			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for geography was introduced.</para>
@@ -167,6 +167,35 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
 <screen>      dega_b       |     degb_a
 ------------------+------------------
 42.27368900609371 | 222.27368900609372</screen>
+
+        <para>Compass direction labels can be computed from the azimuth.</para>
+<programlisting>WITH directions(deg) AS (VALUES
+  (0), (45), (90), (135), (180), (225), (270), (315)
+),
+bearings AS (
+  SELECT deg,
+         degrees(ST_Azimuth(ST_Point(0, 0),
+                            ST_MakePoint(sin(radians(deg)),
+                                         cos(radians(deg))))) AS azimuth
+  FROM directions
+)
+SELECT deg,
+       round(azimuth::numeric, 1) AS azimuth,
+       (ARRAY['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'])
+         [floor((azimuth + 22.5) / 45)::int + 1] AS direction
+FROM bearings
+ORDER BY deg;</programlisting>
+<screen> deg | azimuth | direction
+-----+---------+-----------
+   0 |     0.0 | N
+  45 |    45.0 | NE
+  90 |    90.0 | E
+ 135 |   135.0 | SE
+ 180 |   180.0 | S
+ 225 |   225.0 | SW
+ 270 |   270.0 | W
+ 315 |   315.0 | NW
+</screen>
 		<informaltable>
 		  <tgroup cols="2">
 			<tbody>

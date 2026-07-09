@@ -2153,6 +2153,16 @@ SELECT s.gid, s.school_name
     LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
   WHERE h.gid IS NULL;
 
+-- Find locations more than 3000 units away from their nearest hospital.
+-- Use NOT EXISTS so that a location is returned only when no nearby hospital exists.
+SELECT l.location_name
+  FROM locations l
+  WHERE NOT EXISTS (
+    SELECT 1
+    FROM hospitals h
+    WHERE ST_DWithin(l.geom, h.geom, 3000)
+  );
+
 -- Find broadcasting towers that a receiver with limited range can receive.
 -- Data is geometry in Spherical Mercator (SRID=3857), ranges are approximate.
 

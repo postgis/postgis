@@ -906,13 +906,51 @@ FROM polyTable
  {0}  | POLYGON((1 9,9 9,9 1,1 1,1 9))
  {1}  | POLYGON((2 2,2 3,3 3,3 2,2 2))
  {2}  | POLYGON((4 2,4 4,6 4,6 2,4 2))</screen>
+
+        <para>Finding interior rings which lie close to the exterior ring.</para>
+<programlisting>WITH poly AS (
+  SELECT 'POLYGON ((
+      0 0, 10 0, 10 10, 0 10, 0 0
+    ), (
+      1 1, 1 2, 2 2, 2 1, 1 1
+    ), (
+      8.5 1, 8.5 2, 9.5 2, 9.5 1, 8.5 1
+    ))'::geometry AS geom
+),
+rings AS (
+  SELECT d.path[1] AS ring_no,
+         ST_Boundary(d.geom) AS ring_geom
+  FROM poly
+  CROSS JOIN LATERAL ST_DumpRings(poly.geom) AS d
+),
+shell AS (
+  SELECT ring_geom
+  FROM rings
+  WHERE ring_no = 0
+),
+holes AS (
+  SELECT ring_no, ring_geom
+  FROM rings
+  WHERE ring_no &gt; 0
+)
+SELECT h.ring_no,
+       ST_AsText(ST_Intersection(ST_Buffer(s.ring_geom, 1.0), h.ring_geom)) AS close_part
+FROM shell AS s
+JOIN holes AS h
+  ON ST_DWithin(s.ring_geom, h.ring_geom, 1.0);
+
+ ring_no |                   close_part
+---------+-------------------------------------------------
+       1 | MULTILINESTRING((1 1,2 1),(1 2,1 1))
+       2 | MULTILINESTRING((8.5 1,9 1),(9 2,9.5 2,9.5 1,9 1))
+</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="geometry_dump"/>, <xref linkend="PostGIS_Geometry_DumpFunctions"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_InteriorRingN"/></para>
+		<para><xref linkend="geometry_dump"/>, <xref linkend="PostGIS_Geometry_DumpFunctions"/>, <xref linkend="ST_Boundary"/>, <xref linkend="ST_Buffer"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_InteriorRingN"/>, <xref linkend="ST_Intersection"/></para>
 	  </refsection>
 	</refentry>
 
@@ -2692,7 +2730,47 @@ MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
 <para>Start point of a NURBSCurve</para>
 <programlisting language="sql">SELECT ST_AsText(ST_StartPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));</programlisting>
 <screen>POINT(0 0)</screen>
-	</refsection>
+
+<para>Build edge node references from the start and end points of a LineString
+table. The example uses exact endpoint equality, so linework with nearly
+coincident endpoints should be snapped or otherwise cleaned first.</para>
+<programlisting>WITH roads(road_id, geom) AS (
+  VALUES
+    (1, 'LINESTRING(0 0, 1 0)'::geometry),
+    (2, 'LINESTRING(1 0, 1 1)'::geometry),
+    (3, 'LINESTRING(1 0, 2 0)'::geometry)
+),
+endpoints AS (
+  SELECT road_id, 'from' AS end_name, ST_StartPoint(geom) AS geom,
+         ST_AsEWKB(ST_StartPoint(geom)) AS endpoint_key
+  FROM roads
+  UNION ALL
+  SELECT road_id, 'to' AS end_name, ST_EndPoint(geom) AS geom,
+         ST_AsEWKB(ST_EndPoint(geom)) AS endpoint_key
+  FROM roads
+),
+nodes AS (
+  SELECT dense_rank() OVER (ORDER BY ST_X(geom), ST_Y(geom), endpoint_key) AS node_id,
+         endpoint_key
+  FROM (
+    SELECT DISTINCT ON (endpoint_key) endpoint_key, geom
+    FROM endpoints
+    ORDER BY endpoint_key
+  ) AS distinct_endpoints
+)
+SELECT e.road_id,
+       max(n.node_id) FILTER (WHERE e.end_name = 'from') AS from_node,
+       max(n.node_id) FILTER (WHERE e.end_name = 'to') AS to_node
+FROM endpoints AS e
+JOIN nodes AS n USING (endpoint_key)
+GROUP BY e.road_id
+ORDER BY e.road_id;</programlisting>
+<screen> road_id | from_node | to_node
+---------+-----------+---------
+     1 |         1 |       2
+     2 |         2 |       3
+     3 |         2 |       4</screen>
+		</refsection>
 
 	<refsection>
 	  <title>See Also</title>

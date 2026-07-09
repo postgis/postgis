@@ -57,8 +57,8 @@ fi
 git clone . $outdir || exit 1
 cd $outdir && git checkout $tag && cd -
 
-echo "Removing make_dist.sh and HOWTO_RELEASE"
-rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
+echo "Removing make_dist.sh"
+rm -fv "$outdir"/make_dist.sh
 
 echo "Removing ci files"
 rm -rfv \

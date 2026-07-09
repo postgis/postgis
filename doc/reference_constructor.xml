@@ -926,8 +926,8 @@ is projected to WGS84 (SRID 4326).</para>
             <title>Description</title>
 
             <para>Starts with the concept of a hexagon tiling of the plane.
-            (Not a hexagon tiling of the globe, this is not the
-            <link xlink:href="https://github.com/uber/h3">H3</link> tiling scheme.)
+            (Not a hexagon tiling of the globe; for H3 use the
+            <link xlink:href="https://github.com/postgis/h3-pg">h3-pg</link> extension.)
             For a given planar SRS, and a given edge size, starting at the origin of the SRS,
             there is one unique hexagonal tiling of the plane, Tiling(SRS, Size).
             This function answers the question: what hexagons in a given Tiling(SRS, Size)

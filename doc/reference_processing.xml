@@ -344,13 +344,117 @@ promisingcircle_pcount | lamecircle_pcount
 ST_Transform(ST_SetSRID(ST_Point(-71.063526, 42.35785),4269), 26986),
 100,2)) As octagon;</programlisting>
 <screen>POLYGON((236057.5905746494 900908.7599186979,236028.30125276805 900838.0492405792,235957.5905746494 900808.7599186979,235886.87989653074 900838.0492405792,235857.5905746494 900908.7599186979,235886.87989653074 900979.4705968165,235957.5905746494 901008.7599186979,236028.30125276805 900979.4705968165,236057.5905746494 900908.7599186979))</screen>
-              </refsection>
 
-              <refsection>
-                <title>See Also</title>
+                <para>Buffering a polygon by a positive distance and then by the same negative
+                distance is a morphological closing operation. It can be useful for smoothing
+                noisy boundaries, such as simplifying a coastline by removing narrow inlets and
+                bays. The result intentionally changes the shape and area of the input, and the
+                distance must be chosen in the units of the input SRS. For data in a geographic
+                SRS, transform to a projected SRS suited to the operation first; for cartographic
+                visualization in Web Mercator, using that display SRS can be appropriate.</para>
 
-                <para><xref linkend="ST_Collect"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_MakeValid"/></para>
-              </refsection>
+<programlisting>-- Smooth a coastline using a 1 km closing operation, then simplify the result.
+-- The example uses Massachusetts State Plane meter units for the operation.
+WITH projected AS (
+  SELECT id, ST_Transform(geom, 26986) AS geom
+  FROM coast
+),
+closed AS (
+  SELECT id, ST_Buffer(ST_Buffer(geom, 1000), -1000) AS geom
+  FROM projected
+)
+SELECT id, ST_Transform(ST_SimplifyPreserveTopology(geom, 50), 4326) AS geom
+FROM closed;</programlisting>
+
+	                <para>The same technique is described in Paul Ramsey's
+	                <link xlink:href="https://blog.cleverelephant.ca/2010/11/removing-complexities.html">Removing Complexities</link>.
+	                The final simplification step is optional; use
+	                <xref linkend="ST_SimplifyPreserveTopology"/> when polygonal validity matters,
+	                and check the result against the cartographic or analytical tolerance required by
+	                the application.</para>
+
+                <para>A small negative buffer can also be used as a heuristic to
+                find narrow polygon spikes. The query below compares how much
+                area and perimeter remain after erosion. A large
+                <varname>erosion_index</varname> indicates that the perimeter
+                dropped proportionally more than the area. This is only a
+                preselection aid; the threshold and buffer distance must be
+                chosen for the data units and the kind of spike being checked.</para>
+
+<programlisting>WITH sample(id, geom) AS (
+  VALUES
+    ('plain', 'POLYGON((0 0,10 0,10 10,0 10,0 0))'::geometry),
+    ('spike', 'POLYGON((0 0,10 0,10 10,5.2 10,5 16,4.8 10,0 10,0 0))'::geometry)
+),
+eroded AS (
+  SELECT id, geom, ST_Buffer(geom, -0.5) AS eroded_geom
+  FROM sample
+),
+scored AS (
+  SELECT id,
+         round((
+           ST_Area(eroded_geom) / ST_Area(geom) /
+           NULLIF(ST_Perimeter(eroded_geom) / ST_Perimeter(geom), 0)
+         )::numeric, 3) AS erosion_index
+  FROM eroded
+  WHERE NOT ST_IsEmpty(eroded_geom)
+)
+SELECT id, erosion_index, erosion_index &gt; 1.1 AS possible_spike
+FROM scored
+ORDER BY id;</programlisting>
+<screen>  id   | erosion_index | possible_spike
+-------+---------------+----------------
+ plain |         0.900 | f
+ spike |         1.147 | t</screen>
+
+	                <para>A variable-distance buffer can be approximated by buffering
+	                each vertex of a line by a distance interpolated along the line, building
+	                the convex hull for each consecutive pair of vertex buffers, and unioning
+	                the segment hulls. As with any geometry buffer, distances are in the units
+	                of the input SRS.</para>
+
+<programlisting>-- Taper a line buffer from 5 to 25 units along the line.
+WITH line AS (
+  SELECT 'LINESTRING(0 0, 100 0, 160 40)'::geometry AS geom
+),
+vertices AS (
+  SELECT (dump).path[1] AS n,
+         (dump).geom AS geom,
+         line.geom AS line_geom
+  FROM line
+  CROSS JOIN LATERAL ST_DumpPoints(line.geom) AS dump
+),
+radii AS (
+  SELECT n,
+         geom,
+         5 + (25 - 5) * ST_LineLocatePoint(line_geom, geom) AS radius
+  FROM vertices
+),
+segments AS (
+  SELECT n,
+         geom,
+         radius,
+         lead(geom) OVER (ORDER BY n) AS next_geom,
+         lead(radius) OVER (ORDER BY n) AS next_radius
+  FROM radii
+)
+SELECT ST_Union(
+         ST_ConvexHull(
+           ST_Collect(
+             ST_Buffer(geom, radius),
+             ST_Buffer(next_geom, next_radius)
+           )
+         )
+       ) AS tapered_buffer
+FROM segments
+WHERE next_geom IS NOT NULL;</programlisting>
+	              </refsection>
+
+	              <refsection>
+	                <title>See Also</title>
+
+	                <para><xref linkend="ST_Collect"/>, <xref linkend="ST_ConvexHull"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_DumpPoints"/>, <xref linkend="ST_LineLocatePoint"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_SimplifyPreserveTopology"/>, <xref linkend="ST_Transform"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_MakeValid"/></para>
+	              </refsection>
         </refentry>
 
         <refentry xml:id="ST_BuildArea">
@@ -453,6 +557,25 @@ SELECT ST_BuildArea(ST_Collect(inring,outring))
 FROM (SELECT
     ST_Buffer('POINT(100 90)', 25) As inring,
     ST_Buffer('POINT(100 90)', 50) As outring) As t;
+</programlisting>
+<para>Input linework that crosses at non-endpoint intersections must be noded before building areas:</para>
+<programlisting>WITH lines(geom) AS (VALUES
+  ('LINESTRING(36 35,45 307)'::geometry),
+  ('LINESTRING(30 290,390 280)'::geometry),
+  ('LINESTRING(320 60,300 310)'::geometry),
+  ('LINESTRING(20 60,320 60)'::geometry),
+  ('LINESTRING(120 140,168 225)'::geometry),
+  ('LINESTRING(140 220,220 150,120 170)'::geometry)
+),
+noded AS (
+  SELECT ST_Node(ST_UnaryUnion(ST_Collect(geom))) AS geom FROM lines
+)
+SELECT ST_AsText(ST_BuildArea(geom), 1) AS area
+FROM noded;
+
+                                                area
+-----------------------------------------------------------------------------------------------------
+ POLYGON((320 60,36.8 60,44.4 289.6,302.2 282.4,320 60),(156.9 205.3,135.2 167,220 150,156.9 205.3))
 </programlisting>
 
           </refsection>
@@ -608,13 +731,24 @@ POINT(0.5 1)
 SELECT ST_AsText(ST_Centroid(g))
 FROM  ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 2, -1 1,0 0),(0 0, 0.5 0, 1 0),CIRCULARSTRING( 1 0, 2 1, 1 2),(1 2, 0.5 2, 0 2))' ) AS g;
 ------------------------------------------
-POINT(0.5 1)</screen>
+POINT(0.5 1)
+
+-- Centroids of the parts of a MultiPolygon
+SELECT ST_AsText(ST_Collect(ST_Centroid(geom) ORDER BY path))
+FROM ST_Dump('MULTIPOLYGON (
+    ((0 0, 0 1, 1 1, 1 0, 0 0)),
+    ((2 2, 2 3, 3 3, 3 2, 2 2))
+  )'::geometry);
+--------------------------
+MULTIPOINT((0.5 0.5),(2.5 2.5))
+
+</screen>
     </refsection>
 
     <refsection>
       <title>See Also</title>
 
-      <para><xref linkend="ST_PointOnSurface"/>, <xref linkend="ST_GeometricMedian"/></para>
+      <para><xref linkend="ST_Collect"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_PointOnSurface"/>, <xref linkend="ST_GeometricMedian"/></para>
     </refsection>
   </refentry>
 
@@ -1402,10 +1536,21 @@ FROM (
         10, 'endcap=round join=round') AS geom
 ) AS s;</programlisting>
             </para>
-<para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
-<programlisting>SELECT s.id, dp.path[1] AS pt_id, dp.geom
-FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
-        </refsection>
+	<para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
+	<programlisting>SELECT s.id, dp.path[1] AS pt_id, dp.geom
+	FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom,12)) AS dp;</programlisting>
+	<para>Generate dot-density points from a polygon table, using the absolute value of an attribute
+	as the number of points and keeping the sign of the attribute for styling.</para>
+	<programlisting>SELECT z.id,
+       CASE WHEN z.count_delta &lt; 0 THEN -1 ELSE 1 END AS sign,
+       dp.path[1] AS pt_id,
+       dp.geom
+FROM zones AS z
+CROSS JOIN LATERAL ST_DumpPoints(
+    ST_GeneratePoints(z.geom, abs(z.count_delta)::integer, z.id + 1)
+) AS dp
+WHERE z.count_delta &lt;&gt; 0;</programlisting>
+	        </refsection>
         <refsection>
           <title>See Also</title>
           <para><xref linkend="ST_DumpPoints"/></para>
@@ -2457,6 +2602,42 @@ SELECT ST_AsText(ST_Polygonize(geom ))
 <screen>GEOMETRYCOLLECTION(POLYGON((180 40,30 20,20 90,70 70,80 130,160 160,180 40),(150 80,120 130,80 60,150 80)),POLYGON((80 60,120 130,150 80,80 60)),POLYGON((80 130,70 70,20 90,20 160,70 190,80 130)),POLYGON((160 160,80 130,70 190,160 160)))</screen>
 
 
+        <para>Polygonizing two polygon coverages and transferring attributes to the resultants:</para>
+<programlisting>WITH poly_a(id, geom) AS (VALUES
+  ('a1', 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry),
+  ('a2', 'POLYGON ((4 0, 8 0, 8 4, 4 4, 4 0))'::geometry)
+),
+poly_b(id, geom) AS (VALUES
+  ('b1', 'POLYGON ((0 0, 8 0, 8 2, 0 2, 0 0))'::geometry),
+  ('b2', 'POLYGON ((0 2, 8 2, 8 4, 0 4, 0 2))'::geometry)
+),
+lines AS (
+  SELECT ST_Boundary(geom) AS geom FROM poly_a
+  UNION ALL
+  SELECT ST_Boundary(geom) FROM poly_b
+),
+noded AS (
+  SELECT ST_UnaryUnion(ST_Collect(geom)) AS geom FROM lines
+),
+cells AS (
+  SELECT (ST_Dump(ST_Polygonize(geom))).geom AS geom FROM noded
+)
+SELECT a.id AS id_a,
+       b.id AS id_b,
+       ST_AsText(c.geom) AS geom
+FROM cells AS c
+LEFT JOIN poly_a AS a ON ST_Within(ST_PointOnSurface(c.geom), a.geom)
+LEFT JOIN poly_b AS b ON ST_Within(ST_PointOnSurface(c.geom), b.geom)
+WHERE a.id IS NOT NULL OR b.id IS NOT NULL
+ORDER BY id_a, id_b;</programlisting>
+<screen> id_a | id_b |              geom
+------+------+--------------------------------
+ a1   | b1   | POLYGON((4 0,0 0,0 2,4 2,4 0))
+ a1   | b2   | POLYGON((4 4,4 2,0 2,0 4,4 4))
+ a2   | b1   | POLYGON((4 0,4 2,8 2,8 0,4 0))
+ a2   | b2   | POLYGON((4 2,4 4,8 4,8 2,4 2))
+</screen>
+
         <para>Polygonizing a table of linestrings:</para>
          <programlisting>
 SELECT ST_AsEWKT(ST_Polygonize(geom_4269)) As geomtextrep
@@ -2485,8 +2666,13 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
             <title>See Also</title>
             <para>
             <xref linkend="ST_BuildArea"/>,
+            <xref linkend="ST_Boundary"/>,
+            <xref linkend="ST_Collect"/>,
             <xref linkend="ST_Dump"/>,
-            <xref linkend="ST_Node"/>
+            <xref linkend="ST_Node"/>,
+            <xref linkend="ST_PointOnSurface"/>,
+            <xref linkend="ST_UnaryUnion"/>,
+            <xref linkend="ST_Within"/>
             </para>
         </refsection>
     </refentry>
@@ -2990,6 +3176,12 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) AS geom) AS t;</programlisting>
          Use <xref linkend="ST_SimplifyPreserveTopology"/> to preserve topology and ensure validity.
          <xref linkend="ST_CoverageSimplify"/> also preserves topology and validity.
          </para></note>
+        <note><para>This is a general-purpose simplification function. It may
+         remove narrow polygon spikes when their effective area is below the
+         tolerance, but it is not a dedicated spike-removal or polygon-repair
+         operation. Use <xref linkend="ST_IsValid"/> to check the result and
+         <xref linkend="ST_MakeValid"/> to repair invalid polygonal output if
+         needed.</para></note>
         <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
         <note><para>This function handles 3D and the third dimension will affect the result.</para></note>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>

@@ -213,6 +213,14 @@ Computes a geometry representing the shared portion of geometries A and B.
             <para>ST_Intersection in conjunction with <xref linkend="ST_Intersects"/> is useful for clipping geometries such as in bounding box, buffer, or region
                 queries where you only require the portion of a geometry that is inside a country or region of interest.</para>
 
+            <note><para>Spatial predicates such as <xref linkend="ST_Intersects"/> and overlay functions such as
+                <function>ST_Intersection</function> are computed by different algorithms. For very close or nearly
+                coincident coordinates, floating-point precision and geometric robustness may make a predicate
+                return true while the computed intersection is empty, or place an intersection point slightly away
+                from the input line. For repeatable overlay results, snap inputs to a suitable grid first, for example
+                with <xref linkend="ST_ReducePrecision"/>, or use the <varname>gridSize</varname> parameter when all
+                input vertices already lie on the grid.</para></note>
+
             <note><para>&geography_transform; It first determines the best SRID that
                     fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario)  and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography.</para></note>
 
