@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
-from docbook_qa import add_source_findings, build_index, check_html_file, load_xml
+from docbook_qa import add_source_findings, build_index, check_html_file, load_xml, main
 
 DOCBOOK_OPEN = '<book xmlns="http://docbook.org/ns/docbook" xmlns:xml="http://www.w3.org/XML/1998/namespace">'
 DOCBOOK_CLOSE = '</book>'
@@ -119,6 +121,38 @@ class DocBookHtmlLintTest(unittest.TestCase):
                 '<pre id="s1" class="screen">1</pre></div>'
             ),
         )
+
+    def test_expect_from_requires_source_programlisting_on_refentry_page(self):
+        xml = write_tmp(
+            ".xml",
+            DOCBOOK_OPEN
+            + '<refentry xml:id="ST_Foo"><refsection><title>Examples</title><programlisting>SELECT 1;</programlisting></refsection></refentry>'
+            + DOCBOOK_CLOSE,
+        )
+        html = Path(xml.parent) / "ST_Foo.html"
+        html.write_text("<html><body><p>No generated code block here.</p></body></html>", encoding="utf-8")
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(1, main(["lint-html", "--expect-from", str(xml), str(html)]))
+
+    def test_expect_from_does_not_require_screen_when_source_has_no_screen(self):
+        xml = write_tmp(
+            ".xml",
+            DOCBOOK_OPEN
+            + '<refentry xml:id="ST_Foo"><refsection><title>Examples</title><programlisting>SELECT 1;</programlisting></refsection></refentry>'
+            + DOCBOOK_CLOSE,
+        )
+        html = Path(xml.parent) / "ST_Foo.html"
+        html.write_text(
+            '<html><body><div class="postgis-example-block postgis-example-code postgis-example-language-sql" '
+            'role="group" data-postgis-block="code" data-postgis-language="sql" aria-labelledby="l1">'
+            '<span id="l1" class="postgis-example-label">Code</span>'
+            '<button class="postgis-copy-button" type="button" aria-label="Copy" title="Copy"></button>'
+            '<pre id="p1" class="programlisting language-sql" data-postgis-language="sql">SELECT 1;</pre>'
+            '</div></body></html>',
+            encoding="utf-8",
+        )
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(0, main(["lint-html", "--expect-from", str(xml), str(html)]))
 
     def test_required_kinds_violation_and_clean_case(self):
         self.assertTrue(self.html_findings("", {"programlisting"}))

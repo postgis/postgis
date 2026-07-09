@@ -353,6 +353,44 @@ def check_html_file(path: Path, required_kinds: set[str]) -> list[Finding]:
     return findings
 
 
+def refentry_filename(refentry: etree._Element) -> str | None:
+    entry_id = refentry_id(refentry)
+    if not entry_id:
+        return None
+    return f"{entry_id}.html"
+
+
+def has_programlisting_outside_refsynopsis(refentry: etree._Element) -> bool:
+    for node in refentry.findall(f".//{DB}programlisting"):
+        if not any(local_name(ancestor) == "refsynopsisdiv" for ancestor in node.iterancestors()):
+            return True
+    return False
+
+
+def refentry_expected_kinds(refentry: etree._Element) -> set[str]:
+    kinds: set[str] = set()
+    if has_programlisting_outside_refsynopsis(refentry):
+        kinds.add("programlisting")
+    if refentry.find(f".//{DB}screen") is not None:
+        kinds.add("screen")
+    return kinds
+
+
+def build_html_expectations(input_path: Path) -> dict[str, set[str]]:
+    root = load_xml(input_path).getroot()
+    expectations: dict[str, set[str]] = {}
+    for refentry in root.findall(f".//{DB}refentry"):
+        filename = refentry_filename(refentry)
+        if filename is None:
+            continue
+        expectations.setdefault(filename, set()).update(refentry_expected_kinds(refentry))
+    return expectations
+
+
+def expected_kinds_for_page(expectations: dict[str, set[str]], page: Path) -> set[str]:
+    return expectations.get(page.name, set())
+
+
 def parse_required_kinds(value: str) -> set[str]:
     if not value:
         return set()
@@ -462,12 +500,17 @@ def command_lint_source(args: argparse.Namespace) -> int:
 
 def command_lint_html(args: argparse.Namespace) -> int:
     findings: list[Finding] = []
+    expectations = build_html_expectations(args.expect_from) if args.expect_from else {}
     for page in args.pages:
         path = Path(page)
         if not path.exists():
             findings.append(Finding("error", "html-block-label", f"{path}: file does not exist", ""))
             continue
-        findings.extend(check_html_file(path, args.require_kinds))
+        required_kinds = set(args.require_kinds) | expected_kinds_for_page(expectations, path)
+        if args.show_expectations and path.name in expectations:
+            expected = ",".join(sorted(required_kinds)) or "<none>"
+            print(f"EXPECT {path.name}: {expected}", file=sys.stderr)
+        findings.extend(check_html_file(path, required_kinds))
     print_findings(findings, args.max_warnings)
     print_summary("DocBook block label checker", "no generated HTML block label issues found.", findings, args.fail_on)
     return 1 if should_fail(findings, args.fail_on) else 0
@@ -502,6 +545,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         type=parse_required_kinds,
         default=set(),
         help="comma-separated block kinds that every input page must contain, for focused fixtures",
+    )
+    html.add_argument(
+        "--expect-from",
+        type=Path,
+        help="expanded DocBook XML whose refentries define per-page required block kinds",
+    )
+    html.add_argument(
+        "--show-expectations",
+        action="store_true",
+        help="print derived per-page block-kind expectations to stderr",
     )
     html.add_argument("pages", nargs="+", metavar="GENERATED_PAGE.html")
     html.set_defaults(func=command_lint_html)

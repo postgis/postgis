@@ -340,7 +340,7 @@ ifneq ($(PYTHON3),)
 ifneq ($(XSLTPROC),)
 ifneq ($(XSLBASE),)
 CHECK_UNIT_TARGET += check-html-block-labels
-CHECK_HTML_BLOCK_LABELS_DEPS = $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/docbook_qa.py
+CHECK_HTML_BLOCK_LABELS_DEPS = postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/docbook_qa.py
 endif
 endif
 endif
@@ -695,18 +695,6 @@ else
 	$(PYTHON3) $(abs_top_srcdir)/utils/test_docbook_qa.py
 endif
 
-DOCBOOK_BLOCK_LABEL_CHECK_PAGES = \
-	$(html_builddir)/postgis$(DOCSUFFIX)/is_contained_geometry_box2df.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/overlaps_geometry_box2df.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/overlaps_box2df_geometry.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/overlaps_box2df_box2df.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsKML.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsGML.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/ST_AsLatLonText.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/ST_GeometryN.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/ST_MakeValid.html \
-	$(html_builddir)/postgis$(DOCSUFFIX)/geometry_overlaps.html
-
 check-html-block-labels: $(CHECK_HTML_BLOCK_LABELS_DEPS)
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
@@ -715,8 +703,7 @@ else ifeq ($(XSLTPROC),)
 else ifeq ($(XSLBASE),)
 	@echo "Skipping $@: DocBook XSL stylesheets are not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html $(html_builddir)/postgis$(DOCSUFFIX)/*.html
-	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html --require-kinds programlisting,screen $(DOCBOOK_BLOCK_LABEL_CHECK_PAGES)
+	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html --expect-from postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/*.html
 endif
 
 check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py
