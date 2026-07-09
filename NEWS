@@ -7,8 +7,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Bug Fixes *
 
- - GH-1160, [topology] Preserve overlay intersection boundaries when
-          noding lines with GEOS main (Darafei Praliaskouski)
+ - GH-1160, Adapt topology, regression expectations, and manual examples
+          to GEOS 3.15 overlay line merging (Paul Ramsey, Darafei Praliaskouski)
  - #6093, Fix SQL generation on ppc64el when NURBS comments are
           preprocessed with AltiVec vector macros (Darafei Praliaskouski)
  - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
