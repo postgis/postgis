@@ -599,12 +599,10 @@ hectares
   ST_Area(geom)/10000 AS hectares
 FROM bc_municipality
 ORDER BY hectares DESC
-LIMIT 1;
-
-name           | hectares
+LIMIT 1;</programlisting>
+<screen>name           | hectares
 ---------------+-----------------
-TUMBLER RIDGE  | 155020.02556131
-</programlisting>
+TUMBLER RIDGE  | 155020.02556131</screen>
 
 			<para>Note that in order to answer this query we have to calculate
 			the area of every polygon. If we were doing this a lot it would
@@ -636,16 +634,15 @@ FROM bc_roads AS r
 JOIN bc_municipality AS m
   ON ST_Contains(m.geom, r.geom)
 GROUP BY m.name
-ORDER BY roads_km;
-
-name                        | roads_km
+ORDER BY roads_km;</programlisting>
+<screen>name                        | roads_km
 ----------------------------+----------
 SURREY                      | 1539.476
 VANCOUVER                   | 1450.331
 LANGLEY DISTRICT            |  833.793
 BURNABY                     |  773.769
 PRINCE GEORGE               |  694.376
-...</programlisting>
+...</screen>
 
 			<para>This query takes a while, because every road in the table is
 			summarized into the final result (about 250K roads for the

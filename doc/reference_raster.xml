@@ -1195,14 +1195,10 @@ WHERE short_name = 'JPEG') As g;</programlisting>
 (9 rows)</screen>
 
 <para>This example returns raw XML output for GeoTIFF creator options.</para>
-<programlisting>
-<![CDATA[
-
-SELECT create_options
+<programlisting>SELECT create_options
 FROM ST_GDALDrivers()
-WHERE short_name = 'GTiff';
-
-<CreationOptionList>
+WHERE short_name = 'GTiff';</programlisting>
+<screen><![CDATA[<CreationOptionList>
     <Option name="COMPRESS" type="string-select">
         <Value>NONE</Value>
         <Value>LZW</Value>
@@ -1261,18 +1257,17 @@ WHERE short_name = 'GTiff';
         <Value>BIG</Value>
     </Option>
     <Option name="COPY_SRC_OVERVIEWS" type="boolean" default="NO" description="Force copy of overviews of source dataset (CreateCopy())"/>
-</CreationOptionList>
+</CreationOptionList>]]></screen>
 
--- Output the create options XML column for GTiff as a table  --
+<programlisting><![CDATA[-- Output the create options XML column for GTiff as a table  --
 SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@type', g.opt))[1]::text As otype,
        (xpath('@description', g.opt))[1]::text As descrip,
        array_to_string(xpath('Value/text()', g.opt),', ') As vals
 FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As opt
 FROM  ST_GDALDrivers()
-WHERE short_name = 'GTiff') As g;
-
-       oname        |     otype     |                               descrip                                |                                   vals
+WHERE short_name = 'GTiff') As g;]]></programlisting>
+<screen><![CDATA[       oname        |     otype     |                               descrip                                |                                   vals
 --------------------+---------------+----------------------------------------------------------------------+---------------------------------------------------------------------------
  COMPRESS           | string-select |                                                                      | NONE, LZW, PACKBITS, JPEG, CCITTRLE, CCITTFAX3, CCITTFAX4, DEFLATE
  PREDICTOR          | int           | Predictor Type                                                       |
@@ -1293,9 +1288,7 @@ WHERE short_name = 'GTiff') As g;
  BIGTIFF            | string-select | Force creation of BigTIFF file                                       | YES, NO, IF_NEEDED, IF_SAFER
  ENDIANNESS         | string-select | Force endianness of created file. For DEBUG purpose mostly           | NATIVE, INVERTED, LITTLE, BIG
  COPY_SRC_OVERVIEWS | boolean       | Force copy of overviews of source dataset (CreateCopy())             |
-(19 rows)
-
-]]></programlisting>
+(19 rows)]]></screen>
       </refsection>
 
       <refsection>
@@ -4651,18 +4644,15 @@ SELECT x, y, val, ST_AsText(geom)
                     <programlisting>
 SELECT rid, ST_Value(rast, foo.pt_geom) As b1pval, ST_Value(rast, 2, foo.pt_geom) As b2pval
 FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77, 5793243.76), 0) As pt_geom) As foo
-WHERE rid=2;
-
- rid | b1pval | b2pval
+WHERE rid=2;</programlisting>
+<screen> rid | b1pval | b2pval
 -----+--------+--------
-   2 |    252 |     79
+   2 |    252 |     79</screen>
 
-
--- general fictitious example using a real table
+                    <programlisting>-- general fictitious example using a real table
 SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval
 FROM sometable
-WHERE ST_Intersects(rast,sometable.geom);
-                </programlisting>
+WHERE ST_Intersects(rast,sometable.geom);</programlisting>
                     <programlisting>
 SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval,
     ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval
@@ -4680,9 +4670,8 @@ SELECT x, y, ST_Value(rast, 1, x, y) As b1val,
     ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
 FROM dummy_rast CROSS JOIN
 generate_series(1, 1000) As x CROSS JOIN generate_series(1, 1000) As y
-WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
-
- x | y | b1val | b2val | b3val
+WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);]]></programlisting>
+<screen><![CDATA[ x | y | b1val | b2val | b3val
 ---+---+-------+-------+-------
  1 | 1 |   253 |    78 |    70
  1 | 2 |   253 |    96 |    80
@@ -4692,9 +4681,7 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
  2 | 1 |   254 |    98 |    86
  2 | 2 |   254 |   118 |   108
  :
- :
-
-]]></programlisting>
+ :]]></screen>
 
                 <para>Get all values in bands 1,2,3 of each pixel same as above but returning the upper left point point of each pixel.</para>
                 <programlisting>
@@ -4707,16 +4694,13 @@ SELECT ST_AsText(ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
     ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
 FROM dummy_rast CROSS JOIN
 generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
-WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);
-
-            uplpt            | b1val | b2val | b3val
+WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);]]></programlisting>
+<screen><![CDATA[            uplpt            | b1val | b2val | b3val
 -----------------------------+-------+-------+-------
  POINT(3427929.25 5793245.5) |   253 |    78 |    70
  POINT(3427929.25 5793247)   |   253 |    96 |    80
  POINT(3427929.25 5793248.5) |   250 |    99 |    90
-:
-
-]]></programlisting>
+:]]></screen>
                 <programlisting><![CDATA[
 
 --- Get a polygon formed by union of all pixels
@@ -5303,15 +5287,11 @@ FROM (SELECT ST_DumpAsPolygons(ST_SetValue(
 FROM dummy_rast
 where rid = 2) As foo
 WHERE (foo.geomval).val < 250
-GROUP BY (foo.geomval).val;
-
- val |                                                     st_astext
+GROUP BY (foo.geomval).val;]]></programlisting>
+<screen><![CDATA[ val |                                                     st_astext
 -----+-------------------------------------------------------------------
   50 | POLYGON((3427927.75 5793244,3427927.75 5793243.95,3427927.8 579324 ...
- 249 | POLYGON((3427927.95 5793243.95,3427927.95 5793243.85,3427928 57932 ...
-
-
-]]></programlisting>
+ 249 | POLYGON((3427927.95 5793243.95,3427927.95 5793243.85,3427928 57932 ...]]></screen>
 
                 <para>This example stores the changed raster.</para>
                 <programlisting>
@@ -5453,9 +5433,8 @@ SELECT
         )
     ) AS poly
 ) foo
-ORDER BY 1, 2;
-
- x | y | val
+ORDER BY 1, 2;]]></programlisting>
+<screen><![CDATA[ x | y | val
 ---+---+-----
  1 | 1 |   1
  1 | 2 |   1
@@ -5465,9 +5444,7 @@ ORDER BY 1, 2;
  2 | 3 |   9
  3 | 1 |   1
  3 | 2 |   9
- 3 | 3 |   9
-
-]]></programlisting>
+ 3 | 3 |   9]]></screen>
 
                 <programlisting><![CDATA[
 
@@ -5495,9 +5472,8 @@ SELECT
         )
     ) AS poly
 ) foo
-ORDER BY 1, 2;
-
- x | y | val
+ORDER BY 1, 2;]]></programlisting>
+<screen><![CDATA[ x | y | val
 ---+---+-----
  1 | 1 |   9
  1 | 2 |   9
@@ -5507,9 +5483,7 @@ ORDER BY 1, 2;
  2 | 3 |   9
  3 | 1 |   9
  3 | 2 |   9
- 3 | 3 |   9
-
-]]></programlisting>
+ 3 | 3 |   9]]></screen>
 
                 <programlisting>
 /*
@@ -11298,25 +11272,21 @@ UPDATE dummy_rast SET map_rast2 = ST_MapAlgebraFct(rast,'2BUI','classify_fct(flo
 
 SELECT DISTINCT ST_Value(rast,1,i,j) As origval, ST_Value(map_rast2, 1, i, j) As mapval
 FROM dummy_rast CROSS JOIN generate_series(1, 5) AS i CROSS JOIN generate_series(1,5) AS j
-WHERE rid = 2;
-
- origval | mapval
+WHERE rid = 2;]]></programlisting>
+<screen><![CDATA[ origval | mapval
 ---------+--------
      249 |      1
      250 |      1
      251 |
      252 |      2
      253 |      3
-     254 |      3
+     254 |      3]]></screen>
 
-SELECT ST_BandPixelType(map_rast2) As b1pixtyp
-FROM dummy_rast WHERE rid = 2;
-
- b1pixtyp
+                    <programlisting>SELECT ST_BandPixelType(map_rast2) As b1pixtyp
+FROM dummy_rast WHERE rid = 2;</programlisting>
+<screen><![CDATA[ b1pixtyp
 ----------
- 2BUI
-
-]]></programlisting>
+ 2BUI]]></screen>
 
                     <informaltable>
                         <tgroup cols="2">

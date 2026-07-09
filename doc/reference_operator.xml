@@ -1033,43 +1033,39 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
-SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;
- ?column?
+			<programlisting>SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;</programlisting>
+<screen><![CDATA[ ?column?
 ----------
  f
-(1 row)
+(1 row)]]></screen>
 
-SELECT ST_AsText(column1)
+			<programlisting><![CDATA[SELECT ST_AsText(column1)
 FROM ( VALUES
 	('LINESTRING(0 0, 1 1)'::geometry),
-	('LINESTRING(1 1, 0 0)'::geometry)) AS foo;
-	  st_astext
+	('LINESTRING(1 1, 0 0)'::geometry)) AS foo;]]></programlisting>
+<screen><![CDATA[	  st_astext
 ---------------------
  LINESTRING(0 0,1 1)
  LINESTRING(1 1,0 0)
-(2 rows)
+(2 rows)]]></screen>
 
--- Note: the GROUP BY uses the "=" to compare for geometry equivalency.
+			<programlisting><![CDATA[-- Note: the GROUP BY uses the "=" to compare for geometry equivalency.
 SELECT ST_AsText(column1)
 FROM ( VALUES
 	('LINESTRING(0 0, 1 1)'::geometry),
 	('LINESTRING(1 1, 0 0)'::geometry)) AS foo
-GROUP BY column1;
-      st_astext
+GROUP BY column1;]]></programlisting>
+<screen><![CDATA[      st_astext
 ---------------------
  LINESTRING(0 0,1 1)
  LINESTRING(1 1,0 0)
-(2 rows)
+(2 rows)]]></screen>
 
--- In versions prior to 2.0, this used to return true --
+			<programlisting><![CDATA[-- In versions prior to 2.0, this used to return true --
  SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
-	ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;
-
---pt_intersect --
-f
-
-]]></programlisting>
+	ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;]]></programlisting>
+<screen><![CDATA[--pt_intersect --
+f]]></screen>
 		  </refsection>
 
 		  <refsection>
