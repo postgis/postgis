@@ -1606,6 +1606,58 @@ FROM (VALUES
 
 SELECT '#5597', ST_AsGeoJSON(r.*) from (values (null::geometry)) as r(geom);
 
+SELECT '#5775.1', ST_AsGeoJSONAgg(t.*, 'id')::jsonb
+FROM (VALUES
+    (1, 'one', 'POINT(1 1)'::geometry),
+    (2, 'two', 'POINT(2 2)'::geometry))
+    AS t(id, name, geom);
+
+SELECT '#5775.2', ST_AsGeoJSONAgg(t.*, 'geom2', 'id')::jsonb
+FROM (VALUES
+    (1, 'one', 'POINT(0 0)'::geometry, 'POINT(1 1)'::geometry),
+    (2, 'two', 'POINT(0 0)'::geometry, 'POINT(2 2)'::geometry))
+    AS t(id, name, geom1, geom2);
+
+SELECT '#5775.3', ST_AsGeoJSONAgg(t.*)::jsonb
+FROM (SELECT 1, 'POINT(1 1)'::geometry) AS t(id, geom)
+WHERE false;
+
+SELECT '#5775.4', ST_AsGeoJSONAgg(t.*, 'geom2', 1, false, 'id')::jsonb
+FROM (VALUES
+    (1, 'one', 'POINT(0 0)'::geometry, 'POINT(1.11 1.19)'::geometry))
+    AS t(id, name, geom1, geom2);
+
+WITH geojson AS (
+    SELECT ST_AsGeoJSONAgg(r.*, 'id' ORDER BY l.id)::jsonb AS doc
+    FROM (VALUES (1), (2), (3)) AS l(id)
+    LEFT JOIN (VALUES
+        (1, 'one', 'POINT(1 1)'::geometry),
+        (3, 'three', 'POINT(3 3)'::geometry))
+        AS r(id, name, geom)
+    USING (id)
+)
+SELECT '#5775.5',
+    jsonb_array_length(doc -> 'features'),
+    doc #>> '{features,0,id}',
+    doc #>> '{features,1,id}'
+FROM geojson;
+
+SELECT '#5775.6', ST_AsGeoJSONAgg(r.*, 'id')::jsonb
+FROM (VALUES (1), (2)) AS l(id)
+LEFT JOIN (SELECT 1::integer AS id, 'none'::text AS name, 'POINT(0 0)'::geometry AS geom WHERE false) AS r
+USING (id);
+
+SELECT '#5775.7', ST_AsGeoJSONAgg('POINT(0 0)'::geometry)::jsonb;
+
+SELECT '#5775.8', count(*), bool_and(aggtranstype = 'internal'::regtype)
+FROM pg_catalog.pg_aggregate
+JOIN pg_catalog.pg_proc ON pg_proc.oid = pg_aggregate.aggfnoid
+WHERE proname = 'st_asgeojsonagg';
+
+SELECT '#5775.9', ST_AsGeoJSONAgg(NULL::geometry)::jsonb;
+
+SELECT '#5775.10', (ST_AsGeoJSONAgg('POINT(0 0)'::geometry) FILTER (WHERE false))::jsonb;
+
 SELECT '#5677',
  st_asewkt(st_normalize(
    st_union(
