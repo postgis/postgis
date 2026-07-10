@@ -3804,6 +3804,13 @@ CREATE OR REPLACE FUNCTION ST_LineSubstring(geometry, float8, float8)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_3DLineSubstring(geometry, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_3DLineSubstring'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geom1 geometry, geom2 geometry)
 	RETURNS float8

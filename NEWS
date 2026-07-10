@@ -47,6 +47,11 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
             (Bas Couwenberg)
 
 * Enhancements *
+* New Features *
+
+ - #5776, ST_3DLineSubstring for substring extraction along 3D line length
+          (Darafei Praliaskouski)
+
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
