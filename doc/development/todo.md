@@ -43,6 +43,14 @@ when someone takes ownership of it.
 
 ## Indexing And Planner
 
+* Investigate a typed bounding-box or envelope API that can carry SRID and
+  dimensionality without the size and semantics of a polygon. The historical
+  sprint discussion also proposed using casts to this shared box type so
+  extensions such as raster could reuse core spatial indexing rather than
+  defining parallel operator infrastructure. Current `box2d`, `box3d`,
+  geometry-cached boxes, and raster convex-hull indexing cover adjacent cases
+  but not this common typed-box contract. Source provenance:
+  `DevFOSS4GCodeSprintNotes`; local import commit `7fee744c33af`.
 * Investigate future geometry index tuple designs. Historical proposals include
   carrying SRID in the index tuple, storing very small geometries directly in
   index entries for possible index-only scans, using compact fixed-size
@@ -65,6 +73,14 @@ when someone takes ownership of it.
 
 ## Backend Libraries And Robustness
 
+* Investigate streaming execution for spatial workloads that cannot reasonably
+  materialize one global intermediate geometry. The historical wishlist called
+  out noding very large line sets, constructing polygonal coverages from
+  linework, creating TINs from large DEM point sets, and spatial aggregates
+  that could emit completed regions as input advances. Current aggregate,
+  coverage, noding, and triangulation functions do not provide that general
+  feature-stream execution model. Source provenance: `UsersWikiWishList`;
+  local import commit `7fee744c33af`.
 * Investigate deeper backend-library integration. Historical ideas include GEOS
   memory management through PostgreSQL allocation, GEOS coordinate sequences on
   PostGIS point arrays, moving suitable algorithms such as build-area or
@@ -145,6 +161,12 @@ when someone takes ownership of it.
 
 ## 3D And Output Formats
 
+* Investigate 3D-aware geography/cartesian conversion so the internal
+  geodetic-to-cartesian and cartesian-to-geodetic paths have a defined policy
+  for a third coordinate instead of treating geography as a purely surface
+  model. This needs explicit altitude semantics and compatibility rules before
+  changing current geography calculations. Source provenance: `PostGIS3`;
+  local import commit `7fee744c33af`.
 * Investigate deeper 3D primitive completeness. Current PostGIS supports
   PolyhedralSurface, Triangle, TIN, X3D/GML output, and many SFCGAL-backed 3D
   operations including 3D intersects, distance, area, volume, intersection,
