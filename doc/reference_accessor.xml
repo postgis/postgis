@@ -1243,7 +1243,12 @@ WHERE n <= ST_NumGeometries(geom);]]></programlisting>
 	  </refsection>
 
 <refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
-<para>This example breaks a PolyhedralSurface into its faces.</para>
+<para>A PolyhedralSurface or TIN is treated as a single geometry, not as a
+collection of faces.  <function>ST_GeometryN</function> does not decompose the
+surface into patches, so an index greater than 1 returns <varname>NULL</varname>.
+Use <xref linkend="ST_PatchN"/> and <xref linkend="ST_NumPatches"/> to access
+individual faces.</para>
+<para>This example requests the third element of a PolyhedralSurface.</para>
 <programlisting language="sql">
 SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt
   FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
@@ -1254,9 +1259,9 @@ SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
 ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
 )')  AS p_geom )  AS a;</programlisting>
-<screen>POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))</screen>
+<screen>NULL</screen>
 
-<para>This example uses a TIN geometry.</para>
+<para>This example requests the second element of a TIN.</para>
 <programlisting language="sql">
 SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
   FROM
@@ -1274,14 +1279,14 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
             ))
             )')  AS geom
     ) AS g;</programlisting>
-<screen>TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))</screen>
+<screen>NULL</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_NumGeometries"/></para>
+		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_NumGeometries"/>, <xref linkend="ST_PatchN"/></para>
 	  </refsection>
 	</refentry>
 
