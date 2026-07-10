@@ -1189,12 +1189,7 @@ SELECT ST_AsEWKT(ST_ExteriorRing(
 
 		<para>Return the 1-based Nth element geometry of an input geometry which is a
 			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, or POLYHEDRALSURFACE.
-			Otherwise, returns NULL.</para>
-
-		<note>
-		  <para>Index is 1-based as for OGC specs since version 0.8.0.
-		  Previous versions implemented this as 0-based instead.</para>
-		</note>
+			Otherwise, returns NULL. The index is 1-based, following the OGC specification.</para>
 
 		<note>
 		  <para>To extract all elements of a geometry, <xref linkend="ST_Dump"/> is more efficient and works for atomic geometries.</para>

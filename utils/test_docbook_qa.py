@@ -39,6 +39,10 @@ class DocBookSourceLintTest(unittest.TestCase):
     def assertCategories(self, body: str, categories: set[str]):
         self.assertEqual(categories, {finding.category for finding in self.source_findings(body)})
 
+    def assertInfoCategory(self, body: str, category: str):
+        findings = self.source_findings(body)
+        self.assertEqual([(category, "info")], [(finding.category, finding.severity) for finding in findings])
+
     def test_mixed_programlisting_output_violation_and_clean_case(self):
         self.assertCategories(
             '<refentry xml:id="f"><programlisting>SELECT 1;\n ?column?\n----------\n 1\n(1 row)</programlisting></refentry>',
@@ -98,6 +102,50 @@ class DocBookSourceLintTest(unittest.TestCase):
             '<para role="availability">Availability: 3.7</para></refsection></refentry>',
             set(),
         )
+
+    def test_tab_in_verbatim_violation_and_clean_case(self):
+        self.assertInfoCategory('<refentry xml:id="f"><programlisting>SELECT\t1;</programlisting></refentry>', "tab-in-verbatim")
+        self.assertCategories('<refentry xml:id="f"><screen>1    2</screen></refentry>', set())
+
+    def test_stacked_admonitions_violation_and_clean_case(self):
+        self.assertInfoCategory(
+            '<refentry xml:id="f"><note><para>First</para></note><!-- gap --><tip><para>Second</para></tip></refentry>',
+            "stacked-admonitions",
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><note><para>First</para></note><para>Bridge</para><tip><para>Second</para></tip></refentry>',
+            set(),
+        )
+
+    def test_ancient_version_note_violation_and_clean_case(self):
+        self.assertInfoCategory(
+            '<refentry xml:id="f"><warning><para>Changed in PostGIS 1.5.3.</para></warning></refentry>',
+            "ancient-version-note",
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><warning><para>Changed in PostGIS 2.0.</para></warning></refentry>',
+            set(),
+        )
+
+    def test_example_missing_output_violation_and_clean_case(self):
+        self.assertInfoCategory(
+            '<refentry xml:id="f"><refsection><title>Standard Examples</title>'
+            '<programlisting>-- query\n SELECT 1;</programlisting><para>No output</para></refsection></refentry>',
+            "example-missing-output",
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><refsection><title>Examples</title>'
+            '<programlisting>SELECT 1;</programlisting><!-- gap --><screen>1</screen></refsection></refentry>',
+            set(),
+        )
+
+    def test_info_findings_do_not_fail_warning_gate_or_count_as_warnings(self):
+        path = write_tmp(".xml", DOCBOOK_OPEN + '<refentry xml:id="f"><screen>1\t2</screen></refentry>' + DOCBOOK_CLOSE)
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(0, main(["lint-source", "--fail-on", "warning", "--max-warnings", "0", str(path)]))
+        self.assertIn("info=1", output.getvalue())
+        self.assertNotIn("warning=", output.getvalue())
 
     def test_sql_token_data_drives_all_source_detectors(self):
         self.assertTrue(set(SQL_STATEMENT_START_KEYWORDS).issubset(SQL_HIGHLIGHT_KEYWORDS))

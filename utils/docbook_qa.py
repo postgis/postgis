@@ -105,6 +105,8 @@ PSQL_TABLE_SEPARATOR_RE = re.compile(r"(?m)^\s*[-+]{3,}(?:\s*\+\s*[-+]{2,})+\s*$
 OUTPUT_DASH_RUN_RE = re.compile(r"(?m)^\s*-{3,}")
 PSQL_MESSAGE_RE = re.compile(r"(?m)^\s*(?:ERROR|NOTICE|WARNING|DETAIL|HINT|CONTEXT):")
 REDUNDANT_OUTPUT_CAPTION_RE = re.compile(r"(?:output|result|results|returns|the output):?", re.IGNORECASE)
+ANCIENT_VERSION_RE = re.compile(r"\b(?:0\.\d+|1\.[0-5])(?:\.\d+)?\b")
+SELECT_START_RE = re.compile(r"^\s*SELECT\b", re.IGNORECASE | re.MULTILINE)
 
 BLOCK_KINDS = {
     "programlisting": ("postgis-example-code", "code", "Code"),
@@ -118,7 +120,7 @@ SQL_STARTERS = tuple(
 IDENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 OPERATOR_RE = re.compile(r"^[^A-Za-z0-9_\s]+$")
 
-SEVERITY_ORDER = {"warning": 1, "error": 2}
+SEVERITY_ORDER = {"info": 0, "warning": 1, "error": 2}
 
 
 @dataclass(frozen=True)
@@ -199,12 +201,22 @@ def first_matching(pattern: re.Pattern[str], text: str) -> str | None:
     return match.group(0).strip()
 
 
+def next_element_sibling(node: etree._Element) -> etree._Element | None:
+    sibling = node.getnext()
+    while sibling is not None and not isinstance(sibling.tag, str):
+        sibling = sibling.getnext()
+    return sibling
+
+
 def add_failure_options(parser: argparse.ArgumentParser, *, default_fail_on: str, default_max_warnings: int) -> None:
     parser.add_argument(
         "--max-warnings",
         type=int,
         default=default_max_warnings,
-        help=f"maximum individual findings to print before the summary (default: {default_max_warnings})",
+        help=(
+            "maximum warning/error findings to print before the summary; "
+            f"info findings have a separate report allowance (default: {default_max_warnings})"
+        ),
     )
     parser.add_argument(
         "--fail-on",
@@ -216,6 +228,57 @@ def add_failure_options(parser: argparse.ArgumentParser, *, default_fail_on: str
 
 def add_source_findings(root: etree._Element, path: Path) -> list[Finding]:
     findings: list[Finding] = []
+
+    for node in root.xpath("//d:programlisting|//d:screen", namespaces=NS):
+        if "\t" in block_text(node):
+            findings.append(
+                Finding(
+                    "info",
+                    "tab-in-verbatim",
+                    source_location(path, node),
+                    f"{local_name(node)} contains a TAB character; tabs render at 8 columns and can break alignment",
+                )
+            )
+
+    admonition_xpath = "|".join(f"//d:{name}" for name in sorted(ADMONITIONS))
+    for node in root.xpath(admonition_xpath, namespaces=NS):
+        sibling = next_element_sibling(node)
+        if sibling is not None and local_name(sibling) in ADMONITIONS:
+            findings.append(
+                Finding(
+                    "info",
+                    "stacked-admonitions",
+                    source_location(path, sibling),
+                    f"adjacent {local_name(node)} and {local_name(sibling)} admonitions should be consolidated or moved into prose",
+                )
+            )
+
+        version = ANCIENT_VERSION_RE.search(block_text(node))
+        if version:
+            findings.append(
+                Finding(
+                    "info",
+                    "ancient-version-note",
+                    source_location(path, node),
+                    f"admonition mentions pre-2.0 PostGIS version {version.group(0)!r}; move relevant history into prose or drop it",
+                )
+            )
+
+    examples_xpath = "//d:refsection[contains(d:title[1], 'Example')]//d:programlisting"
+    for node in root.xpath(examples_xpath, namespaces=NS):
+        if not SELECT_START_RE.search(block_text(node)):
+            continue
+        sibling = next_element_sibling(node)
+        if sibling is None or local_name(sibling) != "screen":
+            findings.append(
+                Finding(
+                    "info",
+                    "example-missing-output",
+                    source_location(path, node),
+                    "SELECT example is not immediately followed by a screen containing its output",
+                )
+            )
+
     for node in root.xpath("//d:para[following-sibling::*[1][self::d:screen]]", namespaces=NS):
         caption = normalized_text(node)
         if REDUNDANT_OUTPUT_CAPTION_RE.fullmatch(caption):
@@ -542,11 +605,16 @@ def should_fail(findings: Iterable[Finding], fail_on: str) -> bool:
 
 
 def print_findings(findings: list[Finding], max_findings: int) -> None:
-    for item in findings[: max(max_findings, 0)]:
-        suffix = f": {item.message}" if item.message else ""
-        print(f"{item.severity.upper()} {item.category}: {item.location}{suffix}")
-    if max_findings >= 0 and len(findings) > max_findings:
-        print(f"... {len(findings) - max_findings} additional findings suppressed by --max-warnings")
+    limit = max(max_findings, 0)
+    for severity_group, label in (
+        ([item for item in findings if item.severity != "info"], "warning/error"),
+        ([item for item in findings if item.severity == "info"], "info"),
+    ):
+        for item in severity_group[:limit]:
+            suffix = f": {item.message}" if item.message else ""
+            print(f"{item.severity.upper()} {item.category}: {item.location}{suffix}")
+        if max_findings >= 0 and len(severity_group) > max_findings:
+            print(f"... {len(severity_group) - max_findings} additional {label} findings suppressed")
 
 
 def print_summary(tool_name: str, clean_message: str, findings: list[Finding], fail_on: str) -> None:
