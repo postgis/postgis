@@ -7244,6 +7244,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 		cn name;
 		sql text;
 		attr text;
+		rasttype text;
 	BEGIN
 		fqtn := '';
 		IF length($1) > 0 THEN
@@ -7252,6 +7253,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 		fqtn := fqtn || quote_ident($2);
 
 		cn := 'enforce_same_alignment_' || $3;
+		rasttype := @extschema@._raster_type_name();
 
 		sql := 'SELECT @extschema@.st_makeemptyraster(1, 1, upperleftx, upperlefty, scalex, scaley, skewx, skewy, srid) FROM @extschema@.st_metadata((SELECT '
 			|| quote_ident($3)
@@ -7270,7 +7272,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
-			' CHECK (@extschema@.st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::raster))';
+			' CHECK (@extschema@.st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::' || rasttype || '))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -7383,6 +7385,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		fqtn text;
 		cn name;
 		sql text;
+		rasttype text;
 
 		_scalex double precision;
 		_scaley double precision;
@@ -7402,6 +7405,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		fqtn := fqtn || quote_ident($2);
 
 		cn := 'enforce_coverage_tile_' || $3;
+		rasttype := @extschema@._raster_type_name();
 
 		-- metadata
 		BEGIN
@@ -7431,7 +7435,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
-			' CHECK (@extschema@.st_iscoveragetile(' || quote_ident($3) || ', ''' || _covrast || '''::raster, ' || _tilewidth || ', ' || _tileheight || '))';
+			' CHECK (@extschema@.st_iscoveragetile(' || quote_ident($3) || ', ''' || _covrast || '''::' || rasttype || ', ' || _tilewidth || ', ' || _tileheight || '))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -8345,11 +8349,30 @@ CREATE OR REPLACE VIEW raster_columns AS
 		pg_attribute a,
 		pg_namespace n
 	WHERE a.attisdropped = false
-		AND a.atttypid = 'raster'::regtype
+		AND a.atttypid = '@extschema@.raster'::regtype
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"] )
+		AND c.relkind = ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"] )
 		AND NOT pg_is_other_temp_schema(c.relnamespace)  AND has_table_privilege(c.oid, 'SELECT'::text);
+
+CREATE OR REPLACE FUNCTION _raster_type_name()
+	RETURNS text AS
+	$$
+	DECLARE
+		rast @extschema@.raster;
+		rasttype text;
+	BEGIN
+		SELECT pg_catalog.quote_ident(n.nspname) || '.' || pg_catalog.quote_ident(t.typname)
+		INTO rasttype
+		FROM pg_catalog.pg_type t
+		JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+		WHERE t.oid = pg_catalog.pg_typeof(rast)::oid;
+
+		RETURN rasttype;
+	END;
+	$$
+	LANGUAGE 'plpgsql' STABLE
+	COST 100;
 
 ------------------------------------------------------------------------------
 -- overview constraint functions
@@ -8357,7 +8380,21 @@ CREATE OR REPLACE VIEW raster_columns AS
 
 CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refschema name, reftable name, refcolumn name)
 	RETURNS boolean AS
-	$$ SELECT COALESCE((SELECT TRUE FROM @extschema@.raster_columns WHERE r_table_catalog = current_database() AND r_table_schema = $3 AND r_table_name = $4 AND r_raster_column = $5), FALSE) $$
+	$$
+	SELECT EXISTS (
+		SELECT 1
+		FROM pg_catalog.pg_class c
+		JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+		JOIN pg_catalog.pg_attribute a ON a.attrelid = c.oid
+		WHERE n.nspname = $3
+			AND c.relname = $4
+			AND a.attname = $5
+			AND a.attisdropped = FALSE
+			AND a.atttypid = pg_catalog.pg_typeof($1)::oid
+			AND c.relkind = ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"])
+			AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace)
+		)
+	$$
 	LANGUAGE 'sql' STABLE
 	COST 100;
 
@@ -8399,6 +8436,7 @@ CREATE OR REPLACE FUNCTION _add_overview_constraint(
 		fqtn text;
 		cn name;
 		sql text;
+		rasttype text;
 	BEGIN
 		fqtn := '';
 		IF length($1) > 0 THEN
@@ -8407,10 +8445,12 @@ CREATE OR REPLACE FUNCTION _add_overview_constraint(
 		fqtn := fqtn || quote_ident($2);
 
 		cn := 'enforce_overview_' || $3;
+		rasttype := @extschema@._raster_type_name();
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK ( @extschema@._overview_constraint(' || quote_ident($3)
+			|| '::' || rasttype
 			|| ',' || $7
 			|| ',' || quote_literal($4)
 			|| ',' || quote_literal($5)
