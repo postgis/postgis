@@ -58,7 +58,7 @@ class DocBookSourceLintTest(unittest.TestCase):
         )
         self.assertCategories(
             '<refentry xml:id="f"><programlisting>---- decorative preface\nSELECT 1;</programlisting></refentry>',
-            set(),
+            {"mixed-programlisting-output"},
         )
 
     def test_screen_contains_sql_violation_and_clean_case(self):
