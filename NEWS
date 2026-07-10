@@ -58,6 +58,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #2557, #2805, Document ST_MapAlgebra callback argument
           signatures and return semantics (Darafei Praliaskouski)
+ - #3197, Add ST_EqualsExact as a GEOS exact-equality wrapper with
+          decimal-place tolerance semantics (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0dev
