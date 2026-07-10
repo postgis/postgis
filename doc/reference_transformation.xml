@@ -91,9 +91,9 @@ z' = z </programlisting> This method is a subcase of the 3D method
 
 		<para>Rotate a 3D line 180 degrees about the z axis. Note this is long-hand for doing ST_Rotate();</para>
 		<programlisting>
- SELECT ST_AsEWKT(ST_Affine(geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,
-	 ST_AsEWKT(ST_Rotate(geom, pi())) As using_rotate
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As geom) As foo;</programlisting>
+SELECT ST_AsEWKT(ST_Affine(geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,
+    ST_AsEWKT(ST_Rotate(geom, pi())) As using_rotate
+   FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As geom) As foo;</programlisting>
 <screen>        using_affine         |        using_rotate
 -----------------------------+-----------------------------
  LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)
@@ -101,7 +101,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
 <para>Rotate a 3D line 180 degrees in both the x and z axis.</para>
 <programlisting>
 SELECT ST_AsEWKT(ST_Affine(geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As geom) As foo;</programlisting>
+    FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As geom) As foo;</programlisting>
 <screen>LINESTRING(-1 -2 -3,-1 -4 -3)</screen>
 	  </refsection>
 
@@ -433,8 +433,8 @@ point are equivalent to no scaling the corresponding dimension.
 <screen>LINESTRING(0.5 1.5 3,0.5 0.75 1)</screen>
 <para>This example scales X, Y, Z, and M values.</para>
 <programlisting>
- SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),
-     ST_MakePoint(0.5, 0.75, 2, -1)));</programlisting>
+SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),
+    ST_MakePoint(0.5, 0.75, 2, -1)));</programlisting>
 <screen>LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)</screen>
 <para>This example scales X and Y values using a false origin.</para>
 <programlisting>SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 1)'::geometry));</programlisting>

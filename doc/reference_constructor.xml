@@ -87,7 +87,7 @@ SELECT ST_AsText(ST_Collect(
         'CIRCULARSTRING(220268 150415,220227 150505,220227 150406)',
         'CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));</programlisting>
 <screen>MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
- CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
+CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
         </refsection>
         <refsection>
 <title>Examples - Array variant</title>
@@ -1089,30 +1089,30 @@ FROM admin0 WHERE name = 'Canada'
         <para>To do a point summary against a square tiling, generate a square grid using the
         extent of the points as the bounds, then spatially join to that grid. Note the estimated extent might be off from actual extent, so be cautious and at very least make sure you've analyzed your table.</para>
             <programlisting>SELECT COUNT(*), squares.geom
-    FROM
-    pointtable AS pts
-    INNER JOIN
-    ST_SquareGrid(
-        1000,
-        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
-    ) AS squares
-    ON ST_Intersects(pts.geom, squares.geom)
-    GROUP BY squares.geom</programlisting>
+FROM
+pointtable AS pts
+INNER JOIN
+ST_SquareGrid(
+    1000,
+    ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
+) AS squares
+ON ST_Intersects(pts.geom, squares.geom)
+GROUP BY squares.geom</programlisting>
         </refsection>
 
     <refsection>
         <title>Example: Counting points in squares using set of grid per point</title>
         <para>This yields the same result as the first example but will be slower for a large number of points</para>
             <programlisting>SELECT COUNT(*), squares.geom
-    FROM
-    pointtable AS pts
-    INNER JOIN
-    ST_SquareGrid(
-       1000,
-       pts.geom
-    ) AS squares
-    ON ST_Intersects(pts.geom, squares.geom)
-    GROUP BY squares.geom</programlisting>
+FROM
+pointtable AS pts
+INNER JOIN
+ST_SquareGrid(
+   1000,
+   pts.geom
+) AS squares
+ON ST_Intersects(pts.geom, squares.geom)
+GROUP BY squares.geom</programlisting>
         </refsection>
 
         <refsection>

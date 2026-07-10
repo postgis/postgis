@@ -79,7 +79,7 @@ for ST_IsValid. The flag is a PostGIS extension.
 		<title>Examples</title>
 
 		<programlisting>SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
-	ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly;</programlisting>
+ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly;</programlisting>
 <screen>NOTICE:  Self-intersection at or near point 0 0
  good_line | bad_poly
 -----------+----------
@@ -195,15 +195,15 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
 FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
-	FROM generate_series(-4,6) x1
-	CROSS JOIN generate_series(2,5) y1
-	CROSS JOIN generate_series(1,8) z1
-	WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
-	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
-	FROM generate_series(-3,6) x1
-	CROSS JOIN generate_series(2,5) y1
-	CROSS JOIN generate_series(1,10) z1
-	WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
+    FROM generate_series(-4,6) x1
+    CROSS JOIN generate_series(2,5) y1
+    CROSS JOIN generate_series(1,8) z1
+    WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
+    INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
+    FROM generate_series(-3,6) x1
+    CROSS JOIN generate_series(2,5) y1
+    CROSS JOIN generate_series(1,10) z1
+    WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
 ON (ST_Area(e.buff) > 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
 WHERE ST_IsValid(geom) = false
@@ -283,15 +283,15 @@ SELECT ST_IsValidReason(
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
 FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
-	FROM generate_series(-4,6) x1
-	CROSS JOIN generate_series(2,5) y1
-	CROSS JOIN generate_series(1,8) z1
-	WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
-	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
-	FROM generate_series(-3,6) x1
-	CROSS JOIN generate_series(2,5) y1
-	CROSS JOIN generate_series(1,10) z1
-	WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
+    FROM generate_series(-4,6) x1
+    CROSS JOIN generate_series(2,5) y1
+    CROSS JOIN generate_series(1,8) z1
+    WHERE x1 > y1*0.5 AND z1 < x1*y1) As e
+    INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
+    FROM generate_series(-3,6) x1
+    CROSS JOIN generate_series(2,5) y1
+    CROSS JOIN generate_series(1,10) z1
+    WHERE x1 > y1*0.75 AND z1 < x1*y1) As f
 ON (ST_Area(e.buff) > 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
 WHERE ST_IsValid(geom) = false
@@ -479,14 +479,14 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
                 </mediaobject>
                 </informalfigure>
                 <programlisting>SELECT c.geom AS before_geom,
-                    ST_MakeValid(c.geom) AS after_geom,
-                    ST_MakeValid(c.geom, 'method=structure') AS after_geom_structure
-	FROM (SELECT 'MULTIPOLYGON(((91 50,79 22,51 10,23 22,11 50,23 78,51 90,79 78,91 50)),
-		  ((91 100,79 72,51 60,23 72,11 100,23 128,51 140,79 128,91 100)),
-		  ((91 150,79 122,51 110,23 122,11 150,23 178,51 190,79 178,91 150)),
-		  ((141 50,129 22,101 10,73 22,61 50,73 78,101 90,129 78,141 50)),
-		  ((141 100,129 72,101 60,73 72,61 100,73 128,101 140,129 128,141 100)),
-		  ((141 150,129 122,101 110,73 122,61 150,73 178,101 190,129 178,141 150)))'::geometry AS geom) AS c;</programlisting>
+                ST_MakeValid(c.geom) AS after_geom,
+                ST_MakeValid(c.geom, 'method=structure') AS after_geom_structure
+FROM (SELECT 'MULTIPOLYGON(((91 50,79 22,51 10,23 22,11 50,23 78,51 90,79 78,91 50)),
+      ((91 100,79 72,51 60,23 72,11 100,23 128,51 140,79 128,91 100)),
+      ((91 150,79 122,51 110,23 122,11 150,23 178,51 190,79 178,91 150)),
+      ((141 50,129 22,101 10,73 22,61 50,73 78,101 90,129 78,141 50)),
+      ((141 100,129 72,101 60,73 72,61 100,73 128,101 140,129 128,141 100)),
+      ((141 150,129 122,101 110,73 122,61 150,73 178,101 190,129 178,141 150)))'::geometry AS geom) AS c;</programlisting>
             </para></entry>
         </row>
     </tbody>
@@ -496,14 +496,14 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
 <refsection>
 <title>Collapsed Geometry Examples</title>
 <programlisting>SELECT ST_AsText(ST_MakeValid(
-    'LINESTRING(0 0, 0 0)',
-    'method=structure keepcollapsed=true'
-    ));</programlisting>
+'LINESTRING(0 0, 0 0)',
+'method=structure keepcollapsed=true'
+));</programlisting>
 <screen>POINT(0 0)</screen>
 <programlisting>SELECT ST_AsText(ST_MakeValid(
-    'LINESTRING(0 0, 0 0)',
-    'method=structure keepcollapsed=false'
-    ));</programlisting>
+'LINESTRING(0 0, 0 0)',
+'method=structure keepcollapsed=false'
+));</programlisting>
 <screen>LINESTRING EMPTY</screen>
 </refsection>
           <refsection>

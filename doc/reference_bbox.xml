@@ -367,7 +367,7 @@ GROUP BY category ORDER BY category;</programlisting>
 <para>This example converts the extent back into a geometry and renders its extended text representation.</para>
 <programlisting>SELECT ST_SetSRID(ST_Extent(geom),2249) AS bextent FROM sometable;</programlisting>
 <screen> SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
- 794875.8125 2908247.25,739651.875 2908247.25))
+794875.8125 2908247.25,739651.875 2908247.25))
         </screen>
       </refsection>
 

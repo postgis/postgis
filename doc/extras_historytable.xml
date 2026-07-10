@@ -14,11 +14,11 @@
      <note><para>The <varname>history_table</varname> extension is written in plpgsql and located in the <varname>extras/history_table</varname> directory of the PostGIS source tree.</para></note>
      <para>If you have a table 'roads', this module will maintain a 'roads_history' side table, which contains all the columns of the parent table, and the following additional columns:</para>
 <programlisting>history_id      | integer                     | not null default
- date_added      | timestamp without time zone | not null default now()
- date_deleted    | timestamp without time zone |
- last_operation  | character varying(30)       | not null
- active_user     | character varying(90)       | not null default "current_user"()
- current_version | text                        | not null</programlisting>
+date_added      | timestamp without time zone | not null default now()
+date_deleted    | timestamp without time zone |
+last_operation  | character varying(30)       | not null
+active_user     | character varying(90)       | not null default "current_user"()
+current_version | text                        | not null</programlisting>
 
 <orderedlist>
   <listitem>

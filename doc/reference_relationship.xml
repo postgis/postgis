@@ -54,7 +54,7 @@
     <refsection>
     <title>Geometry Examples</title>
 <programlisting>SELECT ST_3DIntersects(pt, line), ST_Intersects(pt, line)
-  FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::geometry As line) As foo;</programlisting>
+FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::geometry As line) As foo;</programlisting>
 <screen> st_3dintersects | st_intersects
 -----------------+---------------
  f               | t
@@ -355,25 +355,25 @@ ST_Point      | t          | t              | f           | f
     <title>Examples</title>
       <para>This example tests a circle within another circle.</para>
       <programlisting>
-  SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
-  ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,
-  ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as bigcontainspropunion,
-  ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
-  ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
-  ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
-  FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;</programlisting>
+SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
+ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,
+ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as bigcontainspropunion,
+ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
+ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
+ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;</programlisting>
 <screen>  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
  f                     | t                    | f                    | t          | t                 | f</screen>
 <para>This example demonstrates the difference between contains and contains-properly predicates.</para>
 <programlisting>
- SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
- ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
- FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
-      ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
-      ( ST_Point(1,1) )
-  ) As foo(geomA);</programlisting>
+SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
+ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
+FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
+     ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
+     ( ST_Point(1,1) )
+ ) As foo(geomA);</programlisting>
 <screen>  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
 --------------+------------+----------------+-------------+-----------------
 ST_Polygon    | t          | f              | f           | f
@@ -860,10 +860,10 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <title>Examples</title>
 
     <programlisting>SELECT ST_Equals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),
-    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));</programlisting>
+ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));</programlisting>
 <screen>t</screen>
 <programlisting>SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
-    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));</programlisting>
+ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));</programlisting>
 <screen>t</screen>
     </refsection>
 
@@ -973,8 +973,8 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <refsection>
     <title>Geography Examples</title>
 <programlisting>SELECT ST_Intersects('SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'::geography,
-    'SRID=4326;POINT(-43.23456 72.4567772)'::geography
-    );</programlisting>
+'SRID=4326;POINT(-43.23456 72.4567772)'::geography
+);</programlisting>
 <screen>t</screen>
     </refsection>
     <refsection>
@@ -1160,13 +1160,13 @@ WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
     <title>Examples</title>
 
     <programlisting>SELECT ST_OrderingEquals('LINESTRING(0 0, 10 10)',
-  'LINESTRING(0 0, 5 5, 10 10)');</programlisting>
+'LINESTRING(0 0, 5 5, 10 10)');</programlisting>
 <screen>f</screen>
 <programlisting>SELECT ST_OrderingEquals('LINESTRING(0 0, 10 10)',
-  'LINESTRING(0 0, 10 10)');</programlisting>
+'LINESTRING(0 0, 10 10)');</programlisting>
 <screen>t</screen>
 <programlisting>SELECT ST_OrderingEquals('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))',
-  'POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))');</programlisting>
+'POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))');</programlisting>
 <screen>f</screen>
       </refsection>
       <refsection>
@@ -1465,11 +1465,11 @@ SELECT c.* , p.name As poly_name
 
          <para>Computing the intersection matrix for spatial relationships.</para>
     <programlisting>SELECT ST_Relate('POINT(1 2)',
-                  ST_Buffer('POINT(1 2)', 2));</programlisting>
+ST_Buffer('POINT(1 2)', 2));</programlisting>
 <screen>0FFFFF212</screen>
 
     <programlisting>SELECT ST_Relate('LINESTRING(1 2, 3 4)',
-                  'LINESTRING(5 6, 7 8)' );</programlisting>
+'LINESTRING(5 6, 7 8)' );</programlisting>
 <screen>FF1FF0102</screen>
 
 <para>Using different Boundary Node Rules to compute the spatial relationship
@@ -1961,11 +1961,11 @@ ST_DWithin(ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2
     <title>Examples</title>
     <para>This compares the difference between fully within and distance within as well. As the distance fully within for the 2D footprint of the line/point vs. the 3D fully within.</para>
     <programlisting>
-    SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as D3DFullyWithin10, ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10,
-  ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,
-  ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from
-    (select ST_GeomFromEWKT('POINT(1 1 2)') as geom_a,
-    ST_GeomFromEWKT('LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 3)') as geom_b) t1;</programlisting>
+  SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as D3DFullyWithin10, ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10,
+ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,
+ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from
+  (select ST_GeomFromEWKT('POINT(1 1 2)') as geom_a,
+  ST_GeomFromEWKT('LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 3)') as geom_b) t1;</programlisting>
 <screen> d3dfullywithin10 | d3dwithin10 | d2dfullywithin20 | d3dfullywithin20
 ------------------+-------------+------------------+------------------
  f                | t           | t                | f </screen>

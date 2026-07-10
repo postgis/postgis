@@ -296,16 +296,16 @@
         <refsection><title>Examples</title>
             <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
             <programlisting>SELECT CG_3DArea(geom) As cube_surface_area,
-            CG_3DArea(CG_MakeSolid(geom)) As solid_surface_area
-            FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-            ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-            ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-            ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-            ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-            ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
+CG_3DArea(CG_MakeSolid(geom)) As solid_surface_area
+FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
 <screen>            cube_surface_area | solid_surface_area
-            -------------------+--------------------
-            6 |                  0    </screen>
+-------------------+--------------------
+6 |                  0    </screen>
 
     </refsection>
     <refsection>
@@ -349,16 +349,16 @@
         <title>Example</title>
         <para>A closed polyhedral surface has volume.  <xref linkend="CG_MakeSolid"/> makes the solid representation explicit.</para>
     <programlisting>SELECT CG_Volume(geom) As cube_surface_vol,
-    CG_Volume(CG_MakeSolid(geom)) As solid_surface_vol
-    FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
+CG_Volume(CG_MakeSolid(geom)) As solid_surface_vol
+FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
 <screen>    cube_surface_vol | solid_surface_vol
-    ------------------+-------------------
-    1 |                 1</screen>
+------------------+-------------------
+1 |                 1</screen>
     </refsection>
 
     <refsection>
@@ -573,16 +573,16 @@
     <refsection><title>Examples</title>
         <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
         <programlisting>SELECT ST_3DArea(geom) As cube_surface_area,
-        ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area
-        FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-        ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-        ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
+ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area
+FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
 <screen>        cube_surface_area | solid_surface_area
-        -------------------+--------------------
-        6 |                  0    </screen>
+-------------------+--------------------
+6 |                  0    </screen>
 
 </refsection>
 <refsection>
@@ -632,16 +632,16 @@
         <title>Example</title>
         <para>A closed polyhedral surface has volume.  <xref linkend="ST_MakeSolid"/> makes the solid representation explicit.</para>
     <programlisting>SELECT ST_Volume(geom) As cube_surface_vol,
-    ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
-    FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
+ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
+FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);</programlisting>
 <screen>    cube_surface_vol | solid_surface_vol
-    ------------------+-------------------
-    1 |                 1</screen>
+------------------+-------------------
+1 |                 1</screen>
     </refsection>
 
     <refsection>
@@ -909,7 +909,7 @@
                     <row>
                         <entry><para>
                                 <programlisting>SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
-                                CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2;
+CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2;
                             </programlisting>
                             <informalfigure>
                                 <mediaobject>
@@ -922,8 +922,8 @@
                     </entry>
                     <entry><para>
                             <programlisting>SELECT CG_3DDifference(geom1,geom2)
-                            FROM ( SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
-                            CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2 ) As t;</programlisting>
+FROM ( SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
+CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2 ) As t;</programlisting>
                         <informalfigure>
                             <mediaobject>
                                 <imageobject>
@@ -1102,10 +1102,10 @@
         <screen>POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
 
         <programlisting>WITH f AS (SELECT i, CG_Extrude(geom, 0,0, i ) AS geom
-        FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
-        )
-        SELECT CG_3DConvexHull(ST_Collect(f.geom) )
-        FROM f;</programlisting>
+FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
+)
+SELECT CG_3DConvexHull(ST_Collect(f.geom) )
+FROM f;</programlisting>
     <para>
         <informalfigure>
             <mediaobject>
@@ -1197,7 +1197,7 @@
                         <row>
                             <entry><para>
                                     <programlisting>SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
-                                    CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2;
+CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2;
                                 </programlisting>
                                 <informalfigure>
                                     <mediaobject>
@@ -1210,8 +1210,8 @@
                         </entry>
                         <entry><para>
                                 <programlisting>SELECT CG_3DIntersection(geom1,geom2)
-                                FROM ( SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
-                                CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2 ) As t;</programlisting>
+FROM ( SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
+CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2 ) As t;</programlisting>
                             <informalfigure>
                                 <mediaobject>
                                     <imageobject>
@@ -1227,9 +1227,9 @@
     </informaltable>
 
     <para>3D linestrings and polygons</para>
-    <programlisting>	SELECT ST_AsText(CG_3DIntersection(linestring, polygon)) As wkt
-    FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
-    CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;</programlisting>
+    <programlisting>    SELECT ST_AsText(CG_3DIntersection(linestring, polygon)) As wkt
+FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
+CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;</programlisting>
 <screen>LINESTRING Z (1 1 8,0.5 0.5 8)</screen>
 
 <para>Cube (closed Polyhedral Surface) and Polygon Z</para>
@@ -1244,23 +1244,23 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 
             <para>Intersection of 2 solids that result in volumetric intersection is also a solid (ST_Dimension returns 3)</para>
             <programlisting>SELECT ST_AsText(
-            CG_3DIntersection(
-              CG_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1), 0, 0, 30),
-              CG_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1), 2, 0, 10)));</programlisting>
+CG_3DIntersection(
+  CG_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1), 0, 0, 30),
+  CG_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1), 2, 0, 10)));</programlisting>
         <screen>POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),
-        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
-        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),
-        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),
-        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),
-        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),
-        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),
-        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),
-        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),
-        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),
-        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),
-        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),
-        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),
-        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))</screen>
+((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
+((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),
+((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),
+((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),
+((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),
+((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),
+((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),
+((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),
+((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),
+((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),
+((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),
+((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),
+((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))</screen>
 
 </refsection>
 
@@ -1407,7 +1407,7 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                         <row>
                             <entry><para>
                                     <programlisting>SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
-                                    CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2;
+CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2;
                                 </programlisting>
                                 <informalfigure>
                                     <mediaobject>
@@ -1420,8 +1420,8 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                         </entry>
                         <entry><para>
                                 <programlisting>SELECT CG_3DUnion(geom1,geom2)
-                                FROM ( SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
-                                CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2 ) As t;</programlisting>
+FROM ( SELECT CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'), 0, 0, 30) AS geom1,
+CG_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'), 50, 'quad_segs=1'), 0, 0, 30) AS geom2 ) As t;</programlisting>
                             <informalfigure>
                                 <mediaobject>
                                     <imageobject>
@@ -1557,15 +1557,15 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             </mediaobject>
         </informalfigure>
         <programlisting>SELECT ST_AsText(
-        CG_AlphaShape(
-        'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
-        (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
-        (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
-        (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
-        (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
-        (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-        (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
-        80.2));</programlisting>
+CG_AlphaShape(
+'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
+(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
+80.2));</programlisting>
     <screen>MULTIPOLYGON(((89 53,88 58,85 71,83 72,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53)))</screen>
 </para>
 <para>
@@ -1578,14 +1578,14 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
         </mediaobject>
     </informalfigure>
     <programlisting>SELECT ST_AsText(
-    CG_AlphaShape(
-    'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
-    (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
-    (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
-    (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-    (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
-    100.1,
-    true))</programlisting>
+CG_AlphaShape(
+'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
+100.1,
+true))</programlisting>
 <screen>MULTIPOLYGON(((89 53,88 58,85 71,83 72,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,43 19,53 18,65 16,73 16,78 16,84 19,90 30,87 42,91 50,89 53),(36 68,40 75,43 80,60 81,68 73,77 67,81 60,82 54,81 47,78 43,76 27,62 22,54 32,44 42,38 46,36 61,36 68)))</screen>
             </para>
 
@@ -1599,10 +1599,10 @@ ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
                     </mediaobject>
                 </informalfigure>
                 <programlisting>SELECT ST_AsText(
-                CG_AlphaShape(
-                'MULTIPOINT ((132 64), (114 64), (99 64), (81 64), (63 64), (57 49), (52 36), (46 20), (37 20), (26 20), (32 36), (39 55), (43 69), (50 84), (57 100), (63 118), (68 133), (74 149), (81 164), (88 180), (101 180), (112 180), (119 164), (126 149), (132 131), (139 113), (143 100), (150 84), (157 69), (163 51), (168 36), (174 20), (163 20), (150 20), (143 36), (139 49), (132 64), (99 151), (92 138), (88 124), (81 109), (74 93), (70 82), (83 82), (99 82), (112 82), (126 82), (121 96), (114 109), (110 122), (103 138), (99 151), (34 27), (43 31), (48 44), (46 58), (52 73), (63 73), (61 84), (72 71), (90 69), (101 76), (123 71), (141 62), (166 27), (150 33), (159 36), (146 44), (154 53), (152 62), (146 73), (134 76), (143 82), (141 91), (130 98), (126 104), (132 113), (128 127), (117 122), (112 133), (119 144), (108 147), (119 153), (110 171), (103 164), (92 171), (86 160), (88 142), (79 140), (72 124), (83 131), (79 118), (68 113), (63 102), (68 93), (35 45))'::geometry,
-                102.2,
-                true));</programlisting>
+CG_AlphaShape(
+'MULTIPOINT ((132 64), (114 64), (99 64), (81 64), (63 64), (57 49), (52 36), (46 20), (37 20), (26 20), (32 36), (39 55), (43 69), (50 84), (57 100), (63 118), (68 133), (74 149), (81 164), (88 180), (101 180), (112 180), (119 164), (126 149), (132 131), (139 113), (143 100), (150 84), (157 69), (163 51), (168 36), (174 20), (163 20), (150 20), (143 36), (139 49), (132 64), (99 151), (92 138), (88 124), (81 109), (74 93), (70 82), (83 82), (99 82), (112 82), (126 82), (121 96), (114 109), (110 122), (103 138), (99 151), (34 27), (43 31), (48 44), (46 58), (52 73), (63 73), (61 84), (72 71), (90 69), (101 76), (123 71), (141 62), (166 27), (150 33), (159 36), (146 44), (154 53), (152 62), (146 73), (134 76), (143 82), (141 91), (130 98), (126 104), (132 113), (128 127), (117 122), (112 133), (119 144), (108 147), (119 153), (110 171), (103 164), (92 171), (86 160), (88 142), (79 140), (72 124), (83 131), (79 118), (68 113), (63 102), (68 93), (35 45))'::geometry,
+102.2,
+true));</programlisting>
             <screen>MULTIPOLYGON(((168 36,163 51,157 69,150 84,143 100,139 113,132 131,126 149,119 164,112 180,101 180,88 180,81 164,74 149,68 133,63 118,57 100,50 84,43 69,39 55,35 45,32 36,26 20,37 20,46 20,52 36,57 49,63 64,81 64,90 69,99 64,114 64,132 64,139 49,143 36,150 20,163 20,174 20,168 36),(81 109,88 124,92 138,103 138,110 122,114 109,121 96,112 82,99 82,83 82,74 93,81 109)))</screen>
     </para>
 </refsection>
@@ -2295,12 +2295,12 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
                                         </mediaobject>
                                     </informalfigure>
                                     <programlisting>
-                                        select CG_ConstrainedDelaunayTriangles(
-                                        ST_Union(
-                                        'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
-                                        ST_Buffer('POINT(110 170)'::geometry, 20)
-                                        )
-                                        );
+select CG_ConstrainedDelaunayTriangles(
+ST_Union(
+'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
+ST_Buffer('POINT(110 170)'::geometry, 20)
+)
+);
                                     </programlisting>
                             </para></entry>
                             <entry><para><informalfigure>
@@ -2312,12 +2312,12 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
                                         </mediaobject>
                                     </informalfigure>
                                     <programlisting>
-                                        select ST_DelaunayTriangles(
-                                        ST_Union(
-                                        'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
-                                        ST_Buffer('POINT(110 170)'::geometry, 20)
-                                        )
-                                        );
+select ST_DelaunayTriangles(
+ST_Union(
+'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
+ST_Buffer('POINT(110 170)'::geometry, 20)
+)
+);
                                     </programlisting>
                             </para></entry>
                         </row>
@@ -2411,8 +2411,8 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
                         <row>
                             <entry><para>
                                     <programlisting>SELECT ST_Buffer(
-                                    ST_GeomFromText('POINT(100 90)'),
-                                    50, 'quad_segs=2'),0,0,30);</programlisting>
+ST_GeomFromText('POINT(100 90)'),
+50, 'quad_segs=2'),0,0,30);</programlisting>
                                 <informalfigure>
                                     <mediaobject>
                                         <imageobject>
@@ -2424,8 +2424,8 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
                         </entry>
                         <entry><para>
                                 <programlisting>CG_Extrude(
-                                ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'),
-                                0, 0, 30);</programlisting>
+ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'),
+0, 0, 30);</programlisting>
                             <informalfigure>
                                 <mediaobject>
                                     <imageobject>
@@ -2679,14 +2679,14 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
             </tgroup>
         </informaltable>
         <programlisting>
-            SELECT CG_MinkowskiSum(line, circle))
-            FROM (SELECT
-            ST_MakeLine(ST_Point(10, 10),ST_Point(100, 100)) As line,
-            ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;
+SELECT CG_MinkowskiSum(line, circle))
+FROM (SELECT
+ST_MakeLine(ST_Point(10, 10),ST_Point(100, 100)) As line,
+ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;
 
-            -- wkt --
-            MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,
-            161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))
+-- wkt --
+MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,
+161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))
         </programlisting>
 
         <para>Minkowski Sum of a polygon and multipoint</para>
@@ -2723,16 +2723,16 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
             </tgroup>
         </informaltable>
         <programlisting>SELECT CG_MinkowskiSum(mp, poly)
-        FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,
-        'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly
-        ) As foo
+FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,
+'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly
+) As foo
 
 
-        -- wkt --
-        MULTIPOLYGON(
-        ((70 115,100 135,175 175,225 225,70 115)),
-        ((120 65,150 85,225 125,275 175,120 65))
-        )
+-- wkt --
+MULTIPOLYGON(
+((70 115,100 135,175 175,225 225,70 115)),
+((120 65,150 85,225 125,275 175,120 65))
+)
     </programlisting>
 </refsection>
 
@@ -2839,14 +2839,14 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
                 </mediaobject>
             </informalfigure>
             <programlisting>SELECT ST_AsText(
-            CG_OptimalAlphaShape(
-            'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
-            (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
-            (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
-            (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
-            (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
-            (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-            (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry));</programlisting>
+CG_OptimalAlphaShape(
+'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
+(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry));</programlisting>
         <screen>MULTIPOLYGON(((89 53,88 58,83 64,85 71,83 72,75 77,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53)))</screen>
 </para>
 
@@ -2860,13 +2860,13 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
         </mediaobject>
     </informalfigure>
     <programlisting>SELECT ST_AsText(
-    CG_OptimalAlphaShape(
-    'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
-    (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
-    (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
-    (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-    (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
-    allow_holes =&gt; true));</programlisting>
+CG_OptimalAlphaShape(
+'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
+allow_holes =&gt; true));</programlisting>
 <screen>MULTIPOLYGON(((89 53,88 58,83 64,85 71,83 72,75 77,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53),(36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61,36 68)))</screen>
 </para>
 
@@ -3146,9 +3146,9 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                         <row>
                             <entry><para>
                                     <programlisting>SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-                                    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-                                    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-                                    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');</programlisting>
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');</programlisting>
                                 <informalfigure>
                                     <mediaobject>
                                         <imageobject>
@@ -3160,16 +3160,16 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                         </entry>
                         <entry><para>
                                 <programlisting language="sql">SELECT CG_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-                                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-                                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-                                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting></para>
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting></para>
                         <screen>TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),
-                        ((0 0 0,0 1 0,1 1 0,0 0 0)),
-                        ((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),
-                        ((0 0 1,0 0 0,1 0 0,0 0 1)),
-                        ((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 0,1 1 0,1 0 1,1 0 0)),
-                        ((0 1 0,0 1 1,1 1 1,0 1 0)),((1 1 0,0 1 0,1 1 1,1 1 0)),
-                        ((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))</screen>
+((0 0 0,0 1 0,1 1 0,0 0 0)),
+((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),
+((0 0 1,0 0 0,1 0 0,0 0 1)),
+((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 0,1 1 0,1 0 1,1 0 0)),
+((0 1 0,0 1 1,1 1 1,0 1 0)),((1 1 0,0 1 0,1 1 1,1 1 0)),
+((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))</screen>
                     <para> <informalfigure>
                             <mediaobject>
                                 <imageobject>
@@ -3195,11 +3195,11 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                 </entry>
                 <entry><para>
                         <programlisting language="sql">SELECT
-                        CG_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);</programlisting>
+CG_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);</programlisting>
                 </para>
                 <screen>TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),
-                ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),
-                ((120 190,10 190,50 160,120 190)))</screen>
+((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),
+((120 190,10 190,50 160,120 190)))</screen>
             <para><informalfigure>
                     <mediaobject>
                         <imageobject>
@@ -3254,10 +3254,10 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                 <title>Geometry Examples</title>
                 <programlisting>SELECT ST_AsText(CG_Triangulate('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))'));</programlisting>
 <screen>                st_astext
-                ----------
-                TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.8 0.2,1 1)),((0 1,0 0,0.2 0.2,0 1)),((0 1,0.2 0.8,1 1,0 1)),((0 1,0.2 0.2,0.2 0.8,0 1)),((0.2 0.8,0.8 0.8,1 1,0.2 0.8)),((0.2 0.8,0.2 0.2,0.8 0.2,0.2 0.8)),((1 1,0.8 0.2,1 0,1 1)),((0.8 0.8,0.2 0.8,0.8 0.2,0.8 0.8)))
+----------
+TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.8 0.2,1 1)),((0 1,0 0,0.2 0.2,0 1)),((0 1,0.2 0.8,1 1,0 1)),((0 1,0.2 0.2,0.2 0.8,0 1)),((0.2 0.8,0.8 0.8,1 1,0.2 0.8)),((0.2 0.8,0.2 0.2,0.8 0.2,0.2 0.8)),((1 1,0.8 0.2,1 0,1 1)),((0.8 0.8,0.2 0.8,0.8 0.2,0.8 0.8)))
 
-                (1 row)</screen>
+(1 row)</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -3443,9 +3443,9 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
 <screen>POLYHEDRALSURFACE(((0 0,2 0.82842712474619,2 2)),((4 0,2 0.82842712474619,0 0)),((2 2,2 0.82842712474619,4 0)))</screen>
 
         <programlisting>SELECT CG_StraightSkeletonPartition(
-            ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20,
-            160 30, 60 30, 60 130, 190 140, 190 190 ))'),
-            true );</programlisting>
+ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20,
+160 30, 60 30, 60 130, 190 140, 190 190 ))'),
+true );</programlisting>
         <informaltable>
             <tgroup cols="2">
                 <tbody>
@@ -3516,9 +3516,9 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
 
        <para>The following images were rendered pasting the output of the ST_AsX3D query into <link xlink:href="https://postgis.net/docs/support/viewers/x3d_viewer.htm">X3D Viewer</link>.</para>
        <programlisting><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(cgbuffer3d_output)  || '<Appearance>
-          <Material diffuseColor="0 0.8 0.2" specularColor="0 1 0"/>
-        </Appearance>
-    </Shape>', '');]]></programlisting>
+      <Material diffuseColor="0 0.8 0.2" specularColor="0 1 0"/>
+    </Appearance>
+</Shape>', '');]]></programlisting>
     <informaltable>
                 <tgroup cols="2">
                 <tbody>
@@ -3543,8 +3543,8 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                         </mediaobject>
                         </informalfigure>
             <programlisting>SELECT CG_3DBuffer(
- ST_GeomFromText('POINT(100 90)'),
- 50,5,0);
+ST_GeomFromText('POINT(100 90)'),
+50,5,0);
             </programlisting>
                     </para></entry>
                     </row>
@@ -3558,9 +3558,9 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                         </mediaobject>
                         </informalfigure>
             <programlisting>SELECT CG_3DBuffer(
-  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
-    ),
- 10,32,0);
+ ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
+   ),
+10,32,0);
             </programlisting>
                         </para></entry>
                         <entry><para><informalfigure>
@@ -3572,9 +3572,9 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                         </mediaobject>
                         </informalfigure>
             <programlisting>SELECT CG_3DBuffer(
-  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
-    ),
- 10,32,2);
+ ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
+   ),
+10,32,2);
             </programlisting>
                         </para></entry>
     </row>
@@ -4137,15 +4137,15 @@ SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
        <title>Examples</title>
        <para>
            <programlisting>SELECT CG_3DAlphaWrapping(
-           'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
-           (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
-           (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),
-           (35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),(77 73),
-           (41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),
-           (62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-           (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),
-           (34 86),(45 90),(64 97))'::geometry,
-           10);</programlisting>
+'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
+(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),
+(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),(77 73),
+(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),
+(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),
+(34 86),(45 90),(64 97))'::geometry,
+10);</programlisting>
            <informalfigure>
                <mediaobject>
                    <imageobject>
@@ -4157,16 +4157,16 @@ SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
        </para>
        <para>
            <programlisting>SELECT CG_3DAlphaWrapping(
-           'MULTIPOINT((132 64),(114 64),(99 64),(81 64),(63 64),(57 49),
-           (52 36),(46 20),(37 20),(26 20),(32 36),(39 55),(43 69),(50 84),(57 100),(63 118),(68 133),(74 149),
-           (81 164),(88 180),(101 180),(112 180),(119 164),(126 149),(132 131),(139 113),(143 100),(150 84),(157 69),(163 51),
-           (168 36),(174 20),(163 20),(150 20),(143 36),(139 49),(132 64),(99 151),(92 138),(88 124),(81 109),(74 93),(70 82),
-           (83 82),(99 82),(112 82),(126 82),(121 96),(114 109),(110 122),(103 138),(99 151),(34 27),(43 31),(48 44),(46 58),
-           (52 73),(63 73),(61 84),(72 71),(90 69),(101 76),(123 71),(141 62),(166 27),(150 33),(159 36),(146 44),(154 53),
-           (152 62),(146 73),(134 76),(143 82),(141 91),(130 98),(126 104),(132 113),(128 127),(117 122),(112 133),(119 144),
-           (108 147),(119 153),(110 171),(103 164),(92 171),(86 160),(88 142),(79 140),(72 124),(83 131),(79 118),(68 113),
-           (63 102),(68 93),(35 45))'::geometry,
-           14);</programlisting>
+'MULTIPOINT((132 64),(114 64),(99 64),(81 64),(63 64),(57 49),
+(52 36),(46 20),(37 20),(26 20),(32 36),(39 55),(43 69),(50 84),(57 100),(63 118),(68 133),(74 149),
+(81 164),(88 180),(101 180),(112 180),(119 164),(126 149),(132 131),(139 113),(143 100),(150 84),(157 69),(163 51),
+(168 36),(174 20),(163 20),(150 20),(143 36),(139 49),(132 64),(99 151),(92 138),(88 124),(81 109),(74 93),(70 82),
+(83 82),(99 82),(112 82),(126 82),(121 96),(114 109),(110 122),(103 138),(99 151),(34 27),(43 31),(48 44),(46 58),
+(52 73),(63 73),(61 84),(72 71),(90 69),(101 76),(123 71),(141 62),(166 27),(150 33),(159 36),(146 44),(154 53),
+(152 62),(146 73),(134 76),(143 82),(141 91),(130 98),(126 104),(132 113),(128 127),(117 122),(112 133),(119 144),
+(108 147),(119 153),(110 171),(103 164),(92 171),(86 160),(88 142),(79 140),(72 124),(83 131),(79 118),(68 113),
+(63 102),(68 93),(35 45))'::geometry,
+14);</programlisting>
            <informalfigure>
                <mediaobject>
                    <imageobject>

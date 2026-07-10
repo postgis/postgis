@@ -55,10 +55,10 @@
 	<para>
 	  Run the following SQL snippet in the database you want to enable spatially:
 <programlisting>
-      CREATE EXTENSION IF NOT EXISTS plpgsql;
-      CREATE EXTENSION postgis;
-      CREATE EXTENSION postgis_raster; -- OPTIONAL
-      CREATE EXTENSION postgis_topology; -- OPTIONAL
+CREATE EXTENSION IF NOT EXISTS plpgsql;
+CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_raster; -- OPTIONAL
+CREATE EXTENSION postgis_topology; -- OPTIONAL
 </programlisting>
 	</para>
 
@@ -104,21 +104,21 @@ environment).</para></note>
 	<para>
 	  Run the following Shell commands in your terminal:
 <programlisting>
-    DB=[yourdatabase]
-    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/
+DB=[yourdatabase]
+SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/
 
-    # Core objects
-    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql
-    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql
-    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL
+# Core objects
+psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql
+psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql
+psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL
 
-    # Raster support (OPTIONAL)
-    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql
-    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL
+# Raster support (OPTIONAL)
+psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql
+psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL
 
-    # Topology support (OPTIONAL)
-    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql
-    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
+# Topology support (OPTIONAL)
+psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql
+psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
 </programlisting>
   </para>
 

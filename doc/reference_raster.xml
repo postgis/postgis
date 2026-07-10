@@ -1869,28 +1869,28 @@ geometries, each with its associated value.
                 <title>Examples</title>
                 <programlisting>
 WITH inp(g,v) AS (
-	VALUES
-		( ST_Buffer(ST_MakePoint(10,0), 10), 1 ),
-		( ST_Buffer(ST_MakePoint(20,0), 10), 2 )
+    VALUES
+        ( ST_Buffer(ST_MakePoint(10,0), 10), 1 ),
+        ( ST_Buffer(ST_MakePoint(20,0), 10), 2 )
 ),
 agg AS (
-	SELECT ST_AsRasterAgg(
-		g,
-		v,
-		ST_MakeEmptyRaster(0,0,0,0,1.0),
-		'8BUI',
-		99,
-		'SUM',
-		true
-	) r
-	FROM inp
+    SELECT ST_AsRasterAgg(
+        g,
+        v,
+        ST_MakeEmptyRaster(0,0,0,0,1.0),
+        '8BUI',
+        99,
+        'SUM',
+        true
+    ) r
+    FROM inp
 )
 SELECT
-	ST_Width(r) w,
-	ST_Height(r) h,
-	ST_Value(r,'POINT(5 0)') v5_0,
-	ST_Value(r,'POINT(15 0)') v15_0,
-	ST_Value(r,'POINT(25 0)') v25_0
+    ST_Width(r) w,
+    ST_Height(r) h,
+    ST_Value(r,'POINT(5 0)') v5_0,
+    ST_Value(r,'POINT(15 0)') v15_0,
+    ST_Value(r,'POINT(25 0)') v25_0
 FROM agg;</programlisting>
 <screen> w  | h  | v5_0 | v15_0 | v25_0
 ----+----+------+-------+-------
@@ -1966,7 +1966,7 @@ FROM (
 
                     <para>Return bands 2 and 3 using array cast syntax.</para>
                     <programlisting>SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands
-    FROM dummy_rast WHERE rid=2;
+FROM dummy_rast WHERE rid=2;
 </programlisting>
 <screen>2</screen>
                     <para>Return bands 2 and 3 using array syntax.</para>
@@ -2484,7 +2484,7 @@ upperlefty + scaley*0.5</programlisting></para>
                 <title>Examples</title>
 
                 <programlisting>SELECT ST_GeoReference(rast, 'ESRI') As esri_ref, ST_GeoReference(rast, 'GDAL') As gdal_ref
- FROM dummy_rast WHERE rid=1;</programlisting>
+FROM dummy_rast WHERE rid=1;</programlisting>
 <screen>   esri_ref   |   gdal_ref
 --------------+--------------
  2.0000000000 | 2.0000000000
@@ -2653,9 +2653,9 @@ FROM dummy_rast;</programlisting>
  FROM (SELECT rid, ST_MetaData(rast) As md
 FROM dummy_rast) As foo;</programlisting>
 <screen> rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
- ----+------------+------------+-------+--------+--------+-----------+-------+-------+------+-------
-   1 |        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |    0 |        0
-   2 | 3427927.75 |    5793244 |     5 |      5 |   0.05 |  -0.05 |     0 |     0 |    0 |        3</screen>
+----+------------+------------+-------+--------+--------+-----------+-------+-------+------+-------
+  1 |        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |    0 |        0
+  2 | 3427927.75 |    5793244 |     5 |      5 |   0.05 |  -0.05 |     0 |     0 |    0 |        3</screen>
             </refsection>
 
             <!-- Optionally add a "See Also" section -->
@@ -2806,13 +2806,13 @@ FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast
             <title>Examples: Rasters with no skew</title>
 
             <programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,
-    ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
-    ST_SkewY(rast) As skewy
-    FROM dummy_rast;</programlisting>
+ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+ST_SkewY(rast) As skewy
+FROM dummy_rast;</programlisting>
 <screen>    rastwidth | pixwidth | scalex | scaley | skewx | skewy
-    -----------+----------+--------+--------+-------+----------
-    10 |        2 |      2 |      3 |     0 |        0
-     5 |     0.05 |   0.05 |  -0.05 |     0 |        0</screen>
+-----------+----------+--------+--------+-------+----------
+10 |        2 |      2 |      3 |     0 |        0
+ 5 |     0.05 |   0.05 |  -0.05 |     0 |        0</screen>
 
     </refsection>
 
@@ -2820,14 +2820,14 @@ FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast
             <title>Examples: Rasters with skew different than 0</title>
 
             <programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,
-    ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
-    ST_SkewY(rast) As skewy
-    FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast
-    FROM dummy_rast) As skewed;</programlisting>
+ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+ST_SkewY(rast) As skewy
+FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast
+FROM dummy_rast) As skewed;</programlisting>
 <screen>    rastwidth |     pixwidth      | scalex | scaley | skewx | skewy
-    -----------+-------------------+--------+--------+-------+----------
-    10 |  2.06155281280883 |      2 |      3 |   0.5 |      0.5
-     5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5</screen>
+-----------+-------------------+--------+--------+-------+----------
+10 |  2.06155281280883 |      2 |      3 |   0.5 |      0.5
+ 5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5</screen>
 
     </refsection>
 
@@ -5297,8 +5297,8 @@ GROUP BY (foo.geomval).val;]]></programlisting>
 
                 <para>This example stores the changed raster.</para>
                 <programlisting>
-    UPDATE dummy_rast SET rast = ST_SetValue(rast,1, ST_Point(3427927.75, 5793243.95),100)
-        WHERE rid = 2   ;
+UPDATE dummy_rast SET rast = ST_SetValue(rast,1, ST_Point(3427927.75, 5793243.95),100)
+    WHERE rid = 2   ;
 
                 </programlisting>
             </refsection>
@@ -6958,16 +6958,16 @@ SELECT rid, (meta).* FROM bar</programlisting>
                     <title>Examples</title>
 
                     <programlisting>SELECT ST_Width(mass_stm) As w_before, ST_Width(wgs_84) As w_after,
-  ST_Height(mass_stm) As h_before, ST_Height(wgs_84) As h_after
-    FROM
-    ( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84,
-  ST_Transform(rast,4326, 'Bilinear') AS wgs_84_bilin
-        FROM aerials.o_2_boston
-            WHERE ST_Intersects(
-                rast,
-                ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),
-                    26986) )
-        LIMIT 1) As foo;</programlisting>
+ST_Height(mass_stm) As h_before, ST_Height(wgs_84) As h_after
+  FROM
+  ( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84,
+ST_Transform(rast,4326, 'Bilinear') AS wgs_84_bilin
+      FROM aerials.o_2_boston
+          WHERE ST_Intersects(
+              rast,
+              ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),
+                  26986) )
+      LIMIT 1) As foo;</programlisting>
 <screen> w_before | w_after | h_before | h_after
 ----------+---------+----------+---------
       200 |     228 |      200 |     170</screen>
@@ -7782,7 +7782,7 @@ FROM (SELECT ST_Quantile(rast, ARRAY[0.25,0.75]) As pvq
      0.25 |   253
      0.75 |   254</screen>
 <programlisting>SELECT ST_Quantile(rast, 0.75) As value
-    FROM dummy_rast WHERE rid=2;</programlisting>
+FROM dummy_rast WHERE rid=2;</programlisting>
 <screen>254</screen>
 <para>Real live example. Quantile of all pixels in band 2 intersecting a geometry.</para>
 <programlisting>
@@ -8666,15 +8666,15 @@ FROM dummy_rast WHERE rid=2;
 
                     <para>Output the first three bands at 75 percent quality.</para>
                     <programlisting>SELECT ST_AsJPEG(rast) As rastjpg
-    FROM dummy_rast WHERE rid=2;
+FROM dummy_rast WHERE rid=2;
 </programlisting>
                     <para>Output only the first band at 90 percent quality.</para>
                     <programlisting>SELECT ST_AsJPEG(rast,1,90) As rastjpg
-    FROM dummy_rast WHERE rid=2;
+FROM dummy_rast WHERE rid=2;
 </programlisting>
                     <para>Output the first three bands, mapping band 2 to red, band 1 to green, and band 3 to blue, using progressive encoding at 90 percent quality.</para>
                     <programlisting>SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rastjpg
-    FROM dummy_rast WHERE rid=2;</programlisting>
+FROM dummy_rast WHERE rid=2;</programlisting>
 
             </refsection>
 
@@ -11191,11 +11191,11 @@ FROM prunion;
                     <para>The <varname>onerasteruserfunc</varname> parameter must be the name and signature of a SQL or PL/pgSQL function, cast to a regprocedure. A very simple and quite useless PL/pgSQL function example is:
                     </para>
                 <programlisting>CREATE OR REPLACE FUNCTION simple_function(pixel FLOAT, pos INTEGER[], VARIADIC args TEXT[])
-    RETURNS FLOAT
-    AS $$ BEGIN
-        RETURN 0.0;
-    END; $$
-    LANGUAGE 'plpgsql' IMMUTABLE;</programlisting>
+RETURNS FLOAT
+AS $$ BEGIN
+    RETURN 0.0;
+END; $$
+LANGUAGE 'plpgsql' IMMUTABLE;</programlisting>
                     <para>
                 The <varname>userfunction</varname> may accept two or three arguments: a float value, an optional integer array, and a variadic text array. The first argument is the value of an individual raster cell (regardless of the raster datatype). The second argument is the position of the current processing cell in the form '{x,y}'. The third argument indicates that all remaining parameters to <xref linkend="RT_ST_MapAlgebraFct"/> shall be passed through to the <varname>userfunction</varname>.
                     </para>
@@ -11408,11 +11408,11 @@ WHERE rid=167;
                     <para>The <varname>tworastuserfunc</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
                     </para>
                 <programlisting>CREATE OR REPLACE FUNCTION simple_function_for_two_rasters(pixel1 FLOAT, pixel2 FLOAT, pos INTEGER[], VARIADIC args TEXT[])
-    RETURNS FLOAT
-    AS $$ BEGIN
-        RETURN 0.0;
-    END; $$
-    LANGUAGE 'plpgsql' IMMUTABLE;</programlisting>
+RETURNS FLOAT
+AS $$ BEGIN
+    RETURN 0.0;
+END; $$
+LANGUAGE 'plpgsql' IMMUTABLE;</programlisting>
 
                     <para>
                         The <varname>tworastuserfunc</varname> may accept three or four arguments: a double precision value, a double precision value, an optional integer array, and a variadic text array. The first argument is the value of an individual raster cell in <varname>rast1</varname> (regardless of the raster datatype). The second argument is an individual raster cell value in <varname>rast2</varname>.  The third argument is the position of the current processing cell in the form '{x,y}'. The fourth argument indicates that all remaining parameters to <xref linkend="RT_ST_MapAlgebraFct2"/> shall be passed through to the <varname>tworastuserfunc</varname>.
@@ -11959,8 +11959,8 @@ UPDATE wind
                     <para>Create a small raster and map its pixels to new values.</para>
                     <programlisting>
 CREATE TABLE reclassexact (
-	id integer,
-	rast raster
+    id integer,
+    rast raster
 );
 
 --
@@ -12445,13 +12445,13 @@ WHERE rid = 2;</programlisting>
                     <title>Examples: Variant 2</title>
 
                     <programlisting>SELECT
-    rid,
-    ST_Value(
-        ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1),
-        2,
-        2)
-  FROM dummy_rast
-   WHERE rid = 2;</programlisting>
+  rid,
+  ST_Value(
+      ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1),
+      2,
+      2)
+FROM dummy_rast
+ WHERE rid = 2;</programlisting>
 <screen> rid |     st_value
 -----+------------------
    2 | 253.222229003906
@@ -14181,7 +14181,7 @@ FROM raster_proportions_rast;</programlisting>
             <title>Examples</title>
 
             <programlisting>SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&amp; B.rast As intersect
- FROM dummy_rast AS A CROSS JOIN dummy_rast AS B LIMIT 3;</programlisting>
+FROM dummy_rast AS A CROSS JOIN dummy_rast AS B LIMIT 3;</programlisting>
 <screen> a_rid | b_rid | intersect
 -------+-------+---------
      2 |     2 | t
@@ -14469,7 +14469,7 @@ SELECT A.rid As a_rid, B.rid As b_rid, A.rast &> B.rast As overright
         <title>Examples</title>
         <para>Very useful usecase is for taking two sets of single band rasters that are of the same chunk but represent different themes and creating a multi-band raster</para>
   <programlisting>SELECT ST_AddBand(prec.rast, alt.rast) As new_rast
-    FROM prec INNER JOIN alt ON (prec.rast ~= alt.rast);
+FROM prec INNER JOIN alt ON (prec.rast ~= alt.rast);
         </programlisting>
           </refsection>
 
@@ -15408,7 +15408,7 @@ SELECT A.rid As a_rid, B.rid As b_rid, A.rast &> B.rast As overright
 ) as sm;</programlisting>
 <screen>t</screen>
 <programlisting>SELECT ST_SameAlignment(A.rast,b.rast)
- FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;</programlisting>
+FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;</programlisting>
 <screen>NOTICE:  The two rasters provided have different SRIDs
 NOTICE:  The two rasters provided have different SRIDs
  t

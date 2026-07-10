@@ -140,7 +140,7 @@ UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || 
 
 -- specify a geography point using EPSG:4267, NAD27
 SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
-			</programlisting>
+            </programlisting>
 		 </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -299,12 +299,12 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 <para>This example uses a PolyhedralSurface.</para>
 <programlisting language="sql">
 SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
-	((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-	((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-	((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
+    ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
 )');
 </programlisting>
 	  </refsection>
@@ -377,18 +377,18 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
             <para>Converting MARC21/XML geographic data containing a single <varname>POINT</varname> encoded as  <varname>hddd.dddddd</varname>  </para>
             <programlisting language="sql"><![CDATA[
 
-                SELECT
-                ST_AsText(ST_GeomFromMARC21('
-                        <record xmlns="http://www.loc.gov/MARC21/slim">
-                            <leader>00000nz a2200000nc 4500</leader>
-                            <controlfield tag="001">040277569</controlfield>
-                            <datafield tag="034" ind1=" " ind2=" ">
-                                <subfield code="d">W004.500000</subfield>
-                                <subfield code="e">W004.500000</subfield>
-                                <subfield code="f">N054.250000</subfield>
-                                <subfield code="g">N054.250000</subfield>
-                            </datafield>
-                        </record>'));
+SELECT
+ST_AsText(ST_GeomFromMARC21('
+        <record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>00000nz a2200000nc 4500</leader>
+            <controlfield tag="001">040277569</controlfield>
+            <datafield tag="034" ind1=" " ind2=" ">
+                <subfield code="d">W004.500000</subfield>
+                <subfield code="e">W004.500000</subfield>
+                <subfield code="f">N054.250000</subfield>
+                <subfield code="g">N054.250000</subfield>
+            </datafield>
+        </record>'));
 ]]></programlisting>
 <screen>POINT(-4.5 54.25)</screen>
 
@@ -397,20 +397,20 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
             <programlisting language="sql"><![CDATA[
 
 
-                SELECT
-                ST_AsText(ST_GeomFromMARC21('
-                        <record xmlns="http://www.loc.gov/MARC21/slim">
-                            <leader>01062cem a2200241 a 4500</leader>
-                            <controlfield tag="001">   84696781 </controlfield>
-                            <datafield tag="034" ind1="1" ind2=" ">
-                                <subfield code="a">a</subfield>
-                                <subfield code="b">50000</subfield>
-                                <subfield code="d">E0130600</subfield>
-                                <subfield code="e">E0133100</subfield>
-                                <subfield code="f">N0523900</subfield>
-                                <subfield code="g">N0522300</subfield>
-                            </datafield>
-                        </record>'));
+SELECT
+ST_AsText(ST_GeomFromMARC21('
+        <record xmlns="http://www.loc.gov/MARC21/slim">
+            <leader>01062cem a2200241 a 4500</leader>
+            <controlfield tag="001">   84696781 </controlfield>
+            <datafield tag="034" ind1="1" ind2=" ">
+                <subfield code="a">a</subfield>
+                <subfield code="b">50000</subfield>
+                <subfield code="d">E0130600</subfield>
+                <subfield code="e">E0133100</subfield>
+                <subfield code="f">N0523900</subfield>
+                <subfield code="g">N0522300</subfield>
+            </datafield>
+        </record>'));
 ]]></programlisting>
 <screen>POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65))</screen>
 
@@ -419,24 +419,24 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
             <programlisting language="sql"><![CDATA[
 
 
-                SELECT
-                ST_AsText(ST_GeomFromMARC21('
-                <record xmlns="http://www.loc.gov/MARC21/slim">
-                    <datafield tag="034" ind1="1" ind2=" ">
-                        <subfield code="a">a</subfield>
-                        <subfield code="b">50000</subfield>
-                        <subfield code="d">E0130600</subfield>
-                        <subfield code="e">E0133100</subfield>
-                        <subfield code="f">N0523900</subfield>
-                        <subfield code="g">N0522300</subfield>
-                    </datafield>
-                    <datafield tag="034" ind1=" " ind2=" ">
-                        <subfield code="d">W004.500000</subfield>
-                        <subfield code="e">W004.500000</subfield>
-                        <subfield code="f">N054.250000</subfield>
-                        <subfield code="g">N054.250000</subfield>
-                    </datafield>
-                </record>'));
+SELECT
+ST_AsText(ST_GeomFromMARC21('
+<record xmlns="http://www.loc.gov/MARC21/slim">
+    <datafield tag="034" ind1="1" ind2=" ">
+        <subfield code="a">a</subfield>
+        <subfield code="b">50000</subfield>
+        <subfield code="d">E0130600</subfield>
+        <subfield code="e">E0133100</subfield>
+        <subfield code="f">N0523900</subfield>
+        <subfield code="g">N0522300</subfield>
+    </datafield>
+    <datafield tag="034" ind1=" " ind2=" ">
+        <subfield code="d">W004.500000</subfield>
+        <subfield code="e">W004.500000</subfield>
+        <subfield code="f">N054.250000</subfield>
+        <subfield code="g">N054.250000</subfield>
+    </datafield>
+</record>'));
 ]]></programlisting>
 <screen>GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))</screen>
 
@@ -557,7 +557,7 @@ SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
 -71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))',4326);
 
 SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)');
-	</programlisting>
+    </programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -616,12 +616,12 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 		<title>Examples</title>
 
 		<programlisting language="sql">SELECT ST_AsText(ST_LineFromText('LINESTRING(1 2, 3 4)')) AS aline,
-       ST_LineFromText('POINT(1 2)') IS NULL AS null_return;</programlisting>
+ST_LineFromText('POINT(1 2)') IS NULL AS null_return;</programlisting>
 		<screen>
 aline                 | null_return
 ------------------------------------
 LINESTRING(1 2,3 4)  | t
-		</screen>
+                </screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -806,7 +806,7 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 
 		<programlisting language="sql">SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))');
 SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,
-	-70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);
+    -70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);
 </programlisting>
 	  </refsection>
 
@@ -867,7 +867,7 @@ SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.976
 	<programlisting language="sql">
 SELECT ST_PointFromText('POINT(-71.064544 42.28787)');
 SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
-	</programlisting>
+    </programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -1050,7 +1050,7 @@ SELECT ST_AsText(ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\
                     for a single query or at the database or server level.  Below is how you would do it with standard_conforming_strings = on.  In this case we escape the ' with standard ANSI ',
 		    but slashes are not escaped</para></note>
 	<programlisting language="sql">
-	    set standard_conforming_strings = on;
+        set standard_conforming_strings = on;
 SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\012\013B
     \312Q\300n\303(\010\036!E@''\277E''K\012\312Q\300\366{b\235*!E@\225|\354.P\312Q\012\300p\231\323e1')</programlisting>
 	  </refsection>
@@ -1107,9 +1107,9 @@ SELECT ST_AsEWKT(ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\
 );</programlisting>
 <screen>SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 <programlisting language="sql">SELECT
-  ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
-	)
-  );</programlisting>
+ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
+  )
+);</programlisting>
 <screen>POINT(2 5)</screen>
 	  </refsection>
 
@@ -1179,12 +1179,12 @@ SELECT ST_AsEWKT(ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\
 		<title>Examples</title>
 
 		<programlisting language="sql">SELECT ST_AsText(ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)')))) AS aline,
-       ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;</programlisting>
+ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;</programlisting>
 		<screen>
 aline                 | null_return
 ------------------------------------
 LINESTRING(1 2,3 4)  | t
-		</screen>
+                </screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1249,10 +1249,10 @@ LINESTRING(1 2,3 4)  | t
 		<title>Examples</title>
 
 		<programlisting language="sql">SELECT
-  ST_AsText(ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
-  )) AS aline,
-  ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
-  ) IS NULL AS null_return;</programlisting>
+ST_AsText(ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
+)) AS aline,
+ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
+) IS NULL AS null_return;</programlisting>
 		<screen>
 aline                 | null_return
 ------------------------------------
@@ -1311,14 +1311,14 @@ LINESTRING(1 2,3 4)  | t</screen>
 		<title>Examples</title>
 
 		<programlisting language="sql">SELECT
-  ST_AsText(ST_PointFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
-	)
-  );</programlisting>
+ST_AsText(ST_PointFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
+  )
+);</programlisting>
 <screen>POINT(2 5)</screen>
 <programlisting language="sql">SELECT
-  ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
-	)
-  );</programlisting>
+ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
+  )
+);</programlisting>
 <screen>null</screen>
 	  </refsection>
 
@@ -1513,14 +1513,14 @@ LINESTRING(1 2,3 4)  | t</screen>
 		<programlisting language="sql"><![CDATA[
 SELECT ST_GeomFromGML($$
     <gml:LineString xmlns:gml="http://www.opengis.net/gml"
-			srsName="EPSG:4269">
+            srsName="EPSG:4269">
         <gml:coordinates>
             -71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
         </gml:coordinates>
     </gml:LineString>
 $$);
 ]]>
-		</programlisting>
+        </programlisting>
 	  </refsection>
 
 	  <refsection>
@@ -1540,7 +1540,7 @@ SELECT ST_GeomFromGML($$
     </gml:LineString>
 $$);
 ]]>
-		</programlisting>
+        </programlisting>
 	  </refsection>
 
 	 <refsection>
@@ -1556,38 +1556,38 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList></gml:LinearRing>
+    <gml:LinearRing><gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList></gml:LinearRing>
+    <gml:LinearRing><gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-	<gml:LinearRing><gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList></gml:LinearRing>
+    <gml:LinearRing><gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-	<gml:LinearRing><gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList></gml:LinearRing>
+    <gml:LinearRing><gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-	<gml:LinearRing><gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList></gml:LinearRing>
+    <gml:LinearRing><gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
 </gml:polygonPatches>
 </gml:PolyhedralSurface>'));
 ]]></programlisting>
 <screen> POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
- ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
- ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
- ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
- ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
- ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))</screen>
+((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
+((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
+((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))</screen>
 	  </refsection>
 
 

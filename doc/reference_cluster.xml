@@ -96,7 +96,7 @@
 SELECT name, ST_ClusterDBSCAN(geom, eps => 50, minpoints => 2) over () AS cid
 FROM boston_polys
 WHERE name > '' AND building > ''
-	AND ST_DWithin(
+    AND ST_DWithin(
         geom,
         ST_Transform(
             ST_GeomFromText('POINT(-71.04054 42.35141)', 4326),
@@ -603,10 +603,10 @@ from
         <programlisting>
 WITH testdata AS
   (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
-		       'LINESTRING (5 5, 4 4)'::geometry,
-		       'LINESTRING (6 6, 7 7)'::geometry,
-		       'LINESTRING (0 0, -1 -1)'::geometry,
-		       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
+               'LINESTRING (5 5, 4 4)'::geometry,
+               'LINESTRING (6 6, 7 7)'::geometry,
+               'LINESTRING (0 0, -1 -1)'::geometry,
+               'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
 
 SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
 </programlisting>
