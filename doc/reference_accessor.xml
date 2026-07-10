@@ -1197,9 +1197,17 @@ GROUP BY gid;</programlisting>
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the 1-based Nth element geometry of an input geometry which is a
-			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, or POLYHEDRALSURFACE.
-			Otherwise, returns NULL. The index is 1-based, following the OGC specification.</para>
+		<para>Returns the 1-based Nth element of a GEOMETRYCOLLECTION,
+			MULTIPOINT, MULTILINESTRING, MULTICURVE, or MULTIPOLYGON.
+			For a unitary geometry, including a TIN or PolyhedralSurface,
+			an index of 1 returns the input geometry and any other index returns NULL.
+			Use <xref linkend="ST_PatchN"/> and <xref linkend="ST_NumPatches"/> to
+			access and count the faces of a TIN or PolyhedralSurface.</para>
+
+		<note>
+		  <para>Index is 1-based as for OGC specs since version 0.8.0.
+		  Previous versions implemented this as 0-based instead.</para>
+		</note>
 
 		<note>
 		  <para>To extract all elements of a geometry, <xref linkend="ST_Dump"/> is more efficient and works for atomic geometries.</para>
@@ -1292,7 +1300,7 @@ SELECT ST_GeometryN(geom, 2) as wkt
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_NumGeometries"/>, <xref linkend="ST_PatchN"/></para>
+		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_NumGeometries"/>, <xref linkend="ST_PatchN"/>, <xref linkend="ST_NumPatches"/></para>
 	  </refsection>
 	</refentry>
 
@@ -2393,7 +2401,7 @@ GROUP BY gid, field1, field2;
 	<refentry xml:id="ST_NumPatches">
 	  <refnamediv>
 		<refname>ST_NumPatches</refname>
-		<refpurpose>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries.</refpurpose>
+		<refpurpose>Returns the number of faces in a PolyhedralSurface or TIN.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2408,8 +2416,9 @@ GROUP BY gid, field1, field2;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries. This is
-		an alias for ST_NumGeometries to support MM naming. Faster to use ST_NumGeometries if you don't care about MM convention.</para>
+		<para>Returns the number of faces in a PolyhedralSurface or TIN.
+		Returns NULL for other geometries. Unlike <xref linkend="ST_NumGeometries"/>,
+		this function counts individual faces.</para>
 
 		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 		<para>&Z_support;</para>
@@ -2433,7 +2442,7 @@ GROUP BY gid, field1, field2;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_NumGeometries"/></para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_NumGeometries"/>, <xref linkend="ST_PatchN"/></para>
 	  </refsection>
 	</refentry>
 
@@ -2485,7 +2494,7 @@ GROUP BY gid, field1, field2;
 	  <refnamediv>
 		<refname>ST_PatchN</refname>
 
-		<refpurpose>Returns the Nth geometry (face) of a PolyhedralSurface.</refpurpose>
+		<refpurpose>Returns the Nth face of a PolyhedralSurface or TIN.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2501,11 +2510,10 @@ GROUP BY gid, field1, field2;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 1-based Nth geometry (face) if the geometry is a
-			POLYHEDRALSURFACE or POLYHEDRALSURFACEM.
-			Otherwise, returns NULL.
-			This returns the same answer as ST_GeometryN for PolyhedralSurfaces.
-			Using ST_GeometryN is faster.</para>
+		<para>Returns the 1-based Nth face of a PolyhedralSurface or TIN.
+			Returns NULL for other geometries or an out-of-range index.
+			Use this function to access faces, because <xref linkend="ST_GeometryN"/>
+			treats PolyhedralSurface and TIN as unitary geometries.</para>
 
 		<note>
 		  <para>Index is 1-based.</para>
@@ -2519,6 +2527,7 @@ GROUP BY gid, field1, field2;
 		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 
 	  </refsection>
 
@@ -2541,7 +2550,7 @@ VALUES ('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_GeometryN"/>, <xref linkend="ST_NumGeometries"/></para>
+		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_GeometryN"/>, <xref linkend="ST_NumGeometries"/>, <xref linkend="ST_NumPatches"/></para>
 	  </refsection>
 	</refentry>
 
