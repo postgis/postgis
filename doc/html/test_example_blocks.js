@@ -40,6 +40,80 @@ function makePre(text) {
   };
 }
 
+function makeLiteralTree(text, document) {
+  function removeFromParent(node) {
+    if (node.parentNode) {
+      const index = node.parentNode.children.indexOf(node);
+      if (index >= 0) {
+        node.parentNode.children.splice(index, 1);
+      }
+    }
+  }
+
+  function makeElement(tagName) {
+    return {
+      tagName,
+      children: [],
+      attributes: {},
+      className: '',
+      id: '',
+      get textContent() {
+        return this.children.map((child) => child.nodeValue === undefined ? child.textContent : child.nodeValue)
+          .join('');
+      },
+      setAttribute(name, value) {
+        this.attributes[name] = value;
+      },
+      appendChild(node) {
+        removeFromParent(node);
+        this.children.push(node);
+        node.parentNode = this;
+      }
+    };
+  }
+
+  function makeText(value) {
+    return {
+      nodeValue: value,
+      parentNode: null,
+      splitText(offset) {
+        const tail = makeText(this.nodeValue.slice(offset));
+        this.nodeValue = this.nodeValue.slice(0, offset);
+        const index = this.parentNode.children.indexOf(this);
+        this.parentNode.children.splice(index + 1, 0, tail);
+        tail.parentNode = this.parentNode;
+        return tail;
+      }
+    };
+  }
+
+  const root = makeElement('pre');
+  root.insertBefore = function (node, target) {
+    removeFromParent(node);
+    const index = this.children.indexOf(target);
+    this.children.splice(index, 0, node);
+    node.parentNode = this;
+  };
+  root.cloneNode = function () {
+    return { textContent: this.textContent, querySelectorAll: () => [] };
+  };
+  root.appendChild(makeText(text));
+  document.createElement = makeElement;
+  document.createTreeWalker = function (tree) {
+    const nodes = [];
+    (function collect(node) {
+      if (node.nodeValue !== undefined) {
+        nodes.push(node);
+      } else {
+        node.children.forEach(collect);
+      }
+    }(tree));
+    let index = 0;
+    return { nextNode: () => nodes[index++] || null };
+  };
+  return root;
+}
+
 async function main() {
   const blocks = [
     makePre('\na <= b\n \n   '),
@@ -71,7 +145,11 @@ async function main() {
     currentScript: { src: 'file:///tmp/example-blocks.js' },
     readyState: 'loading',
     addEventListener(name, handler) {
-      listeners[name] = handler;
+      const previous = listeners[name];
+      listeners[name] = previous ? function (event) {
+        previous(event);
+        handler(event);
+      } : handler;
     },
     querySelectorAll(selector) {
       if (selector === '.postgis-example-code pre.programlisting[data-postgis-language="sql"]') {
@@ -128,6 +206,83 @@ async function main() {
 
   vm.runInNewContext(fs.readFileSync('doc/html/example-blocks.js', 'utf8'), sandbox,
     { filename: 'example-blocks.js' });
+  const geometry = sandbox.window.POSTGIS_EXAMPLE_BLOCKS_TEST;
+
+  const parserCases = [
+    ['POINT(1 2)', 'POINT', 1],
+    ['LINESTRING(0 0,1 1)', 'LINESTRING', 2],
+    ['POLYGON((0 0,4 0,4 4,0 0))', 'POLYGON', 4],
+    ['MULTIPOINT((0 0),(1 1))', 'MULTIPOINT', 2],
+    ['MULTILINESTRING((0 0,1 1),(2 2,3 3))', 'MULTILINESTRING', 4],
+    ['MULTIPOLYGON(((0 0,2 0,0 2,0 0)),((3 3,4 3,3 4,3 3)))', 'MULTIPOLYGON', 8],
+    ['GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1))', 'GEOMETRYCOLLECTION', 3],
+    ['BOX2D(1 2,5 6)', 'BOX2D', 2],
+    ['BOX3D(1 2 3,5 6 7)', 'BOX3D', 2]
+  ];
+  parserCases.forEach(function ([text, type, vertices]) {
+    const parsed = geometry.parseWkt(text);
+    assert(parsed, text);
+    assert.strictEqual(parsed.type, type);
+    assert.strictEqual(parsed.vertices, vertices);
+  });
+
+  assert.deepStrictEqual(Array.from(geometry.parseWkt('SRID=4326;POINT Z (1 2 9)').primitives[0].points[0]),
+    [1, 2]);
+  assert.deepStrictEqual(Array.from(geometry.parseWkt('POINT M (3 4 99)').primitives[0].points[0]),
+    [3, 4]);
+  assert.deepStrictEqual(Array.from(geometry.parseWkt('POINT ZM (5 6 7 8)').primitives[0].points[0]),
+    [5, 6]);
+  assert.strictEqual(geometry.parseWkt('POINT Z (1 2)'), null);
+  assert.strictEqual(geometry.parseWkt('BOX2D(1 2 3,4 5 6)'), null);
+  assert.strictEqual(geometry.parseWkt('BOX3D(1 2,4 5)'), null);
+  assert.strictEqual(geometry.parseWkt('POINT EMPTY'), null);
+  assert.strictEqual(geometry.parseWkt('POINT(1)'), null);
+  assert.strictEqual(geometry.parseWkt('LINESTRING(0 0)'), null);
+  assert.strictEqual(geometry.parseWkt('LINESTRING(0 0,1 1 2)'), null);
+  assert.strictEqual(geometry.parseWkt('POLYGON((0 0,1 0,0 1))'), null);
+  assert.strictEqual(geometry.parseWkt('POLYGON((0 0,1 0'), null);
+  assert.strictEqual(geometry.parseWkt('CIRCULARSTRING(0 0,1 1,2 0)'), null);
+  assert.strictEqual(geometry.parseWkt('TIN(((0 0,1 0,0 1,0 0)))'), null);
+  assert.strictEqual(geometry.scanGeometryLiterals('XPOINT(1 2)').length, 0);
+  assert.strictEqual(geometry.scanGeometryLiterals('POINT(1 2)junk').length, 0);
+  assert.strictEqual(geometry.scanGeometryLiterals("SELECT 'POINT EMPTY'").length, 0);
+  assert.strictEqual(geometry.scanGeometryLiterals("SELECT 'POINT(1 2)', 'LINESTRING(0 0,1 1)'").length, 2);
+  assert.strictEqual(geometry.scanGeometryLiterals('SELECT POINT(1 2)', true).length, 0);
+  assert.strictEqual(geometry.scanGeometryLiterals("SELECT 'POINT(1 2)'", true).length, 1);
+  assert.strictEqual(geometry.scanGeometryLiterals('SELECT $$POINT(1 2)$$', true).length, 1);
+  assert.strictEqual(geometry.scanGeometryLiterals('SELECT $wkt$POINT(1 2)$wkt$', true).length, 1);
+  assert.strictEqual(geometry.scanGeometryLiterals("-- 'POINT(1 2)'", true).length, 0);
+  assert.strictEqual(geometry.scanGeometryLiterals("/* 'POINT(1 2)' */", true).length, 0);
+  assert.strictEqual(geometry.scanGeometryLiterals('SELECT "POINT(1 2)"', true).length, 0);
+
+  const tooManyPoints = 'LINESTRING(' + Array.from({ length: 2001 }, (_, index) =>
+    index + ' ' + index).join(',') + ')';
+  assert.strictEqual(geometry.parseWkt(tooManyPoints), null);
+
+  const extent = geometry.geometryExtent([
+    { geometry: geometry.parseWkt('POINT(0 0)') },
+    { geometry: geometry.parseWkt('LINESTRING(10 5,20 15)') }
+  ]);
+  assert.deepStrictEqual(
+    [extent.minX, extent.minY, extent.maxX, extent.maxY].map((value) => Number(value.toFixed(2))),
+    [-1.6, -1.2, 21.6, 16.2]
+  );
+  const pointExtent = geometry.geometryExtent([{ geometry: geometry.parseWkt('POINT(2 3)') }]);
+  assert(pointExtent.minX < 2 && pointExtent.maxX > 2 && pointExtent.minY < 3 && pointExtent.maxY > 3);
+  assert.strictEqual(geometry.gridStep(83, 8), 20);
+  assert.strictEqual(geometry.gridStep(0.0083, 8), 0.002);
+  assert.strictEqual(geometry.gridStep(0, 8), 1);
+
+  const literalOriginal = "SELECT 'POINT(1 2)'";
+  const literalPre = makeLiteralTree(literalOriginal, document);
+  geometry.wrapLiteralRange(literalPre, { start: 8, end: 18 }, 'postgis-geometry-99');
+  assert.strictEqual(literalPre.textContent, literalOriginal);
+  assert.strictEqual(geometry.codeText(literalPre), literalOriginal);
+  const literalSpan = literalPre.children[1];
+  assert.strictEqual(literalSpan.textContent, 'POINT(1 2)');
+  assert.strictEqual(literalSpan.id, 'postgis-geometry-99-literal');
+  assert.strictEqual(literalSpan.attributes['data-postgis-geometry-id'], 'postgis-geometry-99');
+
   listeners.DOMContentLoaded();
   await Promise.resolve();
   await Promise.resolve();
@@ -167,7 +322,10 @@ async function main() {
   const pairElements = matchedClasses.map(function (classes) {
     return {
       closest(selector) {
-        return selector === '.postgis-sql-paren[data-postgis-paren-pair]' ? this : pairPre;
+        if (selector === '.postgis-sql-paren[data-postgis-paren-pair]') {
+          return this;
+        }
+        return selector === 'pre.programlisting' ? pairPre : null;
       },
       getAttribute() {
         return '7';
