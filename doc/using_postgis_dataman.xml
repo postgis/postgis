@@ -481,11 +481,12 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
         <para>For example this statement creates a geometry by casting from an EWKT text value,
         and outputs it using the canonical form of HEXEWKB:</para>
 
-	  <programlisting>SELECT 'SRID=4;POINT(0 0)'::geometry;
+	  <programlisting>SELECT 'SRID=4;POINT(0 0)'::geometry;</programlisting>
+<screen>
   geometry
   ----------------------------------------------------
   01010000200400000000000000000000000000000000000000
-</programlisting>
+</screen>
 
         <para>PostGIS EWKT output has a few differences to OGC WKT:</para>
 
@@ -747,18 +748,20 @@ Non-geodetic coordinate systems raise an error if used.
 </para>
 
 <programlisting>-- NAD 83 lon/lat
-SELECT 'SRID=4269;POINT(-123 34)'::geography;
+SELECT 'SRID=4269;POINT(-123 34)'::geography;</programlisting>
+<screen>
                     geography
 ----------------------------------------------------
  0101000020AD1000000000000000C05EC00000000000004140
-</programlisting>
+</screen>
 
 <programlisting>-- NAD27 lon/lat
-SELECT 'SRID=4267;POINT(-123 34)'::geography;
+SELECT 'SRID=4267;POINT(-123 34)'::geography;</programlisting>
+<screen>
                     geography
 ----------------------------------------------------
  0101000020AB1000000000000000C05EC00000000000004140
-</programlisting>
+</screen>
 
 	<para>NAD83 UTM zone meters fails because it is a meter-based planar projection.</para>
 	<programlisting>SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting>

@@ -97,11 +97,15 @@ def keyword_pattern(keywords: Iterable[str]) -> str:
 
 
 SQL_START_RE = re.compile(rf"(?im)^\s*(?:--\s*)?(?:{keyword_pattern(SQL_STATEMENT_START_KEYWORDS)})\b")
+SQL_STATEMENT_KEYWORD_RE = re.compile(
+    rf"(?im)^\s*(?:{keyword_pattern(SQL_STATEMENT_START_KEYWORDS)})\b"
+)
 SQL_STATEMENT_RE = re.compile(
     rf"(?ims)^\s*(?:--[^\n]*\n\s*)*(?:{keyword_pattern(SQL_STATEMENT_START_KEYWORDS)})\b.*;"
 )
 PSQL_ROW_COUNT_RE = re.compile(r"(?m)^\s*\(\d+\s+rows?\)\s*$")
 PSQL_TABLE_SEPARATOR_RE = re.compile(r"(?m)^\s*[-+]{3,}(?:\s*\+\s*[-+]{2,})+\s*$")
+OUTPUT_DASH_RUN_RE = re.compile(r"(?m)^\s*-{3,}")
 PSQL_MESSAGE_RE = re.compile(r"(?m)^\s*(?:ERROR|NOTICE|WARNING|DETAIL|HINT|CONTEXT):")
 
 BLOCK_KINDS = {
@@ -216,15 +220,21 @@ def add_source_findings(root: etree._Element, path: Path) -> list[Finding]:
     findings: list[Finding] = []
     for node in root.xpath("//d:programlisting", namespaces=NS):
         text = block_text(node)
-        if not SQL_STATEMENT_RE.search(text):
+        statement = SQL_STATEMENT_RE.search(text)
+        if not statement:
             continue
+        statement_keyword = SQL_STATEMENT_KEYWORD_RE.search(text, statement.start())
+        if not statement_keyword:  # SQL_STATEMENT_RE guarantees this, but keep the boundary explicit.
+            continue
+        marker_text = text[statement_keyword.start() :]
         markers: list[str] = []
         for label, pattern in (
             ("psql row count", PSQL_ROW_COUNT_RE),
             ("psql table separator", PSQL_TABLE_SEPARATOR_RE),
+            ("output dash run", OUTPUT_DASH_RUN_RE),
             ("server message", PSQL_MESSAGE_RE),
         ):
-            snippet = first_matching(pattern, text)
+            snippet = first_matching(pattern, marker_text)
             if snippet:
                 markers.append(f"{label}: {snippet!r}")
         if markers:

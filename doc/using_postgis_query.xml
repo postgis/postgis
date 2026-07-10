@@ -552,12 +552,12 @@ geom     | geometry          | Location Geometry (Polygon)</programlisting>
 			<para>You can answer this question with a very simple piece of
 			SQL:</para>
 
-			<programlisting>SELECT sum(ST_Length(geom))/1000 AS km_roads FROM bc_roads;
-
+			<programlisting>SELECT sum(ST_Length(geom))/1000 AS km_roads FROM bc_roads;</programlisting>
+<screen>
 km_roads
 ------------------
 70842.1243039643
-</programlisting>
+</screen>
 		  </answer>
 		</qandaentry>
 
@@ -575,11 +575,12 @@ km_roads
   ST_Area(geom)/10000 AS hectares
 FROM bc_municipality
 WHERE name = 'PRINCE GEORGE';
-
+</programlisting>
+<screen>
 hectares
 ------------------
 32657.9103824927
-</programlisting>
+</screen>
 		  </answer>
 		</qandaentry>
 
@@ -693,12 +694,12 @@ JOIN bc_municipality m
   ON ST_Intersects(m.geom, r.geom
 WHERE
   r.name = 'Douglas St'
-  AND m.name = 'VICTORIA';
-
+  AND m.name = 'VICTORIA';</programlisting>
+<screen>
 kilometers
 ------------------
 4.89151904172838
-</programlisting>
+</screen>
 		  </answer>
 		</qandaentry>
 

@@ -834,8 +834,8 @@ $$ LANGUAGE plpythonu;</programlisting>
  SELECT write_file(
 	ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),j*5, 'quad_segs=2'),150*j, 150*j, '8BUI',100)),
 	 'C:/temp/slices'|| j || '.png')
-	 FROM generate_series(1,5) As j;
-
+	 FROM generate_series(1,5) As j;</programlisting>
+<screen>
      write_file
 ---------------------
  C:/temp/slices1.png
@@ -843,7 +843,7 @@ $$ LANGUAGE plpythonu;</programlisting>
  C:/temp/slices3.png
  C:/temp/slices4.png
  C:/temp/slices5.png
-</programlisting>
+</screen>
 		</section>
 		<section xml:id="RasterOutput_PSQL">
 			<title>Outputting Rasters with PSQL</title>

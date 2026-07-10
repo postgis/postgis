@@ -3741,12 +3741,13 @@ FROM (
         ST_BandMetaData(rast, 1) AS md
     FROM dummy_rast
     WHERE rid=2
-) As foo;
-
+) As foo;</programlisting>
+<screen>
  rid | pixeltype | nodatavalue | isoutdb | path | outdbbandnum
------+-----------+---- --------+---------+------+--------------
+-----+-----------+-------------+---------+------+--------------
    2 | 8BUI      |           0 | f       |      |
-                </programlisting>
+(1 row)
+                </screen>
 
             </refsection>
 
@@ -4705,8 +4706,8 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);]]></programlist
 :]]></screen>
                 <programlisting><![CDATA[
 
---- Get a polygon formed by union of all pixels
-    that fall in a particular value range and intersect particular polygon --
+-- Get a polygon formed by union of all pixels
+-- that fall in a particular value range and intersect particular polygon
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
 FROM (SELECT ST_Translate(ST_MakeEnvelope(ST_UpperLeftX(rast), ST_UpperLeftY(rast),
             ST_UpperLeftX(rast) + ST_ScaleX(rast),
@@ -4721,9 +4722,8 @@ WHERE
     ST_Intersects(
         pixpolyg,
         ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
-        ) AND b2val != 254;
-
-
+        ) AND b2val != 254;]]></programlisting>
+<screen><![CDATA[
         shadow
 ------------------------------------------------------------------------------------
  MULTIPOLYGON(((3427928 5793243.9,3427928 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,
@@ -4737,7 +4737,7 @@ WHERE
 3427927.85 5793243.75,3427927.85 5793243.8,3427927.85 5793243.85,3427927.9 5793243.85,
 3427927.95 5793243.85,3427927.95 5793243.8,3427927.95 5793243.75)))
 
-]]></programlisting>
+]]></screen>
 
                 <para>Checking all the pixels of a large raster tile can take a long time. You can dramatically improve speed at some lose of precision by orders of magnitude. By sampling pixels using the step optional parameter of generate_series. This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked. Putting in the checked pixel as the value for subsequent 4.</para>
                 <programlisting>
@@ -4758,8 +4758,8 @@ WHERE
     ST_Intersects(
         pixpolyg,
         ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
-        ) AND b2val != 254;
-
+        ) AND b2val != 254;]]></programlisting>
+<screen><![CDATA[
         shadow
 ------------------------------------------------------------------------------------
  MULTIPOLYGON(((3427927.9 5793243.85,3427927.8 5793243.85,3427927.8 5793243.95,
@@ -4767,7 +4767,7 @@ WHERE
  ((3427927.9 5793243.65,3427927.8 5793243.65,3427927.8 5793243.75,3427927.8 5793243.85,3427927.9 5793243.85,
  3427928 5793243.85,3427928 5793243.75,3427928.1 5793243.75,3427928.1 5793243.65,3427928 5793243.65,3427927.9 5793243.65)))
 
-]]></programlisting>
+]]></screen>
             </refsection>
 
             <refsection>

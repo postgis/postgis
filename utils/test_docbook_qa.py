@@ -45,6 +45,22 @@ class DocBookSourceLintTest(unittest.TestCase):
         )
         self.assertCategories('<refentry xml:id="f"><programlisting>SELECT 1;</programlisting></refentry>', set())
 
+    def test_mixed_programlisting_dash_run_markers_and_sql_comments(self):
+        for output in ("left | right\n----|----\n1 | 2", "----RESULT output ---\n1"):
+            with self.subTest(output=output):
+                self.assertCategories(
+                    f'<refentry xml:id="f"><programlisting>SELECT 1;\n{output}</programlisting></refentry>',
+                    {"mixed-programlisting-output"},
+                )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>-- first comment\nSELECT 1;\n-- second comment</programlisting></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>---- decorative preface\nSELECT 1;</programlisting></refentry>',
+            set(),
+        )
+
     def test_screen_contains_sql_violation_and_clean_case(self):
         self.assertCategories('<refentry xml:id="f"><screen>SELECT 1;</screen></refentry>', {"screen-contains-sql"})
         self.assertCategories('<refentry xml:id="f"><screen>POINT(1 2)</screen></refentry>', set())

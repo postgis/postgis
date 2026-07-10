@@ -138,7 +138,7 @@
 ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
 UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');
 
---- specify a geography point using EPSG:4267, NAD27
+-- specify a geography point using EPSG:4267, NAD27
 SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			</programlisting>
 		 </refsection>

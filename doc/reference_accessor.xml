@@ -2092,32 +2092,33 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;</p
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
+		<programlisting role="requires-external-state">
 --Return how much byte space Boston takes up  in our Mass data set
 SELECT pg_size_pretty(SUM(ST_MemSize(geom))) as totgeomsum,
 pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)) As bossum,
 CAST(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)*1.00 /
 		SUM(ST_MemSize(geom))*100 As numeric(10,2)) As perbos
-FROM towns;
+FROM towns;</programlisting>
+<screen> totgeomsum | bossum | perbos
+------------+--------+--------
+ 1522 kB    | 30 kB  |   1.99
+(1 row)</screen>
 
-totgeomsum	bossum	perbos
-----------	------	------
-1522 kB		30 kB	1.99
+<programlisting>SELECT ST_MemSize(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));</programlisting>
+<screen> st_memsize
+------------
+         73
+(1 row)</screen>
 
-
-SELECT ST_MemSize(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
-
----
-73
-
+<programlisting role="requires-external-state">
 --What percentage of our table is taken up by just the geometry
 SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, sum(ST_MemSize(geom)) As geomsize,
 sum(ST_MemSize(geom))*1.00/pg_total_relation_size('public.neighborhoods')*100 As pergeom
-FROM neighborhoods;
-fulltable_size geomsize  pergeom
-------------------------------------------------
-262144         96238	 36.71188354492187500000
-	</programlisting>
+FROM neighborhoods;</programlisting>
+<screen> fulltable_size | geomsize |         pergeom
+----------------+----------+--------------------------
+         262144 |    96238 | 36.71188354492187500000
+(1 row)</screen>
 	  </refsection>
 
 	</refentry>
