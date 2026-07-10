@@ -590,10 +590,13 @@ def command_lint_html(args: argparse.Namespace) -> int:
 
 def command_ref_index(args: argparse.Namespace) -> int:
     index = build_index(args.xml)
+    serialized_index = json.dumps(index, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    script_output = args.output.with_suffix(".js")
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(index, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n")
+    args.output.write_text(serialized_index + "\n")
+    script_output.write_text(f"window.POSTGIS_REF_INDEX = {serialized_index};\n")
     print(
-        f"wrote {args.output} with {len(index['functions'])} functions, "
+        f"wrote {args.output} and {script_output} with {len(index['functions'])} functions, "
         f"{sum(len(entries) for entries in index['operators'].values())} operator pages, and "
         f"{len(index['keywords'])} SQL keywords",
         file=sys.stderr,

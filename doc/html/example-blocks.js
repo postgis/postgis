@@ -38,6 +38,9 @@
   }
 
   function loadRefIndex() {
+    if (window.POSTGIS_REF_INDEX) {
+      return Promise.resolve(normalizeRefIndex(window.POSTGIS_REF_INDEX));
+    }
     var url = refIndexUrl();
     if (!url || !window.fetch) {
       return Promise.resolve(normalizeRefIndex(emptyRefIndex));

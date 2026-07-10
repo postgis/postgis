@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import contextlib
 import io
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -247,6 +248,24 @@ class DocBookRefIndexTest(unittest.TestCase):
         self.assertIn("SELECT", index["keywords"])
         empty_path = write_tmp(".xml", DOCBOOK_OPEN + DOCBOOK_CLOSE)
         self.assertEqual({"functions": {}, "operators": {}, "keywords": list(SQL_HIGHLIGHT_KEYWORDS)}, build_index(empty_path))
+
+    def test_ref_index_command_writes_json_and_script_with_same_data(self):
+        path = write_tmp(
+            ".xml",
+            DOCBOOK_OPEN
+            + '<refentry xml:id="ST_Point"><refnamediv><refname>ST_Point</refname><refpurpose>Makes a point</refpurpose></refnamediv></refentry>'
+            + DOCBOOK_CLOSE,
+        )
+        json_output = path.parent / "postgis-ref-index.json"
+        with contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(0, main(["ref-index", str(path), str(json_output)]))
+
+        expected = build_index(path)
+        self.assertEqual(expected, json.loads(json_output.read_text(encoding="utf-8")))
+        script = (path.parent / "postgis-ref-index.js").read_text(encoding="utf-8")
+        self.assertTrue(script.startswith("window.POSTGIS_REF_INDEX = "))
+        self.assertTrue(script.endswith(";\n"))
+        self.assertEqual(expected, json.loads(script.removeprefix("window.POSTGIS_REF_INDEX = ").removesuffix(";\n")))
 
 
 if __name__ == "__main__":

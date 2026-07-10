@@ -119,14 +119,16 @@ XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam admon.graphics.path ../images/ \
 	--stringparam img.src.path ../ \
 	--stringparam html.stylesheet ../style.css \
-	--stringparam html.script ../example-blocks.js
+	--stringparam html.script "../postgis-ref-index.js ../example-blocks.js"
 
 HTML_DOCBOOK_XSL=$(builddir)/postgis-html.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(builddir)/postgis-chunk-html.xsl
 POSTGIS_HTML_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-html-block-labels.xsl
 POSTGIS_DBLATEX_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-dblatex-block-labels.xsl
 POSTGIS_BLOCK_LABELS_COMMON_XSL=$(abs_srcdir)/xsl/postgis-block-labels-common.xsl
-HTML_REF_INDEX=$(html_builddir)/postgis-ref-index.json
+HTML_REF_INDEX_JSON=$(html_builddir)/postgis-ref-index.json
+HTML_REF_INDEX_JS=$(html_builddir)/postgis-ref-index.js
+HTML_REF_INDEX=$(HTML_REF_INDEX_JSON) $(HTML_REF_INDEX_JS)
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
@@ -430,14 +432,21 @@ chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
 $(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/%.in $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) Makefile
 	$(PERL) -pe "s!\@\@XSLBASE\@\@!$(XSLBASE)!g; s!\@\@ABS_SRCDIR\@\@!$(abs_srcdir)!g;" $< > $@
 
-$(HTML_REF_INDEX): postgis-out.xml Makefile $(abs_top_srcdir)/utils/docbook_qa.py
+$(HTML_REF_INDEX_JSON): postgis-out.xml Makefile $(abs_top_srcdir)/utils/docbook_qa.py
 	mkdir -p $(html_builddir)
 ifeq ($(PYTHON3),)
 	@echo "Skipping rich PostGIS reference index: python3 is not available."
-	@printf '{"functions":{},"operators":{},"keywords":[]}\n' > $@
+	@printf '{"functions":{},"operators":{},"keywords":[]}\n' > $(HTML_REF_INDEX_JSON)
+	@printf 'window.POSTGIS_REF_INDEX = {"functions":{},"operators":{},"keywords":[]};\n' > $(HTML_REF_INDEX_JS)
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py ref-index $< $@
+	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py ref-index $< $(HTML_REF_INDEX_JSON)
 endif
+
+$(HTML_REF_INDEX_JS): $(HTML_REF_INDEX_JSON)
+	@if test ! -f $@; then \
+		$(RM) $(HTML_REF_INDEX_JSON); \
+		$(MAKE) $(HTML_REF_INDEX_JSON); \
+	fi
 
 $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
@@ -463,7 +472,7 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
 $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
-		--stringparam html.script example-blocks.js \
+		--stringparam html.script "postgis-ref-index.js example-blocks.js" \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
@@ -545,6 +554,7 @@ pdf-images: images
 html-clean:
 	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
 	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
+	rm -f $(HTML_REF_INDEX)
 
 pdf-clean:
 	rm -f postgis*$(DOCSUFFIX).pdf
@@ -647,12 +657,14 @@ chunked-html-uninstall:
 html-assets-install: images-install $(HTML_REF_INDEX)
 	$(INSTALL_DATA) $(abs_srcdir)/html/style.css $(DESTDIR)$(htmldir)/
 	$(INSTALL_DATA) $(abs_srcdir)/html/example-blocks.js $(DESTDIR)$(htmldir)/
-	$(INSTALL_DATA) $(HTML_REF_INDEX) $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(HTML_REF_INDEX_JSON) $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(HTML_REF_INDEX_JS) $(DESTDIR)$(htmldir)/
 
 html-assets-uninstall: images-install
 	rm -f $(DESTDIR)$(htmldir)/style.css
 	rm -f $(DESTDIR)$(htmldir)/example-blocks.js
 	rm -f $(DESTDIR)$(htmldir)/postgis-ref-index.json
+	rm -f $(DESTDIR)$(htmldir)/postgis-ref-index.js
 
 docs-install: html-install html-assets-install
 	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
