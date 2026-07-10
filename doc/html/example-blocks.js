@@ -84,6 +84,10 @@
     return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
+  function normalizeDisplayedSql(text) {
+    return String(text).replace(/^\r?\n/, '').replace(/\r?\n[ \t]*$/, '');
+  }
+
   function safeHref(href) {
     if (/^#[A-Za-z0-9_.:-]+$/.test(href) || /^[A-Za-z0-9_.:-]+\.html$/.test(href)) {
       return href;
@@ -153,6 +157,10 @@
     return operators.map(escapeRegExp).join('|');
   }
 
+  function isOperatorCharacter(character) {
+    return /[<>=!~@&|+*/%^#-]/.test(character);
+  }
+
   function sqlTokenClass(token, refIndex) {
     var upper = token.toUpperCase();
     if (token.slice(0, 2) === '--' || token.slice(0, 2) === '/*') {
@@ -210,6 +218,11 @@
     var match;
 
     while ((match = tokenPattern.exec(text)) !== null) {
+      if (lookupOperator(match[0], refIndex) &&
+          (isOperatorCharacter(text.charAt(match.index - 1)) ||
+           isOperatorCharacter(text.charAt(tokenPattern.lastIndex)))) {
+        continue;
+      }
       highlighted += escapeHtml(text.slice(lastIndex, match.index));
       highlighted += highlightedToken(match[0], refIndex);
       lastIndex = tokenPattern.lastIndex;
@@ -220,6 +233,7 @@
 
   function applySyntaxHighlighting(refIndex) {
     var blocks;
+    var text;
     if (!refIndex.keywords.length) {
       return;
     }
@@ -231,7 +245,9 @@
       if (blocks[i].children.length !== 0) {
         continue;
       }
-      blocks[i].innerHTML = highlightSql(blocks[i].textContent, refIndex);
+      text = normalizeDisplayedSql(blocks[i].textContent);
+      blocks[i].textContent = text;
+      blocks[i].innerHTML = highlightSql(text, refIndex);
       blocks[i].setAttribute('data-postgis-highlighted', 'sql');
     }
   }
@@ -268,7 +284,7 @@
     for (var i = 0; i < ignored.length; i += 1) {
       ignored[i].remove();
     }
-    return clone.textContent;
+    return normalizeDisplayedSql(clone.textContent);
   }
 
   function fallbackCopy(text) {
