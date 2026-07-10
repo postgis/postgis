@@ -402,3 +402,11 @@ AND proleakproof;
 SELECT 'UNEXPECTED', postgis_full_version()
 	WHERE postgis_full_version() LIKE '%UNPACKAGED%'
 	   OR postgis_full_version() LIKE '%need upgrade%';
+
+SELECT 317, ST_EqualsExact('POINT(0 0)', 'POINT(0.0000004 0)');
+SELECT 318, ST_EqualsExact('POINT(0 0)', 'POINT(0.0000006 0)');
+SELECT 319, ST_EqualsExact('POINT(0 0)', 'POINT(0.000004 0)', 5);
+SELECT 320, ST_EqualsExact('POINT(0 0)', 'POINT(0.000006 0)', 5);
+SELECT 321, ST_EqualsExact('LINESTRING(0 0, 1 1)', 'MULTILINESTRING((0 0, 1 1))');
+SELECT 322, ST_EqualsExact('LINESTRING(0 0, 1 1)', 'LINESTRING(1 1, 0 0)');
+SELECT 323, ST_EqualsExact('POINT Z (0 0 1)', 'POINT Z (0 0 2)');
