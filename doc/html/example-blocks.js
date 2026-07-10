@@ -4,6 +4,7 @@
   var resetTimers = new WeakMap();
   var scriptElement = document.currentScript;
   var emptyRefIndex = { functions: {}, operators: {}, keywords: [] };
+  var resizeTimer = null;
 
   // ---------------------------------------------------------------------------
   // Reference-index loading
@@ -85,7 +86,7 @@
   }
 
   function normalizeDisplayedSql(text) {
-    return String(text).replace(/^\r?\n/, '').replace(/\r?\n[ \t]*$/, '');
+    return String(text).replace(/^\r?\n/, '').replace(/\r?\n[ \t\r\n]*$/, '');
   }
 
   function safeHref(href) {
@@ -181,20 +182,55 @@
     return '';
   }
 
-  function highlightedToken(token, refIndex) {
+  function highlightedToken(token, refIndex, displayedText) {
     var tokenClass = sqlTokenClass(token, refIndex);
     var ref = lookupFunction(token, refIndex);
+    displayedText = displayedText === undefined ? token : displayedText;
     if (ref) {
-      return linkedToken(token, 'postgis-sql-function', ref);
+      return linkedToken(displayedText, 'postgis-sql-function', ref);
     }
     ref = lookupOperator(token, refIndex);
     if (ref) {
-      return linkedToken(token, 'postgis-sql-operator', ref);
+      return linkedToken(displayedText, 'postgis-sql-operator', ref);
     }
     if (tokenClass) {
-      return '<span class="' + tokenClass + '">' + escapeHtml(token) + '</span>';
+      return '<span class="' + tokenClass + '">' + escapeHtml(displayedText) + '</span>';
     }
-    return escapeHtml(token);
+    return escapeHtml(displayedText);
+  }
+
+  function parenToken(segment, text) {
+    var classes = 'postgis-sql-paren';
+    var attributes = ' data-postgis-paren-depth="' + segment.depth + '"';
+    if (segment.pairId !== null) {
+      attributes += ' data-postgis-paren-pair="' + segment.pairId + '"';
+    } else {
+      classes += ' paren-unmatched';
+    }
+    return '<span class="' + classes + '"' + attributes + '>' + escapeHtml(text) + '</span>';
+  }
+
+  function renderLogicalLines(segments) {
+    var lines = [''];
+    for (var i = 0; i < segments.length; i += 1) {
+      var pieces = segments[i].text.split('\n');
+      for (var pieceIndex = 0; pieceIndex < pieces.length; pieceIndex += 1) {
+        if (pieceIndex > 0) {
+          lines.push('');
+        }
+        if (segments[i].paren) {
+          lines[lines.length - 1] += parenToken(segments[i], pieces[pieceIndex]);
+        } else if (segments[i].token) {
+          lines[lines.length - 1] += highlightedToken(segments[i].text, segments[i].refIndex,
+            pieces[pieceIndex]);
+        } else {
+          lines[lines.length - 1] += escapeHtml(pieces[pieceIndex]);
+        }
+      }
+    }
+    return lines.map(function (line) {
+      return '<span class="line">' + line + '</span>';
+    }).join('\n');
   }
 
   function highlightSql(text, refIndex) {
@@ -211,9 +247,12 @@
     }
     parts.push('\\b[A-Za-z_][A-Za-z0-9_]*\\b');
     parts.push('\\b\\d+(?:\\.\\d+)?\\b');
+    parts.push('[()]');
 
     var tokenPattern = new RegExp('(' + parts.join('|') + ')', 'g');
-    var highlighted = '';
+    var segments = [];
+    var parenStack = [];
+    var nextPairId = 1;
     var lastIndex = 0;
     var match;
 
@@ -223,12 +262,111 @@
            isOperatorCharacter(text.charAt(tokenPattern.lastIndex)))) {
         continue;
       }
-      highlighted += escapeHtml(text.slice(lastIndex, match.index));
-      highlighted += highlightedToken(match[0], refIndex);
+      if (match.index > lastIndex) {
+        segments.push({ text: text.slice(lastIndex, match.index) });
+      }
+      if (match[0] === '(') {
+        segments.push({ text: match[0], paren: true, depth: parenStack.length, pairId: null });
+        parenStack.push(segments.length - 1);
+      } else if (match[0] === ')') {
+        var openingIndex = parenStack.pop();
+        var closing = { text: match[0], paren: true, depth: parenStack.length, pairId: null };
+        if (openingIndex !== undefined) {
+          segments[openingIndex].pairId = nextPairId;
+          closing.depth = segments[openingIndex].depth;
+          closing.pairId = nextPairId;
+          nextPairId += 1;
+        }
+        segments.push(closing);
+      } else {
+        segments.push({ text: match[0], token: true, refIndex: refIndex });
+      }
       lastIndex = tokenPattern.lastIndex;
     }
-    highlighted += escapeHtml(text.slice(lastIndex));
-    return highlighted;
+    if (lastIndex < text.length) {
+      segments.push({ text: text.slice(lastIndex) });
+    }
+    return renderLogicalLines(segments);
+  }
+
+  function setLineMetadata(pre, count) {
+    pre.setAttribute('data-postgis-lines', 'true');
+    if (count > 1) {
+      pre.setAttribute('data-postgis-multiline', 'true');
+    } else {
+      pre.removeAttribute('data-postgis-multiline');
+    }
+  }
+
+  function wrapPlainText(pre) {
+    var text = pre.textContent;
+    var lines = text.split('\n');
+    pre.innerHTML = lines.map(function (line) {
+      return '<span class="line">' + escapeHtml(line) + '</span>';
+    }).join('\n');
+    setLineMetadata(pre, lines.length);
+  }
+
+  function textBoundary(textNodes, offset) {
+    var consumed = 0;
+    for (var i = 0; i < textNodes.length; i += 1) {
+      var length = textNodes[i].nodeValue.length;
+      if (offset <= consumed + length) {
+        return { node: textNodes[i], offset: offset - consumed };
+      }
+      consumed += length;
+    }
+    return { node: textNodes[textNodes.length - 1], offset: textNodes[textNodes.length - 1].nodeValue.length };
+  }
+
+  function wrapExistingMarkup(pre) {
+    var text = pre.textContent;
+    var walker = document.createTreeWalker(pre, 4);
+    var textNodes = [];
+    var node;
+    while ((node = walker.nextNode())) {
+      textNodes.push(node);
+    }
+    if (textNodes.length === 0) {
+      wrapPlainText(pre);
+      return;
+    }
+
+    var fragment = document.createDocumentFragment();
+    var starts = [0];
+    for (var i = 0; i < text.length; i += 1) {
+      if (text.charAt(i) === '\n') {
+        starts.push(i + 1);
+      }
+    }
+    for (var lineIndex = 0; lineIndex < starts.length; lineIndex += 1) {
+      var end = lineIndex + 1 < starts.length ? starts[lineIndex + 1] - 1 : text.length;
+      var startBoundary = textBoundary(textNodes, starts[lineIndex]);
+      var endBoundary = textBoundary(textNodes, end);
+      var range = document.createRange();
+      var line = document.createElement('span');
+      line.className = 'line';
+      range.setStart(startBoundary.node, startBoundary.offset);
+      range.setEnd(endBoundary.node, endBoundary.offset);
+      line.appendChild(range.cloneContents());
+      fragment.appendChild(line);
+      if (lineIndex + 1 < starts.length) {
+        fragment.appendChild(document.createTextNode('\n'));
+      }
+    }
+    pre.replaceChildren(fragment);
+    setLineMetadata(pre, starts.length);
+  }
+
+  function wrapLogicalLines(pre) {
+    if (pre.getAttribute('data-postgis-lines') === 'true') {
+      return;
+    }
+    if (pre.children.length === 0) {
+      wrapPlainText(pre);
+    } else {
+      wrapExistingMarkup(pre);
+    }
   }
 
   function applySyntaxHighlighting(refIndex) {
@@ -248,7 +386,67 @@
       text = normalizeDisplayedSql(blocks[i].textContent);
       blocks[i].textContent = text;
       blocks[i].innerHTML = highlightSql(text, refIndex);
+      setLineMetadata(blocks[i], text.split('\n').length);
       blocks[i].setAttribute('data-postgis-highlighted', 'sql');
+    }
+  }
+
+  function applyLineWrappers() {
+    var blocks = document.querySelectorAll('.postgis-example-block pre.programlisting, ' +
+      '.postgis-example-block pre.screen');
+    for (var i = 0; i < blocks.length; i += 1) {
+      wrapLogicalLines(blocks[i]);
+    }
+  }
+
+  function updateWrapIndicators() {
+    var lines = document.querySelectorAll('.postgis-example-block pre[data-postgis-lines="true"] > .line');
+    for (var i = 0; i < lines.length; i += 1) {
+      var style = window.getComputedStyle(lines[i]);
+      var lineHeight = parseFloat(style.lineHeight);
+      var wrapped = lineHeight > 0 && lines[i].scrollHeight > lineHeight * 1.5;
+      lines[i].classList.toggle('line-wrapped', wrapped);
+    }
+  }
+
+  function scheduleWrapIndicatorUpdate() {
+    if (window.requestAnimationFrame) {
+      window.requestAnimationFrame(updateWrapIndicators);
+    } else {
+      updateWrapIndicators();
+    }
+  }
+
+  function handleResize() {
+    if (resizeTimer) {
+      window.clearTimeout(resizeTimer);
+    }
+    resizeTimer = window.setTimeout(function () {
+      resizeTimer = null;
+      updateWrapIndicators();
+    }, 120);
+  }
+
+  function parenFromEvent(event) {
+    return event.target.closest && event.target.closest('.postgis-sql-paren[data-postgis-paren-pair]');
+  }
+
+  function setParenMatch(event, matched) {
+    var paren = parenFromEvent(event);
+    var pre;
+    var pairId;
+    var pair;
+    if (!paren) {
+      return;
+    }
+    pre = paren.closest('pre.programlisting');
+    pairId = paren.getAttribute('data-postgis-paren-pair');
+    if (!pre || !/^\d+$/.test(pairId)) {
+      return;
+    }
+    pair = pre.querySelectorAll('.postgis-sql-paren[data-postgis-paren-pair="' + pairId + '"]');
+    for (var i = 0; i < pair.length; i += 1) {
+      pair[i].classList.toggle('paren-match', matched);
     }
   }
 
@@ -343,7 +541,11 @@
   // ---------------------------------------------------------------------------
 
   function highlightWhenReady() {
-    loadRefIndex().then(applySyntaxHighlighting);
+    loadRefIndex().then(function (refIndex) {
+      applySyntaxHighlighting(refIndex);
+      applyLineWrappers();
+      scheduleWrapIndicatorUpdate();
+    });
   }
 
   if (document.readyState === 'loading') {
@@ -353,4 +555,7 @@
   }
 
   document.addEventListener('click', handleCopyClick);
+  document.addEventListener('mouseover', function (event) { setParenMatch(event, true); });
+  document.addEventListener('mouseout', function (event) { setParenMatch(event, false); });
+  window.addEventListener('resize', handleResize);
 }());

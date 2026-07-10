@@ -196,6 +196,47 @@ pre,
     white-space: pre-wrap;
 }
 
+.postgis-example-block pre > .line {
+    display: block;
+    min-height: 1.45em;
+    position: relative;
+}
+
+.postgis-example-block pre[data-postgis-multiline="true"] {
+    counter-reset: postgis-example-line;
+}
+
+.postgis-example-block pre[data-postgis-multiline="true"] > .line {
+    counter-increment: postgis-example-line;
+    padding-left: 4.25em;
+    text-indent: -0.8em;
+}
+
+.postgis-example-block pre[data-postgis-multiline="true"] > .line::before {
+    color: #71808f;
+    content: counter(postgis-example-line);
+    font-size: 0.78em;
+    left: 0;
+    padding-right: 0.8em;
+    position: absolute;
+    text-align: right;
+    text-indent: 0;
+    top: 0.15em;
+    user-select: none;
+    width: 2.55em;
+}
+
+.postgis-example-block pre > .line.line-wrapped::after {
+    color: #71808f;
+    content: "\21AA";
+    font-size: 0.72em;
+    opacity: 0.8;
+    position: absolute;
+    right: 0.35em;
+    top: 0.2em;
+    user-select: none;
+}
+
 .postgis-example-code:has(+ .postgis-example-output) {
     border-bottom: 0;
     border-bottom-left-radius: 0;
@@ -299,6 +340,22 @@ pre,
     font-style: italic;
 }
 
+.postgis-sql-paren {
+    border-radius: 0.12em;
+    outline: 1px solid transparent;
+    outline-offset: 0.04em;
+}
+
+.postgis-sql-paren.paren-match {
+    background: #fff0a8;
+    outline-color: #9a6a00;
+}
+
+.postgis-sql-paren.paren-unmatched {
+    background: rgba(170, 45, 45, 0.08);
+    outline-color: rgba(150, 35, 35, 0.38);
+}
+
 .postgis-example-output {
     border-color: #9aa;
 }
@@ -331,7 +388,8 @@ pre,
     .postgis-sql-operator,
     .postgis-sql-string,
     .postgis-sql-number,
-    .postgis-sql-comment {
+    .postgis-sql-comment,
+    .postgis-sql-paren {
         color: #000;
     }
     .postgis-sql-keyword {
