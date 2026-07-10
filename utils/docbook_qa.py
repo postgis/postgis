@@ -104,6 +104,7 @@ PSQL_ROW_COUNT_RE = re.compile(r"(?m)^\s*\(\d+\s+rows?\)\s*$")
 PSQL_TABLE_SEPARATOR_RE = re.compile(r"(?m)^\s*[-+]{3,}(?:\s*\+\s*[-+]{2,})+\s*$")
 OUTPUT_DASH_RUN_RE = re.compile(r"(?m)^\s*-{3,}")
 PSQL_MESSAGE_RE = re.compile(r"(?m)^\s*(?:ERROR|NOTICE|WARNING|DETAIL|HINT|CONTEXT):")
+REDUNDANT_OUTPUT_CAPTION_RE = re.compile(r"(?:output|result|results|returns|the output):?", re.IGNORECASE)
 
 BLOCK_KINDS = {
     "programlisting": ("postgis-example-code", "code", "Code"),
@@ -215,6 +216,18 @@ def add_failure_options(parser: argparse.ArgumentParser, *, default_fail_on: str
 
 def add_source_findings(root: etree._Element, path: Path) -> list[Finding]:
     findings: list[Finding] = []
+    for node in root.xpath("//d:para[following-sibling::*[1][self::d:screen]]", namespaces=NS):
+        caption = normalized_text(node)
+        if REDUNDANT_OUTPUT_CAPTION_RE.fullmatch(caption):
+            findings.append(
+                Finding(
+                    "warning",
+                    "redundant-output-caption",
+                    source_location(path, node),
+                    f"bare output caption {caption!r} duplicates the following screen block label; remove the para",
+                )
+            )
+
     for node in root.xpath("//d:programlisting", namespaces=NS):
         text = block_text(node)
         if not SQL_STATEMENT_RE.search(text):

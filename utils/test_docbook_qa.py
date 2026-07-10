@@ -65,6 +65,16 @@ class DocBookSourceLintTest(unittest.TestCase):
         self.assertCategories('<refentry xml:id="f"><screen>SELECT 1;</screen></refentry>', {"screen-contains-sql"})
         self.assertCategories('<refentry xml:id="f"><screen>POINT(1 2)</screen></refentry>', set())
 
+    def test_redundant_output_caption_violation_and_real_prose_clean_case(self):
+        self.assertCategories(
+            '<refentry xml:id="f"><para> The output: </para><!-- separator --><screen>1</screen></refentry>',
+            {"redundant-output-caption"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><para>The output preserves the input SRID.</para><screen>1</screen></refentry>',
+            set(),
+        )
+
     def test_duplicate_refsection_title_violation_and_clean_case(self):
         self.assertCategories(
             '<refentry xml:id="f"><refsection><title>Description</title></refsection>'

@@ -1254,7 +1254,6 @@ SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt
 ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
 ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
 )')  AS p_geom )  AS a;</programlisting>
-<para>Output:</para>
 <screen>POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))</screen>
 
 <para>This example uses a TIN geometry.</para>
@@ -1275,7 +1274,6 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
             ))
             )')  AS geom
     ) AS g;</programlisting>
-<para>Output:</para>
 <screen>TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))</screen>
 	  </refsection>
 
