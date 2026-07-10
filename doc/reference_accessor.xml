@@ -2107,7 +2107,7 @@ FROM towns;</programlisting>
 <programlisting>SELECT ST_MemSize(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));</programlisting>
 <screen> st_memsize
 ------------
-         73
+         80
 (1 row)</screen>
 
 <programlisting role="requires-external-state">
