@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-09 09:39+0000\n"
+"PO-Revision-Date: 2026-07-10 06:08+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -19465,6 +19465,9 @@ msgid ""
 "This example changes the geometry columns to use constraints if they are not "
 "typmod or already constrained. For this to work, there must be existing data."
 msgstr ""
+"この例ではtypmodを使っていない場合や既に制約を設定している場合に"
+"ジオメトリーカラムが制約を使うよう変更します。これが動作するにはデータが存在"
+"している必要があります。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -22225,7 +22228,7 @@ msgid ""
 "same as <xref linkend=\"ST_DistanceCPA\"/> but as an operator it can be used "
 "for doing nearest neighbor searches using an N-dimensional index."
 msgstr ""
-"<varname>|=|</varname>演算子は二つのトラジェクトりー (<xref "
+"<varname>|=|</varname>演算子は二つのトラジェクトリー (<xref "
 "linkend=\"ST_IsValidTrajectory\"/>参照)の間の3次元距離を返します。<xref "
 "linkend=\"ST_DistanceCPA\"/>と同じですが、この演算子はN次元インデックスを使っ"
 "た最近傍探索を行います。"
@@ -22264,6 +22267,8 @@ msgid ""
 "This example orders stored trajectories by their distance from a literal "
 "query trajectory."
 msgstr ""
+"この例では格納されているトラジェクトリーをリテラルのトラジェクトリーとの距離"
+"で並び替えます。"
 
 #. Tag: para
 #, no-c-format
@@ -22637,6 +22642,12 @@ msgid ""
 "<code>ST_AsBinary('POINT(1 2)'::geometry);</code>. If that is not possible, "
 "then install <filename>legacy.sql</filename>."
 msgstr ""
+"Changed: 2.0.0 この関数への入力は不明な型にすることができません。必ず"
+"ジオメトリーでなければなりません。<code>ST_AsBinary('POINT(1 2)')</code>とい"
+"った構築はもはや妥当ではなく、 <code>n ST_AsBinary(unknown) is not unique "
+"error</code>を得ることになります。このようなコードは<code>ST_AsBinary('POINT"
+"(1 2)'::geometry);</code>に変更する必要があります。これが不可能な場合に"
+"は<filename>legacy.sql</filename>をインストールして下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -22723,7 +22734,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Which gives the same answer as:"
-msgstr ""
+msgstr "次と同じ結果です:"
 
 #. Tag: refpurpose
 #, no-c-format
