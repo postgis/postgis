@@ -625,6 +625,85 @@ static void test_gdal_warp_preserves_data(void) {
 	GDALClose(hDS_in);
 }
 
+static int gdal_warp_interrupt_callback_count = 0;
+
+static void
+gdal_warp_request_interrupt(void)
+{
+	gdal_warp_interrupt_callback_count++;
+	lwgeom_request_interrupt();
+}
+
+static void
+test_gdal_warp_callback_interrupt(void)
+{
+	const char *filename = POSTGIS_TOP_SRC_DIR "/raster/test/regress/loader/Projected.tif";
+	const char *src_srs = "EPSG:4326";
+	const char *dst_srs = "EPSG:3857";
+	GDALDatasetH hds = NULL;
+	rt_raster rast_in = NULL;
+	rt_raster rast_out = NULL;
+	lwinterrupt_callback *previous_callback;
+
+	GDALAllRegister();
+	hds = GDALOpen(filename, GA_ReadOnly);
+	CU_ASSERT_FATAL(hds != NULL);
+
+	rast_in = rt_raster_from_gdal_dataset(hds);
+	CU_ASSERT_FATAL(rast_in != NULL);
+
+	/* Use the no-skew path so only GDAL progress can request cancellation. */
+	gdal_warp_interrupt_callback_count = 0;
+	previous_callback = lwgeom_register_interrupt_callback(gdal_warp_request_interrupt);
+	rast_out = rt_raster_gdal_warp(rast_in,
+				       src_srs,
+				       dst_srs,
+				       NULL,
+				       NULL,
+				       NULL,
+				       NULL,
+				       NULL,
+				       NULL,
+				       NULL,
+				       NULL,
+				       NULL,
+				       NULL,
+				       GRA_NearestNeighbour,
+				       -1);
+	lwgeom_register_interrupt_callback(previous_callback);
+	lwgeom_cancel_interrupt();
+
+	CU_ASSERT(gdal_warp_interrupt_callback_count > 0);
+	CU_ASSERT_PTR_NULL(rast_out);
+
+	if (rast_out)
+		rt_raster_destroy(rast_out);
+	rt_raster_destroy(rast_in);
+	GDALClose(hds);
+}
+
+static void
+test_gdal_to_raster_interrupt(void)
+{
+	const char *filename = POSTGIS_TOP_SRC_DIR "/raster/test/regress/loader/Projected.tif";
+	GDALDatasetH hds = NULL;
+	rt_raster rast = NULL;
+
+	GDALAllRegister();
+	hds = GDALOpen(filename, GA_ReadOnly);
+	CU_ASSERT_FATAL(hds != NULL);
+
+	lwgeom_request_interrupt();
+	rast = rt_raster_from_gdal_dataset(hds);
+	lwgeom_cancel_interrupt();
+
+	CU_ASSERT_PTR_NULL(rast);
+
+	if (rast)
+		rt_raster_destroy(rast);
+	GDALClose(hds);
+}
+
 /* register tests */
 void gdal_suite_setup(void);
 void gdal_suite_setup(void)
@@ -639,5 +718,6 @@ void gdal_suite_setup(void)
 	PG_ADD_TEST(suite, test_gdal_to_raster);
 	PG_ADD_TEST(suite, test_gdal_warp);
 	PG_ADD_TEST(suite, test_gdal_warp_preserves_data);
+	PG_ADD_TEST(suite, test_gdal_warp_callback_interrupt);
+	PG_ADD_TEST(suite, test_gdal_to_raster_interrupt);
 }
-
