@@ -37,6 +37,8 @@ These are only changes since 3.7.0beta1.
 
  - Add Woodpecker linux/arm64 build and regression coverage under
           QEMU to match the Jenkins Berrie64 platform (Darafei Praliaskouski)
+ - #3197, Add ST_EqualsExact as a GEOS exact-equality wrapper with
+          coordinate tolerance semantics (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta1
 2026/07/20
