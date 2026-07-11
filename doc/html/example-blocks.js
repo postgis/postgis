@@ -2,9 +2,11 @@
   'use strict';
 
   var resetTimers = new WeakMap();
+  var originalBlockText = new WeakMap();
   var scriptElement = document.currentScript;
   var emptyRefIndex = { functions: {}, operators: {}, keywords: [] };
   var resizeTimer = null;
+  var wrapObserver = null;
 
   // ---------------------------------------------------------------------------
   // Reference-index loading
@@ -228,9 +230,13 @@
         }
       }
     }
+    if (lines.length > 1 && lines[lines.length - 1] === '' &&
+        segments.length > 0 && /\n$/.test(segments[segments.length - 1].text)) {
+      lines.pop();
+    }
     return lines.map(function (line) {
       return '<span class="line">' + line + '</span>';
-    }).join('\n');
+    }).join('');
   }
 
   function highlightSql(text, refIndex) {
@@ -301,9 +307,12 @@
   function wrapPlainText(pre) {
     var text = pre.textContent;
     var lines = text.split('\n');
+    if (lines.length > 1 && lines[lines.length - 1] === '' && /\n$/.test(text)) {
+      lines.pop();
+    }
     pre.innerHTML = lines.map(function (line) {
       return '<span class="line">' + escapeHtml(line) + '</span>';
-    }).join('\n');
+    }).join('');
     setLineMetadata(pre, lines.length);
   }
 
@@ -339,6 +348,9 @@
         starts.push(i + 1);
       }
     }
+    if (starts.length > 1 && starts[starts.length - 1] === text.length) {
+      starts.pop();
+    }
     for (var lineIndex = 0; lineIndex < starts.length; lineIndex += 1) {
       var end = lineIndex + 1 < starts.length ? starts[lineIndex + 1] - 1 : text.length;
       var startBoundary = textBoundary(textNodes, starts[lineIndex]);
@@ -350,9 +362,6 @@
       range.setEnd(endBoundary.node, endBoundary.offset);
       line.appendChild(range.cloneContents());
       fragment.appendChild(line);
-      if (lineIndex + 1 < starts.length) {
-        fragment.appendChild(document.createTextNode('\n'));
-      }
     }
     pre.replaceChildren(fragment);
     setLineMetadata(pre, starts.length);
@@ -361,6 +370,9 @@
   function wrapLogicalLines(pre) {
     if (pre.getAttribute('data-postgis-lines') === 'true') {
       return;
+    }
+    if (!originalBlockText.has(pre)) {
+      originalBlockText.set(pre, normalizeDisplayedSql(pre.textContent));
     }
     if (pre.children.length === 0) {
       wrapPlainText(pre);
@@ -384,6 +396,7 @@
         continue;
       }
       text = normalizeDisplayedSql(blocks[i].textContent);
+      originalBlockText.set(blocks[i], text);
       blocks[i].textContent = text;
       blocks[i].innerHTML = highlightSql(text, refIndex);
       setLineMetadata(blocks[i], text.split('\n').length);
@@ -414,6 +427,18 @@
       window.requestAnimationFrame(updateWrapIndicators);
     } else {
       updateWrapIndicators();
+    }
+  }
+
+  function observeLineBlocks() {
+    if (!window.ResizeObserver) {
+      return;
+    }
+    wrapObserver = new window.ResizeObserver(scheduleWrapIndicatorUpdate);
+    var blocks = document.querySelectorAll('.postgis-example-block pre.programlisting, ' +
+      '.postgis-example-block pre.screen');
+    for (var i = 0; i < blocks.length; i += 1) {
+      wrapObserver.observe(blocks[i]);
     }
   }
 
@@ -1156,6 +1181,9 @@
   }
 
   function codeText(pre) {
+    if (originalBlockText.has(pre)) {
+      return originalBlockText.get(pre);
+    }
     var clone = pre.cloneNode(true);
     var ignored = clone.querySelectorAll('.linenumber, .line-number, .ln, .co, .callout, .callout-bug');
     for (var i = 0; i < ignored.length; i += 1) {
@@ -1227,6 +1255,7 @@
       applySyntaxHighlighting(refIndex);
       applyLineWrappers();
       applyGeometryFigures();
+      observeLineBlocks();
       scheduleWrapIndicatorUpdate();
     });
   }

@@ -123,12 +123,17 @@ async function main() {
   ];
   const output = makePre('wide output row\nsecond row');
   output.attributes = {};
+  const trailingOutput = makePre('first row\nsecond row\n');
+  trailingOutput.attributes = {};
   const listeners = {};
   const windowListeners = {};
   const wrapClasses = [new Set(), new Set()];
+  const observedBlocks = [];
+  let resizeObserverCallback = null;
   const layoutLines = wrapClasses.map(function (classes, index) {
     return {
-      scrollHeight: index === 0 ? 32 : 16,
+      owner: index === 0 ? output : blocks[0],
+      scrollHeight: 16,
       classList: {
         toggle(name, enabled) {
           if (enabled) {
@@ -156,7 +161,7 @@ async function main() {
         return blocks;
       }
       if (selector === '.postgis-example-block pre.programlisting, .postgis-example-block pre.screen') {
-        return blocks.concat([output]);
+        return blocks.concat([output, trailingOutput]);
       }
       if (selector === '.postgis-example-block pre[data-postgis-lines="true"] > .line') {
         return layoutLines;
@@ -200,6 +205,13 @@ async function main() {
       },
       addEventListener(name, handler) {
         windowListeners[name] = handler;
+      },
+      ResizeObserver: function (handler) {
+        assert.strictEqual(typeof handler, 'function');
+        resizeObserverCallback = handler;
+        this.observe = function (block) {
+          observedBlocks.push(block);
+        };
       }
     }
   };
@@ -296,12 +308,23 @@ async function main() {
     /^<span class="line"><span class="postgis-sql-keyword">SELECT<\/span> /);
   assert.strictEqual((blocks[3].innerHTML.match(/class="line"/g) || []).length, 2);
   assert.strictEqual(blocks[3].attributes['data-postgis-multiline'], 'true');
-  assert.strictEqual(blocks[3].textContent, 'SELECT (a + (b))\nFROM things)');
+  assert.strictEqual(blocks[3].textContent, 'SELECT (a + (b))FROM things)');
+  assert.doesNotMatch(blocks[3].innerHTML, /<\/span>\n<span class="line">/);
   assert.strictEqual(output.innerHTML,
-    '<span class="line">wide output row</span>\n<span class="line">second row</span>');
-  assert.strictEqual(output.textContent, 'wide output row\nsecond row');
-  assert(wrapClasses[0].has('line-wrapped'));
+    '<span class="line">wide output row</span><span class="line">second row</span>');
+  assert.strictEqual(output.textContent, 'wide output rowsecond row');
+  assert.strictEqual(trailingOutput.innerHTML,
+    '<span class="line">first row</span><span class="line">second row</span>');
+  assert.strictEqual((trailingOutput.innerHTML.match(/class="line"/g) || []).length, 2);
+  assert(!trailingOutput.innerHTML.includes('<span class="line"></span>'));
+  assert(observedBlocks.includes(output));
+  assert(observedBlocks.includes(trailingOutput));
+  assert(!wrapClasses[0].has('line-wrapped'));
   assert(!wrapClasses[1].has('line-wrapped'));
+  layoutLines[0].scrollHeight = 32;
+  resizeObserverCallback([{ target: output }]);
+  assert.strictEqual(layoutLines[0].owner, output);
+  assert(wrapClasses[0].has('line-wrapped'));
 
   const pairIds = Array.from(blocks[3].innerHTML.matchAll(/data-postgis-paren-pair="(\d+)"/g),
     (match) => match[1]);
