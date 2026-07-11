@@ -123,7 +123,7 @@ END;
 $$;
 
 SELECT * FROM invalid_geometry_columns;
-	]]></programlisting>
+]]></programlisting>
 		  </refsection>
 
 	  <refsection>

@@ -572,11 +572,11 @@ noded AS (
 )
 SELECT ST_AsText(ST_BuildArea(geom), 1) AS area
 FROM noded;
-
-                                                area
+</programlisting>
+<screen>                                                area
 -----------------------------------------------------------------------------------------------------
  POLYGON((320 60,36.8 60,44.4 289.6,302.2 282.4,320 60),(156.9 205.3,135.2 167,220 150,156.9 205.3))
-</programlisting>
+</screen>
 
           </refsection>
 

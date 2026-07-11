@@ -938,12 +938,12 @@ SELECT h.ring_no,
 FROM shell AS s
 JOIN holes AS h
   ON ST_DWithin(s.ring_geom, h.ring_geom, 1.0);
-
- ring_no |                   close_part
+</programlisting>
+<screen> ring_no |                   close_part
 ---------+-------------------------------------------------
        1 | MULTILINESTRING((1 1,2 1),(1 2,1 1))
        2 | MULTILINESTRING((8.5 1,9 1),(9 2,9.5 2,9.5 1,9 1))
-</programlisting>
+</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
