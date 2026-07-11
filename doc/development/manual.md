@@ -97,7 +97,9 @@ geometry implementation or checked-in image is needed. Use
 needs an explicit figure identity or preference. Use `role="visual-skip"` on a
 `programlisting` or its adjacent `screen` when the example must remain tested
 as Code and Output but the renderer cannot represent it truthfully, such as a
-genuinely three-dimensional result.
+genuinely three-dimensional result. Use `role="text-primary"` on a `screen`
+when the exact textual type or coordinates carry meaning that the accompanying
+figure cannot show; the figure is still generated, but HTML leaves Output open.
 
 When documenting optional arguments, follow nearby DocBook examples so generated
 signatures and comments remain stable.

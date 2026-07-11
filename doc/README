@@ -139,7 +139,9 @@ The textual output remains in the manual. HTML initially folds it only when
 the figure contains that geometry result; scalar output and input-only figures
 remain visible. Add ``role="visual-primary"`` and a stable ``xml:id`` to an
 adjacent ``screen`` only when an authored example needs an explicit stable
-figure identity or preference.
+figure identity or preference. Add ``role="text-primary"`` to a ``screen`` when
+its exact geometry type or coordinates are essential; HTML then keeps Output
+expanded while still showing the generated figure.
 
 The full ``make -C regress exampletest`` target also regenerates these assets
 while testing every runnable manual example. The narrower visual target shares

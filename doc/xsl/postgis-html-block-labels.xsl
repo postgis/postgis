@@ -203,8 +203,9 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="visual.preferred"
-                select="$manifest.visual/@preferred = 'true'
-                        or (not($manifest.visual) and contains($role.tokens, ' visual-primary '))"/>
+                select="not(contains($role.tokens, ' text-primary '))
+                        and ($manifest.visual/@preferred = 'true'
+                             or (not($manifest.visual) and contains($role.tokens, ' visual-primary ')))"/>
 
   <div class="postgis-example-block postgis-example-output" role="group" data-postgis-block="output">
     <xsl:if test="$visual.preferred">
