@@ -1042,14 +1042,6 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <para><emphasis role="bold">Example:</emphasis>
     LINE CROSS LEFT and LINE CROSS RIGHT
     </para>
-    <informalfigure>
-          <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_linecrossingdirection03.png"/>
-            </imageobject>
-            <caption><para>Blue: Line A;  Green: Line B</para></caption>
-          </mediaobject>
-          </informalfigure>
           <programlisting>
 SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
        ST_LineCrossingDirection(lineB, lineA) As B_cross_A
@@ -1064,14 +1056,6 @@ FROM (SELECT
     <para><emphasis role="bold">Example:</emphasis>
     LINE MULTICROSS END SAME FIRST LEFT and LINE MULTICROSS END SAME FIRST RIGHT
     </para>
-    <informalfigure>
-          <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_linecrossingdirection01.png"/>
-            </imageobject>
-            <caption><para>Blue: Line A;  Green: Line B</para></caption>
-          </mediaobject>
-          </informalfigure>
           <programlisting>
 SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
        ST_LineCrossingDirection(lineB, lineA) As B_cross_A
@@ -1086,14 +1070,6 @@ FROM (SELECT
       <para><emphasis role="bold">Example:</emphasis>
       LINE MULTICROSS END LEFT and LINE MULTICROSS END RIGHT
       </para>
-      <informalfigure>
-        <mediaobject>
-          <imageobject>
-          <imagedata fileref="images/st_linecrossingdirection04.png"/>
-          </imageobject>
-            <caption><para>Blue: Line A;  Green: Line B</para></caption>
-        </mediaobject>
-        </informalfigure>
         <programlisting>
 SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
        ST_LineCrossingDirection(lineB, lineA) As B_cross_A

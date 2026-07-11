@@ -307,6 +307,13 @@ class VisualExampleTest(unittest.TestCase):
             candidates[2]["wkt"],
         )
 
+    def test_code_geometry_candidates_use_cast_expression_aliases(self):
+        candidates = self.tester.code_geometry_candidates(
+            "SELECT 'LINESTRING(0 0,1 1)'::geometry AS line_a, "
+            "'POINT(2 2)'::geography point_b"
+        )
+        self.assertEqual(["line_a", "point_b"], [candidate.get("label") for candidate in candidates])
+
     def test_visual_payload_transforms_known_srids_to_output_srid(self):
         queries = []
         self.tester.run_psql_scalar = lambda database, query: queries.append(query) or '{"bounds":[0,0,1,1],"parts":[]}'
