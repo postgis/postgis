@@ -128,34 +128,15 @@ FROM
 	  <refsection>
 		<title>Examples</title>
 
-						<informaltable>
-				  <tgroup cols="2">
-					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_boundary01.png"/>
-							  </imageobject>
-							  <caption><para>Linestring with boundary points overlaid</para></caption>
-							</mediaobject>
-						  </informalfigure>
+		<para>LineString with boundary points overlaid.</para>
 				<programlisting language="sql">SELECT ST_AsText(ST_Boundary(geom))
 FROM (SELECT 'LINESTRING(100 150,50 60,70 80,160 170)'::geometry As geom) As f;
                 </programlisting>
 <screen>
 MULTIPOINT((100 150),(160 170))
 </screen>
-						  </para></entry>
 
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_boundary02.png"/>
-							  </imageobject>
-							  <caption><para>polygon holes with boundary multilinestring</para></caption>
-							</mediaobject>
-						  </informalfigure>
+		<para>Polygon holes with the boundary MultiLineString overlaid.</para>
 				<programlisting language="sql">SELECT ST_AsText(ST_Boundary(geom))
 FROM (SELECT
 'POLYGON (( 10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130 ),
@@ -165,12 +146,6 @@ FROM (SELECT
 MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),
         (70 40,100 50,120 80,80 110,50 90,70 40))
 </screen>
-						</para></entry>
-					  </row>
-
-		</tbody>
-		</tgroup>
-	</informaltable>
 
 		 <programlisting>SELECT ST_AsText(ST_Boundary('LINESTRING(1 1,0 0,-1 1)'));</programlisting>
 <screen>MULTIPOINT((1 1),(-1 1))</screen>
@@ -1080,14 +1055,7 @@ JOIN holes AS h
     FROM (SELECT 'POLYGON((0 0,0 1000012333334.34545678,1.0000001 1,1.0000001 0,0 0))'::geometry As geom) As foo;
 
 <!-- TODO: Fix examples to reflect new behavior --></programlisting>
-		<informalfigure>
-	  <mediaobject>
-		<imageobject>
-		  <imagedata fileref="images/st_envelope01.png"/>
-		</imageobject>
-		<caption><para>Envelope of a point and linestring.</para></caption>
-	  </mediaobject>
-	</informalfigure>
+	<para>Envelope of a point and LineString.</para>
 <programlisting>
 SELECT ST_AsText(ST_Envelope(ST_Collect(
             'LINESTRING(55 75,125 150)',

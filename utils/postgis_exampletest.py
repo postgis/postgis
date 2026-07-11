@@ -970,8 +970,8 @@ FROM dimensions
                 layers.append({
                     "ord": len(layers) + 1,
                     "source": source,
-                    "label": candidate["label"] if candidate["label"] != "Output" else (
-                        source if len(values) == 1 else f"{source} {index}"
+                    "label": source if len(values) == 1 else (
+                        candidate["label"] if candidate["label"] != "Output" else f"{source} {index}"
                     ),
                     "wkt": candidate["wkt"],
                 })

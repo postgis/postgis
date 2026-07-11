@@ -59,8 +59,6 @@ GENERATED_IMAGES= \
 	st_alphashape03.png \
 	st_azimuth01.png \
 	st_azimuth02.png \
-	st_boundary01.png \
-	st_boundary02.png \
 	st_closestpoint01.png \
 	st_closestpoint02.png \
 	st_clusterkmeans02.png \
@@ -102,7 +100,6 @@ GENERATED_IMAGES= \
 	st_crosses04.png \
 	st_difference01.png \
 	st_dumppoints01.png \
-	st_envelope01.png \
 	st_extrude01.png \
 	st_extrude03.png \
 	st_generatepoints01.png \
@@ -172,16 +169,10 @@ GENERATED_IMAGES= \
 	st_polygonize02.png \
 	st_triangulatepolygon01.png \
 	st_triangulatepolygon02.png \
-	st_segmentize01.png \
 	st_sharedpaths01.png \
 	st_sharedpaths02.png \
 	st_shortestline01.png \
 	st_shortestline02.png \
-	st_snap01.png \
-	st_snap02.png \
-	st_snap03.png \
-	st_snap04.png \
-	st_snap05.png \
 	st_split01.png \
 	st_split02.png \
 	st_split03.png \

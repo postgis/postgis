@@ -371,7 +371,7 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn(">center</text>", visual["svg"])
         self.assertIn(">nearest</text>", visual["svg"])
 
-    def test_render_visual_example_hides_default_text_formatter_header(self):
+    def test_render_visual_example_hides_single_output_column_header(self):
         self.tester.visual_payload = lambda database, layers: {
             "bounds": [0, 0, 1, 1],
             "parts": [{
@@ -379,14 +379,14 @@ class VisualExampleTest(unittest.TestCase):
                 "type": "LINESTRING", "svg": "M 0 0 L 1 -1", "closed": False,
             } for layer in layers],
         }
-        actual = QueryRows([["LINESTRING(0 0,1 1)"]], ["st_astext"])
+        actual = QueryRows([["LINESTRING(0 0,1 1)"]], ["polysnapped"])
         visual = self.tester.render_visual_example("manual", {
             "query": "SELECT 1", "visual_id": "default-label", "label": "labels:2",
             "visual_refentry": "labels", "visual_screen": 2,
             "visual_preferred": True, "visual_kind": "geometry-output",
         }, actual)
         self.assertIn(">Output</text>", visual["svg"])
-        self.assertNotIn(">st_astext</text>", visual["svg"])
+        self.assertNotIn(">polysnapped</text>", visual["svg"])
 
     def test_svg_distinguishes_parts_of_multipart_areas(self):
         svg = self.tester.visual_svg(
