@@ -979,7 +979,10 @@ FROM dimensions
             if value > max_x + step * 1e-9:
                 break
             x = translate_x + value * scale
-            grid.append(f'<line x1="{x:.12g}" y1="12" x2="{x:.12g}" y2="322"/>')
+            grid.append(
+                f'<line x1="{x:.12g}" y1="12" x2="{x:.12g}" y2="322" '
+                'stroke="#dce2e7" stroke-width="1"/>'
+            )
             next_value = value + step
             if next_value <= value:
                 break
@@ -989,13 +992,17 @@ FROM dimensions
             if value > max_y + step * 1e-9:
                 break
             y = translate_y - value * scale
-            grid.append(f'<line x1="20" y1="{y:.12g}" x2="580" y2="{y:.12g}"/>')
+            grid.append(
+                f'<line x1="20" y1="{y:.12g}" x2="580" y2="{y:.12g}" '
+                'stroke="#dce2e7" stroke-width="1"/>'
+            )
             next_value = value + step
             if next_value <= value:
                 break
             value = next_value
 
         groups = []
+        point_groups = []
         legend = []
         source_indexes = {"Code": 0, "Output": 0}
         parts_by_ord = {}
@@ -1018,9 +1025,14 @@ FROM dimensions
                     if multipart_areas else color
                 )
                 if part["type"].upper() == "POINT":
+                    point_x = float(part["x"])
+                    point_y = float(part["y"])
+                    radius = 5 / scale
                     shapes.append(
-                        f'<circle class="point" cx="{float(part["x"]):.12g}" '
-                        f'cy="{float(part["y"]):.12g}" r="{4 / scale:.12g}" fill="{part_color}"/>'
+                        f'<path class="point" d="M {point_x - radius:.12g} {point_y:.12g} '
+                        f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x + radius:.12g} {point_y:.12g} '
+                        f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x - radius:.12g} {point_y:.12g} Z" '
+                        f'fill="{part_color}"/>'
                     )
                 else:
                     if not part.get("svg"):
@@ -1035,7 +1047,11 @@ FROM dimensions
                     fill = color if dimension_class == "area" else "none"
                     shapes.append(
                         f'<path class="{dimension_class}" d="{svg_data}" '
-                        f'stroke="{part_color}" fill="{part_color if dimension_class == "area" else fill}" fill-rule="evenodd"/>'
+                        f'stroke="{part_color}" fill="{part_color if dimension_class == "area" else fill}" '
+                        f'fill-opacity="{0.24 if dimension_class == "area" else 1}" stroke-opacity="1" '
+                        'fill-rule="evenodd" '
+                        f'stroke-width="{3 / scale:.12g}" '
+                        'stroke-linecap="round" stroke-linejoin="round"/>'
                     )
                     vertices = part.get("vertices") or []
                     if len(vertices) > 1 and vertices[0] == vertices[-1]:
@@ -1043,12 +1059,17 @@ FROM dimensions
                     for x, y in vertices:
                         shapes.append(
                             f'<circle class="vertex" cx="{float(x):.12g}" cy="{float(y):.12g}" '
-                            f'r="{3 / scale:.12g}" fill="{part_color}"/>'
+                            f'r="{3 / scale:.12g}" fill="{part_color}" stroke="white" '
+                            f'stroke-width="{0.8 / scale:.12g}"/>'
                         )
-            groups.append(
-                f'<g class="geometry-layer" data-postgis-geometry-id="{geometry_id}">' +
+            group_svg = (
+                f'<g class="geometry-layer" opacity="1" data-postgis-geometry-id="{geometry_id}">' +
                 "".join(shapes) + "</g>"
             )
+            if all(part["type"].upper() in POINT_TYPES for part in parts):
+                point_groups.append(group_svg)
+            else:
+                groups.append(group_svg)
             legend.append((geometry_id, color, parts[0]["label"]))
 
         legend_svg = []
@@ -1062,7 +1083,8 @@ FROM dimensions
                 cursor_y += 22
             legend_svg.append(
                 f'<g class="legend-row" data-postgis-geometry-id="{geometry_id}" transform="translate({cursor_x} {cursor_y})">'
-                f'<rect width="11" height="11" rx="2" fill="{color}"/><text x="16" y="10">{safe_label}</text></g>'
+                f'<rect width="11" height="11" rx="2" fill="{color}"/>'
+                f'<text x="16" y="10" font-family="sans-serif" font-size="12" fill="#344">{safe_label}</text></g>'
             )
             cursor_x += item_width
 
@@ -1073,11 +1095,11 @@ FROM dimensions
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="{svg_height}" viewBox="0 0 600 {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
             f'<title id="{safe_id}-title">Input and output geometries for {safe_id}</title>\n'
-            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.geometry-layer{opacity:.82}.line,.area{stroke-width:2;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.area{fill-opacity:.18}.point,.vertex{stroke:white;stroke-width:1.2;vector-effect:non-scaling-stroke;pointer-events:all}.vertex{stroke-width:.8}.legend-row{cursor:default}.legend-row text{font:12px sans-serif;fill:#344}.geometry-layer.active{opacity:1}.geometry-layer.active .line,.geometry-layer.active .area{stroke-width:3}</style>\n'
+            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.geometry-layer{opacity:1}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font:12px sans-serif;fill:#344}.geometry-layer.active{filter:brightness(.72)}</style>\n'
             '<rect class="plot-background" x="20" y="12" width="560" height="310" fill="#fbfcfd"/>\n'
             '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
             f'<g transform="matrix({scale:.12g} 0 0 {scale:.12g} {translate_x:.12g} {translate_y:.12g})">'
-            + "".join(groups) + '</g>\n' + "".join(legend_svg) + '\n</svg>\n'
+            + "".join(groups + point_groups) + '</g>\n' + "".join(legend_svg) + '\n</svg>\n'
         )
 
     def publish_visual_examples(self, render_dir, visuals):

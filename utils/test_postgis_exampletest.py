@@ -237,13 +237,25 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn('pointer-events:stroke', svg)
         self.assertIn('pointer-events:all', svg)
         self.assertIn('data-postgis-geometry-id="buffer-example-code-1"', svg)
-        self.assertRegex(svg, r'<circle class="point" cx="2" cy="-3" r="[0-9.]+" fill="#2878b8"/>')
+        self.assertRegex(
+            svg,
+            r'<path class="point" d="M [^\"]+ A [^\"]+ Z" fill="#2878b8"/>',
+        )
         self.assertIn(
             'd="M 0 0 L 10 0 10 -10 Z" stroke="#a62c2b" fill="#a62c2b"',
             svg,
         )
+        self.assertIn('fill-opacity="0.24"', svg)
+        self.assertIn('stroke-opacity="1"', svg)
+        self.assertRegex(svg, r'fill-rule="evenodd" stroke-width="[0-9.]+"')
+        self.assertIn('.geometry-layer.active{filter:brightness(.72)}', svg)
+        self.assertIn('stroke="#dce2e7" stroke-width="1"', svg)
         self.assertIn('<rect width="11" height="11" rx="2" fill="#2878b8"/>', svg)
         self.assertIn('<rect width="11" height="11" rx="2" fill="#a62c2b"/>', svg)
+        self.assertLess(
+            svg.index('data-postgis-geometry-id="buffer-example-output-1"'),
+            svg.index('data-postgis-geometry-id="buffer-example-code-1"'),
+        )
 
     def test_visual_candidate_includes_spatial_context_but_skips_trivial_points(self):
         self.assertIsNone(self.tester.visual_candidate("SELECT 'POINT(1 2)'", [["1"]]))
