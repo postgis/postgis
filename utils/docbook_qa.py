@@ -11,16 +11,12 @@ from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
+import xml.etree.ElementTree as ET
 
-try:
-    from lxml import etree
-except ImportError as exc:  # pragma: no cover - dependency issue is environmental
-    print(f"docbook_qa.py: lxml is required: {exc}", file=sys.stderr)
-    raise SystemExit(2) from None
+from xml_tree import parse as parse_xml
 
 DOCBOOK_NS = "http://docbook.org/ns/docbook"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
-NS = {"d": DOCBOOK_NS, "xml": XML_NS}
 DB = f"{{{DOCBOOK_NS}}}"
 XML_ID = f"{{{XML_NS}}}id"
 
@@ -121,6 +117,7 @@ IDENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 OPERATOR_RE = re.compile(r"^[^A-Za-z0-9_\s]+$")
 
 SEVERITY_ORDER = {"info": 0, "warning": 1, "error": 2}
+_INDEX = None
 
 
 @dataclass(frozen=True)
@@ -131,60 +128,64 @@ class Finding:
     message: str
 
 
-def load_xml(path: Path) -> etree._ElementTree:
-    parser = etree.XMLParser(resolve_entities=False, load_dtd=False, no_network=True)
-    return etree.parse(str(path), parser)
+def load_xml(path: Path) -> ET.ElementTree:
+    global _INDEX
+    _INDEX = parse_xml(path)
+    return _INDEX.tree
 
 
-def load_html(path: Path) -> etree._ElementTree:
-    parser = etree.HTMLParser(encoding="utf-8")
-    return etree.parse(str(path), parser)
+def load_html(path: Path) -> ET.ElementTree:
+    return load_xml(path)
 
 
-def local_name(node_or_tag: etree._Element | str) -> str:
+def local_name(node_or_tag: ET.Element | str) -> str:
     tag = node_or_tag.tag if hasattr(node_or_tag, "tag") else str(node_or_tag)
-    return etree.QName(tag).localname if tag.startswith("{") else tag
+    return tag.rsplit("}", 1)[-1]
 
 
-def normalized_text(node: etree._Element) -> str:
+def normalized_text(node: ET.Element) -> str:
     return " ".join("".join(node.itertext()).split())
 
 
-def block_text(node: etree._Element) -> str:
+def block_text(node: ET.Element) -> str:
     return "".join(node.itertext())
 
 
-def class_tokens(node: etree._Element) -> set[str]:
+def class_tokens(node: ET.Element) -> set[str]:
     return set((node.get("class") or "").split())
 
 
-def text_content(node: etree._Element | None) -> str:
+def text_content(node: ET.Element | None) -> str:
     if node is None:
         return ""
     return " ".join("".join(node.itertext()).split())
 
 
-def raw_text_content(node: etree._Element) -> str:
+def raw_text_content(node: ET.Element) -> str:
     return "".join(node.itertext()).strip()
 
 
-def element_id(node: etree._Element) -> str | None:
+def element_id(node: ET.Element) -> str | None:
     return node.get(XML_ID) or node.get("id")
 
 
-def display_element_id(node: etree._Element) -> str:
+def display_element_id(node: ET.Element) -> str:
     return node.get("id") or "<no id>"
 
 
-def nearest_refentry_id(node: etree._Element) -> str:
-    for ancestor in node.iterancestors():
+def ancestors(node: ET.Element):
+    return _INDEX.ancestors(node) if _INDEX is not None else ()
+
+
+def nearest_refentry_id(node: ET.Element) -> str:
+    for ancestor in ancestors(node):
         if local_name(ancestor) == "refentry":
             return element_id(ancestor) or "<unknown-refentry>"
     return "<no-refentry>"
 
 
-def source_location(path: Path, node: etree._Element) -> str:
-    line = node.sourceline or "?"
+def source_location(path: Path, node: ET.Element) -> str:
+    line = (_INDEX.line(node) if _INDEX is not None else None) or "?"
     return f"{path}:{line} ({nearest_refentry_id(node)})"
 
 
@@ -201,11 +202,8 @@ def first_matching(pattern: re.Pattern[str], text: str) -> str | None:
     return match.group(0).strip()
 
 
-def next_element_sibling(node: etree._Element) -> etree._Element | None:
-    sibling = node.getnext()
-    while sibling is not None and not isinstance(sibling.tag, str):
-        sibling = sibling.getnext()
-    return sibling
+def next_element_sibling(node: ET.Element) -> ET.Element | None:
+    return _INDEX.next_sibling(node) if _INDEX is not None else None
 
 
 def refname_used_in_examples(refname: str, example_text: str) -> bool:
@@ -239,174 +237,155 @@ def add_failure_options(parser: argparse.ArgumentParser, *, default_fail_on: str
     )
 
 
-def add_source_findings(root: etree._Element, path: Path) -> list[Finding]:
+def named_descendants(node: ET.Element, *names: str):
+    wanted = set(names)
+    return (child for child in node.iter() if child is not node and local_name(child) in wanted)
+
+
+def named_children(node: ET.Element, *names: str):
+    wanted = set(names)
+    return [child for child in node if local_name(child) in wanted]
+
+
+def first_named_child(node: ET.Element, name: str):
+    return next((child for child in node if local_name(child) == name), None)
+
+
+def section_has_example_title(section: ET.Element) -> bool:
+    title = first_named_child(section, "title")
+    return title is not None and "Example" in normalized_text(title)
+
+
+def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
     findings: list[Finding] = []
 
-    for node in root.xpath("//d:programlisting|//d:screen", namespaces=NS):
+    for node in named_descendants(root, "programlisting", "screen"):
         if "\t" in block_text(node):
-            findings.append(
-                Finding(
-                    "info",
-                    "tab-in-verbatim",
-                    source_location(path, node),
-                    f"{local_name(node)} contains a TAB character; tabs render at 8 columns and can break alignment",
-                )
-            )
+            findings.append(Finding(
+                "info", "tab-in-verbatim", source_location(path, node),
+                f"{local_name(node)} contains a TAB character; tabs render at 8 columns and can break alignment",
+            ))
 
-    admonition_xpath = "|".join(f"//d:{name}" for name in sorted(ADMONITIONS))
-    for node in root.xpath(admonition_xpath, namespaces=NS):
+    for node in named_descendants(root, *ADMONITIONS):
         sibling = next_element_sibling(node)
         if sibling is not None and local_name(sibling) in ADMONITIONS:
-            findings.append(
-                Finding(
-                    "info",
-                    "stacked-admonitions",
-                    source_location(path, sibling),
-                    f"adjacent {local_name(node)} and {local_name(sibling)} admonitions should be consolidated or moved into prose",
-                )
-            )
+            findings.append(Finding(
+                "info", "stacked-admonitions", source_location(path, sibling),
+                f"adjacent {local_name(node)} and {local_name(sibling)} admonitions should be consolidated or moved into prose",
+            ))
+        if version := ANCIENT_VERSION_RE.search(block_text(node)):
+            findings.append(Finding(
+                "info", "ancient-version-note", source_location(path, node),
+                f"admonition mentions pre-2.0 PostGIS version {version.group(0)!r}; move relevant history into prose or drop it",
+            ))
 
-        version = ANCIENT_VERSION_RE.search(block_text(node))
-        if version:
-            findings.append(
-                Finding(
-                    "info",
-                    "ancient-version-note",
-                    source_location(path, node),
-                    f"admonition mentions pre-2.0 PostGIS version {version.group(0)!r}; move relevant history into prose or drop it",
-                )
-            )
-
-    examples_xpath = "//d:refsection[contains(d:title[1], 'Example')]//d:programlisting"
-    for node in root.xpath(examples_xpath, namespaces=NS):
-        if not SELECT_START_RE.search(block_text(node)):
+    for section in named_descendants(root, "refsection"):
+        if not section_has_example_title(section):
             continue
-        sibling = next_element_sibling(node)
-        if sibling is None or local_name(sibling) != "screen":
-            findings.append(
-                Finding(
-                    "info",
-                    "example-missing-output",
-                    source_location(path, node),
-                    "SELECT example is not immediately followed by a screen containing its output",
-                )
-            )
+        for node in named_descendants(section, "programlisting"):
+            if SELECT_START_RE.search(block_text(node)):
+                sibling = next_element_sibling(node)
+                if sibling is None or local_name(sibling) != "screen":
+                    findings.append(Finding(
+                        "info", "example-missing-output", source_location(path, node),
+                        "SELECT example is not immediately followed by a screen containing its output",
+                    ))
 
-    for refentry in root.xpath("//d:refentry", namespaces=NS):
-        example_sections = refentry.xpath(
-            ".//d:refsection[contains(d:title[1], 'Example')]",
-            namespaces=NS,
-        )
-        programlistings = [
-            node
-            for section in example_sections
-            for node in section.xpath(".//d:programlisting", namespaces=NS)
+    for refentry in named_descendants(root, "refentry"):
+        example_sections = [
+            section for section in named_descendants(refentry, "refsection")
+            if section_has_example_title(section)
         ]
-        if not programlistings:
+        programlistings = [
+            node for section in example_sections
+            for node in named_descendants(section, "programlisting")
+        ]
+        synopsis = first_named_child(refentry, "refsynopsisdiv")
+        if (
+            not programlistings
+            or synopsis is None
+            or next(named_descendants(synopsis, "function"), None) is None
+        ):
             continue
-        if not refentry.xpath("./d:refsynopsisdiv//d:function", namespaces=NS):
-            continue
+        refnamediv = first_named_child(refentry, "refnamediv")
         documented_calls = [
             alias.strip()
-            for node in refentry.xpath("./d:refnamediv/d:refname", namespaces=NS)
-            for alias in normalized_text(node).split("/")
-            if alias.strip()
+            for node in (named_children(refnamediv, "refname") if refnamediv is not None else [])
+            for alias in normalized_text(node).split("/") if alias.strip()
         ]
         example_text = "\n".join(block_text(node) for node in programlistings)
         if documented_calls and not any(refname_used_in_examples(name, example_text) for name in documented_calls):
-            findings.append(
-                Finding(
-                    "info",
-                    "current-function-in-examples",
-                    source_location(path, example_sections[0]),
-                    f"Examples do not call the documented function or operator ({', '.join(documented_calls)})",
-                )
-            )
+            findings.append(Finding(
+                "info", "current-function-in-examples", source_location(path, example_sections[0]),
+                f"Examples do not call the documented function or operator ({', '.join(documented_calls)})",
+            ))
 
-    for node in root.xpath("//d:para[following-sibling::*[1][self::d:screen]]", namespaces=NS):
-        caption = normalized_text(node)
-        if REDUNDANT_OUTPUT_CAPTION_RE.fullmatch(caption):
-            findings.append(
-                Finding(
-                    "warning",
-                    "redundant-output-caption",
-                    source_location(path, node),
+    for node in named_descendants(root, "para"):
+        sibling = next_element_sibling(node)
+        if sibling is not None and local_name(sibling) == "screen":
+            caption = normalized_text(node)
+            if REDUNDANT_OUTPUT_CAPTION_RE.fullmatch(caption):
+                findings.append(Finding(
+                    "warning", "redundant-output-caption", source_location(path, node),
                     f"bare output caption {caption!r} duplicates the following screen block label; remove the para",
-                )
-            )
+                ))
 
-    for node in root.xpath("//d:programlisting", namespaces=NS):
+    for node in named_descendants(root, "programlisting"):
         text = block_text(node)
         if not SQL_STATEMENT_RE.search(text):
             continue
-        markers: list[str] = []
+        markers = []
         for label, pattern in (
             ("psql row count", PSQL_ROW_COUNT_RE),
             ("psql table separator", PSQL_TABLE_SEPARATOR_RE),
             ("output dash run", OUTPUT_DASH_RUN_RE),
             ("server message", PSQL_MESSAGE_RE),
         ):
-            snippet = first_matching(pattern, text)
-            if snippet:
+            if snippet := first_matching(pattern, text):
                 markers.append(f"{label}: {snippet!r}")
         if markers:
-            findings.append(
-                Finding(
-                    "warning",
-                    "mixed-programlisting-output",
-                    source_location(path, node),
-                    "programlisting appears to contain SQL input plus output markers; "
-                    "split SQL into <programlisting> and result text into <screen> "
-                    f"({'; '.join(markers)})",
-                )
-            )
+            findings.append(Finding(
+                "warning", "mixed-programlisting-output", source_location(path, node),
+                "programlisting appears to contain SQL input plus output markers; "
+                "split SQL into <programlisting> and result text into <screen> "
+                f"({'; '.join(markers)})",
+            ))
 
-    for node in root.xpath("//d:screen", namespaces=NS):
+    for node in named_descendants(root, "screen"):
         text = block_text(node)
         if SQL_START_RE.search(text) and ";" in text:
-            findings.append(
-                Finding(
-                    "warning",
-                    "screen-contains-sql",
-                    source_location(path, node),
-                    "screen block looks like it contains SQL input; use programlisting for input and screen for output",
-                )
-            )
+            findings.append(Finding(
+                "warning", "screen-contains-sql", source_location(path, node),
+                "screen block looks like it contains SQL input; use programlisting for input and screen for output",
+            ))
 
-    section_xpath = "./d:refsection|./d:section|./d:sect1"
-    for refentry in root.xpath("//d:refentry", namespaces=NS):
-        seen: dict[str, etree._Element] = {}
-        for section in refentry.xpath(section_xpath, namespaces=NS):
-            title_nodes = section.xpath("./d:title[1]", namespaces=NS)
-            if not title_nodes:
+    for refentry in named_descendants(root, "refentry"):
+        seen: dict[str, ET.Element] = {}
+        for section in named_children(refentry, "refsection", "section", "sect1"):
+            title_node = first_named_child(section, "title")
+            if title_node is None:
                 continue
-            title = normalized_text(title_nodes[0])
+            title = normalized_text(title_node)
             if title not in {"Description", "Examples"}:
                 continue
             if title in seen:
-                findings.append(
-                    Finding(
-                        "error",
-                        "duplicate-refsection-title",
-                        source_location(path, title_nodes[0]),
-                        f"refentry has more than one {title!r} section; first one is at line {seen[title].sourceline}",
-                    )
-                )
+                first_line = _INDEX.line(seen[title]) if _INDEX is not None else None
+                findings.append(Finding(
+                    "error", "duplicate-refsection-title", source_location(path, title_node),
+                    f"refentry has more than one {title!r} section; first one is at line {first_line or '?'}",
+                ))
             else:
-                seen[title] = title_nodes[0]
+                seen[title] = title_node
 
-    xpath = "//d:para[@role='availability' or @role='enhanced' or @role='changed']"
-    for node in root.xpath(xpath, namespaces=NS):
+    for node in named_descendants(root, "para"):
         role = node.get("role") or "<missing>"
-        if any(local_name(ancestor) in ADMONITIONS for ancestor in node.iterancestors()):
-            findings.append(
-                Finding(
-                    "warning",
-                    "metadata-role-in-admonition",
-                    source_location(path, node),
-                    f"metadata para role={role!r} is nested inside an admonition; prefer a plain role para in Description",
-                )
-            )
+        if role in {"availability", "enhanced", "changed"} and any(
+            local_name(ancestor) in ADMONITIONS for ancestor in ancestors(node)
+        ):
+            findings.append(Finding(
+                "warning", "metadata-role-in-admonition", source_location(path, node),
+                f"metadata para role={role!r} is nested inside an admonition; prefer a plain role para in Description",
+            ))
     return findings
 
 
@@ -415,14 +394,14 @@ def looks_like_sql_input(text: str) -> bool:
     return normalized.startswith(SQL_STARTERS)
 
 
-def find_label(parent: etree._Element, label_id: str) -> etree._Element | None:
+def find_label(parent: ET.Element, label_id: str) -> ET.Element | None:
     for child in parent.iter():
         if child is not parent and child.get("id") == label_id and "postgis-example-label" in class_tokens(child):
             return child
     return None
 
 
-def copy_buttons(parent: etree._Element) -> list[etree._Element]:
+def copy_buttons(parent: ET.Element) -> list[ET.Element]:
     return [node for node in parent.iter() if "postgis-copy-button" in class_tokens(node)]
 
 
@@ -446,7 +425,7 @@ def check_html_file(path: Path, required_kinds: set[str]) -> list[Finding]:
 
         counts[block_class] += 1
         wrapper_class, expected_data_block, expected_english_label = BLOCK_KINDS[block_class]
-        parent = pre.getparent()
+        parent = _INDEX.parents.get(pre) if _INDEX is not None else None
         if parent is None or local_name(parent) != "div":
             findings.append(html_error(path, f"{block_class} block {display_element_id(pre)} is not wrapped in a div"))
             continue
@@ -532,21 +511,21 @@ def check_html_file(path: Path, required_kinds: set[str]) -> list[Finding]:
     return findings
 
 
-def refentry_filename(refentry: etree._Element) -> str | None:
+def refentry_filename(refentry: ET.Element) -> str | None:
     entry_id = refentry_id(refentry)
     if not entry_id:
         return None
     return f"{entry_id}.html"
 
 
-def has_programlisting_outside_refsynopsis(refentry: etree._Element) -> bool:
+def has_programlisting_outside_refsynopsis(refentry: ET.Element) -> bool:
     for node in refentry.findall(f".//{DB}programlisting"):
-        if not any(local_name(ancestor) == "refsynopsisdiv" for ancestor in node.iterancestors()):
+        if not any(local_name(ancestor) == "refsynopsisdiv" for ancestor in ancestors(node)):
             return True
     return False
 
 
-def refentry_expected_kinds(refentry: etree._Element) -> set[str]:
+def refentry_expected_kinds(refentry: ET.Element) -> set[str]:
     kinds: set[str] = set()
     if has_programlisting_outside_refsynopsis(refentry):
         kinds.add("programlisting")
@@ -590,7 +569,7 @@ def brief(text: str, limit: int = 220) -> str:
     return text[:cut].rstrip() + "…"
 
 
-def refentry_id(refentry: etree._Element) -> str:
+def refentry_id(refentry: ET.Element) -> str:
     return refentry.get(XML_ID) or refentry.get("id") or ""
 
 

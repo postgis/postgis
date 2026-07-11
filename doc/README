@@ -42,7 +42,7 @@ To generate and manage the translated XML files:
  * gettext - https://www.gnu.org/software/gettext/
 
 To generate and report on manual example tests:
- * Python 3 with lxml
+ * Python 3
  * A running PostgreSQL server and the staged PostGIS build
 
 To generate the localized PDFs:

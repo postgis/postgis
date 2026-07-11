@@ -11,10 +11,10 @@ import subprocess
 import sys
 import tempfile
 
-from lxml import etree
+from xml_tree import parse as parse_xml
 
 
-DB = {"db": "http://docbook.org/ns/docbook"}
+DOCBOOK_NS = "http://docbook.org/ns/docbook"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
 FORCE_ROLE = "example-test"
 EXTERNAL_STATE_ROLE = "requires-external-state"
@@ -59,8 +59,8 @@ CATALOG_QUERY_RE = re.compile(r"\bpg_available_extensions\b", re.I)
 
 class ExampleTester:
     def __init__(self, xml_file):
-        parser = etree.XMLParser(resolve_entities=False, no_network=True)
-        self.doc = etree.parse(str(xml_file), parser)
+        self.index = parse_xml(xml_file)
+        self.doc = self.index.tree
 
     def node_text(self, node):
         return "".join(node.itertext()).replace("\r\n", "\n").replace("\r", "\n")
@@ -69,10 +69,14 @@ class ExampleTester:
         return role in node.get("role", "").split()
 
     def source_label(self, node):
-        refentries = node.xpath("ancestor::db:refentry[1]", namespaces=DB)
-        refentry_id = refentries[0].get(f"{{{XML_NS}}}id") if refentries else None
-        label = refentry_id or f"line_{node.sourceline or 'unknown'}"
-        return f"{label}:{node.sourceline or 'unknown'}"
+        refentry = next(
+            (ancestor for ancestor in self.index.ancestors(node) if ancestor.tag == f"{{{DOCBOOK_NS}}}refentry"),
+            None,
+        )
+        line = self.index.line(node) or "unknown"
+        refentry_id = refentry.get(f"{{{XML_NS}}}id") if refentry is not None else None
+        label = refentry_id or f"line_{line}"
+        return f"{label}:{line}"
 
     def obvious_skip_reason(self, text):
         if re.search(r"SELECT\s+'<\?xml", text, re.I):
@@ -134,10 +138,8 @@ class ExampleTester:
         )
 
     def following_screen(self, node):
-        sibling = node.getnext()
-        while sibling is not None and not isinstance(sibling.tag, str):
-            sibling = sibling.getnext()
-        if sibling is not None and etree.QName(sibling).localname == "screen":
+        sibling = self.index.next_sibling(node)
+        if sibling is not None and sibling.tag == f"{{{DOCBOOK_NS}}}screen":
             return sibling
         return None
 
@@ -494,7 +496,7 @@ class ExampleTester:
 
     def examples(self):
         examples = []
-        for node in self.doc.xpath("//db:programlisting", namespaces=DB):
+        for node in self.doc.getroot().iter(f"{{{DOCBOOK_NS}}}programlisting"):
             example = self.example_for_node(node)
             if example is not None:
                 examples.append(example)
@@ -524,7 +526,7 @@ class ExampleTester:
             "volatile_version_tests": 0,
         }
 
-        for node in self.doc.xpath("//db:programlisting", namespaces=DB):
+        for node in self.doc.getroot().iter(f"{{{DOCBOOK_NS}}}programlisting"):
             text = self.node_text(node)
             stats["programlisting_total"] += 1
             if self.has_role(node, EXTERNAL_STATE_ROLE):
