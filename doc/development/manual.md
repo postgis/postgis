@@ -94,7 +94,10 @@ in the result or in SQL literals. The staged PostGIS library supplies the SVG
 paths and the PDF fallbacks are rasterized from the same SVG, so no second
 geometry implementation or checked-in image is needed. Use
 `role="visual-primary"` with a stable `xml:id` only when an authored example
-needs an explicit figure identity or preference.
+needs an explicit figure identity or preference. Use `role="visual-skip"` on a
+`programlisting` or its adjacent `screen` when the example must remain tested
+as Code and Output but the renderer cannot represent it truthfully, such as a
+genuinely three-dimensional result.
 
 When documenting optional arguments, follow nearby DocBook examples so generated
 signatures and comments remain stable.

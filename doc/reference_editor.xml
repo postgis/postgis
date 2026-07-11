@@ -1621,32 +1621,6 @@ UPDATE sometable
 		This situation can be checked with <xref linkend="ST_IsValid"/> and repaired with <xref linkend="ST_MakeValid"/>.
 		</para></warning>
 
-		<para>
-			<informalfigure>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/st_removeirrelevantpointsforview.png"/>
-					</imageobject>
-					<caption>
-						<para>Example: ST_RemoveIrrelevantPointsForView() applied to a polygon. Blue points remain, the rendering result (light-blue area) within the grey view box remains as well.</para>
-					</caption>
-				</mediaobject>
-			</informalfigure>
-		</para>
-
-		<para>
-			<informalfigure>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/st_removeirrelevantpointsforview_crossing.png"/>
-					</imageobject>
-					<caption>
-						<para>Example: Due to the fact that points are just sorted out and no new points are computed, the result of ST_RemoveIrrelevantPointsForView() may contain self-intersections.</para>
-					</caption>
-				</mediaobject>
-			</informalfigure>
-		</para>
-
 		<para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
 
 
@@ -1736,19 +1710,6 @@ ST_MakeEnvelope(12, 12, 18, 18)));</programlisting>
 			<listitem><para>a MULTILINESTRING EMPTY.</para></listitem>
 			</itemizedlist>
 		</para>
-
-        <para>
-            <informalfigure>
-                <mediaobject>
-                    <imageobject>
-                        <imagedata fileref="images/st_removesmallparts.png"/>
-                    </imageobject>
-                    <caption>
-                        <para>Example: ST_RemoveSmallParts() applied to a multi-polygon. Blue parts remain.</para>
-                    </caption>
-                </mediaobject>
-            </informalfigure>
-        </para>
 
 		<para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
 

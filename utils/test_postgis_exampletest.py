@@ -69,6 +69,22 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         with self.assertRaisesRegex(RuntimeError, "Unclosed geometry candidate"):
             self.tester.geometry_candidates("POLYGON((0 0,1 0,0 0)")
 
+    def test_visual_skip_keeps_example_test_without_rendering(self):
+        xml = """<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="example">
+    <refsection>
+      <programlisting role="visual-skip">SELECT ST_AsText('LINESTRING(0 0,1 1)'::geometry);</programlisting>
+      <screen>LINESTRING(0 0,1 1)</screen>
+    </refsection>
+  </refentry>
+</book>"""
+        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+            source.write(xml)
+            source.flush()
+            example = ExampleTester(source.name).examples()[0]
+        self.assertTrue(example["valid"])
+        self.assertIsNone(example["visual_id"])
+
 
 class ExampleTestComparisonTest(unittest.TestCase):
     def setUp(self):

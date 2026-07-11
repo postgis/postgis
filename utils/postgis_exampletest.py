@@ -46,6 +46,7 @@ MAKE_ENVELOPE_RE = re.compile(
     re.I,
 )
 VISUAL_ROLE = "visual-primary"
+VISUAL_SKIP_ROLE = "visual-skip"
 SVG_PALETTES = {
     "Code": ("#2878b8", "#59a4d8", "#0f5f9c"),
     "Output": ("#a62c2b", "#d95f3d", "#ef8a47"),
@@ -581,8 +582,11 @@ class ExampleTester:
         refentry = ""
         screen_ordinal = 0
         explicit_visual = screen is not None and self.has_role(screen, VISUAL_ROLE)
+        skip_visual = self.has_role(node, VISUAL_SKIP_ROLE) or (
+            screen is not None and self.has_role(screen, VISUAL_SKIP_ROLE)
+        )
         visual = None
-        if screen is not None:
+        if screen is not None and not skip_visual:
             refentry, screen_ordinal = self.visual_location(screen)
             visual = self.visual_candidate(query, expected, explicit_visual)
 

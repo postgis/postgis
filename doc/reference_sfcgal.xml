@@ -2962,7 +2962,9 @@ allow_holes =&gt; true));</programlisting>
 
         <refsection><title>Examples</title>
 
-            <programlisting>SELECT CG_StraightSkeleton('POLYGON (( 190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190 ))');</programlisting>
+            <programlisting language="sql">SELECT ST_AsText(CG_StraightSkeleton(
+  'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'));</programlisting>
+<screen>MULTILINESTRING((190 190,164.03987973986756 164.03987973986756),(10 190,40.697077206292434 159.30292279370755),(10 10,35 35),(190 10,184.18861169915812 15.811388300841896),(190 20,184.18861169915812 15.811388300841896),(160 30,158.3772233983162 20),(60 30,50 20),(60 130,35 153.15077848154866),(190 140,164.03987973986756 164.03987973986756),(184.18861169915812 15.811388300841896,158.3772233983162 20),(50 20,158.3772233983162 20),(50 20,35 35),(35 153.15077848154866,35 35),(35 153.15077848154866,40.697077206292434 159.30292279370755),(164.03987973986756 164.03987973986756,40.697077206292434 159.30292279370755))</screen>
 
             <programlisting>SELECT ST_AsText(CG_StraightSkeleton('POLYGON((0 0,1 0,1 1,0 1,0 0))', true));</programlisting>
 <screen>MULTILINESTRING M ((0 0 0,0.5 0.5 0.5),(1 0 0,0.5 0.5 0.5),(1 1 0,0.5 0.5 0.5),(0 1 0,0.5 0.5 0.5))</screen>
@@ -2973,32 +2975,6 @@ allow_holes =&gt; true));</programlisting>
 NOTICE:    with A: POLYGON((0/1 0/1,3/1 0/1,3/1 3/1,0/1 3/1,0/1 0/1),(0/1 0/1,1/1 2/1,2/1 1/1,0/1 0/1))
 ERROR:  straight skeleton of Polygon with point touching rings is not implemented.</screen>
 
-            <informaltable>
-                <tgroup cols="2">
-                    <tbody>
-                        <row>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/st_straightskeleton01.png"/>
-                                            </imageobject>
-                                            <caption><para>Original polygon</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/st_straightskeleton02.png"/>
-                                            </imageobject>
-                                            <caption><para>Straight Skeleton of polygon</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                        </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
         </refsection>
 
         <refsection>
@@ -3040,34 +3016,9 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
         </refsection>
 
         <refsection><title>Examples</title>
-            <programlisting>SELECT ST_StraightSkeleton('POLYGON (( 190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190 ))');</programlisting>
-
-            <informaltable>
-                <tgroup cols="2">
-                    <tbody>
-                        <row>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/st_straightskeleton01.png"/>
-                                            </imageobject>
-                                            <caption><para>Original polygon</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/st_straightskeleton02.png"/>
-                                            </imageobject>
-                                            <caption><para>Straight Skeleton of polygon</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                        </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
+            <programlisting language="sql">SELECT ST_AsText(ST_StraightSkeleton(
+  'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'));</programlisting>
+<screen>MULTILINESTRING((190 190,164.03987973986756 164.03987973986756),(10 190,40.697077206292434 159.30292279370755),(10 10,35 35),(190 10,184.18861169915812 15.811388300841896),(190 20,184.18861169915812 15.811388300841896),(160 30,158.3772233983162 20),(60 30,50 20),(60 130,35 153.15077848154866),(190 140,164.03987973986756 164.03987973986756),(184.18861169915812 15.811388300841896,158.3772233983162 20),(50 20,158.3772233983162 20),(50 20,35 35),(35 153.15077848154866,35 35),(35 153.15077848154866,40.697077206292434 159.30292279370755),(164.03987973986756 164.03987973986756,40.697077206292434 159.30292279370755))</screen>
         </refsection>
 
         <refsection>
