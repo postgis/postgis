@@ -1294,7 +1294,7 @@ ST_DelaunayTriangles(ST_Union(ST_GeomFromText('POLYGON((175 150,20 40,
                               <imageobject>
                                 <imagedata fileref="images/st_delaunaytriangles04.png"/>
                               </imageobject>
-                              <caption><para>Delaunay triangles of 45 points as 55 triangle polygons</para></caption>
+                              <caption><para>Delaunay triangles of 42 points as 55 triangle polygons</para></caption>
                             </mediaobject>
                           </informalfigure>
                 <programlisting>

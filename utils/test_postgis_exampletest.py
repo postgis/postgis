@@ -267,6 +267,19 @@ class VisualExampleTest(unittest.TestCase):
         )
         self.assertEqual(3, svg.count('class="vertex"'))
 
+    def test_svg_distinguishes_parts_of_multipart_areas(self):
+        svg = self.tester.visual_svg(
+            "triangulation",
+            {"bounds": [0, 0, 2, 1], "parts": [
+                {"ord": 1, "source": "Output", "label": "Output", "type": "POLYGON",
+                 "svg": "M 0 0 L 1 0 0 -1 Z"},
+                {"ord": 1, "source": "Output", "label": "Output", "type": "POLYGON",
+                 "svg": "M 1 0 L 2 0 2 -1 Z"},
+            ]},
+        )
+        self.assertIn('stroke="#a62c2b" fill="#a62c2b"', svg)
+        self.assertIn('stroke="#d95f3d" fill="#d95f3d"', svg)
+
     def test_svg_rejects_empty_non_point_paths(self):
         with self.assertRaisesRegex(RuntimeError, "empty SVG path"):
             self.tester.visual_svg(

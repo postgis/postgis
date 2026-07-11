@@ -1004,11 +1004,19 @@ FROM dimensions
             color = SVG_PALETTES[source][source_index % len(SVG_PALETTES[source])]
             geometry_id = f"{visual_id}-{source.lower()}-{source_index + 1}"
             shapes = []
-            for part in parts:
+            multipart_areas = len(parts) > 1 and all(part["type"].upper() in {
+                "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
+                "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
+            } for part in parts)
+            for part_index, part in enumerate(parts):
+                part_color = (
+                    SVG_PALETTES[source][(source_index + part_index) % len(SVG_PALETTES[source])]
+                    if multipart_areas else color
+                )
                 if part["type"].upper() == "POINT":
                     shapes.append(
                         f'<circle class="point" cx="{float(part["x"]):.12g}" '
-                        f'cy="{float(part["y"]):.12g}" r="{4 / scale:.12g}" fill="{color}"/>'
+                        f'cy="{float(part["y"]):.12g}" r="{4 / scale:.12g}" fill="{part_color}"/>'
                     )
                 else:
                     if not part.get("svg"):
@@ -1023,7 +1031,7 @@ FROM dimensions
                     fill = color if dimension_class == "area" else "none"
                     shapes.append(
                         f'<path class="{dimension_class}" d="{svg_data}" '
-                        f'stroke="{color}" fill="{fill}" fill-rule="evenodd"/>'
+                        f'stroke="{part_color}" fill="{part_color if dimension_class == "area" else fill}" fill-rule="evenodd"/>'
                     )
                     vertices = part.get("vertices") or []
                     if len(vertices) > 1 and vertices[0] == vertices[-1]:
@@ -1031,7 +1039,7 @@ FROM dimensions
                     for x, y in vertices:
                         shapes.append(
                             f'<circle class="vertex" cx="{float(x):.12g}" cy="{float(y):.12g}" '
-                            f'r="{3 / scale:.12g}" fill="{color}"/>'
+                            f'r="{3 / scale:.12g}" fill="{part_color}"/>'
                         )
             groups.append(
                 f'<g class="geometry-layer" data-postgis-geometry-id="{geometry_id}">' +
