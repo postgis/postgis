@@ -195,11 +195,11 @@ GROUP BY cid;
         <programlisting>
 WITH testdata AS
   (SELECT unnest(
-           ARRAY['LINESTRING (0 0, 1 1)'::geometry,
-           'LINESTRING (5 5, 4 4)'::geometry,
-           'LINESTRING (6 6, 7 7)'::geometry,
-           'LINESTRING (0 0, -1 -1)'::geometry,
-           'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
+           ARRAY['LINESTRING (0 0,1 1)'::geometry,
+           'LINESTRING (5 5,4 4)'::geometry,
+           'LINESTRING (6 6,7 7)'::geometry,
+           'LINESTRING (0 0,-1 -1)'::geometry,
+           'POLYGON ((0 0,4 0,4 4,0 4,0 0))'::geometry]) AS geom)
 
 SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
 </programlisting>
@@ -247,11 +247,11 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
         <programlisting>
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
-  VALUES  (1, 'LINESTRING (0 0, 1 1)'),
-          (2, 'LINESTRING (5 5, 4 4)'),
-          (3, 'LINESTRING (6 6, 7 7)'),
-          (4, 'LINESTRING (0 0, -1 -1)'),
-          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)
+  VALUES  (1, 'LINESTRING (0 0,1 1)'),
+          (2, 'LINESTRING (5 5,4 4)'),
+          (3, 'LINESTRING (6 6,7 7)'),
+          (4, 'LINESTRING (0 0,-1 -1)'),
+          (5, 'POLYGON ((0 0,4 0,4 4,0 4,0 0))')) AS t(id, geom)
 )
 SELECT id,
   ST_AsText(geom),
@@ -467,12 +467,12 @@ SELECT id, ST_AsText(geom), ST_MinimumSpanningTree(geom) OVER () AS msp
       <title>Examples</title>
 		<para>Generate dummy set of parcels for examples:</para>
 		<programlisting>CREATE TABLE parcels AS
-SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,
-('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As type
+SELECT lpad((row_number() over())::text, 3, '0') As parcel_id, geom,
+('{residential, commercial}'::text[])[1 + mod(row_number()OVER(), 2)] As type
 FROM
     ST_Subdivide(
         ST_Buffer(
-            'SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 90)'::geometry,
+            'SRID=3857;LINESTRING(40 100,98 100,100 150,60 90)'::geometry,
             40, 'endcap=square'),
         12) As geom;
 </programlisting>
@@ -528,7 +528,7 @@ select
             ST_Transform(ST_Force3D(geom), 4978), -- cluster in 3D XYZ CRS
             mvalue =&gt; population -- set clustering to be weighed by population
         ),
-        20,                      -- aim to generate at least 20 clusters
+        20, -- aim to generate at least 20 clusters
         max_radius =&gt; 3000000    -- but generate more to make each under 3000 km radius
     ) over () as cid
 from
@@ -602,11 +602,11 @@ from
         <title>Examples</title>
         <programlisting>
 WITH testdata AS
-  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
-               'LINESTRING (5 5, 4 4)'::geometry,
-               'LINESTRING (6 6, 7 7)'::geometry,
-               'LINESTRING (0 0, -1 -1)'::geometry,
-               'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
+  (SELECT unnest(ARRAY['LINESTRING (0 0,1 1)'::geometry,
+               'LINESTRING (5 5,4 4)'::geometry,
+               'LINESTRING (6 6,7 7)'::geometry,
+               'LINESTRING (0 0,-1 -1)'::geometry,
+               'POLYGON ((0 0,4 0,4 4,0 4,0 0))'::geometry]) AS geom)
 
 SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
 </programlisting>
@@ -662,11 +662,11 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
         <programlisting>
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
-  VALUES  (1, 'LINESTRING (0 0, 1 1)'),
-          (2, 'LINESTRING (5 5, 4 4)'),
-          (3, 'LINESTRING (6 6, 7 7)'),
-          (4, 'LINESTRING (0 0, -1 -1)'),
-          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)
+  VALUES  (1, 'LINESTRING (0 0,1 1)'),
+          (2, 'LINESTRING (5 5,4 4)'),
+          (3, 'LINESTRING (6 6,7 7)'),
+          (4, 'LINESTRING (0 0,-1 -1)'),
+          (5, 'POLYGON ((0 0,4 0,4 4,0 4,0 0))')) AS t(id, geom)
 )
 SELECT id,
   ST_AsText(geom),

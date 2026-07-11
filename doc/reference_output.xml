@@ -261,11 +261,11 @@
       <refsection>
       <title>Examples</title>
 
-      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
 <screen>\x01030000000100000005000000000000000000000000000000000000000000000000000000000000
 000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000
 00000000000000000000000000</screen>
-      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
+      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326), 'XDR');</programlisting>
 <screen>\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
 00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
 00000000000000000000000000</screen>
@@ -332,11 +332,11 @@
       <refsection>
       <title>Examples</title>
 
-      <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+      <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
 <screen>\x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
 00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000
 0000000000000000000000000000000000</screen>
-    <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
+    <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326), 'XDR');</programlisting>
 <screen>\x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
 003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000
 0000000000000000000000000000000000</screen>
@@ -385,14 +385,14 @@
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
 <screen>    0103000020E6100000010000000500
 00000000000000000000000000000000
 00000000000000000000000000000000F03F
 000000000000F03F000000000000F03F000000000000F03
 F000000000000000000000000000000000000000000000000</screen>
     <para>Which gives the same answer as:</para>
-    <programlisting>SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;</programlisting>
+    <programlisting>SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326)::text;</programlisting>
     </refsection>
   </refentry>
 
@@ -703,13 +703,13 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 <screen>{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}</screen>
 
 <para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
-    <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) FROM fe_edges LIMIT 1;</programlisting>
+    <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) FROM fe_edges LIMIT 1;</programlisting>
 <screen>
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
 </screen>
 <para>3D geometries are supported:</para>
-<programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
+<programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3,4 5 6)');</programlisting>
 <screen>{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
 <para>Options argument can be used to add BBOX and CRS in GeoJSON output:</para>
 <programlisting>SELECT ST_AsGeoJSON(ST_SetSRID('POINT(1 1)'::geometry, 4326), 9, 4|1);</programlisting>
@@ -840,13 +840,13 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 
     <refsection>
     <title>Examples: Version 2</title>
-    <programlisting>SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+    <programlisting>SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
     <screen><![CDATA[<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]></screen>
     </refsection>
     <refsection>
     <title>Examples: Version 3</title>
     <para>Flip coordinates and output extended EPSG (16 | 1)</para>
-    <programlisting>SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);</programlisting>
+    <programlisting>SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)', 4326), 5, 17);</programlisting>
     <screen><![CDATA[<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">6.34535 5.23423</gml:pos></gml:Point>]]></screen>
     <programlisting><![CDATA[-- Output the envelope (32) --
 SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);]]></programlisting>
@@ -981,11 +981,11 @@ SELECT ST_AsGML(
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
+    <programlisting>SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
     <screen><![CDATA[<Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>]]></screen>
 
     <para>This example outputs a 3D LineString.</para>
-    <programlisting>SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');</programlisting>
+    <programlisting>SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3,4 5 6)');</programlisting>
     <screen><![CDATA[<LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>]]></screen>
     </refsection>
    <refsection>
@@ -1265,7 +1265,7 @@ SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.51666666
     <refsection>
     <title>Examples</title>
     <programlisting>
-SELECT ST_AsText(ST_AsMVTGeom('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))',
+SELECT ST_AsText(ST_AsMVTGeom('POLYGON ((0 0,10 0,10 5,0 -5,0 0))',
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
     4096, 0, false));</programlisting>
 <screen>MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
@@ -1279,7 +1279,7 @@ SELECT ST_AsMVTGeom(ST_Transform(geom, 3857 ),
             extent => 4096,
             buffer => 64) AS geom
   FROM data
-  WHERE geom && ST_Transform(ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096)),4326)
+  WHERE geom && ST_Transform(ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096)), 4326)
 
 
 ]]></programlisting>
@@ -1802,12 +1802,12 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_GeoHash(ST_Point(-126,48));</programlisting>
+    <programlisting>SELECT ST_GeoHash(ST_Point(-126, 48));</programlisting>
 <screen>c0w3hf1s70w3hf1s70w3</screen>
-<programlisting>SELECT ST_GeoHash(ST_Point(-126,48), 5);</programlisting>
+<programlisting>SELECT ST_GeoHash(ST_Point(-126, 48), 5);</programlisting>
 <screen>c0w3h</screen>
 <para>This example shows that the GeoHash for a line containing a point is a prefix of the point code.</para>
-<programlisting>SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);</programlisting>
+<programlisting>SELECT ST_GeoHash('LINESTRING(-126 48,-126.1 48.1)'::geometry);</programlisting>
 <screen>c0w3</screen>
     </refsection>
    <refsection>

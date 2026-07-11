@@ -96,8 +96,8 @@ CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
 <para>Using an array constructor for values.</para>
 <programlisting>
 SELECT ST_AsText(ST_Collect(
-        ARRAY[ 'LINESTRING(1 2, 3 4)'::geometry,
-            'LINESTRING(3 4, 4 5)'::geometry ] )) As wktcollect;</programlisting>
+        ARRAY[ 'LINESTRING(1 2,3 4)'::geometry,
+            'LINESTRING(3 4,4 5)'::geometry ] )) As wktcollect;</programlisting>
 <screen>MULTILINESTRING((1 2,3 4),(3 4,4 5))</screen>
         </refsection>
         <refsection>
@@ -148,7 +148,7 @@ SELECT stusps, ST_Collect(f.geom) as geom
       <refsection>
         <title>Examples</title>
         <para>Create a 3D line string from a 3D MultiPoint</para>
-        <programlisting>SELECT ST_AsEWKT(ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)'));</programlisting>
+        <programlisting>SELECT ST_AsEWKT(ST_LineFromMultiPoint('MULTIPOINT(1 2 3,4 5 6,7 8 9)'));</programlisting>
 <screen>LINESTRING(1 2 3,4 5 6,7 8 9)</screen>
       </refsection>
 
@@ -262,15 +262,15 @@ SELECT stusps, ST_Collect(f.geom) as geom
             <title>Examples: Two-input variant</title>
 
 <para>Create a line composed of two points.</para>
-<programlisting>SELECT ST_AsText(ST_MakeLine(ST_Point(1,2), ST_Point(3,4)));</programlisting>
+<programlisting>SELECT ST_AsText(ST_MakeLine(ST_Point(1, 2), ST_Point(3, 4)));</programlisting>
 <screen>LINESTRING(1 2,3 4)</screen>
 
 <para>Create a 3D line from two 3D points.</para>
-<programlisting>SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1, 2, 3), ST_MakePoint(3, 4, 5)));</programlisting>
 <screen>LINESTRING(1 2 3,3 4 5)</screen>
 
 <para>Create a line from two disjoint LineStrings.</para>
-<programlisting>SELECT ST_AsText(ST_MakeLine('LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)'));</programlisting>
+<programlisting>SELECT ST_AsText(ST_MakeLine('LINESTRING(0 0,1 1)', 'LINESTRING(2 2,3 3)'));</programlisting>
 <screen>LINESTRING(0 0,1 1,2 2,3 3)</screen>
         </refsection>
 
@@ -281,7 +281,7 @@ SELECT stusps, ST_Collect(f.geom) as geom
 <programlisting>SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time));</programlisting>
 
         <para>Create a 3D line from an array of 3D points</para>
-<programlisting>SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), ST_MakePoint(6,6,6)]));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1, 2, 3), ST_MakePoint(3, 4, 5), ST_MakePoint(6, 6, 6)]));</programlisting>
 <screen>LINESTRING(1 2 3,3 4 5,6 6 6)</screen>
         </refsection>
 
@@ -383,11 +383,11 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 	         <para>This example creates a point with an unknown SRID.</para>
 	         <programlisting>SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);</programlisting>
 	         <para>This example creates a point in the WGS 84 geodetic CRS.</para>
-<programlisting>SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326);</programlisting>
+<programlisting>SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829), 4326);</programlisting>
 	         <para>This example creates a 3D point with altitude.</para>
-<programlisting>SELECT ST_MakePoint(1, 2,1.5);</programlisting>
+<programlisting>SELECT ST_MakePoint(1, 2, 1.5);</programlisting>
 	         <para>This example returns the Z coordinate of a point.</para>
-<programlisting>SELECT ST_Z(ST_MakePoint(1, 2,1.5));</programlisting>
+<programlisting>SELECT ST_Z(ST_MakePoint(1, 2, 1.5));</programlisting>
 	<screen>1.5</screen>
 	        </refsection>
         <refsection>
@@ -445,7 +445,7 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 <screen>POINTM(-71.1043443253471 42.3150676015829 10)</screen>
 
 <para>Create point with a measure in the WGS 84 geodetic coordinate system.</para>
-<programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_MakePointM(-71.104, 42.315, 10),  4326));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_MakePointM(-71.104, 42.315, 10), 4326));</programlisting>
 <screen>SRID=4326;POINTM(-71.104 42.315 10)</screen>
 
 <para>Get measure of created point.</para>
@@ -506,18 +506,18 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
         <refsection>
         <title>Examples: Single input variant</title>
         <para>Create a Polygon from a 2D LineString.</para>
-         <programlisting>SELECT ST_MakePolygon('LINESTRING(75 29,77 29,77 29, 75 29)');</programlisting>
+         <programlisting>SELECT ST_MakePolygon('LINESTRING(75 29,77 29,77 29,75 29)');</programlisting>
 
 <para>Create a Polygon from an open LineString,
 using <xref linkend="ST_StartPoint"/> and <xref linkend="ST_AddPoint"/> to close it.</para>
 <programlisting>
 SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)) )
 FROM (
-  SELECT 'LINESTRING(75 29,77 29,77 29, 75 29)'::geometry As open_line) As foo;
+  SELECT 'LINESTRING(75 29,77 29,77 29,75 29)'::geometry As open_line) As foo;
 </programlisting>
 
 <para>Create a Polygon from a 3D LineString</para>
-<programlisting>SELECT ST_AsEWKT(ST_MakePolygon('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_MakePolygon('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1)'));</programlisting>
 <screen>POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))</screen>
 <para>Create a Polygon from a LineString with measures</para>
 <programlisting>SELECT ST_AsEWKT(ST_MakePolygon('LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)'));</programlisting>
@@ -533,11 +533,11 @@ FROM (
             <para>Create a donut Polygon with an extra hole</para>
            <programlisting>
 SELECT ST_MakePolygon(
-    ST_ExteriorRing(ST_Buffer(ring.line,10)),
+    ST_ExteriorRing(ST_Buffer(ring.line, 10)),
     ARRAY[  ST_Translate(ring.line, 1, 1),
-        ST_ExteriorRing(ST_Buffer(ST_Point(20,20),1)) ]
+        ST_ExteriorRing(ST_Buffer(ST_Point(20, 20), 1)) ]
     )
-FROM (SELECT ST_ExteriorRing(ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring;
+FROM (SELECT ST_ExteriorRing(ST_Buffer(ST_Point(10, 10), 10, 10)) AS line ) AS ring;
 </programlisting>
     <para>Create a set of province boundaries with holes
     representing lakes.  The input is a table of
@@ -571,7 +571,7 @@ GROUP BY p.gid, p.province_name, p.geom;
     <para>Another technique is to utilize a correlated subquery
     and the ARRAY() constructor that converts a row set to an array.</para>
 <programlisting>
-SELECT p.gid,  p.province_name,
+SELECT p.gid, p.province_name,
     CASE WHEN EXISTS( SELECT w.geom
         FROM waterlines w
         WHERE ST_Within(w.geom, p.geom)
@@ -828,10 +828,10 @@ is projected to WGS84 (SRID 4326).</para>
         <title>Examples</title>
 
 <para>Create a 2D polygon.</para>
-<programlisting>SELECT ST_AsText(ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::geometry, 4326));</programlisting>
+<programlisting>SELECT ST_AsText(ST_Polygon('LINESTRING(75 29,77 29,77 29,75 29)'::geometry, 4326));</programlisting>
 <screen>POLYGON((75 29,77 29,77 29,75 29))</screen>
 <para>Create a 3D polygon.</para>
-<programlisting>SELECT ST_AsEWKT(ST_Polygon('LINESTRING(75 29 1, 77 29 2, 77 29 3, 75 29 1)'::geometry, 4326));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_Polygon('LINESTRING(75 29 1,77 29 2,77 29 3,75 29 1)'::geometry, 4326));</programlisting>
 <screen>SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))</screen>
       </refsection>
 
@@ -1025,12 +1025,12 @@ WHERE
         <title>Example: Creating a hexagon at the origin</title>
          <programlisting>SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));
 
-POLYGON((-1 0,-0.5
-         -0.866025403784439,0.5
-         -0.866025403784439,1
-         0,0.5
-         0.866025403784439,-0.5
-         0.866025403784439,-1 0)) </programlisting>
+POLYGON((-1 0, -0.5
+         -0.866025403784439, 0.5
+         -0.866025403784439, 1
+         0, 0.5
+         0.866025403784439, -0.5
+         0.866025403784439, -1 0)) </programlisting>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -1077,7 +1077,7 @@ POLYGON((-1 0,-0.5
         <para>The grid will fill the whole bounds of the country, so if you want just squares
             that touch the country you will have to filter afterwards with ST_Intersects.</para>
             <programlisting>WITH grid AS (
-SELECT (ST_SquareGrid(1, ST_Transform(geom,4326))).*
+SELECT (ST_SquareGrid(1, ST_Transform(geom, 4326))).*
 FROM admin0 WHERE name = 'Canada'
 )
   SELEcT ST_AsText(geom)
@@ -1213,7 +1213,7 @@ has an unknown SRID (as is the case by default).</para>
         </refsection>
         <refsection>
             <title>Example: Scaling and moving words</title>
-            <programlisting>SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100,100);</programlisting>
+            <programlisting>SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100, 100);</programlisting>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -1257,11 +1257,11 @@ has an unknown SRID (as is the case by default).</para>
 		<refsection>
 				<title>Examples</title>
 				<para>This example creates a degree-2 NURBS curve with uniform weights.</para>
-				<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);</programlisting>
+				<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry);</programlisting>
 				<para>This example creates a rational NURBS curve with custom weights.</para>
-<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);</programlisting>
+<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);</programlisting>
 				<para>This example creates a NURBS curve with custom weights and knots.</para>
-<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]);</programlisting>
+<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0, 0, 0, 1, 1, 1]);</programlisting>
 		</refsection>
 
 		<refsection>

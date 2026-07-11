@@ -60,7 +60,7 @@
       column that "caches" the bbox, and matching against this. In our
       example, the commands are like:</para>
 
-      <programlisting>SELECT AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');
+      <programlisting>SELECT AddGeometryColumn('myschema', 'mytable', 'bbox', '4326', 'GEOMETRY', '2');
 UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));</programlisting>
 
       <para>Now change your query to use the &amp;&amp; operator against bbox

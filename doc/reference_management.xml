@@ -242,7 +242,7 @@ WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';</progr
 	  <refsection>
 		<title>Examples</title>
 
-			<programlisting role="requires-external-state">SELECT DropGeometryColumn ('my_schema','my_spatial_table','geom');</programlisting>
+			<programlisting role="requires-external-state">SELECT DropGeometryColumn ('my_schema', 'my_spatial_table', 'geom');</programlisting>
 <screen>my_schema.my_spatial_table.geom effectively removed.</screen>
 			<para>The above is also equivalent to the standard <command>ALTER TABLE</command> command. Both deregister the column from <varname>geometry_columns</varname>.</para>
 <programlisting>ALTER TABLE my_schema.my_spatial_table DROP column geom;</programlisting>
@@ -307,7 +307,7 @@ WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';</progr
 	  <refsection>
 		<title>Examples</title>
 
-			<programlisting role="requires-external-state">SELECT DropGeometryTable ('my_schema','my_spatial_table');</programlisting>
+			<programlisting role="requires-external-state">SELECT DropGeometryTable ('my_schema', 'my_spatial_table');</programlisting>
 <screen>my_schema.my_spatial_table dropped.</screen>
 			<para>The above is now equivalent to the standard <command>DROP TABLE</command> command.</para>
 <programlisting>DROP TABLE my_schema.my_spatial_table;</programlisting>
@@ -449,7 +449,7 @@ WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';</progr
 
 			<para>This example populates geometry column metadata using typmod behavior. For this to work, there must be existing data.</para>
 			<programlisting>CREATE TABLE public.myspatial_table(gid serial, geom geometry);
-INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
+INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2,3 4)', 4326) );
 SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programlisting>
 <screen>                        1
 
@@ -465,7 +465,7 @@ SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programli
 			<para>This example changes the geometry columns to use constraints if they are not typmod or already constrained. For this to work, there must be existing data.</para>
 		<programlisting>
 CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
-INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
+INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2,3 4)', 4326) );
 SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);</programlisting>
 <screen>                        1
 \d myspatial_table_cs
@@ -575,17 +575,17 @@ SRID=4326;LINESTRING(10 10, 15 0)
         </programlisting>
 
 		<para>This will change the srid of the roads table to 4326 from whatever it was before:</para>
-		<programlisting>SELECT UpdateGeometrySRID('roads','geom',4326);</programlisting>
+		<programlisting>SELECT UpdateGeometrySRID('roads', 'geom', 4326);</programlisting>
 
 		<para>The prior example is equivalent to this DDL statement:</para>
 		<programlisting>ALTER TABLE roads
 ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326)
-  USING ST_SetSRID(geom,4326);</programlisting>
+  USING ST_SetSRID(geom, 4326);</programlisting>
 
 	<para>If you got the projection wrong (or brought it in as unknown) in load and you wanted to transform to web mercator all in one shot you can do this with
 	DDL but there is no equivalent PostGIS management function to do so in one go.</para>
 	<programlisting>ALTER TABLE roads
-ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING ST_Transform(ST_SetSRID(geom,4326),3857) ;</programlisting>
+ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING ST_Transform(ST_SetSRID(geom, 4326), 3857) ;</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>

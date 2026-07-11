@@ -791,11 +791,11 @@ FROM
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 &> tbl2.column2 AS overright
 FROM
   ( VALUES
-    (1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,
+    (1, 'LINESTRING(1 2,4 6)'::geometry)) AS tbl1,
   ( VALUES
-    (2, 'LINESTRING(0 0, 3 3)'::geometry),
-    (3, 'LINESTRING(0 1, 0 5)'::geometry),
-    (4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;
+    (2, 'LINESTRING(0 0,3 3)'::geometry),
+    (3, 'LINESTRING(0 1,0 5)'::geometry),
+    (4, 'LINESTRING(6 0,6 1)'::geometry)) AS tbl2;
 ]]></programlisting>
 <screen><![CDATA[ column1 | column1 | overright
 ---------+---------+-----------
@@ -1033,7 +1033,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;</programlisting>
+			<programlisting>SELECT 'LINESTRING(0 0,0 1,1 0)'::geometry = 'LINESTRING(1 1,0 0)'::geometry;</programlisting>
 <screen><![CDATA[ ?column?
 ----------
  f
@@ -1125,11 +1125,11 @@ SELECT 'POINT(1707296.37 4820536.77)'::geometry =
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 >> tbl2.column2 AS right
 FROM
   ( VALUES
-    (1, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (2 3,5 6)'::geometry)) AS tbl1,
   ( VALUES
-    (2, 'LINESTRING (1 4, 1 7)'::geometry),
-    (3, 'LINESTRING (6 1, 6 5)'::geometry),
-    (4, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl2;
+    (2, 'LINESTRING (1 4,1 7)'::geometry),
+    (3, 'LINESTRING (6 1,6 5)'::geometry),
+    (4, 'LINESTRING (0 0,4 3)'::geometry)) AS tbl2;
 ]]></programlisting>
 <screen><![CDATA[ column1 | column1 | right
 ---------+---------+-------
@@ -1261,7 +1261,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer('POINT(2 2)'::geometry, 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;</programlisting>
+			<programlisting>SELECT ST_Buffer('POINT(2 2)'::geometry, 1) @ ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)) AS is_contained;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1323,7 +1323,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_Buffer('POINT(1 1)'::geometry, 10) AS is_contained;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(2, 2), ST_Point(3, 3)) @ ST_Buffer('POINT(1 1)'::geometry, 10) AS is_contained;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1385,7 +1385,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(2, 2), ST_Point(3, 3)) @ ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)) AS is_contained;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1452,11 +1452,11 @@ FROM
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&> tbl2.column2 AS overabove
 FROM
   ( VALUES
-    (1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
+    (1, 'LINESTRING(6 0,6 4)'::geometry)) AS tbl1,
   ( VALUES
-    (2, 'LINESTRING(0 0, 3 3)'::geometry),
-    (3, 'LINESTRING(0 1, 0 5)'::geometry),
-    (4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
+    (2, 'LINESTRING(0 0,3 3)'::geometry),
+    (3, 'LINESTRING(0 1,0 5)'::geometry),
+    (4, 'LINESTRING(1 2,4 6)'::geometry)) AS tbl2;
 ]]></programlisting>
 <screen><![CDATA[ column1 | column1 | overabove
 ---------+---------+-----------
@@ -1524,11 +1524,11 @@ FROM
 			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&gt;&gt; tbl2.column2 AS above
 FROM
   ( VALUES
-    (1, 'LINESTRING (1 4, 1 7)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (1 4,1 7)'::geometry)) AS tbl1,
   ( VALUES
-    (2, 'LINESTRING (0 0, 4 2)'::geometry),
-    (3, 'LINESTRING (6 1, 6 5)'::geometry),
-    (4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;</programlisting>
+    (2, 'LINESTRING (0 0,4 2)'::geometry),
+    (3, 'LINESTRING (6 1,6 5)'::geometry),
+    (4, 'LINESTRING (2 3,5 6)'::geometry)) AS tbl2;</programlisting>
 <screen> column1 | column1 | above
 ---------+---------+-------
        1 |       2 | t
@@ -1590,11 +1590,11 @@ FROM
 			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains
 FROM
   ( VALUES
-    (1, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (0 0,3 3)'::geometry)) AS tbl1,
   ( VALUES
-    (2, 'LINESTRING (0 0, 4 4)'::geometry),
-    (3, 'LINESTRING (1 1, 2 2)'::geometry),
-    (4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;</programlisting>
+    (2, 'LINESTRING (0 0,4 4)'::geometry),
+    (3, 'LINESTRING (1 1,2 2)'::geometry),
+    (4, 'LINESTRING (0 0,3 3)'::geometry)) AS tbl2;</programlisting>
 <screen> column1 | column1 | contains
 ---------+---------+----------
        1 |       2 | f
@@ -1653,7 +1653,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer('POINT(1 1)'::geometry, 10) ~ ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;</programlisting>
+			<programlisting>SELECT ST_Buffer('POINT(1 1)'::geometry, 10) ~ ST_MakeBox2D(ST_Point(0, 0), ST_Point(2, 2)) AS contains;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1715,7 +1715,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_Buffer('POINT(2 2)'::geometry, 1) AS contains;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)) ~ ST_Buffer('POINT(2 2)'::geometry, 1) AS contains;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1777,7 +1777,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) AS contains;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)) ~ ST_MakeBox2D(ST_Point(2, 2), ST_Point(3, 3)) AS contains;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1851,7 +1851,7 @@ FROM
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>SELECT 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry AS equality;</programlisting>
+<programlisting>SELECT 'LINESTRING(0 0,1 1)'::geometry ~= 'LINESTRING(0 1,1 0)'::geometry AS equality;</programlisting>
 <screen>t</screen>
 		  </refsection>
 		  <refsection>
@@ -1935,7 +1935,7 @@ and distance on the sphere for geographies.
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+<programlisting>SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d, edabbr, vaabbr
 FROM va2005
 ORDER BY d limit 10;</programlisting>
 <screen>        d         | edabbr | vaabbr
@@ -2141,10 +2141,10 @@ FROM (
 SELECT b.tlid, b.mtfcc,
     b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
         745787 2948499,745740 2948468,745712 2948438,
-        745690 2948384,745677 2948319)',2249) As b_dist,
+        745690 2948384,745677 2948319)', 2249) As b_dist,
         ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
         745787 2948499,745740 2948468,745712 2948438,
-        745690 2948384,745677 2948319)',2249)) As act_dist
+        745690 2948384,745677 2948319)', 2249)) As act_dist
     FROM bos_roads As b
     ORDER BY b_dist, b.tlid
     LIMIT 100) As foo

@@ -782,7 +782,7 @@ public class SaveQueryImage {
       Connection conn = null;
 
       try {
-        conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mydb","myuser", "mypwd");
+        conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mydb", "myuser", "mypwd");
         conn.setAutoCommit(false);
 
         PreparedStatement sGetImg = conn.prepareStatement(argv[0]);
@@ -832,9 +832,9 @@ $$ LANGUAGE plpythonu;</programlisting>
 -- note the postgresql daemon account needs to have write access to folder
 -- this echos back the file names created;
  SELECT write_file(
-    ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),j*5, 'quad_segs=2'),150*j, 150*j, '8BUI',100)),
+    ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1, 5), j*5, 'quad_segs=2'), 150*j, 150*j, '8BUI', 100)),
      'C:/temp/slices'|| j || '.png')
-     FROM generate_series(1,5) As j;</programlisting>
+     FROM generate_series(1, 5) As j;</programlisting>
 <screen>
      write_file
 ---------------------
@@ -854,7 +854,7 @@ $$ LANGUAGE plpythonu;</programlisting>
 FROM
 ( VALUES (lo_create(0),
   ST_AsPNG((SELECT rast FROM aerials.boston WHERE rid=1) )
- ) ) As v(oid,png);</programlisting>
+ ) ) As v(oid, png);</programlisting>
 <screen>   oid   | num_bytes
 ---------+-----------
  2630819 |     74860</screen>

@@ -135,7 +135,7 @@
 			<title>Examples</title>
 			<para>This example converts longitude/latitude coordinates to geography.</para>
 			<programlisting language="sql">
-ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
+ALTER TABLE sometable ADD COLUMN geog geography(POINT, 4326);
 UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');
 
 -- specify a geography point using EPSG:4267, NAD27
@@ -220,7 +220,7 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(1 2, 3 4))');</programlisting>
+		<programlisting language="sql">SELECT ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(1 2,3 4))');</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -299,12 +299,12 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 <para>This example uses a PolyhedralSurface.</para>
 <programlisting language="sql">
 SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
-    ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
+    ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+    ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
+    ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+    ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+    ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
+    ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))
 )');
 </programlisting>
 	  </refsection>
@@ -523,7 +523,7 @@ ST_AsText(ST_GeomFromMARC21('
 		  <refsection>
 			<title>Examples</title>
 	<programlisting language="sql">SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)');
-SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)',4269);
+SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)', 4269);
 
 SELECT ST_GeomFromText('MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))');
 
@@ -554,7 +554,7 @@ SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
 -71.1032580383161 42.3152269126061,-71.103223066939 42.3152517403219,
 -71.1031880899493 42.3152774590236)),
 ((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
--71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))',4326);
+-71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))', 4326);
 
 SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)');
     </programlisting>
@@ -615,7 +615,7 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_AsText(ST_LineFromText('LINESTRING(1 2, 3 4)')) AS aline,
+		<programlisting language="sql">SELECT ST_AsText(ST_LineFromText('LINESTRING(1 2,3 4)')) AS aline,
 ST_LineFromText('POINT(1 2)') IS NULL AS null_return;</programlisting>
 		<screen>
 aline                 | null_return
@@ -681,7 +681,7 @@ LINESTRING(1 2,3 4)  | t
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_MLineFromText('MULTILINESTRING((1 2, 3 4), (4 5, 6 7))');</programlisting>
+		<programlisting language="sql">SELECT ST_MLineFromText('MULTILINESTRING((1 2,3 4),(4 5,6 7))');</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -806,7 +806,7 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 
 		<programlisting language="sql">SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))');
 SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,
-    -70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);
+    -70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))', 4326);
 </programlisting>
 	  </refsection>
 
@@ -1103,7 +1103,7 @@ SELECT ST_GeomFromEWKB('\001\002\000\000 \255\020\000\000\003\000\000\000\344J=\
 
 		<para>Although bytea rep contains single \, these need to be escaped when inserting into a table. Unless standard_conforming_strings is set to on.</para>
 		<programlisting language="sql">
-SELECT ST_AsEWKT(ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
+SELECT ST_AsEWKT(ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@', 4326)
 );</programlisting>
 <screen>SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 <programlisting language="sql">SELECT
@@ -1178,7 +1178,7 @@ ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_AsText(ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)')))) AS aline,
+		<programlisting language="sql">SELECT ST_AsText(ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2,3 4)')))) AS aline,
 ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;</programlisting>
 		<screen>
 aline                 | null_return
@@ -1249,7 +1249,7 @@ LINESTRING(1 2,3 4)  | t
 		<title>Examples</title>
 
 		<programlisting language="sql">SELECT
-ST_AsText(ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))
+ST_AsText(ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2,3 4)'))
 )) AS aline,
 ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
 ) IS NULL AS null_return;</programlisting>
@@ -1316,7 +1316,7 @@ ST_AsText(ST_PointFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 );</programlisting>
 <screen>POINT(2 5)</screen>
 <programlisting language="sql">SELECT
-ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)
+ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5,2 6)'::geometry)
   )
 );</programlisting>
 <screen>null</screen>
@@ -1515,7 +1515,7 @@ SELECT ST_GeomFromGML($$
     <gml:LineString xmlns:gml="http://www.opengis.net/gml"
             srsName="EPSG:4269">
         <gml:coordinates>
-            -71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
+            -71.16028, 42.258729 -71.160837, 42.259112 -71.161143, 42.25932
         </gml:coordinates>
     </gml:LineString>
 $$);
@@ -1694,8 +1694,8 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 		<programlisting language="sql"><![CDATA[
 SELECT ST_GeomFromKML($$
     <LineString>
-        <coordinates>-71.1663,42.2614
-            -71.1667,42.2616</coordinates>
+        <coordinates>-71.1663, 42.2614
+            -71.1667, 42.2616</coordinates>
     </LineString>
 $$);
 ]]>
@@ -1736,7 +1736,7 @@ $$);
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometry)));</programlisting>
+		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34,127 35)'::geometry)));</programlisting>
 <screen>LINESTRING(126 34, 127 35)</screen>
 <programlisting language="sql">SELECT ST_AsEWKT(ST_GeomFromTWKB(E'\\x620002f7f40dbce4040105')
 );</programlisting>
@@ -1815,7 +1815,7 @@ $$);
     <programlisting language="sql">SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));</programlisting>
 <screen>SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)</screen>
 <para>This example selects a different precision than the one used for polyline encoding.</para>
-<programlisting language="sql">SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@',6));</programlisting>
+<programlisting language="sql">SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@', 6));</programlisting>
 <screen>SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
 
     </screen>

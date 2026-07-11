@@ -384,8 +384,8 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
           </para>
 
           <programlisting>SELECT ST_Relate(
-'LINESTRING (1 1, 5 5)',
-'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );</programlisting>
+'LINESTRING (1 1,5 5)',
+'POLYGON ((3 3,3 7,7 7,7 3,3 3))' );</programlisting>
 <screen>1010F0212</screen>
 
         <para>To test a particular spatial relationship,

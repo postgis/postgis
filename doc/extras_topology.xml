@@ -194,18 +194,18 @@ being defined.
             <refsection>
                 <title>Examples</title>
                  <programlisting>SELECT te[1] AS id, te[2] AS type FROM
-( SELECT ARRAY[1,2]::topology.topoelement AS te ) f;</programlisting>
+( SELECT ARRAY[1, 2]::topology.topoelement AS te ) f;</programlisting>
 <screen> id | type
 ----+------
   1 |    2
                  </screen>
-                 <programlisting>SELECT ARRAY[1,2]::topology.topoelement;</programlisting>
+                 <programlisting>SELECT ARRAY[1, 2]::topology.topoelement;</programlisting>
 <screen>  te
 -------
  {1,2}
                  </screen>
                  <para>This example shows what happens when casting a three-element array to <type>topology.topoelement</type>. The domain requires a two-element array, so the dimension check fails.</para>
-                 <programlisting>SELECT ARRAY[1,2,3]::topology.topoelement;</programlisting>
+                 <programlisting>SELECT ARRAY[1, 2, 3]::topology.topoelement;</programlisting>
 <screen>ERROR:  value for domain topology.topoelement violates check constraint "dimensions"</screen>
             </refsection>
             <!-- Optionally add a "See Also" section -->
@@ -634,7 +634,7 @@ TRUNCATE TABLE topology.layer;
 SELECT *
 FROM topology.Populate_Topology_Layer();
 
-SELECT topology_id,layer_id, schema_name As sn, table_name As tn, feature_column As fc
+SELECT topology_id, layer_id, schema_name As sn, table_name As tn, feature_column As fc
 FROM topology.layer;
 
                 </programlisting>
@@ -2272,7 +2272,7 @@ an error is thrown.
     'ma_topo',
     1,
         ST_GeomFromText(
-            'LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6, 227704.5 893778.5)',
+            'LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6,227704.5 893778.5)',
             26986)
 );</programlisting>
 <screen>Edge 1 changed</screen>
@@ -2325,7 +2325,7 @@ Returns the identifier of the newly added node.
 			<refsection>
 				<title>Examples</title>
 				<para>Add an edge to split.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227592 893910, 227600 893910)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227592 893910,227600 893910)', 26986)) AS edgeid;</programlisting>
 <screen>3</screen>
 				<para>Split the edge with a new node.</para>
 <programlisting>SELECT topology.ST_ModEdgeSplit('ma_topo', 3, ST_SetSRID(ST_Point(227594, 893910), 26986)) AS node_id;</programlisting>
@@ -2539,7 +2539,7 @@ Updates all existing joined edges and relationships accordingly.
 			<refsection>
 				<title>Examples</title>
 				<para>Add an edge to split.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575 893917, 227592 893900)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575 893917,227592 893900)', 26986)) AS edgeid;</programlisting>
 <screen>2</screen>
 				<para>Split the new edge.</para>
 <programlisting>SELECT topology.ST_NewEdgesSplit('ma_topo', 2, ST_GeomFromText('POINT(227578.5 893913.5)', 26986)) AS newnodeid;</programlisting>
@@ -3399,12 +3399,12 @@ get the correct containing face computed.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2, 227591.9 893900.4)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2,227591.9 893900.4)', 26986)) AS edgeid;</programlisting>
 <screen>1</screen>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4, 227622.6 893844.2, 227641.6 893816.5, 227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
 <screen>2</screen>
 				<para>This query errors because the edge intersects an existing edge away from the endpoints.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900, 227591.9 893900.4, 227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900,227591.9 893900.4,227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
 <screen>ERROR:  Edge intersects (not on endpoints) with existing edge 1</screen>
 			</refsection>
 
@@ -3653,7 +3653,7 @@ are expanded to include merged faces (upon removing edges) or healed edges
 			<refsection>
 				<title>Examples: Form from existing edges</title>
 				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>).</para>
-				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo',2,2,'{{1,2}}'::topology.topoelementarray);</programlisting>
+				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo', 2, 2, '{{1,2}}'::topology.topoelementarray);</programlisting>
 
 			</refsection>
 
@@ -3675,7 +3675,7 @@ UPDATE boston.blockgroups AS bg
         'topo_boston',
         3, 1,
         foo.bfaces)
-FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
+FROM (SELECT b.gid, topology.TopoElementArray_Agg(ARRAY[f.face_id, 3]) As bfaces
     FROM boston.blockgroups As b
             INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
         WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
@@ -3690,7 +3690,7 @@ UPDATE boston.blockgroups AS bg
         'topo_boston',
         3, 1,
         foo.bfaces)
-FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
+FROM (SELECT b.gid, topology.TopoElementArray_Agg(ARRAY[f.face_id, 3]) As bfaces
     FROM boston.blockgroups As b
             INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
         WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
@@ -3802,7 +3802,7 @@ replace the old one see <xref linkend="clearTopoGeom"/>.
 				<para>Use the new layer identifier to populate the topogeometry column.</para>
 <programlisting>
 INSERT INTO nei_topo(nei, topo)
-SELECT nei,  topology.toTopoGeom(geom, 'topo_boston_test', 1)
+SELECT nei, topology.toTopoGeom(geom, 'topo_boston_test', 1)
 FROM neighborhoods
 WHERE gid BETWEEN 1 and 15;</programlisting>
 				<para>Verify what happened.</para>
@@ -3873,7 +3873,7 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.TopoElementArray_Agg(ARRAY[e, t] ORDER BY e, t) As tea
-FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;</programlisting>
+FROM generate_series(1, 3) As e CROSS JOIN generate_series(1, 4) As t;</programlisting>
 <screen>{{1,1},{1,2},{1,3},{1,4},{2,1},{2,2},{2,3},{2,4},{3,1},{3,2},{3,3},{3,4}}</screen>
 			</refsection>
 			<refsection>
@@ -4270,7 +4270,7 @@ Refer to <xref linkend="toTopoGeom"/>.
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));</programlisting>
+		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)', 4326));</programlisting>
 <screen> st_srid
 ---------
     4326

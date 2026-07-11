@@ -119,10 +119,10 @@
     <refsection>
       <title>Examples</title>
       <para>Mark a point as WGS 84 longitude/latitude.</para>
-      <programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326)) AS wgs84long_lat;</programlisting>
+      <programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_Point(-123.365556, 48.428611), 4326)) AS wgs84long_lat;</programlisting>
 <screen>SRID=4326;POINT(-123.365556 48.428611)</screen>
       <para>Mark a point as WGS 84 longitude/latitude and then transform it to Web Mercator.</para>
-      <programlisting>SELECT ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785)) AS sphere_merc;</programlisting>
+      <programlisting>SELECT ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611), 4326), 3785)) AS sphere_merc;</programlisting>
 <screen>SRID=3785;POINT(-13732990.8753491 6178458.96425423)</screen>
     </refsection>
 
@@ -165,7 +165,7 @@
     <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));</programlisting>
+    <programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)', 4326));</programlisting>
 <screen> st_srid
 ---------
     4326
@@ -264,7 +264,7 @@
     <title>Examples</title>
     <para>Change Massachusetts state plane US feet geometry to WGS 84 long lat</para>
     <programlisting language="sql">SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-743265 2967450,743265.625 2967416,743238 2967416))',2249),
+743265 2967450,743265.625 2967416,743238 2967416))', 2249),
   4326)) As wgs_geom;
 </programlisting>
     <screen>POLYGON((-71.1776848522251 42.3902896512903,-71.17768437663261 42.390382947801015,-71.17758443054647 42.390382667791854,-71.17758259272304 42.390289364798825,-71.1776848522251 42.3902896512903))</screen>
@@ -317,10 +317,10 @@ FROM data;</programlisting>
         within the <varname>spatial_ref_sys</varname> table.
       </para>
         <para>For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids parameter:</para>
-        <programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat</programlisting>
+        <programlisting>+nadgrids=@conus, @alaska, @ntv2_0.gsb, @ntv1_can.dat</programlisting>
         <para>The @ prefix means no error is reported if the files are not present, but if the end of the list is reached with no file having been appropriate (ie. found and overlapping) then an error is issued.</para>
         <para>If, conversely, you wanted to ensure that at least the standard files were present, but that if all files were scanned without a hit a null transformation is applied you could use:</para>
-        <programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null</programlisting>
+        <programlisting>+nadgrids=@conus, @alaska, @ntv2_0.gsb, @ntv1_can.dat, null</programlisting>
         <para>The null grid shift file is a valid grid shift file covering the whole world and applying no shift. So for a complete example, if you wanted to alter PostGIS so that transformations to SRID 4267 that didn't lie within the correct range did not throw an ERROR, you would use the following:</para>
         <programlisting>UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;</programlisting>
       </refsection>
@@ -649,7 +649,7 @@ point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
       <programlisting language="sql">SELECT auth_name, auth_srid, srname,
   ST_AsText(point_sw) AS point_sw,
   ST_AsText(point_ne) AS point_ne
-FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30, -91 31)')
+FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30,-91 31)')
 WHERE srname LIKE '%Louisiana%'
 ORDER BY auth_name, auth_srid::integer
 LIMIT 3;</programlisting>

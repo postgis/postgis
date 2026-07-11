@@ -122,7 +122,7 @@ register_table
 t
 
 INSERT INTO roads(road_name, geom)
-  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 832202,231627.5 832250.5)',26986));
+  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 832202,231627.5 832250.5)', 26986));
 
 -- check transaction detail --
 SELECT date_added, last_operation, current_version

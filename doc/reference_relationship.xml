@@ -54,7 +54,7 @@
     <refsection>
     <title>Geometry Examples</title>
 <programlisting>SELECT ST_3DIntersects(pt, line), ST_Intersects(pt, line)
-FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::geometry As line) As foo;</programlisting>
+FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1,0 2 3)'::geometry As line) As foo;</programlisting>
 <screen> st_3dintersects | st_intersects
 -----------------+---------------
  f               | t
@@ -259,7 +259,7 @@ FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::geomet
       <para>This example tests a circle within another circle.</para>
       <programlisting>
 SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
-     ST_Contains(bigc,smallc) As bigcontainssmall,
+     ST_Contains(bigc, smallc) As bigcontainssmall,
      ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,
      ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
      ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
@@ -272,11 +272,11 @@ FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
  f                | t                | t                | t          | t        | f</screen>
 <para>This example demonstrates the difference between contains and contains-properly predicates.</para>
 <programlisting>
-SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
+SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA, geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
    ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
-FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
-       ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
-       ( ST_Point(1,1) )
+FROM (VALUES ( ST_Buffer(ST_Point(1, 1), 5, 1) ),
+       ( ST_MakeLine(ST_Point(1, 1), ST_Point(-1, -1) ) ),
+       ( ST_Point(1, 1) )
     ) As foo(geomA);</programlisting>
 <screen>  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
 --------------+------------+----------------+-------------+-----------------
@@ -356,7 +356,7 @@ ST_Point      | t          | t              | f           | f
       <para>This example tests a circle within another circle.</para>
       <programlisting>
 SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
-ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,
+ST_ContainsProperly(bigc, smallc) As bigcontainspropsmall,
 ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as bigcontainspropunion,
 ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
 ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
@@ -368,11 +368,11 @@ ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;</programlisting>
  f                     | t                    | f                    | t          | t                 | f</screen>
 <para>This example demonstrates the difference between contains and contains-properly predicates.</para>
 <programlisting>
-SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
+SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA, geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
 ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba
-FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),
-     ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),
-     ( ST_Point(1,1) )
+FROM (VALUES ( ST_Buffer(ST_Point(1, 1), 5, 1) ),
+     ( ST_MakeLine(ST_Point(1, 1), ST_Point(-1, -1) ) ),
+     ( ST_Point(1, 1) )
  ) As foo(geomA);</programlisting>
 <screen>  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba
 --------------+------------+----------------+-------------+-----------------
@@ -459,10 +459,10 @@ ST_Point      | t          | t              | f           | f
     <title>Examples</title>
       <para>This example tests a circle covered by another circle.</para>
       <programlisting>
-SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,
+SELECT ST_CoveredBy(smallc, smallc) As smallinsmall,
   ST_CoveredBy(smallc, bigc) As smallcoveredbybig,
   ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,
-  ST_Within(ST_ExteriorRing(bigc),bigc) As exeriorwithinbig
+  ST_Within(ST_ExteriorRing(bigc), bigc) As exeriorwithinbig
 FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
   ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;</programlisting>
 <screen> smallinsmall | smallcoveredbybig | exteriorcoveredbybig | exeriorwithinbig
@@ -553,7 +553,7 @@ FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
       <para> Geometry example </para>
       <para>This example tests a circle covering another circle.</para>
       <programlisting>
-SELECT ST_Covers(smallc,smallc) As smallinsmall,
+SELECT ST_Covers(smallc, smallc) As smallinsmall,
   ST_Covers(smallc, bigc) As smallcoversbig,
   ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
   ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
@@ -567,7 +567,7 @@ FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
     <para>This example compares a point with a 300-meter buffer against a point and against a 10-meter buffer around that point.</para>
     <programlisting>
 SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
-  ST_Covers(ST_Buffer(geog_pt,10), geog_pt) As buff_10m_covers_cent
+  ST_Covers(ST_Buffer(geog_pt, 10), geog_pt) As buff_10m_covers_cent
   FROM (SELECT ST_Buffer('SRID=4326;POINT(-99.327 31.4821)'::geography, 300) As geog_poly,
         'SRID=4326;POINT(-99.33 31.483)'::geography As geog_pt ) As foo;</programlisting>
 <screen> poly_covers_pt | buff_10m_covers_cent
@@ -802,9 +802,9 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);</programlisting>
+    <programlisting>SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 2 0,0 2 )'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);</programlisting>
+<programlisting>SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0,0 2 )'::geometry);</programlisting>
 <screen>f</screen>
     </refsection>
 
@@ -859,11 +859,11 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_Equals('LINESTRING(0 0, 10 10)',
-'LINESTRING(0 0, 5 5, 10 10)');</programlisting>
+    <programlisting>SELECT ST_Equals('LINESTRING(0 0,10 10)',
+'LINESTRING(0 0,5 5,10 10)');</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_Equals(ST_Reverse('LINESTRING(0 0, 10 10)'),
-'LINESTRING(0 0, 5 5, 10 10)');</programlisting>
+<programlisting>SELECT ST_Equals(ST_Reverse('LINESTRING(0 0,10 10)'),
+'LINESTRING(0 0,5 5,10 10)');</programlisting>
 <screen>t</screen>
     </refsection>
 
@@ -959,9 +959,9 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     </refsection>
     <refsection>
     <title>Geometry Examples</title>
-<programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);</programlisting>
+<programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0,0 2 )'::geometry);</programlisting>
 <screen>f</screen>
-<programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);</programlisting>
+<programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0,0 2 )'::geometry);</programlisting>
 <screen>t</screen>
 <para>This example looks up rows in a table; for faster lookup, the geometry column should have a GiST index.</para>
 <programlisting role="requires-external-state">SELECT id, name FROM cities WHERE ST_Intersects(geom, 'SRID=4326;POLYGON((28 53,27.707 52.293,27 52,26.293 52.293,26 53,26.293 53.707,27 54,27.707 53.707,28 53))');</programlisting>
@@ -1055,7 +1055,7 @@ SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
        ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
   'LINESTRING(25 169,89 114,40 70,86 43)'::geometry As lineA,
-  'LINESTRING (20 140, 71 74, 161 53)'::geometry As lineB
+  'LINESTRING (20 140,71 74,161 53)'::geometry As lineB
   ) As foo;</programlisting>
 <screen> A_cross_B | B_cross_A
 -----------+-----------
@@ -1099,7 +1099,7 @@ SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
        ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
   'LINESTRING(25 169,89 114,40 70,86 43)'::geometry As lineA,
-  'LINESTRING(5 90, 71 74, 20 140, 171 154)'::geometry As lineB
+  'LINESTRING(5 90,71 74,20 140,171 154)'::geometry As lineB
   ) As foo;</programlisting>
 <screen> A_cross_B | B_cross_A
 -----------+-----------
@@ -1159,14 +1159,14 @@ WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
     <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_OrderingEquals('LINESTRING(0 0, 10 10)',
-'LINESTRING(0 0, 5 5, 10 10)');</programlisting>
+    <programlisting>SELECT ST_OrderingEquals('LINESTRING(0 0,10 10)',
+'LINESTRING(0 0,5 5,10 10)');</programlisting>
 <screen>f</screen>
-<programlisting>SELECT ST_OrderingEquals('LINESTRING(0 0, 10 10)',
-'LINESTRING(0 0, 10 10)');</programlisting>
+<programlisting>SELECT ST_OrderingEquals('LINESTRING(0 0,10 10)',
+'LINESTRING(0 0,10 10)');</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_OrderingEquals('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))',
-'POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))');</programlisting>
+<programlisting>SELECT ST_OrderingEquals('POLYGON((0 0,0 1,1 1,1 0,0 0))',
+'POLYGON((0 0,1 0,1 1,0 1,0 0))');</programlisting>
 <screen>f</screen>
       </refsection>
       <refsection>
@@ -1268,10 +1268,10 @@ WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
 <para>A Point on a LineString is contained,
 but since it has lower dimension it does not overlap or cross.</para>
     <programlisting>
-SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,
-       ST_Intersects(a, b) AS intersects,  ST_Contains(b,a) AS b_contains_a
+SELECT ST_Overlaps(a, b) AS overlaps, ST_Crosses(a, b) AS crosses,
+       ST_Intersects(a, b) AS intersects, ST_Contains(b, a) AS b_contains_a
 FROM (SELECT 'POINT (100 100)'::geometry As a,
-             'LINESTRING (30 50, 40 160, 160 40, 180 160)'::geometry  AS b) AS t</programlisting>
+             'LINESTRING (30 50,40 160,160 40,180 160)'::geometry  AS b) AS t</programlisting>
 <screen>overlaps | crosses | intersects | b_contains_a
 ---------+----------------------+--------------
 f        | f       | t          | t</screen>
@@ -1285,10 +1285,10 @@ f        | f       | t          | t</screen>
 <para>A LineString that partly covers a Polygon intersects and crosses,
 but does not overlap since it has different dimension.</para>
 <programlisting>
-SELECT ST_Overlaps(a,b) AS overlaps,        ST_Crosses(a,b) AS crosses,
-       ST_Intersects(a, b) AS intersects,   ST_Contains(a,b) AS contains
-FROM (SELECT 'POLYGON ((40 170, 90 30, 180 100, 40 170))'::geometry AS a,
-             'LINESTRING(10 10, 190 190)'::geometry AS b) AS t;</programlisting>
+SELECT ST_Overlaps(a, b) AS overlaps, ST_Crosses(a, b) AS crosses,
+       ST_Intersects(a, b) AS intersects, ST_Contains(a, b) AS contains
+FROM (SELECT 'POLYGON ((40 170,90 30,180 100,40 170))'::geometry AS a,
+             'LINESTRING(10 10,190 190)'::geometry AS b) AS t;</programlisting>
 <screen> overlap | crosses | intersects | contains
 ---------+---------+------------+--------------
  f       | t       | t          | f</screen>
@@ -1302,12 +1302,12 @@ FROM (SELECT 'POLYGON ((40 170, 90 30, 180 100, 40 170))'::geometry AS a,
 <para>Two Polygons that intersect but with neither contained by the other overlap,
 but do not cross because their intersection has the same dimension.</para>
 <programlisting>
-SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,
-       ST_Intersects(a, b) AS intersects,  ST_Contains(b, a) AS b_contains_a,
+SELECT ST_Overlaps(a, b) AS overlaps, ST_Crosses(a, b) AS crosses,
+       ST_Intersects(a, b) AS intersects, ST_Contains(b, a) AS b_contains_a,
        ST_Dimension(a) AS dim_a, ST_Dimension(b) AS dim_b,
-       ST_Dimension(ST_Intersection(a,b)) AS dim_int
-FROM (SELECT 'POLYGON ((40 170, 90 30, 180 100, 40 170))'::geometry AS a,
-             'POLYGON ((110 180, 20 60, 130 90, 110 180))'::geometry AS b) As t;</programlisting>
+       ST_Dimension(ST_Intersection(a, b)) AS dim_int
+FROM (SELECT 'POLYGON ((40 170,90 30,180 100,40 170))'::geometry AS a,
+             'POLYGON ((110 180,20 60,130 90,110 180))'::geometry AS b) As t;</programlisting>
 <screen> overlaps | crosses | intersects | b_contains_a | dim_a | dim_b | dim_int
 ----------+---------+------------+--------------+-------+-------+-----------
  t        | f       | t          | f            |     2 |     2 |       2</screen>
@@ -1460,7 +1460,7 @@ SELECT c.* , p.name As poly_name
     FROM polys AS p
     INNER JOIN compounds As c
           ON c.geom &amp;&amp; p.geom
-             AND ST_Relate(p.geom, c.geom,'T********');
+             AND ST_Relate(p.geom, c.geom, 'T********');
 </programlisting>
 
          <para>Computing the intersection matrix for spatial relationships.</para>
@@ -1468,8 +1468,8 @@ SELECT c.* , p.name As poly_name
 ST_Buffer('POINT(1 2)', 2));</programlisting>
 <screen>0FFFFF212</screen>
 
-    <programlisting>SELECT ST_Relate('LINESTRING(1 2, 3 4)',
-'LINESTRING(5 6, 7 8)' );</programlisting>
+    <programlisting>SELECT ST_Relate('LINESTRING(1 2,3 4)',
+'LINESTRING(5 6,7 8)' );</programlisting>
 <screen>FF1FF0102</screen>
 
 <para>Using different Boundary Node Rules to compute the spatial relationship
@@ -1487,8 +1487,8 @@ between a LineString and a MultiLineString with a duplicate endpoint <code>(3 3)
 </itemizedlist>
     <programlisting>
 WITH data AS (SELECT
-  'LINESTRING(1 1, 3 3)'::geometry AS a_line,
-  'MULTILINESTRING((3 3, 3 5), (3 3, 5 3))':: geometry AS b_multiline
+  'LINESTRING(1 1,3 3)'::geometry AS a_line,
+  'MULTILINESTRING((3 3,3 5),(3 3,5 3))':: geometry AS b_multiline
 )
 SELECT ST_Relate(a_line, b_multiline, 1) AS bnr_mod2,
        ST_Relate(a_line, b_multiline, 2) AS bnr_endpoint
@@ -1564,12 +1564,12 @@ SELECT pat.name AS relationship, pat.val AS pattern,
        ST_RelateMatch(mat.val, pat.val) AS match
     FROM (VALUES ( 'Equality', 'T1FF1FFF1' ),
                  ( 'Overlaps', 'T*T***T**' ),
-                 ( 'Within',   'T*F**F***' ),
-                 ( 'Disjoint', 'FF*FF****' )) AS pat(name,val)
+                 ( 'Within', 'T*F**F***' ),
+                 ( 'Disjoint', 'FF*FF****' )) AS pat(name, val)
     CROSS JOIN
         (VALUES  ('non-intersecting', 'FF1FF0212'),
-                 ('overlapping',      '1010F0212'),
-                 ('inside',           '1FF0FF212')) AS mat(name,val);</programlisting>
+                 ('overlapping', '1010F0212'),
+                 ('inside', '1FF0FF212')) AS mat(name, val);</programlisting>
 <screen> relationship |  pattern  |     position     |  matrix   | match
 --------------+-----------+------------------+-----------+-------
  Equality     | T1FF1FFF1 | non-intersecting | FF1FF0212 | f
@@ -1726,9 +1726,9 @@ SELECT pat.name AS relationship, pat.val AS pattern,
       </tgroup>
     </informaltable>
 
-    <programlisting>SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(1 1)'::geometry);</programlisting>
+    <programlisting>SELECT ST_Touches('LINESTRING(0 0,1 1,0 2)'::geometry, 'POINT(1 1)'::geometry);</programlisting>
 <screen>f</screen>
-<programlisting>SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry);</programlisting>
+<programlisting>SELECT ST_Touches('LINESTRING(0 0,1 1,0 2)'::geometry, 'POINT(0 2)'::geometry);</programlisting>
 <screen>t</screen>
     </refsection>
   </refentry>
@@ -1809,9 +1809,9 @@ SELECT pat.name AS relationship, pat.val AS pattern,
     <title>Examples</title>
       <para>This example tests a circle within another circle.</para>
       <programlisting>
-SELECT ST_Within(smallc,smallc) As smallinsmall,
+SELECT ST_Within(smallc, smallc) As smallinsmall,
   ST_Within(smallc, bigc) As smallinbig,
-  ST_Within(bigc,smallc) As biginsmall,
+  ST_Within(bigc, smallc) As biginsmall,
   ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,
   ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,
   ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
@@ -1891,12 +1891,12 @@ SELECT ST_Buffer('POINT(50 50)'::geometry, 20) As smallc,
 
     <para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
     <programlisting>
-SELECT ST_3DDWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
-      ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163),
+SELECT ST_3DDWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry, 2163),
+      ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15,-72.123 42.1546 20)'::geometry, 2163),
       126.8
     ) As within_dist_3d,
-ST_DWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
-      ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163),
+ST_DWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry, 2163),
+      ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15,-72.123 42.1546 20)'::geometry, 2163),
       126.8
     ) As within_dist_2d;</programlisting>
 <screen> within_dist_3d | within_dist_2d
@@ -1965,7 +1965,7 @@ ST_DWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
 ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,
 ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from
   (select 'POINT(1 1 2)'::geometry as geom_a,
-  'LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 3)'::geometry as geom_b) t1;</programlisting>
+  'LINESTRING(1 5 2,2 7 20,1 9 100,14 12 3)'::geometry as geom_b) t1;</programlisting>
 <screen> d3dfullywithin10 | d3dwithin10 | d2dfullywithin20 | d3dfullywithin20
 ------------------+-------------+------------------+------------------
  f                | t           | t                | f </screen>
@@ -2027,7 +2027,7 @@ ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from
     ST_DWithin(geom_a, geom_b, 10) AS DWithin10,
     ST_DFullyWithin(geom_a, geom_b, 20) AS DFullyWithin20
 FROM (VALUES
-    ('POINT(1 1)', 'LINESTRING(1 5, 2 7, 1 9, 14 12)')
+    ('POINT(1 1)', 'LINESTRING(1 5,2 7,1 9,14 12)')
     ) AS v(geom_a, geom_b)</programlisting>
 <screen> dfullywithin10 | dwithin10 | dfullywithin20
 ----------------+-----------+----------------
@@ -2203,7 +2203,7 @@ SELECT b.tower_id, b.geom
     <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_PointInsideCircle(ST_Point(1,2), 0.5, 2, 3);</programlisting>
+    <programlisting>SELECT ST_PointInsideCircle(ST_Point(1, 2), 0.5, 2, 3);</programlisting>
 <screen>t</screen>
     </refsection>
 

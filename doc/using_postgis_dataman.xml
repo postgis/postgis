@@ -147,7 +147,7 @@ POINT ZM (1 2 3 4)
         and zero or more interior boundaries (holes).
         Each boundary is a <link linkend="LinearRing">LinearRing</link>.
         </para>
-        <programlisting>POLYGON ((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))</programlisting>
+        <programlisting>POLYGON ((0 0 0, 4 0 0, 4 4 0, 0 4 0, 0 0 0), (1 1 0, 2 1 0, 2 2 0, 1 2 0, 1 1 0))</programlisting>
     </section>
 
     <section xml:id="MultiPoint">
@@ -161,7 +161,7 @@ POINT ZM (1 2 3 4)
         <para>A MultiLineString is a collection of LineStrings.
         A MultiLineString is closed if each of its elements is closed.
         </para>
-        <programlisting>MULTILINESTRING ( (0 0,1 1,1 2), (2 3,3 2,5 4) )</programlisting>
+        <programlisting>MULTILINESTRING ( (0 0, 1 1, 1 2), (2 3, 3 2, 5 4) )</programlisting>
     </section>
 
     <section xml:id="MultiPolygon">
@@ -257,7 +257,7 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
         every component (except the last) must be coincident with the
         start point of the following component.</para>
 
-		<programlisting>COMPOUNDCURVE( CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))</programlisting>
+		<programlisting>COMPOUNDCURVE( CIRCULARSTRING(0 0, 1 1, 1 0), (1 0, 0 1))</programlisting>
     </section>
     <section xml:id="CurvePolygon">
         <title>CurvePolygon</title>
@@ -275,7 +275,7 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),
         containing a CircularString and a LineString,
         and a hole defined by a CircularString</para>
 		  <programlisting>CURVEPOLYGON(
-COMPOUNDCURVE( CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),
+COMPOUNDCURVE( CIRCULARSTRING(0 0, 2 0, 2 1, 2 3, 4 3),
                (4 3, 4 5, 1 4, 0 0)),
 CIRCULARSTRING(1.7 1, 1.4 0.4, 1.6 0.4, 1.6 0.5, 1.7 1) )</programlisting>
 
@@ -653,7 +653,7 @@ VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</progr
 <programlisting>CREATE TABLE global_points (
   id SERIAL PRIMARY KEY,
   name VARCHAR(64),
-  location geography(POINT,4326)
+  location geography(POINT, 4326)
 );</programlisting>
 
 		<para>The geography type supports two optional type modifiers:</para>
@@ -685,11 +685,11 @@ VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</progr
 		</listitem>
 		<listitem>
 		  <para>Create a table with 2D POINT geography in NAD83 longlat:</para>
-		  <para><programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT,4269));</programlisting></para>
+		  <para><programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT, 4269));</programlisting></para>
 		</listitem>
 		<listitem>
 		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 4326:</para>
-		  <para><programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ,4326));</programlisting></para>
+		  <para><programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ, 4326));</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>Create a table with 2D LINESTRING geography with the default SRID 4326:</para>
@@ -697,7 +697,7 @@ VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</progr
 		</listitem>
 		<listitem>
 			<para>Create a table with 2D POLYGON geography with the SRID 4267 (NAD 1927 long lat):</para>
-			<para><programlisting>CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267));</programlisting></para>
+			<para><programlisting>CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON, 4267));</programlisting></para>
 		</listitem>
 		<!-- TODO: Add other examples -->
         <!--
@@ -783,7 +783,7 @@ comes to Reykjavik (POINT(-21.96 64.15))
 between Reykjavik and the great circle flight path between Seattle and London.</para>
 
 <programlisting>-- Distance calculation using GEOGRAPHY
-SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);</programlisting>
+SELECT ST_Distance('LINESTRING(-122.33 47.606,0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);</programlisting>
 <screen>   st_distance
 -----------------
  122235.23815667</screen>
@@ -796,7 +796,7 @@ but the result doesn't correspond to any true angular difference between the poi
 so even calling them "degrees" is inaccurate.</para>
 
 <programlisting>-- Distance calculation using GEOMETRY
-SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);</programlisting>
+SELECT ST_Distance('LINESTRING(-122.33 47.606,0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);</programlisting>
 <screen>      st_distance
 --------------------
  13.342271221453624</screen>
@@ -1036,8 +1036,8 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 	use the <xref linkend="ST_IsSimple"/> function:</para>
 
 	  <programlisting>SELECT
-ST_IsSimple('LINESTRING(0 0, 100 100)') AS straight,
-ST_IsSimple('LINESTRING(0 0, 100 100, 100 0, 0 100)') AS crossing;</programlisting>
+ST_IsSimple('LINESTRING(0 0,100 100)') AS straight,
+ST_IsSimple('LINESTRING(0 0,100 100,100 0,0 100)') AS crossing;</programlisting>
 <screen> straight | crossing
 ----------+----------
  t        | f</screen>
@@ -1250,9 +1250,9 @@ ST_IsSimple('LINESTRING(0 0, 100 100, 100 0, 0 100)') AS crossing;</programlisti
     </para>
 
 <programlisting>SELECT
-ST_IsValid('LINESTRING(0 0, 1 1)') AS len_nonzero,
-ST_IsValid('LINESTRING(0 0, 0 0, 0 0)') AS len_zero,
-ST_IsValid('LINESTRING(10 10, 150 150, 180 50, 20 130)') AS self_int;</programlisting>
+ST_IsValid('LINESTRING(0 0,1 1)') AS len_nonzero,
+ST_IsValid('LINESTRING(0 0,0 0,0 0)') AS len_zero,
+ST_IsValid('LINESTRING(10 10,150 150,180 50,20 130)') AS self_int;</programlisting>
 <screen> len_nonzero | len_zero | self_int
 -------------+----------+----------
  t           | f        | t</screen>
@@ -1301,13 +1301,13 @@ ST_IsValid('LINESTRING(10 10, 150 150, 180 50, 20 130)') AS self_int;</programli
 	  <para>To test if a geometry is valid use the
 	  <xref linkend="ST_IsValid"/> function:
       </para>
-<programlisting>SELECT ST_IsValid('POLYGON ((20 180, 180 180, 180 20, 20 20, 20 180))');</programlisting>
+<programlisting>SELECT ST_IsValid('POLYGON ((20 180,180 180,180 20,20 20,20 180))');</programlisting>
 <screen> t</screen>
 	  <para>Information about the nature and location of an geometry invalidity are provided by
 	  the <xref linkend="ST_IsValidDetail"/> function:
       </para>
 <programlisting>SELECT valid, reason, ST_AsText(location) AS location
-FROM ST_IsValidDetail('POLYGON ((20 20, 120 190, 50 190, 170 50, 20 20))') AS t;</programlisting>
+FROM ST_IsValidDetail('POLYGON ((20 20,120 190,50 190,170 50,20 20))') AS t;</programlisting>
 <screen> valid |      reason       |                  location
 -------+-------------------+---------------------------------------------
  f     | Self-intersection | POINT(91.51162790697674 141.56976744186048)</screen>
@@ -1446,18 +1446,18 @@ ADD CONSTRAINT geometry_valid_check
 			<programlisting>PROJCS["NAD83 / UTM Zone 10N",
   GEOGCS["NAD83",
     DATUM["North_American_Datum_1983",
-      SPHEROID["GRS 1980",6378137,298.257222101]
+      SPHEROID["GRS 1980", 6378137, 298.257222101]
     ],
-    PRIMEM["Greenwich",0],
-    UNIT["degree",0.0174532925199433]
+    PRIMEM["Greenwich", 0],
+    UNIT["degree", 0.0174532925199433]
   ],
   PROJECTION["Transverse_Mercator"],
-  PARAMETER["latitude_of_origin",0],
-  PARAMETER["central_meridian",-123],
-  PARAMETER["scale_factor",0.9996],
-  PARAMETER["false_easting",500000],
-  PARAMETER["false_northing",0],
-  UNIT["metre",1]
+  PARAMETER["latitude_of_origin", 0],
+  PARAMETER["central_meridian", -123],
+  PARAMETER["scale_factor", 0.9996],
+  PARAMETER["false_easting", 500000],
+  PARAMETER["false_northing", 0],
+  UNIT["metre", 1]
 ]</programlisting>
 
 			<para>For a discussion of SRS WKT, see the OGC standard <link xlink:href="http://docs.opengeospatial.org/is/12-063r5/12-063r5.html">Well-known text representation of coordinate reference systems</link>.
@@ -1568,7 +1568,7 @@ VALUES ( 990000,
 <programlisting>CREATE TABLE roads (
   id SERIAL PRIMARY KEY,
   name VARCHAR(64),
-  geom geometry(LINESTRING,3005)
+  geom geometry(LINESTRING, 3005)
 );</programlisting>
 
 		<para>The <varname>geometry</varname> type supports two optional <emphasis role="bold">type modifiers</emphasis>:</para>
@@ -1607,7 +1607,7 @@ VALUES ( 990000,
 		</listitem>
 		<listitem>
 		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 3005:</para>
-		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ,3005));</programlisting></para>
+		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ, 3005));</programlisting></para>
 		</listitem>
 		<listitem>
 			<para>Create a table with 4D (XYZM) LINESTRING geometry with the default SRID:</para>
@@ -1615,7 +1615,7 @@ VALUES ( 990000,
 		</listitem>
 		<listitem>
 			<para>Create a table with 2D POLYGON geometry with the SRID 4267 (NAD 1927 long lat):</para>
-			<para><programlisting>CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON,4267));</programlisting></para>
+			<para><programlisting>CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON, 4267));</programlisting></para>
 		</listitem>
 		</itemizedlist>
 
@@ -1625,7 +1625,7 @@ VALUES ( 990000,
         SQL statement.
         This example adds a column that can hold 3D LineStrings:</para>
 
-	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
+	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ, 4326);</programlisting>
 	</section>
 
 	<section xml:id="geometry_columns">
@@ -1728,7 +1728,7 @@ CREATE VIEW  public.vwmytablemercator AS
 		<para>If the geometry type is known to be a 2D Polygon, specify it in the cast.</para>
 <programlisting>DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
-    SELECT gid, ST_Transform(geom,3395)::geometry(Polygon, 3395) As geom, f_name
+    SELECT gid, ST_Transform(geom, 3395)::geometry(Polygon, 3395) As geom, f_name
     FROM public.mytable;</programlisting>
 		<para>For a derivative table created by a bulk insert, create the table first.</para>
 		<programlisting>SELECT poi.gid, poi.geom, citybounds.city_name
@@ -1749,7 +1749,7 @@ ON my_special_pois USING gist(geom gist_geometry_ops_nd);</programlisting>
 pass-through view columns register correctly in <varname>geometry_columns</varname>
 for both typmod-based and constraint-based source columns. In this example we
 define a column using typmod and another using constraints.</para>
-<programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT,4326));
+<programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT, 4326));
 SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
 <para>If we run <command>\d pois_ny</command> in psql, we observe they are defined differently -- one is typmod, one is constraint.</para>
 <screen>\d pois_ny
@@ -1800,7 +1800,7 @@ column explicitly so the view can expose the correct type and SRID:</para>
 CREATE VIEW vw_pois_ny_parks AS
 SELECT gid, poi_name, cat,
   geom,
-  ST_Transform(geom, 2160)::geometry(POINT,2160) As geom_2160
+  ST_Transform(geom, 2160)::geometry(POINT, 2160) As geom_2160
   FROM pois_ny
   WHERE cat = 'park';
 SELECT f_table_name, f_geometry_column, srid, type
@@ -1836,17 +1836,17 @@ SELECT f_table_name, f_geometry_column, srid, type
 
 	  <programlisting>BEGIN;
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (1,'LINESTRING(191232 243118,191108 243242)','Jeff Rd');
+  VALUES (1, 'LINESTRING(191232 243118,191108 243242)', 'Jeff Rd');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (2,'LINESTRING(189141 244158,189265 244817)','Geordie Rd');
+  VALUES (2, 'LINESTRING(189141 244158,189265 244817)', 'Geordie Rd');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (3,'LINESTRING(192783 228138,192612 229814)','Paul St');
+  VALUES (3, 'LINESTRING(192783 228138,192612 229814)', 'Paul St');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (4,'LINESTRING(189412 252431,189631 259122)','Graeme Ave');
+  VALUES (4, 'LINESTRING(189412 252431,189631 259122)', 'Graeme Ave');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (5,'LINESTRING(190131 224148,190871 228134)','Phil Tce');
+  VALUES (5, 'LINESTRING(190131 224148,190871 228134)', 'Phil Tce');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (6,'LINESTRING(198231 263418,198213 268322)','Dave Cres');
+  VALUES (6, 'LINESTRING(198231 263418,198213 268322)', 'Dave Cres');
 COMMIT;</programlisting>
 
 	  <para>The SQL file can be loaded into PostgreSQL using <code>psql</code>:</para>

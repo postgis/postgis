@@ -162,7 +162,7 @@ from somegeogtable;</programlisting>
 		<title>Examples</title>
 		<para>Geometry Azimuth in degrees </para>
 <programlisting>
-SELECT degrees(ST_Azimuth(ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
+SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
        degrees(ST_Azimuth(ST_Point(75, 100), ST_Point(25, 45) )) AS degB_A;</programlisting>
 <screen>      dega_b       |     degb_a
 ------------------+------------------
@@ -284,7 +284,7 @@ ORDER BY deg;</programlisting>
 <screen>269.9999999999999</screen>
 
         <para>Angle between vectors defined by the start and end points of lines</para>
-<programlisting>SELECT degrees(ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0.5, 1 0)'));</programlisting>
+<programlisting>SELECT degrees(ST_Angle('LINESTRING(0 0,0.3 0.7,1 1)', 'LINESTRING(0 0,0.2 0.5,1 0)'));</programlisting>
 <screen>45</screen>
 
 		</refsection>
@@ -353,10 +353,10 @@ ORDER BY deg;</programlisting>
         </mediaobject>
         </informalfigure>
 <programlisting>
-SELECT ST_AsText(ST_ClosestPoint(pt,line)) AS cp_pt_line,
-       ST_AsText(ST_ClosestPoint(line,pt)) AS cp_line_pt
+SELECT ST_AsText(ST_ClosestPoint(pt, line)) AS cp_pt_line,
+       ST_AsText(ST_ClosestPoint(line, pt)) AS cp_line_pt
     FROM (SELECT 'POINT (160 40)'::geometry AS pt,
-                 'LINESTRING (10 30, 50 50, 30 110, 70 90, 180 140, 130 190)'::geometry AS line ) AS t;</programlisting>
+                 'LINESTRING (10 30,50 50,30 110,70 90,180 140,130 190)'::geometry AS line ) AS t;</programlisting>
 <screen>   cp_pt_line   |                cp_line_pt
 ----------------+------------------------------------------
  POINT(160 40)  | POINT(125.75342465753425 115.34246575342466)</screen>
@@ -372,7 +372,7 @@ SELECT ST_AsText(ST_ClosestPoint(pt,line)) AS cp_pt_line,
         </informalfigure>
 <programlisting>
 SELECT ST_AsText(ST_ClosestPoint(
-                'POLYGON ((190 150, 20 10, 160 70, 190 150))',
+                'POLYGON ((190 150,20 10,160 70,190 150))',
                 ST_Buffer('POINT(80 160)', 30)  )) As ptwkt;</programlisting>
 	<screen>POINT(131.59149149528952 101.89887534906195)</screen>
 	</para>
@@ -429,10 +429,10 @@ SELECT ST_AsText(ST_ClosestPoint(
 						  <row>
 							<entry><para>linestring and point -- both 3d and 2d closest point
 					<programlisting>
-SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
-        ST_AsEWKT(ST_ClosestPoint(line,pt)) As cp2d_line_pt
+SELECT ST_AsEWKT(ST_3DClosestPoint(line, pt)) AS cp3d_line_pt,
+        ST_AsEWKT(ST_ClosestPoint(line, pt)) As cp2d_line_pt
     FROM (SELECT 'POINT(100 100 30)'::geometry As pt,
-            'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 1000)'::geometry As line
+            'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 1000)'::geometry As line
         ) As foo;</programlisting>
 <screen> cp3d_line_pt                                              |               cp2d_line_pt
 -----------------------------------------------------------+------------------------------------------
@@ -441,10 +441,10 @@ POINT(54.69937988676193 128.93502291722837 11.547586950660556) | POINT(73.076923
 						    </row>
 						    <row>
 							<entry><para>linestring and multipoint -- both 3d and 2d closest point
-					<programlisting>SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
-    ST_AsEWKT(ST_ClosestPoint(line,pt)) As cp2d_line_pt
-FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt,
-        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 900)'::geometry As line
+					<programlisting>SELECT ST_AsEWKT(ST_3DClosestPoint(line, pt)) AS cp3d_line_pt,
+    ST_AsEWKT(ST_ClosestPoint(line, pt)) As cp2d_line_pt
+FROM (SELECT 'MULTIPOINT(100 100 30,50 74 1000)'::geometry As pt,
+        'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 900)'::geometry As line
     ) As foo;</programlisting>
 <screen>                       cp3d_line_pt                        | cp2d_line_pt
 -----------------------------------------------------------+--------------
@@ -455,9 +455,9 @@ POINT(54.69937988676193 128.93502291722837 11.547586950660556) | POINT(50 75)</s
 						  <entry><para>Multilinestring and polygon both 3d and 2d closest point
 					<programlisting>SELECT ST_AsEWKT(ST_3DClosestPoint(poly, mline)) As cp3d,
 ST_AsEWKT(ST_ClosestPoint(poly, mline)) As cp2d
-    FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
-            ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
-            (1 10 2, 5 20 1))') As mline ) As foo;</programlisting>
+    FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5,20 40 5,35 45 5,50 60 5,100 100 5,175 150 5))') As poly,
+            ST_GeomFromEWKT('MULTILINESTRING((175 155 2,20 40 20,50 60 -2,125 100 1,175 155 1),
+            (1 10 2,5 20 1))') As mline ) As foo;</programlisting>
 <screen>                   cp3d                    |     cp2d
 -------------------------------------------+--------------
 POINT(40.45454545454545 53.63636363636364 5) | POINT(20 40)</screen>
@@ -539,7 +539,7 @@ POINT(40.45454545454545 53.63636363636364 5) | POINT(20 40)</screen>
 		<para>Geometry example - units in planar degrees 4326 is WGS 84 long lat, units are degrees.</para>
 			<programlisting>SELECT ST_Distance(
 'SRID=4326;POINT(-72.1235 42.3521)'::geometry,
-'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry );</programlisting>
+'SRID=4326;LINESTRING(-72.1260 42.45,-72.123 42.1546)'::geometry );</programlisting>
 <screen>0.00150567726382282</screen>
 
 <para>Geometry example - units in meters (SRID: 3857, proportional to pixels on popular web maps).
@@ -547,26 +547,26 @@ Although the value is off, nearby ones can be compared correctly,
 which makes it a good choice for algorithms like KNN or KMeans.</para>
 	<programlisting>SELECT ST_Distance(
 ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
-ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857) );</programlisting>
+ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45,-72.123 42.1546)'::geometry, 3857) );</programlisting>
 <screen>167.441410065196</screen>
 
 <para>Geometry example - units in meters (SRID: 3857 as above, but corrected by cos(lat) to account for distortion)</para>
 	<programlisting>SELECT ST_Distance(
 ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
-ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
+ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45,-72.123 42.1546)'::geometry, 3857)
         ) * cosd(42.3521);</programlisting>
 <screen>123.742351254151</screen>
 
 <para>Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)</para>
 	<programlisting>SELECT ST_Distance(
 ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 26986),
-ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 26986) );</programlisting>
+ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45,-72.123 42.1546)'::geometry, 26986) );</programlisting>
 <screen>123.797937878454</screen>
 
 <para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate) </para>
 	<programlisting>SELECT ST_Distance(
 ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 2163),
-ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 2163) );</programlisting>
+ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45,-72.123 42.1546)'::geometry, 2163) );</programlisting>
 <screen>126.664256056812</screen>
 	</refsection>
 	  <refsection>
@@ -575,7 +575,7 @@ ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 
 <programlisting>SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist
 FROM (SELECT
     'SRID=4326;POINT(-72.1235 42.3521)'::geography as gg1,
-    'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geography as gg2
+    'SRID=4326;LINESTRING(-72.1260 42.45,-72.123 42.1546)'::geography as gg2
     ) As foo  ;</programlisting>
 <screen>  spheroid_dist   |   sphere_dist
 ------------------+------------------
@@ -632,12 +632,12 @@ FROM (SELECT
 		<para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
 		<programlisting>
 SELECT ST_3DDistance(
-            ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
-                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
+            ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry, 2163),
+                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15,-72.123 42.1546 20)'::geometry, 2163)
             ) As dist_3d,
             ST_Distance(
-                ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry,2163),
-                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry,2163)
+                ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 2163),
+                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45,-72.123 42.1546)'::geometry, 2163)
             ) As dist_2d;</programlisting>
 <screen>     dist_3d      |     dist_2d
 ------------------+-----------------
@@ -646,8 +646,8 @@ SELECT ST_3DDistance(
 <programlisting>
 SELECT ST_3DDistance(poly, mline) As dist3d,
     ST_Distance(poly, mline) As dist2d
-        FROM (SELECT  'POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))'::geometry as poly,
-               'MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1), (1 10 2, 5 20 1))'::geometry as mline) as foo;</programlisting>
+        FROM (SELECT  'POLYGON((175 150 5,20 40 5,35 45 5,50 60 5,100 100 5,175 150 5))'::geometry as poly,
+               'MULTILINESTRING((175 155 2,20 40 20,50 60 -2,125 100 1,175 155 1),(1 10 2,5 20 1))'::geometry as mline) as foo;</programlisting>
 <screen>      dist3d       | dist2d
 -------------------+--------
                  0 |      0</screen>
@@ -697,16 +697,16 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,
+		<programlisting>SELECT round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric), 2) As dist_meters,
 round(
     CAST(ST_Distance(
-                ST_Transform(ST_Centroid(geom),32611),
-                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters,
-round(CAST(ST_Distance(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric),5) As dist_degrees,
+                ST_Transform(ST_Centroid(geom), 32611),
+                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326), 32611)) As numeric), 2) As dist_utm11_meters,
+round(CAST(ST_Distance(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric), 5) As dist_degrees,
 round(
     CAST(ST_Distance(
-                ST_Transform(geom,32611),
-                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As min_dist_line_point_meters
+                ST_Transform(geom, 32611),
+                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326), 32611)) As numeric), 2) As min_dist_line_point_meters
 FROM
     (SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As geom) as foo;</programlisting>
 <screen> dist_meters | dist_utm11_meters | dist_degrees | min_dist_line_point_meters
@@ -763,13 +763,13 @@ FROM
 
 <programlisting>SELECT round(
             CAST(
-            ST_DistanceSpheroid(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
-                As numeric),2) As dist_meters_spheroid,
-        round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
+            ST_DistanceSpheroid(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)', 4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
+                As numeric), 2) As dist_meters_spheroid,
+        round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric), 2) As dist_meters_sphere,
 round(
     CAST(ST_Distance(
-                ST_Transform(ST_Centroid(geom),32611),
-                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters
+                ST_Transform(ST_Centroid(geom), 32611),
+                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326), 32611)) As numeric), 2) As dist_utm11_meters
 FROM
     (SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As geom) as foo;</programlisting>
 <screen> dist_meters_spheroid | dist_meters_sphere | dist_utm11_meters
@@ -838,9 +838,9 @@ The smaller densifyFrac we specify, the more accurate Fréchet distance we get. 
 
 	  <refsection>
 		<title>Examples</title>
-			<programlisting>SELECT ST_FrechetDistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry);</programlisting>
+			<programlisting>SELECT ST_FrechetDistance('LINESTRING (0 0,100 0)'::geometry, 'LINESTRING (0 0,50 50,100 0)'::geometry);</programlisting>
 <screen>70.7106781186548</screen>
-			<programlisting>SELECT ST_FrechetDistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry, 0.5);</programlisting>
+			<programlisting>SELECT ST_FrechetDistance('LINESTRING (0 0,100 0)'::geometry, 'LINESTRING (0 0,50 50,100 0)'::geometry, 0.5);</programlisting>
 <screen>50</screen>
 
 	  </refsection>
@@ -931,8 +931,8 @@ The smaller densifyFrac we specify, the more accurate Fréchet distance we get. 
 <programlisting>
 SELECT ST_HausdorffDistance(geomA, geomB),
        ST_Distance(geomA, geomB)
-    FROM (SELECT 'LINESTRING (20 70, 70 60, 110 70, 170 70)'::geometry AS geomA,
-                 'LINESTRING (20 90, 130 90, 60 100, 190 100)'::geometry AS geomB) AS t;</programlisting>
+    FROM (SELECT 'LINESTRING (20 70,70 60,110 70,170 70)'::geometry AS geomA,
+                 'LINESTRING (20 90,130 90,60 100,190 100)'::geometry AS geomB) AS t;</programlisting>
 <screen> st_hausdorffdistance | st_distance
 ----------------------+-------------
     37.26206567625497 |          20</screen>
@@ -940,8 +940,8 @@ SELECT ST_HausdorffDistance(geomA, geomB),
 <para><emphasis role="bold">Example:</emphasis> Hausdorff distance with densification.</para>
 <programlisting>
 SELECT ST_HausdorffDistance(
-            'LINESTRING (130 0, 0 0, 0 150)'::geometry,
-            'LINESTRING (10 10, 10 150, 130 10)'::geometry,
+            'LINESTRING (130 0,0 0,0 150)'::geometry,
+            'LINESTRING (10 10,10 150,130 10)'::geometry,
             0.5);</programlisting>
 <screen>70</screen>
 
@@ -1021,7 +1021,7 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 <para>This example transforms a WGS 84 LineString to Massachusetts State Plane meters.</para>
 <programlisting>
 SELECT ST_Length(ST_Transform(
-        'SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)'::geometry,
+        'SRID=4326;LINESTRING(-72.1260 42.45,-72.1240 42.45666,-72.123 42.1546)'::geometry,
             26986
     )
 );</programlisting>
@@ -1032,8 +1032,8 @@ SELECT ST_Length(ST_Transform(
 			<para>Return length of WGS 84 geography line</para>
 			<para>This example uses the default spheroid calculation.</para>
 			<programlisting>
-SELECT ST_Length(the_geog) As length_spheroid,  ST_Length(the_geog,false) As length_sphere
-FROM (SELECT ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)') As the_geog)
+SELECT ST_Length(the_geog) As length_spheroid, ST_Length(the_geog, false) As length_sphere
+FROM (SELECT ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45,-72.1240 42.45666,-72.123 42.1546)') As the_geog)
  As foo;</programlisting>
 <screen> length_spheroid  |  length_sphere
 ------------------+------------------
@@ -1171,10 +1171,10 @@ SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]
 FROM geometry_table;</programlisting>
 
 <programlisting>SELECT ST_LengthSpheroid(geom, sph_m ) As tot_len,
-ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
-ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
+ST_LengthSpheroid(ST_GeometryN(geom, 1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(geom, 2), sph_m) As len_line2
               FROM (SELECT 'MULTILINESTRING((-118.584 38.374,-118.583 38.5),
-    (-71.05957 42.3589 , -71.061 43))'::geometry As geom,
+    (-71.05957 42.3589,-71.061 43))'::geometry As geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;</programlisting>
 <screen>     tot_len      |    len_line1     |    len_line2
 ------------------+------------------+------------------
@@ -1182,10 +1182,10 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 <para>This example uses 3D input.</para>
 <programlisting>
 SELECT ST_LengthSpheroid(geom, sph_m ) As tot_len,
-ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
-ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
+ST_LengthSpheroid(ST_GeometryN(geom, 1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(geom, 2), sph_m) As len_line2
               FROM (SELECT 'MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
-    (-71.05957 42.3589 75, -71.061 43 90))'::geometry As geom,
+    (-71.05957 42.3589 75,-71.061 43 90))'::geometry As geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;</programlisting>
 <screen>     tot_len      |    len_line1    |    len_line2
 ------------------+-----------------+------------------
@@ -1261,7 +1261,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 <programlisting>
 SELECT ST_AsText(ST_LongestLine(
         'POINT (160 40)',
-        'LINESTRING (10 30, 50 50, 30 110, 70 90, 180 140, 130 190)' )
+        'LINESTRING (10 30,50 50,30 110,70 90,180 140,130 190)' )
         ) AS lline;</programlisting>
 <screen>LINESTRING(160 40,130 190)</screen>
 	</para>
@@ -1277,7 +1277,7 @@ SELECT ST_AsText(ST_LongestLine(
         </informalfigure>
 <programlisting>
 SELECT ST_AsText(ST_LongestLine(
-        'POLYGON ((190 150, 20 10, 160 70, 190 150))',
+        'POLYGON ((190 150,20 10,160 70,190 150))',
         ST_Buffer('POINT(80 160)', 30)
             ) ) AS llinewkt;</programlisting>
 <screen>LINESTRING(20 10,91.4805029709527 187.7163859753386)</screen>
@@ -1297,8 +1297,8 @@ SELECT ST_AsText(ST_LongestLine(
 SELECT ST_AsText(ST_LongestLine(geom)) AS llinewkt,
                   ST_MaxDistance(geom) AS max_dist,
                   ST_Length(ST_LongestLine(geom)) AS lenll
-FROM (SELECT 'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10, 70 40, 20 50, 40 180),
-              (60 140, 99 77.5, 90 140, 60 140))'::geometry AS geom) AS t;</programlisting>
+FROM (SELECT 'POLYGON ((40 180,110 160,180 180,180 120,140 90,160 40,80 10,70 40,20 50,40 180),
+              (60 140,99 77.5,90 140,60 140))'::geometry AS geom) AS t;</programlisting>
 <screen>         llinewkt          |      max_dist      |       lenll
 ---------------------------+--------------------+--------------------
  LINESTRING(20 50,180 180) | 206.15528128088303 | 206.15528128088303</screen>
@@ -1358,10 +1358,10 @@ FROM (SELECT 'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10
 						  <row>
 							<entry><para>linestring and point -- both 3d and 2d longest line
 					<programlisting>
-SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
-        ST_AsEWKT(ST_LongestLine(line,pt)) As lol2d_line_pt
+SELECT ST_AsEWKT(ST_3DLongestLine(line, pt)) AS lol3d_line_pt,
+        ST_AsEWKT(ST_LongestLine(line, pt)) As lol2d_line_pt
     FROM (SELECT 'POINT(100 100 30)'::geometry As pt,
-            'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 1000)'::geometry As line
+            'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 1000)'::geometry As line
         ) As foo;</programlisting>
 <screen>           lol3d_line_pt           |       lol2d_line_pt
 -----------------------------------+----------------------------
@@ -1370,10 +1370,10 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
 						    </row>
 						    <row>
 							<entry><para>linestring and multipoint -- both 3d and 2d longest line
-					<programlisting>SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
-    ST_AsEWKT(ST_LongestLine(line,pt)) As lol2d_line_pt
-FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt,
-        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 900)'::geometry As line
+					<programlisting>SELECT ST_AsEWKT(ST_3DLongestLine(line, pt)) AS lol3d_line_pt,
+    ST_AsEWKT(ST_LongestLine(line, pt)) As lol2d_line_pt
+FROM (SELECT 'MULTIPOINT(100 100 30,50 74 1000)'::geometry As pt,
+        'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 900)'::geometry As line
     ) As foo;</programlisting>
 <screen>          lol3d_line_pt          |      lol2d_line_pt
 ---------------------------------+--------------------------
@@ -1384,9 +1384,9 @@ FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt,
 						  <entry><para>MultiLineString and Polygon both 3d and 2d longest line
 					<programlisting>SELECT ST_AsEWKT(ST_3DLongestLine(poly, mline)) As lol3d,
 ST_AsEWKT(ST_LongestLine(poly, mline)) As lol2d
-    FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
-            ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
-            (1 10 2, 5 20 1))') As mline ) As foo;</programlisting>
+    FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5,20 40 5,35 45 5,50 60 5,100 100 5,175 150 5))') As poly,
+            ST_GeomFromEWKT('MULTILINESTRING((175 155 2,20 40 20,50 60 -2,125 100 1,175 155 1),
+            (1 10 2,5 20 1))') As mline ) As foo;</programlisting>
 <screen>            lol3d             |          lol2d
 ------------------------------+--------------------------
  LINESTRING(175 150 5,1 10 2) | LINESTRING(175 150,1 10)</screen>
@@ -1446,14 +1446,14 @@ ST_AsEWKT(ST_LongestLine(poly, mline)) As lol2d
     <title>Examples</title>
 
      <para>Maximum distance between a point and lines.</para>
-		<programlisting>SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);</programlisting>
+		<programlisting>SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0,0 2 )'::geometry);</programlisting>
 <screen>2</screen>
 
-<programlisting>SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )'::geometry);</programlisting>
+<programlisting>SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2,2 2 )'::geometry);</programlisting>
 <screen>2.82842712474619</screen>
 
      <para>Maximum distance between vertices of a single geometry.</para>
-<programlisting>SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry);</programlisting>
+<programlisting>SELECT ST_MaxDistance('POLYGON ((10 10,10 0,0 0,10 10))'::geometry);</programlisting>
 <screen> 14.142135623730951</screen>
   </refsection>
 
@@ -1505,12 +1505,12 @@ ST_AsEWKT(ST_LongestLine(poly, mline)) As lol2d
 		<para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
 		<programlisting>
 SELECT ST_3DMaxDistance(
-            ST_Transform('SRID=4326;POINT(-72.1235 42.3521 10000)'::geometry,2163),
-                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
+            ST_Transform('SRID=4326;POINT(-72.1235 42.3521 10000)'::geometry, 2163),
+                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15,-72.123 42.1546 20)'::geometry, 2163)
             ) As dist_3d,
             ST_MaxDistance(
-                ST_Transform('SRID=4326;POINT(-72.1235 42.3521 10000)'::geometry,2163),
-                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
+                ST_Transform('SRID=4326;POINT(-72.1235 42.3521 10000)'::geometry, 2163),
+                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15,-72.123 42.1546 20)'::geometry, 2163)
             ) As dist_2d;</programlisting>
 <screen>     dist_3d      |     dist_2d
 ------------------+------------------
@@ -1589,7 +1589,7 @@ SELECT ST_3DMaxDistance(
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');</programlisting>
+		<programlisting>SELECT ST_MinimumClearance('POLYGON ((0 0,1 0,1 1,0.5 3.2e-4,0 0))');</programlisting>
 <screen>0.00032</screen>
 
 	  </refsection>
@@ -1636,7 +1636,7 @@ SELECT ST_3DMaxDistance(
 
 	  <refsection>
 		  <title>Examples</title>
-		  <programlisting>SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))'));</programlisting>
+		  <programlisting>SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0,1 0,1 1,0.5 3.2e-4,0 0))'));</programlisting>
 <screen>LINESTRING(0.5 0.00032,0.5 0)
                   </screen>
 	  </refsection>
@@ -1719,7 +1719,7 @@ FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766
 37.37904625414049 | 122.63466618812497</screen>
 <para>This example uses a MultiPolygon.</para>
 <programlisting>
-SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog,false) As per_sphere_meters,  ST_Perimeter(geog)/0.3048 As per_ft
+SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog, false) As per_sphere_meters, ST_Perimeter(geog)/0.3048 As per_ft
 FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.1044542869917 42.3406744369506,
 -71.1044553562977 42.340673886454,-71.1044543107478 42.340674480411)),
 ((-71.1044543107478 42.340674480411,-71.1044860600303 42.3407237015564,-71.1045215770124 42.3407653385914,
@@ -1877,7 +1877,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 <programlisting>
 SELECT ST_AsText(ST_ShortestLine(
         'POINT (160 40)',
-        'LINESTRING (10 30, 50 50, 30 110, 70 90, 180 140, 130 190)')
+        'LINESTRING (10 30,50 50,30 110,70 90,180 140,130 190)')
         ) As sline;</programlisting>
 <screen>LINESTRING(160 40,125.75342465753425 115.34246575342466)</screen>
 		</para>
@@ -1892,7 +1892,7 @@ SELECT ST_AsText(ST_ShortestLine(
             </informalfigure>
 <programlisting>
 SELECT ST_AsText(ST_ShortestLine(
-         'POLYGON ((190 150, 20 10, 160 70, 190 150))',
+         'POLYGON ((190 150,20 10,160 70,190 150))',
          ST_Buffer('POINT(80 160)', 30)
                   ) ) AS llinewkt;</programlisting>
 <screen>LINESTRING(131.59149149528952 101.89887534906195,101.21320343559643 138.78679656440357)</screen>
@@ -1955,10 +1955,10 @@ SELECT ST_AsText(ST_ShortestLine(
 						  <row>
 							<entry><para>linestring and point -- both 3d and 2d shortest line
 					<programlisting>
-SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
-        ST_AsEWKT(ST_ShortestLine(line,pt)) As shl2d_line_pt
+SELECT ST_AsEWKT(ST_3DShortestLine(line, pt)) AS shl3d_line_pt,
+        ST_AsEWKT(ST_ShortestLine(line, pt)) As shl2d_line_pt
     FROM (SELECT 'POINT(100 100 30)'::geometry As pt,
-            'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 1000)'::geometry As line
+            'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 1000)'::geometry As line
         ) As foo;</programlisting>
 <screen> shl3d_line_pt                                                              |               shl2d_line_pt
 ----------------------------------------------------------------------------+------------------------------------------------------
@@ -1967,10 +1967,10 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 						    </row>
 						    <row>
 							<entry><para>linestring and multipoint -- both 3d and 2d shortest line
-					<programlisting>SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
-    ST_AsEWKT(ST_ShortestLine(line,pt)) As shl2d_line_pt
-FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt,
-        'LINESTRING (20 80 20, 98 190 1, 110 180 3, 50 75 900)'::geometry As line
+					<programlisting>SELECT ST_AsEWKT(ST_3DShortestLine(line, pt)) AS shl3d_line_pt,
+    ST_AsEWKT(ST_ShortestLine(line, pt)) As shl2d_line_pt
+FROM (SELECT 'MULTIPOINT(100 100 30,50 74 1000)'::geometry As pt,
+        'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 900)'::geometry As line
     ) As foo;</programlisting>
 <screen>                       shl3d_line_pt                                       | shl2d_line_pt
 ---------------------------------------------------------------------------+------------------------
@@ -1981,9 +1981,9 @@ FROM (SELECT 'MULTIPOINT(100 100 30, 50 74 1000)'::geometry As pt,
 						  <entry><para>MultiLineString and polygon both 3d and 2d shortest line
 					<programlisting>SELECT ST_AsEWKT(ST_3DShortestLine(poly, mline)) As shl3d,
 ST_AsEWKT(ST_ShortestLine(poly, mline)) As shl2d
-    FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
-            ST_GeomFromEWKT('MULTILINESTRING((175 155 2, 20 40 20, 50 60 -2, 125 100 1, 175 155 1),
-            (1 10 2, 5 20 1))') As mline ) As foo;</programlisting>
+    FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5,20 40 5,35 45 5,50 60 5,100 100 5,175 150 5))') As poly,
+            ST_GeomFromEWKT('MULTILINESTRING((175 155 2,20 40 20,50 60 -2,125 100 1,175 155 1),
+            (1 10 2,5 20 1))') As mline ) As foo;</programlisting>
 <screen>                   shl3d                                                                           |     shl2d
 ---------------------------------------------------------------------------------------------------+------------------------
  LINESTRING(40.45454545454545 53.63636363636364 5,40.45454545454545 53.63636363636364 5) | LINESTRING(20 40,20 40)</screen>
