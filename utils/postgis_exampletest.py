@@ -516,13 +516,14 @@ class ExampleTester:
             match = WKT_START_RE.search(text, cursor)
             if not match:
                 break
+            if match.start() and re.match(r"[A-Za-z0-9_]", text[match.start() - 1]):
+                cursor = match.end()
+                continue
             opening = text.find("(", match.start())
             closing = self.closing_parenthesis(text, opening)
             if closing < 0:
                 raise RuntimeError(f"Unclosed geometry candidate near: {text[match.start():match.start() + 80]}")
             cursor = closing + 1
-            if match.start() and re.match(r"[A-Za-z0-9_]", text[match.start() - 1]):
-                continue
             if closing + 1 < len(text) and re.match(r"[A-Za-z0-9_]", text[closing + 1]):
                 continue
             if quoted_only and not any(match.start() >= start and closing + 1 <= end for start, end in quoted):

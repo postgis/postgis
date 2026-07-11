@@ -59,8 +59,6 @@ GENERATED_IMAGES= \
 	st_alphashape03.png \
 	st_azimuth01.png \
 	st_azimuth02.png \
-	st_closestpoint01.png \
-	st_closestpoint02.png \
 	st_clusterkmeans02.png \
 	st_clusterrelatewin01.png \
 	st_catmullromsmoothing01.png \
@@ -150,7 +148,6 @@ GENERATED_IMAGES= \
 	st_touches04.png \
 	st_touches05.png \
 	st_touches06.png \
-	st_voronoi03.png \
 	st_within01.png
 
 # Images that are created with dimensions 100x100

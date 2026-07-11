@@ -79,6 +79,15 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         with self.assertRaisesRegex(RuntimeError, "Unclosed geometry candidate"):
             self.tester.geometry_candidates("POLYGON((0 0,1 0,0 0)")
 
+    def test_function_type_substring_does_not_swallow_argument_geometry(self):
+        self.assertEqual(
+            ["POLYGON((0 0,2 0,0 2,0 0))", "POINT(1 1)"],
+            self.tester.geometry_candidates(
+                "SELECT ST_ClosestPoint('POLYGON((0 0,2 0,0 2,0 0))', 'POINT(1 1)')",
+                quoted_only=True,
+            ),
+        )
+
     def test_visual_skip_keeps_example_test_without_rendering(self):
         xml = """<book xmlns="http://docbook.org/ns/docbook">
   <refentry xml:id="example">

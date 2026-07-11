@@ -343,15 +343,8 @@ ORDER BY deg;</programlisting>
 	  <refsection>
 		<title>Examples</title>
 
-    <para><informalfigure>
-        <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_closestpoint01.png"/>
-            </imageobject>
-            <caption><para>The closest point for a Point and a LineString is the point itself.
-            The closest point for a LineString and a Point is a point on the line.</para></caption>
-        </mediaobject>
-        </informalfigure>
+    <para>The closest point for a Point and a LineString is the point itself.
+    The closest point for a LineString and a Point is a point on the line.</para>
 <programlisting>
 SELECT ST_AsText(ST_ClosestPoint(pt, line)) AS cp_pt_line,
        ST_AsText(ST_ClosestPoint(line, pt)) AS cp_line_pt
@@ -360,22 +353,16 @@ SELECT ST_AsText(ST_ClosestPoint(pt, line)) AS cp_pt_line,
 <screen>   cp_pt_line   |                cp_line_pt
 ----------------+------------------------------------------
  POINT(160 40)  | POINT(125.75342465753425 115.34246575342466)</screen>
-	</para>
 
-    <para><informalfigure>
-        <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_closestpoint02.png"/>
-            </imageobject>
-            <caption><para>The closest point on polygon A to polygon B</para></caption>
-        </mediaobject>
-        </informalfigure>
-<programlisting>
-SELECT ST_AsText(ST_ClosestPoint(
-                'POLYGON ((190 150,20 10,160 70,190 150))',
-                ST_Buffer('POINT(80 160)', 30)  )) As ptwkt;</programlisting>
-	<screen>POINT(131.59149149528952 101.89887534906195)</screen>
-	</para>
+    <para>Find the closest point on polygon A to polygon B.</para>
+<programlisting>WITH source AS (
+  SELECT 'POLYGON ((190 150,20 10,160 70,190 150))'::geometry AS a,
+         ST_Buffer('POINT(80 160)'::geometry, 30) AS b
+)
+SELECT ST_AsText(b, 3) AS polygon_b,
+       ST_AsText(ST_ClosestPoint(a, b)) AS closest_point
+FROM source;</programlisting>
+<screen>POLYGON((110 160,109.424 154.147,107.716 148.519,104.944 143.333,101.213 138.787,96.667 135.056,91.481 132.284,85.853 130.576,80 130,74.147 130.576,68.519 132.284,63.333 135.056,58.787 138.787,55.056 143.333,52.284 148.519,50.576 154.147,50 160,50.576 165.853,52.284 171.481,55.056 176.667,58.787 181.213,63.333 184.944,68.519 187.716,74.147 189.424,80 190,85.853 189.424,91.481 187.716,96.667 184.944,101.213 181.213,104.944 176.667,107.716 171.481,109.424 165.853,110 160)) | POINT(131.59149149528952 101.89887534906195)</screen>
 
 	  </refsection>
 
