@@ -133,6 +133,7 @@ HTML_REF_INDEX=$(HTML_REF_INDEX_JSON) $(HTML_REF_INDEX_JS)
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
 PYTHON3 ?= $(shell command -v python3 2>/dev/null)
+PYTHON_LXML ?= $(shell if test -n "$(PYTHON3)" && $(PYTHON3) -c "import lxml" >/dev/null 2>&1; then echo yes; fi)
 
 # Gettext for translated documentation
 MSGCAT=@MSGCAT@
@@ -339,10 +340,12 @@ CHECK_HTML_BLOCK_LABELS_DEPS =
 ifeq ($(CAN_CHECK_XML),yes)
 CHECK_UNIT_TARGET += check-xml check-docbook-markup
 ifneq ($(PYTHON3),)
+ifneq ($(PYTHON_LXML),)
 ifneq ($(XSLTPROC),)
 ifneq ($(XSLBASE),)
 CHECK_UNIT_TARGET += check-html-block-labels
 CHECK_HTML_BLOCK_LABELS_DEPS = postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/docbook_qa.py
+endif
 endif
 endif
 endif
@@ -434,8 +437,8 @@ $(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/
 
 $(HTML_REF_INDEX_JSON): postgis-out.xml Makefile $(abs_top_srcdir)/utils/docbook_qa.py
 	mkdir -p $(html_builddir)
-ifeq ($(PYTHON3),)
-	@echo "Skipping rich PostGIS reference index: python3 is not available."
+ifeq ($(PYTHON_LXML),)
+	@echo "Skipping rich PostGIS reference index: python3 with lxml is not available."
 	@printf '{"functions":{},"operators":{},"keywords":[]}\n' > $(HTML_REF_INDEX_JSON)
 	@printf 'window.POSTGIS_REF_INDEX = {"functions":{},"operators":{},"keywords":[]};\n' > $(HTML_REF_INDEX_JS)
 else
@@ -690,8 +693,8 @@ endif
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
 exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py ## Report manual examples selected, parseable, or skipped for known reasons
-ifeq ($(PYTHON3),)
-	@echo "Skipping $@: python3 is not available."
+ifeq ($(PYTHON_LXML),)
+	@echo "Skipping $@: python3 with lxml is not available."
 else
 	$(PYTHON3) $(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
 endif
@@ -704,15 +707,15 @@ check-regress:
 check-unit: $(CHECK_UNIT_TARGET)
 
 check-docbook-qa-unit: $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/test_docbook_qa.py
-ifeq ($(PYTHON3),)
-	@echo "Skipping $@: python3 is not available."
+ifeq ($(PYTHON_LXML),)
+	@echo "Skipping $@: python3 with lxml is not available."
 else
 	$(PYTHON3) $(abs_top_srcdir)/utils/test_docbook_qa.py
 endif
 
 check-html-block-labels: $(CHECK_HTML_BLOCK_LABELS_DEPS)
-ifeq ($(PYTHON3),)
-	@echo "Skipping $@: python3 is not available."
+ifeq ($(PYTHON_LXML),)
+	@echo "Skipping $@: python3 with lxml is not available."
 else ifeq ($(XSLTPROC),)
 	@echo "Skipping $@: xsltproc is not available."
 else ifeq ($(XSLBASE),)
@@ -722,8 +725,8 @@ else
 endif
 
 check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py
-ifeq ($(PYTHON3),)
-	@echo "Skipping $@: python3 is not available."
+ifeq ($(PYTHON_LXML),)
+	@echo "Skipping $@: python3 with lxml is not available."
 else
 	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-source --fail-on warning --max-warnings 0 $<
 endif
