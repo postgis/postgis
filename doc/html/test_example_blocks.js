@@ -119,7 +119,8 @@ async function main() {
     makePre('\na <= b\n \n   '),
     makePre('a = b'),
     makePre('a == b'),
-    makePre('SELECT (a + (b))\nFROM things)')
+    makePre('SELECT (a + (b))\nFROM things)'),
+    makePre('SELECT st_buffer(g, 1), ST_Buffer(g, 2), ST_MakePoint(1, 2)')
   ];
   const output = makePre('wide output row\nsecond row');
   output.attributes = {};
@@ -146,6 +147,7 @@ async function main() {
     };
   });
   let copiedText = null;
+  let refnameText = '';
   const document = {
     currentScript: { src: 'file:///tmp/example-blocks.js' },
     readyState: 'loading',
@@ -168,6 +170,12 @@ async function main() {
       }
       return [];
     },
+    querySelector(selector) {
+      if (selector === '.refnamediv .refname, .refnamediv p' && refnameText) {
+        return { textContent: refnameText };
+      }
+      return null;
+    },
     getElementById() {
       return null;
     }
@@ -186,9 +194,12 @@ async function main() {
       }
     },
     window: {
-      location: { pathname: '/manual/ST_Test.html' },
+      location: { pathname: '/manual/st_buffer.HTML' },
       POSTGIS_REF_INDEX: {
-        functions: {},
+        functions: {
+          ST_BUFFER: { href: 'ST_Buffer.html', label: 'ST_Buffer', title: 'buffer geometry' },
+          ST_MAKEPOINT: { href: 'ST_MakePoint.html', label: 'ST_MakePoint', title: 'make a point' }
+        },
         operators: {
           '=': { href: 'equals.html', label: 'Operator', title: 'equals' },
           '==': { href: 'same.html', label: 'Operator', title: 'same' }
@@ -335,6 +346,23 @@ async function main() {
     ['0', '1', '1', '0', '0']
   );
   assert.match(blocks[3].innerHTML, /postgis-sql-paren paren-unmatched/);
+  assert.strictEqual((blocks[4].innerHTML.match(/class="current-fn"/g) || []).length, 2);
+  assert.match(blocks[4].innerHTML, /<span class="current-fn">st_buffer<\/span>/);
+  assert.match(blocks[4].innerHTML, /<span class="current-fn">ST_Buffer<\/span>/);
+  assert.doesNotMatch(blocks[4].innerHTML, /<a\b[^>]*>[^<]*ST_Buffer<\/a>/i);
+  assert.match(blocks[4].innerHTML,
+    /<a\b[^>]*href="ST_MakePoint\.html"[^>]*>ST_MakePoint<\/a>/);
+
+  const refIndex = geometry.normalizeRefIndex(sandbox.window.POSTGIS_REF_INDEX);
+  sandbox.window.location.pathname = '/manual/not-in-index.html';
+  refnameText = 'ST_MakePoint — Creates a point.';
+  assert.strictEqual(geometry.currentFunctionName(refIndex), 'ST_MAKEPOINT');
+  sandbox.window.location.pathname = '';
+  assert.strictEqual(geometry.currentFunctionName(refIndex), 'ST_MAKEPOINT');
+  refnameText = '';
+  assert.strictEqual(geometry.currentFunctionName(refIndex), null);
+  assert.match(geometry.highlightSql('ST_Buffer(g, 1)', refIndex),
+    /<a\b[^>]*href="ST_Buffer\.html"[^>]*>ST_Buffer<\/a>/);
 
   const matchedClasses = [new Set(), new Set()];
   const pairPre = {

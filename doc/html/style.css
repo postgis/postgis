@@ -311,8 +311,16 @@ pre,
 }
 
 .postgis-sql-function,
-.postgis-sql-operator {
+.postgis-sql-operator,
+.current-fn {
     color: #7a3e00;
+}
+
+.current-fn {
+    background: rgba(128, 128, 128, 0.14);
+    border-radius: 0.15em;
+    font-weight: 700;
+    padding: 0 0.08em;
 }
 
 .postgis-sql-link {
@@ -541,6 +549,7 @@ pre,
     .postgis-sql-keyword,
     .postgis-sql-function,
     .postgis-sql-operator,
+    .current-fn,
     .postgis-sql-string,
     .postgis-sql-number,
     .postgis-sql-comment,

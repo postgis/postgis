@@ -99,8 +99,41 @@
   }
 
   function currentPageId() {
-    var filename = window.location.pathname.split('/').pop() || '';
-    return filename.replace(/\.html$/, '');
+    var pathname = window.location && window.location.pathname || '';
+    var filename = pathname.split('/').pop() || '';
+    try {
+      filename = decodeURIComponent(filename);
+    } catch (error) {
+      // Keep the literal basename when the URL contains invalid escapes.
+    }
+    return filename.replace(/\.html$/i, '');
+  }
+
+  function indexedFunctionName(candidate, refIndex) {
+    var upper = String(candidate || '').toUpperCase();
+    var names;
+    if (!upper) {
+      return null;
+    }
+    names = Object.keys(refIndex.functions || {});
+    for (var i = 0; i < names.length; i += 1) {
+      if (names[i].toUpperCase() === upper) {
+        return names[i];
+      }
+    }
+    return null;
+  }
+
+  function currentFunctionName(refIndex) {
+    var name = indexedFunctionName(currentPageId(), refIndex);
+    var refname;
+    var match;
+    if (name) {
+      return name;
+    }
+    refname = document.querySelector('.refnamediv .refname, .refnamediv p');
+    match = refname && /^\s*([A-Za-z_][A-Za-z0-9_]*)/.exec(refname.textContent);
+    return match ? indexedFunctionName(match[1], refIndex) : null;
   }
 
   function refHref(ref) {
@@ -189,6 +222,10 @@
     var ref = lookupFunction(token, refIndex);
     displayedText = displayedText === undefined ? token : displayedText;
     if (ref) {
+      if (refIndex.currentFunction &&
+          token.toUpperCase() === refIndex.currentFunction.toUpperCase()) {
+        return '<span class="current-fn">' + escapeHtml(displayedText) + '</span>';
+      }
       return linkedToken(displayedText, 'postgis-sql-function', ref);
     }
     ref = lookupOperator(token, refIndex);
@@ -1252,6 +1289,7 @@
 
   function highlightWhenReady() {
     loadRefIndex().then(function (refIndex) {
+      refIndex.currentFunction = currentFunctionName(refIndex);
       applySyntaxHighlighting(refIndex);
       applyLineWrappers();
       applyGeometryFigures();
@@ -1280,6 +1318,9 @@
     gridStep: gridStep,
     legendHead: legendHead,
     wrapLiteralRange: wrapLiteralRange,
-    codeText: codeText
+    codeText: codeText,
+    currentFunctionName: currentFunctionName,
+    highlightSql: highlightSql,
+    normalizeRefIndex: normalizeRefIndex
   };
 }());
