@@ -68,14 +68,6 @@
 
 		  <refsection>
 			<title>Examples</title>
-			<informalfigure>
-			  <mediaobject>
-				<imageobject>
-				  <imagedata fileref="images/st_line_interpolate_point01.png"/>
-				</imageobject>
-				<caption><para>A LineString with the interpolated point at 20% position (0.20) </para></caption>
-			  </mediaobject>
-			</informalfigure>
 			<para>This example returns the point 20 percent along a line.</para>
 			<programlisting>SELECT ST_AsEWKT(ST_LineInterpolatePoint(
 'LINESTRING(25 50,100 125,150 190)',
@@ -243,14 +235,6 @@ FROM street;
 
 		  <refsection>
 			<title>Examples</title>
-			<informalfigure>
-			  <mediaobject>
-				<imageobject>
-				  <imagedata fileref="images/st_line_interpolate_points01.png"/>
-				</imageobject>
-				<caption><para>A LineString with points interpolated every 20% </para></caption>
-			  </mediaobject>
-			</informalfigure>
 			<para>This example returns points every 20 percent along a two-dimensional line.</para>
 			<programlisting>SELECT ST_AsText(ST_LineInterpolatePoints(
 'LINESTRING(25 50,100 125,150 190)',
@@ -436,14 +420,7 @@ LIMIT 1;</programlisting>
 
 		  <refsection>
 			<title>Examples</title>
-			<informalfigure>
-			  <mediaobject>
-				<imageobject>
-				  <imagedata fileref="images/st_line_substring01.png"/>
-				</imageobject>
-				<caption><para>A LineString seen with 1/3 midrange overlaid (0.333, 0.666) </para></caption>
-			  </mediaobject>
-			</informalfigure>
+			<para>Extract the middle third of a LineString, from 0.333 to 0.666.</para>
 	<programlisting>SELECT ST_AsText(ST_LineSubstring(
 'LINESTRING (20 180,50 20,90 80,120 40,180 150)',
 0.333,
@@ -682,15 +659,7 @@ FROM data;</programlisting>
 3));</programlisting>
 <screen>GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))</screen>
 
-        <informalfigure>
-            <mediaobject>
-            <imageobject>
-                <imagedata fileref="images/st_locatebetween01.png"/>
-            </imageobject>
-            <caption><para>A LineString with the section between measures 2 and 8, offset to the left </para></caption>
-            </mediaobject>
-        </informalfigure>
-
+		<para>Extract the section between measures 2 and 8, offset to the left.</para>
 <programlisting>SELECT ST_AsText(ST_LocateBetween(
 ST_AddMeasure(
     'LINESTRING (20 180,50 20,100 120,180 20)',

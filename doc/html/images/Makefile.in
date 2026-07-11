@@ -112,10 +112,6 @@ GENERATED_IMAGES= \
 	st_linecrossingdirection02.png \
 	st_linecrossingdirection03.png \
 	st_linecrossingdirection04.png \
-	st_line_interpolate_point01.png \
-	st_line_interpolate_points01.png \
-	st_line_substring01.png \
-	st_locatebetween01.png \
 	st_makevalid01.png \
 	st_makevalid02.png \
 	st_makevalid03.png \
