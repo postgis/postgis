@@ -631,7 +631,7 @@
 
   function setOutputTextCollapsed(block, button, collapsed) {
     block.classList.toggle('postgis-output-text-collapsed', collapsed);
-    button.textContent = collapsed ? 'Text \u25b8' : 'Text \u25be';
+    button.textContent = collapsed ? 'Show text' : 'Hide text';
     button.setAttribute('aria-label', collapsed ? 'Show output text' : 'Hide output text');
     button.setAttribute('title', collapsed ? 'Show output text' : 'Hide output text');
     button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
@@ -669,8 +669,9 @@
 
   function bindSvgTargets(object) {
     var svgDocument = object.contentDocument;
-    if (!svgDocument || object.getAttribute('data-postgis-svg-bound') === 'true') return;
-    object.setAttribute('data-postgis-svg-bound', 'true');
+    var svgRoot = svgDocument && svgDocument.documentElement;
+    if (!svgRoot || svgRoot.getAttribute('data-postgis-svg-bound') === 'true') return;
+    svgRoot.setAttribute('data-postgis-svg-bound', 'true');
     svgDocument.addEventListener('mouseover', function (event) {
       var target = event.target.closest && event.target.closest('[data-postgis-geometry-id]');
       if (target) setGeometryActive(target.getAttribute('data-postgis-geometry-id'), true);
@@ -719,14 +720,16 @@
       var toggle = document.createElement('button');
       toggle.type = 'button';
       toggle.className = 'postgis-geometry-toggle';
-      toggle.textContent = '\u25b4';
+      toggle.textContent = 'Hide figure';
       toggle.setAttribute('aria-label', 'Hide figure');
       toggle.setAttribute('title', 'Hide figure');
       toggle.setAttribute('aria-expanded', 'true');
       if (!object.id) object.id = visualId + '-figure';
       toggle.setAttribute('aria-controls', object.id);
       figure.querySelector('.postgis-example-header').appendChild(toggle);
-      preferVisualOutput(output);
+      if (output.getAttribute('data-postgis-output-preference') === 'visual') {
+        preferVisualOutput(output);
+      }
       object.addEventListener('load', function (event) { bindSvgTargets(event.currentTarget); });
       if (object.contentDocument) bindSvgTargets(object);
     }
@@ -738,7 +741,7 @@
     var figure = button.closest('.postgis-geometry-figure');
     var collapsed = !figure.classList.contains('postgis-geometry-collapsed');
     figure.classList.toggle('postgis-geometry-collapsed', collapsed);
-    button.textContent = collapsed ? '\u25be' : '\u25b4';
+    button.textContent = collapsed ? 'Show figure' : 'Hide figure';
     button.setAttribute('aria-label', collapsed ? 'Show figure' : 'Hide figure');
     button.setAttribute('title', collapsed ? 'Show figure' : 'Hide figure');
     button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');

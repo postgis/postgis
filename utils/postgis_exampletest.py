@@ -2,14 +2,17 @@
 
 import argparse
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import html
 import json
+import math
 from pathlib import Path
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 
 from xml_tree import parse as parse_xml
 
@@ -41,6 +44,16 @@ SVG_PALETTES = {
     "Code": ("#2878b8", "#59a4d8", "#0f5f9c"),
     "Output": ("#a62c2b", "#d95f3d", "#ef8a47"),
 }
+POINT_TYPES = {"POINT", "MULTIPOINT"}
+MAX_VISUAL_GEOMETRIES = 16
+MAX_VISUAL_WKT_BYTES = 100000
+NONVISUAL_SINGLE_INPUT_RE = re.compile(
+    r"\b(?:ST_(?:AS(?:TEXT|EWKT|BINARY|EWKB|HEXEWKB|GML|KML|GEOJSON|X3D|"
+    r"MARC21|GEOBUF|TWKB|ENCODEDPOLYLINE|LATLONTEXT)|GEOHASH|SRID|GEOMETRYTYPE|"
+    r"COORDDIM|NDIMS|ZMFLAG|MEMSIZE|NUMGEOMETRIES|NUMPOINTS|NPOINTS|NUMRINGS|"
+    r"NUMPATCHES|X|Y|Z|M)|CG_3DAREA)\s*\(",
+    re.I,
+)
 DECIMAL_RE = re.compile(r"(?<![A-Za-z_])-?(?:\d+\.\d*|\.\d+)(?:[eE][+-]?\d+)?")
 VERSION_FUNCTION_RE = re.compile(
     r"\b(?:"
@@ -142,6 +155,69 @@ class ExampleTester:
         if sibling is not None and sibling.tag == f"{{{DOCBOOK_NS}}}screen":
             return sibling
         return None
+
+    def visual_location(self, screen):
+        refentry = next(
+            (ancestor for ancestor in self.index.ancestors(screen)
+             if ancestor.tag == f"{{{DOCBOOK_NS}}}refentry"),
+            None,
+        )
+        if refentry is None:
+            screens = [
+                candidate for candidate in self.doc.getroot().iter(f"{{{DOCBOOK_NS}}}screen")
+                if not any(
+                    ancestor.tag == f"{{{DOCBOOK_NS}}}refentry"
+                    for ancestor in self.index.ancestors(candidate)
+                )
+            ]
+            return "", screens.index(screen) + 1
+        screens = list(refentry.iter(f"{{{DOCBOOK_NS}}}screen"))
+        return refentry.get(f"{{{XML_NS}}}id", ""), screens.index(screen) + 1
+
+    def visual_id(self, screen):
+        explicit_id = screen.get(f"{{{XML_NS}}}id")
+        if explicit_id:
+            return explicit_id
+        refentry, ordinal = self.visual_location(screen)
+        slug = re.sub(r"[^a-z0-9]+", "-", refentry.lower()).strip("-") or "manual"
+        return f"visual-{slug}-{ordinal:02d}"
+
+    def geometry_type(self, value):
+        match = WKT_START_RE.search(value or "")
+        if not match:
+            return None
+        prefix = re.sub(r"^\s*SRID\s*=\s*\d+\s*;\s*", "", value, flags=re.I)
+        match = re.match(r"([A-Z]+)", prefix.strip(), re.I)
+        return match.group(1).upper() if match else None
+
+    def normalized_geometry(self, value):
+        return re.sub(r"\s+", "", value or "").upper()
+
+    def visual_candidate(self, query, expected, explicit=False):
+        code = self.geometry_candidates(query, quoted_only=True)
+        output = self.geometry_candidates(self.rows_to_string(expected))
+        values = code + output
+        if not values:
+            return None
+        if len(values) > MAX_VISUAL_GEOMETRIES or sum(len(value) for value in values) > MAX_VISUAL_WKT_BYTES:
+            return None
+        code_types = [self.geometry_type(value) for value in code]
+        output_types = [self.geometry_type(value) for value in output]
+        if explicit:
+            return {"kind": "explicit", "preferred": True}
+        if len(code) == len(output) == 1 and self.normalized_geometry(code[0]) == self.normalized_geometry(output[0]):
+            return None
+        if output:
+            if all(value in POINT_TYPES for value in output_types) and not (
+                len(values) > 1 and any(value not in POINT_TYPES for value in code_types)
+            ):
+                return None
+            return {"kind": "geometry-output", "preferred": True}
+        if not code or all(value in POINT_TYPES for value in code_types):
+            return None
+        if len(code) == 1 and NONVISUAL_SINGLE_INPUT_RE.search(query):
+            return None
+        return {"kind": "input-context", "preferred": False}
 
     def parse_adjacent_example(self, query, screen):
         return self.clean_example(query, self.expected_rows_from_psql_lines(screen.split("\n")))
@@ -478,6 +554,14 @@ class ExampleTester:
         ):
             return None
 
+        refentry = ""
+        screen_ordinal = 0
+        explicit_visual = screen is not None and self.has_role(screen, VISUAL_ROLE)
+        visual = None
+        if screen is not None:
+            refentry, screen_ordinal = self.visual_location(screen)
+            visual = self.visual_candidate(query, expected, explicit_visual)
+
         return {
             "label": self.source_label(node),
             "query": query,
@@ -487,11 +571,11 @@ class ExampleTester:
             "version": self.query_is_version_example(query),
             "catalog": self.query_is_catalog_example(query),
             "volatile": self.query_is_version_example(query) or self.query_is_catalog_example(query),
-            "visual_id": (
-                screen.get(f"{{{XML_NS}}}id")
-                if screen is not None and self.has_role(screen, VISUAL_ROLE)
-                else None
-            ),
+            "visual_id": self.visual_id(screen) if visual is not None else None,
+            "visual_kind": visual["kind"] if visual is not None else None,
+            "visual_preferred": visual["preferred"] if visual is not None else False,
+            "visual_refentry": refentry,
+            "visual_screen": screen_ordinal,
         }
 
     def examples(self):
@@ -575,6 +659,14 @@ class ExampleTester:
         stats["auto_example_tests"] = len([example for example in examples if not example["forced"]])
         stats["forced_example_tests"] = len([example for example in examples if example["forced"]])
         stats["volatile_version_tests"] = len([example for example in examples if example["volatile"]])
+        visual_kinds = {
+            kind: len([example for example in examples if example["visual_kind"] == kind])
+            for kind in ("explicit", "geometry-output", "input-context")
+        }
+        stats["visual_examples"] = sum(visual_kinds.values())
+        stats["visual_explicit"] = visual_kinds["explicit"]
+        stats["visual_geometry_output"] = visual_kinds["geometry-output"]
+        stats["visual_input_context"] = visual_kinds["input-context"]
         stats["example_tests"] = len(examples)
         stats["parseable_example_tests"] = len([example for example in examples if example["valid"]])
         invalid_tests = stats["example_tests"] - stats["parseable_example_tests"]
@@ -594,6 +686,10 @@ class ExampleTester:
         print(f"  {stats['parseable_example_tests']} parseable examples")
         print(f"  {stats['volatile_version_tests']} version/catalog examples checked with relaxed comparison")
         print(f"  {stats['forced_example_tests']} forced by role=\"{FORCE_ROLE}\"")
+        print(f"  {stats['visual_examples']} useful geometry figures selected at build time")
+        print(f"    {stats['visual_geometry_output']} geometry outputs")
+        print(f"    {stats['visual_input_context']} input-context figures with textual output")
+        print(f"    {stats['visual_explicit']} explicit role=\"{VISUAL_ROLE}\" overrides")
         print("")
         print("Skipped by design:")
         print(f"  {stats['requires_external_state']} marked role=\"{EXTERNAL_STATE_ROLE}\"")
@@ -621,7 +717,7 @@ class ExampleTester:
             raise RuntimeError(f"psql failed for query:\n{query}\n{result.stdout}{result.stderr}")
         return self.expected_rows_from_psql_lines(result.stdout.split("\n"))
 
-    def run_examples(self, database, keep_going=False, render_dir=None, visual_only=False):
+    def run_examples(self, database, keep_going=False, render_dir=None, visual_only=False, jobs=1):
         examples = self.examples()
         if visual_only:
             examples = [example for example in examples if example["visual_id"]]
@@ -630,6 +726,21 @@ class ExampleTester:
         failures = []
         ran = 0
         visuals = []
+
+        if visual_only and jobs > 1 and not keep_going:
+            def run_visual(example):
+                actual = self.run_one_example(database, example)
+                return self.render_visual_example(database, example, actual)
+
+            with ThreadPoolExecutor(max_workers=jobs) as pool:
+                visuals = list(pool.map(run_visual, examples))
+            ran = len(examples)
+            if render_dir:
+                self.publish_visual_examples(render_dir, visuals)
+            print(f"manual example tests passed: {ran}")
+            if render_dir:
+                print(f"visual examples rendered: {len(visuals)}")
+            return
 
         for example in examples:
             try:
@@ -699,12 +810,25 @@ WITH raw AS (
   FROM raw
 ), bounds AS (
   SELECT ST_Extent(geom) AS box FROM parsed
+), dimensions AS (
+  SELECT box,
+    ST_XMin(box) AS min_x, ST_YMin(box) AS min_y,
+    ST_XMax(box) - ST_XMin(box) AS width,
+    ST_YMax(box) - ST_YMin(box) AS height,
+    GREATEST(ST_XMax(box) - ST_XMin(box), ST_YMax(box) - ST_YMin(box)) AS span
+  FROM bounds
 ), parts AS (
   SELECT ord, source, label, (ST_Dump(geom)).geom AS geom
   FROM parsed
+), normalized_parts AS (
+  SELECT ord, source, label,
+    ST_Scale(ST_Translate(geom, -min_x, -min_y),
+      COALESCE(1 / NULLIF(span, 0), 1), COALESCE(1 / NULLIF(span, 0), 1)) AS geom
+  FROM parts CROSS JOIN dimensions
 )
 SELECT json_build_object(
-  'bounds', json_build_array(ST_XMin(box), ST_YMin(box), ST_XMax(box), ST_YMax(box)),
+  'bounds', json_build_array(0, 0,
+    COALESCE(width / NULLIF(span, 0), 0), COALESCE(height / NULLIF(span, 0), 0)),
   'parts', (
     SELECT json_agg(json_build_object(
       'ord', ord, 'source', source, 'label', label,
@@ -712,10 +836,10 @@ SELECT json_build_object(
       'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
       'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END
     ) ORDER BY ord)
-    FROM parts
+    FROM normalized_parts
   )
 )::text
-FROM bounds
+FROM dimensions
 """
         payload = self.run_psql_scalar(database, query)
         if not payload:
@@ -731,17 +855,44 @@ FROM bounds
                 layers.append({
                     "ord": len(layers) + 1,
                     "source": source,
-                    "label": f"{source} {index}",
+                    "label": source if len(values) == 1 else f"{source} {index}",
                     "wkt": wkt,
                 })
-        if not output:
-            raise RuntimeError(f"Visual example {example['visual_id']} has no geometry output")
-        payload = self.visual_payload(database, layers)
+        if not layers:
+            raise RuntimeError(f"Visual example {example['visual_id']} has no geometry input or output")
+        output_omitted = False
+        try:
+            payload = self.visual_payload(database, layers)
+        except RuntimeError as exc:
+            parse_failure = re.search(
+                r"geometry (?:contains non-closed rings|requires more points)|parse error",
+                str(exc),
+                re.I,
+            )
+            if not output or not code or not parse_failure:
+                raise
+            layers = [layer for layer in layers if layer["source"] == "Code"]
+            payload = self.visual_payload(database, layers)
+            output_omitted = True
         return {
             "id": example["visual_id"],
             "source": example["label"],
+            "refentry": example["visual_refentry"],
+            "screen": example["visual_screen"],
+            "preferred": example["visual_preferred"] and not output_omitted,
+            "kind": "input-context-fallback" if output_omitted else example["visual_kind"],
+            "output_omitted": output_omitted,
             "svg": self.visual_svg(example["visual_id"], payload),
         }
+
+    def grid_step(self, span, target_lines=8):
+        if span <= 0:
+            return 1
+        rough = span / target_lines
+        power = 10 ** math.floor(math.log10(rough))
+        normalized = rough / power
+        nice = 1 if normalized <= 1 else 2 if normalized <= 2 else 5 if normalized <= 5 else 10
+        return nice * power
 
     def visual_svg(self, visual_id, payload):
         min_x, min_y, max_x, max_y = [float(value) for value in payload["bounds"]]
@@ -768,6 +919,31 @@ FROM bounds
         translate_x = left - min_x * scale
         translate_y = top + max_y * scale
 
+        step = self.grid_step(max(max_x - min_x, max_y - min_y))
+        grid = []
+        first_x = math.ceil(min_x / step) * step
+        first_y = math.ceil(min_y / step) * step
+        value = first_x
+        for _ in range(32):
+            if value > max_x + step * 1e-9:
+                break
+            x = translate_x + value * scale
+            grid.append(f'<line x1="{x:.12g}" y1="12" x2="{x:.12g}" y2="322"/>')
+            next_value = value + step
+            if next_value <= value:
+                break
+            value = next_value
+        value = first_y
+        for _ in range(32):
+            if value > max_y + step * 1e-9:
+                break
+            y = translate_y - value * scale
+            grid.append(f'<line x1="20" y1="{y:.12g}" x2="580" y2="{y:.12g}"/>')
+            next_value = value + step
+            if next_value <= value:
+                break
+            value = next_value
+
         groups = []
         legend = []
         source_indexes = {"Code": 0, "Output": 0}
@@ -785,9 +961,13 @@ FROM bounds
                 if part["type"].upper() == "POINT":
                     shapes.append(
                         f'<circle class="point" cx="{float(part["x"]):.12g}" '
-                        f'cy="{float(part["y"]):.12g}" r="4" fill="{color}"/>'
+                        f'cy="{float(part["y"]):.12g}" r="{4 / scale:.12g}" fill="{color}"/>'
                     )
                 else:
+                    if not part.get("svg"):
+                        raise RuntimeError(
+                            f"PostGIS returned an empty SVG path for {visual_id} {part['type']}"
+                        )
                     svg_data = html.escape(part["svg"], quote=True)
                     dimension_class = "area" if part["type"].upper() in {
                         "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
@@ -805,21 +985,30 @@ FROM bounds
             legend.append((geometry_id, color, parts[0]["label"]))
 
         legend_svg = []
-        cursor = 20
+        cursor_x = 20
+        cursor_y = 354
         for geometry_id, color, label in legend:
             safe_label = html.escape(label)
+            item_width = max(72, 34 + len(label) * 7)
+            if cursor_x + item_width > 580 and cursor_x > 20:
+                cursor_x = 20
+                cursor_y += 22
             legend_svg.append(
-                f'<g class="legend-row" data-postgis-geometry-id="{geometry_id}" transform="translate({cursor} 354)">'
+                f'<g class="legend-row" data-postgis-geometry-id="{geometry_id}" transform="translate({cursor_x} {cursor_y})">'
                 f'<rect width="11" height="11" rx="2" fill="{color}"/><text x="16" y="10">{safe_label}</text></g>'
             )
-            cursor += 88
+            cursor_x += item_width
+
+        svg_height = cursor_y + 26
 
         safe_id = html.escape(visual_id, quote=True)
         return (
             '<?xml version="1.0" encoding="UTF-8"?>\n'
-            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" role="img" aria-labelledby="{safe_id}-title">\n'
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="{svg_height}" viewBox="0 0 600 {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
             f'<title id="{safe_id}-title">Input and output geometries for {safe_id}</title>\n'
-            '<style>.geometry-layer{opacity:.82}.line,.area{stroke-width:2;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}.area{fill-opacity:.18}.point{stroke:white;stroke-width:1.2;vector-effect:non-scaling-stroke}.legend-row text{font:12px sans-serif;fill:#344}.geometry-layer.active{opacity:1}.geometry-layer.active .line,.geometry-layer.active .area{stroke-width:3}</style>\n'
+            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.geometry-layer{opacity:.82}.line,.area{stroke-width:2;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.area{fill-opacity:.18}.point{stroke:white;stroke-width:1.2;vector-effect:non-scaling-stroke;pointer-events:all}.legend-row{cursor:default}.legend-row text{font:12px sans-serif;fill:#344}.geometry-layer.active{opacity:1}.geometry-layer.active .line,.geometry-layer.active .area{stroke-width:3}</style>\n'
+            '<rect class="plot-background" x="20" y="12" width="560" height="310" fill="#fbfcfd"/>\n'
+            '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
             f'<g transform="matrix({scale:.12g} 0 0 {scale:.12g} {translate_x:.12g} {translate_y:.12g})">'
             + "".join(groups) + '</g>\n' + "".join(legend_svg) + '\n</svg>\n'
         )
@@ -836,9 +1025,26 @@ FROM bounds
                     raise RuntimeError(f"Duplicate or missing visual example id: {visual['id']!r}")
                 seen.add(visual["id"])
                 (temporary / f"{visual['id']}.svg").write_text(visual["svg"], encoding="utf-8")
-                manifest.append({"id": visual["id"], "source": visual["source"]})
+                manifest.append({
+                    "id": visual["id"],
+                    "kind": visual["kind"],
+                    "output_omitted": visual.get("output_omitted", False),
+                    "preferred": visual["preferred"],
+                    "refentry": visual["refentry"],
+                    "screen": visual["screen"],
+                    "source": visual["source"],
+                })
             (temporary / "manifest.json").write_text(
                 json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
+            manifest_root = ET.Element("visual-examples")
+            for item in manifest:
+                ET.SubElement(manifest_root, "visual", {
+                    key: ("true" if value is True else "false" if value is False else str(value))
+                    for key, value in item.items()
+                })
+            ET.ElementTree(manifest_root).write(
+                temporary / "manifest.xml", encoding="utf-8", xml_declaration=True
             )
             backup = destination.with_name(f".{destination.name}.old")
             if backup.exists():
@@ -891,8 +1097,9 @@ def parse_args():
     mode.add_argument("--check-environment", action="store_true")
     parser.add_argument("--database")
     parser.add_argument("--keep-going", action="store_true", help="run all examples before failing")
-    parser.add_argument("--render-dir", help="write visual-primary SVG assets after a successful --run")
-    parser.add_argument("--visual-only", action="store_true", help="run only visual-primary examples")
+    parser.add_argument("--render-dir", help="write selected build-time SVG assets after a successful --run")
+    parser.add_argument("--visual-only", action="store_true", help="run only selected visual examples")
+    parser.add_argument("--jobs", type=int, default=1, help="parallel workers for --visual-only (default: 1)")
     parser.add_argument("xml_file")
     return parser.parse_args()
 
@@ -913,6 +1120,7 @@ def main():
                 keep_going=args.keep_going,
                 render_dir=args.render_dir,
                 visual_only=args.visual_only,
+                jobs=max(1, args.jobs),
             )
         elif args.check_environment:
             if not args.database:

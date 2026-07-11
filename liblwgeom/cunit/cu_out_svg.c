@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2010 Olivier Courtin <olivier.courtin@oslandia.com>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -255,6 +256,20 @@ static void out_svg_test_geoms(void)
 	do_svg_test(
 	    "MULTICURVE(NURBSCURVE(1,(0 0,1 0)),(1 0,2 0))",
 	    "M 0 0 L 1 0 M 1 0 L 2 0",
+	    8,
+	    0);
+	do_svg_test("COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,2 0),CIRCULARSTRING(2 0,3 -1,4 0))",
+		    "M 0 0 A 1 1 0 0 1 2 0 A 1 1 0 0 0 4 0",
+		    8,
+		    0);
+	do_svg_test("COMPOUNDCURVE((0 0,4 2),CIRCULARSTRING(4 2,-2 2,4 2),(4 2,5 2))",
+		    "M 0 0 L 4 -2 a 3 3 0 1 0 -6 0 a 3 3 0 1 0 6 0 L 5 -2",
+		    8,
+		    0);
+	do_svg_test(
+	    "GEOMETRYCOLLECTION(MULTICURVE(COMPOUNDCURVE((0 0,1 0),(1 0,2 0))),"
+	    "CURVEPOLYGON(COMPOUNDCURVE((10 0,12 0),(12 0,12 2),(12 2,10 0))))",
+	    "M 0 0 L 1 0 L 2 0;M 10 0 L 12 0 L 12 -2 L 10 0 Z",
 	    8,
 	    0);
 

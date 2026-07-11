@@ -50,6 +50,7 @@ DOCSUFFIX=-en
 html_builddir=$(abs_builddir)/html
 images_builddir=$(html_builddir)/images
 pdf_images_builddir=$(abs_builddir)/pdf/images
+visual_examples_manifest=$(images_builddir)/visual-examples/manifest.xml
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
   POSTGIS_DOWNLOAD_URL=https://postgis.net/stuff
@@ -451,6 +452,7 @@ $(HTML_REF_INDEX_JS): $(HTML_REF_INDEX_JSON)
 $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
+		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
 		$(XSLTPROCFLAGS) \
 		--output $(dir $@) \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
@@ -473,6 +475,7 @@ $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBO
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
 		--stringparam html.script "postgis-ref-index.js example-blocks.js" \
+		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
@@ -497,6 +500,7 @@ else
 		 -P figure.warning="images/warning" \
 		 -P figure.caution="images/caution" \
 		 -P latex.output.revhistory=0 \
+		 -P postgis.visual.manifest="$(visual_examples_manifest)" \
 		 --texinputs "$(srcdir):$(abs_srcdir)" \
 		 -s "texstyle" \
 		 $(DBLATEX_EXTRA_OPTIONS) \

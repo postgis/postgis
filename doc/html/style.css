@@ -443,7 +443,6 @@ table.postgis-example-grid td {
 
 .postgis-geometry-figure > img.postgis-geometry-figure-body,
 .postgis-geometry-figure > object.postgis-geometry-figure-body {
-    aspect-ratio: 30 / 19;
     display: block;
     height: auto;
     margin: 0.65rem auto;
@@ -464,25 +463,26 @@ table.postgis-example-grid td {
 .postgis-output-toggle,
 .postgis-geometry-toggle {
     align-items: center;
-    background: transparent;
-    border: 0;
-    border-radius: 0.25rem;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid #9aabba;
+    border-radius: 999px;
     color: #344b5d;
     cursor: pointer;
     display: inline-flex;
     flex: none;
-    font: 600 0.78em/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font: 600 0.76em/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     justify-content: center;
-    min-height: 1.7rem;
+    min-height: 1.65rem;
     min-width: 0;
-    padding: 0.25rem 0.45rem;
+    padding: 0.22rem 0.68rem;
 }
 
 .postgis-output-toggle:hover,
 .postgis-output-toggle:focus,
 .postgis-geometry-toggle:hover,
 .postgis-geometry-toggle:focus {
-    background: #e7eff5;
+    background: #fff;
+    border-color: #526f87;
     color: #263c4d;
 }
 

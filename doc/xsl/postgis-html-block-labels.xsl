@@ -14,6 +14,7 @@
   relying on color or CSS-generated content.
 -->
 <xsl:include href="postgis-block-labels-common.xsl"/>
+<xsl:param name="postgis.visual.manifest" select="''"/>
 
 <xsl:template match="@*|node()" mode="postgis-code-block-html">
   <xsl:param name="language"/>
@@ -180,9 +181,33 @@
   <xsl:param name="suppress-numbers" select="'0'"/>
   <xsl:variable name="label.id" select="concat('postgis-block-label-', generate-id())"/>
   <xsl:variable name="role.tokens" select="concat(' ', normalize-space(@role), ' ')"/>
+  <xsl:variable name="refentry.id" select="string(ancestor::d:refentry[1]/@xml:id)"/>
+  <xsl:variable name="screen.ordinal">
+    <xsl:choose>
+      <xsl:when test="$refentry.id != ''">
+        <xsl:value-of select="count(preceding::d:screen[ancestor::d:refentry[1]/@xml:id = $refentry.id]) + 1"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="count(preceding::d:screen[not(ancestor::d:refentry)]) + 1"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="manifest.visual"
+                select="document($postgis.visual.manifest)/visual-examples/visual[@refentry = $refentry.id and @screen = string($screen.ordinal)]"/>
+  <xsl:variable name="visual.id">
+    <xsl:choose>
+      <xsl:when test="contains($role.tokens, ' visual-primary ') and @xml:id">
+        <xsl:value-of select="@xml:id"/>
+      </xsl:when>
+      <xsl:otherwise><xsl:value-of select="$manifest.visual/@id"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="visual.preferred"
+                select="$manifest.visual/@preferred = 'true'
+                        or (not($manifest.visual) and contains($role.tokens, ' visual-primary '))"/>
 
   <div class="postgis-example-block postgis-example-output" role="group" data-postgis-block="output">
-    <xsl:if test="contains($role.tokens, ' visual-primary ')">
+    <xsl:if test="$visual.preferred">
       <xsl:attribute name="data-postgis-output-preference">visual</xsl:attribute>
     </xsl:if>
     <xsl:attribute name="aria-labelledby">
@@ -200,9 +225,9 @@
     </div>
     <xsl:apply-imports/>
   </div>
-  <xsl:if test="contains($role.tokens, ' visual-primary ') and @xml:id">
+  <xsl:if test="string($visual.id) != ''">
     <div class="postgis-geometry-figure" data-postgis-built-geometry="true">
-      <xsl:attribute name="data-postgis-visual-id"><xsl:value-of select="@xml:id"/></xsl:attribute>
+      <xsl:attribute name="data-postgis-visual-id"><xsl:value-of select="$visual.id"/></xsl:attribute>
       <div class="postgis-example-header">
         <div class="postgis-example-label">
           <xsl:call-template name="postgis-localized-block-label">
@@ -212,9 +237,9 @@
       </div>
       <object class="postgis-geometry-figure-body" type="image/svg+xml">
         <xsl:attribute name="data">
-          <xsl:value-of select="concat($img.src.path, 'images/visual-examples/', @xml:id, '.svg')"/>
+          <xsl:value-of select="concat($img.src.path, 'images/visual-examples/', $visual.id, '.svg')"/>
         </xsl:attribute>
-        <xsl:text>Geometry figure for </xsl:text><xsl:value-of select="@xml:id"/>
+        <xsl:text>Geometry figure for </xsl:text><xsl:value-of select="$visual.id"/>
       </object>
     </div>
   </xsl:if>

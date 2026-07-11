@@ -88,12 +88,13 @@ For a new function:
    `doc/html/images/Makefile.in`; the image build uses explicit lists rather
    than globbing every `.wkt` file.
 
-For a runnable SQL example whose actual geometry result should be the figure,
-put `role="visual-primary"` and a stable `xml:id` on the adjacent `screen`.
-Run `make -C regress visual-examples` before building HTML or PDF. This verifies the
-text result and generates SVG from the staged PostGIS library; PDF fallbacks are
-rasterized from that SVG, so no second geometry implementation or checked-in
-image is needed.
+Run `make -C regress visual-examples` before building HTML or PDF. It verifies
+every runnable example and automatically generates a figure for geometry found
+in the result or in SQL literals. The staged PostGIS library supplies the SVG
+paths and the PDF fallbacks are rasterized from the same SVG, so no second
+geometry implementation or checked-in image is needed. Use
+`role="visual-primary"` with a stable `xml:id` only when an authored example
+needs an explicit figure identity or preference.
 
 When documenting optional arguments, follow nearby DocBook examples so generated
 signatures and comments remain stable.

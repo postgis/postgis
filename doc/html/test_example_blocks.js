@@ -267,12 +267,12 @@ async function main() {
   };
   geometry.setOutputTextCollapsed(outputBlock, outputButton, true);
   assert(outputState.has('postgis-output-text-collapsed'));
-  assert.strictEqual(outputButton.textContent, 'Text \u25b8');
+  assert.strictEqual(outputButton.textContent, 'Show text');
   assert.strictEqual(outputButton.attributes['aria-expanded'], 'false');
   assert.strictEqual(outputButton.attributes['aria-label'], 'Show output text');
   geometry.setOutputTextCollapsed(outputBlock, outputButton, false);
   assert(!outputState.has('postgis-output-text-collapsed'));
-  assert.strictEqual(outputButton.textContent, 'Text \u25be');
+  assert.strictEqual(outputButton.textContent, 'Hide text');
   assert.strictEqual(outputButton.attributes['aria-expanded'], 'true');
   assert.strictEqual(outputButton.attributes['aria-label'], 'Hide output text');
 

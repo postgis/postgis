@@ -150,7 +150,7 @@ exampletest: staged-install exampletest-run
 
 visual-examples: staged-install visual-examples-run
 
-visual-examples-run: EXAMPLETEST_RUN_FLAGS = --visual-only
+visual-examples-run: EXAMPLETEST_RUN_FLAGS = --visual-only --jobs 16
 visual-examples-run: EXAMPLETEST_CHECK_ENVIRONMENT = no
 visual-examples-run: exampletest-run
 

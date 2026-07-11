@@ -10,6 +10,7 @@
   distinguish input/code from output without relying on color or background.
 -->
 <xsl:include href="postgis-block-labels-common.xsl"/>
+<xsl:param name="postgis.visual.manifest" select="''"/>
 
 <xsl:template name="postgis-dblatex-block-label">
   <xsl:param name="kind"/>
@@ -46,25 +47,39 @@
 
 <xsl:template match="d:screen|screen">
 	<xsl:variable name="role.tokens" select="concat(' ', normalize-space(@role), ' ')"/>
-	<xsl:variable name="visual.id" select="(@xml:id | @id)[1]"/>
+  <xsl:variable name="refentry.id"
+                select="string((ancestor::d:refentry | ancestor::refentry)[1]/@xml:id)"/>
+  <xsl:variable name="screen.ordinal">
+    <xsl:choose>
+      <xsl:when test="$refentry.id != ''">
+        <xsl:value-of select="count(preceding::d:screen[(ancestor::d:refentry | ancestor::refentry)[1]/@xml:id = $refentry.id] | preceding::screen[(ancestor::d:refentry | ancestor::refentry)[1]/@xml:id = $refentry.id]) + 1"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="count(preceding::d:screen[not(ancestor::d:refentry or ancestor::refentry)] | preceding::screen[not(ancestor::d:refentry or ancestor::refentry)]) + 1"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="manifest.visual"
+                select="document($postgis.visual.manifest)/visual-examples/visual[@refentry = $refentry.id and @screen = string($screen.ordinal)]"/>
+	<xsl:variable name="visual.id">
+    <xsl:choose>
+      <xsl:when test="contains($role.tokens, ' visual-primary ') and (@xml:id or @id)">
+        <xsl:value-of select="(@xml:id | @id)[1]"/>
+      </xsl:when>
+      <xsl:otherwise><xsl:value-of select="$manifest.visual/@id"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:call-template name="postgis-dblatex-block-label">
     <xsl:with-param name="kind" select="'output'"/>
   </xsl:call-template>
-	<xsl:if test="contains($role.tokens, ' visual-primary ') and string($visual.id) != ''">
-		<xsl:text>&#10;\begingroup\scriptsize\ttfamily\noindent{</xsl:text>
-		<xsl:call-template name="postgis-dblatex-breakable-geometry">
-			<xsl:with-param name="text" select="normalize-space(.)"/>
-		</xsl:call-template>
-		<xsl:text>}\par\endgroup&#10;</xsl:text>
+	<xsl:apply-imports/>
+	<xsl:if test="string($visual.id) != ''">
 		<xsl:call-template name="postgis-dblatex-block-label">
 			<xsl:with-param name="kind" select="'figure'"/>
 		</xsl:call-template>
 		<xsl:text>&#10;\begin{center}\includegraphics[width=0.96\linewidth,height=0.25\textheight,keepaspectratio]{images/visual-examples/</xsl:text>
 		<xsl:value-of select="$visual.id"/>
 		<xsl:text>.png}\end{center}&#10;</xsl:text>
-	</xsl:if>
-	<xsl:if test="not(contains($role.tokens, ' visual-primary ')) or string($visual.id) = ''">
-		<xsl:apply-imports/>
 	</xsl:if>
 </xsl:template>
 

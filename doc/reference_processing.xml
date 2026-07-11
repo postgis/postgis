@@ -160,6 +160,8 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
   10, 'endcap=square join=round'), 0);</programlisting>
 <screen xml:id="st-buffer-example-04" role="visual-primary">POLYGON((143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,160 40,140 40,140 126,57 43,50 36,36 50,143 157))</screen>
                         </entry>
+                      </row>
+                      <row>
                         <entry>
                           <para><emphasis>endcap=flat</emphasis></para>
 <programlisting>SELECT ST_AsText(ST_Buffer(
@@ -167,8 +169,6 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
   10, 'endcap=flat join=round'), 0);</programlisting>
 <screen xml:id="st-buffer-example-05" role="visual-primary">POLYGON((143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,140 50,140 126,57 43,43 57,143 157))</screen>
                         </entry>
-                      </row>
-                      <row>
                         <entry>
                           <para><emphasis>join=bevel</emphasis></para>
 <programlisting>SELECT ST_AsText(ST_Buffer(
@@ -176,6 +176,8 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
   10, 'join=bevel'), 0);</programlisting>
 <screen xml:id="st-buffer-example-06" role="visual-primary">POLYGON((143 157,160 150,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,143 157))</screen>
                         </entry>
+                      </row>
+                      <row>
                         <entry>
                           <para><emphasis>join=mitre mitre_limit=5.0 (default mitre limit)</emphasis></para>
 <programlisting>SELECT ST_AsText(ST_Buffer(
@@ -206,6 +208,8 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
   10, 'side=right'), 0);</programlisting>
 <screen xml:id="st-buffer-example-10" role="visual-primary">POLYGON((50 50,150 150,150 50,140 50,140 126,57 43,50 50))</screen>
                         </entry>
+                      </row>
+                      <row>
                         <entry>
                           <para><emphasis>side=left join=mitre</emphasis></para>
 <programlisting>SELECT ST_AsText(ST_Buffer(
@@ -213,8 +217,6 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
   10, 'side=left join=mitre'), 0);</programlisting>
 <screen xml:id="st-buffer-example-11" role="visual-primary">POLYGON((150 50,150 150,50 50,43 57,160 174,160 50,150 50))</screen>
                         </entry>
-                      </row>
-                      <row>
                         <entry>
                           <para><emphasis>right-hand winding, polygon boundary side=left</emphasis></para>
 <programlisting>SELECT ST_AsText(ST_Buffer(
@@ -223,6 +225,8 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
   20, 'side=left'), 0);</programlisting>
 <screen xml:id="st-buffer-example-12" role="visual-primary">POLYGON((50 50,50 150,150 150,150 50,50 50))</screen>
                         </entry>
+                      </row>
+                      <row>
                         <entry>
                           <para><emphasis>right-hand winding, polygon boundary side=right</emphasis></para>
 <programlisting>SELECT ST_AsText(ST_Buffer(
@@ -1903,7 +1907,7 @@ GROUP BY d.disease_type;
 <programlisting language="sql">SELECT ST_AsText(ST_MinimumBoundingCircle(ST_Collect('LINESTRING(55 75,125 150)',
 ST_Point(20, 80)), 8
 )) As wktmbc;</programlisting>
-<screen>POLYGON((72.5 178.4024474346694,84.86920388664029 177.18418718546332,96.76306620464646 173.57622349601382,107.72451249529237 167.71720838753708,117.33230052487836 159.83230052487838,125.21720838753708 150.22451249529237,131.07622349601382 139.26306620464646,134.68418718546332 127.3692038866403,135.9024474346694 115,134.68418718546332 102.63079611335971,131.07622349601382 90.73693379535354,125.21720838753708 79.77548750470766,117.33230052487838 70.16769947512164,107.72451249529237 62.282791612462916,96.76306620464648 56.42377650398619,84.86920388664032 52.815812814536685,72.50000000000001 51.59755256533059,60.13079611335969 52.815812814536685,48.236933795353536 56.42377650398618,37.27548750470765 62.28279161246291,27.667699475121637 70.16769947512162,19.782791612462923 79.77548750470763,13.923776503986204 90.7369337953535,10.315812814536692 102.63079611335968,9.097552565330588 114.99999999999999,10.315812814536685 127.3692038866403,13.923776503986197 139.2630662046465,19.78279161246291 150.22451249529234,27.667699475121623 159.83230052487835,37.275487504707634 167.71720838753708,48.236933795353494 173.5762234960138,60.13079611335967 177.18418718546332,72.49999999999999 178.4024474346694))</screen>
+<screen>POLYGON((72.5 178.4024474346694,84.86920388664029 177.18418718546332,96.76306620464646 173.57622349601382,107.72451249529237 167.71720838753708,117.33230052487836 159.83230052487838,125.21720838753708 150.22451249529237,131.07622349601382 139.26306620464646,134.68418718546332 127.3692038866403,135.9024474346694 115,134.68418718546332 102.63079611335971,131.07622349601382 90.73693379535354,125.21720838753708 79.77548750470766,117.33230052487838 70.16769947512164,107.72451249529237 62.282791612462916,96.76306620464648 56.42377650398619,84.86920388664032 52.815812814536685,72.50000000000001 51.59755256533059,60.13079611335969 52.815812814536685,48.236933795353536 56.42377650398618,37.27548750470765 62.28279161246291,27.667699475121637 70.16769947512162,19.782791612462923 79.77548750470763,13.923776503986204 90.7369337953535,10.315812814536692 102.63079611335968,9.097552565330588 114.99999999999999,10.315812814536685 127.3692038866403,13.923776503986197 139.2630662046465,19.78279161246291 150.22451249529234,27.667699475121623 159.83230052487835,37.275487504707634 167.71720838753708,48.236933795353494 173.5762234960138,60.13079611335967 177.18418718546332,72.5 178.4024474346694))</screen>
       </refsection>
       <refsection>
         <title>See Also</title>

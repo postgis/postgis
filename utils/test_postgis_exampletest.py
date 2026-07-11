@@ -217,14 +217,71 @@ class VisualExampleTest(unittest.TestCase):
             },
         )
         self.assertIn('viewBox="0 0 600 380"', svg)
+        self.assertIn('class="plot-grid"', svg)
+        self.assertIn('pointer-events:stroke', svg)
+        self.assertIn('pointer-events:all', svg)
         self.assertIn('data-postgis-geometry-id="buffer-example-code-1"', svg)
-        self.assertIn('<circle class="point" cx="2" cy="-3" r="4" fill="#2878b8"/>', svg)
+        self.assertRegex(svg, r'<circle class="point" cx="2" cy="-3" r="[0-9.]+" fill="#2878b8"/>')
         self.assertIn(
             'd="M 0 0 L 10 0 10 -10 Z" stroke="#a62c2b" fill="#a62c2b"',
             svg,
         )
         self.assertIn('<rect width="11" height="11" rx="2" fill="#2878b8"/>', svg)
         self.assertIn('<rect width="11" height="11" rx="2" fill="#a62c2b"/>', svg)
+
+    def test_visual_candidate_includes_spatial_context_but_skips_trivial_points(self):
+        self.assertIsNone(self.tester.visual_candidate("SELECT 'POINT(1 2)'", [["1"]]))
+        context = self.tester.visual_candidate(
+            "SELECT ST_Intersects('LINESTRING(0 0,1 1)', 'POLYGON((0 0,2 0,2 2,0 0))')",
+            [["t"]],
+        )
+        self.assertEqual({"kind": "input-context", "preferred": False}, context)
+        output = self.tester.visual_candidate(
+            "SELECT ST_Buffer('LINESTRING(0 0,1 1)', 1)",
+            [["POLYGON((0 0,2 0,2 2,0 0))"]],
+        )
+        self.assertEqual({"kind": "geometry-output", "preferred": True}, output)
+        self.assertIsNone(self.tester.visual_candidate(
+            "SELECT ST_AsText('LINESTRING(0 0,1 1)')", [["LINESTRING(0 0,1 1)"]]
+        ))
+
+    def test_svg_rejects_empty_non_point_paths(self):
+        with self.assertRaisesRegex(RuntimeError, "empty SVG path"):
+            self.tester.visual_svg(
+                "broken-curve",
+                {"bounds": [0, 0, 1, 1], "parts": [
+                    {"ord": 1, "source": "Output", "label": "Output", "type": "MULTICURVE", "svg": ""}
+                ]},
+            )
+
+    def test_grid_is_bounded_for_large_coordinate_offsets(self):
+        svg = self.tester.visual_svg(
+            "large-offset",
+            {"bounds": [1e16, 1e16, 1e16 + 2, 1e16 + 2], "parts": [
+                {"ord": 1, "source": "Code", "label": "Code", "type": "POINT", "x": 1e16, "y": -1e16}
+            ]},
+        )
+        self.assertLessEqual(svg.count("<line "), 64)
+
+    def test_unparseable_documented_output_falls_back_to_input_context(self):
+        calls = []
+        def payload(_database, layers):
+            calls.append(layers)
+            if any(layer["source"] == "Output" for layer in layers):
+                raise RuntimeError("geometry contains non-closed rings; parse error")
+            return {"bounds": [0, 0, 1, 1], "parts": [
+                {"ord": 1, "source": "Code", "label": "Code", "type": "LINESTRING", "svg": "M 0 0 L 1 -1"}
+            ]}
+        self.tester.visual_payload = payload
+        visual = self.tester.render_visual_example("db", {
+            "query": "SELECT ST_AsText(f('LINESTRING(0 0,1 1)'))",
+            "label": "example:1", "visual_id": "example", "visual_refentry": "example",
+            "visual_screen": 1, "visual_preferred": True, "visual_kind": "geometry-output",
+        }, [["POLYGON((0 0,1 0,1 1))"]])
+        self.assertEqual(2, len(calls))
+        self.assertTrue(visual["output_omitted"])
+        self.assertFalse(visual["preferred"])
+        self.assertEqual("input-context-fallback", visual["kind"])
 
     def test_publish_visual_examples_replaces_stale_assets(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -233,14 +290,25 @@ class VisualExampleTest(unittest.TestCase):
             (target / "stale.svg").write_text("stale", encoding="utf-8")
             self.tester.publish_visual_examples(
                 target,
-                [{"id": "one", "source": "ST_Buffer:1", "svg": "<svg/>\n"}],
+                [{
+                    "id": "one", "source": "ST_Buffer:1", "svg": "<svg/>\n",
+                    "kind": "geometry-output", "preferred": True,
+                    "refentry": "ST_Buffer", "screen": 1, "output_omitted": False,
+                }],
             )
             self.assertFalse((target / "stale.svg").exists())
             self.assertEqual("<svg/>\n", (target / "one.svg").read_text(encoding="utf-8"))
             self.assertEqual(
-                [{"id": "one", "source": "ST_Buffer:1"}],
+                [{
+                    "id": "one", "kind": "geometry-output", "preferred": True,
+                    "refentry": "ST_Buffer", "screen": 1, "source": "ST_Buffer:1",
+                    "output_omitted": False,
+                }],
                 json.loads((target / "manifest.json").read_text(encoding="utf-8")),
             )
+            manifest_xml = (target / "manifest.xml").read_text(encoding="utf-8")
+            self.assertIn('id="one"', manifest_xml)
+            self.assertIn('preferred="true"', manifest_xml)
 
 
 if __name__ == "__main__":

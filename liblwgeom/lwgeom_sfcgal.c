@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2012-2013 Oslandia <infos@oslandia.com>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -38,6 +39,20 @@
 static int SFCGAL_type_to_lwgeom_type(sfcgal_geometry_type_t type);
 static POINTARRAY *ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int force3D);
 static sfcgal_geometry_t *ptarray_to_SFCGAL(const POINTARRAY *pa, int type);
+
+static POINTARRAY *
+ring_ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int force3D)
+{
+	POINT4D first;
+	POINTARRAY *pa = ptarray_from_SFCGAL(geom, force3D);
+
+	if (pa->npoints && !ptarray_is_closed_2d(pa))
+	{
+		getPoint4d_p(pa, 0, &first);
+		ptarray_append_point(pa, &first, LW_TRUE);
+	}
+	return pa;
+}
 
 /* Return SFCGAL version string */
 const char *
@@ -606,9 +621,9 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 		uint32_t nrings = sfcgal_polygon_num_interior_rings(geom) + 1;
 		POINTARRAY **pa = (POINTARRAY **)lwalloc(sizeof(POINTARRAY *) * nrings);
 
-		pa[0] = ptarray_from_SFCGAL(sfcgal_polygon_exterior_ring(geom), want3d);
+		pa[0] = ring_ptarray_from_SFCGAL(sfcgal_polygon_exterior_ring(geom), want3d);
 		for (i = 1; i < nrings; i++)
-			pa[i] = ptarray_from_SFCGAL(sfcgal_polygon_interior_ring_n(geom, i - 1), want3d);
+			pa[i] = ring_ptarray_from_SFCGAL(sfcgal_polygon_interior_ring_n(geom, i - 1), want3d);
 
 		return (LWGEOM *)lwpoly_construct(srid, NULL, nrings, pa);
 	}

@@ -19,9 +19,9 @@
  **********************************************************************
  *
  * Copyright 2001-2003 Refractions Research Inc.
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 /** @file
 *
@@ -159,11 +159,13 @@ assvg_line(stringbuffer_t* sb, const LWLINE *line, int relative, int precision)
 		pointArray_svg_abs(sb, line->points, 1, precision, 0);
 }
 
-static void pointArray_svg_arc(stringbuffer_t* sb, const POINTARRAY *pa, int close_ring, int relative,  int precision)
+static void
+pointArray_svg_arc(stringbuffer_t *sb, const POINTARRAY *pa, int include_start, int relative, int precision)
 {
 	uint32_t i; //, end;
 	char sx[OUT_DOUBLE_BUFFER_SIZE];
 	char sy[OUT_DOUBLE_BUFFER_SIZE];
+	char sz[OUT_DOUBLE_BUFFER_SIZE];
 
 	LWDEBUG(2, "pointArray_svg_arc called.");
 
@@ -211,14 +213,16 @@ static void pointArray_svg_arc(stringbuffer_t* sb, const POINTARRAY *pa, int clo
 		/* The side of the t1/t3 line that t2 falls on dictates the sweep
 		direction from t1 to t3. */
 		sweepFlag = (p2_side == -1) ? 1 : 0;
-		if ( (i == 2) && !is_circle ){
+		if ((i == 2) && !is_circle && include_start)
+		{
 			/** add MoveTo first point **/
 			lwprint_double(t1->x, precision, sx);
 			lwprint_double(-(t1->y), precision, sy);
 			stringbuffer_aprintf(sb, "%s %s", sx, sy);
 		}
 		/** is circle: need to start at center of circle **/
-		if ( (i == 2) && is_circle){
+		if ((i == 2) && is_circle && include_start)
+		{
 			/** add MoveTo center of circle **/
 			lwprint_double(center.x, precision, sx);
 			lwprint_double(-(center.y), precision, sy);
@@ -228,18 +232,44 @@ static void pointArray_svg_arc(stringbuffer_t* sb, const POINTARRAY *pa, int clo
 		lwprint_double(0, precision, sy);
 		/** is circle need to handle differently **/
 		if (is_circle){
-			//https://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path
-			lwprint_double(radius*2, precision, sy);
-			stringbuffer_aprintf(sb, " m %s 0 a %s %s 0 1 0 -%s 0", sx, sx, sx, sy);
-			stringbuffer_aprintf(sb, " a %s %s 0 1 0 %s 0", sx, sx, sy);
+			if (include_start)
+			{
+				// https://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path
+				lwprint_double(radius * 2, precision, sy);
+				stringbuffer_aprintf(sb, " m %s 0 a %s %s 0 1 0 -%s 0", sx, sx, sx, sy);
+				stringbuffer_aprintf(sb, " a %s %s 0 1 0 %s 0", sx, sx, sy);
+			}
+			else
+			{
+				/* A compound component starts at t1 already. Draw the circle
+				 * through the opposite point and back without moving the path. */
+				lwprint_double(2 * (center.x - t1->x), precision, sy);
+				lwprint_double(-2 * (center.y - t1->y), precision, sz);
+				stringbuffer_aprintf(sb, "a %s %s 0 1 0 %s %s", sx, sx, sy, sz);
+				lwprint_double(-2 * (center.x - t1->x), precision, sy);
+				lwprint_double(2 * (center.y - t1->y), precision, sz);
+				stringbuffer_aprintf(sb, " a %s %s 0 1 0 %s %s", sx, sx, sy, sz);
+			}
 		}
 		else {
 			/* Arc radius radius 0 arcflag swipeflag */
 			if (relative){
-				stringbuffer_aprintf(sb, " a %s %s 0 %d %d ", sx, sx, largeArcFlag, sweepFlag);
+				stringbuffer_aprintf(sb,
+						     (i == 2 && !include_start) ? "a %s %s 0 %d %d "
+										: " a %s %s 0 %d %d ",
+						     sx,
+						     sx,
+						     largeArcFlag,
+						     sweepFlag);
 			}
 			else {
-				stringbuffer_aprintf(sb, " A %s %s 0 %d %d ", sx, sx, largeArcFlag, sweepFlag);
+				stringbuffer_aprintf(sb,
+						     (i == 2 && !include_start) ? "A %s %s 0 %d %d "
+										: " A %s %s 0 %d %d ",
+						     sx,
+						     sx,
+						     largeArcFlag,
+						     sweepFlag);
 			}
 			lwprint_double(t3->x, precision, sx);
 			lwprint_double(-(t3->y), precision, sy);
@@ -345,7 +375,7 @@ assvg_compound(stringbuffer_t* sb, const LWCOMPOUND *icompound, int relative, in
 		{
 			case CIRCSTRINGTYPE:
 				tmpc = (LWCIRCSTRING *)geom;
-				pointArray_svg_arc(sb, tmpc->points, 1, relative, precision);
+				pointArray_svg_arc(sb, tmpc->points, i == 0, relative, precision);
 				break;
 
 			case LINETYPE:
@@ -542,6 +572,10 @@ assvg_multicurve(stringbuffer_t* sb, const LWMCURVE *mcurve, int relative, int p
 
 			case NURBSCURVETYPE:
 				assvg_nurbscurve(sb, (LWNURBSCURVE *)geom, relative, precision);
+				break;
+
+			case COMPOUNDTYPE:
+				assvg_compound(sb, (LWCOMPOUND *)geom, relative, precision);
 				break;
 
 			default:

@@ -253,6 +253,7 @@ PDF_IMAGES_BUILD_DIR ?= pdf-images
 PDF_IMAGES = $(ALL_IMAGES:%=$(PDF_IMAGES_BUILD_DIR)/%)
 VISUAL_EXAMPLES_DIR = visual-examples
 VISUAL_EXAMPLES_MANIFEST = $(VISUAL_EXAMPLES_DIR)/manifest.json
+VISUAL_EXAMPLES_XML_MANIFEST = $(VISUAL_EXAMPLES_DIR)/manifest.xml
 
 OBJS=styles.o generator.o
 
@@ -269,6 +270,10 @@ visual-examples-check:
 		echo "Visual examples are missing. Run 'make -C regress visual-examples' first." >&2; \
 		exit 1; \
 	}
+	@test -s $(VISUAL_EXAMPLES_XML_MANIFEST) || { \
+		echo "Visual example XML manifest is missing. Run 'make -C regress visual-examples' first." >&2; \
+		exit 1; \
+	}
 
 visual-examples-pdf: visual-examples-check
 	@mkdir -p $(PDF_IMAGES_BUILD_DIR)/$(VISUAL_EXAMPLES_DIR)
@@ -283,19 +288,28 @@ visual-examples-pdf: visual-examples-check
 	for source in $(VISUAL_EXAMPLES_DIR)/*.svg; do \
 		name=$$(basename "$$source" .svg); \
 		target="$(PDF_IMAGES_BUILD_DIR)/$(VISUAL_EXAMPLES_DIR)/$$name.png"; \
+		temporary="$$target.tmp.png"; \
+		diagnostics="$$target.tmp.log"; \
+		rm -f "$$temporary" "$$diagnostics"; \
 		if test "$$rasterizer" = rsvg; then \
-			rsvg-convert -w 1200 -h 760 -b white -o "$$target" "$$source" || exit 1; \
+			rsvg-convert -w 1200 -h 760 -b white -o "$$temporary" "$$source" 2>"$$diagnostics" || \
+				{ cat "$$diagnostics" >&2; exit 1; }; \
 		else \
 			$$converter -density 240 "$$source" -background white -flatten \
-				-resize 1200x1200\> "$$target" || exit 1; \
+				-resize 1200x1200\> "$$temporary" 2>"$$diagnostics" || \
+				{ cat "$$diagnostics" >&2; exit 1; }; \
 		fi; \
+		test ! -s "$$diagnostics" || { cat "$$diagnostics" >&2; exit 1; }; \
+		test -s "$$temporary" || { echo "Failed to rasterize $$source" >&2; exit 1; }; \
+		mv "$$temporary" "$$target"; \
+		rm -f "$$diagnostics"; \
 	done
 
 images-install: visual-examples-check $(ALL_IMAGES)
 	mkdir -p $(DESTDIR)$(htmldir)/images
 	$(INSTALL_DATA) $(ALL_IMAGES) $(DESTDIR)$(htmldir)/images/
 	mkdir -p $(DESTDIR)$(htmldir)/images/$(VISUAL_EXAMPLES_DIR)
-	$(INSTALL_DATA) $(VISUAL_EXAMPLES_DIR)/*.svg $(VISUAL_EXAMPLES_MANIFEST) \
+	$(INSTALL_DATA) $(VISUAL_EXAMPLES_DIR)/*.svg $(VISUAL_EXAMPLES_MANIFEST) $(VISUAL_EXAMPLES_XML_MANIFEST) \
 		$(DESTDIR)$(htmldir)/images/$(VISUAL_EXAMPLES_DIR)/
 
 images-uninstall:

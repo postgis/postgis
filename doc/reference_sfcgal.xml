@@ -3440,7 +3440,7 @@ TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.
     <refsection>
         <title>Examples</title>
         <programlisting>SELECT ST_AsText(CG_StraightSkeletonPartition('POLYGON((0 0,4 0,2 2,0 0))', true));</programlisting>
-<screen>POLYHEDRALSURFACE(((0 0,2 0.82842712474619,2 2)),((4 0,2 0.82842712474619,0 0)),((2 2,2 0.82842712474619,4 0)))</screen>
+<screen>POLYHEDRALSURFACE(((0 0,2 0.82842712474619,2 2,0 0)),((4 0,2 0.82842712474619,0 0,4 0)),((2 2,2 0.82842712474619,4 0,2 2)))</screen>
 
         <programlisting>SELECT CG_StraightSkeletonPartition(
 'POLYGON (( 190 190,10 190,10 10,190 10,190 20,
