@@ -252,6 +252,13 @@ pre,
     margin-top: 0;
 }
 
+.postgis-example-output:has(+ .postgis-geometry-figure) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-width: 0;
+    margin-bottom: 0;
+}
+
 .postgis-example-header {
     align-items: center;
     border-bottom: 1px solid #ccd;
@@ -377,77 +384,71 @@ pre,
     background: #fafafa;
 }
 
-.postgis-geometry-figure {
-    background: #fbfcfd;
-    border: 1px solid #b7c1ca;
-    border-radius: 0.45rem;
-    box-sizing: border-box;
-    margin: -0.5rem 0 1rem;
-    max-width: 72rem;
-    padding: 0.65rem;
-    position: relative;
+.postgis-output-text-collapsed pre.screen {
+    display: none;
 }
 
-.postgis-geometry-figure-body {
-    display: grid;
-    gap: 0.55rem;
-}
-
-.postgis-geometry-figure svg {
-    aspect-ratio: 40 / 13;
+#postgis-example-grid > table,
+table.postgis-example-grid {
+    border: 0 !important;
     display: block;
-    height: auto;
-    max-height: 320px;
-    max-width: 984px;
-    margin-inline: auto;
     width: 100%;
 }
 
-.postgis-geometry-grid line {
-    stroke: #dce2e7;
-    stroke-width: 1;
-    vector-effect: non-scaling-stroke;
+#postgis-example-grid > table colgroup,
+table.postgis-example-grid colgroup {
+    display: none;
 }
 
-.postgis-geometry-edge {
-    fill: none;
-    stroke: var(--postgis-geometry-color);
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.5;
-    vector-effect: non-scaling-stroke;
+#postgis-example-grid > table tbody,
+table.postgis-example-grid tbody {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(32rem, 100%), 1fr));
 }
 
-.postgis-geometry-fill {
-    fill: var(--postgis-geometry-color);
-    fill-opacity: 0.22;
+#postgis-example-grid > table tr,
+table.postgis-example-grid tr {
+    display: contents;
 }
 
-.postgis-geometry-point {
-    fill: var(--postgis-geometry-color);
-    stroke: #fff;
-    stroke-width: 1.2;
-    vector-effect: non-scaling-stroke;
+#postgis-example-grid > table td,
+table.postgis-example-grid td {
+    border: 0 !important;
+    min-width: 0;
+    padding: 0;
+    vertical-align: top;
 }
 
-.postgis-geometry-vertex {
-    fill: var(--postgis-geometry-color);
-    stroke: #fff;
-    stroke-width: 0.8;
-    vector-effect: non-scaling-stroke;
+.postgis-geometry-figure {
+    background: #fbfcfd;
+    border: 1px solid #8aa1b8;
+    border-radius: 0.45rem;
+    box-sizing: border-box;
+    margin: 0 0 1rem;
+    max-width: 72rem;
+    padding: 0;
 }
 
-.postgis-geometry-shape {
-    opacity: 0.78;
-    transition: opacity 90ms ease;
+.postgis-example-output + .postgis-geometry-figure {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top-width: 0;
 }
 
-.postgis-geometry-shape.postgis-geometry-active {
-    opacity: 1;
+.postgis-geometry-figure .postgis-example-header {
+    background: #f1f4f6;
+    color: #223746;
 }
 
-.postgis-geometry-shape.postgis-geometry-active .postgis-geometry-edge {
-    stroke-width: 2.6;
+.postgis-geometry-figure > img.postgis-geometry-figure-body,
+.postgis-geometry-figure > object.postgis-geometry-figure-body {
+    aspect-ratio: 30 / 19;
+    display: block;
+    height: auto;
+    margin: 0.65rem auto;
+    max-width: 100%;
+    width: min(calc(100% - 1.3rem), 62rem);
 }
 
 .postgis-geometry-literal {
@@ -460,68 +461,43 @@ pre,
     outline: 1px solid #c28a12;
 }
 
-.postgis-geometry-legend {
-    display: flex;
-    flex-wrap: wrap;
-    font: 0.78em/1.35 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    gap: 0.3rem 0.8rem;
-    padding-right: 6.5rem;
-}
-
-.postgis-geometry-legend-row {
-    align-items: center;
-    border-radius: 0.2rem;
-    display: inline-flex;
-    gap: 0.35rem;
-    padding: 0.12rem 0.25rem;
-}
-
-.postgis-geometry-legend-row.postgis-geometry-active {
-    background: #eef2f5;
-    outline: 1px solid #9baab6;
-}
-
-.postgis-geometry-chip {
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    border-radius: 0.12rem;
-    flex: none;
-    height: 0.72rem;
-    width: 0.72rem;
-}
-
+.postgis-output-toggle,
 .postgis-geometry-toggle {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #b7c1ca;
-    border-radius: 0.3rem;
-    color: #52616d;
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0.25rem;
+    color: #344b5d;
     cursor: pointer;
-    font: 0.72em system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    padding: 0.18rem 0.45rem;
-    position: absolute;
-    right: 0.55rem;
-    top: 0.45rem;
-    z-index: 1;
+    display: inline-flex;
+    flex: none;
+    font: 600 0.78em/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    justify-content: center;
+    min-height: 1.7rem;
+    min-width: 0;
+    padding: 0.25rem 0.45rem;
 }
 
+.postgis-output-toggle:hover,
+.postgis-output-toggle:focus,
 .postgis-geometry-toggle:hover,
 .postgis-geometry-toggle:focus {
-    border-color: #526f86;
+    background: #e7eff5;
     color: #263c4d;
 }
 
+.postgis-output-toggle:focus,
 .postgis-geometry-toggle:focus {
     outline: 2px solid #468;
     outline-offset: 1px;
 }
 
 .postgis-geometry-collapsed {
-    margin-top: -0.5rem;
-    min-height: 1.8rem;
-    padding: 0;
+    min-height: 0;
 }
 
 .postgis-geometry-collapsed .postgis-geometry-figure-body {
-    display: none;
+    display: none !important;
 }
 
 @media print {
@@ -535,8 +511,12 @@ pre,
         border-bottom-color: #000;
         color: #000 !important;
     }
-    .postgis-copy-button {
+    .postgis-copy-button,
+    .postgis-output-toggle {
         display: none;
+    }
+    .postgis-output-text-collapsed pre.screen {
+        display: block;
     }
     .postgis-geometry-figure {
         background: #fff;

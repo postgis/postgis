@@ -61,19 +61,6 @@ GENERATED_IMAGES= \
 	st_azimuth02.png \
 	st_boundary01.png \
 	st_boundary02.png \
-	st_buffer01.png \
-	st_buffer02.png \
-	st_buffer03.png \
-	st_buffer04.png \
-	st_buffer05.png \
-	st_buffer06.png \
-	st_buffer07.png \
-	st_buffer08.png \
-	st_buffer09.png \
-	st_buffer10.png \
-	st_buffer11.png \
-	st_buffer12.png \
-	st_buffer13.png \
 	st_buildarea01.png \
 	st_buildarea02.png \
 	st_buildarea03.png \
@@ -264,6 +251,8 @@ ALL_IMAGES = \
 
 PDF_IMAGES_BUILD_DIR ?= pdf-images
 PDF_IMAGES = $(ALL_IMAGES:%=$(PDF_IMAGES_BUILD_DIR)/%)
+VISUAL_EXAMPLES_DIR = visual-examples
+VISUAL_EXAMPLES_MANIFEST = $(VISUAL_EXAMPLES_DIR)/manifest.json
 
 OBJS=styles.o generator.o
 
@@ -271,16 +260,47 @@ OBJS=styles.o generator.o
 all: generator
 
 # generate the images
-images: $(ALL_IMAGES)
+images: visual-examples-check $(ALL_IMAGES)
 
-pdf-images: $(PDF_IMAGES)
+pdf-images: $(PDF_IMAGES) visual-examples-pdf
 
-images-install: $(ALL_IMAGES)
+visual-examples-check:
+	@test -s $(VISUAL_EXAMPLES_MANIFEST) || { \
+		echo "Visual examples are missing. Run 'make -C regress visual-examples' first." >&2; \
+		exit 1; \
+	}
+
+visual-examples-pdf: visual-examples-check
+	@mkdir -p $(PDF_IMAGES_BUILD_DIR)/$(VISUAL_EXAMPLES_DIR)
+	@converter=$${POSTGIS_DOC_CONVERTER:-}; rasterizer=convert; \
+	if test -z "$$converter"; then \
+		if command -v rsvg-convert >/dev/null 2>&1; then rasterizer=rsvg; \
+		elif command -v gm >/dev/null 2>&1; then converter="gm convert"; \
+		elif command -v magick >/dev/null 2>&1; then converter="magick"; \
+		elif command -v convert >/dev/null 2>&1; then converter="convert"; \
+		else echo "Could not find a converter for visual-example PDF fallbacks." >&2; exit 1; fi; \
+	fi; \
+	for source in $(VISUAL_EXAMPLES_DIR)/*.svg; do \
+		name=$$(basename "$$source" .svg); \
+		target="$(PDF_IMAGES_BUILD_DIR)/$(VISUAL_EXAMPLES_DIR)/$$name.png"; \
+		if test "$$rasterizer" = rsvg; then \
+			rsvg-convert -w 1200 -h 760 -b white -o "$$target" "$$source" || exit 1; \
+		else \
+			$$converter -density 240 "$$source" -background white -flatten \
+				-resize 1200x1200\> "$$target" || exit 1; \
+		fi; \
+	done
+
+images-install: visual-examples-check $(ALL_IMAGES)
 	mkdir -p $(DESTDIR)$(htmldir)/images
 	$(INSTALL_DATA) $(ALL_IMAGES) $(DESTDIR)$(htmldir)/images/
+	mkdir -p $(DESTDIR)$(htmldir)/images/$(VISUAL_EXAMPLES_DIR)
+	$(INSTALL_DATA) $(VISUAL_EXAMPLES_DIR)/*.svg $(VISUAL_EXAMPLES_MANIFEST) \
+		$(DESTDIR)$(htmldir)/images/$(VISUAL_EXAMPLES_DIR)/
 
 images-uninstall:
 	rm -f $(ALL_IMAGES:%=$(DESTDIR)$(htmldir)/images/%)
+	rm -rf $(DESTDIR)$(htmldir)/images/$(VISUAL_EXAMPLES_DIR)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
@@ -335,3 +355,4 @@ distclean: clean
 images-clean:
 	rm -f $(ALL_IMAGES)
 	rm -rf $(PDF_IMAGES_BUILD_DIR)
+	rm -rf $(VISUAL_EXAMPLES_DIR)

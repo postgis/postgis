@@ -179,8 +179,12 @@
 <xsl:template match="d:screen">
   <xsl:param name="suppress-numbers" select="'0'"/>
   <xsl:variable name="label.id" select="concat('postgis-block-label-', generate-id())"/>
+  <xsl:variable name="role.tokens" select="concat(' ', normalize-space(@role), ' ')"/>
 
   <div class="postgis-example-block postgis-example-output" role="group" data-postgis-block="output">
+    <xsl:if test="contains($role.tokens, ' visual-primary ')">
+      <xsl:attribute name="data-postgis-output-preference">visual</xsl:attribute>
+    </xsl:if>
     <xsl:attribute name="aria-labelledby">
       <xsl:value-of select="$label.id"/>
     </xsl:attribute>
@@ -196,6 +200,24 @@
     </div>
     <xsl:apply-imports/>
   </div>
+  <xsl:if test="contains($role.tokens, ' visual-primary ') and @xml:id">
+    <div class="postgis-geometry-figure" data-postgis-built-geometry="true">
+      <xsl:attribute name="data-postgis-visual-id"><xsl:value-of select="@xml:id"/></xsl:attribute>
+      <div class="postgis-example-header">
+        <div class="postgis-example-label">
+          <xsl:call-template name="postgis-localized-block-label">
+            <xsl:with-param name="kind" select="'figure'"/>
+          </xsl:call-template>
+        </div>
+      </div>
+      <object class="postgis-geometry-figure-body" type="image/svg+xml">
+        <xsl:attribute name="data">
+          <xsl:value-of select="concat($img.src.path, 'images/visual-examples/', @xml:id, '.svg')"/>
+        </xsl:attribute>
+        <xsl:text>Geometry figure for </xsl:text><xsl:value-of select="@xml:id"/>
+      </object>
+    </div>
+  </xsl:if>
 </xsl:template>
 
 </xsl:stylesheet>

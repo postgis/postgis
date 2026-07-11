@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 
 import argparse
+import base64
+import html
+import json
+from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 
 from lxml import etree
 
@@ -27,7 +33,14 @@ WKT_TYPES = (
     "POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|"
     "GEOMETRYCOLLECTION|CIRCULARSTRING|COMPOUNDCURVE|CURVEPOLYGON|"
     "MULTICURVE|MULTISURFACE|TIN|TRIANGLE|POLYHEDRALSURFACE"
+    "|NURBSCURVE"
 )
+WKT_START_RE = re.compile(rf"(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*\(", re.I)
+VISUAL_ROLE = "visual-primary"
+SVG_PALETTES = {
+    "Code": ("#2878b8", "#59a4d8", "#0f5f9c"),
+    "Output": ("#a62c2b", "#d95f3d", "#ef8a47"),
+}
 DECIMAL_RE = re.compile(r"(?<![A-Za-z_])-?(?:\d+\.\d*|\.\d+)(?:[eE][+-]?\d+)?")
 VERSION_FUNCTION_RE = re.compile(
     r"\b(?:"
@@ -342,6 +355,80 @@ class ExampleTester:
             return self.parse_adjacent_example(text, self.node_text(screen))
         return None, None
 
+    def quoted_ranges(self, text):
+        ranges = []
+        index = 0
+        while index < len(text):
+            if text.startswith("--", index):
+                newline = text.find("\n", index + 2)
+                index = len(text) if newline < 0 else newline + 1
+                continue
+            if text.startswith("/*", index):
+                closing = text.find("*/", index + 2)
+                index = len(text) if closing < 0 else closing + 2
+                continue
+            if text[index] == "$":
+                delimiter = re.match(r"\$(?:[A-Za-z_][A-Za-z0-9_]*)?\$", text[index:])
+                if delimiter:
+                    token = delimiter.group(0)
+                    start = index + len(token)
+                    closing = text.find(token, start)
+                    if closing < 0:
+                        break
+                    ranges.append((start, closing))
+                    index = closing + len(token)
+                    continue
+            if text[index] != "'":
+                index += 1
+                continue
+            start = index + 1
+            index += 1
+            while index < len(text):
+                if text[index] != "'":
+                    index += 1
+                    continue
+                if index + 1 < len(text) and text[index + 1] == "'":
+                    index += 2
+                    continue
+                ranges.append((start, index))
+                index += 1
+                break
+        return ranges
+
+    def closing_parenthesis(self, text, opening):
+        depth = 0
+        for index in range(opening, len(text)):
+            if text[index] == "(":
+                depth += 1
+            elif text[index] == ")":
+                depth -= 1
+                if depth == 0:
+                    return index
+        return -1
+
+    def geometry_candidates(self, text, quoted_only=False):
+        quoted = self.quoted_ranges(text) if quoted_only else []
+        candidates = []
+        cursor = 0
+        while True:
+            match = WKT_START_RE.search(text, cursor)
+            if not match:
+                break
+            opening = text.find("(", match.start())
+            closing = self.closing_parenthesis(text, opening)
+            if closing < 0:
+                raise RuntimeError(f"Unclosed geometry candidate near: {text[match.start():match.start() + 80]}")
+            cursor = closing + 1
+            if match.start() and re.match(r"[A-Za-z0-9_]", text[match.start() - 1]):
+                continue
+            if closing + 1 < len(text) and re.match(r"[A-Za-z0-9_]", text[closing + 1]):
+                continue
+            if quoted_only and not any(match.start() >= start and closing + 1 <= end for start, end in quoted):
+                continue
+            candidate = text[match.start():closing + 1]
+            candidates.append(candidate.replace("''", "'"))
+        return candidates
+
     def query_is_auto_safe(self, query):
         if query is None:
             return False
@@ -372,6 +459,7 @@ class ExampleTester:
 
     def example_for_node(self, node):
         text = self.node_text(node)
+        screen = self.following_screen(node)
         forced = self.has_role(node, FORCE_ROLE)
         if self.has_role(node, EXTERNAL_STATE_ROLE) and not forced:
             return None
@@ -397,6 +485,11 @@ class ExampleTester:
             "version": self.query_is_version_example(query),
             "catalog": self.query_is_catalog_example(query),
             "volatile": self.query_is_version_example(query) or self.query_is_catalog_example(query),
+            "visual_id": (
+                screen.get(f"{{{XML_NS}}}id")
+                if screen is not None and self.has_role(screen, VISUAL_ROLE)
+                else None
+            ),
         }
 
     def examples(self):
@@ -526,16 +619,20 @@ class ExampleTester:
             raise RuntimeError(f"psql failed for query:\n{query}\n{result.stdout}{result.stderr}")
         return self.expected_rows_from_psql_lines(result.stdout.split("\n"))
 
-    def run_examples(self, database, keep_going=False):
-        self.check_environment(database)
-
+    def run_examples(self, database, keep_going=False, render_dir=None, visual_only=False):
         examples = self.examples()
+        if visual_only:
+            examples = [example for example in examples if example["visual_id"]]
+        else:
+            self.check_environment(database)
         failures = []
         ran = 0
+        visuals = []
 
         for example in examples:
             try:
-                self.run_one_example(database, example)
+                actual = self.run_one_example(database, example)
+                visual = self.render_visual_example(database, example, actual) if example["visual_id"] else None
             except RuntimeError as exc:
                 if not keep_going:
                     raise
@@ -543,11 +640,18 @@ class ExampleTester:
                 failures.append(example["label"])
                 continue
             ran += 1
+            if visual:
+                visuals.append(visual)
 
         if failures:
             raise RuntimeError(f"FAILED {len(failures)} example(s): {', '.join(failures)}")
 
+        if render_dir:
+            self.publish_visual_examples(render_dir, visuals)
+
         print(f"manual example tests passed: {ran}")
+        if render_dir:
+            print(f"visual examples rendered: {len(visuals)}")
 
     def run_one_example(self, database, example):
         if not example["valid"]:
@@ -571,6 +675,180 @@ class ExampleTester:
                 f"Expected:\n{self.rows_to_string(example['expected'])}\n"
                 f"Actual:\n{self.rows_to_string(actual)}"
             )
+        return actual
+
+    def run_psql_scalar(self, database, query):
+        cmd = ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-d", database, "-c", query]
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
+        if result.returncode != 0:
+            raise RuntimeError(f"psql failed while rendering a visual example:\n{result.stdout}{result.stderr}")
+        return result.stdout.strip()
+
+    def visual_payload(self, database, layers):
+        encoded = base64.b64encode(json.dumps(layers, separators=(",", ":")).encode("utf-8")).decode("ascii")
+        query = f"""
+WITH raw AS (
+  SELECT ord, source, label, wkt
+  FROM jsonb_to_recordset(
+    convert_from(decode('{encoded}', 'base64'), 'UTF8')::jsonb
+  ) AS item(ord integer, source text, label text, wkt text)
+), parsed AS (
+  SELECT ord, source, label, ST_Force2D(ST_GeomFromEWKT(wkt)) AS geom
+  FROM raw
+), bounds AS (
+  SELECT ST_Extent(geom) AS box FROM parsed
+), parts AS (
+  SELECT ord, source, label, (ST_Dump(geom)).geom AS geom
+  FROM parsed
+)
+SELECT json_build_object(
+  'bounds', json_build_array(ST_XMin(box), ST_YMin(box), ST_XMax(box), ST_YMax(box)),
+  'parts', (
+    SELECT json_agg(json_build_object(
+      'ord', ord, 'source', source, 'label', label,
+      'type', GeometryType(geom), 'svg', ST_AsSVG(geom, 0, 12),
+      'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
+      'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END
+    ) ORDER BY ord)
+    FROM parts
+  )
+)::text
+FROM bounds
+"""
+        payload = self.run_psql_scalar(database, query)
+        if not payload:
+            raise RuntimeError("PostGIS returned no visual-example payload")
+        return json.loads(payload)
+
+    def render_visual_example(self, database, example, actual):
+        code = self.geometry_candidates(example["query"], quoted_only=True)
+        output = self.geometry_candidates(self.rows_to_string(actual))
+        layers = []
+        for source, values in (("Code", code), ("Output", output)):
+            for index, wkt in enumerate(values, 1):
+                layers.append({
+                    "ord": len(layers) + 1,
+                    "source": source,
+                    "label": f"{source} {index}",
+                    "wkt": wkt,
+                })
+        if not output:
+            raise RuntimeError(f"Visual example {example['visual_id']} has no geometry output")
+        payload = self.visual_payload(database, layers)
+        return {
+            "id": example["visual_id"],
+            "source": example["label"],
+            "svg": self.visual_svg(example["visual_id"], payload),
+        }
+
+    def visual_svg(self, visual_id, payload):
+        min_x, min_y, max_x, max_y = [float(value) for value in payload["bounds"]]
+        width = max_x - min_x
+        height = max_y - min_y
+        fallback = max(width, height, 1.0)
+        if width == 0:
+            min_x -= fallback / 2
+            max_x += fallback / 2
+        if height == 0:
+            min_y -= fallback / 2
+            max_y += fallback / 2
+        width = max_x - min_x
+        height = max_y - min_y
+        min_x -= width * 0.08
+        max_x += width * 0.08
+        min_y -= height * 0.08
+        max_y += height * 0.08
+        scale = min(560 / (max_x - min_x), 310 / (max_y - min_y))
+        used_width = (max_x - min_x) * scale
+        used_height = (max_y - min_y) * scale
+        left = 20 + (560 - used_width) / 2
+        top = 12 + (310 - used_height) / 2
+        translate_x = left - min_x * scale
+        translate_y = top + max_y * scale
+
+        groups = []
+        legend = []
+        source_indexes = {"Code": 0, "Output": 0}
+        parts_by_ord = {}
+        for part in payload.get("parts") or []:
+            parts_by_ord.setdefault(part["ord"], []).append(part)
+        for ordinal, parts in sorted(parts_by_ord.items()):
+            source = parts[0]["source"]
+            source_index = source_indexes[source]
+            source_indexes[source] += 1
+            color = SVG_PALETTES[source][source_index % len(SVG_PALETTES[source])]
+            geometry_id = f"{visual_id}-{source.lower()}-{source_index + 1}"
+            shapes = []
+            for part in parts:
+                if part["type"].upper() == "POINT":
+                    shapes.append(
+                        f'<circle class="point" cx="{float(part["x"]):.12g}" '
+                        f'cy="{float(part["y"]):.12g}" r="4" fill="{color}"/>'
+                    )
+                else:
+                    svg_data = html.escape(part["svg"], quote=True)
+                    dimension_class = "area" if part["type"].upper() in {
+                        "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
+                        "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
+                    } else "line"
+                    fill = color if dimension_class == "area" else "none"
+                    shapes.append(
+                        f'<path class="{dimension_class}" d="{svg_data}" '
+                        f'stroke="{color}" fill="{fill}" fill-rule="evenodd"/>'
+                    )
+            groups.append(
+                f'<g class="geometry-layer" data-postgis-geometry-id="{geometry_id}">' +
+                "".join(shapes) + "</g>"
+            )
+            legend.append((geometry_id, color, parts[0]["label"]))
+
+        legend_svg = []
+        cursor = 20
+        for geometry_id, color, label in legend:
+            safe_label = html.escape(label)
+            legend_svg.append(
+                f'<g class="legend-row" data-postgis-geometry-id="{geometry_id}" transform="translate({cursor} 354)">'
+                f'<rect width="11" height="11" rx="2" fill="{color}"/><text x="16" y="10">{safe_label}</text></g>'
+            )
+            cursor += 88
+
+        safe_id = html.escape(visual_id, quote=True)
+        return (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" role="img" aria-labelledby="{safe_id}-title">\n'
+            f'<title id="{safe_id}-title">Input and output geometries for {safe_id}</title>\n'
+            '<style>.geometry-layer{opacity:.82}.line,.area{stroke-width:2;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}.area{fill-opacity:.18}.point{stroke:white;stroke-width:1.2;vector-effect:non-scaling-stroke}.legend-row text{font:12px sans-serif;fill:#344}.geometry-layer.active{opacity:1}.geometry-layer.active .line,.geometry-layer.active .area{stroke-width:3}</style>\n'
+            f'<g transform="matrix({scale:.12g} 0 0 {scale:.12g} {translate_x:.12g} {translate_y:.12g})">'
+            + "".join(groups) + '</g>\n' + "".join(legend_svg) + '\n</svg>\n'
+        )
+
+    def publish_visual_examples(self, render_dir, visuals):
+        destination = Path(render_dir)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        temporary = Path(tempfile.mkdtemp(prefix=f".{destination.name}-", dir=destination.parent))
+        try:
+            manifest = []
+            seen = set()
+            for visual in visuals:
+                if not visual["id"] or visual["id"] in seen:
+                    raise RuntimeError(f"Duplicate or missing visual example id: {visual['id']!r}")
+                seen.add(visual["id"])
+                (temporary / f"{visual['id']}.svg").write_text(visual["svg"], encoding="utf-8")
+                manifest.append({"id": visual["id"], "source": visual["source"]})
+            (temporary / "manifest.json").write_text(
+                json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
+            backup = destination.with_name(f".{destination.name}.old")
+            if backup.exists():
+                shutil.rmtree(backup)
+            if destination.exists():
+                destination.rename(backup)
+            temporary.rename(destination)
+            if backup.exists():
+                shutil.rmtree(backup)
+        except Exception:
+            shutil.rmtree(temporary, ignore_errors=True)
+            raise
 
     def check_environment(self, database):
         for check in ENVIRONMENT_CHECKS:
@@ -603,7 +881,7 @@ def parse_source_example(body, screen_body=None):
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Report or run manual example tests.",
-        usage="%(prog)s --report|--run|--check-environment [--database DB] [--keep-going] <postgis-out.xml>",
+        usage="%(prog)s --report|--run|--check-environment [--database DB] [--keep-going] [--render-dir DIR] <postgis-out.xml>",
     )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--report", action="store_true")
@@ -611,6 +889,8 @@ def parse_args():
     mode.add_argument("--check-environment", action="store_true")
     parser.add_argument("--database")
     parser.add_argument("--keep-going", action="store_true", help="run all examples before failing")
+    parser.add_argument("--render-dir", help="write visual-primary SVG assets after a successful --run")
+    parser.add_argument("--visual-only", action="store_true", help="run only visual-primary examples")
     parser.add_argument("xml_file")
     return parser.parse_args()
 
@@ -626,7 +906,12 @@ def main():
         elif args.run:
             if not args.database:
                 raise RuntimeError("--database is required with --run")
-            tester.run_examples(args.database, keep_going=args.keep_going)
+            tester.run_examples(
+                args.database,
+                keep_going=args.keep_going,
+                render_dir=args.render_dir,
+                visual_only=args.visual_only,
+            )
         elif args.check_environment:
             if not args.database:
                 raise RuntimeError("--database is required with --check-environment")

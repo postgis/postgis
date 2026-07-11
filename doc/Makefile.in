@@ -448,7 +448,7 @@ $(HTML_REF_INDEX_JS): $(HTML_REF_INDEX_JSON)
 		$(MAKE) $(HTML_REF_INDEX_JSON); \
 	fi
 
-$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX)
+$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		$(XSLTPROCFLAGS) \
@@ -469,7 +469,7 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX)
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css \
 		--stringparam html.script "postgis-ref-index.js example-blocks.js" \
@@ -547,6 +547,9 @@ images: ## Generate images used in html and pdf targets
 
 images images-install images-uninstall images-clean:
 	$(MAKE) -C $(images_builddir) $@
+
+visual-examples:
+	$(MAKE) -C $(images_builddir) visual-examples-check
 
 pdf-images: images
 	$(MAKE) -C $(images_builddir) $@ PDF_IMAGES_BUILD_DIR="$(pdf_images_builddir)"

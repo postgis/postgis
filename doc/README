@@ -31,6 +31,7 @@ To generate the images:
 
 To generate the PDFs:
  * dblatex - http://dblatex.sourceforge.net
+ * rsvg-convert from librsvg (preferred for visual-example SVG fallbacks)
 
 To generate the developer's documentation:
  * Doxygen - http://www.stack.nl/~dimitri/doxygen/
@@ -42,6 +43,7 @@ To generate and manage the translated XML files:
 
 To generate and report on manual example tests:
  * Python 3 with lxml
+ * A running PostgreSQL server and the staged PostGIS build
 
 To generate the localized PDFs:
  * fonts-ipafont-gothic
@@ -124,6 +126,20 @@ Example SQL formatting rules:
 Use ``make exampletest-report`` to inspect the current manual. Use
 ``make -C regress exampletest-unit`` to run fast unit tests for the manual
 example parser and comparison logic.
+
+When a query result is more useful as a drawing, add ``role="visual-primary"``
+and a stable ``xml:id`` to its immediately following ``screen``. The output
+text remains part of the manual and is collapsed by default in HTML. Running
+``make -C regress visual-examples`` verifies the marked results, asks that same
+staged PostGIS build for SVG paths, and writes the generated SVG assets under
+the documentation build tree. HTML embeds those SVG files; the PDF image step
+rasterizes the same files at high resolution. The HTML and PDF targets fail
+with a reminder if these assets have not been generated.
+
+The full ``make -C regress exampletest`` target also regenerates these assets
+while testing every runnable manual example. The narrower visual target shares
+its staged-install and database recipe but does not require unrelated optional
+features used elsewhere in the manual.
 
 For contributor workflow, local testing, and garden checks, see
 ``doc/development/``.

@@ -10,8 +10,17 @@ variables:
       # Makefiles
       - "doc/Makefile.in"
       - "doc/html/images/Makefile.in"
+      - "regress/Makefile.in"
       # XML sources
       - "doc/*.xml"
+      - "doc/xsl/*.xsl"
+      - "doc/html/*.js"
+      - "doc/html/*.css"
+      # Build-time geometry renderer
+      - "utils/postgis_exampletest.py"
+      - "utils/test_postgis_exampletest.py"
+      - "liblwgeom/lwout_svg.c"
+      - "liblwgeom/cunit/cu_out_svg.c"
       # Internationalization Makefiles
       - "doc/po/Makefile.local"
   - &when_path
@@ -31,14 +40,24 @@ steps:
     commands:
       - ./autogen.sh
       - mkdir -p build-docs && cd build-docs
-      - ../configure --without-pg --without-protobuf --without-raster
+      - ../configure --with-pgconfig=/usr/lib/postgresql/18/bin/pg_config --without-protobuf --without-raster
       - make postgis_revision.h
+      - make -j SUBDIRS="deps liblwgeom libpgcommon postgis"
       - xmllint --version
+
+  render-visual-examples:
+    image: *test_image
+    pull: true
+    depends_on: prepare
+    commands:
+      - export PATH=/usr/lib/postgresql/18/bin:$${PATH}
+      - service postgresql start 18
+      - make -C build-docs/regress visual-examples
 
   check-xml:
     image: *test_image
     pull: true
-    depends_on: prepare
+    depends_on: render-visual-examples
     commands:
       - make -C build-docs/doc check
     when:
@@ -46,7 +65,7 @@ steps:
   build-images:
     image: *test_image
     pull: true
-    depends_on: prepare
+    depends_on: render-visual-examples
     commands:
       - make -C build-docs/doc images
     when:
@@ -54,7 +73,7 @@ steps:
   build-html:
     image: *test_image
     pull: true
-    depends_on: check-xml
+    depends_on: [ check-xml, render-visual-examples ]
     commands:
       - make -C build-docs/doc html
     when:
@@ -70,7 +89,7 @@ steps:
   build-chunked-html:
     image: *test_image
     pull: true
-    depends_on: check-xml
+    depends_on: [ check-xml, render-visual-examples ]
     commands:
       - make -C build-docs/doc html
     when:

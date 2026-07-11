@@ -19,6 +19,7 @@
     <xsl:when test="$kind = 'copy'">Copy</xsl:when>
     <xsl:when test="$kind = 'copied'">Copied</xsl:when>
     <xsl:when test="$kind = 'copy-failed'">Failed</xsl:when>
+    <xsl:when test="$kind = 'figure'">Figure</xsl:when>
     <xsl:otherwise>Code</xsl:otherwise>
   </xsl:choose>
 </xsl:template>

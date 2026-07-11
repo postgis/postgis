@@ -2,6 +2,9 @@
 
 import contextlib
 import io
+import json
+from pathlib import Path
+import tempfile
 import unittest
 
 from postgis_exampletest import ExampleTester, parse_source_example
@@ -47,6 +50,24 @@ POINT(1 2)
 
     def test_function_whitespace_is_allowed(self):
         self.assertTrue(self.tester.query_is_auto_safe("SELECT ST_AsText ('POINT(1 2)'::geometry);"))
+
+    def test_geometry_candidates_are_lexical_and_comment_aware(self):
+        sql = """-- 'POINT(9 9)'
+SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
+       'not geometry', /* 'POINT(8 8)' */ 'CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0))';
+"""
+        self.assertEqual(
+            [
+                "POINT(1 2)",
+                "LINESTRING(0 0,1 1)",
+                "CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0))",
+            ],
+            self.tester.geometry_candidates(sql, quoted_only=True),
+        )
+
+    def test_geometry_candidates_reject_unclosed_wkt(self):
+        with self.assertRaisesRegex(RuntimeError, "Unclosed geometry candidate"):
+            self.tester.geometry_candidates("POLYGON((0 0,1 0,0 0)")
 
 
 class ExampleTestComparisonTest(unittest.TestCase):
@@ -119,6 +140,7 @@ class ExampleTestRunnerTest(unittest.TestCase):
                     "valid": True,
                     "catalog": False,
                     "version": False,
+                    "visual_id": None,
                 }
             )
         tester.examples = lambda: examples
@@ -159,6 +181,66 @@ class ExampleTestRunnerTest(unittest.TestCase):
             tester.run_examples("exampletest")
 
         self.assertNotIn("second:2", str(raised.exception))
+
+    def test_visual_only_skips_unmarked_examples_and_global_environment_checks(self):
+        tester = self.make_runner({"SELECT 1": [["1"]], "SELECT 2": [["2"]], "SELECT 3": [["3"]]})
+        examples = tester.examples()
+        examples[1]["visual_id"] = "second-visual"
+        calls = []
+        tester.check_environment = lambda database: self.fail("visual-only checked unrelated environment")
+        tester.run_one_example = lambda database, example: calls.append(example["label"]) or example["expected"]
+        tester.render_visual_example = lambda database, example, actual: {
+            "id": example["visual_id"], "source": example["label"], "svg": "<svg/>\n"
+        }
+        tester.publish_visual_examples = lambda render_dir, visuals: calls.append(
+            (render_dir, [visual["id"] for visual in visuals])
+        )
+
+        tester.run_examples("exampletest", render_dir="visuals", visual_only=True)
+
+        self.assertEqual(["second:2", ("visuals", ["second-visual"])], calls)
+
+
+class VisualExampleTest(unittest.TestCase):
+    def setUp(self):
+        self.tester = ExampleTester.__new__(ExampleTester)
+
+    def test_svg_uses_postgis_fragments_and_stable_source_colors(self):
+        svg = self.tester.visual_svg(
+            "buffer-example",
+            {
+                "bounds": [0, 0, 10, 10],
+                "parts": [
+                    {"ord": 1, "source": "Code", "label": "Code 1", "type": "POINT", "x": 2, "y": -3},
+                    {"ord": 2, "source": "Output", "label": "Output 1", "type": "POLYGON", "svg": "M 0 0 L 10 0 10 -10 Z"},
+                ],
+            },
+        )
+        self.assertIn('viewBox="0 0 600 380"', svg)
+        self.assertIn('data-postgis-geometry-id="buffer-example-code-1"', svg)
+        self.assertIn('<circle class="point" cx="2" cy="-3" r="4" fill="#2878b8"/>', svg)
+        self.assertIn(
+            'd="M 0 0 L 10 0 10 -10 Z" stroke="#a62c2b" fill="#a62c2b"',
+            svg,
+        )
+        self.assertIn('<rect width="11" height="11" rx="2" fill="#2878b8"/>', svg)
+        self.assertIn('<rect width="11" height="11" rx="2" fill="#a62c2b"/>', svg)
+
+    def test_publish_visual_examples_replaces_stale_assets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / "visual-examples"
+            target.mkdir()
+            (target / "stale.svg").write_text("stale", encoding="utf-8")
+            self.tester.publish_visual_examples(
+                target,
+                [{"id": "one", "source": "ST_Buffer:1", "svg": "<svg/>\n"}],
+            )
+            self.assertFalse((target / "stale.svg").exists())
+            self.assertEqual("<svg/>\n", (target / "one.svg").read_text(encoding="utf-8"))
+            self.assertEqual(
+                [{"id": "one", "source": "ST_Buffer:1"}],
+                json.loads((target / "manifest.json").read_text(encoding="utf-8")),
+            )
 
 
 if __name__ == "__main__":

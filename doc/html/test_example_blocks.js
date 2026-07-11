@@ -231,70 +231,50 @@ async function main() {
     { filename: 'example-blocks.js' });
   const geometry = sandbox.window.POSTGIS_EXAMPLE_BLOCKS_TEST;
 
-  const parserCases = [
-    ['POINT(1 2)', 'POINT', 1],
-    ['LINESTRING(0 0,1 1)', 'LINESTRING', 2],
-    ['POLYGON((0 0,4 0,4 4,0 0))', 'POLYGON', 4],
-    ['MULTIPOINT((0 0),(1 1))', 'MULTIPOINT', 2],
-    ['MULTILINESTRING((0 0,1 1),(2 2,3 3))', 'MULTILINESTRING', 4],
-    ['MULTIPOLYGON(((0 0,2 0,0 2,0 0)),((3 3,4 3,3 4,3 3)))', 'MULTIPOLYGON', 8],
-    ['GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1))', 'GEOMETRYCOLLECTION', 3],
-    ['BOX2D(1 2,5 6)', 'BOX2D', 2],
-    ['BOX3D(1 2 3,5 6 7)', 'BOX3D', 2]
-  ];
-  parserCases.forEach(function ([text, type, vertices]) {
-    const parsed = geometry.parseWkt(text);
-    assert(parsed, text);
-    assert.strictEqual(parsed.type, type);
-    assert.strictEqual(parsed.vertices, vertices);
-  });
+  function geometryTexts(text, quotedOnly) {
+    return geometry.scanGeometryCandidates(text, quotedOnly).map((match) => match.text);
+  }
 
-  assert.deepStrictEqual(Array.from(geometry.parseWkt('SRID=4326;POINT Z (1 2 9)').primitives[0].points[0]),
-    [1, 2]);
-  assert.deepStrictEqual(Array.from(geometry.parseWkt('POINT M (3 4 99)').primitives[0].points[0]),
-    [3, 4]);
-  assert.deepStrictEqual(Array.from(geometry.parseWkt('POINT ZM (5 6 7 8)').primitives[0].points[0]),
-    [5, 6]);
-  assert.strictEqual(geometry.parseWkt('POINT Z (1 2)'), null);
-  assert.strictEqual(geometry.parseWkt('BOX2D(1 2 3,4 5 6)'), null);
-  assert.strictEqual(geometry.parseWkt('BOX3D(1 2,4 5)'), null);
-  assert.strictEqual(geometry.parseWkt('POINT EMPTY'), null);
-  assert.strictEqual(geometry.parseWkt('POINT(1)'), null);
-  assert.strictEqual(geometry.parseWkt('LINESTRING(0 0)'), null);
-  assert.strictEqual(geometry.parseWkt('LINESTRING(0 0,1 1 2)'), null);
-  assert.strictEqual(geometry.parseWkt('POLYGON((0 0,1 0,0 1))'), null);
-  assert.strictEqual(geometry.parseWkt('POLYGON((0 0,1 0'), null);
-  assert.strictEqual(geometry.parseWkt('CIRCULARSTRING(0 0,1 1,2 0)'), null);
-  assert.strictEqual(geometry.parseWkt('TIN(((0 0,1 0,0 1,0 0)))'), null);
-  assert.strictEqual(geometry.scanGeometryLiterals('XPOINT(1 2)').length, 0);
-  assert.strictEqual(geometry.scanGeometryLiterals('POINT(1 2)junk').length, 0);
-  assert.strictEqual(geometry.scanGeometryLiterals("SELECT 'POINT EMPTY'").length, 0);
-  assert.strictEqual(geometry.scanGeometryLiterals("SELECT 'POINT(1 2)', 'LINESTRING(0 0,1 1)'").length, 2);
-  assert.strictEqual(geometry.scanGeometryLiterals('SELECT POINT(1 2)', true).length, 0);
-  assert.strictEqual(geometry.scanGeometryLiterals("SELECT 'POINT(1 2)'", true).length, 1);
-  assert.strictEqual(geometry.scanGeometryLiterals('SELECT $$POINT(1 2)$$', true).length, 1);
-  assert.strictEqual(geometry.scanGeometryLiterals('SELECT $wkt$POINT(1 2)$wkt$', true).length, 1);
-  assert.strictEqual(geometry.scanGeometryLiterals("-- 'POINT(1 2)'", true).length, 0);
-  assert.strictEqual(geometry.scanGeometryLiterals("/* 'POINT(1 2)' */", true).length, 0);
-  assert.strictEqual(geometry.scanGeometryLiterals('SELECT "POINT(1 2)"', true).length, 0);
+  assert.deepStrictEqual(Array.from(geometryTexts(
+    "SELECT 'POINT(1 2)', 'CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0))'", true
+  )), ['POINT(1 2)', 'CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0))']);
+  assert.deepStrictEqual(Array.from(geometryTexts(
+    'SELECT $wkt$NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1)))$wkt$',
+    true
+  )), ['NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1)))']);
+  assert.strictEqual(geometryTexts('SELECT POINT(1 2)', true).length, 0);
+  assert.strictEqual(geometryTexts("-- 'POINT(1 2)'", true).length, 0);
+  assert.strictEqual(geometryTexts("/* 'POINT(1 2)' */", true).length, 0);
+  assert.strictEqual(geometryTexts('SELECT "POINT(1 2)"', true).length, 0);
+  assert.strictEqual(geometryTexts('XPOINT(1 2)', false).length, 0);
+  assert.strictEqual(geometryTexts('POINT(1 2)junk', false).length, 0);
+  assert.deepStrictEqual(Array.from(geometryTexts(
+    'GEOMETRYCOLLECTION(TRIANGLE((0 0,2 0,0 2,0 0)),POINT(1 1))', false
+  )), ['GEOMETRYCOLLECTION(TRIANGLE((0 0,2 0,0 2,0 0)),POINT(1 1))']);
 
-  const tooManyPoints = 'LINESTRING(' + Array.from({ length: 2001 }, (_, index) =>
-    index + ' ' + index).join(',') + ')';
-  assert.strictEqual(geometry.parseWkt(tooManyPoints), null);
-
-  const extent = geometry.geometryExtent([
-    { geometry: geometry.parseWkt('POINT(0 0)') },
-    { geometry: geometry.parseWkt('LINESTRING(10 5,20 15)') }
-  ]);
-  assert.deepStrictEqual(
-    [extent.minX, extent.minY, extent.maxX, extent.maxY].map((value) => Number(value.toFixed(2))),
-    [-1.6, -1.2, 21.6, 16.2]
-  );
-  const pointExtent = geometry.geometryExtent([{ geometry: geometry.parseWkt('POINT(2 3)') }]);
-  assert(pointExtent.minX < 2 && pointExtent.maxX > 2 && pointExtent.minY < 3 && pointExtent.maxY > 3);
-  assert.strictEqual(geometry.gridStep(83, 8), 20);
-  assert.strictEqual(geometry.gridStep(0.0083, 8), 0.002);
-  assert.strictEqual(geometry.gridStep(0, 8), 1);
+  const outputState = new Set();
+  const outputBlock = {
+    classList: {
+      toggle(name, enabled) {
+        if (enabled) outputState.add(name); else outputState.delete(name);
+      }
+    }
+  };
+  const outputButton = {
+    textContent: '',
+    attributes: {},
+    setAttribute(name, value) { this.attributes[name] = value; }
+  };
+  geometry.setOutputTextCollapsed(outputBlock, outputButton, true);
+  assert(outputState.has('postgis-output-text-collapsed'));
+  assert.strictEqual(outputButton.textContent, 'Text \u25b8');
+  assert.strictEqual(outputButton.attributes['aria-expanded'], 'false');
+  assert.strictEqual(outputButton.attributes['aria-label'], 'Show output text');
+  geometry.setOutputTextCollapsed(outputBlock, outputButton, false);
+  assert(!outputState.has('postgis-output-text-collapsed'));
+  assert.strictEqual(outputButton.textContent, 'Text \u25be');
+  assert.strictEqual(outputButton.attributes['aria-expanded'], 'true');
+  assert.strictEqual(outputButton.attributes['aria-label'], 'Hide output text');
 
   const literalOriginal = "SELECT 'POINT(1 2)'";
   const literalPre = makeLiteralTree(literalOriginal, document);
@@ -303,7 +283,6 @@ async function main() {
   assert.strictEqual(geometry.codeText(literalPre), literalOriginal);
   const literalSpan = literalPre.children[1];
   assert.strictEqual(literalSpan.textContent, 'POINT(1 2)');
-  assert.strictEqual(literalSpan.id, 'postgis-geometry-99-literal');
   assert.strictEqual(literalSpan.attributes['data-postgis-geometry-id'], 'postgis-geometry-99');
 
   listeners.DOMContentLoaded();

@@ -122,211 +122,119 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
               <refsection>
                 <title>Examples</title>
 
-                <informaltable>
+                <para>The textual results are rounded to whole coordinate units for readability.
+                Each result remains available as text, while the manual initially favors the
+                shared input/output figure.</para>
+
+                <informaltable xml:id="postgis-example-grid" role="postgis-example-grid">
                   <tgroup cols="2">
                     <tbody>
                       <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer01.png"/>
-                              </imageobject>
-                              <caption><para>quad_segs=8 (default)</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('POINT(100 90)'),
- 50, 'quad_segs=8');
-                </programlisting>
-                          </para></entry>
-
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer02.png"/>
-                              </imageobject>
-                              <caption><para>quad_segs=2 (lame)</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('POINT(100 90)'),
- 50, 'quad_segs=2');
-                </programlisting>
-                        </para></entry>
+                        <entry>
+                          <para><emphasis>quad_segs=8 (default)</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('POINT(100 90)'),
+  50, 'quad_segs=8'), 0);</programlisting>
+<screen xml:id="st-buffer-example-01" role="visual-primary">POLYGON((150 90,149 80,146 71,142 62,135 55,128 48,119 44,110 41,100 40,90 41,81 44,72 48,65 55,58 62,54 71,51 80,50 90,51 100,54 109,58 118,65 125,72 132,81 136,90 139,100 140,110 139,119 136,128 132,135 125,142 118,146 109,149 100,150 90))</screen>
+                        </entry>
+                        <entry>
+                          <para><emphasis>quad_segs=2</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('POINT(100 90)'),
+  50, 'quad_segs=2'), 0);</programlisting>
+<screen xml:id="st-buffer-example-02" role="visual-primary">POLYGON((150 90,135 55,100 40,65 55,50 90,65 125,100 140,135 125,150 90))</screen>
+                        </entry>
                       </row>
                       <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer03.png"/>
-                              </imageobject>
-                              <caption><para>endcap=round join=round (default)</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'endcap=round join=round');
-                </programlisting>
-                         </para></entry>
-
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer04.png"/>
-                              </imageobject>
-                              <caption><para>endcap=square</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'endcap=square join=round');
-                </programlisting>
-                          </para></entry>
-
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer05.png"/>
-                              </imageobject>
-                              <caption><para>endcap=flat</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'endcap=flat join=round');
-                </programlisting>
-                          </para></entry>
+                        <entry>
+                          <para><emphasis>endcap=round join=round (default)</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'endcap=round join=round'), 0);</programlisting>
+<screen xml:id="st-buffer-example-03" role="visual-primary">POLYGON((143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,143 157))</screen>
+                        </entry>
+                        <entry>
+                          <para><emphasis>endcap=square</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'endcap=square join=round'), 0);</programlisting>
+<screen xml:id="st-buffer-example-04" role="visual-primary">POLYGON((143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,160 40,140 40,140 126,57 43,50 36,36 50,143 157))</screen>
+                        </entry>
+                        <entry>
+                          <para><emphasis>endcap=flat</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'endcap=flat join=round'), 0);</programlisting>
+<screen xml:id="st-buffer-example-05" role="visual-primary">POLYGON((143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,140 50,140 126,57 43,43 57,143 157))</screen>
+                        </entry>
                       </row>
                       <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer07.png"/>
-                              </imageobject>
-                              <caption><para>join=bevel</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'join=bevel');
-                </programlisting>
-                          </para></entry>
-
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer06.png"/>
-                              </imageobject>
-                              <caption><para>join=mitre mitre_limit=5.0 (default mitre limit)</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'join=mitre mitre_limit=5.0');
-                </programlisting>
-                          </para></entry>
-
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer08.png"/>
-                              </imageobject>
-                              <caption><para>join=mitre mitre_limit=1</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'join=mitre mitre_limit=1.0');
-                </programlisting>
-                          </para></entry>
+                        <entry>
+                          <para><emphasis>join=bevel</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'join=bevel'), 0);</programlisting>
+<screen xml:id="st-buffer-example-06" role="visual-primary">POLYGON((143 157,160 150,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,143 157))</screen>
+                        </entry>
+                        <entry>
+                          <para><emphasis>join=mitre mitre_limit=5.0 (default mitre limit)</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'join=mitre mitre_limit=5.0'), 0);</programlisting>
+<screen xml:id="st-buffer-example-07" role="visual-primary">POLYGON((160 174,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,160 174))</screen>
+                        </entry>
+                        <entry>
+                          <para><emphasis>join=mitre mitre_limit=1</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'join=mitre mitre_limit=1.0'), 0);</programlisting>
+<screen xml:id="st-buffer-example-08" role="visual-primary">POLYGON((148 162,160 157,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,148 162))</screen>
+                        </entry>
                       </row>
-                        <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer09.png"/>
-                              </imageobject>
-                              <caption><para>side=left</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'side=left');
-                </programlisting>
-                          </para></entry>
-
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer10.png"/>
-                              </imageobject>
-                              <caption><para>side=right</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'side=right');
-                </programlisting>
-                          </para></entry>
-
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer11.png"/>
-                              </imageobject>
-                              <caption><para>side=left join=mitre</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
- ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'
- ), 10, 'side=left join=mitre');
-                </programlisting>
-                          </para></entry>
+                      <row>
+                        <entry>
+                          <para><emphasis>side=left</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'side=left'), 0);</programlisting>
+<screen xml:id="st-buffer-example-09" role="visual-primary">POLYGON((150 50,150 150,50 50,43 57,143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,150 50))</screen>
+                        </entry>
+                        <entry>
+                          <para><emphasis>side=right</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'side=right'), 0);</programlisting>
+<screen xml:id="st-buffer-example-10" role="visual-primary">POLYGON((50 50,150 150,150 50,140 50,140 126,57 43,50 50))</screen>
+                        </entry>
+                        <entry>
+                          <para><emphasis>side=left join=mitre</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+  10, 'side=left join=mitre'), 0);</programlisting>
+<screen xml:id="st-buffer-example-11" role="visual-primary">POLYGON((150 50,150 150,50 50,43 57,160 174,160 50,150 50))</screen>
+                        </entry>
                       </row>
-                        <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer12.png"/>
-                              </imageobject>
-                              <caption><para>right-hand-winding, polygon boundary side=left</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
-ST_ForceRHR(ST_Boundary(ST_GeomFromText('POLYGON ((50 50,50 150,150 150,150 50,50 50))'))),
- ), 20, 'side=left');
-                </programlisting>
-                          </para></entry>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buffer13.png"/>
-                              </imageobject>
-                              <caption><para>right-hand-winding, polygon boundary side=right</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_Buffer(
-ST_ForceRHR(ST_Boundary(ST_GeomFromText('POLYGON ((50 50,50 150,150 150,150 50,50 50))'))
-), 20, 'side=right')
-                </programlisting>
-                </para></entry>
-                </row>
+                      <row>
+                        <entry>
+                          <para><emphasis>right-hand winding, polygon boundary side=left</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_ForceRHR(ST_Boundary(ST_GeomFromText(
+    'POLYGON ((50 50,50 150,150 150,150 50,50 50))'))),
+  20, 'side=left'), 0);</programlisting>
+<screen xml:id="st-buffer-example-12" role="visual-primary">POLYGON((50 50,50 150,150 150,150 50,50 50))</screen>
+                        </entry>
+                        <entry>
+                          <para><emphasis>right-hand winding, polygon boundary side=right</emphasis></para>
+<programlisting>SELECT ST_AsText(ST_Buffer(
+  ST_ForceRHR(ST_Boundary(ST_GeomFromText(
+    'POLYGON ((50 50,50 150,150 150,150 50,50 50))'))),
+  20, 'side=right'), 0);</programlisting>
+<screen xml:id="st-buffer-example-13" role="visual-primary">POLYGON((50 50,50 70,50 150,150 150,150 50,70 50,50 50),(70 70,130 70,130 130,70 130,70 70))</screen>
+                        </entry>
+                      </row>
                     </tbody>
                   </tgroup>
-            </informaltable>
+                </informaltable>
 
 <para>A buffered point approximates a circle. A buffered point forcing approximation of (see diagram) 2 points per quarter circle is poly with 8 sides (see diagram)</para>
 <programlisting>SELECT ST_NPoints(ST_Buffer('POINT(100 90)'::geometry, 50)) As promisingcircle_pcount,
