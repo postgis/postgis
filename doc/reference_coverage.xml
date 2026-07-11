@@ -408,11 +408,11 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
     <refsection>
       <title>Examples</title>
       <para>This example returns all unique edges of a coverage.</para>
-      <programlisting role="requires-external-state">SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))')));</programlisting>
+      <programlisting role="requires-external-state">SELECT ST_AsText(ST_CoverageEdges('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))'));</programlisting>
 <screen>MULTILINESTRING((0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 10 10), (10 10, 0 10), (0 10, 0 0), (10 0, 10 10))</screen>
 
       <para>This example returns only the interior shared edges of a coverage.</para>
-      <programlisting role="requires-external-state">SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))'), 2));</programlisting>
+      <programlisting role="requires-external-state">SELECT ST_AsText(ST_CoverageEdges('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))', 2));</programlisting>
 <screen>MULTILINESTRING((10 0, 10 10))</screen>
     </refsection>
 

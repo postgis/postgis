@@ -440,7 +440,7 @@ F000000000000000000000000000000000000000000000000</screen>
   <para>This example builds the SQL for a Boston-to-San-Francisco path with segments every 100 kilometers.</para>
   <programlisting>
 SELECT ST_AsEncodedPolyline(ST_Segmentize(
-      ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'),
+      'LINESTRING(-71.0519 42.4935,-122.4483 37.64)'::geography,
       100000)::geometry) As encodedFlightPath;</programlisting>
 
 
@@ -548,7 +548,7 @@ SELECT ST_AsEncodedPolyline(ST_Segmentize(
     <refsection>
     <title>Examples</title>
     <programlisting>SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
-FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;</programlisting>
+FROM (SELECT 'POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry AS geom) AS q;</programlisting>
 <screen>GAAiEAoOCgwIBBoIAAAAAgIAAAE=</screen>
     </refsection>
   </refentry>
@@ -861,10 +861,10 @@ SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);]
 <![CDATA[
 SELECT ST_AsGML(
 3,
-ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry);
 ]]></programlisting>
     <screen><![CDATA[ <gml:PolyhedralSurface>
 <gml:polygonPatches>
@@ -1265,7 +1265,7 @@ SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.51666666
     <refsection>
     <title>Examples</title>
     <programlisting>
-SELECT ST_AsText(ST_AsMVTGeom(ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
+SELECT ST_AsText(ST_AsMVTGeom('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))',
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
     4096, 0, false));</programlisting>
 <screen>MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
@@ -1453,7 +1453,7 @@ FROM mvtgeom;
 <screen>M 0 0 L 0 -1 1 -1 1 0 Z</screen>
 
         <para>Circular string</para>
-    <programlisting>SELECT ST_AsSVG(ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)'));</programlisting>
+    <programlisting>SELECT ST_AsSVG('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)'::geometry);</programlisting>
 <screen>M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</screen>
 
         <para>Multi-curve</para>

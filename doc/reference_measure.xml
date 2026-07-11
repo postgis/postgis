@@ -1021,7 +1021,7 @@ SELECT DISTINCT ON (buildings.gid) buildings.gid, parcels.parcel_id
 <para>This example transforms a WGS 84 LineString to Massachusetts State Plane meters.</para>
 <programlisting>
 SELECT ST_Length(ST_Transform(
-        ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)'),
+        'SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)'::geometry,
             26986
     )
 );</programlisting>
@@ -1173,8 +1173,8 @@ FROM geometry_table;</programlisting>
 <programlisting>SELECT ST_LengthSpheroid(geom, sph_m ) As tot_len,
 ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
 ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
-              FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
-    (-71.05957 42.3589 , -71.061 43))') As geom,
+              FROM (SELECT 'MULTILINESTRING((-118.584 38.374,-118.583 38.5),
+    (-71.05957 42.3589 , -71.061 43))'::geometry As geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;</programlisting>
 <screen>     tot_len      |    len_line1     |    len_line2
 ------------------+------------------+------------------
@@ -1184,8 +1184,8 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 SELECT ST_LengthSpheroid(geom, sph_m ) As tot_len,
 ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
 ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
-              FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
-    (-71.05957 42.3589 75, -71.061 43 90))') As geom,
+              FROM (SELECT 'MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
+    (-71.05957 42.3589 75, -71.061 43 90))'::geometry As geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;</programlisting>
 <screen>     tot_len      |    len_line1    |    len_line2
 ------------------+-----------------+------------------
@@ -1505,12 +1505,12 @@ ST_AsEWKT(ST_LongestLine(poly, mline)) As lol2d
 		<para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
 		<programlisting>
 SELECT ST_3DMaxDistance(
-            ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 10000)'),2163),
-                ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163)
+            ST_Transform('SRID=4326;POINT(-72.1235 42.3521 10000)'::geometry,2163),
+                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
             ) As dist_3d,
             ST_MaxDistance(
-                ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 10000)'),2163),
-                ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163)
+                ST_Transform('SRID=4326;POINT(-72.1235 42.3521 10000)'::geometry,2163),
+                ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163)
             ) As dist_2d;</programlisting>
 <screen>     dist_3d      |     dist_2d
 ------------------+------------------
@@ -1806,8 +1806,8 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 		<title>Examples</title>
 		<para>Perimeter of a slightly elevated polygon in the air in Massachusetts state plane feet</para>
 		<programlisting>SELECT ST_3DPerimeter(geom), ST_Perimeter2D(geom), ST_Perimeter(geom) FROM
-            (SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 2967416 2,743238 2967450 1,
-743265.625 2967416 1,743238 2967416 2))') As geom) As foo;</programlisting>
+            (SELECT 'SRID=2249;POLYGON((743238 2967416 2,743238 2967450 1,
+743265.625 2967416 1,743238 2967416 2))'::geometry As geom) As foo;</programlisting>
 <screen>  ST_3DPerimeter  |  st_perimeter2d  |   st_perimeter
 ------------------+------------------+------------------
 105.46579359767418 | 105.43299727218763 | 105.43299727218763</screen>

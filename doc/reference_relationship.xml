@@ -264,8 +264,8 @@ SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
      ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
      ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
      ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-       ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
+       ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;
 </programlisting>
 <screen>  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
@@ -361,8 +361,8 @@ ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as bigcontainspropunion,
 ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
 ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
 ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;</programlisting>
+FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
+ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;</programlisting>
 <screen>  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | bigisunion | bigcoversexterior | bigcontainsexterior
 ------------------+------------------+------------------+------------+-------------------+---------------------
  f                     | t                    | f                    | t          | t                 | f</screen>
@@ -463,8 +463,8 @@ SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,
   ST_CoveredBy(smallc, bigc) As smallcoveredbybig,
   ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,
   ST_Within(ST_ExteriorRing(bigc),bigc) As exeriorwithinbig
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;</programlisting>
+FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
+  ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;</programlisting>
 <screen> smallinsmall | smallcoveredbybig | exteriorcoveredbybig | exeriorwithinbig
 --------------+-------------------+----------------------+------------------
  t            | t                 | t                    | f
@@ -557,8 +557,8 @@ SELECT ST_Covers(smallc,smallc) As smallinsmall,
   ST_Covers(smallc, bigc) As smallcoversbig,
   ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
   ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
-  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;</programlisting>
+FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
+  ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;</programlisting>
 <screen> smallinsmall | smallcoversbig | bigcoversexterior | bigcontainsexterior
 --------------+----------------+-------------------+---------------------
  t            | f              | t                 | f
@@ -568,8 +568,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
     <programlisting>
 SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
   ST_Covers(ST_Buffer(geog_pt,10), geog_pt) As buff_10m_covers_cent
-  FROM (SELECT ST_Buffer(ST_GeogFromText('SRID=4326;POINT(-99.327 31.4821)'), 300) As geog_poly,
-        ST_GeogFromText('SRID=4326;POINT(-99.33 31.483)') As geog_pt ) As foo;</programlisting>
+  FROM (SELECT ST_Buffer('SRID=4326;POINT(-99.327 31.4821)'::geography, 300) As geog_poly,
+        'SRID=4326;POINT(-99.33 31.483)'::geography As geog_pt ) As foo;</programlisting>
 <screen> poly_covers_pt | buff_10m_covers_cent
 ----------------+------------------
  f              | t</screen>
@@ -859,11 +859,11 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_Equals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),
-ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));</programlisting>
+    <programlisting>SELECT ST_Equals('LINESTRING(0 0, 10 10)',
+'LINESTRING(0 0, 5 5, 10 10)');</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
-ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));</programlisting>
+<programlisting>SELECT ST_Equals(ST_Reverse('LINESTRING(0 0, 10 10)'),
+'LINESTRING(0 0, 5 5, 10 10)');</programlisting>
 <screen>t</screen>
     </refsection>
 
@@ -1054,8 +1054,8 @@ ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));</programlisting>
 SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
        ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
-  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,
-  ST_GeomFromText('LINESTRING (20 140, 71 74, 161 53)') As lineB
+  'LINESTRING(25 169,89 114,40 70,86 43)'::geometry As lineA,
+  'LINESTRING (20 140, 71 74, 161 53)'::geometry As lineB
   ) As foo;</programlisting>
 <screen> A_cross_B | B_cross_A
 -----------+-----------
@@ -1076,8 +1076,8 @@ FROM (SELECT
 SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
        ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
- ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,
- ST_GeomFromText('LINESTRING(171 154,20 140,71 74,161 53)') As lineB
+ 'LINESTRING(25 169,89 114,40 70,86 43)'::geometry As lineA,
+ 'LINESTRING(171 154,20 140,71 74,161 53)'::geometry As lineB
   ) As foo;</programlisting>
 <screen> A_cross_B | B_cross_A
 -----------+-----------
@@ -1098,8 +1098,8 @@ FROM (SELECT
 SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
        ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
-  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,
-  ST_GeomFromText('LINESTRING(5 90, 71 74, 20 140, 171 154)') As lineB
+  'LINESTRING(25 169,89 114,40 70,86 43)'::geometry As lineA,
+  'LINESTRING(5 90, 71 74, 20 140, 171 154)'::geometry As lineB
   ) As foo;</programlisting>
 <screen> A_cross_B | B_cross_A
 -----------+-----------
@@ -1270,8 +1270,8 @@ but since it has lower dimension it does not overlap or cross.</para>
     <programlisting>
 SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,
        ST_Intersects(a, b) AS intersects,  ST_Contains(b,a) AS b_contains_a
-FROM (SELECT ST_GeomFromText('POINT (100 100)') As a,
-             ST_GeomFromText('LINESTRING (30 50, 40 160, 160 40, 180 160)')  AS b) AS t</programlisting>
+FROM (SELECT 'POINT (100 100)'::geometry As a,
+             'LINESTRING (30 50, 40 160, 160 40, 180 160)'::geometry  AS b) AS t</programlisting>
 <screen>overlaps | crosses | intersects | b_contains_a
 ---------+----------------------+--------------
 f        | f       | t          | t</screen>
@@ -1287,8 +1287,8 @@ but does not overlap since it has different dimension.</para>
 <programlisting>
 SELECT ST_Overlaps(a,b) AS overlaps,        ST_Crosses(a,b) AS crosses,
        ST_Intersects(a, b) AS intersects,   ST_Contains(a,b) AS contains
-FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
-             ST_GeomFromText('LINESTRING(10 10, 190 190)') AS b) AS t;</programlisting>
+FROM (SELECT 'POLYGON ((40 170, 90 30, 180 100, 40 170))'::geometry AS a,
+             'LINESTRING(10 10, 190 190)'::geometry AS b) AS t;</programlisting>
 <screen> overlap | crosses | intersects | contains
 ---------+---------+------------+--------------
  f       | t       | t          | f</screen>
@@ -1306,8 +1306,8 @@ SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,
        ST_Intersects(a, b) AS intersects,  ST_Contains(b, a) AS b_contains_a,
        ST_Dimension(a) AS dim_a, ST_Dimension(b) AS dim_b,
        ST_Dimension(ST_Intersection(a,b)) AS dim_int
-FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
-             ST_GeomFromText('POLYGON ((110 180, 20 60, 130 90, 110 180))') AS b) As t;</programlisting>
+FROM (SELECT 'POLYGON ((40 170, 90 30, 180 100, 40 170))'::geometry AS a,
+             'POLYGON ((110 180, 20 60, 130 90, 110 180))'::geometry AS b) As t;</programlisting>
 <screen> overlaps | crosses | intersects | b_contains_a | dim_a | dim_b | dim_int
 ----------+---------+------------+--------------+-------+-------+-----------
  t        | f       | t          | f            |     2 |     2 |       2</screen>
@@ -1817,8 +1817,8 @@ SELECT ST_Within(smallc,smallc) As smallinsmall,
   ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
 FROM
 (
-SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
-  ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;</programlisting>
+SELECT ST_Buffer('POINT(50 50)'::geometry, 20) As smallc,
+  ST_Buffer('POINT(50 50)'::geometry, 40) As bigc) As foo;</programlisting>
 <screen> smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
 --------------+------------+------------+------------+------------+------------
  t            | t          | f          | t          | t          | t
@@ -1891,12 +1891,12 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 
     <para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
     <programlisting>
-SELECT ST_3DDWithin(ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
-      ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
+SELECT ST_3DDWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
+      ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163),
       126.8
     ) As within_dist_3d,
-ST_DWithin(ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2163),
-      ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),
+ST_DWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry,2163),
+      ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'::geometry,2163),
       126.8
     ) As within_dist_2d;</programlisting>
 <screen> within_dist_3d | within_dist_2d
@@ -1964,8 +1964,8 @@ ST_DWithin(ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 4)'),2
   SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as D3DFullyWithin10, ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10,
 ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,
 ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from
-  (select ST_GeomFromEWKT('POINT(1 1 2)') as geom_a,
-  ST_GeomFromEWKT('LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 3)') as geom_b) t1;</programlisting>
+  (select 'POINT(1 1 2)'::geometry as geom_a,
+  'LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 3)'::geometry as geom_b) t1;</programlisting>
 <screen> d3dfullywithin10 | d3dwithin10 | d2dfullywithin20 | d3dfullywithin20
 ------------------+-------------+------------------+------------------
  f                | t           | t                | f </screen>

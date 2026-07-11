@@ -1062,8 +1062,8 @@ GROUP BY column1;]]></programlisting>
 (2 rows)]]></screen>
 
 			<programlisting><![CDATA[-- In versions prior to 2.0, this used to return true --
-SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
-   ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;]]></programlisting>
+SELECT 'POINT(1707296.37 4820536.77)'::geometry =
+   'POINT(1707296.27 4820536.87)'::geometry As pt_intersect;]]></programlisting>
 <screen><![CDATA[ pt_intersect
 --------------
  f
@@ -1261,7 +1261,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;</programlisting>
+			<programlisting>SELECT ST_Buffer('POINT(2 2)'::geometry, 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1323,7 +1323,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_Buffer('POINT(1 1)'::geometry, 10) AS is_contained;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1653,7 +1653,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;</programlisting>
+			<programlisting>SELECT ST_Buffer('POINT(1 1)'::geometry, 10) ~ ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1715,7 +1715,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_Buffer('POINT(2 2)'::geometry, 1) AS contains;</programlisting>
 <screen>t</screen>
 		  </refsection>
 

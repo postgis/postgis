@@ -508,7 +508,7 @@ SELECT ST_AsText(ST_Node('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5)
                 </tgroup>
             </informaltable>
             <programlisting>
-SELECT ST_AsText(ST_Split(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50), -- circle
+SELECT ST_AsText(ST_Split(ST_Buffer('POINT(100 90)'::geometry, 50), -- circle
                 ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) -- line
     ));</programlisting>
 <screen> GEOMETRYCOLLECTION(
@@ -824,8 +824,8 @@ CREATE TABLE subdivided_geoms AS
 </informaltable>
 <para>This example shows a 2D-safe symmetric difference of two LineStrings.</para>
 <programlisting>
-SELECT ST_AsText(ST_SymDifference(ST_GeomFromText('LINESTRING(50 100, 50 200)'),
-        ST_GeomFromText('LINESTRING(50 50, 50 150)')
+SELECT ST_AsText(ST_SymDifference('LINESTRING(50 100, 50 200)',
+        'LINESTRING(50 50, 50 150)'
     )
 );</programlisting>
 <screen>MULTILINESTRING((50 150,50 200),(50 50,50 100))</screen>
@@ -833,8 +833,8 @@ SELECT ST_AsText(ST_SymDifference(ST_GeomFromText('LINESTRING(50 100, 50 200)'),
 <programlisting>
 
 --When used in 3d doesn't quite do the right thing
-SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 2)'),
-    ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))</programlisting>
+SELECT ST_AsEWKT(ST_SymDifference('LINESTRING(1 2 1, 1 4 2)',
+    'LINESTRING(1 1 3, 1 3 4)'))</programlisting>
 <screen>MULTILINESTRING((1 3 4,1 4 2),(1 1 3,1 2 1))</screen>
       </refsection>
 
@@ -1063,8 +1063,8 @@ FROM (
 
 <para>This example unions an array of linestrings.</para>
 <programlisting>SELECT ST_AsText(ST_Union(ARRAY[
-    ST_GeomFromText('LINESTRING(1 2, 3 4)'),
-    ST_GeomFromText('LINESTRING(4 5, 5 6)')
+    'LINESTRING(1 2, 3 4)'::geometry,
+    'LINESTRING(4 5, 5 6)'::geometry
 ])) As wktunion;</programlisting>
 <screen>MULTILINESTRING((1 2,3 4),(4 5,5 6))</screen>
       </refsection>

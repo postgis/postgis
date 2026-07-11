@@ -1235,10 +1235,10 @@ CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS po
 <para>Cube (closed Polyhedral Surface) and Polygon Z</para>
 <programlisting>SELECT ST_AsText(
 CG_3DIntersection(
-ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+'POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )',
 'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))</programlisting>
             <screen>TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
 
@@ -1756,7 +1756,7 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
         </refsection>
 
         <refsection><title>Examples</title>
-            <programlisting>SELECT CG_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
+            <programlisting>SELECT CG_ApproximateMedialAxis('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))');</programlisting>
 
             <informaltable>
                 <tgroup cols="1">
@@ -2682,7 +2682,7 @@ ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'),
 SELECT CG_MinkowskiSum(line, circle))
 FROM (SELECT
 ST_MakeLine(ST_Point(10, 10),ST_Point(100, 100)) As line,
-ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;
+ST_Buffer('POINT(50 50)'::geometry, 30) As circle) As foo;
 
 -- wkt --
 MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,
@@ -2962,7 +2962,7 @@ allow_holes =&gt; true));</programlisting>
 
         <refsection><title>Examples</title>
 
-            <programlisting>SELECT CG_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
+            <programlisting>SELECT CG_StraightSkeleton('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))');</programlisting>
 
             <programlisting>SELECT ST_AsText(CG_StraightSkeleton('POLYGON((0 0,1 0,1 1,0 1,0 0))', true));</programlisting>
 <screen>MULTILINESTRING M ((0 0 0,0.5 0.5 0.5),(1 0 0,0.5 0.5 0.5),(1 1 0,0.5 0.5 0.5),(0 1 0,0.5 0.5 0.5))</screen>
@@ -3040,7 +3040,7 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
         </refsection>
 
         <refsection><title>Examples</title>
-            <programlisting>SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
+            <programlisting>SELECT ST_StraightSkeleton('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))');</programlisting>
 
             <informaltable>
                 <tgroup cols="2">
@@ -3443,8 +3443,8 @@ TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.
 <screen>POLYHEDRALSURFACE(((0 0,2 0.82842712474619,2 2)),((4 0,2 0.82842712474619,0 0)),((2 2,2 0.82842712474619,4 0)))</screen>
 
         <programlisting>SELECT CG_StraightSkeletonPartition(
-ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20,
-160 30, 60 30, 60 130, 190 140, 190 190 ))'),
+'POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20,
+160 30, 60 30, 60 130, 190 140, 190 190 ))',
 true );</programlisting>
         <informaltable>
             <tgroup cols="2">
@@ -4031,11 +4031,11 @@ ST_GeomFromText('POINT(100 90)'),
   <refsection>
     <title>Examples</title>
     <para>This example simplifies a polygon with a threshold of 0.5.</para>
-    <programlisting>SELECT ST_AsText(CG_Simplify(ST_GeomFromText('POLYGON((0 0, 0 1, 0.1 1, 0.2 1, 0.3 1, 0.4 1, 0.5 1, 1 1, 1 0, 0 0))'), 0.5));</programlisting>
+    <programlisting>SELECT ST_AsText(CG_Simplify('POLYGON((0 0, 0 1, 0.1 1, 0.2 1, 0.3 1, 0.4 1, 0.5 1, 1 1, 1 0, 0 0))', 0.5));</programlisting>
     <para>Simplify a 3D terrain geometry while preserving topology and Z values.</para>
-    <programlisting>SELECT ST_AsText(CG_Simplify(ST_GeomFromText('LINESTRING Z(0 0 0, 0 1 1, 0.1 1 1, 0.2 1 1, 0.3 1 1, 1 1 2)'), 0.2, true));</programlisting>
+    <programlisting>SELECT ST_AsText(CG_Simplify('LINESTRING Z(0 0 0, 0 1 1, 0.1 1 1, 0.2 1 1, 0.3 1 1, 1 1 2)', 0.2, true));</programlisting>
     <para>Simplify a geometry with both Z and M values.</para>
-    <programlisting>SELECT ST_AsText(CG_Simplify(ST_GeomFromText('LINESTRING ZM(0 0 0 1, 0 1 1 2, 0.1 1 1 3, 0.2 1 1 4, 0.3 1 1 5, 1 1 2 6)'), 0.2));</programlisting>
+    <programlisting>SELECT ST_AsText(CG_Simplify('LINESTRING ZM(0 0 0 1, 0 1 1 2, 0.1 1 1 3, 0.2 1 1 4, 0.3 1 1 5, 1 1 2 6)', 0.2));</programlisting>
     <para>Simplify two geometries together, preserving Z and M values without preserving topology.</para>
     <programlisting>SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4, 0 0 10 100, 1 1 20 200, 0 2 15 150, 0 5 30 300, 2 19 25 250, -4 20 15 150), POLYGON ZM((0 0 10 100, 1 1 20 200, 0 2 15 150, 0 5 30 300, 2 19 25 250, -4 20 15 150, 0 0 10 100)))', 2, false));</programlisting>
     <para>Simplify two geometries together, preserving Z and M values and topology.</para>

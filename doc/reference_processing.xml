@@ -329,8 +329,8 @@ ST_ForceRHR(ST_Boundary(ST_GeomFromText('POLYGON ((50 50, 50 150, 150 150, 150 5
             </informaltable>
 
 <para>A buffered point approximates a circle. A buffered point forcing approximation of (see diagram) 2 points per quarter circle is poly with 8 sides (see diagram)</para>
-<programlisting>SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,
-ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 2)) As lamecircle_pcount;
+<programlisting>SELECT ST_NPoints(ST_Buffer('POINT(100 90)'::geometry, 50)) As promisingcircle_pcount,
+ST_NPoints(ST_Buffer('POINT(100 90)'::geometry, 50, 2)) As lamecircle_pcount;
 </programlisting>
 <screen>
 promisingcircle_pcount | lamecircle_pcount
@@ -1335,9 +1335,9 @@ The result geometry representation is determined by the <varname>flags</varname>
                           </informalfigure></para>
 <programlisting>
 <lineannotation>our original geometry</lineannotation>
-    ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,
-            50 60, 125 100, 175 150))'),
-        ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+    ST_Union('POLYGON((175 150, 20 40,
+            50 60, 125 100, 175 150))'::geometry,
+        ST_Buffer('POINT(110 170)'::geometry, 20)
         )</programlisting></entry>
                       </row>
                       <row>
@@ -1424,7 +1424,7 @@ POLYGON((154 14,150 14,154 6,154 14))
 <lineannotation>
 3D multipoint
 </lineannotation>
-SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText('MULTIPOINT Z(14 14 10, 150 14 100,34 6 25, 20 10 150)'))) As wkt;
+SELECT ST_AsText(ST_DelaunayTriangles('MULTIPOINT Z(14 14 10, 150 14 100,34 6 25, 20 10 150)')) As wkt;
 
 <lineannotation>
 wkt
@@ -1992,7 +1992,7 @@ GROUP BY d.disease_type;
         <caption><para>Minimum bounding circle of a point and linestring.  Using 8 segs to approximate a quarter circle</para></caption>
       </mediaobject>
     </informalfigure>
-<programlisting language="sql">SELECT ST_AsText(ST_MinimumBoundingCircle(ST_Collect(ST_GeomFromText('LINESTRING(55 75,125 150)'),
+<programlisting language="sql">SELECT ST_AsText(ST_MinimumBoundingCircle(ST_Collect('LINESTRING(55 75,125 150)',
 ST_Point(20, 80)), 8
 )) As wktmbc;</programlisting>
 <screen>POLYGON((72.5 178.4024474346694,84.86920388664029 177.18418718546332,96.76306620464646 173.57622349601382,107.72451249529237 167.71720838753708,117.33230052487836 159.83230052487838,125.21720838753708 150.22451249529237,131.07622349601382 139.26306620464646,134.68418718546332 127.3692038866403,135.9024474346694 115,134.68418718546332 102.63079611335971,131.07622349601382 90.73693379535354,125.21720838753708 79.77548750470766,117.33230052487838 70.16769947512164,107.72451249529237 62.282791612462916,96.76306620464648 56.42377650398619,84.86920388664032 52.815812814536685,72.50000000000001 51.59755256533059,60.13079611335969 52.815812814536685,48.236933795353536 56.42377650398618,37.27548750470765 62.28279161246291,27.667699475121637 70.16769947512162,19.782791612462923 79.77548750470763,13.923776503986204 90.7369337953535,10.315812814536692 102.63079611335968,9.097552565330588 114.99999999999999,10.315812814536685 127.3692038866403,13.923776503986197 139.2630662046465,19.78279161246291 150.22451249529234,27.667699475121623 159.83230052487835,37.275487504707634 167.71720838753708,48.236933795353494 173.5762234960138,60.13079611335967 177.18418718546332,72.49999999999999 178.4024474346694))</screen>
@@ -2097,7 +2097,7 @@ ST_Point(20, 80)), 8
       </mediaobject>
     </informalfigure>
 <programlisting>
-SELECT ST_AsText(ST_OrientedEnvelope(ST_Collect(ST_GeomFromText('LINESTRING(55 75,125 150)'),
+SELECT ST_AsText(ST_OrientedEnvelope(ST_Collect('LINESTRING(55 75,125 150)',
                 ST_Point(20, 80))
                 )) As wktenv;</programlisting>
 <screen>POLYGON((20 80,125 150,138.0769230769241 130.38461538461573,33.07692307692291 60.384615384615195,20 80))</screen>
@@ -2480,7 +2480,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
  POINT(2.5 2.5)
 (1 row)</screen>
 
-<programlisting>SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 10 2)')));</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_PointOnSurface('LINESTRING(0 5 1, 0 0 1, 0 10 2)'));</programlisting>
 <screen>  st_asewkt
 --------------
  POINT(0 0 1)
