@@ -131,12 +131,6 @@ GENERATED_IMAGES= \
 	st_straightskeleton01.png \
 	st_approximatemedialaxis01.png \
 	st_tesselate04.png \
-	st_touches01.png \
-	st_touches02.png \
-	st_touches03.png \
-	st_touches04.png \
-	st_touches05.png \
-	st_touches06.png \
 	st_within01.png
 
 # Images that are created with dimensions 100x100
