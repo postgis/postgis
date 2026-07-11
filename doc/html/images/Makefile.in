@@ -102,7 +102,6 @@ GENERATED_IMAGES= \
 	st_extrude01.png \
 	st_extrude03.png \
 	st_generatepoints01.png \
-	st_geometricmedian01.png \
 	st_hausdorffdistance01.png \
 	st_issimple01.png \
 	st_issimple02.png \
@@ -135,8 +134,6 @@ GENERATED_IMAGES= \
 	st_makevalid04.png \
 	st_makevalid05.png \
 	st_makevalid06.png \
-	st_maximuminscribedcircle01.png \
-	st_maximuminscribedcircle02.png \
 	st_minkowskisum01.png \
 	st_minkowskisum02.png \
 	st_minkowskisum03.png \
@@ -149,7 +146,6 @@ GENERATED_IMAGES= \
 	st_offsetcurve06.png \
 	st_optimalalphashape01.png \
 	st_optimalalphashape02.png \
-	st_orientedenvelope01.png \
 	st_overlaps01.png \
 	st_overlaps02.png \
 	st_overlaps03.png \

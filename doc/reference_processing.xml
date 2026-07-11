@@ -1378,22 +1378,7 @@ WHERE z.count_delta &lt;&gt; 0;</programlisting>
     </refsection>
     <refsection>
       <title>Examples</title>
-      <para>
-          <informalfigure>
-              <mediaobject>
-                    <imageobject>
-                        <imagedata fileref="images/st_geometricmedian01.png"/>
-                    </imageobject>
-
-                    <caption>
-                        <para>
-                        Comparison of the geometric median (red)
-                        and centroid (turquoise) of a MultiPoint.
-                        </para>
-                    </caption>
-              </mediaobject>
-        </informalfigure>
-      </para>
+		<para>Compare the geometric median and centroid of a MultiPoint.</para>
       <programlisting>
 WITH test AS (
 SELECT 'MULTIPOINT((10 10),(10 40),(40 10),(190 190))'::geometry geom)
@@ -1401,7 +1386,7 @@ SELECT
   ST_AsText(ST_Centroid(geom)) centroid,
   ST_AsText(ST_GeometricMedian(geom)) median
 FROM test;</programlisting>
-<screen>      centroid      |                 median
+<screen xml:id="st-geometricmedian-example" role="visual-primary">      centroid      |                 median
 --------------------+----------------------------------------
    POINT(62.5 62.5) | POINT(25.01778421249728 25.01778421249728)
 (1 row)</screen>
@@ -1547,29 +1532,39 @@ SELECT ST_AsText(ST_LineMerge('MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 
 
       <refsection>
         <title>Examples</title>
-    <informalfigure>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_maximuminscribedcircle01.png"/>
-        </imageobject>
-        <caption><para>Maximum inscribed circle of a polygon. Center, nearest point, and radius are returned.</para></caption>
-      </mediaobject>
-    </informalfigure>
-<programlisting>SELECT radius, ST_AsText(center) AS center, ST_AsText(nearest) AS nearest
-FROM ST_MaximumInscribedCircle('POLYGON ((40 180,110 160,180 180,180 120,140 90,160 40,80 10,70 40,20 50,40 180),
-    (60 140,50 90,90 140,60 140))');</programlisting>
-<screen>     radius      |           center           |    nearest
------------------+----------------------------+---------------
-45.18896951053177 | POINT(96.9287109375 76.3232421875) | POINT(61.64205411585366 104.55256764481707)</screen>
+		<para>Maximum inscribed circle of a polygon. Center, nearest point, radius,
+		circle, and radius line are returned.</para>
+<programlisting>WITH mic AS (
+  SELECT * FROM ST_MaximumInscribedCircle(
+    'POLYGON ((40 180,110 160,180 180,180 120,140 90,160 40,80 10,70 40,20 50,40 180),
+              (60 140,50 90,90 140,60 140))')
+)
+SELECT round(radius::numeric, 3) AS radius,
+       ST_AsText(center, 3) AS center,
+       ST_AsText(nearest, 3) AS nearest,
+       ST_AsText(ST_Buffer(center, radius), 1) AS circle,
+       ST_AsText(ST_MakeLine(center, nearest), 1) AS radius_line
+FROM mic;</programlisting>
+<screen> radius |        center        |        nearest        | circle | radius_line
+--------+----------------------+-----------------------+--------+----------------------------------
+ 45.189 | POINT(96.929 76.323) | POINT(61.642 104.553) | POLYGON((142.1 76.3,141.2 67.5,138.7 59,134.5 51.2,128.9 44.4,122 38.7,114.2 34.6,105.7 32,96.9 31.1,88.1 32,79.6 34.6,71.8 38.7,65 44.4,59.4 51.2,55.2 59,52.6 67.5,51.7 76.3,52.6 85.1,55.2 93.6,59.4 101.4,65 108.3,71.8 113.9,79.6 118.1,88.1 120.6,96.9 121.5,105.7 120.6,114.2 118.1,122 113.9,128.9 108.3,134.5 101.4,138.7 93.6,141.2 85.1,142.1 76.3)) | LINESTRING(96.9 76.3,61.6 104.6)
+(1 row)</screen>
 
-    <informalfigure>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_maximuminscribedcircle02.png"/>
-        </imageobject>
-        <caption><para>Maximum inscribed circle of a multi-linestring. Center, nearest point, and radius are returned.</para></caption>
-      </mediaobject>
-    </informalfigure>
+		<para>Maximum inscribed circle of a MultiLineString.</para>
+<programlisting>WITH mic AS (
+  SELECT * FROM ST_MaximumInscribedCircle(
+    'MULTILINESTRING((100 40,10 150),(10 160,100 150),(190 150,80 40))')
+)
+SELECT round(radius::numeric, 3) AS radius,
+       ST_AsText(center, 3) AS center,
+       ST_AsText(nearest, 3) AS nearest,
+       ST_AsText(ST_Buffer(center, radius), 1) AS circle,
+       ST_AsText(ST_MakeLine(center, nearest), 1) AS radius_line
+FROM mic;</programlisting>
+<screen> radius |        center         |       nearest        | circle | radius_line
+--------+-----------------------+----------------------+--------+--------------------------------
+ 39.924 | POINT(93.936 110.459) | POINT(63.036 85.178) | POLYGON((133.9 110.5,133.1 102.7,130.8 95.2,127.1 88.3,122.2 82.2,116.1 77.3,109.2 73.6,101.7 71.3,93.9 70.5,86.1 71.3,78.7 73.6,71.8 77.3,65.7 82.2,60.7 88.3,57.1 95.2,54.8 102.7,54 110.5,54.8 118.2,57.1 125.7,60.7 132.6,65.7 138.7,71.8 143.7,78.7 147.3,86.1 149.6,93.9 150.4,101.7 149.6,109.2 147.3,116.1 143.7,122.2 138.7,127.1 132.6,130.8 125.7,133.1 118.2,133.9 110.5)) | LINESTRING(93.9 110.5,63 85.2)
+(1 row)</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -1805,14 +1800,7 @@ ST_Point(20, 80)), 8
             <programlisting>SELECT ST_AsText(ST_OrientedEnvelope('MULTIPOINT ((0 0),(-1 -1),(3 2))'));</programlisting>
 <screen>POLYGON((3 2,-1 -1,-1.12 -0.84,2.88 2.16,3 2))</screen>
 
-    <informalfigure>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_orientedenvelope01.png"/>
-        </imageobject>
-        <caption><para>Oriented envelope of a point and linestring.</para></caption>
-      </mediaobject>
-    </informalfigure>
+		<para>Oriented envelope of a Point and LineString.</para>
 <programlisting>
 SELECT ST_AsText(ST_OrientedEnvelope(ST_Collect('LINESTRING(55 75,125 150)',
                 ST_Point(20, 80))
