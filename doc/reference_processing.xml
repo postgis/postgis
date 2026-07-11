@@ -3378,14 +3378,7 @@ SELECT ST_AsText(ST_VoronoiLines('MULTIPOINT (50 30,60 30,100 100,10 150,110 120
       <refsection>
         <title>Examples</title>
 
-        <informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_voronoi01.png"/>
-                </imageobject>
-                <caption><para>Points overlaid on top of Voronoi diagram</para></caption>
-            </mediaobject>
-        </informalfigure>
+        <para>Points overlaid on top of the Voronoi diagram.</para>
 <programlisting language="sql">
 SELECT ST_AsText(ST_VoronoiPolygons('MULTIPOINT (50 30,60 30,100 100,10 150,110 120)'::geometry
             )) AS geom;
@@ -3396,14 +3389,7 @@ POLYGON((230 -20.71428571428572,55 79.28571428571429,36.81818181818182 92.272727
 POLYGON((230 270,230 47.50000000000001,59.34782608695652 132.82608695652175,100.5 270,230 270)))
 </screen>
 
-        <informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_voronoi02.png"/>
-                </imageobject>
-                <caption><para>Voronoi diagram, with tolerance of 30 units</para></caption>
-            </mediaobject>
-            </informalfigure>
+        <para>Voronoi diagram with a tolerance of 30 units.</para>
 <programlisting language="sql">
 SELECT ST_AsText(ST_VoronoiPolygons('MULTIPOINT (50 30,60 30,100 100,10 150,110 120)'::geometry,
             30)) AS geom;

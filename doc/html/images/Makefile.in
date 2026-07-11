@@ -107,8 +107,6 @@ GENERATED_IMAGES= \
 	st_crosses02.png \
 	st_crosses03.png \
 	st_crosses04.png \
-	st_constraineddelaunaytriangles01.png \
-	st_constraineddelaunaytriangles02.png \
 	st_difference01.png \
 	st_dumppoints01.png \
 	st_envelope01.png \
@@ -224,8 +222,6 @@ GENERATED_IMAGES= \
 	st_touches04.png \
 	st_touches05.png \
 	st_touches06.png \
-	st_voronoi01.png \
-	st_voronoi02.png \
 	st_voronoi03.png \
 	st_within01.png
 
