@@ -4,10 +4,11 @@ import contextlib
 import io
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
-from postgis_exampletest import ExampleTester, parse_source_example
+from postgis_exampletest import ExampleTester, QueryRows, parse_source_example
 
 
 class ExampleTestParserTest(unittest.TestCase):
@@ -34,6 +35,15 @@ class ExampleTestParserTest(unittest.TestCase):
             ]
         )
         self.assertEqual([["postgis", "3.7.0dev", "null"]], rows)
+
+    def test_psql_headers_are_preserved_for_visual_labels(self):
+        lines = [
+            " center | nearest ",
+            "--------+---------",
+            " POINT(0 0) | POINT(1 1)",
+            "(1 row)",
+        ]
+        self.assertEqual(["center", "nearest"], self.tester.psql_headers_from_lines(lines))
 
     def test_multiline_programlisting_is_trimmed(self):
         query, expected = parse_source_example(
@@ -239,7 +249,8 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn('data-postgis-geometry-id="buffer-example-code-1"', svg)
         self.assertRegex(
             svg,
-            r'<path class="point" d="M [^\"]+ A [^\"]+ Z" fill="#2878b8"/>',
+            r'<path class="point" d="M [^\"]+ A [^\"]+ Z" fill="#2878b8" '
+            r'stroke="white" stroke-width="[0-9.]+"/>',
         )
         self.assertIn(
             'd="M 0 0 L 10 0 10 -10 Z" stroke="#a62c2b" fill="#a62c2b"',
@@ -249,6 +260,7 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn('stroke-opacity="1"', svg)
         self.assertRegex(svg, r'fill-rule="evenodd" stroke-width="[0-9.]+"')
         self.assertIn('.geometry-layer.active{filter:brightness(.72)}', svg)
+        self.assertIn('svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}', svg)
         self.assertIn('stroke="#dce2e7" stroke-width="1"', svg)
         self.assertIn('<rect width="11" height="11" rx="2" fill="#2878b8"/>', svg)
         self.assertIn('<rect width="11" height="11" rx="2" fill="#a62c2b"/>', svg)
@@ -273,16 +285,26 @@ class VisualExampleTest(unittest.TestCase):
             "SELECT ST_AsText('LINESTRING(0 0,1 1)')", [["LINESTRING(0 0,1 1)"]]
         ))
 
-    def test_code_geometry_candidates_include_view_envelopes_in_sql_order(self):
+    def test_code_geometry_candidates_include_constructed_context_in_sql_order(self):
         candidates = self.tester.code_geometry_candidates(
-            "SELECT f('LINESTRING(0 0,10 10)', ST_MakeEnvelope(2, 3, 8, 9, 4326))"
+            "SELECT f('LINESTRING(0 0,10 10)', ST_Point(1, 2), "
+            "ST_MakeEnvelope(2, 3, 8, 9, 4326))"
         )
-        self.assertEqual([None, "Envelope"], [candidate.get("label") for candidate in candidates])
+        self.assertEqual([None, "Point", "Envelope"], [candidate.get("label") for candidate in candidates])
         self.assertEqual("LINESTRING(0 0,10 10)", candidates[0]["wkt"])
+        self.assertEqual("POINT(1 2)", candidates[1]["wkt"])
         self.assertEqual(
             "SRID=4326;POLYGON((2 3,8 3,8 9,2 9,2 3))",
-            candidates[1]["wkt"],
+            candidates[2]["wkt"],
         )
+
+    def test_visual_payload_transforms_known_srids_to_output_srid(self):
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or '{"bounds":[0,0,1,1],"parts":[]}'
+        self.tester.visual_payload("manual", [])
+        self.assertIn("bool_and(ST_SRID(geom) > 0)", queries[0])
+        self.assertIn("source = 'Output'", queries[0])
+        self.assertIn("THEN ST_Transform(geom, target_srid)", queries[0])
 
     def test_svg_draws_bounded_vertices_for_linear_geometries(self):
         svg = self.tester.visual_svg(
@@ -294,6 +316,77 @@ class VisualExampleTest(unittest.TestCase):
             }]},
         )
         self.assertEqual(3, svg.count('class="vertex"'))
+
+    def test_svg_uses_input_underlay_and_direction_arrows_for_open_lines(self):
+        svg = self.tester.visual_svg(
+            "directions",
+            {"bounds": [0, 0, 2, 1], "parts": [
+                {"ord": 1, "source": "Code", "label": "Code", "type": "LINESTRING",
+                 "svg": "M 0 0 L 2 -1", "closed": False, "vertices": [[0, 0], [2, -1]]},
+                {"ord": 2, "source": "Output", "label": "Output", "type": "LINESTRING",
+                 "svg": "M 0 0 L 2 -1", "closed": False, "vertices": [[0, 0], [2, -1]]},
+            ]},
+        )
+        self.assertEqual(2, svg.count('class="direction-arrow"'))
+        self.assertIn('fill="none" fill-opacity="0"', svg)
+        self.assertRegex(svg, r'class="direction-arrow"[^>]*fill="#2878b8"')
+        self.assertRegex(svg, r'class="direction-arrow"[^>]*fill="#a62c2b"')
+        widths = re.findall(r'class="line"[^>]*stroke-width="([0-9.]+)"', svg)
+        self.assertGreater(float(widths[0]), float(widths[1]))
+
+    def test_svg_points_have_contrasting_halo(self):
+        svg = self.tester.visual_svg(
+            "point-halo",
+            {"bounds": [0, 0, 1, 1], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "POINT",
+                "x": 0.5, "y": -0.5,
+            }]},
+        )
+        self.assertRegex(svg, r'class="point"[^>]*stroke="white" stroke-width="[0-9.]+"')
+
+    def test_svg_does_not_arrow_closed_curves(self):
+        svg = self.tester.visual_svg(
+            "closed-curve",
+            {"bounds": [0, 0, 1, 1], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "CIRCULARSTRING",
+                "svg": "M 0 0 C 0 1 1 1 0 0", "closed": True,
+            }]},
+        )
+        self.assertNotIn('class="direction-arrow"', svg)
+
+    def test_render_visual_example_uses_geometry_column_names(self):
+        self.tester.visual_payload = lambda database, layers: {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": 0, "y": 0,
+            } for layer in layers],
+        }
+        actual = QueryRows([["POINT(0 0)", "POINT(1 1)"]], ["center", "nearest"])
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT 1", "visual_id": "labels", "label": "labels:1",
+            "visual_refentry": "labels", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertIn(">center</text>", visual["svg"])
+        self.assertIn(">nearest</text>", visual["svg"])
+
+    def test_render_visual_example_hides_default_text_formatter_header(self):
+        self.tester.visual_payload = lambda database, layers: {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "LINESTRING", "svg": "M 0 0 L 1 -1", "closed": False,
+            } for layer in layers],
+        }
+        actual = QueryRows([["LINESTRING(0 0,1 1)"]], ["st_astext"])
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT 1", "visual_id": "default-label", "label": "labels:2",
+            "visual_refentry": "labels", "visual_screen": 2,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertIn(">Output</text>", visual["svg"])
+        self.assertNotIn(">st_astext</text>", visual["svg"])
 
     def test_svg_distinguishes_parts_of_multipart_areas(self):
         svg = self.tester.visual_svg(
@@ -315,6 +408,17 @@ class VisualExampleTest(unittest.TestCase):
                 {"bounds": [0, 0, 1, 1], "parts": [
                     {"ord": 1, "source": "Output", "label": "Output", "type": "MULTICURVE", "svg": ""}
                 ]},
+            )
+
+    def test_svg_rejects_negative_arc_radii(self):
+        with self.assertRaisesRegex(RuntimeError, "invalid SVG path"):
+            self.tester.visual_svg(
+                "bad-arc",
+                {"bounds": [0, 0, 1, 1], "parts": [{
+                    "ord": 1, "source": "Output", "label": "Output",
+                    "type": "CIRCULARSTRING", "svg": "M 0 0 A -1 -1 0 0 0 1 -1",
+                    "closed": False,
+                }]},
             )
 
     def test_grid_is_bounded_for_large_coordinate_offsets(self):

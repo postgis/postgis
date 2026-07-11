@@ -32,6 +32,12 @@ ENVIRONMENT_CHECKS = (
         "hint": "Install the PROJ data package containing au_icsm_GDA94_GDA2020_conformal_and_distortion.tif, or fetch it with projsync so the PostgreSQL/PostGIS PROJ search path can find it.",
     },
 )
+
+
+class QueryRows(list):
+    def __init__(self, rows, headers=None):
+        super().__init__(rows)
+        self.headers = headers or []
 WKT_TYPES = (
     "POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|"
     "GEOMETRYCOLLECTION|CIRCULARSTRING|COMPOUNDCURVE|CURVEPOLYGON|"
@@ -43,6 +49,10 @@ NUMBER_PATTERN = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
 MAKE_ENVELOPE_RE = re.compile(
     rf"\bST_MakeEnvelope\s*\(\s*({NUMBER_PATTERN})\s*,\s*({NUMBER_PATTERN})\s*,\s*"
     rf"({NUMBER_PATTERN})\s*,\s*({NUMBER_PATTERN})(?:\s*,\s*(-?\d+))?\s*\)",
+    re.I,
+)
+POINT_CONSTRUCTOR_RE = re.compile(
+    rf"\bST_(?:Make)?Point\s*\(\s*({NUMBER_PATTERN})\s*,\s*({NUMBER_PATTERN})\s*\)",
     re.I,
 )
 VISUAL_ROLE = "visual-primary"
@@ -300,6 +310,13 @@ class ExampleTester:
 
         return self.expected_rows_from_plain_lines(clean)
 
+    def psql_headers_from_lines(self, lines):
+        clean = [line for line in lines if re.search(r"\S", line)]
+        for i in range(len(clean) - 1):
+            if re.match(r"^\s*[-+─┼]+\s*$", clean[i + 1]):
+                return self.split_psql_table_row(clean[i], clean[i], clean[i + 1])
+        return []
+
     def comparable_value(self, value):
         if value is None:
             return ""
@@ -530,6 +547,13 @@ class ExampleTester:
             candidates.append({
                 "start": match.start(), "end": match.end(), "wkt": wkt, "label": "Envelope",
             })
+        for match in POINT_CONSTRUCTOR_RE.finditer(text):
+            candidates.append({
+                "start": match.start(),
+                "end": match.end(),
+                "wkt": f"POINT({match.group(1)} {match.group(2)})",
+                "label": "Point",
+            })
         return sorted(candidates, key=lambda candidate: candidate["start"])
 
     def query_is_auto_safe(self, query):
@@ -743,7 +767,11 @@ class ExampleTester:
         result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
         if result.returncode != 0:
             raise RuntimeError(f"psql failed for query:\n{query}\n{result.stdout}{result.stderr}")
-        return self.expected_rows_from_psql_lines(result.stdout.split("\n"))
+        lines = result.stdout.split("\n")
+        return QueryRows(
+            self.expected_rows_from_psql_lines(lines),
+            self.psql_headers_from_lines(lines),
+        )
 
     def run_examples(self, database, keep_going=False, render_dir=None, visual_only=False, jobs=1):
         examples = self.examples()
@@ -833,9 +861,28 @@ WITH raw AS (
   FROM jsonb_to_recordset(
     convert_from(decode('{encoded}', 'base64'), 'UTF8')::jsonb
   ) AS item(ord integer, source text, label text, wkt text)
-), parsed AS (
+), parsed_raw AS (
   SELECT ord, source, label, ST_Force2D(ST_GeomFromEWKT(wkt)) AS geom
   FROM raw
+), common_srid AS (
+  SELECT bool_and(ST_SRID(geom) > 0) AS all_known,
+    COALESCE(
+      (SELECT ST_SRID(geom) FROM parsed_raw
+       WHERE source = 'Output' AND ST_SRID(geom) > 0
+       ORDER BY ord DESC LIMIT 1),
+      (SELECT ST_SRID(geom) FROM parsed_raw
+       WHERE ST_SRID(geom) > 0
+       ORDER BY ord DESC LIMIT 1)
+    ) AS target_srid
+  FROM parsed_raw
+), parsed AS (
+  SELECT ord, source, label,
+    CASE
+      WHEN all_known AND target_srid > 0 AND ST_SRID(geom) != target_srid
+        THEN ST_Transform(geom, target_srid)
+      ELSE geom
+    END AS geom
+  FROM parsed_raw CROSS JOIN common_srid
 ), bounds AS (
   SELECT ST_Extent(geom) AS box FROM parsed
 ), dimensions AS (
@@ -863,6 +910,10 @@ SELECT json_build_object(
       'type', GeometryType(geom), 'svg', ST_AsSVG(geom, 0, 12),
       'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
       'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END,
+      'closed', CASE
+        WHEN GeometryType(geom) IN ('LINESTRING', 'CIRCULARSTRING', 'COMPOUNDCURVE')
+          THEN ST_IsClosed(geom)
+      END,
       'vertices', CASE
         WHEN GeometryType(geom) IN ('LINESTRING', 'POLYGON', 'TRIANGLE')
           AND ST_NPoints(geom) <= 64
@@ -884,7 +935,20 @@ FROM dimensions
 
     def render_visual_example(self, database, example, actual):
         code = self.code_geometry_candidates(example["query"])
-        output = self.geometry_candidates(self.rows_to_string(actual))
+        output = []
+        headers = getattr(actual, "headers", [])
+        for row_index, row in enumerate(actual, 1):
+            for column_index, value in enumerate(row):
+                matches = self.geometry_candidates(value)
+                for match_index, wkt in enumerate(matches, 1):
+                    label = headers[column_index] if column_index < len(headers) else ""
+                    if not label or label.lower() in {"?column?", "st_astext", "st_asewkt"}:
+                        label = "Output"
+                    if len(actual) > 1:
+                        label = f"{label} {row_index}"
+                    if len(matches) > 1:
+                        label = f"{label}.{match_index}"
+                    output.append({"wkt": wkt, "label": label})
         layers = []
         code_geometry_count = sum("label" not in candidate for candidate in code)
         for index, candidate in enumerate(code, 1):
@@ -902,12 +966,14 @@ FROM dimensions
                 "wkt": candidate["wkt"],
             })
         for source, values in (("Output", output),):
-            for index, wkt in enumerate(values, 1):
+            for index, candidate in enumerate(values, 1):
                 layers.append({
                     "ord": len(layers) + 1,
                     "source": source,
-                    "label": source if len(values) == 1 else f"{source} {index}",
-                    "wkt": wkt,
+                    "label": candidate["label"] if candidate["label"] != "Output" else (
+                        source if len(values) == 1 else f"{source} {index}"
+                    ),
+                    "wkt": candidate["wkt"],
                 })
         if not layers:
             raise RuntimeError(f"Visual example {example['visual_id']} has no geometry input or output")
@@ -1027,17 +1093,21 @@ FROM dimensions
                 if part["type"].upper() == "POINT":
                     point_x = float(part["x"])
                     point_y = float(part["y"])
-                    radius = 5 / scale
+                    radius = (6.5 if source == "Code" else 4.5) / scale
                     shapes.append(
                         f'<path class="point" d="M {point_x - radius:.12g} {point_y:.12g} '
                         f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x + radius:.12g} {point_y:.12g} '
                         f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x - radius:.12g} {point_y:.12g} Z" '
-                        f'fill="{part_color}"/>'
+                        f'fill="{part_color}" stroke="white" stroke-width="{1.2 / scale:.12g}"/>'
                     )
                 else:
                     if not part.get("svg"):
                         raise RuntimeError(
                             f"PostGIS returned an empty SVG path for {visual_id} {part['type']}"
+                        )
+                    if re.search(r"(?:^|\s)[Aa]\s+-(?:\d|\.)|\b(?:nan|inf)\b", part["svg"], re.I):
+                        raise RuntimeError(
+                            f"PostGIS returned an invalid SVG path for {visual_id} {part['type']}: {part['svg']}"
                         )
                     svg_data = html.escape(part["svg"], quote=True)
                     dimension_class = "area" if part["type"].upper() in {
@@ -1045,17 +1115,39 @@ FROM dimensions
                         "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
                     } else "line"
                     fill = color if dimension_class == "area" else "none"
+                    stroke_width = (5 if source == "Code" and dimension_class == "line" else 3) / scale
                     shapes.append(
                         f'<path class="{dimension_class}" d="{svg_data}" '
                         f'stroke="{part_color}" fill="{part_color if dimension_class == "area" else fill}" '
-                        f'fill-opacity="{0.24 if dimension_class == "area" else 1}" stroke-opacity="1" '
+                        f'fill-opacity="{0.24 if dimension_class == "area" else 0}" stroke-opacity="1" '
                         'fill-rule="evenodd" '
-                        f'stroke-width="{3 / scale:.12g}" '
+                        f'stroke-width="{stroke_width:.12g}" '
                         'stroke-linecap="round" stroke-linejoin="round"/>'
                     )
                     vertices = part.get("vertices") or []
                     if len(vertices) > 1 and vertices[0] == vertices[-1]:
                         vertices = vertices[:-1]
+                    if dimension_class == "line" and not part.get("closed") and len(vertices) >= 2:
+                        end_x, end_y = [float(value) for value in vertices[-1]]
+                        previous_x, previous_y = [float(value) for value in vertices[-2]]
+                        delta_x = end_x - previous_x
+                        delta_y = end_y - previous_y
+                        length = math.hypot(delta_x, delta_y)
+                        if length > 0:
+                            arrow_length = (10 if source == "Code" else 8) / scale
+                            arrow_half_width = arrow_length * 0.45
+                            unit_x = delta_x / length
+                            unit_y = delta_y / length
+                            base_x = end_x - unit_x * arrow_length
+                            base_y = end_y - unit_y * arrow_length
+                            perpendicular_x = -unit_y * arrow_half_width
+                            perpendicular_y = unit_x * arrow_half_width
+                            shapes.append(
+                                f'<path class="direction-arrow" d="M {end_x:.12g} {end_y:.12g} '
+                                f'L {base_x + perpendicular_x:.12g} {base_y + perpendicular_y:.12g} '
+                                f'L {base_x - perpendicular_x:.12g} {base_y - perpendicular_y:.12g} Z" '
+                                f'fill="{part_color}" stroke="white" stroke-width="{0.7 / scale:.12g}"/>'
+                            )
                     for x, y in vertices:
                         shapes.append(
                             f'<circle class="vertex" cx="{float(x):.12g}" cy="{float(y):.12g}" '
@@ -1095,7 +1187,7 @@ FROM dimensions
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="{svg_height}" viewBox="0 0 600 {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
             f'<title id="{safe_id}-title">Input and output geometries for {safe_id}</title>\n'
-            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.geometry-layer{opacity:1}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font:12px sans-serif;fill:#344}.geometry-layer.active{filter:brightness(.72)}</style>\n'
+            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.geometry-layer{opacity:1;transition:opacity 90ms ease}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font:12px sans-serif;fill:#344}svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}.geometry-layer.active{filter:brightness(.72)}</style>\n'
             '<rect class="plot-background" x="20" y="12" width="560" height="310" fill="#fbfcfd"/>\n'
             '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
             f'<g transform="matrix({scale:.12g} 0 0 {scale:.12g} {translate_x:.12g} {translate_y:.12g})">'

@@ -61,9 +61,6 @@ GENERATED_IMAGES= \
 	st_azimuth02.png \
 	st_boundary01.png \
 	st_boundary02.png \
-	st_buildarea01.png \
-	st_buildarea02.png \
-	st_buildarea03.png \
 	st_closestpoint01.png \
 	st_closestpoint02.png \
 	st_clusterkmeans02.png \
@@ -90,10 +87,6 @@ GENERATED_IMAGES= \
 	st_contains06.png \
 	st_contains07.png \
 	st_contains08.png \
-	st_concavehull01.png \
-	st_concavehull02.png \
-	st_concavehull03.png \
-	st_concavehull04.png \
 	st_convexhull01.png \
 	st_coverageclean01.png \
 	st_coverageclean02.png \
@@ -131,8 +124,6 @@ GENERATED_IMAGES= \
 	st_isvalid07.png \
 	st_isvalid08.png \
 	st_isvalid09.png \
-	st_largestemptycircle01.png \
-	st_largestemptycircle02.png \
 	st_letters01.png \
 	st_linecrossingdirection01.png \
 	st_linecrossingdirection02.png \
@@ -140,9 +131,6 @@ GENERATED_IMAGES= \
 	st_linecrossingdirection04.png \
 	st_line_interpolate_point01.png \
 	st_line_interpolate_points01.png \
-	st_linemerge01.png \
-	st_linemerge02.png \
-	st_linemerge03.png \
 	st_line_substring01.png \
 	st_locatebetween01.png \
 	st_longestline01.png \
@@ -156,7 +144,6 @@ GENERATED_IMAGES= \
 	st_makevalid06.png \
 	st_maximuminscribedcircle01.png \
 	st_maximuminscribedcircle02.png \
-	st_minimumboundingcircle01.png \
 	st_minkowskisum01.png \
 	st_minkowskisum02.png \
 	st_minkowskisum03.png \
