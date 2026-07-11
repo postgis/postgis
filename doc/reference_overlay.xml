@@ -102,38 +102,6 @@
 
       <refsection>
         <title>Examples</title>
-            <informaltable>
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry>
-                        <para>
-                            <informalfigure>
-                                <mediaobject>
-                                  <imageobject>
-                                    <imagedata fileref="images/st_symdifference01.png"/>
-                                  </imageobject>
-                                  <caption><para>The input linestrings </para></caption>
-                                </mediaobject>
-                            </informalfigure>
-                        </para>
-                    </entry>
-
-                    <entry>
-                        <para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_difference01.png"/>
-                              </imageobject>
-                              <caption><para>The difference of the two linestrings</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                    </para>
-                </entry>
-                  </row>
-        </tbody>
-    </tgroup>
-</informaltable>
 <para>The difference of 2D linestrings.</para>
 <programlisting>SELECT ST_AsText(ST_Difference('LINESTRING(50 100,50 200)'::geometry,
         'LINESTRING(50 50,50 150)'::geometry
@@ -475,80 +443,12 @@ SELECT ST_AsText(ST_Node('MULTILINESTRING ((2 5,2 1,7 1),(6 1,4 1,2 3,2 5))'::ge
         <refsection>
             <title>Examples</title>
             <para>Split a Polygon by a Line.</para>
-            <informaltable>
-                <tgroup cols="2">
-                    <tbody>
-                      <row>
-                        <entry>
-                                               <para>
-                            <informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_split01.png"/>
-                              </imageobject>
-                              <caption><para>Before Split</para></caption>
-                            </mediaobject>
-                            </informalfigure>
-                                               </para>
-                        </entry>
-                        <entry>
-                                               <para>
-                            <informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_split02.png"/>
-                              </imageobject>
-                              <caption><para>After split</para></caption>
-                            </mediaobject>
-                            </informalfigure>
-                                              </para>
-                        </entry>
-                    </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
             <programlisting>
 SELECT ST_AsText(ST_Split(ST_Buffer('POINT(100 90)'::geometry, 50), -- circle
-                ST_MakeLine(ST_Point(10, 10), ST_Point(190, 190)) -- line
-    ));</programlisting>
-<screen> GEOMETRYCOLLECTION(
-            POLYGON((150 90,149.039264020162 80.2454838991936,146.193976625564 70.8658283817455,..),
-            POLYGON(..))
-)
-            </screen>
+                'LINESTRING(10 10,190 190)'::geometry -- line
+    ), 1);</programlisting>
+<screen>GEOMETRYCOLLECTION(POLYGON((150 90,149 80.2,146.2 70.9,141.6 62.2,135.4 54.6,127.8 48.4,119.1 43.8,109.8 41,100 40,90.2 41,80.9 43.8,72.2 48.4,64.6 54.6,60.1 60.1,129.9 129.9,135.4 125.4,141.6 117.8,146.2 109.1,149 99.8,150 90)),POLYGON((60.1 60.1,58.4 62.2,53.8 70.9,51 80.2,50 90,51 99.8,53.8 109.1,58.4 117.8,64.6 125.4,72.2 131.6,80.9 136.2,90.2 139,100 140,109.8 139,119.1 136.2,127.8 131.6,129.9 129.9,60.1 60.1)))</screen>
             <para>Split a MultiLineString by a Point, where the point lies exactly on both LineStrings elements.</para>
-            <informaltable>
-                <tgroup cols="2">
-                    <tbody>
-                      <row>
-                        <entry>
-                                               <para>
-                            <informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_split03.png"/>
-                              </imageobject>
-                              <caption><para>Before Split</para></caption>
-                            </mediaobject>
-                            </informalfigure>
-                                               </para>
-                        </entry>
-                        <entry>
-                                               <para>
-                            <informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_split04.png"/>
-                              </imageobject>
-                              <caption><para>After split</para></caption>
-                            </mediaobject>
-                            </informalfigure>
-                                               </para>
-                        </entry>
-                    </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
             <programlisting>
 SELECT ST_AsText(ST_Split('MULTILINESTRING((10 10,190 190),(15 15,30 30,100 90))',
     ST_Point(30, 30)));</programlisting>
@@ -790,38 +690,6 @@ CREATE TABLE subdivided_geoms AS
       <refsection>
         <title>Examples</title>
 
-        <informaltable>
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry>
-                        <para>
-                            <informalfigure>
-                                <mediaobject>
-                                  <imageobject>
-                                    <imagedata fileref="images/st_symdifference01.png"/>
-                                  </imageobject>
-                                  <caption><para>The original linestrings shown together</para></caption>
-                                </mediaobject>
-                            </informalfigure>
-                        </para>
-                    </entry>
-
-                    <entry>
-                        <para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_symdifference02.png"/>
-                              </imageobject>
-                              <caption><para>The symmetric difference of the two linestrings</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                    </para>
-                </entry>
-                  </row>
-        </tbody>
-    </tgroup>
-</informaltable>
 <para>This example shows a 2D-safe symmetric difference of two LineStrings.</para>
 <programlisting>
 SELECT ST_AsText(ST_SymDifference('LINESTRING(50 100,50 200)',

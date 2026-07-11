@@ -2289,35 +2289,7 @@ SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
         <refsection>
         <title>Examples</title>
 
-    <informaltable>
-      <tgroup cols="2">
-      <tbody>
-        <row>
-        <entry><para>
-        <informalfigure>
-          <mediaobject>
-              <imageobject>
-              <imagedata fileref="images/st_polygonize01.png"/>
-              </imageobject>
-              <caption><para>Input lines</para></caption>
-          </mediaobject>
-        </informalfigure>
-        </para></entry>
-        <entry><para>
-        <informalfigure>
-          <mediaobject>
-              <imageobject>
-              <imagedata fileref="images/st_polygonize02.png"/>
-              </imageobject>
-              <caption><para>Polygonized result</para></caption>
-          </mediaobject>
-        </informalfigure>
-        </para></entry>
-       </row>
-      </tbody>
-      </tgroup>
-    </informaltable>
-
+		<para>Polygonize a set of input lines.</para>
       <programlisting language="sql">WITH data(geom) AS (VALUES
    ('LINESTRING (180 40,30 20,20 90)'::geometry),
   ('LINESTRING (180 40,160 160)'::geometry),
