@@ -132,7 +132,6 @@ GENERATED_IMAGES= \
 	st_overlaps05.png \
 	st_overlaps06.png \
 	st_triangulatepolygon01.png \
-	st_triangulatepolygon02.png \
 	st_simplifypolygonhull01.png \
 	st_simplifypolygonhull02.png \
 	st_simplifypolygonhull03.png \
@@ -140,7 +139,6 @@ GENERATED_IMAGES= \
 	st_approximatemedialaxis01.png \
 	st_subdivide01.png \
 	st_subdivide02.png \
-	st_tesselate03.png \
 	st_tesselate04.png \
 	st_touches01.png \
 	st_touches02.png \
