@@ -545,68 +545,27 @@ FROM noded;
     <refsection>
       <title>Examples</title>
 
-      <para>In the following illustrations the red dot is
-      the centroid of the source geometry.</para>
+		<para>Centroid of a MultiPoint.</para>
+<programlisting>SELECT ST_AsText(ST_Centroid(
+  'MULTIPOINT (8 24,10 92,12 154,17 68,28 10,29 52,29 84,55 50,56 24,131 14,160 180,189 180)'), 3);</programlisting>
+<screen xml:id="st-centroid-multipoint" role="visual-primary">POINT(60.333 77.667)</screen>
 
-      <informaltable>
-        <tgroup cols="2">
-          <tbody>
-            <row>
-              <entry><para><informalfigure>
-                  <mediaobject>
-                    <imageobject>
-                      <imagedata fileref="images/st_centroid01.png"/>
-                    </imageobject>
+		<para>Centroid of a LineString.</para>
+<programlisting>SELECT ST_AsText(ST_Centroid(
+  'LINESTRING (190 160,10 190,40 90,20 70,10 10,30 40,30 10,110 40,70 10,110 10,140 40,140 10,160 30,180 10)'), 3);</programlisting>
+<screen>POINT(76.191 79.876)</screen>
 
-                    <caption><para>Centroid of a
-                    <varname>MULTIPOINT</varname></para></caption>
-                  </mediaobject>
-                </informalfigure></para></entry>
+		<para>Centroid of a Polygon.</para>
+<programlisting>SELECT ST_AsText(ST_Centroid(
+  'POLYGON ((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'), 3);</programlisting>
+<screen>POINT(80.251 113.405)</screen>
 
-              <entry><para><informalfigure>
-                  <mediaobject>
-                    <imageobject>
-                      <imagedata fileref="images/st_centroid02.png"/>
-                    </imageobject>
-
-                    <caption><para>Centroid of a
-                    <varname>LINESTRING</varname></para></caption>
-                  </mediaobject>
-                </informalfigure></para></entry>
-            </row>
-
-            <row>
-              <entry><para><informalfigure>
-                  <mediaobject>
-                    <imageobject>
-                      <imagedata fileref="images/st_centroid03.png"/>
-                    </imageobject>
-
-                    <caption><para>Centroid of a
-                    <varname>POLYGON</varname></para></caption>
-                  </mediaobject>
-                </informalfigure></para></entry>
-
-              <entry><para><informalfigure>
-                  <mediaobject>
-                    <imageobject>
-                      <imagedata fileref="images/st_centroid04.png"/>
-                    </imageobject>
-
-                    <caption><para>Centroid of a
-                    <varname>GEOMETRYCOLLECTION</varname></para></caption>
-                  </mediaobject>
-                </informalfigure></para></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
-
-      <programlisting>SELECT ST_AsText(ST_Centroid('MULTIPOINT ( -1 0,-1 2,-1 3,-1 4,-1 7,0 1,0 3,1 1,2 0,6 0,7 8,9 8,10 6 )'));</programlisting>
-<screen>                st_astext
-------------------------------------------
-POINT(2.307692307692308 3.307692307692308)
-(1 row)</screen>
+		<para>Centroid of the highest-dimension components of a GeometryCollection.</para>
+<programlisting>SELECT ST_AsText(ST_Centroid(
+  'GEOMETRYCOLLECTION (POLYGON ((190 170,180 100,80 140,80 160,130 160,110 180,110 190,180 180,190 170)),
+    LINESTRING (80 120,120 20,140 70,150 30,180 50,190 10),
+    MULTIPOINT (19 150,22 49,30 13,32 101,45 35,67 88,75 16))'), 3);</programlisting>
+<screen>POINT(143.361 148.263)</screen>
 
       <programlisting>SELECT ST_AsText(ST_Centroid(g))
 FROM  ST_GeomFromText('CIRCULARSTRING(0 2,-1 1,0 0,0.5 0,1 0,2 1,1 2,0.5 2,0 2)')  AS g ;</programlisting>
@@ -2113,77 +2072,27 @@ MULTILINESTRING((164 1, 11.7867965644036 1, 1 11.7867965644036, 1 195),
       <refsection>
         <title>Examples</title>
 
-      <informaltable>
-        <tgroup cols="2">
-          <tbody>
-            <row>
-              <entry><para><informalfigure>
-                  <mediaobject>
-                    <imageobject>
-                      <imagedata fileref="images/st_pointonsurface01.png"/>
-                    </imageobject>
+		<para>Point on surface of a MultiPoint.</para>
+<programlisting>SELECT ST_AsText(ST_PointOnSurface(
+  'MULTIPOINT (8 24,10 92,12 154,17 68,28 10,29 52,29 84,55 50,56 24,131 14,160 180,189 180)'), 3);</programlisting>
+<screen xml:id="st-pointonsurface-multipoint" role="visual-primary">POINT(55 50)</screen>
 
-                    <caption><para>Point on surface of a
-                    <varname>MULTIPOINT</varname></para></caption>
-                  </mediaobject>
-                </informalfigure></para></entry>
+		<para>Point on surface of a LineString.</para>
+<programlisting>SELECT ST_AsText(ST_PointOnSurface(
+  'LINESTRING (190 160,10 190,40 90,20 70,10 10,30 40,30 10,110 40,70 10,110 10,140 40,140 10,160 30,180 10)'), 3);</programlisting>
+<screen>POINT(40 90)</screen>
 
-              <entry><para><informalfigure>
-                  <mediaobject>
-                    <imageobject>
-                      <imagedata fileref="images/st_pointonsurface02.png"/>
-                    </imageobject>
+		<para>Point on surface of a Polygon.</para>
+<programlisting>SELECT ST_AsText(ST_PointOnSurface(
+  'POLYGON ((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'), 3);</programlisting>
+<screen>POINT(35 80)</screen>
 
-                    <caption><para>Point on surface of a
-                    <varname>LINESTRING</varname></para></caption>
-                  </mediaobject>
-                </informalfigure></para></entry>
-            </row>
-
-            <row>
-              <entry><para><informalfigure>
-                  <mediaobject>
-                    <imageobject>
-                      <imagedata fileref="images/st_pointonsurface03.png"/>
-                    </imageobject>
-
-                    <caption><para>Point on surface of a
-                    <varname>POLYGON</varname></para></caption>
-                  </mediaobject>
-                </informalfigure></para></entry>
-
-              <entry><para><informalfigure>
-                  <mediaobject>
-                    <imageobject>
-                      <imagedata fileref="images/st_pointonsurface04.png"/>
-                    </imageobject>
-
-                    <caption><para>Point on surface of a
-                    <varname>GEOMETRYCOLLECTION</varname></para></caption>
-                  </mediaobject>
-                </informalfigure></para></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
-
-        <programlisting>SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));</programlisting>
-<screen> st_astext
------------
- POINT(0 5)
-(1 row)</screen>
-
-<programlisting>SELECT ST_AsText(ST_PointOnSurface('LINESTRING(0 5,0 10)'::geometry));</programlisting>
-<screen> st_astext
------------
- POINT(0 5)
-(1 row)</screen>
-
-<programlisting>SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0,0 5,5 5,5 0,0 0))'::geometry));</programlisting>
-<screen>  st_astext
---------------
- POINT(2.5 2.5)
-(1 row)</screen>
+		<para>Point on surface of the highest-dimension components of a GeometryCollection.</para>
+<programlisting>SELECT ST_AsText(ST_PointOnSurface(
+  'GEOMETRYCOLLECTION (POLYGON ((190 170,180 100,80 140,80 160,130 160,110 180,110 190,180 180,190 170)),
+    LINESTRING (80 120,120 20,140 70,150 30,180 50,190 10),
+    MULTIPOINT (19 150,22 49,30 13,32 101,45 35,67 88,75 16))'), 3);</programlisting>
+<screen>POINT(133.571 150)</screen>
 
 <programlisting>SELECT ST_AsEWKT(ST_PointOnSurface('LINESTRING(0 5 1,0 0 1,0 10 2)'));</programlisting>
 <screen>  st_asewkt
@@ -2195,15 +2104,6 @@ MULTILINESTRING((164 1, 11.7867965644036 1, 1 11.7867965644036, 1 195),
         The result of ST_PointOnSurface is guaranteed to lie within polygons,
         whereas the point computed by <xref linkend="ST_Centroid"/> may be outside.
         </para>
-
-        <informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_pointonsurface.png"/>
-                </imageobject>
-                <caption><para>Red: point on surface; Green: centroid</para></caption>
-            </mediaobject>
-            </informalfigure>
 
 <programlisting>
 SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
