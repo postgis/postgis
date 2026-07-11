@@ -1237,26 +1237,21 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2,3 8,6 20,7 25,10 10)'::geometr
         <refsection>
             <title>Examples</title>
 
-<para><informalfigure>
-                        <mediaobject>
-                          <imageobject>
-                            <imagedata fileref="images/st_generatepoints01.png"/>
-                          </imageobject>
-                          <caption><para>Generated a multipoint consisting of 12 Points overlaid on top of original polygon using a random seed value 1996</para></caption>
-                        </mediaobject>
-                      </informalfigure>
-                        <programlisting>SELECT ST_GeneratePoints(geom, 12, 1996)
-FROM (
-    SELECT ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-        10, 'endcap=round join=round') AS geom
-) AS s;</programlisting>
-            </para>
-	<para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
-	<programlisting>SELECT s.id, dp.path[1] AS pt_id, dp.geom
-	FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom, 12)) AS dp;</programlisting>
-	<para>Generate dot-density points from a polygon table, using the absolute value of an attribute
-	as the number of points and keeping the sign of the attribute for styling.</para>
-	<programlisting>SELECT z.id,
+<para>Generate 12 points inside a buffered LineString using the deterministic seed 1996.</para>
+<programlisting>WITH source AS (
+  SELECT ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
+           10, 'endcap=round join=round') AS geom
+)
+SELECT ST_AsText(geom, 3) AS area,
+       ST_AsText(ST_GeneratePoints(geom, 12, 1996), 3) AS points
+FROM source;</programlisting>
+<screen>POLYGON((142.929 157.071,144.444 158.315,146.173 159.239,148.049 159.808,150 160,151.951 159.808,153.827 159.239,155.556 158.315,157.071 157.071,158.315 155.556,159.239 153.827,159.808 151.951,160 150,160 50,159.808 48.049,159.239 46.173,158.315 44.444,157.071 42.929,155.556 41.685,153.827 40.761,151.951 40.192,150 40,148.049 40.192,146.173 40.761,144.444 41.685,142.929 42.929,141.685 44.444,140.761 46.173,140.192 48.049,140 50,140 125.858,57.071 42.929,55.556 41.685,53.827 40.761,51.951 40.192,50 40,48.049 40.192,46.173 40.761,44.444 41.685,42.929 42.929,41.685 44.444,40.761 46.173,40.192 48.049,40 50,40.192 51.951,40.761 53.827,41.685 55.556,42.929 57.071,142.929 157.071)) | MULTIPOINT((97.546 111.15),(155.206 69.56),(101.94 114.818),(90.308 91.125),(151.257 106.401),(143.12 120.461),(152.952 146.697),(119.774 123.985),(148.672 40.92),(54.376 45.337),(150.667 88.153),(129.634 120.578))</screen>
+<para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
+<programlisting>SELECT s.id, dp.path[1] AS pt_id, dp.geom
+FROM s, ST_DumpPoints(ST_GeneratePoints(s.geom, 12)) AS dp;</programlisting>
+<para>Generate dot-density points from a polygon table, using the absolute value of an attribute
+as the number of points and keeping the sign of the attribute for styling.</para>
+<programlisting>SELECT z.id,
        CASE WHEN z.count_delta &lt; 0 THEN -1 ELSE 1 END AS sign,
        dp.path[1] AS pt_id,
        dp.geom
