@@ -208,6 +208,19 @@ def next_element_sibling(node: etree._Element) -> etree._Element | None:
     return sibling
 
 
+def refname_used_in_examples(refname: str, example_text: str) -> bool:
+    bare = refname.split("(", 1)[0].strip()
+    if IDENT_RE.fullmatch(bare):
+        return re.search(rf"(?i)(?<![A-Za-z0-9_]){re.escape(bare)}\s*\(", example_text) is not None
+    if OPERATOR_RE.fullmatch(bare):
+        operator_chars = r"~!@#%^&|`?+\-*/<=>"
+        return re.search(
+            rf"(?<![{operator_chars}]){re.escape(bare)}(?![{operator_chars}])",
+            example_text,
+        ) is not None
+    return False
+
+
 def add_failure_options(parser: argparse.ArgumentParser, *, default_fail_on: str, default_max_warnings: int) -> None:
     parser.add_argument(
         "--max-warnings",
@@ -276,6 +289,37 @@ def add_source_findings(root: etree._Element, path: Path) -> list[Finding]:
                     "example-missing-output",
                     source_location(path, node),
                     "SELECT example is not immediately followed by a screen containing its output",
+                )
+            )
+
+    for refentry in root.xpath("//d:refentry", namespaces=NS):
+        example_sections = refentry.xpath(
+            ".//d:refsection[contains(d:title[1], 'Example')]",
+            namespaces=NS,
+        )
+        programlistings = [
+            node
+            for section in example_sections
+            for node in section.xpath(".//d:programlisting", namespaces=NS)
+        ]
+        if not programlistings:
+            continue
+        if not refentry.xpath("./d:refsynopsisdiv//d:function", namespaces=NS):
+            continue
+        documented_calls = [
+            alias.strip()
+            for node in refentry.xpath("./d:refnamediv/d:refname", namespaces=NS)
+            for alias in normalized_text(node).split("/")
+            if alias.strip()
+        ]
+        example_text = "\n".join(block_text(node) for node in programlistings)
+        if documented_calls and not any(refname_used_in_examples(name, example_text) for name in documented_calls):
+            findings.append(
+                Finding(
+                    "info",
+                    "current-function-in-examples",
+                    source_location(path, example_sections[0]),
+                    f"Examples do not call the documented function or operator ({', '.join(documented_calls)})",
                 )
             )
 

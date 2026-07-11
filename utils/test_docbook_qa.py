@@ -139,6 +139,42 @@ class DocBookSourceLintTest(unittest.TestCase):
             set(),
         )
 
+    def test_current_function_in_examples_for_functions_and_operators(self):
+        self.assertCategories(
+            '<refentry xml:id="ST_Foo"><refnamediv><refname>ST_Foo</refname></refnamediv>'
+            '<refsynopsisdiv><funcsynopsis><funcprototype><funcdef><type>integer</type> '
+            '<function>ST_Foo</function></funcdef></funcprototype></funcsynopsis></refsynopsisdiv>'
+            '<refsection><title>Examples</title><programlisting>SELECT ST_Foo(1);</programlisting>'
+            '<screen>1</screen></refsection></refentry>',
+            set(),
+        )
+        self.assertInfoCategory(
+            '<refentry xml:id="ST_Foo"><refnamediv><refname>ST_Foo</refname></refnamediv>'
+            '<refsynopsisdiv><funcsynopsis><funcprototype><funcdef><type>integer</type> '
+            '<function>ST_Foo</function></funcdef></funcprototype></funcsynopsis></refsynopsisdiv>'
+            '<refsection><title>Examples</title><programlisting>SELECT ST_Bar(1);</programlisting>'
+            '<screen>1</screen></refsection></refentry>',
+            "current-function-in-examples",
+        )
+        self.assertCategories(
+            '<refentry xml:id="geometry_overlaps"><refnamediv>'
+            '<refname>&amp;&amp;(geometry,box2df)</refname></refnamediv>'
+            '<refsynopsisdiv><funcsynopsis><funcprototype><funcdef><type>boolean</type> '
+            '<function>&amp;&amp;</function></funcdef></funcprototype></funcsynopsis></refsynopsisdiv>'
+            '<refsection><title>Examples</title><programlisting>SELECT a &amp;&amp; b;</programlisting>'
+            '<screen>t</screen></refsection></refentry>',
+            set(),
+        )
+        self.assertInfoCategory(
+            '<refentry xml:id="geometry_overlaps"><refnamediv>'
+            '<refname>&amp;&amp;(geometry,box2df)</refname></refnamediv>'
+            '<refsynopsisdiv><funcsynopsis><funcprototype><funcdef><type>boolean</type> '
+            '<function>&amp;&amp;</function></funcdef></funcprototype></funcsynopsis></refsynopsisdiv>'
+            '<refsection><title>Examples</title><programlisting>SELECT a @ b;</programlisting>'
+            '<screen>t</screen></refsection></refentry>',
+            "current-function-in-examples",
+        )
+
     def test_info_findings_do_not_fail_warning_gate_or_count_as_warnings(self):
         path = write_tmp(".xml", DOCBOOK_OPEN + '<refentry xml:id="f"><screen>1\t2</screen></refentry>' + DOCBOOK_CLOSE)
         output = io.StringIO()
