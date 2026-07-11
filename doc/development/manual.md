@@ -100,6 +100,9 @@ as Code and Output but the renderer cannot represent it truthfully, such as a
 genuinely three-dimensional result. Use `role="text-primary"` on a `screen`
 when the exact textual type or coordinates carry meaning that the accompanying
 figure cannot show; the figure is still generated, but HTML leaves Output open.
+Keep a short plain paragraph immediately before the associated
+`programlisting` when an example needs an introduction; HTML joins that prose
+to the Code, Output, and Figure card without requiring a wrapper or empty label.
 
 When documenting optional arguments, follow nearby DocBook examples so generated
 signatures and comments remain stable.

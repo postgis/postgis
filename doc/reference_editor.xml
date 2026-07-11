@@ -2118,11 +2118,13 @@ select ST_WrapX(geom, -30, 360);
 	  <refsection>
 		<title>Examples</title>
 
-		<para>This example snaps geometries to a precision grid of 10^-3.</para>
+		<para>Snap a geometry column to a precision grid of 10^-3.</para>
 		<programlisting language="sql">
 UPDATE mytable
-   SET geom = ST_SnapToGrid(geom, 0.001);
+   SET geom = ST_SnapToGrid(geom, 0.001);</programlisting>
 
+		<para>Display how the same grid size rounds a LineString.</para>
+<programlisting language="sql">
 SELECT ST_AsText(ST_SnapToGrid('LINESTRING(1.1115678 2.123,4.111111 3.2374897,4.11112 3.23748667)'::geometry,
         0.001));</programlisting>
 <screen>LINESTRING(1.112 2.123,4.111 3.237)</screen>

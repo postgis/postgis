@@ -186,6 +186,28 @@ pre,
     overflow: hidden;
 }
 
+/* A plain paragraph immediately before Code is its example introduction.
+ * Browsers without :has keep the existing standalone paragraph/card layout. */
+@supports selector(p:has(+ div)) {
+    .refsection > p:not([class]):has(+ .postgis-example-code) {
+        background: #f7f9fb;
+        border: 1px solid #8aa1b8;
+        border-bottom: 0;
+        border-radius: 0.45rem 0.45rem 0 0;
+        box-sizing: border-box;
+        color: #344b5d;
+        margin: 1rem 0 0;
+        max-width: 72rem;
+        padding: 0.7rem 0.85rem;
+    }
+
+    .refsection > p:not([class]) + .postgis-example-code {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        margin-top: 0;
+    }
+}
+
 .postgis-example-block pre {
     border-radius: 0;
     line-height: 1.45;
@@ -502,6 +524,10 @@ table.postgis-example-grid td {
 }
 
 @media print {
+    .refsection > p:not([class]):has(+ .postgis-example-code) {
+        background: #fff;
+        border-color: #000;
+    }
     .postgis-example-block {
         background: #fff;
         border-color: #000;

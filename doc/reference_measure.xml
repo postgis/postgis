@@ -1250,49 +1250,24 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 
 	  <refsection>
 		<title>Examples</title>
-        <para><informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_longestline01.png"/>
-                </imageobject>
-                <caption><para>Longest line between a point and a line</para></caption>
-            </mediaobject>
-            </informalfigure>
+		<para>Longest line between a Point and a LineString.</para>
 <programlisting>
 SELECT ST_AsText(ST_LongestLine(
         'POINT (160 40)',
         'LINESTRING (10 30,50 50,30 110,70 90,180 140,130 190)' )
         ) AS lline;</programlisting>
 <screen>LINESTRING(160 40,130 190)</screen>
-	</para>
 
-    <para>
-        <informalfigure>
-        <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_longestline02.png"/>
-            </imageobject>
-            <caption><para>Longest line between two polygons</para></caption>
-        </mediaobject>
-        </informalfigure>
+		<para>Longest line between two polygons.</para>
 <programlisting>
 SELECT ST_AsText(ST_LongestLine(
         'POLYGON ((190 150,20 10,160 70,190 150))',
         ST_Buffer('POINT(80 160)', 30)
             ) ) AS llinewkt;</programlisting>
 <screen>LINESTRING(20 10,91.4805029709527 187.7163859753386)</screen>
-	</para>
 
-    <para><informalfigure>
-        <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_longestline03.png"/>
-            </imageobject>
-            <caption><para>Longest line across a single geometry.
-            The length of the line is equal to the Maximum Distance.
-            The endpoints of the line lie on the Minimum Bounding Circle.</para></caption>
-        </mediaobject>
-        </informalfigure>
+		<para>Longest line across a single geometry. The length of the line is equal to the
+		Maximum Distance. The endpoints of the line lie on the Minimum Bounding Circle.</para>
 <programlisting>
 SELECT ST_AsText(ST_LongestLine(geom)) AS llinewkt,
                   ST_MaxDistance(geom) AS max_dist,
@@ -1302,7 +1277,6 @@ FROM (SELECT 'POLYGON ((40 180,110 160,180 180,180 120,140 90,160 40,80 10,70 40
 <screen>         llinewkt          |      max_dist      |       lenll
 ---------------------------+--------------------+--------------------
  LINESTRING(20 50,180 180) | 206.15528128088303 | 206.15528128088303</screen>
-	</para>
 	  </refsection>
 
 	  <refsection>
@@ -1866,37 +1840,21 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 
 	  <refsection>
 		<title>Examples</title>
-        <para><informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_shortestline01.png"/>
-                </imageobject>
-                <caption><para>Shortest line between Point and LineString</para></caption>
-            </mediaobject>
-            </informalfigure>
+		<para>Shortest line between a Point and a LineString.</para>
 <programlisting>
 SELECT ST_AsText(ST_ShortestLine(
         'POINT (160 40)',
         'LINESTRING (10 30,50 50,30 110,70 90,180 140,130 190)')
         ) As sline;</programlisting>
 <screen>LINESTRING(160 40,125.75342465753425 115.34246575342466)</screen>
-		</para>
 
-        <para><informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_shortestline02.png"/>
-                </imageobject>
-                <caption><para>Shortest line between Polygons</para></caption>
-            </mediaobject>
-            </informalfigure>
+		<para>Shortest line between polygons.</para>
 <programlisting>
 SELECT ST_AsText(ST_ShortestLine(
          'POLYGON ((190 150,20 10,160 70,190 150))',
          ST_Buffer('POINT(80 160)', 30)
                   ) ) AS llinewkt;</programlisting>
 <screen>LINESTRING(131.59149149528952 101.89887534906195,101.21320343559643 138.78679656440357)</screen>
-		</para>
 
 	  </refsection>
 

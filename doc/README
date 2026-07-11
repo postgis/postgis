@@ -143,6 +143,10 @@ figure identity or preference. Add ``role="text-primary"`` to a ``screen`` when
 its exact geometry type or coordinates are essential; HTML then keeps Output
 expanded while still showing the generated figure.
 
+A plain paragraph immediately before a ``programlisting`` is rendered as the
+introduction to that example card. Examples without an introduction retain the
+same standalone Code styling.
+
 The full ``make -C regress exampletest`` target also regenerates these assets
 while testing every runnable manual example. The narrower visual target shares
 its staged-install and database recipe but does not require unrelated optional

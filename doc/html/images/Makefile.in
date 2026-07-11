@@ -130,9 +130,6 @@ GENERATED_IMAGES= \
 	st_line_interpolate_points01.png \
 	st_line_substring01.png \
 	st_locatebetween01.png \
-	st_longestline01.png \
-	st_longestline02.png \
-	st_longestline03.png \
 	st_makevalid01.png \
 	st_makevalid02.png \
 	st_makevalid03.png \
@@ -171,8 +168,6 @@ GENERATED_IMAGES= \
 	st_triangulatepolygon02.png \
 	st_sharedpaths01.png \
 	st_sharedpaths02.png \
-	st_shortestline01.png \
-	st_shortestline02.png \
 	st_split01.png \
 	st_split02.png \
 	st_split03.png \
