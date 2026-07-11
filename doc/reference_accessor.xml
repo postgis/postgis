@@ -538,14 +538,7 @@ FROM (SELECT 1 As edge_id,
 		<refsection>
 			<title>Standard Geometry Examples</title>
 
-			<informalfigure>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/st_dumppoints01.png"/>
-					</imageobject>
-				</mediaobject>
-			</informalfigure>
-
+			<para>Dump every vertex from a mixed GeometryCollection.</para>
 			<programlisting>SELECT path, ST_AsText(geom)
 FROM (
   SELECT (ST_DumpPoints(g.geom)).*
@@ -597,6 +590,21 @@ FROM (
  {5,2,1,3} | POINT(6 7)
  {5,2,1,4} | POINT(5 4)
 (29 rows)</screen>
+
+			<para>Collect the dumped vertices to visualize them over the source geometry.</para>
+			<programlisting>WITH source(geom) AS (VALUES (
+  'GEOMETRYCOLLECTION(
+     POINT (0 1),
+     LINESTRING (0 3,3 4),
+     POLYGON ((2 0,2 3,0 2,2 0)),
+     POLYGON ((3 0,3 3,6 3,6 0,3 0),(5 1,4 2,5 2,5 1)),
+     MULTIPOLYGON (((0 5,0 8,4 8,4 5,0 5),(1 6,3 6,2 7,1 6)),
+                   ((5 4,5 8,6 7,5 4))))'::geometry
+))
+SELECT ST_AsText(ST_Collect((dp).geom ORDER BY (dp).path)) AS vertices
+FROM source
+CROSS JOIN LATERAL ST_DumpPoints(source.geom) AS dp;</programlisting>
+<screen>MULTIPOINT((0 1),(0 3),(3 4),(2 0),(2 3),(0 2),(2 0),(3 0),(3 3),(6 3),(6 0),(3 0),(5 1),(4 2),(5 2),(5 1),(0 5),(0 8),(4 8),(4 5),(0 5),(1 6),(3 6),(2 7),(1 6),(5 4),(5 8),(6 7),(5 4))</screen>
 		</refsection>
 	<refsection>
 			<title>Polyhedral Surfaces, TIN and Triangle Examples</title>

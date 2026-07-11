@@ -1041,15 +1041,7 @@ SELECT disease_type,
       <refsection>
         <title>Examples</title>
 
-<para>
-    <informalfigure>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_convexhull01.png"/>
-        </imageobject>
-        <caption><para>Convex Hull of a MultiLinestring and a MultiPoint</para></caption>
-      </mediaobject>
-    </informalfigure>
+<para>Compute the convex hull of a MultiLineString and a MultiPoint.</para>
     <programlisting>
 SELECT ST_AsText(ST_ConvexHull(ST_Collect(ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10,20 30))'),
             ST_GeomFromText('MULTIPOINT(50 5,150 30,50 10,10 10)')
@@ -1058,7 +1050,6 @@ SELECT ST_AsText(ST_ConvexHull(ST_Collect(ST_GeomFromText('MULTILINESTRING((100 
 -----------
 POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 (1 row)</screen>
-</para>
 
 <para>Using with ST_Collect to compute the convex hulls of geometry sets.</para>
 

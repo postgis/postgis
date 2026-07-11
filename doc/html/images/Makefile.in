@@ -81,12 +81,10 @@ GENERATED_IMAGES= \
 	st_contains06.png \
 	st_contains07.png \
 	st_contains08.png \
-	st_convexhull01.png \
 	st_crosses01.png \
 	st_crosses02.png \
 	st_crosses03.png \
 	st_crosses04.png \
-	st_dumppoints01.png \
 	st_extrude01.png \
 	st_extrude03.png \
 	st_generatepoints01.png \
