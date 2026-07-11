@@ -39,6 +39,12 @@ WKT_TYPES = (
     "|NURBSCURVE"
 )
 WKT_START_RE = re.compile(rf"(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*\(", re.I)
+NUMBER_PATTERN = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
+MAKE_ENVELOPE_RE = re.compile(
+    rf"\bST_MakeEnvelope\s*\(\s*({NUMBER_PATTERN})\s*,\s*({NUMBER_PATTERN})\s*,\s*"
+    rf"({NUMBER_PATTERN})\s*,\s*({NUMBER_PATTERN})(?:\s*,\s*(-?\d+))?\s*\)",
+    re.I,
+)
 VISUAL_ROLE = "visual-primary"
 SVG_PALETTES = {
     "Code": ("#2878b8", "#59a4d8", "#0f5f9c"),
@@ -194,7 +200,7 @@ class ExampleTester:
         return re.sub(r"\s+", "", value or "").upper()
 
     def visual_candidate(self, query, expected, explicit=False):
-        code = self.geometry_candidates(query, quoted_only=True)
+        code = [candidate["wkt"] for candidate in self.code_geometry_candidates(query)]
         output = self.geometry_candidates(self.rows_to_string(expected))
         values = code + output
         if not values:
@@ -484,7 +490,7 @@ class ExampleTester:
                     return index
         return -1
 
-    def geometry_candidates(self, text, quoted_only=False):
+    def geometry_candidate_matches(self, text, quoted_only=False):
         quoted = self.quoted_ranges(text) if quoted_only else []
         candidates = []
         cursor = 0
@@ -503,9 +509,27 @@ class ExampleTester:
                 continue
             if quoted_only and not any(match.start() >= start and closing + 1 <= end for start, end in quoted):
                 continue
-            candidate = text[match.start():closing + 1]
-            candidates.append(candidate.replace("''", "'"))
+            candidate = text[match.start():closing + 1].replace("''", "'")
+            candidates.append({"start": match.start(), "end": closing + 1, "wkt": candidate})
         return candidates
+
+    def geometry_candidates(self, text, quoted_only=False):
+        return [match["wkt"] for match in self.geometry_candidate_matches(text, quoted_only)]
+
+    def code_geometry_candidates(self, text):
+        candidates = self.geometry_candidate_matches(text, quoted_only=True)
+        for match in MAKE_ENVELOPE_RE.finditer(text):
+            min_x, min_y, max_x, max_y = match.group(1, 2, 3, 4)
+            wkt = (
+                f"POLYGON(({min_x} {min_y},{max_x} {min_y},{max_x} {max_y},"
+                f"{min_x} {max_y},{min_x} {min_y}))"
+            )
+            if match.group(5) is not None:
+                wkt = f"SRID={match.group(5)};{wkt}"
+            candidates.append({
+                "start": match.start(), "end": match.end(), "wkt": wkt, "label": "Envelope",
+            })
+        return sorted(candidates, key=lambda candidate: candidate["start"])
 
     def query_is_auto_safe(self, query):
         if query is None:
@@ -834,7 +858,15 @@ SELECT json_build_object(
       'ord', ord, 'source', source, 'label', label,
       'type', GeometryType(geom), 'svg', ST_AsSVG(geom, 0, 12),
       'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
-      'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END
+      'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END,
+      'vertices', CASE
+        WHEN GeometryType(geom) IN ('LINESTRING', 'POLYGON', 'TRIANGLE')
+          AND ST_NPoints(geom) <= 64
+        THEN (
+          SELECT json_agg(json_build_array(ST_X(vertex.geom), -ST_Y(vertex.geom)))
+          FROM ST_DumpPoints(geom) AS vertex
+        )
+      END
     ) ORDER BY ord)
     FROM normalized_parts
   )
@@ -847,10 +879,25 @@ FROM dimensions
         return json.loads(payload)
 
     def render_visual_example(self, database, example, actual):
-        code = self.geometry_candidates(example["query"], quoted_only=True)
+        code = self.code_geometry_candidates(example["query"])
         output = self.geometry_candidates(self.rows_to_string(actual))
         layers = []
-        for source, values in (("Code", code), ("Output", output)):
+        code_geometry_count = sum("label" not in candidate for candidate in code)
+        for index, candidate in enumerate(code, 1):
+            if candidate.get("label"):
+                label = candidate["label"]
+            elif code_geometry_count == 1:
+                label = "Code"
+            else:
+                code_index = sum("label" not in previous for previous in code[:index])
+                label = f"Code {code_index}"
+            layers.append({
+                "ord": len(layers) + 1,
+                "source": "Code",
+                "label": label,
+                "wkt": candidate["wkt"],
+            })
+        for source, values in (("Output", output),):
             for index, wkt in enumerate(values, 1):
                 layers.append({
                     "ord": len(layers) + 1,
@@ -978,6 +1025,14 @@ FROM dimensions
                         f'<path class="{dimension_class}" d="{svg_data}" '
                         f'stroke="{color}" fill="{fill}" fill-rule="evenodd"/>'
                     )
+                    vertices = part.get("vertices") or []
+                    if len(vertices) > 1 and vertices[0] == vertices[-1]:
+                        vertices = vertices[:-1]
+                    for x, y in vertices:
+                        shapes.append(
+                            f'<circle class="vertex" cx="{float(x):.12g}" cy="{float(y):.12g}" '
+                            f'r="{3 / scale:.12g}" fill="{color}"/>'
+                        )
             groups.append(
                 f'<g class="geometry-layer" data-postgis-geometry-id="{geometry_id}">' +
                 "".join(shapes) + "</g>"
@@ -1006,7 +1061,7 @@ FROM dimensions
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="{svg_height}" viewBox="0 0 600 {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
             f'<title id="{safe_id}-title">Input and output geometries for {safe_id}</title>\n'
-            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.geometry-layer{opacity:.82}.line,.area{stroke-width:2;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.area{fill-opacity:.18}.point{stroke:white;stroke-width:1.2;vector-effect:non-scaling-stroke;pointer-events:all}.legend-row{cursor:default}.legend-row text{font:12px sans-serif;fill:#344}.geometry-layer.active{opacity:1}.geometry-layer.active .line,.geometry-layer.active .area{stroke-width:3}</style>\n'
+            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.geometry-layer{opacity:.82}.line,.area{stroke-width:2;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.area{fill-opacity:.18}.point,.vertex{stroke:white;stroke-width:1.2;vector-effect:non-scaling-stroke;pointer-events:all}.vertex{stroke-width:.8}.legend-row{cursor:default}.legend-row text{font:12px sans-serif;fill:#344}.geometry-layer.active{opacity:1}.geometry-layer.active .line,.geometry-layer.active .area{stroke-width:3}</style>\n'
             '<rect class="plot-background" x="20" y="12" width="560" height="310" fill="#fbfcfd"/>\n'
             '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
             f'<g transform="matrix({scale:.12g} 0 0 {scale:.12g} {translate_x:.12g} {translate_y:.12g})">'

@@ -251,6 +251,9 @@ async function main() {
   assert.deepStrictEqual(Array.from(geometryTexts(
     'GEOMETRYCOLLECTION(TRIANGLE((0 0,2 0,0 2,0 0)),POINT(1 1))', false
   )), ['GEOMETRYCOLLECTION(TRIANGLE((0 0,2 0,0 2,0 0)),POINT(1 1))']);
+  assert.deepStrictEqual(Array.from(geometryTexts(
+    "SELECT f('LINESTRING(0 0,10 10)', ST_MakeEnvelope(2, 3, 8, 9, 4326))", true
+  )), ['LINESTRING(0 0,10 10)', 'ST_MakeEnvelope(2, 3, 8, 9, 4326)']);
 
   const outputState = new Set();
   const outputBlock = {

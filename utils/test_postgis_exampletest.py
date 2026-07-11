@@ -245,6 +245,28 @@ class VisualExampleTest(unittest.TestCase):
             "SELECT ST_AsText('LINESTRING(0 0,1 1)')", [["LINESTRING(0 0,1 1)"]]
         ))
 
+    def test_code_geometry_candidates_include_view_envelopes_in_sql_order(self):
+        candidates = self.tester.code_geometry_candidates(
+            "SELECT f('LINESTRING(0 0,10 10)', ST_MakeEnvelope(2, 3, 8, 9, 4326))"
+        )
+        self.assertEqual([None, "Envelope"], [candidate.get("label") for candidate in candidates])
+        self.assertEqual("LINESTRING(0 0,10 10)", candidates[0]["wkt"])
+        self.assertEqual(
+            "SRID=4326;POLYGON((2 3,8 3,8 9,2 9,2 3))",
+            candidates[1]["wkt"],
+        )
+
+    def test_svg_draws_bounded_vertices_for_linear_geometries(self):
+        svg = self.tester.visual_svg(
+            "vertices",
+            {"bounds": [0, 0, 1, 1], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "POLYGON",
+                "svg": "M 0 0 L 1 0 0 -1 Z",
+                "vertices": [[0, 0], [1, 0], [0, -1], [0, 0]],
+            }]},
+        )
+        self.assertEqual(3, svg.count('class="vertex"'))
+
     def test_svg_rejects_empty_non_point_paths(self):
         with self.assertRaisesRegex(RuntimeError, "empty SVG path"):
             self.tester.visual_svg(

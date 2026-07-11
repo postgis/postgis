@@ -7,6 +7,12 @@
   var emptyRefIndex = { functions: {}, operators: {}, keywords: [] };
   var resizeTimer = null;
   var wrapObserver = null;
+  var numberPattern = '[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][-+]?\\d+)?';
+  var makeEnvelopePattern = new RegExp(
+    '\\bST_MakeEnvelope\\s*\\(\\s*' + numberPattern + '\\s*,\\s*' +
+    numberPattern + '\\s*,\\s*' + numberPattern + '\\s*,\\s*' + numberPattern +
+    '(?:\\s*,\\s*-?\\d+)?\\s*\\)', 'gi'
+  );
 
   // ---------------------------------------------------------------------------
   // Reference-index loading
@@ -600,7 +606,13 @@
       matches.push({ start: match.index, end: closing + 1, text: text.slice(match.index, closing + 1) });
       geometryPattern.lastIndex = closing + 1;
     }
-    return matches;
+    if (quotedOnly) {
+      makeEnvelopePattern.lastIndex = 0;
+      while ((match = makeEnvelopePattern.exec(text)) !== null) {
+        matches.push({ start: match.index, end: makeEnvelopePattern.lastIndex, text: match[0] });
+      }
+    }
+    return matches.sort(function (left, right) { return left.start - right.start; });
   }
 
   function wrapLiteralRange(pre, match, id) {

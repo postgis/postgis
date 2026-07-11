@@ -1656,9 +1656,10 @@ UPDATE sometable
 		<title>Examples</title>
 
 		<programlisting language="sql">
-SELECT ST_AsText(ST_RemoveIrrelevantPointsForView('MULTIPOLYGON(((10 10,20 10,30 10,40 10,20 20,10 20,10 10)),((10 10,20 10,20 20,10 20,10 10)))',
-ST_MakeEnvelope(12, 12, 18, 18), true));</programlisting>
-<screen>MULTIPOLYGON(((10 10,40 10,20 20,10 20,10 10)),((10 10,20 10,20 20,10 20,10 10)))</screen>
+SELECT ST_AsText(ST_RemoveIrrelevantPointsForView(
+  'POLYGON((12.299 0,12.656 1.452,12.799 2.976,12.699 4.531,12.338 6.066,11.713 7.527,10.836 8.861,9.735 10.017,8.449 10.957,7.028 11.655,5.525 12.097,3.993 12.288,2.481 12.246,1.031 11.999,-0.331 11.584,-1.588 11.043,-2.737 10.414,-3.789 9.731,-4.759 9.02,-5.672 8.295,-6.549 7.558,-7.408 6.799,-8.261 6.002,-9.109 5.144,-9.939 4.2,-10.729 3.15,-11.447 1.981,-12.052 0.689,-12.502 -0.715,-12.756 -2.208,-12.781 -3.753,-12.552 -5.304,-12.058 -6.809,-11.304 -8.213,-10.311 -9.464,-9.112 -10.516,-7.752 -11.337,-6.283 -11.908,-4.759 -12.223,-3.232 -12.295,-1.746 -12.145,-0.337 -11.81,0.973 -11.327,2.176 -10.737,3.274 -10.077,4.283 -9.378,5.222 -8.659,6.113 -7.928,6.98 -7.182,7.835 -6.407,8.686 -5.582,9.527 -4.684,10.341 -3.69,11.1 -2.581,11.766 -1.35,12.299 0))',
+  ST_MakeEnvelope(-9, -9, 9, 9), true), 3);</programlisting>
+<screen>POLYGON((9.735 10.017,-4.759 9.02,-5.672 8.295,-6.549 7.558,-7.408 6.799,-8.261 6.002,-9.109 5.144,-9.112 -10.516,4.283 -9.378,5.222 -8.659,6.113 -7.928,6.98 -7.182,7.835 -6.407,8.686 -5.582,9.527 -4.684,9.735 10.017))</screen>
 
 		<programlisting language="sql">
 SELECT ST_AsText(ST_RemoveIrrelevantPointsForView('MULTILINESTRING((0 0,10 0,20 0,30 0),(0 15,5 15,10 15,15 15,20 15,25 15,30 15,40 15),(13 13,15 15,17 17))',
@@ -1671,9 +1672,10 @@ ST_MakeEnvelope(12, 12, 18, 18), true));</programlisting>
 <screen>LINESTRING EMPTY</screen>
 
 		<programlisting language="sql">
-SELECT ST_AsText(ST_RemoveIrrelevantPointsForView('POLYGON((0 30,15 30,30 30,30 0,0 0,0 30))',
-ST_MakeEnvelope(12, 12, 18, 18), true));</programlisting>
-<screen>POLYGON((15 30,30 0,0 0,15 30))</screen>
+SELECT ST_AsText(ST_RemoveIrrelevantPointsForView(
+  'POLYGON((0 10,0 0,10 -10,30 0,25 20,10 -5,0 10))',
+  ST_MakeEnvelope(-5, 1, 20, 12), true));</programlisting>
+<screen>POLYGON((0 10,0 0,30 0,25 20,10 -5,0 10))</screen>
 
 		<programlisting language="sql">
 SELECT ST_AsText(ST_RemoveIrrelevantPointsForView('POLYGON((0 30,15 30,30 30,30 0,0 0,0 30))',
