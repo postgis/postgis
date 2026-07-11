@@ -76,7 +76,7 @@ h1 {
 			<div class='card_separator'>&nbsp;</div>
 			<div class='card_front'><div class='func'>WHAT DOES POST GIS?</div></div><div class='card_back'><div class='func'>POSTGIS<br /><img src='images/PostGIS_logo.png' style='width:100px;height:100px'/></div></div>
 			<div class='card_separator'>&nbsp;</div>]]></xsl:text>
-			<xsl:apply-templates select="/db:book/db:chapter//db:refentry" />
+			<xsl:apply-templates select="/db:book/db:chapter//db:refentry[not(contains(concat(' ', normalize-space(@role), ' '), ' deprecated-alias '))]" />
 			<xsl:text><![CDATA[</div></body></html>]]></xsl:text>
 </xsl:template>
 

@@ -21,6 +21,7 @@ DB = f"{{{DOCBOOK_NS}}}"
 XML_ID = f"{{{XML_NS}}}id"
 
 ADMONITIONS = {"note", "tip", "important", "warning", "caution"}
+DEPRECATED_ALIAS_ROLE = "deprecated-alias"
 SQL_KEYWORD_DATA = (
     # keyword, starts a semicolon-terminated SQL statement, starts an example code block
     ("ADD", False, False),
@@ -155,6 +156,10 @@ def class_tokens(node: ET.Element) -> set[str]:
     return set((node.get("class") or "").split())
 
 
+def role_tokens(node: ET.Element) -> set[str]:
+    return set((node.get("role") or "").split())
+
+
 def text_content(node: ET.Element | None) -> str:
     if node is None:
         return ""
@@ -251,6 +256,20 @@ def first_named_child(node: ET.Element, name: str):
     return next((child for child in node if local_name(child) == name), None)
 
 
+def deprecated_alias_replacement(refentry: ET.Element) -> str | None:
+    if DEPRECATED_ALIAS_ROLE not in role_tokens(refentry):
+        return None
+    warning = next(named_descendants(refentry, "warning"), None)
+    if warning is None:
+        return None
+    targets = {
+        node.get("linkend")
+        for node in named_descendants(warning, "xref")
+        if node.get("linkend")
+    }
+    return next(iter(targets)) if len(targets) == 1 else None
+
+
 def section_has_example_title(section: ET.Element) -> bool:
     title = first_named_child(section, "title")
     return title is not None and "Example" in normalized_text(title)
@@ -258,6 +277,47 @@ def section_has_example_title(section: ET.Element) -> bool:
 
 def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
     findings: list[Finding] = []
+
+    refentries = list(named_descendants(root, "refentry"))
+    refentry_ids = {element_id(refentry) for refentry in refentries if element_id(refentry)}
+    deprecated_aliases: dict[str, str] = {}
+    for refentry in refentries:
+        if DEPRECATED_ALIAS_ROLE not in role_tokens(refentry):
+            continue
+        alias = element_id(refentry)
+        replacement = deprecated_alias_replacement(refentry)
+        if not alias or not replacement or replacement == alias or replacement not in refentry_ids:
+            findings.append(Finding(
+                "error", "deprecated-alias-replacement", source_location(path, refentry),
+                "deprecated alias must contain one warning xref to a different documented replacement",
+            ))
+            continue
+        deprecated_aliases[alias] = replacement
+        if any(section_has_example_title(section) for section in named_descendants(refentry, "refsection")):
+            findings.append(Finding(
+                "error", "deprecated-alias-examples", source_location(path, refentry),
+                f"deprecated alias {alias} duplicates examples; keep examples on {replacement}",
+            ))
+
+    for node in named_descendants(root, "xref"):
+        target = node.get("linkend")
+        if target not in deprecated_aliases or nearest_refentry_id(node) == target:
+            continue
+        findings.append(Finding(
+            "error", "deprecated-alias-link", source_location(path, node),
+            f"link targets deprecated alias {target}; use {deprecated_aliases[target]}",
+        ))
+
+    for node in named_descendants(root, "programlisting", "title"):
+        owner = nearest_refentry_id(node)
+        text = block_text(node)
+        for alias, replacement in deprecated_aliases.items():
+            if owner == alias or not re.search(rf"(?<![A-Za-z0-9_]){re.escape(alias)}(?![A-Za-z0-9_])", text):
+                continue
+            findings.append(Finding(
+                "error", "deprecated-alias-reference", source_location(path, node),
+                f"content references deprecated alias {alias}; use {replacement}",
+            ))
 
     for node in named_descendants(root, "programlisting", "screen"):
         if "\t" in block_text(node):
@@ -607,15 +667,16 @@ def build_index(input_path: Path) -> dict[str, Any]:
         if not entry_id:
             continue
         purpose = text_content(refentry.find(f"./{DB}refnamediv/{DB}refpurpose"))
+        indexed_entry_id = deprecated_alias_replacement(refentry) or entry_id
         for refname in refentry.findall(f"./{DB}refnamediv/{DB}refname"):
             name = text_content(refname)
             if not name:
                 continue
             bare = name.split("(", 1)[0].strip()
             if IDENT_RE.match(bare):
-                add_function(functions, bare.upper(), bare, entry_id, purpose)
+                add_function(functions, bare.upper(), bare, indexed_entry_id, purpose)
             elif OPERATOR_RE.match(bare):
-                add_operator(operators, bare, bare, entry_id, purpose)
+                add_operator(operators, bare, bare, indexed_entry_id, purpose)
 
     return {"functions": functions, "operators": operators, "keywords": list(SQL_HIGHLIGHT_KEYWORDS)}
 

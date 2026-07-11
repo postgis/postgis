@@ -102,6 +102,13 @@ genuinely three-dimensional result.
 When documenting optional arguments, follow nearby DocBook examples so generated
 signatures and comments remain stable.
 
+Keep deprecated compatibility names as compact refentries with
+`role="deprecated-alias"`. Their warning must contain exactly one `xref` to the
+canonical replacement, and their page must not duplicate examples. Put these
+entries in a separate compatibility chapter. The source checker rejects links
+and examples that use deprecated aliases elsewhere, while the reference search
+index resolves the legacy spelling directly to the canonical page.
+
 The public website also links training material, including the Introduction to
 PostGIS workshop. The workshop has its own upstream repository under the PostGIS
 umbrella at <https://github.com/postgis/postgis-workshops>; route workshop

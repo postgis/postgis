@@ -175,6 +175,35 @@ class DocBookSourceLintTest(unittest.TestCase):
             "current-function-in-examples",
         )
 
+    def test_deprecated_alias_requires_canonical_links_and_no_examples(self):
+        canonical = (
+            '<refentry xml:id="CG_Foo"><refnamediv><refname>CG_Foo</refname>'
+            '<refpurpose>Canonical</refpurpose></refnamediv></refentry>'
+        )
+        alias = (
+            '<refentry xml:id="ST_Foo" role="deprecated-alias"><refnamediv><refname>ST_Foo</refname>'
+            '<refpurpose>Deprecated alias</refpurpose></refnamediv><refsection><title>Description</title>'
+            '<warning><para>Use <xref linkend="CG_Foo"/>.</para></warning></refsection></refentry>'
+        )
+        self.assertCategories(canonical + alias, set())
+        self.assertCategories(
+            canonical + alias + '<para>See <xref linkend="ST_Foo"/>.</para>',
+            {"deprecated-alias-link"},
+        )
+        self.assertCategories(
+            canonical + alias.replace(
+                '</refentry>',
+                '<refsection><title>Examples</title><programlisting>SELECT ST_Foo();</programlisting>'
+                '<screen>1</screen></refsection></refentry>',
+            ),
+            {"deprecated-alias-examples"},
+        )
+        self.assertCategories(
+            canonical + alias + '<refentry xml:id="Other"><refsection><title>Examples</title>'
+            '<programlisting>SELECT ST_Foo();</programlisting></refsection></refentry>',
+            {"deprecated-alias-reference", "example-missing-output"},
+        )
+
     def test_info_findings_do_not_fail_warning_gate_or_count_as_warnings(self):
         path = write_tmp(".xml", DOCBOOK_OPEN + '<refentry xml:id="f"><screen>1\t2</screen></refentry>' + DOCBOOK_CLOSE)
         output = io.StringIO()
@@ -350,6 +379,21 @@ class DocBookRefIndexTest(unittest.TestCase):
         self.assertTrue(script.startswith("window.POSTGIS_REF_INDEX = "))
         self.assertTrue(script.endswith(";\n"))
         self.assertEqual(expected, json.loads(script.removeprefix("window.POSTGIS_REF_INDEX = ").removesuffix(";\n")))
+
+    def test_deprecated_alias_search_opens_canonical_page(self):
+        path = write_tmp(
+            ".xml",
+            DOCBOOK_OPEN
+            + '<refentry xml:id="CG_Foo"><refnamediv><refname>CG_Foo</refname>'
+            '<refpurpose>Canonical function</refpurpose></refnamediv></refentry>'
+            + '<refentry xml:id="ST_Foo" role="deprecated-alias"><refnamediv><refname>ST_Foo</refname>'
+            '<refpurpose>Deprecated alias for CG_Foo</refpurpose></refnamediv>'
+            '<refsection><warning><para>Use <xref linkend="CG_Foo"/>.</para></warning></refsection></refentry>'
+            + DOCBOOK_CLOSE,
+        )
+        index = build_index(path)
+        self.assertEqual("CG_Foo", index["functions"]["ST_FOO"]["id"])
+        self.assertEqual("CG_Foo.html", index["functions"]["ST_FOO"]["href"])
 
 
 if __name__ == "__main__":

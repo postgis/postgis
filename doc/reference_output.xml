@@ -1686,7 +1686,7 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
             and click Show
          </para>
          <programlisting><![CDATA[
-SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*0.5)) ||
+SELECT string_agg('<Shape>' || ST_AsX3D(CG_Extrude(geom, 0,0, i*0.5)) ||
     '<Appearance>
           <Material diffuseColor="' || (0.01*i)::text || ' 0.8 0.2" specularColor="' || (0.05*i)::text || ' 0 0.5"/>
         </Appearance>

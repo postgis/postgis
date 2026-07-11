@@ -112,7 +112,7 @@ from somegeogtable;</programlisting>
 		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_3DArea"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_GeographyFromText"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/></para>
+			<para><xref linkend="CG_3DArea"/>, <xref linkend="ST_GeomFromText"/>, <xref linkend="ST_GeographyFromText"/>, <xref linkend="ST_SetSRID"/>, <xref linkend="ST_Transform"/></para>
 		</refsection>
 	</refentry>
 

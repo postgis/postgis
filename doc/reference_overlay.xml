@@ -226,7 +226,7 @@ Computes a geometry representing the shared portion of geometries A and B.
 
         <warning><para>This function will drop the M coordinate values if present.</para></warning>
 
-          <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection"/> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate.</para></warning>
+        <warning><para>If working with 3D geometries, you may want to use SFCGAL based <xref linkend="CG_3DIntersection"/> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate.</para></warning>
 
         <para>Performed by the GEOS module</para>
 
@@ -273,7 +273,7 @@ where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));<
 
         <refsection>
         <title>Examples: 2.5D geometries</title>
-        <para>Note this is not a true 3D intersection. It uses 2.5D geometries (geometries with Z ordinates, but where calculations are performed in 2D). Compare to the same example using <xref linkend="ST_3DIntersection"/>.</para>
+        <para>Note this is not a true 3D intersection. It uses 2.5D geometries (geometries with Z ordinates, but where calculations are performed in 2D). Compare to the same example using <xref linkend="CG_3DIntersection"/>.</para>
         <programlisting>
 select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
 from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
@@ -283,7 +283,7 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
         <refsection>
             <title>See Also</title>
             <para>
-<xref linkend="ST_3DIntersection"/>,
+<xref linkend="CG_3DIntersection"/>,
 <xref linkend="ST_Difference"/>,
 <xref linkend="ST_Union"/>,
 <xref linkend="ST_ClipByBox2D"/>,
