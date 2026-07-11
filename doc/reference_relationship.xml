@@ -613,55 +613,37 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 
     <para>The following situations all return <varname>true</varname>.</para>
 
-    <informaltable>
-    <tgroup cols="2">
-      <tbody>
-      <row>
-        <entry><para><informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_crosses01.png"/>
-          </imageobject>
+    <para>A LineString crosses a MultiPoint when some, but not all, points lie on the line.</para>
+    <programlisting>SELECT ST_Crosses(a, b)
+FROM (SELECT
+  'LINESTRING (10 190,60 80,130 120,190 10)'::geometry AS a,
+  'MULTIPOINT (80 170,120 13,130 120,181 142)'::geometry AS b
+) AS example;</programlisting>
+    <screen>t</screen>
 
-          <caption><para><varname>MULTIPOINT</varname> / <varname>LINESTRING</varname></para></caption>
-          </mediaobject>
-        </informalfigure></para></entry>
+    <para>A Polygon crosses a MultiPoint when some, but not all, points lie in its interior.</para>
+    <programlisting>SELECT ST_Crosses(a, b)
+FROM (SELECT
+  'POLYGON ((30 190,10 100,10 10,90 20,110 70,80 130,30 190))'::geometry AS a,
+  'MULTIPOINT (56 60,120 13,130 119,181 142)'::geometry AS b
+) AS example;</programlisting>
+    <screen>t</screen>
 
-        <entry><para><informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_crosses02.png"/>
-          </imageobject>
+    <para>A LineString crosses a Polygon when part of the line lies inside and part outside.</para>
+    <programlisting>SELECT ST_Crosses(a, b)
+FROM (SELECT
+  'POLYGON ((30 190,10 100,10 10,90 20,110 70,80 130,30 190))'::geometry AS a,
+  'LINESTRING (30 40,70 50,120 150,190 190)'::geometry AS b
+) AS example;</programlisting>
+    <screen>t</screen>
 
-          <caption><para><varname>MULTIPOINT</varname> / <varname>POLYGON</varname></para></caption>
-          </mediaobject>
-        </informalfigure></para></entry>
-      </row>
-
-      <row>
-        <entry><para><informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_crosses03.png"/>
-          </imageobject>
-
-          <caption><para><varname>LINESTRING</varname> / <varname>POLYGON</varname></para></caption>
-          </mediaobject>
-        </informalfigure></para></entry>
-
-        <entry><para><informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_crosses04.png"/>
-          </imageobject>
-
-          <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
-          </mediaobject>
-        </informalfigure></para></entry>
-      </row>
-      </tbody>
-    </tgroup>
-    </informaltable>
+    <para>Two LineStrings cross when they share an interior point.</para>
+    <programlisting>SELECT ST_Crosses(a, b)
+FROM (SELECT
+  'LINESTRING (10 190,60 80,130 120,190 10)'::geometry AS a,
+  'LINESTRING (10 10,70 30,110 120,190 190)'::geometry AS b
+) AS example;</programlisting>
+    <screen>t</screen>
 
     <para>Consider a situation where a user has two tables: a table of roads
     and a table of highways.</para>
