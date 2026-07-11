@@ -1234,13 +1234,6 @@ WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
     </tgroup>
     </informaltable>
 
-    <informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_overlaps04.png"/>
-          </imageobject>
-          </mediaobject>
-        </informalfigure>
 <para>A Point on a LineString is contained,
 but since it has lower dimension it does not overlap or cross.</para>
     <programlisting>
@@ -1251,13 +1244,6 @@ FROM (SELECT 'POINT (100 100)'::geometry As a,
 <screen>overlaps | crosses | intersects | b_contains_a
 ---------+----------------------+--------------
 f        | f       | t          | t</screen>
-    <informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_overlaps05.png"/>
-          </imageobject>
-          </mediaobject>
-        </informalfigure>
 <para>A LineString that partly covers a Polygon intersects and crosses,
 but does not overlap since it has different dimension.</para>
 <programlisting>
@@ -1268,13 +1254,6 @@ FROM (SELECT 'POLYGON ((40 170,90 30,180 100,40 170))'::geometry AS a,
 <screen> overlap | crosses | intersects | contains
 ---------+---------+------------+--------------
  f       | t       | t          | f</screen>
-    <informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_overlaps06.png"/>
-          </imageobject>
-          </mediaobject>
-        </informalfigure>
 <para>Two Polygons that intersect but with neither contained by the other overlap,
 but do not cross because their intersection has the same dimension.</para>
 <programlisting>
