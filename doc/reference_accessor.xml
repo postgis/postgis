@@ -934,15 +934,17 @@ holes AS (
   WHERE ring_no &gt; 0
 )
 SELECT h.ring_no,
-       ST_AsText(ST_Intersection(ST_Buffer(s.ring_geom, 1.0), h.ring_geom)) AS close_part
+       ST_AsText(ST_Normalize(ST_Multi(ST_LineMerge(
+         ST_Intersection(ST_Buffer(s.ring_geom, 1.0), h.ring_geom)
+       )))) AS close_part
 FROM shell AS s
 JOIN holes AS h
   ON ST_DWithin(s.ring_geom, h.ring_geom, 1.0);
 </programlisting>
 <screen> ring_no |                   close_part
 ---------+-------------------------------------------------
-       1 | MULTILINESTRING((1 1,2 1),(1 2,1 1))
-       2 | MULTILINESTRING((8.5 1,9 1),(9 2,9.5 2,9.5 1,9 1))
+       1 | MULTILINESTRING((1 2,1 1,2 1))
+       2 | MULTILINESTRING((8.5 1,9 1,9.5 1,9.5 2,9 2))
 </screen>
 	  </refsection>
 
