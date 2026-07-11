@@ -101,12 +101,6 @@ GENERATED_IMAGES= \
 	st_minkowskisum02.png \
 	st_minkowskisum03.png \
 	st_minkowskisum04.png \
-	st_offsetcurve01.png \
-	st_offsetcurve02.png \
-	st_offsetcurve03.png \
-	st_offsetcurve04.png \
-	st_offsetcurve05.png \
-	st_offsetcurve06.png \
 	st_optimalalphashape01.png \
 	st_optimalalphashape02.png \
 	st_triangulatepolygon01.png \

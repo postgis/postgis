@@ -1843,44 +1843,21 @@ SELECT ST_Union(
 FROM someroadstable;
 
                 </programlisting>
-                <informaltable>
-                  <tgroup cols="2">
-                    <tbody>
-                      <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_offsetcurve01.png"/>
-                              </imageobject>
-                              <caption><para>15, 'quad_segs=4 join=round' original line
-and its offset 15 units.</para></caption>
-                            </mediaobject>
-                          </informalfigure>
+                <para>Offset 15 units with <code>quad_segs=4 join=round</code>.</para>
                 <programlisting>
 SELECT ST_AsText(ST_OffsetCurve(
     ST_GeomFromText('LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)'),
-    15, 'quad_segs=4 join=round'));
-<lineannotation>
-output
-</lineannotation>
-LINESTRING(164 1, 18 1, 12.2597485145237 2.1418070123307,
-    7.39339828220179 5.39339828220179,
-    5.39339828220179 7.39339828220179,
-    2.14180701233067 12.2597485145237, 1 18, 1 195)
-                </programlisting>
-                          </para></entry>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_offsetcurve02.png"/>
-                              </imageobject>
-                              <caption><para>-15, 'quad_segs=4 join=round' original line
-                                and its offset -15 units </para></caption>
-                            </mediaobject>
-                          </informalfigure>
+    15, 'quad_segs=4 join=round'));</programlisting>
+                <screen>LINESTRING(164 1,18 1,15.073645169758077 1.288220793951544,
+    12.259748514523654 2.141807012330698,9.66644650470597 3.527955815461818,
+    7.393398282201788 5.393398282201788,5.393398282201788 7.393398282201788,
+    3.527955815461818 9.66644650470597,2.141807012330696 12.259748514523654,
+    1.288220793951544 15.073645169758075,1 18,1 195)</screen>
+
+                <para>Offset -15 units with <code>quad_segs=4 join=round</code>.</para>
                 <programlisting>
 SELECT ST_AsText(ST_OffsetCurve(
     geom,
@@ -1889,23 +1866,10 @@ SELECT ST_AsText(ST_OffsetCurve(
     FROM ST_GeomFromText('LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
-    16 120,16 140,16 160,16 180,16 195)') As geom;
-<lineannotation>
-notsocurvy
-</lineannotation>
-LINESTRING(31 195, 31 31, 164 31)
-                </programlisting>
-                        </para></entry>
-                      </row>
-                     <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_offsetcurve05.png"/>
-                              </imageobject>
-                              <caption><para>double-offset to get more curvy, note the first reverses direction, so -30 + 15 = -15</para></caption>
-                            </mediaobject>
-                          </informalfigure>
+    16 120,16 140,16 160,16 180,16 195)') As geom;</programlisting>
+                <screen>LINESTRING(164 31,31 31,31 195)</screen>
+
+                <para>Apply two negative offsets to obtain a smoother curve; the distances combine to -45 units.</para>
                 <programlisting>
 SELECT ST_AsText(ST_OffsetCurve(
     ST_OffsetCurve(
@@ -1917,23 +1881,10 @@ SELECT ST_AsText(ST_OffsetCurve(
     FROM ST_GeomFromText('LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
-    16 120,16 140,16 160,16 180,16 195)') As geom;
-<lineannotation>
-morecurvy
-</lineannotation>
-LINESTRING(164 31, 46 31, 40.2597485145236 32.1418070123307,
-35.3933982822018 35.3933982822018,
-32.1418070123307 40.2597485145237, 31 46, 31 195)
-                </programlisting>
-                        </para></entry>
-<entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_offsetcurve06.png"/>
-                              </imageobject>
-                              <caption><para>double-offset to get more curvy,combined with regular offset 15 to get parallel lines.  Overlaid with original.</para></caption>
-                            </mediaobject>
-                          </informalfigure>
+    16 120,16 140,16 160,16 180,16 195)') As geom;</programlisting>
+                <screen>LINESTRING(164 61,61 61,61 195)</screen>
+
+                <para>Collect the positive offset and the double-offset to produce parallel curves.</para>
                 <programlisting>SELECT ST_AsText(ST_Collect(
     ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'),
     ST_OffsetCurve(
@@ -1948,50 +1899,25 @@ LINESTRING(164 31, 46 31, 40.2597485145236 32.1418070123307,
     FROM ST_GeomFromText('LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
-    16 120,16 140,16 160,16 180,16 195)') As geom;
-<lineannotation>
-parallel curves
-</lineannotation>
-MULTILINESTRING((164 1, 18 1, 12.2597485145237 2.1418070123307,
-7.39339828220179 5.39339828220179, 5.39339828220179 7.39339828220179,
-2.14180701233067 12.2597485145237, 1 18, 1 195),
-(164 31, 46 31, 40.2597485145236 32.1418070123307, 35.3933982822018 35.3933982822018,
-32.1418070123307 40.2597485145237, 31 46, 31 195))
-                </programlisting>
-                        </para></entry>
-                      </row>
-                      <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_offsetcurve03.png"/>
-                              </imageobject>
-                              <caption><para>15, 'quad_segs=4 join=bevel' shown with original line</para></caption>
-                            </mediaobject>
-                          </informalfigure>
+    16 120,16 140,16 160,16 180,16 195)') As geom;</programlisting>
+                <screen>MULTILINESTRING((164 1,18 1,15.073645169758077 1.288220793951544,
+12.259748514523654 2.141807012330698,9.66644650470597 3.527955815461818,
+7.393398282201788 5.393398282201788,5.393398282201788 7.393398282201788,
+3.527955815461818 9.66644650470597,2.141807012330696 12.259748514523654,
+1.288220793951544 15.073645169758075,1 18,1 195),(164 61,61 61,61 195))</screen>
+
+                <para>Offset 15 units with a bevel join.</para>
                 <programlisting>
 SELECT ST_AsText(ST_OffsetCurve(
     ST_GeomFromText('LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)'),
-        15, 'quad_segs=4 join=bevel'));
-<lineannotation>
-output
-</lineannotation>
-LINESTRING(164 1, 18 1, 7.39339828220179 5.39339828220179,
-    5.39339828220179 7.39339828220179, 1 18, 1 195)
-                </programlisting>
-                         </para></entry>
+        15, 'quad_segs=4 join=bevel'));</programlisting>
+                <screen>LINESTRING(164 1,18 1,7.393398282201788 5.393398282201788,
+    5.393398282201788 7.393398282201788,1 18,1 195)</screen>
 
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_offsetcurve04.png"/>
-                              </imageobject>
-                              <caption><para>15,-15 collected, join=mitre mitre_limit=2.1</para></caption>
-                            </mediaobject>
-                          </informalfigure>
+                <para>Collect offsets on both sides using a mitre join and a mitre limit of 2.2.</para>
                 <programlisting>
 SELECT ST_AsText(ST_Collect(
     ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),
@@ -2000,18 +1926,9 @@ SELECT ST_AsText(ST_Collect(
     FROM ST_GeomFromText('LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
-    16 120,16 140,16 160,16 180,16 195)') As geom;
-<lineannotation>
-output
-</lineannotation>
-MULTILINESTRING((164 1, 11.7867965644036 1, 1 11.7867965644036, 1 195),
-    (31 195, 31 31, 164 31))
-                </programlisting>
-                          </para></entry>
-                      </row>
-                    </tbody>
-                  </tgroup>
-            </informaltable>
+    16 120,16 140,16 160,16 180,16 195)') As geom;</programlisting>
+                <screen>MULTILINESTRING((164 1,11.786796564403577 1,1 11.786796564403577,1 195),
+    (164 31,31 31,31 195))</screen>
 
             </refsection>
 
