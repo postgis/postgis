@@ -547,14 +547,6 @@ SELECT ST_AsText(ST_Split(ST_Snap(line, point, 1), point)) AS snapped_split,
         and assign each part a unique id.
         </para>
 
-        <informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_subdivide01.png"/>
-                </imageobject>
-                <caption><para>Subdivided to maximum 10 vertices</para></caption>
-            </mediaobject>
-            </informalfigure>
 <programlisting>
 SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
     FROM (SELECT ST_Subdivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
@@ -576,14 +568,6 @@ SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
         Densification minimizes the impact of changes to the geography representation of a geometry
         when subdividing.
         </para>
-        <informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_subdivide02.png"/>
-                </imageobject>
-                <caption><para>The densified and split lines.</para></caption>
-            </mediaobject>
-            </informalfigure>
 <programlisting>
 SELECT ST_AsText(ST_Subdivide(ST_Segmentize('LINESTRING(0 0,85 85)'::geography,
                           1200000)::geometry, 8));

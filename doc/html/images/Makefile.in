@@ -137,8 +137,6 @@ GENERATED_IMAGES= \
 	st_simplifypolygonhull03.png \
 	st_straightskeleton01.png \
 	st_approximatemedialaxis01.png \
-	st_subdivide01.png \
-	st_subdivide02.png \
 	st_tesselate04.png \
 	st_touches01.png \
 	st_touches02.png \
