@@ -2365,30 +2365,8 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
         <title>Examples: Finding shared paths</title>
         <para>Adjacent shared path segments may be returned as separate or merged LineStrings
           depending on the GEOS version.</para>
-        <informaltable>
-          <tgroup cols="1">
-            <tbody>
-              <row>
-                <entry><para><informalfigure>
-                    <mediaobject>
-                      <imageobject>
-                        <imagedata fileref="images/st_sharedpaths01.png"/>
-                      </imageobject>
-                      <caption><para>A multilinestring and a linestring</para></caption>
-                    </mediaobject>
-                  </informalfigure></para>
-               </entry>
-              </row>
-              <row>
-                <entry><para><informalfigure>
-                    <mediaobject>
-                      <imageobject>
-                        <imagedata fileref="images/st_sharedpaths02.png"/>
-                      </imageobject>
-                      <caption><para>The shared path of multilinestring and linestring overlaid with original geometries.</para></caption>
-                    </mediaobject>
-                  </informalfigure>
-                  <programlisting>
+        <para>Find the shared paths of a MultiLineString and a LineString.</para>
+        <programlisting>
 SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
       (51 150,101 150,76 175,51 150))'),
    ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,101 150,76 175)')
@@ -2396,12 +2374,9 @@ SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('MULTILINESTRING((26 125,26 200,
  )</programlisting>
 <screen>GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),
 (101 150,76 175)),MULTILINESTRING EMPTY)</screen>
-            </para>
-            </entry>
-        </row>
-        <row>
-            <entry><para>
-                  <programlisting>
+
+        <para>Flip the LineString orientation to return the same paths in the opposite-direction member.</para>
+        <programlisting>
 <lineannotation>
 same example but linestring orientation flipped
 </lineannotation>
@@ -2412,12 +2387,6 @@ SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('LINESTRING(76 175,101 150,126 1
   )</programlisting>
 <screen>GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,
 MULTILINESTRING((76 175,101 150),(126 125,126 156.25)))</screen>
-            </para>
-            </entry>
-        </row>
-    </tbody>
-    </tgroup>
-</informaltable>
      </refsection>
       <refsection>
         <title>See Also</title>

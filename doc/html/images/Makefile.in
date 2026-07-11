@@ -135,8 +135,6 @@ GENERATED_IMAGES= \
 	st_overlaps06.png \
 	st_triangulatepolygon01.png \
 	st_triangulatepolygon02.png \
-	st_sharedpaths01.png \
-	st_sharedpaths02.png \
 	st_simplifypolygonhull01.png \
 	st_simplifypolygonhull02.png \
 	st_simplifypolygonhull03.png \
