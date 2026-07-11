@@ -1200,39 +1200,29 @@ WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
     <title>Examples</title>
           <para><function>ST_Overlaps</function> returns <varname>TRUE</varname> in the following situations:</para>
 
-    <informaltable>
-    <tgroup cols="3">
-      <tbody>
-      <row>
-        <entry><para><informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_overlaps01.png"/>
-          </imageobject>
-          <caption><para><varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname></para></caption>
-          </mediaobject>
-        </informalfigure></para></entry>
+    <para>Two MultiPoints overlap when they share some, but not all, points.</para>
+    <programlisting>SELECT ST_Overlaps(a, b)
+FROM (SELECT
+  'MULTIPOINT ((20 20),(40 90),(80 130),(140 100),(110 40),(120 170),(150 70))'::geometry AS a,
+  'MULTIPOINT ((180 10),(40 90),(80 130),(160 150),(110 40),(50 50),(50 160))'::geometry AS b
+) AS example;</programlisting>
+    <screen role="visual-primary">t</screen>
 
-        <entry><para><informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_overlaps02.png"/>
-          </imageobject>
-          <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
-          </mediaobject>
-        </informalfigure></para></entry>
-        <entry><para><informalfigure>
-          <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_overlaps03.png"/>
-          </imageobject>
-          <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
-          </mediaobject>
-        </informalfigure></para></entry>
-      </row>
-      </tbody>
-    </tgroup>
-    </informaltable>
+    <para>Two LineStrings overlap along part of their paths.</para>
+    <programlisting>SELECT ST_Overlaps(a, b)
+FROM (SELECT
+  'LINESTRING (10 10,40 90,70 110,140 110,170 130,190 190)'::geometry AS a,
+  'LINESTRING (10 190,50 130,90 110,130 110,160 70,180 10)'::geometry AS b
+) AS example;</programlisting>
+    <screen>t</screen>
+
+    <para>Two Polygons overlap where their interiors intersect and neither contains the other.</para>
+    <programlisting>SELECT ST_Overlaps(a, b)
+FROM (SELECT
+  'POLYGON ((140 140,140 122,135 105,126 100,118 99,110 94,100 86,97 73,102 59,98 49,87 38,70 30,55 29,40 30,28 38,20 50,14 66,10 84,6 100,4 119,4 143,6 166,10 180,18 191,28 195,40 190,55 189,67 186,86 179,112 165,124 158,133 148,140 140),(48 177,40 177,30 174,24 166,22 159,25 155,30 153,40 154,45 157,52 162,53 169,51 174,48 177))'::geometry AS a,
+  'POLYGON ((75 63,79 50,87 38,95 31,108 25,124 22,140 18,154 11,166 6,176 10,184 21,188 35,190 58,190 82,193 104,190 121,185 139,178 154,166 163,154 171,139 172,124 171,112 165,96 152,92 142,92 126,86 116,79 110,75 104,72 94,73 86,75 76,75 63))'::geometry AS b
+) AS example;</programlisting>
+    <screen>t</screen>
 
 <para>A Point on a LineString is contained,
 but since it has lower dimension it does not overlap or cross.</para>

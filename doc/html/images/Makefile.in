@@ -121,9 +121,6 @@ GENERATED_IMAGES= \
 	st_offsetcurve06.png \
 	st_optimalalphashape01.png \
 	st_optimalalphashape02.png \
-	st_overlaps01.png \
-	st_overlaps02.png \
-	st_overlaps03.png \
 	st_triangulatepolygon01.png \
 	st_simplifypolygonhull01.png \
 	st_simplifypolygonhull02.png \
