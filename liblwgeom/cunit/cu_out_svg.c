@@ -197,7 +197,17 @@ static void out_svg_test_geoms(void)
 	do_svg_test(
 	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
 	    "M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4",
-			0, 0);
+	    0, 0);
+
+	/* Collinear arcs are emitted as lines, never as negative SVG radii. */
+	do_svg_test(
+	    "CIRCULARSTRING(0 0,1 1,2 2)",
+	    "M 0 0 L 1 -1 2 -2",
+	    0, 0);
+	do_svg_test(
+	    "CIRCULARSTRING(0 0,1 1,2 2)",
+	    "M 0 0 l 1 -1 1 -1",
+	    0, 1);
 
 	/* : Circle */
 	do_svg_test(

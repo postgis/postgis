@@ -186,6 +186,36 @@ pointArray_svg_arc(stringbuffer_t *sb, const POINTARRAY *pa, int include_start, 
 		t2 = getPoint2d_cp(pa, i - 1);
 		t3 = getPoint2d_cp(pa, i);
 		radius = lw_arc_center(t1, t2, t3, &center);
+		if (radius < 0.0)
+		{
+			/* SVG arc radii must be non-negative. A collinear circular arc
+			 * is linear, but keep its control point so the degenerate path is
+			 * represented exactly even when it lies outside t1-t3. */
+			if ((i == 2) && include_start)
+			{
+				lwprint_double(t1->x, precision, sx);
+				lwprint_double(-(t1->y), precision, sy);
+				stringbuffer_aprintf(sb, "%s %s", sx, sy);
+			}
+			if (relative)
+			{
+				lwprint_double(t2->x - t1->x, precision, sx);
+				lwprint_double(-(t2->y - t1->y), precision, sy);
+				stringbuffer_aprintf(sb, (i == 2 && !include_start) ? "l %s %s" : " l %s %s", sx, sy);
+				lwprint_double(t3->x - t2->x, precision, sx);
+				lwprint_double(-(t3->y - t2->y), precision, sy);
+			}
+			else
+			{
+				lwprint_double(t2->x, precision, sx);
+				lwprint_double(-(t2->y), precision, sy);
+				stringbuffer_aprintf(sb, (i == 2 && !include_start) ? "L %s %s" : " L %s %s", sx, sy);
+				lwprint_double(t3->x, precision, sx);
+				lwprint_double(-(t3->y), precision, sy);
+			}
+			stringbuffer_aprintf(sb, " %s %s", sx, sy);
+			continue;
+		}
 		if ( t1->x == t3->x && t1->y == t3->y ){
 			is_circle = LW_TRUE;
 		}
