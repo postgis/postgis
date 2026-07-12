@@ -477,21 +477,21 @@ WHERE ST_DWithin(geom, 'SRID=312;POINT(100000 200000)', 100)</programlisting>
 	  of linear roads, and a table of polygonal municipality boundaries. The
 	  definition of the <varname>bc_roads</varname> table is:</para>
 
-	  <programlisting>Column    | Type              | Description
+	  <screen>Column    | Type              | Description
 ----------+-------------------+-------------------
 gid       | integer           | Unique ID
 name      | character varying | Road Name
-geom      | geometry          | Location Geometry (Linestring)</programlisting>
+geom      | geometry          | Location Geometry (Linestring)</screen>
 
 	  <para>The definition of the <varname>bc_municipality</varname>
 	  table is:</para>
 
-	  <programlisting>Column   | Type              | Description
+	  <screen>Column   | Type              | Description
 ---------+-------------------+-------------------
 gid      | integer           | Unique ID
 code     | integer           | Unique ID
 name     | character varying | City / Town Name
-geom     | geometry          | Location Geometry (Polygon)</programlisting>
+geom     | geometry          | Location Geometry (Polygon)</screen>
 
 	  <qandaset>
 		<qandaentry xml:id="qa_total_length_roads">
