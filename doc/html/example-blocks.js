@@ -2,6 +2,7 @@
   'use strict';
 
   var resetTimers = new WeakMap();
+  var geometryDeactivateTimers = new Map();
   var originalBlockText = new WeakMap();
   var scriptElement = document.currentScript;
   var emptyRefIndex = { functions: {}, operators: {}, keywords: [] };
@@ -686,12 +687,29 @@
       if (!svgDocument) continue;
       var svgTargets = svgDocument.querySelectorAll('[data-postgis-geometry-id="' + id + '"]');
       for (var j = 0; j < svgTargets.length; j += 1) {
+        var wasActive = svgTargets[j].classList.contains('active');
         svgTargets[j].classList.toggle('active', active);
-        if (active && svgTargets[j].classList.contains('geometry-layer')) {
+        if (active && !wasActive && svgTargets[j].classList.contains('geometry-layer')) {
           svgTargets[j].parentNode.appendChild(svgTargets[j]);
         }
       }
     }
+  }
+
+  function setGeometryHovered(id, active) {
+    var pending = geometryDeactivateTimers.get(id);
+    if (pending) {
+      window.clearTimeout(pending);
+      geometryDeactivateTimers.delete(id);
+    }
+    if (active) {
+      setGeometryActive(id, true);
+      return;
+    }
+    geometryDeactivateTimers.set(id, window.setTimeout(function () {
+      geometryDeactivateTimers.delete(id);
+      setGeometryActive(id, false);
+    }, 60));
   }
 
   function bindSvgTargets(object) {
@@ -701,12 +719,12 @@
     svgRoot.setAttribute('data-postgis-svg-bound', 'true');
     svgDocument.addEventListener('mouseover', function (event) {
       var target = event.target.closest && event.target.closest('[data-postgis-geometry-id]');
-      if (target) setGeometryActive(target.getAttribute('data-postgis-geometry-id'), true);
+      if (target) setGeometryHovered(target.getAttribute('data-postgis-geometry-id'), true);
     });
     svgDocument.addEventListener('mouseout', function (event) {
       var target = event.target.closest && event.target.closest('[data-postgis-geometry-id]');
       if (target && (!event.relatedTarget || !target.contains(event.relatedTarget))) {
-        setGeometryActive(target.getAttribute('data-postgis-geometry-id'), false);
+        setGeometryHovered(target.getAttribute('data-postgis-geometry-id'), false);
       }
     });
   }
@@ -915,12 +933,12 @@
   document.addEventListener('mouseout', function (event) { setParenMatch(event, false); });
   document.addEventListener('mouseover', function (event) {
     var target = event.target.closest && event.target.closest('[data-postgis-geometry-id]');
-    if (target) setGeometryActive(target.getAttribute('data-postgis-geometry-id'), true);
+    if (target) setGeometryHovered(target.getAttribute('data-postgis-geometry-id'), true);
   });
   document.addEventListener('mouseout', function (event) {
     var target = event.target.closest && event.target.closest('[data-postgis-geometry-id]');
     if (target && (!event.relatedTarget || !target.contains(event.relatedTarget))) {
-      setGeometryActive(target.getAttribute('data-postgis-geometry-id'), false);
+      setGeometryHovered(target.getAttribute('data-postgis-geometry-id'), false);
     }
   });
   window.addEventListener('resize', handleResize);
@@ -935,6 +953,8 @@
     highlightSql: highlightSql,
     currentFunctionName: currentFunctionName,
     previousVisualStackSibling: previousVisualStackSibling,
+    setGeometryActive: setGeometryActive,
+    setGeometryHovered: setGeometryHovered,
     updateWrapIndicators: updateWrapIndicators
   };
 }());

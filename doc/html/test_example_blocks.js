@@ -132,6 +132,8 @@ async function main() {
   trailingOutput.attributes = {};
   const listeners = {};
   const windowListeners = {};
+  let geometryRelated = [];
+  let geometryObjects = [];
   const wrapClasses = [new Set(), new Set()];
   const observedBlocks = [];
   let resizeObserverCallback = null;
@@ -182,6 +184,12 @@ async function main() {
       }
       if (selector === '.postgis-example-block pre[data-postgis-lines="true"] > .line') {
         return layoutLines;
+      }
+      if (selector.startsWith('[data-postgis-geometry-id=')) {
+        return geometryRelated;
+      }
+      if (selector === '.postgis-geometry-figure-body') {
+        return geometryObjects;
       }
       return [];
     },
@@ -360,6 +368,54 @@ async function main() {
   resizeObserverCallback([{ target: output }]);
   assert(!wrapClasses[0].has('line-wrapped'));
   assert.strictEqual(layoutLines[0].children.length, 0);
+
+  const relatedClasses = new Set();
+  const layerClasses = new Set(['geometry-layer']);
+  let raiseCount = 0;
+  const toggleClass = (classes) => ({
+    contains: (name) => classes.has(name),
+    toggle(name, enabled) {
+      if (enabled) classes.add(name);
+      else classes.delete(name);
+    }
+  });
+  const related = { classList: toggleClass(relatedClasses) };
+  const layer = {
+    classList: toggleClass(layerClasses),
+    parentNode: { appendChild() { raiseCount += 1; } }
+  };
+  geometryRelated = [related];
+  geometryObjects = [{
+    contentDocument: {
+      querySelectorAll() { return [layer]; }
+    }
+  }];
+  geometry.setGeometryActive('example-code-1', true);
+  geometry.setGeometryActive('example-code-1', true);
+  assert(relatedClasses.has('postgis-geometry-active'));
+  assert(layerClasses.has('active'));
+  assert.strictEqual(raiseCount, 1);
+  geometry.setGeometryActive('example-code-1', false);
+  geometry.setGeometryActive('example-code-1', true);
+  assert.strictEqual(raiseCount, 2);
+
+  let pendingGeometryDeactivate = null;
+  sandbox.window.setTimeout = function (callback) {
+    pendingGeometryDeactivate = callback;
+    return callback;
+  };
+  sandbox.window.clearTimeout = function (callback) {
+    if (pendingGeometryDeactivate === callback) pendingGeometryDeactivate = null;
+  };
+  geometry.setGeometryHovered('example-code-1', false);
+  assert(pendingGeometryDeactivate);
+  geometry.setGeometryHovered('example-code-1', true);
+  assert.strictEqual(pendingGeometryDeactivate, null);
+  assert(layerClasses.has('active'));
+  geometry.setGeometryHovered('example-code-1', false);
+  pendingGeometryDeactivate();
+  assert(!relatedClasses.has('postgis-geometry-active'));
+  assert(!layerClasses.has('active'));
 
   const pairIds = Array.from(blocks[3].innerHTML.matchAll(/data-postgis-paren-pair="(\d+)"/g),
     (match) => match[1]);
