@@ -57,6 +57,7 @@ function makeLiteralTree(text, document) {
       attributes: {},
       className: '',
       id: '',
+      style: {},
       get textContent() {
         return this.children.map((child) => child.nodeValue === undefined ? child.textContent : child.nodeValue)
           .join('');
@@ -68,6 +69,9 @@ function makeLiteralTree(text, document) {
         removeFromParent(node);
         this.children.push(node);
         node.parentNode = this;
+      },
+      remove() {
+        removeFromParent(this);
       }
     };
   }
@@ -135,6 +139,17 @@ async function main() {
     return {
       owner: index === 0 ? output : blocks[0],
       scrollHeight: 16,
+      children: [],
+      appendChild(node) {
+        this.children.push(node);
+        node.parentNode = this;
+      },
+      querySelectorAll(selector) {
+        if (selector === ':scope > .postgis-wrap-indicator') {
+          return this.children.filter((child) => child.className === 'postgis-wrap-indicator');
+        }
+        return [];
+      },
       classList: {
         toggle(name, enabled) {
           if (enabled) {
@@ -334,6 +349,17 @@ async function main() {
   resizeObserverCallback([{ target: output }]);
   assert.strictEqual(layoutLines[0].owner, output);
   assert(wrapClasses[0].has('line-wrapped'));
+  assert.strictEqual(layoutLines[0].children.length, 1);
+  assert.strictEqual(layoutLines[0].children[0].attributes['aria-hidden'], 'true');
+  assert.strictEqual(layoutLines[0].children[0].style.top, '16px');
+  layoutLines[0].scrollHeight = 48;
+  resizeObserverCallback([{ target: output }]);
+  assert.strictEqual(layoutLines[0].children.length, 2);
+  assert.deepStrictEqual(layoutLines[0].children.map((indicator) => indicator.style.top), ['16px', '32px']);
+  layoutLines[0].scrollHeight = 16;
+  resizeObserverCallback([{ target: output }]);
+  assert(!wrapClasses[0].has('line-wrapped'));
+  assert.strictEqual(layoutLines[0].children.length, 0);
 
   const pairIds = Array.from(blocks[3].innerHTML.matchAll(/data-postgis-paren-pair="(\d+)"/g),
     (match) => match[1]);

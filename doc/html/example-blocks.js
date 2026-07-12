@@ -458,10 +458,22 @@
   function updateWrapIndicators() {
     var lines = document.querySelectorAll('.postgis-example-block pre[data-postgis-lines="true"] > .line');
     for (var i = 0; i < lines.length; i += 1) {
+      var oldIndicators = lines[i].querySelectorAll(':scope > .postgis-wrap-indicator');
+      for (var oldIndex = 0; oldIndex < oldIndicators.length; oldIndex += 1) {
+        oldIndicators[oldIndex].remove();
+      }
       var style = window.getComputedStyle(lines[i]);
       var lineHeight = parseFloat(style.lineHeight);
-      var wrapped = lineHeight > 0 && lines[i].scrollHeight > lineHeight * 1.5;
+      var visualLineCount = lineHeight > 0 ? Math.max(1, Math.round(lines[i].scrollHeight / lineHeight)) : 1;
+      var wrapped = visualLineCount > 1;
       lines[i].classList.toggle('line-wrapped', wrapped);
+      for (var visualLine = 1; visualLine < visualLineCount; visualLine += 1) {
+        var indicator = document.createElement('span');
+        indicator.className = 'postgis-wrap-indicator';
+        indicator.setAttribute('aria-hidden', 'true');
+        indicator.style.top = (visualLine * lineHeight) + 'px';
+        lines[i].appendChild(indicator);
+      }
     }
   }
 
@@ -814,7 +826,9 @@
       return originalBlockText.get(pre);
     }
     var clone = pre.cloneNode(true);
-    var ignored = clone.querySelectorAll('.linenumber, .line-number, .ln, .co, .callout, .callout-bug');
+    var ignored = clone.querySelectorAll(
+      '.linenumber, .line-number, .ln, .co, .callout, .callout-bug, .postgis-wrap-indicator'
+    );
     for (var i = 0; i < ignored.length; i += 1) {
       ignored[i].remove();
     }
