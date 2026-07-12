@@ -2239,38 +2239,18 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
                 </entry>
             </row>
 
-            <row>
-                <entry><para>
-                        <programlisting language="sql">SELECT 'POLYGON (( 10 190,10 70,80 70,80 130,50 160,120 160,120 190,10 190 ))'::geometry;</programlisting>
-                        <informalfigure>
-                            <mediaobject>
-                                <imageobject>
-                                    <imagedata fileref="images/st_tesselate03.png"/>
-                                </imageobject>
-                                <caption><para>Original polygon</para></caption>
-                            </mediaobject>
-                    </informalfigure></para>
-                </entry>
-                <entry><para>
-                        <programlisting language="sql">SELECT
-CG_Tesselate('POLYGON (( 10 190,10 70,80 70,80 130,50 160,120 160,120 190,10 190 ))'::geometry);</programlisting>
-                </para>
-                <screen>TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),
-((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),
-((120 190,10 190,50 160,120 190)))</screen>
-            <para><informalfigure>
-                    <mediaobject>
-                        <imageobject>
-                            <imagedata fileref="images/st_tesselate04.png"/>
-                        </imageobject>
-                        <caption><para>Tessellated Polygon</para></caption>
-                    </mediaobject>
-            </informalfigure></para>
-        </entry>
-    </row>
 </tbody>
                     </tgroup>
                 </informaltable>
+
+                <para>Tessellation of a Polygon.</para>
+                <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((10 190,10 70,80 70,80 130,50 160,120 160,120 190,10 190))'::geometry AS polygon
+)
+SELECT ST_AsText(polygon, 3) AS input_polygon,
+       ST_AsText(CG_Tesselate(polygon), 3) AS tessellation
+FROM data;</programlisting>
+                <screen role="visual-primary">POLYGON((10 190,10 70,80 70,80 130,50 160,120 160,120 190,10 190)) | TIN(((80 130,10 70,80 70,80 130)),((50 160,10 190,10 70,50 160)),((80 130,50 160,10 70,80 130)),((120 160,120 190,50 160,120 160)),((120 190,10 190,50 160,120 190)))</screen>
             </refsection>
 
             <refsection>
