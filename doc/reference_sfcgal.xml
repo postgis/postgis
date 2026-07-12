@@ -1752,67 +1752,37 @@ SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
         </refsection>
 
         <refsection><title>Examples</title>
-            <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D"/> and rendering in HTML using <link xlink:href="http://www.x3dom.org">X3Dom HTML Javascript rendering library</link>.</para>
+            <para>The figures use <xref linkend="ST_Affine"/> to project Z diagonally into XY after extrusion. The returned geometry from <function>CG_Extrude</function> remains a 3D PolyhedralSurface.</para>
 
-            <informaltable>
-                <tgroup cols="2">
-                    <tbody>
-                        <row>
-                            <entry><para>
-                                    <programlisting>SELECT ST_Buffer(
-ST_GeomFromText('POINT(100 90)'),
-50, 'quad_segs=2'), 0, 0, 30);</programlisting>
-                                <informalfigure>
-                                    <mediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="images/st_extrude01.png"/>
-                                        </imageobject>
-                                        <caption><para>Original octagon formed from buffering point</para></caption>
-                                    </mediaobject>
-                            </informalfigure></para>
-                        </entry>
-                        <entry><para>
-                                <programlisting>CG_Extrude(
-ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'),
-0, 0, 30);</programlisting>
-                            <informalfigure>
-                                <mediaobject>
-                                    <imageobject>
-                                        <imagedata fileref="images/st_extrude02.png"/>
-                                    </imageobject>
-                                    <caption><para>Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ</para></caption>
-                                </mediaobject>
-                        </informalfigure></para>
-                    </entry>
-                </row>
+            <para>Extruding an octagonal Polygon 30 units along Z.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT ST_Buffer('POINT(100 90)'::geometry, 50, 'quad_segs=2') AS geom
+), projected AS (
+  SELECT ST_Force2D(ST_Affine(geom,
+           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS input_geom,
+         ST_Force2D(ST_Affine(CG_Extrude(geom, 0, 0, 30),
+           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS output_geom
+  FROM data
+)
+SELECT ST_AsText(input_geom, 3) AS input_geometry,
+       ST_AsText(output_geom, 3) AS extruded_projection
+FROM projected;</programlisting>
+            <screen role="visual-primary">POLYGON((150 90,135.355 54.645,100 40,64.645 54.645,50 90,64.645 125.355,100 140,135.355 125.355,150 90)) | POLYHEDRALSURFACE(((150 90,135.355 54.645,100 40,64.645 54.645,50 90,64.645 125.355,100 140,135.355 125.355,150 90)),((165 105,150.355 140.355,115 155,79.645 140.355,65 105,79.645 69.645,115 55,150.355 69.645,165 105)),((150 90,165 105,150.355 69.645,135.355 54.645,150 90)),((135.355 54.645,150.355 69.645,115 55,100 40,135.355 54.645)),((100 40,115 55,79.645 69.645,64.645 54.645,100 40)),((64.645 54.645,79.645 69.645,65 105,50 90,64.645 54.645)),((50 90,65 105,79.645 140.355,64.645 125.355,50 90)),((64.645 125.355,79.645 140.355,115 155,100 140,64.645 125.355)),((100 140,115 155,150.355 140.355,135.355 125.355,100 140)),((135.355 125.355,150.355 140.355,165 105,150 90,135.355 125.355)))</screen>
 
-                <row>
-                    <entry><para>
-                            <programlisting>SELECT ST_GeomFromText('LINESTRING(50 50,100 90,95 150)')</programlisting>
-                            <informalfigure>
-                                <mediaobject>
-                                    <imageobject>
-                                        <imagedata fileref="images/st_extrude03.png"/>
-                                    </imageobject>
-                                    <caption><para>Original linestring</para></caption>
-                                </mediaobject>
-                        </informalfigure></para>
-                    </entry>
-                    <entry><para>
-                            <programlisting>SELECT CG_Extrude(ST_GeomFromText('LINESTRING(50 50,100 90,95 150)'), 0, 0, 10));</programlisting>
-                        <informalfigure>
-                            <mediaobject>
-                                <imageobject>
-                                    <imagedata fileref="images/st_extrude04.png"/>
-                                </imageobject>
-                                <caption><para>LineString Extruded along Z produces a PolyhedralSurfaceZ</para></caption>
-                            </mediaobject>
-                    </informalfigure></para>
-                </entry>
-            </row>
-        </tbody>
-    </tgroup>
-</informaltable>
+            <para>Extruding a LineString 10 units along Z.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'LINESTRING(50 50,100 90,95 150)'::geometry AS geom
+), projected AS (
+  SELECT ST_Force2D(ST_Affine(geom,
+           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS input_geom,
+         ST_Force2D(ST_Affine(CG_Extrude(geom, 0, 0, 10),
+           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS output_geom
+  FROM data
+)
+SELECT ST_AsText(input_geom, 3) AS input_geometry,
+       ST_AsText(output_geom, 3) AS extruded_projection
+FROM projected;</programlisting>
+            <screen role="visual-primary">LINESTRING(50 50,100 90,95 150) | POLYHEDRALSURFACE(((50 50,100 90,105 95,55 55,50 50)),((100 90,95 150,100 155,105 95,100 90)))</screen>
             </refsection>
             <refsection>
                 <title>See Also</title>
