@@ -1437,12 +1437,15 @@ ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5,2 6)'::geometry)
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));</programlisting>
-<screen>POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646))</screen>
-<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));</programlisting>
-<screen>POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625))</screen>
-<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));</programlisting>
-<screen>POLYGON((-115.17282128334 36.1146408319473,-115.17282128334 36.1146461963654,-115.172810554504 36.1146461963654,-115.172810554504 36.1146408319473,-115.17282128334 36.1146408319473))</screen>
+		<para>The cells are returned together so their relative sizes remain visible in a shared coordinate frame.</para>
+		<programlisting language="sql">SELECT
+  ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4)) AS "precision 4",
+  ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 5)) AS "precision 5",
+  ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 6)) AS "precision 6";</programlisting>
+<screen> precision 4 | precision 5 | precision 6
+-------------+-------------+-------------
+ POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625)) | POLYGON((-115.1806640625 36.0791015625,-115.1806640625 36.123046875,-115.13671875 36.123046875,-115.13671875 36.0791015625,-115.1806640625 36.0791015625)) | POLYGON((-115.1806640625 36.112060546875,-115.1806640625 36.1175537109375,-115.169677734375 36.1175537109375,-115.169677734375 36.112060546875,-115.1806640625 36.112060546875))
+(1 row)</screen>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
