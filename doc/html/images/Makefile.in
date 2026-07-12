@@ -61,10 +61,6 @@ GENERATED_IMAGES= \
 	st_azimuth02.png \
 	st_clusterkmeans02.png \
 	st_clusterrelatewin01.png \
-	st_catmullromsmoothing01.png \
-	st_catmullromsmoothing02.png \
-	st_catmullromsmoothing03.png \
-	st_catmullromsmoothing04.png \
 	st_extrude01.png \
 	st_extrude03.png \
 	st_hausdorffdistance01.png \
