@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import contextlib
+import base64
 import io
 import json
 from pathlib import Path
@@ -104,6 +105,25 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         self.assertTrue(example["valid"])
         self.assertIsNone(example["visual_id"])
 
+    def test_explicit_visual_can_be_selected_from_binary_image_output(self):
+        xml = """<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="image-example">
+    <refsection>
+      <programlisting>SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1, 5), 10), 150, 150)) AS image;</programlisting>
+      <screen role="visual-primary"> image
+-------
+ PNG image, 150 x 150 pixels
+      </screen>
+    </refsection>
+  </refentry>
+</book>"""
+        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+            source.write(xml)
+            source.flush()
+            example = ExampleTester(source.name).examples()[0]
+        self.assertEqual("explicit", example["visual_kind"])
+        self.assertEqual("visual-image-example-01", example["visual_id"])
+
 
 class ExampleTestComparisonTest(unittest.TestCase):
     def setUp(self):
@@ -123,6 +143,46 @@ class ExampleTestComparisonTest(unittest.TestCase):
             )
         )
 
+    def test_png_bytea_is_summarized_without_losing_visual_payload(self):
+        raw = b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + (150).to_bytes(4, "big") + (90).to_bytes(4, "big")
+        actual = QueryRows([["\\x" + raw.hex()]], ["image"])
+        prepared = self.tester.prepare_visual_rows(actual, ["bytea"])
+        self.assertEqual([["PNG image, 150 x 90 pixels"]], prepared)
+        self.assertEqual(1, len(prepared.visuals))
+        self.assertEqual("Output", prepared.visuals[0]["label"])
+        self.assertEqual("image/png", prepared.visuals[0]["media_type"])
+        self.assertEqual(base64.b64encode(raw).decode("ascii"), prepared.visuals[0]["data"])
+
+    def test_non_image_bytea_remains_text_output(self):
+        actual = QueryRows([["\\x0102"]], ["payload"])
+        prepared = self.tester.prepare_visual_rows(actual, ["bytea"])
+        self.assertEqual([["\\x0102"]], prepared)
+        self.assertEqual([], prepared.visuals)
+
+    def test_scalar_row_value_labels_image_gallery_items(self):
+        raw = b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + (4).to_bytes(4, "big") + (5).to_bytes(4, "big")
+        actual = QueryRows([["weighted neighbors", "\\x" + raw.hex()]], ["title", "image"])
+        prepared = self.tester.prepare_visual_rows(actual, ["text", "bytea"])
+        self.assertEqual("weighted neighbors", prepared.visuals[0]["label"])
+
+    def test_image_svg_embeds_buildtime_output_and_uses_alias_labels(self):
+        svg = self.tester.visual_image_svg("raster-example", [{
+            "source": "Output", "label": "greyscale", "media_type": "image/png",
+            "width": 2, "height": 3, "data": "YWJj",
+        }])
+        self.assertIn('href="data:image/png;base64,YWJj"', svg)
+        self.assertIn('preserveAspectRatio="none"', svg)
+        self.assertIn('image-rendering:pixelated', svg)
+        self.assertIn('data-postgis-geometry-id="raster-example-output-1"', svg)
+        self.assertIn('>greyscale</text>', svg)
+
+    def test_image_svg_uses_integer_upscale_for_pixel_art(self):
+        svg = self.tester.visual_image_svg("pixels", [{
+            "source": "Output", "label": "Output", "media_type": "image/png",
+            "width": 150, "height": 90, "data": "YWJj",
+        }])
+        self.assertRegex(svg, r'<image[^>]+width="450"[^>]+height="270"')
+
     def test_multipolygon_ring_start_and_polygon_order_are_canonicalized(self):
         self.assertTrue(
             self.tester.values_equal(
@@ -136,6 +196,22 @@ class ExampleTestComparisonTest(unittest.TestCase):
             self.tester.values_equal(
                 "GEOMETRYCOLLECTION(POLYGON((0 0,1 0,1 1,0 0)),POLYGON((10 10,11 10,11 11,10 10)))",
                 "GEOMETRYCOLLECTION(POLYGON((11 10,11 11,10 10,11 10)),POLYGON((1 0,1 1,0 0,1 0)))",
+            )
+        )
+
+    def test_polyhedral_surface_faces_and_ring_starts_are_canonicalized(self):
+        self.assertTrue(
+            self.tester.values_equal(
+                "POLYHEDRALSURFACE(((0 0,1 0,0 1,0 0)),((10 10,11 10,10 11,10 10)))",
+                "POLYHEDRALSURFACE(((11 10,10 11,10 10,11 10)),((1 0,0 1,0 0,1 0)))",
+            )
+        )
+
+    def test_tin_faces_and_ring_starts_are_canonicalized(self):
+        self.assertTrue(
+            self.tester.values_equal(
+                "TIN(((0 0,1 0,0 1,0 0)),((10 10,11 10,10 11,10 10)))",
+                "TIN(((11 10,10 11,10 10,11 10)),((1 0,0 1,0 0,1 0)))",
             )
         )
 

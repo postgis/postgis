@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 import html
 import json
 import math
+import os
 from pathlib import Path
 import re
 import shutil
@@ -35,9 +36,11 @@ ENVIRONMENT_CHECKS = (
 
 
 class QueryRows(list):
-    def __init__(self, rows, headers=None):
+    def __init__(self, rows, headers=None, types=None, visuals=None):
         super().__init__(rows)
         self.headers = headers or []
+        self.types = types or []
+        self.visuals = visuals or []
 WKT_TYPES = (
     "POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|"
     "GEOMETRYCOLLECTION|CIRCULARSTRING|COMPOUNDCURVE|CURVEPOLYGON|"
@@ -129,7 +132,7 @@ class ExampleTester:
             r"ST_MinimumSpanningTree|PostGIS_Extensions_Upgrade|"
             r"PostGIS_GDAL_Version|PostGIS_Liblwgeom_Version|"
             r"PostGIS_Raster_Lib_Build_Date|PostGIS_Raster_Lib_Version|"
-            r"PostGIS_Raster_Scripts_Installed|ST_GDALDrivers|ST_FromGDALRaster|ST_AsPNG"
+            r"PostGIS_Raster_Scripts_Installed|ST_GDALDrivers|ST_FromGDALRaster"
             r")\s*\(",
             text,
             re.I,
@@ -215,14 +218,14 @@ class ExampleTester:
         code = [candidate["wkt"] for candidate in self.code_geometry_candidates(query)]
         output = self.geometry_candidates(self.rows_to_string(expected))
         values = code + output
+        if explicit:
+            return {"kind": "explicit", "preferred": True}
         if not values:
             return None
         if len(values) > MAX_VISUAL_GEOMETRIES or sum(len(value) for value in values) > MAX_VISUAL_WKT_BYTES:
             return None
         code_types = [self.geometry_type(value) for value in code]
         output_types = [self.geometry_type(value) for value in output]
-        if explicit:
-            return {"kind": "explicit", "preferred": True}
         if len(code) == len(output) == 1 and self.normalized_geometry(code[0]) == self.normalized_geometry(output[0]):
             return None
         if output:
@@ -391,6 +394,24 @@ class ExampleTester:
         geometries = [self.canonical_geometry_wkt(part) for part in self.split_wkt_parts(match.group(1))]
         return "GEOMETRYCOLLECTION(" + ",".join(sorted(geometries)) + ")"
 
+    def canonical_surface_wkt(self, value):
+        match = re.match(
+            r"^(?:SRID=\d+;)?(POLYHEDRALSURFACE|TIN)\((.*)\)$",
+            value, re.I | re.S,
+        )
+        if not match:
+            return value
+        faces = []
+        for face in self.split_wkt_parts(match.group(2)):
+            face_match = re.match(r"^\(\((.*)\)\)$", face, re.S)
+            if not face_match:
+                return value
+            polygon = self.canonical_polygon_wkt(f"POLYGON(({face_match.group(1)}))")
+            if not polygon.startswith("POLYGON"):
+                return value
+            faces.append(polygon[len("POLYGON"):])
+        return f"{match.group(1).upper()}(" + ",".join(sorted(faces)) + ")"
+
     def canonical_geometry_wkt(self, value):
         polygon = self.canonical_polygon_wkt(value)
         if polygon != value:
@@ -398,6 +419,9 @@ class ExampleTester:
         multipolygon = self.canonical_multipolygon_wkt(value)
         if multipolygon != value:
             return multipolygon
+        surface = self.canonical_surface_wkt(value)
+        if surface != value:
+            return surface
         return self.canonical_geometrycollection_wkt(value)
 
     def values_equal(self, left, right):
@@ -842,7 +866,10 @@ class ExampleTester:
 
     def run_psql_query(self, database, query):
         cmd = ["psql", "-X", "-v", "ON_ERROR_STOP=1", "-P", "null=null", "-d", database, "-c", query]
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, encoding="utf-8",
+            env=self.psql_environment(),
+        )
         if result.returncode != 0:
             raise RuntimeError(f"psql failed for query:\n{query}\n{result.stdout}{result.stderr}")
         lines = result.stdout.split("\n")
@@ -850,6 +877,96 @@ class ExampleTester:
             self.expected_rows_from_psql_lines(lines),
             self.psql_headers_from_lines(lines),
         )
+
+    def psql_environment(self):
+        env = os.environ.copy()
+        options = env.get("PGOPTIONS", "").strip()
+        png_driver = "-c postgis.gdal_enabled_drivers=PNG"
+        if "postgis.gdal_enabled_drivers" not in options:
+            options = f"{options} {png_driver}".strip()
+        env["PGOPTIONS"] = options
+        return env
+
+    def query_output_types(self, database, query):
+        query = re.sub(r";\s*$", "", query.strip())
+        cmd = [
+            "psql", "-X", "-A", "-t", "-F", "\t", "-P", "footer=off",
+            "-v", "ON_ERROR_STOP=1", "-d", database,
+        ]
+        result = subprocess.run(
+            cmd, input=f"{query}\n\\gdesc\n", capture_output=True, text=True,
+            encoding="utf-8", env=self.psql_environment(),
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"psql failed while describing a visual example:\n{query}\n"
+                f"{result.stdout}{result.stderr}"
+            )
+        return [
+            line.rsplit("\t", 1)[1].strip().lower()
+            for line in result.stdout.splitlines()
+            if "\t" in line
+        ]
+
+    def bytea_image(self, value):
+        if not isinstance(value, str) or not value.startswith("\\x"):
+            return None
+        try:
+            raw = bytes.fromhex(value[2:])
+        except ValueError:
+            return None
+        if raw.startswith(b"\x89PNG\r\n\x1a\n") and len(raw) >= 24:
+            width = int.from_bytes(raw[16:20], "big")
+            height = int.from_bytes(raw[20:24], "big")
+            return {
+                "format": "PNG", "media_type": "image/png", "width": width,
+                "height": height, "data": base64.b64encode(raw).decode("ascii"),
+            }
+        return None
+
+    def prepare_visual_rows(self, actual, types):
+        if not actual:
+            return QueryRows(actual, getattr(actual, "headers", []), types)
+        width = max((len(row) for row in actual), default=0)
+        if len(types) != width:
+            raise RuntimeError(
+                f"Visual query returned {width} columns but psql described {len(types)}"
+            )
+        headers = getattr(actual, "headers", [])
+        rows = []
+        visuals = []
+        for row_index, row in enumerate(actual, 1):
+            row_label = next((
+                value.strip() for column_index, value in enumerate(row)
+                if types[column_index] != "bytea"
+                and isinstance(value, str) and 0 < len(value.strip()) <= 80
+                and not self.geometry_type(value)
+            ), "")
+            display_row = []
+            for column_index, value in enumerate(row):
+                image = self.bytea_image(value) if types[column_index] == "bytea" else None
+                if image is None:
+                    display_row.append(value)
+                    continue
+                header = headers[column_index] if column_index < len(headers) else ""
+                source = "Code" if header.lower().startswith("input_") else "Output"
+                label = header[len("input_"):] if source == "Code" else header
+                row_labeled = False
+                if not label or label.lower() in {"?column?", "image", "st_aspng"}:
+                    label = row_label or source
+                    row_labeled = bool(row_label)
+                if len(actual) > 1 and not row_labeled:
+                    label = f"{label} {row_index}"
+                image.update({
+                    "source": source, "label": label, "row": row_index,
+                    "column": column_index + 1,
+                })
+                visuals.append(image)
+                display_row.append(
+                    f"{image['format']} image, {image['width']} x {image['height']} pixels"
+                )
+            rows.append(display_row)
+        return QueryRows(rows, headers, types, visuals)
 
     def run_examples(self, database, keep_going=False, render_dir=None, visual_only=False, jobs=1):
         all_examples = self.examples()
@@ -918,6 +1035,10 @@ class ExampleTester:
 
         try:
             actual = self.run_psql_query(database, example["query"])
+            if example.get("visual_kind") == "explicit":
+                actual = self.prepare_visual_rows(
+                    actual, self.query_output_types(database, example["query"])
+                )
         except RuntimeError as exc:
             raise RuntimeError(f"Example test failed to run: {example['label']}\n{exc}") from exc
 
@@ -938,7 +1059,10 @@ class ExampleTester:
 
     def run_psql_scalar(self, database, query):
         cmd = ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-d", database, "-c", query]
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, encoding="utf-8",
+            env=self.psql_environment(),
+        )
         if result.returncode != 0:
             raise RuntimeError(f"psql failed while rendering a visual example:\n{result.stdout}{result.stderr}")
         return result.stdout.strip()
@@ -1042,7 +1166,97 @@ SELECT json_build_object(
             raise RuntimeError("PostGIS returned no visual-example payload")
         return json.loads(payload)
 
+    def visual_image_svg(self, visual_id, images):
+        count = len(images)
+        columns = 1 if count == 1 else min(2, count)
+        rows = math.ceil(count / columns)
+        gap = 14
+        outer = 20
+        label_height = 24 if count > 1 else 0
+        cell_width = (560 - gap * (columns - 1)) / columns
+        cell_height = 520 if count == 1 else 320
+        svg_height = outer + rows * (label_height + cell_height) + (rows - 1) * gap + 44
+        panels = []
+        legends = []
+        source_indexes = {"Code": 0, "Output": 0}
+        for index, image in enumerate(images):
+            column = index % columns
+            row = index // columns
+            left = outer + column * (cell_width + gap)
+            top = outer + row * (label_height + cell_height + gap)
+            image_top = top + label_height
+            available_scale = min(cell_width / image["width"], cell_height / image["height"])
+            scale = max(1, math.floor(available_scale)) if available_scale >= 1 else available_scale
+            width = image["width"] * scale
+            height = image["height"] * scale
+            x = left + (cell_width - width) / 2
+            y = image_top + (cell_height - height) / 2
+            source_indexes[image["source"]] += 1
+            layer_id = (
+                f"{visual_id}-{image['source'].lower()}-"
+                f"{source_indexes[image['source']]}"
+            )
+            label = html.escape(image["label"])
+            if count > 1:
+                panels.append(
+                    f'<text class="frame-label" x="{left + cell_width / 2:.12g}" '
+                    f'y="{top + 16:.12g}" text-anchor="middle">{label}</text>'
+                )
+            panels.append(
+                f'<rect class="image-background" x="{x:.12g}" y="{y:.12g}" '
+                f'width="{width:.12g}" height="{height:.12g}" fill="white"/>'
+                f'<g class="geometry-layer image-layer" data-postgis-geometry-id="{layer_id}">'
+                f'<image x="{x:.12g}" y="{y:.12g}" width="{width:.12g}" '
+                f'height="{height:.12g}" preserveAspectRatio="none" '
+                'style="image-rendering:crisp-edges;image-rendering:pixelated" '
+                f'href="data:{image["media_type"]};base64,{image["data"]}"/>'
+                '</g>'
+            )
+            if count == 1:
+                legends.append(
+                    f'<g class="legend-row" data-postgis-geometry-id="{layer_id}" '
+                    f'transform="translate(20 {svg_height - 26})">'
+                    '<rect width="11" height="11" rx="2" fill="#a62c2b"/>'
+                    f'<text x="16" y="10">{label}</text></g>'
+                )
+        safe_id = html.escape(visual_id, quote=True)
+        return (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="{svg_height}" '
+            f'viewBox="0 0 600 {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
+            f'<title id="{safe_id}-title">Rendered SQL image output for {safe_id}</title>\n'
+            '<style>.frame-label{font-family:sans-serif;font-size:12px;font-weight:600;fill:#344}'
+            '.geometry-layer{opacity:1;transition:opacity 90ms ease}'
+            '.image-layer image{image-rendering:crisp-edges;image-rendering:pixelated}'
+            '.legend-row text{font-family:sans-serif;font-size:12px;fill:#344}'
+            'svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}'
+            '.geometry-layer.active{filter:brightness(.72)}</style>\n'
+            + ''.join(panels) + '\n' + ''.join(legends) + '\n</svg>\n'
+        )
+
+    def render_image_visual_example(self, example, actual):
+        layers = []
+        source_indexes = {"Code": 0, "Output": 0}
+        for image in actual.visuals:
+            source = image["source"]
+            source_indexes[source] += 1
+            layers.append({
+                "id": f"{example['visual_id']}-{source.lower()}-{source_indexes[source]}",
+                "source": source, "label": image["label"], "row": image["row"],
+                "column": image["column"], "media_type": image["media_type"],
+                "width": image["width"], "height": image["height"], "frame": image["label"],
+            })
+        return {
+            "id": example["visual_id"], "source": example["label"],
+            "refentry": example["visual_refentry"], "screen": example["visual_screen"],
+            "preferred": example["visual_preferred"], "kind": "image-output",
+            "output_omitted": False, "layers": layers,
+            "svg": self.visual_image_svg(example["visual_id"], actual.visuals),
+        }
+
     def render_visual_example(self, database, example, actual):
+        if getattr(actual, "visuals", None):
+            return self.render_image_visual_example(example, actual)
         code = self.code_geometry_candidates(example["query"])
         output = []
         headers = getattr(actual, "headers", []) or self.query_output_headers(example["query"])

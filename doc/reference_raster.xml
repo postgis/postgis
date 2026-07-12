@@ -1793,30 +1793,36 @@ FROM ST_BandMetaData(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)
 
             <refsection>
                 <title>Examples: Output geometries as PNG files</title>
-                <para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_asraster01.png"/>
-                              </imageobject>
-                              <caption><para>black circle</para></caption>
-                            </mediaobject>
-                          </informalfigure></para>
-                <para>This example outputs a black circle occupying 150 by 150 pixels.</para>
-                <programlisting>SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1, 5), 10), 150, 150));</programlisting>
-
- <para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_asraster02.png"/>
-                              </imageobject>
-                              <caption><para>example from buffer rendered with just PostGIS</para></caption>
-                            </mediaobject>
-                          </informalfigure></para>
+                <para>This example outputs a black circle on a white background, occupying 150 by 150 pixels.</para>
+                <programlisting>SELECT ST_AsPNG(
+    ST_AsRaster(
+        ST_Buffer(ST_Point(1, 5), 10),
+        150, 150,
+        ARRAY['8BUI', '8BUI', '8BUI'],
+        ARRAY[0, 0, 0],
+        ARRAY[255, 255, 255]
+    )
+) AS image;</programlisting>
+                <screen role="visual-primary"> image
+-------------------------------
+ PNG image, 150 x 150 pixels
+                </screen>
 
                 <para>This example maps bands to RGB channels, producing the teal value (118,154,118).</para>
                 <programlisting>
-SELECT ST_AsPNG(ST_AsRaster(ST_Buffer('LINESTRING(50 50,150 150,150 50)'::geometry, 10, 'join=bevel'),
-            200, 200, ARRAY['8BUI', '8BUI', '8BUI'], ARRAY[118, 154, 118], ARRAY[0, 0, 0]));</programlisting>
+SELECT ST_AsPNG(
+    ST_AsRaster(
+        ST_Buffer('LINESTRING(50 50,150 150,150 50)'::geometry, 10, 'join=bevel'),
+        200, 200,
+        ARRAY['8BUI', '8BUI', '8BUI'],
+        ARRAY[118, 154, 118],
+        ARRAY[255, 255, 255]
+    )
+) AS image;</programlisting>
+                <screen role="visual-primary"> image
+-------------------------------
+ PNG image, 200 x 200 pixels
+                </screen>
 
             </refsection>
             <!-- Optionally add a "See Also" section -->
@@ -9251,20 +9257,12 @@ nv 0 0 0 0
 
                 <refsection>
                     <title>Examples</title>
-                    <para>This is a junk table to play with</para>
-
-                    <para>Setup test raster table.</para>
-                    <programlisting>
-DROP TABLE IF EXISTS funky_shapes;
-CREATE TABLE funky_shapes(rast raster);
-
-INSERT INTO funky_shapes(rast)
-WITH ref AS (
+                    <para>This example builds a raster from rotated buffered lines and compares the original values with predefined and custom color maps.</para>
+                    <programlisting>WITH ref AS (
     SELECT ST_MakeEmptyRaster(200, 200, 0, 200, 1, -1, 0, 0) AS rast
-)
-SELECT
-    ST_Union(rast)
-FROM (
+), source AS (
+    SELECT ST_Union(rast) AS rast
+    FROM (
     SELECT
         ST_AsRaster(ST_Rotate(ST_Buffer('LINESTRING(0 2,50 50,150 150,125 50)'::geometry,
                     i*2
@@ -9275,148 +9273,35 @@ FROM (
         ) AS rast
     FROM ref
     CROSS JOIN generate_series(1, 10, 3) AS i
-) AS shapes;
-                    </programlisting>
-
-                <programlisting role="requires-external-state">
-SELECT
-    ST_NumBands(rast) As n_orig,
-    ST_NumBands(ST_ColorMap(rast, 1, 'greyscale')) As ngrey,
-    ST_NumBands(ST_ColorMap(rast, 1, 'pseudocolor')) As npseudo,
-    ST_NumBands(ST_ColorMap(rast, 1, 'fire')) As nfire,
-    ST_NumBands(ST_ColorMap(rast, 1, 'bluered')) As nbluered,
-    ST_NumBands(ST_ColorMap(rast, 1, '
+) AS shapes
+)
+SELECT title, ST_AsPNG(rendered) AS image
+FROM source
+CROSS JOIN LATERAL (VALUES
+    ('original', rast),
+    ('greyscale', ST_ColorMap(rast, 1, 'greyscale')),
+    ('pseudocolor', ST_ColorMap(rast, 1, 'pseudocolor')),
+    ('fire', ST_ColorMap(rast, 1, 'fire')),
+    ('blue-red', ST_ColorMap(rast, 1, 'bluered')),
+    ('custom red', ST_ColorMap(rast, 1, '
 100% 255   0   0
  80% 160   0   0
  50% 130   0   0
  30%  30   0   0
- 20%  60   0   0
+  20%  60   0   0
   0%   0   0   0
   nv 255 255 255
-    ')) As nred
-FROM funky_shapes;
-                    </programlisting>
-
-                    <screen>
- n_orig | ngrey | npseudo | nfire | nbluered | nred
---------+-------+---------+-------+----------+------
-      1 |     1 |       4 |     4 |        4 |    3
+    '))
+) AS variants(title, rendered);</programlisting>
+                    <screen role="visual-primary"> title      | image
+------------+--------------------------------
+ original   | PNG image, 224 x 295 pixels
+ greyscale  | PNG image, 224 x 295 pixels
+ pseudocolor| PNG image, 224 x 295 pixels
+ fire       | PNG image, 224 x 295 pixels
+ blue-red   | PNG image, 224 x 295 pixels
+ custom red | PNG image, 224 x 295 pixels
                     </screen>
-
-                    <para>Compare different color map looks using ST_AsPNG.</para>
-                    <programlisting>
-SELECT
-    ST_AsPNG(rast) As orig_png,
-    ST_AsPNG(ST_ColorMap(rast, 1, 'greyscale')) As grey_png,
-    ST_AsPNG(ST_ColorMap(rast, 1, 'pseudocolor')) As pseudo_png,
-    ST_AsPNG(ST_ColorMap(rast, 1, 'nfire')) As fire_png,
-    ST_AsPNG(ST_ColorMap(rast, 1, 'bluered')) As bluered_png,
-    ST_AsPNG(ST_ColorMap(rast, 1, '
-100% 255   0   0
- 80% 160   0   0
- 50% 130   0   0
- 30%  30   0   0
- 20%  60   0   0
-  0%   0   0   0
-  nv 255 255 255
-    ')) As red_png
-FROM funky_shapes;
-                    </programlisting>
-
-                    <informaltable>
-                        <tgroup cols="3">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_colormap_orig.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>orig_png</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_colormap_grey.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>grey_png</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_colormap_pseudo.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>pseudo_png</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_colormap_fire.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>fire_png</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_colormap_bluered.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>bluered_png</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_colormap_red.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>red_png</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
                 </refsection>
 
                 <refsection>
@@ -10149,94 +10034,35 @@ WHERE t1.rid = 1
                     </programlisting>
 
 
-                    <para>Using Masks.</para>
-                    <programlisting>
-WITH foo AS (SELECT
+					<para>Compare an unmasked mean with neighbor-only and weighted-neighbor masks. The weighted mask multiplies neighboring values by 2 before computing the result.</para>
+					<programlisting>WITH foo AS (SELECT
    ST_SetBandNoDataValue(ST_SetValue(ST_SetValue(ST_AsRaster(ST_Buffer('LINESTRING(50 50,100 90,100 50)'::geometry, 5, 'join=bevel'),
             200, 200, ARRAY['8BUI'], ARRAY[100], ARRAY[0]), ST_Buffer('POINT(70 70)'::geometry, 10, 'quad_segs=1') , 50),
-  'LINESTRING(20 20,100 100,150 98)'::geometry, 1), 0)  AS rast )
+  'LINESTRING(20 20,100 100,150 98)'::geometry, 1), 0) AS rast
+), variants AS (
 SELECT 'original' AS title, rast
 FROM foo
 UNION ALL
-SELECT 'no mask mean value' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure) AS rast
+SELECT 'unmasked mean' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure) AS rast
 FROM foo
 UNION ALL
-SELECT 'mask only consider neighbors, exclude center' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
+SELECT 'neighbor-only mean' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
     '{{1,1,1}, {1,0,1}, {1,1,1}}'::double precision[], false) As rast
 FROM foo
-
 UNION ALL
-SELECT 'mask weighted only consider neighbors, exclude center multi other pixel values by 2' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
+SELECT 'weighted neighbor mean' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
     '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast
-FROM foo;
-                    </programlisting>
-
-                <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebramask01.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>original</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebramask02.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>no mask mean value (same as having all 1s in mask matrix)</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebramask03.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>mask only consider neighbors, exclude center</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebramask04.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>mask weighted only consider neighbors, exclude center multi other pixel values by 2</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
+FROM foo
+)
+SELECT title, ST_AsPNG(rast) AS image
+FROM variants;</programlisting>
+                    <screen role="visual-primary"> title                  | image
+------------------------+--------------------------------
+ original               | PNG image, 200 x 200 pixels
+ unmasked mean          | PNG image, 200 x 200 pixels
+ neighbor-only mean     | PNG image, 200 x 200 pixels
+ weighted neighbor mean | PNG image, 200 x 200 pixels
+                    </screen>
 
                 </refsection>
 
@@ -10928,74 +10754,16 @@ WITH mygeoms
                 FROM mygeoms AS m CROSS JOIN canvas
                 ORDER BY m.bnum) As rasts
                 )
-          SELECT rasts[1] As rast1 , rasts[2] As rast2, rasts[3] As rast3, ST_AddBand(ST_AddBand(rasts[1], rasts[2]), rasts[3]) As final_rast
-            FROM rbands;
-                    </programlisting>
-
-                    <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr2_04.png"/>
-                                                    </imageobject>
-                                                    <caption><para>rast1</para></caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr2_05.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>rast2</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr2_06.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>rast3</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr2_07.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>final_rast</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
+		  SELECT ST_AsPNG(rasts[1]) AS rast1,
+                 ST_AsPNG(rasts[2]) AS rast2,
+                 ST_AsPNG(rasts[3]) AS rast3,
+                 ST_AsPNG(ST_AddBand(ST_AddBand(rasts[1], rasts[2]), rasts[3])) AS final_rast
+		    FROM rbands;
+					</programlisting>
+                    <screen role="visual-primary"> rast1                           | rast2                           | rast3                           | final_rast
+---------------------------------+---------------------------------+---------------------------------+--------------------------------
+ PNG image, 200 x 200 pixels     | PNG image, 200 x 200 pixels     | PNG image, 200 x 200 pixels     | PNG image, 200 x 200 pixels
+                    </screen>
 
                     <para>Overlay 2 meter boundary of select parcels over an aerial imagery.</para>
 

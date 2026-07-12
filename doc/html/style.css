@@ -472,6 +472,13 @@ table.postgis-example-grid td {
     width: min(calc(100% - 1.3rem), 62rem);
 }
 
+.postgis-geometry-figure > object.postgis-image-output-figure-body {
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    max-width: calc(100% - 1.3rem);
+    width: auto;
+}
+
 .postgis-geometry-literal {
     border-radius: 0.16em;
     transition: background-color 90ms ease;

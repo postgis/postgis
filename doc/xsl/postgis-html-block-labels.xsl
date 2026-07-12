@@ -266,7 +266,13 @@
           </xsl:call-template>
         </div>
       </div>
-      <object class="postgis-geometry-figure-body" type="image/svg+xml">
+      <object type="image/svg+xml">
+        <xsl:attribute name="class">
+          <xsl:text>postgis-geometry-figure-body</xsl:text>
+          <xsl:if test="$manifest.visual/@kind = 'image-output'">
+            <xsl:text> postgis-image-output-figure-body</xsl:text>
+          </xsl:if>
+        </xsl:attribute>
         <xsl:attribute name="data">
           <xsl:value-of select="concat($img.src.path, 'images/visual-examples/', $visual.id, '.svg')"/>
         </xsl:attribute>

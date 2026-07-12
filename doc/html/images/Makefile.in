@@ -123,7 +123,7 @@ visual-examples-pdf: visual-examples-check
 		diagnostics="$$target.tmp.log"; \
 		rm -f "$$temporary" "$$diagnostics"; \
 		if test "$$rasterizer" = rsvg; then \
-			rsvg-convert -w 1200 -h 760 -b white -o "$$temporary" "$$source" 2>"$$diagnostics" || \
+			rsvg-convert -w 1200 -b white -o "$$temporary" "$$source" 2>"$$diagnostics" || \
 				{ cat "$$diagnostics" >&2; exit 1; }; \
 		else \
 			$$converter -density 240 "$$source" -background white -flatten \

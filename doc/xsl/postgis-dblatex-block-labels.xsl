@@ -89,7 +89,14 @@
 		<xsl:call-template name="postgis-dblatex-block-label">
 			<xsl:with-param name="kind" select="'figure'"/>
 		</xsl:call-template>
-		<xsl:text>&#10;\begin{center}\includegraphics[width=0.96\linewidth,height=0.25\textheight,keepaspectratio]{images/visual-examples/</xsl:text>
+		<xsl:text>&#10;\begin{center}\includegraphics[width=0.96\linewidth,height=</xsl:text>
+		<xsl:choose>
+			<xsl:when test="$manifest.visual/@kind = 'image-output' and count($manifest.visual/layer) &gt; 4">0.62</xsl:when>
+			<xsl:when test="$manifest.visual/@kind = 'image-output' and count($manifest.visual/layer) &gt; 1">0.48</xsl:when>
+			<xsl:when test="$manifest.visual/@kind = 'image-output'">0.40</xsl:when>
+			<xsl:otherwise>0.25</xsl:otherwise>
+		</xsl:choose>
+		<xsl:text>\textheight,keepaspectratio]{images/visual-examples/</xsl:text>
 		<xsl:value-of select="$visual.id"/>
 		<xsl:text>.png}\end{center}&#10;</xsl:text>
 	</xsl:if>

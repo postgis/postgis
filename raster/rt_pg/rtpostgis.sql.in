@@ -1388,7 +1388,7 @@ CREATE OR REPLACE FUNCTION st_colormap(
 		_ismap := TRUE;
 
 		-- clean colormap to see what it is
-		_colormap := split_part(colormap, E'\n', 1);
+		_colormap := split_part(trim(both E' \t\r\n' from colormap), E'\n', 1);
 		_colormap := regexp_replace(_colormap, E':+', ' ', 'g');
 		_colormap := regexp_replace(_colormap, E',+', ' ', 'g');
 		_colormap := regexp_replace(_colormap, E'\\t+', ' ', 'g');
