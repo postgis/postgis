@@ -94,9 +94,6 @@ GENERATED_IMAGES= \
 	st_optimalalphashape01.png \
 	st_optimalalphashape02.png \
 	st_triangulatepolygon01.png \
-	st_simplifypolygonhull01.png \
-	st_simplifypolygonhull02.png \
-	st_simplifypolygonhull03.png \
 	st_straightskeleton01.png \
 	st_approximatemedialaxis01.png \
 	st_tesselate04.png \
