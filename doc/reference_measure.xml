@@ -1634,7 +1634,8 @@ SELECT ST_3DMaxDistance(
 		</refsection>
 
 		<refsection>
-			<title>Examples: Geometry</title>
+			<title>Examples</title>
+			<para>Geometry.</para>
 			<para>Return perimeter in feet for Polygon and MultiPolygon. Note this is in feet because EPSG:2249 is
 				Massachusetts State Plane Feet</para>
 				<programlisting>SELECT ST_Perimeter(ST_GeomFromText(
@@ -1656,9 +1657,7 @@ SELECT ST_3DMaxDistance(
 763104.471273676 2949418.44119003)))',
 2249));</programlisting>
 <screen>845.227713366825</screen>
-		  </refsection>
-		  <refsection>
-			<title>Examples: Geography</title>
+
 			<para>Return perimeter in meters and feet for Polygon and MultiPolygon. Note this is geography (WGS 84 long lat)</para>
 			<programlisting>SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog)/0.3048 As per_ft
 FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,

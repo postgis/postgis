@@ -104,6 +104,7 @@ PSQL_MESSAGE_RE = re.compile(r"(?m)^\s*(?:ERROR|NOTICE|WARNING|DETAIL|HINT|CONTE
 REDUNDANT_OUTPUT_CAPTION_RE = re.compile(r"(?:output|result|results|returns|the output):?", re.IGNORECASE)
 ANCIENT_VERSION_RE = re.compile(r"\b(?:0\.\d+|1\.[0-5])(?:\.\d+)?\b")
 SELECT_START_RE = re.compile(r"^\s*SELECT\b", re.IGNORECASE | re.MULTILINE)
+EXAMPLE_SECTION_TITLE_RE = re.compile(r"^(?:same\s+)?examples?\b", re.IGNORECASE)
 
 BLOCK_KINDS = {
     "programlisting": ("postgis-example-code", "code", "Code"),
@@ -421,11 +422,14 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
 
     for refentry in named_descendants(root, "refentry"):
         seen: dict[str, ET.Element] = {}
+        example_titles: list[ET.Element] = []
         for section in named_children(refentry, "refsection", "section", "sect1"):
             title_node = first_named_child(section, "title")
             if title_node is None:
                 continue
             title = normalized_text(title_node)
+            if EXAMPLE_SECTION_TITLE_RE.match(title):
+                example_titles.append(title_node)
             if title not in {"Description", "Examples"}:
                 continue
             if title in seen:
@@ -436,6 +440,13 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
                 ))
             else:
                 seen[title] = title_node
+        for title_node in example_titles[1:]:
+            first_line = _INDEX.line(example_titles[0]) if _INDEX is not None else None
+            findings.append(Finding(
+                "error", "repeated-example-sections", source_location(path, title_node),
+                "refentry has multiple Example/Examples sections; keep one 'Examples' section "
+                f"and use introductory paragraphs for individual cases (first at line {first_line or '?'})",
+            ))
 
     for node in named_descendants(root, "para"):
         role = node.get("role") or "<missing>"
@@ -567,6 +578,39 @@ def check_html_file(path: Path, required_kinds: set[str]) -> list[Finding]:
     for block_class in required_kinds:
         if counts.get(block_class, 0) == 0:
             findings.append(html_error(path, f"no generated {block_class} blocks found"))
+
+    for figure in root.iter():
+        if local_name(figure) != "div" or "postgis-geometry-figure" not in class_tokens(figure):
+            continue
+        visual_id = figure.get("data-postgis-visual-id")
+        parent = _INDEX.parents.get(figure) if _INDEX is not None else None
+        siblings = list(parent) if parent is not None else []
+        index = siblings.index(figure) if figure in siblings else -1
+
+        def previous_stack_sibling(position: int):
+            position -= 1
+            while position >= 0:
+                sibling = siblings[position]
+                if local_name(sibling) == "p" and not raw_text_content(sibling).strip() and not list(sibling):
+                    position -= 1
+                    continue
+                return sibling, position
+            return None, -1
+
+        output, output_index = previous_stack_sibling(index)
+        code, _code_index = previous_stack_sibling(output_index)
+        if not visual_id:
+            findings.append(html_error(path, "generated geometry figure lacks data-postgis-visual-id"))
+            continue
+        if (
+            output is None or code is None
+            or "postgis-example-output" not in class_tokens(output)
+            or "postgis-example-code" not in class_tokens(code)
+        ):
+            findings.append(html_error(path, f"geometry figure {visual_id!r} is not adjacent to Code and Output blocks"))
+            continue
+        if output.get("data-postgis-visual-id") != visual_id or code.get("data-postgis-visual-id") != visual_id:
+            findings.append(html_error(path, f"Code, Output, and Figure do not share visual id {visual_id!r}"))
 
     return findings
 

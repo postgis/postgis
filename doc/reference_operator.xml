@@ -355,7 +355,8 @@ SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) && ST_MakeBox2D(ST_Point(1,1),
 		  </refsection>
 
 		  <refsection>
-			<title>Examples: 3D LineStrings</title>
+			<title>Examples</title>
+			<para>3D LineStrings.</para>
 
 			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 &&& tbl2.column2 AS overlaps_3d,
@@ -372,9 +373,8 @@ FROM ( VALUES
        2 |       3 | f           | t
 ]]></screen>
 
-		  </refsection>
-		  <refsection>
-			<title>Examples: 3M LineStrings</title>
+
+			<para>3M LineStrings.</para>
 
 			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 &&& tbl2.column2 AS overlaps_3zm,

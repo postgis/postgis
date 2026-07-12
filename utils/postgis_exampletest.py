@@ -566,6 +566,69 @@ class ExampleTester:
             })
         return sorted(candidates, key=lambda candidate: candidate["start"])
 
+    def query_output_headers(self, query):
+        """Return explicit aliases from the outer SELECT list.
+
+        Documented-only visual examples are not executed because their result
+        ordering is intentionally unstable.  Their SQL aliases still carry the
+        same input/output layer semantics as executed examples, so retain those
+        aliases without introducing a SQL parser dependency.
+        """
+        masked = list(query)
+        for start, end in self.quoted_ranges(query):
+            masked[start:end] = " " * (end - start)
+        masked_text = "".join(masked)
+        masked_text = re.sub(r"--[^\n]*|/\*.*?\*/", lambda match: " " * len(match.group(0)), masked_text, flags=re.S)
+
+        depth = 0
+        select_start = None
+        from_start = None
+        index = 0
+        while index < len(masked_text):
+            char = masked_text[index]
+            if char == "(":
+                depth += 1
+            elif char == ")":
+                depth = max(0, depth - 1)
+            elif depth == 0:
+                token = re.match(r"(?i)(SELECT|FROM)\b", masked_text[index:])
+                if token and (index == 0 or not re.match(r"[A-Za-z0-9_]", masked_text[index - 1])):
+                    if token.group(1).upper() == "SELECT":
+                        select_start = index + len(token.group(0))
+                        from_start = None
+                    elif select_start is not None:
+                        from_start = index
+                        break
+                    index += len(token.group(0))
+                    continue
+            index += 1
+        if select_start is None:
+            return []
+        select_end = from_start if from_start is not None else len(query)
+
+        items = []
+        item_start = select_start
+        depth = 0
+        for index in range(select_start, select_end):
+            char = masked_text[index]
+            if char == "(":
+                depth += 1
+            elif char == ")":
+                depth = max(0, depth - 1)
+            elif char == "," and depth == 0:
+                items.append(query[item_start:index])
+                item_start = index + 1
+        items.append(query[item_start:select_end])
+
+        headers = []
+        for item in items:
+            alias = re.search(r'(?i)\bAS\s+("(?:""|[^"])+"|[A-Za-z_][A-Za-z0-9_]*)\s*$', item)
+            header = alias.group(1) if alias else ""
+            if header.startswith('"'):
+                header = header[1:-1].replace('""', '"')
+            headers.append(header)
+        return headers
+
     def query_is_auto_safe(self, query):
         if query is None:
             return False
@@ -884,57 +947,77 @@ class ExampleTester:
         encoded = base64.b64encode(json.dumps(layers, separators=(",", ":")).encode("utf-8")).decode("ascii")
         query = f"""
 WITH raw AS (
-  SELECT ord, source, label, wkt
+  SELECT ord, source, label, row_num, column_num, wkt
   FROM jsonb_to_recordset(
     convert_from(decode('{encoded}', 'base64'), 'UTF8')::jsonb
-  ) AS item(ord integer, source text, label text, wkt text)
+  ) AS item(ord integer, source text, label text, row_num integer, column_num integer, wkt text)
 ), parsed_raw AS (
-  SELECT ord, source, label, ST_Force2D(ST_GeomFromEWKT(wkt)) AS geom
+  SELECT ord, source, label, row_num, column_num,
+    ST_Force2D(ST_GeomFromEWKT(wkt)) AS geom
   FROM raw
-), common_srid AS (
-  SELECT bool_and(ST_SRID(geom) > 0) AS all_known,
-    COALESCE(
-      (SELECT ST_SRID(geom) FROM parsed_raw
-       WHERE source = 'Output' AND ST_SRID(geom) > 0
-       ORDER BY ord DESC LIMIT 1),
-      (SELECT ST_SRID(geom) FROM parsed_raw
-       WHERE ST_SRID(geom) > 0
-       ORDER BY ord DESC LIMIT 1)
-    ) AS target_srid
+), source_dimensions AS (
+  SELECT source, max(ST_Dimension(geom)) AS dimension
   FROM parsed_raw
-), parsed AS (
-  SELECT ord, source, label,
-    CASE
-      WHEN all_known AND target_srid > 0 AND ST_SRID(geom) != target_srid
-        THEN ST_Transform(geom, target_srid)
-      ELSE geom
-    END AS geom
-  FROM parsed_raw CROSS JOIN common_srid
-), bounds AS (
-  SELECT ST_Extent(geom) AS box FROM parsed
-), dimensions AS (
-  SELECT box,
+  GROUP BY source
+), frame_policy AS (
+  SELECT
+    EXISTS (SELECT 1 FROM parsed_raw WHERE source = 'Code')
+    AND EXISTS (SELECT 1 FROM parsed_raw WHERE source = 'Output')
+    AND (
+      (SELECT dimension FROM source_dimensions WHERE source = 'Code') =
+        (SELECT dimension FROM source_dimensions WHERE source = 'Output')
+      OR (SELECT count(DISTINCT ST_SRID(geom)) FROM parsed_raw) > 1
+    ) AS separate_sources,
+    (SELECT count(DISTINCT ST_SRID(geom)) FROM parsed_raw) = 1 AS shared_coordinate_space
+  FROM parsed_raw
+  LIMIT 1
+), framed AS (
+  SELECT ord, source, label, row_num, column_num, geom, shared_coordinate_space,
+    CASE WHEN separate_sources THEN source ELSE 'Overlay' END AS frame
+  FROM parsed_raw CROSS JOIN frame_policy
+), frame_bounds_raw AS (
+  SELECT frame, min(ord) AS first_ord,
+    CASE WHEN bool_and(shared_coordinate_space)
+      THEN (SELECT ST_Extent(all_geometries.geom) FROM framed AS all_geometries)
+      ELSE ST_Extent(geom)
+    END AS box,
+    CASE WHEN count(DISTINCT ST_SRID(geom)) = 1 THEN max(ST_SRID(geom)) ELSE 0 END AS srid
+  FROM framed
+  GROUP BY frame
+), frame_bounds AS (
+  SELECT frame, first_ord, srid,
     ST_XMin(box) AS min_x, ST_YMin(box) AS min_y,
     ST_XMax(box) - ST_XMin(box) AS width,
-    ST_YMax(box) - ST_YMin(box) AS height,
-    GREATEST(ST_XMax(box) - ST_XMin(box), ST_YMax(box) - ST_YMin(box)) AS span
-  FROM bounds
+    ST_YMax(box) - ST_YMin(box) AS height
+  FROM frame_bounds_raw
+  WHERE box IS NOT NULL
 ), parts AS (
-  SELECT ord, source, label, (ST_Dump(geom)).geom AS geom
-  FROM parsed
-), normalized_parts AS (
-  SELECT ord, source, label,
-    ST_Scale(ST_Translate(geom, -min_x, -min_y),
-      COALESCE(1 / NULLIF(span, 0), 1), COALESCE(1 / NULLIF(span, 0), 1)) AS geom
-  FROM parts CROSS JOIN dimensions
+  SELECT ord, source, label, row_num, column_num, frame,
+    ST_NPoints(geom) AS total_points,
+    GeometryType(geom) AS root_type,
+    (ST_Dump(geom)).geom AS geom
+  FROM framed
+), translated_parts AS (
+  SELECT ord, source, label, row_num, column_num, parts.frame, total_points, root_type,
+    ST_Translate(geom, -min_x, -min_y) AS geom
+  FROM parts JOIN frame_bounds USING (frame)
 )
 SELECT json_build_object(
-  'bounds', json_build_array(0, 0,
-    COALESCE(width / NULLIF(span, 0), 0), COALESCE(height / NULLIF(span, 0), 0)),
+  'frames', (
+    SELECT json_agg(json_build_object(
+      'id', frame,
+      'label', CASE WHEN srid > 0 THEN frame || ' (SRID ' || srid || ')' ELSE frame END,
+      'bounds', json_build_array(0, 0, width, height)
+    ) ORDER BY first_ord)
+    FROM frame_bounds
+  ),
   'parts', (
     SELECT json_agg(json_build_object(
       'ord', ord, 'source', source, 'label', label,
+      'row', row_num, 'column', column_num, 'frame', frame,
+      'root_type', root_type,
       'type', GeometryType(geom), 'svg', ST_AsSVG(geom, 0, 12),
+      'dimension', ST_Dimension(geom), 'srid', ST_SRID(geom),
       'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
       'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END,
       'closed', CASE
@@ -942,18 +1025,17 @@ SELECT json_build_object(
           THEN ST_IsClosed(geom)
       END,
       'vertices', CASE
-        WHEN GeometryType(geom) IN ('LINESTRING', 'POLYGON', 'TRIANGLE')
-          AND ST_NPoints(geom) <= 64
+        WHEN root_type IN ('LINESTRING', 'POLYGON', 'TRIANGLE')
+          AND total_points <= 64
         THEN (
           SELECT json_agg(json_build_array(ST_X(vertex.geom), -ST_Y(vertex.geom)))
           FROM ST_DumpPoints(geom) AS vertex
         )
       END
     ) ORDER BY ord)
-    FROM normalized_parts
+    FROM translated_parts
   )
 )::text
-FROM dimensions
 """
         payload = self.run_psql_scalar(database, query)
         if not payload:
@@ -963,7 +1045,7 @@ FROM dimensions
     def render_visual_example(self, database, example, actual):
         code = self.code_geometry_candidates(example["query"])
         output = []
-        headers = getattr(actual, "headers", [])
+        headers = getattr(actual, "headers", []) or self.query_output_headers(example["query"])
         for row_index, row in enumerate(actual, 1):
             for column_index, value in enumerate(row):
                 matches = self.geometry_candidates(value)
@@ -978,7 +1060,10 @@ FROM dimensions
                         label = f"{label} {row_index}"
                     if len(matches) > 1:
                         label = f"{label}.{match_index}"
-                    output.append({"wkt": wkt, "label": label, "source": source})
+                    output.append({
+                        "wkt": wkt, "label": label, "source": source,
+                        "row_num": row_index, "column_num": column_index + 1,
+                    })
         if any(candidate["source"] == "Code" for candidate in output):
             # Explicit input_* result columns define the authored input layers.
             # Do not repeat geometry literals and constructor arguments inferred
@@ -998,6 +1083,8 @@ FROM dimensions
                 "ord": len(layers) + 1,
                 "source": "Code",
                 "label": label,
+                "row_num": None,
+                "column_num": None,
                 "wkt": candidate["wkt"],
             })
         for source in ("Code", "Output"):
@@ -1010,6 +1097,8 @@ FROM dimensions
                     "label": candidate["label"] if meaningful_label else source if len(values) == 1 else (
                         candidate["label"] if candidate["label"] != source else f"{source} {index}"
                     ),
+                    "row_num": candidate["row_num"],
+                    "column_num": candidate["column_num"],
                     "wkt": candidate["wkt"],
                 })
         if not layers:
@@ -1028,6 +1117,27 @@ FROM dimensions
             layers = [layer for layer in layers if layer["source"] == "Code"]
             payload = self.visual_payload(database, layers)
             output_omitted = True
+        rendered_layers = []
+        layer_source_indexes = {"Code": 0, "Output": 0}
+        parts_by_ord = {}
+        for part in payload.get("parts") or []:
+            parts_by_ord.setdefault(part["ord"], []).append(part)
+        for ordinal, parts in sorted(parts_by_ord.items()):
+            first = parts[0]
+            source_index = layer_source_indexes[first["source"]]
+            layer_source_indexes[first["source"]] += 1
+            closed_values = [part.get("closed") for part in parts if part.get("closed") is not None]
+            rendered_layers.append({
+                "id": f"{example['visual_id']}-{first['source'].lower()}-{source_index + 1}",
+                "source": first["source"],
+                "label": first["label"],
+                "row": first.get("row"),
+                "column": first.get("column"),
+                "dimension": first.get("dimension"),
+                "closed": all(closed_values) if closed_values else None,
+                "srid": first.get("srid"),
+                "frame": first.get("frame", "Overlay"),
+            })
         return {
             "id": example["visual_id"],
             "source": example["label"],
@@ -1036,6 +1146,7 @@ FROM dimensions
             "preferred": example["visual_preferred"] and not output_omitted,
             "kind": "input-context-fallback" if output_omitted else example["visual_kind"],
             "output_omitted": output_omitted,
+            "layers": rendered_layers,
             "svg": self.visual_svg(example["visual_id"], payload),
         }
 
@@ -1049,60 +1160,93 @@ FROM dimensions
         return nice * power
 
     def visual_svg(self, visual_id, payload):
-        min_x, min_y, max_x, max_y = [float(value) for value in payload["bounds"]]
-        width = max_x - min_x
-        height = max_y - min_y
-        fallback = max(width, height, 1.0)
-        if width == 0:
-            min_x -= fallback / 2
-            max_x += fallback / 2
-        if height == 0:
-            min_y -= fallback / 2
-            max_y += fallback / 2
-        width = max_x - min_x
-        height = max_y - min_y
-        min_x -= width * 0.08
-        max_x += width * 0.08
-        min_y -= height * 0.08
-        max_y += height * 0.08
-        scale = min(560 / (max_x - min_x), 310 / (max_y - min_y))
-        used_width = (max_x - min_x) * scale
-        used_height = (max_y - min_y) * scale
-        left = 20 + (560 - used_width) / 2
-        top = 12 + (310 - used_height) / 2
-        translate_x = left - min_x * scale
-        translate_y = top + max_y * scale
-
-        step = self.grid_step(max(max_x - min_x, max_y - min_y))
+        frames = payload.get("frames") or [{
+            "id": "Overlay",
+            "bounds": payload["bounds"],
+        }]
+        frame_count = len(frames)
+        panel_gap = 20 if frame_count > 1 else 0
+        panel_width = (560 - panel_gap * (frame_count - 1)) / frame_count
+        plot_top = 30 if frame_count > 1 else 12
+        plot_bottom = 322
+        plot_height = plot_bottom - plot_top
+        layouts = {}
+        backgrounds = []
+        frame_labels = []
         grid = []
-        first_x = math.ceil(min_x / step) * step
-        first_y = math.ceil(min_y / step) * step
-        value = first_x
-        for _ in range(32):
-            if value > max_x + step * 1e-9:
-                break
-            x = translate_x + value * scale
-            grid.append(
-                f'<line x1="{x:.12g}" y1="12" x2="{x:.12g}" y2="322" '
-                'stroke="#dce2e7" stroke-width="1"/>'
+        for frame_index, frame in enumerate(frames):
+            frame_id = str(frame["id"])
+            min_x, min_y, max_x, max_y = [float(value) for value in frame["bounds"]]
+            width = max_x - min_x
+            height = max_y - min_y
+            fallback = max(width, height, 1.0)
+            if width == 0:
+                min_x -= fallback / 2
+                max_x += fallback / 2
+            if height == 0:
+                min_y -= fallback / 2
+                max_y += fallback / 2
+            width = max_x - min_x
+            height = max_y - min_y
+            min_x -= width * 0.08
+            max_x += width * 0.08
+            min_y -= height * 0.08
+            max_y += height * 0.08
+            panel_left = 20 + frame_index * (panel_width + panel_gap)
+            panel_right = panel_left + panel_width
+            scale = min(panel_width / (max_x - min_x), plot_height / (max_y - min_y))
+            used_width = (max_x - min_x) * scale
+            used_height = (max_y - min_y) * scale
+            left = panel_left + (panel_width - used_width) / 2
+            top = plot_top + (plot_height - used_height) / 2
+            translate_x = left - min_x * scale
+            translate_y = top + max_y * scale
+            layouts[frame_id] = {
+                "scale": scale,
+                "translate_x": translate_x,
+                "translate_y": translate_y,
+            }
+            backgrounds.append(
+                f'<rect class="plot-background" x="{panel_left:.12g}" y="{plot_top}" '
+                f'width="{panel_width:.12g}" height="{plot_height}" fill="#fbfcfd"/>'
             )
-            next_value = value + step
-            if next_value <= value:
-                break
-            value = next_value
-        value = first_y
-        for _ in range(32):
-            if value > max_y + step * 1e-9:
-                break
-            y = translate_y - value * scale
-            grid.append(
-                f'<line x1="20" y1="{y:.12g}" x2="580" y2="{y:.12g}" '
-                'stroke="#dce2e7" stroke-width="1"/>'
-            )
-            next_value = value + step
-            if next_value <= value:
-                break
-            value = next_value
+            if frame_count > 1:
+                frame_label = str(frame.get("label", frame_id))
+                frame_labels.append(
+                    f'<text class="frame-label" x="{(panel_left + panel_right) / 2:.12g}" y="20" '
+                    f'text-anchor="middle">{html.escape(frame_label)}</text>'
+                )
+
+            step = self.grid_step(max(max_x - min_x, max_y - min_y))
+            first_x = math.ceil(min_x / step) * step
+            first_y = math.ceil(min_y / step) * step
+            value = first_x
+            for _ in range(32):
+                if value > max_x + step * 1e-9:
+                    break
+                x = translate_x + value * scale
+                grid.append(
+                    f'<line x1="{x:.12g}" y1="{plot_top}" x2="{x:.12g}" y2="{plot_bottom}" '
+                    'stroke="#dce2e7" stroke-width="1"/>'
+                )
+                next_value = value + step
+                if next_value <= value:
+                    break
+                value = next_value
+            value = first_y
+            for _ in range(32):
+                if value > max_y + step * 1e-9:
+                    break
+                y = translate_y - value * scale
+                grid.append(
+                    f'<line x1="{panel_left:.12g}" y1="{y:.12g}" '
+                    f'x2="{panel_right:.12g}" y2="{y:.12g}" '
+                    'stroke="#dce2e7" stroke-width="1"/>'
+                )
+                next_value = value + step
+                if next_value <= value:
+                    break
+                value = next_value
 
         area_groups = []
         line_groups = []
@@ -1114,15 +1258,19 @@ FROM dimensions
             parts_by_ord.setdefault(part["ord"], []).append(part)
         for ordinal, parts in sorted(parts_by_ord.items()):
             source = parts[0]["source"]
+            frame_id = str(parts[0].get("frame", frames[0]["id"]))
+            layout = layouts[frame_id]
+            scale = layout["scale"]
             source_index = source_indexes[source]
             source_indexes[source] += 1
             color = SVG_PALETTES[source][source_index % len(SVG_PALETTES[source])]
             geometry_id = f"{visual_id}-{source.lower()}-{source_index + 1}"
             shapes = []
+            root_type = parts[0].get("root_type", "").upper()
             multipart_areas = len(parts) > 1 and all(part["type"].upper() in {
                 "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
                 "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
-            } for part in parts)
+            } for part in parts) and root_type != "POLYHEDRALSURFACE"
             for part_index, part in enumerate(parts):
                 part_color = (
                     SVG_PALETTES[source][(source_index + part_index) % len(SVG_PALETTES[source])]
@@ -1153,7 +1301,12 @@ FROM dimensions
                         "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
                     } else "line"
                     fill = color if dimension_class == "area" else "none"
-                    stroke_width = (5 if source == "Code" and dimension_class == "line" else 3) / scale
+                    stroke_pixels = (
+                        5 if source == "Code" and dimension_class == "line"
+                        else 1.8 if root_type == "POLYHEDRALSURFACE"
+                        else 3
+                    )
+                    stroke_width = stroke_pixels / scale
                     shapes.append(
                         f'<path class="{dimension_class}" d="{svg_data}" '
                         f'stroke="{part_color}" fill="{part_color if dimension_class == "area" else fill}" '
@@ -1193,7 +1346,10 @@ FROM dimensions
                             f'stroke-width="{0.8 / scale:.12g}"/>'
                         )
             group_svg = (
-                f'<g class="geometry-layer" opacity="1" data-postgis-geometry-id="{geometry_id}">' +
+                f'<g class="geometry-layer" opacity="1" data-postgis-geometry-id="{geometry_id}" '
+                f'data-postgis-frame="{html.escape(frame_id, quote=True)}" '
+                f'transform="matrix({scale:.12g} 0 0 {scale:.12g} '
+                f'{layout["translate_x"]:.12g} {layout["translate_y"]:.12g})">' +
                 "".join(shapes) + "</g>"
             )
             if all(part["type"].upper() in POINT_TYPES for part in parts):
@@ -1230,11 +1386,10 @@ FROM dimensions
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="{svg_height}" viewBox="0 0 600 {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
             f'<title id="{safe_id}-title">Input and output geometries for {safe_id}</title>\n'
-            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.geometry-layer{opacity:1;transition:opacity 90ms ease}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font:12px sans-serif;fill:#344}svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}.geometry-layer.active{filter:brightness(.72)}</style>\n'
-            '<rect class="plot-background" x="20" y="12" width="560" height="310" fill="#fbfcfd"/>\n'
+            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.frame-label{font-family:sans-serif;font-size:12px;font-weight:600;fill:#344}.geometry-layer{opacity:1;transition:opacity 90ms ease}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font-family:sans-serif;font-size:12px;fill:#344}svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}.geometry-layer.active{filter:brightness(.72)}</style>\n'
+            + "".join(backgrounds) + "\n" + "".join(frame_labels) + "\n"
             '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
-            f'<g transform="matrix({scale:.12g} 0 0 {scale:.12g} {translate_x:.12g} {translate_y:.12g})">'
-            + "".join(area_groups + line_groups + point_groups) + '</g>\n' + "".join(legend_svg) + '\n</svg>\n'
+            + "".join(area_groups + line_groups + point_groups) + '\n' + "".join(legend_svg) + '\n</svg>\n'
         )
 
     def publish_visual_examples(self, render_dir, visuals):
@@ -1257,16 +1412,24 @@ FROM dimensions
                     "refentry": visual["refentry"],
                     "screen": visual["screen"],
                     "source": visual["source"],
+                    "layers": visual.get("layers", []),
                 })
             (temporary / "manifest.json").write_text(
                 json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
             )
             manifest_root = ET.Element("visual-examples")
             for item in manifest:
-                ET.SubElement(manifest_root, "visual", {
+                visual_node = ET.SubElement(manifest_root, "visual", {
                     key: ("true" if value is True else "false" if value is False else str(value))
                     for key, value in item.items()
+                    if key != "layers"
                 })
+                for layer in item["layers"]:
+                    ET.SubElement(visual_node, "layer", {
+                        key: ("true" if value is True else "false" if value is False else str(value))
+                        for key, value in layer.items()
+                        if value is not None
+                    })
             ET.ElementTree(manifest_root).write(
                 temporary / "manifest.xml", encoding="utf-8", xml_declaration=True
             )

@@ -699,6 +699,16 @@
     });
   }
 
+  function previousVisualStackSibling(node) {
+    var sibling = node && node.previousElementSibling;
+    while (sibling && sibling.tagName === 'P' && !sibling.textContent.trim() && !sibling.children.length) {
+      var emptyParagraph = sibling;
+      sibling = sibling.previousElementSibling;
+      emptyParagraph.parentNode.removeChild(emptyParagraph);
+    }
+    return sibling;
+  }
+
   function enhanceBuiltGeometryFigures() {
     var figures = document.querySelectorAll('[data-postgis-built-geometry="true"]');
     for (var i = 0; i < figures.length; i += 1) {
@@ -709,10 +719,12 @@
       var object = figure.querySelector('object.postgis-geometry-figure-body');
       if (!visualId || !object) continue;
 
-      var output = figure.previousElementSibling;
-      var code = output && output.previousElementSibling;
+      var output = previousVisualStackSibling(figure);
+      var code = previousVisualStackSibling(output);
       if (!output || !output.matches('.postgis-example-output') ||
-          !code || !code.matches('.postgis-example-code')) continue;
+          !code || !code.matches('.postgis-example-code') ||
+          output.getAttribute('data-postgis-visual-id') !== visualId ||
+          code.getAttribute('data-postgis-visual-id') !== visualId) continue;
 
       var codePre = code.querySelector('pre.programlisting');
       var outputPre = output.querySelector('pre.screen');
@@ -908,6 +920,7 @@
     normalizeRefIndex: normalizeRefIndex,
     highlightSql: highlightSql,
     currentFunctionName: currentFunctionName,
+    previousVisualStackSibling: previousVisualStackSibling,
     updateWrapIndicators: updateWrapIndicators
   };
 }());

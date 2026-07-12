@@ -1509,7 +1509,8 @@ ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5,2 6)'::geometry)
 	  </refsection>
 
 	  <refsection>
-		<title>Examples - A single geometry with srsName</title>
+		<title>Examples</title>
+		<para>A single geometry with srsName.</para>
 		<programlisting language="sql"><![CDATA[
 SELECT ST_GeomFromGML($$
     <gml:LineString xmlns:gml="http://www.opengis.net/gml"
@@ -1521,10 +1522,8 @@ SELECT ST_GeomFromGML($$
 $$);
 ]]>
         </programlisting>
-	  </refsection>
 
-	  <refsection>
-		<title>Examples - XLink usage</title>
+		<para>XLink usage.</para>
 		<programlisting language="sql"><![CDATA[
 SELECT ST_GeomFromGML($$
     <gml:LineString xmlns:gml="http://www.opengis.net/gml"
@@ -1541,10 +1540,8 @@ SELECT ST_GeomFromGML($$
 $$);
 ]]>
         </programlisting>
-	  </refsection>
 
-	 <refsection>
-		<title>Examples - Polyhedral Surface</title>
+		<para>Polyhedral Surface.</para>
 		<programlisting language="sql"><![CDATA[
 SELECT ST_AsEWKT(ST_GeomFromGML('
 <gml:PolyhedralSurface xmlns:gml="http://www.opengis.net/gml">

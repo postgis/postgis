@@ -839,12 +839,12 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
     </refsection>
 
     <refsection>
-    <title>Examples: Version 2</title>
+    <title>Examples</title>
+    <para>Version 2.</para>
     <programlisting>SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
     <screen><![CDATA[<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]></screen>
-    </refsection>
-    <refsection>
-    <title>Examples: Version 3</title>
+
+    <para>Version 3.</para>
     <para>Flip coordinates and output extended EPSG (16 | 1)</para>
     <programlisting>SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)', 4326), 5, 17);</programlisting>
     <screen><![CDATA[<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">6.34535 5.23423</gml:pos></gml:Point>]]></screen>
@@ -1638,7 +1638,8 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     </refsection>
 
     <refsection>
-    <title>Example: Create a fully functional X3D document - This will generate a cube that is viewable in FreeWrl and other X3D viewers.</title>
+    <title>Examples</title>
+    <para>Create a complete X3D document containing a cube that is viewable in FreeWRL and other X3D viewers.</para>
     <programlisting><![CDATA[
 SELECT '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
@@ -1677,9 +1678,7 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
   </Scene>
 </X3D>
 ]]></screen>
-    </refsection>
-      <refsection>
-         <title>PostGIS buildings</title>
+         <para>PostGIS buildings.</para>
          <para>
             Copy and paste the output of this query to
             <link xlink:href="http://postgis.net/docs/support/viewers/x3d_viewer.htm">x3d scene viewer</link>
@@ -1701,9 +1700,7 @@ FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
                 <caption><para>Buildings formed by subdividing PostGIS and extrusion</para></caption>
             </mediaobject>
         </informalfigure>
-      </refsection>
-     <refsection>
-    <title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
+    <para>An Octagon elevated 3 Units and decimal precision of 6.</para>
     <programlisting><![CDATA[
 SELECT ST_AsX3D(ST_Translate(ST_Force3D(ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
     3),
@@ -1713,9 +1710,8 @@ SELECT ST_AsX3D(ST_Translate(ST_Force3D(ST_Buffer(ST_Point(10,10),5, 'quad_segs=
 --------
 <IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><Coordinate point='15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 ' /></IndexedFaceSet>
 ]]></screen>
-    </refsection>
-    <refsection>
-    <title>Example: TIN</title>
+
+    <para>TIN.</para>
     <programlisting><![CDATA[
 SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
                 0 0 0,
@@ -1734,9 +1730,8 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
     --------
 <IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>
 ]]></screen>
-    </refsection>
-    <refsection>
-    <title>Example: Closed multilinestring (the boundary of a polygon with holes)</title>
+
+    <para>Closed multilinestring (the boundary of a polygon with holes).</para>
     <programlisting><![CDATA[
 SELECT ST_AsX3D(ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
   (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')

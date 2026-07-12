@@ -231,6 +231,22 @@ async function main() {
     { filename: 'example-blocks.js' });
   const geometry = sandbox.window.POSTGIS_EXAMPLE_BLOCKS_TEST;
 
+  const stackCode = { tagName: 'DIV', textContent: 'code', children: [] };
+  const stackOutput = { tagName: 'DIV', textContent: 'output', children: [], previousElementSibling: stackCode };
+  const emptyStackParagraph = {
+    tagName: 'P', textContent: '  ', children: [], previousElementSibling: stackOutput
+  };
+  const stackFigure = { previousElementSibling: emptyStackParagraph };
+  const stackParent = {
+    removeChild(node) {
+      assert.strictEqual(node, emptyStackParagraph);
+      stackFigure.previousElementSibling = node.previousElementSibling;
+    }
+  };
+  emptyStackParagraph.parentNode = stackParent;
+  assert.strictEqual(geometry.previousVisualStackSibling(stackFigure), stackOutput);
+  assert.strictEqual(geometry.previousVisualStackSibling(stackOutput), stackCode);
+
   function geometryTexts(text, quotedOnly) {
     return geometry.scanGeometryCandidates(text, quotedOnly).map((match) => match.text);
   }

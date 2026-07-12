@@ -123,11 +123,38 @@
       <xsl:when test="$looks.like.sql">sql</xsl:when>
     </xsl:choose>
   </xsl:variable>
+  <xsl:variable name="next.screen" select="following-sibling::*[1][self::d:screen]"/>
+  <xsl:variable name="next.screen.role.tokens"
+                select="concat(' ', normalize-space($next.screen/@role), ' ')"/>
+  <xsl:variable name="next.refentry.id" select="string(ancestor::d:refentry[1]/@xml:id)"/>
+  <xsl:variable name="next.screen.ordinal">
+    <xsl:choose>
+      <xsl:when test="$next.refentry.id != ''">
+        <xsl:value-of select="count($next.screen/preceding::d:screen[ancestor::d:refentry[1]/@xml:id = $next.refentry.id]) + 1"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="count($next.screen/preceding::d:screen[not(ancestor::d:refentry)]) + 1"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="next.manifest.visual"
+                select="document($postgis.visual.manifest)/visual-examples/visual[@refentry = $next.refentry.id and @screen = string($next.screen.ordinal)]"/>
+  <xsl:variable name="visual.id">
+    <xsl:choose>
+      <xsl:when test="$next.screen and contains($next.screen.role.tokens, ' visual-primary ') and $next.screen/@xml:id">
+        <xsl:value-of select="$next.screen/@xml:id"/>
+      </xsl:when>
+      <xsl:when test="$next.screen"><xsl:value-of select="$next.manifest.visual/@id"/></xsl:when>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="rendered.block">
     <xsl:apply-imports/>
   </xsl:variable>
 
   <div role="group" data-postgis-block="code">
+    <xsl:if test="string($visual.id) != ''">
+      <xsl:attribute name="data-postgis-visual-id"><xsl:value-of select="$visual.id"/></xsl:attribute>
+    </xsl:if>
     <xsl:attribute name="class">
       <xsl:text>postgis-example-block postgis-example-code</xsl:text>
       <xsl:if test="$effective.language != ''">
@@ -208,6 +235,9 @@
                              or (not($manifest.visual) and contains($role.tokens, ' visual-primary ')))"/>
 
   <div class="postgis-example-block postgis-example-output" role="group" data-postgis-block="output">
+    <xsl:if test="string($visual.id) != ''">
+      <xsl:attribute name="data-postgis-visual-id"><xsl:value-of select="$visual.id"/></xsl:attribute>
+    </xsl:if>
     <xsl:if test="$visual.preferred">
       <xsl:attribute name="data-postgis-output-preference">visual</xsl:attribute>
     </xsl:if>

@@ -275,11 +275,11 @@ VALUES (1,
             </variablelist>
           </refsection>
           <refsection>
-              <title>Example: Reclassify band 2 as an 8BUI where 255 is nodata value</title>
+              <title>Examples</title>
+              <para>Reclassify band 2 as an 8BUI where 255 is nodata value.</para>
               <programlisting>SELECT ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)::reclassarg;</programlisting>
-          </refsection>
-          <refsection>
-              <title>Example: Reclassify band 1 as an 1BB and no nodata value defined</title>
+
+              <para>Reclassify band 1 as an 1BB and no nodata value defined.</para>
               <programlisting>SELECT ROW(1, '0-100]:0, (100-255:1', '1BB', NULL)::reclassarg;</programlisting>
           </refsection>
            <refsection>
@@ -609,7 +609,8 @@ VALUES (1,
       </refsection>
 
       <refsection>
-        <title>Examples: Apply all possible constraints on column based on data</title>
+        <title>Examples</title>
+        <para>Apply all possible constraints on column based on data.</para>
 
         <programlisting>CREATE TABLE myrasters(rid SERIAL primary key, rast raster);
 INSERT INTO myrasters(rast)
@@ -625,10 +626,8 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 <screen> srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
 ------+---------+---------+-------------+-------------+-----------+-------------+---------------
  4326 |       2 |       2 |        1000 |        1000 |         1 | {8BSI}      | {0}</screen>
-      </refsection>
 
-       <refsection>
-        <title>Examples: Apply single constraint</title>
+        <para>Apply single constraint.</para>
 
         <programlisting>CREATE TABLE public.myrasters2(rid SERIAL primary key, rast raster);
 INSERT INTO myrasters2(rast)
@@ -1111,7 +1110,8 @@ will be used.
       </refsection>
 
       <refsection>
-        <title>Examples: List of Drivers</title>
+        <title>Examples</title>
+        <para>List of Drivers.</para>
 
         <programlisting>SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SELECT short_name, long_name, can_write
@@ -1172,8 +1172,8 @@ ORDER BY short_name;</programlisting>
  XPM             | X11 PixMap Format                                           | t
  XYZ             | ASCII Gridded XYZ                                           | t
  ZMap            | ZMap Plus Grid                                              | t</screen>
-</refsection>
-<refsection><title>Example: List of options for each driver</title>
+
+<para>List of options for each driver.</para>
 <para>Output the create options XML column of JPEG as a table. These creator options can be used in the ST_AsGDALRaster options argument.</para>
 <programlisting>
 SELECT (xpath('@name', g.opt))[1]::text As oname,
@@ -1513,7 +1513,8 @@ constraints enforced.
             </refsection>
 
             <refsection>
-                <title>Examples: Single New Band</title>
+                <title>Examples</title>
+                <para>Single New Band.</para>
 
                 <para>This example adds another 8-bit unsigned integer band with pixels initialized to 200.</para>
                 <programlisting>
@@ -1550,10 +1551,8 @@ FROM (SELECT ST_MetaData(rast) As rmd
 ------------+------------+-------+--------+------------+------------+-------+-------+------+----------
           0 |          0 |   100 |    100 |      1 |     -1 |     0 |     0 |   0 |        2
                 </screen>
-            </refsection>
 
-            <refsection>
-                <title>Examples: Multiple New Bands</title>
+                <para>Multiple New Bands.</para>
 
                 <programlisting>
 SELECT
@@ -1583,10 +1582,8 @@ SELECT
 FROM mice_studies
 GROUP BY mouse;
                 </programlisting>
-            </refsection>
 
-            <refsection>
-                <title>Examples: New Out-db band</title>
+                <para>New Out-db band.</para>
                 <programlisting>
 SELECT
     *
@@ -2728,7 +2725,8 @@ FROM dummy_rast;</programlisting>
             </refsection>
 
             <refsection>
-                <title>Examples: Rasters with no skew</title>
+                <title>Examples</title>
+                <para>Rasters with no skew.</para>
 
                 <programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,
  ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
@@ -2739,10 +2737,8 @@ FROM dummy_rast;</programlisting>
          20 |         3 |      2 |      3 |     0 |        0
           5 |      0.05 |   0.05 |  -0.05 |     0 |        0</screen>
 
-        </refsection>
 
-        <refsection>
-                <title>Examples: Rasters with skew different than 0</title>
+                <para>Rasters with skew different than 0.</para>
 
                 <programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,
  ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
@@ -2803,7 +2799,8 @@ FROM (SELECT ST_SetSkew(rast, 0.5, 0.5) As rast
         </refsection>
 
         <refsection>
-            <title>Examples: Rasters with no skew</title>
+            <title>Examples</title>
+            <para>Rasters with no skew.</para>
 
             <programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,
 ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
@@ -2814,10 +2811,8 @@ FROM dummy_rast;</programlisting>
 10 |        2 |      2 |      3 |     0 |        0
  5 |     0.05 |   0.05 |  -0.05 |     0 |        0</screen>
 
-    </refsection>
 
-    <refsection>
-            <title>Examples: Rasters with skew different than 0</title>
+            <para>Rasters with skew different than 0.</para>
 
             <programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,
 ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
@@ -3729,7 +3724,8 @@ FROM dummy_rast;</programlisting>
             </refsection>
 
             <refsection>
-                <title>Examples: Variant 1</title>
+                <title>Examples</title>
+                <para>Variant 1.</para>
 
                 <programlisting>
 SELECT
@@ -3749,10 +3745,8 @@ FROM (
 (1 row)
                 </screen>
 
-            </refsection>
 
-            <refsection>
-                <title>Examples: Variant 2</title>
+                <para>Variant 2.</para>
 
                 <programlisting>
 WITH foo AS (
@@ -5407,7 +5401,8 @@ UPDATE dummy_rast SET rast = ST_SetValue(rast, 1, ST_Point(3427927.75, 5793243.9
             </refsection>
 
             <refsection>
-                <title>Examples: Variant 1</title>
+                <title>Examples</title>
+                <para>Variant 1.</para>
 
                 <programlisting><![CDATA[
 
@@ -5570,10 +5565,8 @@ ORDER BY 1, 2;</programlisting>
  3 | 2 |   9
  3 | 3 |   9</screen>
 
-            </refsection>
 
-            <refsection>
-                <title>Examples: Variant 2</title>
+                <para>Variant 2.</para>
 
                 <programlisting>
 /*
@@ -5653,10 +5646,8 @@ ORDER BY 1, 2;</programlisting>
  3 | 2 |   9
  3 | 3 |   9</screen>
 
-            </refsection>
 
-            <refsection>
-                <title>Examples: Variant 3</title>
+                <para>Variant 3.</para>
 
                 <programlisting>
 /*
@@ -5736,10 +5727,8 @@ ORDER BY 1, 2;</programlisting>
  3 | 2 |   9
  3 | 3 |   9</screen>
 
-            </refsection>
 
-            <refsection>
-                <title>Examples: Variant 5</title>
+                <para>Variant 5.</para>
 
                 <programlisting>
 WITH foo AS (
@@ -7006,10 +6995,8 @@ ST_Transform(rast, 4326, 'Bilinear') AS wgs_84_bilin
     </tbody>
 </tgroup>
 </informaltable>
-            </refsection>
 
-            <refsection>
-                <title>Examples: Variant 3</title>
+                <para>Variant 3.</para>
 
                 <para>The following shows the difference between using ST_Transform(raster, srid) and ST_Transform(raster, alignto)</para>
                 <programlisting>
@@ -7633,7 +7620,8 @@ FROM foo;</programlisting>
             </refsection>
 
             <refsection>
-                <title>Example: Single raster tile - compute histograms for bands 1, 2, 3 and autocompute bins</title>
+                <title>Examples</title>
+                <para>Single raster tile - compute histograms for bands 1, 2, 3 and autocompute bins.</para>
                 <programlisting>SELECT band, (stats).*
 FROM (SELECT rid, band, ST_Histogram(rast, band) As stats
     FROM dummy_rast CROSS JOIN generate_series(1, 3) As band
@@ -7655,10 +7643,8 @@ FROM (SELECT rid, band, ST_Histogram(rast, band) As stats
     3 | 138.8 | 177.2 |     4 |    0.16
     3 | 177.2 | 215.6 |     1 |    0.04
     3 | 215.6 |   254 |     4 |    0.16</screen>
-            </refsection>
 
-            <refsection>
-                <title>Example: Just band 2 but for 6 bins</title>
+                <para>Just band 2 but for 6 bins.</para>
                 <programlisting>SELECT (stats).*
 FROM (SELECT rid, ST_Histogram(rast, 2, 6) As stats
     FROM dummy_rast
@@ -7867,7 +7853,8 @@ ORDER BY value, quantile, rid
             </refsection>
 
             <refsection>
-                <title>Example: Single raster tile</title>
+                <title>Examples</title>
+                <para>Single raster tile.</para>
                 <programlisting>
 SELECT rid, band, (stats).*
 FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats
@@ -7878,10 +7865,8 @@ FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats
    2 |    1 |    23 | 5821 | 253.086957 |  1.248061 | 250 | 254
    2 |    2 |    25 | 3682 |     147.28 | 59.862188 |  78 | 254
    2 |    3 |    25 | 3290 |      131.6 | 61.647384 |  62 | 254</screen>
-            </refsection>
 
-            <refsection>
-                <title>Example: Summarize pixels that intersect buildings of interest</title>
+                <para>Summarize pixels that intersect buildings of interest.</para>
                 <para>This example took 574ms on PostGIS windows 64-bit with all of Boston Buildings
 and aerial Tiles (tiles each 150x150 pixels ~ 134,000 tiles), ~102,000 building records</para>
                 <programlisting><![CDATA[
@@ -7916,10 +7901,8 @@ SELECT building_id, SUM(count) As num_pixels,
         103 |        655 |        7 |      182 | 70.5038167938931
         150 |        895 |        2 |      252 | 185.642458100559
 </screen>
-            </refsection>
 
-            <refsection>
-                <title>Example: Raster coverage</title>
+                <para>Raster coverage.</para>
                 <para>This example returns statistics for each band.</para>
                 <programlisting>
 SELECT band, (stats).*
@@ -8959,7 +8942,8 @@ FROM dummy_rast WHERE rid=2;
                     </para>
                 </refsection>
 
-                <refsection><title>Examples: Comparing selecting all touched vs. not all touched</title>
+                <refsection><title>Examples</title>
+<para>Comparing selecting all touched vs. not all touched.</para>
                         <programlisting><![CDATA[SELECT ST_Count(rast) AS count_pixels_in_orig, ST_Count(rast_touched) AS all_touched_pixels, ST_Count(rast_not_touched) AS default_clip
 FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
     INNER JOIN ST_GeomFromText('LINESTRING(0 1,5 6,10 10)') AS g(geom)
@@ -8970,9 +8954,8 @@ FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
 ----------------------+--------------------+--------------
                  2605 |                 16 |           10
 (1 row)</screen>
-                </refsection>
-                <refsection>
-                    <title>Examples: 1 band clipping (not touched)</title>
+
+                    <para>1 band clipping (not touched).</para>
                     <para>Clip the first band of an aerial tile by a 20 meter buffer.</para>
                     <programlisting>
 SELECT ST_Clip(
@@ -9032,10 +9015,8 @@ WHERE rid = 6) As foo;</programlisting>
                             </tbody>
                         </tgroup>
                     </informaltable>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: 1 band clipping with no crop and add back other bands unchanged</title>
+                    <para>1 band clipping with no crop and add back other bands unchanged.</para>
 
                     <para>Same example as before, but we need to set crop to false to be able to use ST_AddBand. Because ST_AddBand requires all bands be the same Width and height.</para>
                     <programlisting>
@@ -9087,10 +9068,7 @@ WHERE rid = 6;
                             </tbody>
                         </tgroup>
                     </informaltable>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Clip all bands</title>
 
                     <para>Clip all bands of an aerial tile by a 20 meter buffer. Only difference is we don't specify a specific band to clip. So all bands are clipped.</para>
                     <programlisting>
@@ -9324,10 +9302,8 @@ FROM funky_shapes;
 --------+-------+---------+-------+----------+------
       1 |     1 |       4 |     4 |        4 |    3
                     </screen>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Compare different color map looks using ST_AsPNG</title>
+                    <para>Compare different color map looks using ST_AsPNG.</para>
                     <programlisting>
 SELECT
     ST_AsPNG(rast) As orig_png,
@@ -9503,7 +9479,8 @@ FROM funky_shapes;
                 </refsection>
 
                 <refsection>
-                    <title>Examples: Variant 1</title>
+                    <title>Examples</title>
+                    <para>Variant 1.</para>
 
                     <programlisting>
 SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
@@ -9558,10 +9535,8 @@ FROM apple;
                         </tgroup>
                     </informaltable>
 
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Variant 2</title>
+                    <para>Variant 2.</para>
 
                     <programlisting>
 SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
@@ -10001,7 +9976,8 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
                 </refsection>
 
                 <refsection>
-                    <title>Examples: Variant 1</title>
+                    <title>Examples</title>
+                    <para>Variant 1.</para>
 
                     <para>One raster, one band</para>
                     <programlisting>
@@ -10119,10 +10095,8 @@ SELECT
     ST_Value(rast, 1, 1, 1)
 FROM bar;
                     </programlisting>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Variants 2 and 3</title>
+                    <para>Variants 2 and 3.</para>
 
                     <para>One raster, several bands</para>
                     <programlisting>
@@ -10151,10 +10125,8 @@ SELECT
     ) AS rast
 FROM foo
                     </programlisting>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Variant 4</title>
+                    <para>Variant 4.</para>
 
                     <para>Two rasters, two bands</para>
                     <programlisting>
@@ -10176,10 +10148,8 @@ WHERE t1.rid = 1
     AND t2.rid = 2
                     </programlisting>
 
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Using Masks</title>
+                    <para>Using Masks.</para>
                     <programlisting>
 WITH foo AS (SELECT
    ST_SetBandNoDataValue(ST_SetValue(ST_SetValue(ST_AsRaster(ST_Buffer('LINESTRING(50 50,100 90,100 50)'::geometry, 5, 'join=bevel'),
@@ -10496,7 +10466,8 @@ FROM foo;
                 </refsection>
 
                 <refsection>
-                    <title>Examples: Variants 1 and 2</title>
+                    <title>Examples</title>
+                    <para>Variants 1 and 2.</para>
 
                     <programlisting>
 WITH foo AS (
@@ -10506,10 +10477,8 @@ SELECT
     ST_MapAlgebra(rast, 1, NULL, 'ceil([rast]*[rast.x]/[rast.y]+[rast.val])')
 FROM foo;
                     </programlisting>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Variant 3 and 4</title>
+                    <para>Variant 3 and 4.</para>
 
                     <programlisting>
 WITH foo AS (
@@ -10850,7 +10819,8 @@ WHERE rid=167;
                 </refsection>
 
                 <refsection>
-                    <title>Example: 2 Band Intersection and Union</title>
+                    <title>Examples</title>
+                    <para>2 Band Intersection and Union.</para>
 
                     <para>Create a new 1 band raster from our original that is  a function of modulo 2 of the original raster band.</para>
                     <para>Create a cool set of rasters.</para>
@@ -10922,10 +10892,8 @@ FROM fun_shapes WHERE
                             </tbody>
                         </tgroup>
                     </informaltable>
-                </refsection>
 
-                <refsection>
-                    <title>Example: Overlaying rasters on a canvas as separate bands</title>
+                    <para>Overlaying rasters on a canvas as separate bands.</para>
                     <para>We use ST_AsPNG to render the image so all single band ones look grey.</para>
                     <programlisting>
 WITH mygeoms
@@ -11028,10 +10996,8 @@ WITH mygeoms
                             </tbody>
                         </tgroup>
                     </informaltable>
-                </refsection>
 
-                <refsection>
-                    <title>Example: Overlay 2 meter boundary of select parcels over an aerial imagery</title>
+                    <para>Overlay 2 meter boundary of select parcels over an aerial imagery.</para>
 
                     <para>Create new 3 band raster composed of first 2 clipped bands, and overlay of 3rd band with our geometry. This query took 3.6 seconds on PostGIS windows 64-bit install.</para>
                     <programlisting>
@@ -11827,7 +11793,8 @@ SELECT ST_MapAlgebraFctNgb(
                 </refsection>
 
                 <refsection>
-                    <title>Example: Basic</title>
+                    <title>Examples</title>
+                    <para>Basic.</para>
                     <para>Create a new raster from the original where band 2 is converted from 8BUI to 4BUI and all values from 101-254 are set to nodata value.</para>
                     <programlisting>
 ALTER TABLE dummy_rast ADD COLUMN reclass_rast raster;
@@ -11849,10 +11816,8 @@ WHERE rid = 2;</programlisting>
    1 |   3 |      99 |         15 |                        15
    2 |   3 |     112 |            |                         0
    3 |   3 |     169 |            |                         0</screen>
-                </refsection>
 
-                <refsection>
-                    <title>Example: Advanced using multiple reclassargs</title>
+                    <para>Advanced using multiple reclassargs.</para>
 
                     <para>Create a new raster from the original where band 1,2,3 is converted to 1BB,4BUI, 4BUI respectively and reclassified. Note this uses the variadic <varname>reclassarg</varname> argument which can take as input an indefinite number of reclassargs (theoretically as many bands as you have) </para>
                     <programlisting>
@@ -11880,10 +11845,8 @@ WHERE rid = 2;</programlisting>
   1 |   3 | 250 |   1 |  99 |  15 |  90 |   3
   2 |   3 | 254 |   0 | 112 |   0 | 108 |   3
   3 |   3 | 254 |   0 | 169 |   0 | 175 |   4</screen>
-                </refsection>
 
-                <refsection>
-                    <title>Example: Advanced Map a single band 32BF raster to multiple viewable bands</title>
+                    <para>Advanced Map a single band 32BF raster to multiple viewable bands.</para>
                     <para>Create a new 3 band (8BUI,8BUI,8BUI viewable raster) from a raster that has only one 32bf band </para>
                     <programlisting>
 ALTER TABLE wind ADD COLUMN rast_view raster;
@@ -12075,25 +12038,23 @@ FROM rc;
                     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of all input rasters.</para>
                 </refsection>
                 <refsection>
-                    <title>Examples: Reconstitute a single band chunked raster tile</title>
+                    <title>Examples</title>
+                    <para>Reconstitute a single band chunked raster tile.</para>
                     <para>This creates a single band from first band of raster tiles. That form the original file system tile.</para>
                     <programlisting>
 SELECT filename, ST_Union(rast, 1) As file_rast
 FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;
                     </programlisting>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
+                    <para>Return a multi-band raster that is the union of tiles intersecting geometry.</para>
                     <para>This creates a multi band raster collecting all the tiles that intersect a line. Note that In 2.0, this would have just returned a single band raster. , new union works on all bands by default. This is equivalent to unionarg: ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[].</para>
                     <programlisting>
 SELECT ST_Union(rast)
 FROM aerials.boston
 WHERE ST_Intersects(rast, ST_GeomFromText('LINESTRING(230486 887771,230500 88772)', 26986) );
                     </programlisting>
-                </refsection>
-                <refsection>
-                    <title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
+
+                    <para>Select and reorder bands while unioning tiles that intersect a geometry.</para>
                     <para>Here we use the longer syntax if we only wanted a subset of bands or we want to change order of bands</para>
                     <para>This creates a multi band raster collecting all the tiles that intersect a line.</para>
                     <programlisting>
@@ -12426,7 +12387,8 @@ WHERE rid = 2;</programlisting>
             </refsection>
 
                 <refsection>
-                    <title>Examples: Variant 1</title>
+                    <title>Examples</title>
+                    <para>Variant 1.</para>
 
                     <programlisting>SELECT
     rid,
@@ -12439,10 +12401,8 @@ WHERE rid = 2;</programlisting>
    2 | 253.222229003906
 (1 row)</screen>
 
-            </refsection>
 
-            <refsection>
-                    <title>Examples: Variant 2</title>
+                    <para>Variant 2.</para>
 
                     <programlisting>SELECT
   rid,
@@ -12949,7 +12909,8 @@ WHERE rid = 2;</programlisting>
                 </refsection>
 
                 <refsection>
-                    <title>Examples: Variant 1</title>
+                    <title>Examples</title>
+                    <para>Variant 1.</para>
                     <programlisting>
 WITH foo AS (
     SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
@@ -12972,10 +12933,8 @@ FROM foo
  (1,"{{315,341.565063476562,0,18.4349479675293,45},{288.434936523438,315,0,45,71.5650482177734},{270,270,-1,90,90},{251.565048217773,225,180,135,108.434951782227},{225,198.43495178
 2227,180,161.565048217773,135}}")
 (1 row)</screen>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Variant 2</title>
+                    <para>Variant 2.</para>
 
                     <para>Complete example of tiles of a coverage.</para>
 
@@ -13091,7 +13050,8 @@ GROUP BY t1.rast;
                 </refsection>
 
                 <refsection>
-                    <title>Examples: Variant 1</title>
+                    <title>Examples</title>
+                    <para>Variant 1.</para>
                     <programlisting>
 WITH foo AS (
     SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
@@ -13114,10 +13074,8 @@ FROM foo
  (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,251.32763671875,220.749786376953,147.224319458008,NULL},{NULL,220.749786376953,180.312225341797,67.7497863769531,NULL},{NULL,147.224319458008,
 67.7497863769531,43.1210060119629,NULL},{NULL,NULL,NULL,NULL,NULL}}")
 (1 row)</screen>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Variant 2</title>
+                    <para>Variant 2.</para>
 
                     <para>Complete example of tiles of a coverage.</para>
 
@@ -13277,7 +13235,8 @@ FROM foo;</programlisting>
                 </refsection>
 
                 <refsection>
-                    <title>Examples: Variant 1</title>
+                    <title>Examples</title>
+                    <para>Variant 1.</para>
                     <programlisting>
 WITH foo AS (
     SELECT ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
@@ -13302,10 +13261,8 @@ FROM foo
 {26.5650520324707,36.8698959350586,0,36.8698959350586,26.5650520324707},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},{10.0249881744385,21.
 5681285858154,26.5650520324707,21.5681285858154,10.0249881744385}}")
 (1 row)</screen>
-                </refsection>
 
-                <refsection>
-                    <title>Examples: Variant 2</title>
+                    <para>Variant 2.</para>
 
                     <para>Complete example of tiles of a coverage.</para>
 

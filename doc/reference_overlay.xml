@@ -237,10 +237,7 @@ where ST_Dimension(clipped.clipped_geom) = 1;</programlisting>
 from country
      inner join poly on ST_Intersects(country.geom, poly.geom)
 where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));</programlisting>
-        </refsection>
 
-        <refsection>
-        <title>Examples: 2.5D geometries</title>
         <para>Note this is not a true 3D intersection. It uses 2.5D geometries (geometries with Z ordinates, but where calculations are performed in 2D). Compare to the same example using <xref linkend="CG_3DIntersection"/>.</para>
         <programlisting>
 select ST_AsText(ST_Intersection(linestring, polygon)) As wkt

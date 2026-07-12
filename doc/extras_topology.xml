@@ -3651,14 +3651,13 @@ are expanded to include merged faces (upon removing edges) or healed edges
 
 
 			<refsection>
-				<title>Examples: Form from existing edges</title>
+				<title>Examples</title>
+				<para>Form from existing edges.</para>
 				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>).</para>
 				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo', 2, 2, '{{1,2}}'::topology.topoelementarray);</programlisting>
 
-			</refsection>
 
-				<refsection>
-					<title>Examples: Convert an areal geometry to best guess topogeometry</title>
+					<para>Convert an areal geometry to best guess topogeometry.</para>
 					<para>Lets say we have geometries that should be formed from a collection of faces. We have for example blockgroups table
 						and want to know the topo geometry of each block group. If our data was perfectly aligned, we could do this:</para>
 					<para>Create the topogeometry column.</para>

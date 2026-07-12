@@ -1629,28 +1629,33 @@ UPDATE sometable
 	  <refsection>
 		<title>Examples</title>
 
+		<para>The input polygon has 55 points. The result retains 15 points, while rendering the same shape inside the view envelope.</para>
 		<programlisting language="sql">
 SELECT ST_AsText(ST_RemoveIrrelevantPointsForView(
   'POLYGON((3.2 14.2,6.8 14.2,7.6 11.9,7.2 9.8,7.8 7.2,10.3 7.2,11.5 7.5,13.8 7.2,14.6 5.9,14.2 4.8,14.8 3.2,14.6 0.9,13.2 -1.2,12.8 -3.8,12 -4.1,11 -4,9.8 -4.2,8.8 -4.8,8.3 -2.5,6.5 0.2,5.8 2.2,5.3 0.2,3.5 -1.5,2.8 -3.8,1.6 -4.5,-0.3 -5.2,-2.2 -5.8,-0.9 -4.8,-1.5 -4.4,-1.8 -2.8,-1.2 -1.8,0.5 -1.8,1.8 -1.8,2.3 -0.1,1.5 1.8,1.8 3.2,0 3.5,-3.2 4.2,-5.2 4.2,-4.4 4.9,-4.9 5.5,-4.3 5.9,-3.8 6.4,-3 6.9,-3.2 7.8,-2.2 8.2,-1.7 8.9,-2.7 9.4,-2.2 9.9,-1.4 10.9,-1.8 11.8,-1.2 12.2,-2.3 12.8,-2.9 13.2,0.6 13.5,3.2 14.2))',
   ST_MakeEnvelope(0.1, 0, 10, 10), true), 1);</programlisting>
 <screen>POLYGON((7.6 11.9,7.2 9.8,7.8 7.2,10.3 7.2,11 -4,8.3 -2.5,6.5 0.2,5.8 2.2,5.3 0.2,3.5 -1.5,2.3 -0.1,1.5 1.8,1.8 3.2,0 3.5,-2.9 13.2,7.6 11.9))</screen>
 
+		<para>Only linework affecting the view is retained; existing vertices are reused.</para>
 		<programlisting language="sql">
 SELECT ST_AsText(ST_RemoveIrrelevantPointsForView('MULTILINESTRING((0 0,10 0,20 0,30 0),(0 15,5 15,10 15,15 15,20 15,25 15,30 15,40 15),(13 13,15 15,17 17))',
 ST_MakeEnvelope(12, 12, 18, 18), true));</programlisting>
 <screen>MULTILINESTRING((10 15,15 15,20 15),(13 13,15 15,17 17))</screen>
 
+		<para>A line with no segment relevant to the view becomes empty.</para>
 		<programlisting language="sql">
 SELECT ST_AsText(ST_RemoveIrrelevantPointsForView('LINESTRING(0 0,10 0,20 0,30 0)',
 ST_MakeEnvelope(12, 12, 18, 18), true));</programlisting>
 <screen>LINESTRING EMPTY</screen>
 
+		<para>Removing vertices without computing intersections can introduce self-intersections in the result.</para>
 		<programlisting language="sql">
 SELECT ST_AsText(ST_RemoveIrrelevantPointsForView(
   'POLYGON((0 10,0 0,10 -10,30 0,25 20,10 -5,0 10))',
   ST_MakeEnvelope(-5, 1, 20, 12), true));</programlisting>
 <screen>POLYGON((0 10,0 0,30 0,25 20,10 -5,0 10))</screen>
 
+		<para>With the default <parameter>cartesian_hint</parameter>, the function removes only points known to be irrelevant to the view.</para>
 		<programlisting language="sql">
 SELECT ST_AsText(ST_RemoveIrrelevantPointsForView('POLYGON((0 30,15 30,30 30,30 0,0 0,0 30))',
 ST_MakeEnvelope(12, 12, 18, 18)));</programlisting>

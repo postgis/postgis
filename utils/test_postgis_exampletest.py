@@ -341,13 +341,94 @@ class VisualExampleTest(unittest.TestCase):
         )
         self.assertEqual(["line_a", "point_b"], [candidate.get("label") for candidate in candidates])
 
-    def test_visual_payload_transforms_known_srids_to_output_srid(self):
+    def test_query_output_headers_use_only_outer_select_aliases(self):
+        headers = self.tester.query_output_headers(
+            "WITH data AS (SELECT 'POINT(0 0)'::geometry AS inner_geom), "
+            "projected AS (SELECT inner_geom AS other_inner FROM data) "
+            "SELECT ST_AsText(other_inner) AS input_geometry, "
+            "ST_AsText(ST_Buffer(other_inner, 1)) AS result_geometry FROM projected"
+        )
+        self.assertEqual(["input_geometry", "result_geometry"], headers)
+
+    def test_documented_visual_uses_query_aliases_for_layer_roles(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": 0, "y": 0,
+            } for layer in layers],
+        }
+        actual = QueryRows([["POINT(0 0)", "POINT(1 1)"]])
+        self.tester.render_visual_example("manual", {
+            "query": (
+                "WITH data AS (SELECT 1) "
+                "SELECT 'POINT(0 0)' AS input_center, 'POINT(1 1)' AS result FROM data"
+            ),
+            "visual_id": "documented-aliases", "label": "aliases:documented",
+            "visual_refentry": "aliases", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "explicit",
+        }, actual)
+        self.assertEqual(["Code", "Output"], [layer["source"] for layer in captured])
+        self.assertEqual(["center", "result"], [layer["label"] for layer in captured])
+
+    def test_visual_payload_separates_same_dimension_or_cross_srid_sources(self):
         queries = []
-        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or '{"bounds":[0,0,1,1],"parts":[]}'
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or '{"frames":[],"parts":[]}'
         self.tester.visual_payload("manual", [])
-        self.assertIn("bool_and(ST_SRID(geom) > 0)", queries[0])
-        self.assertIn("source = 'Output'", queries[0])
-        self.assertIn("THEN ST_Transform(geom, target_srid)", queries[0])
+        self.assertIn("source_dimensions", queries[0])
+        self.assertIn("count(DISTINCT ST_SRID(geom))", queries[0])
+        self.assertIn("AS shared_coordinate_space", queries[0])
+        self.assertIn("ST_Extent(all_geometries.geom)", queries[0])
+        self.assertIn("bool_and(shared_coordinate_space)", queries[0])
+        self.assertIn("CASE WHEN separate_sources THEN source ELSE 'Overlay' END", queries[0])
+        self.assertIn("ST_Translate(geom, -min_x, -min_y)", queries[0])
+        self.assertIn("ST_NPoints(geom) AS total_points", queries[0])
+        self.assertIn("GeometryType(geom) AS root_type", queries[0])
+        self.assertIn("'root_type', root_type", queries[0])
+        self.assertIn("root_type IN ('LINESTRING', 'POLYGON', 'TRIANGLE')", queries[0])
+        self.assertIn("AND total_points <= 64", queries[0])
+        self.assertNotIn("AND ST_NPoints(geom) <= 64", queries[0])
+        self.assertNotIn("ST_Scale", queries[0])
+
+    def test_svg_renders_separate_source_frames(self):
+        svg = self.tester.visual_svg(
+            "comparison",
+            {
+                "frames": [
+                    {"id": "Code", "label": "Code (SRID 2249)", "bounds": [0, 0, 10, 10]},
+                    {"id": "Output", "label": "Output (SRID 4326)", "bounds": [0, 0, 10, 10]},
+                ],
+                "parts": [
+                    {"ord": 1, "source": "Code", "label": "Code", "frame": "Code",
+                     "type": "LINESTRING", "svg": "M 0 0 L 10 -10", "closed": False},
+                    {"ord": 2, "source": "Output", "label": "Output", "frame": "Output",
+                     "type": "LINESTRING", "svg": "M 0 0 L 10 -10", "closed": False},
+                ],
+            },
+        )
+        self.assertIn('class="frame-label"', svg)
+        self.assertIn('>Code (SRID 2249)</text>', svg)
+        self.assertIn('>Output (SRID 4326)</text>', svg)
+        self.assertIn('data-postgis-frame="Code"', svg)
+        self.assertIn('data-postgis-frame="Output"', svg)
+        self.assertEqual(2, svg.count('class="plot-background"'))
+        self.assertNotIn("font:", svg)
+
+    def test_svg_uses_one_color_for_polyhedral_surface_faces(self):
+        svg = self.tester.visual_svg(
+            "solid",
+            {"bounds": [0, 0, 2, 1], "parts": [
+                {"ord": 1, "source": "Output", "label": "solid",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "M 0 0 L 1 0 0 -1 Z"},
+                {"ord": 1, "source": "Output", "label": "solid",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "M 1 0 L 2 0 2 -1 Z"},
+            ]},
+        )
+        self.assertEqual(2, svg.count('stroke="#a62c2b" fill="#a62c2b"'))
+        self.assertNotIn('stroke="#d95f3d"', svg)
 
     def test_svg_draws_bounded_vertices_for_linear_geometries(self):
         svg = self.tester.visual_svg(
@@ -592,6 +673,11 @@ class VisualExampleTest(unittest.TestCase):
                     "id": "one", "source": "ST_Buffer:1", "svg": "<svg/>\n",
                     "kind": "geometry-output", "preferred": True,
                     "refentry": "ST_Buffer", "screen": 1, "output_omitted": False,
+                    "layers": [{
+                        "id": "one-code-1", "source": "Code", "label": "center",
+                        "row": None, "column": None, "dimension": 0,
+                        "closed": None, "srid": 0, "frame": "Overlay",
+                    }],
                 }],
             )
             self.assertFalse((target / "stale.svg").exists())
@@ -601,12 +687,19 @@ class VisualExampleTest(unittest.TestCase):
                     "id": "one", "kind": "geometry-output", "preferred": True,
                     "refentry": "ST_Buffer", "screen": 1, "source": "ST_Buffer:1",
                     "output_omitted": False,
+                    "layers": [{
+                        "id": "one-code-1", "source": "Code", "label": "center",
+                        "row": None, "column": None, "dimension": 0,
+                        "closed": None, "srid": 0, "frame": "Overlay",
+                    }],
                 }],
                 json.loads((target / "manifest.json").read_text(encoding="utf-8")),
             )
             manifest_xml = (target / "manifest.xml").read_text(encoding="utf-8")
             self.assertIn('id="one"', manifest_xml)
             self.assertIn('preferred="true"', manifest_xml)
+            self.assertIn('<layer id="one-code-1" source="Code" label="center"', manifest_xml)
+            self.assertIn('dimension="0" srid="0" frame="Overlay"', manifest_xml)
 
 
 if __name__ == "__main__":

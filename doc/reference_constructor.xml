@@ -66,7 +66,8 @@
       </refsection>
 
       <refsection>
-        <title>Examples - Two-input variant</title>
+        <title>Examples</title>
+        <para>Two-input variant.</para>
         <para>Collect 2D points.</para>
 <programlisting>
 SELECT ST_AsText(ST_Collect(
@@ -88,9 +89,8 @@ SELECT ST_AsText(ST_Collect(
         'CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));</programlisting>
 <screen>MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
 CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
-        </refsection>
-        <refsection>
-<title>Examples - Array variant</title>
+
+<para>Array variant.</para>
 <para>Using an array constructor for a subquery.</para>
 <programlisting>SELECT ST_Collect(ARRAY(SELECT geom FROM sometable));</programlisting>
 <para>Using an array constructor for values.</para>
@@ -99,9 +99,8 @@ SELECT ST_AsText(ST_Collect(
         ARRAY[ 'LINESTRING(1 2,3 4)'::geometry,
             'LINESTRING(3 4,4 5)'::geometry ] )) As wktcollect;</programlisting>
 <screen>MULTILINESTRING((1 2,3 4),(3 4,4 5))</screen>
-        </refsection>
-        <refsection>
-        <title>Examples - Aggregate variant</title>
+
+        <para>Aggregate variant.</para>
         <para>Creating multiple collections by grouping geometries in a table.</para>
 <programlisting>
 SELECT stusps, ST_Collect(f.geom) as geom
@@ -259,7 +258,8 @@ SELECT stusps, ST_Collect(f.geom) as geom
         </refsection>
 
         <refsection>
-            <title>Examples: Two-input variant</title>
+            <title>Examples</title>
+            <para>Two-input variant.</para>
 
 <para>Create a line composed of two points.</para>
 <programlisting>SELECT ST_AsText(ST_MakeLine(ST_Point(1, 2), ST_Point(3, 4)));</programlisting>
@@ -272,10 +272,8 @@ SELECT stusps, ST_Collect(f.geom) as geom
 <para>Create a line from two disjoint LineStrings.</para>
 <programlisting>SELECT ST_AsText(ST_MakeLine('LINESTRING(0 0,1 1)', 'LINESTRING(2 2,3 3)'));</programlisting>
 <screen>LINESTRING(0 0,1 1,2 2,3 3)</screen>
-        </refsection>
 
-        <refsection>
-            <title>Examples: Array variant</title>
+            <para>Array variant.</para>
 
         <para>Create a line from an array formed by a subquery with ordering.</para>
 <programlisting>SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time));</programlisting>
@@ -283,10 +281,8 @@ SELECT stusps, ST_Collect(f.geom) as geom
         <para>Create a 3D line from an array of 3D points</para>
 <programlisting>SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1, 2, 3), ST_MakePoint(3, 4, 5), ST_MakePoint(6, 6, 6)]));</programlisting>
 <screen>LINESTRING(1 2 3,3 4 5,6 6 6)</screen>
-        </refsection>
 
-        <refsection>
-        <title>Examples: Aggregate variant</title>
+        <para>Aggregate variant.</para>
         <para>This example queries time-based sequences of GPS points from a set of tracks
         and creates one record for each track.
         The result geometries are LineStrings composed of the GPS track points in the order of travel.</para>
@@ -504,7 +500,8 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
         </refsection>
 
         <refsection>
-        <title>Examples: Single input variant</title>
+        <title>Examples</title>
+        <para>Single input variant.</para>
         <para>Create a Polygon from a 2D LineString.</para>
          <programlisting>SELECT ST_MakePolygon('LINESTRING(75 29,77 29,77 29,75 29)');</programlisting>
 
@@ -526,9 +523,8 @@ FROM (
 <para>Create a CurvePolygon from a CircularString shell.</para>
 <programlisting>SELECT ST_AsText(ST_MakePolygon('CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0)'));</programlisting>
 <screen>CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0))</screen>
-        </refsection>
-        <refsection>
-            <title>Examples: Outer shell with inner holes variant</title>
+
+            <para>Outer shell with inner holes variant.</para>
 
             <para>Create a donut Polygon with an extra hole</para>
            <programlisting>
@@ -635,7 +631,8 @@ FROM provinces p;
 
 
       <refsection>
-        <title>Examples: Geometry</title>
+        <title>Examples</title>
+        <para>Geometry.</para>
 
         <programlisting>SELECT ST_Point(-71.104, 42.315);</programlisting>
 
@@ -644,10 +641,7 @@ FROM provinces p;
 
         <para>Alternative way of specifying SRID:</para>
         <programlisting>SELECT ST_SetSRID(ST_Point(-71.104, 42.315), 4326);</programlisting>
-      </refsection>
 
-      <refsection>
-        <title>Examples: Geography</title>
 
         <para>Create <link linkend="PostGIS_Geography">geography</link> points using the <varname>::</varname> cast syntax:</para>
         <programlisting>SELECT ST_Point(-71.104, 42.315, 4326)::geography;</programlisting>
@@ -951,7 +945,8 @@ is projected to WGS84 (SRID 4326).</para>
         </refsection>
 
         <refsection>
-        <title>Example: Counting points in hexagons</title>
+        <title>Examples</title>
+        <para>Counting points in hexagons.</para>
         <para>To do a point summary against a hexagonal tiling, generate a hexagon grid using the
         extent of the points as the bounds, then spatially join to that grid.</para>
          <programlisting>SELECT COUNT(*), hexes.geom
@@ -963,9 +958,8 @@ FROM ST_HexagonGrid(
     pointtable AS pts
     ON ST_Intersects(pts.geom, hexes.geom)
 GROUP BY hexes.geom;</programlisting>
-    </refsection>
-    <refsection>
-        <title>Example: Generating hex coverage of polygons</title>
+
+        <para>Generating hex coverage of polygons.</para>
         <para>If we generate a set of hexagons for each polygon boundary and filter
             out those that do not intersect their hexagons, we end up with a tiling for
             each polygon.</para>
@@ -1073,7 +1067,8 @@ POLYGON((-1 0, -0.5
         </refsection>
 
         <refsection>
-        <title>Example: Generating a 1 degree grid for a country</title>
+        <title>Examples</title>
+        <para>Generating a 1 degree grid for a country.</para>
         <para>The grid will fill the whole bounds of the country, so if you want just squares
             that touch the country you will have to filter afterwards with ST_Intersects.</para>
             <programlisting>WITH grid AS (
@@ -1082,10 +1077,8 @@ FROM admin0 WHERE name = 'Canada'
 )
   SELEcT ST_AsText(geom)
   FROM grid</programlisting>
-        </refsection>
 
-        <refsection>
-        <title>Example: Counting points in squares (using single chopped grid)</title>
+        <para>Counting points in squares (using single chopped grid).</para>
         <para>To do a point summary against a square tiling, generate a square grid using the
         extent of the points as the bounds, then spatially join to that grid. Note the estimated extent might be off from actual extent, so be cautious and at very least make sure you've analyzed your table.</para>
             <programlisting>SELECT COUNT(*), squares.geom
@@ -1098,10 +1091,8 @@ ST_SquareGrid(
 ) AS squares
 ON ST_Intersects(pts.geom, squares.geom)
 GROUP BY squares.geom</programlisting>
-        </refsection>
 
-    <refsection>
-        <title>Example: Counting points in squares using set of grid per point</title>
+        <para>Counting points in squares using set of grid per point.</para>
         <para>This yields the same result as the first example but will be slower for a large number of points</para>
             <programlisting>SELECT COUNT(*), squares.geom
 FROM
@@ -1200,12 +1191,12 @@ has an unknown SRID (as is the case by default).</para>
         </refsection>
 
         <refsection>
-            <title>Example: Generating the word 'Yo'</title>
+            <title>Examples</title>
+            <para>Generating the word 'Yo'.</para>
             <programlisting>SELECT ST_AsText(ST_Letters('Yo'), 3);</programlisting>
             <screen>MULTIPOLYGON(((34.5 73.8,54 73.8,53.1 72.9,35.1 28.7,35.1 0.9,36 0,18 0,19 0.9,19 28.7,0.9 72.9,0 73.8,19.5 73.8,18.6 72.9,23 61.6,27 47.4,31.1 61.9,35.4 72.9,34.5 73.8)),((68.87 58,69.97 58,71.07 57.9,72.17 57.8,73.17 57.7,74.27 57.5,75.27 57.3,76.17 57.1,77.17 56.8,78.07 56.5,78.97 56.1,79.87 55.7,80.67 55.3,81.47 54.8,82.27 54.3,82.97 53.7,83.67 53.1,84.37 52.5,84.97 51.8,85.57 51.1,86.07 50.3,86.57 49.5,87.07 48.7,87.57 47.9,87.97 47,88.37 46.1,88.67 45.1,88.97 44.1,89.17 43.1,89.37 42.1,89.47 41,89.57 39.9,89.57 38.7,89.57 18.9,89.57 17.7,89.47 16.6,89.37 15.5,89.17 14.5,88.97 13.5,88.77 12.5,88.47 11.5,88.07 10.6,87.67 9.7,87.27 8.9,86.77 8.1,86.27 7.3,85.67 6.6,85.07 5.9,84.47 5.2,83.77 4.6,83.07 4,82.27 3.5,81.57 2.9,80.77 2.5,79.87 2,79.07 1.6,78.17 1.2,77.27 0.8,76.37 0.5,75.37 0.2,74.37 0,73.37 -0.2,72.27 -0.4,71.17 -0.5,70.07 -0.5,68.97 -0.5,67.87 -0.5,66.77 -0.4,65.67 -0.3,64.57 -0.2,63.57 0,62.57 0.2,61.57 0.5,60.57 0.8,59.67 1.1,58.77 1.5,57.87 1.9,57.07 2.4,56.27 2.9,55.47 3.4,54.77 3.9,54.07 4.5,53.37 5.1,52.77 5.8,52.17 6.5,51.67 7.2,51.17 8,50.67 8.8,50.17 9.7,49.77 10.6,49.37 11.5,49.07 12.5,48.77 13.5,48.57 14.5,48.37 15.6,48.27 16.7,48.17 17.8,48.17 18.9,48.17 38.7,48.17 39.9,48.27 41,48.37 42.1,48.57 43.1,48.77 44.1,48.97 45.1,49.27 46.1,49.67 47,50.07 47.9,50.47 48.7,50.97 49.5,51.47 50.3,52.07 51,52.67 51.7,53.27 52.4,53.97 53,54.67 53.6,55.47 54.1,56.17 54.6,57.07 55.1,57.87 55.6,58.77 56,59.67 56.4,60.57 56.7,61.57 57,62.47 57.3,63.47 57.5,64.57 57.7,65.57 57.8,66.67 57.9,67.77 58,68.87 58),(73.77 38.9,72.27 41.6,68.97 42.6,65.57 41.7,64.07 38.9,64.07 18.9,65.47 16.2,68.77 15.2,72.07 16.1,73.77 18.9,73.77 38.9)))</screen>
-        </refsection>
-        <refsection>
-            <title>Example: Scaling and moving words</title>
+
+            <para>Scaling and moving words.</para>
             <programlisting>SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100, 100);</programlisting>
         </refsection>
         <refsection>

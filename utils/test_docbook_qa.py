@@ -92,6 +92,20 @@ class DocBookSourceLintTest(unittest.TestCase):
             set(),
         )
 
+    def test_repeated_example_section_variants_violation_and_single_section_clean_case(self):
+        self.assertCategories(
+            '<refentry xml:id="f"><refsection><title>Example: Geometry</title></refsection>'
+            '<refsection><title>Examples - Geography</title></refsection></refentry>',
+            {"repeated-example-sections"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><refsection><title>Examples</title>'
+            '<para>Geometry.</para><programlisting>SELECT 1;</programlisting><screen>1</screen>'
+            '<para>Geography.</para><programlisting>SELECT 2;</programlisting><screen>2</screen>'
+            '</refsection></refentry>',
+            set(),
+        )
+
     def test_metadata_role_in_admonition_violation_and_clean_case(self):
         self.assertCategories(
             '<refentry xml:id="f"><note><para role="availability">Availability: 3.7</para></note></refentry>',
@@ -343,6 +357,19 @@ class DocBookHtmlLintTest(unittest.TestCase):
                 {"screen"},
             ),
         )
+
+    def test_geometry_figure_requires_adjacent_shared_visual_stack(self):
+        broken = self.html_findings(
+            '<div class="postgis-example-block postgis-example-code" data-postgis-visual-id="v1"></div>'
+            '<div class="postgis-example-block postgis-example-output"></div>'
+            '<div class="postgis-geometry-figure" data-postgis-visual-id="v1"></div>'
+        )
+        self.assertTrue(any("do not share visual id" in finding.location for finding in broken))
+        self.assertEqual([], self.html_findings(
+            '<div class="postgis-example-block postgis-example-code" data-postgis-visual-id="v1"></div>'
+            '<div class="postgis-example-block postgis-example-output" data-postgis-visual-id="v1"></div>'
+            '<div class="postgis-geometry-figure" data-postgis-visual-id="v1"></div>'
+        ))
 
 
 class DocBookRefIndexTest(unittest.TestCase):
