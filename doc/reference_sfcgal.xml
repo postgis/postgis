@@ -1215,25 +1215,14 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
         </refsection>
 
         <refsection><title>Examples</title>
-            <programlisting>SELECT CG_ApproximateMedialAxis('POLYGON (( 190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190 ))');</programlisting>
-
-            <informaltable>
-                <tgroup cols="1">
-                    <tbody>
-                        <row>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/st_approximatemedialaxis01.png"/>
-                                            </imageobject>
-                                            <caption><para>A polygon and its approximate medial axis</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                        </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
+            <para>A polygon and its approximate medial axis.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'::geometry AS polygon
+)
+SELECT ST_AsText(polygon, 3) AS input_polygon,
+       ST_AsText(CG_ApproximateMedialAxis(polygon), 3) AS medial_axis
+FROM data;</programlisting>
+            <screen role="visual-primary">POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190)) | MULTILINESTRING((184.189 15.811,158.377 20),(50 20,158.377 20),(50 20,35 35),(35 153.151,35 35),(35 153.151,40.697 159.303),(164.04 164.04,40.697 159.303))</screen>
 
             <para>This example computes the projected medial axis with free endpoints extended to the polygon boundary.</para>
             <programlisting>SELECT ST_AsText(CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true));</programlisting>
@@ -2511,36 +2500,14 @@ TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.
         <programlisting>SELECT ST_AsText(CG_StraightSkeletonPartition('POLYGON((0 0,4 0,2 2,0 0))', true));</programlisting>
 <screen>POLYHEDRALSURFACE(((0 0,2 0.82842712474619,2 2,0 0)),((4 0,2 0.82842712474619,0 0,4 0)),((2 2,2 0.82842712474619,4 0,2 2)))</screen>
 
-        <programlisting>SELECT CG_StraightSkeletonPartition(
-'POLYGON (( 190 190,10 190,10 10,190 10,190 20,
-160 30,60 30,60 130,190 140,190 190 ))',
-true );</programlisting>
-        <informaltable>
-            <tgroup cols="2">
-                <tbody>
-                    <row>
-                        <entry><para><informalfigure>
-                                    <mediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="images/st_straightskeleton01.png"/>
-                                        </imageobject>
-                                        <caption><para>Original polygon</para></caption>
-                                    </mediaobject>
-                            </informalfigure></para>
-                        </entry>
-                        <entry><para><informalfigure>
-                                    <mediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="images/cg_straightskeletonpartition01.png"/>
-                                        </imageobject>
-                                        <caption><para>Straight Skeleton Partition of polygon</para></caption>
-                                    </mediaobject>
-                            </informalfigure></para>
-                        </entry>
-                    </row>
-                </tbody>
-            </tgroup>
-        </informaltable>
+        <para>Straight skeleton partition of a polygon.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'::geometry AS polygon
+)
+SELECT ST_AsText(polygon, 3) AS input_polygon,
+       ST_AsText(CG_StraightSkeletonPartition(polygon, true), 3) AS skeleton_partition
+FROM data;</programlisting>
+        <screen role="visual-primary">POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190)) | POLYHEDRALSURFACE(((190 190,164.04 164.04,190 140,190 190)),((10 190,40.697 159.303,164.04 164.04,190 190,10 190)),((10 10,35 35,35 153.151,40.697 159.303,10 190,10 10)),((190 10,184.189 15.811,158.377 20,50 20,35 35,10 10,190 10)),((190 20,184.189 15.811,190 10,190 20)),((160 30,158.377 20,184.189 15.811,190 20,160 30)),((60 30,50 20,158.377 20,160 30,60 30)),((60 130,35 153.151,35 35,50 20,60 30,60 130)),((190 140,164.04 164.04,40.697 159.303,35 153.151,60 130,190 140)))</screen>
     </refsection>
 
     <refsection>

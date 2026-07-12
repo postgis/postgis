@@ -48,7 +48,6 @@ GENERATED_IMAGES= \
 	cg_visibility03.png \
 	cg_ymonotonepartition01.png \
 	cg_ymonotonepartition02.png \
-	cg_straightskeletonpartition01.png \
 	cg_simplify00.png \
 	cg_simplify01.png \
 	cg_simplify02.png \
@@ -74,8 +73,6 @@ GENERATED_IMAGES= \
 	st_isvalid07.png \
 	st_isvalid08.png \
 	st_isvalid09.png \
-	st_straightskeleton01.png \
-	st_approximatemedialaxis01.png \
 	st_tesselate04.png
 
 
