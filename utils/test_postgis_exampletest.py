@@ -240,6 +240,7 @@ class ExampleTestRunnerTest(unittest.TestCase):
         example = tester.examples()[0]
         example.update({
             "documented_only": True,
+            "expected_headers": ["documented_geom"],
             "visual_id": "documented-visual",
             "visual_kind": "explicit",
             "visual_preferred": True,
@@ -258,6 +259,7 @@ class ExampleTestRunnerTest(unittest.TestCase):
 
         self.assertEqual("documented-visual", calls[0][0])
         self.assertEqual(example["expected"], calls[0][1])
+        self.assertEqual(["documented_geom"], calls[0][1].headers)
         self.assertEqual(("visuals", ["documented-visual"]), calls[1])
 
 

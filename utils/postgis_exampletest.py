@@ -139,7 +139,8 @@ class ExampleTester:
             r"\b(?:CG_3DIntersection|CG_3DConvexHull|CG_AlphaShape|"
             r"CG_ApproxConvexPartition|CG_ExtrudeStraightSkeleton|"
             r"CG_GreeneApproxConvexPartition|CG_OptimalAlphaShape|"
-            r"CG_OptimalConvexPartition|CG_YMonotonePartition)\s*\(",
+            r"CG_OptimalConvexPartition|CG_YMonotonePartition|"
+            r"ST_ClusterKMeans)\s*\(",
             text,
             re.I,
         ):
@@ -617,6 +618,7 @@ class ExampleTester:
 
         refentry = ""
         screen_ordinal = 0
+        expected_headers = self.psql_headers_from_lines(self.node_text(screen).split("\n")) if screen is not None else []
         skip_visual = self.has_role(node, VISUAL_SKIP_ROLE) or (
             screen is not None and self.has_role(screen, VISUAL_SKIP_ROLE)
         )
@@ -629,6 +631,7 @@ class ExampleTester:
             "label": self.source_label(node),
             "query": query,
             "expected": expected,
+            "expected_headers": expected_headers,
             "valid": valid,
             "forced": forced,
             "version": self.query_is_version_example(query),
@@ -809,7 +812,8 @@ class ExampleTester:
                 visuals = list(pool.map(run_visual, examples))
             visuals.extend(
                 self.render_visual_example(
-                    database, example, QueryRows(example["expected"], [])
+                    database, example,
+                    QueryRows(example["expected"], example.get("expected_headers", []))
                 )
                 for example in documented_visuals
             )
