@@ -1148,16 +1148,9 @@ true));</programlisting>
         <refsection>
             <title>Examples</title>
             <para>
-                <informalfigure>
-                    <mediaobject>
-                        <imageobject>
-                            <imagedata fileref="images/cg_approxconvexpartition01.png" />
-                        </imageobject>
-                        <caption><para>Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
-                    </mediaobject>
-                </informalfigure>
+                Approximal convex partition (the same Polygon is used by <xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, and <xref linkend="CG_OptimalConvexPartition" />).
                 <programlisting>SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-                <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
+                <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
             </para>
         </refsection>
         <refsection>
@@ -1912,16 +1905,9 @@ ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'),
     <refsection>
         <title>Examples</title>
         <para>
-            <informalfigure>
-                <mediaobject>
-                    <imageobject>
-                        <imagedata fileref="images/cg_greeneapproxconvexpartition01.png" />
-                    </imageobject>
-                    <caption><para>Greene Approximal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
-                </mediaobject>
-            </informalfigure>
+            Greene approximate convex partition (the same Polygon is used by <xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, and <xref linkend="CG_OptimalConvexPartition" />).
             <programlisting>SELECT ST_AsText(CG_GreeneApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-            <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
+            <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
         </para>
     </refsection>
     <refsection>
@@ -2100,16 +2086,9 @@ allow_holes =&gt; true));</programlisting>
         <refsection>
             <title>Examples</title>
             <para>
-                <informalfigure>
-                    <mediaobject>
-                        <imageobject>
-                            <imagedata fileref="images/cg_optimalconvexpartition01.png" />
-                        </imageobject>
-                        <caption><para>Optimal Convex Partition (same example As <xref linkend="CG_YMonotonePartition" />,  <xref linkend="CG_ApproxConvexPartition" /> and <xref linkend="CG_GreeneApproxConvexPartition" />)</para></caption>
-                    </mediaobject>
-                </informalfigure>
+                Optimal convex partition (the same Polygon is used by <xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, and <xref linkend="CG_GreeneApproxConvexPartition" />).
                 <programlisting>SELECT ST_AsText(CG_OptimalConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-                <screen>GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
+                <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
             </para>
         </refsection>
         <refsection>
@@ -2400,34 +2379,9 @@ FROM data;</programlisting>
     <refsection>
         <title>Examples</title>
         <para>
-            <informaltable>
-                <tgroup cols="2">
-                    <tbody>
-                        <row>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/cg_ymonotonepartition01.png"/>
-                                            </imageobject>
-                                            <caption><para>Original polygon</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/cg_ymonotonepartition02.png"/>
-                                            </imageobject>
-                                            <caption><para>Y-Monotone Partition (same example As <xref linkend="CG_ApproxConvexPartition" />,  <xref linkend="CG_GreeneApproxConvexPartition" /> and <xref linkend="CG_OptimalConvexPartition" />)</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                        </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
+            Y-monotone partition (the same Polygon is used by <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, and <xref linkend="CG_OptimalConvexPartition" />).
             <programlisting>SELECT ST_AsText(CG_YMonotonePartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-            <screen>GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
+            <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
         </para>
     </refsection>
     <refsection>
