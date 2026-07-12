@@ -74,10 +74,6 @@ GENERATED_IMAGES= \
 	st_isvalid07.png \
 	st_isvalid08.png \
 	st_isvalid09.png \
-	st_minkowskisum01.png \
-	st_minkowskisum02.png \
-	st_minkowskisum03.png \
-	st_minkowskisum04.png \
 	st_straightskeleton01.png \
 	st_approximatemedialaxis01.png \
 	st_tesselate04.png

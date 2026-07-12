@@ -967,11 +967,22 @@ FROM dimensions
                     label = headers[column_index] if column_index < len(headers) else ""
                     if not label or label.lower() in {"?column?", "st_astext", "st_asewkt"}:
                         label = "Output"
+                    source = "Code" if label.lower().startswith("input_") else "Output"
+                    if source == "Code":
+                        label = label[len("input_"):]
                     if len(actual) > 1:
                         label = f"{label} {row_index}"
                     if len(matches) > 1:
                         label = f"{label}.{match_index}"
-                    output.append({"wkt": wkt, "label": label})
+                    output.append({"wkt": wkt, "label": label, "source": source})
+        named_output_layers = {
+            candidate["label"].lower() for candidate in output
+            if candidate["label"] != "Output"
+        }
+        if len(named_output_layers) > 1:
+            # Multiple named geometry columns define the complete authored figure.
+            # Do not repeat geometry literals and constructor arguments as Code layers.
+            code = []
         layers = []
         code_geometry_count = sum("label" not in candidate for candidate in code)
         for index, candidate in enumerate(code, 1):
@@ -988,14 +999,15 @@ FROM dimensions
                 "label": label,
                 "wkt": candidate["wkt"],
             })
-        for source, values in (("Output", output),):
+        for source in ("Code", "Output"):
+            values = [candidate for candidate in output if candidate["source"] == source]
             for index, candidate in enumerate(values, 1):
-                meaningful_label = candidate["label"] != "Output" and (len(values) > 1 or bool(code))
+                meaningful_label = candidate["label"] != source and (len(output) > 1 or bool(code))
                 layers.append({
                     "ord": len(layers) + 1,
                     "source": source,
                     "label": candidate["label"] if meaningful_label else source if len(values) == 1 else (
-                        candidate["label"] if candidate["label"] != "Output" else f"{source} {index}"
+                        candidate["label"] if candidate["label"] != source else f"{source} {index}"
                     ),
                     "wkt": candidate["wkt"],
                 })

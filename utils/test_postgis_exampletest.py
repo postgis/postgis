@@ -412,6 +412,29 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn(">center</text>", visual["svg"])
         self.assertIn(">nearest</text>", visual["svg"])
 
+    def test_named_output_layers_replace_inferred_code_context(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": 0, "y": 0,
+            } for layer in layers],
+        }
+        actual = QueryRows([[
+            "POINT(0 0)", "LINESTRING(0 0,1 1)", "POLYGON((0 0,1 0,0 1,0 0))",
+        ]], ["input_point", "input_line", "result"])
+
+        self.tester.render_visual_example("manual", {
+            "query": "SELECT 'POINT(0 0)', 'LINESTRING(0 0,1 1)'",
+            "visual_id": "complete-layers", "label": "labels:complete",
+            "visual_refentry": "labels", "visual_screen": 2,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+
+        self.assertEqual(["Code", "Code", "Output"], [layer["source"] for layer in captured])
+        self.assertEqual(["point", "line", "result"], [layer["label"] for layer in captured])
+
     def test_render_visual_example_hides_single_output_column_header(self):
         self.tester.visual_payload = lambda database, layers: {
             "bounds": [0, 0, 1, 1],

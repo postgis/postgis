@@ -1974,96 +1974,28 @@ ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 'quad_segs=2'),
     </refsection>
 
     <refsection><title>Examples</title>
-        <para>Minkowski Sum of Linestring and circle polygon where Linestring cuts thru the circle</para>
-        <informaltable>
-            <tgroup cols="2">
-                <tbody>
-                    <row>
-                        <entry>
-                            <para>
-                                <informalfigure>
-                                    <mediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="images/st_minkowskisum01.png"/>
-                                        </imageobject>
-                                        <caption><para>Before Summing</para></caption>
-                                    </mediaobject>
-                                </informalfigure>
-                            </para>
-                        </entry>
-                        <entry>
-                            <para>
-                                <informalfigure>
-                                    <mediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="images/st_minkowskisum02.png"/>
-                                        </imageobject>
-                                        <caption><para>After summing</para></caption>
-                                    </mediaobject>
-                                </informalfigure>
-                            </para>
-                        </entry>
-                    </row>
-                </tbody>
-            </tgroup>
-        </informaltable>
-        <programlisting>
-SELECT CG_MinkowskiSum(line, circle))
-FROM (SELECT
-ST_MakeLine(ST_Point(10, 10), ST_Point(100, 100)) As line,
-ST_Buffer('POINT(50 50)'::geometry, 30) As circle) As foo;
-
--- wkt --
-MULTIPOLYGON(((30 59.9999999999999, 30.5764415879031 54.1472903395161, 32.2836140246614 48.5194970290472, 35.0559116309237 43.3328930094119, 38.7867965644036 38.7867965644035, 43.332893009412 35.0559116309236, 48.5194970290474 32.2836140246614, 54.1472903395162 30.5764415879031, 60.0000000000001 30, 65.8527096604839 30.5764415879031, 71.4805029709527 32.2836140246614, 76.6671069905881 35.0559116309237, 81.2132034355964 38.7867965644036, 171.213203435596 128.786796564404, 174.944088369076 133.332893009412, 177.716385975339 138.519497029047, 179.423558412097 144.147290339516, 180 150, 179.423558412097 155.852709660484, 177.716385975339 161.480502970953, 174.944088369076 166.667106990588, 171.213203435596 171.213203435596, 166.667106990588 174.944088369076,
-161.480502970953 177.716385975339, 155.852709660484 179.423558412097, 150 180, 144.147290339516 179.423558412097, 138.519497029047 177.716385975339, 133.332893009412 174.944088369076, 128.786796564403 171.213203435596, 38.7867965644035 81.2132034355963, 35.0559116309236 76.667106990588, 32.2836140246614 71.4805029709526, 30.5764415879031 65.8527096604838, 30 59.9999999999999)))
-        </programlisting>
-
-        <para>Minkowski Sum of a polygon and multipoint</para>
-        <informaltable>
-            <tgroup cols="2">
-                <tbody>
-                    <row>
-                        <entry>
-                            <para>
-                                <informalfigure>
-                                    <mediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="images/st_minkowskisum03.png"/>
-                                        </imageobject>
-                                        <caption><para>Before Summing</para></caption>
-                                    </mediaobject>
-                                </informalfigure>
-                            </para>
-                        </entry>
-                        <entry>
-                            <para>
-                                <informalfigure>
-                                    <mediaobject>
-                                        <imageobject>
-                                            <imagedata fileref="images/st_minkowskisum04.png"/>
-                                        </imageobject>
-                                        <caption><para>After summing: polygon is duplicated and translated to position of points</para></caption>
-                                    </mediaobject>
-                                </informalfigure>
-                            </para>
-                        </entry>
-                    </row>
-                </tbody>
-            </tgroup>
-        </informaltable>
-        <programlisting>SELECT CG_MinkowskiSum(mp, poly)
-FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,
-'POLYGON((130 150,20 40,50 60,125 100,130 150))'::geometry As poly
-) As foo
-
-
--- wkt --
-MULTIPOLYGON(
-((70 115, 100 135, 175 175, 225 225, 70 115)),
-((120 65, 150 85, 225 125, 275 175, 120 65))
+        <para>Minkowski sum of a LineString and a circular polygon. The line crosses the polygon, and the result sweeps the polygon along the line.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT ST_MakeLine(ST_Point(10, 10), ST_Point(100, 100)) AS line,
+         ST_Buffer('POINT(50 50)'::geometry, 30) AS circle
 )
-    </programlisting>
-</refsection>
+SELECT ST_AsText(line, 3) AS input_line,
+       ST_AsText(circle, 3) AS input_circle,
+       ST_AsText(CG_MinkowskiSum(line, circle), 3) AS minkowski_sum
+FROM data;</programlisting>
+        <screen role="visual-primary">LINESTRING(10 10,100 100) | POLYGON((80 50,79.424 44.147,77.716 38.519,74.944 33.333,71.213 28.787,66.667 25.056,61.481 22.284,55.853 20.576,50 20,44.147 20.576,38.519 22.284,33.333 25.056,28.787 28.787,25.056 33.333,22.284 38.519,20.576 44.147,20 50,20.576 55.853,22.284 61.481,25.056 66.667,28.787 71.213,33.333 74.944,38.519 77.716,44.147 79.424,50 80,55.853 79.424,61.481 77.716,66.667 74.944,71.213 71.213,74.944 66.667,77.716 61.481,79.424 55.853,80 50)) | MULTIPOLYGON(((179.424 155.853,177.716 161.481,174.944 166.667,171.213 171.213,166.667 174.944,161.481 177.716,155.853 179.424,150 180,144.147 179.424,138.519 177.716,133.333 174.944,128.787 171.213,38.787 81.213,35.056 76.667,32.284 71.481,30.576 65.853,30 60,30.576 54.147,32.284 48.519,35.056 43.333,38.787 38.787,43.333 35.056,48.519 32.284,54.147 30.576,60 30,65.853 30.576,71.481 32.284,76.667 35.056,81.213 38.787,171.213 128.787,174.944 133.333,177.716 138.519,179.424 144.147,180 150,179.424 155.853)))</screen>
+
+        <para>Minkowski sum of a MultiPoint and a polygon. The result contains one translated copy of the polygon for each point.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'MULTIPOINT(25 50,70 25)'::geometry AS points,
+         'POLYGON((130 150,20 40,50 60,125 100,130 150))'::geometry AS polygon
+)
+SELECT ST_AsText(points, 3) AS input_points,
+       ST_AsText(polygon, 3) AS input_polygon,
+       ST_AsText(CG_MinkowskiSum(points, polygon), 3) AS minkowski_sum
+FROM data;</programlisting>
+        <screen role="visual-primary">MULTIPOINT((25 50),(70 25)) | POLYGON((130 150,20 40,50 60,125 100,130 150)) | MULTIPOLYGON(((45 90,75 110,150 150,155 200,45 90)),((90 65,120 85,195 125,200 175,90 65)))</screen>
+    </refsection>
 
         </refentry>
 
