@@ -54,9 +54,6 @@ GENERATED_IMAGES= \
 	cg_simplify02.png \
 	de9im01.png \
 	de9im02.png \
-	st_alphashape01.png \
-	st_alphashape02.png \
-	st_alphashape03.png \
 	st_clusterkmeans02.png \
 	st_clusterrelatewin01.png \
 	st_extrude01.png \
@@ -81,8 +78,6 @@ GENERATED_IMAGES= \
 	st_minkowskisum02.png \
 	st_minkowskisum03.png \
 	st_minkowskisum04.png \
-	st_optimalalphashape01.png \
-	st_optimalalphashape02.png \
 	st_straightskeleton01.png \
 	st_approximatemedialaxis01.png \
 	st_tesselate04.png

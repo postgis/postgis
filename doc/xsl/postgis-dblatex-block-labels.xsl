@@ -69,10 +69,22 @@
       <xsl:otherwise><xsl:value-of select="$manifest.visual/@id"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:call-template name="postgis-dblatex-block-label">
-    <xsl:with-param name="kind" select="'output'"/>
-  </xsl:call-template>
-	<xsl:apply-imports/>
+	<xsl:variable name="visual.preferred"
+	              select="not(contains($role.tokens, ' text-primary '))
+	                      and ($manifest.visual/@preferred = 'true'
+	                           or (not($manifest.visual) and contains($role.tokens, ' visual-primary ')))"/>
+	<!--
+	  HTML can keep a large WKT output collapsed next to its interactive figure.
+	  In the non-interactive PDF the preferred figure carries the same geometry,
+	  while typesetting very large WKT collections can exceed TeX dimensions.
+	  Authors can retain text in PDF with role="text-primary".
+	-->
+	<xsl:if test="not($visual.preferred)">
+	  <xsl:call-template name="postgis-dblatex-block-label">
+	    <xsl:with-param name="kind" select="'output'"/>
+	  </xsl:call-template>
+		<xsl:apply-imports/>
+	</xsl:if>
 	<xsl:if test="string($visual.id) != ''">
 		<xsl:call-template name="postgis-dblatex-block-label">
 			<xsl:with-param name="kind" select="'figure'"/>

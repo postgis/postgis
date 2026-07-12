@@ -235,6 +235,31 @@ class ExampleTestRunnerTest(unittest.TestCase):
 
         self.assertEqual(["second:2", ("visuals", ["second-visual"])], calls)
 
+    def test_visual_only_renders_documented_output_without_executing_query(self):
+        tester = self.make_runner({"SELECT 1": [["POLYGON((0 0,1 0,0 1,0 0))"]]})
+        example = tester.examples()[0]
+        example.update({
+            "documented_only": True,
+            "visual_id": "documented-visual",
+            "visual_kind": "explicit",
+            "visual_preferred": True,
+        })
+        tester.examples = lambda: [example]
+        calls = []
+        tester.run_one_example = lambda database, selected: self.fail("documented output was executed")
+        tester.render_visual_example = lambda database, selected, actual: calls.append(
+            (selected["visual_id"], actual)
+        ) or {"id": selected["visual_id"], "source": selected["label"], "svg": "<svg/>\n"}
+        tester.publish_visual_examples = lambda render_dir, visuals: calls.append(
+            (render_dir, [visual["id"] for visual in visuals])
+        )
+
+        tester.run_examples("exampletest", render_dir="visuals", visual_only=True, jobs=2)
+
+        self.assertEqual("documented-visual", calls[0][0])
+        self.assertEqual(example["expected"], calls[0][1])
+        self.assertEqual(("visuals", ["documented-visual"]), calls[1])
+
 
 class VisualExampleTest(unittest.TestCase):
     def setUp(self):

@@ -597,12 +597,15 @@ class ExampleTester:
         text = self.node_text(node)
         screen = self.following_screen(node)
         forced = self.has_role(node, FORCE_ROLE)
-        if self.has_role(node, EXTERNAL_STATE_ROLE) and not forced:
+        explicit_visual = screen is not None and self.has_role(screen, VISUAL_ROLE)
+        skip_reason = self.obvious_skip_reason(text)
+        documented_only = bool(explicit_visual and skip_reason)
+        if self.has_role(node, EXTERNAL_STATE_ROLE) and not forced and not documented_only:
             return None
         if not forced:
             if not self.looks_query(text):
                 return None
-            if self.obvious_skip_reason(text):
+            if skip_reason and not documented_only:
                 return None
 
         query, expected = self.parse_example_node(node)
@@ -614,7 +617,6 @@ class ExampleTester:
 
         refentry = ""
         screen_ordinal = 0
-        explicit_visual = screen is not None and self.has_role(screen, VISUAL_ROLE)
         skip_visual = self.has_role(node, VISUAL_SKIP_ROLE) or (
             screen is not None and self.has_role(screen, VISUAL_SKIP_ROLE)
         )
@@ -631,6 +633,7 @@ class ExampleTester:
             "forced": forced,
             "version": self.query_is_version_example(query),
             "catalog": self.query_is_catalog_example(query),
+            "documented_only": documented_only,
             "volatile": self.query_is_version_example(query) or self.query_is_catalog_example(query),
             "visual_id": self.visual_id(screen) if visual is not None else None,
             "visual_kind": visual["kind"] if visual is not None else None,
@@ -783,7 +786,12 @@ class ExampleTester:
         )
 
     def run_examples(self, database, keep_going=False, render_dir=None, visual_only=False, jobs=1):
-        examples = self.examples()
+        all_examples = self.examples()
+        documented_visuals = [
+            example for example in all_examples
+            if example.get("documented_only") and example["visual_id"]
+        ]
+        examples = [example for example in all_examples if not example.get("documented_only")]
         if visual_only:
             examples = [example for example in examples if example["visual_id"]]
         else:
@@ -799,6 +807,12 @@ class ExampleTester:
 
             with ThreadPoolExecutor(max_workers=jobs) as pool:
                 visuals = list(pool.map(run_visual, examples))
+            visuals.extend(
+                self.render_visual_example(
+                    database, example, QueryRows(example["expected"], [])
+                )
+                for example in documented_visuals
+            )
             ran = len(examples)
             if render_dir:
                 self.publish_visual_examples(render_dir, visuals)
