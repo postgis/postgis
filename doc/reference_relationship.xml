@@ -1674,26 +1674,21 @@ FROM (SELECT
     <title>Examples</title>
       <para>This example tests a circle within another circle.</para>
       <programlisting>
+WITH circles AS (
+  SELECT ST_Buffer(center, 20) AS smallc,
+         ST_Buffer(center, 40) AS bigc
+  FROM (SELECT 'POINT(50 50)'::geometry AS center) AS p
+)
 SELECT ST_Within(smallc, smallc) As smallinsmall,
   ST_Within(smallc, bigc) As smallinbig,
   ST_Within(bigc, smallc) As biginsmall,
   ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,
   ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,
-  ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
-FROM
-(
-SELECT ST_Buffer('POINT(50 50)'::geometry, 20) As smallc,
-  ST_Buffer('POINT(50 50)'::geometry, 40) As bigc) As foo;</programlisting>
-<screen> smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
---------------+------------+------------+------------+------------+------------
- t            | t          | f          | t          | t          | t
-(1 row)</screen>
-
-    <para><inlinemediaobject>
-    <imageobject>
-      <imagedata fileref="images/st_within01.png"/>
-    </imageobject>
-    </inlinemediaobject> </para>
+  ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
+  ST_AsText(smallc, 3) AS small_circle,
+  ST_AsText(bigc, 3) AS big_circle
+FROM circles;</programlisting>
+<screen>t | t | f | t | t | t | POLYGON((70 50,69.616 46.098,68.478 42.346,66.629 38.889,64.142 35.858,61.111 33.371,57.654 31.522,53.902 30.384,50 30,46.098 30.384,42.346 31.522,38.889 33.371,35.858 35.858,33.371 38.889,31.522 42.346,30.384 46.098,30 50,30.384 53.902,31.522 57.654,33.371 61.111,35.858 64.142,38.889 66.629,42.346 68.478,46.098 69.616,50 70,53.902 69.616,57.654 68.478,61.111 66.629,64.142 64.142,66.629 61.111,68.478 57.654,69.616 53.902,70 50)) | POLYGON((90 50,89.231 42.196,86.955 34.693,83.259 27.777,78.284 21.716,72.223 16.741,65.307 13.045,57.804 10.769,50 10,42.196 10.769,34.693 13.045,27.777 16.741,21.716 21.716,16.741 27.777,13.045 34.693,10.769 42.196,10 50,10.769 57.804,13.045 65.307,16.741 72.223,21.716 78.284,27.777 83.259,34.693 86.955,42.196 89.231,50 90,57.804 89.231,65.307 86.955,72.223 83.259,78.284 78.284,83.259 72.223,86.955 65.307,89.231 57.804,90 50))</screen>
     </refsection>
 
     <refsection>

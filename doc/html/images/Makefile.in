@@ -85,8 +85,8 @@ GENERATED_IMAGES= \
 	st_optimalalphashape02.png \
 	st_straightskeleton01.png \
 	st_approximatemedialaxis01.png \
-	st_tesselate04.png \
-	st_within01.png
+	st_tesselate04.png
+
 
 # Images that are created with dimensions 100x100
 GENERATED_IMAGES_RESIZED= \
