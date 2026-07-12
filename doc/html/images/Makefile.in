@@ -57,13 +57,10 @@ GENERATED_IMAGES= \
 	st_alphashape01.png \
 	st_alphashape02.png \
 	st_alphashape03.png \
-	st_azimuth01.png \
-	st_azimuth02.png \
 	st_clusterkmeans02.png \
 	st_clusterrelatewin01.png \
 	st_extrude01.png \
 	st_extrude03.png \
-	st_hausdorffdistance01.png \
 	st_issimple01.png \
 	st_issimple02.png \
 	st_issimple03.png \

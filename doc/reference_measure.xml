@@ -196,34 +196,27 @@ ORDER BY deg;</programlisting>
  270 |   270.0 | W
  315 |   315.0 | NW
 </screen>
-		<informaltable>
-		  <tgroup cols="2">
-			<tbody>
-				<row>
-				<entry><para><informalfigure>
-					<mediaobject>
-					  <imageobject>
-						<imagedata fileref="images/st_azimuth01.png"/>
-					  </imageobject>
-					  <caption><para>Blue: origin Point(25,45); Green: target Point(75, 100); Yellow: Y axis or North;
-                      Red: azimuth angle.</para></caption>
-					</mediaobject>
-				  </informalfigure>
-				</para></entry>
-				<entry><para><informalfigure>
-					<mediaobject>
-					  <imageobject>
-						<imagedata fileref="images/st_azimuth02.png"/>
-					  </imageobject>
-					  <caption><para>Blue: origin Point(75, 100); Green: target Point(25, 45); Yellow: Y axis or North;
-                      Red: azimuth angle.</para></caption>
-					</mediaobject>
-				  </informalfigure>
-				</para></entry>
-				</row>
-			</tbody>
-			</tgroup>
-		</informaltable>
+		<para>Azimuth from Point(25, 45) to Point(75, 100), shown against the positive Y axis (north).</para>
+<programlisting>WITH points AS (
+  SELECT 'POINT(25 45)'::geometry AS origin,
+         'POINT(75 100)'::geometry AS target
+)
+SELECT round(degrees(ST_Azimuth(origin, target))::numeric, 6) AS degrees,
+       ST_AsText(ST_MakeLine(origin, ST_Translate(origin, 0, 105))) AS north,
+       ST_AsText(ST_MakeLine(origin, target)) AS direction
+FROM points;</programlisting>
+<screen>42.273689 | LINESTRING(25 45,25 150) | LINESTRING(25 45,75 100)</screen>
+
+		<para>Reverse azimuth from Point(75, 100) to Point(25, 45).</para>
+<programlisting>WITH points AS (
+  SELECT 'POINT(75 100)'::geometry AS origin,
+         'POINT(25 45)'::geometry AS target
+)
+SELECT round(degrees(ST_Azimuth(origin, target))::numeric, 6) AS degrees,
+       ST_AsText(ST_MakeLine(origin, ST_Translate(origin, 0, 90))) AS north,
+       ST_AsText(ST_MakeLine(origin, target)) AS direction
+FROM points;</programlisting>
+<screen>222.273689 | LINESTRING(75 100,75 190) | LINESTRING(75 100,25 45)</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -905,24 +898,19 @@ The smaller densifyFrac we specify, the more accurate Fréchet distance we get. 
 	  <refsection>
 		<title>Examples</title>
 
-        <informalfigure>
-            <mediaobject>
-            <imageobject>
-                <imagedata fileref="images/st_hausdorffdistance01.png"/>
-            </imageobject>
-            <caption><para>Hausdorff distance (red) and distance (yellow)
-            between two lines </para></caption>
-            </mediaobject>
-        </informalfigure>
-
-<programlisting>
-SELECT ST_HausdorffDistance(geomA, geomB),
-       ST_Distance(geomA, geomB)
-    FROM (SELECT 'LINESTRING (20 70,70 60,110 70,170 70)'::geometry AS geomA,
-                 'LINESTRING (20 90,130 90,60 100,190 100)'::geometry AS geomB) AS t;</programlisting>
-<screen> st_hausdorffdistance | st_distance
-----------------------+-------------
-    37.26206567625497 |          20</screen>
+        <para>Hausdorff distance and minimum distance between two lines.
+        The Hausdorff witness segment from the original illustration is retained and its length is checked against the computed distance.</para>
+<programlisting>WITH lines AS (
+  SELECT 'LINESTRING (20 70,70 60,110 70,170 70)'::geometry AS geomA,
+         'LINESTRING (20 90,130 90,60 100,190 100)'::geometry AS geomB,
+         'LINESTRING (52.69230769230769 63.46153846153846,60 100)'::geometry AS hausdorff_segment
+)
+SELECT round(ST_HausdorffDistance(geomA, geomB)::numeric, 6) AS hausdorff_distance,
+       round(ST_Distance(geomA, geomB)::numeric, 6) AS distance,
+       round(ST_Length(hausdorff_segment)::numeric, 6) AS witness_length,
+       ST_AsText(ST_ShortestLine(geomA, geomB)) AS distance_segment
+FROM lines;</programlisting>
+<screen>37.262066 | 20.000000 | 37.262066 | LINESTRING(20 70,20 90)</screen>
 
 <para><emphasis role="bold">Example:</emphasis> Hausdorff distance with densification.</para>
 <programlisting>
