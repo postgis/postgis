@@ -998,88 +998,64 @@ SELECT
         polygon invalid.
       </para>
 
-	  <informaltable frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(h)</emphasis> and
-				<emphasis role="bold">(i)</emphasis> are valid <varname>POLYGON</varname>s.
-                <emphasis role="bold">(j-m)</emphasis> are invalid.
-				<emphasis role="bold">(j)</emphasis>
-				can be represented as a valid <varname>MULTIPOLYGON</varname>.
-				</emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid01.png"/>
-					</imageobject>
+	  <para>The following examples use <xref linkend="ST_IsValid"/> to check
+      the validity rules.  Each labeled geometry is returned only if its
+      computed validity agrees with the label.</para>
 
-					<caption><para><emphasis role="bold">(h)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
+	  <programlisting>WITH cases(label, geom) AS (VALUES
+  ('h', 'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+                 (50 100, 70 80, 110 100, 110 140, 50 100))'::geometry),
+  ('i', 'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+                 (190 60, 140 40, 110 60, 120 90, 190 60))'::geometry)
+)
+SELECT
+  ST_AsText((SELECT geom FROM cases WHERE label = 'h' AND ST_IsValid(geom)))
+    AS "input_(h) valid",
+  ST_AsText((SELECT geom FROM cases WHERE label = 'i' AND ST_IsValid(geom)))
+    AS "input_(i) valid, tangent hole";</programlisting>
+<screen xml:id="visual-valid-polygons" role="visual-primary visual-separate-output">                                          input_(h) valid                                          |                                  input_(i) valid, tangent hole
+---------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------
+ POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(50 100,70 80,110 100,110 140,50 100)) | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(190 60,140 40,110 60,120 90,190 60))
+(1 row)</screen>
 
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid02.png"/>
-					</imageobject>
+	  <para>Examples <emphasis role="bold">(j-m)</emphasis> are invalid.
+      They show, respectively, a disconnected interior, crossing rings, a cut
+      line, and a hole outside the shell.  The invalidity reason is checked with
+      <xref linkend="ST_IsValidReason"/>.  The disconnected interior in
+      <emphasis role="bold">(j)</emphasis> can instead be represented as a
+      valid <varname>MULTIPOLYGON</varname>.</para>
 
-					<caption><para><emphasis role="bold">(i)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid03.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(j)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-			<row>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid04.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(k)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid05.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(l)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid06.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(m)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-	  </informaltable>
+	  <programlisting>WITH cases(label, geom) AS (VALUES
+  ('j', 'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+                 (130 170, 10 140, 50 120, 110 110, 130 170))'::geometry),
+  ('k', 'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+                 (90 189, 10 139, 80 110, 110 130, 90 189))'::geometry),
+  ('l', 'POLYGON ((10 100, 60 140, 60 190, 60 140, 130 170,
+                  190 60, 160 10, 50 20, 10 100))'::geometry),
+  ('m', 'POLYGON ((10 40, 10 100, 130 130, 190 80, 140 20, 50 10, 10 40),
+                 (81 143, 103 143, 112 162, 107 175, 89 183, 71 169, 81 143))'::geometry)
+)
+SELECT
+  ST_AsText((SELECT geom FROM cases
+             WHERE label = 'j' AND NOT ST_IsValid(geom)
+             AND ST_IsValidReason(geom) LIKE 'Interior is disconnected%'))
+    AS "input_(j) invalid, disconnected",
+  ST_AsText((SELECT geom FROM cases
+             WHERE label = 'k' AND NOT ST_IsValid(geom)
+             AND ST_IsValidReason(geom) LIKE 'Self-intersection%'))
+    AS "input_(k) invalid, rings cross",
+  ST_AsText((SELECT geom FROM cases
+             WHERE label = 'l' AND NOT ST_IsValid(geom)
+             AND ST_IsValidReason(geom) LIKE 'Ring Self-intersection%'))
+    AS "input_(l) invalid, cut line",
+  ST_AsText((SELECT geom FROM cases
+             WHERE label = 'm' AND NOT ST_IsValid(geom)
+             AND ST_IsValidReason(geom) LIKE 'Hole lies outside shell%'))
+    AS "input_(m) invalid, hole outside";</programlisting>
+<screen xml:id="visual-invalid-polygons" role="visual-primary visual-separate-output">                                   input_(j) invalid, disconnected                                   |                                  input_(k) invalid, rings cross                                   |                        input_(l) invalid, cut line                        |                                         input_(m) invalid, hole outside
+-----------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------
+ POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(130 170,10 140,50 120,110 110,130 170)) | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(90 189,10 139,80 110,110 130,90 189)) | POLYGON((10 100,60 140,60 190,60 140,130 170,190 60,160 10,50 20,10 100)) | POLYGON((10 40,10 100,130 130,190 80,140 20,50 10,10 40),(81 143,103 143,112 162,107 175,89 183,71 169,81 143))
+(1 row)</screen>
 
 	  <para>A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> if:
 	  </para>
@@ -1096,53 +1072,37 @@ SELECT
         </para></listitem>
         </orderedlist>
 
-	  <informaltable frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(n)</emphasis> is a valid <varname>MULTIPOLYGON</varname>.
-				<emphasis role="bold">(o)</emphasis> and <emphasis role="bold">(p)</emphasis> are invalid.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid09.png"/>
-					</imageobject>
+	  <para>The next example checks the MultiPolygon rules.  In
+      <emphasis role="bold">(n)</emphasis> the polygons touch at only one point.
+      In <emphasis role="bold">(o)</emphasis> they share an edge, and in
+      <emphasis role="bold">(p)</emphasis> their interiors overlap.</para>
 
-					<caption><para><emphasis role="bold">(n)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid07.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(o)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid08.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(p)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-	  </informaltable>
+	  <programlisting>WITH cases(label, geom) AS (VALUES
+  ('n', 'MULTIPOLYGON (((10 40, 29 118, 100 75, 180 88, 140 30, 70 10, 10 40)),
+                       ((50 170, 100 190, 160 180, 180 140, 180 90, 120 120,
+                         30 120, 50 170)))'::geometry),
+  ('o', 'MULTIPOLYGON (((10 40, 30 120, 120 120, 180 88, 140 30, 70 10, 10 40)),
+                       ((50 170, 100 190, 160 180, 180 140, 180 90, 120 120,
+                         30 120, 50 170)))'::geometry),
+  ('p', 'MULTIPOLYGON (((10 40, 42 93, 130 150, 180 86, 140 30, 70 10, 10 40)),
+                       ((50 170, 100 190, 138 182, 149 156, 146 137, 100 100,
+                         58 140, 50 170)))'::geometry)
+)
+SELECT
+  ST_AsText((SELECT geom FROM cases WHERE label = 'n' AND ST_IsValid(geom)))
+    AS "input_(n) valid, point touch",
+  ST_AsText((SELECT geom FROM cases
+             WHERE label = 'o' AND NOT ST_IsValid(geom)
+             AND ST_IsValidReason(geom) LIKE 'Self-intersection%'))
+    AS "input_(o) invalid, shared edge",
+  ST_AsText((SELECT geom FROM cases
+             WHERE label = 'p' AND NOT ST_IsValid(geom)
+             AND ST_IsValidReason(geom) LIKE 'Self-intersection%'))
+    AS "input_(p) invalid, overlap";</programlisting>
+<screen xml:id="visual-validity-multipolygons" role="visual-primary visual-separate-output">                                                  input_(n) valid, point touch                                                   |                                                  input_(o) invalid, shared edge                                                  |                                                    input_(p) invalid, overlap
+---------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------
+ MULTIPOLYGON(((10 40,29 118,100 75,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170))) | MULTIPOLYGON(((10 40,30 120,120 120,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170))) | MULTIPOLYGON(((10 40,42 93,130 150,180 86,140 30,70 10,10 40)),((50 170,100 190,138 182,149 156,146 137,100 100,58 140,50 170)))
+(1 row)</screen>
 
 	  <para>These rules mean that valid polygonal geometry is also <emphasis>simple</emphasis>.
        </para>
