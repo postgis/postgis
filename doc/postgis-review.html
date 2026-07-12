@@ -207,6 +207,8 @@
       const position = document.getElementById("position");
       const message = document.getElementById("message");
       const params = new URLSearchParams(location.search);
+      const boundaryEpsilon = 3;
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
       const state = {
         loaded: new Set(),
@@ -241,7 +243,7 @@
       }
 
       function scrollFrame(side, top) {
-        state.suppressUntil[side] = performance.now() + 150;
+        state.suppressUntil[side] = performance.now() + 500;
         frameWindow(side).scrollTo({ top, behavior: "instant" });
       }
 
@@ -259,7 +261,7 @@
         let index = -1;
         while (low <= high) {
           const middle = (low + high) >> 1;
-          if (elementTop(side, ids[middle]) <= y + 1) {
+          if (elementTop(side, ids[middle]) <= y + boundaryEpsilon) {
             index = middle;
             low = middle + 1;
           } else {
@@ -300,7 +302,7 @@
           const end = index + 1 < ids.length
             ? elementTop(targetSide, ids[index + 1])
             : documentHeight(targetSide);
-          return start + Math.min(interval.offset, Math.max(end - start - 2, 0));
+          return start + Math.min(interval.offset, Math.max(end - start - boundaryEpsilon - 1, 0));
         }
 
         const sourceIds = state.ids[sourceSide];
@@ -361,6 +363,7 @@
 
       function bindFrame(side) {
         const win = frameWindow(side);
+        if ("scrollRestoration" in win.history) win.history.scrollRestoration = "manual";
         win.addEventListener("scroll", () => scheduleSync(side), { passive: true });
         win.document.addEventListener("pointerdown", () => activate(side), { passive: true });
         win.document.addEventListener("wheel", () => activate(side), { passive: true });
@@ -427,14 +430,25 @@
             return option;
           }));
           waitForStableLayout(() => {
-            state.ready = true;
             message.textContent = "";
-            observeLayoutChanges();
-            if (fragment && state.elements.old.has(fragment) && state.elements.new.has(fragment)) {
-              jumpTo(fragment);
-            } else {
+            const target = fragment && state.elements.old.has(fragment) && state.elements.new.has(fragment)
+              ? fragment
+              : "";
+            const placeInitialPosition = () => {
+              if (target) {
+                jumpTo(target);
+              } else {
+                scrollFrame("old", 0);
+                scrollFrame("new", 0);
+              }
+            };
+            placeInitialPosition();
+            setTimeout(() => {
+              placeInitialPosition();
+              state.ready = true;
+              observeLayoutChanges();
               synchronizeFrom(state.activeSide);
-            }
+            }, 300);
           });
         } catch (error) {
           message.textContent = "Serve this directory over HTTP";
@@ -444,7 +458,7 @@
       }
 
       function jumpTo(id) {
-        if (!state.ready || !state.elements.old.has(id) || !state.elements.new.has(id)) {
+        if (!state.elements.old.has(id) || !state.elements.new.has(id)) {
           message.textContent = `No common entry: ${id}`;
           return false;
         }
