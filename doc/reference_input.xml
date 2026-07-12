@@ -522,17 +522,29 @@ ST_AsText(ST_GeomFromMARC21('
 
 		  <refsection>
 			<title>Examples</title>
-	<programlisting language="sql">SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)');
-SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)', 4269);
+	<para>Create a LineString with SRID 0.</para>
+	<programlisting language="sql">SELECT ST_SRID(ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)'));</programlisting>
+	<screen role="visual-primary" xml:id="st-geomfromtext-linestring-srid0">0</screen>
 
-SELECT ST_GeomFromText('MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))');
+	<para>Create the same LineString with SRID 4269.</para>
+	<programlisting language="sql">SELECT ST_SRID(ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)', 4269));</programlisting>
+	<screen role="visual-primary" xml:id="st-geomfromtext-linestring-srid4269">4269</screen>
 
-SELECT ST_GeomFromText('POINT(-71.064544 42.28787)');
+	<para>Create a MultiLineString.</para>
+	<programlisting language="sql">SELECT ST_GeometryType(ST_GeomFromText('MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))'));</programlisting>
+	<screen role="visual-primary" xml:id="st-geomfromtext-multilinestring">ST_MultiLineString</screen>
 
-SELECT ST_GeomFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
--71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');
+	<para>Create a Point.</para>
+	<programlisting language="sql">SELECT ST_GeometryType(ST_GeomFromText('POINT(-71.064544 42.28787)'));</programlisting>
+	<screen>ST_Point</screen>
 
-SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
+	<para>Create a Polygon.</para>
+	<programlisting language="sql">SELECT ST_GeometryType(ST_GeomFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
+-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))'));</programlisting>
+	<screen role="visual-primary" xml:id="st-geomfromtext-polygon">ST_Polygon</screen>
+
+	<para>Create a MultiPolygon with SRID 4326.</para>
+	<programlisting language="sql">SELECT ST_GeometryType(ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
 -71.1031627617667 42.3152960829043,-71.102923838298 42.3149156848307,
 -71.1023097974109 42.3151969047397,-71.1019285062273 42.3147384934248,
 -71.102505233663 42.3144722937587,-71.10277487471 42.3141658254797,
@@ -554,10 +566,12 @@ SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
 -71.1032580383161 42.3152269126061,-71.103223066939 42.3152517403219,
 -71.1031880899493 42.3152774590236)),
 ((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
--71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))', 4326);
+-71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))', 4326));</programlisting>
+	<screen role="visual-primary" xml:id="st-geomfromtext-multipolygon">ST_MultiPolygon</screen>
 
-SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)');
-    </programlisting>
+	<para>Create a CircularString.</para>
+	<programlisting language="sql">SELECT ST_GeometryType(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));</programlisting>
+	<screen role="visual-primary" xml:id="st-geomfromtext-circularstring">ST_CircularString</screen>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
