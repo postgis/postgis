@@ -124,6 +124,8 @@ coordinate frame. Use `role="visual-separate-output"` when independent output
 columns should be compared in separate frames at a common scale. Geometry
 columns named with an `input_` prefix are treated as authored input layers; in
 separate-output mode their remaining column names also label their frames.
+Aliases on cast WKT literals and geometry result columns become figure legend
+labels; quote an alias when the label needs spaces.
 Keep a short plain paragraph immediately before the associated
 `programlisting` when an example needs an introduction; HTML joins that prose
 to the Code, Output, and Figure card without requiring a wrapper or empty label.

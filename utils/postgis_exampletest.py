@@ -572,12 +572,16 @@ class ExampleTester:
         candidates = self.geometry_candidate_matches(text, quoted_only=True)
         for candidate in candidates:
             alias = re.match(
-                r"\s*'\s*::\s*(?:geometry|geography)\s+(?:AS\s+)?([A-Za-z_][A-Za-z0-9_]*)",
+                r'\s*\'\s*::\s*(?:geometry|geography)\s+(?:AS\s+)?'
+                r'("(?:""|[^"])+"|[A-Za-z_][A-Za-z0-9_]*)',
                 text[candidate["end"]:],
                 re.I,
             )
             if alias:
-                candidate["label"] = alias.group(1)
+                label = alias.group(1)
+                candidate["label"] = (
+                    label[1:-1].replace('""', '"') if label.startswith('"') else label
+                )
         for match in MAKE_ENVELOPE_RE.finditer(text):
             min_x, min_y, max_x, max_y = match.group(1, 2, 3, 4)
             wkt = (

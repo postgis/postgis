@@ -482,9 +482,13 @@ class VisualExampleTest(unittest.TestCase):
     def test_code_geometry_candidates_use_cast_expression_aliases(self):
         candidates = self.tester.code_geometry_candidates(
             "SELECT 'LINESTRING(0 0,1 1)'::geometry AS line_a, "
-            "'POINT(2 2)'::geography point_b"
+            "'POINT(2 2)'::geography point_b, "
+            "'POLYGON((0 0,1 0,0 0))'::geometry AS \"lake \"\"inner\"\" shore\""
         )
-        self.assertEqual(["line_a", "point_b"], [candidate.get("label") for candidate in candidates])
+        self.assertEqual(
+            ["line_a", "point_b", 'lake "inner" shore'],
+            [candidate.get("label") for candidate in candidates],
+        )
 
     def test_query_output_headers_use_only_outer_select_aliases(self):
         headers = self.tester.query_output_headers(

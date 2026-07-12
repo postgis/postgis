@@ -86,6 +86,8 @@
 		<xsl:apply-imports/>
 	</xsl:if>
 	<xsl:if test="string($visual.id) != ''">
+		<!-- Keep the visible Figure label attached to the generated image. -->
+		<xsl:text>&#10;\par\noindent\begin{minipage}{\linewidth}&#10;</xsl:text>
 		<xsl:call-template name="postgis-dblatex-block-label">
 			<xsl:with-param name="kind" select="'figure'"/>
 		</xsl:call-template>
@@ -99,7 +101,7 @@
 		</xsl:choose>
 		<xsl:text>\textheight,keepaspectratio]{images/visual-examples/</xsl:text>
 		<xsl:value-of select="$visual.id"/>
-		<xsl:text>.png}\end{center}&#10;</xsl:text>
+		<xsl:text>.png}\end{center}&#10;\end{minipage}\par&#10;</xsl:text>
 	</xsl:if>
 </xsl:template>
 
