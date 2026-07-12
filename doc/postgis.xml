@@ -141,7 +141,6 @@
   &reference_raster;
   &extras;
   &postgis_special;
-  &reference_sfcgal_legacy;
   &reporting;
   &credits;
   &release_notes;

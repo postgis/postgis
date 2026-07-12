@@ -1,4 +1,4 @@
-<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="reference_sfcgal_legacy">
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="reference_sfcgal_legacy">
     <title>Deprecated SFCGAL Function Aliases</title>
     <para>
         These <code>ST_</code> names remain available for compatibility and emit deprecation notices.
@@ -468,4 +468,4 @@
             <para>&sfcgal_required;</para>
         </refsection>
     </refentry>
-</chapter>
+</section>
