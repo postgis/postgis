@@ -16,6 +16,15 @@
 <xsl:include href="postgis-block-labels-common.xsl"/>
 <xsl:param name="postgis.visual.manifest" select="''"/>
 
+<!-- Keep a semantic hook around literal syntax collections.  The upstream
+     DocBook itemized-list template uses role internally and does not retain it
+     in the generated HTML class list. -->
+<xsl:template match="d:itemizedlist[@role = 'postgis-syntax-list']">
+  <div class="postgis-syntax-list">
+    <xsl:apply-imports/>
+  </div>
+</xsl:template>
+
 <xsl:template match="@*|node()" mode="postgis-code-block-html">
   <xsl:param name="language"/>
   <xsl:copy>

@@ -313,7 +313,7 @@ CURVEPOLYGON(
 	  <para>Well-Known Text (WKT) provides a standard textual representation of spatial data.
       Examples of WKT representations of spatial objects are:</para>
 
-	  <itemizedlist>
+	  <itemizedlist role="postgis-syntax-list" spacing="compact">
 		<listitem>
 		  <para>POINT(0 0)</para>
 		</listitem>
@@ -387,7 +387,7 @@ VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place'); -- 312 is the 
       of spatial data as binary data (arrays of bytes).
       Examples of the WKB representations of spatial objects are:</para>
 
-    <itemizedlist>
+    <itemizedlist role="postgis-syntax-list" spacing="compact">
     <listitem>
         <para>WKT: POINT(1 1)</para>
         <para>WKB: 0101000000000000000000F03F000000000000F03</para>
