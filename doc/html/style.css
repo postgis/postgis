@@ -387,6 +387,30 @@ pre,
     font-style: italic;
 }
 
+.postgis-shell-keyword,
+.postgis-shell-command {
+    color: #003f7f;
+    font-weight: 600;
+}
+
+.postgis-shell-variable {
+    color: #5c3a9f;
+}
+
+.postgis-shell-string {
+    color: #146000;
+}
+
+.postgis-shell-option,
+.postgis-shell-operator {
+    color: #7a3e00;
+}
+
+.postgis-shell-comment {
+    color: #666;
+    font-style: italic;
+}
+
 .postgis-sql-paren {
     border-radius: 0.12em;
     outline: 1px solid transparent;
@@ -577,13 +601,23 @@ table.postgis-example-grid td {
     .postgis-sql-string,
     .postgis-sql-number,
     .postgis-sql-comment,
-    .postgis-sql-paren {
+    .postgis-sql-paren,
+    .postgis-shell-keyword,
+    .postgis-shell-command,
+    .postgis-shell-variable,
+    .postgis-shell-string,
+    .postgis-shell-option,
+    .postgis-shell-operator,
+    .postgis-shell-comment {
         color: #000;
     }
-    .postgis-sql-keyword {
+    .postgis-sql-keyword,
+    .postgis-shell-keyword,
+    .postgis-shell-command {
         font-weight: 600;
     }
-    .postgis-sql-comment {
+    .postgis-sql-comment,
+    .postgis-shell-comment {
         font-style: italic;
     }
 }

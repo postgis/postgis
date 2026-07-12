@@ -126,6 +126,12 @@ async function main() {
     makePre('SELECT (a + (b))\nFROM things)'),
     makePre('SELECT st_buffer(g, 1), ST_Buffer(g, 2), ST_MakePoint(1, 2)')
   ];
+  const shellSource = 'DB=[yourdatabase]\n' +
+    'SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-3.6/\n\n' +
+    '# Core objects\n' +
+    'psql -d ${DB} -f "${SCRIPTSDIR}/postgis.sql" # OPTIONAL';
+  const shellBlock = makePre(shellSource);
+  shellBlock.attributes['data-postgis-language'] = 'bash';
   const output = makePre('wide output row\nsecond row');
   output.attributes = {};
   const trailingOutput = makePre('first row\nsecond row\n');
@@ -179,8 +185,13 @@ async function main() {
       if (selector === '.postgis-example-code pre.programlisting[data-postgis-language="sql"]') {
         return blocks;
       }
+      if (selector === '.postgis-example-code pre.programlisting[data-postgis-language="bash"], ' +
+          '.postgis-example-code pre.programlisting[data-postgis-language="sh"], ' +
+          '.postgis-example-code pre.programlisting[data-postgis-language="shell"]') {
+        return [shellBlock];
+      }
       if (selector === '.postgis-example-block pre.programlisting, .postgis-example-block pre.screen') {
-        return blocks.concat([output, trailingOutput]);
+        return blocks.concat([shellBlock, output, trailingOutput]);
       }
       if (selector === '.postgis-example-block pre[data-postgis-lines="true"] > .line') {
         return layoutLines;
@@ -432,6 +443,21 @@ async function main() {
   assert.doesNotMatch(blocks[4].innerHTML, /<a\b[^>]*>[^<]*ST_Buffer<\/a>/i);
   assert.match(blocks[4].innerHTML,
     /<a\b[^>]*href="ST_MakePoint\.html"[^>]*>ST_MakePoint<\/a>/);
+  assert.match(shellBlock.innerHTML, /postgis-shell-variable">DB<\/span>/);
+  assert.match(shellBlock.innerHTML, /postgis-shell-variable">\$\{DB\}<\/span>/);
+  assert.match(shellBlock.innerHTML, /postgis-shell-command">pg_config<\/span>/);
+  assert.match(shellBlock.innerHTML, /postgis-shell-command">psql<\/span>/);
+  assert.match(shellBlock.innerHTML, /postgis-shell-option">--sharedir<\/span>/);
+  assert.match(shellBlock.innerHTML, /postgis-shell-option">-d<\/span>/);
+  assert.match(shellBlock.innerHTML, /postgis-shell-comment"># Core objects<\/span>/);
+  assert.match(shellBlock.innerHTML, /postgis-shell-string">"\$\{SCRIPTSDIR\}\/postgis\.sql"<\/span>/);
+  assert.strictEqual(geometry.codeText(shellBlock), shellSource);
+  const shellRedirections = geometry.highlightShell('echo ok > out\n< input cat\ncat 2>> log');
+  assert.strictEqual((shellRedirections.match(/postgis-shell-command/g) || []).length, 3);
+  assert.match(shellRedirections, /postgis-shell-command">echo<\/span>/);
+  assert.strictEqual((shellRedirections.match(/postgis-shell-command">cat<\/span>/g) || []).length, 2);
+  assert.doesNotMatch(shellRedirections, /postgis-shell-command">(?:out|input|log)<\/span>/);
+  assert.match(shellRedirections, /postgis-shell-operator">2&gt;&gt;<\/span>/);
 
   const refIndex = geometry.normalizeRefIndex(sandbox.window.POSTGIS_REF_INDEX);
   sandbox.window.location.pathname = '/manual/not-in-index.html';

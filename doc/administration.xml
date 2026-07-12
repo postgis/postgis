@@ -103,7 +103,7 @@ environment).</para></note>
 
 	<para>
 	  Run the following Shell commands in your terminal:
-<programlisting>
+<programlisting language="bash">
 DB=[yourdatabase]
 SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/
 

@@ -339,6 +339,186 @@
     return renderLogicalLines(segments);
   }
 
+  // ---------------------------------------------------------------------------
+  // Shell tokenizer
+  // ---------------------------------------------------------------------------
+
+  var shellKeywords = {
+    'case': true, 'do': true, 'done': true, 'elif': true, 'else': true,
+    'esac': true, 'fi': true, 'for': true, 'function': true, 'if': true,
+    'in': true, 'select': true, 'then': true, 'time': true, 'until': true,
+    'while': true
+  };
+  var shellCommandPrefixes = {
+    'do': true, 'elif': true, 'else': true, 'if': true, 'then': true,
+    'time': true, 'until': true, 'while': true
+  };
+
+  function shellToken(tokenClass, text) {
+    if (!tokenClass) {
+      return escapeHtml(text);
+    }
+    return '<span class="postgis-shell-' + tokenClass + '">' + escapeHtml(text) + '</span>';
+  }
+
+  function highlightShellLine(line) {
+    var html = '';
+    var index = 0;
+    var commandExpected = true;
+    var assignmentValue = false;
+    var redirectionExpected = false;
+    var atWordStart = true;
+    var inBacktick = false;
+    var savedAssignmentValue = false;
+    var savedCommandExpected = true;
+
+    while (index < line.length) {
+      var character = line.charAt(index);
+      var remainder = line.slice(index);
+      var match;
+      var end;
+      var lower;
+      var tokenClass = '';
+
+      if (/\s/.test(character)) {
+        html += escapeHtml(character);
+        index += 1;
+        atWordStart = true;
+        if (!inBacktick) {
+          assignmentValue = false;
+        }
+        continue;
+      }
+
+      if (character === '#' && atWordStart) {
+        html += shellToken('comment', remainder);
+        break;
+      }
+
+      if (character === '\'' || character === '"') {
+        end = index + 1;
+        while (end < line.length) {
+          if (character === '"' && line.charAt(end) === '\\') {
+            end += 2;
+            continue;
+          }
+          if (line.charAt(end) === character) {
+            end += 1;
+            break;
+          }
+          end += 1;
+        }
+        html += shellToken('string', line.slice(index, end));
+        index = end;
+        atWordStart = false;
+        if (redirectionExpected) {
+          redirectionExpected = false;
+        } else if (!assignmentValue) {
+          commandExpected = false;
+        }
+        continue;
+      }
+
+      if (character === '`') {
+        html += shellToken('operator', character);
+        if (inBacktick) {
+          inBacktick = false;
+          assignmentValue = savedAssignmentValue;
+          commandExpected = savedCommandExpected;
+          atWordStart = false;
+        } else {
+          inBacktick = true;
+          savedAssignmentValue = assignmentValue;
+          savedCommandExpected = commandExpected;
+          assignmentValue = false;
+          commandExpected = true;
+          atWordStart = true;
+        }
+        index += 1;
+        continue;
+      }
+
+      if (character === '$') {
+        match = /^(\$\{[^}\n]*\}|\$[A-Za-z_][A-Za-z0-9_]*|\$[0-9@*#?$!_-])/.exec(remainder);
+        if (match) {
+          html += shellToken('variable', match[0]);
+          index += match[0].length;
+          atWordStart = false;
+          if (redirectionExpected) {
+            redirectionExpected = false;
+          }
+          continue;
+        }
+      }
+
+      if (commandExpected && !assignmentValue && !redirectionExpected && atWordStart) {
+        match = /^([A-Za-z_][A-Za-z0-9_]*)(\+?=)/.exec(remainder);
+        if (match) {
+          html += shellToken('variable', match[1]);
+          html += shellToken('operator', match[2]);
+          index += match[0].length;
+          assignmentValue = true;
+          atWordStart = false;
+          continue;
+        }
+      }
+
+      match = /^(\d*(?:<<-?|>>|<>|>&|<&|[<>])|&&|\|\||[|;&()])/.exec(remainder);
+      if (match) {
+        html += shellToken('operator', match[0]);
+        index += match[0].length;
+        if (/^\d*(?:<<-?|>>|<>|>&|<&|[<>])$/.test(match[0])) {
+          redirectionExpected = true;
+        } else {
+          commandExpected = match[0] !== ')';
+          redirectionExpected = false;
+        }
+        assignmentValue = false;
+        atWordStart = true;
+        continue;
+      }
+
+      end = index;
+      while (end < line.length && !/[\s#'"`$|&;()<>]/.test(line.charAt(end))) {
+        end += 1;
+      }
+      if (end === index) {
+        html += escapeHtml(character);
+        index += 1;
+        atWordStart = false;
+        continue;
+      }
+
+      match = [line.slice(index, end)];
+      lower = match[0].toLowerCase();
+      if (redirectionExpected) {
+        redirectionExpected = false;
+      } else if (shellKeywords[lower]) {
+        tokenClass = 'keyword';
+        commandExpected = Boolean(shellCommandPrefixes[lower]);
+      } else if (!commandExpected && /^--?[A-Za-z0-9]/.test(match[0])) {
+        tokenClass = 'option';
+      } else if (commandExpected && !assignmentValue) {
+        tokenClass = 'command';
+        commandExpected = false;
+      }
+      html += shellToken(tokenClass, match[0]);
+      index = end;
+      atWordStart = false;
+    }
+    return html;
+  }
+
+  function highlightShell(text) {
+    var lines = text.split('\n');
+    if (lines.length > 1 && lines[lines.length - 1] === '' && /\n$/.test(text)) {
+      lines.pop();
+    }
+    return lines.map(function (line) {
+      return '<span class="line">' + highlightShellLine(line) + '</span>';
+    }).join('');
+  }
+
   function setLineMetadata(pre, count) {
     pre.setAttribute('data-postgis-lines', 'true');
     if (count > 1) {
@@ -428,9 +608,25 @@
   function applySyntaxHighlighting(refIndex) {
     var blocks;
     var text;
-    if (!refIndex.keywords.length) {
-      return;
+    blocks = document.querySelectorAll(
+      '.postgis-example-code pre.programlisting[data-postgis-language="bash"], ' +
+      '.postgis-example-code pre.programlisting[data-postgis-language="sh"], ' +
+      '.postgis-example-code pre.programlisting[data-postgis-language="shell"]'
+    );
+    for (var shellIndex = 0; shellIndex < blocks.length; shellIndex += 1) {
+      if (blocks[shellIndex].getAttribute('data-postgis-highlighted') === 'shell' ||
+          blocks[shellIndex].children.length !== 0) {
+        continue;
+      }
+      text = normalizeDisplayedSql(blocks[shellIndex].textContent);
+      originalBlockText.set(blocks[shellIndex], text);
+      blocks[shellIndex].textContent = text;
+      blocks[shellIndex].innerHTML = highlightShell(text);
+      setLineMetadata(blocks[shellIndex], text.split('\n').length);
+      blocks[shellIndex].setAttribute('data-postgis-highlighted', 'shell');
     }
+
+    if (!refIndex.keywords.length) return;
     blocks = document.querySelectorAll('.postgis-example-code pre.programlisting[data-postgis-language="sql"]');
     for (var i = 0; i < blocks.length; i += 1) {
       if (blocks[i].getAttribute('data-postgis-highlighted') === 'sql') {
@@ -951,6 +1147,7 @@
     codeText: codeText,
     normalizeRefIndex: normalizeRefIndex,
     highlightSql: highlightSql,
+    highlightShell: highlightShell,
     currentFunctionName: currentFunctionName,
     previousVisualStackSibling: previousVisualStackSibling,
     setGeometryActive: setGeometryActive,
