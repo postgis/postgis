@@ -94,6 +94,7 @@
 			<xsl:when test="$manifest.visual/@kind = 'image-output' and count($manifest.visual/layer) &gt; 4">0.62</xsl:when>
 			<xsl:when test="$manifest.visual/@kind = 'image-output' and count($manifest.visual/layer) &gt; 1">0.48</xsl:when>
 			<xsl:when test="$manifest.visual/@kind = 'image-output'">0.40</xsl:when>
+			<xsl:when test="count($manifest.visual/layer[not(@frame = preceding-sibling::layer/@frame)]) &gt; 2">0.35</xsl:when>
 			<xsl:otherwise>0.25</xsl:otherwise>
 		</xsl:choose>
 		<xsl:text>\textheight,keepaspectratio]{images/visual-examples/</xsl:text>

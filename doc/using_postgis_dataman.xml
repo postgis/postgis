@@ -890,136 +890,61 @@ so even calling them "degrees" is inaccurate.</para>
       If the endpoints of a simple LineString are identical it is called <emphasis>closed</emphasis>
       and referred to as a Linear Ring.</para>
 
-	  <informaltable frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(a)</emphasis> and
-				<emphasis role="bold">(c)</emphasis> are simple	<varname>LINESTRING</varname>s.
-                <emphasis role="bold">(b)</emphasis> and <emphasis role="bold">(d)</emphasis> are not simple.
-                <emphasis role="bold">(c)</emphasis> is a closed Linear Ring.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="2" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple01.png"/>
-					</imageobject>
+	  <para>Use <xref linkend="ST_IsSimple"/> to classify linear geometries.
+      Each labeled result below is returned only when the function agrees with
+      the stated classification; example <emphasis role="bold">(c)</emphasis>
+      also verifies that the simple LineString is closed.</para>
 
-					<caption><para><emphasis role="bold">(a)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple02.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(b)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple03.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(c)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple04.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(d)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-
-	  </informaltable>
+	  <programlisting>WITH cases(label, geom) AS (VALUES
+  ('a', 'LINESTRING (10 190, 140 130, 70 80, 190 10)'::geometry),
+  ('b', 'LINESTRING (10 190, 130 40, 170 160, 10 10)'::geometry),
+  ('c', 'LINESTRING (90 190, 120 190, 130 140, 190 50, 70 10, 10 70, 10 150, 90 190)'::geometry),
+  ('d', 'LINESTRING (90 190, 120 190, 50 60, 130 10, 190 50, 160 90, 10 150, 90 190)'::geometry)
+)
+SELECT
+  ST_AsText((SELECT geom FROM cases WHERE label = 'a' AND ST_IsSimple(geom)))
+    AS "input_(a) simple",
+  ST_AsText((SELECT geom FROM cases WHERE label = 'b' AND NOT ST_IsSimple(geom)))
+    AS "input_(b) not simple",
+  ST_AsText((SELECT geom FROM cases
+             WHERE label = 'c' AND ST_IsSimple(geom) AND ST_IsClosed(geom)))
+    AS "input_(c) simple, closed",
+  ST_AsText((SELECT geom FROM cases WHERE label = 'd' AND NOT ST_IsSimple(geom)))
+    AS "input_(d) not simple";</programlisting>
+<screen xml:id="visual-simple-linestrings" role="visual-primary visual-separate-output">            input_(a) simple             |          input_(b) not simple           |                      input_(c) simple, closed                       |                        input_(d) not simple
+-----------------------------------------+-----------------------------------------+---------------------------------------------------------------------+---------------------------------------------------------------------
+ LINESTRING(10 190,140 130,70 80,190 10) | LINESTRING(10 190,130 40,170 160,10 10) | LINESTRING(90 190,120 190,130 140,190 50,70 10,10 70,10 150,90 190) | LINESTRING(90 190,120 190,50 60,130 10,190 50,160 90,10 150,90 190)
+(1 row)</screen>
 
 	  <para>A <varname>MULTILINESTRING</varname> is <emphasis>simple</emphasis>
 	  only if all of its elements are simple and the only intersection between
 	  any two elements occurs at points that are on the
 	  boundaries of both elements.  </para>
 
-	  <informaltable frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(e)</emphasis> and
-				<emphasis role="bold">(f)</emphasis> are simple
-				<varname>MULTILINESTRING</varname>s.
-                <emphasis role="bold">(g)</emphasis> is not simple.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple05.png"/>
-					</imageobject>
+	  <para>The next example applies the same classification to the three
+      MultiLineStrings.  In <emphasis role="bold">(f)</emphasis> the component
+      lines meet only at a shared endpoint, while in
+      <emphasis role="bold">(g)</emphasis> they cross in their interiors.</para>
 
-					<caption><para><emphasis role="bold">(e)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple06.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(f)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple07.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(g)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-	  </informaltable>
+	  <programlisting>WITH cases(label, geom) AS (VALUES
+  ('e', 'MULTILINESTRING ((30 190, 60 60, 170 10), (100 190, 180 150, 160 70))'::geometry),
+  ('f', 'MULTILINESTRING ((30 190, 60 60, 170 10), (30 190, 180 150, 160 70))'::geometry),
+  ('g', 'MULTILINESTRING ((30 190, 60 60, 170 10), (100 190, 180 150, 80 10))'::geometry)
+)
+SELECT
+  ST_AsText((SELECT geom FROM cases WHERE label = 'e' AND ST_IsSimple(geom)))
+    AS "input_(e) simple",
+  ST_AsText((SELECT geom FROM cases WHERE label = 'f' AND ST_IsSimple(geom)))
+    AS "input_(f) simple",
+  ST_AsText((SELECT geom FROM cases WHERE label = 'g' AND NOT ST_IsSimple(geom)))
+    AS "input_(g) not simple";</programlisting>
+<screen xml:id="visual-simple-multilinestrings" role="visual-primary visual-separate-output">                        input_(e) simple                         |                        input_(f) simple                        |                      input_(g) not simple
+-----------------------------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------
+ MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,160 70)) | MULTILINESTRING((30 190,60 60,170 10),(30 190,180 150,160 70)) | MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,80 10))
+(1 row)</screen>
 
     <para><varname>POLYGON</varname>s are formed from linear rings, so
     valid polygonal geometry is always <emphasis>simple</emphasis>.</para>
-
-    <para>To test if a geometry is simple
-	use the <xref linkend="ST_IsSimple"/> function:</para>
-
-	  <programlisting>SELECT
-ST_IsSimple('LINESTRING(0 0,100 100)') AS straight,
-ST_IsSimple('LINESTRING(0 0,100 100,100 0,0 100)') AS crossing;</programlisting>
-<screen> straight | crossing
-----------+----------
- t        | f</screen>
 
     <para>Generally, PostGIS functions do not require geometric arguments to be simple.
 	Simplicity is primarily used as a basis for defining geometric validity.

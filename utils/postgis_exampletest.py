@@ -1364,9 +1364,9 @@ SELECT json_build_object(
                     ),
                     "row_num": candidate["row_num"],
                     "column_num": candidate["column_num"],
-                    "requested_frame": forced_frame or (candidate["label"] if (
-                        example.get("visual_separate_output") and source == "Output"
-                    ) else "Code" if example.get("visual_separate_output") else None),
+                    "requested_frame": forced_frame or (
+                        candidate["label"] if example.get("visual_separate_output") else None
+                    ),
                     "wkt": candidate["wkt"],
                 })
         if not layers:
@@ -1567,11 +1567,13 @@ SELECT json_build_object(
             "bounds": payload["bounds"],
         }]
         frame_count = len(frames)
+        panel_columns = 1 if frame_count == 1 else min(2, frame_count)
+        panel_rows = math.ceil(frame_count / panel_columns)
         panel_gap = 20 if frame_count > 1 else 0
-        panel_width = (560 - panel_gap * (frame_count - 1)) / frame_count
+        panel_width = (560 - panel_gap * (panel_columns - 1)) / panel_columns
         plot_top = 30 if frame_count > 1 else 12
-        plot_bottom = 322
-        plot_height = plot_bottom - plot_top
+        panel_height = 322 - plot_top if panel_rows == 1 else 220
+        plot_bottom = plot_top + panel_rows * panel_height + panel_gap * (panel_rows - 1)
         layouts = {}
         backgrounds = []
         frame_labels = []
@@ -1594,13 +1596,20 @@ SELECT json_build_object(
             max_x += width * 0.08
             min_y -= height * 0.08
             max_y += height * 0.08
-            panel_left = 20 + frame_index * (panel_width + panel_gap)
+            panel_row = frame_index // panel_columns
+            panel_column = frame_index % panel_columns
+            panels_in_row = min(panel_columns, frame_count - panel_row * panel_columns)
+            row_width = panels_in_row * panel_width + (panels_in_row - 1) * panel_gap
+            row_left = 20 + (560 - row_width) / 2
+            panel_left = row_left + panel_column * (panel_width + panel_gap)
             panel_right = panel_left + panel_width
-            scale = min(panel_width / (max_x - min_x), plot_height / (max_y - min_y))
+            panel_top = plot_top + panel_row * (panel_height + panel_gap)
+            panel_bottom = panel_top + panel_height
+            scale = min(panel_width / (max_x - min_x), panel_height / (max_y - min_y))
             used_width = (max_x - min_x) * scale
             used_height = (max_y - min_y) * scale
             left = panel_left + (panel_width - used_width) / 2
-            top = plot_top + (plot_height - used_height) / 2
+            top = panel_top + (panel_height - used_height) / 2
             translate_x = left - min_x * scale
             translate_y = top + max_y * scale
             layouts[frame_id] = {
@@ -1609,13 +1618,13 @@ SELECT json_build_object(
                 "translate_y": translate_y,
             }
             backgrounds.append(
-                f'<rect class="plot-background" x="{panel_left:.12g}" y="{plot_top}" '
-                f'width="{panel_width:.12g}" height="{plot_height}" fill="#fbfcfd"/>'
+                f'<rect class="plot-background" x="{panel_left:.12g}" y="{panel_top}" '
+                f'width="{panel_width:.12g}" height="{panel_height}" fill="#fbfcfd"/>'
             )
             if frame_count > 1:
                 frame_label = str(frame.get("label", frame_id))
                 frame_labels.append(
-                    f'<text class="frame-label" x="{(panel_left + panel_right) / 2:.12g}" y="20" '
+                    f'<text class="frame-label" x="{(panel_left + panel_right) / 2:.12g}" y="{panel_top - 10}" '
                     f'text-anchor="middle">{html.escape(frame_label)}</text>'
                 )
 
@@ -1630,7 +1639,7 @@ SELECT json_build_object(
                     break
                 x = translate_x + value * scale
                 grid.append(
-                    f'<line x1="{x:.12g}" y1="{plot_top}" x2="{x:.12g}" y2="{plot_bottom}" '
+                    f'<line x1="{x:.12g}" y1="{panel_top}" x2="{x:.12g}" y2="{panel_bottom}" '
                     'stroke="#dce2e7" stroke-width="1"/>'
                 )
                 next_value = value + step
@@ -1785,7 +1794,7 @@ SELECT json_build_object(
 
         legend_svg = []
         cursor_x = 20
-        cursor_y = 354
+        cursor_y = plot_bottom + 32
         for geometry_id, color, label in legend:
             safe_label = html.escape(label)
             item_width = max(72, 34 + len(label) * 7)

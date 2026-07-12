@@ -761,6 +761,58 @@ class VisualExampleTest(unittest.TestCase):
         self.assertEqual(2, svg.count('class="plot-background"'))
         self.assertNotIn("font:", svg)
 
+    def test_svg_renders_four_frames_in_two_column_grid(self):
+        frames = [
+            {"id": label, "label": label, "bounds": [0, 0, 10, 10]}
+            for label in ("(a) simple", "(b) not simple", "(c) simple", "(d) not simple")
+        ]
+        svg = self.tester.visual_svg(
+            "four-frames",
+            {
+                "frames": frames,
+                "parts": [
+                    {"ord": index, "source": "Code", "label": frame["label"],
+                     "frame": frame["id"], "type": "LINESTRING",
+                     "svg": "M 0 0 L 10 -10", "closed": False}
+                    for index, frame in enumerate(frames, 1)
+                ],
+            },
+        )
+        self.assertEqual(4, svg.count('class="plot-background"'))
+        self.assertEqual(2, svg.count('y="30" width="270" height="220"'))
+        self.assertEqual(2, svg.count('y="270" width="270" height="220"'))
+        self.assertIn('x="155" y="20"', svg)
+        self.assertIn('x="445" y="260"', svg)
+        self.assertIn('height="548" viewBox="0 0 600 548"', svg)
+
+    def test_separate_explicit_inputs_use_their_labels_as_frames(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "frames": [
+                {"id": layer["requested_frame"], "label": layer["requested_frame"],
+                 "bounds": [0, 0, 1, 1]}
+                for layer in layers
+            ],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "frame": layer["requested_frame"], "type": "POINT", "x": 0, "y": 0,
+            } for layer in layers],
+        }
+        actual = QueryRows(
+            [["POINT(0 0)", "POINT(1 1)"]],
+            ["input_(a) simple", "input_(b) not simple"],
+        )
+        self.tester.render_visual_example("manual", {
+            "query": "SELECT 'POINT(9 9)'",
+            "visual_id": "labeled-inputs", "label": "labels:labeled-inputs",
+            "visual_refentry": "labels", "visual_screen": 3,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+            "visual_separate_output": True,
+        }, actual)
+        self.assertEqual(["(a) simple", "(b) not simple"], [
+            layer["requested_frame"] for layer in captured
+        ])
+
     def test_svg_uses_one_color_for_polyhedral_surface_faces(self):
         svg = self.tester.visual_svg(
             "solid",
