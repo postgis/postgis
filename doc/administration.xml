@@ -213,7 +213,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 	  </para>
 
 	  <para>
-		The dump/reload process is assisted by the postgis_restore
+		The dump/reload process is assisted by the <command role="reference-target">postgis_restore</command>
 		script which takes care of skipping from the dump all
 		definitions which belong to PostGIS (including old ones),
 		allowing you to restore your schemas and data into a
@@ -240,7 +240,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		super account.
 	  </para>
 
-	  <programlisting>pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f "/somepath/olddb.backup" olddb</programlisting>
+	  <programlisting language="bash">pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f "/somepath/olddb.backup" olddb</programlisting>
 
 	</listitem>
 
@@ -287,7 +287,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		error stream by psql. Keep a log of those.
 	  </para>
 
-	  <programlisting>postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
+	  <programlisting language="bash">postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
 
 	</listitem>
 
@@ -356,13 +356,13 @@ ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));
 		from postgis_restore. So, after having run :
     </para>
 
-		<programlisting>postgis_restore "/somepath/olddb.backup" &gt; olddb.sql</programlisting>
+		<programlisting language="bash">postgis_restore "/somepath/olddb.backup" &gt; olddb.sql</programlisting>
 
     <para>
 		run this command :
     </para>
 
-		<programlisting>grep -v IGNF olddb.sql &gt; olddb-without-IGN.sql</programlisting>
+		<programlisting language="bash">grep -v IGNF olddb.sql &gt; olddb-without-IGN.sql</programlisting>
 
     <para>
 		Create then your newdb, activate the required Postgis extensions,

@@ -22,6 +22,8 @@ XML_ID = f"{{{XML_NS}}}id"
 
 ADMONITIONS = {"note", "tip", "important", "warning", "caution"}
 DEPRECATED_ALIAS_ROLE = "deprecated-alias"
+COMMAND_REFERENCE_ROLE = "reference-target"
+CHUNK_OWNER_ELEMENTS = {"appendix", "chapter", "preface", "refentry"}
 SQL_KEYWORD_DATA = (
     # keyword, starts a semicolon-terminated SQL statement, starts an example code block
     ("ADD", False, False),
@@ -677,11 +679,11 @@ def refentry_id(refentry: ET.Element) -> str:
     return refentry.get(XML_ID) or refentry.get("id") or ""
 
 
-def make_entry(label: str, entry_id: str, purpose: str) -> dict[str, str]:
+def make_entry(label: str, entry_id: str, purpose: str, href: str | None = None) -> dict[str, str]:
     return {
         "id": entry_id,
         "label": label,
-        "href": f"{entry_id}.html",
+        "href": href or f"{entry_id}.html",
         "title": brief(purpose) if purpose else label,
     }
 
@@ -701,10 +703,35 @@ def add_operator(target: dict[str, list[dict[str, str]]], key: str, label: str, 
     entries.append(make_entry(label, entry_id, purpose))
 
 
+def command_reference(command: ET.Element) -> tuple[str, dict[str, str]] | None:
+    if COMMAND_REFERENCE_ROLE not in role_tokens(command):
+        return None
+    label = text_content(command)
+    target = next((ancestor for ancestor in ancestors(command) if element_id(ancestor)), None)
+    owner = next(
+        (
+            ancestor
+            for ancestor in ancestors(command)
+            if local_name(ancestor) in CHUNK_OWNER_ELEMENTS and element_id(ancestor)
+        ),
+        None,
+    )
+    if not label or target is None or owner is None:
+        return None
+    target_id = element_id(target) or ""
+    owner_id = element_id(owner) or ""
+    target_title = text_content(first_named_child(target, "title")) or label
+    href = f"{owner_id}.html"
+    if target_id != owner_id:
+        href += f"#{target_id}"
+    return label, make_entry(label, target_id, target_title, href)
+
+
 def build_index(input_path: Path) -> dict[str, Any]:
     root = load_xml(input_path).getroot()
     functions: dict[str, dict[str, str]] = {}
     operators: dict[str, list[dict[str, str]]] = {}
+    commands: dict[str, dict[str, str]] = {}
 
     for refentry in root.findall(f".//{DB}refentry"):
         entry_id = refentry_id(refentry)
@@ -722,7 +749,18 @@ def build_index(input_path: Path) -> dict[str, Any]:
             elif OPERATOR_RE.match(bare):
                 add_operator(operators, bare, bare, indexed_entry_id, purpose)
 
-    return {"functions": functions, "operators": operators, "keywords": list(SQL_HIGHLIGHT_KEYWORDS)}
+    for command in root.findall(f".//{DB}command"):
+        reference = command_reference(command)
+        if reference is not None:
+            label, entry = reference
+            commands.setdefault(label, entry)
+
+    return {
+        "commands": commands,
+        "functions": functions,
+        "operators": operators,
+        "keywords": list(SQL_HIGHLIGHT_KEYWORDS),
+    }
 
 
 def should_fail(findings: Iterable[Finding], fail_on: str) -> bool:
@@ -792,9 +830,10 @@ def command_ref_index(args: argparse.Namespace) -> int:
     args.output.write_text(serialized_index + "\n")
     script_output.write_text(f"window.POSTGIS_REF_INDEX = {serialized_index};\n")
     print(
-        f"wrote {args.output} and {script_output} with {len(index['functions'])} functions, "
-        f"{sum(len(entries) for entries in index['operators'].values())} operator pages, and "
-        f"{len(index['keywords'])} SQL keywords",
+        f"wrote {args.output} and {script_output}; commands={len(index['commands'])}, "
+        f"functions={len(index['functions'])}, "
+        f"operator pages={sum(len(entries) for entries in index['operators'].values())}, "
+        f"SQL keywords={len(index['keywords'])}",
         file=sys.stderr,
     )
     return 0

@@ -374,6 +374,18 @@ pre,
     text-decoration-color: currentColor;
 }
 
+.postgis-shell-link {
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 63, 127, 0.35);
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.16em;
+}
+
+.postgis-shell-link:hover,
+.postgis-shell-link:focus {
+    text-decoration-color: currentColor;
+}
+
 .postgis-sql-string {
     color: #146000;
 }

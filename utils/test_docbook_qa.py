@@ -373,21 +373,36 @@ class DocBookHtmlLintTest(unittest.TestCase):
 
 
 class DocBookRefIndexTest(unittest.TestCase):
-    def test_ref_index_function_operator_and_clean_empty_case(self):
+    def test_ref_index_command_function_operator_and_clean_empty_case(self):
         path = write_tmp(
             ".xml",
             DOCBOOK_OPEN
+            + '<chapter xml:id="admin"><title>Administration</title><section xml:id="hard-upgrade">'
+            '<title>Hard upgrade</title><para><command role="reference-target">postgis_restore</command>'
+            '</para></section></chapter>'
             + '<refentry xml:id="ST_Point"><refnamediv><refname>ST_Point</refname><refpurpose>Makes a point</refpurpose></refnamediv></refentry>'
             + '<refentry xml:id="geometry_overlaps"><refnamediv><refname>&amp;&amp;</refname><refpurpose>Overlaps</refpurpose></refnamediv></refentry>'
             + DOCBOOK_CLOSE,
         )
         index = build_index(path)
+        self.assertEqual(
+            {
+                "id": "hard-upgrade",
+                "label": "postgis_restore",
+                "href": "admin.html#hard-upgrade",
+                "title": "Hard upgrade",
+            },
+            index["commands"]["postgis_restore"],
+        )
         self.assertEqual("ST_Point", index["functions"]["ST_POINT"]["label"])
         self.assertEqual("geometry_overlaps", index["operators"]["&&"][0]["id"])
         self.assertEqual(list(SQL_HIGHLIGHT_KEYWORDS), index["keywords"])
         self.assertIn("SELECT", index["keywords"])
         empty_path = write_tmp(".xml", DOCBOOK_OPEN + DOCBOOK_CLOSE)
-        self.assertEqual({"functions": {}, "operators": {}, "keywords": list(SQL_HIGHLIGHT_KEYWORDS)}, build_index(empty_path))
+        self.assertEqual(
+            {"commands": {}, "functions": {}, "operators": {}, "keywords": list(SQL_HIGHLIGHT_KEYWORDS)},
+            build_index(empty_path),
+        )
 
     def test_ref_index_command_writes_json_and_script_with_same_data(self):
         path = write_tmp(

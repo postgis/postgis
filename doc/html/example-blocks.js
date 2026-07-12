@@ -5,7 +5,7 @@
   var geometryDeactivateTimers = new Map();
   var originalBlockText = new WeakMap();
   var scriptElement = document.currentScript;
-  var emptyRefIndex = { functions: {}, operators: {}, keywords: [] };
+  var emptyRefIndex = { commands: {}, functions: {}, operators: {}, keywords: [] };
   var resizeTimer = null;
   var wrapObserver = null;
   var numberPattern = '[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][-+]?\\d+)?';
@@ -40,6 +40,7 @@
   function normalizeRefIndex(refIndex) {
     refIndex = refIndex || emptyRefIndex;
     return {
+      commands: refIndex.commands || {},
       functions: refIndex.functions || {},
       operators: refIndex.operators || {},
       keywords: Array.isArray(refIndex.keywords) ? refIndex.keywords : [],
@@ -99,7 +100,8 @@
   }
 
   function safeHref(href) {
-    if (/^#[A-Za-z0-9_.:-]+$/.test(href) || /^[A-Za-z0-9_.:-]+\.html$/.test(href)) {
+    if (/^#[A-Za-z0-9_.:-]+$/.test(href) ||
+        /^[A-Za-z0-9_.:-]+\.html(?:#[A-Za-z0-9_.:-]+)?$/.test(href)) {
       return href;
     }
     return '';
@@ -150,18 +152,24 @@
     return ref.href || '';
   }
 
-  function linkedToken(token, tokenClass, ref) {
+  function linkedToken(token, tokenClass, ref, linkClass) {
     var href = safeHref(refHref(ref));
     var title = ref.title ? ref.label + ': ' + ref.title : ref.label;
+    linkClass = linkClass || 'postgis-sql-link';
     if (!href) {
       return '<span class="' + tokenClass + '">' + escapeHtml(token) + '</span>';
     }
-    return '<a class="' + tokenClass + ' postgis-sql-link" href="' + escapeAttribute(href) + '" title="' +
+    return '<a class="' + tokenClass + ' ' + linkClass + '" href="' + escapeAttribute(href) + '" title="' +
       escapeAttribute(title) + '" aria-label="' + escapeAttribute(title) + '">' + escapeHtml(token) + '</a>';
   }
 
   function lookupFunction(token, refIndex) {
     return refIndex.functions && refIndex.functions[token.toUpperCase()];
+  }
+
+  function lookupCommand(token, refIndex) {
+    var basename = token.split('/').pop();
+    return refIndex.commands && refIndex.commands[basename];
   }
 
   function lookupOperator(token, refIndex) {
@@ -361,7 +369,7 @@
     return '<span class="postgis-shell-' + tokenClass + '">' + escapeHtml(text) + '</span>';
   }
 
-  function highlightShellLine(line) {
+  function highlightShellLine(line, refIndex) {
     var html = '';
     var index = 0;
     var commandExpected = true;
@@ -502,20 +510,26 @@
         tokenClass = 'command';
         commandExpected = false;
       }
-      html += shellToken(tokenClass, match[0]);
+      var commandRef = tokenClass === 'command' ? lookupCommand(match[0], refIndex) : null;
+      if (commandRef) {
+        html += linkedToken(match[0], 'postgis-shell-command', commandRef, 'postgis-shell-link');
+      } else {
+        html += shellToken(tokenClass, match[0]);
+      }
       index = end;
       atWordStart = false;
     }
     return html;
   }
 
-  function highlightShell(text) {
+  function highlightShell(text, refIndex) {
+    refIndex = refIndex || normalizeRefIndex(emptyRefIndex);
     var lines = text.split('\n');
     if (lines.length > 1 && lines[lines.length - 1] === '' && /\n$/.test(text)) {
       lines.pop();
     }
     return lines.map(function (line) {
-      return '<span class="line">' + highlightShellLine(line) + '</span>';
+      return '<span class="line">' + highlightShellLine(line, refIndex) + '</span>';
     }).join('');
   }
 
@@ -621,7 +635,7 @@
       text = normalizeDisplayedSql(blocks[shellIndex].textContent);
       originalBlockText.set(blocks[shellIndex], text);
       blocks[shellIndex].textContent = text;
-      blocks[shellIndex].innerHTML = highlightShell(text);
+      blocks[shellIndex].innerHTML = highlightShell(text, refIndex);
       setLineMetadata(blocks[shellIndex], text.split('\n').length);
       blocks[shellIndex].setAttribute('data-postgis-highlighted', 'shell');
     }

@@ -230,6 +230,14 @@ async function main() {
     window: {
       location: { pathname: '/manual/st_buffer.HTML' },
       POSTGIS_REF_INDEX: {
+        commands: {
+          postgis_restore: {
+            id: 'hard_upgrade',
+            href: 'postgis_administration.html#hard_upgrade',
+            label: 'postgis_restore',
+            title: 'Hard upgrade'
+          }
+        },
         functions: {
           ST_BUFFER: { href: 'ST_Buffer.html', label: 'ST_Buffer', title: 'buffer geometry' },
           ST_MAKEPOINT: { href: 'ST_MakePoint.html', label: 'ST_MakePoint', title: 'make a point' }
@@ -458,6 +466,15 @@ async function main() {
   assert.strictEqual((shellRedirections.match(/postgis-shell-command">cat<\/span>/g) || []).length, 2);
   assert.doesNotMatch(shellRedirections, /postgis-shell-command">(?:out|input|log)<\/span>/);
   assert.match(shellRedirections, /postgis-shell-operator">2&gt;&gt;<\/span>/);
+  const linkedPipeline = geometry.highlightShell(
+    'postgis_restore old.backup | psql -d newdb',
+    geometry.normalizeRefIndex(sandbox.window.POSTGIS_REF_INDEX)
+  );
+  assert.match(linkedPipeline,
+    /<a class="postgis-shell-command postgis-shell-link" href="postgis_administration\.html#hard_upgrade"[^>]*>postgis_restore<\/a>/);
+  assert.match(linkedPipeline, /postgis-shell-operator">\|<\/span>/);
+  assert.match(linkedPipeline, /<span class="postgis-shell-command">psql<\/span>/);
+  assert.doesNotMatch(linkedPipeline, /<a[^>]*>psql<\/a>/);
 
   const refIndex = geometry.normalizeRefIndex(sandbox.window.POSTGIS_REF_INDEX);
   sandbox.window.location.pathname = '/manual/not-in-index.html';
