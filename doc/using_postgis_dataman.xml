@@ -675,46 +675,29 @@ VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</progr
 		</listitem>
 		</itemizedlist>
 
-		<para/>
-
         <para>Examples of creating tables with geography columns:</para>
-		<itemizedlist>
-		<listitem>
-		  <para>Create a table with 2D POINT geography with the default SRID 4326 (WGS84 long/lat):</para>
-		  <para><programlisting>CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT));</programlisting></para>
-		</listitem>
-		<listitem>
-		  <para>Create a table with 2D POINT geography in NAD83 longlat:</para>
-		  <para><programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT, 4269));</programlisting></para>
-		</listitem>
-		<listitem>
-		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 4326:</para>
-		  <para><programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ, 4326));</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>Create a table with 2D LINESTRING geography with the default SRID 4326:</para>
-			<para><programlisting>CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING));</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>Create a table with 2D POLYGON geography with the SRID 4267 (NAD 1927 long lat):</para>
-			<para><programlisting>CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON, 4267));</programlisting></para>
-		</listitem>
+		<para>Create a table with 2D POINT geography with the default SRID 4326 (WGS84 long/lat):</para>
+		<programlisting>CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT));</programlisting>
+
+		<para>Create a table with 2D POINT geography in NAD83 longlat:</para>
+		<programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT, 4269));</programlisting>
+
+		<para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 4326:</para>
+		<programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ, 4326));</programlisting>
+
+		<para>Create a table with 2D LINESTRING geography with the default SRID 4326:</para>
+		<programlisting>CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING));</programlisting>
+
+		<para>Create a table with 2D POLYGON geography with the SRID 4267 (NAD 1927 long lat):</para>
+		<programlisting>CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON, 4267));</programlisting>
+
 		<!-- TODO: Add other examples -->
         <!--
-		<listitem>
-			<para>MULTIPOINT</para>
-		</listitem>
-		<listitem>
-			<para>MULTILINESTRING</para>
-		</listitem>
-		<listitem>
-			<para>MULTIPOLYGON</para>
-		</listitem>
-		<listitem>
-			<para>GEOMETRYCOLLECTION</para>
-		</listitem>
+		<para>MULTIPOINT</para>
+		<para>MULTILINESTRING</para>
+		<para>MULTIPOLYGON</para>
+		<para>GEOMETRYCOLLECTION</para>
         -->
-		</itemizedlist>
 		<para>Geography fields are registered in the <varname>geography_columns</varname> system view.
 		You can query the <varname>geography_columns</varname> view and see that the table is listed:</para>
 
