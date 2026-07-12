@@ -58,6 +58,10 @@ POINT_CONSTRUCTOR_RE = re.compile(
     rf"\bST_(?:Make)?Point\s*\(\s*({NUMBER_PATTERN})\s*,\s*({NUMBER_PATTERN})\s*\)",
     re.I,
 )
+GEOGRAPHY_INPUT_RE = re.compile(
+    r"::\s*geography\b|\bST_(?:Geog|Geography)FromText\s*\(",
+    re.I,
+)
 VISUAL_ROLE = "visual-primary"
 VISUAL_SKIP_ROLE = "visual-skip"
 VISUAL_SEPARATE_OUTPUT_ROLE = "visual-separate-output"
@@ -219,9 +223,11 @@ class ExampleTester:
     def visual_candidate(self, query, expected, explicit=False):
         code = [candidate["wkt"] for candidate in self.code_geometry_candidates(query)]
         output = self.geometry_candidates(self.rows_to_string(expected))
-        values = code + output
         if explicit:
             return {"kind": "explicit", "preferred": True}
+        if code and not output and GEOGRAPHY_INPUT_RE.search(query):
+            return None
+        values = code + output
         if not values:
             return None
         if len(values) > MAX_VISUAL_GEOMETRIES or sum(len(value) for value in values) > MAX_VISUAL_WKT_BYTES:

@@ -445,6 +445,27 @@ class VisualExampleTest(unittest.TestCase):
             "SELECT ST_AsText('LINESTRING(0 0,1 1)')", [["LINESTRING(0 0,1 1)"]]
         ))
 
+    def test_visual_candidate_does_not_draw_geography_inputs_as_planar(self):
+        geography_context = self.tester.visual_candidate(
+            "SELECT ST_Distance('LINESTRING(-122 47,0 51)'::geography, "
+            "'POINT(-21 64)'::geography)",
+            [["122235"]],
+        )
+        self.assertIsNone(geography_context)
+
+        geometry_context = self.tester.visual_candidate(
+            "SELECT ST_Distance('LINESTRING(-122 47,0 51)'::geometry, "
+            "'POINT(-21 64)'::geometry)",
+            [["13.3"]],
+        )
+        self.assertEqual({"kind": "input-context", "preferred": False}, geometry_context)
+
+        geography_output = self.tester.visual_candidate(
+            "SELECT ST_AsText(ST_Segmentize('LINESTRING(0 0,60 60)'::geography, 2000000))",
+            [["LINESTRING(0 0,10 12,60 60)"]],
+        )
+        self.assertEqual({"kind": "geometry-output", "preferred": True}, geography_output)
+
     def test_code_geometry_candidates_include_constructed_context_in_sql_order(self):
         candidates = self.tester.code_geometry_candidates(
             "SELECT f('LINESTRING(0 0,10 10)', ST_Point(1, 2), "
