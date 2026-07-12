@@ -203,6 +203,15 @@ pre,
     margin: 0.3rem 0;
 }
 
+.postgis-syntax-comparison ul.itemizedlist {
+    font-family: inherit;
+    min-width: 0;
+}
+
+.postgis-syntax-comparison li > p:not(:first-child) {
+    font-family: Consolas, Monaco, monospace;
+}
+
 .postgis-example-block {
     background: #f7f9fb;
     border: 1px solid #9aa;

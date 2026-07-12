@@ -19,8 +19,14 @@
 <!-- Keep a semantic hook around literal syntax collections.  The upstream
      DocBook itemized-list template uses role internally and does not retain it
      in the generated HTML class list. -->
-<xsl:template match="d:itemizedlist[@role = 'postgis-syntax-list']">
-  <div class="postgis-syntax-list">
+<xsl:template match="d:itemizedlist[@role = 'postgis-syntax-list'] | d:itemizedlist[@role = 'postgis-syntax-comparison']">
+  <div>
+    <xsl:attribute name="class">
+      <xsl:text>postgis-syntax-list</xsl:text>
+      <xsl:if test="@role = 'postgis-syntax-comparison'">
+        <xsl:text> postgis-syntax-comparison</xsl:text>
+      </xsl:if>
+    </xsl:attribute>
     <xsl:apply-imports/>
   </div>
 </xsl:template>

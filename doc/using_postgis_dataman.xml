@@ -490,7 +490,7 @@ geometry
 
         <para>PostGIS EWKT output has a few differences to OGC WKT:</para>
 
-		<itemizedlist>
+		<itemizedlist role="postgis-syntax-comparison" spacing="compact">
 			<listitem>
 				<para>For 3DZ geometries the Z qualifier is omitted:</para>
 				<para>OGC: POINT Z (1 2 3)</para>
@@ -512,7 +512,7 @@ geometry
         and the inconsistencies that can occur with the OGC/ISO format, such as:
         </para>
 
-		<itemizedlist>
+		<itemizedlist role="postgis-syntax-list" spacing="compact">
 			<listitem>
 				<para>POINT ZM (1 1)</para>
 			</listitem>
@@ -534,7 +534,7 @@ geometry
 
 	  <para>Examples of the EWKT text representation of spatial objects are:</para>
 
-	  <itemizedlist>
+	  <itemizedlist role="postgis-syntax-list" spacing="compact">
 		<listitem>
 		  <para>POINT(0 0 0) -- XYZ</para>
 		</listitem>
