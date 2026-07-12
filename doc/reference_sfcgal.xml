@@ -2338,44 +2338,28 @@ TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.
         </refsection>
 
         <refsection><title>Examples</title>
-            <programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry, 'POINT(91 87)'::geometry);</programlisting>
+            <para>Visibility from a point inside a polygon with holes.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry AS polygon,
+         'POINT(91 87)'::geometry AS observer
+)
+SELECT ST_AsText(polygon, 3) AS input_polygon,
+       ST_AsText(observer, 3) AS input_observer,
+       ST_AsText(CG_Visibility(polygon, observer), 3) AS visibility
+FROM data;</programlisting>
+            <screen role="visual-primary">POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)) | POINT(91 87) | POLYGON((78.5 68,98.5 68,108 43.933,108 98,121.962 107.034,107 106.5,107 135,97.5 106.5,65.28 105.099,77.5 96.5,78.5 68))</screen>
 
-            <programlisting>SELECT CG_Visibility('POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry, 'POINT(78.5 68)'::geometry, 'POINT(98.5 68)'::geometry);</programlisting>
-            <informaltable>
-                <tgroup cols="3">
-                    <tbody>
-                        <row>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/cg_visibility01.png"/>
-                                            </imageobject>
-                                            <caption><para>Original polygon</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/cg_visibility02.png"/>
-                                            </imageobject>
-                                            <caption><para>Visibility from the point</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                            <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/cg_visibility03.png"/>
-                                            </imageobject>
-                                            <caption><para>Visibility from the segment</para></caption>
-                                        </mediaobject>
-                                </informalfigure></para>
-                            </entry>
-                        </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
+            <para>Visibility from a segment inside the same polygon.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry AS polygon,
+         'POINT(78.5 68)'::geometry AS observer_start,
+         'POINT(98.5 68)'::geometry AS observer_end
+)
+SELECT ST_AsText(polygon, 3) AS input_polygon,
+       ST_AsText(ST_MakeLine(observer_start, observer_end), 3) AS input_observer,
+       ST_AsText(CG_Visibility(polygon, observer_start, observer_end), 3) AS visibility
+FROM data;</programlisting>
+            <screen role="visual-primary">POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)) | LINESTRING(78.5 68,98.5 68) | POLYGON((78.5 68,98.5 68,100.5 36,101.281 23.5,111.711 23.5,108 36,108 98,110.734 106.633,107 106.5,107 157.5,108.52 173.5,95.76 173.5,97.5 106.5,70.981 105.347,77.5 96.5,78.5 68))</screen>
         </refsection>
 
     </refentry>

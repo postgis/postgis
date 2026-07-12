@@ -1103,7 +1103,8 @@ FROM dimensions
                 break
             value = next_value
 
-        groups = []
+        area_groups = []
+        line_groups = []
         point_groups = []
         legend = []
         source_indexes = {"Code": 0, "Output": 0}
@@ -1196,8 +1197,13 @@ FROM dimensions
             )
             if all(part["type"].upper() in POINT_TYPES for part in parts):
                 point_groups.append(group_svg)
+            elif all(part["type"].upper() in {
+                "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
+                "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
+            } for part in parts):
+                area_groups.append(group_svg)
             else:
-                groups.append(group_svg)
+                line_groups.append(group_svg)
             legend.append((geometry_id, color, parts[0]["label"]))
 
         legend_svg = []
@@ -1227,7 +1233,7 @@ FROM dimensions
             '<rect class="plot-background" x="20" y="12" width="560" height="310" fill="#fbfcfd"/>\n'
             '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
             f'<g transform="matrix({scale:.12g} 0 0 {scale:.12g} {translate_x:.12g} {translate_y:.12g})">'
-            + "".join(groups + point_groups) + '</g>\n' + "".join(legend_svg) + '\n</svg>\n'
+            + "".join(area_groups + line_groups + point_groups) + '</g>\n' + "".join(legend_svg) + '\n</svg>\n'
         )
 
     def publish_visual_examples(self, render_dir, visuals):

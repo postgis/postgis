@@ -483,6 +483,21 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn('stroke="#a62c2b" fill="#a62c2b"', svg)
         self.assertIn('stroke="#d95f3d" fill="#d95f3d"', svg)
 
+    def test_svg_draws_lines_above_area_fills(self):
+        svg = self.tester.visual_svg(
+            "line-over-area",
+            {"bounds": [0, 0, 2, 1], "parts": [
+                {"ord": 1, "source": "Code", "label": "observer", "type": "LINESTRING",
+                 "svg": "M 0 0 L 2 0", "closed": False},
+                {"ord": 2, "source": "Output", "label": "visibility", "type": "POLYGON",
+                 "svg": "M 0 0 L 2 0 1 -1 Z"},
+            ]},
+        )
+        self.assertLess(
+            svg.index('data-postgis-geometry-id="line-over-area-output-1"'),
+            svg.index('data-postgis-geometry-id="line-over-area-code-1"'),
+        )
+
     def test_svg_rejects_empty_non_point_paths(self):
         with self.assertRaisesRegex(RuntimeError, "empty SVG path"):
             self.tester.visual_svg(
