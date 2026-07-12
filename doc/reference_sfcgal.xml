@@ -2994,57 +2994,18 @@ ST_GeomFromText('POINT(100 90)'),
     <programlisting>SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4,0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150),POLYGON ZM((0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150,0 0 10 100)))', 2, false));</programlisting>
     <para>Simplify two geometries together, preserving Z and M values and topology.</para>
     <programlisting>SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4,0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150),POLYGON ZM((0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150,0 0 10 100)))', 2, true));</programlisting>
-    <para>
-        <programlisting>
-WITH depts_pds as (SELECT ST_GeomFromText('GEOMETRYCOLLECTION(
-POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),
-POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46)))
-') as geom)
-SELECT geom FROM depts_pds;
-        </programlisting>
-        <informalfigure>
-            <mediaobject>
-                <imageobject>
-                    <imagedata fileref="images/cg_simplify00.png"/>
-                </imageobject>
-                <caption><para>Originals geometries</para></caption>
-            </mediaobject>
-        </informalfigure>
-    </para>
-    <para>
-        <programlisting>
-WITH depts_pds as (SELECT ST_GeomFromText('GEOMETRYCOLLECTION(
-POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),
-POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46)))
-') as geom)
-SELECT (ST_Dump(CG_Simplify(geom, 0.5, true))).geom FROM depts_pds;
-        </programlisting>
-        <informalfigure>
-            <mediaobject>
-                <imageobject>
-                    <imagedata fileref="images/cg_simplify01.png"/>
-                </imageobject>
-                <caption><para>Simplification with 0.5 and topology preserved</para></caption>
-            </mediaobject>
-        </informalfigure>
-    </para>
-    <para>
-      <programlisting>
-WITH depts_pds as (SELECT ST_GeomFromText('GEOMETRYCOLLECTION(
-POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),
-POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46)))
-') as geom)
-SELECT (ST_Dump(CG_Simplify(geom, 0.5, false))).geom FROM depts_pds;
-      </programlisting>
-      <informalfigure>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/cg_simplify02.png"/>
-          </imageobject>
-          <caption><para>Simplification with 0.5 without topology preservation</para></caption>
-        </mediaobject>
-      </informalfigure>
-    </para>
+    <para>Compare simplification with and without topology preservation, using a threshold of 50.</para>
+    <programlisting language="sql">WITH data AS (
+  SELECT ST_GeomFromText('GEOMETRYCOLLECTION(
+    POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),
+    POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46)))
+  ') AS geom
+)
+SELECT ST_AsText(geom, 2) AS input_geometry,
+       ST_AsText(CG_Simplify(geom, 50, true), 2) AS topology_preserved,
+       ST_AsText(CG_Simplify(geom, 50, false), 2) AS topology_not_preserved
+FROM data;</programlisting>
+    <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,147.31 173.85,146.15 103.46,112.69 118.46,34.23 121.92,88.46 158.85)),POLYGON((112.69 118.46,146.15 103.46,185.38 43.46,10 83.85,34.23 121.92,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,173.85 119.62,34.23 121.92,88.46 158.85)),POLYGON((112.69 118.46,190 60.77,10 83.85,112.69 118.46)))</screen>
   </refsection>
 
   <refsection>

@@ -40,9 +40,6 @@ STATIC_IMAGES = $(subst $(srcdir)/static/,,$(STATIC_IMAGES_SRC))
 GENERATED_IMAGES= \
 	cg_3dalphawrapping01.png \
 	cg_3dalphawrapping02.png \
-	cg_simplify00.png \
-	cg_simplify01.png \
-	cg_simplify02.png \
 	de9im01.png \
 	de9im02.png \
 	st_clusterkmeans02.png \
