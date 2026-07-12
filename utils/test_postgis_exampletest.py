@@ -414,7 +414,7 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn(">center</text>", visual["svg"])
         self.assertIn(">nearest</text>", visual["svg"])
 
-    def test_named_output_layers_replace_inferred_code_context(self):
+    def test_explicit_input_layers_replace_inferred_code_context(self):
         captured = []
         self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
             "bounds": [0, 0, 1, 1],
@@ -436,6 +436,38 @@ class VisualExampleTest(unittest.TestCase):
 
         self.assertEqual(["Code", "Code", "Output"], [layer["source"] for layer in captured])
         self.assertEqual(["point", "line", "result"], [layer["label"] for layer in captured])
+
+    def test_named_outputs_retain_inferred_code_context(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": 0, "y": 0,
+            } for layer in layers],
+        }
+        actual = QueryRows(
+            [["POINT(160 40)", "POINT(125.75 115.34)"]],
+            ["cp_pt_line", "cp_line_pt"],
+        )
+
+        self.tester.render_visual_example("manual", {
+            "query": (
+                "SELECT ST_ClosestPoint(pt, line), ST_ClosestPoint(line, pt) "
+                "FROM (SELECT 'POINT (160 40)'::geometry AS pt, "
+                "'LINESTRING (10 30,50 50,30 110,70 90,180 140,130 190)'::geometry AS line) t"
+            ),
+            "visual_id": "closest-point", "label": "ST_ClosestPoint:1",
+            "visual_refentry": "ST_ClosestPoint", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+
+        self.assertEqual(["Code", "Code", "Output", "Output"], [
+            layer["source"] for layer in captured
+        ])
+        self.assertEqual(["pt", "line", "cp_pt_line", "cp_line_pt"], [
+            layer["label"] for layer in captured
+        ])
 
     def test_render_visual_example_hides_single_output_column_header(self):
         self.tester.visual_payload = lambda database, layers: {

@@ -979,13 +979,10 @@ FROM dimensions
                     if len(matches) > 1:
                         label = f"{label}.{match_index}"
                     output.append({"wkt": wkt, "label": label, "source": source})
-        named_output_layers = {
-            candidate["label"].lower() for candidate in output
-            if candidate["label"] != "Output"
-        }
-        if len(named_output_layers) > 1:
-            # Multiple named geometry columns define the complete authored figure.
-            # Do not repeat geometry literals and constructor arguments as Code layers.
+        if any(candidate["source"] == "Code" for candidate in output):
+            # Explicit input_* result columns define the authored input layers.
+            # Do not repeat geometry literals and constructor arguments inferred
+            # from the query, but retain them for ordinary named output columns.
             code = []
         layers = []
         code_geometry_count = sum("label" not in candidate for candidate in code)
