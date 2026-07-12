@@ -4257,23 +4257,22 @@ Refer to <xref linkend="toTopoGeom"/>.
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys"/></para>
-		<para><note><para>spatial_ref_sys
-		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
-			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
+		<para>Returns the spatial reference identifier of the topology containing the TopoGeometry.</para>
+		<para>The identifier is recorded for the topology when it is created and refers to an entry in <xref linkend="spatial_ref_sys"/>.</para>
         <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 14.1.5</para>
 
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)', 4326));</programlisting>
-<screen> st_srid
----------
-    4326
-(1 row)</screen>
+		<para>Return the SRID of a TopoGeometry stored in the <varname>ri_topo</varname> topology.</para>
+		<programlisting role="requires-external-state">SELECT topology.ST_SRID(topo) AS srid
+FROM ri.roads
+WHERE road_name = 'Unknown';</programlisting>
+<screen> srid
+------
+ 3438</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>

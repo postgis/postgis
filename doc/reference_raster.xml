@@ -1978,48 +1978,39 @@ FROM dummy_rast WHERE rid=2;
 WHERE rid=2;
                     </programlisting>
 <screen>2</screen>
-<informaltable>
-  <tgroup cols="3">
-    <tbody>
-      <row>
-        <entry><para><informalfigure>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/st_band01.png"/>
-              </imageobject>
-              <caption><para>original (column rast)</para></caption>
-            </mediaobject>
-          </informalfigure></para>
-         </entry>
-        <entry><para><informalfigure>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/st_band02.png"/>
-              </imageobject>
-              <caption><para>dupe_band</para></caption>
-            </mediaobject>
-          </informalfigure></para>
-         </entry>
-        <entry><para><informalfigure>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/st_band03.png"/>
-              </imageobject>
-              <caption><para>sing_band</para></caption>
-            </mediaobject>
-          </informalfigure></para>
-         </entry>
-        </row>
-    </tbody>
-</tgroup>
-</informaltable>
-        <programlisting>--Make a new raster with 2nd band of original and 1st band repeated twice,
-and another with just the third band
-SELECT rast, ST_Band(rast, ARRAY[2, 1, 1]) As dupe_band,
-    ST_Band(rast, 3) As sing_band
-FROM samples.than_chunked
-WHERE rid=35;
+        <para>This example uses three distinct shapes as the red, green, and blue bands of a synthetic raster. It compares the original RGB raster with band 2 followed by band 1 twice, and with band 3 alone.</para>
+        <programlisting>WITH canvas AS (
+    SELECT ST_AddBand(
+        ST_AddBand(
+            ST_AddBand(
+                ST_MakeEmptyRaster(128, 128, 0, 128, 1, -1, 0, 0, 0),
+                '8BUI'::text, 0::double precision, 0::double precision
+            ),
+            '8BUI'::text, 0::double precision, 0::double precision
+        ),
+        '8BUI'::text, 0::double precision, 0::double precision
+    ) AS rast
+), bands AS (
+    SELECT ST_SetValue(
+        ST_SetValue(
+            ST_SetValue(rast, 1, ST_Buffer('POINT(32 96)'::geometry, 22), 220),
+            2, ST_Buffer('LINESTRING(18 20,110 110)'::geometry, 6,
+                         'endcap=flat join=bevel'), 210
+        ),
+        3, ST_Buffer('LINESTRING(10 48,118 48)'::geometry, 7,
+                     'endcap=flat'), 180
+    ) AS rast
+    FROM canvas
+)
+SELECT ST_AsPNG(rast) AS "original RGB",
+    ST_AsPNG(ST_Band(rast, ARRAY[2, 1, 1])) AS "bands 2,1,1",
+    ST_AsPNG(ST_Band(rast, 3)) AS "band 3"
+FROM bands;
                     </programlisting>
+<screen role="visual-primary"> original RGB                | bands 2,1,1                | band 3
+-----------------------------+----------------------------+----------------------------
+ PNG image, 128 x 128 pixels | PNG image, 128 x 128 pixels | PNG image, 128 x 128 pixels
+</screen>
 
             </refsection>
 
@@ -6966,46 +6957,18 @@ ST_Transform(rast, 4326, 'Bilinear') AS wgs_84_bilin
 <screen> w_before | w_after | h_before | h_after
 ----------+---------+----------+---------
       200 |     228 |      200 |     170</screen>
-<informaltable>
-  <tgroup cols="3">
-    <tbody>
-      <row>
-        <entry><para><informalfigure>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/rt_st_transform01.png"/>
-              </imageobject>
-              <caption><para>original mass state plane meters (mass_stm)</para></caption>
-            </mediaobject>
-          </informalfigure></para>
-         </entry>
-        <entry><para><informalfigure>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/rt_st_transform02.png"/>
-              </imageobject>
-              <caption><para>After transform to wgs 84 long lat (wgs_84)</para></caption>
-            </mediaobject>
-          </informalfigure></para>
-         </entry>
-        <entry><para><informalfigure>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/rt_st_transform03.png"/>
-              </imageobject>
-              <caption><para>After transform to wgs 84 long lat with bilinear algorithm instead of NN default (wgs_84_bilin)</para></caption>
-            </mediaobject>
-          </informalfigure></para>
-         </entry>
-        </row>
-    </tbody>
-</tgroup>
-</informaltable>
+                    <informaltable>
+                        <tgroup cols="3"><tbody><row>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/rt_st_transform01.png"/></imageobject><caption><para>Original Massachusetts State Plane raster</para></caption></mediaobject></entry>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/rt_st_transform02.png"/></imageobject><caption><para>Transformed to WGS 84 using nearest-neighbor resampling</para></caption></mediaobject></entry>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/rt_st_transform03.png"/></imageobject><caption><para>Transformed to WGS 84 using bilinear resampling</para></caption></mediaobject></entry>
+                        </row></tbody></tgroup>
+                    </informaltable>
 
                 <para>Variant 3.</para>
 
                 <para>The following shows the difference between using ST_Transform(raster, srid) and ST_Transform(raster, alignto)</para>
-                <programlisting>
+<programlisting>
 WITH foo AS (
     SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 600000, 100, -100, 0, 0, 2163), 1, '16BUI', 1, 0) AS rast UNION ALL
     SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 600000, 100, -100, 0, 0, 2163), 1, '16BUI', 2, 0) AS rast UNION ALL
@@ -7033,40 +6996,10 @@ WITH foo AS (
     CROSS JOIN bar
 )
 SELECT
-    ST_SameAlignment(rast) AS rast,
-    ST_SameAlignment(not_aligned) AS not_aligned,
-    ST_SameAlignment(aligned) AS aligned
+    ST_AsText(ST_Collect(ST_ConvexHull(not_aligned) ORDER BY rid), 3) AS not_aligned,
+    ST_AsText(ST_Collect(ST_ConvexHull(aligned) ORDER BY rid), 3) AS aligned
 FROM baz</programlisting>
-<screen> rast | not_aligned | aligned
-------+-------------+---------
- t    | f           | t</screen>
-                <informaltable>
-                  <tgroup cols="2">
-                    <tbody>
-                      <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/rt_st_transform04.png"/>
-                              </imageobject>
-                              <caption><para>not_aligned</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                          </para></entry>
-
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/rt_st_transform05.png"/>
-                              </imageobject>
-                              <caption><para>aligned</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                        </para></entry>
-                      </row>
-                        </tbody>
-                        </tgroup>
-                    </informaltable>
+<screen role="visual-separate-output">MULTIPOLYGON(((-107.007 50.2,-107.005 50.2,-107.005 50.198,-107.007 50.198,-107.007 50.2)),((-107.004 50.201,-107.002 50.201,-107.002 50.198,-107.004 50.198,-107.004 50.201)),((-107.001 50.201,-106.999 50.201,-106.999 50.198,-107.001 50.198,-107.001 50.201)),((-107.007 50.199,-107.004 50.199,-107.004 50.196,-107.007 50.196,-107.007 50.199)),((-107.004 50.199,-107.001 50.199,-107.001 50.196,-107.004 50.196,-107.004 50.199)),((-107.001 50.199,-106.999 50.199,-106.999 50.196,-107.001 50.196,-107.001 50.199)),((-107.006 50.197,-107.004 50.197,-107.004 50.194,-107.006 50.194,-107.006 50.197)),((-107.004 50.197,-107.001 50.197,-107.001 50.194,-107.004 50.194,-107.004 50.197)),((-107.001 50.197,-106.998 50.197,-106.998 50.195,-107.001 50.195,-107.001 50.197))) | MULTIPOLYGON(((-107.007 50.2,-107.005 50.2,-107.005 50.198,-107.007 50.198,-107.007 50.2)),((-107.005 50.202,-107.001 50.202,-107.001 50.198,-107.005 50.198,-107.005 50.202)),((-107.002 50.202,-106.998 50.202,-106.998 50.198,-107.002 50.198,-107.002 50.202)),((-107.007 50.199,-107.003 50.199,-107.003 50.195,-107.007 50.195,-107.007 50.199)),((-107.005 50.199,-107.001 50.199,-107.001 50.195,-107.005 50.195,-107.005 50.199)),((-107.002 50.199,-106.998 50.199,-106.998 50.195,-107.002 50.195,-107.002 50.199)),((-107.007 50.198,-107.003 50.198,-107.003 50.194,-107.007 50.194,-107.007 50.198)),((-107.005 50.198,-107.001 50.198,-107.001 50.194,-107.005 50.194,-107.005 50.198)),((-107.002 50.198,-106.998 50.198,-106.998 50.194,-107.002 50.194,-107.002 50.198)))</screen>
             </refsection>
 
             <refsection>
@@ -8507,7 +8440,7 @@ SELECT (ST_MetaData(ST_RastFromHexWKB('01000000000000000000000040000000000000084
                    </listitem>
                    <listitem>
             <para>
-            <varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to embed in the image
+            <varname>srid</varname> the spatial reference identifier to embed in the output raster
             </para>
                    </listitem>
                 </itemizedlist>
@@ -8516,7 +8449,9 @@ SELECT (ST_MetaData(ST_RastFromHexWKB('01000000000000000000000040000000000000084
 
 
             <refsection>
-                <title>JPEG Output Example, multiple tiles as single raster</title>
+                <title>Examples</title>
+
+                <para>Export multiple raster tiles as a single JPEG image with 50 percent quality.</para>
 
                 <programlisting><![CDATA[
 SELECT ST_AsGDALRaster(ST_Union(rast), 'JPEG', ARRAY['QUALITY=50']) As rastjpg
@@ -8524,15 +8459,11 @@ FROM dummy_rast
 WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);
 ]]></programlisting>
 
-            </refsection>
-
-
-            <refsection><title>Using PostgreSQL Large Object Support to export raster</title>
                 <para>One way to export raster into another format is using <link xlink:href="https://www.postgresql.org/docs/current/static/lo-funcs.html">PostgreSQL large object export functions</link>.
-                We'lll repeat the prior example but also exporting.  Note for this you'll need to have super user access to db since it uses server side lo functions.
+                The following repeats the JPEG example and exports the result. Note that this requires superuser access because it uses server-side large object functions.
                 It will also export to path on server network.  If you need export locally,
                 use the psql equivalent lo_ functions which export to the local file system instead of the server file system.</para>
-                <programlisting><![CDATA[
+                <programlisting role="requires-external-state"><![CDATA[
 DROP TABLE IF EXISTS tmp_out ;
 
 CREATE TABLE tmp_out AS
@@ -8549,21 +8480,18 @@ SELECT lo_export(loid, '/tmp/dummy.jpg')
 SELECT lo_unlink(loid)
   FROM tmp_out;
 ]]></programlisting>
-            </refsection>
 
-            <refsection>
-                    <title>GTIFF Output Examples</title>
+                <para>Export a raster as a GeoTIFF using the default creation options.</para>
+                <programlisting>SELECT ST_AsGDALRaster(rast, 'GTiff') AS rasttiff
+FROM dummy_rast WHERE rid = 2;</programlisting>
 
-                    <programlisting>SELECT ST_AsGDALRaster(rast, 'GTiff') As rastjpg
-FROM dummy_rast WHERE rid=2;
-
--- Out GeoTiff with jpeg compression, 90% quality
-SELECT ST_AsGDALRaster(
+                <para>Export a GeoTIFF using JPEG compression at 90 percent quality and embed SRID 4269.</para>
+                <programlisting>SELECT ST_AsGDALRaster(
   rast,
   'GTiff',
   ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'],
-  4269) As rasttiff
-FROM dummy_rast WHERE rid=2;
+  4269) AS rasttiff
+FROM dummy_rast WHERE rid = 2;
                 </programlisting>
 
             </refsection>
@@ -8950,178 +8878,68 @@ FROM dummy_rast WHERE rid=2;
 
                 <refsection><title>Examples</title>
 <para>Comparing selecting all touched vs. not all touched.</para>
-                        <programlisting><![CDATA[SELECT ST_Count(rast) AS count_pixels_in_orig, ST_Count(rast_touched) AS all_touched_pixels, ST_Count(rast_not_touched) AS default_clip
-FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
+                        <programlisting><![CDATA[WITH source AS (
+    SELECT rast, geom
+    FROM ST_AsRaster(ST_Letters('R'), scalex => 1.0, scaley => -1.0) AS r(rast)
     INNER JOIN ST_GeomFromText('LINESTRING(0 1,5 6,10 10)') AS g(geom)
- ON ST_Intersects(r.rast, g.geom)
- CROSS JOIN ST_Clip(r.rast, g.geom, touched => true) AS rast_touched
- CROSS JOIN ST_Clip(r.rast, g.geom, touched => false) AS rast_not_touched;]]></programlisting>
-<screen> count_pixels_in_orig | all_touched_pixels | default_clip
-----------------------+--------------------+--------------
-                 2605 |                 16 |           10
+        ON ST_Intersects(r.rast, g.geom)
+), clipped AS (
+    SELECT rast,
+        ST_Clip(rast, geom, touched => true) AS rast_touched,
+        ST_Clip(rast, geom, touched => false) AS rast_not_touched
+    FROM source
+)
+SELECT ST_Count(rast) AS count_pixels_in_orig,
+    ST_Count(rast_touched) AS all_touched_pixels,
+    ST_Count(rast_not_touched) AS default_clip,
+    ST_AsPNG(rast) AS original,
+    ST_AsPNG(rast_touched) AS "all touched",
+    ST_AsPNG(rast_not_touched) AS "default clip"
+FROM clipped;]]></programlisting>
+<screen role="visual-primary"> count_pixels_in_orig | all_touched_pixels | default_clip | original                   | all touched                | default clip
+----------------------+--------------------+--------------+----------------------------+----------------------------+---------------------------
+                 2605 |                 16 |           10 | PNG image, 48 x 74 pixels | PNG image, 11 x 11 pixels | PNG image, 11 x 11 pixels
 (1 row)</screen>
 
-                    <para>1 band clipping (not touched).</para>
-                    <para>Clip the first band of an aerial tile by a 20 meter buffer.</para>
-                    <programlisting>
-SELECT ST_Clip(
-        rast,
-        1,
-        ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20)
-    ) from aerials.boston
-WHERE rid = 4;
-                    </programlisting>
-
-                    <para>Demonstrate effect of crop on final dimensions of raster. Note how final extent is clipped to that of the geometry. If crop = true.</para>
-                    <programlisting>
-SELECT ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, true))) As xmax_w_trim,
-    ST_XMax(clipper) As xmax_clipper,
-    ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, false))) As xmax_wo_trim,
-    ST_XMax(ST_Envelope(rast)) As xmax_rast_orig
-FROM (SELECT rast, ST_Buffer(ST_Centroid(ST_Envelope(rast)), 6) As clipper
-    FROM aerials.boston
-WHERE rid = 6) As foo;</programlisting>
-<screen>   xmax_w_trim    |   xmax_clipper   |   xmax_wo_trim   |  xmax_rast_orig
-------------------+------------------+------------------+------------------
- 230657.436173996 | 230657.436173996 | 230666.436173996 | 230666.436173996</screen>
-
-                    <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_clip01.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>Full raster tile before clipping</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_clip02.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>After Clipping</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
-
-                    <para>1 band clipping with no crop and add back other bands unchanged.</para>
-
-                    <para>Same example as before, but we need to set crop to false to be able to use ST_AddBand. Because ST_AddBand requires all bands be the same Width and height.</para>
-                    <programlisting>
-SELECT ST_AddBand(
-    ST_Clip(
-        rast,
-        1,
-        ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20),
-        false
-    ),
-    ARRAY[ST_Band(rast, 2), ST_Band(rast, 3)]
-) from aerials.boston
-WHERE rid = 6;
-                    </programlisting>
-
-                    <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_clip04.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>Full raster tile before clipping</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_clip05.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>After Clipping - surreal</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
-
-
-                    <para>Clip all bands of an aerial tile by a 20 meter buffer. Only difference is we don't specify a specific band to clip. So all bands are clipped.</para>
-                    <programlisting>
-SELECT ST_Clip(
-      rast,
-      ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20),
-      false
-    ) from aerials.boston
-WHERE rid = 4;
-                    </programlisting>
-
-                    <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_clip01.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>Full raster tile before clipping</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_clip03.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>After Clipping</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
+<para>The following self-contained example uses three simple shapes as RGB bands. It compares cropping band 1, clipping band 1 without cropping and then restoring bands 2 and 3, and clipping every band without cropping.</para>
+                    <programlisting>WITH canvas AS (
+    SELECT ST_AddBand(
+        ST_AddBand(
+            ST_AddBand(
+                ST_MakeEmptyRaster(128, 128, 0, 128, 1, -1, 0, 0, 0),
+                '8BUI'::text, 0::double precision, 0::double precision
+            ),
+            '8BUI'::text, 0::double precision, 0::double precision
+        ),
+        '8BUI'::text, 0::double precision, 0::double precision
+    ) AS rast
+), source AS (
+    SELECT ST_SetValue(
+        ST_SetValue(
+            ST_SetValue(rast, 1, ST_Buffer('POINT(32 96)'::geometry, 22), 220),
+            2, ST_Buffer('LINESTRING(18 20,110 110)'::geometry, 6,
+                         'endcap=flat join=bevel'), 210
+        ),
+        3, ST_Buffer('LINESTRING(10 48,118 48)'::geometry, 7,
+                     'endcap=flat'), 180
+    ) AS rast,
+    ST_Buffer('POINT(64 64)'::geometry, 34) AS clipper
+    FROM canvas
+)
+SELECT ST_AsPNG(rast) AS "original RGB",
+    ST_AsPNG(ST_Clip(rast, 1, clipper, true)) AS "band 1 cropped",
+    ST_AsPNG(
+        ST_AddBand(
+            ST_Clip(rast, 1, clipper, false),
+            ARRAY[ST_Band(rast, 2), ST_Band(rast, 3)]
+        )
+    ) AS "band 1 clipped; bands 2 and 3 unchanged",
+    ST_AsPNG(ST_Clip(rast, clipper, false)) AS "all bands clipped"
+FROM source;</programlisting>
+<screen role="visual-primary"> original RGB                | band 1 cropped             | band 1 clipped; bands 2 and 3 unchanged | all bands clipped
+-----------------------------+----------------------------+-----------------------------------------+----------------------------
+ PNG image, 128 x 128 pixels | PNG image, 68 x 68 pixels | PNG image, 128 x 128 pixels             | PNG image, 128 x 128 pixels
+(1 row)</screen>
                 </refsection>
 
                 <!-- Optionally add a "See Also" section -->
@@ -9365,84 +9183,48 @@ CROSS JOIN LATERAL (VALUES
 
                 <refsection>
                     <title>Examples</title>
-                    <para>Variant 1.</para>
+                    <para>This self-contained example paints a simple apple shape into three raster bands. It compares the original RGB raster with the equivalent grayscale results produced by both function variants.</para>
 
-                    <programlisting>
-SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
-SET postgis.enable_outdb_rasters = True;
-
-WITH apple AS (
-    SELECT ST_AddBand(ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
-        '/tmp/apple.png'::text,
-        NULL::int[]
-    ) AS rast
+                    <programlisting>WITH canvas AS (
+    SELECT ST_AddBand(ST_AddBand(ST_AddBand(
+        ST_MakeEmptyRaster(120, 90, 0, 90, 1, -1, 0, 0, 0),
+        '8BUI'::text, 245::double precision, 0::double precision),
+        '8BUI'::text, 245::double precision, 0::double precision),
+        '8BUI'::text, 245::double precision, 0::double precision) AS rast
+), shapes AS (
+    SELECT rast,
+        ST_Union(
+            ST_Buffer('POINT(48 43)'::geometry, 24),
+            ST_Buffer('POINT(72 43)'::geometry, 24)
+        ) AS fruit,
+        'POLYGON((62 68,89 79,74 59,62 68))'::geometry AS leaf,
+        ST_Buffer(
+            'LINESTRING(61 63,65 77)'::geometry,
+            2.5, 'endcap=flat'
+        ) AS stem
+    FROM canvas
+), painted AS (
+    SELECT ST_SetValue(ST_SetValue(ST_SetValue(
+           ST_SetValue(ST_SetValue(ST_SetValue(
+           ST_SetValue(ST_SetValue(ST_SetValue(
+               rast,
+               1, fruit, 220), 2, fruit, 45), 3, fruit, 30),
+               1, leaf, 50), 2, leaf, 150), 3, leaf, 50),
+               1, stem, 100), 2, stem, 65), 3, stem, 25) AS rast
+    FROM shapes
 )
-SELECT
-    ST_AsPNG(rast) AS original_png,
-    ST_AsPNG(ST_Grayscale(rast)) AS grayscale_png
-FROM apple;
-                    </programlisting>
-
-                    <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/apple.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>original_png</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/apple_st_grayscale.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>grayscale_png</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
-
-
-                    <para>Variant 2.</para>
-
-                    <programlisting>
-SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
-SET postgis.enable_outdb_rasters = True;
-
-WITH apple AS (
-    SELECT ST_AddBand(ST_MakeEmptyRaster(350, 246, 0, 0, 1, -1, 0, 0, 0),
-        '/tmp/apple.png'::text,
-        NULL::int[]
-    ) AS rast
-)
-SELECT
-    ST_AsPNG(rast) AS original_png,
+SELECT ST_AsPNG(rast) AS "original RGB",
+    ST_AsPNG(ST_Grayscale(rast)) AS "grayscale (variant 1)",
     ST_AsPNG(ST_Grayscale(ARRAY[
-            ROW(rast, 1)::rastbandarg, -- red
-            ROW(rast, 2)::rastbandarg, -- green
-            ROW(rast, 3)::rastbandarg, -- blue
-        ]::rastbandarg[]
-    )) AS grayscale_png
-FROM apple;
-                    </programlisting>
+        ROW(rast, 1)::rastbandarg,
+        ROW(rast, 2)::rastbandarg,
+        ROW(rast, 3)::rastbandarg
+    ]::rastbandarg[])) AS "grayscale (variant 2)"
+FROM painted;</programlisting>
+<screen role="visual-primary"> original RGB                | grayscale (variant 1)      | grayscale (variant 2)
+-----------------------------+----------------------------+----------------------------
+ PNG image, 120 x 90 pixels | PNG image, 120 x 90 pixels | PNG image, 120 x 90 pixels
+(1 row)</screen>
                 </refsection>
 
                 <refsection>
@@ -10444,40 +10226,10 @@ WHERE rid = 2;</programlisting>
 <screen>2BUI</screen>
 
                     <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr01.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>original (column rast_view)</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr02.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>rast_view_ma</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
+                        <tgroup cols="2"><tbody><row>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/st_mapalgebraexpr01.png"/></imageobject><caption><para>Original raster (<varname>rast_view</varname>)</para></caption></mediaobject></entry>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/st_mapalgebraexpr02.png"/></imageobject><caption><para>Raster after applying the expression to band 1</para></caption></mediaobject></entry>
+                        </row></tbody></tgroup>
                     </informaltable>
 
                     <para>Create a new 3 band raster same pixel type from our original 3 band raster with first band altered by map algebra and remaining 2 bands unaltered.</para>
@@ -10683,40 +10435,10 @@ FROM fun_shapes WHERE
                     </programlisting>
 
                     <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr2_01.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>mapalgebra intersection</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr2_02.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>map algebra union</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
+                        <tgroup cols="2"><tbody><row>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/st_mapalgebraexpr2_01.png"/></imageobject><caption><para>Map algebra intersection</para></caption></mediaobject></entry>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/st_mapalgebraexpr2_02.png"/></imageobject><caption><para>Map algebra union</para></caption></mediaobject></entry>
+                        </row></tbody></tgroup>
                     </informaltable>
 
                     <para>Overlaying rasters on a canvas as separate bands.</para>
@@ -10801,28 +10523,12 @@ SELECT ST_AddBand(
 FROM prunion;
                     </programlisting>
 
-                    <informaltable>
-                        <tgroup cols="1">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebraexpr2_08.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>The blue lines are the boundaries of select parcels</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
+                    <informalfigure>
+                        <mediaobject>
+                            <imageobject><imagedata fileref="images/st_mapalgebraexpr2_08.png"/></imageobject>
+                            <caption><para>The blue lines are the boundaries of the selected parcels.</para></caption>
+                        </mediaobject>
+                    </informalfigure>
                 </refsection>
 
                 <refsection>
@@ -11033,31 +10739,6 @@ FROM dummy_rast WHERE rid = 2;</programlisting>
 ----------
  2BUI]]></screen>
 
-                    <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/st_mapalgebraexpr01.png"/>
-                                            </imageobject>
-                                            <caption><para>original (column rast-view)</para></caption>
-                                        </mediaobject>
-                                    </informalfigure></para></entry>
-                                    <entry><para><informalfigure>
-                                        <mediaobject>
-                                            <imageobject>
-                                                <imagedata fileref="images/st_mapalgebraexpr02.png"/>
-                                            </imageobject>
-                                            <caption><para>rast_view_ma</para></caption>
-                                        </mediaobject>
-                                    </informalfigure></para></entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
-
                     <para>Create a new 3 band raster same pixel type from our original 3 band raster with first band altered by map algebra and remaining 2 bands unaltered.</para>
                     <programlisting>CREATE FUNCTION rast_plus_tan(pixel float, pos integer[], variadic args text[])
 RETURNS float
@@ -11079,6 +10760,22 @@ SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(rast_view),
 FROM wind
 WHERE rid=167;
                     </programlisting>
+
+                    <programlisting role="requires-external-state">SELECT ST_AsPNG(rast_view) As "original (column rast_view)",
+    ST_AsPNG(
+        ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(rast_view),
+                    ST_MapAlgebraFct(rast_view, 1, NULL, 'rast_plus_tan(float,integer[],text[])'::regprocedure)
+                ),
+                ST_Band(rast_view, 2)
+            ),
+            ST_Band(rast_view, 3)
+        )
+    ) As "rast_view_ma"
+FROM wind
+WHERE rid = 167;</programlisting>
+                    <screen role="visual-primary"> original (column rast_view) | rast_view_ma
+-----------------------------+-------------
+ PNG image                   | PNG image</screen>
                 </refsection>
 
                 <refsection>
@@ -11256,26 +10953,12 @@ SELECT ST_AddBand(ST_AddBand(rasts[1], rasts[2]),rasts[3]), 4, 'map bands overla
 
 ]]></programlisting>
 
-                    <informaltable>
-                        <tgroup cols="1">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebrafct2_01.png"/>
-                                                    </imageobject>
-                                                    <caption><para>map bands overlay (canvas) (R: small road, G: circle, B: big road)</para></caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
-                    </informaltable>
+                    <informalfigure>
+                        <mediaobject>
+                            <imageobject><imagedata fileref="images/st_mapalgebrafct2_01.png"/></imageobject>
+                            <caption><para>Map bands overlay on the canvas (red: small road, green: circle, blue: big road).</para></caption>
+                        </mediaobject>
+                    </informalfigure>
                 </refsection>
 
                 <refsection>
@@ -11319,16 +11002,12 @@ SELECT ST_MapAlgebraFct(
     WHERE m1.descrip = 'map bands overlay fct union (canvas)';
                     </programlisting>
 
-                    <para>
-                        <informalfigure>
-                            <mediaobject>
-                                <imageobject>
-                                    <imagedata fileref="images/st_mapalgebrafct2_02.png"/>
-                                </imageobject>
-                                <caption><para>user defined with extra args and different bands from same raster</para></caption>
-                            </mediaobject>
-                        </informalfigure>
-                    </para>
+                    <informalfigure>
+                        <mediaobject>
+                            <imageobject><imagedata fileref="images/st_mapalgebrafct2_02.png"/></imageobject>
+                            <caption><para>User-defined callback with extra arguments and different bands from the same raster.</para></caption>
+                        </mediaobject>
+                    </informalfigure>
                 </refsection>
 
                 <refsection>
@@ -11463,40 +11142,10 @@ SELECT ST_MapAlgebraFctNgb(
                     </programlisting>
 
                     <informaltable>
-                        <tgroup cols="2">
-                            <tbody>
-                                <row>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebrafctngb01.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>First band of our raster</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                    <entry>
-                                        <para>
-                                            <informalfigure>
-                                                <mediaobject>
-                                                    <imageobject>
-                                                        <imagedata fileref="images/st_mapalgebrafctngb02.png"/>
-                                                    </imageobject>
-                                                    <caption>
-                                                        <para>new raster after averaging pixels within 4x4 pixels of each other</para>
-                                                    </caption>
-                                                </mediaobject>
-                                            </informalfigure>
-                                        </para>
-                                    </entry>
-                                </row>
-                            </tbody>
-                        </tgroup>
+                        <tgroup cols="2"><tbody><row>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/st_mapalgebrafctngb01.png"/></imageobject><caption><para>First band of the source raster</para></caption></mediaobject></entry>
+                            <entry><mediaobject><imageobject><imagedata fileref="images/st_mapalgebrafctngb02.png"/></imageobject><caption><para>Raster after averaging each 4-by-4 pixel neighborhood</para></caption></mediaobject></entry>
+                        </row></tbody></tgroup>
                     </informaltable>
                 </refsection>
 

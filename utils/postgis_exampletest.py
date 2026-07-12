@@ -60,6 +60,8 @@ POINT_CONSTRUCTOR_RE = re.compile(
 )
 VISUAL_ROLE = "visual-primary"
 VISUAL_SKIP_ROLE = "visual-skip"
+VISUAL_SEPARATE_OUTPUT_ROLE = "visual-separate-output"
+VISUAL_OVERLAY_ROLE = "visual-overlay"
 SVG_PALETTES = {
     "Code": ("#2878b8", "#59a4d8", "#0f5f9c"),
     "Output": ("#a62c2b", "#d95f3d", "#ef8a47"),
@@ -709,6 +711,15 @@ class ExampleTester:
         skip_visual = self.has_role(node, VISUAL_SKIP_ROLE) or (
             screen is not None and self.has_role(screen, VISUAL_SKIP_ROLE)
         )
+        visual_separate_output = screen is not None and self.has_role(
+            screen, VISUAL_SEPARATE_OUTPUT_ROLE
+        )
+        visual_overlay = screen is not None and self.has_role(screen, VISUAL_OVERLAY_ROLE)
+        if visual_separate_output and visual_overlay:
+            raise RuntimeError(
+                f"Visual example {self.source_label(node)} cannot request both "
+                f"{VISUAL_SEPARATE_OUTPUT_ROLE} and {VISUAL_OVERLAY_ROLE}"
+            )
         visual = None
         if screen is not None and not skip_visual:
             refentry, screen_ordinal = self.visual_location(screen)
@@ -728,6 +739,8 @@ class ExampleTester:
             "visual_id": self.visual_id(screen) if visual is not None else None,
             "visual_kind": visual["kind"] if visual is not None else None,
             "visual_preferred": visual["preferred"] if visual is not None else False,
+            "visual_separate_output": visual_separate_output,
+            "visual_overlay": visual_overlay,
             "visual_refentry": refentry,
             "visual_screen": screen_ordinal,
         }
@@ -1071,13 +1084,14 @@ class ExampleTester:
         encoded = base64.b64encode(json.dumps(layers, separators=(",", ":")).encode("utf-8")).decode("ascii")
         query = f"""
 WITH raw AS (
-  SELECT ord, source, label, row_num, column_num, wkt
+  SELECT ord, source, label, row_num, column_num, requested_frame, wkt
   FROM jsonb_to_recordset(
     convert_from(decode('{encoded}', 'base64'), 'UTF8')::jsonb
-  ) AS item(ord integer, source text, label text, row_num integer, column_num integer, wkt text)
+  ) AS item(ord integer, source text, label text, row_num integer, column_num integer,
+            requested_frame text, wkt text)
 ), parsed_raw AS (
-  SELECT ord, source, label, row_num, column_num,
-    ST_Force2D(ST_GeomFromEWKT(wkt)) AS geom
+  SELECT ord, source, label, row_num, column_num, requested_frame,
+    ST_GeomFromEWKT(wkt) AS geom
   FROM raw
 ), source_dimensions AS (
   SELECT source, max(ST_Dimension(geom)) AS dimension
@@ -1097,13 +1111,14 @@ WITH raw AS (
   LIMIT 1
 ), framed AS (
   SELECT ord, source, label, row_num, column_num, geom, shared_coordinate_space,
-    CASE WHEN separate_sources THEN source ELSE 'Overlay' END AS frame
+    COALESCE(requested_frame,
+      CASE WHEN separate_sources THEN source ELSE 'Overlay' END) AS frame
   FROM parsed_raw CROSS JOIN frame_policy
 ), frame_bounds_raw AS (
   SELECT frame, min(ord) AS first_ord,
     CASE WHEN bool_and(shared_coordinate_space)
-      THEN (SELECT ST_Extent(all_geometries.geom) FROM framed AS all_geometries)
-      ELSE ST_Extent(geom)
+      THEN (SELECT ST_Extent(ST_Force2D(all_geometries.geom)) FROM framed AS all_geometries)
+      ELSE ST_Extent(ST_Force2D(geom))
     END AS box,
     CASE WHEN count(DISTINCT ST_SRID(geom)) = 1 THEN max(ST_SRID(geom)) ELSE 0 END AS srid
   FROM framed
@@ -1125,6 +1140,10 @@ WITH raw AS (
   SELECT ord, source, label, row_num, column_num, parts.frame, total_points, root_type,
     ST_Translate(geom, -min_x, -min_y) AS geom
   FROM parts JOIN frame_bounds USING (frame)
+), render_parts AS (
+  SELECT *,
+    CASE WHEN ST_HasArc(geom) THEN ST_CurveToLine(geom) ELSE geom END AS render_geom
+  FROM translated_parts
 )
 SELECT json_build_object(
   'frames', (
@@ -1140,7 +1159,7 @@ SELECT json_build_object(
       'ord', ord, 'source', source, 'label', label,
       'row', row_num, 'column', column_num, 'frame', frame,
       'root_type', root_type,
-      'type', GeometryType(geom), 'svg', ST_AsSVG(geom, 0, 12),
+      'type', GeometryType(geom), 'svg', ST_AsSVG(ST_Force2D(geom), 0, 12),
       'dimension', ST_Dimension(geom), 'srid', ST_SRID(geom),
       'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
       'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END,
@@ -1155,9 +1174,25 @@ SELECT json_build_object(
           SELECT json_agg(json_build_array(ST_X(vertex.geom), -ST_Y(vertex.geom)))
           FROM ST_DumpPoints(geom) AS vertex
         )
+      END,
+      'has_z', ST_Zmflag(geom) IN (2, 3),
+      'points_xyz', CASE
+        WHEN GeometryType(render_geom) IN ('POINT', 'LINESTRING', 'POLYGON', 'TRIANGLE')
+        THEN (
+          SELECT json_agg(
+            json_build_object(
+              'path', vertex3d.path,
+              'point', json_build_array(
+                ST_X(vertex3d.geom), ST_Y(vertex3d.geom),
+                COALESCE(ST_Z(vertex3d.geom), 0)
+              )
+            ) ORDER BY vertex3d.path
+          )
+          FROM ST_DumpPoints(render_geom) AS vertex3d
+        )
       END
     ) ORDER BY ord)
-    FROM translated_parts
+    FROM render_parts
   )
 )::text
 """
@@ -1175,6 +1210,14 @@ SELECT json_build_object(
         label_height = 24 if count > 1 else 0
         cell_width = (560 - gap * (columns - 1)) / columns
         cell_height = 520 if count == 1 else 320
+        available_scale = min(
+            min(cell_width / image["width"], cell_height / image["height"])
+            for image in images
+        )
+        shared_scale = (
+            max(1, math.floor(available_scale))
+            if available_scale >= 1 else available_scale
+        )
         svg_height = outer + rows * (label_height + cell_height) + (rows - 1) * gap + 44
         panels = []
         legends = []
@@ -1185,10 +1228,8 @@ SELECT json_build_object(
             left = outer + column * (cell_width + gap)
             top = outer + row * (label_height + cell_height + gap)
             image_top = top + label_height
-            available_scale = min(cell_width / image["width"], cell_height / image["height"])
-            scale = max(1, math.floor(available_scale)) if available_scale >= 1 else available_scale
-            width = image["width"] * scale
-            height = image["height"] * scale
+            width = image["width"] * shared_scale
+            height = image["height"] * shared_scale
             x = left + (cell_width - width) / 2
             y = image_top + (cell_height - height) / 2
             source_indexes[image["source"]] += 1
@@ -1284,6 +1325,7 @@ SELECT json_build_object(
             # from the query, but retain them for ordinary named output columns.
             code = []
         layers = []
+        forced_frame = "Overlay" if example.get("visual_overlay") else None
         code_geometry_count = sum("label" not in candidate for candidate in code)
         for index, candidate in enumerate(code, 1):
             if candidate.get("label"):
@@ -1299,6 +1341,9 @@ SELECT json_build_object(
                 "label": label,
                 "row_num": None,
                 "column_num": None,
+                "requested_frame": forced_frame or (
+                    "Code" if example.get("visual_separate_output") else None
+                ),
                 "wkt": candidate["wkt"],
             })
         for source in ("Code", "Output"):
@@ -1313,6 +1358,9 @@ SELECT json_build_object(
                     ),
                     "row_num": candidate["row_num"],
                     "column_num": candidate["column_num"],
+                    "requested_frame": forced_frame or (candidate["label"] if (
+                        example.get("visual_separate_output") and source == "Output"
+                    ) else "Code" if example.get("visual_separate_output") else None),
                     "wkt": candidate["wkt"],
                 })
         if not layers:
@@ -1373,7 +1421,141 @@ SELECT json_build_object(
         nice = 1 if normalized <= 1 else 2 if normalized <= 2 else 5 if normalized <= 5 else 10
         return nice * power
 
+    def project_3d_point(self, point):
+        """Return deterministic isometric x/y/depth coordinates for one XYZ point."""
+        x, y, z = [float(value) for value in point]
+        projected_x = (x - y) / math.sqrt(2)
+        projected_y = z * math.sqrt(2 / 3) - (x + y) / math.sqrt(6)
+        depth = (x + y + z) / math.sqrt(3)
+        return projected_x, projected_y, depth
+
+    def face_shade(self, rings):
+        """Return an orientation-independent light factor for a polygon face."""
+        points = rings[0] if rings else []
+        if len(points) > 1 and points[0] == points[-1]:
+            points = points[:-1]
+        if len(points) < 3:
+            return 0.72
+        normal_x = normal_y = normal_z = 0.0
+        for index, current in enumerate(points):
+            following = points[(index + 1) % len(points)]
+            x1, y1, z1 = [float(value) for value in current]
+            x2, y2, z2 = [float(value) for value in following]
+            normal_x += (y1 - y2) * (z1 + z2)
+            normal_y += (z1 - z2) * (x1 + x2)
+            normal_z += (x1 - x2) * (y1 + y2)
+        length = math.sqrt(normal_x ** 2 + normal_y ** 2 + normal_z ** 2)
+        if length == 0:
+            return 0.72
+        light = (0.25, -0.45, 0.86)
+        light_length = math.sqrt(sum(value ** 2 for value in light))
+        incidence = abs(
+            (normal_x * light[0] + normal_y * light[1] + normal_z * light[2])
+            / (length * light_length)
+        )
+        return 0.48 + 0.52 * incidence
+
+    def shade_color(self, color, factor):
+        channels = [int(color[index:index + 2], 16) for index in (1, 3, 5)]
+        return "#" + "".join(f"{max(0, min(255, round(channel * factor))):02x}" for channel in channels)
+
+    def xyz_paths(self, part):
+        """Rebuild deterministic point/line/ring paths from ST_DumpPoints paths."""
+        paths = {}
+        for vertex in part.get("points_xyz") or []:
+            path = tuple(vertex.get("path") or [])
+            parent_path = path[:-1] if len(path) > 1 else ()
+            paths.setdefault(parent_path, []).append(vertex["point"])
+        return list(paths.values())
+
+    def project_3d_payload(self, payload):
+        """Project every renderable part in frames containing at least one Z surface."""
+        frames = payload.get("frames") or [{"id": "Overlay", "bounds": payload["bounds"]}]
+        area_types = {
+            "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
+            "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
+        }
+        three_dimensional_frames = {
+            str(part.get("frame", frames[0]["id"]))
+            for part in payload.get("parts") or []
+            if part.get("has_z") and part.get("points_xyz")
+            and part.get("type", "").upper() in area_types
+        }
+        projected_bounds = {}
+        projected_parts = []
+        for original in payload.get("parts") or []:
+            frame_id = str(original.get("frame", frames[0]["id"]))
+            paths = self.xyz_paths(original)
+            if frame_id not in three_dimensional_frames or not paths:
+                projected_parts.append(original)
+                continue
+            projected_paths = []
+            depths = []
+            for path in paths:
+                projected_path = []
+                for point in path:
+                    projected_x, projected_y, depth = self.project_3d_point(point)
+                    projected_path.append((projected_x, projected_y))
+                    depths.append(depth)
+                if projected_path:
+                    projected_paths.append(projected_path)
+            if not projected_paths:
+                projected_parts.append(original)
+                continue
+            bounds = projected_bounds.setdefault(frame_id, [math.inf, math.inf, -math.inf, -math.inf])
+            for path in projected_paths:
+                for x, y in path:
+                    bounds[0] = min(bounds[0], x)
+                    bounds[1] = min(bounds[1], y)
+                    bounds[2] = max(bounds[2], x)
+                    bounds[3] = max(bounds[3], y)
+            projected = dict(original)
+            geometry_type = original.get("type", "").upper()
+            if geometry_type in POINT_TYPES:
+                projected_x, projected_y = projected_paths[0][0]
+                projected.update({"x": projected_x, "y": -projected_y, "vertices": []})
+            else:
+                close_paths = geometry_type in area_types
+                projected["svg"] = " ".join(
+                    "M " + " L ".join(f"{x:.12g} {-y:.12g}" for x, y in path)
+                    + (" Z" if close_paths else "")
+                    for path in projected_paths
+                )
+                projected["vertices"] = (
+                    [] if close_paths or geometry_type in {"CIRCULARSTRING", "COMPOUNDCURVE"}
+                    else [[x, -y] for x, y in projected_paths[0]]
+                )
+            if geometry_type in area_types:
+                projected.update({
+                    "is_3d_face": True,
+                    "depth": sum(depths) / len(depths),
+                    "shade": self.face_shade(paths),
+                })
+            projected_parts.append(projected)
+
+        projected_frames = []
+        for frame in frames:
+            projected_frame = dict(frame)
+            frame_id = str(frame["id"])
+            if frame_id in projected_bounds:
+                projected_frame["bounds"] = projected_bounds[frame_id]
+                projected_frame["three_dimensional"] = True
+            projected_frames.append(projected_frame)
+        projected_payload = dict(payload)
+        projected_payload["frames"] = projected_frames
+        projected_payload["parts"] = projected_parts
+        return projected_payload
+
     def visual_svg(self, visual_id, payload):
+        if any(
+            part.get("has_z") and part.get("points_xyz")
+            and part.get("type", "").upper() in {
+                "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
+                "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
+            }
+            for part in payload.get("parts") or []
+        ):
+            payload = self.project_3d_payload(payload)
         frames = payload.get("frames") or [{
             "id": "Overlay",
             "bounds": payload["bounds"],
@@ -1431,6 +1613,8 @@ SELECT json_build_object(
                     f'text-anchor="middle">{html.escape(frame_label)}</text>'
                 )
 
+            if frame.get("three_dimensional"):
+                continue
             step = self.grid_step(max(max_x - min_x, max_y - min_y))
             first_x = math.ceil(min_x / step) * step
             first_y = math.ceil(min_y / step) * step
@@ -1471,6 +1655,8 @@ SELECT json_build_object(
         for part in payload.get("parts") or []:
             parts_by_ord.setdefault(part["ord"], []).append(part)
         for ordinal, parts in sorted(parts_by_ord.items()):
+            if any(part.get("is_3d_face") for part in parts):
+                parts.sort(key=lambda part: (float(part.get("depth", 0)), part.get("svg", "")))
             source = parts[0]["source"]
             frame_id = str(parts[0].get("frame", frames[0]["id"]))
             layout = layouts[frame_id]
@@ -1515,16 +1701,24 @@ SELECT json_build_object(
                         "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
                     } else "line"
                     fill = color if dimension_class == "area" else "none"
+                    if part.get("is_3d_face"):
+                        part_color = self.shade_color(part_color, float(part["shade"]))
                     stroke_pixels = (
                         5 if source == "Code" and dimension_class == "line"
+                        else 1.2 if part.get("is_3d_face")
                         else 1.8 if root_type == "POLYHEDRALSURFACE"
                         else 3
                     )
                     stroke_width = stroke_pixels / scale
+                    face_attributes = (
+                        f' data-postgis-face="{part_index + 1}"'
+                        f' data-postgis-depth="{float(part["depth"]):.12g}"'
+                        if part.get("is_3d_face") else ""
+                    )
                     shapes.append(
-                        f'<path class="{dimension_class}" d="{svg_data}" '
+                        f'<path class="{dimension_class}"{face_attributes} d="{svg_data}" '
                         f'stroke="{part_color}" fill="{part_color if dimension_class == "area" else fill}" '
-                        f'fill-opacity="{0.24 if dimension_class == "area" else 0}" stroke-opacity="1" '
+                        f'fill-opacity="{0.82 if part.get("is_3d_face") else 0.24 if dimension_class == "area" else 0}" stroke-opacity="1" '
                         'fill-rule="evenodd" '
                         f'stroke-width="{stroke_width:.12g}" '
                         'stroke-linecap="round" stroke-linejoin="round"/>'
@@ -1553,12 +1747,18 @@ SELECT json_build_object(
                                 f'L {base_x - perpendicular_x:.12g} {base_y - perpendicular_y:.12g} Z" '
                                 f'fill="{part_color}" stroke="white" stroke-width="{0.7 / scale:.12g}"/>'
                             )
-                    for x, y in vertices:
-                        shapes.append(
-                            f'<circle class="vertex" cx="{float(x):.12g}" cy="{float(y):.12g}" '
-                            f'r="{3 / scale:.12g}" fill="{part_color}" stroke="white" '
-                            f'stroke-width="{0.8 / scale:.12g}"/>'
-                        )
+                    show_vertices = (
+                        source == "Code"
+                        or dimension_class == "line"
+                        or len(vertices) <= 16
+                    )
+                    if show_vertices:
+                        for x, y in vertices:
+                            shapes.append(
+                                f'<circle class="vertex" cx="{float(x):.12g}" cy="{float(y):.12g}" '
+                                f'r="{3 / scale:.12g}" fill="{part_color}" stroke="white" '
+                                f'stroke-width="{0.8 / scale:.12g}"/>'
+                            )
             group_svg = (
                 f'<g class="geometry-layer" opacity="1" data-postgis-geometry-id="{geometry_id}" '
                 f'data-postgis-frame="{html.escape(frame_id, quote=True)}" '

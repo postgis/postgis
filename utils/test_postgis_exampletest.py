@@ -2,6 +2,7 @@
 
 import contextlib
 import base64
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -10,6 +11,13 @@ import tempfile
 import unittest
 
 from postgis_exampletest import ExampleTester, QueryRows, parse_source_example
+
+
+def xyz_vertices(points, ring=False):
+    return [
+        {"path": [1, index] if ring else [index], "point": point}
+        for index, point in enumerate(points, 1)
+    ]
 
 
 class ExampleTestParserTest(unittest.TestCase):
@@ -124,6 +132,36 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         self.assertEqual("explicit", example["visual_kind"])
         self.assertEqual("visual-image-example-01", example["visual_id"])
 
+    def test_visual_separate_output_role_is_preserved(self):
+        xml = """<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="comparison">
+    <refsection>
+      <programlisting>SELECT ST_AsText('LINESTRING(0 0,1 1)'), ST_AsText('POINT(0 0)');</programlisting>
+      <screen role="visual-separate-output">LINESTRING(0 0,1 1) | POINT(0 0)</screen>
+    </refsection>
+  </refentry>
+</book>"""
+        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+            source.write(xml)
+            source.flush()
+            example = ExampleTester(source.name).examples()[0]
+        self.assertTrue(example["visual_separate_output"])
+
+    def test_visual_overlay_role_is_preserved(self):
+        xml = """<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="overlay">
+    <refsection>
+      <programlisting>SELECT ST_AsText(ST_Buffer('POINT(0 0)'::geometry, 1));</programlisting>
+      <screen role="visual-overlay">POLYGON((0 0,1 0,0 1,0 0))</screen>
+    </refsection>
+  </refentry>
+</book>"""
+        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+            source.write(xml)
+            source.flush()
+            example = ExampleTester(source.name).examples()[0]
+        self.assertTrue(example["visual_overlay"])
+
 
 class ExampleTestComparisonTest(unittest.TestCase):
     def setUp(self):
@@ -182,6 +220,16 @@ class ExampleTestComparisonTest(unittest.TestCase):
             "width": 150, "height": 90, "data": "YWJj",
         }])
         self.assertRegex(svg, r'<image[^>]+width="450"[^>]+height="270"')
+
+    def test_image_gallery_uses_one_shared_pixel_scale(self):
+        svg = self.tester.visual_image_svg("crop", [
+            {"source": "Code", "label": "before", "media_type": "image/png",
+             "width": 200, "height": 200, "data": "YQ=="},
+            {"source": "Output", "label": "after", "media_type": "image/png",
+             "width": 150, "height": 150, "data": "Yg=="},
+        ])
+        dimensions = re.findall(r'<image[^>]+width="([0-9.]+)"[^>]+height="([0-9.]+)"', svg)
+        self.assertEqual([("200", "200"), ("150", "150")], dimensions)
 
     def test_multipolygon_ring_start_and_polygon_order_are_canonicalized(self):
         self.assertTrue(
@@ -448,6 +496,56 @@ class VisualExampleTest(unittest.TestCase):
         self.assertEqual(["Code", "Output"], [layer["source"] for layer in captured])
         self.assertEqual(["center", "result"], [layer["label"] for layer in captured])
 
+    def test_separate_output_visual_requests_one_frame_per_output_label(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 1, 1],
+            "frames": [
+                {"id": "Code", "bounds": [0, 0, 1, 1]},
+                {"id": "cleaned", "bounds": [0, 0, 1, 1]},
+                {"id": "invalid_edges", "bounds": [0, 0, 1, 1]},
+            ],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "frame": layer["requested_frame"], "type": "LINESTRING",
+                "svg": "M 0 0 L 1 -1",
+            } for layer in layers],
+        }
+        actual = QueryRows(
+            [["LINESTRING(0 0,1 1)", "LINESTRING(0 1,1 0)"]],
+            headers=["cleaned", "invalid_edges"],
+        )
+        self.tester.render_visual_example("manual", {
+            "query": "SELECT 'POLYGON((0 0,1 0,1 1,0 0))'::geometry",
+            "visual_id": "separate-output", "label": "comparison:documented",
+            "visual_refentry": "comparison", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "explicit",
+            "visual_separate_output": True,
+        }, actual)
+        self.assertEqual(
+            ["Code", "cleaned", "invalid_edges"],
+            [layer["requested_frame"] for layer in captured],
+        )
+
+    def test_overlay_visual_requests_one_shared_frame(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": 0, "y": 0,
+            } for layer in layers],
+        }
+        actual = QueryRows([["POINT(1 1)"]], headers=["center"])
+        self.tester.render_visual_example("manual", {
+            "query": "SELECT 'POLYGON((0 0,1 0,1 1,0 0))'::geometry",
+            "visual_id": "overlay", "label": "overlay:documented",
+            "visual_refentry": "overlay", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "explicit",
+            "visual_overlay": True,
+        }, actual)
+        self.assertEqual(["Overlay", "Overlay"], [layer["requested_frame"] for layer in captured])
+
     def test_visual_payload_separates_same_dimension_or_cross_srid_sources(self):
         queries = []
         self.tester.run_psql_scalar = lambda database, query: queries.append(query) or '{"frames":[],"parts":[]}'
@@ -455,10 +553,18 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("source_dimensions", queries[0])
         self.assertIn("count(DISTINCT ST_SRID(geom))", queries[0])
         self.assertIn("AS shared_coordinate_space", queries[0])
-        self.assertIn("ST_Extent(all_geometries.geom)", queries[0])
         self.assertIn("bool_and(shared_coordinate_space)", queries[0])
         self.assertIn("CASE WHEN separate_sources THEN source ELSE 'Overlay' END", queries[0])
+        self.assertIn("COALESCE(requested_frame", queries[0])
         self.assertIn("ST_Translate(geom, -min_x, -min_y)", queries[0])
+        self.assertIn("ST_Extent(ST_Force2D(all_geometries.geom))", queries[0])
+        self.assertIn("ST_AsSVG(ST_Force2D(geom), 0, 12)", queries[0])
+        self.assertIn("ST_Zmflag(geom) IN (2, 3)", queries[0])
+        self.assertIn("'has_z'", queries[0])
+        self.assertIn("'points_xyz'", queries[0])
+        self.assertIn("CASE WHEN ST_HasArc(geom) THEN ST_CurveToLine(geom)", queries[0])
+        self.assertIn("COALESCE(ST_Z(vertex3d.geom), 0)", queries[0])
+        self.assertIn("ST_Z(vertex3d.geom)", queries[0])
         self.assertIn("ST_NPoints(geom) AS total_points", queries[0])
         self.assertIn("GeometryType(geom) AS root_type", queries[0])
         self.assertIn("'root_type', root_type", queries[0])
@@ -466,6 +572,149 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("AND total_points <= 64", queries[0])
         self.assertNotIn("AND ST_NPoints(geom) <= 64", queries[0])
         self.assertNotIn("ST_Scale", queries[0])
+
+    def test_ordinary_2d_svg_remains_byte_stable(self):
+        svg = self.tester.visual_svg(
+            "buffer-example",
+            {
+                "bounds": [0, 0, 10, 10],
+                "parts": [
+                    {"ord": 1, "source": "Code", "label": "Code 1",
+                     "type": "POINT", "x": 2, "y": -3},
+                    {"ord": 2, "source": "Output", "label": "Output 1",
+                     "type": "POLYGON", "svg": "M 0 0 L 10 0 10 -10 Z",
+                     "has_z": False,
+                     "points_xyz": xyz_vertices(
+                         [[0, 0, 0], [10, 0, 0], [10, 10, 0], [0, 0, 0]], ring=True
+                     )},
+                ],
+            },
+        )
+        self.assertEqual(
+            "8c90be0f646bdf792054f5396be58935250fc5ad5304cbc341fca97379614878",
+            hashlib.sha256(svg.encode()).hexdigest(),
+        )
+
+    def test_z_surface_faces_are_projected_depth_sorted_and_shaded(self):
+        payload = {
+            "bounds": [0, 0, 2, 1],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "solid",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "unused",
+                 "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[2, 0, 0], [2, 1, 0], [2, 1, 1], [2, 0, 1], [2, 0, 0]], ring=True
+                 )},
+                {"ord": 1, "source": "Output", "label": "solid",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "unused",
+                 "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0], [0, 0, 0]], ring=True
+                 )},
+            ],
+        }
+        svg = self.tester.visual_svg("solid-3d", payload)
+        self.assertEqual(svg, self.tester.visual_svg("solid-3d", payload))
+        depths = [float(value) for value in re.findall(r'data-postgis-depth="([^"]+)"', svg)]
+        self.assertEqual(sorted(depths), depths)
+        fills = re.findall(
+            r'data-postgis-face="[12]"[^>]+fill="(#[0-9a-f]{6})"', svg
+        )
+        self.assertEqual(2, len(fills))
+        self.assertEqual(2, len(set(fills)))
+        self.assertEqual(2, svg.count('fill-opacity="0.82"'))
+        self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
+
+    def test_mixed_frame_projects_2d_footprint_with_3d_roof(self):
+        payload = {
+            "frames": [{"id": "Overlay", "bounds": [0, 0, 4, 3]}],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "footprint",
+                 "root_type": "POLYGON", "type": "POLYGON",
+                 "svg": "M 0 0 L 4 0 4 -3 0 -3 Z", "has_z": False,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 0], [4, 0, 0], [4, 3, 0], [0, 3, 0], [0, 0, 0]], ring=True
+                 )},
+                {"ord": 2, "source": "Output", "label": "roof",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "unused", "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 0], [4, 0, 0], [2, 1.5, 2], [0, 0, 0]], ring=True
+                 )},
+            ],
+        }
+        projected = self.tester.project_3d_payload(payload)
+        self.assertTrue(projected["frames"][0]["three_dimensional"])
+        self.assertTrue(all(part.get("is_3d_face") for part in projected["parts"]))
+        self.assertNotEqual(payload["parts"][0]["svg"], projected["parts"][0]["svg"])
+        svg = self.tester.visual_svg("mixed-roof", payload)
+        self.assertEqual(2, svg.count("data-postgis-face="))
+        self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
+
+    def test_mixed_frame_projects_3d_line_with_3d_polygon(self):
+        line_points = [[0, 0, 0], [4, 0, 1], [4, 3, 2]]
+        payload = {
+            "frames": [{"id": "Overlay", "bounds": [0, 0, 4, 3]}],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "ring",
+                 "root_type": "LINESTRING", "type": "LINESTRING",
+                 "svg": "M 0 0 L 4 0 4 -3", "closed": False, "has_z": True,
+                 "points_xyz": xyz_vertices(line_points)},
+                {"ord": 2, "source": "Output", "label": "polygon",
+                 "root_type": "POLYGON", "type": "POLYGON",
+                 "svg": "unused", "has_z": True,
+                 "points_xyz": xyz_vertices(line_points + [line_points[0]], ring=True)},
+            ],
+        }
+        projected = self.tester.project_3d_payload(payload)
+        line = projected["parts"][0]
+        self.assertNotEqual(payload["parts"][0]["svg"], line["svg"])
+        self.assertFalse(line.get("is_3d_face", False))
+        min_x, min_y, max_x, max_y = projected["frames"][0]["bounds"]
+        for x, svg_y in line["vertices"]:
+            self.assertGreaterEqual(x, min_x)
+            self.assertLessEqual(x, max_x)
+            self.assertGreaterEqual(-svg_y, min_y)
+            self.assertLessEqual(-svg_y, max_y)
+        svg = self.tester.visual_svg("makepolygon", payload)
+        self.assertIn('data-postgis-geometry-id="makepolygon-code-1"', svg)
+        self.assertIn('data-postgis-geometry-id="makepolygon-output-1"', svg)
+
+    def test_3d_frame_projects_zero_z_point_and_line(self):
+        payload = {
+            "frames": [{"id": "Overlay", "bounds": [0, 0, 3, 2]}],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "surface",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "unused",
+                 "has_z": True, "points_xyz": xyz_vertices(
+                     [[0, 0, 0], [3, 0, 0], [0, 2, 2], [0, 0, 0]], ring=True
+                 )},
+                {"ord": 2, "source": "Code", "label": "origin",
+                 "root_type": "POINT", "type": "POINT", "x": 2, "y": -1,
+                 "has_z": False, "points_xyz": xyz_vertices([[2, 1, 0]])},
+                {"ord": 3, "source": "Code", "label": "edge",
+                 "root_type": "LINESTRING", "type": "LINESTRING",
+                 "svg": "M 0 0 L 3 -2", "closed": False, "has_z": False,
+                 "points_xyz": xyz_vertices([[0, 0, 0], [3, 2, 0]])},
+            ],
+        }
+        projected = self.tester.project_3d_payload(payload)
+        expected_x, expected_y, _ = self.tester.project_3d_point([2, 1, 0])
+        self.assertEqual(expected_x, projected["parts"][1]["x"])
+        self.assertEqual(-expected_y, projected["parts"][1]["y"])
+        self.assertNotEqual(payload["parts"][2]["svg"], projected["parts"][2]["svg"])
+        svg = self.tester.visual_svg("mixed-zero-z", payload)
+        self.assertIn('data-postgis-geometry-id="mixed-zero-z-code-1"', svg)
+        self.assertIn('data-postgis-geometry-id="mixed-zero-z-code-2"', svg)
+
+    def test_3d_projection_preserves_vertical_separation(self):
+        ground = self.tester.project_3d_point([4, 7, 0])
+        raised = self.tester.project_3d_point([4, 7, 3])
+        self.assertEqual(ground[0], raised[0])
+        self.assertGreater(raised[1], ground[1])
+        self.assertGreater(raised[2], ground[2])
 
     def test_svg_renders_separate_source_frames(self):
         svg = self.tester.visual_svg(
@@ -516,6 +765,32 @@ class VisualExampleTest(unittest.TestCase):
             }]},
         )
         self.assertEqual(3, svg.count('class="vertex"'))
+
+    def test_svg_suppresses_vertices_for_dense_output_areas(self):
+        vertices = [[index, index % 2] for index in range(17)]
+        vertices.append(vertices[0])
+        svg = self.tester.visual_svg(
+            "dense-output-area",
+            {"bounds": [0, 0, 16, 1], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "POLYGON",
+                "svg": "M 0 0 L 1 -1 L 2 0 L 3 -1 L 16 0 Z",
+                "vertices": vertices,
+            }]},
+        )
+        self.assertNotIn('class="vertex"', svg)
+
+    def test_svg_keeps_vertices_for_dense_input_areas(self):
+        vertices = [[index, index % 2] for index in range(17)]
+        vertices.append(vertices[0])
+        svg = self.tester.visual_svg(
+            "dense-input-area",
+            {"bounds": [0, 0, 16, 1], "parts": [{
+                "ord": 1, "source": "Code", "label": "Code", "type": "POLYGON",
+                "svg": "M 0 0 L 1 -1 L 2 0 L 3 -1 L 16 0 Z",
+                "vertices": vertices,
+            }]},
+        )
+        self.assertEqual(17, svg.count('class="vertex"'))
 
     def test_svg_uses_input_underlay_and_direction_arrows_for_open_lines(self):
         svg = self.tester.visual_svg(

@@ -100,6 +100,9 @@ as Code and Output but the renderer cannot represent it truthfully, such as a
 genuinely three-dimensional result. Use `role="text-primary"` on a `screen`
 when the exact textual type or coordinates carry meaning that the accompanying
 figure cannot show; the figure is still generated, but HTML leaves Output open.
+Use `role="visual-overlay"` when input and output geometries must share one
+coordinate frame. Use `role="visual-separate-output"` when independent output
+columns should be compared in separate frames at a common scale.
 Keep a short plain paragraph immediately before the associated
 `programlisting` when an example needs an introduction; HTML joins that prose
 to the Code, Output, and Figure card without requiring a wrapper or empty label.

@@ -141,7 +141,10 @@ remain visible. Add ``role="visual-primary"`` and a stable ``xml:id`` to an
 adjacent ``screen`` only when an authored example needs an explicit stable
 figure identity or preference. Add ``role="text-primary"`` to a ``screen`` when
 its exact geometry type or coordinates are essential; HTML then keeps Output
-expanded while still showing the generated figure.
+expanded while still showing the generated figure. Use ``role="visual-overlay"``
+when input and output layers must share one coordinate frame, and
+``role="visual-separate-output"`` when independent output columns must be shown
+in separate, equally scaled frames.
 
 A plain paragraph immediately before a ``programlisting`` is rendered as the
 introduction to that example card. Examples without an introduction retain the

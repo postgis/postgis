@@ -890,7 +890,7 @@ is projected to WGS84 (SRID 4326).</para>
          <programlisting>SELECT ST_AsText(ST_TileEnvelope(2, 1, 1));</programlisting>
 <screen>POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))</screen>
 <programlisting>SELECT ST_AsText(ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326)));</programlisting>
-<screen>POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))</screen>
+<screen role="visual-overlay">POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -927,18 +927,10 @@ is projected to WGS84 (SRID 4326).</para>
             This function answers the question: what hexagons in a given Tiling(SRS, Size)
             overlap with a given bounds.</para>
 
-            <para><inlinemediaobject><imageobject>
-                <imagedata fileref="images/st_hexagongrid01.png"/>
-            </imageobject></inlinemediaobject></para>
-
             <para>The SRS for the output hexagons is the SRS provided by the bounds geometry.</para>
             <para>Doubling or tripling the edge size of the hexagon generates a new parent tiling that
             fits with the origin tiling. Unfortunately, it is not possible to generate parent
             hexagon tilings that the child tiles perfectly fit inside.</para>
-
-            <para><inlinemediaobject><imageobject>
-                <imagedata fileref="images/st_hexagongrid02.png"/>
-            </imageobject></inlinemediaobject></para>
 
             <para role="availability" conformance="3.1.0">Availability: 3.1.0</para>
 
@@ -946,6 +938,33 @@ is projected to WGS84 (SRID 4326).</para>
 
         <refsection>
         <title>Examples</title>
+        <para>Unit hexagons covering rectangular bounds.</para>
+        <programlisting>WITH bounds AS (
+    SELECT ST_MakeEnvelope(2, 1, 4, 3, 3857) AS geom
+), grid AS (
+    SELECT hex.*
+    FROM bounds
+    CROSS JOIN LATERAL ST_HexagonGrid(1, geom) AS hex
+)
+SELECT ST_AsText((SELECT geom FROM bounds), 3) AS input_bounds,
+    ST_AsText(ST_Collect(geom ORDER BY i, j), 3) AS grid
+FROM grid;</programlisting>
+        <screen role="visual-overlay">POLYGON((2 1,2 3,4 3,4 1,2 1)) | MULTIPOLYGON(((0.5 0.866,1 0,2 0,2.5 0.866,2 1.732,1 1.732,0.5 0.866)),((0.5 2.598,1 1.732,2 1.732,2.5 2.598,2 3.464,1 3.464,0.5 2.598)),((2 1.732,2.5 0.866,3.5 0.866,4 1.732,3.5 2.598,2.5 2.598,2 1.732)),((2 3.464,2.5 2.598,3.5 2.598,4 3.464,3.5 4.33,2.5 4.33,2 3.464)),((3.5 0.866,4 0,5 0,5.5 0.866,5 1.732,4 1.732,3.5 0.866)),((3.5 2.598,4 1.732,5 1.732,5.5 2.598,5 3.464,4 3.464,3.5 2.598)))</screen>
+
+        <para>Child tiles that intersect a doubled-size parent hexagon share the tiling origin, but do not nest perfectly inside the parent.</para>
+        <programlisting>WITH parent AS (
+    SELECT ST_Hexagon(2, 0, 0) AS geom
+), children AS (
+    SELECT child.*
+    FROM parent
+    CROSS JOIN LATERAL ST_HexagonGrid(1, geom) AS child
+    WHERE ST_Area(ST_Intersection(child.geom, parent.geom)) &gt; 0
+)
+SELECT ST_AsText(ST_Collect(geom ORDER BY i, j), 3) AS children,
+    ST_AsText((SELECT geom FROM parent), 3) AS parent
+FROM children;</programlisting>
+        <screen role="visual-overlay">MULTIPOLYGON(((-2.5 -0.866,-2 -1.732,-1 -1.732,-0.5 -0.866,-1 0,-2 0,-2.5 -0.866)),((-2.5 0.866,-2 0,-1 0,-0.5 0.866,-1 1.732,-2 1.732,-2.5 0.866)),((-1 -1.732,-0.5 -2.598,0.5 -2.598,1 -1.732,0.5 -0.866,-0.5 -0.866,-1 -1.732)),((-1 0,-0.5 -0.866,0.5 -0.866,1 0,0.5 0.866,-0.5 0.866,-1 0)),((-1 1.732,-0.5 0.866,0.5 0.866,1 1.732,0.5 2.598,-0.5 2.598,-1 1.732)),((0.5 -0.866,1 -1.732,2 -1.732,2.5 -0.866,2 0,1 0,0.5 -0.866)),((0.5 0.866,1 0,2 0,2.5 0.866,2 1.732,1 1.732,0.5 0.866))) | POLYGON((-2 0,-1 -1.732,1 -1.732,2 0,1 1.732,-1 1.732,-2 0))</screen>
+
         <para>Counting points in hexagons.</para>
         <para>To do a point summary against a hexagonal tiling, generate a hexagon grid using the
         extent of the points as the bounds, then spatially join to that grid.</para>
@@ -1241,11 +1260,26 @@ has an unknown SRID (as is the case by default).</para>
 		<refsection>
 				<title>Examples</title>
 				<para>This example creates a degree-2 NURBS curve with uniform weights.</para>
-				<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry);</programlisting>
+				<programlisting>SELECT ST_AsEWKT(ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0,5 10,10 0)'::geometry
+));</programlisting>
+<screen role="visual-overlay text-primary">NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(5 10),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))</screen>
 				<para>This example creates a rational NURBS curve with custom weights.</para>
-<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);</programlisting>
-				<para>This example creates a NURBS curve with custom weights and knots.</para>
-<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0, 0, 0, 1, 1, 1]);</programlisting>
+<programlisting>SELECT ST_AsEWKT(ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0,5 10,10 0)'::geometry,
+    ARRAY[1.0, 2.0, 1.0]
+));</programlisting>
+<screen role="visual-overlay text-primary">NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(5 10),WEIGHT 2),NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))</screen>
+				<para>This example creates a NURBS curve with a non-uniform knot vector.</para>
+<programlisting>SELECT ST_AsEWKT(ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0,3 10,7 10,10 0)'::geometry,
+    ARRAY[1.0, 1.0, 1.0, 1.0],
+    ARRAY[0.0, 0.0, 0.0, 0.3, 1.0, 1.0, 1.0]
+));</programlisting>
+<screen role="visual-overlay text-primary">NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(3 10),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(7 10),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(0.3,1),KNOT(1,3)))</screen>
 		</refsection>
 
 		<refsection>
