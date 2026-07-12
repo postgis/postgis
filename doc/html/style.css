@@ -223,10 +223,11 @@ pre,
     overflow: hidden;
 }
 
-/* A plain paragraph immediately before Code is its example introduction.
- * Browsers without :has keep the existing standalone paragraph/card layout. */
+/* A plain paragraph immediately before Code is its example introduction,
+ * whether it appears in a refsection, prose chapter, or list item.  Browsers
+ * without :has keep the existing standalone paragraph/card layout. */
 @supports selector(p:has(+ div)) {
-    .refsection > p:not([class]):has(+ .postgis-example-code) {
+    p:not([class]):has(+ .postgis-example-code) {
         background: #f7f9fb;
         border: 1px solid #8aa1b8;
         border-bottom: 0;
@@ -238,7 +239,7 @@ pre,
         padding: 0.7rem 0.85rem;
     }
 
-    .refsection > p:not([class]) + .postgis-example-code {
+    p:not([class]) + .postgis-example-code {
         border-top-left-radius: 0;
         border-top-right-radius: 0;
         margin-top: 0;
@@ -614,7 +615,7 @@ table.postgis-example-grid td {
 }
 
 @media print {
-    .refsection > p:not([class]):has(+ .postgis-example-code) {
+    p:not([class]):has(+ .postgis-example-code) {
         background: #fff;
         border-color: #000;
     }
