@@ -459,6 +459,26 @@ $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUN
 		$<
 
 html: $(html_builddir)/postgis$(DOCSUFFIX).html ## Generate a single-file html/postgis-en.html
+
+review-html: html ## Compare this manual with REVIEW_HTML_BASE using synchronized scrolling
+	@if test -z "$(REVIEW_HTML_BASE)"; then \
+		echo "Set REVIEW_HTML_BASE to a built baseline doc/html directory."; \
+		exit 1; \
+	fi
+	@baseline=`cd "$(REVIEW_HTML_BASE)" 2>/dev/null && pwd -P`; \
+	if test ! -f "$$baseline/postgis$(DOCSUFFIX).html"; then \
+		echo "No postgis$(DOCSUFFIX).html found in REVIEW_HTML_BASE=$(REVIEW_HTML_BASE)"; \
+		exit 1; \
+	fi; \
+	mkdir -p "$(html_builddir)/review"; \
+	if test -e "$(html_builddir)/review/base" && test ! -L "$(html_builddir)/review/base"; then \
+		echo "Refusing to replace non-symlink $(html_builddir)/review/base"; \
+		exit 1; \
+	fi; \
+	rm -f "$(html_builddir)/review/base"; \
+	ln -s "$$baseline" "$(html_builddir)/review/base"
+	$(INSTALL_DATA) $(abs_srcdir)/postgis-review.html $(html_builddir)/review/index.html
+
 # Localized render targets share translated XML files in each language
 # directory.  Build and validate those files once before recursive render
 # targets can run in parallel.
@@ -561,6 +581,7 @@ pdf-images: images
 html-clean:
 	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
 	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
+	rm -rf $(html_builddir)/review/
 	rm -f $(HTML_REF_INDEX)
 
 pdf-clean:

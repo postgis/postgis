@@ -26,6 +26,25 @@ make -C doc images
 make -C doc doxygen
 ```
 
+To review a manual-wide visual change, build the old revision in a separate
+worktree, build the current revision, and point the opt-in comparison target at
+the old HTML directory:
+
+```sh
+make -C /path/to/old-postgis/doc html
+make -C doc review-html REVIEW_HTML_BASE=/path/to/old-postgis/doc/html
+python3 -m http.server --directory . 8000
+```
+
+Open `http://127.0.0.1:8000/doc/html/review/`. The page keeps the old manual on
+the left and the current manual on the right. Scrolling either pane aligns the
+other pane to the same vertical offset from the current function heading. For
+example, `ST_Buffer +1200px` on one side maps to `ST_Buffer +1200px` on the
+other, even though the manuals have different total heights. Use the search
+field or a URL fragment such as `#ST_Buffer` to jump both panes to a common
+function. The comparison is an uninstalled review artifact and
+`make -C doc html-clean` removes it.
+
 Use `make -C doc check-localized` after translation-related changes. Use
 `make -C doc update-po` to refresh translation files when source XML changes
 need to be propagated.

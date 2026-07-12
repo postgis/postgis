@@ -45,6 +45,7 @@ doc/postgis-chunk-html.xsl
 doc/postgis-html.xsl
 
 doc/html/*.html
+doc/html/review/
 doc/html/docbook.css
 doc/Makefile
 doc/Makefile.comments
