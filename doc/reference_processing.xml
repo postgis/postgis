@@ -651,92 +651,28 @@ FROM ST_Dump('MULTIPOLYGON (
             <para>Smoothing a triangle:</para>
                 <programlisting>
 SELECT ST_AsText(ST_ChaikinSmoothing(geom)) smoothed
-FROM (SELECT  'POLYGON((0 0,8 8,0 16,0 0))'::geometry geom) AS foo;
-
-                 smoothed
-───────────────────────────────────────────
- POLYGON((2 2, 6 6, 6 10, 2 14, 0 12, 0 4, 2 2))
-</programlisting>
+FROM (SELECT  'POLYGON((0 0,8 8,0 16,0 0))'::geometry geom) AS foo;</programlisting>
+<screen>POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2))</screen>
 
     <para>Smoothing a Polygon using 1, 2 and 3 iterations:</para>
-    <informaltable>
-      <tgroup cols="3">
-      <tbody>
-        <row>
-        <entry><para><informalfigure>
-          <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing01.png"/>
-            </imageobject>
-            <caption><para>nIterations = 1</para></caption>
-          </mediaobject>
-          </informalfigure></para></entry>
-
-        <entry><para><informalfigure>
-          <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing02.png"/>
-            </imageobject>
-            <caption><para>nIterations = 2</para></caption>
-          </mediaobject>
-          </informalfigure></para></entry>
-
-        <entry><para><informalfigure>
-          <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing03.png"/>
-            </imageobject>
-            <caption><para>nIterations = 3</para></caption>
-          </mediaobject>
-          </informalfigure></para></entry>
-        </row>
-      </tbody>
-      </tgroup>
-    </informaltable>
-                <programlisting>
-SELECT ST_ChaikinSmoothing('POLYGON ((20 20,60 90,10 150,100 190,190 160,130 120,190 50,140 70,120 10,90 60,20 20))',
-            generate_series(1, 3) );
-</programlisting>
+    <programlisting>SELECT n AS iterations,
+  ST_AsText(ST_ChaikinSmoothing(
+    'POLYGON ((20 20,60 90,10 150,100 190,190 160,130 120,190 50,140 70,120 10,90 60,20 20))', n
+  )) AS smoothed
+FROM generate_series(1, 3) AS n;</programlisting>
+    <screen>1 | POLYGON((30 37.5,50 72.5,47.5 105,22.5 135,32.5 160,77.5 180,122.5 182.5,167.5 167.5,175 150,145 130,145 102.5,175 67.5,177.5 55,152.5 65,135 55,125 25,112.5 22.5,97.5 47.5,72.5 50,37.5 30,30 37.5))
+2 | POLYGON((35 46.25,45 63.75,49.375 80.625,48.125 96.875,41.25 112.5,28.75 127.5,25 141.25,30 153.75,43.75 165,66.25 175,88.75 180.625,111.25 181.875,133.75 178.75,156.25 171.25,169.375 163.125,173.125 154.375,167.5 145,152.5 135,145 123.125,145 109.375,152.5 93.75,167.5 76.25,175.625 64.375,176.875 58.125,171.25 57.5,158.75 62.5,148.125 62.5,139.375 57.5,132.5 47.5,127.5 32.5,121.875 24.375,115.625 23.125,108.75 28.75,101.25 41.25,91.25 48.125,78.75 49.375,63.75 45,46.25 35,35.625 31.875,31.875 35.625,35 46.25))
+3 | POLYGON((37.5 50.625,42.5 59.375,46.09375 67.96875,48.28125 76.40625,49.0625 84.6875,48.4375 92.8125,46.40625 100.78125,42.96875 108.59375,38.125 116.25,31.875 123.75,27.8125 130.9375,25.9375 137.8125,26.25 144.375,28.75 150.625,33.4375 156.5625,40.3125 162.1875,49.375 167.5,60.625 172.5,71.875 176.40625,83.125 179.21875,94.375 180.9375,105.625 181.5625,116.875 181.09375,128.125 179.53125,139.375 176.875,150.625 173.125,159.53125 169.21875,166.09375 165.15625,170.3125 160.9375,172.1875 156.5625,171.71875 152.03125,168.90625 147.34375,163.75 142.5,156.25 137.5,150.625 132.03125,146.875 126.09375,145 119.6875,145 112.8125,146.875 105.46875,150.625 97.65625,156.25 89.375,163.75 80.625,169.53125 73.28125,173.59375 67.34375,175.9375 62.8125,176.5625 59.6875,175.46875 57.96875,172.65625 57.65625,168.125 58.75,161.875 61.25,156.09375 62.5,150.78125 62.5,145.9375 61.25,141.5625 58.75,137.65625 55,134.21875 50,131.25 43.75,128.75 36.25,126.09375 30.46875,123.28125 26.40625,120.3125 24.0625,117.1875 23.4375,113.90625 24.53125,110.46875 27.34375,106.875 31.875,103.125 38.125,98.75 42.96875,93.75 46.40625,88.125 48.4375,81.875 49.0625,75 48.28125,67.5 46.09375,59.375 42.5,50.625 37.5,43.59375 34.21875,38.28125 32.65625,34.6875 32.8125,32.8125 34.6875,32.65625 38.28125,34.21875 43.59375,37.5 50.625))</screen>
 
     <para>Smoothing a LineString using 1, 2 and 3 iterations:</para>
-    <informaltable>
-      <tgroup cols="3">
-      <tbody>
-        <row>
-        <entry><para><informalfigure>
-          <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing04.png"/>
-            </imageobject>
-            <caption><para>nIterations = 1</para></caption>
-          </mediaobject>
-          </informalfigure></para></entry>
-
-        <entry><para><informalfigure>
-          <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing05.png"/>
-            </imageobject>
-            <caption><para>nIterations = 2</para></caption>
-          </mediaobject>
-          </informalfigure></para></entry>
-
-        <entry><para><informalfigure>
-          <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_chaikinsmoothing06.png"/>
-            </imageobject>
-            <caption><para>nIterations = 3</para></caption>
-          </mediaobject>
-          </informalfigure></para></entry>
-        </row>
-      </tbody>
-      </tgroup>
-    </informaltable>
-                <programlisting>
-SELECT ST_ChaikinSmoothing('LINESTRING (10 140,80 130,100 190,190 150,140 20,120 120,50 30,30 100)',
-            generate_series(1, 3) );
-</programlisting>
+    <programlisting>SELECT n AS iterations,
+  ST_AsText(ST_ChaikinSmoothing(
+    'LINESTRING (10 140,80 130,100 190,190 150,140 20,120 120,50 30,30 100)', n
+  )) AS smoothed
+FROM generate_series(1, 3) AS n;</programlisting>
+    <screen>1 | LINESTRING(10 140,62.5 132.5,85 145,95 175,122.5 180,167.5 160,177.5 117.5,152.5 52.5,135 45,125 95,102.5 97.5,67.5 52.5,45 47.5,30 100)
+2 | LINESTRING(10 140,49.375 134.375,68.125 135.625,79.375 141.875,87.5 152.5,92.5 167.5,101.875 176.25,115.625 178.75,133.75 175,156.25 165,170 149.375,175 128.125,171.25 101.25,158.75 68.75,148.125 50.625,139.375 46.875,132.5 57.5,127.5 82.5,119.375 95.625,108.125 96.875,93.75 86.25,76.25 63.75,61.875 51.25,50.625 48.75,41.25 60.625,30 100)
+3 | LINESTRING(10 140,39.53125 135.78125,54.0625 134.6875,63.4375 135.3125,70.9375 137.1875,76.5625 140.3125,81.40625 144.53125,85.46875 149.84375,88.75 156.25,91.25 163.75,94.84375 169.6875,99.53125 174.0625,105.3125 176.875,112.1875 178.125,120.15625 177.8125,129.21875 175.9375,139.375 172.5,150.625 167.5,159.6875 161.09375,166.5625 153.28125,171.25 144.0625,173.75 133.4375,174.0625 121.40625,172.1875 107.96875,168.125 93.125,161.875 76.875,156.09375 64.21875,150.78125 55.15625,145.9375 49.6875,141.5625 47.8125,137.65625 49.53125,134.21875 54.84375,131.25 63.75,128.75 76.25,125.46875 85.78125,121.40625 92.34375,116.5625 95.9375,110.9375 96.5625,104.53125 94.21875,97.34375 88.90625,89.375 80.625,80.625 69.375,72.65625 60.625,65.46875 54.375,59.0625 50.625,53.4375 49.375,48.28125 51.71875,43.59375 57.65625,38.4375 70.46875,30 100)</screen>
 
           </refsection>
           <refsection>

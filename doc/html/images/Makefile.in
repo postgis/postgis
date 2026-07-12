@@ -65,12 +65,6 @@ GENERATED_IMAGES= \
 	st_catmullromsmoothing02.png \
 	st_catmullromsmoothing03.png \
 	st_catmullromsmoothing04.png \
-	st_chaikinsmoothing01.png \
-	st_chaikinsmoothing02.png \
-	st_chaikinsmoothing03.png \
-	st_chaikinsmoothing04.png \
-	st_chaikinsmoothing05.png \
-	st_chaikinsmoothing06.png \
 	st_extrude01.png \
 	st_extrude03.png \
 	st_hausdorffdistance01.png \
