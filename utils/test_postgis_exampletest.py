@@ -404,6 +404,24 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn(">Output</text>", visual["svg"])
         self.assertNotIn(">polysnapped</text>", visual["svg"])
 
+    def test_render_visual_example_keeps_single_output_alias_in_comparison(self):
+        self.tester.visual_payload = lambda database, layers: {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "LINESTRING", "svg": "M 0 0 L 1 -1", "closed": False,
+            } for layer in layers],
+        }
+        actual = QueryRows([["LINESTRING(0 0,1 1)"]], ["distance_segment"])
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT 'LINESTRING(0 0,1 1)'::geometry AS input",
+            "visual_id": "comparison-label", "label": "labels:3",
+            "visual_refentry": "labels", "visual_screen": 3,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertIn(">input</text>", visual["svg"])
+        self.assertIn(">distance_segment</text>", visual["svg"])
+
     def test_svg_distinguishes_parts_of_multipart_areas(self):
         svg = self.tester.visual_svg(
             "triangulation",

@@ -976,10 +976,11 @@ FROM dimensions
             })
         for source, values in (("Output", output),):
             for index, candidate in enumerate(values, 1):
+                meaningful_label = candidate["label"] != "Output" and (len(values) > 1 or bool(code))
                 layers.append({
                     "ord": len(layers) + 1,
                     "source": source,
-                    "label": source if len(values) == 1 else (
+                    "label": candidate["label"] if meaningful_label else source if len(values) == 1 else (
                         candidate["label"] if candidate["label"] != "Output" else f"{source} {index}"
                     ),
                     "wkt": candidate["wkt"],
