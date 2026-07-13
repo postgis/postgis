@@ -528,7 +528,9 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             <para>&Z_support;</para>
 		</refsection>
 
-		<refsection><title>Classic Explode a Table of LineStrings into nodes</title>
+		<refsection>
+			<title>Examples</title>
+			<para>Explode a table of LineStrings into their vertices.</para>
 			<programlisting>SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode
 FROM (SELECT 1 As edge_id,
     ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2,3 4,10 10)')) AS dp
@@ -544,9 +546,6 @@ FROM (SELECT 1 As edge_id,
        2 |     1 | POINT(3 5)
        2 |     2 | POINT(5 6)
        2 |     3 | POINT(9 10)</screen>
-		</refsection>
-		<refsection>
-			<title>Standard Geometry Examples</title>
 
 			<para>Dump every vertex from a mixed GeometryCollection.</para>
 			<programlisting>SELECT path, ST_AsText(geom)
@@ -615,9 +614,7 @@ SELECT ST_AsText(ST_Collect((dp).geom ORDER BY (dp).path)) AS vertices
 FROM source
 CROSS JOIN LATERAL ST_DumpPoints(source.geom) AS dp;</programlisting>
 <screen>MULTIPOINT((0 1),(0 3),(3 4),(2 0),(2 3),(0 2),(2 0),(3 0),(3 3),(6 3),(6 0),(3 0),(5 1),(4 2),(5 2),(5 1),(0 5),(0 8),(4 8),(4 5),(0 5),(1 6),(3 6),(2 7),(1 6),(5 4),(5 8),(6 7),(5 4))</screen>
-		</refsection>
-	<refsection>
-			<title>Polyhedral Surfaces, TIN and Triangle Examples</title>
+
 			<para>This example uses a cube represented as a PolyhedralSurface.</para>
 			<programlisting>
 SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
