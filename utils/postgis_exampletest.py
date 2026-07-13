@@ -1434,9 +1434,21 @@ SELECT json_build_object(
     def project_3d_point(self, point):
         """Return deterministic isometric x/y/depth coordinates for one XYZ point."""
         x, y, z = [float(value) for value in point]
-        projected_x = (x - y) / math.sqrt(2)
-        projected_y = z * math.sqrt(2 / 3) - (x + y) / math.sqrt(6)
-        depth = (x + y + z) / math.sqrt(3)
+        # A slightly asymmetric camera avoids collapsing opposite corners of a
+        # cube, while retaining an orthographic projection and stable depth.
+        view = (-1.35, -1.0, -0.8)
+        view_length = math.sqrt(sum(value ** 2 for value in view))
+        view = tuple(value / view_length for value in view)
+        horizontal_length = math.hypot(view[0], view[1])
+        right = (-view[1] / horizontal_length, view[0] / horizontal_length, 0.0)
+        up = (
+            view[1] * right[2] - view[2] * right[1],
+            view[2] * right[0] - view[0] * right[2],
+            view[0] * right[1] - view[1] * right[0],
+        )
+        projected_x = x * right[0] + y * right[1] + z * right[2]
+        projected_y = x * up[0] + y * up[1] + z * up[2]
+        depth = x * view[0] + y * view[1] + z * view[2]
         return projected_x, projected_y, depth
 
     def face_shade(self, rings):
@@ -1679,11 +1691,9 @@ SELECT json_build_object(
             parts_by_ord.setdefault(part["ord"], []).append(part)
         for ordinal, parts in sorted(parts_by_ord.items()):
             if any(part.get("is_3d_face") for part in parts):
-                # View the isometric projection from the negative XYZ side:
-                # paint the farthest faces first so opaque near faces hide them.
+                # Paint the farthest faces first so opaque near faces hide them.
                 parts.sort(
                     key=lambda part: (float(part.get("depth", 0)), part.get("svg", "")),
-                    reverse=True,
                 )
             source = parts[0]["source"]
             frame_id = str(parts[0].get("frame", frames[0]["id"]))

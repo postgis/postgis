@@ -643,7 +643,7 @@ class VisualExampleTest(unittest.TestCase):
         svg = self.tester.visual_svg("solid-3d", payload)
         self.assertEqual(svg, self.tester.visual_svg("solid-3d", payload))
         depths = [float(value) for value in re.findall(r'data-postgis-depth="([^"]+)"', svg)]
-        self.assertEqual(sorted(depths, reverse=True), depths)
+        self.assertEqual(sorted(depths), depths)
         fills = re.findall(
             r'data-postgis-face="[12]"[^>]+fill="(#[0-9a-f]{6})"', svg
         )
@@ -787,7 +787,12 @@ class VisualExampleTest(unittest.TestCase):
         raised = self.tester.project_3d_point([4, 7, 3])
         self.assertEqual(ground[0], raised[0])
         self.assertGreater(raised[1], ground[1])
-        self.assertGreater(raised[2], ground[2])
+        self.assertLess(raised[2], ground[2])
+
+    def test_3d_projection_does_not_collapse_opposite_cube_corners(self):
+        origin = self.tester.project_3d_point([0, 0, 0])
+        opposite = self.tester.project_3d_point([1, 1, 1])
+        self.assertNotEqual(origin[:2], opposite[:2])
 
     def test_svg_renders_separate_source_frames(self):
         svg = self.tester.visual_svg(
