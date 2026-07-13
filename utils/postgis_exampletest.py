@@ -52,6 +52,31 @@ WKT_COMPONENT_RE = re.compile(
     rf"\b({WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*(?=\(|EMPTY\b)",
     re.I,
 )
+HEXWKB_RE = re.compile(r"^(?:\\x)?([0-9A-Fa-f]+)$")
+GEOMETRY_OUTPUT_TYPE_RE = re.compile(r"^(?:geometry|geography)(?:\s*\([^)]*\))?$", re.I)
+WKB_TYPE_NAMES = {
+    1: "POINT",
+    2: "LINESTRING",
+    3: "POLYGON",
+    4: "MULTIPOINT",
+    5: "MULTILINESTRING",
+    6: "MULTIPOLYGON",
+    7: "GEOMETRYCOLLECTION",
+    8: "CIRCULARSTRING",
+    9: "COMPOUNDCURVE",
+    10: "CURVEPOLYGON",
+    11: "MULTICURVE",
+    12: "MULTISURFACE",
+    15: "POLYHEDRALSURFACE",
+    16: "TIN",
+    17: "TRIANGLE",
+    21: "NURBSCURVE",
+}
+EWKB_Z_FLAG = 0x80000000
+EWKB_M_FLAG = 0x40000000
+EWKB_SRID_FLAG = 0x20000000
+EWKB_BBOX_FLAG = 0x10000000
+EWKB_TYPE_MASK = 0x0FFFFFFF
 NUMBER_PATTERN = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
 MAKE_ENVELOPE_RE = re.compile(
     rf"\bST_MakeEnvelope\s*\(\s*({NUMBER_PATTERN})\s*,\s*({NUMBER_PATTERN})\s*,\s*"
@@ -221,6 +246,76 @@ class ExampleTester:
         match = re.match(r"([A-Z]+)", prefix.strip(), re.I)
         return match.group(1).upper() if match else None
 
+    def hexwkb_geometry(self, value, allow_bytea_prefix=True):
+        """Return the normalized HEXWKB payload and root type, without parsing coordinates."""
+        if not isinstance(value, str):
+            return None
+        text = value.strip()
+        match = HEXWKB_RE.fullmatch(text)
+        if not match or (text.startswith("\\x") and not allow_bytea_prefix):
+            return None
+        payload = match.group(1)
+        if len(payload) < 10 or len(payload) % 2:
+            return None
+        header = bytes.fromhex(payload[:10])
+        byte_order = header[0]
+        if byte_order not in (0, 1):
+            return None
+        type_word = int.from_bytes(header[1:5], "little" if byte_order == 1 else "big")
+        if type_word & EWKB_BBOX_FLAG:
+            return None
+        encoded_type = type_word & EWKB_TYPE_MASK
+        dimension_offset = encoded_type // 1000
+        if dimension_offset in (1, 2, 3):
+            base_type = encoded_type % 1000
+        else:
+            base_type = encoded_type
+        geometry_type = WKB_TYPE_NAMES.get(base_type)
+        if geometry_type is None:
+            return None
+        has_z = bool(type_word & EWKB_Z_FLAG) or dimension_offset in (1, 3)
+        has_m = bool(type_word & EWKB_M_FLAG) or dimension_offset in (2, 3)
+        if dimension_offset in (1, 2, 3) and type_word & (EWKB_Z_FLAG | EWKB_M_FLAG):
+            return None
+        if dimension_offset in (1, 2, 3) and type_word & EWKB_SRID_FLAG and base_type != 21:
+            return None
+        if base_type == 21 and type_word & (EWKB_Z_FLAG | EWKB_M_FLAG):
+            return None
+        dimensions = 2 + int(has_z) + int(has_m)
+        minimum_bytes = 5 + (4 if type_word & EWKB_SRID_FLAG else 0)
+        if base_type == 1:
+            minimum_bytes += dimensions * 8
+        elif base_type == 21:
+            minimum_bytes += 12
+        else:
+            minimum_bytes += 4
+        if len(payload) // 2 < minimum_bytes:
+            return None
+        return {"hexwkb": payload.upper(), "type": geometry_type}
+
+    def geometry_output_hex(self, value, output_type):
+        if not GEOMETRY_OUTPUT_TYPE_RE.fullmatch(output_type or ""):
+            return None
+        return self.hexwkb_geometry(value)
+
+    def expected_has_hexwkb(self, expected):
+        return any(
+            self.hexwkb_geometry(value, allow_bytea_prefix=False) is not None
+            for row in expected
+            for value in row
+        )
+
+    def documented_visual_types(self, expected):
+        width = max((len(row) for row in expected), default=0)
+        return [
+            "geometry" if any(
+                column < len(row)
+                and self.hexwkb_geometry(row[column], allow_bytea_prefix=False) is not None
+                for row in expected
+            ) else ""
+            for column in range(width)
+        ]
+
     def normalized_geometry(self, value):
         return re.sub(r"\s+", "", value or "").upper()
 
@@ -233,21 +328,34 @@ class ExampleTester:
 
     def visual_candidate(self, query, expected, explicit=False):
         code = [candidate["wkt"] for candidate in self.code_geometry_candidates(query)]
-        output = self.geometry_candidates(self.rows_to_string(expected))
+        output_wkt = self.geometry_candidates(self.rows_to_string(expected))
+        output_hex = []
+        if not NONVISUAL_SINGLE_INPUT_RE.search(query):
+            for row in expected:
+                for value in row:
+                    candidate = self.hexwkb_geometry(value, allow_bytea_prefix=False)
+                    if candidate is not None:
+                        output_hex.append(candidate)
         if explicit:
             return {"kind": "explicit", "preferred": True}
-        if code and not output and GEOGRAPHY_INPUT_RE.search(query):
+        if code and not output_wkt and not output_hex and GEOGRAPHY_INPUT_RE.search(query):
             return None
-        values = code + output
+        output_values = output_wkt + [candidate["hexwkb"] for candidate in output_hex]
+        values = code + output_values
         if not values:
             return None
         if len(values) > MAX_VISUAL_GEOMETRIES or sum(len(value) for value in values) > MAX_VISUAL_WKT_BYTES:
             return None
         code_types = [self.geometry_type(value) for value in code]
-        output_types = [self.geometry_type(value) for value in output]
-        if len(code) == len(output) == 1 and self.normalized_geometry(code[0]) == self.normalized_geometry(output[0]):
+        output_types = [self.geometry_type(value) for value in output_wkt]
+        output_types.extend(candidate["type"] for candidate in output_hex)
+        if (
+            len(code) == len(output_wkt) == 1
+            and not output_hex
+            and self.normalized_geometry(code[0]) == self.normalized_geometry(output_wkt[0])
+        ):
             return None
-        if output:
+        if output_values:
             if all(value in POINT_TYPES for value in output_types) and not (
                 len(values) > 1 and any(value not in POINT_TYPES for value in code_types)
             ):
@@ -1042,6 +1150,32 @@ class ExampleTester:
             rows.append(display_row)
         return QueryRows(rows, headers, types, visuals)
 
+    def typed_rows_equal(self, database, actual, expected):
+        if len(actual) != len(expected) or any(
+            len(actual_row) != len(expected_row)
+            for actual_row, expected_row in zip(actual, expected)
+        ):
+            return False
+        for actual_row, expected_row in zip(actual, expected):
+            for column, (actual_value, expected_value) in enumerate(zip(actual_row, expected_row)):
+                output_type = actual.types[column] if column < len(actual.types) else ""
+                actual_hex = self.geometry_output_hex(actual_value, output_type)
+                expected_hex = self.geometry_output_hex(expected_value, output_type)
+                if actual_hex is not None or expected_hex is not None:
+                    if actual_hex is None or expected_hex is None:
+                        return False
+                    query = (
+                        "SELECT ST_AsHEXEWKB(ST_GeomFromEWKB(decode("
+                        f"'{actual_hex['hexwkb']}', 'hex')), 'XDR') = "
+                        "ST_AsHEXEWKB(ST_GeomFromEWKB(decode("
+                        f"'{expected_hex['hexwkb']}', 'hex')), 'XDR')"
+                    )
+                    if self.run_psql_scalar(database, query) != "t":
+                        return False
+                elif not self.values_equal(actual_value, expected_value):
+                    return False
+        return True
+
     def run_examples(self, database, keep_going=False, render_dir=None, visual_only=False, jobs=1):
         all_examples = self.examples()
         documented_visuals = [
@@ -1057,20 +1191,28 @@ class ExampleTester:
         ran = 0
         visuals = []
 
+        def render_documented_visuals():
+            rendered = []
+            for example in documented_visuals:
+                rows = QueryRows(
+                    example["expected"],
+                    example.get("expected_headers", []),
+                    self.documented_visual_types(example["expected"]),
+                )
+                visual = self.render_visual_example(database, example, rows)
+                if visual is not None:
+                    rendered.append(visual)
+            return rendered
+
         if visual_only and jobs > 1 and not keep_going:
             def run_visual(example):
                 actual = self.run_one_example(database, example)
                 return self.render_visual_example(database, example, actual)
 
             with ThreadPoolExecutor(max_workers=jobs) as pool:
-                visuals = list(pool.map(run_visual, examples))
-            visuals.extend(
-                self.render_visual_example(
-                    database, example,
-                    QueryRows(example["expected"], example.get("expected_headers", []))
-                )
-                for example in documented_visuals
-            )
+                visuals = [visual for visual in pool.map(run_visual, examples) if visual is not None]
+            if render_dir:
+                visuals.extend(render_documented_visuals())
             ran = len(examples)
             if render_dir:
                 self.publish_visual_examples(render_dir, visuals)
@@ -1097,6 +1239,7 @@ class ExampleTester:
             raise RuntimeError(f"FAILED {len(failures)} example(s): {', '.join(failures)}")
 
         if render_dir:
+            visuals.extend(render_documented_visuals())
             self.publish_visual_examples(render_dir, visuals)
 
         print(f"manual example tests passed: {ran}")
@@ -1109,7 +1252,10 @@ class ExampleTester:
 
         try:
             actual = self.run_psql_query(database, example["query"])
-            if example.get("visual_kind") == "explicit":
+            if example.get("visual_kind") == "explicit" or (
+                self.expected_has_hexwkb(example["expected"])
+                and not NONVISUAL_SINGLE_INPUT_RE.search(example["query"])
+            ):
                 actual = self.prepare_visual_rows(
                     actual, self.query_output_types(database, example["query"])
                 )
@@ -1120,6 +1266,11 @@ class ExampleTester:
             equal = self.catalog_rows_equal(actual, example["expected"])
         elif example["version"]:
             equal = self.version_rows_equal(actual, example["expected"])
+        elif (
+            any(GEOMETRY_OUTPUT_TYPE_RE.fullmatch(output_type or "") for output_type in getattr(actual, "types", []))
+            and self.expected_has_hexwkb(example["expected"])
+        ):
+            equal = self.typed_rows_equal(database, actual, example["expected"])
         else:
             equal = self.rows_equal(actual, example["expected"])
         if not equal:
@@ -1145,15 +1296,30 @@ class ExampleTester:
         encoded = base64.b64encode(json.dumps(layers, separators=(",", ":")).encode("utf-8")).decode("ascii")
         query = f"""
 WITH raw AS (
-  SELECT ord, source, label, row_num, column_num, requested_frame, wkt
+  SELECT ord, source, label, row_num, column_num, requested_frame, wkt, hexwkb
   FROM jsonb_to_recordset(
     convert_from(decode('{encoded}', 'base64'), 'UTF8')::jsonb
   ) AS item(ord integer, source text, label text, row_num integer, column_num integer,
-            requested_frame text, wkt text)
-), parsed_raw AS (
+            requested_frame text, wkt text, hexwkb text)
+), parsed_all AS (
   SELECT ord, source, label, row_num, column_num, requested_frame,
-    ST_GeomFromEWKT(wkt) AS geom
+    hexwkb,
+    CASE WHEN hexwkb IS NOT NULL
+      THEN ST_GeomFromEWKB(decode(hexwkb, 'hex'))
+      ELSE ST_GeomFromEWKT(wkt)
+    END AS geom
   FROM raw
+), parsed_raw AS (
+  SELECT ord, source, label, row_num, column_num, requested_frame, geom
+  FROM parsed_all AS candidate
+  WHERE candidate.source <> 'Code'
+    OR NOT EXISTS (
+      SELECT 1
+      FROM parsed_all AS result
+      WHERE result.source = 'Output'
+        AND result.hexwkb IS NOT NULL
+        AND ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)
+    )
 ), source_dimensions AS (
   SELECT source, max(ST_Dimension(geom)) AS dimension
   FROM parsed_raw
@@ -1362,12 +1528,25 @@ SELECT json_build_object(
         code = self.code_geometry_candidates(example["query"])
         output = []
         headers = getattr(actual, "headers", []) or self.query_output_headers(example["query"])
+        explicit_headers = self.query_output_headers(example["query"])
+        output_types = getattr(actual, "types", [])
         for row_index, row in enumerate(actual, 1):
             for column_index, value in enumerate(row):
-                matches = self.geometry_candidates(value)
-                for match_index, wkt in enumerate(matches, 1):
+                matches = [{"wkt": wkt} for wkt in self.geometry_candidates(value)]
+                output_type = output_types[column_index] if column_index < len(output_types) else ""
+                hexwkb = self.geometry_output_hex(value, output_type)
+                if hexwkb is not None:
+                    matches.append({"hexwkb": hexwkb["hexwkb"]})
+                for match_index, geometry in enumerate(matches, 1):
                     label = headers[column_index] if column_index < len(headers) else ""
-                    if not label or label.lower() in {"?column?", "st_astext", "st_asewkt"}:
+                    has_explicit_header = (
+                        column_index < len(explicit_headers) and bool(explicit_headers[column_index])
+                    )
+                    if (
+                        not label
+                        or label.lower() in {"?column?", "st_astext", "st_asewkt"}
+                        or ("hexwkb" in geometry and not has_explicit_header)
+                    ):
                         label = "Output"
                     source = "Code" if label.lower().startswith("input_") else "Output"
                     if source == "Code":
@@ -1377,9 +1556,15 @@ SELECT json_build_object(
                     if len(matches) > 1:
                         label = f"{label}.{match_index}"
                     output.append({
-                        "wkt": wkt, "label": label, "source": source,
+                        **geometry, "label": label, "source": source,
                         "row_num": row_index, "column_num": column_index + 1,
                     })
+        if (
+            example.get("visual_kind") == "geometry-output"
+            and self.expected_has_hexwkb(example.get("expected", []))
+            and not output
+        ):
+            return None
         if any(candidate["source"] == "Code" for candidate in output):
             # Explicit input_* result columns define the authored input layers.
             # Do not repeat geometry literals and constructor arguments inferred
@@ -1406,6 +1591,7 @@ SELECT json_build_object(
                     "Code" if example.get("visual_separate_output") else None
                 ),
                 "wkt": candidate["wkt"],
+                "hexwkb": None,
             })
         for source in ("Code", "Output"):
             values = [candidate for candidate in output if candidate["source"] == source]
@@ -1422,7 +1608,8 @@ SELECT json_build_object(
                     "requested_frame": forced_frame or (
                         candidate["label"] if example.get("visual_separate_output") else None
                     ),
-                    "wkt": candidate["wkt"],
+                    "wkt": candidate.get("wkt"),
+                    "hexwkb": candidate.get("hexwkb"),
                 })
         if not layers:
             raise RuntimeError(f"Visual example {example['visual_id']} has no geometry input or output")
@@ -1439,6 +1626,13 @@ SELECT json_build_object(
                 raise
             layers = [layer for layer in layers if layer["source"] == "Code"]
             payload = self.visual_payload(database, layers)
+            output_omitted = True
+        if not payload.get("parts"):
+            return None
+        if (
+            any(layer["source"] == "Output" for layer in layers)
+            and not any(part["source"] == "Output" for part in payload["parts"])
+        ):
             output_omitted = True
         rendered_layers = []
         layer_source_indexes = {"Code": 0, "Output": 0}

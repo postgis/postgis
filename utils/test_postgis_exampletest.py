@@ -119,6 +119,82 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         with self.assertRaisesRegex(RuntimeError, "Unclosed geometry candidate"):
             self.tester.geometry_candidates("POLYGON((0 0,1 0,0 0)")
 
+    def test_hexwkb_geometry_recognizes_endian_flags_offsets_and_extended_types(self):
+        def payload(type_word, byte_order=1):
+            endian = "little" if byte_order == 1 else "big"
+            encoded_type = type_word & 0x0FFFFFFF
+            dimension_offset = encoded_type // 1000
+            base_type = encoded_type % 1000 if dimension_offset in (1, 2, 3) else encoded_type
+            dimensions = 2
+            dimensions += int(bool(type_word & 0x80000000) or dimension_offset in (1, 3))
+            dimensions += int(bool(type_word & 0x40000000) or dimension_offset in (2, 3))
+            body = b""
+            if type_word & 0x20000000:
+                body += (4326).to_bytes(4, endian)
+            if base_type == 1:
+                body += b"\x00" * (dimensions * 8)
+            elif base_type == 21:
+                body += b"\x00" * 12
+            else:
+                body += b"\x00" * 4
+            return (bytes([byte_order]) + type_word.to_bytes(4, endian) + body).hex()
+
+        type_names = {
+            1: "POINT", 2: "LINESTRING", 3: "POLYGON", 4: "MULTIPOINT",
+            5: "MULTILINESTRING", 6: "MULTIPOLYGON", 7: "GEOMETRYCOLLECTION",
+            8: "CIRCULARSTRING", 9: "COMPOUNDCURVE", 10: "CURVEPOLYGON",
+            11: "MULTICURVE", 12: "MULTISURFACE", 15: "POLYHEDRALSURFACE",
+            16: "TIN", 17: "TRIANGLE", 21: "NURBSCURVE",
+        }
+        cases = [
+            (payload(type_code, byte_order), expected_type)
+            for type_code, expected_type in type_names.items()
+            for byte_order in (0, 1)
+        ]
+        cases.extend((
+            (payload(0xE0000001), "POINT"),
+            (payload(3003, byte_order=0), "POLYGON"),
+            (payload(0x20000000 | 2021), "NURBSCURVE"),
+            (payload(0x20000000 | 3021, byte_order=0), "NURBSCURVE"),
+        ))
+        for value, expected_type in cases:
+            with self.subTest(value=value):
+                self.assertEqual(
+                    expected_type,
+                    self.tester.hexwkb_geometry(value)["type"],
+                )
+
+    def test_hexwkb_geometry_rejects_false_positives_and_bbox_flag(self):
+        self.assertIsNone(self.tester.hexwkb_geometry("0103"))
+        self.assertIsNone(self.tester.hexwkb_geometry("0103000000"))
+        self.assertIsNone(self.tester.hexwkb_geometry("010300000"))
+        self.assertIsNone(self.tester.hexwkb_geometry("0203000000"))
+        self.assertIsNone(self.tester.hexwkb_geometry("0100000000"))
+        self.assertIsNone(self.tester.hexwkb_geometry("0112000000"))
+        self.assertIsNone(self.tester.hexwkb_geometry("0103000010"))
+        self.assertIsNone(self.tester.hexwkb_geometry("01E9030080" + "00" * 32))
+        self.assertIsNone(self.tester.hexwkb_geometry("0115000080" + "00" * 24))
+        self.assertIsNone(self.tester.hexwkb_geometry("01E9030020" + "00" * 32))
+        self.assertIsNone(self.tester.hexwkb_geometry("0115000000" + "00" * 4))
+        self.assertIsNone(self.tester.hexwkb_geometry("89504E470D0A1A0A"))
+        self.assertIsNone(self.tester.hexwkb_geometry("not hex"))
+
+    def test_hexwkb_geometry_accepts_bytea_prefix_only_when_requested(self):
+        self.assertEqual(
+            {"hexwkb": "010300000000000000", "type": "POLYGON"},
+            self.tester.hexwkb_geometry("  \\x010300000000000000  "),
+        )
+        self.assertIsNone(
+            self.tester.hexwkb_geometry("\\x010300000000000000", allow_bytea_prefix=False)
+        )
+
+    def test_geometry_output_hex_requires_geometry_type_metadata(self):
+        value = "010300000000000000"
+        self.assertEqual("POLYGON", self.tester.geometry_output_hex(value, "geometry")["type"])
+        self.assertEqual("POLYGON", self.tester.geometry_output_hex(value, "geography")["type"])
+        self.assertIsNone(self.tester.geometry_output_hex(value, "text"))
+        self.assertIsNone(self.tester.geometry_output_hex("\\x" + value, "bytea"))
+
     def test_function_type_substring_does_not_swallow_argument_geometry(self):
         self.assertEqual(
             ["POLYGON((0 0,2 0,0 2,0 0))", "POINT(1 1)"],
@@ -312,6 +388,16 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertTrue(self.tester.catalog_rows_equal([["postgis", "3.7.0dev", "null"]], expected))
         self.assertFalse(self.tester.catalog_rows_equal([["postgis", "3.7.0dev"]], expected))
 
+    def test_typed_hexwkb_comparison_is_endian_independent(self):
+        ndr = "0101000000000000000000F03F0000000000000040"
+        xdr = "00000000013FF00000000000004000000000000000"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        actual = QueryRows([[xdr]], types=["geometry"])
+        self.assertTrue(self.tester.typed_rows_equal("manual", actual, [[ndr]]))
+        self.assertIn("ST_AsHEXEWKB", queries[0])
+        self.assertEqual(2, queries[0].count("'XDR'"))
+
 
 class ExampleTestRunnerTest(unittest.TestCase):
     def make_runner(self, actual_rows):
@@ -390,32 +476,39 @@ class ExampleTestRunnerTest(unittest.TestCase):
 
         self.assertEqual(["second:2", ("visuals", ["second-visual"])], calls)
 
-    def test_visual_only_renders_documented_output_without_executing_query(self):
-        tester = self.make_runner({"SELECT 1": [["POLYGON((0 0,1 0,0 1,0 0))"]]})
-        example = tester.examples()[0]
-        example.update({
-            "documented_only": True,
-            "expected_headers": ["documented_geom"],
-            "visual_id": "documented-visual",
-            "visual_kind": "explicit",
-            "visual_preferred": True,
-        })
-        tester.examples = lambda: [example]
-        calls = []
-        tester.run_one_example = lambda database, selected: self.fail("documented output was executed")
-        tester.render_visual_example = lambda database, selected, actual: calls.append(
-            (selected["visual_id"], actual)
-        ) or {"id": selected["visual_id"], "source": selected["label"], "svg": "<svg/>\n"}
-        tester.publish_visual_examples = lambda render_dir, visuals: calls.append(
-            (render_dir, [visual["id"] for visual in visuals])
-        )
+    def test_visual_only_renders_typed_documented_output_at_any_job_count(self):
+        hexwkb = "010300000000000000"
+        for jobs in (1, 2):
+            with self.subTest(jobs=jobs):
+                tester = self.make_runner({"SELECT 1": [[hexwkb]]})
+                example = tester.examples()[0]
+                example.update({
+                    "expected": [[hexwkb]],
+                    "documented_only": True,
+                    "expected_headers": ["documented_geom"],
+                    "visual_id": "documented-visual",
+                    "visual_kind": "explicit",
+                    "visual_preferred": True,
+                })
+                tester.examples = lambda: [example]
+                calls = []
+                tester.run_one_example = lambda database, selected: self.fail(
+                    "documented output was executed"
+                )
+                tester.render_visual_example = lambda database, selected, actual: calls.append(
+                    (selected["visual_id"], actual)
+                ) or {"id": selected["visual_id"], "source": selected["label"], "svg": "<svg/>\n"}
+                tester.publish_visual_examples = lambda render_dir, visuals: calls.append(
+                    (render_dir, [visual["id"] for visual in visuals])
+                )
 
-        tester.run_examples("exampletest", render_dir="visuals", visual_only=True, jobs=2)
+                tester.run_examples("exampletest", render_dir="visuals", visual_only=True, jobs=jobs)
 
-        self.assertEqual("documented-visual", calls[0][0])
-        self.assertEqual(example["expected"], calls[0][1])
-        self.assertEqual(["documented_geom"], calls[0][1].headers)
-        self.assertEqual(("visuals", ["documented-visual"]), calls[1])
+                self.assertEqual("documented-visual", calls[0][0])
+                self.assertEqual(example["expected"], calls[0][1])
+                self.assertEqual(["documented_geom"], calls[0][1].headers)
+                self.assertEqual(["geometry"], calls[0][1].types)
+                self.assertEqual(("visuals", ["documented-visual"]), calls[1])
 
 
 class VisualExampleTest(unittest.TestCase):
@@ -493,6 +586,24 @@ class VisualExampleTest(unittest.TestCase):
         self.assertEqual({"kind": "geometry-output", "preferred": True}, point_output)
         self.assertIsNone(self.tester.visual_candidate(
             "SELECT ST_AsText('LINESTRING(0 0,1 1)')", [["LINESTRING(0 0,1 1)"]]
+        ))
+
+    def test_visual_candidate_recognizes_natural_geometry_hex_output(self):
+        polygon_hex = "010300000000000000"
+        self.assertEqual(
+            {"kind": "geometry-output", "preferred": True},
+            self.tester.visual_candidate(
+                "SELECT ST_PolygonFromText('POLYGON EMPTY')",
+                [[polygon_hex]],
+            ),
+        )
+        self.assertIsNone(self.tester.visual_candidate(
+            "SELECT ST_AsHEXEWKB('POLYGON EMPTY'::geometry)",
+            [[polygon_hex]],
+        ))
+        self.assertIsNone(self.tester.visual_candidate(
+            "SELECT ST_PolygonFromText('POINT(1 2)')",
+            [["0101000000000000000000F03F0000000000000040"]],
         ))
 
     def test_visual_candidate_does_not_draw_geography_inputs_as_planar(self):
@@ -638,6 +749,9 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("'has_z'", queries[0])
         self.assertIn("'points_xyz'", queries[0])
         self.assertIn("CASE WHEN ST_HasArc(geom) THEN ST_CurveToLine(geom)", queries[0])
+        self.assertIn("ST_GeomFromEWKB(decode(hexwkb, 'hex'))", queries[0])
+        self.assertIn("ELSE ST_GeomFromEWKT(wkt)", queries[0])
+        self.assertIn("ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)", queries[0])
         self.assertIn("COALESCE(ST_Z(vertex3d.geom), 0)", queries[0])
         self.assertIn("ST_Z(vertex3d.geom)", queries[0])
         self.assertIn("ST_NPoints(geom) AS total_points", queries[0])
@@ -1075,6 +1189,84 @@ class VisualExampleTest(unittest.TestCase):
         }, actual)
         self.assertIn(">center</text>", visual["svg"])
         self.assertIn(">nearest</text>", visual["svg"])
+
+    def test_render_visual_example_uses_typed_hexwkb_without_text_roundtrip(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POLYGON", "svg": "M 0 0 L 1 0 L 0 -1 Z",
+            } for layer in layers],
+        }
+        actual = QueryRows(
+            [["010300000000000000"]],
+            ["st_polygonfromtext"],
+            ["geometry"],
+        )
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT ST_PolygonFromText('POLYGON EMPTY')",
+            "visual_id": "hexwkb", "label": "ST_PolygonFromText:1",
+            "visual_refentry": "ST_PolygonFromText", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertEqual("010300000000000000", captured[-1]["hexwkb"])
+        self.assertIsNone(captured[-1]["wkt"])
+        self.assertEqual("Output", captured[-1]["label"])
+        self.assertIn(">Output</text>", visual["svg"])
+
+    def test_render_visual_example_skips_provisional_hex_text(self):
+        hexwkb = "010300000000000000"
+        actual = QueryRows([[hexwkb]], ["payload"], ["text"])
+        visual = self.tester.render_visual_example("manual", {
+            "query": f"SELECT '{hexwkb}'::text",
+            "expected": [[hexwkb]],
+            "visual_id": "hex-text", "label": "hex-text:1",
+            "visual_refentry": "hex-text", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertIsNone(visual)
+
+    def test_render_visual_example_skips_empty_only_geometry(self):
+        self.tester.visual_payload = lambda database, layers: {
+            "bounds": None, "frames": None, "parts": None,
+        }
+        hexwkb = "010300000000000000"
+        actual = QueryRows([[hexwkb]], ["empty_polygon"], ["geometry"])
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT 'POLYGON EMPTY'::geometry",
+            "expected": [[hexwkb]],
+            "visual_id": "empty", "label": "empty:1",
+            "visual_refentry": "empty", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertIsNone(visual)
+
+    def test_render_visual_example_exposes_text_when_empty_output_leaves_input_context(self):
+        def payload(database, layers):
+            code = next(layer for layer in layers if layer["source"] == "Code")
+            return {
+                "bounds": [0, 0, 1, 1],
+                "parts": [{
+                    "ord": code["ord"], "source": "Code", "label": code["label"],
+                    "type": "LINESTRING", "svg": "M 0 0 L 1 -1",
+                }],
+            }
+
+        self.tester.visual_payload = payload
+        hexwkb = "010300000000000000"
+        actual = QueryRows([[hexwkb]], ["empty_result"], ["geometry"])
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT f('LINESTRING(0 0,1 1)'::geometry)",
+            "expected": [[hexwkb]],
+            "visual_id": "empty-result", "label": "empty-result:1",
+            "visual_refentry": "empty-result", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertTrue(visual["output_omitted"])
+        self.assertFalse(visual["preferred"])
+        self.assertEqual("input-context-fallback", visual["kind"])
+        self.assertEqual(["Code"], [layer["source"] for layer in visual["layers"]])
 
     def test_explicit_input_layers_replace_inferred_code_context(self):
         captured = []
