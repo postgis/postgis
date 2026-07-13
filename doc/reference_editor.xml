@@ -1911,7 +1911,6 @@ SELECT ST_AsText(ST_Segmentize('POLYGON((0 0,0 8,30 0,0 0))'::geometry,
             </para>
 <programlisting language="sql">SELECT ST_AsText(ST_Segmentize(('LINESTRING (0 0,60 60)'::geography), 2000000));</programlisting>
 <screen>LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.824093489701564,13.550465473227048 25.107950473646188,19.1066053508691 33.21091076089908,25.779290201459894 41.01711439406505,34.188839517966954 48.337222885886,45.238153936612264 54.84733442373889,60 60)</screen>
-			<para>The generated figure shows the geographic line segmentized along a great-circle arc.</para>
 
 		</refsection>
 		<refsection>
