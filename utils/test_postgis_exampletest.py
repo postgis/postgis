@@ -549,6 +549,33 @@ class ExampleTestRunnerTest(unittest.TestCase):
                 self.assertEqual(["geometry"], calls[0][1].types)
                 self.assertEqual(("visuals", ["documented-visual"]), calls[1])
 
+    def test_native_geometry_output_is_described_when_input_uses_serializer(self):
+        hexwkb = "010200000002000000000000000000F03F0000000000000040" \
+                 "00000000000008400000000000001040"
+        tester = ExampleTester.__new__(ExampleTester)
+        example = {
+            "label": "ST_LineFromWKB:1",
+            "query": "SELECT ST_LineFromWKB(ST_AsBinary(" \
+                     "ST_GeomFromText('LINESTRING(1 2,3 4)'))) AS aline",
+            "expected": [["LINESTRING(1 2,3 4)"]],
+            "valid": True,
+            "catalog": False,
+            "version": False,
+            "visual_id": "st-linefromwkb-1",
+            "visual_kind": "geometry-output",
+        }
+        described = []
+        tester.run_psql_query = lambda database, query: QueryRows(
+            [[hexwkb]], ["aline"]
+        )
+        tester.query_output_types = lambda database, query: described.append(query) or ["geometry"]
+        tester.run_psql_scalar = lambda database, query: "t"
+
+        actual = tester.run_one_example("manual", example)
+
+        self.assertEqual([example["query"]], described)
+        self.assertEqual(["geometry"], actual.types)
+
 
 class VisualExampleTest(unittest.TestCase):
     def setUp(self):

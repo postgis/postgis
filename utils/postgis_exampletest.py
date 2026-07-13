@@ -1334,7 +1334,6 @@ class ExampleTester:
                     self.expected_has_hexwkb(example["expected"])
                     or self.expected_has_geometry_text(example["expected"])
                 )
-                and not NONVISUAL_SINGLE_INPUT_RE.search(example["query"])
             ):
                 actual = self.prepare_visual_rows(
                     actual, self.query_output_types(database, example["query"])
