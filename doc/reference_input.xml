@@ -1762,7 +1762,7 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 
 	  <refsection>
 		<title>Description</title>
-		<para>Constructs a PostGIS ST_Geometry object from the OGC KML representation.</para>
+		<para>Constructs a PostGIS geometry from an OGC KML representation.</para>
 		<para>ST_GeomFromKML works only for KML Geometry fragments. It throws an error if you try to use it on a whole KML document.</para>
 		<para>
 			OGC KML versions supported:
@@ -1777,13 +1777,14 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 		<para role="availability" conformance="1.5">Availability: 1.5, requires libxml2 2.6+</para>
 		<para>&Z_support;</para>
 		<note>
-			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
+			<para>ST_GeomFromKML does not support SQL/MM curve geometries.</para>
 		</note>
 
 	  </refsection>
 
 	  <refsection>
-		<title>Examples - A single geometry with srsName</title>
+		<title>Examples</title>
+		<para>A single LineString geometry.</para>
 		<programlisting language="sql"><![CDATA[
 SELECT ST_GeomFromKML($$
     <LineString>
@@ -1793,6 +1794,7 @@ SELECT ST_GeomFromKML($$
 $$);
 ]]>
         </programlisting>
+<screen>0102000020E610000002000000CA54C1A8A4CA51C05396218E75214540910F7A36ABCA51C01A51DA1B7C214540</screen>
 	  </refsection>
 
 	  <refsection>
