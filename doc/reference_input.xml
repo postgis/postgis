@@ -943,10 +943,13 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 
 		  <refsection>
 			<title>Examples</title>
-	<programlisting language="sql">
-SELECT ST_PointFromText('POINT(-71.064544 42.28787)');
-SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
-    </programlisting>
+			<para>Create a point with the default SRID 0.</para>
+			<programlisting language="sql">SELECT ST_AsEWKT(ST_PointFromText('POINT(-71.064544 42.28787)'));</programlisting>
+			<screen>POINT(-71.064544 42.28787)</screen>
+
+			<para>Create a point with SRID 4326.</para>
+			<programlisting language="sql">SELECT ST_AsEWKT(ST_PointFromText('POINT(-71.064544 42.28787)', 4326));</programlisting>
+			<screen>SRID=4326;POINT(-71.064544 42.28787)</screen>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
