@@ -24,6 +24,7 @@ ADMONITIONS = {"note", "tip", "important", "warning", "caution"}
 DEPRECATED_ALIAS_ROLE = "deprecated-alias"
 COMMAND_REFERENCE_ROLE = "reference-target"
 CHUNK_OWNER_ELEMENTS = {"appendix", "chapter", "preface", "refentry"}
+DESCRIPTION_METADATA_ROLES = {"availability", "enhanced", "changed"}
 SQL_KEYWORD_DATA = (
     # keyword, starts a semicolon-terminated SQL statement, starts an example code block
     ("ADD", False, False),
@@ -274,6 +275,31 @@ def deprecated_alias_replacement(refentry: ET.Element) -> str | None:
     return next(iter(targets)) if len(targets) == 1 else None
 
 
+def is_description_badge(node: ET.Element) -> bool:
+    if local_name(node) != "para":
+        return False
+    text = normalized_text(node)
+    return (
+        next(named_descendants(node, "inlinemediaobject"), None) is not None
+        and text.startswith(("This function supports", "This method supports", "This method implements"))
+    )
+
+
+def description_is_support_only(section: ET.Element) -> bool:
+    found_badge = False
+    for child in section:
+        if local_name(child) == "title":
+            continue
+        if local_name(child) == "para" and (child.get("role") or "") in DESCRIPTION_METADATA_ROLES:
+            continue
+        if is_description_badge(child):
+            found_badge = True
+            continue
+        if normalized_text(child):
+            return False
+    return found_badge
+
+
 def section_has_example_title(section: ET.Element) -> bool:
     title = first_named_child(section, "title")
     return title is not None and "Example" in normalized_text(title)
@@ -311,6 +337,19 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
             "error", "deprecated-alias-link", source_location(path, node),
             f"link targets deprecated alias {target}; use {deprecated_aliases[target]}",
         ))
+
+    for refentry in refentries:
+        if DEPRECATED_ALIAS_ROLE in role_tokens(refentry):
+            continue
+        for section in named_children(refentry, "refsection", "section", "sect1"):
+            title = first_named_child(section, "title")
+            if title is None or normalized_text(title) != "Description":
+                continue
+            if description_is_support_only(section):
+                findings.append(Finding(
+                    "warning", "support-only-description", source_location(path, section),
+                    "Description contains support/compliance badges but no semantic prose",
+                ))
 
     for node in named_descendants(root, "programlisting", "title"):
         owner = nearest_refentry_id(node)

@@ -137,6 +137,22 @@ class DocBookSourceLintTest(unittest.TestCase):
             set(),
         )
 
+    def test_support_only_description_violation_and_semantic_prose_clean_case(self):
+        badge = (
+            '<para><inlinemediaobject><imageobject/></inlinemediaobject>'
+            'This function supports 3d.</para>'
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><refsection><title>Description</title>'
+            '<para role="availability">Availability: 3.7</para>' + badge + '</refsection></refentry>',
+            {"support-only-description"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><refsection><title>Description</title>'
+            '<para>Converts curves to linear geometry.</para>' + badge + '</refsection></refentry>',
+            set(),
+        )
+
     def test_tab_in_verbatim_violation_and_clean_case(self):
         self.assertInfoCategory('<refentry xml:id="f"><programlisting>SELECT\t1;</programlisting></refentry>', "tab-in-verbatim")
         self.assertCategories('<refentry xml:id="f"><screen>1    2</screen></refentry>', set())

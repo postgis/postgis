@@ -2362,7 +2362,7 @@ GROUP BY gid, field1, field2;
 	<refentry xml:id="ST_NumInteriorRing">
 	  <refnamediv>
 		<refname>ST_NumInteriorRing</refname>
-		<refpurpose>Returns the number of interior rings (holes) of a Polygon. Aias for ST_NumInteriorRings</refpurpose>
+		<refpurpose>Returns the number of interior rings (holes) of a Polygon. Alias for ST_NumInteriorRings.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2373,6 +2373,13 @@ GROUP BY gid, field1, field2;
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>This function is an alias for <xref linkend="ST_NumInteriorRings"/>.</para>
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>

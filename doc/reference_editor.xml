@@ -893,7 +893,7 @@ SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0
 	  <refnamediv>
 		<refname>ST_ForceSFS</refname>
 
-		<refpurpose>Force the geometries to use SFS 1.1 geometry types only.</refpurpose>
+		<refpurpose>Force geometries to use SFS 1.1 or 1.2 geometry types.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -912,11 +912,56 @@ SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0
 
 	  <refsection>
 		<title>Description</title>
+		<para>
+		  Forces a geometry to use the geometry types defined by the requested
+		  version of the OGC Simple Features Specification. The default is SFS
+		  1.1. Curved geometries are converted to linear representations,
+		  <varname>TRIANGLE</varname> is converted to <varname>POLYGON</varname>,
+		  and <varname>TIN</varname> and <varname>POLYHEDRALSURFACE</varname> are
+		  converted to <varname>GEOMETRYCOLLECTION</varname>s of
+		  <varname>POLYGON</varname>s.
+		</para>
+		<para>
+		  If <parameter>version</parameter> begins with <literal>1.2</literal>,
+		  curved geometries are still converted to linear representations, but
+		  <varname>TRIANGLE</varname>, <varname>TIN</varname>, and
+		  <varname>POLYHEDRALSURFACE</varname> are preserved. Other version
+		  values use the default SFS 1.1 behavior. Geometry collections are
+		  processed recursively, and the SRID and Z/M coordinates are preserved.
+		</para>
 
+		<para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<para>Compare the geometry types produced for SFS 1.1 (the default) and SFS 1.2.</para>
+		<programlisting language="sql" role="visual-skip">WITH inputs(name, geom) AS (VALUES
+    ('circular string', 'CIRCULARSTRING(0 0, 1 1, 2 0)'::geometry),
+    ('triangle', 'TRIANGLE((0 0, 0 2, 2 0, 0 0))'::geometry),
+    ('TIN', 'TIN(((0 0, 0 2, 2 0, 0 0)))'::geometry),
+    ('polyhedral surface', 'POLYHEDRALSURFACE(((0 0, 0 2, 2 0, 0 0)))'::geometry)
+)
+SELECT name,
+       ST_GeometryType(ST_ForceSFS(geom)) AS sfs_1_1,
+       ST_GeometryType(ST_ForceSFS(geom, '1.2')) AS sfs_1_2
+FROM inputs;</programlisting>
+		<screen>        name        |        sfs_1_1        |       sfs_1_2
+--------------------+-----------------------+----------------------
+ circular string    | ST_LineString         | ST_LineString
+ triangle           | ST_Polygon            | ST_Triangle
+ TIN                | ST_GeometryCollection | ST_Tin
+ polyhedral surface | ST_GeometryCollection | ST_PolyhedralSurface
+(4 rows)</screen>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_CurveToLine"/>, <xref linkend="ST_ForceCurve"/></para>
 	  </refsection>
 	</refentry>
 
