@@ -171,101 +171,39 @@ FROM relation;</programlisting>
  212101212 | t                       | t
 (1 row)</screen>
 
-         <para>The nine cells below show the dimension of each
-         Interior, Boundary, and Exterior intersection for the same relation.</para>
+         <para>The executable query and generated overlay above are the visual
+         source for the relation. The nine matrix cells below map each character
+         of its returned <literal>212101212</literal> value to the corresponding
+         Interior, Boundary, or Exterior intersection.</para>
 
-          <informaltable frame="none">
-            <tgroup cols="2">
-              <colspec colwidth="80pt"/>
-
+          <informaltable tabstyle="styledtable">
+            <tgroup cols="4">
+              <thead>
+                <row>
+                  <entry><emphasis role="bold">a \ b</emphasis></entry>
+                  <entry><emphasis role="bold">Interior</emphasis></entry>
+                  <entry><emphasis role="bold">Boundary</emphasis></entry>
+                  <entry><emphasis role="bold">Exterior</emphasis></entry>
+                </row>
+              </thead>
               <tbody>
                 <row>
-                  <entry/>
-
-                  <entry align="center"><para><informalfigure>
-                      <mediaobject><imageobject><imagedata align="center" fileref="images/de9im04.png" valign="middle"/></imageobject></mediaobject>
-                    </informalfigure></para></entry>
+                  <entry><emphasis role="bold">Interior</emphasis></entry>
+                  <entry><literal>dim(I(a) ∩ I(b)) = 2</literal></entry>
+                  <entry><literal>dim(I(a) ∩ B(b)) = 1</literal></entry>
+                  <entry><literal>dim(I(a) ∩ E(b)) = 2</literal></entry>
                 </row>
-
                 <row>
-                  <entry align="center" valign="middle"><para><informalfigure>
-                      <mediaobject><imageobject><imagedata align="center" fileref="images/de9im03.png" valign="middle"/></imageobject></mediaobject>
-                    </informalfigure></para></entry>
-
-                  <entrytbl cols="4">
-                        <thead valign="middle">
-                          <row>
-                            <entry/>
-
-                            <entry><emphasis role="bold">Interior</emphasis></entry>
-
-                            <entry><emphasis role="bold">Boundary</emphasis></entry>
-
-                            <entry><emphasis role="bold">Exterior</emphasis></entry>
-                          </row>
-                        </thead>
-
-                        <tbody valign="middle">
-                          <row>
-                            <entry spanname="de9im_a">
-                                <emphasis role="bold">Interior</emphasis>
-                            </entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im05.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( I(a) ∩ I(b) ) =
-                            </emphasis><emphasis role="bold">2</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im06.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( I(a) ∩ B(b)  =
-                            </emphasis><emphasis role="bold">1</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im07.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( I(a) ∩ E(b) ) =
-                            </emphasis><emphasis role="bold">2</emphasis></para></entry>
-                          </row>
-
-                          <row>
-                            <entry><emphasis role="bold">Boundary</emphasis></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im08.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( B(a) ∩ I(b) ) =
-                            </emphasis><emphasis role="bold">1</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im09.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( B(a) ∩ B(b) ) =
-                            </emphasis><emphasis role="bold">0</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im10.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( B(a) ∩ E(b) ) =
-                            </emphasis><emphasis role="bold">1</emphasis></para></entry>
-                          </row>
-
-                          <row>
-                            <entry><emphasis role="bold">Exterior</emphasis></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im11.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( E(a) ∩ I(b) ) =
-                            </emphasis><emphasis role="bold">2</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im12.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( E(a) ∩ B(b) ) =
-                            </emphasis><emphasis role="bold">1</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im13.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( E(a) ∩ E(b)  =
-                            </emphasis><emphasis role="bold">2</emphasis></para></entry>
-                          </row>
-                        </tbody>
-                    </entrytbl>
+                  <entry><emphasis role="bold">Boundary</emphasis></entry>
+                  <entry><literal>dim(B(a) ∩ I(b)) = 1</literal></entry>
+                  <entry><literal>dim(B(a) ∩ B(b)) = 0</literal></entry>
+                  <entry><literal>dim(B(a) ∩ E(b)) = 1</literal></entry>
+                </row>
+                <row>
+                  <entry><emphasis role="bold">Exterior</emphasis></entry>
+                  <entry><literal>dim(E(a) ∩ I(b)) = 2</literal></entry>
+                  <entry><literal>dim(E(a) ∩ B(b)) = 1</literal></entry>
+                  <entry><literal>dim(E(a) ∩ E(b)) = 2</literal></entry>
                 </row>
               </tbody>
             </tgroup>

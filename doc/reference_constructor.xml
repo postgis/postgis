@@ -981,14 +981,48 @@ FROM ST_HexagonGrid(
 GROUP BY hexes.geom;</programlisting>
 
         <para>Generating hex coverage of polygons.</para>
-        <para>If we generate a set of hexagons for each polygon boundary and filter
-            out those that do not intersect their hexagons, we end up with a tiling for
-            each polygon.</para>
-        <para><inlinemediaobject><imageobject>
-            <imagedata fileref="images/st_hexagongrid03.png"/>
-        </imageobject></inlinemediaobject></para>
-        <para>Tiling states results in a hexagon coverage of each state, and multiple
-            hexagons overlapping at the borders between states.</para>
+        <para>If a grid is generated for each polygon boundary and filtered to
+            intersecting cells, adjacent regions receive overlapping hexagons
+            along their shared border. The build-time figure below uses two
+            simple regions in place of an external administrative-boundary
+            table, so the example is self-contained.</para>
+        <programlisting language="sql">WITH admin1(gid, geom) AS (
+    VALUES
+        (1, ST_MakeEnvelope(0, 0, 3, 3, 3857)),
+        (2, ST_MakeEnvelope(3, 0, 6, 3, 3857))
+), coverage AS (
+    SELECT hex.geom
+    FROM admin1
+    CROSS JOIN LATERAL ST_HexagonGrid(1.5, admin1.geom) AS hex
+    WHERE ST_Intersects(admin1.geom, hex.geom)
+    GROUP BY hex.geom
+), layers AS (
+    SELECT 'region' AS kind, gid AS position, geom
+    FROM admin1
+    UNION ALL
+    SELECT
+        'hexagon',
+        1000 + row_number() OVER (ORDER BY ST_AsText(geom)),
+        geom
+    FROM coverage
+)
+SELECT
+    CASE kind WHEN 'region' THEN ST_AsText(geom, 2) END AS input_region,
+    CASE kind WHEN 'hexagon' THEN ST_AsText(geom, 2) END AS hexagon
+FROM layers
+ORDER BY position;</programlisting>
+        <screen role="visual-primary visual-overlay">POLYGON((0 0,0 3,3 3,3 0,0 0)) | null
+POLYGON((3 0,3 3,6 3,6 0,3 0)) | null
+null | POLYGON((0.75 1.3,1.5 0,3 0,3.75 1.3,3 2.6,1.5 2.6,0.75 1.3))
+null | POLYGON((0.75 3.9,1.5 2.6,3 2.6,3.75 3.9,3 5.2,1.5 5.2,0.75 3.9))
+null | POLYGON((-1.5 0,-0.75 -1.3,0.75 -1.3,1.5 0,0.75 1.3,-0.75 1.3,-1.5 0))
+null | POLYGON((-1.5 2.6,-0.75 1.3,0.75 1.3,1.5 2.6,0.75 3.9,-0.75 3.9,-1.5 2.6))
+null | POLYGON((3 0,3.75 -1.3,5.25 -1.3,6 0,5.25 1.3,3.75 1.3,3 0))
+null | POLYGON((3 2.6,3.75 1.3,5.25 1.3,6 2.6,5.25 3.9,3.75 3.9,3 2.6))
+null | POLYGON((5.25 1.3,6 0,7.5 0,8.25 1.3,7.5 2.6,6 2.6,5.25 1.3))
+null | POLYGON((5.25 3.9,6 2.6,7.5 2.6,8.25 3.9,7.5 5.2,6 5.2,5.25 3.9))</screen>
+        <para>The same pattern applies to a real administrative-boundary
+            table:</para>
         <note><para>The LATERAL keyword is implied for set-returning functions when referring to a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs for this example.</para></note>
         <programlisting>SELECT admin1.gid, hex.geom
 FROM
