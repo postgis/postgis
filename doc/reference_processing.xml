@@ -434,15 +434,18 @@ SELECT ST_AsText(ST_BuildArea(ST_Collect(geom ))) AS wkt
   SELECT 'POINT(100 90)'::geometry AS geom
 ),
 rings AS (
-  SELECT ST_Buffer(geom, 25) AS inring,
-         ST_Buffer(geom, 50) AS outring
+  SELECT ST_Buffer(geom, 25, 'quad_segs=1') AS inring,
+         ST_Buffer(geom, 50, 'quad_segs=1') AS outring
   FROM input
 )
-SELECT ST_AsText(inring, 1) AS inner_ring,
-       ST_AsText(outring, 1) AS outer_ring,
-       ST_AsText(ST_BuildArea(ST_Collect(inring, outring)), 1) AS area
+SELECT ST_AsText(inring, 0) AS inner_ring,
+       ST_AsText(outring, 0) AS outer_ring,
+       ST_AsText(ST_BuildArea(ST_Collect(inring, outring)), 0) AS area
 FROM rings;</programlisting>
-<screen>POLYGON((125 90,124.5 85.1,123.1 80.4,120.8 76.1,117.7 72.3,113.9 69.2,109.6 66.9,104.9 65.5,100 65,95.1 65.5,90.4 66.9,86.1 69.2,82.3 72.3,79.2 76.1,76.9 80.4,75.5 85.1,75 90,75.5 94.9,76.9 99.6,79.2 103.9,82.3 107.7,86.1 110.8,90.4 113.1,95.1 114.5,100 115,104.9 114.5,109.6 113.1,113.9 110.8,117.7 107.7,120.8 103.9,123.1 99.6,124.5 94.9,125 90)) | POLYGON((150 90,149 80.2,146.2 70.9,141.6 62.2,135.4 54.6,127.8 48.4,119.1 43.8,109.8 41,100 40,90.2 41,80.9 43.8,72.2 48.4,64.6 54.6,58.4 62.2,53.8 70.9,51 80.2,50 90,51 99.8,53.8 109.1,58.4 117.8,64.6 125.4,72.2 131.6,80.9 136.2,90.2 139,100 140,109.8 139,119.1 136.2,127.8 131.6,135.4 125.4,141.6 117.8,146.2 109.1,149 99.8,150 90)) | POLYGON((150 90,149 80.2,146.2 70.9,141.6 62.2,135.4 54.6,127.8 48.4,119.1 43.8,109.8 41,100 40,90.2 41,80.9 43.8,72.2 48.4,64.6 54.6,58.4 62.2,53.8 70.9,51 80.2,50 90,51 99.8,53.8 109.1,58.4 117.8,64.6 125.4,72.2 131.6,80.9 136.2,90.2 139,100 140,109.8 139,119.1 136.2,127.8 131.6,135.4 125.4,141.6 117.8,146.2 109.1,149 99.8,150 90),(125 90,124.5 94.9,123.1 99.6,120.8 103.9,117.7 107.7,113.9 110.8,109.6 113.1,104.9 114.5,100 115,95.1 114.5,90.4 113.1,86.1 110.8,82.3 107.7,79.2 103.9,76.9 99.6,75.5 94.9,75 90,75.5 85.1,76.9 80.4,79.2 76.1,82.3 72.3,86.1 69.2,90.4 66.9,95.1 65.5,100 65,104.9 65.5,109.6 66.9,113.9 69.2,117.7 72.3,120.8 76.1,123.1 80.4,124.5 85.1,125 90))</screen>
+<screen>-[ RECORD 1 ]-----
+inner_ring | POLYGON((125 90,100 65,75 90,100 115,125 90))
+outer_ring | POLYGON((150 90,100 40,50 90,100 140,150 90))
+area       | POLYGON((150 90,100 40,50 90,100 140,150 90),(125 90,100 115,75 90,100 65,125 90))</screen>
 <para>Input linework that crosses at non-endpoint intersections must be noded before building areas:</para>
 <programlisting>WITH lines(geom) AS (VALUES
   ('LINESTRING(36 35,45 307)'::geometry),
@@ -458,10 +461,7 @@ noded AS (
 SELECT ST_AsText(ST_BuildArea(geom), 1) AS area
 FROM noded;
 </programlisting>
-<screen>                                                area
------------------------------------------------------------------------------------------------------
- POLYGON((320 60,36.8 60,44.4 289.6,302.2 282.4,320 60),(156.9 205.3,135.2 167,220 150,156.9 205.3))
-</screen>
+<screen>POLYGON((320 60,36.8 60,44.4 289.6,302.2 282.4,320 60),(156.9 205.3,135.2 167,220 150,156.9 205.3))</screen>
 
           </refsection>
 
@@ -1370,15 +1370,17 @@ SELECT ST_AsText(ST_LineMerge('MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 
               (60 140,50 90,90 140,60 140))')
 )
 SELECT round(radius::numeric, 3) AS radius,
-       ST_AsText(center, 3) AS center,
-       ST_AsText(nearest, 3) AS nearest,
-       ST_AsText(ST_Buffer(center, radius), 1) AS circle,
-       ST_AsText(ST_MakeLine(center, nearest), 1) AS radius_line
+       ST_AsText(center, 0) AS center,
+       ST_AsText(nearest, 0) AS nearest,
+       ST_AsText(ST_Buffer(center, radius, 'quad_segs=2'), 0) AS circle,
+       ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line
 FROM mic;</programlisting>
-<screen role="visual-overlay"> radius |        center        |        nearest        | circle | radius_line
---------+----------------------+-----------------------+--------+----------------------------------
- 45.189 | POINT(96.929 76.323) | POINT(61.642 104.553) | POLYGON((142.1 76.3,141.2 67.5,138.7 59,134.5 51.2,128.9 44.4,122 38.7,114.2 34.6,105.7 32,96.9 31.1,88.1 32,79.6 34.6,71.8 38.7,65 44.4,59.4 51.2,55.2 59,52.6 67.5,51.7 76.3,52.6 85.1,55.2 93.6,59.4 101.4,65 108.3,71.8 113.9,79.6 118.1,88.1 120.6,96.9 121.5,105.7 120.6,114.2 118.1,122 113.9,128.9 108.3,134.5 101.4,138.7 93.6,141.2 85.1,142.1 76.3)) | LINESTRING(96.9 76.3,61.6 104.6)
-(1 row)</screen>
+<screen role="visual-overlay">-[ RECORD 1 ]-----
+radius      | 45.189
+center      | POINT(97 76)
+nearest     | POINT(62 105)
+circle      | POLYGON((142 76,129 44,97 31,65 44,52 76,65 108,97 122,129 108,142 76))
+radius_line | LINESTRING(97 76,62 105)</screen>
 
 		<para>Maximum inscribed circle of a MultiLineString.</para>
 <programlisting>WITH mic AS (
@@ -1386,15 +1388,17 @@ FROM mic;</programlisting>
     'MULTILINESTRING((100 40,10 150),(10 160,100 150),(190 150,80 40))')
 )
 SELECT round(radius::numeric, 3) AS radius,
-       ST_AsText(center, 3) AS center,
-       ST_AsText(nearest, 3) AS nearest,
-       ST_AsText(ST_Buffer(center, radius), 1) AS circle,
-       ST_AsText(ST_MakeLine(center, nearest), 1) AS radius_line
+       ST_AsText(center, 0) AS center,
+       ST_AsText(nearest, 0) AS nearest,
+       ST_AsText(ST_Buffer(center, radius, 'quad_segs=2'), 0) AS circle,
+       ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line
 FROM mic;</programlisting>
-<screen role="visual-overlay"> radius |        center         |       nearest        | circle | radius_line
---------+-----------------------+----------------------+--------+--------------------------------
- 39.924 | POINT(93.936 110.459) | POINT(63.036 85.178) | POLYGON((133.9 110.5,133.1 102.7,130.8 95.2,127.1 88.3,122.2 82.2,116.1 77.3,109.2 73.6,101.7 71.3,93.9 70.5,86.1 71.3,78.7 73.6,71.8 77.3,65.7 82.2,60.7 88.3,57.1 95.2,54.8 102.7,54 110.5,54.8 118.2,57.1 125.7,60.7 132.6,65.7 138.7,71.8 143.7,78.7 147.3,86.1 149.6,93.9 150.4,101.7 149.6,109.2 147.3,116.1 143.7,122.2 138.7,127.1 132.6,130.8 125.7,133.1 118.2,133.9 110.5)) | LINESTRING(93.9 110.5,63 85.2)
-(1 row)</screen>
+<screen role="visual-overlay">-[ RECORD 1 ]-----
+radius      | 39.924
+center      | POINT(94 110)
+nearest     | POINT(63 85)
+circle      | POLYGON((134 110,122 82,94 71,66 82,54 110,66 139,94 150,122 139,134 110))
+radius_line | LINESTRING(94 110,63 85)</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -1453,12 +1457,17 @@ circle AS (
   CROSS JOIN LATERAL ST_LargestEmptyCircle(obstacles.geom) AS result
 )
 SELECT round(radius::numeric, 6) AS radius,
-       ST_AsText(center) AS center,
-       ST_AsText(nearest) AS nearest,
-       ST_AsText(ST_MakeLine(center, nearest)) AS radius_line,
-       ST_AsText(ST_Buffer(center, radius, 'quad_segs=8'), 3) AS circle
+       ST_AsText(center, 0) AS center,
+       ST_AsText(nearest, 0) AS nearest,
+       ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line,
+       ST_AsText(ST_Buffer(center, radius, 'quad_segs=2'), 0) AS circle
 FROM circle;</programlisting>
-<screen role="visual-overlay">39.260545 | POINT(61.591796875 108.349609375) | POINT(70 70) | LINESTRING(61.591796875 108.349609375,70 70) | POLYGON((100.852 108.35,100.098 100.69,97.864 93.325,94.236 86.538,89.353 80.588,83.404 75.706,76.616 72.078,69.251 69.843,61.592 69.089,53.932 69.843,46.567 72.078,39.78 75.706,33.83 80.588,28.948 86.538,25.32 93.325,23.086 100.69,22.331 108.35,23.086 116.009,25.32 123.374,28.948 130.162,33.83 136.111,39.78 140.994,46.567 144.622,53.932 146.856,61.592 147.61,69.251 146.856,76.616 144.622,83.404 140.994,89.353 136.111,94.236 130.162,97.864 123.374,100.098 116.009,100.852 108.35))</screen>
+<screen role="visual-overlay">-[ RECORD 1 ]-----
+radius      | 39.260545
+center      | POINT(62 108)
+nearest     | POINT(70 70)
+radius_line | LINESTRING(62 108,70 70)
+circle      | POLYGON((101 108,89 81,62 69,34 81,22 108,34 136,62 148,89 136,101 108))</screen>
 
 <para>Largest empty circle within a set of points, constrained to lie in a polygon.
 The constraint polygon boundary is included both as an obstacle and as the constraint for the circle center.</para>
@@ -1474,12 +1483,17 @@ circle AS (
   ) AS result
 )
 SELECT round(radius::numeric, 6) AS radius,
-       ST_AsText(center) AS center,
-       ST_AsText(nearest) AS nearest,
-       ST_AsText(ST_MakeLine(center, nearest)) AS radius_line,
-       ST_AsText(ST_Buffer(center, radius, 'quad_segs=8'), 3) AS circle
+       ST_AsText(center, 0) AS center,
+       ST_AsText(nearest, 0) AS nearest,
+       ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line,
+       ST_AsText(ST_Buffer(center, radius, 'quad_segs=2'), 0) AS circle
 FROM circle;</programlisting>
-<screen role="visual-overlay">19.903876 | POINT(97.23958333333333 99.94791666666667) | POINT(80 90) | LINESTRING(97.23958333333333 99.94791666666667,80 90) | POLYGON((117.143 99.948,116.761 96.065,115.628 92.331,113.789 88.89,111.314 85.874,108.298 83.398,104.856 81.559,101.123 80.426,97.24 80.044,93.357 80.426,89.623 81.559,86.182 83.398,83.165 85.874,80.69 88.89,78.851 92.331,77.718 96.065,77.336 99.948,77.718 103.831,78.851 107.565,80.69 111.006,83.165 114.022,86.182 116.497,89.623 118.337,93.357 119.469,97.24 119.852,101.123 119.469,104.856 118.337,108.298 116.497,111.314 114.022,113.789 111.006,115.628 107.565,116.761 103.831,117.143 99.948))</screen>
+<screen role="visual-overlay">-[ RECORD 1 ]-----
+radius      | 19.903876
+center      | POINT(97 100)
+nearest     | POINT(80 90)
+radius_line | LINESTRING(97 100,80 90)
+circle      | POLYGON((117 100,111 86,97 80,83 86,77 100,83 114,97 120,111 114,117 100))</screen>
 
       </refsection>
       <refsection>
@@ -1736,7 +1750,7 @@ SELECT ST_AsText(ST_OffsetCurve(
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)'),
     15, 'quad_segs=4 join=round'));</programlisting>
-                <screen>LINESTRING(164 1,18 1,15.073645169758077 1.288220793951544,
+                <screen role="visual-primary visual-overlay">LINESTRING(164 1,18 1,15.073645169758077 1.288220793951544,
     12.259748514523654 2.141807012330698,9.66644650470597 3.527955815461818,
     7.393398282201788 5.393398282201788,5.393398282201788 7.393398282201788,
     3.527955815461818 9.66644650470597,2.141807012330696 12.259748514523654,
@@ -1752,7 +1766,7 @@ SELECT ST_AsText(ST_OffsetCurve(
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)') As geom;</programlisting>
-                <screen>LINESTRING(164 31,31 31,31 195)</screen>
+                <screen role="visual-primary visual-overlay">LINESTRING(164 31,31 31,31 195)</screen>
 
                 <para>Apply two negative offsets to obtain a smoother curve; the distances combine to -45 units.</para>
                 <programlisting language="sql">
@@ -1767,7 +1781,7 @@ SELECT ST_AsText(ST_OffsetCurve(
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)') As geom;</programlisting>
-                <screen>LINESTRING(164 61,61 61,61 195)</screen>
+                <screen role="visual-primary visual-overlay">LINESTRING(164 61,61 61,61 195)</screen>
 
                 <para>Collect the positive offset and the double-offset to produce parallel curves.</para>
                 <programlisting language="sql">SELECT ST_AsText(ST_Collect(
@@ -1785,7 +1799,7 @@ SELECT ST_AsText(ST_OffsetCurve(
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)') As geom;</programlisting>
-                <screen>MULTILINESTRING((164 1,18 1,15.073645169758077 1.288220793951544,
+                <screen role="visual-primary visual-overlay">MULTILINESTRING((164 1,18 1,15.073645169758077 1.288220793951544,
 12.259748514523654 2.141807012330698,9.66644650470597 3.527955815461818,
 7.393398282201788 5.393398282201788,5.393398282201788 7.393398282201788,
 3.527955815461818 9.66644650470597,2.141807012330696 12.259748514523654,
@@ -1799,7 +1813,7 @@ SELECT ST_AsText(ST_OffsetCurve(
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)'),
         15, 'quad_segs=4 join=bevel'));</programlisting>
-                <screen>LINESTRING(164 1,18 1,7.393398282201788 5.393398282201788,
+                <screen role="visual-primary visual-overlay">LINESTRING(164 1,18 1,7.393398282201788 5.393398282201788,
     5.393398282201788 7.393398282201788,1 18,1 195)</screen>
 
                 <para>Collect offsets on both sides using a mitre join and a mitre limit of 2.2.</para>
@@ -2257,9 +2271,13 @@ MULTILINESTRING((76 175,101 150),(126 125,126 156.25)))</screen>
      ST_NPoints(ST_Simplify(geom, 10)) AS np10_gone,
      (ST_Simplify(geom, 100) is null) AS  np100_geometrygoesaway
 FROM (SELECT ST_Buffer('POINT(1 3)', 10, 12) As geom) AS t;</programlisting>
-<screen> np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_gone | np100_geometrygoesaway
------------+-------------------+---------------------+-------------+-----------+------------------------
-        49 |                33 |                  17 |           9 |      null | t</screen>
+<screen>-[ RECORD 1 ]------------
+np_before                | 49
+np01_notbadcircle        | 33
+np05_notquitecircle      | 17
+np1_octagon              | 9
+np10_gone                | null
+np100_geometrygoesaway   | t</screen>
 
     <para>Simplifying a set of lines.  Lines may intersect after simplification.</para>
     <programlisting>SELECT ST_AsText(ST_Simplify('MULTILINESTRING ((20 180,20 150,50 150,50 100,110 150,150 140,170 120),(20 10,80 30,90 120),(90 120,130 130),(130 130,130 70,160 40,180 60,180 90,140 80),(50 40,70 40,80 70,70 60,60 60,50 50,50 40))'::geometry,
@@ -2572,12 +2590,12 @@ SELECT ST_AsText(ST_SimplifyVW(geom, 30)) simplified
             </para>
                 <programlisting>
 
-select ST_AsText(ST_SetEffectiveArea(geom)) all_pts, ST_AsText(ST_SetEffectiveArea(geom, 30) ) thrshld_30
+SELECT ST_AsText(ST_SetEffectiveArea(geom), 1) AS all_pts,
+       ST_AsText(ST_SetEffectiveArea(geom, 30), 1) AS threshold_30
 FROM (SELECT  'LINESTRING(5 2,3 8,6 20,7 25,10 10)'::geometry geom) As foo;</programlisting>
-<screen>                                            all_pts                                             |                                   thrshld_30
-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------
- LINESTRING M (5 2 3.402823466385289e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.402823466385289e+38) | LINESTRING M (5 2 3.402823466385289e+38,7 25 49.5,10 10 3.402823466385289e+38)
-(1 row)</screen>
+<screen>-[ RECORD 1 ]------------------
+all_pts      | LINESTRING M (5 2 3.4e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4e+38)
+threshold_30 | LINESTRING M (5 2 3.4e+38,7 25 49.5,10 10 3.4e+38)</screen>
           </refsection>
           <refsection>
             <title>See Also</title>

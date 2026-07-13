@@ -101,7 +101,7 @@ and <varname>GetNodeEdges</varname> functions.
 			  <refsection>
 				<title>Casting Behavior</title>
 				<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
-				<informaltable rowsep="1" frame="all" tabstyle="postgis-cast-table">
+				<informaltable rowsep="1" colsep="1" frame="all" tabstyle="styledtable">
 					<tgroup cols="2">
 						<thead>
 						  <row>
@@ -622,31 +622,40 @@ SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_co
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting language="sql">SELECT CreateTopology('strk_topo');
+				<programlisting language="sql" role="requires-external-state">SELECT CreateTopology('strk_topo');
 CREATE SCHEMA strk;
 CREATE TABLE strk.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
 SELECT topology.AddTopoGeometryColumn('strk_topo', 'strk', 'parcels', 'topo', 'POLYGON');</programlisting>
+				<screen> createtopology
+----------------
+              1
+(1 row)
+
+CREATE SCHEMA
+CREATE TABLE
+ addtopogeometrycolumn
+-----------------------
+                     1
+(1 row)</screen>
 				<para>This query returns no records because the feature is already registered.</para>
-<programlisting language="sql">SELECT *
+<programlisting language="sql" role="requires-external-state">SELECT *
 FROM topology.Populate_Topology_Layer();</programlisting>
                 <screen>(0 rows)</screen>
 				<para>Rebuild the topology layer catalog.</para>
-<programlisting language="sql">
-TRUNCATE TABLE topology.layer;
-SELECT *
-FROM topology.Populate_Topology_Layer();
-SELECT topology_id, layer_id, schema_name As sn, table_name As tn, feature_column As fc
-FROM topology.layer;
-                </programlisting>
-				<screen>TRUNCATE TABLE
- schema_name | table_name | feature_column
+<programlisting language="sql" role="requires-external-state">TRUNCATE TABLE topology.layer;</programlisting>
+<screen>TRUNCATE TABLE</screen>
+<programlisting language="sql" role="requires-external-state">SELECT *
+FROM topology.Populate_Topology_Layer();</programlisting>
+<screen> schema_name | table_name | feature_column
 -------------+------------+----------------
  strk        | parcels    | topo
-(1 row)
-
- topology_id | layer_id |  sn  |   tn    |  fc
+(1 row)</screen>
+<programlisting language="sql" role="requires-external-state">SELECT topology_id, layer_id,
+       schema_name AS sn, table_name AS tn, feature_column AS fc
+FROM topology.layer;</programlisting>
+<screen> topology_id | layer_id |  sn  |   tn    |  fc
 -------------+----------+------+---------+------
-           2 |        2 | strk | parcels | topo
+           1 |        1 | strk | parcels | topo
 (1 row)</screen>
 			</refsection>
 
@@ -732,7 +741,7 @@ area specified by the <varname>bbox</varname> parameter.
 
                 <para>List of possible errors, what they mean and what the returned ids represent are displayed below:</para>
 
-                  <informaltable rowsep="1" frame="all" tabstyle="styledtable">
+                  <informaltable rowsep="1" colsep="1" frame="all" tabstyle="styledtable">
                     <tgroup cols="4">
                         <thead>
                             <row>

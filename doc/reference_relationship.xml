@@ -216,19 +216,26 @@ FROM (SELECT
     <screen>f | t</screen>
 
       <para>This example tests a circle within another circle.</para>
-      <programlisting>
+      <programlisting language="sql">WITH circles AS (
+  SELECT ST_Buffer(center, 10) AS smallc,
+         ST_Buffer(center, 20) AS bigc
+  FROM (SELECT 'POINT(1 2)'::geometry AS center) AS p
+)
 SELECT ST_Contains(smallc, bigc) As smallcontainsbig,
      ST_Contains(bigc, smallc) As bigcontainssmall,
      ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,
      ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
      ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
      ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
-FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
-       ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;
+FROM circles;
 </programlisting>
-<screen>  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
-------------------+------------------+------------------+------------+-------------------+---------------------
- f                | t                | t                | t          | t        | f</screen>
+<screen>-[ RECORD 1 ]-----
+smallcontainsbig   | f
+bigcontainssmall   | t
+bigcontainsunion   | t
+bigisunion         | t
+bigcoversexterior  | t
+bigcontainsexterior | f</screen>
 <para>This example demonstrates the difference between contains and contains-properly predicates.</para>
 <programlisting>
 SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA, geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
@@ -313,18 +320,25 @@ ST_Point      | t          | t              | f           | f
     <refsection>
     <title>Examples</title>
       <para>This example tests a circle within another circle.</para>
-      <programlisting>
+      <programlisting language="sql">WITH circles AS (
+  SELECT ST_Buffer(center, 10) AS smallc,
+         ST_Buffer(center, 20) AS bigc
+  FROM (SELECT 'POINT(1 2)'::geometry AS center) AS p
+)
 SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,
 ST_ContainsProperly(bigc, smallc) As bigcontainspropsmall,
 ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as bigcontainspropunion,
 ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
 ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
 ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
-FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
-ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;</programlisting>
-<screen>  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | bigisunion | bigcoversexterior | bigcontainsexterior
-------------------+------------------+------------------+------------+-------------------+---------------------
- f                     | t                    | f                    | t          | t                 | f</screen>
+FROM circles;</programlisting>
+<screen>-[ RECORD 1 ]-----
+smallcontainspropbig   | f
+bigcontainspropsmall   | t
+bigcontainspropunion   | f
+bigisunion             | t
+bigcoversexterior      | t
+bigcontainsexterior    | f</screen>
 <para>This example demonstrates the difference between contains and contains-properly predicates.</para>
 <programlisting>
 SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA, geomA) AS acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,
@@ -417,13 +431,16 @@ ST_Point      | t          | t              | f           | f
     <refsection>
     <title>Examples</title>
       <para>This example tests a circle covered by another circle.</para>
-      <programlisting>
+      <programlisting language="sql">WITH circles AS (
+  SELECT ST_Buffer(center, 10) AS smallc,
+         ST_Buffer(center, 20) AS bigc
+  FROM (SELECT 'POINT(1 2)'::geometry AS center) AS p
+)
 SELECT ST_CoveredBy(smallc, smallc) As smallinsmall,
   ST_CoveredBy(smallc, bigc) As smallcoveredbybig,
   ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,
   ST_Within(ST_ExteriorRing(bigc), bigc) As exeriorwithinbig
-FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
-  ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;</programlisting>
+FROM circles;</programlisting>
 <screen> smallinsmall | smallcoveredbybig | exteriorcoveredbybig | exeriorwithinbig
 --------------+-------------------+----------------------+------------------
  t            | t                 | t                    | f
@@ -511,13 +528,16 @@ FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
     <title>Examples</title>
       <para> Geometry example </para>
       <para>This example tests a circle covering another circle.</para>
-      <programlisting>
+      <programlisting language="sql">WITH circles AS (
+  SELECT ST_Buffer(center, 10) AS smallc,
+         ST_Buffer(center, 20) AS bigc
+  FROM (SELECT 'POINT(1 2)'::geometry AS center) AS p
+)
 SELECT ST_Covers(smallc, smallc) As smallinsmall,
   ST_Covers(smallc, bigc) As smallcoversbig,
   ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
   ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
-FROM (SELECT ST_Buffer('POINT(1 2)'::geometry, 10) As smallc,
-  ST_Buffer('POINT(1 2)'::geometry, 20) As bigc) As foo;</programlisting>
+FROM circles;</programlisting>
 <screen> smallinsmall | smallcoversbig | bigcoversexterior | bigcontainsexterior
 --------------+----------------+-------------------+---------------------
  t            | f              | t                 | f
@@ -1988,7 +2008,7 @@ FROM (VALUES
     <title>Examples</title>
       <para>This self-contained geometry example keeps the compared shapes visible while also returning the boolean results.</para>
       <programlisting language="sql">WITH sample AS (
-  SELECT ST_Buffer('POINT(100 90)'::geometry, 50) AS coverage,
+  SELECT ST_Buffer('POINT(100 90)'::geometry, 50, 'quad_segs=2') AS coverage,
          ST_Point(120, 120) AS inside_pt,
          ST_Point(170, 90) AS outside_pt
 )
@@ -1998,7 +2018,12 @@ SELECT ST_DWithin(coverage, inside_pt, 0) AS inside_now,
        ST_AsText(inside_pt, 0) AS inside_geom,
        ST_AsText(outside_pt, 0) AS outside_geom
 FROM sample;</programlisting>
-      <screen role="visual-primary visual-overlay text-primary">t | f | POLYGON((150 90,149 80,146 71,142 62,135 55,128 48,119 44,110 41,100 40,90 41,81 44,72 48,65 55,58 62,54 71,51 80,50 90,51 100,54 109,58 118,65 125,72 132,81 136,90 139,100 140,110 139,119 136,128 132,135 125,142 118,146 109,149 100,150 90)) | POINT(120 120) | POINT(170 90)</screen>
+      <screen role="visual-primary visual-overlay text-primary">-[ RECORD 1 ]-----
+inside_now        | t
+outside_within_10 | f
+coverage_geom     | POLYGON((150 90,135 55,100 40,65 55,50 90,65 125,100 140,135 125,150 90))
+inside_geom       | POINT(120 120)
+outside_geom      | POINT(170 90)</screen>
 
       <para>Find the nearest hospital to each school. That is within 3000 units of the school. We do an ST_DWithin search to utilize indexes to limit our search list. That the non-indexable ST_Distance needs to process. If the units of the spatial reference is meters then units would be meters.</para>
       <programlisting language="sql">

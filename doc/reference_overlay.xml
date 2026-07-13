@@ -372,14 +372,14 @@ This may cause the resulting linestrings to have a different order and direction
         <programlisting language="sql">
 SELECT ST_AsText(ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
     ) As  output;</programlisting>
-<screen>MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))</screen>
+<screen role="text-primary">MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))</screen>
 
         <para>Noding two LineStrings which share common linework.
         Note that the result linework is dissolved.</para>
         <programlisting language="sql">
 SELECT ST_AsText(ST_Node('MULTILINESTRING ((2 5,2 1,7 1),(6 1,4 1,2 3,2 5))'::geometry)
     ) As  output;</programlisting>
-<screen>MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))</screen>
+<screen role="text-primary">MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))</screen>
 
       </refsection>
 
@@ -471,9 +471,9 @@ WITH data AS (SELECT
 SELECT ST_AsText(ST_Split(ST_Snap(line, point, 1), point)) AS snapped_split,
        ST_AsText(ST_Split(line, point)) AS not_snapped_not_split
        FROM data;</programlisting>
-<screen>                            snapped_split                            |            not_snapped_not_split
----------------------------------------------------------------------+---------------------------------------------
- GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100)) | GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))</screen>
+<screen>-[ RECORD 1 ]---------
+snapped_split         | GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100))
+not_snapped_not_split | GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))</screen>
         </refsection>
         <refsection>
         <title>See Also</title>

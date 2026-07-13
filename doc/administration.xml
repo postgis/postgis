@@ -172,10 +172,10 @@ SELECT postgis_extensions_upgrade();
 		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;";
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
-			<programlisting>No migration path defined for … to &last_release_version;</programlisting>
+			<screen>No migration path defined for … to &last_release_version;</screen>
 		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions"/> and then restore your backup on top of this new database.</para>
     <para>If you get a notice message like:</para>
-    <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
+    <screen>Version "&last_release_version;" of extension "postgis" is already installed</screen>
     <para>
 Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
 you're attempting to upgrade from an development version to the next (which

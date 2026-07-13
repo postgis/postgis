@@ -129,9 +129,11 @@ SELECT to_timestamp(m) AT TIME ZONE 'UTC' t,
        ST_3DDistance(pa, pb) distance,
        ST_AsText(pa, 2) AS pa, ST_AsText(pb, 2) AS pb
 FROM points, cpa;</programlisting>
-<screen role="text-primary">             t              |      distance      |                  pa                  |                   pb
-----------------------------+--------------------+--------------------------------------+----------------------------------------
- 2015-05-26 10:45:31.034483 | 1.9652147377620688 | POINT ZM (7.59 0 3.79 1432637131.03) | POINT ZM (9.1 1.24 3.93 1432637131.03)</screen>
+<screen role="text-primary">-[ RECORD 1 ]-----------------------------
+t        | 2015-05-26 10:45:31.034483
+distance | 1.9652147377620688
+pa       | POINT ZM (7.59 0 3.79 1432637131.03)
+pb       | POINT ZM (9.1 1.24 3.93 1432637131.03)</screen>
       </refsection>
 
       <refsection>
