@@ -1217,6 +1217,18 @@ class ExampleTester:
         return QueryRows(rows, headers, types, visuals)
 
     def typed_rows_equal(self, database, actual, expected):
+        if (
+            len(actual) == 1
+            and len(actual[0]) == 1
+            and len(expected) > 1
+            and all(len(row) == 1 for row in expected)
+        ):
+            joined = "".join(row[0] for row in expected)
+            spaced = " ".join(row[0] for row in expected)
+            if WKT_VALUE_RE.match(joined):
+                expected = [[joined]]
+            elif WKT_VALUE_RE.match(spaced):
+                expected = [[spaced]]
         if len(actual) != len(expected) or any(
             len(actual_row) != len(expected_row)
             for actual_row, expected_row in zip(actual, expected)
@@ -1235,17 +1247,20 @@ class ExampleTester:
                 if actual_hex is not None or expected_hex is not None or expected_wkt is not None:
                     if actual_hex is None or (expected_hex is None and expected_wkt is None):
                         return False
-                    expected_geometry = (
-                        "ST_GeomFromEWKB(decode("
-                        f"'{expected_hex['hexwkb']}', 'hex'))"
-                        if expected_hex is not None
-                        else "ST_GeomFromEWKT("
-                        f"'{expected_wkt.replace(chr(39), chr(39) * 2)}')"
-                    )
+                    if expected_wkt is not None:
+                        actual_wkt = self.run_psql_scalar(
+                            database,
+                            "SELECT ST_AsEWKT(ST_GeomFromEWKB(decode("
+                            f"'{actual_hex['hexwkb']}', 'hex')))",
+                        )
+                        if not self.values_equal(actual_wkt, expected_wkt):
+                            return False
+                        continue
                     query = (
                         "SELECT ST_AsHEXEWKB(ST_GeomFromEWKB(decode("
                         f"'{actual_hex['hexwkb']}', 'hex')), 'XDR') = "
-                        f"ST_AsHEXEWKB({expected_geometry}, 'XDR')"
+                        "ST_AsHEXEWKB(ST_GeomFromEWKB(decode("
+                        f"'{expected_hex['hexwkb']}', 'hex')), 'XDR')"
                     )
                     if self.run_psql_scalar(database, query) != "t":
                         return False

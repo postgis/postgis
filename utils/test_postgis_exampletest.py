@@ -423,14 +423,29 @@ class ExampleTestComparisonTest(unittest.TestCase):
     def test_typed_hexwkb_comparison_accepts_readable_ewkt_expectation(self):
         ndr = "0101000020E6100000000000000000F03F0000000000000040"
         queries = []
-        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "SRID=4326;POINT(1 2)"
         actual = QueryRows([[ndr]], types=["geometry"])
         self.assertTrue(
             self.tester.typed_rows_equal(
                 "manual", actual, [["SRID=4326;POINT(1 2)"]]
             )
         )
-        self.assertIn("ST_GeomFromEWKT('SRID=4326;POINT(1 2)')", queries[0])
+        self.assertIn("ST_AsEWKT(ST_GeomFromEWKB", queries[0])
+
+    def test_typed_hexwkb_comparison_accepts_wrapped_readable_ewkt(self):
+        ndr = "0101000020E6100000000000000000F03F0000000000000040"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "SRID=4326;POINT(1 2)"
+        actual = QueryRows([[ndr]], types=["geometry"])
+
+        self.assertTrue(
+            self.tester.typed_rows_equal(
+                "manual",
+                actual,
+                [["SRID=4326;POINT(1"], [" 2)"]],
+            )
+        )
+        self.assertIn("ST_AsEWKT(ST_GeomFromEWKB", queries[0])
 
     def test_readable_geometry_expectation_is_detected(self):
         self.assertTrue(self.tester.expected_has_geometry_text([["POINT(1 2)"]]))
@@ -569,7 +584,7 @@ class ExampleTestRunnerTest(unittest.TestCase):
             [[hexwkb]], ["aline"]
         )
         tester.query_output_types = lambda database, query: described.append(query) or ["geometry"]
-        tester.run_psql_scalar = lambda database, query: "t"
+        tester.run_psql_scalar = lambda database, query: "LINESTRING(1 2,3 4)"
 
         actual = tester.run_one_example("manual", example)
 
