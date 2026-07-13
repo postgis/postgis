@@ -110,12 +110,92 @@
                 <title>Description</title>
 
                 <para>
-                    Returns <varname>true</varname> when the input is already a
-                    solid geometry, such as a closed <varname>SOLID</varname> or a
-                    geometry produced by <xref linkend="CG_MakeSolid"/>. A closed
-                    <varname>PolyhedralSurface</varname> remains a surface until it
-                    is explicitly converted.
-                    No validity check is performed.
+                    Returns an equivalent geometry whose polygonal components
+                    follow the left-hand rule: exterior rings are
+                    counter-clockwise and interior rings are clockwise. Rings
+                    are reversed as needed; coordinates and dimensionality are
+                    preserved. The input must be valid.
+                </para>
+                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <para>Reorient a polygon and its hole to the left-hand rule.</para>
+                <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((0 0,0 4,4 4,4 0,0 0),
+                  (1 1,3 1,3 3,1 3,1 1))'::geometry AS geom
+)
+SELECT ST_AsText(geom) AS input_polygon,
+       ST_AsText(CG_ForceLHR(geom)) AS lhr_polygon,
+       ST_IsPolygonCCW(geom) AS input_is_lhr,
+       ST_IsPolygonCCW(CG_ForceLHR(geom)) AS output_is_lhr
+FROM data;</programlisting>
+                <screen role="visual-primary visual-separate-output docbook-qa-ignore-wide-lines">POLYGON((0 0,0 4,4 4,4 0,0 0),(1 1,3 1,3 3,1 3,1 1)) | POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1,1 3,3 3,3 1,1 1)) | f | t</screen>
+            </refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_IsPlanar">
+            <refnamediv>
+                <refname>CG_IsPlanar</refname>
+
+                <refpurpose>Check if a surface is or not planar</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>boolean <function>CG_IsPlanar</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Tests whether the input geometry lies in a single plane in 3D.</para>
+                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_IsSolid">
+            <refnamediv>
+                <refname>CG_IsSolid</refname>
+
+                <refpurpose>Test if the geometry is a solid. No validity check is performed.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>boolean <function>CG_IsSolid</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>
+                    Returns <varname>true</varname> when the input carries the
+                    solid flag, such as a geometry produced by
+                    <xref linkend="CG_MakeSolid"/>. A closed
+                    <varname>PolyhedralSurface</varname> remains a surface until
+                    it is explicitly converted. This tests the representation,
+                    not shell closure or validity; no validity check is
+                    performed.
                 </para>
                 <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
                 <para>&sfcgal_required;</para>
@@ -145,62 +225,6 @@ FROM data;</programlisting>
 
         </refentry>
 
-        <refentry xml:id="CG_IsPlanar">
-            <refnamediv>
-                <refname>CG_IsPlanar</refname>
-
-                <refpurpose>Check if a surface is or not planar</refpurpose>
-            </refnamediv>
-
-            <refsynopsisdiv>
-                <funcsynopsis>
-                    <funcprototype>
-                        <funcdef>boolean <function>CG_IsPlanar</function></funcdef>
-                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-                    </funcprototype>
-                </funcsynopsis>
-            </refsynopsisdiv>
-
-            <refsection>
-                <title>Description</title>
-
-                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
-                <para>&sfcgal_required;</para>
-                <para>&Z_support;</para>
-                <para>&P_support;</para>
-                <para>&T_support;</para>
-            </refsection>
-
-        </refentry>
-
-        <refentry xml:id="CG_IsSolid">
-            <refnamediv>
-                <refname>CG_IsSolid</refname>
-
-                <refpurpose>Test if the geometry is a solid. No validity check is performed.</refpurpose>
-            </refnamediv>
-
-            <refsynopsisdiv>
-                <funcsynopsis>
-                    <funcprototype>
-                        <funcdef>boolean <function>CG_IsSolid</function></funcdef>
-                        <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
-                    </funcprototype>
-                </funcsynopsis>
-            </refsynopsisdiv>
-
-            <refsection>
-                <title>Description</title>
-
-                <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
-                <para>&sfcgal_required;</para>
-                <para>&Z_support;</para>
-                <para>&P_support;</para>
-                <para>&T_support;</para>
-            </refsection>
-
-        </refentry>
-
         <refentry xml:id="CG_MakeSolid">
             <refnamediv>
                 <refname>CG_MakeSolid</refname>
@@ -220,6 +244,11 @@ FROM data;</programlisting>
             <refsection>
                 <title>Description</title>
 
+                <para>
+                    Marks a PolyhedralSurface or TIN as a solid. The input is
+                    expected to describe a closed shell; the function sets the
+                    solid representation and does not validate the shell.
+                </para>
                 <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
                 <para>&sfcgal_required;</para>
                 <para>&Z_support;</para>
@@ -609,18 +638,35 @@ FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 
     <refsection>
         <title>Examples</title>
-        <para>Compare the two input solids in their native 3D form and report the resulting geometry type.</para>
+        <para>Subtract a smaller tetrahedral solid and render the two inputs and the actual remaining solid separately.</para>
         <programlisting language="sql">WITH data AS (
-  SELECT CG_Extrude(ST_Buffer('POINT(100 90)'::geometry,
-           50, 'quad_segs=2'), 0, 0, 30) AS geom1,
-         CG_Extrude(ST_Buffer('POINT(80 80)'::geometry,
-           50, 'quad_segs=1'), 0, 0, 30) AS geom2
+  SELECT CG_MakeSolid('POLYHEDRALSURFACE Z (
+    ((0 0 0,0 4 0,4 0 0,0 0 0)),
+    ((0 0 0,4 0 0,0 0 4,0 0 0)),
+    ((0 0 0,0 0 4,0 4 0,0 0 0)),
+    ((4 0 0,0 4 0,0 0 4,4 0 0))
+  )'::geometry) AS outer_solid
+), solids AS (
+  SELECT outer_solid,
+         ST_Scale(outer_solid, 0.5, 0.5, 0.5) AS inner_solid
+  FROM data
+), difference_faces AS (
+  SELECT ST_ExteriorRing((ST_Dump(
+           CG_3DDifference(outer_solid, inner_solid)
+         )).geom) AS ring
+  FROM solids
+), closed_faces AS (
+  SELECT ST_Normalize(ST_MakePolygon(
+           CASE WHEN ST_IsClosed(ring) THEN ring
+                ELSE ST_AddPoint(ring, ST_StartPoint(ring)) END
+         )) AS geom
+  FROM difference_faces
 )
-SELECT ST_AsText(geom1, 3) AS input_geom1,
-       ST_AsText(geom2, 3) AS input_geom2,
-       ST_GeometryType(CG_3DDifference(geom1, geom2)) AS difference_type
-FROM data;</programlisting>
-        <screen role="visual-primary visual-separate-output">POLYHEDRALSURFACE Z (((150 90 0,135.355 54.645 0,100 40 0,64.645 54.645 0,50 90 0,64.645 125.355 0,100 140 0,135.355 125.355 0,150 90 0)),((150 90 30,135.355 125.355 30,100 140 30,64.645 125.355 30,50 90 30,64.645 54.645 30,100 40 30,135.355 54.645 30,150 90 30)),((150 90 0,150 90 30,135.355 54.645 30,135.355 54.645 0,150 90 0)),((135.355 54.645 0,135.355 54.645 30,100 40 30,100 40 0,135.355 54.645 0)),((100 40 0,100 40 30,64.645 54.645 30,64.645 54.645 0,100 40 0)),((64.645 54.645 0,64.645 54.645 30,50 90 30,50 90 0,64.645 54.645 0)),((50 90 0,50 90 30,64.645 125.355 30,64.645 125.355 0,50 90 0)),((64.645 125.355 0,64.645 125.355 30,100 140 30,100 140 0,64.645 125.355 0)),((100 140 0,100 140 30,135.355 125.355 30,135.355 125.355 0,100 140 0)),((135.355 125.355 0,135.355 125.355 30,150 90 30,150 90 0,135.355 125.355 0))) | POLYHEDRALSURFACE Z (((130 80 0,80 30 0,30 80 0,80 130 0,130 80 0)),((130 80 30,80 130 30,30 80 30,80 30 30,130 80 30)),((130 80 0,130 80 30,80 30 30,80 30 0,130 80 0)),((80 30 0,80 30 30,30 80 30,30 80 0,80 30 0)),((30 80 0,30 80 30,80 130 30,80 130 0,30 80 0)),((80 130 0,80 130 30,130 80 30,130 80 0,80 130 0))) | ST_PolyhedralSurface</screen>
+SELECT ST_AsText((SELECT outer_solid FROM solids), 2) AS input_outer,
+       ST_AsText((SELECT inner_solid FROM solids), 2) AS input_inner,
+       ST_AsText(ST_Collect(geom ORDER BY ST_AsEWKT(geom)), 2) AS difference
+FROM closed_faces;</programlisting>
+        <screen role="visual-primary visual-separate-output docbook-qa-ignore-wide-lines">POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 0 0,0 0 0)),((0 0 0,4 0 0,0 0 4,0 0 0)),((0 0 0,0 0 4,0 4 0,0 0 0)),((4 0 0,0 4 0,0 0 4,4 0 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 2 0,2 0 0,0 0 0)),((0 0 0,2 0 0,0 0 2,0 0 0)),((0 0 0,0 0 2,0 2 0,0 0 0)),((2 0 0,0 2 0,0 0 2,2 0 0))) | MULTIPOLYGON Z (((0 0 2,0 0 4,0 4 0,0 0 2)),((0 0 2,0 2 0,2 0 0,0 0 2)),((0 0 2,0 4 0,0 2 0,0 0 2)),((0 0 4,0 0 2,2 0 0,0 0 4)),((0 0 4,0 4 0,4 0 0,0 0 4)),((0 0 4,2 0 0,4 0 0,0 0 4)),((0 2 0,0 4 0,4 0 0,0 2 0)),((0 2 0,4 0 0,2 0 0,0 2 0)))</screen>
 
     </refsection>
 
@@ -740,6 +786,11 @@ FROM data;</programlisting>
     <refsection>
         <title>Description</title>
 
+        <para>
+            Computes the smallest convex three-dimensional geometry that
+            contains the input. Unlike <xref linkend="ST_ConvexHull"/>, this
+            function uses Z coordinates when constructing the hull.
+        </para>
         <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
         <para>&sfcgal_required;</para>
         <para>&Z_support;</para>
@@ -812,7 +863,7 @@ SELECT ST_AsText(input_linestring) AS input_linestring,
        ST_AsText(input_polygon) AS input_polygon,
        ST_AsText(CG_3DIntersection(input_linestring, input_polygon)) AS intersection
 FROM data;</programlisting>
-            <screen role="visual-overlay">LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10) | POLYGON Z ((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8)) | LINESTRING Z (1 1 8,0.5 0.5 8)</screen>
+            <screen role="visual-overlay docbook-qa-ignore-wide-lines">LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10) | POLYGON Z ((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8)) | LINESTRING Z (1 1 8,0.5 0.5 8)</screen>
 
             <para>Intersect a cube shell with a vertical polygon.</para>
             <programlisting language="sql">WITH data AS (
@@ -830,7 +881,7 @@ SELECT ST_AsText(input_cube) AS input_cube,
        ST_AsText(input_polygon) AS input_polygon,
        ST_AsText(CG_3DIntersection(input_cube, input_polygon)) AS intersection
 FROM data;</programlisting>
-            <screen role="visual-overlay">POLYHEDRALSURFACE Z (((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))) | POLYGON Z ((0 0 0,0 0 0.5,0 0.5 0.5,0 0.5 0,0 0 0)) | TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
+            <screen role="visual-overlay docbook-qa-ignore-wide-lines">POLYHEDRALSURFACE Z (((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))) | POLYGON Z ((0 0 0,0 0 0.5,0 0.5 0.5,0 0.5 0,0 0 0)) | TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
 
             <para>A smaller solid contained by a larger solid remains volumetric after intersection.</para>
             <programlisting language="sql">WITH data AS (
@@ -849,7 +900,7 @@ SELECT ST_AsText(outer_solid) AS input_outer,
        ST_AsText(inner_solid) AS input_inner,
        ST_AsText(CG_3DIntersection(outer_solid, inner_solid)) AS intersection
 FROM solids;</programlisting>
-            <screen role="visual-separate-output">POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 0 0,0 0 0)),((0 0 0,4 0 0,0 0 4,0 0 0)),((0 0 0,0 0 4,0 4 0,0 0 0)),((4 0 0,0 4 0,0 0 4,4 0 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 2 0,2 0 0,0 0 0)),((0 0 0,2 0 0,0 0 2,0 0 0)),((0 0 0,0 0 2,0 2 0,0 0 0)),((2 0 0,0 2 0,0 0 2,2 0 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 0 2,0 2 0,0 0 0)),((0 0 0,2 0 0,0 0 2,0 0 0)),((0 2 0,2 0 0,0 0 0,0 2 0)),((2 0 0,0 2 0,0 0 2,2 0 0)))</screen>
+            <screen role="visual-separate-output docbook-qa-ignore-wide-lines">POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 0 0,0 0 0)),((0 0 0,4 0 0,0 0 4,0 0 0)),((0 0 0,0 0 4,0 4 0,0 0 0)),((4 0 0,0 4 0,0 0 4,4 0 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 2 0,2 0 0,0 0 0)),((0 0 0,2 0 0,0 0 2,0 0 0)),((0 0 0,0 0 2,0 2 0,0 0 0)),((2 0 0,0 2 0,0 0 2,2 0 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 0 2,0 2 0,0 0 0)),((0 0 0,2 0 0,0 0 2,0 0 0)),((0 2 0,2 0 0,0 0 0,0 2 0)),((2 0 0,0 2 0,0 0 2,2 0 0)))</screen>
 
 </refsection>
 
@@ -958,7 +1009,7 @@ SELECT ST_AsText(input_geom1, 3) AS input_geom1,
        ST_AsText(input_geom2, 3) AS input_geom2,
        ST_AsText(result_geom, 3) AS union_projection
 FROM projected;</programlisting>
-        <screen role="visual-primary">POLYHEDRALSURFACE(((150 90,135.355 54.645,100 40,64.645 54.645,50 90,64.645 125.355,100 140,135.355 125.355,150 90)),((165 105,150.355 140.355,115 155,79.645 140.355,65 105,79.645 69.645,115 55,150.355 69.645,165 105)),((150 90,165 105,150.355 69.645,135.355 54.645,150 90)),((135.355 54.645,150.355 69.645,115 55,100 40,135.355 54.645)),((100 40,115 55,79.645 69.645,64.645 54.645,100 40)),((64.645 54.645,79.645 69.645,65 105,50 90,64.645 54.645)),((50 90,65 105,79.645 140.355,64.645 125.355,50 90)),((64.645 125.355,79.645 140.355,115 155,100 140,64.645 125.355)),((100 140,115 155,150.355 140.355,135.355 125.355,100 140)),((135.355 125.355,150.355 140.355,165 105,150 90,135.355 125.355))) | POLYHEDRALSURFACE(((130 80,80 30,30 80,80 130,130 80)),((145 95,95 145,45 95,95 45,145 95)),((130 80,145 95,95 45,80 30,130 80)),((80 30,95 45,45 95,30 80,80 30)),((30 80,45 95,95 145,80 130,30 80)),((80 130,95 145,145 95,130 80,80 130))) | POLYHEDRALSURFACE(((80 60,64.645 54.645,50 90,80 60)),((80 60,113.64 63.64,95 45,80 60)),((113.64 63.64,80 77.574,121.213 88.787,113.64 63.64)),((50 90,57.071 107.071,80 120,50 90)),((80 130,85 125,80 120,80 130)),((80 130,80 120,57.071 107.071,80 130)),((130 80,126.36 76.36,121.213 88.787,130 80)),((92.929 42.929,80 48.284,95 45,92.929 42.929)),((95 45,80 48.284,80 60,95 45)),((80 48.284,64.645 54.645,80 60,80 48.284)),((80 60,80 77.574,113.64 63.64,80 60)),((50 90,80 77.574,80 60,50 90)),((80 120,85 125,121.213 88.787,80 120)),((126.36 76.36,113.64 63.64,121.213 88.787,126.36 76.36)),((80 120,80 77.574,50 90,80 120)),((80 77.574,80 120,121.213 88.787,80 77.574)),((100 140,85 125,80 130,100 140)),((126.36 76.36,130 80,135.355 54.645,126.36 76.36)),((135.355 125.355,150 90,100 140,135.355 125.355)),((165 105,150.355 140.355,115 155,165 105)),((100 140,135 105,115 155,100 140)),((119.645 69.645,115 55,150.355 69.645,119.645 69.645)),((135.355 54.645,165 105,150.355 69.645,135.355 54.645)),((135.355 54.645,150 90,165 105,135.355 54.645)),((100 40,150.355 69.645,115 55,100 40)),((100 40,135.355 54.645,150.355 69.645,100 40)),((64.828 114.828,79.645 140.355,64.645 125.355,64.828 114.828)),((100 140,79.645 140.355,115 155,100 140)),((100 140,64.645 125.355,79.645 140.355,100 140)),((135.355 125.355,115 155,150.355 140.355,135.355 125.355)),((135.355 125.355,100 140,115 155,135.355 125.355)),((150 90,150.355 140.355,165 105,150 90)),((150 90,135.355 125.355,150.355 140.355,150 90)),((100 140,80 130,64.645 125.355,100 140)),((57.071 107.071,64.645 125.355,80 130,57.071 107.071)),((150 90,135.355 54.645,130 80,150 90)),((150 90,121.213 88.787,100 140,150 90)),((150 90,130 80,121.213 88.787,150 90)),((150.355 69.645,145 95,128.64 78.64,150.355 69.645)),((165 105,135 105,145 95,165 105)),((165 105,145 95,150.355 69.645,165 105)),((95 145,100 140,115 155,95 145)),((79.645 140.355,95 145,115 155,79.645 140.355)),((95 145,79.645 140.355,72.071 122.071,95 145)),((57.071 107.071,63.95 113.95,64.645 125.355,57.071 107.071)),((64.645 125.355,63.95 113.95,64.828 114.828,64.645 125.355)),((92.929 42.929,95 45,100 40,92.929 42.929)),((100 40,115 55,96.808 46.808,100 40)),((115 55,104.929 54.929,96.808 46.808,115 55)),((100 40,96.808 46.808,92.929 42.929,100 40)),((100 40,95 45,113.64 63.64,100 40)),((100 40,113.64 63.64,135.355 54.645,100 40)),((72.071 122.071,79.645 140.355,64.828 114.828,72.071 122.071)),((135 105,165 105,115 155,135 105)),((85 125,100 140,121.213 88.787,85 125)),((135.355 54.645,113.64 63.64,126.36 76.36,135.355 54.645)),((150.355 69.645,128.64 78.64,119.645 69.645,150.355 69.645)),((115 55,107.929 57.929,104.929 54.929,115 55)),((107.929 57.929,115 55,119.645 69.645,107.929 57.929)),((95 145,95 135,100 140,95 145)),((119.645 69.645,95 92.574,95 69.645,119.645 69.645)),((95 92.574,128.64 78.64,135 105,95 92.574)),((95 105,95 92.574,135 105,95 105)),((65 105,95 92.574,95 105,65 105)),((145 95,135 105,128.64 78.64,145 95)),((65 105,95 135,72.071 122.071,65 105)),((72.071 122.071,95 135,95 145,72.071 122.071)),((95 105,100 140,95 135,95 105)),((95 105,95 135,65 105,95 105)),((95 105,135 105,100 140,95 105)),((79.645 69.645,95 69.645,95 92.574,79.645 69.645)),((119.645 69.645,128.64 78.64,95 92.574,119.645 69.645)),((79.645 69.645,95 92.574,65 105,79.645 69.645)),((95 63.284,107.929 57.929,95 69.645,95 63.284)),((95 63.284,95 69.645,79.645 69.645,95 63.284)),((95 69.645,107.929 57.929,119.645 69.645,95 69.645)),((96.808 46.808,95 45,80 30,96.808 46.808)),((30 80,95 45,45 95,30 80)),((30 80,80 30,95 45,30 80)),((63.95 113.95,30 80,45 95,63.95 113.95)),((95 63.284,95 45,107.929 57.929,95 63.284)),((80 30,92.929 42.929,96.808 46.808,80 30)),((80 48.284,92.929 42.929,80 30,80 48.284)),((57.071 107.071,30 80,63.95 113.95,57.071 107.071)),((72.071 122.071,64.828 114.828,45 95,72.071 122.071)),((45 95,64.828 114.828,63.95 113.95,45 95)),((107.929 57.929,95 45,104.929 54.929,107.929 57.929)),((104.929 54.929,95 45,96.808 46.808,104.929 54.929)),((95 45,95 63.284,79.645 69.645,95 45)),((95 45,79.645 69.645,45 95,95 45)),((65 105,72.071 122.071,45 95,65 105)),((79.645 69.645,65 105,45 95,79.645 69.645)),((80 48.284,80 30,64.645 54.645,80 48.284)),((57.071 107.071,50 90,30 80,57.071 107.071)),((64.645 54.645,80 30,30 80,64.645 54.645)),((50 90,64.645 54.645,30 80,50 90)))</screen>
+        <screen role="visual-primary docbook-qa-ignore-wide-lines">POLYHEDRALSURFACE(((150 90,135.355 54.645,100 40,64.645 54.645,50 90,64.645 125.355,100 140,135.355 125.355,150 90)),((165 105,150.355 140.355,115 155,79.645 140.355,65 105,79.645 69.645,115 55,150.355 69.645,165 105)),((150 90,165 105,150.355 69.645,135.355 54.645,150 90)),((135.355 54.645,150.355 69.645,115 55,100 40,135.355 54.645)),((100 40,115 55,79.645 69.645,64.645 54.645,100 40)),((64.645 54.645,79.645 69.645,65 105,50 90,64.645 54.645)),((50 90,65 105,79.645 140.355,64.645 125.355,50 90)),((64.645 125.355,79.645 140.355,115 155,100 140,64.645 125.355)),((100 140,115 155,150.355 140.355,135.355 125.355,100 140)),((135.355 125.355,150.355 140.355,165 105,150 90,135.355 125.355))) | POLYHEDRALSURFACE(((130 80,80 30,30 80,80 130,130 80)),((145 95,95 145,45 95,95 45,145 95)),((130 80,145 95,95 45,80 30,130 80)),((80 30,95 45,45 95,30 80,80 30)),((30 80,45 95,95 145,80 130,30 80)),((80 130,95 145,145 95,130 80,80 130))) | POLYHEDRALSURFACE(((80 60,64.645 54.645,50 90,80 60)),((80 60,113.64 63.64,95 45,80 60)),((113.64 63.64,80 77.574,121.213 88.787,113.64 63.64)),((50 90,57.071 107.071,80 120,50 90)),((80 130,85 125,80 120,80 130)),((80 130,80 120,57.071 107.071,80 130)),((130 80,126.36 76.36,121.213 88.787,130 80)),((92.929 42.929,80 48.284,95 45,92.929 42.929)),((95 45,80 48.284,80 60,95 45)),((80 48.284,64.645 54.645,80 60,80 48.284)),((80 60,80 77.574,113.64 63.64,80 60)),((50 90,80 77.574,80 60,50 90)),((80 120,85 125,121.213 88.787,80 120)),((126.36 76.36,113.64 63.64,121.213 88.787,126.36 76.36)),((80 120,80 77.574,50 90,80 120)),((80 77.574,80 120,121.213 88.787,80 77.574)),((100 140,85 125,80 130,100 140)),((126.36 76.36,130 80,135.355 54.645,126.36 76.36)),((135.355 125.355,150 90,100 140,135.355 125.355)),((165 105,150.355 140.355,115 155,165 105)),((100 140,135 105,115 155,100 140)),((119.645 69.645,115 55,150.355 69.645,119.645 69.645)),((135.355 54.645,165 105,150.355 69.645,135.355 54.645)),((135.355 54.645,150 90,165 105,135.355 54.645)),((100 40,150.355 69.645,115 55,100 40)),((100 40,135.355 54.645,150.355 69.645,100 40)),((64.828 114.828,79.645 140.355,64.645 125.355,64.828 114.828)),((100 140,79.645 140.355,115 155,100 140)),((100 140,64.645 125.355,79.645 140.355,100 140)),((135.355 125.355,115 155,150.355 140.355,135.355 125.355)),((135.355 125.355,100 140,115 155,135.355 125.355)),((150 90,150.355 140.355,165 105,150 90)),((150 90,135.355 125.355,150.355 140.355,150 90)),((100 140,80 130,64.645 125.355,100 140)),((57.071 107.071,64.645 125.355,80 130,57.071 107.071)),((150 90,135.355 54.645,130 80,150 90)),((150 90,121.213 88.787,100 140,150 90)),((150 90,130 80,121.213 88.787,150 90)),((150.355 69.645,145 95,128.64 78.64,150.355 69.645)),((165 105,135 105,145 95,165 105)),((165 105,145 95,150.355 69.645,165 105)),((95 145,100 140,115 155,95 145)),((79.645 140.355,95 145,115 155,79.645 140.355)),((95 145,79.645 140.355,72.071 122.071,95 145)),((57.071 107.071,63.95 113.95,64.645 125.355,57.071 107.071)),((64.645 125.355,63.95 113.95,64.828 114.828,64.645 125.355)),((92.929 42.929,95 45,100 40,92.929 42.929)),((100 40,115 55,96.808 46.808,100 40)),((115 55,104.929 54.929,96.808 46.808,115 55)),((100 40,96.808 46.808,92.929 42.929,100 40)),((100 40,95 45,113.64 63.64,100 40)),((100 40,113.64 63.64,135.355 54.645,100 40)),((72.071 122.071,79.645 140.355,64.828 114.828,72.071 122.071)),((135 105,165 105,115 155,135 105)),((85 125,100 140,121.213 88.787,85 125)),((135.355 54.645,113.64 63.64,126.36 76.36,135.355 54.645)),((150.355 69.645,128.64 78.64,119.645 69.645,150.355 69.645)),((115 55,107.929 57.929,104.929 54.929,115 55)),((107.929 57.929,115 55,119.645 69.645,107.929 57.929)),((95 145,95 135,100 140,95 145)),((119.645 69.645,95 92.574,95 69.645,119.645 69.645)),((95 92.574,128.64 78.64,135 105,95 92.574)),((95 105,95 92.574,135 105,95 105)),((65 105,95 92.574,95 105,65 105)),((145 95,135 105,128.64 78.64,145 95)),((65 105,95 135,72.071 122.071,65 105)),((72.071 122.071,95 135,95 145,72.071 122.071)),((95 105,100 140,95 135,95 105)),((95 105,95 135,65 105,95 105)),((95 105,135 105,100 140,95 105)),((79.645 69.645,95 69.645,95 92.574,79.645 69.645)),((119.645 69.645,128.64 78.64,95 92.574,119.645 69.645)),((79.645 69.645,95 92.574,65 105,79.645 69.645)),((95 63.284,107.929 57.929,95 69.645,95 63.284)),((95 63.284,95 69.645,79.645 69.645,95 63.284)),((95 69.645,107.929 57.929,119.645 69.645,95 69.645)),((96.808 46.808,95 45,80 30,96.808 46.808)),((30 80,95 45,45 95,30 80)),((30 80,80 30,95 45,30 80)),((63.95 113.95,30 80,45 95,63.95 113.95)),((95 63.284,95 45,107.929 57.929,95 63.284)),((80 30,92.929 42.929,96.808 46.808,80 30)),((80 48.284,92.929 42.929,80 30,80 48.284)),((57.071 107.071,30 80,63.95 113.95,57.071 107.071)),((72.071 122.071,64.828 114.828,45 95,72.071 122.071)),((45 95,64.828 114.828,63.95 113.95,45 95)),((107.929 57.929,95 45,104.929 54.929,107.929 57.929)),((104.929 54.929,95 45,96.808 46.808,104.929 54.929)),((95 45,95 63.284,79.645 69.645,95 45)),((95 45,79.645 69.645,45 95,95 45)),((65 105,72.071 122.071,45 95,65 105)),((79.645 69.645,65 105,45 95,79.645 69.645)),((80 48.284,80 30,64.645 54.645,80 48.284)),((57.071 107.071,50 90,30 80,57.071 107.071)),((64.645 54.645,80 30,30 80,64.645 54.645)),((50 90,64.645 54.645,30 80,50 90)))</screen>
 
 </refsection>
 
@@ -1504,7 +1555,7 @@ SELECT ST_AsText(input_footprint) AS input_footprint,
        ST_AsText(CG_GenerateRoof(input_footprint, 'HIPPED', 2.0, 30.0, 0)) AS hipped_roof,
        ST_AsText(CG_GenerateRoof(input_footprint, 'FLAT', 2.0, 30.0, 0)) AS flat_roof
 FROM data;</programlisting>
-	            <screen role="visual-primary visual-separate-output">POLYGON((0 0,4 0,4 4,0 4,0 0)) | POLYHEDRALSURFACE Z (((0 4 0,4 4 0,4 0 0,0 0 0,0 4 0)),((0 4 0,0 0 0,2 2 2,0 4 0)),((0 0 0,4 0 0,2 2 2,0 0 0)),((4 0 0,4 4 0,2 2 2,4 0 0)),((4 4 0,0 4 0,2 2 2,4 4 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 0 0,0 0 0)),((0 0 2,4 0 2,4 4 2,0 4 2,0 0 2)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 0 2,4 0 0,4 4 0)),((4 0 0,4 0 2,0 0 2,0 0 0,4 0 0)))</screen>
+	            <screen role="visual-primary visual-separate-output docbook-qa-ignore-wide-lines">POLYGON((0 0,4 0,4 4,0 4,0 0)) | POLYHEDRALSURFACE Z (((0 4 0,4 4 0,4 0 0,0 0 0,0 4 0)),((0 4 0,0 0 0,2 2 2,0 4 0)),((0 0 0,4 0 0,2 2 2,0 0 0)),((4 0 0,4 4 0,2 2 2,4 0 0)),((4 4 0,0 4 0,2 2 2,4 4 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 0 0,0 0 0)),((0 0 2,4 0 2,4 4 2,0 4 2,0 0 2)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 0 2,4 0 0,4 4 0)),((4 0 0,4 0 2,0 0 2,0 0 0,4 0 0)))</screen>
 	        </refsection>
 
         <refsection>
@@ -1678,6 +1729,13 @@ FROM data;</programlisting>
         <refsection>
             <title>Description</title>
 
+            <para>
+                Extrudes the input along the vector
+                (<parameter>x</parameter>, <parameter>y</parameter>,
+                <parameter>z</parameter>) and connects it to its translated
+                copy. Extrusion can raise the dimensionality of the result,
+                for example from a surface to a volume.
+            </para>
             <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
             <para>&sfcgal_required;</para>
             <para>&Z_support;</para>
@@ -1869,7 +1927,7 @@ SELECT ST_AsText(line, 3) AS input_line,
        ST_AsText(circle, 3) AS input_circle,
        ST_AsText(CG_MinkowskiSum(line, circle), 3) AS minkowski_sum
 FROM data;</programlisting>
-        <screen role="visual-primary">LINESTRING(10 10,100 100) | POLYGON((80 50,79.424 44.147,77.716 38.519,74.944 33.333,71.213 28.787,66.667 25.056,61.481 22.284,55.853 20.576,50 20,44.147 20.576,38.519 22.284,33.333 25.056,28.787 28.787,25.056 33.333,22.284 38.519,20.576 44.147,20 50,20.576 55.853,22.284 61.481,25.056 66.667,28.787 71.213,33.333 74.944,38.519 77.716,44.147 79.424,50 80,55.853 79.424,61.481 77.716,66.667 74.944,71.213 71.213,74.944 66.667,77.716 61.481,79.424 55.853,80 50)) | MULTIPOLYGON(((179.424 155.853,177.716 161.481,174.944 166.667,171.213 171.213,166.667 174.944,161.481 177.716,155.853 179.424,150 180,144.147 179.424,138.519 177.716,133.333 174.944,128.787 171.213,38.787 81.213,35.056 76.667,32.284 71.481,30.576 65.853,30 60,30.576 54.147,32.284 48.519,35.056 43.333,38.787 38.787,43.333 35.056,48.519 32.284,54.147 30.576,60 30,65.853 30.576,71.481 32.284,76.667 35.056,81.213 38.787,171.213 128.787,174.944 133.333,177.716 138.519,179.424 144.147,180 150,179.424 155.853)))</screen>
+        <screen role="visual-primary docbook-qa-ignore-wide-lines">LINESTRING(10 10,100 100) | POLYGON((80 50,79.424 44.147,77.716 38.519,74.944 33.333,71.213 28.787,66.667 25.056,61.481 22.284,55.853 20.576,50 20,44.147 20.576,38.519 22.284,33.333 25.056,28.787 28.787,25.056 33.333,22.284 38.519,20.576 44.147,20 50,20.576 55.853,22.284 61.481,25.056 66.667,28.787 71.213,33.333 74.944,38.519 77.716,44.147 79.424,50 80,55.853 79.424,61.481 77.716,66.667 74.944,71.213 71.213,74.944 66.667,77.716 61.481,79.424 55.853,80 50)) | MULTIPOLYGON(((179.424 155.853,177.716 161.481,174.944 166.667,171.213 171.213,166.667 174.944,161.481 177.716,155.853 179.424,150 180,144.147 179.424,138.519 177.716,133.333 174.944,128.787 171.213,38.787 81.213,35.056 76.667,32.284 71.481,30.576 65.853,30 60,30.576 54.147,32.284 48.519,35.056 43.333,38.787 38.787,43.333 35.056,48.519 32.284,54.147 30.576,60 30,65.853 30.576,71.481 32.284,76.667 35.056,81.213 38.787,171.213 128.787,174.944 133.333,177.716 138.519,179.424 144.147,180 150,179.424 155.853)))</screen>
 
         <para>Minkowski sum of a MultiPoint and a polygon. The result contains one translated copy of the polygon for each point.</para>
         <programlisting language="sql">WITH data AS (
@@ -1880,7 +1938,7 @@ SELECT ST_AsText(points, 3) AS input_points,
        ST_AsText(polygon, 3) AS input_polygon,
        ST_AsText(CG_MinkowskiSum(points, polygon), 3) AS minkowski_sum
 FROM data;</programlisting>
-        <screen role="visual-primary">MULTIPOINT((25 50),(70 25)) | POLYGON((130 150,20 40,50 60,125 100,130 150)) | MULTIPOLYGON(((45 90,75 110,150 150,155 200,45 90)),((90 65,120 85,195 125,200 175,90 65)))</screen>
+        <screen role="visual-primary docbook-qa-ignore-wide-lines">MULTIPOINT((25 50),(70 25)) | POLYGON((130 150,20 40,50 60,125 100,130 150)) | MULTIPOLYGON(((45 90,75 110,150 150,155 200,45 90)),((90 65,120 85,195 125,200 175,90 65)))</screen>
     </refsection>
 
         </refentry>
@@ -2041,6 +2099,13 @@ FROM data;</programlisting>
         <refsection>
             <title>Description</title>
 
+            <para>
+                Computes the straight skeleton of a polygon by tracing the
+                inward propagation of its edges. When
+                <parameter>use_distance_as_m</parameter> is
+                <varname>true</varname>, the M coordinate of each output point
+                stores its distance from the input boundary.
+            </para>
             <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
             <para role="sfcgal_requirement" conformance="1.3.8">Requires SFCGAL &gt;= 1.3.8 for option use_distance_as_m</para>
             <para>&sfcgal_required;</para>
@@ -2198,6 +2263,11 @@ TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.
         <refsection>
             <title>Description</title>
 
+            <para>
+                Returns the portion of a polygon visible from an observer
+                point, or from the observer segment defined by
+                <parameter>pointA</parameter> and <parameter>pointB</parameter>.
+            </para>
             <para role="availability" conformance="3.5.0">Availability: 3.5.0 - requires SFCGAL &gt;= 1.5.0.</para>
             <para role="sfcgal_requirement" conformance="1.5.0">Requires SFCGAL &gt;= 1.5.0</para>
             <para>&sfcgal_required;</para>
@@ -2212,23 +2282,22 @@ TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.
   SELECT 'POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry AS polygon,
          'POINT(91 87)'::geometry AS observer
 )
-SELECT ST_AsText(polygon, 3) AS input_polygon,
-       ST_AsText(observer, 3) AS input_observer,
+SELECT ST_AsText(ST_Collect(polygon, observer), 3) AS input_scene,
        ST_AsText(CG_Visibility(polygon, observer), 3) AS visibility
 FROM data;</programlisting>
-	            <screen role="visual-overlay">POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)) | POINT(91 87) | POLYGON((78.5 68,98.5 68,108 43.933,108 98,121.962 107.034,107 106.5,107 135,97.5 106.5,65.28 105.099,77.5 96.5,78.5 68))</screen>
+	            <screen role="visual-primary visual-separate-output">GEOMETRYCOLLECTION(POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)),POINT(91 87)) | POLYGON((78.5 68,98.5 68,108 43.933,108 98,121.962 107.034,107 106.5,107 135,97.5 106.5,65.28 105.099,77.5 96.5,78.5 68))</screen>
 
             <para>Visibility from a segment inside the same polygon.</para>
             <programlisting language="sql">WITH data AS (
   SELECT 'POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150))'::geometry AS polygon,
-         'POINT(78.5 68)'::geometry AS observer_start,
-         'POINT(98.5 68)'::geometry AS observer_end
+         'LINESTRING(78.5 68,98.5 68)'::geometry AS observer
 )
-SELECT ST_AsText(polygon, 3) AS input_polygon,
-       ST_AsText(ST_MakeLine(observer_start, observer_end), 3) AS input_observer,
-       ST_AsText(CG_Visibility(polygon, observer_start, observer_end), 3) AS visibility
+SELECT ST_AsText(ST_Collect(polygon, observer), 3) AS input_scene,
+       ST_AsText(CG_Visibility(polygon,
+                              ST_StartPoint(observer),
+                              ST_EndPoint(observer)), 3) AS visibility
 FROM data;</programlisting>
-	            <screen role="visual-overlay">POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)) | LINESTRING(78.5 68,98.5 68) | POLYGON((78.5 68,98.5 68,100.5 36,101.281 23.5,111.711 23.5,108 36,108 98,110.734 106.633,107 106.5,107 157.5,108.52 173.5,95.76 173.5,97.5 106.5,70.981 105.347,77.5 96.5,78.5 68))</screen>
+	            <screen role="visual-primary visual-separate-output">GEOMETRYCOLLECTION(POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)),LINESTRING(78.5 68,98.5 68)) | POLYGON((78.5 68,98.5 68,100.5 36,101.281 23.5,111.711 23.5,108 36,108 98,110.734 106.633,107 106.5,107 157.5,108.52 173.5,95.76 173.5,97.5 106.5,70.981 105.347,77.5 96.5,78.5 68))</screen>
 	        </refsection>
 
     </refentry>
@@ -2856,7 +2925,7 @@ SELECT ST_AsText(geom, 2) AS input_geometry,
        ST_AsText(CG_Simplify(geom, 50, true), 2) AS topology_preserved,
        ST_AsText(CG_Simplify(geom, 50, false), 2) AS topology_not_preserved
 FROM data;</programlisting>
-    <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,147.31 173.85,146.15 103.46,112.69 118.46,34.23 121.92,88.46 158.85)),POLYGON((112.69 118.46,146.15 103.46,185.38 43.46,10 83.85,34.23 121.92,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,173.85 119.62,34.23 121.92,88.46 158.85)),POLYGON((112.69 118.46,190 60.77,10 83.85,112.69 118.46)))</screen>
+    <screen role="visual-primary docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,147.31 173.85,146.15 103.46,112.69 118.46,34.23 121.92,88.46 158.85)),POLYGON((112.69 118.46,146.15 103.46,185.38 43.46,10 83.85,34.23 121.92,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,173.85 119.62,34.23 121.92,88.46 158.85)),POLYGON((112.69 118.46,190 60.77,10 83.85,112.69 118.46)))</screen>
   </refsection>
 
   <refsection>
@@ -2887,12 +2956,12 @@ FROM data;</programlisting>
        <para>Computes the <link xlink:href="https://doc.cgal.org/latest/Alpha_wrap_3/index.html">3D Alpha Wrapping</link> of the points in a geometry. An alpha wrapping is a watertight and orientable surface mesh that strictly encloses the input. It can be seen as an extension or refinement of an <link linkend="CG_AlphaShape">alpha-shape</link>.</para>
        <para>
             The <varname>relative_alpha</varname> parameter controls which features will appear in the output.
-            It can can have values from 0 to infinity.
-            Smaller relative_alpha values result in simpler outputs, but they are less accurate representations of the original input.
+            It can have values from 0 to infinity.
+            Higher relative_alpha values produce coarser wraps; lower values retain more detail.
         </para>
        <para>
             The <varname>relative_offset</varname> parameter controls the tightness of the result.
-            It can can have values from 0 to infinity.
+            It can have values from 0 to infinity.
             If this parameter is set to 0, its value is automatically determined based on the relative_alpha parameter.
         </para>
        <para role="availability" conformance="3.6.0">Availability: 3.6.0 - requires SFCGAL &gt;= 2.1.0</para>
@@ -2901,26 +2970,20 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <para>Increasing <varname>relative_alpha</varname> makes the wrapping more detailed for the same point cloud.</para>
-       <programlisting language="sql">WITH ptcloud AS (
-  SELECT 'MULTIPOINT((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))'::geometry AS input_points
-),
-alpha_5 AS (
-  SELECT COUNT(*) AS alpha_5_vertices
-  FROM ptcloud, LATERAL ST_DumpPoints(CG_3DAlphaWrapping(input_points, 5)) AS dumped
-),
-alpha_10 AS (
-  SELECT COUNT(*) AS alpha_10_vertices
-  FROM ptcloud, LATERAL ST_DumpPoints(CG_3DAlphaWrapping(input_points, 10)) AS dumped
-),
-alpha_15 AS (
-  SELECT COUNT(*) AS alpha_15_vertices
-  FROM ptcloud, LATERAL ST_DumpPoints(CG_3DAlphaWrapping(input_points, 15)) AS dumped
+       <para>Wrap a tetrahedral surface and show the native 3D input beside the actual enclosing mesh.</para>
+       <programlisting language="sql">WITH data AS (
+  SELECT 'POLYHEDRALSURFACE Z (
+    ((0 0 0,4 0 0,0 4 0,0 0 0)),
+    ((0 0 0,0 0 4,4 0 0,0 0 0)),
+    ((0 0 0,0 4 0,0 0 4,0 0 0)),
+    ((4 0 0,0 0 4,0 4 0,4 0 0))
+  )'::geometry AS input_geometry
 )
-SELECT ST_AsText(input_points) AS input_points,
-       alpha_5_vertices &lt; alpha_10_vertices AND alpha_10_vertices &lt; alpha_15_vertices AS finer_with_larger_alpha
-FROM ptcloud, alpha_5, alpha_10, alpha_15;</programlisting>
-       <screen role="visual-skip">MULTIPOINT((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7)) | t</screen>
+SELECT ST_AsText(input_geometry, 3) AS input_geometry,
+       ST_AsText(CG_3DAlphaWrapping(input_geometry, 1), 3)
+         AS wrapped_geometry
+FROM data;</programlisting>
+       <screen role="visual-primary visual-separate-output">POLYHEDRALSURFACE Z (((0 0 0,4 0 0,0 4 0,0 0 0)),((0 0 0,0 0 4,4 0 0,0 0 0)),((0 0 0,0 4 0,0 0 4,0 0 0)),((4 0 0,0 0 4,0 4 0,4 0 0))) | POLYHEDRALSURFACE Z (((-0.193 0.127 4,-0.035 -0.228 4.004,0.087 0.087 4.195,-0.193 0.127 4)),((0.083 0.082 3.801,0.087 0.087 4.195,-0.035 -0.228 4.004,0.083 0.082 3.801)),((0.087 0.087 4.195,0.083 0.082 3.801,-0.193 0.127 4,0.087 0.087 4.195)),((0.048 3.84 0.16,3.867 0.133 0.133,0.091 3.926 -0.199,0.048 3.84 0.16)),((3.92 0.08 -0.201,0.037 -0.007 -0.228,0.091 3.926 -0.199,3.92 0.08 -0.201)),((3.867 0.133 0.133,3.92 0.08 -0.201,0.091 3.926 -0.199,3.867 0.133 0.133)),((3.867 0.133 0.133,3.877 -0.195 0.012,4.228 -0.006 0.037,3.867 0.133 0.133)),((3.867 0.133 0.133,4.228 -0.006 0.037,3.92 0.08 -0.201,3.867 0.133 0.133)),((3.877 -0.195 0.012,3.92 0.08 -0.201,4.228 -0.006 0.037,3.877 -0.195 0.012)),((0.012 -0.196 0.121,-0.035 -0.228 4.004,-0.202 0.079 0.078,0.012 -0.196 0.121)),((-0.202 0.079 0.078,0.037 -0.007 -0.228,0.012 -0.196 0.121,-0.202 0.079 0.078)),((3.867 0.133 0.133,0.083 0.082 3.801,3.877 -0.195 0.012,3.867 0.133 0.133)),((0.091 3.926 -0.199,0.101 4.199 0.06,0.048 3.84 0.16,0.091 3.926 -0.199)),((0.101 4.199 0.06,-0.228 4.028 -0.021,0.048 3.84 0.16,0.101 4.199 0.06)),((0.091 3.926 -0.199,-0.228 4.028 -0.021,0.101 4.199 0.06,0.091 3.926 -0.199)),((3.867 0.133 0.133,0.048 3.84 0.16,0.083 0.082 3.801,3.867 0.133 0.133)),((3.877 -0.195 0.012,0.037 -0.007 -0.228,3.92 0.08 -0.201,3.877 -0.195 0.012)),((0.012 -0.196 0.121,0.037 -0.007 -0.228,3.877 -0.195 0.012,0.012 -0.196 0.121)),((0.083 0.082 3.801,0.048 3.84 0.16,-0.193 0.127 4,0.083 0.082 3.801)),((-0.228 4.028 -0.021,-0.193 0.127 4,0.048 3.84 0.16,-0.228 4.028 -0.021)),((-0.228 4.028 -0.021,-0.202 0.079 0.078,-0.193 0.127 4,-0.228 4.028 -0.021)),((-0.202 0.079 0.078,-0.035 -0.228 4.004,-0.193 0.127 4,-0.202 0.079 0.078)),((3.877 -0.195 0.012,0.083 0.082 3.801,-0.035 -0.228 4.004,3.877 -0.195 0.012)),((0.012 -0.196 0.121,3.877 -0.195 0.012,-0.035 -0.228 4.004,0.012 -0.196 0.121)),((0.091 3.926 -0.199,0.037 -0.007 -0.228,-0.228 4.028 -0.021,0.091 3.926 -0.199)),((-0.228 4.028 -0.021,0.037 -0.007 -0.228,-0.202 0.079 0.078,-0.228 4.028 -0.021)))</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
