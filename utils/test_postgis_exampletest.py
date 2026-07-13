@@ -957,6 +957,25 @@ class VisualExampleTest(unittest.TestCase):
         self.assertRegex(svg, r'class="direction-arrow"[^>]*fill="#a62c2b"')
         widths = re.findall(r'class="line"[^>]*stroke-width="([0-9.]+)"', svg)
         self.assertGreater(float(widths[0]), float(widths[1]))
+        self.assertNotIn('class="start-vertex"', svg)
+
+    def test_svg_marks_start_vertex_for_closed_lines(self):
+        svg = self.tester.visual_svg(
+            "scroll",
+            {"bounds": [0, 0, 2, 1], "parts": [
+                {"ord": 1, "source": "Code", "label": "input", "type": "LINESTRING",
+                 "svg": "M 0 0 L 2 0 1 -1 0 0", "closed": True,
+                 "vertices": [[0, 0], [2, 0], [1, -1], [0, 0]]},
+                {"ord": 2, "source": "Output", "label": "scrolled", "type": "LINESTRING",
+                 "svg": "M 1 -1 L 0 0 2 0 1 -1", "closed": True,
+                 "vertices": [[1, -1], [0, 0], [2, 0], [1, -1]]},
+            ]},
+        )
+        self.assertEqual(2, svg.count('class="start-vertex"'))
+        self.assertIn("<title>Start vertex for input</title>", svg)
+        self.assertIn("<title>Start vertex for scrolled</title>", svg)
+        self.assertIn('data-postgis-start-vertex="true"', svg)
+        self.assertNotIn('class="direction-arrow"', svg)
 
     def test_svg_points_have_contrasting_halo(self):
         svg = self.tester.visual_svg(

@@ -1808,6 +1808,21 @@ SELECT json_build_object(
                                 f'r="{3 / scale:.12g}" fill="{part_color}" stroke="white" '
                                 f'stroke-width="{0.8 / scale:.12g}"/>'
                             )
+                    if dimension_class == "line" and part.get("closed") and vertices:
+                        start_x, start_y = [float(value) for value in vertices[0]]
+                        marker_label = html.escape(f"Start vertex for {parts[0]['label']}")
+                        shapes.append(
+                            f'<g class="start-vertex" data-postgis-start-vertex="true" '
+                            f'pointer-events="all">'
+                            f'<title>{marker_label}</title>'
+                            f'<circle cx="{start_x:.12g}" cy="{start_y:.12g}" '
+                            f'r="{7 / scale:.12g}" fill="white" stroke="{part_color}" '
+                            f'stroke-width="{2 / scale:.12g}"/>'
+                            f'<text x="{start_x:.12g}" y="{start_y + 3.1 / scale:.12g}" '
+                            f'text-anchor="middle" font-size="{9 / scale:.12g}" '
+                            f'fill="{part_color}" font-family="sans-serif" font-weight="700" '
+                            f'pointer-events="none">1</text></g>'
+                        )
             group_svg = (
                 f'<g class="geometry-layer" opacity="1" data-postgis-geometry-id="{geometry_id}" '
                 f'data-postgis-frame="{html.escape(frame_id, quote=True)}" '
