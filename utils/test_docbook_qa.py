@@ -153,6 +153,19 @@ class DocBookSourceLintTest(unittest.TestCase):
             set(),
         )
 
+    def test_documented_reference_requires_description_section(self):
+        entry = (
+            '<refentry xml:id="ST_Foo"><refnamediv><refname>ST_Foo</refname>'
+            '<refpurpose>Returns a value.</refpurpose></refnamediv>'
+            '<refsynopsisdiv><funcsynopsis><funcprototype><funcdef>integer '
+            '<function>ST_Foo</function></funcdef></funcprototype></funcsynopsis></refsynopsisdiv>'
+        )
+        self.assertCategories(entry + '</refentry>', {"missing-description"})
+        self.assertCategories(
+            entry + '<refsection><title>Description</title><para>Returns one.</para></refsection></refentry>',
+            set(),
+        )
+
     def test_tab_in_verbatim_violation_and_clean_case(self):
         self.assertInfoCategory('<refentry xml:id="f"><programlisting>SELECT\t1;</programlisting></refentry>', "tab-in-verbatim")
         self.assertCategories('<refentry xml:id="f"><screen>1    2</screen></refentry>', set())

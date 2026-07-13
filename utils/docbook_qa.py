@@ -341,15 +341,29 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
     for refentry in refentries:
         if DEPRECATED_ALIAS_ROLE in role_tokens(refentry):
             continue
-        for section in named_children(refentry, "refsection", "section", "sect1"):
+        sections = named_children(refentry, "refsection", "section", "sect1")
+        description_sections = []
+        for section in sections:
             title = first_named_child(section, "title")
             if title is None or normalized_text(title) != "Description":
                 continue
+            description_sections.append(section)
             if description_is_support_only(section):
                 findings.append(Finding(
                     "warning", "support-only-description", source_location(path, section),
                     "Description contains support/compliance badges but no semantic prose",
                 ))
+        refnamediv = first_named_child(refentry, "refnamediv")
+        if (
+            not description_sections
+            and refnamediv is not None
+            and first_named_child(refnamediv, "refpurpose") is not None
+            and first_named_child(refentry, "refsynopsisdiv") is not None
+        ):
+            findings.append(Finding(
+                "warning", "missing-description", source_location(path, refentry),
+                "documented reference entry has a synopsis but no Description section",
+            ))
 
     for node in named_descendants(root, "programlisting", "title"):
         owner = nearest_refentry_id(node)
