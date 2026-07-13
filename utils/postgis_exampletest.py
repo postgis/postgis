@@ -48,6 +48,10 @@ WKT_TYPES = (
     "|NURBSCURVE"
 )
 WKT_START_RE = re.compile(rf"(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*\(", re.I)
+WKT_COMPONENT_RE = re.compile(
+    rf"\b({WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*(?=\(|EMPTY\b)",
+    re.I,
+)
 NUMBER_PATTERN = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
 MAKE_ENVELOPE_RE = re.compile(
     rf"\bST_MakeEnvelope\s*\(\s*({NUMBER_PATTERN})\s*,\s*({NUMBER_PATTERN})\s*,\s*"
@@ -220,6 +224,13 @@ class ExampleTester:
     def normalized_geometry(self, value):
         return re.sub(r"\s+", "", value or "").upper()
 
+    def point_only_geometry(self, value):
+        geometry_types = [match.group(1).upper() for match in WKT_COMPONENT_RE.finditer(value or "")]
+        return bool(geometry_types) and all(
+            geometry_type in POINT_TYPES or geometry_type == "GEOMETRYCOLLECTION"
+            for geometry_type in geometry_types
+        )
+
     def visual_candidate(self, query, expected, explicit=False):
         code = [candidate["wkt"] for candidate in self.code_geometry_candidates(query)]
         output = self.geometry_candidates(self.rows_to_string(expected))
@@ -242,7 +253,7 @@ class ExampleTester:
             ):
                 return None
             return {"kind": "geometry-output", "preferred": True}
-        if not code or all(value in POINT_TYPES for value in code_types):
+        if not code or all(self.point_only_geometry(value) for value in code):
             return None
         if len(code) == 1 and NONVISUAL_SINGLE_INPUT_RE.search(query):
             return None

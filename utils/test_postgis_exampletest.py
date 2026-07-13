@@ -431,16 +431,35 @@ class VisualExampleTest(unittest.TestCase):
 
     def test_visual_candidate_includes_spatial_context_but_skips_trivial_points(self):
         self.assertIsNone(self.tester.visual_candidate("SELECT 'POINT(1 2)'", [["1"]]))
+        self.assertIsNone(self.tester.visual_candidate(
+            "SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))')", [["t"]]
+        ))
+        self.assertIsNone(self.tester.visual_candidate(
+            "SELECT ST_IsCollection("
+            "'GEOMETRYCOLLECTION(MULTIPOINT((0 0),(1 1)),GEOMETRYCOLLECTION(POINT(2 2)))')",
+            [["t"]],
+        ))
         context = self.tester.visual_candidate(
             "SELECT ST_Intersects('LINESTRING(0 0,1 1)', 'POLYGON((0 0,2 0,2 2,0 0))')",
             [["t"]],
         )
         self.assertEqual({"kind": "input-context", "preferred": False}, context)
+        collection_context = self.tester.visual_candidate(
+            "SELECT ST_IsCollection("
+            "'GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1))')",
+            [["t"]],
+        )
+        self.assertEqual({"kind": "input-context", "preferred": False}, collection_context)
         output = self.tester.visual_candidate(
             "SELECT ST_Buffer('LINESTRING(0 0,1 1)', 1)",
             [["POLYGON((0 0,2 0,2 2,0 0))"]],
         )
         self.assertEqual({"kind": "geometry-output", "preferred": True}, output)
+        point_output = self.tester.visual_candidate(
+            "SELECT ST_Buffer('POINT(0 0)', 1)",
+            [["POLYGON((0 0,1 0,1 1,0 0))"]],
+        )
+        self.assertEqual({"kind": "geometry-output", "preferred": True}, point_output)
         self.assertIsNone(self.tester.visual_candidate(
             "SELECT ST_AsText('LINESTRING(0 0,1 1)')", [["LINESTRING(0 0,1 1)"]]
         ))
