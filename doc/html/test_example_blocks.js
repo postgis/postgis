@@ -353,6 +353,32 @@ async function main() {
   assert.strictEqual(outputButton.attributes['aria-expanded'], 'true');
   assert.strictEqual(outputButton.attributes['aria-label'], 'Hide output text');
 
+  const readableOutput = makePre('POINT(1 2)');
+  const nativeOutput = makePre('0101000000000000000000F03F0000000000000040');
+  readableOutput.hidden = false;
+  nativeOutput.hidden = true;
+  const representationBlock = {
+    querySelector(selector) {
+      if (selector === 'pre.screen:not(.postgis-native-output)') return readableOutput;
+      if (selector === 'pre.postgis-native-output') return nativeOutput;
+      return null;
+    }
+  };
+  const representationButton = {
+    textContent: '',
+    attributes: {},
+    setAttribute(name, value) { this.attributes[name] = value; }
+  };
+  geometry.setOutputRepresentation(representationBlock, representationButton, true);
+  assert.strictEqual(readableOutput.hidden, true);
+  assert.strictEqual(nativeOutput.hidden, false);
+  assert.strictEqual(representationButton.textContent, 'Show EWKT');
+  assert.strictEqual(representationButton.attributes['aria-expanded'], 'true');
+  geometry.setOutputRepresentation(representationBlock, representationButton, false);
+  assert.strictEqual(readableOutput.hidden, false);
+  assert.strictEqual(nativeOutput.hidden, true);
+  assert.strictEqual(representationButton.textContent, 'Show HEXEWKB');
+
   const literalOriginal = "SELECT 'POINT(1 2)'";
   const literalPre = makeLiteralTree(literalOriginal, document);
   geometry.wrapLiteralRange(literalPre, { start: 8, end: 18 }, 'postgis-geometry-99');

@@ -236,6 +236,7 @@
   </xsl:variable>
   <xsl:variable name="manifest.visual"
                 select="document($postgis.visual.manifest)/visual-examples/visual[@refentry = $refentry.id and @screen = string($screen.ordinal)]"/>
+  <xsl:variable name="native.output" select="$manifest.visual/native-output[@format = 'hexewkb']"/>
   <xsl:variable name="visual.id">
     <xsl:choose>
       <xsl:when test="contains($role.tokens, ' visual-primary ') and @xml:id">
@@ -277,8 +278,16 @@
           <xsl:with-param name="kind" select="'output'"/>
         </xsl:call-template>
       </div>
+      <xsl:if test="$native.output">
+        <button class="postgis-output-representation-toggle" type="button"
+                aria-label="Show native HEXEWKB" title="Show native HEXEWKB"
+                aria-expanded="false">Show HEXEWKB</button>
+      </xsl:if>
     </div>
     <xsl:apply-imports/>
+    <xsl:if test="$native.output">
+      <pre class="screen postgis-native-output" hidden="hidden" aria-hidden="true"><xsl:value-of select="$native.output"/></pre>
+    </xsl:if>
   </div>
   <xsl:if test="string($visual.id) != ''">
     <div class="postgis-geometry-figure" data-postgis-built-geometry="true">

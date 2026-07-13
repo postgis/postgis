@@ -652,7 +652,7 @@ ST_AsText(ST_GeomFromMARC21('
 				not given, it defaults to 0.  If WKT passed in is not a LINESTRING, then null is returned.  </para>
 
 		<note>
-		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance
 				suite.</para>
 		</note>
 
@@ -998,9 +998,12 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 	  <refsection>
 		<title>Examples</title>
 
+		<para>The result is returned as a native geometry.  The documentation test runner
+		compares that value directly with the readable EWKT shown below and uses the same
+		geometry for the generated figure.</para>
 		<programlisting language="sql">SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
 -71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');</programlisting>
-<screen>010300000001000000050000006285C7C15ECB51C0ED88FC0DF531454028A46F245FCB51C009075EA6F731454047DED1E65DCB51C0781C510EF83145404871A7835DCB51C0EBDAEE75F53145406285C7C15ECB51C0ED88FC0DF5314540</screen>
+<screen role="visual-primary">POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))</screen>
 <programlisting language="sql">SELECT ST_PolygonFromText('POINT(1 2)') IS NULL AS point_is_notpoly;</programlisting>
 <screen>t</screen>
 	  </refsection>
@@ -1214,7 +1217,7 @@ ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 	  <refnamediv>
 		<refname>ST_LineFromWKB</refname>
 
-		<refpurpose>Makes a <varname>LINESTRING</varname> from WKB with the given SRID</refpurpose>
+		<refpurpose>Creates a <varname>LINESTRING</varname> from WKB, optionally using a given SRID.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1235,11 +1238,11 @@ ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 	  <refsection>
 		<title>Description</title>
 
-	  <para>The <varname>ST_LineFromWKB</varname> function, takes a well-known binary
+	  <para>The <function>ST_LineFromWKB</function> function takes a Well-Known Binary
 		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
-		and creates an instance of the appropriate geometry type - in this case, a
-		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
-		Factory in SQL.</para>
+		and creates an instance of the appropriate geometry type—in this case, a
+		<varname>LINESTRING</varname>. This function plays the role of the geometry
+		factory in SQL.</para>
 
 	  <para>If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname>
@@ -1251,10 +1254,10 @@ ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 		</note>
 
 		<note>
-		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, its more
+		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it is more
 		  efficient to just use <xref linkend="ST_GeomFromWKB"/>.  This function just
 		  calls <xref linkend="ST_GeomFromWKB"/> and adds additional validation that
-		  it returns a linestring.</para>
+		  it returns a <varname>LINESTRING</varname>.</para>
 		</note>
 
 
@@ -1267,8 +1270,12 @@ ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_AsText(ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2,3 4)')))) AS aline,
-ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;</programlisting>
+		<programlisting language="sql">SELECT ST_LineFromWKB(
+    ST_AsBinary(ST_GeomFromText('LINESTRING(1 2,3 4)'))
+) AS aline,
+ST_LineFromWKB(
+    ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
+) IS NULL AS null_return;</programlisting>
 		<screen>
 aline                 | null_return
 ------------------------------------
@@ -1288,7 +1295,7 @@ LINESTRING(1 2,3 4)  | t
 	  <refnamediv>
 		<refname>ST_LinestringFromWKB</refname>
 
-		<refpurpose>Makes a geometry from WKB with the given SRID.</refpurpose>
+		<refpurpose>Creates a <varname>LINESTRING</varname> from WKB, optionally using a given SRID.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1309,22 +1316,22 @@ LINESTRING(1 2,3 4)  | t
 	  <refsection>
 		<title>Description</title>
 
-	  <para>The <varname>ST_LinestringFromWKB</varname> function, takes a well-known binary
+	  <para>The <function>ST_LinestringFromWKB</function> function takes a Well-Known Binary
 		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
-		and creates an instance of the appropriate geometry type - in this case, a
-		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
-		Factory in SQL.</para>
+		and creates an instance of the appropriate geometry type—in this case, a
+		<varname>LINESTRING</varname>. This function plays the role of the geometry
+		factory in SQL.</para>
 
 	  <para>If an SRID is not specified, it defaults to 0.  <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname> does not represent a
-		<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB"/>.</para>
+		<varname>LINESTRING</varname> geometry. This function is an alias for <xref linkend="ST_LineFromWKB"/>.</para>
 
 		<note>
 		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite.</para>
 		</note>
 
 		<note>
-		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it's more
+		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it is more
 		  efficient to just use <xref linkend="ST_GeomFromWKB"/>.  This function just calls
 		  <xref linkend="ST_GeomFromWKB"/> and adds additional validation that it returns a
 		  <varname>LINESTRING</varname>.</para>
@@ -1337,10 +1344,11 @@ LINESTRING(1 2,3 4)  | t
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT
-ST_AsText(ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2,3 4)'))
-)) AS aline,
-ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
+		<programlisting language="sql">SELECT ST_LinestringFromWKB(
+    ST_AsBinary(ST_GeomFromText('LINESTRING(1 2,3 4)'))
+) AS aline,
+ST_LinestringFromWKB(
+    ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
 ) IS NULL AS null_return;</programlisting>
 		<screen>
 aline                 | null_return

@@ -48,6 +48,10 @@ WKT_TYPES = (
     "|NURBSCURVE"
 )
 WKT_START_RE = re.compile(rf"(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*\(", re.I)
+WKT_VALUE_RE = re.compile(
+    rf"^\s*(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*(?:\(|EMPTY\s*$)",
+    re.I,
+)
 WKT_COMPONENT_RE = re.compile(
     rf"\b({WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*(?=\(|EMPTY\b)",
     re.I,
@@ -303,6 +307,13 @@ class ExampleTester:
     def expected_has_hexwkb(self, expected):
         return any(
             self.hexwkb_geometry(value, allow_bytea_prefix=False) is not None
+            for row in expected
+            for value in row
+        )
+
+    def expected_has_geometry_text(self, expected):
+        return any(
+            isinstance(value, str) and WKT_VALUE_RE.match(value)
             for row in expected
             for value in row
         )
@@ -1216,14 +1227,25 @@ class ExampleTester:
                 output_type = actual.types[column] if column < len(actual.types) else ""
                 actual_hex = self.geometry_output_hex(actual_value, output_type)
                 expected_hex = self.geometry_output_hex(expected_value, output_type)
-                if actual_hex is not None or expected_hex is not None:
-                    if actual_hex is None or expected_hex is None:
+                expected_wkt = (
+                    expected_value.strip()
+                    if isinstance(expected_value, str) and WKT_VALUE_RE.match(expected_value)
+                    else None
+                )
+                if actual_hex is not None or expected_hex is not None or expected_wkt is not None:
+                    if actual_hex is None or (expected_hex is None and expected_wkt is None):
                         return False
+                    expected_geometry = (
+                        "ST_GeomFromEWKB(decode("
+                        f"'{expected_hex['hexwkb']}', 'hex'))"
+                        if expected_hex is not None
+                        else "ST_GeomFromEWKT("
+                        f"'{expected_wkt.replace(chr(39), chr(39) * 2)}')"
+                    )
                     query = (
                         "SELECT ST_AsHEXEWKB(ST_GeomFromEWKB(decode("
                         f"'{actual_hex['hexwkb']}', 'hex')), 'XDR') = "
-                        "ST_AsHEXEWKB(ST_GeomFromEWKB(decode("
-                        f"'{expected_hex['hexwkb']}', 'hex')), 'XDR')"
+                        f"ST_AsHEXEWKB({expected_geometry}, 'XDR')"
                     )
                     if self.run_psql_scalar(database, query) != "t":
                         return False
@@ -1308,7 +1330,10 @@ class ExampleTester:
         try:
             actual = self.run_psql_query(database, example["query"])
             if example.get("visual_kind") == "explicit" or (
-                self.expected_has_hexwkb(example["expected"])
+                (
+                    self.expected_has_hexwkb(example["expected"])
+                    or self.expected_has_geometry_text(example["expected"])
+                )
                 and not NONVISUAL_SINGLE_INPUT_RE.search(example["query"])
             ):
                 actual = self.prepare_visual_rows(
@@ -1323,7 +1348,10 @@ class ExampleTester:
             equal = self.version_rows_equal(actual, example["expected"])
         elif (
             any(GEOMETRY_OUTPUT_TYPE_RE.fullmatch(output_type or "") for output_type in getattr(actual, "types", []))
-            and self.expected_has_hexwkb(example["expected"])
+            and (
+                self.expected_has_hexwkb(example["expected"])
+                or self.expected_has_geometry_text(example["expected"])
+            )
         ):
             equal = self.typed_rows_equal(database, actual, example["expected"])
         else:
@@ -1780,6 +1808,15 @@ SELECT json_build_object(
             "preferred": example["visual_preferred"] and not output_omitted,
             "kind": "input-context-fallback" if output_omitted else example["visual_kind"],
             "output_omitted": output_omitted,
+            "native_output": (
+                self.rows_to_string(actual)
+                if self.expected_has_geometry_text(example.get("expected", []))
+                and any(
+                    GEOMETRY_OUTPUT_TYPE_RE.fullmatch(output_type or "")
+                    for output_type in getattr(actual, "types", [])
+                )
+                else None
+            ),
             "layers": rendered_layers,
             "svg": self.visual_svg(example["visual_id"], payload),
         }
@@ -2271,7 +2308,7 @@ SELECT json_build_object(
                     raise RuntimeError(f"Duplicate or missing visual example id: {visual['id']!r}")
                 seen.add(visual["id"])
                 (temporary / f"{visual['id']}.svg").write_text(visual["svg"], encoding="utf-8")
-                manifest.append({
+                manifest_item = {
                     "id": visual["id"],
                     "kind": visual["kind"],
                     "output_omitted": visual.get("output_omitted", False),
@@ -2280,7 +2317,10 @@ SELECT json_build_object(
                     "screen": visual["screen"],
                     "source": visual["source"],
                     "layers": visual.get("layers", []),
-                })
+                }
+                if visual.get("native_output"):
+                    manifest_item["native_output"] = visual["native_output"]
+                manifest.append(manifest_item)
             (temporary / "manifest.json").write_text(
                 json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
             )
@@ -2289,8 +2329,13 @@ SELECT json_build_object(
                 visual_node = ET.SubElement(manifest_root, "visual", {
                     key: ("true" if value is True else "false" if value is False else str(value))
                     for key, value in item.items()
-                    if key != "layers"
+                    if key not in {"layers", "native_output"} and value is not None
                 })
+                if item.get("native_output"):
+                    native_output = ET.SubElement(visual_node, "native-output", {
+                        "format": "hexewkb",
+                    })
+                    native_output.text = item["native_output"]
                 for layer in item["layers"]:
                     ET.SubElement(visual_node, "layer", {
                         key: ("true" if value is True else "false" if value is False else str(value))

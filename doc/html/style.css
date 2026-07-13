@@ -606,6 +606,7 @@ table.postgis-example-grid td {
 }
 
 .postgis-output-toggle,
+.postgis-output-representation-toggle,
 .postgis-geometry-toggle {
     align-items: center;
     background: rgba(255, 255, 255, 0.72);
@@ -625,6 +626,8 @@ table.postgis-example-grid td {
 
 .postgis-output-toggle:hover,
 .postgis-output-toggle:focus,
+.postgis-output-representation-toggle:hover,
+.postgis-output-representation-toggle:focus,
 .postgis-geometry-toggle:hover,
 .postgis-geometry-toggle:focus {
     background: #fff;
@@ -633,6 +636,7 @@ table.postgis-example-grid td {
 }
 
 .postgis-output-toggle:focus,
+.postgis-output-representation-toggle:focus,
 .postgis-geometry-toggle:focus {
     outline: 2px solid #468;
     outline-offset: 1px;
@@ -662,8 +666,12 @@ table.postgis-example-grid td {
         color: #000 !important;
     }
     .postgis-copy-button,
-    .postgis-output-toggle {
+    .postgis-output-toggle,
+    .postgis-output-representation-toggle {
         display: none;
+    }
+    .postgis-native-output {
+        display: none !important;
     }
     .postgis-output-text-collapsed pre.screen {
         display: block;

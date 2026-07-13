@@ -420,6 +420,23 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertIn("ST_AsHEXEWKB", queries[0])
         self.assertEqual(2, queries[0].count("'XDR'"))
 
+    def test_typed_hexwkb_comparison_accepts_readable_ewkt_expectation(self):
+        ndr = "0101000020E6100000000000000000F03F0000000000000040"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertTrue(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["SRID=4326;POINT(1 2)"]]
+            )
+        )
+        self.assertIn("ST_GeomFromEWKT('SRID=4326;POINT(1 2)')", queries[0])
+
+    def test_readable_geometry_expectation_is_detected(self):
+        self.assertTrue(self.tester.expected_has_geometry_text([["POINT(1 2)"]]))
+        self.assertTrue(self.tester.expected_has_geometry_text([["POLYGON EMPTY"]]))
+        self.assertFalse(self.tester.expected_has_geometry_text([["not geometry"]]))
+
 
 class ExampleTestRunnerTest(unittest.TestCase):
     def make_runner(self, actual_rows):
@@ -1406,6 +1423,25 @@ class VisualExampleTest(unittest.TestCase):
         self.assertEqual("Output", captured[-1]["label"])
         self.assertIn(">Output</text>", visual["svg"])
 
+    def test_native_geometry_visual_exposes_raw_hex_alongside_readable_ewkt(self):
+        self.tester.visual_payload = lambda database, layers: {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": 1, "y": 2,
+            } for layer in layers],
+        }
+        hexwkb = "0101000000000000000000F03F0000000000000040"
+        actual = QueryRows([[hexwkb]], ["point"], ["geometry"])
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT 'POINT(1 2)'::geometry",
+            "expected": [["POINT(1 2)"]],
+            "visual_id": "native-output", "label": "native-output:1",
+            "visual_refentry": "native-output", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertEqual(hexwkb, visual["native_output"])
+
     def test_render_visual_example_skips_provisional_hex_text(self):
         hexwkb = "010300000000000000"
         actual = QueryRows([[hexwkb]], ["payload"], ["text"])
@@ -1637,6 +1673,7 @@ class VisualExampleTest(unittest.TestCase):
                     "id": "one", "source": "ST_Buffer:1", "svg": "<svg/>\n",
                     "kind": "geometry-output", "preferred": True,
                     "refentry": "ST_Buffer", "screen": 1, "output_omitted": False,
+                    "native_output": "01010000000000000000000000000000000000000000",
                     "layers": [{
                         "id": "one-code-1", "source": "Code", "label": "center",
                         "row": None, "column": None, "dimension": 0,
@@ -1651,6 +1688,7 @@ class VisualExampleTest(unittest.TestCase):
                     "id": "one", "kind": "geometry-output", "preferred": True,
                     "refentry": "ST_Buffer", "screen": 1, "source": "ST_Buffer:1",
                     "output_omitted": False,
+                    "native_output": "01010000000000000000000000000000000000000000",
                     "layers": [{
                         "id": "one-code-1", "source": "Code", "label": "center",
                         "row": None, "column": None, "dimension": 0,
@@ -1662,6 +1700,7 @@ class VisualExampleTest(unittest.TestCase):
             manifest_xml = (target / "manifest.xml").read_text(encoding="utf-8")
             self.assertIn('id="one"', manifest_xml)
             self.assertIn('preferred="true"', manifest_xml)
+            self.assertIn('<native-output format="hexewkb">01010000', manifest_xml)
             self.assertIn('<layer id="one-code-1" source="Code" label="center"', manifest_xml)
             self.assertIn('dimension="0" srid="0" frame="Overlay"', manifest_xml)
 

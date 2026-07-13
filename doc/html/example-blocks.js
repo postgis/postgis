@@ -1098,6 +1098,20 @@
     button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
   }
 
+  function setOutputRepresentation(block, button, nativeOutput) {
+    var readable = block && block.querySelector('pre.screen:not(.postgis-native-output)');
+    var native = block && block.querySelector('pre.postgis-native-output');
+    if (!readable || !native || !button) return;
+    readable.hidden = nativeOutput;
+    readable.setAttribute('aria-hidden', nativeOutput ? 'true' : 'false');
+    native.hidden = !nativeOutput;
+    native.setAttribute('aria-hidden', nativeOutput ? 'false' : 'true');
+    button.textContent = nativeOutput ? 'Show EWKT' : 'Show HEXEWKB';
+    button.setAttribute('aria-label', nativeOutput ? 'Show readable EWKT' : 'Show native HEXEWKB');
+    button.setAttribute('title', nativeOutput ? 'Show readable EWKT' : 'Show native HEXEWKB');
+    button.setAttribute('aria-expanded', nativeOutput ? 'true' : 'false');
+  }
+
   function preferVisualOutput(block) {
     if (!block || block.querySelector('.postgis-output-toggle')) return;
     var pre = block.querySelector('pre.screen');
@@ -1245,6 +1259,14 @@
     return true;
   }
 
+  function handleOutputRepresentationToggle(event) {
+    var button = event.target.closest && event.target.closest('.postgis-output-representation-toggle');
+    if (!button) return false;
+    var block = button.closest('.postgis-example-output');
+    setOutputRepresentation(block, button, button.getAttribute('aria-expanded') !== 'true');
+    return true;
+  }
+
   // ---------------------------------------------------------------------------
   // Copy button
   // ---------------------------------------------------------------------------
@@ -1314,7 +1336,7 @@
   }
 
   function handleCopyClick(event) {
-    if (handleFigureToggle(event) || handleOutputToggle(event)) {
+    if (handleFigureToggle(event) || handleOutputToggle(event) || handleOutputRepresentationToggle(event)) {
       return;
     }
     var button = event.target.closest && event.target.closest('.postgis-copy-button');
@@ -1379,6 +1401,7 @@
     scanGeometryCandidates: scanGeometryCandidates,
     wrapLiteralRange: wrapLiteralRange,
     setOutputTextCollapsed: setOutputTextCollapsed,
+    setOutputRepresentation: setOutputRepresentation,
     normalizeDisplayedSql: normalizeDisplayedSql,
     codeText: codeText,
     normalizeRefIndex: normalizeRefIndex,
