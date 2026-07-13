@@ -2084,28 +2084,31 @@ FROM (SELECT 'LINESTRING(0 0,0 1,1 0,1 1,0 0)'::geometry AS geom) AS foo;</progr
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting role="requires-external-state">
---Return how much byte space Boston takes up  in our Mass data set
-SELECT pg_size_pretty(SUM(ST_MemSize(geom))) as totgeomsum,
-pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)) As bossum,
-CAST(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)*1.00 /
-        SUM(ST_MemSize(geom))*100 As numeric(10, 2)) As perbos
+		<para>Compare the memory used by all geometries in a Massachusetts town dataset with the subset for Boston.</para>
+		<programlisting role="requires-external-state">SELECT pg_size_pretty(sum(ST_MemSize(geom))) AS totgeomsum,
+       pg_size_pretty(sum(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)) AS bossum,
+       cast(
+           sum(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END) * 100.0
+           / sum(ST_MemSize(geom)) AS numeric(10, 2)
+       ) AS perbos
 FROM towns;</programlisting>
 <screen> totgeomsum | bossum | perbos
 ------------+--------+--------
  1522 kB    | 30 kB  |   1.99
 (1 row)</screen>
 
+		<para>Return the memory size of a CircularString in bytes.</para>
 <programlisting>SELECT ST_MemSize('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'::geometry);</programlisting>
 <screen> st_memsize
 ------------
          80
 (1 row)</screen>
 
-<programlisting role="requires-external-state">
---What percentage of our table is taken up by just the geometry
-SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, sum(ST_MemSize(geom)) As geomsize,
-sum(ST_MemSize(geom))*1.00/pg_total_relation_size('public.neighborhoods')*100 As pergeom
+		<para>Calculate the percentage of a table's total size used by geometry data.</para>
+		<programlisting role="requires-external-state">SELECT pg_total_relation_size('public.neighborhoods') AS fulltable_size,
+       sum(ST_MemSize(geom)) AS geomsize,
+       sum(ST_MemSize(geom)) * 100.0
+           / pg_total_relation_size('public.neighborhoods') AS pergeom
 FROM neighborhoods;</programlisting>
 <screen> fulltable_size | geomsize |         pergeom
 ----------------+----------+--------------------------
