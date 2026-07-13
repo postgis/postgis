@@ -215,8 +215,8 @@ LIMIT 3;]]></programlisting>
  5340 | Self-intersection | POINT(42 5)
  5350 | Self-intersection | POINT(52 5)]]></screen>
 
-		<programlisting>--simple example
-SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 150410)');</programlisting>
+		<para>This example reports a valid LineString.</para>
+		<programlisting language="sql">SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 150410)');</programlisting>
 <screen><![CDATA[ valid | reason | location
 -------+--------+----------
  t     |        |]]></screen>
