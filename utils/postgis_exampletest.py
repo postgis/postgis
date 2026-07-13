@@ -1679,7 +1679,12 @@ SELECT json_build_object(
             parts_by_ord.setdefault(part["ord"], []).append(part)
         for ordinal, parts in sorted(parts_by_ord.items()):
             if any(part.get("is_3d_face") for part in parts):
-                parts.sort(key=lambda part: (float(part.get("depth", 0)), part.get("svg", "")))
+                # View the isometric projection from the negative XYZ side:
+                # paint the farthest faces first so opaque near faces hide them.
+                parts.sort(
+                    key=lambda part: (float(part.get("depth", 0)), part.get("svg", "")),
+                    reverse=True,
+                )
             source = parts[0]["source"]
             frame_id = str(parts[0].get("frame", frames[0]["id"]))
             layout = layouts[frame_id]
@@ -1741,7 +1746,7 @@ SELECT json_build_object(
                     shapes.append(
                         f'<path class="{dimension_class}"{face_attributes} d="{svg_data}" '
                         f'stroke="{part_color}" fill="{part_color if dimension_class == "area" else fill}" '
-                        f'fill-opacity="{0.82 if part.get("is_3d_face") else 0.24 if dimension_class == "area" else 0}" stroke-opacity="1" '
+                        f'fill-opacity="{1 if part.get("is_3d_face") else 0.24 if dimension_class == "area" else 0}" stroke-opacity="1" '
                         'fill-rule="evenodd" '
                         f'stroke-width="{stroke_width:.12g}" '
                         'stroke-linecap="round" stroke-linejoin="round"/>'

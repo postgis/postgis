@@ -620,7 +620,7 @@ class VisualExampleTest(unittest.TestCase):
             hashlib.sha256(svg.encode()).hexdigest(),
         )
 
-    def test_z_surface_faces_are_projected_depth_sorted_and_shaded(self):
+    def test_z_surface_faces_are_projected_depth_sorted_shaded_and_opaque(self):
         payload = {
             "bounds": [0, 0, 2, 1],
             "parts": [
@@ -643,14 +643,35 @@ class VisualExampleTest(unittest.TestCase):
         svg = self.tester.visual_svg("solid-3d", payload)
         self.assertEqual(svg, self.tester.visual_svg("solid-3d", payload))
         depths = [float(value) for value in re.findall(r'data-postgis-depth="([^"]+)"', svg)]
-        self.assertEqual(sorted(depths), depths)
+        self.assertEqual(sorted(depths, reverse=True), depths)
         fills = re.findall(
             r'data-postgis-face="[12]"[^>]+fill="(#[0-9a-f]{6})"', svg
         )
         self.assertEqual(2, len(fills))
         self.assertEqual(2, len(set(fills)))
-        self.assertEqual(2, svg.count('fill-opacity="0.82"'))
+        self.assertEqual(2, svg.count('fill-opacity="1"'))
+        self.assertNotIn('fill-opacity="0.82"', svg)
         self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
+
+    def test_tin_faces_do_not_alpha_stack_when_their_projections_overlap(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "TIN",
+                 "root_type": "TIN", "type": "TRIANGLE", "svg": "unused",
+                 "has_z": True, "points_xyz": xyz_vertices(points, ring=True)}
+                for points in (
+                    [[0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 0, 0]],
+                    [[0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 0]],
+                    [[0, 0, 0], [1, 0, 0], [0, 0, 1], [0, 0, 0]],
+                    [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0]],
+                )
+            ],
+        }
+        svg = self.tester.visual_svg("tetrahedron", payload)
+        self.assertEqual(4, svg.count('data-postgis-face='))
+        self.assertEqual(4, svg.count('fill-opacity="1"'))
+        self.assertNotIn('fill-opacity="0.82"', svg)
 
     def test_mixed_frame_projects_2d_footprint_with_3d_roof(self):
         payload = {
