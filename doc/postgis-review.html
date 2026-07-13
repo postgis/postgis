@@ -141,6 +141,27 @@
 
     .pane + .pane { border-left: 2px solid #6f879d; }
 
+    .pane::before {
+      content: attr(data-label);
+      position: absolute;
+      top: 0.55rem;
+      left: 0.55rem;
+      z-index: 1;
+      padding: 0.28rem 0.52rem;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: rgb(255 255 255 / 92%);
+      box-shadow: 0 1px 3px rgb(29 53 73 / 18%);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .pane.old::before { color: var(--old); }
+    .pane.new::before { color: var(--new); }
+
     iframe {
       display: block;
       width: 100%;
@@ -181,10 +202,10 @@
   </header>
 
   <main class="panes">
-    <section class="pane" aria-label="Old manual">
+    <section class="pane old" id="old-pane" data-label="OLD" aria-label="Old manual">
       <iframe id="old" title="Old PostGIS manual" src="base/postgis-en.html"></iframe>
     </section>
-    <section class="pane" aria-label="New manual">
+    <section class="pane new" id="new-pane" data-label="NEW" aria-label="New manual">
       <iframe id="new" title="New PostGIS manual" src="../postgis-en.html"></iframe>
     </section>
   </main>
@@ -200,6 +221,10 @@
       const labels = {
         old: document.getElementById("old-label"),
         new: document.getElementById("new-label")
+      };
+      const panes = {
+        old: document.getElementById("old-pane"),
+        new: document.getElementById("new-pane")
       };
       const jump = document.getElementById("jump");
       const datalist = document.getElementById("refentries");
@@ -227,6 +252,8 @@
 
       labels.old.textContent = params.get("oldLabel") || "OLD";
       labels.new.textContent = params.get("newLabel") || "NEW";
+      panes.old.dataset.label = labels.old.textContent;
+      panes.new.dataset.label = labels.new.textContent;
 
       function frameWindow(side) {
         return frames[side].contentWindow;
