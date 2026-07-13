@@ -133,18 +133,37 @@ and <varname>GetNodeEdges</varname> functions.
             <refsection>
             <title>Description</title>
             <para>A composite type that consists of an error message and two integers.  The <xref linkend="ValidateTopology"/> function returns a set of these to denote validation errors and the id1 and id2 to denote the ids of the topology objects involved in the error.</para>
-                <orderedlist>
-                  <listitem>
-                    <para><varname>error</varname> is varchar:  Denotes type of error. </para>
-                    <para>Current error descriptors are: coincident nodes, edge crosses node, edge not simple, edge end node geometry mismatch, edge start node geometry mismatch, face overlaps face,face within face,  </para>
-                  </listitem>
-                  <listitem>
-                    <para><varname>id1</varname> is an integer: Denotes identifier of edge / face / nodes in error.</para>
-                  </listitem>
-                 <listitem>
-                    <para><varname>id2</varname> is an integer: For errors that involve 2 objects denotes the secondary edge / or node</para>
-                  </listitem>
-                </orderedlist>
+                <informaltable tabstyle="styledtable">
+                    <tgroup cols="3">
+                        <thead>
+                            <row>
+                                <entry>Field</entry>
+                                <entry>Type</entry>
+                                <entry>Description</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry><varname>error</varname></entry>
+                                <entry><type>varchar</type></entry>
+                                <entry>
+                                    <para>Denotes the type of error.</para>
+                                    <para>Current error descriptors are: coincident nodes, edge crosses node, edge not simple, edge end node geometry mismatch, edge start node geometry mismatch, face overlaps face, face within face.</para>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><varname>id1</varname></entry>
+                                <entry><type>integer</type></entry>
+                                <entry>Denotes the identifier of the edge, face, or node in error.</entry>
+                            </row>
+                            <row>
+                                <entry><varname>id2</varname></entry>
+                                <entry><type>integer</type></entry>
+                                <entry>For errors that involve two objects, denotes the secondary edge or node.</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </informaltable>
 
             </refsection>
 		  <!-- Optionally add a "See Also" section -->
