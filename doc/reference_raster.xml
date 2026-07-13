@@ -213,13 +213,15 @@ VALUES (1,
             <refsection>
             <title>Casting Behavior</title>
             <para>This section lists the automatic as well as explicit casts allowed for this data type</para>
-            <informaltable rowsep="1" frame="all">
+            <informaltable rowsep="1" frame="all" tabstyle="postgis-cast-table">
             <tgroup cols="2">
-                <tbody>
+                <thead>
                   <row>
                     <entry>Cast To</entry>
                     <entry>Behavior</entry>
                   </row>
+                </thead>
+                <tbody>
                   <row>
                     <entry>geometry</entry>
                     <entry>automatic</entry>

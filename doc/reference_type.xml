@@ -49,12 +49,14 @@
       <refsection>
 		<title>Casting Behavior</title>
 		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
-		<informaltable rowsep="1" frame="all">
+		<informaltable rowsep="1" frame="all" tabstyle="postgis-cast-table">
 		<tgroup cols="2">
-			<tbody>
+			<thead>
 			  <row>
 				<entry>Cast To</entry>  <entry>Behavior</entry>
 			  </row>
+			</thead>
+			<tbody>
 			  <row>
 				<entry>box3d</entry>	<entry>automatic</entry>
 			  </row>
@@ -96,13 +98,15 @@
       <refsection>
 		<title>Casting Behavior</title>
 		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
-		<informaltable rowsep="1" frame="all">
+		<informaltable rowsep="1" frame="all" tabstyle="postgis-cast-table">
 		<tgroup cols="2">
-			<tbody>
+			<thead>
 			  <row>
 				<entry>Cast To</entry>
 				<entry>Behavior</entry>
 			  </row>
+			</thead>
+			<tbody>
 			  <row>
 				<entry>box</entry>
 				<entry>automatic</entry>
@@ -142,13 +146,15 @@
 		<refsection>
 		<title>Casting Behavior</title>
 		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
-		<informaltable rowsep="1" frame="all">
+		<informaltable rowsep="1" frame="all" tabstyle="postgis-cast-table">
 		<tgroup cols="2">
-			<tbody>
+			<thead>
 			  <row>
 				<entry>Cast To</entry>
 				<entry>Behavior</entry>
 			  </row>
+			</thead>
+			<tbody>
 			  <row>
 				<entry>box</entry>
 				<entry>automatic</entry>
@@ -236,13 +242,15 @@
 		<refsection>
 		<title>Casting Behavior</title>
 		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
-		<informaltable rowsep="1" frame="all">
+		<informaltable rowsep="1" frame="all" tabstyle="postgis-cast-table">
 		<tgroup cols="2">
-			<tbody>
+			<thead>
 			  <row>
 				<entry>Cast To</entry>
 				<entry>Behavior</entry>
 			  </row>
+			</thead>
+			<tbody>
 			  <row>
 				<entry>geometry</entry>
 				<entry>explicit</entry>

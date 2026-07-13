@@ -823,6 +823,49 @@ table.informaltable td, th {
     padding: 0.2em 0.4em 0.2em 0.4em;
 }
 
+.postgis-cast-table table {
+    background: #fff;
+    border: 1px solid #8aa1b8 !important;
+    border-collapse: separate;
+    border-radius: 0.45rem;
+    border-spacing: 0;
+    display: inline-table;
+    margin: 0.35rem 0 1rem;
+    min-width: min(22rem, 100%);
+    overflow: hidden;
+}
+
+.postgis-cast-table th,
+.postgis-cast-table td {
+    border: 0 !important;
+    padding: 0.55rem 0.8rem;
+    text-align: left;
+}
+
+.postgis-cast-table thead th {
+    background: #e3edf8;
+    border-bottom: 1px solid #aebfd0 !important;
+    color: #304b63;
+    font-weight: 600;
+}
+
+.postgis-cast-table th + th,
+.postgis-cast-table td + td {
+    border-left: 1px solid #d8e1e8 !important;
+}
+
+.postgis-cast-table thead th + th {
+    border-left-color: #aebfd0 !important;
+}
+
+.postgis-cast-table tbody tr + tr td {
+    border-top: 1px solid #d8e1e8 !important;
+}
+
+.postgis-cast-table tbody tr:nth-child(even) td {
+    background: #f7f9fb;
+}
+
 .pdparam {
     color: #900
 }
