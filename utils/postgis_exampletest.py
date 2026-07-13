@@ -108,6 +108,7 @@ CLUSTER_COLUMN_NAMES = {"cluster", "cluster_id", "cid", "category"}
 MARKER_SCALE_COLUMN_NAME = "marker_scale"
 MAX_VISUAL_GEOMETRIES = 16
 MAX_VISUAL_WKT_BYTES = 100000
+VALUE_TOLERANCE = 1e-12
 NONVISUAL_SINGLE_INPUT_RE = re.compile(
     r"\b(?:ST_(?:AS(?:TEXT|EWKT|BINARY|EWKB|HEXEWKB|GML|KML|GEOJSON|X3D|"
     r"MARC21|GEOBUF|TWKB|ENCODEDPOLYLINE|LATLONTEXT)|GEOHASH|SRID|GEOMETRYTYPE|"
@@ -303,6 +304,61 @@ class ExampleTester:
         if not GEOMETRY_OUTPUT_TYPE_RE.fullmatch(output_type or ""):
             return None
         return self.hexwkb_geometry(value)
+
+    def geometry_comparison_query(
+        self, actual_hex, expected_hex=None, expected_wkt=None
+    ):
+        actual = (
+            "ST_GeomFromEWKB(decode("
+            f"'{actual_hex}', 'hex'))"
+        )
+        if expected_hex is not None:
+            expected = (
+                "ST_GeomFromEWKB(decode("
+                f"'{expected_hex}', 'hex'))"
+            )
+            srid_is_optional = "FALSE"
+        else:
+            expected_literal = expected_wkt.replace("'", "''")
+            expected = f"ST_GeomFromEWKT('{expected_literal}')"
+            srid_is_optional = "TRUE"
+        tolerance = format(VALUE_TOLERANCE, ".17g")
+        return (
+            "WITH geometries AS (SELECT "
+            f"{actual} AS actual, {expected} AS expected), "
+            "comparable AS (SELECT actual, CASE WHEN "
+            f"{srid_is_optional} AND ST_SRID(expected) = 0 "
+            "THEN ST_SetSRID(expected, ST_SRID(actual)) ELSE expected END AS expected "
+            "FROM geometries), "
+            "actual_components AS (SELECT path, GeometryType(geom) AS type "
+            "FROM comparable CROSS JOIN LATERAL ST_Dump(actual)), "
+            "expected_components AS (SELECT path, GeometryType(geom) AS type "
+            "FROM comparable CROSS JOIN LATERAL ST_Dump(expected)), "
+            "actual_points AS (SELECT path, ST_X(geom) AS x, ST_Y(geom) AS y, "
+            "ST_Z(geom) AS z, ST_M(geom) AS m "
+            "FROM comparable CROSS JOIN LATERAL ST_DumpPoints(actual)), "
+            "expected_points AS (SELECT path, ST_X(geom) AS x, ST_Y(geom) AS y, "
+            "ST_Z(geom) AS z, ST_M(geom) AS m "
+            "FROM comparable CROSS JOIN LATERAL ST_DumpPoints(expected)) "
+            "SELECT GeometryType(actual) = GeometryType(expected) "
+            "AND ST_CoordDim(actual) = ST_CoordDim(expected) "
+            "AND ST_Zmflag(actual) = ST_Zmflag(expected) "
+            "AND ST_SRID(actual) = ST_SRID(expected) "
+            "AND NOT EXISTS (SELECT 1 FROM actual_components a FULL JOIN "
+            "expected_components e USING (path) WHERE a.path IS NULL OR e.path IS NULL "
+            "OR a.type IS DISTINCT FROM e.type) "
+            "AND NOT EXISTS (SELECT 1 FROM actual_points a FULL JOIN expected_points e "
+            "USING (path) WHERE a.path IS NULL OR e.path IS NULL "
+            "OR (a.x IS NULL) <> (e.x IS NULL) "
+            f"OR (a.x IS NOT NULL AND abs(a.x - e.x) > {tolerance}) "
+            "OR (a.y IS NULL) <> (e.y IS NULL) "
+            f"OR (a.y IS NOT NULL AND abs(a.y - e.y) > {tolerance}) "
+            "OR (a.z IS NULL) <> (e.z IS NULL) "
+            f"OR (a.z IS NOT NULL AND abs(a.z - e.z) > {tolerance}) "
+            "OR (a.m IS NULL) <> (e.m IS NULL) "
+            f"OR (a.m IS NOT NULL AND abs(a.m - e.m) > {tolerance})) "
+            "FROM comparable"
+        )
 
     def expected_has_hexwkb(self, expected):
         return any(
@@ -614,7 +670,7 @@ class ExampleTester:
         if re.match(r"^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$", left_value) and re.match(
             r"^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$", right_value
         ):
-            return abs(float(left_value) - float(right_value)) <= 1e-12
+            return abs(float(left_value) - float(right_value)) <= VALUE_TOLERANCE
         return False
 
     def normalized_header_name(self, value):
@@ -1247,20 +1303,10 @@ class ExampleTester:
                 if actual_hex is not None or expected_hex is not None or expected_wkt is not None:
                     if actual_hex is None or (expected_hex is None and expected_wkt is None):
                         return False
-                    if expected_wkt is not None:
-                        actual_wkt = self.run_psql_scalar(
-                            database,
-                            "SELECT ST_AsEWKT(ST_GeomFromEWKB(decode("
-                            f"'{actual_hex['hexwkb']}', 'hex')))",
-                        )
-                        if not self.values_equal(actual_wkt, expected_wkt):
-                            return False
-                        continue
-                    query = (
-                        "SELECT ST_AsHEXEWKB(ST_GeomFromEWKB(decode("
-                        f"'{actual_hex['hexwkb']}', 'hex')), 'XDR') = "
-                        "ST_AsHEXEWKB(ST_GeomFromEWKB(decode("
-                        f"'{expected_hex['hexwkb']}', 'hex')), 'XDR')"
+                    query = self.geometry_comparison_query(
+                        actual_hex["hexwkb"],
+                        expected_hex["hexwkb"] if expected_hex is not None else None,
+                        expected_wkt,
                     )
                     if self.run_psql_scalar(database, query) != "t":
                         return False

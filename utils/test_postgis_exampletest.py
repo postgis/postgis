@@ -417,25 +417,75 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
         actual = QueryRows([[xdr]], types=["geometry"])
         self.assertTrue(self.tester.typed_rows_equal("manual", actual, [[ndr]]))
-        self.assertIn("ST_AsHEXEWKB", queries[0])
-        self.assertEqual(2, queries[0].count("'XDR'"))
+        self.assertIn("ST_DumpPoints", queries[0])
+        self.assertIn("ST_Zmflag(actual) = ST_Zmflag(expected)", queries[0])
 
     def test_typed_hexwkb_comparison_accepts_readable_ewkt_expectation(self):
         ndr = "0101000020E6100000000000000000F03F0000000000000040"
         queries = []
-        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "SRID=4326;POINT(1 2)"
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
         actual = QueryRows([[ndr]], types=["geometry"])
         self.assertTrue(
             self.tester.typed_rows_equal(
                 "manual", actual, [["SRID=4326;POINT(1 2)"]]
             )
         )
-        self.assertIn("ST_AsEWKT(ST_GeomFromEWKB", queries[0])
+        self.assertIn("ST_GeomFromEWKB", queries[0])
+        self.assertIn("ST_GeomFromEWKT('SRID=4326;POINT(1 2)')", queries[0])
+        self.assertNotIn("ST_AsText", queries[0])
+        self.assertNotIn("ST_AsEWKT", queries[0])
+
+    def test_typed_hexwkb_comparison_accepts_readable_wkt_without_srid(self):
+        ndr = "0102000020E610000002000000713D0AD7A38051C08FC2F5285C6F4540D7A3703D0A8751C0713D0AD7A3704540"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertTrue(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["LINESTRING(-70.01 42.87,-70.11 42.88)"]]
+            )
+        )
+        self.assertIn("TRUE AND ST_SRID(expected) = 0", queries[0])
+        self.assertNotIn("regexp_replace", queries[0])
+
+    def test_typed_hexwkb_comparison_accepts_legacy_3d_wkt_without_z_token(self):
+        ndr = "010200008002000000010000000000F0BFFFFFFFFFFFFFFFBF0000000000000840020000000000F0BF00000000000010C00000000000000840"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertTrue(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["LINESTRING(-1 -2 3,-1 -4 3)"]]
+            )
+        )
+        self.assertIn("ST_GeomFromEWKT('LINESTRING(-1 -2 3,-1 -4 3)')", queries[0])
+
+    def test_typed_hexwkb_comparison_accepts_explicit_z_token(self):
+        ndr = "010200008002000000010000000000F0BFFFFFFFFFFFFFFFBF0000000000000840020000000000F0BF00000000000010C00000000000000840"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertTrue(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["LINESTRING Z (-1 -2 3,-1 -4 3)"]]
+            )
+        )
+        self.assertIn("ST_GeomFromEWKT('LINESTRING Z (-1 -2 3,-1 -4 3)')", queries[0])
+
+    def test_typed_geometry_comparison_rejects_semantic_mismatch(self):
+        ndr = "0101000020E6100000000000000000F03F0000000000000040"
+        self.tester.run_psql_scalar = lambda database, query: "f"
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertFalse(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["SRID=3857;POINT(1 2)"]]
+            )
+        )
 
     def test_typed_hexwkb_comparison_accepts_wrapped_readable_ewkt(self):
         ndr = "0101000020E6100000000000000000F03F0000000000000040"
         queries = []
-        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "SRID=4326;POINT(1 2)"
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
         actual = QueryRows([[ndr]], types=["geometry"])
 
         self.assertTrue(
@@ -445,7 +495,8 @@ class ExampleTestComparisonTest(unittest.TestCase):
                 [["SRID=4326;POINT(1"], [" 2)"]],
             )
         )
-        self.assertIn("ST_AsEWKT(ST_GeomFromEWKB", queries[0])
+        self.assertIn("ST_GeomFromEWKB", queries[0])
+        self.assertIn("ST_DumpPoints", queries[0])
 
     def test_readable_geometry_expectation_is_detected(self):
         self.assertTrue(self.tester.expected_has_geometry_text([["POINT(1 2)"]]))
@@ -584,7 +635,7 @@ class ExampleTestRunnerTest(unittest.TestCase):
             [[hexwkb]], ["aline"]
         )
         tester.query_output_types = lambda database, query: described.append(query) or ["geometry"]
-        tester.run_psql_scalar = lambda database, query: "LINESTRING(1 2,3 4)"
+        tester.run_psql_scalar = lambda database, query: "t"
 
         actual = tester.run_one_example("manual", example)
 

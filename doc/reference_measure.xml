@@ -66,14 +66,14 @@ FROM (
 				Note this is in square feet because 2249 is
 				Massachusetts State Plane Feet and transformed area is in square meters since EPSG:26986 is state plane Massachusetts meters. </para>
 <programlisting language="sql">SELECT ST_Area(geom) AS sqft,
-       ST_Area(ST_Transform(geom, 26986)) AS sqm
+       round(ST_Area(ST_Transform(geom, 26986))::numeric, 6) AS sqm
 FROM (
   SELECT 'SRID=2249;POLYGON((743238 2967416,743238 2967450,
           743265 2967450,743265.625 2967416,743238 2967416))'::geometry AS geom
 ) AS subquery;</programlisting>
-<screen> sqft   |       sqm
---------+-----------------
-928.625 | 86.272430607008</screen>
+<screen> sqft   |    sqm
+--------+-----------
+928.625 | 86.272431</screen>
 
 <para>Return area square feet and square meters using geography data type.  Note that we transform to our geometry to geography
 	(before you can do that make sure your geometry is in WGS 84 long lat 4326).  Geography always measures in meters.
