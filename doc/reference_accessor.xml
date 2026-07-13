@@ -220,6 +220,15 @@ The result is still topologically valid.
 	  <refsection>
 		<title>Examples</title>
 
+		<para>This example shows a polygon together with the diagonal of its bounding box.</para>
+		<programlisting>WITH input AS (
+  SELECT 'POLYGON((10 20,30 60,70 40,90 10,50 -10,10 20))'::geometry AS geom
+)
+SELECT ST_AsText(geom) AS input_polygon,
+       ST_AsText(ST_BoundingDiagonal(geom)) AS diagonal
+FROM input;</programlisting>
+<screen role="visual-overlay">POLYGON((10 20,30 60,70 40,90 10,50 -10,10 20)) | LINESTRING(10 -10,90 60)</screen>
+
 		<para>This example returns the minimum X coordinate of a buffer around a point.</para>
 		<programlisting>
 SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
