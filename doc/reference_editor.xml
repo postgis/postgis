@@ -1169,8 +1169,9 @@ FROM data;</programlisting>
 		<refsection>
 			<title>Examples</title>
 
+<para>A Polygon is converted to a single-element MultiPolygon. The coordinates are unchanged.</para>
 <programlisting language="sql">SELECT ST_AsText(ST_Multi('POLYGON ((10 30,30 30,30 10,10 10,10 30))'));</programlisting>
-<screen>MULTIPOLYGON(((10 30,30 30,30 10,10 10,10 30)))</screen>
+<screen role="text-primary">MULTIPOLYGON(((10 30,30 30,30 10,10 10,10 30)))</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
