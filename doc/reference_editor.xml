@@ -1339,30 +1339,12 @@ SELECT ST_AsText(ST_Normalize('GEOMETRYCOLLECTION(
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>
-						geometry
-						<function>ST_QuantizeCoordinates</function>
-					</funcdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>g</parameter>
-					</paramdef>
-					<paramdef>
-						<type>int</type>
-						<parameter>prec_x</parameter>
-					</paramdef>
-					<paramdef>
-						<type>int</type>
-						<parameter>prec_y</parameter>
-					</paramdef>
-					<paramdef>
-						<type>int</type>
-						<parameter>prec_z</parameter>
-					</paramdef>
-					<paramdef>
-						<type>int</type>
-						<parameter>prec_m</parameter>
-					</paramdef>
+					<funcdef>geometry <function>ST_QuantizeCoordinates</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
+					<paramdef><type>int</type> <parameter>prec_x</parameter></paramdef>
+					<paramdef choice="opt"><type>int</type> <parameter>prec_y = NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>int</type> <parameter>prec_z = NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>int</type> <parameter>prec_m = NULL</parameter></paramdef>
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
