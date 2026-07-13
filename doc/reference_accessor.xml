@@ -1121,24 +1121,50 @@ SELECT ST_AsText(ST_Envelope(ST_Collect(
 
 	  <refsection>
 		<title>Examples</title>
-<para>This example extracts exterior rings from a table of polygons.</para>
+
+<para>Extract the exterior ring from a Polygon with a hole.</para>
+<programlisting>WITH input(geom) AS (VALUES (
+  'POLYGON((0 0,2 9,9 11,14 6,12 0,0 0),(4 3,9 3,10 7,5 8,4 3))'::geometry
+))
+SELECT ST_AsText(geom) AS input_polygon,
+       ST_AsText(ST_ExteriorRing(geom)) AS exterior_ring
+FROM input;</programlisting>
+<screen role="visual-overlay">POLYGON((0 0,2 9,9 11,14 6,12 0,0 0),(4 3,9 3,10 7,5 8,4 3)) | LINESTRING(0 0,2 9,9 11,14 6,12 0,0 0)</screen>
+
+<para>For a MultiPolygon, dump the component Polygons before extracting their exterior rings. Both component Polygons in this example have holes.</para>
+<programlisting>WITH input(geom) AS (VALUES (
+  'MULTIPOLYGON(
+    ((0 0,2 9,9 11,14 6,12 0,0 0),(4 3,9 3,10 7,5 8,4 3)),
+    ((18 1,18 10,29 10,31 4,25 0,18 1),(21 3,25 2,28 5,25 8,21 7,21 3))
+  )'::geometry
+))
+SELECT ST_AsText(part.geom) AS input_polygon,
+       ST_AsText(ST_ExteriorRing(part.geom)) AS exterior_ring
+FROM input
+CROSS JOIN LATERAL ST_Dump(geom) AS part
+ORDER BY part.path;</programlisting>
+<screen role="visual-overlay">POLYGON((0 0,2 9,9 11,14 6,12 0,0 0),(4 3,9 3,10 7,5 8,4 3)) | LINESTRING(0 0,2 9,9 11,14 6,12 0,0 0)
+POLYGON((18 1,18 10,29 10,31 4,25 0,18 1),(21 3,25 2,28 5,25 8,21 7,21 3)) | LINESTRING(18 1,18 10,29 10,31 4,25 0,18 1)</screen>
+
+<para>Extract exterior rings from a table of Polygons.</para>
 <programlisting>
 SELECT gid, ST_ExteriorRing(geom) AS ering
-FROM sometable;
+FROM sometable;</programlisting>
 
---If you have a table of MULTIPOLYGONs
---and want to return a MULTILINESTRING composed of the exterior rings of each polygon
+<para>For a table of MultiPolygons, dump the component Polygons and collect their exterior rings into a MultiLineString.</para>
+<programlisting>
 SELECT gid, ST_Collect(ST_ExteriorRing(geom)) AS erings
     FROM (SELECT gid, (ST_Dump(geom)).geom As geom
             FROM sometable) As foo
-GROUP BY gid;
+GROUP BY gid;</programlisting>
 
---3d Example
+<para>This example returns the 3D exterior ring of a Polygon.</para>
+<programlisting>
 SELECT ST_AsEWKT(ST_ExteriorRing(
-    'POLYGON((0 0 1,1 1 1,1 2 1,1 1 1,0 0 1))'
+    'POLYGON Z ((0 0 5,4 0 5,4 3 5,0 3 5,0 0 5))'
     )
 );</programlisting>
-<screen>LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)</screen>
+<screen>LINESTRING(0 0 5,4 0 5,4 3 5,0 3 5,0 0 5)</screen>
 	  </refsection>
 
 	  <refsection>
