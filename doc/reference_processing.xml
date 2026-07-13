@@ -1161,9 +1161,7 @@ WHERE z.count_delta &lt;&gt; 0;</programlisting>
 
     <refentry xml:id="ST_GeometricMedian">
       <refnamediv>
-          <refname>
-              ST_GeometricMedian
-          </refname>
+          <refname>ST_GeometricMedian</refname>
 
         <refpurpose>
             Returns the geometric median of a MultiPoint.

@@ -1762,9 +1762,7 @@ SELECT ST_IsClosed('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 
 	<refentry xml:id="ST_IsPolygonCCW">
 		<refnamediv>
-			<refname>
-				ST_IsPolygonCCW
-			</refname>
+			<refname>ST_IsPolygonCCW</refname>
 			<refpurpose>Tests if Polygons have exterior rings oriented counter-clockwise and interior rings oriented clockwise.
 			</refpurpose>
 		</refnamediv>
@@ -1826,9 +1824,7 @@ SELECT ST_IsClosed('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 
 	<refentry xml:id="ST_IsPolygonCW">
 		<refnamediv>
-			<refname>
-				ST_IsPolygonCW
-			</refname>
+			<refname>ST_IsPolygonCW</refname>
 			<refpurpose>Tests if Polygons have exterior rings oriented clockwise and interior rings oriented counter-clockwise.
 			</refpurpose>
 		</refnamediv>

@@ -809,9 +809,7 @@ SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0
 
 	<refentry xml:id="ST_ForcePolygonCCW">
 		<refnamediv>
-			<refname>
-				ST_ForcePolygonCCW
-			</refname>
+			<refname>ST_ForcePolygonCCW</refname>
 			<refpurpose>
 				Orients all exterior rings counter-clockwise and all interior rings clockwise.
 			</refpurpose>
@@ -852,9 +850,7 @@ SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0
 
 	<refentry xml:id="ST_ForcePolygonCW">
 		<refnamediv>
-			<refname>
-				ST_ForcePolygonCW
-			</refname>
+			<refname>ST_ForcePolygonCW</refname>
 			<refpurpose>
 				Orients all exterior rings clockwise and all interior rings counter-clockwise.
 			</refpurpose>
@@ -1289,9 +1285,7 @@ SELECT ST_AsText(ST_Normalize('GEOMETRYCOLLECTION(
 
 	<refentry xml:id="ST_QuantizeCoordinates">
 		<refnamediv>
-			<refname>
-				ST_QuantizeCoordinates
-			</refname>
+			<refname>ST_QuantizeCoordinates</refname>
 			<refpurpose>
 				Sets least significant bits of coordinates to zero
 			</refpurpose>
