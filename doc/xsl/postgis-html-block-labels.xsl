@@ -249,7 +249,16 @@
                         and ($manifest.visual/@preferred = 'true'
                              or (not($manifest.visual) and contains($role.tokens, ' visual-primary ')))"/>
 
-  <div class="postgis-example-block postgis-example-output" role="group" data-postgis-block="output">
+  <div role="group" data-postgis-block="output">
+    <xsl:attribute name="class">
+      <xsl:text>postgis-example-block postgis-example-output</xsl:text>
+      <xsl:if test="contains($role.tokens, ' psql-expanded ')">
+        <xsl:text> postgis-example-output-expanded</xsl:text>
+      </xsl:if>
+    </xsl:attribute>
+    <xsl:if test="contains($role.tokens, ' psql-expanded ')">
+      <xsl:attribute name="data-postgis-output-layout">expanded</xsl:attribute>
+    </xsl:if>
     <xsl:if test="string($visual.id) != ''">
       <xsl:attribute name="data-postgis-visual-id"><xsl:value-of select="$visual.id"/></xsl:attribute>
     </xsl:if>

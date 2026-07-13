@@ -537,17 +537,16 @@ FROM data;</programlisting>
     <refsection>
       <title>Examples</title>
       <para>Get the metadata for EPSG:3005.</para>
-      <programlisting>
-SELECT * FROM postgis_srs('EPSG', '3005');
-
+      <programlisting language="sql">SELECT auth_name, auth_srid, srname,
+  ST_AsText(point_sw) AS point_sw,
+  ST_AsText(point_ne) AS point_ne
+FROM postgis_srs('EPSG', '3005');</programlisting>
+      <screen role="psql-expanded">-[ RECORD 1 ]-------------------
 auth_name | EPSG
 auth_srid | 3005
 srname    | NAD83 / BC Albers
-srtext    | PROJCS["NAD83 / BC Albers", ... ]]
-proj4text | +proj=aea +lat_0=45 +lon_0=-126 +lat_1=50 +lat_2=58.5 +x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs +type=crs
-point_sw  | 0101000020E6100000E17A14AE476161C00000000000204840
-point_ne  | 0101000020E610000085EB51B81E855CC0E17A14AE47014E40
-    </programlisting>
+point_sw  | POINT(-139.04 48.25)
+point_ne  | POINT(-114.08 60.01)</screen>
     </refsection>
 
     <!-- Optionally add a "See Also" section -->

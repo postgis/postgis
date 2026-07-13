@@ -128,6 +128,10 @@ coordinate frame. Use `role="visual-separate-output"` when independent output
 columns should be compared in separate frames at a common scale. Geometry
 columns named with an `input_` prefix are treated as authored input layers; in
 separate-output mode their remaining column names also label their frames.
+Use `role="psql-expanded"` on a `screen` when a wide result is clearer in
+psql's expanded display: one `-[ RECORD n ]-` block per row and one
+`column | value` line per field. The example runner transposes this display
+back into rows for comparison, so expanded examples remain executable.
 Aliases on cast WKT literals and geometry result columns become figure legend
 labels; quote an alias when the label needs spaces.
 Keep a short plain paragraph immediately before the associated

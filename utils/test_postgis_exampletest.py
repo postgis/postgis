@@ -54,6 +54,37 @@ class ExampleTestParserTest(unittest.TestCase):
         ]
         self.assertEqual(["center", "nearest"], self.tester.psql_headers_from_lines(lines))
 
+    def test_psql_expanded_record_is_transposed_into_one_row(self):
+        lines = [
+            "-[ RECORD 1 ]-------------------",
+            "auth_name | EPSG",
+            "auth_srid | 3005",
+            "srname    | NAD83 / BC Albers",
+        ]
+        self.assertEqual(
+            [["EPSG", "3005", "NAD83 / BC Albers"]],
+            self.tester.expected_rows_from_psql_lines(lines),
+        )
+        self.assertEqual(
+            ["auth_name", "auth_srid", "srname"],
+            self.tester.psql_headers_from_lines(lines),
+        )
+
+    def test_multiple_psql_expanded_records_become_multiple_rows(self):
+        lines = [
+            "-[ RECORD 1 ]---",
+            "name | first",
+            "srid | 1",
+            "-[ RECORD 2 ]---",
+            "name | second",
+            "srid | 2",
+        ]
+        self.assertEqual(
+            [["first", "1"], ["second", "2"]],
+            self.tester.expected_rows_from_psql_lines(lines),
+        )
+        self.assertEqual(["name", "srid"], self.tester.psql_headers_from_lines(lines))
+
     def test_multiline_programlisting_is_trimmed(self):
         query, expected = parse_source_example(
             """

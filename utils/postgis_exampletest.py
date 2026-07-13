@@ -309,10 +309,47 @@ class ExampleTester:
         values.append(line[start:].strip())
         return values
 
+    def psql_expanded_records(self, lines):
+        record_header = re.compile(r"^\s*-\[\s*RECORD\s+\d+\s*\]-*\s*$", re.I)
+        field = re.compile(r"^\s*([^|]+?)\s+\|\s?(.*)$")
+        headers = None
+        rows = []
+        current_headers = None
+        current_row = None
+
+        for line in lines:
+            if record_header.match(line):
+                if current_row is not None:
+                    if headers is None:
+                        headers = current_headers
+                    rows.append(current_row)
+                current_headers = []
+                current_row = []
+                continue
+            if current_row is None:
+                continue
+            match = field.match(line)
+            if not match:
+                continue
+            current_headers.append(match.group(1).strip())
+            current_row.append(match.group(2).strip())
+
+        if current_row is not None:
+            if headers is None:
+                headers = current_headers
+            rows.append(current_row)
+        if not rows:
+            return None
+        return headers, rows
+
     def expected_rows_from_psql_lines(self, lines):
         clean = [line.replace("\r\n", "\n").replace("\r", "\n") for line in lines if re.search(r"\S", line)]
         if not clean:
             return []
+
+        expanded = self.psql_expanded_records(clean)
+        if expanded is not None:
+            return expanded[1]
 
         for i in range(len(clean) - 1):
             if not re.match(r"^\s*[-+─┼]+\s*$", clean[i + 1]):
@@ -335,6 +372,9 @@ class ExampleTester:
 
     def psql_headers_from_lines(self, lines):
         clean = [line for line in lines if re.search(r"\S", line)]
+        expanded = self.psql_expanded_records(clean)
+        if expanded is not None:
+            return expanded[0]
         for i in range(len(clean) - 1):
             if re.match(r"^\s*[-+─┼]+\s*$", clean[i + 1]):
                 return self.split_psql_table_row(clean[i], clean[i], clean[i + 1])
