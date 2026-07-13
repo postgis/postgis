@@ -1489,17 +1489,17 @@ FROM (SELECT ST_BuildArea(ST_Collect(
       <refsection>
         <title>Examples</title>
 
-        <programlisting>
--- Returns 3
-SELECT ST_NumCurves('COMPOUNDCURVE(
+        <para>This CompoundCurve contains three component curves.</para>
+        <programlisting>SELECT ST_NumCurves('COMPOUNDCURVE(
     (2 2,2.5 2.5),
     CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5),
     (3.5 3.5,2.5 4.5,3 5,2 2)
-  )');
+  )');</programlisting>
+<screen>3</screen>
 
--- Returns 0
-SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
-        </programlisting>
+        <para>An empty CompoundCurve has no component curves.</para>
+        <programlisting>SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');</programlisting>
+<screen>0</screen>
       </refsection>
 
       <refsection>
