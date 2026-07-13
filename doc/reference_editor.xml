@@ -939,23 +939,23 @@ SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0
 
 	  <refsection>
 		<title>Examples</title>
-		<para>Compare the geometry types produced for SFS 1.1 (the default) and SFS 1.2.</para>
-		<programlisting language="sql" role="visual-skip">WITH inputs(name, geom) AS (VALUES
-    ('circular string', 'CIRCULARSTRING(0 0, 1 1, 2 0)'::geometry),
-    ('triangle', 'TRIANGLE((0 0, 0 2, 2 0, 0 0))'::geometry),
-    ('TIN', 'TIN(((0 0, 0 2, 2 0, 0 0)))'::geometry),
-    ('polyhedral surface', 'POLYHEDRALSURFACE(((0 0, 0 2, 2 0, 0 0)))'::geometry)
+		<para>Compare the geometry types produced for SFS 1.1 (the default) and SFS 1.2. Read each row from the input type in the direction of the result columns.</para>
+		<programlisting language="sql" role="visual-skip">WITH inputs(geom) AS (VALUES
+    ('CIRCULARSTRING(0 0, 1 1, 2 0)'::geometry),
+    ('TRIANGLE((0 0, 0 2, 2 0, 0 0))'::geometry),
+    ('TIN(((0 0, 0 2, 2 0, 0 0)))'::geometry),
+    ('POLYHEDRALSURFACE(((0 0, 0 2, 2 0, 0 0)))'::geometry)
 )
-SELECT name,
-       ST_GeometryType(ST_ForceSFS(geom)) AS sfs_1_1,
-       ST_GeometryType(ST_ForceSFS(geom, '1.2')) AS sfs_1_2
+SELECT ST_GeometryType(geom) || ' →' AS input,
+       ST_GeometryType(ST_ForceSFS(geom)) AS "SFS 1.1 (default)",
+       ST_GeometryType(ST_ForceSFS(geom, '1.2')) AS "SFS 1.2"
 FROM inputs;</programlisting>
-		<screen>        name        |        sfs_1_1        |       sfs_1_2
---------------------+-----------------------+----------------------
- circular string    | ST_LineString         | ST_LineString
- triangle           | ST_Polygon            | ST_Triangle
- TIN                | ST_GeometryCollection | ST_Tin
- polyhedral surface | ST_GeometryCollection | ST_PolyhedralSurface
+		<screen>         input          |   SFS 1.1 (default)   |       SFS 1.2
+------------------------+-----------------------+----------------------
+ ST_CircularString →    | ST_LineString         | ST_LineString
+ ST_Triangle →          | ST_Polygon            | ST_Triangle
+ ST_Tin →               | ST_GeometryCollection | ST_Tin
+ ST_PolyhedralSurface → | ST_GeometryCollection | ST_PolyhedralSurface
 (4 rows)</screen>
 	  </refsection>
 
