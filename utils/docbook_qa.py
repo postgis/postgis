@@ -99,6 +99,7 @@ SQL_START_RE = re.compile(rf"(?im)^\s*(?:--\s*)?(?:{keyword_pattern(SQL_STATEMEN
 SQL_STATEMENT_RE = re.compile(
     rf"(?ims)^\s*(?:--[^\n]*\n\s*)*(?:{keyword_pattern(SQL_STATEMENT_START_KEYWORDS)})\b.*;"
 )
+PSQL_META_COMMAND_RE = re.compile(r"(?m)^[ \t]*\\(?:[A-Za-z][A-Za-z_+.-]*|[?!])(?:[ \t]|$)")
 PSQL_ROW_COUNT_RE = re.compile(r"(?m)^\s*\(\d+\s+rows?\)\s*$")
 PSQL_TABLE_SEPARATOR_RE = re.compile(r"(?m)^\s*[-+]{3,}(?:\s*\+\s*[-+]{2,})+\s*$")
 OUTPUT_DASH_RUN_RE = re.compile(r"(?m)^\s*-{3,}")
@@ -420,6 +421,11 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
             findings.append(Finding(
                 "warning", "screen-contains-sql", source_location(path, node),
                 "screen block looks like it contains SQL input; use programlisting for input and screen for output",
+            ))
+        if command := first_matching(PSQL_META_COMMAND_RE, text):
+            findings.append(Finding(
+                "warning", "screen-contains-psql-command", source_location(path, node),
+                f"screen block contains psql input {command!r}; move the backslash command to a preceding programlisting",
             ))
 
     for refentry in named_descendants(root, "refentry"):

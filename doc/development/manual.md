@@ -26,6 +26,10 @@ make -C doc images
 make -C doc doxygen
 ```
 
+The markup checker treats `programlisting` as input and `screen` as output.
+Keep SQL and psql backslash commands in `programlisting`; a following `screen`
+contains only the captured result.
+
 To review a manual-wide visual change, build the old revision in a separate
 worktree, build the current revision, and point the opt-in comparison target at
 the old HTML directory:

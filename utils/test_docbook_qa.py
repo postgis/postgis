@@ -70,6 +70,26 @@ class DocBookSourceLintTest(unittest.TestCase):
         self.assertCategories('<refentry xml:id="f"><screen>SELECT 1;</screen></refentry>', {"screen-contains-sql"})
         self.assertCategories('<refentry xml:id="f"><screen>POINT(1 2)</screen></refentry>', set())
 
+    def test_screen_contains_psql_command_violation_and_clean_cases(self):
+        for command in (r"\d roads", r"  \pset tuples_only on", r"\?", r"\! echo ready"):
+            with self.subTest(command=command):
+                self.assertCategories(
+                    f'<refentry xml:id="f"><screen>output\n{command}\nmore output</screen></refentry>',
+                    {"screen-contains-psql-command"},
+                )
+        self.assertCategories(
+            r'<refentry xml:id="f"><programlisting>\d roads</programlisting><screen>Table "roads"</screen></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            r'<refentry xml:id="f"><screen>C:\temp\roads.sql</screen></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            r'<refentry xml:id="f"><screen>\x0103000020e6100000</screen></refentry>',
+            set(),
+        )
+
     def test_redundant_output_caption_violation_and_real_prose_clean_case(self):
         self.assertCategories(
             '<refentry xml:id="f"><para> The output: </para><!-- separator --><screen>1</screen></refentry>',
