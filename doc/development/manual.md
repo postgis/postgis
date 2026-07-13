@@ -58,24 +58,27 @@ Manual translations are coordinated in Weblate at
 work in progress for languages including Italian, French, Portuguese,
 Japanese, German, Korean, Spanish, and Polish.
 
-Manual images live in `doc/html/images`. Each `.wkt` file stores one drawing,
-optionally split into named layers by prefixing a line with `StyleName;WKT`.
-The generator associates each layer with `styles.conf` and streams the
-GraphicsMagick command without temporary image files, so parallel image builds
-are safe.
+Substantive manual figures are generated from executable examples at build
+time. Do not add screenshots, authored geometry PNGs, or a second geometry
+renderer. Static raster files under `doc/html/images/static` are limited to
+branding and interface icons; the DocBook checker rejects other raster image
+references. Use DocBook markup for equations and tables.
 
-To regenerate images:
+Run the example renderer before an HTML or PDF build:
 
 ```sh
-make -C doc/html/images generator
-make -C doc/html/images images -j"$(nproc)"
+make -C regress visual-examples
+make -C doc html
+make -C doc pdf
 ```
 
-Invoke `doc/html/images/generator` directly to spot-check artwork. The `-v`
-flag prints the exact GraphicsMagick or ImageMagick command, `-s` overrides the
-canvas size, and passing a second filename overrides the default `.png` output.
-Set `POSTGIS_DOC_CONVERTER` when autodetection cannot find `gm`, `magick`, or
-`convert`.
+The renderer writes SVG and a manifest under
+`doc/html/images/visual-examples`. HTML embeds those SVG files directly. The
+PDF build rasterizes the same SVG source at high resolution only as a backend
+compatibility fallback, so HTML and PDF do not have separate authored figures.
+Raster-returning SQL examples are also executed at build time; their exact
+pixels are embedded in the generated SVG container rather than checked in as a
+manual screenshot.
 
 Garden checks combine documentation examples with behavior validation. Keep the
 command and review guidance in [Testing and debugging](testing.md#garden-checks)
@@ -105,11 +108,10 @@ For a new function:
 5. Name the XML file after the function or feature, then include the refentry
    from the appropriate `doc/reference_*.xml` file so `doc/postgis.xml`,
    generated comments, and HTML builds can see it.
-6. Add examples and images when they materially improve the documentation. For
-   generated `.wkt` images, also register the expected PNG in the appropriate
-   `GENERATED_IMAGES`, `ALL_IMAGES`, or related list in
-   `doc/html/images/Makefile.in`; the image build uses explicit lists rather
-   than globbing every `.wkt` file.
+6. Add executable examples when a figure materially improves the
+   documentation. Return the relevant input and output geometry columns from
+   one self-contained query and let the visual-example manifest supply the
+   figure to HTML and PDF.
 
 Run `make -C regress visual-examples` before building HTML or PDF. It verifies
 every runnable example and automatically generates a figure for geometry found
@@ -118,9 +120,10 @@ paths and the PDF fallbacks are rasterized from the same SVG, so no second
 geometry implementation or checked-in image is needed. Use
 `role="visual-primary"` with a stable `xml:id` only when an authored example
 needs an explicit figure identity or preference. Use `role="visual-skip"` on a
-`programlisting` or its adjacent `screen` when the example must remain tested
-as Code and Output but the renderer cannot represent it truthfully, such as a
-genuinely three-dimensional result. Use `role="text-primary"` on a `screen`
+`programlisting` or its adjacent `screen` only when a figure would be
+misleading; three-dimensional geometries are rendered with projected,
+depth-sorted faces and hidden-edge cues and are not a reason to skip a figure.
+Use `role="text-primary"` on a `screen`
 when the exact textual type or coordinates carry meaning that the accompanying
 figure cannot show; the figure is still generated, but HTML leaves Output open.
 Use `role="visual-overlay"` when input and output geometries must share one
@@ -134,9 +137,26 @@ psql's expanded display: one `-[ RECORD n ]-` block per row and one
 back into rows for comparison, so expanded examples remain executable.
 Aliases on cast WKT literals and geometry result columns become figure legend
 labels; quote an alias when the label needs spaces.
+Return native `geometry`/`geography` values when an `ST_AsText` or `ST_AsEWKT`
+wrapper would exist only to make the documented output readable. Put the
+readable WKT or EWKT in the adjacent `screen`; the example runner recognizes
+the server's typed HEXEWKB result, compares it to that text through canonical
+EWKB, and sends the native value directly to the figure renderer. HTML keeps
+the readable WKT/EWKT visible by default and offers `Show HEXEWKB` when the
+native transport value is useful for debugging. Keep an
+explicit text conversion only when the function's text representation is the
+behavior being documented.
 Keep a short plain paragraph immediately before the associated
 `programlisting` when an example needs an introduction; HTML joins that prose
 to the Code, Output, and Figure card without requiring a wrapper or empty label.
+
+Before committing a visual change, inspect the generated SVG rather than only
+checking that a manifest entry exists. Verify that inputs and outputs share a
+frame when overlap, direction, or scale is the point of the example; use
+separate frames only when comparison benefits from them. Confirm that labels
+name the actual semantic layers, dense points do not obscure edges, important
+text remains expanded, and 3D faces are readable as solids. Then inspect the
+same example in chunked HTML and in a PDF build.
 
 When documenting optional arguments, follow nearby DocBook examples so generated
 signatures and comments remain stable.

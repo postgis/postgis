@@ -46,6 +46,11 @@
     <link xlink:href="https://git-scm.com/">git</link>
     installed):</para>
 
+    <para>Before editing or building the manual, read the repository's
+    <link xlink:href="https://git.osgeo.org/gitea/postgis/postgis/src/branch/master/doc/development">documentation development guide</link>.
+    It covers the executable example, generated figure, validation, HTML, and
+    PDF workflows used by the manual.</para>
+
     <orderedlist>
       <listitem>
         <para>Clone the PostGIS' git repository. On Unix,

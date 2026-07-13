@@ -300,22 +300,15 @@ sh autogen.sh
     </para>
     </listitem>
 
-          <listitem>
-                <para>
-                  GraphicsMagick (<filename>gm convert</filename>) is required to generate the
-                  images used in the documentation. If GraphicsMagick is unavailable, ImageMagick
-                  (<filename>convert</filename> or <filename>magick convert</filename>) provides the
-                  same command-line syntax. GraphicsMagick is available from
-                  <link xlink:href="http://www.graphicsmagick.org/">
-                        http://www.graphicsmagick.org/
-                  </link>
-                  and ImageMagick from
-                  <link xlink:href="https://imagemagick.org/">
-                        https://imagemagick.org/
-                  </link>
-                  .
-                </para>
-          </listitem>
+    <listitem>
+      <para>
+        PDF documentation needs an SVG rasterizer for its high-resolution
+        figure fallbacks.  The build prefers
+        <filename>rsvg-convert</filename>, and can also use GraphicsMagick
+        (<filename>gm convert</filename>) or ImageMagick
+        (<filename>magick</filename> or <filename>convert</filename>).
+      </para>
+    </listitem>
   </itemizedlist>
   </section>
 
