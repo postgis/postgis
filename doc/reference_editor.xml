@@ -2073,14 +2073,11 @@ of interest not spawned from one side to the other.
       <refsection>
         <title>Examples</title>
 
-        <para>Move all components of the given geometries whose bounding box. Falls completely on the left of x=0 to +360.</para>
-        <programlisting language="sql">
-select ST_WrapX(geom, 0, 360);
+        <para>Move all components whose bounding boxes fall completely to the left of <literal>x = 0</literal> by +360.</para>
+        <programlisting language="sql">SELECT ST_WrapX(geom, 0, 360);</programlisting>
 
--- Move all components of the given geometries whose bounding box
--- falls completely on the left of x=-30 to +360
-select ST_WrapX(geom, -30, 360);
-        </programlisting>
+        <para>Move all components whose bounding boxes fall completely to the left of <literal>x = -30</literal> by +360.</para>
+        <programlisting language="sql">SELECT ST_WrapX(geom, -30, 360);</programlisting>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
