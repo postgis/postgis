@@ -2221,7 +2221,7 @@ SELECT json_build_object(
                     show_vertices = (
                         source == "Code"
                         or dimension_class == "line"
-                        or len(vertices) <= 16
+                        or (len(vertices) <= 16 and len(parts) <= 8)
                     )
                     if show_vertices:
                         vertex_radius = (

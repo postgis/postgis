@@ -53,56 +53,44 @@
 			<para>Return area in square feet for a plot of Massachusetts land and multiply by conversion to get square meters.
 				Note this is in square feet because EPSG:2249 is
 				Massachusetts State Plane Feet </para>
-			<programlisting>
-select ST_Area(geom) sqft,
-    ST_Area(geom) * 0.3048 ^ 2 sqm
-from (
-         select 'SRID=2249;POLYGON((743238 2967416,743238 2967450,
-                 743265 2967450,743265.625 2967416,743238 2967416))' :: geometry geom
-     ) subquery;
-┌─────────┬─────────────┐
-│  sqft   │     sqm     │
-├─────────┼─────────────┤
-│ 928.625 │ 86.27208552 │
-└─────────┴─────────────┘
-</programlisting>
+			<programlisting language="sql">SELECT ST_Area(geom) AS sqft,
+       ST_Area(geom) * 0.3048 ^ 2 AS sqm
+FROM (
+  SELECT 'SRID=2249;POLYGON((743238 2967416,743238 2967450,
+          743265 2967450,743265.625 2967416,743238 2967416))'::geometry AS geom
+) AS subquery;</programlisting>
+<screen> sqft   |     sqm
+--------+-------------
+928.625 | 86.27208552</screen>
 <para>Return area square feet and transform to Massachusetts state plane meters (EPSG:26986) to get square meters.
 				Note this is in square feet because 2249 is
 				Massachusetts State Plane Feet and transformed area is in square meters since EPSG:26986 is state plane Massachusetts meters. </para>
-<programlisting>select ST_Area(geom) sqft,
-    ST_Area(ST_Transform(geom, 26986)) As sqm
-from (
-         select
-             'SRID=2249;POLYGON((743238 2967416,743238 2967450,
-             743265 2967450,743265.625 2967416,743238 2967416))' :: geometry geom
-     ) subquery;
-┌─────────┬─────────────────┐
-│  sqft   │       sqm       │
-├─────────┼─────────────────┤
-│ 928.625 │ 86.272430607008 │
-└─────────┴─────────────────┘
-</programlisting>
+<programlisting language="sql">SELECT ST_Area(geom) AS sqft,
+       ST_Area(ST_Transform(geom, 26986)) AS sqm
+FROM (
+  SELECT 'SRID=2249;POLYGON((743238 2967416,743238 2967450,
+          743265 2967450,743265.625 2967416,743238 2967416))'::geometry AS geom
+) AS subquery;</programlisting>
+<screen> sqft   |       sqm
+--------+-----------------
+928.625 | 86.272430607008</screen>
 
 <para>Return area square feet and square meters using geography data type.  Note that we transform to our geometry to geography
 	(before you can do that make sure your geometry is in WGS 84 long lat 4326).  Geography always measures in meters.
 	This is just for demonstration to compare.  Normally your table will be stored in geography data type already.</para>
-<programlisting>
-
-select ST_Area(geog) / 0.3048 ^ 2 sqft_spheroid,
-    ST_Area(geog, false) / 0.3048 ^ 2 sqft_sphere,
-    ST_Area(geog) sqm_spheroid
-from (
-         select ST_Transform(
-                    'SRID=2249;POLYGON((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,743238 2967416))'::geometry,
-                    4326
-             ) :: geography geog
-     ) as subquery;
-┌──────────────────┬──────────────────┬──────────────────┐
-│  sqft_spheroid   │   sqft_sphere    │   sqm_spheroid   │
-├──────────────────┼──────────────────┼──────────────────┤
-│ 928.684405784452 │ 927.049336105925 │ 86.2776044979692 │
-└──────────────────┴──────────────────┴──────────────────┘
-</programlisting>
+<programlisting language="sql">SELECT ST_Area(geog) / 0.3048 ^ 2 AS sqft_spheroid,
+       ST_Area(geog, false) / 0.3048 ^ 2 AS sqft_sphere,
+       ST_Area(geog) AS sqm_spheroid
+FROM (
+  SELECT ST_Transform(
+           'SRID=2249;POLYGON((743238 2967416,743238 2967450,
+           743265 2967450,743265.625 2967416,743238 2967416))'::geometry,
+           4326
+         )::geography AS geog
+) AS subquery;</programlisting>
+<screen>   sqft_spheroid   |   sqft_sphere    |   sqm_spheroid
+-------------------+------------------+------------------
+928.684405784452   | 927.049336105925 | 86.2776044979692</screen>
 
  <para>If your data is in geography already:</para>
  <programlisting>
@@ -1148,23 +1136,28 @@ SPHEROID[<NAME>,<SEMI-MAJOR AXIS>,<INVERSE FLATTENING>]
 FROM geometry_table;</programlisting>
 
 		<para>This example measures a 2D MultiLineString and each component separately on the same spheroid.</para>
-<programlisting language="sql">SELECT ST_LengthSpheroid(geom, sph_m ) As tot_len,
-ST_LengthSpheroid(ST_GeometryN(geom, 1), sph_m) As len_line1,
-ST_LengthSpheroid(ST_GeometryN(geom, 2), sph_m) As len_line2
-              FROM (SELECT 'MULTILINESTRING((-118.584 38.374,-118.583 38.5),
-    (-71.05957 42.3589,-71.061 43))'::geometry As geom,
-CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;</programlisting>
+<programlisting language="sql">WITH sample AS (
+  SELECT 'MULTILINESTRING((-118.584 38.374,-118.583 38.5),
+          (-71.05957 42.3589,-71.061 43))'::geometry AS geom,
+         CAST('SPHEROID["GRS_1980",6378137,298.257222101]' AS spheroid) AS sph_m
+)
+SELECT ST_LengthSpheroid(geom, sph_m) AS tot_len,
+       ST_LengthSpheroid(ST_GeometryN(geom, 1), sph_m) AS len_line1,
+       ST_LengthSpheroid(ST_GeometryN(geom, 2), sph_m) AS len_line2
+FROM sample;</programlisting>
 <screen>     tot_len      |    len_line1     |    len_line2
 ------------------+------------------+------------------
  85204.52077117894 | 13986.87252824332 | 71217.64824293563</screen>
 <para>This example uses 3D input; Z contributes to the measured result.</para>
-<programlisting language="sql">
-SELECT ST_LengthSpheroid(geom, sph_m ) As tot_len,
-ST_LengthSpheroid(ST_GeometryN(geom, 1), sph_m) As len_line1,
-ST_LengthSpheroid(ST_GeometryN(geom, 2), sph_m) As len_line2
-              FROM (SELECT 'MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
-    (-71.05957 42.3589 75,-71.061 43 90))'::geometry As geom,
-CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;</programlisting>
+<programlisting language="sql">WITH sample AS (
+  SELECT 'MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
+          (-71.05957 42.3589 75,-71.061 43 90))'::geometry AS geom,
+         CAST('SPHEROID["GRS_1980",6378137,298.257222101]' AS spheroid) AS sph_m
+)
+SELECT ST_LengthSpheroid(geom, sph_m) AS tot_len,
+       ST_LengthSpheroid(ST_GeometryN(geom, 1), sph_m) AS len_line1,
+       ST_LengthSpheroid(ST_GeometryN(geom, 2), sph_m) AS len_line2
+FROM sample;</programlisting>
 <screen>     tot_len      |    len_line1    |    len_line2
 ------------------+-----------------+------------------
  85204.52592562366 | 13986.876103023424 | 71217.64982260024</screen>

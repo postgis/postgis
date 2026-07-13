@@ -209,7 +209,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
 
       <refsection>
         <title>Examples</title>
-        <para>Return an explicit cluster id for each input geometry. The aliases keep the cluster id and geometry columns ready for color-by-cluster rendering when the shared renderer grows that capability.</para>
+        <para>Return an explicit cluster id for each input geometry. Using the conventional <varname>cid</varname> alias keeps the geometry column ready for color-by-cluster rendering.</para>
         <programlisting language="sql">WITH testdata(id, geom) AS (
   VALUES (1, 'LINESTRING (0 0,1 1)'::geometry),
          (2, 'LINESTRING (5 5,4 4)'::geometry),
@@ -219,21 +219,21 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
 ), clustered AS (
   SELECT id,
          geom,
-         ST_ClusterIntersectingWin(geom) OVER () AS cluster_id
+         ST_ClusterIntersectingWin(geom) OVER () AS cid
   FROM testdata
 )
 SELECT id,
        ST_AsText(geom) AS geom_wkt,
-       cluster_id
+       cid
 FROM clustered
 ORDER BY id;</programlisting>
-<screen> id |            geom_wkt            | cluster_id
-----+--------------------------------+------------
-  1 | LINESTRING(0 0,1 1)            |          0
-  2 | LINESTRING(5 5,4 4)            |          0
-  3 | LINESTRING(6 6,7 7)            |          1
-  4 | LINESTRING(0 0,-1 -1)          |          0
-  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |          0</screen>
+<screen> id |            geom_wkt            | cid
+----+--------------------------------+-----
+  1 | LINESTRING(0 0,1 1)            |   0
+  2 | LINESTRING(5 5,4 4)            |   0
+  3 | LINESTRING(6 6,7 7)            |   1
+  4 | LINESTRING(0 0,-1 -1)          |   0
+  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |   0</screen>
       </refsection>
       <refsection>
         <title>See Also</title>

@@ -1779,19 +1779,24 @@ FROM circles;</programlisting>
     <refsection>
     <title>Examples</title>
 
-    <para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (3D point and line compared 2D point and line) Note that currently no vertical datum support so Z is not transformed and assumed to be same units as final.</para>
-    <programlisting>
-SELECT ST_3DDWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry, 2163),
-      ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15,-72.123 42.1546 20)'::geometry, 2163),
-      126.8
-    ) As within_dist_3d,
-ST_DWithin(ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry, 2163),
-      ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45 15,-72.123 42.1546 20)'::geometry, 2163),
-      126.8
-    ) As within_dist_2d;</programlisting>
-<screen> within_dist_3d | within_dist_2d
-----------------+----------------
- f              | t</screen>
+    <para>Compare the same transformed point and line in both 3D and 2D. The 3D test fails because the Z difference matters even though the 2D footprints are close enough.</para>
+    <programlisting language="sql">WITH sample AS (
+  SELECT ST_Transform('SRID=4326;POINT(-72.1235 42.3521 4)'::geometry, 2163) AS input_point,
+         ST_Transform(
+           'SRID=4326;LINESTRING(-72.1260 42.45 15,-72.123 42.1546 20)'::geometry,
+           2163
+         ) AS input_line
+)
+SELECT ST_3DDWithin(input_point, input_line, 126.8) AS within_dist_3d,
+       ST_DWithin(input_point, input_line, 126.8) AS within_dist_2d,
+       ST_AsText(input_point, 1) AS input_point,
+       ST_AsText(input_line, 1) AS input_line
+FROM sample;</programlisting>
+<screen role="visual-primary visual-overlay text-primary">-[ RECORD 1 ]--+----------------------------------------------------------------------------------------------------------------------------------
+within_dist_3d | f
+within_dist_2d | t
+input_point    | POINT Z (-11774128.9 5237160.2 4)
+input_line     | LINESTRING Z (-11774339.5 5243556.8 15,-11773706.7 5215256.3 20)</screen>
     </refsection>
 
     <refsection>
