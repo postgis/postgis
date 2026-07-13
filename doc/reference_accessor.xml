@@ -1540,15 +1540,15 @@ FROM (SELECT ST_BuildArea(ST_Collect(
       <refsection>
         <title>Examples</title>
 
-        <programlisting>
-SELECT ST_AsText(ST_CurveN(
+        <para>This example extracts the second component curve, a CircularString, from a CompoundCurve.</para>
+        <programlisting>SELECT ST_AsText(ST_CurveN(
   'COMPOUNDCURVE(
-    (2 2,2.5 2.5),
-    CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5),
-    (3.5 3.5,2.5 4.5,3 5,2 2)
+    (0 0,2 0),
+    CIRCULARSTRING(2 0,3 1,4 0),
+    (4 0,6 1)
   )',
-  1));
-        </programlisting>
+  2)) AS curve;</programlisting>
+<screen role="visual-overlay">CIRCULARSTRING(2 0,3 1,4 0)</screen>
       </refsection>
 
       <refsection>
