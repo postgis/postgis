@@ -129,8 +129,8 @@
 			<para>Create a simple PostgreSQL table in the schema.</para>
 <programlisting>CREATE TABLE my_schema.my_spatial_table (id serial);</programlisting>
 			<para>Describing the table shows a single <varname>id</varname> column.</para>
-<screen>\d my_schema.my_spatial_table
-                                                         Table "my_schema.my_spatial_table"
+<programlisting>\d my_schema.my_spatial_table</programlisting>
+<screen>                                                         Table "my_schema.my_spatial_table"
  Column |  Type   |                                Modifiers
 --------+---------+-------------------------------------------------------------------------
  id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)</screen>
@@ -142,8 +142,8 @@
 <programlisting role="requires-external-state">SELECT AddGeometryColumn('my_schema', 'my_spatial_table', 'geomcp_c', 4326, 'CURVEPOLYGON', 2, false);</programlisting>
 <screen>my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2</screen>
 			<para>Describe the table again to see the new geometry columns.</para>
-<screen>\d my_schema.my_spatial_table
-                                    Table "my_schema.my_spatial_table"
+<programlisting>\d my_schema.my_spatial_table</programlisting>
+<screen>                                    Table "my_schema.my_spatial_table"
  Column  |         Type         |                                Modifiers
 ----------+----------------------+-------------------------------------------------------------------------
  id       | integer              | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
@@ -451,12 +451,11 @@ WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';</progr
 			<programlisting>CREATE TABLE public.myspatial_table(gid serial, geom geometry);
 INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2,3 4)', 4326) );
 SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programlisting>
-<screen>                        1
+<screen>1</screen>
 
-
-\d myspatial_table
-
-                                   Table "public.myspatial_table"
+			<para>Describe the table to see the typmod-based geometry column.</para>
+<programlisting>\d myspatial_table</programlisting>
+<screen>                                   Table "public.myspatial_table"
  Column |           Type            |                           Modifiers
 --------+---------------------------+---------------------------------------------------------------
  gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
@@ -467,10 +466,11 @@ SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programli
 CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
 INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2,3 4)', 4326) );
 SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);</programlisting>
-<screen>                        1
-\d myspatial_table_cs
+<screen>1</screen>
 
-                          Table "public.myspatial_table_cs"
+			<para>Describe the table to see the constraint-based geometry column.</para>
+<programlisting>\d myspatial_table_cs</programlisting>
+<screen>                          Table "public.myspatial_table_cs"
  Column |   Type   |                            Modifiers
 --------+----------+------------------------------------------------------------------
  gid    | integer  | not null default nextval('myspatial_table_cs_gid_seq'::regclass)

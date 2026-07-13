@@ -1501,8 +1501,8 @@ VALUES ( 990000,
       This ensures that the spatial metadata information is always consistent with the currently defined tables and views.
 	  The view structure is:</para>
 
-	  <screen>\d geometry_columns
-             View "public.geometry_columns"
+	  <programlisting>\d geometry_columns</programlisting>
+	  <screen>             View "public.geometry_columns"
       Column       |          Type          | Modifiers
 -------------------+------------------------+-----------
  f_table_catalog   | character varying(256) |
@@ -1616,8 +1616,8 @@ define a column using typmod and another using constraints.</para>
 <programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT, 4326));
 SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
 <para>If we run <command>\d pois_ny</command> in psql, we observe they are defined differently -- one is typmod, one is constraint.</para>
-<screen>\d pois_ny
-                                  Table "public.pois_ny"
+<programlisting>\d pois_ny</programlisting>
+<screen>                                  Table "public.pois_ny"
   Column   |         Type          |                       Modifiers
 
 -----------+-----------------------+------------------------------------------------------
