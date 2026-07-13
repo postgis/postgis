@@ -348,6 +348,198 @@
   }
 
   // ---------------------------------------------------------------------------
+  // HTML and JavaScript tokenizers
+  // ---------------------------------------------------------------------------
+
+  function renderSourceLines(segments) {
+    var lines = [''];
+    for (var i = 0; i < segments.length; i += 1) {
+      var pieces = segments[i].text.split('\n');
+      for (var pieceIndex = 0; pieceIndex < pieces.length; pieceIndex += 1) {
+        if (pieceIndex > 0) {
+          lines.push('');
+        }
+        var piece = escapeHtml(pieces[pieceIndex]);
+        if (segments[i].tokenClass && piece !== '') {
+          piece = '<span class="' + segments[i].tokenClass + '">' + piece + '</span>';
+        }
+        lines[lines.length - 1] += piece;
+      }
+    }
+    if (lines.length > 1 && lines[lines.length - 1] === '' &&
+        segments.length > 0 && /\n$/.test(segments[segments.length - 1].text)) {
+      lines.pop();
+    }
+    return lines.map(function (line) {
+      return '<span class="line">' + line + '</span>';
+    }).join('');
+  }
+
+  var javascriptKeywords = {
+    'async': true, 'await': true, 'break': true, 'case': true, 'catch': true,
+    'class': true, 'const': true, 'continue': true, 'debugger': true,
+    'default': true, 'delete': true, 'do': true, 'else': true, 'export': true,
+    'extends': true, 'finally': true, 'for': true, 'from': true, 'function': true,
+    'get': true, 'if': true, 'import': true, 'in': true, 'instanceof': true,
+    'let': true, 'new': true, 'of': true, 'return': true, 'set': true,
+    'static': true, 'super': true, 'switch': true, 'this': true, 'throw': true,
+    'try': true, 'typeof': true, 'var': true, 'void': true, 'while': true,
+    'with': true, 'yield': true
+  };
+
+  var javascriptLiterals = {
+    'false': true, 'Infinity': true, 'NaN': true, 'null': true,
+    'true': true, 'undefined': true
+  };
+
+  function javascriptSegments(text) {
+    var tokenPattern = /(\/\*[\s\S]*?\*\/|\/\/[^\n\r]*|`(?:\\[\s\S]|[^`])*`|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b\d+(?:\.\d+)?\b|\b[A-Za-z_$][A-Za-z0-9_$]*\b|===|!==|=>|==|!=|<=|>=|\+\+|--|&&|\|\||\?\?|\+=|-=|\*=|\/=|%=|[+*\/%<>=!&|?:-])/g;
+    var segments = [];
+    var lastIndex = 0;
+    var match;
+    while ((match = tokenPattern.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        segments.push({ text: text.slice(lastIndex, match.index) });
+      }
+      var token = match[0];
+      var tokenClass = '';
+      if (token.slice(0, 2) === '//' || token.slice(0, 2) === '/*') {
+        tokenClass = 'postgis-js-comment';
+      } else if (/^["'`]/.test(token)) {
+        tokenClass = 'postgis-js-string';
+      } else if (/^\d/.test(token)) {
+        tokenClass = 'postgis-js-number';
+      } else if (javascriptKeywords[token]) {
+        tokenClass = 'postgis-js-keyword';
+      } else if (javascriptLiterals[token]) {
+        tokenClass = 'postgis-js-literal';
+      } else if (/^[A-Za-z_$]/.test(token) && /^\s*\(/.test(text.slice(tokenPattern.lastIndex))) {
+        tokenClass = 'postgis-js-function';
+      } else if (!/^[A-Za-z_$]/.test(token)) {
+        tokenClass = 'postgis-js-operator';
+      }
+      segments.push({ text: token, tokenClass: tokenClass });
+      lastIndex = tokenPattern.lastIndex;
+    }
+    if (lastIndex < text.length) {
+      segments.push({ text: text.slice(lastIndex) });
+    }
+    return segments;
+  }
+
+  function highlightJavaScript(text) {
+    return renderSourceLines(javascriptSegments(text));
+  }
+
+  function htmlTagEnd(text, start) {
+    var quote = '';
+    for (var i = start + 1; i < text.length; i += 1) {
+      var character = text.charAt(i);
+      if (quote) {
+        if (character === quote && text.charAt(i - 1) !== '\\') {
+          quote = '';
+        }
+      } else if (character === '"' || character === "'") {
+        quote = character;
+      } else if (character === '>') {
+        return i + 1;
+      }
+    }
+    return -1;
+  }
+
+  function htmlTagSegments(tag) {
+    if (tag.slice(0, 4) === '<!--') {
+      return [{ text: tag, tokenClass: 'postgis-html-comment' }];
+    }
+    var match = /^(<\/?)([A-Za-z][A-Za-z0-9:.-]*)([\s\S]*?)(\/?>)$/.exec(tag);
+    if (!match) {
+      return [{ text: tag }];
+    }
+    var segments = [
+      { text: match[1], tokenClass: 'postgis-html-punctuation' },
+      { text: match[2], tokenClass: 'postgis-html-tag' }
+    ];
+    var attributes = match[3];
+    var attributePattern = /(\s+)|([A-Za-z_:][A-Za-z0-9_.:-]*)(?=\s*=)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(=)|([^\s]+)/g;
+    var lastIndex = 0;
+    var attribute;
+    while ((attribute = attributePattern.exec(attributes)) !== null) {
+      if (attribute.index > lastIndex) {
+        segments.push({ text: attributes.slice(lastIndex, attribute.index) });
+      }
+      var tokenClass = '';
+      if (attribute[2]) {
+        tokenClass = 'postgis-html-attribute';
+      } else if (attribute[3]) {
+        tokenClass = 'postgis-html-string';
+      } else if (attribute[4]) {
+        tokenClass = 'postgis-html-punctuation';
+      }
+      segments.push({ text: attribute[0], tokenClass: tokenClass });
+      lastIndex = attributePattern.lastIndex;
+    }
+    if (lastIndex < attributes.length) {
+      segments.push({ text: attributes.slice(lastIndex) });
+    }
+    segments.push({ text: match[4], tokenClass: 'postgis-html-punctuation' });
+    return segments;
+  }
+
+  function highlightHtml(text) {
+    var segments = [];
+    var lower = text.toLowerCase();
+    var index = 0;
+    var inScript = false;
+    while (index < text.length) {
+      if (inScript) {
+        var closingScript = lower.indexOf('</script', index);
+        if (closingScript === -1) {
+          segments = segments.concat(javascriptSegments(text.slice(index)));
+          break;
+        }
+        segments = segments.concat(javascriptSegments(text.slice(index, closingScript)));
+        index = closingScript;
+      }
+
+      var opening = text.indexOf('<', index);
+      if (opening === -1) {
+        segments.push({ text: text.slice(index) });
+        break;
+      }
+      if (opening > index) {
+        segments.push({ text: text.slice(index, opening) });
+      }
+      if (text.slice(opening, opening + 4) === '<!--') {
+        var commentEnd = text.indexOf('-->', opening + 4);
+        commentEnd = commentEnd === -1 ? text.length : commentEnd + 3;
+        segments.push({ text: text.slice(opening, commentEnd), tokenClass: 'postgis-html-comment' });
+        index = commentEnd;
+        continue;
+      }
+      if (!/^<\/?[A-Za-z]/.test(text.slice(opening))) {
+        segments.push({ text: '<' });
+        index = opening + 1;
+        continue;
+      }
+      var end = htmlTagEnd(text, opening);
+      if (end === -1) {
+        segments.push({ text: text.slice(opening) });
+        break;
+      }
+      var tag = text.slice(opening, end);
+      segments = segments.concat(htmlTagSegments(tag));
+      if (/^<script\b/i.test(tag)) {
+        inScript = true;
+      } else if (/^<\/script\b/i.test(tag)) {
+        inScript = false;
+      }
+      index = end;
+    }
+    return renderSourceLines(segments);
+  }
+
+  // ---------------------------------------------------------------------------
   // Shell tokenizer
   // ---------------------------------------------------------------------------
 
@@ -638,6 +830,40 @@
       blocks[shellIndex].innerHTML = highlightShell(text, refIndex);
       setLineMetadata(blocks[shellIndex], text.split('\n').length);
       blocks[shellIndex].setAttribute('data-postgis-highlighted', 'shell');
+    }
+
+    blocks = document.querySelectorAll(
+      '.postgis-example-code pre.programlisting[data-postgis-language="html"], ' +
+      '.postgis-example-code pre.programlisting[data-postgis-language="xml"]'
+    );
+    for (var htmlIndex = 0; htmlIndex < blocks.length; htmlIndex += 1) {
+      if (blocks[htmlIndex].getAttribute('data-postgis-highlighted') === 'html' ||
+          blocks[htmlIndex].children.length !== 0) {
+        continue;
+      }
+      text = normalizeDisplayedSql(blocks[htmlIndex].textContent);
+      originalBlockText.set(blocks[htmlIndex], text);
+      blocks[htmlIndex].textContent = text;
+      blocks[htmlIndex].innerHTML = highlightHtml(text);
+      setLineMetadata(blocks[htmlIndex], text.split('\n').length);
+      blocks[htmlIndex].setAttribute('data-postgis-highlighted', 'html');
+    }
+
+    blocks = document.querySelectorAll(
+      '.postgis-example-code pre.programlisting[data-postgis-language="javascript"], ' +
+      '.postgis-example-code pre.programlisting[data-postgis-language="js"]'
+    );
+    for (var javascriptIndex = 0; javascriptIndex < blocks.length; javascriptIndex += 1) {
+      if (blocks[javascriptIndex].getAttribute('data-postgis-highlighted') === 'javascript' ||
+          blocks[javascriptIndex].children.length !== 0) {
+        continue;
+      }
+      text = normalizeDisplayedSql(blocks[javascriptIndex].textContent);
+      originalBlockText.set(blocks[javascriptIndex], text);
+      blocks[javascriptIndex].textContent = text;
+      blocks[javascriptIndex].innerHTML = highlightJavaScript(text);
+      setLineMetadata(blocks[javascriptIndex], text.split('\n').length);
+      blocks[javascriptIndex].setAttribute('data-postgis-highlighted', 'javascript');
     }
 
     if (!refIndex.keywords.length) return;
@@ -1162,6 +1388,8 @@
     normalizeRefIndex: normalizeRefIndex,
     highlightSql: highlightSql,
     highlightShell: highlightShell,
+    highlightHtml: highlightHtml,
+    highlightJavaScript: highlightJavaScript,
     currentFunctionName: currentFunctionName,
     previousVisualStackSibling: previousVisualStackSibling,
     setGeometryActive: setGeometryActive,

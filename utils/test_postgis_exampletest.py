@@ -269,6 +269,28 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             example = ExampleTester(source.name).examples()[0]
         self.assertTrue(example["visual_overlay"])
 
+    def test_visual_layout_roles_opt_unstable_output_into_documented_rendering(self):
+        for role, flag in (
+            ("visual-overlay", "visual_overlay"),
+            ("visual-separate-output", "visual_separate_output"),
+        ):
+            with self.subTest(role=role):
+                xml = f"""<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="alpha-shape">
+    <refsection>
+      <programlisting>SELECT ST_AsText(CG_AlphaShape('MULTIPOINT((0 0),(1 0),(0 1))'::geometry, 1));</programlisting>
+      <screen role="{role}">POLYGON((0 0,1 0,0 1,0 0))</screen>
+    </refsection>
+  </refentry>
+</book>"""
+                with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+                    source.write(xml)
+                    source.flush()
+                    example = ExampleTester(source.name).examples()[0]
+                self.assertTrue(example["documented_only"])
+                self.assertEqual("explicit", example["visual_kind"])
+                self.assertTrue(example[flag])
+
 
 class ExampleTestComparisonTest(unittest.TestCase):
     def setUp(self):
@@ -515,6 +537,16 @@ class VisualExampleTest(unittest.TestCase):
     def setUp(self):
         self.tester = ExampleTester.__new__(ExampleTester)
 
+    def point_radius(self, svg):
+        match = re.search(r'class="point" d="M [^"]+ A ([0-9.]+) ([0-9.]+) 0 1 0', svg)
+        self.assertIsNotNone(match)
+        return float(match.group(1))
+
+    def vertex_radius(self, svg):
+        match = re.search(r'class="vertex"[^>]* r="([0-9.]+)"', svg)
+        self.assertIsNotNone(match)
+        return float(match.group(1))
+
     def test_svg_uses_postgis_fragments_and_stable_source_colors(self):
         svg = self.tester.visual_svg(
             "buffer-example",
@@ -754,9 +786,11 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)", queries[0])
         self.assertIn("COALESCE(ST_Z(vertex3d.geom), 0)", queries[0])
         self.assertIn("ST_Z(vertex3d.geom)", queries[0])
-        self.assertIn("ST_NPoints(geom) AS total_points", queries[0])
+        self.assertIn("COALESCE(total_points, ST_NPoints(geom)) AS total_points", queries[0])
         self.assertIn("GeometryType(geom) AS root_type", queries[0])
         self.assertIn("'root_type', root_type", queries[0])
+        self.assertIn("'source_point_count', source_point_count", queries[0])
+        self.assertIn("'marker_scale', marker_scale", queries[0])
         self.assertIn("root_type IN ('LINESTRING', 'POLYGON', 'TRIANGLE')", queries[0])
         self.assertIn("AND total_points <= 64", queries[0])
         self.assertNotIn("AND ST_NPoints(geom) <= 64", queries[0])
@@ -1163,6 +1197,62 @@ class VisualExampleTest(unittest.TestCase):
         )
         self.assertRegex(svg, r'class="point"[^>]*stroke="white" stroke-width="[0-9.]+"')
 
+    def test_svg_scales_point_markers_down_for_dense_payloads(self):
+        sparse = self.tester.visual_svg(
+            "sparse-points",
+            {"bounds": [0, 0, 10, 10], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "POINT",
+                "x": 5, "y": -5, "total_points": 8, "source_point_count": 8,
+            }]},
+        )
+        dense = self.tester.visual_svg(
+            "dense-points",
+            {"bounds": [0, 0, 10, 10], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "POINT",
+                "x": 5, "y": -5, "total_points": 512, "source_point_count": 512,
+            }]},
+        )
+        self.assertLess(self.point_radius(dense), self.point_radius(sparse))
+
+    def test_svg_scales_vertices_down_for_dense_payloads(self):
+        sparse = self.tester.visual_svg(
+            "sparse-vertices",
+            {"bounds": [0, 0, 4, 1], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "LINESTRING",
+                "svg": "M 0 0 L 4 -1", "closed": False,
+                "vertices": [[0, 0], [4, -1]],
+                "total_points": 2, "source_point_count": 2,
+            }]},
+        )
+        dense = self.tester.visual_svg(
+            "dense-vertices",
+            {"bounds": [0, 0, 4, 1], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "LINESTRING",
+                "svg": "M 0 0 L 1 -1 L 2 0 L 3 -1 L 4 0", "closed": False,
+                "vertices": [[0, 0], [1, -1], [2, 0], [3, -1], [4, 0]],
+                "total_points": 512, "source_point_count": 512,
+            }]},
+        )
+        self.assertLess(self.vertex_radius(dense), self.vertex_radius(sparse))
+
+    def test_svg_scales_point_markers_with_marker_scale_but_caps_them(self):
+        smaller = self.tester.visual_svg(
+            "marker-scale-small",
+            {"bounds": [0, 0, 10, 10], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "POINT",
+                "x": 5, "y": -5, "marker_scale": 0.5, "total_points": 1, "source_point_count": 1,
+            }]},
+        )
+        larger = self.tester.visual_svg(
+            "marker-scale-large",
+            {"bounds": [0, 0, 10, 10], "parts": [{
+                "ord": 1, "source": "Output", "label": "Output", "type": "POINT",
+                "x": 5, "y": -5, "marker_scale": 999, "total_points": 1, "source_point_count": 1,
+            }]},
+        )
+        self.assertLess(self.point_radius(smaller), self.point_radius(larger))
+        self.assertLess(self.point_radius(larger), self.point_radius(smaller) * 4)
+
     def test_svg_does_not_arrow_closed_curves(self):
         svg = self.tester.visual_svg(
             "closed-curve",
@@ -1189,6 +1279,66 @@ class VisualExampleTest(unittest.TestCase):
         }, actual)
         self.assertIn(">center</text>", visual["svg"])
         self.assertIn(">nearest</text>", visual["svg"])
+
+    def test_render_visual_example_groups_multirow_outputs_by_cluster_column(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 2, 2],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": layer["row_num"] or 0, "y": -(layer["row_num"] or 0),
+            } for layer in layers],
+        }
+        actual = QueryRows(
+            [["POINT(0 0)", "A"], ["POINT(1 1)", "A"], ["POINT(2 2)", "B"]],
+            ["geom", "cluster"],
+        )
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT 1", "visual_id": "clustered", "label": "clustered:1",
+            "visual_refentry": "clustered", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertEqual(["cluster A", "cluster A", "cluster B"], [layer["label"] for layer in captured])
+        self.assertEqual([1, 1, 2], [layer["ord"] for layer in captured])
+        self.assertEqual(2, len(visual["layers"]))
+        self.assertEqual(2, visual["svg"].count('class="legend-row"'))
+
+    def test_render_visual_example_reads_marker_scale_companion_column(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": 0, "y": 0, "marker_scale": layer["marker_scale"],
+            } for layer in layers],
+        }
+        actual = QueryRows([["POINT(0 0)", "3.5"]], ["geom", "marker_scale"])
+        self.tester.render_visual_example("manual", {
+            "query": "SELECT 1", "visual_id": "scaled", "label": "scaled:1",
+            "visual_refentry": "scaled", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertEqual(3.5, captured[0]["marker_scale"])
+
+    def test_render_visual_example_defers_geometry_point_counts_to_postgis(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "MULTIPOINT", "svg": "M 0 0",
+            } for layer in layers],
+        }
+        actual = QueryRows([["MULTIPOINT((0 0),(1 1))"]], ["points"])
+        self.tester.render_visual_example("manual", {
+            "query": "SELECT 'MULTIPOINT((0 0),(1 1))'::geometry",
+            "visual_id": "point-counts", "label": "point-counts:1",
+            "visual_refentry": "point-counts", "visual_screen": 1,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertTrue(captured)
+        self.assertTrue(all(layer["total_points"] is None for layer in captured))
+        self.assertTrue(all(layer["source_point_count"] == 1 for layer in captured))
 
     def test_render_visual_example_uses_typed_hexwkb_without_text_roundtrip(self):
         captured = []

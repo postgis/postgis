@@ -518,7 +518,10 @@ ifeq ($(DBLATEX),)
 	@echo
 	@false
 else
-	$(DBLATEX) -T native -t pdf \
+	# The native profile forces latex.style=docbook after -s texstyle and thus
+	# silently discards the project style package.  texstyle already extends
+	# docbook, so select it directly and keep the custom listings definitions.
+	$(DBLATEX) -t pdf \
 		 -p "$(POSTGIS_DBLATEX_BLOCK_LABELS_XSL)" \
 		 -x "--path $(XSLT_PATH)" \
 		 -I "$(abs_builddir)/pdf" \

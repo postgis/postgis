@@ -423,46 +423,59 @@ F000000000000000000000000000000000000000000000000</screen>
     <refsection>
     <title>Description</title>
 
-    <para>Returns the geometry as an Encoded Polyline. This format is used by Google Maps with precision=5 and by Open Source Routing Machine with precision=5 and 6.</para>
-    <para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
+    <para>Returns the geometry in the <link xlink:href="https://developers.google.com/maps/documentation/utilities/polylinealgorithm">Encoded Polyline Algorithm Format</link>. The format stores latitude and longitude deltas as integers after multiplying coordinates by 10 raised to the requested <varname>precision</varname>.</para>
+    <para>The informal names <emphasis>polyline5</emphasis> and <emphasis>polyline6</emphasis> refer to the same encoding with precision 5 and 6. The precision must match when encoding and decoding; otherwise the coordinates are scaled incorrectly.</para>
+    <para>The input geometry must use SRID 4326, with longitude as X and latitude as Y. Use <xref linkend="ST_Transform"/> to transform geometries in other coordinate systems before encoding.</para>
+    <para>The <link xlink:href="https://project-osrm.org/docs/v5.24.0/api/#general-options">OSRM API</link> returns precision 5 for <literal>geometries=polyline</literal> and precision 6 for <literal>geometries=polyline6</literal>. Decode the resulting <literal>route.geometry</literal> with <xref linkend="ST_LineFromEncodedPolyline"/> using the matching precision.</para>
 
     <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
     </refsection>
 
     <refsection>
     <title>Examples</title>
-  <para>Basic </para>
-  <programlisting>SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));</programlisting>
-<screen>  _p~iF~ps|U_ulLnnqC_mqNvxq`@
-  </screen>
+  <para>Encode the same WGS 84 LineString using precision 5 and 6.</para>
+  <programlisting language="sql"><![CDATA[
+WITH route AS (
+  SELECT ST_GeomFromEWKT(
+    'SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'
+  ) AS geom
+)
+SELECT ST_AsEncodedPolyline(geom, 5) AS polyline5,
+       ST_AsEncodedPolyline(geom, 6) AS polyline6
+FROM route;
+]]></programlisting>
+<screen>          polyline5          |            polyline6
+-----------------------------+----------------------------------
+ _p~iF~ps|U_ulLnnqC_mqNvxq`@ | _izlhA~rlgdF_{geC~ywl@_kwzCn`{nI</screen>
 
-  <para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
-  <para>This example builds the SQL for a Boston-to-San-Francisco path with segments every 100 kilometers.</para>
-  <programlisting>
-SELECT ST_AsEncodedPolyline(ST_Segmentize(
-      'LINESTRING(-71.0519 42.4935,-122.4483 37.64)'::geography,
-      100000)::geometry) As encodedFlightPath;</programlisting>
+  <para>Decode an OSRM <literal>route.geometry</literal> returned with <literal>geometries=polyline6</literal>.</para>
+  <programlisting language="sql"><![CDATA[
+SELECT ST_AsEWKT(ST_LineFromEncodedPolyline(
+  '_izlhA~rlgdF_{geC~ywl@_kwzCn`{nI',
+  6
+)) AS route;
+]]></programlisting>
+<screen>SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)</screen>
 
-
-  <para>javascript will look something like this where $ variable you replace with query result</para>
-  <programlisting><![CDATA[
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry"></script>
-<script type="text/javascript">
-   flightPath = new google.maps.Polyline({
-      path:  google.maps.geometry.encoding.decodePath("$encodedFlightPath"),
-      map: map,
-      strokeColor: '#0000CC',
-      strokeOpacity: 1.0,
-      strokeWeight: 4
-    });
+  <para>The Google Maps JavaScript Geometry library decodes precision-5 strings. This browser example assumes that <varname>map</varname> is an initialized Google map.</para>
+  <programlisting language="html"><![CDATA[
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=geometry"></script>
+<script>
+  const encodedPath = "_p~iF~ps|U_ulLnnqC_mqNvxq`@";
+  const flightPath = new google.maps.Polyline({
+    path: google.maps.geometry.encoding.decodePath(encodedPath),
+    map: map,
+    strokeColor: "#0000CC",
+    strokeOpacity: 1.0,
+    strokeWeight: 4
+  });
 </script>
-
 ]]></programlisting>
   </refsection>
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_LineFromEncodedPolyline"/>, <xref linkend="ST_Segmentize"/></para>
+    <para><xref linkend="ST_LineFromEncodedPolyline"/>, <xref linkend="ST_Transform"/></para>
     </refsection>
   </refentry>
 
@@ -1268,7 +1281,7 @@ SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.51666666
 SELECT ST_AsText(ST_AsMVTGeom('POLYGON ((0 0,10 0,10 5,0 -5,0 0))',
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
     4096, 0, false));</programlisting>
-<screen>MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
+<screen role="text-primary">MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
 
     <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry. This assumes the data.geom column has srid of 4326.
     </para>
@@ -1578,7 +1591,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
         </itemizedlist>
 
 
-    <informaltable>
+    <informaltable rowsep="1" frame="all" tabstyle="postgis-reference-table">
         <tgroup cols="3">
           <thead>
             <row>

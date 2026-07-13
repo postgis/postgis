@@ -109,11 +109,38 @@
             <refsection>
                 <title>Description</title>
 
+                <para>
+                    Returns <varname>true</varname> when the input is already a
+                    solid geometry, such as a closed <varname>SOLID</varname> or a
+                    geometry produced by <xref linkend="CG_MakeSolid"/>. A closed
+                    <varname>PolyhedralSurface</varname> remains a surface until it
+                    is explicitly converted.
+                    No validity check is performed.
+                </para>
                 <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
                 <para>&sfcgal_required;</para>
                 <para>&Z_support;</para>
                 <para>&P_support;</para>
                 <para>&T_support;</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <para>Compare the same closed shell before and after converting it to a solid.</para>
+                <programlisting language="sql">WITH data AS (
+  SELECT 'POLYHEDRALSURFACE Z (
+    ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+    ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
+    ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+    ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+    ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
+    ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))
+  )'::geometry AS geom
+)
+SELECT CG_IsSolid(geom) AS shell_is_solid,
+       CG_IsSolid(CG_MakeSolid(geom)) AS solid_is_solid
+FROM data;</programlisting>
+                <screen>f | t</screen>
             </refsection>
 
         </refentry>
@@ -582,26 +609,18 @@ FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 
     <refsection>
         <title>Examples</title>
-        <para>The two input solids and the difference result use the same isometric projection, so the generated figure shows their spatial relationship.</para>
+        <para>Compare the two input solids in their native 3D form and report the resulting geometry type.</para>
         <programlisting language="sql">WITH data AS (
   SELECT CG_Extrude(ST_Buffer('POINT(100 90)'::geometry,
            50, 'quad_segs=2'), 0, 0, 30) AS geom1,
          CG_Extrude(ST_Buffer('POINT(80 80)'::geometry,
            50, 'quad_segs=1'), 0, 0, 30) AS geom2
-), projected AS (
-  SELECT ST_Force2D(ST_Affine(geom1,
-           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS input_geom1,
-         ST_Force2D(ST_Affine(geom2,
-           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS input_geom2,
-         ST_Force2D(ST_Affine(CG_3DDifference(geom1, geom2),
-           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS result_geom
-  FROM data
 )
-SELECT ST_AsText(input_geom1, 3) AS input_geom1,
-       ST_AsText(input_geom2, 3) AS input_geom2,
-       ST_AsText(result_geom, 3) AS difference_projection
-FROM projected;</programlisting>
-        <screen role="visual-primary">POLYHEDRALSURFACE(((150 90,135.355 54.645,100 40,64.645 54.645,50 90,64.645 125.355,100 140,135.355 125.355,150 90)),((165 105,150.355 140.355,115 155,79.645 140.355,65 105,79.645 69.645,115 55,150.355 69.645,165 105)),((150 90,165 105,150.355 69.645,135.355 54.645,150 90)),((135.355 54.645,150.355 69.645,115 55,100 40,135.355 54.645)),((100 40,115 55,79.645 69.645,64.645 54.645,100 40)),((64.645 54.645,79.645 69.645,65 105,50 90,64.645 54.645)),((50 90,65 105,79.645 140.355,64.645 125.355,50 90)),((64.645 125.355,79.645 140.355,115 155,100 140,64.645 125.355)),((100 140,115 155,150.355 140.355,135.355 125.355,100 140)),((135.355 125.355,150.355 140.355,165 105,150 90,135.355 125.355))) | POLYHEDRALSURFACE(((130 80,80 30,30 80,80 130,130 80)),((145 95,95 145,45 95,95 45,145 95)),((130 80,145 95,95 45,80 30,130 80)),((80 30,95 45,45 95,30 80,80 30)),((30 80,45 95,95 145,80 130,30 80)),((80 130,95 145,145 95,130 80,80 130))) | POLYHEDRALSURFACE(((95 45,113.64 63.64,100 40,95 45)),((126.36 76.36,130 80,135.355 54.645,126.36 76.36)),((135.355 125.355,150 90,100 140,135.355 125.355)),((165 105,150.355 140.355,115 155,165 105)),((100 140,135 105,115 155,100 140)),((119.645 69.645,115 55,150.355 69.645,119.645 69.645)),((135.355 54.645,165 105,150.355 69.645,135.355 54.645)),((135.355 54.645,150 90,165 105,135.355 54.645)),((100 40,150.355 69.645,115 55,100 40)),((100 40,135.355 54.645,150.355 69.645,100 40)),((104.929 54.929,96.808 46.808,115 55,104.929 54.929)),((72.071 122.071,79.645 140.355,64.828 114.828,72.071 122.071)),((100 140,79.645 140.355,115 155,100 140)),((100 140,64.645 125.355,79.645 140.355,100 140)),((135.355 125.355,115 155,150.355 140.355,135.355 125.355)),((135.355 125.355,100 140,115 155,135.355 125.355)),((150 90,150.355 140.355,165 105,150 90)),((150 90,135.355 125.355,150.355 140.355,150 90)),((95 145,100 140,115 155,95 145)),((79.645 140.355,95 145,115 155,79.645 140.355)),((95 145,79.645 140.355,72.071 122.071,95 145)),((80 130,64.645 125.355,100 140,80 130)),((85 125,80 130,100 140,85 125)),((57.071 107.071,64.645 125.355,80 130,57.071 107.071)),((150 90,135.355 54.645,130 80,150 90)),((150 90,121.213 88.787,100 140,150 90)),((150 90,130 80,121.213 88.787,150 90)),((107.929 57.929,104.929 54.929,115 55,107.929 57.929)),((128.64 78.64,150.355 69.645,145 95,128.64 78.64)),((145 95,150.355 69.645,165 105,145 95)),((135 105,145 95,165 105,135 105)),((92.929 42.929,100 40,96.808 46.808,92.929 42.929)),((96.808 46.808,100 40,115 55,96.808 46.808)),((150.355 69.645,128.64 78.64,119.645 69.645,150.355 69.645)),((64.645 125.355,57.071 107.071,63.95 113.95,64.645 125.355)),((64.645 125.355,63.95 113.95,64.828 114.828,64.645 125.355)),((107.929 57.929,115 55,119.645 69.645,107.929 57.929)),((113.64 63.64,135.355 54.645,100 40,113.64 63.64)),((135 105,165 105,115 155,135 105)),((64.645 125.355,64.828 114.828,79.645 140.355,64.645 125.355)),((100 40,92.929 42.929,95 45,100 40)),((121.213 88.787,85 125,100 140,121.213 88.787)),((126.36 76.36,135.355 54.645,113.64 63.64,126.36 76.36)),((96.808 46.808,119.645 69.645,128.64 78.64,96.808 46.808)),((145 95,113.64 63.64,96.808 46.808,145 95)),((64.828 114.828,95 145,72.071 122.071,64.828 114.828)),((95 145,130 80,100 140,95 145)),((130 80,95 145,121.213 88.787,130 80)),((135 105,100 140,130 80,135 105)),((145 95,135 105,130 80,145 95)),((96.808 46.808,95 45,92.929 42.929,96.808 46.808)),((96.808 46.808,113.64 63.64,95 45,96.808 46.808)),((145 95,126.36 76.36,113.64 63.64,145 95)),((145 95,130 80,126.36 76.36,145 95)),((63.95 113.95,57.071 107.071,80 130,63.95 113.95)),((85 125,121.213 88.787,95 145,85 125)),((80 130,85 125,95 145,80 130)),((119.645 69.645,104.929 54.929,107.929 57.929,119.645 69.645)),((96.808 46.808,128.64 78.64,145 95,96.808 46.808)),((119.645 69.645,96.808 46.808,104.929 54.929,119.645 69.645)),((64.828 114.828,63.95 113.95,80 130,64.828 114.828)),((80 130,95 145,64.828 114.828,80 130)))</screen>
+SELECT ST_AsText(geom1, 3) AS input_geom1,
+       ST_AsText(geom2, 3) AS input_geom2,
+       ST_GeometryType(CG_3DDifference(geom1, geom2)) AS difference_type
+FROM data;</programlisting>
+        <screen role="visual-primary visual-separate-output">POLYHEDRALSURFACE Z (((150 90 0,135.355 54.645 0,100 40 0,64.645 54.645 0,50 90 0,64.645 125.355 0,100 140 0,135.355 125.355 0,150 90 0)),((150 90 30,135.355 125.355 30,100 140 30,64.645 125.355 30,50 90 30,64.645 54.645 30,100 40 30,135.355 54.645 30,150 90 30)),((150 90 0,150 90 30,135.355 54.645 30,135.355 54.645 0,150 90 0)),((135.355 54.645 0,135.355 54.645 30,100 40 30,100 40 0,135.355 54.645 0)),((100 40 0,100 40 30,64.645 54.645 30,64.645 54.645 0,100 40 0)),((64.645 54.645 0,64.645 54.645 30,50 90 30,50 90 0,64.645 54.645 0)),((50 90 0,50 90 30,64.645 125.355 30,64.645 125.355 0,50 90 0)),((64.645 125.355 0,64.645 125.355 30,100 140 30,100 140 0,64.645 125.355 0)),((100 140 0,100 140 30,135.355 125.355 30,135.355 125.355 0,100 140 0)),((135.355 125.355 0,135.355 125.355 30,150 90 30,150 90 0,135.355 125.355 0))) | POLYHEDRALSURFACE Z (((130 80 0,80 30 0,30 80 0,80 130 0,130 80 0)),((130 80 30,80 130 30,30 80 30,80 30 30,130 80 30)),((130 80 0,130 80 30,80 30 30,80 30 0,130 80 0)),((80 30 0,80 30 30,30 80 30,30 80 0,80 30 0)),((30 80 0,30 80 30,80 130 30,80 130 0,30 80 0)),((80 130 0,80 130 30,130 80 30,130 80 0,80 130 0))) | ST_PolyhedralSurface</screen>
 
     </refsection>
 
@@ -784,62 +803,53 @@ FROM shapes;</programlisting>
 
         <refsection>
             <title>Examples</title>
-        <para>The two input solids and the intersection result use the same isometric projection, so the generated figure shows their spatial relationship.</para>
-        <programlisting language="sql">WITH data AS (
-  SELECT CG_Extrude(ST_Buffer('POINT(100 90)'::geometry,
-           50, 'quad_segs=2'), 0, 0, 30) AS geom1,
-         CG_Extrude(ST_Buffer('POINT(80 80)'::geometry,
-           50, 'quad_segs=1'), 0, 0, 30) AS geom2
-), projected AS (
-  SELECT ST_Force2D(ST_Affine(geom1,
-           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS input_geom1,
-         ST_Force2D(ST_Affine(geom2,
-           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS input_geom2,
-         ST_Force2D(ST_Affine(CG_3DIntersection(geom1, geom2),
-           1, 0, 0.5, 0, 1, 0.5, 0, 0, 0, 0, 0, 0)) AS result_geom
+            <para>3D linestrings and polygons can intersect in a 3D segment.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)'::geometry AS input_linestring,
+         'POLYGON Z ((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_linestring) AS input_linestring,
+       ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_3DIntersection(input_linestring, input_polygon)) AS intersection
+FROM data;</programlisting>
+            <screen role="visual-overlay">LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10) | POLYGON Z ((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8)) | LINESTRING Z (1 1 8,0.5 0.5 8)</screen>
+
+            <para>Intersect a cube shell with a vertical polygon.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYHEDRALSURFACE Z(
+    ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+    ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
+    ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+    ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+    ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
+    ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))
+  )'::geometry AS input_cube,
+  'POLYGON Z ((0 0 0,0 0 0.5,0 0.5 0.5,0 0.5 0,0 0 0))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_cube) AS input_cube,
+       ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_3DIntersection(input_cube, input_polygon)) AS intersection
+FROM data;</programlisting>
+            <screen role="visual-overlay">POLYHEDRALSURFACE Z (((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))) | POLYGON Z ((0 0 0,0 0 0.5,0 0.5 0.5,0 0.5 0,0 0 0)) | TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
+
+            <para>A smaller solid contained by a larger solid remains volumetric after intersection.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT CG_MakeSolid('POLYHEDRALSURFACE Z (
+    ((0 0 0,0 4 0,4 0 0,0 0 0)),
+    ((0 0 0,4 0 0,0 0 4,0 0 0)),
+    ((0 0 0,0 0 4,0 4 0,0 0 0)),
+    ((4 0 0,0 4 0,0 0 4,4 0 0))
+  )'::geometry) AS outer_solid
+), solids AS (
+  SELECT outer_solid,
+         ST_Scale(outer_solid, 0.5, 0.5, 0.5) AS inner_solid
   FROM data
 )
-SELECT ST_AsText(input_geom1, 3) AS input_geom1,
-       ST_AsText(input_geom2, 3) AS input_geom2,
-       ST_AsText(result_geom, 3) AS intersection_projection
-FROM projected;</programlisting>
-        <screen role="visual-primary">POLYHEDRALSURFACE(((150 90,135.355 54.645,100 40,64.645 54.645,50 90,64.645 125.355,100 140,135.355 125.355,150 90)),((165 105,150.355 140.355,115 155,79.645 140.355,65 105,79.645 69.645,115 55,150.355 69.645,165 105)),((150 90,165 105,150.355 69.645,135.355 54.645,150 90)),((135.355 54.645,150.355 69.645,115 55,100 40,135.355 54.645)),((100 40,115 55,79.645 69.645,64.645 54.645,100 40)),((64.645 54.645,79.645 69.645,65 105,50 90,64.645 54.645)),((50 90,65 105,79.645 140.355,64.645 125.355,50 90)),((64.645 125.355,79.645 140.355,115 155,100 140,64.645 125.355)),((100 140,115 155,150.355 140.355,135.355 125.355,100 140)),((135.355 125.355,150.355 140.355,165 105,150 90,135.355 125.355))) | POLYHEDRALSURFACE(((130 80,80 30,30 80,80 130,130 80)),((145 95,95 145,45 95,95 45,145 95)),((130 80,145 95,95 45,80 30,130 80)),((80 30,95 45,45 95,30 80,80 30)),((30 80,45 95,95 145,80 130,30 80)),((80 130,95 145,145 95,130 80,80 130))) | POLYHEDRALSURFACE(((95 45,80 48.284,80 60,95 45)),((80 60,113.64 63.64,95 45,80 60)),((113.64 63.64,80 77.574,121.213 88.787,113.64 63.64)),((95 135,72.071 122.071,65 105,95 135)),((95 69.645,107.929 57.929,119.645 69.645,95 69.645)),((119.645 69.645,95 92.574,95 69.645,119.645 69.645)),((95 92.574,128.64 78.64,135 105,95 92.574)),((104.929 54.929,95 63.284,64.645 54.645,104.929 54.929)),((50 90,79.645 69.645,65 105,50 90)),((50 90,64.645 54.645,79.645 69.645,50 90)),((57.071 107.071,50 90,63.95 113.95,57.071 107.071)),((95 69.645,95 63.284,107.929 57.929,95 69.645)),((79.645 69.645,95 63.284,95 69.645,79.645 69.645)),((130 80,126.36 76.36,121.213 88.787,130 80)),((95 105,95 92.574,135 105,95 105)),((65 105,95 92.574,95 105,65 105)),((145 95,135 105,128.64 78.64,145 95)),((64.645 54.645,80 60,80 48.284,64.645 54.645)),((95 45,92.929 42.929,80 48.284,95 45)),((50 90,80 60,64.645 54.645,50 90)),((95 135,100 140,95 145,95 135)),((72.071 122.071,95 135,95 145,72.071 122.071)),((79.645 69.645,95 69.645,95 92.574,79.645 69.645)),((119.645 69.645,128.64 78.64,95 92.574,119.645 69.645)),((79.645 69.645,95 92.574,65 105,79.645 69.645)),((65 105,64.828 114.828,50 90,65 105)),((63.95 113.95,50 90,64.828 114.828,63.95 113.95)),((80 48.284,104.929 54.929,64.645 54.645,80 48.284)),((80 48.284,92.929 42.929,96.808 46.808,80 48.284)),((80 48.284,96.808 46.808,104.929 54.929,80 48.284)),((80 120,85 125,121.213 88.787,80 120)),((126.36 76.36,113.64 63.64,121.213 88.787,126.36 76.36)),((80 120,80 77.574,50 90,80 120)),((80 77.574,80 120,121.213 88.787,80 77.574)),((107.929 57.929,95 63.284,104.929 54.929,107.929 57.929)),((95 63.284,79.645 69.645,64.645 54.645,95 63.284)),((50 90,57.071 107.071,80 120,50 90)),((80 130,85 125,80 120,80 130)),((80 130,80 120,57.071 107.071,80 130)),((80 60,80 77.574,113.64 63.64,80 60)),((50 90,80 77.574,80 60,50 90)),((65 105,72.071 122.071,64.828 114.828,65 105)),((95 105,100 140,95 135,95 105)),((95 105,95 135,65 105,95 105)),((95 105,135 105,100 140,95 105)),((96.808 46.808,113.64 63.64,145 95,96.808 46.808)),((63.95 113.95,64.828 114.828,80 130,63.95 113.95)),((100 140,130 80,95 145,100 140)),((121.213 88.787,95 145,130 80,121.213 88.787)),((95 145,121.213 88.787,85 125,95 145)),((95 145,85 125,80 130,95 145)),((130 80,100 140,135 105,130 80)),((130 80,135 105,145 95,130 80)),((57.071 107.071,63.95 113.95,80 130,57.071 107.071)),((128.64 78.64,96.808 46.808,145 95,128.64 78.64)),((128.64 78.64,119.645 69.645,96.808 46.808,128.64 78.64)),((119.645 69.645,107.929 57.929,104.929 54.929,119.645 69.645)),((119.645 69.645,104.929 54.929,96.808 46.808,119.645 69.645)),((72.071 122.071,95 145,64.828 114.828,72.071 122.071)),((64.828 114.828,95 145,80 130,64.828 114.828)),((92.929 42.929,95 45,96.808 46.808,92.929 42.929)),((95 45,113.64 63.64,96.808 46.808,95 45)),((113.64 63.64,126.36 76.36,145 95,113.64 63.64)),((126.36 76.36,130 80,145 95,126.36 76.36)))</screen>
-
-    <para>3D linestrings and polygons</para>
-    <programlisting>    SELECT ST_AsText(CG_3DIntersection(linestring, polygon)) As wkt
-FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
-CROSS JOIN ST_GeomFromText('POLYGON((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8))') AS polygon;</programlisting>
-<screen>LINESTRING Z (1 1 8,0.5 0.5 8)</screen>
-
-<para>Cube (closed Polyhedral Surface) and Polygon Z</para>
-<programlisting>SELECT ST_AsText(
-CG_3DIntersection(
-'POLYHEDRALSURFACE Z( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
-((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
-((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
-((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )',
-'POLYGON Z ((0 0 0,0 0 0.5,0 0.5 0.5,0 0.5 0,0 0 0))'::geometry))</programlisting>
-            <screen>TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
-
-            <para>Intersection of 2 solids that result in volumetric intersection is also a solid (ST_Dimension returns 3)</para>
-            <programlisting>SELECT ST_AsText(
-CG_3DIntersection(
-  CG_Extrude(ST_Buffer('POINT(10 20)'::geometry, 10, 1), 0, 0, 30),
-  CG_Extrude(ST_Buffer('POINT(10 20)'::geometry, 10, 1), 2, 0, 10)));</programlisting>
-        <screen>POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),
-((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
-((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),
-((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),
-((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),
-((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),
-((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),
-((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),
-((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),
-((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),
-((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),
-((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),
-((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),
-((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))</screen>
+SELECT ST_AsText(outer_solid) AS input_outer,
+       ST_AsText(inner_solid) AS input_inner,
+       ST_AsText(CG_3DIntersection(outer_solid, inner_solid)) AS intersection
+FROM solids;</programlisting>
+            <screen role="visual-separate-output">POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 0 0,0 0 0)),((0 0 0,4 0 0,0 0 4,0 0 0)),((0 0 0,0 0 4,0 4 0,0 0 0)),((4 0 0,0 4 0,0 0 4,4 0 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 2 0,2 0 0,0 0 0)),((0 0 0,2 0 0,0 0 2,0 0 0)),((0 0 0,0 0 2,0 2 0,0 0 0)),((2 0 0,0 2 0,0 0 2,2 0 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 0 2,0 2 0,0 0 0)),((0 0 0,2 0 0,0 0 2,0 0 0)),((0 2 0,2 0 0,0 0 0,0 2 0)),((2 0 0,0 2 0,0 0 2,2 0 0)))</screen>
 
 </refsection>
 
@@ -1023,40 +1033,56 @@ FROM projected;</programlisting>
 
 <refsection>
     <title>Examples</title>
-    <para>
-        <programlisting>SELECT ST_AsText(
-CG_AlphaShape(
-'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+    <para>The original point cloud and the alpha-shape share one comparison frame.</para>
+    <programlisting language="sql">WITH data AS (
+  SELECT 'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
 (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
 (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
 (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
 (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
 (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
-80.2));</programlisting>
-    <screen role="visual-primary">MULTIPOLYGON(((89 53,88 58,85 71,83 72,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53)))</screen>
-</para>
-<para>
-    <programlisting>SELECT ST_AsText(
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry AS input_points
+)
+SELECT ST_AsText(input_points) AS input_points,
+       ST_AsText(
 CG_AlphaShape(
-'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+         input_points,
+         80.2
+       )) AS alpha_shape
+FROM data;</programlisting>
+    <screen role="visual-overlay">MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97)) | MULTIPOLYGON(((89 53,88 58,85 71,83 72,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53)))</screen>
+
+    <para>The same point cloud can produce a shape with a hole when holes are allowed.</para>
+    <programlisting language="sql">WITH data AS (
+  SELECT 'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
 (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
 (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
 (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
-100.1,
-true))</programlisting>
-<screen role="visual-primary">MULTIPOLYGON(((89 53,88 58,85 71,83 72,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,43 19,53 18,65 16,73 16,78 16,84 19,90 30,87 42,91 50,89 53),(36 68,40 75,43 80,60 81,68 73,77 67,81 60,82 54,81 47,78 43,76 27,62 22,54 32,44 42,38 46,36 61,36 68)))</screen>
-            </para>
-
-            <para>
-                <programlisting>SELECT ST_AsText(
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry AS input_points
+)
+SELECT ST_AsText(input_points) AS input_points,
+       ST_AsText(
 CG_AlphaShape(
-'MULTIPOINT ((132 64),(114 64),(99 64),(81 64),(63 64),(57 49),(52 36),(46 20),(37 20),(26 20),(32 36),(39 55),(43 69),(50 84),(57 100),(63 118),(68 133),(74 149),(81 164),(88 180),(101 180),(112 180),(119 164),(126 149),(132 131),(139 113),(143 100),(150 84),(157 69),(163 51),(168 36),(174 20),(163 20),(150 20),(143 36),(139 49),(132 64),(99 151),(92 138),(88 124),(81 109),(74 93),(70 82),(83 82),(99 82),(112 82),(126 82),(121 96),(114 109),(110 122),(103 138),(99 151),(34 27),(43 31),(48 44),(46 58),(52 73),(63 73),(61 84),(72 71),(90 69),(101 76),(123 71),(141 62),(166 27),(150 33),(159 36),(146 44),(154 53),(152 62),(146 73),(134 76),(143 82),(141 91),(130 98),(126 104),(132 113),(128 127),(117 122),(112 133),(119 144),(108 147),(119 153),(110 171),(103 164),(92 171),(86 160),(88 142),(79 140),(72 124),(83 131),(79 118),(68 113),(63 102),(68 93),(35 45))'::geometry,
-102.2,
-true));</programlisting>
-            <screen role="visual-primary">MULTIPOLYGON(((168 36,163 51,157 69,150 84,143 100,139 113,132 131,126 149,119 164,112 180,101 180,88 180,81 164,74 149,68 133,63 118,57 100,50 84,43 69,39 55,35 45,32 36,26 20,37 20,46 20,52 36,57 49,63 64,81 64,90 69,99 64,114 64,132 64,139 49,143 36,150 20,163 20,174 20,168 36),(81 109,88 124,92 138,103 138,110 122,114 109,121 96,112 82,99 82,83 82,74 93,81 109)))</screen>
-    </para>
+         input_points,
+         100.1,
+         true
+       )) AS alpha_shape
+FROM data;</programlisting>
+    <screen role="visual-overlay">MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97)) | MULTIPOLYGON(((89 53,88 58,85 71,83 72,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,43 19,53 18,65 16,73 16,78 16,84 19,90 30,87 42,91 50,89 53),(36 68,40 75,43 80,60 81,68 73,77 67,81 60,82 54,81 47,78 43,76 27,62 22,54 32,44 42,38 46,36 61,36 68)))</screen>
+
+            <para>The second documented point cloud also produces a holed alpha-shape.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'MULTIPOINT ((132 64),(114 64),(99 64),(81 64),(63 64),(57 49),(52 36),(46 20),(37 20),(26 20),(32 36),(39 55),(43 69),(50 84),(57 100),(63 118),(68 133),(74 149),(81 164),(88 180),(101 180),(112 180),(119 164),(126 149),(132 131),(139 113),(143 100),(150 84),(157 69),(163 51),(168 36),(174 20),(163 20),(150 20),(143 36),(139 49),(132 64),(99 151),(92 138),(88 124),(81 109),(74 93),(70 82),(83 82),(99 82),(112 82),(126 82),(121 96),(114 109),(110 122),(103 138),(99 151),(34 27),(43 31),(48 44),(46 58),(52 73),(63 73),(61 84),(72 71),(90 69),(101 76),(123 71),(141 62),(166 27),(150 33),(159 36),(146 44),(154 53),(152 62),(146 73),(134 76),(143 82),(141 91),(130 98),(126 104),(132 113),(128 127),(117 122),(112 133),(119 144),(108 147),(119 153),(110 171),(103 164),(92 171),(86 160),(88 142),(79 140),(72 124),(83 131),(79 118),(68 113),(63 102),(68 93),(35 45))'::geometry AS input_points
+)
+SELECT ST_AsText(input_points) AS input_points,
+       ST_AsText(
+CG_AlphaShape(
+         input_points,
+         102.2,
+         true
+       )) AS alpha_shape
+FROM data;</programlisting>
+            <screen role="visual-overlay">MULTIPOINT((132 64),(114 64),(99 64),(81 64),(63 64),(57 49),(52 36),(46 20),(37 20),(26 20),(32 36),(39 55),(43 69),(50 84),(57 100),(63 118),(68 133),(74 149),(81 164),(88 180),(101 180),(112 180),(119 164),(126 149),(132 131),(139 113),(143 100),(150 84),(157 69),(163 51),(168 36),(174 20),(163 20),(150 20),(143 36),(139 49),(132 64),(99 151),(92 138),(88 124),(81 109),(74 93),(70 82),(83 82),(99 82),(112 82),(126 82),(121 96),(114 109),(110 122),(103 138),(99 151),(34 27),(43 31),(48 44),(46 58),(52 73),(63 73),(61 84),(72 71),(90 69),(101 76),(123 71),(141 62),(166 27),(150 33),(159 36),(146 44),(154 53),(152 62),(146 73),(134 76),(143 82),(141 91),(130 98),(126 104),(132 113),(128 127),(117 122),(112 133),(119 144),(108 147),(119 153),(110 171),(103 164),(92 171),(86 160),(88 142),(79 140),(72 124),(83 131),(79 118),(68 113),(63 102),(68 93),(35 45)) | MULTIPOLYGON(((168 36,163 51,157 69,150 84,143 100,139 113,132 131,126 149,119 164,112 180,101 180,88 180,81 164,74 149,68 133,63 118,57 100,50 84,43 69,39 55,35 45,32 36,26 20,37 20,46 20,52 36,57 49,63 64,81 64,90 69,99 64,114 64,132 64,139 49,143 36,150 20,163 20,174 20,168 36),(81 109,88 124,92 138,103 138,110 122,114 109,121 96,112 82,99 82,83 82,74 93,81 109)))</screen>
 </refsection>
 <refsection>
     <title>See Also</title>
@@ -1098,14 +1124,17 @@ true));</programlisting>
             <para>&sfcgal_required;</para>
         </refsection>
 
-        <refsection>
-            <title>Examples</title>
-            <para>
-                Approximal convex partition (the same Polygon is used by <xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, and <xref linkend="CG_OptimalConvexPartition" />).
-                <programlisting>SELECT ST_AsText(CG_ApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-                <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
-            </para>
-        </refsection>
+	        <refsection>
+	            <title>Examples</title>
+	            <para>Approximate convex partition of the same polygon used by the other partition examples.</para>
+	            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_ApproxConvexPartition(input_polygon)) AS partition
+FROM data;</programlisting>
+	            <screen role="visual-overlay">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
+	        </refsection>
         <refsection>
             <title>See Also</title>
             <para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
@@ -1264,16 +1293,17 @@ FROM data;</programlisting>
             <para>&P_support;</para>
         </refsection>
 
-        <refsection>
-            <title>Examples</title>
-            <para>Generate a hipped roof two units above a rectangular footprint.</para>
-            <programlisting>WITH data AS (
-  SELECT 'POLYGON((0 0,5 0,5 4,0 4,0 0))'::geometry AS footprint
+	        <refsection>
+	            <title>Examples</title>
+	            <para>The footprint and hipped roof share one 3D panel so the roof height stays visible without fake perspective SQL.</para>
+	            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((0 0,5 0,5 4,0 4,0 0))'::geometry AS input_footprint
 )
-SELECT ST_AsText(CG_GenerateHippedRoof(footprint, 2.0), 3) AS roof
+SELECT ST_AsText(input_footprint, 3) AS input_footprint,
+       ST_AsText(CG_GenerateHippedRoof(input_footprint, 2.0), 3) AS hipped_roof
 FROM data;</programlisting>
-<screen role="visual-primary">POLYHEDRALSURFACE Z (((0 4 0,5 4 0,5 0 0,0 0 0,0 4 0)),((0 4 0,0 0 0,2 2 2,0 4 0)),((0 0 0,5 0 0,3 2 2,2 2 2,0 0 0)),((5 0 0,5 4 0,3 2 2,5 0 0)),((5 4 0,0 4 0,2 2 2,3 2 2,5 4 0)))</screen>
-        </refsection>
+<screen role="visual-overlay">POLYGON((0 0,5 0,5 4,0 4,0 0)) | POLYHEDRALSURFACE Z (((0 4 0,5 4 0,5 0 0,0 0 0,0 4 0)),((0 4 0,0 0 0,2 2 2,0 4 0)),((0 0 0,5 0 0,3 2 2,2 2 2,0 0 0)),((5 0 0,5 4 0,3 2 2,5 0 0)),((5 4 0,0 4 0,2 2 2,3 2 2,5 4 0)))</screen>
+	        </refsection>
 
         <refsection>
             <title>See Also</title>
@@ -1464,16 +1494,18 @@ FROM data;</programlisting>
             <para>&P_support;</para>
         </refsection>
 
-        <refsection>
-            <title>Examples</title>
-            <programlisting language="sql">SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'HIPPED', 2.0, 30.0, 0));
-            </programlisting>
-            <screen>POLYHEDRALSURFACE Z (((0 4 0,4 4 0,4 0 0,0 0 0,0 4 0)), ...)</screen>
-            <programlisting language="sql">
-SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'FLAT', 2.0));
-            </programlisting>
-            <screen>POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 0 0,0 0 0)), ...)</screen>
-        </refsection>
+	        <refsection>
+	            <title>Examples</title>
+	            <para>The generic dispatcher returns the same 3D roofs as the specialized helpers for the same footprint.</para>
+	            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((0 0,4 0,4 4,0 4,0 0))'::geometry AS input_footprint
+)
+SELECT ST_AsText(input_footprint) AS input_footprint,
+       ST_AsText(CG_GenerateRoof(input_footprint, 'HIPPED', 2.0, 30.0, 0)) AS hipped_roof,
+       ST_AsText(CG_GenerateRoof(input_footprint, 'FLAT', 2.0, 30.0, 0)) AS flat_roof
+FROM data;</programlisting>
+	            <screen role="visual-primary visual-separate-output">POLYGON((0 0,4 0,4 4,0 4,0 0)) | POLYHEDRALSURFACE Z (((0 4 0,4 4 0,4 0 0,0 0 0,0 4 0)),((0 4 0,0 0 0,2 2 2,0 4 0)),((0 0 0,4 0 0,2 2 2,0 0 0)),((4 0 0,4 4 0,2 2 2,4 0 0)),((4 4 0,0 4 0,2 2 2,4 4 0))) | POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 0 0,0 0 0)),((0 0 2,4 0 2,4 4 2,0 4 2,0 0 2)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 0 2,4 0 0,4 4 0)),((4 0 0,4 0 2,0 0 2,0 0 0,4 0 0)))</screen>
+	        </refsection>
 
         <refsection>
             <title>See Also</title>
@@ -1527,19 +1559,26 @@ SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'FLAT', 2.0))
             <para>&P_support;</para>
         </refsection>
 
-        <refsection>
-            <title>Examples</title>
-            <para>This example repairs a bowtie self-intersecting polygon.</para>
-            <programlisting language="sql">
-SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))'));
-            </programlisting>
-            <screen>MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))</screen>
-            <para>Keep all winding area with UNION rule (requires CGAL 6.1 or later).</para>
-            <programlisting language="sql">
-SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
-            </programlisting>
-            <screen>MULTIPOLYGON(((0 0,1 1,0 2,0 0)))</screen>
-        </refsection>
+	        <refsection>
+	            <title>Examples</title>
+	            <para>Repair a self-intersecting bowtie polygon with the default <literal>EVEN_ODD</literal> rule.</para>
+	            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((0 0,2 2,2 0,0 2,0 0))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_PolygonRepair(input_polygon)) AS repaired_polygon
+FROM data;</programlisting>
+	            <screen role="visual-overlay">POLYGON((0 0,2 2,2 0,0 2,0 0)) | MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))</screen>
+
+		            <para>With the <literal>UNION</literal> rule, all winding area is kept. This rule requires CGAL 6.1 or later.</para>
+	            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((0 0,2 2,2 0,0 2,0 0))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_PolygonRepair(input_polygon, 'UNION')) AS repaired_polygon
+FROM data;</programlisting>
+	            <screen role="visual-overlay">POLYGON((0 0,2 2,2 0,0 2,0 0)) | MULTIPOLYGON(((0 0,1 1,0 2,0 0)))</screen>
+	        </refsection>
 
         <refsection>
             <title>See Also</title>
@@ -1720,13 +1759,17 @@ FROM projected;</programlisting>
             <para>&sfcgal_required;</para>
         </refsection>
 
-        <refsection>
-            <title>Examples</title>
-            <para>
-                <programlisting>SELECT ST_AsText(CG_ExtrudeStraightSkeleton('POLYGON (( 0 0,5 0,5 5,4 5,4 4,0 4,0 0 ),(1 1,1 2,2 2,2 1,1 1))', 3.0, 2.0));</programlisting>
-                <screen>POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 5 0,5 5 0,5 0 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 5 2,4 5 0,4 4 0)),((4 5 0,4 5 2,5 5 2,5 5 0,4 5 0)),((5 5 0,5 5 2,5 0 2,5 0 0,5 5 0)),((5 0 0,5 0 2,0 0 2,0 0 0,5 0 0)),((1 1 0,1 1 2,2 1 2,2 1 0,1 1 0)),((2 1 0,2 1 2,2 2 2,2 2 0,2 1 0)),((2 2 0,2 2 2,1 2 2,1 2 0,2 2 0)),((1 2 0,1 2 2,1 1 2,1 1 0,1 2 0)),((0 4 2,0 0 2,0.5 0.5 2.5,0.5 2.5 2.5,1 3 3,0 4 2)),((0 0 2,5 0 2,3.5 1.5 3.5,2.5 0.5 2.5,0.5 0.5 2.5,0 0 2)),((5 0 2,5 5 2,4.5 4.5 2.5,4.5 3.5 2.5,3.5 2.5 3.5,3.5 1.5 3.5,5 0 2)),((5 5 2,4 5 2,4.5 4.5 2.5,5 5 2)),((4 5 2,4 4 2,4.5 3.5 2.5,4.5 4.5 2.5,4 5 2)),((4 4 2,0 4 2,1 3 3,3 3 3,3.5 2.5 3.5,4.5 3.5 2.5,4 4 2)),((2 1 2,1 1 2,0.5 0.5 2.5,2.5 0.5 2.5,2 1 2)),((1 1 2,1 2 2,0.5 2.5 2.5,0.5 0.5 2.5,1 1 2)),((1 2 2,2 2 2,3 3 3,1 3 3,0.5 2.5 2.5,1 2 2)),((2 2 2,2 1 2,2.5 0.5 2.5,3.5 1.5 3.5,3.5 2.5 3.5,3 3 3,2 2 2)))</screen>
-            </para>
-        </refsection>
+	        <refsection>
+	            <title>Examples</title>
+	            <para>Extrude a polygon with a hole into a body and straight-skeleton roof.</para>
+	            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON ((0 0,5 0,5 5,4 5,4 4,0 4,0 0),(1 1,1 2,2 2,2 1,1 1))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_ExtrudeStraightSkeleton(input_polygon, 3.0, 2.0)) AS straight_skeleton_extrusion
+FROM data;</programlisting>
+	            <screen role="visual-primary visual-separate-output">POLYGON((0 0,5 0,5 5,4 5,4 4,0 4,0 0),(1 1,1 2,2 2,2 1,1 1)) | POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 5 0,5 5 0,5 0 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0)),((0 0 0,0 0 2,0 4 2,0 4 0,0 0 0)),((0 4 0,0 4 2,4 4 2,4 4 0,0 4 0)),((4 4 0,4 4 2,4 5 2,4 5 0,4 4 0)),((4 5 0,4 5 2,5 5 2,5 5 0,4 5 0)),((5 5 0,5 5 2,5 0 2,5 0 0,5 5 0)),((5 0 0,5 0 2,0 0 2,0 0 0,5 0 0)),((1 1 0,1 1 2,2 1 2,2 1 0,1 1 0)),((2 1 0,2 1 2,2 2 2,2 2 0,2 1 0)),((2 2 0,2 2 2,1 2 2,1 2 0,2 2 0)),((1 2 0,1 2 2,1 1 2,1 1 0,1 2 0)),((0 4 2,0 0 2,0.5 0.5 2.5,0.5 2.5 2.5,1 3 3,0 4 2)),((0 0 2,5 0 2,3.5 1.5 3.5,2.5 0.5 2.5,0.5 0.5 2.5,0 0 2)),((5 0 2,5 5 2,4.5 4.5 2.5,4.5 3.5 2.5,3.5 2.5 3.5,3.5 1.5 3.5,5 0 2)),((5 5 2,4 5 2,4.5 4.5 2.5,5 5 2)),((4 5 2,4 4 2,4.5 3.5 2.5,4.5 4.5 2.5,4 5 2)),((4 4 2,0 4 2,1 3 3,3 3 3,3.5 2.5 3.5,4.5 3.5 2.5,4 4 2)),((2 1 2,1 1 2,0.5 0.5 2.5,2.5 0.5 2.5,2 1 2)),((1 1 2,1 2 2,0.5 2.5 2.5,0.5 0.5 2.5,1 1 2)),((1 2 2,2 2 2,3 3 3,1 3 3,0.5 2.5 2.5,1 2 2)),((2 2 2,2 1 2,2.5 0.5 2.5,3.5 1.5 3.5,3.5 2.5 3.5,3 3 3,2 2 2)))</screen>
+	        </refsection>
         <refsection>
             <title>See Also</title>
             <para><xref linkend="CG_Extrude" />, <xref linkend="CG_ExtrudeStraightSkeleton" />, <xref linkend="CG_StraightSkeleton" />,  <xref linkend="CG_StraightSkeletonPartition" /> </para>
@@ -1767,14 +1810,17 @@ FROM projected;</programlisting>
         <para>&sfcgal_required;</para>
     </refsection>
 
-    <refsection>
-        <title>Examples</title>
-        <para>
-            Greene approximate convex partition (the same Polygon is used by <xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, and <xref linkend="CG_OptimalConvexPartition" />).
-            <programlisting>SELECT ST_AsText(CG_GreeneApproxConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-            <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
-        </para>
-    </refsection>
+	    <refsection>
+	        <title>Examples</title>
+	        <para>Greene's monotone-based approximation uses the same polygon and stays directly comparable in one panel.</para>
+	        <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_GreeneApproxConvexPartition(input_polygon)) AS partition
+FROM data;</programlisting>
+	        <screen role="visual-overlay">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
+	    </refsection>
     <refsection>
         <title>See Also</title>
         <para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
@@ -1880,34 +1926,44 @@ FROM data;</programlisting>
         <para>&sfcgal_required;</para>
     </refsection>
 
-    <refsection>
-        <title>Examples</title>
-        <para>
-            <programlisting>SELECT ST_AsText(
-CG_OptimalAlphaShape(
-'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
+	    <refsection>
+	        <title>Examples</title>
+	        <para>The original point cloud and the optimal alpha-shape share one comparison frame.</para>
+	        <programlisting language="sql">WITH data AS (
+  SELECT 'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
 (88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
 (81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
 (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
 (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
 (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry));</programlisting>
-        <screen role="visual-primary">MULTIPOLYGON(((89 53,88 58,83 64,85 71,83 72,75 77,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53)))</screen>
-</para>
-
-<para>
-    <programlisting>SELECT ST_AsText(
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry AS input_points
+)
+SELECT ST_AsText(input_points) AS input_points,
+       ST_AsText(
 CG_OptimalAlphaShape(
-'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+         input_points
+       )) AS optimal_alpha_shape
+FROM data;</programlisting>
+	        <screen role="visual-overlay">MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97)) | MULTIPOLYGON(((89 53,88 58,83 64,85 71,83 72,75 77,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53)))</screen>
+
+            <para>Allowing holes keeps the same outer shell but carves a central hole.</para>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
 (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
 (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
 (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry,
-allow_holes =&gt; true));</programlisting>
-<screen role="visual-primary">MULTIPOLYGON(((89 53,88 58,83 64,85 71,83 72,75 77,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53),(36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61,36 68)))</screen>
-</para>
+(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry AS input_points
+)
+SELECT ST_AsText(input_points) AS input_points,
+       ST_AsText(
+CG_OptimalAlphaShape(
+         input_points,
+         allow_holes =&gt; true
+       )) AS optimal_alpha_shape
+FROM data;</programlisting>
+<screen role="visual-overlay">MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97)) | MULTIPOLYGON(((89 53,88 58,83 64,85 71,83 72,75 77,75 84,76 88,72 95,64 97,57 97,52 98,49 95,45 90,39 88,34 86,26 85,24 82,27 77,24 67,23 60,27 54,26 44,23 36,28 33,30 22,37 23,43 19,53 18,65 16,73 16,78 16,84 19,88 29,90 30,87 42,91 50,89 53),(36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61,36 68)))</screen>
 
-            </refsection>
+	            </refsection>
             <refsection>
                 <title>See Also</title>
                 <para><xref linkend="ST_ConcaveHull"/>, <xref linkend="CG_AlphaShape"/></para>
@@ -1948,14 +2004,17 @@ allow_holes =&gt; true));</programlisting>
             <para>&sfcgal_required;</para>
         </refsection>
 
-        <refsection>
-            <title>Examples</title>
-            <para>
-                Optimal convex partition (the same Polygon is used by <xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, and <xref linkend="CG_GreeneApproxConvexPartition" />).
-                <programlisting>SELECT ST_AsText(CG_OptimalConvexPartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-                <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
-            </para>
-        </refsection>
+	        <refsection>
+	            <title>Examples</title>
+	            <para>The optimal convex partition uses the same polygon and produces the smallest documented piece count.</para>
+	            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_OptimalConvexPartition(input_polygon)) AS partition
+FROM data;</programlisting>
+	            <screen role="visual-overlay">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
+	        </refsection>
         <refsection>
             <title>See Also</title>
             <para><xref linkend="CG_YMonotonePartition" />, <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" /></para>
@@ -1990,7 +2049,7 @@ allow_holes =&gt; true));</programlisting>
             <para>&T_support;</para>
         </refsection>
 
-        <refsection><title>Examples</title>
+	        <refsection><title>Examples</title>
 
             <programlisting language="sql">SELECT ST_AsText(CG_StraightSkeleton(
   'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'));</programlisting>
@@ -2157,7 +2216,7 @@ SELECT ST_AsText(polygon, 3) AS input_polygon,
        ST_AsText(observer, 3) AS input_observer,
        ST_AsText(CG_Visibility(polygon, observer), 3) AS visibility
 FROM data;</programlisting>
-            <screen role="visual-primary">POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)) | POINT(91 87) | POLYGON((78.5 68,98.5 68,108 43.933,108 98,121.962 107.034,107 106.5,107 135,97.5 106.5,65.28 105.099,77.5 96.5,78.5 68))</screen>
+	            <screen role="visual-overlay">POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)) | POINT(91 87) | POLYGON((78.5 68,98.5 68,108 43.933,108 98,121.962 107.034,107 106.5,107 135,97.5 106.5,65.28 105.099,77.5 96.5,78.5 68))</screen>
 
             <para>Visibility from a segment inside the same polygon.</para>
             <programlisting language="sql">WITH data AS (
@@ -2169,8 +2228,8 @@ SELECT ST_AsText(polygon, 3) AS input_polygon,
        ST_AsText(ST_MakeLine(observer_start, observer_end), 3) AS input_observer,
        ST_AsText(CG_Visibility(polygon, observer_start, observer_end), 3) AS visibility
 FROM data;</programlisting>
-            <screen role="visual-primary">POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)) | LINESTRING(78.5 68,98.5 68) | POLYGON((78.5 68,98.5 68,100.5 36,101.281 23.5,111.711 23.5,108 36,108 98,110.734 106.633,107 106.5,107 157.5,108.52 173.5,95.76 173.5,97.5 106.5,70.981 105.347,77.5 96.5,78.5 68))</screen>
-        </refsection>
+	            <screen role="visual-overlay">POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)) | LINESTRING(78.5 68,98.5 68) | POLYGON((78.5 68,98.5 68,100.5 36,101.281 23.5,111.711 23.5,108 36,108 98,110.734 106.633,107 106.5,107 157.5,108.52 173.5,95.76 173.5,97.5 106.5,70.981 105.347,77.5 96.5,78.5 68))</screen>
+	        </refsection>
 
     </refentry>
 
@@ -2207,14 +2266,17 @@ FROM data;</programlisting>
         <para>&sfcgal_required;</para>
     </refsection>
 
-    <refsection>
-        <title>Examples</title>
-        <para>
-            Y-monotone partition (the same Polygon is used by <xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, and <xref linkend="CG_OptimalConvexPartition" />).
-            <programlisting>SELECT ST_AsText(CG_YMonotonePartition('POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry));</programlisting>
-            <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
-        </para>
-    </refsection>
+	    <refsection>
+	        <title>Examples</title>
+	        <para>The same polygon can also be partitioned into y-monotone pieces for downstream processing.</para>
+	        <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(CG_YMonotonePartition(input_polygon)) AS partition
+FROM data;</programlisting>
+	        <screen role="visual-overlay">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
+	    </refsection>
     <refsection>
         <title>See Also</title>
         <para><xref linkend="CG_ApproxConvexPartition" />, <xref linkend="CG_GreeneApproxConvexPartition" />, <xref linkend="CG_OptimalConvexPartition" /></para>
@@ -2772,15 +2834,17 @@ FROM data;</programlisting>
   <refsection>
     <title>Examples</title>
     <para>This example simplifies a polygon with a threshold of 0.5.</para>
-    <programlisting>SELECT ST_AsText(CG_Simplify('POLYGON((0 0,0 1,0.1 1,0.2 1,0.3 1,0.4 1,0.5 1,1 1,1 0,0 0))', 0.5));</programlisting>
-    <para>Simplify a 3D terrain geometry while preserving topology and Z values.</para>
-    <programlisting>SELECT ST_AsText(CG_Simplify('LINESTRING Z(0 0 0,0 1 1,0.1 1 1,0.2 1 1,0.3 1 1,1 1 2)', 0.2, true));</programlisting>
-    <para>Simplify a geometry with both Z and M values.</para>
-    <programlisting>SELECT ST_AsText(CG_Simplify('LINESTRING ZM(0 0 0 1,0 1 1 2,0.1 1 1 3,0.2 1 1 4,0.3 1 1 5,1 1 2 6)', 0.2));</programlisting>
-    <para>Simplify two geometries together, preserving Z and M values without preserving topology.</para>
-    <programlisting>SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4,0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150),POLYGON ZM((0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150,0 0 10 100)))', 2, false));</programlisting>
-    <para>Simplify two geometries together, preserving Z and M values and topology.</para>
-    <programlisting>SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4,0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150),POLYGON ZM((0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150,0 0 10 100)))', 2, true));</programlisting>
+    <programlisting language="sql">SELECT ST_AsText(CG_Simplify('POLYGON((0 0,0 1,0.1 1,0.2 1,0.3 1,0.4 1,0.5 1,1 1,1 0,0 0))', 0.5));</programlisting>
+    <screen>POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
+
+    <para>Preserving topology can keep additional support points in a mixed ZM collection.</para>
+    <programlisting language="sql">SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4,0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150),POLYGON ZM((0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150,0 0 10 100)))', 2, false));</programlisting>
+    <screen>GEOMETRYCOLLECTION ZM (LINESTRING ZM (-1 -1 3 4,2 19 25 250,-4 20 15 150),POLYGON ZM ((0 0 10 100,2 19 25 250,-4 20 15 150,0 0 10 100)))</screen>
+
+    <para>The topology-preserving variant keeps the shared anchor point at the collection intersection.</para>
+    <programlisting language="sql">SELECT ST_AsText(CG_Simplify('GEOMETRYCOLLECTION ZM(LINESTRING ZM(-1 -1 3 4,0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150),POLYGON ZM((0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150,0 0 10 100)))', 2, true));</programlisting>
+    <screen>GEOMETRYCOLLECTION ZM (LINESTRING ZM (-1 -1 3 4,0 0 10 100,2 19 25 250,-4 20 15 150),POLYGON ZM ((0 0 10 100,2 19 25 250,-4 20 15 150,0 0 10 100)))</screen>
+
     <para>Compare simplification with and without topology preservation, using a threshold of 50.</para>
     <programlisting language="sql">WITH data AS (
   SELECT ST_GeomFromText('GEOMETRYCOLLECTION(
@@ -2837,57 +2901,26 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <para>
-           <programlisting>SELECT CG_3DAlphaWrapping(
-'MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),
-(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),
-(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),(79 21),(30 22),(78 43),(26 85),(48 34),
-(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),(77 73),
-(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),
-(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
-(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),
-(34 86),(45 90),(64 97))'::geometry,
-10);</programlisting>
-           <informalfigure>
-               <mediaobject>
-                   <imageobject>
-                       <imagedata fileref="images/cg_3dalphawrapping01.png"/>
-                   </imageobject>
-                   <caption><para>Alpha wrapping of a MultiPoint (same example As <xref linkend="CG_OptimalAlphaShape"/>)</para></caption>
-               </mediaobject>
-           </informalfigure>
-       </para>
-       <para>
-           <programlisting>SELECT CG_3DAlphaWrapping(
-'MULTIPOINT((132 64),(114 64),(99 64),(81 64),(63 64),(57 49),
-(52 36),(46 20),(37 20),(26 20),(32 36),(39 55),(43 69),(50 84),(57 100),(63 118),(68 133),(74 149),
-(81 164),(88 180),(101 180),(112 180),(119 164),(126 149),(132 131),(139 113),(143 100),(150 84),(157 69),(163 51),
-(168 36),(174 20),(163 20),(150 20),(143 36),(139 49),(132 64),(99 151),(92 138),(88 124),(81 109),(74 93),(70 82),
-(83 82),(99 82),(112 82),(126 82),(121 96),(114 109),(110 122),(103 138),(99 151),(34 27),(43 31),(48 44),(46 58),
-(52 73),(63 73),(61 84),(72 71),(90 69),(101 76),(123 71),(141 62),(166 27),(150 33),(159 36),(146 44),(154 53),
-(152 62),(146 73),(134 76),(143 82),(141 91),(130 98),(126 104),(132 113),(128 127),(117 122),(112 133),(119 144),
-(108 147),(119 153),(110 171),(103 164),(92 171),(86 160),(88 142),(79 140),(72 124),(83 131),(79 118),(68 113),
-(63 102),(68 93),(35 45))'::geometry,
-14);</programlisting>
-           <informalfigure>
-               <mediaobject>
-                   <imageobject>
-                       <imagedata fileref="images/cg_3dalphawrapping02.png"/>
-                   </imageobject>
-                   <caption><para>Alpha wrapping of a MultiPoint (same example as <xref linkend="ST_ConcaveHull"/>)</para></caption>
-               </mediaobject>
-           </informalfigure>
-       </para>
-       <para>
-           <informalfigure>
-               <mediaobject>
-                   <imageobject>
-                       <imagedata fileref="images/cg_3dalphawrapping03.png"/>
-                   </imageobject>
-                   <caption><para>Effect of the <varname>relative_alpha</varname> parameter with values 5, 10 and 20. A value of 5 results in a coarse output. Increasing the parameter up to 20 significantly improves the precision and granularity of the result.</para></caption>
-               </mediaobject>
-           </informalfigure>
-       </para>
+       <para>Increasing <varname>relative_alpha</varname> makes the wrapping more detailed for the same point cloud.</para>
+       <programlisting language="sql">WITH ptcloud AS (
+  SELECT 'MULTIPOINT((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))'::geometry AS input_points
+),
+alpha_5 AS (
+  SELECT COUNT(*) AS alpha_5_vertices
+  FROM ptcloud, LATERAL ST_DumpPoints(CG_3DAlphaWrapping(input_points, 5)) AS dumped
+),
+alpha_10 AS (
+  SELECT COUNT(*) AS alpha_10_vertices
+  FROM ptcloud, LATERAL ST_DumpPoints(CG_3DAlphaWrapping(input_points, 10)) AS dumped
+),
+alpha_15 AS (
+  SELECT COUNT(*) AS alpha_15_vertices
+  FROM ptcloud, LATERAL ST_DumpPoints(CG_3DAlphaWrapping(input_points, 15)) AS dumped
+)
+SELECT ST_AsText(input_points) AS input_points,
+       alpha_5_vertices &lt; alpha_10_vertices AND alpha_10_vertices &lt; alpha_15_vertices AS finer_with_larger_alpha
+FROM ptcloud, alpha_5, alpha_10, alpha_15;</programlisting>
+       <screen role="visual-skip">MULTIPOINT((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7)) | t</screen>
    </refsection>
    <refsection>
        <title>See Also</title>
@@ -2929,20 +2962,23 @@ FROM data;</programlisting>
 
     <refsection>
         <title>Examples</title>
-        <para>This example creates a smooth curve interpolating through five points.</para>
-        <programlisting language="sql">
-SELECT CG_NurbsCurveInterpolate(
-    'LINESTRING(0 0,1 2,3 3,5 1,6 0)'::geometry,
-    3
-);
-</programlisting>
-        <para>3D interpolation.</para>
-        <programlisting language="sql">
-SELECT CG_NurbsCurveInterpolate(
-    'LINESTRING Z(0 0 0,1 2 1,3 3 0,5 1 -1,6 0 0)'::geometry,
-    2
-);
-</programlisting>
+        <para>Interpolate a degree-3 NURBS curve through four 2D points.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'LINESTRING(0 0,2 5,5 3,8 1)'::geometry AS input_points
+)
+SELECT ST_AsText(input_points, 2) AS input_points,
+       ST_AsText(CG_NurbsCurveInterpolate(input_points, 3), 2) AS interpolated_curve
+FROM data;</programlisting>
+        <screen role="visual-overlay text-primary">LINESTRING(0 0,2 5,5 3,8 1) | NURBSCURVE(DEGREE 3,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(-0.43 10.29),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(4.95 1.9),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(8 1),WEIGHT 1)),KNOTS (KNOT(0,4),KNOT(1,4)))</screen>
+
+        <para>Interpolate a 3D degree-3 NURBS curve through the documented control points.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'LINESTRING Z (0 0 0,2 5 2,5 3 1,8 1 0)'::geometry AS input_points
+)
+SELECT ST_AsText(input_points, 2) AS input_points,
+       ST_AsText(CG_NurbsCurveInterpolate(input_points, 3), 2) AS interpolated_curve
+FROM data;</programlisting>
+        <screen role="visual-overlay text-primary">LINESTRING Z (0 0 0,2 5 2,5 3 1,8 1 0) | NURBSCURVE Z (DEGREE 3,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (-0.43 10.29 4.36),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (4.95 1.9 0.54),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (8 1 0),WEIGHT 1)),KNOTS (KNOT(0,4),KNOT(1,4)))</screen>
     </refsection>
 
     <refsection>
@@ -2989,23 +3025,23 @@ SELECT CG_NurbsCurveInterpolate(
 
     <refsection>
         <title>Examples</title>
-        <para>This example approximates noisy data using a tolerance.</para>
-        <programlisting language="sql">
-SELECT CG_NurbsCurveApproximate(
-    'LINESTRING(0 0,1 2.1,2 1.9,3 3.2,4 2.8,5 1)'::geometry,
-    2,
-    0.5
-);
-</programlisting>
-        <para>Limit the curve to a maximum of 20 control points.</para>
-        <programlisting language="sql">
-SELECT CG_NurbsCurveApproximate(
-    'LINESTRING(0 0,1 2,2 2,3 3,4 3,5 1,6 0,7 -1,8 0)'::geometry,
-    3,
-    0.2,
-    20
-);
-</programlisting>
+        <para>Approximate noisy 2D data with a degree-2 curve and a tolerance of 0.5.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'LINESTRING(0 0,1 2.1,2 1.9,3 3.2,4 2.8,5 1)'::geometry AS input_points
+)
+SELECT ST_AsText(input_points, 2) AS input_points,
+       ST_AsText(CG_NurbsCurveApproximate(input_points, 2, 0.5), 2) AS approximated_curve
+FROM data;</programlisting>
+        <screen role="visual-overlay text-primary">LINESTRING(0 0,1 2.1,2 1.9,3 3.2,4 2.8,5 1) | NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(-0.05 2.64),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2.24 1.65),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2.79 3.48),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(4.84 2.43),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(5 1),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(0.35,1),KNOT(0.51,1),KNOT(0.68,1),KNOT(1,3)))</screen>
+
+        <para>Approximate a 3D point set while preserving the Z dimension in the fitted curve.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'LINESTRING Z (0 0 0,1 2 1,2 3 2,3 2 1,4 1 0,5 0 0)'::geometry AS input_points
+)
+SELECT ST_AsText(input_points, 2) AS input_points,
+       ST_AsText(CG_NurbsCurveApproximate(input_points, 3, 0.1), 2) AS approximated_curve
+FROM data;</programlisting>
+        <screen role="visual-overlay text-primary">LINESTRING Z (0 0 0,1 2 1,2 3 2,3 2 1,4 1 0,5 0 0) | NURBSCURVE Z (DEGREE 3,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (0.18 -0.15 -1.29),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (1.49 4.36 3.35),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (3.33 1.33 0.38),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (4.34 0.83 -0.44),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (5 0 0),WEIGHT 1)),KNOTS (KNOT(0,4),KNOT(0.46,1),KNOT(0.64,1),KNOT(1,4)))</screen>
     </refsection>
 
     <refsection>
@@ -3057,31 +3093,32 @@ SELECT CG_NurbsCurveApproximate(
 
     <refsection>
         <title>Examples</title>
-        <para>This example returns the tangent vector at the curve midpoint.</para>
-<programlisting language="sql">
-WITH nurbs AS (
-    SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry) AS geom
+        <para>The first derivative gives the tangent vector at the evaluation parameter.</para>
+<programlisting language="sql">WITH data AS (
+  SELECT 'NURBSCURVE (2, (0.00 0.00, 5.00 10.00, 10.00 0.00))'::geometry AS input_curve
 )
-SELECT CG_NurbsCurveDerivative(geom, 0.5, 1) FROM nurbs;
-</programlisting>
-        <para>Get curvature at start of curve.</para>
-        <programlisting language="sql">
-WITH nurbs AS (
-    SELECT ST_MakeNurbsCurve(3, 'LINESTRING(0 0,2 5,5 5,8 2,10 0)'::geometry) AS geom
+SELECT ST_AsText(input_curve, 2) AS input_curve,
+       ST_AsText(CG_NurbsCurveDerivative(input_curve, 0.5, 1), 2) AS tangent
+FROM data;</programlisting>
+        <screen role="visual-overlay text-primary">NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(5 10),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3))) | POINT Z (10 0 0)</screen>
+
+        <para>The second derivative exposes curvature change for a higher-degree curve.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'NURBSCURVE (3, (0.00 0.00, 2.00 8.00, 5.00 5.00, 8.00 2.00, 10.00 0.00))'::geometry AS input_curve
 )
-SELECT CG_NurbsCurveDerivative(geom, 0.0, 2) FROM nurbs;
-</programlisting>
-        <para>Analyze tangent at multiple points.</para>
-        <programlisting language="sql">
-WITH nurbs AS (
-    SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry) AS geom
+SELECT ST_AsText(input_curve, 2) AS input_curve,
+       ST_AsText(CG_NurbsCurveDerivative(input_curve, 0.5, 2), 2) AS curvature
+FROM data;</programlisting>
+        <screen role="visual-overlay text-primary">NURBSCURVE(DEGREE 3,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2 8),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(5 5),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(8 2),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,4),KNOT(0.5,1),KNOT(1,4))) | POINT Z (9 -9 0)</screen>
+
+        <para>The same derivative call also works for 3D NURBS curves.</para>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'NURBSCURVE Z (2, (0.00 0.00 0.00, 5.00 10.00 5.00, 10.00 0.00 0.00))'::geometry AS input_curve
 )
-SELECT
-    t.param,
-    CG_NurbsCurveDerivative(n.geom, t.param, 1) AS tangent
-FROM nurbs n
-CROSS JOIN (VALUES (0.0), (0.25), (0.5), (0.75), (1.0)) AS t(param);
-</programlisting>
+SELECT ST_AsText(input_curve, 2) AS input_curve,
+       ST_AsText(CG_NurbsCurveDerivative(input_curve, 0.5, 1), 2) AS tangent
+FROM data;</programlisting>
+        <screen role="visual-overlay text-primary">NURBSCURVE Z (DEGREE 2,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (5 10 5),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (10 0 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3))) | POINT Z (10 0 0)</screen>
     </refsection>
 
     <refsection>

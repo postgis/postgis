@@ -464,6 +464,35 @@ div.funcsynopsis code {
     font-style: italic;
 }
 
+.postgis-html-tag,
+.postgis-js-keyword {
+    color: #003f7f;
+    font-weight: 600;
+}
+
+.postgis-html-attribute,
+.postgis-html-punctuation,
+.postgis-js-function,
+.postgis-js-operator {
+    color: #7a3e00;
+}
+
+.postgis-html-string,
+.postgis-js-string {
+    color: #146000;
+}
+
+.postgis-js-number,
+.postgis-js-literal {
+    color: #5c3a9f;
+}
+
+.postgis-html-comment,
+.postgis-js-comment {
+    color: #666;
+    font-style: italic;
+}
+
 .postgis-sql-paren {
     border-radius: 0.12em;
     outline: 1px solid transparent;
@@ -661,16 +690,32 @@ table.postgis-example-grid td {
     .postgis-shell-string,
     .postgis-shell-option,
     .postgis-shell-operator,
-    .postgis-shell-comment {
+    .postgis-shell-comment,
+    .postgis-html-tag,
+    .postgis-html-attribute,
+    .postgis-html-punctuation,
+    .postgis-html-string,
+    .postgis-html-comment,
+    .postgis-js-keyword,
+    .postgis-js-function,
+    .postgis-js-operator,
+    .postgis-js-string,
+    .postgis-js-number,
+    .postgis-js-literal,
+    .postgis-js-comment {
         color: #000;
     }
     .postgis-sql-keyword,
     .postgis-shell-keyword,
-    .postgis-shell-command {
+    .postgis-shell-command,
+    .postgis-html-tag,
+    .postgis-js-keyword {
         font-weight: 600;
     }
     .postgis-sql-comment,
-    .postgis-shell-comment {
+    .postgis-shell-comment,
+    .postgis-html-comment,
+    .postgis-js-comment {
         font-style: italic;
     }
 }
@@ -826,7 +871,8 @@ table.informaltable td, th {
     padding: 0.2em 0.4em 0.2em 0.4em;
 }
 
-.postgis-cast-table table {
+.postgis-cast-table table,
+.postgis-reference-table table {
     background: #fff;
     border: 1px solid #8aa1b8 !important;
     border-collapse: separate;
@@ -839,13 +885,16 @@ table.informaltable td, th {
 }
 
 .postgis-cast-table th,
-.postgis-cast-table td {
+.postgis-cast-table td,
+.postgis-reference-table th,
+.postgis-reference-table td {
     border: 0 !important;
     padding: 0.55rem 0.8rem;
     text-align: left;
 }
 
-.postgis-cast-table thead th {
+.postgis-cast-table thead th,
+.postgis-reference-table thead th {
     background: #e3edf8;
     border-bottom: 1px solid #aebfd0 !important;
     color: #304b63;
@@ -853,19 +902,24 @@ table.informaltable td, th {
 }
 
 .postgis-cast-table th + th,
-.postgis-cast-table td + td {
+.postgis-cast-table td + td,
+.postgis-reference-table th + th,
+.postgis-reference-table td + td {
     border-left: 1px solid #d8e1e8 !important;
 }
 
-.postgis-cast-table thead th + th {
+.postgis-cast-table thead th + th,
+.postgis-reference-table thead th + th {
     border-left-color: #aebfd0 !important;
 }
 
-.postgis-cast-table tbody tr + tr td {
+.postgis-cast-table tbody tr + tr td,
+.postgis-reference-table tbody tr + tr td {
     border-top: 1px solid #d8e1e8 !important;
 }
 
-.postgis-cast-table tbody tr:nth-child(even) td {
+.postgis-cast-table tbody tr:nth-child(even) td,
+.postgis-reference-table tbody tr:nth-child(even) td {
     background: #f7f9fb;
 }
 

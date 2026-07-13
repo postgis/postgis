@@ -621,8 +621,8 @@ AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting
 			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
 				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union"/> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform"/>,
 				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG"/>.</para>
-				<para>You would call the below using <programlisting>http://mywebserver/test_raster.php?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
-			<programlisting><![CDATA[
+				<para>You would call the script with <literal>http://mywebserver/test_raster.php?srid=2249</literal> to get the raster image in Massachusetts state plane feet.</para>
+			<programlisting language="php"><![CDATA[
 
 <?php
 /** contents of test_raster.php **/
@@ -659,14 +659,14 @@ echo pg_unescape_bytea($row[0]);
 		<section xml:id="RT_Net_Output_CS">
 			<title>ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster functions</title>
 			<para>In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver and the <xref linkend="RT_ST_AsGDALRaster"/> family of functions to
-				output band 1,2,3 of a raster to a PHP request stream that can then be embedded in an img src html tag.</para>
+				output band 1,2,3 of a raster to the HTTP response stream so it can be embedded in an <code>img</code> tag.</para>
 
 			<para>You will need the npgsql .NET PostgreSQL driver for this exercise which you can get the latest of from <link xlink:href="http://npgsql.projects.postgresql.org/">http://npgsql.projects.postgresql.org/</link>.  Just download the latest and drop into your ASP.NET bin folder and you'll be good to go.</para>
 			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
 				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union"/> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform"/>,
 				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG"/>.</para>
 				<para>This is same example as <xref linkend="RT_PHP_Output"/> except implemented in C#.</para>
-				<para>You would call the below using <programlisting>http://mywebserver/TestRaster.ashx?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
+				<para>You would call the handler with <literal>http://mywebserver/TestRaster.ashx?srid=2249</literal> to get the raster image in Massachusetts state plane feet.</para>
 				<para>web.config connection string section:</para>
 				<programlisting language="xml"><![CDATA[
 <connectionStrings>
@@ -674,7 +674,7 @@ echo pg_unescape_bytea($row[0]);
         connectionString="server=localhost;database=mydb;Port=5432;User Id=myuser;password=mypwd"/>
 </connectionStrings>
 ]]></programlisting>
-			<programlisting><![CDATA[
+			<programlisting language="csharp"><![CDATA[
 // Code for TestRaster.ashx
 <%@ WebHandler Language="C#" Class="TestRaster" %>
 using System;
@@ -749,16 +749,16 @@ public class TestRaster : IHttpHandler
 			<title>Java console app that outputs raster query as Image file</title>
 			<para>This is a simple java console app that takes a query that returns one image and outputs to specified file.</para>
 			<para>You can download the latest PostgreSQL JDBC drivers from <link xlink:href="http://jdbc.postgresql.org/download.html">http://jdbc.postgresql.org/download.html</link> </para>
-				<para>You can compile the following code using a command something like:</para>
-	<screen>set env CLASSPATH .:..\postgresql-9.0-801.jdbc4.jar
+				<para>You can compile the following code with commands like:</para>
+	<programlisting language="sh">set env CLASSPATH .:..\postgresql-9.0-801.jdbc4.jar
 javac SaveQueryImage.java
-jar cfm SaveQueryImage.jar Manifest.txt *.class</screen>
-	<para>And call it from the command-line with something like</para>
-	<screen>java -jar SaveQueryImage.jar "SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, '8BUI',100));" "test.png"</screen>
+jar cfm SaveQueryImage.jar Manifest.txt *.class</programlisting>
+	<para>And call it from the command line with something like:</para>
+	<programlisting language="sh">java -jar SaveQueryImage.jar "SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, '8BUI',100));" "test.png"</programlisting>
 	<para>Manifest.txt</para>
 	<programlisting>Class-Path: postgresql-9.0-801.jdbc4.jar
 Main-Class: SaveQueryImage</programlisting>
-			<programlisting>// Code for SaveQueryImage.java
+			<programlisting language="java">// Code for SaveQueryImage.java
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -821,7 +821,7 @@ public class SaveQueryImage {
 			<title>Use PLPython to dump out images via SQL</title>
 			<para>This is a plpython stored function that creates a file in the server directory for each record.
 			Requires you have plpython installed.  Should work fine with both plpythonu and plpython3u.</para>
-			<programlisting>CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, param_filepath text)
+			<programlisting language="sql">CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, param_filepath text)
 RETURNS text
 AS $$
 f = open(param_filepath, 'wb+')
@@ -846,10 +846,10 @@ $$ LANGUAGE plpythonu;</programlisting>
 		</section>
 		<section xml:id="RasterOutput_PSQL">
 			<title>Outputting Rasters with PSQL</title>
-			<para>Sadly PSQL doesn't have easy to use built-in functionality for outputting binaries.  This is a bit of a hack that piggy backs on PostgreSQL somewhat legacy large object support.  To use first launch your psql commandline connected to your database.
+			<para>Sadly PSQL doesn't have easy to use built-in functionality for outputting binaries.  This is a bit of a hack that piggy backs on PostgreSQL somewhat legacy large object support.  To use it, first launch your <command>psql</command> command line connected to your database.
 			</para>
 			<para>Unlike the python approach, this approach creates the file on your local computer.</para>
-			<programlisting>SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes
+			<programlisting language="sql">SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes
 FROM
 ( VALUES (lo_create(0),
   ST_AsPNG((SELECT rast FROM aerials.boston WHERE rid=1) )

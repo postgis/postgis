@@ -646,14 +646,8 @@ FROM ST_Dump('MULTIPOLYGON (
 
           <refsection>
             <title>Examples</title>
-            <para>Smoothing a triangle:</para>
-                <programlisting>
-SELECT ST_AsText(ST_ChaikinSmoothing(geom)) smoothed
-FROM (SELECT  'POLYGON((0 0,8 8,0 16,0 0))'::geometry geom) AS foo;</programlisting>
-<screen>POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2))</screen>
-
-    <para>Smoothing a Polygon using 1, 2 and 3 iterations:</para>
-    <programlisting>SELECT n AS iterations,
+    <para>Smoothing a Polygon using 1, 2 and 3 iterations.</para>
+    <programlisting language="sql">SELECT n AS iterations,
   ST_AsText(ST_ChaikinSmoothing(
     'POLYGON ((20 20,60 90,10 150,100 190,190 160,130 120,190 50,140 70,120 10,90 60,20 20))', n
   )) AS smoothed
@@ -662,8 +656,8 @@ FROM generate_series(1, 3) AS n;</programlisting>
 2 | POLYGON((35 46.25,45 63.75,49.375 80.625,48.125 96.875,41.25 112.5,28.75 127.5,25 141.25,30 153.75,43.75 165,66.25 175,88.75 180.625,111.25 181.875,133.75 178.75,156.25 171.25,169.375 163.125,173.125 154.375,167.5 145,152.5 135,145 123.125,145 109.375,152.5 93.75,167.5 76.25,175.625 64.375,176.875 58.125,171.25 57.5,158.75 62.5,148.125 62.5,139.375 57.5,132.5 47.5,127.5 32.5,121.875 24.375,115.625 23.125,108.75 28.75,101.25 41.25,91.25 48.125,78.75 49.375,63.75 45,46.25 35,35.625 31.875,31.875 35.625,35 46.25))
 3 | POLYGON((37.5 50.625,42.5 59.375,46.09375 67.96875,48.28125 76.40625,49.0625 84.6875,48.4375 92.8125,46.40625 100.78125,42.96875 108.59375,38.125 116.25,31.875 123.75,27.8125 130.9375,25.9375 137.8125,26.25 144.375,28.75 150.625,33.4375 156.5625,40.3125 162.1875,49.375 167.5,60.625 172.5,71.875 176.40625,83.125 179.21875,94.375 180.9375,105.625 181.5625,116.875 181.09375,128.125 179.53125,139.375 176.875,150.625 173.125,159.53125 169.21875,166.09375 165.15625,170.3125 160.9375,172.1875 156.5625,171.71875 152.03125,168.90625 147.34375,163.75 142.5,156.25 137.5,150.625 132.03125,146.875 126.09375,145 119.6875,145 112.8125,146.875 105.46875,150.625 97.65625,156.25 89.375,163.75 80.625,169.53125 73.28125,173.59375 67.34375,175.9375 62.8125,176.5625 59.6875,175.46875 57.96875,172.65625 57.65625,168.125 58.75,161.875 61.25,156.09375 62.5,150.78125 62.5,145.9375 61.25,141.5625 58.75,137.65625 55,134.21875 50,131.25 43.75,128.75 36.25,126.09375 30.46875,123.28125 26.40625,120.3125 24.0625,117.1875 23.4375,113.90625 24.53125,110.46875 27.34375,106.875 31.875,103.125 38.125,98.75 42.96875,93.75 46.40625,88.125 48.4375,81.875 49.0625,75 48.28125,67.5 46.09375,59.375 42.5,50.625 37.5,43.59375 34.21875,38.28125 32.65625,34.6875 32.8125,32.8125 34.6875,32.65625 38.28125,34.21875 43.59375,37.5 50.625))</screen>
 
-    <para>Smoothing a LineString using 1, 2 and 3 iterations:</para>
-    <programlisting>SELECT n AS iterations,
+    <para>Smoothing a LineString using 1, 2 and 3 iterations.</para>
+    <programlisting language="sql">SELECT n AS iterations,
   ST_AsText(ST_ChaikinSmoothing(
     'LINESTRING (10 140,80 130,100 190,190 150,140 20,120 120,50 30,30 100)', n
   )) AS smoothed
@@ -671,6 +665,12 @@ FROM generate_series(1, 3) AS n;</programlisting>
     <screen>1 | LINESTRING(10 140,62.5 132.5,85 145,95 175,122.5 180,167.5 160,177.5 117.5,152.5 52.5,135 45,125 95,102.5 97.5,67.5 52.5,45 47.5,30 100)
 2 | LINESTRING(10 140,49.375 134.375,68.125 135.625,79.375 141.875,87.5 152.5,92.5 167.5,101.875 176.25,115.625 178.75,133.75 175,156.25 165,170 149.375,175 128.125,171.25 101.25,158.75 68.75,148.125 50.625,139.375 46.875,132.5 57.5,127.5 82.5,119.375 95.625,108.125 96.875,93.75 86.25,76.25 63.75,61.875 51.25,50.625 48.75,41.25 60.625,30 100)
 3 | LINESTRING(10 140,39.53125 135.78125,54.0625 134.6875,63.4375 135.3125,70.9375 137.1875,76.5625 140.3125,81.40625 144.53125,85.46875 149.84375,88.75 156.25,91.25 163.75,94.84375 169.6875,99.53125 174.0625,105.3125 176.875,112.1875 178.125,120.15625 177.8125,129.21875 175.9375,139.375 172.5,150.625 167.5,159.6875 161.09375,166.5625 153.28125,171.25 144.0625,173.75 133.4375,174.0625 121.40625,172.1875 107.96875,168.125 93.125,161.875 76.875,156.09375 64.21875,150.78125 55.15625,145.9375 49.6875,141.5625 47.8125,137.65625 49.53125,134.21875 54.84375,131.25 63.75,128.75 76.25,125.46875 85.78125,121.40625 92.34375,116.5625 95.9375,110.9375 96.5625,104.53125 94.21875,97.34375 88.90625,89.375 80.625,80.625 69.375,72.65625 60.625,65.46875 54.375,59.0625 50.625,53.4375 49.375,48.28125 51.71875,43.59375 57.65625,38.4375 70.46875,30 100)</screen>
+
+            <para>Smoothing a triangle shows the weakest visual change, so it is kept last.</para>
+                <programlisting language="sql">
+SELECT ST_AsText(ST_ChaikinSmoothing(geom)) smoothed
+FROM (SELECT  'POLYGON((0 0,8 8,0 16,0 0))'::geometry geom) AS foo;</programlisting>
+<screen>POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2))</screen>
 
           </refsection>
           <refsection>
@@ -734,16 +734,8 @@ FROM generate_series(1, 3) AS n;</programlisting>
 
       <refsection>
         <title>Examples</title>
-        <para>Smoothing a 4-point collinear line with default nSegments=5:</para>
-        <programlisting>
-SELECT ST_AsText(ST_CatmullRomSmoothing('LINESTRING(0 0,5 0,10 0,15 0)'));</programlisting>
-<screen>                                                st_astext
----------------------------------------------------------------------------------------------------------
- LINESTRING(0 0,1 0,2 0,3 0,4 0,5 0,6 0,7 0,8 0,9 0,10 0,11 0,12 0,13 0,14 0,15 0)
-(1 row)</screen>
-
-    <para>Smoothing a Polygon using nSegments = 5 and 10:</para>
-    <programlisting>WITH input(geom) AS (VALUES
+    <para>Smoothing a Polygon using nSegments = 5 and 10.</para>
+    <programlisting language="sql">WITH input(geom) AS (VALUES
   ('POLYGON ((20 20,60 90,10 150,100 190,190 160,130 120,190 50,140 70,120 10,90 60,20 20))'::geometry)
 )
 SELECT ST_AsText(ST_CatmullRomSmoothing(geom, 5), 3) AS segments_5,
@@ -751,14 +743,19 @@ SELECT ST_AsText(ST_CatmullRomSmoothing(geom, 5), 3) AS segments_5,
 FROM input;</programlisting>
     <screen>POLYGON((20 20,22.4 27.12,32.4 40.56,45.2 57.44,56 74.88,60 90,53.52 102.96,39.76 115.68,24.24 127.92,12.48 139.44,10 150,19.04 160.4,35.92 170.8,57.28 180,79.76 186.8,100 190,120.4 188.64,143.2 183.52,164.8 176.08,181.6 167.76,190 160,185.68 153.12,171.04 146.16,152.56 138.64,136.72 130.08,130 120,136.08 106.48,150.64 89.84,168.16 72.96,183.12 58.72,190 50,186.56 49.52,176.48 55.36,163.12 63.44,149.84 69.68,140 70,134.24 61.36,130.32 46.48,127.28 29.92,124.16 16.24,120 10,115.28 14.4,110.64 26.4,105.36 41.2,98.72 54,90 60,76.8 56,59.6 45.2,42 32.4,27.6 22.4,20 20)) | POLYGON((20 20,19.95 22.59,22.4 27.12,26.75 33.23,32.4 40.56,38.75 48.75,45.2 57.44,51.15 66.27,56 74.88,59.15 82.91,60 90,58.015 96.495,53.52 102.96,47.205 109.365,39.76 115.68,31.875 121.875,24.24 127.92,17.545 133.785,12.48 139.44,9.735 144.855,10 150,13.33 155.125,19.04 160.4,26.71 165.675,35.92 170.8,46.25 175.625,57.28 180,68.59 183.775,79.76 186.8,90.37 188.925,100 190,109.675 189.88,120.4 188.64,131.725 186.46,143.2 183.52,154.375 180,164.8 176.08,174.025 171.94,181.6 167.76,187.075 163.72,190 160,189.535 156.54,185.68 153.12,179.245 149.68,171.04 146.16,161.875 142.5,152.56 138.64,143.905 134.52,136.72 130.08,131.815 125.26,130 120,131.635 113.81,136.08 106.48,142.645 98.37,150.64 89.84,159.375 81.25,168.16 72.96,176.305 65.33,183.12 58.72,187.915 53.49,190 50,189.32 48.715,186.56 49.52,182.14 51.905,176.48 55.36,170 59.375,163.12 63.44,156.26 67.045,149.84 69.68,144.28 70.835,140 70,136.83 66.745,134.24 61.36,132.11 54.415,130.32 46.48,128.75 38.125,127.28 29.92,125.79 22.435,124.16 16.24,122.27 11.905,120 10,117.585 10.95,115.28 14.4,112.995 19.75,110.64 26.4,108.125 33.75,105.36 41.2,102.255 48.15,98.72 54,94.665 58.15,90 60,84.125 59.15,76.8 56,68.475 51.15,59.6 45.2,50.625 38.75,42 32.4,34.175 26.75,27.6 22.4,22.725 19.95,20 20))</screen>
 
-    <para>Smoothing a LineString using nSegments = 5 and 10:</para>
-    <programlisting>WITH input(geom) AS (VALUES
+    <para>Smoothing a LineString using nSegments = 5 and 10.</para>
+    <programlisting language="sql">WITH input(geom) AS (VALUES
   ('LINESTRING (10 140,80 130,100 190,190 150,140 20,120 120,50 30,30 100)'::geometry)
 )
 SELECT ST_AsText(ST_CatmullRomSmoothing(geom, 5), 3) AS segments_5,
   ST_AsText(ST_CatmullRomSmoothing(geom, 10), 3) AS segments_10
 FROM input;</programlisting>
     <screen>LINESTRING(10 140,24.8 136.88,40.4 132.64,55.6 128.96,69.2 127.52,80 130,86.08 139.12,88.24 153.76,89.36 169.84,92.32 183.28,100 190,115.76 189.84,137.68 185.52,160.72 177.28,179.84 165.36,190 150,188.48 126.08,178.64 93.44,164.56 59.76,150.32 32.72,140 20,134.88 28.32,132.24 52.56,130.16 82.64,126.72 108.48,120 120,108.4 111.6,93.2 90,76.8 63.6,61.6 40.8,50 30,42.8 33.76,38.4 46.48,35.6 64.32,33.2 83.44,30 100) | LINESTRING(10 140,17.225 138.685,24.8 136.88,32.575 134.795,40.4 132.64,48.125 130.625,55.6 128.96,62.675 127.855,69.2 127.52,75.025 128.165,80 130,83.71 133.615,86.08 139.12,87.47 146.005,88.24 153.76,88.75 161.875,89.36 169.84,90.43 177.145,92.32 183.28,95.39 187.735,100 190,106.795 190.455,115.76 189.84,126.265 188.185,137.68 185.52,149.375 181.875,160.72 177.28,171.085 171.765,179.84 165.36,186.355 158.095,190 150,190.535 139.61,188.48 126.08,184.345 110.37,178.64 93.44,171.875 76.25,164.56 59.76,157.205 44.93,150.32 32.72,144.415 24.09,140 20,137.01 21.54,134.88 28.32,133.37 39.08,132.24 52.56,131.25 67.5,130.16 82.64,128.73 96.72,126.72 108.48,123.89 116.66,120 120,114.8 117.975,108.4 111.6,101.1 101.925,93.2 90,85 76.875,76.8 63.6,68.9 51.225,61.6 40.8,55.2 33.375,50 30,45.975 30.52,42.8 33.76,40.325 39.24,38.4 46.48,36.875 55,35.6 64.32,34.425 73.96,33.2 83.44,31.775 92.28,30 100)</screen>
+
+        <para>Smoothing a 4-point collinear line with default nSegments=5 shows the minimal change case, so it is kept last.</para>
+        <programlisting language="sql">
+SELECT ST_AsText(ST_CatmullRomSmoothing('LINESTRING(0 0,5 0,10 0,15 0)'));</programlisting>
+<screen>LINESTRING(0 0,1 0,2 0,3 0,4 0,5 0,6 0,7 0,8 0,9 0,10 0,11 0,12 0,13 0,14 0,15 0)</screen>
       </refsection>
 
       <refsection>
@@ -1007,7 +1004,7 @@ The result geometry representation is determined by the <varname>flags</varname>
         <programlisting language="sql">SELECT ST_AsText(ST_DelaunayTriangles(ST_Union(
   'POLYGON((175 150,20 40,50 60,125 100,175 150))'::geometry,
   ST_Buffer('POINT(110 170)'::geometry, 20))), 0);</programlisting>
-        <screen>GEOMETRYCOLLECTION(POLYGON((96 184,93 181,96 156,96 184)),POLYGON((96 184,96 156,102 188,96 184)),POLYGON((96 184,102 188,99 187,96 184)),POLYGON((102 188,96 156,99 153,102 188)),POLYGON((102 188,99 153,102 152,102 188)),POLYGON((102 188,102 152,106 190,102 188)),POLYGON((106 190,102 152,106 150,106 190)),POLYGON((106 190,106 150,110 190,106 190)),POLYGON((110 190,106 150,110 150,110 190)),POLYGON((110 190,110 150,118 188,110 190)),POLYGON((110 190,118 188,114 190,110 190)),POLYGON((118 188,110 150,121 153,118 188)),POLYGON((118 188,121 153,121 187,118 188)),POLYGON((121 187,121 153,124 156,121 187)),POLYGON((121 187,124 156,124 184,121 187)),POLYGON((121 187,124 184,175 150,121 187)),POLYGON((175 150,124 184,127 181,175 150)),POLYGON((175 150,127 181,128 178,175 150)),POLYGON((175 150,128 178,130 174,175 150)),POLYGON((175 150,130 174,130 170,175 150)),POLYGON((175 150,130 170,130 166,175 150)),POLYGON((175 150,130 166,128 162,175 150)),POLYGON((175 150,128 162,127 159,175 150)),POLYGON((175 150,127 159,124 156,175 150)),POLYGON((175 150,124 156,125 100,175 150)),POLYGON((125 100,124 156,121 153,125 100)),POLYGON((125 100,121 153,118 152,125 100)),POLYGON((125 100,118 152,114 150,125 100)),POLYGON((125 100,114 150,110 150,125 100)),POLYGON((125 100,110 150,106 150,125 100)),POLYGON((125 100,106 150,102 152,125 100)),POLYGON((125 100,102 152,99 153,125 100)),POLYGON((125 100,99 153,50 60,125 100)),POLYGON((125 100,50 60,20 40,125 100)),POLYGON((20 40,50 60,90 166,20 40)),POLYGON((20 40,90 166,90 170,20 40)),POLYGON((20 40,90 170,90 174,20 40)),POLYGON((20 40,90 174,92 178,20 40)),POLYGON((92 178,90 174,90 170,92 178)),POLYGON((92 178,90 170,92 162,92 178)),POLYGON((92 178,92 162,93 159,92 178)),POLYGON((92 178,93 159,93 181,92 178)),POLYGON((93 181,93 159,96 156,93 181)),POLYGON((96 156,93 159,50 60,96 156)),POLYGON((96 156,50 60,99 153,96 156)),POLYGON((50 60,93 159,92 162,50 60)),POLYGON((50 60,92 162,90 166,50 60)),POLYGON((90 166,92 162,90 170,90 166)),POLYGON((110 150,114 150,121 153,110 150)),POLYGON((121 153,114 150,118 152,121 153)),POLYGON((124 156,127 159,130 166,124 156)),POLYGON((124 156,130 166,128 178,124 156)),POLYGON((124 156,128 178,124 184,124 156)),POLYGON((124 184,128 178,127 181,124 184)),POLYGON((128 178,130 166,130 170,128 178)),POLYGON((128 178,130 170,130 174,128 178)),POLYGON((130 166,127 159,128 162,130 166)))</screen>
+        <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((96 184,93 181,96 156,96 184)),POLYGON((96 184,96 156,102 188,96 184)),POLYGON((96 184,102 188,99 187,96 184)),POLYGON((102 188,96 156,99 153,102 188)),POLYGON((102 188,99 153,102 152,102 188)),POLYGON((102 188,102 152,106 190,102 188)),POLYGON((106 190,102 152,106 150,106 190)),POLYGON((106 190,106 150,110 190,106 190)),POLYGON((110 190,106 150,110 150,110 190)),POLYGON((110 190,110 150,118 188,110 190)),POLYGON((110 190,118 188,114 190,110 190)),POLYGON((118 188,110 150,121 153,118 188)),POLYGON((118 188,121 153,121 187,118 188)),POLYGON((121 187,121 153,124 156,121 187)),POLYGON((121 187,124 156,124 184,121 187)),POLYGON((121 187,124 184,175 150,121 187)),POLYGON((175 150,124 184,127 181,175 150)),POLYGON((175 150,127 181,128 178,175 150)),POLYGON((175 150,128 178,130 174,175 150)),POLYGON((175 150,130 174,130 170,175 150)),POLYGON((175 150,130 170,130 166,175 150)),POLYGON((175 150,130 166,128 162,175 150)),POLYGON((175 150,128 162,127 159,175 150)),POLYGON((175 150,127 159,124 156,175 150)),POLYGON((175 150,124 156,125 100,175 150)),POLYGON((125 100,124 156,121 153,125 100)),POLYGON((125 100,121 153,118 152,125 100)),POLYGON((125 100,118 152,114 150,125 100)),POLYGON((125 100,114 150,110 150,125 100)),POLYGON((125 100,110 150,106 150,125 100)),POLYGON((125 100,106 150,102 152,125 100)),POLYGON((125 100,102 152,99 153,125 100)),POLYGON((125 100,99 153,50 60,125 100)),POLYGON((125 100,50 60,20 40,125 100)),POLYGON((20 40,50 60,90 166,20 40)),POLYGON((20 40,90 166,90 170,20 40)),POLYGON((20 40,90 170,90 174,20 40)),POLYGON((20 40,90 174,92 178,20 40)),POLYGON((92 178,90 174,90 170,92 178)),POLYGON((92 178,90 170,92 162,92 178)),POLYGON((92 178,92 162,93 159,92 178)),POLYGON((92 178,93 159,93 181,92 178)),POLYGON((93 181,93 159,96 156,93 181)),POLYGON((96 156,93 159,50 60,96 156)),POLYGON((96 156,50 60,99 153,96 156)),POLYGON((50 60,93 159,92 162,50 60)),POLYGON((50 60,92 162,90 166,50 60)),POLYGON((90 166,92 162,90 170,90 166)),POLYGON((110 150,114 150,121 153,110 150)),POLYGON((121 153,114 150,118 152,121 153)),POLYGON((124 156,127 159,130 166,124 156)),POLYGON((124 156,130 166,128 178,124 156)),POLYGON((124 156,128 178,124 184,124 156)),POLYGON((124 184,128 178,127 181,124 184)),POLYGON((128 178,130 166,130 170,128 178)),POLYGON((128 178,130 170,130 174,128 178)),POLYGON((130 166,127 159,128 162,130 166)))</screen>
 
         <para>Triangulation edges returned as a <varname>MULTILINESTRING</varname>.</para>
         <programlisting language="sql">SELECT ST_AsText(ST_DelaunayTriangles(ST_Union(
@@ -1722,8 +1719,8 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
 
             <refsection>
             <title>Examples</title>
-<para>Compute an open buffer around roads</para>
-                <programlisting>
+<para>Compute an open buffer around roads.</para>
+                <programlisting language="sql">
 SELECT ST_Union(
  ST_OffsetCurve(f.geom, f.width/2, 'quad_segs=4 join=round'),
  ST_OffsetCurve(f.geom, -f.width/2, 'quad_segs=4 join=round')
@@ -1732,7 +1729,7 @@ FROM someroadstable;
 
                 </programlisting>
                 <para>Offset 15 units with <code>quad_segs=4 join=round</code>.</para>
-                <programlisting>
+                <programlisting language="sql">
 SELECT ST_AsText(ST_OffsetCurve(
     ST_GeomFromText('LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
@@ -1746,7 +1743,7 @@ SELECT ST_AsText(ST_OffsetCurve(
     1.288220793951544 15.073645169758075,1 18,1 195)</screen>
 
                 <para>Offset -15 units with <code>quad_segs=4 join=round</code>.</para>
-                <programlisting>
+                <programlisting language="sql">
 SELECT ST_AsText(ST_OffsetCurve(
     geom,
     -15,
@@ -1758,7 +1755,7 @@ SELECT ST_AsText(ST_OffsetCurve(
                 <screen>LINESTRING(164 31,31 31,31 195)</screen>
 
                 <para>Apply two negative offsets to obtain a smoother curve; the distances combine to -45 units.</para>
-                <programlisting>
+                <programlisting language="sql">
 SELECT ST_AsText(ST_OffsetCurve(
     ST_OffsetCurve(
         geom,
@@ -1773,7 +1770,7 @@ SELECT ST_AsText(ST_OffsetCurve(
                 <screen>LINESTRING(164 61,61 61,61 195)</screen>
 
                 <para>Collect the positive offset and the double-offset to produce parallel curves.</para>
-                <programlisting>SELECT ST_AsText(ST_Collect(
+                <programlisting language="sql">SELECT ST_AsText(ST_Collect(
     ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'),
     ST_OffsetCurve(
         ST_OffsetCurve(
@@ -1795,7 +1792,7 @@ SELECT ST_AsText(ST_OffsetCurve(
 1.288220793951544 15.073645169758075,1 18,1 195),(164 61,61 61,61 195))</screen>
 
                 <para>Offset 15 units with a bevel join.</para>
-                <programlisting>
+                <programlisting language="sql">
 SELECT ST_AsText(ST_OffsetCurve(
     ST_GeomFromText('LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
     44 16,24 16,20 16,18 16,17 17,
@@ -1806,7 +1803,7 @@ SELECT ST_AsText(ST_OffsetCurve(
     5.393398282201788 7.393398282201788,1 18,1 195)</screen>
 
                 <para>Collect offsets on both sides using a mitre join and a mitre limit of 2.2.</para>
-                <programlisting>
+                <programlisting language="sql">
 SELECT ST_AsText(ST_Collect(
     ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),
     ST_OffsetCurve(geom, -15, 'quad_segs=4 join=mitre mitre_limit=2.2')
@@ -1815,7 +1812,7 @@ SELECT ST_AsText(ST_Collect(
     44 16,24 16,20 16,18 16,17 17,
     16 18,16 20,16 40,16 60,16 80,16 100,
     16 120,16 140,16 160,16 180,16 195)') As geom;</programlisting>
-                <screen>MULTILINESTRING((164 1,11.786796564403577 1,1 11.786796564403577,1 195),
+                <screen role="visual-overlay">MULTILINESTRING((164 1,11.786796564403577 1,1 11.786796564403577,1 195),
     (164 31,31 31,31 195))</screen>
 
             </refsection>
@@ -2171,7 +2168,7 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
         <para>Adjacent shared path segments may be returned as separate or merged LineStrings
           depending on the GEOS version.</para>
         <para>Find the shared paths of a MultiLineString and a LineString.</para>
-        <programlisting>
+<programlisting language="sql">
 SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
       (51 150,101 150,76 175,51 150))'),
    ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,101 150,76 175)')
@@ -2181,10 +2178,7 @@ SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('MULTILINESTRING((26 125,26 200,
 (101 150,76 175)),MULTILINESTRING EMPTY)</screen>
 
         <para>Flip the LineString orientation to return the same paths in the opposite-direction member.</para>
-        <programlisting>
-<lineannotation>
-same example but linestring orientation flipped
-</lineannotation>
+        <programlisting language="sql">
 SELECT ST_AsText(ST_SharedPaths(ST_GeomFromText('LINESTRING(76 175,101 150,126 125,126 156.25,151 100)'),
    ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),
        (51 150,101 150,76 175,51 150))')
@@ -2469,7 +2463,7 @@ FROM letters;</programlisting>
         <title>Description</title>
         <para> Returns a simplified representation of a geometry using the
         <link xlink:href="https://en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm">Visvalingam-Whyatt algorithm</link>.
-            The simplification <varname>tolerance</varname> is an area value, in the units of the input SRS.
+            The simplification <varname>tolerance</varname> is an area value, in squared units of the input SRS.
             Simplification removes vertices which form "corners" with area less than the tolerance.
             The result may not be valid even if the input is.
             </para>
@@ -2484,32 +2478,33 @@ FROM letters;</programlisting>
          Use <xref linkend="ST_SimplifyPreserveTopology"/> to preserve topology and ensure validity.
          <xref linkend="ST_CoverageSimplify"/> also preserves topology and validity.
          </para></note>
-        <note><para>This is a general-purpose simplification function. It may
-         remove narrow polygon spikes when their effective area is below the
-         tolerance, but it is not a dedicated spike-removal or polygon-repair
-         operation. Use <xref linkend="ST_IsValid"/> to check the result and
-         <xref linkend="ST_MakeValid"/> to repair invalid polygonal output if
-         needed.</para></note>
-        <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
-        <note><para>This function handles 3D and the third dimension will affect the result.</para></note>
+          <para>This is a general-purpose simplification function. It may remove narrow polygon spikes when their effective area is below the tolerance, but it is not a dedicated spike-removal or polygon-repair operation. Use <xref linkend="ST_IsValid"/> to check the result and <xref linkend="ST_MakeValid"/> to repair invalid polygonal output if needed.</para>
+          <para>This function does not preserve boundaries shared between polygons. Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para>
+          <para>This function handles 3D and the third dimension will affect the result.</para>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
       </refsection>
 
           <refsection>
             <title>Examples</title>
-            <para>A LineString is simplified with a minimum-area tolerance of 30.</para>
-                <programlisting>
+            <para>This polygon has a narrow spike whose effective area is small enough to be removed by a tolerance of 20 square units.</para>
+                <programlisting language="sql">SELECT ST_AsText(geom) AS original,
+       ST_AsText(ST_SimplifyVW(geom, 20)) AS simplified
+FROM (SELECT 'POLYGON((0 0,10 0,10 10,5.2 10,5 16,4.8 10,0 10,0 0))'::geometry AS geom) AS t;</programlisting>
+<screen role="visual-primary visual-overlay text-primary">POLYGON((0 0,10 0,10 10,5.2 10,5 16,4.8 10,0 10,0 0)) | POLYGON((0 0,10 0,10 10,0 10,0 0))</screen>
+
+            <para>A LineString is simplified with a minimum-area tolerance of 30. For a linear simplification using <xref linkend="ST_Simplify"/>, a comparable tolerance would be a length in input-SRS units, so the value here is roughly that linear tolerance squared.</para>
+                <programlisting language="sql">
 SELECT ST_AsText(ST_SimplifyVW(geom, 30)) simplified
   FROM (SELECT 'LINESTRING(5 2,3 8,6 20,7 25,10 10)'::geometry AS geom) AS t;</programlisting>
 <screen>LINESTRING(5 2,7 25,10 10)</screen>
 
     <para>Simplifying a line.</para>
-    <programlisting>SELECT ST_AsText(ST_SimplifyVW('LINESTRING (10 10,50 40,30 70,50 60,70 80,50 110,100 100,90 140,100 180,150 170,170 140,190 90,180 40,110 40,150 20)'::geometry,
+    <programlisting language="sql">SELECT ST_AsText(ST_SimplifyVW('LINESTRING (10 10,50 40,30 70,50 60,70 80,50 110,100 100,90 140,100 180,150 170,170 140,190 90,180 40,110 40,150 20)'::geometry,
 1600), 3);</programlisting>
 <screen>LINESTRING(10 10,100 100,100 180,150 170,190 90,150 20)</screen>
 
     <para>Simplifying a polygon.</para>
-    <programlisting>SELECT ST_AsText(ST_SimplifyVW('POLYGON ((20 20,50 60,20 120,40 170,80 180,120 140,180 180,160 130,180 100,180 30,130 70,150 10,20 20))'::geometry,
+    <programlisting language="sql">SELECT ST_AsText(ST_SimplifyVW('POLYGON ((20 20,50 60,20 120,40 170,80 180,120 140,180 180,160 130,180 100,180 30,130 70,150 10,20 20))'::geometry,
 1600), 3);</programlisting>
 <screen>POLYGON((20 20,20 120,80 180,160 130,180 30,20 20))</screen>
 

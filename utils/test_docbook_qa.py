@@ -182,6 +182,35 @@ class DocBookSourceLintTest(unittest.TestCase):
         self.assertInfoCategory('<refentry xml:id="f"><programlisting>SELECT\t1;</programlisting></refentry>', "tab-in-verbatim")
         self.assertCategories('<refentry xml:id="f"><screen>1    2</screen></refentry>', set())
 
+    def test_wide_verbatim_line_violation_and_recommendation(self):
+        long_sql = (
+            "SELECT col_a, col_b, col_c, col_d, col_e, col_f, col_g, col_h, col_i, col_j, col_k, "
+            "col_l, col_m, col_n FROM huge_schema.huge_table_with_very_wide_columns WHERE id > 0;"
+        )
+        findings = self.source_findings(f'<refentry xml:id="f"><programlisting>{long_sql}</programlisting></refentry>')
+        self.assertEqual({"wide-verbatim-line"}, {finding.category for finding in findings})
+        self.assertTrue(any("wrap" in finding.message for finding in findings))
+
+    def test_wide_verbatim_table_row_in_screen_recommends_psql_expanded_output(self):
+        table_row = (
+            " id | name | description | created_at | updated_at | extra_comment | status_comment | geometry_wkt | source_id | user_name | note | flag | tag\n"
+            "----+------+-------------+------------+------------+---------------+---------------+------------+----------+----------+------|----+------+"
+        )
+        findings = self.source_findings(f'<refentry xml:id="f"><screen>{table_row}</screen></refentry>')
+        self.assertEqual({"wide-verbatim-line"}, {finding.category for finding in findings})
+        self.assertTrue(any("psql expanded output" in finding.message for finding in findings))
+
+    def test_wide_verbatim_line_negative_payload_and_opt_out(self):
+        payload = "\\x" + "0123456789abcdef" * 10
+        self.assertCategories(
+            f'<refentry xml:id="f"><programlisting>{payload}</programlisting></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            f'<refentry xml:id="f"><programlisting role="docbook-qa-ignore-wide-lines">{payload * 2}</programlisting></refentry>',
+            set(),
+        )
+
     def test_stacked_admonitions_violation_and_clean_case(self):
         self.assertInfoCategory(
             '<refentry xml:id="f"><note><para>First</para></note><!-- gap --><tip><para>Second</para></tip></refentry>',

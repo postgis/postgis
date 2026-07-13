@@ -353,7 +353,7 @@ SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,
       <refsection>
         <title>Examples</title>
         <note><para>Examples below use Massachusetts State Plane ft (SRID=2249)</para></note>
-        <programlisting>SELECT ST_Extent(geom) AS bextent FROM sometable;</programlisting>
+        <programlisting language="sql">SELECT ST_Extent(geom) AS bextent FROM sometable;</programlisting>
 <screen>BOX(739651.875 2908247.25,794875.8125 2970042.75)</screen>
         <para>Return extent of each geometry category.</para>
 <programlisting language="sql">SELECT ST_Extent(geom) as bextent
@@ -365,7 +365,7 @@ GROUP BY category ORDER BY category;</programlisting>
  BOX(751315.8125 2919164.75,765202.6875 2935417.25) | B
  BOX(739651.875 2917394.75,756688.375 2935866)      | C</screen>
 <para>This example converts the extent back into a geometry and renders its extended text representation.</para>
-<programlisting>SELECT ST_SetSRID(ST_Extent(geom), 2249) AS bextent FROM sometable;</programlisting>
+<programlisting language="sql">SELECT ST_SetSRID(ST_Extent(geom), 2249) AS bextent FROM sometable;</programlisting>
 <screen> SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
 794875.8125 2908247.25,739651.875 2908247.25))
         </screen>

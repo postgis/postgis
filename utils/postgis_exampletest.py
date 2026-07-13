@@ -100,6 +100,8 @@ SVG_PALETTES = {
     "Output": ("#a62c2b", "#d95f3d", "#ef8a47"),
 }
 POINT_TYPES = {"POINT", "MULTIPOINT"}
+CLUSTER_COLUMN_NAMES = {"cluster", "cluster_id", "cid", "category"}
+MARKER_SCALE_COLUMN_NAME = "marker_scale"
 MAX_VISUAL_GEOMETRIES = 16
 MAX_VISUAL_WKT_BYTES = 100000
 NONVISUAL_SINGLE_INPUT_RE = re.compile(
@@ -604,6 +606,49 @@ class ExampleTester:
             return abs(float(left_value) - float(right_value)) <= 1e-12
         return False
 
+    def normalized_header_name(self, value):
+        return re.sub(r"[^a-z0-9]+", "_", (value or "").strip().lower()).strip("_")
+
+    def cluster_column_index(self, headers):
+        for index, header in enumerate(headers or []):
+            if self.normalized_header_name(header) in CLUSTER_COLUMN_NAMES:
+                return index
+        return None
+
+    def marker_scale_column_index(self, headers):
+        for index, header in enumerate(headers or []):
+            if self.normalized_header_name(header) == MARKER_SCALE_COLUMN_NAME:
+                return index
+        return None
+
+    def scalar_companion_value(self, row, index):
+        if index is None or index >= len(row):
+            return None
+        value = row[index]
+        if value is None:
+            return None
+        text = str(value).strip()
+        return text or None
+
+    def marker_scale_value(self, value):
+        if value is None or not re.match(rf"^{NUMBER_PATTERN}$", value):
+            return None
+        return max(0.25, min(float(value), 6.0))
+
+    def marker_density_scale(self, total_points, source_point_count):
+        density = max(int(total_points or 0), int(source_point_count or 0))
+        if density <= 16:
+            return 1.0
+        if density <= 64:
+            return 0.8
+        if density <= 256:
+            return 0.62
+        return 0.48
+
+    def grouped_geometry_label(self, header, value):
+        header_label = (header or "").strip().replace("_", " ")
+        return f"{header_label} {value}".strip()
+
     def rows_equal(self, left, right):
         if len(left) == 1 and len(left[0]) == 1 and len(right) > 1:
             if all(len(row) == 1 for row in right):
@@ -856,7 +901,17 @@ class ExampleTester:
         text = self.node_text(node)
         screen = self.following_screen(node)
         forced = self.has_role(node, FORCE_ROLE)
-        explicit_visual = screen is not None and self.has_role(screen, VISUAL_ROLE)
+        # Layout roles are also explicit author requests for a generated figure.
+        # This matters for documented-only examples whose output is intentionally
+        # not executed because it can vary between dependency versions.
+        explicit_visual = screen is not None and any(
+            self.has_role(screen, role)
+            for role in (
+                VISUAL_ROLE,
+                VISUAL_SEPARATE_OUTPUT_ROLE,
+                VISUAL_OVERLAY_ROLE,
+            )
+        )
         skip_reason = self.obvious_skip_reason(text)
         documented_only = bool(explicit_visual and skip_reason)
         if self.has_role(node, EXTERNAL_STATE_ROLE) and not forced and not documented_only:
@@ -1296,21 +1351,24 @@ class ExampleTester:
         encoded = base64.b64encode(json.dumps(layers, separators=(",", ":")).encode("utf-8")).decode("ascii")
         query = f"""
 WITH raw AS (
-  SELECT ord, source, label, row_num, column_num, requested_frame, wkt, hexwkb
+  SELECT ord, source, label, row_num, column_num, requested_frame, wkt, hexwkb,
+    source_point_count, total_points, marker_scale
   FROM jsonb_to_recordset(
     convert_from(decode('{encoded}', 'base64'), 'UTF8')::jsonb
   ) AS item(ord integer, source text, label text, row_num integer, column_num integer,
-            requested_frame text, wkt text, hexwkb text)
+            requested_frame text, wkt text, hexwkb text, source_point_count integer,
+            total_points integer, marker_scale double precision)
 ), parsed_all AS (
   SELECT ord, source, label, row_num, column_num, requested_frame,
-    hexwkb,
+    source_point_count, total_points, marker_scale, hexwkb,
     CASE WHEN hexwkb IS NOT NULL
       THEN ST_GeomFromEWKB(decode(hexwkb, 'hex'))
       ELSE ST_GeomFromEWKT(wkt)
     END AS geom
   FROM raw
 ), parsed_raw AS (
-  SELECT ord, source, label, row_num, column_num, requested_frame, geom
+  SELECT ord, source, label, row_num, column_num, requested_frame,
+    source_point_count, total_points, marker_scale, geom
   FROM parsed_all AS candidate
   WHERE candidate.source <> 'Code'
     OR NOT EXISTS (
@@ -1337,7 +1395,8 @@ WITH raw AS (
   FROM parsed_raw
   LIMIT 1
 ), framed AS (
-  SELECT ord, source, label, row_num, column_num, geom, shared_coordinate_space,
+  SELECT ord, source, label, row_num, column_num, source_point_count, total_points,
+    marker_scale, geom, shared_coordinate_space,
     COALESCE(requested_frame,
       CASE WHEN separate_sources THEN source ELSE 'Overlay' END) AS frame
   FROM parsed_raw CROSS JOIN frame_policy
@@ -1359,12 +1418,15 @@ WITH raw AS (
   WHERE box IS NOT NULL
 ), parts AS (
   SELECT ord, source, label, row_num, column_num, frame,
-    ST_NPoints(geom) AS total_points,
+    source_point_count,
+    COALESCE(total_points, ST_NPoints(geom)) AS total_points,
+    marker_scale,
     GeometryType(geom) AS root_type,
     (ST_Dump(geom)).geom AS geom
   FROM framed
 ), translated_parts AS (
-  SELECT ord, source, label, row_num, column_num, parts.frame, total_points, root_type,
+  SELECT ord, source, label, row_num, column_num, parts.frame, source_point_count,
+    total_points, marker_scale, root_type,
     ST_Translate(geom, -min_x, -min_y) AS geom
   FROM parts JOIN frame_bounds USING (frame)
 ), render_parts AS (
@@ -1385,7 +1447,8 @@ SELECT json_build_object(
     SELECT json_agg(json_build_object(
       'ord', ord, 'source', source, 'label', label,
       'row', row_num, 'column', column_num, 'frame', frame,
-      'root_type', root_type,
+      'root_type', root_type, 'source_point_count', source_point_count,
+      'total_points', total_points, 'marker_scale', marker_scale,
       'type', GeometryType(geom), 'svg', ST_AsSVG(ST_Force2D(geom), 0, 12),
       'dimension', ST_Dimension(geom), 'srid', ST_SRID(geom),
       'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
@@ -1530,7 +1593,15 @@ SELECT json_build_object(
         headers = getattr(actual, "headers", []) or self.query_output_headers(example["query"])
         explicit_headers = self.query_output_headers(example["query"])
         output_types = getattr(actual, "types", [])
+        cluster_column = self.cluster_column_index(headers) if len(actual) > 1 else None
+        marker_scale_column = self.marker_scale_column_index(headers)
+        output_groups = {}
+        next_output_group = 1
         for row_index, row in enumerate(actual, 1):
+            cluster_value = self.scalar_companion_value(row, cluster_column)
+            marker_scale = self.marker_scale_value(
+                self.scalar_companion_value(row, marker_scale_column)
+            )
             for column_index, value in enumerate(row):
                 matches = [{"wkt": wkt} for wkt in self.geometry_candidates(value)]
                 output_type = output_types[column_index] if column_index < len(output_types) else ""
@@ -1555,9 +1626,27 @@ SELECT json_build_object(
                         label = f"{label} {row_index}"
                     if len(matches) > 1:
                         label = f"{label}.{match_index}"
+                    group_key = None
+                    group_label = None
+                    if (
+                        source == "Output"
+                        and cluster_value is not None
+                        and column_index != cluster_column
+                    ):
+                        group_key = (column_index + 1, cluster_value)
+                        if group_key not in output_groups:
+                            output_groups[group_key] = next_output_group
+                            next_output_group += 1
+                        group_label = self.grouped_geometry_label(
+                            headers[cluster_column] if cluster_column is not None else "",
+                            cluster_value,
+                        )
                     output.append({
                         **geometry, "label": label, "source": source,
                         "row_num": row_index, "column_num": column_index + 1,
+                        "group_ord": output_groups.get(group_key),
+                        "group_label": group_label,
+                        "marker_scale": marker_scale,
                     })
         if (
             example.get("visual_kind") == "geometry-output"
@@ -1573,6 +1662,20 @@ SELECT json_build_object(
         layers = []
         forced_frame = "Overlay" if example.get("visual_overlay") else None
         code_geometry_count = sum("label" not in candidate for candidate in code)
+        code_point_count = sum(
+            self.geometry_type(candidate.get("wkt") or "") in POINT_TYPES
+            for candidate in code
+        )
+        output_point_counts = {"Code": 0, "Output": 0}
+        for candidate in output:
+            geometry_value = candidate.get("wkt") or candidate.get("hexwkb") or ""
+            geometry_type = self.geometry_type(geometry_value)
+            if geometry_type is None and candidate.get("hexwkb"):
+                geometry_type = self.hexwkb_geometry(
+                    candidate["hexwkb"], allow_bytea_prefix=False
+                )["type"]
+            if geometry_type in POINT_TYPES:
+                output_point_counts[candidate["source"]] += 1
         for index, candidate in enumerate(code, 1):
             if candidate.get("label"):
                 label = candidate["label"]
@@ -1590,6 +1693,11 @@ SELECT json_build_object(
                 "requested_frame": forced_frame or (
                     "Code" if example.get("visual_separate_output") else None
                 ),
+                "source_point_count": code_point_count,
+                # Let PostGIS compute ST_NPoints for the actual geometry.  A
+                # MULTIPOINT is one layer, but may contain hundreds of points.
+                "total_points": None,
+                "marker_scale": None,
                 "wkt": candidate["wkt"],
                 "hexwkb": None,
             })
@@ -1598,16 +1706,25 @@ SELECT json_build_object(
             for index, candidate in enumerate(values, 1):
                 meaningful_label = candidate["label"] != source and (len(output) > 1 or bool(code))
                 layers.append({
-                    "ord": len(layers) + 1,
+                    "ord": (
+                        len(code) + candidate["group_ord"]
+                        if source == "Output" and candidate.get("group_ord")
+                        else len(layers) + 1
+                    ),
                     "source": source,
-                    "label": candidate["label"] if meaningful_label else source if len(values) == 1 else (
-                        candidate["label"] if candidate["label"] != source else f"{source} {index}"
+                    "label": candidate.get("group_label") or (
+                        candidate["label"] if meaningful_label else source if len(values) == 1 else (
+                            candidate["label"] if candidate["label"] != source else f"{source} {index}"
+                        )
                     ),
                     "row_num": candidate["row_num"],
                     "column_num": candidate["column_num"],
                     "requested_frame": forced_frame or (
                         candidate["label"] if example.get("visual_separate_output") else None
                     ),
+                    "source_point_count": output_point_counts.get(source, 0),
+                    "total_points": None,
+                    "marker_scale": candidate.get("marker_scale"),
                     "wkt": candidate.get("wkt"),
                     "hexwkb": candidate.get("hexwkb"),
                 })
@@ -1965,7 +2082,12 @@ SELECT json_build_object(
                 if part["type"].upper() == "POINT":
                     point_x = float(part["x"])
                     point_y = float(part["y"])
-                    radius = (6.5 if source == "Code" else 4.5) / scale
+                    density_scale = self.marker_density_scale(
+                        part.get("total_points"),
+                        part.get("source_point_count"),
+                    )
+                    marker_scale = max(0.75, min(float(part.get("marker_scale") or 1.0), 2.2))
+                    radius = ((6.5 if source == "Code" else 4.5) * density_scale * marker_scale) / scale
                     shapes.append(
                         f'<path class="point" d="M {point_x - radius:.12g} {point_y:.12g} '
                         f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x + radius:.12g} {point_y:.12g} '
@@ -2039,10 +2161,16 @@ SELECT json_build_object(
                         or len(vertices) <= 16
                     )
                     if show_vertices:
+                        vertex_radius = (
+                            3 * self.marker_density_scale(
+                                part.get("total_points"),
+                                part.get("source_point_count"),
+                            )
+                        ) / scale
                         for x, y in vertices:
                             shapes.append(
                                 f'<circle class="vertex" cx="{float(x):.12g}" cy="{float(y):.12g}" '
-                                f'r="{3 / scale:.12g}" fill="{part_color}" stroke="white" '
+                                f'r="{vertex_radius:.12g}" fill="{part_color}" stroke="white" '
                                 f'stroke-width="{0.8 / scale:.12g}"/>'
                             )
                     if dimension_class == "line" and part.get("closed") and vertices:

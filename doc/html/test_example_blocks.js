@@ -132,6 +132,14 @@ async function main() {
     'psql -d ${DB} -f "${SCRIPTSDIR}/postgis.sql" # OPTIONAL';
   const shellBlock = makePre(shellSource);
   shellBlock.attributes['data-postgis-language'] = 'bash';
+  const htmlSource = '<script type="text/javascript">\n' +
+    'const path = google.maps.geometry.encoding.decodePath("encoded");\n' +
+    '</script>';
+  const htmlBlock = makePre(htmlSource);
+  htmlBlock.attributes['data-postgis-language'] = 'html';
+  const javascriptSource = 'const route = decodePath(encoded); // polyline5';
+  const javascriptBlock = makePre(javascriptSource);
+  javascriptBlock.attributes['data-postgis-language'] = 'javascript';
   const output = makePre('wide output row\nsecond row');
   output.attributes = {};
   const trailingOutput = makePre('first row\nsecond row\n');
@@ -190,8 +198,16 @@ async function main() {
           '.postgis-example-code pre.programlisting[data-postgis-language="shell"]') {
         return [shellBlock];
       }
+      if (selector === '.postgis-example-code pre.programlisting[data-postgis-language="html"], ' +
+          '.postgis-example-code pre.programlisting[data-postgis-language="xml"]') {
+        return [htmlBlock];
+      }
+      if (selector === '.postgis-example-code pre.programlisting[data-postgis-language="javascript"], ' +
+          '.postgis-example-code pre.programlisting[data-postgis-language="js"]') {
+        return [javascriptBlock];
+      }
       if (selector === '.postgis-example-block pre.programlisting, .postgis-example-block pre.screen') {
-        return blocks.concat([shellBlock, output, trailingOutput]);
+        return blocks.concat([shellBlock, htmlBlock, javascriptBlock, output, trailingOutput]);
       }
       if (selector === '.postgis-example-block pre[data-postgis-lines="true"] > .line') {
         return layoutLines;
@@ -475,6 +491,16 @@ async function main() {
   assert.match(linkedPipeline, /postgis-shell-operator">\|<\/span>/);
   assert.match(linkedPipeline, /<span class="postgis-shell-command">psql<\/span>/);
   assert.doesNotMatch(linkedPipeline, /<a[^>]*>psql<\/a>/);
+  assert.match(htmlBlock.innerHTML, /postgis-html-tag">script<\/span>/);
+  assert.match(htmlBlock.innerHTML, /postgis-html-attribute">type<\/span>/);
+  assert.match(htmlBlock.innerHTML, /postgis-html-string">"text\/javascript"<\/span>/);
+  assert.match(htmlBlock.innerHTML, /postgis-js-keyword">const<\/span>/);
+  assert.match(htmlBlock.innerHTML, /postgis-js-function">decodePath<\/span>/);
+  assert.strictEqual(geometry.codeText(htmlBlock), htmlSource);
+  assert.match(javascriptBlock.innerHTML, /postgis-js-keyword">const<\/span>/);
+  assert.match(javascriptBlock.innerHTML, /postgis-js-function">decodePath<\/span>/);
+  assert.match(javascriptBlock.innerHTML, /postgis-js-comment">\/\/ polyline5<\/span>/);
+  assert.strictEqual(geometry.codeText(javascriptBlock), javascriptSource);
 
   const refIndex = geometry.normalizeRefIndex(sandbox.window.POSTGIS_REF_INDEX);
   sandbox.window.location.pathname = '/manual/not-in-index.html';

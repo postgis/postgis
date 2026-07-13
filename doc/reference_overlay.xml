@@ -368,15 +368,15 @@ This may cause the resulting linestrings to have a different order and direction
       </refsection>
       <refsection>
         <title>Examples</title>
-        <para>Noding a 3D LineString which self-intersects</para>
-        <programlisting>
+        <para>Noding a 3D LineString which self-intersects.</para>
+        <programlisting language="sql">
 SELECT ST_AsText(ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
     ) As  output;</programlisting>
 <screen>MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))</screen>
 
         <para>Noding two LineStrings which share common linework.
         Note that the result linework is dissolved.</para>
-        <programlisting>
+        <programlisting language="sql">
 SELECT ST_AsText(ST_Node('MULTILINESTRING ((2 5,2 1,7 1),(6 1,4 1,2 3,2 5))'::geometry)
     ) As  output;</programlisting>
 <screen>MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))</screen>
@@ -439,11 +439,15 @@ SELECT ST_AsText(ST_Node('MULTILINESTRING ((2 5,2 1,7 1),(6 1,4 1,2 3,2 5))'::ge
         </refsection>
         <refsection>
             <title>Examples</title>
-            <para>Split a Polygon by a Line.</para>
-            <programlisting>
-SELECT ST_AsText(ST_Split(ST_Buffer('POINT(100 90)'::geometry, 50), -- circle
-                'LINESTRING(10 10,190 190)'::geometry -- line
-    ), 1);</programlisting>
+            <para>Split a circular polygon by a diagonal line.</para>
+            <programlisting language="sql">
+SELECT ST_AsText(
+         ST_Split(
+           ST_Buffer('POINT(100 90)'::geometry, 50),
+           'LINESTRING(10 10,190 190)'::geometry
+         ),
+         1
+       );</programlisting>
 <screen>GEOMETRYCOLLECTION(POLYGON((150 90,149 80.2,146.2 70.9,141.6 62.2,135.4 54.6,127.8 48.4,119.1 43.8,109.8 41,100 40,90.2 41,80.9 43.8,72.2 48.4,64.6 54.6,60.1 60.1,129.9 129.9,135.4 125.4,141.6 117.8,146.2 109.1,149 99.8,150 90)),POLYGON((60.1 60.1,58.4 62.2,53.8 70.9,51 80.2,50 90,51 99.8,53.8 109.1,58.4 117.8,64.6 125.4,72.2 131.6,80.9 136.2,90.2 139,100 140,109.8 139,119.1 136.2,127.8 131.6,129.9 129.9,60.1 60.1)))</screen>
             <para>Split a MultiLineString by a Point, where the point lies exactly on both LineStrings elements.</para>
             <programlisting>
@@ -672,7 +676,7 @@ CREATE TABLE subdivided_geoms AS
         <title>Examples</title>
 
 <para>This example shows a 2D-safe symmetric difference of two LineStrings.</para>
-<programlisting>
+<programlisting language="sql">
 SELECT ST_AsText(ST_SymDifference('LINESTRING(50 100,50 200)',
         'LINESTRING(50 50,50 150)'
     )

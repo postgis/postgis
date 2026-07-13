@@ -116,6 +116,13 @@ ANCIENT_VERSION_RE = re.compile(r"\b(?:0\.\d+|1\.[0-5])(?:\.\d+)?\b")
 SELECT_START_RE = re.compile(r"^\s*SELECT\b", re.IGNORECASE | re.MULTILINE)
 EXAMPLE_SECTION_TITLE_RE = re.compile(r"^(?:same\s+)?examples?\b", re.IGNORECASE)
 
+VERBATIM_LINE_LIMIT = 120
+VERBATIM_TABLE_LINE_LIMIT = 100
+VERBATIM_LONG_LINE_ROLE = "docbook-qa-ignore-wide-lines"
+VERBATIM_HEX_PAYLOAD_RE = re.compile(r"\A\\x[0-9A-Fa-f]{64,}\Z")
+VERBATIM_BASE64_PAYLOAD_RE = re.compile(r"\A[A-Za-z0-9+/]{88,}={0,2}\Z")
+VERBATIM_PSQL_TABLE_ROW_RE = re.compile(r"^\s*\|.*\|.*\|\s*")
+
 BLOCK_KINDS = {
     "programlisting": ("postgis-example-code", "code", "Code"),
     "screen": ("postgis-example-output", "output", "Output"),
@@ -311,6 +318,55 @@ def section_has_example_title(section: ET.Element) -> bool:
     return title is not None and "Example" in normalized_text(title)
 
 
+def line_contains_verbatim_payload(line: str) -> bool:
+    stripped = line.strip()
+    if not stripped:
+        return False
+    return (
+        VERBATIM_HEX_PAYLOAD_RE.fullmatch(stripped) is not None
+        or VERBATIM_BASE64_PAYLOAD_RE.fullmatch(stripped) is not None
+    )
+
+
+def line_is_wide_psql_table(line: str) -> bool:
+    stripped = line.strip()
+    if not stripped:
+        return False
+    return PSQL_TABLE_SEPARATOR_RE.search(line) is not None or VERBATIM_PSQL_TABLE_ROW_RE.fullmatch(stripped) is not None
+
+
+def summarize_long_verbatim_lines(node: ET.Element) -> tuple[list[int], bool]:
+    if VERBATIM_LONG_LINE_ROLE in role_tokens(node):
+        return [], False
+
+    long_lines: list[int] = []
+    has_psql_table = False
+    for line_no, line in enumerate(block_text(node).splitlines(), start=1):
+        if line_contains_verbatim_payload(line):
+            continue
+        if line_is_wide_psql_table(line):
+            if len(line) >= VERBATIM_TABLE_LINE_LIMIT:
+                long_lines.append(line_no)
+                has_psql_table = True
+            continue
+        if len(line) > VERBATIM_LINE_LIMIT:
+            long_lines.append(line_no)
+
+    return long_lines, has_psql_table
+
+
+def wide_verbatim_recommendation(has_psql_table: bool) -> str:
+    if has_psql_table:
+        return (
+            "line is wide; use psql expanded output (`\\x on`) or split this block into smaller"
+            " table/output pieces"
+        )
+    return (
+        "wrap long lines, split the example into smaller steps or blocks,"
+        " and consider psql expanded output (`\\x on`) for wide tables"
+    )
+
+
 def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
     findings: list[Finding] = []
 
@@ -492,6 +548,18 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
                 "warning", "screen-contains-psql-command", source_location(path, node),
                 f"screen block contains psql input {command!r}; move the backslash command to a preceding programlisting",
             ))
+
+    for node in named_descendants(root, "programlisting", "screen"):
+        long_lines, has_psql_table = summarize_long_verbatim_lines(node)
+        if not long_lines:
+            continue
+        preview = ", ".join(str(line_no) for line_no in long_lines[:3])
+        if len(long_lines) > 3:
+            preview += f", ... (+{len(long_lines) - 3} more)"
+        findings.append(Finding(
+            "info", "wide-verbatim-line", source_location(path, node),
+            f"{local_name(node)} has {len(long_lines)} wide line(s) ({'lines' if len(long_lines) != 1 else 'line'}: {preview}); {wide_verbatim_recommendation(has_psql_table)}",
+        ))
 
     for refentry in named_descendants(root, "refentry"):
         seen: dict[str, ET.Element] = {}

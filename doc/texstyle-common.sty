@@ -10,6 +10,8 @@
 
 %% Make regular quotes within programlisting tags (#3726)
 \usepackage{listings}
+%% DocBook uses the readable language name while listings exposes C# as the
+%% C language's Sharp dialect.  Keep the HTML language metadata without
+%% making the PDF backend reject the same programlisting.
+\lstalias[]{csharp}[Sharp]{C}
 \lstset{upquote=true}
-
-

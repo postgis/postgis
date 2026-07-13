@@ -80,60 +80,40 @@ VALUES (1,
 
             <refsection>
                 <title>Description</title>
-                <para>
-                    A composite type used as input into the ST_AddBand function defining the attributes and initial value of the new band.
-
-                    <variablelist>
-                        <varlistentry>
-                            <term><varname>
-                                index
-                                integer
-                            </varname></term>
-                            <listitem>
-                                <para>
-                                    1-based value indicating the position where the new band will be added amongst the raster's bands. If NULL, the new band will be added at the end of the raster's bands.
-                                </para>
-                            </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                            <term><varname>
-                                pixeltype
-                                text
-                            </varname></term>
-                            <listitem>
-                                <para>
-                    Pixel type of the new band. One of defined pixel types as described in <xref linkend="RT_ST_BandPixelType"/>.
-                                </para>
-                            </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                            <term><varname>
-                                initialvalue
-                                double precision
-                            </varname></term>
-                            <listitem>
-                                <para>
-                    Initial value that all pixels of new band will be set to.
-                                </para>
-                            </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                            <term><varname>
-                                nodataval
-                                double precision
-                            </varname></term>
-                            <listitem>
-                                <para>
-                    NODATA value of the new band. If NULL, the new band will not have a NODATA value assigned.
-                                </para>
-                            </listitem>
-                        </varlistentry>
-                    </variablelist>
-
-                </para>
+                <para>A composite type used as input into the ST_AddBand function defining the attributes and initial value of the new band.</para>
+                <informaltable tabstyle="styledtable">
+                    <tgroup cols="3">
+                        <thead>
+                            <row>
+                                <entry>Field</entry>
+                                <entry>Type</entry>
+                                <entry>Description</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry><varname>index</varname></entry>
+                                <entry><type>integer</type></entry>
+                                <entry>1-based value indicating the position where the new band will be added amongst the raster's bands. If NULL, the new band will be added at the end of the raster's bands.</entry>
+                            </row>
+                            <row>
+                                <entry><varname>pixeltype</varname></entry>
+                                <entry><type>text</type></entry>
+                                <entry>Pixel type of the new band. One of the pixel types described in <xref linkend="RT_ST_BandPixelType"/>.</entry>
+                            </row>
+                            <row>
+                                <entry><varname>initialvalue</varname></entry>
+                                <entry><type>double precision</type></entry>
+                                <entry>Initial value that all pixels of the new band will be set to.</entry>
+                            </row>
+                            <row>
+                                <entry><varname>nodataval</varname></entry>
+                                <entry><type>double precision</type></entry>
+                                <entry>NODATA value of the new band. If NULL, the new band will not have a NODATA value assigned.</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </informaltable>
             </refsection>
 
             <refsection>
@@ -152,38 +132,30 @@ VALUES (1,
 
             <refsection>
                 <title>Description</title>
-                <para>
-                    A composite type for use when needing to express a raster and a band index of that raster.
-
-                    <variablelist>
-
-                        <varlistentry>
-                            <term><varname>
-                                rast
-                                raster
-                            </varname></term>
-                            <listitem>
-                                <para>
-                    The raster in question/
-                                </para>
-                            </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                            <term><varname>
-                                nband
-                                integer
-                            </varname></term>
-                            <listitem>
-                                <para>
-                                    1-based value indicating the band of raster
-                                </para>
-                            </listitem>
-                        </varlistentry>
-
-                    </variablelist>
-
-                </para>
+                <para>A composite type for use when needing to express a raster and a band index of that raster.</para>
+                <informaltable tabstyle="styledtable">
+                    <tgroup cols="3">
+                        <thead>
+                            <row>
+                                <entry>Field</entry>
+                                <entry>Type</entry>
+                                <entry>Description</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry><varname>rast</varname></entry>
+                                <entry><type>raster</type></entry>
+                                <entry>The raster in question.</entry>
+                            </row>
+                            <row>
+                                <entry><varname>nband</varname></entry>
+                                <entry><type>integer</type></entry>
+                                <entry>1-based value indicating the raster band.</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </informaltable>
             </refsection>
 
             <refsection>
@@ -252,19 +224,16 @@ VALUES (1,
                 </varlistentry>
                 <varlistentry>
                     <term><varname>reclassexpr text</varname></term>
-                    <listitem><para>range expression consisting of comma delimited range:map_range mappings. : to define mapping that defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or equal, [ means &gt; or equal</para>
-                        <para><programlisting><![CDATA[
-1. [a-b] = a <= x <= b
-
-2. (a-b] = a < x <= b
-
-3. [a-b) = a <= x < b
-
-4. (a-b) = a < x < b
-]]></programlisting></para>
-<para>( notation is optional so a-b means the same as (a-b)</para>
+                    <listitem>
+                        <para>Range expression consisting of comma-delimited <literal>range:map_range</literal> mappings that define how old band values map to new band values. The range delimiters mean: <literal>(</literal> greater than, <literal>)</literal> less than, <literal>]</literal> less than or equal, and <literal>[</literal> greater than or equal.</para>
+                        <orderedlist>
+                            <listitem><para><literal>[a-b]</literal> means <literal>a &lt;= x &lt;= b</literal>.</para></listitem>
+                            <listitem><para><literal>(a-b]</literal> means <literal>a &lt; x &lt;= b</literal>.</para></listitem>
+                            <listitem><para><literal>[a-b)</literal> means <literal>a &lt;= x &lt; b</literal>.</para></listitem>
+                            <listitem><para><literal>(a-b)</literal> means <literal>a &lt; x &lt; b</literal>.</para></listitem>
+                        </orderedlist>
+                        <para>Opening-parenthesis notation is optional, so <literal>a-b</literal> means the same as <literal>(a-b)</literal>.</para>
                     </listitem>
-
                 </varlistentry>
                 <varlistentry>
                     <term><varname>pixeltype text</varname></term>
@@ -395,37 +364,30 @@ VALUES (1,
 
             <refsection>
                 <title>Description</title>
-                <para>
-                    A composite type used as input into the ST_Union function defining the bands to be processed and behavior of the UNION operation.
-
-                    <variablelist>
-                        <varlistentry>
-                            <term><varname>
-                                nband
-                                integer
-                            </varname></term>
-                            <listitem>
-                                <para>
-                                    1-based value indicating the band of each input raster to be processed.
-                                </para>
-                            </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                            <term><varname>
-                                uniontype
-                                text
-                            </varname></term>
-                            <listitem>
-                                <para>
-                    Type of UNION operation. One of defined types as described in <xref linkend="RT_ST_Union"/>.
-                                </para>
-                            </listitem>
-                        </varlistentry>
-
-                    </variablelist>
-
-                </para>
+                <para>A composite type used as input into the ST_Union function defining the bands to be processed and behavior of the UNION operation.</para>
+                <informaltable tabstyle="styledtable">
+                    <tgroup cols="3">
+                        <thead>
+                            <row>
+                                <entry>Field</entry>
+                                <entry>Type</entry>
+                                <entry>Description</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry><varname>nband</varname></entry>
+                                <entry><type>integer</type></entry>
+                                <entry>1-based value indicating the band of each input raster to be processed.</entry>
+                            </row>
+                            <row>
+                                <entry><varname>uniontype</varname></entry>
+                                <entry><type>text</type></entry>
+                                <entry>Type of union operation. One of the types described in <xref linkend="RT_ST_Union"/>.</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </informaltable>
             </refsection>
 
             <refsection>
@@ -1113,7 +1075,7 @@ will be used.
         <title>Examples</title>
         <para>List of Drivers.</para>
 
-        <programlisting>SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
+        <programlisting language="sql">SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
 SELECT short_name, long_name, can_write
 FROM ST_GDALDrivers()
 ORDER BY short_name;</programlisting>
@@ -1175,7 +1137,7 @@ ORDER BY short_name;</programlisting>
 
 <para>List of options for each driver.</para>
 <para>Output the create options XML column of JPEG as a table. These creator options can be used in the ST_AsGDALRaster options argument.</para>
-<programlisting>
+<programlisting language="sql">
 SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@type', g.opt))[1]::text As otype,
        (xpath('@description', g.opt))[1]::text As descrip
@@ -1197,7 +1159,7 @@ WHERE short_name = 'JPEG') As g;</programlisting>
 (9 rows)</screen>
 
 <para>This example returns raw XML output for GeoTIFF creator options.</para>
-<programlisting>SELECT create_options
+<programlisting language="sql">SELECT create_options
 FROM ST_GDALDrivers()
 WHERE short_name = 'GTiff';</programlisting>
 <screen><![CDATA[<CreationOptionList>
@@ -2641,9 +2603,11 @@ FROM dummy_rast;</programlisting>
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT rid, (foo.md).*
- FROM (SELECT rid, ST_MetaData(rast) As md
-FROM dummy_rast) As foo;</programlisting>
+                <programlisting language="sql">SELECT rid, (foo.md).*
+FROM (
+    SELECT rid, ST_MetaData(rast) AS md
+    FROM dummy_rast
+) AS foo;</programlisting>
 <screen> rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ----+------------+------------+-------+--------+--------+-----------+-------+-------+------+-------
   1 |        0.5 |        0.5 |    10 |     20 |      2 |      3 |     0 |     0 |    0 |        0
@@ -3722,7 +3686,7 @@ FROM dummy_rast;</programlisting>
                 <title>Examples</title>
                 <para>Variant 1.</para>
 
-                <programlisting>
+                <programlisting language="sql">
 SELECT
     rid,
     (foo.md).*
@@ -3743,7 +3707,7 @@ FROM (
 
                 <para>Variant 2.</para>
 
-                <programlisting>
+                <programlisting language="sql">
 WITH foo AS (
     SELECT
         ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
@@ -3753,11 +3717,11 @@ SELECT
 FROM ST_BandMetaData((SELECT rast FROM foo),
     ARRAY[1, 3, 2]::int[]
 );</programlisting>
-<screen> bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                      | outdbbandnum  | filesize | filetimestamp |
----------+-----------+-------------+---------+--------------------------------------------------------------------------------+---------------+----------+---------------+-
-       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            1  |    12345 |    1521807257 |
-       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            3  |    12345 |    1521807257 |
-       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif      |            2  |    12345 |    1521807257 |</screen>
+<screen> bandnum | pixeltype | nodatavalue | isoutdb |                                     path                                      | outdbbandnum | filesize | filetimestamp
+---------+-----------+-------------+---------+-------------------------------------------------------------------------------+--------------+----------+---------------
+       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif     |            1 |    12345 |    1521807257
+       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif     |            3 |    12345 |    1521807257
+       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif     |            2 |    12345 |    1521807257</screen>
 
             </refsection>
 
@@ -3942,8 +3906,21 @@ select ST_BandIsNoData(rast, 2) from dummy_rast where rid = 1; -- Expected false
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting><!-- TODO: -->
-                    </programlisting>
+                    <programlisting language="sql">WITH foo AS (
+    SELECT ST_AddBand(
+        NULL::raster,
+        '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif',
+        NULL::int[]
+    ) AS rast
+)
+SELECT bandnum, ST_BandPath(rast, bandnum) AS path
+FROM foo
+CROSS JOIN generate_series(1, 3) AS bandnum;</programlisting>
+                    <screen> bandnum |                                    path
+---------+----------------------------------------------------------------------------
+       1 | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif
+       2 | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif
+       3 | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif</screen>
 
             </refsection>
 
@@ -4291,7 +4268,7 @@ WHERE rid=2;</programlisting>
             <refsection>
                     <title>Examples</title>
                     <para>This example returns a raster pixel polygon.</para>
-                    <programlisting>
+                    <programlisting language="sql">
 SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom
 FROM (SELECT ST_PixelAsPolygons(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 0.001, -0.001, 0.001, 0.001, 4269),
                                                     '8BUI'::text, 1, 0),
@@ -4300,7 +4277,7 @@ FROM (SELECT ST_PixelAsPolygons(ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyR
 ) gv
 ) foo
 ORDER BY (gv).x, (gv).y;</programlisting>
-<screen> x | y | val |                geom
+<screen role="visual"> x | y | val |                geom
 ---+---+-----------------------------------------------------------------------------
  1 | 2 |   1 | POLYGON((0.001 -0.001,0.002 0,0.003 -0.001,0.002 -0.002,0.001 -0.001))
  2 | 1 |   1 | POLYGON((0.001 0.001,0.002 0.002,0.003 0.001,0.002 0,0.001 0.001))
@@ -4403,34 +4380,46 @@ ORDER BY (gv).x, (gv).y;</programlisting>
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;</programlisting>
-<screen> x | y | val |          st_astext
----+---+-----+------------------------------
- 1 | 1 | 253 | POINT(3427927.75 5793244)
- 2 | 1 | 254 | POINT(3427927.8 5793244)
- 3 | 1 | 253 | POINT(3427927.85 5793244)
- 4 | 1 | 254 | POINT(3427927.9 5793244)
- 5 | 1 | 254 | POINT(3427927.95 5793244)
- 1 | 2 | 253 | POINT(3427927.75 5793243.95)
- 2 | 2 | 254 | POINT(3427927.8 5793243.95)
- 3 | 2 | 254 | POINT(3427927.85 5793243.95)
- 4 | 2 | 253 | POINT(3427927.9 5793243.95)
- 5 | 2 | 249 | POINT(3427927.95 5793243.95)
- 1 | 3 | 250 | POINT(3427927.75 5793243.9)
- 2 | 3 | 254 | POINT(3427927.8 5793243.9)
- 3 | 3 | 254 | POINT(3427927.85 5793243.9)
- 4 | 3 | 252 | POINT(3427927.9 5793243.9)
- 5 | 3 | 249 | POINT(3427927.95 5793243.9)
- 1 | 4 | 251 | POINT(3427927.75 5793243.85)
- 2 | 4 | 253 | POINT(3427927.8 5793243.85)
- 3 | 4 | 254 | POINT(3427927.85 5793243.85)
- 4 | 4 | 254 | POINT(3427927.9 5793243.85)
- 5 | 4 | 253 | POINT(3427927.95 5793243.85)
- 1 | 5 | 252 | POINT(3427927.75 5793243.8)
- 2 | 5 | 250 | POINT(3427927.8 5793243.8)
- 3 | 5 | 254 | POINT(3427927.85 5793243.8)
- 4 | 5 | 254 | POINT(3427927.9 5793243.8)
- 5 | 5 | 254 | POINT(3427927.95 5793243.8)</screen>
+                <para>This example returns point features together with a derived marker size that a client can use for value-scaled point rendering.</para>
+                <programlisting language="sql">SELECT
+    x,
+    y,
+    val,
+    round((val / 32.0)::numeric, 2) AS marker_scale,
+    ST_AsText(geom) AS geom_wkt
+FROM (
+    SELECT (ST_PixelAsPoints(rast, 1)).*
+    FROM dummy_rast
+    WHERE rid = 2
+) AS foo
+ORDER BY y, x;</programlisting>
+<screen role="visual"> x | y | val | marker_scale |          geom_wkt
+---+---+-----+--------------+------------------------------
+ 1 | 1 | 253 |         7.91 | POINT(3427927.75 5793244)
+ 2 | 1 | 254 |         7.94 | POINT(3427927.8 5793244)
+ 3 | 1 | 253 |         7.91 | POINT(3427927.85 5793244)
+ 4 | 1 | 254 |         7.94 | POINT(3427927.9 5793244)
+ 5 | 1 | 254 |         7.94 | POINT(3427927.95 5793244)
+ 1 | 2 | 253 |         7.91 | POINT(3427927.75 5793243.95)
+ 2 | 2 | 254 |         7.94 | POINT(3427927.8 5793243.95)
+ 3 | 2 | 254 |         7.94 | POINT(3427927.85 5793243.95)
+ 4 | 2 | 253 |         7.91 | POINT(3427927.9 5793243.95)
+ 5 | 2 | 249 |         7.78 | POINT(3427927.95 5793243.95)
+ 1 | 3 | 250 |         7.81 | POINT(3427927.75 5793243.9)
+ 2 | 3 | 254 |         7.94 | POINT(3427927.8 5793243.9)
+ 3 | 3 | 254 |         7.94 | POINT(3427927.85 5793243.9)
+ 4 | 3 | 252 |         7.88 | POINT(3427927.9 5793243.9)
+ 5 | 3 | 249 |         7.78 | POINT(3427927.95 5793243.9)
+ 1 | 4 | 251 |         7.84 | POINT(3427927.75 5793243.85)
+ 2 | 4 | 253 |         7.91 | POINT(3427927.8 5793243.85)
+ 3 | 4 | 254 |         7.94 | POINT(3427927.85 5793243.85)
+ 4 | 4 | 254 |         7.94 | POINT(3427927.9 5793243.85)
+ 5 | 4 | 253 |         7.91 | POINT(3427927.95 5793243.85)
+ 1 | 5 | 252 |         7.88 | POINT(3427927.75 5793243.8)
+ 2 | 5 | 250 |         7.81 | POINT(3427927.8 5793243.8)
+ 3 | 5 | 254 |         7.94 | POINT(3427927.85 5793243.8)
+ 4 | 5 | 254 |         7.94 | POINT(3427927.9 5793243.8)
+ 5 | 5 | 254 |         7.94 | POINT(3427927.95 5793243.8)</screen>
             </refsection>
 
             <refsection>
@@ -4633,7 +4622,7 @@ SELECT x, y, val, ST_AsText(geom)
                 <refsection>
                     <title>Examples</title>
                     <para>Get raster values at particular postgis geometry points. The srid of your geometry should be same as for your raster.</para>
-                    <programlisting>
+                    <programlisting language="sql">
 SELECT rid, ST_Value(rast, foo.pt_geom) As b1pval, ST_Value(rast, 2, foo.pt_geom) As b2pval
 FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77, 5793243.76), 0) As pt_geom) As foo
 WHERE rid=2;</programlisting>
@@ -4646,7 +4635,7 @@ WHERE rid=2;</programlisting>
 SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval
 FROM sometable
 WHERE ST_Intersects(rast, sometable.geom);</programlisting>
-                    <programlisting>
+                    <programlisting language="sql">
 SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval,
     ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval
 FROM dummy_rast
@@ -4656,7 +4645,7 @@ WHERE rid=2;</programlisting>
    2 |    253 |     78 |     70</screen>
 
                 <para>Get all values in bands 1,2,3 of each pixel.</para>
-                <programlisting>
+                <programlisting language="sql">
 <![CDATA[
 
 SELECT x, y, ST_Value(rast, 1, x, y) As b1val,
@@ -4712,7 +4701,7 @@ WHERE
         pixpolyg,
         ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
         ) AND b2val != 254;]]></programlisting>
-<screen><![CDATA[
+<screen role="visual"><![CDATA[
         shadow
 ------------------------------------------------------------------------------------
  MULTIPOLYGON(((3427928 5793243.9,3427928 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,
@@ -4729,7 +4718,7 @@ WHERE
 ]]></screen>
 
                 <para>Checking all the pixels of a large raster tile can take a long time. You can dramatically improve speed at some lose of precision by orders of magnitude. By sampling pixels using the step optional parameter of generate_series. This next example does the same as previous but by checking 1 for every 4 (2x2) pixels and putting in the last checked. Putting in the checked pixel as the value for subsequent 4.</para>
-                <programlisting>
+                <programlisting language="sql">
 <![CDATA[
 
 
@@ -4748,7 +4737,7 @@ WHERE
         pixpolyg,
         ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 5793243.75,3427928 5793243.75,3427928 5793244))',0)
         ) AND b2val != 254;]]></programlisting>
-<screen><![CDATA[
+<screen role="visual"><![CDATA[
         shadow
 ------------------------------------------------------------------------------------
  MULTIPOLYGON(((3427927.9 5793243.85,3427927.8 5793243.85,3427927.8 5793243.95,
@@ -4845,7 +4834,7 @@ WHERE
                 <title>Examples</title>
 
                 <para>This example reads a value from pixel 2x2.</para>
-                <programlisting>
+                <programlisting language="sql">
 SELECT
     ST_Value(rast, 2, 2) AS value,
     ST_NearestValue(rast, 2, 2) AS nearestvalue
@@ -4870,7 +4859,7 @@ FROM (
      1 |            1</screen>
 
                 <para>This example reads a NODATA value from pixel 2x3.</para>
-                <programlisting>
+                <programlisting language="sql">
 SELECT
     ST_Value(rast, 2, 3) AS value,
     ST_NearestValue(rast, 2, 3) AS nearestvalue
@@ -6069,10 +6058,10 @@ FROM (
 
                 <para>Set Georeference 6 georeference parameters in a single call.  Accepts inputs in 'GDAL' or 'ESRI' format.  Default is GDAL. If 6 coordinates are not provided will return null.</para>
                 <para>Difference between format representations is as follows:</para>
-                <para><varname>GDAL</varname>:
-<programlisting>scalex skewy skewx scaley upperleftx upperlefty</programlisting></para>
-                <para><varname>ESRI</varname>:
-<programlisting>scalex skewy skewx scaley upperleftx + scalex*0.5 upperlefty + scaley*0.5</programlisting></para>
+                <para><varname>GDAL</varname> uses the value order shown below.</para>
+                <programlisting>scalex skewy skewx scaley upperleftx upperlefty</programlisting>
+                <para><varname>ESRI</varname> uses the value order shown below.</para>
+                <programlisting>scalex skewy skewx scaley upperleftx + scalex*0.5 upperlefty + scaley*0.5</programlisting>
 
                 <note>
                     <para>
@@ -6087,7 +6076,7 @@ FROM (
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>
+                <programlisting language="sql">
 WITH foo AS (
     SELECT ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0) AS rast
 )
@@ -6145,7 +6134,7 @@ FROM foo</programlisting>
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT
+                <programlisting language="sql">SELECT
   ST_ScaleX(rast1), ST_ScaleY(rast1), ST_SkewX(rast1), ST_SkewY(rast1),
   ST_ScaleX(rast2), ST_ScaleY(rast2), ST_SkewX(rast2), ST_SkewY(rast2)
 FROM (
@@ -7208,7 +7197,7 @@ select ST_BandIsNoData(rast, 1) from dummy_rast where rid = 1; -- Expected true
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
+                <programlisting language="sql">
 WITH foo AS (
     SELECT
         ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
@@ -7225,23 +7214,24 @@ SELECT
     *
 FROM ST_BandMetaData((
         SELECT
-            <emphasis role="strong">ST_SetBandPath(rast,
+            ST_SetBandPath(rast,
                 2,
                 '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif',
                 1
-            )</emphasis> AS rast
+            ) AS rast
         FROM foo
     ),
     ARRAY[1, 3, 2]::int[]
 )
 ORDER BY 1, 2;</programlisting>
+                <para>In the second result set, band 2 now points at <literal>Projected2.tif</literal> and uses out-db band 1.</para>
 <screen> query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
 -------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
      1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
      1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
      1 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
      2 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
-<emphasis role="strong">     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif      |            1</emphasis>
+     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected2.tif      |            1
      2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3</screen>
             </refsection>
 
@@ -7295,7 +7285,7 @@ ORDER BY 1, 2;</programlisting>
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
+                <programlisting language="sql">
 WITH foo AS (
     SELECT
         ST_AddBand(NULL::raster, '/home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif', NULL::int[]) AS rast
@@ -7312,22 +7302,23 @@ SELECT
     *
 FROM ST_BandMetaData((
         SELECT
-            <emphasis role="strong">ST_SetBandIndex(rast,
+            ST_SetBandIndex(rast,
                 2,
                 1
-            )</emphasis> AS rast
+            ) AS rast
         FROM foo
     ),
     ARRAY[1, 3, 2]::int[]
 )
 ORDER BY 1, 2;</programlisting>
+                <para>In the second result set, band 2 still points at the same file but now reads external band 1.</para>
 <screen> query | bandnum | pixeltype | nodatavalue | isoutdb |                                      path                                       | outdbbandnum
 -------+---------+-----------+-------------+---------+---------------------------------------------------------------------------------+--------------
      1 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
      1 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            2
      1 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3
      2 |       1 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
-<emphasis role="strong">     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1</emphasis>
+     2 |       2 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            1
      2 |       3 | 8BUI      |             | t       | /home/pele/devel/geo/postgis-git/raster/test/regress/loader/Projected.tif       |            3</screen>
             </refsection>
 
@@ -7448,7 +7439,7 @@ SELECT rid, ST_Count(ST_SetBandNoDataValue(rast, 249)) As exclude_nodata,
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
+                <programlisting language="sql">
 WITH foo AS (
     SELECT
         rast.rast
@@ -7469,9 +7460,12 @@ WITH foo AS (
         ON 1 = 1
 )
 SELECT
-    ST_CountAgg(rast, 1, TRUE)
+    ST_CountAgg(rast, 1, TRUE) AS non_nodata_pixels
 FROM foo;</programlisting>
-<screen>20</screen>
+<screen> non_nodata_pixels
+-------------------
+                20
+(1 row)</screen>
             </refsection>
 
             <refsection>
@@ -7920,7 +7914,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston', 'rast', band, true, 0.25) As st
 
             <refsection>
                 <title>Examples</title>
-                <programlisting>
+                <programlisting language="sql">
 WITH foo AS (
     SELECT
         rast.rast
@@ -7941,20 +7935,20 @@ WITH foo AS (
         ON 1 = 1
 )
 SELECT
-    (stats).count,
-    round((stats).sum::numeric, 3),
-    round((stats).mean::numeric, 3),
-    round((stats).stddev::numeric, 3),
-    round((stats).min::numeric, 3),
-    round((stats).max::numeric, 3)
+    (stats).count AS count,
+    round((stats).sum::numeric, 3) AS sum,
+    round((stats).mean::numeric, 3) AS mean,
+    round((stats).stddev::numeric, 3) AS stddev,
+    round((stats).min::numeric, 3) AS min,
+    round((stats).max::numeric, 3) AS max
 FROM (
     SELECT
         ST_SummaryStatsAgg(rast, 1, TRUE, 1) AS stats
     FROM foo
 ) bar;</programlisting>
-<screen> count |  round  | round  | round |  round  | round
--------+---------+--------+-------+---------+-------
-    20 | -68.584 | -3.429 | 6.571 | -10.000 | 3.142
+<screen> count |   sum   |  mean  | stddev |   min   |  max
+-------+---------+--------+--------+---------+-------
+    20 | -68.584 | -3.429 |  6.571 | -10.000 | 3.142
 (1 row)</screen>
             </refsection>
 
@@ -9641,6 +9635,60 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 
                 <refsection>
                     <title>Examples</title>
+                    <para>Compare an unmasked mean with neighbor-only and weighted-neighbor masks. The weighted mask multiplies neighboring values by 2 before computing the result.</para>
+                    <programlisting language="sql">WITH foo AS (
+    SELECT ST_SetBandNoDataValue(
+        ST_SetValue(
+            ST_SetValue(
+                ST_AsRaster(
+                    ST_Buffer('LINESTRING(50 50,100 90,100 50)'::geometry, 5, 'join=bevel'),
+                    200, 200, ARRAY['8BUI'], ARRAY[100], ARRAY[0]
+                ),
+                ST_Buffer('POINT(70 70)'::geometry, 10, 'quad_segs=1'),
+                50
+            ),
+            'LINESTRING(20 20,100 100,150 98)'::geometry,
+            1
+        ),
+        0
+    ) AS rast
+), variants AS (
+    SELECT 'original' AS title, rast
+    FROM foo
+    UNION ALL
+    SELECT 'unmasked mean' AS title,
+        ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure) AS rast
+    FROM foo
+    UNION ALL
+    SELECT 'neighbor-only mean' AS title,
+        ST_MapAlgebra(
+            rast,
+            1,
+            'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
+            '{{1,1,1}, {1,0,1}, {1,1,1}}'::double precision[],
+            false
+        ) AS rast
+    FROM foo
+    UNION ALL
+    SELECT 'weighted neighbor mean' AS title,
+        ST_MapAlgebra(
+            rast,
+            1,
+            'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
+            '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[],
+            true
+        ) AS rast
+    FROM foo
+)
+SELECT title, ST_AsPNG(rast) AS image
+FROM variants;</programlisting>
+                    <screen role="visual-primary"> title                  | image
+------------------------+--------------------------------
+ original               | PNG image, 200 x 200 pixels
+ unmasked mean          | PNG image, 200 x 200 pixels
+ neighbor-only mean     | PNG image, 200 x 200 pixels
+ weighted neighbor mean | PNG image, 200 x 200 pixels
+                    </screen>
                     <para>Variant 1.</para>
 
                     <para>One raster, one band</para>
@@ -9811,37 +9859,6 @@ CROSS JOIN foo t2
 WHERE t1.rid = 1
     AND t2.rid = 2
                     </programlisting>
-
-
-					<para>Compare an unmasked mean with neighbor-only and weighted-neighbor masks. The weighted mask multiplies neighboring values by 2 before computing the result.</para>
-					<programlisting>WITH foo AS (SELECT
-   ST_SetBandNoDataValue(ST_SetValue(ST_SetValue(ST_AsRaster(ST_Buffer('LINESTRING(50 50,100 90,100 50)'::geometry, 5, 'join=bevel'),
-            200, 200, ARRAY['8BUI'], ARRAY[100], ARRAY[0]), ST_Buffer('POINT(70 70)'::geometry, 10, 'quad_segs=1') , 50),
-  'LINESTRING(20 20,100 100,150 98)'::geometry, 1), 0) AS rast
-), variants AS (
-SELECT 'original' AS title, rast
-FROM foo
-UNION ALL
-SELECT 'unmasked mean' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure) AS rast
-FROM foo
-UNION ALL
-SELECT 'neighbor-only mean' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
-    '{{1,1,1}, {1,0,1}, {1,1,1}}'::double precision[], false) As rast
-FROM foo
-UNION ALL
-SELECT 'weighted neighbor mean' AS title, ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], int[], text[])'::regprocedure,
-    '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast
-FROM foo
-)
-SELECT title, ST_AsPNG(rast) AS image
-FROM variants;</programlisting>
-                    <screen role="visual-primary"> title                  | image
-------------------------+--------------------------------
- original               | PNG image, 200 x 200 pixels
- unmasked mean          | PNG image, 200 x 200 pixels
- neighbor-only mean     | PNG image, 200 x 200 pixels
- weighted neighbor mean | PNG image, 200 x 200 pixels
-                    </screen>
 
                 </refsection>
 
@@ -13381,31 +13398,34 @@ FROM foo</programlisting>
                 <refsection>
                     <title>Examples</title>
                     <para>By default no data band value is 0 or not set, so polygon will return a square polygon.</para>
-                    <programlisting>
+                    <programlisting language="sql">
 SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
-<screen>MULTIPOLYGON(((3427927.75 5793244,3427928 5793244,3427928 5793243.75,3427927.75 5793243.75,3427927.75 5793244)))</screen>
+<screen role="visual">MULTIPOLYGON(((3427927.75 5793244,3427928 5793244,3427928 5793243.75,3427927.75 5793243.75,3427927.75 5793244)))</screen>
 <para>Now we change the no data value of first band.</para>
-                    <para>ST_Polygon excludes the pixel value 254 and returns a multipolygon.</para>
                     <programlisting language="sql">
 UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast, 1, 254)
+WHERE rid = 2;</programlisting>
+                    <screen>UPDATE 1</screen>
+                    <para>ST_Polygon excludes the pixel value 254 and returns a multipolygon.</para>
+                    <programlisting language="sql">SELECT rid, ST_BandNoDataValue(rast)
+FROM dummy_rast
 WHERE rid = 2;
-SELECt rid, ST_BandNoDataValue(rast)
-from dummy_rast where rid = 2;
 SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
-<screen>MULTIPOLYGON(((3427927.9 5793243.95,3427927.85 5793243.95,3427927.85 5793244,3427927.9 5793244,3427927.9 5793243.95)),((3427928 5793243.85,3427928 5793243.8,3427927.95 5793243.8,3427927.95 5793243.85,3427927.9 5793243.85,3427927.9 5793243.9,3427927.9 5793243.95,3427927.95 5793243.95,3427928 5793243.95,3427928 5793243.85)),((3427927.8 5793243.75,3427927.75 5793243.75,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.8 5793243.9,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75,3427927.8 5793243.75)))</screen>
+<screen role="visual"> rid | st_bandnodatavalue
+-----+-------------------
+   2 |               254
+MULTIPOLYGON(((3427927.9 5793243.95,3427927.85 5793243.95,3427927.85 5793244,3427927.9 5793244,3427927.9 5793243.95)),((3427928 5793243.85,3427928 5793243.8,3427927.95 5793243.8,3427927.95 5793243.85,3427927.9 5793243.85,3427927.9 5793243.9,3427927.9 5793243.95,3427927.95 5793243.95,3427928 5793243.95,3427928 5793243.85)),((3427927.8 5793243.75,3427927.75 5793243.75,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.8 5793243.9,3427927.8 5793243.85,3427927.85 5793243.85,3427927.85 5793243.8,3427927.85 5793243.75,3427927.8 5793243.75)))</screen>
 <para>Or if you want the no data value different for just one time.</para>
-<programlisting>
-
-SELECT ST_AsText(ST_Polygon(ST_SetBandNoDataValue(rast, 1, 252)
-        )
-    ) As geomwkt
+<programlisting language="sql">SELECT ST_AsText(
+    ST_Polygon(ST_SetBandNoDataValue(rast, 1, 252))
+) AS geomwkt
 FROM dummy_rast
-WHERE rid =2;</programlisting>
-<screen>MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.85 5793244,3427927.9 5793244,3427928 5793244,3427928 5793243.95,3427928 5793243.85),(3427927.9 5793243.9,3427927.9 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,3427927.9 5793243.9)))</screen>
+WHERE rid = 2;</programlisting>
+<screen role="visual">MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8,3427927.75 5793243.8,3427927.75 5793243.85,3427927.75 5793243.9,3427927.75 5793244,3427927.8 5793244,3427927.85 5793244,3427927.9 5793244,3427928 5793244,3427928 5793243.95,3427928 5793243.85),(3427927.9 5793243.9,3427927.9 5793243.85,3427927.95 5793243.85,3427927.95 5793243.9,3427927.9 5793243.9)))</screen>
                 </refsection>
 
                 <refsection>
