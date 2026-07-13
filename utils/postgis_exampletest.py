@@ -1509,14 +1509,9 @@ SELECT json_build_object(
             "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
         }
         parts = payload.get("parts") or []
-        has_3d_surface = any(
-            part.get("has_z") and part.get("points_xyz")
-            and part.get("type", "").upper() in area_types
-            for part in parts
-        )
         three_dimensional_frames = {
             str(part.get("frame", frames[0]["id"])) for part in parts
-            if has_3d_surface and part.get("points_xyz")
+            if part.get("has_z") and part.get("points_xyz")
         }
         projected_bounds = {}
         projected_parts = []
@@ -1598,11 +1593,14 @@ SELECT json_build_object(
             "bounds": payload["bounds"],
         }]
         frame_count = len(frames)
+        show_frame_labels = frame_count > 1 or any(
+            frame.get("three_dimensional") for frame in frames
+        )
         panel_columns = 1 if frame_count == 1 else min(2, frame_count)
         panel_rows = math.ceil(frame_count / panel_columns)
         panel_gap = 20 if frame_count > 1 else 0
         panel_width = (560 - panel_gap * (panel_columns - 1)) / panel_columns
-        plot_top = 30 if frame_count > 1 else 12
+        plot_top = 30 if show_frame_labels else 12
         panel_height = 322 - plot_top if panel_rows == 1 else 220
         plot_bottom = plot_top + panel_rows * panel_height + panel_gap * (panel_rows - 1)
         layouts = {}
@@ -1652,8 +1650,13 @@ SELECT json_build_object(
                 f'<rect class="plot-background" x="{panel_left:.12g}" y="{panel_top}" '
                 f'width="{panel_width:.12g}" height="{panel_height}" fill="#fbfcfd"/>'
             )
-            if frame_count > 1:
+            if show_frame_labels:
                 frame_label = str(frame.get("label", frame_id))
+                if frame.get("three_dimensional"):
+                    frame_label = (
+                        "3D view" if frame_count == 1 or frame_label == "Overlay"
+                        else f"{frame_label} (3D view)"
+                    )
                 frame_labels.append(
                     f'<text class="frame-label" x="{(panel_left + panel_right) / 2:.12g}" y="{panel_top - 10}" '
                     f'text-anchor="middle">{html.escape(frame_label)}</text>'

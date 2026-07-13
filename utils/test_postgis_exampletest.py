@@ -661,6 +661,7 @@ class VisualExampleTest(unittest.TestCase):
         }
         svg = self.tester.visual_svg("solid-3d", payload)
         self.assertEqual(svg, self.tester.visual_svg("solid-3d", payload))
+        self.assertIn(">3D view</text>", svg)
         depths = [float(value) for value in re.findall(r'data-postgis-depth="([^"]+)"', svg)]
         self.assertEqual(sorted(depths), depths)
         fills = re.findall(
@@ -773,6 +774,36 @@ class VisualExampleTest(unittest.TestCase):
         )
         svg = self.tester.visual_svg("separate-3d", payload)
         self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
+        self.assertIn(">Code (3D view)</text>", svg)
+        self.assertIn(">Output (3D view)</text>", svg)
+
+    def test_separate_2d_output_is_not_projected_with_3d_input(self):
+        ring_3d = [[0, 0, 2], [0, 5, 2], [5, 0, 2], [0, 0, 2]]
+        ring_2d = [[0, 0, 0], [0, 5, 0], [5, 0, 0], [0, 0, 0]]
+        payload = {
+            "frames": [
+                {"id": "Code", "bounds": [0, 0, 5, 5]},
+                {"id": "Output", "bounds": [0, 0, 5, 5]},
+            ],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "input", "frame": "Code",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "input-2d-placeholder",
+                 "has_z": True, "points_xyz": xyz_vertices(ring_3d, ring=True)},
+                {"ord": 2, "source": "Output", "label": "output", "frame": "Output",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "M 0 0 L 0 -5 5 0 Z",
+                 "has_z": False, "points_xyz": xyz_vertices(ring_2d, ring=True)},
+            ],
+        }
+        projected = self.tester.project_3d_payload(payload)
+        self.assertTrue(projected["frames"][0]["three_dimensional"])
+        self.assertNotIn("three_dimensional", projected["frames"][1])
+        self.assertNotEqual(payload["parts"][0]["svg"], projected["parts"][0]["svg"])
+        self.assertEqual(payload["parts"][1]["svg"], projected["parts"][1]["svg"])
+        svg = self.tester.visual_svg("force2d", payload)
+        self.assertIn(">Code (3D view)</text>", svg)
+        self.assertIn(">Output</text>", svg)
+        self.assertNotIn(">Output (3D view)</text>", svg)
+        self.assertIn('stroke="#dce2e7" stroke-width="1"', svg)
 
     def test_3d_frame_projects_zero_z_point_and_line(self):
         payload = {
