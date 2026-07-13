@@ -2343,16 +2343,16 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))');</programlisting>
 	  <refsection>
 		<title>Examples</title>
 
-			<para>This example counts the interior rings of a polygon.</para>
-			<programlisting>
-SELECT gid, field1, field2, ST_NumInteriorRings(geom) AS numholes
-FROM sometable;
+			<para>Count the interior rings of a Polygon.</para>
+			<programlisting role="requires-external-state">SELECT gid, field1, field2, ST_NumInteriorRings(geom) AS numholes
+FROM sometable;</programlisting>
 
---If you have multipolygons
---And you want to know the total number of interior rings in the MULTIPOLYGON
-SELECT gid, field1, field2, SUM(ST_NumInteriorRings(geom)) AS numholes
-FROM (SELECT gid, field1, field2, (ST_Dump(geom)).geom As geom
-    FROM sometable) As foo
+			<para>For a MultiPolygon, dump its component Polygons and sum their interior ring counts.</para>
+			<programlisting role="requires-external-state">SELECT gid, field1, field2, SUM(ST_NumInteriorRings(geom)) AS numholes
+FROM (
+    SELECT gid, field1, field2, (ST_Dump(geom)).geom AS geom
+    FROM sometable
+) AS foo
 GROUP BY gid, field1, field2;
             </programlisting>
 	  </refsection>
