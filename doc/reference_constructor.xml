@@ -45,20 +45,18 @@
         <para><emphasis role="bold">Variant 2:</emphasis> accepts an array of geometries</para>
         <para><emphasis role="bold">Variant 3:</emphasis> aggregate function accepting a rowset of geometries.</para>
 
-        <note><para>
-        If any of the input geometries are collections (Multi* or GeometryCollection)
-        ST_Collect returns a GeometryCollection (since that is the only type
-        which can contain nested collections).
-        To prevent this, use <xref linkend="ST_Dump"/> in a subquery to expand the
-        input collections to their atomic elements (see example below).
-        </para></note>
+        <warning><para><function>ST_Collect</function> does not dissolve boundaries
+        or resolve overlaps. Collecting overlapping polygons can produce an invalid
+        <type>MultiPolygon</type>. If the result must be a valid polygonal geometry
+        with overlaps merged, use <xref linkend="ST_Union"/> instead.
+        <function>ST_Union</function> also splits linestrings at intersections and
+        may return a single geometry after dissolving boundaries.</para></warning>
 
-        <note><para>ST_Collect and <xref linkend="ST_Union"/> appear similar, but in fact operate quite differently.
-        ST_Collect aggregates geometries into a collection without changing them in any way.
-        ST_Union geometrically merges geometries where they overlap,
-        and splits linestrings at intersections.
-        It may return single geometries when it dissolves boundaries.
-        </para></note>
+        <para>If any input geometry is a collection (Multi* or GeometryCollection),
+        <function>ST_Collect</function> returns a GeometryCollection, since that is
+        the only type which can contain nested collections. To prevent this, use
+        <xref linkend="ST_Dump"/> in a subquery to expand input collections to
+        their atomic elements (see example below).</para>
 
         <para role="availability" conformance="1.4.0">Availability: 1.4.0 -  ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster.</para>
         <para>&Z_support;</para>
