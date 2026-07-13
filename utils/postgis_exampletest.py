@@ -1434,9 +1434,9 @@ SELECT json_build_object(
     def project_3d_point(self, point):
         """Return deterministic isometric x/y/depth coordinates for one XYZ point."""
         x, y, z = [float(value) for value in point]
-        # A slightly asymmetric camera avoids collapsing opposite corners of a
-        # cube, while retaining an orthographic projection and stable depth.
-        view = (-1.35, -1.0, -0.8)
+        # A slightly elevated, asymmetric camera avoids collapsing opposite
+        # corners of a cube while retaining a stable orthographic projection.
+        view = (-1.35, -1.0, 0.8)
         view_length = math.sqrt(sum(value ** 2 for value in view))
         view = tuple(value / view_length for value in view)
         horizontal_length = math.hypot(view[0], view[1])
