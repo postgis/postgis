@@ -406,12 +406,14 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 	  </refsection>
 
 	  <refsection>
-		<title>Standard Examples</title>
-	<programlisting>SELECT sometable.field1, sometable.field1,
-      (ST_Dump(sometable.geom)).geom AS geom
-FROM sometable;
+		<title>Examples</title>
+	<para>Dump the components of geometries stored in a table.</para>
+	<programlisting>SELECT sometable.field1,
+       (ST_Dump(sometable.geom)).geom AS geom
+FROM sometable;</programlisting>
 
--- Break a compound curve into its constituent linestrings and circularstrings
+	<para>Break a CompoundCurve into its constituent LineStrings and CircularStrings.</para>
+	<programlisting>
 SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
   FROM ( SELECT (ST_Dump(p_geom)).geom AS geom
          FROM (SELECT 'COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))'::geometry AS p_geom) AS b
@@ -421,8 +423,7 @@ SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
  CIRCULARSTRING(0 0,1 1,1 0) | t
  LINESTRING(1 0,0 1)         | f
 (2 rows)</screen>
-</refsection>
-<refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
+
 <para>This example breaks a PolyhedralSurface into its faces.</para>
 <programlisting>
 SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt
