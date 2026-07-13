@@ -918,8 +918,8 @@ SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0
 		  1.1. Curved geometries are converted to linear representations,
 		  <varname>TRIANGLE</varname> is converted to <varname>POLYGON</varname>,
 		  and <varname>TIN</varname> and <varname>POLYHEDRALSURFACE</varname> are
-		  converted to <varname>GEOMETRYCOLLECTION</varname>s of
-		  <varname>POLYGON</varname>s.
+		  converted to <varname>GEOMETRYCOLLECTION</varname> values containing
+		  <varname>POLYGON</varname> elements.
 		</para>
 		<para>
 		  If <parameter>version</parameter> begins with <literal>1.2</literal>,
