@@ -114,13 +114,22 @@ XSLTPROC_COMMONOPTS= \
 	--stringparam saxon.character.representation decimal \
 	$(XSLTPROCFLAGS)
 
+HTML_RUNTIME_ASSETS = \
+	$(abs_srcdir)/html/style.css \
+	$(abs_srcdir)/html/example-blocks.js
+
+# Keep generated HTML from being paired with stale cached CSS or JavaScript.
+# The checksum is deterministic and changes whenever the document or an asset
+# that participates in the rendered page changes.
+HTML_ASSET_VERSION = $(shell cat postgis-out.xml $(HTML_RUNTIME_ASSETS) $(HTML_REF_INDEX_JS) 2>/dev/null | cksum | cut -d ' ' -f 1)
+
 XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam chunker.output.encoding UTF-8 \
 	--stringparam chunker.output.indent yes \
 	--stringparam admon.graphics.path ../images/ \
 	--stringparam img.src.path ../ \
-	--stringparam html.stylesheet ../style.css \
-	--stringparam html.script "../postgis-ref-index.js ../example-blocks.js"
+	--stringparam html.stylesheet ../style.css?v=$(HTML_ASSET_VERSION) \
+	--stringparam html.script "../postgis-ref-index.js?v=$(HTML_ASSET_VERSION) ../example-blocks.js?v=$(HTML_ASSET_VERSION)"
 
 HTML_DOCBOOK_XSL=$(builddir)/postgis-html.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(builddir)/postgis-chunk-html.xsl
@@ -449,7 +458,7 @@ $(HTML_REF_INDEX_JS): $(HTML_REF_INDEX_JSON)
 		$(MAKE) $(HTML_REF_INDEX_JSON); \
 	fi
 
-$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) | visual-examples
+$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) $(HTML_RUNTIME_ASSETS) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
@@ -491,10 +500,10 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) | visual-examples
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) $(HTML_RUNTIME_ASSETS) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--stringparam html.stylesheet style.css \
-		--stringparam html.script "postgis-ref-index.js example-blocks.js" \
+		--stringparam html.stylesheet style.css?v=$(HTML_ASSET_VERSION) \
+		--stringparam html.script "postgis-ref-index.js?v=$(HTML_ASSET_VERSION) example-blocks.js?v=$(HTML_ASSET_VERSION)" \
 		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
