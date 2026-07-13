@@ -2188,14 +2188,15 @@ ST_NDims('POINTM(1 1 0.5)') As d2pointm;</programlisting>
 		<refsection>
 			<title>Examples</title>
 
+			<para>Count the points in a 2D LineString.</para>
 <programlisting>SELECT ST_NPoints('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)');</programlisting>
 <screen> st_npoints
 ------------
           4
 (1 row)</screen>
 
-<programlisting>--Polygon in 3D space
-SELECT ST_NPoints('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)')</programlisting>
+			<para>Count the points in a 3D LineString.</para>
+<programlisting>SELECT ST_NPoints('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)');</programlisting>
 <screen> st_npoints
 ------------
           4
