@@ -1772,14 +1772,8 @@ SELECT ST_IsClosed('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>
-						boolean
-						<function>ST_IsPolygonCCW</function>
-					</funcdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>geom</parameter>
-					</paramdef>
+					<funcdef>boolean <function>ST_IsPolygonCCW</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
@@ -1842,14 +1836,8 @@ SELECT ST_IsClosed('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>
-						boolean
-						<function>ST_IsPolygonCW</function>
-					</funcdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>geom</parameter>
-					</paramdef>
+					<funcdef>boolean <function>ST_IsPolygonCW</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
