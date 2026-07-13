@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-13 01:39+0000\n"
+"PO-Revision-Date: 2026-07-13 03:34+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -28546,11 +28546,13 @@ msgid ""
 "Output the create options XML column of JPEG as a table. These creator "
 "options can be used in the ST_AsGDALRaster options argument."
 msgstr ""
+"JPEGのカラムの生成オプションのXMLカラムをテーブルとして出力します。この生成"
+"オプションはST_AsGDALRasterのoptions引数で使用できます。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example returns raw XML output for GeoTIFF creator options."
-msgstr ""
+msgstr "この例ではGeoTIFFの生成オプションを生のXMLで返します。"
 
 #. Tag: para
 #, no-c-format
@@ -28741,7 +28743,7 @@ msgstr "例: 単一バンド"
 msgid ""
 "This example adds another 8-bit unsigned integer band with pixels "
 "initialized to 200."
-msgstr ""
+msgstr "この例では8ビット符号なし整数のバンドを初期値200で追加します。"
 
 #. Tag: para
 #, no-c-format
@@ -28750,11 +28752,14 @@ msgid ""
 "bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15) Uses "
 "addbandargs."
 msgstr ""
+"100x100単位で、左上の座標値を原点とした空のラスターを生成し、2バンド (1番"
+"バンドは 0/1の2値で、2番バンドは0-15の値が利用可能)を追加します。addbandargs"
+"を使っています。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example outputs metadata for the raster."
-msgstr ""
+msgstr "この例ではラスターのメタデータを出力しています。"
 
 #. Tag: title
 #, no-c-format
@@ -28771,6 +28776,10 @@ msgid ""
 "alphabetical by test_type. For mouse lovers: No mice were harmed in this "
 "exercise."
 msgstr ""
+"複数ラスターのようなテーブルの1番バンドを単一ラスターに集約します。test_types"
+"と同じ数のバンドがあり、ネズミと同じ数の行 (新ラスター)があります。ORDER BY "
+"test_type節は集約の ORDER BY対応に依っています。結果ラスターはtest_typeごとに"
+"バンドを持ちます。マウス好きの方へ: この例ではマウスは傷つきませんでした。"
 
 #. Tag: title
 #, no-c-format
@@ -28945,7 +28954,7 @@ msgstr "黒い円"
 #. Tag: para
 #, no-c-format
 msgid "This example outputs a black circle occupying 150 by 150 pixels."
-msgstr ""
+msgstr "この例では150x150の黒い円を出力します。"
 
 #. Tag: para
 #, no-c-format
@@ -28958,6 +28967,8 @@ msgid ""
 "This example maps bands to RGB channels, producing the teal value "
 "(118,154,118)."
 msgstr ""
+"この例ではバンドをRGBチャンネルに割り当ててティール色 (118,154,118)を生成しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
