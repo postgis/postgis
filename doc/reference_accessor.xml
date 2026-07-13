@@ -2297,8 +2297,8 @@ SELECT ST_NumGeometries('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29
                 1
 (1 row)</screen>
 
-<programlisting>--Geometry Collection Example - multis count as one geom in a collection
-SELECT ST_NumGeometries('GEOMETRYCOLLECTION(MULTIPOINT((-2 3),(-2 2)),
+			<para>A MultiPoint counts as one geometry within a GeometryCollection.</para>
+<programlisting>SELECT ST_NumGeometries('GEOMETRYCOLLECTION(MULTIPOINT((-2 3),(-2 2)),
 LINESTRING(5 5,10 10),
 POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))');</programlisting>
 <screen> st_numgeometries
