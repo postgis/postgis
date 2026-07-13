@@ -1466,11 +1466,13 @@ FROM data;</programlisting>
 
         <refsection>
             <title>Examples</title>
-            <programlisting>SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'HIPPED', 2.0, 30.0, 0));
--- POLYHEDRALSURFACE Z (((0 4 0,4 4 0,4 0 0,0 0 0,0 4 0)), ...)
-
+            <programlisting language="sql">SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'HIPPED', 2.0, 30.0, 0));
+            </programlisting>
+            <screen>POLYHEDRALSURFACE Z (((0 4 0,4 4 0,4 0 0,0 0 0,0 4 0)), ...)</screen>
+            <programlisting language="sql">
 SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'FLAT', 2.0));
--- POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 0 0,0 0 0)), ...)</programlisting>
+            </programlisting>
+            <screen>POLYHEDRALSURFACE Z (((0 0 0,0 4 0,4 4 0,4 0 0,0 0 0)), ...)</screen>
         </refsection>
 
         <refsection>
@@ -1528,13 +1530,15 @@ SELECT ST_AsText(CG_GenerateRoof('POLYGON((0 0,4 0,4 4,0 4,0 0))', 'FLAT', 2.0))
         <refsection>
             <title>Examples</title>
             <para>This example repairs a bowtie self-intersecting polygon.</para>
-            <programlisting>
+            <programlisting language="sql">
 SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))'));
--- MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))
-
--- Keep all winding area with UNION rule (requires CGAL 6.1 or later)
+            </programlisting>
+            <screen>MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))</screen>
+            <para>Keep all winding area with UNION rule (requires CGAL 6.1 or later).</para>
+            <programlisting language="sql">
 SELECT ST_AsText(CG_PolygonRepair('POLYGON((0 0,2 2,2 0,0 2,0 0))', 'UNION'));
--- MULTIPOLYGON(((0 0,1 1,0 2,0 0)))</programlisting>
+            </programlisting>
+            <screen>MULTIPOLYGON(((0 0,1 1,0 2,0 0)))</screen>
         </refsection>
 
         <refsection>
@@ -2926,13 +2930,14 @@ FROM data;</programlisting>
     <refsection>
         <title>Examples</title>
         <para>This example creates a smooth curve interpolating through five points.</para>
-        <programlisting>
+        <programlisting language="sql">
 SELECT CG_NurbsCurveInterpolate(
     'LINESTRING(0 0,1 2,3 3,5 1,6 0)'::geometry,
     3
 );
-
--- 3D interpolation
+</programlisting>
+        <para>3D interpolation.</para>
+        <programlisting language="sql">
 SELECT CG_NurbsCurveInterpolate(
     'LINESTRING Z(0 0 0,1 2 1,3 3 0,5 1 -1,6 0 0)'::geometry,
     2
@@ -2985,19 +2990,20 @@ SELECT CG_NurbsCurveInterpolate(
     <refsection>
         <title>Examples</title>
         <para>This example approximates noisy data using a tolerance.</para>
-        <programlisting>
+        <programlisting language="sql">
 SELECT CG_NurbsCurveApproximate(
     'LINESTRING(0 0,1 2.1,2 1.9,3 3.2,4 2.8,5 1)'::geometry,
     2,
     0.5
 );
-
--- Control maximum complexity
+</programlisting>
+        <para>Limit the curve to a maximum of 20 control points.</para>
+        <programlisting language="sql">
 SELECT CG_NurbsCurveApproximate(
     'LINESTRING(0 0,1 2,2 2,3 3,4 3,5 1,6 0,7 -1,8 0)'::geometry,
     3,
     0.2,
-    20  -- max 20 control points
+    20
 );
 </programlisting>
     </refsection>
@@ -3052,19 +3058,21 @@ SELECT CG_NurbsCurveApproximate(
     <refsection>
         <title>Examples</title>
         <para>This example returns the tangent vector at the curve midpoint.</para>
-        <programlisting>
+<programlisting language="sql">
 WITH nurbs AS (
     SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry) AS geom
 )
 SELECT CG_NurbsCurveDerivative(geom, 0.5, 1) FROM nurbs;
-
--- Get curvature at start of curve
+</programlisting>
+        <para>Get curvature at start of curve.</para>
+        <programlisting language="sql">
 WITH nurbs AS (
     SELECT ST_MakeNurbsCurve(3, 'LINESTRING(0 0,2 5,5 5,8 2,10 0)'::geometry) AS geom
 )
 SELECT CG_NurbsCurveDerivative(geom, 0.0, 2) FROM nurbs;
-
--- Analyze tangent at multiple points
+</programlisting>
+        <para>Analyze tangent at multiple points.</para>
+        <programlisting language="sql">
 WITH nurbs AS (
     SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry) AS geom
 )

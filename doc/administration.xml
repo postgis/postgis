@@ -158,13 +158,14 @@ psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
         <section xml:id="soft_upgrade_extensions"><title>Soft upgrade using extensions</title>
                 <para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions is fairly painless.</para>
         <para>Use the <xref linkend="PostGIS_Extensions_Upgrade"/> function to upgrade to the latest version you have installed.</para>
-        <programlisting>SELECT postgis_extensions_upgrade();</programlisting>
+        <programlisting language="sql">SELECT postgis_extensions_upgrade();</programlisting>
 
         <para>If you are upgrading a database that still runs PostGIS 2.5, issue an <command>ALTER EXTENSION</command> followed by <function>postgis_extensions_upgrade()</function> to make sure the legacy <varname>postgis_raster</varname> objects are folded back into the main extension.</para>
-        <programlisting>ALTER EXTENSION postgis UPDATE;
+        <programlisting language="sql">ALTER EXTENSION postgis UPDATE;
 SELECT postgis_extensions_upgrade();
--- This second call is needed to rebundle postgis_raster extension
-SELECT postgis_extensions_upgrade();
+</programlisting>
+        <para>This second call is needed to rebundle the <varname>postgis_raster</varname> extension.</para>
+        <programlisting language="sql">SELECT postgis_extensions_upgrade();
 </programlisting>
 
         <para>If you have multiple versions of PostGIS installed, and you don't want to upgrade to the latest, you can explicitly specify the version as follows:</para>

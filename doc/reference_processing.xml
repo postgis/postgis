@@ -265,9 +265,8 @@ ST_Transform(ST_SetSRID(ST_Point(-71.063526, 42.35785), 4269), 26986),
                 SRS, transform to a projected SRS suited to the operation first; for cartographic
                 visualization in Web Mercator, using that display SRS can be appropriate.</para>
 
-<programlisting>-- Smooth a coastline using a 1 km closing operation, then simplify the result.
--- The example uses Massachusetts State Plane meter units for the operation.
-WITH projected AS (
+<para>Smooth a coastline using a 1 km closing operation, then simplify the result. The example uses Massachusetts State Plane meter units for the operation.</para>
+<programlisting language="sql">WITH projected AS (
   SELECT id, ST_Transform(geom, 26986) AS geom
   FROM coast
 ),
@@ -325,8 +324,8 @@ ORDER BY id;</programlisting>
 	                the segment hulls. As with any geometry buffer, distances are in the units
 	                of the input SRS.</para>
 
-	<programlisting language="sql">-- Taper a line buffer from 5 to 25 units along the line.
-WITH line AS (
+		<para>Taper a line buffer from 5 to 25 units along the line.</para>
+		<programlisting language="sql">WITH line AS (
   SELECT 'LINESTRING(0 0, 100 0, 160 40)'::geometry AS geom
 ),
 vertices AS (
@@ -581,9 +580,8 @@ FROM  ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 2,-1 1,0 0),(0 0,0.5 0,1 0
  POINT(0.5 1)
 (1 row)</screen>
 
-      <para>Centroids of the parts of a MultiPolygon:</para>
-
-      <programlisting>SELECT ST_AsText(ST_Collect(ST_Centroid(geom) ORDER BY path))
+	<para>Centroids of the parts of a MultiPolygon.</para>
+<programlisting language="sql">SELECT ST_AsText(ST_Collect(ST_Centroid(geom) ORDER BY path))
 FROM ST_Dump('MULTIPOLYGON (
     ((0 0, 0 1, 1 1, 1 0, 0 0)),
     ((2 2, 2 3, 3 3, 3 2, 2 2))
@@ -2034,8 +2032,8 @@ FROM (SELECT geom_4269 FROM ma.suffolk_edges) As foo;</programlisting>
  -71.17112 42.354238,-71.17166 42.353675)))
 (1 row)</screen>
 
-<programlisting role="requires-external-state">
---Use ST_Dump to dump out the polygonize geoms into individual polygons
+<para>Use ST_Dump to dump out the polygonize geoms into individual polygons.</para>
+<programlisting role="requires-external-state" language="sql">
 SELECT ST_AsEWKT((ST_Dump(t.polycoll)).geom) AS geomtextrep
 FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
     FROM (SELECT geom_4269 FROM ma.suffolk_edges)

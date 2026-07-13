@@ -85,8 +85,8 @@ ST_IsValid('POLYGON((0 0,1 1,1 2,1 1,0 0))') As bad_poly;</programlisting>
 -----------+----------
  t         | f</screen>
 
-	<programlisting><![CDATA[
--- Find tables with invalid geometries in registered geometry columns
+		<para>Find tables with invalid geometries in registered geometry columns.</para>
+		<programlisting language="sql"><![CDATA[
 CREATE TEMP TABLE invalid_geometry_columns (
     table_name text,
     column_name text,
@@ -303,8 +303,8 @@ LIMIT 3;]]></programlisting>
  5340 | Self-intersection [42 5]
  5350 | Self-intersection [52 5]]]></screen>
 
-		<programlisting>--simple example
-SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)');</programlisting>
+		<para>Simple example.</para>
+		<programlisting language="sql">SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)');</programlisting>
 <screen><![CDATA[ st_isvalidreason
 ------------------
  Valid Geometry]]></screen>

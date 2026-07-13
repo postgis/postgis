@@ -58,12 +58,24 @@ class DocBookSourceLintTest(unittest.TestCase):
                     {"mixed-programlisting-output"},
                 )
         self.assertCategories(
-            '<refentry xml:id="f"><programlisting>-- first comment\nSELECT 1;\n-- second comment</programlisting></refentry>',
-            set(),
+            '<refentry xml:id="f"><programlisting>-- first comment\n-- second caption line\nSELECT 1;\n-- internal comment</programlisting></refentry>',
+            {"leading-sql-comment"},
         )
         self.assertCategories(
             '<refentry xml:id="f"><programlisting>---- decorative preface\nSELECT 1;</programlisting></refentry>',
             {"mixed-programlisting-output"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>SELECT 1;\n-- explain the next step\nSELECT 2;</programlisting></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>-- Manifest.txt --\nAssembly-Version: 1.0</programlisting></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>-- export this file\n\\lo_export 42 /tmp/result.png</programlisting></refentry>',
+            {"leading-sql-comment"},
         )
 
     def test_screen_contains_sql_violation_and_clean_case(self):
@@ -193,7 +205,7 @@ class DocBookSourceLintTest(unittest.TestCase):
     def test_example_missing_output_violation_and_clean_case(self):
         self.assertInfoCategory(
             '<refentry xml:id="f"><refsection><title>Standard Examples</title>'
-            '<programlisting>-- query\n SELECT 1;</programlisting><para>No output</para></refsection></refentry>',
+            '<programlisting>SELECT 1;</programlisting><para>No output</para></refsection></refentry>',
             "example-missing-output",
         )
         self.assertCategories(

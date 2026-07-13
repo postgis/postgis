@@ -289,8 +289,8 @@
       <refsection>
         <title>Examples</title>
         <note><para>Examples below use US National Atlas Equal Area (SRID=2163) which is a meter projection</para></note>
-        <programlisting>        <!-- TODO: fix results of documentation to reflect new behavior -->
---10 meter expanded box around bbox of a linestring
+        <para>10-meter expanded box around bbox of a linestring.</para>
+        <programlisting language="sql">        <!-- TODO: fix results of documentation to reflect new behavior -->
 SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,2312892 110714)', 2163), 10) As box2d);</programlisting>
 <screen>BOX(2312882 110666,2312990 110724)</screen>
 <para>This example expands a 3D box by 10 meters.</para>
@@ -355,8 +355,8 @@ SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,
         <note><para>Examples below use Massachusetts State Plane ft (SRID=2249)</para></note>
         <programlisting>SELECT ST_Extent(geom) AS bextent FROM sometable;</programlisting>
 <screen>BOX(739651.875 2908247.25,794875.8125 2970042.75)</screen>
-<programlisting>--Return extent of each category of geometries
-SELECT ST_Extent(geom) as bextent
+        <para>Return extent of each geometry category.</para>
+<programlisting language="sql">SELECT ST_Extent(geom) as bextent
 FROM sometable
 GROUP BY category ORDER BY category;</programlisting>
 <screen>                      bextent                       |         name
@@ -470,10 +470,8 @@ FROM (SELECT ST_Translate(ST_Force3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x, y), 1
       <refsection>
         <title>Examples</title>
 
-        <programlisting><![CDATA[
-
---Return all features that fall reside or partly reside in a US national atlas coordinate bounding box
---It is assumed here that the geometries are stored with SRID = 2163 (US National atlas equal area)
+        <para>Return all features that fall within or partly reside in a US National Atlas coordinate bounding box. It is assumed here that the geometries are stored with SRID=2163 (US National Atlas equal area).</para>
+        <programlisting language="sql"><![CDATA[
 SELECT feature_id, feature_name, geom
 FROM features
 WHERE geom && ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),

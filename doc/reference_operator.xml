@@ -1049,8 +1049,8 @@ FROM ( VALUES
  LINESTRING(1 1,0 0)
 (2 rows)]]></screen>
 
-			<programlisting><![CDATA[-- Note: the GROUP BY uses the "=" to compare for geometry equivalency.
-SELECT ST_AsText(column1)
+				<para>Note: the GROUP BY uses the "=" to compare for geometry equivalency.</para>
+				<programlisting language="sql"><![CDATA[SELECT ST_AsText(column1)
 FROM ( VALUES
     ('LINESTRING(0 0, 1 1)'::geometry),
     ('LINESTRING(1 1, 0 0)'::geometry)) AS foo
@@ -1061,8 +1061,8 @@ GROUP BY column1;]]></programlisting>
  LINESTRING(1 1,0 0)
 (2 rows)]]></screen>
 
-			<programlisting><![CDATA[-- In versions prior to 2.0, this used to return true --
-SELECT 'POINT(1707296.37 4820536.77)'::geometry =
+				<para>In versions prior to 2.0, this used to return true.</para>
+				<programlisting language="sql"><![CDATA[SELECT 'POINT(1707296.37 4820536.77)'::geometry =
    'POINT(1707296.27 4820536.87)'::geometry As pt_intersect;]]></programlisting>
 <screen><![CDATA[ pt_intersect
 --------------

@@ -610,18 +610,16 @@ VALUES (1,
         <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
       </refsection>
 
-      <refsection>
+        <refsection>
         <title>Examples</title>
         <para>Apply all possible constraints on column based on data.</para>
+        <para>Verify the raster table is registered correctly in the raster_columns view.</para>
 
-        <programlisting>CREATE TABLE myrasters(rid SERIAL primary key, rast raster);
+        <programlisting language="sql">CREATE TABLE myrasters(rid SERIAL primary key, rast raster);
 INSERT INTO myrasters(rast)
 SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0, 4326), 1, '8BSI'::text, -129, NULL);
 
 SELECT AddRasterConstraints('myrasters'::name, 'rast'::name);
-
-
--- verify if registered correctly in the raster_columns view --
 SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
     FROM raster_columns
     WHERE r_table_name = 'myrasters';</programlisting>
@@ -787,7 +785,8 @@ SELECT DropRasterConstraints ('myrasters', 'rast');</programlisting>
  t
 (1 row)</screen>
 
-<programlisting>-- verify change in raster_columns --
+                <para>Verify change in raster_columns.</para>
+                <programlisting language="sql">
 SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
     FROM raster_columns
     WHERE r_table_name = 'myrasters';</programlisting>
@@ -870,7 +869,8 @@ parameters are omitted, the first table found scanning the
       <refsection>
         <title>Examples</title>
 
-        <programlisting>
+        <para>Verify the raster table is registered correctly in the raster_overviews view.</para>
+        <programlisting language="sql">
 CREATE TABLE res1 AS SELECT
 ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0, 0, 2),
   1, '8BSI'::text, -129, NULL
@@ -882,8 +882,6 @@ ST_AddBand(ST_MakeEmptyRaster(500, 500, 0, 0, 4),
 ) r2;
 
 SELECT AddOverviewConstraints('res2', 'r2', 'res1', 'r1', 2);
-
--- verify if registered correctly in the raster_overviews view --
 SELECT o_table_name ot, o_raster_column oc,
        r_table_name rt, r_raster_column rc,
        overview_factor f
@@ -1263,7 +1261,8 @@ WHERE short_name = 'GTiff';</programlisting>
     <Option name="COPY_SRC_OVERVIEWS" type="boolean" default="NO" description="Force copy of overviews of source dataset (CreateCopy())"/>
 </CreationOptionList>]]></screen>
 
-<programlisting><![CDATA[-- Output the create options XML column for GTiff as a table  --
+<para>Output the create options XML column for GTiff as a table.</para>
+<programlisting language="sql"><![CDATA[
 SELECT (xpath('@name', g.opt))[1]::text As oname,
        (xpath('@type', g.opt))[1]::text As otype,
        (xpath('@description', g.opt))[1]::text As descrip,
@@ -1526,7 +1525,8 @@ WHERE rid = 1;
                 </programlisting>
 
                 <para>Create an empty raster 100x100 units, with upper left right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15) Uses addbandargs.</para>
-                <programlisting>
+                <para>Output metadata for the raster bands to verify they are correct.</para>
+                <programlisting language="sql">
 INSERT INTO dummy_rast(rid, rast)
     VALUES(10, ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, 0),
     ARRAY[
@@ -1536,7 +1536,6 @@ INSERT INTO dummy_rast(rid, rast)
      )
     );
 
--- output meta data of raster bands to verify all is right --
 SELECT  (bmd).*
 FROM (SELECT ST_BandMetaData(rast, generate_series(1, 2)) As bmd
     FROM dummy_rast WHERE rid = 10) AS foo;</programlisting>
@@ -2137,17 +2136,14 @@ FROM bands;
 
                 <refsection>
                     <title>Examples</title>
+                    <para>Use an existing raster as a template and output metadata of the rasters we added.</para>
 
-                    <programlisting>
+                    <programlisting language="sql">
 INSERT INTO dummy_rast(rid, rast)
 VALUES(3, ST_MakeEmptyRaster(100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
-
---use an existing raster as template for new raster
 INSERT INTO dummy_rast(rid, rast)
 SELECT 4, ST_MakeEmptyRaster(rast)
 FROM dummy_rast WHERE rid = 3;
-
--- output meta data of rasters we just added
 SELECT rid, (md).*
 FROM (SELECT rid, ST_MetaData(rast) As md
     FROM dummy_rast
@@ -4645,7 +4641,8 @@ WHERE rid=2;</programlisting>
 -----+--------+--------
    2 |    252 |     79</screen>
 
-                    <programlisting>-- general fictitious example using a real table
+                    <para>General fictitious example using a real table.</para>
+                    <programlisting language="sql">
 SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval
 FROM sometable
 WHERE ST_Intersects(rast, sometable.geom);</programlisting>
@@ -4697,10 +4694,9 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);]]></programlist
  POINT(3427929.25 5793247)   |   253 |    96 |    80
  POINT(3427929.25 5793248.5) |   250 |    99 |    90
 :]]></screen>
-                <programlisting><![CDATA[
+<para>Get a polygon formed by union of all pixels that fall in a particular value range and intersect a particular polygon.</para>
+<programlisting language="sql"><![CDATA[
 
--- Get a polygon formed by union of all pixels
--- that fall in a particular value range and intersect particular polygon
 SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
 FROM (SELECT ST_Translate(ST_MakeEnvelope(ST_UpperLeftX(rast), ST_UpperLeftY(rast),
             ST_UpperLeftX(rast) + ST_ScaleX(rast),
@@ -6657,8 +6653,8 @@ SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 
            0
 (1 row)</screen>
 
-<programlisting>-- the reskewed raster raster rotation
-SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));</programlisting>
+<para>The reskewed raster rotation.</para>
+<programlisting language="sql">SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));</programlisting>
 <screen>    st_rotation
 ------------------
  -0.982793723247329
@@ -6748,8 +6744,8 @@ SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 
              0
 (1 row)</screen>
 
-<programlisting>-- the upper left of raster after snapping
-SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));</programlisting>
+                    <para>The upper left of raster after snapping.</para>
+                    <programlisting language="sql">SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));</programlisting>
 <screen> st_upperleftx
 ---------------
        -0.0008
@@ -7697,8 +7693,8 @@ FROM (SELECT rid, ST_Histogram(rast, 2, 6, ARRAY[0.5, 1, 4, 100, 5]) As stats
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast, 249) WHERE rid=2;
---Example will consider only pixels of band 1 that are not 249 and in named quantiles --
+                <para>Example will consider only pixels of band 1 that are not 249 and in named quantiles.</para>
+                <programlisting language="sql">UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast, 249) WHERE rid=2;
 
 SELECT (pvq).*
 FROM (SELECT ST_Quantile(rast, ARRAY[0.25, 0.75]) As pvq
@@ -8103,8 +8099,8 @@ FROM (
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast, 249) WHERE rid=2;
---Example will count only pixels of band 1 that are not 249. --
+                <para>Example will count only pixels of band 1 that are not 249.</para>
+                <programlisting language="sql">UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast, 249) WHERE rid=2;
 
 SELECT (pvc).*
 FROM (SELECT ST_ValueCount(rast) As pvc
@@ -8683,10 +8679,9 @@ FROM dummy_rast WHERE rid=2;</programlisting>
                 <refsection>
                     <title>Examples</title>
 
-                    <programlisting>SELECT ST_AsPNG(rast) As rastpng
+                    <para>Export the first 3 bands and map band 3 to red, band 1 to green, and band 2 to blue.</para>
+                    <programlisting language="sql">SELECT ST_AsPNG(rast) As rastpng
 FROM dummy_rast WHERE rid=2;
-
--- export the first 3 bands and map band 3 to Red, band 1 to Green, band 2 to blue
 SELECT ST_AsPNG(rast, ARRAY[3, 1, 2]) As rastpng
 FROM dummy_rast WHERE rid=2;
                 </programlisting>
@@ -10404,11 +10399,11 @@ WHERE rid=167;
 
                     <para>Create a new 1 band raster from our original that is  a function of modulo 2 of the original raster band.</para>
                     <para>Create a cool set of rasters.</para>
-                    <programlisting>
+                    <para>Insert some cool shapes around Boston in Massachusetts state plane meters.</para>
+                    <programlisting language="sql">
 DROP TABLE IF EXISTS fun_shapes;
 CREATE TABLE fun_shapes(rid serial PRIMARY KEY, fun_name text, rast raster);
 
--- Insert some cool shapes around Boston in Massachusetts state plane meters --
 INSERT INTO fun_shapes(fun_name, rast)
 VALUES ('ref', ST_AsRaster(ST_MakeEnvelope(235229, 899970, 237229, 901930, 26986), 200, 200, '8BUI', 0, 0));
 
@@ -11339,17 +11334,12 @@ UPDATE wind
                 <refsection>
                     <title>Example: Basic</title>
                     <para>Create a small raster and map its pixels to new values.</para>
-                    <programlisting>
+                    <para>Create a raster with four pixels: first row 1 2, second row 3 4.</para>
+                    <programlisting language="sql">
 CREATE TABLE reclassexact (
     id integer,
     rast raster
 );
-
---
--- Create a raster with just four pixels
--- [1  2]
--- [3  4]
---
 INSERT INTO reclassexact (id, rast)
 SELECT 1, ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(2, -- width in pixels
         2, -- height in pixels
@@ -13388,7 +13378,7 @@ FROM foo</programlisting>
                     <para role="changed" conformance="2.1.0">Changed: 2.1.0 In prior versions would sometimes return a polygon, changed to always return multipolygon.</para>
                 </refsection>
 
-            <refsection>
+                <refsection>
                     <title>Examples</title>
                     <para>By default no data band value is 0 or not set, so polygon will return a square polygon.</para>
                     <programlisting>
@@ -13397,13 +13387,12 @@ FROM dummy_rast
 WHERE rid = 2;</programlisting>
 <screen>MULTIPOLYGON(((3427927.75 5793244,3427928 5793244,3427928 5793243.75,3427927.75 5793243.75,3427927.75 5793244)))</screen>
 <para>Now we change the no data value of first band.</para>
-<programlisting>
+                    <para>ST_Polygon excludes the pixel value 254 and returns a multipolygon.</para>
+                    <programlisting language="sql">
 UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast, 1, 254)
 WHERE rid = 2;
 SELECt rid, ST_BandNoDataValue(rast)
 from dummy_rast where rid = 2;
-
--- ST_Polygon excludes the pixel value 254 and returns a multipolygon
 SELECT ST_AsText(ST_Polygon(rast)) As geomwkt
 FROM dummy_rast
 WHERE rid = 2;</programlisting>
@@ -13452,7 +13441,8 @@ WHERE rid =2;</programlisting>
 
             <refsection>
                     <title>Examples</title>
-                    <programlisting>
+                    <para>This rotated square polygon covers half of each cell in the raster.</para>
+                    <programlisting language="sql">
 CREATE TABLE raster_proportions_rast (
     name text,
     rast raster
@@ -13467,10 +13457,6 @@ INSERT INTO raster_proportions_rast (name, rast) VALUES (
     0        -- SRID
   ));
 
---
--- This rotated square polygon covers half of each cell in the
--- raster.
---
 SELECT name, ST_DumpValues(
     ST_IntersectionFractions(
         rast,

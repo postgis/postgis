@@ -100,7 +100,13 @@ SQL_START_RE = re.compile(rf"(?im)^\s*(?:--\s*)?(?:{keyword_pattern(SQL_STATEMEN
 SQL_STATEMENT_RE = re.compile(
     rf"(?ims)^\s*(?:--[^\n]*\n\s*)*(?:{keyword_pattern(SQL_STATEMENT_START_KEYWORDS)})\b.*;"
 )
-PSQL_META_COMMAND_RE = re.compile(r"(?m)^[ \t]*\\(?:[A-Za-z][A-Za-z_+.-]*|[?!])(?:[ \t]|$)")
+PSQL_META_COMMAND_PATTERN = r"\\(?:[A-Za-z][A-Za-z_+.-]*|[?!])"
+LEADING_SQL_COMMENT_RE = re.compile(
+    rf"(?is)^\s*(?:--(?!-)[^\n]*(?:\n|$)\s*)+"
+    rf"(?=(?:(?:{keyword_pattern(SQL_STATEMENT_START_KEYWORDS)})\b|"
+    rf"{PSQL_META_COMMAND_PATTERN}(?:[ \t]|$)))"
+)
+PSQL_META_COMMAND_RE = re.compile(rf"(?m)^[ \t]*{PSQL_META_COMMAND_PATTERN}(?:[ \t]|$)")
 PSQL_ROW_COUNT_RE = re.compile(r"(?m)^\s*\(\d+\s+rows?\)\s*$")
 PSQL_TABLE_SEPARATOR_RE = re.compile(r"(?m)^\s*[-+]{3,}(?:\s*\+\s*[-+]{2,})+\s*$")
 OUTPUT_DASH_RUN_RE = re.compile(r"(?m)^\s*-{3,}")
@@ -449,6 +455,12 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
 
     for node in named_descendants(root, "programlisting"):
         text = block_text(node)
+        if LEADING_SQL_COMMENT_RE.match(text):
+            findings.append(Finding(
+                "warning", "leading-sql-comment", source_location(path, node),
+                "programlisting begins with comments before its first SQL or psql command; "
+                "move the example description into a preceding <para>",
+            ))
         if not SQL_STATEMENT_RE.search(text):
             continue
         markers = []

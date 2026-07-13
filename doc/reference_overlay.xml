@@ -679,11 +679,10 @@ SELECT ST_AsText(ST_SymDifference('LINESTRING(50 100,50 200)',
 );</programlisting>
 <screen>MULTILINESTRING((50 150,50 200),(50 50,50 100))</screen>
 
-<programlisting>
-
---When used in 3d doesn't quite do the right thing
+<para>In 3D, this example does not produce the expected result.</para>
+<programlisting language="sql">
 SELECT ST_AsEWKT(ST_SymDifference('LINESTRING(1 2 1,1 4 2)',
-    'LINESTRING(1 1 3,1 3 4)'))</programlisting>
+    'LINESTRING(1 1 3,1 3 4)'));</programlisting>
 <screen>MULTILINESTRING((1 3 4,1 4 2),(1 1 3,1 2 1))</screen>
       </refsection>
 

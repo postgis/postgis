@@ -667,8 +667,8 @@ echo pg_unescape_bytea($row[0]);
 				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG"/>.</para>
 				<para>This is same example as <xref linkend="RT_PHP_Output"/> except implemented in C#.</para>
 				<para>You would call the below using <programlisting>http://mywebserver/TestRaster.ashx?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
-				<programlisting><![CDATA[
- -- web.config connection string section --
+				<para>web.config connection string section:</para>
+				<programlisting language="xml"><![CDATA[
 <connectionStrings>
     <add name="DSN"
         connectionString="server=localhost;database=mydb;Port=5432;User Id=myuser;password=mypwd"/>
@@ -755,8 +755,8 @@ javac SaveQueryImage.java
 jar cfm SaveQueryImage.jar Manifest.txt *.class</screen>
 	<para>And call it from the command-line with something like</para>
 	<screen>java -jar SaveQueryImage.jar "SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, '8BUI',100));" "test.png"</screen>
-<programlisting> -- Manifest.txt --
-Class-Path: postgresql-9.0-801.jdbc4.jar
+	<para>Manifest.txt</para>
+	<programlisting>Class-Path: postgresql-9.0-801.jdbc4.jar
 Main-Class: SaveQueryImage</programlisting>
 			<programlisting>// Code for SaveQueryImage.java
 import java.sql.Connection;
@@ -828,9 +828,8 @@ f = open(param_filepath, 'wb+')
 f.write(param_bytes)
 return param_filepath
 $$ LANGUAGE plpythonu;</programlisting>
-<programlisting>--write out 5 images to the PostgreSQL server in varying sizes
--- note the postgresql daemon account needs to have write access to folder
--- this echos back the file names created;
+<para>Write out 5 images to the PostgreSQL server in varying sizes. The PostgreSQL daemon account needs write access to the folder; this echoes back the file names created.</para>
+<programlisting language="sql">
  SELECT write_file(
     ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1, 5), j*5, 'quad_segs=2'), 150*j, 150*j, '8BUI', 100)),
      'C:/temp/slices'|| j || '.png')
@@ -859,12 +858,11 @@ FROM
 ---------+-----------
  2630819 |     74860</screen>
 
-			<programlisting>-- next note the oid and do this replacing the c:/test.png to file path location
--- on your local computer
- \lo_export 2630819 'C:/temp/aerial_samp.png'</programlisting>
+			<para>Note the large object OID and export it to a file on your local computer, replacing the example path with the desired file path.</para>
+			<programlisting>\lo_export 2630819 'C:/temp/aerial_samp.png'</programlisting>
 
-			<programlisting>-- this deletes the file from large object storage on db
-SELECT lo_unlink(2630819);</programlisting>
+			<para>This deletes the file from large object storage in the database.</para>
+			<programlisting language="sql">SELECT lo_unlink(2630819);</programlisting>
 		</section>
    </section>
 </chapter>

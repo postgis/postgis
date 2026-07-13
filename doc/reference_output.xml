@@ -848,12 +848,12 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
     <para>Flip coordinates and output extended EPSG (16 | 1)</para>
     <programlisting>SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)', 4326), 5, 17);</programlisting>
     <screen><![CDATA[<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">6.34535 5.23423</gml:pos></gml:Point>]]></screen>
-    <programlisting><![CDATA[-- Output the envelope (32) --
-SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);]]></programlisting>
+    <para>Output the envelope (32).</para>
+    <programlisting language="sql"><![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);]]></programlisting>
     <screen><![CDATA[<gml:Envelope srsName="EPSG:4326" srsDimension="2"><gml:lowerCorner>1 2</gml:lowerCorner><gml:upperCorner>10 20</gml:upperCorner></gml:Envelope>]]></screen>
 
-    <programlisting><![CDATA[-- Output the envelope (32), reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --
-SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);]]></programlisting>
+    <para>Output the envelope (32), reverse (lat lon instead of lon lat) (16), long srs (1) = 32 | 16 | 1 = 49.</para>
+    <programlisting language="sql"><![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);]]></programlisting>
     <screen><![CDATA[<gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326" srsDimension="2"><gml:lowerCorner>2 1</gml:lowerCorner><gml:upperCorner>20 10</gml:upperCorner></gml:Envelope>]]></screen>
 
     <para>This example uses a PolyhedralSurface.</para>

@@ -1977,22 +1977,21 @@ FROM (VALUES
     <refsection>
     <title>Examples</title>
       <para>Find the nearest hospital to each school. That is within 3000 units of the school. We do an ST_DWithin search to utilize indexes to limit our search list. That the non-indexable ST_Distance needs to process. If the units of the spatial reference is meters then units would be meters.</para>
-      <programlisting>
+      <programlisting language="sql">
 SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.geom, h.hospital_name
   FROM schools s
     LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
   ORDER BY s.gid, ST_Distance(s.geom, h.geom);
-
--- The schools with no close hospitals
--- Find all schools with no hospital within 3000 units
--- away from the school.  Units is in units of spatial ref (e.g. meters, feet, degrees)
+</programlisting>
+      <para>The schools with no close hospitals. Find all schools with no hospital within 3000 units away from the school. Units are in units of spatial reference (for example meters, feet, or degrees).</para>
+      <programlisting language="sql">
 SELECT s.gid, s.school_name
   FROM schools s
     LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
   WHERE h.gid IS NULL;
-
--- Find locations more than 3000 units away from their nearest hospital.
--- Use NOT EXISTS so that a location is returned only when no nearby hospital exists.
+</programlisting>
+      <para>Find locations more than 3000 units away from their nearest hospital. Use <literal>NOT EXISTS</literal> so that a location is returned only when no nearby hospital exists.</para>
+      <programlisting language="sql">
 SELECT l.location_name
   FROM locations l
   WHERE NOT EXISTS (
@@ -2000,18 +1999,14 @@ SELECT l.location_name
     FROM hospitals h
     WHERE ST_DWithin(l.geom, h.geom, 3000)
   );
-
--- Find broadcasting towers that a receiver with limited range can receive.
--- Data is geometry in Spherical Mercator (SRID=3857), ranges are approximate.
-
--- Create geometry index that will check proximity limit of user to tower
-CREATE INDEX ON broadcasting_towers using gist (geom);
-
--- Create geometry index that will check proximity limit of tower to user
-CREATE INDEX ON broadcasting_towers using gist (ST_Expand(geom, sending_range));
-
--- Query towers that 4-kilometer receiver in Minsk Hackerspace can get
--- Note: two conditions, because shorter LEAST(b.sending_range, 4000) will not use index.
+</programlisting>
+      <para>Find broadcasting towers that a receiver with limited range can receive. Data is geometry in Spherical Mercator (SRID=3857), ranges are approximate.</para>
+      <programlisting language="sql">
+CREATE INDEX ON broadcasting_towers USING gist (geom);
+CREATE INDEX ON broadcasting_towers USING gist (ST_Expand(geom, sending_range));
+</programlisting>
+      <para>Query towers that a 4-kilometer receiver in Minsk Hackerspace can get. Note: two conditions are required because the shorter <literal>LEAST(b.sending_range, 4000)</literal> will not use an index.</para>
+      <programlisting language="sql">
 SELECT b.tower_id, b.geom
   FROM broadcasting_towers b
   WHERE ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', 4000)
