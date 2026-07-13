@@ -1326,16 +1326,16 @@ SELECT ST_AsEWKT(ST_GeometryN(geom, 2)) as wkt
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_GeometryType('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)');</programlisting>
+			<programlisting language="sql">SELECT ST_GeometryType('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'::geometry);</programlisting>
 <screen>ST_LineString</screen>
 
-			<programlisting>SELECT ST_GeometryType('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+			<programlisting language="sql">SELECT ST_GeometryType('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
 ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
-((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )');</programlisting>
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )'::geometry);</programlisting>
 <screen>ST_PolyhedralSurface</screen>
 
-		<programlisting>SELECT ST_GeometryType(geom) AS result
+		<programlisting language="sql">SELECT ST_GeometryType(geom) AS result
 FROM
   (SELECT
      'TIN (((
