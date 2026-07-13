@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-13 08:39+0000\n"
+"PO-Revision-Date: 2026-07-13 11:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -32096,7 +32096,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Example will count all pixels not 249 and one will count all pixels."
-msgstr ""
+msgstr "249でない全てのピクセル数を数えたものと全てのピクセル数を数えたもの。"
 
 #. Tag: para
 #, no-c-format
