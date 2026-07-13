@@ -297,7 +297,7 @@ SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,
 <programlisting>SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' AS box3d), 10)</programlisting>
 <screen>BOX3D(778773 2951731 -9,794885 2970052.61545891 20)</screen>
 <para>This example renders the text representation of a 10-meter expanded box around a point geometry.</para>
-<programlisting>SELECT ST_AsEWKT(ST_Expand('SRID=2163;POINT(2312980 110676)'::geometry, 10));</programlisting>
+<programlisting>SELECT ST_Expand('SRID=2163;POINT(2312980 110676)'::geometry, 10);</programlisting>
 <screen>SRID=2163;POLYGON((2312970 110666,2312970 110686,2312990 110686,2312990 110666,2312970 110666))</screen>
       </refsection>
 

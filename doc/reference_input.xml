@@ -139,7 +139,7 @@
 			<programlisting language="sql" role="requires-external-state">UPDATE sometable
 SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');</programlisting>
 			<para>Specify a geography point using EPSG:4267, NAD27.</para>
-			<programlisting language="sql">SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));</programlisting>
+			<programlisting language="sql">SELECT ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)');</programlisting>
 			<screen>SRID=4267;POINT(-77.0092 38.889588)</screen>
 		 </refsection>
 		  <refsection>
