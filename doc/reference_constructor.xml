@@ -885,8 +885,12 @@ is projected to WGS84 (SRID 4326).</para>
 
         <refsection>
         <title>Example: Building a tile envelope</title>
-         <programlisting>SELECT ST_AsText(ST_TileEnvelope(2, 1, 1));</programlisting>
-<screen>POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))</screen>
+<para>Show tile (2, 1, 1) within the root tile (0, 0, 0).</para>
+<programlisting>SELECT ST_AsText(ST_TileEnvelope(0, 0, 0)) AS input_z0_x0_y0,
+       ST_AsText(ST_TileEnvelope(2, 1, 1)) AS z2_x1_y1;</programlisting>
+<screen role="visual-overlay">input_z0_x0_y0 | z2_x1_y1
+----------------+-----------
+POLYGON((-20037508.342789244 -20037508.342789244,-20037508.342789244 20037508.342789244,20037508.342789244 20037508.342789244,20037508.342789244 -20037508.342789244,-20037508.342789244 -20037508.342789244)) | POLYGON((-10018754.171394622 0,-10018754.171394622 10018754.171394622,0 10018754.171394622,0 0,-10018754.171394622 0))</screen>
 <programlisting>SELECT ST_AsText(ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326)));</programlisting>
 <screen role="visual-overlay">POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))</screen>
         </refsection>
