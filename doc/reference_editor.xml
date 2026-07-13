@@ -1815,11 +1815,16 @@ SELECT ST_AsText(ST_RemoveSmallParts('LINESTRING(10 10,20 20)',
 	  <refsection>
 		<title>Examples</title>
 		<programlisting language="sql">
-SELECT ST_AsText(geom) as line, ST_AsText(ST_Reverse(geom)) As reverseline
-FROM ST_MakeLine(ST_Point(1, 2), ST_Point(1, 10)) As geom;</programlisting>
-<screen>        line         |     reverseline
----------------------+----------------------
-LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)</screen>
+WITH data(geom) AS (VALUES (
+  ST_MakeLine(ST_Point(1, 2), ST_Point(1, 10))
+))
+SELECT ST_AsText(geom) AS input_line,
+       ST_AsText(ST_Reverse(geom)) AS reversed_line
+FROM data;</programlisting>
+<screen>      input_line      |    reversed_line
+----------------------+----------------------
+ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
+(1 row)</screen>
 	  </refsection>
 	</refentry>
 
