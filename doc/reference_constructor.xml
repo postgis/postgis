@@ -1038,14 +1038,8 @@ WHERE
 
         <refsection>
         <title>Example: Creating a hexagon at the origin</title>
-         <programlisting>SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));
-
-POLYGON((-1 0, -0.5
-         -0.866025403784439, 0.5
-         -0.866025403784439, 1
-         0, 0.5
-         0.866025403784439, -0.5
-         0.866025403784439, -1 0)) </programlisting>
+<programlisting>SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));</programlisting>
+<screen>POLYGON((-1 0,-0.5 -0.866025403784439,0.5 -0.866025403784439,1 0,0.5 0.866025403784439,-0.5 0.866025403784439,-1 0))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
