@@ -820,11 +820,11 @@ is projected to WGS84 (SRID 4326).</para>
         <title>Examples</title>
 
 <para>Create a 2D polygon.</para>
-<programlisting>SELECT ST_AsText(ST_Polygon('LINESTRING(75 29,77 29,77 29,75 29)'::geometry, 4326));</programlisting>
-<screen>POLYGON((75 29,77 29,77 29,75 29))</screen>
+<programlisting>SELECT ST_AsText(ST_Polygon('LINESTRING(75 29,77 29,77 31,75 31,75 29)'::geometry, 4326));</programlisting>
+<screen>POLYGON((75 29,77 29,77 31,75 31,75 29))</screen>
 <para>Create a 3D polygon.</para>
-<programlisting>SELECT ST_AsEWKT(ST_Polygon('LINESTRING(75 29 1,77 29 2,77 29 3,75 29 1)'::geometry, 4326));</programlisting>
-<screen>SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))</screen>
+<programlisting>SELECT ST_AsEWKT(ST_Polygon('LINESTRING(75 29 1,77 29 2,77 31 2,75 31 1,75 29 1)'::geometry, 4326));</programlisting>
+<screen>SRID=4326;POLYGON((75 29 1,77 29 2,77 31 2,75 31 1,75 29 1))</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
