@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-13 03:34+0000\n"
+"PO-Revision-Date: 2026-07-13 06:37+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -25013,9 +25013,11 @@ msgid "The symmetric difference of the two linestrings"
 msgstr "二つのラインストリングの対称差"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "This example shows a 2D-safe symmetric difference of two LineStrings."
 msgstr ""
+"この例では二つのラインストリングの違いを2次元では正しく動作するのを示していま"
+"す。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25511,6 +25513,9 @@ msgid ""
 "approximation of (see diagram) 2 points per quarter circle is poly with 8 "
 "sides (see diagram)"
 msgstr ""
+"バッファーを施したポイントは近似円になります。ポイントに四分円ごとに二つの"
+"ポイント (図を参照)の近似を行うようバッファーを施した場合には8辺のポリゴンに"
+"なります (図を参照)。"
 
 #. Tag: para
 #, no-c-format
@@ -27259,6 +27264,8 @@ msgid ""
 "A circle simplified with a medium tolerance becomes an octagon, and with a "
 "large tolerance disappears."
 msgstr ""
+"中ぐらいの許容値で円を単純化すると八角形になり、許容値を大きくすると消えます"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -29051,16 +29058,18 @@ msgid ""
 "This example creates two rasters: one containing band 1 of dummy_rast, and "
 "one containing band 2 reclassified as 2BUI."
 msgstr ""
+"この例では二つのラスターを生成します: 一つはdummy_rastとうバンドを一つもつも"
+"ので、もう一つは二つの2BUIで再分類したバンドを持つものです。"
 
 #. Tag: para
 #, no-c-format
 msgid "Return bands 2 and 3 using array cast syntax."
-msgstr ""
+msgstr "配列へのキャストの書き方を使って2番バンドと3番バンドを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Return bands 2 and 3 using array syntax."
-msgstr ""
+msgstr "配列を使って2番バンドと3番バンドを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -29597,12 +29606,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example uses a non-skewed raster."
-msgstr ""
+msgstr "この例ではスキューなしのラスターを使っています。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example uses a skewed raster."
-msgstr ""
+msgstr "この例ではスキューのかかったラスターを使っています。"
 
 #. Tag: para
 #, no-c-format
@@ -29660,11 +29669,13 @@ msgid ""
 "This example shows that providing a column is sufficient for a non-skewed "
 "raster."
 msgstr ""
+"この例ではカラムの提供がスキューなしラスターにとっては十分であることを示して"
+"います。"
 
 #. Tag: para
 #, no-c-format
 msgid "For fun let's skew it."
-msgstr ""
+msgstr "試しにスキューをかけてみましょう。"
 
 #. Tag: para
 #, no-c-format
@@ -29719,7 +29730,7 @@ msgstr "Changed: 2.1.0 以前の版ではST_Raster2WorldCoordYと呼ばれてい
 #. Tag: para
 #, no-c-format
 msgid "Non-skewed raster providing row is sufficient."
-msgstr ""
+msgstr "行を提供するスキューなしラスターは十分です。"
 
 #. Tag: para
 #, no-c-format
@@ -30098,11 +30109,15 @@ msgid ""
 "true, by using ST_SetBandIsNoData(), or ST_SetBandNoDataValue() with TRUE as "
 "last argument. See <xref linkend=\"RT_ST_SetBandIsNoData\"/>."
 msgstr ""
+"フラグが汚れている (最後の引数をTRUEにした場合としない場合とで結果が違う)場合"
+"には、ST_SetBandIsNoData()または、最後の引数をTRUEにしたST_SetBandNoDataValue"
+"()を使って、このフラグにTRUEを設定するためにラスタを更新するべきです。<xref "
+"linkend=\"RT_ST_SetBandIsNoData\"/>を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example creates a dummy table with one raster column."
-msgstr ""
+msgstr "この例ではラスターカラムを一つ持つダミーテーブルを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -30327,7 +30342,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example returns a raster pixel polygon."
-msgstr ""
+msgstr "この例ではラスターピクセルのポリゴンを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -30541,7 +30556,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example uses LATERAL syntax."
-msgstr ""
+msgstr "この例ではLATERAL書式を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -30608,6 +30623,14 @@ msgid ""
 "options choose which pixel is returned when the point lies on a horizontal "
 "or vertical pixel boundary, including corner intersections."
 msgstr ""
+"<varname>resample</varname>パラメーターに指定できる値はデフォルトの最近傍補間"
+"を行う\"nearest\"、<link xlink:href=\"https://ja.wikipedia.org/wiki/"
+"%E3%83%90%E3%82%A4%E3%83%AA%E3%83%8B%E3%82%A2%E8%A3%9C%E9%96%93\">バイリニア"
+"補間</link>を行う\"bilinear\"です。これらはピクセル中心間の値の見積もりに使い"
+"ます。また、最近傍補間の境界オプション\"nearest-UL\"、\"nearest-"
+"UR\"、\"nearest-LL\"、\"nearest-LR\"を指定します。境界オプションは、ポイント"
+"と角を含む水平または垂直の境界線上のポイントとがインターセクトする時にどの"
+"ピクセルを返すかを選択するためのものです。"
 
 #. Tag: para
 #, no-c-format
@@ -30615,6 +30638,8 @@ msgid ""
 "Enhanced: 3.7.0 resample accepts nearest-neighbor boundary options \"nearest-"
 "UL\", \"nearest-UR\", \"nearest-LL\", and \"nearest-LR\"."
 msgstr ""
+"Enhanced: 3.7.0 最近傍補間の境界オプション\"nearest-UL\"、\"nearest-"
+"UR\"、\"nearest-LL\"、\"nearest-LR\"を受け付けるようになりました。"
 
 #. Tag: para
 #, no-c-format
@@ -30632,11 +30657,13 @@ msgid ""
 "Get raster values at particular postgis geometry points. The srid of your "
 "geometry should be same as for your raster."
 msgstr ""
+"特定のPostGISジオメトリーのポイントにおけるラスターの値を得ます、ジオメトリー"
+"のSRIDはラスターのSRIDと同じであるべきです。"
 
 #. Tag: para
 #, no-c-format
 msgid "Get all values in bands 1,2,3 of each pixel."
-msgstr ""
+msgstr "1番バンド、2番バンド、3番バンドのそれぞれのピクセルの値を全て得ます。"
 
 #. Tag: para
 #, no-c-format
@@ -30644,6 +30671,8 @@ msgid ""
 "Get all values in bands 1,2,3 of each pixel same as above but returning the "
 "upper left point point of each pixel."
 msgstr ""
+"上と同じように1番バンド、2番バンド、3番バンドの全ての値を得ますが、ピクセルの"
+"左上のポイントの値を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -30727,12 +30756,12 @@ msgstr "ST_NearestValueはST_Valueと交換可能です。"
 #. Tag: para
 #, no-c-format
 msgid "This example reads a value from pixel 2x2."
-msgstr ""
+msgstr "この例では2x2ピクセルから値を読みます。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example reads a NODATA value from pixel 2x3."
-msgstr ""
+msgstr "この例では2x3ピクセルからNODATA値を読みます。"
 
 #. Tag: para
 #, no-c-format
@@ -30777,7 +30806,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "2x2 test raster with values. 10 50. 40 20."
-msgstr ""
+msgstr "値が10 50. 40 20.となる2x2テストラスター。"
 
 #. Tag: para
 #, no-c-format
@@ -30866,7 +30895,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Pixel 3x3 has value. Exclude_nodata_value = FALSE."
-msgstr ""
+msgstr "3x3ピクセルに値があります。 exclude_nodata_value = FALSEとします。"
 
 #. Tag: para
 #, no-c-format
@@ -30918,12 +30947,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example uses geometry input."
-msgstr ""
+msgstr "この例ではジオメトリー入力を使います。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example stores the changed raster."
-msgstr ""
+msgstr "この例では変更されたラスターを格納します。"
 
 #. Tag: para
 #, no-c-format
@@ -31239,12 +31268,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This is the first example."
-msgstr ""
+msgstr "これが最初の例です。"
 
 #. Tag: para
 #, no-c-format
 msgid "This second example sets both values to the same number."
-msgstr ""
+msgstr "これが二つ目の例で、両方の値に同じ数字を設定します。"
 
 #. Tag: para
 #, no-c-format
