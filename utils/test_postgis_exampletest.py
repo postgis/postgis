@@ -852,6 +852,37 @@ class VisualExampleTest(unittest.TestCase):
         self.assertNotIn('fill-opacity="0.82"', svg)
         self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
 
+    def test_z_surface_draws_dashed_hidden_edges_beneath_opaque_faces(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "solid",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "unused", "has_z": True,
+                 "points_xyz": xyz_vertices(points, ring=True)}
+                for points in (
+                    [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]],
+                    [[0, 0, 0], [1, 1, 0], [0, 0, 1], [0, 0, 0]],
+                )
+            ],
+        }
+        svg = self.tester.visual_svg("hidden-edges", payload)
+        self.assertEqual(2, svg.count('class="hidden-edge"'))
+        self.assertIn('stroke-dasharray=', svg)
+        self.assertLess(svg.index('class="hidden-edge-layer"'), svg.index('class="geometry-layer"'))
+
+    def test_2d_surface_does_not_draw_hidden_edges(self):
+        svg = self.tester.visual_svg(
+            "flat-area",
+            {"bounds": [0, 0, 1, 1], "parts": [{
+                "ord": 1, "source": "Output", "label": "area",
+                "root_type": "POLYGON", "type": "POLYGON",
+                "svg": "M 0 0 L 1 0 L 0 -1 Z", "has_z": False,
+                "vertices": [[0, 0], [1, 0], [0, -1], [0, 0]],
+            }]},
+        )
+        self.assertNotIn('class="hidden-edge"', svg)
+
     def test_tin_faces_do_not_alpha_stack_when_their_projections_overlap(self):
         payload = {
             "bounds": [0, 0, 1, 1],
@@ -1213,6 +1244,16 @@ class VisualExampleTest(unittest.TestCase):
             }]},
         )
         self.assertLess(self.point_radius(dense), self.point_radius(sparse))
+
+    def test_svg_keeps_medium_density_code_points_below_four_pixel_radius(self):
+        svg = self.tester.visual_svg(
+            "delaunay-points",
+            {"bounds": [0, 0, 200, 200], "parts": [{
+                "ord": 1, "source": "Code", "label": "Code", "type": "POINT",
+                "x": 5, "y": -5, "total_points": 42, "source_point_count": 42,
+            }]},
+        )
+        self.assertLess(self.point_radius(svg), 4.0)
 
     def test_svg_scales_vertices_down_for_dense_payloads(self):
         sparse = self.tester.visual_svg(

@@ -640,7 +640,7 @@ class ExampleTester:
         if density <= 16:
             return 1.0
         if density <= 64:
-            return 0.8
+            return 0.55
         if density <= 256:
             return 0.62
         return 0.48
@@ -2046,6 +2046,7 @@ SELECT json_build_object(
                     break
                 value = next_value
 
+        hidden_edge_groups = []
         area_groups = []
         line_groups = []
         point_groups = []
@@ -2068,6 +2069,7 @@ SELECT json_build_object(
             source_indexes[source] += 1
             color = SVG_PALETTES[source][source_index % len(SVG_PALETTES[source])]
             geometry_id = f"{visual_id}-{source.lower()}-{source_index + 1}"
+            hidden_edge_shapes = []
             shapes = []
             root_type = parts[0].get("root_type", "").upper()
             multipart_areas = len(parts) > 1 and all(part["type"].upper() in {
@@ -2118,6 +2120,16 @@ SELECT json_build_object(
                         else 3
                     )
                     stroke_width = stroke_pixels / scale
+                    if part.get("is_3d_face"):
+                        hidden_edge_shapes.append(
+                            f'<path class="hidden-edge" d="{svg_data}" '
+                            f'stroke="{part_color}" fill="none" '
+                            f'stroke-width="{0.9 / scale:.12g}" '
+                            f'stroke-dasharray="{2.4 / scale:.12g} {2.4 / scale:.12g}" '
+                            'stroke-opacity="0.48" fill-rule="evenodd" '
+                            'stroke-linecap="round" stroke-linejoin="round" '
+                            'pointer-events="none"/>'
+                        )
                     face_attributes = (
                         f' data-postgis-face="{part_index + 1}"'
                         f' data-postgis-depth="{float(part["depth"]):.12g}"'
@@ -2188,6 +2200,15 @@ SELECT json_build_object(
                             f'fill="{part_color}" font-family="sans-serif" font-weight="700" '
                             f'pointer-events="none">1</text></g>'
                         )
+            hidden_edge_svg = (
+                f'<g class="hidden-edge-layer" aria-hidden="true" '
+                f'data-postgis-geometry-id="{geometry_id}" '
+                f'data-postgis-frame="{html.escape(frame_id, quote=True)}" '
+                f'transform="matrix({scale:.12g} 0 0 {scale:.12g} '
+                f'{layout["translate_x"]:.12g} {layout["translate_y"]:.12g})">' +
+                "".join(hidden_edge_shapes) + "</g>"
+                if hidden_edge_shapes else ""
+            )
             group_svg = (
                 f'<g class="geometry-layer" opacity="1" data-postgis-geometry-id="{geometry_id}" '
                 f'data-postgis-frame="{html.escape(frame_id, quote=True)}" '
@@ -2201,6 +2222,8 @@ SELECT json_build_object(
                 "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
                 "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
             } for part in parts):
+                if hidden_edge_svg:
+                    hidden_edge_groups.append(hidden_edge_svg)
                 area_groups.append(group_svg)
             else:
                 line_groups.append(group_svg)
@@ -2232,7 +2255,8 @@ SELECT json_build_object(
             '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.frame-label{font-family:sans-serif;font-size:12px;font-weight:600;fill:#344}.geometry-layer{opacity:1;transition:opacity 90ms ease}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font-family:sans-serif;font-size:12px;fill:#344}svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}.geometry-layer.active{filter:brightness(.72)}</style>\n'
             + "".join(backgrounds) + "\n" + "".join(frame_labels) + "\n"
             '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
-            + "".join(area_groups + line_groups + point_groups) + '\n' + "".join(legend_svg) + '\n</svg>\n'
+            + "".join(hidden_edge_groups + area_groups + line_groups + point_groups)
+            + '\n' + "".join(legend_svg) + '\n</svg>\n'
         )
 
     def publish_visual_examples(self, render_dir, visuals):

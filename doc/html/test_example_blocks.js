@@ -406,7 +406,6 @@ async function main() {
 
   const relatedClasses = new Set();
   const layerClasses = new Set(['geometry-layer']);
-  let raiseCount = 0;
   const toggleClass = (classes) => ({
     contains: (name) => classes.has(name),
     toggle(name, enabled) {
@@ -416,8 +415,7 @@ async function main() {
   });
   const related = { classList: toggleClass(relatedClasses) };
   const layer = {
-    classList: toggleClass(layerClasses),
-    parentNode: { appendChild() { raiseCount += 1; } }
+    classList: toggleClass(layerClasses)
   };
   geometryRelated = [related];
   geometryObjects = [{
@@ -429,10 +427,8 @@ async function main() {
   geometry.setGeometryActive('example-code-1', true);
   assert(relatedClasses.has('postgis-geometry-active'));
   assert(layerClasses.has('active'));
-  assert.strictEqual(raiseCount, 1);
   geometry.setGeometryActive('example-code-1', false);
   geometry.setGeometryActive('example-code-1', true);
-  assert.strictEqual(raiseCount, 2);
 
   let pendingGeometryDeactivate = null;
   sandbox.window.setTimeout = function (callback) {

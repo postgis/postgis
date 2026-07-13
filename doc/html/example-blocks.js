@@ -1123,11 +1123,7 @@
       if (!svgDocument) continue;
       var svgTargets = svgDocument.querySelectorAll('[data-postgis-geometry-id="' + id + '"]');
       for (var j = 0; j < svgTargets.length; j += 1) {
-        var wasActive = svgTargets[j].classList.contains('active');
         svgTargets[j].classList.toggle('active', active);
-        if (active && !wasActive && svgTargets[j].classList.contains('geometry-layer')) {
-          svgTargets[j].parentNode.appendChild(svgTargets[j]);
-        }
       }
     }
   }
