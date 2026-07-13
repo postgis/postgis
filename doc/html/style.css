@@ -79,12 +79,6 @@ div.refnamediv {
     display: none;
 }
 
-div.funcsynopsis code {
-    font: unset;
-}
-
-
-
 /* 2. Standard Tags ----------------------------------------------------- */
 a {
     text-decoration: none;
@@ -173,6 +167,15 @@ pre,
 .screen,
 .literallayout {
     overflow: auto;
+}
+
+/* Funcsynopsis is ordinary flowing text, not a verbatim code block.  Some
+ * legacy DocBook entries indent the return type and function name on separate
+ * XML lines; collapse that source whitespace instead of rendering it as
+ * forced line breaks. */
+div.funcsynopsis code {
+    font: unset;
+    white-space: normal;
 }
 
 /* Compact reference cards for collections of literal syntax examples.  The
