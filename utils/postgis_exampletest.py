@@ -1479,21 +1479,25 @@ SELECT json_build_object(
         return list(paths.values())
 
     def project_3d_payload(self, payload):
-        """Project every renderable part in frames containing at least one Z surface."""
+        """Project every frame consistently when the visual contains a Z surface."""
         frames = payload.get("frames") or [{"id": "Overlay", "bounds": payload["bounds"]}]
         area_types = {
             "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
             "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
         }
-        three_dimensional_frames = {
-            str(part.get("frame", frames[0]["id"]))
-            for part in payload.get("parts") or []
-            if part.get("has_z") and part.get("points_xyz")
+        parts = payload.get("parts") or []
+        has_3d_surface = any(
+            part.get("has_z") and part.get("points_xyz")
             and part.get("type", "").upper() in area_types
+            for part in parts
+        )
+        three_dimensional_frames = {
+            str(part.get("frame", frames[0]["id"])) for part in parts
+            if has_3d_surface and part.get("points_xyz")
         }
         projected_bounds = {}
         projected_parts = []
-        for original in payload.get("parts") or []:
+        for original in parts:
             frame_id = str(original.get("frame", frames[0]["id"]))
             paths = self.xyz_paths(original)
             if frame_id not in three_dimensional_frames or not paths:

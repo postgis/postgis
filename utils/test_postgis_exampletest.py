@@ -707,6 +707,33 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn('data-postgis-geometry-id="makepolygon-code-1"', svg)
         self.assertIn('data-postgis-geometry-id="makepolygon-output-1"', svg)
 
+    def test_separate_frames_share_3d_projection_policy(self):
+        ring_points = [[0, 0, 1], [4, 0, 2], [4, 3, 2], [0, 3, 1], [0, 0, 1]]
+        payload = {
+            "frames": [
+                {"id": "Code", "bounds": [0, 0, 4, 3]},
+                {"id": "Output", "bounds": [0, 0, 4, 3]},
+            ],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "ring", "frame": "Code",
+                 "root_type": "LINESTRING", "type": "LINESTRING",
+                 "svg": "M 0 0 L 4 0 4 -3 0 -3 0 0", "closed": True,
+                 "has_z": True, "points_xyz": xyz_vertices(ring_points)},
+                {"ord": 2, "source": "Output", "label": "polygon", "frame": "Output",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "unused",
+                 "has_z": True, "points_xyz": xyz_vertices(ring_points, ring=True)},
+            ],
+        }
+        projected = self.tester.project_3d_payload(payload)
+        self.assertTrue(all(frame["three_dimensional"] for frame in projected["frames"]))
+        self.assertNotEqual(payload["parts"][0]["svg"], projected["parts"][0]["svg"])
+        self.assertEqual(
+            projected["parts"][0]["svg"] + " Z",
+            projected["parts"][1]["svg"],
+        )
+        svg = self.tester.visual_svg("separate-3d", payload)
+        self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
+
     def test_3d_frame_projects_zero_z_point_and_line(self):
         payload = {
             "frames": [{"id": "Overlay", "bounds": [0, 0, 3, 2]}],
