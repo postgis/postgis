@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-13 06:37+0000\n"
+"PO-Revision-Date: 2026-07-13 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -31529,12 +31529,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example returns the original raster pixel size."
-msgstr ""
+msgstr "この例では元のラスターのピクセルサイズを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example returns the pixel size of the rescaled raster."
-msgstr ""
+msgstr "この例ではスケール再設定後のラスターのピクセルサイズを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -31623,7 +31623,7 @@ msgstr "スキューを0.0から0.0015に再設定する簡単な例です。"
 #. Tag: para
 #, no-c-format
 msgid "This example uses the original non-rotated raster."
-msgstr ""
+msgstr "この例では元の回転していないラスターを使います。"
 
 #. Tag: para
 #, no-c-format
@@ -31705,7 +31705,7 @@ msgstr "ラスタをわずかに異なるグリッドにスナップさせる簡
 #, no-c-format
 msgid ""
 "This example returns the upper-left X coordinate of the original raster."
-msgstr ""
+msgstr "この例では元のラスターの左上のX座標値を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -31945,7 +31945,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example changes only the first band NODATA value."
-msgstr ""
+msgstr "この例では1番バンドのNODATA値だけを変更します。"
 
 #. Tag: refpurpose
 #, no-c-format
