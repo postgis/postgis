@@ -102,6 +102,28 @@ class DocBookSourceLintTest(unittest.TestCase):
             set(),
         )
 
+    def test_substantive_raster_image_violation_and_branding_allowlist(self):
+        self.assertCategories(
+            '<mediaobject><imageobject><imagedata fileref="images/example.png"/>'
+            '</imageobject></mediaobject>',
+            {"legacy-raster-image"},
+        )
+        self.assertCategories(
+            '<mediaobject><imageobject><imagedata fileref="images/PostGIS_logo.png"/>'
+            '</imageobject></mediaobject>',
+            set(),
+        )
+        self.assertCategories(
+            '<mediaobject><imageobject><imagedata fileref="images/matrix_sfcgal_enhanced.png"/>'
+            '</imageobject></mediaobject>',
+            set(),
+        )
+        self.assertCategories(
+            '<mediaobject><imageobject><imagedata fileref="images/example.svg"/>'
+            '</imageobject></mediaobject>',
+            set(),
+        )
+
     def test_redundant_output_caption_violation_and_real_prose_clean_case(self):
         self.assertCategories(
             '<refentry xml:id="f"><para> The output: </para><!-- separator --><screen>1</screen></refentry>',
@@ -197,7 +219,9 @@ class DocBookSourceLintTest(unittest.TestCase):
             "----+------+-------------+------------+------------+---------------+---------------+------------+----------+----------+------|----+------+"
         )
         findings = self.source_findings(f'<refentry xml:id="f"><screen>{table_row}</screen></refentry>')
-        self.assertEqual({"wide-verbatim-line"}, {finding.category for finding in findings})
+        self.assertEqual({"wide-output-table"}, {finding.category for finding in findings})
+        self.assertEqual({"warning"}, {finding.severity for finding in findings})
+        self.assertIn("2 wide line(s)", findings[0].message)
         self.assertTrue(any("psql expanded output" in finding.message for finding in findings))
 
     def test_wide_verbatim_line_negative_payload_and_opt_out(self):

@@ -73,7 +73,7 @@ SQL_KEYWORD_DATA = (
     ("RETURNING", False, False),
     ("RIGHT", False, False),
     ("SELECT", True, True),
-    ("SET", False, False),
+    ("SET", True, True),
     ("THEN", False, False),
     ("TRUE", False, False),
     ("UNION", False, False),
@@ -115,13 +115,25 @@ REDUNDANT_OUTPUT_CAPTION_RE = re.compile(r"(?:output|result|results|returns|the 
 ANCIENT_VERSION_RE = re.compile(r"\b(?:0\.\d+|1\.[0-5])(?:\.\d+)?\b")
 SELECT_START_RE = re.compile(r"^\s*SELECT\b", re.IGNORECASE | re.MULTILINE)
 EXAMPLE_SECTION_TITLE_RE = re.compile(r"^(?:same\s+)?examples?\b", re.IGNORECASE)
+RASTER_IMAGE_EXTENSIONS = {".gif", ".jpeg", ".jpg", ".png", ".webp"}
+ALLOWED_SOURCE_RASTER_IMAGES = {
+    "PostGIS_logo.png",
+    "ccbysa.png",
+    "check.png",
+    "matrix_autocast.png",
+    "matrix_checkmark.png",
+    "matrix_sfcgal_enhanced.png",
+    "matrix_sfcgal_required.png",
+    "matrix_transform.png",
+    "osgeo_logo.png",
+}
 
 VERBATIM_LINE_LIMIT = 120
 VERBATIM_TABLE_LINE_LIMIT = 100
 VERBATIM_LONG_LINE_ROLE = "docbook-qa-ignore-wide-lines"
 VERBATIM_HEX_PAYLOAD_RE = re.compile(r"\A\\x[0-9A-Fa-f]{64,}\Z")
 VERBATIM_BASE64_PAYLOAD_RE = re.compile(r"\A[A-Za-z0-9+/]{88,}={0,2}\Z")
-VERBATIM_PSQL_TABLE_ROW_RE = re.compile(r"^\s*\|.*\|.*\|\s*")
+VERBATIM_PSQL_TABLE_ROW_RE = re.compile(r"^\s*[^|]*\|[^|]*\|.*$")
 
 BLOCK_KINDS = {
     "programlisting": ("postgis-example-code", "code", "Code"),
@@ -341,10 +353,11 @@ def summarize_long_verbatim_lines(node: ET.Element) -> tuple[list[int], bool]:
 
     long_lines: list[int] = []
     has_psql_table = False
+    is_output = local_name(node) == "screen"
     for line_no, line in enumerate(block_text(node).splitlines(), start=1):
         if line_contains_verbatim_payload(line):
             continue
-        if line_is_wide_psql_table(line):
+        if is_output and line_is_wide_psql_table(line):
             if len(line) >= VERBATIM_TABLE_LINE_LIMIT:
                 long_lines.append(line_no)
                 has_psql_table = True
@@ -399,6 +412,19 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
             "error", "deprecated-alias-link", source_location(path, node),
             f"link targets deprecated alias {target}; use {deprecated_aliases[target]}",
         ))
+
+    for node in named_descendants(root, "imagedata"):
+        fileref = (node.get("fileref") or "").strip()
+        image_name = Path(fileref).name
+        if (
+            Path(image_name).suffix.lower() in RASTER_IMAGE_EXTENSIONS
+            and image_name not in ALLOWED_SOURCE_RASTER_IMAGES
+        ):
+            findings.append(Finding(
+                "error", "legacy-raster-image", source_location(path, node),
+                f"substantive raster image {fileref!r} must be replaced by an executable "
+                "visual example, DocBook markup, or another vector source",
+            ))
 
     for refentry in refentries:
         if DEPRECATED_ALIAS_ROLE in role_tokens(refentry):
@@ -557,7 +583,9 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
         if len(long_lines) > 3:
             preview += f", ... (+{len(long_lines) - 3} more)"
         findings.append(Finding(
-            "info", "wide-verbatim-line", source_location(path, node),
+            "warning" if has_psql_table else "info",
+            "wide-output-table" if has_psql_table else "wide-verbatim-line",
+            source_location(path, node),
             f"{local_name(node)} has {len(long_lines)} wide line(s) ({'lines' if len(long_lines) != 1 else 'line'}: {preview}); {wide_verbatim_recommendation(has_psql_table)}",
         ))
 
