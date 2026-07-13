@@ -1609,23 +1609,25 @@ SELECT ST_GeomFromGML($$
     <gml:LineString xmlns:gml="http://www.opengis.net/gml"
             srsName="EPSG:4269">
         <gml:coordinates>
-            -71.16028, 42.258729 -71.160837, 42.259112 -71.161143, 42.25932
+            -71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
         </gml:coordinates>
     </gml:LineString>
 $$);
 ]]>
         </programlisting>
+<screen>0102000020AD10000003000000FC8C0B0742CA51C06EC328081E21454027BF45274BCA51C02600FF942A214540ADBEBA2A50CA51C07099D36531214540</screen>
 
 		<para>XLink usage.</para>
 		<programlisting language="sql"><![CDATA[
 SELECT ST_GeomFromGML($$
     <gml:LineString xmlns:gml="http://www.opengis.net/gml"
             xmlns:xlink="http://www.w3.org/1999/xlink"
-            srsName="urn:ogc:def:crs:EPSG::4269">
+            srsName="EPSG:4269">
         <gml:pointProperty>
-            <gml:Point gml:id="p1"><gml:pos>42.258729 -71.16028</gml:pos></gml:Point>
+            <gml:Point gml:id="p1"><gml:pos>-71.16028 42.258729</gml:pos></gml:Point>
         </gml:pointProperty>
-        <gml:pos>42.259112 -71.160837</gml:pos>
+        <gml:pos>-71.160837 42.259112</gml:pos>
+        <gml:pos>-71.161143 42.258729</gml:pos>
         <gml:pointProperty>
             <gml:Point xlink:type="simple" xlink:href="#p1"/>
         </gml:pointProperty>
@@ -1633,6 +1635,7 @@ SELECT ST_GeomFromGML($$
 $$);
 ]]>
         </programlisting>
+<screen>0102000020AD10000004000000FC8C0B0742CA51C06EC328081E21454027BF45274BCA51C02600FF942A214540ADBEBA2A50CA51C06EC328081E214540FC8C0B0742CA51C06EC328081E214540</screen>
 
 		<para>Polyhedral Surface.</para>
 		<programlisting language="sql"><![CDATA[
