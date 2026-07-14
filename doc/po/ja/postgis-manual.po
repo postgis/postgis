@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-13 11:39+0000\n"
+"PO-Revision-Date: 2026-07-14 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -30675,7 +30675,7 @@ msgstr ""
 "左上のポイントの値を返します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Checking all the pixels of a large raster tile can take a long time. You can "
 "dramatically improve speed at some lose of precision by orders of magnitude. "
@@ -30684,6 +30684,10 @@ msgid ""
 "(2x2) pixels and putting in the last checked. Putting in the checked pixel "
 "as the value for subsequent 4."
 msgstr ""
+"大きなラスタータイルの全てのピクセルを調べるには長い時間がかかります。"
+"generate_seriesの任意パラメーターstepを使ったサンプリングによって、精度の低下"
+"はありますが、劇的に改善できます。この次の例では上と同じですが、4 (2x2)"
+"ピクセルごとに1回調べ、調べたピクセル値を続く4ピクセルの値とします。"
 
 #. Tag: para
 #, no-c-format
@@ -32241,7 +32245,7 @@ msgstr "例: ビン数を6で固定して2番バンドだけを計算"
 #, no-c-format
 msgid ""
 "Same as previous but we explicitly control the pixel value range of each bin."
-msgstr ""
+msgstr "前の例と同じですが、ビンごとのピクセル値の範囲を明示的に制御しています。"
 
 #. Tag: para
 #, no-c-format
@@ -32293,6 +32297,8 @@ msgstr ""
 msgid ""
 "Real live example. Quantile of all pixels in band 2 intersecting a geometry."
 msgstr ""
+"実際の例。2番バンドのうちジオメトリーとインタセクトしているピクセル全ての分位"
+"数。"
 
 #. Tag: para
 #, no-c-format
@@ -32386,7 +32392,7 @@ msgstr "例:ラスタカバレッジ"
 #. Tag: para
 #, no-c-format
 msgid "This example returns statistics for each band."
-msgstr ""
+msgstr "この例ではバンドごとの統計情報を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -32488,12 +32494,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Example will coount all pixels of band 1 including 249."
-msgstr ""
+msgstr "249を含む1番バンドの全てのピクセル数を数える例です。"
 
 #. Tag: para
 #, no-c-format
 msgid "Example will count only non-nodata value pixels of band 2."
-msgstr ""
+msgstr "2番バンドのNODATAでない値を持つピクセルだけを数える例です。"
 
 #. Tag: para
 #, no-c-format
@@ -32502,6 +32508,8 @@ msgid ""
 "intersecting a geometry. And return only the pixel band values that have a "
 "count &gt; 500."
 msgstr ""
+"実際の例です。ジオメトリーとインターセクトするラスタータイルの2番バンドの全て"
+"の値ごとのピクセル数を数え、個数が500を超えるバンド値だけを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -32509,6 +32517,8 @@ msgid ""
 "Just return count of pixels in each raster tile that have value of 100 of "
 "tiles that intersect a specific geometry."
 msgstr ""
+"テーブルについて -- サンプリング割合を100%未満にすると速度が向上します。25%に"
+"すると解を得るのが非常に早くなりました。"
 
 #. Tag: para
 #, no-c-format
@@ -32827,12 +32837,12 @@ msgstr "例: 出力"
 #. Tag: para
 #, no-c-format
 msgid "Output the first three bands at 75 percent quality."
-msgstr ""
+msgstr "最初の3バンドを75%品質で出力します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Output only the first band at 90 percent quality."
-msgstr ""
+msgstr "最初のバンドだけを90%品質で出力します。"
 
 #. Tag: para
 #, no-c-format
