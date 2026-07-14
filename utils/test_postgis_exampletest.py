@@ -468,17 +468,29 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertTrue(self.tester.typed_rows_equal("manual", actual, [[polygon]]))
         self.assertIn("GeometryType(actual) IN ('POLYGON', 'MULTIPOLYGON', 'TRIANGLE')", queries[0])
         self.assertIn("ST_Normalize(actual)", queries[0])
+        self.assertIn("generate_subscripts(points, 1)", queries[0])
 
     def test_surface_comparison_canonicalizes_face_order_without_refentry_rules(self):
         query = self.tester.geometry_comparison_query(
             "00", expected_hex="00", actual_type="POLYHEDRALSURFACE"
         )
-        self.assertEqual(2, query.count("array_agg(face ORDER BY face)"))
-        self.assertEqual(2, query.count("FROM ST_Dump("))
+        self.assertEqual(2, query.count("array_agg(face_key ORDER BY face_key)"))
+        self.assertEqual(2, query.count("ST_Dump("))
         self.assertIn("ST_Normalize", query)
         self.assertNotIn("ST_AsEWKT", query)
         self.assertNotIn("ST_GeomFromEWKT(ST_AsEWKT", query)
         self.assertNotIn("refentry", query.lower())
+
+    def test_areal_comparison_uses_full_3d_point_to_break_ring_start_ties(self):
+        query = self.tester.geometry_comparison_query(
+            "00", expected_wkt="POLYGON Z EMPTY", actual_type="POLYGON",
+        )
+        self.assertEqual(2, query.count("generate_subscripts(points, 1)"))
+        self.assertEqual(2, query.count("ST_AsHEXEWKB(point.geom, 'XDR')"))
+        self.assertIn("points[rotation:array_length(points, 1)]", query)
+        self.assertIn("IS NOT DISTINCT FROM", query)
+        self.assertNotIn("regexp_replace", query)
+        self.assertNotIn("CG_3DDifference", query)
 
     def test_typed_hexwkb_comparison_accepts_readable_ewkt_expectation(self):
         ndr = "0101000020E6100000000000000000F03F0000000000000040"

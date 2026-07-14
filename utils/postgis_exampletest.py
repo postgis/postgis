@@ -343,6 +343,36 @@ class ExampleTester:
             return None
         return self.hexwkb_geometry(value)
 
+    def areal_canonical_key_sql(self, geometry):
+        """Return an exact, representation-independent key for areal geometry.
+
+        ST_Normalize canonicalizes polygon orientation and component order, but
+        its ring-start choice is based on XY.  A 3D face may therefore retain
+        different (but equivalent) cyclic starts when two vertices share XY
+        and differ only in Z.  Rotate each normalized ring using the full native
+        point EWKB, then sort the normalized areal components.
+        """
+        return (
+            "(SELECT array_agg(face_key ORDER BY face_key) FROM (SELECT "
+            "face_path, array_agg(ring_key ORDER BY ring_path) AS face_key "
+            "FROM (SELECT face_path, ring_path, (SELECT "
+            "points[rotation:array_length(points, 1)] || points[1:rotation - 1] "
+            "FROM generate_subscripts(points, 1) AS rotations(rotation) "
+            "ORDER BY 1 LIMIT 1) AS ring_key FROM (SELECT face_path, ring_path, "
+            "array_agg(point_key ORDER BY point_ordinal) AS points FROM (SELECT "
+            "face.path AS face_path, "
+            "point.path[1:array_length(point.path, 1) - 1] AS ring_path, "
+            "point.path[array_length(point.path, 1)] AS point_ordinal, "
+            "max(point.path[array_length(point.path, 1)]) OVER (PARTITION BY "
+            "face.path, point.path[1:array_length(point.path, 1) - 1]) AS "
+            "closing_ordinal, ST_AsHEXEWKB(point.geom, 'XDR') AS point_key "
+            f"FROM canonical CROSS JOIN LATERAL ST_Dump({geometry}) AS face "
+            "CROSS JOIN LATERAL ST_DumpPoints(ST_Normalize(face.geom)) AS point"
+            ") AS face_points WHERE point_ordinal < closing_ordinal "
+            "GROUP BY face_path, ring_path) AS face_rings) AS canonical_rings "
+            "GROUP BY face_path) AS canonical_faces)"
+        )
+
     def geometry_comparison_query(
         self, actual_hex, expected_hex=None, expected_wkt=None, actual_type=None
     ):
@@ -391,15 +421,12 @@ class ExampleTester:
                 "FROM canonical"
             )
 
-        if actual_type in UNORDERED_SURFACE_TYPES:
+        if actual_type in UNORDERED_AREAL_TYPES + UNORDERED_SURFACE_TYPES:
             return preamble + (
                 "SELECT " + metadata +
-                "AND (SELECT array_agg(face ORDER BY face) FROM (SELECT "
-                "ST_AsHEXEWKB(ST_Normalize(geom), 'XDR') AS face "
-                "FROM ST_Dump(actual)) AS actual_faces) = "
-                "(SELECT array_agg(face ORDER BY face) FROM (SELECT "
-                "ST_AsHEXEWKB(ST_Normalize(geom), 'XDR') AS face "
-                "FROM ST_Dump(expected)) AS expected_faces) "
+                "AND " + self.areal_canonical_key_sql("actual") +
+                " IS NOT DISTINCT FROM " +
+                self.areal_canonical_key_sql("expected") + " "
                 "FROM canonical"
             )
 
