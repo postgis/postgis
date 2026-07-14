@@ -121,6 +121,7 @@
                         or starts-with($code.text.upper, 'INSERT ')
                         or starts-with($code.text.upper, 'UPDATE ')
                         or starts-with($code.text.upper, 'DELETE ')
+                        or starts-with($code.text.upper, 'SET ')
                         or starts-with($code.text.upper, 'CREATE ')
                         or starts-with($code.text.upper, 'ALTER ')
                         or starts-with($code.text.upper, 'DROP ')

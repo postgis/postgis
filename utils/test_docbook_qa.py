@@ -10,6 +10,7 @@ import unittest
 from pathlib import Path
 
 from docbook_qa import (
+    SQL_BLOCK_STARTER_KEYWORDS,
     SQL_BLOCK_STARTER_EXTRAS,
     SQL_HIGHLIGHT_KEYWORDS,
     SQL_STARTERS,
@@ -356,6 +357,21 @@ class DocBookSourceLintTest(unittest.TestCase):
             body = starter if starter.endswith(";") else starter + "1;"
             findings = self.html_findings_for_sql_probe(body)
             self.assertTrue(any("lacks data-postgis-language='sql'" in finding.location for finding in findings), body)
+
+    def test_xsl_sql_detection_covers_all_block_starters(self):
+        xsl = (
+            Path(__file__).resolve().parents[1]
+            / "doc"
+            / "xsl"
+            / "postgis-html-block-labels.xsl"
+        ).read_text(encoding="utf-8")
+        for keyword in SQL_BLOCK_STARTER_KEYWORDS:
+            suffix = ";" if keyword in {"BEGIN", "COMMIT"} else " "
+            self.assertIn(
+                f"starts-with($code.text.upper, '{keyword}{suffix}')",
+                xsl,
+                f"XSL SQL detection is missing {keyword}",
+            )
 
     def html_findings_for_sql_probe(self, text: str):
         path = write_tmp(
