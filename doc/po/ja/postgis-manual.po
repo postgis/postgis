@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-14 06:39+0000\n"
+"PO-Revision-Date: 2026-07-14 08:41+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -33146,6 +33146,9 @@ msgid ""
 "Demonstrate effect of crop on final dimensions of raster. Note how final "
 "extent is clipped to that of the geometry. If crop = true."
 msgstr ""
+"ラスターの最終的なピクセル範囲についての切取りの効果のデモンストレーションで"
+"す。crop=trueでは、どのように最終的な範囲がジオメトリに切り取られるかをみます"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -33718,6 +33721,15 @@ msgid ""
 "optional third argument <varname>userargs</varname> is for passing through "
 "any user-specified arguments."
 msgstr ""
+"<varname>callbackfunc</varname>は、二つまたは三つの引数を持たなければなりませ"
+"ん: 3次元倍精度浮動小数点数配列、2次元整数配列、VARIADICの1次元文字列配列です"
+"。一つ目の引数<varname>value</varname>は、全ての入力ラスタからの値 (倍精度浮"
+"動小数点数)の配列です。3次元 (1始まり)は、ラスタ番号、行、列です。二つ目の引"
+"数<varname>position</varname>は、出力ラスタと入力ラスタからのピクセル位置の集"
+"合です。一つ目の次元の添え字 (0はじまりです)はラスター番号です。一つ目の次元"
+"の添え字が0の場合に指される位置は、出力ラスタのピクセル位置です。二つ目の次元"
+"はXとYからなる二つの要素を持ちます。三つ目の引数<varname>userargs</varname>は"
+"任意引数でユーザ定義関数特有の引数としてそのまま渡されます。"
 
 #. Tag: para
 #, no-c-format
@@ -36085,6 +36097,8 @@ msgid ""
 "Now we skew the raster. Note how the convex hull and envelope are now "
 "different."
 msgstr ""
+"ラスターにスキューを施しています。凸包とエンベロープでどれぐらい異なるかに注"
+"意して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -36180,7 +36194,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This syntax uses a LATERAL join."
-msgstr ""
+msgstr "この記述ではLATERAL結合を使っています。"
 
 #. Tag: para
 #, no-c-format
@@ -36288,16 +36302,18 @@ msgid ""
 "By default no data band value is 0 or not set, so polygon will return a "
 "square polygon."
 msgstr ""
+"デフォルトではNODATAバンド値は0またはセットされていないのでポリゴンが四角形"
+"ポリゴンを返します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Now we change the no data value of first band."
-msgstr ""
+msgstr "最初のバンドのNODATA値を変更します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Or if you want the no data value different for just one time."
-msgstr ""
+msgstr "もしくは、一度だけ別のNODATA値が欲しい時。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36586,12 +36602,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Specified band numbers."
-msgstr ""
+msgstr "バンド番号を指定した場合。"
 
 #. Tag: para
 #, no-c-format
 msgid "No band numbers specified."
-msgstr ""
+msgstr "バンド番号を指定しなかった場合。"
 
 #. Tag: para
 #, no-c-format
@@ -37885,6 +37901,8 @@ msgid ""
 "This example compares a point with a 300-meter buffer against a point and "
 "against a 10-meter buffer around that point."
 msgstr ""
+"この例ではあるポイントと、このポイントとは別のポイントの300mバッファーと比較"
+"して、このポイントの10mバッファーとも比較します。"
 
 #. Tag: para
 #, no-c-format
@@ -38245,6 +38263,8 @@ msgid ""
 "This example looks up rows in a table; for faster lookup, the geometry "
 "column should have a GiST index."
 msgstr ""
+"この例ではテーブル内の行を検索します。より早く検索するにはジオメトリーカラム"
+"にGiSTインデックスを持たせます。"
 
 #. Tag: para
 #, no-c-format
