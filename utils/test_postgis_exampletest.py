@@ -269,7 +269,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             example = ExampleTester(source.name).examples()[0]
         self.assertTrue(example["visual_overlay"])
 
-    def test_visual_layout_roles_opt_unstable_output_into_documented_rendering(self):
+    def test_visual_layout_roles_do_not_disable_self_contained_queries(self):
         for role, flag in (
             ("visual-overlay", "visual_overlay"),
             ("visual-separate-output", "visual_separate_output"),
@@ -287,9 +287,41 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
                     source.write(xml)
                     source.flush()
                     example = ExampleTester(source.name).examples()[0]
-                self.assertTrue(example["documented_only"])
+                self.assertFalse(example["documented_only"])
                 self.assertEqual("explicit", example["visual_kind"])
                 self.assertTrue(example[flag])
+
+    def test_self_contained_functions_are_not_skipped_by_name(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        for function in (
+            "ST_MinimumSpanningTree",
+            "ST_ClusterKMeans",
+            "CG_3DConvexHull",
+            "CG_AlphaShape",
+            "CG_OptimalConvexPartition",
+        ):
+            with self.subTest(function=function):
+                self.assertEqual("", tester.obvious_skip_reason(f"SELECT {function}(geom)"))
+
+    def test_capability_roles_are_parsed_and_compared_generically(self):
+        xml = """<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="capability"><refsection>
+    <programlisting role="requires-geos-3.15 requires-proj-9.2">SELECT 1;</programlisting>
+    <screen>1</screen>
+  </refsection></refentry>
+</book>"""
+        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+            source.write(xml)
+            source.flush()
+            tester = ExampleTester(source.name)
+            example = tester.examples()[0]
+        self.assertEqual(["geos", "proj"], [item["name"] for item in example["requirements"]])
+        self.assertTrue(tester.requirements_satisfied(
+            example["requirements"], {"geos": (3, 15, 1), "proj": (9, 2)}
+        ))
+        self.assertFalse(tester.requirements_satisfied(
+            example["requirements"], {"geos": (3, 14, 9), "proj": (9, 5)}
+        ))
 
 
 class ExampleTestComparisonTest(unittest.TestCase):
@@ -417,8 +449,36 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
         actual = QueryRows([[xdr]], types=["geometry"])
         self.assertTrue(self.tester.typed_rows_equal("manual", actual, [[ndr]]))
-        self.assertIn("ST_DumpPoints", queries[0])
+        self.assertIn("ST_DumpPoints(actual)", queries[0])
+        self.assertIn("greatest(1.0, abs(a.x), abs(e.x))", queries[0])
+        self.assertIn("GeometryType(actual) = GeometryType(expected)", queries[0])
+        self.assertIn("ST_CoordDim(actual) = ST_CoordDim(expected)", queries[0])
         self.assertIn("ST_Zmflag(actual) = ST_Zmflag(expected)", queries[0])
+        self.assertIn("ST_SRID(actual) = ST_SRID(expected)", queries[0])
+
+    def test_typed_geometry_comparison_canonicalizes_unordered_areal_rings(self):
+        polygon = (
+            "0103000000010000000400000000000000000000000000000000000000"
+            "000000000000F03F00000000000000000000000000000000000000000000F03F"
+            "00000000000000000000000000000000"
+        )
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        actual = QueryRows([[polygon]], types=["geometry"])
+        self.assertTrue(self.tester.typed_rows_equal("manual", actual, [[polygon]]))
+        self.assertIn("GeometryType(actual) IN ('POLYGON', 'MULTIPOLYGON', 'TRIANGLE')", queries[0])
+        self.assertIn("ST_Normalize(actual)", queries[0])
+
+    def test_surface_comparison_canonicalizes_face_order_without_refentry_rules(self):
+        query = self.tester.geometry_comparison_query(
+            "00", expected_hex="00", actual_type="POLYHEDRALSURFACE"
+        )
+        self.assertEqual(2, query.count("array_agg(face ORDER BY face)"))
+        self.assertEqual(2, query.count("FROM ST_Dump("))
+        self.assertIn("ST_Normalize", query)
+        self.assertNotIn("ST_AsEWKT", query)
+        self.assertNotIn("ST_GeomFromEWKT(ST_AsEWKT", query)
+        self.assertNotIn("refentry", query.lower())
 
     def test_typed_hexwkb_comparison_accepts_readable_ewkt_expectation(self):
         ndr = "0101000020E6100000000000000000F03F0000000000000040"
@@ -433,7 +493,8 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertIn("ST_GeomFromEWKB", queries[0])
         self.assertIn("ST_GeomFromEWKT('SRID=4326;POINT(1 2)')", queries[0])
         self.assertNotIn("ST_AsText", queries[0])
-        self.assertNotIn("ST_AsEWKT", queries[0])
+        self.assertIn("ST_DumpPoints(actual)", queries[0])
+        self.assertNotIn("regexp_replace", queries[0])
 
     def test_typed_hexwkb_comparison_accepts_readable_wkt_without_srid(self):
         ndr = "0102000020E610000002000000713D0AD7A38051C08FC2F5285C6F4540D7A3703D0A8751C0713D0AD7A3704540"
@@ -447,6 +508,18 @@ class ExampleTestComparisonTest(unittest.TestCase):
         )
         self.assertIn("TRUE AND ST_SRID(expected) = 0", queries[0])
         self.assertNotIn("regexp_replace", queries[0])
+
+    def test_typed_hexwkb_comparison_preserves_explicit_srid_zero(self):
+        ndr = "0101000000000000000000F03F0000000000000040"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertTrue(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["SRID=0;POINT(1 2)"]]
+            )
+        )
+        self.assertIn("FALSE AND ST_SRID(expected) = 0", queries[0])
 
     def test_typed_hexwkb_comparison_accepts_legacy_3d_wkt_without_z_token(self):
         ndr = "010200008002000000010000000000F0BFFFFFFFFFFFFFFFBF0000000000000840020000000000F0BF00000000000010C00000000000000840"
@@ -472,6 +545,68 @@ class ExampleTestComparisonTest(unittest.TestCase):
         )
         self.assertIn("ST_GeomFromEWKT('LINESTRING Z (-1 -2 3,-1 -4 3)')", queries[0])
 
+    def test_typed_hexwkb_comparison_accepts_compact_ewkt_dimension_marker(self):
+        point_m = "0101000040000000000000144000000000000028400000000000002640"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        actual = QueryRows([[point_m]], types=["geometry"])
+        self.assertTrue(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["POINTM(5 12 11)"]]
+            )
+        )
+        self.assertIn("ST_GeomFromEWKT('POINTM(5 12 11)')", queries[0])
+        self.assertNotIn("regexp_replace", queries[0])
+
+    def test_typed_geometry_comparison_rejects_coordinate_mismatch(self):
+        ndr = "010200000002000000000000000000F03F000000000000004000000000000008400000000000001040"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "f"
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertFalse(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["LINESTRING(1 2,3 4)"]]
+            )
+        )
+        self.assertEqual(1, len(queries))
+        self.assertIn("ST_DumpPoints(actual)", queries[0])
+        self.assertIn("greatest(1.0, abs(a.x), abs(e.x))", queries[0])
+
+    def test_typed_nurbs_comparison_stays_native(self):
+        nurbs = "011500000002000000030000000000000000000000000000000000000000000000000014400000000000002440000000000000000000000000"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "f"
+        actual = QueryRows([[nurbs]], types=["geometry"])
+        self.assertFalse(
+            self.tester.typed_rows_equal(
+                "manual", actual, [[nurbs]]
+            )
+        )
+        self.assertEqual(1, len(queries))
+        self.assertIn("ST_AsHEXEWKB(actual, 'XDR')", queries[0])
+        self.assertIn("ST_AsHEXEWKB(expected, 'XDR')", queries[0])
+        self.assertNotIn("ST_AsEWKT", queries[0])
+        self.assertNotIn("ST_CurveToLine", queries[0])
+        self.assertNotIn("ST_DumpPoints", queries[0])
+
+    def test_typed_linestring_comparison_does_not_normalize_direction(self):
+        ndr = "010200000002000000000000000000F03F000000000000004000000000000008400000000000001040"
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "f"
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertFalse(
+            self.tester.typed_rows_equal(
+                "manual", actual, [["LINESTRING(3 4,1 2)"]]
+            )
+        )
+        self.assertEqual(1, len(queries))
+        self.assertIn(
+            "CASE WHEN GeometryType(actual) IN "
+            "('POLYGON', 'MULTIPOLYGON', 'TRIANGLE') THEN ST_Normalize(actual)",
+            queries[0],
+        )
+        self.assertNotIn("ST_Reverse", queries[0])
+
     def test_typed_geometry_comparison_rejects_semantic_mismatch(self):
         ndr = "0101000020E6100000000000000000F03F0000000000000040"
         self.tester.run_psql_scalar = lambda database, query: "f"
@@ -496,7 +631,7 @@ class ExampleTestComparisonTest(unittest.TestCase):
             )
         )
         self.assertIn("ST_GeomFromEWKB", queries[0])
-        self.assertIn("ST_DumpPoints", queries[0])
+        self.assertIn("ST_DumpPoints(actual)", queries[0])
 
     def test_readable_geometry_expectation_is_detected(self):
         self.assertTrue(self.tester.expected_has_geometry_text([["POINT(1 2)"]]))

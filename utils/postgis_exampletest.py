@@ -22,6 +22,14 @@ DOCBOOK_NS = "http://docbook.org/ns/docbook"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
 FORCE_ROLE = "example-test"
 EXTERNAL_STATE_ROLE = "requires-external-state"
+CAPABILITY_ROLE_RE = re.compile(
+    r"^requires-(geos|proj|sfcgal)-(\d+(?:\.\d+)*)$", re.I
+)
+CAPABILITY_VERSION_QUERIES = {
+    "geos": "SELECT PostGIS_GEOS_Version()",
+    "proj": "SELECT PostGIS_PROJ_Version()",
+    "sfcgal": "SELECT postgis_sfcgal_version()",
+}
 ENVIRONMENT_CHECKS = (
     {
         "label": "PROJ grid au_icsm_GDA94_GDA2020_conformal_and_distortion.tif",
@@ -47,13 +55,13 @@ WKT_TYPES = (
     "MULTICURVE|MULTISURFACE|TIN|TRIANGLE|POLYHEDRALSURFACE"
     "|NURBSCURVE"
 )
-WKT_START_RE = re.compile(rf"(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*\(", re.I)
+WKT_START_RE = re.compile(rf"(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s*(?:ZM|Z|M))?\s*\(", re.I)
 WKT_VALUE_RE = re.compile(
-    rf"^\s*(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*(?:\(|EMPTY\s*$)",
+    rf"^\s*(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s*(?:ZM|Z|M))?\s*(?:\(|EMPTY\s*$)",
     re.I,
 )
 WKT_COMPONENT_RE = re.compile(
-    rf"\b({WKT_TYPES})(?:\s+(?:ZM|Z|M))?\s*(?=\(|EMPTY\b)",
+    rf"\b({WKT_TYPES})(?:\s*(?:ZM|Z|M))?\s*(?=\(|EMPTY\b)",
     re.I,
 )
 HEXWKB_RE = re.compile(r"^(?:\\x)?([0-9A-Fa-f]+)$")
@@ -76,6 +84,8 @@ WKB_TYPE_NAMES = {
     17: "TRIANGLE",
     21: "NURBSCURVE",
 }
+UNORDERED_AREAL_TYPES = ("POLYGON", "MULTIPOLYGON", "TRIANGLE")
+UNORDERED_SURFACE_TYPES = ("POLYHEDRALSURFACE", "TIN")
 EWKB_Z_FLAG = 0x80000000
 EWKB_M_FLAG = 0x40000000
 EWKB_SRID_FLAG = 0x20000000
@@ -108,7 +118,8 @@ CLUSTER_COLUMN_NAMES = {"cluster", "cluster_id", "cid", "category"}
 MARKER_SCALE_COLUMN_NAME = "marker_scale"
 MAX_VISUAL_GEOMETRIES = 16
 MAX_VISUAL_WKT_BYTES = 100000
-VALUE_TOLERANCE = 1e-12
+VALUE_DECIMAL_DIGITS = 12
+VALUE_TOLERANCE = 10 ** -VALUE_DECIMAL_DIGITS
 NONVISUAL_SINGLE_INPUT_RE = re.compile(
     r"\b(?:ST_(?:AS(?:TEXT|EWKT|BINARY|EWKB|HEXEWKB|GML|KML|GEOJSON|X3D|"
     r"MARC21|GEOBUF|TWKB|ENCODEDPOLYLINE|LATLONTEXT)|GEOHASH|SRID|GEOMETRYTYPE|"
@@ -143,6 +154,43 @@ class ExampleTester:
     def has_role(self, node, role):
         return role in node.get("role", "").split()
 
+    def capability_requirements(self, node):
+        requirements = []
+        for role in node.get("role", "").split():
+            match = CAPABILITY_ROLE_RE.fullmatch(role)
+            if match:
+                requirements.append({
+                    "name": match.group(1).lower(),
+                    "minimum": tuple(int(part) for part in match.group(2).split(".")),
+                    "role": role,
+                })
+        return requirements
+
+    def runtime_capabilities(self, database, names):
+        capabilities = {}
+        for name in sorted(names):
+            query = CAPABILITY_VERSION_QUERIES[name]
+            try:
+                value = self.run_psql_scalar(database, query)
+            except RuntimeError:
+                capabilities[name] = ()
+                continue
+            match = re.search(r"\d+(?:\.\d+)+", value)
+            capabilities[name] = (
+                tuple(int(part) for part in match.group(0).split("."))
+                if match else ()
+            )
+        return capabilities
+
+    def requirements_satisfied(self, requirements, capabilities):
+        for requirement in requirements:
+            current = capabilities.get(requirement["name"], ())
+            minimum = requirement["minimum"]
+            width = max(len(current), len(minimum))
+            if current + (0,) * (width - len(current)) < minimum + (0,) * (width - len(minimum)):
+                return False
+        return True
+
     def source_label(self, node):
         refentry = next(
             (ancestor for ancestor in self.index.ancestors(node) if ancestor.tag == f"{{{DOCBOOK_NS}}}refentry"),
@@ -171,7 +219,7 @@ class ExampleTester:
             return "external-context"
         if re.search(
             r"\b(?:DropGeometryColumn|DropGeometryTable|Find_SRID|"
-            r"ST_MinimumSpanningTree|PostGIS_Extensions_Upgrade|"
+            r"PostGIS_Extensions_Upgrade|"
             r"PostGIS_GDAL_Version|PostGIS_Liblwgeom_Version|"
             r"PostGIS_Raster_Lib_Build_Date|PostGIS_Raster_Lib_Version|"
             r"PostGIS_Raster_Scripts_Installed|ST_GDALDrivers|ST_FromGDALRaster"
@@ -180,16 +228,6 @@ class ExampleTester:
             re.I,
         ):
             return "external-context"
-        if re.search(
-            r"\b(?:CG_3DIntersection|CG_3DConvexHull|CG_AlphaShape|"
-            r"CG_ApproxConvexPartition|CG_ExtrudeStraightSkeleton|"
-            r"CG_GreeneApproxConvexPartition|CG_OptimalAlphaShape|"
-            r"CG_OptimalConvexPartition|CG_YMonotonePartition|"
-            r"ST_ClusterKMeans)\s*\(",
-            text,
-            re.I,
-        ):
-            return "unstable-output"
         if (
             "..." in text
             or re.search(r"\.\.(?:[),]|\s*$)", text, re.M)
@@ -306,7 +344,7 @@ class ExampleTester:
         return self.hexwkb_geometry(value)
 
     def geometry_comparison_query(
-        self, actual_hex, expected_hex=None, expected_wkt=None
+        self, actual_hex, expected_hex=None, expected_wkt=None, actual_type=None
     ):
         actual = (
             "ST_GeomFromEWKB(decode("
@@ -321,43 +359,81 @@ class ExampleTester:
         else:
             expected_literal = expected_wkt.replace("'", "''")
             expected = f"ST_GeomFromEWKT('{expected_literal}')"
-            srid_is_optional = "TRUE"
-        tolerance = format(VALUE_TOLERANCE, ".17g")
-        return (
+            srid_is_optional = (
+                "FALSE" if re.match(r"^\s*SRID\s*=", expected_wkt, re.I) else "TRUE"
+            )
+        preamble = (
             "WITH geometries AS (SELECT "
             f"{actual} AS actual, {expected} AS expected), "
             "comparable AS (SELECT actual, CASE WHEN "
             f"{srid_is_optional} AND ST_SRID(expected) = 0 "
             "THEN ST_SetSRID(expected, ST_SRID(actual)) ELSE expected END AS expected "
             "FROM geometries), "
-            "actual_components AS (SELECT path, GeometryType(geom) AS type "
-            "FROM comparable CROSS JOIN LATERAL ST_Dump(actual)), "
-            "expected_components AS (SELECT path, GeometryType(geom) AS type "
-            "FROM comparable CROSS JOIN LATERAL ST_Dump(expected)), "
-            "actual_points AS (SELECT path, ST_X(geom) AS x, ST_Y(geom) AS y, "
-            "ST_Z(geom) AS z, ST_M(geom) AS m "
-            "FROM comparable CROSS JOIN LATERAL ST_DumpPoints(actual)), "
-            "expected_points AS (SELECT path, ST_X(geom) AS x, ST_Y(geom) AS y, "
-            "ST_Z(geom) AS z, ST_M(geom) AS m "
-            "FROM comparable CROSS JOIN LATERAL ST_DumpPoints(expected)) "
-            "SELECT GeometryType(actual) = GeometryType(expected) "
+            "canonical AS (SELECT "
+            f"CASE WHEN GeometryType(actual) IN {UNORDERED_AREAL_TYPES!r} "
+            "THEN ST_Normalize(actual) ELSE actual END AS actual, "
+            f"CASE WHEN GeometryType(expected) IN {UNORDERED_AREAL_TYPES!r} "
+            "THEN ST_Normalize(expected) ELSE expected END AS expected "
+            "FROM comparable) "
+        )
+        metadata = (
+            "GeometryType(actual) = GeometryType(expected) "
             "AND ST_CoordDim(actual) = ST_CoordDim(expected) "
             "AND ST_Zmflag(actual) = ST_Zmflag(expected) "
             "AND ST_SRID(actual) = ST_SRID(expected) "
+        )
+
+        if actual_type == "NURBSCURVE":
+            return preamble + (
+                "SELECT " + metadata +
+                "AND ST_AsHEXEWKB(actual, 'XDR') = "
+                "ST_AsHEXEWKB(expected, 'XDR') "
+                "FROM canonical"
+            )
+
+        if actual_type in UNORDERED_SURFACE_TYPES:
+            return preamble + (
+                "SELECT " + metadata +
+                "AND (SELECT array_agg(face ORDER BY face) FROM (SELECT "
+                "ST_AsHEXEWKB(ST_Normalize(geom), 'XDR') AS face "
+                "FROM ST_Dump(actual)) AS actual_faces) = "
+                "(SELECT array_agg(face ORDER BY face) FROM (SELECT "
+                "ST_AsHEXEWKB(ST_Normalize(geom), 'XDR') AS face "
+                "FROM ST_Dump(expected)) AS expected_faces) "
+                "FROM canonical"
+            )
+
+        tolerance = format(VALUE_TOLERANCE, ".17g")
+        return preamble + (
+            ", actual_components AS (SELECT path, GeometryType(geom) AS type "
+            "FROM canonical CROSS JOIN LATERAL ST_Dump(actual)), "
+            "expected_components AS (SELECT path, GeometryType(geom) AS type "
+            "FROM canonical CROSS JOIN LATERAL ST_Dump(expected)), "
+            "actual_points AS (SELECT path, ST_X(geom) AS x, ST_Y(geom) AS y, "
+            "ST_Z(geom) AS z, ST_M(geom) AS m "
+            "FROM canonical CROSS JOIN LATERAL ST_DumpPoints(actual)), "
+            "expected_points AS (SELECT path, ST_X(geom) AS x, ST_Y(geom) AS y, "
+            "ST_Z(geom) AS z, ST_M(geom) AS m "
+            "FROM canonical CROSS JOIN LATERAL ST_DumpPoints(expected)) "
+            "SELECT " + metadata +
             "AND NOT EXISTS (SELECT 1 FROM actual_components a FULL JOIN "
             "expected_components e USING (path) WHERE a.path IS NULL OR e.path IS NULL "
             "OR a.type IS DISTINCT FROM e.type) "
             "AND NOT EXISTS (SELECT 1 FROM actual_points a FULL JOIN expected_points e "
             "USING (path) WHERE a.path IS NULL OR e.path IS NULL "
             "OR (a.x IS NULL) <> (e.x IS NULL) "
-            f"OR (a.x IS NOT NULL AND abs(a.x - e.x) > {tolerance}) "
+            f"OR (a.x IS NOT NULL AND abs(a.x - e.x) > {tolerance} * "
+            "greatest(1.0, abs(a.x), abs(e.x))) "
             "OR (a.y IS NULL) <> (e.y IS NULL) "
-            f"OR (a.y IS NOT NULL AND abs(a.y - e.y) > {tolerance}) "
+            f"OR (a.y IS NOT NULL AND abs(a.y - e.y) > {tolerance} * "
+            "greatest(1.0, abs(a.y), abs(e.y))) "
             "OR (a.z IS NULL) <> (e.z IS NULL) "
-            f"OR (a.z IS NOT NULL AND abs(a.z - e.z) > {tolerance}) "
+            f"OR (a.z IS NOT NULL AND abs(a.z - e.z) > {tolerance} * "
+            "greatest(1.0, abs(a.z), abs(e.z))) "
             "OR (a.m IS NULL) <> (e.m IS NULL) "
-            f"OR (a.m IS NOT NULL AND abs(a.m - e.m) > {tolerance})) "
-            "FROM comparable"
+            f"OR (a.m IS NOT NULL AND abs(a.m - e.m) > {tolerance} * "
+            "greatest(1.0, abs(a.m), abs(e.m)))) "
+            "FROM canonical"
         )
 
     def expected_has_hexwkb(self, expected):
@@ -1025,6 +1101,7 @@ class ExampleTester:
             "forced": forced,
             "version": self.query_is_version_example(query),
             "catalog": self.query_is_catalog_example(query),
+            "requirements": self.capability_requirements(node),
             "documented_only": documented_only,
             "volatile": self.query_is_version_example(query) or self.query_is_catalog_example(query),
             "visual_id": self.visual_id(screen) if visual is not None else None,
@@ -1307,6 +1384,7 @@ class ExampleTester:
                         actual_hex["hexwkb"],
                         expected_hex["hexwkb"] if expected_hex is not None else None,
                         expected_wkt,
+                        actual_hex["type"],
                     )
                     if self.run_psql_scalar(database, query) != "t":
                         return False
@@ -1316,11 +1394,26 @@ class ExampleTester:
 
     def run_examples(self, database, keep_going=False, render_dir=None, visual_only=False, jobs=1):
         all_examples = self.examples()
+        required_capabilities = {
+            requirement["name"]
+            for example in all_examples
+            for requirement in example.get("requirements", [])
+        }
+        capabilities = self.runtime_capabilities(database, required_capabilities)
+        unavailable_examples = [
+            example for example in all_examples
+            if not self.requirements_satisfied(example.get("requirements", []), capabilities)
+        ]
         documented_visuals = [
             example for example in all_examples
-            if example.get("documented_only") and example["visual_id"]
+            if (
+                example.get("documented_only") or example in unavailable_examples
+            ) and example["visual_id"]
         ]
-        examples = [example for example in all_examples if not example.get("documented_only")]
+        examples = [
+            example for example in all_examples
+            if not example.get("documented_only") and example not in unavailable_examples
+        ]
         if visual_only:
             examples = [example for example in examples if example["visual_id"]]
         else:
@@ -1355,6 +1448,8 @@ class ExampleTester:
             if render_dir:
                 self.publish_visual_examples(render_dir, visuals)
             print(f"manual example tests passed: {ran}")
+            if unavailable_examples:
+                print(f"manual examples skipped for unavailable capabilities: {len(unavailable_examples)}")
             if render_dir:
                 print(f"visual examples rendered: {len(visuals)}")
             return
@@ -1381,6 +1476,8 @@ class ExampleTester:
             self.publish_visual_examples(render_dir, visuals)
 
         print(f"manual example tests passed: {ran}")
+        if unavailable_examples:
+            print(f"manual examples skipped for unavailable capabilities: {len(unavailable_examples)}")
         if render_dir:
             print(f"visual examples rendered: {len(visuals)}")
 
@@ -1413,7 +1510,11 @@ class ExampleTester:
                 or self.expected_has_geometry_text(example["expected"])
             )
         ):
-            equal = self.typed_rows_equal(database, actual, example["expected"])
+            equal = self.typed_rows_equal(
+                database,
+                actual,
+                example["expected"],
+            )
         else:
             equal = self.rows_equal(actual, example["expected"])
         if not equal:
@@ -1426,9 +1527,9 @@ class ExampleTester:
         return actual
 
     def run_psql_scalar(self, database, query):
-        cmd = ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-d", database, "-c", query]
+        cmd = ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-d", database]
         result = subprocess.run(
-            cmd, capture_output=True, text=True, encoding="utf-8",
+            cmd, input=f"{query}\n", capture_output=True, text=True, encoding="utf-8",
             env=self.psql_environment(),
         )
         if result.returncode != 0:

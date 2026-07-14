@@ -911,10 +911,11 @@ SELECT
     AS "input_(c) simple, closed",
   ST_AsText((SELECT geom FROM cases WHERE label = 'd' AND NOT ST_IsSimple(geom)))
     AS "input_(d) not simple";</programlisting>
-<screen xml:id="visual-simple-linestrings" role="visual-primary visual-separate-output">            input_(a) simple             |          input_(b) not simple           |                      input_(c) simple, closed                       |                        input_(d) not simple
------------------------------------------+-----------------------------------------+---------------------------------------------------------------------+---------------------------------------------------------------------
- LINESTRING(10 190,140 130,70 80,190 10) | LINESTRING(10 190,130 40,170 160,10 10) | LINESTRING(90 190,120 190,130 140,190 50,70 10,10 70,10 150,90 190) | LINESTRING(90 190,120 190,50 60,130 10,190 50,160 90,10 150,90 190)
-(1 row)</screen>
+<screen xml:id="visual-simple-linestrings" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
+input_(a) simple         | LINESTRING(10 190,140 130,70 80,190 10)
+input_(b) not simple     | LINESTRING(10 190,130 40,170 160,10 10)
+input_(c) simple, closed | LINESTRING(90 190,120 190,130 140,190 50,70 10,10 70,10 150,90 190)
+input_(d) not simple     | LINESTRING(90 190,120 190,50 60,130 10,190 50,160 90,10 150,90 190)</screen>
 
 	  <para>A <varname>MULTILINESTRING</varname> is <emphasis>simple</emphasis>
 	  only if all of its elements are simple and the only intersection between
@@ -938,10 +939,10 @@ SELECT
     AS "input_(f) simple",
   ST_AsText((SELECT geom FROM cases WHERE label = 'g' AND NOT ST_IsSimple(geom)))
     AS "input_(g) not simple";</programlisting>
-<screen xml:id="visual-simple-multilinestrings" role="visual-primary visual-separate-output">                        input_(e) simple                         |                        input_(f) simple                        |                      input_(g) not simple
------------------------------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------
- MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,160 70)) | MULTILINESTRING((30 190,60 60,170 10),(30 190,180 150,160 70)) | MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,80 10))
-(1 row)</screen>
+<screen xml:id="visual-simple-multilinestrings" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
+input_(e) simple     | MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,160 70))
+input_(f) simple     | MULTILINESTRING((30 190,60 60,170 10),(30 190,180 150,160 70))
+input_(g) not simple | MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,80 10))</screen>
 
     <para><varname>POLYGON</varname>s are formed from linear rings, so
     valid polygonal geometry is always <emphasis>simple</emphasis>.</para>
@@ -1013,10 +1014,9 @@ SELECT
     AS "input_(h) valid",
   ST_AsText((SELECT geom FROM cases WHERE label = 'i' AND ST_IsValid(geom)))
     AS "input_(i) valid, tangent hole";</programlisting>
-<screen xml:id="visual-valid-polygons" role="visual-primary visual-separate-output">                                          input_(h) valid                                          |                                  input_(i) valid, tangent hole
----------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------
- POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(50 100,70 80,110 100,110 140,50 100)) | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(190 60,140 40,110 60,120 90,190 60))
-(1 row)</screen>
+<screen xml:id="visual-valid-polygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
+input_(h) valid               | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(50 100,70 80,110 100,110 140,50 100))
+input_(i) valid, tangent hole | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(190 60,140 40,110 60,120 90,190 60))</screen>
 
 	  <para>Examples <emphasis role="bold">(j-m)</emphasis> are invalid.
       They show, respectively, a disconnected interior, crossing rings, a cut
@@ -1052,10 +1052,11 @@ SELECT
              WHERE label = 'm' AND NOT ST_IsValid(geom)
              AND ST_IsValidReason(geom) LIKE 'Hole lies outside shell%'))
     AS "input_(m) invalid, hole outside";</programlisting>
-<screen xml:id="visual-invalid-polygons" role="visual-primary visual-separate-output">                                   input_(j) invalid, disconnected                                   |                                  input_(k) invalid, rings cross                                   |                        input_(l) invalid, cut line                        |                                         input_(m) invalid, hole outside
------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------
- POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(130 170,10 140,50 120,110 110,130 170)) | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(90 189,10 139,80 110,110 130,90 189)) | POLYGON((10 100,60 140,60 190,60 140,130 170,190 60,160 10,50 20,10 100)) | POLYGON((10 40,10 100,130 130,190 80,140 20,50 10,10 40),(81 143,103 143,112 162,107 175,89 183,71 169,81 143))
-(1 row)</screen>
+<screen xml:id="visual-invalid-polygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
+input_(j) invalid, disconnected | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(130 170,10 140,50 120,110 110,130 170))
+input_(k) invalid, rings cross  | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(90 189,10 139,80 110,110 130,90 189))
+input_(l) invalid, cut line     | POLYGON((10 100,60 140,60 190,60 140,130 170,190 60,160 10,50 20,10 100))
+input_(m) invalid, hole outside | POLYGON((10 40,10 100,130 130,190 80,140 20,50 10,10 40),(81 143,103 143,112 162,107 175,89 183,71 169,81 143))</screen>
 
 	  <para>A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> if:
 	  </para>
@@ -1099,10 +1100,10 @@ SELECT
              WHERE label = 'p' AND NOT ST_IsValid(geom)
              AND ST_IsValidReason(geom) LIKE 'Self-intersection%'))
     AS "input_(p) invalid, overlap";</programlisting>
-<screen xml:id="visual-validity-multipolygons" role="visual-primary visual-separate-output">                                                  input_(n) valid, point touch                                                   |                                                  input_(o) invalid, shared edge                                                  |                                                    input_(p) invalid, overlap
----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------
- MULTIPOLYGON(((10 40,29 118,100 75,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170))) | MULTIPOLYGON(((10 40,30 120,120 120,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170))) | MULTIPOLYGON(((10 40,42 93,130 150,180 86,140 30,70 10,10 40)),((50 170,100 190,138 182,149 156,146 137,100 100,58 140,50 170)))
-(1 row)</screen>
+<screen xml:id="visual-validity-multipolygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
+input_(n) valid, point touch   | MULTIPOLYGON(((10 40,29 118,100 75,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
+input_(o) invalid, shared edge | MULTIPOLYGON(((10 40,30 120,120 120,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
+input_(p) invalid, overlap     | MULTIPOLYGON(((10 40,42 93,130 150,180 86,140 30,70 10,10 40)),((50 170,100 190,138 182,149 156,146 137,100 100,58 140,50 170)))</screen>
 
 	  <para>These rules mean that valid polygonal geometry is also <emphasis>simple</emphasis>.
        </para>

@@ -143,13 +143,14 @@
 <screen>my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2</screen>
 			<para>Describe the table again to see the new geometry columns.</para>
 <programlisting>\d my_schema.my_spatial_table</programlisting>
-<screen>                                    Table "my_schema.my_spatial_table"
- Column  |         Type         |                                Modifiers
-----------+----------------------+-------------------------------------------------------------------------
- id       | integer              | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
- geom     | geometry(Point,4326) |
- geom_c   | geometry             |
- geomcp_c | geometry             |
+<screen>Table "my_schema.my_spatial_table"
+
+Columns:
+  id       integer               not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
+  geom     geometry(Point,4326)
+  geom_c   geometry
+  geomcp_c geometry
+
 Check constraints:
     "enforce_dims_geom_c" CHECK (st_ndims(geom_c) = 2)
     "enforce_dims_geomcp_c" CHECK (st_ndims(geomcp_c) = 2)
@@ -477,11 +478,11 @@ SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programli
 
 			<para>Describe the table to see the typmod-based geometry column.</para>
 <programlisting>\d myspatial_table</programlisting>
-<screen>                                   Table "public.myspatial_table"
- Column |           Type            |                           Modifiers
---------+---------------------------+---------------------------------------------------------------
- gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
- geom   | geometry(LineString,4326) |</screen>
+<screen>Table "public.myspatial_table"
+
+Columns:
+  gid  integer                    not null default nextval('myspatial_table_gid_seq'::regclass)
+  geom geometry(LineString,4326)</screen>
 
 			<para>This example changes the geometry columns to use constraints if they are not typmod or already constrained. For this to work, there must be existing data.</para>
 		<programlisting>

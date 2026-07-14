@@ -275,9 +275,9 @@
 SELECT ST_Transform('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'::geometry,
     4326);</programlisting>
 
-    <screen> SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,
--71.1775844305465 42.3903826677917 3,
--71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)
+    <screen> SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512903 1,-71.17768437663261 42.390382947801015 2,
+-71.17758443054647 42.390382667791854 3,
+-71.17758259272304 42.390289364798825 3,-71.1776848522251 42.3902896512903 4)
 
     </screen>
     <para>Example of creating a partial functional index.  For tables where you are not sure all the geometries
@@ -649,12 +649,24 @@ FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30,-91 31)')
 WHERE srname LIKE '%Louisiana%'
 ORDER BY auth_name, auth_srid::integer
 LIMIT 3;</programlisting>
-      <screen> auth_name | auth_srid |                srname                |      point_sw       |      point_ne
------------+-----------+--------------------------------------+---------------------+---------------------
- EPSG      | 2801      | NAD83(HARN) / Louisiana South        | POINT(-93.94 28.85) | POINT(-88.75 31.07)
- EPSG      | 3452      | NAD83 / Louisiana South (ftUS)       | POINT(-93.94 28.85) | POINT(-88.75 31.07)
- EPSG      | 3457      | NAD83(HARN) / Louisiana South (ftUS) | POINT(-93.94 28.85) | POINT(-88.75 31.07)
-</screen>
+      <screen role="psql-expanded">-[ RECORD 1 ]----------
+auth_name | EPSG
+auth_srid | 2801
+srname    | NAD83(HARN) / Louisiana South
+point_sw  | POINT(-93.94 28.85)
+point_ne  | POINT(-88.75 31.07)
+-[ RECORD 2 ]----------
+auth_name | EPSG
+auth_srid | 3452
+srname    | NAD83 / Louisiana South (ftUS)
+point_sw  | POINT(-93.94 28.85)
+point_ne  | POINT(-88.75 31.07)
+-[ RECORD 3 ]----------
+auth_name | EPSG
+auth_srid | 3457
+srname    | NAD83(HARN) / Louisiana South (ftUS)
+point_sw  | POINT(-93.94 28.85)
+point_ne  | POINT(-88.75 31.07)</screen>
 
       <para>Scan a table for max extent and find projected coordinate systems that might suit.</para>
 

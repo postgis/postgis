@@ -524,9 +524,9 @@ ST_AsText(ST_LineSubstring(
     0.333,
     0.666),
     6) AS geom_sub;</programlisting>
-<screen>                        geog_sub                         |                         geom_sub
----------------------------------------------------------+----------------------------------------------------------
- LINESTRING(-103.911641 38.931128,-87.941787 41.831072) | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)</screen>
+<screen role="psql-expanded">-[ RECORD 1 ]----------
+geog_sub | LINESTRING(-103.911641 38.931128,-87.941787 41.831072)
+geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)</screen>
 
 	<para>For geometry inputs, the fractional locations are based on the 2D
 	length of the line, even when the input has Z values. The resulting Z values

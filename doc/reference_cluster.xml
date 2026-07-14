@@ -340,7 +340,7 @@ ORDER BY cluster;</programlisting>
       <refsection>
         <title>Examples</title>
         <para>These six edges describe a square with both diagonals. The minimum spanning tree keeps three edges and excludes the rest.</para>
-        <programlisting language="sql">WITH edges(id, geom) AS (
+<programlisting language="sql" role="requires-geos-3.15">WITH edges(id, geom) AS (
   VALUES
     (1, 'LINESTRING(0 0,1 0)'::geometry),
     (2, 'LINESTRING(0 0,0 1)'::geometry),

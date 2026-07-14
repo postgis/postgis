@@ -78,9 +78,9 @@ FROM (
 <para>Return area square feet and square meters using geography data type.  Note that we transform to our geometry to geography
 	(before you can do that make sure your geometry is in WGS 84 long lat 4326).  Geography always measures in meters.
 	This is just for demonstration to compare.  Normally your table will be stored in geography data type already.</para>
-<programlisting language="sql">SELECT ST_Area(geog) / 0.3048 ^ 2 AS sqft_spheroid,
-       ST_Area(geog, false) / 0.3048 ^ 2 AS sqft_sphere,
-       ST_Area(geog) AS sqm_spheroid
+<programlisting language="sql">SELECT round((ST_Area(geog) / 0.3048 ^ 2)::numeric, 2) AS sqft_spheroid,
+       round((ST_Area(geog, false) / 0.3048 ^ 2)::numeric, 2) AS sqft_sphere,
+       round(ST_Area(geog)::numeric, 2) AS sqm_spheroid
 FROM (
   SELECT ST_Transform(
            'SRID=2249;POLYGON((743238 2967416,743238 2967450,
@@ -88,9 +88,9 @@ FROM (
            4326
          )::geography AS geog
 ) AS subquery;</programlisting>
-<screen>   sqft_spheroid   |   sqft_sphere    |   sqm_spheroid
--------------------+------------------+------------------
-928.684405784452   | 927.049336105925 | 86.2776044979692</screen>
+<screen> sqft_spheroid | sqft_sphere | sqm_spheroid
+----------------+-------------+--------------
+         928.68 |      926.61 |        86.28</screen>
 
  <para>If your data is in geography already:</para>
  <programlisting>
