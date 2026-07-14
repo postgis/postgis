@@ -30,6 +30,7 @@ CTAGS = ctags
 PERL = @PERL@
 top_srcdir = @top_srcdir@
 top_builddir = @top_builddir@
+PYTHON3 ?= $(shell command -v python3 2>/dev/null)
 
 # todo: add more rules here, like uninstall, clean...
 all install uninstall noop clean distclean check-unit:
@@ -82,6 +83,9 @@ check: check-unit docs-check check-lint check-spell
 
 ifeq (@SUPPORT_POSTGRESQL@,yes)
 check: check-regress
+ifneq (,$(and $(PYTHON3),@XSLTPROC@,@XSLBASE@,@XMLLINT@,@XMLCATALOG@,@DOCBOOK5_RNG@,@DOCBOOK5_XSD@,@DOCBOOK5_DTD@))
+check-unit docs-check: visual-examples
+endif
 endif
 ifeq (@RASTER@,raster)
 check: check-fuzzers
@@ -94,6 +98,10 @@ check-lint: check-no-trailing-blanks check-news check-contributor-credits \
 
 staged-install: all
 	$(MAKE) -C regress staged-install
+
+.PHONY: visual-examples
+visual-examples: staged-install
+	$(MAKE) -C regress visual-examples-run
 
 check-news:
 	$(top_srcdir)/utils/check_news.sh $(top_srcdir)

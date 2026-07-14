@@ -991,18 +991,18 @@ GROUP BY hexes.geom;</programlisting>
         (1, ST_MakeEnvelope(0, 0, 3, 3, 3857)),
         (2, ST_MakeEnvelope(3, 0, 6, 3, 3857))
 ), coverage AS (
-    SELECT hex.geom
+    SELECT hex.i, hex.j, hex.geom
     FROM admin1
     CROSS JOIN LATERAL ST_HexagonGrid(1.5, admin1.geom) AS hex
     WHERE ST_Intersects(admin1.geom, hex.geom)
-    GROUP BY hex.geom
+    GROUP BY hex.i, hex.j, hex.geom
 ), layers AS (
     SELECT 'region' AS kind, gid AS position, geom
     FROM admin1
     UNION ALL
     SELECT
         'hexagon',
-        1000 + row_number() OVER (ORDER BY ST_AsText(geom)),
+        1000 + row_number() OVER (ORDER BY i, j),
         geom
     FROM coverage
 )
@@ -1013,10 +1013,10 @@ FROM layers
 ORDER BY position;</programlisting>
         <screen role="visual-primary visual-overlay">POLYGON((0 0,0 3,3 3,3 0,0 0)) | null
 POLYGON((3 0,3 3,6 3,6 0,3 0)) | null
-null | POLYGON((0.75 1.3,1.5 0,3 0,3.75 1.3,3 2.6,1.5 2.6,0.75 1.3))
-null | POLYGON((0.75 3.9,1.5 2.6,3 2.6,3.75 3.9,3 5.2,1.5 5.2,0.75 3.9))
 null | POLYGON((-1.5 0,-0.75 -1.3,0.75 -1.3,1.5 0,0.75 1.3,-0.75 1.3,-1.5 0))
 null | POLYGON((-1.5 2.6,-0.75 1.3,0.75 1.3,1.5 2.6,0.75 3.9,-0.75 3.9,-1.5 2.6))
+null | POLYGON((0.75 1.3,1.5 0,3 0,3.75 1.3,3 2.6,1.5 2.6,0.75 1.3))
+null | POLYGON((0.75 3.9,1.5 2.6,3 2.6,3.75 3.9,3 5.2,1.5 5.2,0.75 3.9))
 null | POLYGON((3 0,3.75 -1.3,5.25 -1.3,6 0,5.25 1.3,3.75 1.3,3 0))
 null | POLYGON((3 2.6,3.75 1.3,5.25 1.3,6 2.6,5.25 3.9,3.75 3.9,3 2.6))
 null | POLYGON((5.25 1.3,6 0,7.5 0,8.25 1.3,7.5 2.6,6 2.6,5.25 1.3))
