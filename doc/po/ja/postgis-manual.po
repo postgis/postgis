@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-14 08:41+0000\n"
+"PO-Revision-Date: 2026-07-14 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -36769,11 +36769,13 @@ msgstr ""
 msgid ""
 "Rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint."
 msgstr ""
+"Rid = 1 にバンドが無く、したがってST_DisjointはNOTICEを出してNULL値を返します"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid "This time, without specifying band numbers."
-msgstr ""
+msgstr "今度はバンド番号の指定をしません。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36810,7 +36812,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Different bands of same raster."
-msgstr ""
+msgstr "同じラスターの異なるバンド。"
 
 #. Tag: para
 #, no-c-format
@@ -36854,7 +36856,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Comparing different bands of same raster."
-msgstr ""
+msgstr "同じラスターの異なるバンドの比較です。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -37633,14 +37635,14 @@ msgstr "<varname>LINESTRING</varname> / <varname>POINT</varname>"
 #. Tag: para
 #, no-c-format
 msgid "This example tests a circle within another circle."
-msgstr ""
+msgstr "この例ではある円がもう一つの円の中にあるかどうかをテストします。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example demonstrates the difference between contains and contains-"
 "properly predicates."
-msgstr ""
+msgstr "この例ではST_ContainsとST_ContainsProperlyとの差異を示します。"
 
 #. Tag: para
 #, no-c-format
@@ -37797,7 +37799,7 @@ msgstr "これはOGC標準と違いますがOracleは持っています。"
 #. Tag: para
 #, no-c-format
 msgid "This example tests a circle covered by another circle."
-msgstr ""
+msgstr "この例ではある円がもう一つの円に覆われているかどうかをテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -37888,7 +37890,7 @@ msgstr "ジオメトリの例"
 #. Tag: para
 #, no-c-format
 msgid "This example tests a circle covering another circle."
-msgstr ""
+msgstr "この例ではある円がもう一つの円を覆っているかどうかをテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -38724,6 +38726,8 @@ msgid ""
 "Find compounds that properly intersect (not just touch) a poly (Interior "
 "Intersects)"
 msgstr ""
+"ポリゴンと確実にインターセクト (接触だけは除く)している (内部でインターセクト"
+"している)ものを探索します。"
 
 #. Tag: para
 #, no-c-format
