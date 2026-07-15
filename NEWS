@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- [topology] Correct the CreateTopoGeom INSERT example (Darafei Praliaskouski)
 - [raster] Correct the documented ST_BandIsNoData forceChecking default (Darafei Praliaskouski)
 - [raster] Avoid padding single-tile overviews in raster2pgsql (Darafei Praliaskouski)
 - Preserve complete type definitions in generated upgrade SQL (Sandro Santilli)

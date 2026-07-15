@@ -3702,7 +3702,7 @@ are expanded to include merged faces (upon removing edges) or healed edges
 			<refsection>
 				<title>Examples: Form from existing edges</title>
 				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>).</para>
-				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo',2,2,'{{1,2}}'::topology.topoelementarray);</programlisting>
+				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo',2,2,'{{1,2}}'::topology.topoelementarray));</programlisting>
 
 			</refsection>
 
