@@ -2252,18 +2252,31 @@ SELECT json_build_object(
         projected_bounds = {}
         projected_parts = []
         frame_views = {}
+        shared_3d_view = None
+        if len(three_dimensional_frames) > 1:
+            shared_points = [
+                point
+                for part in parts
+                if str(part.get("frame", frames[0]["id"])) in three_dimensional_frames
+                for vertex in (part.get("points_xyz") or [])
+                for point in [vertex["point"]]
+            ]
+            shared_3d_view = self.choose_3d_view(shared_points)
         for frame in frames:
             frame_id = str(frame["id"])
             if frame_id not in three_dimensional_frames:
                 continue
-            frame_points = [
-                point
-                for part in parts
-                if str(part.get("frame", frames[0]["id"])) == frame_id
-                for vertex in (part.get("points_xyz") or [])
-                for point in [vertex["point"]]
-            ]
-            frame_views[frame_id] = self.choose_3d_view(frame_points)
+            if shared_3d_view is not None:
+                frame_views[frame_id] = shared_3d_view
+            else:
+                frame_points = [
+                    point
+                    for part in parts
+                    if str(part.get("frame", frames[0]["id"])) == frame_id
+                    for vertex in (part.get("points_xyz") or [])
+                    for point in [vertex["point"]]
+                ]
+                frame_views[frame_id] = self.choose_3d_view(frame_points)
         for original in parts:
             frame_id = str(original.get("frame", frames[0]["id"]))
             paths = self.xyz_paths(original)
@@ -2321,6 +2334,17 @@ SELECT json_build_object(
             projected_parts.append(projected)
 
         projected_frames = []
+        if len(projected_bounds) > 1:
+            shared_bounds = [
+                min(bounds[0] for bounds in projected_bounds.values()),
+                min(bounds[1] for bounds in projected_bounds.values()),
+                max(bounds[2] for bounds in projected_bounds.values()),
+                max(bounds[3] for bounds in projected_bounds.values()),
+            ]
+            projected_bounds = {
+                frame_id: list(shared_bounds)
+                for frame_id in projected_bounds
+            }
         for frame in frames:
             projected_frame = dict(frame)
             frame_id = str(frame["id"])

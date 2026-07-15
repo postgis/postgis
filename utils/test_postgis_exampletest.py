@@ -2080,6 +2080,48 @@ class VisualExampleTest(unittest.TestCase):
         )
         self.assertLessEqual(svg.count("<line "), 64)
 
+    def test_multi_frame_3d_payload_uses_shared_projected_bounds(self):
+        def triangle_part(ord_, label, frame, size):
+            points = [
+                [0, 0, 0],
+                [size, 0, 0],
+                [0, size, 0],
+                [0, 0, size],
+            ]
+            return {
+                "ord": ord_,
+                "source": "Output",
+                "label": label,
+                "frame": frame,
+                "type": "POLYHEDRALSURFACE",
+                "has_z": True,
+                "points_xyz": [
+                    {"path": [face, index], "point": point}
+                    for face, ring in enumerate((
+                        [points[0], points[1], points[2], points[0]],
+                        [points[0], points[1], points[3], points[0]],
+                        [points[0], points[2], points[3], points[0]],
+                        [points[1], points[2], points[3], points[1]],
+                    ), 1)
+                    for index, point in enumerate(ring, 1)
+                ],
+            }
+
+        projected = self.tester.project_3d_payload({
+            "frames": [
+                {"id": "outer", "bounds": [0, 0, 4, 4]},
+                {"id": "inner", "bounds": [0, 0, 2, 2]},
+            ],
+            "parts": [
+                triangle_part(1, "outer", "outer", 4),
+                triangle_part(2, "inner", "inner", 2),
+            ],
+        })
+        self.assertEqual(
+            projected["frames"][0]["bounds"],
+            projected["frames"][1]["bounds"],
+        )
+
     def test_unparseable_documented_output_falls_back_to_input_context(self):
         calls = []
         def payload(_database, layers):
