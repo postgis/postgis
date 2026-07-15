@@ -964,10 +964,6 @@ tr.question td {
     font-weight: bold;
 }
 
-.styledtable table td,th {
-    padding: 0.5em;
-}
-
 table.informaltable {
     border-color: #aaa;
 }
@@ -975,6 +971,7 @@ table.informaltable td, th {
     padding: 0.2em 0.4em 0.2em 0.4em;
 }
 
+.styledtable table,
 .postgis-cast-table table,
 .postgis-reference-table table {
     background: #fff;
@@ -988,6 +985,8 @@ table.informaltable td, th {
     overflow: hidden;
 }
 
+.styledtable th,
+.styledtable td,
 .postgis-cast-table th,
 .postgis-cast-table td,
 .postgis-reference-table th,
@@ -997,6 +996,7 @@ table.informaltable td, th {
     text-align: left;
 }
 
+.styledtable thead th,
 .postgis-cast-table thead th,
 .postgis-reference-table thead th {
     background: #e3edf8;
@@ -1005,6 +1005,8 @@ table.informaltable td, th {
     font-weight: 600;
 }
 
+.styledtable th + th,
+.styledtable td + td,
 .postgis-cast-table th + th,
 .postgis-cast-table td + td,
 .postgis-reference-table th + th,
@@ -1012,16 +1014,19 @@ table.informaltable td, th {
     border-left: 1px solid #d8e1e8 !important;
 }
 
+.styledtable thead th + th,
 .postgis-cast-table thead th + th,
 .postgis-reference-table thead th + th {
     border-left-color: #aebfd0 !important;
 }
 
+.styledtable tbody tr + tr td,
 .postgis-cast-table tbody tr + tr td,
 .postgis-reference-table tbody tr + tr td {
     border-top: 1px solid #d8e1e8 !important;
 }
 
+.styledtable tbody tr:nth-child(even) td,
 .postgis-cast-table tbody tr:nth-child(even) td,
 .postgis-reference-table tbody tr:nth-child(even) td {
     background: #f7f9fb;
