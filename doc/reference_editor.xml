@@ -1693,9 +1693,9 @@ result     | MULTILINESTRING((10 15,15 15,20 15),(13 13,15 15,17 17))
 view       | POLYGON((12 12,12 18,18 18,18 12,12 12))</screen>
 
 		<para>A line with no segment relevant to the view becomes empty.</para>
-		<programlisting language="sql">SELECT ST_RemoveIrrelevantPointsForView('LINESTRING(0 0,10 0,20 0,30 0)',
+		<programlisting language="sql" role="visual-skip">SELECT ST_RemoveIrrelevantPointsForView('LINESTRING(0 0,10 0,20 0,30 0)',
 ST_MakeEnvelope(12, 12, 18, 18), true);</programlisting>
-<screen role="visual-primary text-primary">LINESTRING EMPTY</screen>
+<screen role="text-primary">LINESTRING EMPTY</screen>
 
 		<para>Removing vertices without computing intersections can introduce self-intersections in the result.</para>
 		<programlisting language="sql">
@@ -1800,9 +1800,9 @@ view       | POLYGON((12 12,12 18,18 18,18 12,12 12))</screen>
     50, 50);</programlisting>
 <screen role="visual-primary text-primary">MULTIPOLYGON(((60 160,120 160,120 220,60 220,60 160)),((85 75,155 75,155 145,85 145,85 75)))</screen>
 
-		<programlisting language="sql">SELECT ST_RemoveSmallParts('LINESTRING(10 10,20 20)',
+		<programlisting language="sql" role="visual-skip">SELECT ST_RemoveSmallParts('LINESTRING(10 10,20 20)',
     50, 50);</programlisting>
-<screen role="visual-primary text-primary">LINESTRING EMPTY</screen>
+<screen role="text-primary">LINESTRING EMPTY</screen>
 
 	  </refsection>
 

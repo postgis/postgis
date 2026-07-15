@@ -442,16 +442,16 @@ FROM (SELECT 'MULTIPOLYGON(((91 50,79 22,51 10,23 22,11 50,23 78,51 90,79 78,91 
 </refsection>
 <refsection>
 <title>Collapsed Geometry Examples</title>
-<programlisting>SELECT ST_MakeValid(
+<programlisting language="sql">SELECT ST_MakeValid(
 'LINESTRING(0 0,0 0)',
 'method=structure keepcollapsed=true'
 );</programlisting>
-<screen>POINT(0 0)</screen>
-<programlisting>SELECT ST_MakeValid(
+<screen role="visual-primary text-primary">POINT(0 0)</screen>
+<programlisting language="sql" role="visual-skip">SELECT ST_MakeValid(
 'LINESTRING(0 0,0 0)',
 'method=structure keepcollapsed=false'
 );</programlisting>
-<screen>LINESTRING EMPTY</screen>
+<screen role="text-primary">LINESTRING EMPTY</screen>
 </refsection>
           <refsection>
             <title>See Also</title>

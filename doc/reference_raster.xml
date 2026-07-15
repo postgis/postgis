@@ -9393,6 +9393,8 @@ CROSS JOIN LATERAL (VALUES
 
                     <programlisting language="sql">WITH pixels AS (
     SELECT
+        col,
+        row,
         x,
         y,
         (((x - 48.0)^2 / (25.0^2) + (y - 54.0)^2 / (29.0^2) &lt; 1)
@@ -9402,10 +9404,19 @@ CROSS JOIN LATERAL (VALUES
           + (-(x - 82.0) * 0.54 + (y - 28.0) * 0.84)^2 / (8.0^2) &lt; 1 AS leaf,
         abs((x - 62.0) * 0.96 - (y - 29.0) * 0.28) &lt; 3
           AND x BETWEEN 60 AND 69 AND y BETWEEN 21 AND 45 AS stem
-    FROM generate_series(1, 90) AS y
-    CROSS JOIN generate_series(1, 120) AS x
+    FROM (
+        SELECT
+            col,
+            row,
+            col / 2.0 AS x,
+            row / 2.0 AS y
+        FROM generate_series(1, 180) AS row
+        CROSS JOIN generate_series(1, 240) AS col
+    ) AS source_pixels
 ), shaded AS (
     SELECT
+        col,
+        row,
         x,
         y,
         CASE
@@ -9466,22 +9477,22 @@ CROSS JOIN LATERAL (VALUES
     FROM pixels
 ), rows AS (
     SELECT
-        y,
-        array_agg(red::double precision ORDER BY x) AS red_values,
-        array_agg(green::double precision ORDER BY x) AS green_values,
-        array_agg(blue::double precision ORDER BY x) AS blue_values
+        row,
+        array_agg(red::double precision ORDER BY col) AS red_values,
+        array_agg(green::double precision ORDER BY col) AS green_values,
+        array_agg(blue::double precision ORDER BY col) AS blue_values
     FROM shaded
-    GROUP BY y
+    GROUP BY row
 ), source AS (
     SELECT ST_SetValues(ST_SetValues(ST_SetValues(
         ST_AddBand(ST_AddBand(ST_AddBand(
-            ST_MakeEmptyRaster(120, 90, 0, 90, 1, -1, 0, 0, 0),
+            ST_MakeEmptyRaster(240, 180, 0, 180, 1, -1, 0, 0, 0),
             '8BUI'::text, 245::double precision, 0::double precision),
             '8BUI'::text, 245::double precision, 0::double precision),
             '8BUI'::text, 245::double precision, 0::double precision),
-        1, 1, 1, array_agg(red_values ORDER BY y)::double precision[][]),
-        2, 1, 1, array_agg(green_values ORDER BY y)::double precision[][]),
-        3, 1, 1, array_agg(blue_values ORDER BY y)::double precision[][]) AS rast
+        1, 1, 1, array_agg(red_values ORDER BY row)::double precision[][]),
+        2, 1, 1, array_agg(green_values ORDER BY row)::double precision[][]),
+        3, 1, 1, array_agg(blue_values ORDER BY row)::double precision[][]) AS rast
     FROM rows
 )
 SELECT ST_AsPNG(rast) AS "original RGB",
@@ -9494,7 +9505,7 @@ SELECT ST_AsPNG(rast) AS "original RGB",
 FROM source;</programlisting>
 <screen role="visual-primary"> original RGB                | grayscale (variant 1)      | grayscale (variant 2)
 -----------------------------+----------------------------+----------------------------
- PNG image, 120 x 90 pixels | PNG image, 120 x 90 pixels | PNG image, 120 x 90 pixels
+ PNG image, 240 x 180 pixels | PNG image, 240 x 180 pixels | PNG image, 240 x 180 pixels
 (1 row)</screen>
                 </refsection>
 
@@ -11188,21 +11199,44 @@ FROM wind
 WHERE rid=167;
                     </programlisting>
 
-                    <programlisting role="requires-external-state">SELECT ST_AsPNG(rast_view) As "original (column rast_view)",
-    ST_AsPNG(
-        ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(rast_view),
-                    ST_MapAlgebraFct(rast_view, 1, NULL, 'rast_plus_tan(float,integer[],text[])'::regprocedure)
-                ),
-                ST_Band(rast_view, 2)
-            ),
-            ST_Band(rast_view, 3)
-        )
-    ) As "rast_view_ma"
-FROM wind
-WHERE rid = 167;</programlisting>
-                    <screen role="visual-primary"> original (column rast_view) | rast_view_ma
------------------------------+-------------
- PNG image                   | PNG image</screen>
+                    <para>The deprecated callback form above is equivalent to a
+                    modern <xref linkend="RT_ST_MapAlgebra"/> expression for
+                    simple per-pixel transforms. This build-time example renders
+                    the original raster and a modulo-2 classification.</para>
+                    <programlisting language="sql">WITH pixels AS (
+    SELECT x, y, (x + y * 2)::double precision AS value
+    FROM generate_series(1, 48) AS x
+    CROSS JOIN generate_series(1, 48) AS y
+), rows AS (
+    SELECT y, array_agg(value ORDER BY x) AS values
+    FROM pixels
+    GROUP BY y
+), source AS (
+    SELECT ST_SetValues(
+        ST_AddBand(
+            ST_MakeEmptyRaster(48, 48, 0, 48, 1, -1, 0, 0, 0),
+            1, '8BUI', 0, 0
+        ),
+        1, 1, 1, array_agg(values ORDER BY y)::double precision[][]
+    ) AS rast
+    FROM rows
+), variants AS (
+    SELECT 'source' AS title, rast AS rendered FROM source
+    UNION ALL
+    SELECT 'modulo 2', ST_MapAlgebra(
+        rast, 1,
+        '8BUI',
+        'mod([rast]::integer,2) * 255'
+    )
+    FROM source
+)
+SELECT title, ST_AsPNG(rendered) AS image
+FROM variants
+ORDER BY title DESC;</programlisting>
+                    <screen role="visual-primary">  title   | image
+----------+-------------------------
+ source   | PNG image, 48 x 48 pixels
+ modulo 2 | PNG image, 48 x 48 pixels</screen>
                 </refsection>
 
                 <refsection>
@@ -11301,6 +11335,45 @@ Note that the argument contains the name of the function, the types of the funct
 
                 <refsection>
                     <title>Example: Overlaying rasters on a canvas as separate bands</title>
+                    <para>The deprecated two-raster callback form can often be
+                    expressed with the modern two-raster
+                    <xref linkend="RT_ST_MapAlgebra"/> expression variant. This
+                    build-time example renders two input rasters and their
+                    averaged overlap.</para>
+                    <programlisting language="sql">WITH canvas AS (
+    SELECT ST_AddBand(
+        ST_MakeEmptyRaster(80, 80, 0, 80, 1, -1, 0, 0, 0),
+        1, '8BUI', 0, 0
+    ) AS rast
+), inputs AS (
+    SELECT
+        ST_AsRaster(ST_Buffer(ST_Point(30, 40), 25), rast, '8BUI', 80, 0)
+            AS raster_1,
+        ST_AsRaster(ST_Buffer(ST_Point(50, 40), 25), rast, '8BUI', 220, 0)
+            AS raster_2
+    FROM canvas
+), variants AS (
+    SELECT 'raster 1' AS title, raster_1 AS rendered FROM inputs
+    UNION ALL
+    SELECT 'raster 2', raster_2 FROM inputs
+    UNION ALL
+    SELECT 'averaged', ST_MapAlgebra(
+        raster_1, 1,
+        raster_2, 1,
+        '([rast1] + [rast2]) / 2',
+        '8BUI',
+        'UNION'
+    ) FROM inputs
+)
+SELECT title, ST_AsPNG(rendered) AS image
+FROM variants
+ORDER BY title DESC;</programlisting>
+                    <screen role="visual-primary">  title   | image
+----------+-------------------------
+ raster 2 | PNG image, 50 x 50 pixels
+ raster 1 | PNG image, 50 x 50 pixels
+ averaged | PNG image, 70 x 50 pixels</screen>
+
                     <para>Define our user defined function.</para>
                     <programlisting language="sql">
 <![CDATA[

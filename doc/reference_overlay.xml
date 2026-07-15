@@ -209,8 +209,8 @@ Computes a geometry representing the shared portion of geometries A and B.
         </refsection>
         <refsection>
         <title>Examples</title>
-<programlisting>SELECT ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0,0 2 )'::geometry);</programlisting>
-<screen role="visual-primary text-primary">POINT EMPTY</screen>
+<programlisting role="visual-skip">SELECT ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0,0 2 )'::geometry);</programlisting>
+<screen role="text-primary">POINT EMPTY</screen>
 <programlisting>SELECT ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0,0 2 )'::geometry);</programlisting>
 <screen role="visual-primary text-primary">POINT(0 0)</screen>
 <para>
