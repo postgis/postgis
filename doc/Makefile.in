@@ -122,7 +122,7 @@ HTML_RUNTIME_ASSETS = \
 # or build-time SVG figures.
 # The checksum is deterministic and changes whenever the document or an asset
 # that participates in the rendered page changes.
-HTML_ASSET_VERSION = $(shell cat postgis-out.xml $(HTML_RUNTIME_ASSETS) $(HTML_REF_INDEX_JS) $(visual_examples_manifest) 2>/dev/null | cksum | cut -d ' ' -f 1)
+HTML_ASSET_VERSION = $(shell cat postgis-out.xml $(HTML_RUNTIME_ASSETS) $(HTML_REF_INDEX_JS) $(images_builddir)/visual-examples/*.svg $(visual_examples_manifest) 2>/dev/null | cksum | cut -d ' ' -f 1)
 
 XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam chunker.output.encoding UTF-8 \

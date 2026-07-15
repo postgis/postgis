@@ -109,6 +109,7 @@ VISUAL_ROLE = "visual-primary"
 VISUAL_SKIP_ROLE = "visual-skip"
 VISUAL_DIRECTION_ROLE = "visual-direction"
 VISUAL_OUTPUT_ONLY_ROLE = "visual-output-only"
+VISUAL_HIDE_OUTPUT_AREA_VERTICES_ROLE = "visual-hide-output-area-vertices"
 VISUAL_SEPARATE_OUTPUT_ROLE = "visual-separate-output"
 VISUAL_OVERLAY_ROLE = "visual-overlay"
 SVG_PALETTES = {
@@ -1140,6 +1141,9 @@ class ExampleTester:
         visual_overlay = screen is not None and self.has_role(screen, VISUAL_OVERLAY_ROLE)
         visual_direction = screen is not None and self.has_role(screen, VISUAL_DIRECTION_ROLE)
         visual_output_only = screen is not None and self.has_role(screen, VISUAL_OUTPUT_ONLY_ROLE)
+        visual_hide_output_area_vertices = screen is not None and self.has_role(
+            screen, VISUAL_HIDE_OUTPUT_AREA_VERTICES_ROLE
+        )
         if visual_separate_output and visual_overlay:
             raise RuntimeError(
                 f"Visual example {self.source_label(node)} cannot request both "
@@ -1166,6 +1170,7 @@ class ExampleTester:
             "visual_kind": visual["kind"] if visual is not None else None,
             "visual_preferred": visual["preferred"] if visual is not None else False,
             "visual_direction": visual_direction,
+            "visual_hide_output_area_vertices": visual_hide_output_area_vertices,
             "visual_output_only": visual_output_only,
             "visual_separate_output": visual_separate_output,
             "visual_overlay": visual_overlay,
@@ -2108,6 +2113,9 @@ SELECT json_build_object(
             "svg": self.visual_svg(
                 example["visual_id"], payload,
                 show_direction=example.get("visual_direction", False),
+                hide_output_area_vertices=example.get(
+                    "visual_hide_output_area_vertices", False
+                ),
             ),
         }
 
@@ -2306,7 +2314,10 @@ SELECT json_build_object(
         projected_payload["parts"] = projected_parts
         return projected_payload
 
-    def visual_svg(self, visual_id, payload, show_direction=False):
+    def visual_svg(
+        self, visual_id, payload, show_direction=False,
+        hide_output_area_vertices=False,
+    ):
         if any(
             part.get("has_z") and part.get("points_xyz")
             and part.get("type", "").upper() in {
@@ -2594,7 +2605,15 @@ SELECT json_build_object(
                     show_vertices = (
                         source == "Code"
                         or dimension_class == "line"
-                        or (len(vertices) <= 16 and len(parts) <= 8)
+                        or (
+                            len(vertices) <= 16
+                            and len(parts) <= 8
+                            and not (
+                                hide_output_area_vertices
+                                and source == "Output"
+                                and dimension_class == "area"
+                            )
+                        )
                     )
                     if show_vertices:
                         vertex_radius = (

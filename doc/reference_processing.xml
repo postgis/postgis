@@ -1371,7 +1371,7 @@ SELECT round(radius::numeric, 3) AS radius,
        ST_AsText(ST_Buffer(center, radius), 0) AS circle,
        ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line
 FROM mic;</programlisting>
-<screen role="visual-overlay">-[ RECORD 1 ]-----
+<screen role="visual-overlay visual-hide-output-area-vertices">-[ RECORD 1 ]-----
 radius      | 45.189
 center      | POINT(97 76)
 nearest     | POINT(62 105)
@@ -1389,7 +1389,7 @@ SELECT round(radius::numeric, 3) AS radius,
        ST_AsText(ST_Buffer(center, radius), 0) AS circle,
        ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line
 FROM mic;</programlisting>
-<screen role="visual-overlay">-[ RECORD 1 ]-----
+<screen role="visual-overlay visual-hide-output-area-vertices">-[ RECORD 1 ]-----
 radius      | 39.924
 center      | POINT(94 110)
 nearest     | POINT(63 85)
@@ -1458,7 +1458,7 @@ SELECT round(radius::numeric, 6) AS radius,
        ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line,
        ST_AsText(ST_Buffer(center, radius), 0) AS circle
 FROM circle;</programlisting>
-<screen role="visual-overlay">-[ RECORD 1 ]-----
+<screen role="visual-overlay visual-hide-output-area-vertices">-[ RECORD 1 ]-----
 radius      | 39.260545
 center      | POINT(62 108)
 nearest     | POINT(70 70)
@@ -1484,7 +1484,7 @@ SELECT round(radius::numeric, 6) AS radius,
        ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line,
        ST_AsText(ST_Buffer(center, radius), 0) AS circle
 FROM circle;</programlisting>
-<screen role="visual-overlay">-[ RECORD 1 ]-----
+<screen role="visual-overlay visual-hide-output-area-vertices">-[ RECORD 1 ]-----
 radius      | 19.903876
 center      | POINT(97 100)
 nearest     | POINT(80 90)

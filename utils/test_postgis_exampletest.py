@@ -1537,6 +1537,19 @@ class VisualExampleTest(unittest.TestCase):
         )
         self.assertEqual(3, svg.count('class="vertex"'))
 
+    def test_svg_can_hide_output_area_vertices_for_visual_clarity(self):
+        payload = {"bounds": [0, 0, 1, 1], "parts": [{
+            "ord": 1, "source": "Output", "label": "circle", "type": "POLYGON",
+            "svg": "M 0 0 L 1 0 0 -1 Z",
+            "vertices": [[0, 0], [1, 0], [0, -1], [0, 0]],
+        }]}
+        default_svg = self.tester.visual_svg("vertices-default", payload)
+        hidden_svg = self.tester.visual_svg(
+            "vertices-hidden", payload, hide_output_area_vertices=True
+        )
+        self.assertEqual(3, default_svg.count('class="vertex"'))
+        self.assertNotIn('class="vertex"', hidden_svg)
+
     def test_svg_suppresses_vertices_for_dense_output_areas(self):
         vertices = [[index, index % 2] for index in range(17)]
         vertices.append(vertices[0])
