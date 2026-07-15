@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-15 02:39+0000\n"
+"PO-Revision-Date: 2026-07-15 04:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -41450,7 +41450,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Creates an interpolating NURBS curve passing through all given data points"
-msgstr ""
+msgstr "全ての与えられたデータのポイントを通る補間NURBS曲線を生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -41458,18 +41458,20 @@ msgid ""
 "Creates a NURBS curve that interpolates through all provided data points. "
 "The resulting curve passes exactly through each point in the input geometry."
 msgstr ""
+"与えられたデータのポイント全てを通るNURBS曲線を生成します。得られる曲線は確実"
+"に入力ジオメトリーの各ポイントを通ります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Parameters:"
-msgstr ""
+msgstr "パラメーター:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>data_points</varname> - A LINESTRING geometry containing the points "
 "to interpolate through."
-msgstr ""
+msgstr "<varname>data_points</varname> - 補間用ポイントを持つLINESTRINGジオメトリー。"
 
 #. Tag: para
 #, no-c-format
