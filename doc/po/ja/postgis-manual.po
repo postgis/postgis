@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-15 06:39+0000\n"
+"PO-Revision-Date: 2026-07-15 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -42593,7 +42593,7 @@ msgstr "Availability: 1.1.2 1.2.2でRotateYからST_RotateYに名称変更しま
 #. Tag: para
 #, no-c-format
 msgid "This example rotates a line 90 degrees around the Y axis."
-msgstr ""
+msgstr "この例ではラインをY軸回りに90°回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -42634,7 +42634,7 @@ msgstr "Availability: 1.1.2 1.2.2でRotateZからST_RotateZに名称変更しま
 #. Tag: para
 #, no-c-format
 msgid "This example rotates a line 90 degrees around the Z axis."
-msgstr ""
+msgstr "この例ではラインをZ軸回りに90°回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -42712,22 +42712,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example scales X, Y, and Z values."
-msgstr ""
+msgstr "この例ではX,Y,Z値を拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example scales X and Y values."
-msgstr ""
+msgstr "この例ではX,Y値を拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example scales X, Y, Z, and M values."
-msgstr ""
+msgstr "この例ではX,Y,Z,M値を拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example scales X and Y values using a false origin."
-msgstr ""
+msgstr "この例では仮原点を使ってX,Y値を拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
@@ -42746,6 +42746,8 @@ msgid ""
 "y,delta z units. Units are based on the units defined in spatial reference "
 "(SRID) for this geometry. M coordinates are preserved."
 msgstr ""
+"座標がX増分、Y増分、Z増分で変換した新しいジオメトリーを返します。単位は"
+"ジオメトリーのSRID (空間参照系)の単位です。M値は保存されます。"
 
 #. Tag: para
 #, no-c-format
@@ -42765,7 +42767,7 @@ msgstr "3次元ポイントを移動させます。"
 #. Tag: para
 #, no-c-format
 msgid "Move points with a measure coordinate"
-msgstr ""
+msgstr "M値を持つポイントを移動させます"
 
 #. Tag: para
 #, no-c-format
