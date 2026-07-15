@@ -3709,40 +3709,62 @@ VALUES (
 </programlisting>
 <screen>1</screen>
 					<para>Update the column assuming everything is perfectly aligned with the edges.</para>
-<programlisting>
+<programlisting language="sql">
 UPDATE boston.blockgroups AS bg
-    SET topo = topology.CreateTopoGeom(
-        'topo_boston',
-        3, 1,
-        foo.bfaces)
-FROM (SELECT b.gid, topology.TopoElementArray_Agg(ARRAY[f.face_id, 3]) As bfaces
-    FROM boston.blockgroups As b
-            INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
-        WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-            GROUP BY b.gid) As foo
-WHERE foo.gid = bg.gid;
-    </programlisting>
+SET topo = topology.CreateTopoGeom(
+    'topo_boston',
+    3,
+    1,
+    foo.bfaces
+)
+FROM (
+    SELECT
+        b.gid,
+        topology.TopoElementArray_Agg(ARRAY[f.face_id, 3]) AS bfaces
+    FROM boston.blockgroups AS b
+    INNER JOIN topo_boston.face AS f
+        ON b.geom &amp;&amp; f.mbr
+    WHERE ST_Covers(
+        b.geom,
+        topology.ST_GetFaceGeometry('topo_boston', f.face_id)
+    )
+    GROUP BY b.gid
+) AS foo
+WHERE foo.gid = bg.gid;</programlisting>
 
 	<para>The world is rarely perfect, so this version allows some error. It counts a face if 50 percent of it falls within the expected block group boundary.</para>
-	<programlisting>
+	<programlisting language="sql">WITH candidate_faces AS (
+    SELECT
+        b.gid,
+        b.geom AS block_geom,
+        f.face_id,
+        topology.ST_GetFaceGeometry('topo_boston', f.face_id) AS face_geom
+    FROM boston.blockgroups AS b
+    INNER JOIN topo_boston.face AS f
+        ON b.geom &amp;&amp; f.mbr
+),
+block_faces AS (
+    SELECT
+        gid,
+        topology.TopoElementArray_Agg(ARRAY[face_id, 3]) AS bfaces
+    FROM candidate_faces
+    WHERE ST_Covers(block_geom, face_geom)
+        OR (
+            ST_Intersects(block_geom, face_geom)
+            AND ST_Area(ST_Intersection(block_geom, face_geom))
+                > ST_Area(face_geom) * 0.5
+        )
+    GROUP BY gid
+)
 UPDATE boston.blockgroups AS bg
-    SET topo = topology.CreateTopoGeom(
-        'topo_boston',
-        3, 1,
-        foo.bfaces)
-FROM (SELECT b.gid, topology.TopoElementArray_Agg(ARRAY[f.face_id, 3]) As bfaces
-    FROM boston.blockgroups As b
-            INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
-        WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-    OR
- (  ST_Intersects(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-            AND ST_Area(ST_Intersection(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id) ) ) >
-                ST_Area(topology.ST_GetFaceGeometry('topo_boston', f.face_id))*0.5
-                )
-            GROUP BY b.gid) As foo
-WHERE foo.gid = bg.gid;
-
-</programlisting>
+SET topo = topology.CreateTopoGeom(
+    'topo_boston',
+    3,
+    1,
+    block_faces.bfaces
+)
+FROM block_faces
+WHERE block_faces.gid = bg.gid;</programlisting>
 	<para>To convert the topogeometry back to a denormalized geometry aligned with faces and edges, cast the topogeometry to a geometry. The resulting geometries are aligned with the TIGER street centerlines.</para>
 <programlisting>UPDATE boston.blockgroups SET new_geom = topo::geometry;</programlisting>
 			</refsection>
