@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-15 04:39+0000\n"
+"PO-Revision-Date: 2026-07-15 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -41478,23 +41478,23 @@ msgstr "<varname>data_points</varname> - 補間用ポイントを持つLINESTRIN
 msgid ""
 "<varname>degree</varname> - Polynomial degree of the NURBS curve (typically "
 "2 or 3)."
-msgstr ""
+msgstr "<varname>degree</varname> - NURBS曲線の次数 (通常は 2 か 3)。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example creates a smooth curve interpolating through five points."
-msgstr ""
+msgstr "この例では5点を通る滑らかな曲線を生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeNurbsCurve\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_MakeNurbsCurve\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Creates an approximating NURBS curve fitting data points within a tolerance"
-msgstr ""
+msgstr "データポイントに許容値範囲内で近似するNURBS曲線を生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -41503,25 +41503,28 @@ msgid ""
 "specified tolerance. Unlike interpolation, the curve does not necessarily "
 "pass through all points but provides a smooth fit with fewer control points."
 msgstr ""
+"与えたデータポイントを指定した許容値内に収まるようにNURBS曲線を生成します。補"
+"間と違い、この曲線は必ずしも全てのポイントを通りませんが、少ない制御点で滑ら"
+"かに近似します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>data_points</varname> - A LINESTRING geometry containing the points "
 "to approximate."
-msgstr ""
+msgstr "<varname>data_points</varname> - 近似用ポイントを持つLINESTRINGジオメトリー。"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>degree</varname> - Polynomial degree of the NURBS curve."
-msgstr ""
+msgstr "<varname>degree</varname> - NURBS曲線の次数。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>tolerance</varname> - Maximum allowed distance between the curve "
 "and data points."
-msgstr ""
+msgstr "<varname>tolerance</varname> - 曲線とデータポイントとの最大許容距離。"
 
 #. Tag: para
 #, no-c-format
@@ -41529,18 +41532,20 @@ msgid ""
 "<varname>max_control_points</varname> - Optional maximum number of control "
 "points (default: 100). Limits curve complexity."
 msgstr ""
+"<varname>max_control_points</varname> - 任意パラメーター。制御点の最大数 "
+"(デフォルト: 100)。曲線の複雑さを制限します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example approximates noisy data using a tolerance."
-msgstr ""
+msgstr "この例では許容値を使ってノイズ入りデータを近似します。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Computes the derivative (tangent, curvature) of a NURBS curve at a given "
 "parameter"
-msgstr ""
+msgstr "与えたパラメーターのNURBS曲線の導関数 (正接、曲率)を計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -41548,40 +41553,42 @@ msgid ""
 "Computes the derivative of a NURBS curve at a specific parameter value. The "
 "derivative represents the rate of change at that point:"
 msgstr ""
+"指定したパラメーター値のNURBS曲線の導関数を計算します。導関数は指定した"
+"ポイントの変化率を表現します:"
 
 #. Tag: para
 #, no-c-format
 msgid "Order 1: Tangent vector (direction and speed)"
-msgstr ""
+msgstr "1階: 正接ベクトル (方向と速度)"
 
 #. Tag: para
 #, no-c-format
 msgid "Order 2: Curvature vector (how the tangent changes)"
-msgstr ""
+msgstr "2階: 曲率ベクトル (正接の変更)"
 
 #. Tag: para
 #, no-c-format
 msgid "Order 3: Third-order derivative (supported maximum)"
-msgstr ""
+msgstr "3階: 3階の導関数 (対応する最大階数)"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>nurbscurve</varname> - A NURBS curve geometry."
-msgstr ""
+msgstr "<varname>nurbscurve</varname> - NURBS曲線ジオメトリー。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>parameter</varname> - Parameter value for evaluation (typically 0.0 "
 "to 1.0)."
-msgstr ""
+msgstr "<varname>parameter</varname> - 評価用パラメーター値 (通常は0.0から1.0)。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>derivative_order</varname> - Order of derivative to compute (1, 2, "
 "or 3)."
-msgstr ""
+msgstr "<varname>derivative_order</varname> - 導関数計算の階数(1、2、3)."
 
 #. Tag: para
 #, no-c-format
@@ -41589,11 +41596,13 @@ msgid ""
 "Returns a POINT geometry representing the derivative vector at the specified "
 "parameter."
 msgstr ""
+"指定したパラメーターにおける導関数ベクトルを表現するPOINTジオメトリーを返しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example returns the tangent vector at the curve midpoint."
-msgstr ""
+msgstr "この例では曲線の中点における正接ベクトルを返します。"
 
 #. Tag: title
 #, no-c-format
@@ -41674,7 +41683,7 @@ msgstr "EPSG:16031変換を使ったWGS 84 経度緯度から UTM31Nへの変換
 #. Tag: para
 #, no-c-format
 msgid "This example transforms in the inverse direction."
-msgstr ""
+msgstr "この例では逆方向に変換しています。"
 
 #. Tag: para
 #, no-c-format
