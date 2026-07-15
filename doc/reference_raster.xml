@@ -7060,19 +7060,41 @@ ORDER BY rid</programlisting>
             <refsection>
                     <title>Examples</title>
 
-                    <para>Compare the source raster with nearest-neighbor and
-                    bilinear reprojections. All three figures are generated from
-                    this query at manual build time.</para>
-                    <programlisting language="sql">WITH shapes AS (
-    SELECT ST_Collect(ARRAY[
-        ST_Buffer(ST_SetSRID(ST_Point(0, 0), 3857), 70000),
-        ST_SetSRID(ST_GeomFromText(
-            'LINESTRING(-90000 -70000,0 90000,90000 -70000)'
-        ), 3857)
-    ]) AS geom
+                    <para>Compare a source raster with nearest-neighbor and
+                    bilinear reprojections. The diagonal bands make the
+                    resampling behavior visible: nearest-neighbor keeps hard
+                    pixel steps, while bilinear smooths values between pixels.
+                    All three figures are generated from this query at manual
+                    build time.</para>
+                    <programlisting language="sql">WITH rows AS (
+    SELECT
+        y,
+        array_agg(
+            ((
+                    x * 3 + y * 5
+                    + CASE WHEN (x + y) % 8 &lt; 4 THEN 80 ELSE 0 END
+                ) % 255)::double precision
+            ORDER BY x
+        ) AS row_values
+    FROM generate_series(1, 80) AS y
+    CROSS JOIN generate_series(1, 80) AS x
+    GROUP BY y
 ), source AS (
-    SELECT ST_AsRaster(geom, 80, 80, '8BUI', 200, 0) AS rast
-    FROM shapes
+    SELECT ST_SetValues(
+        ST_AddBand(
+            ST_MakeEmptyRaster(
+                80, 80,
+                -500000, 600000,
+                2500, -2500,
+                0, 0,
+                2163
+            ),
+            1, '8BUI', 0, NULL
+        ),
+        1, 1, 1,
+        array_agg(row_values ORDER BY y)::double precision[][]
+    ) AS rast
+    FROM rows
 ), transformed AS (
     SELECT
         rast,
@@ -7081,11 +7103,11 @@ ORDER BY rid</programlisting>
     FROM source
 )
 SELECT
-    ST_AsPNG(rast) AS "source (EPSG:3857)",
+    ST_AsPNG(rast) AS "source (EPSG:2163)",
     ST_AsPNG(nearest) AS "nearest (EPSG:4326)",
     ST_AsPNG(bilinear) AS "bilinear (EPSG:4326)"
 FROM transformed;</programlisting>
-                    <screen role="visual-primary">PNG image, 80 x 80 pixels | PNG image, 85 x 75 pixels | PNG image, 85 x 75 pixels</screen>
+                    <screen role="visual-primary">PNG image, 80 x 80 pixels | PNG image, 98 x 64 pixels | PNG image, 98 x 64 pixels</screen>
 
                 <para>Variant 3.</para>
 
