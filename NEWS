@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - [topology] Correct the CreateTopoGeom INSERT example (Darafei Praliaskouski)
  - [raster] Correct the documented ST_BandIsNoData forceChecking default (Darafei Praliaskouski)
  - #5357, Preserve close points in ST_LineFromEncodedPolyline (Paul Ramsey)
  - Resolve the ST_GeomFromGeoHash cast in the PostGIS schema (Paul Ramsey)
