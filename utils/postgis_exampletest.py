@@ -346,14 +346,23 @@ class ExampleTester:
         return self.hexwkb_geometry(value)
 
     def areal_canonical_key_sql(self, geometry):
-        """Return an exact, representation-independent key for areal geometry.
+        """Return a representation-independent key for areal geometry.
 
         ST_Normalize canonicalizes polygon orientation and component order, but
         its ring-start choice is based on XY.  A 3D face may therefore retain
         different (but equivalent) cyclic starts when two vertices share XY
-        and differ only in Z.  Rotate each normalized ring using the full native
-        point EWKB, then sort the normalized areal components.
+        and differ only in Z.  Rotate each normalized ring using rounded point
+        coordinate keys, then sort the normalized areal components.
         """
+        tolerance = format(VALUE_TOLERANCE, ".17g")
+        digits = VALUE_DECIMAL_DIGITS
+        point_key = (
+            "concat_ws(' ', "
+            f"round((CASE WHEN abs(ST_X(point.geom)) < {tolerance} THEN 0 ELSE ST_X(point.geom) END)::numeric, {digits}), "
+            f"round((CASE WHEN abs(ST_Y(point.geom)) < {tolerance} THEN 0 ELSE ST_Y(point.geom) END)::numeric, {digits}), "
+            f"round((CASE WHEN abs(ST_Z(point.geom)) < {tolerance} THEN 0 ELSE ST_Z(point.geom) END)::numeric, {digits}), "
+            f"round((CASE WHEN abs(ST_M(point.geom)) < {tolerance} THEN 0 ELSE ST_M(point.geom) END)::numeric, {digits}))"
+        )
         return (
             "(SELECT jsonb_agg(face_key ORDER BY face_key) FROM (SELECT "
             "face_path, jsonb_agg(ring_key ORDER BY ring_path) AS face_key "
@@ -370,7 +379,7 @@ class ExampleTester:
             "point.path[array_length(point.path, 1)] AS point_ordinal, "
             "max(point.path[array_length(point.path, 1)]) OVER (PARTITION BY "
             "face.path, point.path[1:array_length(point.path, 1) - 1]) AS "
-            "closing_ordinal, ST_AsHEXEWKB(point.geom, 'XDR') AS point_key "
+            f"closing_ordinal, {point_key} AS point_key "
             f"FROM canonical CROSS JOIN LATERAL ST_Dump({geometry}) AS face "
             "CROSS JOIN LATERAL ST_DumpPoints(ST_Normalize(face.geom)) AS point"
             ") AS face_points WHERE point_ordinal < closing_ordinal "
@@ -754,7 +763,7 @@ class ExampleTester:
 
     def canonical_surface_wkt(self, value):
         match = re.match(
-            r"^(?:SRID=\d+;)?(POLYHEDRALSURFACE|TIN)\((.*)\)$",
+            r"^(?:SRID=\d+;)?(POLYHEDRALSURFACE|TIN)(?:\s+(?:ZM|Z|M))?\s*\((.*)\)$",
             value, re.I | re.S,
         )
         if not match:
@@ -1359,6 +1368,7 @@ class ExampleTester:
     def prepare_visual_rows(self, actual, types):
         if not actual:
             return QueryRows(actual, getattr(actual, "headers", []), types)
+        actual = self.coalesce_single_column_wkt_rows(actual)
         width = max((len(row) for row in actual), default=0)
         if len(types) != width:
             raise RuntimeError(
@@ -1400,19 +1410,36 @@ class ExampleTester:
             rows.append(display_row)
         return QueryRows(rows, headers, types, visuals)
 
-    def typed_rows_equal(self, database, actual, expected):
-        if (
-            len(actual) == 1
-            and len(actual[0]) == 1
-            and len(expected) > 1
-            and all(len(row) == 1 for row in expected)
+    def coalesce_single_column_wkt_rows(self, rows):
+        if not (
+            len(rows) > 1
+            and all(len(row) == 1 and isinstance(row[0], str) for row in rows)
         ):
-            joined = "".join(row[0] for row in expected)
-            spaced = " ".join(row[0] for row in expected)
-            if WKT_VALUE_RE.match(joined):
-                expected = [[joined]]
-            elif WKT_VALUE_RE.match(spaced):
-                expected = [[spaced]]
+            return rows
+        for candidate in (
+            "".join(row[0] for row in rows),
+            " ".join(row[0] for row in rows),
+            "\n".join(row[0] for row in rows),
+        ):
+            value = candidate.strip()
+            if not WKT_VALUE_RE.match(value):
+                continue
+            try:
+                matches = self.geometry_candidates(value)
+            except RuntimeError:
+                continue
+            if len(matches) == 1 and matches[0].strip() == value:
+                return QueryRows(
+                    [[value]],
+                    getattr(rows, "headers", []),
+                    getattr(rows, "types", []),
+                    getattr(rows, "visuals", []),
+                )
+        return rows
+
+    def typed_rows_equal(self, database, actual, expected):
+        if len(actual) == 1 and len(actual[0]) == 1:
+            expected = self.coalesce_single_column_wkt_rows(expected)
         if len(actual) != len(expected) or any(
             len(actual_row) != len(expected_row)
             for actual_row, expected_row in zip(actual, expected)
@@ -1423,12 +1450,17 @@ class ExampleTester:
                 output_type = actual.types[column] if column < len(actual.types) else ""
                 actual_hex = self.geometry_output_hex(actual_value, output_type)
                 expected_hex = self.geometry_output_hex(expected_value, output_type)
+                actual_wkt = (
+                    actual_value.strip()
+                    if isinstance(actual_value, str) and WKT_VALUE_RE.match(actual_value)
+                    else None
+                )
                 expected_wkt = (
                     expected_value.strip()
                     if isinstance(expected_value, str) and WKT_VALUE_RE.match(expected_value)
                     else None
                 )
-                if actual_hex is not None or expected_hex is not None or expected_wkt is not None:
+                if actual_hex is not None or expected_hex is not None:
                     if actual_hex is None or (expected_hex is None and expected_wkt is None):
                         return False
                     query = self.geometry_comparison_query(
@@ -1438,6 +1470,11 @@ class ExampleTester:
                         actual_hex["type"],
                     )
                     if self.run_psql_scalar(database, query) != "t":
+                        return False
+                elif actual_wkt is not None or expected_wkt is not None:
+                    if actual_wkt is None or expected_wkt is None:
+                        return False
+                    if not self.values_equal(actual_wkt, expected_wkt):
                         return False
                 elif not self.values_equal(actual_value, expected_value):
                     return False
@@ -1859,6 +1896,7 @@ SELECT json_build_object(
         }
 
     def render_visual_example(self, database, example, actual):
+        actual = self.coalesce_single_column_wkt_rows(actual)
         if getattr(actual, "visuals", None):
             return self.render_image_visual_example(example, actual)
         code = (
@@ -2082,12 +2120,24 @@ SELECT json_build_object(
         nice = 1 if normalized <= 1 else 2 if normalized <= 2 else 5 if normalized <= 5 else 10
         return nice * power
 
-    def project_3d_point(self, point):
-        """Return deterministic isometric x/y/depth coordinates for one XYZ point."""
+    DEFAULT_3D_VIEW = (-1.35, -1.0, 0.8)
+    CANDIDATE_3D_VIEWS = (
+        DEFAULT_3D_VIEW,
+        (-0.45, -1.6, 0.85),
+        (1.2, -1.1, 0.85),
+        (1.45, 0.65, 0.85),
+        (-1.0, 1.35, 0.85),
+        (0.2, -1.5, 1.15),
+        (-1.5, 0.15, 1.15),
+        (1.5, -0.2, 1.15),
+    )
+
+    def project_3d_point(self, point, view=None):
+        """Return deterministic orthographic x/y/depth coordinates for one XYZ point."""
         x, y, z = [float(value) for value in point]
-        # A slightly elevated, asymmetric camera avoids collapsing opposite
+        # Slightly elevated, asymmetric cameras avoid collapsing opposite
         # corners of a cube while retaining a stable orthographic projection.
-        view = (-1.35, -1.0, 0.8)
+        view = self.DEFAULT_3D_VIEW if view is None else view
         view_length = math.sqrt(sum(value ** 2 for value in view))
         view = tuple(value / view_length for value in view)
         horizontal_length = math.hypot(view[0], view[1])
@@ -2101,6 +2151,25 @@ SELECT json_build_object(
         projected_y = x * up[0] + y * up[1] + z * up[2]
         depth = x * view[0] + y * view[1] + z * view[2]
         return projected_x, projected_y, depth
+
+    def choose_3d_view(self, points):
+        """Choose a deterministic 3D view that avoids edge-on projections."""
+        if len(points) < 2:
+            return self.DEFAULT_3D_VIEW
+        best = None
+        for view_index, view in enumerate(self.CANDIDATE_3D_VIEWS):
+            projected = [self.project_3d_point(point, view) for point in points]
+            xs = [point[0] for point in projected]
+            ys = [point[1] for point in projected]
+            width = max(xs) - min(xs)
+            height = max(ys) - min(ys)
+            smaller_span = min(width, height)
+            larger_span = max(width, height)
+            balance = smaller_span / larger_span if larger_span else 0
+            score = (smaller_span, balance, -view_index)
+            if best is None or score > best[0]:
+                best = (score, view)
+        return best[1]
 
     def face_shade(self, rings):
         """Return an orientation-independent light factor for a polygon face."""
@@ -2155,6 +2224,19 @@ SELECT json_build_object(
         }
         projected_bounds = {}
         projected_parts = []
+        frame_views = {}
+        for frame in frames:
+            frame_id = str(frame["id"])
+            if frame_id not in three_dimensional_frames:
+                continue
+            frame_points = [
+                point
+                for part in parts
+                if str(part.get("frame", frames[0]["id"])) == frame_id
+                for vertex in (part.get("points_xyz") or [])
+                for point in [vertex["point"]]
+            ]
+            frame_views[frame_id] = self.choose_3d_view(frame_points)
         for original in parts:
             frame_id = str(original.get("frame", frames[0]["id"]))
             paths = self.xyz_paths(original)
@@ -2166,7 +2248,9 @@ SELECT json_build_object(
             for path in paths:
                 projected_path = []
                 for point in path:
-                    projected_x, projected_y, depth = self.project_3d_point(point)
+                    projected_x, projected_y, depth = self.project_3d_point(
+                        point, frame_views.get(frame_id)
+                    )
                     projected_path.append((projected_x, projected_y))
                     depths.append(depth)
                 if projected_path:

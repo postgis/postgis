@@ -195,6 +195,39 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         self.assertIsNone(self.tester.geometry_output_hex(value, "text"))
         self.assertIsNone(self.tester.geometry_output_hex("\\x" + value, "bytea"))
 
+    def test_textual_surface_wkt_compares_canonically(self):
+        actual = QueryRows(
+            [[
+                "POLYHEDRALSURFACE Z ("
+                "((0 0 0,0 0 2,0 2 0,0 0 0)),"
+                "((0 0 0,0 2 0,2 0 0,0 0 0))"
+                ")"
+            ]],
+            types=["text"],
+        )
+        expected = [[
+            "POLYHEDRALSURFACE Z ("
+            "((0 0 0,0 2 0,2 0 0,0 0 0)),"
+            "((0 0 0,0 0 2,0 2 0,0 0 0))"
+            ")"
+        ]]
+        self.assertTrue(self.tester.typed_rows_equal("unused", actual, expected))
+
+    def test_multiline_single_column_wkt_rows_are_coalesced(self):
+        rows = QueryRows([
+            ["POLYGON((234776.9 899563.7,234896.5 899456.7,"],
+            ["234914 899436.4,234946.6 899356.9,"],
+            ["234776.9 899563.7))"],
+        ])
+        self.assertEqual(
+            [[
+                "POLYGON((234776.9 899563.7,234896.5 899456.7,"
+                "234914 899436.4,234946.6 899356.9,"
+                "234776.9 899563.7))"
+            ]],
+            self.tester.coalesce_single_column_wkt_rows(rows),
+        )
+
     def test_function_type_substring_does_not_swallow_argument_geometry(self):
         self.assertEqual(
             ["POLYGON((0 0,2 0,0 2,0 0))", "POINT(1 1)"],
@@ -492,12 +525,14 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertIn("ST_AsEWKT(ST_Normalize(expected))", query)
         self.assertNotIn("actual_components AS", query)
 
-    def test_areal_comparison_uses_full_3d_point_to_break_ring_start_ties(self):
+    def test_areal_comparison_uses_rounded_coordinate_keys(self):
         query = self.tester.geometry_comparison_query(
             "00", expected_wkt="POLYGON Z EMPTY", actual_type="POLYGON",
         )
         self.assertEqual(2, query.count("generate_subscripts(points, 1)"))
-        self.assertEqual(2, query.count("ST_AsHEXEWKB(point.geom, 'XDR')"))
+        self.assertEqual(2, query.count("concat_ws(' ',"))
+        self.assertIn("round((CASE WHEN abs(ST_X(point.geom))", query)
+        self.assertIn("round((CASE WHEN abs(ST_Z(point.geom))", query)
         self.assertIn("points[rotation:array_length(points, 1)]", query)
         self.assertIn("IS NOT DISTINCT FROM", query)
         self.assertNotIn("regexp_replace", query)
@@ -1312,13 +1347,56 @@ class VisualExampleTest(unittest.TestCase):
             ],
         }
         projected = self.tester.project_3d_payload(payload)
-        expected_x, expected_y, _ = self.tester.project_3d_point([2, 1, 0])
+        frame_points = [
+            vertex["point"]
+            for part in payload["parts"]
+            for vertex in (part.get("points_xyz") or [])
+        ]
+        view = self.tester.choose_3d_view(frame_points)
+        expected_x, expected_y, _ = self.tester.project_3d_point([2, 1, 0], view)
         self.assertEqual(expected_x, projected["parts"][1]["x"])
         self.assertEqual(-expected_y, projected["parts"][1]["y"])
         self.assertNotEqual(payload["parts"][2]["svg"], projected["parts"][2]["svg"])
         svg = self.tester.visual_svg("mixed-zero-z", payload)
         self.assertIn('data-postgis-geometry-id="mixed-zero-z-code-1"', svg)
         self.assertIn('data-postgis-geometry-id="mixed-zero-z-code-2"', svg)
+
+    def test_3d_projection_chooses_non_edge_on_view_for_skinny_footprints(self):
+        payload = {
+            "frames": [{"id": "Overlay", "bounds": [1, 10, 175, 155]}],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "poly",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "unused",
+                 "has_z": True, "points_xyz": xyz_vertices(
+                     [[175, 150, 5], [20, 40, 5], [35, 45, 5],
+                      [50, 60, 5], [100, 100, 5], [175, 150, 5]],
+                     ring=True,
+                 )},
+                {"ord": 2, "source": "Code", "label": "mline",
+                 "root_type": "MULTILINESTRING", "type": "LINESTRING",
+                 "svg": "unused", "closed": False, "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[175, 155, 2], [20, 40, 20], [50, 60, -2],
+                      [125, 100, 1], [175, 155, 1]]
+                 )},
+                {"ord": 3, "source": "Output", "label": "lol3d",
+                 "root_type": "LINESTRING", "type": "LINESTRING",
+                 "svg": "unused", "closed": False, "has_z": True,
+                 "points_xyz": xyz_vertices([[175, 150, 5], [1, 10, 2]])},
+                {"ord": 4, "source": "Output", "label": "lol2d",
+                 "root_type": "LINESTRING", "type": "LINESTRING",
+                 "svg": "unused", "closed": False, "has_z": False,
+                 "points_xyz": xyz_vertices([[175, 150, 0], [1, 10, 0]])},
+            ],
+        }
+        projected = self.tester.project_3d_payload(payload)
+        min_x, min_y, max_x, max_y = projected["frames"][0]["bounds"]
+        self.assertGreater(max_x - min_x, 0)
+        self.assertGreater(max_y - min_y, 0)
+        self.assertGreaterEqual(
+            min(max_x - min_x, max_y - min_y) / max(max_x - min_x, max_y - min_y),
+            0.55,
+        )
 
     def test_3d_projection_preserves_vertical_separation(self):
         ground = self.tester.project_3d_point([4, 7, 0])
