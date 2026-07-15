@@ -217,7 +217,8 @@
     if (token.slice(0, 2) === '--' || token.slice(0, 2) === '/*') {
       return 'postgis-sql-comment';
     }
-    if (token.charAt(0) === '\'' || token.charAt(0) === '"' || token.slice(0, 2) === '$$') {
+    if (token.charAt(0) === '\'' || token.charAt(0) === '"' ||
+        (token.charAt(0) === '$' && dollarQuoteDelimiter(token))) {
       return 'postgis-sql-string';
     }
     if (/^\d/.test(token)) {
@@ -251,6 +252,27 @@
       return '<span class="' + tokenClass + '">' + escapeHtml(displayedText) + '</span>';
     }
     return escapeHtml(displayedText);
+  }
+
+  function dollarQuoteDelimiter(token) {
+    var match = /^\$[A-Za-z_][A-Za-z0-9_]*\$|^\$\$/.exec(token);
+    return match ? match[0] : null;
+  }
+
+  function isPlpgsqlDollarQuote(text, startIndex, endIndex) {
+    var prefix = text.slice(0, startIndex);
+    var suffix = text.slice(endIndex);
+    var statementStart = Math.max(prefix.lastIndexOf(';'), prefix.lastIndexOf('\n/\n'));
+    var statementPrefix = prefix.slice(statementStart + 1);
+
+    if (/\bDO\s*(?:LANGUAGE\s+['"]?plpgsql['"]?)?\s*$/i.test(statementPrefix)) {
+      return true;
+    }
+    if (/\bAS\s*$/i.test(statementPrefix) &&
+        /^\s*LANGUAGE\s+['"]?plpgsql['"]?/i.test(suffix)) {
+      return true;
+    }
+    return false;
   }
 
   function parenToken(segment, text) {
@@ -291,12 +313,13 @@
     }).join('');
   }
 
-  function highlightSql(text, refIndex) {
+  function sqlSegments(text, refIndex) {
     var operators = operatorPattern(refIndex);
     var parts = [
       '--[^\\n\\r]*',
       '\\/\\*[\\s\\S]*?\\*\\/',
       '\\$\\$[\\s\\S]*?\\$\\$',
+      '\\$[A-Za-z_][A-Za-z0-9_]*\\$[\\s\\S]*?\\$[A-Za-z_][A-Za-z0-9_]*\\$',
       "'(?:''|[^'])*'",
       '"(?:""|[^"])*"'
     ];
@@ -336,6 +359,17 @@
           nextPairId += 1;
         }
         segments.push(closing);
+      } else if (match[0].charAt(0) === '$' &&
+          isPlpgsqlDollarQuote(text, match.index, tokenPattern.lastIndex)) {
+        var delimiter = dollarQuoteDelimiter(match[0]);
+        if (delimiter && match[0].slice(-delimiter.length) === delimiter) {
+          segments.push({ text: delimiter, token: true, refIndex: refIndex });
+          segments = segments.concat(sqlSegments(
+            match[0].slice(delimiter.length, -delimiter.length), refIndex));
+          segments.push({ text: delimiter, token: true, refIndex: refIndex });
+        } else {
+          segments.push({ text: match[0], token: true, refIndex: refIndex });
+        }
       } else {
         segments.push({ text: match[0], token: true, refIndex: refIndex });
       }
@@ -344,6 +378,11 @@
     if (lastIndex < text.length) {
       segments.push({ text: text.slice(lastIndex) });
     }
+    return segments;
+  }
+
+  function highlightSql(text, refIndex) {
+    var segments = sqlSegments(text, refIndex);
     return renderLogicalLines(segments);
   }
 

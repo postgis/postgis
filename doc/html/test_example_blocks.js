@@ -262,7 +262,10 @@ async function main() {
           '=': { href: 'equals.html', label: 'Operator', title: 'equals' },
           '==': { href: 'same.html', label: 'Operator', title: 'same' }
         },
-        keywords: ['SELECT']
+        keywords: [
+          'ANALYZE', 'BEGIN', 'DECLARE', 'DO', 'END', 'EXECUTE', 'FOR', 'IF',
+          'LOOP', 'SELECT', 'SET', 'THEN', 'VACUUM'
+        ]
       },
       clearTimeout() {},
       setTimeout() {},
@@ -534,6 +537,18 @@ async function main() {
   assert.strictEqual(geometry.currentFunctionName(refIndex), null);
   assert.match(geometry.highlightSql('ST_Buffer(g, 1)', refIndex),
     /<a\b[^>]*href="ST_Buffer\.html"[^>]*>ST_Buffer<\/a>/);
+  assert.match(geometry.highlightSql('VACUUM ANALYZE table_name;', refIndex),
+    /<span class="postgis-sql-keyword">VACUUM<\/span> <span class="postgis-sql-keyword">ANALYZE<\/span>/);
+  const doBlock = geometry.highlightSql(
+    "DO $$\nDECLARE\n  invalid_count bigint;\nBEGIN\n  IF invalid_count > 0 THEN\n    EXECUTE format('SELECT 1');\n  END IF;\nEND;\n$$;",
+    refIndex
+  );
+  assert.match(doBlock, /postgis-sql-string">\$\$<\/span>/);
+  assert.match(doBlock, /postgis-sql-keyword">DECLARE<\/span>/);
+  assert.match(doBlock, /postgis-sql-keyword">BEGIN<\/span>/);
+  assert.match(doBlock, /postgis-sql-keyword">IF<\/span>/);
+  assert.match(doBlock, /postgis-sql-keyword">EXECUTE<\/span>/);
+  assert.doesNotMatch(doBlock, /postgis-sql-string">\$\$\nDECLARE/);
 
   const matchedClasses = [new Set(), new Set()];
   const pairPre = {
