@@ -990,6 +990,7 @@ table.informaltable th {
     margin: 0.35rem 0 1rem;
     min-width: min(22rem, 100%);
     overflow: hidden;
+    box-shadow: 0 1px 2px rgba(48, 75, 99, 0.08);
 }
 
 .styledtable th,
@@ -1038,6 +1039,17 @@ table.informaltable th {
 .postgis-cast-table tbody tr:nth-child(even) td,
 .postgis-reference-table tbody tr:nth-child(even) td {
     background: #f7f9fb;
+}
+
+.styledtable td:first-child,
+.styledtable td:nth-child(2) {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.styledtable td:last-child {
+    max-width: 68rem;
+    min-width: min(24rem, 60vw);
 }
 
 .pdparam {
