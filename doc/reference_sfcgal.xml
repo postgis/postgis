@@ -360,9 +360,9 @@ FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
 ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
 ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )'::geometry) As f(geom);</programlisting>
-<screen role="text-primary">            cube_surface_area | solid_surface_area
--------------------+--------------------
-6 |                  0    </screen>
+<screen role="text-primary">cube_surface_area │ solid_surface_area
+──────────────────┼────────────────────
+6                 │ 0</screen>
 
     </refsection>
     <refsection>

@@ -271,6 +271,20 @@ class DocBookSourceLintTest(unittest.TestCase):
         )
         self.assertCategories(f'<refentry xml:id="f"><screen>{table_row}</screen></refentry>', set())
 
+    def test_misaligned_psql_table_violation_and_unicode_clean_case(self):
+        self.assertCategories(
+            '<refentry xml:id="f"><screen>            left | right\n'
+            '-----+------\n'
+            '1 |      2</screen></refentry>',
+            {"misaligned-psql-table"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><screen>left │ right\n'
+            '─────┼──────\n'
+            '1    │ 2</screen></refentry>',
+            set(),
+        )
+
     def test_wide_verbatim_line_negative_payload_and_opt_out(self):
         payload = "\\x" + "0123456789abcdef" * 10
         self.assertCategories(

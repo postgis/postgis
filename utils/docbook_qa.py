@@ -116,6 +116,7 @@ LEADING_SQL_COMMENT_RE = re.compile(
 PSQL_META_COMMAND_RE = re.compile(rf"(?m)^[ \t]*{PSQL_META_COMMAND_PATTERN}(?:[ \t]|$)")
 PSQL_ROW_COUNT_RE = re.compile(r"(?m)^\s*\(\d+\s+rows?\)\s*$")
 PSQL_TABLE_SEPARATOR_RE = re.compile(r"(?m)^\s*[-+]{3,}(?:\s*\+\s*[-+]{2,})+\s*$")
+PSQL_UNICODE_TABLE_SEPARATOR_RE = re.compile(r"(?m)^\s*[─┼]{3,}(?:\s*┼\s*[─┼]{2,})+\s*$")
 OUTPUT_DASH_RUN_RE = re.compile(r"(?m)^\s*-{3,}")
 PSQL_MESSAGE_RE = re.compile(r"(?m)^\s*(?:ERROR|NOTICE|WARNING|DETAIL|HINT|CONTEXT):")
 REDUNDANT_OUTPUT_CAPTION_RE = re.compile(r"(?:output|result|results|returns|the output):?", re.IGNORECASE)
@@ -362,11 +363,45 @@ def line_contains_verbatim_payload(line: str) -> bool:
     )
 
 
+def line_is_psql_table_separator(line: str) -> bool:
+    return PSQL_TABLE_SEPARATOR_RE.fullmatch(line) is not None or PSQL_UNICODE_TABLE_SEPARATOR_RE.fullmatch(line) is not None
+
+
+def psql_table_delimiter_positions(line: str, delimiters: str) -> list[int]:
+    return [index for index, char in enumerate(line) if char in delimiters]
+
+
+def has_misaligned_psql_table(text: str) -> bool:
+    lines = [line for line in text.splitlines() if line.strip()]
+    for index in range(len(lines) - 1):
+        header, separator = lines[index], lines[index + 1]
+        if not line_is_psql_table_separator(separator):
+            continue
+        separator_positions = psql_table_delimiter_positions(separator, "+┼")
+        if not separator_positions:
+            continue
+        expected_columns = len(separator_positions) + 1
+        rows = [header]
+        for row in lines[index + 2 :]:
+            if PSQL_ROW_COUNT_RE.fullmatch(row) or line_is_psql_table_separator(row):
+                break
+            rows.append(row)
+        for row in rows:
+            row_positions = psql_table_delimiter_positions(row, "|│")
+            if not row_positions:
+                continue
+            if len(row_positions) != expected_columns - 1:
+                return True
+            if any(abs(row_position - separator_position) > 1 for row_position, separator_position in zip(row_positions, separator_positions)):
+                return True
+    return False
+
+
 def line_is_wide_psql_table(line: str) -> bool:
     stripped = line.strip()
     if not stripped:
         return False
-    return PSQL_TABLE_SEPARATOR_RE.search(line) is not None or VERBATIM_PSQL_TABLE_ROW_RE.fullmatch(stripped) is not None
+    return line_is_psql_table_separator(line) or VERBATIM_PSQL_TABLE_ROW_RE.fullmatch(stripped) is not None
 
 
 def summarize_long_verbatim_lines(node: ET.Element) -> tuple[list[int], bool]:
@@ -408,7 +443,7 @@ def has_ragged_scalar_output_indent(text: str) -> bool:
         return False
     if any(
         PSQL_ROW_COUNT_RE.fullmatch(line)
-        or PSQL_TABLE_SEPARATOR_RE.fullmatch(line)
+        or line_is_psql_table_separator(line)
         or line.strip().startswith("---")
         for line in lines
     ):
@@ -638,6 +673,12 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
                 "warning", "ragged-scalar-output-indent", source_location(path, node),
                 "screen output starts with a stray leading indent on the first scalar line; "
                 "left-align scalar output or format it as an aligned psql table",
+            ))
+        if has_misaligned_psql_table(text):
+            findings.append(Finding(
+                "warning", "misaligned-psql-table", source_location(path, node),
+                "screen contains a psql-style table whose column separators do not line up; "
+                "align header, separator, and data rows before rendering",
             ))
 
     for node in named_descendants(root, "programlisting", "screen"):

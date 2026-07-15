@@ -45,6 +45,16 @@ class ExampleTestParserTest(unittest.TestCase):
         )
         self.assertEqual([["postgis", "3.7.0dev", "null"]], rows)
 
+    def test_unicode_psql_table_rows_are_parsed(self):
+        rows = self.tester.expected_rows_from_psql_lines(
+            [
+                "cube_surface_area │ solid_surface_area",
+                "──────────────────┼────────────────────",
+                "6                 │ 0",
+            ]
+        )
+        self.assertEqual([["6", "0"]], rows)
+
     def test_psql_headers_are_preserved_for_visual_labels(self):
         lines = [
             " center | nearest ",
