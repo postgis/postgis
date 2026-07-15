@@ -470,18 +470,21 @@ ORDER BY cid;</programlisting>
          ('{residential,commercial}'::text[])[1 + mod(row_number() OVER (ORDER BY ST_YMin(geom), ST_XMin(geom)), 2)] AS type
   FROM parcel_geoms
 )
-SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, type
+SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid,
+       parcel_id,
+       type,
+       ST_SnapToGrid(geom, 1) AS parcel_geom
 FROM parcels
 ORDER BY type, parcel_id;</programlisting>
-<screen role="text-primary"> cid | parcel_id |    type
------+-----------+-------------
-   0 | 001       | commercial
-   2 | 003       | commercial
-   2 | 005       | commercial
-   1 | 007       | commercial
-   0 | 002       | residential
-   2 | 004       | residential
-   1 | 006       | residential
+<screen role="visual-primary text-primary visual-output-only"> cid | parcel_id |    type     | parcel_geom
+-----+-----------+-------------+--------------------------------------------------------------
+   0 | 001       | commercial  | POLYGON((33 60,0 60,0 98,71 98,71 35,33 60))
+   2 | 003       | commercial  | POLYGON((106 98,138 98,137 91,134 84,131 77,126 71,120 66,113 63,106 61,106 98))
+   2 | 005       | commercial  | POLYGON((140 148,138 98,72 98,72 148,140 148))
+   1 | 007       | commercial  | POLYGON((109 189,116 187,123 183,129 178,134 171,137 164,139 156,140 148,109 148,109 189))
+   0 | 002       | residential | POLYGON((71 98,106 98,106 61,98 60,88 60,71 35,71 98))
+   2 | 004       | residential | POLYGON((0 98,0 140,45 140,67 172,72 178,72 98,0 98))
+   1 | 006       | residential | POLYGON((72 178,78 183,85 187,93 189,101 190,109 189,109 148,72 148,72 178))
 </screen>
 
 	<para>Cluster weighted city populations on the Earth in geocentric coordinates. The maximum radius is specified in meters, while the returned geometries stay in WGS 84 for display.</para>
