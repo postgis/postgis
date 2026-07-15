@@ -1762,6 +1762,33 @@ class VisualExampleTest(unittest.TestCase):
         self.assertEqual(2, len(visual["layers"]))
         self.assertEqual(2, visual["svg"].count('class="legend-row"'))
 
+    def test_render_visual_example_uses_text_companion_for_cluster_labels(self):
+        captured = []
+        self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
+            "bounds": [0, 0, 2, 2],
+            "parts": [{
+                "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
+                "type": "POINT", "x": layer["row_num"] or 0, "y": -(layer["row_num"] or 0),
+            } for layer in layers],
+        }
+        actual = QueryRows(
+            [
+                ["0", "Melbourne, Sydney", "MULTIPOINT((144.96 -37.81),(151.21 -33.87))"],
+                ["1", "Boston, New York", "MULTIPOINT((-71.06 42.36),(-74.01 40.71))"],
+            ],
+            ["cid", "places", "cluster_geom"],
+        )
+        visual = self.tester.render_visual_example("manual", {
+            "query": "SELECT 1", "visual_id": "clustered-places", "label": "clustered:2",
+            "visual_refentry": "clustered", "visual_screen": 2,
+            "visual_preferred": True, "visual_kind": "geometry-output",
+        }, actual)
+        self.assertEqual(
+            ["cid 0: Melbourne, Sydney", "cid 1: Boston, New York"],
+            [layer["label"] for layer in captured],
+        )
+        self.assertIn(">cid 0: Melbourne, Sydney</text>", visual["svg"])
+
     def test_render_visual_example_reads_marker_scale_companion_column(self):
         captured = []
         self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {

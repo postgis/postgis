@@ -118,6 +118,7 @@ SVG_PALETTES = {
 }
 POINT_TYPES = {"POINT", "MULTIPOINT"}
 CLUSTER_COLUMN_NAMES = {"cluster", "cluster_id", "cid", "category"}
+LABEL_COLUMN_NAMES = {"label", "name", "title", "description", "place", "places", "parcels"}
 MARKER_SCALE_COLUMN_NAME = "marker_scale"
 MAX_VISUAL_GEOMETRIES = 16
 MAX_VISUAL_WKT_BYTES = 100000
@@ -820,6 +821,15 @@ class ExampleTester:
                 return index
         return None
 
+    def label_companion_column_index(self, headers, excluded_indexes=None):
+        excluded_indexes = set(excluded_indexes or ())
+        for index, header in enumerate(headers or []):
+            if index in excluded_indexes:
+                continue
+            if self.normalized_header_name(header) in LABEL_COLUMN_NAMES:
+                return index
+        return None
+
     def scalar_companion_value(self, row, index):
         if index is None or index >= len(row):
             return None
@@ -844,9 +854,12 @@ class ExampleTester:
             return 0.62
         return 0.48
 
-    def grouped_geometry_label(self, header, value):
+    def grouped_geometry_label(self, header, value, detail=None):
         header_label = (header or "").strip().replace("_", " ")
-        return f"{header_label} {value}".strip()
+        label = f"{header_label} {value}".strip()
+        if detail:
+            return f"{label}: {detail}" if label else detail
+        return label
 
     def rows_equal(self, left, right):
         if len(left) == 1 and len(left[0]) == 1 and len(right) > 1:
@@ -1953,6 +1966,11 @@ SELECT json_build_object(
                         and cluster_value is not None
                         and column_index != cluster_column
                     ):
+                        label_column = self.label_companion_column_index(
+                            headers,
+                            excluded_indexes={cluster_column, column_index},
+                        )
+                        label_value = self.scalar_companion_value(row, label_column)
                         group_key = (column_index + 1, cluster_value)
                         if group_key not in output_groups:
                             output_groups[group_key] = next_output_group
@@ -1960,6 +1978,7 @@ SELECT json_build_object(
                         group_label = self.grouped_geometry_label(
                             headers[cluster_column] if cluster_column is not None else "",
                             cluster_value,
+                            label_value,
                         )
                     output.append({
                         **geometry, "label": label, "source": source,

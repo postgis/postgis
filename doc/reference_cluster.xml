@@ -514,7 +514,7 @@ SELECT cid,
 FROM clustered
 GROUP BY cid
 ORDER BY cid;</programlisting>
-	<screen role="visual-primary text-primary">0 | Melbourne, Sydney | MULTIPOINT((144.96 -37.81),(151.21 -33.87))
+	<screen role="visual-primary text-primary visual-output-only">0 | Melbourne, Sydney | MULTIPOINT((144.96 -37.81),(151.21 -33.87))
 1 | Boston, New York | MULTIPOINT((-71.06 42.36),(-74.01 40.71))
 2 | Osaka, Tokyo | MULTIPOINT((135.5 34.69),(139.69 35.68))
 3 | London, Paris | MULTIPOINT((-0.13 51.51),(2.35 48.86))</screen>
