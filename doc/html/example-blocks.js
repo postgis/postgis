@@ -1130,6 +1130,7 @@
   }
 
   function setOutputTextCollapsed(block, button, collapsed) {
+    if (!block || !button) return;
     block.classList.toggle('postgis-output-text-collapsed', collapsed);
     button.textContent = collapsed ? 'Show text' : 'Hide text';
     button.setAttribute('aria-label', collapsed ? 'Show output text' : 'Hide output text');
@@ -1137,10 +1138,18 @@
     button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
   }
 
+  function revealOutputText(block) {
+    var textButton = block && block.querySelector('.postgis-output-toggle');
+    if (block && block.classList && block.classList.contains('postgis-output-text-collapsed')) {
+      setOutputTextCollapsed(block, textButton, false);
+    }
+  }
+
   function setOutputRepresentation(block, button, nativeOutput) {
     var readable = block && block.querySelector('pre.screen:not(.postgis-native-output)');
     var native = block && block.querySelector('pre.postgis-native-output');
     if (!readable || !native || !button) return;
+    revealOutputText(block);
     readable.hidden = nativeOutput;
     readable.setAttribute('aria-hidden', nativeOutput ? 'true' : 'false');
     native.hidden = !nativeOutput;

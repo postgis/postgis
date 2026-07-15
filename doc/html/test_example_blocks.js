@@ -360,10 +360,23 @@ async function main() {
   const nativeOutput = makePre('0101000000000000000000F03F0000000000000040');
   readableOutput.hidden = false;
   nativeOutput.hidden = true;
+  const representationState = new Set(['postgis-output-text-collapsed']);
+  const representationTextButton = {
+    textContent: 'Show text',
+    attributes: { 'aria-expanded': 'false' },
+    setAttribute(name, value) { this.attributes[name] = value; }
+  };
   const representationBlock = {
+    classList: {
+      contains(name) { return representationState.has(name); },
+      toggle(name, enabled) {
+        if (enabled) representationState.add(name); else representationState.delete(name);
+      }
+    },
     querySelector(selector) {
       if (selector === 'pre.screen:not(.postgis-native-output)') return readableOutput;
       if (selector === 'pre.postgis-native-output') return nativeOutput;
+      if (selector === '.postgis-output-toggle') return representationTextButton;
       return null;
     }
   };
@@ -375,6 +388,9 @@ async function main() {
   geometry.setOutputRepresentation(representationBlock, representationButton, true);
   assert.strictEqual(readableOutput.hidden, true);
   assert.strictEqual(nativeOutput.hidden, false);
+  assert(!representationState.has('postgis-output-text-collapsed'));
+  assert.strictEqual(representationTextButton.textContent, 'Hide text');
+  assert.strictEqual(representationTextButton.attributes['aria-expanded'], 'true');
   assert.strictEqual(representationButton.textContent, 'Show EWKT');
   assert.strictEqual(representationButton.attributes['aria-expanded'], 'true');
   geometry.setOutputRepresentation(representationBlock, representationButton, false);
