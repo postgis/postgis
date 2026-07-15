@@ -2209,10 +2209,19 @@ SELECT json_build_object(
         show_frame_labels = frame_count > 1 or any(
             frame.get("three_dimensional") for frame in frames
         )
-        panel_columns = 1 if frame_count == 1 else min(2, frame_count)
+        if frame_count == 1:
+            panel_columns = 1
+        elif frame_count == 3:
+            panel_columns = 3
+        elif frame_count == 9:
+            panel_columns = 3
+        else:
+            panel_columns = min(2, frame_count)
         panel_rows = math.ceil(frame_count / panel_columns)
         panel_gap = 20 if frame_count > 1 else 0
-        panel_width = (560 - panel_gap * (panel_columns - 1)) / panel_columns
+        svg_width = 900 if frame_count == 3 else 600
+        plot_width = svg_width - 40
+        panel_width = (plot_width - panel_gap * (panel_columns - 1)) / panel_columns
         plot_top = 30 if show_frame_labels else 12
         panel_height = 322 - plot_top if panel_rows == 1 else 220
         plot_bottom = plot_top + panel_rows * panel_height + panel_gap * (panel_rows - 1)
@@ -2242,7 +2251,7 @@ SELECT json_build_object(
             panel_column = frame_index % panel_columns
             panels_in_row = min(panel_columns, frame_count - panel_row * panel_columns)
             row_width = panels_in_row * panel_width + (panels_in_row - 1) * panel_gap
-            row_left = 20 + (560 - row_width) / 2
+            row_left = 20 + (plot_width - row_width) / 2
             panel_left = row_left + panel_column * (panel_width + panel_gap)
             panel_right = panel_left + panel_width
             panel_top = plot_top + panel_row * (panel_height + panel_gap)
@@ -2535,7 +2544,7 @@ SELECT json_build_object(
         for geometry_id, color, label in legend:
             safe_label = html.escape(label)
             item_width = max(72, 34 + len(label) * 7)
-            if cursor_x + item_width > 580 and cursor_x > 20:
+            if cursor_x + item_width > svg_width - 20 and cursor_x > 20:
                 cursor_x = 20
                 cursor_y += 22
             legend_svg.append(
@@ -2550,7 +2559,7 @@ SELECT json_build_object(
         safe_id = html.escape(visual_id, quote=True)
         return (
             '<?xml version="1.0" encoding="UTF-8"?>\n'
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="{svg_height}" viewBox="0 0 600 {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{svg_width}" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
             f'<title id="{safe_id}-title">Input and output geometries for {safe_id}</title>\n'
             '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.frame-label{font-family:sans-serif;font-size:12px;font-weight:600;fill:#344}.geometry-layer{opacity:1;transition:opacity 90ms ease}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font-family:sans-serif;font-size:12px;fill:#344}svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}.geometry-layer.active{filter:brightness(.72)}</style>\n'
             + "".join(backgrounds) + "\n" + "".join(frame_labels) + "\n"

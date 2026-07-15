@@ -1367,6 +1367,31 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn('x="445" y="260"', svg)
         self.assertIn('height="548" viewBox="0 0 600 548"', svg)
 
+    def test_svg_renders_three_frames_in_one_wide_row(self):
+        frames = [
+            {"id": label, "label": label, "bounds": [0, 0, 10, 10]}
+            for label in ("Code", "linework", "structure")
+        ]
+        svg = self.tester.visual_svg(
+            "three-frames",
+            {
+                "frames": frames,
+                "parts": [
+                    {"ord": index, "source": "Output" if index > 1 else "Code",
+                     "label": frame["label"], "frame": frame["id"],
+                     "type": "LINESTRING", "svg": "M 0 0 L 10 -10", "closed": False}
+                    for index, frame in enumerate(frames, 1)
+                ],
+            },
+        )
+        self.assertIn('width="900"', svg)
+        self.assertIn('viewBox="0 0 900 380"', svg)
+        self.assertEqual(3, svg.count('class="plot-background"'))
+        self.assertEqual(3, svg.count('y="30" width="273.333333333" height="292"'))
+        self.assertIn('>Code</text>', svg)
+        self.assertIn('>linework</text>', svg)
+        self.assertIn('>structure</text>', svg)
+
     def test_separate_explicit_inputs_use_their_labels_as_frames(self):
         captured = []
         self.tester.visual_payload = lambda database, layers: captured.extend(layers) or {
