@@ -147,6 +147,14 @@ static void test_lwgeom_calculate_gbox(void)
 	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
 	lwgeom_free(g);
 
+	g = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.ymin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 2.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.ymax, 0.5, 0.0000001);
+	lwgeom_free(g);
+
 	/* Inf = 0x7FF0000000000000 */
 	/* POINT(0 0) = 00 00000001 0000000000000000 0000000000000000 */
 	/* POINT(0 Inf) = 00 00000001 0000000000000000 7FF0000000000000 */
