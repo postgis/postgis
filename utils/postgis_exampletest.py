@@ -2142,6 +2142,12 @@ SELECT json_build_object(
         nice = 1 if normalized <= 1 else 2 if normalized <= 2 else 5 if normalized <= 5 else 10
         return nice * power
 
+    def grid_label(self, value):
+        if abs(value) < 1e-12:
+            value = 0
+        label = f"{value:.12g}"
+        return "0" if label == "-0" else label
+
     DEFAULT_3D_VIEW = (-1.35, -1.0, 0.8)
     CANDIDATE_3D_VIEWS = (
         DEFAULT_3D_VIEW,
@@ -2462,6 +2468,12 @@ SELECT json_build_object(
                     f'<line x1="{x:.12g}" y1="{panel_top}" x2="{x:.12g}" y2="{panel_bottom}" '
                     'stroke="#dce2e7" stroke-width="1"/>'
                 )
+                if panel_left + 18 <= x <= panel_right - 18:
+                    grid.append(
+                        f'<text class="grid-label grid-label-x" x="{x:.12g}" '
+                        f'y="{panel_bottom - 5:.12g}" text-anchor="middle">'
+                        f'{html.escape(self.grid_label(value))}</text>'
+                    )
                 next_value = value + step
                 if next_value <= value:
                     break
@@ -2476,6 +2488,12 @@ SELECT json_build_object(
                     f'x2="{panel_right:.12g}" y2="{y:.12g}" '
                     'stroke="#dce2e7" stroke-width="1"/>'
                 )
+                if panel_top + 12 <= y <= panel_bottom - 16:
+                    grid.append(
+                        f'<text class="grid-label grid-label-y" x="{panel_left + 5:.12g}" '
+                        f'y="{y - 3:.12g}" text-anchor="start">'
+                        f'{html.escape(self.grid_label(value))}</text>'
+                    )
                 next_value = value + step
                 if next_value <= value:
                     break
@@ -2752,7 +2770,7 @@ SELECT json_build_object(
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{svg_width}" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}" role="img" aria-labelledby="{safe_id}-title">\n'
             f'<title id="{safe_id}-title">Input and output geometries for {safe_id}</title>\n'
-            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.frame-label{font-family:sans-serif;font-size:12px;font-weight:600;fill:#344}.geometry-layer{opacity:1;transition:opacity 90ms ease}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font-family:sans-serif;font-size:12px;fill:#344}svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}.geometry-layer.active{filter:brightness(.72)}</style>\n'
+            '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.plot-grid text{font-family:sans-serif;font-size:9px;fill:#667887;fill-opacity:.56;paint-order:stroke;stroke:#fbfcfd;stroke-width:2.5px;stroke-opacity:.76}.frame-label{font-family:sans-serif;font-size:12px;font-weight:600;fill:#344}.geometry-layer{opacity:1;transition:opacity 90ms ease}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font-family:sans-serif;font-size:12px;fill:#344}svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}.geometry-layer.active{filter:brightness(.72)}</style>\n'
             + "".join(backgrounds) + "\n" + "".join(frame_labels) + "\n"
             '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
             + "".join(hidden_edge_groups + area_groups + line_groups + point_groups)

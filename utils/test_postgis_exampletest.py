@@ -891,6 +891,10 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn('.geometry-layer.active{filter:brightness(.72)}', svg)
         self.assertIn('svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}', svg)
         self.assertIn('stroke="#dce2e7" stroke-width="1"', svg)
+        self.assertIn('<text class="grid-label grid-label-x"', svg)
+        self.assertIn('<text class="grid-label grid-label-y"', svg)
+        self.assertIn('>0</text>', svg)
+        self.assertIn('>10</text>', svg)
         self.assertIn('<rect width="11" height="11" rx="2" fill="#2878b8"/>', svg)
         self.assertIn('<rect width="11" height="11" rx="2" fill="#a62c2b"/>', svg)
         self.assertLess(
@@ -1139,7 +1143,7 @@ class VisualExampleTest(unittest.TestCase):
             },
         )
         self.assertEqual(
-            "8c90be0f646bdf792054f5396be58935250fc5ad5304cbc341fca97379614878",
+            "ad9f03873ee58dbb970b5fab66598bf146db51f76331217814abeddbff05ae0b",
             hashlib.sha256(svg.encode()).hexdigest(),
         )
 
