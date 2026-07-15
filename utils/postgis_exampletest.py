@@ -1616,14 +1616,21 @@ WITH raw AS (
     COALESCE(requested_frame,
       CASE WHEN separate_sources THEN source ELSE 'Overlay' END) AS frame
   FROM parsed_raw CROSS JOIN frame_policy
+), frame_bounds_geoms AS (
+  SELECT *,
+    CASE WHEN ST_HasArc(geom)
+      THEN ST_CurveToLine(ST_Force2D(geom))
+      ELSE ST_Force2D(geom)
+    END AS bounds_geom
+  FROM framed
 ), frame_bounds_raw AS (
   SELECT frame, min(ord) AS first_ord,
     CASE WHEN bool_and(shared_coordinate_space)
-      THEN (SELECT ST_Extent(ST_Force2D(all_geometries.geom)) FROM framed AS all_geometries)
-      ELSE ST_Extent(ST_Force2D(geom))
+      THEN (SELECT ST_Extent(all_geometries.bounds_geom) FROM frame_bounds_geoms AS all_geometries)
+      ELSE ST_Extent(bounds_geom)
     END AS box,
     CASE WHEN count(DISTINCT ST_SRID(geom)) = 1 THEN max(ST_SRID(geom)) ELSE 0 END AS srid
-  FROM framed
+  FROM frame_bounds_geoms
   GROUP BY frame
 ), frame_bounds AS (
   SELECT frame, first_ord, srid,
