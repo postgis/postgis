@@ -967,8 +967,15 @@ tr.question td {
 table.informaltable {
     border-color: #aaa;
 }
-table.informaltable td, th {
+table.informaltable td,
+table.informaltable th {
     padding: 0.2em 0.4em 0.2em 0.4em;
+}
+
+.styledtable {
+    margin: 0.75rem 0 1.25rem;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .styledtable table,
@@ -976,7 +983,7 @@ table.informaltable td, th {
 .postgis-reference-table table {
     background: #fff;
     border: 1px solid #8aa1b8 !important;
-    border-collapse: separate;
+    border-collapse: separate !important;
     border-radius: 0.45rem;
     border-spacing: 0;
     display: inline-table;
@@ -994,6 +1001,7 @@ table.informaltable td, th {
     border: 0 !important;
     padding: 0.55rem 0.8rem;
     text-align: left;
+    vertical-align: top;
 }
 
 .styledtable thead th,
