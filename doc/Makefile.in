@@ -118,10 +118,11 @@ HTML_RUNTIME_ASSETS = \
 	$(abs_srcdir)/html/style.css \
 	$(abs_srcdir)/html/example-blocks.js
 
-# Keep generated HTML from being paired with stale cached CSS or JavaScript.
+# Keep generated HTML from being paired with stale cached CSS, JavaScript,
+# or build-time SVG figures.
 # The checksum is deterministic and changes whenever the document or an asset
 # that participates in the rendered page changes.
-HTML_ASSET_VERSION = $(shell cat postgis-out.xml $(HTML_RUNTIME_ASSETS) $(HTML_REF_INDEX_JS) 2>/dev/null | cksum | cut -d ' ' -f 1)
+HTML_ASSET_VERSION = $(shell cat postgis-out.xml $(HTML_RUNTIME_ASSETS) $(HTML_REF_INDEX_JS) $(visual_examples_manifest) 2>/dev/null | cksum | cut -d ' ' -f 1)
 
 XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam chunker.output.encoding UTF-8 \
