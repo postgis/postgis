@@ -9,6 +9,8 @@
 html {
     font-family: 'Lucida Grande', Verdana, Geneva, Arial, Helvetica, sans-serif;
     font-size: 12pt;
+    --postgis-prose-width: min(100%, 76rem);
+    --postgis-example-width: max(72rem, calc(80ch + 2rem));
 }
 
 
@@ -128,6 +130,21 @@ ul.toc li {
     list-style-type: none;
 }
 
+.refentry .refsynopsisdiv,
+.refentry .refsection > p,
+.refentry .refsection > .itemizedlist,
+.refentry .refsection > .orderedlist,
+.refentry .refsection > .itemizedlist > ul,
+.refentry .refsection > .orderedlist > ol,
+.refentry .refsection li > p,
+.chapter > p,
+.sect1 > p,
+.sect2 > p,
+.sect3 > p,
+.section > p {
+    max-width: var(--postgis-prose-width);
+}
+
 
 /* 3. Block Formatted ----------------------------------------------------- */
 
@@ -186,7 +203,7 @@ div.funcsynopsis code {
     border-radius: 0.45rem;
     box-sizing: border-box;
     margin: 1rem 0;
-    max-width: 72rem;
+    max-width: var(--postgis-example-width);
     overflow-x: auto;
     padding: 0.55rem 1rem;
 }
@@ -222,7 +239,7 @@ div.funcsynopsis code {
     box-sizing: border-box;
     margin-bottom: 1rem;
     margin-top: 1rem;
-    max-width: 72rem;
+    max-width: var(--postgis-example-width);
     overflow: hidden;
 }
 
@@ -238,7 +255,7 @@ div.funcsynopsis code {
         box-sizing: border-box;
         color: #344b5d;
         margin: 1rem 0 0;
-        max-width: 72rem;
+        max-width: var(--postgis-example-width);
         padding: 0.7rem 0.85rem;
     }
 
@@ -564,7 +581,7 @@ table.postgis-example-grid td {
     border-radius: 0.45rem;
     box-sizing: border-box;
     margin: 0 0 1rem;
-    max-width: 72rem;
+    max-width: var(--postgis-example-width);
     padding: 0;
 }
 
@@ -748,8 +765,10 @@ div.note {
     border-color: #dd5;
     border-style: solid;
     border-width: 1.5px;
+    box-sizing: border-box;
     margin-bottom: 1em;
     margin-top: 1em;
+    max-width: var(--postgis-prose-width);
     overflow: auto;
     padding: 0.8em;
     background: #ffe;
@@ -770,8 +789,10 @@ div.warning {
     border-color: #cc5555;
     border-style: solid;
     border-width: 1.5px;
+    box-sizing: border-box;
     margin-bottom: 1em;
     margin-top: 1em;
+    max-width: var(--postgis-prose-width);
     overflow: auto;
     padding: 0.8em;
     background: #FFf1f1;
@@ -792,8 +813,10 @@ div.important {
     border-color: #55d;
     border-style: solid;
     border-width: 1.5px;
+    box-sizing: border-box;
     margin-bottom: 1em;
     margin-top: 1em;
+    max-width: var(--postgis-prose-width);
     overflow: auto;
     padding: 0.8em;
     background: #eef;
