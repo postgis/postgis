@@ -413,9 +413,9 @@ FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
 ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
 ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )'::geometry) As f(geom);</programlisting>
-<screen role="text-primary">    cube_surface_vol | solid_surface_vol
-------------------+-------------------
-1 |                 1</screen>
+<screen role="text-primary">cube_surface_vol │ solid_surface_vol
+─────────────────┼──────────────────
+1                │ 1</screen>
     </refsection>
 
     <refsection>
