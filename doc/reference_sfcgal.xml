@@ -791,9 +791,11 @@ FROM solids;</programlisting>
     <refsection>
         <title>Examples</title>
         <para>Compute the 3D convex hull of a 3D LineString.</para>
-        <programlisting language="sql">SELECT CG_3DConvexHull(
-    'LINESTRING Z(0 0 5,1 5 3,5 7 6,9 5 3,5 7 5,6 3 5)'::geometry
-  );</programlisting>
+        <programlisting language="sql">WITH data AS (
+  SELECT 'LINESTRING Z(0 0 5,1 5 3,5 7 6,9 5 3,5 7 5,6 3 5)'::geometry AS source_line
+)
+SELECT CG_3DConvexHull(source_line) AS convex_hull
+FROM data;</programlisting>
         <screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
 
         <para>Compare the extruded source geometry with its 3D convex hull.</para>
@@ -2099,11 +2101,18 @@ FROM data;</programlisting>
 
 	        <refsection><title>Examples</title>
 
-            <programlisting language="sql">SELECT CG_StraightSkeleton(
-  'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))');</programlisting>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'::geometry AS polygon
+)
+SELECT CG_StraightSkeleton(polygon) AS straight_skeleton
+FROM data;</programlisting>
 <screen role="visual-primary docbook-qa-ignore-wide-lines">MULTILINESTRING((190 190,164.03987973986756 164.03987973986756),(10 190,40.697077206292434 159.30292279370755),(10 10,35 35),(190 10,184.18861169915812 15.811388300841896),(190 20,184.18861169915812 15.811388300841896),(160 30,158.3772233983162 20),(60 30,50 20),(60 130,35 153.15077848154866),(190 140,164.03987973986756 164.03987973986756),(184.18861169915812 15.811388300841896,158.3772233983162 20),(50 20,158.3772233983162 20),(50 20,35 35),(35 153.15077848154866,35 35),(35 153.15077848154866,40.697077206292434 159.30292279370755),(164.03987973986756 164.03987973986756,40.697077206292434 159.30292279370755))</screen>
 
-            <programlisting language="sql">SELECT CG_StraightSkeleton('POLYGON((0 0,1 0,1 1,0 1,0 0))', true);</programlisting>
+            <programlisting language="sql">WITH data AS (
+  SELECT 'POLYGON((0 0,1 0,1 1,0 1,0 0))'::geometry AS polygon
+)
+SELECT CG_StraightSkeleton(polygon, true) AS straight_skeleton_with_m
+FROM data;</programlisting>
 <screen role="visual-primary text-primary">MULTILINESTRING M ((0 0 0,0.5 0.5 0.5),(1 0 0,0.5 0.5 0.5),(1 1 0,0.5 0.5 0.5),(0 1 0,0.5 0.5 0.5))</screen>
 
             <para>Note that valid inputs with rings that touch at a single point will raise an error.</para>
@@ -2152,10 +2161,10 @@ ERROR:  straight skeleton of Polygon with point touching rings is not implemente
             <title>Examples</title>
             <para>Tessellation divides each face of a cube into triangles.</para>
             <programlisting language="sql">WITH data AS (
-  SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+  SELECT 'POLYHEDRALSURFACE Z( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
 ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
-((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )') AS cube
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )'::geometry AS cube
 )
 SELECT ST_AsText(CG_Tesselate(cube), 3) AS tessellation
 FROM data;</programlisting>
