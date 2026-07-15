@@ -225,6 +225,14 @@ class DocBookSourceLintTest(unittest.TestCase):
         self.assertIn("2 wide line(s)", findings[0].message)
         self.assertTrue(any("psql expanded output" in finding.message for finding in findings))
 
+    def test_psql_table_at_manual_width_is_not_forced_to_expanded_output(self):
+        table_row = (
+            " digits |                   encode                   |                  st_astext                   \n"
+            "--------+--------------------------------------------+----------------------------------------------\n"
+            "     13 | 01010000005e9a72083cdd5e405e9a72083cdd5e40 | POINT(123.45678912345599 123.45678912345599)"
+        )
+        self.assertCategories(f'<refentry xml:id="f"><screen>{table_row}</screen></refentry>', set())
+
     def test_wide_verbatim_line_negative_payload_and_opt_out(self):
         payload = "\\x" + "0123456789abcdef" * 10
         self.assertCategories(
