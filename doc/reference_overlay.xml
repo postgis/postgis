@@ -237,12 +237,17 @@ from country
      inner join poly on ST_Intersects(country.geom, poly.geom)
 where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));</programlisting>
 
-        <para>Note this is not a true 3D intersection. It uses 2.5D geometries (geometries with Z ordinates, but where calculations are performed in 2D). Compare to the same example using <xref linkend="CG_3DIntersection"/>.</para>
-        <programlisting>
-selectST_Intersection(linestring, polygon) As wkt
-from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
- CROSS JOIN ST_GeomFromText('POLYGON((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8))') AS polygon;</programlisting>
-<screen role="visual-primary text-primary">LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)</screen>
+        <para>Note this is not a true 3D intersection. It uses 2.5D geometries (geometries with Z ordinates, but where calculations are performed in 2D). The same input is compared with <xref linkend="CG_3DIntersection"/>, which performs a true 3D intersection.</para>
+        <programlisting language="sql" role="requires-sfcgal-1.5.0">WITH data AS (
+  SELECT 'LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)'::geometry AS input_linestring,
+         'POLYGON Z ((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8))'::geometry AS input_polygon
+)
+SELECT ST_AsText(input_linestring) AS input_linestring,
+       ST_AsText(input_polygon) AS input_polygon,
+       ST_AsText(ST_Intersection(input_linestring, input_polygon)) AS intersection_2d,
+       ST_AsText(CG_3DIntersection(input_linestring, input_polygon)) AS intersection_3d
+FROM data;</programlisting>
+<screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10) | POLYGON Z ((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8)) | LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10) | LINESTRING Z (1 1 8,0.5 0.5 8)</screen>
       </refsection>
         <refsection>
             <title>See Also</title>
