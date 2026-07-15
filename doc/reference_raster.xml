@@ -12830,7 +12830,9 @@ WHERE rid = 2;</programlisting>
                     <para>This symmetric peak highlights the expected compass
                     directions at the corners and the <literal>-1</literal>
                     aspect at the summit. The generated PNG shows the full
-                    aspect surface without relying on a manual illustration.</para>
+                    aspect surface without relying on a manual illustration.
+                    The colorized raster is enlarged with nearest-neighbor
+                    resampling so the discrete aspect cells remain readable.</para>
                     <programlisting language="sql">WITH source AS (
     SELECT ST_SetValues(
         ST_AddBand(
@@ -12853,11 +12855,15 @@ SELECT
     round(ST_Value(rast, 1, 1, 1)::numeric, 3) AS northwest_degrees,
     round(ST_Value(rast, 1, 3, 3)::numeric, 3) AS summit_degrees,
     round(ST_Value(rast, 1, 5, 5)::numeric, 3) AS southeast_degrees,
-    ST_AsPNG(ST_ColorMap(rast, 1, 'bluered')) AS image
+    ST_AsPNG(ST_Resize(
+        ST_ColorMap(rast, 1, 'bluered'),
+        25, 25,
+        'NearestNeighbor'
+    )) AS image
 FROM aspect;</programlisting>
 <screen role="visual-primary"> northwest_degrees | summit_degrees | southeast_degrees | image
 -------------------+----------------+-------------------+------------------------
-           315.000 |         -1.000 |           135.000 | PNG image, 5 x 5 pixels</screen>
+           315.000 |         -1.000 |           135.000 | PNG image, 25 x 25 pixels</screen>
 
                     <para>Variant 2.</para>
 
