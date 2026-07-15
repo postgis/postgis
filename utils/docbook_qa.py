@@ -138,9 +138,24 @@ ALLOWED_SOURCE_RASTER_IMAGES = {
 VERBATIM_LINE_LIMIT = 120
 VERBATIM_TABLE_LINE_LIMIT = 120
 VERBATIM_LONG_LINE_ROLE = "docbook-qa-ignore-wide-lines"
+VERBATIM_SQL_INDENT_ROLE = "docbook-qa-ignore-sql-indent"
 VERBATIM_HEX_PAYLOAD_RE = re.compile(r"\A\\x[0-9A-Fa-f]{64,}\Z")
 VERBATIM_BASE64_PAYLOAD_RE = re.compile(r"\A[A-Za-z0-9+/]{88,}={0,2}\Z")
 VERBATIM_PSQL_TABLE_ROW_RE = re.compile(r"^\s*[^|]*\|[^|]*\|.*$")
+VERBATIM_SIMPLE_SCALAR_RE = re.compile(r"^[A-Za-z0-9_.:+-]+$")
+SQL_STANDALONE_FROM_STAIRCASE_RE = re.compile(r"(?mi)^ {8,}FROM\s*$")
+SQL_SUBQUERY_STAIRCASE_RE = re.compile(
+    r"(?mi)^ {4,}FROM\s*\(\s*(?:\n\s*)?SELECT\b[^\n]*\n"
+    r" {12,}(?:SELECT|FROM|WHERE|GROUP BY|ORDER BY|HAVING|JOIN|INNER JOIN|LEFT JOIN|RIGHT JOIN)\b"
+)
+SQL_INLINE_SUBQUERY_STAIRCASE_RE = re.compile(
+    r"(?mi)^ {4,}.*\b(?:EXISTS|ARRAY)[ \t]*\([ \t]*SELECT\b[^\n]*\n"
+    r" {8,}(?:SELECT|FROM|WHERE|GROUP BY|ORDER BY|HAVING|JOIN|INNER JOIN|LEFT JOIN|RIGHT JOIN)\b"
+)
+SQL_SPLIT_CLAUSE_INDENT_RE = re.compile(
+    r"(?mi)^(?:FROM|JOIN|INNER JOIN|LEFT JOIN|RIGHT JOIN|CROSS JOIN)\s*$\n"
+    r"^[A-Za-z_][A-Za-z0-9_]*(?:\s|\()"
+)
 
 BLOCK_KINDS = {
     "programlisting": ("postgis-example-code", "code", "Code"),
@@ -387,6 +402,23 @@ def wide_verbatim_recommendation(has_psql_table: bool) -> str:
     )
 
 
+def has_ragged_scalar_output_indent(text: str) -> bool:
+    lines = [line for line in text.splitlines() if line.strip()]
+    if len(lines) < 2:
+        return False
+    if any(
+        PSQL_ROW_COUNT_RE.fullmatch(line)
+        or PSQL_TABLE_SEPARATOR_RE.fullmatch(line)
+        or line.strip().startswith("---")
+        for line in lines
+    ):
+        return False
+    first, second = lines[0], lines[1]
+    if not first.startswith((" ", "\t")) or second.startswith((" ", "\t")):
+        return False
+    return all(VERBATIM_SIMPLE_SCALAR_RE.fullmatch(line.strip()) for line in lines)
+
+
 def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
     findings: list[Finding] = []
 
@@ -556,6 +588,20 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
                 "programlisting begins with comments before its first SQL or psql command; "
                 "move the example description into a preceding <para>",
             ))
+        if (
+            VERBATIM_SQL_INDENT_ROLE not in role_tokens(node)
+            and (
+                SQL_STANDALONE_FROM_STAIRCASE_RE.search(text)
+                or SQL_SUBQUERY_STAIRCASE_RE.search(text)
+                or SQL_INLINE_SUBQUERY_STAIRCASE_RE.search(text)
+                or SQL_SPLIT_CLAUSE_INDENT_RE.search(text)
+            )
+        ):
+            findings.append(Finding(
+                "warning", "sql-staircase-indent", source_location(path, node),
+                "SQL programlisting contains deeply-indented nested SELECT/FROM clauses; "
+                "format nested SELECT/FROM blocks with ordinary two-space indentation",
+            ))
         if not SQL_STATEMENT_RE.search(text):
             continue
         markers = []
@@ -586,6 +632,12 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
             findings.append(Finding(
                 "warning", "screen-contains-psql-command", source_location(path, node),
                 f"screen block contains psql input {command!r}; move the backslash command to a preceding programlisting",
+            ))
+        if has_ragged_scalar_output_indent(text):
+            findings.append(Finding(
+                "warning", "ragged-scalar-output-indent", source_location(path, node),
+                "screen output starts with a stray leading indent on the first scalar line; "
+                "left-align scalar output or format it as an aligned psql table",
             ))
 
     for node in named_descendants(root, "programlisting", "screen"):

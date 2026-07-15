@@ -482,7 +482,7 @@ FROM data;</programlisting>
       <title>Examples</title>
       <para>List the first ten codes associated with the EPSG authority.</para>
       <programlisting>SELECT * FROM postgis_srs_codes('EPSG') ORDER BY 1 LIMIT 10;</programlisting>
-<screen> 10156
+<screen>10156
 10157
 10158
 10160

@@ -235,6 +235,34 @@ class DocBookSourceLintTest(unittest.TestCase):
         self.assertIn("2 wide line(s)", findings[0].message)
         self.assertTrue(any("psql expanded output" in finding.message for finding in findings))
 
+    def test_ragged_scalar_output_indent_violation_and_clean_cases(self):
+        self.assertCategories(
+            '<refentry xml:id="f"><screen> 10156\n10157\n10158</screen></refentry>',
+            {"ragged-scalar-output-indent"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><screen>10156\n10157\n10158</screen></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><screen> t\n(1 row)</screen></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><screen> name | value\n------+------\n a    | b</screen></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><screen>                    geography\n'
+            '----------------------------------------------------\n'
+            ' 0101000020AD1000000000000000C05EC00000000000004140</screen></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><screen> LINESTRING(0 0,\n1 1)</screen></refentry>',
+            set(),
+        )
+
     def test_psql_table_at_manual_width_is_not_forced_to_expanded_output(self):
         table_row = (
             " digits |                   encode                   |                  st_astext                   \n"
@@ -251,6 +279,56 @@ class DocBookSourceLintTest(unittest.TestCase):
         )
         self.assertCategories(
             f'<refentry xml:id="f"><programlisting role="docbook-qa-ignore-wide-lines">{payload * 2}</programlisting></refentry>',
+            set(),
+        )
+
+    def test_sql_staircase_indent_violation_and_opt_out(self):
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>SELECT x\n'
+            'FROM (SELECT y\n'
+            '                FROM\n'
+            '                table_name) AS q;</programlisting></refentry>',
+            {"sql-staircase-indent"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>SELECT gps.track_id, ST_MakeLine(gps.geom) AS geom\n'
+            '    FROM ( SELECT track_id, gps_time, geom\n'
+            '            FROM gps_points ORDER BY track_id, gps_time ) AS gps\n'
+            '    GROUP BY track_id;</programlisting></refentry>',
+            {"sql-staircase-indent"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>SELECT p.gid,\n'
+            '    CASE WHEN EXISTS( SELECT w.geom\n'
+            '        FROM waterlines w\n'
+            '        WHERE ST_Within(w.geom, p.geom))\n'
+            '    THEN ARRAY( SELECT w.geom\n'
+            '        FROM waterlines w)\n'
+            '    END AS geom\n'
+            'FROM provinces p;</programlisting></refentry>',
+            {"sql-staircase-indent"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>SELECT COUNT(*), squares.geom\n'
+            'FROM\n'
+            'pointtable AS pts\n'
+            'INNER JOIN\n'
+            'ST_SquareGrid(1000, pts.geom) AS squares\n'
+            'ON ST_Intersects(pts.geom, squares.geom)</programlisting></refentry>',
+            {"sql-staircase-indent"},
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting>SELECT x\n'
+            'FROM (\n'
+            '  SELECT y\n'
+            '  FROM table_name\n'
+            ') AS q;</programlisting></refentry>',
+            set(),
+        )
+        self.assertCategories(
+            '<refentry xml:id="f"><programlisting role="docbook-qa-ignore-sql-indent">SELECT x\n'
+            '                FROM\n'
+            '                table_name;</programlisting></refentry>',
             set(),
         )
 
