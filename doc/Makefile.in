@@ -462,6 +462,7 @@ $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUN
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
+		--stringparam postgis.visual.version "$(HTML_ASSET_VERSION)" \
 		$(XSLTPROCFLAGS) \
 		--output $(dir $@) \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
@@ -505,6 +506,7 @@ $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBO
 		--stringparam html.stylesheet style.css?v=$(HTML_ASSET_VERSION) \
 		--stringparam html.script "postgis-ref-index.js?v=$(HTML_ASSET_VERSION) example-blocks.js?v=$(HTML_ASSET_VERSION)" \
 		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
+		--stringparam postgis.visual.version "$(HTML_ASSET_VERSION)" \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<

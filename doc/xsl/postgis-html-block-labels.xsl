@@ -15,6 +15,7 @@
 -->
 <xsl:include href="postgis-block-labels-common.xsl"/>
 <xsl:param name="postgis.visual.manifest" select="''"/>
+<xsl:param name="postgis.visual.version" select="''"/>
 
 <!-- Keep a semantic hook around literal syntax collections.  The upstream
      DocBook itemized-list template uses role internally and does not retain it
@@ -309,6 +310,9 @@
         </xsl:attribute>
         <xsl:attribute name="data">
           <xsl:value-of select="concat($img.src.path, 'images/visual-examples/', $visual.id, '.svg')"/>
+          <xsl:if test="$postgis.visual.version != ''">
+            <xsl:value-of select="concat('?v=', $postgis.visual.version)"/>
+          </xsl:if>
         </xsl:attribute>
         <xsl:text>Geometry figure for </xsl:text><xsl:value-of select="$visual.id"/>
       </object>
