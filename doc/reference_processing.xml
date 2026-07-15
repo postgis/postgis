@@ -1368,14 +1368,14 @@ TRUE);</programlisting>
 SELECT round(radius::numeric, 3) AS radius,
        ST_AsText(center, 0) AS center,
        ST_AsText(nearest, 0) AS nearest,
-       ST_AsText(ST_Buffer(center, radius, 'quad_segs=2'), 0) AS circle,
+       ST_AsText(ST_Buffer(center, radius), 0) AS circle,
        ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line
 FROM mic;</programlisting>
 <screen role="visual-overlay">-[ RECORD 1 ]-----
 radius      | 45.189
 center      | POINT(97 76)
 nearest     | POINT(62 105)
-circle      | POLYGON((142 76,129 44,97 31,65 44,52 76,65 108,97 122,129 108,142 76))
+circle      | POLYGON((142 76,141 68,139 59,135 51,129 44,122 39,114 35,106 32,97 31,88 32,80 35,72 39,65 44,59 51,55 59,53 68,52 76,53 85,55 94,59 101,65 108,72 114,80 118,88 121,97 122,106 121,114 118,122 114,129 108,135 101,139 94,141 85,142 76))
 radius_line | LINESTRING(97 76,62 105)</screen>
 
 		<para>Maximum inscribed circle of a MultiLineString.</para>
@@ -1386,14 +1386,14 @@ radius_line | LINESTRING(97 76,62 105)</screen>
 SELECT round(radius::numeric, 3) AS radius,
        ST_AsText(center, 0) AS center,
        ST_AsText(nearest, 0) AS nearest,
-       ST_AsText(ST_Buffer(center, radius, 'quad_segs=2'), 0) AS circle,
+       ST_AsText(ST_Buffer(center, radius), 0) AS circle,
        ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line
 FROM mic;</programlisting>
 <screen role="visual-overlay">-[ RECORD 1 ]-----
 radius      | 39.924
 center      | POINT(94 110)
 nearest     | POINT(63 85)
-circle      | POLYGON((134 110,122 82,94 71,66 82,54 110,66 139,94 150,122 139,134 110))
+circle      | POLYGON((134 110,133 103,131 95,127 88,122 82,116 77,109 74,102 71,94 71,86 71,79 74,72 77,66 82,61 88,57 95,55 103,54 110,55 118,57 126,61 133,66 139,72 144,79 147,86 150,94 150,102 150,109 147,116 144,122 139,127 133,131 126,133 118,134 110))
 radius_line | LINESTRING(94 110,63 85)</screen>
       </refsection>
       <refsection>
@@ -1456,14 +1456,14 @@ SELECT round(radius::numeric, 6) AS radius,
        ST_AsText(center, 0) AS center,
        ST_AsText(nearest, 0) AS nearest,
        ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line,
-       ST_AsText(ST_Buffer(center, radius, 'quad_segs=2'), 0) AS circle
+       ST_AsText(ST_Buffer(center, radius), 0) AS circle
 FROM circle;</programlisting>
 <screen role="visual-overlay">-[ RECORD 1 ]-----
 radius      | 39.260545
 center      | POINT(62 108)
 nearest     | POINT(70 70)
 radius_line | LINESTRING(62 108,70 70)
-circle      | POLYGON((101 108,89 81,62 69,34 81,22 108,34 136,62 148,89 136,101 108))</screen>
+circle      | POLYGON((101 108,100 101,98 93,94 87,89 81,83 76,77 72,69 70,62 69,54 70,47 72,40 76,34 81,29 87,25 93,23 101,22 108,23 116,25 123,29 130,34 136,40 141,47 145,54 147,62 148,69 147,77 145,83 141,89 136,94 130,98 123,100 116,101 108))</screen>
 
 <para>Largest empty circle within a set of points, constrained to lie in a polygon.
 The constraint polygon boundary is included both as an obstacle and as the constraint for the circle center.</para>
@@ -1482,14 +1482,14 @@ SELECT round(radius::numeric, 6) AS radius,
        ST_AsText(center, 0) AS center,
        ST_AsText(nearest, 0) AS nearest,
        ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line,
-       ST_AsText(ST_Buffer(center, radius, 'quad_segs=2'), 0) AS circle
+       ST_AsText(ST_Buffer(center, radius), 0) AS circle
 FROM circle;</programlisting>
 <screen role="visual-overlay">-[ RECORD 1 ]-----
 radius      | 19.903876
 center      | POINT(97 100)
 nearest     | POINT(80 90)
 radius_line | LINESTRING(97 100,80 90)
-circle      | POLYGON((117 100,111 86,97 80,83 86,77 100,83 114,97 120,111 114,117 100))</screen>
+circle      | POLYGON((117 100,117 96,116 92,114 89,111 86,108 83,105 82,101 80,97 80,93 80,90 82,86 83,83 86,81 89,79 92,78 96,77 100,78 104,79 108,81 111,83 114,86 116,90 118,93 119,97 120,101 119,105 118,108 116,111 114,114 111,116 108,117 104,117 100))</screen>
 
       </refsection>
       <refsection>
