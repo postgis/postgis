@@ -251,11 +251,18 @@ promisingcircle_pcount | lamecircle_pcount
 </screen>
 
 <para>A lighter, less smooth circle using only 2 points per quarter circle is an octagon.</para>
-<para>The following example creates a 100 meter octagon in NAD83 longitude/latitude by transforming to the Massachusetts state plane meter projection and then buffering.</para>
-<programlisting>SELECT ST_Buffer(
-ST_Transform(ST_SetSRID(ST_Point(-71.063526, 42.35785), 4269), 26986),
-100, 2) As octagon;</programlisting>
-<screen role="visual-primary text-primary">POLYGON((236057.5905746494 900908.7599186979,236028.30125276805 900838.0492405792,235957.5905746494 900808.7599186979,235886.87989653074 900838.0492405792,235857.5905746494 900908.7599186979,235886.87989653074 900979.4705968165,235957.5905746494 901008.7599186979,236028.30125276805 900979.4705968165,236057.5905746494 900908.7599186979))</screen>
+<para>The following example creates a 100 meter octagon in NAD83 longitude/latitude by transforming to the Massachusetts state plane meter projection and then buffering. The figure shows the input and output in separate panels because the coordinates are in different SRIDs.</para>
+<programlisting language="sql">WITH input AS (
+  SELECT ST_SetSRID(ST_Point(-71.063526, 42.35785), 4269) AS point_4269
+), projected AS (
+  SELECT point_4269,
+         ST_Transform(point_4269, 26986) AS point_26986
+  FROM input
+)
+SELECT ST_AsEWKT(point_4269) AS input_point_4269,
+       ST_AsEWKT(ST_Buffer(point_26986, 100, 2)) AS octagon_26986
+FROM projected;</programlisting>
+<screen role="visual-primary text-primary visual-separate-output docbook-qa-ignore-wide-lines">SRID=4269;POINT(-71.063526 42.35785) | SRID=26986;POLYGON((236057.5905746494 900908.7599186979,236028.30125276805 900838.0492405792,235957.5905746494 900808.7599186979,235886.87989653074 900838.0492405792,235857.5905746494 900908.7599186979,235886.87989653074 900979.4705968165,235957.5905746494 901008.7599186979,236028.30125276805 900979.4705968165,236057.5905746494 900908.7599186979))</screen>
 
                 <para>Buffering a polygon by a positive distance and then by the same negative
                 distance is a morphological closing operation. It can be useful for smoothing
