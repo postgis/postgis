@@ -1654,7 +1654,10 @@ WITH raw AS (
   FROM parts JOIN frame_bounds USING (frame)
 ), render_parts AS (
   SELECT *,
-    CASE WHEN ST_HasArc(geom) THEN ST_CurveToLine(geom) ELSE geom END AS render_geom
+    CASE WHEN ST_HasArc(geom) OR GeometryType(geom) IN ('CURVEPOLYGON', 'MULTISURFACE')
+      THEN ST_CurveToLine(geom)
+      ELSE geom
+    END AS render_geom
   FROM translated_parts
 )
 SELECT json_build_object(

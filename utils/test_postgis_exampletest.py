@@ -1041,7 +1041,10 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("ST_Zmflag(geom) IN (2, 3)", queries[0])
         self.assertIn("'has_z'", queries[0])
         self.assertIn("'points_xyz'", queries[0])
-        self.assertIn("CASE WHEN ST_HasArc(geom) THEN ST_CurveToLine(geom)", queries[0])
+        self.assertIn(
+            "CASE WHEN ST_HasArc(geom) OR GeometryType(geom) IN ('CURVEPOLYGON', 'MULTISURFACE')",
+            queries[0],
+        )
         self.assertIn("ST_GeomFromEWKB(decode(hexwkb, 'hex'))", queries[0])
         self.assertIn("ELSE ST_GeomFromEWKT(wkt)", queries[0])
         self.assertIn("ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)", queries[0])
