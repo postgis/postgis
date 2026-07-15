@@ -136,7 +136,10 @@ psql's expanded display: one `-[ RECORD n ]-` block per row and one
 `column | value` line per field. The example runner transposes this display
 back into rows for comparison, so expanded examples remain executable.
 Aliases on cast WKT literals and geometry result columns become figure legend
-labels; quote an alias when the label needs spaces.
+labels.  The renderer normalizes underscores in aliases to spaces, so SQL-safe
+aliases such as `invalid_edges` display as `invalid edges`.  Quote an alias
+when the label needs punctuation or capitalization that cannot be expressed as
+a simple identifier.
 Return native `geometry`/`geography` values when an `ST_AsText` or `ST_AsEWKT`
 wrapper would exist only to make the documented output readable. Put the
 readable WKT or EWKT in the adjacent `screen`; the example runner recognizes

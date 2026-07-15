@@ -375,6 +375,25 @@ async function main() {
   assert.strictEqual(outputButton.attributes['aria-expanded'], 'true');
   assert.strictEqual(outputButton.attributes['aria-label'], 'Hide output text');
 
+  const localizedOutputBlock = {
+    classList: {
+      toggle(name, enabled) {
+        if (enabled) outputState.add(name); else outputState.delete(name);
+      }
+    },
+    getAttribute(name) {
+      return {
+        'data-postgis-show-text-label': 'Показать текст',
+        'data-postgis-hide-text-label': 'Скрыть текст',
+        'data-postgis-show-output-text-label': 'Показать текстовый вывод',
+        'data-postgis-hide-output-text-label': 'Скрыть текстовый вывод'
+      }[name] || '';
+    }
+  };
+  geometry.setOutputTextCollapsed(localizedOutputBlock, outputButton, true);
+  assert.strictEqual(outputButton.textContent, 'Показать текст');
+  assert.strictEqual(outputButton.attributes['aria-label'], 'Показать текстовый вывод');
+
   const readableOutput = makePre('POINT(1 2)');
   const nativeOutput = makePre('0101000000000000000000F03F0000000000000040');
   readableOutput.hidden = false;
@@ -392,6 +411,18 @@ async function main() {
         if (enabled) representationState.add(name); else representationState.delete(name);
       }
     },
+    getAttribute(name) {
+      return {
+        'data-postgis-show-hexewkb-label': 'Показать HEXEWKB',
+        'data-postgis-show-native-hexewkb-label': 'Показать native HEXEWKB',
+        'data-postgis-show-ewkt-label': 'Показать EWKT',
+        'data-postgis-show-readable-ewkt-label': 'Показать readable EWKT',
+        'data-postgis-show-text-label': 'Показать текст',
+        'data-postgis-hide-text-label': 'Скрыть текст',
+        'data-postgis-show-output-text-label': 'Показать текстовый вывод',
+        'data-postgis-hide-output-text-label': 'Скрыть текстовый вывод'
+      }[name] || '';
+    },
     querySelector(selector) {
       if (selector === 'pre.screen:not(.postgis-native-output)') return readableOutput;
       if (selector === 'pre.postgis-native-output') return nativeOutput;
@@ -408,14 +439,14 @@ async function main() {
   assert.strictEqual(readableOutput.hidden, true);
   assert.strictEqual(nativeOutput.hidden, false);
   assert(!representationState.has('postgis-output-text-collapsed'));
-  assert.strictEqual(representationTextButton.textContent, 'Hide text');
+  assert.strictEqual(representationTextButton.textContent, 'Скрыть текст');
   assert.strictEqual(representationTextButton.attributes['aria-expanded'], 'true');
-  assert.strictEqual(representationButton.textContent, 'Show EWKT');
+  assert.strictEqual(representationButton.textContent, 'Показать EWKT');
   assert.strictEqual(representationButton.attributes['aria-expanded'], 'true');
   geometry.setOutputRepresentation(representationBlock, representationButton, false);
   assert.strictEqual(readableOutput.hidden, false);
   assert.strictEqual(nativeOutput.hidden, true);
-  assert.strictEqual(representationButton.textContent, 'Show HEXEWKB');
+  assert.strictEqual(representationButton.textContent, 'Показать HEXEWKB');
 
   const literalOriginal = "SELECT 'POINT(1 2)'";
   const literalPre = makeLiteralTree(literalOriginal, document);

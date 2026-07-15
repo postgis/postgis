@@ -410,14 +410,14 @@ class ExampleTestComparisonTest(unittest.TestCase):
 
     def test_image_svg_embeds_buildtime_output_and_uses_alias_labels(self):
         svg = self.tester.visual_image_svg("raster-example", [{
-            "source": "Output", "label": "greyscale", "media_type": "image/png",
+            "source": "Output", "label": "grayscale", "media_type": "image/png",
             "width": 2, "height": 3, "data": "YWJj",
         }])
         self.assertIn('href="data:image/png;base64,YWJj"', svg)
         self.assertIn('preserveAspectRatio="none"', svg)
         self.assertIn('image-rendering:pixelated', svg)
         self.assertIn('data-postgis-geometry-id="raster-example-output-1"', svg)
-        self.assertIn('>greyscale</text>', svg)
+        self.assertIn('>grayscale</text>', svg)
 
     def test_image_svg_uses_integer_upscale_for_pixel_art(self):
         svg = self.tester.visual_image_svg("pixels", [{
@@ -1038,7 +1038,7 @@ class VisualExampleTest(unittest.TestCase):
             "frames": [
                 {"id": "Code", "bounds": [0, 0, 1, 1]},
                 {"id": "cleaned", "bounds": [0, 0, 1, 1]},
-                {"id": "invalid_edges", "bounds": [0, 0, 1, 1]},
+                {"id": "invalid edges", "bounds": [0, 0, 1, 1]},
             ],
             "parts": [{
                 "ord": layer["ord"], "source": layer["source"], "label": layer["label"],
@@ -1058,7 +1058,7 @@ class VisualExampleTest(unittest.TestCase):
             "visual_separate_output": True,
         }, actual)
         self.assertEqual(
-            ["Code", "cleaned", "invalid_edges"],
+            ["Code", "cleaned", "invalid edges"],
             [layer["requested_frame"] for layer in captured],
         )
 
@@ -1995,7 +1995,7 @@ class VisualExampleTest(unittest.TestCase):
         self.assertEqual(["Code", "Code", "Output", "Output"], [
             layer["source"] for layer in captured
         ])
-        self.assertEqual(["pt", "line", "cp_pt_line", "cp_line_pt"], [
+        self.assertEqual(["pt", "line", "cp pt line", "cp line pt"], [
             layer["label"] for layer in captured
         ])
 
@@ -2032,7 +2032,7 @@ class VisualExampleTest(unittest.TestCase):
             "visual_preferred": True, "visual_kind": "geometry-output",
         }, actual)
         self.assertIn(">input</text>", visual["svg"])
-        self.assertIn(">distance_segment</text>", visual["svg"])
+        self.assertIn(">distance segment</text>", visual["svg"])
 
     def test_svg_distinguishes_parts_of_multipart_areas(self):
         svg = self.tester.visual_svg(

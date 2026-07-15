@@ -854,8 +854,11 @@ class ExampleTester:
             return 0.62
         return 0.48
 
+    def display_label(self, label):
+        return re.sub(r"\s+", " ", (label or "").strip().replace("_", " "))
+
     def grouped_geometry_label(self, header, value, detail=None):
-        header_label = (header or "").strip().replace("_", " ")
+        header_label = self.display_label(header)
         label = f"{header_label} {value}".strip()
         if detail:
             return f"{label}: {detail}" if label else detail
@@ -1411,9 +1414,10 @@ class ExampleTester:
                 header = headers[column_index] if column_index < len(headers) else ""
                 source = "Code" if header.lower().startswith("input_") else "Output"
                 label = header[len("input_"):] if source == "Code" else header
+                label = self.display_label(label)
                 row_labeled = False
                 if not label or label.lower() in {"?column?", "image", "st_aspng"}:
-                    label = row_label or source
+                    label = self.display_label(row_label) or source
                     row_labeled = bool(row_label)
                 if len(actual) > 1 and not row_labeled:
                     label = f"{label} {row_index}"
@@ -1943,6 +1947,7 @@ SELECT json_build_object(
                     source = "Code" if label.lower().startswith("input_") else "Output"
                     if source == "Code":
                         label = label[len("input_"):]
+                    label = self.display_label(label)
                     if len(actual) > 1:
                         label = f"{label} {row_index}"
                     if len(matches) > 1:
@@ -2005,7 +2010,7 @@ SELECT json_build_object(
                 output_point_counts[candidate["source"]] += 1
         for index, candidate in enumerate(code, 1):
             if candidate.get("label"):
-                label = candidate["label"]
+                label = self.display_label(candidate["label"])
             elif code_geometry_count == 1:
                 label = "Code"
             else:

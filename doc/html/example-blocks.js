@@ -1300,11 +1300,22 @@
 
   function setOutputTextCollapsed(block, button, collapsed) {
     if (!block || !button) return;
+    var text = collapsed
+      ? blockLabel(block, 'data-postgis-show-text-label', 'Show text')
+      : blockLabel(block, 'data-postgis-hide-text-label', 'Hide text');
+    var aria = collapsed
+      ? blockLabel(block, 'data-postgis-show-output-text-label', 'Show output text')
+      : blockLabel(block, 'data-postgis-hide-output-text-label', 'Hide output text');
     block.classList.toggle('postgis-output-text-collapsed', collapsed);
-    button.textContent = collapsed ? 'Show text' : 'Hide text';
-    button.setAttribute('aria-label', collapsed ? 'Show output text' : 'Hide output text');
-    button.setAttribute('title', collapsed ? 'Show output text' : 'Hide output text');
+    button.textContent = text;
+    button.setAttribute('aria-label', aria);
+    button.setAttribute('title', aria);
     button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  }
+
+  function blockLabel(block, attribute, fallback) {
+    if (!block || !block.getAttribute) return fallback;
+    return block.getAttribute(attribute) || fallback;
   }
 
   function revealOutputText(block) {
@@ -1323,9 +1334,15 @@
     readable.setAttribute('aria-hidden', nativeOutput ? 'true' : 'false');
     native.hidden = !nativeOutput;
     native.setAttribute('aria-hidden', nativeOutput ? 'false' : 'true');
-    button.textContent = nativeOutput ? 'Show EWKT' : 'Show HEXEWKB';
-    button.setAttribute('aria-label', nativeOutput ? 'Show readable EWKT' : 'Show native HEXEWKB');
-    button.setAttribute('title', nativeOutput ? 'Show readable EWKT' : 'Show native HEXEWKB');
+    var text = nativeOutput
+      ? blockLabel(block, 'data-postgis-show-ewkt-label', 'Show EWKT')
+      : blockLabel(block, 'data-postgis-show-hexewkb-label', 'Show HEXEWKB');
+    var aria = nativeOutput
+      ? blockLabel(block, 'data-postgis-show-readable-ewkt-label', 'Show readable EWKT')
+      : blockLabel(block, 'data-postgis-show-native-hexewkb-label', 'Show native HEXEWKB');
+    button.textContent = text;
+    button.setAttribute('aria-label', aria);
+    button.setAttribute('title', aria);
     button.setAttribute('aria-expanded', nativeOutput ? 'true' : 'false');
   }
 

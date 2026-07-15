@@ -241,6 +241,46 @@
   <xsl:variable name="manifest.visual"
                 select="document($postgis.visual.manifest)/visual-examples/visual[@refentry = $refentry.id and @screen = string($screen.ordinal)]"/>
   <xsl:variable name="native.output" select="$manifest.visual/native-output[@format = 'hexewkb']"/>
+  <xsl:variable name="show.text.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'show-text'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="hide.text.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'hide-text'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="show.output.text.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'show-output-text'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="hide.output.text.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'hide-output-text'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="show.hexewkb.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'show-hexewkb'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="show.native.hexewkb.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'show-native-hexewkb'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="show.ewkt.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'show-ewkt'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="show.readable.ewkt.label">
+    <xsl:call-template name="postgis-localized-block-label">
+      <xsl:with-param name="kind" select="'show-readable-ewkt'"/>
+    </xsl:call-template>
+  </xsl:variable>
   <xsl:variable name="visual.id">
     <xsl:choose>
       <xsl:when test="contains($role.tokens, ' visual-primary ') and @xml:id">
@@ -270,6 +310,14 @@
     <xsl:if test="$visual.preferred">
       <xsl:attribute name="data-postgis-output-preference">visual</xsl:attribute>
     </xsl:if>
+    <xsl:attribute name="data-postgis-show-text-label"><xsl:value-of select="$show.text.label"/></xsl:attribute>
+    <xsl:attribute name="data-postgis-hide-text-label"><xsl:value-of select="$hide.text.label"/></xsl:attribute>
+    <xsl:attribute name="data-postgis-show-output-text-label"><xsl:value-of select="$show.output.text.label"/></xsl:attribute>
+    <xsl:attribute name="data-postgis-hide-output-text-label"><xsl:value-of select="$hide.output.text.label"/></xsl:attribute>
+    <xsl:attribute name="data-postgis-show-hexewkb-label"><xsl:value-of select="$show.hexewkb.label"/></xsl:attribute>
+    <xsl:attribute name="data-postgis-show-native-hexewkb-label"><xsl:value-of select="$show.native.hexewkb.label"/></xsl:attribute>
+    <xsl:attribute name="data-postgis-show-ewkt-label"><xsl:value-of select="$show.ewkt.label"/></xsl:attribute>
+    <xsl:attribute name="data-postgis-show-readable-ewkt-label"><xsl:value-of select="$show.readable.ewkt.label"/></xsl:attribute>
     <xsl:attribute name="aria-labelledby">
       <xsl:value-of select="$label.id"/>
     </xsl:attribute>
@@ -284,8 +332,11 @@
       </div>
       <xsl:if test="$native.output">
         <button class="postgis-output-representation-toggle" type="button"
-                aria-label="Show native HEXEWKB" title="Show native HEXEWKB"
-                aria-expanded="false">Show HEXEWKB</button>
+                aria-expanded="false">
+          <xsl:attribute name="aria-label"><xsl:value-of select="$show.native.hexewkb.label"/></xsl:attribute>
+          <xsl:attribute name="title"><xsl:value-of select="$show.native.hexewkb.label"/></xsl:attribute>
+          <xsl:value-of select="$show.hexewkb.label"/>
+        </button>
       </xsl:if>
     </div>
     <xsl:apply-imports/>

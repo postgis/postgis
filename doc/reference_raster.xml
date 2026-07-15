@@ -9302,7 +9302,7 @@ SELECT title, ST_AsPNG(rendered) AS image
 FROM source
 CROSS JOIN LATERAL (VALUES
     ('original', rast),
-    ('greyscale', ST_ColorMap(rast, 1, 'greyscale')),
+    ('grayscale', ST_ColorMap(rast, 1, 'greyscale')),
     ('pseudocolor', ST_ColorMap(rast, 1, 'pseudocolor')),
     ('fire', ST_ColorMap(rast, 1, 'fire')),
     ('blue-red', ST_ColorMap(rast, 1, 'bluered')),
@@ -9317,7 +9317,7 @@ CROSS JOIN LATERAL (VALUES
                     <screen role="visual-primary"> title      | image
 ------------+--------------------------------
  original   | PNG image, 224 x 295 pixels
- greyscale  | PNG image, 224 x 295 pixels
+ grayscale | PNG image, 224 x 295 pixels
  pseudocolor| PNG image, 224 x 295 pixels
  fire       | PNG image, 224 x 295 pixels
  blue-red   | PNG image, 224 x 295 pixels
