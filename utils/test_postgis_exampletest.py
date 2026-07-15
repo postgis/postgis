@@ -272,6 +272,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     def test_visual_layout_roles_do_not_disable_self_contained_queries(self):
         for role, flag in (
             ("visual-overlay", "visual_overlay"),
+            ("visual-direction", "visual_direction"),
             ("visual-separate-output", "visual_separate_output"),
         ):
             with self.subTest(role=role):
@@ -1463,6 +1464,30 @@ class VisualExampleTest(unittest.TestCase):
         widths = re.findall(r'class="line"[^>]*stroke-width="([0-9.]+)"', svg)
         self.assertGreater(float(widths[0]), float(widths[1]))
         self.assertNotIn('class="start-vertex"', svg)
+
+    def test_svg_uses_direction_arrows_for_area_rings_when_requested(self):
+        payload = {"bounds": [0, 0, 4, 4], "parts": [{
+            "ord": 1, "source": "Code", "label": "Code", "type": "POLYGON",
+            "svg": "M 0 0 L 4 0 L 4 -4 L 0 -4 Z M 1 -1 L 1 -3 L 3 -3 L 3 -1 Z",
+            "vertices": [
+                [0, 0], [4, 0], [4, -4], [0, -4], [0, 0],
+                [1, -1], [1, -3], [3, -3], [3, -1], [1, -1],
+            ],
+            "direction_paths": [
+                [[0, 0], [4, 0], [4, -4], [0, -4], [0, 0]],
+                [[1, -1], [1, -3], [3, -3], [3, -1], [1, -1]],
+            ],
+        }]}
+        default_svg = self.tester.visual_svg("area-directions", payload)
+        directed_svg = self.tester.visual_svg(
+            "area-directions", payload, show_direction=True
+        )
+        self.assertNotIn("ring-direction-arrow", default_svg)
+        self.assertEqual(4, directed_svg.count("ring-direction-arrow"))
+        self.assertRegex(
+            directed_svg,
+            r'class="direction-arrow ring-direction-arrow"[^>]*fill="#2878b8"',
+        )
 
     def test_svg_marks_start_vertex_for_closed_lines(self):
         svg = self.tester.visual_svg(

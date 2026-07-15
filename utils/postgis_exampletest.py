@@ -107,6 +107,7 @@ GEOGRAPHY_INPUT_RE = re.compile(
 )
 VISUAL_ROLE = "visual-primary"
 VISUAL_SKIP_ROLE = "visual-skip"
+VISUAL_DIRECTION_ROLE = "visual-direction"
 VISUAL_SEPARATE_OUTPUT_ROLE = "visual-separate-output"
 VISUAL_OVERLAY_ROLE = "visual-overlay"
 SVG_PALETTES = {
@@ -1078,6 +1079,7 @@ class ExampleTester:
             self.has_role(screen, role)
             for role in (
                 VISUAL_ROLE,
+                VISUAL_DIRECTION_ROLE,
                 VISUAL_SEPARATE_OUTPUT_ROLE,
                 VISUAL_OVERLAY_ROLE,
             )
@@ -1109,6 +1111,7 @@ class ExampleTester:
             screen, VISUAL_SEPARATE_OUTPUT_ROLE
         )
         visual_overlay = screen is not None and self.has_role(screen, VISUAL_OVERLAY_ROLE)
+        visual_direction = screen is not None and self.has_role(screen, VISUAL_DIRECTION_ROLE)
         if visual_separate_output and visual_overlay:
             raise RuntimeError(
                 f"Visual example {self.source_label(node)} cannot request both "
@@ -1134,6 +1137,7 @@ class ExampleTester:
             "visual_id": self.visual_id(screen) if visual is not None else None,
             "visual_kind": visual["kind"] if visual is not None else None,
             "visual_preferred": visual["preferred"] if visual is not None else False,
+            "visual_direction": visual_direction,
             "visual_separate_output": visual_separate_output,
             "visual_overlay": visual_overlay,
             "visual_refentry": refentry,
@@ -1691,6 +1695,22 @@ SELECT json_build_object(
           FROM ST_DumpPoints(geom) AS vertex
         )
       END,
+      'direction_paths', CASE
+        WHEN GeometryType(render_geom) IN ('POLYGON', 'TRIANGLE')
+          AND total_points <= 128
+        THEN (
+          SELECT json_agg(points ORDER BY ring_num)
+          FROM (
+            SELECT COALESCE(vertex.path[1], 1) AS ring_num,
+              json_agg(
+                json_build_array(ST_X(vertex.geom), -ST_Y(vertex.geom))
+                ORDER BY vertex.path
+              ) AS points
+            FROM ST_DumpPoints(render_geom) AS vertex
+            GROUP BY COALESCE(vertex.path[1], 1)
+          ) AS rings
+        )
+      END,
       'has_z', ST_Zmflag(geom) IN (2, 3),
       'points_xyz', CASE
         WHEN GeometryType(render_geom) IN ('POINT', 'LINESTRING', 'POLYGON', 'TRIANGLE')
@@ -2016,7 +2036,10 @@ SELECT json_build_object(
                 else None
             ),
             "layers": rendered_layers,
-            "svg": self.visual_svg(example["visual_id"], payload),
+            "svg": self.visual_svg(
+                example["visual_id"], payload,
+                show_direction=example.get("visual_direction", False),
+            ),
         }
 
     def grid_step(self, span, target_lines=8):
@@ -2139,6 +2162,10 @@ SELECT json_build_object(
                     + (" Z" if close_paths else "")
                     for path in projected_paths
                 )
+                if close_paths:
+                    projected["direction_paths"] = [
+                        [[x, -y] for x, y in path] for path in projected_paths
+                    ]
                 projected["vertices"] = (
                     [] if close_paths or geometry_type in {"CIRCULARSTRING", "COMPOUNDCURVE"}
                     else [[x, -y] for x, y in projected_paths[0]]
@@ -2164,7 +2191,7 @@ SELECT json_build_object(
         projected_payload["parts"] = projected_parts
         return projected_payload
 
-    def visual_svg(self, visual_id, payload):
+    def visual_svg(self, visual_id, payload, show_direction=False):
         if any(
             part.get("has_z") and part.get("points_xyz")
             and part.get("type", "").upper() in {
@@ -2402,6 +2429,44 @@ SELECT json_build_object(
                                 f'L {base_x - perpendicular_x:.12g} {base_y - perpendicular_y:.12g} Z" '
                                 f'fill="{part_color}" stroke="white" stroke-width="{0.7 / scale:.12g}"/>'
                             )
+                    if show_direction and dimension_class == "area":
+                        direction_paths = part.get("direction_paths") or [vertices]
+                        for direction_path in direction_paths:
+                            if len(direction_path) > 1 and direction_path[0] == direction_path[-1]:
+                                direction_path = direction_path[:-1]
+                            if len(direction_path) < 2:
+                                continue
+                            for segment_index, (start, end) in enumerate(
+                                zip(direction_path, direction_path[1:] + direction_path[:1])
+                            ):
+                                # Two arrows per ring are enough to make winding visible
+                                # without turning small polygons into hedgehogs.
+                                if segment_index % max(1, len(direction_path) // 2) != 0:
+                                    continue
+                                start_x, start_y = [float(value) for value in start]
+                                end_x, end_y = [float(value) for value in end]
+                                delta_x = end_x - start_x
+                                delta_y = end_y - start_y
+                                length = math.hypot(delta_x, delta_y)
+                                if length <= 0:
+                                    continue
+                                arrow_length = (9 if source == "Code" else 8) / scale
+                                arrow_half_width = arrow_length * 0.42
+                                unit_x = delta_x / length
+                                unit_y = delta_y / length
+                                tip_x = start_x + delta_x * 0.55
+                                tip_y = start_y + delta_y * 0.55
+                                base_x = tip_x - unit_x * arrow_length
+                                base_y = tip_y - unit_y * arrow_length
+                                perpendicular_x = -unit_y * arrow_half_width
+                                perpendicular_y = unit_x * arrow_half_width
+                                shapes.append(
+                                    f'<path class="direction-arrow ring-direction-arrow" '
+                                    f'd="M {tip_x:.12g} {tip_y:.12g} '
+                                    f'L {base_x + perpendicular_x:.12g} {base_y + perpendicular_y:.12g} '
+                                    f'L {base_x - perpendicular_x:.12g} {base_y - perpendicular_y:.12g} Z" '
+                                    f'fill="{part_color}" stroke="white" stroke-width="{0.75 / scale:.12g}"/>'
+                                )
                     show_vertices = (
                         source == "Code"
                         or dimension_class == "line"
