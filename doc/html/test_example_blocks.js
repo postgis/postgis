@@ -124,7 +124,8 @@ async function main() {
     makePre('a = b'),
     makePre('a == b'),
     makePre('SELECT (a + (b))\nFROM things)'),
-    makePre('SELECT st_buffer(g, 1), ST_Buffer(g, 2), ST_MakePoint(1, 2)')
+    makePre('SELECT st_buffer(g, 1), ST_Buffer(g, 2), ST_MakePoint(1, 2)'),
+    makePre('SET postgis.gdal_datapath TO default;')
   ];
   const shellSource = 'DB=[yourdatabase]\n' +
     'SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-3.6/\n\n' +
@@ -132,6 +133,12 @@ async function main() {
     'psql -d ${DB} -f "${SCRIPTSDIR}/postgis.sql" # OPTIONAL';
   const shellBlock = makePre(shellSource);
   shellBlock.attributes['data-postgis-language'] = 'bash';
+  const batchSource = 'REM In a .bat file, use %%F. At an interactive cmd.exe prompt, use %F.\n' +
+    'for %%F in ("C:\\data\\shapefiles\\*.shp") do (\n' +
+    '  shp2pgsql -d -D -s 4269 -I -W UTF-8 "%%~fF" "myschema.%%~nF" | psql -d roadsdb\n' +
+    ')';
+  const batchBlock = makePre(batchSource);
+  batchBlock.attributes['data-postgis-language'] = 'cmd';
   const htmlSource = '<script type="text/javascript">\n' +
     'const path = google.maps.geometry.encoding.decodePath("encoded");\n' +
     '</script>';
@@ -144,6 +151,12 @@ async function main() {
   output.attributes = {};
   const trailingOutput = makePre('first row\nsecond row\n');
   trailingOutput.attributes = {};
+  const psqlOutput = makePre(' track_id |       dist\n' +
+    '----------+------------------\n' +
+    '      395 | 0.576496831518066\n' +
+    '      380 | 5.06797130410151\n' +
+    '(2 rows)');
+  psqlOutput.attributes = {};
   const listeners = {};
   const windowListeners = {};
   let geometryRelated = [];
@@ -198,6 +211,11 @@ async function main() {
           '.postgis-example-code pre.programlisting[data-postgis-language="shell"]') {
         return [shellBlock];
       }
+      if (selector === '.postgis-example-code pre.programlisting[data-postgis-language="bat"], ' +
+          '.postgis-example-code pre.programlisting[data-postgis-language="batch"], ' +
+          '.postgis-example-code pre.programlisting[data-postgis-language="cmd"]') {
+        return [batchBlock];
+      }
       if (selector === '.postgis-example-code pre.programlisting[data-postgis-language="html"], ' +
           '.postgis-example-code pre.programlisting[data-postgis-language="xml"]') {
         return [htmlBlock];
@@ -207,7 +225,8 @@ async function main() {
         return [javascriptBlock];
       }
       if (selector === '.postgis-example-block pre.programlisting, .postgis-example-block pre.screen') {
-        return blocks.concat([shellBlock, htmlBlock, javascriptBlock, output, trailingOutput]);
+        return blocks.concat([shellBlock, batchBlock, htmlBlock, javascriptBlock,
+          output, trailingOutput, psqlOutput]);
       }
       if (selector === '.postgis-example-block pre[data-postgis-lines="true"] > .line') {
         return layoutLines;
@@ -422,6 +441,8 @@ async function main() {
   assert.strictEqual(blocks[3].attributes['data-postgis-multiline'], 'true');
   assert.strictEqual(blocks[3].textContent, 'SELECT (a + (b))FROM things)');
   assert.doesNotMatch(blocks[3].innerHTML, /<\/span>\n<span class="line">/);
+  assert.match(blocks[5].innerHTML,
+    /^<span class="line"><span class="postgis-sql-keyword">SET<\/span> /);
   assert.strictEqual(output.innerHTML,
     '<span class="line">wide output row</span><span class="line">second row</span>');
   assert.strictEqual(output.textContent, 'wide output rowsecond row');
@@ -429,8 +450,12 @@ async function main() {
     '<span class="line">first row</span><span class="line">second row</span>');
   assert.strictEqual((trailingOutput.innerHTML.match(/class="line"/g) || []).length, 2);
   assert(!trailingOutput.innerHTML.includes('<span class="line"></span>'));
+  assert.match(psqlOutput.innerHTML, /track_id │       dist/);
+  assert.match(psqlOutput.innerHTML, /──────────┼──────────────────/);
+  assert.doesNotMatch(psqlOutput.innerHTML, /---\+---/);
   assert(observedBlocks.includes(output));
   assert(observedBlocks.includes(trailingOutput));
+  assert(observedBlocks.includes(psqlOutput));
   assert(!wrapClasses[0].has('line-wrapped'));
   assert(!wrapClasses[1].has('line-wrapped'));
   layoutLines[0].scrollHeight = 32;
@@ -532,6 +557,19 @@ async function main() {
   assert.match(linkedPipeline, /postgis-shell-operator">\|<\/span>/);
   assert.match(linkedPipeline, /<span class="postgis-shell-command">psql<\/span>/);
   assert.doesNotMatch(linkedPipeline, /<a[^>]*>psql<\/a>/);
+  assert.match(batchBlock.innerHTML, /postgis-shell-comment">REM In a \.bat file/);
+  assert.match(batchBlock.innerHTML, /postgis-shell-keyword">for<\/span>/);
+  assert.match(batchBlock.innerHTML, /postgis-shell-variable">%%F<\/span>/);
+  assert.match(batchBlock.innerHTML, /postgis-shell-string">"%%~fF"<\/span>/);
+  assert.match(batchBlock.innerHTML, /postgis-shell-string">"myschema\.%%~nF"<\/span>/);
+  assert.match(batchBlock.innerHTML, /postgis-shell-command">shp2pgsql<\/span>/);
+  assert.match(batchBlock.innerHTML, /postgis-shell-option">-d<\/span>/);
+  assert.match(batchBlock.innerHTML, /postgis-shell-operator">\|<\/span>/);
+  assert.strictEqual(geometry.codeText(batchBlock), batchSource);
+  const batchRedirections = geometry.highlightBatch('echo ok > out\npsql -d roadsdb 2> errors.txt');
+  assert.match(batchRedirections, /postgis-shell-keyword">echo<\/span>/);
+  assert.match(batchRedirections, /postgis-shell-command">psql<\/span>/);
+  assert.match(batchRedirections, /postgis-shell-operator">2&gt;<\/span>/);
   assert.match(htmlBlock.innerHTML, /postgis-html-tag">script<\/span>/);
   assert.match(htmlBlock.innerHTML, /postgis-html-attribute">type<\/span>/);
   assert.match(htmlBlock.innerHTML, /postgis-html-string">"text\/javascript"<\/span>/);
@@ -565,6 +603,14 @@ async function main() {
   assert.match(doBlock, /postgis-sql-keyword">IF<\/span>/);
   assert.match(doBlock, /postgis-sql-keyword">EXECUTE<\/span>/);
   assert.doesNotMatch(doBlock, /postgis-sql-string">\$\$\nDECLARE/);
+  assert.strictEqual(
+    geometry.unicodePsqlOutput(' a | b\n---+---\n 1 | 2'),
+    ' a │ b\n───┼───\n 1 │ 2'
+  );
+  assert.strictEqual(
+    geometry.unicodePsqlOutput('GEOMETRYCOLLECTION(POINT(0 0)|POINT(1 1))'),
+    'GEOMETRYCOLLECTION(POINT(0 0)|POINT(1 1))'
+  );
 
   const matchedClasses = [new Set(), new Set()];
   const pairPre = {

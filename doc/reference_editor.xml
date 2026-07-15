@@ -47,8 +47,8 @@
 			<title>Examples</title>
 
             <para>Add a point to the end of a 3D line</para>
-<programlisting language="sql">SELECT ST_AsEWKT(ST_AddPoint('LINESTRING(0 0 1,1 1 1)', ST_MakePoint(1, 2, 3)));</programlisting>
-<screen>LINESTRING(0 0 1,1 1 1,1 2 3)</screen>
+<programlisting language="sql">SELECT ST_AddPoint('LINESTRING(0 0 1,1 1 1)', ST_MakePoint(1, 2, 3));</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(0 0 1,1 1 1,1 2 3)</screen>
 
 <para>Guarantee all lines in a table are closed
 by adding the start point of each line to the end of the line
@@ -136,20 +136,18 @@ Given a geometry collection, returns a multi-geometry containing only elements o
 		<refsection>
 			<title>Examples</title>
 <para>Extract highest-dimension type:</para>
-<programlisting language="sql">SELECT ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION( POINT(0 0),LINESTRING(1 1,2 2) )'));</programlisting>
-<screen>MULTILINESTRING((1 1, 2 2))</screen>
+<programlisting language="sql">SELECT ST_CollectionExtract('GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(1 1,2 2) )');</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING((1 1, 2 2))</screen>
 
 <para>Extract points (type 1 == POINT):</para>
-<programlisting language="sql">
-SELECT ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',
-        1));</programlisting>
-<screen>MULTIPOINT((0 0))</screen>
+<programlisting language="sql">SELECT ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',
+        1);</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT((0 0))</screen>
 
 <para>Extract lines (type 2 == LINESTRING):</para>
-<programlisting language="sql">
-SELECT ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0,1 1)),LINESTRING(2 2,3 3))',
-        2));</programlisting>
-<screen>MULTILINESTRING((0 0, 1 1), (2 2, 3 3))</screen>
+<programlisting language="sql">SELECT ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0,1 1)), LINESTRING(2 2,3 3))',
+        2);</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING((0 0, 1 1), (2 2, 3 3))</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -204,24 +202,24 @@ Returns the simplest representation of a geometry collection.
         <refsection>
             <title>Examples</title>
 <para>Single-element collection converted to an atomic geometry</para>
-<programlisting language="sql">SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));</programlisting>
-<screen>POINT(0 0)</screen>
+<programlisting language="sql">SELECT ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))');</programlisting>
+<screen role="visual-primary text-primary">POINT(0 0)</screen>
 
 <para>Nested single-element collection converted to an atomic geometry:</para>
-<programlisting language="sql">SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 0)))'));</programlisting>
-<screen>POINT(0 0)</screen>
+<programlisting language="sql">SELECT ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 0)))');</programlisting>
+<screen role="visual-primary text-primary">POINT(0 0)</screen>
 
 <para>Collection converted to a multi-geometry:</para>
-<programlisting language="sql">SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));</programlisting>
-<screen>MULTIPOINT((0 0),(1 1))</screen>
+<programlisting language="sql">SELECT ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0), POINT(1 1))');</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT((0 0),(1 1))</screen>
 
 <para>Nested heterogeneous collection flattened to a GeometryCollection:</para>
-<programlisting language="sql">SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),GEOMETRYCOLLECTION( LINESTRING(1 1,2 2)))'));</programlisting>
-<screen>GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 1,2 2))</screen>
+<programlisting language="sql">SELECT ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0), GEOMETRYCOLLECTION( LINESTRING(1 1,2 2)))');</programlisting>
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POINT(0 0), LINESTRING(1 1,2 2))</screen>
 
 <para>Collection of Polygons converted to an (invalid) MultiPolygon:</para>
-<programlisting language="sql">SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50,50 50,50 10,10 10,10 50)),POLYGON ((90 50,90 10,50 10,50 50,90 50)))'));</programlisting>
-<screen>MULTIPOLYGON(((10 50,50 50,50 10,10 10,10 50)),((90 50,90 10,50 10,50 50,90 50)))</screen>
+<programlisting language="sql">SELECT ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50,50 50,50 10,10 10,10 50)),POLYGON ((90 50,90 10,50 10,50 50,90 50)))');</programlisting>
+<screen role="visual-primary text-primary">MULTIPOLYGON(((10 50,50 50,50 10,10 10,10 50)),((90 50,90 10,50 10,50 50,90 50)))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -302,8 +300,8 @@ Supported bits are:
       <refsection>
         <title>Examples</title>
 
-        <programlisting language="sql">SELECT ST_AsText(ST_CurveToLine('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));</programlisting>
-<screen> LINESTRING(220268 150415,220269.95064912 150416.539364228,220271.823415575 150418.17258804,220273.613787707 150419.895736857,
+        <programlisting language="sql">SELECT ST_CurveToLine('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)');</programlisting>
+<screen role="visual-primary text-primary"> LINESTRING(220268 150415,220269.95064912 150416.539364228,220271.823415575 150418.17258804,220273.613787707 150419.895736857,
 220275.317452352 150421.704659462,220276.930305234 150423.594998003,220278.448460847 150425.562198489,
 220279.868261823 150427.60152176,220281.186287736 150429.708054909,220282.399363347 150431.876723113,
 220283.50456625 150434.10230186,220284.499233914 150436.379429536,220285.380970099 150438.702620341,220286.147650624 150441.066277505,
@@ -340,23 +338,23 @@ Supported bits are:
 220213.998674333 150410.722587873,220216.22425308 150409.61738497,220218.501380756 150408.622717305,220220.824571561 150407.740981121,
 220223.188228725 150406.974300596,220225.586657991 150406.324522731,220227 150406)</screen>
 <para>This example uses 3D input.</para>
-<programlisting language="sql">SELECT ST_AsEWKT(ST_CurveToLine('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)'));</programlisting>
-<screen> LINESTRING(220268 150415 1,220269.95064912 150416.539364228 1.0181172856673,
+<programlisting language="sql">SELECT ST_CurveToLine('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');</programlisting>
+<screen role="visual-primary text-primary"> LINESTRING(220268 150415 1,220269.95064912 150416.539364228 1.0181172856673,
 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 150419.895736857 1.05435185700189,....AD INFINITUM ....
    220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)</screen>
 <para>Use only 2 segments to approximate quarter circle.</para>
-<programlisting language="sql">SELECT ST_AsText(ST_CurveToLine('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)', 2));</programlisting>
-<screen> LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,
+<programlisting language="sql">SELECT ST_CurveToLine('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)', 2);</programlisting>
+<screen role="visual-primary text-primary"> LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,
 220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 150462.657300346,
 220197.12195122 150425.12195122,220227 150406)</screen>
-<para>Ensure approximated line is no further than 20 units away from. Original curve, and make the result direction-neutral.</para>
-<programlisting language="sql">
-SELECT ST_AsText(ST_CurveToLine('CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,
-        20, -- Tolerance
-        1, -- Above is max distance between curve and line
-        1  -- Symmetric flag
-));</programlisting>
-<screen>LINESTRING(0 0,49.99999999999996 -86.60254037844383,149.99999999999994 -86.6025403784439,200 0)</screen>
+<para>Ensure the approximated line is no more than 20 units away from the original curve, and make the result direction-neutral.</para>
+<programlisting language="sql">SELECT ST_CurveToLine(
+    'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,
+    20,
+    1,
+    1
+  );</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(0 0,49.99999999999996 -86.60254037844383,149.99999999999994 -86.6025403784439,200 0)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -398,7 +396,7 @@ the given vertex <parameter>point</parameter>.
         <title>Examples</title>
 
         <para>Make a closed line start at its 3rd vertex.</para>
-<programlisting language="sql">SELECT ST_AsEWKT(ST_Scroll('SRID=4326;LINESTRING(0 0 0 1,10 0 2 0,5 5 4 2,0 0 0 1)', 'POINT(5 5 4 2)'));</programlisting>
+<programlisting language="sql">SELECT ST_Scroll('SRID=4326;LINESTRING(0 0 0 1,10 0 2 0,5 5 4 2,0 0 0 1)', 'POINT(5 5 4 2)');</programlisting>
 <screen role="visual-primary text-primary">SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)</screen>
 
       </refsection>
@@ -437,8 +435,8 @@ the given vertex <parameter>point</parameter>.
 
       <refsection>
         <title>Example</title>
-        <programlisting language="sql">SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));</programlisting>
-<screen>POINT(2 1)</screen>
+        <programlisting language="sql">SELECT ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)'));</programlisting>
+<screen role="visual-primary text-primary">POINT(2 1)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -484,9 +482,9 @@ the given vertex <parameter>point</parameter>.
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_AsEWKT(ST_Force2D('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)'));</programlisting>
+		<programlisting language="sql">SELECT ST_Force2D('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)');</programlisting>
 <screen role="visual-primary text-primary">CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)</screen>
-<programlisting language="sql">SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))'));</programlisting>
+<programlisting language="sql">SELECT ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))');</programlisting>
 <screen role="visual-primary text-primary">POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))</screen>
 	  </refsection>
 
@@ -533,9 +531,9 @@ the given vertex <parameter>point</parameter>.
 		<title>Examples</title>
 
 		<para>Nothing happens to an already 3D geometry.</para>
-		<programlisting language="sql">SELECT ST_AsEWKT(ST_Force3D('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)'));</programlisting>
+		<programlisting language="sql">SELECT ST_Force3D('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)');</programlisting>
 <screen role="visual-primary text-primary">CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)</screen>
-<programlisting language="sql">SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));</programlisting>
+<programlisting language="sql">SELECT ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))');</programlisting>
 <screen role="visual-primary text-primary">POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))</screen>
 	  </refsection>
 
@@ -582,9 +580,9 @@ the given vertex <parameter>point</parameter>.
 		<title>Examples</title>
 
 		<para>Nothing happens to an already 3D geometry.</para>
-		<programlisting language="sql">SELECT ST_AsEWKT(ST_Force3DZ('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)'));</programlisting>
+		<programlisting language="sql">SELECT ST_Force3DZ('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)');</programlisting>
 <screen role="visual-primary text-primary">CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)</screen>
-<programlisting language="sql">SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));</programlisting>
+<programlisting language="sql">SELECT ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))');</programlisting>
 <screen role="visual-primary text-primary">POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))</screen>
 	  </refsection>
 
@@ -629,9 +627,9 @@ the given vertex <parameter>point</parameter>.
 		<title>Examples</title>
 
 		<para>Nothing happens to an already 3D geometry.</para>
-		<programlisting language="sql">SELECT ST_AsEWKT(ST_Force3DM('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)'));</programlisting>
+		<programlisting language="sql">SELECT ST_Force3DM('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)');</programlisting>
 <screen role="visual-primary text-primary">CIRCULARSTRINGM(1 1 0,2 3 0,4 5 0,6 7 0,5 6 0)</screen>
-<programlisting language="sql">SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));</programlisting>
+<programlisting language="sql">SELECT ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))');</programlisting>
 <screen role="visual-primary text-primary">POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))</screen>
 	  </refsection>
 
@@ -677,9 +675,9 @@ the given vertex <parameter>point</parameter>.
 		<title>Examples</title>
 
 		<para>Nothing happens to an already 3D geometry.</para>
-		<programlisting language="sql">SELECT ST_AsEWKT(ST_Force4D('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)'));</programlisting>
+		<programlisting language="sql">SELECT ST_Force4D('CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)');</programlisting>
 <screen role="visual-primary text-primary">CIRCULARSTRING(1 1 2 0,2 3 2 0,4 5 2 0,6 7 2 0,5 6 2 0)</screen>
-<programlisting language="sql">SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 1))'));</programlisting>
+<programlisting language="sql">SELECT ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 1))');</programlisting>
 <screen role="visual-primary text-primary">MULTILINESTRING((0 0 0 1,0 5 0 2,5 0 0 3,0 0 0 4),(1 1 0 1,3 1 0 1,1 3 0 1,1 1 0 1))</screen>
 	  </refsection>
 
@@ -726,20 +724,19 @@ the given vertex <parameter>point</parameter>.
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));</programlisting>
-<screen role="text-primary">GEOMETRYCOLLECTION(POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1)))</screen>
-<programlisting language="sql">SELECT ST_AsText(ST_ForceCollection('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));</programlisting>
-<screen role="text-primary">GEOMETRYCOLLECTION(CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
+		<programlisting language="sql">SELECT ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))');</programlisting>
+<screen role="text-primary visual-primary">GEOMETRYCOLLECTION(POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1)))</screen>
+<programlisting language="sql">SELECT ST_ForceCollection('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)');</programlisting>
+<screen role="text-primary visual-primary">GEOMETRYCOLLECTION(CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
 
 		<para>This example uses a PolyhedralSurface.</para>
-		<programlisting language="sql">
-SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+		<programlisting language="sql">SELECT ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
  ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
  ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
  ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
  ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
- ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))'));</programlisting>
-<screen role="text-primary">GEOMETRYCOLLECTION(
+ ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))');</programlisting>
+<screen role="text-primary visual-primary">GEOMETRYCOLLECTION(
   POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
   POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
   POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
@@ -794,10 +791,9 @@ SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting language="sql">SELECT ST_AsText(ST_ForceCurve('POLYGON((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))'::geometry
-  )
-);</programlisting>
-<screen role="text-primary">CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))</screen>
+			<programlisting language="sql">SELECT ST_ForceCurve('POLYGON((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))'::geometry
+  );</programlisting>
+<screen role="text-primary visual-primary">CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))</screen>
 		</refsection>
 
 		<refsection>
@@ -1035,9 +1031,8 @@ FROM inputs;</programlisting>
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting language="sql">SELECT ST_AsEWKT(ST_ForceRHR('POLYGON((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))'
-  )
-);</programlisting>
+			<programlisting language="sql">SELECT ST_ForceRHR('POLYGON((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))'
+  );</programlisting>
 <screen role="visual-primary text-primary visual-direction">POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))</screen>
 		</refsection>
 
@@ -1092,8 +1087,8 @@ FROM inputs;</programlisting>
           <refsection>
             <title>Example: Extends a line 5 units forward and 6 units backward</title>
 
-<programlisting language="sql">SELECT ST_AsText(ST_LineExtend('LINESTRING(0 0,0 10)'::geometry, 5, 6));</programlisting>
-<screen>LINESTRING(0 -6,0 0,0 10,0 15)</screen>
+<programlisting language="sql">SELECT ST_LineExtend('LINESTRING(0 0,0 10)'::geometry, 5, 6);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(0 -6,0 0,0 10,0 15)</screen>
           </refsection>
 
           <refsection>
@@ -1196,8 +1191,8 @@ Circular string at Z=3   | CIRCULARSTRING Z (3 3 3,-1 3 3,3 3 3)</screen>
 			<title>Examples</title>
 
 <para>A Polygon is converted to a single-element MultiPolygon. The coordinates are unchanged.</para>
-<programlisting language="sql">SELECT ST_AsText(ST_Multi('POLYGON ((10 30,30 30,30 10,10 10,10 30))'));</programlisting>
-<screen role="text-primary">MULTIPOLYGON(((10 30,30 30,30 10,10 10,10 30)))</screen>
+<programlisting language="sql">SELECT ST_Multi('POLYGON ((10 30,30 30,30 10,10 10,10 30))');</programlisting>
+<screen role="text-primary visual-primary">MULTIPOLYGON(((10 30,30 30,30 10,10 10,10 30)))</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -1244,8 +1239,7 @@ Circular string at Z=3   | CIRCULARSTRING Z (3 3 3,-1 3 3,3 3 3)</screen>
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting language="sql">
-SELECT ST_AsText(ST_Normalize('GEOMETRYCOLLECTION(
+			<programlisting language="sql">SELECT ST_Normalize('GEOMETRYCOLLECTION(
     POINT(2 3),
     MULTILINESTRING((0 0,1 1),(2 2,3 3)),
     POLYGON(
@@ -1253,8 +1247,8 @@ SELECT ST_AsText(ST_Normalize('GEOMETRYCOLLECTION(
       (4 2,2 2,2 4,4 4,4 2),
       (6 8,8 8,8 6,6 6,6 8)
     )
-  )'));</programlisting>
-<screen>GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0),(6 6,8 6,8 8,6 8,6 6),(2 2,4 2,4 4,2 4,2 2)),MULTILINESTRING((2 2,3 3),(0 0,1 1)),POINT(2 3))</screen>
+  )');</programlisting>
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0),(6 6,8 6,8 8,6 8,6 6),(2 2,4 2,4 4,2 4,2 2)), MULTILINESTRING((2 2,3 3),(0 0,1 1)), POINT(2 3))</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -1342,8 +1336,8 @@ SELECT ST_AsText(ST_Normalize('GEOMETRYCOLLECTION(
           <refsection>
             <title>Example: Projected point at 100,000 meters and bearing 45 degrees </title>
 
-<programlisting language="sql">SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));</programlisting>
-<screen> POINT(0.635231029125537 0.639472334729198)</screen>
+<programlisting language="sql">SELECT ST_Project('POINT(0 0)'::geography, 100000, radians(45.0));</programlisting>
+<screen role="visual-primary text-primary"> POINT(0.635231029125537 0.639472334729198)</screen>
           </refsection>
 
           <refsection>
@@ -1448,8 +1442,8 @@ SELECT ST_AsText(ST_Normalize('GEOMETRYCOLLECTION(
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting language="sql">SELECT ST_AsText(ST_QuantizeCoordinates('POINT (100.123456 0)'::geometry, 4));</programlisting>
-<screen role="text-primary">POINT(100.12344360351562 0)</screen>
+			<programlisting language="sql">SELECT ST_QuantizeCoordinates('POINT (100.123456 0)'::geometry, 4);</programlisting>
+<screen role="text-primary visual-primary">POINT(100.12344360351562 0)</screen>
 
 			<programlisting language="sql">WITH test AS (SELECT 'POINT (123.456789123456 123.456789123456)'::geometry AS geom)
 SELECT
@@ -1586,23 +1580,23 @@ UPDATE sometable
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT ((1 1),(2 2),(3 3),(2 2))'));</programlisting>
-<screen>MULTIPOINT((1 1),(2 2),(3 3))</screen>
+		<programlisting language="sql">SELECT ST_RemoveRepeatedPoints('MULTIPOINT ((1 1),(2 2),(3 3),(2 2))');</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT((1 1),(2 2),(3 3))</screen>
 
-		<programlisting language="sql">SELECT ST_AsText(ST_RemoveRepeatedPoints('LINESTRING (0 0,0 0,1 1,0 0,1 1,2 2)'));</programlisting>
-<screen> LINESTRING(0 0,1 1,0 0,1 1,2 2)</screen>
+		<programlisting language="sql">SELECT ST_RemoveRepeatedPoints('LINESTRING (0 0,0 0,1 1,0 0,1 1,2 2)');</programlisting>
+<screen role="visual-primary text-primary"> LINESTRING(0 0,1 1,0 0,1 1,2 2)</screen>
 
       <para><emphasis role="bold">Example:</emphasis>
       Collection elements are processed individually.
       </para>
-		<programlisting language="sql">SELECT ST_AsText(ST_RemoveRepeatedPoints('GEOMETRYCOLLECTION (LINESTRING (1 1,2 2,2 2,3 3),POINT (4 4),POINT (4 4),POINT (5 5))'));</programlisting>
-<screen> GEOMETRYCOLLECTION(LINESTRING(1 1,2 2,3 3),POINT(4 4),POINT(4 4),POINT(5 5))</screen>
+		<programlisting language="sql">SELECT ST_RemoveRepeatedPoints('GEOMETRYCOLLECTION (LINESTRING (1 1,2 2,2 2,3 3),POINT (4 4),POINT (4 4),POINT (5 5))');</programlisting>
+<screen role="visual-primary text-primary"> GEOMETRYCOLLECTION(LINESTRING(1 1,2 2,3 3), POINT(4 4), POINT(4 4), POINT(5 5))</screen>
 
       <para><emphasis role="bold">Example:</emphasis>
       Repeated point removal with a distance tolerance.
       </para>
-		<programlisting language="sql">SELECT ST_AsText(ST_RemoveRepeatedPoints('LINESTRING (0 0,0 0,1 1,5 5,1 1,2 2)', 2));</programlisting>
-<screen> LINESTRING(0 0,5 5,2 2)</screen>
+		<programlisting language="sql">SELECT ST_RemoveRepeatedPoints('LINESTRING (0 0,0 0,1 1,5 5,1 1,2 2)', 2);</programlisting>
+<screen role="visual-primary text-primary"> LINESTRING(0 0,5 5,2 2)</screen>
 
 	  </refsection>
 
@@ -1699,10 +1693,9 @@ result     | MULTILINESTRING((10 15,15 15,20 15),(13 13,15 15,17 17))
 view       | POLYGON((12 12,12 18,18 18,18 12,12 12))</screen>
 
 		<para>A line with no segment relevant to the view becomes empty.</para>
-		<programlisting language="sql">
-SELECT ST_AsText(ST_RemoveIrrelevantPointsForView('LINESTRING(0 0,10 0,20 0,30 0)',
-ST_MakeEnvelope(12, 12, 18, 18), true));</programlisting>
-<screen>LINESTRING EMPTY</screen>
+		<programlisting language="sql">SELECT ST_RemoveIrrelevantPointsForView('LINESTRING(0 0,10 0,20 0,30 0)',
+ST_MakeEnvelope(12, 12, 18, 18), true);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING EMPTY</screen>
 
 		<para>Removing vertices without computing intersections can introduce self-intersections in the result.</para>
 		<programlisting language="sql">
@@ -1800,18 +1793,16 @@ view       | POLYGON((12 12,12 18,18 18,18 12,12 12))</screen>
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">
-SELECT ST_AsText(ST_RemoveSmallParts('MULTIPOLYGON(
+		<programlisting language="sql">SELECT ST_RemoveSmallParts('MULTIPOLYGON(
     ((60 160,120 160,120 220,60 220,60 160),(70 170,70 210,110 210,110 170,70 170)),
     ((85 75,155 75,155 145,85 145,85 75)),
     ((50 110,70 110,70 130,50 130,50 110)))',
-    50, 50));</programlisting>
-<screen>MULTIPOLYGON(((60 160,120 160,120 220,60 220,60 160)),((85 75,155 75,155 145,85 145,85 75)))</screen>
+    50, 50);</programlisting>
+<screen role="visual-primary text-primary">MULTIPOLYGON(((60 160,120 160,120 220,60 220,60 160)),((85 75,155 75,155 145,85 145,85 75)))</screen>
 
-		<programlisting language="sql">
-SELECT ST_AsText(ST_RemoveSmallParts('LINESTRING(10 10,20 20)',
-    50, 50));</programlisting>
-<screen>LINESTRING EMPTY</screen>
+		<programlisting language="sql">SELECT ST_RemoveSmallParts('LINESTRING(10 10,20 20)',
+    50, 50);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING EMPTY</screen>
 
 	  </refsection>
 
@@ -1926,21 +1917,20 @@ FROM data;</programlisting>
 			<title>Examples</title>
 
             <para>Segmentizing a line.  Long segments are split evenly, and short segments are not split.</para>
-			<programlisting language="sql">SELECT ST_AsText(ST_Segmentize('MULTILINESTRING((0 0,0 1,0 9),(1 10,1 18))'::geometry,
-5));</programlisting>
-<screen>MULTILINESTRING((0 0,0 1,0 5,0 9),(1 10,1 14,1 18))</screen>
+			<programlisting language="sql">SELECT ST_Segmentize('MULTILINESTRING((0 0,0 1,0 9),(1 10,1 18))'::geometry,
+5);</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING((0 0,0 1,0 5,0 9),(1 10,1 14,1 18))</screen>
 
             <para>Segmentizing a polygon:</para>
-<programlisting language="sql">
-SELECT ST_AsText(ST_Segmentize('POLYGON((0 0,0 8,30 0,0 0))'::geometry,
-        10));</programlisting>
-<screen>POLYGON((0 0,0 8,7.5 6,15 4,22.5 2,30 0,20 0,10 0,0 0))</screen>
+<programlisting language="sql">SELECT ST_Segmentize('POLYGON((0 0,0 8,30 0,0 0))'::geometry,
+        10);</programlisting>
+<screen role="visual-primary text-primary">POLYGON((0 0,0 8,7.5 6,15 4,22.5 2,30 0,20 0,10 0,0 0))</screen>
 
             <para>Segmentizing a geographic line, using a maximum segment length of 2000 kilometers.
             Vertices are added along the great-circle arc connecting the endpoints.
             </para>
-<programlisting language="sql">SELECT ST_AsText(ST_Segmentize(('LINESTRING (0 0,60 60)'::geography), 2000000));</programlisting>
-<screen>LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.824093489701564,13.550465473227048 25.107950473646188,19.1066053508691 33.21091076089908,25.779290201459894 41.01711439406505,34.188839517966954 48.337222885886,45.238153936612264 54.84733442373889,60 60)</screen>
+<programlisting language="sql">SELECT ST_Segmentize(('LINESTRING (0 0,60 60)'::geography), 2000000);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.824093489701564,13.550465473227048 25.107950473646188,19.1066053508691 33.21091076089908,25.779290201459894 41.01711439406505,34.188839517966954 48.337222885886,45.238153936612264 54.84733442373889,60 60)</screen>
 
 		</refsection>
 		<refsection>
@@ -1980,17 +1970,17 @@ SELECT ST_AsText(ST_Segmentize('POLYGON((0 0,0 8,30 0,0 0))'::geometry,
 		  <refsection>
 			<title>Examples</title>
 			<para>Change first point in line string from -1 3 to -1 1.</para>
-			<programlisting language="sql">SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)'));</programlisting>
-<screen>LINESTRING(-1 1,-1 3)</screen>
+			<programlisting language="sql">SELECT ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)');</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(-1 1,-1 3)</screen>
 <para>Change last point in a line string (let's play with 3D linestring this time)</para>
 <programlisting language="sql">
-SELECT ST_AsEWKT(ST_SetPoint(foo.geom, ST_NumPoints(foo.geom) - 1, 'POINT(-1 1 3)'))
+SELECT ST_SetPoint(foo.geom, ST_NumPoints(foo.geom) - 1, 'POINT(-1 1 3)')
 FROM (SELECT 'LINESTRING(-1 2 3,-1 3 4,5 6 7)'::geometry As geom) As foo;</programlisting>
-<screen>LINESTRING(-1 2 3,-1 3 4,-1 1 3)</screen>
-<programlisting language="sql">SELECT ST_AsText(ST_SetPoint(g, -3, p))
+<screen role="visual-primary text-primary">LINESTRING(-1 2 3,-1 3 4,-1 1 3)</screen>
+<programlisting language="sql">SELECT ST_SetPoint(g, -3, p)
 FROM ST_GeomFromText('LINESTRING(0 0,1 1,2 2,3 3,4 4)') AS g
     CROSS JOIN ST_PointN(g, 1) as p;</programlisting>
-<screen>LINESTRING(0 0,1 1,0 0,3 3,4 4)</screen>
+<screen role="visual-primary text-primary">LINESTRING(0 0,1 1,0 0,3 3,4 4)</screen>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -2039,14 +2029,14 @@ FROM ST_GeomFromText('LINESTRING(0 0,1 1,2 2,3 3,4 4)') AS g
         <title>Examples</title>
 
         <para>This example performs a forward longitude shift on a single point.</para>
-        <programlisting language="sql">SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;POINT(270 0)'::geometry))</programlisting>
-<screen>POINT(-90 0)</screen>
+        <programlisting language="sql">SELECT ST_ShiftLongitude('SRID=4326;POINT(270 0)'::geometry)</programlisting>
+<screen role="visual-primary text-primary">POINT(-90 0)</screen>
 <para>This example performs a reverse longitude shift on a single point.</para>
-<programlisting language="sql">SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;POINT(-90 0)'::geometry))</programlisting>
-<screen>POINT(270 0)</screen>
+<programlisting language="sql">SELECT ST_ShiftLongitude('SRID=4326;POINT(-90 0)'::geometry)</programlisting>
+<screen role="visual-primary text-primary">POINT(270 0)</screen>
 <para>This example shows that LineStrings are shifted only where coordinates require it.</para>
-<programlisting language="sql">SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;LINESTRING(174 12,182 13)'::geometry))</programlisting>
-<screen>LINESTRING(174 12,-178 13)</screen>
+<programlisting language="sql">SELECT ST_ShiftLongitude('SRID=4326;LINESTRING(174 12,182 13)'::geometry)</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(174 12,-178 13)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -2207,23 +2197,20 @@ UPDATE mytable
    SET geom = ST_SnapToGrid(geom, 0.001);</programlisting>
 
 		<para>Display how the same grid size rounds a LineString.</para>
-<programlisting language="sql">
-SELECT ST_AsText(ST_SnapToGrid('LINESTRING(1.1115678 2.123,4.111111 3.2374897,4.11112 3.23748667)'::geometry,
-        0.001));</programlisting>
-<screen>LINESTRING(1.112 2.123,4.111 3.237)</screen>
+<programlisting language="sql">SELECT ST_SnapToGrid('LINESTRING(1.1115678 2.123,4.111111 3.2374897,4.11112 3.23748667)'::geometry,
+        0.001);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(1.112 2.123,4.111 3.237)</screen>
 <para>This example snaps a 4D geometry.</para>
-<programlisting language="sql">
-SELECT ST_AsEWKT(ST_SnapToGrid('LINESTRING(-1.1115678 2.123 2.3456 1.11111,
+<programlisting language="sql">SELECT ST_SnapToGrid('LINESTRING(-1.1115678 2.123 2.3456 1.11111,
         4.111111 3.2374897 3.1234 1.1111,-1.11111112 2.123 2.3456 1.1111112)'::geometry,
         'POINT(1.12 2.22 3.2 4.4444)',
-        0.1, 0.1, 0.1, 0.01));</programlisting>
-<screen>LINESTRING(-1.08 2.12 2.3 1.1144,4.12 3.22 3.1 1.1144,-1.08 2.12 2.3 1.1144)</screen>
+        0.1, 0.1, 0.1, 0.01);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(-1.08 2.12 2.3 1.1144,4.12 3.22 3.1 1.1144,-1.08 2.12 2.3 1.1144)</screen>
 <para>With a 4D geometry - the ST_SnapToGrid(geom,size) only touches x and y coords but keeps m and z the same.</para>
-<programlisting language="sql">
-SELECT ST_AsEWKT(ST_SnapToGrid('LINESTRING(-1.1115678 2.123 3 2.3456,
+<programlisting language="sql">SELECT ST_SnapToGrid('LINESTRING(-1.1115678 2.123 3 2.3456,
         4.111111 3.2374897 3.1234 1.1111)'::geometry,
-       0.01)      );</programlisting>
-<screen>LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)</screen>
+       0.01);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -2302,7 +2289,7 @@ SELECT ST_AsEWKT(ST_SnapToGrid('LINESTRING(-1.1115678 2.123 3 2.3456,
 		<title>Examples</title>
 		<para>A MultiPolygon snapped to a LineString at 1.01 times their distance.</para>
 				<programlisting language="sql">
-SELECT ST_AsText(ST_Snap(poly, line, ST_Distance(poly, line)*1.01)) AS polysnapped
+SELECT ST_Snap(poly, line, ST_Distance(poly, line)*1.01) AS polysnapped
 FROM (SELECT
    ST_GeomFromText('MULTIPOLYGON(
      ((26 125,26 200,126 200,126 125,26 125 ),
@@ -2310,14 +2297,13 @@ FROM (SELECT
       (( 151 100,151 200,176 175,151 100 )))') As poly,
        ST_GeomFromText('LINESTRING (5 107,54 84,101 100)') As line
     ) As foo;</programlisting>
-<screen> MULTIPOLYGON(((26 125,26 200,126 200,126 125,101 100,26 125),
+<screen role="visual-primary text-primary"> MULTIPOLYGON(((26 125,26 200,126 200,126 125,101 100,26 125),
 (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))
 </screen>
 
 		<para>A MultiPolygon snapped to a LineString at 1.25 times their distance.</para>
 				<programlisting language="sql">
-SELECT ST_AsText(ST_Snap(poly, line, ST_Distance(poly, line)*1.25)
-  ) AS polysnapped
+SELECT ST_Snap(poly, line, ST_Distance(poly, line)*1.25) AS polysnapped
 FROM (SELECT
   ST_GeomFromText('MULTIPOLYGON(
     (( 26 125,26 200,126 200,126 125,26 125 ),
@@ -2325,14 +2311,13 @@ FROM (SELECT
       (( 151 100,151 200,176 175,151 100 )))') As poly,
        ST_GeomFromText('LINESTRING (5 107,54 84,101 100)') As line
     ) As foo;</programlisting>
-<screen>MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),
+<screen role="visual-primary text-primary">MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),
 (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))
 </screen>
 
 		<para>The LineString snapped to the original MultiPolygon at 1.01 times their distance.</para>
 				<programlisting language="sql">
-SELECT ST_AsText(ST_Snap(line, poly, ST_Distance(poly, line)*1.01)
-  ) AS linesnapped
+SELECT ST_Snap(line, poly, ST_Distance(poly, line)*1.01) AS linesnapped
 FROM (SELECT
   ST_GeomFromText('MULTIPOLYGON(
      ((26 125,26 200,126 200,126 125,26 125),
@@ -2340,12 +2325,11 @@ FROM (SELECT
       ((151 100,151 200,176 175,151 100)))') As poly,
        ST_GeomFromText('LINESTRING (5 107,54 84,101 100)') As line
     ) As foo;</programlisting>
-<screen>LINESTRING(5 107,26 125,54 84,101 100)</screen>
+<screen role="visual-primary text-primary">LINESTRING(5 107,26 125,54 84,101 100)</screen>
 
 		<para>The LineString snapped to the original MultiPolygon at 1.25 times their distance.</para>
 				<programlisting language="sql">
-SELECT ST_AsText(ST_Snap(line, poly, ST_Distance(poly, line)*1.25)
-  ) AS linesnapped
+SELECT ST_Snap(line, poly, ST_Distance(poly, line)*1.25) AS linesnapped
 FROM (SELECT
   ST_GeomFromText('MULTIPOLYGON(
      (( 26 125,26 200,126 200,126 125,26 125 ),
@@ -2353,7 +2337,7 @@ FROM (SELECT
       ((151 100,151 200,176 175,151 100 )))') As poly,
        ST_GeomFromText('LINESTRING (5 107,54 84,101 100)') As line
     ) As foo;</programlisting>
-<screen>LINESTRING(26 125,54 84,101 100)</screen>
+<screen role="visual-primary text-primary">LINESTRING(26 125,54 84,101 100)</screen>
 
 	  </refsection>
 
@@ -2406,12 +2390,11 @@ the ordinates to swap. Valid names are: x,y,z and m.
 		<title>Example</title>
 		<para>This example scales the M value by 2.</para>
 		<programlisting language="sql">
-SELECT ST_AsText(ST_SwapOrdinates(ST_Scale(ST_SwapOrdinates(g, 'xm'),
+SELECT ST_SwapOrdinates(ST_Scale(ST_SwapOrdinates(g, 'xm'),
       2, 1
     ),
-  'xm')
-) FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;</programlisting>
-<screen>POINT ZM (0 0 0 4)</screen>
+  'xm') FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;</programlisting>
+<screen role="visual-primary text-primary">POINT ZM (0 0 0 4)</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->

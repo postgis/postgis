@@ -252,7 +252,7 @@ False is returned if the trajectories do not overlap in their M ranges.
 
       <refsection>
       <title>Examples</title>
-<programlisting>
+<programlisting language="sql">
 WITH inp AS ( SELECT
   ST_AddMeasure('LINESTRING Z (0 0 0,10 0 5)'::geometry,
     extract(epoch from timestamp '2015-05-26 10:00' AT TIME ZONE 'UTC'),
@@ -264,7 +264,7 @@ WITH inp AS ( SELECT
   ) b
 )
 SELECT ST_CPAWithin(a, b, 2), ST_DistanceCPA(a, b) distance FROM inp;</programlisting>
-<screen> st_cpawithin |     distance
+<screen role="text-primary"> st_cpawithin |     distance
 --------------+------------------
  t            | 1.9652147377620688</screen>
       </refsection>

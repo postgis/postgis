@@ -127,6 +127,8 @@
                         or starts-with($code.text.upper, 'ALTER ')
                         or starts-with($code.text.upper, 'DROP ')
                         or starts-with($code.text.upper, 'EXPLAIN ')
+                        or starts-with($code.text.upper, 'ANALYZE ')
+                        or starts-with($code.text.upper, 'VACUUM ')
                         or starts-with($code.text.upper, 'DO ')
                         or starts-with($code.text.upper, 'BEGIN;')
                         or starts-with($code.text.upper, 'COMMIT;')"/>

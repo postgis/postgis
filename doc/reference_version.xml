@@ -104,7 +104,7 @@ NOTICE:  Extension postgis_topology is not available or not packagable for some 
 		<title>Examples</title>
 
 		<programlisting language="sql">SELECT PostGIS_Full_Version();</programlisting>
-<screen>POSTGIS="3.7.0dev 3.7.0alpha1-456-gee80d2e71" [EXTENSION] PGSQL="180" GEOS="3.14.1" SFCGAL="2.3.0" PROJ="9.8.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org DATABASE_PATH=/usr/share/proj/proj.db" GDAL="GDAL 3.13.1, released 2026/06/01" LIBXML="2.15.3"</screen>
+<screen role="text-primary">POSTGIS="3.7.0dev 3.7.0alpha1-477-ga9004e778" [EXTENSION] PGSQL="180" GEOS="3.15.0beta1" SFCGAL="2.3.0" PROJ="9.8.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org DATABASE_PATH=/usr/share/proj/proj.db" GDAL="GDAL 3.13.1, released 2026/06/01" LIBXML="2.15.3"</screen>
 	  </refsection>
 
 	  <refsection>

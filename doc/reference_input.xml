@@ -140,7 +140,7 @@
 SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');</programlisting>
 			<para>Specify a geography point using EPSG:4267, NAD27.</para>
 			<programlisting language="sql">SELECT ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)');</programlisting>
-			<screen>SRID=4267;POINT(-77.0092 38.889588)</screen>
+				<screen role="text-primary visual-primary">SRID=4267;POINT(-77.0092 38.889588)</screen>
 		 </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -220,7 +220,7 @@ SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');</pro
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(1 2,3 4))');</programlisting>
+		<programlisting language="sql">SELECT ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(1 2), LINESTRING(1 2,3 4))');</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -265,7 +265,7 @@ SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');</pro
 		<para>Create a LineString with SRID 4269.</para>
 		<programlisting language="sql">SELECT ST_GeometryType(geom) AS geometry_type, ST_SRID(geom) AS srid
 FROM ST_GeomFromEWKT('SRID=4269;LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)') AS geom;</programlisting>
-		<screen> geometry_type | srid
+			<screen role="text-primary"> geometry_type | srid
 ---------------+------
  ST_LineString | 4269
 (1 row)</screen>
@@ -273,7 +273,7 @@ FROM ST_GeomFromEWKT('SRID=4269;LINESTRING(-71.160281 42.258729,-71.160837 42.25
 		<para>Create a MultiLineString with SRID 4269.</para>
 		<programlisting language="sql">SELECT ST_GeometryType(geom) AS geometry_type, ST_SRID(geom) AS srid
 FROM ST_GeomFromEWKT('SRID=4269;MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))') AS geom;</programlisting>
-		<screen>    geometry_type    | srid
+			<screen role="text-primary">    geometry_type    | srid
 ---------------------+------
  ST_MultiLineString  | 4269
 (1 row)</screen>
@@ -281,7 +281,7 @@ FROM ST_GeomFromEWKT('SRID=4269;MULTILINESTRING((-71.160281 42.258729,-71.160837
 		<para>Create a Point with SRID 4269.</para>
 		<programlisting language="sql">SELECT ST_GeometryType(geom) AS geometry_type, ST_SRID(geom) AS srid
 FROM ST_GeomFromEWKT('SRID=4269;POINT(-71.064544 42.28787)') AS geom;</programlisting>
-		<screen> geometry_type | srid
+			<screen role="text-primary"> geometry_type | srid
 ---------------+------
  ST_Point      | 4269
 (1 row)</screen>
@@ -290,7 +290,7 @@ FROM ST_GeomFromEWKT('SRID=4269;POINT(-71.064544 42.28787)') AS geom;</programli
 		<programlisting language="sql">SELECT ST_GeometryType(geom) AS geometry_type, ST_SRID(geom) AS srid
 FROM ST_GeomFromEWKT('SRID=4269;POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
 -71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))') AS geom;</programlisting>
-		<screen> geometry_type | srid
+			<screen role="text-primary"> geometry_type | srid
 ---------------+------
  ST_Polygon    | 4269
 (1 row)</screen>
@@ -320,7 +320,7 @@ FROM ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.315277459023
 -71.1031880899493 42.3152774590236)),
 ((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
 -71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))') AS geom;</programlisting>
-		<screen>   geometry_type   | srid
+			<screen role="text-primary">   geometry_type   | srid
 -------------------+------
  ST_MultiPolygon   | 4269
 (1 row)</screen>
@@ -328,7 +328,7 @@ FROM ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.315277459023
 		<para>Create a 3D CircularString without an SRID.</para>
 		<programlisting language="sql">SELECT ST_GeometryType(geom) AS geometry_type, ST_SRID(geom) AS srid
 FROM ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)') AS geom;</programlisting>
-		<screen>   geometry_type    | srid
+			<screen role="text-primary">   geometry_type    | srid
 --------------------+------
  ST_CircularString  | 0
 (1 row)</screen>
@@ -343,7 +343,7 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
     ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
     ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))
 )') AS geom;</programlisting>
-		<screen>      geometry_type       | srid
+			<screen role="text-primary">      geometry_type       | srid
 --------------------------+------
  ST_PolyhedralSurface     | 0
 (1 row)</screen>
@@ -470,7 +470,7 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
 </record>'
 ));
 ]]></programlisting>
-<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))</screen>
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)), POINT(-4.5 54.25))</screen>
 
         </refsection>
 
@@ -570,7 +570,7 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
 
 	<para>Create a Point.</para>
 	<programlisting language="sql">SELECT ST_GeometryType(ST_GeomFromText('POINT(-71.064544 42.28787)'));</programlisting>
-	<screen>ST_Point</screen>
+			<screen role="text-primary">ST_Point</screen>
 
 	<para>Create a Polygon.</para>
 	<programlisting language="sql">SELECT ST_GeometryType(ST_GeomFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
@@ -663,9 +663,9 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_AsText(ST_LineFromText('LINESTRING(1 2,3 4)')) AS aline,
+		<programlisting language="sql">SELECT ST_LineFromText('LINESTRING(1 2,3 4)') AS aline,
 ST_LineFromText('POINT(1 2)') IS NULL AS null_return;</programlisting>
-		<screen>
+		<screen role="text-primary">
 aline                 | null_return
 ------------------------------------
 LINESTRING(1 2,3 4)  | t
@@ -853,14 +853,14 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 		<title>Examples</title>
 
 		<para>Create a 3D MultiPolygon with an interior ring and SRID 0.</para>
-		<programlisting language="sql">SELECT ST_AsEWKT(ST_MPolyFromText(
+		<programlisting language="sql">SELECT ST_MPolyFromText(
     'MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),
                    (5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))'
-));</programlisting>
-		<screen role="visual-primary">MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))</screen>
+);</programlisting>
+		<screen role="visual-primary text-primary">MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))</screen>
 
 		<para>Create a MultiPolygon with SRID 4326.</para>
-		<programlisting language="sql">SELECT ST_AsEWKT(ST_MPolyFromText(
+		<programlisting language="sql">SELECT ST_MPolyFromText(
     'MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.9765 42.0872,
       -70.9754 42.0875,-70.9749 42.0879,-70.9752 42.0881,-70.9754 42.0891,
       -70.9758 42.0894,-70.9759 42.0897,-70.9759 42.0899,-70.9754 42.0902,
@@ -877,8 +877,8 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
       -70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,-70.9408 42.1513,
       -70.9315 42.1165,-70.916 42.1002)))',
     4326
-));</programlisting>
-		<screen>SRID=4326;MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,-70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))</screen>
+);</programlisting>
+			<screen role="visual-primary text-primary">SRID=4326;MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,-70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -936,12 +936,12 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 		  <refsection>
 			<title>Examples</title>
 			<para>Create a point with the default SRID 0.</para>
-			<programlisting language="sql">SELECT ST_AsEWKT(ST_PointFromText('POINT(-71.064544 42.28787)'));</programlisting>
-			<screen>POINT(-71.064544 42.28787)</screen>
+			<programlisting language="sql">SELECT ST_PointFromText('POINT(-71.064544 42.28787)');</programlisting>
+				<screen role="text-primary visual-primary">POINT(-71.064544 42.28787)</screen>
 
 			<para>Create a point with SRID 4326.</para>
-			<programlisting language="sql">SELECT ST_AsEWKT(ST_PointFromText('POINT(-71.064544 42.28787)', 4326));</programlisting>
-			<screen>SRID=4326;POINT(-71.064544 42.28787)</screen>
+			<programlisting language="sql">SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);</programlisting>
+				<screen role="text-primary visual-primary">SRID=4326;POINT(-71.064544 42.28787)</screen>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -995,9 +995,9 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 		geometry for the generated figure.</para>
 		<programlisting language="sql">SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
 -71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');</programlisting>
-<screen role="visual-primary">POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))</screen>
+<screen role="visual-primary text-primary">POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))</screen>
 <programlisting language="sql">SELECT ST_PolygonFromText('POINT(1 2)') IS NULL AS point_is_notpoly;</programlisting>
-<screen>t</screen>
+<screen role="text-primary">t</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1072,10 +1072,8 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 		<title>Examples</title>
 
 		<para>Although bytea rep contains single \, these need to be escaped when inserting into a table.</para>
-		<programlisting language="sql">
-SELECT ST_AsText(ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@')
-);</programlisting>
-<screen>LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
+		<programlisting language="sql">SELECT ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@');</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 	  </refsection>
 	   <refsection>
 		<title>See Also</title>
@@ -1126,7 +1124,7 @@ SELECT ST_AsText(ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\
     E'\\047\\113\\312\\121\\300\\366\\173\\142\\235\\052\\041\\105\\100\\225\\174\\354' ||
     E'\\056\\120\\312\\121\\300\\160\\231\\323\\145\\061\\041\\105\\100'
 )::bytea);</programlisting>
-<screen>0102000020AD10000003000000E44A3D0B42CA51C06EC328081E21454027BF45274BCA51C0F67B629D2A214540957CEC2E50CA51C07099D36531214540</screen>
+<screen role="visual-primary text-primary">0102000020AD10000003000000E44A3D0B42CA51C06EC328081E21454027BF45274BCA51C0F67B629D2A214540957CEC2E50CA51C07099D36531214540</screen>
 
 		<para>With <varname>standard_conforming_strings</varname> enabled (the default), ordinary string literals preserve
 		backslashes. The same EWKB can therefore be written with a single backslash before each octal byte value.</para>
@@ -1186,15 +1184,11 @@ SELECT ST_AsText(ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\
 		<title>Examples</title>
 
 		<para>Although bytea rep contains single \, these need to be escaped when inserting into a table. Unless standard_conforming_strings is set to on.</para>
-		<programlisting language="sql">
-SELECT ST_AsEWKT(ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@', 4326)
-);</programlisting>
-<screen>SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
-<programlisting language="sql">SELECT
-ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
-  )
-);</programlisting>
-<screen>POINT(2 5)</screen>
+		<programlisting language="sql">SELECT ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@', 4326);</programlisting>
+<screen role="visual-primary text-primary">SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
+<programlisting language="sql">SELECT ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
+  );</programlisting>
+<screen role="visual-primary text-primary">POINT(2 5)</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1209,7 +1203,7 @@ ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 	  <refnamediv>
 		<refname>ST_LineFromWKB</refname>
 
-		<refpurpose>Creates a <varname>LINESTRING</varname> from WKB, optionally using a given SRID.</refpurpose>
+		<refpurpose>Creates a <varname>LINESTRING</varname> from a WKB representation, optionally using a given SRID.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1231,25 +1225,24 @@ ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 		<title>Description</title>
 
 	  <para>The <function>ST_LineFromWKB</function> function takes a Well-Known Binary
-		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
-		and creates an instance of the appropriate geometry type—in this case, a
-		<varname>LINESTRING</varname>. This function plays the role of the geometry
-		factory in SQL.</para>
+		(WKB) representation of a geometry and an optional Spatial Reference System
+		ID (<varname>SRID</varname>), and creates a <varname>LINESTRING</varname>
+		geometry. It is a type-specific geometry factory in SQL.</para>
 
 	  <para>If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is
-		returned if the input <varname>bytea</varname>
-		does not represent a <varname>LINESTRING</varname>.</para>
+		returned if the input <varname>bytea</varname> does not represent a
+		<varname>LINESTRING</varname> geometry.</para>
 
 		<note>
-		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance
 				suite.</para>
 		</note>
 
 		<note>
 		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it is more
-		  efficient to just use <xref linkend="ST_GeomFromWKB"/>.  This function just
-		  calls <xref linkend="ST_GeomFromWKB"/> and adds additional validation that
-		  it returns a <varname>LINESTRING</varname>.</para>
+		  efficient to use <xref linkend="ST_GeomFromWKB"/> directly.  This function
+		  calls <xref linkend="ST_GeomFromWKB"/> and adds validation that the result is
+		  a <varname>LINESTRING</varname>.</para>
 		</note>
 
 
@@ -1268,7 +1261,7 @@ ST_AsText(ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
 ST_LineFromWKB(
     ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
 ) IS NULL AS null_return;</programlisting>
-		<screen>
+		<screen role="text-primary">
 aline                 | null_return
 ------------------------------------
 LINESTRING(1 2,3 4)  | t
@@ -1287,7 +1280,7 @@ LINESTRING(1 2,3 4)  | t
 	  <refnamediv>
 		<refname>ST_LinestringFromWKB</refname>
 
-		<refpurpose>Creates a <varname>LINESTRING</varname> from WKB, optionally using a given SRID.</refpurpose>
+		<refpurpose>Creates a <varname>LINESTRING</varname> from a WKB representation, optionally using a given SRID.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1309,14 +1302,13 @@ LINESTRING(1 2,3 4)  | t
 		<title>Description</title>
 
 	  <para>The <function>ST_LinestringFromWKB</function> function takes a Well-Known Binary
-		representation of geometry and a Spatial Reference System ID (<varname>SRID</varname>)
-		and creates an instance of the appropriate geometry type—in this case, a
-		<varname>LINESTRING</varname>. This function plays the role of the geometry
-		factory in SQL.</para>
+		(WKB) representation of a geometry and an optional Spatial Reference System
+		ID (<varname>SRID</varname>), and creates a <varname>LINESTRING</varname>
+		geometry. It is an alias for <xref linkend="ST_LineFromWKB"/>.</para>
 
 	  <para>If an SRID is not specified, it defaults to 0.  <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname> does not represent a
-		<varname>LINESTRING</varname> geometry. This function is an alias for <xref linkend="ST_LineFromWKB"/>.</para>
+		<varname>LINESTRING</varname> geometry.</para>
 
 		<note>
 		  <para>OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite.</para>
@@ -1324,9 +1316,9 @@ LINESTRING(1 2,3 4)  | t
 
 		<note>
 		  <para>If you know all your geometries are <varname>LINESTRING</varname>s, it is more
-		  efficient to just use <xref linkend="ST_GeomFromWKB"/>.  This function just calls
-		  <xref linkend="ST_GeomFromWKB"/> and adds additional validation that it returns a
-		  <varname>LINESTRING</varname>.</para>
+		  efficient to use <xref linkend="ST_GeomFromWKB"/> directly.  This function
+		  calls <xref linkend="ST_GeomFromWKB"/> and adds validation that the result is
+		  a <varname>LINESTRING</varname>.</para>
 		</note>
 
 		<para>&sfs_compliant; s3.2.6.2</para>
@@ -1342,7 +1334,7 @@ LINESTRING(1 2,3 4)  | t
 ST_LinestringFromWKB(
     ST_AsBinary(ST_GeomFromText('POINT(1 2)'))
 ) IS NULL AS null_return;</programlisting>
-		<screen>
+		<screen role="text-primary">
 aline                 | null_return
 ------------------------------------
 LINESTRING(1 2,3 4)  | t</screen>
@@ -1399,16 +1391,10 @@ LINESTRING(1 2,3 4)  | t</screen>
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT
-ST_AsText(ST_PointFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
-  )
-);</programlisting>
-<screen>POINT(2 5)</screen>
-<programlisting language="sql">SELECT
-ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5,2 6)'::geometry)
-  )
-);</programlisting>
-<screen>null</screen>
+		<programlisting language="sql">SELECT ST_PointFromWKB(ST_AsEWKB('POINT(2 5)'::geometry));</programlisting>
+<screen role="visual-primary text-primary">POINT(2 5)</screen>
+<programlisting language="sql">SELECT ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5,2 6)'::geometry));</programlisting>
+<screen role="text-primary">null</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1482,11 +1468,11 @@ ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5,2 6)'::geometry)
 	  <refsection>
 		<title>Examples</title>
 		<programlisting language="sql">SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');</programlisting>
-<screen>BOX(-115.172816 36.114646,-115.172816 36.114646)</screen>
+<screen role="text-primary">BOX(-115.172816 36.114646,-115.172816 36.114646)</screen>
 <programlisting language="sql">SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);</programlisting>
-<screen>BOX(-180 -90,180 90)</screen>
+<screen role="text-primary">BOX(-180 -90,180 90)</screen>
 <programlisting language="sql">SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10);</programlisting>
-<screen>BOX(-115.17282128334 36.1146408319473,-115.172810554504 36.1146461963654)</screen>
+<screen role="text-primary">BOX(-115.17282128334 36.1146408319473,-115.172810554504 36.1146461963654)</screen>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>
@@ -1528,11 +1514,8 @@ ST_AsText(ST_PointFromWKB(ST_AsEWKB('LINESTRING(2 5,2 6)'::geometry)
 	  <refsection>
 		<title>Examples</title>
 		<para>The cells are returned together so their relative sizes remain visible in a shared coordinate frame.</para>
-		<programlisting language="sql">SELECT
-  ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4)) AS "precision 4",
-  ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 5)) AS "precision 5",
-  ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 6)) AS "precision 6";</programlisting>
-<screen role="psql-expanded">-[ RECORD 1 ]----------
+		<programlisting language="sql">SELECT ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4) AS "precision 4", ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 5) AS "precision 5", ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 6) AS "precision 6";</programlisting>
+<screen role="visual-primary text-primary visual-overlay psql-expanded">-[ RECORD 1 ]----------
 precision 4 | POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625))
 precision 5 | POLYGON((-115.1806640625 36.0791015625,-115.1806640625 36.123046875,-115.13671875 36.123046875,-115.13671875 36.0791015625,-115.1806640625 36.0791015625))
 precision 6 | POLYGON((-115.1806640625 36.112060546875,-115.1806640625 36.1175537109375,-115.169677734375 36.1175537109375,-115.169677734375 36.112060546875,-115.1806640625 36.112060546875))</screen>
@@ -1605,37 +1588,37 @@ precision 6 | POLYGON((-115.1806640625 36.112060546875,-115.1806640625 36.117553
 		<title>Examples</title>
 		<para>A single geometry with srsName.</para>
 		<programlisting language="sql"><![CDATA[
-SELECT ST_GeomFromGML($$
-    <gml:LineString xmlns:gml="http://www.opengis.net/gml"
-            srsName="EPSG:4269">
-        <gml:coordinates>
+	SELECT ST_AsEWKT(ST_GeomFromGML($$
+	    <gml:LineString xmlns:gml="http://www.opengis.net/gml"
+	            srsName="EPSG:4269">
+	        <gml:coordinates>
             -71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932
-        </gml:coordinates>
-    </gml:LineString>
-$$);
+	        </gml:coordinates>
+	    </gml:LineString>
+	$$));
 ]]>
-        </programlisting>
-<screen>0102000020AD10000003000000FC8C0B0742CA51C06EC328081E21454027BF45274BCA51C02600FF942A214540ADBEBA2A50CA51C07099D36531214540</screen>
+	        </programlisting>
+	<screen role="visual-primary text-primary">SRID=4269;LINESTRING(-71.16028 42.258729,-71.160837 42.259112,-71.161143 42.25932)</screen>
 
 		<para>XLink usage.</para>
 		<programlisting language="sql"><![CDATA[
-SELECT ST_GeomFromGML($$
-    <gml:LineString xmlns:gml="http://www.opengis.net/gml"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            srsName="EPSG:4269">
+	SELECT ST_AsEWKT(ST_GeomFromGML($$
+	    <gml:LineString xmlns:gml="http://www.opengis.net/gml"
+	            xmlns:xlink="http://www.w3.org/1999/xlink"
+	            srsName="EPSG:4269">
         <gml:pointProperty>
             <gml:Point gml:id="p1"><gml:pos>-71.16028 42.258729</gml:pos></gml:Point>
         </gml:pointProperty>
         <gml:pos>-71.160837 42.259112</gml:pos>
         <gml:pos>-71.161143 42.258729</gml:pos>
-        <gml:pointProperty>
-            <gml:Point xlink:type="simple" xlink:href="#p1"/>
-        </gml:pointProperty>
-    </gml:LineString>
-$$);
+	        <gml:pointProperty>
+	            <gml:Point xlink:type="simple" xlink:href="#p1"/>
+	        </gml:pointProperty>
+	    </gml:LineString>
+	$$));
 ]]>
-        </programlisting>
-<screen>0102000020AD10000004000000FC8C0B0742CA51C06EC328081E21454027BF45274BCA51C02600FF942A214540ADBEBA2A50CA51C06EC328081E214540FC8C0B0742CA51C06EC328081E214540</screen>
+	        </programlisting>
+	<screen role="visual-primary text-primary">SRID=4269;LINESTRING(-71.16028 42.258729,-71.160837 42.259112,-71.161143 42.258729,-71.16028 42.258729)</screen>
 
 		<para>Polyhedral Surface.</para>
 		<programlisting language="sql"><![CDATA[
@@ -1675,7 +1658,7 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 </gml:polygonPatches>
 </gml:PolyhedralSurface>'));
 ]]></programlisting>
-<screen> POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+<screen role="visual-primary text-primary"> POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
 ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
 ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
@@ -1731,11 +1714,11 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 
 	 <refsection>
 		<title>Examples</title>
-		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) AS wkt;</programlisting>
-<screen>POINT(-48.23456 20.12345)</screen>
+		<programlisting language="sql">SELECT ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}') AS wkt;</programlisting>
+<screen role="text-primary visual-primary">POINT(-48.23456 20.12345)</screen>
 <para>This example creates a 3D LineString.</para>
-<programlisting language="sql">SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3],[4,5,6],[7,8,9]]}')) AS wkt;</programlisting>
-<screen>LINESTRING Z (1 2 3,4 5 6,7 8 9)</screen>
+<programlisting language="sql">SELECT ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3],[4,5,6],[7,8,9]]}') AS wkt;</programlisting>
+<screen role="visual-primary text-primary">LINESTRING Z (1 2 3,4 5 6,7 8 9)</screen>
 	  </refsection>
 
 
@@ -1786,15 +1769,15 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 		<title>Examples</title>
 		<para>A single LineString geometry.</para>
 		<programlisting language="sql"><![CDATA[
-SELECT ST_GeomFromKML($$
-    <LineString>
-        <coordinates>-71.1663, 42.2614
-            -71.1667, 42.2616</coordinates>
-    </LineString>
-$$);
+	SELECT ST_AsEWKT(ST_GeomFromKML($$
+	    <LineString>
+	        <coordinates>-71.1663, 42.2614
+	            -71.1667, 42.2616</coordinates>
+	    </LineString>
+	$$));
 ]]>
-        </programlisting>
-<screen>0102000020E610000002000000CA54C1A8A4CA51C05396218E75214540910F7A36ABCA51C01A51DA1B7C214540</screen>
+	        </programlisting>
+	<screen role="visual-primary text-primary">SRID=4326;LINESTRING(-71.1663 42.2614,-71.1667 42.2616)</screen>
 	  </refsection>
 
 	  <refsection>
@@ -1831,11 +1814,10 @@ $$);
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting language="sql">SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34,127 35)'::geometry)));</programlisting>
-<screen>LINESTRING(126 34, 127 35)</screen>
-<programlisting language="sql">SELECT ST_AsEWKT(ST_GeomFromTWKB(E'\\x620002f7f40dbce4040105')
-);</programlisting>
-<screen>LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
+		<programlisting language="sql">SELECT ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34,127 35)'::geometry));</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(126 34, 127 35)</screen>
+<programlisting language="sql">SELECT ST_GeomFromTWKB(E'\\x620002f7f40dbce4040105');</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(-113.98 39.198,-113.981 39.195)</screen>
 	  </refsection>
 	   <refsection>
 		<title>See Also</title>
@@ -1908,11 +1890,11 @@ $$);
     <title>Examples</title>
 
     <para>This example creates a LineString from a polyline.</para>
-    <programlisting language="sql">SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));</programlisting>
-<screen>SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)</screen>
+    <programlisting language="sql">SELECT ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@');</programlisting>
+<screen role="visual-primary text-primary">SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)</screen>
 <para>This example selects a different precision than the one used for polyline encoding.</para>
-<programlisting language="sql">SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@', 6));</programlisting>
-<screen>SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
+<programlisting language="sql">SELECT ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@', 6);</programlisting>
+<screen role="visual-primary text-primary">SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)
 
     </screen>
     </refsection>
@@ -1956,12 +1938,12 @@ $$);
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting language="sql">SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));</programlisting>
-<screen>POINT(-115.172816 36.114646)</screen>
-<programlisting language="sql">SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));</programlisting>
-<screen>POINT(-115.13671875 36.123046875)</screen>
-<programlisting language="sql">SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));</programlisting>
-<screen>POINT(-115.172815918922 36.1146435141563)</screen>
+		<programlisting language="sql">SELECT ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');</programlisting>
+<screen role="text-primary visual-primary">POINT(-115.172816 36.114646)</screen>
+<programlisting language="sql">SELECT ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4);</programlisting>
+<screen role="text-primary visual-primary">POINT(-115.13671875 36.123046875)</screen>
+<programlisting language="sql">SELECT ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10);</programlisting>
+<screen role="text-primary visual-primary">POINT(-115.172815918922 36.1146435141563)</screen>
 	  </refsection>
 	 <refsection>
 		<title>See Also</title>

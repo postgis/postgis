@@ -137,6 +137,8 @@ when input and output layers must share one coordinate frame, and
 in separate, equally scaled frames. Geometry columns named with an ``input_``
 prefix are treated as authored input layers; in separate-output mode their
 remaining column names also label their frames.
+Use ``role="visual-output-only"`` when setup geometry literals or constructors
+appear in the SQL but the figure should render only the query output.
 Aliases on cast WKT literals and geometry result columns become figure legend
 labels; quote an alias when the label needs spaces.
 

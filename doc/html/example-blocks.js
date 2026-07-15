@@ -764,6 +764,137 @@
     }).join('');
   }
 
+  var batchKeywords = {
+    'call': true, 'do': true, 'echo': true, 'else': true, 'exit': true,
+    'for': true, 'goto': true, 'if': true, 'in': true, 'not': true,
+    'pause': true, 'rem': true, 'set': true, 'shift': true
+  };
+  var batchCommandPrefixes = {
+    'do': true, 'else': true, 'if': true
+  };
+
+  function highlightBatchLine(line, refIndex) {
+    var html = '';
+    var index = 0;
+    var commandExpected = true;
+    var redirectionExpected = false;
+    var atWordStart = true;
+    var match;
+    var lower;
+    var end;
+    var tokenClass;
+
+    if (/^\s*(?:rem\b|::)/i.test(line)) {
+      return shellToken('comment', line);
+    }
+
+    while (index < line.length) {
+      var character = line.charAt(index);
+      var remainder = line.slice(index);
+
+      if (/\s/.test(character)) {
+        html += escapeHtml(character);
+        index += 1;
+        atWordStart = true;
+        continue;
+      }
+
+      if (character === '"') {
+        end = index + 1;
+        while (end < line.length) {
+          if (line.charAt(end) === '"') {
+            end += 1;
+            break;
+          }
+          end += 1;
+        }
+        html += shellToken('string', line.slice(index, end));
+        index = end;
+        atWordStart = false;
+        if (redirectionExpected) {
+          redirectionExpected = false;
+        } else {
+          commandExpected = false;
+        }
+        continue;
+      }
+
+      if (character === '%') {
+        match = /^(%%?~[A-Za-z]+[A-Za-z0-9]|%%?[A-Za-z0-9]|%%?[A-Za-z0-9_]+%%?|%[A-Za-z0-9_]+%)/.exec(remainder);
+        if (match) {
+          html += shellToken('variable', match[0]);
+          index += match[0].length;
+          atWordStart = false;
+          if (redirectionExpected) {
+            redirectionExpected = false;
+          }
+          continue;
+        }
+      }
+
+      match = /^(\d*(?:>>|>&|<&|[<>])|&&|\|\||[|&()])/.exec(remainder);
+      if (match) {
+        html += shellToken('operator', match[0]);
+        index += match[0].length;
+        if (/^\d*(?:>>|>&|<&|[<>])$/.test(match[0])) {
+          redirectionExpected = true;
+        } else {
+          commandExpected = match[0] !== ')';
+          redirectionExpected = false;
+        }
+        atWordStart = true;
+        continue;
+      }
+
+      end = index;
+      while (end < line.length && !/[\s"%|&()<>]/.test(line.charAt(end))) {
+        end += 1;
+      }
+      if (end === index) {
+        html += escapeHtml(character);
+        index += 1;
+        atWordStart = false;
+        continue;
+      }
+
+      match = [line.slice(index, end)];
+      lower = match[0].toLowerCase();
+      tokenClass = '';
+      if (redirectionExpected) {
+        redirectionExpected = false;
+      } else if (batchKeywords[lower]) {
+        tokenClass = 'keyword';
+        commandExpected = Boolean(batchCommandPrefixes[lower]);
+      } else if (!commandExpected && /^[-/][A-Za-z0-9]/.test(match[0])) {
+        tokenClass = 'option';
+      } else if (commandExpected && atWordStart) {
+        tokenClass = 'command';
+        commandExpected = false;
+      }
+
+      var commandRef = tokenClass === 'command' ? lookupCommand(match[0], refIndex) : null;
+      if (commandRef) {
+        html += linkedToken(match[0], 'postgis-shell-command', commandRef, 'postgis-shell-link');
+      } else {
+        html += shellToken(tokenClass, match[0]);
+      }
+      index = end;
+      atWordStart = false;
+    }
+    return html;
+  }
+
+  function highlightBatch(text, refIndex) {
+    refIndex = refIndex || normalizeRefIndex(emptyRefIndex);
+    var lines = text.split('\n');
+    if (lines.length > 1 && lines[lines.length - 1] === '' && /\n$/.test(text)) {
+      lines.pop();
+    }
+    return lines.map(function (line) {
+      return '<span class="line">' + highlightBatchLine(line, refIndex) + '</span>';
+    }).join('');
+  }
+
   function setLineMetadata(pre, count) {
     pre.setAttribute('data-postgis-lines', 'true');
     if (count > 1) {
@@ -773,12 +904,32 @@
     }
   }
 
+  function unicodePsqlOutput(text) {
+    var lines = String(text).split('\n');
+    var hasAsciiTable = lines.some(function (line) {
+      return line.indexOf('+') >= 0 && line.indexOf('-') >= 0 && /^[\s+-]+$/.test(line);
+    });
+    if (!hasAsciiTable) {
+      return text;
+    }
+    return lines.map(function (line) {
+      if (line.indexOf('+') >= 0 && line.indexOf('-') >= 0 && /^[\s+-]+$/.test(line)) {
+        return line.replace(/-/g, '─').replace(/\+/g, '┼');
+      }
+      if (line.indexOf('|') >= 0) {
+        return line.replace(/\|/g, '│');
+      }
+      return line;
+    }).join('\n');
+  }
+
   function wrapPlainText(pre) {
-    var text = pre.textContent;
+    var text = unicodePsqlOutput(pre.textContent);
     var lines = text.split('\n');
     if (lines.length > 1 && lines[lines.length - 1] === '' && /\n$/.test(text)) {
       lines.pop();
     }
+    pre.textContent = lines.join('\n');
     pre.innerHTML = lines.map(function (line) {
       return '<span class="line">' + escapeHtml(line) + '</span>';
     }).join('');
@@ -869,6 +1020,24 @@
       blocks[shellIndex].innerHTML = highlightShell(text, refIndex);
       setLineMetadata(blocks[shellIndex], text.split('\n').length);
       blocks[shellIndex].setAttribute('data-postgis-highlighted', 'shell');
+    }
+
+    blocks = document.querySelectorAll(
+      '.postgis-example-code pre.programlisting[data-postgis-language="bat"], ' +
+      '.postgis-example-code pre.programlisting[data-postgis-language="batch"], ' +
+      '.postgis-example-code pre.programlisting[data-postgis-language="cmd"]'
+    );
+    for (var batchIndex = 0; batchIndex < blocks.length; batchIndex += 1) {
+      if (blocks[batchIndex].getAttribute('data-postgis-highlighted') === 'batch' ||
+          blocks[batchIndex].children.length !== 0) {
+        continue;
+      }
+      text = normalizeDisplayedSql(blocks[batchIndex].textContent);
+      originalBlockText.set(blocks[batchIndex], text);
+      blocks[batchIndex].textContent = text;
+      blocks[batchIndex].innerHTML = highlightBatch(text, refIndex);
+      setLineMetadata(blocks[batchIndex], text.split('\n').length);
+      blocks[batchIndex].setAttribute('data-postgis-highlighted', 'batch');
     }
 
     blocks = document.querySelectorAll(
@@ -1453,8 +1622,10 @@
     normalizeDisplayedSql: normalizeDisplayedSql,
     codeText: codeText,
     normalizeRefIndex: normalizeRefIndex,
+    unicodePsqlOutput: unicodePsqlOutput,
     highlightSql: highlightSql,
     highlightShell: highlightShell,
+    highlightBatch: highlightBatch,
     highlightHtml: highlightHtml,
     highlightJavaScript: highlightJavaScript,
     currentFunctionName: currentFunctionName,

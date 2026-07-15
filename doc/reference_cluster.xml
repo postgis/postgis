@@ -106,7 +106,7 @@ noise | noise | MULTIPOLYGON(((250 0,250 10,260 10,260 0,250 0)))</screen>
         <para>
             A example showing combining parcels with the same cluster number into geometry collections.
         </para>
-		    <programlisting>
+		    <programlisting language="sql">
 SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS ids_in_cluster FROM (
     SELECT parcel_id, ST_ClusterDBSCAN(geom, eps =&gt; 0.5, minpoints =&gt; 5) over () AS cid, geom
     FROM parcels) sq
@@ -157,7 +157,7 @@ GROUP BY cid;
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting language="sql">
 WITH testdata AS
   (SELECT unnest(
            ARRAY['LINESTRING (0 0,1 1)'::geometry,
@@ -168,7 +168,7 @@ WITH testdata AS
 
 SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
 </programlisting>
-<screen>GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
 GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
       </refsection>
       <refsection>
@@ -227,7 +227,7 @@ SELECT id,
        cid
 FROM clustered
 ORDER BY id;</programlisting>
-<screen> id |            geom_wkt            | cid
+<screen role="visual-primary text-primary"> id |            geom_wkt            | cid
 ----+--------------------------------+-----
   1 | LINESTRING(0 0,1 1)            |   0
   2 | LINESTRING(5 5,4 4)            |   0
@@ -453,7 +453,7 @@ SELECT cid,
 FROM clustered
 GROUP BY cid
 ORDER BY cid;</programlisting>
-<screen role="visual-primary">0 | C1,C2 | POLYGON((200 10,210 10,220 10,220 0,210 0,200 0,200 10))
+<screen role="visual-primary visual-overlay text-primary">0 | C1,C2 | POLYGON((200 10,210 10,220 10,220 0,210 0,200 0,200 10))
 1 | A1,A2 | POLYGON((0 10,10 10,20 10,20 0,10 0,0 0,0 10))
 2 | B1,B2 | POLYGON((100 10,110 10,120 10,120 0,110 0,100 0,100 10))</screen>
 
@@ -473,7 +473,7 @@ ORDER BY cid;</programlisting>
 SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, type
 FROM parcels
 ORDER BY type, parcel_id;</programlisting>
-<screen> cid | parcel_id |    type
+<screen role="text-primary"> cid | parcel_id |    type
 -----+-----------+-------------
    0 | 001       | commercial
    2 | 003       | commercial
@@ -571,7 +571,7 @@ ORDER BY cid;</programlisting>
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting language="sql">
 WITH testdata AS
   (SELECT unnest(ARRAY['LINESTRING (0 0,1 1)'::geometry,
                'LINESTRING (5 5,4 4)'::geometry,
@@ -581,7 +581,7 @@ WITH testdata AS
 
 SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
 </programlisting>
-<screen>GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
 GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
       </refsection>
       <refsection>
@@ -630,7 +630,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting language="sql">
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
   VALUES  (1, 'LINESTRING (0 0,1 1)'),
@@ -643,7 +643,7 @@ SELECT id,
   ST_AsText(geom),
   ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster
 FROM testdata;</programlisting>
-<screen> id |           st_astext            | cluster
+<screen role="visual-primary text-primary"> id |           st_astext            | cluster
 ----+--------------------------------+---------
   1 | LINESTRING(0 0,1 1)            |       0
   2 | LINESTRING(5 5,4 4)            |       0

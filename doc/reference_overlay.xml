@@ -103,17 +103,16 @@
       <refsection>
         <title>Examples</title>
 <para>The difference of 2D linestrings.</para>
-<programlisting>SELECT ST_AsText(ST_Difference('LINESTRING(50 100,50 200)'::geometry,
+<programlisting>SELECT ST_Difference('LINESTRING(50 100,50 200)'::geometry,
         'LINESTRING(50 50,50 150)'::geometry
-    )
-);</programlisting>
-<screen>LINESTRING(50 150,50 200)</screen>
+    );</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(50 150,50 200)</screen>
 
 <para>The difference of 3D points.</para>
-<programlisting>SELECT ST_AsEWKT(ST_Difference('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
+<programlisting>SELECT ST_Difference('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
  'POINT(-118.614 38.281 5)' :: geometry
-) );</programlisting>
-<screen>MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</screen>
+);</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</screen>
       </refsection>
 
       <refsection>
@@ -210,10 +209,10 @@ Computes a geometry representing the shared portion of geometries A and B.
         </refsection>
         <refsection>
         <title>Examples</title>
-<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0,0 2 )'::geometry));</programlisting>
-<screen>POINT EMPTY</screen>
-<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0,0 2 )'::geometry));</programlisting>
-<screen>POINT(0 0)</screen>
+<programlisting>SELECT ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0,0 2 )'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT EMPTY</screen>
+<programlisting>SELECT ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0,0 2 )'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(0 0)</screen>
 <para>
 Clip all lines (trails) by country. Here we assume country geom are POLYGON or MULTIPOLYGONS.
 NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
@@ -240,10 +239,10 @@ where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));<
 
         <para>Note this is not a true 3D intersection. It uses 2.5D geometries (geometries with Z ordinates, but where calculations are performed in 2D). Compare to the same example using <xref linkend="CG_3DIntersection"/>.</para>
         <programlisting>
-select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
+selectST_Intersection(linestring, polygon) As wkt
 from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
  CROSS JOIN ST_GeomFromText('POLYGON((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8))') AS polygon;</programlisting>
-<screen>LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)</screen>
+<screen role="visual-primary text-primary">LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)</screen>
       </refsection>
         <refsection>
             <title>See Also</title>
@@ -370,16 +369,14 @@ This may cause the resulting linestrings to have a different order and direction
         <title>Examples</title>
         <para>Noding a 3D LineString which self-intersects.</para>
         <programlisting language="sql">
-SELECT ST_AsText(ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
-    ) As  output;</programlisting>
-<screen role="text-primary">MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))</screen>
+SELECT ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry) As  output;</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))</screen>
 
         <para>Noding two LineStrings which share common linework.
         Note that the result linework is dissolved.</para>
         <programlisting language="sql">
-SELECT ST_AsText(ST_Node('MULTILINESTRING ((2 5,2 1,7 1),(6 1,4 1,2 3,2 5))'::geometry)
-    ) As  output;</programlisting>
-<screen role="text-primary">MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))</screen>
+SELECT ST_Node('MULTILINESTRING ((2 5,2 1,7 1),(6 1,4 1,2 3,2 5))'::geometry) As  output;</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))</screen>
 
       </refsection>
 
@@ -448,12 +445,11 @@ SELECT ST_AsText(
          ),
          1
        );</programlisting>
-<screen>GEOMETRYCOLLECTION(POLYGON((150 90,149 80.2,146.2 70.9,141.6 62.2,135.4 54.6,127.8 48.4,119.1 43.8,109.8 41,100 40,90.2 41,80.9 43.8,72.2 48.4,64.6 54.6,60.1 60.1,129.9 129.9,135.4 125.4,141.6 117.8,146.2 109.1,149 99.8,150 90)),POLYGON((60.1 60.1,58.4 62.2,53.8 70.9,51 80.2,50 90,51 99.8,53.8 109.1,58.4 117.8,64.6 125.4,72.2 131.6,80.9 136.2,90.2 139,100 140,109.8 139,119.1 136.2,127.8 131.6,129.9 129.9,60.1 60.1)))</screen>
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POLYGON((150 90,149 80.2,146.2 70.9,141.6 62.2,135.4 54.6,127.8 48.4,119.1 43.8,109.8 41,100 40,90.2 41,80.9 43.8,72.2 48.4,64.6 54.6,60.1 60.1,129.9 129.9,135.4 125.4,141.6 117.8,146.2 109.1,149 99.8,150 90)), POLYGON((60.1 60.1,58.4 62.2,53.8 70.9,51 80.2,50 90,51 99.8,53.8 109.1,58.4 117.8,64.6 125.4,72.2 131.6,80.9 136.2,90.2 139,100 140,109.8 139,119.1 136.2,127.8 131.6,129.9 129.9,60.1 60.1)))</screen>
             <para>Split a MultiLineString by a Point, where the point lies exactly on both LineStrings elements.</para>
-            <programlisting>
-SELECT ST_AsText(ST_Split('MULTILINESTRING((10 10,190 190),(15 15,30 30,100 90))',
-    ST_Point(30, 30)));</programlisting>
-<screen>GEOMETRYCOLLECTION(
+            <programlisting>SELECT ST_Split('MULTILINESTRING((10 10,190 190),(15 15,30 30,100 90))',
+    ST_Point(30, 30));</programlisting>
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(
     LINESTRING(10 10,30 30),
     LINESTRING(30 30,190 190),
     LINESTRING(15 15,30 30),
@@ -472,7 +468,7 @@ SELECT ST_AsText(ST_Split(ST_Snap(line, point, 1), point)) AS snapped_split,
        ST_AsText(ST_Split(line, point)) AS not_snapped_not_split
        FROM data;</programlisting>
 <screen>-[ RECORD 1 ]---------
-snapped_split         | GEOMETRYCOLLECTION(LINESTRING(0 0,51 50),LINESTRING(51 50,100 100))
+snapped_split         | GEOMETRYCOLLECTION(LINESTRING(0 0,51 50), LINESTRING(51 50,100 100))
 not_snapped_not_split | GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))</screen>
         </refsection>
         <refsection>
@@ -549,7 +545,7 @@ not_snapped_not_split | GEOMETRYCOLLECTION(LINESTRING(0 0,100 100))</screen>
         </para>
 
 <programlisting>
-SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
+SELECT row_number() OVER() As rn,geom As wkt
     FROM (SELECT ST_Subdivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
         57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 122,
         190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::geometry, 10))  AS f(geom);
@@ -569,11 +565,9 @@ SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
         Densification minimizes the impact of changes to the geography representation of a geometry
         when subdividing.
         </para>
-<programlisting>
-SELECT ST_AsText(ST_Subdivide(ST_Segmentize('LINESTRING(0 0,85 85)'::geography,
-                          1200000)::geometry, 8));
-</programlisting>
-<screen>
+<programlisting>SELECT ST_Subdivide(ST_Segmentize('LINESTRING(0 0,85 85)'::geography,
+                          1200000)::geometry, 8);</programlisting>
+<screen role="visual-primary text-primary">
 LINESTRING(0 0,0.487578359029357 5.57659056746196,0.984542144675897 11.1527721155093,1.50101059639722 16.7281035483571,1.94532113630331 21.25)
 LINESTRING(1.94532113630331 21.25,2.04869538062779 22.3020741387339,2.64204641967673 27.8740533545155,3.29994062412787 33.443216802941,4.04836719489742 39.0084282520239,4.59890468420694 42.5)
 LINESTRING(4.59890468420694 42.5,4.92498503922732 44.5680389206321,5.98737409390639 50.1195229244701,7.3290919767674 55.6587646879025,8.79638749938413 60.1969505994924)
@@ -676,18 +670,15 @@ CREATE TABLE subdivided_geoms AS
         <title>Examples</title>
 
 <para>This example shows a 2D-safe symmetric difference of two LineStrings.</para>
-<programlisting language="sql">
-SELECT ST_AsText(ST_SymDifference('LINESTRING(50 100,50 200)',
+<programlisting language="sql">SELECT ST_SymDifference('LINESTRING(50 100,50 200)',
         'LINESTRING(50 50,50 150)'
-    )
-);</programlisting>
-<screen>MULTILINESTRING((50 150,50 200),(50 50,50 100))</screen>
+    );</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING((50 150,50 200),(50 50,50 100))</screen>
 
 <para>In 3D, this example does not produce the expected result.</para>
-<programlisting language="sql">
-SELECT ST_AsEWKT(ST_SymDifference('LINESTRING(1 2 1,1 4 2)',
-    'LINESTRING(1 1 3,1 3 4)'));</programlisting>
-<screen>MULTILINESTRING((1 3 4,1 4 2),(1 1 3,1 2 1))</screen>
+<programlisting language="sql">SELECT ST_SymDifference('LINESTRING(1 2 1,1 4 2)',
+    'LINESTRING(1 1 3,1 3 4)');</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING((1 3 4,1 4 2),(1 1 3,1 2 1))</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -881,12 +872,12 @@ FROM sometable f
 GROUP BY id;
               </programlisting>
         <para>Non-Aggregate example</para>
-            <programlisting>SELECT ST_AsText(ST_Union('POINT(1 2)'::geometry, 'POINT(-2 3)'::geometry));</programlisting>
-<screen>MULTIPOINT((1 2),(-2 3))</screen>
-<programlisting>SELECT ST_AsText(ST_Union('POINT(1 2)'::geometry, 'POINT(1 2)'::geometry));</programlisting>
-<screen>POINT(1 2)</screen>
+            <programlisting>SELECT ST_Union('POINT(1 2)'::geometry, 'POINT(-2 3)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT((1 2),(-2 3))</screen>
+<programlisting>SELECT ST_Union('POINT(1 2)'::geometry, 'POINT(1 2)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(1 2)</screen>
 <para>3D example - sort of supports 3D (and with mixed geometry types!)</para>
-<programlisting>SELECT ST_AsEWKT(ST_Union(geom))
+<programlisting>SELECT ST_Union(geom)
 FROM (
     SELECT 'POLYGON Z((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5))'::geometry geom
     UNION ALL
@@ -896,9 +887,9 @@ FROM (
     UNION ALL
     SELECT 'LINESTRING Z(5 5 5,10 10 10)'::geometry geom
 ) AS foo;</programlisting>
-<screen>GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)))</screen>
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POINT(-2 3 1), LINESTRING(5 5 5,10 10 10), POLYGON((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)))</screen>
 <para>This 3D example does not mix dimensions.</para>
-<programlisting>SELECT ST_AsEWKT(ST_Union(geom))
+<programlisting>SELECT ST_Union(geom)
 FROM (
     SELECT 'POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2))'::geometry geom
     UNION ALL
@@ -908,17 +899,17 @@ FROM (
     UNION ALL
     SELECT 'LINESTRING(5 5 5,10 10 10)'::geometry geom
 ) AS foo;</programlisting>
-<screen>GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))</screen>
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POINT(-2 3 1), LINESTRING(5 5 5,10 10 10), POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))</screen>
 
 <para>This example unions an array built from a query.</para>
 <programlisting>SELECT ST_Union(ARRAY(SELECT geom FROM sometable));</programlisting>
 
 <para>This example unions an array of linestrings.</para>
-<programlisting>SELECT ST_AsText(ST_Union(ARRAY[
+<programlisting>SELECT ST_Union(ARRAY[
     'LINESTRING(1 2,3 4)'::geometry,
     'LINESTRING(4 5,5 6)'::geometry
-])) As wktunion;</programlisting>
-<screen>MULTILINESTRING((1 2,3 4),(4 5,5 6))</screen>
+]) As wktunion;</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING((1 2,3 4),(4 5,5 6))</screen>
       </refsection>
       <refsection>
         <title>See Also</title>

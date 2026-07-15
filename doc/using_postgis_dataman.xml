@@ -364,7 +364,7 @@ CURVEPOLYGON(
 		</listitem>
 
 		<listitem>
-		  <para>GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))</para>
+		  <para>GEOMETRYCOLLECTION(POINT(2 3), LINESTRING(2 3,3 4))</para>
 		</listitem>
 
 		<listitem>
@@ -378,10 +378,10 @@ CURVEPOLYGON(
 	  <programlisting>text WKT = ST_AsText(geometry);
 geometry = ST_GeomFromText(text WKT, SRID);</programlisting>
 
-	  <para>For example, a statement to create and insert a spatial object from WKT and a SRID is:</para>
+		  <para>For example, a statement to create and insert a spatial object from WKT with SRID 312 is:</para>
 
-	  <programlisting>INSERT INTO geotable ( geom, name )
-VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place'); -- 312 is the SRID</programlisting>
+		  <programlisting>INSERT INTO geotable ( geom, name )
+VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
 
     <para>Well-Known Binary (WKB) provides a portable, full-precision representation
       of spatial data as binary data (arrays of bytes).
@@ -481,8 +481,8 @@ VALUES ( ST_GeomFromWKB('\x0101000000000000000000f03f000000000000f03f', 312), 'A
         <para>For example this statement creates a geometry by casting from an EWKT text value,
         and outputs it using the canonical form of HEXEWKB:</para>
 
-	  <programlisting>SELECT 'SRID=4;POINT(0 0)'::geometry;</programlisting>
-<screen>
+	  <programlisting language="sql">SELECT 'SRID=4;POINT(0 0)'::geometry;</programlisting>
+<screen role="text-primary">
 geometry
 ----------------------------------------------------
 01010000200400000000000000000000000000000000000000
@@ -650,7 +650,7 @@ VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</progr
         The following example creates a table with a geography column storing 2D LineStrings
         in the WGS84 geodetic coordinate system (SRID 4326):</para>
 
-<programlisting>CREATE TABLE global_points (
+<programlisting language="sql">CREATE TABLE global_points (
   id SERIAL PRIMARY KEY,
   name VARCHAR(64),
   location geography(POINT, 4326)
@@ -677,19 +677,19 @@ VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</progr
 
         <para>Examples of creating tables with geography columns:</para>
 		<para>Create a table with 2D POINT geography with the default SRID 4326 (WGS84 long/lat):</para>
-		<programlisting>CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT));</programlisting>
+		<programlisting language="sql">CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT));</programlisting>
 
 		<para>Create a table with 2D POINT geography in NAD83 longlat:</para>
-		<programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT, 4269));</programlisting>
+		<programlisting language="sql">CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT, 4269));</programlisting>
 
 		<para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 4326:</para>
-		<programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ, 4326));</programlisting>
+		<programlisting language="sql">CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ, 4326));</programlisting>
 
 		<para>Create a table with 2D LINESTRING geography with the default SRID 4326:</para>
-		<programlisting>CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING));</programlisting>
+		<programlisting language="sql">CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING));</programlisting>
 
 		<para>Create a table with 2D POLYGON geography with the SRID 4267 (NAD 1927 long lat):</para>
-		<programlisting>CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON, 4267));</programlisting>
+		<programlisting language="sql">CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON, 4267));</programlisting>
 
 		<!-- TODO: Add other examples -->
         <!--
@@ -701,12 +701,12 @@ VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</progr
 		<para>Geography fields are registered in the <varname>geography_columns</varname> system view.
 		You can query the <varname>geography_columns</varname> view and see that the table is listed:</para>
 
-	<programlisting>SELECT * FROM geography_columns;</programlisting>
+		<programlisting language="sql">SELECT * FROM geography_columns;</programlisting>
 
 <para>Creating a spatial index works the same as for geometry columns.
 	PostGIS will note that the column type is GEOGRAPHY and create an appropriate sphere-based index instead of the usual planar index used for GEOMETRY.</para>
 
-<programlisting>CREATE INDEX global_points_gix ON global_points USING GIST ( location );</programlisting>
+<programlisting language="sql">CREATE INDEX global_points_gix ON global_points USING GIST ( location );</programlisting>
 
 	</section>
 
@@ -718,7 +718,7 @@ Geometry data will autocast to the geography type if it has SRID 4326.
 The <link linkend="EWKB_EWKT">EWKT and EWKB</link> formats can also be used
 to specify geography values.</para>
 
-<programlisting>INSERT INTO global_points (name, location) VALUES ('Town', 'SRID=4326;POINT(-110 30)');
+<programlisting language="sql">INSERT INTO global_points (name, location) VALUES ('Town', 'SRID=4326;POINT(-110 30)');
 INSERT INTO global_points (name, location) VALUES ('Forest', 'SRID=4326;POINT(-109 29)');
 INSERT INTO global_points (name, location) VALUES ('London', 'SRID=4326;POINT(0 49)');
 </programlisting>
@@ -729,29 +729,29 @@ Non-geodetic coordinate systems raise an error if used.
 </para>
 
 <para>A NAD83 longitude/latitude geography value:</para>
-<programlisting>SELECT 'SRID=4269;POINT(-123 34)'::geography;</programlisting>
-<screen>
+<programlisting language="sql">SELECT 'SRID=4269;POINT(-123 34)'::geography;</programlisting>
+<screen role="text-primary">
                     geography
 ----------------------------------------------------
  0101000020AD1000000000000000C05EC00000000000004140
 </screen>
 
 <para>A NAD27 longitude/latitude geography value:</para>
-<programlisting>SELECT 'SRID=4267;POINT(-123 34)'::geography;</programlisting>
-<screen>
+<programlisting language="sql">SELECT 'SRID=4267;POINT(-123 34)'::geography;</programlisting>
+<screen role="text-primary">
                     geography
 ----------------------------------------------------
  0101000020AB1000000000000000C05EC00000000000004140
 </screen>
 
 	<para>NAD83 UTM zone meters fails because it is a meter-based planar projection.</para>
-	<programlisting>SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting>
-<screen>ERROR:  Only lon/lat coordinate systems are supported in geography.</screen>
+		<programlisting language="sql">SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting>
+<screen role="text-primary">ERROR:  Only lon/lat coordinate systems are supported in geography.</screen>
 
 <para>Query and measurement functions use units of meters. So distance parameters should be expressed in meters, and return values should be expected in meters (or square meters for areas).</para>
 
 <para>This query finds rows within a 1000 km tolerance:</para>
-<programlisting>SELECT name FROM global_points WHERE ST_DWithin(location, 'SRID=4326;POINT(-110 29)'::geography, 1000000);</programlisting>
+<programlisting language="sql">SELECT name FROM global_points WHERE ST_DWithin(location, 'SRID=4326;POINT(-110 29)'::geography, 1000000);</programlisting>
 
 
 <para>You can see the power of geography in action by calculating how close a plane flying
@@ -763,8 +763,8 @@ comes to Reykjavik (POINT(-21.96 64.15))
 <para>The geography type calculates the true shortest distance of 122.235 km over the sphere
 between Reykjavik and the great circle flight path between Seattle and London.</para>
 
-<programlisting>SELECT ST_Distance('LINESTRING(-122.33 47.606,0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);</programlisting>
-<screen>   st_distance
+<programlisting language="sql">SELECT ST_Distance('LINESTRING(-122.33 47.606,0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);</programlisting>
+<screen role="text-primary">   st_distance
 -----------------
  122235.23815667</screen>
 
@@ -775,8 +775,8 @@ The nominal units of the result is "degrees",
 but the result doesn't correspond to any true angular difference between the points,
 so even calling them "degrees" is inaccurate.</para>
 
-<programlisting>SELECT ST_Distance('LINESTRING(-122.33 47.606,0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);</programlisting>
-<screen>      st_distance
+<programlisting language="sql">SELECT ST_Distance('LINESTRING(-122.33 47.606,0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);</programlisting>
+<screen role="text-primary">      st_distance
 --------------------
  13.342271221453624</screen>
 
@@ -1114,11 +1114,11 @@ input_(p) invalid, overlap     | MULTIPOLYGON(((10 40,42 93,130 150,180 86,140 3
     Note that non-simple (self-intersecting) lines are valid.
     </para>
 
-<programlisting>SELECT
+	<programlisting language="sql">SELECT
 ST_IsValid('LINESTRING(0 0,1 1)') AS len_nonzero,
 ST_IsValid('LINESTRING(0 0,0 0,0 0)') AS len_zero,
 ST_IsValid('LINESTRING(10 10,150 150,180 50,20 130)') AS self_int;</programlisting>
-<screen> len_nonzero | len_zero | self_int
+	<screen role="text-primary"> len_nonzero | len_zero | self_int
 -------------+----------+----------
  t           | f        | t</screen>
 
@@ -1166,14 +1166,14 @@ ST_IsValid('LINESTRING(10 10,150 150,180 50,20 130)') AS self_int;</programlisti
 	  <para>To test if a geometry is valid use the
 	  <xref linkend="ST_IsValid"/> function:
       </para>
-<programlisting>SELECT ST_IsValid('POLYGON ((20 180,180 180,180 20,20 20,20 180))');</programlisting>
-<screen> t</screen>
+	<programlisting language="sql">SELECT ST_IsValid('POLYGON ((20 180,180 180,180 20,20 20,20 180))');</programlisting>
+	<screen role="text-primary"> t</screen>
 	  <para>Information about the nature and location of an geometry invalidity are provided by
 	  the <xref linkend="ST_IsValidDetail"/> function:
       </para>
-<programlisting>SELECT valid, reason, ST_AsText(location) AS location
-FROM ST_IsValidDetail('POLYGON ((20 20,120 190,50 190,170 50,20 20))') AS t;</programlisting>
-<screen> valid |      reason       |                  location
+	<programlisting language="sql">SELECT valid, reason,location AS location
+	FROM ST_IsValidDetail('POLYGON ((20 20,120 190,50 190,170 50,20 20))') AS t;</programlisting>
+	<screen role="text-primary"> valid |      reason       |                  location
 -------+-------------------+---------------------------------------------
  f     | Self-intersection | POINT(91.51162790697674 141.56976744186048)</screen>
 
@@ -1461,28 +1461,21 @@ VALUES ( 990000,
 		<para/>
 
         <para>Examples of creating tables with geometry columns:</para>
-		<itemizedlist>
-		<listitem>
-		  <para>Create a table holding any kind of geometry with the default SRID:</para>
-		  <para><programlisting>CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry);</programlisting></para>
-		</listitem>
-		<listitem>
-		  <para>Create a table with 2D POINT geometry with the default SRID:</para>
-		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT));</programlisting></para>
-		</listitem>
-		<listitem>
-		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 3005:</para>
-		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ, 3005));</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>Create a table with 4D (XYZM) LINESTRING geometry with the default SRID:</para>
-			<para><programlisting>CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM));</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>Create a table with 2D POLYGON geometry with the SRID 4267 (NAD 1927 long lat):</para>
-			<para><programlisting>CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON, 4267));</programlisting></para>
-		</listitem>
-		</itemizedlist>
+
+        <para>Create a table holding any kind of geometry with the default SRID:</para>
+        <programlisting language="sql">CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry);</programlisting>
+
+        <para>Create a table with 2D POINT geometry with the default SRID:</para>
+        <programlisting language="sql">CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT));</programlisting>
+
+        <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 3005:</para>
+        <programlisting language="sql">CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ, 3005));</programlisting>
+
+        <para>Create a table with 4D (XYZM) LINESTRING geometry with the default SRID:</para>
+        <programlisting language="sql">CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM));</programlisting>
+
+        <para>Create a table with 2D POLYGON geometry with the SRID 4267 (NAD 1927 long lat):</para>
+        <programlisting language="sql">CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON, 4267));</programlisting>
 
 	  <para>It is possible to have more than one geometry column in a table.
         This can be specified when the table is created, or a column can be added using the
@@ -1490,7 +1483,7 @@ VALUES ( 990000,
         SQL statement.
         This example adds a column that can hold 3D LineStrings:</para>
 
-	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ, 4326);</programlisting>
+		  <programlisting language="sql">ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ, 4326);</programlisting>
 	</section>
 
 	<section xml:id="geometry_columns">
@@ -1502,8 +1495,8 @@ VALUES ( 990000,
       This ensures that the spatial metadata information is always consistent with the currently defined tables and views.
 	  The view structure is:</para>
 
-	  <programlisting>\d geometry_columns</programlisting>
-	  <screen>             View "public.geometry_columns"
+		  <programlisting language="psql">\d geometry_columns</programlisting>
+		  <screen role="text-primary">             View "public.geometry_columns"
       Column       |          Type          | Modifiers
 -------------------+------------------------+-----------
  f_table_catalog   | character varying(256) |
@@ -1582,43 +1575,43 @@ VALUES ( 990000,
 		Also views that have no spatial function applied to the geometry will register the same as the underlying table geometry column.</para>
 
 		<para>For example, suppose you have a view created like this.</para>
-		<programlisting>CREATE VIEW public.vwmytablemercator AS
+			<programlisting language="sql">CREATE VIEW public.vwmytablemercator AS
 SELECT gid, ST_Transform(geom, 3395) As geom, f_name
 FROM public.mytable;</programlisting>
 		<para>To register the geometry column correctly, cast the transformed geometry.</para>
-<programlisting>DROP VIEW public.vwmytablemercator;
+	<programlisting language="sql">DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
     SELECT gid, ST_Transform(geom, 3395)::geometry(Geometry, 3395) As geom, f_name
     FROM public.mytable;</programlisting>
 		<para>If the geometry type is known to be a 2D Polygon, specify it in the cast.</para>
-<programlisting>DROP VIEW public.vwmytablemercator;
+	<programlisting language="sql">DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
     SELECT gid, ST_Transform(geom, 3395)::geometry(Polygon, 3395) As geom, f_name
     FROM public.mytable;</programlisting>
 		<para>For a derivative table created by a bulk insert, create the table first.</para>
-		<programlisting>SELECT poi.gid, poi.geom, citybounds.city_name
+			<programlisting language="sql">SELECT poi.gid, poi.geom, citybounds.city_name
 INTO myschema.my_special_pois
 FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);</programlisting>
 		<para>Create a 2D spatial index on the new table.</para>
-<programlisting>CREATE INDEX idx_myschema_myspecialpois_geom_gist
+	<programlisting language="sql">CREATE INDEX idx_myschema_myspecialpois_geom_gist
 ON myschema.my_special_pois USING gist(geom);</programlisting>
 		<para>If the points are 3D or measured, an n-D index may be more appropriate.</para>
-<programlisting>CREATE INDEX my_special_pois_geom_gist_nd
+	<programlisting language="sql">CREATE INDEX my_special_pois_geom_gist_nd
 ON my_special_pois USING gist(geom gist_geometry_ops_nd);</programlisting>
 		<para>Manually register the new table's geometry column in <varname>geometry_columns</varname>. This also changes the underlying table structure to make the column typmod-based.</para>
-<programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass);</programlisting>
+	<programlisting language="sql">SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass);</programlisting>
 		<para>To retain constraint-based definition behavior, such as for inherited tables where all children do not have the same type and SRID, set the optional <varname>use_typmod</varname> argument to false.</para>
-<programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass, false);</programlisting>
+	<programlisting language="sql">SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass, false);</programlisting>
 
 <para>Although the old constraint-based method is still supported, direct
 pass-through view columns register correctly in <varname>geometry_columns</varname>
 for both typmod-based and constraint-based source columns. In this example we
 define a column using typmod and another using constraints.</para>
-<programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT, 4326));
+	<programlisting language="sql">CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT, 4326));
 SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
 <para>If we run <command>\d pois_ny</command> in psql, we observe they are defined differently -- one is typmod, one is constraint.</para>
-<programlisting>\d pois_ny</programlisting>
-<screen>                                  Table "public.pois_ny"
+	<programlisting language="psql">\d pois_ny</programlisting>
+	<screen role="text-primary">                                  Table "public.pois_ny"
   Column   |         Type          |                       Modifiers
 
 -----------+-----------------------+------------------------------------------------------
@@ -1638,12 +1631,12 @@ Check constraints:
 <programlisting role="requires-external-state">SELECT f_table_name, f_geometry_column, srid, type
 FROM geometry_columns
 WHERE f_table_name = 'pois_ny';</programlisting>
-<screen>f_table_name | f_geometry_column | srid | type
+	<screen role="text-primary">f_table_name | f_geometry_column | srid | type
 -------------+-------------------+------+-------
 pois_ny      | geom              | 4326 | POINT
 pois_ny      | geom_2160         | 2160 | POINT</screen>
 <para>However -- if we were to create a view like this</para>
-<programlisting>CREATE VIEW vw_pois_ny_parks AS
+	<programlisting language="sql">CREATE VIEW vw_pois_ny_parks AS
 SELECT *
   FROM pois_ny
   WHERE cat='park';
@@ -1653,7 +1646,7 @@ SELECT f_table_name, f_geometry_column, srid, type
     WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
 <para>Both the typmod based geom view column and the direct constraint based
 view column register correctly.</para>
-<screen>   f_table_name   | f_geometry_column | srid |   type
+	<screen role="text-primary">   f_table_name   | f_geometry_column | srid |   type
 ------------------+-------------------+------+----------
  vw_pois_ny_parks | geom              | 4326 | POINT
  vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
@@ -1661,7 +1654,7 @@ view column register correctly.</para>
 <para>If the view applies a spatial function to the geometry, such as
 <function>ST_Transform</function>, you still need to cast the transformed
 column explicitly so the view can expose the correct type and SRID:</para>
-<programlisting>DROP VIEW vw_pois_ny_parks;
+	<programlisting language="sql">DROP VIEW vw_pois_ny_parks;
 CREATE VIEW vw_pois_ny_parks AS
 SELECT gid, poi_name, cat,
   geom,
@@ -1671,7 +1664,7 @@ SELECT gid, poi_name, cat,
 SELECT f_table_name, f_geometry_column, srid, type
     FROM geometry_columns
     WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
-<screen>   f_table_name   | f_geometry_column | srid | type
+	<screen role="text-primary">   f_table_name   | f_geometry_column | srid | type
 ------------------+-------------------+------+-------
  vw_pois_ny_parks | geom              | 4326 | POINT
  vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
@@ -1699,7 +1692,7 @@ SELECT f_table_name, f_geometry_column, srid, type
 	  <para>A SQL load file (<filename>roads.sql</filename> for example)
 	  might look like this:</para>
 
-	  <programlisting>BEGIN;
+		  <programlisting language="sql">BEGIN;
 INSERT INTO roads (road_id, roads_geom, road_name)
   VALUES (1, 'LINESTRING(191232 243118,191108 243242)', 'Jeff Rd');
 INSERT INTO roads (road_id, roads_geom, road_name)
@@ -1716,7 +1709,7 @@ COMMIT;</programlisting>
 
 	  <para>The SQL file can be loaded into PostgreSQL using <code>psql</code>:</para>
 
-		  <screen>psql -d [database] -f roads.sql</screen>
+			  <programlisting language="bash">psql -d [database] -f roads.sql</programlisting>
 	</section>
 
 <section xml:id="shp2pgsql_usage">
@@ -2009,16 +2002,14 @@ AVERYLONGCOLUMNNAME DBFFIELD2</literallayout>
     this:
   </para>
 
-	  <screen><![CDATA[
-# shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable > roads.sql
-# psql -d roadsdb -f roads.sql
-]]></screen>
+			  <programlisting language="bash">shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable &gt; roads.sql
+psql -d roadsdb -f roads.sql</programlisting>
 
   <para>
     A conversion and load can be done in one step using UNIX pipes:
   </para>
 
-	  <programlisting># shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb</programlisting>
+			  <programlisting language="bash">shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb</programlisting>
 
 	  <para>
     To load a directory of Shapefiles, run the loader once per file and derive
@@ -2027,12 +2018,10 @@ AVERYLONGCOLUMNNAME DBFFIELD2</literallayout>
     file:
   </para>
 
-  <programlisting><![CDATA[
-REM In a .bat file, use %%F. At an interactive cmd.exe prompt, use %F.
+		  <programlisting language="cmd"><![CDATA[REM In a .bat file, use %%F. At an interactive cmd.exe prompt, use %F.
 for %%F in ("C:\data\shapefiles\*.shp") do (
   shp2pgsql -d -D -s 4269 -I -W UTF-8 "%%~fF" "myschema.%%~nF" | psql -d roadsdb
-)
-]]></programlisting>
+)]]></programlisting>
 
   <para>
 	    If every Shapefile has the same attributes and data types and should be
@@ -2058,8 +2047,8 @@ for %%F in ("C:\data\shapefiles\*.shp") do (
         to define the data set to be extracted
         and dump the resulting columns into a parsable text file:</para>
 
-	  <programlisting role="requires-external-state">SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;</programlisting>
-<screen>road_id | geom                                    | road_name
+	  <programlisting role="requires-external-state">SELECT road_id,road_geom AS geom, road_name FROM roads;</programlisting>
+	<screen role="text-primary">road_id | geom                                    | road_name
 --------+-----------------------------------------+-----------
       1 | LINESTRING(191232 243118,191108 243242) | Jeff Rd
       2 | LINESTRING(189141 244158,189265 244817) | Geordie Rd
@@ -2146,13 +2135,13 @@ WHERE
 	  to the database and converts a table (possibly defined by a query) into
 	  a shape file. The basic syntax is:</para>
 
-		  <screen><![CDATA[
+		  <programlisting language="bash"><![CDATA[
 pgsql2shp [<options>] <database> [<schema>.]<table>
-]]></screen>
+]]></programlisting>
 
-		  <screen><![CDATA[
+			  <programlisting language="bash"><![CDATA[
 pgsql2shp [<options>] <database> <query>
-]]></screen>
+]]></programlisting>
 
 	  <para>The commandline options are:</para>
 
@@ -2326,12 +2315,12 @@ pgsql2shp [<options>] <database> <query>
 	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] gist_geometry_ops_nd);</programlisting>
 
 	  <para>Building a spatial index is a computationally intensive exercise. It also blocks write access to your table for the time it creates, so on a production system you may want to do in in a slower CONCURRENTLY-aware way:</para>
-		<para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING GIST ( [geometryfield]);</programlisting></para>
+			<programlisting language="sql">CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING GIST ( [geometryfield]);</programlisting>
 
 		<para>After building an index, it is sometimes helpful to force PostgreSQL to collect
 		table statistics, which are used to optimize query plans:</para>
 
-	  <para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];</programlisting></para>
+		  <programlisting language="sql">VACUUM ANALYZE [table_name] [(column_name)];</programlisting>
 
 	</section>
 
@@ -2506,12 +2495,12 @@ USING BRIN ( [geome_col] ) WITH (pages_per_range = [number]); </programlisting><
 		It also blocks write access to your table for the time it creates, so on a
 		production system you may want to do in in a slower CONCURRENTLY-aware way:</para>
 
-	  <para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST ( [geometryfield]);</programlisting></para>
+		  <programlisting language="sql">CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST ( [geometryfield]);</programlisting>
 
 		<para>After building an index, it is sometimes helpful to force PostgreSQL to
 		collect table statistics, which are used to optimize query plans:</para>
 
-		<para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];</programlisting></para>
+			<programlisting language="sql">VACUUM ANALYZE [table_name] [(column_name)];</programlisting>
 
 		<para>An SP-GiST index can accelerate queries involving the following operators:</para>
 		<itemizedlist>

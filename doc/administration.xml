@@ -182,18 +182,19 @@ you're attempting to upgrade from an development version to the next (which
 doesn't get a new version number); in that case you can append "next" to the version
 string, and next time you'll need to drop the "next" suffix again:
     </para>
-		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
-ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
-		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
-		picks up the newest latest version during restore.</para></note>
+			<programlisting language="sql">ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
+	ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
+			<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
+			picks up the newest latest version during restore.</para></note>
 
-    <note>
-    <para>If you are upgrading PostGIS extension from a version prior to 3.0.0, you will have a new extension <emphasis>postgis_raster</emphasis>
-    which you can safely drop, if you don't need raster support.  You can drop as follows:</para>
-    <programlisting>DROP EXTENSION postgis_raster;</programlisting>
-    </note>
+	    <note>
+	    <para>If you are upgrading PostGIS extension from a version prior to 3.0.0, you will have a new extension <emphasis>postgis_raster</emphasis>
+	    which you can safely drop, if you don't need raster support.</para>
+	    </note>
 
-	</section>
+	    <programlisting language="sql">DROP EXTENSION postgis_raster;</programlisting>
+
+		</section>
 
      <section xml:id="soft_upgrade_sql_script">
                 <title>Soft upgrade without extensions</title>
@@ -366,18 +367,14 @@ ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));
 		<programlisting language="bash">grep -v IGNF olddb.sql &gt; olddb-without-IGN.sql</programlisting>
 
     <para>
-		Create then your newdb, activate the required Postgis extensions,
-		and insert properly the french system IGN with :
-
-		<link xlink:href="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">
-			this script
-		  </link>
-
-		After these operations, import your data :
+			Create your <varname>newdb</varname>, activate the required PostGIS extensions,
+			and insert the French IGN spatial reference definitions using
+			<link xlink:href="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">this script</link>.
+			After these operations, import your data:
 
     </para>
 
-		<programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2&gt; errors.txt</programlisting>
+		<programlisting language="bash">psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2&gt; errors.txt</programlisting>
 
 	</listitem>
 	</orderedlist>

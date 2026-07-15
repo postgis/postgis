@@ -1079,13 +1079,13 @@ the check to the area specified by the <varname>bbox</varname> parameter.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT ST_AsEWKT(g)
+				<programlisting>SELECT g
 FROM topology.ValidateTopologyPrecision(
     'city_data',
     gridSize => 2,
     bbox => ST_MakeEnvelope(0, 0, 20, 20)
 ) g;</programlisting>
-<screen>MULTIPOINT(9 6,9 14)</screen>
+<screen role="visual-primary text-primary">MULTIPOINT(9 6,9 14)</screen>
 			</refsection>
 
 			<refsection>
@@ -3120,8 +3120,8 @@ FROM topology.ST_GetFaceEdges('tt', 1) As t(seq, edge)
 			<refsection>
 				<title>Examples</title>
 				<para>This query returns the WKT of the polygon added with <xref linkend="AddFace"/>.</para>
-				<programlisting>SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) AS facegeomwkt;</programlisting>
-<screen>POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
+				<programlisting>SELECT topology.ST_GetFaceGeometry('ma_topo', 1) AS facegeomwkt;</programlisting>
+<screen role="visual-primary text-primary">POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
 234872.5 899328.7,234891 899285.4,234992.5 899145,234890.6 899069,
 234755.2 899255.4,234612.7 899379.4,234776.9 899563.7))</screen>
 			</refsection>
@@ -3514,13 +3514,16 @@ existing face record be updated. It is up to the caller to deal with that.
 				<para>First add the edges using <function>generate_series</function> as an iterator. This query only works for polygons with fewer than 10000 points because of the maximum value in <function>generate_series</function>.</para>
 				<programlisting><![CDATA[
 SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom, i + 1) )) As edgeid
-    FROM (SELECT  ST_NPoints(geom) AS npt, geom
-            FROM
-                (SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
+FROM (
+  SELECT ST_NPoints(geom) AS npt, geom
+  FROM (
+    SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
                 234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
                 234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) )  As geom
-            )  As geoms) As facen CROSS JOIN generate_series(1,10000) As i
-         WHERE i < npt;]]></programlisting>
+  ) AS geoms
+) AS facen
+CROSS JOIN generate_series(1,10000) AS i
+WHERE i < npt;]]></programlisting>
 <screen>3
 4
 5

@@ -48,8 +48,8 @@ psql -d gisdb -f elev.sql
     <para>List the raster formats supported by this build:</para>
     <programlisting language="bash">raster2pgsql -G</programlisting>
 
-<para>The -G commands outputs a list something like </para>
-<screen>
+<para>The <option>-G</option> command outputs a list something like:</para>
+<screen role="text-primary">
 Available GDAL raster formats:
   Virtual Raster
   GeoTIFF
@@ -421,7 +421,7 @@ Available GDAL raster formats:
 	<para>On many occasions, you'll want to create rasters and raster tables right in the database.  There are a plethora of functions to do that.  The general steps to follow.</para>
 	<orderedlist>
 		<listitem><para>Create a table with a raster column to hold the new raster records which can be accomplished with:</para>
-			<programlisting>CREATE TABLE myrasters(rid serial primary key, rast raster);</programlisting>
+			<programlisting language="sql">CREATE TABLE myrasters(rid serial primary key, rast raster);</programlisting>
 		</listitem>
 		<listitem>
 			<para>There are many functions to help with that goal.  If you are creating rasters not as a derivative of other rasters, you will want to start with:
@@ -431,7 +431,7 @@ Available GDAL raster formats:
 			<para>There are even many more options for creating new raster tables from existing tables.  For example you can create a raster table in a different projection from an existing one using <xref linkend="RT_ST_Transform"/> </para>
 		</listitem>
 		<listitem><para>Once you are done populating your table initially, you'll want to create a spatial index on the raster column with something like:</para>
-			<programlisting>CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist(ST_ConvexHull(rast));</programlisting>
+			<programlisting language="sql">CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist(ST_ConvexHull(rast));</programlisting>
 			<para>Note the use of <xref linkend="RT_ST_ConvexHull"/> since most raster operators are based on the convex hull of the rasters.</para>
 			<note><para>Pre-2.0 versions of PostGIS raster were based on the envelop rather than the convex hull.  For the spatial indexes to work properly you'll need to drop those and replace with convex hull based index.</para></note></listitem>
 		<listitem><para>Apply raster constraints using <xref linkend="RT_AddRasterConstraints"/></para></listitem>
@@ -463,19 +463,19 @@ raster2pgsql \
     <para>
         Once the table is loaded, you need to give the database permission to read from remote rasters, by setting two permissions, <xref linkend="postgis_enable_outdb_rasters"/> and <xref linkend="postgis_gdal_enabled_drivers"/>.
     </para>
-    <programlisting>SET postgis.enable_outdb_rasters = true;
+    <programlisting language="sql">SET postgis.enable_outdb_rasters = true;
 SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
     </programlisting>
     <para>
         To make the changes sticky, set them directly on your database. You will need to re-connect to experience the new settings.
     </para>
-    <programlisting>ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;
+    <programlisting language="sql">ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;
 ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
     </programlisting>
     <para>
         For non-public rasters, you may have to provide access keys to read from the cloud rasters. The same keys you used to write the <varname>raster2pgsql</varname> call can be set for use inside the database, with the <xref linkend="postgis_gdal_vsi_options"/> configuration. Note that multiple options can be set by space-separating the <varname>key=value</varname> pairs.
     </para>
-    <programlisting>SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx
+    <programlisting language="sql">SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx
 AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting>
     <para>
         Once you have the data loaded and permissions set you can interact with the raster table like any other raster table, using the same functions. The database will handle all the mechanics of connecting to the cloud data when it needs to read pixel data.
@@ -674,8 +674,8 @@ echo pg_unescape_bytea($row[0]);
         connectionString="server=localhost;database=mydb;Port=5432;User Id=myuser;password=mypwd"/>
 </connectionStrings>
 ]]></programlisting>
+				<para>Code for <filename>TestRaster.ashx</filename>:</para>
 			<programlisting language="csharp"><![CDATA[
-// Code for TestRaster.ashx
 <%@ WebHandler Language="C#" Class="TestRaster" %>
 using System;
 using System.Data;
@@ -761,10 +761,11 @@ jar cfm SaveQueryImage.jar Manifest.txt *.class</programlisting>
 	<programlisting language="bash">java -jar SaveQueryImage.jar \
   "SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1, 5), 10, 'quad_segs=2'), 150, 150, '8BUI', 100));" \
   "test.png"</programlisting>
-	<para>Manifest.txt</para>
-	<programlisting>Class-Path: postgresql-9.0-801.jdbc4.jar
+	<para><filename>Manifest.txt</filename>:</para>
+	<programlisting language="text">Class-Path: postgresql-9.0-801.jdbc4.jar
 Main-Class: SaveQueryImage</programlisting>
-			<programlisting language="java">// Code for SaveQueryImage.java
+			<para>Code for <filename>SaveQueryImage.java</filename>:</para>
+			<programlisting language="java">
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -848,7 +849,7 @@ $$ LANGUAGE plpythonu;</programlisting>
     'C:/temp/slices' || j || '.png'
 )
 FROM generate_series(1, 5) AS j;</programlisting>
-<screen>
+<screen role="text-primary">
      write_file
 ---------------------
  C:/temp/slices1.png
@@ -870,7 +871,7 @@ FROM (VALUES (
     lo_create(0),
     ST_AsPNG((SELECT rast FROM aerials.boston WHERE rid = 1))
 )) AS v(oid, png);</programlisting>
-<screen>   oid   | num_bytes
+<screen role="text-primary">   oid   | num_bytes
 ---------+-----------
  2630819 |     74860</screen>
 

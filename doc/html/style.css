@@ -160,6 +160,18 @@ pre, .literallayout {
     border-radius: 1em;
 }
 
+div.literallayout {
+    box-sizing: border-box;
+    width: max-content;
+    max-width: min(100%, var(--postgis-example-width));
+}
+
+div.literallayout > p {
+    margin: 0;
+    max-width: none;
+    padding: 0;
+}
+
 /*
  * Fix #5645: localized manuals apply aggressive word breaking to code tokens,
  * splitting operators like "=>" into "= >". Force verbatim behaviour for
@@ -774,6 +786,10 @@ div.note {
     background: #ffe;
     border-radius: 1em;
 }
+div.note > table {
+    border-collapse: collapse;
+    width: 100%;
+}
 div.note table p {
     font-size: 0.9em;
     margin: 0 0 0 0;
@@ -783,7 +799,58 @@ div.note table tr td img {
     margin: 0 0.5em 0 0;
     padding: 0 0 0 0;
 }
+div.note .postgis-example-block,
+div.caution .postgis-example-block,
+div.warning .postgis-example-block,
+div.important .postgis-example-block {
+    margin: 0.65rem 0 0.75rem;
+    max-width: 100%;
+    width: 100%;
+}
+div.note + .postgis-example-block,
+div.caution + .postgis-example-block,
+div.warning + .postgis-example-block,
+div.important + .postgis-example-block {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin-top: -1.5px;
+}
+div.note:has(+ .postgis-example-block),
+div.caution:has(+ .postgis-example-block),
+div.warning:has(+ .postgis-example-block),
+div.important:has(+ .postgis-example-block) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: 0;
+}
 
+div.caution {
+    font-size: 0.9em;
+    border-color: #dd5;
+    border-style: solid;
+    border-width: 1.5px;
+    box-sizing: border-box;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    max-width: var(--postgis-prose-width);
+    overflow: auto;
+    padding: 0.8em;
+    background: #ffe;
+    border-radius: 1em;
+}
+div.caution > table {
+    border-collapse: collapse;
+    width: 100%;
+}
+div.caution table p {
+    font-size: 0.9em;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+div.caution table tr td img {
+    margin: 0 0.5em 0 0;
+    padding: 0 0 0 0;
+}
 div.warning {
     font-size: 0.9em;
     border-color: #cc5555;
@@ -798,6 +865,10 @@ div.warning {
     background: #FFf1f1;
     border-radius: 1em;
 }
+div.warning > table {
+    border-collapse: collapse;
+    width: 100%;
+}
 div.warning table p {
     font-size: 0.9em;
     margin: 0 0 0 0;
@@ -807,7 +878,6 @@ div.warning table tr td img {
     margin: 0 0.5em 0 0;
     padding: 0 0 0 0;
 }
-
 div.important {
     font-size: 0.9em;
     border-color: #55d;
@@ -822,6 +892,10 @@ div.important {
     background: #eef;
     border-radius: 1em;
 }
+div.important > table {
+    border-collapse: collapse;
+    width: 100%;
+}
 div.important table p {
     font-size: 0.9em;
     margin: 0 0 0 0;
@@ -831,7 +905,6 @@ div.important table tr td img {
     margin: 0 0.5em 0 0;
     padding: 0 0 0 0;
 }
-
 span.inlinemediaobject img {
     vertical-align: middle;
 }

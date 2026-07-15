@@ -10,7 +10,7 @@
   <section xml:id="install_short_version">
   <title>Short Version</title>
   <para>To compile assuming you have all the dependencies in your search path:</para>
-  <programlisting>tar -xvzf postgis-&last_release_version;.tar.gz
+  <programlisting language="bash">tar -xvzf postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
 ./configure
 make
@@ -90,7 +90,7 @@ in each individual database you want to use it in.
     </link>
   </para>
 
-  <programlisting>wget &postgis_download_url;
+  <programlisting language="bash">wget &postgis_download_url;
 tar -xvzf postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;</programlisting>
 
@@ -112,7 +112,7 @@ cd postgis-&last_release_version;</programlisting>
     .
   </para>
 
-  <programlisting>git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis
+  <programlisting language="bash">git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis
 cd postgis
 sh autogen.sh
     </programlisting>
@@ -122,7 +122,7 @@ sh autogen.sh
     <varname>postgis</varname> directory to continue
     the installation.
   </para>
-    <programlisting>./configure</programlisting>
+    <programlisting language="bash">./configure</programlisting>
   </section>
 
   <section xml:id="install_requirements">
@@ -322,9 +322,7 @@ sh autogen.sh
     running the shell script
     </para>
 
-    <para>
-    <command>./configure</command>
-    </para>
+    <programlisting language="bash">./configure</programlisting>
 
     <para>
     With no additional parameters, this command will attempt to
@@ -557,14 +555,10 @@ sh autogen.sh
     running
     </para>
 
-    <para>
-    <command>make</command>
-    </para>
+    <programlisting language="bash">make</programlisting>
 
-    <para>
-    The last line of the output should be "<code>PostGIS was built
-    successfully. Ready to install.</code>"
-    </para>
+    <screen>[last line of output]
+PostGIS was built successfully. Ready to install.</screen>
 
           <para>
                 All the functions have comments generated from the
@@ -575,9 +569,7 @@ sh autogen.sh
                         if installing from the tar ball.  Comments are also included as part of the CREATE EXTENSION install.
           </para>
 
-    <para>
-    <command>make comments</command>
-    </para>
+    <programlisting language="bash">make comments</programlisting>
 
           <para>
                 The <command>make cheatsheets</command> target generates html cheat sheets suitable for quick reference or for student handouts.
@@ -586,9 +578,7 @@ sh autogen.sh
           </para>
     <para>You can download some pre-built ones available in html and pdf from <link xlink:href="http://www.postgis.us/study_guides">PostGIS / PostgreSQL Study Guides</link></para>
 
-    <para>
-    <command>make cheatsheets</command>
-    </para>
+    <programlisting language="bash">make cheatsheets</programlisting>
   </section>
 
   <section xml:id="make_install_postgis_extensions">
@@ -599,21 +589,19 @@ sh autogen.sh
           </para>
     <para>If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:
     </para>
-    <para>
-    <command>make comments</command>
-    </para>
+    <programlisting language="bash">make comments</programlisting>
     <para>Building the comments is not necessary if you are building from a release tar ball since these are packaged pre-built with the tar ball already.</para>
     <para>The extensions should automatically build as part of the make install process.  You can if needed build from the extensions
     folders or copy files if you need them on a different server. </para>
-    <programlisting>cd extensions
-cd postgis
-make clean
-make
-export PGUSER=postgres #overwrite psql variables
-make check #to test before install
-make install
-# to test extensions
-make check RUNTESTFLAGS=--extension</programlisting>
+	    <para>Set <varname>PGUSER</varname> if you need to override the psql connection user, then test before installing. After installation, run the extension regression tests.</para>
+	    <programlisting language="bash">cd extensions
+	cd postgis
+	make clean
+	make
+	export PGUSER=postgres
+	make check
+	make install
+	make check RUNTESTFLAGS=--extension</programlisting>
     <note><para><code>make check</code> uses psql to run tests and as such can use psql environment variables.
     Common ones useful to override are <varname>PGUSER</varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to <link xlink:href="https://www.postgresql.org/docs/current/libpq-envars.html">psql environment variables</link> </para></note>
     <para>The extension files will always be the same for the same version of PostGIS and PostgreSQL regardless of OS, so it is fine to copy over the extension files from one OS to another as long as you
@@ -639,11 +627,11 @@ make check RUNTESTFLAGS=--extension</programlisting>
    </itemizedlist>
    <para>Once you do that, you should see <varname>postgis</varname>, <varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; extensions.</para>
    <para>If you are using psql, you can verify that the extensions are installed by running this query:</para>
-   <programlisting>SELECT name, default_version, installed_version
+   <programlisting language="sql">SELECT name, default_version, installed_version
 FROM pg_available_extensions
 WHERE name LIKE 'postgis%'
 ORDER BY name;</programlisting>
-<screen>             name             | default_version | installed_version
+<screen role="text-primary">             name             | default_version | installed_version
 ------------------------------+-----------------+-------------------
  postgis                      | &last_release_version;         | &last_release_version;
  postgis_raster               | &last_release_version;         | &last_release_version;
@@ -655,17 +643,17 @@ If you get no records back, it means you don't have postgis extensions installed
 in the <varname>extensions</varname> section of the database browser tree and will even allow upgrade or uninstall by right-clicking.</para>
 
 <para>If you have the extensions available, you can install postgis extension in your database of choice by either using pgAdmin extension interface or running these sql commands:</para>
-<programlisting>CREATE EXTENSION postgis;
+<programlisting language="sql">CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_raster;
 CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION postgis_topology;</programlisting>
 
 <para>In psql you can use to see what versions you have installed and also what schema they are installed. </para>
-<programlisting>\connect mygisdb
+<programlisting language="psql">\connect mygisdb
 \x
 \dx postgis*</programlisting>
 
-<screen>List of installed extensions
+<screen role="text-primary">List of installed extensions
 -[ RECORD 1 ]-------------------------------------------------
 Name        | postgis
 Version     | &last_release_version;
@@ -692,7 +680,7 @@ wonderful extension system, you can change it to be extension based by
 running the below commands to package the functions in their respective extension.
 Installing using `unpackaged` was removed in PostgreSQL 13, so you are advised to switch to an extension build before upgrading to PostgreSQL 13.
 </para>
-<programlisting>
+<programlisting language="sql">
 CREATE EXTENSION postgis FROM unpackaged;
 CREATE EXTENSION postgis_raster FROM unpackaged;
 CREATE EXTENSION postgis_topology FROM unpackaged;
@@ -708,9 +696,7 @@ CREATE EXTENSION postgis_topology FROM unpackaged;
     If you wish to test the PostGIS build, run
     </para>
 
-    <para>
-    <command>make check</command>
-    </para>
+    <programlisting language="bash">make check</programlisting>
 
     <para>
     The above command will run through various checks and regression tests
@@ -761,7 +747,7 @@ CREATE EXTENSION postgis_topology FROM unpackaged;
                 following (numerous lines omitted below):
           </para>
 
-    <programlisting>
+    <programlisting language="text">
 
      CUnit - A unit testing framework for C - Version 2.1-3
      http://cunit.sourceforge.net/
@@ -861,7 +847,7 @@ Run Summary:    Type  Total    Ran Passed Failed Inactive
 
 
     <para>output should look like:
-    <screen>============== dropping database "contrib_regression" ==============
+    <screen role="text-primary">============== dropping database "contrib_regression" ==============
 DROP DATABASE
 ============== creating database "contrib_regression" ==============
 CREATE DATABASE
@@ -885,9 +871,7 @@ All 2 tests passed.
     To install PostGIS, type
     </para>
 
-    <para>
-    <command>make install</command>
-    </para>
+    <programlisting language="bash">make install</programlisting>
 
     <para>
     This will copy the PostGIS installation files into their appropriate
@@ -924,9 +908,7 @@ All 2 tests passed.
     sql file by running
     </para>
 
-    <para>
-    <command>make comments-install</command>
-    </para>
+    <programlisting language="bash">make comments-install</programlisting>
 
     <note>
     <para>
@@ -947,8 +929,10 @@ All 2 tests passed.
     doesn't go as you expected.
   </para>
 
-  <orderedlist>
-    <listitem>
+  <para>
+    <emphasis role="bold">PostgreSQL version mismatch.</emphasis>
+  </para>
+
     <para>
       Check that you have installed PostgreSQL &min_postgres_version;
       or newer, and that you are compiling against the same version of the
@@ -962,28 +946,29 @@ All 2 tests passed.
       psql and run this query:
     </para>
 
-    <programlisting>SELECT version();</programlisting>
+    <programlisting language="sql">SELECT version();</programlisting>
 
     <para>
       If you are running an RPM based distribution, you can check for the
       existence of pre-installed packages using the <command>rpm</command>
-      command as follows: <command>rpm -qa | grep postgresql</command>
+      command as follows:
     </para>
-    </listitem>
 
-    <listitem>
+    <programlisting language="bash">rpm -qa | grep postgresql</programlisting>
+
+  <para>
+    <emphasis role="bold">Restoring an upgrade into a database without PostGIS.</emphasis>
+  </para>
+
     <para>If your upgrade fails, make sure you are restoring into a database that already has PostGIS installed.</para>
-    <programlisting>SELECT PostGIS_Full_Version();</programlisting>
-    </listitem>
-  </orderedlist>
+
+    <programlisting language="sql">SELECT PostGIS_Full_Version();</programlisting>
 
   <para>
     Also check that configure has correctly detected the location and version
     of PostgreSQL, the Proj library and the GEOS library.
   </para>
 
-  <orderedlist>
-    <listitem>
     <para>
       The output from configure is used to generate the
       <filename>postgis_config.h</filename> file. Check that the
@@ -992,8 +977,6 @@ All 2 tests passed.
       <varname>POSTGIS_GEOS_VERSION</varname> variables have been set
       correctly.
     </para>
-    </listitem>
-  </orderedlist>
   </section>
 
 </chapter>

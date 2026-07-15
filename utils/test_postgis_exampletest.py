@@ -470,17 +470,27 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertIn("GeometryType(actual) IN ('POLYGON', 'MULTIPOLYGON', 'TRIANGLE')", queries[0])
         self.assertIn("ST_Normalize(actual)", queries[0])
         self.assertIn("generate_subscripts(points, 1)", queries[0])
+        self.assertIn("jsonb_agg(face_key ORDER BY face_key)", queries[0])
+        self.assertNotIn("array_agg(face_key ORDER BY face_key)", queries[0])
 
     def test_surface_comparison_canonicalizes_face_order_without_refentry_rules(self):
         query = self.tester.geometry_comparison_query(
             "00", expected_hex="00", actual_type="POLYHEDRALSURFACE"
         )
-        self.assertEqual(2, query.count("array_agg(face_key ORDER BY face_key)"))
+        self.assertEqual(2, query.count("jsonb_agg(face_key ORDER BY face_key)"))
         self.assertEqual(2, query.count("ST_Dump("))
         self.assertIn("ST_Normalize", query)
         self.assertNotIn("ST_AsEWKT", query)
         self.assertNotIn("ST_GeomFromEWKT(ST_AsEWKT", query)
         self.assertNotIn("refentry", query.lower())
+
+    def test_geometrycollection_comparison_normalizes_member_order(self):
+        query = self.tester.geometry_comparison_query(
+            "00", expected_wkt="GEOMETRYCOLLECTION EMPTY", actual_type="GEOMETRYCOLLECTION",
+        )
+        self.assertIn("ST_AsEWKT(ST_Normalize(actual))", query)
+        self.assertIn("ST_AsEWKT(ST_Normalize(expected))", query)
+        self.assertNotIn("actual_components AS", query)
 
     def test_areal_comparison_uses_full_3d_point_to_break_ring_start_ties(self):
         query = self.tester.geometry_comparison_query(
@@ -1042,6 +1052,9 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("ST_Zmflag(geom) IN (2, 3)", queries[0])
         self.assertIn("'has_z'", queries[0])
         self.assertIn("'points_xyz'", queries[0])
+        self.assertIn("CROSS JOIN LATERAL", queries[0])
+        self.assertIn("WHERE GeometryType(framed.geom) = 'CURVEPOLYGON'", queries[0])
+        self.assertIn("WHERE GeometryType(framed.geom) <> 'CURVEPOLYGON'", queries[0])
         self.assertIn(
             "CASE WHEN ST_HasArc(geom) OR GeometryType(geom) IN ('CURVEPOLYGON', 'MULTISURFACE')",
             queries[0],
@@ -1051,8 +1064,8 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)", queries[0])
         self.assertIn("COALESCE(ST_Z(vertex3d.geom), 0)", queries[0])
         self.assertIn("ST_Z(vertex3d.geom)", queries[0])
-        self.assertIn("COALESCE(total_points, ST_NPoints(geom)) AS total_points", queries[0])
-        self.assertIn("GeometryType(geom) AS root_type", queries[0])
+        self.assertIn("COALESCE(total_points, ST_NPoints(framed.geom)) AS total_points", queries[0])
+        self.assertIn("GeometryType(framed.geom) AS root_type", queries[0])
         self.assertIn("'root_type', root_type", queries[0])
         self.assertIn("'source_point_count', source_point_count", queries[0])
         self.assertIn("'marker_scale', marker_scale", queries[0])

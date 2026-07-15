@@ -108,6 +108,7 @@ GEOGRAPHY_INPUT_RE = re.compile(
 VISUAL_ROLE = "visual-primary"
 VISUAL_SKIP_ROLE = "visual-skip"
 VISUAL_DIRECTION_ROLE = "visual-direction"
+VISUAL_OUTPUT_ONLY_ROLE = "visual-output-only"
 VISUAL_SEPARATE_OUTPUT_ROLE = "visual-separate-output"
 VISUAL_OVERLAY_ROLE = "visual-overlay"
 SVG_PALETTES = {
@@ -354,10 +355,13 @@ class ExampleTester:
         point EWKB, then sort the normalized areal components.
         """
         return (
-            "(SELECT array_agg(face_key ORDER BY face_key) FROM (SELECT "
-            "face_path, array_agg(ring_key ORDER BY ring_path) AS face_key "
+            "(SELECT jsonb_agg(face_key ORDER BY face_key) FROM (SELECT "
+            "face_path, jsonb_agg(ring_key ORDER BY ring_path) AS face_key "
             "FROM (SELECT face_path, ring_path, (SELECT "
-            "points[rotation:array_length(points, 1)] || points[1:rotation - 1] "
+            "array_to_string("
+            "points[rotation:array_length(points, 1)] || points[1:rotation - 1], "
+            "','"
+            ") "
             "FROM generate_subscripts(points, 1) AS rotations(rotation) "
             "ORDER BY 1 LIMIT 1) AS ring_key FROM (SELECT face_path, ring_path, "
             "array_agg(point_key ORDER BY point_ordinal) AS points FROM (SELECT "
@@ -428,6 +432,20 @@ class ExampleTester:
                 "AND " + self.areal_canonical_key_sql("actual") +
                 " IS NOT DISTINCT FROM " +
                 self.areal_canonical_key_sql("expected") + " "
+                "FROM canonical"
+            )
+
+        if actual_type == "GEOMETRYCOLLECTION":
+            surface_types = "('POLYHEDRALSURFACE', 'TIN')"
+            return preamble + (
+                "SELECT " + metadata +
+                "AND CASE WHEN EXISTS (SELECT 1 FROM ST_Dump(actual) AS part "
+                f"WHERE GeometryType(part.geom) IN {surface_types}) "
+                "OR EXISTS (SELECT 1 FROM ST_Dump(expected) AS part "
+                f"WHERE GeometryType(part.geom) IN {surface_types}) "
+                "THEN ST_AsEWKT(actual) = ST_AsEWKT(expected) "
+                "ELSE ST_AsEWKT(ST_Normalize(actual)) = "
+                "ST_AsEWKT(ST_Normalize(expected)) END "
                 "FROM canonical"
             )
 
@@ -591,7 +609,7 @@ class ExampleTester:
         return values
 
     def psql_expanded_records(self, lines):
-        record_header = re.compile(r"^\s*-\[\s*RECORD\s+\d+\s*\]-*\s*$", re.I)
+        record_header = re.compile(r"^\s*-\[\s*RECORD\s+\d+\s*\][-+]*\s*$", re.I)
         field = re.compile(r"^\s*([^|]+?)\s+\|\s?(.*)$")
         headers = None
         rows = []
@@ -1112,6 +1130,7 @@ class ExampleTester:
         )
         visual_overlay = screen is not None and self.has_role(screen, VISUAL_OVERLAY_ROLE)
         visual_direction = screen is not None and self.has_role(screen, VISUAL_DIRECTION_ROLE)
+        visual_output_only = screen is not None and self.has_role(screen, VISUAL_OUTPUT_ONLY_ROLE)
         if visual_separate_output and visual_overlay:
             raise RuntimeError(
                 f"Visual example {self.source_label(node)} cannot request both "
@@ -1138,6 +1157,7 @@ class ExampleTester:
             "visual_kind": visual["kind"] if visual is not None else None,
             "visual_preferred": visual["preferred"] if visual is not None else False,
             "visual_direction": visual_direction,
+            "visual_output_only": visual_output_only,
             "visual_separate_output": visual_separate_output,
             "visual_overlay": visual_overlay,
             "visual_refentry": refentry,
@@ -1646,11 +1666,18 @@ WITH raw AS (
 ), parts AS (
   SELECT ord, source, label, row_num, column_num, frame,
     source_point_count,
-    COALESCE(total_points, ST_NPoints(geom)) AS total_points,
+    COALESCE(total_points, ST_NPoints(framed.geom)) AS total_points,
     marker_scale,
-    GeometryType(geom) AS root_type,
-    (ST_Dump(geom)).geom AS geom
+    GeometryType(framed.geom) AS root_type,
+    part.geom
   FROM framed
+  CROSS JOIN LATERAL (
+    SELECT framed.geom
+    WHERE GeometryType(framed.geom) = 'CURVEPOLYGON'
+    UNION ALL
+    SELECT (ST_Dump(framed.geom)).geom
+    WHERE GeometryType(framed.geom) <> 'CURVEPOLYGON'
+  ) AS part
 ), translated_parts AS (
   SELECT ord, source, label, row_num, column_num, parts.frame, source_point_count,
     total_points, marker_scale, root_type,
@@ -1717,7 +1744,7 @@ SELECT json_build_object(
         THEN (
           SELECT json_agg(
             json_build_object(
-              'path', vertex3d.path,
+              'path', array_to_json(vertex3d.path),
               'point', json_build_array(
                 ST_X(vertex3d.geom), ST_Y(vertex3d.geom),
                 COALESCE(ST_Z(vertex3d.geom), 0)
@@ -1834,7 +1861,11 @@ SELECT json_build_object(
     def render_visual_example(self, database, example, actual):
         if getattr(actual, "visuals", None):
             return self.render_image_visual_example(example, actual)
-        code = self.code_geometry_candidates(example["query"])
+        code = (
+            []
+            if example.get("visual_output_only")
+            else self.code_geometry_candidates(example["query"])
+        )
         output = []
         headers = getattr(actual, "headers", []) or self.query_output_headers(example["query"])
         explicit_headers = self.query_output_headers(example["query"])

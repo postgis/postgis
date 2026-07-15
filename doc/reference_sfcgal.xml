@@ -462,7 +462,7 @@ FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting language="sql">SELECT ST_AsText(CG_Intersection('LINESTRING(0 0,5 5)', 'LINESTRING(5 0,0 5)'));</programlisting>
+                <programlisting language="sql">SELECT CG_Intersection('LINESTRING(0 0,5 5)', 'LINESTRING(5 0,0 5)');</programlisting>
 <screen role="visual-primary text-primary">POINT(2.5 2.5)</screen>
         </refsection>
         <refsection>
@@ -599,7 +599,7 @@ FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 </refsection>
 <refsection>
     <title>Geometry Examples</title>
-    <programlisting language="sql">SELECT ST_AsText(CG_Difference('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry, 'LINESTRING(0 0,2 2)'::geometry));</programlisting>
+    <programlisting language="sql">SELECT CG_Difference('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry, 'LINESTRING(0 0,2 2)'::geometry);</programlisting>
 <screen role="visual-primary text-primary">POLYGON((0 0,1 0,1 1,0 1,0 0))</screen>
     </refsection>
     <refsection>
@@ -791,11 +791,9 @@ FROM solids;</programlisting>
     <refsection>
         <title>Examples</title>
         <para>Compute the 3D convex hull of a 3D LineString.</para>
-        <programlisting language="sql">SELECT ST_AsText(
-  CG_3DConvexHull(
+        <programlisting language="sql">SELECT CG_3DConvexHull(
     'LINESTRING Z(0 0 5,1 5 3,5 7 6,9 5 3,5 7 5,6 3 5)'::geometry
-  )
-);</programlisting>
+  );</programlisting>
         <screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
 
         <para>Compare the extruded source geometry with its 3D convex hull.</para>
@@ -814,7 +812,7 @@ SELECT
   CG_3DConvexHull(source_geometry) AS convex_hull
 FROM shapes;</programlisting>
 <screen role="visual-primary text-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
-input_source_geometry | GEOMETRYCOLLECTION(POLYHEDRALSURFACE(((0 0 0,0 8 0,5 8 0,5 6 0,2 6 0,2 2 0,5 2 0,5 0 0,0 0 0)),((0 0 3,5 0 3,5 2 3,2 2 3,2 6 3,5 6 3,5 8 3,0 8 3,0 0 3)),((0 0 0,0 0 3,0 8 3,0 8 0,0 0 0)),((0 8 0,0 8 3,5 8 3,5 8 0,0 8 0)),((5 8 0,5 8 3,5 6 3,5 6 0,5 8 0)),((5 6 0,5 6 3,2 6 3,2 6 0,5 6 0)),((2 6 0,2 6 3,2 2 3,2 2 0,2 6 0)),((2 2 0,2 2 3,5 2 3,5 2 0,2 2 0)),((5 2 0,5 2 3,5 0 3,5 0 0,5 2 0)),((5 0 0,5 0 3,0 0 3,0 0 0,5 0 0))),POLYHEDRALSURFACE(((7 0 0,7 8 0,9 8 0,9 5 0,12 5 0,12 8 0,14 8 0,14 0 0,12 0 0,12 3 0,9 3 0,9 0 0,7 0 0)),((7 0 7,9 0 7,9 3 7,12 3 7,12 0 7,14 0 7,14 8 7,12 8 7,12 5 7,9 5 7,9 8 7,7 8 7,7 0 7)),((7 0 0,7 0 7,7 8 7,7 8 0,7 0 0)),((7 8 0,7 8 7,9 8 7,9 8 0,7 8 0)),((9 8 0,9 8 7,9 5 7,9 5 0,9 8 0)),((9 5 0,9 5 7,12 5 7,12 5 0,9 5 0)),((12 5 0,12 5 7,12 8 7,12 8 0,12 5 0)),((12 8 0,12 8 7,14 8 7,14 8 0,12 8 0)),((14 8 0,14 8 7,14 0 7,14 0 0,14 8 0)),((14 0 0,14 0 7,12 0 7,12 0 0,14 0 0)),((12 0 0,12 0 7,12 3 7,12 3 0,12 0 0)),((12 3 0,12 3 7,9 3 7,9 3 0,12 3 0)),((9 3 0,9 3 7,9 0 7,9 0 0,9 3 0)),((9 0 0,9 0 7,7 0 7,7 0 0,9 0 0))))
+input_source_geometry | GEOMETRYCOLLECTION(POLYHEDRALSURFACE(((0 0 0,0 8 0,5 8 0,5 6 0,2 6 0,2 2 0,5 2 0,5 0 0,0 0 0)),((0 0 3,5 0 3,5 2 3,2 2 3,2 6 3,5 6 3,5 8 3,0 8 3,0 0 3)),((0 0 0,0 0 3,0 8 3,0 8 0,0 0 0)),((0 8 0,0 8 3,5 8 3,5 8 0,0 8 0)),((5 8 0,5 8 3,5 6 3,5 6 0,5 8 0)),((5 6 0,5 6 3,2 6 3,2 6 0,5 6 0)),((2 6 0,2 6 3,2 2 3,2 2 0,2 6 0)),((2 2 0,2 2 3,5 2 3,5 2 0,2 2 0)),((5 2 0,5 2 3,5 0 3,5 0 0,5 2 0)),((5 0 0,5 0 3,0 0 3,0 0 0,5 0 0))), POLYHEDRALSURFACE(((7 0 0,7 8 0,9 8 0,9 5 0,12 5 0,12 8 0,14 8 0,14 0 0,12 0 0,12 3 0,9 3 0,9 0 0,7 0 0)),((7 0 7,9 0 7,9 3 7,12 3 7,12 0 7,14 0 7,14 8 7,12 8 7,12 5 7,9 5 7,9 8 7,7 8 7,7 0 7)),((7 0 0,7 0 7,7 8 7,7 8 0,7 0 0)),((7 8 0,7 8 7,9 8 7,9 8 0,7 8 0)),((9 8 0,9 8 7,9 5 7,9 5 0,9 8 0)),((9 5 0,9 5 7,12 5 7,12 5 0,9 5 0)),((12 5 0,12 5 7,12 8 7,12 8 0,12 5 0)),((12 8 0,12 8 7,14 8 7,14 8 0,12 8 0)),((14 8 0,14 8 7,14 0 7,14 0 0,14 8 0)),((14 0 0,14 0 7,12 0 7,12 0 0,14 0 0)),((12 0 0,12 0 7,12 3 7,12 3 0,12 0 0)),((12 3 0,12 3 7,9 3 7,9 3 0,12 3 0)),((9 3 0,9 3 7,9 0 7,9 0 0,9 3 0)),((9 0 0,9 0 7,7 0 7,7 0 0,9 0 0))))
 convex_hull           | POLYHEDRALSURFACE(((14 8 7,14 0 0,14 8 0,14 8 7)),((14 0 7,7 8 7,7 0 7,14 0 7)),((0 8 3,7 8 7,0 8 0,0 8 3)),((0 0 3,7 8 7,0 8 3,0 0 3)),((0 0 3,0 8 3,0 0 0,0 0 3)),((7 0 7,7 8 7,0 0 3,7 0 7)),((14 0 7,14 0 0,14 8 7,14 0 7)),((7 0 7,14 0 0,14 0 7,7 0 7)),((14 8 7,7 8 7,14 0 7,14 8 7)),((0 0 0,0 8 3,0 8 0,0 0 0)),((0 0 0,14 0 0,0 0 3,0 0 0)),((0 0 3,14 0 0,7 0 7,0 0 3)),((0 8 0,14 0 0,0 0 0,0 8 0)),((14 8 0,14 0 0,0 8 0,14 8 0)),((14 8 0,7 8 7,14 8 7,14 8 0)),((0 8 0,7 8 7,14 8 0,0 8 0)))</screen>
 </refsection>
 <refsection>
@@ -938,7 +936,7 @@ FROM solids;</programlisting>
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting language="sql">SELECT ST_AsText(CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)'));</programlisting>
+                <programlisting language="sql">SELECT CG_Union('POINT(.5 0)', 'LINESTRING(-1 0,1 0)');</programlisting>
 <screen role="visual-primary text-primary">LINESTRING(-1 0,0.5 0,1 0)</screen>
         </refsection>
         <refsection>
@@ -1176,7 +1174,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_polygon) AS input_polygon,
        ST_AsText(CG_ApproxConvexPartition(input_polygon)) AS partition
 FROM data;</programlisting>
-            <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,107 61)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,148 120)),POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
+            <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)), POLYGON((32 159,0 45,41 86,32 159)), POLYGON((107 61,32 159,41 86,107 61)), POLYGON((45 1,177 2,67 24,45 1)), POLYGON((41 86,45 1,67 24,41 86)), POLYGON((107 61,41 86,67 24,109 31,107 61)), POLYGON((148 120,107 61,109 31,170 60,148 120)), POLYGON((156 150,148 120,170 60,180 110,156 150)))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -1243,7 +1241,7 @@ FROM data;</programlisting>
             <screen role="visual-primary text-primary">POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190)) | MULTILINESTRING((184.189 15.811,158.377 20),(50 20,158.377 20),(50 20,35 35),(35 153.151,35 35),(35 153.151,40.697 159.303),(164.04 164.04,40.697 159.303))</screen>
 
             <para>This example computes the projected medial axis with free endpoints extended to the polygon boundary.</para>
-            <programlisting language="sql">SELECT ST_AsText(CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true));</programlisting>
+            <programlisting language="sql">SELECT CG_ApproximateMedialAxis('POLYGON((0 0,2 0,2 1,0 1,0 0))', true);</programlisting>
 <screen role="visual-primary text-primary">MULTILINESTRING((0 0.5,0.5 0.5,1.5 0.5,2 0.5))</screen>
         </refsection>
 
@@ -1685,7 +1683,7 @@ FROM data;</programlisting>
   ),
   1
 );</programlisting>
-<screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((95.9 184.1,93.4 181.1,95.9 155.9,95.9 184.1)),POLYGON((95.9 184.1,95.9 155.9,102.3 188.5,95.9 184.1)),POLYGON((95.9 184.1,102.3 188.5,98.9 186.6,95.9 184.1)),POLYGON((102.3 188.5,95.9 155.9,98.9 153.4,102.3 188.5)),POLYGON((102.3 188.5,98.9 153.4,102.3 151.5,102.3 188.5)),POLYGON((102.3 188.5,102.3 151.5,106.1 189.6,102.3 188.5)),POLYGON((106.1 189.6,102.3 151.5,106.1 150.4,106.1 189.6)),POLYGON((106.1 189.6,106.1 150.4,110 190,106.1 189.6)),POLYGON((110 190,106.1 150.4,110 150,110 190)),POLYGON((110 190,110 150,117.7 188.5,110 190)),POLYGON((110 190,117.7 188.5,113.9 189.6,110 190)),POLYGON((117.7 188.5,110 150,121.1 153.4,117.7 188.5)),POLYGON((117.7 188.5,121.1 153.4,121.1 186.6,117.7 188.5)),POLYGON((121.1 186.6,121.1 153.4,124.1 155.9,121.1 186.6)),POLYGON((121.1 186.6,124.1 155.9,124.1 184.1,121.1 186.6)),POLYGON((121.1 186.6,124.1 184.1,175 150,121.1 186.6)),POLYGON((175 150,124.1 184.1,126.6 181.1,175 150)),POLYGON((175 150,126.6 181.1,128.5 177.7,175 150)),POLYGON((175 150,128.5 177.7,129.6 173.9,175 150)),POLYGON((175 150,129.6 173.9,130 170,175 150)),POLYGON((175 150,130 170,129.6 166.1,175 150)),POLYGON((175 150,129.6 166.1,128.5 162.3,175 150)),POLYGON((175 150,128.5 162.3,126.6 158.9,175 150)),POLYGON((175 150,126.6 158.9,124.1 155.9,175 150)),POLYGON((175 150,124.1 155.9,125 100,175 150)),POLYGON((125 100,124.1 155.9,121.1 153.4,125 100)),POLYGON((125 100,121.1 153.4,117.7 151.5,125 100)),POLYGON((125 100,117.7 151.5,113.9 150.4,125 100)),POLYGON((125 100,113.9 150.4,110 150,125 100)),POLYGON((125 100,110 150,106.1 150.4,125 100)),POLYGON((125 100,106.1 150.4,102.3 151.5,125 100)),POLYGON((125 100,102.3 151.5,98.9 153.4,125 100)),POLYGON((125 100,98.9 153.4,50 60,125 100)),POLYGON((125 100,50 60,20 40,125 100)),POLYGON((20 40,50 60,90.4 166.1,20 40)),POLYGON((20 40,90.4 166.1,90 170,20 40)),POLYGON((20 40,90 170,90.4 173.9,20 40)),POLYGON((20 40,90.4 173.9,91.5 177.7,20 40)),POLYGON((91.5 177.7,90.4 173.9,90 170,91.5 177.7)),POLYGON((91.5 177.7,90 170,91.5 162.3,91.5 177.7)),POLYGON((91.5 177.7,91.5 162.3,93.4 158.9,91.5 177.7)),POLYGON((91.5 177.7,93.4 158.9,93.4 181.1,91.5 177.7)),POLYGON((93.4 181.1,93.4 158.9,95.9 155.9,93.4 181.1)),POLYGON((95.9 155.9,93.4 158.9,50 60,95.9 155.9)),POLYGON((95.9 155.9,50 60,98.9 153.4,95.9 155.9)),POLYGON((50 60,93.4 158.9,91.5 162.3,50 60)),POLYGON((50 60,91.5 162.3,90.4 166.1,50 60)),POLYGON((90.4 166.1,91.5 162.3,90 170,90.4 166.1)),POLYGON((110 150,113.9 150.4,121.1 153.4,110 150)),POLYGON((121.1 153.4,113.9 150.4,117.7 151.5,121.1 153.4)),POLYGON((124.1 155.9,126.6 158.9,129.6 166.1,124.1 155.9)),POLYGON((124.1 155.9,129.6 166.1,128.5 177.7,124.1 155.9)),POLYGON((124.1 155.9,128.5 177.7,124.1 184.1,124.1 155.9)),POLYGON((124.1 184.1,128.5 177.7,126.6 181.1,124.1 184.1)),POLYGON((128.5 177.7,129.6 166.1,130 170,128.5 177.7)),POLYGON((128.5 177.7,130 170,129.6 173.9,128.5 177.7)),POLYGON((129.6 166.1,126.6 158.9,128.5 162.3,129.6 166.1)))</screen>
+<screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((95.9 184.1,93.4 181.1,95.9 155.9,95.9 184.1)), POLYGON((95.9 184.1,95.9 155.9,102.3 188.5,95.9 184.1)), POLYGON((95.9 184.1,102.3 188.5,98.9 186.6,95.9 184.1)), POLYGON((102.3 188.5,95.9 155.9,98.9 153.4,102.3 188.5)), POLYGON((102.3 188.5,98.9 153.4,102.3 151.5,102.3 188.5)), POLYGON((102.3 188.5,102.3 151.5,106.1 189.6,102.3 188.5)), POLYGON((106.1 189.6,102.3 151.5,106.1 150.4,106.1 189.6)), POLYGON((106.1 189.6,106.1 150.4,110 190,106.1 189.6)), POLYGON((110 190,106.1 150.4,110 150,110 190)), POLYGON((110 190,110 150,117.7 188.5,110 190)), POLYGON((110 190,117.7 188.5,113.9 189.6,110 190)), POLYGON((117.7 188.5,110 150,121.1 153.4,117.7 188.5)), POLYGON((117.7 188.5,121.1 153.4,121.1 186.6,117.7 188.5)), POLYGON((121.1 186.6,121.1 153.4,124.1 155.9,121.1 186.6)), POLYGON((121.1 186.6,124.1 155.9,124.1 184.1,121.1 186.6)), POLYGON((121.1 186.6,124.1 184.1,175 150,121.1 186.6)), POLYGON((175 150,124.1 184.1,126.6 181.1,175 150)), POLYGON((175 150,126.6 181.1,128.5 177.7,175 150)), POLYGON((175 150,128.5 177.7,129.6 173.9,175 150)), POLYGON((175 150,129.6 173.9,130 170,175 150)), POLYGON((175 150,130 170,129.6 166.1,175 150)), POLYGON((175 150,129.6 166.1,128.5 162.3,175 150)), POLYGON((175 150,128.5 162.3,126.6 158.9,175 150)), POLYGON((175 150,126.6 158.9,124.1 155.9,175 150)), POLYGON((175 150,124.1 155.9,125 100,175 150)), POLYGON((125 100,124.1 155.9,121.1 153.4,125 100)), POLYGON((125 100,121.1 153.4,117.7 151.5,125 100)), POLYGON((125 100,117.7 151.5,113.9 150.4,125 100)), POLYGON((125 100,113.9 150.4,110 150,125 100)), POLYGON((125 100,110 150,106.1 150.4,125 100)), POLYGON((125 100,106.1 150.4,102.3 151.5,125 100)), POLYGON((125 100,102.3 151.5,98.9 153.4,125 100)), POLYGON((125 100,98.9 153.4,50 60,125 100)), POLYGON((125 100,50 60,20 40,125 100)), POLYGON((20 40,50 60,90.4 166.1,20 40)), POLYGON((20 40,90.4 166.1,90 170,20 40)), POLYGON((20 40,90 170,90.4 173.9,20 40)), POLYGON((20 40,90.4 173.9,91.5 177.7,20 40)), POLYGON((91.5 177.7,90.4 173.9,90 170,91.5 177.7)), POLYGON((91.5 177.7,90 170,91.5 162.3,91.5 177.7)), POLYGON((91.5 177.7,91.5 162.3,93.4 158.9,91.5 177.7)), POLYGON((91.5 177.7,93.4 158.9,93.4 181.1,91.5 177.7)), POLYGON((93.4 181.1,93.4 158.9,95.9 155.9,93.4 181.1)), POLYGON((95.9 155.9,93.4 158.9,50 60,95.9 155.9)), POLYGON((95.9 155.9,50 60,98.9 153.4,95.9 155.9)), POLYGON((50 60,93.4 158.9,91.5 162.3,50 60)), POLYGON((50 60,91.5 162.3,90.4 166.1,50 60)), POLYGON((90.4 166.1,91.5 162.3,90 170,90.4 166.1)), POLYGON((110 150,113.9 150.4,121.1 153.4,110 150)), POLYGON((121.1 153.4,113.9 150.4,117.7 151.5,121.1 153.4)), POLYGON((124.1 155.9,126.6 158.9,129.6 166.1,124.1 155.9)), POLYGON((124.1 155.9,129.6 166.1,128.5 177.7,124.1 155.9)), POLYGON((124.1 155.9,128.5 177.7,124.1 184.1,124.1 155.9)), POLYGON((124.1 184.1,128.5 177.7,126.6 181.1,124.1 184.1)), POLYGON((128.5 177.7,129.6 166.1,130 170,128.5 177.7)), POLYGON((128.5 177.7,130 170,129.6 173.9,128.5 177.7)), POLYGON((129.6 166.1,126.6 158.9,128.5 162.3,129.6 166.1)))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -1869,7 +1867,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_polygon) AS input_polygon,
        ST_AsText(CG_GreeneApproxConvexPartition(input_polygon)) AS partition
 FROM data;</programlisting>
-	        <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((67 24,109 31,170 60,107 61,67 24)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,107 61)),POLYGON((148 120,107 61,170 60,148 120)),POLYGON((148 120,170 60,180 110,156 150,148 120)),POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
+	        <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)), POLYGON((45 1,177 2,67 24,45 1)), POLYGON((67 24,109 31,170 60,107 61,67 24)), POLYGON((41 86,45 1,67 24,41 86)), POLYGON((107 61,32 159,41 86,67 24,107 61)), POLYGON((148 120,107 61,170 60,148 120)), POLYGON((148 120,170 60,180 110,156 150,148 120)), POLYGON((156 150,83 181,89 131,148 120,156 150)))</screen>
 	    </refsection>
     <refsection>
         <title>See Also</title>
@@ -2060,7 +2058,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_polygon) AS input_polygon,
        ST_AsText(CG_OptimalConvexPartition(input_polygon)) AS partition
 FROM data;</programlisting>
-            <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)),POLYGON((32 159,0 45,41 86,32 159)),POLYGON((45 1,177 2,67 24,45 1)),POLYGON((41 86,45 1,67 24,41 86)),POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)),POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)),POLYGON((156 150,148 120,180 110,156 150)))</screen>
+            <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((156 150,83 181,89 131,148 120,156 150)), POLYGON((32 159,0 45,41 86,32 159)), POLYGON((45 1,177 2,67 24,45 1)), POLYGON((41 86,45 1,67 24,41 86)), POLYGON((107 61,32 159,41 86,67 24,109 31,107 61)), POLYGON((148 120,107 61,109 31,170 60,180 110,148 120)), POLYGON((156 150,148 120,180 110,156 150)))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -2105,11 +2103,11 @@ FROM data;</programlisting>
 
 	        <refsection><title>Examples</title>
 
-            <programlisting language="sql">SELECT ST_AsText(CG_StraightSkeleton(
-  'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'));</programlisting>
+            <programlisting language="sql">SELECT CG_StraightSkeleton(
+  'POLYGON((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))');</programlisting>
 <screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">MULTILINESTRING((190 190,164.03987973986756 164.03987973986756),(10 190,40.697077206292434 159.30292279370755),(10 10,35 35),(190 10,184.18861169915812 15.811388300841896),(190 20,184.18861169915812 15.811388300841896),(160 30,158.3772233983162 20),(60 30,50 20),(60 130,35 153.15077848154866),(190 140,164.03987973986756 164.03987973986756),(184.18861169915812 15.811388300841896,158.3772233983162 20),(50 20,158.3772233983162 20),(50 20,35 35),(35 153.15077848154866,35 35),(35 153.15077848154866,40.697077206292434 159.30292279370755),(164.03987973986756 164.03987973986756,40.697077206292434 159.30292279370755))</screen>
 
-            <programlisting language="sql">SELECT ST_AsText(CG_StraightSkeleton('POLYGON((0 0,1 0,1 1,0 1,0 0))', true));</programlisting>
+            <programlisting language="sql">SELECT CG_StraightSkeleton('POLYGON((0 0,1 0,1 1,0 1,0 0))', true);</programlisting>
 <screen role="visual-primary text-primary">MULTILINESTRING M ((0 0 0,0.5 0.5 0.5),(1 0 0,0.5 0.5 0.5),(1 1 0,0.5 0.5 0.5),(0 1 0,0.5 0.5 0.5))</screen>
 
             <para>Note that valid inputs with rings that touch at a single point will raise an error.</para>
@@ -2214,10 +2212,10 @@ FROM data;</programlisting>
             </refsection>
             <refsection>
                 <title>Geometry Examples</title>
-                <programlisting language="sql">SELECT ST_AsText(CG_Triangulate(
+                <programlisting language="sql">SELECT CG_Triangulate(
   'POLYGON((0 0,1 0,1 1,0 1,0 0),
             (0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))'
-));</programlisting>
+);</programlisting>
 <screen role="visual-primary text-primary">TIN(((0.8 0.2,0.2 0.2,1 0,0.8 0.2)),((0.2 0.2,0 0,1 0,0.2 0.2)),((1 1,0.8 0.8,0.8 0.2,1 1)),((0 1,0 0,0.2 0.2,0 1)),((0 1,0.2 0.8,1 1,0 1)),((0 1,0.2 0.2,0.2 0.8,0 1)),((0.2 0.8,0.8 0.8,1 1,0.2 0.8)),((0.2 0.8,0.2 0.2,0.8 0.2,0.2 0.8)),((1 1,0.8 0.2,1 0,1 1)),((0.8 0.8,0.2 0.8,0.8 0.2,0.8 0.8)))</screen>
         </refsection>
         <refsection>
@@ -2275,7 +2273,7 @@ FROM data;</programlisting>
 SELECT ST_Collect(polygon, observer) AS input_scene,
        CG_Visibility(polygon, observer) AS visibility
 FROM data;</programlisting>
-            <screen role="visual-primary text-primary visual-separate-output docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)),POINT(91 87)) | POLYGON((78.5 68,98.5 68,108 43.93333333333334,108 98,121.96219931271477 107.03436426116838,107 106.5,107 135,97.5 106.5,65.28017241379311 105.09913793103448,77.5 96.5,78.5 68))</screen>
+            <screen role="visual-primary text-primary visual-separate-output docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)), POINT(91 87)) | POLYGON((78.5 68,98.5 68,108 43.93333333333334,108 98,121.96219931271477 107.03436426116838,107 106.5,107 135,97.5 106.5,65.28017241379311 105.09913793103448,77.5 96.5,78.5 68))</screen>
 
             <para>Visibility from a segment inside the same polygon.</para>
             <programlisting language="sql">WITH data AS (
@@ -2287,7 +2285,7 @@ SELECT ST_Collect(polygon, observer) AS input_scene,
                      ST_StartPoint(observer),
                      ST_EndPoint(observer)) AS visibility
 FROM data;</programlisting>
-            <screen role="visual-primary text-primary visual-separate-output docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)),LINESTRING(78.5 68,98.5 68)) | POLYGON((78.5 68,98.5 68,100.5 36,101.28125 23.5,111.7109375 23.5,108 36,108 98,110.73389524382901 106.63335340156533,107 106.5,107 157.5,108.51955307262571 173.5,95.75974025974025 173.5,97.5 106.5,70.9811529933481 105.3470066518847,77.5 96.5,78.5 68))</screen>
+            <screen role="visual-primary text-primary visual-separate-output docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((23.5 23.5,23.5 173.5,173.5 173.5,173.5 23.5,23.5 23.5),(108 98,108 36,156 37,155 99,108 98),(107 157.5,107 106.5,135 107.5,133 127.5,143.5 127.5,143.5 108.5,153.5 109.5,151.5 166,107 157.5),(41 95.5,41 35,100.5 36,98.5 68,78.5 68,77.5 96.5,41 95.5),(39 150,40 104,97.5 106.5,95.5 152,39 150)), LINESTRING(78.5 68,98.5 68)) | POLYGON((78.5 68,98.5 68,100.5 36,101.28125 23.5,111.7109375 23.5,108 36,108 98,110.73389524382901 106.63335340156533,107 106.5,107 157.5,108.51955307262571 173.5,95.75974025974025 173.5,97.5 106.5,70.9811529933481 105.3470066518847,77.5 96.5,78.5 68))</screen>
         </refsection>
 
     </refentry>
@@ -2334,7 +2332,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_polygon) AS input_polygon,
        ST_AsText(CG_YMonotonePartition(input_polygon)) AS partition
 FROM data;</programlisting>
-        <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)),POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)),POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
+        <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">POLYGON((156 150,83 181,89 131,148 120,107 61,32 159,0 45,41 86,45 1,177 2,67 24,109 31,170 60,180 110,156 150)) | GEOMETRYCOLLECTION(POLYGON((32 159,0 45,41 86,32 159)), POLYGON((107 61,32 159,41 86,45 1,177 2,67 24,109 31,170 60,107 61)), POLYGON((156 150,83 181,89 131,148 120,107 61,170 60,180 110,156 150)))</screen>
     </refsection>
     <refsection>
         <title>See Also</title>
@@ -2367,7 +2365,7 @@ FROM data;</programlisting>
     </refsection>
     <refsection>
         <title>Examples</title>
-        <programlisting language="sql">SELECT ST_AsText(CG_StraightSkeletonPartition('POLYGON((0 0,4 0,2 2,0 0))', true));</programlisting>
+        <programlisting language="sql">SELECT CG_StraightSkeletonPartition('POLYGON((0 0,4 0,2 2,0 0))', true);</programlisting>
 <screen role="visual-primary text-primary">POLYHEDRALSURFACE(((0 0,2 0.82842712474619,2 2,0 0)),((4 0,2 0.82842712474619,0 0,4 0)),((2 2,2 0.82842712474619,4 0,2 2)))</screen>
 
         <para>Straight skeleton partition of a polygon.</para>
@@ -2417,7 +2415,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_3DBuffer('POINT(0 0 0)', 1, 8, 0));</programlisting>
+       <programlisting language="sql">SELECT CG_3DBuffer('POINT(0 0 0)', 1, 8, 0);</programlisting>
 <screen role="visual-primary text-primary">POLYHEDRALSURFACE Z (((0 0 1, 0.5 -0.5 0.71, 0 -0.71 0.71, 0 0 1)), ... )</screen>
 
        <para>A rounded point buffer using 32 segments.</para>
@@ -2474,7 +2472,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_Rotate('LINESTRING(1 0,0 1)', pi()/2));</programlisting>
+       <programlisting language="sql">SELECT CG_Rotate('LINESTRING(1 0,0 1)', pi()/2);</programlisting>
 <screen role="visual-primary text-primary">LINESTRING(6.123233995736766e-17 1,-1 6.123233995736766e-17)</screen>
    </refsection>
    <refsection>
@@ -2509,7 +2507,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_2DRotate('POINT(1 0)', pi()/2, 1, 1));</programlisting>
+       <programlisting language="sql">SELECT CG_2DRotate('POINT(1 0)', pi()/2, 1, 1);</programlisting>
 <screen role="visual-primary text-primary">POINT(2 1)</screen>
    </refsection>
    <refsection>
@@ -2545,7 +2543,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_3DRotate('POINT(1 0 0)', pi()/2, 0, 0, 1));</programlisting>
+       <programlisting language="sql">SELECT CG_3DRotate('POINT(1 0 0)', pi()/2, 0, 0, 1);</programlisting>
 <screen role="visual-primary text-primary">POINT Z (6.123233995736766e-17 1 0)</screen>
    </refsection>
    <refsection>
@@ -2578,7 +2576,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_RotateX('POINT(0 1 0)', pi()/2));</programlisting>
+       <programlisting language="sql">SELECT CG_RotateX('POINT(0 1 0)', pi()/2);</programlisting>
 <screen role="visual-primary text-primary">POINT Z (0 6.123233995736766e-17 1)</screen>
    </refsection>
    <refsection>
@@ -2611,7 +2609,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_RotateY('POINT(1 0 0)', pi()/2));</programlisting>
+       <programlisting language="sql">SELECT CG_RotateY('POINT(1 0 0)', pi()/2);</programlisting>
 <screen role="visual-primary text-primary">POINT Z (6.123233995736766e-17 0 -1)</screen>
    </refsection>
    <refsection>
@@ -2644,7 +2642,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_RotateZ('POINT(1 0 0)', pi()/2));</programlisting>
+       <programlisting language="sql">SELECT CG_RotateZ('POINT(1 0 0)', pi()/2);</programlisting>
 <screen role="visual-primary text-primary">POINT Z (6.123233995736766e-17 1 0)</screen>
    </refsection>
    <refsection>
@@ -2676,7 +2674,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_Scale('LINESTRING(1 1,2 2)', 2));</programlisting>
+       <programlisting language="sql">SELECT CG_Scale('LINESTRING(1 1,2 2)', 2);</programlisting>
 <screen role="visual-primary text-primary">LINESTRING(2 2,4 4)</screen>
    </refsection>
    <refsection>
@@ -2711,7 +2709,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_3DScale('POINT(1 1 1)', 2, 3, 4));</programlisting>
+       <programlisting language="sql">SELECT CG_3DScale('POINT(1 1 1)', 2, 3, 4);</programlisting>
 <screen role="visual-primary text-primary">POINT Z (2 3 4)</screen>
    </refsection>
    <refsection>
@@ -2748,7 +2746,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_3DScaleAroundCenter('POINT(2 2 2)', 0.5, 0.5, 0.5, 1, 1, 1));</programlisting>
+       <programlisting language="sql">SELECT CG_3DScaleAroundCenter('POINT(2 2 2)', 0.5, 0.5, 0.5, 1, 1, 1);</programlisting>
 <screen role="visual-primary text-primary">POINT Z (1.5 1.5 1.5)</screen>
    </refsection>
    <refsection>
@@ -2781,7 +2779,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_Translate('LINESTRING(1 1,2 2)', 1, -1));</programlisting>
+       <programlisting language="sql">SELECT CG_Translate('LINESTRING(1 1,2 2)', 1, -1);</programlisting>
 <screen role="visual-primary text-primary">LINESTRING(2 0,3 1)</screen>
    </refsection>
    <refsection>
@@ -2815,7 +2813,7 @@ FROM data;</programlisting>
    </refsection>
    <refsection>
        <title>Examples</title>
-       <programlisting language="sql">SELECT ST_AsText(CG_3DTranslate('POINT(1 1 1)', 1, -1, 2));</programlisting>
+       <programlisting language="sql">SELECT CG_3DTranslate('POINT(1 1 1)', 1, -1, 2);</programlisting>
 <screen role="visual-primary text-primary">POINT Z (2 0 3)</screen>
    </refsection>
    <refsection>
@@ -2893,38 +2891,32 @@ FROM data;</programlisting>
   <refsection>
     <title>Examples</title>
     <para>This example simplifies a polygon with a threshold of 0.5.</para>
-    <programlisting language="sql">SELECT ST_AsText(
-  CG_Simplify(
+    <programlisting language="sql">SELECT CG_Simplify(
     'POLYGON((0 0,0 1,0.1 1,0.2 1,0.3 1,0.4 1,0.5 1,1 1,1 0,0 0))',
     0.5
-  )
-);</programlisting>
+  );</programlisting>
     <screen role="visual-primary text-primary">POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
 
     <para>Preserving topology can keep additional support points in a mixed ZM collection.</para>
-    <programlisting language="sql">SELECT ST_AsText(
-  CG_Simplify(
+    <programlisting language="sql">SELECT CG_Simplify(
     'GEOMETRYCOLLECTION ZM(
       LINESTRING ZM(-1 -1 3 4,0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150),
       POLYGON ZM((0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150,0 0 10 100))
     )',
     2,
     false
-  )
-);</programlisting>
+  );</programlisting>
     <screen role="visual-primary text-primary">GEOMETRYCOLLECTION ZM (LINESTRING ZM (-1 -1 3 4,2 19 25 250,-4 20 15 150),POLYGON ZM ((0 0 10 100,2 19 25 250,-4 20 15 150,0 0 10 100)))</screen>
 
     <para>The topology-preserving variant keeps the shared anchor point at the collection intersection.</para>
-    <programlisting language="sql">SELECT ST_AsText(
-  CG_Simplify(
+    <programlisting language="sql">SELECT CG_Simplify(
     'GEOMETRYCOLLECTION ZM(
       LINESTRING ZM(-1 -1 3 4,0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150),
       POLYGON ZM((0 0 10 100,1 1 20 200,0 2 15 150,0 5 30 300,2 19 25 250,-4 20 15 150,0 0 10 100))
     )',
     2,
     true
-  )
-);</programlisting>
+  );</programlisting>
     <screen role="visual-primary text-primary">GEOMETRYCOLLECTION ZM (LINESTRING ZM (-1 -1 3 4,0 0 10 100,2 19 25 250,-4 20 15 150),POLYGON ZM ((0 0 10 100,2 19 25 250,-4 20 15 150,0 0 10 100)))</screen>
 
     <para>Compare simplification with and without topology preservation, using a threshold of 50.</para>
@@ -2938,7 +2930,7 @@ SELECT ST_AsText(geom, 2) AS input_geometry,
        ST_AsText(CG_Simplify(geom, 50, true), 2) AS topology_preserved,
        ST_AsText(CG_Simplify(geom, 50, false), 2) AS topology_not_preserved
 FROM data;</programlisting>
-    <screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)),POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,147.31 173.85,146.15 103.46,112.69 118.46,34.23 121.92,88.46 158.85)),POLYGON((112.69 118.46,146.15 103.46,185.38 43.46,10 83.85,34.23 121.92,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,173.85 119.62,34.23 121.92,88.46 158.85)),POLYGON((112.69 118.46,190 60.77,10 83.85,112.69 118.46)))</screen>
+    <screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">GEOMETRYCOLLECTION(POLYGON((88.46 158.85,90.77 171.54,147.31 173.85,146.15 145,173.85 119.62,146.15 103.46,112.69 118.46,91.92 93.08,65.38 101.15,34.23 121.92,41.15 142.69,49.23 143.85,88.46 158.85)), POLYGON((112.69 118.46,146.15 103.46,190 60.77,185.38 43.46,126.54 26.15,83.85 28.46,67.69 64.23,43.46 58.46,10 83.85,34.23 121.92,65.38 101.15,91.92 93.08,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,147.31 173.85,146.15 103.46,112.69 118.46,34.23 121.92,88.46 158.85)), POLYGON((112.69 118.46,146.15 103.46,185.38 43.46,10 83.85,34.23 121.92,112.69 118.46))) | GEOMETRYCOLLECTION(POLYGON((88.46 158.85,173.85 119.62,34.23 121.92,88.46 158.85)), POLYGON((112.69 118.46,190 60.77,10 83.85,112.69 118.46)))</screen>
   </refsection>
 
   <refsection>
@@ -3045,7 +3037,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_points, 2) AS input_points,
        ST_AsText(CG_NurbsCurveInterpolate(input_points, 3), 2) AS interpolated_curve
 FROM data;</programlisting>
-        <screen role="visual-primary visual-overlay text-primary">LINESTRING(0 0,2 5,5 3,8 1) | NURBSCURVE(DEGREE 3,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(-0.43 10.29),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(4.95 1.9),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(8 1),WEIGHT 1)),KNOTS (KNOT(0,4),KNOT(1,4)))</screen>
+        <screen role="visual-primary visual-overlay text-primary">LINESTRING(0 0,2 5,5 3,8 1) | NURBSCURVE(DEGREE 3, CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(-0.43 10.29),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(4.95 1.9),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(8 1),WEIGHT 1)),KNOTS (KNOT(0,4), KNOT(1,4)))</screen>
 
         <para>Interpolate a 3D degree-3 NURBS curve through the documented control points.</para>
         <programlisting language="sql">WITH data AS (
@@ -3054,7 +3046,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_points, 2) AS input_points,
        ST_AsText(CG_NurbsCurveInterpolate(input_points, 3), 2) AS interpolated_curve
 FROM data;</programlisting>
-        <screen role="visual-primary visual-overlay text-primary">LINESTRING Z (0 0 0,2 5 2,5 3 1,8 1 0) | NURBSCURVE Z (DEGREE 3,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (-0.43 10.29 4.36),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (4.95 1.9 0.54),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (8 1 0),WEIGHT 1)),KNOTS (KNOT(0,4),KNOT(1,4)))</screen>
+        <screen role="visual-primary visual-overlay text-primary">LINESTRING Z (0 0 0,2 5 2,5 3 1,8 1 0) | NURBSCURVE Z (DEGREE 3,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (-0.43 10.29 4.36),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (4.95 1.9 0.54),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (8 1 0),WEIGHT 1)),KNOTS (KNOT(0,4), KNOT(1,4)))</screen>
     </refsection>
 
     <refsection>
@@ -3108,7 +3100,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_points, 2) AS input_points,
        ST_AsText(CG_NurbsCurveApproximate(input_points, 2, 0.5), 2) AS approximated_curve
 FROM data;</programlisting>
-        <screen role="visual-primary visual-overlay text-primary">LINESTRING(0 0,1 2.1,2 1.9,3 3.2,4 2.8,5 1) | NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(-0.05 2.64),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2.24 1.65),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2.79 3.48),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(4.84 2.43),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(5 1),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(0.35,1),KNOT(0.51,1),KNOT(0.68,1),KNOT(1,3)))</screen>
+        <screen role="visual-primary visual-overlay text-primary">LINESTRING(0 0,1 2.1,2 1.9,3 3.2,4 2.8,5 1) | NURBSCURVE(DEGREE 2, CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(-0.05 2.64),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(2.24 1.65),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(2.79 3.48),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(4.84 2.43),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(5 1),WEIGHT 1)),KNOTS (KNOT(0,3), KNOT(0.35,1), KNOT(0.51,1), KNOT(0.68,1), KNOT(1,3)))</screen>
 
         <para>Approximate a 3D point set while preserving the Z dimension in the fitted curve.</para>
         <programlisting language="sql">WITH data AS (
@@ -3117,7 +3109,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_points, 2) AS input_points,
        ST_AsText(CG_NurbsCurveApproximate(input_points, 3, 0.1), 2) AS approximated_curve
 FROM data;</programlisting>
-        <screen role="visual-primary visual-overlay text-primary">LINESTRING Z (0 0 0,1 2 1,2 3 2,3 2 1,4 1 0,5 0 0) | NURBSCURVE Z (DEGREE 3,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (0.18 -0.15 -1.29),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (1.49 4.36 3.35),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (3.33 1.33 0.38),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (4.34 0.83 -0.44),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (5 0 0),WEIGHT 1)),KNOTS (KNOT(0,4),KNOT(0.46,1),KNOT(0.64,1),KNOT(1,4)))</screen>
+        <screen role="visual-primary visual-overlay text-primary">LINESTRING Z (0 0 0,1 2 1,2 3 2,3 2 1,4 1 0,5 0 0) | NURBSCURVE Z (DEGREE 3,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (0.18 -0.15 -1.29),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (1.49 4.36 3.35),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (3.33 1.33 0.38),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (4.34 0.83 -0.44),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (5 0 0),WEIGHT 1)),KNOTS (KNOT(0,4), KNOT(0.46,1), KNOT(0.64,1), KNOT(1,4)))</screen>
     </refsection>
 
     <refsection>
@@ -3176,7 +3168,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_curve, 2) AS input_curve,
        ST_AsText(CG_NurbsCurveDerivative(input_curve, 0.5, 1), 2) AS tangent
 FROM data;</programlisting>
-        <screen role="visual-primary visual-overlay text-primary">NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(5 10),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3))) | POINT Z (10 0 0)</screen>
+        <screen role="visual-primary visual-overlay text-primary">NURBSCURVE(DEGREE 2, CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(5 10),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3), KNOT(1,3))) | POINT Z (10 0 0)</screen>
 
         <para>The second derivative exposes curvature change for a higher-degree curve.</para>
         <programlisting language="sql">WITH data AS (
@@ -3185,7 +3177,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_curve, 2) AS input_curve,
        ST_AsText(CG_NurbsCurveDerivative(input_curve, 0.5, 2), 2) AS curvature
 FROM data;</programlisting>
-        <screen role="visual-primary visual-overlay text-primary">NURBSCURVE(DEGREE 3,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2 8),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(5 5),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(8 2),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,4),KNOT(0.5,1),KNOT(1,4))) | POINT Z (9 -9 0)</screen>
+        <screen role="visual-primary visual-overlay text-primary">NURBSCURVE(DEGREE 3, CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(2 8),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(5 5),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(8 2),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,4), KNOT(0.5,1), KNOT(1,4))) | POINT Z (9 -9 0)</screen>
 
         <para>The same derivative call also works for 3D NURBS curves.</para>
         <programlisting language="sql">WITH data AS (
@@ -3194,7 +3186,7 @@ FROM data;</programlisting>
 SELECT ST_AsText(input_curve, 2) AS input_curve,
        ST_AsText(CG_NurbsCurveDerivative(input_curve, 0.5, 1), 2) AS tangent
 FROM data;</programlisting>
-        <screen role="visual-primary visual-overlay text-primary">NURBSCURVE Z (DEGREE 2,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (5 10 5),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT Z (10 0 0),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3))) | POINT Z (10 0 0)</screen>
+        <screen role="visual-primary visual-overlay text-primary">NURBSCURVE Z (DEGREE 2,CONTROLPOINTS Z (NURBSPOINT(WEIGHTEDPOINT Z (0 0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (5 10 5),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT Z (10 0 0),WEIGHT 1)),KNOTS (KNOT(0,3), KNOT(1,3))) | POINT Z (10 0 0)</screen>
     </refsection>
 
     <refsection>
