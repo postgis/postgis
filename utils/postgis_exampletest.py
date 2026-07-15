@@ -1672,7 +1672,7 @@ SELECT json_build_object(
       'row', row_num, 'column', column_num, 'frame', frame,
       'root_type', root_type, 'source_point_count', source_point_count,
       'total_points', total_points, 'marker_scale', marker_scale,
-      'type', GeometryType(geom), 'svg', ST_AsSVG(ST_Force2D(geom), 0, 12),
+      'type', GeometryType(geom), 'svg', ST_AsSVG(ST_Force2D(render_geom), 0, 12),
       'dimension', ST_Dimension(geom), 'srid', ST_SRID(geom),
       'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
       'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END,

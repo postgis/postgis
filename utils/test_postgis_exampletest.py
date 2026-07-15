@@ -1037,7 +1037,7 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("ST_Extent(all_geometries.bounds_geom)", queries[0])
         self.assertIn("ELSE ST_Extent(bounds_geom)", queries[0])
         self.assertNotIn("ST_Extent(ST_Force2D(all_geometries.geom))", queries[0])
-        self.assertIn("ST_AsSVG(ST_Force2D(geom), 0, 12)", queries[0])
+        self.assertIn("ST_AsSVG(ST_Force2D(render_geom), 0, 12)", queries[0])
         self.assertIn("ST_Zmflag(geom) IN (2, 3)", queries[0])
         self.assertIn("'has_z'", queries[0])
         self.assertIn("'points_xyz'", queries[0])
