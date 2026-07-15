@@ -40,6 +40,7 @@ sfcgal/regress/tests.mk
 # files, so we ignore them
 doc/html/images/*.png
 doc/html/images/visual-examples/
+doc/html/images/pdf-images/
 doc/pdf/
 doc/postgis-chunk-html.xsl
 doc/postgis-html.xsl
@@ -57,6 +58,7 @@ doc/*.xml.pot
 doc/po/*/*.xml
 doc/po/*/*.xml.in
 doc/po/*/html
+doc/po/*/postgis-html.xsl
 doc/po/*/Makefile
 doc/po/*/xsl
 doc/po/*/*_comments.sql
@@ -179,6 +181,7 @@ raster/test/regress/rtpostgis.sql
 raster/test/regress/loader/TiledAutoSkipNoData.tif
 regression.diffs
 regession.out
+/tmp/
 regress/00-regress-install/
 regress/Makefile
 regress/core/Makefile
