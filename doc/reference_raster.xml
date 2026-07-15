@@ -9386,35 +9386,103 @@ CROSS JOIN LATERAL (VALUES
 
                 <refsection>
                     <title>Examples</title>
-                    <para>This self-contained example paints a simple apple shape into three raster bands. It compares the original RGB raster with the equivalent grayscale results produced by both function variants.</para>
+                    <para>This self-contained example paints an apple with
+                    gradients and highlights into three raster bands. It
+                    compares the original RGB raster with the equivalent
+                    grayscale results produced by both function variants.</para>
 
-                    <programlisting language="sql">WITH canvas AS (
-    SELECT ST_AddBand(ST_AddBand(ST_AddBand(
-        ST_MakeEmptyRaster(120, 90, 0, 90, 1, -1, 0, 0, 0),
-        '8BUI'::text, 245::double precision, 0::double precision),
-        '8BUI'::text, 245::double precision, 0::double precision),
-        '8BUI'::text, 245::double precision, 0::double precision) AS rast
-), shapes AS (
-    SELECT rast,
-        ST_Union(
-            ST_Buffer('POINT(48 43)'::geometry, 24),
-            ST_Buffer('POINT(72 43)'::geometry, 24)
-        ) AS fruit,
-        'POLYGON((62 68,89 79,74 59,62 68))'::geometry AS leaf,
-        ST_Buffer(
-            'LINESTRING(61 63,65 77)'::geometry,
-            2.5, 'endcap=flat'
-        ) AS stem
-    FROM canvas
-), painted AS (
-    SELECT ST_SetValue(ST_SetValue(ST_SetValue(
-           ST_SetValue(ST_SetValue(ST_SetValue(
-           ST_SetValue(ST_SetValue(ST_SetValue(
-               rast,
-               1, fruit, 220), 2, fruit, 45), 3, fruit, 30),
-               1, leaf, 50), 2, leaf, 150), 3, leaf, 50),
-               1, stem, 100), 2, stem, 65), 3, stem, 25) AS rast
-    FROM shapes
+                    <programlisting language="sql">WITH pixels AS (
+    SELECT
+        x,
+        y,
+        (((x - 48.0)^2 / (25.0^2) + (y - 54.0)^2 / (29.0^2) &lt; 1)
+         OR ((x - 72.0)^2 / (25.0^2) + (y - 54.0)^2 / (29.0^2) &lt; 1))
+         AND NOT ((x - 60.0)^2 / (8.0^2) + (y - 26.0)^2 / (5.0^2) &lt; 1) AS fruit,
+        ((x - 82.0) * 0.84 + (y - 28.0) * 0.54)^2 / (22.0^2)
+          + (-(x - 82.0) * 0.54 + (y - 28.0) * 0.84)^2 / (8.0^2) &lt; 1 AS leaf,
+        abs((x - 62.0) * 0.96 - (y - 29.0) * 0.28) &lt; 3
+          AND x BETWEEN 60 AND 69 AND y BETWEEN 21 AND 45 AS stem
+    FROM generate_series(1, 90) AS y
+    CROSS JOIN generate_series(1, 120) AS x
+), shaded AS (
+    SELECT
+        x,
+        y,
+        CASE
+            WHEN stem THEN 95 + y * 0.7 + (x % 3) * 8
+            WHEN leaf THEN 28 + (90 - x) * 0.5
+            WHEN fruit THEN LEAST(255, GREATEST(0,
+                150
+                + (85 - sqrt((x - 39.0)^2 + (y - 37.0)^2)) * 1.1
+                + CASE
+                    WHEN (x - 43.0)^2 / (10.0^2) + (y - 43.0)^2 / (7.0^2) &lt; 1
+                    THEN 35
+                    ELSE 0
+                END
+                - CASE
+                    WHEN (x - 77.0)^2 / (20.0^2) + (y - 67.0)^2 / (13.0^2) &lt; 1
+                    THEN 35
+                    ELSE 0
+                END
+                + ((x * 13 + y * 7) % 19 - 9)
+            ))
+            ELSE 245
+        END AS red,
+        CASE
+            WHEN stem THEN 50 + y * 0.35
+            WHEN leaf THEN LEAST(190, GREATEST(40,
+                105 + (95 - x) * 1.2 + (y - 20) * 1.5
+                + CASE
+                    WHEN (x - 76.0)^2 / (12.0^2) + (y - 24.0)^2 / (4.0^2) &lt; 1
+                    THEN 45
+                    ELSE 0
+                END
+            ))
+            WHEN fruit THEN LEAST(95, GREATEST(15,
+                24 + (68 - y) * 0.35
+                + CASE
+                    WHEN (x - 43.0)^2 / (10.0^2) + (y - 43.0)^2 / (7.0^2) &lt; 1
+                    THEN 30
+                    ELSE 0
+                END
+                + ((x * 5 + y * 11) % 13 - 6)
+            ))
+            ELSE 245
+        END AS green,
+        CASE
+            WHEN stem THEN 22 + (x % 4) * 3
+            WHEN leaf THEN 42 + (100 - x) * 0.4
+            WHEN fruit THEN LEAST(75, GREATEST(10,
+                18
+                + CASE
+                    WHEN (x - 43.0)^2 / (10.0^2) + (y - 43.0)^2 / (7.0^2) &lt; 1
+                    THEN 25
+                    ELSE 0
+                END
+                + ((x * 3 + y * 5) % 11 - 5)
+            ))
+            ELSE 245
+        END AS blue
+    FROM pixels
+), rows AS (
+    SELECT
+        y,
+        array_agg(red::double precision ORDER BY x) AS red_values,
+        array_agg(green::double precision ORDER BY x) AS green_values,
+        array_agg(blue::double precision ORDER BY x) AS blue_values
+    FROM shaded
+    GROUP BY y
+), source AS (
+    SELECT ST_SetValues(ST_SetValues(ST_SetValues(
+        ST_AddBand(ST_AddBand(ST_AddBand(
+            ST_MakeEmptyRaster(120, 90, 0, 90, 1, -1, 0, 0, 0),
+            '8BUI'::text, 245::double precision, 0::double precision),
+            '8BUI'::text, 245::double precision, 0::double precision),
+            '8BUI'::text, 245::double precision, 0::double precision),
+        1, 1, 1, array_agg(red_values ORDER BY y)::double precision[][]),
+        2, 1, 1, array_agg(green_values ORDER BY y)::double precision[][]),
+        3, 1, 1, array_agg(blue_values ORDER BY y)::double precision[][]) AS rast
+    FROM rows
 )
 SELECT ST_AsPNG(rast) AS "original RGB",
     ST_AsPNG(ST_Grayscale(rast)) AS "grayscale (variant 1)",
@@ -9423,7 +9491,7 @@ SELECT ST_AsPNG(rast) AS "original RGB",
         ROW(rast, 2)::rastbandarg,
         ROW(rast, 3)::rastbandarg
     ]::rastbandarg[])) AS "grayscale (variant 2)"
-FROM painted;</programlisting>
+FROM source;</programlisting>
 <screen role="visual-primary"> original RGB                | grayscale (variant 1)      | grayscale (variant 2)
 -----------------------------+----------------------------+----------------------------
  PNG image, 120 x 90 pixels | PNG image, 120 x 90 pixels | PNG image, 120 x 90 pixels
