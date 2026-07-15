@@ -12831,39 +12831,44 @@ WHERE rid = 2;</programlisting>
                     directions at the corners and the <literal>-1</literal>
                     aspect at the summit. The generated PNG shows the full
                     aspect surface without relying on a manual illustration.
-                    The colorized raster is enlarged with nearest-neighbor
-                    resampling so the discrete aspect cells remain readable.</para>
-                    <programlisting language="sql">WITH source AS (
+                    The generated source raster is large enough for the PNG to
+                    show the directional field around the summit.</para>
+                    <programlisting language="sql">WITH pixels AS (
+    SELECT
+        x,
+        y,
+        (20 - greatest(abs(x - 9), abs(y - 9)))::double precision AS value
+    FROM generate_series(1, 17) AS y
+    CROSS JOIN generate_series(1, 17) AS x
+), rows AS (
+    SELECT
+        y,
+        array_agg(value ORDER BY x) AS row_values
+    FROM pixels
+    GROUP BY y
+), source AS (
     SELECT ST_SetValues(
         ST_AddBand(
-            ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0),
+            ST_MakeEmptyRaster(17, 17, 0, 0, 1, -1, 0, 0, 0),
             1, '32BF', 0, -9999
         ),
-        1, 1, 1, ARRAY[
-            [1, 1, 1, 1, 1],
-            [1, 2, 2, 2, 1],
-            [1, 2, 3, 2, 1],
-            [1, 2, 2, 2, 1],
-            [1, 1, 1, 1, 1]
-        ]::double precision[][]
+        1, 1, 1,
+        array_agg(row_values ORDER BY y)::double precision[][]
     ) AS rast
+    FROM rows
 ), aspect AS (
     SELECT ST_Aspect(rast, 1, '32BF') AS rast
     FROM source
 )
 SELECT
     round(ST_Value(rast, 1, 1, 1)::numeric, 3) AS northwest_degrees,
-    round(ST_Value(rast, 1, 3, 3)::numeric, 3) AS summit_degrees,
-    round(ST_Value(rast, 1, 5, 5)::numeric, 3) AS southeast_degrees,
-    ST_AsPNG(ST_Resize(
-        ST_ColorMap(rast, 1, 'bluered'),
-        25, 25,
-        'NearestNeighbor'
-    )) AS image
+    round(ST_Value(rast, 1, 9, 9)::numeric, 3) AS summit_degrees,
+    round(ST_Value(rast, 1, 17, 17)::numeric, 3) AS southeast_degrees,
+    ST_AsPNG(ST_ColorMap(rast, 1, 'bluered')) AS image
 FROM aspect;</programlisting>
 <screen role="visual-primary"> northwest_degrees | summit_degrees | southeast_degrees | image
 -------------------+----------------+-------------------+------------------------
-           315.000 |         -1.000 |           135.000 | PNG image, 25 x 25 pixels</screen>
+           315.000 |         -1.000 |           135.000 | PNG image, 17 x 17 pixels</screen>
 
                     <para>Variant 2.</para>
 
