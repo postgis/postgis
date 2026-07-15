@@ -1726,13 +1726,11 @@ WITH raw AS (
     GeometryType(framed.geom) AS root_type,
     part.geom
   FROM framed
+  CROSS JOIN LATERAL generate_series(1, ST_NumGeometries(framed.geom)) AS part_num(n)
   CROSS JOIN LATERAL (
-    SELECT framed.geom
-    WHERE GeometryType(framed.geom) = 'CURVEPOLYGON'
-    UNION ALL
-    SELECT (ST_Dump(framed.geom)).geom
-    WHERE GeometryType(framed.geom) <> 'CURVEPOLYGON'
+    SELECT ST_GeometryN(framed.geom, part_num.n) AS geom
   ) AS part
+  WHERE NOT ST_IsEmpty(part.geom)
 ), translated_parts AS (
   SELECT ord, source, label, row_num, column_num, parts.frame, source_point_count,
     total_points, marker_scale, root_type,
@@ -1740,10 +1738,7 @@ WITH raw AS (
   FROM parts JOIN frame_bounds USING (frame)
 ), render_parts AS (
   SELECT *,
-    CASE WHEN ST_HasArc(geom) OR GeometryType(geom) IN ('CURVEPOLYGON', 'MULTISURFACE')
-      THEN ST_CurveToLine(geom)
-      ELSE geom
-    END AS render_geom
+    geom AS render_geom
   FROM translated_parts
 )
 SELECT json_build_object(

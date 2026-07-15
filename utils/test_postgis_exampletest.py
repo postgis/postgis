@@ -1098,12 +1098,14 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("'has_z'", queries[0])
         self.assertIn("'points_xyz'", queries[0])
         self.assertIn("CROSS JOIN LATERAL", queries[0])
-        self.assertIn("WHERE GeometryType(framed.geom) = 'CURVEPOLYGON'", queries[0])
-        self.assertIn("WHERE GeometryType(framed.geom) <> 'CURVEPOLYGON'", queries[0])
-        self.assertIn(
-            "CASE WHEN ST_HasArc(geom) OR GeometryType(geom) IN ('CURVEPOLYGON', 'MULTISURFACE')",
-            queries[0],
-        )
+        self.assertIn("generate_series(1, ST_NumGeometries(framed.geom))", queries[0])
+        self.assertIn("ST_GeometryN(framed.geom, part_num.n) AS geom", queries[0])
+        self.assertIn("WHERE NOT ST_IsEmpty(part.geom)", queries[0])
+        self.assertNotIn("CROSS JOIN LATERAL ST_Dump", queries[0])
+        self.assertNotIn("WHERE GeometryType(framed.geom) = 'CURVEPOLYGON'", queries[0])
+        self.assertNotIn("WHERE GeometryType(framed.geom) <> 'CURVEPOLYGON'", queries[0])
+        self.assertIn("geom AS render_geom", queries[0])
+        self.assertNotIn("ST_HasArc(geom) OR GeometryType(geom) IN ('CURVEPOLYGON', 'MULTISURFACE')", queries[0])
         self.assertIn("ST_GeomFromEWKB(decode(hexwkb, 'hex'))", queries[0])
         self.assertIn("ELSE ST_GeomFromEWKT(wkt)", queries[0])
         self.assertIn("ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)", queries[0])
