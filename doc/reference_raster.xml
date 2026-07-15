@@ -11616,25 +11616,31 @@ SELECT ST_MapAlgebraFctNgb(
 
                     <para>A self-contained neighborhood average. The source
                     raster has a sharp central square, while the result spreads
-                    those values across neighboring pixels.</para>
+                    those values across neighboring pixels. The source uses a
+                    non-NODATA background so <varname>nodatamode</varname>
+                    <literal>ignore</literal> averages background values with
+                    the square values, instead of treating the background as
+                    absent.</para>
                     <programlisting language="sql">WITH source AS (
     SELECT ST_SetValues(
         ST_AddBand(
-            ST_MakeEmptyRaster(8, 8, 0, 8, 1, -1, 0, 0, 0),
-            1, '8BUI', 0, 0
+            ST_MakeEmptyRaster(16, 16, 0, 16, 1, -1, 0, 0, 0),
+            1, '8BUI', 25, NULL
         ),
-        1, 3, 3,
+        1, 6, 6,
         ARRAY[
-            [240, 240, 240, 240],
-            [240, 240, 240, 240],
-            [240, 240, 240, 240],
-            [240, 240, 240, 240]
+            [240, 240, 240, 240, 240, 240],
+            [240, 240, 240, 240, 240, 240],
+            [240, 240, 240, 240, 240, 240],
+            [240, 240, 240, 240, 240, 240],
+            [240, 240, 240, 240, 240, 240],
+            [240, 240, 240, 240, 240, 240]
         ]::double precision[][]
     ) AS rast
 ), variants AS (
     SELECT 'source' AS title, rast AS rendered FROM source
     UNION ALL
-    SELECT 'averaged', ST_MapAlgebraFctNgb(
+    SELECT 'averaged', ST_SetBandNoDataValue(ST_MapAlgebraFctNgb(
         rast,
         1,
         '8BUI',
@@ -11643,15 +11649,15 @@ SELECT ST_MapAlgebraFctNgb(
         'ST_Mean4ma(float[][],text,text[])'::regprocedure,
         'ignore',
         NULL
-    ) FROM source
+    ), NULL) FROM source
 )
 SELECT title, ST_AsPNG(rendered) AS image
 FROM variants
 ORDER BY title DESC;</programlisting>
                     <screen role="visual-primary"> title    | image
 ----------+-------------------------
- source   | PNG image, 8 x 8 pixels
- averaged | PNG image, 8 x 8 pixels</screen>
+ source   | PNG image, 16 x 16 pixels
+ averaged | PNG image, 16 x 16 pixels</screen>
                 </refsection>
 
                 <!-- Optionally add a "See Also" section -->
