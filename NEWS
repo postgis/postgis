@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - [topology] Correct the CreateTopoGeom INSERT example (Darafei Praliaskouski)
   - [raster] Correct the documented ST_BandIsNoData forceChecking default (Darafei Praliaskouski)
   - [raster] Allocate the right size for GDAL option strings (Maksim Korotkov)
   - [topology] Initialize the edge linkage when snapping an edge to a node (Darafei Praliaskouski)
