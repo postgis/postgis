@@ -1366,10 +1366,10 @@ TRUE);</programlisting>
               (60 140,50 90,90 140,60 140))')
 )
 SELECT round(radius::numeric, 3) AS radius,
-       ST_AsText(center, 0) AS center,
-       ST_AsText(nearest, 0) AS nearest,
-       ST_AsText(ST_Buffer(center, radius), 0) AS circle,
-       ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line
+       ST_SnapToGrid(center, 1) AS center,
+       ST_SnapToGrid(nearest, 1) AS nearest,
+       ST_SnapToGrid(ST_Buffer(center, radius), 1) AS circle,
+       ST_SnapToGrid(ST_MakeLine(center, nearest), 1) AS radius_line
 FROM mic;</programlisting>
 <screen role="visual-overlay visual-hide-output-area-vertices">-[ RECORD 1 ]-----
 radius      | 45.189
@@ -1384,10 +1384,10 @@ radius_line | LINESTRING(97 76,62 105)</screen>
     'MULTILINESTRING((100 40,10 150),(10 160,100 150),(190 150,80 40))')
 )
 SELECT round(radius::numeric, 3) AS radius,
-       ST_AsText(center, 0) AS center,
-       ST_AsText(nearest, 0) AS nearest,
-       ST_AsText(ST_Buffer(center, radius), 0) AS circle,
-       ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line
+       ST_SnapToGrid(center, 1) AS center,
+       ST_SnapToGrid(nearest, 1) AS nearest,
+       ST_SnapToGrid(ST_Buffer(center, radius), 1) AS circle,
+       ST_SnapToGrid(ST_MakeLine(center, nearest), 1) AS radius_line
 FROM mic;</programlisting>
 <screen role="visual-overlay visual-hide-output-area-vertices">-[ RECORD 1 ]-----
 radius      | 39.924
@@ -1453,10 +1453,10 @@ circle AS (
   CROSS JOIN LATERAL ST_LargestEmptyCircle(obstacles.geom) AS result
 )
 SELECT round(radius::numeric, 6) AS radius,
-       ST_AsText(center, 0) AS center,
-       ST_AsText(nearest, 0) AS nearest,
-       ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line,
-       ST_AsText(ST_Buffer(center, radius), 0) AS circle
+       ST_SnapToGrid(center, 1) AS center,
+       ST_SnapToGrid(nearest, 1) AS nearest,
+       ST_SnapToGrid(ST_MakeLine(center, nearest), 1) AS radius_line,
+       ST_SnapToGrid(ST_Buffer(center, radius), 1) AS circle
 FROM circle;</programlisting>
 <screen role="visual-overlay visual-hide-output-area-vertices">-[ RECORD 1 ]-----
 radius      | 39.260545
@@ -1479,10 +1479,10 @@ circle AS (
   ) AS result
 )
 SELECT round(radius::numeric, 6) AS radius,
-       ST_AsText(center, 0) AS center,
-       ST_AsText(nearest, 0) AS nearest,
-       ST_AsText(ST_MakeLine(center, nearest), 0) AS radius_line,
-       ST_AsText(ST_Buffer(center, radius), 0) AS circle
+       ST_SnapToGrid(center, 1) AS center,
+       ST_SnapToGrid(nearest, 1) AS nearest,
+       ST_SnapToGrid(ST_MakeLine(center, nearest), 1) AS radius_line,
+       ST_SnapToGrid(ST_Buffer(center, radius), 1) AS circle
 FROM circle;</programlisting>
 <screen role="visual-overlay visual-hide-output-area-vertices">-[ RECORD 1 ]-----
 radius      | 19.903876
