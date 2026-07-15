@@ -2497,9 +2497,10 @@ SELECT json_build_object(
             parts_by_ord.setdefault(part["ord"], []).append(part)
         for ordinal, parts in sorted(parts_by_ord.items()):
             if any(part.get("is_3d_face") for part in parts):
-                # Paint the farthest faces first so opaque near faces hide them.
+                # Paint larger projected-depth faces first so nearer faces hide
+                # the far side of the solid.
                 parts.sort(
-                    key=lambda part: (float(part.get("depth", 0)), part.get("svg", "")),
+                    key=lambda part: (-float(part.get("depth", 0)), part.get("svg", "")),
                 )
             source = parts[0]["source"]
             frame_id = str(parts[0].get("frame", frames[0]["id"]))

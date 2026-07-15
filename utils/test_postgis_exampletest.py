@@ -1165,7 +1165,7 @@ class VisualExampleTest(unittest.TestCase):
         self.assertEqual(svg, self.tester.visual_svg("solid-3d", payload))
         self.assertIn(">3D view</text>", svg)
         depths = [float(value) for value in re.findall(r'data-postgis-depth="([^"]+)"', svg)]
-        self.assertEqual(sorted(depths), depths)
+        self.assertEqual(sorted(depths, reverse=True), depths)
         fills = re.findall(
             r'data-postgis-face="[12]"[^>]+fill="(#[0-9a-f]{6})"', svg
         )
