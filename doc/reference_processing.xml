@@ -2134,8 +2134,15 @@ FROM (SELECT ST_Polygonize(geom_4269) AS polycoll
 <screen role="visual-primary text-primary">LINESTRING (10 10, 20 30, 40 40)</screen>
 
 <para>Precision reduction splits polygons if needed to ensure validity</para>
-<programlisting>SELECT ST_ReducePrecision('POLYGON ((10 10,60 60.1,70 30,40 40,50 10,10 10))', 10);</programlisting>
-<screen role="visual-primary text-primary">MULTIPOLYGON(((40 40,50 10,10 10,40 40)),((60 60,70 30,40 40,60 60)))</screen>
+<programlisting language="sql">WITH data(geom) AS (
+  VALUES ('POLYGON ((10 10,60 60.1,70 30,40 40,50 10,10 10))'::geometry)
+)
+SELECT geom AS input,
+       ST_ReducePrecision(geom, 10) AS reduced
+FROM data;</programlisting>
+<screen role="visual-primary text-primary visual-output-only visual-separate-output psql-expanded">-[ RECORD 1 ]------------------------------------------------
+input   | POLYGON((10 10,60 60.1,70 30,40 40,50 10,10 10))
+reduced | MULTIPOLYGON(((10 10,40 40,50 10,10 10)),((40 40,60 60,70 30,40 40)))</screen>
       </refsection>
 
       <refsection>
