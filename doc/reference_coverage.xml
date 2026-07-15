@@ -340,12 +340,36 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
     <refsection>
       <title>Examples</title>
       <para>This example returns all unique edges of a coverage.</para>
-      <programlisting role="requires-external-state">SELECT ST_CoverageEdges('GEOMETRYCOLLECTION(POLYGON((0 0,10 0,10 10,0 10,0 0)),POLYGON((10 0,20 0,20 10,10 10,10 0)))');</programlisting>
-<screen>MULTILINESTRING((0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 10 10), (10 10, 0 10), (0 10, 0 0), (10 0, 10 10))</screen>
+      <programlisting language="sql">WITH coverage(geom) AS (
+  VALUES (
+    'GEOMETRYCOLLECTION(
+      POLYGON((0 0,10 0,10 10,0 10,0 0)),
+      POLYGON((10 0,20 0,20 10,10 10,10 0))
+    )'::geometry
+  )
+)
+SELECT ST_AsText(geom) AS input_coverage,
+       ST_AsText(ST_CoverageEdges(geom)) AS all_edges
+FROM coverage;</programlisting>
+<screen role="visual-primary text-primary visual-output-only visual-overlay psql-expanded docbook-qa-ignore-wide-lines">-[ RECORD 1 ]--+----------------------------------------------------------------------------------------------
+input_coverage | GEOMETRYCOLLECTION(POLYGON((0 0,10 0,10 10,0 10,0 0)),POLYGON((10 0,20 0,20 10,10 10,10 0)))
+all_edges      | MULTILINESTRING((10 0,10 10),(10 10,0 10,0 0,10 0),(10 0,20 0,20 10,10 10))</screen>
 
       <para>This example returns only the interior shared edges of a coverage.</para>
-      <programlisting role="requires-external-state">SELECT ST_CoverageEdges('GEOMETRYCOLLECTION(POLYGON((0 0,10 0,10 10,0 10,0 0)),POLYGON((10 0,20 0,20 10,10 10,10 0)))', 2);</programlisting>
-<screen>MULTILINESTRING((10 0, 10 10))</screen>
+      <programlisting language="sql">WITH coverage(geom) AS (
+  VALUES (
+    'GEOMETRYCOLLECTION(
+      POLYGON((0 0,10 0,10 10,0 10,0 0)),
+      POLYGON((10 0,20 0,20 10,10 10,10 0))
+    )'::geometry
+  )
+)
+SELECT ST_AsText(geom) AS input_coverage,
+       ST_AsText(ST_CoverageEdges(geom, 2)) AS shared_edges
+FROM coverage;</programlisting>
+<screen role="visual-primary text-primary visual-output-only visual-overlay psql-expanded">-[ RECORD 1 ]--+----------------------------------------------------------------------------------------------
+input_coverage | GEOMETRYCOLLECTION(POLYGON((0 0,10 0,10 10,0 10,0 0)),POLYGON((10 0,20 0,20 10,10 10,10 0)))
+shared_edges   | MULTILINESTRING((10 0,10 10))</screen>
     </refsection>
 
     <refsection>
