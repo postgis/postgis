@@ -2594,8 +2594,12 @@ SELECT json_build_object(
                                 zip(direction_path, direction_path[1:] + direction_path[:1])
                             ):
                                 # Two arrows per ring are enough to make winding visible
-                                # without turning small polygons into hedgehogs.
-                                if segment_index % max(1, len(direction_path) // 2) != 0:
+                                # without turning small polygons into hedgehogs.  Offset
+                                # the first arrow from vertices so it does not disappear
+                                # under vertex markers on simple rectangles.
+                                arrow_step = max(1, len(direction_path) // 2)
+                                arrow_offset = 1 if arrow_step > 1 else 0
+                                if segment_index % arrow_step != arrow_offset:
                                     continue
                                 start_x, start_y = [float(value) for value in start]
                                 end_x, end_y = [float(value) for value in end]
@@ -2604,22 +2608,30 @@ SELECT json_build_object(
                                 length = math.hypot(delta_x, delta_y)
                                 if length <= 0:
                                     continue
-                                arrow_length = (9 if source == "Code" else 8) / scale
-                                arrow_half_width = arrow_length * 0.42
+                                arrow_length = (15 if source == "Code" else 13) / scale
+                                arrow_half_width = arrow_length * 0.5
                                 unit_x = delta_x / length
                                 unit_y = delta_y / length
-                                tip_x = start_x + delta_x * 0.55
-                                tip_y = start_y + delta_y * 0.55
+                                tip_x = start_x + delta_x * 0.5
+                                tip_y = start_y + delta_y * 0.5
                                 base_x = tip_x - unit_x * arrow_length
                                 base_y = tip_y - unit_y * arrow_length
                                 perpendicular_x = -unit_y * arrow_half_width
                                 perpendicular_y = unit_x * arrow_half_width
+                                arrow_path = (
+                                    f'M {tip_x:.12g} {tip_y:.12g} '
+                                    f'L {base_x + perpendicular_x:.12g} {base_y + perpendicular_y:.12g} '
+                                    f'L {base_x - perpendicular_x:.12g} {base_y - perpendicular_y:.12g} Z'
+                                )
+                                shapes.append(
+                                    f'<path class="direction-arrow-halo" '
+                                    f'd="{arrow_path}" fill="white" stroke="white" '
+                                    f'stroke-width="{2.2 / scale:.12g}"/>'
+                                )
                                 shapes.append(
                                     f'<path class="direction-arrow ring-direction-arrow" '
-                                    f'd="M {tip_x:.12g} {tip_y:.12g} '
-                                    f'L {base_x + perpendicular_x:.12g} {base_y + perpendicular_y:.12g} '
-                                    f'L {base_x - perpendicular_x:.12g} {base_y - perpendicular_y:.12g} Z" '
-                                    f'fill="{part_color}" stroke="white" stroke-width="{0.75 / scale:.12g}"/>'
+                                    f'd="{arrow_path}" fill="{part_color}" stroke="{part_color}" '
+                                    f'stroke-width="{0.35 / scale:.12g}"/>'
                                 )
                     show_vertices = (
                         source == "Code"
