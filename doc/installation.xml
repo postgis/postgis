@@ -63,16 +63,16 @@ in each individual database you want to use it in.
     For GEOS functionality, when you install PostgreSQL you may need to
     explicitly link PostgreSQL against the standard C++ library:
     </para>
+  </note>
 
-    <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
+  <programlisting language="bash">LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
 
-    <para>
+  <para>
     This is a workaround for bogus C++ exceptions interaction with older
     development tools. If you experience weird problems (backend
     unexpectedly closed or similar things) try this trick. This will require
     recompiling your PostgreSQL from scratch, of course.
-    </para>
-  </note>
+  </para>
 
   <para>
     The following steps outline the configuration and compilation of the
@@ -533,10 +533,9 @@ sh autogen.sh
       </link>
       , the first step is really to run the script
     </para>
+    </note>
 
-    <para>
-      <command>./autogen.sh</command>
-    </para>
+    <programlisting language="bash">./autogen.sh</programlisting>
 
     <para>
       This script will generate the <command>configure</command> script that
@@ -548,7 +547,6 @@ sh autogen.sh
       <command>./autogen.sh</command> is not necessary as
       <command>configure</command> has already been generated.
     </para>
-    </note>
   </section>
 
   <section>

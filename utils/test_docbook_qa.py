@@ -205,6 +205,16 @@ class DocBookSourceLintTest(unittest.TestCase):
         self.assertInfoCategory('<refentry xml:id="f"><programlisting>SELECT\t1;</programlisting></refentry>', "tab-in-verbatim")
         self.assertCategories('<refentry xml:id="f"><screen>1    2</screen></refentry>', set())
 
+    def test_admonition_must_not_contain_code_or_output_blocks(self):
+        self.assertCategories(
+            '<note><para>Run this command:</para><programlisting>make check</programlisting></note>',
+            {"admonition-contains-verbatim"},
+        )
+        self.assertCategories(
+            '<note><para>Run this command:</para></note><programlisting>make check</programlisting>',
+            set(),
+        )
+
     def test_wide_verbatim_line_violation_and_recommendation(self):
         long_sql = (
             "SELECT col_a, col_b, col_c, col_d, col_e, col_f, col_g, col_h, col_i, col_j, col_k, "

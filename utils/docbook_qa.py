@@ -485,6 +485,12 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
                 "info", "stacked-admonitions", source_location(path, sibling),
                 f"adjacent {local_name(node)} and {local_name(sibling)} admonitions should be consolidated or moved into prose",
             ))
+        verbatim = next(named_descendants(node, "programlisting", "screen"), None)
+        if verbatim is not None:
+            findings.append(Finding(
+                "error", "admonition-contains-verbatim", source_location(path, verbatim),
+                f"{local_name(node)} contains a {local_name(verbatim)} block; move code and output blocks next to the admonition",
+            ))
         if version := ANCIENT_VERSION_RE.search(block_text(node)):
             findings.append(Finding(
                 "info", "ancient-version-note", source_location(path, node),
