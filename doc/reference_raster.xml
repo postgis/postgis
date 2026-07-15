@@ -235,16 +235,7 @@ VALUES (1,
                         <row>
                             <entry><varname>reclassexpr</varname></entry>
                             <entry><type>text</type></entry>
-                            <entry>
-                                <para>Range expression consisting of comma-delimited <literal>range:map_range</literal> mappings that define how old band values map to new band values. The range delimiters mean: <literal>(</literal> greater than, <literal>)</literal> less than, <literal>]</literal> less than or equal, and <literal>[</literal> greater than or equal.</para>
-                                <itemizedlist>
-                                    <listitem><para><literal>[a-b]</literal> means <literal>a &lt;= x &lt;= b</literal>.</para></listitem>
-                                    <listitem><para><literal>(a-b]</literal> means <literal>a &lt; x &lt;= b</literal>.</para></listitem>
-                                    <listitem><para><literal>[a-b)</literal> means <literal>a &lt;= x &lt; b</literal>.</para></listitem>
-                                    <listitem><para><literal>(a-b)</literal> means <literal>a &lt; x &lt; b</literal>.</para></listitem>
-                                </itemizedlist>
-                                <para>Opening-parenthesis notation is optional, so <literal>a-b</literal> means the same as <literal>(a-b)</literal>.</para>
-                            </entry>
+                            <entry>Comma-delimited <literal>range:map_range</literal> mappings that define how old band values map to new band values.</entry>
                         </row>
                         <row>
                             <entry><varname>pixeltype</varname></entry>
@@ -259,6 +250,14 @@ VALUES (1,
                     </tbody>
                 </tgroup>
             </informaltable>
+            <para>The <varname>reclassexpr</varname> range delimiters mean: <literal>(</literal> greater than, <literal>)</literal> less than, <literal>]</literal> less than or equal, and <literal>[</literal> greater than or equal.</para>
+            <itemizedlist>
+                <listitem><para><literal>[a-b]</literal> means <literal>a &lt;= x &lt;= b</literal>.</para></listitem>
+                <listitem><para><literal>(a-b]</literal> means <literal>a &lt; x &lt;= b</literal>.</para></listitem>
+                <listitem><para><literal>[a-b)</literal> means <literal>a &lt;= x &lt; b</literal>.</para></listitem>
+                <listitem><para><literal>(a-b)</literal> means <literal>a &lt; x &lt; b</literal>.</para></listitem>
+            </itemizedlist>
+            <para>Opening-parenthesis notation is optional, so <literal>a-b</literal> means the same as <literal>(a-b)</literal>.</para>
           </refsection>
           <refsection>
               <title>Examples</title>
