@@ -1171,6 +1171,12 @@ class VisualExampleTest(unittest.TestCase):
         )
         self.assertEqual(2, len(fills))
         self.assertEqual(2, len(set(fills)))
+        face_colors = re.findall(
+            r'data-postgis-face="[12]"[^>]+stroke="(#[0-9a-f]{6})" fill="(#[0-9a-f]{6})"',
+            svg,
+        )
+        self.assertEqual(2, len(face_colors))
+        self.assertTrue(all(stroke != fill for stroke, fill in face_colors))
         self.assertEqual(2, svg.count('fill-opacity="1"'))
         self.assertNotIn('fill-opacity="0.82"', svg)
         self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)

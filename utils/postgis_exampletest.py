@@ -2552,8 +2552,14 @@ SELECT json_build_object(
                         "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
                     } else "line"
                     fill = color if dimension_class == "area" else "none"
+                    stroke_color = part_color
                     if part.get("is_3d_face"):
                         part_color = self.shade_color(part_color, float(part["shade"]))
+                        # 3D solids need visible face boundaries to read as
+                        # faceted surfaces.  Using the fill color as the stroke
+                        # makes rounded polyhedral buffers collapse visually
+                        # into a flat disk.
+                        stroke_color = self.shade_color(part_color, 0.68)
                     stroke_pixels = (
                         5 if source == "Code" and dimension_class == "line"
                         else 1.2 if part.get("is_3d_face")
@@ -2578,7 +2584,7 @@ SELECT json_build_object(
                     )
                     shapes.append(
                         f'<path class="{dimension_class}"{face_attributes} d="{svg_data}" '
-                        f'stroke="{part_color}" fill="{part_color if dimension_class == "area" else fill}" '
+                        f'stroke="{stroke_color}" fill="{part_color if dimension_class == "area" else fill}" '
                         f'fill-opacity="{1 if part.get("is_3d_face") else 0.24 if dimension_class == "area" else 0}" stroke-opacity="1" '
                         'fill-rule="evenodd" '
                         f'stroke-width="{stroke_width:.12g}" '
