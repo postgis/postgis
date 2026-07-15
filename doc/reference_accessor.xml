@@ -3328,12 +3328,10 @@ ST_Summary('SRID=4326;POLYGON((0 0 1,1 1 2,1 2 3,1 1 1,0 0 1))'::geometry) As ge
   <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_HasZ('POINT(1 2 3)');
-true
-</programlisting>
-    <programlisting>SELECT ST_HasZ('LINESTRING(0 0,1 1)');
-false
-</programlisting>
+    <programlisting language="sql">SELECT ST_HasZ('POINT(1 2 3)');</programlisting>
+    <screen role="text-primary">t</screen>
+    <programlisting language="sql">SELECT ST_HasZ('LINESTRING(0 0,1 1)');</programlisting>
+    <screen role="text-primary">f</screen>
   </refsection>
 
   <refsection>
@@ -3375,12 +3373,10 @@ false
   <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_HasM('POINTM(1 2 3)');
-true
-</programlisting>
-    <programlisting>SELECT ST_HasM('LINESTRING(0 0,1 1)');
-false
-</programlisting>
+    <programlisting language="sql">SELECT ST_HasM('POINTM(1 2 3)');</programlisting>
+    <screen role="text-primary">t</screen>
+    <programlisting language="sql">SELECT ST_HasM('LINESTRING(0 0,1 1)');</programlisting>
+    <screen role="text-primary">f</screen>
   </refsection>
 
   <refsection>
