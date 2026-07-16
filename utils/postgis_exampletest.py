@@ -114,6 +114,7 @@ VISUAL_OUTPUT_ONLY_ROLE = "visual-output-only"
 VISUAL_HIDE_OUTPUT_AREA_VERTICES_ROLE = "visual-hide-output-area-vertices"
 VISUAL_SEPARATE_OUTPUT_ROLE = "visual-separate-output"
 VISUAL_ROW_PANELS_ROLE = "visual-row-panels"
+VISUAL_MATRIX_3X3_ROLE = "visual-matrix-3x3"
 VISUAL_OVERLAY_ROLE = "visual-overlay"
 SVG_PALETTES = {
     "Code": ("#2878b8", "#59a4d8", "#0f5f9c"),
@@ -1210,6 +1211,7 @@ class ExampleTester:
                 VISUAL_DIRECTION_ROLE,
                 VISUAL_SEPARATE_OUTPUT_ROLE,
                 VISUAL_ROW_PANELS_ROLE,
+                VISUAL_MATRIX_3X3_ROLE,
                 VISUAL_OVERLAY_ROLE,
             )
         )
@@ -1242,6 +1244,7 @@ class ExampleTester:
         visual_row_panels = screen is not None and self.has_role(
             screen, VISUAL_ROW_PANELS_ROLE
         )
+        visual_matrix_3x3 = screen is not None and self.has_role(screen, VISUAL_MATRIX_3X3_ROLE)
         visual_overlay = screen is not None and self.has_role(screen, VISUAL_OVERLAY_ROLE)
         visual_direction = screen is not None and self.has_role(screen, VISUAL_DIRECTION_ROLE)
         visual_output_only = screen is not None and self.has_role(screen, VISUAL_OUTPUT_ONLY_ROLE)
@@ -1278,6 +1281,7 @@ class ExampleTester:
             "visual_output_only": visual_output_only,
             "visual_separate_output": visual_separate_output,
             "visual_row_panels": visual_row_panels,
+            "visual_matrix_3x3": visual_matrix_3x3,
             "visual_overlay": visual_overlay,
             "geometry_output_precision": self.geometry_output_precision(screen),
             "visual_refentry": refentry,
@@ -2262,6 +2266,7 @@ SELECT json_build_object(
                 hide_output_area_vertices=example.get(
                     "visual_hide_output_area_vertices", False
                 ),
+                matrix_3x3=example.get("visual_matrix_3x3", False),
             ),
         }
 
@@ -2493,6 +2498,7 @@ SELECT json_build_object(
     def visual_svg(
         self, visual_id, payload, show_direction=False,
         hide_output_area_vertices=False,
+        matrix_3x3=False,
     ):
         if any(
             part.get("has_z") and part.get("points_xyz")
@@ -2511,17 +2517,56 @@ SELECT json_build_object(
         show_frame_labels = frame_count > 1 or any(
             frame.get("three_dimensional") for frame in frames
         )
-        if frame_count == 1:
+        frame_rows = None
+        if matrix_3x3 and frame_count > 9:
+            sources_by_frame = {}
+            for part in payload.get("parts") or []:
+                frame_id = str(part.get("frame", frames[0]["id"]))
+                sources_by_frame.setdefault(frame_id, set()).add(part.get("source"))
+            code_frame_ids = [
+                str(frame["id"])
+                for frame in frames
+                if "Code" in sources_by_frame.get(str(frame["id"]), set())
+            ]
+            output_frame_ids = [
+                str(frame["id"])
+                for frame in frames
+                if "Output" in sources_by_frame.get(str(frame["id"]), set())
+            ]
+            if len(output_frame_ids) == 9:
+                frame_rows = []
+                for index in range(0, len(code_frame_ids), 3):
+                    frame_rows.append(code_frame_ids[index:index + 3])
+                frame_rows.extend([
+                    output_frame_ids[index:index + 3]
+                    for index in range(0, len(output_frame_ids), 3)
+                ])
+        if frame_rows:
+            panel_columns = max(len(row) for row in frame_rows)
+            panel_rows = len(frame_rows)
+            frame_positions = {
+                frame_id: (row_index, column_index, len(row))
+                for row_index, row in enumerate(frame_rows)
+                for column_index, frame_id in enumerate(row)
+            }
+        elif frame_count == 1:
             panel_columns = 1
+            panel_rows = 1
+            frame_positions = None
         elif frame_count == 3:
             panel_columns = 3
+            panel_rows = 1
+            frame_positions = None
         elif frame_count == 9:
             panel_columns = 3
+            panel_rows = 3
+            frame_positions = None
         else:
             panel_columns = min(2, frame_count)
-        panel_rows = math.ceil(frame_count / panel_columns)
+            panel_rows = math.ceil(frame_count / panel_columns)
+            frame_positions = None
         panel_gap = 20 if frame_count > 1 else 0
-        svg_width = 900 if frame_count == 3 else 600
+        svg_width = 900 if frame_count == 3 or frame_rows else 600
         plot_width = svg_width - 40
         panel_width = (plot_width - panel_gap * (panel_columns - 1)) / panel_columns
         plot_top = 30 if show_frame_labels else 12
@@ -2549,9 +2594,12 @@ SELECT json_build_object(
             max_x += width * 0.08
             min_y -= height * 0.08
             max_y += height * 0.08
-            panel_row = frame_index // panel_columns
-            panel_column = frame_index % panel_columns
-            panels_in_row = min(panel_columns, frame_count - panel_row * panel_columns)
+            if frame_positions and frame_id in frame_positions:
+                panel_row, panel_column, panels_in_row = frame_positions[frame_id]
+            else:
+                panel_row = frame_index // panel_columns
+                panel_column = frame_index % panel_columns
+                panels_in_row = min(panel_columns, frame_count - panel_row * panel_columns)
             row_width = panels_in_row * panel_width + (panels_in_row - 1) * panel_gap
             row_left = 20 + (plot_width - row_width) / 2
             panel_left = row_left + panel_column * (panel_width + panel_gap)

@@ -2,6 +2,7 @@
 
 import contextlib
 import base64
+from collections import Counter
 import hashlib
 import io
 import json
@@ -941,6 +942,43 @@ class VisualExampleTest(unittest.TestCase):
             svg.index('data-postgis-geometry-id="buffer-example-output-1"'),
             svg.index('data-postgis-geometry-id="buffer-example-code-1"'),
         )
+
+    def test_svg_matrix_3x3_keeps_context_separate_from_output_grid(self):
+        frames = [
+            {"id": frame_id, "bounds": [0, 0, 1, 1]}
+            for frame_id in ["a", "b"] + [f"cell-{index}" for index in range(9)]
+        ]
+        parts = [
+            {"ord": 1, "source": "Code", "label": "a", "frame": "a", "type": "POINT", "x": 0, "y": 0},
+            {"ord": 2, "source": "Code", "label": "b", "frame": "b", "type": "POINT", "x": 1, "y": 1},
+        ]
+        parts.extend(
+            {
+                "ord": index + 3,
+                "source": "Output",
+                "label": f"cell {index}",
+                "frame": f"cell-{index}",
+                "type": "POINT",
+                "x": 0.5,
+                "y": 0.5,
+            }
+            for index in range(9)
+        )
+
+        svg = self.tester.visual_svg(
+            "matrix-cells",
+            {"bounds": [0, 0, 1, 1], "frames": frames, "parts": parts},
+            matrix_3x3=True,
+        )
+
+        backgrounds = re.findall(
+            r'<rect class="plot-background" x="([^"]+)" y="([^"]+)"',
+            svg,
+        )
+        self.assertEqual(11, len(backgrounds))
+        row_counts = Counter(y for _x, y in backgrounds)
+        self.assertEqual([2, 3, 3, 3], sorted(row_counts.values()))
+        self.assertIn('viewBox="0 0 900 ', svg)
 
     def test_visual_candidate_includes_spatial_context_but_skips_trivial_points(self):
         self.assertIsNone(self.tester.visual_candidate("SELECT 'POINT(1 2)'", [["1"]]))

@@ -231,7 +231,7 @@ class DocBookSourceLintTest(unittest.TestCase):
         )
         findings = self.source_findings(f'<refentry xml:id="f"><screen>{table_row}</screen></refentry>')
         self.assertEqual({"wide-output-table"}, {finding.category for finding in findings})
-        self.assertEqual({"warning"}, {finding.severity for finding in findings})
+        self.assertEqual({"info"}, {finding.severity for finding in findings})
         self.assertIn("2 wide line(s)", findings[0].message)
         self.assertTrue(any("psql expanded output" in finding.message for finding in findings))
 
@@ -272,12 +272,13 @@ class DocBookSourceLintTest(unittest.TestCase):
         self.assertCategories(f'<refentry xml:id="f"><screen>{table_row}</screen></refentry>', set())
 
     def test_misaligned_psql_table_violation_and_unicode_clean_case(self):
-        self.assertCategories(
+        findings = self.source_findings(
             '<refentry xml:id="f"><screen>            left | right\n'
             '-----+------\n'
             '1 |      2</screen></refentry>',
-            {"misaligned-psql-table"},
         )
+        self.assertEqual({"misaligned-psql-table"}, {finding.category for finding in findings})
+        self.assertEqual({"info"}, {finding.severity for finding in findings})
         self.assertCategories(
             '<refentry xml:id="f"><screen>left │ right\n'
             '─────┼──────\n'
@@ -449,6 +450,19 @@ class DocBookSourceLintTest(unittest.TestCase):
         with contextlib.redirect_stdout(output):
             self.assertEqual(0, main(["lint-source", "--fail-on", "warning", "--max-warnings", "0", str(path)]))
         self.assertIn("info=1", output.getvalue())
+        self.assertNotIn("warning=", output.getvalue())
+
+    def test_table_polish_findings_do_not_fail_warning_gate(self):
+        table = (
+            "left | right | a_very_long_column_name_that_should_be_expanded_in_polished_docs\n"
+            "-----+-------+--------------------------------------------------------------------------\n"
+            "1 |      2 | " + "x" * 90
+        )
+        path = write_tmp(".xml", DOCBOOK_OPEN + f'<refentry xml:id="f"><screen>{table}</screen></refentry>' + DOCBOOK_CLOSE)
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(0, main(["lint-source", "--fail-on", "warning", "--max-warnings", "0", str(path)]))
+        self.assertIn("info=", output.getvalue())
         self.assertNotIn("warning=", output.getvalue())
 
     def test_sql_token_data_drives_all_source_detectors(self):

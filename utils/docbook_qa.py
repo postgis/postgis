@@ -676,7 +676,7 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
             ))
         if has_misaligned_psql_table(text):
             findings.append(Finding(
-                "warning", "misaligned-psql-table", source_location(path, node),
+                "info", "misaligned-psql-table", source_location(path, node),
                 "screen contains a psql-style table whose column separators do not line up; "
                 "align header, separator, and data rows before rendering",
             ))
@@ -689,7 +689,7 @@ def add_source_findings(root: ET.Element, path: Path) -> list[Finding]:
         if len(long_lines) > 3:
             preview += f", ... (+{len(long_lines) - 3} more)"
         findings.append(Finding(
-            "warning" if has_psql_table else "info",
+            "info",
             "wide-output-table" if has_psql_table else "wide-verbatim-line",
             source_location(path, node),
             f"{local_name(node)} has {len(long_lines)} wide line(s) ({'lines' if len(long_lines) != 1 else 'line'}: {preview}); {wide_verbatim_recommendation(has_psql_table)}",
