@@ -815,6 +815,17 @@ div.important + .postgis-example-block {
     border-top-right-radius: 0;
     margin-top: 0;
 }
+div.note + .postgis-example-block {
+    border-color: #dd5;
+}
+div.note + .postgis-example-block .postgis-example-header {
+    background: #fff8c5;
+    border-bottom-color: #dd5;
+    color: #443;
+}
+div.note + .postgis-example-block pre {
+    background: #fffef5;
+}
 div.note:has(+ .postgis-example-block),
 div.caution:has(+ .postgis-example-block),
 div.warning:has(+ .postgis-example-block),
@@ -824,6 +835,10 @@ div.important:has(+ .postgis-example-block) {
     border-bottom-right-radius: 0;
     margin-bottom: 0;
     max-width: var(--postgis-example-width);
+}
+div.note:has(+ .postgis-example-block) {
+    background: #ffe;
+    border-color: #dd5;
 }
 
 div.caution {
