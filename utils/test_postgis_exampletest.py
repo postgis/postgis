@@ -1202,6 +1202,28 @@ class VisualExampleTest(unittest.TestCase):
         self.assertNotIn("AND ST_NPoints(geom) <= 64", queries[0])
         self.assertNotIn("ST_Scale", queries[0])
 
+    def test_visual_payload_sends_unicode_labels_without_json_escapes(self):
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or '{"frames":[],"parts":[]}'
+        self.tester.visual_payload("manual", [{
+            "ord": 1,
+            "source": "Output",
+            "label": "2 I(a) ∩ I(b)",
+            "row_num": 1,
+            "column_num": 1,
+            "requested_frame": None,
+            "wkt": "POINT(0 0)",
+            "hexwkb": None,
+            "source_point_count": 1,
+            "total_points": 1,
+            "marker_scale": None,
+        }])
+        match = re.search(r"decode\('([^']+)', 'base64'\)", queries[0])
+        self.assertIsNotNone(match)
+        payload = base64.b64decode(match.group(1)).decode("utf-8")
+        self.assertIn("∩", payload)
+        self.assertNotIn(r"\u2229", payload)
+
     def test_ordinary_2d_svg_remains_byte_stable(self):
         svg = self.tester.visual_svg(
             "buffer-example",

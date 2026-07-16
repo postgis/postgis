@@ -109,9 +109,11 @@ check-news:
 check-contributor-credits:
 	@if test ! -e "$(top_srcdir)/.git"; then \
 		echo "SKIP: contributor credits require a Git worktree"; \
+	elif test -z "$(PYTHON3)"; then \
+		echo "SKIP: contributor credits require python3"; \
 	else \
-		python3 -B $(top_srcdir)/utils/test_check_contributor_credits.py && \
-		python3 -B $(top_srcdir)/utils/check_contributor_credits.py --repo $(top_srcdir); \
+		$(PYTHON3) -B $(top_srcdir)/utils/test_check_contributor_credits.py && \
+		$(PYTHON3) -B $(top_srcdir)/utils/check_contributor_credits.py --repo $(top_srcdir); \
 	fi
 
 check-unit check-regress: all

@@ -37,6 +37,9 @@ NON_HUMAN_EMAILS = {
     "noreply-mt-weblate@weblate.org",
     "noreply@weblate.org",
 }
+NON_HUMAN_NAMES = {
+    ("claude", "fable", "5"),
+}
 NON_PERSON_NEWS_RE = re.compile(
     r"\b(?:bureau|city of|company|corporation|foundation|highgo|inc\.?|"
     r"koordinates|llc|osgeo|team|university)\b",
@@ -180,8 +183,11 @@ def add_contributor(contributors, name, source_kind, source_detail):
     contributor.sources.setdefault(source_kind, source_detail)
 
 
-def non_human_identity(email):
-    return email.strip().casefold() in NON_HUMAN_EMAILS
+def non_human_identity(name, email):
+    return (
+        email.strip().casefold() in NON_HUMAN_EMAILS
+        or normalized_name(name) in NON_HUMAN_NAMES
+    )
 
 
 def git_author_contributors(repo, revision):
@@ -199,7 +205,7 @@ def git_author_contributors(repo, revision):
         if len(fields) != 3:
             continue
         name, email, commit = fields
-        if not non_human_identity(email):
+        if not non_human_identity(name, email):
             authors.append((name, email, commit))
     return authors
 
@@ -231,7 +237,7 @@ def coauthor_identities(repo, revision):
     normalized = []
     for mapped_identity, (_, _, commit) in zip(mapped, identities):
         match = IDENTITY_RE.match(mapped_identity)
-        if match and not non_human_identity(match.group(2)):
+        if match and not non_human_identity(match.group(1), match.group(2)):
             normalized.append((match.group(1).strip(), match.group(2), commit))
     return normalized
 

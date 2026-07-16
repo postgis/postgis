@@ -1779,7 +1779,9 @@ class ExampleTester:
         return result.stdout.strip()
 
     def visual_payload(self, database, layers):
-        encoded = base64.b64encode(json.dumps(layers, separators=(",", ":")).encode("utf-8")).decode("ascii")
+        encoded = base64.b64encode(
+            json.dumps(layers, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        ).decode("ascii")
         query = f"""
 WITH raw AS (
   SELECT ord, source, label, row_num, column_num, requested_frame, wkt, hexwkb,

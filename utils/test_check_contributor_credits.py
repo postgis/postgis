@@ -255,6 +255,19 @@ class ContributorCreditValidationTest(unittest.TestCase):
         self.assertEqual([], result.missing)
         self.assertEqual(0, result.git_coauthors)
 
+    def test_non_human_coauthor_name_is_ignored(self):
+        self.fixture.initial_commit(
+            "Alice Example",
+            "Bob News",
+            message=(
+                "fixture\n\n"
+                "Co-authored-by: Claude Fable 5 <noreply@anthropic.com>"
+            ),
+        )
+        result = validate(self.fixture.repo)
+        self.assertEqual([], result.missing)
+        self.assertEqual(0, result.git_coauthors)
+
     def test_news_slashes_separate_people_from_people_and_affiliations(self):
         self.assertEqual(
             ["Regina Obe", "Sandro Santilli"],

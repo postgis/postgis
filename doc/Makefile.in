@@ -353,7 +353,7 @@ ifneq ($(PYTHON3),)
 ifneq ($(XSLTPROC),)
 ifneq ($(XSLBASE),)
 CHECK_UNIT_TARGET += check-html-block-labels
-CHECK_HTML_BLOCK_LABELS_DEPS = postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/index.html $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+CHECK_HTML_BLOCK_LABELS_DEPS = postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
 endif
 endif
 endif
@@ -758,7 +758,12 @@ else ifeq ($(XSLTPROC),)
 else ifeq ($(XSLBASE),)
 	@echo "Skipping $@: DocBook XSL stylesheets are not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html --expect-from postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/*.html
+	@if ! test -s "$(visual_examples_manifest)"; then \
+		echo "Skipping $@: visual examples are missing. Run 'make -C regress visual-examples' first."; \
+	else \
+		$(MAKE) $(html_builddir)/postgis$(DOCSUFFIX)/index.html; \
+		$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html --expect-from postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/*.html; \
+	fi
 endif
 
 check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
