@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-16 03:39+0000\n"
+"PO-Revision-Date: 2026-07-16 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -43279,7 +43279,7 @@ msgstr ""
 msgid ""
 "This example returns the first three rejects from a successful quintuplet "
 "experiment."
-msgstr ""
+msgstr "この例では5行が成功する試験から拒否された最初の3タプルを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -43324,7 +43324,7 @@ msgstr "Availability: 2.0 フラグを取る形式。"
 #. Tag: para
 #, no-c-format
 msgid "This example uses an invalid bow-tie polygon."
-msgstr ""
+msgstr "この例では蝶ネクタイ型の不正ポリゴンを使います。"
 
 #. Tag: para
 #, no-c-format
@@ -44076,7 +44076,7 @@ msgid "New Features"
 msgstr "新機能"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1124\">#1124</"
 "link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
@@ -44089,12 +44089,22 @@ msgid ""
 "output, raster2pgsql/shp2pgsql expose loader actions as long options, both "
 "loaders accept long aliases for existing options, and"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1124\">#1124</link>"
+", <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2935\">#2935</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3033\">"
+"#3033</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"4658\">#4658</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/4659\">#4659</link>, [loader] ローダー引数の手直し: shp2pgsqlは"
+"UNLOGGEDテーブルを作ることができ、地物IDカラム名を選択することができます。"
+"shp2pgsql --drop-tableは準備より前にDROP TABLEを吐くことができます。"
+"raster2pgsql/shp2pgsqlはローダーの活動をオプションの範囲内で露出します。両方"
+"のローダー共に既存オプションの長い別名を受け付けることができます。また、"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "-if-not-exists makes creation actions idempotent (Darafei Praliaskouski)"
-msgstr ""
+msgstr "-if-not-existsでべき等アクションを生成します (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44103,6 +44113,9 @@ msgid ""
 "link>, Add single-geometry variants of ST_MaxDistance and ST_LongestLine "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4208\">#4208</link>"
+", ST_MaxDistanceとST_LongestLineにおいて単一ジオメトリーに対応する形式を追加"
+"しました。"
 
 #. Tag: para
 #, no-c-format
