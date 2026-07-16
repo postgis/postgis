@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-16 07:39+0000\n"
+"PO-Revision-Date: 2026-07-16 09:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -44076,7 +44076,7 @@ msgid "New Features"
 msgstr "新機能"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1124\">#1124</"
 "link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
@@ -44097,8 +44097,9 @@ msgstr ""
 "ticket/4659\">#4659</link>, [loader] ローダー引数の手直し: shp2pgsqlは"
 "UNLOGGEDテーブルを作ることができ、地物IDカラム名を選択することができます。"
 "shp2pgsql --drop-tableは準備より前にDROP TABLEを吐くことができます。"
-"raster2pgsql/shp2pgsqlはローダーの活動をオプションの範囲内で露出します。両方"
-"のローダー共に既存オプションの長い別名を受け付けることができます。また、"
+"raster2pgsql/shp2pgsqlはローダーのどうさタイプを長いオプション名で指定できま"
+"す。両方のローダー共に既存オプションの長い別名を受け付けることができます。ま"
+"た、"
 
 #. Tag: para
 #, no-c-format
@@ -44121,7 +44122,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "[topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)"
-msgstr ""
+msgstr "[topology] FindVertexSegmentPairsBelowDistance関数 (Sandro Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44129,11 +44130,13 @@ msgid ""
 "ST_CoverageEdges, returns MultiLinestring of distinct shared edges in "
 "polygonal coverage (Paul Ramsey)"
 msgstr ""
+"ポリゴンカバレッジの明確にエッジを共有しているマルチラインストリングを返す"
+"ST_CoverageEdges (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
 msgid "ST_MinimumSpanningTree, window function to calculate MST (Paul Ramsey)"
-msgstr ""
+msgstr "最小接続木を計算するウィンドウ関数ST_MinimumSpanningTree (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44142,6 +44145,9 @@ msgid ""
 "link>, [topology] Add max_edges parameter to TopoGeo_AddLinestring (Sandro "
 "Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5993\">#5993</link>"
+", [topology] TopoGeo_AddLinestringへのmax_edgesパラメーターの追加 (Sandro "
+"Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44149,6 +44155,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6001\">#6001</"
 "link>, support MultiLineString in ST_MakeLine (Paul Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6001\">#6001</link>"
+", ST_MakeLineのマルチラインストリング対応 (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44156,6 +44164,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2858\">#2858</"
 "link>, ST_MMin and ST_MMax (Paul Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2858\">#2858</link>"
+", ST_MMinとST_MMax (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44163,6 +44173,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5941\">#5941</"
 "link>, [raster] Support GDT_Float16 pixel type (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5941\">#5941</link>"
+", [raster] GDALピクセルタイプGDT_Float16対応 (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44171,6 +44183,9 @@ msgid ""
 "link>, Optimize GiST index for repeated edge subdivision in topology "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5992\">#5992</link>"
+", トポロジーでのエッジ分割の繰返しでのGiSTインデックス最適化 (Darafei "
+"Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44273,6 +44288,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1291\">#1291</"
 "link>, ST_MakePolygon support for curved rings (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1291\">#1291</link>"
+", ST_MakePolygonの曲線リング対応 (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44280,6 +44297,8 @@ msgid ""
 "<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/pulls/"
 "270\">GT-270</link>, Add NURBSCurve (Loïc Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/pulls/270\">GT-"
+"270</link>, NURBS曲線の追加 (Loïc Bartolettiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44288,6 +44307,9 @@ msgid ""
 "link>, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2863\">#2863</link>"
+", 次元補助ST_XSize, ST_YSize, ST_ZSize, ST_MSizeの追加 (Darafei Praliaskouski"
+"さん)"
 
 #. Tag: para
 #, no-c-format
