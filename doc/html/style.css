@@ -1066,6 +1066,9 @@ table.informaltable th {
 
 .styledtable td:last-child {
     max-width: 68rem;
+}
+
+.refentry .styledtable td:last-child {
     min-width: min(24rem, 60vw);
 }
 
