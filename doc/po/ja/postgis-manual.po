@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-15 08:39+0000\n"
+"PO-Revision-Date: 2026-07-16 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -41695,7 +41695,7 @@ msgstr "GDA2020の例。"
 msgid ""
 "This example uses ST_Transform with automatic selection of a conversion "
 "pipeline."
-msgstr ""
+msgstr "この例ではST_Transformが変換パイプラインの自動選択をしています。"
 
 #. Tag: para
 #, no-c-format
@@ -41731,7 +41731,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Mark a point as WGS 84 longitude/latitude."
-msgstr ""
+msgstr "ポイントをWGS 84経度/緯度となるようSRIDを設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -41739,6 +41739,8 @@ msgid ""
 "Mark a point as WGS 84 longitude/latitude and then transform it to Web "
 "Mercator."
 msgstr ""
+"ポイントをWGS 84経度/緯度となるようSRIDを設定したうえでWebメルカトルに変換し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -41861,7 +41863,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "3D Circular String example."
-msgstr ""
+msgstr "3次元曲線ストリングの例です。"
 
 #. Tag: para
 #, no-c-format
@@ -41887,6 +41889,9 @@ msgid ""
 "Find intersection of two polygons near the North pole, using a custom Gnomic "
 "projection. See http://boundlessgeo.com/2012/02/flattening-the-peel/."
 msgstr ""
+"独自の心射図法を使って北極付近二つのポリゴンのインターセクトしている部分を探"
+"索します。http://boundlessgeo.com/2012/02/flattening-the-peel/ を参照して下さ"
+"い。"
 
 #. Tag: title
 #, no-c-format
@@ -42044,12 +42049,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example transforms in the forward direction."
-msgstr ""
+msgstr "この例では順方向に変換します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Using a defined conversion (EPSG:8447)"
-msgstr ""
+msgstr "定義済み変換を使います (EPSG:8447)。"
 
 #. Tag: para
 #, no-c-format
@@ -42057,6 +42062,8 @@ msgid ""
 "This example uses a PROJ pipeline definition matching EPSG:8447, as returned "
 "from projinfo. Any axisswap steps must be removed."
 msgstr ""
+"この例ではEPSG:8447に適合するPROJパプライン定義を使います。これはprojinfo"
+"コマンドから得ます。軸交換ステップはいずれも削除しなければなりません。"
 
 #. Tag: para
 #, no-c-format
@@ -42257,12 +42264,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This example constructs a valid trajectory."
-msgstr ""
+msgstr "この例では妥当なトラジェクトリーを構築します。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example constructs an invalid trajectory."
-msgstr ""
+msgstr "この例では不正なトラジェクトリーを構築します。"
 
 #. Tag: refpurpose
 #, no-c-format
