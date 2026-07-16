@@ -1776,15 +1776,7 @@ WITH raw AS (
 ), parsed_raw AS (
   SELECT ord, source, label, row_num, column_num, requested_frame,
     source_point_count, total_points, marker_scale, geom
-  FROM parsed_all AS candidate
-  WHERE candidate.source <> 'Code'
-    OR NOT EXISTS (
-      SELECT 1
-      FROM parsed_all AS result
-      WHERE result.source = 'Output'
-        AND result.hexwkb IS NOT NULL
-        AND ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)
-    )
+  FROM parsed_all
 ), source_dimensions AS (
   SELECT source, max(ST_Dimension(geom)) AS dimension
   FROM parsed_raw
@@ -1895,7 +1887,10 @@ SELECT json_build_object(
       END,
       'has_z', ST_Zmflag(geom) IN (2, 3),
       'points_xyz', CASE
-        WHEN GeometryType(render_geom) IN ('POINT', 'LINESTRING', 'POLYGON', 'TRIANGLE')
+        WHEN GeometryType(render_geom) IN (
+          'POINT', 'LINESTRING', 'POLYGON', 'TRIANGLE',
+          'TIN', 'POLYHEDRALSURFACE'
+        )
         THEN (
           SELECT json_agg(
             json_build_object(

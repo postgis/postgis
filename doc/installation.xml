@@ -595,13 +595,13 @@ PostGIS was built successfully. Ready to install.</screen>
     folders or copy files if you need them on a different server. </para>
 	    <para>Set <varname>PGUSER</varname> if you need to override the psql connection user, then test before installing. After installation, run the extension regression tests.</para>
 	    <programlisting language="bash">cd extensions
-	cd postgis
-	make clean
-	make
-	export PGUSER=postgres
-	make check
-	make install
-	make check RUNTESTFLAGS=--extension</programlisting>
+cd postgis
+make clean
+make
+export PGUSER=postgres
+make check
+make install
+make check RUNTESTFLAGS=--extension</programlisting>
     <note><para><code>make check</code> uses psql to run tests and as such can use psql environment variables.
     Common ones useful to override are <varname>PGUSER</varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to <link xlink:href="https://www.postgresql.org/docs/current/libpq-envars.html">psql environment variables</link> </para></note>
     <para>The extension files will always be the same for the same version of PostGIS and PostgreSQL regardless of OS, so it is fine to copy over the extension files from one OS to another as long as you
@@ -627,16 +627,18 @@ PostGIS was built successfully. Ready to install.</screen>
    </itemizedlist>
    <para>Once you do that, you should see <varname>postgis</varname>, <varname>postgis_topology</varname> as available extensions in PgAdmin -&gt; extensions.</para>
    <para>If you are using psql, you can verify that the extensions are installed by running this query:</para>
-   <programlisting language="sql">SELECT name, default_version, installed_version
+	   <programlisting language="sql" role="requires-external-state">SELECT name, default_version, installed_version
 FROM pg_available_extensions
 WHERE name LIKE 'postgis%'
 ORDER BY name;</programlisting>
-<screen role="text-primary">             name             | default_version | installed_version
-------------------------------+-----------------+-------------------
- postgis                      | &last_release_version;         | &last_release_version;
- postgis_raster               | &last_release_version;         | &last_release_version;
- postgis_sfcgal               | &last_release_version;         |
- postgis_topology             | &last_release_version;         |</screen>
+	<screen role="text-primary">┌──────────────────┬─────────────────┬───────────────────┐
+│ name             │ default_version │ installed_version │
+├──────────────────┼─────────────────┼───────────────────┤
+│ postgis          │ &last_release_version;        │ &last_release_version;        │
+│ postgis_raster   │ &last_release_version;        │ &last_release_version;        │
+│ postgis_sfcgal   │ &last_release_version;        │                   │
+│ postgis_topology │ &last_release_version;        │                   │
+└──────────────────┴─────────────────┴───────────────────┘</screen>
 
 <para>If you have the extension installed in the database you are querying, you'll see mention in the <varname>installed_version</varname> column.
 If you get no records back, it means you don't have postgis extensions installed on the server at all.  PgAdmin III 1.14+ will also provide this information
@@ -653,22 +655,23 @@ CREATE EXTENSION postgis_topology;</programlisting>
 \x
 \dx postgis*</programlisting>
 
-<screen role="text-primary">List of installed extensions
--[ RECORD 1 ]-------------------------------------------------
-Name        | postgis
-Version     | &last_release_version;
-Schema      | public
-Description | PostGIS geometry, geography, and raster spat..
--[ RECORD 2 ]-------------------------------------------------
-Name        | postgis_raster
-Version     | 3.0.0dev
-Schema      | public
-Description | PostGIS raster types and functions
--[ RECORD 3 ]-------------------------------------------------
-Name        | postgis_topology
-Version     | &last_release_version;
-Schema      | topology
-Description | PostGIS topology spatial types and functions</screen>
+	<screen role="text-primary">List of installed extensions
+┌─[ RECORD 1 ]────────────────────────────────────────────────┐
+│ Name        │ postgis                                       │
+│ Version     │ &last_release_version;                                        │
+│ Schema      │ public                                        │
+│ Description │ PostGIS geometry, geography, and raster…      │
+├─[ RECORD 2 ]────────────────────────────────────────────────┤
+│ Name        │ postgis_raster                                │
+│ Version     │ &last_release_version;                                        │
+│ Schema      │ public                                        │
+│ Description │ PostGIS raster types and functions            │
+├─[ RECORD 3 ]────────────────────────────────────────────────┤
+│ Name        │ postgis_topology                              │
+│ Version     │ &last_release_version;                                        │
+│ Schema      │ topology                                      │
+│ Description │ PostGIS topology spatial types and functions  │
+└─────────────────────────────────────────────────────────────┘</screen>
 
 <warning><para>Extension tables <varname>spatial_ref_sys</varname>, <varname>layer</varname>, <varname>topology</varname> can not be explicitly backed up.  They can only
 be backed up when the respective <varname>postgis</varname> or <varname>postgis_topology</varname> extension is backed up, which only happens when you back up the whole database.

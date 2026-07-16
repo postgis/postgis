@@ -1151,7 +1151,7 @@ class VisualExampleTest(unittest.TestCase):
         self.assertNotIn("ST_HasArc(geom) OR GeometryType(geom) IN ('CURVEPOLYGON', 'MULTISURFACE')", queries[0])
         self.assertIn("ST_GeomFromEWKB(decode(hexwkb, 'hex'))", queries[0])
         self.assertIn("ELSE ST_GeomFromEWKT(wkt)", queries[0])
-        self.assertIn("ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)", queries[0])
+        self.assertNotIn("ST_AsEWKB(result.geom) = ST_AsEWKB(candidate.geom)", queries[0])
         self.assertIn("COALESCE(ST_Z(vertex3d.geom), 0)", queries[0])
         self.assertIn("ST_Z(vertex3d.geom)", queries[0])
         self.assertIn("COALESCE(total_points, ST_NPoints(framed.geom)) AS total_points", queries[0])

@@ -1460,19 +1460,19 @@ FROM mvtgeom;
 
         <para>Circular string</para>
     <programlisting language="sql">SELECT ST_AsSVG('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)'::geometry);</programlisting>
-	<screen role="text-primary">M -2 0 A 2 2 0 0 0 2 0 A 2 2 0 0 0 2 -4</screen>
+	<screen role="text-primary">M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</screen>
 
         <para>Multi-curve</para>
         <programlisting language="sql">SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
 CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);</programlisting>
-	<screen role="text-primary">M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 1 2 -2</screen>
+	<screen role="text-primary">M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2</screen>
 
         <para>Multi-surface</para>
         <programlisting language="sql">SELECT ST_AsSVG('MULTISURFACE(
 CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),
     (-1 0,0 0.5,1 0,0 1,-1 0)),
 ((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);</programlisting>
-	<screen role="text-primary">M -2 0 A 1 1 0 0 1 0 0 A 1 1 0 0 1 2 0 A 2 2 0 0 1 -2 0 Z
+	<screen role="text-primary">M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z
 M -1 0 L 0 -0.5 1 0 0 -1 -1 0 Z
 M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     </refsection>

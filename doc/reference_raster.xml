@@ -9230,7 +9230,7 @@ END;</programlisting>
                         Users can pass a set of entries (one per line) to <varname>colormap</varname> to specify custom colormaps. Each entry generally consists of five values: the pixel value and corresponding Red, Green, Blue, Alpha components (color components between 0 and 255). Percent values can be used instead of pixel values where 0% and 100% are the minimum and maximum values found in the raster band. Values can be separated with commas (','), tabs, colons (':') and/or spaces. The pixel value can be set to <emphasis>nv</emphasis>, <emphasis>null</emphasis> or <emphasis>nodata</emphasis> for the NODATA value. An example is provided below.
                     </para>
 
-                    <programlisting role="text-primary">
+                    <programlisting language="bash" role="text-primary">
 5 0 0 0 255
 4 100:50 55 255
 1 150, 100 150 255
@@ -15769,7 +15769,7 @@ SELECT
                 <para>
                     In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), <varname>GDAL_DISABLE_READDIR_ON_OPEN</varname> can be set in <emphasis>/etc/postgresql/POSTGRESQL_VERSION/CLUSTER_NAME/environment</emphasis> (where POSTGRESQL_VERSION is the version of PostgreSQL, e.g. 9.6 and CLUSTER_NAME is the name of the cluster, e.g. maindb). You can also set PostGIS environment variables here as well.
 
-                    <programlisting role="text-primary">
+                    <programlisting language="bash" role="text-primary">
 # environment variables for postmaster process
 # This file has the same syntax as postgresql.conf:
 #  VARIABLE = simple_value
@@ -15797,7 +15797,7 @@ POSTGIS_ENABLE_OUTDB_RASTERS = 1
                 <para>
                     The easiest change to make is the following PostgreSQL setting: <link xlink:href="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-FILES-PER-PROCESS">max_files_per_process</link>. The default is set to 1000, which is far too low for Out-DB Rasters. A safe starting value could be 65536 but this really depends on your datasets and the queries run against those datasets. This setting can only be made on server start and probably only in the PostgreSQL configuration file (e.g. <emphasis>/etc/postgresql/POSTGRESQL_VERSION/CLUSTER_NAME/postgresql.conf</emphasis> in Ubuntu environments).
 
-                    <programlisting role="text-primary">
+                    <programlisting language="bash" role="text-primary">
 ...
 # - Kernel Resource Usage -
 
@@ -15826,7 +15826,7 @@ POSTGIS_ENABLE_OUTDB_RASTERS = 1
                         You can inspect the current maximum number of open files for the entire system with the following example:
                     </para>
 
-                    <programlisting role="text-primary">
+                    <programlisting language="bash" role="text-primary">
 $ sysctl -a | grep fs.file-max
 fs.file-max = 131072
                     </programlisting>
@@ -15835,7 +15835,7 @@ fs.file-max = 131072
                         If the value returned is not large enough, add a file to <emphasis>/etc/sysctl.d/</emphasis> as per the following example:
                     </para>
 
-                    <programlisting role="text-primary">
+                    <programlisting language="bash" role="text-primary">
 $ echo "fs.file-max = 6145324" &gt;&gt; /etc/sysctl.d/fs.conf
 
 $ cat /etc/sysctl.d/fs.conf
@@ -15862,17 +15862,17 @@ fs.file-max = 6145324
                         To see what the current PostgreSQL service processes are using for maximum number of open files, do as per the following example (make sure to have PostgreSQL running):
                     </para>
 
-                    <programlisting role="text-primary">
-$ ps aux | grep postgres
+                    <programlisting language="bash">$ ps aux | grep postgres</programlisting>
+                    <screen role="text-primary">
 postgres 31713  0.0  0.4 179012 17564 pts/0    S    Dec26   0:03 /home/dustymugs/devel/postgresql/sandbox/10/usr/local/bin/postgres -D /home/dustymugs/devel/postgresql/sandbox/10/pgdata
 postgres 31716  0.0  0.8 179776 33632 ?        Ss   Dec26   0:01 postgres: checkpointer process
 postgres 31717  0.0  0.2 179144  9416 ?        Ss   Dec26   0:05 postgres: writer process
 postgres 31718  0.0  0.2 179012  8708 ?        Ss   Dec26   0:06 postgres: wal writer process
 postgres 31719  0.0  0.1 179568  7252 ?        Ss   Dec26   0:03 postgres: autovacuum launcher process
 postgres 31720  0.0  0.1  34228  4124 ?        Ss   Dec26   0:09 postgres: stats collector process
-postgres 31721  0.0  0.1 179308  6052 ?        Ss   Dec26   0:00 postgres: bgworker: logical replication launcher
-
-$ cat /proc/31718/limits
+postgres 31721  0.0  0.1 179308  6052 ?        Ss   Dec26   0:00 postgres: bgworker: logical replication launcher</screen>
+                    <programlisting language="bash">$ cat /proc/31718/limits</programlisting>
+                    <screen role="text-primary">
 Limit                     Soft Limit           Hard Limit           Units
 Max cpu time              unlimited            unlimited            seconds
 Max file size             unlimited            unlimited            bytes
@@ -15890,7 +15890,7 @@ Max msgqueue size         819200               819200               bytes
 Max nice priority         0                    0
 Max realtime priority     0                    0
 Max realtime timeout      unlimited            unlimited            us
-                    </programlisting>
+                    </screen>
 
                     <para>
                         In the example above, we inspected the open files limit for Process 31718. It doesn't matter which PostgreSQL process, any of them will do. The response we are interested in is <emphasis>Max open files</emphasis>.
@@ -15908,7 +15908,7 @@ Max realtime timeout      unlimited            unlimited            us
                         Let's first address the SysV Ubuntu case where we add <emphasis role="strong">ulimit -H -n 262144</emphasis> and <emphasis role="strong">ulimit -n 131072</emphasis> to <emphasis role="strong">/etc/init.d/postgresql</emphasis>.
                     </para>
 
-                    <programlisting role="text-primary">
+                    <programlisting language="bash" role="text-primary">
 ...
 case "$1" in
     start|stop|restart|reload)
@@ -15936,7 +15936,7 @@ case "$1" in
                         Now to address the systemd Ubuntu case. We will add <emphasis role="strong">LimitNOFILE=131072</emphasis> to every <emphasis role="strong">/lib/systemd/system/postgresql*.service</emphasis> file in the <emphasis role="strong">[Service]</emphasis> section.
                     </para>
 
-                    <programlisting role="text-primary">
+                    <programlisting language="bash" role="text-primary">
 ...
 [Service]
 <emphasis role="strong">
@@ -15953,7 +15953,7 @@ WantedBy=multi-user.target
                         After making the necessary systemd changes, make sure to reload the daemon
                     </para>
 
-                    <programlisting role="text-primary">systemctl daemon-reload</programlisting>
+                    <programlisting language="bash" role="text-primary">systemctl daemon-reload</programlisting>
 
                 </section>
 

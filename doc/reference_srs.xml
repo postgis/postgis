@@ -404,19 +404,19 @@ FROM data;</programlisting>
     <title>Examples</title>
     <para>Change WGS 84 long lat to UTM 31N using the EPSG:16031 conversion</para>
     <para>This example transforms in the forward direction.</para>
-    <programlisting>SELECT
-    ST_TransformPipeline(
+<programlisting>SELECT
+    ST_SetSRID(ST_TransformPipeline(
         'SRID=4326;POINT(2 49)'::geometry,
         'urn:ogc:def:coordinateOperation:EPSG::16031'
-    ) AS utm_geom;</programlisting>
-<screen role="visual-primary text-primary">POINT(426857.9877165967 5427937.523342293)</screen>
+    ), 32631) AS utm_geom;</programlisting>
+<screen role="visual-primary text-primary">SRID=32631;POINT(426857.9877165967 5427937.523342293)</screen>
 <para>This example transforms in the inverse direction.</para>
 <programlisting>SELECT
-    ST_InverseTransformPipeline(
-        'POINT(426857.9877165967 5427937.523342293)'::geometry,
+    ST_SetSRID(ST_InverseTransformPipeline(
+        'SRID=32631;POINT(426857.9877165967 5427937.523342293)'::geometry,
         'urn:ogc:def:coordinateOperation:EPSG::16031'
-    ) AS wgs_geom;</programlisting>
-<screen role="visual-primary text-primary">POINT(2 48.99999999999999)</screen>
+    ), 4326) AS wgs_geom;</programlisting>
+<screen role="visual-primary text-primary">SRID=4326;POINT(2 48.99999999999999)</screen>
 
     <para>GDA2020 example.</para>
     <para>This example uses ST_Transform with automatic selection of a conversion pipeline.</para>

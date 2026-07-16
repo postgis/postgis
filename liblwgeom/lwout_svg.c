@@ -240,10 +240,9 @@ pointArray_svg_arc(stringbuffer_t *sb, const POINTARRAY *pa, int include_start, 
 
 		/** endAngle - startAngle <= 180 ? "0" : "1" **/
 		largeArcFlag = (total_angle <= 180)? 0 : 1;
-		/* ST_AsSVG emits coordinates in SVG's Y-down coordinate system by
-		 * negating geometry Y values. Reflection reverses arc direction, so
-		 * the SVG sweep flag is the opposite of the geometry orientation. */
-		sweepFlag = (p2_side == -1) ? 0 : 1;
+		/* The side of the t1/t3 line that t2 falls on dictates the sweep
+		direction from t1 to t3. */
+		sweepFlag = (p2_side == -1) ? 1 : 0;
 		if ((i == 2) && !is_circle && include_start)
 		{
 			/** add MoveTo first point **/
