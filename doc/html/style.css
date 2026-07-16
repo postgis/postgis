@@ -819,9 +819,7 @@ div.note:has(+ .postgis-example-block),
 div.caution:has(+ .postgis-example-block),
 div.warning:has(+ .postgis-example-block),
 div.important:has(+ .postgis-example-block) {
-    background: #fbfcff;
     border-bottom: 0;
-    border-color: #8aa8cb;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     margin-bottom: 0;
