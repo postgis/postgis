@@ -1003,6 +1003,20 @@ class ExampleTester:
                     index = closing + len(token)
                     continue
             if text[index] != "'":
+                if text[index] == '"':
+                    start = index + 1
+                    index += 1
+                    while index < len(text):
+                        if text[index] != '"':
+                            index += 1
+                            continue
+                        if index + 1 < len(text) and text[index + 1] == '"':
+                            index += 2
+                            continue
+                        ranges.append((start, index))
+                        index += 1
+                        break
+                    continue
                 index += 1
                 continue
             start = index + 1
@@ -1147,7 +1161,7 @@ class ExampleTester:
 
         headers = []
         for item in items:
-            alias = re.search(r'(?i)\bAS\s+("(?:""|[^"])+"|[A-Za-z_][A-Za-z0-9_]*)\s*$', item)
+            alias = re.search(r'(?i)\bAS\s+("(?:""|[^"])+"|[A-Za-z_][A-Za-z0-9_]*)\s*;?\s*$', item)
             header = alias.group(1) if alias else ""
             if header.startswith('"'):
                 header = header[1:-1].replace('""', '"')
