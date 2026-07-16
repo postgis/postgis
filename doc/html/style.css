@@ -813,15 +813,19 @@ div.warning + .postgis-example-block,
 div.important + .postgis-example-block {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    margin-top: -1.5px;
+    margin-top: 0;
 }
 div.note:has(+ .postgis-example-block),
 div.caution:has(+ .postgis-example-block),
 div.warning:has(+ .postgis-example-block),
 div.important:has(+ .postgis-example-block) {
+    background: #fbfcff;
+    border-bottom: 0;
+    border-color: #8aa8cb;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     margin-bottom: 0;
+    max-width: var(--postgis-example-width);
 }
 
 div.caution {
