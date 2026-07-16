@@ -120,6 +120,17 @@ Other useful targets:
   extension upgrade paths after `sudo make install`.
 * `make installcheck` runs tests against an installed copy after
   `sudo make install`.
+* `make check` includes the contributor-credit validator in its source-state
+  checks. It checks that every non-merge Git author, `Co-authored-by` trailer,
+  and contributor named in an unreleased `NEWS` section is present in
+  `doc/credits.xml`; `make check-contributor-credits` runs only this check.
+  A Git worktree must have full, non-shallow history; release trees without
+  `.git` skip the check. Add aliases to `.mailmap` instead of duplicating a
+  person under multiple names in the manual. If only a public handle can be
+  verified, use a linked `@handle (GitHub user)` credit. If only a partial name
+  is public, use `@handle (GitHub user: partial name)` to credit both forms and
+  keep all handle-first entries together at the start of the list. Do not infer
+  a person's name from an email address.
 * [CI inventory standards](testing/ci.md) describe how to keep build-bot and badge
   inventories checkable instead of copying stale dashboard markup into
   maintained prose.

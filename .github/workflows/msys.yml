@@ -23,6 +23,8 @@ jobs:
       # see https://github.com/msys2/setup-msys2
     - name: checkout
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
     - name: '${{ matrix.icon }} Setup MSYS2'
       uses: msys2/setup-msys2@v2
       with:

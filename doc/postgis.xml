@@ -19,6 +19,7 @@
 <!ENTITY max_postgres_version "18">
 
 <!ENTITY introduction SYSTEM "introduction.xml">
+<!ENTITY credits SYSTEM "credits.xml">
 <!ENTITY installation SYSTEM "installation.xml">
 <!ENTITY administration SYSTEM "administration.xml">
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
@@ -140,6 +141,7 @@
   &extras;
   &postgis_special;
   &reporting;
+  &credits;
   &release_notes;
 
 </book>

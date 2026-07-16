@@ -47,6 +47,8 @@ jobs:
 
     - name: 'Check Out'
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
 
     - name: 'Prepare Image'
       run: |

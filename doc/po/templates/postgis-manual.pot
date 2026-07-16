@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-07-05 04:20+0000\n"
+"POT-Creation-Date: 2026-07-16 17:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -360,9 +360,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Supplementary instructions for windows users are available at <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
-"upgrade</link>."
+"Supplementary instructions for windows users are available at <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiWinUpgrade\">Windows Hard upgrade</link>."
 msgstr ""
 
 #. Tag: para
@@ -460,10 +460,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you are upgrading an old database containing french <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national\"> "
-"IGN </link> cartography, you will have probably SRIDs out of range and you "
-"will see, when importing your database, issues like this :"
+"If you are upgrading an old database containing french <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
+"Institut_g%C3%A9ographique_national\"> IGN </link> cartography, you will "
+"have probably SRIDs out of range and you will see, when importing your "
+"database, issues like this :"
 msgstr ""
 
 #. Tag: para
@@ -483,10 +484,1720 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Create then your newdb, activate the required Postgis extensions, and insert "
-"properly the french system IGN with : <link xlink:href=\"https://raw."
-"githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
+"properly the french system IGN with : <link xlink:href=\"https://"
+"raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/"
 "Put_IGN_SRS_into_Postgis.sql\"> this script </link> After these operations, "
 "import your data :"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Credits and Acknowledgments"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"PostGIS is built and sustained by a worldwide community. This chapter "
+"records the people, organizations, funders, and upstream projects that have "
+"contributed code, documentation, infrastructure, testing, support, and "
+"funding."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Project Steering Committee"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The PostGIS Project Steering Committee (PSC) coordinates the general "
+"direction, release cycles, documentation, and outreach efforts for the "
+"PostGIS project. In addition the PSC provides general user support, accepts "
+"and approves patches from the general PostGIS community and votes on "
+"miscellaneous issues involving PostGIS such as developer commit access, new "
+"PSC members or significant API changes."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Raúl Marín Rodríguez"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"MVT support, Bug fixing, Performance and stability improvements, GitHub "
+"curation, alignment of PostGIS with PostgreSQL releases"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Regina Obe"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"CI and website maintenance, Windows production and experimental builds, "
+"documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
+"management functions."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Darafei Praliaskouski"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Index improvements, bug fixing and geometry/geography function improvements, "
+"SFCGAL, raster, GitHub curation, and ci maintenance."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Paul Ramsey (Chair)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Co-founder of PostGIS project. General bug fixing, geography support, "
+"geography and geometry index support (2D, 3D, nD index and anything spatial "
+"index), underlying geometry internal structures, GEOS functionality "
+"integration and alignment with GEOS releases, alignment of PostGIS with "
+"PostgreSQL releases, loader/dumper, and Shapefile GUI loader."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Sandro Santilli"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Bug fixes and maintenance, ci maintenance, git mirror management, management "
+"functions, integration of new GEOS functionality and alignment with GEOS "
+"releases, topology support, and raster framework and low level API functions."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Core Contributors Present"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Nicklas Avén"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Distance function enhancements (including 3D distance and relationship "
+"functions) and additions, Tiny WKB (TWKB) output format and general user "
+"support"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Loïc Bartoletti"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "SFCGAL enhancements and maintenance and ci support"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Dan Baston"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Geometry clustering function additions, other geometry algorithm "
+"enhancements, GEOS enhancements and general user support"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Martin Davis"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "GEOS enhancements and documentation"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Björn Harrtell"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
+"GitLab experimentation."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Aliaksandr Kalenik"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Geometry Processing, PostgreSQL gist, general bug fixing"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "<term>Laurențiu Nicola</term>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Bug fixes, maintenance, stability, and performance"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Core Contributors Past"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Bborie Park"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Prior PSC Member. Raster development, integration with GDAL, raster loader, "
+"user support, general bug fixing, testing on various OS (Slackware, Mac, "
+"Windows, and more)"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Mark Cave-Ayland"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial "
+"index selectivity and binding, loader/dumper, and Shapefile GUI Loader, "
+"integration of new and new function enhancements."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Jorge Arévalo"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Raster development, GDAL driver support, loader"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Olivier Courtin"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug "
+"fixes."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Chris Hodgson"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Prior PSC Member. General development, site and buildbot maintenance, OSGeo "
+"incubation management"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Mateusz Loskot"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"CMake support for PostGIS, built original raster loader in python and low "
+"level raster API functions"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Kevin Neufeld"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Prior PSC Member. Documentation and documentation support tools, buildbot "
+"maintenance, advanced user support on PostGIS newsgroup, and PostGIS "
+"maintenance function enhancements."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Dave Blasby"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The original developer/Co-founder of PostGIS. Dave wrote the server side "
+"objects, index bindings, and many of the server side analytical functions."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Jeff Lounsbury"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Original development of the Shapefile loader/dumper."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Mark Leslie"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Ongoing maintenance and development of core functions. Enhanced curve "
+"support. Shapefile GUI loader."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Pierre Racine"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Architect of PostGIS raster implementation. Raster overall architecture, "
+"prototyping, programming support"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "David Zwarg"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Raster development (mostly map algebra analytic functions)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Other Contributors"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Individual Contributors"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/amwps290\">@amwps290</link> (GitHub "
+"user)"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/kannes\">@kannes</link> (GitHub user: "
+"Hannes)"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/sunhm89\">@sunhm89</link> (GitHub user)"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/wewindy\">@wewindy</link> (GitHub "
+"user: Chen)"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Adrien Berchet"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Alex Bodnaru"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Alex Mayrhofer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Andrea Peri"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Andreas Forø Tollefsen"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Andreas Neumann"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Andreas Schild"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Andrew Gierth"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Andrew Harvey"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Anne Ghisla"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Antoine Bajolet"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Ariel Mashraki"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Arno Renevier"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Arthur Bazin"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Arthur Lesuisse"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Artur Zakirov"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Ayo Adesugba"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Barbara Phillipot"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Baris Ergun"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Bas Couwenberg"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Ben Jubb"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Benjamin Morel"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Bernd Reiß"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Bernhard Reiter"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Bill Mill"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Björn Esser"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Brian Hamlin"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Bruce Rindahl"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Bruno Wolff III"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Bryce L. Nordgren"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Carl Anderson"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Carlos López Quintanilla"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Charles Karney"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Charlie Savage"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Chris Mayo"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Christian Schroeder"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Christoph Berg"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Christoph Moench-Tegeder"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Dan Faudemer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Dan Levy"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Dane Springmeyer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Daniel Nylander"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Dapeng Wang"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Daryl Herzmann"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Dave Fuhry"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "David G. Johnston"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "David Garnier"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "David Skea"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "David Techer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Denys Kovshun"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Devrim Gündüz"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Dian M Fay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Dmitry Vasilyev"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Edouard Choinière"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Eduin Carrillo"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Egor Ivkov"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Esteban Zimanyi"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Eugene Antimirov"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Evan Si"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Even Rouault"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Fabrice Fontaine"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Florentin Drogeanu"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Florian Weimer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "François Bonzon"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Frank Warmerdam"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "George Silva"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Gerald Fenoy"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Gino Lucrezi"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Giovanni Zezza"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Grant Hutchins"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Greg Troxel"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Guillaume Lelarge"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Giuseppe Broccolo"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Han Wang"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Hannes Janetzek"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Hans Lemuet"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Haribabu Kommi"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Harrissou Sant-anna"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Havard Tveite"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "IIDA Tetsushi"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Ingvild Nystuen"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jackie Leng"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "James Addison"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "James Marca"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jan Katins"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jan Tojnar"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jason Smith"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jean Felder"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jeff Adams"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jelte Fennema"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jim Jones"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Joe Conway"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jonne Savolainen"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jorge Gustavo Rocha"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jorge Sanz"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jose Carlos Martinez Llari"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jostein Leira"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Jörg Habenicht"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Juan Sebastian Jimenez Aldana"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Juergen E. Fischer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Julien Monticolo"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Julien Rouhaud"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Kashif Rasul"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Klaus Foerster"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Kris Jurka"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Kristian Thy"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Lars Aksel Opsahl"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "<member>Laurențiu Nicola</member>"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Laurenz Albe"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Lars Roessiger"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Lauri Kajan"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Leo Hsu"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Loic Dachary"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Louis Descoteaux"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Luca Delucchi"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Luca S. Percich"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Lucas C. Villa Real"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Ludovic Hirlimann"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Maksim Korotkov"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Manuel Morillo"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Maria Arias de Reyna"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Marc Ducobu"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Mark Sondheim"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Markus Schaber"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Markus Wanner"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Matt Amos"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Matt Bretl"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Matthias Bay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Maxim Kochetkov"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Maxime Guillaud"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Maxime van Noppen"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Maxime Schoemans"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Megan Ma"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Michael Fuhr"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Michal Páleník"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Mike Toews"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Mitchell Henke"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Nathan Wagner"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Nathaniel Clay"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Nicolas Roelandt"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Nikita Shulga"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Nikolai Berkoff"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Norman Barker"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Norman Vine"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Patricia Tozer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Paul Norman"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Paulo Cesar Coronado"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Pavel Seleznev"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Pawel Ostrowski"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Peter Nguyen"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Pierre Cardinal"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Rafal Magda"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Ralph Mason"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Rémi Cura"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Richard Greenwood"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Robert Coup"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Rodrigo Smarzaro"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Roger Crew"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Ron Mayer"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Sam Peters"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Sergei Shoulbakov"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Sergey Fedoseev"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Shinichi Sugiyama"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Shoaib Burq"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Silvio Grosso"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Stefan Corneliu Petrea"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Steffen Macke"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Stepan Kuzmin"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Stephen Frost"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Stephen Woodbridge"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Steven Ottens"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Talha Rizwan"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Temuri Doghonadze"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Teramoto Ikuhiro"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Thomas Muguet"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Thomas Petazzoni"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Tobias Bussmann"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Tom Glancy"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Tom van Tilburg"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Victor Collod"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Vincent Bre"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Vincent Mora"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Vincent Picavet"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Volf Tomáš"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Yoichi Kayama"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Yuri Astrakhan"
+msgstr ""
+
+#. Tag: member
+#, no-c-format
+msgid "Zuo Chenwei"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Corporate Sponsors"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"These are corporate entities that have contributed developer time, hosting, "
+"or direct monetary funding to the PostGIS project. In alphabetical order:"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Aiven"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Arrival 3D"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "AusVet"
+msgstr ""
+
+#. Tag: simpara
+#, no-c-format
+msgid "Avencia"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Azavea"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Boundless"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Cadcorp"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Camptocamp"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Carto"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Crunchy Data"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "City of Boston (DND)"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "City of Helsinki"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Clever Elephant Solutions"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Cooperativa Alveo"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Deimos Space"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Faunalia"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Geographic Data BC"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "HighGo"
+msgstr ""
+
+#. Tag: simpara
+#, no-c-format
+msgid "Hunter Systems Group"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "INIA-CSIC"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "ISciences, LLC"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Kontur"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Lidwala Consulting Engineers"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "LISAsoft"
+msgstr ""
+
+#. Tag: simpara
+#, no-c-format
+msgid "Logical Tracking &amp; Tracing International AG"
+msgstr ""
+
+#. Tag: simpara
+#, no-c-format
+msgid "Maponics"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Maumap"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Michigan Tech Research Institute"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Natural Resources Canada"
+msgstr ""
+
+#. Tag: simpara
+#, no-c-format
+msgid "Norwegian Forest and Landscape Institute"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Norwegian Institute of Bioeconomy Research (NIBIO)"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "OSGeo"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Oslandia"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Palantir Technologies"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Paragon Corporation"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Postgres Pro"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "R3 GIS"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Refractions Research"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Regione Toscana - SITA"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Safe Software"
+msgstr ""
+
+#. Tag: simpara
+#, no-c-format
+msgid "Sirius Corporation plc"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Stadt Uster"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "UC Davis Center for Vectorborne Diseases"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Université Laval"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "U.S. Census Bureau"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "U.S. Department of State (HIU)"
+msgstr ""
+
+#. Tag: link
+#, no-c-format
+msgid "Zonar Systems"
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Crowd Funding Campaigns"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Crowd funding campaigns are campaigns we run to get badly wanted features "
+"funded that can service a large number of people. Each campaign is "
+"specifically focused on a particular feature or set of features. Each "
+"sponsor chips in a small fraction of the needed funding and with enough "
+"people/organizations contributing, we have the funds to pay for the work "
+"that will help many. If you have an idea for a feature you think many others "
+"would be willing to co-fund, please post to the <link xlink:href=\"https://"
+"lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</link> "
+"your thoughts and together we can make it happen."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"PostGIS has experimented with community fundraising for features in the "
+"past. We used PledgeBank and we got two successful campaigns out of it."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">postgistopology</emphasis> - 10 plus sponsors each "
+"contributed $250 USD to build toTopoGeometry function and beef up topology "
+"support in 2.0.0. It happened."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">postgis64windows</emphasis> - 20 someodd sponsors "
+"each contributed $100 USD to pay for the work needed to work out PostGIS 64-"
+"bit issues on windows. It happened."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "External Libraries and Platforms"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://www.postgresql.org/\">PostgreSQL</link>, the "
+"extensible database system on which PostGIS is built. PostgreSQL provides "
+"the SQL engine, transactions, query planner, extension framework, and index "
+"access methods used by PostGIS."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <link xlink:href=\"https://libgeos.org\">GEOS</link> geometry operations "
+"library."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <link xlink:href=\"https://proj.org/\">PROJ</link> coordinate "
+"transformation and geodesic calculation library."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <link xlink:href=\"https://gdal.org\">GDAL</link> Geospatial Data "
+"Abstraction Library used to power much of the raster functionality "
+"introduced in PostGIS 2. In kind, improvements needed in GDAL to support "
+"PostGIS are contributed back to the GDAL project."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2\">LibXML2</link> "
+"for XML-based spatial formats, and <link xlink:href=\"https://github.com/"
+"json-c/json-c\">JSON-C</link> for GeoJSON input."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <link xlink:href=\"https://gmplib.org/\">GNU Multiple Precision "
+"Arithmetic Library (GMP)</link> for precision-sensitive topology operations."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</"
+"link> for Mapbox Vector Tile and Geobuf output."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <link xlink:href=\"https://www.gnu.org/software/libiconv/\">iconv</link> "
+"API, supplied by the C library or GNU libiconv, for character encoding "
+"conversion in the shapefile loader."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://sfcgal.gitlab.io/sfcgal/\">SFCGAL</link> for "
+"advanced 2D and 3D functions, together with the <link xlink:href=\"https://"
+"www.cgal.org/\">CGAL</link> algorithms that SFCGAL exposes."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid "Bundled Libraries and Source Code"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"PostGIS ships selected source from <link xlink:href=\"https://flatgeobuf.org/"
+"\">FlatGeobuf</link> and <link xlink:href=\"https://flatbuffers.dev/"
+"\">FlatBuffers</link> to support FlatGeobuf input and output."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/mapbox/wagyu\">Wagyu</link> and <link "
+"xlink:href=\"https://github.com/mapbox/geometry.hpp\">Mapbox Geometry</link> "
+"provide polygon clipping and validation for Mapbox Vector Tile output."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/ulfjack/ryu\">Ryu</link> provides "
+"round-trip-safe floating-point formatting, and <link xlink:href=\"https://"
+"troydhanson.github.io/uthash/\">uthash</link> provides in-process hash "
+"tables."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The shapefile loader and dumper include code derived from <link "
+"xlink:href=\"https://github.com/OSGeo/shapelib\">ShapeLib</link>, originally "
+"by Frank Warmerdam and Even Rouault. They also include public-domain "
+"<filename>getopt</filename> code from AT&amp;T."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<filename>liblwgeom/lookup3.c</filename> contains the public-domain "
+"<literal>lookup3</literal> hash function by Bob Jenkins."
 msgstr ""
 
 #. Tag: title
@@ -506,8 +2217,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For general details about optimizing PostgreSQL, refer to <link xlink:"
-"href=\"https://wiki.postgresql.org/wiki/"
+"For general details about optimizing PostgreSQL, refer to <link "
+"xlink:href=\"https://wiki.postgresql.org/wiki/"
 "Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</link>."
 msgstr ""
 
@@ -853,29 +2564,31 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Sandro Santilli's presentation at PostGIS Day Paris 2011 conference gives a "
-"good synopsis of PostGIS Topology and where it is headed <link xlink:"
-"href=\"http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0."
-"pdf\">Topology with PostGIS 2.0 slide deck</link>."
+"good synopsis of PostGIS Topology and where it is headed <link "
+"xlink:href=\"http://strk.kbt.io/projects/postgis/"
+"Paris2011_TopologyWithPostGIS_2_0.pdf\">Topology with PostGIS 2.0 slide "
+"deck</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Vincent Picavet provides a good synopsis and overview of what is Topology, "
-"how is it used, and various FOSS4G tools that support it in <link xlink:"
-"href=\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/"
-"master/2012/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology."
-"pdf\">PostGIS Topology PGConf EU 2012</link>."
+"how is it used, and various FOSS4G tools that support it in <link "
+"xlink:href=\"https://gitlab.com/Oslandia/documentation/presentations/-/blob/"
+"master/2012/pgconf_eu_2012/"
+"pgconfeu2012_vincent_picavet_postgis_topology.pdf\">PostGIS Topology PGConf "
+"EU 2012</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"An example of a topologically based GIS database is the <link xlink:"
-"href=\"https://www.census.gov/geo/maps-data/data/tiger.html\">US Census "
-"Topologically Integrated Geographic Encoding and Referencing System (TIGER)</"
-"link> database. If you want to experiment with PostGIS topology and need "
-"some data."
+"An example of a topologically based GIS database is the <link "
+"xlink:href=\"https://www.census.gov/geo/maps-data/data/tiger.html\">US "
+"Census Topologically Integrated Geographic Encoding and Referencing System "
+"(TIGER)</link> database. If you want to experiment with PostGIS topology and "
+"need some data."
 msgstr ""
 
 #. Tag: para
@@ -890,8 +2603,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Details of this project can be found at <link xlink:href=\"http://trac.osgeo."
-"org/postgis/wiki/UsersWikiPostgisTopology\">PostGIS Topology Wiki</link>"
+"This chapter is the maintained reference for the topology module, including "
+"its primitive tables, TopoGeometry type, topology management functions, "
+"editing functions, validation functions, and conversion helpers."
 msgstr ""
 
 #. Tag: para
@@ -1427,6 +3141,13 @@ msgid ""
 "topogeometry column definition was changed. This caused corruption in "
 "topogeometries created before the upgrade. This function fixes this "
 "corruption in affected tables."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The function refuses to process tables with expression or partial indexes; "
+"drop or rebuild those indexes manually around the repair."
 msgstr ""
 
 #. Tag: para
@@ -2303,6 +4024,16 @@ msgid ""
 "The number of newly created edges (either covering space previously "
 "uncovered or resulting from split of existing edges) may be limited by the "
 "<varname>max_edges</varname> parameter."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When adding many lines, the load order can have a large impact on "
+"performance because each call checks the line against topology elements "
+"already loaded. In bulk workflows, adding large closed or enclosing lines "
+"before smaller contained lines can avoid expensive later splits. For loading "
+"a collection in one call, see <xref linkend=\"TopoGeo_LoadGeometry\"/>."
 msgstr ""
 
 #. Tag: para
@@ -4478,8 +6209,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Refer to the PostgreSQL installation guides if you haven't already installed "
-"PostgreSQL. <link xlink:href=\"https://www.postgresql.org\"> https://www."
-"postgresql.org </link> ."
+"PostgreSQL. <link xlink:href=\"https://www.postgresql.org\"> https://"
+"www.postgresql.org </link> ."
 msgstr ""
 
 #. Tag: para
@@ -4513,8 +6244,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Retrieve the PostGIS source archive from the downloads website <link xlink:"
-"href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
+"Retrieve the PostGIS source archive from the downloads website <link "
+"xlink:href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
 msgstr ""
 
 #. Tag: para
@@ -4560,17 +6291,16 @@ msgstr ""
 msgid ""
 "PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
 "installation of PostgreSQL (including server headers) is required. "
-"PostgreSQL is available from <link xlink:href=\"https://www.postgresql."
-"org\"> https://www.postgresql.org </link>18 ."
+"PostgreSQL is available from <link xlink:href=\"https://"
+"www.postgresql.org\"> https://www.postgresql.org </link>18 ."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support "
-"matrix refer to <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS\">https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS</link>"
+"For current release-line support and end-of-life policy, see <link "
+"xlink:href=\"https://postgis.net/development/versions_eol/\">https://"
+"postgis.net/development/versions_eol/</link>"
 msgstr ""
 
 #. Tag: para
@@ -4640,16 +6370,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "GDAL, version 3+ is preferred. This is required for raster support. <link "
-"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/download."
-"html</link>."
+"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/"
+"download.html</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <link "
-"xlink:href=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo."
-"org/postgis/ticket/4125</link>."
+"xlink:href=\"https://trac.osgeo.org/postgis/ticket/4125\">https://"
+"trac.osgeo.org/postgis/ticket/4125</link>."
 msgstr ""
 
 #. Tag: emphasis
@@ -4687,9 +6417,9 @@ msgstr ""
 msgid ""
 "To enable ST_AsMVT protobuf-c library 1.1.0 or higher (for usage) and the "
 "protoc-c compiler (for building) are required. Also, pkg-config is required "
-"to verify the correct minimum version of protobuf-c. See <link xlink:"
-"href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>. By "
-"default, Postgis will use Wagyu to validate MVT polygons faster which "
+"to verify the correct minimum version of protobuf-c. See <link "
+"xlink:href=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</link>. "
+"By default, Postgis will use Wagyu to validate MVT polygons faster which "
 "requires a c++11 compiler. It will use CXXFLAGS and the same compiler as the "
 "PostgreSQL installation. To disable this and use GEOS instead use the "
 "<varname>--without-wagyu</varname> during the configure step."
@@ -4699,25 +6429,25 @@ msgstr ""
 #, no-c-format
 msgid ""
 "CUnit (<filename>CUnit</filename>). This is needed for regression testing. "
-"<link xlink:href=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge."
-"net/</link>"
+"<link xlink:href=\"http://cunit.sourceforge.net/\">http://"
+"cunit.sourceforge.net/</link>"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "DocBook (<filename>xsltproc</filename>) is required for building the "
-"documentation. Docbook is available from <link xlink:href=\"http://www."
-"docbook.org/\"> http://www.docbook.org/ </link> ."
+"documentation. Docbook is available from <link xlink:href=\"http://"
+"www.docbook.org/\"> http://www.docbook.org/ </link> ."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "DBLatex (<filename>dblatex</filename>) is required for building the "
-"documentation in PDF format. DBLatex is available from <link xlink:"
-"href=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </"
-"link> ."
+"documentation in PDF format. DBLatex is available from <link "
+"xlink:href=\"http://dblatex.sourceforge.net/\"> http://"
+"dblatex.sourceforge.net/ </link> ."
 msgstr ""
 
 #. Tag: para
@@ -4728,8 +6458,8 @@ msgid ""
 "ImageMagick (<filename>convert</filename> or <filename>magick convert</"
 "filename>) provides the same command-line syntax. GraphicsMagick is "
 "available from <link xlink:href=\"http://www.graphicsmagick.org/\"> http://"
-"www.graphicsmagick.org/ </link> and ImageMagick from <link xlink:"
-"href=\"https://imagemagick.org/\"> https://imagemagick.org/ </link> ."
+"www.graphicsmagick.org/ </link> and ImageMagick from <link "
+"xlink:href=\"https://imagemagick.org/\"> https://imagemagick.org/ </link> ."
 msgstr ""
 
 #. Tag: title
@@ -4787,9 +6517,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This parameter is currently broken, as the package will only install into "
-"the PostgreSQL installation directory. Visit <link xlink:href=\"http://trac."
-"osgeo.org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </"
-"link> to track this bug."
+"the PostgreSQL installation directory. Visit <link xlink:href=\"http://"
+"trac.osgeo.org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/"
+"635 </link> to track this bug."
 msgstr ""
 
 #. Tag: para
@@ -4880,11 +6610,11 @@ msgid ""
 "By default PostGIS will try to detect gettext support and compile with it, "
 "however if you run into incompatibility issues that cause breakage of "
 "loader, you can disable it entirely with this command. Refer to ticket <link "
-"xlink:href=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo."
-"org/postgis/ticket/748</link> for an example issue solved by configuring "
-"with this. NOTE: that you aren't missing much by turning this off. This is "
-"used for international help/label support for the GUI loader which is not "
-"yet documented and still experimental."
+"xlink:href=\"http://trac.osgeo.org/postgis/ticket/748\">http://"
+"trac.osgeo.org/postgis/ticket/748</link> for an example issue solved by "
+"configuring with this. NOTE: that you aren't missing much by turning this "
+"off. This is used for international help/label support for the GUI loader "
+"which is not yet documented and still experimental."
 msgstr ""
 
 #. Tag: para
@@ -4961,8 +6691,9 @@ msgid ""
 "The <command>make cheatsheets</command> target generates html cheat sheets "
 "suitable for quick reference or for student handouts. This requires xsltproc "
 "to build and will generate 4 files in doc folder "
-"<filename>topology_cheatsheet.html</filename>, <filename>raster_cheatsheet."
-"html</filename>, <filename>postgis_cheatsheet.html</filename>"
+"<filename>topology_cheatsheet.html</filename>, "
+"<filename>raster_cheatsheet.html</filename>, "
+"<filename>postgis_cheatsheet.html</filename>"
 msgstr ""
 
 #. Tag: para
@@ -5014,8 +6745,8 @@ msgid ""
 "<code>make check</code> uses psql to run tests and as such can use psql "
 "environment variables. Common ones useful to override are <varname>PGUSER</"
 "varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to "
-"<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-envars."
-"html\">psql environment variables</link>"
+"<link xlink:href=\"https://www.postgresql.org/docs/current/libpq-"
+"envars.html\">psql environment variables</link>"
 msgstr ""
 
 #. Tag: para
@@ -5298,10 +7029,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The output from configure is used to generate the <filename>postgis_config."
-"h</filename> file. Check that the <varname>POSTGIS_PGSQL_VERSION</varname>, "
-"<varname>POSTGIS_PROJ_VERSION</varname> and <varname>POSTGIS_GEOS_VERSION</"
-"varname> variables have been set correctly."
+"The output from configure is used to generate the "
+"<filename>postgis_config.h</filename> file. Check that the "
+"<varname>POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</"
+"varname> and <varname>POSTGIS_GEOS_VERSION</varname> variables have been set "
+"correctly."
 msgstr ""
 
 #. Tag: title
@@ -5309,1316 +7041,405 @@ msgstr ""
 msgid "Introduction"
 msgstr ""
 
-#. Tag: para
+#. Tag: title
 #, no-c-format
-msgid ""
-"PostGIS is a spatial extension for the PostgreSQL relational database that "
-"was created by Refractions Research Inc, as a spatial database technology "
-"research project. Refractions is a GIS and database consulting company in "
-"Victoria, British Columbia, Canada, specializing in data integration and "
-"custom software development."
+msgid "What Is PostGIS?"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"PostGIS is now a project of the OSGeo Foundation and is developed and funded "
-"by many FOSS4G developers and organizations all over the world that gain "
-"great benefit from its functionality and versatility."
+"PostGIS extends <link xlink:href=\"https://www.postgresql.org/\">PostgreSQL</"
+"link> so that geospatial data can be stored, indexed, queried, and processed "
+"in the database. It keeps location data beside ordinary relational data, so "
+"a spatial query can use the same SQL, transactions, constraints, access "
+"controls, backup tools, and application connections as the rest of a "
+"PostgreSQL database."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The main <literal>postgis</literal> extension adds:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The PostGIS project development group plans on supporting and enhancing "
-"PostGIS to better support a range of important GIS functionality in the "
-"areas of OGC and SQL/MM spatial standards, advanced topological constructs "
-"(coverages, surfaces, networks), data source for desktop user interface "
-"tools for viewing and editing GIS data, and web-based access tools."
+"<varname>geometry</varname> for planar coordinate systems and "
+"<varname>geography</varname> for geodetic coordinates on the earth."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Spatial indexes that let the PostgreSQL planner avoid scanning every row "
+"when objects can be filtered by location."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Functions for measurement, relationships, overlays, geometry construction "
+"and editing, coordinate transformation, clustering, and spatial data "
+"exchange."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Support for common geospatial encodings and formats, including WKT, WKB, "
+"GeoJSON, GML, KML, FlatGeobuf, Geobuf, and Mapbox Vector Tiles."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This makes PostgreSQL a spatial database: applications can ask both ordinary "
+"questions and location-aware questions without moving data to a separate GIS "
+"processing system. Desktop GIS, map servers, ETL tools, and application "
+"frameworks can connect through normal PostgreSQL interfaces."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Project Steering Committee"
+msgid "What Is in the PostGIS Distribution?"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The PostGIS Project Steering Committee (PSC) coordinates the general "
-"direction, release cycles, documentation, and outreach efforts for the "
-"PostGIS project. In addition the PSC provides general user support, accepts "
-"and approves patches from the general PostGIS community and votes on "
-"miscellaneous issues involving PostGIS such as developer commit access, new "
-"PSC members or significant API changes."
+"This manual documents the main PostGIS source distribution. Depending on how "
+"PostGIS was built and packaged, it can provide several PostgreSQL extensions "
+"and command-line tools:"
+msgstr ""
+
+#. Tag: literal
+#, no-c-format
+msgid "postgis"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The core geometry and geography types, spatial indexes, and most spatial "
+"functions."
+msgstr ""
+
+#. Tag: literal
+#, no-c-format
+msgid "postgis_raster"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Raster storage, analysis, loading, and export. Raster support uses GDAL and "
+"can be omitted from a build."
+msgstr ""
+
+#. Tag: literal
+#, no-c-format
+msgid "postgis_topology"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"SQL/MM topology types and functions for models based on shared nodes, edges, "
+"and faces."
+msgstr ""
+
+#. Tag: literal
+#, no-c-format
+msgid "postgis_sfcgal"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Additional 2D and 3D processing functions backed by the optional SFCGAL "
+"library."
 msgstr ""
 
 #. Tag: term
 #, no-c-format
-msgid "Raúl Marín Rodríguez"
+msgid "Loaders and utilities"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"MVT support, Bug fixing, Performance and stability improvements, GitHub "
-"curation, alignment of PostGIS with PostgreSQL releases"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Regina Obe"
+"<command>shp2pgsql</command>, <command>pgsql2shp</command>, and "
+"<command>raster2pgsql</command> move data between common file formats and "
+"PostGIS. Other utilities support upgrades, profiling, and development."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"CI and website maintenance, Windows production and experimental builds, "
-"documentation, alignment of PostGIS with PostgreSQL releases, X3D support, "
-"management functions."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Darafei Praliaskouski"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Index improvements, bug fixing and geometry/geography function improvements, "
-"SFCGAL, raster, GitHub curation, and ci maintenance."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Paul Ramsey (Chair)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Co-founder of PostGIS project. General bug fixing, geography support, "
-"geography and geometry index support (2D, 3D, nD index and anything spatial "
-"index), underlying geometry internal structures, GEOS functionality "
-"integration and alignment with GEOS releases, alignment of PostGIS with "
-"PostgreSQL releases, loader/dumper, and Shapefile GUI loader."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Sandro Santilli"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Bug fixes and maintenance, ci maintenance, git mirror management, management "
-"functions, integration of new GEOS functionality and alignment with GEOS "
-"releases, topology support, and raster framework and low level API functions."
+"The source tree also contains internal libraries such as "
+"<filename>liblwgeom</filename> and <filename>libpgcommon</filename>. They "
+"are implementation layers shared by PostGIS components, not separately "
+"released PostgreSQL extensions. Most users start by enabling the core "
+"extension with <code>CREATE EXTENSION postgis</code>; see <xref "
+"linkend=\"postgis_installation\"/> for available components and build "
+"options."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Core Contributors Present"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Nicklas Avén"
+msgid "The PostGIS Project Family"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Distance function enhancements (including 3D distance and relationship "
-"functions) and additions, Tiny WKB (TWKB) output format and general user "
-"support"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Loïc Bartoletti"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "SFCGAL enhancements and maintenance and ci support"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Dan Baston"
+"This manual covers the main <literal>postgis/postgis</literal> distribution. "
+"The official <link xlink:href=\"https://gitea.osgeo.org/postgis/\">PostGIS "
+"source organization</link> also hosts or mirrors complementary projects. "
+"These projects have their own release cycles, installation instructions, and "
+"documentation; installing the core extension does not install them."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Geometry clustering function additions, other geometry algorithm "
-"enhancements, GEOS enhancements and general user support"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Martin Davis"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "GEOS enhancements and documentation"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Björn Harrtell"
+"<link xlink:href=\"https://github.com/postgis/address_standardizer\">Address "
+"Standardizer</link> parses and normalizes postal addresses. It moved from "
+"the main PostGIS source tree to a separate repository for the PostGIS 3.7 "
+"development cycle."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and "
-"GitLab experimentation."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Aliaksandr Kalenik"
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/"
+"postgis_tiger_geocoder\">PostGIS TIGER Geocoder</link> provides United "
+"States address geocoding and reverse geocoding using Census TIGER data. It "
+"is also maintained separately from the main distribution."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Geometry Processing, PostgreSQL gist, general bug fixing"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "<term>Laurențiu Nicola</term>"
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/h3-pg\">H3-pg</link> provides "
+"PostgreSQL bindings for the H3 hierarchical hexagonal indexing system and "
+"interoperates with PostGIS."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Bug fixes, maintenance, stability, and performance"
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis-java\">PostGIS Java</"
+"link> provides Java bindings for PostGIS types."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://postgis.net/workshops/postgis-intro/"
+"\">Introduction to PostGIS</link> is the hands-on workshop maintained by the "
+"PostGIS project."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Other PostgreSQL spatial extensions can complement PostGIS while remaining "
+"independent projects. For example, <link xlink:href=\"https://pgrouting.org/"
+"\">pgRouting</link> adds routing and graph analysis. Use each project's own "
+"manual for its functions and support policy."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Core Contributors Past"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Bborie Park"
+msgid "How to Use This Manual"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Prior PSC Member. Raster development, integration with GDAL, raster loader, "
-"user support, general bug fixing, testing on various OS (Slackware, Mac, "
-"Windows, and more)"
+"The manual is both a guide to the PostGIS data model and the complete "
+"reference for the SQL interface. Choose a starting point based on what you "
+"are trying to do:"
 msgstr ""
 
 #. Tag: term
 #, no-c-format
-msgid "Mark Cave-Ayland"
+msgid "If you are new to spatial SQL"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial "
-"index selectivity and binding, loader/dumper, and Shapefile GUI Loader, "
-"integration of new and new function enhancements."
+"Start with the <link xlink:href=\"https://postgis.net/workshops/postgis-"
+"intro/\">Introduction to PostGIS workshop</link> for a tutorial, then use "
+"<xref linkend=\"using_postgis_dbmanagement\"/> to understand spatial types, "
+"coordinate systems, validity, loading, and indexes."
 msgstr ""
 
 #. Tag: term
 #, no-c-format
-msgid "Jorge Arévalo"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Raster development, GDAL driver support, loader"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Olivier Courtin"
+msgid "If you are installing or upgrading PostGIS"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug "
-"fixes."
+"Read <xref linkend=\"postgis_installation\"/> and <xref "
+"linkend=\"postgis_administration\"/>. Package-specific instructions and "
+"supported release information are maintained on the <link "
+"xlink:href=\"https://postgis.net/documentation/getting_started/\">PostGIS "
+"website</link>."
 msgstr ""
 
 #. Tag: term
 #, no-c-format
-msgid "Chris Hodgson"
+msgid "If you are writing spatial queries"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Prior PSC Member. General development, site and buildbot maintenance, OSGeo "
-"incubation management"
+"Read <xref linkend=\"using_postgis_query\"/> for spatial relationships and "
+"index-aware query patterns, and <xref linkend=\"performance_tips\"/> for "
+"common performance problems."
 msgstr ""
 
 #. Tag: term
 #, no-c-format
-msgid "Mateusz Loskot"
+msgid "If you need a particular function"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"CMake support for PostGIS, built original raster loader in python and low "
-"level raster API functions"
+"Use <xref linkend=\"reference\"/> or <xref "
+"linkend=\"PostGIS_Special_Functions_Index\"/>. Function pages state accepted "
+"types, dimensional support, standards conformance, dependency requirements, "
+"and version availability."
 msgstr ""
 
 #. Tag: term
 #, no-c-format
-msgid "Kevin Neufeld"
+msgid "If you use an optional component"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Prior PSC Member. Documentation and documentation support tools, buildbot "
-"maintenance, advanced user support on PostGIS newsgroup, and PostGIS "
-"maintenance function enhancements."
+"See <xref linkend=\"Topology\"/>, <xref linkend=\"using_raster_dataman\"/>, "
+"<xref linkend=\"RT_reference\"/>, or <xref linkend=\"reference_sfcgal\"/>."
 msgstr ""
 
 #. Tag: term
 #, no-c-format
-msgid "Dave Blasby"
+msgid "If something goes wrong"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The original developer/Co-founder of PostGIS. Dave wrote the server side "
-"objects, index bindings, and many of the server side analytical functions."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Jeff Lounsbury"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Original development of the Shapefile loader/dumper."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Mark Leslie"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Ongoing maintenance and development of core functions. Enhanced curve "
-"support. Shapefile GUI loader."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Pierre Racine"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Architect of PostGIS raster implementation. Raster overall architecture, "
-"prototyping, programming support"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "David Zwarg"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Raster development (mostly map algebra analytic functions)"
+"Collect the versions reported by <xref linkend=\"PostGIS_Full_Version\"/> "
+"and follow <xref linkend=\"reporting\"/>. Check <xref "
+"linkend=\"release_notes\"/> when behavior differs between release lines."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Other Contributors"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Individual Contributors"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Alex Bodnaru"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Alex Mayrhofer"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Andrea Peri"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Andreas Forø Tollefsen"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Andreas Neumann"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Andrew Gierth"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Anne Ghisla"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Antoine Bajolet"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Arthur Lesuisse"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Artur Zakirov"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Ayo Adesugba"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Barbara Phillipot"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Ben Jubb"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Bernhard Reiter"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Björn Esser"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Brian Hamlin"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Bruce Rindahl"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Bruno Wolff III"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Bryce L. Nordgren"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Carl Anderson"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Charlie Savage"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Chris Mayo"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Christian Schroeder"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Christoph Berg"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Christoph Moench-Tegeder"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Dane Springmeyer"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Daniel Nylander"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Dapeng Wang"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Daryl Herzmann"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Dave Fuhry"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "David Garnier"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "David Skea"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "David Techer"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Denys Kovshun"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Dian M Fay"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Dmitry Vasilyev"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Eduin Carrillo"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Esteban Zimanyi"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Eugene Antimirov"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Even Rouault"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Florian Weimer"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Frank Warmerdam"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "George Silva"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Gerald Fenoy"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Gino Lucrezi"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Greg Troxel"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Guillaume Lelarge"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Giuseppe Broccolo"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Han Wang"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Hans Lemuet"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Haribabu Kommi"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Havard Tveite"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "IIDA Tetsushi"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Ingvild Nystuen"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jackie Leng"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "James Addison"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "James Marca"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jan Katins"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jan Tojnar"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jason Smith"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jeff Adams"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jelte Fennema"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jim Jones"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Joe Conway"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jonne Savolainen"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jose Carlos Martinez Llari"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Jörg Habenicht"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Julien Rouhaud"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Kashif Rasul"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Klaus Foerster"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Kris Jurka"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "<member>Laurențiu Nicola</member>"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Laurenz Albe"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Lars Roessiger"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Leo Hsu"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Loic Dachary"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Luca S. Percich"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Lucas C. Villa Real"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Maksim Korotkov"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Maria Arias de Reyna"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Marc Ducobu"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Mark Sondheim"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Markus Schaber"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Markus Wanner"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Matt Amos"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Matt Bretl"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Matthias Bay"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Maxime Guillaud"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Maxime van Noppen"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Maxime Schoemans"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Megan Ma"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Michael Fuhr"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Mike Toews"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Nathan Wagner"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Nathaniel Clay"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Nikita Shulga"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Norman Vine"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Patricia Tozer"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Rafal Magda"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Ralph Mason"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Rémi Cura"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Richard Greenwood"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Robert Coup"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Roger Crew"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Ron Mayer"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Sam Peters"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Sebastiaan Couwenberg"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Sergei Shoulbakov"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Sergey Fedoseev"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Shinichi Sugiyama"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Shoaib Burq"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Silvio Grosso"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Stefan Corneliu Petrea"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Steffen Macke"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Stepan Kuzmin"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Stephen Frost"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Steven Ottens"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Talha Rizwan"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Teramoto Ikuhiro"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Tom Glancy"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Tom van Tilburg"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Victor Collod"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Vincent Bre"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Vincent Mora"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Vincent Picavet"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Volf Tomáš"
-msgstr ""
-
-#. Tag: member
-#, no-c-format
-msgid "Zuo Chenwei"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Corporate Sponsors"
+msgid "Standards Support"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"These are corporate entities that have contributed developer time, hosting, "
-"or direct monetary funding to the PostGIS project. In alphabetical order:"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Aiven"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Arrival 3D"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "AusVet"
-msgstr ""
-
-#. Tag: simpara
-#, no-c-format
-msgid "Avencia"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Azavea"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Boundless"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Cadcorp"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Camptocamp"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Carto"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Crunchy Data"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "City of Boston (DND)"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "City of Helsinki"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Clever Elephant Solutions"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Cooperativa Alveo"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Deimos Space"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Faunalia"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Geographic Data BC"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "HighGo"
-msgstr ""
-
-#. Tag: simpara
-#, no-c-format
-msgid "Hunter Systems Group"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "INIA-CSIC"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "ISciences, LLC"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Kontur"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Lidwala Consulting Engineers"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "LISAsoft"
-msgstr ""
-
-#. Tag: simpara
-#, no-c-format
-msgid "Logical Tracking &amp; Tracing International AG"
-msgstr ""
-
-#. Tag: simpara
-#, no-c-format
-msgid "Maponics"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Michigan Tech Research Institute"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Natural Resources Canada"
-msgstr ""
-
-#. Tag: simpara
-#, no-c-format
-msgid "Norwegian Forest and Landscape Institute"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Norwegian Institute of Bioeconomy Research (NIBIO)"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "OSGeo"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Oslandia"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Palantir Technologies"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Paragon Corporation"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Postgres Pro"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "R3 GIS"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Refractions Research"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Regione Toscana - SITA"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Safe Software"
-msgstr ""
-
-#. Tag: simpara
-#, no-c-format
-msgid "Sirius Corporation plc"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Stadt Uster"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "UC Davis Center for Vectorborne Diseases"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Université Laval"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "U.S. Census Bureau"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "U.S. Department of State (HIU)"
-msgstr ""
-
-#. Tag: link
-#, no-c-format
-msgid "Zonar Systems"
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Crowd Funding Campaigns"
+"This manual marks individual functions as compliant with spatial standards "
+"so users can tell which behavior is portable and which behavior is a PostGIS "
+"extension. PostGIS implements the <link xlink:href=\"https://www.ogc.org/"
+"standard/sfs/\">OGC Simple Features for SQL</link> model, including the "
+"geometry type, Well-Known Text (WKT), Well-Known Binary (WKB), and the "
+"common spatial accessors, constructors, predicates, and processing "
+"functions. PostGIS also implements many <link xlink:href=\"https://"
+"www.iso.org/standard/60343.html\">SQL/MM Spatial</link> types and functions."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Crowd funding campaigns are campaigns we run to get badly wanted features "
-"funded that can service a large number of people. Each campaign is "
-"specifically focused on a particular feature or set of features. Each "
-"sponsor chips in a small fraction of the needed funding and with enough "
-"people/organizations contributing, we have the funds to pay for the work "
-"that will help many. If you have an idea for a feature you think many others "
-"would be willing to co-fund, please post to the <link xlink:href=\"https://"
-"lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</link> "
-"your thoughts and together we can make it happen."
+"PostGIS supports geometry families defined by later standards, including SQL/"
+"MM curved geometry and OGC Simple Features Access 1.2 PolyhedralSurface, "
+"Triangle, and TIN. Support for these geometry families is function-specific, "
+"and each function page documents the supported input types and conformance "
+"level."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"PostGIS has experimented with community fundraising for features in the "
-"past. We used <link xlink:href=\"http://www.pledgebank.com\">PledgeBank</"
-"link> and we got two successful campaigns out of it."
+"PostGIS also includes widely used extensions and integrations. Examples of "
+"PostGIS extensions include Extended WKT (EWKT), Extended WKB (EWKB), SRID "
+"metadata in those extended formats, geography, and raster. PostGIS also "
+"supports input and output exchange formats defined by other standards, such "
+"as GeoJSON, GML, and KML. These features are documented individually and "
+"should not be read as OGC Simple Features or SQL/MM requirements unless the "
+"specific function or format says so."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"http://www.pledgebank.com/postgistopology\"><emphasis "
-"role=\"bold\">postgistopology</emphasis></link> - 10 plus sponsors each "
-"contributed $250 USD to build toTopoGeometry function and beef up topology "
-"support in 2.0.0. It happened."
+"When the implementation intentionally differs from a standard, or when a "
+"standard leaves behavior ambiguous, the relevant function page describes the "
+"PostGIS behavior. <xref linkend=\"PostGIS_Special_Functions_Index\"/> "
+"summarizes SQL/MM compliance and geometry-type support across functions."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Project and Community"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
-"role=\"bold\">postgis64windows</emphasis></link> - 20 someodd sponsors each "
-"contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
-"issues on windows. It happened."
-msgstr ""
-
-#. Tag: term
-#, no-c-format
-msgid "Important Support Libraries"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The <link xlink:href=\"https://libgeos.org\">GEOS</link> geometry operations "
-"library"
+"PostGIS began in 2001 as a spatial database research project at Refractions "
+"Research. It is now an <link xlink:href=\"https://www.osgeo.org/projects/"
+"postgis/\">OSGeo project</link> developed by contributors and organizations "
+"around the world. The Project Steering Committee coordinates releases, "
+"project policy, and the general direction of development. The complete "
+"contributor and sponsor record is in <xref linkend=\"postgis_credits\"/> at "
+"the end of this manual."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <link xlink:href=\"https://gdal.org\">GDAL</link> Geospatial Data "
-"Abstraction Library used to power much of the raster functionality "
-"introduced in PostGIS 2. In kind, improvements needed in GDAL to support "
-"PostGIS are contributed back to the GDAL project."
+"The manual is the authoritative reference for the released SQL interface. "
+"The project website and source tree provide the surrounding material:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <link xlink:href=\"https://www.proj4.org\">PROJ</link> cartographic "
-"projection library"
+"<link xlink:href=\"https://postgis.net/documentation/\">Documentation</link> "
+"routes readers to getting-started instructions, versioned manuals, tips, "
+"training material, and the FAQ."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Last but not least, <link xlink:href=\"http://www.postgresql."
-"org\">PostgreSQL</link>, the giant that PostGIS stands on. Much of the speed "
-"and flexibility of PostGIS would not be possible without the extensibility, "
-"great query planner, GIST index, and plethora of SQL features provided by "
-"PostgreSQL."
+"<link xlink:href=\"https://postgis.net/community/\">Community</link> lists "
+"mailing lists, chat, events, videos, and other support channels."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/src/branch/master/"
+"doc/development\">Developer documentation</link> covers development "
+"environments, testing, coding style, internals, maintenance, governance, "
+"releases, and website work."
 msgstr ""
 
 #. Tag: title
@@ -6677,10 +7498,10 @@ msgstr ""
 msgid ""
 "To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the PostgreSQL performance mailing list: <link xlink:"
-"href=\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030."
-"php\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
-"link>"
+"read the thread on the PostgreSQL performance mailing list: <link "
+"xlink:href=\"http://archives.postgresql.org/pgsql-performance/2005-02/"
+"msg00030.php\">http://archives.postgresql.org/pgsql-performance/2005-02/"
+"msg00030.php</link>"
 msgstr ""
 
 #. Tag: para
@@ -7473,6 +8294,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"A <varname>TIN</varname>, including a closed TIN surface, is a surface "
+"geometry and has dimension 2. Use <xref linkend=\"CG_MakeSolid\"/> to make "
+"the solid representation explicit; the resulting 3D solid has dimension 3. "
+"Solid geometry semantics, such as volume, are handled separately by the SQL/"
+"MM 3D solid functions (SQL-MM IEC 13249-3: 9.1)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No "
 "longer throws an exception if given empty geometry."
 msgstr ""
@@ -7482,6 +8313,11 @@ msgstr ""
 msgid ""
 "Prior to 2.0.0, this function throws an exception if used with empty "
 "geometry."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_Volume\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -7735,10 +8571,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "Finding interior rings which lie close to the exterior ring."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
-"linkend=\"ST_InteriorRingN\"/>"
+"linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_Buffer\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
+"linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN\"/>, <xref "
+"linkend=\"ST_Intersection\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -8341,8 +9184,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"This complements the PostgreSQL built-in <link xlink:href=\"https://www."
-"postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-"
+"This complements the PostgreSQL built-in <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-"
 "DBOBJECT\">database object functions</link> pg_column_size, pg_size_pretty, "
 "pg_relation_size, pg_total_relation_size."
 msgstr ""
@@ -8382,9 +9225,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns the coordinate dimension of the geometry. PostGIS supports 2 - (x,"
-"y) , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure space x,"
-"y,z,m"
+"Returns the coordinate dimension of the geometry. PostGIS supports 2 - "
+"(x,y) , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure "
+"space x,y,z,m"
 msgstr ""
 
 #. Tag: para
@@ -8721,6 +9564,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Start point of a NURBSCurve"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Build edge node references from the start and end points of a LineString "
+"table. The example uses exact endpoint equality, so linework with nearly "
+"coincident endpoints should be snapped or otherwise cleaned first."
 msgstr ""
 
 #. Tag: para
@@ -11153,25 +12004,25 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Creates a rectangular Polygon giving the extent of a tile in the <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</link>. "
-"The tile is specified by the zoom level Z and the XY index of the tile in "
-"the grid at that level. Can be used to define the tile bounds required by "
-"<xref linkend=\"ST_AsMVTGeom\"/> to convert geometry into the MVT tile "
-"coordinate space."
+"Creates a rectangular Polygon giving the extent of a tile in the <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</"
+"link>. The tile is specified by the zoom level Z and the XY index of the "
+"tile in the grid at that level. Can be used to define the tile bounds "
+"required by <xref linkend=\"ST_AsMVTGeom\"/> to convert geometry into the "
+"MVT tile coordinate space."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"By default, the tile envelope is in the <link xlink:href=\"https://en."
-"wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</link> coordinate "
-"system (SRID:3857) using the standard range of the Web Mercator system "
-"(-20037508.342789, 20037508.342789). This is the most common coordinate "
-"system used for MVT tiles. The optional <varname>bounds</varname> parameter "
-"can be used to generate tiles in any coordinate system. It is a geometry "
-"that has the SRID and extent of the \"Zoom Level zero\" square within which "
-"the XYZ tile system is inscribed."
+"By default, the tile envelope is in the <link xlink:href=\"https://"
+"en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</link> "
+"coordinate system (SRID:3857) using the standard range of the Web Mercator "
+"system (-20037508.342789, 20037508.342789). This is the most common "
+"coordinate system used for MVT tiles. The optional <varname>bounds</varname> "
+"parameter can be used to generate tiles in any coordinate system. It is a "
+"geometry that has the SRID and extent of the \"Zoom Level zero\" square "
+"within which the XYZ tile system is inscribed."
 msgstr ""
 
 #. Tag: para
@@ -11218,9 +12069,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Starts with the concept of a hexagon tiling of the plane. (Not a hexagon "
-"tiling of the globe, this is not the <link xlink:href=\"https://github.com/"
-"uber/h3\">H3</link> tiling scheme.) For a given planar SRS, and a given edge "
-"size, starting at the origin of the SRS, there is one unique hexagonal "
+"tiling of the globe; for H3 use the <link xlink:href=\"https://github.com/"
+"postgis/h3-pg\">h3-pg</link> extension.) For a given planar SRS, and a given "
+"edge size, starting at the origin of the SRS, there is one unique hexagonal "
 "tiling of the plane, Tiling(SRS, Size). This function answers the question: "
 "what hexagons in a given Tiling(SRS, Size) overlap with a given bounds."
 msgstr ""
@@ -11808,11 +12659,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The simplification uses a variant of the <link xlink:href=\"https://en."
-"wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt "
-"algorithm</link>. The <parameter>tolerance</parameter> parameter has units "
-"of distance, and is roughly equal to the square root of triangular areas to "
-"be simplified."
+"The simplification uses a variant of the <link xlink:href=\"https://"
+"en.wikipedia.org/wiki/Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–"
+"Whyatt algorithm</link>. The <parameter>tolerance</parameter> parameter has "
+"units of distance, and is roughly equal to the square root of triangular "
+"areas to be simplified."
 msgstr ""
 
 #. Tag: para
@@ -11821,6 +12672,15 @@ msgid ""
 "To simplify only the \"internal\" edges of the coverage (those that are "
 "shared by two polygons) set the <parameter>simplifyBoundary</parameter> "
 "parameter to false."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Use this function to simplify adjacent polygon layers when shared boundaries "
+"must remain edge-matched. For a single geometry where only self-intersection "
+"and ring validity matter, see <xref linkend=\"ST_SimplifyPreserveTopology\"/"
+">."
 msgstr ""
 
 #. Tag: para
@@ -12703,9 +13563,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Distance\"/>, <link xlink:href=\"http://www.postgresql."
-"org/docs/current/interactive/functions-math.html\">PostgreSQL function "
-"radians()</link>"
+", <xref linkend=\"ST_Distance\"/>, <link xlink:href=\"http://"
+"www.postgresql.org/docs/current/interactive/functions-math.html\">PostgreSQL "
+"function radians()</link>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -12727,8 +13587,8 @@ msgid ""
 "link>. The function allows specification of a different number of digits "
 "after the decimal point in each dimension; unspecified dimensions are "
 "assumed to have the precision of the <code>x</code> dimension. Negative "
-"digits are interpreted to refer digits to the left of the decimal point, (i."
-"e., <code>prec_x=-2</code> will preserve coordinate values to the nearest "
+"digits are interpreted to refer digits to the left of the decimal point, "
+"(i.e., <code>prec_x=-2</code> will preserve coordinate values to the nearest "
 "100."
 msgstr ""
 
@@ -13594,10 +14454,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more examples of usage refer to <link xlink:href=\"https://www."
-"postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-altersystem.html\">SQL "
-"ALTER SYSTEM</link>"
+"For more examples of usage refer to <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/sql-set.html\">SQL SET</link> and <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"altersystem.html\">SQL ALTER SYSTEM</link>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -13633,9 +14493,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Additional information about GDAL_DATA is available at GDAL's <link xlink:"
-"href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
-"link>."
+"Additional information about GDAL_DATA is available at GDAL's <link "
+"xlink:href=\"https://gdal.org/user/configoptions.html\">Configuration "
+"Options</link>."
 msgstr ""
 
 #. Tag: para
@@ -13682,16 +14542,18 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Enabled GDAL specified drivers can be specified by the driver's short-name "
-"or code. Driver short-names or codes can be found at <link xlink:"
-"href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</link>. "
-"Multiple drivers can be specified by putting a space between each driver."
+"or code. Driver short-names or codes can be found at <link "
+"xlink:href=\"http://www.gdal.org/formats_list.html\">GDAL Raster Formats</"
+"link>. Multiple drivers can be specified by putting a space between each "
+"driver."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"There are three special codes available for <varname>postgis."
-"gdal_enabled_drivers</varname>. The codes are case-sensitive."
+"There are three special codes available for "
+"<varname>postgis.gdal_enabled_drivers</varname>. The codes are case-"
+"sensitive."
 msgstr ""
 
 #. Tag: para
@@ -13732,9 +14594,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Additional information about GDAL_SKIP is available at GDAL's <link xlink:"
-"href=\"https://gdal.org/user/configoptions.html\">Configuration Options</"
-"link>."
+"Additional information about GDAL_SKIP is available at GDAL's <link "
+"xlink:href=\"https://gdal.org/user/configoptions.html\">Configuration "
+"Options</link>."
 msgstr ""
 
 #. Tag: para
@@ -13842,10 +14704,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A string configuration to set options used when working with an out-db "
-"raster. <link xlink:href=\"https://gdal.org/user/configoptions."
-"html\">Configuration options</link> control things like how much space GDAL "
-"allocates to local data cache, whether to read overviews, and what access "
-"keys to use for remote out-db data sources."
+"raster. <link xlink:href=\"https://gdal.org/user/"
+"configoptions.html\">Configuration options</link> control things like how "
+"much space GDAL allocates to local data cache, whether to read overviews, "
+"and what access keys to use for remote out-db data sources."
 msgstr ""
 
 #. Tag: para
@@ -14894,8 +15756,8 @@ msgstr ""
 msgid ""
 "OGC KML versions supported: <itemizedlist> <listitem> <para>KML 2.2.0 "
 "Namespace</para> </listitem> </itemizedlist> OGC KML standards, cf: <link "
-"xlink:href=\"http://www.opengeospatial.org/standards/kml\">http://www."
-"opengeospatial.org/standards/kml</link>:"
+"xlink:href=\"http://www.opengeospatial.org/standards/kml\">http://"
+"www.opengeospatial.org/standards/kml</link>:"
 msgstr ""
 
 #. Tag: para
@@ -14916,8 +15778,8 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
-"Creates a geometry instance from a TWKB (\"<link xlink:href=\"https://github."
-"com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</"
+"Creates a geometry instance from a TWKB (\"<link xlink:href=\"https://"
+"github.com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</"
 "link>\") geometry representation."
 msgstr ""
 
@@ -14925,8 +15787,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB (\"<link "
-"xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
-"md\">Tiny Well-Known Binary</link>\") geometry representation (WKB) and "
+"xlink:href=\"https://github.com/TWKB/Specification/blob/master/"
+"twkb.md\">Tiny Well-Known Binary</link>\") geometry representation (WKB) and "
 "creates an instance of the appropriate geometry type."
 msgstr ""
 
@@ -15025,8 +15887,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Creates a table based on the structure of FlatGeobuf data. (<link xlink:"
-"href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
+"Creates a table based on the structure of FlatGeobuf data. (<link "
+"xlink:href=\"http://flatgeobuf.org\">http://flatgeobuf.org</link>)."
 msgstr ""
 
 #. Tag: para
@@ -15149,8 +16011,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"An interpolated point can be offset to the left or right of a line by using "
+"<xref linkend=\"ST_OffsetCurve\"/> before interpolation. This is useful for "
+"locating an address point beside a street centerline."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref "
-"linkend=\"ST_LineLocatePoint\"/>"
+"linkend=\"ST_LineLocatePoint\"/>, <xref linkend=\"ST_OffsetCurve\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -15274,9 +16144,14 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "This example locates the closest segment and point on a LineString."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid ""
-", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
-">, <xref linkend=\"ST_LineSubstring\"/>"
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_Length2D\"/>, <xref "
+"linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -15353,6 +16228,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"Split a LineString by points by locating the points along the line, adding "
+"the 0 and 1 endpoints, and extracting substrings between adjacent locations."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Geography implementation measures along a spheroid, geometry along a line"
 msgstr ""
 
@@ -15368,7 +16250,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LineExtend\"/>, <xref "
-"linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge\"/>"
+"linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineLocatePoint\"/"
+">, <xref linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_Split\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -16065,9 +16948,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For the geography type, the azimuth solution is known as the <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse "
-"geodesic problem</link>."
+"For the geography type, the azimuth solution is known as the <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
+"Geodesics_on_an_ellipsoid\">inverse geodesic problem</link>."
 msgstr ""
 
 #. Tag: para
@@ -16082,12 +16965,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Azimuth can be used in conjunction with <xref linkend=\"ST_Translate\"/> to "
-"shift an object along its perpendicular axis. See the "
-"<varname>upgis_lineshift()</varname> function in the <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/wiki/"
-"UsersWikiplpgsqlfunctions\">PostGIS wiki</link> for an implementation of "
-"this."
+"For offsetting lines relative to their direction, use <xref "
+"linkend=\"ST_OffsetCurve\"/>. For projecting a point by distance and "
+"bearing, use <xref linkend=\"ST_Project\"/>."
 msgstr ""
 
 #. Tag: para
@@ -16106,6 +16986,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Geometry Azimuth in degrees"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Compass direction labels can be computed from the azimuth."
 msgstr ""
 
 #. Tag: para
@@ -16516,8 +17401,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Implements algorithm for computing the Fréchet distance restricted to "
-"discrete points for both geometries, based on <link xlink:href=\"http://www."
-"kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
+"discrete points for both geometries, based on <link xlink:href=\"http://"
+"www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
 "Fréchet Distance</link>. The Fréchet distance is a measure of similarity "
 "between curves that takes into account the location and ordering of the "
 "points along the curves. Therefore it is often better than the Hausdorff "
@@ -17968,16 +18853,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant (not in a "
-"subquery/cte). e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a."
-"geom"
+"subquery/cte). e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of "
+"a.geom"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Refer to <link xlink:href=\"https://postgis.net/workshops/postgis-intro/knn."
-"html\">PostGIS workshop: Nearest-Neighbor Searching</link> for a detailed "
-"example."
+"Refer to <link xlink:href=\"https://postgis.net/workshops/postgis-intro/"
+"knn.html\">PostGIS workshop: Nearest-Neighbor Searching</link> for a "
+"detailed example."
 msgstr ""
 
 #. Tag: para
@@ -18496,9 +19381,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Return a FlatGeobuf representation (<link xlink:href=\"http://flatgeobuf."
-"org\">http://flatgeobuf.org</link>) of a set of rows corresponding to a "
-"FeatureCollection. NOTE: PostgreSQL bytea cannot exceed 1GB."
+"Return a FlatGeobuf representation (<link xlink:href=\"http://"
+"flatgeobuf.org\">http://flatgeobuf.org</link>) of a set of rows "
+"corresponding to a FeatureCollection. NOTE: PostgreSQL bytea cannot exceed "
+"1GB."
 msgstr ""
 
 #. Tag: para
@@ -18553,12 +19439,12 @@ msgid ""
 "The resulting GeoJSON geometry and feature representations conform with the "
 "<link xlink:href=\"https://tools.ietf.org/html/rfc7946\">GeoJSON "
 "specifications RFC 7946</link>, except when the parsed geometries are "
-"referenced with a CRS other than WGS84 longitude and latitude (<link xlink:"
-"href=\"https://epsg.io/4326\">EPSG:4326</link>, <link xlink:href=\"http://"
-"epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>); the GeoJSON geometry "
-"object will then have a short CRS SRID identifier attached by default. 2D "
-"and 3D Geometries are both supported. GeoJSON only supports SFS 1.1 geometry "
-"types (no curve support for example)."
+"referenced with a CRS other than WGS84 longitude and latitude (<link "
+"xlink:href=\"https://epsg.io/4326\">EPSG:4326</link>, <link "
+"xlink:href=\"http://epsg.io/4326.gml\">urn:ogc:def:crs:OGC::CRS84</link>); "
+"the GeoJSON geometry object will then have a short CRS SRID identifier "
+"attached by default. 2D and 3D Geometries are both supported. GeoJSON only "
+"supports SFS 1.1 geometry types (no curve support for example)."
 msgstr ""
 
 #. Tag: para
@@ -18645,8 +19531,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GeoJSON can be tested and viewed online at <link xlink:href=\"http://geojson."
-"io/\">geojson.io</link> and <link xlink:href=\"http://geojson.io/"
+"GeoJSON can be tested and viewed online at <link xlink:href=\"http://"
+"geojson.io/\">geojson.io</link> and <link xlink:href=\"http://geojson.io/"
 "\">geojsonlint.com</link>. It is widely supported by web mapping frameworks:"
 msgstr ""
 
@@ -19085,13 +19971,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Transforms a geometry into the coordinate space of a MVT (<link xlink:"
-"href=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</link>) "
-"tile, clipping it to the tile bounds if required. The geometry must be in "
-"the coordinate system of the target map (using <xref "
-"linkend=\"ST_Transform\"/> if needed). Commonly this is <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</"
-"link> (SRID:3857)."
+"Transforms a geometry into the coordinate space of a MVT (<link "
+"xlink:href=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</"
+"link>) tile, clipping it to the tile bounds if required. The geometry must "
+"be in the coordinate system of the target map (using <xref "
+"linkend=\"ST_Transform\"/> if needed). Commonly this is <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web "
+"Mercator</link> (SRID:3857)."
 msgstr ""
 
 #. Tag: para
@@ -19194,12 +20080,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"An aggregate function which returns a binary <link xlink:href=\"https://www."
-"mapbox.com/vector-tiles/\">Mapbox Vector Tile</link> representation of a set "
-"of rows corresponding to a tile layer. The rows must contain a geometry "
+"An aggregate function which returns a binary <link xlink:href=\"https://"
+"www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</link> representation of a "
+"set of rows corresponding to a tile layer. The rows must contain a geometry "
 "column which will be encoded as a feature geometry. The geometry must be in "
-"tile coordinate space and valid as per the <link xlink:href=\"https://www."
-"mapbox.com/vector-tiles/specification/\">MVT specification</link>. <xref "
+"tile coordinate space and valid as per the <link xlink:href=\"https://"
+"www.mapbox.com/vector-tiles/specification/\">MVT specification</link>. <xref "
 "linkend=\"ST_AsMVTGeom\"/> can be used to transform geometry into tile "
 "coordinate space. Other row columns are encoded as feature attributes."
 msgstr ""
@@ -19250,8 +20136,8 @@ msgid ""
 "data. Default is the first geometry column. Note that PostgreSQL by default "
 "automatically <link xlink:href=\"https://www.postgresql.org/docs/current/sql-"
 "syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS\">folds unquoted identifiers to "
-"lower case</link>, which means that unless the geometry column is quoted, e."
-"g. <varname>\"MyMVTGeom\"</varname>, this parameter must be provided as "
+"lower case</link>, which means that unless the geometry column is quoted, "
+"e.g. <varname>\"MyMVTGeom\"</varname>, this parameter must be provided as "
 "lowercase."
 msgstr ""
 
@@ -19319,9 +20205,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Availability: 1.2.2. Availability: 1.4.0 Changed in PostGIS 1.4.0 to include "
-"L command in absolute path to conform to <link xlink:href=\"http://www.w3."
-"org/TR/SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/paths."
-"html#PathDataBNF</link>"
+"L command in absolute path to conform to <link xlink:href=\"http://"
+"www.w3.org/TR/SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/"
+"paths.html#PathDataBNF</link>"
 msgstr ""
 
 #. Tag: para
@@ -19348,9 +20234,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a "
-"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/twkb."
-"md\">compressed binary format</link> with a focus on minimizing the size of "
-"the output."
+"<link xlink:href=\"https://github.com/TWKB/Specification/blob/master/"
+"twkb.md\">compressed binary format</link> with a focus on minimizing the "
+"size of the output."
 msgstr ""
 
 #. Tag: para
@@ -19390,9 +20276,9 @@ msgstr ""
 msgid ""
 "The format specification is available online at <link xlink:href=\"https://"
 "github.com/TWKB/Specification\">https://github.com/TWKB/Specification</"
-"link>, and code for building a JavaScript client can be found at <link xlink:"
-"href=\"https://github.com/TWKB/twkb.js\">https://github.com/TWKB/twkb.js</"
-"link>."
+"link>, and code for building a JavaScript client can be found at <link "
+"xlink:href=\"https://github.com/TWKB/twkb.js\">https://github.com/TWKB/"
+"twkb.js</link>."
 msgstr ""
 
 #. Tag: para
@@ -19425,10 +20311,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a geometry as an X3D xml formatted node element <link xlink:"
-"href=\"http://www.web3d.org/standards/number/19776-1\">http://www.web3d.org/"
-"standards/number/19776-1</link>. If <varname>maxdecimaldigits</varname> "
-"(precision) is not specified then defaults to 15."
+"Returns a geometry as an X3D xml formatted node element <link "
+"xlink:href=\"http://www.web3d.org/standards/number/19776-1\">http://"
+"www.web3d.org/standards/number/19776-1</link>. If <varname>maxdecimaldigits</"
+"varname> (precision) is not specified then defaults to 15."
 msgstr ""
 
 #. Tag: para
@@ -19590,9 +20476,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Lots of advancements happening in 3D space particularly with <link xlink:"
-"href=\"https://www.web3d.org/wiki/index.php/X3D_and_HTML5\">X3D Integration "
-"with HTML5</link>"
+"Lots of advancements happening in 3D space particularly with <link "
+"xlink:href=\"https://www.web3d.org/wiki/index.php/X3D_and_HTML5\">X3D "
+"Integration with HTML5</link>"
 msgstr ""
 
 #. Tag: para
@@ -19640,9 +20526,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Copy and paste the output of this query to <link xlink:href=\"http://postgis."
-"net/docs/support/viewers/x3d_viewer.htm\">x3d scene viewer</link> and click "
-"Show"
+"Copy and paste the output of this query to <link xlink:href=\"http://"
+"postgis.net/docs/support/viewers/x3d_viewer.htm\">x3d scene viewer</link> "
+"and click Show"
 msgstr ""
 
 #. Tag: para
@@ -19879,6 +20765,20 @@ msgid ""
 "useful for clipping geometries such as in bounding box, buffer, or region "
 "queries where you only require the portion of a geometry that is inside a "
 "country or region of interest."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Spatial predicates such as <xref linkend=\"ST_Intersects\"/> and overlay "
+"functions such as <function>ST_Intersection</function> are computed by "
+"different algorithms. For very close or nearly coincident coordinates, "
+"floating-point precision and geometric robustness may make a predicate "
+"return true while the computed intersection is empty, or place an "
+"intersection point slightly away from the input line. For repeatable overlay "
+"results, snap inputs to a suitable grid first, for example with <xref "
+"linkend=\"ST_ReducePrecision\"/>, or use the <varname>gridSize</varname> "
+"parameter when all input vertices already lie on the grid."
 msgstr ""
 
 #. Tag: para
@@ -20256,8 +21156,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns a geometry representing the portions of geometries A and B that do "
-"not intersect. This is equivalent to <code>ST_Union(A,B) - ST_Intersection(A,"
-"B)</code>. It is called a symmetric difference because "
+"not intersect. This is equivalent to <code>ST_Union(A,B) - "
+"ST_Intersection(A,B)</code>. It is called a symmetric difference because "
 "<code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>."
 msgstr ""
 
@@ -20696,8 +21596,54 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"Buffering a polygon by a positive distance and then by the same negative "
+"distance is a morphological closing operation. It can be useful for "
+"smoothing noisy boundaries, such as simplifying a coastline by removing "
+"narrow inlets and bays. The result intentionally changes the shape and area "
+"of the input, and the distance must be chosen in the units of the input SRS. "
+"For data in a geographic SRS, transform to a projected SRS suited to the "
+"operation first; for cartographic visualization in Web Mercator, using that "
+"display SRS can be appropriate."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The same technique is described in Paul Ramsey's <link xlink:href=\"https://"
+"blog.cleverelephant.ca/2010/11/removing-complexities.html\">Removing "
+"Complexities</link>. The final simplification step is optional; use <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/> when polygonal validity matters, "
+"and check the result against the cartographic or analytical tolerance "
+"required by the application."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A small negative buffer can also be used as a heuristic to find narrow "
+"polygon spikes. The query below compares how much area and perimeter remain "
+"after erosion. A large <varname>erosion_index</varname> indicates that the "
+"perimeter dropped proportionally more than the area. This is only a "
+"preselection aid; the threshold and buffer distance must be chosen for the "
+"data units and the kind of spike being checked."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A variable-distance buffer can be approximated by buffering each vertex of a "
+"line by a distance interpolated along the line, building the convex hull for "
+"each consecutive pair of vertex buffers, and unioning the segment hulls. As "
+"with any geometry buffer, distances are in the units of the input SRS."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ConvexHull\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
+"linkend=\"ST_DumpPoints\"/>, <xref linkend=\"ST_LineLocatePoint\"/>, <xref "
+"linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SimplifyPreserveTopology\"/>, "
+"<xref linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref "
 "linkend=\"ST_MakeValid\"/>"
 msgstr ""
 
@@ -20757,6 +21703,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a donut from two circular polygons"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Input linework that crosses at non-endpoint intersections must be noded "
+"before building areas:"
 msgstr ""
 
 #. Tag: para
@@ -20853,7 +21806,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_GeometricMedian\"/>"
+msgid ""
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_PointOnSurface\"/>, <xref "
+"linkend=\"ST_GeometricMedian\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -20864,13 +21819,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Smoothes a linear or polygonal geometry using <link xlink:href=\"http://www."
-"idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-Algorithm."
-"html\">Chaikin's algorithm</link>. The degree of smoothing is controlled by "
-"the <varname>nIterations</varname> parameter. On each iteration, each "
-"interior vertex is replaced by two vertices located at 1/4 of the length of "
-"the line segments before and after the vertex. A reasonable degree of "
-"smoothing is provided by 3 iterations; the maximum is limited to 5."
+"Smoothes a linear or polygonal geometry using <link xlink:href=\"http://"
+"www.idav.ucdavis.edu/education/CAGDNotes/Chaikins-Algorithm/Chaikins-"
+"Algorithm.html\">Chaikin's algorithm</link>. The degree of smoothing is "
+"controlled by the <varname>nIterations</varname> parameter. On each "
+"iteration, each interior vertex is replaced by two vertices located at 1/4 "
+"of the length of the line segments before and after the vertex. A reasonable "
+"degree of smoothing is provided by 3 iterations; the maximum is limited to 5."
 msgstr ""
 
 #. Tag: para
@@ -21341,6 +22296,14 @@ msgstr ""
 msgid ""
 "Given a table of polygons s, return 12 individual points per polygon. "
 "Results will be different each time you run."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generate dot-density points from a polygon table, using the absolute value "
+"of an attribute as the number of points and keeping the sign of the "
+"attribute for styling."
 msgstr ""
 
 #. Tag: refpurpose
@@ -21954,12 +22917,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Polygonizing two polygon coverages and transferring attributes to the "
+"resultants:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Polygonizing a table of linestrings:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Node\"/>"
+msgid ""
+", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_PointOnSurface\"/>, <xref linkend=\"ST_UnaryUnion\"/>, <xref "
+"linkend=\"ST_Within\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -22049,6 +23023,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"Adjacent shared path segments may be returned as separate or merged "
+"LineStrings depending on the GEOS version."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "A multilinestring and a linestring"
 msgstr ""
 
@@ -22075,8 +23056,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Computes a simplified representation of a geometry using the <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/"
+"Computes a simplified representation of a geometry using the <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
 "Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</"
 "link>. The simplification <varname>tolerance</varname> is a distance value, "
 "in the units of the input SRS. Simplification removes vertices which are "
@@ -22291,8 +23272,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a simplified representation of a geometry using the <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/"
+"Returns a simplified representation of a geometry using the <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
 "Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam-Whyatt algorithm</link>. "
 "The simplification <varname>tolerance</varname> is an area value, in the "
 "units of the input SRS. Simplification removes vertices which form "
@@ -22309,6 +23290,16 @@ msgid ""
 "linkend=\"ST_SimplifyPreserveTopology\"/> to preserve topology and ensure "
 "validity. <xref linkend=\"ST_CoverageSimplify\"/> also preserves topology "
 "and validity."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This is a general-purpose simplification function. It may remove narrow "
+"polygon spikes when their effective area is below the tolerance, but it is "
+"not a dedicated spike-removal or polygon-repair operation. Use <xref "
+"linkend=\"ST_IsValid\"/> to check the result and <xref "
+"linkend=\"ST_MakeValid\"/> to repair invalid polygonal output if needed."
 msgstr ""
 
 #. Tag: para
@@ -23241,8 +24232,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', "
-"'CubicSpline', and 'Lanczos'. Refer to: <link xlink:href=\"http://www.gdal."
-"org/gdalwarp.html\">GDAL Warp resampling methods</link> for more details."
+"'CubicSpline', and 'Lanczos'. Refer to: <link xlink:href=\"http://"
+"www.gdal.org/gdalwarp.html\">GDAL Warp resampling methods</link> for more "
+"details."
 msgstr ""
 
 #. Tag: para
@@ -25284,9 +26276,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Uniformly rotate the raster. Rotation is in radian. Refer to <link xlink:"
-"href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
-"details."
+"Uniformly rotate the raster. Rotation is in radian. Refer to <link "
+"xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for "
+"more details."
 msgstr ""
 
 #. Tag: refpurpose
@@ -25339,9 +26331,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Sets the georeference X and Y skew (or rotation parameter). If only one is "
-"passed in, sets X and Y to the same value. Refer to <link xlink:"
-"href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for more "
-"details."
+"passed in, sets X and Y to the same value. Refer to <link "
+"xlink:href=\"http://en.wikipedia.org/wiki/World_file\">World File</link> for "
+"more details."
 msgstr ""
 
 #. Tag: para
@@ -26519,11 +27511,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"One way to export raster into another format is using <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/static/lo-funcs."
-"html\">PostgreSQL large object export functions</link>. We'lll repeat the "
-"prior example but also exporting. Note for this you'll need to have super "
-"user access to db since it uses server side lo functions. It will also "
+"One way to export raster into another format is using <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/static/lo-"
+"funcs.html\">PostgreSQL large object export functions</link>. We'lll repeat "
+"the prior example but also exporting. Note for this you'll need to have "
+"super user access to db since it uses server side lo functions. It will also "
 "export to path on server network. If you need export locally, use the psql "
 "equivalent lo_ functions which export to the local file system instead of "
 "the server file system."
@@ -26663,9 +27655,9 @@ msgid ""
 "(look at create_options for PNG of <xref linkend=\"RT_ST_GDALDrivers\"/>). "
 "For PNG valid one is only ZLEVEL (amount of time to spend on compression -- "
 "default 6) e.g. ARRAY['ZLEVEL=9']. WORLDFILE is not allowed since the "
-"function would have to output two outputs. Refer to <link xlink:"
-"href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster format options</"
-"link> for more details."
+"function would have to output two outputs. Refer to <link "
+"xlink:href=\"http://www.gdal.org/frmt_various.html\">GDAL Raster format "
+"options</link> for more details."
 msgstr ""
 
 #. Tag: para
@@ -26715,8 +27707,8 @@ msgstr ""
 msgid ""
 "<varname>options</varname> text Array of GDAL create options as defined for "
 "GTiff (look at create_options for GTiff of <xref "
-"linkend=\"RT_ST_GDALDrivers\"/>). or refer to <link xlink:href=\"http://www."
-"gdal.org/frmt_various.html\">GDAL Raster format options</link> for more "
+"linkend=\"RT_ST_GDALDrivers\"/>). or refer to <link xlink:href=\"http://"
+"www.gdal.org/frmt_various.html\">GDAL Raster format options</link> for more "
 "details."
 msgstr ""
 
@@ -26959,8 +27951,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The syntax of <varname>colormap</varname> is similar to that of the color-"
-"relief mode of GDAL <link xlink:href=\"http://www.gdal.org/gdaldem."
-"html#gdaldem_color_relief\">gdaldem</link>."
+"relief mode of GDAL <link xlink:href=\"http://www.gdal.org/"
+"gdaldem.html#gdaldem_color_relief\">gdaldem</link>."
 msgstr ""
 
 #. Tag: para
@@ -26993,8 +27985,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"A great reference for colormaps is <link xlink:href=\"http://www."
-"colorbrewer2.org\">ColorBrewer</link>."
+"A great reference for colormaps is <link xlink:href=\"http://"
+"www.colorbrewer2.org\">ColorBrewer</link>."
 msgstr ""
 
 #. Tag: para
@@ -27286,6 +28278,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"The callback return value is used as the value of the output pixel. If the "
+"callback returns <varname>NULL</varname>, the output pixel is set to NODATA "
+"when the output band has a NODATA value. If the output band has no NODATA "
+"value, a <varname>NULL</varname> callback result raises an error."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "Passing a <type>regprocedure</type> argument to a SQL function requires the "
 "full function signature to be passed, then cast to a <type>regprocedure</"
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
@@ -27295,9 +28296,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Note that the argument contains the name of the function, the types of the "
-"function arguments, quotes around the name and argument types, and a cast to "
-"a <type>regprocedure</type>."
+"Note that PostgreSQL array types do not encode dimensions in function "
+"signatures, so multidimensional callback arguments are written as "
+"<type>double precision[]</type> and <type>integer[]</type> in the "
+"<type>regprocedure</type> signature."
 msgstr ""
 
 #. Tag: para
@@ -27817,9 +28819,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Use the term <varname>[rast1.val]</varname> <varname>[rast2.val]</varname> "
-"to refer to the pixel value of the original raster bands and <varname>[rast1."
-"x]</varname>, <varname>[rast1.y]</varname> etc. to refer to the column / row "
-"positions of the pixels."
+"to refer to the pixel value of the original raster bands and "
+"<varname>[rast1.x]</varname>, <varname>[rast1.y]</varname> etc. to refer to "
+"the column / row positions of the pixels."
 msgstr ""
 
 #. Tag: title
@@ -27952,6 +28954,14 @@ msgid ""
 "full function signature to be passed, then cast to a <type>regprocedure</"
 "type> type. To pass the above example PL/pgSQL function as an argument, the "
 "SQL for the argument is:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note that the argument contains the name of the function, the types of the "
+"function arguments, quotes around the name and argument types, and a cast to "
+"a <type>regprocedure</type>."
 msgstr ""
 
 #. Tag: para
@@ -28178,9 +29188,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Examples utilize the katrina raster loaded as a single tile described in "
-"<link xlink:href=\"https://gdal.org/user/drivers/raster/postgisraster."
-"html\">https://gdal.org/user/drivers/raster/postgisraster.html</link> and "
-"then prepared in the <xref linkend=\"RT_ST_Rescale\"/> examples"
+"<link xlink:href=\"https://gdal.org/user/drivers/raster/"
+"postgisraster.html\">https://gdal.org/user/drivers/raster/"
+"postgisraster.html</link> and then prepared in the <xref "
+"linkend=\"RT_ST_Rescale\"/> examples"
 msgstr ""
 
 #. Tag: para
@@ -28811,8 +29822,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more information about Hillshade, please refer to <link xlink:"
-"href=\"http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?"
+"For more information about Hillshade, please refer to <link "
+"xlink:href=\"http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?"
 "TopicName=How%20Hillshade%20works\">How hillshade works</link>."
 msgstr ""
 
@@ -28968,8 +29979,8 @@ msgid ""
 "the X- and Y-values to position the points on the grid and the Z-value of "
 "the points as the surface elevation. There are five interpolation algorithms "
 "available: inverse distance, inverse distance nearest-neighbor, moving "
-"average, nearest neighbor, and linear interpolation. See the <link xlink:"
-"href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
+"average, nearest neighbor, and linear interpolation. See the <link "
+"xlink:href=\"https://gdal.org/programs/gdal_grid.html#interpolation-"
 "algorithms\">gdal_grid documentation</link> for more details on the "
 "algorithms and their parameters. For more information on how interpolations "
 "are calculated, see the <link xlink:href=\"https://gdal.org/tutorials/"
@@ -29149,14 +30160,16 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Refer to <link xlink:href=\"http://trac.osgeo.org/postgis/wiki/WKTRaster/"
-"SpecificationWorking01\">PostGIS Raster Specification</link> for a diagram "
-"of this."
+"See <filename>doc/development/internals/raster-affine.md</filename> for the "
+"scale, skew, and rotation terms that make the convex hull and envelope "
+"differ for skewed rasters."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Note envelope and convexhull are more or less the same."
+msgid ""
+"For regular non-skewed rasters, the envelope and convex hull are more or "
+"less the same."
 msgstr ""
 
 #. Tag: para
@@ -30041,8 +31054,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The easiest change to make is the following PostgreSQL setting: <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/static/runtime-config-"
+"The easiest change to make is the following PostgreSQL setting: <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/static/runtime-config-"
 "resource.html#GUC-MAX-FILES-PER-PROCESS\">max_files_per_process</link>. The "
 "default is set to 1000, which is far too low for Out-DB Rasters. A safe "
 "starting value could be 65536 but this really depends on your datasets and "
@@ -30266,8 +31279,8 @@ msgstr ""
 msgid ""
 "Because the interiors must have a common point, a subtlety of the definition "
 "is that polygons and lines do <emphasis>not</emphasis> contain lines and "
-"points lying fully in their boundary. For further details see <link xlink:"
-"href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
+"points lying fully in their boundary. For further details see <link "
+"xlink:href=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-"
 "covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</link>. The "
 "<xref linkend=\"ST_Covers\"/> predicate provides a more inclusive "
 "relationship."
@@ -30745,8 +31758,8 @@ msgstr ""
 msgid ""
 "This function call does not use indexes. A negated <xref "
 "linkend=\"ST_Intersects\"/> predicate can be used as a more performant "
-"alternative that uses indexes: <code>ST_Disjoint(A,B) = NOT ST_Intersects(A,"
-"B)</code>"
+"alternative that uses indexes: <code>ST_Disjoint(A,B) = NOT "
+"ST_Intersects(A,B)</code>"
 msgstr ""
 
 #. Tag: para
@@ -31014,8 +32027,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This function is implemented as per the ArcSDE SQL specification rather than "
-"SQL-MM. http://edndoc.esri.com/arcsde/9.1/sql_api/sqlapi3."
-"htm#ST_OrderingEquals"
+"SQL-MM. http://edndoc.esri.com/arcsde/9.1/sql_api/"
+"sqlapi3.htm#ST_OrderingEquals"
 msgstr ""
 
 #. Tag: para
@@ -31120,8 +32133,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "These functions allow testing and evaluating the spatial (topological) "
-"relationship between two geometries, as defined by the <link xlink:"
-"href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
+"relationship between two geometries, as defined by the <link "
+"xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
 "Intersection Model</link> (DE-9IM)."
 msgstr ""
 
@@ -31865,6 +32878,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"Closed surface geometries can have non-zero volume. Use <xref "
+"linkend=\"CG_MakeSolid\"/> when the geometry value itself must carry the "
+"solid flag."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "A closed polyhedral surface has volume. <xref linkend=\"CG_MakeSolid\"/> "
 "makes the solid representation explicit."
 msgstr ""
@@ -31928,6 +32949,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Closed surface geometries can have non-zero volume. Use <xref "
+"linkend=\"ST_MakeSolid\"/> when the geometry value itself must carry the "
+"solid flag."
 msgstr ""
 
 #. Tag: para
@@ -32261,9 +33290,9 @@ msgstr ""
 msgid ""
 "Following the CGAL implementation, the alpha value is the <emphasis>square</"
 "emphasis> of the radius of the disc used in the Alpha-Shape algorithm to "
-"\"erode\" the Delaunay Triangulation of the input points. See <link xlink:"
-"href=\"https://doc.cgal.org/latest/Alpha_shapes_2/index."
-"html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</link> for more "
+"\"erode\" the Delaunay Triangulation of the input points. See <link "
+"xlink:href=\"https://doc.cgal.org/latest/Alpha_shapes_2/"
+"index.html#Chapter_2D_Alpha_Shapes\">CGAL Alpha-Shapes</link> for more "
 "information. This is different from the original definition of alpha-shapes, "
 "which defines alpha as the radius of the eroding disc."
 msgstr ""
@@ -32793,8 +33822,8 @@ msgstr ""
 msgid ""
 "A minkowski sum of two geometries A and B is the set of all points that are "
 "the sum of any point in A and B. Minkowski sums are often used in motion "
-"planning and computer-aided design. More details on <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia "
+"planning and computer-aided design. More details on <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia "
 "Minkowski addition</link>."
 msgstr ""
 
@@ -33140,8 +34169,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The following images were rendered pasting the output of the ST_AsX3D query "
-"into <link xlink:href=\"https://postgis.net/docs/support/viewers/x3d_viewer."
-"htm\">X3D Viewer</link>."
+"into <link xlink:href=\"https://postgis.net/docs/support/viewers/"
+"x3d_viewer.htm\">X3D Viewer</link>."
 msgstr ""
 
 #. Tag: para
@@ -33379,9 +34408,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The algorithm is based on constrained triangulation and uses the <link xlink:"
-"href=\"https://doc.cgal.org/latest/Polyline_simplification_2/index."
-"html\">CGAL Polyline Simplification 2</link> library with additional "
+"The algorithm is based on constrained triangulation and uses the <link "
+"xlink:href=\"https://doc.cgal.org/latest/Polyline_simplification_2/"
+"index.html\">CGAL Polyline Simplification 2</link> library with additional "
 "handling to preserve Z and M coordinates. When topology is preserved and "
 "geometries intersect, Z and M values are interpolated at intersection points."
 msgstr ""
@@ -34029,9 +35058,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Concatenated operations of the form: <varname>urn:ogc:def:"
-"coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:"
-"EPSG::1618</varname>."
+"Concatenated operations of the form: "
+"<varname>urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618</"
+"varname>."
 msgstr ""
 
 #. Tag: para
@@ -34496,8 +35525,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for "
-"<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -"
-"sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
+"<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, "
+"-sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
 
 #. Tag: para
@@ -34641,8 +35670,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Returns a new geometry whose coordinates are translated delta x,delta y,"
-"delta z units. Units are based on the units defined in spatial reference "
+"Returns a new geometry whose coordinates are translated delta x,delta "
+"y,delta z units. Units are based on the units defined in spatial reference "
 "(SRID) for this geometry. M coordinates are preserved."
 msgstr ""
 
@@ -34731,14 +35760,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Each data type describes its type casting behavior. A <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
-"SYNTAX-TYPE-CASTS\">type cast</link> converts values of one data type into "
-"another type. PostgreSQL allows defining casting behavior for custom types, "
-"along with the functions used to convert type values. Casts can have "
-"<emphasis role=\"bold\">automatic</emphasis> behavior, which allows "
-"automatic conversion of a function argument to a type supported by the "
-"function."
+"Each data type describes its type casting behavior. A <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"expressions.html#SQL-SYNTAX-TYPE-CASTS\">type cast</link> converts values of "
+"one data type into another type. PostgreSQL allows defining casting behavior "
+"for custom types, along with the functions used to convert type values. "
+"Casts can have <emphasis role=\"bold\">automatic</emphasis> behavior, which "
+"allows automatic conversion of a function argument to a type supported by "
+"the function."
 msgstr ""
 
 #. Tag: para
@@ -34892,8 +35921,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<varname>geometry_dump</varname> is a <link xlink:href=\"https://www."
-"postgresql.org/docs/current/rowtypes.html\">composite data type</link> "
+"<varname>geometry_dump</varname> is a <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/rowtypes.html\">composite data type</link> "
 "containing the fields:"
 msgstr ""
 
@@ -35629,11 +36658,6 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
-msgid "Appendix"
-msgstr ""
-
-#. Tag: subtitle
-#, no-c-format
 msgid "Release Notes"
 msgstr ""
 
@@ -35688,18 +36712,18 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6053\">#6053</"
-"link>, [address_standardizer] Extension removed and moved to <link xlink:"
-"href=\"https://github.com/postgis/address_standardizer\">https://github.com/"
-"postgis/address_standardizer</link> (Paul Ramsey)"
+"link>, [address_standardizer] Extension removed and moved to <link "
+"xlink:href=\"https://github.com/postgis/address_standardizer\">https://"
+"github.com/postgis/address_standardizer</link> (Paul Ramsey)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6052\">#6052</"
-"link>, [tiger_geocoder] Extension removed and moved to <link xlink:"
-"href=\"https://git.osgeo.org/postgis/postgis_tiger_geocoder\">https://git."
-"osgeo.org/postgis/postgis_tiger_geocoder</link> (Regina Obe)"
+"link>, [tiger_geocoder] Extension removed and moved to <link "
+"xlink:href=\"https://git.osgeo.org/postgis/postgis_tiger_geocoder\">https://"
+"git.osgeo.org/postgis/postgis_tiger_geocoder</link> (Regina Obe)"
 msgstr ""
 
 #. Tag: para
@@ -35732,11 +36756,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1124\">#1124</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
-"ticket/2935\">#2935</link>, <link xlink:href=\"https://trac.osgeo.org/"
-"postgis/ticket/3033\">#3033</link>, <link xlink:href=\"https://trac.osgeo."
-"org/postgis/ticket/4658\">#4658</link>, <link xlink:href=\"https://trac."
-"osgeo.org/postgis/ticket/4659\">#4659</link>, [loader] Rework loader "
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"2935\">#2935</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/3033\">#3033</link>, <link xlink:href=\"https://trac.osgeo.org/"
+"postgis/ticket/4658\">#4658</link>, <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/ticket/4659\">#4659</link>, [loader] Rework loader "
 "arguments: shp2pgsql can create UNLOGGED tables and choose the feature id "
 "column name, shp2pgsql --drop-table can emit DROP TABLE before prepare "
 "output, raster2pgsql/shp2pgsql expose loader actions as long options, both "
@@ -35856,8 +36880,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5109\">#5109</"
-"link>, Document the meaning of topology.next_left_edge and topology."
-"next_right_edge links (Darafei Praliaskouski)"
+"link>, Document the meaning of topology.next_left_edge and "
+"topology.next_right_edge links (Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -35917,8 +36941,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/"
-"pulls/270\">GT-270</link>, Add NURBSCurve (Loïc Bartoletti)"
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/pulls/"
+"270\">GT-270</link>, Add NURBSCurve (Loïc Bartoletti)"
 msgstr ""
 
 #. Tag: para
@@ -35986,10 +37010,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2804\">#2804</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
-"ticket/4315\">#4315</link>, [raster] Support two-argument ST_MapAlgebra "
-"callbacks and pass callback call data as actual arguments (Darafei "
-"Praliaskouski)"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"4315\">#4315</link>, [raster] Support two-argument ST_MapAlgebra callbacks "
+"and pass callback call data as actual arguments (Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -36019,10 +37042,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3743\">#3743</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
-"ticket/4385\">#4385</link>, [raster loader] Document raster2pgsql -s "
-"FROM_SRID:SRID reprojection support and clarify index creation timing for "
-"append loads (Darafei Praliaskouski)"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"4385\">#4385</link>, [raster loader] Document raster2pgsql -s FROM_SRID:SRID "
+"reprojection support and clarify index creation timing for append loads "
+"(Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -36259,8 +37282,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If your changes are more extensive, a patch is definitely preferred. This is "
-"a four step process on Unix (assuming you already have <link xlink:"
-"href=\"https://git-scm.com/\">git</link> installed):"
+"a four step process on Unix (assuming you already have <link "
+"xlink:href=\"https://git-scm.com/\">git</link> installed):"
 msgstr ""
 
 #. Tag: para
@@ -36318,13 +37341,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The Open Geospatial Consortium (OGC) developed the <link xlink:"
-"href=\"https://www.ogc.org/standards/sfa\"><emphasis>Simple Features Access</"
-"emphasis></link> standard (SFA) to provide a model for geospatial data. It "
-"defines the fundamental spatial type of <emphasis role=\"bold\">Geometry</"
-"emphasis>, along with operations which manipulate and transform geometry "
-"values to perform spatial analysis tasks. PostGIS implements the OGC "
-"Geometry model as the PostgreSQL data types <link "
+"The Open Geospatial Consortium (OGC) developed the <link "
+"xlink:href=\"https://www.ogc.org/standards/sfa\"><emphasis>Simple Features "
+"Access</emphasis></link> standard (SFA) to provide a model for geospatial "
+"data. It defines the fundamental spatial type of <emphasis "
+"role=\"bold\">Geometry</emphasis>, along with operations which manipulate "
+"and transform geometry values to perform spatial analysis tasks. PostGIS "
+"implements the OGC Geometry model as the PostgreSQL data types <link "
 "linkend=\"PostGIS_Geometry\">geometry</link> and <link "
 "linkend=\"PostGIS_Geography\">geography</link>."
 msgstr ""
@@ -36343,10 +37366,10 @@ msgid ""
 "linkend=\"MultiPoint\">MultiPoint</link>, <link "
 "linkend=\"MultiLineString\">MultiLineString</link>, <link "
 "linkend=\"MultiPolygon\">MultiPolygon</link> and <link "
-"linkend=\"GeometryCollection\">GeometryCollection</link>. The <link xlink:"
-"href=\"https://portal.ogc.org/files/?artifact_id=25355\"><emphasis>Simple "
-"Features Access - Part 1: Common architecture v1.2.1</emphasis></link> adds "
-"subtypes for the structures <link "
+"linkend=\"GeometryCollection\">GeometryCollection</link>. The <link "
+"xlink:href=\"https://portal.ogc.org/files/?"
+"artifact_id=25355\"><emphasis>Simple Features Access - Part 1: Common "
+"architecture v1.2.1</emphasis></link> adds subtypes for the structures <link "
 "linkend=\"PolyhedralSurface\">PolyhedralSurface</link>, <link "
 "linkend=\"Triangle\">Triangle</link> and <link linkend=\"TIN\">TIN</link>."
 msgstr ""
@@ -36582,8 +37605,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A TIN is a collection of non-overlapping <link "
-"linkend=\"Triangle\">Triangle</link>s representing a <link xlink:"
-"href=\"https://en.wikipedia.org/wiki/"
+"linkend=\"Triangle\">Triangle</link>s representing a <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
 "Triangulated_irregular_network\">Triangulated Irregular Network</link>."
 msgstr ""
 
@@ -36595,11 +37618,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The <link xlink:href=\"https://www.iso.org/obp/ui/#iso:std:iso-iec:13249:-3:"
-"ed-5:v1:en\"><emphasis>ISO/IEC 13249-3 SQL Multimedia - Spatial</emphasis></"
-"link> standard (SQL/MM) extends the OGC SFA to define Geometry subtypes "
-"containing curves with circular arcs. The SQL/MM types support 3DM, 3DZ and "
-"4D coordinates."
+"The <link xlink:href=\"https://www.iso.org/obp/ui/#iso:std:iso-"
+"iec:13249:-3:ed-5:v1:en\"><emphasis>ISO/IEC 13249-3 SQL Multimedia - "
+"Spatial</emphasis></link> standard (SQL/MM) extends the OGC SFA to define "
+"Geometry subtypes containing curves with circular arcs. The SQL/MM types "
+"support 3DM, 3DZ and 4D coordinates."
 msgstr ""
 
 #. Tag: para
@@ -37182,11 +38205,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can create a table to store geography data using the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-createtable.html\">CREATE "
-"TABLE</link> SQL statement with a column of type <varname>geography</"
-"varname>. The following example creates a table with a geography column "
-"storing 2D LineStrings in the WGS84 geodetic coordinate system (SRID 4326):"
+"You can create a table to store geography data using the <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"createtable.html\">CREATE TABLE</link> SQL statement with a column of type "
+"<varname>geography</varname>. The following example creates a table with a "
+"geography column storing 2D LineStrings in the WGS84 geodetic coordinate "
+"system (SRID 4326):"
 msgstr ""
 
 #. Tag: para
@@ -37307,8 +38331,9 @@ msgstr ""
 msgid ""
 "You can see the power of geography in action by calculating how close a "
 "plane flying a great circle route from Seattle to London (LINESTRING(-122.33 "
-"47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)) (<link xlink:"
-"href=\"http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">map the route</link>)."
+"47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15)) (<link "
+"xlink:href=\"http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">map the route</"
+"link>)."
 msgstr ""
 
 #. Tag: para
@@ -37663,10 +38688,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Consecutive repeated points in a polygon boundary ring are treated as "
-"redundant vertices, and do not make the polygon invalid. Repeated points "
-"that cause the boundary to self-intersect, self-touch, or collapse still "
-"violate the validity rules."
+"Consecutive repeated points in a polygon boundary ring do not make the ring "
+"non-simple. Under the SFS curve model, a curve is interpreted by a "
+"continuous parameterization; consecutive equal coordinates are topologically "
+"indistinguishable from a single vertex. PostGIS therefore treats them as "
+"redundant vertices, so they do not make an otherwise valid polygon invalid."
 msgstr ""
 
 #. Tag: emphasis
@@ -37900,10 +38926,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "There are many different spatial reference systems in use. Common SRSes are "
-"standardized in the European Petroleum Survey Group <link xlink:"
-"href=\"http://www.epsg.org/\">EPSG database</link>. For convenience PostGIS "
-"(and many other spatial systems) refers to SRS definitions using an integer "
-"identifier called a SRID."
+"standardized in the European Petroleum Survey Group <link "
+"xlink:href=\"http://www.epsg.org/\">EPSG database</link>. For convenience "
+"PostGIS (and many other spatial systems) refers to SRS definitions using an "
+"integer identifier called a SRID."
 msgstr ""
 
 #. Tag: para
@@ -37958,9 +38984,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"An integer code that uniquely identifies the <link xlink:href=\"http://en."
-"wikipedia.org/wiki/SRID\">Spatial Reference System</link> (SRS) within the "
-"database."
+"An integer code that uniquely identifies the <link xlink:href=\"http://"
+"en.wikipedia.org/wiki/SRID\">Spatial Reference System</link> (SRS) within "
+"the database."
 msgstr ""
 
 #. Tag: para
@@ -38060,8 +39086,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "A resource for finding spatial reference systems not defined in the core set "
-"is <link xlink:href=\"http://spatialreference.org/\">http://spatialreference."
-"org/</link>"
+"is <link xlink:href=\"http://spatialreference.org/\">http://"
+"spatialreference.org/</link>"
 msgstr ""
 
 #. Tag: para
@@ -38070,14 +39096,14 @@ msgid ""
 "Some commonly used spatial reference systems are: <link xlink:href=\"http://"
 "spatialreference.org/ref/epsg/4326/\">4326 - WGS 84 Long Lat</link>, <link "
 "xlink:href=\"http://spatialreference.org/ref/epsg/4269/\">4269 - NAD 83 Long "
-"Lat</link>, <link xlink:href=\"http://spatialreference.org/ref/epsg/3395/"
-"\">3395 - WGS 84 World Mercator</link>, <link xlink:href=\"http://"
+"Lat</link>, <link xlink:href=\"http://spatialreference.org/ref/epsg/"
+"3395/\">3395 - WGS 84 World Mercator</link>, <link xlink:href=\"http://"
 "spatialreference.org/ref/epsg/2163/\">2163 - US National Atlas Equal Area</"
 "link>, and the 60 WGS84 UTM zones. UTM zones are one of the most ideal for "
-"measurement, but only cover 6-degree regions. (To determine which UTM zone "
-"to use for your area of interest, see the <link xlink:href=\"http://trac."
-"osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance\">utmzone PostGIS "
-"plpgsql helper function</link>.)"
+"measurement, but only cover 6-degree regions. For WGS84 longitude/latitude "
+"data, the UTM zone is <varname>least(floor((longitude + 180) / 6) + 1, 60)</"
+"varname>; the EPSG code is <varname>32600 + zone</varname> in the northern "
+"hemisphere or <varname>32700 + zone</varname> in the southern hemisphere."
 msgstr ""
 
 #. Tag: para
@@ -38086,18 +39112,18 @@ msgid ""
 "US states use State Plane spatial reference systems (meter or feet based) - "
 "usually one or 2 exists per state. Most of the meter-based ones are in the "
 "core set, but many of the feet-based ones or ESRI-created ones will need to "
-"be copied from <link xlink:href=\"http://spatialreference."
-"org\">spatialreference.org</link>."
+"be copied from <link xlink:href=\"http://"
+"spatialreference.org\">spatialreference.org</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can even define non-Earth-based coordinate systems, such as <link xlink:"
-"href=\"http://spatialreference.org/ref/iau2000/mars-2000/\">Mars 2000</link> "
-"This Mars coordinate system is non-planar (it's in degrees spheroidal), but "
-"you can use it with the <varname>geography</varname> type to obtain length "
-"and proximity measurements in meters instead of degrees."
+"You can even define non-Earth-based coordinate systems, such as <link "
+"xlink:href=\"http://spatialreference.org/ref/iau2000/mars-2000/\">Mars 2000</"
+"link> This Mars coordinate system is non-planar (it's in degrees "
+"spheroidal), but you can use it with the <varname>geography</varname> type "
+"to obtain length and proximity measurements in meters instead of degrees."
 msgstr ""
 
 #. Tag: para
@@ -38120,11 +39146,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can create a table to store geometry data using the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/sql-createtable.html\">CREATE "
-"TABLE</link> SQL statement with a column of type <varname>geometry</"
-"varname>. The following example creates a table with a geometry column "
-"storing 2D (XY) LineStrings in the BC-Albers coordinate system (SRID 3005):"
+"You can create a table to store geometry data using the <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"createtable.html\">CREATE TABLE</link> SQL statement with a column of type "
+"<varname>geometry</varname>. The following example creates a table with a "
+"geometry column storing 2D (XY) LineStrings in the BC-Albers coordinate "
+"system (SRID 3005):"
 msgstr ""
 
 #. Tag: para
@@ -38194,9 +39221,9 @@ msgstr ""
 msgid ""
 "It is possible to have more than one geometry column in a table. This can be "
 "specified when the table is created, or a column can be added using the "
-"<link xlink:href=\"https://www.postgresql.org/docs/current/sql-altertable."
-"html\">ALTER TABLE</link> SQL statement. This example adds a column that can "
-"hold 3D LineStrings:"
+"<link xlink:href=\"https://www.postgresql.org/docs/current/sql-"
+"altertable.html\">ALTER TABLE</link> SQL statement. This example adds a "
+"column that can hold 3D LineStrings:"
 msgstr ""
 
 #. Tag: title
@@ -38639,6 +39666,23 @@ msgstr ""
 msgid "A conversion and load can be done in one step using UNIX pipes:"
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"To load a directory of Shapefiles, run the loader once per file and derive "
+"the table name from the file name. On Windows <filename>cmd.exe</filename>, "
+"use a single percent sign interactively and double percent signs in a batch "
+"file:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If every Shapefile has the same attributes and data types and should be "
+"appended into one table, create the table from the first file and use "
+"<option>-a</option> for the remaining files."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Extracting Spatial Data"
@@ -38683,8 +39727,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This tests whether two geometries are geometrically identical. For example, "
-"if 'POLYGON((0 0,1 1,1 0,0 0))' is the same as 'POLYGON((0 0,1 1,1 0,0 "
-"0))' (it is)."
+"if 'POLYGON((0 0,1 1,1 0,0 0))' is the same as 'POLYGON((0 0,1 1,1 0,0 0))' "
+"(it is)."
 msgstr ""
 
 #. Tag: para
@@ -38880,8 +39924,8 @@ msgstr ""
 msgid ""
 "See also the <link xlink:href=\"https://postgis.net/workshops/postgis-intro/"
 "indexing.html\">PostGIS Workshop section on spatial indexes</link>, and the "
-"<link xlink:href=\"https://www.postgresql.org/docs/current/indexes."
-"html\">PostgreSQL manual</link>."
+"<link xlink:href=\"https://www.postgresql.org/docs/current/"
+"indexes.html\">PostgreSQL manual</link>."
 msgstr ""
 
 #. Tag: title
@@ -38899,8 +39943,8 @@ msgid ""
 "performance. Other implementations of GiST are used to speed up searches on "
 "all kinds of irregular data structures (integer arrays, spectral data, etc) "
 "which are not amenable to normal B-Tree indexing. For more information see "
-"the <link xlink:href=\"https://www.postgresql.org/docs/current/gist."
-"html\">PostgreSQL manual</link>."
+"the <link xlink:href=\"https://www.postgresql.org/docs/current/"
+"gist.html\">PostgreSQL manual</link>."
 msgstr ""
 
 #. Tag: para
@@ -38957,8 +40001,8 @@ msgid ""
 "indexing very large tables on columns which have a correlation with their "
 "physical location within the table. In addition to spatial indexing, BRIN "
 "can speed up searches on various kinds of attribute data structures "
-"(integer, arrays etc). For more information see the <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL "
+"(integer, arrays etc). For more information see the <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/brin.html\">PostgreSQL "
 "manual</link>."
 msgstr ""
 
@@ -39091,8 +40135,9 @@ msgid ""
 "performing a <code>VACUUM</code>, or by using a special function "
 "<code>brin_summarize_new_values(regclass)</code>. For this reason BRIN may "
 "be most appropriate for use with data that is read-only, or only rarely "
-"changing. For more information refer to the <link xlink:href=\"https://www."
-"postgresql.org/docs/current/brin-intro.html#BRIN-OPERATION\">manual</link>."
+"changing. For more information refer to the <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/brin-intro.html#BRIN-OPERATION\">manual</"
+"link>."
 msgstr ""
 
 #. Tag: para
@@ -39294,9 +40339,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more information see the Postgres manual section on <link xlink:"
-"href=\"https://www.postgresql.org/docs/current/runtime-config-query."
-"html\">Query Planning</link>."
+"For more information see the Postgres manual section on <link "
+"xlink:href=\"https://www.postgresql.org/docs/current/runtime-config-"
+"query.html\">Query Planning</link>."
 msgstr ""
 
 #. Tag: title
@@ -39410,8 +40455,8 @@ msgid ""
 "<emphasis>Boundary</emphasis>, and <emphasis>Exterior</emphasis> are denoted "
 "using the notation <emphasis>I(g)</emphasis>, <emphasis>B(g)</emphasis>, and "
 "<emphasis>E(g)</emphasis>. Also, <emphasis>dim(s)</emphasis> denotes the "
-"dimension of a set <emphasis>s</emphasis> with the domain of <literal>{0,1,2,"
-"F}</literal>:"
+"dimension of a set <emphasis>s</emphasis> with the domain of "
+"<literal>{0,1,2,F}</literal>:"
 msgstr ""
 
 #. Tag: para
@@ -39847,8 +40892,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"For more information and examples see the <link xlink:href=\"https://postgis."
-"net/workshops/postgis-intro/indexing.html\">PostGIS Workshop</link>."
+"For more information and examples see the <link xlink:href=\"https://"
+"postgis.net/workshops/postgis-intro/indexing.html\">PostGIS Workshop</link>."
 msgstr ""
 
 #. Tag: title
@@ -40008,9 +41053,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "When creating overviews of a specific factor from a set of rasters that are "
-"aligned, it is possible for the overviews to not align. Visit <link xlink:"
-"href=\"http://trac.osgeo.org/postgis/ticket/1764\">http://trac.osgeo.org/"
-"postgis/ticket/1764</link> for an example where the overviews do not align."
+"aligned, it is possible for the overviews to not align. Visit <link "
+"xlink:href=\"http://trac.osgeo.org/postgis/ticket/1764\">http://"
+"trac.osgeo.org/postgis/ticket/1764</link> for an example where the overviews "
+"do not align."
 msgstr ""
 
 #. Tag: title
@@ -40417,11 +41463,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Efficient use of cloud stored rasters requires the use of a \"cloud "
-"optimized\" format. The most well-known and widely used is the \"<link xlink:"
-"href=\"https://gdal.org/drivers/raster/cog.html\">cloud optimized GeoTIFF</"
-"link>\" format. Using a non-cloud format, like a JPEG, or an un-tiled TIFF "
-"will result in very poor performance, as the system will have to download "
-"the entire raster each time it needs to access a subset."
+"optimized\" format. The most well-known and widely used is the \"<link "
+"xlink:href=\"https://gdal.org/drivers/raster/cog.html\">cloud optimized "
+"GeoTIFF</link>\" format. Using a non-cloud format, like a JPEG, or an un-"
+"tiled TIFF will result in very poor performance, as the system will have to "
+"download the entire raster each time it needs to access a subset."
 msgstr ""
 
 #. Tag: para
@@ -40813,10 +41859,10 @@ msgid ""
 "rasters in known image formats gives you a lot of options for rendering "
 "them. For example you can use OpenOffice / LibreOffice for rendering as "
 "demonstrated in <link xlink:href=\"http://www.postgresonline.com/journal/"
-"archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports."
-"html\">Rendering PostGIS Raster graphics with LibreOffice Base Reports</"
-"link>. In addition you can use a wide variety of languages as demonstrated "
-"in this section."
+"archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-"
+"Reports.html\">Rendering PostGIS Raster graphics with LibreOffice Base "
+"Reports</link>. In addition you can use a wide variety of languages as "
+"demonstrated in this section."
 msgstr ""
 
 #. Tag: title
@@ -40873,10 +41919,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "You will need the npgsql .NET PostgreSQL driver for this exercise which you "
-"can get the latest of from <link xlink:href=\"http://npgsql.projects."
-"postgresql.org/\">http://npgsql.projects.postgresql.org/</link>. Just "
-"download the latest and drop into your ASP.NET bin folder and you'll be good "
-"to go."
+"can get the latest of from <link xlink:href=\"http://"
+"npgsql.projects.postgresql.org/\">http://npgsql.projects.postgresql.org/</"
+"link>. Just download the latest and drop into your ASP.NET bin folder and "
+"you'll be good to go."
 msgstr ""
 
 #. Tag: para
@@ -40889,9 +41935,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You would call the below using <programlisting>http://mywebserver/TestRaster."
-"ashx?srid=2249</programlisting> to get the raster image in Massachusetts "
-"state plane feet."
+"You would call the below using <programlisting>http://mywebserver/"
+"TestRaster.ashx?srid=2249</programlisting> to get the raster image in "
+"Massachusetts state plane feet."
 msgstr ""
 
 #. Tag: title
@@ -40909,9 +41955,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"You can download the latest PostgreSQL JDBC drivers from <link xlink:"
-"href=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/"
-"download.html</link>"
+"You can download the latest PostgreSQL JDBC drivers from <link "
+"xlink:href=\"http://jdbc.postgresql.org/download.html\">http://"
+"jdbc.postgresql.org/download.html</link>"
 msgstr ""
 
 #. Tag: para

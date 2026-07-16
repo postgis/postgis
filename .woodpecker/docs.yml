@@ -792,4 +792,3 @@ steps:
        - path:
           include:
             - "doc/po/be/*.po"
-

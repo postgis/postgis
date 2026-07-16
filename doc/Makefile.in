@@ -165,6 +165,7 @@ help: ## Print this help message
 
 XML_SOURCES = \
 	administration.xml \
+	credits.xml \
 	database_tuning.xml \
 	extras_historytable.xml \
 	extras_topology.xml \
@@ -420,7 +421,10 @@ $(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile
 		$<
 
 html: $(html_builddir)/postgis$(DOCSUFFIX).html ## Generate a single-file html/postgis-en.html
-html-localized: ## Generate a single-file html/postgis-<lang>.html for supported languages
+# Localized render targets share translated XML files in each language
+# directory.  Build and validate those files once before recursive render
+# targets can run in parallel.
+html-localized: check-localized ## Generate a single-file html/postgis-<lang>.html for supported languages
 
 %-localized:
 	rule=$(patsubst %-localized,%,$@); \
@@ -490,10 +494,10 @@ epub-uninstall:
 	rm -f $(DESTDIR)$(docdir)/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
 
 epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub ## Generate postgis-<version>-en.epub
-epub-localized: ## Generate a postgis-<version>-<lang>.epub for supported languages
+epub-localized: check-localized ## Generate a postgis-<version>-<lang>.epub for supported languages
 
 pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf ## Generate postgis-<version>-en.pdf
-pdf-localized: ## Generate a postgis-<version>-<lang>.pdf for supported languages
+pdf-localized: check-localized ## Generate a postgis-<version>-<lang>.pdf for supported languages
 
 doxygen.cfg: doxygen.cfg.in
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@

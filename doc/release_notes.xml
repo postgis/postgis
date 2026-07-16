@@ -1,7 +1,6 @@
 <!-- Converted by db4-upgrade version 1.1 -->
 <appendix xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="release_notes">
-  <title>Appendix</title>
-    <subtitle>Release Notes</subtitle>
+  <title>Release Notes</title>
     <section xml:id="release_notes_3_7_0">
     <title>PostGIS 3.7.0</title>
     <subtitle>2026/xx/xx</subtitle>

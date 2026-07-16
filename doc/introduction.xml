@@ -2,490 +2,233 @@
 <chapter xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="postgis_introduction">
   <title>Introduction</title>
 
-  <para>PostGIS is a spatial extension for the PostgreSQL relational database
-	that was created by Refractions Research Inc, as a spatial
-  database technology research project. Refractions is a GIS and database
-  consulting company in Victoria, British Columbia, Canada, specializing in
-  data integration and custom software development.</para>
+  <section xml:id="what_is_postgis">
+    <title>What Is PostGIS?</title>
 
-	<para>PostGIS is now a project of the OSGeo Foundation and is developed and funded by many FOSS4G developers and
-     organizations all over the world that gain great benefit from its functionality and versatility.</para>
-	<para>The PostGIS project development group plans on supporting and
-  enhancing PostGIS to better support a range of important GIS functionality
-	in the areas of OGC and SQL/MM spatial standards, advanced topological constructs (coverages,
-  surfaces, networks), data source for desktop user interface tools for viewing and editing
-  GIS data, and web-based access tools.</para>
+    <para>PostGIS extends <link xlink:href="https://www.postgresql.org/">PostgreSQL</link>
+    so that geospatial data can be stored, indexed, queried, and processed in
+    the database. It keeps location data beside ordinary relational data, so a
+    spatial query can use the same SQL, transactions, constraints, access
+    controls, backup tools, and application connections as the rest of a
+    PostgreSQL database.</para>
+
+    <para>The main <literal>postgis</literal> extension adds:</para>
+
+    <itemizedlist>
+      <listitem><para><varname>geometry</varname> for planar coordinate systems
+      and <varname>geography</varname> for geodetic coordinates on the
+      earth.</para></listitem>
+      <listitem><para>Spatial indexes that let the PostgreSQL planner avoid
+      scanning every row when objects can be filtered by location.</para></listitem>
+      <listitem><para>Functions for measurement, relationships, overlays,
+      geometry construction and editing, coordinate transformation, clustering,
+      and spatial data exchange.</para></listitem>
+      <listitem><para>Support for common geospatial encodings and formats,
+      including WKT, WKB, GeoJSON, GML, KML, FlatGeobuf, Geobuf, and Mapbox
+      Vector Tiles.</para></listitem>
+    </itemizedlist>
+
+    <para>This makes PostgreSQL a spatial database: applications can ask both
+    ordinary questions and location-aware questions without moving data to a
+    separate GIS processing system. Desktop GIS, map servers, ETL tools, and
+    application frameworks can connect through normal PostgreSQL interfaces.</para>
+  </section>
+
+  <section xml:id="postgis_distribution">
+    <title>What Is in the PostGIS Distribution?</title>
+
+    <para>This manual documents the main PostGIS source distribution. Depending
+    on how PostGIS was built and packaged, it can provide several PostgreSQL
+    extensions and command-line tools:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><literal>postgis</literal></term>
+        <listitem><para>The core geometry and geography types, spatial indexes,
+        and most spatial functions.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>postgis_raster</literal></term>
+        <listitem><para>Raster storage, analysis, loading, and export. Raster
+        support uses GDAL and can be omitted from a build.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>postgis_topology</literal></term>
+        <listitem><para>SQL/MM topology types and functions for models based on
+        shared nodes, edges, and faces.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>postgis_sfcgal</literal></term>
+        <listitem><para>Additional 2D and 3D processing functions backed by the
+        optional SFCGAL library.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Loaders and utilities</term>
+        <listitem><para><command>shp2pgsql</command>,
+        <command>pgsql2shp</command>, and <command>raster2pgsql</command> move
+        data between common file formats and PostGIS. Other utilities support
+        upgrades, profiling, and development.</para></listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The source tree also contains internal libraries such as
+    <filename>liblwgeom</filename> and <filename>libpgcommon</filename>. They
+    are implementation layers shared by PostGIS components, not separately
+    released PostgreSQL extensions. Most users start by enabling the core
+    extension with <code>CREATE EXTENSION postgis</code>; see
+    <xref linkend="postgis_installation"/> for available components and build
+    options.</para>
+  </section>
+
+  <section xml:id="postgis_project_family">
+    <title>The PostGIS Project Family</title>
+
+    <para>This manual covers the main <literal>postgis/postgis</literal>
+    distribution. The official
+    <link xlink:href="https://gitea.osgeo.org/postgis/">PostGIS source
+    organization</link> also hosts or mirrors complementary projects. These
+    projects have their own release cycles, installation instructions, and
+    documentation; installing the core extension does not install them.</para>
+
+    <itemizedlist>
+      <listitem><para><link xlink:href="https://github.com/postgis/address_standardizer">Address
+      Standardizer</link> parses and normalizes postal addresses. It moved from
+      the main PostGIS source tree to a separate repository for the PostGIS 3.7
+      development cycle.</para></listitem>
+      <listitem><para><link xlink:href="https://gitea.osgeo.org/postgis/postgis_tiger_geocoder">PostGIS
+      TIGER Geocoder</link> provides United States address geocoding and reverse
+      geocoding using Census TIGER data. It is also maintained separately from
+      the main distribution.</para></listitem>
+      <listitem><para><link xlink:href="https://github.com/postgis/h3-pg">H3-pg</link>
+      provides PostgreSQL bindings for the H3 hierarchical hexagonal indexing
+      system and interoperates with PostGIS.</para></listitem>
+      <listitem><para><link xlink:href="https://github.com/postgis/postgis-java">PostGIS
+      Java</link> provides Java bindings for PostGIS types.</para></listitem>
+      <listitem><para><link xlink:href="https://postgis.net/workshops/postgis-intro/">Introduction
+      to PostGIS</link> is the hands-on workshop maintained by the PostGIS
+      project.</para></listitem>
+    </itemizedlist>
+
+    <para>Other PostgreSQL spatial extensions can complement PostGIS while
+    remaining independent projects. For example,
+    <link xlink:href="https://pgrouting.org/">pgRouting</link> adds routing and
+    graph analysis. Use each project's own manual for its functions and support
+    policy.</para>
+  </section>
+
+  <section xml:id="using_this_manual">
+    <title>How to Use This Manual</title>
+
+    <para>The manual is both a guide to the PostGIS data model and the complete
+    reference for the SQL interface. Choose a starting point based on what you
+    are trying to do:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>If you are new to spatial SQL</term>
+        <listitem><para>Start with the
+        <link xlink:href="https://postgis.net/workshops/postgis-intro/">Introduction
+        to PostGIS workshop</link> for a tutorial, then use
+        <xref linkend="using_postgis_dbmanagement"/> to understand spatial
+        types, coordinate systems, validity, loading, and indexes.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>If you are installing or upgrading PostGIS</term>
+        <listitem><para>Read <xref linkend="postgis_installation"/> and
+        <xref linkend="postgis_administration"/>. Package-specific instructions
+        and supported release information are maintained on the
+        <link xlink:href="https://postgis.net/documentation/getting_started/">PostGIS
+        website</link>.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>If you are writing spatial queries</term>
+        <listitem><para>Read <xref linkend="using_postgis_query"/> for spatial
+        relationships and index-aware query patterns, and
+        <xref linkend="performance_tips"/> for common performance problems.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>If you need a particular function</term>
+        <listitem><para>Use <xref linkend="reference"/> or
+        <xref linkend="PostGIS_Special_Functions_Index"/>. Function pages state
+        accepted types, dimensional support, standards conformance, dependency
+        requirements, and version availability.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>If you use an optional component</term>
+        <listitem><para>See <xref linkend="Topology"/>,
+        <xref linkend="using_raster_dataman"/>,
+        <xref linkend="RT_reference"/>, or
+        <xref linkend="reference_sfcgal"/>.</para></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>If something goes wrong</term>
+        <listitem><para>Collect the versions reported by
+        <xref linkend="PostGIS_Full_Version"/> and follow
+        <xref linkend="reporting"/>. Check <xref linkend="release_notes"/> when
+        behavior differs between release lines.</para></listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
 
   <section xml:id="standards_support">
-	<title>Standards Support</title>
+    <title>Standards Support</title>
 
-	<para>This manual marks individual functions as compliant with spatial
-	standards so users can tell which behavior is portable and which behavior is
-	a PostGIS extension.  PostGIS implements the
-	<link xlink:href="https://www.ogc.org/standard/sfs/">OGC Simple Features
-	for SQL</link> model, including the geometry type, Well-Known Text (WKT),
-	Well-Known Binary (WKB), and the common spatial accessors, constructors,
-	predicates, and processing functions.  PostGIS also implements many
-	<link xlink:href="https://www.iso.org/standard/60343.html">SQL/MM Spatial</link>
-	types and functions.</para>
+    <para>This manual marks individual functions as compliant with spatial
+    standards so users can tell which behavior is portable and which behavior is
+    a PostGIS extension. PostGIS implements the
+    <link xlink:href="https://www.ogc.org/standard/sfs/">OGC Simple Features
+    for SQL</link> model, including the geometry type, Well-Known Text (WKT),
+    Well-Known Binary (WKB), and the common spatial accessors, constructors,
+    predicates, and processing functions. PostGIS also implements many
+    <link xlink:href="https://www.iso.org/standard/60343.html">SQL/MM Spatial</link>
+    types and functions.</para>
 
-	<para>PostGIS supports geometry families defined by later standards,
-	including SQL/MM curved geometry and OGC Simple Features Access 1.2
-	PolyhedralSurface, Triangle, and TIN.  Support for these geometry families
-	is function-specific, and each function page documents the supported input
-	types and conformance level.</para>
+    <para>PostGIS supports geometry families defined by later standards,
+    including SQL/MM curved geometry and OGC Simple Features Access 1.2
+    PolyhedralSurface, Triangle, and TIN. Support for these geometry families is
+    function-specific, and each function page documents the supported input
+    types and conformance level.</para>
 
-	<para>PostGIS also includes widely used extensions and integrations.
-	Examples of PostGIS extensions include Extended WKT (EWKT), Extended WKB
-	(EWKB), SRID metadata in those extended formats, geography, and raster.
-	PostGIS also supports input and output exchange formats defined by other
-	standards, such as GeoJSON, GML, and KML.  These features are documented
-	individually and should not be read as OGC Simple Features or SQL/MM
-	requirements unless the specific function or format says so.</para>
+    <para>PostGIS also includes widely used extensions and integrations.
+    Examples of PostGIS extensions include Extended WKT (EWKT), Extended WKB
+    (EWKB), SRID metadata in those extended formats, geography, and raster.
+    PostGIS also supports input and output exchange formats defined by other
+    standards, such as GeoJSON, GML, and KML. These features are documented
+    individually and should not be read as OGC Simple Features or SQL/MM
+    requirements unless the specific function or format says so.</para>
 
-	<para>When the implementation intentionally differs from a standard, or when
-	a standard leaves behavior ambiguous, the relevant function page describes
-	the PostGIS behavior.  The <xref linkend="PostGIS_Special_Functions_Index"/>
-	chapter summarizes SQL/MM compliance and geometry-type support across
-	functions.</para>
+    <para>When the implementation intentionally differs from a standard, or when
+    a standard leaves behavior ambiguous, the relevant function page describes
+    the PostGIS behavior. <xref linkend="PostGIS_Special_Functions_Index"/>
+    summarizes SQL/MM compliance and geometry-type support across
+    functions.</para>
   </section>
 
-  <section xml:id="psc">
-	<title>Project Steering Committee</title>
-	<para>
-		The PostGIS Project Steering Committee (PSC) coordinates the general direction,
-			release cycles, documentation, and outreach efforts for the PostGIS project.  In addition
-			the PSC provides general user support, accepts and approves patches from the general PostGIS community
-			and votes on miscellaneous issues involving PostGIS such as developer commit access, new PSC members
-			or significant API changes.
-	</para>
-	<variablelist>
-		<varlistentry>
-			<term>Raúl Marín Rodríguez</term>
-			<listitem>
-				<para>MVT support, Bug fixing, Performance and stability improvements, GitHub curation,  alignment of
-			PostGIS with PostgreSQL releases</para>
-			</listitem>
-		</varlistentry>
+  <section xml:id="postgis_project">
+    <title>Project and Community</title>
 
-		<varlistentry>
-		<term>Regina Obe</term>
-		<listitem>
-			<para>CI and website maintenance, Windows production and experimental builds, documentation, alignment of
-			PostGIS with PostgreSQL releases, X3D support,  management functions.</para>
-		</listitem>
-		</varlistentry>
+    <para>PostGIS began in 2001 as a spatial database research project at
+    Refractions Research. It is now an
+    <link xlink:href="https://www.osgeo.org/projects/postgis/">OSGeo project</link>
+    developed by contributors and organizations around the world. The Project
+    Steering Committee coordinates releases, project policy, and the general
+    direction of development. The complete contributor and sponsor record is in
+    <xref linkend="postgis_credits"/> at the end of this manual.</para>
 
-		<varlistentry>
-			<term>Darafei Praliaskouski</term>
-			<listitem>
-				<para>Index improvements, bug fixing and geometry/geography function improvements, SFCGAL, raster, GitHub curation, and ci maintenance.</para>
-			</listitem>
-		</varlistentry>
+    <para>The manual is the authoritative reference for the released SQL
+    interface. The project website and source tree provide the surrounding
+    material:</para>
 
-		<varlistentry>
-		<term>Paul Ramsey (Chair)</term>
-		<listitem>
-			<para>Co-founder of PostGIS project.  General bug fixing, geography support,  geography and geometry index support (2D, 3D, nD index and anything spatial index), underlying geometry internal structures, GEOS functionality integration and alignment with
-			GEOS releases, alignment of
-			PostGIS with PostgreSQL releases, loader/dumper, and Shapefile GUI loader.</para>
-		</listitem>
-		</varlistentry>
-
-		<varlistentry>
-		<term>Sandro Santilli</term>
-		<listitem>
-			<para>Bug fixes and maintenance, ci maintenance, git mirror management, management functions, integration of new GEOS functionality and alignment with GEOS releases, topology support, and raster framework and low level API functions.</para>
-		</listitem>
-		</varlistentry>
-
-	</variablelist>
-  </section>
-  <section xml:id="credits_core_present">
-	<title>Core Contributors Present</title>
-	<variablelist>
-		<varlistentry>
-			<term>Nicklas Avén</term>
-			<listitem>
-			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Tiny WKB (TWKB) output format and general user support</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Loïc Bartoletti</term>
-			<listitem>
-			  <para>SFCGAL enhancements and maintenance and ci support</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Dan Baston</term>
-
-			<listitem>
-			  <para>Geometry clustering function additions, other geometry algorithm enhancements, GEOS enhancements and general user support</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Martin Davis</term>
-			<listitem>
-			  <para>GEOS enhancements and documentation</para>
-			</listitem>
-		</varlistentry>
-
-    	<varlistentry>
-			<term>Björn Harrtell</term>
-
-			<listitem>
-			  <para>MapBox Vector Tile, GeoBuf, and Flatgeobuf functions. Gitea testing and GitLab experimentation.</para>
-			</listitem>
-		</varlistentry>
-
-    	<varlistentry>
-			<term>Aliaksandr Kalenik</term>
-
-			<listitem>
-			  <para>Geometry Processing, PostgreSQL gist, general bug fixing</para>
-			</listitem>
-		</varlistentry>
-
-        <varlistentry>
-			<term>Laurențiu Nicola</term>
-			<listitem>
-			  <para>Bug fixes, maintenance, stability, and performance</para>
-			</listitem>
-		</varlistentry>
-
-
-	</variablelist>
-  </section>
-
-  <section xml:id="credits_core_past">
-	<title>Core Contributors Past</title>
-	<variablelist>
-		<varlistentry>
-            <term>Bborie Park</term>
-            <listitem>
-                <para>Prior PSC Member. Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
-            </listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Mark Cave-Ayland</term>
-			<listitem>
-				<para>Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
-					and new function enhancements.</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Jorge Arévalo</term>
-			<listitem>
-			  <para>Raster development, GDAL driver support, loader</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Olivier Courtin</term>
-			<listitem>
-			  <para>(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-		<term>Chris Hodgson</term>
-		<listitem>
-		  <para>Prior PSC Member. General development, site and buildbot maintenance, OSGeo incubation management</para>
-		</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Mateusz Loskot</term>
-			<listitem>
-			  <para>CMake support for PostGIS, built original raster loader in python and low level raster API functions</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-		<term>Kevin Neufeld</term>
-		<listitem>
-		  <para>Prior PSC Member. Documentation and documentation support tools, buildbot maintenance, advanced user support
-		  on PostGIS newsgroup, and PostGIS maintenance function enhancements.</para>
-		</listitem>
-		</varlistentry>
-
-		<varlistentry>
-		<term>Dave Blasby</term>
-
-		<listitem>
-		  <para>The original developer/Co-founder of PostGIS. Dave wrote the server side
-		  objects, index bindings, and many of the server side analytical
-		  functions.</para>
-		</listitem>
-		</varlistentry>
-
-		<varlistentry>
-		<term>Jeff Lounsbury</term>
-		<listitem>
-		  <para>Original development of the Shapefile loader/dumper.</para>
-		</listitem>
-		</varlistentry>
-
-
-		<varlistentry>
-		<term>Mark Leslie</term>
-		<listitem>
-		  <para>Ongoing maintenance and development of core functions.  Enhanced curve support. Shapefile GUI loader.</para>
-		</listitem>
-		</varlistentry>
-
-        <varlistentry>
-			<term>Pierre Racine</term>
-			<listitem>
-			  <para>Architect of PostGIS raster implementation. Raster overall architecture, prototyping, programming support</para>
-			</listitem>
-		</varlistentry>
-
-        <varlistentry>
-			<term>David Zwarg</term>
-			<listitem>
-			  <para>Raster development (mostly map algebra analytic functions)</para>
-			</listitem>
-		</varlistentry>
-	</variablelist>
-</section>
-
-<section xml:id="credits_other_contributors"><title>Other Contributors</title>
-	<variablelist>
-	  <varlistentry>
-		<term>Individual Contributors</term>
-
-		<listitem>
-			<para>
-				<simplelist type="vert" columns="3">
-					<member>Alex Bodnaru</member>
-					<member>Alex Mayrhofer</member>
-					<member>Andrea Peri</member>
-					<member>Andreas Forø Tollefsen</member>
-					<member>Andreas Neumann</member>
-					<member>Andrew Gierth</member>
-					<member>Anne Ghisla</member>
-					<member>Antoine Bajolet</member>
-					<member>Arthur Lesuisse</member>
-					<member>Artur Zakirov</member>
-					<member>Ayo Adesugba</member>
-					<member>Barbara Phillipot</member>
-					<member>Ben Jubb</member>
-					<member>Bernhard Reiter</member>
-					<member>Björn Esser</member>
-					<member>Brian Hamlin</member>
-					<member>Bruce Rindahl</member>
-					<member>Bruno Wolff III</member>
-					<member>Bryce L. Nordgren</member>
-					<member>Carl Anderson</member>
-					<member>Charlie Savage</member>
-					<member>Chris Mayo</member>
-					<member>Christian Schroeder</member>
-					<member>Christoph Berg</member>
-					<member>Christoph Moench-Tegeder</member>
-					<member>Dane Springmeyer</member>
-					<member>Daniel Nylander</member>
-					<member>Dapeng Wang</member>
-					<member>Daryl Herzmann</member>
-					<member>Dave Fuhry</member>
-					<member>David Garnier</member>
-					<member>David Skea</member>
-					<member>David Techer</member>
-					<member>Denys Kovshun</member>
-					<member>Dian M Fay</member>
-					<member>Dmitry Vasilyev</member>
-					<member>Eduin Carrillo</member>
-					<member>Esteban Zimanyi</member>
-					<member>Eugene Antimirov</member>
-					<member>Even Rouault</member>
-					<member>Florian Weimer</member>
-					<member>Frank Warmerdam</member>
-					<member>George Silva</member>
-					<member>Gerald Fenoy</member>
-					<member>Gino Lucrezi</member>
-					<member>Greg Troxel</member>
-					<member>Guillaume Lelarge</member>
-					<member>Giuseppe Broccolo</member>
-					<member>Han Wang</member>
-					<member>Hans Lemuet</member>
-					<member>Haribabu Kommi</member>
-					<member>Havard Tveite</member>
-					<member>IIDA Tetsushi</member>
-					<member>Ingvild Nystuen</member>
-					<member>Jackie Leng</member>
-					<member>James Addison</member>
-					<member>James Marca</member>
-					<member>Jan Katins</member>
-					<member>Jan Tojnar</member>
-					<member>Jason Smith</member>
-					<member>Jeff Adams</member>
-					<member>Jelte Fennema</member>
-					<member>Jim Jones</member>
-					<member>Joe Conway</member>
-					<member>Jonne Savolainen</member>
-					<member>Jose Carlos Martinez Llari</member>
-					<member>Jörg Habenicht</member>
-					<member>Julien Rouhaud</member>
-					<member>Kashif Rasul</member>
-					<member>Klaus Foerster</member>
-					<member>Kris Jurka</member>
-					<member>Laurențiu Nicola</member>
-					<member>Laurenz Albe</member>
-					<member>Lars Roessiger</member>
-					<member>Leo Hsu</member>
-					<member>Loic Dachary</member>
-					<member>Luca S. Percich</member>
-					<member>Lucas C. Villa Real</member>
-					<member>Maksim Korotkov</member>
-					<member>Maria Arias de Reyna</member>
-					<member>Marc Ducobu</member>
-					<member>Mark Sondheim</member>
-					<member>Markus Schaber</member>
-					<member>Markus Wanner</member>
-					<member>Matt Amos</member>
-					<member>Matt Bretl</member>
-					<member>Matthias Bay</member>
-					<member>Maxime Guillaud</member>
-					<member>Maxime van Noppen</member>
-					<member>Maxime Schoemans</member>
-					<member>Megan Ma</member>
-					<member>Michael Fuhr</member>
-					<member>Mike Toews</member>
-					<member>Nathan Wagner</member>
-					<member>Nathaniel Clay</member>
-					<member>Nikita Shulga</member>
-					<member>Norman Vine</member>
-					<member>Patricia Tozer</member>
-					<member>Rafal Magda</member>
-					<member>Ralph Mason</member>
-					<member>Rémi Cura</member>
-					<member>Richard Greenwood</member>
-					<member>Robert Coup</member>
-					<member>Roger Crew</member>
-					<member>Ron Mayer</member>
-					<member>Sam Peters</member>
-					<member>Sebastiaan Couwenberg</member>
-					<member>Sergei Shoulbakov</member>
-					<member>Sergey Fedoseev</member>
-					<member>Shinichi Sugiyama</member>
-					<member>Shoaib Burq</member>
-					<member>Silvio Grosso</member>
-					<member>Stefan Corneliu Petrea</member>
-					<member>Steffen Macke</member>
-					<member>Stepan Kuzmin</member>
-					<member>Stephen Frost</member>
-					<member>Steven Ottens</member>
-					<member>Talha Rizwan</member>
-					<member>Teramoto Ikuhiro</member>
-					<member>Tom Glancy</member>
-					<member>Tom van Tilburg</member>
-					<member>Victor Collod</member>
-					<member>Vincent Bre</member>
-					<member>Vincent Mora</member>
-					<member>Vincent Picavet</member>
-					<member>Volf Tomáš</member>
-					<member>Zuo Chenwei</member>
-				</simplelist>
-			</para>
-		</listitem>
-	</varlistentry>
-
-	  <varlistentry>
-		<term>Corporate Sponsors</term>
-
-		<listitem>
-			<para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project.
-			      In alphabetical order:
-			<itemizedlist>
-                <listitem><simpara><link xlink:href="https://aiven.io">Aiven</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://arrival3d.com">Arrival 3D</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.ausvet.com.au">AusVet</link></simpara></listitem>
-				<listitem><simpara>Avencia</simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.azavea.com">Azavea</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.boundlessgeo.com">Boundless</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.cadcorp.com">Cadcorp</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.camptocamp.com">Camptocamp</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://carto.com">Carto</link></simpara></listitem>
-                <listitem><simpara><link xlink:href="https://www.crunchydata.com">Crunchy Data</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.boston.gov">City of Boston (DND)</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.hel.fi">City of Helsinki</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://blog.cleverelephant.ca">Clever Elephant Solutions</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.alveo.coop">Cooperativa Alveo</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="http://www.elecnor-deimos.com">Deimos Space</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.faunalia.eu">Faunalia</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://gov.bc.ca">Geographic Data BC</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.highgo.com">HighGo</link></simpara></listitem>
-				<listitem><simpara>Hunter Systems Group</simpara></listitem>
-				<listitem><simpara><link xlink:href="https://pti-agriambio.csic.es">INIA-CSIC</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.isciences.com">ISciences, LLC</link></simpara></listitem>
-                <listitem><simpara><link xlink:href="https://www.kontur.io">Kontur</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.lidwala.com">Lidwala Consulting Engineers</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.jirotech.com">LISAsoft</link></simpara></listitem>
-				<listitem><simpara>Logical Tracking &amp; Tracing International AG</simpara></listitem>
-				<listitem><simpara>Maponics</simpara></listitem>
-				<listitem><simpara><link xlink:href="http://www.mtri.org">Michigan Tech Research Institute</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.nrcan.gc.ca">Natural Resources Canada</link></simpara></listitem>
-				<listitem><simpara>Norwegian Forest and Landscape Institute</simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.nibio.no/">Norwegian Institute of Bioeconomy Research (NIBIO)</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.osgeo.org">OSGeo</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://oslandia.com">Oslandia</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.palantir.com">Palantir Technologies</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.paragoncorporation.com">Paragon Corporation</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://postgrespro.com">Postgres Pro</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.r3-gis.com">R3 GIS</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="http://www.refractions.net">Refractions Research</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.regione.toscana.it">Regione Toscana - SITA</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.safe.com">Safe Software</link></simpara></listitem>
-				<listitem><simpara>Sirius Corporation plc</simpara></listitem>
-				<listitem><simpara><link xlink:href="http://www.uster.ch">Stadt Uster</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.ulaval.ca">Université Laval</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.census.gov">U.S. Census Bureau</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://hiu.state.gov">U.S. Department of State (HIU)</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.zonarsystems.com">Zonar Systems</link></simpara></listitem>
-			</itemizedlist>
-		</para>
-		</listitem>
-	  </varlistentry>
-
-	   <varlistentry>
-		<term>Crowd Funding Campaigns</term>
-
-		<listitem>
-            <para>Crowd funding campaigns are campaigns we run to get badly wanted features funded that can service a large number of people.  Each campaign is specifically focused on a particular feature or set of features.  Each sponsor chips in a small fraction of the needed funding and with enough people/organizations contributing, we have the funds to pay for the work that will help many.  If you have an idea for a feature you think many others would be willing to co-fund, please post to the <link xlink:href="https://lists.osgeo.org/mailman/listinfo/postgis-users">PostGIS newsgroup</link> your thoughts and together we can make it happen. </para>
-              <para>PostGIS has experimented with community fundraising for features in the past. We used <link xlink:href="http://www.pledgebank.com">PledgeBank</link> and we got two successful campaigns out of it.</para>
-		  <para><link xlink:href="http://www.pledgebank.com/postgistopology"><emphasis role="bold">postgistopology</emphasis></link> - 10 plus sponsors each contributed $250 USD to build toTopoGeometry function and beef up topology support in 2.0.0. It happened.</para>
-		 <para><link xlink:href="http://www.pledgebank.com/postgis64windows"><emphasis role="bold">postgis64windows</emphasis></link> - 20 someodd sponsors each contributed $100 USD to pay for the work needed to work out PostGIS 64-bit issues on windows. It happened.</para>
-		</listitem>
-	  </varlistentry>
-
-	  <varlistentry>
-		<term>Important Support Libraries</term>
-
-		<listitem>
-		  <para>The <link xlink:href="https://libgeos.org">GEOS</link>
-		  geometry operations library</para>
-
-		  <para>The <link xlink:href="https://gdal.org">GDAL</link>
-		  Geospatial Data Abstraction Library used to
-		  power much of the raster functionality introduced in PostGIS 2. In kind, improvements needed in GDAL
-		  to support PostGIS are contributed back to the GDAL project.</para>
-
-		  <para>The <link xlink:href="https://www.proj4.org">PROJ</link>
-		  cartographic projection library</para>
-
-		  <para>Last but not least, <link xlink:href="http://www.postgresql.org">PostgreSQL</link>,
-		  the giant that PostGIS stands on.  Much of the speed and flexibility of PostGIS would not be possible without
-		  the extensibility, great query planner, GIST index, and plethora of SQL features provided by PostgreSQL.</para>
-		</listitem>
-	  </varlistentry>
-	</variablelist>
+    <itemizedlist>
+      <listitem><para><link xlink:href="https://postgis.net/documentation/">Documentation</link>
+      routes readers to getting-started instructions, versioned manuals, tips,
+      training material, and the FAQ.</para></listitem>
+      <listitem><para><link xlink:href="https://postgis.net/community/">Community</link>
+      lists mailing lists, chat, events, videos, and other support channels.</para></listitem>
+      <listitem><para><link xlink:href="https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development">Developer documentation</link>
+      covers development environments, testing, coding style, internals,
+      maintenance, governance, releases, and website work.</para></listitem>
+    </itemizedlist>
   </section>
 
 </chapter>

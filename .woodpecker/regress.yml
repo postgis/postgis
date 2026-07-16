@@ -49,9 +49,11 @@ variables:
     - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' check.log
 
 clone:
-  git:
+  - name: git
     image: woodpeckerci/plugin-git
-    depth: 50
+    settings:
+      depth: 0
+      partial: false
 
 steps:
 
