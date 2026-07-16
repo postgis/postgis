@@ -358,19 +358,18 @@ sh autogen.sh
       <term><option>--prefix=PREFIX</option></term>
       <listitem>
       <para>
-        This is the location the PostGIS loader executables and shared libs will be installed.
-        By default, this location is the same as the
-        detected PostgreSQL installation.
+        This is the installation prefix for PostGIS command-line utilities.
+        By default, utilities are installed in the executable directory
+        reported by the detected PostgreSQL installation.
       </para>
 
       <caution>
         <para>
-        This parameter is currently broken, as the package will only
-        install into the PostgreSQL installation directory. Visit
-        <link xlink:href="http://trac.osgeo.org/postgis/ticket/635">
-          http://trac.osgeo.org/postgis/ticket/635
-        </link>
-        to track this bug.
+        PostgreSQL extension files are installed in the directories reported
+        by <command>pg_config</command>, so the server can load them.  This
+        includes the PostGIS shared library and SQL extension files.  Use
+        <option>--with-pgconfig=FILE</option> to choose the PostgreSQL
+        installation that PostGIS builds and installs against.
         </para>
       </caution>
       </listitem>
