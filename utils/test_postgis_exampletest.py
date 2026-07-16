@@ -386,6 +386,20 @@ class ExampleTestComparisonTest(unittest.TestCase):
             )
         )
 
+    def test_multipoint_wrapped_point_spelling_is_canonicalized(self):
+        self.assertTrue(
+            self.tester.values_equal(
+                "MULTIPOINT(0.5 0.5,2.5 2.5)",
+                "MULTIPOINT((0.5 0.5),(2.5 2.5))",
+            )
+        )
+        self.assertFalse(
+            self.tester.values_equal(
+                "MULTIPOINT(0.5 0.5,2.5 2.5)",
+                "MULTIPOINT(2.5 2.5,0.5 0.5)",
+            )
+        )
+
     def test_png_bytea_is_summarized_without_losing_visual_payload(self):
         raw = b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + (150).to_bytes(4, "big") + (90).to_bytes(4, "big")
         actual = QueryRows([["\\x" + raw.hex()]], ["image"])
@@ -567,15 +581,19 @@ class ExampleTestComparisonTest(unittest.TestCase):
     def test_typed_hexwkb_comparison_accepts_readable_wkt_without_srid(self):
         ndr = "0102000020E610000002000000713D0AD7A38051C08FC2F5285C6F4540D7A3703D0A8751C0713D0AD7A3704540"
         queries = []
-        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "t"
+        def scalar(database, query):
+            queries.append(query)
+            if "ST_AsEWKT" in query:
+                return "LINESTRING(-70.01 42.87,-70.11 42.88)"
+            return "t"
+        self.tester.run_psql_scalar = scalar
         actual = QueryRows([[ndr]], types=["geometry"])
         self.assertTrue(
             self.tester.typed_rows_equal(
                 "manual", actual, [["LINESTRING(-70.01 42.87,-70.11 42.88)"]]
             )
         )
-        self.assertIn("TRUE AND ST_SRID(expected) = 0", queries[0])
-        self.assertNotIn("regexp_replace", queries[0])
+        self.assertIn("ST_AsEWKT", queries[0])
 
     def test_typed_hexwkb_comparison_preserves_explicit_srid_zero(self):
         ndr = "0101000000000000000000F03F0000000000000040"
@@ -612,6 +630,28 @@ class ExampleTestComparisonTest(unittest.TestCase):
             )
         )
         self.assertIn("ST_GeomFromEWKT('LINESTRING Z (-1 -2 3,-1 -4 3)')", queries[0])
+
+    def test_rounded_typed_hexwkb_comparison_keeps_explicit_z_spelling(self):
+        ndr = "010200008002000000010000000000F0BFFFFFFFFFFFFFFFBF0000000000000840020000000000F0BF00000000000010C00000000000000840"
+        queries = []
+
+        def scalar(database, query):
+            queries.append(query)
+            if "ST_AsText" in query:
+                return "LINESTRING Z (-1.000 -2.000 3.000,-1.000 -4.000 3.000)"
+            return "f"
+
+        self.tester.run_psql_scalar = scalar
+        actual = QueryRows([[ndr]], types=["geometry"])
+        self.assertTrue(
+            self.tester.typed_rows_equal(
+                "manual",
+                actual,
+                [["LINESTRING Z (-1.000 -2.000 3.000,-1.000 -4.000 3.000)"]],
+            )
+        )
+        self.assertIn("ST_AsText", queries[0])
+        self.assertNotIn("ST_AsEWKT", queries[0])
 
     def test_typed_hexwkb_comparison_accepts_compact_ewkt_dimension_marker(self):
         point_m = "0101000040000000000000144000000000000028400000000000002640"

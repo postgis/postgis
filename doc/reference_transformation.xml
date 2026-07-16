@@ -168,16 +168,16 @@ SELECT ST_Affine(geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()
 		<title>Examples</title>
 
 		<para>This example rotates a geometry by 180 degrees.</para>
-		<programlisting>SELECT ST_AsText(ST_Rotate('LINESTRING (50 160,50 50,100 50)'::geometry, pi()), 6);</programlisting>
+		<programlisting>SELECT ST_Rotate('LINESTRING (50 160,50 50,100 50)'::geometry, pi());</programlisting>
 <screen>LINESTRING(-50 -160,-50 -50,-100 -50)</screen>
 
 		<para>This example rotates a geometry 30 degrees counter-clockwise around x=50, y=160.</para>
-		<programlisting>SELECT ST_AsText(ST_Rotate('LINESTRING (50 160,50 50,100 50)'::geometry, pi()/6, 50, 160), 6);</programlisting>
+		<programlisting>SELECT ST_Rotate('LINESTRING (50 160,50 50,100 50)'::geometry, pi()/6, 50, 160);</programlisting>
 <screen>LINESTRING(50 160,105 64.737206,148.30127 89.737206)</screen>
 
 		<para>This example rotates a geometry 60 degrees clockwise around its centroid.</para>
 		<programlisting>
-SELECT ST_AsText(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)), 4)
+SELECT ST_Rotate(geom, -pi()/3, ST_Centroid(geom))
 FROM (SELECT 'LINESTRING (50 160,50 50,100 50)'::geometry AS geom) AS foo;</programlisting>
 <screen>LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)</screen>
 	  </refsection>

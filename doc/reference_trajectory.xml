@@ -127,7 +127,7 @@ WITH inp AS ( SELECT
 )
 SELECT to_timestamp(m) AT TIME ZONE 'UTC' t,
        ST_3DDistance(pa, pb) distance,
-       ST_AsText(pa, 2) AS pa, ST_AsText(pb, 2) AS pb
+       pa AS pa, pb AS pb
 FROM points, cpa;</programlisting>
 <screen role="text-primary">-[ RECORD 1 ]-----------------------------
 t        | 2015-05-26 10:45:31.034483

@@ -132,107 +132,107 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
                       <row>
                         <entry>
                           <para><emphasis>quad_segs=8 (default)</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('POINT(100 90)'),
-  50, 'quad_segs=8'), 0);</programlisting>
+  50, 'quad_segs=8');</programlisting>
 <screen xml:id="st-buffer-example-01" role="visual-primary text-primary">POLYGON((150 90,149 80,146 71,142 62,135 55,128 48,119 44,110 41,100 40,90 41,81 44,72 48,65 55,58 62,54 71,51 80,50 90,51 100,54 109,58 118,65 125,72 132,81 136,90 139,100 140,110 139,119 136,128 132,135 125,142 118,146 109,149 100,150 90))</screen>
                         </entry>
                         <entry>
                           <para><emphasis>quad_segs=2</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('POINT(100 90)'),
-  50, 'quad_segs=2'), 0);</programlisting>
+  50, 'quad_segs=2');</programlisting>
 <screen xml:id="st-buffer-example-02" role="visual-primary text-primary">POLYGON((150 90,135 55,100 40,65 55,50 90,65 125,100 140,135 125,150 90))</screen>
                         </entry>
                       </row>
                       <row>
                         <entry>
                           <para><emphasis>endcap=round join=round (default)</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'endcap=round join=round'), 0);</programlisting>
+  10, 'endcap=round join=round');</programlisting>
 <screen xml:id="st-buffer-example-03" role="visual-primary text-primary">POLYGON((143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,143 157))</screen>
                         </entry>
                         <entry>
                           <para><emphasis>endcap=square</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'endcap=square join=round'), 0);</programlisting>
+  10, 'endcap=square join=round');</programlisting>
 <screen xml:id="st-buffer-example-04" role="visual-primary text-primary">POLYGON((143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,160 40,140 40,140 126,57 43,50 36,36 50,143 157))</screen>
                         </entry>
                       </row>
                       <row>
                         <entry>
                           <para><emphasis>endcap=flat</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'endcap=flat join=round'), 0);</programlisting>
+  10, 'endcap=flat join=round');</programlisting>
 <screen xml:id="st-buffer-example-05" role="visual-primary text-primary">POLYGON((143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,140 50,140 126,57 43,43 57,143 157))</screen>
                         </entry>
                         <entry>
                           <para><emphasis>join=bevel</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'join=bevel'), 0);</programlisting>
+  10, 'join=bevel');</programlisting>
 <screen xml:id="st-buffer-example-06" role="visual-primary text-primary">POLYGON((143 157,160 150,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,143 157))</screen>
                         </entry>
                       </row>
                       <row>
                         <entry>
                           <para><emphasis>join=mitre mitre_limit=5.0 (default mitre limit)</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'join=mitre mitre_limit=5.0'), 0);</programlisting>
+  10, 'join=mitre mitre_limit=5.0');</programlisting>
 <screen xml:id="st-buffer-example-07" role="visual-primary text-primary">POLYGON((160 174,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,160 174))</screen>
                         </entry>
                         <entry>
                           <para><emphasis>join=mitre mitre_limit=1</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'join=mitre mitre_limit=1.0'), 0);</programlisting>
+  10, 'join=mitre mitre_limit=1.0');</programlisting>
 <screen xml:id="st-buffer-example-08" role="visual-primary text-primary">POLYGON((148 162,160 157,160 50,160 48,159 46,158 44,157 43,156 42,154 41,152 40,150 40,148 40,146 41,144 42,143 43,142 44,141 46,140 48,140 50,140 126,57 43,56 42,54 41,52 40,50 40,48 40,46 41,44 42,43 43,42 44,41 46,40 48,40 50,40 52,41 54,42 56,43 57,148 162))</screen>
                         </entry>
                       </row>
                       <row>
                         <entry>
                           <para><emphasis>side=left</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'side=left'), 0);</programlisting>
+  10, 'side=left');</programlisting>
 <screen xml:id="st-buffer-example-09" role="visual-primary text-primary">POLYGON((150 50,150 150,50 50,43 57,143 157,144 158,146 159,148 160,150 160,152 160,154 159,156 158,157 157,158 156,159 154,160 152,160 150,160 50,150 50))</screen>
                         </entry>
                         <entry>
                           <para><emphasis>side=right</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'side=right'), 0);</programlisting>
+  10, 'side=right');</programlisting>
 <screen xml:id="st-buffer-example-10" role="visual-primary text-primary">POLYGON((50 50,150 150,150 50,140 50,140 126,57 43,50 50))</screen>
                         </entry>
                       </row>
                       <row>
                         <entry>
                           <para><emphasis>side=left join=mitre</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
-  10, 'side=left join=mitre'), 0);</programlisting>
+  10, 'side=left join=mitre');</programlisting>
 <screen xml:id="st-buffer-example-11" role="visual-primary text-primary">POLYGON((150 50,150 150,50 50,43 57,160 174,160 50,150 50))</screen>
                         </entry>
                         <entry>
                           <para><emphasis>right-hand winding, polygon boundary side=left</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_ForceRHR(ST_Boundary(ST_GeomFromText(
     'POLYGON ((50 50,50 150,150 150,150 50,50 50))'))),
-  20, 'side=left'), 0);</programlisting>
+  20, 'side=left');</programlisting>
 <screen xml:id="st-buffer-example-12" role="visual-primary text-primary">POLYGON((50 50,50 150,150 150,150 50,50 50))</screen>
                         </entry>
                       </row>
                       <row>
                         <entry>
                           <para><emphasis>right-hand winding, polygon boundary side=right</emphasis></para>
-<programlisting>SELECT ST_AsText(ST_Buffer(
+<programlisting>SELECT ST_Buffer(
   ST_ForceRHR(ST_Boundary(ST_GeomFromText(
     'POLYGON ((50 50,50 150,150 150,150 50,50 50))'))),
-  20, 'side=right'), 0);</programlisting>
+  20, 'side=right');</programlisting>
 <screen xml:id="st-buffer-example-13" role="visual-primary text-primary">POLYGON((50 50,50 70,50 150,150 150,150 50,70 50,50 50),(70 70,130 70,130 130,70 130,70 70))</screen>
                         </entry>
                       </row>
@@ -259,8 +259,8 @@ promisingcircle_pcount | lamecircle_pcount
          ST_Transform(point_4269, 26986) AS point_26986
   FROM input
 )
-SELECT ST_AsEWKT(point_4269) AS input_point_4269,
-       ST_AsEWKT(ST_Buffer(point_26986, 100, 2)) AS octagon_26986
+SELECT point_4269 AS input_point_4269,
+       ST_Buffer(point_26986, 100, 2) AS octagon_26986
 FROM projected;</programlisting>
 <screen role="visual-primary text-primary visual-separate-output docbook-qa-ignore-wide-lines">SRID=4269;POINT(-71.063526 42.35785) | SRID=26986;POLYGON((236057.5905746494 900908.7599186979,236028.30125276805 900838.0492405792,235957.5905746494 900808.7599186979,235886.87989653074 900838.0492405792,235857.5905746494 900908.7599186979,235886.87989653074 900979.4705968165,235957.5905746494 901008.7599186979,236028.30125276805 900979.4705968165,236057.5905746494 900908.7599186979))</screen>
 
@@ -356,14 +356,14 @@ segments AS (
          lead(radius) OVER (ORDER BY n) AS next_radius
   FROM radii
 )
-SELECT ST_AsText(ST_Union(
+SELECT ST_Union(
          ST_ConvexHull(
            ST_Collect(
              ST_Buffer(geom, radius),
              ST_Buffer(next_geom, next_radius)
            )
          )
-       ), 3) AS tapered_buffer
+       ) AS tapered_buffer
 FROM segments
 WHERE next_geom IS NOT NULL;</programlisting>
 <screen role="visual-primary">POLYGON((96.758 -16.301,-0.975 -4.904,-1.913 -4.619,-2.778 -4.157,-3.536 -3.536,-4.157 -2.778,-4.619 -1.913,-4.904 -0.975,-5 0,-4.904 0.975,-4.619 1.913,-4.157 2.778,-3.536 3.536,-2.778 4.157,-1.913 4.619,-0.975 4.904,93.101 15.875,142.322 57.678,146.111 60.787,150.433 63.097,155.123 64.52,160 65,164.877 64.52,169.567 63.097,173.889 60.787,177.678 57.678,180.787 53.889,183.097 49.567,184.52 44.877,185 40,184.52 35.123,183.097 30.433,180.787 26.111,177.678 22.322,173.889 19.213,169.567 16.903,106.36 -15.355,103.242 -16.301,100 -16.62,96.758 -16.301))</screen>
@@ -432,7 +432,7 @@ WHERE next_geom IS NOT NULL;</programlisting>
   ('LINESTRING (80 60,120 130,150 80)'::geometry),
   ('LINESTRING (80 60,150 80)'::geometry)
 )
-SELECT ST_AsText(ST_BuildArea(ST_Collect(geom ))) AS wkt
+SELECT ST_BuildArea(ST_Collect(geom )) AS wkt
     FROM data;</programlisting>
 <screen role="visual-primary text-primary">POLYGON((180 40,30 20,20 90,80 120,80 190,160 160,180 40),(150 80,120 130,80 60,150 80))</screen>
 
@@ -445,9 +445,9 @@ rings AS (
          ST_Buffer(geom, 50, 'quad_segs=1') AS outring
   FROM input
 )
-SELECT ST_AsText(inring, 0) AS inner_ring,
-       ST_AsText(outring, 0) AS outer_ring,
-       ST_AsText(ST_BuildArea(ST_Collect(inring, outring)), 0) AS area
+SELECT inring AS inner_ring,
+       outring AS outer_ring,
+       ST_BuildArea(ST_Collect(inring, outring)) AS area
 FROM rings;</programlisting>
 <screen>-[ RECORD 1 ]-----
 inner_ring | POLYGON((125 90,100 65,75 90,100 115,125 90))
@@ -465,7 +465,7 @@ area       | POLYGON((150 90,100 40,50 90,100 140,150 90),(125 90,100 115,75 90,
 noded AS (
   SELECT ST_Node(ST_UnaryUnion(ST_Collect(geom))) AS geom FROM lines
 )
-SELECT ST_AsText(ST_BuildArea(geom), 1) AS area
+SELECT ST_BuildArea(geom) AS area
 FROM noded;
 </programlisting>
 <screen role="visual-primary text-primary">POLYGON((320 60,36.8 60,44.4 289.6,302.2 282.4,320 60),(156.9 205.3,135.2 167,220 150,156.9 205.3))</screen>
@@ -552,25 +552,25 @@ FROM noded;
       <title>Examples</title>
 
 		<para>Centroid of a MultiPoint.</para>
-<programlisting>SELECT ST_AsText(ST_Centroid(
-  'MULTIPOINT (8 24,10 92,12 154,17 68,28 10,29 52,29 84,55 50,56 24,131 14,160 180,189 180)'), 3);</programlisting>
+<programlisting>SELECT ST_Centroid(
+  'MULTIPOINT (8 24,10 92,12 154,17 68,28 10,29 52,29 84,55 50,56 24,131 14,160 180,189 180)');</programlisting>
 <screen xml:id="st-centroid-multipoint" role="visual-primary text-primary">POINT(60.333 77.667)</screen>
 
 		<para>Centroid of a LineString.</para>
-<programlisting>SELECT ST_AsText(ST_Centroid(
-  'LINESTRING (190 160,10 190,40 90,20 70,10 10,30 40,30 10,110 40,70 10,110 10,140 40,140 10,160 30,180 10)'), 3);</programlisting>
+<programlisting>SELECT ST_Centroid(
+  'LINESTRING (190 160,10 190,40 90,20 70,10 10,30 40,30 10,110 40,70 10,110 10,140 40,140 10,160 30,180 10)');</programlisting>
 <screen role="visual-primary text-primary">POINT(76.191 79.876)</screen>
 
 		<para>Centroid of a Polygon.</para>
-<programlisting>SELECT ST_AsText(ST_Centroid(
-  'POLYGON ((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'), 3);</programlisting>
+<programlisting>SELECT ST_Centroid(
+  'POLYGON ((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))');</programlisting>
 <screen role="visual-primary text-primary">POINT(80.251 113.405)</screen>
 
 		<para>Centroid of the highest-dimension components of a GeometryCollection.</para>
-<programlisting>SELECT ST_AsText(ST_Centroid(
+<programlisting>SELECT ST_Centroid(
   'GEOMETRYCOLLECTION (POLYGON ((190 170,180 100,80 140,80 160,130 160,110 180,110 190,180 180,190 170)),
     LINESTRING (80 120,120 20,140 70,150 30,180 50,190 10),
-    MULTIPOINT (19 150,22 49,30 13,32 101,45 35,67 88,75 16))'), 3);</programlisting>
+    MULTIPOINT (19 150,22 49,30 13,32 101,45 35,67 88,75 16))');</programlisting>
 <screen role="visual-primary text-primary">POINT(143.361 148.263)</screen>
 
       <programlisting>SELECT ST_Centroid(g)
@@ -741,8 +741,8 @@ FROM (SELECT  'POLYGON((0 0,8 8,0 16,0 0))'::geometry geom) AS foo;</programlist
     <programlisting language="sql">WITH input(geom) AS (VALUES
   ('LINESTRING (10 140,80 130,100 190,190 150,140 20,120 120,50 30,30 100)'::geometry)
 )
-SELECT ST_AsText(ST_CatmullRomSmoothing(geom, 5), 3) AS segments_5,
-  ST_AsText(ST_CatmullRomSmoothing(geom, 10), 3) AS segments_10
+SELECT ST_CatmullRomSmoothing(geom, 5) AS segments_5,
+  ST_CatmullRomSmoothing(geom, 10) AS segments_10
 FROM input;</programlisting>
     <screen role="visual-primary visual-overlay">LINESTRING(10 140,24.8 136.88,40.4 132.64,55.6 128.96,69.2 127.52,80 130,86.08 139.12,88.24 153.76,89.36 169.84,92.32 183.28,100 190,115.76 189.84,137.68 185.52,160.72 177.28,179.84 165.36,190 150,188.48 126.08,178.64 93.44,164.56 59.76,150.32 32.72,140 20,134.88 28.32,132.24 52.56,130.16 82.64,126.72 108.48,120 120,108.4 111.6,93.2 90,76.8 63.6,61.6 40.8,50 30,42.8 33.76,38.4 46.48,35.6 64.32,33.2 83.44,30 100) | LINESTRING(10 140,17.225 138.685,24.8 136.88,32.575 134.795,40.4 132.64,48.125 130.625,55.6 128.96,62.675 127.855,69.2 127.52,75.025 128.165,80 130,83.71 133.615,86.08 139.12,87.47 146.005,88.24 153.76,88.75 161.875,89.36 169.84,90.43 177.145,92.32 183.28,95.39 187.735,100 190,106.795 190.455,115.76 189.84,126.265 188.185,137.68 185.52,149.375 181.875,160.72 177.28,171.085 171.765,179.84 165.36,186.355 158.095,190 150,190.535 139.61,188.48 126.08,184.345 110.37,178.64 93.44,171.875 76.25,164.56 59.76,157.205 44.93,150.32 32.72,144.415 24.09,140 20,137.01 21.54,134.88 28.32,133.37 39.08,132.24 52.56,131.25 67.5,130.16 82.64,128.73 96.72,126.72 108.48,123.89 116.66,120 120,114.8 117.975,108.4 111.6,101.1 101.925,93.2 90,85 76.875,76.8 63.6,68.9 51.225,61.6 40.8,55.2 33.375,50 30,45.975 30.52,42.8 33.76,40.325 39.24,38.4 46.48,36.875 55,35.6 64.32,34.425 73.96,33.2 83.44,31.775 92.28,30 100)</screen>
 
@@ -753,8 +753,8 @@ FROM input;</programlisting>
     <programlisting language="sql">WITH input(geom) AS (VALUES
   ('POLYGON ((20 20,60 90,10 150,100 190,190 160,130 120,190 50,140 70,120 10,90 60,20 20))'::geometry)
 )
-SELECT ST_AsText(ST_CatmullRomSmoothing(geom, 5), 3) AS segments_5,
-  ST_AsText(ST_CatmullRomSmoothing(geom, 10), 3) AS segments_10
+SELECT ST_CatmullRomSmoothing(geom, 5) AS segments_5,
+  ST_CatmullRomSmoothing(geom, 10) AS segments_10
 FROM input;</programlisting>
     <screen role="visual-primary visual-overlay">POLYGON((20 20,22.4 27.12,32.4 40.56,45.2 57.44,56 74.88,60 90,53.52 102.96,39.76 115.68,24.24 127.92,12.48 139.44,10 150,19.04 160.4,35.92 170.8,57.28 180,79.76 186.8,100 190,120.4 188.64,143.2 183.52,164.8 176.08,181.6 167.76,190 160,185.68 153.12,171.04 146.16,152.56 138.64,136.72 130.08,130 120,136.08 106.48,150.64 89.84,168.16 72.96,183.12 58.72,190 50,186.56 49.52,176.48 55.36,163.12 63.44,149.84 69.68,140 70,134.24 61.36,130.32 46.48,127.28 29.92,124.16 16.24,120 10,115.28 14.4,110.64 26.4,105.36 41.2,98.72 54,90 60,76.8 56,59.6 45.2,42 32.4,27.6 22.4,20 20)) | POLYGON((20 20,19.95 22.59,22.4 27.12,26.75 33.23,32.4 40.56,38.75 48.75,45.2 57.44,51.15 66.27,56 74.88,59.15 82.91,60 90,58.015 96.495,53.52 102.96,47.205 109.365,39.76 115.68,31.875 121.875,24.24 127.92,17.545 133.785,12.48 139.44,9.735 144.855,10 150,13.33 155.125,19.04 160.4,26.71 165.675,35.92 170.8,46.25 175.625,57.28 180,68.59 183.775,79.76 186.8,90.37 188.925,100 190,109.675 189.88,120.4 188.64,131.725 186.46,143.2 183.52,154.375 180,164.8 176.08,174.025 171.94,181.6 167.76,187.075 163.72,190 160,189.535 156.54,185.68 153.12,179.245 149.68,171.04 146.16,161.875 142.5,152.56 138.64,143.905 134.52,136.72 130.08,131.815 125.26,130 120,131.635 113.81,136.08 106.48,142.645 98.37,150.64 89.84,159.375 81.25,168.16 72.96,176.305 65.33,183.12 58.72,187.915 53.49,190 50,189.32 48.715,186.56 49.52,182.14 51.905,176.48 55.36,170 59.375,163.12 63.44,156.26 67.045,149.84 69.68,144.28 70.835,140 70,136.83 66.745,134.24 61.36,132.11 54.415,130.32 46.48,128.75 38.125,127.28 29.92,125.79 22.435,124.16 16.24,122.27 11.905,120 10,117.585 10.95,115.28 14.4,112.995 19.75,110.64 26.4,108.125 33.75,105.36 41.2,102.255 48.15,98.72 54,94.665 58.15,90 60,84.125 59.15,76.8 56,68.475 51.15,59.6 45.2,50.625 38.75,42 32.4,34.175 26.75,27.6 22.4,22.725 19.95,20 20))</screen>
 
@@ -858,8 +858,8 @@ The hull respects the boundary of the polygon, whereas the points-based hull doe
 WITH data(geom) AS (VALUES
    ('POLYGON ((10 90,39 85,61 79,50 90,80 80,95 55,25 60,90 45,70 16,63 38,60 10,50 30,43 27,30 10,20 20,10 90))'::geometry)
 )
-SELECT ST_AsText(ST_ConcaveHull(geom, 0.1)) AS polygon_hull,
-       ST_AsText(ST_ConcaveHull(ST_Points(geom), 0.1)) AS points_hull
+SELECT ST_ConcaveHull(geom, 0.1) AS polygon_hull,
+       ST_ConcaveHull(ST_Points(geom), 0.1) AS points_hull
     FROM data;
 </programlisting>
 <screen role="visual-primary text-primary">POLYGON((60 10,50 30,43 27,30 10,20 20,10 90,39 85,50 90,80 80,95 55,90 45,70 16,60 10)) | POLYGON((25 60,10 90,39 85,50 90,80 80,95 55,90 45,70 16,60 10,30 10,20 20,43 27,50 30,63 38,61 79,25 60))</screen>
@@ -1007,9 +1007,9 @@ The result geometry representation is determined by the <varname>flags</varname>
     'POINT(110 170)'::geometry AS center
   ) AS input
 )
-SELECT ST_AsText(ST_DelaunayTriangles(ST_Union(polygon, point_buffer)), 0) AS triangles
+SELECT ST_DelaunayTriangles(ST_Union(polygon, point_buffer)) AS triangles
 FROM data;</programlisting>
-        <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((96 184,93 181,96 156,96 184)), POLYGON((96 184,96 156,102 188,96 184)), POLYGON((96 184,102 188,99 187,96 184)), POLYGON((102 188,96 156,99 153,102 188)), POLYGON((102 188,99 153,102 152,102 188)), POLYGON((102 188,102 152,106 190,102 188)), POLYGON((106 190,102 152,106 150,106 190)), POLYGON((106 190,106 150,110 190,106 190)), POLYGON((110 190,106 150,110 150,110 190)), POLYGON((110 190,110 150,118 188,110 190)), POLYGON((110 190,118 188,114 190,110 190)), POLYGON((118 188,110 150,121 153,118 188)), POLYGON((118 188,121 153,121 187,118 188)), POLYGON((121 187,121 153,124 156,121 187)), POLYGON((121 187,124 156,124 184,121 187)), POLYGON((121 187,124 184,175 150,121 187)), POLYGON((175 150,124 184,127 181,175 150)), POLYGON((175 150,127 181,128 178,175 150)), POLYGON((175 150,128 178,130 174,175 150)), POLYGON((175 150,130 174,130 170,175 150)), POLYGON((175 150,130 170,130 166,175 150)), POLYGON((175 150,130 166,128 162,175 150)), POLYGON((175 150,128 162,127 159,175 150)), POLYGON((175 150,127 159,124 156,175 150)), POLYGON((175 150,124 156,125 100,175 150)), POLYGON((125 100,124 156,121 153,125 100)), POLYGON((125 100,121 153,118 152,125 100)), POLYGON((125 100,118 152,114 150,125 100)), POLYGON((125 100,114 150,110 150,125 100)), POLYGON((125 100,110 150,106 150,125 100)), POLYGON((125 100,106 150,102 152,125 100)), POLYGON((125 100,102 152,99 153,125 100)), POLYGON((125 100,99 153,50 60,125 100)), POLYGON((125 100,50 60,20 40,125 100)), POLYGON((20 40,50 60,90 166,20 40)), POLYGON((20 40,90 166,90 170,20 40)), POLYGON((20 40,90 170,90 174,20 40)), POLYGON((20 40,90 174,92 178,20 40)), POLYGON((92 178,90 174,90 170,92 178)), POLYGON((92 178,90 170,92 162,92 178)), POLYGON((92 178,92 162,93 159,92 178)), POLYGON((92 178,93 159,93 181,92 178)), POLYGON((93 181,93 159,96 156,93 181)), POLYGON((96 156,93 159,50 60,96 156)), POLYGON((96 156,50 60,99 153,96 156)), POLYGON((50 60,93 159,92 162,50 60)), POLYGON((50 60,92 162,90 166,50 60)), POLYGON((90 166,92 162,90 170,90 166)), POLYGON((110 150,114 150,121 153,110 150)), POLYGON((121 153,114 150,118 152,121 153)), POLYGON((124 156,127 159,130 166,124 156)), POLYGON((124 156,130 166,128 178,124 156)), POLYGON((124 156,128 178,124 184,124 156)), POLYGON((124 184,128 178,127 181,124 184)), POLYGON((128 178,130 166,130 170,128 178)), POLYGON((128 178,130 170,130 174,128 178)), POLYGON((130 166,127 159,128 162,130 166)))</screen>
+        <screen role="visual-primary geometry-output-precision-0">GEOMETRYCOLLECTION(POLYGON((96 184,93 181,96 156,96 184)), POLYGON((96 184,96 156,102 188,96 184)), POLYGON((96 184,102 188,99 187,96 184)), POLYGON((102 188,96 156,99 153,102 188)), POLYGON((102 188,99 153,102 152,102 188)), POLYGON((102 188,102 152,106 190,102 188)), POLYGON((106 190,102 152,106 150,106 190)), POLYGON((106 190,106 150,110 190,106 190)), POLYGON((110 190,106 150,110 150,110 190)), POLYGON((110 190,110 150,118 188,110 190)), POLYGON((110 190,118 188,114 190,110 190)), POLYGON((118 188,110 150,121 153,118 188)), POLYGON((118 188,121 153,121 187,118 188)), POLYGON((121 187,121 153,124 156,121 187)), POLYGON((121 187,124 156,124 184,121 187)), POLYGON((121 187,124 184,175 150,121 187)), POLYGON((175 150,124 184,127 181,175 150)), POLYGON((175 150,127 181,128 178,175 150)), POLYGON((175 150,128 178,130 174,175 150)), POLYGON((175 150,130 174,130 170,175 150)), POLYGON((175 150,130 170,130 166,175 150)), POLYGON((175 150,130 166,128 162,175 150)), POLYGON((175 150,128 162,127 159,175 150)), POLYGON((175 150,127 159,124 156,175 150)), POLYGON((175 150,124 156,125 100,175 150)), POLYGON((125 100,124 156,121 153,125 100)), POLYGON((125 100,121 153,118 152,125 100)), POLYGON((125 100,118 152,114 150,125 100)), POLYGON((125 100,114 150,110 150,125 100)), POLYGON((125 100,110 150,106 150,125 100)), POLYGON((125 100,106 150,102 152,125 100)), POLYGON((125 100,102 152,99 153,125 100)), POLYGON((125 100,99 153,50 60,125 100)), POLYGON((125 100,50 60,20 40,125 100)), POLYGON((20 40,50 60,90 166,20 40)), POLYGON((20 40,90 166,90 170,20 40)), POLYGON((20 40,90 170,90 174,20 40)), POLYGON((20 40,90 174,92 178,20 40)), POLYGON((92 178,90 174,90 170,92 178)), POLYGON((92 178,90 170,92 162,92 178)), POLYGON((92 178,92 162,93 159,92 178)), POLYGON((92 178,93 159,93 181,92 178)), POLYGON((93 181,93 159,96 156,93 181)), POLYGON((96 156,93 159,50 60,96 156)), POLYGON((96 156,50 60,99 153,96 156)), POLYGON((50 60,93 159,92 162,50 60)), POLYGON((50 60,92 162,90 166,50 60)), POLYGON((90 166,92 162,90 170,90 166)), POLYGON((110 150,114 150,121 153,110 150)), POLYGON((121 153,114 150,118 152,121 153)), POLYGON((124 156,127 159,130 166,124 156)), POLYGON((124 156,130 166,128 178,124 156)), POLYGON((124 156,128 178,124 184,124 156)), POLYGON((124 184,128 178,127 181,124 184)), POLYGON((128 178,130 166,130 170,128 178)), POLYGON((128 178,130 170,130 174,128 178)), POLYGON((130 166,127 159,128 162,130 166)))</screen>
 
         <para>Triangulation edges returned as a <varname>MULTILINESTRING</varname>.</para>
         <programlisting language="sql">WITH data AS (
@@ -1019,9 +1019,9 @@ FROM data;</programlisting>
     'POINT(110 170)'::geometry AS center
   ) AS input
 )
-SELECT ST_AsText(ST_DelaunayTriangles(ST_Union(polygon, point_buffer), 0.001, 1), 0) AS triangulation_edges
+SELECT ST_DelaunayTriangles(ST_Union(polygon, point_buffer), 0.001, 1) AS triangulation_edges
 FROM data;</programlisting>
-        <screen role="visual-primary">MULTILINESTRING((121 187,175 150),(118 188,121 187),(114 190,118 188),(110 190,114 190),(106 190,110 190),(102 188,106 190),(99 187,102 188),(96 184,99 187),(93 181,96 184),(92 178,93 181),(20 40,92 178),(20 40,125 100),(125 100,175 150),(124 156,125 100),(124 156,175 150),(124 156,127 159),(127 159,175 150),(127 159,128 162),(128 162,175 150),(128 162,130 166),(130 166,175 150),(130 166,130 170),(130 170,175 150),(130 174,130 170),(130 174,175 150),(128 178,130 174),(128 178,175 150),(127 181,128 178),(127 181,175 150),(124 184,127 181),(124 184,175 150),(121 187,124 184),(124 156,124 184),(121 187,124 156),(121 153,124 156),(121 153,121 187),(118 188,121 153),(110 150,121 153),(110 150,118 188),(110 150,110 190),(110 190,118 188),(106 150,110 150),(106 150,110 190),(106 190,106 150),(102 152,106 150),(102 152,106 190),(102 152,102 188),(99 153,102 152),(99 153,102 188),(96 156,99 153),(96 156,102 188),(96 156,96 184),(96 184,102 188),(93 181,96 156),(93 159,96 156),(93 159,93 181),(92 178,93 159),(92 162,93 159),(92 162,92 178),(90 170,92 162),(90 170,92 178),(90 170,90 174),(90 174,92 178),(20 40,90 174),(20 40,90 170),(90 170,90 166),(20 40,90 166),(50 60,90 166),(20 40,50 60),(50 60,125 100),(50 60,99 153),(99 153,125 100),(50 60,96 156),(50 60,93 159),(50 60,92 162),(90 166,92 162),(102 152,125 100),(106 150,125 100),(110 150,125 100),(110 150,114 150),(114 150,125 100),(114 150,118 152),(118 152,125 100),(118 152,121 153),(121 153,125 100),(114 150,121 153),(124 184,128 178),(124 156,128 178),(128 178,130 166),(124 156,130 166),(127 159,130 166),(128 178,130 170))</screen>
+        <screen role="visual-primary geometry-output-precision-0">MULTILINESTRING((121 187,175 150),(118 188,121 187),(114 190,118 188),(110 190,114 190),(106 190,110 190),(102 188,106 190),(99 187,102 188),(96 184,99 187),(93 181,96 184),(92 178,93 181),(20 40,92 178),(20 40,125 100),(125 100,175 150),(124 156,125 100),(124 156,175 150),(124 156,127 159),(127 159,175 150),(127 159,128 162),(128 162,175 150),(128 162,130 166),(130 166,175 150),(130 166,130 170),(130 170,175 150),(130 174,130 170),(130 174,175 150),(128 178,130 174),(128 178,175 150),(127 181,128 178),(127 181,175 150),(124 184,127 181),(124 184,175 150),(121 187,124 184),(124 156,124 184),(121 187,124 156),(121 153,124 156),(121 153,121 187),(118 188,121 153),(110 150,121 153),(110 150,118 188),(110 150,110 190),(110 190,118 188),(106 150,110 150),(106 150,110 190),(106 190,106 150),(102 152,106 150),(102 152,106 190),(102 152,102 188),(99 153,102 152),(99 153,102 188),(96 156,99 153),(96 156,102 188),(96 156,96 184),(96 184,102 188),(93 181,96 156),(93 159,96 156),(93 159,93 181),(92 178,93 159),(92 162,93 159),(92 162,92 178),(90 170,92 162),(90 170,92 178),(90 170,90 174),(90 174,92 178),(20 40,90 174),(20 40,90 170),(90 170,90 166),(20 40,90 166),(50 60,90 166),(20 40,50 60),(50 60,125 100),(50 60,99 153),(99 153,125 100),(50 60,96 156),(50 60,93 159),(50 60,92 162),(90 166,92 162),(102 152,125 100),(106 150,125 100),(110 150,125 100),(110 150,114 150),(114 150,125 100),(114 150,118 152),(118 152,125 100),(118 152,121 153),(121 153,125 100),(114 150,121 153),(124 184,128 178),(124 156,128 178),(128 178,130 166),(124 156,130 166),(127 159,130 166),(128 178,130 170))</screen>
 
         <para>Triangulation of 42 points forming an L shape.</para>
         <programlisting language="sql">WITH data AS (
@@ -1033,7 +1033,7 @@ FROM data;</programlisting>
 )
 SELECT ST_DelaunayTriangles(l_shape_points) AS triangles
 FROM data;</programlisting>
-        <screen role="visual-primary">GEOMETRYCOLLECTION(POLYGON((6 194,6 190,14 194,6 194)), POLYGON((14 194,6 190,14 174,14 194)), POLYGON((14 194,14 174,154 14,14 194)), POLYGON((154 14,14 174,14 154,154 14)), POLYGON((154 14,14 154,150 14,154 14)), POLYGON((154 14,150 14,154 6,154 14)), POLYGON((154 6,150 14,134 6,154 6)), POLYGON((134 6,150 14,134 14,134 6)), POLYGON((134 6,134 14,114 14,134 6)), POLYGON((134 6,114 14,114 6,134 6)), POLYGON((114 6,114 14,94 14,114 6)), POLYGON((114 6,94 14,94 6,114 6)), POLYGON((94 6,94 14,74 14,94 6)), POLYGON((94 6,74 14,74 6,94 6)), POLYGON((74 6,74 14,54 14,74 6)), POLYGON((74 6,54 14,54 6,74 6)), POLYGON((54 6,54 14,34 14,54 6)), POLYGON((54 6,34 14,34 6,54 6)), POLYGON((34 6,34 14,14 14,34 6)), POLYGON((34 6,14 14,14 6,34 6)), POLYGON((14 6,14 14,10 6,14 6)), POLYGON((10 6,14 14,6 10,10 6)), POLYGON((10 6,6 10,7 7,10 6)), POLYGON((10 6,7 7,8 6,10 6)), POLYGON((7 7,6 10,6 8,7 7)), POLYGON((6 10,14 14,6 30,6 10)), POLYGON((6 30,14 14,14 34,6 30)), POLYGON((6 30,14 34,6 50,6 30)), POLYGON((6 50,14 34,14 54,6 50)), POLYGON((6 50,14 54,6 70,6 50)), POLYGON((6 70,14 54,14 74,6 70)), POLYGON((6 70,14 74,6 90,6 70)), POLYGON((6 90,14 74,14 94,6 90)), POLYGON((6 90,14 94,6 110,6 90)), POLYGON((6 110,14 94,14 114,6 110)), POLYGON((6 110,14 114,6 130,6 110)), POLYGON((6 130,14 114,14 134,6 130)), POLYGON((6 130,14 134,6 150,6 130)), POLYGON((6 150,14 134,14 154,6 150)), POLYGON((6 150,14 154,6 170,6 150)), POLYGON((6 170,14 154,14 174,6 170)), POLYGON((6 170,14 174,6 190,6 170)), POLYGON((14 154,14 134,150 14,14 154)), POLYGON((150 14,14 134,134 14,150 14)), POLYGON((134 14,14 134,114 14,134 14)), POLYGON((114 14,14 134,14 114,114 14)), POLYGON((114 14,14 114,94 14,114 14)), POLYGON((94 14,14 114,14 94,94 14)), POLYGON((94 14,14 94,74 14,94 14)), POLYGON((74 14,14 94,14 74,74 14)), POLYGON((74 14,14 74,54 14,74 14)), POLYGON((54 14,14 74,14 54,54 14)), POLYGON((54 14,14 54,34 14,54 14)), POLYGON((34 14,14 54,14 34,34 14)), POLYGON((34 14,14 34,14 14,34 14)))</screen>
+        <screen role="visual-primary geometry-output-precision-0">GEOMETRYCOLLECTION(POLYGON((6 194,6 190,14 194,6 194)), POLYGON((14 194,6 190,14 174,14 194)), POLYGON((14 194,14 174,154 14,14 194)), POLYGON((154 14,14 174,14 154,154 14)), POLYGON((154 14,14 154,150 14,154 14)), POLYGON((154 14,150 14,154 6,154 14)), POLYGON((154 6,150 14,134 6,154 6)), POLYGON((134 6,150 14,134 14,134 6)), POLYGON((134 6,134 14,114 14,134 6)), POLYGON((134 6,114 14,114 6,134 6)), POLYGON((114 6,114 14,94 14,114 6)), POLYGON((114 6,94 14,94 6,114 6)), POLYGON((94 6,94 14,74 14,94 6)), POLYGON((94 6,74 14,74 6,94 6)), POLYGON((74 6,74 14,54 14,74 6)), POLYGON((74 6,54 14,54 6,74 6)), POLYGON((54 6,54 14,34 14,54 6)), POLYGON((54 6,34 14,34 6,54 6)), POLYGON((34 6,34 14,14 14,34 6)), POLYGON((34 6,14 14,14 6,34 6)), POLYGON((14 6,14 14,10 6,14 6)), POLYGON((10 6,14 14,6 10,10 6)), POLYGON((10 6,6 10,7 7,10 6)), POLYGON((10 6,7 7,8 6,10 6)), POLYGON((7 7,6 10,6 8,7 7)), POLYGON((6 10,14 14,6 30,6 10)), POLYGON((6 30,14 14,14 34,6 30)), POLYGON((6 30,14 34,6 50,6 30)), POLYGON((6 50,14 34,14 54,6 50)), POLYGON((6 50,14 54,6 70,6 50)), POLYGON((6 70,14 54,14 74,6 70)), POLYGON((6 70,14 74,6 90,6 70)), POLYGON((6 90,14 74,14 94,6 90)), POLYGON((6 90,14 94,6 110,6 90)), POLYGON((6 110,14 94,14 114,6 110)), POLYGON((6 110,14 114,6 130,6 110)), POLYGON((6 130,14 114,14 134,6 130)), POLYGON((6 130,14 134,6 150,6 130)), POLYGON((6 150,14 134,14 154,6 150)), POLYGON((6 150,14 154,6 170,6 150)), POLYGON((6 170,14 154,14 174,6 170)), POLYGON((6 170,14 174,6 190,6 170)), POLYGON((14 154,14 134,150 14,14 154)), POLYGON((150 14,14 134,134 14,150 14)), POLYGON((134 14,14 134,114 14,134 14)), POLYGON((114 14,14 134,14 114,114 14)), POLYGON((114 14,14 114,94 14,114 14)), POLYGON((94 14,14 114,14 94,94 14)), POLYGON((94 14,14 94,74 14,94 14)), POLYGON((74 14,14 94,14 74,74 14)), POLYGON((74 14,14 74,54 14,74 14)), POLYGON((54 14,14 74,14 54,54 14)), POLYGON((54 14,14 54,34 14,54 14)), POLYGON((34 14,14 54,14 34,34 14)), POLYGON((34 14,14 34,14 14,34 14)))</screen>
 
         <para>Example using vertices with Z values.</para>
         <programlisting language="sql" role="visual-skip">SELECT ST_DelaunayTriangles(
@@ -1143,8 +1143,8 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2,3 8,6 20,7 25,10 10)'::geometr
   SELECT ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'),
            10, 'endcap=round join=round') AS geom
 )
-SELECT ST_AsText(geom, 3) AS area,
-       ST_AsText(ST_GeneratePoints(geom, 12, 1996), 3) AS points
+SELECT geom AS area,
+       ST_GeneratePoints(geom, 12, 1996) AS points
 FROM source;</programlisting>
 <screen role="visual-primary">POLYGON((142.929 157.071,144.444 158.315,146.173 159.239,148.049 159.808,150 160,151.951 159.808,153.827 159.239,155.556 158.315,157.071 157.071,158.315 155.556,159.239 153.827,159.808 151.951,160 150,160 50,159.808 48.049,159.239 46.173,158.315 44.444,157.071 42.929,155.556 41.685,153.827 40.761,151.951 40.192,150 40,148.049 40.192,146.173 40.761,144.444 41.685,142.929 42.929,141.685 44.444,140.761 46.173,140.192 48.049,140 50,140 125.858,57.071 42.929,55.556 41.685,53.827 40.761,51.951 40.192,50 40,48.049 40.192,46.173 40.761,44.444 41.685,42.929 42.929,41.685 44.444,40.761 46.173,40.192 48.049,40 50,40.192 51.951,40.761 53.827,41.685 55.556,42.929 57.071,142.929 157.071)) | MULTIPOINT((97.546 111.15),(155.206 69.56),(101.94 114.818),(90.308 91.125),(151.257 106.401),(143.12 120.461),(152.952 146.697),(119.774 123.985),(148.672 40.92),(54.376 45.337),(150.667 88.153),(129.634 120.578))</screen>
 <para>Given a table of polygons s, return 12 individual points per polygon. Results will be different each time you run.</para>
@@ -1227,8 +1227,8 @@ WHERE z.count_delta &lt;&gt; 0;</programlisting>
 WITH test AS (
 SELECT 'MULTIPOINT((10 10),(10 40),(40 10),(190 190))'::geometry geom)
 SELECT
-  ST_AsText(ST_Centroid(geom)) centroid,
-  ST_AsText(ST_GeometricMedian(geom)) median
+  ST_Centroid(geom) centroid,
+  ST_GeometricMedian(geom) median
 FROM test;</programlisting>
 <screen xml:id="st-geometricmedian-example" role="visual-primary">      centroid      |                 median
 --------------------+----------------------------------------
@@ -1883,25 +1883,25 @@ SELECT ST_Collect(
         <title>Examples</title>
 
 		<para>Point on surface of a MultiPoint.</para>
-<programlisting>SELECT ST_AsText(ST_PointOnSurface(
-  'MULTIPOINT (8 24,10 92,12 154,17 68,28 10,29 52,29 84,55 50,56 24,131 14,160 180,189 180)'), 3);</programlisting>
+<programlisting>SELECT ST_PointOnSurface(
+  'MULTIPOINT (8 24,10 92,12 154,17 68,28 10,29 52,29 84,55 50,56 24,131 14,160 180,189 180)');</programlisting>
 <screen xml:id="st-pointonsurface-multipoint" role="visual-primary text-primary">POINT(55 50)</screen>
 
 		<para>Point on surface of a LineString.</para>
-<programlisting>SELECT ST_AsText(ST_PointOnSurface(
-  'LINESTRING (190 160,10 190,40 90,20 70,10 10,30 40,30 10,110 40,70 10,110 10,140 40,140 10,160 30,180 10)'), 3);</programlisting>
+<programlisting>SELECT ST_PointOnSurface(
+  'LINESTRING (190 160,10 190,40 90,20 70,10 10,30 40,30 10,110 40,70 10,110 10,140 40,140 10,160 30,180 10)');</programlisting>
 <screen role="visual-primary text-primary">POINT(40 90)</screen>
 
 		<para>Point on surface of a Polygon.</para>
-<programlisting>SELECT ST_AsText(ST_PointOnSurface(
-  'POLYGON ((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))'), 3);</programlisting>
+<programlisting>SELECT ST_PointOnSurface(
+  'POLYGON ((190 190,10 190,10 10,190 10,190 20,160 30,60 30,60 130,190 140,190 190))');</programlisting>
 <screen role="visual-primary text-primary">POINT(35 80)</screen>
 
 		<para>Point on surface of the highest-dimension components of a GeometryCollection.</para>
-<programlisting>SELECT ST_AsText(ST_PointOnSurface(
+<programlisting>SELECT ST_PointOnSurface(
   'GEOMETRYCOLLECTION (POLYGON ((190 170,180 100,80 140,80 160,130 160,110 180,110 190,180 180,190 170)),
     LINESTRING (80 120,120 20,140 70,150 30,180 50,190 10),
-    MULTIPOINT (19 150,22 49,30 13,32 101,45 35,67 88,75 16))'), 3);</programlisting>
+    MULTIPOINT (19 150,22 49,30 13,32 101,45 35,67 88,75 16))');</programlisting>
 <screen role="visual-primary text-primary">POINT(133.571 150)</screen>
 
 <programlisting>SELECT ST_PointOnSurface('LINESTRING(0 5 1,0 0 1,0 10 2)');</programlisting>
@@ -1999,7 +1999,7 @@ SELECT ST_PointOnSurface(geom) AS pt_on_surf, ST_Centroid(geom) AS centroid
     ('LINESTRING (70 190,80 130)'::geometry),
     ('LINESTRING (70 190,160 160)'::geometry)
 )
-SELECT ST_AsText(ST_Polygonize(geom))
+SELECT ST_Polygonize(geom)
 FROM data;</programlisting>
 <screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POLYGON((180 40,30 20,20 90,70 70,80 130,160 160,180 40),(150 80,120 130,80 60,150 80)), POLYGON((80 60,120 130,150 80,80 60)), POLYGON((80 130,70 70,20 90,20 160,70 190,80 130)), POLYGON((160 160,80 130,70 190,160 160)))</screen>
 
@@ -2026,7 +2026,7 @@ cells AS (
 )
 SELECT a.id AS id_a,
        b.id AS id_b,
-       ST_AsText(c.geom) AS geom
+       c.geom AS geom
 FROM cells AS c
 LEFT JOIN poly_a AS a ON ST_Within(ST_PointOnSurface(c.geom), a.geom)
 LEFT JOIN poly_b AS b ON ST_Within(ST_PointOnSurface(c.geom), b.geom)
@@ -2293,13 +2293,13 @@ np10_gone                | null
 np100_geometrygoesaway   | t</screen>
 
     <para>Simplifying a set of lines.  Lines may intersect after simplification.</para>
-    <programlisting>SELECT ST_AsText(ST_Simplify('MULTILINESTRING ((20 180,20 150,50 150,50 100,110 150,150 140,170 120),(20 10,80 30,90 120),(90 120,130 130),(130 130,130 70,160 40,180 60,180 90,140 80),(50 40,70 40,80 70,70 60,60 60,50 50,50 40))'::geometry,
-40), 3);</programlisting>
+    <programlisting>SELECT ST_Simplify('MULTILINESTRING ((20 180,20 150,50 150,50 100,110 150,150 140,170 120),(20 10,80 30,90 120),(90 120,130 130),(130 130,130 70,160 40,180 60,180 90,140 80),(50 40,70 40,80 70,70 60,60 60,50 50,50 40))'::geometry,
+40);</programlisting>
 <screen role="visual-primary text-primary">MULTILINESTRING((20 180,50 100,170 120),(20 10,90 120),(90 120,130 130),(130 130,160 40,180 90,140 80),(50 40,80 70,50 40))</screen>
 
     <para>Simplifying a MultiPolygon.  Polygonal results may be invalid.</para>
-    <programlisting>SELECT ST_AsText(ST_Simplify('MULTIPOLYGON (((90 110,80 180,50 160,10 170,10 140,20 110,90 110)),((40 80,100 100,120 160,170 180,190 70,140 10,110 40,60 40,40 80),(180 70,170 110,142.5 128.5,128.5 77.5,90 60,180 70)))'::geometry,
-40), 3);</programlisting>
+    <programlisting>SELECT ST_Simplify('MULTIPOLYGON (((90 110,80 180,50 160,10 170,10 140,20 110,90 110)),((40 80,100 100,120 160,170 180,190 70,140 10,110 40,60 40,40 80),(180 70,170 110,142.5 128.5,128.5 77.5,90 60,180 70)))'::geometry,
+40);</programlisting>
 <screen role="visual-primary text-primary">MULTIPOLYGON(((90 110,80 180,10 170,20 110,90 110)),((40 80,170 180,140 10,40 80),(180 70,142.5 128.5,90 60,180 70)))</screen>
 
           </refsection>
@@ -2373,13 +2373,13 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10, 12) AS geom) AS t;</programlisting>
         49 |                33 |                  17 |           9 |            4 |             4</screen>
 
     <para>Simplifying a set of lines, preserving topology of non-intersecting lines.</para>
-    <programlisting>SELECT ST_AsText(ST_SimplifyPreserveTopology('MULTILINESTRING ((20 180,20 150,50 150,50 100,110 150,150 140,170 120),(20 10,80 30,90 120),(90 120,130 130),(130 130,130 70,160 40,180 60,180 90,140 80),(50 40,70 40,80 70,70 60,60 60,50 50,50 40))'::geometry,
-40), 3);</programlisting>
+    <programlisting>SELECT ST_SimplifyPreserveTopology('MULTILINESTRING ((20 180,20 150,50 150,50 100,110 150,150 140,170 120),(20 10,80 30,90 120),(90 120,130 130),(130 130,130 70,160 40,180 60,180 90,140 80),(50 40,70 40,80 70,70 60,60 60,50 50,50 40))'::geometry,
+40);</programlisting>
 <screen role="visual-primary text-primary">MULTILINESTRING((20 180,50 100,110 150,170 120),(20 10,80 30,90 120),(90 120,130 130),(130 130,130 70,160 40,180 90,140 80),(50 40,70 40,80 70,60 60,50 40))</screen>
 
     <para>Simplifying a MultiPolygon, preserving topology of shells and holes.</para>
-    <programlisting>SELECT ST_AsText(ST_SimplifyPreserveTopology('MULTIPOLYGON (((90 110,80 180,50 160,10 170,10 140,20 110,90 110)),((40 80,100 100,120 160,170 180,190 70,140 10,110 40,60 40,40 80),(180 70,170 110,142.5 128.5,128.5 77.5,90 60,180 70)))'::geometry,
-40), 3);</programlisting>
+    <programlisting>SELECT ST_SimplifyPreserveTopology('MULTIPOLYGON (((90 110,80 180,50 160,10 170,10 140,20 110,90 110)),((40 80,100 100,120 160,170 180,190 70,140 10,110 40,60 40,40 80),(180 70,170 110,142.5 128.5,128.5 77.5,90 60,180 70)))'::geometry,
+40);</programlisting>
 <screen role="visual-primary text-primary">MULTIPOLYGON(((90 110,80 180,10 170,20 110,90 110)),((40 80,100 100,170 180,190 70,140 10,40 80),(180 70,142.5 128.5,90 60,180 70)))</screen>
 
           </refsection>
@@ -2460,8 +2460,8 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10, 12) AS geom) AS t;</programlisting>
     <programlisting>WITH letters AS (
   SELECT ST_Letters('xt') AS geom
 )
-SELECT ST_AsText(geom, 3) AS input,
-  ST_AsText(ST_SimplifyPolygonHull(ST_Segmentize(geom, 2.0), 0.1), 3) AS outer_hull
+SELECT geom AS input,
+  ST_SimplifyPolygonHull(ST_Segmentize(geom, 2.0), 0.1) AS outer_hull
 FROM letters;</programlisting>
     <screen role="visual-primary">MULTIPOLYGON(((18.3 57.6,20.7 51,23.3 41.9,26 51,28.4 57.6,45.4 57.6,33.1 28.8,46.6 0,29.5 0,26.6 6.7,23.3 16.3,19.8 6.3,17.1 0,0 0,13.5 28.8,1.3 57.6,18.3 57.6)),((77.808 15.2,82.208 15.2,83.508 16,83.508 -0.9,82.108 -0.2,76.808 -0.2,76.108 -0.2,75.408 -0.2,74.608 -0.1,73.908 -0.1,73.208 0,72.508 0,71.808 0.1,71.108 0.2,70.408 0.3,69.708 0.5,69.008 0.6,68.408 0.9,67.708 1.1,67.008 1.4,66.408 1.7,65.708 2,65.108 2.4,64.408 2.8,63.808 3.2,63.208 3.7,62.608 4.1,62.108 4.7,61.508 5.2,61.008 5.8,60.508 6.4,60.008 7.1,59.508 7.8,59.108 8.6,58.708 9.5,58.308 10.4,57.908 11.3,57.608 12.3,57.608 42.7,52.208 42.7,51.108 41.8,51.108 58.9,52.208 57.9,57.608 57.9,57.608 74.4,56.508 75.4,74.408 75.4,73.308 74.2,73.308 57.9,81.408 57.9,82.508 58.9,82.508 41.8,81.408 42.7,73.308 42.7,73.308 17.7,73.408 17.4,73.608 17.2,73.808 16.9,74.008 16.7,74.208 16.5,74.408 16.3,74.708 16.1,75.008 15.9,75.308 15.7,75.608 15.6,76.008 15.5,76.308 15.4,76.708 15.3,77.008 15.2,77.408 15.2,77.808 15.2))) | MULTIPOLYGON(((45.4 57.6,44.631 55.8,33.869 30.6,46.6 0,29.5 0,19.8 6.3,18.45 3.15,17.1 0,0 0,10.969 23.4,9.688 37.8,2.062 55.8,1.3 57.6,45.4 57.6)),((83.508 16,83.508 -0.9,72.508 0,71.108 0.2,70.408 0.3,69.008 0.6,67.708 1.1,67.008 1.4,65.708 2,64.408 2.8,63.808 3.2,62.608 4.1,61.508 5.2,60.508 6.4,59.508 7.8,59.108 8.6,58.308 10.4,57.908 11.3,57.608 12.3,51.108 41.8,51.108 58.9,56.508 75.4,74.408 75.4,82.508 58.9,83.508 16)))</screen>
 
@@ -2529,13 +2529,13 @@ SELECT ST_SimplifyVW(geom, 30) simplified
 <screen role="visual-primary text-primary">LINESTRING(5 2,7 25,10 10)</screen>
 
     <para>Simplifying a line.</para>
-    <programlisting language="sql">SELECT ST_AsText(ST_SimplifyVW('LINESTRING (10 10,50 40,30 70,50 60,70 80,50 110,100 100,90 140,100 180,150 170,170 140,190 90,180 40,110 40,150 20)'::geometry,
-1600), 3);</programlisting>
+    <programlisting language="sql">SELECT ST_SimplifyVW('LINESTRING (10 10,50 40,30 70,50 60,70 80,50 110,100 100,90 140,100 180,150 170,170 140,190 90,180 40,110 40,150 20)'::geometry,
+1600);</programlisting>
 <screen role="visual-primary text-primary">LINESTRING(10 10,100 100,100 180,150 170,190 90,150 20)</screen>
 
     <para>Simplifying a polygon.</para>
-    <programlisting language="sql">SELECT ST_AsText(ST_SimplifyVW('POLYGON ((20 20,50 60,20 120,40 170,80 180,120 140,180 180,160 130,180 100,180 30,130 70,150 10,20 20))'::geometry,
-1600), 3);</programlisting>
+    <programlisting language="sql">SELECT ST_SimplifyVW('POLYGON ((20 20,50 60,20 120,40 170,80 180,120 140,180 180,160 130,180 100,180 30,130 70,150 10,20 20))'::geometry,
+1600);</programlisting>
 <screen role="visual-primary text-primary">POLYGON((20 20,20 120,80 180,160 130,180 30,20 20))</screen>
 
           </refsection>
@@ -2602,10 +2602,10 @@ SELECT ST_SimplifyVW(geom, 30) simplified
             </para>
                 <programlisting>
 
-SELECT ST_AsText(ST_SetEffectiveArea(geom), 1) AS all_pts,
-       ST_AsText(ST_SetEffectiveArea(geom, 30), 1) AS threshold_30
+SELECT ST_SetEffectiveArea(geom) AS all_pts,
+       ST_SetEffectiveArea(geom, 30) AS threshold_30
 FROM (SELECT  'LINESTRING(5 2,3 8,6 20,7 25,10 10)'::geometry geom) As foo;</programlisting>
-<screen>-[ RECORD 1 ]------------------
+<screen role="visual-primary text-primary geometry-output-precision-1 psql-expanded">-[ RECORD 1 ]------------------
 all_pts      | LINESTRING M (5 2 3.4e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4e+38)
 threshold_30 | LINESTRING M (5 2 3.4e+38,7 25 49.5,10 10 3.4e+38)</screen>
           </refsection>

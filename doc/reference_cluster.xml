@@ -94,7 +94,7 @@
 )
 SELECT COALESCE(cid::text, 'noise') AS cluster,
        string_agg(name, ',' ORDER BY name) AS members,
-       ST_AsText(ST_Collect(geom ORDER BY name), 0) AS cluster_geom
+       ST_Collect(geom ORDER BY name) AS cluster_geom
 FROM clustered
 GROUP BY cid
 ORDER BY cid NULLS LAST;</programlisting>
@@ -166,7 +166,7 @@ WITH testdata AS
            'LINESTRING (0 0,-1 -1)'::geometry,
            'POLYGON ((0 0,4 0,4 4,0 4,0 0))'::geometry]) AS geom)
 
-SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
+SELECT unnest(ST_ClusterIntersecting(geom)) FROM testdata;
 </programlisting>
 <screen role="visual-primary text-primary">GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
 GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
@@ -223,7 +223,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
   FROM testdata
 )
 SELECT id,
-       ST_AsText(geom) AS geom_wkt,
+       geom AS geom_wkt,
        cid
 FROM clustered
 ORDER BY id;</programlisting>
@@ -291,7 +291,7 @@ ORDER BY id;</programlisting>
 )
 SELECT cluster,
        string_agg(id::text, ',' ORDER BY id) AS members,
-       ST_AsText(ST_Collect(geom ORDER BY id)) AS cluster_geom
+       ST_Collect(geom ORDER BY id) AS cluster_geom
 FROM clustered
 GROUP BY cluster
 ORDER BY cluster;</programlisting>
@@ -356,12 +356,12 @@ ORDER BY cluster;</programlisting>
 )
 SELECT string_agg(id::text, ',' ORDER BY id)
          FILTER (WHERE tree_id &gt; 0) AS tree_edge_ids,
-       ST_AsText(ST_Collect(geom ORDER BY id)
-         FILTER (WHERE tree_id &gt; 0)) AS tree_edges,
+       ST_Collect(geom ORDER BY id)
+         FILTER (WHERE tree_id &gt; 0) AS tree_edges,
        string_agg(id::text, ',' ORDER BY id)
          FILTER (WHERE tree_id = 0) AS excluded_edge_ids,
-       ST_AsText(ST_Collect(geom ORDER BY id)
-         FILTER (WHERE tree_id = 0)) AS excluded_edges
+       ST_Collect(geom ORDER BY id)
+         FILTER (WHERE tree_id = 0) AS excluded_edges
 FROM marked;</programlisting>
 <screen role="visual-primary visual-overlay text-primary">-[ RECORD 1 ]-----
 tree_edge_ids     | 1,2,3
@@ -449,7 +449,7 @@ excluded_edges    | MULTILINESTRING((1 1,1 0),(0 0,1 1),(1 0,0 1))</screen>
 )
 SELECT cid,
        string_agg(parcel_id, ',' ORDER BY parcel_id) AS parcels,
-       ST_AsText(ST_Union(geom)) AS cluster_geom
+       ST_Union(geom) AS cluster_geom
 FROM clustered
 GROUP BY cid
 ORDER BY cid;</programlisting>
@@ -513,7 +513,7 @@ ORDER BY type, parcel_id;</programlisting>
 )
 SELECT cid,
        string_agg(place, ', ' ORDER BY place) AS places,
-       ST_AsText(ST_Collect(geom ORDER BY place), 2) AS cluster_geom
+       ST_Collect(geom ORDER BY place) AS cluster_geom
 FROM clustered
 GROUP BY cid
 ORDER BY cid;</programlisting>
@@ -582,7 +582,7 @@ WITH testdata AS
                'LINESTRING (0 0,-1 -1)'::geometry,
                'POLYGON ((0 0,4 0,4 4,0 4,0 0))'::geometry]) AS geom)
 
-SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
+SELECT unnest(ST_ClusterWithin(geom, 1.4)) FROM testdata;
 </programlisting>
 <screen role="visual-primary text-primary">GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
 GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
@@ -643,7 +643,7 @@ WITH testdata AS (
           (5, 'POLYGON ((0 0,4 0,4 4,0 4,0 0))')) AS t(id, geom)
 )
 SELECT id,
-  ST_AsText(geom),
+  geom,
   ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster
 FROM testdata;</programlisting>
 <screen role="visual-primary text-primary"> id |           st_astext            | cluster

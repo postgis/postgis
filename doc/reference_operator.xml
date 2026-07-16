@@ -1039,7 +1039,7 @@ FROM
  f
 (1 row)]]></screen>
 
-			<programlisting><![CDATA[SELECT ST_AsText(column1)
+			<programlisting><![CDATA[SELECT column1
 FROM ( VALUES
     ('LINESTRING(0 0, 1 1)'::geometry),
     ('LINESTRING(1 1, 0 0)'::geometry)) AS foo;]]></programlisting>
@@ -1050,7 +1050,7 @@ FROM ( VALUES
 (2 rows)]]></screen>
 
 				<para>Note: the GROUP BY uses the "=" to compare for geometry equivalency.</para>
-				<programlisting language="sql"><![CDATA[SELECT ST_AsText(column1)
+				<programlisting language="sql"><![CDATA[SELECT column1
 FROM ( VALUES
     ('LINESTRING(0 0, 1 1)'::geometry),
     ('LINESTRING(1 1, 0 0)'::geometry)) AS foo

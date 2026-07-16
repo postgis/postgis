@@ -242,10 +242,10 @@ where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));<
   SELECT 'LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)'::geometry AS input_linestring,
          'POLYGON Z ((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8))'::geometry AS input_polygon
 )
-SELECT ST_AsText(input_linestring) AS input_linestring,
-       ST_AsText(input_polygon) AS input_polygon,
-       ST_AsText(ST_Intersection(input_linestring, input_polygon)) AS intersection_2d,
-       ST_AsText(CG_3DIntersection(input_linestring, input_polygon)) AS intersection_3d
+SELECT input_linestring AS input_linestring,
+       input_polygon AS input_polygon,
+       ST_Intersection(input_linestring, input_polygon) AS intersection_2d,
+       CG_3DIntersection(input_linestring, input_polygon) AS intersection_3d
 FROM data;</programlisting>
 <screen role="visual-primary text-primary visual-overlay docbook-qa-ignore-wide-lines">LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10) | POLYGON Z ((0 0 8,0 1 8,1 1 8,1 0 8,0 0 8)) | LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10) | LINESTRING Z (1 1 8,0.5 0.5 8)</screen>
       </refsection>
@@ -443,13 +443,11 @@ SELECT ST_Node('MULTILINESTRING ((2 5,2 1,7 1),(6 1,4 1,2 3,2 5))'::geometry) As
             <title>Examples</title>
             <para>Split a circular polygon by a diagonal line.</para>
             <programlisting language="sql">
-SELECT ST_AsText(
+SELECT
          ST_Split(
            ST_Buffer('POINT(100 90)'::geometry, 50),
            'LINESTRING(10 10,190 190)'::geometry
-         ),
-         1
-       );</programlisting>
+         );</programlisting>
 <screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POLYGON((150 90,149 80.2,146.2 70.9,141.6 62.2,135.4 54.6,127.8 48.4,119.1 43.8,109.8 41,100 40,90.2 41,80.9 43.8,72.2 48.4,64.6 54.6,60.1 60.1,129.9 129.9,135.4 125.4,141.6 117.8,146.2 109.1,149 99.8,150 90)), POLYGON((60.1 60.1,58.4 62.2,53.8 70.9,51 80.2,50 90,51 99.8,53.8 109.1,58.4 117.8,64.6 125.4,72.2 131.6,80.9 136.2,90.2 139,100 140,109.8 139,119.1 136.2,127.8 131.6,129.9 129.9,60.1 60.1)))</screen>
             <para>Split a MultiLineString by a Point, where the point lies exactly on both LineStrings elements.</para>
             <programlisting>SELECT ST_Split('MULTILINESTRING((10 10,190 190),(15 15,30 30,100 90))',
@@ -469,8 +467,8 @@ WITH data AS (SELECT
   'LINESTRING(0 0,100 100)'::geometry AS line,
   'POINT(51 50)':: geometry AS point
 )
-SELECT ST_AsText(ST_Split(ST_Snap(line, point, 1), point)) AS snapped_split,
-       ST_AsText(ST_Split(line, point)) AS not_snapped_not_split
+SELECT ST_Split(ST_Snap(line, point, 1), point) AS snapped_split,
+       ST_Split(line, point) AS not_snapped_not_split
        FROM data;</programlisting>
 <screen>-[ RECORD 1 ]---------
 snapped_split         | GEOMETRYCOLLECTION(LINESTRING(0 0,51 50), LINESTRING(51 50,100 100))

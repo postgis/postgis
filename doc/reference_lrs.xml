@@ -96,12 +96,11 @@ WITH street AS (
            100 AS from_num,
            200 AS to_num
 )
-SELECT ST_AsText(
+SELECT
     ST_LineInterpolatePoint(
         ST_OffsetCurve(geom, -2),
         (160 - from_num)::float8 / (to_num - from_num)
-    )
-) AS interpolated_offset_point
+    ) AS interpolated_offset_point
 FROM street;
 ]]></programlisting>
 <screen> interpolated_offset_point
@@ -341,7 +340,7 @@ segments AS (
 SELECT
   i AS segment_number,
   round(ST_Distance(segment, pt)::numeric, 3) AS distance,
-  ST_AsText(ST_ClosestPoint(segment, pt)) AS closest_point
+  ST_ClosestPoint(segment, pt) AS closest_point
 FROM segments
 ORDER BY ST_Distance(segment, pt)
 LIMIT 1;</programlisting>
@@ -449,7 +448,7 @@ to produce the equivalent of a FOR loop.
         ( 'C', 'LINESTRING( 0 200, 50 200)'::geometry )
     )
 SELECT id, i,
-       ST_AsText(ST_LineSubstring(geom, startfrac, LEAST( endfrac, 1 )) ) AS geom
+       ST_LineSubstring(geom, startfrac, LEAST( endfrac, 1 )) AS geom
 FROM (
     SELECT id, geom, ST_Length(geom) len, 100 sublen FROM data
     ) AS d
@@ -499,7 +498,7 @@ segments AS (
   FROM ordered
 )
 SELECT row_number() OVER (ORDER BY start_fraction) AS segment_id,
-       ST_AsText(ST_LineSubstring(line, start_fraction, end_fraction)) AS geom
+       ST_LineSubstring(line, start_fraction, end_fraction) AS geom
 FROM data
 CROSS JOIN segments
 WHERE end_fraction IS NOT NULL
@@ -514,16 +513,14 @@ ORDER BY start_fraction;
           4 | LINESTRING(8 0,10 0)</screen>
 
 <para>Geography implementation measures along a spheroid, geometry along a line</para>
-<programlisting language="sql">SELECT ST_AsText(ST_LineSubstring(
+<programlisting language="sql">SELECT ST_LineSubstring(
 'LINESTRING(-118.2436 34.0522,-71.0570 42.3611)'::geography,
 0.333,
-0.666),
-6) AS geog_sub,
-ST_AsText(ST_LineSubstring(
+0.666) AS geog_sub,
+ST_LineSubstring(
     'LINESTRING(-118.2436 34.0522,-71.0570 42.3611)'::geometry,
     0.333,
-    0.666),
-    6) AS geom_sub;</programlisting>
+    0.666) AS geom_sub;</programlisting>
 <screen role="psql-expanded text-primary">-[ RECORD 1 ]----------
 geog_sub | LINESTRING(-103.911641 38.931128,-87.941787 41.831072)
 geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)</screen>
@@ -536,7 +533,7 @@ geom_sub | LINESTRING(-102.530462 36.819064,-86.817324 39.585927)</screen>
 )
 SELECT ST_Length(geom) AS length_2d,
        ST_3DLength(geom) AS length_3d,
-       ST_AsText(ST_LineSubstring(geom, 0, 0.5)) AS substring
+       ST_LineSubstring(geom, 0, 0.5) AS substring
 FROM data;</programlisting>
 <screen role="visual-overlay text-primary"> length_2d |    length_3d     |              substring
 -----------+------------------+-------------------------------------

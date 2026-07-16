@@ -2777,15 +2777,15 @@ FROM (SELECT ST_SetSkew(rast, 0.5, 0.5) As rast
     ) AS rast
 )
 SELECT
-    ST_AsText(ST_ConvexHull(rast), 3) AS footprint,
-    ST_AsText(ST_MakeLine(
+    ST_ConvexHull(rast) AS footprint,
+    ST_MakeLine(
         ST_Point(0, 0),
         ST_Point(ST_ScaleX(rast), ST_SkewY(rast))
-    ), 3) AS "i direction (scaleX, skewY)",
-    ST_AsText(ST_MakeLine(
+    ) AS "i direction (scaleX, skewY)",
+    ST_MakeLine(
         ST_Point(0, 0),
         ST_Point(ST_SkewX(rast), ST_ScaleY(rast))
-    ), 3) AS "j direction (skewX, scaleY)"
+    ) AS "j direction (skewX, scaleY)"
 FROM raster;</programlisting>
             <screen role="visual-primary visual-overlay text-primary">POLYGON((0 0,6 1.5,9 -7.5,3 -9,0 0)) | LINESTRING(0 0,2 0.5) | LINESTRING(0 0,1 -3)</screen>
             <para>Rasters with no skew.</para>
@@ -4359,7 +4359,7 @@ WHERE rid=2;</programlisting>
     SELECT (ST_PixelAsPolygons(rast)).*
     FROM raster
 )
-SELECT x, y, val, ST_AsText(geom) AS geom
+SELECT x, y, val, geom AS geom
 FROM pixels
 ORDER BY x, y;</programlisting>
 <screen role="visual"> x | y | val |                geom
@@ -4753,9 +4753,9 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);]]></programlist
                 <programlisting language="sql">
 <![CDATA[
 
-SELECT ST_AsText(ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
+SELECT ST_SetSRID(ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,
         ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),
-        ST_SRID(rast))) As uplpt,
+        ST_SRID(rast)) As uplpt,
     ST_Value(rast, 1, x, y) As b1val,
     ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
 FROM dummy_rast CROSS JOIN
@@ -4770,7 +4770,7 @@ WHERE rid =  2 AND x <= ST_Width(rast) AND y <= ST_Height(rast);]]></programlist
 <para>Get a polygon formed by union of all pixels that fall in a particular value range and intersect a particular polygon.</para>
 <programlisting language="sql"><![CDATA[
 
-SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
+SELECT ST_Union(pixpolyg) As shadow
 FROM (SELECT ST_Translate(ST_MakeEnvelope(ST_UpperLeftX(rast), ST_UpperLeftY(rast),
             ST_UpperLeftX(rast) + ST_ScaleX(rast),
             ST_UpperLeftY(rast) + ST_ScaleY(rast), 0
@@ -4806,7 +4806,7 @@ WHERE
 <![CDATA[
 
 
-SELECT ST_AsText(ST_Union(pixpolyg)) As shadow
+SELECT ST_Union(pixpolyg) As shadow
 FROM (SELECT ST_Translate(ST_MakeEnvelope(ST_UpperLeftX(rast), ST_UpperLeftY(rast),
             ST_UpperLeftX(rast) + ST_ScaleX(rast)*2,
             ST_UpperLeftY(rast) + ST_ScaleY(rast)*2, 0
@@ -5037,12 +5037,12 @@ ST_MakeEmptyRaster(
   newvalueset =&gt; ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
 )
 SELECT
-ST_AsText(ST_SetZ(
+ST_SetZ(
     rast,
     band =&gt; 1,
     geom =&gt; 'SRID=4326;LINESTRING(1.0 1.9,1.0 0.2)'::geometry,
     resample =&gt; 'bilinear'
-))
+)
 FROM test_raster</programlisting>
 <screen role="visual-primary text-primary">LINESTRING Z (1 1.9 38,1 0.2 27)</screen>
 
@@ -5114,12 +5114,12 @@ ST_MakeEmptyRaster(
   newvalueset =&gt; ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
 )
 SELECT
-ST_AsText(ST_SetM(
+ST_SetM(
     rast,
     band =&gt; 1,
     geom =&gt; 'SRID=4326;LINESTRING(1.0 1.9,1.0 0.2)'::geometry,
     resample =&gt; 'bilinear'
-))
+)
 FROM test_raster</programlisting>
 <screen role="visual-primary text-primary">LINESTRING M (1 1.9 38,1 0.2 27)</screen>
 
@@ -5343,7 +5343,7 @@ FROM ST_SetValues(ST_AddBand(ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
                 <programlisting language="sql">
 <![CDATA[
 
-                SELECT (foo.geomval).val, ST_AsText(ST_Union((foo.geomval).geom))
+                SELECT (foo.geomval).val, ST_Union((foo.geomval).geom)
 FROM (SELECT ST_DumpAsPolygons(ST_SetValue(
             rast,
             1,
@@ -7140,8 +7140,8 @@ WITH foo AS (
     CROSS JOIN bar
 )
 SELECT
-    ST_AsText(ST_Collect(ST_ConvexHull(not_aligned) ORDER BY rid), 3) AS not_aligned,
-    ST_AsText(ST_Collect(ST_ConvexHull(aligned) ORDER BY rid), 3) AS aligned
+    ST_Collect(ST_ConvexHull(not_aligned) ORDER BY rid) AS not_aligned,
+    ST_Collect(ST_ConvexHull(aligned) ORDER BY rid) AS aligned
 FROM baz</programlisting>
 <screen role="visual-separate-output visual-primary text-primary">MULTIPOLYGON(((-107.007 50.2,-107.005 50.2,-107.005 50.198,-107.007 50.198,-107.007 50.2)),((-107.004 50.201,-107.002 50.201,-107.002 50.198,-107.004 50.198,-107.004 50.201)),((-107.001 50.201,-106.999 50.201,-106.999 50.198,-107.001 50.198,-107.001 50.201)),((-107.007 50.199,-107.004 50.199,-107.004 50.196,-107.007 50.196,-107.007 50.199)),((-107.004 50.199,-107.001 50.199,-107.001 50.196,-107.004 50.196,-107.004 50.199)),((-107.001 50.199,-106.999 50.199,-106.999 50.196,-107.001 50.196,-107.001 50.199)),((-107.006 50.197,-107.004 50.197,-107.004 50.194,-107.006 50.194,-107.006 50.197)),((-107.004 50.197,-107.001 50.197,-107.001 50.194,-107.004 50.194,-107.004 50.197)),((-107.001 50.197,-106.998 50.197,-106.998 50.195,-107.001 50.195,-107.001 50.197))) | MULTIPOLYGON(((-107.007 50.2,-107.005 50.2,-107.005 50.198,-107.007 50.198,-107.007 50.2)),((-107.005 50.202,-107.001 50.202,-107.001 50.198,-107.005 50.198,-107.005 50.202)),((-107.002 50.202,-106.998 50.202,-106.998 50.198,-107.002 50.198,-107.002 50.202)),((-107.007 50.199,-107.003 50.199,-107.003 50.195,-107.007 50.195,-107.007 50.199)),((-107.005 50.199,-107.001 50.199,-107.001 50.195,-107.005 50.195,-107.005 50.199)),((-107.002 50.199,-106.998 50.199,-106.998 50.195,-107.002 50.195,-107.002 50.199)),((-107.007 50.198,-107.003 50.198,-107.003 50.194,-107.007 50.194,-107.007 50.198)),((-107.005 50.198,-107.001 50.198,-107.001 50.194,-107.005 50.194,-107.005 50.198)),((-107.002 50.198,-106.998 50.198,-106.998 50.194,-107.002 50.194,-107.002 50.198)))</screen>
             </refsection>
@@ -9701,7 +9701,7 @@ GROUP BY rast, input_geometry
         ST_Translate(result_geometry, -3427927.75, -5793243.75)
     FROM intersection
 )
-SELECT title, ST_AsText(geom) AS geom
+SELECT title, geom AS geom
 FROM layers
 ORDER BY CASE title
     WHEN 'raster' THEN 1
@@ -13615,7 +13615,7 @@ FROM foo;</programlisting>
 SELECT (ST_Contour(rast, 1, fixed_levels =&gt; ARRAY[100.0, 200.0, 300.0])).*
 FROM dem_grid WHERE rid = 1
 )
-SELECT ST_AsText(geom), id, value
+SELECT geom, id, value
 FROM c;</programlisting>
 
     </refsection>
@@ -13930,7 +13930,7 @@ WITH foo AS (
             ]::double precision[][]
         ) AS rast
 )
-SELECT title, ST_AsText(geom) AS geom
+SELECT title, geom AS geom
 FROM foo
 CROSS JOIN LATERAL (VALUES
     ('raster hull', ST_ConvexHull(rast)),
@@ -14009,7 +14009,7 @@ CROSS JOIN LATERAL (VALUES
         ST_Polygon(ST_SetBandNoDataValue(rast, 1, 0))
     FROM source
 )
-SELECT title, ST_AsText(geom, 1) AS geom
+SELECT title, geom AS geom
 FROM variants
 ORDER BY CASE title
     WHEN 'all pixels' THEN 1

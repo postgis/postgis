@@ -670,8 +670,8 @@ WITH ext AS (
   FROM foo
 )
 SELECT auth_name, auth_srid, srname,
-  ST_AsText(point_sw) AS point_sw,
-  ST_AsText(point_ne) AS point_ne
+  point_sw AS point_sw,
+  point_ne AS point_ne
 FROM ext
 CROSS JOIN postgis_srs_search(ST_SetSRID(ext.geom, ext.srid))
 LIMIT 3;</programlisting>

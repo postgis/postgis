@@ -193,15 +193,15 @@ FROM relation;</programlisting>
 )
 SELECT
   ST_Relate(a, b) AS matrix,
-  ST_AsText(ST_Intersection(a, b)) AS "2 I(a) ∩ I(b)",
-  ST_AsText(ST_Intersection(a, bb)) AS "1 I(a) ∩ B(b)",
-  ST_AsText(ST_Difference(a, b)) AS "2 I(a) ∩ E(b)",
-  ST_AsText(ST_Intersection(ba, b)) AS "1 B(a) ∩ I(b)",
-  ST_AsText(ST_Intersection(ba, bb)) AS "0 B(a) ∩ B(b)",
-  ST_AsText(ST_Difference(ba, b)) AS "1 B(a) ∩ E(b)",
-  ST_AsText(ST_Difference(b, a)) AS "2 E(a) ∩ I(b)",
-  ST_AsText(ST_Difference(bb, a)) AS "1 E(a) ∩ B(b)",
-  ST_AsText(ST_Difference(viewport, ST_Union(a, b)))
+  ST_Intersection(a, b) AS "2 I(a) ∩ I(b)",
+  ST_Intersection(a, bb) AS "1 I(a) ∩ B(b)",
+  ST_Difference(a, b) AS "2 I(a) ∩ E(b)",
+  ST_Intersection(ba, b) AS "1 B(a) ∩ I(b)",
+  ST_Intersection(ba, bb) AS "0 B(a) ∩ B(b)",
+  ST_Difference(ba, b) AS "1 B(a) ∩ E(b)",
+  ST_Difference(b, a) AS "2 E(a) ∩ I(b)",
+  ST_Difference(bb, a) AS "1 E(a) ∩ B(b)",
+  ST_Difference(viewport, ST_Union(a, b))
     AS "2 E(a) ∩ E(b), clipped"
 FROM parts;</programlisting>
 <screen xml:id="visual-de9im-matrix-cells" role="visual-primary visual-separate-output visual-output-only text-primary psql-expanded">-[ RECORD 1 ]----------+-----------------------------------------------------------------------------
@@ -313,7 +313,7 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
   FROM roads
 )
 SELECT
-  ST_AsText(ST_Intersection("road A", "road B")) AS overlap,
+  ST_Intersection("road A", "road B") AS overlap,
   matrix,
   ST_Crosses("road A", "road B") AS "ST_Crosses",
   ST_RelateMatch(matrix, '1*1***1**') AS "matches 1*1***1**"
@@ -342,7 +342,7 @@ FROM relation;</programlisting>
 )
 SELECT
   id AS wharf,
-  ST_AsText(geom) AS "matching wharf",
+  geom AS "matching wharf",
   matrix
 FROM relation
 WHERE ST_RelateMatch(matrix, '102101FF2')

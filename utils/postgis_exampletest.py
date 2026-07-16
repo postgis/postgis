@@ -25,6 +25,7 @@ EXTERNAL_STATE_ROLE = "requires-external-state"
 CAPABILITY_ROLE_RE = re.compile(
     r"^requires-(geos|proj|sfcgal)-(\d+(?:\.\d+)*)$", re.I
 )
+GEOMETRY_OUTPUT_PRECISION_ROLE_RE = re.compile(r"^geometry-output-precision-(\d+)$")
 CAPABILITY_VERSION_QUERIES = {
     "geos": "SELECT PostGIS_GEOS_Version()",
     "proj": "SELECT PostGIS_PROJ_Version()",
@@ -55,13 +56,14 @@ WKT_TYPES = (
     "MULTICURVE|MULTISURFACE|TIN|TRIANGLE|POLYHEDRALSURFACE"
     "|NURBSCURVE"
 )
-WKT_START_RE = re.compile(rf"(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s*(?:ZM|Z|M))?\s*\(", re.I)
+WKT_DIMENSION_SUFFIX = r"(?:\s*(?:ZM|Z|M)|ZM|Z|M)?"
+WKT_START_RE = re.compile(rf"(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES}){WKT_DIMENSION_SUFFIX}\s*\(", re.I)
 WKT_VALUE_RE = re.compile(
-    rf"^\s*(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES})(?:\s*(?:ZM|Z|M))?\s*(?:\(|EMPTY\s*$)",
+    rf"^\s*(?:SRID\s*=\s*\d+\s*;\s*)?(?:{WKT_TYPES}){WKT_DIMENSION_SUFFIX}\s*(?:\(|EMPTY\s*$)",
     re.I,
 )
 WKT_COMPONENT_RE = re.compile(
-    rf"\b({WKT_TYPES})(?:\s*(?:ZM|Z|M))?\s*(?=\(|EMPTY\b)",
+    rf"\b({WKT_TYPES}){WKT_DIMENSION_SUFFIX}\s*(?=\(|EMPTY\b)",
     re.I,
 )
 HEXWKB_RE = re.compile(r"^(?:\\x)?([0-9A-Fa-f]+)$")
@@ -157,6 +159,15 @@ class ExampleTester:
 
     def has_role(self, node, role):
         return role in node.get("role", "").split()
+
+    def geometry_output_precision(self, node):
+        if node is None:
+            return None
+        for role in node.get("role", "").split():
+            match = GEOMETRY_OUTPUT_PRECISION_ROLE_RE.fullmatch(role)
+            if match:
+                return int(match.group(1))
+        return None
 
     def capability_requirements(self, node):
         requirements = []
@@ -347,7 +358,30 @@ class ExampleTester:
             return None
         return self.hexwkb_geometry(value)
 
-    def areal_canonical_key_sql(self, geometry):
+    def documented_wkt_decimal_digits(self, expected_wkt):
+        if expected_wkt is None:
+            return VALUE_DECIMAL_DIGITS
+        digits = []
+        for match in re.finditer(NUMBER_PATTERN, expected_wkt):
+            value = match.group(0).lower()
+            if "e" in value:
+                return VALUE_DECIMAL_DIGITS
+            if "." in value:
+                digits.append(len(value.split(".", 1)[1]))
+        return min(max(digits, default=0), VALUE_DECIMAL_DIGITS)
+
+    def documented_wkt_tolerance(self, expected_wkt):
+        digits = self.documented_wkt_decimal_digits(expected_wkt)
+        return max(VALUE_TOLERANCE, 0.5 * 10 ** -digits)
+
+    def documented_wkt_uses_explicit_z_token(self, expected_wkt):
+        return bool(re.search(
+            rf"\b(?:{WKT_TYPES})\s+Z(?:M)?\s*(?:\(|EMPTY\b)",
+            expected_wkt or "",
+            re.I,
+        ))
+
+    def areal_canonical_key_sql(self, geometry, digits=VALUE_DECIMAL_DIGITS):
         """Return a representation-independent key for areal geometry.
 
         ST_Normalize canonicalizes polygon orientation and component order, but
@@ -357,7 +391,6 @@ class ExampleTester:
         coordinate keys, then sort the normalized areal components.
         """
         tolerance = format(VALUE_TOLERANCE, ".17g")
-        digits = VALUE_DECIMAL_DIGITS
         point_key = (
             "concat_ws(' ', "
             f"round((CASE WHEN abs(ST_X(point.geom)) < {tolerance} THEN 0 ELSE ST_X(point.geom) END)::numeric, {digits}), "
@@ -390,7 +423,8 @@ class ExampleTester:
         )
 
     def geometry_comparison_query(
-        self, actual_hex, expected_hex=None, expected_wkt=None, actual_type=None
+        self, actual_hex, expected_hex=None, expected_wkt=None, actual_type=None,
+        expected_wkt_digits=None,
     ):
         actual = (
             "ST_GeomFromEWKB(decode("
@@ -428,6 +462,22 @@ class ExampleTester:
             "AND ST_Zmflag(actual) = ST_Zmflag(expected) "
             "AND ST_SRID(actual) = ST_SRID(expected) "
         )
+        documented_digits = (
+            expected_wkt_digits
+            if expected_wkt_digits is not None else
+            self.documented_wkt_decimal_digits(expected_wkt)
+            if expected_hex is None else VALUE_DECIMAL_DIGITS
+        )
+
+        if expected_hex is None and (
+            expected_wkt_digits is not None or 0 < documented_digits < VALUE_DECIMAL_DIGITS
+        ):
+            return preamble + (
+                "SELECT " + metadata +
+                f"AND ST_AsText(actual, {documented_digits}) = "
+                f"ST_AsText(expected, {documented_digits}) "
+                "FROM comparable"
+            )
 
         if actual_type == "NURBSCURVE":
             return preamble + (
@@ -440,9 +490,9 @@ class ExampleTester:
         if actual_type in UNORDERED_AREAL_TYPES + UNORDERED_SURFACE_TYPES:
             return preamble + (
                 "SELECT " + metadata +
-                "AND " + self.areal_canonical_key_sql("actual") +
+                "AND " + self.areal_canonical_key_sql("actual", documented_digits) +
                 " IS NOT DISTINCT FROM " +
-                self.areal_canonical_key_sql("expected") + " "
+                self.areal_canonical_key_sql("expected", documented_digits) + " "
                 "FROM canonical"
             )
 
@@ -460,7 +510,11 @@ class ExampleTester:
                 "FROM canonical"
             )
 
-        tolerance = format(VALUE_TOLERANCE, ".17g")
+        tolerance = format(
+            self.documented_wkt_tolerance(expected_wkt)
+            if expected_hex is None else VALUE_TOLERANCE,
+            ".17g",
+        )
         return preamble + (
             ", actual_components AS (SELECT path, GeometryType(geom) AS type "
             "FROM canonical CROSS JOIN LATERAL ST_Dump(actual)), "
@@ -697,7 +751,9 @@ class ExampleTester:
             return "null"
         if re.match(r"^null$", value, re.I):
             return "null"
-        if re.match(rf"^(?:SRID=\d+;)?(?:{WKT_TYPES})\b", value, re.I):
+        if re.match(rf"^(?:SRID=\d+;)?(?:{WKT_TYPES}){WKT_DIMENSION_SUFFIX}\s*(?:\(|EMPTY\b)", value, re.I):
+            value = re.sub(rf"\b({WKT_TYPES})\s+(ZM|Z|M)\s*\(", r"\1\2(", value, flags=re.I)
+            value = re.sub(rf"\b({WKT_TYPES})(ZM|Z|M)\s*\(", r"\1\2(", value, flags=re.I)
             value = re.sub(rf"\b({WKT_TYPES})\s+\(", r"\1(", value, flags=re.I)
             value = re.sub(r",\s+", ",", value)
         value = DECIMAL_RE.sub(lambda match: f"{float(match.group(0)):.12g}", value)
@@ -740,6 +796,16 @@ class ExampleTester:
         parts.append(value[start:])
         return [part.strip() for part in parts if part.strip()]
 
+    def canonical_multipoint_wkt(self, value):
+        match = re.match(r"^(?:SRID=\d+;)?MULTIPOINT\((.*)\)$", value, re.I | re.S)
+        if not match:
+            return value
+        points = []
+        for point in self.split_wkt_parts(match.group(1)):
+            point_match = re.match(r"^\((.*)\)$", point, re.S)
+            points.append(point_match.group(1) if point_match else point)
+        return "MULTIPOINT(" + ",".join(points) + ")"
+
     def canonical_multipolygon_wkt(self, value):
         match = re.match(r"^(?:SRID=\d+;)?MULTIPOLYGON\((.*)\)$", value, re.I | re.S)
         if not match:
@@ -765,7 +831,7 @@ class ExampleTester:
 
     def canonical_surface_wkt(self, value):
         match = re.match(
-            r"^(?:SRID=\d+;)?(POLYHEDRALSURFACE|TIN)(?:\s+(?:ZM|Z|M))?\s*\((.*)\)$",
+            rf"^(?:SRID=\d+;)?(POLYHEDRALSURFACE|TIN){WKT_DIMENSION_SUFFIX}\s*\((.*)\)$",
             value, re.I | re.S,
         )
         if not match:
@@ -782,6 +848,9 @@ class ExampleTester:
         return f"{match.group(1).upper()}(" + ",".join(sorted(faces)) + ")"
 
     def canonical_geometry_wkt(self, value):
+        multipoint = self.canonical_multipoint_wkt(value)
+        if multipoint != value:
+            return multipoint
         polygon = self.canonical_polygon_wkt(value)
         if polygon != value:
             return polygon
@@ -1190,6 +1259,7 @@ class ExampleTester:
             "visual_output_only": visual_output_only,
             "visual_separate_output": visual_separate_output,
             "visual_overlay": visual_overlay,
+            "geometry_output_precision": self.geometry_output_precision(screen),
             "visual_refentry": refentry,
             "visual_screen": screen_ordinal,
         }
@@ -1459,7 +1529,7 @@ class ExampleTester:
                 )
         return rows
 
-    def typed_rows_equal(self, database, actual, expected):
+    def typed_rows_equal(self, database, actual, expected, expected_wkt_digits=None):
         if len(actual) == 1 and len(actual[0]) == 1:
             expected = self.coalesce_single_column_wkt_rows(expected)
         if len(actual) != len(expected) or any(
@@ -1485,11 +1555,48 @@ class ExampleTester:
                 if actual_hex is not None or expected_hex is not None:
                     if actual_hex is None or (expected_hex is None and expected_wkt is None):
                         return False
+                    documented_digits = (
+                        expected_wkt_digits
+                        if expected_wkt_digits is not None else
+                        self.documented_wkt_decimal_digits(expected_wkt)
+                        if expected_wkt is not None else VALUE_DECIMAL_DIGITS
+                    )
+                    if (
+                        expected_hex is None
+                        and expected_wkt is not None
+                        and (
+                            expected_wkt_digits is not None
+                            or 0 < documented_digits < VALUE_DECIMAL_DIGITS
+                        )
+                    ):
+                        geom = (
+                            "ST_GeomFromEWKB(decode("
+                            f"'{actual_hex['hexwkb']}', 'hex'))"
+                        )
+                        if self.documented_wkt_uses_explicit_z_token(expected_wkt):
+                            formatter = (
+                                f"CASE WHEN ST_SRID({geom}) = 0 "
+                                f"THEN ST_AsText({geom}, {documented_digits}) "
+                                f"ELSE 'SRID=' || ST_SRID({geom}) || ';' || "
+                                f"ST_AsText({geom}, {documented_digits}) END"
+                            )
+                        else:
+                            formatter = f"ST_AsEWKT({geom}, {documented_digits})"
+                        actual_text = self.run_psql_scalar(
+                            database,
+                            f"SELECT {formatter}",
+                        )
+                        if not re.match(r"^\s*SRID\s*=", expected_wkt, re.I):
+                            actual_text = re.sub(r"^\s*SRID\s*=\s*\d+\s*;\s*", "", actual_text, flags=re.I)
+                        if not self.values_equal(actual_text, expected_wkt):
+                            return False
+                        continue
                     query = self.geometry_comparison_query(
                         actual_hex["hexwkb"],
                         expected_hex["hexwkb"] if expected_hex is not None else None,
                         expected_wkt,
                         actual_hex["type"],
+                        expected_wkt_digits,
                     )
                     if self.run_psql_scalar(database, query) != "t":
                         return False
@@ -1624,6 +1731,7 @@ class ExampleTester:
                 database,
                 actual,
                 example["expected"],
+                example.get("geometry_output_precision"),
             )
         else:
             equal = self.rows_equal(actual, example["expected"])

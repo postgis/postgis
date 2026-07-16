@@ -415,7 +415,7 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
             <title>Examples</title>
 
             <para>Converting MARC21/XML geographic data containing a single <varname>POINT</varname> encoded as  <varname>hddd.dddddd</varname>  </para>
-            <programlisting language="sql"><![CDATA[SELECT ST_AsText(ST_GeomFromMARC21(
+            <programlisting language="sql"><![CDATA[SELECT ST_GeomFromMARC21(
 '<record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>00000nz a2200000nc 4500</leader>
     <controlfield tag="001">040277569</controlfield>
@@ -426,13 +426,13 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
         <subfield code="g">N054.250000</subfield>
     </datafield>
 </record>'
-));
+);
 ]]></programlisting>
 <screen role="visual-primary text-primary">POINT(-4.5 54.25)</screen>
 
             <para>Converting MARC21/XML geographic data containing a single <varname>POLYGON</varname> encoded as <varname>hdddmmss</varname></para>
 
-            <programlisting language="sql"><![CDATA[SELECT ST_AsText(ST_GeomFromMARC21(
+            <programlisting language="sql"><![CDATA[SELECT ST_GeomFromMARC21(
 '<record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>01062cem a2200241 a 4500</leader>
     <controlfield tag="001">   84696781 </controlfield>
@@ -445,13 +445,13 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
         <subfield code="g">N0522300</subfield>
     </datafield>
 </record>'
-));
+);
 ]]></programlisting>
 <screen role="visual-primary text-primary">POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65))</screen>
 
             <para>Converting MARC21/XML geographic data containing a <varname>POLYGON</varname> and a <varname>POINT</varname>:</para>
 
-            <programlisting language="sql"><![CDATA[SELECT ST_AsText(ST_GeomFromMARC21(
+            <programlisting language="sql"><![CDATA[SELECT ST_GeomFromMARC21(
 '<record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
         <subfield code="a">a</subfield>
@@ -468,7 +468,7 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
         <subfield code="g">N054.250000</subfield>
     </datafield>
 </record>'
-));
+);
 ]]></programlisting>
 <screen role="visual-primary text-primary">GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)), POINT(-4.5 54.25))</screen>
 

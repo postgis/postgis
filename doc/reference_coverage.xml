@@ -77,7 +77,7 @@
   (3, 'POLYGON ((140 190,190 190,190 80,140 80,140 190))'::geometry),
   (4, 'POLYGON ((180 40,120 10,100 70,140 80,190 80,180 40))'::geometry)
 )
-SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
+SELECT id, ST_CoverageInvalidEdges(geom) OVER ()
   FROM coverage;</programlisting>
 <screen> id |               st_astext
 ----+---------------------------------------
@@ -196,8 +196,8 @@ SELECT true = ALL (
          ST_CoverageInvalidEdges(geom) OVER () AS invalid_edges
   FROM coverage
 )
-SELECT ST_AsText(ST_Collect(cleaned ORDER BY id), 1) AS cleaned,
-       ST_AsText(ST_Collect(invalid_edges ORDER BY id), 1) AS invalid_edges
+SELECT ST_Collect(cleaned ORDER BY id) AS cleaned,
+       ST_Collect(invalid_edges ORDER BY id) AS invalid_edges
 FROM processed;</programlisting>
 <screen role="visual-separate-output">MULTIPOLYGON(((10 10,10 190,30 160,27 134.5,40 110,84.7 75.7,102 62.3,120 10,10 10)),((140 190,140 160,140 130,135 111,131.7 84.2,97 77,98 74,84.7 75.7,40 110,50 140,30 160,10 190,140 190)),((190 190,190 80,165 80,140 80,140 85.9,140 130,140 160,140 190,150 190,190 190)),((190 10,120 10,102 62.3,98 74,97 77,131.7 84.2,140 85.9,140 80,165 80,170 70,190 80,190 10))) | MULTILINESTRING((40 110,122 47,120 10),(40 110,50 80,130 70,135 111,140 130,140 160,150 190,10 190),(190 80,140 80,140 190,190 190),(120 10,97 77,160 90,170 70))</screen>
 
@@ -272,7 +272,7 @@ FROM processed;</programlisting>
   (3, 'POLYGON ((110 130,160 50,140 50,120 33,90 30,50 10,60 60,90 70,90 100,110 130))'::geometry),
   (4, 'POLYGON ((160 150,150 120,160 90,160 50,110 130,160 150))'::geometry)
 )
-SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
+SELECT id, ST_CoverageSimplify(geom, 30) OVER ()
   FROM coverage;</programlisting>
 <screen> id |               st_astext
 ----+---------------------------------------
@@ -348,8 +348,8 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
     )'::geometry
   )
 )
-SELECT ST_AsText(geom) AS input_coverage,
-       ST_AsText(ST_CoverageEdges(geom)) AS all_edges
+SELECT geom AS input_coverage,
+       ST_CoverageEdges(geom) AS all_edges
 FROM coverage;</programlisting>
 <screen role="visual-primary text-primary visual-output-only visual-overlay psql-expanded docbook-qa-ignore-wide-lines">-[ RECORD 1 ]--+----------------------------------------------------------------------------------------------
 input_coverage | GEOMETRYCOLLECTION(POLYGON((0 0,10 0,10 10,0 10,0 0)),POLYGON((10 0,20 0,20 10,10 10,10 0)))
@@ -364,8 +364,8 @@ all_edges      | MULTILINESTRING((10 0,10 10),(10 10,0 10,0 0,10 0),(10 0,20 0,2
     )'::geometry
   )
 )
-SELECT ST_AsText(geom) AS input_coverage,
-       ST_AsText(ST_CoverageEdges(geom, 2)) AS shared_edges
+SELECT geom AS input_coverage,
+       ST_CoverageEdges(geom, 2) AS shared_edges
 FROM coverage;</programlisting>
 <screen role="visual-primary text-primary visual-output-only visual-overlay psql-expanded">-[ RECORD 1 ]--+----------------------------------------------------------------------------------------------
 input_coverage | GEOMETRYCOLLECTION(POLYGON((0 0,10 0,10 10,0 10,0 0)),POLYGON((10 0,20 0,20 10,10 10,10 0)))
@@ -426,7 +426,7 @@ shared_edges   | MULTILINESTRING((10 0,10 10))</screen>
   (4, 'POLYGON ((140 190,120 170,140 130,160 150,140 190))'::geometry),
   (5, 'POLYGON ((180 160,170 140,140 130,160 150,140 190,180 160))'::geometry)
 )
-SELECT ST_AsText(ST_CoverageUnion(geom)) AS wkt
+SELECT ST_CoverageUnion(geom) AS wkt
   FROM coverage;</programlisting>
 <screen>MULTIPOLYGON(((10 150,80 190,110 150,140 80,120 10,10 10,10 150),(50 60,100 70,40 110,50 60)),((120 170,140 190,180 160,170 140,140 130,120 170)))</screen>
     </refsection>

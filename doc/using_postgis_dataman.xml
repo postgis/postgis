@@ -375,7 +375,7 @@ CURVEPOLYGON(
 	  <para>Input and output of WKT is provided by the functions
       <xref linkend="ST_AsText"/> and <xref linkend="ST_GeomFromText"/>:</para>
 
-	  <programlisting>text WKT = ST_AsText(geometry);
+	  <programlisting>text WKT = geometry;
 geometry = ST_GeomFromText(text WKT, SRID);</programlisting>
 
 		  <para>For example, a statement to create and insert a spatial object from WKT with SRID 312 is:</para>
@@ -597,7 +597,7 @@ geometry
 	  <para>Input and output using these formats is available using the following functions:</para>
 
 	  <programlisting>bytea EWKB = ST_AsEWKB(geometry);
-text EWKT = ST_AsEWKT(geometry);
+text EWKT = geometry;
 geometry = ST_GeomFromEWKB(bytea EWKB);
 geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 
@@ -902,14 +902,14 @@ so even calling them "degrees" is inaccurate.</para>
   ('d', 'LINESTRING (90 190, 120 190, 50 60, 130 10, 190 50, 160 90, 10 150, 90 190)'::geometry)
 )
 SELECT
-  ST_AsText((SELECT geom FROM cases WHERE label = 'a' AND ST_IsSimple(geom)))
+  (SELECT geom FROM cases WHERE label = 'a' AND ST_IsSimple(geom))
     AS "input_(a) simple",
-  ST_AsText((SELECT geom FROM cases WHERE label = 'b' AND NOT ST_IsSimple(geom)))
+  (SELECT geom FROM cases WHERE label = 'b' AND NOT ST_IsSimple(geom))
     AS "input_(b) not simple",
-  ST_AsText((SELECT geom FROM cases
-             WHERE label = 'c' AND ST_IsSimple(geom) AND ST_IsClosed(geom)))
+  (SELECT geom FROM cases
+             WHERE label = 'c' AND ST_IsSimple(geom) AND ST_IsClosed(geom))
     AS "input_(c) simple, closed",
-  ST_AsText((SELECT geom FROM cases WHERE label = 'd' AND NOT ST_IsSimple(geom)))
+  (SELECT geom FROM cases WHERE label = 'd' AND NOT ST_IsSimple(geom))
     AS "input_(d) not simple";</programlisting>
 <screen xml:id="visual-simple-linestrings" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
 input_(a) simple         | LINESTRING(10 190,140 130,70 80,190 10)
@@ -933,11 +933,11 @@ input_(d) not simple     | LINESTRING(90 190,120 190,50 60,130 10,190 50,160 90,
   ('g', 'MULTILINESTRING ((30 190, 60 60, 170 10), (100 190, 180 150, 80 10))'::geometry)
 )
 SELECT
-  ST_AsText((SELECT geom FROM cases WHERE label = 'e' AND ST_IsSimple(geom)))
+  (SELECT geom FROM cases WHERE label = 'e' AND ST_IsSimple(geom))
     AS "input_(e) simple",
-  ST_AsText((SELECT geom FROM cases WHERE label = 'f' AND ST_IsSimple(geom)))
+  (SELECT geom FROM cases WHERE label = 'f' AND ST_IsSimple(geom))
     AS "input_(f) simple",
-  ST_AsText((SELECT geom FROM cases WHERE label = 'g' AND NOT ST_IsSimple(geom)))
+  (SELECT geom FROM cases WHERE label = 'g' AND NOT ST_IsSimple(geom))
     AS "input_(g) not simple";</programlisting>
 <screen xml:id="visual-simple-multilinestrings" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
 input_(e) simple     | MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,160 70))
@@ -1010,9 +1010,9 @@ input_(g) not simple | MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,80
                  (190 60, 140 40, 110 60, 120 90, 190 60))'::geometry)
 )
 SELECT
-  ST_AsText((SELECT geom FROM cases WHERE label = 'h' AND ST_IsValid(geom)))
+  (SELECT geom FROM cases WHERE label = 'h' AND ST_IsValid(geom))
     AS "input_(h) valid",
-  ST_AsText((SELECT geom FROM cases WHERE label = 'i' AND ST_IsValid(geom)))
+  (SELECT geom FROM cases WHERE label = 'i' AND ST_IsValid(geom))
     AS "input_(i) valid, tangent hole";</programlisting>
 <screen xml:id="visual-valid-polygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
 input_(h) valid               | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(50 100,70 80,110 100,110 140,50 100))
@@ -1036,21 +1036,21 @@ input_(i) valid, tangent hole | POLYGON((10 140,90 190,130 170,190 60,160 10,50 
                  (81 143, 103 143, 112 162, 107 175, 89 183, 71 169, 81 143))'::geometry)
 )
 SELECT
-  ST_AsText((SELECT geom FROM cases
+  (SELECT geom FROM cases
              WHERE label = 'j' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Interior is disconnected%'))
+             AND ST_IsValidReason(geom) LIKE 'Interior is disconnected%')
     AS "input_(j) invalid, disconnected",
-  ST_AsText((SELECT geom FROM cases
+  (SELECT geom FROM cases
              WHERE label = 'k' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Self-intersection%'))
+             AND ST_IsValidReason(geom) LIKE 'Self-intersection%')
     AS "input_(k) invalid, rings cross",
-  ST_AsText((SELECT geom FROM cases
+  (SELECT geom FROM cases
              WHERE label = 'l' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Ring Self-intersection%'))
+             AND ST_IsValidReason(geom) LIKE 'Ring Self-intersection%')
     AS "input_(l) invalid, cut line",
-  ST_AsText((SELECT geom FROM cases
+  (SELECT geom FROM cases
              WHERE label = 'm' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Hole lies outside shell%'))
+             AND ST_IsValidReason(geom) LIKE 'Hole lies outside shell%')
     AS "input_(m) invalid, hole outside";</programlisting>
 <screen xml:id="visual-invalid-polygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
 input_(j) invalid, disconnected | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(130 170,10 140,50 120,110 110,130 170))
@@ -1090,15 +1090,15 @@ input_(m) invalid, hole outside | POLYGON((10 40,10 100,130 130,190 80,140 20,50
                          58 140, 50 170)))'::geometry)
 )
 SELECT
-  ST_AsText((SELECT geom FROM cases WHERE label = 'n' AND ST_IsValid(geom)))
+  (SELECT geom FROM cases WHERE label = 'n' AND ST_IsValid(geom))
     AS "input_(n) valid, point touch",
-  ST_AsText((SELECT geom FROM cases
+  (SELECT geom FROM cases
              WHERE label = 'o' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Self-intersection%'))
+             AND ST_IsValidReason(geom) LIKE 'Self-intersection%')
     AS "input_(o) invalid, shared edge",
-  ST_AsText((SELECT geom FROM cases
+  (SELECT geom FROM cases
              WHERE label = 'p' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Self-intersection%'))
+             AND ST_IsValidReason(geom) LIKE 'Self-intersection%')
     AS "input_(p) invalid, overlap";</programlisting>
 <screen xml:id="visual-validity-multipolygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
 input_(n) valid, point touch   | MULTIPOLYGON(((10 40,29 118,100 75,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
@@ -2117,7 +2117,7 @@ WHERE ST_Intersects(roads_geom, 'SRID=312;POLYGON((...))');</programlisting>
 		<para>Using a "BOX3D" object for the frame, such a query looks like this:</para>
 
 	  <programlisting><![CDATA[
-SELECT ST_AsText(roads_geom) AS geom
+SELECT roads_geom AS geom
 FROM roads
 WHERE
   roads_geom && ST_MakeEnvelope(191232, 243117,191232, 243119,312);

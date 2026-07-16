@@ -189,8 +189,8 @@ ORDER BY deg;</programlisting>
          'POINT(75 100)'::geometry AS target
 )
 SELECT round(degrees(ST_Azimuth(origin, target))::numeric, 6) AS degrees,
-       ST_AsText(ST_MakeLine(origin, ST_Translate(origin, 0, 105))) AS north,
-       ST_AsText(ST_MakeLine(origin, target)) AS direction
+       ST_MakeLine(origin, ST_Translate(origin, 0, 105)) AS north,
+       ST_MakeLine(origin, target) AS direction
 FROM points;</programlisting>
 <screen role="visual-primary visual-overlay text-primary">42.273689 | LINESTRING(25 45,25 150) | LINESTRING(25 45,75 100)</screen>
 
@@ -200,8 +200,8 @@ FROM points;</programlisting>
          'POINT(25 45)'::geometry AS target
 )
 SELECT round(degrees(ST_Azimuth(origin, target))::numeric, 6) AS degrees,
-       ST_AsText(ST_MakeLine(origin, ST_Translate(origin, 0, 90))) AS north,
-       ST_AsText(ST_MakeLine(origin, target)) AS direction
+       ST_MakeLine(origin, ST_Translate(origin, 0, 90)) AS north,
+       ST_MakeLine(origin, target) AS direction
 FROM points;</programlisting>
 <screen role="visual-primary visual-overlay text-primary">222.273689 | LINESTRING(75 100,75 190) | LINESTRING(75 100,25 45)</screen>
 		</refsection>
@@ -338,8 +338,8 @@ SELECT ST_ClosestPoint(pt, line) AS cp_pt_line, ST_ClosestPoint(line, pt) AS cp_
   SELECT 'POLYGON ((190 150,20 10,160 70,190 150))'::geometry AS a,
          ST_Buffer('POINT(80 160)'::geometry, 30) AS b
 )
-SELECT ST_AsText(b, 3) AS polygon_b,
-       ST_AsText(ST_ClosestPoint(a, b)) AS closest_point
+SELECT b AS polygon_b,
+       ST_ClosestPoint(a, b) AS closest_point
 FROM source;</programlisting>
 <screen role="visual-primary visual-overlay">POLYGON((110 160,109.424 154.147,107.716 148.519,104.944 143.333,101.213 138.787,96.667 135.056,91.481 132.284,85.853 130.576,80 130,74.147 130.576,68.519 132.284,63.333 135.056,58.787 138.787,55.056 143.333,52.284 148.519,50.576 154.147,50 160,50.576 165.853,52.284 171.481,55.056 176.667,58.787 181.213,63.333 184.944,68.519 187.716,74.147 189.424,80 190,85.853 189.424,91.481 187.716,96.667 184.944,101.213 181.213,104.944 176.667,107.716 171.481,109.424 165.853,110 160)) | POINT(131.59149149528952 101.89887534906195)</screen>
 
@@ -394,8 +394,8 @@ FROM source;</programlisting>
   SELECT 'POINT(100 100 30)'::geometry AS pt,
          'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 1000)'::geometry AS line
 )
-SELECT ST_AsEWKT(ST_3DClosestPoint(line, pt)) AS cp3d_line_pt,
-       ST_AsEWKT(ST_ClosestPoint(line, pt)) AS cp2d_line_pt
+SELECT ST_3DClosestPoint(line, pt) AS cp3d_line_pt,
+       ST_ClosestPoint(line, pt) AS cp2d_line_pt
 FROM input;</programlisting>
 <screen role="visual-primary visual-overlay text-primary psql-expanded">-[ RECORD 1 ]--+--------------------------------------------------------
 cp3d_line_pt   | POINT(54.69937988676193 128.93502291722837 11.547586950660556)
@@ -405,8 +405,8 @@ cp2d_line_pt   | POINT(73.07692307692307 115.38461538461539)</screen>
   SELECT 'MULTIPOINT(100 100 30,50 74 1000)'::geometry AS pt,
          'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 900)'::geometry AS line
 )
-SELECT ST_AsEWKT(ST_3DClosestPoint(line, pt)) AS cp3d_line_pt,
-       ST_AsEWKT(ST_ClosestPoint(line, pt)) AS cp2d_line_pt
+SELECT ST_3DClosestPoint(line, pt) AS cp3d_line_pt,
+       ST_ClosestPoint(line, pt) AS cp2d_line_pt
 FROM input;</programlisting>
 <screen role="visual-primary visual-overlay text-primary psql-expanded">-[ RECORD 1 ]--+--------------------------------------------------------
 cp3d_line_pt   | POINT(54.69937988676193 128.93502291722837 11.547586950660556)
@@ -421,8 +421,8 @@ cp2d_line_pt   | POINT(50 75)</screen>
                             (1 10 2,5 20 1))'
          ) AS mline
 )
-SELECT ST_AsEWKT(ST_3DClosestPoint(poly, mline)) AS cp3d,
-       ST_AsEWKT(ST_ClosestPoint(poly, mline)) AS cp2d
+SELECT ST_3DClosestPoint(poly, mline) AS cp3d,
+       ST_ClosestPoint(poly, mline) AS cp2d
 FROM input;</programlisting>
 <screen role="visual-primary visual-overlay text-primary psql-expanded">-[ RECORD 1 ]--+---------------------------------------
 cp3d           | POINT(40.45454545454545 53.63636363636364 5)
@@ -824,8 +824,8 @@ The smaller densifyFrac we specify, the more accurate Fréchet distance we get. 
   SELECT 'LINESTRING (0 0,100 0)'::geometry AS baseline,
          'LINESTRING (0 0,50 50,100 0)'::geometry AS bowed
 )
-SELECT ST_AsText(baseline) AS baseline,
-       ST_AsText(bowed) AS bowed,
+SELECT baseline AS baseline,
+       bowed AS bowed,
        ST_FrechetDistance(baseline, bowed) AS discrete_distance,
        ST_FrechetDistance(baseline, bowed, 0.5) AS densified_distance
 FROM lines;</programlisting>
@@ -920,7 +920,7 @@ densified_distance | 50</screen>
 SELECT round(ST_HausdorffDistance(geomA, geomB)::numeric, 6) AS hausdorff_distance,
        round(ST_Distance(geomA, geomB)::numeric, 6) AS distance,
        round(ST_Length(hausdorff_segment)::numeric, 6) AS witness_length,
-       ST_AsText(ST_ShortestLine(geomA, geomB)) AS distance_segment
+       ST_ShortestLine(geomA, geomB) AS distance_segment
 FROM lines;</programlisting>
 <screen role="visual-primary visual-overlay text-primary">37.262066 | 20.000000 | 37.262066 | LINESTRING(20 70,20 90)</screen>
 
@@ -1894,8 +1894,8 @@ SELECT ST_ShortestLine(
   SELECT 'POINT(100 100 30)'::geometry AS pt,
          'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 1000)'::geometry AS line
 )
-SELECT ST_AsEWKT(ST_3DShortestLine(line, pt)) AS shl3d_line_pt,
-       ST_AsEWKT(ST_ShortestLine(line, pt)) AS shl2d_line_pt
+SELECT ST_3DShortestLine(line, pt) AS shl3d_line_pt,
+       ST_ShortestLine(line, pt) AS shl2d_line_pt
 FROM input;</programlisting>
 <screen role="visual-primary visual-overlay text-primary psql-expanded">-[ RECORD 1 ]--+--------------------------------------------------------------------------------
 shl3d_line_pt  | LINESTRING(54.69937988676193 128.93502291722837 11.547586950660556,100 100 30)
@@ -1905,8 +1905,8 @@ shl2d_line_pt  | LINESTRING(73.07692307692307 115.38461538461539,100 100)</scree
   SELECT 'MULTIPOINT(100 100 30,50 74 1000)'::geometry AS pt,
          'LINESTRING (20 80 20,98 190 1,110 180 3,50 75 900)'::geometry AS line
 )
-SELECT ST_AsEWKT(ST_3DShortestLine(line, pt)) AS shl3d_line_pt,
-       ST_AsEWKT(ST_ShortestLine(line, pt)) AS shl2d_line_pt
+SELECT ST_3DShortestLine(line, pt) AS shl3d_line_pt,
+       ST_ShortestLine(line, pt) AS shl2d_line_pt
 FROM input;</programlisting>
 <screen role="visual-primary visual-overlay text-primary psql-expanded">-[ RECORD 1 ]--+--------------------------------------------------------------------------------
 shl3d_line_pt  | LINESTRING(54.69937988676193 128.93502291722837 11.547586950660556,100 100 30)
@@ -1921,8 +1921,8 @@ shl2d_line_pt  | LINESTRING(50 75,50 74)</screen>
                             (1 10 2,5 20 1))'
          ) AS mline
 )
-SELECT ST_AsEWKT(ST_3DShortestLine(poly, mline)) AS shl3d,
-       ST_AsEWKT(ST_ShortestLine(poly, mline)) AS shl2d
+SELECT ST_3DShortestLine(poly, mline) AS shl3d,
+       ST_ShortestLine(poly, mline) AS shl2d
 FROM input;</programlisting>
 <screen role="visual-primary visual-overlay text-primary psql-expanded">-[ RECORD 1 ]--+--------------------------------------------------------------------------------------
 shl3d          | LINESTRING(40.45454545454545 53.63636363636364 5,40.45454545454545 53.63636363636364 5)
