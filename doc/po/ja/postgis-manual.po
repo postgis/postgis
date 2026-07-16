@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-05 04:20+0000\n"
-"PO-Revision-Date: 2026-07-16 01:39+0000\n"
+"PO-Revision-Date: 2026-07-16 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -42464,11 +42464,13 @@ msgid ""
 "Rotate a 3D line 180 degrees about the z axis. Note this is long-hand for "
 "doing ST_Rotate();"
 msgstr ""
+"3次元ラインをZ軸周りに180°回転させます。これはST_Rotate()を冗長にしたものであ"
+"ることに注意して下さい;"
 
 #. Tag: para
 #, no-c-format
 msgid "Rotate a 3D line 180 degrees in both the x and z axis."
-msgstr ""
+msgstr "3次元ラインをX軸回りZ軸回りとで180°回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -42511,20 +42513,20 @@ msgstr "Availability: 1.1.2 RotateからST_Rotateに名称変更しました。"
 #. Tag: para
 #, no-c-format
 msgid "This example rotates a geometry by 180 degrees."
-msgstr ""
+msgstr "この例ではジオメトリーを180°回転させます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example rotates a geometry 30 degrees counter-clockwise around x=50, "
 "y=160."
-msgstr ""
+msgstr "この例ではジオメトリーをx=50, y=160を原点にして反時計回りで30°回転させます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example rotates a geometry 60 degrees clockwise around its centroid."
-msgstr ""
+msgstr "この例ではジオメトリーを重心を原点として時計回りに60°回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -42564,7 +42566,7 @@ msgstr "Availability: 1.1.2 1.2.2でRotateXからST_RotateXに名称変更しま
 #. Tag: para
 #, no-c-format
 msgid "This example rotates a line 90 degrees around the X axis."
-msgstr ""
+msgstr "この例ではラインをX軸周りに90度回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -42600,7 +42602,7 @@ msgstr "Availability: 1.1.2 1.2.2でRotateYからST_RotateYに名称変更しま
 #. Tag: para
 #, no-c-format
 msgid "This example rotates a line 90 degrees around the Y axis."
-msgstr "この例ではラインをY軸回りに90°回転させます。"
+msgstr "この例ではラインをY軸周りに90°回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -42641,12 +42643,12 @@ msgstr "Availability: 1.1.2 1.2.2でRotateZからST_RotateZに名称変更しま
 #. Tag: para
 #, no-c-format
 msgid "This example rotates a line 90 degrees around the Z axis."
-msgstr "この例ではラインをZ軸回りに90°回転させます。"
+msgstr "この例ではラインをZ軸周りに90°回転させます。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example rotates a curved circle around the Z axis."
-msgstr ""
+msgstr "この例では曲線円をZ軸周りに回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -42817,6 +42819,8 @@ msgid ""
 "This example buffers a point to approximate a circle, converts it to a "
 "curve, translates it by 1,2, and scales it by 3,4."
 msgstr ""
+"この例ではポイントにポイントへのバッファーで近似円を作り、曲線に変換して、"
+"1,2に移動させ、3,4倍にします。"
 
 #. Tag: title
 #, no-c-format
@@ -43957,12 +43961,12 @@ msgstr "リリースノート"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS 3.7.0"
-msgstr ""
+msgstr "PostGIS 3.7.0"
 
 #. Tag: subtitle
 #, no-c-format
 msgid "2026/xx/xx"
-msgstr ""
+msgstr "2026/xx/xx"
 
 #. Tag: para
 #, no-c-format
@@ -43972,6 +43976,10 @@ msgid ""
 "needed. To take advantage of all postgis_sfcgal extension features SFCGAL "
 "2.3+ is needed."
 msgstr ""
+"このバージョンではGEOS 3.10以上、PostgreSQL 14-19beta1、Proj 6.1以上、libgmp"
+"が必要です。PostGISエクステンションの全ての機能を活用するには、GEOS 3.15以上"
+"が必要です。全てのpostgis_sfcgal エクステンションの機能を活用するにはSFCGAL "
+"2.3以上が必要です。"
 
 #. Tag: title
 #, no-c-format
@@ -43979,13 +43987,17 @@ msgid "Breaking Changes"
 msgstr "大幅な変更"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5688\">#5688</"
 "link>, [topology] topology building functions now interpret tolerance 0 (old "
 "default) to really mean 0 and want -1 (new default) to mean &quot;use "
 "topology precision&quot; (Sandro Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5688\">#5688</link>"
+", [topology] トポロジー構築関数が許容値0 (以前のデフォルト値)を実際の0にして"
+"、-1 (新しいデフォルト値)が「トポロジーの精度」にするようにしました (Sandro "
+"Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -43993,6 +44005,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6024\">#6024</"
 "link>, Remove support for PostgreSQL 12 and 13 (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6024\">#6024</link>"
+", PostgreSQL 12と13とへの対応を削除 (Regina Obeさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44000,6 +44014,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6040\">#6040</"
 "link>, ST_GeoHash round trip through ST_GeomFromGeoHash (Paul Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6040\">#6040</link>"
+", ST_GeoHashとST_GeomFromGeoHashとの往復 (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44009,6 +44025,10 @@ msgid ""
 "xlink:href=\"https://github.com/postgis/address_standardizer\">https://"
 "github.com/postgis/address_standardizer</link> (Paul Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6053\">#6053</link>"
+", [address_standardizer] エクステンションの削除と<link xlink:href=\"https://"
+"github.com/postgis/address_standardizer\">https://github.com/postgis/"
+"address_standardizer</link>への移動 (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44018,6 +44038,10 @@ msgid ""
 "xlink:href=\"https://git.osgeo.org/postgis/postgis_tiger_geocoder\">https://"
 "git.osgeo.org/postgis/postgis_tiger_geocoder</link> (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6052\">#6052</link>"
+", [tiger_geocoder] エクステンションの削除と<link xlink:href=\"https://"
+"git.osgeo.org/postgis/postgis_tiger_geocoder\">https://git.osgeo.org/postgis/"
+"postgis_tiger_geocoder</link>への移動 (Regina Obeさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44025,6 +44049,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6079\">#6079</"
 "link>, Remove support for GEOS &lt; 3.10 (Sandro Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6079\">#6079</link>"
+", GEOS &lt; 3.10対応を削除 (Sandro Santilliさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44032,6 +44058,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1793\">#1793</"
 "link>, Remove ST_MemCollect aggregate (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1793\">#1793</link>"
+", 集約関数ST_MemCollectを削除 (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44039,6 +44067,8 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/848\">GH-848</"
 "link>, CG_AlphaShape now returns a MultiPolygon (Jean Felder)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/848\">GH-848</"
+"link>, CG_AlphaShapeはマルチポリゴンを返すようになりました (Jean Felderさん)"
 
 #. Tag: title
 #, no-c-format
