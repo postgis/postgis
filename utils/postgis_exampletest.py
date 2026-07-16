@@ -113,6 +113,7 @@ VISUAL_DIRECTION_ROLE = "visual-direction"
 VISUAL_OUTPUT_ONLY_ROLE = "visual-output-only"
 VISUAL_HIDE_OUTPUT_AREA_VERTICES_ROLE = "visual-hide-output-area-vertices"
 VISUAL_SEPARATE_OUTPUT_ROLE = "visual-separate-output"
+VISUAL_ROW_PANELS_ROLE = "visual-row-panels"
 VISUAL_OVERLAY_ROLE = "visual-overlay"
 SVG_PALETTES = {
     "Code": ("#2878b8", "#59a4d8", "#0f5f9c"),
@@ -1194,6 +1195,7 @@ class ExampleTester:
                 VISUAL_ROLE,
                 VISUAL_DIRECTION_ROLE,
                 VISUAL_SEPARATE_OUTPUT_ROLE,
+                VISUAL_ROW_PANELS_ROLE,
                 VISUAL_OVERLAY_ROLE,
             )
         )
@@ -1222,6 +1224,9 @@ class ExampleTester:
         )
         visual_separate_output = screen is not None and self.has_role(
             screen, VISUAL_SEPARATE_OUTPUT_ROLE
+        )
+        visual_row_panels = screen is not None and self.has_role(
+            screen, VISUAL_ROW_PANELS_ROLE
         )
         visual_overlay = screen is not None and self.has_role(screen, VISUAL_OVERLAY_ROLE)
         visual_direction = screen is not None and self.has_role(screen, VISUAL_DIRECTION_ROLE)
@@ -1258,6 +1263,7 @@ class ExampleTester:
             "visual_hide_output_area_vertices": visual_hide_output_area_vertices,
             "visual_output_only": visual_output_only,
             "visual_separate_output": visual_separate_output,
+            "visual_row_panels": visual_row_panels,
             "visual_overlay": visual_overlay,
             "geometry_output_precision": self.geometry_output_precision(screen),
             "visual_refentry": refentry,
@@ -2023,6 +2029,11 @@ SELECT json_build_object(
         output_types = getattr(actual, "types", [])
         cluster_column = self.cluster_column_index(headers) if len(actual) > 1 else None
         marker_scale_column = self.marker_scale_column_index(headers)
+        row_panel_label_column = (
+            self.label_companion_column_index(headers)
+            if example.get("visual_row_panels")
+            else None
+        )
         output_groups = {}
         next_output_group = 1
         for row_index, row in enumerate(actual, 1):
@@ -2037,7 +2048,8 @@ SELECT json_build_object(
                 if hexwkb is not None:
                     matches.append({"hexwkb": hexwkb["hexwkb"]})
                 for match_index, geometry in enumerate(matches, 1):
-                    label = headers[column_index] if column_index < len(headers) else ""
+                    header_label = headers[column_index] if column_index < len(headers) else ""
+                    label = header_label
                     has_explicit_header = (
                         column_index < len(explicit_headers) and bool(explicit_headers[column_index])
                     )
@@ -2050,8 +2062,11 @@ SELECT json_build_object(
                     source = "Code" if label.lower().startswith("input_") else "Output"
                     if source == "Code":
                         label = label[len("input_"):]
+                    row_panel_label = self.scalar_companion_value(row, row_panel_label_column)
+                    if row_panel_label and column_index != row_panel_label_column:
+                        label = row_panel_label
                     label = self.display_label(label)
-                    if len(actual) > 1:
+                    if len(actual) > 1 and not row_panel_label:
                         label = f"{label} {row_index}"
                     if len(matches) > 1:
                         label = f"{label}.{match_index}"
@@ -2155,7 +2170,9 @@ SELECT json_build_object(
                     "row_num": candidate["row_num"],
                     "column_num": candidate["column_num"],
                     "requested_frame": forced_frame or (
-                        candidate["label"] if example.get("visual_separate_output") else None
+                        candidate["label"]
+                        if example.get("visual_separate_output") or example.get("visual_row_panels")
+                        else None
                     ),
                     "source_point_count": output_point_counts.get(source, 0),
                     "total_points": None,

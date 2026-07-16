@@ -1025,38 +1025,35 @@ input_(i) valid, tangent hole | POLYGON((10 140,90 190,130 170,190 60,160 10,50 
       <emphasis role="bold">(j)</emphasis> can instead be represented as a
       valid <varname>MULTIPOLYGON</varname>.</para>
 
-	  <programlisting>WITH cases(label, geom) AS (VALUES
-  ('j', 'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
-                 (130 170, 10 140, 50 120, 110 110, 130 170))'::geometry),
-  ('k', 'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
-                 (90 189, 10 139, 80 110, 110 130, 90 189))'::geometry),
-  ('l', 'POLYGON ((10 100, 60 140, 60 190, 60 140, 130 170,
-                  190 60, 160 10, 50 20, 10 100))'::geometry),
-  ('m', 'POLYGON ((10 40, 10 100, 130 130, 190 80, 140 20, 50 10, 10 40),
-                 (81 143, 103 143, 112 162, 107 175, 89 183, 71 169, 81 143))'::geometry)
+	  <programlisting>WITH cases(label, geom, reason_pattern) AS (VALUES
+  ('(j) disconnected interior',
+   'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+             (130 170, 10 140, 50 120, 110 110, 130 170))'::geometry,
+   'Interior is disconnected%'),
+  ('(k) crossing rings',
+   'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+             (90 189, 10 139, 80 110, 110 130, 90 189))'::geometry,
+   'Self-intersection%'),
+  ('(l) cut line',
+   'POLYGON ((10 100, 60 140, 60 190, 60 140, 130 170,
+              190 60, 160 10, 50 20, 10 100))'::geometry,
+   'Ring Self-intersection%'),
+  ('(m) hole outside shell',
+   'POLYGON ((10 40, 10 100, 130 130, 190 80, 140 20, 50 10, 10 40),
+             (81 143, 103 143, 112 162, 107 175, 89 183, 71 169, 81 143))'::geometry,
+   'Hole lies outside shell%')
 )
-SELECT
-  (SELECT geom FROM cases
-             WHERE label = 'j' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Interior is disconnected%')
-    AS "input_(j) invalid, disconnected",
-  (SELECT geom FROM cases
-             WHERE label = 'k' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Self-intersection%')
-    AS "input_(k) invalid, rings cross",
-  (SELECT geom FROM cases
-             WHERE label = 'l' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Ring Self-intersection%')
-    AS "input_(l) invalid, cut line",
-  (SELECT geom FROM cases
-             WHERE label = 'm' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Hole lies outside shell%')
-    AS "input_(m) invalid, hole outside";</programlisting>
-<screen xml:id="visual-invalid-polygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
-input_(j) invalid, disconnected | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(130 170,10 140,50 120,110 110,130 170))
-input_(k) invalid, rings cross  | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(90 189,10 139,80 110,110 130,90 189))
-input_(l) invalid, cut line     | POLYGON((10 100,60 140,60 190,60 140,130 170,190 60,160 10,50 20,10 100))
-input_(m) invalid, hole outside | POLYGON((10 40,10 100,130 130,190 80,140 20,50 10,10 40),(81 143,103 143,112 162,107 175,89 183,71 169,81 143))</screen>
+SELECT label, geom
+FROM cases
+WHERE NOT ST_IsValid(geom)
+  AND ST_IsValidReason(geom) LIKE reason_pattern
+ORDER BY label;</programlisting>
+<screen xml:id="visual-invalid-polygons" role="visual-primary visual-output-only visual-row-panels text-primary">          label          | geom
+-------------------------+----------------------------------------------------------------------------------------------------------------------------------------
+ (j) disconnected interior | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(130 170,10 140,50 120,110 110,130 170))
+ (k) crossing rings       | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(90 189,10 139,80 110,110 130,90 189))
+ (l) cut line             | POLYGON((10 100,60 140,60 190,60 140,130 170,190 60,160 10,50 20,10 100))
+ (m) hole outside shell   | POLYGON((10 40,10 100,130 130,190 80,140 20,50 10,10 40),(81 143,103 143,112 162,107 175,89 183,71 169,81 143))</screen>
 
 	  <para>A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> if:
 	  </para>
@@ -1078,32 +1075,33 @@ input_(m) invalid, hole outside | POLYGON((10 40,10 100,130 130,190 80,140 20,50
       In <emphasis role="bold">(o)</emphasis> they share an edge, and in
       <emphasis role="bold">(p)</emphasis> their interiors overlap.</para>
 
-	  <programlisting>WITH cases(label, geom) AS (VALUES
-  ('n', 'MULTIPOLYGON (((10 40, 29 118, 100 75, 180 88, 140 30, 70 10, 10 40)),
-                       ((50 170, 100 190, 160 180, 180 140, 180 90, 120 120,
-                         30 120, 50 170)))'::geometry),
-  ('o', 'MULTIPOLYGON (((10 40, 30 120, 120 120, 180 88, 140 30, 70 10, 10 40)),
-                       ((50 170, 100 190, 160 180, 180 140, 180 90, 120 120,
-                         30 120, 50 170)))'::geometry),
-  ('p', 'MULTIPOLYGON (((10 40, 42 93, 130 150, 180 86, 140 30, 70 10, 10 40)),
-                       ((50 170, 100 190, 138 182, 149 156, 146 137, 100 100,
-                         58 140, 50 170)))'::geometry)
+	  <programlisting>WITH cases(label, geom, valid, reason_pattern) AS (VALUES
+  ('(n) point touch',
+   'MULTIPOLYGON (((10 40, 29 118, 100 75, 180 88, 140 30, 70 10, 10 40)),
+                  ((50 170, 100 190, 160 180, 180 140, 180 90, 120 120,
+                    30 120, 50 170)))'::geometry,
+   true, NULL),
+  ('(o) shared edge',
+   'MULTIPOLYGON (((10 40, 30 120, 120 120, 180 88, 140 30, 70 10, 10 40)),
+                  ((50 170, 100 190, 160 180, 180 140, 180 90, 120 120,
+                    30 120, 50 170)))'::geometry,
+   false, 'Self-intersection%'),
+  ('(p) overlap',
+   'MULTIPOLYGON (((10 40, 42 93, 130 150, 180 86, 140 30, 70 10, 10 40)),
+                  ((50 170, 100 190, 138 182, 149 156, 146 137, 100 100,
+                    58 140, 50 170)))'::geometry,
+   false, 'Self-intersection%')
 )
-SELECT
-  (SELECT geom FROM cases WHERE label = 'n' AND ST_IsValid(geom))
-    AS "input_(n) valid, point touch",
-  (SELECT geom FROM cases
-             WHERE label = 'o' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Self-intersection%')
-    AS "input_(o) invalid, shared edge",
-  (SELECT geom FROM cases
-             WHERE label = 'p' AND NOT ST_IsValid(geom)
-             AND ST_IsValidReason(geom) LIKE 'Self-intersection%')
-    AS "input_(p) invalid, overlap";</programlisting>
-<screen xml:id="visual-validity-multipolygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
-input_(n) valid, point touch   | MULTIPOLYGON(((10 40,29 118,100 75,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
-input_(o) invalid, shared edge | MULTIPOLYGON(((10 40,30 120,120 120,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
-input_(p) invalid, overlap     | MULTIPOLYGON(((10 40,42 93,130 150,180 86,140 30,70 10,10 40)),((50 170,100 190,138 182,149 156,146 137,100 100,58 140,50 170)))</screen>
+SELECT label, geom
+FROM cases
+WHERE ST_IsValid(geom) = valid
+  AND (valid OR ST_IsValidReason(geom) LIKE reason_pattern)
+ORDER BY label;</programlisting>
+<screen xml:id="visual-validity-multipolygons" role="visual-primary visual-output-only visual-row-panels text-primary">      label       | geom
+------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ (n) point touch  | MULTIPOLYGON(((10 40,29 118,100 75,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
+ (o) shared edge  | MULTIPOLYGON(((10 40,30 120,120 120,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
+ (p) overlap      | MULTIPOLYGON(((10 40,42 93,130 150,180 86,140 30,70 10,10 40)),((50 170,100 190,138 182,149 156,146 137,100 100,58 140,50 170)))</screen>
 
 	  <para>These rules mean that valid polygonal geometry is also <emphasis>simple</emphasis>.
        </para>
