@@ -1521,9 +1521,14 @@ class ExampleTester:
     def psql_environment(self):
         env = os.environ.copy()
         options = env.get("PGOPTIONS", "").strip()
-        png_driver = "-c postgis.gdal_enabled_drivers=PNG"
+        settings = []
         if "postgis.gdal_enabled_drivers" not in options:
-            options = f"{options} {png_driver}".strip()
+            settings.extend(["-c", "postgis.gdal_enabled_drivers=PNG"])
+        if "statement_timeout" not in options:
+            timeout = env.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "60s")
+            settings.extend(["-c", f"statement_timeout={timeout}"])
+        if settings:
+            options = f"{options} {' '.join(settings)}".strip()
         env["PGOPTIONS"] = options
         return env
 

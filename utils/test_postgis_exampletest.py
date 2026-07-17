@@ -6,10 +6,12 @@ from collections import Counter
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import re
 import tempfile
 import unittest
+from unittest import mock
 
 from postgis_exampletest import ExampleTester, QueryRows, parse_source_example
 
@@ -466,6 +468,23 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             actual_type="POINT",
         )
         self.assertNotIn("ST_Force2D", query)
+
+    def test_psql_environment_sets_default_query_timeout(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        with mock.patch.dict(os.environ, {}, clear=True):
+            env = tester.psql_environment()
+        self.assertIn("postgis.gdal_enabled_drivers=PNG", env["PGOPTIONS"])
+        self.assertIn("statement_timeout=60s", env["PGOPTIONS"])
+
+    def test_psql_environment_allows_timeout_override(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        with mock.patch.dict(
+            os.environ,
+            {"POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT": "5s"},
+            clear=True,
+        ):
+            env = tester.psql_environment()
+        self.assertIn("statement_timeout=5s", env["PGOPTIONS"])
 
 
 class ExampleTestComparisonTest(unittest.TestCase):
