@@ -23,7 +23,7 @@ XML_NS = "http://www.w3.org/XML/1998/namespace"
 FORCE_ROLE = "example-test"
 EXTERNAL_STATE_ROLE = "requires-external-state"
 CAPABILITY_ROLE_RE = re.compile(
-    r"^requires-(geos|proj|sfcgal|cgal)-(\d+(?:\.\d+)*)$", re.I
+    r"^requires-(geos|proj|sfcgal|cgal|protobuf)-(\d+(?:\.\d+)*)$", re.I
 )
 GEOMETRY_OUTPUT_PRECISION_ROLE_RE = re.compile(r"^geometry-output-precision-(\d+)$")
 CAPABILITY_VERSION_QUERIES = {
@@ -31,6 +31,7 @@ CAPABILITY_VERSION_QUERIES = {
     "proj": "SELECT PostGIS_PROJ_Version()",
     "sfcgal": "SELECT postgis_sfcgal_version()",
     "cgal": "SELECT postgis_sfcgal_full_version()",
+    "protobuf": "SELECT postgis_libprotobuf_version()",
 }
 ENVIRONMENT_CHECKS = (
     {

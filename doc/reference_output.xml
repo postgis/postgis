@@ -1274,14 +1274,14 @@ SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.51666666
 
     <refsection>
     <title>Examples</title>
-    <programlisting language="sql">SELECT ST_AsMVTGeom('POLYGON ((0 0,10 0,10 5,0 -5,0 0))',
+    <programlisting language="sql" role="requires-protobuf-1.1.0">SELECT ST_AsMVTGeom('POLYGON ((0 0,10 0,10 5,0 -5,0 0))',
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
     4096, 0, false);</programlisting>
 <screen role="text-primary">MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
 
     <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry. This assumes the data.geom column has srid of 4326.
     </para>
-    <programlisting language="sql"><![CDATA[SELECT ST_AsMVTGeom(ST_Transform(geom, 3857 ),
+    <programlisting language="sql" role="requires-protobuf-1.1.0"><![CDATA[SELECT ST_AsMVTGeom(ST_Transform(geom, 3857 ),
             ST_TileEnvelope(12, 513, 412),
             extent => 4096,
             buffer => 64) AS geom
@@ -1386,7 +1386,7 @@ SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.51666666
 
     <refsection>
     <title>Examples</title>
-    <programlisting language="sql"><![CDATA[WITH mvtgeom AS
+    <programlisting language="sql" role="requires-protobuf-1.1.0"><![CDATA[WITH mvtgeom AS
 (
   SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom, name, description
   FROM points_of_interest
