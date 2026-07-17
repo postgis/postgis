@@ -280,7 +280,6 @@ steps:
        - path:
           include:
             - "doc/po/be/*.po"
-
 ### TARGET html
   html-it_IT:
     image: *test_image
@@ -298,7 +297,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/pt_BR local-html
-    depends_on: check-xml-pt_BR
+    depends_on: [ check-xml-pt_BR, html-it_IT ]
     when:
        - path:
           include:
@@ -309,7 +308,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/fr local-html
-    depends_on: check-xml-fr
+    depends_on: [ check-xml-fr, html-pt_BR ]
     when:
        - path:
           include:
@@ -320,7 +319,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/es local-html
-    depends_on: check-xml-es
+    depends_on: [ check-xml-es, html-fr ]
     when:
        - path:
           include:
@@ -331,7 +330,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/pl local-html
-    depends_on: check-xml-pl
+    depends_on: [ check-xml-pl, html-es ]
     when:
        - path:
           include:
@@ -342,7 +341,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ka local-html
-    depends_on: check-xml-ka
+    depends_on: [ check-xml-ka, html-pl ]
     when:
        - path:
           include:
@@ -353,7 +352,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ko_KR local-html
-    depends_on: check-xml-ko_KR
+    depends_on: [ check-xml-ko_KR, html-ka ]
     when:
        - path:
           include:
@@ -364,7 +363,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/da local-html
-    depends_on: check-xml-da
+    depends_on: [ check-xml-da, html-ko_KR ]
     when:
        - path:
           include:
@@ -375,7 +374,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/de local-html
-    depends_on: check-xml-de
+    depends_on: [ check-xml-de, html-da ]
     when:
        - path:
           include:
@@ -386,7 +385,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ja local-html
-    depends_on: check-xml-ja
+    depends_on: [ check-xml-ja, html-de ]
     when:
        - path:
           include:
@@ -397,7 +396,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ru local-html
-    depends_on: check-xml-ru
+    depends_on: [ check-xml-ru, html-ja ]
     when:
        - path:
           include:
@@ -408,7 +407,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/zh_Hans local-html
-    depends_on: check-xml-zh_Hans
+    depends_on: [ check-xml-zh_Hans, html-ru ]
     when:
        - path:
           include:
@@ -419,7 +418,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/ro local-html
-    depends_on: check-xml-ro
+    depends_on: [ check-xml-ro, html-zh_Hans ]
     when:
        - path:
           include:
@@ -430,7 +429,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/sv local-html
-    depends_on: check-xml-sv
+    depends_on: [ check-xml-sv, html-ro ]
     when:
        - path:
           include:
@@ -441,7 +440,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/uk local-html
-    depends_on: check-xml-uk
+    depends_on: [ check-xml-uk, html-sv ]
     when:
        - path:
           include:
@@ -452,7 +451,7 @@ steps:
     pull: true
     commands:
       - make -C build-docs/doc/po/be local-html
-    depends_on: check-xml-be
+    depends_on: [ check-xml-be, html-uk ]
     when:
        - path:
           include:

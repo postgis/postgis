@@ -16,13 +16,22 @@ exec >> docs.yml.new
 for target in ${TARGETS}
 do
   echo "### TARGET ${target}"
+  previous_html=
   for lang in ${SUPPORTED_LANGUAGES};
   do
     case ${target} in
       check-xml)
         depends_on=prepare
         ;;
-      html|cheatsheets)
+      html)
+        if test -n "${previous_html}"; then
+          depends_on="[ check-xml-${lang}, ${previous_html} ]"
+        else
+          depends_on=check-xml-${lang}
+        fi
+        previous_html=html-${lang}
+        ;;
+      cheatsheets)
         depends_on=check-xml-${lang}
         ;;
       pdf)
