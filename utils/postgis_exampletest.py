@@ -2,7 +2,7 @@
 
 import argparse
 import base64
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import html
 import json
 import math
@@ -1814,17 +1814,26 @@ class ExampleTester:
                         "failure": str(exc),
                     }
 
+            completed = 0
             with ThreadPoolExecutor(max_workers=jobs) as pool:
-                results = list(pool.map(run_visual, examples))
-            for result in results:
-                if result.get("failure"):
-                    print(result["failure"], file=sys.stderr)
-                    failures.append(result["label"])
-                    continue
-                visual = result.get("visual")
-                if visual is not None:
-                    visuals.append(visual)
-                ran += 1
+                futures = [pool.submit(run_visual, example) for example in examples]
+                for future in as_completed(futures):
+                    result = future.result()
+                    completed += 1
+                    if result.get("failure"):
+                        print(result["failure"], file=sys.stderr, flush=True)
+                        failures.append(result["label"])
+                        continue
+                    visual = result.get("visual")
+                    if visual is not None:
+                        visuals.append(visual)
+                    ran += 1
+                    if completed == len(futures) or completed % 50 == 0:
+                        print(
+                            f"manual visual examples processed: {completed}/{len(futures)}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
             if failures:
                 raise RuntimeError(f"FAILED {len(failures)} example(s): {', '.join(failures)}")
             if render_dir:
