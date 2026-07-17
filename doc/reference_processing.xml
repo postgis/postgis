@@ -332,7 +332,7 @@ ORDER BY id;</programlisting>
 	                of the input SRS.</para>
 
 		<para>Taper a line buffer from 5 to 25 units along the line.</para>
-		<programlisting language="sql">WITH line AS (
+			<programlisting language="sql" role="documented-output">WITH line AS (
   SELECT 'LINESTRING(0 0, 100 0, 160 40)'::geometry AS geom
 ),
 vertices AS (
