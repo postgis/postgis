@@ -474,7 +474,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         with mock.patch.dict(os.environ, {}, clear=True):
             env = tester.psql_environment()
         self.assertIn("postgis.gdal_enabled_drivers=PNG", env["PGOPTIONS"])
-        self.assertIn("statement_timeout=60s", env["PGOPTIONS"])
+        self.assertIn("statement_timeout=10s", env["PGOPTIONS"])
 
     def test_psql_environment_allows_timeout_override(self):
         tester = ExampleTester.__new__(ExampleTester)

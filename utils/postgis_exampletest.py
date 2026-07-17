@@ -1530,7 +1530,7 @@ class ExampleTester:
         if "postgis.gdal_enabled_drivers" not in options:
             settings.extend(["-c", "postgis.gdal_enabled_drivers=PNG"])
         if "statement_timeout" not in options:
-            timeout = env.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "60s")
+            timeout = env.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "10s")
             settings.extend(["-c", f"statement_timeout={timeout}"])
         if settings:
             options = f"{options} {' '.join(settings)}".strip()
@@ -1555,7 +1555,7 @@ class ExampleTester:
             if override.strip().lower() in {"0", "off", "none"}:
                 return None
             return self.duration_seconds(override)
-        statement_timeout = os.environ.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "60s")
+        statement_timeout = os.environ.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "10s")
         seconds = self.duration_seconds(statement_timeout)
         if seconds is None:
             return None
