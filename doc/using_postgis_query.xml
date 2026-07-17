@@ -193,31 +193,31 @@ FROM relation;</programlisting>
 )
 SELECT
   ST_Relate(a, b) AS matrix,
-  ST_AsText(a) AS input_a,
-  ST_AsText(b) AS input_b,
-  ST_AsText(ST_Intersection(a, b)) AS "2 I(a) ∩ I(b)",
-  ST_AsText(ST_Intersection(a, bb)) AS "1 I(a) ∩ B(b)",
-  ST_AsText(ST_Difference(a, b)) AS "2 I(a) ∩ E(b)",
-  ST_AsText(ST_Intersection(ba, b)) AS "1 B(a) ∩ I(b)",
-  ST_AsText(ST_Intersection(ba, bb)) AS "0 B(a) ∩ B(b)",
-  ST_AsText(ST_Difference(ba, b)) AS "1 B(a) ∩ E(b)",
-  ST_AsText(ST_Difference(b, a)) AS "2 E(a) ∩ I(b)",
-  ST_AsText(ST_Difference(bb, a)) AS "1 E(a) ∩ B(b)",
-  ST_AsText(ST_Difference(viewport, ST_Union(a, b)))
+  ST_AsText(ST_Normalize(a)) AS input_a,
+  ST_AsText(ST_Normalize(b)) AS input_b,
+  ST_AsText(ST_Normalize(ST_Intersection(a, b))) AS "2 I(a) ∩ I(b)",
+  ST_AsText(ST_Normalize(ST_Intersection(a, bb))) AS "1 I(a) ∩ B(b)",
+  ST_AsText(ST_Normalize(ST_Difference(a, b))) AS "2 I(a) ∩ E(b)",
+  ST_AsText(ST_Normalize(ST_Intersection(ba, b))) AS "1 B(a) ∩ I(b)",
+  ST_AsText(ST_Normalize(ST_Intersection(ba, bb))) AS "0 B(a) ∩ B(b)",
+  ST_AsText(ST_Normalize(ST_Difference(ba, b))) AS "1 B(a) ∩ E(b)",
+  ST_AsText(ST_Normalize(ST_Difference(b, a))) AS "2 E(a) ∩ I(b)",
+  ST_AsText(ST_Normalize(ST_Difference(bb, a))) AS "1 E(a) ∩ B(b)",
+  ST_AsText(ST_Normalize(ST_Difference(viewport, ST_Union(a, b))))
     AS "2 E(a) ∩ E(b) clipped"
 FROM parts;</programlisting>
 	<screen xml:id="visual-de9im-matrix-cells" role="visual-primary visual-separate-output visual-matrix-3x3 text-primary psql-expanded">-[ RECORD 1 ]----------+-----------------------------------------------------------------------------
 matrix                 | 212101212
 input_a                | POLYGON((0 0,0 4,6 4,6 0,0 0))
 input_b                | POLYGON((3 -1,3 3,8 3,8 -1,3 -1))
-2 I(a) ∩ I(b)          | POLYGON((6 3,6 0,3 0,3 3,6 3))
+2 I(a) ∩ I(b)          | POLYGON((3 0,3 3,6 3,6 0,3 0))
 1 I(a) ∩ B(b)          | LINESTRING(3 0,3 3,6 3)
 2 I(a) ∩ E(b)          | POLYGON((0 0,0 4,6 4,6 3,3 3,3 0,0 0))
-1 B(a) ∩ I(b)          | LINESTRING(6 3,6 0,3 0)
-0 B(a) ∩ B(b)          | MULTIPOINT((3 0),(6 3))
+1 B(a) ∩ I(b)          | LINESTRING(3 0,6 0,6 3)
+0 B(a) ∩ B(b)          | MULTIPOINT((6 3),(3 0))
 1 B(a) ∩ E(b)          | LINESTRING(3 0,0 0,0 4,6 4,6 3)
 2 E(a) ∩ I(b)          | POLYGON((3 -1,3 0,6 0,6 3,8 3,8 -1,3 -1))
-1 E(a) ∩ B(b)          | LINESTRING(6 3,8 3,8 -1,3 -1,3 0)
+1 E(a) ∩ B(b)          | LINESTRING(3 0,3 -1,8 -1,8 3,6 3)
 2 E(a) ∩ E(b) clipped  | POLYGON((-1 -2,-1 5,9 5,9 -2,-1 -2),(0 0,3 0,3 -1,8 -1,8 3,6 3,6 4,0 4,0 0))</screen>
 
           <para>Reading from left to right and top to bottom, the intersection matrix is
