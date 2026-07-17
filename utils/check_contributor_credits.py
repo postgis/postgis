@@ -80,6 +80,7 @@ def git(repo, *args, input_text=None):
             cwd=repo,
             input=input_text,
             text=True,
+            encoding="utf-8",
             check=True,
             capture_output=True,
         ).stdout
