@@ -389,20 +389,20 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	  <refsection>
 		<title>Examples</title>
 
-<programlisting>SELECT ST_AsEWKT(ST_FromLatLonText('31°55''12.000"N', '98°58''48.000"W'));
-              st_asewkt
+<programlisting language="sql">SELECT ST_AsEWKT(ST_FromLatLonText('31°55''12.000"N', '98°58''48.000"W'));</programlisting>
+<screen role="visual-primary text-primary">              st_asewkt
 -------------------------------------
- SRID=4326;POINT(-98.98 31.92)
+ SRID=4326;POINT(-98.98 31.92)</screen>
 
-SELECT ST_AsEWKT(ST_FromLatLonText('31°55''12.000"N 98°58''48.000"W'));
-              st_asewkt
+<programlisting language="sql">SELECT ST_AsEWKT(ST_FromLatLonText('31°55''12.000"N 98°58''48.000"W'));</programlisting>
+<screen role="visual-primary text-primary">              st_asewkt
 -------------------------------------
- SRID=4326;POINT(-98.98 31.92)
+ SRID=4326;POINT(-98.98 31.92)</screen>
 
-SELECT ST_AsEWKT(ST_FromLatLonText('the coordinates were 122°36''52.5" W and 32°18''23.1" N'));
-                        st_asewkt
+<programlisting language="sql">SELECT ST_AsEWKT(ST_FromLatLonText('the coordinates were 122°36''52.5" W and 32°18''23.1" N'));</programlisting>
+<screen role="visual-primary text-primary">                        st_asewkt
 ---------------------------------------------------------
- SRID=4326;POINT(-122.61458333333333 32.306416666666664)</programlisting>
+ SRID=4326;POINT(-122.61458333333333 32.306416666666664)</screen>
 	  </refsection>
 
 	  <refsection>
