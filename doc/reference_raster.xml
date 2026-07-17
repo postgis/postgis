@@ -1952,7 +1952,7 @@ FROM bands;
 -----------------------------+----------------------------+----------------------------
  PNG image, 128 x 128 pixels | PNG image, 128 x 128 pixels | PNG image, 128 x 128 pixels
 </screen>
-<para>Original manual illustration: band selection from a multi-band raster.</para>
+<para>Band selection from a multi-band raster.</para>
 <informaltable>
   <tgroup cols="2">
     <tbody>
@@ -7138,7 +7138,7 @@ SELECT
     ST_AsPNG(bilinear) AS "bilinear (EPSG:4326)"
 FROM transformed;</programlisting>
                     <screen role="visual-primary">PNG image, 80 x 80 pixels | PNG image, 98 x 64 pixels | PNG image, 98 x 64 pixels</screen>
-                    <para>Original manual illustration: raster reprojection and resampling.</para>
+                    <para>Raster reprojection and resampling.</para>
 <informaltable>
                       <tgroup cols="3">
                         <tbody>
@@ -9202,7 +9202,7 @@ END;</programlisting>
  band 1 only       | PNG image, 128 x 128 pixels
  all bands clipped | PNG image, 128 x 128 pixels
 (4 rows)</screen>
-<para>Original manual illustrations: crop, single-band clipping, and all-band clipping.</para>
+<para>Crop, single-band clipping, and all-band clipping.</para>
 <informaltable>
   <tgroup cols="2">
     <tbody>
@@ -10735,7 +10735,7 @@ ORDER BY title DESC;</programlisting>
 ------------+-------------------------
  source     | PNG image, 8 x 8 pixels
  classified | PNG image, 8 x 8 pixels</screen>
-                    <para>Original manual illustration: map algebra altering the first band of a three-band raster.</para>
+                    <para>Map algebra altering the first band of a three-band raster.</para>
 <informaltable>
                       <tgroup cols="2">
                         <tbody>
@@ -11113,7 +11113,7 @@ FROM prunion;
                     </programlisting>
 
 
-                    <para>Original manual illustration: parcel-boundary overlay.</para>
+                    <para>Parcel-boundary overlay.</para>
                     <informaltable>
                       <tgroup cols="1">
                         <tbody>
@@ -11895,7 +11895,7 @@ ORDER BY title DESC;</programlisting>
 ----------+-------------------------
  source   | PNG image, 16 x 16 pixels
  averaged | PNG image, 16 x 16 pixels</screen>
-                    <para>Original manual illustration: neighborhood averaging.</para>
+                    <para>Neighborhood averaging.</para>
 <informaltable>
                       <tgroup cols="2">
                         <tbody>

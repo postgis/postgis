@@ -14,11 +14,11 @@
 
 <xsl:template name="postgis-dblatex-block-label">
   <xsl:param name="kind"/>
-  <xsl:text>&#10;\par\smallskip\noindent{\sffamily\small\bfseries </xsl:text>
+  <xsl:text>&#10;\postgisblocklabel{</xsl:text>
   <xsl:call-template name="postgis-localized-block-label">
     <xsl:with-param name="kind" select="$kind"/>
   </xsl:call-template>
-  <xsl:text>}\par&#10;</xsl:text>
+  <xsl:text>}&#10;</xsl:text>
 </xsl:template>
 
 <!-- WKT is safe as typewriter text, but commas need explicit break points. -->
@@ -83,7 +83,21 @@
 	  <xsl:call-template name="postgis-dblatex-block-label">
 	    <xsl:with-param name="kind" select="'output'"/>
 	  </xsl:call-template>
-		<xsl:apply-imports/>
+		<xsl:choose>
+		  <xsl:when test="contains(., '┌') or contains(., '┐') or contains(., '└') or contains(., '┘') or contains(., '─') or contains(., '│')">
+		    <xsl:text>&#10;\begingroup\lstset{basicstyle=\ttfamily\scriptsize}&#10;\begin{lstlisting}[language=text]&#10;</xsl:text>
+		    <xsl:value-of select="translate(., '┌┐└┘├┤┬┴┼─│', '+++++++++-|')"/>
+		    <xsl:text>&#10;\end{lstlisting}&#10;\endgroup&#10;</xsl:text>
+		  </xsl:when>
+		  <xsl:when test="contains($role.tokens, ' text-primary ') or string-length(normalize-space(.)) &gt; 600">
+		    <xsl:text>&#10;\begingroup\lstset{basicstyle=\ttfamily\scriptsize}&#10;</xsl:text>
+		    <xsl:apply-imports/>
+		    <xsl:text>&#10;\endgroup&#10;</xsl:text>
+		  </xsl:when>
+		  <xsl:otherwise>
+		    <xsl:apply-imports/>
+		  </xsl:otherwise>
+		</xsl:choose>
 	</xsl:if>
 	<xsl:if test="string($visual.id) != ''">
 		<!-- Keep the visible Figure label attached to the generated image. -->
@@ -91,13 +105,13 @@
 		<xsl:call-template name="postgis-dblatex-block-label">
 			<xsl:with-param name="kind" select="'figure'"/>
 		</xsl:call-template>
-		<xsl:text>&#10;\begin{center}\includegraphics[width=0.96\linewidth,height=</xsl:text>
+		<xsl:text>&#10;\begin{center}\includegraphics[width=\linewidth,height=</xsl:text>
 		<xsl:choose>
-			<xsl:when test="$manifest.visual/@kind = 'image-output' and count($manifest.visual/layer) &gt; 4">0.62</xsl:when>
-			<xsl:when test="$manifest.visual/@kind = 'image-output' and count($manifest.visual/layer) &gt; 1">0.48</xsl:when>
-			<xsl:when test="$manifest.visual/@kind = 'image-output'">0.40</xsl:when>
-			<xsl:when test="count($manifest.visual/layer[not(@frame = preceding-sibling::layer/@frame)]) &gt; 2">0.35</xsl:when>
-			<xsl:otherwise>0.25</xsl:otherwise>
+			<xsl:when test="$manifest.visual/@kind = 'image-output' and count($manifest.visual/layer) &gt; 4">0.70</xsl:when>
+			<xsl:when test="$manifest.visual/@kind = 'image-output' and count($manifest.visual/layer) &gt; 1">0.58</xsl:when>
+			<xsl:when test="$manifest.visual/@kind = 'image-output'">0.48</xsl:when>
+			<xsl:when test="count($manifest.visual/layer[not(@frame = preceding-sibling::layer/@frame)]) &gt; 2">0.55</xsl:when>
+			<xsl:otherwise>0.38</xsl:otherwise>
 		</xsl:choose>
 		<xsl:text>\textheight,keepaspectratio]{images/visual-examples/</xsl:text>
 		<xsl:value-of select="$visual.id"/>
