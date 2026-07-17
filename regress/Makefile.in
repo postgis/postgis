@@ -180,7 +180,4 @@ exampletest-run: exampletest-unit
 	fi
 	$(top_srcdir)/utils/postgis_exampletest.py --run --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
 		$(EXAMPLETEST_RUN_FLAGS) \
-		--render-dir $(abs_top_builddir)/doc/html/images/visual-examples \
-		> postgis_exampletest_result.txt 2>&1 || { \
-		cat postgis_exampletest_result.txt; false; }
-	tail -n 20 postgis_exampletest_result.txt
+		--render-dir $(abs_top_builddir)/doc/html/images/visual-examples
