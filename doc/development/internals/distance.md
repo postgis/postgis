@@ -142,12 +142,10 @@ old narrative should not be treated as maintained text until it is checked
 against the current `define_plane` implementation.
 
 The old `NewDistCalcGeom2Geom` diagrams are also recovered under
-`doc/development/internals/images/distance/geom2geom/` and recorded in
-`doc/trac-wiki/ATTACHMENTS.tsv`. The maintained summary above keeps the part
-that still matches current code and leaves the step-by-step PostGIS 1.5 wiki
-walkthrough in the archive.
+`doc/development/internals/images/distance/geom2geom/`. The maintained summary
+above keeps the part that still matches current code and leaves the step-by-step
+PostGIS 1.5 wiki walkthrough in the archive.
 
 The old `NewDistCalcSubGeom` illustrations are recovered under
-`doc/development/internals/images/distance/subgeom/` and recorded in
-`doc/trac-wiki/ATTACHMENTS.tsv`. The maintained summary above maps the surviving
-subgeometry-pruning idea to the current rect-tree code.
+`doc/development/internals/images/distance/subgeom/`. The maintained summary
+above maps the surviving subgeometry-pruning idea to the current rect-tree code.
