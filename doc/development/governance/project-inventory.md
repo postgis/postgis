@@ -38,7 +38,7 @@ For pull-request routing, source-of-truth branches, and mirror handling, see
 | `postgis.net` website | Public website, release pointers, news, RFC pages, community pages, and documentation links | [PostGIS website maintenance](../website.md) |
 | `postgis.net/stuff` | Release tarballs, checksums, and generated documentation artefacts | [Release process](../release-process.md) |
 | Debbie build host and build jobs | Release builds, distribution checks, and build-bot jobs referenced during release work | [Release process](../release-process.md) |
-| OSGeo Trac | Tickets, legacy wiki, roadmap, reports, and historical project records | [Contributing workflow](../contributing.md) and [Trac cleanup ledger](../wiki/trac-cleanup.md) |
+| OSGeo Trac | Tickets, legacy wiki, roadmap, reports, and historical project records | [Contributing workflow](../contributing.md) |
 | Weblate | Translation repository maintenance for the PostGIS manual | [Pull request and maintainer workflow](../maintenance.md) and [Manual documentation workflow](../manual.md) |
 | Mailing lists and chat | Public development discussion, user support, and community coordination | [Contributing workflow](../contributing.md) |
 
