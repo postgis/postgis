@@ -120,6 +120,11 @@ class DocBookSourceLintTest(unittest.TestCase):
             set(),
         )
         self.assertCategories(
+            '<mediaobject><imageobject><imagedata fileref="images/st_clusterkmeans03.png"/>'
+            '</imageobject></mediaobject>',
+            set(),
+        )
+        self.assertCategories(
             '<mediaobject><imageobject><imagedata fileref="images/example.svg"/>'
             '</imageobject></mediaobject>',
             set(),

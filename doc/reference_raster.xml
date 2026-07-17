@@ -1952,6 +1952,36 @@ FROM bands;
 -----------------------------+----------------------------+----------------------------
  PNG image, 128 x 128 pixels | PNG image, 128 x 128 pixels | PNG image, 128 x 128 pixels
 </screen>
+<para>Original manual illustration: band selection from a multi-band raster.</para>
+<informaltable>
+  <tgroup cols="2">
+    <tbody>
+      <row>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_band01.png"/></imageobject>
+              <caption><para>original (column rast)</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_band02.png"/></imageobject>
+              <caption><para>dupe_band</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+      </row>
+      <row>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_band03.png"/></imageobject>
+              <caption><para>sing_band</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+        <entry><para/></entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
 
             </refsection>
 
@@ -7108,6 +7138,33 @@ SELECT
     ST_AsPNG(bilinear) AS "bilinear (EPSG:4326)"
 FROM transformed;</programlisting>
                     <screen role="visual-primary">PNG image, 80 x 80 pixels | PNG image, 98 x 64 pixels | PNG image, 98 x 64 pixels</screen>
+                    <para>Original manual illustration: raster reprojection and resampling.</para>
+<informaltable>
+                      <tgroup cols="3">
+                        <tbody>
+                          <row>
+                            <entry><para><informalfigure>
+                                <mediaobject>
+                                  <imageobject><imagedata fileref="images/rt_st_transform01.png"/></imageobject>
+                                  <caption><para>Massachusetts State Plane source</para></caption>
+                                </mediaobject>
+                              </informalfigure></para></entry>
+                            <entry><para><informalfigure>
+                                <mediaobject>
+                                  <imageobject><imagedata fileref="images/rt_st_transform02.png"/></imageobject>
+                                  <caption><para>WGS 84 nearest-neighbor</para></caption>
+                                </mediaobject>
+                              </informalfigure></para></entry>
+                            <entry><para><informalfigure>
+                                <mediaobject>
+                                  <imageobject><imagedata fileref="images/rt_st_transform03.png"/></imageobject>
+                                  <caption><para>WGS 84 bilinear</para></caption>
+                                </mediaobject>
+                              </informalfigure></para></entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </informaltable>
 
                 <para>Variant 3.</para>
 
@@ -9145,6 +9202,55 @@ END;</programlisting>
  band 1 only       | PNG image, 128 x 128 pixels
  all bands clipped | PNG image, 128 x 128 pixels
 (4 rows)</screen>
+<para>Original manual illustrations: crop, single-band clipping, and all-band clipping.</para>
+<informaltable>
+  <tgroup cols="2">
+    <tbody>
+      <row>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_clip01.png"/></imageobject>
+              <caption><para>Source tile</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_clip02.png"/></imageobject>
+              <caption><para>Cropped</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+      </row>
+      <row>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_clip04.png"/></imageobject>
+              <caption><para>One-band source</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_clip05.png"/></imageobject>
+              <caption><para>One-band clip</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+      </row>
+      <row>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_clip01.png"/></imageobject>
+              <caption><para>All-band source</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/st_clip03.png"/></imageobject>
+              <caption><para>All-band clip</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
                 </refsection>
 
                 <!-- Optionally add a "See Also" section -->
@@ -9507,6 +9613,27 @@ FROM source;</programlisting>
 -----------------------------+----------------------------+----------------------------
  PNG image, 240 x 180 pixels | PNG image, 240 x 180 pixels | PNG image, 240 x 180 pixels
 (1 row)</screen>
+<para>Original photographic illustration:</para>
+<informaltable>
+  <tgroup cols="2">
+    <tbody>
+      <row>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/apple.png"/></imageobject>
+              <caption><para>original apple</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+        <entry><para><informalfigure>
+            <mediaobject>
+              <imageobject><imagedata fileref="images/apple_st_grayscale.png"/></imageobject>
+              <caption><para>grayscale apple</para></caption>
+            </mediaobject>
+          </informalfigure></para></entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
                 </refsection>
 
                 <refsection>
@@ -10608,6 +10735,27 @@ ORDER BY title DESC;</programlisting>
 ------------+-------------------------
  source     | PNG image, 8 x 8 pixels
  classified | PNG image, 8 x 8 pixels</screen>
+                    <para>Original manual illustration: map algebra altering the first band of a three-band raster.</para>
+<informaltable>
+                      <tgroup cols="2">
+                        <tbody>
+                          <row>
+                            <entry><para><informalfigure>
+                                <mediaobject>
+                                  <imageobject><imagedata fileref="images/st_mapalgebraexpr01.png"/></imageobject>
+                                  <caption><para>original (column rast_view)</para></caption>
+                                </mediaobject>
+                              </informalfigure></para></entry>
+                            <entry><para><informalfigure>
+                                <mediaobject>
+                                  <imageobject><imagedata fileref="images/st_mapalgebraexpr02.png"/></imageobject>
+                                  <caption><para>rast_view_ma</para></caption>
+                                </mediaobject>
+                              </informalfigure></para></entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </informaltable>
 
                     <para>Create a new 3 band raster same pixel type from our original 3 band raster with first band altered by map algebra and remaining 2 bands unaltered.</para>
                     <programlisting language="sql">
@@ -10963,6 +11111,23 @@ SELECT ST_AddBand(
      '[rast1.val]') ) As rast
 FROM prunion;
                     </programlisting>
+
+
+                    <para>Original manual illustration: parcel-boundary overlay.</para>
+                    <informaltable>
+                      <tgroup cols="1">
+                        <tbody>
+                          <row>
+                            <entry><para><informalfigure>
+                                <mediaobject>
+                                  <imageobject><imagedata fileref="images/st_mapalgebraexpr2_08.png"/></imageobject>
+                                  <caption><para>The blue lines are the boundaries of selected parcels</para></caption>
+                                </mediaobject>
+                              </informalfigure></para></entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </informaltable>
 
                     <para>The generated four-panel canvas example above shows
                     the same band-overlay technique without requiring an
@@ -11373,7 +11538,6 @@ ORDER BY title DESC;</programlisting>
  raster 2 | PNG image, 50 x 50 pixels
  raster 1 | PNG image, 50 x 50 pixels
  averaged | PNG image, 70 x 50 pixels</screen>
-
                     <para>Define our user defined function.</para>
                     <programlisting language="sql">
 <![CDATA[
@@ -11731,6 +11895,27 @@ ORDER BY title DESC;</programlisting>
 ----------+-------------------------
  source   | PNG image, 16 x 16 pixels
  averaged | PNG image, 16 x 16 pixels</screen>
+                    <para>Original manual illustration: neighborhood averaging.</para>
+<informaltable>
+                      <tgroup cols="2">
+                        <tbody>
+                          <row>
+                            <entry><para><informalfigure>
+                                <mediaobject>
+                                  <imageobject><imagedata fileref="images/st_mapalgebrafctngb01.png"/></imageobject>
+                                  <caption><para>First band of our raster</para></caption>
+                                </mediaobject>
+                              </informalfigure></para></entry>
+                            <entry><para><informalfigure>
+                                <mediaobject>
+                                  <imageobject><imagedata fileref="images/st_mapalgebrafctngb02.png"/></imageobject>
+                                  <caption><para>Averaged result</para></caption>
+                                </mediaobject>
+                              </informalfigure></para></entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </informaltable>
                 </refsection>
 
                 <!-- Optionally add a "See Also" section -->

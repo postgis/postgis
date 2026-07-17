@@ -933,6 +933,10 @@ POLYGON((-20037508.342789244 -20037508.342789244,-20037508.342789244 20037508.34
             This function answers the question: what hexagons in a given Tiling(SRS, Size)
             overlap with a given bounds.</para>
 
+            <para><inlinemediaobject><imageobject>
+                <imagedata fileref="images/st_hexagongrid01.png"/>
+            </imageobject></inlinemediaobject></para>
+
             <para>The SRS for the output hexagons is the SRS provided by the bounds geometry.</para>
             <para>Doubling or tripling the edge size of the hexagon generates a new parent tiling that
             fits with the origin tiling. Unfortunately, it is not possible to generate parent
@@ -989,6 +993,9 @@ GROUP BY hexes.geom;</programlisting>
             along their shared border. The build-time figure below uses two
             simple regions in place of an external administrative-boundary
             table, so the example is self-contained.</para>
+        <para><inlinemediaobject><imageobject>
+            <imagedata fileref="images/st_hexagongrid03.png"/>
+        </imageobject></inlinemediaobject></para>
         <programlisting language="sql">WITH admin1(gid, geom) AS (
     VALUES
         (1, ST_MakeEnvelope(0, 0, 3, 3, 3857)),

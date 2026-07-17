@@ -487,6 +487,34 @@ ORDER BY type, parcel_id;</programlisting>
    1 | 006       | residential | POLYGON((72 178,78 183,85 187,93 189,101 190,109 189,109 148,72 148,72 178))
 </screen>
 
+<para>Example: Clustering a preaggregated planetary-scale data population dataset
+using 3D clustering and weighting. Identify at least 20 regions based on
+<link xlink:href="https://data.humdata.org/dataset/kontur-population-dataset">Kontur Population Data</link>
+that do not span more than 3000 km from their center:</para>
+<programlisting language="sql" role="requires-external-state">CREATE TABLE kontur_population_3000km_clusters AS
+SELECT
+    geom,
+    ST_ClusterKMeans(
+        ST_Force4D(
+            ST_Transform(ST_Force3D(geom), 4978),
+            mvalue =&gt; population
+        ),
+        20,
+        max_radius =&gt; 3000000
+    ) OVER () AS cid
+FROM kontur_population;</programlisting>
+<para>The clustering produces 46 regions. Clusters are centered at well-populated
+regions such as New York and Moscow. Greenland forms one cluster, several island
+clusters span the antimeridian, and cluster edges follow the Earth's curvature.</para>
+<informalfigure>
+    <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/st_clusterkmeans03.png"/>
+        </imageobject>
+        <caption><para>Kontur population clustered with 3000 km maximum radius.</para></caption>
+    </mediaobject>
+</informalfigure>
+
 	<para>Cluster weighted city populations on the Earth in geocentric coordinates. The maximum radius is specified in meters, while the returned geometries stay in WGS 84 for display.</para>
 	<programlisting language="sql" role="example-test">WITH population(place, population, geom) AS (
   VALUES

@@ -126,6 +126,8 @@ EXAMPLE_SECTION_TITLE_RE = re.compile(r"^(?:same\s+)?examples?\b", re.IGNORECASE
 RASTER_IMAGE_EXTENSIONS = {".gif", ".jpeg", ".jpg", ".png", ".webp"}
 ALLOWED_SOURCE_RASTER_IMAGES = {
     "PostGIS_logo.png",
+    "apple.png",
+    "apple_st_grayscale.png",
     "ccbysa.png",
     "check.png",
     "matrix_autocast.png",
@@ -134,6 +136,25 @@ ALLOWED_SOURCE_RASTER_IMAGES = {
     "matrix_sfcgal_required.png",
     "matrix_transform.png",
     "osgeo_logo.png",
+    "rt_st_transform01.png",
+    "rt_st_transform02.png",
+    "rt_st_transform03.png",
+    "st_band01.png",
+    "st_band02.png",
+    "st_band03.png",
+    "st_clip01.png",
+    "st_clip02.png",
+    "st_clip03.png",
+    "st_clip04.png",
+    "st_clip05.png",
+    "st_clusterkmeans03.png",
+    "st_hexagongrid01.png",
+    "st_hexagongrid03.png",
+    "st_mapalgebraexpr01.png",
+    "st_mapalgebraexpr02.png",
+    "st_mapalgebraexpr2_08.png",
+    "st_mapalgebrafctngb01.png",
+    "st_mapalgebrafctngb02.png",
 }
 
 VERBATIM_LINE_LIMIT = 120
