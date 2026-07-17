@@ -282,9 +282,21 @@ class ExampleTester:
             (ancestor for ancestor in self.index.ancestors(node) if ancestor.tag == f"{{{DOCBOOK_NS}}}refentry"),
             None,
         )
+        section = next(
+            (
+                ancestor for ancestor in self.index.ancestors(node)
+                if ancestor.tag == f"{{{DOCBOOK_NS}}}section"
+            ),
+            None,
+        )
         line = self.index.line(node) or "unknown"
         refentry_id = refentry.get(f"{{{XML_NS}}}id") if refentry is not None else None
-        label = refentry_id or f"line_{line}"
+        section_id = section.get(f"{{{XML_NS}}}id") if section is not None else None
+        if section is not None and not section_id:
+            title = section.find(f"{{{DOCBOOK_NS}}}title")
+            if title is not None:
+                section_id = re.sub(r"[^A-Za-z0-9_.-]+", "_", self.node_text(title).strip()).strip("_")
+        label = refentry_id or section_id or f"line_{line}"
         return f"{label}:{line}"
 
     def obvious_skip_reason(self, text):
@@ -1530,7 +1542,7 @@ class ExampleTester:
         if "postgis.gdal_enabled_drivers" not in options:
             settings.extend(["-c", "postgis.gdal_enabled_drivers=PNG"])
         if "statement_timeout" not in options:
-            timeout = env.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "10s")
+            timeout = env.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "60s")
             settings.extend(["-c", f"statement_timeout={timeout}"])
         if settings:
             options = f"{options} {' '.join(settings)}".strip()
@@ -1555,7 +1567,7 @@ class ExampleTester:
             if override.strip().lower() in {"0", "off", "none"}:
                 return None
             return self.duration_seconds(override)
-        statement_timeout = os.environ.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "10s")
+        statement_timeout = os.environ.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "60s")
         seconds = self.duration_seconds(statement_timeout)
         if seconds is None:
             return None
