@@ -83,9 +83,6 @@ check: check-unit docs-check check-lint check-spell
 
 ifeq (@SUPPORT_POSTGRESQL@,yes)
 check: check-regress
-ifneq (,$(and $(PYTHON3),@XSLTPROC@,@XSLBASE@,@XMLLINT@,@XMLCATALOG@,@DOCBOOK5_RNG@,@DOCBOOK5_XSD@,@DOCBOOK5_DTD@))
-check-unit docs-check: visual-examples
-endif
 endif
 ifeq (@RASTER@,raster)
 check: check-fuzzers
