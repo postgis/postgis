@@ -313,23 +313,17 @@ class ContributorCreditValidationTest(unittest.TestCase):
 
     def test_shallow_history_is_rejected(self):
         self.fixture.initial_commit("Alice Example", "Bob News")
-        with tempfile.TemporaryDirectory() as clone_directory:
-            subprocess.run(
-                [
-                    "git",
-                    "-c",
-                    "protocol.file.allow=always",
-                    "clone",
-                    "--depth=1",
-                    self.fixture.repo.as_uri(),
-                    clone_directory,
-                ],
-                check=True,
+        shallow_file = self.fixture.repo / ".git" / "shallow"
+        shallow_file.write_text(
+            subprocess.check_output(
+                ["git", "rev-parse", "HEAD"],
+                cwd=self.fixture.repo,
                 text=True,
-                capture_output=True,
-            )
-            with self.assertRaisesRegex(CreditValidationError, "non-shallow"):
-                validate(clone_directory)
+            ),
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(CreditValidationError, "non-shallow"):
+            validate(self.fixture.repo)
 
 
 if __name__ == "__main__":
