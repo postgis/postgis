@@ -1731,9 +1731,7 @@ class ExampleTester:
         ]
         documented_visuals = [
             example for example in all_examples
-            if (
-                example.get("documented_only") or example in unavailable_examples
-            ) and example["visual_id"]
+            if example.get("documented_only") and example["visual_id"]
         ]
         examples = [
             example for example in all_examples
