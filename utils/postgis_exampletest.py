@@ -1821,7 +1821,12 @@ class ExampleTester:
                     result = future.result()
                     completed += 1
                     if result.get("failure"):
-                        print(result["failure"], file=sys.stderr, flush=True)
+                        print(
+                            f"Example test failed to run: {result['label']}\n"
+                            f"{result['failure']}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
                         failures.append(result["label"])
                         continue
                     visual = result.get("visual")
