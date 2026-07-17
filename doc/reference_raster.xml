@@ -13074,7 +13074,7 @@ WHERE rid = 2;</programlisting>
 
                 <refsection>
                     <title>Examples</title>
-                    <programlisting>
+                    <programlisting language="sql">
 WITH foo AS (
     SELECT ST_SetValues(
         ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
@@ -13089,11 +13089,11 @@ SELECT
     ST_DumpValues(ST_Sharpen(rast, 'UMM'))
 FROM foo;
 
-          st_dumpvalues
+                    </programlisting>
+                    <screen role="visual-primary text-primary">          st_dumpvalues
 -----------------------------------
  (1,"{{0.555556,0.555556,0.555556},{0.555556,8.555555,0.555556},{0.555556,0.555556,0.555556}}")
-(1 row)
-                    </programlisting>
+(1 row)</screen>
                 </refsection>
 
                 <refsection>
