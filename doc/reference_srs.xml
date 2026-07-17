@@ -640,9 +640,9 @@ point_ne  | POINT(-114.08 60.01)</screen>
       <para>Search for projected coordinate systems in Louisiana.</para>
       <programlisting language="sql">SELECT auth_name, auth_srid, srname,point_sw AS point_sw,point_ne AS point_ne
 FROM postgis_srs_search('SRID=4326;LINESTRING(-90 30,-91 31)')
-WHERE srname LIKE '%Louisiana%'
+WHERE auth_srid IN ('2801', '3452', '3457')
 ORDER BY auth_name, auth_srid::integer
-LIMIT 3;</programlisting>
+</programlisting>
       <screen role="psql-expanded">-[ RECORD 1 ]----------
 auth_name | EPSG
 auth_srid | 2801
