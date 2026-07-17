@@ -486,6 +486,24 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             env = tester.psql_environment()
         self.assertIn("statement_timeout=5s", env["PGOPTIONS"])
 
+    def test_psql_subprocess_timeout_follows_statement_timeout(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        with mock.patch.dict(
+            os.environ,
+            {"POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT": "5s"},
+            clear=True,
+        ):
+            self.assertEqual(20.0, tester.psql_subprocess_timeout())
+
+    def test_psql_subprocess_timeout_can_be_disabled(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        with mock.patch.dict(
+            os.environ,
+            {"POSTGIS_EXAMPLETEST_SUBPROCESS_TIMEOUT": "off"},
+            clear=True,
+        ):
+            self.assertIsNone(tester.psql_subprocess_timeout())
+
 
 class ExampleTestComparisonTest(unittest.TestCase):
     def setUp(self):

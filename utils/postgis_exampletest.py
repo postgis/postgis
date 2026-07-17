@@ -1506,10 +1506,15 @@ class ExampleTester:
 
     def run_psql_query(self, database, query):
         cmd = ["psql", "-X", "-v", "ON_ERROR_STOP=1", "-P", "null=null", "-d", database, "-c", query]
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, encoding="utf-8",
-            env=self.psql_environment(),
-        )
+        try:
+            result = subprocess.run(
+                cmd, capture_output=True, text=True, encoding="utf-8",
+                env=self.psql_environment(), timeout=self.psql_subprocess_timeout(),
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(
+                f"psql timed out after {exc.timeout:g}s for query:\n{query}"
+            ) from exc
         if result.returncode != 0:
             raise RuntimeError(f"psql failed for query:\n{query}\n{result.stdout}{result.stderr}")
         lines = result.stdout.split("\n")
@@ -1532,16 +1537,46 @@ class ExampleTester:
         env["PGOPTIONS"] = options
         return env
 
+    def duration_seconds(self, value):
+        match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)(ms|s|min)?\s*", value or "")
+        if not match:
+            return None
+        duration = float(match.group(1))
+        unit = match.group(2) or "s"
+        if unit == "ms":
+            return duration / 1000.0
+        if unit == "min":
+            return duration * 60.0
+        return duration
+
+    def psql_subprocess_timeout(self):
+        override = os.environ.get("POSTGIS_EXAMPLETEST_SUBPROCESS_TIMEOUT")
+        if override is not None:
+            if override.strip().lower() in {"0", "off", "none"}:
+                return None
+            return self.duration_seconds(override)
+        statement_timeout = os.environ.get("POSTGIS_EXAMPLETEST_STATEMENT_TIMEOUT", "60s")
+        seconds = self.duration_seconds(statement_timeout)
+        if seconds is None:
+            return None
+        return seconds + 15.0
+
     def query_output_types(self, database, query):
         query = re.sub(r";\s*$", "", query.strip())
         cmd = [
             "psql", "-X", "-A", "-t", "-F", "\t", "-P", "footer=off",
             "-v", "ON_ERROR_STOP=1", "-d", database,
         ]
-        result = subprocess.run(
-            cmd, input=f"{query}\n\\gdesc\n", capture_output=True, text=True,
-            encoding="utf-8", env=self.psql_environment(),
-        )
+        try:
+            result = subprocess.run(
+                cmd, input=f"{query}\n\\gdesc\n", capture_output=True, text=True,
+                encoding="utf-8", env=self.psql_environment(),
+                timeout=self.psql_subprocess_timeout(),
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(
+                f"psql timed out after {exc.timeout:g}s while describing a visual example:\n{query}"
+            ) from exc
         if result.returncode != 0:
             raise RuntimeError(
                 f"psql failed while describing a visual example:\n{query}\n"
@@ -1878,10 +1913,15 @@ class ExampleTester:
 
     def run_psql_scalar(self, database, query):
         cmd = ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-d", database]
-        result = subprocess.run(
-            cmd, input=f"{query}\n", capture_output=True, text=True, encoding="utf-8",
-            env=self.psql_environment(),
-        )
+        try:
+            result = subprocess.run(
+                cmd, input=f"{query}\n", capture_output=True, text=True, encoding="utf-8",
+                env=self.psql_environment(), timeout=self.psql_subprocess_timeout(),
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(
+                f"psql timed out after {exc.timeout:g}s while rendering a visual example"
+            ) from exc
         if result.returncode != 0:
             raise RuntimeError(f"psql failed while rendering a visual example:\n{result.stdout}{result.stderr}")
         return result.stdout.strip()
