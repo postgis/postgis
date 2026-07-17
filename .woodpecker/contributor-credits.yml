@@ -2,9 +2,17 @@ labels:
   platform: linux/amd64
 when:
   event: [push, pull_request, tag]
+
+clone:
+  - name: git
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 0
+      partial: false
+
 steps:
-  build:
+  check:
     image: repo.osgeo.org/postgis/build-test:debian13
     pull: true
     commands:
-      - sh ci/dronie/postgis_tools.sh
+      - make check-contributor-credits

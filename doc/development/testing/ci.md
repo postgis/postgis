@@ -27,7 +27,7 @@ service that owns the behavior:
 | FreeBSD GitHub Actions job | `.github/workflows/ci-freebsd.yml`; see [FreeBSD development environment](../environment/freebsd.md) |
 | macOS GitHub Actions job | `.github/workflows/ci-macos.yml`; see [macOS development environment](../environment/macos.md) |
 | MSYS2/MinGW GitHub Actions job | `.github/workflows/msys.yml` |
-| GitHub CodeQL and codespell jobs | `.github/workflows/codeql.yml` and `.github/workflows/codespell.yml` |
+| GitHub CodeQL, codespell, and contributor-credit jobs | `.github/workflows/codeql.yml`, `.github/workflows/codespell.yml`, and `.github/workflows/contributor-credits.yml` |
 | Debbie build, docs, and release jobs | `ci/debbie/`, the Debbie Jenkins jobs, and release-process notes |
 | Winnie Windows jobs | `ci/winnie/` and the Winnie Jenkins jobs |
 | Bessie/Bessie32 and Berrie/Berrie64 jobs | `ci/bessie*`, `ci/berrie*`, and the corresponding Jenkins worker labels |

@@ -25,3 +25,14 @@ all install uninstall staged-install clean distclean maintainer-clean test check
 	   echo "You must use GNU make to build PostGIS." ; \
 	   false; \
 	 fi
+
+# This target must also work before configure, so dedicated CI can audit
+# contributor credits from a clean checkout with full Git history.
+.PHONY: check-contributor-credits
+check-contributor-credits:
+	@if test ! -e ".git"; then \
+		echo "SKIP: contributor credits require a Git worktree"; \
+	else \
+		python3 -B utils/test_check_contributor_credits.py && \
+		python3 -B utils/check_contributor_credits.py --repo .; \
+	fi

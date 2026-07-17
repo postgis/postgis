@@ -120,11 +120,13 @@ Other useful targets:
   extension upgrade paths after `sudo make install`.
 * `make installcheck` runs tests against an installed copy after
   `sudo make install`.
-* `make check` includes the contributor-credit validator in its source-state
-  checks. It checks that every non-merge Git author, `Co-authored-by` trailer,
-  and contributor named in an unreleased `NEWS` section is present in
-  `doc/credits.xml`; `make check-contributor-credits` runs only this check.
-  A Git worktree must have full, non-shallow history; release trees without
+* `make check-contributor-credits` runs an optional maintainer audit that checks
+  that every non-merge Git author, `Co-authored-by` trailer, and contributor
+  named in an unreleased `NEWS` section is present in `doc/credits.xml`. It is
+  not part of `make check` because it needs Python and a Git worktree with
+  full, non-shallow history. GitHub Actions and Woodpecker each run a dedicated
+  contributor-credit job with full history, keeping the audit in CI without
+  making ordinary build or packaging checks depend on it. Release trees without
   `.git` skip the check. Add aliases to `.mailmap` instead of duplicating a
   person under multiple names in the manual. If only a public handle can be
   verified, use a linked `@handle (GitHub user)` credit. If only a partial name

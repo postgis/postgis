@@ -85,6 +85,16 @@
       ]
     },
     {
+      "name": "GitHub Actions / Contributor Credits",
+      "provider": "github_actions",
+      "required": true,
+      "workflow": "contributor-credits.yml",
+      "url": "https://github.com/postgis/postgis/actions/workflows/contributor-credits.yml",
+      "branches": [
+        "master"
+      ]
+    },
+    {
       "name": "GitHub Actions / CodeQL",
       "provider": "github_actions",
       "required": true,
