@@ -51,6 +51,7 @@ html_builddir=$(abs_builddir)/html
 images_builddir=$(html_builddir)/images
 pdf_images_builddir=$(abs_builddir)/pdf/images
 visual_examples_manifest=$(images_builddir)/visual-examples/manifest.xml
+visual_examples_inputs=$(wildcard $(visual_examples_manifest) $(images_builddir)/visual-examples/*.svg)
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
   POSTGIS_DOWNLOAD_URL=https://postgis.net/stuff
@@ -513,7 +514,7 @@ $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBO
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty $(POSTGIS_DBLATEX_BLOCK_LABELS_XSL) $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) | images pdf-images
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty $(POSTGIS_DBLATEX_BLOCK_LABELS_XSL) $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) $(visual_examples_inputs) | images pdf-images
 ifeq ($(DBLATEX),)
 	@echo
 	@echo "configure was unable to find the 'dblatex' utility program."

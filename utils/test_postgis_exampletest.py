@@ -1286,6 +1286,22 @@ class VisualExampleTest(unittest.TestCase):
         self.assertNotIn('fill-opacity="0.82"', svg)
         self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
 
+    def test_wide_3d_scene_keeps_source_x_axis_readable(self):
+        points = [
+            (x, y, z)
+            for x in (0, 280)
+            for y in (0, 70)
+            for z in (0, 10)
+        ]
+        view = self.tester.choose_3d_view(points)
+        self.assertEqual((0.2, -1.5, 1.15), view)
+        origin = self.tester.project_3d_point((0, 0, 0), view)
+        x_axis = self.tester.project_3d_point((100, 0, 0), view)
+        dx = x_axis[0] - origin[0]
+        dy = x_axis[1] - origin[1]
+        self.assertGreater(dx, 0)
+        self.assertLess(abs(dy / dx), 0.1)
+
     def test_z_surface_draws_dashed_hidden_edges_beneath_opaque_faces(self):
         payload = {
             "bounds": [0, 0, 1, 1],

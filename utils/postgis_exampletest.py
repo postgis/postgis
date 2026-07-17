@@ -2323,6 +2323,13 @@ SELECT json_build_object(
         """Choose a deterministic 3D view that avoids edge-on projections."""
         if len(points) < 2:
             return self.DEFAULT_3D_VIEW
+        xs = [float(point[0]) for point in points]
+        ys = [float(point[1]) for point in points]
+        zs = [float(point[2]) for point in points]
+        source_width = max(xs) - min(xs)
+        source_height = max(ys) - min(ys)
+        source_depth = max(zs) - min(zs)
+        wide_scene = source_width > max(source_height, source_depth, 1e-9) * 2.2
         best = None
         for view_index, view in enumerate(self.CANDIDATE_3D_VIEWS):
             projected = [self.project_3d_point(point, view) for point in points]
@@ -2333,7 +2340,19 @@ SELECT json_build_object(
             smaller_span = min(width, height)
             larger_span = max(width, height)
             balance = smaller_span / larger_span if larger_span else 0
-            score = (smaller_span, balance, -view_index)
+            if wide_scene:
+                origin = self.project_3d_point((0, 0, 0), view)
+                x_axis = self.project_3d_point((1, 0, 0), view)
+                dx = x_axis[0] - origin[0]
+                dy = x_axis[1] - origin[1]
+                horizontalness = abs(dx) / math.hypot(dx, dy) if dx or dy else 0
+                # Long text-like 3D geometries are easier to read when their
+                # source X axis remains left-to-right and nearly horizontal.
+                # A purely bbox-driven camera can make these examples look
+                # mirrored or rotated even though the solid itself is valid.
+                score = (dx > 0, horizontalness, width, smaller_span, -view_index)
+            else:
+                score = (smaller_span, balance, -view_index)
             if best is None or score > best[0]:
                 best = (score, view)
         return best[1]
