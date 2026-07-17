@@ -1320,7 +1320,10 @@ class VisualExampleTest(unittest.TestCase):
         self.assertNotIn("ST_CurveToLine", queries[0])
         self.assertIn("ST_Extent(ST_Force2D(all_geometries.geom))", queries[0])
         self.assertIn("ELSE ST_Extent(ST_Force2D(geom))", queries[0])
-        self.assertIn("ST_AsSVG(ST_Force2D(render_geom), 0, 12)", queries[0])
+        self.assertIn("ELSE ST_AsSVG(ST_Force2D(render_geom), 0, 12)", queries[0])
+        self.assertIn("WHEN ST_Dimension(render_geom) = 0 THEN NULL", queries[0])
+        self.assertIn("'points'", queries[0])
+        self.assertIn("ST_DumpPoints(render_geom) AS point", queries[0])
         self.assertIn("ST_Zmflag(geom) IN (2, 3)", queries[0])
         self.assertIn("'has_z'", queries[0])
         self.assertIn("'points_xyz'", queries[0])
@@ -1928,6 +1931,18 @@ class VisualExampleTest(unittest.TestCase):
             }]},
         )
         self.assertRegex(svg, r'class="point"[^>]*stroke="white" stroke-width="[0-9.]+"')
+
+    def test_svg_renders_multipoint_coordinates_as_point_markers(self):
+        svg = self.tester.visual_svg(
+            "multipoint-markers",
+            {"bounds": [0, 0, 10, 10], "parts": [{
+                "ord": 1, "source": "Code", "label": "Code", "type": "MULTIPOINT",
+                "dimension": 0, "points": [[1, -1], [2, -2], [3, -3]],
+                "svg": 'cx="1" cy="-1",cx="2" cy="-2"',
+            }]},
+        )
+        self.assertEqual(3, svg.count('class="point"'))
+        self.assertNotIn('d="cx=', svg)
 
     def test_svg_scales_point_markers_down_for_dense_payloads(self):
         sparse = self.tester.visual_svg(

@@ -2059,10 +2059,21 @@ SELECT json_build_object(
       'row', row_num, 'column', column_num, 'frame', frame,
       'root_type', root_type, 'source_point_count', source_point_count,
       'total_points', total_points, 'marker_scale', marker_scale,
-      'type', GeometryType(geom), 'svg', ST_AsSVG(ST_Force2D(render_geom), 0, 12),
+      'type', GeometryType(geom),
+      'svg', CASE
+        WHEN ST_Dimension(render_geom) = 0 THEN NULL
+        ELSE ST_AsSVG(ST_Force2D(render_geom), 0, 12)
+      END,
       'dimension', ST_Dimension(geom), 'srid', ST_SRID(geom),
       'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
       'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END,
+      'points', CASE
+        WHEN ST_Dimension(render_geom) = 0
+        THEN (
+          SELECT json_agg(json_build_array(ST_X(point.geom), -ST_Y(point.geom)))
+          FROM ST_DumpPoints(render_geom) AS point
+        )
+      END,
       'closed', CASE
         WHEN GeometryType(geom) IN ('LINESTRING', 'CIRCULARSTRING', 'COMPOUNDCURVE')
           THEN ST_IsClosed(geom)
@@ -2894,7 +2905,7 @@ SELECT json_build_object(
                 # Paint larger projected-depth faces first so nearer faces hide
                 # the far side of the solid.
                 parts.sort(
-                    key=lambda part: (-float(part.get("depth", 0)), part.get("svg", "")),
+                    key=lambda part: (-float(part.get("depth", 0)), part.get("svg") or ""),
                 )
             source = parts[0]["source"]
             frame_id = str(parts[0].get("frame", frames[0]["id"]))
@@ -2916,21 +2927,25 @@ SELECT json_build_object(
                     SVG_PALETTES[source][(source_index + part_index) % len(SVG_PALETTES[source])]
                     if multipart_areas else color
                 )
-                if part["type"].upper() == "POINT":
-                    point_x = float(part["x"])
-                    point_y = float(part["y"])
+                if str(part.get("dimension")) == "0" or part["type"].upper() in {"POINT", "MULTIPOINT"}:
+                    points = part.get("points") or [[part.get("x"), part.get("y")]]
                     density_scale = self.marker_density_scale(
                         part.get("total_points"),
                         part.get("source_point_count"),
                     )
                     marker_scale = max(0.75, min(float(part.get("marker_scale") or 1.0), 2.2))
                     radius = ((6.5 if source == "Code" else 4.5) * density_scale * marker_scale) / scale
-                    shapes.append(
-                        f'<path class="point" d="M {point_x - radius:.12g} {point_y:.12g} '
-                        f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x + radius:.12g} {point_y:.12g} '
-                        f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x - radius:.12g} {point_y:.12g} Z" '
-                        f'fill="{part_color}" stroke="white" stroke-width="{1.2 / scale:.12g}"/>'
-                    )
+                    for point in points:
+                        if point[0] is None or point[1] is None:
+                            continue
+                        point_x = float(point[0])
+                        point_y = float(point[1])
+                        shapes.append(
+                            f'<path class="point" d="M {point_x - radius:.12g} {point_y:.12g} '
+                            f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x + radius:.12g} {point_y:.12g} '
+                            f'A {radius:.12g} {radius:.12g} 0 1 0 {point_x - radius:.12g} {point_y:.12g} Z" '
+                            f'fill="{part_color}" stroke="white" stroke-width="{1.2 / scale:.12g}"/>'
+                        )
                 else:
                     if not part.get("svg"):
                         raise RuntimeError(
