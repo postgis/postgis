@@ -1686,16 +1686,37 @@ class ExampleTester:
                     rendered.append(visual)
             return rendered
 
-        if visual_only and jobs > 1 and not keep_going:
+        if visual_only and jobs > 1:
             def run_visual(example):
-                actual = self.run_one_example(database, example)
-                return self.render_visual_example(database, example, actual)
+                try:
+                    actual = self.run_one_example(database, example)
+                    return {
+                        "label": example["label"],
+                        "visual": self.render_visual_example(database, example, actual),
+                    }
+                except RuntimeError as exc:
+                    if not keep_going:
+                        raise
+                    return {
+                        "label": example["label"],
+                        "failure": str(exc),
+                    }
 
             with ThreadPoolExecutor(max_workers=jobs) as pool:
-                visuals = [visual for visual in pool.map(run_visual, examples) if visual is not None]
+                results = list(pool.map(run_visual, examples))
+            for result in results:
+                if result.get("failure"):
+                    print(result["failure"], file=sys.stderr)
+                    failures.append(result["label"])
+                    continue
+                visual = result.get("visual")
+                if visual is not None:
+                    visuals.append(visual)
+                ran += 1
+            if failures:
+                raise RuntimeError(f"FAILED {len(failures)} example(s): {', '.join(failures)}")
             if render_dir:
                 visuals.extend(render_documented_visuals())
-            ran = len(examples)
             if render_dir:
                 self.publish_visual_examples(render_dir, visuals)
             print(f"manual example tests passed: {ran}")

@@ -29,6 +29,7 @@ POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 #
 GARDENDB=postgis_garden
 EXAMPLETESTDB=postgis_exampletest
+EXAMPLETEST_RUN_FLAGS = --keep-going
 
 # Where we put our regression installation
 # See https://trac.osgeo.org/postgis/ticket/5066
@@ -150,7 +151,7 @@ exampletest: staged-install exampletest-run
 
 visual-examples: staged-install visual-examples-run
 
-visual-examples-run: EXAMPLETEST_RUN_FLAGS = --visual-only --jobs 16
+visual-examples-run: EXAMPLETEST_RUN_FLAGS = --keep-going --visual-only --jobs 16
 visual-examples-run: EXAMPLETEST_CHECK_ENVIRONMENT = no
 visual-examples-run: exampletest-run
 
@@ -181,5 +182,5 @@ exampletest-run: exampletest-unit
 		$(EXAMPLETEST_RUN_FLAGS) \
 		--render-dir $(abs_top_builddir)/doc/html/images/visual-examples \
 		> postgis_exampletest_result.txt 2>&1 || { \
-		tail -n 20 postgis_exampletest_result.txt; false; }
+		cat postgis_exampletest_result.txt; false; }
 	tail -n 20 postgis_exampletest_result.txt
