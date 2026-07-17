@@ -126,6 +126,10 @@ depth-sorted faces and hidden-edge cues and are not a reason to skip a figure.
 Use `role="text-primary"` on a `screen`
 when the exact textual type or coordinates carry meaning that the accompanying
 figure cannot show; the figure is still generated, but HTML leaves Output open.
+Use `role="documented-output"` on a `programlisting` only when the adjacent
+`screen` is an authored preview for a figure and must not be treated as the
+query's exact current text output, for example when dependency-version details
+make the full geometry text unstable.
 Use `role="visual-overlay"` when input and output geometries must share one
 coordinate frame. Use `role="visual-separate-output"` when independent output
 columns should be compared in separate frames at a common scale. Geometry

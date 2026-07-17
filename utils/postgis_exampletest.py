@@ -22,6 +22,7 @@ DOCBOOK_NS = "http://docbook.org/ns/docbook"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
 FORCE_ROLE = "example-test"
 EXTERNAL_STATE_ROLE = "requires-external-state"
+DOCUMENTED_OUTPUT_ROLE = "documented-output"
 CAPABILITY_ROLE_RE = re.compile(
     r"^requires-(geos|proj|sfcgal|cgal|protobuf)-(\d+(?:\.\d+)*)$", re.I
 )
@@ -1224,7 +1225,11 @@ class ExampleTester:
             )
         )
         skip_reason = self.obvious_skip_reason(text)
-        documented_only = bool(explicit_visual and skip_reason)
+        documented_only = bool(
+            explicit_visual and (
+                skip_reason or self.has_role(node, DOCUMENTED_OUTPUT_ROLE)
+            )
+        )
         if self.has_role(node, EXTERNAL_STATE_ROLE) and not forced and not documented_only:
             return None
         if not forced:

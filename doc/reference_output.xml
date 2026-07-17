@@ -1698,7 +1698,7 @@ FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
 ]]></programlisting>
         <para>The following preview shows the extruded geometry generated from a simplified version of the same source lettering.
           It is a geometry preview, not X3D markup; use the preceding <function>ST_AsX3D</function> query output in an X3D viewer to inspect the native X3D scene.</para>
-        <programlisting language="sql">SELECT
+        <programlisting language="sql" role="documented-output">SELECT
     CG_Extrude(
         ST_SimplifyPreserveTopology(ST_Letters('PostGIS'), 2),
         0, 0, 10

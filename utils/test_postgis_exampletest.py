@@ -336,6 +336,23 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
                 self.assertEqual("explicit", example["visual_kind"])
                 self.assertTrue(example[flag])
 
+    def test_documented_output_role_keeps_explicit_visual_without_execution(self):
+        xml = """<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="preview">
+    <refsection>
+      <programlisting role="documented-output">SELECT ExpensiveVersionSensitiveGeometry() AS geom;</programlisting>
+      <screen role="visual-primary">POLYGON((0 0,1 0,0 1,0 0))</screen>
+    </refsection>
+  </refentry>
+</book>"""
+        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+            source.write(xml)
+            source.flush()
+            example = ExampleTester(source.name).examples()[0]
+        self.assertTrue(example["documented_only"])
+        self.assertEqual("explicit", example["visual_kind"])
+        self.assertEqual("visual-preview-01", example["visual_id"])
+
     def test_self_contained_functions_are_not_skipped_by_name(self):
         tester = ExampleTester.__new__(ExampleTester)
         for function in (
