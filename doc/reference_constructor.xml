@@ -45,20 +45,18 @@
         <para><emphasis role="bold">Variant 2:</emphasis> accepts an array of geometries</para>
         <para><emphasis role="bold">Variant 3:</emphasis> aggregate function accepting a rowset of geometries.</para>
 
-        <note><para>
-        If any of the input geometries are collections (Multi* or GeometryCollection)
-        ST_Collect returns a GeometryCollection (since that is the only type
-        which can contain nested collections).
-        To prevent this, use <xref linkend="ST_Dump"/> in a subquery to expand the
-        input collections to their atomic elements (see example below).
-        </para></note>
+        <warning><para><function>ST_Collect</function> does not dissolve boundaries
+        or resolve overlaps. Collecting overlapping polygons can produce an invalid
+        <type>MultiPolygon</type>. If the result must be a valid polygonal geometry
+        with overlaps merged, use <xref linkend="ST_Union"/> instead.
+        <function>ST_Union</function> also splits linestrings at intersections and
+        may return a single geometry after dissolving boundaries.</para></warning>
 
-        <note><para>ST_Collect and <xref linkend="ST_Union"/> appear similar, but in fact operate quite differently.
-        ST_Collect aggregates geometries into a collection without changing them in any way.
-        ST_Union geometrically merges geometries where they overlap,
-        and splits linestrings at intersections.
-        It may return single geometries when it dissolves boundaries.
-        </para></note>
+        <para>If any input geometry is a collection (Multi* or GeometryCollection),
+        <function>ST_Collect</function> returns a GeometryCollection, since that is
+        the only type which can contain nested collections. To prevent this, use
+        <xref linkend="ST_Dump"/> in a subquery to expand input collections to
+        their atomic elements (see example below).</para>
 
         <para role="availability" conformance="1.4.0">Availability: 1.4.0 -  ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster.</para>
         <para>&Z_support;</para>
@@ -66,50 +64,45 @@
       </refsection>
 
       <refsection>
-        <title>Examples - Two-input variant</title>
+        <title>Examples</title>
+        <para>Two-input variant.</para>
         <para>Collect 2D points.</para>
-<programlisting>
-SELECT ST_AsText(ST_Collect(
-    ST_GeomFromText('POINT(1 2)'),
-    ST_GeomFromText('POINT(-2 3)') ));</programlisting>
-<screen>MULTIPOINT((1 2),(-2 3))</screen>
+<programlisting>SELECT ST_Collect(
+    'POINT(1 2)',
+    'POINT(-2 3)' );</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT((1 2),(-2 3))</screen>
 
 <para>Collect 3D points.</para>
-<programlisting>
-SELECT ST_AsEWKT(ST_Collect(
-        ST_GeomFromEWKT('POINT(1 2 3)'),
-        ST_GeomFromEWKT('POINT(1 2 4)') ) );</programlisting>
-<screen>MULTIPOINT(1 2 3,1 2 4)</screen>
+<programlisting>SELECT ST_Collect(
+        'POINT(1 2 3)',
+        'POINT(1 2 4)' );</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT(1 2 3,1 2 4)</screen>
 
 <para>Collect curves.</para>
- <programlisting>
-SELECT ST_AsText(ST_Collect(
+ <programlisting>SELECT ST_Collect(
         'CIRCULARSTRING(220268 150415,220227 150505,220227 150406)',
-        'CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));</programlisting>
+        'CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)');</programlisting>
 <screen>MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
- CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
-        </refsection>
-        <refsection>
-<title>Examples - Array variant</title>
+CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))</screen>
+
+<para>Array variant.</para>
 <para>Using an array constructor for a subquery.</para>
 <programlisting>SELECT ST_Collect(ARRAY(SELECT geom FROM sometable));</programlisting>
 <para>Using an array constructor for values.</para>
 <programlisting>
-SELECT ST_AsText(ST_Collect(
-        ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),
-            ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As wktcollect;</programlisting>
-<screen>MULTILINESTRING((1 2,3 4),(3 4,4 5))</screen>
-        </refsection>
-        <refsection>
-        <title>Examples - Aggregate variant</title>
-        <para>Creating multiple collections by grouping geometries in a table.</para>
-<programlisting>
-SELECT stusps, ST_Collect(f.geom) as geom
-     FROM (SELECT stusps, (ST_Dump(geom)).geom As geom
-                FROM
-                somestatetable ) As f
-    GROUP BY stusps
-</programlisting>
+SELECT ST_Collect(
+        ARRAY[ 'LINESTRING(1 2,3 4)'::geometry,
+            'LINESTRING(3 4,4 5)'::geometry ] ) As wktcollect;</programlisting>
+<screen role="visual-primary text-primary">MULTILINESTRING((1 2,3 4),(3 4,4 5))</screen>
+
+	        <para>Aggregate variant.</para>
+	        <para>Creating multiple collections by grouping geometries in a table.</para>
+<programlisting language="sql">SELECT stusps, ST_Collect(geom) AS geom
+FROM (
+  SELECT stusps, (ST_Dump(geom)).geom AS geom
+  FROM somestatetable
+) AS f
+GROUP BY stusps;</programlisting>
 
       </refsection>
       <refsection>
@@ -148,8 +141,8 @@ SELECT stusps, ST_Collect(f.geom) as geom
       <refsection>
         <title>Examples</title>
         <para>Create a 3D line string from a 3D MultiPoint</para>
-        <programlisting>SELECT ST_AsEWKT(ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)'));</programlisting>
-<screen>LINESTRING(1 2 3,4 5 6,7 8 9)</screen>
+        <programlisting>SELECT ST_LineFromMultiPoint('MULTIPOINT(1 2 3,4 5 6,7 8 9)');</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(1 2 3,4 5 6,7 8 9)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -193,9 +186,10 @@ SELECT stusps, ST_Collect(f.geom) as geom
         </refsection>
 
         <refsection>
-        <title>Example: Building a bounding box polygon</title>
-         <programlisting>SELECT ST_AsText(ST_MakeEnvelope(10, 10, 11, 11, 4326));</programlisting>
-<screen>POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))</screen>
+        <title>Examples</title>
+        <para>Building a bounding box polygon.</para>
+         <programlisting>SELECT ST_MakeEnvelope(10, 10, 11, 11, 4326);</programlisting>
+<screen role="visual-primary text-primary">POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -259,51 +253,49 @@ SELECT stusps, ST_Collect(f.geom) as geom
         </refsection>
 
         <refsection>
-            <title>Examples: Two-input variant</title>
+            <title>Examples</title>
+            <para>Two-input variant.</para>
 
 <para>Create a line composed of two points.</para>
-<programlisting>SELECT ST_AsText(ST_MakeLine(ST_Point(1,2), ST_Point(3,4)));</programlisting>
-<screen>LINESTRING(1 2,3 4)</screen>
+<programlisting>SELECT ST_MakeLine(ST_Point(1, 2), ST_Point(3, 4));</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(1 2,3 4)</screen>
 
 <para>Create a 3D line from two 3D points.</para>
-<programlisting>SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));</programlisting>
-<screen>LINESTRING(1 2 3,3 4 5)</screen>
+<programlisting>SELECT ST_MakeLine(ST_MakePoint(1, 2, 3), ST_MakePoint(3, 4, 5));</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(1 2 3,3 4 5)</screen>
 
 <para>Create a line from two disjoint LineStrings.</para>
-<programlisting>SELECT ST_AsText(ST_MakeLine('LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)'));</programlisting>
-<screen>LINESTRING(0 0,1 1,2 2,3 3)</screen>
-        </refsection>
+<programlisting>SELECT ST_MakeLine('LINESTRING(0 0,1 1)', 'LINESTRING(2 2,3 3)');</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(0 0,1 1,2 2,3 3)</screen>
 
-        <refsection>
-            <title>Examples: Array variant</title>
+            <para>Array variant.</para>
 
         <para>Create a line from an array formed by a subquery with ordering.</para>
 <programlisting>SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time));</programlisting>
 
         <para>Create a 3D line from an array of 3D points</para>
-<programlisting>SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), ST_MakePoint(6,6,6)]));</programlisting>
-<screen>LINESTRING(1 2 3,3 4 5,6 6 6)</screen>
-        </refsection>
+<programlisting>SELECT ST_MakeLine(ARRAY[ST_MakePoint(1, 2, 3), ST_MakePoint(3, 4, 5), ST_MakePoint(6, 6, 6)]);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(1 2 3,3 4 5,6 6 6)</screen>
 
-        <refsection>
-        <title>Examples: Aggregate variant</title>
+        <para>Aggregate variant.</para>
         <para>This example queries time-based sequences of GPS points from a set of tracks
         and creates one record for each track.
         The result geometries are LineStrings composed of the GPS track points in the order of travel.</para>
 
 <para>Using aggregate <varname>ORDER BY</varname> provides a correctly-ordered LineString.</para>
-        <programlisting>
-SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom
-    FROM gps_points As gps
-    GROUP BY track_id;</programlisting>
+        <programlisting language="sql">SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) AS geom
+FROM gps_points AS gps
+GROUP BY gps.track_id;</programlisting>
 
 <para>When ordering within the aggregate is not possible, ordering in a subquery can be used.
 However, sometimes the query plan may not respect the order of the subquery.</para>
-        <programlisting>
-SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
-    FROM ( SELECT track_id, gps_time, geom
-            FROM gps_points ORDER BY track_id, gps_time ) As gps
-    GROUP BY track_id;</programlisting>
+        <programlisting language="sql">SELECT gps.track_id, ST_MakeLine(gps.geom) AS geom
+FROM (
+  SELECT track_id, gps_time, geom
+  FROM gps_points
+  ORDER BY track_id, gps_time
+) AS gps
+GROUP BY gps.track_id;</programlisting>
         </refsection>
 
         <refsection>
@@ -383,11 +375,11 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 	         <para>This example creates a point with an unknown SRID.</para>
 	         <programlisting>SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);</programlisting>
 	         <para>This example creates a point in the WGS 84 geodetic CRS.</para>
-<programlisting>SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326);</programlisting>
+<programlisting>SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829), 4326);</programlisting>
 	         <para>This example creates a 3D point with altitude.</para>
-<programlisting>SELECT ST_MakePoint(1, 2,1.5);</programlisting>
+<programlisting>SELECT ST_MakePoint(1, 2, 1.5);</programlisting>
 	         <para>This example returns the Z coordinate of a point.</para>
-<programlisting>SELECT ST_Z(ST_MakePoint(1, 2,1.5));</programlisting>
+<programlisting>SELECT ST_Z(ST_MakePoint(1, 2, 1.5));</programlisting>
 	<screen>1.5</screen>
 	        </refsection>
         <refsection>
@@ -441,11 +433,11 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
             because <xref linkend="ST_AsText"/> does not support M values.</para></note>
 
             <para>Create point with unknown SRID.</para>
-         <programlisting>SELECT ST_AsEWKT(ST_MakePointM(-71.1043443253471, 42.3150676015829, 10));</programlisting>
+         <programlisting>SELECT ST_MakePointM(-71.1043443253471, 42.3150676015829, 10);</programlisting>
 <screen>POINTM(-71.1043443253471 42.3150676015829 10)</screen>
 
 <para>Create point with a measure in the WGS 84 geodetic coordinate system.</para>
-<programlisting>SELECT ST_AsEWKT(ST_SetSRID(ST_MakePointM(-71.104, 42.315, 10),  4326));</programlisting>
+<programlisting>SELECT ST_SetSRID(ST_MakePointM(-71.104, 42.315, 10), 4326);</programlisting>
 <screen>SRID=4326;POINTM(-71.104 42.315 10)</screen>
 
 <para>Get measure of created point.</para>
@@ -504,40 +496,40 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
         </refsection>
 
         <refsection>
-        <title>Examples: Single input variant</title>
+        <title>Examples</title>
+        <para>Single input variant.</para>
         <para>Create a Polygon from a 2D LineString.</para>
-         <programlisting>SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)'));</programlisting>
+         <programlisting>SELECT ST_MakePolygon('LINESTRING(75 29,77 29,77 29,75 29)');</programlisting>
 
 <para>Create a Polygon from an open LineString,
 using <xref linkend="ST_StartPoint"/> and <xref linkend="ST_AddPoint"/> to close it.</para>
 <programlisting>
 SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)) )
 FROM (
-  SELECT ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)') As open_line) As foo;
+  SELECT 'LINESTRING(75 29,77 29,77 29,75 29)'::geometry As open_line) As foo;
 </programlisting>
 
 <para>Create a Polygon from a 3D LineString</para>
-<programlisting>SELECT ST_AsEWKT(ST_MakePolygon('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));</programlisting>
-<screen>POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))</screen>
+<programlisting>SELECT ST_MakePolygon('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1)');</programlisting>
+<screen role="visual-primary text-primary">POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))</screen>
 <para>Create a Polygon from a LineString with measures</para>
-<programlisting>SELECT ST_AsEWKT(ST_MakePolygon('LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)'));</programlisting>
+<programlisting>SELECT ST_MakePolygon('LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)');</programlisting>
 <screen>POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))</screen>
 
 <para>Create a CurvePolygon from a CircularString shell.</para>
-<programlisting>SELECT ST_AsText(ST_MakePolygon('CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0)'));</programlisting>
-<screen>CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0))</screen>
-        </refsection>
-        <refsection>
-            <title>Examples: Outer shell with inner holes variant</title>
+<programlisting>SELECT ST_MakePolygon('CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0)');</programlisting>
+<screen role="visual-primary text-primary">CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0))</screen>
+
+            <para>Outer shell with inner holes variant.</para>
 
             <para>Create a donut Polygon with an extra hole</para>
            <programlisting>
 SELECT ST_MakePolygon(
-    ST_ExteriorRing(ST_Buffer(ring.line,10)),
+    ST_ExteriorRing(ST_Buffer(ring.line, 10)),
     ARRAY[  ST_Translate(ring.line, 1, 1),
-        ST_ExteriorRing(ST_Buffer(ST_Point(20,20),1)) ]
+        ST_ExteriorRing(ST_Buffer(ST_Point(20, 20), 1)) ]
     )
-FROM (SELECT ST_ExteriorRing(ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring;
+FROM (SELECT ST_ExteriorRing(ST_Buffer(ST_Point(10, 10), 10, 10)) AS line ) AS ring;
 </programlisting>
     <para>Create a set of province boundaries with holes
     representing lakes.  The input is a table of
@@ -555,35 +547,42 @@ FROM (SELECT ST_ExteriorRing(ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring
     <note><para>The CASE construct is used because passing a null array into
     ST_MakePolygon results in a NULL return value.</para></note>
 
-        <programlisting>
-SELECT p.gid, p.province_name,
-    CASE WHEN array_agg(w.geom) IS NULL
-    THEN p.geom
-    ELSE  ST_MakePolygon(
-        ST_LineMerge(ST_Boundary(p.geom)),
-        array_agg(w.geom)) END
-FROM
-    provinces p LEFT JOIN waterlines w
-        ON (ST_Within(w.geom, p.geom) AND ST_IsClosed(w.geom))
+        <programlisting language="sql">SELECT p.gid, p.province_name,
+  CASE
+    WHEN array_agg(w.geom) IS NULL THEN p.geom
+    ELSE ST_MakePolygon(
+      ST_LineMerge(ST_Boundary(p.geom)),
+      array_agg(w.geom)
+    )
+  END AS geom
+FROM provinces p
+LEFT JOIN waterlines w
+  ON ST_Within(w.geom, p.geom)
+  AND ST_IsClosed(w.geom)
 GROUP BY p.gid, p.province_name, p.geom;
 </programlisting>
 
     <para>Another technique is to utilize a correlated subquery
     and the ARRAY() constructor that converts a row set to an array.</para>
-<programlisting>
-SELECT p.gid,  p.province_name,
-    CASE WHEN EXISTS( SELECT w.geom
+<programlisting language="sql">SELECT p.gid, p.province_name,
+  CASE
+    WHEN EXISTS (
+      SELECT w.geom
+      FROM waterlines w
+      WHERE ST_Within(w.geom, p.geom)
+      AND ST_IsClosed(w.geom)
+    )
+    THEN ST_MakePolygon(
+      ST_LineMerge(ST_Boundary(p.geom)),
+      ARRAY(
+        SELECT w.geom
         FROM waterlines w
         WHERE ST_Within(w.geom, p.geom)
-        AND ST_IsClosed(w.geom))
-    THEN ST_MakePolygon(
-        ST_LineMerge(ST_Boundary(p.geom)),
-        ARRAY( SELECT w.geom
-            FROM waterlines w
-            WHERE ST_Within(w.geom, p.geom)
-            AND ST_IsClosed(w.geom)))
+        AND ST_IsClosed(w.geom)
+      )
+    )
     ELSE p.geom
-    END AS geom
+  END AS geom
 FROM provinces p;
 </programlisting>
         </refsection>
@@ -635,7 +634,8 @@ FROM provinces p;
 
 
       <refsection>
-        <title>Examples: Geometry</title>
+        <title>Examples</title>
+        <para>Geometry.</para>
 
         <programlisting>SELECT ST_Point(-71.104, 42.315);</programlisting>
 
@@ -644,10 +644,7 @@ FROM provinces p;
 
         <para>Alternative way of specifying SRID:</para>
         <programlisting>SELECT ST_SetSRID(ST_Point(-71.104, 42.315), 4326);</programlisting>
-      </refsection>
 
-      <refsection>
-        <title>Examples: Geography</title>
 
         <para>Create <link linkend="PostGIS_Geography">geography</link> points using the <varname>::</varname> cast syntax:</para>
         <programlisting>SELECT ST_Point(-71.104, 42.315, 4326)::geography;</programlisting>
@@ -828,11 +825,11 @@ is projected to WGS84 (SRID 4326).</para>
         <title>Examples</title>
 
 <para>Create a 2D polygon.</para>
-<programlisting>SELECT ST_AsText(ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::geometry, 4326));</programlisting>
-<screen>POLYGON((75 29,77 29,77 29,75 29))</screen>
+<programlisting>SELECT ST_Polygon('LINESTRING(75 29,77 29,77 31,75 31,75 29)'::geometry, 4326);</programlisting>
+<screen role="visual-primary text-primary">POLYGON((75 29,77 29,77 31,75 31,75 29))</screen>
 <para>Create a 3D polygon.</para>
-<programlisting>SELECT ST_AsEWKT(ST_Polygon(ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, 77 29 3, 75 29 1)'), 4326));</programlisting>
-<screen>SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))</screen>
+<programlisting>SELECT ST_Polygon('LINESTRING(75 29 1,77 29 2,77 31 2,75 31 1,75 29 1)'::geometry, 4326);</programlisting>
+<screen role="visual-primary text-primary">SRID=4326;POLYGON((75 29 1,77 29 2,77 31 2,75 31 1,75 29 1))</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -892,11 +889,14 @@ is projected to WGS84 (SRID 4326).</para>
         </refsection>
 
         <refsection>
-        <title>Example: Building a tile envelope</title>
-         <programlisting>SELECT ST_AsText(ST_TileEnvelope(2, 1, 1));</programlisting>
-<screen>POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))</screen>
-<programlisting>SELECT ST_AsText(ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326)));</programlisting>
-<screen>POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))</screen>
+        <title>Examples</title>
+<para>Show tile (2, 1, 1) within the root tile (0, 0, 0).</para>
+<programlisting>SELECT ST_TileEnvelope(0, 0, 0) AS input_z0_x0_y0, ST_TileEnvelope(2, 1, 1) AS z2_x1_y1;</programlisting>
+<screen role="visual-overlay">input_z0_x0_y0 | z2_x1_y1
+----------------+-----------
+POLYGON((-20037508.342789244 -20037508.342789244,-20037508.342789244 20037508.342789244,20037508.342789244 20037508.342789244,20037508.342789244 -20037508.342789244,-20037508.342789244 -20037508.342789244)) | POLYGON((-10018754.171394622 0,-10018754.171394622 10018754.171394622,0 10018754.171394622,0 0,-10018754.171394622 0))</screen>
+<programlisting>SELECT ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326));</programlisting>
+<screen role="visual-overlay visual-primary text-primary">POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -942,38 +942,97 @@ is projected to WGS84 (SRID 4326).</para>
             fits with the origin tiling. Unfortunately, it is not possible to generate parent
             hexagon tilings that the child tiles perfectly fit inside.</para>
 
-            <para><inlinemediaobject><imageobject>
-                <imagedata fileref="images/st_hexagongrid02.png"/>
-            </imageobject></inlinemediaobject></para>
-
             <para role="availability" conformance="3.1.0">Availability: 3.1.0</para>
 
         </refsection>
 
         <refsection>
-        <title>Example: Counting points in hexagons</title>
+        <title>Examples</title>
+        <para>Unit hexagons covering rectangular bounds.</para>
+        <programlisting>WITH bounds AS (
+    SELECT ST_MakeEnvelope(2, 1, 4, 3, 3857) AS geom
+), grid AS (
+    SELECT hex.*
+    FROM bounds
+    CROSS JOIN LATERAL ST_HexagonGrid(1, geom) AS hex
+)
+SELECT (SELECT geom FROM bounds) AS input_bounds,
+    ST_Collect(geom ORDER BY i, j) AS grid
+FROM grid;</programlisting>
+        <screen role="visual-overlay visual-primary text-primary">POLYGON((2 1,2 3,4 3,4 1,2 1)) | MULTIPOLYGON(((0.5 0.866,1 0,2 0,2.5 0.866,2 1.732,1 1.732,0.5 0.866)),((0.5 2.598,1 1.732,2 1.732,2.5 2.598,2 3.464,1 3.464,0.5 2.598)),((2 1.732,2.5 0.866,3.5 0.866,4 1.732,3.5 2.598,2.5 2.598,2 1.732)),((2 3.464,2.5 2.598,3.5 2.598,4 3.464,3.5 4.33,2.5 4.33,2 3.464)),((3.5 0.866,4 0,5 0,5.5 0.866,5 1.732,4 1.732,3.5 0.866)),((3.5 2.598,4 1.732,5 1.732,5.5 2.598,5 3.464,4 3.464,3.5 2.598)))</screen>
+
+        <para>Child tiles that intersect a doubled-size parent hexagon share the tiling origin, but do not nest perfectly inside the parent.</para>
+        <programlisting>WITH parent AS (
+    SELECT ST_Hexagon(2, 0, 0) AS geom
+), children AS (
+    SELECT child.*
+    FROM parent
+    CROSS JOIN LATERAL ST_HexagonGrid(1, geom) AS child
+    WHERE ST_Area(ST_Intersection(child.geom, parent.geom)) &gt; 0
+)
+SELECT ST_Collect(geom ORDER BY i, j) AS children,
+    (SELECT geom FROM parent) AS parent
+FROM children;</programlisting>
+        <screen role="visual-overlay visual-primary">MULTIPOLYGON(((-2.5 -0.866,-2 -1.732,-1 -1.732,-0.5 -0.866,-1 0,-2 0,-2.5 -0.866)),((-2.5 0.866,-2 0,-1 0,-0.5 0.866,-1 1.732,-2 1.732,-2.5 0.866)),((-1 -1.732,-0.5 -2.598,0.5 -2.598,1 -1.732,0.5 -0.866,-0.5 -0.866,-1 -1.732)),((-1 0,-0.5 -0.866,0.5 -0.866,1 0,0.5 0.866,-0.5 0.866,-1 0)),((-1 1.732,-0.5 0.866,0.5 0.866,1 1.732,0.5 2.598,-0.5 2.598,-1 1.732)),((0.5 -0.866,1 -1.732,2 -1.732,2.5 -0.866,2 0,1 0,0.5 -0.866)),((0.5 0.866,1 0,2 0,2.5 0.866,2 1.732,1 1.732,0.5 0.866))) | POLYGON((-2 0,-1 -1.732,1 -1.732,2 0,1 1.732,-1 1.732,-2 0))</screen>
+
+        <para>Counting points in hexagons.</para>
         <para>To do a point summary against a hexagonal tiling, generate a hexagon grid using the
         extent of the points as the bounds, then spatially join to that grid.</para>
-         <programlisting>SELECT COUNT(*), hexes.geom
+         <programlisting language="sql">SELECT COUNT(*), hexes.geom
 FROM ST_HexagonGrid(
-    10000,
-    ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
+  10000,
+  ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
 ) AS hexes
-    INNER JOIN
-    pointtable AS pts
-    ON ST_Intersects(pts.geom, hexes.geom)
+INNER JOIN pointtable AS pts
+  ON ST_Intersects(pts.geom, hexes.geom)
 GROUP BY hexes.geom;</programlisting>
-    </refsection>
-    <refsection>
-        <title>Example: Generating hex coverage of polygons</title>
-        <para>If we generate a set of hexagons for each polygon boundary and filter
-            out those that do not intersect their hexagons, we end up with a tiling for
-            each polygon.</para>
+
+        <para>Generating hex coverage of polygons.</para>
+        <para>If a grid is generated for each polygon boundary and filtered to
+            intersecting cells, adjacent regions receive overlapping hexagons
+            along their shared border. The build-time figure below uses two
+            simple regions in place of an external administrative-boundary
+            table, so the example is self-contained.</para>
         <para><inlinemediaobject><imageobject>
             <imagedata fileref="images/st_hexagongrid03.png"/>
         </imageobject></inlinemediaobject></para>
-        <para>Tiling states results in a hexagon coverage of each state, and multiple
-            hexagons overlapping at the borders between states.</para>
+        <programlisting language="sql">WITH admin1(gid, geom) AS (
+    VALUES
+        (1, ST_MakeEnvelope(0, 0, 3, 3, 3857)),
+        (2, ST_MakeEnvelope(3, 0, 6, 3, 3857))
+), coverage AS (
+    SELECT hex.i, hex.j, hex.geom
+    FROM admin1
+    CROSS JOIN LATERAL ST_HexagonGrid(1.5, admin1.geom) AS hex
+    WHERE ST_Intersects(admin1.geom, hex.geom)
+    GROUP BY hex.i, hex.j, hex.geom
+), layers AS (
+    SELECT 'region' AS kind, gid AS position, geom
+    FROM admin1
+    UNION ALL
+    SELECT
+        'hexagon',
+        1000 + row_number() OVER (ORDER BY i, j),
+        geom
+    FROM coverage
+)
+SELECT
+    CASE kind WHEN 'region' THEN geom END AS input_region,
+    CASE kind WHEN 'hexagon' THEN geom END AS hexagon
+FROM layers
+ORDER BY position;</programlisting>
+        <screen role="visual-primary visual-overlay text-primary">POLYGON((0 0,0 3,3 3,3 0,0 0)) | null
+POLYGON((3 0,3 3,6 3,6 0,3 0)) | null
+null | POLYGON((-1.5 0,-0.75 -1.3,0.75 -1.3,1.5 0,0.75 1.3,-0.75 1.3,-1.5 0))
+null | POLYGON((-1.5 2.6,-0.75 1.3,0.75 1.3,1.5 2.6,0.75 3.9,-0.75 3.9,-1.5 2.6))
+null | POLYGON((0.75 1.3,1.5 0,3 0,3.75 1.3,3 2.6,1.5 2.6,0.75 1.3))
+null | POLYGON((0.75 3.9,1.5 2.6,3 2.6,3.75 3.9,3 5.2,1.5 5.2,0.75 3.9))
+null | POLYGON((3 0,3.75 -1.3,5.25 -1.3,6 0,5.25 1.3,3.75 1.3,3 0))
+null | POLYGON((3 2.6,3.75 1.3,5.25 1.3,6 2.6,5.25 3.9,3.75 3.9,3 2.6))
+null | POLYGON((5.25 1.3,6 0,7.5 0,8.25 1.3,7.5 2.6,6 2.6,5.25 1.3))
+null | POLYGON((5.25 3.9,6 2.6,7.5 2.6,8.25 3.9,7.5 5.2,6 5.2,5.25 3.9))</screen>
+        <para>The same pattern applies to a real administrative-boundary
+            table:</para>
         <note><para>The LATERAL keyword is implied for set-returning functions when referring to a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs for this example.</para></note>
         <programlisting>SELECT admin1.gid, hex.geom
 FROM
@@ -1022,15 +1081,10 @@ WHERE
         </refsection>
 
         <refsection>
-        <title>Example: Creating a hexagon at the origin</title>
-         <programlisting>SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));
-
-POLYGON((-1 0,-0.5
-         -0.866025403784439,0.5
-         -0.866025403784439,1
-         0,0.5
-         0.866025403784439,-0.5
-         0.866025403784439,-1 0)) </programlisting>
+        <title>Examples</title>
+<para>Creating a hexagon at the origin.</para>
+<programlisting>SELECT ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857);</programlisting>
+<screen role="visual-primary text-primary">POLYGON((-1 0,-0.5 -0.8660254037844387,0.5 -0.8660254037844387,1 0,0.5 0.8660254037844387,-0.5 0.8660254037844387,-1 0))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -1073,46 +1127,39 @@ POLYGON((-1 0,-0.5
         </refsection>
 
         <refsection>
-        <title>Example: Generating a 1 degree grid for a country</title>
+        <title>Examples</title>
+        <para>Generating a 1 degree grid for a country.</para>
         <para>The grid will fill the whole bounds of the country, so if you want just squares
             that touch the country you will have to filter afterwards with ST_Intersects.</para>
             <programlisting>WITH grid AS (
-SELECT (ST_SquareGrid(1, ST_Transform(geom,4326))).*
+SELECT (ST_SquareGrid(1, ST_Transform(geom, 4326))).*
 FROM admin0 WHERE name = 'Canada'
 )
-  SELEcT ST_AsText(geom)
+  SELEcT geom
   FROM grid</programlisting>
-        </refsection>
 
-        <refsection>
-        <title>Example: Counting points in squares (using single chopped grid)</title>
+        <para>Counting points in squares (using single chopped grid).</para>
         <para>To do a point summary against a square tiling, generate a square grid using the
         extent of the points as the bounds, then spatially join to that grid. Note the estimated extent might be off from actual extent, so be cautious and at very least make sure you've analyzed your table.</para>
-            <programlisting>SELECT COUNT(*), squares.geom
-    FROM
-    pointtable AS pts
-    INNER JOIN
-    ST_SquareGrid(
-        1000,
-        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
-    ) AS squares
-    ON ST_Intersects(pts.geom, squares.geom)
-    GROUP BY squares.geom</programlisting>
-        </refsection>
+            <programlisting language="sql">SELECT COUNT(*), squares.geom
+FROM pointtable AS pts
+INNER JOIN ST_SquareGrid(
+  1000,
+  ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
+) AS squares
+  ON ST_Intersects(pts.geom, squares.geom)
+GROUP BY squares.geom;</programlisting>
 
-    <refsection>
-        <title>Example: Counting points in squares using set of grid per point</title>
+        <para>Counting points in squares using set of grid per point.</para>
         <para>This yields the same result as the first example but will be slower for a large number of points</para>
-            <programlisting>SELECT COUNT(*), squares.geom
-    FROM
-    pointtable AS pts
-    INNER JOIN
-    ST_SquareGrid(
-       1000,
-       pts.geom
-    ) AS squares
-    ON ST_Intersects(pts.geom, squares.geom)
-    GROUP BY squares.geom</programlisting>
+            <programlisting language="sql">SELECT COUNT(*), squares.geom
+FROM pointtable AS pts
+INNER JOIN ST_SquareGrid(
+  1000,
+  pts.geom
+) AS squares
+  ON ST_Intersects(pts.geom, squares.geom)
+GROUP BY squares.geom;</programlisting>
         </refsection>
 
         <refsection>
@@ -1158,10 +1205,13 @@ has an unknown SRID (as is the case by default).</para>
         </refsection>
 
         <refsection>
-        <title>Example: Creating a square at the origin</title>
-         <programlisting>SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857));
-
- POLYGON((0 0,0 1,1 1,1 0,0 0))</programlisting>
+        <title>Examples</title>
+<para>Creating a square at the origin.</para>
+         <programlisting>SELECT ST_SetSRID(ST_Square(1.0, 0, 0), 3857);</programlisting>
+<screen>              st_astext
+-------------------------------------
+ POLYGON((0 0,0 1,1 1,1 0,0 0))
+(1 row)</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -1198,20 +1248,24 @@ has an unknown SRID (as is the case by default).</para>
         </refsection>
 
         <refsection>
-            <title>Example: Generating the word 'Yo'</title>
-            <programlisting>SELECT ST_AsText(ST_Letters('Yo'));</programlisting>
-            <informalfigure>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/st_letters01.png"/>
-              </imageobject>
-              <caption><para>Letters generated by ST_Letters</para></caption>
-            </mediaobject>
-            </informalfigure>
-        </refsection>
-        <refsection>
-            <title>Example: Scaling and moving words</title>
-            <programlisting>SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100,100);</programlisting>
+            <title>Examples</title>
+            <para>Generating the word 'Yo'.</para>
+            <programlisting>SELECT ST_Letters('Yo');</programlisting>
+            <screen role="visual-primary">MULTIPOLYGON(((34.5 73.8,54 73.8,53.1 72.9,35.1 28.7,35.1 0.9,36 0,18 0,19 0.9,19 28.7,0.9 72.9,0 73.8,19.5 73.8,18.6 72.9,23 61.6,27 47.4,31.1 61.9,35.4 72.9,34.5 73.8)),((68.87 58,69.97 58,71.07 57.9,72.17 57.8,73.17 57.7,74.27 57.5,75.27 57.3,76.17 57.1,77.17 56.8,78.07 56.5,78.97 56.1,79.87 55.7,80.67 55.3,81.47 54.8,82.27 54.3,82.97 53.7,83.67 53.1,84.37 52.5,84.97 51.8,85.57 51.1,86.07 50.3,86.57 49.5,87.07 48.7,87.57 47.9,87.97 47,88.37 46.1,88.67 45.1,88.97 44.1,89.17 43.1,89.37 42.1,89.47 41,89.57 39.9,89.57 38.7,89.57 18.9,89.57 17.7,89.47 16.6,89.37 15.5,89.17 14.5,88.97 13.5,88.77 12.5,88.47 11.5,88.07 10.6,87.67 9.7,87.27 8.9,86.77 8.1,86.27 7.3,85.67 6.6,85.07 5.9,84.47 5.2,83.77 4.6,83.07 4,82.27 3.5,81.57 2.9,80.77 2.5,79.87 2,79.07 1.6,78.17 1.2,77.27 0.8,76.37 0.5,75.37 0.2,74.37 0,73.37 -0.2,72.27 -0.4,71.17 -0.5,70.07 -0.5,68.97 -0.5,67.87 -0.5,66.77 -0.4,65.67 -0.3,64.57 -0.2,63.57 0,62.57 0.2,61.57 0.5,60.57 0.8,59.67 1.1,58.77 1.5,57.87 1.9,57.07 2.4,56.27 2.9,55.47 3.4,54.77 3.9,54.07 4.5,53.37 5.1,52.77 5.8,52.17 6.5,51.67 7.2,51.17 8,50.67 8.8,50.17 9.7,49.77 10.6,49.37 11.5,49.07 12.5,48.77 13.5,48.57 14.5,48.37 15.6,48.27 16.7,48.17 17.8,48.17 18.9,48.17 38.7,48.17 39.9,48.27 41,48.37 42.1,48.57 43.1,48.77 44.1,48.97 45.1,49.27 46.1,49.67 47,50.07 47.9,50.47 48.7,50.97 49.5,51.47 50.3,52.07 51,52.67 51.7,53.27 52.4,53.97 53,54.67 53.6,55.47 54.1,56.17 54.6,57.07 55.1,57.87 55.6,58.77 56,59.67 56.4,60.57 56.7,61.57 57,62.47 57.3,63.47 57.5,64.57 57.7,65.57 57.8,66.67 57.9,67.77 58,68.87 58),(73.77 38.9,72.27 41.6,68.97 42.6,65.57 41.7,64.07 38.9,64.07 18.9,65.47 16.2,68.77 15.2,72.07 16.1,73.77 18.9,73.77 38.9)))</screen>
+
+            <para>Generating the word 'PostGIS'.</para>
+            <programlisting>SELECT ST_Letters('PostGIS') AS letters;</programlisting>
+            <screen role="visual-primary geometry-output-precision-0">MULTIPOLYGON(((43 39,43 38,42 37,42 36,42 35,42 34,42 33,42 32,41 31,41 30,40 29,40 28,39 28,39 27,38 26,38 26,37 25,36 24,36 24,35 24,34 23,33 23,33 22,32 22,31 22,30 21,29 21,28 21,27 21,26 20,25 20,24 20,23 20,17 20,17 1,18 0,0 0,1 1,1 73,0 74,23 74,24 74,25 74,26 74,27 74,28 73,29 73,30 73,31 73,32 72,33 72,33 72,34 72,35 71,36 70,36 70,37 69,38 69,38 68,39 67,39 67,40 66,40 65,41 64,41 64,42 63,42 62,42 61,42 60,42 58,42 57,43 56,43 55,43 39),(26 56,26 58,23 59,17 59,17 35,23 35,26 36,26 38,26 56)),((69 58,70 58,71 58,72 58,73 58,74 58,75 57,76 57,77 57,78 56,79 56,80 56,81 55,82 55,82 54,83 54,84 53,85 52,85 52,86 51,86 50,87 50,87 49,88 48,88 47,89 46,89 45,89 44,89 43,90 42,90 41,90 40,90 39,90 19,90 18,90 17,90 16,89 14,89 14,89 12,89 12,88 11,88 10,87 9,87 8,86 7,86 7,85 6,85 5,84 5,83 4,82 4,82 3,81 2,80 2,79 2,78 1,77 1,77 0,76 0,75 0,74 0,72 0,71 0,70 0,69 0,68 0,67 0,66 0,65 0,64 0,63 0,62 0,61 1,60 1,59 2,58 2,57 2,56 3,56 3,55 4,54 4,54 5,53 6,52 6,52 7,51 8,51 9,50 10,50 11,50 12,49 12,49 14,49 14,49 16,48 17,48 18,48 19,48 39,48 40,48 41,49 42,49 43,49 44,49 45,49 46,50 47,50 48,51 49,51 50,52 50,52 51,53 52,53 52,54 53,55 54,56 54,56 55,57 55,58 56,59 56,60 56,61 57,62 57,63 57,64 58,65 58,66 58,67 58,68 58,69 58),(74 39,72 42,69 43,66 42,64 39,64 19,66 16,69 15,72 16,74 19,74 39)),((111 38,112 37,112 37,113 37,113 37,114 36,115 36,116 36,116 36,117 35,118 35,119 34,120 34,121 33,121 33,122 32,123 32,124 31,125 30,126 30,126 29,127 28,128 27,128 27,129 26,129 25,130 24,130 23,131 22,131 21,131 20,131 18,131 17,131 16,131 15,131 14,130 12,130 11,130 10,129 9,129 8,128 8,128 7,127 6,127 5,126 5,126 4,125 3,124 3,124 2,123 2,122 1,121 1,120 1,120 0,119 0,118 0,117 0,116 0,115 0,114 0,113 0,112 0,111 0,110 0,110 0,109 0,108 0,107 0,106 0,105 0,104 0,103 0,102 1,101 1,100 1,99 2,97 2,96 3,95 3,94 4,99 19,99 19,100 18,100 18,100 18,101 18,101 18,102 18,102 18,103 17,103 17,104 17,104 17,105 17,105 17,106 16,106 16,107 16,107 16,108 16,108 16,109 16,110 16,110 16,111 16,111 16,112 15,112 15,113 15,113 15,113 15,114 15,114 15,115 16,115 16,115 17,115 17,115 18,115 18,115 19,115 19,115 20,114 20,114 20,113 20,113 20,113 20,112 20,112 21,111 21,111 21,110 21,109 22,109 22,108 22,108 22,107 23,107 23,106 24,106 24,105 24,104 24,104 25,103 25,103 26,102 26,102 26,101 27,101 28,100 28,100 28,99 29,99 30,98 30,98 31,98 31,97 32,97 33,97 33,96 34,96 35,96 35,96 36,96 37,96 38,96 38,95 39,95 40,95 41,96 42,96 43,96 43,96 44,96 45,96 45,96 46,97 47,97 47,97 48,97 48,97 49,98 49,98 50,98 50,99 51,99 51,99 52,100 52,100 52,100 53,101 53,101 53,101 54,101 54,102 54,102 54,102 55,103 55,103 55,103 55,104 56,105 56,106 56,106 57,107 57,108 57,109 58,110 58,111 58,112 58,113 58,114 58,115 58,116 58,117 58,118 58,118 58,119 58,120 58,121 57,122 57,123 57,123 57,124 56,125 56,126 56,126 56,127 56,127 55,128 55,128 55,129 55,129 55,123 40,123 40,122 40,122 40,122 40,122 40,121 40,121 40,121 41,120 41,120 41,119 41,119 41,119 41,118 41,118 41,118 41,117 41,117 41,117 42,116 42,116 42,115 42,115 42,115 42,114 42,114 42,114 42,113 42,113 42,113 42,112 42,112 42,112 42,112 42,112 42,112 42,112 42,112 42,112 42,111 42,111 42,111 41,111 41,111 41,111 41,111 41,111 40,111 40,111 40,111 40,111 40,111 40,111 39,111 39,111 39,111 39,111 39,111 38,111 38,111 38,111 38,111 38,111 38,111 38)),((161 15,166 15,167 16,167 -1,166 0,160 0,160 0,159 0,158 0,157 0,157 0,156 0,155 0,155 0,154 0,153 0,153 1,152 1,151 1,151 1,150 2,149 2,149 2,148 3,147 3,147 4,146 4,146 5,145 5,145 6,144 6,144 7,143 8,143 9,142 10,142 10,141 11,141 12,141 43,136 43,135 42,135 59,136 58,141 58,141 74,140 75,158 75,157 74,157 58,165 58,166 59,166 42,165 43,157 43,157 18,157 17,157 17,157 17,158 17,158 16,158 16,158 16,159 16,159 16,159 16,160 16,160 15,160 15,161 15,161 15,161 15)),((214 13,214 12,213 12,213 11,213 10,212 10,212 9,212 8,211 8,211 7,210 6,210 6,209 5,209 5,208 4,208 4,207 3,206 3,206 2,205 2,204 2,203 1,203 1,202 0,201 0,200 0,199 0,199 0,198 0,197 0,196 -1,195 -1,194 -1,193 -1,192 -1,190 0,189 0,188 0,187 0,186 0,185 1,184 1,183 1,182 2,182 2,181 3,180 3,179 4,178 4,178 5,177 6,176 6,176 7,175 8,175 9,175 10,174 10,174 11,174 12,173 13,173 14,173 15,173 16,173 18,173 19,173 54,173 56,173 56,173 57,173 58,173 59,173 60,173 61,174 62,174 63,174 64,174 64,175 65,175 66,176 67,176 68,177 68,177 69,178 70,179 70,179 71,180 71,181 72,182 72,183 72,184 73,185 73,186 73,187 74,188 74,189 74,190 74,192 74,210 74,210 58,192 58,191 58,191 58,191 58,190 58,190 58,190 58,190 57,189 57,189 57,189 56,189 56,189 56,189 56,189 55,189 55,189 54,189 19,189 19,189 18,189 18,189 18,189 17,189 17,189 17,190 17,190 16,190 16,191 16,191 16,191 16,192 15,192 15,193 15,193 15,193 15,194 15,194 15,195 15,195 15,196 15,196 15,196 15,197 15,197 15,198 16,198 16,198 16,199 16,199 16,199 32,193 32,193 46,214 46,214 13)),((236 73,236 1,237 0,219 0,220 1,220 73,219 74,237 74,236 73)),((264 45,265 45,266 44,266 44,267 44,268 43,269 43,270 42,271 42,272 42,273 41,274 40,274 40,275 39,276 39,277 38,277 38,278 37,279 36,279 35,280 35,280 34,281 33,281 32,282 31,282 30,283 29,283 28,283 27,283 26,284 25,284 24,284 22,283 21,283 20,283 20,283 19,283 18,283 17,283 16,283 15,282 15,282 14,282 13,282 13,281 12,281 11,281 11,280 10,280 10,280 9,279 9,279 8,279 8,278 7,278 7,278 6,277 6,277 6,276 5,276 5,276 5,275 4,275 4,275 4,274 3,273 3,272 2,271 2,270 1,269 1,268 1,267 0,266 0,264 0,263 0,262 0,261 0,260 0,259 0,258 0,257 0,256 0,255 0,253 0,252 0,251 1,250 1,249 2,248 2,247 2,246 3,245 3,244 4,243 4,242 4,242 5,246 21,247 20,248 20,248 20,249 20,250 19,251 19,251 19,252 18,253 18,254 18,255 18,255 17,256 17,257 17,258 17,259 17,259 16,260 16,261 16,262 16,262 17,263 17,264 17,264 17,265 17,265 18,266 18,266 19,267 19,267 20,267 21,267 22,267 22,267 23,267 23,267 24,267 24,267 24,267 25,266 25,266 26,265 26,265 26,264 27,264 27,263 28,262 28,261 28,261 29,260 29,259 30,258 30,258 30,257 31,256 31,255 32,254 32,253 33,253 33,252 34,251 34,250 35,249 36,248 36,248 37,247 38,246 39,246 39,245 40,244 41,244 42,244 43,243 44,243 45,243 46,242 47,242 49,242 50,242 51,242 53,242 55,242 56,242 58,243 60,243 61,244 62,245 64,246 65,247 66,248 67,249 68,250 69,251 70,252 71,253 72,255 72,256 73,258 73,259 74,261 74,262 74,264 74,265 74,267 74,269 74,270 74,272 73,274 73,275 73,277 72,279 72,280 71,275 56,275 57,274 57,274 57,273 57,273 57,272 57,271 58,271 58,270 58,269 58,269 58,268 58,267 58,267 58,266 58,265 58,265 58,264 58,263 58,263 58,262 58,262 58,261 57,260 57,260 56,260 56,259 56,259 55,258 54,258 54,258 53,258 52,258 52,258 51,258 51,258 50,258 50,259 49,259 48,259 48,260 48,260 47,261 47,262 46,262 46,263 46,263 45,264 45)))</screen>
+
+            <para>Scaling and moving words.</para>
+            <programlisting>WITH letters AS (
+    SELECT ST_Letters('Yo') AS geom
+)
+SELECT geom AS input_letters,
+       ST_Translate(ST_Scale(geom, 2, 2), 120, 0)
+           AS scaled_letters
+FROM letters;</programlisting>
+            <screen role="visual-overlay visual-primary geometry-output-precision-0">MULTIPOLYGON(((34 74,54 74,53 73,35 29,35 1,36 0,18 0,19 1,19 29,1 73,0 74,20 74,19 73,23 62,27 47,31 62,35 73,34 74)),((69 58,70 58,71 58,72 58,73 58,74 58,75 57,76 57,77 57,78 56,79 56,80 56,81 55,81 55,82 54,83 54,84 53,84 52,85 52,86 51,86 50,87 50,87 49,88 48,88 47,88 46,89 45,89 44,89 43,89 42,89 41,90 40,90 39,90 19,90 18,89 17,89 16,89 14,89 14,89 12,88 12,88 11,88 10,87 9,87 8,86 7,86 7,85 6,84 5,84 5,83 4,82 4,82 3,81 2,80 2,79 2,78 1,77 1,76 0,75 0,74 0,73 0,72 0,71 0,70 0,69 0,68 0,67 0,66 0,65 0,64 0,63 0,62 0,61 1,60 1,59 2,58 2,57 2,56 3,55 3,55 4,54 4,53 5,53 6,52 6,52 7,51 8,51 9,50 10,50 11,49 12,49 12,49 14,49 14,48 16,48 17,48 18,48 19,48 39,48 40,48 41,48 42,49 43,49 44,49 45,49 46,50 47,50 48,50 49,51 50,51 50,52 51,53 52,53 52,54 53,55 54,55 54,56 55,57 55,58 56,59 56,60 56,61 57,62 57,62 57,63 58,65 58,66 58,67 58,68 58,69 58),(74 39,72 42,69 43,66 42,64 39,64 19,65 16,69 15,72 16,74 19,74 39))) | MULTIPOLYGON(((189 148,228 148,226 146,190 57,190 2,192 0,156 0,158 2,158 57,122 146,120 148,159 148,157 146,166 123,174 95,182 124,191 146,189 148)),((258 116,260 116,262 116,264 116,266 115,269 115,271 115,272 114,274 114,276 113,278 112,280 111,281 111,283 110,285 109,286 107,287 106,289 105,290 104,291 102,292 101,293 99,294 97,295 96,296 94,297 92,297 90,298 88,298 86,299 84,299 82,299 80,299 77,299 38,299 35,299 33,299 31,298 29,298 27,298 25,297 23,296 21,295 19,295 18,294 16,293 15,291 13,290 12,289 10,288 9,286 8,285 7,283 6,282 5,280 4,278 3,276 2,275 2,273 1,271 0,269 0,267 0,265 -1,262 -1,260 -1,258 -1,256 -1,254 -1,251 -1,249 0,247 0,245 0,243 1,241 2,239 2,238 3,236 4,234 5,233 6,231 7,230 8,228 9,227 10,226 12,224 13,223 14,222 16,221 18,220 19,220 21,219 23,218 25,218 27,217 29,217 31,217 33,216 36,216 38,216 77,216 80,217 82,217 84,217 86,218 88,218 90,219 92,219 94,220 96,221 97,222 99,223 101,224 102,225 103,227 105,228 106,229 107,231 108,232 109,234 110,236 111,238 112,239 113,241 113,243 114,245 115,247 115,249 115,251 116,253 116,256 116,258 116),(268 78,265 83,258 85,251 83,248 78,248 38,251 32,258 30,264 32,268 38,268 78)))</screen>
         </refsection>
         <refsection>
             <title>See Also</title>
@@ -1255,11 +1309,26 @@ has an unknown SRID (as is the case by default).</para>
 		<refsection>
 				<title>Examples</title>
 				<para>This example creates a degree-2 NURBS curve with uniform weights.</para>
-				<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry);</programlisting>
+				<programlisting>SELECT ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0,5 10,10 0)'::geometry
+);</programlisting>
+<screen role="visual-overlay text-primary visual-primary">NURBSCURVE(DEGREE 2, CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(5 10),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3), KNOT(1,3)))</screen>
 				<para>This example creates a rational NURBS curve with custom weights.</para>
-<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]);</programlisting>
-				<para>This example creates a NURBS curve with custom weights and knots.</para>
-<programlisting>SELECT ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0], ARRAY[0,0,0,1,1,1]);</programlisting>
+<programlisting>SELECT ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0,5 10,10 0)'::geometry,
+    ARRAY[1.0, 2.0, 1.0]
+);</programlisting>
+<screen role="visual-overlay text-primary visual-primary">NURBSCURVE(DEGREE 2, CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(5 10),WEIGHT 2), NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3), KNOT(1,3)))</screen>
+				<para>This example creates a NURBS curve with a non-uniform knot vector.</para>
+<programlisting>SELECT ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0,3 10,7 10,10 0)'::geometry,
+    ARRAY[1.0, 1.0, 1.0, 1.0],
+    ARRAY[0.0, 0.0, 0.0, 0.3, 1.0, 1.0, 1.0]
+);</programlisting>
+<screen role="visual-overlay text-primary visual-primary">NURBSCURVE(DEGREE 2, CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(0 0),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(3 10),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(7 10),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT(10 0),WEIGHT 1)),KNOTS (KNOT(0,3), KNOT(0.3,1), KNOT(1,3)))</screen>
 		</refsection>
 
 		<refsection>

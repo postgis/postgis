@@ -53,31 +53,31 @@
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));</programlisting>
-<screen>LINESTRING</screen>
-		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
-			POLYHEDRALSURFACE
-			</programlisting>
+		<programlisting>SELECT GeometryType('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING</screen>
+		<programlisting>SELECT ST_GeometryType('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )');
+    POLYHEDRALSURFACE
+            </programlisting>
 <programlisting>SELECT GeometryType(geom) as result
-  FROM
-    (SELECT
-       ST_GeomFromEWKT('TIN (((
-                0 0 0,
-                0 0 1,
-                0 1 0,
-                0 0 0
-            )), ((
-                0 0 0,
-                0 1 0,
-                1 1 0,
-                0 0 0
-            ))
-            )')  AS geom
-    ) AS g;</programlisting>
-<screen>TIN</screen>
+FROM
+  (SELECT
+     'TIN (((
+              0 0 0,
+              0 0 1,
+              0 1 0,
+              0 0 0
+          )),((
+              0 0 0,
+              0 1 0,
+              1 1 0,
+              0 0 0
+          ))
+          )'::geometry  AS geom
+  ) AS g;</programlisting>
+<screen role="visual-primary text-primary">TIN</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -128,60 +128,35 @@
 	  <refsection>
 		<title>Examples</title>
 
-						<informaltable>
-				  <tgroup cols="2">
-					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_boundary01.png"/>
-							  </imageobject>
-							  <caption><para>Linestring with boundary points overlaid</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting language="sql">SELECT ST_AsText(ST_Boundary(geom))
-FROM (SELECT 'LINESTRING(100 150,50 60, 70 80, 160 170)'::geometry As geom) As f;
-				</programlisting>
-<screen>
+		<para>LineString with boundary points overlaid.</para>
+				<programlisting language="sql">SELECT ST_Boundary(geom)
+FROM (SELECT 'LINESTRING(100 150,50 60,70 80,160 170)'::geometry As geom) As f;
+                </programlisting>
+<screen role="visual-primary text-primary">
 MULTIPOINT((100 150),(160 170))
 </screen>
-						  </para></entry>
 
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_boundary02.png"/>
-							  </imageobject>
-							  <caption><para>polygon holes with boundary multilinestring</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting language="sql">SELECT ST_AsText(ST_Boundary(geom))
+		<para>Polygon holes with the boundary MultiLineString overlaid.</para>
+				<programlisting language="sql">SELECT ST_Boundary(geom)
 FROM (SELECT
-'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 130 ),
-	( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) As f;
-				</programlisting>
-<screen>
+'POLYGON (( 10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130 ),
+    ( 70 40,100 50,120 80,80 110,50 90,70 40 ))'::geometry As geom) As f;
+                </programlisting>
+<screen role="visual-primary text-primary">
 MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),
-	(70 40,100 50,120 80,80 110,50 90,70 40))
+        (70 40,100 50,120 80,80 110,50 90,70 40))
 </screen>
-						</para></entry>
-					  </row>
 
-		</tbody>
-		</tgroup>
-	</informaltable>
-
-		 <programlisting>SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));</programlisting>
-<screen>MULTIPOINT((1 1),(-1 1))</screen>
-<programlisting>SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 1))')));</programlisting>
-<screen>LINESTRING(1 1,0 0,-1 1,1 1)</screen>
+		 <programlisting>SELECT ST_Boundary('LINESTRING(1 1,0 0,-1 1)');</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT((1 1),(-1 1))</screen>
+<programlisting>SELECT ST_Boundary('POLYGON((1 1,0 0,-1 1,1 1))');</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(1 1,0 0,-1 1,1 1)</screen>
 <para>This example uses a 3D polygon.</para>
-<programlisting>SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, 1 1 1))')));</programlisting>
-<screen>LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)</screen>
+<programlisting>SELECT ST_Boundary('POLYGON((1 1 1,0 0 1,-1 1 1,1 1 1))');</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)</screen>
 <para>This example uses a 3D MultiLineString.</para>
-<programlisting>SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));</programlisting>
-<screen>MULTIPOINT(1 1 1,-1 1 1)</screen>
+<programlisting>SELECT ST_Boundary('MULTILINESTRING((1 1 1,0 0 0.5,-1 1 1),(1 1 0.5,0 0 0.5,-1 1 0.5,1 1 0.5) )');</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT(1 1 1,-1 1 1)</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -245,10 +220,19 @@ The result is still topologically valid.
 	  <refsection>
 		<title>Examples</title>
 
+		<para>This example shows a polygon together with the diagonal of its bounding box.</para>
+		<programlisting>WITH input AS (
+  SELECT 'POLYGON((10 20,30 60,70 40,90 10,50 -10,10 20))'::geometry AS geom
+)
+SELECT geom AS input_polygon,
+       ST_BoundingDiagonal(geom) AS diagonal
+FROM input;</programlisting>
+<screen role="visual-overlay visual-primary text-primary">POLYGON((10 20,30 60,70 40,90 10,50 -10,10 20)) | LINESTRING(10 -10,90 60)</screen>
+
 		<para>This example returns the minimum X coordinate of a buffer around a point.</para>
 		<programlisting>
 SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
-  ST_Buffer(ST_Point(0,0),10)
+  ST_Buffer(ST_Point(0, 0), 10)
 )));</programlisting>
 <screen>-10</screen>
 		</refsection>
@@ -301,9 +285,9 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 13)');</programlisting>
+		<programlisting>SELECT ST_CoordDim('CIRCULARSTRING(1 2 3,1 3 4,5 6 7,8 9 10,11 12 13)');</programlisting>
 <screen>3</screen>
-		<programlisting>SELECT ST_CoordDim(ST_Point(1,2));</programlisting>
+		<programlisting>SELECT ST_CoordDim(ST_Point(1, 2));</programlisting>
 <screen>2</screen>
 	  </refsection>
 
@@ -363,7 +347,7 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 	  <refsection>
 		<title>Examples</title>
 
-		 <programlisting>SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))');</programlisting>
+		 <programlisting>SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0), POINT(0 0))');</programlisting>
 <screen>1</screen>
 		 <programlisting>SELECT ST_Dimension('TIN Z (((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))');</programlisting>
 <screen>2</screen>
@@ -422,31 +406,32 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 	  </refsection>
 
 	  <refsection>
-		<title>Standard Examples</title>
-	<programlisting>SELECT sometable.field1, sometable.field1,
-      (ST_Dump(sometable.geom)).geom AS geom
-FROM sometable;
+		<title>Examples</title>
+	<para>Dump the components of geometries stored in a table.</para>
+	<programlisting>SELECT sometable.field1,
+       (ST_Dump(sometable.geom)).geom AS geom
+FROM sometable;</programlisting>
 
--- Break a compound curve into its constituent linestrings and circularstrings
-SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
+	<para>Break a CompoundCurve into its constituent LineStrings and CircularStrings.</para>
+	<programlisting>
+SELECT a.geom, ST_HasArc(a.geom)
   FROM ( SELECT (ST_Dump(p_geom)).geom AS geom
-         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))') AS p_geom) AS b
+         FROM (SELECT 'COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))'::geometry AS p_geom) AS b
         ) AS a;</programlisting>
 <screen>          st_asewkt          | st_hasarc
 -----------------------------+----------
  CIRCULARSTRING(0 0,1 1,1 0) | t
  LINESTRING(1 0,0 1)         | f
 (2 rows)</screen>
-</refsection>
-<refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
+
 <para>This example breaks a PolyhedralSurface into its faces.</para>
 <programlisting>
-SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt
-  FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE(
-((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
-)') ) AS p_geom )  AS a;</programlisting>
+SELECT (a.p_geom).path[1] As path,(a.p_geom).geom As geom_ewkt
+  FROM (SELECT ST_Dump('POLYHEDRALSURFACE(
+((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))
+)' ) AS p_geom )  AS a;</programlisting>
 <screen> path |                geom_ewkt
 ------+------------------------------------------
     1 | POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0))
@@ -458,21 +443,21 @@ SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt
 
 <para>This example uses a TIN geometry.</para>
 <programlisting language="sql">
-SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
+SELECT (g.gdump).path,(g.gdump).geom as wkt
   FROM
     (SELECT
-       ST_Dump(ST_GeomFromEWKT('TIN (((
+       ST_Dump('TIN (((
                 0 0 0,
                 0 0 1,
                 0 1 0,
                 0 0 0
-            )), ((
+            )),((
                 0 0 0,
                 0 1 0,
                 1 1 0,
                 0 0 0
             ))
-            )') ) AS gdump
+            )' ) AS gdump
     ) AS g;</programlisting>
 <screen> path |                 wkt
 ------+-------------------------------------
@@ -543,13 +528,15 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             <para>&Z_support;</para>
 		</refsection>
 
-		<refsection><title>Classic Explode a Table of LineStrings into nodes</title>
-			<programlisting>SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode
+		<refsection>
+			<title>Examples</title>
+			<para>Explode a table of LineStrings into their vertices.</para>
+			<programlisting>SELECT edge_id, (dp).path[1] As index,(dp).geom As wktnode
 FROM (SELECT 1 As edge_id,
-	ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS dp
+    ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2,3 4,10 10)')) AS dp
      UNION ALL
      SELECT 2 As edge_id,
-	ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS dp
+    ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5,5 6,9 10)')) AS dp
    ) As foo;</programlisting>
 <screen> edge_id | index |    wktnode
 ---------+-------+--------------
@@ -559,33 +546,23 @@ FROM (SELECT 1 As edge_id,
        2 |     1 | POINT(3 5)
        2 |     2 | POINT(5 6)
        2 |     3 | POINT(9 10)</screen>
-		</refsection>
-		<refsection>
-			<title>Standard Geometry Examples</title>
 
-			<informalfigure>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/st_dumppoints01.png"/>
-					</imageobject>
-				</mediaobject>
-			</informalfigure>
-
-			<programlisting>SELECT path, ST_AsText(geom)
+			<para>Dump every vertex from a mixed GeometryCollection.</para>
+			<programlisting>SELECT path,geom
 FROM (
   SELECT (ST_DumpPoints(g.geom)).*
   FROM
     (SELECT
        'GEOMETRYCOLLECTION(
           POINT ( 0 1 ),
-          LINESTRING ( 0 3, 3 4 ),
-          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),
-          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ),
-                   ( 5 1, 4 2, 5 2, 5 1 )),
+          LINESTRING ( 0 3,3 4 ),
+          POLYGON (( 2 0,2 3,0 2,2 0 )),
+          POLYGON (( 3 0,3 3,6 3,6 0,3 0 ),
+                   ( 5 1,4 2,5 2,5 1 )),
           MULTIPOLYGON (
-                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ),
-                   ( 1 6, 3 6, 2 7, 1 6 )),
-                  (( 5 4, 5 8, 6 7, 5 4 ))
+                  (( 0 5,0 8,4 8,4 5,0 5 ),
+                   ( 1 6,3 6,2 7,1 6 )),
+                  (( 5 4,5 8,6 7,5 4 ))
           )
         )'::geometry AS geom
     ) AS g
@@ -622,18 +599,31 @@ FROM (
  {5,2,1,3} | POINT(6 7)
  {5,2,1,4} | POINT(5 4)
 (29 rows)</screen>
-		</refsection>
-	<refsection>
-			<title>Polyhedral Surfaces, TIN and Triangle Examples</title>
+
+			<para>Collect the dumped vertices to visualize them over the source geometry.</para>
+			<programlisting>WITH source(geom) AS (VALUES (
+  'GEOMETRYCOLLECTION(
+     POINT (0 1),
+     LINESTRING (0 3,3 4),
+     POLYGON ((2 0,2 3,0 2,2 0)),
+     POLYGON ((3 0,3 3,6 3,6 0,3 0),(5 1,4 2,5 2,5 1)),
+     MULTIPOLYGON (((0 5,0 8,4 8,4 5,0 5),(1 6,3 6,2 7,1 6)),
+                   ((5 4,5 8,6 7,5 4))))'::geometry
+))
+SELECT ST_Collect((dp).geom ORDER BY (dp).path) AS vertices
+FROM source
+CROSS JOIN LATERAL ST_DumpPoints(source.geom) AS dp;</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT((0 1),(0 3),(3 4),(2 0),(2 3),(0 2),(2 0),(3 0),(3 3),(6 3),(6 0),(3 0),(5 1),(4 2),(5 2),(5 1),(0 5),(0 8),(4 8),(4 5),(0 5),(1 6),(3 6),(2 7),(1 6),(5 4),(5 8),(6 7),(5 4))</screen>
+
 			<para>This example uses a cube represented as a PolyhedralSurface.</para>
 			<programlisting>
-SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
+SELECT (g.gdump).path,(g.gdump).geom as wkt
   FROM
     (SELECT
-       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )') ) AS gdump
+       ST_DumpPoints('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )' ) AS gdump
     ) AS g;</programlisting>
 <screen>  path   |     wkt
 ---------+--------------
@@ -670,15 +660,15 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 (30 rows)</screen>
 <para>This example uses a Triangle geometry.</para>
 <programlisting>
-SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
+SELECT (g.gdump).path,(g.gdump).geom as wkt
   FROM
     (SELECT
-       ST_DumpPoints(ST_GeomFromEWKT('TRIANGLE ((
+       ST_DumpPoints('TRIANGLE ((
                 0 0,
                 0 9,
                 9 0,
                 0 0
-            ))') ) AS gdump
+            ))' ) AS gdump
     ) AS g;</programlisting>
 <screen> path |    wkt
 ------+------------
@@ -688,21 +678,21 @@ SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt
  {1,4} | POINT(0 0)</screen>
 <para>This example uses a TIN geometry.</para>
 <programlisting>
-SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
+SELECT (g.gdump).path,(g.gdump).geom as wkt
   FROM
     (SELECT
-       ST_DumpPoints(ST_GeomFromEWKT('TIN (((
+       ST_DumpPoints('TIN (((
                 0 0 0,
                 0 0 1,
                 0 1 0,
                 0 0 0
-            )), ((
+            )),((
                 0 0 0,
                 0 1 0,
                 1 1 0,
                 0 0 0
             ))
-            )') ) AS gdump
+            )' ) AS gdump
     ) AS g;</programlisting>
 <screen>  path   |     wkt
 ---------+--------------
@@ -775,12 +765,12 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 		<refsection>
 			<title>Standard Geometry Examples</title>
 
-			<programlisting>SELECT path, ST_AsText(geom)
+			<programlisting>SELECT path,geom
 FROM (
     SELECT (ST_DumpSegments(g.geom)).*
     FROM (SELECT 'GEOMETRYCOLLECTION(
-    LINESTRING(1 1, 3 3, 4 4),
-    POLYGON((5 5, 6 6, 7 7, 5 5))
+    LINESTRING(1 1,3 3,4 4),
+    POLYGON((5 5,6 6,7 7,5 5))
 )'::geometry AS geom
         ) AS g
 ) j;</programlisting>
@@ -797,7 +787,7 @@ FROM (
 			<title>TIN and Triangle Examples</title>
 <para>This example uses a Triangle geometry.</para>
 <programlisting>
-SELECT path, ST_AsText(geom)
+SELECT path,geom
 FROM (
     SELECT (ST_DumpSegments(g.geom)).*
     FROM (SELECT 'TRIANGLE((
@@ -816,7 +806,7 @@ FROM (
 (3 rows)</screen>
 <para>This example uses a TIN geometry.</para>
 <programlisting>
-SELECT path, ST_AsEWKT(geom)
+SELECT path,geom
 FROM (
     SELECT (ST_DumpSegments(g.geom)).*
     FROM (SELECT 'TIN(((
@@ -824,7 +814,7 @@ FROM (
         0 0 1,
         0 1 0,
         0 0 0
-    )), ((
+    )),((
         0 0 0,
         0 1 0,
         1 1 0,
@@ -895,12 +885,12 @@ FROM (
 		<title>Examples</title>
         <para>Extracting all rings as polygons.</para>
 		<programlisting>SELECT polyTable.field1, polyTable.field1,
-	  (ST_DumpRings(polyTable.geom)).geom As geom
+      (ST_DumpRings(polyTable.geom)).geom As geom
 FROM polyTable
 </programlisting>
         <para>Extracting shell and holes from a polygon.</para>
-<programlisting>SELECT path, ST_AsText(geom) As geom
-	FROM ST_DumpRings('POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 2, 2 3, 3 3, 3 2, 2 2), (4 2, 4 4, 6 4, 6 2, 4 2))');</programlisting>
+<programlisting>SELECT path,geom As geom
+FROM ST_DumpRings('POLYGON ((1 9,9 9,9 1,1 1,1 9),(2 2,2 3,3 3,3 2,2 2),(4 2,4 4,6 4,6 2,4 2))');</programlisting>
 <screen> path |              geom
 ------+--------------------------------
  {0}  | POLYGON((1 9,9 9,9 1,1 1,1 9))
@@ -934,16 +924,18 @@ holes AS (
   WHERE ring_no &gt; 0
 )
 SELECT h.ring_no,
-       ST_AsText(ST_Intersection(ST_Buffer(s.ring_geom, 1.0), h.ring_geom)) AS close_part
+       ST_Normalize(ST_Multi(ST_LineMerge(
+         ST_Intersection(ST_Buffer(s.ring_geom, 1.0), h.ring_geom)
+       ))) AS close_part
 FROM shell AS s
 JOIN holes AS h
   ON ST_DWithin(s.ring_geom, h.ring_geom, 1.0);
-
- ring_no |                   close_part
----------+-------------------------------------------------
-       1 | MULTILINESTRING((1 1,2 1),(1 2,1 1))
-       2 | MULTILINESTRING((8.5 1,9 1),(9 2,9.5 2,9.5 1,9 1))
 </programlisting>
+<screen> ring_no |                   close_part
+---------+-------------------------------------------------
+       1 | MULTILINESTRING((1 2,1 1,2 1))
+       2 | MULTILINESTRING((8.5 1,9 1,9.5 1,9.5 2,9 2))
+</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -984,11 +976,11 @@ JOIN holes AS h
 		<para>&Z_support;</para>
 	  <para>&curve_support;</para>
 
-		<note><para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
 	  versions of PostGIS a single-line MultiLineString would work with this
 	  function and return the end point.  In 2.0.0 it returns NULL like any other MultiLineString.
 	  The old behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
-	  may experience these returning NULL in 2.0.0.</para></note>
+	  may experience these returning NULL in 2.0.0.</para>
 
 	  </refsection>
 
@@ -996,8 +988,8 @@ JOIN holes AS h
 		<title>Examples</title>
 
 <para>End point of a LineString</para>
-		<programlisting>SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::geometry));</programlisting>
-<screen>POINT(3 3)</screen>
+		<programlisting>SELECT ST_EndPoint('LINESTRING(1 1,2 2,3 3)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(3 3)</screen>
 
 <para>End point of a non-LineString is NULL</para>
 <programlisting>SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;</programlisting>
@@ -1005,16 +997,16 @@ JOIN holes AS h
 
 <para>End point of a 3D LineString</para>
 <para>3D endpoint.</para>
-<programlisting>SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));</programlisting>
-<screen>POINT(0 0 5)</screen>
+<programlisting>SELECT ST_EndPoint('LINESTRING(1 1 2,1 2 3,0 0 5)');</programlisting>
+<screen role="visual-primary text-primary">POINT(0 0 5)</screen>
 
 <para>End point of a CircularString</para>
-<programlisting>SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 2, -2 1, -4 2, 6 3)'::geometry));</programlisting>
-<screen>POINT(6 3)</screen>
+<programlisting>SELECT ST_EndPoint('CIRCULARSTRING(5 2,-3 2,-2 1,-4 2,6 3)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(6 3)</screen>
 
 <para>End point of a NURBSCurve</para>
-<programlisting>SELECT ST_AsText(ST_EndPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));</programlisting>
-<screen>POINT(2 0)</screen>
+<programlisting>SELECT ST_EndPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(2 0)</screen>
 	  </refsection>
 
 	  <refsection>
@@ -1066,32 +1058,25 @@ JOIN holes AS h
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_AsText(ST_Envelope('POINT(1 3)'::geometry));</programlisting>
-<screen>POINT(1 3)</screen>
-<programlisting>SELECT ST_AsText(ST_Envelope('LINESTRING(0 0, 1 3)'::geometry));</programlisting>
-<screen>POLYGON((0 0,0 3,1 3,1 0,0 0))</screen>
-<programlisting>SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 0))'::geometry));</programlisting>
-<screen>POLYGON((0 0,0 1,1.0000001 1,1.0000001 0,0 0))</screen>
-<programlisting>SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0, 0 0))'::geometry));</programlisting>
-<screen>POLYGON((0 0,0 1,1.0000000001 1,1.0000000001 0,0 0))</screen>
-<programlisting>SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt
-	FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, 1.0000001 0, 0 0))'::geometry As geom) As foo;
+		<programlisting>SELECT ST_Envelope('POINT(1 3)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(1 3)</screen>
+<programlisting>SELECT ST_Envelope('LINESTRING(0 0,1 3)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POLYGON((0 0,0 3,1 3,1 0,0 0))</screen>
+<programlisting>SELECT ST_Envelope('POLYGON((0 0,0 1,1.0000001 1,1.0000001 0,0 0))'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POLYGON((0 0,0 1,1.0000001 1,1.0000001 0,0 0))</screen>
+<programlisting>SELECT ST_Envelope('POLYGON((0 0,0 1,1.0000000001 1,1.0000000001 0,0 0))'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POLYGON((0 0,0 1,1.0000000001 1,1.0000000001 0,0 0))</screen>
+<programlisting>SELECT Box3D(geom), Box2D(geom), ST_Envelope(geom) As envelopewkt
+    FROM (SELECT 'POLYGON((0 0,0 1000012333334.34545678,1.0000001 1,1.0000001 0,0 0))'::geometry As geom) As foo;
 
 <!-- TODO: Fix examples to reflect new behavior --></programlisting>
-		<informalfigure>
-	  <mediaobject>
-		<imageobject>
-		  <imagedata fileref="images/st_envelope01.png"/>
-		</imageobject>
-		<caption><para>Envelope of a point and linestring.</para></caption>
-	  </mediaobject>
-	</informalfigure>
+	<para>Envelope of a point and LineString.</para>
 <programlisting>
-SELECT ST_AsText(ST_Envelope(ST_Collect(
-			ST_GeomFromText('LINESTRING(55 75,125 150)'),
-			ST_Point(20, 80)
-			))) As wktenv;</programlisting>
-<screen>POLYGON((20 75,20 150,125 150,125 75,20 75))</screen>
+SELECT ST_Envelope(ST_Collect(
+            'LINESTRING(55 75,125 150)',
+            ST_Point(20, 80)
+            )) As wktenv;</programlisting>
+<screen role="visual-primary text-primary">POLYGON((20 75,20 150,125 150,125 75,20 75))</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -1136,24 +1121,49 @@ SELECT ST_AsText(ST_Envelope(ST_Collect(
 
 	  <refsection>
 		<title>Examples</title>
-<para>This example extracts exterior rings from a table of polygons.</para>
+
+<para>Extract the exterior ring from a Polygon with a hole.</para>
+<programlisting>WITH input(geom) AS (VALUES (
+  'POLYGON((0 0,2 9,9 11,14 6,12 0,0 0),(4 3,9 3,10 7,5 8,4 3))'::geometry
+))
+SELECT geom AS input_polygon,
+       ST_ExteriorRing(geom) AS exterior_ring
+FROM input;</programlisting>
+<screen role="visual-overlay visual-primary text-primary">POLYGON((0 0,2 9,9 11,14 6,12 0,0 0),(4 3,9 3,10 7,5 8,4 3)) | LINESTRING(0 0,2 9,9 11,14 6,12 0,0 0)</screen>
+
+<para>For a MultiPolygon, dump the component Polygons before extracting their exterior rings. Both component Polygons in this example have holes.</para>
+<programlisting>WITH input(geom) AS (VALUES (
+  'MULTIPOLYGON(
+    ((0 0,2 9,9 11,14 6,12 0,0 0),(4 3,9 3,10 7,5 8,4 3)),
+    ((18 1,18 10,29 10,31 4,25 0,18 1),(21 3,25 2,28 5,25 8,21 7,21 3))
+  )'::geometry
+))
+SELECT part.geom AS input_polygon,
+       ST_ExteriorRing(part.geom) AS exterior_ring
+FROM input
+CROSS JOIN LATERAL ST_Dump(geom) AS part
+ORDER BY part.path;</programlisting>
+<screen role="visual-overlay visual-primary text-primary">POLYGON((0 0,2 9,9 11,14 6,12 0,0 0),(4 3,9 3,10 7,5 8,4 3)) | LINESTRING(0 0,2 9,9 11,14 6,12 0,0 0)
+POLYGON((18 1,18 10,29 10,31 4,25 0,18 1),(21 3,25 2,28 5,25 8,21 7,21 3)) | LINESTRING(18 1,18 10,29 10,31 4,25 0,18 1)</screen>
+
+<para>Extract exterior rings from a table of Polygons.</para>
 <programlisting>
 SELECT gid, ST_ExteriorRing(geom) AS ering
-FROM sometable;
+FROM sometable;</programlisting>
 
---If you have a table of MULTIPOLYGONs
---and want to return a MULTILINESTRING composed of the exterior rings of each polygon
-SELECT gid, ST_Collect(ST_ExteriorRing(geom)) AS erings
-	FROM (SELECT gid, (ST_Dump(geom)).geom As geom
-			FROM sometable) As foo
-GROUP BY gid;
+<para>For a table of MultiPolygons, dump the component Polygons and collect their exterior rings into a MultiLineString.</para>
+<programlisting language="sql">SELECT gid, ST_Collect(ST_ExteriorRing(geom)) AS erings
+FROM (
+  SELECT gid, (ST_Dump(geom)).geom AS geom
+  FROM sometable
+) AS foo
+GROUP BY gid;</programlisting>
 
---3d Example
-SELECT ST_AsEWKT(ST_ExteriorRing(
-	ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 1, 1 2 1, 1 1 1, 0 0 1))')
-	)
-);</programlisting>
-<screen>LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)</screen>
+<para>This example returns the 3D exterior ring of a Polygon.</para>
+<programlisting>SELECT ST_ExteriorRing(
+    'POLYGON Z ((0 0 5,4 0 5,4 3 5,0 3 5,0 0 5))'
+    );</programlisting>
+<screen role="visual-primary text-primary">LINESTRING(0 0 5,4 0 5,4 3 5,0 3 5,0 0 5)</screen>
 	  </refsection>
 
 	  <refsection>
@@ -1187,9 +1197,12 @@ SELECT ST_AsEWKT(ST_ExteriorRing(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the 1-based Nth element geometry of an input geometry which is a
-			GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, or POLYHEDRALSURFACE.
-			Otherwise, returns NULL.</para>
+		<para>Returns the 1-based Nth element of a GEOMETRYCOLLECTION,
+			MULTIPOINT, MULTILINESTRING, MULTICURVE, or MULTIPOLYGON.
+			For a unitary geometry, including a TIN or PolyhedralSurface,
+			an index of 1 returns the input geometry and any other index returns NULL.
+			Use <xref linkend="ST_PatchN"/> and <xref linkend="ST_NumPatches"/> to
+			access and count the faces of a TIN or PolyhedralSurface.</para>
 
 		<note>
 		  <para>Index is 1-based as for OGC specs since version 0.8.0.
@@ -1201,6 +1214,7 @@ SELECT ST_AsEWKT(ST_ExteriorRing(
 		</note>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para role="changed" conformance="2.0.0">Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
+		<para role="changed" conformance="3.6.0">Changed: 3.6.0 TIN and PolyhedralSurface are treated as unitary geometries and are not decomposed into patches; use ST_PatchN to access faces.</para>
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 9.1.5</para>
 		<para>&Z_support;</para>
@@ -1217,73 +1231,76 @@ SELECT ST_AsEWKT(ST_ExteriorRing(
 		<para>Extracting a subset of points from a 3D multipoint.</para>
 		<programlisting>
 <![CDATA[
-SELECT n, ST_AsEWKT(ST_GeometryN(geom, n)) As geomewkt
+SELECT n, ST_GeometryN(geom, n) As geomewkt
 FROM (
-VALUES (ST_GeomFromEWKT('MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))') ),
-( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
-	)As foo(geom)
-	CROSS JOIN generate_series(1,100) n
-WHERE n <= ST_NumGeometries(geom);
-
- n |               geomewkt
+VALUES
+    (1, 'MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))'::geometry ),
+    (2, 'MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))'::geometry )
+    ) As foo(id, geom)
+    CROSS JOIN generate_series(1,100) n
+WHERE n <= ST_NumGeometries(geom)
+ORDER BY id, n;
+]]></programlisting>
+<screen><![CDATA[ n |               geomewkt
 ---+-----------------------------------------
  1 | POINT(1 2 7)
  2 | POINT(3 4 7)
  3 | POINT(5 6 7)
  4 | POINT(8 9 10)
  1 | CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5)
- 2 | LINESTRING(10 11,12 11)
+ 2 | LINESTRING(10 11,12 11)]]></screen>
 
-
---Extracting all geometries (useful when you want to assign an id)
-SELECT gid, n, ST_GeometryN(geom, n)
+<para>Extracting all geometries (useful when you want to assign an id).</para>
+<programlisting><![CDATA[SELECT gid, n, ST_GeometryN(geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
-WHERE n <= ST_NumGeometries(geom);
-]]></programlisting>
+WHERE n <= ST_NumGeometries(geom);]]></programlisting>
 	  </refsection>
 
 <refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
-<para>This example breaks a PolyhedralSurface into its faces.</para>
+<para>A PolyhedralSurface or TIN is treated as a single geometry, not as a
+collection of faces.  <function>ST_GeometryN</function> does not decompose the
+surface into patches, so an index greater than 1 returns <varname>NULL</varname>.
+Use <xref linkend="ST_PatchN"/> and <xref linkend="ST_NumPatches"/> to access
+individual faces.</para>
+<para>This example requests the third element of a PolyhedralSurface.</para>
 <programlisting language="sql">
-SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt
-  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
-((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
-)')  AS p_geom )  AS a;</programlisting>
-<para>Output:</para>
-<screen>POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))</screen>
+SELECT ST_GeometryN(p_geom, 3) As geom_ewkt
+  FROM (SELECT 'POLYHEDRALSURFACE(
+((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
+((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),
+((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))
+)'::geometry  AS p_geom )  AS a;</programlisting>
+<screen>NULL</screen>
 
-<para>This example uses a TIN geometry.</para>
+<para>This example requests the second element of a TIN.</para>
 <programlisting language="sql">
-SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
+SELECT ST_GeometryN(geom, 2) as wkt
   FROM
     (SELECT
-       ST_GeomFromEWKT('TIN (((
+       'TIN (((
                 0 0 0,
                 0 0 1,
                 0 1 0,
                 0 0 0
-            )), ((
+            )),((
                 0 0 0,
                 0 1 0,
                 1 1 0,
                 0 0 0
             ))
-            )')  AS geom
+            )'::geometry  AS geom
     ) AS g;</programlisting>
-<para>Output:</para>
-<screen>TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))</screen>
+<screen>NULL</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_NumGeometries"/></para>
+		<para><xref linkend="ST_Dump"/>, <xref linkend="ST_NumGeometries"/>, <xref linkend="ST_PatchN"/>, <xref linkend="ST_NumPatches"/></para>
 	  </refsection>
 	</refentry>
 
@@ -1316,38 +1333,32 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
-			ST_LineString</programlisting>
+			<programlisting language="sql">SELECT ST_GeometryType('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'::geometry);</programlisting>
+<screen role="text-primary">ST_LineString</screen>
 
-			<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
-			ST_PolyhedralSurface</programlisting>
+			<programlisting language="sql">SELECT ST_GeometryType('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )'::geometry);</programlisting>
+<screen role="text-primary">ST_PolyhedralSurface</screen>
 
-		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
-			ST_PolyhedralSurface</programlisting>
-
-		<programlisting>SELECT ST_GeometryType(geom) as result
-  FROM
-    (SELECT
-       ST_GeomFromEWKT('TIN (((
-                0 0 0,
-                0 0 1,
-                0 1 0,
-                0 0 0
-            )), ((
-                0 0 0,
-                0 1 0,
-                1 1 0,
-                0 0 0
-            ))
-            )')  AS geom
-    ) AS g;</programlisting>
-<screen>ST_Tin</screen>
+		<programlisting language="sql">SELECT ST_GeometryType(geom) AS result
+FROM
+  (SELECT
+     'TIN (((
+              0 0 0,
+              0 0 1,
+              0 1 0,
+              0 0 0
+          )),((
+              0 0 0,
+              0 1 0,
+              1 1 0,
+              0 0 0
+          ))
+          )'::geometry AS geom
+  ) AS g;</programlisting>
+<screen role="text-primary">ST_Tin</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -1386,7 +1397,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)'));</programlisting>
+		<programlisting>SELECT ST_HasArc(ST_Collect('LINESTRING(1 2,3 4,5 6)', 'CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)'));</programlisting>
 <screen>t</screen>
 	  </refsection>
 
@@ -1436,13 +1447,16 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-SELECT ST_AsText(ST_InteriorRingN(geom, 1)) As geom
-FROM (SELECT ST_BuildArea(ST_Collect(
-			ST_Buffer(ST_Point(1,2), 20,3),
-			ST_Buffer(ST_Point(1, 2), 10,3))) As geom
-		)  as foo;
-		</programlisting>
+		<programlisting language="sql">WITH data AS (
+  SELECT ST_BuildArea(ST_Collect(
+    ST_Buffer(ST_Point(1, 2), 20, 3),
+    ST_Buffer(ST_Point(1, 2), 10, 3)
+  )) AS geom
+)
+SELECT geom AS input_polygon,
+       ST_InteriorRingN(geom, 1) AS ring
+FROM data;</programlisting>
+        <screen role="visual-primary docbook-qa-ignore-wide-lines">POLYGON((21 2,18.320508075688775 -7.999999999999998,11.000000000000002 -15.320508075688771,1 -18,-8.999999999999996 -15.320508075688775,-16.32050807568877 -8.000000000000007,-19 2,-16.320508075688778 11.999999999999995,-9.000000000000009 19.320508075688767,1 22,10.999999999999986 19.32050807568878,18.320508075688767 12.000000000000009,21 2),(11 2,9.660254037844384 7.000000000000004,5.999999999999993 10.66025403784439,1 12,-4.000000000000004 10.660254037844384,-7.660254037844389 6.999999999999997,-9 2,-7.660254037844386 -3.000000000000004,-3.999999999999998 -6.660254037844387,1 -8,6.000000000000001 -6.660254037844386,9.660254037844387 -2.999999999999999,11 2)) | LINESTRING(11 2,9.660254037844384 7.000000000000004,5.999999999999993 10.66025403784439,1 12,-4.000000000000004 10.660254037844384,-7.660254037844389 6.999999999999997,-9 2,-7.660254037844386 -3.000000000000004,-3.999999999999998 -6.660254037844387,1 -8,6.000000000000001 -6.660254037844386,9.660254037844387 -2.999999999999999,11 2)</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1485,17 +1499,17 @@ FROM (SELECT ST_BuildArea(ST_Collect(
       <refsection>
         <title>Examples</title>
 
-        <programlisting>
--- Returns 3
-SELECT ST_NumCurves('COMPOUNDCURVE(
-    (2 2, 2.5 2.5),
-    CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
-    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
-  )');
+        <para>This CompoundCurve contains three component curves.</para>
+        <programlisting language="sql">SELECT ST_NumCurves('COMPOUNDCURVE(
+    (2 2,2.5 2.5),
+    CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5),
+    (3.5 3.5,2.5 4.5,3 5,2 2)
+  )');</programlisting>
+<screen role="text-primary">3</screen>
 
--- Returns 0
-SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
-        </programlisting>
+        <para>An empty CompoundCurve has no component curves.</para>
+        <programlisting language="sql">SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');</programlisting>
+<screen role="text-primary">0</screen>
       </refsection>
 
       <refsection>
@@ -1536,15 +1550,15 @@ SELECT ST_NumCurves('COMPOUNDCURVE EMPTY');
       <refsection>
         <title>Examples</title>
 
-        <programlisting>
-SELECT ST_AsText(ST_CurveN(
+        <para>This example extracts the second component curve, a CircularString, from a CompoundCurve.</para>
+        <programlisting language="sql">SELECT ST_CurveN(
   'COMPOUNDCURVE(
-    (2 2, 2.5 2.5),
-    CIRCULARSTRING(2.5 2.5, 4.5 2.5, 3.5 3.5),
-    (3.5 3.5, 2.5 4.5, 3 5, 2 2)
+    (0 0,2 0),
+    CIRCULARSTRING(2 0,3 1,4 0),
+    (4 0,6 1)
   )',
-  1));
-        </programlisting>
+  2) AS curve;</programlisting>
+<screen role="visual-primary visual-overlay text-primary">CIRCULARSTRING(2 0,3 1,4 0)</screen>
       </refsection>
 
       <refsection>
@@ -1603,15 +1617,15 @@ SELECT ST_AsText(ST_CurveN(
 	  <refsection>
 		<title>Line String and Point Examples</title>
 
-		<programlisting>SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);</programlisting>
+		<programlisting>SELECT ST_IsClosed('LINESTRING(0 0,1 1)'::geometry);</programlisting>
 <screen>f</screen>
-<programlisting>SELECT ST_IsClosed('LINESTRING(0 0, 0 1, 1 1, 0 0)'::geometry);</programlisting>
+<programlisting>SELECT ST_IsClosed('LINESTRING(0 0,0 1,1 1,0 0)'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 1))'::geometry);</programlisting>
+<programlisting>SELECT ST_IsClosed('MULTILINESTRING((0 0,0 1,1 1,0 0),(0 0,1 1))'::geometry);</programlisting>
 <screen>f</screen>
 <programlisting>SELECT ST_IsClosed('POINT(0 0)'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);</programlisting>
+<programlisting>SELECT ST_IsClosed('MULTIPOINT((0 0),(1 1))'::geometry);</programlisting>
 <screen>t</screen>
 	  </refsection>
 
@@ -1620,17 +1634,17 @@ SELECT ST_AsText(ST_CurveN(
 
 		<para>This example uses a cube.</para>
 		<programlisting>
-		SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting>
+SELECT ST_IsClosed('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )');</programlisting>
 <screen>t</screen>
 <para>This example uses the same cube with one side missing.</para>
 <programlisting>
- SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)) )'));</programlisting>
+SELECT ST_IsClosed('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+       ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+       ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+       ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)) )');</programlisting>
 <screen>f</screen>
 	  </refsection>
 
@@ -1684,13 +1698,13 @@ SELECT ST_AsText(ST_CurveN(
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_IsCollection('LINESTRING(0 0, 1 1)'::geometry);</programlisting>
+		<programlisting>SELECT ST_IsCollection('LINESTRING(0 0,1 1)'::geometry);</programlisting>
 <screen>f</screen>
 <programlisting>SELECT ST_IsCollection('MULTIPOINT EMPTY'::geometry);</programlisting>
 <screen>t</screen>
 <programlisting>SELECT ST_IsCollection('MULTIPOINT((0 0))'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_IsCollection('MULTIPOINT((0 0), (42 42))'::geometry);</programlisting>
+<programlisting>SELECT ST_IsCollection('MULTIPOINT((0 0),(42 42))'::geometry);</programlisting>
 <screen>t</screen>
 <programlisting>SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);</programlisting>
 <screen>t</screen>
@@ -1733,7 +1747,7 @@ SELECT ST_AsText(ST_CurveN(
 		<para>&sfs_compliant; s2.1.1.1</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.7</para>
 		<para>&curve_support;</para>
-		<warning><para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards</para></warning>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards</para>
 
 	  </refsection>
 
@@ -1741,16 +1755,16 @@ SELECT ST_AsText(ST_CurveN(
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_IsEmpty(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY'));</programlisting>
+		<programlisting>SELECT ST_IsEmpty('GEOMETRYCOLLECTION EMPTY'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_IsEmpty(ST_GeomFromText('POLYGON EMPTY'));</programlisting>
+<programlisting>SELECT ST_IsEmpty('POLYGON EMPTY'::geometry);</programlisting>
 <screen>t</screen>
-<programlisting>SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));</programlisting>
+<programlisting>SELECT ST_IsEmpty('POLYGON((1 2,3 4,5 6,1 2))'::geometry);</programlisting>
 <screen>f</screen>
-<programlisting>SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = false;</programlisting>
+<programlisting>SELECT ST_IsEmpty('POLYGON((1 2,3 4,5 6,1 2))'::geometry) = false;</programlisting>
 <screen> t
 (1 row)</screen>
-<programlisting>SELECT ST_IsEmpty(ST_GeomFromText('CIRCULARSTRING EMPTY'));</programlisting>
+<programlisting>SELECT ST_IsEmpty('CIRCULARSTRING EMPTY'::geometry);</programlisting>
 <screen>t</screen>
 	  </refsection>
 
@@ -1758,9 +1772,7 @@ SELECT ST_AsText(ST_CurveN(
 
 	<refentry xml:id="ST_IsPolygonCCW">
 		<refnamediv>
-			<refname>
-				ST_IsPolygonCCW
-			</refname>
+			<refname>ST_IsPolygonCCW</refname>
 			<refpurpose>Tests if Polygons have exterior rings oriented counter-clockwise and interior rings oriented clockwise.
 			</refpurpose>
 		</refnamediv>
@@ -1768,14 +1780,8 @@ SELECT ST_AsText(ST_CurveN(
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>
-						boolean
-						<function>ST_IsPolygonCCW</function>
-					</funcdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>geom</parameter>
-					</paramdef>
+					<funcdef>boolean <function>ST_IsPolygonCCW</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
@@ -1828,9 +1834,7 @@ SELECT ST_AsText(ST_CurveN(
 
 	<refentry xml:id="ST_IsPolygonCW">
 		<refnamediv>
-			<refname>
-				ST_IsPolygonCW
-			</refname>
+			<refname>ST_IsPolygonCW</refname>
 			<refpurpose>Tests if Polygons have exterior rings oriented clockwise and interior rings oriented counter-clockwise.
 			</refpurpose>
 		</refnamediv>
@@ -1838,14 +1842,8 @@ SELECT ST_AsText(ST_CurveN(
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>
-						boolean
-						<function>ST_IsPolygonCW</function>
-					</funcdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>geom</parameter>
-					</paramdef>
+					<funcdef>boolean <function>ST_IsPolygonCW</function></funcdef>
+					<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
@@ -1933,13 +1931,13 @@ SELECT ST_AsText(ST_CurveN(
 	  <title>Examples</title>
 
 	  <programlisting>SELECT ST_IsRing(geom), ST_IsClosed(geom), ST_IsSimple(geom)
-FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS geom) AS foo;</programlisting>
+FROM (SELECT 'LINESTRING(0 0,0 1,1 1,1 0,0 0)'::geometry AS geom) AS foo;</programlisting>
 <screen> st_isring | st_isclosed | st_issimple
 -----------+-------------+-------------
  t         | t           | t
 (1 row)</screen>
 <programlisting>SELECT ST_IsRing(geom), ST_IsClosed(geom), ST_IsSimple(geom)
-FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;</programlisting>
+FROM (SELECT 'LINESTRING(0 0,0 1,1 0,1 1,0 0)'::geometry AS geom) AS foo;</programlisting>
 <screen> st_isring | st_isclosed | st_issimple
 -----------+-------------+-------------
  f         | t           | f
@@ -1993,9 +1991,9 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;</p
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_IsSimple(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));</programlisting>
+		<programlisting>SELECT ST_IsSimple('POLYGON((1 2,3 4,5 6,1 2))');</programlisting>
 <screen>f</screen>
-<programlisting>SELECT ST_IsSimple(ST_GeomFromText('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)'));</programlisting>
+<programlisting>SELECT ST_IsSimple('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)');</programlisting>
 <screen>f</screen>
 		</refsection>
 
@@ -2041,7 +2039,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;</p
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_M(ST_GeomFromEWKT('POINT(1 2 3 4)'));</programlisting>
+		<programlisting>SELECT ST_M('POINT(1 2 3 4)');</programlisting>
 <screen>4</screen>
 	  </refsection>
 
@@ -2092,32 +2090,36 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;</p
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
---Return how much byte space Boston takes up  in our Mass data set
-SELECT pg_size_pretty(SUM(ST_MemSize(geom))) as totgeomsum,
-pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)) As bossum,
-CAST(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)*1.00 /
-		SUM(ST_MemSize(geom))*100 As numeric(10,2)) As perbos
-FROM towns;
+		<para>Compare the memory used by all geometries in a Massachusetts town dataset with the subset for Boston.</para>
+		<programlisting role="requires-external-state">SELECT pg_size_pretty(sum(ST_MemSize(geom))) AS totgeomsum,
+       pg_size_pretty(sum(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)) AS bossum,
+       cast(
+           sum(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END) * 100.0
+           / sum(ST_MemSize(geom)) AS numeric(10, 2)
+       ) AS perbos
+FROM towns;</programlisting>
+<screen> totgeomsum | bossum | perbos
+------------+--------+--------
+ 1522 kB    | 30 kB  |   1.99
+(1 row)</screen>
 
-totgeomsum	bossum	perbos
-----------	------	------
-1522 kB		30 kB	1.99
+		<para>Return the memory size of a CircularString in bytes.</para>
+<programlisting>SELECT ST_MemSize('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'::geometry);</programlisting>
+<screen> st_memsize
+------------
+         80
+(1 row)</screen>
 
-
-SELECT ST_MemSize(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
-
----
-73
-
---What percentage of our table is taken up by just the geometry
-SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, sum(ST_MemSize(geom)) As geomsize,
-sum(ST_MemSize(geom))*1.00/pg_total_relation_size('public.neighborhoods')*100 As pergeom
-FROM neighborhoods;
-fulltable_size geomsize  pergeom
-------------------------------------------------
-262144         96238	 36.71188354492187500000
-	</programlisting>
+		<para>Calculate the percentage of a table's total size used by geometry data.</para>
+		<programlisting role="requires-external-state">SELECT pg_total_relation_size('public.neighborhoods') AS fulltable_size,
+       sum(ST_MemSize(geom)) AS geomsize,
+       sum(ST_MemSize(geom)) * 100.0
+           / pg_total_relation_size('public.neighborhoods') AS pergeom
+FROM neighborhoods;</programlisting>
+<screen> fulltable_size | geomsize |         pergeom
+----------------+----------+--------------------------
+         262144 |    96238 | 36.71188354492187500000
+(1 row)</screen>
 	  </refsection>
 
 	</refentry>
@@ -2149,12 +2151,12 @@ fulltable_size geomsize  pergeom
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_NDims(ST_GeomFromText('POINT(1 1)')) As d2point,
-	ST_NDims(ST_GeomFromEWKT('POINT(1 1 2)')) As d3point,
-	ST_NDims(ST_GeomFromEWKT('POINTM(1 1 0.5)')) As d2pointm;</programlisting>
-<screen>	 d2point | d3point | d2pointm
+			<programlisting>SELECT ST_NDims('POINT(1 1)') As d2point,
+ST_NDims('POINT(1 1 2)') As d3point,
+ST_NDims('POINTM(1 1 0.5)') As d2pointm;</programlisting>
+<screen> d2point | d3point | d2pointm
 ---------+---------+----------
-	   2 |       3 |        3</screen>
+       2 |       3 |        3</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -2192,12 +2194,19 @@ fulltable_size geomsize  pergeom
 		<refsection>
 			<title>Examples</title>
 
-<programlisting>SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
-4
+			<para>Count the points in a 2D LineString.</para>
+<programlisting>SELECT ST_NPoints('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)');</programlisting>
+<screen> st_npoints
+------------
+          4
+(1 row)</screen>
 
---Polygon in 3D space
-SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))
-4</programlisting>
+			<para>Count the points in a 3D LineString.</para>
+<programlisting>SELECT ST_NPoints('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)');</programlisting>
+<screen> st_npoints
+------------
+          4
+(1 row)</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -2235,10 +2244,10 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 		<title>Examples</title>
 
 		<programlisting>SELECT ST_NRings(geom) As Nrings, ST_NumInteriorRings(geom) As ninterrings
-					FROM (SELECT ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As geom) As foo;</programlisting>
-<screen>	 nrings | ninterrings
+FROM (SELECT 'POLYGON((1 2,3 4,5 6,1 2))'::geometry As geom) As foo;</programlisting>
+<screen> nrings | ninterrings
 --------+-------------
-	  1 |           0
+      1 |           0
 (1 row)</screen>
 	  </refsection>
 
@@ -2275,6 +2284,7 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para role="changed" conformance="2.0.0">Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type.
 				2.0.0+ now returns 1 for single geometries e.g POLYGON, LINESTRING, POINT.</para>
+			<para role="changed" conformance="3.6.0">Changed: 3.6.0 TIN and PolyhedralSurface are treated as unitary geometries and return 1; use ST_NumPatches to count faces.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
 			<para>&Z_support;</para>
 			<para>&P_support;</para>
@@ -2286,16 +2296,21 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			<title>Examples</title>
 
 <para>This example returns 1; prior versions would have returned NULL.</para>
-<programlisting>
-SELECT ST_NumGeometries(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
-1
+<programlisting language="sql">
+SELECT ST_NumGeometries('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)');</programlisting>
+<screen role="text-primary"> st_numgeometries
+------------------
+                1
+(1 row)</screen>
 
---Geometry Collection Example - multis count as one geom in a collection
-SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT((-2 3),(-2 2)),
-LINESTRING(5 5 ,10 10),
-POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
-3
-</programlisting>
+			<para>A MultiPoint counts as one geometry within a GeometryCollection.</para>
+<programlisting language="sql">SELECT ST_NumGeometries('GEOMETRYCOLLECTION(MULTIPOINT((-2 3),(-2 2)),
+LINESTRING(5 5,10 10),
+POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))');</programlisting>
+<screen role="text-primary"> st_numgeometries
+------------------
+                3
+(1 row)</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -2334,18 +2349,18 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 	  <refsection>
 		<title>Examples</title>
 
-			<para>This example counts the interior rings of a polygon.</para>
-			<programlisting>
-SELECT gid, field1, field2, ST_NumInteriorRings(geom) AS numholes
-FROM sometable;
+			<para>Count the interior rings of a Polygon.</para>
+			<programlisting language="sql" role="requires-external-state">SELECT gid, field1, field2, ST_NumInteriorRings(geom) AS numholes
+FROM sometable;</programlisting>
 
---If you have multipolygons
---And you want to know the total number of interior rings in the MULTIPOLYGON
-SELECT gid, field1, field2, SUM(ST_NumInteriorRings(geom)) AS numholes
-FROM (SELECT gid, field1, field2, (ST_Dump(geom)).geom As geom
-	FROM sometable) As foo
-GROUP BY gid, field1,field2;
-			</programlisting>
+			<para>For a MultiPolygon, dump its component Polygons and sum their interior ring counts.</para>
+			<programlisting language="sql" role="requires-external-state">SELECT gid, field1, field2, SUM(ST_NumInteriorRings(geom)) AS numholes
+FROM (
+    SELECT gid, field1, field2, (ST_Dump(geom)).geom AS geom
+    FROM sometable
+) AS foo
+GROUP BY gid, field1, field2;
+            </programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -2357,7 +2372,7 @@ GROUP BY gid, field1,field2;
 	<refentry xml:id="ST_NumInteriorRing">
 	  <refnamediv>
 		<refname>ST_NumInteriorRing</refname>
-		<refpurpose>Returns the number of interior rings (holes) of a Polygon. Aias for ST_NumInteriorRings</refpurpose>
+		<refpurpose>Returns the number of interior rings (holes) of a Polygon. Alias for ST_NumInteriorRings.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2370,6 +2385,13 @@ GROUP BY gid, field1,field2;
 	  </refsynopsisdiv>
 
 	  <refsection>
+		<title>Description</title>
+
+		<para>This function is an alias for <xref linkend="ST_NumInteriorRings"/>.</para>
+		<para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+	  </refsection>
+
+	  <refsection>
 		<title>See Also</title>
 
 		<para><xref linkend="ST_NumInteriorRings"/>, <xref linkend="ST_InteriorRingN"/></para>
@@ -2379,7 +2401,7 @@ GROUP BY gid, field1,field2;
 	<refentry xml:id="ST_NumPatches">
 	  <refnamediv>
 		<refname>ST_NumPatches</refname>
-		<refpurpose>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries.</refpurpose>
+		<refpurpose>Returns the number of faces in a PolyhedralSurface or TIN.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2394,8 +2416,9 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the number of faces on a Polyhedral Surface.  Will return null for non-polyhedral geometries. This is
-		an alias for ST_NumGeometries to support MM naming. Faster to use ST_NumGeometries if you don't care about MM convention.</para>
+		<para>Returns the number of faces in a PolyhedralSurface or TIN.
+		Returns NULL for other geometries. Unlike <xref linkend="ST_NumGeometries"/>,
+		this function counts individual faces.</para>
 
 		<para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 		<para>&Z_support;</para>
@@ -2407,17 +2430,19 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
-		6
-		</programlisting>
+		<programlisting>SELECT ST_NumPatches('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )');</programlisting>
+<screen> st_numpatches
+---------------
+             6
+(1 row)</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_NumGeometries"/></para>
+		<para><xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_NumGeometries"/>, <xref linkend="ST_PatchN"/></para>
 	  </refsection>
 	</refentry>
 
@@ -2452,9 +2477,11 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
-		4
-		</programlisting>
+		<programlisting language="sql">SELECT ST_NumPoints('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)');</programlisting>
+<screen role="text-primary"> st_numpoints
+--------------
+            4
+(1 row)</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -2467,7 +2494,7 @@ GROUP BY gid, field1,field2;
 	  <refnamediv>
 		<refname>ST_PatchN</refname>
 
-		<refpurpose>Returns the Nth geometry (face) of a PolyhedralSurface.</refpurpose>
+		<refpurpose>Returns the Nth face of a PolyhedralSurface or TIN.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2483,11 +2510,10 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 1-based Nth geometry (face) if the geometry is a
-			POLYHEDRALSURFACE or POLYHEDRALSURFACEM.
-			Otherwise, returns NULL.
-			This returns the same answer as ST_GeometryN for PolyhedralSurfaces.
-			Using ST_GeometryN is faster.</para>
+		<para>Returns the 1-based Nth face of a PolyhedralSurface or TIN.
+			Returns NULL for other geometries or an out-of-range index.
+			Use this function to access faces, because <xref linkend="ST_GeometryN"/>
+			treats PolyhedralSurface and TIN as unitary geometries.</para>
 
 		<note>
 		  <para>Index is 1-based.</para>
@@ -2501,6 +2527,7 @@ GROUP BY gid, field1,field2;
 		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
+		<para>&T_support;</para>
 
 	  </refsection>
 
@@ -2510,20 +2537,20 @@ GROUP BY gid, field1,field2;
 
 		<para>Extract the 2nd face of the polyhedral surface.</para>
 		<programlisting>
-SELECT ST_AsEWKT(ST_PatchN(geom, 2)) As geomewkt
+SELECT ST_PatchN(geom, 2) As geomewkt
 FROM (
-VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ) As foo(geom);</programlisting>
-<screen>POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))</screen>
+VALUES ('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+    ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
+    ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
+    ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)) )'::geometry) ) As foo(geom);</programlisting>
+<screen role="visual-primary text-primary">POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_GeometryN"/>, <xref linkend="ST_NumGeometries"/></para>
+		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromEWKT"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_GeometryN"/>, <xref linkend="ST_NumGeometries"/>, <xref linkend="ST_NumPatches"/></para>
 	  </refsection>
 	</refentry>
 
@@ -2567,12 +2594,11 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		<para>&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<note><para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
 	  versions of PostGIS -- a single line multilinestring would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.</para>
-      <para role="changed" conformance="2.3.0"> Changed: 2.3.0 : negative indexing available (-1 is last point)
+		<para role="changed" conformance="2.3.0"> Changed: 2.3.0 : negative indexing available (-1 is last point)
     </para>
-      </note>
 
 	  </refsection>
 
@@ -2582,22 +2608,23 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 
 		<para>This example extracts all POINT geometries from a LineString.</para>
 		<programlisting>
-SELECT ST_AsText(ST_PointN(
-	  column1,
-	  generate_series(1, ST_NPoints(column1))
-   ))
-FROM ( VALUES ('LINESTRING(0 0, 1 1, 2 2)'::geometry) ) AS foo;</programlisting>
-<screen> POINT(0 0)
+SELECT ST_PointN(
+      column1,
+      generate_series(1, ST_NPoints(column1))
+   )
+FROM ( VALUES ('LINESTRING(0 0,1 1,2 2)'::geometry) ) AS foo;</programlisting>
+<screen role="visual-primary text-primary"> POINT(0 0)
  POINT(1 1)
  POINT(2 2)
 (3 rows)</screen>
-<para>This example uses a CircularString.</para>
-<programlisting>SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'), 2));</programlisting>
-<screen>POINT(3 2)</screen>
-<programlisting>SELECT ST_AsText(f)
-FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
-  CROSS JOIN ST_PointN(g, -2) AS f; -- 1 based index</programlisting>
-<screen>POINT Z (1 1 1)</screen>
+	<para>This example uses a CircularString.</para>
+	<programlisting>SELECT ST_PointN('CIRCULARSTRING(1 2,3 2,1 2)', 2);</programlisting>
+	<screen role="visual-primary text-primary">POINT(3 2)</screen>
+	<para>The index is 1-based. A negative index counts backward from the end of the LineString.</para>
+	<programlisting>SELECT f
+FROM ST_GeomFromText('LINESTRING(0 0 0,1 1 1,2 2 2)') AS g
+  CROSS JOIN ST_PointN(g, -2) AS f;</programlisting>
+	<screen role="visual-primary text-primary">POINT Z (1 1 1)</screen>
 	  </refsection>
 
 	  <refsection>
@@ -2656,10 +2683,8 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 10))'));
-
-MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
-			</programlisting>
+			<programlisting language="sql">SELECT ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6,30 10 4))');</programlisting>
+			<screen role="visual-primary text-primary">MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))</screen>
 		</refsection>
 
 		<refsection>
@@ -2697,39 +2722,36 @@ MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
 	  <para>&Z_support;</para>
 	  <para>&curve_support;</para>
 
-	  <note>
-        <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns NULLs if input was not a LineString.</para>
-      <para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
+	  <para role="enhanced" conformance="3.2.0">Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns NULLs if input was not a LineString.</para>
+	  <para role="changed" conformance="2.0.0">Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
 	  versions of PostGIS a single-line MultiLineString would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other MultiLineString.
 	  The old behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
 	  may experience these returning NULL in 2.0.0.</para>
-
-      </note>
 
 	</refsection>
 
 	<refsection>
 	  <title>Examples</title>
 <para>Start point of a LineString</para>
-	  <programlisting>SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));</programlisting>
-<screen>POINT(0 1)</screen>
+	  <programlisting>SELECT ST_StartPoint('LINESTRING(0 1,0 2)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(0 1)</screen>
 
 <para>Start point of a Point is the Point itself</para>
-<programlisting>SELECT ST_AsText(ST_StartPoint('POINT(0 1)'::geometry));</programlisting>
-<screen>POINT(0 1)</screen>
+<programlisting>SELECT ST_StartPoint('POINT(0 1)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(0 1)</screen>
 
 <para>Start point of a 3D LineString</para>
-<programlisting>SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));</programlisting>
-<screen>POINT(0 1 1)</screen>
+<programlisting>SELECT ST_StartPoint('LINESTRING(0 1 1,0 2 2)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(0 1 1)</screen>
 
 <para>Start point of a CircularString</para>
-<programlisting>SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 2, -2 1, -4 2, 6 3)'::geometry));</programlisting>
-<screen>POINT(5 2)</screen>
+<programlisting>SELECT ST_StartPoint('CIRCULARSTRING(5 2,-3 2,-2 1,-4 2,6 3)'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(5 2)</screen>
 
 <para>Start point of a NURBSCurve</para>
-<programlisting language="sql">SELECT ST_AsText(ST_StartPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));</programlisting>
-<screen>POINT(0 0)</screen>
+<programlisting language="sql">SELECT ST_StartPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry);</programlisting>
+<screen role="visual-primary text-primary">POINT(0 0)</screen>
 
 <para>Build edge node references from the start and end points of a LineString
 table. The example uses exact endpoint equality, so linework with nearly
@@ -2810,11 +2832,11 @@ ORDER BY e.road_id;</programlisting>
 	<refsection>
 	  <title>Examples</title>
 <para>Start M value of a LineString</para>
-	  <programlisting>SELECT ST_StartM('LINESTRING M(0 0 10, 1 1 20, 2 0 30)'::geometry);</programlisting>
+	  <programlisting>SELECT ST_StartM('LINESTRING M(0 0 10,1 1 20,2 0 30)'::geometry);</programlisting>
 <screen>10</screen>
 
 <para>Start M value of a CircularString</para>
-<programlisting>SELECT ST_StartM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry);</programlisting>
+<programlisting>SELECT ST_StartM('CIRCULARSTRING M(0 0 5,1 1 10,2 0 15)'::geometry);</programlisting>
 <screen>5</screen>
 
 <para>Start M value of a NURBSCurve</para>
@@ -2822,7 +2844,7 @@ ORDER BY e.road_id;</programlisting>
 <screen>100</screen>
 
 <para>Geometry without M dimension returns NULL</para>
-<programlisting>SELECT ST_StartM('LINESTRING(0 0, 1 1)'::geometry) IS NULL AS is_null;</programlisting>
+<programlisting>SELECT ST_StartM('LINESTRING(0 0,1 1)'::geometry) IS NULL AS is_null;</programlisting>
 <screen>t</screen>
 	</refsection>
 
@@ -2864,11 +2886,11 @@ ORDER BY e.road_id;</programlisting>
 	<refsection>
 	  <title>Examples</title>
 <para>End M value of a LineString</para>
-	  <programlisting>SELECT ST_EndM('LINESTRING M(0 0 10, 1 1 20, 2 0 30)'::geometry);</programlisting>
+	  <programlisting>SELECT ST_EndM('LINESTRING M(0 0 10,1 1 20,2 0 30)'::geometry);</programlisting>
 <screen>30</screen>
 
 <para>End M value of a CircularString</para>
-<programlisting>SELECT ST_EndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry);</programlisting>
+<programlisting>SELECT ST_EndM('CIRCULARSTRING M(0 0 5,1 1 10,2 0 15)'::geometry);</programlisting>
 <screen>15</screen>
 
 <para>End M value of a NURBSCurve</para>
@@ -2876,7 +2898,7 @@ ORDER BY e.road_id;</programlisting>
 <screen>300</screen>
 
 <para>Geometry without M dimension returns NULL</para>
-<programlisting>SELECT ST_EndM('LINESTRING(0 0, 1 1)'::geometry) IS NULL AS is_null;</programlisting>
+<programlisting>SELECT ST_EndM('LINESTRING(0 0,1 1)'::geometry) IS NULL AS is_null;</programlisting>
 <screen>t</screen>
 	</refsection>
 
@@ -2921,20 +2943,20 @@ ORDER BY e.road_id;</programlisting>
 	<refsection>
 	  <title>Examples</title>
 <para>Set start M value of a LineString</para>
-	  <programlisting>SELECT ST_AsText(ST_SetStartM('LINESTRING M(0 0 10, 1 1 20, 2 0 30)'::geometry, 100));</programlisting>
-<screen>LINESTRING M (0 0 100,1 1 20,2 0 30)</screen>
+	  <programlisting>SELECT ST_SetStartM('LINESTRING M(0 0 10,1 1 20,2 0 30)'::geometry, 100);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING M (0 0 100,1 1 20,2 0 30)</screen>
 
 <para>Add M dimension and set start M value</para>
-<programlisting>SELECT ST_AsText(ST_SetStartM('LINESTRING(0 0, 1 1, 2 0)'::geometry, 50));</programlisting>
-<screen>LINESTRING M (0 0 50,1 1 0,2 0 0)</screen>
+<programlisting>SELECT ST_SetStartM('LINESTRING(0 0,1 1,2 0)'::geometry, 50);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING M (0 0 50,1 1 0,2 0 0)</screen>
 
 <para>Set start M value of a CircularString</para>
-<programlisting>SELECT ST_AsText(ST_SetStartM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry, 99));</programlisting>
-<screen>CIRCULARSTRING M (0 0 99,1 1 10,2 0 15)</screen>
+<programlisting>SELECT ST_SetStartM('CIRCULARSTRING M(0 0 5,1 1 10,2 0 15)'::geometry, 99);</programlisting>
+<screen role="visual-primary text-primary">CIRCULARSTRING M (0 0 99,1 1 10,2 0 15)</screen>
 
 <para>Set start M value of a NURBSCurve</para>
-<programlisting language="sql">SELECT ST_AsText(ST_SetStartM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry, 500));</programlisting>
-<screen>NURBSCURVE M (DEGREE 2,CONTROLPOINTS M (NURBSPOINT(WEIGHTEDPOINT M (0 0 500),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT M (1 1 200),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT M (2 0 300),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))</screen>
+<programlisting language="sql">SELECT ST_SetStartM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry, 500);</programlisting>
+<screen role="visual-primary text-primary">NURBSCURVE M (DEGREE 2,CONTROLPOINTS M (NURBSPOINT(WEIGHTEDPOINT M (0 0 500),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT M (1 1 200),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT M (2 0 300),WEIGHT 1)),KNOTS (KNOT(0,3), KNOT(1,3)))</screen>
 	</refsection>
 
 	<refsection>
@@ -2978,20 +3000,20 @@ ORDER BY e.road_id;</programlisting>
 	<refsection>
 	  <title>Examples</title>
 <para>Set end M value of a LineString</para>
-	  <programlisting>SELECT ST_AsText(ST_SetEndM('LINESTRING M(0 0 10, 1 1 20, 2 0 30)'::geometry, 999));</programlisting>
-<screen>LINESTRING M (0 0 10,1 1 20,2 0 999)</screen>
+	  <programlisting>SELECT ST_SetEndM('LINESTRING M(0 0 10,1 1 20,2 0 30)'::geometry, 999);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING M (0 0 10,1 1 20,2 0 999)</screen>
 
 <para>Add M dimension and set end M value</para>
-<programlisting>SELECT ST_AsText(ST_SetEndM('LINESTRING(0 0, 1 1, 2 0)'::geometry, 75));</programlisting>
-<screen>LINESTRING M (0 0 0,1 1 0,2 0 75)</screen>
+<programlisting>SELECT ST_SetEndM('LINESTRING(0 0,1 1,2 0)'::geometry, 75);</programlisting>
+<screen role="visual-primary text-primary">LINESTRING M (0 0 0,1 1 0,2 0 75)</screen>
 
 <para>Set end M value of a CircularString</para>
-<programlisting>SELECT ST_AsText(ST_SetEndM('CIRCULARSTRING M(0 0 5, 1 1 10, 2 0 15)'::geometry, 88));</programlisting>
-<screen>CIRCULARSTRING M (0 0 5,1 1 10,2 0 88)</screen>
+<programlisting>SELECT ST_SetEndM('CIRCULARSTRING M(0 0 5,1 1 10,2 0 15)'::geometry, 88);</programlisting>
+<screen role="visual-primary text-primary">CIRCULARSTRING M (0 0 5,1 1 10,2 0 88)</screen>
 
 <para>Set end M value of a NURBSCurve</para>
-<programlisting language="sql">SELECT ST_AsText(ST_SetEndM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry, 999));</programlisting>
-<screen>NURBSCURVE M (DEGREE 2,CONTROLPOINTS M (NURBSPOINT(WEIGHTEDPOINT M (0 0 100),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT M (1 1 200),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT M (2 0 999),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3)))</screen>
+<programlisting language="sql">SELECT ST_SetEndM('NURBSCURVE M(2, (0 0 100, 1 1 200, 2 0 300))'::geometry, 999);</programlisting>
+<screen role="visual-primary text-primary">NURBSCURVE M (DEGREE 2,CONTROLPOINTS M (NURBSPOINT(WEIGHTEDPOINT M (0 0 100),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT M (1 1 200),WEIGHT 1), NURBSPOINT(WEIGHTEDPOINT M (2 0 999),WEIGHT 1)),KNOTS (KNOT(0,3), KNOT(1,3)))</screen>
 	</refsection>
 
 	<refsection>
@@ -3055,16 +3077,16 @@ ORDER BY e.road_id;</programlisting>
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,
-        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) geog;</programlisting>
+		<programlisting>SELECT ST_Summary('LINESTRING(0 0,1 1)'::geometry) as geom,
+ST_Summary('POLYGON((0 0,1 1,1 2,1 1,0 0))'::geography) geog;</programlisting>
 <screen>            geom             |          geog
 -----------------------------+--------------------------
  LineString[B] with 2 points | Polygon[BGS] with 1 rings
                              | ring 0 has 5 points
                              :
 (1 row)</screen>
-<programlisting>SELECT ST_Summary(ST_GeogFromText('LINESTRING(0 0 1, 1 1 1)')) As geog_line,
-        ST_Summary(ST_GeomFromText('SRID=4326;POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As geom_poly;</programlisting>
+<programlisting>SELECT ST_Summary('LINESTRING(0 0 1,1 1 1)'::geography) As geog_line,
+ST_Summary('SRID=4326;POLYGON((0 0 1,1 1 2,1 2 3,1 1 1,0 0 1))'::geometry) As geom_poly;</programlisting>
 <screen>          geog_line             |        geom_poly
 -------------------------------- +--------------------------
  LineString[ZBGS] with 2 points | Polygon[ZBS] with 1 rings
@@ -3127,9 +3149,9 @@ ORDER BY e.road_id;</programlisting>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_X(ST_GeomFromEWKT('POINT(1 2 3 4)'));</programlisting>
+		<programlisting>SELECT ST_X('POINT(1 2 3 4)');</programlisting>
 <screen>1</screen>
-<programlisting>SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));</programlisting>
+<programlisting>SELECT ST_Y(ST_Centroid('LINESTRING(1 2 3 4,1 1 1 1)'::geometry));</programlisting>
 <screen>1.5</screen>
 	  </refsection>
 
@@ -3175,9 +3197,9 @@ ORDER BY e.road_id;</programlisting>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_Y(ST_GeomFromEWKT('POINT(1 2 3 4)'));</programlisting>
+		<programlisting>SELECT ST_Y('POINT(1 2 3 4)');</programlisting>
 <screen>2</screen>
-<programlisting>SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));</programlisting>
+<programlisting>SELECT ST_Y(ST_Centroid('LINESTRING(1 2 3 4,1 1 1 1)'::geometry));</programlisting>
 <screen>1.5</screen>
 	  </refsection>
 
@@ -3222,7 +3244,7 @@ ORDER BY e.road_id;</programlisting>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_Z(ST_GeomFromEWKT('POINT(1 2 3 4)'));</programlisting>
+		<programlisting>SELECT ST_Z('POINT(1 2 3 4)');</programlisting>
 <screen>3</screen>
 	  </refsection>
 
@@ -3265,13 +3287,13 @@ ORDER BY e.road_id;</programlisting>
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_ZMFlag(ST_GeomFromEWKT('LINESTRING(1 2, 3 4)'));</programlisting>
+		<programlisting>SELECT ST_ZMFlag('LINESTRING(1 2,3 4)');</programlisting>
 <screen>0</screen>
-<programlisting>SELECT ST_ZMFlag(ST_GeomFromEWKT('LINESTRINGM(1 2 3, 3 4 3)'));</programlisting>
+<programlisting>SELECT ST_ZMFlag('LINESTRINGM(1 2 3, 3 4 3)');</programlisting>
 <screen>1</screen>
-<programlisting>SELECT ST_ZMFlag(ST_GeomFromEWKT('CIRCULARSTRING(1 2 3, 3 4 3, 5 6 3)'));</programlisting>
+<programlisting>SELECT ST_ZMFlag('CIRCULARSTRING(1 2 3,3 4 3,5 6 3)');</programlisting>
 <screen>2</screen>
-<programlisting>SELECT ST_ZMFlag(ST_GeomFromEWKT('POINT(1 2 3 4)'));</programlisting>
+<programlisting>SELECT ST_ZMFlag('POINT(1 2 3 4)');</programlisting>
 <screen>3</screen>
 	  </refsection>
 
@@ -3315,12 +3337,10 @@ ORDER BY e.road_id;</programlisting>
   <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_HasZ(ST_GeomFromText('POINT(1 2 3)'));
- true
-</programlisting>
-    <programlisting>SELECT ST_HasZ(ST_GeomFromText('LINESTRING(0 0, 1 1)'));
- false
-</programlisting>
+    <programlisting language="sql">SELECT ST_HasZ('POINT(1 2 3)');</programlisting>
+    <screen role="text-primary">t</screen>
+    <programlisting language="sql">SELECT ST_HasZ('LINESTRING(0 0,1 1)');</programlisting>
+    <screen role="text-primary">f</screen>
   </refsection>
 
   <refsection>
@@ -3362,12 +3382,10 @@ ORDER BY e.road_id;</programlisting>
   <refsection>
     <title>Examples</title>
 
-    <programlisting>SELECT ST_HasM(ST_GeomFromText('POINTM(1 2 3)'));
- true
-</programlisting>
-    <programlisting>SELECT ST_HasM(ST_GeomFromText('LINESTRING(0 0, 1 1)'));
- false
-</programlisting>
+    <programlisting language="sql">SELECT ST_HasM('POINTM(1 2 3)');</programlisting>
+    <screen role="text-primary">t</screen>
+    <programlisting language="sql">SELECT ST_HasM('LINESTRING(0 0,1 1)');</programlisting>
+    <screen role="text-primary">f</screen>
   </refsection>
 
   <refsection>
@@ -3404,8 +3422,8 @@ ORDER BY e.road_id;</programlisting>
 		<refsection>
 				<title>Examples</title>
 				<para>This example extracts control points from a NURBS curve.</para>
-				<programlisting>SELECT ST_AsText(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));</programlisting>
-<screen>MULTIPOINT((0 0),(5 10),(10 0))</screen>
+				<programlisting>SELECT ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
+<screen role="visual-primary text-primary">MULTIPOINT((0 0),(5 10),(10 0))</screen>
 				<para>This example counts the control points.</para>
 <programlisting>SELECT ST_NPoints(ST_ControlPoints('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));</programlisting>
 <screen>3</screen>
@@ -3484,7 +3502,7 @@ ORDER BY e.road_id;</programlisting>
 		<refsection>
 				<title>Examples</title>
 				<para>This example returns weights from a rational NURBS curve.</para>
-				<programlisting>SELECT ST_Weights(ST_MakeNurbsCurve(2, 'LINESTRING(0 0, 5 10, 10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]));</programlisting>
+				<programlisting>SELECT ST_Weights(ST_MakeNurbsCurve(2, 'LINESTRING(0 0,5 10,10 0)'::geometry, ARRAY[1.0, 2.0, 1.0]));</programlisting>
 <screen>{1,2,1}</screen>
 				<para>This example checks the weights of a non-rational curve.</para>
 <programlisting>SELECT ST_Weights('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
@@ -3526,10 +3544,10 @@ ORDER BY e.road_id;</programlisting>
 				<para>This example returns knots from a NURBS curve with a custom knot vector.</para>
 				<programlisting>
 SELECT ST_Knots(ST_MakeNurbsCurve(
-		2,
-		'LINESTRING(0 0, 5 10, 10 0)'::geometry,
-		ARRAY[1.0, 2.0, 1.0],
-		ARRAY[0,0,0,1,1,1]));</programlisting>
+        2,
+        'LINESTRING(0 0,5 10,10 0)'::geometry,
+        ARRAY[1.0, 2.0, 1.0],
+        ARRAY[0, 0, 0, 1, 1, 1]));</programlisting>
 <screen>{0,0,0,1,1,1}</screen>
 				<para>This example checks the knots of a curve using the default knot vector.</para>
 <programlisting>SELECT ST_Knots('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
@@ -3614,9 +3632,9 @@ FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS t;</progr
 				<para>This example checks whether a curve is rational.</para>
 				<programlisting>
 SELECT ST_NurbsCurveIsRational(ST_MakeNurbsCurve(
-		2,
-		'LINESTRING(0 0, 5 10, 10 0)'::geometry,
-		ARRAY[1.0, 2.0, 1.0]));</programlisting>
+        2,
+        'LINESTRING(0 0,5 10,10 0)'::geometry,
+        ARRAY[1.0, 2.0, 1.0]));</programlisting>
 <screen>t</screen>
 				<para>This example checks a non-rational curve.</para>
 <programlisting>SELECT ST_NurbsCurveIsRational('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
@@ -3659,7 +3677,7 @@ SELECT ST_NurbsCurveIsRational(ST_MakeNurbsCurve(
 				<programlisting>SELECT ST_IsNurbsCurve('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
 <screen>t</screen>
 				<para>This example tests a regular LineString.</para>
-<programlisting>SELECT ST_IsNurbsCurve('LINESTRING(0 0, 10 10)'::geometry);</programlisting>
+<programlisting>SELECT ST_IsNurbsCurve('LINESTRING(0 0,10 10)'::geometry);</programlisting>
 <screen>f</screen>
 		</refsection>
 
@@ -3697,11 +3715,11 @@ SELECT ST_NurbsCurveIsRational(ST_MakeNurbsCurve(
 		<refsection>
 				<title>Examples</title>
 				<para>This example returns the midpoint of a NURBS curve.</para>
-				<programlisting>SELECT ST_AsText(ST_Evaluate('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 0.5));</programlisting>
+				<programlisting>SELECT ST_Evaluate('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 0.5);</programlisting>
 				<para>This example samples multiple points along a curve.</para>
-<programlisting>SELECT t, ST_AsText(ST_Evaluate(curve, t)) AS point
+<programlisting>SELECT t, ST_Evaluate(curve, t) AS point
 FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS c,
-	     generate_series(0, 1, 0.25) AS t;</programlisting>
+         generate_series(0, 1, 0.25) AS t;</programlisting>
 		</refsection>
 
 		<refsection>
@@ -3740,11 +3758,14 @@ FROM (SELECT 'NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry AS curve) AS c,
 		<refsection>
 				<title>Examples</title>
 				<para>This example converts a NURBS curve to a LineString using the default quality.</para>
-				<programlisting>SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry));</programlisting>
+				<programlisting language="sql">SELECT ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry);</programlisting>
+<screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">LINESTRING(0 0,0.3125 0.60546875,0.625 1.171875,0.9375 1.69921875,1.25 2.1875,1.5625 2.63671875,1.875 3.046875,2.1875 3.41796875,2.5 3.75,2.8125 4.04296875,3.125 4.296875,3.4375 4.51171875,3.75 4.6875,4.0625 4.82421875,4.375 4.921875,4.6875 4.98046875,5 5,5.3125 4.98046875,5.625 4.921875,5.9375 4.82421875,6.25 4.6875,6.5625 4.51171875,6.875 4.296875,7.1875 4.04296875,7.5 3.75,7.8125 3.41796875,8.125 3.046875,8.4375 2.63671875,8.75 2.1875,9.0625 1.69921875,9.375 1.171875,9.6875 0.60546875,10 0)</screen>
 				<para>This example creates a high-quality approximation with 64 segments.</para>
-<programlisting>SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 64));</programlisting>
+<programlisting language="sql">SELECT ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 64);</programlisting>
+<screen role="visual-primary docbook-qa-ignore-wide-lines">LINESTRING(0 0,0.15625 0.3076171875,0.3125 0.60546875,0.46875 0.8935546875,0.625 1.171875,0.78125 1.4404296875,0.9375 1.69921875,1.09375 1.9482421875,1.25 2.1875,1.40625 2.4169921875,1.5625 2.63671875,1.71875 2.8466796875,1.875 3.046875,2.03125 3.2373046875,2.1875 3.41796875,2.34375 3.5888671875,2.5 3.75,2.65625 3.9013671875,2.8125 4.04296875,2.96875 4.1748046875,3.125 4.296875,3.28125 4.4091796875,3.4375 4.51171875,3.59375 4.6044921875,3.75 4.6875,3.90625 4.7607421875,4.0625 4.82421875,4.21875 4.8779296875,4.375 4.921875,4.53125 4.9560546875,4.6875 4.98046875,4.84375 4.9951171875,5 5,5.15625 4.9951171875,5.3125 4.98046875,5.46875 4.9560546875,5.625 4.921875,5.78125 4.8779296875,5.9375 4.82421875,6.09375 4.7607421875,6.25 4.6875,6.40625 4.6044921875,6.5625 4.51171875,6.71875 4.4091796875,6.875 4.296875,7.03125 4.1748046875,7.1875 4.04296875,7.34375 3.9013671875,7.5 3.75,7.65625 3.5888671875,7.8125 3.41796875,7.96875 3.2373046875,8.125 3.046875,8.28125 2.8466796875,8.4375 2.63671875,8.59375 2.4169921875,8.75 2.1875,8.90625 1.9482421875,9.0625 1.69921875,9.21875 1.4404296875,9.375 1.171875,9.53125 0.8935546875,9.6875 0.60546875,9.84375 0.3076171875,10 0)</screen>
 				<para>This example creates a lower-quality, faster approximation with 16 segments.</para>
-<programlisting>SELECT ST_AsText(ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 16));</programlisting>
+<programlisting language="sql">SELECT ST_NurbsToLineString('NURBSCURVE(2, (0 0, 5 10, 10 0))'::geometry, 16);</programlisting>
+<screen role="visual-primary text-primary docbook-qa-ignore-wide-lines">LINESTRING(0 0,0.625 1.171875,1.25 2.1875,1.875 3.046875,2.5 3.75,3.125 4.296875,3.75 4.6875,4.375 4.921875,5 5,5.625 4.921875,6.25 4.6875,6.875 4.296875,7.5 3.75,8.125 3.046875,8.75 2.1875,9.375 1.171875,10 0)</screen>
 		</refsection>
 
 		<refsection>

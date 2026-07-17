@@ -55,6 +55,7 @@ if test -f utils/repo_revision.pl; then
 fi
 export VREV="`cat postgis_revision.h | awk '{print $3}'`"
 echo "VREV is ${VREV}"
+make -C regress visual-examples
 cd doc
 
 

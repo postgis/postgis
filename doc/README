@@ -24,13 +24,10 @@ To generate the html files and the comments:
  * DocBook 5 schemas and stylesheets - https://docbook.org/tools/
  * xmllint - http://xmlsoft.org
 
-To generate the images:
- * GraphicsMagick - http://www.graphicsmagick.org/ (preferred)
- * ImageMagick - https://imagemagick.org/script/download.php ("convert" or
-   "magick convert" binaries)
-
 To generate the PDFs:
  * dblatex - http://dblatex.sourceforge.net
+ * rsvg-convert from librsvg (preferred for visual-example SVG fallbacks)
+ * GraphicsMagick or ImageMagick as an optional SVG fallback rasterizer
 
 To generate the developer's documentation:
  * Doxygen - http://www.stack.nl/~dimitri/doxygen/
@@ -41,7 +38,8 @@ To generate and manage the translated XML files:
  * gettext - https://www.gnu.org/software/gettext/
 
 To generate and report on manual example tests:
- * Python 3 with lxml
+ * Python 3
+ * A running PostgreSQL server and the staged PostGIS build
 
 To generate the localized PDFs:
  * fonts-ipafont-gothic
@@ -50,23 +48,17 @@ To generate the localized PDFs:
 How to
 ------
 
-Manual images for the reference documentation live in ``doc/html/images``.
-Each ``.wkt`` file stores one drawing, optionally split into named layers by
-prefixing a line with ``StyleName;WKT``. The generator associates each layer
-with ``styles.conf`` and streams the resulting GraphicsMagick command without
-ever writing intermediate files, so building all figures in parallel is safe.
+Reference figures are generated from executable manual examples. Run
+``make -C regress visual-examples`` before HTML or PDF targets. The staged
+PostGIS build supplies geometry paths and raster outputs; the renderer writes
+SVG plus a manifest under ``doc/html/images/visual-examples``. HTML embeds the
+SVG files directly, while PDF rasterizes the same files as a backend fallback.
 
-To regenerate the helper binary and PNG artwork:
-
-1. ``make -C doc/html/images generator``
-2. ``make -C doc/html/images images`` (use ``-j`` for parallel builds)
-
-Invoke ``doc/html/images/generator`` directly to spot-check new artwork. The
-``-v`` flag prints the exact GraphicsMagick or ImageMagick command, ``-s``
-overrides the canvas size, and passing a second filename overrides the default
-``.png`` output. Set ``POSTGIS_DOC_CONVERTER`` to the GraphicsMagick/ImageMagick
-binary if autodetection cannot find ``gm``, ``magick``, or ``convert`` in
-``PATH``.
+Do not add screenshots or authored geometry PNGs. Static raster files under
+``doc/html/images/static`` are limited to branding and interface icons. Use
+DocBook markup for equations and tables. See
+``doc/development/manual.md`` for layout roles, labels, textual-output policy,
+native geometry/EWKT output handling, and the visual review procedure.
 
 To run garden tests against functions, follow these instructions on the PostGIS
 dev wiki: http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
@@ -124,6 +116,40 @@ Example SQL formatting rules:
 Use ``make exampletest-report`` to inspect the current manual. Use
 ``make -C regress exampletest-unit`` to run fast unit tests for the manual
 example parser and comparison logic.
+
+Running ``make -C regress visual-examples`` executes every runnable manual
+example against the staged PostGIS build and renders a figure whenever its
+result or SQL literals contain geometry. The same PostGIS build parses and
+normalizes the geometry and supplies the SVG paths; no second geometry
+implementation or checked-in image is needed. HTML embeds those SVG files and
+the PDF image step rasterizes the same files at high resolution. The HTML and
+PDF targets fail with a reminder if these assets have not been generated.
+
+The textual output remains in the manual. HTML initially folds it only when
+the figure contains that geometry result; scalar output and input-only figures
+remain visible. Add ``role="visual-primary"`` and a stable ``xml:id`` to an
+adjacent ``screen`` only when an authored example needs an explicit stable
+figure identity or preference. Add ``role="text-primary"`` to a ``screen`` when
+its exact geometry type or coordinates are essential; HTML then keeps Output
+expanded while still showing the generated figure. Use ``role="visual-overlay"``
+when input and output layers must share one coordinate frame, and
+``role="visual-separate-output"`` when independent output columns must be shown
+in separate, equally scaled frames. Geometry columns named with an ``input_``
+prefix are treated as authored input layers; in separate-output mode their
+remaining column names also label their frames.
+Use ``role="visual-output-only"`` when setup geometry literals or constructors
+appear in the SQL but the figure should render only the query output.
+Aliases on cast WKT literals and geometry result columns become figure legend
+labels; quote an alias when the label needs spaces.
+
+A plain paragraph immediately before a ``programlisting`` is rendered as the
+introduction to that example card. Examples without an introduction retain the
+same standalone Code styling.
+
+The full ``make -C regress exampletest`` target also regenerates these assets
+while testing every runnable manual example. The narrower visual target shares
+its staged-install and database recipe but does not require unrelated optional
+features used elsewhere in the manual.
 
 For contributor workflow, local testing, and garden checks, see
 ``doc/development/``.

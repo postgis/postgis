@@ -62,7 +62,7 @@
 						<tbody>
 						<!-- Exclude PostGIS types, management functions, long transaction support, or exceptional functions from consideration  -->
 						<!-- leaving out operators in an effor to try to fit on one page -->
-						<xsl:for-each select="descendant::node()[not(@xml:id='PostGIS_Types' or @xml:id='Management_Functions' or @xml:id='Long_Transactions_Support' or @xml:id='Exceptional_Functions' or @xml:id='Version_Functions')]/db:refentry">
+						<xsl:for-each select="descendant::node()[not(@xml:id='PostGIS_Types' or @xml:id='Management_Functions' or @xml:id='Long_Transactions_Support' or @xml:id='Exceptional_Functions' or @xml:id='Version_Functions')]/db:refentry[not(contains(concat(' ', normalize-space(@role), ' '), ' deprecated-alias '))]">
 							<xsl:sort select="@id"/>
 							<xsl:variable name='comment'>
 								<xsl:value-of select="normalize-space(translate(translate(db:refnamediv/db:refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>

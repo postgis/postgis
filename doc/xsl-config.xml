@@ -168,6 +168,23 @@
         </para>
     </tags>
 
+    <block_labels>
+        <label role="code"><para>Code</para></label>
+        <label role="output"><para>Output</para></label>
+        <label role="figure"><para>Figure</para></label>
+        <label role="copy"><para>Copy</para></label>
+        <label role="copied"><para>Copied</para></label>
+        <label role="copy-failed"><para>Failed</para></label>
+        <label role="show-text"><para>Show text</para></label>
+        <label role="hide-text"><para>Hide text</para></label>
+        <label role="show-output-text"><para>Show output text</para></label>
+        <label role="hide-output-text"><para>Hide output text</para></label>
+        <label role="show-hexewkb"><para>Show HEXEWKB</para></label>
+        <label role="show-native-hexewkb"><para>Show native HEXEWKB</para></label>
+        <label role="show-ewkt"><para>Show EWKT</para></label>
+        <label role="show-readable-ewkt"><para>Show readable EWKT</para></label>
+    </block_labels>
+
     <cheatsheets>
         <para role="new_in_release">
             New in this release

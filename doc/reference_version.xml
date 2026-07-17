@@ -41,11 +41,9 @@ postgis_topology, postgis_sfcgal) to given or latest version.
     postgis_raster, postgis_sfcgal, and postgis_topology.</para>
 
 		<para role="availability" conformance="2.5.0">Availability: 2.5.0</para>
-		<note>
-			<para role="changed" conformance="3.4.0">Changed: 3.4.0 to add target_version argument.</para>
-            <para role="changed" conformance="3.3.0">Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work on all systems.</para>
-			<para role="changed" conformance="3.0.0">Changed: 3.0.0 to repackage loose extensions and support postgis_raster.</para>
-		</note>
+		<para role="changed" conformance="3.4.0">Changed: 3.4.0 to add target_version argument.</para>
+		<para role="changed" conformance="3.3.0">Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work on all systems.</para>
+		<para role="changed" conformance="3.0.0">Changed: 3.0.0 to repackage loose extensions and support postgis_raster.</para>
 	  </refsection>
 
 	  <refsection>
@@ -105,8 +103,8 @@ NOTICE:  Extension postgis_topology is not available or not packagable for some 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT PostGIS_Full_Version();</programlisting>
-<screen>POSTGIS="3.4.0dev 3.3.0rc2-993-g61bdf43a7" [EXTENSION] PGSQL="160" GEOS="3.12.0dev-CAPI-1.18.0" SFCGAL="1.3.8" PROJ="7.2.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org USER_WRITABLE_DIRECTORY=/tmp/proj DATABASE_PATH=/usr/share/proj/proj.db" GDAL="GDAL 3.2.2, released 2021/03/05" LIBXML="2.9.10" LIBJSON="0.15" LIBPROTOBUF="1.3.3" WAGYU="0.5.0 (Internal)" TOPOLOGY RASTER</screen>
+		<programlisting language="sql">SELECT PostGIS_Full_Version();</programlisting>
+<screen role="text-primary">POSTGIS="3.7.0dev 3.7.0alpha1-477-ga9004e778" [EXTENSION] PGSQL="180" GEOS="3.15.0beta1" SFCGAL="2.3.0" PROJ="9.8.1 NETWORK_ENABLED=OFF URL_ENDPOINT=https://cdn.proj.org DATABASE_PATH=/usr/share/proj/proj.db" GDAL="GDAL 3.13.1, released 2026/06/01" LIBXML="2.15.3"</screen>
 	  </refsection>
 
 	  <refsection>

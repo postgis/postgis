@@ -65,12 +65,3 @@ Modules:
 The generated Doxygen manuals are published at
 <https://postgis.net/docs/doxygen/>. User-facing manuals remain at
 <https://postgis.net/documentation/>.
-
-## Draft-Only Migration Records
-
-The [Trac cleanup ledger](wiki/trac-cleanup.md) and
-[Trac wiki corpus record](../trac-wiki/) are review aids for this draft pull
-request. They are not intended to become published developer documentation.
-The raw `.tracwiki` page import has been fully audited; each page was folded
-into maintained topic pages above, left as historical Trac context, or retired
-through the cleanup ledger.

@@ -42,8 +42,8 @@ Route new work there unless the target is an explicit in-tree backpatch:
 When old Trac wiki pages contain backlog, examples, or design notes for a
 split component, do not carry that material into core PostGIS developer docs
 only because it was historically on the PostGIS wiki. Check the current
-component repository first. Completed or superseded ideas should be recorded in
-the Trac cleanup ledger; still-relevant component work belongs as issues,
+component repository first. Completed or superseded ideas can stay as
+historical Trac context; still-relevant component work belongs as issues,
 design notes, or documentation in that component repository.
 
 ## Core Contributor Guidelines

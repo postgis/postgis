@@ -1754,6 +1754,7 @@ static void test_lwpoly_construct_circle(void)
 
 	ASSERT_INT_EQUAL(lwgeom_count_vertices(lwpoly_as_lwgeom(p)), segments_per_quad * 4 + 1);
 	ASSERT_INT_EQUAL(lwgeom_get_srid(lwpoly_as_lwgeom(p)), srid)
+	CU_ASSERT_TRUE(ptarray_is_closed_2d(p->rings[0]));
 
 	g = lwgeom_get_bbox(lwpoly_as_lwgeom(p));
 	CU_ASSERT_DOUBLE_EQUAL(g->xmin, x-r, 0.1);

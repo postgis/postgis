@@ -14,11 +14,11 @@
      <note><para>The <varname>history_table</varname> extension is written in plpgsql and located in the <varname>extras/history_table</varname> directory of the PostGIS source tree.</para></note>
      <para>If you have a table 'roads', this module will maintain a 'roads_history' side table, which contains all the columns of the parent table, and the following additional columns:</para>
 <programlisting>history_id      | integer                     | not null default
- date_added      | timestamp without time zone | not null default now()
- date_deleted    | timestamp without time zone |
- last_operation  | character varying(30)       | not null
- active_user     | character varying(90)       | not null default "current_user"()
- current_version | text                        | not null</programlisting>
+date_added      | timestamp without time zone | not null default now()
+date_deleted    | timestamp without time zone |
+last_operation  | character varying(30)       | not null
+active_user     | character varying(90)       | not null default "current_user"()
+current_version | text                        | not null</programlisting>
 
 <orderedlist>
   <listitem>
@@ -113,27 +113,24 @@ SELECT * FROM roads_history
 			<refsection>
 				<title>Examples</title>
 
-				<programlisting>CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));
+				<programlisting language="sql">CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));
 SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);
 
 SELECT postgis_enable_history('public', 'roads', 'geom') As register_table;
-register_table
---------------
-t
-
-INSERT INTO roads(road_name, geom)
-  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 832202,231627.5 832250.5)',26986));
-
--- check transaction detail --
-SELECT date_added, last_operation, current_version
-FROM roads_history
-WHERE road_name = 'Test Street' ORDER BY date_added DESC;
-
-       date_added       | last_operation | current_version
-------------------------+----------------+-----------------
- 2011-02-07 12:44:36.92 | INSERT         | 2
-
 </programlisting>
+<screen>register_table
+--------------
+t</screen>
+				<programlisting language="sql">INSERT INTO roads(road_name, geom)
+  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 832202,231627.5 832250.5)', 26986));</programlisting>
+
+        <para>Check the transaction history.</para>
+        <programlisting language="sql">SELECT date_added, last_operation, current_version
+FROM roads_history
+WHERE road_name = 'Test Street' ORDER BY date_added DESC;</programlisting>
+        <screen>       date_added       | last_operation | current_version
+------------------------+----------------+-----------------
+ 2011-02-07 12:44:36.92 | INSERT         | 2</screen>
 
 			</refsection>
 

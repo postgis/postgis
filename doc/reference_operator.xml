@@ -79,17 +79,16 @@
 			<programlisting><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 && tbl2.column2 AS overlaps
 FROM ( VALUES
-	(1, 'LINESTRING(0 0, 3 3)'::geometry),
-	(2, 'LINESTRING(0 1, 0 5)'::geometry)) AS tbl1,
+    (1, 'LINESTRING(0 0, 3 3)'::geometry),
+    (2, 'LINESTRING(0 1, 0 5)'::geometry)) AS tbl1,
 ( VALUES
-	(3, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
-
- column1 | column1 | overlaps
----------+---------+----------
-	   1 |       3 | t
-	   2 |       3 | f
-(2 rows)
+    (3, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | overlaps
+---------+---------+----------
+       1 |       3 | t
+       2 |       3 | f
+(2 rows)]]></screen>
 <!-- TODO Add geography examples -->
 		  </refsection>
 
@@ -152,14 +151,14 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT ST_Point(1,1) && ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS overlaps;
-
- overlaps
+]]></programlisting>
+<screen><![CDATA[ overlaps
 ----------
  t
 (1 row)
-]]></programlisting>
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -220,14 +219,14 @@ SELECT ST_Point(1,1) && ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS overlaps;
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) && ST_Point(1,1) AS overlaps;
-
- overlaps
+]]></programlisting>
+<screen><![CDATA[ overlaps
 ----------
  t
 (1 row)
-]]></programlisting>
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -288,14 +287,14 @@ SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) && ST_Point(1,1) AS overlaps;
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) && ST_MakeBox2D(ST_Point(1,1), ST_Point(3,3)) AS overlaps;
-
- overlaps
+]]></programlisting>
+<screen><![CDATA[ overlaps
 ----------
  t
 (1 row)
-]]></programlisting>
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -356,43 +355,41 @@ SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) && ST_MakeBox2D(ST_Point(1,1),
 		  </refsection>
 
 		  <refsection>
-			<title>Examples: 3D LineStrings</title>
+			<title>Examples</title>
+			<para>3D LineStrings.</para>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 &&& tbl2.column2 AS overlaps_3d,
-			            tbl1.column2 && tbl2.column2 AS overlaps_2d
+                        tbl1.column2 && tbl2.column2 AS overlaps_2d
 FROM ( VALUES
-	(1, 'LINESTRING Z(0 0 1, 3 3 2)'::geometry),
-	(2, 'LINESTRING Z(1 2 0, 0 5 -1)'::geometry)) AS tbl1,
+    (1, 'LINESTRING Z(0 0 1, 3 3 2)'::geometry),
+    (2, 'LINESTRING Z(1 2 0, 0 5 -1)'::geometry)) AS tbl1,
 ( VALUES
-	(3, 'LINESTRING Z(1 2 1, 4 6 1)'::geometry)) AS tbl2;
-
- column1 | column1 | overlaps_3d | overlaps_2d
+    (3, 'LINESTRING Z(1 2 1, 4 6 1)'::geometry)) AS tbl2;
+]]></programlisting>
+<screen><![CDATA[ column1 | column1 | overlaps_3d | overlaps_2d
 ---------+---------+-------------+-------------
        1 |       3 | t           | t
        2 |       3 | f           | t
+]]></screen>
 
-]]></programlisting>
 
-		  </refsection>
-		  <refsection>
-			<title>Examples: 3M LineStrings</title>
+			<para>3M LineStrings.</para>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 &&& tbl2.column2 AS overlaps_3zm,
-			            tbl1.column2 && tbl2.column2 AS overlaps_2d
+                        tbl1.column2 && tbl2.column2 AS overlaps_2d
 FROM ( VALUES
-	(1, 'LINESTRING M(0 0 1, 3 3 2)'::geometry),
-	(2, 'LINESTRING M(1 2 0, 0 5 -1)'::geometry)) AS tbl1,
+    (1, 'LINESTRING M(0 0 1, 3 3 2)'::geometry),
+    (2, 'LINESTRING M(1 2 0, 0 5 -1)'::geometry)) AS tbl1,
 ( VALUES
-	(3, 'LINESTRING M(1 2 1, 4 6 1)'::geometry)) AS tbl2;
-
- column1 | column1 | overlaps_3zm | overlaps_2d
+    (3, 'LINESTRING M(1 2 1, 4 6 1)'::geometry)) AS tbl2;
+]]></programlisting>
+<screen><![CDATA[ column1 | column1 | overlaps_3zm | overlaps_2d
 ---------+---------+-------------+-------------
        1 |       3 | t           | t
        2 |       3 | f           | t
-
-]]></programlisting>
+]]></screen>
 
 		  </refsection>
 
@@ -448,14 +445,14 @@ FROM ( VALUES
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT ST_MakePoint(1,1,1) &&& ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) AS overlaps;
-
- overlaps
+]]></programlisting>
+<screen><![CDATA[ overlaps
 ----------
  t
 (1 row)
-]]></programlisting>
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -512,14 +509,14 @@ SELECT ST_MakePoint(1,1,1) &&& ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &&& ST_MakePoint(1,1,1) AS overlaps;
-
- overlaps
+]]></programlisting>
+<screen><![CDATA[ overlaps
 ----------
  t
 (1 row)
-]]></programlisting>
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -576,14 +573,14 @@ SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &&& ST_MakePoint(1
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &&& ST_3DMakeBox(ST_MakePoint(1,1,1), ST_MakePoint(3,3,3)) AS overlaps;
-
- overlaps
+]]></programlisting>
+<screen><![CDATA[ overlaps
 ----------
  t
 (1 row)
-]]></programlisting>
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -639,23 +636,23 @@ SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &&& ST_3DMakeBox(S
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 &< tbl2.column2 AS overleft
 FROM
   ( VALUES
-	(1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,
+    (1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING(0 0, 3 3)'::geometry),
-	(3, 'LINESTRING(0 1, 0 5)'::geometry),
-	(4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;
-
- column1 | column1 | overleft
----------+---------+----------
-	   1 |       2 | f
-	   1 |       3 | f
-	   1 |       4 | t
-(3 rows)
+    (2, 'LINESTRING(0 0, 3 3)'::geometry),
+    (3, 'LINESTRING(0 1, 0 5)'::geometry),
+    (4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | overleft
+---------+---------+----------
+       1 |       2 | f
+       1 |       3 | f
+       1 |       4 | t
+(3 rows)
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -716,23 +713,23 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 &<| tbl2.column2 AS overbelow
 FROM
   ( VALUES
-	(1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
+    (1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING(0 0, 3 3)'::geometry),
-	(3, 'LINESTRING(0 1, 0 5)'::geometry),
-	(4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
-
- column1 | column1 | overbelow
----------+---------+-----------
-	   1 |       2 | f
-	   1 |       3 | t
-	   1 |       4 | t
-(3 rows)
+    (2, 'LINESTRING(0 0, 3 3)'::geometry),
+    (3, 'LINESTRING(0 1, 0 5)'::geometry),
+    (4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | overbelow
+---------+---------+-----------
+       1 |       2 | f
+       1 |       3 | t
+       1 |       4 | t
+(3 rows)
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -790,23 +787,23 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 &> tbl2.column2 AS overright
 FROM
   ( VALUES
-	(1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,
+    (1, 'LINESTRING(1 2,4 6)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING(0 0, 3 3)'::geometry),
-	(3, 'LINESTRING(0 1, 0 5)'::geometry),
-	(4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;
-
- column1 | column1 | overright
----------+---------+-----------
-	   1 |       2 | t
-	   1 |       3 | t
-	   1 |       4 | f
-(3 rows)
+    (2, 'LINESTRING(0 0,3 3)'::geometry),
+    (3, 'LINESTRING(0 1,0 5)'::geometry),
+    (4, 'LINESTRING(6 0,6 1)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | overright
+---------+---------+-----------
+       1 |       2 | t
+       1 |       3 | t
+       1 |       4 | f
+(3 rows)
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -863,23 +860,23 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 << tbl2.column2 AS left
 FROM
   ( VALUES
-	(1, 'LINESTRING (1 2, 1 5)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (1 2, 1 5)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING (0 0, 4 3)'::geometry),
-	(3, 'LINESTRING (6 0, 6 5)'::geometry),
-	(4, 'LINESTRING (2 2, 5 6)'::geometry)) AS tbl2;
-
- column1 | column1 | left
----------+---------+------
-	   1 |       2 | f
-	   1 |       3 | t
-	   1 |       4 | t
-(3 rows)
+    (2, 'LINESTRING (0 0, 4 3)'::geometry),
+    (3, 'LINESTRING (6 0, 6 5)'::geometry),
+    (4, 'LINESTRING (2 2, 5 6)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | left
+---------+---------+------
+       1 |       2 | f
+       1 |       3 | t
+       1 |       4 | t
+(3 rows)
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -932,23 +929,23 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 <<| tbl2.column2 AS below
 FROM
   ( VALUES
-	(1, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING (1 4, 1 7)'::geometry),
-	(3, 'LINESTRING (6 1, 6 5)'::geometry),
-	(4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;
-
- column1 | column1 | below
----------+---------+-------
-	   1 |       2 | t
-	   1 |       3 | f
-	   1 |       4 | f
-(3 rows)
+    (2, 'LINESTRING (1 4, 1 7)'::geometry),
+    (3, 'LINESTRING (6 1, 6 5)'::geometry),
+    (4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | below
+---------+---------+-------
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | f
+(3 rows)
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -1036,43 +1033,41 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
-SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;
- ?column?
+			<programlisting>SELECT 'LINESTRING(0 0,0 1,1 0)'::geometry = 'LINESTRING(1 1,0 0)'::geometry;</programlisting>
+<screen><![CDATA[ ?column?
 ----------
  f
-(1 row)
+(1 row)]]></screen>
 
-SELECT ST_AsText(column1)
+			<programlisting><![CDATA[SELECT column1
 FROM ( VALUES
-	('LINESTRING(0 0, 1 1)'::geometry),
-	('LINESTRING(1 1, 0 0)'::geometry)) AS foo;
-	  st_astext
+    ('LINESTRING(0 0, 1 1)'::geometry),
+    ('LINESTRING(1 1, 0 0)'::geometry)) AS foo;]]></programlisting>
+<screen><![CDATA[          st_astext
 ---------------------
  LINESTRING(0 0,1 1)
  LINESTRING(1 1,0 0)
-(2 rows)
+(2 rows)]]></screen>
 
--- Note: the GROUP BY uses the "=" to compare for geometry equivalency.
-SELECT ST_AsText(column1)
+				<para>Note: the GROUP BY uses the "=" to compare for geometry equivalency.</para>
+				<programlisting language="sql"><![CDATA[SELECT column1
 FROM ( VALUES
-	('LINESTRING(0 0, 1 1)'::geometry),
-	('LINESTRING(1 1, 0 0)'::geometry)) AS foo
-GROUP BY column1;
-      st_astext
+    ('LINESTRING(0 0, 1 1)'::geometry),
+    ('LINESTRING(1 1, 0 0)'::geometry)) AS foo
+GROUP BY column1;]]></programlisting>
+<screen><![CDATA[      st_astext
 ---------------------
  LINESTRING(0 0,1 1)
  LINESTRING(1 1,0 0)
-(2 rows)
+(2 rows)]]></screen>
 
--- In versions prior to 2.0, this used to return true --
- SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
-	ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;
-
---pt_intersect --
-f
-
-]]></programlisting>
+				<para>In versions prior to 2.0, this used to return true.</para>
+				<programlisting language="sql"><![CDATA[SELECT 'POINT(1707296.37 4820536.77)'::geometry =
+   'POINT(1707296.27 4820536.87)'::geometry As pt_intersect;]]></programlisting>
+<screen><![CDATA[ pt_intersect
+--------------
+ f
+(1 row)]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -1126,23 +1121,23 @@ f
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 >> tbl2.column2 AS right
 FROM
   ( VALUES
-	(1, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (2 3,5 6)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING (1 4, 1 7)'::geometry),
-	(3, 'LINESTRING (6 1, 6 5)'::geometry),
-	(4, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl2;
-
- column1 | column1 | right
----------+---------+-------
-	   1 |       2 | t
-	   1 |       3 | f
-	   1 |       4 | f
-(3 rows)
+    (2, 'LINESTRING (1 4,1 7)'::geometry),
+    (3, 'LINESTRING (6 1,6 5)'::geometry),
+    (4, 'LINESTRING (0 0,4 3)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | right
+---------+---------+-------
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | f
+(3 rows)
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -1197,23 +1192,23 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 @ tbl2.column2 AS contained
 FROM
   ( VALUES
-	(1, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING (0 0, 4 4)'::geometry),
-	(3, 'LINESTRING (2 2, 4 4)'::geometry),
-	(4, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl2;
-
- column1 | column1 | contained
----------+---------+-----------
-	   1 |       2 | t
-	   1 |       3 | f
-	   1 |       4 | t
-(3 rows)
+    (2, 'LINESTRING (0 0, 4 4)'::geometry),
+    (3, 'LINESTRING (2 2, 4 4)'::geometry),
+    (4, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | contained
+---------+---------+-----------
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | t
+(3 rows)
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -1266,7 +1261,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;</programlisting>
+			<programlisting>SELECT ST_Buffer('POINT(2 2)'::geometry, 1) @ ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)) AS is_contained;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1328,7 +1323,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(2, 2), ST_Point(3, 3)) @ ST_Buffer('POINT(1 1)'::geometry, 10) AS is_contained;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1390,7 +1385,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(2, 2), ST_Point(3, 3)) @ ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)) AS is_contained;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1453,23 +1448,23 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&> tbl2.column2 AS overabove
 FROM
   ( VALUES
-	(1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
+    (1, 'LINESTRING(6 0,6 4)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING(0 0, 3 3)'::geometry),
-	(3, 'LINESTRING(0 1, 0 5)'::geometry),
-	(4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
-
- column1 | column1 | overabove
----------+---------+-----------
-	   1 |       2 | t
-	   1 |       3 | f
-	   1 |       4 | f
-(3 rows)
+    (2, 'LINESTRING(0 0,3 3)'::geometry),
+    (3, 'LINESTRING(0 1,0 5)'::geometry),
+    (4, 'LINESTRING(1 2,4 6)'::geometry)) AS tbl2;
 ]]></programlisting>
+<screen><![CDATA[ column1 | column1 | overabove
+---------+---------+-----------
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | f
+(3 rows)
+]]></screen>
 		  </refsection>
 
 		  <refsection>
@@ -1529,16 +1524,16 @@ FROM
 			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&gt;&gt; tbl2.column2 AS above
 FROM
   ( VALUES
-	(1, 'LINESTRING (1 4, 1 7)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (1 4,1 7)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING (0 0, 4 2)'::geometry),
-	(3, 'LINESTRING (6 1, 6 5)'::geometry),
-	(4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;</programlisting>
+    (2, 'LINESTRING (0 0,4 2)'::geometry),
+    (3, 'LINESTRING (6 1,6 5)'::geometry),
+    (4, 'LINESTRING (2 3,5 6)'::geometry)) AS tbl2;</programlisting>
 <screen> column1 | column1 | above
 ---------+---------+-------
-	   1 |       2 | t
-	   1 |       3 | f
-	   1 |       4 | f
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | f
 (3 rows)</screen>
 		  </refsection>
 
@@ -1595,16 +1590,16 @@ FROM
 			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains
 FROM
   ( VALUES
-	(1, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl1,
+    (1, 'LINESTRING (0 0,3 3)'::geometry)) AS tbl1,
   ( VALUES
-	(2, 'LINESTRING (0 0, 4 4)'::geometry),
-	(3, 'LINESTRING (1 1, 2 2)'::geometry),
-	(4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;</programlisting>
+    (2, 'LINESTRING (0 0,4 4)'::geometry),
+    (3, 'LINESTRING (1 1,2 2)'::geometry),
+    (4, 'LINESTRING (0 0,3 3)'::geometry)) AS tbl2;</programlisting>
 <screen> column1 | column1 | contains
 ---------+---------+----------
-	   1 |       2 | f
-	   1 |       3 | t
-	   1 |       4 | t
+       1 |       2 | f
+       1 |       3 | t
+       1 |       4 | t
 (3 rows)</screen>
 		  </refsection>
 
@@ -1658,7 +1653,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;</programlisting>
+			<programlisting>SELECT ST_Buffer('POINT(1 1)'::geometry, 10) ~ ST_MakeBox2D(ST_Point(0, 0), ST_Point(2, 2)) AS contains;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1720,7 +1715,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)) ~ ST_Buffer('POINT(2 2)'::geometry, 1) AS contains;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1782,7 +1777,7 @@ FROM
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) AS contains;</programlisting>
+			<programlisting>SELECT ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)) ~ ST_MakeBox2D(ST_Point(2, 2), ST_Point(3, 3)) AS contains;</programlisting>
 <screen>t</screen>
 		  </refsection>
 
@@ -1856,7 +1851,7 @@ FROM
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>SELECT 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry AS equality;</programlisting>
+<programlisting>SELECT 'LINESTRING(0 0,1 1)'::geometry ~= 'LINESTRING(0 1,1 0)'::geometry AS equality;</programlisting>
 <screen>t</screen>
 		  </refsection>
 		  <refsection>
@@ -1940,7 +1935,7 @@ and distance on the sphere for geographies.
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+<programlisting>SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d, edabbr, vaabbr
 FROM va2005
 ORDER BY d limit 10;</programlisting>
 <screen>        d         | edabbr | vaabbr
@@ -1959,12 +1954,12 @@ ORDER BY d limit 10;</programlisting>
 <para>
 Then the KNN raw answer:
 </para>
-<programlisting><![CDATA[
+<programlisting language="sql"><![CDATA[
 SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
 FROM va2005
 ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;
-
-        d         | edabbr | vaabbr
+]]></programlisting>
+<screen><![CDATA[        d         | edabbr | vaabbr
 ------------------+--------+--------
                 0 | ALQ    | 128
  5541.57712511724 | ALQ    | 129A
@@ -1977,8 +1972,7 @@ ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;
   12089.665931705 | ALQ    | 127
  18472.5531479404 | ALQ    | 002
 (10 rows)
-
-]]></programlisting>
+]]></screen>
 <para>
 If you run "EXPLAIN ANALYZE" on the two queries you would see a performance improvement for the second.
 </para>
@@ -1986,16 +1980,16 @@ If you run "EXPLAIN ANALYZE" on the two queries you would see a performance impr
         <para>
 When a plan cannot produce exact distances directly, use a hybrid query to find the true nearest neighbors. First a CTE query using the index-assisted KNN, then an exact query to get correct ordering:
         </para>
-<programlisting><![CDATA[
+<programlisting language="sql"><![CDATA[
 WITH index_query AS (
   SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
-	FROM va2005
+    FROM va2005
   ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100)
   SELECT *
-	FROM index_query
+    FROM index_query
   ORDER BY d limit 10;
-
-        d         | edabbr | vaabbr
+]]></programlisting>
+<screen><![CDATA[        d         | edabbr | vaabbr
 ------------------+--------+--------
                 0 | ALQ    | 128
  5541.57712511724 | ALQ    | 129A
@@ -2008,9 +2002,7 @@ WITH index_query AS (
   12089.665931705 | ALQ    | 127
  18472.5531479404 | ALQ    | 002
 (10 rows)
-
-
-]]></programlisting>
+]]></screen>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -2143,22 +2135,22 @@ Returns the 2D distance between A and B bounding boxes.
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting role="requires-external-state"><![CDATA[
+<programlisting role="requires-external-state" language="sql"><![CDATA[
 SELECT *
 FROM (
 SELECT b.tlid, b.mtfcc,
-	b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
-		745787 2948499,745740 2948468,745712 2948438,
-		745690 2948384,745677 2948319)',2249) As b_dist,
-		ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
-		745787 2948499,745740 2948468,745712 2948438,
-		745690 2948384,745677 2948319)',2249)) As act_dist
+    b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
+        745787 2948499,745740 2948468,745712 2948438,
+        745690 2948384,745677 2948319)', 2249) As b_dist,
+        ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
+        745787 2948499,745740 2948468,745712 2948438,
+        745690 2948384,745677 2948319)', 2249)) As act_dist
     FROM bos_roads As b
     ORDER BY b_dist, b.tlid
     LIMIT 100) As foo
     ORDER BY act_dist, tlid LIMIT 10;
-
-   tlid    | mtfcc |      b_dist      |     act_dist
+]]></programlisting>
+<screen><![CDATA[   tlid    | mtfcc |      b_dist      |     act_dist
 -----------+-------+------------------+------------------
   85732027 | S1400 |                0 |                0
   85732029 | S1400 |                0 |                0
@@ -2171,8 +2163,7 @@ SELECT b.tlid, b.mtfcc,
   85732032 | S1400 |           277.75 | 311.830282365264
   85735592 | S1400 |           222.25 | 311.830282365264
 (10 rows)
-
-]]></programlisting>
+]]></screen>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>

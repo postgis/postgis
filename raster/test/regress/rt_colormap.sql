@@ -129,5 +129,9 @@ SELECT
 FROM raster_colormap_out
 ORDER BY 1, 2, nband;
 
+SELECT ST_NumBands(ST_ColorMap(rast, 1, E'\n0 0 0 0\n9 255 255 255\n'))
+FROM raster_colormap_in
+WHERE rid = 2;
+
 DROP TABLE IF EXISTS raster_colormap_in;
 DROP TABLE IF EXISTS raster_colormap_out;

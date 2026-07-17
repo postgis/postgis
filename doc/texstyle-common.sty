@@ -9,7 +9,54 @@
 \RequirePackageWithOptions{docbook}
 
 %% Make regular quotes within programlisting tags (#3726)
+\usepackage{xcolor}
+\usepackage{needspace}
 \usepackage{listings}
-\lstset{upquote=true}
+\DeclareUnicodeCharacter{2026}{\ldots}
+\DeclareUnicodeCharacter{1D62}{\ensuremath{_{i}}}
+\DeclareUnicodeCharacter{1D4F}{\ensuremath{^{k}}}
+\DeclareUnicodeCharacter{021B}{\c{t}}
+%% DocBook uses the readable language name while listings exposes C# as the
+%% C language's Sharp dialect.  Keep the HTML language metadata without
+%% making the PDF backend reject the same programlisting.
+\lstalias[]{csharp}[Sharp]{C}
+%% These DocBook language hints are used by the HTML manual renderer.  Teach
+%% listings their closest PDF-side equivalents so dblatex can preserve the
+%% same metadata without failing on unknown languages.
+\lstdefinelanguage{psql}{
+  morekeywords={SELECT,FROM,WHERE,WITH,AS,CREATE,ALTER,DROP,INSERT,UPDATE,DELETE,SET,RESET,BEGIN,COMMIT,ROLLBACK,VACUUM,ANALYZE},
+  sensitive=false,
+  morecomment=[l]{--},
+  morestring=[b]',
+}
+\lstdefinelanguage{text}{
+  sensitive=false,
+}
+\lstdefinelanguage{cmd}{
+  sensitive=false,
+  morecomment=[l]{::},
+  morestring=[b]",
+}
+\lstset{
+  upquote=true,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  literate=
+    {┌}{+}1 {┐}{+}1 {└}{+}1 {┘}{+}1
+    {├}{+}1 {┤}{+}1 {┬}{+}1 {┴}{+}1 {┼}{+}1
+    {─}{-}1 {│}{|}1
+    {↩}{{$\hookleftarrow$}}1
+    {…}{{$\ldots$}}1
+    {ᵢ}{{$_i$}}1
+    {ᵏ}{{$^k$}}1
+    {ț}{{\c{t}}}1
+}
 
-
+\newcommand{\postgisblocklabel}[1]{%
+  \Needspace{5\baselineskip}%
+  \par\smallskip\noindent
+  {\color{gray!65}\vrule width 2pt\hspace{0.55em}}%
+  {\sffamily\small\bfseries #1}\par\nobreak
+}

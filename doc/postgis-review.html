@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PostGIS manual visual review</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, sans-serif;
+      --bar-height: 46px;
+      --border: #9fb4c9;
+      --ink: #213547;
+      --muted: #5d7184;
+      --old: #7d4e57;
+      --new: #226f9b;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      background: #eef3f7;
+    }
+
+    .toolbar {
+      height: var(--bar-height);
+      display: grid;
+      grid-template-columns: minmax(13rem, 1fr) minmax(18rem, 2fr) minmax(13rem, 1fr);
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.4rem 0.7rem;
+      border-bottom: 1px solid var(--border);
+      background: #f8fafc;
+      box-shadow: 0 1px 4px rgb(29 53 73 / 15%);
+      position: relative;
+      z-index: 2;
+    }
+
+    .side-labels,
+    .controls,
+    .position {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-width: 0;
+    }
+
+    .controls { justify-content: center; }
+    .position { justify-content: flex-end; }
+
+    .side-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .side-label::before {
+      content: "";
+      display: inline-block;
+      width: 0.68rem;
+      height: 0.68rem;
+      margin-right: 0.35rem;
+      border-radius: 2px;
+      vertical-align: -0.03rem;
+      background: currentColor;
+    }
+
+    .side-label.old { color: var(--old); }
+    .side-label.new { color: var(--new); }
+
+    input, button, label.toggle {
+      height: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 0.35rem;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    input {
+      width: min(28rem, 40vw);
+      padding: 0 0.55rem;
+    }
+
+    button {
+      padding: 0 0.7rem;
+      cursor: pointer;
+    }
+
+    button:hover { background: #edf5fa; }
+
+    label.toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0 0.55rem;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    label.toggle input {
+      width: auto;
+      height: auto;
+      margin: 0;
+    }
+
+    #position {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.82rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #message {
+      color: #9b2c2c;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .panes {
+      height: calc(100vh - var(--bar-height));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      background: white;
+    }
+
+    .pane {
+      min-width: 0;
+      position: relative;
+      border: 0;
+    }
+
+    .pane + .pane { border-left: 2px solid #6f879d; }
+
+    .pane::before {
+      content: attr(data-label);
+      position: absolute;
+      top: 0.55rem;
+      left: 0.55rem;
+      z-index: 1;
+      padding: 0.28rem 0.52rem;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: rgb(255 255 255 / 92%);
+      box-shadow: 0 1px 3px rgb(29 53 73 / 18%);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .pane.old::before { color: var(--old); }
+    .pane.new::before { color: var(--new); }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: white;
+    }
+
+    @media (max-width: 900px) {
+      :root { --bar-height: 82px; }
+      .toolbar {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+      }
+      .controls { grid-column: 1 / -1; grid-row: 2; }
+      .position { grid-column: 2; grid-row: 1; }
+      input { width: min(65vw, 28rem); }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="side-labels" aria-label="Compared revisions">
+      <span class="side-label old" id="old-label">OLD</span>
+      <span aria-hidden="true">/</span>
+      <span class="side-label new" id="new-label">NEW</span>
+    </div>
+    <div class="controls">
+      <input id="jump" list="refentries" placeholder="Jump to ST_Buffer…" aria-label="Jump to a manual entry">
+      <datalist id="refentries"></datalist>
+      <button id="go" type="button">Go</button>
+      <label class="toggle"><input id="sync" type="checkbox" checked> Sync</label>
+    </div>
+    <div class="position">
+      <span id="position">Loading manuals…</span>
+      <span id="message" role="alert"></span>
+    </div>
+  </header>
+
+  <main class="panes">
+    <section class="pane old" id="old-pane" data-label="OLD" aria-label="Old manual">
+      <iframe id="old" title="Old PostGIS manual" src="base/postgis-en.html"></iframe>
+    </section>
+    <section class="pane new" id="new-pane" data-label="NEW" aria-label="New manual">
+      <iframe id="new" title="New PostGIS manual" src="../postgis-en.html"></iframe>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const frames = {
+        old: document.getElementById("old"),
+        new: document.getElementById("new")
+      };
+      const labels = {
+        old: document.getElementById("old-label"),
+        new: document.getElementById("new-label")
+      };
+      const panes = {
+        old: document.getElementById("old-pane"),
+        new: document.getElementById("new-pane")
+      };
+      const jump = document.getElementById("jump");
+      const datalist = document.getElementById("refentries");
+      const sync = document.getElementById("sync");
+      const position = document.getElementById("position");
+      const message = document.getElementById("message");
+      const params = new URLSearchParams(location.search);
+      const boundaryEpsilon = 3;
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+      const state = {
+        loaded: new Set(),
+        ids: { old: [], new: [] },
+        commonIds: [],
+        commonIdSet: new Set(),
+        elements: { old: new Map(), new: new Map() },
+        activeSide: "new",
+        displayedId: "",
+        suppressUntil: { old: 0, new: 0 },
+        observers: [],
+        layoutTimer: 0,
+        frameRequest: 0,
+        ready: false
+      };
+
+      labels.old.textContent = params.get("oldLabel") || "OLD";
+      labels.new.textContent = params.get("newLabel") || "NEW";
+      panes.old.dataset.label = labels.old.textContent;
+      panes.new.dataset.label = labels.new.textContent;
+
+      function frameWindow(side) {
+        return frames[side].contentWindow;
+      }
+
+      function documentHeight(side) {
+        const doc = frameWindow(side).document.documentElement;
+        return Math.max(doc.scrollHeight - frameWindow(side).innerHeight, 1);
+      }
+
+      function elementTop(side, id) {
+        const element = state.elements[side].get(id);
+        return element.getBoundingClientRect().top + frameWindow(side).scrollY;
+      }
+
+      function scrollFrame(side, top) {
+        state.suppressUntil[side] = performance.now() + 500;
+        frameWindow(side).scrollTo({ top, behavior: "instant" });
+      }
+
+      function intervalAt(side) {
+        const win = frameWindow(side);
+        const y = win.scrollY;
+        const ids = state.ids[side];
+
+        if (!ids.length) {
+          return { id: "document", index: -1, offset: y, span: documentHeight(side), fraction: y / documentHeight(side), common: false };
+        }
+
+        let low = 0;
+        let high = ids.length - 1;
+        let index = -1;
+        while (low <= high) {
+          const middle = (low + high) >> 1;
+          if (elementTop(side, ids[middle]) <= y + boundaryEpsilon) {
+            index = middle;
+            low = middle + 1;
+          } else {
+            high = middle - 1;
+          }
+        }
+
+        if (index < 0) {
+          const end = Math.max(elementTop(side, ids[0]), 1);
+          return { id: "document start", index: -1, offset: y, span: end, fraction: Math.max(0, Math.min(1, y / end)), common: false };
+        }
+
+        const start = elementTop(side, ids[index]);
+        const end = index + 1 < ids.length
+          ? elementTop(side, ids[index + 1])
+          : documentHeight(side);
+        const span = Math.max(end - start, 1);
+        return {
+          id: ids[index],
+          index,
+          offset: Math.max(0, y - start),
+          span,
+          fraction: Math.max(0, Math.min(1, (y - start) / span)),
+          common: state.commonIdSet.has(ids[index])
+        };
+      }
+
+      function targetY(sourceSide, targetSide, interval) {
+        const ids = state.ids[targetSide];
+        if (interval.index < 0) {
+          const end = ids.length ? elementTop(targetSide, ids[0]) : documentHeight(targetSide);
+          return interval.fraction * end;
+        }
+
+        if (interval.common && state.elements[targetSide].has(interval.id)) {
+          const index = ids.indexOf(interval.id);
+          const start = elementTop(targetSide, ids[index]);
+          const end = index + 1 < ids.length
+            ? elementTop(targetSide, ids[index + 1])
+            : documentHeight(targetSide);
+          return start + Math.min(interval.offset, Math.max(end - start - boundaryEpsilon - 1, 0));
+        }
+
+        const sourceIds = state.ids[sourceSide];
+        let before = interval.index - 1;
+        while (before >= 0 && !state.commonIdSet.has(sourceIds[before])) before--;
+        let after = interval.index + 1;
+        while (after < sourceIds.length && !state.commonIdSet.has(sourceIds[after])) after++;
+
+        if (before < 0 || after >= sourceIds.length) {
+          return frameWindow(sourceSide).scrollY / documentHeight(sourceSide) * documentHeight(targetSide);
+        }
+
+        const sourceStart = elementTop(sourceSide, sourceIds[before]);
+        const sourceEnd = elementTop(sourceSide, sourceIds[after]);
+        const gapFraction = (frameWindow(sourceSide).scrollY - sourceStart) / Math.max(sourceEnd - sourceStart, 1);
+        const targetStart = elementTop(targetSide, sourceIds[before]);
+        const targetEnd = elementTop(targetSide, sourceIds[after]);
+        return targetStart + Math.max(0, Math.min(1, gapFraction)) * (targetEnd - targetStart);
+      }
+
+      function updatePosition(side, interval) {
+        const percent = Math.round(interval.fraction * 100);
+        const suffix = interval.common ? "" : " · only here";
+        const offset = Math.round(interval.offset).toLocaleString("en-US");
+        position.textContent = `${interval.id} +${offset}px · ${percent}% · ${side.toUpperCase()}${suffix}`;
+        document.body.dataset.anchor = interval.id;
+        document.body.dataset.progress = String(interval.fraction);
+        document.body.dataset.side = side;
+        if (interval.id !== "document" && interval.id !== "document start") {
+          if (document.activeElement !== jump) jump.value = interval.id;
+          if (state.displayedId !== interval.id) {
+            state.displayedId = interval.id;
+            history.replaceState(null, "", `${location.pathname}${location.search}#${encodeURIComponent(interval.id)}`);
+          }
+        }
+      }
+
+      function synchronizeFrom(side) {
+        if (!state.ready) return;
+        const interval = intervalAt(side);
+        updatePosition(side, interval);
+        if (!sync.checked) return;
+        const other = side === "old" ? "new" : "old";
+        scrollFrame(other, targetY(side, other, interval));
+      }
+
+      function scheduleSync(side) {
+        if (performance.now() < state.suppressUntil[side]) return;
+        activate(side);
+        cancelAnimationFrame(state.frameRequest);
+        state.frameRequest = requestAnimationFrame(() => synchronizeFrom(side));
+      }
+
+      function activate(side) {
+        state.activeSide = side;
+        if (state.ready) updatePosition(side, intervalAt(side));
+      }
+
+      function bindFrame(side) {
+        const win = frameWindow(side);
+        if ("scrollRestoration" in win.history) win.history.scrollRestoration = "manual";
+        win.addEventListener("scroll", () => scheduleSync(side), { passive: true });
+        win.document.addEventListener("pointerdown", () => activate(side), { passive: true });
+        win.document.addEventListener("wheel", () => activate(side), { passive: true });
+        win.document.addEventListener("touchstart", () => activate(side), { passive: true });
+        win.document.addEventListener("keydown", () => activate(side));
+      }
+
+      function waitForStableLayout(callback) {
+        let previous = "";
+        let stableSamples = 0;
+        let samples = 0;
+        const sample = () => {
+          const signature = ["old", "new"].map(side => {
+            const doc = frameWindow(side).document.documentElement;
+            return `${doc.scrollWidth}:${doc.scrollHeight}`;
+          }).join("|");
+          stableSamples = signature === previous ? stableSamples + 1 : 0;
+          previous = signature;
+          samples += 1;
+          if (stableSamples >= 3 || samples >= 30) {
+            callback();
+          } else {
+            setTimeout(sample, 100);
+          }
+        };
+        sample();
+      }
+
+      function observeLayoutChanges() {
+        if (!window.ResizeObserver) return;
+        for (const side of ["old", "new"]) {
+          const observer = new ResizeObserver(() => {
+            clearTimeout(state.layoutTimer);
+            state.layoutTimer = setTimeout(() => {
+              if (state.ready) synchronizeFrom(state.activeSide);
+            }, 150);
+          });
+          observer.observe(frameWindow(side).document.body);
+          state.observers.push(observer);
+        }
+      }
+
+      function finishSetup() {
+        try {
+          const oldEntries = [...frameWindow("old").document.querySelectorAll(".refentry[id]")];
+          const newEntries = [...frameWindow("new").document.querySelectorAll(".refentry[id]")];
+          state.ids.old = oldEntries.map(entry => entry.id);
+          state.ids.new = newEntries.map(entry => entry.id);
+          const newIds = new Set(state.ids.new);
+          state.commonIds = state.ids.old.filter(id => newIds.has(id));
+          state.commonIdSet = new Set(state.commonIds);
+
+          for (const side of ["old", "new"]) {
+            for (const entry of frameWindow(side).document.querySelectorAll(".refentry[id]")) {
+              state.elements[side].set(entry.id, entry);
+            }
+            bindFrame(side);
+          }
+
+          const fragment = decodeURIComponent(location.hash.slice(1));
+          datalist.replaceChildren(...state.commonIds.map(id => {
+            const option = document.createElement("option");
+            option.value = id;
+            return option;
+          }));
+          waitForStableLayout(() => {
+            message.textContent = "";
+            const target = fragment && state.elements.old.has(fragment) && state.elements.new.has(fragment)
+              ? fragment
+              : "";
+            const placeInitialPosition = () => {
+              if (target) {
+                jumpTo(target);
+              } else {
+                scrollFrame("old", 0);
+                scrollFrame("new", 0);
+              }
+            };
+            placeInitialPosition();
+            setTimeout(() => {
+              placeInitialPosition();
+              state.ready = true;
+              observeLayoutChanges();
+              synchronizeFrom(state.activeSide);
+            }, 300);
+          });
+        } catch (error) {
+          message.textContent = "Serve this directory over HTTP";
+          position.textContent = "Manuals are not same-origin";
+          console.error(error);
+        }
+      }
+
+      function jumpTo(id) {
+        if (!state.elements.old.has(id) || !state.elements.new.has(id)) {
+          message.textContent = `No common entry: ${id}`;
+          return false;
+        }
+        message.textContent = "";
+        jump.value = id;
+        cancelAnimationFrame(state.frameRequest);
+        for (const side of ["old", "new"]) {
+          scrollFrame(side, elementTop(side, id));
+        }
+        history.replaceState(null, "", `${location.pathname}${location.search}#${encodeURIComponent(id)}`);
+        state.displayedId = id;
+        updatePosition(state.activeSide, { id, index: state.ids[state.activeSide].indexOf(id), offset: 0, span: 1, fraction: 0, common: true });
+        return true;
+      }
+
+      for (const side of ["old", "new"]) {
+        frames[side].addEventListener("load", () => {
+          state.loaded.add(side);
+          if (state.loaded.size === 2) finishSetup();
+        });
+      }
+
+      document.getElementById("go").addEventListener("click", () => jumpTo(jump.value.trim()));
+      jump.addEventListener("keydown", event => {
+        if (event.key === "Enter") jumpTo(jump.value.trim());
+      });
+      sync.addEventListener("change", () => {
+        if (sync.checked) synchronizeFrom(state.activeSide);
+      });
+
+      window.__postgisReview = {
+        get ready() { return state.ready; },
+        get commonIds() { return [...state.commonIds]; },
+        get activeSide() { return state.activeSide; },
+        intervalAt,
+        jumpTo,
+        activate,
+        synchronizeFrom
+      };
+    })();
+  </script>
+</body>
+</html>

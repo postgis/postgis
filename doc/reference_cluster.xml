@@ -77,71 +77,36 @@
 
     <refsection>
       <title>Examples</title>
-      <para>
-          Clustering polygon within 50 meters of each other, and requiring at least 2 polygons per cluster.
-      </para>
-	<informaltable>
-				  <tgroup cols="2">
-					<tbody>
-				  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_clusterdbscan01.png"/>
-							  </imageobject>
-							  <caption><para>Clusters within 50 meters with at least 2 items per cluster. Singletons have NULL for cid</para></caption>
-							</mediaobject>
-						  </informalfigure>
-  <programlisting><![CDATA[
-SELECT name, ST_ClusterDBSCAN(geom, eps => 50, minpoints => 2) over () AS cid
-FROM boston_polys
-WHERE name > '' AND building > ''
-	AND ST_DWithin(
-        geom,
-        ST_Transform(
-            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326),
-            26986),
-        500
-    );
-]]></programlisting>
-						  </para></entry>
-
-						<entry><para><screen><![CDATA[
-                name                 | bucket
--------------------------------------+--------
- Manulife Tower                      |      0
- Park Lane Seaport I                 |      0
- Park Lane Seaport II                |      0
- Renaissance Boston Waterfront Hotel |      0
- Seaport Boston Hotel                |      0
- Seaport Hotel & World Trade Center  |      0
- Waterside Place                     |      0
- World Trade Center East             |      0
- 100 Northern Avenue                 |      1
- 100 Pier 4                          |      1
- The Institute of Contemporary Art   |      1
- 101 Seaport                         |      2
- District Hall                       |      2
- One Marina Park Drive               |      2
- Twenty Two Liberty                  |      2
- Vertex                              |      2
- Vertex                              |      2
- Watermark Seaport                   |      2
- Blue Hills Bank Pavilion            |   NULL
- World Trade Center West             |   NULL
-(20 rows)
-]]></screen></para>
-				</entry>
-					  </row>
-				</tbody>
-				</tgroup>
-			</informaltable>
+	      <para>Cluster polygons within 50 units of each other, requiring at least two polygons per cluster. The isolated polygon is reported as noise.</para>
+	      <programlisting language="sql">WITH input(name, geom) AS (
+  VALUES
+    ('A1', ST_MakeEnvelope(0, 0, 10, 10)),
+    ('A2', ST_MakeEnvelope(30, 0, 40, 10)),
+    ('B1', ST_MakeEnvelope(100, 0, 110, 10)),
+    ('B2', ST_MakeEnvelope(130, 0, 140, 10)),
+    ('noise', ST_MakeEnvelope(250, 0, 260, 10))
+), clustered AS (
+  SELECT name,
+         geom,
+         ST_ClusterDBSCAN(geom, eps =&gt; 50, minpoints =&gt; 2)
+           OVER (ORDER BY name) AS cid
+  FROM input
+)
+SELECT COALESCE(cid::text, 'noise') AS cluster,
+       string_agg(name, ',' ORDER BY name) AS members,
+       ST_Collect(geom ORDER BY name) AS cluster_geom
+FROM clustered
+GROUP BY cid
+ORDER BY cid NULLS LAST;</programlisting>
+	      <screen role="visual-primary text-primary">0 | A1,A2 | MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0)),((30 0,30 10,40 10,40 0,30 0)))
+1 | B1,B2 | MULTIPOLYGON(((100 0,100 10,110 10,110 0,100 0)),((130 0,130 10,140 10,140 0,130 0)))
+noise | noise | MULTIPOLYGON(((250 0,250 10,260 10,260 0,250 0)))</screen>
 
 
         <para>
             A example showing combining parcels with the same cluster number into geometry collections.
         </para>
-		    <programlisting>
+		    <programlisting language="sql">
 SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS ids_in_cluster FROM (
     SELECT parcel_id, ST_ClusterDBSCAN(geom, eps =&gt; 0.5, minpoints =&gt; 5) over () AS cid, geom
     FROM parcels) sq
@@ -192,18 +157,18 @@ GROUP BY cid;
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting language="sql">
 WITH testdata AS
   (SELECT unnest(
-           ARRAY['LINESTRING (0 0, 1 1)'::geometry,
-           'LINESTRING (5 5, 4 4)'::geometry,
-           'LINESTRING (6 6, 7 7)'::geometry,
-           'LINESTRING (0 0, -1 -1)'::geometry,
-           'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
+           ARRAY['LINESTRING (0 0,1 1)'::geometry,
+           'LINESTRING (5 5,4 4)'::geometry,
+           'LINESTRING (6 6,7 7)'::geometry,
+           'LINESTRING (0 0,-1 -1)'::geometry,
+           'POLYGON ((0 0,4 0,4 4,0 4,0 0))'::geometry]) AS geom)
 
-SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
+SELECT unnest(ST_ClusterIntersecting(geom)) FROM testdata;
 </programlisting>
-<screen>GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
 GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
       </refsection>
       <refsection>
@@ -244,26 +209,31 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
-WITH testdata AS (
-  SELECT id, geom::geometry FROM (
-  VALUES  (1, 'LINESTRING (0 0, 1 1)'),
-          (2, 'LINESTRING (5 5, 4 4)'),
-          (3, 'LINESTRING (6 6, 7 7)'),
-          (4, 'LINESTRING (0 0, -1 -1)'),
-          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)
+        <para>Return an explicit cluster id for each input geometry. Using the conventional <varname>cid</varname> alias keeps the geometry column ready for color-by-cluster rendering.</para>
+        <programlisting language="sql">WITH testdata(id, geom) AS (
+  VALUES (1, 'LINESTRING (0 0,1 1)'::geometry),
+         (2, 'LINESTRING (5 5,4 4)'::geometry),
+         (3, 'LINESTRING (6 6,7 7)'::geometry),
+         (4, 'LINESTRING (0 0,-1 -1)'::geometry),
+         (5, 'POLYGON ((0 0,4 0,4 4,0 4,0 0))'::geometry)
+), clustered AS (
+  SELECT id,
+         geom,
+         ST_ClusterIntersectingWin(geom) OVER () AS cid
+  FROM testdata
 )
 SELECT id,
-  ST_AsText(geom),
-  ST_ClusterIntersectingWin(geom) OVER () AS cluster
-FROM testdata;</programlisting>
-<screen> id |           st_astext            | cluster
-----+--------------------------------+---------
-  1 | LINESTRING(0 0,1 1)            |       0
-  2 | LINESTRING(5 5,4 4)            |       0
-  3 | LINESTRING(6 6,7 7)            |       1
-  4 | LINESTRING(0 0,-1 -1)          |       0
-  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |       0</screen>
+       geom AS geom_wkt,
+       cid
+FROM clustered
+ORDER BY id;</programlisting>
+<screen role="visual-primary text-primary"> id |            geom_wkt            | cid
+----+--------------------------------+-----
+  1 | LINESTRING(0 0,1 1)            |   0
+  2 | LINESTRING(5 5,4 4)            |   0
+  3 | LINESTRING(6 6,7 7)            |   1
+  4 | LINESTRING(0 0,-1 -1)          |   0
+  5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |   0</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -307,43 +277,27 @@ FROM testdata;</programlisting>
         <title>Examples</title>
         <para>This collection of line strings would form a single cluster using <xref linkend="ST_ClusterIntersectingWin"/>, but using <xref linkend="ST_ClusterRelateWin"/> can be clustered into three groups that connect only via their end points.</para>
 
-        <para>
-          <informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_clusterrelatewin01.png"/>
-                </imageobject>
-                <caption><para>Connected and overlapping linestrings</para></caption>
-            </mediaobject>
-          </informalfigure>
-        </para>
-
-        <programlisting>
-CREATE TABLE clusterrelate (
-  id serial,
-  geom geometry);
-
-INSERT INTO clusterrelate (geom)
-  VALUES
-  ('LINESTRING(0 0,1 1)'),
-  ('LINESTRING(2 2,1 1)'),
-  ('LINESTRING(0 1,1 0)'),
-  ('LINESTRING(0 1,0 4)'),
-  ('LINESTRING(2 2,2 4)'),
-  ('LINESTRING(1.5 2.5,2.5 3.5)');
-
-SELECT id,
-  ST_AsText(geom),
-  ST_ClusterRelateWin(geom, '****0****') OVER () AS cluster
-FROM clusterrelate;</programlisting>
-<screen> id |          st_astext          | cluster
-----+-----------------------------+---------
-  1 | LINESTRING(0 0,1 1)         |       0
-  2 | LINESTRING(2 2,1 1)         |       0
-  3 | LINESTRING(0 1,1 0)         |       1
-  4 | LINESTRING(0 1,0 4)         |       1
-  5 | LINESTRING(2 2,2 4)         |       0
-  6 | LINESTRING(1.5 2.5,2.5 3.5) |       2</screen>
+        <programlisting language="sql">WITH data(id, geom) AS (
+  VALUES (1, 'LINESTRING(0 0,1 1)'::geometry),
+         (2, 'LINESTRING(2 2,1 1)'::geometry),
+         (3, 'LINESTRING(0 1,1 0)'::geometry),
+         (4, 'LINESTRING(0 1,0 4)'::geometry),
+         (5, 'LINESTRING(2 2,2 4)'::geometry),
+         (6, 'LINESTRING(1.5 2.5,2.5 3.5)'::geometry)
+), clustered AS (
+  SELECT id, geom,
+         ST_ClusterRelateWin(geom, '****0****') OVER () AS cluster
+  FROM data
+)
+SELECT cluster,
+       string_agg(id::text, ',' ORDER BY id) AS members,
+       ST_Collect(geom ORDER BY id) AS cluster_geom
+FROM clustered
+GROUP BY cluster
+ORDER BY cluster;</programlisting>
+<screen role="visual-primary">0 | 1,2,5 | MULTILINESTRING((0 0,1 1),(2 2,1 1),(2 2,2 4))
+1 | 3,4 | MULTILINESTRING((0 1,1 0),(0 1,0 4))
+2 | 6 | MULTILINESTRING((1.5 2.5,2.5 3.5))</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -385,24 +339,35 @@ FROM clusterrelate;</programlisting>
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
-SELECT id, ST_AsText(geom), ST_MinimumSpanningTree(geom) OVER () AS msp
-  FROM (VALUES
+        <para>These six edges describe a square with both diagonals. The minimum spanning tree keeps three edges and excludes the rest.</para>
+<programlisting language="sql" role="requires-geos-3.15">WITH edges(id, geom) AS (
+  VALUES
     (1, 'LINESTRING(0 0,1 0)'::geometry),
     (2, 'LINESTRING(0 0,0 1)'::geometry),
     (3, 'LINESTRING(1 1,0 1)'::geometry),
     (4, 'LINESTRING(1 1,1 0)'::geometry),
     (5, 'LINESTRING(0 0,1 1)'::geometry),
     (6, 'LINESTRING(1 0,0 1)'::geometry)
-) AS t(id, geom);</programlisting>
-<screen> id |      st_astext      | msp
-----+---------------------+-----
-  1 | LINESTRING(0 0,1 0) |   1
-  2 | LINESTRING(0 0,0 1) |   1
-  3 | LINESTRING(1 1,0 1) |   1
-  4 | LINESTRING(1 1,1 0) |   0
-  5 | LINESTRING(0 0,1 1) |   0
-  6 | LINESTRING(1 0,0 1) |   0</screen>
+), marked AS (
+  SELECT id,
+         geom,
+         ST_MinimumSpanningTree(geom) OVER (ORDER BY id) AS tree_id
+  FROM edges
+)
+SELECT string_agg(id::text, ',' ORDER BY id)
+         FILTER (WHERE tree_id &gt; 0) AS tree_edge_ids,
+       ST_Collect(geom ORDER BY id)
+         FILTER (WHERE tree_id &gt; 0) AS tree_edges,
+       string_agg(id::text, ',' ORDER BY id)
+         FILTER (WHERE tree_id = 0) AS excluded_edge_ids,
+       ST_Collect(geom ORDER BY id)
+         FILTER (WHERE tree_id = 0) AS excluded_edges
+FROM marked;</programlisting>
+<screen role="visual-primary visual-overlay text-primary">-[ RECORD 1 ]-----
+tree_edge_ids     | 1,2,3
+tree_edges        | MULTILINESTRING((0 0,1 0),(0 0,0 1),(1 1,0 1))
+excluded_edge_ids | 4,5,6
+excluded_edges    | MULTILINESTRING((1 1,1 0),(0 0,1 1),(1 0,0 1))</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
@@ -465,88 +430,125 @@ SELECT id, ST_AsText(geom), ST_MinimumSpanningTree(geom) OVER () AS msp
 
     <refsection>
       <title>Examples</title>
-		<para>Generate dummy set of parcels for examples:</para>
-		<programlisting>CREATE TABLE parcels AS
-SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,
-('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As type
-FROM
-    ST_Subdivide(
-        ST_Buffer(
-            'SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 90)'::geometry,
-            40, 'endcap=square'),
-        12) As geom;
-</programlisting>
+		<para>Define the parcel geometries once in a CTE and reuse them across the executable examples.</para>
 
-        <para><informalfigure>
-            <mediaobject>
-                <imageobject>
-                <imagedata fileref="images/st_clusterkmeans02.png"/>
-                </imageobject>
-                <caption><para>Parcels color-coded by cluster number (cid)</para></caption>
-            </mediaobject>
-            </informalfigure>
-<programlisting role="requires-external-state">
-SELECT ST_ClusterKMeans(geom, 3) OVER() AS cid, parcel_id, geom
-    FROM parcels;</programlisting>
-<screen> cid | parcel_id |   geom
------+-----------+---------------
-   0 | 001       | 0103000000...
-   0 | 002       | 0103000000...
-   1 | 003       | 0103000000...
-   0 | 004       | 0103000000...
-   1 | 005       | 0103000000...
-   2 | 006       | 0103000000...
-   2 | 007       | 0103000000...
-</screen>
-        </para>
+        <para>Parcels color-coded by cluster number (<varname>cid</varname>).</para>
+<programlisting language="sql" role="example-test">WITH parcels(parcel_id, geom) AS (
+  VALUES
+    ('A1', ST_MakeEnvelope(0, 0, 10, 10)),
+    ('A2', ST_MakeEnvelope(10, 0, 20, 10)),
+    ('B1', ST_MakeEnvelope(100, 0, 110, 10)),
+    ('B2', ST_MakeEnvelope(110, 0, 120, 10)),
+    ('C1', ST_MakeEnvelope(200, 0, 210, 10)),
+    ('C2', ST_MakeEnvelope(210, 0, 220, 10))
+), clustered AS (
+  SELECT parcel_id,
+         geom,
+         ST_ClusterKMeans(geom, 3) OVER (ORDER BY parcel_id) AS cid
+  FROM parcels
+)
+SELECT cid,
+       string_agg(parcel_id, ',' ORDER BY parcel_id) AS parcels,
+       ST_Union(geom) AS cluster_geom
+FROM clustered
+GROUP BY cid
+ORDER BY cid;</programlisting>
+<screen role="visual-primary visual-overlay text-primary">0 | C1,C2 | POLYGON((200 10,210 10,220 10,220 0,210 0,200 0,200 10))
+1 | A1,A2 | POLYGON((0 10,10 10,20 10,20 0,10 0,0 0,0 10))
+2 | B1,B2 | POLYGON((100 10,110 10,120 10,120 0,110 0,100 0,100 10))</screen>
 
         <para>Partitioning parcel clusters by type:</para>
-<programlisting role="requires-external-state">
-SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, type
-    FROM parcels;</programlisting>
-<screen> cid | parcel_id |    type
------+-----------+-------------
-   1 | 005       | commercial
-   1 | 003       | commercial
-   2 | 007       | commercial
-   0 | 001       | commercial
-   1 | 004       | residential
-   0 | 002       | residential
-   2 | 006       | residential
+<programlisting language="sql" role="example-test">WITH parcel_geoms AS (
+  SELECT geom
+  FROM ST_Subdivide(
+    ST_Buffer('SRID=3857;LINESTRING(40 100,98 100,100 150,60 90)'::geometry,
+              40, 'endcap=square'),
+    12) AS geom
+), parcels AS (
+  SELECT lpad(row_number() OVER (ORDER BY ST_YMin(geom), ST_XMin(geom))::text, 3, '0') AS parcel_id,
+         geom,
+         ('{residential,commercial}'::text[])[1 + mod(row_number() OVER (ORDER BY ST_YMin(geom), ST_XMin(geom)), 2)] AS type
+  FROM parcel_geoms
+)
+SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid,
+       parcel_id,
+       type,
+       ST_SnapToGrid(geom, 1) AS parcel_geom
+FROM parcels
+ORDER BY type, parcel_id;</programlisting>
+<screen role="visual-primary text-primary visual-output-only"> cid | parcel_id |    type     | parcel_geom
+-----+-----------+-------------+--------------------------------------------------------------
+   0 | 001       | commercial  | POLYGON((33 60,0 60,0 98,71 98,71 35,33 60))
+   2 | 003       | commercial  | POLYGON((106 98,138 98,137 91,134 84,131 77,126 71,120 66,113 63,106 61,106 98))
+   2 | 005       | commercial  | POLYGON((140 148,138 98,72 98,72 148,140 148))
+   1 | 007       | commercial  | POLYGON((109 189,116 187,123 183,129 178,134 171,137 164,139 156,140 148,109 148,109 189))
+   0 | 002       | residential | POLYGON((71 98,106 98,106 61,98 60,88 60,71 35,71 98))
+   2 | 004       | residential | POLYGON((0 98,0 140,45 140,67 172,72 178,72 98,0 98))
+   1 | 006       | residential | POLYGON((72 178,78 183,85 187,93 189,101 190,109 189,109 148,72 148,72 178))
 </screen>
 
 <para>Example: Clustering a preaggregated planetary-scale data population dataset
-using 3D clusering and weighting.
-Identify at least 20 regions based on
+using 3D clustering and weighting. Identify at least 20 regions based on
 <link xlink:href="https://data.humdata.org/dataset/kontur-population-dataset">Kontur Population Data</link>
 that do not span more than 3000 km from their center:</para>
-<programlisting>create table kontur_population_3000km_clusters as
-select
+<programlisting language="sql" role="requires-external-state">CREATE TABLE kontur_population_3000km_clusters AS
+SELECT
     geom,
     ST_ClusterKMeans(
         ST_Force4D(
-            ST_Transform(ST_Force3D(geom), 4978), -- cluster in 3D XYZ CRS
-            mvalue =&gt; population -- set clustering to be weighed by population
+            ST_Transform(ST_Force3D(geom), 4978),
+            mvalue =&gt; population
         ),
-        20,                      -- aim to generate at least 20 clusters
-        max_radius =&gt; 3000000    -- but generate more to make each under 3000 km radius
-    ) over () as cid
-from
-    kontur_population;
-    </programlisting>
-    <para><informalfigure>
+        20,
+        max_radius =&gt; 3000000
+    ) OVER () AS cid
+FROM kontur_population;</programlisting>
+<para>The clustering produces 46 regions. Clusters are centered at well-populated
+regions such as New York and Moscow. Greenland forms one cluster, several island
+clusters span the antimeridian, and cluster edges follow the Earth's curvature.</para>
+<informalfigure>
     <mediaobject>
         <imageobject>
-        <imagedata fileref="images/st_clusterkmeans03.png"/>
+            <imagedata fileref="images/st_clusterkmeans03.png"/>
         </imageobject>
-        <caption><para>World population clustered to above specs produces 46 clusters.
-        Clusters are centered at well-populated regions (New York, Moscow).
-        Greenland is one cluster.
-        There are island clusters that span across the antimeridian.
-        Cluster edges follow Earth's curvature.</para></caption>
+        <caption><para>Kontur population clustered with 3000 km maximum radius.</para></caption>
     </mediaobject>
-    </informalfigure>
-    </para>
+</informalfigure>
+
+	<para>Cluster weighted city populations on the Earth in geocentric coordinates. The maximum radius is specified in meters, while the returned geometries stay in WGS 84 for display.</para>
+	<programlisting language="sql" role="example-test">WITH population(place, population, geom) AS (
+  VALUES
+    ('Boston', 5.0, ST_SetSRID(ST_Point(-71.06, 42.36), 4326)),
+    ('New York', 20.0, ST_SetSRID(ST_Point(-74.01, 40.71), 4326)),
+    ('London', 15.0, ST_SetSRID(ST_Point(-0.13, 51.51), 4326)),
+    ('Paris', 11.0, ST_SetSRID(ST_Point(2.35, 48.86), 4326)),
+    ('Osaka', 19.0, ST_SetSRID(ST_Point(135.50, 34.69), 4326)),
+    ('Tokyo', 37.0, ST_SetSRID(ST_Point(139.69, 35.68), 4326)),
+    ('Melbourne', 5.0, ST_SetSRID(ST_Point(144.96, -37.81), 4326)),
+    ('Sydney', 5.0, ST_SetSRID(ST_Point(151.21, -33.87), 4326))
+), clustered AS (
+  SELECT place,
+         geom,
+         ST_ClusterKMeans(
+           ST_Force4D(
+             ST_Transform(ST_Force3D(geom), 4978),
+             mvalue =&gt; population
+           ),
+           4,
+           max_radius =&gt; 3000000
+         ) OVER (ORDER BY place) AS cid
+  FROM population
+)
+SELECT cid,
+       string_agg(place, ', ' ORDER BY place) AS places,
+       ST_Collect(geom ORDER BY place) AS cluster_geom
+FROM clustered
+GROUP BY cid
+ORDER BY cid;</programlisting>
+	<screen role="visual-primary text-primary visual-output-only">0 | Melbourne, Sydney | MULTIPOINT((144.96 -37.81),(151.21 -33.87))
+1 | Boston, New York | MULTIPOINT((-71.06 42.36),(-74.01 40.71))
+2 | Osaka, Tokyo | MULTIPOINT((135.5 34.69),(139.69 35.68))
+3 | London, Paris | MULTIPOINT((-0.13 51.51),(2.35 48.86))</screen>
 
     </refsection>
 
@@ -600,17 +602,17 @@ from
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting language="sql">
 WITH testdata AS
-  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
-		       'LINESTRING (5 5, 4 4)'::geometry,
-		       'LINESTRING (6 6, 7 7)'::geometry,
-		       'LINESTRING (0 0, -1 -1)'::geometry,
-		       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
+  (SELECT unnest(ARRAY['LINESTRING (0 0,1 1)'::geometry,
+               'LINESTRING (5 5,4 4)'::geometry,
+               'LINESTRING (6 6,7 7)'::geometry,
+               'LINESTRING (0 0,-1 -1)'::geometry,
+               'POLYGON ((0 0,4 0,4 4,0 4,0 0))'::geometry]) AS geom)
 
-SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
+SELECT unnest(ST_ClusterWithin(geom, 1.4)) FROM testdata;
 </programlisting>
-<screen>GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
+<screen role="visual-primary text-primary">GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
 GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
       </refsection>
       <refsection>
@@ -659,20 +661,20 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))</screen>
 
       <refsection>
         <title>Examples</title>
-        <programlisting>
+        <programlisting language="sql">
 WITH testdata AS (
   SELECT id, geom::geometry FROM (
-  VALUES  (1, 'LINESTRING (0 0, 1 1)'),
-          (2, 'LINESTRING (5 5, 4 4)'),
-          (3, 'LINESTRING (6 6, 7 7)'),
-          (4, 'LINESTRING (0 0, -1 -1)'),
-          (5, 'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))')) AS t(id, geom)
+  VALUES  (1, 'LINESTRING (0 0,1 1)'),
+          (2, 'LINESTRING (5 5,4 4)'),
+          (3, 'LINESTRING (6 6,7 7)'),
+          (4, 'LINESTRING (0 0,-1 -1)'),
+          (5, 'POLYGON ((0 0,4 0,4 4,0 4,0 0))')) AS t(id, geom)
 )
 SELECT id,
-  ST_AsText(geom),
+  geom,
   ST_ClusterWithinWin(geom, 1.4) OVER () AS cluster
 FROM testdata;</programlisting>
-<screen> id |           st_astext            | cluster
+<screen role="visual-primary text-primary"> id |           st_astext            | cluster
 ----+--------------------------------+---------
   1 | LINESTRING(0 0,1 1)            |       0
   2 | LINESTRING(5 5,4 4)            |       0

@@ -130,6 +130,11 @@ class ContributorCreditValidationTest(unittest.TestCase):
         result = validate(self.fixture.repo)
         self.assertEqual(["Alice Example"], [item.name for item in result.missing])
 
+    def test_subdirectory_is_rejected_as_worktree_root(self):
+        self.fixture.initial_commit("Alice Example", "Bob News")
+        with self.assertRaisesRegex(CreditValidationError, "not the Git worktree root"):
+            validate(self.fixture.repo / "doc")
+
     def test_missing_mailmap_alias_fails(self):
         self.fixture.initial_commit("Alice Example", "Bob News", mailmap=False)
         result = validate(self.fixture.repo)
@@ -255,6 +260,19 @@ class ContributorCreditValidationTest(unittest.TestCase):
         self.assertEqual([], result.missing)
         self.assertEqual(0, result.git_coauthors)
 
+    def test_non_human_coauthor_name_is_ignored(self):
+        self.fixture.initial_commit(
+            "Alice Example",
+            "Bob News",
+            message=(
+                "fixture\n\n"
+                "Co-authored-by: Claude Fable 5 <noreply@anthropic.com>"
+            ),
+        )
+        result = validate(self.fixture.repo)
+        self.assertEqual([], result.missing)
+        self.assertEqual(0, result.git_coauthors)
+
     def test_news_slashes_separate_people_from_people_and_affiliations(self):
         self.assertEqual(
             ["Regina Obe", "Sandro Santilli"],
@@ -295,21 +313,17 @@ class ContributorCreditValidationTest(unittest.TestCase):
 
     def test_shallow_history_is_rejected(self):
         self.fixture.initial_commit("Alice Example", "Bob News")
-        with tempfile.TemporaryDirectory() as clone_directory:
-            subprocess.run(
-                [
-                    "git",
-                    "clone",
-                    "--depth=1",
-                    self.fixture.repo.as_uri(),
-                    clone_directory,
-                ],
-                check=True,
+        shallow_file = self.fixture.repo / ".git" / "shallow"
+        shallow_file.write_text(
+            subprocess.check_output(
+                ["git", "rev-parse", "HEAD"],
+                cwd=self.fixture.repo,
                 text=True,
-                capture_output=True,
-            )
-            with self.assertRaisesRegex(CreditValidationError, "non-shallow"):
-                validate(clone_directory)
+            ),
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(CreditValidationError, "non-shallow"):
+            validate(self.fixture.repo)
 
 
 if __name__ == "__main__":

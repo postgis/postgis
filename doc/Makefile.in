@@ -50,6 +50,8 @@ DOCSUFFIX=-en
 html_builddir=$(abs_builddir)/html
 images_builddir=$(html_builddir)/images
 pdf_images_builddir=$(abs_builddir)/pdf/images
+visual_examples_manifest=$(images_builddir)/visual-examples/manifest.xml
+visual_examples_inputs=$(wildcard $(visual_examples_manifest) $(images_builddir)/visual-examples/*.svg)
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
   POSTGIS_DOWNLOAD_URL=https://postgis.net/stuff
@@ -113,18 +115,36 @@ XSLTPROC_COMMONOPTS= \
 	--stringparam saxon.character.representation decimal \
 	$(XSLTPROCFLAGS)
 
+HTML_RUNTIME_ASSETS = \
+	$(abs_srcdir)/html/style.css \
+	$(abs_srcdir)/html/example-blocks.js
+
+# Keep generated HTML from being paired with stale cached CSS, JavaScript,
+# or build-time SVG figures.
+# The checksum is deterministic and changes whenever the document or an asset
+# that participates in the rendered page changes.
+HTML_ASSET_VERSION = $(shell cat postgis-out.xml $(HTML_RUNTIME_ASSETS) $(HTML_REF_INDEX_JS) $(images_builddir)/visual-examples/*.svg $(visual_examples_manifest) 2>/dev/null | cksum | cut -d ' ' -f 1)
+
 XSLTPROC_CHUNKED_HTML_OPTS = \
 	--stringparam chunker.output.encoding UTF-8 \
 	--stringparam chunker.output.indent yes \
 	--stringparam admon.graphics.path ../images/ \
 	--stringparam img.src.path ../ \
-	--stringparam html.stylesheet ../style.css
+	--stringparam html.stylesheet ../style.css?v=$(HTML_ASSET_VERSION) \
+	--stringparam html.script "../postgis-ref-index.js?v=$(HTML_ASSET_VERSION) ../example-blocks.js?v=$(HTML_ASSET_VERSION)"
 
-HTML_DOCBOOK_XSL=$(XSLBASE)/xhtml5/docbook.xsl
-CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/xhtml5/chunk.xsl
+HTML_DOCBOOK_XSL=$(builddir)/postgis-html.xsl
+CHUNK_HTML_DOCBOOK_XSL=$(builddir)/postgis-chunk-html.xsl
+POSTGIS_HTML_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-html-block-labels.xsl
+POSTGIS_DBLATEX_BLOCK_LABELS_XSL=$(abs_srcdir)/xsl/postgis-dblatex-block-labels.xsl
+POSTGIS_BLOCK_LABELS_COMMON_XSL=$(abs_srcdir)/xsl/postgis-block-labels-common.xsl
+HTML_REF_INDEX_JSON=$(html_builddir)/postgis-ref-index.json
+HTML_REF_INDEX_JS=$(html_builddir)/postgis-ref-index.js
+HTML_REF_INDEX=$(HTML_REF_INDEX_JSON) $(HTML_REF_INDEX_JS)
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
+PYTHON3 ?= $(shell command -v python3 2>/dev/null)
 
 # Gettext for translated documentation
 MSGCAT=@MSGCAT@
@@ -325,10 +345,19 @@ ifeq ($(XML2POT),)
 $(XML_SOURCE_POTS): requirements_not_met_xml2pot
 endif
 
-CHECK_UNIT_TARGET =
+CHECK_UNIT_TARGET = check-docbook-qa-unit
+CHECK_HTML_BLOCK_LABELS_DEPS =
 
 ifeq ($(CAN_CHECK_XML),yes)
-CHECK_UNIT_TARGET = check-xml
+CHECK_UNIT_TARGET += check-xml check-docbook-markup
+ifneq ($(PYTHON3),)
+ifneq ($(XSLTPROC),)
+ifneq ($(XSLBASE),)
+CHECK_UNIT_TARGET += check-html-block-labels
+CHECK_HTML_BLOCK_LABELS_DEPS = postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+endif
+endif
+endif
 endif
 
 
@@ -412,15 +441,56 @@ postgis-out-epub.xml: postgis-out.xml Makefile
 chunked-html: ## Generate multi-file html in html/postgis-en/
 
 chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
-$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile
+$(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/%.in $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) Makefile
+	$(PERL) -pe "s!\@\@XSLBASE\@\@!$(XSLBASE)!g; s!\@\@ABS_SRCDIR\@\@!$(abs_srcdir)!g;" $< > $@
+
+$(HTML_REF_INDEX_JSON): postgis-out.xml Makefile $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+	mkdir -p $(html_builddir)
+ifeq ($(PYTHON3),)
+	@echo "Skipping rich PostGIS reference index: python3 is not available."
+	@printf '{"functions":{},"operators":{},"keywords":[]}\n' > $(HTML_REF_INDEX_JSON)
+	@printf 'window.POSTGIS_REF_INDEX = {"functions":{},"operators":{},"keywords":[]};\n' > $(HTML_REF_INDEX_JS)
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py ref-index $< $(HTML_REF_INDEX_JSON)
+endif
+
+$(HTML_REF_INDEX_JS): $(HTML_REF_INDEX_JSON)
+	@if test ! -f $@; then \
+		$(RM) $(HTML_REF_INDEX_JSON); \
+		$(MAKE) $(HTML_REF_INDEX_JSON); \
+	fi
+
+$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) $(HTML_RUNTIME_ASSETS) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
+		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
+		--stringparam postgis.visual.version "$(HTML_ASSET_VERSION)" \
 		$(XSLTPROCFLAGS) \
 		--output $(dir $@) \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
 html: $(html_builddir)/postgis$(DOCSUFFIX).html ## Generate a single-file html/postgis-en.html
+
+review-html: html ## Compare this manual with REVIEW_HTML_BASE using synchronized scrolling
+	@if test -z "$(REVIEW_HTML_BASE)"; then \
+		echo "Set REVIEW_HTML_BASE to a built baseline doc/html directory."; \
+		exit 1; \
+	fi
+	@baseline=`cd "$(REVIEW_HTML_BASE)" 2>/dev/null && pwd -P`; \
+	if test ! -f "$$baseline/postgis$(DOCSUFFIX).html"; then \
+		echo "No postgis$(DOCSUFFIX).html found in REVIEW_HTML_BASE=$(REVIEW_HTML_BASE)"; \
+		exit 1; \
+	fi; \
+	mkdir -p "$(html_builddir)/review"; \
+	if test -e "$(html_builddir)/review/base" && test ! -L "$(html_builddir)/review/base"; then \
+		echo "Refusing to replace non-symlink $(html_builddir)/review/base"; \
+		exit 1; \
+	fi; \
+	rm -f "$(html_builddir)/review/base"; \
+	ln -s "$$baseline" "$(html_builddir)/review/base"
+	$(INSTALL_DATA) $(abs_srcdir)/postgis-review.html $(html_builddir)/review/index.html
+
 # Localized render targets share translated XML files in each language
 # directory.  Build and validate those files once before recursive render
 # targets can run in parallel.
@@ -433,15 +503,18 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) $(HTML_RUNTIME_ASSETS) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--stringparam html.stylesheet style.css \
+		--stringparam html.stylesheet style.css?v=$(HTML_ASSET_VERSION) \
+		--stringparam html.script "postgis-ref-index.js?v=$(HTML_ASSET_VERSION) example-blocks.js?v=$(HTML_ASSET_VERSION)" \
+		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
+		--stringparam postgis.visual.version "$(HTML_ASSET_VERSION)" \
 		--output $(html_builddir)/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty | images pdf-images
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty $(POSTGIS_DBLATEX_BLOCK_LABELS_XSL) $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) $(visual_examples_inputs) | images pdf-images
 ifeq ($(DBLATEX),)
 	@echo
 	@echo "configure was unable to find the 'dblatex' utility program."
@@ -449,7 +522,11 @@ ifeq ($(DBLATEX),)
 	@echo
 	@false
 else
-	$(DBLATEX) -T native -t pdf \
+	# The native profile forces latex.style=docbook after -s texstyle and thus
+	# silently discards the project style package.  texstyle already extends
+	# docbook, so select it directly and keep the custom listings definitions.
+	$(DBLATEX) -t pdf \
+		 -p "$(POSTGIS_DBLATEX_BLOCK_LABELS_XSL)" \
 		 -x "--path $(XSLT_PATH)" \
 		 -I "$(abs_builddir)/pdf" \
 		 -P doc.collab.show=0 \
@@ -459,6 +536,7 @@ else
 		 -P figure.warning="images/warning" \
 		 -P figure.caution="images/caution" \
 		 -P latex.output.revhistory=0 \
+		 -P postgis.visual.manifest="$(visual_examples_manifest)" \
 		 --texinputs "$(srcdir):$(abs_srcdir)" \
 		 -s "texstyle" \
 		 $(DBLATEX_EXTRA_OPTIONS) \
@@ -510,12 +588,17 @@ images: ## Generate images used in html and pdf targets
 images images-install images-uninstall images-clean:
 	$(MAKE) -C $(images_builddir) $@
 
+visual-examples:
+	$(MAKE) -C $(images_builddir) visual-examples-check
+
 pdf-images: images
 	$(MAKE) -C $(images_builddir) $@ PDF_IMAGES_BUILD_DIR="$(pdf_images_builddir)"
 
 html-clean:
 	rm -f $(html_builddir)/postgis$(DOCSUFFIX).html
 	rm -rf $(html_builddir)/postgis$(DOCSUFFIX)/
+	rm -rf $(html_builddir)/review/
+	rm -f $(HTML_REF_INDEX)
 
 pdf-clean:
 	rm -f postgis*$(DOCSUFFIX).pdf
@@ -533,6 +616,7 @@ cheatsheet-clean:
 
 clean: images-clean html-clean pdf-clean epub-clean cheatsheet-clean clean-pot ## Remove generated files except comments
 	rm -f images # work around https://trac.osgeo.org/postgis/ticket/5422
+	rm -f $(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL)
 	rm -f postgis-out-epub.xml
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f postgis-nospecial.xml postgis-nospecial.xml.in
@@ -614,11 +698,17 @@ chunked-html-install: chunked-html
 chunked-html-uninstall:
 	rm -rf $(DESTDIR)$(htmldir)/postgis$(DOCSUFFIX)/
 
-html-assets-install: images-install
+html-assets-install: images-install $(HTML_REF_INDEX)
 	$(INSTALL_DATA) $(abs_srcdir)/html/style.css $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(abs_srcdir)/html/example-blocks.js $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(HTML_REF_INDEX_JSON) $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(HTML_REF_INDEX_JS) $(DESTDIR)$(htmldir)/
 
 html-assets-uninstall: images-install
 	rm -f $(DESTDIR)$(htmldir)/style.css
+	rm -f $(DESTDIR)$(htmldir)/example-blocks.js
+	rm -f $(DESTDIR)$(htmldir)/postgis-ref-index.json
+	rm -f $(DESTDIR)$(htmldir)/postgis-ref-index.js
 
 docs-install: html-install html-assets-install
 	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
@@ -640,15 +730,49 @@ endif
 %_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/%_gardentest.sql.xsl postgis-out.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
-exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py ## Report manual examples selected, parseable, or skipped for known reasons
-	$(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
+exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py $(abs_top_srcdir)/utils/xml_tree.py ## Report manual examples selected, parseable, or skipped for known reasons
+ifeq ($(PYTHON3),)
+	@echo "Skipping $@: python3 is not available."
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
+endif
 
-check: check-unit ## Check structural correctness of XML documentation with DocBook DTD, RelaxNG, and XMLSchema validation
+check: check-unit ## Check structural correctness of XML documentation and generated HTML block labels
 check-localized: ## Check structural correctness of localized (translated) XML documentation.
 
 check-regress:
 
 check-unit: $(CHECK_UNIT_TARGET)
+
+check-docbook-qa-unit: $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/test_docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+ifeq ($(PYTHON3),)
+	@echo "Skipping $@: python3 is not available."
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/test_docbook_qa.py
+endif
+
+check-html-block-labels: $(CHECK_HTML_BLOCK_LABELS_DEPS)
+ifeq ($(PYTHON3),)
+	@echo "Skipping $@: python3 is not available."
+else ifeq ($(XSLTPROC),)
+	@echo "Skipping $@: xsltproc is not available."
+else ifeq ($(XSLBASE),)
+	@echo "Skipping $@: DocBook XSL stylesheets are not available."
+else
+	@if ! test -s "$(visual_examples_manifest)"; then \
+		echo "Skipping $@: visual examples are missing. Run 'make -C regress visual-examples' first."; \
+	else \
+		$(MAKE) $(html_builddir)/postgis$(DOCSUFFIX)/index.html; \
+		$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html --expect-from postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/*.html; \
+	fi
+endif
+
+check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+ifeq ($(PYTHON3),)
+	@echo "Skipping $@: python3 is not available."
+else
+	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-source --fail-on warning --max-warnings 0 $<
+endif
 
 check-xml: postgis-out.xml
 	# TODO: --schematron http://docbook.org/xml/5.0/sch/docbook.sch

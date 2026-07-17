@@ -147,7 +147,7 @@ POINT ZM (1 2 3 4)
         and zero or more interior boundaries (holes).
         Each boundary is a <link linkend="LinearRing">LinearRing</link>.
         </para>
-        <programlisting>POLYGON ((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))</programlisting>
+        <programlisting>POLYGON ((0 0 0, 4 0 0, 4 4 0, 0 4 0, 0 0 0), (1 1 0, 2 1 0, 2 2 0, 1 2 0, 1 1 0))</programlisting>
     </section>
 
     <section xml:id="MultiPoint">
@@ -161,7 +161,7 @@ POINT ZM (1 2 3 4)
         <para>A MultiLineString is a collection of LineStrings.
         A MultiLineString is closed if each of its elements is closed.
         </para>
-        <programlisting>MULTILINESTRING ( (0 0,1 1,1 2), (2 3,3 2,5 4) )</programlisting>
+        <programlisting>MULTILINESTRING ( (0 0, 1 1, 1 2), (2 3, 3 2, 5 4) )</programlisting>
     </section>
 
     <section xml:id="MultiPolygon">
@@ -187,12 +187,12 @@ POINT ZM (1 2 3 4)
         Each patch is a planar Polygon.
         If the Polygon coordinates have Z ordinates then the surface is 3-dimensional.</para>
         <programlisting>POLYHEDRALSURFACE Z (
-  ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
-  ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
-  ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
-  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-  ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
-  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )</programlisting>
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )</programlisting>
     </section>
 
     <section xml:id="Triangle">
@@ -257,7 +257,7 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
         every component (except the last) must be coincident with the
         start point of the following component.</para>
 
-		<programlisting>COMPOUNDCURVE( CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))</programlisting>
+		<programlisting>COMPOUNDCURVE( CIRCULARSTRING(0 0, 1 1, 1 0), (1 0, 0 1))</programlisting>
     </section>
     <section xml:id="CurvePolygon">
         <title>CurvePolygon</title>
@@ -268,16 +268,16 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
         <para>As of PostGIS 1.4 PostGIS supports compound curves in a curve polygon.</para>
 
 		<programlisting>CURVEPOLYGON(
-  CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),
-  (1 1, 3 3, 3 1, 1 1) )</programlisting>
+CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),
+(1 1, 3 3, 3 1, 1 1) )</programlisting>
 
         <para>Example: A CurvePolygon with the shell defined by a CompoundCurve
         containing a CircularString and a LineString,
         and a hole defined by a CircularString</para>
 		  <programlisting>CURVEPOLYGON(
-  COMPOUNDCURVE( CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),
-                 (4 3, 4 5, 1 4, 0 0)),
-  CIRCULARSTRING(1.7 1, 1.4 0.4, 1.6 0.4, 1.6 0.5, 1.7 1) )</programlisting>
+COMPOUNDCURVE( CIRCULARSTRING(0 0, 2 0, 2 1, 2 3, 4 3),
+               (4 3, 4 5, 1 4, 0 0)),
+CIRCULARSTRING(1.7 1, 1.4 0.4, 1.6 0.4, 1.6 0.5, 1.7 1) )</programlisting>
 
     </section>
     <section xml:id="MultiCurve">
@@ -293,10 +293,10 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
         Polygons or CurvePolygons.</para>
 
         <programlisting>MULTISURFACE(
-  CURVEPOLYGON(
-    CIRCULARSTRING( 0 0, 4 0, 4 4, 0 4, 0 0),
-    (1 1, 3 3, 3 1, 1 1)),
-  ((10 10, 14 12, 11 10, 10 10), (11 11, 11.5 11, 11 11.5, 11 11)))</programlisting>
+CURVEPOLYGON(
+  CIRCULARSTRING( 0 0, 4 0, 4 4, 0 4, 0 0),
+  (1 1, 3 3, 3 1, 1 1)),
+((10 10, 14 12, 11 10, 10 10), (11 11, 11.5 11, 11 11.5, 11 11)))</programlisting>
 
     </section>
 
@@ -313,7 +313,7 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
 	  <para>Well-Known Text (WKT) provides a standard textual representation of spatial data.
       Examples of WKT representations of spatial objects are:</para>
 
-	  <itemizedlist>
+	  <itemizedlist role="postgis-syntax-list" spacing="compact">
 		<listitem>
 		  <para>POINT(0 0)</para>
 		</listitem>
@@ -364,7 +364,7 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
 		</listitem>
 
 		<listitem>
-		  <para>GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))</para>
+		  <para>GEOMETRYCOLLECTION(POINT(2 3), LINESTRING(2 3,3 4))</para>
 		</listitem>
 
 		<listitem>
@@ -375,19 +375,19 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
 	  <para>Input and output of WKT is provided by the functions
       <xref linkend="ST_AsText"/> and <xref linkend="ST_GeomFromText"/>:</para>
 
-	  <programlisting>text WKT = ST_AsText(geometry);
+	  <programlisting>text WKT = geometry;
 geometry = ST_GeomFromText(text WKT, SRID);</programlisting>
 
-	  <para>For example, a statement to create and insert a spatial object from WKT and a SRID is:</para>
+		  <para>For example, a statement to create and insert a spatial object from WKT with SRID 312 is:</para>
 
-	  <programlisting>INSERT INTO geotable ( geom, name )
-  VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place'); -- 312 is the SRID</programlisting>
+		  <programlisting>INSERT INTO geotable ( geom, name )
+VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
 
     <para>Well-Known Binary (WKB) provides a portable, full-precision representation
       of spatial data as binary data (arrays of bytes).
       Examples of the WKB representations of spatial objects are:</para>
 
-    <itemizedlist>
+    <itemizedlist role="postgis-syntax-list" spacing="compact">
     <listitem>
         <para>WKT: POINT(1 1)</para>
         <para>WKB: 0101000000000000000000F03F000000000000F03</para>
@@ -410,7 +410,7 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
 	  spatial object from WKB is:</para>
 
 	  <programlisting>INSERT INTO geotable ( geom, name )
-  VALUES ( ST_GeomFromWKB('\x0101000000000000000000f03f000000000000f03f', 312), 'A Place');</programlisting>
+VALUES ( ST_GeomFromWKB('\x0101000000000000000000f03f000000000000f03f', 312), 'A Place');</programlisting>
 	</section>
 
   </section>
@@ -481,15 +481,16 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
         <para>For example this statement creates a geometry by casting from an EWKT text value,
         and outputs it using the canonical form of HEXEWKB:</para>
 
-	  <programlisting>SELECT 'SRID=4;POINT(0 0)'::geometry;
-  geometry
-  ----------------------------------------------------
-  01010000200400000000000000000000000000000000000000
-</programlisting>
+	  <programlisting language="sql">SELECT 'SRID=4;POINT(0 0)'::geometry;</programlisting>
+<screen role="text-primary">
+geometry
+----------------------------------------------------
+01010000200400000000000000000000000000000000000000
+</screen>
 
         <para>PostGIS EWKT output has a few differences to OGC WKT:</para>
 
-		<itemizedlist>
+		<itemizedlist role="postgis-syntax-comparison" spacing="compact">
 			<listitem>
 				<para>For 3DZ geometries the Z qualifier is omitted:</para>
 				<para>OGC: POINT Z (1 2 3)</para>
@@ -511,7 +512,7 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
         and the inconsistencies that can occur with the OGC/ISO format, such as:
         </para>
 
-		<itemizedlist>
+		<itemizedlist role="postgis-syntax-list" spacing="compact">
 			<listitem>
 				<para>POINT ZM (1 1)</para>
 			</listitem>
@@ -533,7 +534,7 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
 
 	  <para>Examples of the EWKT text representation of spatial objects are:</para>
 
-	  <itemizedlist>
+	  <itemizedlist role="postgis-syntax-list" spacing="compact">
 		<listitem>
 		  <para>POINT(0 0 0) -- XYZ</para>
 		</listitem>
@@ -596,14 +597,14 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
 	  <para>Input and output using these formats is available using the following functions:</para>
 
 	  <programlisting>bytea EWKB = ST_AsEWKB(geometry);
-text EWKT = ST_AsEWKT(geometry);
+text EWKT = geometry;
 geometry = ST_GeomFromEWKB(bytea EWKB);
 geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 
 	  <para>For example, a statement to create and insert a PostGIS spatial object using EWKT is:</para>
 
 	  <programlisting>INSERT INTO geotable ( geom, name )
-  VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</programlisting>
+VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</programlisting>
 
 	</section>
 
@@ -649,11 +650,11 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
         The following example creates a table with a geography column storing 2D LineStrings
         in the WGS84 geodetic coordinate system (SRID 4326):</para>
 
-<programlisting>CREATE TABLE global_points (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(64),
-    location geography(POINT,4326)
-  );</programlisting>
+<programlisting language="sql">CREATE TABLE global_points (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(64),
+  location geography(POINT, 4326)
+);</programlisting>
 
 		<para>The geography type supports two optional type modifiers:</para>
 
@@ -674,56 +675,38 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 		</listitem>
 		</itemizedlist>
 
-		<para/>
-
         <para>Examples of creating tables with geography columns:</para>
-		<itemizedlist>
-		<listitem>
-		  <para>Create a table with 2D POINT geography with the default SRID 4326 (WGS84 long/lat):</para>
-		  <para><programlisting>CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT));</programlisting></para>
-		</listitem>
-		<listitem>
-		  <para>Create a table with 2D POINT geography in NAD83 longlat:</para>
-		  <para><programlisting>CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT,4269));</programlisting></para>
-		</listitem>
-		<listitem>
-		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 4326:</para>
-		  <para><programlisting>CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ,4326));</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>Create a table with 2D LINESTRING geography with the default SRID 4326:</para>
-			<para><programlisting>CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING));</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>Create a table with 2D POLYGON geography with the SRID 4267 (NAD 1927 long lat):</para>
-			<para><programlisting>CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON,4267));</programlisting></para>
-		</listitem>
+		<para>Create a table with 2D POINT geography with the default SRID 4326 (WGS84 long/lat):</para>
+		<programlisting language="sql">CREATE TABLE ptgeogwgs(gid serial PRIMARY KEY, geog geography(POINT));</programlisting>
+
+		<para>Create a table with 2D POINT geography in NAD83 longlat:</para>
+		<programlisting language="sql">CREATE TABLE ptgeognad83(gid serial PRIMARY KEY, geog geography(POINT, 4269));</programlisting>
+
+		<para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 4326:</para>
+		<programlisting language="sql">CREATE TABLE ptzgeogwgs84(gid serial PRIMARY KEY, geog geography(POINTZ, 4326));</programlisting>
+
+		<para>Create a table with 2D LINESTRING geography with the default SRID 4326:</para>
+		<programlisting language="sql">CREATE TABLE lgeog(gid serial PRIMARY KEY, geog geography(LINESTRING));</programlisting>
+
+		<para>Create a table with 2D POLYGON geography with the SRID 4267 (NAD 1927 long lat):</para>
+		<programlisting language="sql">CREATE TABLE lgeognad27(gid serial PRIMARY KEY, geog geography(POLYGON, 4267));</programlisting>
+
 		<!-- TODO: Add other examples -->
         <!--
-		<listitem>
-			<para>MULTIPOINT</para>
-		</listitem>
-		<listitem>
-			<para>MULTILINESTRING</para>
-		</listitem>
-		<listitem>
-			<para>MULTIPOLYGON</para>
-		</listitem>
-		<listitem>
-			<para>GEOMETRYCOLLECTION</para>
-		</listitem>
+		<para>MULTIPOINT</para>
+		<para>MULTILINESTRING</para>
+		<para>MULTIPOLYGON</para>
+		<para>GEOMETRYCOLLECTION</para>
         -->
-		</itemizedlist>
 		<para>Geography fields are registered in the <varname>geography_columns</varname> system view.
 		You can query the <varname>geography_columns</varname> view and see that the table is listed:</para>
 
-	<programlisting>SELECT * FROM geography_columns;</programlisting>
+		<programlisting language="sql">SELECT * FROM geography_columns;</programlisting>
 
 <para>Creating a spatial index works the same as for geometry columns.
 	PostGIS will note that the column type is GEOGRAPHY and create an appropriate sphere-based index instead of the usual planar index used for GEOMETRY.</para>
 
-<programlisting>-- Index the test table with a spherical index
-CREATE INDEX global_points_gix ON global_points USING GIST ( location );</programlisting>
+<programlisting language="sql">CREATE INDEX global_points_gix ON global_points USING GIST ( location );</programlisting>
 
 	</section>
 
@@ -735,8 +718,7 @@ Geometry data will autocast to the geography type if it has SRID 4326.
 The <link linkend="EWKB_EWKT">EWKT and EWKB</link> formats can also be used
 to specify geography values.</para>
 
-<programlisting>-- Add some data into the test table
-INSERT INTO global_points (name, location) VALUES ('Town', 'SRID=4326;POINT(-110 30)');
+<programlisting language="sql">INSERT INTO global_points (name, location) VALUES ('Town', 'SRID=4326;POINT(-110 30)');
 INSERT INTO global_points (name, location) VALUES ('Forest', 'SRID=4326;POINT(-109 29)');
 INSERT INTO global_points (name, location) VALUES ('London', 'SRID=4326;POINT(0 49)');
 </programlisting>
@@ -746,28 +728,30 @@ INSERT INTO global_points (name, location) VALUES ('London', 'SRID=4326;POINT(0 
 Non-geodetic coordinate systems raise an error if used.
 </para>
 
-<programlisting>-- NAD 83 lon/lat
-SELECT 'SRID=4269;POINT(-123 34)'::geography;
+<para>A NAD83 longitude/latitude geography value:</para>
+<programlisting language="sql">SELECT 'SRID=4269;POINT(-123 34)'::geography;</programlisting>
+<screen role="text-primary">
                     geography
 ----------------------------------------------------
  0101000020AD1000000000000000C05EC00000000000004140
-</programlisting>
+</screen>
 
-<programlisting>-- NAD27 lon/lat
-SELECT 'SRID=4267;POINT(-123 34)'::geography;
+<para>A NAD27 longitude/latitude geography value:</para>
+<programlisting language="sql">SELECT 'SRID=4267;POINT(-123 34)'::geography;</programlisting>
+<screen role="text-primary">
                     geography
 ----------------------------------------------------
  0101000020AB1000000000000000C05EC00000000000004140
-</programlisting>
+</screen>
 
 	<para>NAD83 UTM zone meters fails because it is a meter-based planar projection.</para>
-	<programlisting>SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting>
-<screen>ERROR:  Only lon/lat coordinate systems are supported in geography.</screen>
+		<programlisting language="sql">SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting>
+<screen role="text-primary">ERROR:  Only lon/lat coordinate systems are supported in geography.</screen>
 
 <para>Query and measurement functions use units of meters. So distance parameters should be expressed in meters, and return values should be expected in meters (or square meters for areas).</para>
 
-<programlisting>-- A distance query using a 1000km tolerance
-SELECT name FROM global_points WHERE ST_DWithin(location, 'SRID=4326;POINT(-110 29)'::geography, 1000000);</programlisting>
+<para>This query finds rows within a 1000 km tolerance:</para>
+<programlisting language="sql">SELECT name FROM global_points WHERE ST_DWithin(location, 'SRID=4326;POINT(-110 29)'::geography, 1000000);</programlisting>
 
 
 <para>You can see the power of geography in action by calculating how close a plane flying
@@ -779,9 +763,8 @@ comes to Reykjavik (POINT(-21.96 64.15))
 <para>The geography type calculates the true shortest distance of 122.235 km over the sphere
 between Reykjavik and the great circle flight path between Seattle and London.</para>
 
-<programlisting>-- Distance calculation using GEOGRAPHY
-SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);</programlisting>
-<screen>   st_distance
+<programlisting language="sql">SELECT ST_Distance('LINESTRING(-122.33 47.606,0.0 51.5)'::geography, 'POINT(-21.96 64.15)'::geography);</programlisting>
+<screen role="text-primary">   st_distance
 -----------------
  122235.23815667</screen>
 
@@ -792,9 +775,8 @@ The nominal units of the result is "degrees",
 but the result doesn't correspond to any true angular difference between the points,
 so even calling them "degrees" is inaccurate.</para>
 
-<programlisting>-- Distance calculation using GEOMETRY
-SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);</programlisting>
-<screen>      st_distance
+<programlisting language="sql">SELECT ST_Distance('LINESTRING(-122.33 47.606,0.0 51.5)'::geometry, 'POINT(-21.96 64.15)'::geometry);</programlisting>
+<screen role="text-primary">      st_distance
 --------------------
  13.342271221453624</screen>
 
@@ -908,136 +890,62 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
       If the endpoints of a simple LineString are identical it is called <emphasis>closed</emphasis>
       and referred to as a Linear Ring.</para>
 
-	  <informaltable frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(a)</emphasis> and
-				<emphasis role="bold">(c)</emphasis> are simple	<varname>LINESTRING</varname>s.
-                <emphasis role="bold">(b)</emphasis> and <emphasis role="bold">(d)</emphasis> are not simple.
-                <emphasis role="bold">(c)</emphasis> is a closed Linear Ring.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="2" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple01.png"/>
-					</imageobject>
+	  <para>Use <xref linkend="ST_IsSimple"/> to classify linear geometries.
+      Each labeled result below is returned only when the function agrees with
+      the stated classification; example <emphasis role="bold">(c)</emphasis>
+      also verifies that the simple LineString is closed.</para>
 
-					<caption><para><emphasis role="bold">(a)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple02.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(b)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple03.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(c)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple04.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(d)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-
-	  </informaltable>
+	  <programlisting>WITH cases(label, geom) AS (VALUES
+  ('a', 'LINESTRING (10 190, 140 130, 70 80, 190 10)'::geometry),
+  ('b', 'LINESTRING (10 190, 130 40, 170 160, 10 10)'::geometry),
+  ('c', 'LINESTRING (90 190, 120 190, 130 140, 190 50, 70 10, 10 70, 10 150, 90 190)'::geometry),
+  ('d', 'LINESTRING (90 190, 120 190, 50 60, 130 10, 190 50, 160 90, 10 150, 90 190)'::geometry)
+)
+SELECT
+  (SELECT geom FROM cases WHERE label = 'a' AND ST_IsSimple(geom))
+    AS "input_(a) simple",
+  (SELECT geom FROM cases WHERE label = 'b' AND NOT ST_IsSimple(geom))
+    AS "input_(b) not simple",
+  (SELECT geom FROM cases
+             WHERE label = 'c' AND ST_IsSimple(geom) AND ST_IsClosed(geom))
+    AS "input_(c) simple, closed",
+  (SELECT geom FROM cases WHERE label = 'd' AND NOT ST_IsSimple(geom))
+    AS "input_(d) not simple";</programlisting>
+<screen xml:id="visual-simple-linestrings" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
+input_(a) simple         | LINESTRING(10 190,140 130,70 80,190 10)
+input_(b) not simple     | LINESTRING(10 190,130 40,170 160,10 10)
+input_(c) simple, closed | LINESTRING(90 190,120 190,130 140,190 50,70 10,10 70,10 150,90 190)
+input_(d) not simple     | LINESTRING(90 190,120 190,50 60,130 10,190 50,160 90,10 150,90 190)</screen>
 
 	  <para>A <varname>MULTILINESTRING</varname> is <emphasis>simple</emphasis>
 	  only if all of its elements are simple and the only intersection between
 	  any two elements occurs at points that are on the
 	  boundaries of both elements.  </para>
 
-	  <informaltable frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(e)</emphasis> and
-				<emphasis role="bold">(f)</emphasis> are simple
-				<varname>MULTILINESTRING</varname>s.
-                <emphasis role="bold">(g)</emphasis> is not simple.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple05.png"/>
-					</imageobject>
+	  <para>The next example applies the same classification to the three
+      MultiLineStrings.  In <emphasis role="bold">(f)</emphasis> the component
+      lines meet only at a shared endpoint, while in
+      <emphasis role="bold">(g)</emphasis> they cross in their interiors.</para>
 
-					<caption><para><emphasis role="bold">(e)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple06.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(f)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple07.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(g)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-	  </informaltable>
+	  <programlisting>WITH cases(label, geom) AS (VALUES
+  ('e', 'MULTILINESTRING ((30 190, 60 60, 170 10), (100 190, 180 150, 160 70))'::geometry),
+  ('f', 'MULTILINESTRING ((30 190, 60 60, 170 10), (30 190, 180 150, 160 70))'::geometry),
+  ('g', 'MULTILINESTRING ((30 190, 60 60, 170 10), (100 190, 180 150, 80 10))'::geometry)
+)
+SELECT
+  (SELECT geom FROM cases WHERE label = 'e' AND ST_IsSimple(geom))
+    AS "input_(e) simple",
+  (SELECT geom FROM cases WHERE label = 'f' AND ST_IsSimple(geom))
+    AS "input_(f) simple",
+  (SELECT geom FROM cases WHERE label = 'g' AND NOT ST_IsSimple(geom))
+    AS "input_(g) not simple";</programlisting>
+<screen xml:id="visual-simple-multilinestrings" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
+input_(e) simple     | MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,160 70))
+input_(f) simple     | MULTILINESTRING((30 190,60 60,170 10),(30 190,180 150,160 70))
+input_(g) not simple | MULTILINESTRING((30 190,60 60,170 10),(100 190,180 150,80 10))</screen>
 
     <para><varname>POLYGON</varname>s are formed from linear rings, so
     valid polygonal geometry is always <emphasis>simple</emphasis>.</para>
-
-    <para>To test if a geometry is simple
-	use the <xref linkend="ST_IsSimple"/> function:</para>
-
-	  <programlisting>SELECT
-   ST_IsSimple('LINESTRING(0 0, 100 100)') AS straight,
-   ST_IsSimple('LINESTRING(0 0, 100 100, 100 0, 0 100)') AS crossing;</programlisting>
-<screen> straight | crossing
-----------+----------
- t        | f</screen>
 
     <para>Generally, PostGIS functions do not require geometric arguments to be simple.
 	Simplicity is primarily used as a basis for defining geometric validity.
@@ -1091,88 +999,61 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
         polygon invalid.
       </para>
 
-	  <informaltable frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(h)</emphasis> and
-				<emphasis role="bold">(i)</emphasis> are valid <varname>POLYGON</varname>s.
-                <emphasis role="bold">(j-m)</emphasis> are invalid.
-				<emphasis role="bold">(j)</emphasis>
-				can be represented as a valid <varname>MULTIPOLYGON</varname>.
-				</emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid01.png"/>
-					</imageobject>
+	  <para>The following examples use <xref linkend="ST_IsValid"/> to check
+      the validity rules.  Each labeled geometry is returned only if its
+      computed validity agrees with the label.</para>
 
-					<caption><para><emphasis role="bold">(h)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
+	  <programlisting>WITH cases(label, geom) AS (VALUES
+  ('h', 'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+                 (50 100, 70 80, 110 100, 110 140, 50 100))'::geometry),
+  ('i', 'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+                 (190 60, 140 40, 110 60, 120 90, 190 60))'::geometry)
+)
+SELECT
+  (SELECT geom FROM cases WHERE label = 'h' AND ST_IsValid(geom))
+    AS "input_(h) valid",
+  (SELECT geom FROM cases WHERE label = 'i' AND ST_IsValid(geom))
+    AS "input_(i) valid, tangent hole";</programlisting>
+<screen xml:id="visual-valid-polygons" role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
+input_(h) valid               | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(50 100,70 80,110 100,110 140,50 100))
+input_(i) valid, tangent hole | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(190 60,140 40,110 60,120 90,190 60))</screen>
 
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid02.png"/>
-					</imageobject>
+	  <para>Examples <emphasis role="bold">(j-m)</emphasis> are invalid.
+      They show, respectively, a disconnected interior, crossing rings, a cut
+      line, and a hole outside the shell.  The invalidity reason is checked with
+      <xref linkend="ST_IsValidReason"/>.  The disconnected interior in
+      <emphasis role="bold">(j)</emphasis> can instead be represented as a
+      valid <varname>MULTIPOLYGON</varname>.</para>
 
-					<caption><para><emphasis role="bold">(i)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid03.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(j)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-			<row>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid04.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(k)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid05.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(l)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid06.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(m)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-	  </informaltable>
+	  <programlisting>WITH cases(label, geom, reason_pattern) AS (VALUES
+  ('(j) disconnected interior',
+   'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+             (130 170, 10 140, 50 120, 110 110, 130 170))'::geometry,
+   'Interior is disconnected%'),
+  ('(k) crossing rings',
+   'POLYGON ((10 140, 90 190, 130 170, 190 60, 160 10, 50 20, 10 140),
+             (90 189, 10 139, 80 110, 110 130, 90 189))'::geometry,
+   'Self-intersection%'),
+  ('(l) cut line',
+   'POLYGON ((10 100, 60 140, 60 190, 60 140, 130 170,
+              190 60, 160 10, 50 20, 10 100))'::geometry,
+   'Ring Self-intersection%'),
+  ('(m) hole outside shell',
+   'POLYGON ((10 40, 10 100, 130 130, 190 80, 140 20, 50 10, 10 40),
+             (81 143, 103 143, 112 162, 107 175, 89 183, 71 169, 81 143))'::geometry,
+   'Hole lies outside shell%')
+)
+SELECT label, geom
+FROM cases
+WHERE NOT ST_IsValid(geom)
+  AND ST_IsValidReason(geom) LIKE reason_pattern
+ORDER BY label;</programlisting>
+<screen xml:id="visual-invalid-polygons" role="visual-primary visual-output-only visual-row-panels text-primary">          label          | geom
+-------------------------+----------------------------------------------------------------------------------------------------------------------------------------
+ (j) disconnected interior | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(130 170,10 140,50 120,110 110,130 170))
+ (k) crossing rings       | POLYGON((10 140,90 190,130 170,190 60,160 10,50 20,10 140),(90 189,10 139,80 110,110 130,90 189))
+ (l) cut line             | POLYGON((10 100,60 140,60 190,60 140,130 170,190 60,160 10,50 20,10 100))
+ (m) hole outside shell   | POLYGON((10 40,10 100,130 130,190 80,140 20,50 10,10 40),(81 143,103 143,112 162,107 175,89 183,71 169,81 143))</screen>
 
 	  <para>A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> if:
 	  </para>
@@ -1189,53 +1070,38 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
         </para></listitem>
         </orderedlist>
 
-	  <informaltable frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(n)</emphasis> is a valid <varname>MULTIPOLYGON</varname>.
-				<emphasis role="bold">(o)</emphasis> and <emphasis role="bold">(p)</emphasis> are invalid.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid09.png"/>
-					</imageobject>
+	  <para>The next example checks the MultiPolygon rules.  In
+      <emphasis role="bold">(n)</emphasis> the polygons touch at only one point.
+      In <emphasis role="bold">(o)</emphasis> they share an edge, and in
+      <emphasis role="bold">(p)</emphasis> their interiors overlap.</para>
 
-					<caption><para><emphasis role="bold">(n)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid07.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(o)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid08.png"/>
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(p)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-	  </informaltable>
+	  <programlisting>WITH cases(label, geom, valid, reason_pattern) AS (VALUES
+  ('(n) point touch',
+   'MULTIPOLYGON (((10 40, 29 118, 100 75, 180 88, 140 30, 70 10, 10 40)),
+                  ((50 170, 100 190, 160 180, 180 140, 180 90, 120 120,
+                    30 120, 50 170)))'::geometry,
+   true, NULL),
+  ('(o) shared edge',
+   'MULTIPOLYGON (((10 40, 30 120, 120 120, 180 88, 140 30, 70 10, 10 40)),
+                  ((50 170, 100 190, 160 180, 180 140, 180 90, 120 120,
+                    30 120, 50 170)))'::geometry,
+   false, 'Self-intersection%'),
+  ('(p) overlap',
+   'MULTIPOLYGON (((10 40, 42 93, 130 150, 180 86, 140 30, 70 10, 10 40)),
+                  ((50 170, 100 190, 138 182, 149 156, 146 137, 100 100,
+                    58 140, 50 170)))'::geometry,
+   false, 'Self-intersection%')
+)
+SELECT label, geom
+FROM cases
+WHERE ST_IsValid(geom) = valid
+  AND (valid OR ST_IsValidReason(geom) LIKE reason_pattern)
+ORDER BY label;</programlisting>
+<screen xml:id="visual-validity-multipolygons" role="visual-primary visual-output-only visual-row-panels text-primary">      label       | geom
+------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ (n) point touch  | MULTIPOLYGON(((10 40,29 118,100 75,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
+ (o) shared edge  | MULTIPOLYGON(((10 40,30 120,120 120,180 88,140 30,70 10,10 40)),((50 170,100 190,160 180,180 140,180 90,120 120,30 120,50 170)))
+ (p) overlap      | MULTIPOLYGON(((10 40,42 93,130 150,180 86,140 30,70 10,10 40)),((50 170,100 190,138 182,149 156,146 137,100 100,58 140,50 170)))</screen>
 
 	  <para>These rules mean that valid polygonal geometry is also <emphasis>simple</emphasis>.
        </para>
@@ -1246,11 +1112,11 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
     Note that non-simple (self-intersecting) lines are valid.
     </para>
 
-<programlisting>SELECT
-   ST_IsValid('LINESTRING(0 0, 1 1)') AS len_nonzero,
-   ST_IsValid('LINESTRING(0 0, 0 0, 0 0)') AS len_zero,
-   ST_IsValid('LINESTRING(10 10, 150 150, 180 50, 20 130)') AS self_int;</programlisting>
-<screen> len_nonzero | len_zero | self_int
+	<programlisting language="sql">SELECT
+ST_IsValid('LINESTRING(0 0,1 1)') AS len_nonzero,
+ST_IsValid('LINESTRING(0 0,0 0,0 0)') AS len_zero,
+ST_IsValid('LINESTRING(10 10,150 150,180 50,20 130)') AS self_int;</programlisting>
+	<screen role="text-primary"> len_nonzero | len_zero | self_int
 -------------+----------+----------
  t           | f        | t</screen>
 
@@ -1298,14 +1164,14 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 	  <para>To test if a geometry is valid use the
 	  <xref linkend="ST_IsValid"/> function:
       </para>
-<programlisting>SELECT ST_IsValid('POLYGON ((20 180, 180 180, 180 20, 20 20, 20 180))');</programlisting>
-<screen> t</screen>
+	<programlisting language="sql">SELECT ST_IsValid('POLYGON ((20 180,180 180,180 20,20 20,20 180))');</programlisting>
+	<screen role="text-primary"> t</screen>
 	  <para>Information about the nature and location of an geometry invalidity are provided by
 	  the <xref linkend="ST_IsValidDetail"/> function:
       </para>
-<programlisting>SELECT valid, reason, ST_AsText(location) AS location
-    FROM ST_IsValidDetail('POLYGON ((20 20, 120 190, 50 190, 170 50, 20 20))') AS t;</programlisting>
-<screen> valid |      reason       |                  location
+	<programlisting language="sql">SELECT valid, reason,location AS location
+	FROM ST_IsValidDetail('POLYGON ((20 20,120 190,50 190,170 50,20 20))') AS t;</programlisting>
+	<screen role="text-primary"> valid |      reason       |                  location
 -------+-------------------+---------------------------------------------
  f     | Self-intersection | POINT(91.51162790697674 141.56976744186048)</screen>
 
@@ -1321,8 +1187,8 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 	  constraint:</para>
 
 	  <programlisting>ALTER TABLE mytable
-  ADD CONSTRAINT geometry_valid_check
-	CHECK (ST_IsValid(geom));</programlisting>
+ADD CONSTRAINT geometry_valid_check
+  CHECK (ST_IsValid(geom));</programlisting>
 
     </section>
 </section>
@@ -1442,19 +1308,19 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 
 			<programlisting>PROJCS["NAD83 / UTM Zone 10N",
   GEOGCS["NAD83",
-	DATUM["North_American_Datum_1983",
-	  SPHEROID["GRS 1980",6378137,298.257222101]
-	],
-	PRIMEM["Greenwich",0],
-	UNIT["degree",0.0174532925199433]
+    DATUM["North_American_Datum_1983",
+      SPHEROID["GRS 1980", 6378137, 298.257222101]
+    ],
+    PRIMEM["Greenwich", 0],
+    UNIT["degree", 0.0174532925199433]
   ],
   PROJECTION["Transverse_Mercator"],
-  PARAMETER["latitude_of_origin",0],
-  PARAMETER["central_meridian",-123],
-  PARAMETER["scale_factor",0.9996],
-  PARAMETER["false_easting",500000],
-  PARAMETER["false_northing",0],
-  UNIT["metre",1]
+  PARAMETER["latitude_of_origin", 0],
+  PARAMETER["central_meridian", -123],
+  PARAMETER["scale_factor", 0.9996],
+  PARAMETER["false_easting", 500000],
+  PARAMETER["false_northing", 0],
+  UNIT["metre", 1]
 ]</programlisting>
 
 			<para>For a discussion of SRS WKT, see the OGC standard <link xlink:href="http://docs.opengeospatial.org/is/12-063r5/12-063r5.html">Well-known text representation of coordinate reference systems</link>.
@@ -1563,10 +1429,10 @@ VALUES ( 990000,
         in the BC-Albers coordinate system (SRID 3005):</para>
 
 <programlisting>CREATE TABLE roads (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(64),
-    geom geometry(LINESTRING,3005)
-  );</programlisting>
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(64),
+  geom geometry(LINESTRING, 3005)
+);</programlisting>
 
 		<para>The <varname>geometry</varname> type supports two optional <emphasis role="bold">type modifiers</emphasis>:</para>
 
@@ -1593,28 +1459,21 @@ VALUES ( 990000,
 		<para/>
 
         <para>Examples of creating tables with geometry columns:</para>
-		<itemizedlist>
-		<listitem>
-		  <para>Create a table holding any kind of geometry with the default SRID:</para>
-		  <para><programlisting>CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry);</programlisting></para>
-		</listitem>
-		<listitem>
-		  <para>Create a table with 2D POINT geometry with the default SRID:</para>
-		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT));</programlisting></para>
-		</listitem>
-		<listitem>
-		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 3005:</para>
-		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ,3005));</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>Create a table with 4D (XYZM) LINESTRING geometry with the default SRID:</para>
-			<para><programlisting>CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM));</programlisting></para>
-		</listitem>
-		<listitem>
-			<para>Create a table with 2D POLYGON geometry with the SRID 4267 (NAD 1927 long lat):</para>
-			<para><programlisting>CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON,4267));</programlisting></para>
-		</listitem>
-		</itemizedlist>
+
+        <para>Create a table holding any kind of geometry with the default SRID:</para>
+        <programlisting language="sql">CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry);</programlisting>
+
+        <para>Create a table with 2D POINT geometry with the default SRID:</para>
+        <programlisting language="sql">CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT));</programlisting>
+
+        <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 3005:</para>
+        <programlisting language="sql">CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ, 3005));</programlisting>
+
+        <para>Create a table with 4D (XYZM) LINESTRING geometry with the default SRID:</para>
+        <programlisting language="sql">CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM));</programlisting>
+
+        <para>Create a table with 2D POLYGON geometry with the SRID 4267 (NAD 1927 long lat):</para>
+        <programlisting language="sql">CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON, 4267));</programlisting>
 
 	  <para>It is possible to have more than one geometry column in a table.
         This can be specified when the table is created, or a column can be added using the
@@ -1622,7 +1481,7 @@ VALUES ( 990000,
         SQL statement.
         This example adds a column that can hold 3D LineStrings:</para>
 
-	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
+		  <programlisting language="sql">ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ, 4326);</programlisting>
 	</section>
 
 	<section xml:id="geometry_columns">
@@ -1634,8 +1493,8 @@ VALUES ( 990000,
       This ensures that the spatial metadata information is always consistent with the currently defined tables and views.
 	  The view structure is:</para>
 
-	  <screen>\d geometry_columns
-             View "public.geometry_columns"
+		  <programlisting language="psql">\d geometry_columns</programlisting>
+		  <screen role="text-primary">             View "public.geometry_columns"
       Column       |          Type          | Modifiers
 -------------------+------------------------+-----------
  f_table_catalog   | character varying(256) |
@@ -1714,43 +1573,43 @@ VALUES ( 990000,
 		Also views that have no spatial function applied to the geometry will register the same as the underlying table geometry column.</para>
 
 		<para>For example, suppose you have a view created like this.</para>
-		<programlisting>CREATE VIEW public.vwmytablemercator AS
-	SELECT gid, ST_Transform(geom, 3395) As geom, f_name
-	FROM public.mytable;</programlisting>
+			<programlisting language="sql">CREATE VIEW public.vwmytablemercator AS
+SELECT gid, ST_Transform(geom, 3395) As geom, f_name
+FROM public.mytable;</programlisting>
 		<para>To register the geometry column correctly, cast the transformed geometry.</para>
-<programlisting>DROP VIEW public.vwmytablemercator;
+	<programlisting language="sql">DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
-	SELECT gid, ST_Transform(geom, 3395)::geometry(Geometry, 3395) As geom, f_name
-	FROM public.mytable;</programlisting>
+    SELECT gid, ST_Transform(geom, 3395)::geometry(Geometry, 3395) As geom, f_name
+    FROM public.mytable;</programlisting>
 		<para>If the geometry type is known to be a 2D Polygon, specify it in the cast.</para>
-<programlisting>DROP VIEW public.vwmytablemercator;
+	<programlisting language="sql">DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
-	SELECT gid, ST_Transform(geom,3395)::geometry(Polygon, 3395) As geom, f_name
-	FROM public.mytable;</programlisting>
+    SELECT gid, ST_Transform(geom, 3395)::geometry(Polygon, 3395) As geom, f_name
+    FROM public.mytable;</programlisting>
 		<para>For a derivative table created by a bulk insert, create the table first.</para>
-		<programlisting>SELECT poi.gid, poi.geom, citybounds.city_name
+			<programlisting language="sql">SELECT poi.gid, poi.geom, citybounds.city_name
 INTO myschema.my_special_pois
 FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);</programlisting>
 		<para>Create a 2D spatial index on the new table.</para>
-<programlisting>CREATE INDEX idx_myschema_myspecialpois_geom_gist
-  ON myschema.my_special_pois USING gist(geom);</programlisting>
+	<programlisting language="sql">CREATE INDEX idx_myschema_myspecialpois_geom_gist
+ON myschema.my_special_pois USING gist(geom);</programlisting>
 		<para>If the points are 3D or measured, an n-D index may be more appropriate.</para>
-<programlisting>CREATE INDEX my_special_pois_geom_gist_nd
-	ON my_special_pois USING gist(geom gist_geometry_ops_nd);</programlisting>
+	<programlisting language="sql">CREATE INDEX my_special_pois_geom_gist_nd
+ON my_special_pois USING gist(geom gist_geometry_ops_nd);</programlisting>
 		<para>Manually register the new table's geometry column in <varname>geometry_columns</varname>. This also changes the underlying table structure to make the column typmod-based.</para>
-<programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass);</programlisting>
+	<programlisting language="sql">SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass);</programlisting>
 		<para>To retain constraint-based definition behavior, such as for inherited tables where all children do not have the same type and SRID, set the optional <varname>use_typmod</varname> argument to false.</para>
-<programlisting>SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass, false);</programlisting>
+	<programlisting language="sql">SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass, false);</programlisting>
 
 <para>Although the old constraint-based method is still supported, direct
 pass-through view columns register correctly in <varname>geometry_columns</varname>
 for both typmod-based and constraint-based source columns. In this example we
 define a column using typmod and another using constraints.</para>
-<programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT,4326));
+	<programlisting language="sql">CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT, 4326));
 SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
 <para>If we run <command>\d pois_ny</command> in psql, we observe they are defined differently -- one is typmod, one is constraint.</para>
-<screen>\d pois_ny
-                                  Table "public.pois_ny"
+	<programlisting language="psql">\d pois_ny</programlisting>
+	<screen role="text-primary">                                  Table "public.pois_ny"
   Column   |         Type          |                       Modifiers
 
 -----------+-----------------------+------------------------------------------------------
@@ -1768,24 +1627,24 @@ Check constraints:
     "enforce_srid_geom_2160" CHECK (st_srid(geom_2160) = 2160)</screen>
 <para>In geometry_columns, they both register correctly</para>
 <programlisting role="requires-external-state">SELECT f_table_name, f_geometry_column, srid, type
-	FROM geometry_columns
-	WHERE f_table_name = 'pois_ny';</programlisting>
-<screen>f_table_name | f_geometry_column | srid | type
+FROM geometry_columns
+WHERE f_table_name = 'pois_ny';</programlisting>
+	<screen role="text-primary">f_table_name | f_geometry_column | srid | type
 -------------+-------------------+------+-------
 pois_ny      | geom              | 4326 | POINT
 pois_ny      | geom_2160         | 2160 | POINT</screen>
 <para>However -- if we were to create a view like this</para>
-<programlisting>CREATE VIEW vw_pois_ny_parks AS
+	<programlisting language="sql">CREATE VIEW vw_pois_ny_parks AS
 SELECT *
   FROM pois_ny
   WHERE cat='park';
 
 SELECT f_table_name, f_geometry_column, srid, type
-	FROM geometry_columns
-	WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
+    FROM geometry_columns
+    WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
 <para>Both the typmod based geom view column and the direct constraint based
 view column register correctly.</para>
-<screen>   f_table_name   | f_geometry_column | srid |   type
+	<screen role="text-primary">   f_table_name   | f_geometry_column | srid |   type
 ------------------+-------------------+------+----------
  vw_pois_ny_parks | geom              | 4326 | POINT
  vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
@@ -1793,17 +1652,17 @@ view column register correctly.</para>
 <para>If the view applies a spatial function to the geometry, such as
 <function>ST_Transform</function>, you still need to cast the transformed
 column explicitly so the view can expose the correct type and SRID:</para>
-<programlisting>DROP VIEW vw_pois_ny_parks;
+	<programlisting language="sql">DROP VIEW vw_pois_ny_parks;
 CREATE VIEW vw_pois_ny_parks AS
 SELECT gid, poi_name, cat,
   geom,
-  ST_Transform(geom, 2160)::geometry(POINT,2160) As geom_2160
+  ST_Transform(geom, 2160)::geometry(POINT, 2160) As geom_2160
   FROM pois_ny
   WHERE cat = 'park';
 SELECT f_table_name, f_geometry_column, srid, type
-	FROM geometry_columns
-	WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
-<screen>   f_table_name   | f_geometry_column | srid | type
+    FROM geometry_columns
+    WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
+	<screen role="text-primary">   f_table_name   | f_geometry_column | srid | type
 ------------------+-------------------+------+-------
  vw_pois_ny_parks | geom              | 4326 | POINT
  vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
@@ -1831,24 +1690,24 @@ SELECT f_table_name, f_geometry_column, srid, type
 	  <para>A SQL load file (<filename>roads.sql</filename> for example)
 	  might look like this:</para>
 
-	  <programlisting>BEGIN;
+		  <programlisting language="sql">BEGIN;
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (1,'LINESTRING(191232 243118,191108 243242)','Jeff Rd');
+  VALUES (1, 'LINESTRING(191232 243118,191108 243242)', 'Jeff Rd');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (2,'LINESTRING(189141 244158,189265 244817)','Geordie Rd');
+  VALUES (2, 'LINESTRING(189141 244158,189265 244817)', 'Geordie Rd');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (3,'LINESTRING(192783 228138,192612 229814)','Paul St');
+  VALUES (3, 'LINESTRING(192783 228138,192612 229814)', 'Paul St');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (4,'LINESTRING(189412 252431,189631 259122)','Graeme Ave');
+  VALUES (4, 'LINESTRING(189412 252431,189631 259122)', 'Graeme Ave');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (5,'LINESTRING(190131 224148,190871 228134)','Phil Tce');
+  VALUES (5, 'LINESTRING(190131 224148,190871 228134)', 'Phil Tce');
 INSERT INTO roads (road_id, roads_geom, road_name)
-  VALUES (6,'LINESTRING(198231 263418,198213 268322)','Dave Cres');
+  VALUES (6, 'LINESTRING(198231 263418,198213 268322)', 'Dave Cres');
 COMMIT;</programlisting>
 
 	  <para>The SQL file can be loaded into PostgreSQL using <code>psql</code>:</para>
 
-		  <screen>psql -d [database] -f roads.sql</screen>
+			  <programlisting language="bash">psql -d [database] -f roads.sql</programlisting>
 	</section>
 
 <section xml:id="shp2pgsql_usage">
@@ -2009,13 +1868,13 @@ COMMIT;</programlisting>
       <term><option>-m</option></term>
       <listitem>
         <para>
-          -m <filename>a_file_name</filename>  Specify a file containing a set of mappings of (long) column
-     names to 10 character DBF column names. The content of the file is one or
-     more lines of two names separated by white space and no trailing or
-     leading space. For example:
-         <programlisting>COLUMNNAME DBFFIELD1
-AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
+          Specify a file containing a set of mappings of (long) column
+          names to 10 character DBF column names. The content of the file is one or
+          more lines of two names separated by white space and no trailing or
+          leading space. For example:
         </para>
+        <literallayout>COLUMNNAME DBFFIELD1
+AVERYLONGCOLUMNNAME DBFFIELD2</literallayout>
       </listitem>
     </varlistentry>
 
@@ -2141,16 +2000,14 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     this:
   </para>
 
-	  <screen><![CDATA[
-# shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable > roads.sql
-# psql -d roadsdb -f roads.sql
-]]></screen>
+			  <programlisting language="bash">shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable &gt; roads.sql
+psql -d roadsdb -f roads.sql</programlisting>
 
   <para>
     A conversion and load can be done in one step using UNIX pipes:
   </para>
 
-	  <programlisting># shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb</programlisting>
+			  <programlisting language="bash">shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb</programlisting>
 
 	  <para>
     To load a directory of Shapefiles, run the loader once per file and derive
@@ -2159,12 +2016,10 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
     file:
   </para>
 
-  <programlisting><![CDATA[
-REM In a .bat file, use %%F. At an interactive cmd.exe prompt, use %F.
+		  <programlisting language="cmd"><![CDATA[REM In a .bat file, use %%F. At an interactive cmd.exe prompt, use %F.
 for %%F in ("C:\data\shapefiles\*.shp") do (
   shp2pgsql -d -D -s 4269 -I -W UTF-8 "%%~fF" "myschema.%%~nF" | psql -d roadsdb
-)
-]]></programlisting>
+)]]></programlisting>
 
   <para>
 	    If every Shapefile has the same attributes and data types and should be
@@ -2190,16 +2045,16 @@ for %%F in ("C:\data\shapefiles\*.shp") do (
         to define the data set to be extracted
         and dump the resulting columns into a parsable text file:</para>
 
-	  <programlisting role="requires-external-state">SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;</programlisting>
-<screen>road_id | geom                                    | road_name
+	  <programlisting role="requires-external-state">SELECT road_id,road_geom AS geom, road_name FROM roads;</programlisting>
+	<screen role="text-primary">road_id | geom                                    | road_name
 --------+-----------------------------------------+-----------
-	  1 | LINESTRING(191232 243118,191108 243242) | Jeff Rd
-	  2 | LINESTRING(189141 244158,189265 244817) | Geordie Rd
-	  3 | LINESTRING(192783 228138,192612 229814) | Paul St
-	  4 | LINESTRING(189412 252431,189631 259122) | Graeme Ave
-	  5 | LINESTRING(190131 224148,190871 228134) | Phil Tce
-	  6 | LINESTRING(198231 263418,198213 268322) | Dave Cres
-	  7 | LINESTRING(218421 284121,224123 241231) | Chris Way
+      1 | LINESTRING(191232 243118,191108 243242) | Jeff Rd
+      2 | LINESTRING(189141 244158,189265 244817) | Geordie Rd
+      3 | LINESTRING(192783 228138,192612 229814) | Paul St
+      4 | LINESTRING(189412 252431,189631 259122) | Graeme Ave
+      5 | LINESTRING(190131 224148,190871 228134) | Phil Tce
+      6 | LINESTRING(198231 263418,198213 268322) | Dave Cres
+      7 | LINESTRING(218421 284121,224123 241231) | Chris Way
 (6 rows)</screen>
 
 	  <para>There will be times when some kind of restriction is
@@ -2236,8 +2091,8 @@ for %%F in ("C:\data\shapefiles\*.shp") do (
 	  So, for example:</para>
 
 	  <programlisting>SELECT road_id, road_name
-  FROM roads
-  WHERE roads_geom='SRID=312;LINESTRING(191232 243118,191108 243242)'::geometry;</programlisting>
+FROM roads
+WHERE roads_geom='SRID=312;LINESTRING(191232 243118,191108 243242)'::geometry;</programlisting>
 
 	  <para>The above query would return the single record from the
 	  "ROADS_GEOM" table in which the geometry was equal to that value.</para>
@@ -2260,7 +2115,7 @@ WHERE ST_Intersects(roads_geom, 'SRID=312;POLYGON((...))');</programlisting>
 		<para>Using a "BOX3D" object for the frame, such a query looks like this:</para>
 
 	  <programlisting><![CDATA[
-SELECT ST_AsText(roads_geom) AS geom
+SELECT roads_geom AS geom
 FROM roads
 WHERE
   roads_geom && ST_MakeEnvelope(191232, 243117,191232, 243119,312);
@@ -2278,13 +2133,13 @@ WHERE
 	  to the database and converts a table (possibly defined by a query) into
 	  a shape file. The basic syntax is:</para>
 
-		  <screen><![CDATA[
+		  <programlisting language="bash"><![CDATA[
 pgsql2shp [<options>] <database> [<schema>.]<table>
-]]></screen>
+]]></programlisting>
 
-		  <screen><![CDATA[
+			  <programlisting language="bash"><![CDATA[
 pgsql2shp [<options>] <database> <query>
-]]></screen>
+]]></programlisting>
 
 	  <para>The commandline options are:</para>
 
@@ -2458,12 +2313,12 @@ pgsql2shp [<options>] <database> <query>
 	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] gist_geometry_ops_nd);</programlisting>
 
 	  <para>Building a spatial index is a computationally intensive exercise. It also blocks write access to your table for the time it creates, so on a production system you may want to do in in a slower CONCURRENTLY-aware way:</para>
-		<para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING GIST ( [geometryfield]);</programlisting></para>
+			<programlisting language="sql">CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING GIST ( [geometryfield]);</programlisting>
 
 		<para>After building an index, it is sometimes helpful to force PostgreSQL to collect
 		table statistics, which are used to optimize query plans:</para>
 
-	  <para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];</programlisting></para>
+		  <programlisting language="sql">VACUUM ANALYZE [table_name] [(column_name)];</programlisting>
 
 	</section>
 
@@ -2523,7 +2378,7 @@ pgsql2shp [<options>] <database> <query>
     </para>
 
 	    <para><programlisting>CREATE TABLE table_sorted AS
-   SELECT * FROM table  ORDER BY geom;
+SELECT * FROM table  ORDER BY geom;
 </programlisting></para>
 
     <para>Alternatively, data can be sorted in-place by using a GeoHash as a (temporary) index,
@@ -2543,18 +2398,18 @@ CLUSTER table USING idx_temp_geohash;
     <para>The above syntax builds a 2D index.  To build a 3D-dimensional index, use this syntax:</para>
 
 	    <programlisting>CREATE INDEX [indexname] ON [tablename]
-    USING BRIN ([geome_col] brin_geometry_inclusion_ops_3d);</programlisting>
+USING BRIN ([geome_col] brin_geometry_inclusion_ops_3d);</programlisting>
 
     <para>You can also get a 4D-dimensional index using the 4D operator class:</para>
 
 	    <programlisting>CREATE INDEX [indexname] ON [tablename]
-    USING BRIN ([geome_col] brin_geometry_inclusion_ops_4d);</programlisting>
+USING BRIN ([geome_col] brin_geometry_inclusion_ops_4d);</programlisting>
 
     <para>The above commands use the default number of blocks in a range, which is 128.
     To specify the number of blocks to summarise in a range, use this syntax</para>
 
 	    <para><programlisting>CREATE INDEX [indexname] ON [tablename]
-    USING BRIN ( [geome_col] ) WITH (pages_per_range = [number]); </programlisting></para>
+USING BRIN ( [geome_col] ) WITH (pages_per_range = [number]); </programlisting></para>
 
     <para>Keep in mind that a BRIN index only stores one index
     entry for a large number of rows.  If your table stores geometries with
@@ -2638,12 +2493,12 @@ CLUSTER table USING idx_temp_geohash;
 		It also blocks write access to your table for the time it creates, so on a
 		production system you may want to do in in a slower CONCURRENTLY-aware way:</para>
 
-	  <para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST ( [geometryfield]);</programlisting></para>
+		  <programlisting language="sql">CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST ( [geometryfield]);</programlisting>
 
 		<para>After building an index, it is sometimes helpful to force PostgreSQL to
 		collect table statistics, which are used to optimize query plans:</para>
 
-		<para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];</programlisting></para>
+			<programlisting language="sql">VACUUM ANALYZE [table_name] [(column_name)];</programlisting>
 
 		<para>An SP-GiST index can accelerate queries involving the following operators:</para>
 		<itemizedlist>

@@ -48593,3 +48593,28 @@ msgstr "2.5/3D 支持"
 #, no-c-format
 msgid "Supports geography"
 msgstr "支持地理"
+
+#. Tag: para
+#, no-c-format
+msgid "Code"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Output"
+msgstr "栅格输出"
+
+#. Tag: para
+#, no-c-format
+msgid "Copy"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Copied"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Failed"
+msgstr ""

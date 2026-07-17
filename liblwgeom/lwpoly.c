@@ -20,9 +20,9 @@
  *
  * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2001-2006 Refractions Research Inc.
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 /* basic LWPOLY manipulation */
 
@@ -146,12 +146,14 @@ lwpoly_construct_circle(int32_t srid, double x, double y, double radius, uint32_
 	if (exterior)
 		radius *= sqrt(1 + pow(tan(theta/2), 2));
 
-	for (i = 0; i <= segments; i++)
+	for (i = 0; i < segments; i++)
 	{
 		pt.x = x + radius*sin(i * theta);
 		pt.y = y + radius*cos(i * theta);
 		ptarray_append_point(pa, &pt, LW_TRUE);
 	}
+	getPoint4d_p(pa, 0, &pt);
+	ptarray_append_point(pa, &pt, LW_TRUE);
 
 	lwpoly_add_ring(lwpoly, pa);
 	return lwpoly;
@@ -555,5 +557,3 @@ lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt)
 	else
 		return t;
 }
-
-

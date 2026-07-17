@@ -67,7 +67,7 @@
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in
 						 a variable to be tagged unto each function comment	-->
-					<xsl:for-each select="$chap//db:refentry">
+					<xsl:for-each select="$chap//db:refentry[not(contains(concat(' ', normalize-space(@role), ' '), ' deprecated-alias '))]">
 
 						<xsl:sort select="db:refnamediv/db:refname"/>
 

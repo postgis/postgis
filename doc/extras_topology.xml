@@ -101,13 +101,15 @@ and <varname>GetNodeEdges</varname> functions.
 			  <refsection>
 				<title>Casting Behavior</title>
 				<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
-				<informaltable rowsep="1" frame="all">
+				<informaltable rowsep="1" colsep="1" frame="all" tabstyle="styledtable">
 					<tgroup cols="2">
-						<tbody>
+						<thead>
 						  <row>
 							<entry>Cast To</entry>
 							<entry>Behavior</entry>
 						  </row>
+						</thead>
+						<tbody>
 						  <row>
 							<entry>geometry</entry>
 							<entry>automatic</entry>
@@ -131,18 +133,37 @@ and <varname>GetNodeEdges</varname> functions.
             <refsection>
             <title>Description</title>
             <para>A composite type that consists of an error message and two integers.  The <xref linkend="ValidateTopology"/> function returns a set of these to denote validation errors and the id1 and id2 to denote the ids of the topology objects involved in the error.</para>
-                <orderedlist>
-                  <listitem>
-                    <para><varname>error</varname> is varchar:  Denotes type of error. </para>
-                    <para>Current error descriptors are: coincident nodes, edge crosses node, edge not simple, edge end node geometry mismatch, edge start node geometry mismatch, face overlaps face,face within face,  </para>
-                  </listitem>
-                  <listitem>
-                    <para><varname>id1</varname> is an integer: Denotes identifier of edge / face / nodes in error.</para>
-                  </listitem>
-                 <listitem>
-                    <para><varname>id2</varname> is an integer: For errors that involve 2 objects denotes the secondary edge / or node</para>
-                  </listitem>
-                </orderedlist>
+                <informaltable tabstyle="styledtable">
+                    <tgroup cols="3">
+                        <thead>
+                            <row>
+                                <entry>Field</entry>
+                                <entry>Type</entry>
+                                <entry>Description</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry><varname>error</varname></entry>
+                                <entry><type>varchar</type></entry>
+                                <entry>
+                                    <para>Denotes the type of error.</para>
+                                    <para>Current error descriptors are: coincident nodes, edge crosses node, edge not simple, edge end node geometry mismatch, edge start node geometry mismatch, face overlaps face, face within face.</para>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><varname>id1</varname></entry>
+                                <entry><type>integer</type></entry>
+                                <entry>Denotes the identifier of the edge, face, or node in error.</entry>
+                            </row>
+                            <row>
+                                <entry><varname>id2</varname></entry>
+                                <entry><type>integer</type></entry>
+                                <entry>For errors that involve two objects, denotes the secondary edge or node.</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </informaltable>
 
             </refsection>
 		  <!-- Optionally add a "See Also" section -->
@@ -194,18 +215,18 @@ being defined.
             <refsection>
                 <title>Examples</title>
                  <programlisting>SELECT te[1] AS id, te[2] AS type FROM
-( SELECT ARRAY[1,2]::topology.topoelement AS te ) f;</programlisting>
+( SELECT ARRAY[1, 2]::topology.topoelement AS te ) f;</programlisting>
 <screen> id | type
 ----+------
   1 |    2
                  </screen>
-                 <programlisting>SELECT ARRAY[1,2]::topology.topoelement;</programlisting>
+                 <programlisting>SELECT ARRAY[1, 2]::topology.topoelement;</programlisting>
 <screen>  te
 -------
  {1,2}
                  </screen>
                  <para>This example shows what happens when casting a three-element array to <type>topology.topoelement</type>. The domain requires a two-element array, so the dimension check fails.</para>
-                 <programlisting>SELECT ARRAY[1,2,3]::topology.topoelement;</programlisting>
+                 <programlisting>SELECT ARRAY[1, 2, 3]::topology.topoelement;</programlisting>
 <screen>ERROR:  value for domain topology.topoelement violates check constraint "dimensions"</screen>
             </refsection>
             <!-- Optionally add a "See Also" section -->
@@ -620,32 +641,40 @@ SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_co
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT CreateTopology('strk_topo');
+				<programlisting language="sql" role="requires-external-state">SELECT CreateTopology('strk_topo');
 CREATE SCHEMA strk;
 CREATE TABLE strk.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
 SELECT topology.AddTopoGeometryColumn('strk_topo', 'strk', 'parcels', 'topo', 'POLYGON');</programlisting>
-				<para>This query returns no records because the feature is already registered.</para>
-<programlisting>SELECT *
-FROM topology.Populate_Topology_Layer();</programlisting>
-				<para>Rebuild the topology layer catalog.</para>
-<programlisting>
-TRUNCATE TABLE topology.layer;
-
-SELECT *
-FROM topology.Populate_Topology_Layer();
-
-SELECT topology_id,layer_id, schema_name As sn, table_name As tn, feature_column As fc
-FROM topology.layer;
-
-				</programlisting>
-				<screen> schema_name | table_name | feature_column
--------------+------------+----------------
- strk        | parcels    | topo
+				<screen> createtopology
+----------------
+              1
 (1 row)
 
- topology_id | layer_id |  sn  |   tn    |  fc
+CREATE SCHEMA
+CREATE TABLE
+ addtopogeometrycolumn
+-----------------------
+                     1
+(1 row)</screen>
+				<para>This query returns no records because the feature is already registered.</para>
+<programlisting language="sql" role="requires-external-state">SELECT *
+FROM topology.Populate_Topology_Layer();</programlisting>
+                <screen>(0 rows)</screen>
+				<para>Rebuild the topology layer catalog.</para>
+<programlisting language="sql" role="requires-external-state">TRUNCATE TABLE topology.layer;</programlisting>
+<screen>TRUNCATE TABLE</screen>
+<programlisting language="sql" role="requires-external-state">SELECT *
+FROM topology.Populate_Topology_Layer();</programlisting>
+<screen> schema_name | table_name | feature_column
+-------------+------------+----------------
+ strk        | parcels    | topo
+(1 row)</screen>
+<programlisting language="sql" role="requires-external-state">SELECT topology_id, layer_id,
+       schema_name AS sn, table_name AS tn, feature_column AS fc
+FROM topology.layer;</programlisting>
+<screen> topology_id | layer_id |  sn  |   tn    |  fc
 -------------+----------+------+---------+------
-           2 |        2 | strk | parcels | topo
+           1 |        1 | strk | parcels | topo
 (1 row)</screen>
 			</refsection>
 
@@ -686,19 +715,19 @@ FROM topology.layer;
 				<title>Examples</title>
 				<programlisting>SELECT topology.TopologySummary('city_data');</programlisting>
 <screen>Topology city_data (329), SRID 4326, precision: 0
- 22 nodes, 24 edges, 10 faces, 29 topogeoms in 5 layers
- Layer 1, type Polygonal (3), 9 topogeoms
-  Deploy: features.land_parcels.feature
- Layer 2, type Puntal (1), 8 topogeoms
-  Deploy: features.traffic_signs.feature
- Layer 3, type Lineal (2), 8 topogeoms
-  Deploy: features.city_streets.feature
- Layer 4, type Polygonal (3), 3 topogeoms
-  Hierarchy level 1, child layer 1
-  Deploy: features.big_parcels.feature
- Layer 5, type Puntal (1), 1 topogeoms
-  Hierarchy level 1, child layer 2
-  Deploy: features.big_signs.feature</screen>
+22 nodes, 24 edges, 10 faces, 29 topogeoms in 5 layers
+Layer 1, type Polygonal (3), 9 topogeoms
+ Deploy: features.land_parcels.feature
+Layer 2, type Puntal (1), 8 topogeoms
+ Deploy: features.traffic_signs.feature
+Layer 3, type Lineal (2), 8 topogeoms
+ Deploy: features.city_streets.feature
+Layer 4, type Polygonal (3), 3 topogeoms
+ Hierarchy level 1, child layer 1
+ Deploy: features.big_parcels.feature
+Layer 5, type Puntal (1), 1 topogeoms
+ Hierarchy level 1, child layer 2
+ Deploy: features.big_signs.feature</screen>
 			</refsection>
 			<!-- Optionally add a "See Also" section -->
 		</refentry>
@@ -731,7 +760,7 @@ area specified by the <varname>bbox</varname> parameter.
 
                 <para>List of possible errors, what they mean and what the returned ids represent are displayed below:</para>
 
-                  <informaltable rowsep="1" frame="all">
+                  <informaltable rowsep="1" colsep="1" frame="all" tabstyle="styledtable">
                     <tgroup cols="4">
                         <thead>
                             <row>
@@ -1050,13 +1079,13 @@ the check to the area specified by the <varname>bbox</varname> parameter.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT ST_AsEWKT(g)
+				<programlisting>SELECT g
 FROM topology.ValidateTopologyPrecision(
     'city_data',
     gridSize => 2,
     bbox => ST_MakeEnvelope(0, 0, 20, 20)
 ) g;</programlisting>
-<screen>MULTIPOINT(9 6,9 14)</screen>
+<screen role="visual-primary text-primary">MULTIPOINT(9 6,9 14)</screen>
 			</refsection>
 
 			<refsection>
@@ -1280,19 +1309,19 @@ disk space used by all its tables, including indexes and TOAST data.
 				<title>Examples</title>
 				<programlisting>SELECT topology.TopologySummary('city_data');</programlisting>
 <screen>Topology city_data (329), SRID 4326, precision: 0
- 22 nodes, 24 edges, 10 faces, 29 topogeoms in 5 layers
- Layer 1, type Polygonal (3), 9 topogeoms
-  Deploy: features.land_parcels.feature
- Layer 2, type Puntal (1), 8 topogeoms
-  Deploy: features.traffic_signs.feature
- Layer 3, type Lineal (2), 8 topogeoms
-  Deploy: features.city_streets.feature
- Layer 4, type Polygonal (3), 3 topogeoms
-  Hierarchy level 1, child layer 1
-  Deploy: features.big_parcels.feature
- Layer 5, type Puntal (1), 1 topogeoms
-  Hierarchy level 1, child layer 2
-  Deploy: features.big_signs.feature</screen>
+22 nodes, 24 edges, 10 faces, 29 topogeoms in 5 layers
+Layer 1, type Polygonal (3), 9 topogeoms
+ Deploy: features.land_parcels.feature
+Layer 2, type Puntal (1), 8 topogeoms
+ Deploy: features.traffic_signs.feature
+Layer 3, type Lineal (2), 8 topogeoms
+ Deploy: features.city_streets.feature
+Layer 4, type Polygonal (3), 3 topogeoms
+ Hierarchy level 1, child layer 1
+ Deploy: features.big_parcels.feature
+Layer 5, type Puntal (1), 1 topogeoms
+ Hierarchy level 1, child layer 2
+ Deploy: features.big_signs.feature</screen>
 			</refsection>
 		</refentry>
 
@@ -1590,20 +1619,20 @@ Adds a collection of geometries to a given empty topology and returns a message 
 				<title>Examples</title>
 				<para>Populate the topology.</para>
 				<programlisting role="requires-external-state">SELECT topology.ST_CreateTopoGeo(
- 'ri_topo',
- ST_GeomFromText(
-  'MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,
-  384844 236882,384866 236881,384879 236883,384954 236898,385087 236932,385117 236938,
-  385167 236938,385203 236941,385224 236946,385233 236950,385241 236956,385254 236971,
-  385260 236979,385268 236999,385273 237018,385273 237037,385271 237047,385267 237057,
-  385225 237125,385210 237144,385192 237161,385167 237192,385162 237202,385159 237214,
-  385159 237227,385162 237241,385166 237256,385196 237324,385209 237345,385234 237375,
-  385237 237383,385238 237399,385236 237407,385227 237419,385213 237430,385193 237439,
-  385174 237451,385170 237455,385169 237460,385171 237475,385181 237503,385190 237521,
-  385200 237533,385206 237538,385213 237541,385221 237542,385235 237540,385242 237541,
-  385249 237544,385260 237555,385270 237570,385289 237584,385292 237589,385291 237596,385284 237630))',
-  3438)
-  );</programlisting>
+'ri_topo',
+ST_GeomFromText(
+ 'MULTILINESTRING((384744 236928,384750 236923,384769 236911,384799 236895,384811 236890,384833 236884,
+ 384844 236882,384866 236881,384879 236883,384954 236898,385087 236932,385117 236938,
+ 385167 236938,385203 236941,385224 236946,385233 236950,385241 236956,385254 236971,
+ 385260 236979,385268 236999,385273 237018,385273 237037,385271 237047,385267 237057,
+ 385225 237125,385210 237144,385192 237161,385167 237192,385162 237202,385159 237214,
+ 385159 237227,385162 237241,385166 237256,385196 237324,385209 237345,385234 237375,
+ 385237 237383,385238 237399,385236 237407,385227 237419,385213 237430,385193 237439,
+ 385174 237451,385170 237455,385169 237460,385171 237475,385181 237503,385190 237521,
+ 385200 237533,385206 237538,385213 237541,385221 237542,385235 237540,385242 237541,
+ 385249 237544,385260 237555,385270 237570,385289 237584,385292 237589,385291 237596,385284 237630))',
+ 3438)
+ );</programlisting>
 <screen>Topology ri_topo populated</screen>
 				<para>Create the tables and topogeometries.</para>
 <programlisting>CREATE TABLE ri.roads(gid serial PRIMARY KEY, road_name text);
@@ -2271,9 +2300,9 @@ an error is thrown.
 				<programlisting>SELECT topology.ST_ChangeEdgeGeom(
     'ma_topo',
     1,
-	    ST_GeomFromText(
-	        'LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6, 227704.5 893778.5)',
-	        26986)
+        ST_GeomFromText(
+            'LINESTRING(227591.9 893900.4,227622.6 893844.3,227641.6 893816.6,227704.5 893778.5)',
+            26986)
 );</programlisting>
 <screen>Edge 1 changed</screen>
 			</refsection>
@@ -2325,7 +2354,7 @@ Returns the identifier of the newly added node.
 			<refsection>
 				<title>Examples</title>
 				<para>Add an edge to split.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227592 893910, 227600 893910)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227592 893910,227600 893910)', 26986)) AS edgeid;</programlisting>
 <screen>3</screen>
 				<para>Split the edge with a new node.</para>
 <programlisting>SELECT topology.ST_ModEdgeSplit('ma_topo', 3, ST_SetSRID(ST_Point(227594, 893910), 26986)) AS node_id;</programlisting>
@@ -2539,7 +2568,7 @@ Updates all existing joined edges and relationships accordingly.
 			<refsection>
 				<title>Examples</title>
 				<para>Add an edge to split.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575 893917, 227592 893900)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575 893917,227592 893900)', 26986)) AS edgeid;</programlisting>
 <screen>2</screen>
 				<para>Split the new edge.</para>
 <programlisting>SELECT topology.ST_NewEdgesSplit('ma_topo', 2, ST_GeomFromText('POINT(227578.5 893913.5)', 26986)) AS newnodeid;</programlisting>
@@ -3044,7 +3073,7 @@ Order of edges follows a left-hand-rule (bound face is on the left of each direc
 <programlisting>
 SELECT t.seq, t.edge, geom
 FROM topology.ST_GetFaceEdges('tt', 1) As t(seq, edge)
-	INNER JOIN tt.edge AS e ON abs(t.edge) = e.edge_id;
+    INNER JOIN tt.edge AS e ON abs(t.edge) = e.edge_id;
 </programlisting>
 			</refsection>
 
@@ -3091,8 +3120,8 @@ FROM topology.ST_GetFaceEdges('tt', 1) As t(seq, edge)
 			<refsection>
 				<title>Examples</title>
 				<para>This query returns the WKT of the polygon added with <xref linkend="AddFace"/>.</para>
-				<programlisting>SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) AS facegeomwkt;</programlisting>
-<screen>POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
+				<programlisting>SELECT topology.ST_GetFaceGeometry('ma_topo', 1) AS facegeomwkt;</programlisting>
+<screen role="visual-primary text-primary">POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
 234872.5 899328.7,234891 899285.4,234992.5 899145,234890.6 899069,
 234755.2 899255.4,234612.7 899379.4,234776.9 899563.7))</screen>
 			</refsection>
@@ -3399,12 +3428,12 @@ get the correct containing face computed.
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2, 227591.9 893900.4)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227575.8 893917.2,227591.9 893900.4)', 26986)) AS edgeid;</programlisting>
 <screen>1</screen>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4, 227622.6 893844.2, 227641.6 893816.5, 227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.9 893900.4,227622.6 893844.2,227641.6 893816.5,227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
 <screen>2</screen>
 				<para>This query errors because the edge intersects an existing edge away from the endpoints.</para>
-				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900, 227591.9 893900.4, 227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
+				<programlisting>SELECT topology.AddEdge('ma_topo', ST_GeomFromText('LINESTRING(227591.2 893900,227591.9 893900.4,227704.5 893778.5)', 26986)) AS edgeid;</programlisting>
 <screen>ERROR:  Edge intersects (not on endpoints) with existing edge 1</screen>
 			</refsection>
 
@@ -3485,13 +3514,16 @@ existing face record be updated. It is up to the caller to deal with that.
 				<para>First add the edges using <function>generate_series</function> as an iterator. This query only works for polygons with fewer than 10000 points because of the maximum value in <function>generate_series</function>.</para>
 				<programlisting><![CDATA[
 SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN(geom, i + 1) )) As edgeid
-    FROM (SELECT  ST_NPoints(geom) AS npt, geom
-            FROM
-                (SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
+FROM (
+  SELECT ST_NPoints(geom) AS npt, geom
+  FROM (
+    SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 899456.7,234914 899436.4,234946.6 899356.9,234872.5 899328.7,
                 234891 899285.4,234992.5 899145, 234890.6 899069,234755.2 899255.4,
                 234612.7 899379.4,234776.9 899563.7,234896.5 899456.7))', 26986) )  As geom
-            )  As geoms) As facen CROSS JOIN generate_series(1,10000) As i
-         WHERE i < npt;]]></programlisting>
+  ) AS geoms
+) AS facen
+CROSS JOIN generate_series(1,10000) AS i
+WHERE i < npt;]]></programlisting>
 <screen>3
 4
 5
@@ -3651,58 +3683,88 @@ are expanded to include merged faces (upon removing edges) or healed edges
 
 
 			<refsection>
-				<title>Examples: Form from existing edges</title>
+				<title>Examples</title>
+				<para>Form from existing edges.</para>
 				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>).</para>
-				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo',2,2,'{{1,2}}'::topology.topoelementarray);</programlisting>
+				<programlisting language="sql">INSERT INTO ri.ri_roads(road_name, topo)
+VALUES (
+    'Unknown',
+    topology.CreateTopoGeom(
+        'ri_topo',
+        2,
+        2,
+        '{{1,2}}'::topology.topoelementarray
+    )
+);</programlisting>
 
-			</refsection>
 
-				<refsection>
-					<title>Examples: Convert an areal geometry to best guess topogeometry</title>
+					<para>Convert an areal geometry to best guess topogeometry.</para>
 					<para>Lets say we have geometries that should be formed from a collection of faces. We have for example blockgroups table
 						and want to know the topo geometry of each block group. If our data was perfectly aligned, we could do this:</para>
 					<para>Create the topogeometry column.</para>
 					<programlisting role="requires-external-state">SELECT topology.AddTopoGeometryColumn(
-		'topo_boston',
-		'boston', 'blockgroups', 'topo', 'POLYGON');
+'topo_boston',
+'boston', 'blockgroups', 'topo', 'POLYGON');
 
 </programlisting>
 <screen>1</screen>
 					<para>Update the column assuming everything is perfectly aligned with the edges.</para>
-<programlisting>
+<programlisting language="sql">
 UPDATE boston.blockgroups AS bg
-	SET topo = topology.CreateTopoGeom(
-        'topo_boston',
-        3, 1,
-        foo.bfaces)
-FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
-	FROM boston.blockgroups As b
-            INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
-        WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-            GROUP BY b.gid) As foo
-WHERE foo.gid = bg.gid;
-	</programlisting>
+SET topo = topology.CreateTopoGeom(
+    'topo_boston',
+    3,
+    1,
+    foo.bfaces
+)
+FROM (
+    SELECT
+        b.gid,
+        topology.TopoElementArray_Agg(ARRAY[f.face_id, 3]) AS bfaces
+    FROM boston.blockgroups AS b
+    INNER JOIN topo_boston.face AS f
+        ON b.geom &amp;&amp; f.mbr
+    WHERE ST_Covers(
+        b.geom,
+        topology.ST_GetFaceGeometry('topo_boston', f.face_id)
+    )
+    GROUP BY b.gid
+) AS foo
+WHERE foo.gid = bg.gid;</programlisting>
 
 	<para>The world is rarely perfect, so this version allows some error. It counts a face if 50 percent of it falls within the expected block group boundary.</para>
-	<programlisting>
+	<programlisting language="sql">WITH candidate_faces AS (
+    SELECT
+        b.gid,
+        b.geom AS block_geom,
+        f.face_id,
+        topology.ST_GetFaceGeometry('topo_boston', f.face_id) AS face_geom
+    FROM boston.blockgroups AS b
+    INNER JOIN topo_boston.face AS f
+        ON b.geom &amp;&amp; f.mbr
+),
+block_faces AS (
+    SELECT
+        gid,
+        topology.TopoElementArray_Agg(ARRAY[face_id, 3]) AS bfaces
+    FROM candidate_faces
+    WHERE ST_Covers(block_geom, face_geom)
+        OR (
+            ST_Intersects(block_geom, face_geom)
+            AND ST_Area(ST_Intersection(block_geom, face_geom))
+                > ST_Area(face_geom) * 0.5
+        )
+    GROUP BY gid
+)
 UPDATE boston.blockgroups AS bg
-	SET topo = topology.CreateTopoGeom(
-        'topo_boston',
-        3, 1,
-        foo.bfaces)
-FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
-	FROM boston.blockgroups As b
-            INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
-        WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-	OR
- (  ST_Intersects(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
-            AND ST_Area(ST_Intersection(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id) ) ) >
-                ST_Area(topology.ST_GetFaceGeometry('topo_boston', f.face_id))*0.5
-                )
-            GROUP BY b.gid) As foo
-WHERE foo.gid = bg.gid;
-
-</programlisting>
+SET topo = topology.CreateTopoGeom(
+    'topo_boston',
+    3,
+    1,
+    block_faces.bfaces
+)
+FROM block_faces
+WHERE block_faces.gid = bg.gid;</programlisting>
 	<para>To convert the topogeometry back to a denormalized geometry aligned with faces and edges, cast the topogeometry to a geometry. The resulting geometries are aligned with the TIGER street centerlines.</para>
 <programlisting>UPDATE boston.blockgroups SET new_geom = topo::geometry;</programlisting>
 			</refsection>
@@ -3802,7 +3864,7 @@ replace the old one see <xref linkend="clearTopoGeom"/>.
 				<para>Use the new layer identifier to populate the topogeometry column.</para>
 <programlisting>
 INSERT INTO nei_topo(nei, topo)
-SELECT nei,  topology.toTopoGeom(geom, 'topo_boston_test', 1)
+SELECT nei, topology.toTopoGeom(geom, 'topo_boston_test', 1)
 FROM neighborhoods
 WHERE gid BETWEEN 1 and 15;</programlisting>
 				<para>Verify what happened.</para>
@@ -3873,7 +3935,7 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 			<refsection>
 				<title>Examples</title>
 				<programlisting>SELECT topology.TopoElementArray_Agg(ARRAY[e, t] ORDER BY e, t) As tea
-	  FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;</programlisting>
+FROM generate_series(1, 3) As e CROSS JOIN generate_series(1, 4) As t;</programlisting>
 <screen>{{1,1},{1,2},{1,3},{1,4},{2,1},{2,2},{2,3},{2,4},{3,1},{3,2},{3,3},{3,4}}</screen>
 			</refsection>
 			<refsection>
@@ -4106,7 +4168,7 @@ of the same child layer.
     ),
     tg_specific2
 );
-				</programlisting>
+                </programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -4258,21 +4320,22 @@ Refer to <xref linkend="toTopoGeom"/>.
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys"/></para>
-		<para><note><para>spatial_ref_sys
-		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
-			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
+		<para>Returns the spatial reference identifier of the topology containing the TopoGeometry.</para>
+		<para>The identifier is recorded for the topology when it is created and refers to an entry in <xref linkend="spatial_ref_sys"/>.</para>
         <para role="availability" conformance="3.2.0">Availability: 3.2.0</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 14.1.5</para>
 
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
-		4326
-		</programlisting>
+		<para>Return the SRID of a TopoGeometry stored in the <varname>ri_topo</varname> topology.</para>
+		<programlisting role="requires-external-state">SELECT topology.ST_SRID(topo) AS srid
+FROM ri.roads
+WHERE road_name = 'Unknown';</programlisting>
+<screen> srid
+------
+ 3438</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>

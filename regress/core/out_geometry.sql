@@ -94,6 +94,9 @@ SELECT 'svg_option_01', ST_AsSVG(ST_GeomFromEWKT('LINESTRING(1 1, 4 4, 5 7)'), 0
 SELECT 'svg_option_02', ST_AsSVG(ST_GeomFromEWKT('LINESTRING(1 1, 4 4, 5 7)'), 1);
 SELECT 'svg_option_03', ST_AsSVG(ST_GeomFromEWKT('LINESTRING(1 1, 4 4, 5 7)'), 0, 0);
 SELECT 'svg_option_04', ST_AsSVG(ST_GeomFromEWKT('LINESTRING(1 1, 4 4, 5 7)'), 1, 0);
+SELECT 'svg_circularstring_upper', ST_AsSVG(ST_GeomFromEWKT('CIRCULARSTRING(0 0, 1 1, 2 0)'), 0, 0);
+SELECT 'svg_circularstring_lower', ST_AsSVG(ST_GeomFromEWKT('CIRCULARSTRING(0 0, 1 -1, 2 0)'), 0, 0);
+SELECT 'svg_curvepolygon_circle', ST_AsSVG(ST_GeomFromEWKT('CURVEPOLYGON(CIRCULARSTRING(0 0, 1 1, 2 0, 1 -1, 0 0))'), 0, 0);
 
 -- Precision
 SELECT 'svg_precision_01', ST_AsSVG(ST_GeomFromEWKT('POINT(1.1111111 1.1111111)'), 1, -2);

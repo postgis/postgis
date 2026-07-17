@@ -19,9 +19,9 @@
  **********************************************************************
  *
  * Copyright 2001-2003 Refractions Research Inc.
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 /** @file
 *
@@ -159,11 +159,13 @@ assvg_line(stringbuffer_t* sb, const LWLINE *line, int relative, int precision)
 		pointArray_svg_abs(sb, line->points, 1, precision, 0);
 }
 
-static void pointArray_svg_arc(stringbuffer_t* sb, const POINTARRAY *pa, int close_ring, int relative,  int precision)
+static void
+pointArray_svg_arc(stringbuffer_t *sb, const POINTARRAY *pa, int include_start, int relative, int precision)
 {
 	uint32_t i; //, end;
 	char sx[OUT_DOUBLE_BUFFER_SIZE];
 	char sy[OUT_DOUBLE_BUFFER_SIZE];
+	char sz[OUT_DOUBLE_BUFFER_SIZE];
 
 	LWDEBUG(2, "pointArray_svg_arc called.");
 
@@ -184,6 +186,36 @@ static void pointArray_svg_arc(stringbuffer_t* sb, const POINTARRAY *pa, int clo
 		t2 = getPoint2d_cp(pa, i - 1);
 		t3 = getPoint2d_cp(pa, i);
 		radius = lw_arc_center(t1, t2, t3, &center);
+		if (radius < 0.0)
+		{
+			/* SVG arc radii must be non-negative. A collinear circular arc
+			 * is linear, but keep its control point so the degenerate path is
+			 * represented exactly even when it lies outside t1-t3. */
+			if ((i == 2) && include_start)
+			{
+				lwprint_double(t1->x, precision, sx);
+				lwprint_double(-(t1->y), precision, sy);
+				stringbuffer_aprintf(sb, "%s %s", sx, sy);
+			}
+			if (relative)
+			{
+				lwprint_double(t2->x - t1->x, precision, sx);
+				lwprint_double(-(t2->y - t1->y), precision, sy);
+				stringbuffer_aprintf(sb, (i == 2 && !include_start) ? "l %s %s" : " l %s %s", sx, sy);
+				lwprint_double(t3->x - t2->x, precision, sx);
+				lwprint_double(-(t3->y - t2->y), precision, sy);
+			}
+			else
+			{
+				lwprint_double(t2->x, precision, sx);
+				lwprint_double(-(t2->y), precision, sy);
+				stringbuffer_aprintf(sb, (i == 2 && !include_start) ? "L %s %s" : " L %s %s", sx, sy);
+				lwprint_double(t3->x, precision, sx);
+				lwprint_double(-(t3->y), precision, sy);
+			}
+			stringbuffer_aprintf(sb, " %s %s", sx, sy);
+			continue;
+		}
 		if ( t1->x == t3->x && t1->y == t3->y ){
 			is_circle = LW_TRUE;
 		}
@@ -211,14 +243,16 @@ static void pointArray_svg_arc(stringbuffer_t* sb, const POINTARRAY *pa, int clo
 		/* The side of the t1/t3 line that t2 falls on dictates the sweep
 		direction from t1 to t3. */
 		sweepFlag = (p2_side == -1) ? 1 : 0;
-		if ( (i == 2) && !is_circle ){
+		if ((i == 2) && !is_circle && include_start)
+		{
 			/** add MoveTo first point **/
 			lwprint_double(t1->x, precision, sx);
 			lwprint_double(-(t1->y), precision, sy);
 			stringbuffer_aprintf(sb, "%s %s", sx, sy);
 		}
 		/** is circle: need to start at center of circle **/
-		if ( (i == 2) && is_circle){
+		if ((i == 2) && is_circle && include_start)
+		{
 			/** add MoveTo center of circle **/
 			lwprint_double(center.x, precision, sx);
 			lwprint_double(-(center.y), precision, sy);
@@ -228,18 +262,44 @@ static void pointArray_svg_arc(stringbuffer_t* sb, const POINTARRAY *pa, int clo
 		lwprint_double(0, precision, sy);
 		/** is circle need to handle differently **/
 		if (is_circle){
-			//https://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path
-			lwprint_double(radius*2, precision, sy);
-			stringbuffer_aprintf(sb, " m %s 0 a %s %s 0 1 0 -%s 0", sx, sx, sx, sy);
-			stringbuffer_aprintf(sb, " a %s %s 0 1 0 %s 0", sx, sx, sy);
+			if (include_start)
+			{
+				// https://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path
+				lwprint_double(radius * 2, precision, sy);
+				stringbuffer_aprintf(sb, " m %s 0 a %s %s 0 1 0 -%s 0", sx, sx, sx, sy);
+				stringbuffer_aprintf(sb, " a %s %s 0 1 0 %s 0", sx, sx, sy);
+			}
+			else
+			{
+				/* A compound component starts at t1 already. Draw the circle
+				 * through the opposite point and back without moving the path. */
+				lwprint_double(2 * (center.x - t1->x), precision, sy);
+				lwprint_double(-2 * (center.y - t1->y), precision, sz);
+				stringbuffer_aprintf(sb, "a %s %s 0 1 0 %s %s", sx, sx, sy, sz);
+				lwprint_double(-2 * (center.x - t1->x), precision, sy);
+				lwprint_double(2 * (center.y - t1->y), precision, sz);
+				stringbuffer_aprintf(sb, " a %s %s 0 1 0 %s %s", sx, sx, sy, sz);
+			}
 		}
 		else {
 			/* Arc radius radius 0 arcflag swipeflag */
 			if (relative){
-				stringbuffer_aprintf(sb, " a %s %s 0 %d %d ", sx, sx, largeArcFlag, sweepFlag);
+				stringbuffer_aprintf(sb,
+						     (i == 2 && !include_start) ? "a %s %s 0 %d %d "
+										: " a %s %s 0 %d %d ",
+						     sx,
+						     sx,
+						     largeArcFlag,
+						     sweepFlag);
 			}
 			else {
-				stringbuffer_aprintf(sb, " A %s %s 0 %d %d ", sx, sx, largeArcFlag, sweepFlag);
+				stringbuffer_aprintf(sb,
+						     (i == 2 && !include_start) ? "A %s %s 0 %d %d "
+										: " A %s %s 0 %d %d ",
+						     sx,
+						     sx,
+						     largeArcFlag,
+						     sweepFlag);
 			}
 			lwprint_double(t3->x, precision, sx);
 			lwprint_double(-(t3->y), precision, sy);
@@ -257,6 +317,74 @@ assvg_circstring(stringbuffer_t* sb, const LWCIRCSTRING *icurve, int relative, i
 	pointArray_svg_arc(sb, icurve->points, 1, relative, precision);
 }
 
+static uint32_t
+nurbscurve_svg_bezier_degree(const LWNURBSCURVE *curve)
+{
+	uint32_t degree;
+
+	if (!curve || !curve->points || curve->points->npoints == 0)
+		return 0;
+
+	degree = curve->degree;
+	if (degree < 1 || degree > 3 || curve->points->npoints != degree + 1)
+		return 0;
+
+	/* Equal weights cancel, leaving a polynomial B-spline. */
+	for (uint32_t i = 1; i < curve->nweights; i++)
+	{
+		if (!FP_EQUALS(curve->weights[i], curve->weights[0]))
+			return 0;
+	}
+
+	/* A single clamped span is exactly a Bezier curve. */
+	for (uint32_t i = 1; i <= degree && curve->nknots > 0; i++)
+	{
+		if (!FP_EQUALS(curve->knots[i], curve->knots[0]) ||
+		    !FP_EQUALS(curve->knots[degree + 1 + i], curve->knots[degree + 1]))
+			return 0;
+	}
+
+	return degree;
+}
+
+static int
+pointArray_svg_nurbs_bezier(
+    stringbuffer_t *sb, const LWNURBSCURVE *curve, int relative, int precision, int include_start)
+{
+	uint32_t degree = nurbscurve_svg_bezier_degree(curve);
+	double x[4], y[4], factor = 1.0;
+	char sx[OUT_DOUBLE_BUFFER_SIZE], sy[OUT_DOUBLE_BUFFER_SIZE];
+
+	if (!degree)
+		return LW_FALSE;
+
+	if (precision >= 0)
+		factor = pow(10, precision);
+	for (uint32_t i = 0; i <= degree; i++)
+	{
+		const POINT2D *point = getPoint2d_cp(curve->points, i);
+		x[i] = round(point->x * factor) / factor;
+		y[i] = round(point->y * factor) / factor;
+	}
+
+	if (include_start)
+	{
+		lwprint_double(x[0], precision, sx);
+		lwprint_double(-y[0], precision, sy);
+		stringbuffer_aprintf(sb, "%s %s ", sx, sy);
+	}
+	stringbuffer_append(sb, relative ? (degree == 1 ? "l" : degree == 2 ? "q" : "c") :
+	                                   (degree == 1 ? "L" : degree == 2 ? "Q" : "C"));
+	for (uint32_t i = 1; i <= degree; i++)
+	{
+		lwprint_double(relative ? x[i] - x[0] : x[i], precision, sx);
+		lwprint_double(relative ? -(y[i] - y[0]) : -y[i], precision, sy);
+		stringbuffer_aprintf(sb, " %s %s", sx, sy);
+	}
+
+	return LW_TRUE;
+}
+
 static void
 assvg_compound(stringbuffer_t* sb, const LWCOMPOUND *icompound, int relative, int precision)
 {
@@ -264,6 +392,7 @@ assvg_compound(stringbuffer_t* sb, const LWCOMPOUND *icompound, int relative, in
 	LWGEOM *geom;
 	LWCIRCSTRING *tmpc = NULL;
 	LWLINE *tmpl = NULL;
+	LWLINE *nurbs_line = NULL;
 	/* Start path with SVG MoveTo */
 	stringbuffer_append(sb, "M ");
 
@@ -276,7 +405,7 @@ assvg_compound(stringbuffer_t* sb, const LWCOMPOUND *icompound, int relative, in
 		{
 			case CIRCSTRINGTYPE:
 				tmpc = (LWCIRCSTRING *)geom;
-				pointArray_svg_arc(sb, tmpc->points, 1, relative, precision);
+				pointArray_svg_arc(sb, tmpc->points, i == 0, relative, precision);
 				break;
 
 			case LINETYPE:
@@ -297,6 +426,23 @@ assvg_compound(stringbuffer_t* sb, const LWCOMPOUND *icompound, int relative, in
 					else
 						pointArray_svg_abs(sb, tmpl->points, 1, precision, 0);
 				}
+				break;
+
+			case NURBSCURVETYPE:
+				if (pointArray_svg_nurbs_bezier(
+				        sb, (LWNURBSCURVE *)geom, relative, precision, i == 0))
+					break;
+				nurbs_line = lwnurbscurve_to_linestring((LWNURBSCURVE *)geom, 32);
+				if (!nurbs_line)
+				{
+					lwerror("Unable to linearize NURBS curve for SVG output");
+					return;
+				}
+				if (relative)
+					pointArray_svg_rel(sb, nurbs_line->points, 1, precision, i ? 1 : 0);
+				else
+					pointArray_svg_abs(sb, nurbs_line->points, 1, precision, i ? 1 : 0);
+				lwline_free(nurbs_line);
 				break;
 
 			default:
@@ -325,6 +471,64 @@ assvg_polygon(stringbuffer_t* sb, const LWPOLY *poly, int relative, int precisio
 			pointArray_svg_abs(sb, poly->rings[i], 0, precision, 0);
 			stringbuffer_append(sb, " Z");	/* SVG closepath */
 		}
+	}
+}
+
+static void
+assvg_triangle(stringbuffer_t *sb, const LWTRIANGLE *triangle, int relative, int precision)
+{
+	stringbuffer_append(sb, "M ");
+	if (relative)
+	{
+		pointArray_svg_rel(sb, triangle->points, 0, precision, 0);
+		stringbuffer_append(sb, " z");
+	}
+	else
+	{
+		pointArray_svg_abs(sb, triangle->points, 0, precision, 0);
+		stringbuffer_append(sb, " Z");
+	}
+}
+
+static void
+assvg_nurbscurve(stringbuffer_t *sb, const LWNURBSCURVE *curve, int relative, int precision)
+{
+	LWLINE *line;
+
+	if (!curve || !curve->points || curve->points->npoints == 0)
+		return;
+
+	if (nurbscurve_svg_bezier_degree(curve))
+	{
+		stringbuffer_append(sb, "M ");
+		pointArray_svg_nurbs_bezier(sb, curve, relative, precision, LW_TRUE);
+		return;
+	}
+
+	/* SVG has no rational B-spline primitive. Preserve general NURBS by
+	 * falling back to the library's sampled approximation. */
+	line = lwnurbscurve_to_linestring(curve, 32);
+	if (!line)
+	{
+		lwerror("Unable to linearize NURBS curve for SVG output");
+		return;
+	}
+	assvg_line(sb, line, relative, precision);
+	lwline_free(line);
+}
+
+static void
+assvg_collection_members(stringbuffer_t *sb, const LWCOLLECTION *collection, int relative, int precision)
+{
+	uint32_t emitted = 0;
+	for (uint32_t i = 0; i < collection->ngeoms; i++)
+	{
+		const LWGEOM *member = collection->geoms[i];
+		if (lwgeom_is_empty(member))
+			continue;
+		if (emitted++)
+			stringbuffer_append(sb, " ");
+		assvg_geom(sb, member, relative, precision);
 	}
 }
 
@@ -396,6 +600,14 @@ assvg_multicurve(stringbuffer_t* sb, const LWMCURVE *mcurve, int relative, int p
 				assvg_line(sb, tmpl, relative, precision);
 				break;
 
+			case NURBSCURVETYPE:
+				assvg_nurbscurve(sb, (LWNURBSCURVE *)geom, relative, precision);
+				break;
+
+			case COMPOUNDTYPE:
+				assvg_compound(sb, (LWCOMPOUND *)geom, relative, precision);
+				break;
+
 			default:
 				break; /** in theory this should never happen **/
 		}
@@ -424,6 +636,10 @@ assvg_curvepoly(stringbuffer_t* sb, const LWCURVEPOLY *curvepoly, int relative, 
 
 			case COMPOUNDTYPE:
 				assvg_compound(sb, (LWCOMPOUND *)tmp, relative, precision);
+				break;
+
+			case NURBSCURVETYPE:
+				assvg_nurbscurve(sb, (LWNURBSCURVE *)tmp, relative, precision);
 				break;
 
 			default:
@@ -513,6 +729,10 @@ assvg_geom(stringbuffer_t* sb, const LWGEOM *geom, int relative, int precision)
 		assvg_polygon(sb, (LWPOLY*)geom, relative, precision);
 		break;
 
+	case TRIANGLETYPE:
+		assvg_triangle(sb, (LWTRIANGLE *)geom, relative, precision);
+		break;
+
 	case MULTIPOINTTYPE:
 		assvg_multipoint(sb, (LWMPOINT*)geom, relative, precision);
 		break;
@@ -543,6 +763,19 @@ assvg_geom(stringbuffer_t* sb, const LWGEOM *geom, int relative, int precision)
 
 	case MULTISURFACETYPE:
 		assvg_multisurface(sb, (LWMSURFACE*)geom, relative, precision);
+		break;
+
+	case NURBSCURVETYPE:
+		assvg_nurbscurve(sb, (LWNURBSCURVE *)geom, relative, precision);
+		break;
+
+	case TINTYPE:
+	case POLYHEDRALSURFACETYPE:
+		assvg_collection_members(sb, (LWCOLLECTION *)geom, relative, precision);
+		break;
+
+	case COLLECTIONTYPE:
+		assvg_collection(sb, (LWCOLLECTION *)geom, relative, precision);
 		break;
 
 	default:
@@ -582,6 +815,9 @@ lwgeom_to_svg(const LWGEOM *geom, int precision, int relative)
 	case POLYGONTYPE:
 		assvg_polygon(&sb, (LWPOLY*)geom, relative, precision);
 		break;
+	case TRIANGLETYPE:
+		assvg_triangle(&sb, (LWTRIANGLE *)geom, relative, precision);
+		break;
 	case CIRCSTRINGTYPE:
 		assvg_circstring(&sb, (LWCIRCSTRING*)geom, relative, precision);
 		break;
@@ -606,6 +842,13 @@ lwgeom_to_svg(const LWGEOM *geom, int precision, int relative)
 	case MULTISURFACETYPE:
 		assvg_multisurface(&sb, (LWMSURFACE*)geom, relative, precision);
 		break;
+	case NURBSCURVETYPE:
+		assvg_nurbscurve(&sb, (LWNURBSCURVE *)geom, relative, precision);
+		break;
+	case TINTYPE:
+	case POLYHEDRALSURFACETYPE:
+		assvg_collection_members(&sb, (LWCOLLECTION *)geom, relative, precision);
+		break;
 	case COLLECTIONTYPE:
 		assvg_collection(&sb, (LWCOLLECTION*)geom, relative, precision);
 		break;
@@ -616,4 +859,3 @@ lwgeom_to_svg(const LWGEOM *geom, int precision, int relative)
 
 	return stringbuffer_getvarlena(&sb);
 }
-

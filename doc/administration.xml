@@ -55,10 +55,10 @@
 	<para>
 	  Run the following SQL snippet in the database you want to enable spatially:
 <programlisting>
-      CREATE EXTENSION IF NOT EXISTS plpgsql;
-      CREATE EXTENSION postgis;
-      CREATE EXTENSION postgis_raster; -- OPTIONAL
-      CREATE EXTENSION postgis_topology; -- OPTIONAL
+CREATE EXTENSION IF NOT EXISTS plpgsql;
+CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_raster; -- OPTIONAL
+CREATE EXTENSION postgis_topology; -- OPTIONAL
 </programlisting>
 	</para>
 
@@ -103,22 +103,22 @@ environment).</para></note>
 
 	<para>
 	  Run the following Shell commands in your terminal:
-<programlisting>
-    DB=[yourdatabase]
-    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/
+<programlisting language="bash">
+DB=[yourdatabase]
+SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/
 
-    # Core objects
-    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql
-    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql
-    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL
+# Core objects
+psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql
+psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql
+psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL
 
-    # Raster support (OPTIONAL)
-    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql
-    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL
+# Raster support (OPTIONAL)
+psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql
+psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL
 
-    # Topology support (OPTIONAL)
-    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql
-    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
+# Topology support (OPTIONAL)
+psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql
+psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
 </programlisting>
   </para>
 
@@ -158,41 +158,43 @@ environment).</para></note>
         <section xml:id="soft_upgrade_extensions"><title>Soft upgrade using extensions</title>
                 <para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions is fairly painless.</para>
         <para>Use the <xref linkend="PostGIS_Extensions_Upgrade"/> function to upgrade to the latest version you have installed.</para>
-        <programlisting>SELECT postgis_extensions_upgrade();</programlisting>
+        <programlisting language="sql">SELECT postgis_extensions_upgrade();</programlisting>
 
         <para>If you are upgrading a database that still runs PostGIS 2.5, issue an <command>ALTER EXTENSION</command> followed by <function>postgis_extensions_upgrade()</function> to make sure the legacy <varname>postgis_raster</varname> objects are folded back into the main extension.</para>
-        <programlisting>ALTER EXTENSION postgis UPDATE;
+        <programlisting language="sql">ALTER EXTENSION postgis UPDATE;
 SELECT postgis_extensions_upgrade();
--- This second call is needed to rebundle postgis_raster extension
-SELECT postgis_extensions_upgrade();
+</programlisting>
+        <para>This second call is needed to rebundle the <varname>postgis_raster</varname> extension.</para>
+        <programlisting language="sql">SELECT postgis_extensions_upgrade();
 </programlisting>
 
         <para>If you have multiple versions of PostGIS installed, and you don't want to upgrade to the latest, you can explicitly specify the version as follows:</para>
 		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;";
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
-			<programlisting>No migration path defined for … to &last_release_version;</programlisting>
+			<screen>No migration path defined for … to &last_release_version;</screen>
 		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions"/> and then restore your backup on top of this new database.</para>
     <para>If you get a notice message like:</para>
-    <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
+    <screen>Version "&last_release_version;" of extension "postgis" is already installed</screen>
     <para>
 Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
 you're attempting to upgrade from an development version to the next (which
 doesn't get a new version number); in that case you can append "next" to the version
 string, and next time you'll need to drop the "next" suffix again:
     </para>
-		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
-ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
-		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
-		picks up the newest latest version during restore.</para></note>
+			<programlisting language="sql">ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
+	ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
+			<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
+			picks up the newest latest version during restore.</para></note>
 
-    <note>
-    <para>If you are upgrading PostGIS extension from a version prior to 3.0.0, you will have a new extension <emphasis>postgis_raster</emphasis>
-    which you can safely drop, if you don't need raster support.  You can drop as follows:</para>
-    <programlisting>DROP EXTENSION postgis_raster;</programlisting>
-    </note>
+	    <note>
+	    <para>If you are upgrading PostGIS extension from a version prior to 3.0.0, you will have a new extension <emphasis>postgis_raster</emphasis>
+	    which you can safely drop, if you don't need raster support.</para>
+	    </note>
 
-	</section>
+	    <programlisting language="sql">DROP EXTENSION postgis_raster;</programlisting>
+
+		</section>
 
      <section xml:id="soft_upgrade_sql_script">
                 <title>Soft upgrade without extensions</title>
@@ -213,7 +215,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 	  </para>
 
 	  <para>
-		The dump/reload process is assisted by the postgis_restore
+		The dump/reload process is assisted by the <command role="reference-target">postgis_restore</command>
 		script which takes care of skipping from the dump all
 		definitions which belong to PostGIS (including old ones),
 		allowing you to restore your schemas and data into a
@@ -240,7 +242,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		super account.
 	  </para>
 
-	  <programlisting>pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f "/somepath/olddb.backup" olddb</programlisting>
+	  <programlisting language="bash">pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f "/somepath/olddb.backup" olddb</programlisting>
 
 	</listitem>
 
@@ -287,7 +289,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		error stream by psql. Keep a log of those.
 	  </para>
 
-	  <programlisting>postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
+	  <programlisting language="bash">postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
 
 	</listitem>
 
@@ -356,27 +358,23 @@ ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));
 		from postgis_restore. So, after having run :
     </para>
 
-		<programlisting>postgis_restore "/somepath/olddb.backup" &gt; olddb.sql</programlisting>
+		<programlisting language="bash">postgis_restore "/somepath/olddb.backup" &gt; olddb.sql</programlisting>
 
     <para>
 		run this command :
     </para>
 
-		<programlisting>grep -v IGNF olddb.sql &gt; olddb-without-IGN.sql</programlisting>
+		<programlisting language="bash">grep -v IGNF olddb.sql &gt; olddb-without-IGN.sql</programlisting>
 
     <para>
-		Create then your newdb, activate the required Postgis extensions,
-		and insert properly the french system IGN with :
-
-		<link xlink:href="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">
-			this script
-		  </link>
-
-		After these operations, import your data :
+			Create your <varname>newdb</varname>, activate the required PostGIS extensions,
+			and insert the French IGN spatial reference definitions using
+			<link xlink:href="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">this script</link>.
+			After these operations, import your data:
 
     </para>
 
-		<programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2&gt; errors.txt</programlisting>
+		<programlisting language="bash">psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2&gt; errors.txt</programlisting>
 
 	</listitem>
 	</orderedlist>

@@ -44511,3 +44511,28 @@ msgstr "Supporta il 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Supporta il tipo geography"
+
+#. Tag: para
+#, no-c-format
+msgid "Code"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Output"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Copy"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Copied"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Failed"
+msgstr ""

@@ -44630,3 +44630,28 @@ msgstr ""
 #, no-c-format
 msgid "Supports geography"
 msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Code"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Output"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Copy"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Copied"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Failed"
+msgstr ""

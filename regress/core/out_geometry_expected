@@ -48,6 +48,9 @@ svg_option_01|M 1 -1 L 4 -4 5 -7
 svg_option_02|M 1 -1 l 3 -3 1 -3
 svg_option_03|M 1 -1 L 4 -4 5 -7
 svg_option_04|M 1 -1 l 3 -3 1 -3
+svg_circularstring_upper|M 0 0 A 1 1 0 0 1 2 0
+svg_circularstring_lower|M 0 0 A 1 1 0 0 0 2 0
+svg_curvepolygon_circle|M 0 0 A 1 1 0 0 1 2 0 A 1 1 0 0 1 0 0 Z
 svg_precision_01|x="1" y="-1"
 svg_precision_02|x="1.1111111" y="-1.1111111"
 geojson_empty_geom|

@@ -10,11 +10,9 @@
 
   <para>PostgreSQL configuration can be set at the server level without touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code>
   by using the <code>ALTER SYSTEM</code> command.</para>
-  <programlisting>ALTER SYSTEM SET work_mem = '256MB';
--- this forces non-startup configs to take effect for new connections
+  <para>Set <varname>work_mem</varname>, reload the configuration so new connections use the change, and display the current value. Use <command>SHOW ALL</command> to list all settings.</para>
+  <programlisting language="sql">ALTER SYSTEM SET work_mem = '256MB';
 SELECT pg_reload_conf();
--- show current setting value
--- use SHOW ALL to see all settings
 SHOW work_mem;</programlisting>
 
 <para>In addition to the Postgres settings, PostGIS has some custom settings which are listed in <xref linkend="PostGIS_GUC"/>.</para>

@@ -44,8 +44,8 @@
 			<title>Examples</title>
 
 			<programlisting>UPDATE sometable
- SET geom =  PostGIS_AddBBox(geom)
- WHERE PostGIS_HasBBox(geom) = false;</programlisting>
+SET geom =  PostGIS_AddBBox(geom)
+WHERE PostGIS_HasBBox(geom) = false;</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -93,19 +93,15 @@
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>--This example drops bounding boxes where the cached box is not correct
-			--The force to ST_AsBinary before applying Box2D forces a recalculation of the box, and Box2D applied to the table geometry always
-			-- returns the cached bounding box.
-			UPDATE sometable
- SET geom =  PostGIS_DropBBox(geom)
- WHERE Not (Box2D(ST_AsBinary(geom)) = Box2D(geom));
+				<para>This example drops cached bounding boxes where the stored box is stale. Applying <function>Box2D</function> to <function>ST_AsBinary(geom)</function> forces a recalculation, while <function>Box2D(geom)</function> reads the cached value.</para>
+	           <programlisting language="sql">UPDATE sometable
+SET geom = PostGIS_DropBBox(geom)
+WHERE NOT (Box2D(ST_AsBinary(geom)) = Box2D(geom));</programlisting>
 
-	UPDATE sometable
- SET geom =  PostGIS_AddBBox(geom)
- WHERE Not PostGIS_HasBBOX(geom);
-
-
- </programlisting>
+				<para>After clearing stale caches, re-add bounding boxes where they are missing.</para>
+	           <programlisting language="sql">UPDATE sometable
+SET geom = PostGIS_AddBBox(geom)
+WHERE NOT PostGIS_HasBBox(geom);</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->

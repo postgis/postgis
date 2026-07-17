@@ -21,21 +21,13 @@
 
     <para>An example session using the loader to create an input file and uploading it chunked in 100x100 tiles might look like this:</para>
 
-    <screen><![CDATA[
-# -s use srid 4326
-# -I create spatial index
-# -C use standard raster constraints
-# -M vacuum analyze after load
-# *.tif load all these files
-# -F include a filename column in the raster table
-# -t tile the output 100x100
-# public.demelevation load into this table
+    <para>The loader assigns SRID 4326, creates an index and standard
+    constraints, analyzes the loaded table, records source filenames, and
+    stores the input rasters in 100 by 100 pixel tiles.</para>
+    <programlisting language="bash"><![CDATA[
 raster2pgsql -s 4326 -I -C -M -F -t 100x100 *.tif public.demelevation > elev.sql
-
-# -d connect to this database
-# -f read this file after connecting
 psql -d gisdb -f elev.sql
-]]></screen>
+]]></programlisting>
 
     <note>
       <para>If you do not specify the schema as part of the target table name, the table will be created in the default schema of the database or user you are connecting with.</para>
@@ -43,17 +35,21 @@ psql -d gisdb -f elev.sql
 
     <para>A conversion and upload can be done all in one step using UNIX pipes:</para>
 
-    <screen>raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql -d gisdb</screen>
+    <programlisting language="bash">raster2pgsql -s 4326 -I -C -M -F -t 100x100 \
+  *.tif public.demelevation |
+  psql -d gisdb</programlisting>
 
     <para>Load rasters Massachusetts state plane meters aerial tiles
   into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables, use copy mode for inserting (no intermediary file just straight to db), and -e don't force everything in a transaction (good if you want to see data in tables right away without waiting).  Break up the rasters into 128x128 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
-    <screen>raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</screen>
+    <programlisting language="bash">raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128 -l 2,4 \
+  bostonaerials2008/*.jpg aerials.boston |
+  psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
 
-    <screen># Get a list of raster types supported:
-raster2pgsql -G</screen>
+    <para>List the raster formats supported by this build:</para>
+    <programlisting language="bash">raster2pgsql -G</programlisting>
 
-<para>The -G commands outputs a list something like </para>
-<screen>
+<para>The <option>-G</option> command outputs a list something like:</para>
+<screen role="text-primary">
 Available GDAL raster formats:
   Virtual Raster
   GeoTIFF
@@ -425,7 +421,7 @@ Available GDAL raster formats:
 	<para>On many occasions, you'll want to create rasters and raster tables right in the database.  There are a plethora of functions to do that.  The general steps to follow.</para>
 	<orderedlist>
 		<listitem><para>Create a table with a raster column to hold the new raster records which can be accomplished with:</para>
-			<programlisting>CREATE TABLE myrasters(rid serial primary key, rast raster);</programlisting>
+			<programlisting language="sql">CREATE TABLE myrasters(rid serial primary key, rast raster);</programlisting>
 		</listitem>
 		<listitem>
 			<para>There are many functions to help with that goal.  If you are creating rasters not as a derivative of other rasters, you will want to start with:
@@ -435,7 +431,7 @@ Available GDAL raster formats:
 			<para>There are even many more options for creating new raster tables from existing tables.  For example you can create a raster table in a different projection from an existing one using <xref linkend="RT_ST_Transform"/> </para>
 		</listitem>
 		<listitem><para>Once you are done populating your table initially, you'll want to create a spatial index on the raster column with something like:</para>
-			<programlisting>CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist(ST_ConvexHull(rast));</programlisting>
+			<programlisting language="sql">CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist(ST_ConvexHull(rast));</programlisting>
 			<para>Note the use of <xref linkend="RT_ST_ConvexHull"/> since most raster operators are based on the convex hull of the rasters.</para>
 			<note><para>Pre-2.0 versions of PostGIS raster were based on the envelop rather than the convex hull.  For the spatial indexes to work properly you'll need to drop those and replace with convex hull based index.</para></note></listitem>
 		<listitem><para>Apply raster constraints using <xref linkend="RT_AddRasterConstraints"/></para></listitem>
@@ -454,7 +450,7 @@ Available GDAL raster formats:
     <para>
         First, load your raster into the cloud storage of your choice. Once it is loaded, you will have a URI to access it with, either an "http" URI, or sometimes a URI specific to the service. (e.g., "s3://bucket/object"). To access non-public buckets, you will need to supply GDAL config options to authenticate your connection. Note that this command is <emphasis>reading</emphasis> from the cloud raster and <emphasis>writing</emphasis> to the database.
     </para>
-    <screen>AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx \
+    <programlisting language="bash">AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx \
 AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
 raster2pgsql \
   -s 990000 \
@@ -463,23 +459,23 @@ raster2pgsql \
   -R \
   /vsis3/your.bucket.com/your_file.tif \
   your_table \
-  | psql your_db</screen>
+  | psql your_db</programlisting>
     <para>
         Once the table is loaded, you need to give the database permission to read from remote rasters, by setting two permissions, <xref linkend="postgis_enable_outdb_rasters"/> and <xref linkend="postgis_gdal_enabled_drivers"/>.
     </para>
-    <programlisting>SET postgis.enable_outdb_rasters = true;
+    <programlisting language="sql">SET postgis.enable_outdb_rasters = true;
 SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
     </programlisting>
     <para>
         To make the changes sticky, set them directly on your database. You will need to re-connect to experience the new settings.
     </para>
-    <programlisting>ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;
+    <programlisting language="sql">ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;
 ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
     </programlisting>
     <para>
         For non-public rasters, you may have to provide access keys to read from the cloud rasters. The same keys you used to write the <varname>raster2pgsql</varname> call can be set for use inside the database, with the <xref linkend="postgis_gdal_vsi_options"/> configuration. Note that multiple options can be set by space-separating the <varname>key=value</varname> pairs.
     </para>
-    <programlisting>SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx
+    <programlisting language="sql">SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx
 AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting>
     <para>
         Once you have the data loaded and permissions set you can interact with the raster table like any other raster table, using the same functions. The database will handle all the mechanics of connecting to the cloud data when it needs to read pixel data.
@@ -621,33 +617,37 @@ AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting
 			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
 				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union"/> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform"/>,
 				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG"/>.</para>
-				<para>You would call the below using <programlisting>http://mywebserver/test_raster.php?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
-			<programlisting><![CDATA[
-
-<?php
-/** contents of test_raster.php **/
-$conn_str ='dbname=mydb host=localhost port=5432 user=myuser password=mypwd';
+				<para>You would call the script with <literal>http://mywebserver/test_raster.php?srid=2249</literal> to get the raster image in Massachusetts state plane feet.</para>
+			<programlisting language="php"><![CDATA[<?php
+$conn_str = 'dbname=mydb host=localhost port=5432 user=myuser password=mypwd';
 $dbconn = pg_connect($conn_str);
 header('Content-Type: image/png');
-/**If a particular projection was requested use it otherwise use mass state plane meters **/
-if (!empty( $_REQUEST['srid'] ) &amp;&amp; is_numeric( $_REQUEST['srid']) ){
-		$input_srid = intval($_REQUEST['srid']);
+
+if (!empty($_REQUEST['srid']) &amp;&amp; is_numeric($_REQUEST['srid'])) {
+    $input_srid = intval($_REQUEST['srid']);
+} else {
+    $input_srid = 26986;
 }
-else { $input_srid = 26986; }
-/** The set bytea_output ensures bytea values are returned using escape format. **/
-$sql = "set bytea_output='escape';
+
+$sql = "SET bytea_output = 'escape';
 SELECT ST_AsPNG(
-	ST_Transform(
-		ST_AddBand(
-			ST_Union(rast, 1),
-			ARRAY[ST_Union(rast, 2), ST_Union(rast, 3)]
-		),
-		$input_srid
-	)
-) As new_rast
- FROM aerials.boston
-	WHERE
-	 ST_Intersects(rast, ST_Transform(ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),26986) )";
+    ST_Transform(
+        ST_AddBand(
+            ST_Union(rast, 1),
+            ARRAY[ST_Union(rast, 2), ST_Union(rast, 3)]
+        ),
+        $input_srid
+    )
+) AS new_rast
+FROM aerials.boston
+WHERE ST_Intersects(
+    rast,
+    ST_Transform(
+        ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218, 4326),
+        26986
+    )
+)";
+
 $result = pg_query($sql);
 $row = pg_fetch_row($result);
 pg_free_result($result);
@@ -659,23 +659,23 @@ echo pg_unescape_bytea($row[0]);
 		<section xml:id="RT_Net_Output_CS">
 			<title>ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster functions</title>
 			<para>In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver and the <xref linkend="RT_ST_AsGDALRaster"/> family of functions to
-				output band 1,2,3 of a raster to a PHP request stream that can then be embedded in an img src html tag.</para>
+				output band 1,2,3 of a raster to the HTTP response stream so it can be embedded in an <code>img</code> tag.</para>
 
 			<para>You will need the npgsql .NET PostgreSQL driver for this exercise which you can get the latest of from <link xlink:href="http://npgsql.projects.postgresql.org/">http://npgsql.projects.postgresql.org/</link>.  Just download the latest and drop into your ASP.NET bin folder and you'll be good to go.</para>
 			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
 				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union"/> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform"/>,
 				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG"/>.</para>
 				<para>This is same example as <xref linkend="RT_PHP_Output"/> except implemented in C#.</para>
-				<para>You would call the below using <programlisting>http://mywebserver/TestRaster.ashx?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
-				<programlisting><![CDATA[
- -- web.config connection string section --
+				<para>You would call the handler with <literal>http://mywebserver/TestRaster.ashx?srid=2249</literal> to get the raster image in Massachusetts state plane feet.</para>
+				<para>web.config connection string section:</para>
+				<programlisting language="xml"><![CDATA[
 <connectionStrings>
     <add name="DSN"
         connectionString="server=localhost;database=mydb;Port=5432;User Id=myuser;password=mypwd"/>
 </connectionStrings>
 ]]></programlisting>
-			<programlisting><![CDATA[
-// Code for TestRaster.ashx
+				<para>Code for <filename>TestRaster.ashx</filename>:</para>
+			<programlisting language="csharp"><![CDATA[
 <%@ WebHandler Language="C#" Class="TestRaster" %>
 using System;
 using System.Data;
@@ -684,27 +684,27 @@ using Npgsql;
 
 public class TestRaster : IHttpHandler
 {
-	public void ProcessRequest(HttpContext context)
-	{
+    public void ProcessRequest(HttpContext context)
+    {
+        context.Response.ContentType = "image/png";
+        context.Response.BinaryWrite(GetResults(context));
+    }
 
-		context.Response.ContentType = "image/png";
-		context.Response.BinaryWrite(GetResults(context));
+    public bool IsReusable {
+        get { return false; }
+    }
 
-	}
-
-	public bool IsReusable {
-		get { return false; }
-	}
-
-	public byte[] GetResults(HttpContext context)
-	{
-		byte[] result = null;
-		NpgsqlCommand command;
-		string sql = null;
-		int input_srid = 26986;
+    public byte[] GetResults(HttpContext context)
+    {
+        byte[] result = null;
+        NpgsqlCommand command;
+        string sql = null;
+        int input_srid = 26986;
         try {
-		    using (NpgsqlConnection conn = new NpgsqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["DSN"].ConnectionString)) {
-			    conn.Open();
+            string connectionString = System.Configuration.ConfigurationManager
+                .ConnectionStrings["DSN"].ConnectionString;
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString)) {
+                conn.Open();
 
                 if (context.Request["srid"] != null)
                 {
@@ -720,28 +720,33 @@ public class TestRaster : IHttpHandler
                             )
                         ) As new_rast
                         FROM aerials.boston
-	                        WHERE
-	                            ST_Intersects(
-                                    rast,
-                                    ST_Transform(
-                                        ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),
-                                        26986) )";
-			    command = new NpgsqlCommand(sql, conn);
+                        WHERE ST_Intersects(
+                            rast,
+                            ST_Transform(
+                                ST_MakeEnvelope(
+                                    -71.1217, 42.227,
+                                    -71.1210, 42.218,
+                                    4326
+                                ),
+                                26986
+                            )
+                        )";
+                command = new NpgsqlCommand(sql, conn);
                 command.Parameters.Add(new NpgsqlParameter("input_srid", input_srid));
 
 
-			    result = (byte[]) command.ExecuteScalar();
+                result = (byte[]) command.ExecuteScalar();
                 conn.Close();
-			}
+            }
 
-		}
+        }
         catch (Exception ex)
         {
             result = null;
             context.Response.Write(ex.Message.Trim());
         }
-		return result;
-	}
+        return result;
+    }
 }
 ]]></programlisting>
 		</section>
@@ -749,16 +754,18 @@ public class TestRaster : IHttpHandler
 			<title>Java console app that outputs raster query as Image file</title>
 			<para>This is a simple java console app that takes a query that returns one image and outputs to specified file.</para>
 			<para>You can download the latest PostgreSQL JDBC drivers from <link xlink:href="http://jdbc.postgresql.org/download.html">http://jdbc.postgresql.org/download.html</link> </para>
-				<para>You can compile the following code using a command something like:</para>
-	<screen>set env CLASSPATH .:..\postgresql-9.0-801.jdbc4.jar
-javac SaveQueryImage.java
-jar cfm SaveQueryImage.jar Manifest.txt *.class</screen>
-	<para>And call it from the command-line with something like</para>
-	<screen>java -jar SaveQueryImage.jar "SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, '8BUI',100));" "test.png"</screen>
-<programlisting> -- Manifest.txt --
-Class-Path: postgresql-9.0-801.jdbc4.jar
+				<para>You can compile the following code with commands like:</para>
+	<programlisting language="bash">CLASSPATH=".:../postgresql.jar" javac SaveQueryImage.java
+jar cfm SaveQueryImage.jar Manifest.txt *.class</programlisting>
+	<para>And call it from the command line with something like:</para>
+	<programlisting language="bash">java -jar SaveQueryImage.jar \
+  "SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1, 5), 10, 'quad_segs=2'), 150, 150, '8BUI', 100));" \
+  "test.png"</programlisting>
+	<para><filename>Manifest.txt</filename>:</para>
+	<programlisting language="text">Class-Path: postgresql-9.0-801.jdbc4.jar
 Main-Class: SaveQueryImage</programlisting>
-			<programlisting>// Code for SaveQueryImage.java
+			<para>Code for <filename>SaveQueryImage.java</filename>:</para>
+			<programlisting language="java">
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -782,30 +789,30 @@ public class SaveQueryImage {
       Connection conn = null;
 
       try {
-        conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mydb","myuser", "mypwd");
+        conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mydb", "myuser", "mypwd");
         conn.setAutoCommit(false);
 
         PreparedStatement sGetImg = conn.prepareStatement(argv[0]);
 
         ResultSet rs = sGetImg.executeQuery();
 
-		FileOutputStream fout;
-		try
-		{
-			rs.next();
-			/** Output to file name requested by user **/
-			fout = new FileOutputStream(new File(argv[1]) );
-			fout.write(rs.getBytes(1));
-			fout.close();
-		}
-		catch(Exception e)
-		{
-			System.out.println("Can't create file");
-			e.printStackTrace();
-		}
+        FileOutputStream fout;
+        try
+        {
+            rs.next();
+            /** Output to file name requested by user **/
+            fout = new FileOutputStream(new File(argv[1]) );
+            fout.write(rs.getBytes(1));
+            fout.close();
+        }
+        catch(Exception e)
+        {
+            System.out.println("Can't create file");
+            e.printStackTrace();
+        }
 
         rs.close();
-		sGetImg.close();
+        sGetImg.close();
         conn.close();
       }
       catch (SQLException se) {
@@ -821,21 +828,28 @@ public class SaveQueryImage {
 			<title>Use PLPython to dump out images via SQL</title>
 			<para>This is a plpython stored function that creates a file in the server directory for each record.
 			Requires you have plpython installed.  Should work fine with both plpythonu and plpython3u.</para>
-			<programlisting>CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, param_filepath text)
+			<programlisting language="sql">CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, param_filepath text)
 RETURNS text
 AS $$
 f = open(param_filepath, 'wb+')
 f.write(param_bytes)
 return param_filepath
 $$ LANGUAGE plpythonu;</programlisting>
-<programlisting>--write out 5 images to the PostgreSQL server in varying sizes
--- note the postgresql daemon account needs to have write access to folder
--- this echos back the file names created;
- SELECT write_file(
-	ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),j*5, 'quad_segs=2'),150*j, 150*j, '8BUI',100)),
-	 'C:/temp/slices'|| j || '.png')
-	 FROM generate_series(1,5) As j;
-
+<para>Write out 5 images to the PostgreSQL server in varying sizes. The PostgreSQL daemon account needs write access to the folder; this echoes back the file names created.</para>
+<programlisting language="sql">SELECT write_file(
+    ST_AsPNG(
+        ST_AsRaster(
+            ST_Buffer(ST_Point(1, 5), j * 5, 'quad_segs=2'),
+            150 * j,
+            150 * j,
+            '8BUI',
+            100
+        )
+    ),
+    'C:/temp/slices' || j || '.png'
+)
+FROM generate_series(1, 5) AS j;</programlisting>
+<screen role="text-primary">
      write_file
 ---------------------
  C:/temp/slices1.png
@@ -843,30 +857,29 @@ $$ LANGUAGE plpythonu;</programlisting>
  C:/temp/slices3.png
  C:/temp/slices4.png
  C:/temp/slices5.png
-</programlisting>
+</screen>
 		</section>
 		<section xml:id="RasterOutput_PSQL">
 			<title>Outputting Rasters with PSQL</title>
-			<para>Sadly PSQL doesn't have easy to use built-in functionality for outputting binaries.  This is a bit of a hack that piggy backs on PostgreSQL somewhat legacy large object support.  To use first launch your psql commandline connected to your database.
+			<para>Sadly PSQL doesn't have easy to use built-in functionality for outputting binaries.  This is a bit of a hack that piggy backs on PostgreSQL somewhat legacy large object support.  To use it, first launch your <command>psql</command> command line connected to your database.
 			</para>
 			<para>Unlike the python approach, this approach creates the file on your local computer.</para>
-			<screen>SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes
- FROM
- ( VALUES (lo_create(0),
-   ST_AsPNG((SELECT rast FROM aerials.boston WHERE rid=1) )
-  ) ) As v(oid,png);
--- you'll get an output something like --
-   oid   | num_bytes
+			<programlisting language="sql">SELECT
+    oid,
+    lowrite(lo_open(oid, 131072), png) AS num_bytes
+FROM (VALUES (
+    lo_create(0),
+    ST_AsPNG((SELECT rast FROM aerials.boston WHERE rid = 1))
+)) AS v(oid, png);</programlisting>
+<screen role="text-primary">   oid   | num_bytes
 ---------+-----------
- 2630819 |     74860
+ 2630819 |     74860</screen>
 
--- next note the oid and do this replacing the c:/test.png to file path location
--- on your local computer
- \lo_export 2630819 'C:/temp/aerial_samp.png'
+			<para>Note the large object OID and export it to a file on your local computer, replacing the example path with the desired file path.</para>
+			<programlisting language="psql">\lo_export 2630819 'C:/temp/aerial_samp.png'</programlisting>
 
--- this deletes the file from large object storage on db
-SELECT lo_unlink(2630819);
-			</screen>
+			<para>This deletes the file from large object storage in the database.</para>
+			<programlisting language="sql">SELECT lo_unlink(2630819);</programlisting>
 		</section>
    </section>
 </chapter>

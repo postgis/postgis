@@ -79,10 +79,10 @@
       <title>Examples</title>
 
       <programlisting language="sql">SELECT ST_AsEWKT('0103000020e61000000100000005000000000000000000000000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f000000000000f03f000000000000000000000000000000000000000000000000'::geometry);</programlisting>
-<screen>SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
+<screen role="text-primary">SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
 
 <programlisting language="sql">SELECT ST_AsEWKT('0108000080030000000000000060E30A4100000000785C0241000000000000F03F0000000018E20A4100000000485F024100000000000000400000000018E20A4100000000305C02410000000000000840');</programlisting>
-<screen>CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)</screen>
+<screen role="text-primary">CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -166,15 +166,15 @@
       <title>Examples</title>
 
       <programlisting language="sql">SELECT ST_AsText('01030000000100000005000000000000000000000000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f000000000000f03f000000000000000000000000000000000000000000000000');</programlisting>
-<screen>POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
+<screen role="text-primary">POLYGON((0 0,0 1,1 1,1 0,0 0))</screen>
 
 <para>Full precision output is the default.</para>
-      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry);</programlisting>
-<screen>POINT(111.1111111 1.1111111)</screen>
+      <programlisting language="sql">SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry);</programlisting>
+<screen role="text-primary">POINT(111.1111111 1.1111111)</screen>
 
 <para>The <parameter>maxdecimaldigits</parameter> argument can be used to limit output precision.</para>
-      <programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry, 2);</programlisting>
-<screen>POINT(111.11 1.11)</screen>
+      <programlisting language="sql">SELECT ST_AsText('POINT(111.1111111 1.1111111)'::geometry, 2);</programlisting>
+<screen role="text-primary">POINT(111.11 1.11)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -261,12 +261,12 @@
       <refsection>
       <title>Examples</title>
 
-      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
-<screen>\x01030000000100000005000000000000000000000000000000000000000000000000000000000000
+      <programlisting language="sql">SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
+<screen role="text-primary">\x01030000000100000005000000000000000000000000000000000000000000000000000000000000
 000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000
 00000000000000000000000000</screen>
-      <programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
-<screen>\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
+      <programlisting language="sql">SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326), 'XDR');</programlisting>
+<screen role="text-primary">\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
 00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
 00000000000000000000000000</screen>
       </refsection>
@@ -332,12 +332,12 @@
       <refsection>
       <title>Examples</title>
 
-      <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
-<screen>\x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
+      <programlisting language="sql">SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
+<screen role="text-primary">\x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
 00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000
 0000000000000000000000000000000000</screen>
-    <programlisting>SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');</programlisting>
-<screen>\x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
+    <programlisting language="sql">SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326), 'XDR');</programlisting>
+<screen role="text-primary">\x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
 003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000
 0000000000000000000000000000000000</screen>
       </refsection>
@@ -378,23 +378,21 @@
     <para>Returns a Geometry in HEXEWKB format (as text) using either
       little-endian (NDR) or big-endian (XDR) encoding.  If no encoding is specified, then NDR is used.</para>
 
-    <note>
-      <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
-    </note>
+    <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
     <para>&Z_support;</para>
     <para>&curve_support;</para>
     </refsection>
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));</programlisting>
-<screen>    0103000020E6100000010000000500
-    00000000000000000000000000000000
-    00000000000000000000000000000000F03F
-    000000000000F03F000000000000F03F000000000000F03
-    F000000000000000000000000000000000000000000000000</screen>
+    <programlisting language="sql">SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
+<screen role="text-primary">0103000020E6100000010000000500
+00000000000000000000000000000000
+00000000000000000000000000000000F03F
+000000000000F03F000000000000F03F000000000000F03
+F000000000000000000000000000000000000000000000000</screen>
     <para>Which gives the same answer as:</para>
-    <programlisting>SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;</programlisting>
+    <programlisting language="sql">SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326)::text;</programlisting>
     </refsection>
   </refentry>
 
@@ -425,46 +423,59 @@
     <refsection>
     <title>Description</title>
 
-    <para>Returns the geometry as an Encoded Polyline. This format is used by Google Maps with precision=5 and by Open Source Routing Machine with precision=5 and 6.</para>
-    <para>Optional <varname>precision</varname> specifies how many decimal places will be preserved in Encoded Polyline. Value should be the same on encoding and decoding, or coordinates will be incorrect.</para>
+    <para>Returns the geometry in the <link xlink:href="https://developers.google.com/maps/documentation/utilities/polylinealgorithm">Encoded Polyline Algorithm Format</link>. The format stores latitude and longitude deltas as integers after multiplying coordinates by 10 raised to the requested <varname>precision</varname>.</para>
+    <para>The informal names <emphasis>polyline5</emphasis> and <emphasis>polyline6</emphasis> refer to the same encoding with precision 5 and 6. The precision must match when encoding and decoding; otherwise the coordinates are scaled incorrectly.</para>
+    <para>The input geometry must use SRID 4326, with longitude as X and latitude as Y. Use <xref linkend="ST_Transform"/> to transform geometries in other coordinate systems before encoding.</para>
+    <para>The <link xlink:href="https://project-osrm.org/docs/v5.24.0/api/#general-options">OSRM API</link> returns precision 5 for <literal>geometries=polyline</literal> and precision 6 for <literal>geometries=polyline6</literal>. Decode the resulting <literal>route.geometry</literal> with <xref linkend="ST_LineFromEncodedPolyline"/> using the matching precision.</para>
 
     <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
     </refsection>
 
     <refsection>
     <title>Examples</title>
-  <para>Basic </para>
-  <programlisting>SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));</programlisting>
-<screen>  _p~iF~ps|U_ulLnnqC_mqNvxq`@
-  </screen>
+  <para>Encode the same WGS 84 LineString using precision 5 and 6.</para>
+  <programlisting language="sql"><![CDATA[
+WITH route AS (
+  SELECT ST_GeomFromEWKT(
+    'SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'
+  ) AS geom
+)
+SELECT ST_AsEncodedPolyline(geom, 5) AS polyline5,
+       ST_AsEncodedPolyline(geom, 6) AS polyline6
+FROM route;
+]]></programlisting>
+<screen role="text-primary">          polyline5          |            polyline6
+-----------------------------+----------------------------------
+ _p~iF~ps|U_ulLnnqC_mqNvxq`@ | _izlhA~rlgdF_{geC~ywl@_kwzCn`{nI</screen>
 
-  <para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
-  <para>This example builds the SQL for a Boston-to-San-Francisco path with segments every 100 kilometers.</para>
-  <programlisting>
-  SELECT ST_AsEncodedPolyline(ST_Segmentize(
-        ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'),
-        100000)::geometry) As encodedFlightPath;</programlisting>
+  <para>Decode an OSRM <literal>route.geometry</literal> returned with <literal>geometries=polyline6</literal>.</para>
+  <programlisting language="sql"><![CDATA[
+SELECT ST_AsEWKT(ST_LineFromEncodedPolyline(
+  '_izlhA~rlgdF_{geC~ywl@_kwzCn`{nI',
+  6
+)) AS route;
+]]></programlisting>
+<screen role="text-primary">SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)</screen>
 
-
-  <para>javascript will look something like this where $ variable you replace with query result</para>
-  <programlisting><![CDATA[
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry"></script>
-<script type="text/javascript">
-   flightPath = new google.maps.Polyline({
-      path:  google.maps.geometry.encoding.decodePath("$encodedFlightPath"),
-      map: map,
-      strokeColor: '#0000CC',
-      strokeOpacity: 1.0,
-      strokeWeight: 4
-    });
+  <para>The Google Maps JavaScript Geometry library decodes precision-5 strings. This browser example assumes that <varname>map</varname> is an initialized Google map.</para>
+  <programlisting language="html"><![CDATA[
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=geometry"></script>
+<script>
+  const encodedPath = "_p~iF~ps|U_ulLnnqC_mqNvxq`@";
+  const flightPath = new google.maps.Polyline({
+    path: google.maps.geometry.encoding.decodePath(encodedPath),
+    map: map,
+    strokeColor: "#0000CC",
+    strokeOpacity: 1.0,
+    strokeWeight: 4
+  });
 </script>
-
 ]]></programlisting>
   </refsection>
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_LineFromEncodedPolyline"/>, <xref linkend="ST_Segmentize"/></para>
+    <para><xref linkend="ST_LineFromEncodedPolyline"/>, <xref linkend="ST_Transform"/></para>
     </refsection>
   </refentry>
 
@@ -549,9 +560,9 @@
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
-    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;</programlisting>
-<screen>GAAiEAoOCgwIBBoIAAAAAgIAAAE=</screen>
+    <programlisting language="sql">SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
+FROM (SELECT 'POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry AS geom) AS q;</programlisting>
+<screen role="text-primary">GAAiEAoOCgwIBBoIAAAAAgIAAAE=</screen>
     </refsection>
   </refentry>
 
@@ -689,7 +700,7 @@ Conversely, passing the parameter will save column type lookups.
     <title>Examples</title>
 
 <para>Generate a FeatureCollection:</para>
-<programlisting>SELECT json_build_object(
+<programlisting language="sql">SELECT json_build_object(
     'type', 'FeatureCollection',
     'features', json_agg(ST_AsGeoJSON(t.*, id_column => 'id')::json)
     )
@@ -697,26 +708,26 @@ FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
               (2, 'two', 'POINT(2 2)'),
               (3, 'three', 'POINT(3 3)')
      ) as t(id, name, geom);</programlisting>
-<screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "id": 2, "properties": {"name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "id": 3, "properties": {"name": "three"}}]}</screen>
+<screen role="text-primary">{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "id": 2, "properties": {"name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "id": 3, "properties": {"name": "three"}}]}</screen>
 
 <para>Generate a Feature:</para>
-    <programlisting>SELECT ST_AsGeoJSON(t.*, id_column => 'id')
+    <programlisting language="sql">SELECT ST_AsGeoJSON(t.*, id_column => 'id')
 FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
-<screen>{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}</screen>
+<screen role="text-primary">{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}</screen>
 
 <para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
-    <programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) FROM fe_edges LIMIT 1;</programlisting>
-<screen>
+    <programlisting language="sql">SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) FROM fe_edges LIMIT 1;</programlisting>
+<screen role="text-primary">
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
 </screen>
 <para>3D geometries are supported:</para>
-<programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
-<screen>{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
+<programlisting language="sql">SELECT ST_AsGeoJSON('LINESTRING(1 2 3,4 5 6)');</programlisting>
+<screen role="text-primary">{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
 <para>Options argument can be used to add BBOX and CRS in GeoJSON output:</para>
-<programlisting>SELECT ST_AsGeoJSON(ST_SetSRID('POINT(1 1)'::geometry, 4326), 9, 4|1);</programlisting>
-<screen>
-  {"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1.000000000,1.000000000,1.000000000,1.000000000],"coordinates":[1,1]}
+<programlisting language="sql">SELECT ST_AsGeoJSON(ST_SetSRID('POINT(1 1)'::geometry, 4326), 9, 4|1);</programlisting>
+<screen role="text-primary">
+{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1.000000000,1.000000000,1.000000000,1.000000000],"coordinates":[1,1]}
 </screen>
     </refsection>
   <refsection>
@@ -841,56 +852,34 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
     </refsection>
 
     <refsection>
-    <title>Examples: Version 2</title>
-    <programlisting><![CDATA[
-SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
-    st_asgml
-    --------
-    <gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>
+    <title>Examples</title>
+    <para>Version 2.</para>
+    <programlisting language="sql">SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
+    <screen role="text-primary"><![CDATA[<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]></screen>
 
-]]></programlisting>
-    </refsection>
-    <refsection>
-    <title>Examples: Version 3</title>
+    <para>Version 3.</para>
     <para>Flip coordinates and output extended EPSG (16 | 1)</para>
-    <programlisting>
-<![CDATA[
-SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
-      st_asgml
-      --------
-    <gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">6.34535 5.23423</gml:pos></gml:Point>
+    <programlisting language="sql">SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)', 4326), 5, 17);</programlisting>
+    <screen role="text-primary"><![CDATA[<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">6.34535 5.23423</gml:pos></gml:Point>]]></screen>
+    <para>Output the envelope (32).</para>
+    <programlisting language="sql"><![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);]]></programlisting>
+    <screen role="text-primary"><![CDATA[<gml:Envelope srsName="EPSG:4326" srsDimension="2"><gml:lowerCorner>1 2</gml:lowerCorner><gml:upperCorner>10 20</gml:upperCorner></gml:Envelope>]]></screen>
 
-]]></programlisting>
-    <programlisting><![CDATA[
--- Output the envelope (32) --
-SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
-    st_asgml
-    --------
-  <gml:Envelope srsName="EPSG:4326" srsDimension="2"><gml:lowerCorner>1 2</gml:lowerCorner><gml:upperCorner>10 20</gml:upperCorner></gml:Envelope>
-
-]]></programlisting>
-
-    <programlisting><![CDATA[
--- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --
-SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
-  st_asgml
-  --------
-  <gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326" srsDimension="2"><gml:lowerCorner>2 1</gml:lowerCorner><gml:upperCorner>20 10</gml:upperCorner></gml:Envelope>
-
-]]></programlisting>
+    <para>Output the envelope (32), reverse (lat lon instead of lon lat) (16), long srs (1) = 32 | 16 | 1 = 49.</para>
+    <programlisting language="sql"><![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);]]></programlisting>
+    <screen role="text-primary"><![CDATA[<gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326" srsDimension="2"><gml:lowerCorner>2 1</gml:lowerCorner><gml:upperCorner>20 10</gml:upperCorner></gml:Envelope>]]></screen>
 
     <para>This example uses a PolyhedralSurface.</para>
-    <programlisting>
+    <programlisting language="sql">
 <![CDATA[
 SELECT ST_AsGML(
 3,
-ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
 ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
-  st_asgml
-  --------
- <gml:PolyhedralSurface>
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry);
+]]></programlisting>
+    <screen role="text-primary"><![CDATA[ <gml:PolyhedralSurface>
 <gml:polygonPatches>
    <gml:PolygonPatch>
     <gml:exterior>
@@ -935,9 +924,7 @@ ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
     </gml:exterior>
    </gml:PolygonPatch>
 </gml:polygonPatches>
-</gml:PolyhedralSurface>
-
-]]></programlisting>
+</gml:PolyhedralSurface>]]></screen>
 
     </refsection>
   <refsection>
@@ -990,18 +977,12 @@ ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
             </para>
       </warning>
 
-    <note>
-      <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version"/> to confirm you have proj support compiled in.</para>
-    </note>
+    <para role="availability" conformance="1.2.2">Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
+    <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - Add prefix namespace, use default and named args</para>
+    <para role="changed" conformance="3.0.0">Changed: 3.0.0 - Removed the "versioned" variant signature</para>
 
     <note>
-      <para role="availability" conformance="1.2.2">Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
-    </note>
-    <note>
-      <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - Add prefix namespace, use default and named args</para>
-    </note>
-    <note>
-      <para role="changed" conformance="3.0.0">Changed: 3.0.0 - Removed the "versioned" variant signature</para>
+      <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version"/> to confirm you have proj support compiled in.</para>
     </note>
 
     <note>
@@ -1013,19 +994,12 @@ ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
 
     <refsection>
     <title>Examples</title>
-    <programlisting><![CDATA[
-SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+    <programlisting language="sql">SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))', 4326));</programlisting>
+    <screen role="text-primary"><![CDATA[<Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>]]></screen>
 
-    st_askml
-    --------
-    <Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>
-
-    --3d linestring
-    SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
-    <LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>
-
-
-]]></programlisting>
+    <para>This example outputs a 3D LineString.</para>
+    <programlisting language="sql">SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3,4 5 6)');</programlisting>
+    <screen role="text-primary"><![CDATA[<LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>]]></screen>
     </refsection>
    <refsection>
     <title>See Also</title>
@@ -1080,23 +1054,23 @@ SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
       <refsection>
       <title>Examples</title>
 <para>Default format.</para>
-<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));</programlisting>
-<screen>2°19'29.928"S 3°14'3.243"W</screen>
+<programlisting language="sql">SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));</programlisting>
+<screen role="text-primary">2°19'29.928"S 3°14'3.243"W</screen>
 <para>Providing a format (same as the default).</para>
-<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));</programlisting>
-<screen>2°19'29.928"S 3°14'3.243"W</screen>
+<programlisting language="sql">SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"C'));</programlisting>
+<screen role="text-primary">2°19'29.928"S 3°14'3.243"W</screen>
 <para>Characters other than D, M, S, C and . are just passed through.</para>
-<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));</programlisting>
-<screen>2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W</screen>
+<programlisting language="sql">SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));</programlisting>
+<screen role="text-primary">2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W</screen>
 <para>Signed degrees instead of cardinal directions.</para>
-<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));</programlisting>
-<screen>-2°19'29.928" -3°14'3.243"</screen>
+<programlisting language="sql">SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS"'));</programlisting>
+<screen role="text-primary">-2°19'29.928" -3°14'3.243"</screen>
 <para>Decimal degrees.</para>
-<programlisting>SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));</programlisting>
-<screen>2.3250 degrees S 3.2342 degrees W</screen>
+<programlisting language="sql">SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));</programlisting>
+<screen role="text-primary">2.3250 degrees S 3.2342 degrees W</screen>
 <para>Excessively large values are normalized.</para>
-<programlisting>SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));</programlisting>
-<screen>72°19'29.928"S 57°45'56.757"E</screen>
+<programlisting language="sql">SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));</programlisting>
+<screen role="text-primary">72°19'29.928"S 57°45'56.757"E</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -1175,75 +1149,62 @@ SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
             <title>Examples</title>
 
             <para>Converting a <varname>POINT</varname> to MARC21/XML formatted as hdddmmss (default)</para>
-            <programlisting><![CDATA[
-
-
-                SELECT ST_AsMARC21('SRID=4326;POINT(-4.504289 54.253312)'::geometry);
-
-                                st_asmarc21
-                -------------------------------------------------
-                <record xmlns="http://www.loc.gov/MARC21/slim">
-                    <datafield tag="034" ind1="1" ind2=" ">
-                        <subfield code="a">a</subfield>
-                        <subfield code="d">W0043015</subfield>
-                        <subfield code="e">W0043015</subfield>
-                        <subfield code="f">N0541512</subfield>
-                        <subfield code="g">N0541512</subfield>
-                    </datafield>
-                </record>
-
-
-
+            <programlisting language="sql"><![CDATA[
+SELECT ST_AsMARC21('SRID=4326;POINT(-4.504289 54.253312)'::geometry);
 ]]></programlisting>
+<screen role="text-primary"><![CDATA[                                st_asmarc21
+-------------------------------------------------
+<record xmlns="http://www.loc.gov/MARC21/slim">
+    <datafield tag="034" ind1="1" ind2=" ">
+        <subfield code="a">a</subfield>
+        <subfield code="d">W0043015</subfield>
+        <subfield code="e">W0043015</subfield>
+        <subfield code="f">N0541512</subfield>
+        <subfield code="g">N0541512</subfield>
+    </datafield>
+</record>
+]]></screen>
 
             <para>Converting a <varname>POLYGON</varname> to MARC21/XML formatted in decimal degrees</para>
-            <programlisting><![CDATA[
+            <programlisting language="sql"><![CDATA[SELECT ST_AsMARC21('SRID=4326;POLYGON((-4.5792388916015625 54.18172660239091,-4.56756591796875 54.196993557130355,-4.546623229980469 54.18313300502024,-4.5792388916015625 54.18172660239091))'::geometry,'hddd.dddd');
 
-
-                SELECT ST_AsMARC21('SRID=4326;POLYGON((-4.5792388916015625 54.18172660239091,-4.56756591796875 54.196993557130355,-4.546623229980469 54.18313300502024,-4.5792388916015625 54.18172660239091))'::geometry,'hddd.dddd');
-
-                <record xmlns="http://www.loc.gov/MARC21/slim">
-                    <datafield tag="034" ind1="1" ind2=" ">
-                        <subfield code="a">a</subfield>
-                        <subfield code="d">W004.5792</subfield>
-                        <subfield code="e">W004.5466</subfield>
-                        <subfield code="f">N054.1970</subfield>
-                        <subfield code="g">N054.1817</subfield>
-                    </datafield>
-                </record>
+<record xmlns="http://www.loc.gov/MARC21/slim">
+    <datafield tag="034" ind1="1" ind2=" ">
+        <subfield code="a">a</subfield>
+        <subfield code="d">W004.5792</subfield>
+        <subfield code="e">W004.5466</subfield>
+        <subfield code="f">N054.1970</subfield>
+        <subfield code="g">N054.1817</subfield>
+    </datafield>
+</record>
 
 
 
 ]]></programlisting>
 
             <para>Converting a <varname>GEOMETRYCOLLECTION</varname> to MARC21/XML formatted in decimal minutes. The geometries order in the MARC21/XML output correspond to their order in the collection.</para>
-            <programlisting><![CDATA[
-
-
-                SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))'::geometry,'hdddmm.mmmm');
-
-                                st_asmarc21
-                -------------------------------------------------
-                <record xmlns="http://www.loc.gov/MARC21/slim">
-                    <datafield tag="034" ind1="1" ind2=" ">
-                        <subfield code="a">a</subfield>
-                        <subfield code="d">E01307.0000</subfield>
-                        <subfield code="e">E01331.0000</subfield>
-                        <subfield code="f">N05240.0000</subfield>
-                        <subfield code="g">N05224.0000</subfield>
-                    </datafield>
-                    <datafield tag="034" ind1="1" ind2=" ">
-                        <subfield code="a">a</subfield>
-                        <subfield code="d">W00430.0000</subfield>
-                        <subfield code="e">W00430.0000</subfield>
-                        <subfield code="f">N05415.0000</subfield>
-                        <subfield code="g">N05415.0000</subfield>
-                    </datafield>
-                </record>
-
-
-
+            <programlisting language="sql"><![CDATA[
+SELECT ST_AsMARC21('SRID=4326;GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))'::geometry,'hdddmm.mmmm');
 ]]></programlisting>
+<screen role="text-primary"><![CDATA[                                st_asmarc21
+-------------------------------------------------
+<record xmlns="http://www.loc.gov/MARC21/slim">
+    <datafield tag="034" ind1="1" ind2=" ">
+        <subfield code="a">a</subfield>
+        <subfield code="d">E01307.0000</subfield>
+        <subfield code="e">E01331.0000</subfield>
+        <subfield code="f">N05240.0000</subfield>
+        <subfield code="g">N05224.0000</subfield>
+    </datafield>
+    <datafield tag="034" ind1="1" ind2=" ">
+        <subfield code="a">a</subfield>
+        <subfield code="d">W00430.0000</subfield>
+        <subfield code="e">W00430.0000</subfield>
+        <subfield code="f">N05415.0000</subfield>
+        <subfield code="g">N05415.0000</subfield>
+    </datafield>
+</record>
+]]></screen>
 
         </refsection>
         <refsection>
@@ -1313,22 +1274,19 @@ SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 
     <refsection>
     <title>Examples</title>
-    <programlisting>
-SELECT ST_AsText(ST_AsMVTGeom(ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
+    <programlisting language="sql" role="requires-protobuf-1.1.0">SELECT ST_AsMVTGeom('POLYGON ((0 0,10 0,10 5,0 -5,0 0))',
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
-    4096, 0, false));</programlisting>
-<screen>MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
+    4096, 0, false);</programlisting>
+<screen role="text-primary">MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))</screen>
 
     <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry. This assumes the data.geom column has srid of 4326.
     </para>
-    <programlisting><![CDATA[
-
-SELECT ST_AsMVTGeom(ST_Transform(geom, 3857 ),
+    <programlisting language="sql" role="requires-protobuf-1.1.0"><![CDATA[SELECT ST_AsMVTGeom(ST_Transform(geom, 3857 ),
             ST_TileEnvelope(12, 513, 412),
             extent => 4096,
             buffer => 64) AS geom
   FROM data
-  WHERE geom && ST_Transform(ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096)),4326)
+  WHERE geom && ST_Transform(ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096)), 4326)
 
 
 ]]></programlisting>
@@ -1428,8 +1386,7 @@ SELECT ST_AsMVTGeom(ST_Transform(geom, 3857 ),
 
     <refsection>
     <title>Examples</title>
-    <programlisting><![CDATA[
-WITH mvtgeom AS
+    <programlisting language="sql" role="requires-protobuf-1.1.0"><![CDATA[WITH mvtgeom AS
 (
   SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom, name, description
   FROM points_of_interest
@@ -1492,32 +1449,30 @@ FROM mvtgeom;
 
         <para role="enhanced" conformance="3.4.0">Enhanced: 3.4.0 to support all curve types</para>
     <para role="changed" conformance="2.0.0">Changed: 2.0.0 to use default args and support named args</para>
-    <note>
-      <para role="availability" conformance="1.2.2.">Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <link xlink:href="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</link></para>
-    </note>
+    <para role="availability" conformance="1.2.2.">Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <link xlink:href="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</link></para>
         <para>&curve_support;</para>
     </refsection>
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);</programlisting>
-<screen>M 0 0 L 0 -1 1 -1 1 0 Z</screen>
+    <programlisting language="sql">SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))'::geometry);</programlisting>
+<screen role="text-primary">M 0 0 L 0 -1 1 -1 1 0 Z</screen>
 
         <para>Circular string</para>
-    <programlisting>SELECT ST_AsSVG(ST_GeomFromText('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)'));</programlisting>
-<screen>M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</screen>
+    <programlisting language="sql">SELECT ST_AsSVG('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)'::geometry);</programlisting>
+	<screen role="text-primary">M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4</screen>
 
         <para>Multi-curve</para>
-        <programlisting>SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
- CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);</programlisting>
-<screen>M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2</screen>
+        <programlisting language="sql">SELECT ST_AsSVG('MULTICURVE((5 5,3 5,3 3,0 3),
+CIRCULARSTRING(0 0,2 1,2 2))'::geometry, 0, 0);</programlisting>
+	<screen role="text-primary">M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2</screen>
 
         <para>Multi-surface</para>
-        <programlisting>SELECT ST_AsSVG('MULTISURFACE(
+        <programlisting language="sql">SELECT ST_AsSVG('MULTISURFACE(
 CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),
     (-1 0,0 0.5,1 0,0 1,-1 0)),
 ((7 8,10 10,6 14,4 11,7 8)))'::geometry, 0, 2);</programlisting>
-<screen>M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z
+	<screen role="text-primary">M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z
 M -1 0 L 0 -0.5 1 0 0 -1 -1 0 Z
 M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     </refsection>
@@ -1568,12 +1523,12 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
 
       <refsection>
       <title>Examples</title>
-<programlisting>SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);</programlisting>
-<screen>\x02000202020808</screen>
+<programlisting language="sql">SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);</programlisting>
+<screen role="text-primary">\x02000202020808</screen>
 <para>To create an aggregate TWKB object including identifiers aggregate the desired geometries and objects first, using "array_agg()", then call the appropriate TWKB function.
 </para>
-<programlisting>SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;</programlisting>
-<screen>\x040402020400000202</screen>
+<programlisting language="sql">SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;</programlisting>
+<screen role="text-primary">\x040402020400000202</screen>
 
       </refsection>
 
@@ -1629,7 +1584,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
         </itemizedlist>
 
 
-    <informaltable>
+    <informaltable rowsep="1" frame="all" tabstyle="postgis-reference-table">
         <tgroup cols="3">
           <thead>
             <row>
@@ -1689,9 +1644,9 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     </refsection>
 
     <refsection>
-    <title>Example: Create a fully functional X3D document - This will generate a cube that is viewable in FreeWrl and other X3D viewers.</title>
-    <programlisting><![CDATA[
-SELECT '<?xml version="1.0" encoding="UTF-8"?>
+    <title>Examples</title>
+    <para>Create a complete X3D document containing a cube that is viewable in FreeWRL and other X3D viewers.</para>
+    <programlisting language="sql"><![CDATA[SELECT '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
 <X3D>
   <Scene>
@@ -1709,7 +1664,7 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
   </Scene>
 </X3D>' As x3ddoc;
 ]]></programlisting>
-<screen><![CDATA[    x3ddoc
+<screen role="text-primary"><![CDATA[    x3ddoc
     --------
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN" "http://www.web3d.org/specifications/x3d-3.0.dtd">
@@ -1728,47 +1683,39 @@ SELECT '<?xml version="1.0" encoding="UTF-8"?>
   </Scene>
 </X3D>
 ]]></screen>
-    </refsection>
-      <refsection>
-         <title>PostGIS buildings</title>
+         <para>PostGIS buildings.</para>
          <para>
             Copy and paste the output of this query to
             <link xlink:href="http://postgis.net/docs/support/viewers/x3d_viewer.htm">x3d scene viewer</link>
             and click Show
          </para>
-         <programlisting><![CDATA[
-SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*0.5)) ||
+         <programlisting language="sql"><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(CG_Extrude(geom, 0,0, i*0.5)) ||
     '<Appearance>
           <Material diffuseColor="' || (0.01*i)::text || ' 0.8 0.2" specularColor="' || (0.05*i)::text || ' 0 0.5"/>
         </Appearance>
     </Shape>', '')
 FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
 ]]></programlisting>
-        <informalfigure>
-            <mediaobject>
-                <imageobject>
-                    <imagedata fileref="images/st_asx3d01.png"/>
-                </imageobject>
-                <caption><para>Buildings formed by subdividing PostGIS and extrusion</para></caption>
-            </mediaobject>
-        </informalfigure>
-      </refsection>
-     <refsection>
-    <title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
-    <programlisting><![CDATA[
-SELECT ST_AsX3D(ST_Translate(ST_Force3D(ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
+        <para>The following preview shows the extruded geometry generated from a simplified version of the same source lettering.
+          It is a geometry preview, not X3D markup; use the preceding <function>ST_AsX3D</function> query output in an X3D viewer to inspect the native X3D scene.</para>
+        <programlisting language="sql" role="documented-output">SELECT
+    CG_Extrude(
+        ST_SimplifyPreserveTopology(ST_Letters('PostGIS'), 2),
+        0, 0, 10
+    ) AS buildings;</programlisting>
+        <screen role="visual-primary">GEOMETRYCOLLECTION Z (POLYHEDRALSURFACE Z (((42.6 39.2 0,36.3 24.5 0,17 20.3 0,17.9 0 0,0 0 0,0 73.8 0,27.3 73.6 0,36.3 70 0,41.8 61.6 0,42.6 39.2 0),(26.5 55.7 0,17 58.8 0,17 35.3 0,25.6 36.2 0,26.5 55.7 0)),((42.6 39.2 10,41.8 61.6 10,36.3 70 10,27.3 73.6 10,0 73.8 10,0 0 10,17.9 0 10,17 20.3 10,36.3 24.5 10,42.6 39.2 10),(26.5 55.7 10,25.6 36.2 10,17 35.3 10,17 58.8 10,26.5 55.7 10)),((42.6 39.2 0,42.6 39.2 10,36.3 24.5 10,36.3 24.5 0,42.6 39.2 0)),((36.3 24.5 0,36.3 24.5 10,17 20.3 10,17 20.3 0,36.3 24.5 0)),((17 20.3 0,17 20.3 10,17.9 0 10,17.9 0 0,17 20.3 0)),((17.9 0 0,17.9 0 10,0 0 10,0 0 0,17.9 0 0)),((0 0 0,0 0 10,0 73.8 10,0 73.8 0,0 0 0)),((0 73.8 0,0 73.8 10,27.3 73.6 10,27.3 73.6 0,0 73.8 0)),((27.3 73.6 0,27.3 73.6 10,36.3 70 10,36.3 70 0,27.3 73.6 0)),((36.3 70 0,36.3 70 10,41.8 61.6 10,41.8 61.6 0,36.3 70 0)),((41.8 61.6 0,41.8 61.6 10,42.6 39.2 10,42.6 39.2 0,41.8 61.6 0)),((26.5 55.7 0,26.5 55.7 10,17 58.8 10,17 58.8 0,26.5 55.7 0)),((17 58.8 0,17 58.8 10,17 35.3 10,17 35.3 0,17 58.8 0)),((17 35.3 0,17 35.3 10,25.6 36.2 10,25.6 36.2 0,17 35.3 0)),((25.6 36.2 0,25.6 36.2 10,26.5 55.7 10,26.5 55.7 0,25.6 36.2 0))),POLYHEDRALSURFACE Z (((69.01 58 0,84.51 52.5 0,89.71 39.9 0,87.81 9.7 0,81.71 2.9 0,71.31 -0.5 0,54.91 3.9 0,48.31 17.8 0,50.61 48.7 0,58.01 55.6 0,69.01 58 0),(73.91 38.9 0,69.11 42.6 0,64.21 38.9 0,64.21 18.9 0,68.91 15.2 0,73.91 18.9 0,73.91 38.9 0)),((69.01 58 10,58.01 55.6 10,50.61 48.7 10,48.31 17.8 10,54.91 3.9 10,71.31 -0.5 10,81.71 2.9 10,87.81 9.7 10,89.71 39.9 10,84.51 52.5 10,69.01 58 10),(73.91 38.9 10,73.91 18.9 10,68.91 15.2 10,64.21 18.9 10,64.21 38.9 10,69.11 42.6 10,73.91 38.9 10)),((69.01 58 0,69.01 58 10,84.51 52.5 10,84.51 52.5 0,69.01 58 0)),((84.51 52.5 0,84.51 52.5 10,89.71 39.9 10,89.71 39.9 0,84.51 52.5 0)),((89.71 39.9 0,89.71 39.9 10,87.81 9.7 10,87.81 9.7 0,89.71 39.9 0)),((87.81 9.7 0,87.81 9.7 10,81.71 2.9 10,81.71 2.9 0,87.81 9.7 0)),((81.71 2.9 0,81.71 2.9 10,71.31 -0.5 10,71.31 -0.5 0,81.71 2.9 0)),((71.31 -0.5 0,71.31 -0.5 10,54.91 3.9 10,54.91 3.9 0,71.31 -0.5 0)),((54.91 3.9 0,54.91 3.9 10,48.31 17.8 10,48.31 17.8 0,54.91 3.9 0)),((48.31 17.8 0,48.31 17.8 10,50.61 48.7 10,50.61 48.7 0,48.31 17.8 0)),((50.61 48.7 0,50.61 48.7 10,58.01 55.6 10,58.01 55.6 0,50.61 48.7 0)),((58.01 55.6 0,58.01 55.6 10,69.01 58 10,69.01 58 0,58.01 55.6 0)),((73.91 38.9 0,73.91 38.9 10,69.11 42.6 10,69.11 42.6 0,73.91 38.9 0)),((69.11 42.6 0,69.11 42.6 10,64.21 38.9 10,64.21 38.9 0,69.11 42.6 0)),((64.21 38.9 0,64.21 38.9 10,64.21 18.9 10,64.21 18.9 0,64.21 38.9 0)),((64.21 18.9 0,64.21 18.9 10,68.91 15.2 10,68.91 15.2 0,64.21 18.9 0)),((68.91 15.2 0,68.91 15.2 10,73.91 18.9 10,73.91 18.9 0,68.91 15.2 0)),((73.91 18.9 0,73.91 18.9 10,73.91 38.9 10,73.91 38.9 0,73.91 18.9 0))),POLYHEDRALSURFACE Z (((111.02 37.6 0,123.92 31.1 0,130.72 20.8 0,126.82 5.3 0,116.02 -0.3 0,94.02 3.7 0,98.82 18.9 0,112.52 15.3 0,115.02 17.6 0,98.72 29.6 0,96.12 45.4 0,100.52 53 0,107.32 57.1 0,128.92 54.7 0,122.72 39.9 0,112.02 42.1 0,111.02 37.6 0)),((111.02 37.6 10,112.02 42.1 10,122.72 39.9 10,128.92 54.7 10,107.32 57.1 10,100.52 53 10,96.12 45.4 10,98.72 29.6 10,115.02 17.6 10,112.52 15.3 10,98.82 18.9 10,94.02 3.7 10,116.02 -0.3 10,126.82 5.3 10,130.72 20.8 10,123.92 31.1 10,111.02 37.6 10)),((111.02 37.6 0,111.02 37.6 10,123.92 31.1 10,123.92 31.1 0,111.02 37.6 0)),((123.92 31.1 0,123.92 31.1 10,130.72 20.8 10,130.72 20.8 0,123.92 31.1 0)),((130.72 20.8 0,130.72 20.8 10,126.82 5.3 10,126.82 5.3 0,130.72 20.8 0)),((126.82 5.3 0,126.82 5.3 10,116.02 -0.3 10,116.02 -0.3 0,126.82 5.3 0)),((116.02 -0.3 0,116.02 -0.3 10,94.02 3.7 10,94.02 3.7 0,116.02 -0.3 0)),((94.02 3.7 0,94.02 3.7 10,98.82 18.9 10,98.82 18.9 0,94.02 3.7 0)),((98.82 18.9 0,98.82 18.9 10,112.52 15.3 10,112.52 15.3 0,98.82 18.9 0)),((112.52 15.3 0,112.52 15.3 10,115.02 17.6 10,115.02 17.6 0,112.52 15.3 0)),((115.02 17.6 0,115.02 17.6 10,98.72 29.6 10,98.72 29.6 0,115.02 17.6 0)),((98.72 29.6 0,98.72 29.6 10,96.12 45.4 10,96.12 45.4 0,98.72 29.6 0)),((96.12 45.4 0,96.12 45.4 10,100.52 53 10,100.52 53 0,96.12 45.4 0)),((100.52 53 0,100.52 53 10,107.32 57.1 10,107.32 57.1 0,100.52 53 0)),((107.32 57.1 0,107.32 57.1 10,128.92 54.7 10,128.92 54.7 0,107.32 57.1 0)),((128.92 54.7 0,128.92 54.7 10,122.72 39.9 10,122.72 39.9 0,128.92 54.7 0)),((122.72 39.9 0,122.72 39.9 10,112.02 42.1 10,112.02 42.1 0,122.72 39.9 0)),((112.02 42.1 0,112.02 42.1 10,111.02 37.6 10,111.02 37.6 0,112.02 42.1 0))),POLYHEDRALSURFACE Z (((156.82 17.7 0,167.02 16 0,167.02 -0.9 0,149.22 2 0,141.42 11.3 0,141.12 42.7 0,134.62 41.8 0,134.62 58.9 0,141.12 57.9 0,140.02 75.4 0,157.92 75.4 0,156.82 57.9 0,166.02 58.9 0,166.02 41.8 0,156.82 42.7 0,156.82 17.7 0)),((156.82 17.7 10,156.82 42.7 10,166.02 41.8 10,166.02 58.9 10,156.82 57.9 10,157.92 75.4 10,140.02 75.4 10,141.12 57.9 10,134.62 58.9 10,134.62 41.8 10,141.12 42.7 10,141.42 11.3 10,149.22 2 10,167.02 -0.9 10,167.02 16 10,156.82 17.7 10)),((156.82 17.7 0,156.82 17.7 10,167.02 16 10,167.02 16 0,156.82 17.7 0)),((167.02 16 0,167.02 16 10,167.02 -0.9 10,167.02 -0.9 0,167.02 16 0)),((167.02 -0.9 0,167.02 -0.9 10,149.22 2 10,149.22 2 0,167.02 -0.9 0)),((149.22 2 0,149.22 2 10,141.42 11.3 10,141.42 11.3 0,149.22 2 0)),((141.42 11.3 0,141.42 11.3 10,141.12 42.7 10,141.12 42.7 0,141.42 11.3 0)),((141.12 42.7 0,141.12 42.7 10,134.62 41.8 10,134.62 41.8 0,141.12 42.7 0)),((134.62 41.8 0,134.62 41.8 10,134.62 58.9 10,134.62 58.9 0,134.62 41.8 0)),((134.62 58.9 0,134.62 58.9 10,141.12 57.9 10,141.12 57.9 0,134.62 58.9 0)),((141.12 57.9 0,141.12 57.9 10,140.02 75.4 10,140.02 75.4 0,141.12 57.9 0)),((140.02 75.4 0,140.02 75.4 10,157.92 75.4 10,157.92 75.4 0,140.02 75.4 0)),((157.92 75.4 0,157.92 75.4 10,156.82 57.9 10,156.82 57.9 0,157.92 75.4 0)),((156.82 57.9 0,156.82 57.9 10,166.02 58.9 10,166.02 58.9 0,156.82 57.9 0)),((166.02 58.9 0,166.02 58.9 10,166.02 41.8 10,166.02 41.8 0,166.02 58.9 0)),((166.02 41.8 0,166.02 41.8 10,156.82 42.7 10,156.82 42.7 0,166.02 41.8 0)),((156.82 42.7 0,156.82 42.7 10,156.82 17.7 10,156.82 17.7 0,156.82 42.7 0))),POLYHEDRALSURFACE Z (((213.81 13.2 0,208.11 4.2 0,198.51 -0.3 0,184.21 0.9 0,174.91 8.8 0,172.61 57.4 0,175.21 66.1 0,180.91 71.6 0,209.81 74 0,209.81 58.4 0,189.11 56.8 0,188.61 18.7 0,193.81 14.8 0,199.11 16.5 0,199.11 32.2 0,193.41 32.2 0,193.41 46.4 0,213.81 46.4 0,213.81 13.2 0)),((213.81 13.2 10,213.81 46.4 10,193.41 46.4 10,193.41 32.2 10,199.11 32.2 10,199.11 16.5 10,193.81 14.8 10,188.61 18.7 10,189.11 56.8 10,209.81 58.4 10,209.81 74 10,180.91 71.6 10,175.21 66.1 10,172.61 57.4 10,174.91 8.8 10,184.21 0.9 10,198.51 -0.3 10,208.11 4.2 10,213.81 13.2 10)),((213.81 13.2 0,213.81 13.2 10,208.11 4.2 10,208.11 4.2 0,213.81 13.2 0)),((208.11 4.2 0,208.11 4.2 10,198.51 -0.3 10,198.51 -0.3 0,208.11 4.2 0)),((198.51 -0.3 0,198.51 -0.3 10,184.21 0.9 10,184.21 0.9 0,198.51 -0.3 0)),((184.21 0.9 0,184.21 0.9 10,174.91 8.8 10,174.91 8.8 0,184.21 0.9 0)),((174.91 8.8 0,174.91 8.8 10,172.61 57.4 10,172.61 57.4 0,174.91 8.8 0)),((172.61 57.4 0,172.61 57.4 10,175.21 66.1 10,175.21 66.1 0,172.61 57.4 0)),((175.21 66.1 0,175.21 66.1 10,180.91 71.6 10,180.91 71.6 0,175.21 66.1 0)),((180.91 71.6 0,180.91 71.6 10,209.81 74 10,209.81 74 0,180.91 71.6 0)),((209.81 74 0,209.81 74 10,209.81 58.4 10,209.81 58.4 0,209.81 74 0)),((209.81 58.4 0,209.81 58.4 10,189.11 56.8 10,189.11 56.8 0,209.81 58.4 0)),((189.11 56.8 0,189.11 56.8 10,188.61 18.7 10,188.61 18.7 0,189.11 56.8 0)),((188.61 18.7 0,188.61 18.7 10,193.81 14.8 10,193.81 14.8 0,188.61 18.7 0)),((193.81 14.8 0,193.81 14.8 10,199.11 16.5 10,199.11 16.5 0,193.81 14.8 0)),((199.11 16.5 0,199.11 16.5 10,199.11 32.2 10,199.11 32.2 0,199.11 16.5 0)),((199.11 32.2 0,199.11 32.2 10,193.41 32.2 10,193.41 32.2 0,199.11 32.2 0)),((193.41 32.2 0,193.41 32.2 10,193.41 46.4 10,193.41 46.4 0,193.41 32.2 0)),((193.41 46.4 0,193.41 46.4 10,213.81 46.4 10,213.81 46.4 0,193.41 46.4 0)),((213.81 46.4 0,213.81 46.4 10,213.81 13.2 10,213.81 13.2 0,213.81 46.4 0))),POLYHEDRALSURFACE Z (((235.82 72.9 0,236.82 0 0,218.52 0 0,218.52 73.8 0,235.82 72.9 0)),((235.82 72.9 10,218.52 73.8 10,218.52 0 10,236.82 0 10,235.82 72.9 10)),((235.82 72.9 0,235.82 72.9 10,236.82 0 10,236.82 0 0,235.82 72.9 0)),((236.82 0 0,236.82 0 10,218.52 0 10,218.52 0 0,236.82 0 0)),((218.52 0 0,218.52 0 10,218.52 73.8 10,218.52 73.8 0,218.52 0 0)),((218.52 73.8 0,218.52 73.8 10,235.82 72.9 10,235.82 72.9 0,218.52 73.8 0))),POLYHEDRALSURFACE Z (((258.33 49.5 0,279.93 34.6 0,283.43 25.9 0,282.53 15.4 0,277.93 6.8 0,270.73 1.6 0,252.33 0.5 0,241.53 4.9 0,246.43 20.6 0,260.73 16.4 0,266.23 18.7 0,267.43 23.2 0,245.63 39.4 0,242.03 48.6 0,242.83 59.6 0,247.53 67.3 0,257.53 73.2 0,280.43 70.8 0,275.23 56.4 0,264.53 58.3 0,258.73 55.1 0,258.33 49.5 0)),((258.33 49.5 10,258.73 55.1 10,264.53 58.3 10,275.23 56.4 10,280.43 70.8 10,257.53 73.2 10,247.53 67.3 10,242.83 59.6 10,242.03 48.6 10,245.63 39.4 10,267.43 23.2 10,266.23 18.7 10,260.73 16.4 10,246.43 20.6 10,241.53 4.9 10,252.33 0.5 10,270.73 1.6 10,277.93 6.8 10,282.53 15.4 10,283.43 25.9 10,279.93 34.6 10,258.33 49.5 10)),((258.33 49.5 0,258.33 49.5 10,279.93 34.6 10,279.93 34.6 0,258.33 49.5 0)),((279.93 34.6 0,279.93 34.6 10,283.43 25.9 10,283.43 25.9 0,279.93 34.6 0)),((283.43 25.9 0,283.43 25.9 10,282.53 15.4 10,282.53 15.4 0,283.43 25.9 0)),((282.53 15.4 0,282.53 15.4 10,277.93 6.8 10,277.93 6.8 0,282.53 15.4 0)),((277.93 6.8 0,277.93 6.8 10,270.73 1.6 10,270.73 1.6 0,277.93 6.8 0)),((270.73 1.6 0,270.73 1.6 10,252.33 0.5 10,252.33 0.5 0,270.73 1.6 0)),((252.33 0.5 0,252.33 0.5 10,241.53 4.9 10,241.53 4.9 0,252.33 0.5 0)),((241.53 4.9 0,241.53 4.9 10,246.43 20.6 10,246.43 20.6 0,241.53 4.9 0)),((246.43 20.6 0,246.43 20.6 10,260.73 16.4 10,260.73 16.4 0,246.43 20.6 0)),((260.73 16.4 0,260.73 16.4 10,266.23 18.7 10,266.23 18.7 0,260.73 16.4 0)),((266.23 18.7 0,266.23 18.7 10,267.43 23.2 10,267.43 23.2 0,266.23 18.7 0)),((267.43 23.2 0,267.43 23.2 10,245.63 39.4 10,245.63 39.4 0,267.43 23.2 0)),((245.63 39.4 0,245.63 39.4 10,242.03 48.6 10,242.03 48.6 0,245.63 39.4 0)),((242.03 48.6 0,242.03 48.6 10,242.83 59.6 10,242.83 59.6 0,242.03 48.6 0)),((242.83 59.6 0,242.83 59.6 10,247.53 67.3 10,247.53 67.3 0,242.83 59.6 0)),((247.53 67.3 0,247.53 67.3 10,257.53 73.2 10,257.53 73.2 0,247.53 67.3 0)),((257.53 73.2 0,257.53 73.2 10,280.43 70.8 10,280.43 70.8 0,257.53 73.2 0)),((280.43 70.8 0,280.43 70.8 10,275.23 56.4 10,275.23 56.4 0,280.43 70.8 0)),((275.23 56.4 0,275.23 56.4 10,264.53 58.3 10,264.53 58.3 0,275.23 56.4 0)),((264.53 58.3 0,264.53 58.3 10,258.73 55.1 10,258.73 55.1 0,264.53 58.3 0)),((258.73 55.1 0,258.73 55.1 10,258.33 49.5 10,258.33 49.5 0,258.73 55.1 0))))</screen>
+    <para>An Octagon elevated 3 Units and decimal precision of 6.</para>
+    <programlisting language="sql"><![CDATA[SELECT ST_AsX3D(ST_Translate(ST_Force3D(ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,
     3),
   6) As x3dfrag;
 ]]></programlisting>
-<screen><![CDATA[x3dfrag
+<screen role="text-primary"><![CDATA[x3dfrag
 --------
 <IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><Coordinate point='15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 ' /></IndexedFaceSet>
 ]]></screen>
-    </refsection>
-    <refsection>
-    <title>Example: TIN</title>
-    <programlisting><![CDATA[
-SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
+
+    <para>TIN.</para>
+    <programlisting language="sql"><![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
                 0 0 0,
                 0 0 1,
                 0 1 0,
@@ -1781,19 +1728,17 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((
             ))
             )')) As x3dfrag;
 ]]></programlisting>
-<screen><![CDATA[    x3dfrag
+<screen role="text-primary"><![CDATA[    x3dfrag
     --------
 <IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>
 ]]></screen>
-    </refsection>
-    <refsection>
-    <title>Example: Closed multilinestring (the boundary of a polygon with holes)</title>
-    <programlisting><![CDATA[
-SELECT ST_AsX3D(ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
+
+    <para>Closed multilinestring (the boundary of a polygon with holes).</para>
+    <programlisting language="sql"><![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),
   (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))')
 ) As x3dfrag;
 ]]></programlisting>
-<screen><![CDATA[    x3dfrag
+<screen role="text-primary"><![CDATA[    x3dfrag
     --------
 <IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'>
     <Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' />
@@ -1853,13 +1798,13 @@ SELECT ST_AsX3D(ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12
 
     <refsection>
     <title>Examples</title>
-    <programlisting>SELECT ST_GeoHash(ST_Point(-126,48));</programlisting>
-<screen>c0w3hf1s70w3hf1s70w3</screen>
-<programlisting>SELECT ST_GeoHash(ST_Point(-126,48), 5);</programlisting>
-<screen>c0w3h</screen>
+    <programlisting language="sql">SELECT ST_GeoHash(ST_Point(-126, 48));</programlisting>
+<screen role="text-primary">c0w3hf1s70w3hf1s70w3</screen>
+<programlisting language="sql">SELECT ST_GeoHash(ST_Point(-126, 48), 5);</programlisting>
+<screen role="text-primary">c0w3h</screen>
 <para>This example shows that the GeoHash for a line containing a point is a prefix of the point code.</para>
-<programlisting>SELECT ST_GeoHash('LINESTRING(-126 48, -126.1 48.1)'::geometry);</programlisting>
-<screen>c0w3</screen>
+<programlisting language="sql">SELECT ST_GeoHash('LINESTRING(-126 48,-126.1 48.1)'::geometry);</programlisting>
+<screen role="text-primary">c0w3</screen>
     </refsection>
    <refsection>
     <title>See Also</title>

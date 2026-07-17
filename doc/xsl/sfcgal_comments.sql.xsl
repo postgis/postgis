@@ -18,7 +18,7 @@
 
 	<!-- We deal only with the reference chapter -->
         <xsl:template match="/">
-                <xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference_sfcgal']" />
+                <xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference_sfcgal' or @xml:id='reference_sfcgal_legacy']" />
         </xsl:template>
 
         <xsl:template match="db:chapter">

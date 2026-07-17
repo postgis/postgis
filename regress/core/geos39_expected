@@ -1,4 +1,4 @@
-mic-box|POINT(49.5 49.5)|POINT(50.5 99)|49.5
+mic-box|POINT(49.5 49.5)|t|t|49.5
 mic-empty|POINT EMPTY|POINT EMPTY|0.0000
 mic-null|||
 mic-line|POINT(49.5117 49.5117)|POINT(50.5111 98.9796)|49.4779

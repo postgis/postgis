@@ -21,7 +21,7 @@
 	<xsl:template match="/">
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-			<xsl:for-each select='//db:refentry'>
+			<xsl:for-each select="//db:refentry[not(contains(concat(' ', normalize-space(@role), ' '), ' deprecated-alias '))]">
 				<xsl:sort select="db:refnamediv/db:refname"/>
 				<xsl:variable name='comment'>
 					<xsl:value-of select="normalize-space(translate(translate(db:refnamediv/db:refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>

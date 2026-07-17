@@ -70,22 +70,14 @@
     <refsection>
       <title>Examples</title>
 
-        <informalfigure>
-          <mediaobject>
-              <imageobject>
-              <imagedata fileref="images/st_coverageinvalidedges01.png"/>
-              </imageobject>
-              <caption><para>Invalid edges caused by overlap and non-matching vertices</para></caption>
-          </mediaobject>
-        </informalfigure>
-
+		<para>Invalid edges caused by overlap and non-matching vertices.</para>
       <programlisting>WITH coverage(id, geom) AS (VALUES
-  (1, 'POLYGON ((10 190, 30 160, 40 110, 100 70, 120 10, 10 10, 10 190))'::geometry),
-  (2, 'POLYGON ((100 190, 10 190, 30 160, 40 110, 50 80, 74 110.5, 100 130, 140 120, 140 160, 100 190))'::geometry),
-  (3, 'POLYGON ((140 190, 190 190, 190 80, 140 80, 140 190))'::geometry),
-  (4, 'POLYGON ((180 40, 120 10, 100 70, 140 80, 190 80, 180 40))'::geometry)
+  (1, 'POLYGON ((10 190,30 160,40 110,100 70,120 10,10 10,10 190))'::geometry),
+  (2, 'POLYGON ((100 190,10 190,30 160,40 110,50 80,74 110.5,100 130,140 120,140 160,100 190))'::geometry),
+  (3, 'POLYGON ((140 190,190 190,190 80,140 80,140 190))'::geometry),
+  (4, 'POLYGON ((180 40,120 10,100 70,140 80,190 80,180 40))'::geometry)
 )
-SELECT id, ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
+SELECT id, ST_CoverageInvalidEdges(geom) OVER ()
   FROM coverage;</programlisting>
 <screen> id |               st_astext
 ----+---------------------------------------
@@ -191,55 +183,23 @@ SELECT true = ALL (
     <refsection>
       <title>Examples</title>
 
-      <para>This example populates the input table.</para>
-      <programlisting>
-CREATE TABLE example AS SELECT * FROM (VALUES
-  (1, 'POLYGON ((10 190, 30 160, 27 134.5, 40 110, 122 47, 120 10, 10 10, 10 190))'::geometry),
-  (2, 'POLYGON ((150 190, 10 190, 30 160, 50 140, 40 110, 50 80, 130 70, 135 111, 140 130, 140 160, 150 190))'::geometry),
-  (3, 'POLYGON ((140 190, 190 190, 190 80, 140 80, 140 190))'::geometry),
-  (4, 'POLYGON ((190 10, 120 10, 97 77, 160 90, 170 70, 190 80, 190 10))'::geometry)
-) AS v(id, geom);
-</programlisting>
-
-      <informalfigure>
-        <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_coverageclean01.png"/>
-            </imageobject>
-            <caption><para>Polygons with overlaps and gaps</para></caption>
-        </mediaobject>
-      </informalfigure>
-
-<para>This example shows that the coverage is invalid.</para>
-<programlisting>
-SELECT ST_AsText(ST_CoverageInvalidEdges(geom) OVER ())
-  FROM example;
-</programlisting>
-
-      <informalfigure>
-        <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_coverageclean02.png"/>
-            </imageobject>
-            <caption><para>Invalid coverage edges</para></caption>
-        </mediaobject>
-      </informalfigure>
-
-<para>This example cleans the coverage by merging gaps with width less than or equal to 1.</para>
-<programlisting>
-CREATE TABLE example_clean AS
-  SELECT id, ST_CoverageClean(geom, 1) OVER () AS GEOM
-  FROM example;
-</programlisting>
-
-      <informalfigure>
-        <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_coverageclean03.png"/>
-            </imageobject>
-            <caption><para>Clean polygonal coverage, with overlaps and narrow gaps removed</para></caption>
-        </mediaobject>
-      </informalfigure>
+      <para>Clean a coverage containing overlaps and narrow gaps, and compare the cleaned
+      polygons with the original invalid edges.</para>
+      <programlisting>WITH coverage(id, geom) AS (VALUES
+  (1, 'POLYGON ((10 190,30 160,27 134.5,40 110,122 47,120 10,10 10,10 190))'::geometry),
+  (2, 'POLYGON ((150 190,10 190,30 160,50 140,40 110,50 80,130 70,135 111,140 130,140 160,150 190))'::geometry),
+  (3, 'POLYGON ((140 190,190 190,190 80,140 80,140 190))'::geometry),
+  (4, 'POLYGON ((190 10,120 10,97 77,160 90,170 70,190 80,190 10))'::geometry)
+), processed AS (
+  SELECT id,
+         ST_CoverageClean(geom, 1) OVER () AS cleaned,
+         ST_CoverageInvalidEdges(geom) OVER () AS invalid_edges
+  FROM coverage
+)
+SELECT ST_Collect(cleaned ORDER BY id) AS cleaned,
+       ST_Collect(invalid_edges ORDER BY id) AS invalid_edges
+FROM processed;</programlisting>
+<screen role="visual-separate-output">MULTIPOLYGON(((10 10,10 190,30 160,27 134.5,40 110,84.7 75.7,102 62.3,120 10,10 10)),((140 190,140 160,140 130,135 111,131.7 84.2,97 77,98 74,84.7 75.7,40 110,50 140,30 160,10 190,140 190)),((190 190,190 80,165 80,140 80,140 85.9,140 130,140 160,140 190,150 190,190 190)),((190 10,120 10,102 62.3,98 74,97 77,131.7 84.2,140 85.9,140 80,165 80,170 70,190 80,190 10))) | MULTILINESTRING((40 110,122 47,120 10),(40 110,50 80,130 70,135 111,140 130,140 160,150 190,10 190),(190 80,140 80,140 190,190 190),(120 10,97 77,160 90,170 70))</screen>
 
     </refsection>
 
@@ -305,42 +265,14 @@ CREATE TABLE example_clean AS
 
     <refsection>
       <title>Examples</title>
-    <informaltable>
-      <tgroup cols="2">
-      <tbody>
-        <row>
-        <entry><para>
-        <informalfigure>
-          <mediaobject>
-              <imageobject>
-              <imagedata fileref="images/st_coveragesimplify01.png"/>
-              </imageobject>
-              <caption><para>Input coverage</para></caption>
-          </mediaobject>
-        </informalfigure>
-        </para></entry>
-        <entry><para>
-        <informalfigure>
-          <mediaobject>
-              <imageobject>
-              <imagedata fileref="images/st_coveragesimplify02.png"/>
-              </imageobject>
-              <caption><para>Simplified coverage</para></caption>
-          </mediaobject>
-        </informalfigure>
-        </para></entry>
-       </row>
-      </tbody>
-      </tgroup>
-    </informaltable>
-
+		<para>Simplify a polygonal coverage while preserving shared boundaries.</para>
       <programlisting>WITH coverage(id, geom) AS (VALUES
-  (1, 'POLYGON ((160 150, 110 130, 90 100, 90 70, 60 60, 50 10, 30 30, 40 50, 25 40, 10 60, 30 100, 30 120, 20 170, 60 180, 90 190, 130 180, 130 160, 160 150), (40 160, 50 140, 66 125, 60 100, 80 140, 90 170, 60 160, 40 160))'::geometry),
-  (2, 'POLYGON ((40 160, 60 160, 90 170, 80 140, 60 100, 66 125, 50 140, 40 160))'::geometry),
-  (3, 'POLYGON ((110 130, 160 50, 140 50, 120 33, 90 30, 50 10, 60 60, 90 70, 90 100, 110 130))'::geometry),
-  (4, 'POLYGON ((160 150, 150 120, 160 90, 160 50, 110 130, 160 150))'::geometry)
+  (1, 'POLYGON ((160 150,110 130,90 100,90 70,60 60,50 10,30 30,40 50,25 40,10 60,30 100,30 120,20 170,60 180,90 190,130 180,130 160,160 150),(40 160,50 140,66 125,60 100,80 140,90 170,60 160,40 160))'::geometry),
+  (2, 'POLYGON ((40 160,60 160,90 170,80 140,60 100,66 125,50 140,40 160))'::geometry),
+  (3, 'POLYGON ((110 130,160 50,140 50,120 33,90 30,50 10,60 60,90 70,90 100,110 130))'::geometry),
+  (4, 'POLYGON ((160 150,150 120,160 90,160 50,110 130,160 150))'::geometry)
 )
-SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
+SELECT id, ST_CoverageSimplify(geom, 30) OVER ()
   FROM coverage;</programlisting>
 <screen> id |               st_astext
 ----+---------------------------------------
@@ -408,12 +340,36 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
     <refsection>
       <title>Examples</title>
       <para>This example returns all unique edges of a coverage.</para>
-      <programlisting role="requires-external-state">SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))')));</programlisting>
-<screen>MULTILINESTRING((0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 10 10), (10 10, 0 10), (0 10, 0 0), (10 0, 10 10))</screen>
+      <programlisting language="sql">WITH coverage(geom) AS (
+  VALUES (
+    'GEOMETRYCOLLECTION(
+      POLYGON((0 0,10 0,10 10,0 10,0 0)),
+      POLYGON((10 0,20 0,20 10,10 10,10 0))
+    )'::geometry
+  )
+)
+SELECT geom AS input_coverage,
+       ST_CoverageEdges(geom) AS all_edges
+FROM coverage;</programlisting>
+<screen role="visual-primary text-primary visual-output-only visual-overlay psql-expanded docbook-qa-ignore-wide-lines">-[ RECORD 1 ]--+----------------------------------------------------------------------------------------------
+input_coverage | GEOMETRYCOLLECTION(POLYGON((0 0,10 0,10 10,0 10,0 0)),POLYGON((10 0,20 0,20 10,10 10,10 0)))
+all_edges      | MULTILINESTRING((10 0,10 10),(10 10,0 10,0 0,10 0),(10 0,20 0,20 10,10 10))</screen>
 
       <para>This example returns only the interior shared edges of a coverage.</para>
-      <programlisting role="requires-external-state">SELECT ST_AsText(ST_CoverageEdges(ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)), POLYGON((10 0, 20 0, 20 10, 10 10, 10 0)))'), 2));</programlisting>
-<screen>MULTILINESTRING((10 0, 10 10))</screen>
+      <programlisting language="sql">WITH coverage(geom) AS (
+  VALUES (
+    'GEOMETRYCOLLECTION(
+      POLYGON((0 0,10 0,10 10,0 10,0 0)),
+      POLYGON((10 0,20 0,20 10,10 10,10 0))
+    )'::geometry
+  )
+)
+SELECT geom AS input_coverage,
+       ST_CoverageEdges(geom, 2) AS shared_edges
+FROM coverage;</programlisting>
+<screen role="visual-primary text-primary visual-output-only visual-overlay psql-expanded">-[ RECORD 1 ]--+----------------------------------------------------------------------------------------------
+input_coverage | GEOMETRYCOLLECTION(POLYGON((0 0,10 0,10 10,0 10,0 0)),POLYGON((10 0,20 0,20 10,10 10,10 0)))
+shared_edges   | MULTILINESTRING((10 0,10 10))</screen>
     </refsection>
 
     <refsection>
@@ -462,43 +418,15 @@ SELECT id, ST_AsText(ST_CoverageSimplify(geom, 30) OVER ())
 
     <refsection>
       <title>Examples</title>
-    <informaltable>
-      <tgroup cols="2">
-      <tbody>
-        <row>
-        <entry><para>
-        <informalfigure>
-          <mediaobject>
-              <imageobject>
-              <imagedata fileref="images/st_coverageunion01.png"/>
-              </imageobject>
-              <caption><para>Input coverage</para></caption>
-          </mediaobject>
-        </informalfigure>
-        </para></entry>
-        <entry><para>
-        <informalfigure>
-          <mediaobject>
-              <imageobject>
-              <imagedata fileref="images/st_coverageunion02.png"/>
-              </imageobject>
-              <caption><para>Union result</para></caption>
-          </mediaobject>
-        </informalfigure>
-        </para></entry>
-       </row>
-      </tbody>
-      </tgroup>
-    </informaltable>
-
+		<para>Union a polygonal coverage.</para>
       <programlisting>WITH coverage(id, geom) AS (VALUES
-  (1, 'POLYGON ((10 10, 10 150, 80 190, 110 150, 90 110, 40 110, 50 60, 10 10))'::geometry),
-  (2, 'POLYGON ((120 10, 10 10, 50 60, 100 70, 120 10))'::geometry),
-  (3, 'POLYGON ((140 80, 120 10, 100 70, 40 110, 90 110, 110 150, 140 80))'::geometry),
-  (4, 'POLYGON ((140 190, 120 170, 140 130, 160 150, 140 190))'::geometry),
-  (5, 'POLYGON ((180 160, 170 140, 140 130, 160 150, 140 190, 180 160))'::geometry)
+  (1, 'POLYGON ((10 10,10 150,80 190,110 150,90 110,40 110,50 60,10 10))'::geometry),
+  (2, 'POLYGON ((120 10,10 10,50 60,100 70,120 10))'::geometry),
+  (3, 'POLYGON ((140 80,120 10,100 70,40 110,90 110,110 150,140 80))'::geometry),
+  (4, 'POLYGON ((140 190,120 170,140 130,160 150,140 190))'::geometry),
+  (5, 'POLYGON ((180 160,170 140,140 130,160 150,140 190,180 160))'::geometry)
 )
-SELECT ST_AsText(ST_CoverageUnion(geom)) AS wkt
+SELECT ST_CoverageUnion(geom) AS wkt
   FROM coverage;</programlisting>
 <screen>MULTIPOLYGON(((10 150,80 190,110 150,140 80,120 10,10 10,10 150),(50 60,100 70,40 110,50 60)),((120 170,140 190,180 160,170 140,140 130,120 170)))</screen>
     </refsection>

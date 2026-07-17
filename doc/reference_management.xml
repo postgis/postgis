@@ -105,20 +105,16 @@
 		(or not visible in the current search_path) or the specified SRID,
 		geometry type, or dimension is invalid.</para>
 
-		<note>
-			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
 			also does not create constraints, but instead uses the built in type modifier behavior of PostgreSQL.  So for example building a wgs84 POINT column with this function is now
 			equivalent to: <code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code> </para>
-			<para role="changed" conformance="2.0.0">Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
-		</note>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
 
-		<note>
-		    <para role="changed" conformance="2.0.0">Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly
 		            because they inherit the typmod behavior of their parent table column.
 		            Views that use geometry functions that output other geometries will need to be cast to typmod geometries for these view geometry columns to be registered correctly
 		            in geometry_columns. Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
 			</para>
-		</note>
 		<para>&sfs_compliant;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
@@ -133,8 +129,8 @@
 			<para>Create a simple PostgreSQL table in the schema.</para>
 <programlisting>CREATE TABLE my_schema.my_spatial_table (id serial);</programlisting>
 			<para>Describing the table shows a single <varname>id</varname> column.</para>
-<screen>\d my_schema.my_spatial_table
-							 Table "my_schema.my_spatial_table"
+<programlisting>\d my_schema.my_spatial_table</programlisting>
+<screen>                                                         Table "my_schema.my_spatial_table"
  Column |  Type   |                                Modifiers
 --------+---------+-------------------------------------------------------------------------
  id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)</screen>
@@ -146,14 +142,15 @@
 <programlisting role="requires-external-state">SELECT AddGeometryColumn('my_schema', 'my_spatial_table', 'geomcp_c', 4326, 'CURVEPOLYGON', 2, false);</programlisting>
 <screen>my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2</screen>
 			<para>Describe the table again to see the new geometry columns.</para>
-<screen>\d my_schema.my_spatial_table
-                                    Table "my_schema.my_spatial_table"
- Column  |         Type         |                                Modifiers
-----------+----------------------+-------------------------------------------------------------------------
- id       | integer              | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
- geom     | geometry(Point,4326) |
- geom_c   | geometry             |
- geomcp_c | geometry             |
+<programlisting>\d my_schema.my_spatial_table</programlisting>
+<screen>Table "my_schema.my_spatial_table"
+
+Columns:
+  id       integer               not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
+  geom     geometry(Point,4326)
+  geom_c   geometry
+  geomcp_c geometry
+
 Check constraints:
     "enforce_dims_geom_c" CHECK (st_ndims(geom_c) = 2)
     "enforce_dims_geomcp_c" CHECK (st_ndims(geomcp_c) = 2)
@@ -163,8 +160,8 @@ Check constraints:
     "enforce_srid_geomcp_c" CHECK (st_srid(geomcp_c) = 4326)</screen>
 			<para>The <varname>geometry_columns</varname> view also registers the new columns.</para>
 <programlisting role="requires-external-state">SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
-    FROM geometry_columns
-    WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';</programlisting>
+FROM geometry_columns
+WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';</programlisting>
 <screen> col_name |     type     | srid | ndims
 ----------+--------------+------+-------
  geom     | Point        | 4326 |     2
@@ -237,21 +234,30 @@ Check constraints:
 		schema_name will need to match the f_table_schema field of the table's
 		row in the geometry_columns table.</para>
 
+		<warning>
+		  <para><function>DropGeometryColumn</function> is retained for backward
+		  compatibility and is not recommended for new applications. Use the
+		  standard <command>ALTER TABLE ... DROP COLUMN</command> command instead.
+		  The <varname>geometry_columns</varname> view updates automatically from
+		  the system catalogs.</para>
+		</warning>
+
 		<para>&sfs_compliant;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
-		<note>
-			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
-			    you can drop a geometry column like any other table column using <code>ALTER TABLE</code></para>
-		</note>
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0. Retained for
+		backward compatibility after <varname>geometry_columns</varname> became a
+		view of the system catalogs.</para>
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
 
-			<programlisting role="requires-external-state">SELECT DropGeometryColumn ('my_schema','my_spatial_table','geom');</programlisting>
+			<para>Use standard SQL to drop the geometry column. The
+			<varname>geometry_columns</varname> view updates automatically.</para>
+<programlisting>ALTER TABLE my_schema.my_spatial_table DROP COLUMN geom;</programlisting>
+			<para>The legacy compatibility function performs the equivalent operation.</para>
+			<programlisting role="requires-external-state">SELECT DropGeometryColumn ('my_schema', 'my_spatial_table', 'geom');</programlisting>
 <screen>my_schema.my_spatial_table.geom effectively removed.</screen>
-			<para>The above is also equivalent to the standard <command>ALTER TABLE</command> command. Both deregister the column from <varname>geometry_columns</varname>.</para>
-<programlisting>ALTER TABLE my_schema.my_spatial_table DROP column geom;</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -306,19 +312,28 @@ Check constraints:
 		uses current_schema() on schema-aware pgsql installations if schema is
 		not provided.</para>
 
-		<note>
-			<para role="changed" conformance="2.0.0">Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
-			    you can drop a table with geometry columns like any other table using <code>DROP TABLE</code></para>
-		</note>
+		<warning>
+		  <para><function>DropGeometryTable</function> is retained for backward
+		  compatibility and is not recommended for new applications. Use the
+		  standard <command>DROP TABLE</command> command instead. The
+		  <varname>geometry_columns</varname> view updates automatically from the
+		  system catalogs.</para>
+		</warning>
+
+		<para role="changed" conformance="2.0.0">Changed: 2.0.0. Retained for
+		backward compatibility after <varname>geometry_columns</varname> became a
+		view of the system catalogs.</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
-			<programlisting role="requires-external-state">SELECT DropGeometryTable ('my_schema','my_spatial_table');</programlisting>
-<screen>my_schema.my_spatial_table dropped.</screen>
-			<para>The above is now equivalent to the standard <command>DROP TABLE</command> command.</para>
+			<para>Use standard SQL to drop a table containing geometry columns. The
+			<varname>geometry_columns</varname> view updates automatically.</para>
 <programlisting>DROP TABLE my_schema.my_spatial_table;</programlisting>
+			<para>The legacy compatibility function performs the equivalent operation.</para>
+			<programlisting role="requires-external-state">SELECT DropGeometryTable ('my_schema', 'my_spatial_table');</programlisting>
+<screen>my_schema.my_spatial_table dropped.</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -457,28 +472,28 @@ Check constraints:
 
 			<para>This example populates geometry column metadata using typmod behavior. For this to work, there must be existing data.</para>
 			<programlisting>CREATE TABLE public.myspatial_table(gid serial, geom geometry);
-INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
+INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2,3 4)', 4326) );
 SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programlisting>
-<screen>                        1
+<screen>1</screen>
 
+			<para>Describe the table to see the typmod-based geometry column.</para>
+<programlisting>\d myspatial_table</programlisting>
+<screen>Table "public.myspatial_table"
 
-\d myspatial_table
-
-                                   Table "public.myspatial_table"
- Column |           Type            |                           Modifiers
---------+---------------------------+---------------------------------------------------------------
- gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
- geom   | geometry(LineString,4326) |</screen>
+Columns:
+  gid  integer                    not null default nextval('myspatial_table_gid_seq'::regclass)
+  geom geometry(LineString,4326)</screen>
 
 			<para>This example changes the geometry columns to use constraints if they are not typmod or already constrained. For this to work, there must be existing data.</para>
 		<programlisting>
 CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
-INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
+INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2,3 4)', 4326) );
 SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);</programlisting>
-<screen>                        1
-\d myspatial_table_cs
+<screen>1</screen>
 
-                          Table "public.myspatial_table_cs"
+			<para>Describe the table to see the constraint-based geometry column.</para>
+<programlisting>\d myspatial_table_cs</programlisting>
+<screen>                          Table "public.myspatial_table_cs"
  Column |   Type   |                            Modifiers
 --------+----------+------------------------------------------------------------------
  gid    | integer  | not null default nextval('myspatial_table_cs_gid_seq'::regclass)
@@ -580,20 +595,20 @@ Check constraints:
 SRID=4326;LINESTRING(0 0, 10 10)
 SRID=4326;LINESTRING(10 10, 15 0)
 \.
-		</programlisting>
+        </programlisting>
 
 		<para>This will change the srid of the roads table to 4326 from whatever it was before:</para>
-		<programlisting>SELECT UpdateGeometrySRID('roads','geom',4326);</programlisting>
+		<programlisting>SELECT UpdateGeometrySRID('roads', 'geom', 4326);</programlisting>
 
 		<para>The prior example is equivalent to this DDL statement:</para>
 		<programlisting>ALTER TABLE roads
-  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326)
-    USING ST_SetSRID(geom,4326);</programlisting>
+ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326)
+  USING ST_SetSRID(geom, 4326);</programlisting>
 
 	<para>If you got the projection wrong (or brought it in as unknown) in load and you wanted to transform to web mercator all in one shot you can do this with
 	DDL but there is no equivalent PostGIS management function to do so in one go.</para>
 	<programlisting>ALTER TABLE roads
- ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING ST_Transform(ST_SetSRID(geom,4326),3857) ;</programlisting>
+ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING ST_Transform(ST_SetSRID(geom, 4326), 3857) ;</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>

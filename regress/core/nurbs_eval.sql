@@ -154,6 +154,11 @@ SELECT 'NURBS_CURVETOLINE_2', ST_GeometryType(ST_CurveToLine(
     'MULTICURVE(NURBSCURVE(2, (0 0, 1 1, 2 0)))'::geometry
 ));
 
+SELECT 'NURBS_ENVELOPE_1',
+    ST_AsText(ST_Envelope('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry));
+SELECT 'NURBS_ORIENTEDENVELOPE_1',
+    ST_AsText(ST_Normalize(ST_OrientedEnvelope('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry)));
+
 SELECT 'NURBS_CURVETOLINE_TOLERANCE_1',
     ST_GeometryType(ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.01, 1)),
     ST_NPoints(ST_CurveToLine('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0.01, 1));

@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2010 Olivier Courtin <olivier.courtin@oslandia.com>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -28,19 +29,22 @@ static void do_svg_test(char * in, char * out, int precision, int relative)
 	lwfree(v);
 }
 
-
-static void do_svg_unsupported(char * in, char * out)
+static void do_svg_contains_test(char *in, char *required, char *forbidden)
 {
 	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	lwvarlena_t *v = lwgeom_to_svg(g, 0, 0);
+	lwvarlena_t *v = lwgeom_to_svg(g, 8, 0);
+	size_t length = LWSIZE_GET(v->size) - LWVARHDRSZ;
+	char *text = lwalloc(length + 1);
 
-	ASSERT_STRING_EQUAL(cu_error_msg, out);
-	cu_error_msg_reset();
+	memcpy(text, v->data, length);
+	text[length] = '\0';
+	CU_ASSERT_PTR_NOT_NULL(strstr(text, required));
+	CU_ASSERT_PTR_NULL(strstr(text, forbidden));
 
+	lwfree(text);
 	lwgeom_free(g);
 	lwfree(v);
 }
-
 
 static void out_svg_test_precision(void)
 {
@@ -190,10 +194,21 @@ static void out_svg_test_geoms(void)
 	    0, 0);
 
 	/* CircularString */
+	do_svg_test("CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)", "M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4", 0, 0);
+
+	/* Arc sweep follows the circular arc control point. */
+	do_svg_test("CIRCULARSTRING(0 0,1 1,2 0)", "M 0 0 A 1 1 0 0 1 2 0", 0, 0);
+	do_svg_test("CIRCULARSTRING(0 0,1 -1,2 0)", "M 0 0 A 1 1 0 0 0 2 0", 0, 0);
+
+	/* Collinear arcs are emitted as lines, never as negative SVG radii. */
 	do_svg_test(
-	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
-	    "M -2 0 A 2 2 0 0 1 2 0 A 2 2 0 0 1 2 -4",
-			0, 0);
+	    "CIRCULARSTRING(0 0,1 1,2 2)",
+	    "M 0 0 L 1 -1 2 -2",
+	    0, 0);
+	do_svg_test(
+	    "CIRCULARSTRING(0 0,1 1,2 2)",
+	    "M 0 0 l 1 -1 1 -1",
+	    0, 1);
 
 	/* : Circle */
 	do_svg_test(
@@ -202,24 +217,74 @@ static void out_svg_test_geoms(void)
 			0, 0);
 
 	/* CompoundCurve */
-	do_svg_test(
-	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
-	    "M 0 0 A 1 1 0 1 1 1 0 L 0 -1", 0, 0);
+	do_svg_test("COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))", "M 0 0 A 1 1 0 1 1 1 0 L 0 -1", 0, 0);
 
 	/* MultiCurve */
-	do_svg_test(
-	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
-	    "M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2", 0, 0);
+	do_svg_test("MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
+		    "M 5 -5 L 3 -5 3 -3 0 -3 M 0 0 A 2 2 0 0 0 2 -2",
+		    0,
+		    0);
 
 	/* CurvePolygon */
-	do_svg_test(
-	    "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
-	    "M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z M -1 0 L 0 0 1 0 0 -1 -1 0 Z", 0, 0);
+	do_svg_test("CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
+		    "M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z M -1 0 L 0 0 1 0 0 -1 -1 0 Z",
+		    0,
+		    0);
 
 	/* MultiSurface */
 	do_svg_test(
 	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
-	    "M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z M -1 0 L 0 0 1 0 0 -1 -1 0 Z M 7 -8 L 10 -10 6 -14 4 -11 Z", 0, 0);
+	    "M -2 0 A 1 1 0 0 0 0 0 A 1 1 0 0 0 2 0 A 2 2 0 0 0 -2 0 Z M -1 0 L 0 0 1 0 0 -1 -1 0 Z M 7 -8 L 10 -10 6 -14 4 -11 Z",
+	    0,
+	    0);
+
+	/* Polynomial NURBS with one knot span map exactly to SVG Bezier paths. */
+	do_svg_test("NURBSCURVE(2,(0 0,1 2,2 0))", "M 0 0 Q 1 -2 2 0", 8, 0);
+	do_svg_test("NURBSCURVE(3,(0 0,1 3,2 3,3 0))", "M 0 0 C 1 -3 2 -3 3 0", 8, 0);
+	do_svg_test("NURBSCURVE(2,(0 0,1 2,2 0))", "M 0 0 q 1 -2 2 0", 8, 1);
+	do_svg_test(
+	    "COMPOUNDCURVE(NURBSCURVE(2,(0 0,1 2,2 0)),(2 0,3 0))",
+	    "M 0 0 Q 1 -2 2 0 L 3 0",
+	    8,
+	    0);
+	do_svg_contains_test(
+	    "NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(1 0),WEIGHT 1),"
+	    "NURBSPOINT(WEIGHTEDPOINT(1 1),WEIGHT 0.5),NURBSPOINT(WEIGHTEDPOINT(0 1),WEIGHT 1)),"
+	    "KNOTS (KNOT(0,3),KNOT(1,3)))",
+	    " L ",
+	    " Q ");
+
+	/* Triangle, TIN and PolyhedralSurface share polygonal SVG path output. */
+	do_svg_test("TRIANGLE((0 0,2 0,0 2,0 0))", "M 0 0 L 2 0 0 -2 Z", 0, 0);
+	do_svg_test("TIN(((0 0,2 0,0 2,0 0)),((2 0,2 2,0 2,2 0)))", "M 0 0 L 2 0 0 -2 Z M 2 0 L 2 -2 0 -2 Z", 0, 0);
+	do_svg_test("POLYHEDRALSURFACE(((0 0,2 0,0 2,0 0)),((2 0,2 2,0 2,2 0)))",
+		    "M 0 0 L 2 0 0 -2 Z M 2 0 L 2 -2 0 -2 Z",
+		    0,
+		    0);
+	do_svg_test(
+	    "GEOMETRYCOLLECTION(NURBSCURVE(1,(0 0,2 0)),TRIANGLE((0 0,2 0,0 2,0 0)))",
+	    "M 0 0 L 2 0;M 0 0 L 2 0 0 -2 Z",
+	    8,
+	    0);
+	do_svg_test(
+	    "MULTICURVE(NURBSCURVE(1,(0 0,1 0)),(1 0,2 0))",
+	    "M 0 0 L 1 0 M 1 0 L 2 0",
+	    8,
+	    0);
+	do_svg_test("COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,2 0),CIRCULARSTRING(2 0,3 -1,4 0))",
+		    "M 0 0 A 1 1 0 0 1 2 0 A 1 1 0 0 0 4 0",
+		    8,
+		    0);
+	do_svg_test("COMPOUNDCURVE((0 0,4 2),CIRCULARSTRING(4 2,-2 2,4 2),(4 2,5 2))",
+		    "M 0 0 L 4 -2 a 3 3 0 1 0 -6 0 a 3 3 0 1 0 6 0 L 5 -2",
+		    8,
+		    0);
+	do_svg_test(
+	    "GEOMETRYCOLLECTION(MULTICURVE(COMPOUNDCURVE((0 0,1 0),(1 0,2 0))),"
+	    "CURVEPOLYGON(COMPOUNDCURVE((10 0,12 0),(12 0,12 2),(12 2,10 0))))",
+	    "M 0 0 L 1 0 L 2 0;M 10 0 L 12 0 L 12 -2 L 10 0 Z",
+	    8,
+	    0);
 
 	/* Empty GeometryCollection */
 	do_svg_test(
@@ -228,10 +293,10 @@ static void out_svg_test_geoms(void)
 	    0, 0);
 
 	/* Nested GeometryCollection */
-	do_svg_unsupported(
-	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
-	    "assvg_geom_buf: 'GeometryCollection' geometry type not supported.");
-
+	do_svg_test("GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
+		    "cx=\"0\" cy=\"-1\";M 2 -3 L 4 -5",
+		    0,
+		    0);
 }
 
 static void out_svg_test_relative(void)

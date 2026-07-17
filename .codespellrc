@@ -2,6 +2,7 @@
 ignore-words = .codespell.ignore
 skip =
     ./build/**,
+    ./debian/**,
     ./deps/**,
     ./extensions/*/sql/**,
     ./extensions/*/sql_bits/*.sql,

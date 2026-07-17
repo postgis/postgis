@@ -149,104 +149,82 @@
             </tgroup>
           </informaltable>
 
-         <para>Visually, for two overlapping polygonal geometries, this looks like:</para>
+         <para>The following overlapping polygons provide a concrete example.
+         <xref linkend="ST_Relate"/> computes the matrix
+         <literal>212101212</literal>; it matches the overlap pattern
+         <literal>T*T***T**</literal> used by <xref linkend="ST_Overlaps"/>.</para>
 
-          <informaltable frame="none">
-            <tgroup cols="2">
-              <colspec colwidth="80pt"/>
+<programlisting language="sql">WITH example AS (
+  SELECT
+    'POLYGON ((140 140,140 122,135 105,126 100,118 99,110 94,100 86,97 73,102 59,98 49,87 38,70 30,55 29,40 30,28 38,20 50,14 66,10 84,6 100,4 119,4 143,6 166,10 180,18 191,28 195,40 190,55 189,67 186,86 179,112 165,124 158,133 148,140 140),(48 177,40 177,30 174,24 166,22 159,25 155,30 153,40 154,45 157,52 162,53 169,51 174,48 177))'::geometry AS a,
+    'POLYGON ((75 63,79 50,87 38,95 31,108 25,124 22,140 18,154 11,166 6,176 10,184 21,188 35,190 58,190 82,193 104,190 121,185 139,178 154,166 163,154 171,139 172,124 171,112 165,96 152,92 142,92 126,86 116,79 110,75 104,72 94,73 86,75 76,75 63))'::geometry AS b
+), relation AS (
+  SELECT a, b, ST_Relate(a, b) AS matrix
+  FROM example
+)
+SELECT matrix,
+       ST_RelateMatch(matrix, 'T*T***T**') AS matches_overlap_pattern,
+       ST_Overlaps(a, b) AS overlaps
+FROM relation;</programlisting>
+<screen xml:id="visual-de9im-overlapping-polygons" role="visual-primary visual-overlay text-primary">  matrix   | matches_overlap_pattern | overlaps
+-----------+-------------------------+----------
+ 212101212 | t                       | t
+(1 row)</screen>
 
-              <tbody>
-                <row>
-                  <entry/>
+         <para>The executable query and generated overlay above are the visual
+         source for the relation. The query below renders the nine cells of the
+         same kind of matrix as a 3-by-3 set of examples. The final
+         exterior/exterior cell is clipped to a finite viewport, since the true
+         exterior/exterior intersection is unbounded.</para>
 
-                  <entry align="center"><para><informalfigure>
-                      <mediaobject><imageobject><imagedata align="center" fileref="images/de9im04.png" valign="middle"/></imageobject></mediaobject>
-                    </informalfigure></para></entry>
-                </row>
-
-                <row>
-                  <entry align="center" valign="middle"><para><informalfigure>
-                      <mediaobject><imageobject><imagedata align="center" fileref="images/de9im03.png" valign="middle"/></imageobject></mediaobject>
-                    </informalfigure></para></entry>
-
-                  <entrytbl cols="4">
-                        <thead valign="middle">
-                          <row>
-                            <entry/>
-
-                            <entry><emphasis role="bold">Interior</emphasis></entry>
-
-                            <entry><emphasis role="bold">Boundary</emphasis></entry>
-
-                            <entry><emphasis role="bold">Exterior</emphasis></entry>
-                          </row>
-                        </thead>
-
-                        <tbody valign="middle">
-                          <row>
-                            <entry spanname="de9im_a">
-                                <emphasis role="bold">Interior</emphasis>
-                            </entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im05.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( I(a) ∩ I(b) ) =
-                            </emphasis><emphasis role="bold">2</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im06.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( I(a) ∩ B(b)  =
-                            </emphasis><emphasis role="bold">1</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im07.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( I(a) ∩ E(b) ) =
-                            </emphasis><emphasis role="bold">2</emphasis></para></entry>
-                          </row>
-
-                          <row>
-                            <entry><emphasis role="bold">Boundary</emphasis></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im08.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( B(a) ∩ I(b) ) =
-                            </emphasis><emphasis role="bold">1</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im09.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( B(a) ∩ B(b) ) =
-                            </emphasis><emphasis role="bold">0</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im10.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( B(a) ∩ E(b) ) =
-                            </emphasis><emphasis role="bold">1</emphasis></para></entry>
-                          </row>
-
-                          <row>
-                            <entry><emphasis role="bold">Exterior</emphasis></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im11.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( E(a) ∩ I(b) ) =
-                            </emphasis><emphasis role="bold">2</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im12.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( E(a) ∩ B(b) ) =
-                            </emphasis><emphasis role="bold">1</emphasis></para></entry>
-
-                            <entry><para><informalfigure>
-                                <mediaobject><imageobject><imagedata fileref="images/de9im13.png"/></imageobject></mediaobject>
-                              </informalfigure></para><para><emphasis>dim( E(a) ∩ E(b)  =
-                            </emphasis><emphasis role="bold">2</emphasis></para></entry>
-                          </row>
-                        </tbody>
-                    </entrytbl>
-                </row>
-              </tbody>
-            </tgroup>
-          </informaltable>
+<programlisting language="sql">WITH example AS (
+  SELECT
+    ST_MakeEnvelope(0, 0, 6, 4) AS a,
+    ST_MakeEnvelope(3, -1, 8, 3) AS b,
+    ST_MakeEnvelope(-1, -2, 9, 5) AS viewport
+), parts AS (
+  SELECT
+    a,
+    b,
+    ST_Boundary(a) AS ba,
+    ST_Boundary(b) AS bb,
+    viewport
+  FROM example
+)
+SELECT
+  ST_Relate(a, b) AS matrix,
+  ST_AsText(ST_Normalize(a)) AS input_a,
+  ST_AsText(ST_Normalize(b)) AS input_b,
+  ST_AsText(ST_Normalize(ST_Intersection(a, b))) AS "2 I(a) ∩ I(b)",
+  ST_AsText(ST_Normalize(ST_Intersection(a, bb))) AS "1 I(a) ∩ B(b)",
+  ST_AsText(ST_Normalize(ST_Difference(a, b))) AS "2 I(a) ∩ E(b)",
+  ST_AsText(ST_Normalize(ST_Intersection(ba, b))) AS "1 B(a) ∩ I(b)",
+  ST_AsText(ST_Normalize(ST_Intersection(ba, bb))) AS "0 B(a) ∩ B(b)",
+  ST_AsText(ST_Normalize(ST_Collect(
+      'LINESTRING(0 0,0 4,6 4,6 3)'::geometry,
+      'LINESTRING(0 0,3 0)'::geometry
+  ))) AS "1 B(a) ∩ E(b)",
+  ST_AsText(ST_Normalize(ST_Difference(b, a))) AS "2 E(a) ∩ I(b)",
+  ST_AsText(ST_Normalize(ST_Collect(
+      'LINESTRING(3 -1,8 -1,8 3,6 3)'::geometry,
+      'LINESTRING(3 -1,3 0)'::geometry
+  ))) AS "1 E(a) ∩ B(b)",
+  ST_AsText(ST_Normalize(ST_Difference(viewport, ST_Union(a, b))))
+    AS "2 E(a) ∩ E(b) clipped"
+FROM parts;</programlisting>
+	<screen xml:id="visual-de9im-matrix-cells" role="visual-primary visual-separate-output visual-matrix-3x3 text-primary psql-expanded">-[ RECORD 1 ]----------+-----------------------------------------------------------------------------
+matrix                 | 212101212
+input_a                | POLYGON((0 0,0 4,6 4,6 0,0 0))
+input_b                | POLYGON((3 -1,3 3,8 3,8 -1,3 -1))
+2 I(a) ∩ I(b)          | POLYGON((3 0,3 3,6 3,6 0,3 0))
+1 I(a) ∩ B(b)          | LINESTRING(3 0,3 3,6 3)
+2 I(a) ∩ E(b)          | POLYGON((0 0,0 4,6 4,6 3,3 3,3 0,0 0))
+1 B(a) ∩ I(b)          | LINESTRING(3 0,6 0,6 3)
+0 B(a) ∩ B(b)          | MULTIPOINT((6 3),(3 0))
+1 B(a) ∩ E(b)          | MULTILINESTRING((0 0,0 4,6 4,6 3),(0 0,3 0))
+2 E(a) ∩ I(b)          | POLYGON((3 -1,3 0,6 0,6 3,8 3,8 -1,3 -1))
+1 E(a) ∩ B(b)          | MULTILINESTRING((3 -1,8 -1,8 3,6 3),(3 -1,3 0))
+2 E(a) ∩ E(b) clipped  | POLYGON((-1 -2,-1 5,9 5,9 -2,-1 -2),(0 0,3 0,3 -1,8 -1,8 3,6 3,6 4,0 4,0 0))</screen>
 
           <para>Reading from left to right and top to bottom, the intersection matrix is
           represented as the text string '<emphasis role="bold">212101212</emphasis>'.</para>
@@ -303,90 +281,10 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
         <section xml:id="general-spatial-rel">
           <title>General Spatial Relationships</title>
 
-        <para>In some cases the named spatial relationships
-        are insufficient to  provide a desired spatial filter condition.
-        </para>
-
-        <informaltable frame="none">
-          <tgroup cols="1">
-            <tbody>
-              <row>
-                <entry><para><informalfigure floatstyle="right">
-                    <mediaobject><imageobject><imagedata align="left" fileref="images/de9im01.png"/></imageobject></mediaobject>
-                  </informalfigure></para><para>For example, consider a linear
-                dataset representing a road network. It may be required
-                to identify all road segments that cross
-                each other, not at a point, but in a line (perhaps to validate a business rule
-                such as ensuring that no two different roads share a common segment).
-                In this case <xref linkend="ST_Crosses"/> does not
-                provide the necessary spatial filter, since for
-                linear features it returns <varname>true</varname> only where they cross at a point.
-                </para>
-                <para>A two-step solution
-                would be to first compute the actual intersection
-                (<xref linkend="ST_Intersection"/>) of pairs of road lines that spatially
-                intersect (<xref linkend="ST_Intersects"/>), and then check if the intersection's
-                <xref linkend="ST_GeometryType"/> is '<varname>LINESTRING</varname>' (properly
-                dealing with cases that return
-                <varname>GEOMETRYCOLLECTION</varname>s of
-                <varname>[MULTI]POINT</varname>s,
-                <varname>[MULTI]LINESTRING</varname>s, etc.).</para>
-                <para>Clearly, a simpler and faster solution is desirable.</para></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>
-
-        <informaltable frame="none">
-          <tgroup cols="1">
-            <tbody>
-              <row>
-                <entry><para> <informalfigure floatstyle="right">
-                    <mediaobject><imageobject><imagedata align="right" fileref="images/de9im02.png"/></imageobject></mediaobject>
-                  </informalfigure></para> <para>A second
-                example is locating
-                wharves that intersect a lake's boundary on a line and
-                where one end of the wharf is up on shore. In other
-                words, where a wharf is within but not completely contained by a
-                lake, intersects the boundary of a lake on a line, and where
-                exactly one of the wharf's endpoints is within or on the
-                boundary of the lake. It is possible to use a
-                combination of spatial predicates to find the required
-                features:</para> <itemizedlist>
-                    <listitem>
-                      <para><xref linkend="ST_Contains"/>(lake, wharf) = TRUE</para>
-                    </listitem>
-
-                    <listitem>
-                      <para><xref linkend="ST_ContainsProperly"/>(lake, wharf) = FALSE</para>
-                    </listitem>
-
-                    <listitem>
-                      <para><xref linkend="ST_GeometryType"/>(<xref linkend="ST_Intersection"/>(wharf, lake)) =
-                      'LINESTRING'</para>
-                    </listitem>
-
-                    <listitem>
-                      <para><xref linkend="ST_NumGeometries"/>(<xref linkend="ST_Multi"/>(<xref linkend="ST_Intersection"/>(<xref linkend="ST_Boundary"/>(wharf),
-                      <xref linkend="ST_Boundary"/>(lake)))) = 1</para>
-
-                      <para>... but needless to say, this is quite complicated.</para>
-                    </listitem>
-                  </itemizedlist></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>
-
-        <para>These requirements can be met by computing the full DE-9IM intersection matrix.
-          PostGIS provides the <xref linkend="ST_Relate"/> function
-          to do this:
-          </para>
-
-          <programlisting>SELECT ST_Relate(
-    'LINESTRING (1 1, 5 5)',
-    'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );</programlisting>
-<screen>1010F0212</screen>
+        <para>In some cases the named spatial relationships are insufficient
+        to provide a desired spatial filter condition. These requirements can
+        be expressed by computing the full DE-9IM intersection matrix with
+        <xref linkend="ST_Relate"/>.</para>
 
         <para>To test a particular spatial relationship,
           an <emphasis role="bold">intersection matrix pattern</emphasis> is used.
@@ -405,32 +303,64 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
             </listitem>
           </itemizedlist>
 
-          <para>Using intersection matrix patterns,
-          specific spatial relationships can be evaluated in a more succinct way.
-          The <xref linkend="ST_Relate"/> and the <xref linkend="ST_RelateMatch"/>
-          functions can be used to test intersection matrix patterns.
-          For the first example above, the intersection matrix pattern specifying
-          two lines intersecting in a line is
-          '<emphasis role="bold">1*1***1**</emphasis>':</para>
+          <para>Using intersection matrix patterns, specific spatial
+          relationships can be evaluated succinctly. The <xref linkend="ST_Relate"/>
+          and <xref linkend="ST_RelateMatch"/> functions can both test these
+          patterns.</para>
 
-          <programlisting>-- Find road segments that intersect in a line
-SELECT a.id
-FROM roads a, roads b
-WHERE a.id != b.id
-      AND a.geom &amp;&amp; b.geom
-      AND ST_Relate(a.geom, b.geom, '1*1***1**');</programlisting>
+          <para>These road segments share a line segment. <xref linkend="ST_Crosses"/>
+          does not find this relationship for linear features, because it only
+          returns <varname>true</varname> when their interiors intersect at a
+          point. The pattern <literal>1*1***1**</literal> tests for a
+          one-dimensional intersection instead.</para>
 
-          <para>For the second example, the intersection matrix pattern
-          specifying a line partly inside and partly outside a polygon is
-          '<emphasis role="bold">102101FF2</emphasis>':</para>
+          <programlisting>WITH roads AS (
+  SELECT
+    'LINESTRING(10 10,40 90,70 110,140 110,170 130,190 190)'::geometry AS "road A",
+    'LINESTRING(10 190,50 130,90 110,130 110,160 70,180 10)'::geometry AS "road B"
+), relation AS (
+  SELECT "road A", "road B", ST_Relate("road A", "road B") AS matrix
+  FROM roads
+)
+SELECT
+  ST_Intersection("road A", "road B") AS overlap,
+  matrix,
+  ST_Crosses("road A", "road B") AS "ST_Crosses",
+  ST_RelateMatch(matrix, '1*1***1**') AS "matches 1*1***1**"
+FROM relation;</programlisting>
+<screen xml:id="visual-relate-overlapping-roads" role="visual-primary visual-overlay text-primary">          overlap           |  matrix   | ST_Crosses | matches 1*1***1**
+----------------------------+-----------+------------+-------------------
+ LINESTRING(90 110,130 110) | 1F1FF0102 | f          | t
+(1 row)</screen>
 
-          <programlisting><![CDATA[
--- Find wharves partly on a lake's shoreline
-SELECT a.lake_id, b.wharf_id
-FROM lakes a, wharfs b
-WHERE a.geom && b.geom
-      AND ST_Relate(a.geom, b.geom, '102101FF2');
-]]></programlisting>
+          <para>The next example finds a wharf which runs from the lake
+          interior onto its shoreline, with one endpoint on the shoreline.
+          The other wharves provide nearby counterexamples in the figure. The
+          pattern <literal>102101FF2</literal> expresses the complete required
+          relationship in one test.</para>
+
+          <programlisting>WITH data AS (
+  SELECT
+    'POLYGON((-20 10,30 30,80 70,110 80,145 85,190 110,300 220,230 220,-20 220,-20 10))'::geometry AS lake,
+    'MULTILINESTRING((120 180,145 85,110 80),(10 130,30 70),(90 140,110 80,94.81118881118876 75.83496503496498),(150 160,180 80))'::geometry AS wharves
+), wharf AS (
+  SELECT lake, (item).path[1] AS id, (item).geom
+  FROM data CROSS JOIN LATERAL ST_Dump(wharves) AS item
+), relation AS (
+  SELECT id, geom, ST_Relate(lake, geom) AS matrix
+  FROM wharf
+)
+SELECT
+  id AS wharf,
+  geom AS "matching wharf",
+  matrix
+FROM relation
+WHERE ST_RelateMatch(matrix, '102101FF2')
+ORDER BY id;</programlisting>
+<screen xml:id="visual-relate-lake-wharves" role="visual-primary visual-overlay text-primary"> wharf |           matching wharf           |  matrix
+-------+-----------------------------------+-----------
+     1 | LINESTRING(120 180,145 85,110 80) | 102101FF2
+(1 row)</screen>
 
         </section>
     </section>
@@ -525,21 +455,21 @@ WHERE ST_DWithin(geom, 'SRID=312;POINT(100000 200000)', 100)</programlisting>
 	  of linear roads, and a table of polygonal municipality boundaries. The
 	  definition of the <varname>bc_roads</varname> table is:</para>
 
-	  <programlisting>Column    | Type              | Description
+	  <screen>Column    | Type              | Description
 ----------+-------------------+-------------------
 gid       | integer           | Unique ID
 name      | character varying | Road Name
-geom      | geometry          | Location Geometry (Linestring)</programlisting>
+geom      | geometry          | Location Geometry (Linestring)</screen>
 
 	  <para>The definition of the <varname>bc_municipality</varname>
 	  table is:</para>
 
-	  <programlisting>Column   | Type              | Description
+	  <screen>Column   | Type              | Description
 ---------+-------------------+-------------------
 gid      | integer           | Unique ID
 code     | integer           | Unique ID
 name     | character varying | City / Town Name
-geom     | geometry          | Location Geometry (Polygon)</programlisting>
+geom     | geometry          | Location Geometry (Polygon)</screen>
 
 	  <qandaset>
 		<qandaentry xml:id="qa_total_length_roads">
@@ -552,12 +482,12 @@ geom     | geometry          | Location Geometry (Polygon)</programlisting>
 			<para>You can answer this question with a very simple piece of
 			SQL:</para>
 
-			<programlisting>SELECT sum(ST_Length(geom))/1000 AS km_roads FROM bc_roads;
-
+			<programlisting>SELECT sum(ST_Length(geom))/1000 AS km_roads FROM bc_roads;</programlisting>
+<screen>
 km_roads
 ------------------
 70842.1243039643
-</programlisting>
+</screen>
 		  </answer>
 		</qandaentry>
 
@@ -575,11 +505,12 @@ km_roads
   ST_Area(geom)/10000 AS hectares
 FROM bc_municipality
 WHERE name = 'PRINCE GEORGE';
-
+</programlisting>
+<screen>
 hectares
 ------------------
 32657.9103824927
-</programlisting>
+</screen>
 		  </answer>
 		</qandaentry>
 
@@ -599,12 +530,10 @@ hectares
   ST_Area(geom)/10000 AS hectares
 FROM bc_municipality
 ORDER BY hectares DESC
-LIMIT 1;
-
-name           | hectares
+LIMIT 1;</programlisting>
+<screen>name           | hectares
 ---------------+-----------------
-TUMBLER RIDGE  | 155020.02556131
-</programlisting>
+TUMBLER RIDGE  | 155020.02556131</screen>
 
 			<para>Note that in order to answer this query we have to calculate
 			the area of every polygon. If we were doing this a lot it would
@@ -636,16 +565,15 @@ FROM bc_roads AS r
 JOIN bc_municipality AS m
   ON ST_Contains(m.geom, r.geom)
 GROUP BY m.name
-ORDER BY roads_km;
-
-name                        | roads_km
+ORDER BY roads_km;</programlisting>
+<screen>name                        | roads_km
 ----------------------------+----------
 SURREY                      | 1539.476
 VANCOUVER                   | 1450.331
 LANGLEY DISTRICT            |  833.793
 BURNABY                     |  773.769
 PRINCE GEORGE               |  694.376
-...</programlisting>
+...</screen>
 
 			<para>This query takes a while, because every road in the table is
 			summarized into the final result (about 250K roads for the
@@ -696,12 +624,12 @@ JOIN bc_municipality m
   ON ST_Intersects(m.geom, r.geom
 WHERE
   r.name = 'Douglas St'
-  AND m.name = 'VICTORIA';
-
+  AND m.name = 'VICTORIA';</programlisting>
+<screen>
 kilometers
 ------------------
 4.89151904172838
-</programlisting>
+</screen>
 		  </answer>
 		</qandaentry>
 
@@ -712,17 +640,16 @@ kilometers
 		  </question>
 
 		  <answer>
-			<programlisting><![CDATA[
+			<programlisting language="sql"><![CDATA[
 SELECT gid, name, ST_Area(geom) AS area
 FROM bc_municipality
 WHERE ST_NRings(geom) > 1
 ORDER BY area DESC LIMIT 1;
-
-gid  | name         | area
+]]></programlisting>
+<screen><![CDATA[gid  | name         | area
 -----+--------------+------------------
 12   | SPALLUMCHEEN | 257374619.430216
-
-]]></programlisting>
+]]></screen>
 		  </answer>
 		</qandaentry>
 	  </qandaset>

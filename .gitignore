@@ -39,8 +39,14 @@ sfcgal/regress/tests.mk
 # should be either symlinks or generated
 # files, so we ignore them
 doc/html/images/*.png
+doc/html/images/visual-examples/
+doc/html/images/pdf-images/
+doc/pdf/
+doc/postgis-chunk-html.xsl
+doc/postgis-html.xsl
 
 doc/html/*.html
+doc/html/review/
 doc/html/docbook.css
 doc/Makefile
 doc/Makefile.comments
@@ -52,6 +58,7 @@ doc/*.xml.pot
 doc/po/*/*.xml
 doc/po/*/*.xml.in
 doc/po/*/html
+doc/po/*/postgis-html.xsl
 doc/po/*/Makefile
 doc/po/*/xsl
 doc/po/*/*_comments.sql
@@ -174,6 +181,7 @@ raster/test/regress/rtpostgis.sql
 raster/test/regress/loader/TiledAutoSkipNoData.tif
 regression.diffs
 regession.out
+/tmp/
 regress/00-regress-install/
 regress/Makefile
 regress/core/Makefile
@@ -188,6 +196,7 @@ regress/sfcgal/Makefile
 regress/postgis.sql
 regress/postgis_garden_result.txt
 regress/postgis_exampletest_result.txt
+regress/postgis_exampletest_environment.txt
 regress/raster_garden_result.txt
 regress/topology_garden_result.txt
 sfcgal/Makefile
@@ -215,6 +224,7 @@ libpgcommon/cunit/Makefile
 utils/Makefile
 utils/postgis_restore.pl
 utils/postgis_restore_data.*
+utils/__pycache__/
 doc/sfcgal_comments.sql
 postgis/sfcgal.sql
 postgis/uninstall_sfcgal.sql
