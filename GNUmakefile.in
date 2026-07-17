@@ -89,8 +89,7 @@ endif
 
 # The "lint" tests do not depend on specific code configurations
 # but solely on the source code state
-check-lint: check-no-trailing-blanks check-news check-contributor-credits \
-	check-tests-enabled check-lang-enabled
+check-lint: check-no-trailing-blanks check-news check-tests-enabled check-lang-enabled
 
 staged-install: all
 	$(MAKE) -C regress staged-install
@@ -98,6 +97,7 @@ staged-install: all
 check-news:
 	$(top_srcdir)/utils/check_news.sh $(top_srcdir)
 
+.PHONY: check-contributor-credits
 check-contributor-credits:
 	@if test ! -e "$(top_srcdir)/.git"; then \
 		echo "SKIP: contributor credits require a Git worktree"; \
