@@ -385,7 +385,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     def test_capability_roles_are_parsed_and_compared_generically(self):
         xml = """<book xmlns="http://docbook.org/ns/docbook">
   <refentry xml:id="capability"><refsection>
-    <programlisting role="requires-geos-3.15 requires-proj-9.2 requires-cgal-6.1 requires-protobuf-1.1.0">SELECT 1;</programlisting>
+    <programlisting role="requires-geos-3.15 requires-proj-9.2 requires-cgal-6.1 requires-protobuf-1.1.0 requires-raster-1.0.0">SELECT 1;</programlisting>
     <screen>1</screen>
   </refsection></refentry>
 </book>"""
@@ -394,13 +394,17 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             source.flush()
             tester = ExampleTester(source.name)
             example = tester.examples()[0]
-        self.assertEqual(["geos", "proj", "cgal", "protobuf"], [item["name"] for item in example["requirements"]])
+        self.assertEqual(
+            ["geos", "proj", "cgal", "protobuf", "raster"],
+            [item["name"] for item in example["requirements"]],
+        )
         self.assertTrue(tester.requirements_satisfied(
             example["requirements"], {
                 "geos": (3, 15, 1),
                 "proj": (9, 2),
                 "cgal": (6, 1),
                 "protobuf": (1, 5, 2),
+                "raster": (1, 0, 0),
             }
         ))
         self.assertFalse(tester.requirements_satisfied(
@@ -409,6 +413,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
                 "proj": (9, 5),
                 "cgal": (6, 2),
                 "protobuf": (1, 5, 2),
+                "raster": (1, 0, 0),
             }
         ))
         self.assertEqual(
@@ -422,6 +427,45 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             (),
             tester.capability_version("cgal", 'SFCGAL="2.3.0" Boost="1.83.0"'),
         )
+
+    def test_capability_requirements_are_inferred_from_known_functions(self):
+        xml = """<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="capability"><refsection>
+    <programlisting>SELECT ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0),
+                           ST_CoverageEdges('MULTIPOLYGON EMPTY'::geometry),
+                           CG_PolygonRepair('POLYGON EMPTY'::geometry);</programlisting>
+    <screen>dummy</screen>
+  </refsection></refentry>
+</book>"""
+        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+            source.write(xml)
+            source.flush()
+            example = ExampleTester(source.name).examples()[0]
+
+        requirements = {item["name"]: item["minimum"] for item in example["requirements"]}
+        self.assertEqual((1, 0, 0), requirements["raster"])
+        self.assertEqual((3, 15, 0), requirements["geos"])
+        self.assertEqual((2, 3, 0), requirements["sfcgal"])
+        self.assertEqual((6, 0, 0), requirements["cgal"])
+
+    def test_legacy_2d_wkt_output_compares_against_2d_projection(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        query = tester.geometry_comparison_query(
+            "0101000040000000000000F03F00000000000000400000000000000840",
+            expected_wkt="POINT(1 2)",
+            actual_type="POINT",
+        )
+        self.assertIn("ST_Force2D(ST_GeomFromEWKB", query)
+        self.assertIn("ST_Force2D(ST_GeomFromEWKT", query)
+
+    def test_implicit_3d_wkt_output_keeps_z_for_historical_postgis_spelling(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        query = tester.geometry_comparison_query(
+            "0101000080000000000000F03F00000000000000400000000000000840",
+            expected_wkt="POINT(1 2 3)",
+            actual_type="POINT",
+        )
+        self.assertNotIn("ST_Force2D", query)
 
 
 class ExampleTestComparisonTest(unittest.TestCase):

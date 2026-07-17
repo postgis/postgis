@@ -24,7 +24,7 @@ FORCE_ROLE = "example-test"
 EXTERNAL_STATE_ROLE = "requires-external-state"
 DOCUMENTED_OUTPUT_ROLE = "documented-output"
 CAPABILITY_ROLE_RE = re.compile(
-    r"^requires-(geos|proj|sfcgal|cgal|protobuf)-(\d+(?:\.\d+)*)$", re.I
+    r"^requires-(geos|proj|sfcgal|cgal|protobuf|raster)-(\d+(?:\.\d+)*)$", re.I
 )
 GEOMETRY_OUTPUT_PRECISION_ROLE_RE = re.compile(r"^geometry-output-precision-(\d+)$")
 CAPABILITY_VERSION_QUERIES = {
@@ -33,7 +33,45 @@ CAPABILITY_VERSION_QUERIES = {
     "sfcgal": "SELECT postgis_sfcgal_version()",
     "cgal": "SELECT postgis_sfcgal_full_version()",
     "protobuf": "SELECT postgis_libprotobuf_version()",
+    "raster": (
+        "SELECT CASE WHEN EXISTS ("
+        "SELECT 1 FROM pg_proc WHERE proname = 'st_makeemptyraster'"
+        ") THEN '1.0.0' ELSE '' END"
+    ),
 }
+FUNCTION_CAPABILITY_REQUIREMENTS = (
+    ("raster", (1, 0, 0), re.compile(
+        r"\b(?:ST_(?:AddBand|AsPNG|AsRaster|Band|Clip|ColorMap|ConvexHull|"
+        r"FromGDALRaster|GDALDrivers|Grayscale|MapAlgebra|MakeEmptyRaster|"
+        r"MinConvexHull|Pixel|Polygon|Raster|Resample|Rescale|Resize|"
+        r"SetBand|SetM|SetValue|SetValues|SetZ|Transform|Value)|PostGIS_Raster_)",
+        re.I,
+    )),
+    ("geos", (3, 11, 0), re.compile(
+        r"\bST_(?:DelaunayTriangles|LargestEmptyCircle|LineMerge|"
+        r"MaximumInscribedCircle|OffsetCurve|OrientedEnvelope|"
+        r"SimplifyPolygonHull|SimplifyPreserveTopology|TriangulatePolygon|"
+        r"VoronoiPolygons)\s*\(",
+        re.I,
+    )),
+    ("geos", (3, 12, 0), re.compile(r"\bST_Coverage(?:InvalidEdges|Simplify)\s*\(", re.I)),
+    ("geos", (3, 13, 0), re.compile(r"\bST_ClusterRelateWin\s*\(", re.I)),
+    ("geos", (3, 14, 0), re.compile(r"\bST_CoverageClean\s*\(", re.I)),
+    ("geos", (3, 15, 0), re.compile(r"\bST_CoverageEdges\s*\(", re.I)),
+    ("sfcgal", (2, 1, 0), re.compile(
+        r"\bCG_(?:3DAlphaWrapping|3DBuffer|3DDifference|3DUnion|AlphaShape|"
+        r"ApproximateMedialAxis|ConstrainedDelaunayTriangles|"
+        r"ExtrudeStraightSkeleton|OptimalAlphaShape|Simplify|"
+        r"StraightSkeletonPartition|Volume)\s*\(",
+        re.I,
+    )),
+    ("sfcgal", (2, 3, 0), re.compile(
+        r"\bCG_(?:Generate(?:Flat|Hipped|Gable|Skillion)?Roof|PolygonRepair|"
+        r"NurbsCurve(?:Interpolate|Approximate|Derivative))\s*\(",
+        re.I,
+    )),
+    ("cgal", (6, 0, 0), re.compile(r"\bCG_PolygonRepair\s*\(", re.I)),
+)
 ENVIRONMENT_CHECKS = (
     {
         "label": "PROJ grid au_icsm_GDA94_GDA2020_conformal_and_distortion.tif",
@@ -185,6 +223,28 @@ class ExampleTester:
                     "role": role,
                 })
         return requirements
+
+    def inferred_capability_requirements(self, query):
+        requirements = []
+        if query is None:
+            return requirements
+        for name, minimum, pattern in FUNCTION_CAPABILITY_REQUIREMENTS:
+            if pattern.search(query):
+                requirements.append({
+                    "name": name,
+                    "minimum": minimum,
+                    "role": f"auto-requires-{name}-" + ".".join(str(part) for part in minimum),
+                })
+        return requirements
+
+    def merge_capability_requirements(self, requirements):
+        merged = {}
+        for requirement in requirements:
+            name = requirement["name"]
+            current = merged.get(name)
+            if current is None or requirement["minimum"] > current["minimum"]:
+                merged[name] = requirement
+        return list(merged.values())
 
     def runtime_capabilities(self, database, names):
         capabilities = {}
@@ -392,6 +452,14 @@ class ExampleTester:
             re.I,
         ))
 
+    def documented_wkt_is_2d(self, expected_wkt):
+        if expected_wkt is None or self.documented_wkt_uses_explicit_z_token(expected_wkt):
+            return False
+        return not re.search(
+            rf"\(\s*{NUMBER_PATTERN}\s+{NUMBER_PATTERN}\s+{NUMBER_PATTERN}",
+            expected_wkt,
+        )
+
     def areal_canonical_key_sql(self, geometry, digits=VALUE_DECIMAL_DIGITS):
         """Return a representation-independent key for areal geometry.
 
@@ -453,6 +521,9 @@ class ExampleTester:
             srid_is_optional = (
                 "FALSE" if re.match(r"^\s*SRID\s*=", expected_wkt, re.I) else "TRUE"
             )
+        if expected_hex is None and self.documented_wkt_is_2d(expected_wkt):
+            actual = f"ST_Force2D({actual})"
+            expected = f"ST_Force2D({expected})"
         preamble = (
             "WITH geometries AS (SELECT "
             f"{actual} AS actual, {expected} AS expected), "
@@ -1280,7 +1351,10 @@ class ExampleTester:
             "forced": forced,
             "version": self.query_is_version_example(query),
             "catalog": self.query_is_catalog_example(query),
-            "requirements": self.capability_requirements(node),
+            "requirements": self.merge_capability_requirements(
+                self.capability_requirements(node)
+                + self.inferred_capability_requirements(query)
+            ),
             "documented_only": documented_only,
             "volatile": self.query_is_version_example(query) or self.query_is_catalog_example(query),
             "visual_id": self.visual_id(screen) if visual is not None else None,
