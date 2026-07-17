@@ -423,14 +423,14 @@ FROM data;</programlisting>
     <programlisting>SELECT ST_Transform('SRID=4939;POINT(143.0 -37.0)'::geometry, 7844) AS gda2020_auto;</programlisting>
 <screen role="visual-primary text-primary">POINT(143.00000635638918 -36.999986706128176)</screen>
 <para>Using a defined conversion (EPSG:8447)</para>
-<programlisting>SELECT
+<programlisting role="requires-external-state">SELECT
     ST_TransformPipeline(
         'SRID=4939;POINT(143.0 -37.0)'::geometry,
         'urn:ogc:def:coordinateOperation:EPSG::8447'
     ) AS gda2020_code;</programlisting>
 <screen role="visual-primary text-primary">POINT(143.0000063280214 -36.999986718287545)</screen>
 <para>This example uses a PROJ pipeline definition matching EPSG:8447, as returned from projinfo. Any axisswap steps must be removed.</para>
-<programlisting>SELECT
+<programlisting role="requires-external-state">SELECT
     ST_TransformPipeline(
         'SRID=4939;POINT(143.0 -37.0)'::geometry,
         '+proj=pipeline
