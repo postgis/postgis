@@ -4938,7 +4938,7 @@ WHERE
             <refsection>
                 <title>Examples</title>
 
-                <programlisting><![CDATA[
+                <programlisting language="sql"><![CDATA[
 WITH dem AS (
     SELECT ST_SetSRID(
         ST_AddBand(
@@ -4960,11 +4960,11 @@ SELECT
         ST_SetSRID(ST_PointZ(4.5, 2.5, 1), 3857)
     ) AS blocked_path
 FROM dem;
-
- clear_path | blocked_path
+                ]]></programlisting>
+                <screen role="visual-primary text-primary"><![CDATA[ clear_path | blocked_path
 ------------+--------------
  t          | f
-                ]]></programlisting>
+                ]]></screen>
             </refsection>
 
             <refsection>
