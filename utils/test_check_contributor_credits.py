@@ -317,6 +317,8 @@ class ContributorCreditValidationTest(unittest.TestCase):
             subprocess.run(
                 [
                     "git",
+                    "-c",
+                    "protocol.file.allow=always",
                     "clone",
                     "--depth=1",
                     self.fixture.repo.as_uri(),
