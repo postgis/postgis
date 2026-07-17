@@ -219,7 +219,7 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
                         </entry>
                         <entry>
                           <para><emphasis>right-hand winding, polygon boundary side=left</emphasis></para>
-<programlisting>SELECT ST_Buffer(
+<programlisting role="documented-output">SELECT ST_Buffer(
   ST_ForceRHR(ST_Boundary(ST_GeomFromText(
     'POLYGON ((50 50,50 150,150 150,150 50,50 50))'))),
   20, 'side=left');</programlisting>
@@ -229,7 +229,7 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
                       <row>
                         <entry>
                           <para><emphasis>right-hand winding, polygon boundary side=right</emphasis></para>
-<programlisting>SELECT ST_Buffer(
+<programlisting role="documented-output">SELECT ST_Buffer(
   ST_ForceRHR(ST_Boundary(ST_GeomFromText(
     'POLYGON ((50 50,50 150,150 150,150 50,50 50))'))),
   20, 'side=right');</programlisting>
