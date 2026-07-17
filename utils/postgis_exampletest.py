@@ -1225,11 +1225,8 @@ class ExampleTester:
             )
         )
         skip_reason = self.obvious_skip_reason(text)
-        documented_only = bool(
-            explicit_visual and (
-                skip_reason or self.has_role(node, DOCUMENTED_OUTPUT_ROLE)
-            )
-        )
+        documented_output = self.has_role(node, DOCUMENTED_OUTPUT_ROLE)
+        documented_only = documented_output or bool(explicit_visual and skip_reason)
         if self.has_role(node, EXTERNAL_STATE_ROLE) and not forced and not documented_only:
             return None
         if not forced:
