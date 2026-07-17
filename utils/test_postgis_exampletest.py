@@ -469,6 +469,16 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         )
         self.assertNotIn("ST_Force2D", query)
 
+    def test_explicit_geometry_output_precision_allows_hausdorff_tolerance(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        query = tester.geometry_comparison_query(
+            "0101000000000000000000F03F0000000000000040",
+            expected_wkt="POINT(1.000000 2.000000)",
+            actual_type="POINT",
+            expected_wkt_digits=6,
+        )
+        self.assertIn("ST_HausdorffDistance(actual, expected) <= 9.9999999999999995e-07", query)
+
     def test_psql_environment_sets_default_query_timeout(self):
         tester = ExampleTester.__new__(ExampleTester)
         with mock.patch.dict(os.environ, {}, clear=True):

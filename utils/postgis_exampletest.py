@@ -566,10 +566,18 @@ class ExampleTester:
         if expected_hex is None and (
             expected_wkt_digits is not None or 0 < documented_digits < VALUE_DECIMAL_DIGITS
         ):
+            shape_match = (
+                f"ST_AsText(actual, {documented_digits}) = "
+                f"ST_AsText(expected, {documented_digits})"
+            )
+            if expected_wkt_digits is not None:
+                shape_match = (
+                    f"({shape_match} OR "
+                    f"ST_HausdorffDistance(actual, expected) <= {10 ** -expected_wkt_digits:.17g})"
+                )
             return preamble + (
                 "SELECT " + metadata +
-                f"AND ST_AsText(actual, {documented_digits}) = "
-                f"ST_AsText(expected, {documented_digits}) "
+                f"AND {shape_match} "
                 "FROM comparable"
             )
 
@@ -1724,10 +1732,8 @@ class ExampleTester:
                     if (
                         expected_hex is None
                         and expected_wkt is not None
-                        and (
-                            expected_wkt_digits is not None
-                            or 0 < documented_digits < VALUE_DECIMAL_DIGITS
-                        )
+                        and expected_wkt_digits is None
+                        and 0 < documented_digits < VALUE_DECIMAL_DIGITS
                     ):
                         geom = (
                             "ST_GeomFromEWKB(decode("
