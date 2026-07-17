@@ -490,22 +490,20 @@ GROUP BY gps.track_id;</programlisting>
 
         <refsection>
         <title>Examples</title>
-<programlisting>
+<programlisting language="sql">
 SELECT ST_AsText( ST_MakeCurveLine(ST_MakePoint(1,2), ST_MakePoint(3,4), ST_MakePoint(5,6)) );
-
-       st_astext
-------------------------
- CIRCULARSTRING(1 2,3 4,5 6)
 </programlisting>
-<programlisting>
+<screen role="visual-primary text-primary">       st_astext
+------------------------
+ CIRCULARSTRING(1 2,3 4,5 6)</screen>
+<programlisting language="sql">
 SELECT ST_AsText( ST_MakeCurveLine(ARRAY[
   ST_MakePoint(1,2), ST_MakePoint(3,4), ST_MakePoint(5,6),
   ST_MakePoint(7,8), ST_MakePoint(9,10)]));
-
-               st_astext
----------------------------------------
- CIRCULARSTRING(1 2,3 4,5 6,7 8,9 10)
 </programlisting>
+<screen role="visual-primary text-primary">               st_astext
+---------------------------------------
+ CIRCULARSTRING(1 2,3 4,5 6,7 8,9 10)</screen>
         </refsection>
 
         <refsection>
@@ -546,15 +544,14 @@ SELECT ST_AsText( ST_MakeCurveLine(ARRAY[
 
         <refsection>
         <title>Examples</title>
-<programlisting>
+<programlisting language="sql">
 SELECT ST_AsText( ST_MakeCompoundCurve(ARRAY[
   'CIRCULARSTRING(0 0,2 0,2 1,2 3,4 3)'::geometry,
   'LINESTRING(4 3,4 5,1 4,0 0)'::geometry]));
-
-                                st_astext
-----------------------------------------------------------------------
- COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0,2 1,2 3,4 3),(4 3,4 5,1 4,0 0))
 </programlisting>
+<screen role="visual-primary text-primary">                                st_astext
+----------------------------------------------------------------------
+ COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0,2 1,2 3,4 3),(4 3,4 5,1 4,0 0))</screen>
         </refsection>
 
         <refsection>
