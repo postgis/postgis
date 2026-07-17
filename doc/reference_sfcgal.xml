@@ -1607,7 +1607,7 @@ FROM data;</programlisting>
             <screen role="visual-primary text-primary visual-overlay">POLYGON((0 0,2 2,2 0,0 2,0 0)) | MULTIPOLYGON(((0 0,1 1,0 2,0 0)),((1 1,2 0,2 2,1 1)))</screen>
 
             <para>With the <literal>UNION</literal> rule, all winding area is kept. This rule requires CGAL 6.1 or later.</para>
-            <programlisting language="sql">WITH data AS (
+            <programlisting language="sql" role="requires-cgal-6.1">WITH data AS (
   SELECT 'POLYGON((0 0,2 2,2 0,0 2,0 0))'::geometry AS input_polygon
 )
 SELECT input_polygon AS input_polygon,

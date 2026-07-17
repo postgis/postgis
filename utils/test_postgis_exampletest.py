@@ -351,7 +351,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     def test_capability_roles_are_parsed_and_compared_generically(self):
         xml = """<book xmlns="http://docbook.org/ns/docbook">
   <refentry xml:id="capability"><refsection>
-    <programlisting role="requires-geos-3.15 requires-proj-9.2">SELECT 1;</programlisting>
+    <programlisting role="requires-geos-3.15 requires-proj-9.2 requires-cgal-6.1">SELECT 1;</programlisting>
     <screen>1</screen>
   </refsection></refentry>
 </book>"""
@@ -360,13 +360,24 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             source.flush()
             tester = ExampleTester(source.name)
             example = tester.examples()[0]
-        self.assertEqual(["geos", "proj"], [item["name"] for item in example["requirements"]])
+        self.assertEqual(["geos", "proj", "cgal"], [item["name"] for item in example["requirements"]])
         self.assertTrue(tester.requirements_satisfied(
-            example["requirements"], {"geos": (3, 15, 1), "proj": (9, 2)}
+            example["requirements"], {"geos": (3, 15, 1), "proj": (9, 2), "cgal": (6, 1)}
         ))
         self.assertFalse(tester.requirements_satisfied(
-            example["requirements"], {"geos": (3, 14, 9), "proj": (9, 5)}
+            example["requirements"], {"geos": (3, 14, 9), "proj": (9, 5), "cgal": (6, 2)}
         ))
+        self.assertEqual(
+            (6, 1, 0),
+            tester.capability_version(
+                "cgal",
+                'SFCGAL="2.3.0" CGAL="6.1.0" Boost="1.83.0"',
+            ),
+        )
+        self.assertEqual(
+            (),
+            tester.capability_version("cgal", 'SFCGAL="2.3.0" Boost="1.83.0"'),
+        )
 
 
 class ExampleTestComparisonTest(unittest.TestCase):

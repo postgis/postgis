@@ -312,8 +312,9 @@ def news_contributors(news_path):
 
 def validate(repo, revision="HEAD", require_full_history=True):
     repo = Path(repo).resolve()
-    top_level = Path(git(repo, "rev-parse", "--show-toplevel").strip()).resolve()
-    if top_level != repo:
+    prefix = git(repo, "rev-parse", "--show-prefix").strip()
+    if prefix:
+        top_level = git(repo, "rev-parse", "--show-toplevel").strip()
         raise CreditValidationError(f"{repo} is not the Git worktree root ({top_level})")
     if require_full_history:
         shallow = git(repo, "rev-parse", "--is-shallow-repository").strip()

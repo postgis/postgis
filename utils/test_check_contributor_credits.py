@@ -130,6 +130,11 @@ class ContributorCreditValidationTest(unittest.TestCase):
         result = validate(self.fixture.repo)
         self.assertEqual(["Alice Example"], [item.name for item in result.missing])
 
+    def test_subdirectory_is_rejected_as_worktree_root(self):
+        self.fixture.initial_commit("Alice Example", "Bob News")
+        with self.assertRaisesRegex(CreditValidationError, "not the Git worktree root"):
+            validate(self.fixture.repo / "doc")
+
     def test_missing_mailmap_alias_fails(self):
         self.fixture.initial_commit("Alice Example", "Bob News", mailmap=False)
         result = validate(self.fixture.repo)

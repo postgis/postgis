@@ -23,13 +23,14 @@ XML_NS = "http://www.w3.org/XML/1998/namespace"
 FORCE_ROLE = "example-test"
 EXTERNAL_STATE_ROLE = "requires-external-state"
 CAPABILITY_ROLE_RE = re.compile(
-    r"^requires-(geos|proj|sfcgal)-(\d+(?:\.\d+)*)$", re.I
+    r"^requires-(geos|proj|sfcgal|cgal)-(\d+(?:\.\d+)*)$", re.I
 )
 GEOMETRY_OUTPUT_PRECISION_ROLE_RE = re.compile(r"^geometry-output-precision-(\d+)$")
 CAPABILITY_VERSION_QUERIES = {
     "geos": "SELECT PostGIS_GEOS_Version()",
     "proj": "SELECT PostGIS_PROJ_Version()",
     "sfcgal": "SELECT postgis_sfcgal_version()",
+    "cgal": "SELECT postgis_sfcgal_full_version()",
 }
 ENVIRONMENT_CHECKS = (
     {
@@ -192,12 +193,18 @@ class ExampleTester:
             except RuntimeError:
                 capabilities[name] = ()
                 continue
-            match = re.search(r"\d+(?:\.\d+)+", value)
-            capabilities[name] = (
-                tuple(int(part) for part in match.group(0).split("."))
-                if match else ()
-            )
+            capabilities[name] = self.capability_version(name, value)
         return capabilities
+
+    def capability_version(self, name, value):
+        if name == "cgal":
+            match = re.search(r"\bCGAL\b[^0-9]*(\d+(?:\.\d+)+)", value, re.I)
+        else:
+            match = re.search(r"\d+(?:\.\d+)+", value)
+        if not match:
+            return ()
+        version_text = match.group(1 if name == "cgal" else 0)
+        return tuple(int(part) for part in version_text.split("."))
 
     def requirements_satisfied(self, requirements, capabilities):
         for requirement in requirements:
