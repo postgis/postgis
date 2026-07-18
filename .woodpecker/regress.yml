@@ -6,6 +6,7 @@ variables:
   test-image: &test-image repo.osgeo.org/postgis/build-test:debian13
   steps-env: &steps-env
     - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
+    - export PGHOST=/tmp
     - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
     - export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
     - export RUNTESTFLAGS="-v
@@ -16,7 +17,14 @@ variables:
     - export CURRENTVERSION=$$(grep '^POSTGIS_' $${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.')
     - pg_config --version
   steps-start-postgresql: &steps-start-postgresql
-    - service postgresql start $${PGVER}
+    # The test image can need crash recovery after clone-local startup. Under
+    # multi-workflow I/O load, Debian's default 60-second pg_ctl wait is short.
+    # Use /tmp for the socket: runner-specific /run mounts are not portable.
+    - runuser -u postgres -- pg_ctl
+      -D /var/lib/postgresql/$${PGVER}/main
+      -l /tmp/postgresql-$${PGVER}.log
+      -o "-c config_file=/etc/postgresql/$${PGVER}/main/postgresql.conf -c unix_socket_directories=/tmp"
+      -t 300 start
     - psql -c 'select version()' template1
   steps-pg-build: &steps-pg-build
     - mkdir -p "$${BUILDDIR}"
@@ -26,27 +34,24 @@ variables:
       --disable-spellcheck-tests
       --enable-lto
       --without-interrupt-tests
-      --disable-spellcheck-tests
       CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
-    - make -j
-  steps-pg-test-preinstall: &steps-pg-test-preinstall
-    - cd build/pg$${PGVER}
-    - make check
-    - make check-double-upgrade
-    - make check-locked-upgrade
-  steps-pg-install: &steps-pg-install
-    - make -C build/pg$${PGVER} install
-  steps-pg-test-install: &steps-pg-test-install
-    - service postgresql start $${PGVER}
-    - make -C build/pg$${PGVER} installcheck
+    # Matrix jobs provide the parallelism. Keep each build serial: the PostGIS
+    # make graph can otherwise race generation of files such as postgis.control.
+    - make -j1
   steps-pg-test-all-upgrades: &steps-pg-test-all-upgrades
-    - cd build/pg$${PGVER}
-    - mkfifo check.fifo
-    - tee check.log < check.fifo &
-    - $${SRCDIR}/utils/check_all_upgrades.sh -s $${CURRENTVERSION}! > check.fifo
+    - cd "$${BUILDDIR}"
+    - export CHECK_FIFO=check-$${UPGRADE_EXTENSION}.fifo
+    - export CHECK_LOG=check-$${UPGRADE_EXTENSION}.log
+    - rm -f "$${CHECK_FIFO}"
+    - mkfifo "$${CHECK_FIFO}"
+    - tee "$${CHECK_LOG}" < "$${CHECK_FIFO}" &
+    - UPGRADECHECK_ARGS=
+    - if test "$${CI_PIPELINE_EVENT}" = pull_request; then UPGRADECHECK_ARGS=--oldest; fi
+    - $${SRCDIR}/utils/check_all_upgrades.sh -s $${UPGRADECHECK_ARGS} --extension $${UPGRADE_EXTENSION} $${CURRENTVERSION}! > "$${CHECK_FIFO}"
     - wait # for tee process to flush its buffers
+    - rm -f "$${CHECK_FIFO}"
     - echo "-- Summary of upgrade tests --"
-    - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' check.log
+    - egrep '(PASS|FAIL|SKIP|INFO|ERROR)' "$${CHECK_LOG}"
 
 clone:
   git:
@@ -56,108 +61,194 @@ clone:
       partial: false
 
 steps:
-
   autogen:
     image: *test-image
     pull: true
     commands:
       - ./autogen.sh
 
-  build-pg14:
+  build:
     image: *test-image
     depends_on: autogen
-    environment:
-      PGVER: 14
     commands:
       - <<: *steps-env
       - <<: *steps-pg-build
 
-  build-pg16:
+  build-second-postgresql:
     image: *test-image
     depends_on: autogen
-    environment:
-      PGVER: 16
+    when:
+      - matrix:
+          REGRESS_SUITE: cluster-upgrade
     commands:
+      - export PGVER=$${SECOND_PGVER}
       - <<: *steps-env
       - <<: *steps-pg-build
 
-  build-pg18:
+  test-preinstall:
     image: *test-image
-    depends_on: autogen
-    environment:
-       PGVER: 18
-    commands:
-      - <<: *steps-env
-      - <<: *steps-pg-build
-
-  check-pg14:
-    image: *test-image
-    depends_on: build-pg14
-    environment:
-      PGVER: 14
+    depends_on: build
+    when:
+      - matrix:
+          REGRESS_SUITE: preinstall
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
-      - <<: *steps-pg-test-preinstall
+      - make -C "$${BUILDDIR}" $${REGRESS_TARGET}
 
-  check-pg18:
+  test-install:
     image: *test-image
-    depends_on: build-pg18
-    environment:
-       PGVER: 18
+    depends_on: build
+    when:
+      - matrix:
+          REGRESS_SUITE: install
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
-      - <<: *steps-pg-test-preinstall
+      - make -C "$${BUILDDIR}" install
+      - make -C "$${BUILDDIR}" $${REGRESS_TARGET}
 
-  installcheck-pg14:
+  test-upgrades:
     image: *test-image
-    depends_on: build-pg14
-    environment:
-      PGVER: 14
+    depends_on: build
+    when:
+      - matrix:
+          REGRESS_SUITE: extension-upgrade
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
-      - <<: *steps-pg-test-install
-
-  installcheck-pg16:
-    image: *test-image
-    depends_on: build-pg16
-    environment:
-      PGVER: 16
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
-      - <<: *steps-pg-test-install
-
-  installcheck-pg18:
-    image: *test-image
-    depends_on: build-pg18
-    environment:
-      PGVER: 18
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
-      - <<: *steps-pg-test-install
-
-  upgradecheck-pg16:
-    image: *test-image
-    depends_on: installcheck-pg16
-    environment:
-      PGVER: 16
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
+      - make -C "$${BUILDDIR}" staged-install
+      - make -C "$${BUILDDIR}" install
       - <<: *steps-pg-test-all-upgrades
 
-  cluster-upgradecheck-pg14-to-pg18:
+  test-cluster-upgrade:
     image: *test-image
-    depends_on: [ installcheck-pg14, installcheck-pg18 ]
+    depends_on: [ build, build-second-postgresql ]
+    when:
+      - matrix:
+          REGRESS_SUITE: cluster-upgrade
     commands:
-      - make -C build/pg14 install
-      - make -C build/pg18 install
-      - su postgres -c 'utils/check_cluster_upgrade.sh -i regress/hooks/cluster-upgrade-geography.sql /usr/lib/postgresql/14/bin/pg_config /usr/lib/postgresql/18/bin/pg_config'
+      - make -C build/pg$${PGVER} install
+      - make -C build/pg$${SECOND_PGVER} install
+      - su postgres -c 'utils/check_cluster_upgrade.sh -i regress/hooks/cluster-upgrade-geography.sql /usr/lib/postgresql/'$${PGVER}'/bin/pg_config /usr/lib/postgresql/'$${SECOND_PGVER}'/bin/pg_config'
+
+# Every entry is an independent workflow with its own clone, workspace,
+# containers, PostgreSQL instance, and regression database. Splitting at this
+# boundary lets Woodpecker schedule the long suites across agents safely.
+matrix:
+  include:
+    - PGVER: "14"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: preinstall
+      REGRESS_TARGET: check
+      UPGRADE_EXTENSION: none
+    - PGVER: "14"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: preinstall
+      REGRESS_TARGET: check-double-upgrade
+      UPGRADE_EXTENSION: none
+    - PGVER: "14"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: preinstall
+      REGRESS_TARGET: check-locked-upgrade
+      UPGRADE_EXTENSION: none
+    - PGVER: "18"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: preinstall
+      REGRESS_TARGET: check
+      UPGRADE_EXTENSION: none
+    - PGVER: "18"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: preinstall
+      REGRESS_TARGET: check-double-upgrade
+      UPGRADE_EXTENSION: none
+    - PGVER: "18"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: preinstall
+      REGRESS_TARGET: check-locked-upgrade
+      UPGRADE_EXTENSION: none
+    - PGVER: "14"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-base
+      UPGRADE_EXTENSION: none
+    - PGVER: "14"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-unpackaged
+      UPGRADE_EXTENSION: none
+    - PGVER: "14"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-unpackaged-by-func
+      UPGRADE_EXTENSION: none
+    - PGVER: "14"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-packaged-by-func
+      UPGRADE_EXTENSION: none
+    - PGVER: "16"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-base
+      UPGRADE_EXTENSION: none
+    - PGVER: "16"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-unpackaged
+      UPGRADE_EXTENSION: none
+    - PGVER: "16"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-unpackaged-by-func
+      UPGRADE_EXTENSION: none
+    - PGVER: "16"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-packaged-by-func
+      UPGRADE_EXTENSION: none
+    - PGVER: "18"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-base
+      UPGRADE_EXTENSION: none
+    - PGVER: "18"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-unpackaged
+      UPGRADE_EXTENSION: none
+    - PGVER: "18"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-unpackaged-by-func
+      UPGRADE_EXTENSION: none
+    - PGVER: "18"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: install
+      REGRESS_TARGET: installcheck-upgrade-from-packaged-by-func
+      UPGRADE_EXTENSION: none
+    - PGVER: "16"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: extension-upgrade
+      REGRESS_TARGET: none
+      UPGRADE_EXTENSION: postgis
+    - PGVER: "16"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: extension-upgrade
+      REGRESS_TARGET: none
+      UPGRADE_EXTENSION: postgis_topology
+    - PGVER: "16"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: extension-upgrade
+      REGRESS_TARGET: none
+      UPGRADE_EXTENSION: postgis_raster
+    - PGVER: "16"
+      SECOND_PGVER: "0"
+      REGRESS_SUITE: extension-upgrade
+      REGRESS_TARGET: none
+      UPGRADE_EXTENSION: postgis_sfcgal
+    - PGVER: "14"
+      SECOND_PGVER: "18"
+      REGRESS_SUITE: cluster-upgrade
+      REGRESS_TARGET: none
+      UPGRADE_EXTENSION: none

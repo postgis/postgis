@@ -7,6 +7,8 @@ TMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/check_all_upgrades.XXXXXX") || exit 1
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
 SKIP_LABEL_REGEXP=
+ONLY_EXTENSION=
+ONLY_OLDEST=0
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 MAKE=$(which gmake make | head -1)
 BUILDDIR=$PWD # TODO: allow override ?
@@ -24,6 +26,8 @@ usage() {
   echo "\t--help|-h        Print this usage text"
   echo "\t-s               Stop on first failure"
   echo "\t--skip <regexp>  Do not run tests with label matching given extended regexp"
+  echo "\t--extension <name>  Only run upgrade tests for the named extension"
+  echo "\t--oldest        Only run the oldest compatible upgrade source"
   echo "Positional parameters:"
   echo "\t<to_version>     Target upgrade version. See regress/run_test.pl help on --upgrade-path <to> parameter."
 }
@@ -34,6 +38,11 @@ while test -n "$1"; do
   elif test "$1" = "--skip"; then
     shift
     SKIP_LABEL_REGEXP=$1
+  elif test "$1" = "--extension"; then
+    shift
+    ONLY_EXTENSION=$1
+  elif test "$1" = "--oldest"; then
+    ONLY_OLDEST=1
   elif test "$1" = "-h" -o "$1" = "--help"; then
     usage
     exit 0
@@ -87,6 +96,28 @@ semver_compare()
     echo -1; return;
   fi
   echo 0; return;
+}
+
+# Emit versions in ascending semantic-version order without relying on GNU sort.
+sort_versions()
+{
+  unsorted="$*"
+  while test -n "${unsorted}"; do
+    oldest=
+    remaining=
+    for version in ${unsorted}; do
+      if test -z "${oldest}"; then
+        oldest=${version}
+      elif test "`semver_compare "${version}" "${oldest}"`" -lt 0; then
+        remaining="${remaining} ${oldest}"
+        oldest=${version}
+      else
+        remaining="${remaining} ${version}"
+      fi
+    done
+    echo "${oldest}"
+    unsorted=${remaining}
+  done
 }
 
 failed()
@@ -248,6 +279,20 @@ if test -f postgis_sfcgal--${to_version}.sql; then
   INSTALLED_EXTENSIONS="$INSTALLED_EXTENSIONS postgis_sfcgal"
 fi
 
+if test -n "${ONLY_EXTENSION}"; then
+  selected_extensions=
+  for EXT in ${INSTALLED_EXTENSIONS}; do
+    if test "${EXT}" = "${ONLY_EXTENSION}"; then
+      selected_extensions="${EXT}"
+    fi
+  done
+  if test -z "${selected_extensions}"; then
+    echo "SKIP: extension ${ONLY_EXTENSION} is not installed for target ${to_version}"
+    exit 0
+  fi
+  INSTALLED_EXTENSIONS=${selected_extensions}
+fi
+
 echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
 USERTESTFLAGS=${RUNTESTFLAGS}
@@ -275,6 +320,9 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
 
   # Check extension->extension upgrades
   files=`'ls' ${EXT}--* | grep -v -- '--.*--' | sed "s/^${EXT}--\(.*\)\.sql/\1/"`
+  if test ${ONLY_OLDEST} != 0; then
+    files=`sort_versions ${files}`
+  fi
   for fname in $files; do
     from_version="$fname"
     if test "$from_version" = "unpackaged"; then
@@ -287,6 +335,11 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     #echo "INFO: semver_compare ${from} ${to} returned $cmp"
     if test $cmp -eq 0; then
       echo "SKIP: ${from_version} -> ${to_version} (we won't test same-version upgrade/downgrade here)"
+      continue;
+    fi
+
+    if test ${ONLY_OLDEST} != 0 -a $cmp -gt 0; then
+      echo "SKIP: ${from_version} -> ${to_version} (--oldest only tests upgrades)"
       continue;
     fi
 
@@ -337,6 +390,10 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
       " check_downgrade
     fi
 
+    if test ${ONLY_OLDEST} != 0; then
+      break
+    fi
+
   done
 
   if ! kept_label "unpackaged"; then
@@ -345,7 +402,11 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
   fi
 
   # Check unpackaged->extension upgrades
-  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
+  unpackaged_versions=`'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
+  if test ${ONLY_OLDEST} != 0; then
+    unpackaged_versions=`sort_versions ${unpackaged_versions}`
+  fi
+  for majmin in ${unpackaged_versions}; do
     UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
     test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
     if expr $to_version_param : ':auto' >/dev/null; then
@@ -371,6 +432,9 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
       echo "FAIL: ${test_label}"
       failed
     }
+    if test ${ONLY_OLDEST} != 0; then
+      break
+    fi
   done
 
   # Check unpackaged->unpackaged upgrades (if target version == current version)
@@ -382,7 +446,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     continue
   fi #}
 
-  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`
+  for majmin in ${unpackaged_versions}
   do #{
     UPGRADE_PATH="unpackaged${majmin}--:auto"
     test_label="${EXT} script soft upgrade ${UPGRADE_PATH}"
@@ -392,7 +456,9 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
 
     compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
 
-    if kept_label "${test_label}"; then #{
+    run_soft_upgrade=1
+    kept_label "${test_label}" || run_soft_upgrade=0
+    if test ${run_soft_upgrade} != 0; then #{
       echo "Testing ${test_label}"
       RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
       ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
@@ -404,7 +470,9 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     fi #}
 
     test_label="${EXT} script hard upgrade ${UPGRADE_PATH}"
-    if kept_label "${test_label}"; then #{
+    run_hard_upgrade=1
+    kept_label "${test_label}" || run_hard_upgrade=0
+    if test ${run_hard_upgrade} != 0; then #{
       echo "Testing ${test_label}"
       RUNTESTFLAGS="-v --dumprestore --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
       ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
@@ -414,6 +482,12 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
         failed
       }
     fi #}
+
+    if test ${ONLY_OLDEST} != 0; then
+      if test ${run_soft_upgrade} != 0 || test ${run_hard_upgrade} != 0; then
+        break
+      fi
+    fi
 
   done #}
 

@@ -132,14 +132,13 @@ SELECT 'expr &&', id, estimate_error(
 SELECT 'st_orderingequals_idx',
   qnodes('select * from test where ST_OrderingEquals(the_geom, ST_MakePoint(0,0))');
 
-CREATE TABLE st_orderingequals_volatile_calls (num integer);
-INSERT INTO st_orderingequals_volatile_calls VALUES (0);
+CREATE SEQUENCE st_orderingequals_volatile_calls;
 
 CREATE OR REPLACE FUNCTION st_orderingequals_volatile_geom(g geometry)
 RETURNS geometry
 LANGUAGE 'plpgsql' VOLATILE AS $$
 BEGIN
-  UPDATE st_orderingequals_volatile_calls SET num = num + 1;
+  PERFORM nextval('st_orderingequals_volatile_calls');
   RETURN g;
 END;
 $$;
@@ -148,10 +147,10 @@ SELECT 'st_orderingequals_volatile_count', count(*)
 FROM (VALUES (ST_MakePoint(0,0))) AS q(g)
 JOIN test t ON ST_OrderingEquals(st_orderingequals_volatile_geom(t.the_geom), q.g);
 
-SELECT 'st_orderingequals_volatile', num FROM st_orderingequals_volatile_calls;
+SELECT 'st_orderingequals_volatile', last_value FROM st_orderingequals_volatile_calls;
 
 DROP FUNCTION st_orderingequals_volatile_geom(geometry);
-DROP TABLE st_orderingequals_volatile_calls;
+DROP SEQUENCE st_orderingequals_volatile_calls;
 
 CREATE SCHEMA st_orderingequals_search_path;
 CREATE FUNCTION st_orderingequals_search_path.geometry_bbox_false(geometry, geometry)
