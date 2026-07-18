@@ -42,15 +42,21 @@ start_release_docs_pg()
   release_docs_pghost="${release_docs_tmpdir}/socket"
   mkdir "${release_docs_pghost}"
 
-  "${PGPATH}/bin/initdb" -D "${release_docs_pgdata}" -A trust --no-sync
+  release_docs_initdb_options=(-D "${release_docs_pgdata}" -A trust --no-sync)
+  if "${PGPATH}/bin/initdb" --help | grep -q -- '--no-data-checksums'; then
+    release_docs_initdb_options+=(--no-data-checksums)
+  fi
+  "${PGPATH}/bin/initdb" "${release_docs_initdb_options[@]}"
   export PGHOST="${release_docs_pghost}"
   export PGPORT="${PGPORT:-8447}"
   PGUSER=$(id -un)
   export PGUSER
+  release_docs_pgopts="-F -h '' -k ${PGHOST} -p ${PGPORT}"
+  release_docs_pgopts="${release_docs_pgopts} -c synchronous_commit=off -c full_page_writes=off"
   "${PGPATH}/bin/pg_ctl" \
     -D "${release_docs_pgdata}" \
     -l "${release_docs_tmpdir}/postgresql.log" \
-    -o "-F -h '' -k ${PGHOST} -p ${PGPORT}" \
+    -o "${release_docs_pgopts}" \
     -w start
 }
 
