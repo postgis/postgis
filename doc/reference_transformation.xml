@@ -419,12 +419,8 @@ FROM (SELECT ST_LineToCurve(ST_Buffer('POINT(234 567)'::geometry, 3)) As geom) A
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-SELECT ST_AsEWKT(ST_RotateXYZ(ST_GeomFromEWKT('POINT(1 0 0)'), 0, pi()/2, pi()/2));
- st_asewkt
-------------
- POINT(0 0 -1)
-</programlisting>
+		<programlisting>SELECT ST_AsEWKT(ST_RotateXYZ(ST_GeomFromEWKT('POINT(1 0 0)'), 0, pi()/2, pi()/2));</programlisting>
+<screen>POINT(0 0 -1)</screen>
 	  </refsection>
 
 	  <refsection>
