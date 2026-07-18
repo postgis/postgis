@@ -7,7 +7,7 @@ DROP VIEW IF EXISTS upgrade_view_test_askml;
 DROP VIEW IF EXISTS upgrade_view_test_dwithin;
 DROP VIEW IF EXISTS upgrade_view_test_clusterkmeans;
 DROP VIEW IF EXISTS upgrade_view_test_distance;
-DROP TABLE upgrade_test;
+DROP TABLE IF EXISTS upgrade_test;
 
 -- Drop functions deprecated on upgrade
 DROP FUNCTION IF EXISTS st_force3dz_deprecated_by_postgis_301(geometry);
