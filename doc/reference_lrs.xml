@@ -930,17 +930,12 @@ ST_AddMeasure(
 		<title>Examples</title>
 
 		<programlisting>SELECT ST_AsText(ST_3DAddMeasure(
-ST_GeomFromEWKT('LINESTRING(0 0 0, 0 0 1, 0 0 4)'),10,20)) As ewelev;
-                  ewelev
-------------------------------------------
- LINESTRING ZM (0 0 0 10,0 0 1 12.5,0 0 4 20)
+ST_GeomFromEWKT('LINESTRING(0 0 0, 0 0 1, 0 0 4)'),10,20)) As ewelev;</programlisting>
+<screen>LINESTRING ZM (0 0 0 10,0 0 1 12.5,0 0 4 20)</screen>
 
-SELECT ST_AsText(ST_3DAddMeasure(
-ST_GeomFromEWKT('MULTILINESTRING((0 0 0, 0 0 1),(0 0 1, 0 0 4))'),10,20)) As ewelev;
-                                      ewelev
-----------------------------------------------------------------------------------
- MULTILINESTRING ZM ((0 0 0 10,0 0 1 12.5),(0 0 1 12.5,0 0 4 20))
-</programlisting>
+<programlisting>SELECT ST_AsText(ST_3DAddMeasure(
+ST_GeomFromEWKT('MULTILINESTRING((0 0 0, 0 0 1),(0 0 1, 0 0 4))'),10,20)) As ewelev;</programlisting>
+<screen>MULTILINESTRING ZM ((0 0 0 10,0 0 1 12.5),(0 0 1 12.5,0 0 4 20))</screen>
 	  </refsection>
 
 	  <refsection>
