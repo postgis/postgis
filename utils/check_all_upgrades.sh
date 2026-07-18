@@ -339,11 +339,16 @@ echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
 USERTESTFLAGS=${RUNTESTFLAGS}
 
-# Make use of all public functions defined by source version
-# and use double-upgrade
+# Make use of all public functions defined by source version when the
+# branch carries that hook, and use double-upgrade.
+if test -f "${SRCDIR}/regress/hooks/use-all-functions.sql"; then
+  USERTESTFLAGS="\
+    ${USERTESTFLAGS} \
+    --before-upgrade-script ${SRCDIR}/regress/hooks/use-all-functions.sql \
+  "
+fi
 USERTESTFLAGS="\
   ${USERTESTFLAGS} \
-  --before-upgrade-script ${SRCDIR}/regress/hooks/use-all-functions.sql \
   --after-upgrade-script ${SRCDIR}/regress/hooks/hook-after-upgrade.sql \
 "
 
