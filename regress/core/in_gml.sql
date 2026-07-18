@@ -173,6 +173,9 @@ SELECT 'polygon_24', ST_AsEWKT(ST_GeomFromGML('<gml:CurvePolygon xmlns:gml="http
 -- ERROR mismatched Z between a Ring member and a nested compound Curve
 SELECT 'polygon_25', ST_AsEWKT(ST_GeomFromGML('<gml:CurvePolygon xmlns:gml="http://www.opengis.net/gml/3.2"><gml:exterior><gml:Ring><gml:curveMember><gml:LineString><gml:posList srsDimension="3">0 0 0 1 0 0</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">1 0 99 2 0 99</gml:posList></gml:LineStringSegment><gml:ArcString><gml:posList srsDimension="3">2 0 99 3 1 99 4 0 99</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:LineString><gml:posList srsDimension="3">4 0 99 0 0 0</gml:posList></gml:LineString></gml:curveMember></gml:Ring></gml:exterior></gml:CurvePolygon>'));
 
+-- Mixed dimensions make the whole curved ring 2D before closure validation
+SELECT 'polygon_26', ST_AsEWKT(ST_GeomFromGML('<gml:CurvePolygon xmlns:gml="http://www.opengis.net/gml/3.2"><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:pos srsDimension="3">0 0 5</gml:pos><gml:pos>1 1</gml:pos><gml:pos>0 0</gml:pos></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:CurvePolygon>'));
+
 -- ERROR open curved ring
 SELECT 'polygon_22', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1 2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:Polygon>'));
 SELECT 'polygon_23', ST_AsEWKT(ST_GeomFromGML('<gml:CurvePolygon xmlns:gml="http://www.opengis.net/gml/3.2" srsName="urn:ogc:def:crs:EPSG::4326"><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>1 2 3 4 5 6 7 8 1 2</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:CurvePolygon>'));
@@ -298,6 +301,8 @@ SELECT 'surface_22', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Po
 
 -- ERROR: interior but no exterior
 SELECT 'surface_23', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:interior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface>'));
+
+SELECT 'surface_24', ST_AsEWKT(ST_GeomFromGML('<gml:Surface xmlns:gml="http://www.opengis.net/gml/3.2"><gml:patches><gml:PolygonPatch><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1 2 0 1 -1 0 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
 --
 -- MultiPoint
@@ -466,6 +471,8 @@ SELECT 'msurface_11', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMe
 SELECT 'msurface_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMembers></gml:surfaceMembers></gml:MultiSurface>'));
 
 SELECT 'msurface_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface xmlns:gml="http://www.opengis.net/gml/3.2"><gml:surfaceMember><gml:CurvePolygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList>0 0 1 1 2 0 1 -1 0 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:CurvePolygon></gml:surfaceMember></gml:MultiSurface>'));
+
+SELECT 'msurface_14', ST_AsEWKT(ST_GeomFromGML(ST_AsGML(3, ST_GeomFromEWKT('MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0)),((10 10,11 10,11 11,10 10)))'))));
 
 --
 -- PolyhedralSurface

@@ -1382,11 +1382,13 @@ static LWGEOM* parse_gml_linearring(xmlNodePtr xnode, bool *hasz, int *root_srid
  * Parse GML Polygon (2.1.2, 3.1.1)
  */
 static void
-gml_validate_ring_geom(LWGEOM *ring, int error_code)
+gml_validate_ring_geom(LWGEOM *ring, bool hasz, int error_code)
 {
+	POINT4D first, last;
 	uint32_t vertices_needed = ring->type == LINETYPE ? 4 : 3;
 
-	if (lwgeom_count_vertices(ring) < vertices_needed || !lwgeom_is_closed(ring))
+	if (lwgeom_count_vertices(ring) < vertices_needed || lwgeom_startpoint(ring, &first) == LW_FAILURE ||
+	    gml_curve_endpoint(ring, &last) == LW_FAILURE || !gml_curve_points_equal(&first, &last, hasz))
 		gml_lwpgerror("invalid GML representation", error_code);
 }
 
@@ -1404,7 +1406,7 @@ parse_gml_linearring_as_lwgeom(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		gml_reproject_lwgeom(ring, srs.srid, *root_srid);
 	ring->srid = *root_srid;
 
-	gml_validate_ring_geom(ring, 43);
+	gml_validate_ring_geom(ring, *hasz, 43);
 
 	return ring;
 }
@@ -1462,7 +1464,7 @@ parse_gml_ring(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	ring = gml_curve_segments_to_lwgeom(segments, nsegments, hasz, root_srid);
 	lwfree(segments);
 
-	gml_validate_ring_geom(ring, 43);
+	gml_validate_ring_geom(ring, *hasz, 43);
 
 	return ring;
 }
@@ -1649,12 +1651,8 @@ static LWGEOM* parse_gml_triangle(xmlNodePtr xnode, bool *hasz, int *root_srid)
  */
 static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
-	xmlChar *interpolation=NULL;
-	POINTARRAY **ppa=NULL;
-	LWGEOM *geom=NULL;
-	xmlNodePtr xa, xb;
-	int i, ring=0;
-	gmlSrs srs;
+	xmlChar *interpolation = NULL;
+	LWGEOM *geom;
 
 	/* PolygonPatch */
 	if (!is_gml_element(xnode, "PolygonPatch"))
@@ -1669,76 +1667,9 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		xmlFree(interpolation);
 	}
 
-	parse_gml_srs(xnode, &srs);
-
-	/* PolygonPatch/exterior */
-	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
-	{
-		if (!is_gml_namespace(xa, false)) continue;
-		if (!is_gml_element(xa, "exterior")) continue;
-
-		/* PolygonPatch/exterior/LinearRing */
-		for (xb = xa->children ; xb != NULL ; xb = xb->next)
-		{
-			if (xb->type != XML_ELEMENT_NODE) continue;
-			if (!is_gml_namespace(xb, false)) continue;
-			if (!is_gml_element(xb, "LinearRing")) continue;
-
-			ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
-			ppa[0] = parse_gml_data(xb->children, hasz, root_srid);
-
-			if (ppa[0]->npoints < 4
-			        || (!*hasz && !ptarray_is_closed_2d(ppa[0]))
-			        ||  (*hasz && !ptarray_is_closed_3d(ppa[0])))
-				gml_lwpgerror("invalid GML representation", 48);
-
-			if (srs.reverse_axis)
-				ppa[0] = ptarray_flip_coordinates(ppa[0]);
-		}
-	}
-
-	/* Interior but no Exterior ! */
-	if ( ! ppa )
-	 	gml_lwpgerror("invalid GML representation", 48);
-
-	/* PolygonPatch/interior */
-	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
-	{
-		if (xa->type != XML_ELEMENT_NODE) continue;
-		if (!is_gml_namespace(xa, false)) continue;
-		if (!is_gml_element(xa, "interior")) continue;
-
-		/* PolygonPatch/interior/LinearRing */
-		for (xb = xa->children ; xb != NULL ; xb = xb->next)
-		{
-			if (xb->type != XML_ELEMENT_NODE) continue;
-			if (!is_gml_element(xb, "LinearRing")) continue;
-
-			ppa = (POINTARRAY**) lwrealloc((POINTARRAY *) ppa,
-			                               sizeof(POINTARRAY*) * (ring + 1));
-			ppa[ring] = parse_gml_data(xb->children, hasz, root_srid);
-
-			if (ppa[ring]->npoints < 4
-			        || (!*hasz && !ptarray_is_closed_2d(ppa[ring]))
-			        || ( *hasz && !ptarray_is_closed_3d(ppa[ring])))
-				gml_lwpgerror("invalid GML representation", 49);
-
-			if (srs.reverse_axis)
-				ppa[ring] = ptarray_flip_coordinates(ppa[ring]);
-
-			ring++;
-		}
-	}
-
-	/* Exterior Ring is mandatory */
-	if (ppa == NULL || ppa[0] == NULL) gml_lwpgerror("invalid GML representation", 50);
-
-	if (srs.srid != *root_srid && *root_srid != SRID_UNKNOWN)
-	{
-		for (i=0 ; i < ring ; i++)
-			gml_reproject_pa(ppa[i], srs.srid, *root_srid);
-	}
-	geom = (LWGEOM *) lwpoly_construct(*root_srid, NULL, ring, ppa);
+	geom = parse_gml_polygon(xnode, hasz, root_srid);
+	if (lwgeom_is_empty(geom))
+		gml_lwpgerror("invalid GML representation", 50);
 
 	return geom;
 }
@@ -2093,6 +2024,15 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 				if (member->type != POLYGONTYPE)
 					has_curve = true;
 			}
+		}
+		else if (is_gml_element(xa, "Polygon") || is_gml_element(xa, "CurvePolygon"))
+		{
+			LWGEOM *member = parse_gml(xa, hasz, root_srid);
+			geoms = ngeoms == 0 ? (LWGEOM **)lwalloc(sizeof(LWGEOM *))
+					    : (LWGEOM **)lwrealloc(geoms, sizeof(LWGEOM *) * (ngeoms + 1));
+			geoms[ngeoms++] = member;
+			if (member->type != POLYGONTYPE)
+				has_curve = true;
 		}
 		else if (is_gml_element(xa, "surfaceMember"))
 		{
