@@ -30,7 +30,7 @@ service that owns the behavior:
 | GitHub CodeQL, codespell, and contributor-credit jobs | `.github/workflows/codeql.yml`, `.github/workflows/codespell.yml`, and `.github/workflows/contributor-credits.yml` |
 | Debbie build, docs, and release jobs | `ci/debbie/`, the Debbie Jenkins jobs, and release-process notes |
 | Winnie Windows jobs | `ci/winnie/` and the Winnie Jenkins jobs |
-| Bessie/Bessie32 and Berrie/Berrie64 jobs | `ci/bessie*`, `ci/berrie*`, and the corresponding Jenkins worker labels |
+| Bessie and Berrie/Berrie64 jobs | `ci/bessie/`, `ci/berrie*`, and the corresponding Jenkins worker labels |
 | Docker build images used by GitHub Actions | `postgis/postgis-build-env` image tags referenced from `.github/workflows/ci.yml` |
 
 When a dashboard row describes dependency versions, operating systems, branch

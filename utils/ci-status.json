@@ -143,13 +143,6 @@
       "branch_parameter": "reference"
     },
     {
-      "name": "Jenkins / Bessie32",
-      "provider": "jenkins",
-      "required": true,
-      "job_url": "https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie32/",
-      "branch_parameter": "reference"
-    },
-    {
       "name": "Jenkins / Berrie",
       "provider": "jenkins",
       "required": true,
