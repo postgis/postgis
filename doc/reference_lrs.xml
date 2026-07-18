@@ -228,13 +228,9 @@ WITH data AS (
 )
 SELECT ST_AsText(ST_3DLineSubstring(geom, 0, 0.5), 6) AS substring,
        round(ST_3DLength(ST_3DLineSubstring(geom, 0, 0.5))::numeric, 6) AS substring_length,
-       round(ST_3DLength(geom)::numeric, 6) AS total_length
-FROM data;
-
-                 substring                  | substring_length | total_length
---------------------------------------------+------------------+--------------
- LINESTRING Z (0 0 0,0 2 5,0 3.716695 6.072934) |         7.409573 |    14.819146
-</programlisting>
+			   round(ST_3DLength(geom)::numeric, 6) AS total_length
+FROM data;</programlisting>
+<screen>LINESTRING Z (0 0 0,0 2 5,0 3.716695 6.072934) | 7.409573 | 14.819146</screen>
 		  </refsection>
 
 		  <refsection>
