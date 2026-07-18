@@ -5,8 +5,6 @@ weight: 40
 geekdocHidden: false
 ---
 
-# SQL Upgrade and Deprecation
-
 This page covers SQL API changes, upgrade metadata comments, upgrade hooks, and
 parser-sensitive SQL style used by PostGIS upgrade-script generators.
 

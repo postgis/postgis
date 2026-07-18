@@ -5,8 +5,6 @@ weight: 10
 geekdocHidden: false
 ---
 
-# CI Inventory Standards
-
 The old Trac `ContinuousIntegration` page is a useful warning: a build-badge
 dashboard combines live service URLs, branch names, CI job names, dependency
 versions, and human-readable host notes. That kind of table becomes stale
@@ -87,7 +85,7 @@ readback.
 
 ## Relationship To Other Docs
 
-Use [Testing and debugging](../testing.md) for test commands and local validation
+Use [Testing and debugging](_index.md) for test commands and local validation
 workflows. Use [Release process](../release-process.md) for release-manager
 greenlight checks, Debbie release jobs, and branch-opening steps. Use
 [Website maintenance](../website.md) and the public website compatibility matrix

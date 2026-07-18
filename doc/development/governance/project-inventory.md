@@ -5,8 +5,6 @@ weight: 10
 geekdocHidden: false
 ---
 
-# PostGIS Project Inventory
-
 This page records the project codebases and services that need governance or
 maintainer routing. It is intentionally separate from the PSC process so the
 governance notes can describe how decisions are made while this page describes
@@ -29,7 +27,7 @@ explicit in-tree backpatches.
 | `postgis_tiger_geocoder` | <https://git.osgeo.org/gitea/postgis/postgis_tiger_geocoder> |
 
 For pull-request routing, source-of-truth branches, and mirror handling, see
-[Pull request and maintainer workflow](../maintenance.md).
+[Pull request and maintainer workflow](../maintenance/_index.md).
 
 ## Project Services
 
@@ -39,7 +37,7 @@ For pull-request routing, source-of-truth branches, and mirror handling, see
 | `postgis.net/stuff` | Release tarballs, checksums, and generated documentation artefacts | [Release process](../release-process.md) |
 | Debbie build host and build jobs | Release builds, distribution checks, and build-bot jobs referenced during release work | [Release process](../release-process.md) |
 | OSGeo Trac | Tickets, legacy wiki, roadmap, reports, and historical project records | [Contributing workflow](../contributing.md) |
-| Weblate | Translation repository maintenance for the PostGIS manual | [Pull request and maintainer workflow](../maintenance.md) and [Manual documentation workflow](../manual.md) |
+| Weblate | Translation repository maintenance for the PostGIS manual | [Pull request and maintainer workflow](../maintenance/_index.md) and [Manual documentation workflow](../manual.md) |
 | Mailing lists and chat | Public development discussion, user support, and community coordination | [Contributing workflow](../contributing.md) |
 
 Keep credentials, server-specific secrets, and deployment tokens out of this

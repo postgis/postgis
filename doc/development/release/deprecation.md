@@ -5,8 +5,6 @@ weight: 30
 geekdocHidden: false
 ---
 
-# Deprecating and Removing API
-
 Several removal types affect user upgrades and must be considered carefully:
 
 * SQL API functions

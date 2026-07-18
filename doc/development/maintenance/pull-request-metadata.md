@@ -5,8 +5,6 @@ weight: 30
 geekdocHidden: false
 ---
 
-# Pull Request Metadata
-
 Use labels, milestones, and draft state to make the maintainer queue sortable.
 They are triage metadata, not a substitute for reading the pull request body,
 the Trac ticket, the diff, current review threads, and CI.

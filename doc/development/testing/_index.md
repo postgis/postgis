@@ -3,9 +3,8 @@ title: "Testing and Debugging"
 date: 2026-06-26
 weight: 40
 geekdocHidden: false
+geekdocCollapseSection: true
 ---
-
-# Testing and Debugging
 
 PostGIS uses both SQL regression tests and CUnit tests. Choose the lowest layer
 that exercises the behavior you changed.
@@ -82,7 +81,7 @@ unprivileged.
 ## Standard Test Runs
 
 Tests expect PostgreSQL to be running and the current user to be able to create
-databases. The setup in [Building PostGIS](environment/ubuntu.md) configures a packaged
+databases. The setup in [Building PostGIS](../environment/ubuntu.md) configures a packaged
 cluster for local testing.
 
 Export connection parameters so every helper uses the same cluster:
@@ -133,7 +132,7 @@ Other useful targets:
   is public, use `@handle (GitHub user: partial name)` to credit both forms and
   keep all handle-first entries together at the start of the list. Do not infer
   a person's name from an email address.
-* [CI inventory standards](testing/ci.md) describe how to keep build-bot and badge
+* [CI inventory standards](ci.md) describe how to keep build-bot and badge
   inventories checkable instead of copying stale dashboard markup into
   maintained prose.
 
@@ -193,7 +192,7 @@ Open `coverage-html/index.html` in a browser or upload the report to CI
 artifacts to inspect missing lines.
 
 If you rely on the `ci/github/run_*.sh` wrappers, export `PGHOME` and `PGDATA`
-as described in [Building PostGIS](environment/ubuntu.md) and replace
+as described in [Building PostGIS](../environment/ubuntu.md) and replace
 `/usr/local/pgsql/bin/pg_ctl` in those scripts with the packaged location or
 create a symlink at `/usr/local/pgsql/bin` pointing to `${PGHOME}/bin`.
 

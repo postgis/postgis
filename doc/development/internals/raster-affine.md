@@ -5,8 +5,6 @@ weight: 50
 geekdocHidden: false
 ---
 
-# Raster affine georeferencing
-
 PostGIS raster stores the relationship between raster cell coordinates
 `(i, j)` and spatial coordinates `(x, y)` as the same six-coefficient
 geotransform used by GDAL world files:

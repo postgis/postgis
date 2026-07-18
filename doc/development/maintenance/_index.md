@@ -3,13 +3,12 @@ title: "Pull Request and Maintainer Workflow"
 date: 2026-06-26
 weight: 130
 geekdocHidden: false
+geekdocCollapseSection: true
 ---
-
-# Pull Request and Maintainer Workflow
 
 This page collects maintainer-facing workflow notes for landing patches and
 pull requests. Contributor-facing setup and submission notes live in
-[Contributing workflow](contributing.md).
+[Contributing workflow](../contributing.md).
 
 ## Source of Truth
 
@@ -50,8 +49,8 @@ design notes, or documentation in that component repository.
 
 RFC-5, published at <https://postgis.net/development/rfcs/rfc05/>, records the
 core contributor guideline for commit practice, Trac references, `NEWS`, code
-provenance, and legal review. Use [Governance notes](governance.md) and
-[PostGIS project inventory](governance/project-inventory.md) for current PSC
+provenance, and legal review. Use [Governance notes](../governance/_index.md) and
+[PostGIS project inventory](../governance/project-inventory.md) for current PSC
 process, repository routing, and service ownership.
 
 Write access to the canonical repository is granted by the Project Steering
@@ -66,18 +65,18 @@ from other projects, and discuss unusual licensing situations with the PSC or
 OSGeo legal counsel before committing.
 
 For the maintained commit-message, branch-target, authorship, and post-push
-rules distilled from RFC-5, see [Commit and branch guidelines](maintenance/commit-guidelines.md).
+rules distilled from RFC-5, see [Commit and branch guidelines](commit-guidelines.md).
 For supported-branch fix propagation, provenance, `NEWS`, and Trac follow-up
-rules, see [Backpatching fixes](maintenance/backpatching.md).
+rules, see [Backpatching fixes](backpatching.md).
 For labels, milestones, draft state, and mirror metadata on pull requests, see
-[Pull request metadata](maintenance/pull-request-metadata.md).
+[Pull request metadata](pull-request-metadata.md).
 
 ## First Pass
 
 Before editing a public branch, public pull request body, or Trac ticket state,
 read the current source of truth:
 
-* `CONTRIBUTING.md`, [Coding style](style.md), and the relevant page under
+* `CONTRIBUTING.md`, [Coding style](../style.md), and the relevant page under
   this directory.
 * The Trac ticket, including all comments, attachments, and linked context.
 * The pull request description, commits, diff, review threads, and CI state.
@@ -94,13 +93,13 @@ When a mirror pull request, mailing-list patch, or Trac ticket needs contributor
 follow-up instead of maintainer-side branch repair, point the contributor to the
 specific workflow section rather than sending them back to this maintainer page:
 
-* [Contributing workflow](contributing.md) for Trac tickets, mirror pull
+* [Contributing workflow](../contributing.md) for Trac tickets, mirror pull
   requests, mailing lists, chat, and security reports.
-* [First contribution path](contributing.md#first-contribution-path) for a
+* [First contribution path](../contributing.md#first-contribution-path) for a
   small-patch checklist from fork through focused validation.
-* [Development environments](environment.md) and
-  [Testing and debugging](testing.md) for local build and regression setup.
-* [Release and upgrade rules](release.md) when a proposed change affects SQL
+* [Development environments](../environment/_index.md) and
+  [Testing and debugging](../testing/_index.md) for local build and regression setup.
+* [Release and upgrade rules](../release/_index.md) when a proposed change affects SQL
   API compatibility, extension upgrades, dependency policy, or backpatch scope.
 
 ## Review and CI Readback
@@ -116,7 +115,7 @@ head commit that produced it, not to a later force-push.
 ## Commit Messages
 
 The maintained commit-message and branch-target rules live in
-[Commit and branch guidelines](maintenance/commit-guidelines.md). The short summary below is
+[Commit and branch guidelines](commit-guidelines.md). The short summary below is
 for common pull request landings.
 
 For a single-commit pull request that can be represented cleanly on the target
@@ -170,7 +169,7 @@ Before backpatching, confirm the target release line is open in `Version.config`
 and `NEWS`. Stable branches normally receive bug fixes, not new features. End of
 life branches should not receive new work without explicit release-manager
 direction.
-Use [Backpatching fixes](maintenance/backpatching.md) for the two-pass branch
+Use [Backpatching fixes](backpatching.md) for the two-pass branch
 scan, one-to-one commit provenance, `NEWS` expectations, and per-ticket Trac
 follow-up wording.
 
@@ -197,4 +196,4 @@ work before merge or reset operations, and unlock when the repository is clean.
 For website maintenance, use the OSGeo Gitea `postgis/postgis.net` repository.
 The site is a Hugo project; update release pointers and news there during
 release work, run `make check`, and do not edit the vendored theme. See
-[PostGIS website maintenance](website.md).
+[PostGIS website maintenance](../website.md).

@@ -5,8 +5,6 @@ weight: 20
 geekdocHidden: false
 ---
 
-# macOS Development Environment
-
 The current macOS pull-request build is defined in
 `.github/workflows/ci-macos.yml`. Use that workflow as the source of truth when
 checking platform-specific dependencies or flags.

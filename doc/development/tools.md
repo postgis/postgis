@@ -5,8 +5,6 @@ weight: 50
 geekdocHidden: false
 ---
 
-# Developer Tools
-
 These tools support debugging, formatting, profiling, and coverage work. Install
 the relevant packages through your development environment first, then use the
 focused workflow for the task at hand.
@@ -26,7 +24,7 @@ ulimit -c unlimited
 
 When running under constrained CI where you cannot change `kernel.core_pattern`,
 skip the `logbt` setup and use the manual `gdb` workflow in
-[Testing and debugging](testing.md#backtraces).
+[Testing and debugging](testing/_index.md#backtraces).
 
 ## Formatting
 
@@ -35,7 +33,7 @@ rules.
 
 ## Coverage
 
-Use the coverage workflow in [Testing and debugging](testing.md#coverage).
+Use the coverage workflow in [Testing and debugging](testing/_index.md#coverage).
 
 ## Profiling
 

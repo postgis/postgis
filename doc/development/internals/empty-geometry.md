@@ -5,8 +5,6 @@ weight: 30
 geekdocHidden: false
 ---
 
-# Empty geometry semantics
-
 Empty geometries are valid geometry values with no coordinates. They are not
 SQL `NULL`: `NULL` means an unknown or absent SQL value, while `EMPTY` is a
 known geometry value that can be produced by a successful spatial operation.

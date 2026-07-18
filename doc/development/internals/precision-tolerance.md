@@ -5,8 +5,6 @@ weight: 100
 geekdocHidden: false
 ---
 
-# Precision And Tolerance Internals
-
 PostGIS does not have one global tolerance model for all geometry operations.
 Precision and tolerance are handled at the API boundary where they affect a
 specific algorithm.

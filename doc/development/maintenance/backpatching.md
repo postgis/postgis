@@ -5,8 +5,6 @@ weight: 20
 geekdocHidden: false
 ---
 
-# Backpatching Fixes
-
 Backpatching keeps supported release lines consistent without turning stable
 branches into feature branches. Use this checklist when a bug fix, release-line
 CI fix, or security fix may need to move between `master` and supported

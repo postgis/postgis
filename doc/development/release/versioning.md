@@ -5,8 +5,6 @@ weight: 20
 geekdocHidden: false
 ---
 
-# Versioning Policy
-
 PostGIS version names use three digits separated by periods:
 
 ```text

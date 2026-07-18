@@ -5,8 +5,6 @@ weight: 20
 geekdocHidden: false
 ---
 
-# Windows Development Environments
-
 PostGIS has two maintained Windows build surfaces:
 
 * The MSYS2 GitHub Actions job in `.github/workflows/msys.yml`.

@@ -5,8 +5,6 @@ weight: 70
 geekdocHidden: false
 ---
 
-# Raster storage and WKB
-
 PostGIS Raster has three related representations that are easy to confuse:
 
 * The PostgreSQL `raster` type is a variable-length value declared in

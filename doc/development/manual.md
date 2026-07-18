@@ -5,8 +5,6 @@ weight: 100
 geekdocHidden: false
 ---
 
-# Manual Documentation Workflow
-
 PostGIS documentation is written in DocBook XML under `doc/`. The root file is
 `doc/postgis.xml`, which includes chapter and reference XML files. The same XML
 also generates SQL comments for functions.
@@ -81,7 +79,7 @@ pixels are embedded in the generated SVG container rather than checked in as a
 manual screenshot.
 
 Garden checks combine documentation examples with behavior validation. Keep the
-command and review guidance in [Testing and debugging](testing.md#garden-checks)
+command and review guidance in [Testing and debugging](testing/_index.md#garden-checks)
 and link back here when manual examples need attention.
 
 Generated Doxygen documentation for supported branches is linked from the
