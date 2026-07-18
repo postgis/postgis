@@ -10390,11 +10390,8 @@ SELECT ST_Value(
     ),
     2, 2
 )
-FROM src;
- st_value
-----------
-       25
-                    </programlisting>
+FROM src;</programlisting>
+                    <screen>25</screen>
                 </refsection>
 
                 <refsection>
