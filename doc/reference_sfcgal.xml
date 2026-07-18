@@ -201,10 +201,8 @@ FROM data;</programlisting>
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT CG_IsValid('LINESTRING Z (0 0 0,0 0 1)'::geometry);
- cg_isvalid
---------------
- t</programlisting>
+                <programlisting>SELECT CG_IsValid('LINESTRING Z (0 0 0,0 0 1)'::geometry);</programlisting>
+                <screen>t</screen>
             </refsection>
 
             <refsection>
@@ -248,10 +246,8 @@ FROM data;</programlisting>
                 <title>Examples</title>
 
                 <programlisting>SELECT valid, reason, ST_AsText(location) AS location
-FROM CG_IsValidDetail('POLYGON((0 0,2 2,2 0,0 2,0 0))'::geometry);
- valid |         reason         | location
--------+------------------------+----------
- f     | ring 0 self intersects |</programlisting>
+FROM CG_IsValidDetail('POLYGON((0 0,2 2,2 0,0 2,0 0))'::geometry);</programlisting>
+                <screen>f | ring 0 self intersects |</screen>
             </refsection>
 
             <refsection>
@@ -294,10 +290,8 @@ FROM CG_IsValidDetail('POLYGON((0 0,2 2,2 0,0 2,0 0))'::geometry);
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT CG_IsSimple('LINESTRING(0 0,2 2,2 0,0 2)'::geometry);
- cg_issimple
--------------
- f</programlisting>
+                <programlisting>SELECT CG_IsSimple('LINESTRING(0 0,2 2,2 0,0 2)'::geometry);</programlisting>
+                <screen>f</screen>
             </refsection>
 
             <refsection>
@@ -339,10 +333,8 @@ FROM CG_IsValidDetail('POLYGON((0 0,2 2,2 0,0 2,0 0))'::geometry);
             <refsection>
                 <title>Examples</title>
 
-                <programlisting>SELECT CG_IsSimpleDetail('LINESTRING(0 0,2 2,2 0,0 2)'::geometry);
-     cg_issimpledetail
----------------------------
- linestring self intersects</programlisting>
+                <programlisting>SELECT CG_IsSimpleDetail('LINESTRING(0 0,2 2,2 0,0 2)'::geometry);</programlisting>
+                <screen>linestring self intersects</screen>
             </refsection>
 
             <refsection>
