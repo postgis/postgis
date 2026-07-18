@@ -612,65 +612,11 @@ AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting
 		<section xml:id="RT_Raster_MapAlgebra_Reclass_Rendering">
 			<title>Rendering Map Algebra and Reclass Results</title>
 			<para><xref linkend="RT_ST_MapAlgebra"/> and <xref linkend="RT_ST_Reclass"/> can be used together to turn analysis rasters into viewable images.  A common pattern is to build a derived raster with map algebra, convert numeric ranges into display classes with reclassification, and render the result with <xref linkend="RT_ST_AsPNG"/> or another <xref linkend="RT_ST_AsGDALRaster"/> output format.</para>
-			<para>The following examples from the raster reference show the kind of visual output these functions can produce.</para>
-			<informaltable>
-				<tgroup cols="2">
-					<tbody>
-						<row>
-							<entry>
-								<para>
-									<informalfigure>
-										<mediaobject>
-											<imageobject>
-												<imagedata fileref="images/st_mapalgebraexpr2_01.png"/>
-											</imageobject>
-											<caption><para>Two-raster map algebra intersection</para></caption>
-										</mediaobject>
-									</informalfigure>
-								</para>
-							</entry>
-							<entry>
-								<para>
-									<informalfigure>
-										<mediaobject>
-											<imageobject>
-												<imagedata fileref="images/st_mapalgebraexpr2_02.png"/>
-											</imageobject>
-											<caption><para>Two-raster map algebra union</para></caption>
-										</mediaobject>
-									</informalfigure>
-								</para>
-							</entry>
-						</row>
-						<row>
-							<entry>
-								<para>
-									<informalfigure>
-										<mediaobject>
-											<imageobject>
-												<imagedata fileref="images/st_mapalgebrafctngb01.png"/>
-											</imageobject>
-											<caption><para>Input raster band before neighborhood processing</para></caption>
-										</mediaobject>
-									</informalfigure>
-								</para>
-							</entry>
-							<entry>
-								<para>
-									<informalfigure>
-										<mediaobject>
-											<imageobject>
-												<imagedata fileref="images/st_mapalgebrafctngb02.png"/>
-											</imageobject>
-											<caption><para>Neighborhood average rendered as an image</para></caption>
-										</mediaobject>
-									</informalfigure>
-								</para>
-							</entry>
-						</row>
-					</tbody>
-				</tgroup>
-			</informaltable>
+			<para>The raster reference includes executable visual examples for these workflows:</para>
+			<itemizedlist>
+				<listitem><para><xref linkend="RT_ST_MapAlgebraExpr2"/> compares two-raster intersection and union results.</para></listitem>
+				<listitem><para><xref linkend="RT_ST_MapAlgebra"/> demonstrates neighborhood processing and renders the source and result rasters.</para></listitem>
+			</itemizedlist>
 			<para>For a classification-style output, reclassify a continuous band into a small display palette and render it directly.</para>
 			<programlisting><![CDATA[
 WITH classified AS (
