@@ -449,7 +449,8 @@ ERROR:  BOX2D_construct: args can not be empty points
 #1416g|t
 #1416h|t
 #1416i|t
-#1416j|t
+#1416j|<NurbsCurve  order='3' knot='0 0 0 1 1 1' weight='1 1 1'><Coordinate containerField='controlPoint' point='0 0 0 1 1 0 2 0 0' /></NurbsCurve>
+#1416k|t
 #4670-0|LINESTRING(2 2,0 0,1 1,3 3,4 4)
 #4670-1|LINESTRING(0 0,2 2,1 1,3 3,4 4)
 #4670-2|LINESTRING(0 0,1 1,2 2,3 3,4 4)

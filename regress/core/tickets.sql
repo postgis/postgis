@@ -1418,7 +1418,8 @@ SELECT '#1416f', ST_AsX3D('GEOMETRYCOLLECTION(CIRCULARSTRING(0 0 1,1 1 1,2 0 1))
 SELECT '#1416g', ST_AsX3D('GEOMETRYCOLLECTION(COMPOUNDCURVE(CIRCULARSTRING(0 0 1,1 1 1,1 0 1),(1 0 1,0 1 1)))'::geometry, 0) LIKE '<Shape><LineSet%';
 SELECT '#1416h', ST_AsX3D('GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(0 0 1,1 1 1,2 0 1,1 -1 1,0 0 1)))'::geometry, 0) LIKE '<Shape><IndexedFaceSet%';
 SELECT '#1416i', ST_AsX3D('CIRCULARSTRING(0 0 1,1 1 1,2 0 1,1 -1 1,0 0 1)'::geometry, 0) LIKE '<LineSet  vertexCount=''129''><Coordinate point=%';
-SELECT '#1416j', ST_AsX3D('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0) LIKE '%<Coordinate containerField=''controlPoint'' point=%';
+SELECT '#1416j', ST_AsX3D('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0);
+SELECT '#1416k', ST_AsX3D('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0) NOT LIKE '%<LineSet%';
 
 SELECT '#4670-0', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 0));
 SELECT '#4670-1', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 1));

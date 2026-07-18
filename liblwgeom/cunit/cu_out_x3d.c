@@ -262,7 +262,7 @@ out_x3d3_test_geoms(void)
 
 	do_x3d3_test(
 	    "NURBSCURVE(2, (0 0, 1 1, 2 0))",
-	    "<NurbsCurve  order='3'><Coordinate containerField='controlPoint' point='0 0 0 1 1 0 2 0 0' /></NurbsCurve>",
+	    "<NurbsCurve  order='3' knot='0 0 0 1 1 1' weight='1 1 1'><Coordinate containerField='controlPoint' point='0 0 0 1 1 0 2 0 0' /></NurbsCurve>",
 	    0,
 	    0);
 
@@ -271,6 +271,8 @@ out_x3d3_test_geoms(void)
 	    "<NurbsCurve  order='3' knot='0 0 0 1 1 1' weight='1 2 1'><Coordinate containerField='controlPoint' point='0 0 0 1 1 0 2 0 0' /></NurbsCurve>",
 	    0,
 	    0);
+
+	do_x3d3_not_contains("NURBSCURVE(2, (0 0, 1 1, 2 0))", "<LineSet", 0, 0);
 
 	do_x3d3_contains("GEOMETRYCOLLECTION(NURBSCURVE(2, (0 0, 1 1, 2 0)))", "<Shape><NurbsCurve", 0, 0);
 

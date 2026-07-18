@@ -497,35 +497,38 @@ static int
 asx3d3_nurbscurve_sb(const LWNURBSCURVE *curve, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	uint32_t i;
+	uint32_t nknots = 0;
+	double *knots;
 
 	if (!curve->points || curve->points->npoints == 0)
 		return LW_SUCCESS;
 
-	stringbuffer_aprintf(sb, "<NurbsCurve %s order='%u'", defid, curve->degree + 1);
-
-	if (curve->knots && curve->nknots > 0)
+	knots = lwnurbscurve_get_or_generate_knots(curve, &nknots);
+	if (!knots || nknots == 0)
 	{
-		stringbuffer_append_len(sb, " knot='", strlen(" knot='"));
-		for (i = 0; i < curve->nknots; i++)
-		{
-			if (i)
-				stringbuffer_append_len(sb, " ", 1);
-			stringbuffer_append_double(sb, curve->knots[i], precision);
-		}
-		stringbuffer_append_len(sb, "'", 1);
+		if (knots)
+			lwfree(knots);
+		return LW_FAILURE;
 	}
 
-	if (curve->weights && curve->nweights > 0)
+	stringbuffer_aprintf(sb, "<NurbsCurve %s order='%u' knot='", defid, curve->degree + 1);
+	for (i = 0; i < nknots; i++)
 	{
-		stringbuffer_append_len(sb, " weight='", strlen(" weight='"));
-		for (i = 0; i < curve->nweights; i++)
-		{
-			if (i)
-				stringbuffer_append_len(sb, " ", 1);
-			stringbuffer_append_double(sb, curve->weights[i], precision);
-		}
-		stringbuffer_append_len(sb, "'", 1);
+		if (i)
+			stringbuffer_append_len(sb, " ", 1);
+		stringbuffer_append_double(sb, knots[i], precision);
 	}
+	stringbuffer_append_len(sb, "' weight='", strlen("' weight='"));
+	lwfree(knots);
+
+	for (i = 0; i < curve->points->npoints; i++)
+	{
+		double weight = (curve->weights && i < curve->nweights) ? curve->weights[i] : 1.0;
+		if (i)
+			stringbuffer_append_len(sb, " ", 1);
+		stringbuffer_append_double(sb, weight, precision);
+	}
+	stringbuffer_append_len(sb, "'", 1);
 
 	if (X3D_USE_GEOCOORDS(opts))
 		stringbuffer_aprintf(
