@@ -494,7 +494,22 @@ review-html: html ## Compare this manual with REVIEW_HTML_BASE using synchronize
 # Localized render targets share translated XML files in each language
 # directory.  Build and validate those files once before recursive render
 # targets can run in parallel.
-html-localized: check-localized ## Generate a single-file html/postgis-<lang>.html for supported languages
+localized_html_targets = $(addprefix html-localized-,$(translations))
+
+.PHONY: html-localized refresh-html-ref-index
+
+html-localized: $(localized_html_targets) ## Generate a single-file html/postgis-<lang>.html for supported languages
+	@:
+
+# Localized builds share one installed reference index.  Keep its English
+# contents newer than the translated XML files so recursive builds only read
+# it while rendering in parallel.
+refresh-html-ref-index: check-localized $(HTML_REF_INDEX)
+	touch $(HTML_REF_INDEX)
+
+html-localized-%: | refresh-html-ref-index
+	@echo "Making html for language $*..."
+	$(MAKE) -C po/$* local-html
 
 %-localized:
 	rule=$(patsubst %-localized,%,$@); \

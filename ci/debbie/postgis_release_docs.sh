@@ -128,7 +128,7 @@ fi
 
 make cheatsheets
 make -e chunked-html # TODO: do we really want this too in the doc-html-*.tar.gz package ?
-make html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
+make -j2 html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 tar -czf "$package" --exclude='static' --exclude='wkt' --exclude '*.o' html
