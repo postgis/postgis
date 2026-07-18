@@ -1838,18 +1838,13 @@ view       | POLYGON((12 12,12 18,18 18,18 12,12 12))</screen>
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-			SELECT ST_AsText(
+		<programlisting>SELECT ST_AsText(
 				ST_FilterHolesByArea(
 					ST_GeomFromText('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),
 						(1 1, 2 1, 2 2, 1 2, 1 1),
 						(4 4, 8 4, 8 8, 4 8, 4 4))'),
-					2.0::float8));
-
-		st_astext
-		---------
-			POLYGON((0 0,10 0,10 10,0 10,0 0),(4 4,8 4,8 8,4 8,4 4))
-		</programlisting>
+					2.0::float8));</programlisting>
+<screen>POLYGON((0 0,10 0,10 10,0 10,0 0),(4 4,8 4,8 8,4 8,4 4))</screen>
 
 	  </refsection>
 
