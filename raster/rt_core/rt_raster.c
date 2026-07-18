@@ -4,6 +4,7 @@
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2013 Bborie Park <dustymugs@gmail.com>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
@@ -2414,6 +2415,14 @@ rt_raster_gdal_rasterize(
 		compatibility with GDAL 1.6, 1.7 and 1.8.  1.9+ works fine with half-pixel.
 	*/
 	wkbtype = wkbFlatten(OGR_G_GetGeometryType(src_geom));
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 14, 0)
+	/*
+	 * GDAL 3.14 rasterizes curve line types as their linear counterparts. Use
+	 * the same type mapping for extent padding so native and pre-linearized
+	 * curves receive identical bounds.
+	 */
+	wkbtype = wkbFlatten(OGR_GT_GetLinear(wkbtype));
+#endif
 	if ((
 			(wkbtype == wkbPoint) ||
 			(wkbtype == wkbMultiPoint) ||
