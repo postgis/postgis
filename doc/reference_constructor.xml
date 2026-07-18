@@ -145,31 +145,18 @@ GROUP BY stusps;</programlisting>
 
       <refsection>
         <title>Examples</title>
-<programlisting>
-SELECT ST_AsText(ST_AddGeometry('MULTIPOINT((0 0),(1 1))', 'POINT(2 2)'));
-
-st_astext
---------------------------
-MULTIPOINT((0 0),(1 1),(2 2))
-</programlisting>
+<programlisting>SELECT ST_AsText(ST_AddGeometry('MULTIPOINT((0 0),(1 1))', 'POINT(2 2)'));</programlisting>
+<screen>MULTIPOINT((0 0),(1 1),(2 2))</screen>
 
 <programlisting>
 SELECT ST_AsText(ST_AddGeometry(
     'MULTIPOLYGON(((0 0,0 1,1 1,0 0)))',
-    'POLYGON((2 2,2 3,3 3,2 2))'));
-
-st_astext
-------------------------------------------------------------
-MULTIPOLYGON(((0 0,0 1,1 1,0 0)),((2 2,2 3,3 3,2 2)))
-</programlisting>
+    'POLYGON((2 2,2 3,3 3,2 2))'));</programlisting>
+<screen>MULTIPOLYGON(((0 0,0 1,1 1,0 0)),((2 2,2 3,3 3,2 2)))</screen>
 
 <programlisting>
-SELECT ST_AsText(ST_AddGeometry('MULTIPOINT((0 0),(1 1))', 'LINESTRING(2 2,3 3)'));
-
-st_astext
-------------------------------------------------
-GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1),LINESTRING(2 2,3 3))
-</programlisting>
+SELECT ST_AsText(ST_AddGeometry('MULTIPOINT((0 0),(1 1))', 'LINESTRING(2 2,3 3)'));</programlisting>
+<screen>GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1),LINESTRING(2 2,3 3))</screen>
       </refsection>
 
       <refsection>
