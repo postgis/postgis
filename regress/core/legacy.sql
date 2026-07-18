@@ -10,21 +10,21 @@ SET client_min_messages TO WARNING;
 CREATE SCHEMA legacy_caller_path;
 SET search_path TO public, legacy_caller_path;
 
-WITH legacy_aliases(legacy_definition, modern_regprocedure) AS (
+WITH legacy_aliases(legacy_definition, modern_regprocedure, legacy_symbol) AS (
 	VALUES
-		('public.AsBinary(geometry)', 'st_asbinary(geometry)'::regprocedure),
-		('public.AsBinary(geometry, text)', 'st_asbinary(geometry,text)'::regprocedure),
-		('public.AsText(geometry)', 'st_astext(geometry)'::regprocedure),
-		('public.ndims(geometry)', 'st_ndims(geometry)'::regprocedure),
-		('public.SetSRID(geometry, integer)', 'st_setsrid(geometry,integer)'::regprocedure),
-		('public.SRID(geometry)', 'st_srid(geometry)'::regprocedure)
+		('public.AsBinary(geometry)', 'st_asbinary(geometry)'::regprocedure, 'LWGEOM_asBinary'),
+		('public.AsBinary(geometry, text)', 'st_asbinary(geometry,text)'::regprocedure, 'LWGEOM_asBinary'),
+		('public.AsText(geometry)', 'st_astext(geometry)'::regprocedure, 'LWGEOM_asText'),
+		('public.ndims(geometry)', 'st_ndims(geometry)'::regprocedure, 'LWGEOM_ndims'),
+		('public.SetSRID(geometry, integer)', 'st_setsrid(geometry,integer)'::regprocedure, 'LWGEOM_set_srid'),
+		('public.SRID(geometry)', 'st_srid(geometry)'::regprocedure, 'LWGEOM_get_srid')
 )
 SELECT pg_catalog.format(
 	'CREATE OR REPLACE FUNCTION %s RETURNS %s AS %L, %L LANGUAGE c IMMUTABLE STRICT',
 	legacy_definition,
 	pg_catalog.format_type(pg_proc.prorettype, NULL),
 	pg_proc.probin,
-	pg_proc.prosrc
+	legacy_symbol
 )
 FROM legacy_aliases
 JOIN pg_catalog.pg_proc
@@ -46,6 +46,13 @@ WHERE pg_proc.oid IN (
 	'srid(geometry)'::regprocedure
 )
 AND pg_language.lanname = 'c';
+
+SELECT 'legacy_old_catalog_calls',
+	public.AsText(public.ST_Point(1, 2)) = 'POINT(1 2)'
+	AND octet_length(public.AsBinary(public.ST_Point(1, 2))) > 0
+	AND octet_length(public.AsBinary(public.ST_Point(1, 2), 'NDR')) > 0
+	AND public.ndims(public.ST_Point(1, 2)) = 2
+	AND public.SRID(public.SetSRID(public.ST_Point(1, 2), 4326)) = 4326;
 
 \cd :scriptdir
 \i legacy.sql
