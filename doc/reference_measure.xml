@@ -142,30 +142,19 @@ FROM (
 		<refsection>
 			<title>Examples</title>
 
-<programlisting>
-SELECT degrees(ST_3DSlope('TRIANGLE Z((0 0 0,1 0 1,0 1 0,0 0 0))'));
+<programlisting>SELECT degrees(ST_3DSlope('TRIANGLE Z((0 0 0,1 0 1,0 1 0,0 0 0))'));</programlisting>
+<screen>45</screen>
 
- degrees
----------
-      45
+<programlisting>SELECT degrees(ST_3DSlope('POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0))'));</programlisting>
+<screen>45</screen>
 
-SELECT degrees(ST_3DSlope('POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0))'));
-
- degrees
----------
-      45
-
-SELECT degrees(ST_3DSlope('LINESTRING Z(0 0 0,1 0 1)'));
-
- degrees
----------
-      45
-</programlisting>
+<programlisting>SELECT degrees(ST_3DSlope('LINESTRING Z(0 0 0,1 0 1)'));</programlisting>
+<screen>45</screen>
 		</refsection>
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Azimuth"/>, <xref linkend="ST_3DArea"/></para>
+			<para><xref linkend="ST_Azimuth"/>, <xref linkend="CG_3DArea"/></para>
 		</refsection>
 	</refentry>
 
