@@ -15,6 +15,53 @@ export PGPATH=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 export PATH="${PGPATH}/bin:$PATH"
 export LD_LIBRARY_PATH="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/lib:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/lib:${PGPATH}/lib"
 
+release_docs_tmpdir=
+release_docs_pgdata=
+
+cleanup_release_docs_pg()
+{
+  status=$?
+  if test "${status}" -ne 0 && test -n "${release_docs_tmpdir}" && test -f "${release_docs_tmpdir}/postgresql.log"; then
+    tail -n 100 "${release_docs_tmpdir}/postgresql.log"
+  fi
+  if test -n "${release_docs_pgdata}" && test -f "${release_docs_pgdata}/postmaster.pid"; then
+    "${PGPATH}/bin/pg_ctl" -D "${release_docs_pgdata}" -m fast -w stop || true
+  fi
+  if test -n "${release_docs_tmpdir}"; then
+    rm -rf -- "${release_docs_tmpdir}"
+  fi
+  return "${status}"
+}
+
+start_release_docs_pg()
+{
+  tmp_root=${TMPDIR:-/tmp}
+  mkdir -p "${tmp_root}"
+  release_docs_tmpdir=$(mktemp -d "${tmp_root}/postgis-release-docs.XXXXXX")
+  release_docs_pgdata="${release_docs_tmpdir}/data"
+  release_docs_pghost="${release_docs_tmpdir}/socket"
+  mkdir "${release_docs_pghost}"
+
+  release_docs_initdb_options=(-D "${release_docs_pgdata}" -A trust --no-sync)
+  if "${PGPATH}/bin/initdb" --help | grep -q -- '--no-data-checksums'; then
+    release_docs_initdb_options+=(--no-data-checksums)
+  fi
+  "${PGPATH}/bin/initdb" "${release_docs_initdb_options[@]}"
+  export PGHOST="${release_docs_pghost}"
+  export PGPORT="${PGPORT:-8447}"
+  PGUSER=$(id -un)
+  export PGUSER
+  release_docs_pgopts="-F -h '' -k ${PGHOST} -p ${PGPORT}"
+  release_docs_pgopts="${release_docs_pgopts} -c synchronous_commit=off -c full_page_writes=off"
+  "${PGPATH}/bin/pg_ctl" \
+    -D "${release_docs_pgdata}" \
+    -l "${release_docs_tmpdir}/postgresql.log" \
+    -o "${release_docs_pgopts}" \
+    -w start
+}
+
+trap cleanup_release_docs_pg EXIT
+
 ./autogen.sh
 
 
@@ -47,6 +94,11 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --htmldir ${HTML_DIR} \
   --docdir ${STUFF_DIR}
 make clean
+
+# The rendered manual now builds visual examples through a temporary PostGIS
+# database.  The distribution job does not otherwise require a running server,
+# so keep this database private to the documentation build.
+start_release_docs_pg
 
 # generating postgis_revision.h in case hasn't been generated
 if test -f utils/repo_revision.pl; then
