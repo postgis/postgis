@@ -1,4 +1,5 @@
 legacy_old_catalog_aliases|6
+legacy_old_catalog_calls|t
 legacy_load_search_path|public, legacy_caller_path
 estimated_extent_properties|2
 legacy_wrapper_search_path|10
