@@ -65,7 +65,16 @@ rtpg_lwgeom_needs_curve_linearize(const LWGEOM *geom)
 	uint32_t i;
 	const LWCOLLECTION *collection;
 
+	/*
+	 * GDAL 3.14 linearizes OGR curve geometries in
+	 * GDALRasterizeGeometries(). Older versions ignore them. NURBSCURVE is
+	 * not an OGR geometry type, so it must always be linearized here.
+	 */
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 14, 0)
+	if (geom->type == NURBSCURVETYPE)
+#else
 	if (lwgeom_type_arc(geom))
+#endif
 		return LW_TRUE;
 
 	if (!lwgeom_is_collection(geom))
