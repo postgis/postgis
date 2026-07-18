@@ -125,19 +125,13 @@
 
     <refsection>
     <title>Examples</title>
-    <programlisting>
-SELECT ST_BestSRID('POINT(-3 60)'::geography);
- st_bestsrid
--------------
-       32630
+    <programlisting>SELECT ST_BestSRID('POINT(-3 60)'::geography);</programlisting>
+    <screen>32630</screen>
 
-SELECT ST_BestSRID(
+    <programlisting>SELECT ST_BestSRID(
   'POINT(-160 -40)'::geography,
-  'POINT(160 40)'::geography);
- st_bestsrid
--------------
-        3395
-    </programlisting>
+  'POINT(160 40)'::geography);</programlisting>
+    <screen>3395</screen>
     </refsection>
 
     <refsection>
