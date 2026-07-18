@@ -10641,12 +10641,8 @@ WITH src AS (
     SELECT ST_MakeEmptyRaster(3, 2, 0, 0, 1, -1, 0, 0, 0) AS rast
 )
 SELECT (ST_DumpValues(ST_CreateIndexRaster(rast))).valarray
-FROM src;
-
- valarray
----------------
- {{0,2,4},{1,3,5}}
-                    </programlisting>
+FROM src;</programlisting>
+                    <screen>{{0,2,4},{1,3,5}}</screen>
                 </refsection>
 
                 <refsection>
