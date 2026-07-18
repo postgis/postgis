@@ -2322,11 +2322,8 @@ np100_geometrygoesaway   | t</screen>
     <para>Simplifying a geographic line, using a tolerance in meters.</para>
     <programlisting>SELECT ST_AsText(ST_Simplify(
   'LINESTRING(-71.060316 48.432044,-71.0608 48.4327,-71.0612 48.4334,-71.062 48.434)'::geography,
-    75), 6);
- st_astext
-----------------------------
- LINESTRING(-71.060316 48.432044,-71.062 48.434)
-</programlisting>
+    75), 6);</programlisting>
+<screen>LINESTRING(-71.060316 48.432044,-71.062 48.434)</screen>
 
           </refsection>
           <refsection>
