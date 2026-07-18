@@ -25,7 +25,10 @@ make install
 make check RUNTESTFLAGS="-v --extension"
 err_status=$?
 
-make garden
+# Optional PROJ grids are not installed on this worker. Grid-dependent manual
+# examples are marked requires-external-state, so run the remaining examples
+# without the global optional-grid preflight.
+make garden EXAMPLETEST_CHECK_ENVIRONMENT=no
 err_status=$?
 
 utils/check_all_upgrades.sh \

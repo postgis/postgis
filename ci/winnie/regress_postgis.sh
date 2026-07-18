@@ -38,14 +38,12 @@ export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD
 echo PATH AFTER: $PATH
 
 echo WORKSPACE IS $WORKSPACE
-#mkdir ${PROJECTS}/postgis/tmp
-#export PGIS_REG_TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_MICRO_VER}_pg${PG_VER}_geos${GEOS_VER}_gdal${GDAL_VER}w${OS_BUILD}
-#rm -rf ${PGIS_REG_TMPDIR}
-#mkdir ${PGIS_REG_TMPDIR}
-#export TMPDIR=${PGIS_REG_TMPDIR}
-
-#rm -rf ${PGIS_REG_TMPDIR}
-#TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_VER}_${PG_VER}_${GEOS_VERSION}_${PROJ_VER}
+if [ -z "${PGIS_REG_TMPDIR:-}" ]; then
+	PGIS_REG_TMPDIR=${PROJECTS}/postgis/tmp/${POSTGIS_MICRO_VER}_pg${PG_VER}_geos${GEOS_VER}_gdal${GDAL_VER}w${OS_BUILD}
+fi
+mkdir -p "${PGIS_REG_TMPDIR}"
+export PGIS_REG_TMPDIR
+export TMPDIR="${PGIS_REG_TMPDIR}"
 echo PORT IS $PGPORT
 echo PGIS_REG_TMPDIR IS $PGIS_REG_TMPDIR
 export XSLTPROCFLAGS=
