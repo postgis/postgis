@@ -4937,8 +4937,9 @@ WHERE
 
             <refsection>
                 <title>Examples</title>
+				<para>This example requires the <literal>GTiff</literal> driver in <varname>postgis.gdal_enabled_drivers</varname>.</para>
 
-                <programlisting language="sql"><![CDATA[
+                <programlisting language="sql" role="requires-external-state"><![CDATA[
 WITH dem AS (
     SELECT ST_SetSRID(
         ST_AddBand(
