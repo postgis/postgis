@@ -739,6 +739,10 @@ endif
 
 check: check-unit ## Check structural correctness of XML documentation and generated HTML block labels
 check-localized: ## Check structural correctness of localized (translated) XML documentation.
+	for lang in $(translations); do \
+		echo "Checking XML for language $$lang..."; \
+		$(MAKE) -C po/$$lang local-check-xml || exit 1; \
+	done
 
 check-regress:
 
