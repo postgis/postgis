@@ -60,6 +60,11 @@ cd $outdir && git checkout $tag && cd -
 echo "Removing make_dist.sh"
 rm -fv "$outdir"/make_dist.sh
 
+echo "Removing developer docs and top-level AGENTS.md"
+rm -rfv \
+  "$outdir"/AGENTS.md \
+  "$outdir"/doc/development
+
 echo "Removing ci files"
 rm -rfv \
   "$outdir"/ci \
@@ -147,6 +152,33 @@ echo "Generating $package file"
 
 # Create tar
 tar cf - --sort=name --mode=a+rwX --owner=0 --group=0 --numeric-owner "$outdir" > ${package}.tar || exit 1
+
+echo "Checking tar package membership"
+
+if ! tar -tf "${package}.tar" | grep -Fxq "${outdir}/README.md"; then
+  echo "Missing required file in source distribution: ${outdir}/README.md"
+  exit 1
+fi
+
+if ! tar -tf "${package}.tar" | grep -Fxq "${outdir}/CONTRIBUTING.md"; then
+  echo "Missing required file in source distribution: ${outdir}/CONTRIBUTING.md"
+  exit 1
+fi
+
+if ! tar -tf "${package}.tar" | grep -Fxq "${outdir}/doc/postgis.xml"; then
+  echo "Missing required file in source distribution: ${outdir}/doc/postgis.xml"
+  exit 1
+fi
+
+if tar -tf "${package}.tar" | grep -Fq "${outdir}/doc/development/"; then
+  echo "Forbidden path in source distribution: ${outdir}/doc/development/"
+  exit 1
+fi
+
+if tar -tf "${package}.tar" | grep -Fxq "${outdir}/AGENTS.md"; then
+  echo "Forbidden file in source distribution: ${outdir}/AGENTS.md"
+  exit 1
+fi
 
 # Compress
 gzip -n9 < ${package}.tar > ${package} || exit 1
