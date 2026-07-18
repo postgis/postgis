@@ -63,3 +63,14 @@ NOTICE:  The rasters have different scales on the X axis
 4.8|993310|142|88|1|1000.000|-1000.000|0.000|0.000|-176000.000|115000.000|16BUI|0.000|t|13.000|13.000|f
 4.9|993310|142|88|1|1000.000|-1000.000|0.000|0.000|-176453.000|115987.000|16BUI|0.000|t|13.000|13.000|f
 #5084|10
+#1168-CircularString|t|t|t|t
+#1168-CompoundCurve|t|t|t|t
+#1168-CompoundCurveStraight|t|t|t|t
+#1168-CurvePolygon|t|t|t|t
+#1168-CurvePolygonStraight|t|t|t|t
+#1168-NURBSCurve|t|t|t|t
+#1168-CircularStringMatchesCurveToLine|t|t|t
+#1168-CompoundCurveMatchesCurveToLine|t|t|t
+#1168-MultiCurveMatchesCurveToLine|t|t|t
+#1168-GeometryCollectionCurveStraight|t|t|t|t
+#1168-NURBSCurveMatchesCurveToLine|t|t|t|t
