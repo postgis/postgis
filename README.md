@@ -7,7 +7,7 @@ https://trac.osgeo.org/postgis/
 ## Build status and continuous integration:
 See the GitHub Actions workflows, OSGeo Woodie pipelines, and the CI scripts in
 the `ci/` directory. Developer setup notes are in
-[doc/development](doc/development/).
+[doc/development](https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/).
 
 ## Translations
 We are using [Weblate software](https://weblate.org) for translation.  If you want to help out, log into [OSGeo Weblate](https://weblate.osgeo.org/projects/postgis/).
@@ -32,7 +32,7 @@ http://postgis.net/development/source_code/
 If you would like to contribute to this project, please refer to our
 [contributing guidelines](CONTRIBUTING.md).
 Developer workflow, build, test, release, and documentation notes live in
-[doc/development](doc/development/).
+[doc/development](https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/).
 
 ## Project Home Page and Manuals
 Project homepage: http://postgis.net/

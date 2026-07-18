@@ -56,9 +56,10 @@ SVG files directly, while PDF rasterizes the same files as a backend fallback.
 
 Do not add screenshots or authored geometry PNGs. Static raster files under
 ``doc/html/images/static`` are limited to branding and interface icons. Use
-DocBook markup for equations and tables. See
-``doc/development/manual.md`` for layout roles, labels, textual-output policy,
-native geometry/EWKT output handling, and the visual review procedure.
+DocBook markup for equations and tables. See the repository-only developer
+manual at https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/manual.md
+for layout roles, labels, textual-output policy, native geometry/EWKT output
+handling, and the visual review procedure.
 
 To run garden tests against functions, follow these instructions on the PostGIS
 dev wiki: http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
@@ -152,7 +153,7 @@ its staged-install and database recipe but does not require unrelated optional
 features used elsewhere in the manual.
 
 For contributor workflow, local testing, and garden checks, see
-``doc/development/``.
+https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/.
 
 The audited Trac wiki migration record and recovered attachments live in
 ``doc/trac-wiki/``.
