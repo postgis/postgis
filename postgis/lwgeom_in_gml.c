@@ -1211,10 +1211,7 @@ gml_compound_add_curve_component(LWCOMPOUND *compound, LWGEOM *segment)
 		LWCOMPOUND *nested = (LWCOMPOUND *)segment;
 
 		for (uint32_t i = 0; i < nested->ngeoms; i++)
-		{
-			if (lwcompound_add_lwgeom(compound, nested->geoms[i]) == LW_FAILURE)
-				gml_lwpgerror("invalid GML representation", 41);
-		}
+			gml_compound_add_curve_component(compound, nested->geoms[i]);
 
 		nested->ngeoms = 0;
 		lwgeom_free(segment);

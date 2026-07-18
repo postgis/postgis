@@ -47,11 +47,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
             (Bas Couwenberg)
 
 * Enhancements *
-* New Features *
 
  - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
           (Darafei Praliaskouski)
-
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
