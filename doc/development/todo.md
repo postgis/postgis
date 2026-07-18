@@ -192,6 +192,16 @@ when someone takes ownership of it.
   provenance: `PostGIS3` and `UsersWikiWishList`; local import commit
   `7fee744c33af`.
 
+## Developer Workflow
+
+* Investigate repository policy for PostGIS AI skills files. The 2026
+  development meeting raised whether project-owned AI skills files should live
+  in the core repository, in a separate repository, and how they should be
+  structured as versioned developer assets. No maintained developer policy
+  currently settles that question, so keep it as planning work until a design
+  is accepted and documented. Source provenance: `PostGISDevelopment2026-1`;
+  local import commit `7fee744c33af`.
+
 ## Topology
 
 * Investigate topology-aware shapefile loader and dumper workflows. The
@@ -234,3 +244,11 @@ when someone takes ownership of it.
   SQL/topology management and `pgtopo_export` / `pgtopo_import`; OSM, E00, and
   routing-specific import design remains unowned. Source provenance:
   `PostGIS3` and `UsersWikiWishList`; local import commit `7fee744c33af`.
+* Investigate first-class detached-layer attach/detach APIs for copied
+  TopoGeometry layers. The historical `TopologyCopy` design notes proposed
+  allowing copied `topology.layer` definitions to exist without immediate
+  binding to a physical table column, followed by explicit functions to attach,
+  detach, or drop those conceptual layers later. Current `CopyTopology`,
+  `pgtopo_export`, and `pgtopo_import` cover copying and transfer workflows,
+  but they do not provide this detached-layer lifecycle API. Source
+  provenance: `TopologyCopy`; local import commit `7fee744c33af`.
