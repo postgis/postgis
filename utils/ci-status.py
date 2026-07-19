@@ -364,15 +364,31 @@ def normalize_woodpecker_status(value):
     return mapping.get(str(value).lower(), UNKNOWN)
 
 
+def woodpecker_matches_branch(build, check, branch):
+    if build.get("branch") != branch["name"]:
+        return False
+
+    event = check.get("event", "push")
+    if event and build.get("event") != event:
+        return False
+
+    expected_ref = render_template(check.get("ref", "refs/heads/${branch}"), branch)
+    return build.get("ref") in (None, expected_ref)
+
+
 def woodpecker_check(check, branch, timeout):
-    query = urllib.parse.urlencode({"branch": branch["name"], "limit": "20"})
+    query = urllib.parse.urlencode({
+        "branch": branch["name"],
+        "event": check.get("event", "push"),
+        "limit": "20",
+    })
     api_url = check["api_url"]
     separator = "&" if "?" in api_url else "?"
     url = f"{api_url}{separator}{query}"
     builds = http_json(url, timeout=timeout)
     if isinstance(builds, dict):
         builds = builds.get("builds") or builds.get("pipelines") or builds.get("data") or []
-    builds = [build for build in builds if build.get("branch") == branch["name"]]
+    builds = [build for build in builds if woodpecker_matches_branch(build, check, branch)]
     if not builds:
         return make_result(check, branch, UNKNOWN, message="no Woodpecker builds found", debug_url=url)
 

@@ -165,36 +165,17 @@
     },
     {
       "name": "GitLab mirror",
-      "provider": "gitlab",
-      "required": true,
-      "api_url": "https://gitlab.com/api/v4",
-      "project": "postgis/postgis",
-      "web_url": "https://gitlab.com/postgis/postgis/-/commits/${branch}",
-      "branches": [
-        "master",
-        "stable-3.6",
-        "stable-3.5",
-        "stable-3.4",
-        "stable-3.3",
-        "stable-3.2"
-      ]
+      "provider": "disabled",
+      "required": false,
+      "status": "retired",
+      "message": "The GitLab.com mirror is out of CI minutes, so release gating uses GitHub Actions, Woodie, and Jenkins."
     },
     {
       "name": "INAF GitLab mirror",
-      "provider": "gitlab",
-      "required": true,
-      "api_url": "https://www.ict.inaf.it/gitlab/api/v4",
-      "project": "postgis/postgis",
-      "web_url": "https://www.ict.inaf.it/gitlab/postgis/postgis/-/commits/${branch}",
-      "branches": [
-        "master",
-        "stable-3.6",
-        "stable-3.5",
-        "stable-3.4",
-        "stable-3.3",
-        "stable-3.2"
-      ],
-      "message": "The legacy Trac badges use release labels, but the INAF GitLab API exposes pipelines under stable-X.Y refs."
+      "provider": "disabled",
+      "required": false,
+      "status": "retired",
+      "message": "The INAF GitLab mirror is stale and no longer provides a current release-gating signal."
     }
   ]
 }
