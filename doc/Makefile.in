@@ -500,10 +500,14 @@ review-html: html ## Compare this manual with REVIEW_HTML_BASE using synchronize
 # directory.  Build and validate those files once before recursive render
 # targets can run in parallel.
 localized_html_targets = $(addprefix html-localized-,$(translations))
+localized_chunked_install_targets = $(addprefix chunked-html-install-localized-,$(translations))
 
-.PHONY: html-localized localized-html-ready
+.PHONY: html-localized chunked-html-install-localized localized-html-ready
 
 html-localized: $(localized_html_targets) ## Generate a single-file html/postgis-<lang>.html for supported languages
+	@:
+
+chunked-html-install-localized: $(localized_chunked_install_targets) ## Install multi-file html for supported languages
 	@:
 
 # Localized builds share the English reference index installed alongside all
@@ -515,6 +519,10 @@ localized-html-ready: check-localized $(HTML_REF_INDEX)
 html-localized-%: | localized-html-ready
 	@echo "Making html for language $*..."
 	$(MAKE) -C po/$* local-html
+
+chunked-html-install-localized-%: | $(HTML_REF_INDEX)
+	@echo "Making chunked-html-install for language $*..."
+	$(MAKE) -C po/$* local-chunked-html-install
 
 %-localized:
 	rule=$(patsubst %-localized,%,$@); \

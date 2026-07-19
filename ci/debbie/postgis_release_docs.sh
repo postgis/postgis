@@ -139,7 +139,7 @@ make html-assets-install
 make html-install
 make html-install-localized
 make chunked-html-install
-make chunked-html-install-localized
+make -j2 chunked-html-install-localized
 make cheatsheet-install
 make cheatsheet-install-localized
 
