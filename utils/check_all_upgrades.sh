@@ -7,6 +7,7 @@ TMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/check_all_upgrades.XXXXXX") || exit 1
 PGVER=`pg_config --version | awk '{print $2}'`
 PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
 SKIP_LABEL_REGEXP=
+SELFTEST=0
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 MAKE=$(which gmake make | head -1)
 BUILDDIR=$PWD # TODO: allow override ?
@@ -23,11 +24,14 @@ usage() {
   echo "Options:"
   echo "\t-s  Stop on first failure"
   echo "\t--skip <regexp>  Do not run tests with label matching given extended regexp"
+  echo "\t--self-test  Run check_all_upgrades.sh unit tests"
 }
 
 while test -n "$1"; do
   if test "$1" = "-s"; then
     EXIT_ON_FIRST_FAILURE=1
+  elif test "$1" = "--self-test"; then
+    SELFTEST=1
   elif test "$1" = "--skip"; then
     shift
     SKIP_LABEL_REGEXP=$1
@@ -40,7 +44,7 @@ while test -n "$1"; do
   shift
 done
 
-if test -z "$to_version_param"; then
+if test "${SELFTEST}" != 1 && test -z "$to_version_param"; then
   usage >&2
   exit 1
 fi
@@ -69,6 +73,16 @@ semver_compare()
       echo 1; return;
     fi
     V2=`echo "$V2" | cut -d. -sf2-`
+    v1_numeric=`echo "$v1" | sed 's/[^0-9].*//'`
+    v2_numeric=`echo "$v2" | sed 's/[^0-9].*//'`
+    if test -n "$v1_numeric" && test -n "$v2_numeric"; then
+      if [ "$v1_numeric" -lt "$v2_numeric" ]; then
+        echo -1; return;
+      fi
+      if [ "$v1_numeric" -gt "$v2_numeric" ]; then
+        echo 1; return;
+      fi
+    fi
     # echo "v: $v1 - $v2" >&2
     if expr "$v1" '<' "$v2" > /dev/null; then
       echo -1; return;
@@ -211,6 +225,29 @@ report_missing_versions()
   fi
   cleanup
 }
+
+check_all_upgrades_selftest()
+{
+  if test "`semver_compare 3.2.7 3.2.11dev`" != "-1"; then
+    echo "FAIL: expected 3.2.7 to compare older than 3.2.11dev" >&2
+    exit 1
+  fi
+
+  if test "`semver_compare 3.2.11dev 3.2.7`" != "1"; then
+    echo "FAIL: expected 3.2.11dev to compare newer than 3.2.7" >&2
+    exit 1
+  fi
+
+  if test "`semver_compare 3.2.11dev 3.2.11dev`" != "0"; then
+    echo "FAIL: expected identical dev versions to compare equal" >&2
+    exit 1
+  fi
+}
+
+if test "${SELFTEST}" = 1; then
+  check_all_upgrades_selftest
+  exit
+fi
 
 
 to_version=$to_version_param
