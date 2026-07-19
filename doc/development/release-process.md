@@ -5,8 +5,6 @@ weight: 90
 geekdocHidden: false
 ---
 
-# Release Process
-
 Date: 2022-09-25
 
 ## Versioning Scheme

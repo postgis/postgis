@@ -5,8 +5,6 @@ weight: 10
 geekdocHidden: false
 ---
 
-# Memory Management
-
 Use the allocator that matches the layer you are editing:
 
 | Area | Allocators |

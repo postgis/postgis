@@ -5,8 +5,6 @@ weight: 110
 geekdocHidden: false
 ---
 
-# Topology Internals
-
 The topology extension has SQL-facing documentation in the user manual. This
 page is for implementation notes that matter when changing the C topology
 engine or its PostgreSQL wrappers.

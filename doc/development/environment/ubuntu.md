@@ -5,8 +5,6 @@ weight: 10
 geekdocHidden: false
 ---
 
-# Ubuntu Development Environment
-
 This document aims to get an Ubuntu development environment ready quickly so you
 can build and test the PostGIS codebase. The package list below targets Ubuntu
 24.04.
@@ -137,7 +135,7 @@ PostgreSQL instance:
 sudo make install
 ```
 
-See [Testing and debugging](../testing.md) for regression commands, CUnit
+See [Testing and debugging](../testing/_index.md) for regression commands, CUnit
 tests, coverage, dependency guards, and backtrace capture. Optional tooling such
 as `logbt` setup lives in [Developer tools](../tools.md).
 
@@ -157,4 +155,4 @@ If you created a private cluster instead of using the packaged one, stop it with
 Review [Coding style](../style.md) for source-formatting preferences, including
 `git clang-format` usage for C and C++ changes. For release policies, upgrade
 implications, and naming conventions for new features, read
-[Release and upgrade rules](../release.md).
+[Release and upgrade rules](../release/_index.md).

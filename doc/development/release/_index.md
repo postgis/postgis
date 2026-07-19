@@ -3,9 +3,8 @@ title: "Release and Upgrade Rules"
 date: 2026-06-26
 weight: 80
 geekdocHidden: false
+geekdocCollapseSection: true
 ---
-
-# Release and Upgrade Rules
 
 This directory collects release-policy and upgrade-safety rules consolidated
 from the former `doc/developer.md` and the developer wiki. Use it when a patch
@@ -14,17 +13,17 @@ supported PostgreSQL versions.
 
 ## Topics
 
-* [API compatibility](release/api.md) indexes SQL/C API compatibility rules.
-* [Versioning policy](release/versioning.md) explains version terminology, library naming,
+* [API compatibility](api.md) indexes SQL/C API compatibility rules.
+* [Versioning policy](versioning.md) explains version terminology, library naming,
   and release-line compatibility constraints.
-* [Deprecating and removing API](release/deprecation.md) explains SQL-visible object
+* [Deprecating and removing API](deprecation.md) explains SQL-visible object
   removals and C API stubs for `pg_upgrade`.
-* [SQL upgrade and deprecation](release/sql-scripting.md) explains `Availability:`,
+* [SQL upgrade and deprecation](sql-scripting.md) explains `Availability:`,
   `Changed:`, `Replaces`, before/after upgrade hooks, and parser-sensitive SQL
   style.
-* [Dependency and support guards](release/dependencies.md) explains dependency-version
+* [Dependency and support guards](dependencies.md) explains dependency-version
   guards and the checklist for dropping PostgreSQL support.
-* [Testing and debugging](testing.md) explains sandboxed regression roles used
+* [Testing and debugging](../testing/_index.md) explains sandboxed regression roles used
   by CI and downstream builders.
 
 ## Quick Rules

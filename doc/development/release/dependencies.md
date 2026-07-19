@@ -5,8 +5,6 @@ weight: 50
 geekdocHidden: false
 ---
 
-# Dependency and Support Guards
-
 This page explains how to guard functionality that depends on newer libraries
 and how to remove support for older PostgreSQL versions.
 

@@ -5,8 +5,6 @@ weight: 10
 geekdocHidden: false
 ---
 
-# Commit and Branch Guidelines
-
 This page keeps the source-control practices from the historical RFC-5
 contributor guideline in a maintained form. Use it together with
 [Contributing workflow](../contributing.md), [Coding style](../style.md), and the

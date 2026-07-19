@@ -5,8 +5,6 @@ weight: 30
 geekdocHidden: false
 ---
 
-# Docker Development Environment
-
 PostGIS has two container families that are useful for development and testing.
 Production images are documented separately at
 <https://github.com/postgis/docker-postgis> and should not be treated as build

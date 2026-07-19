@@ -5,8 +5,6 @@ weight: 40
 geekdocHidden: false
 ---
 
-# Spatial collections and raster/vector crossings
-
 The historical `DevWikiSpatialCollectionTutorial` page described an internal
 `SPATIAL_COLLECTION` abstraction intended to erase the difference between
 vector geometries and rasters. That abstraction is not present in the current

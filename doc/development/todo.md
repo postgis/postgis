@@ -5,8 +5,6 @@ weight: 35
 geekdocHidden: false
 ---
 
-# Development TODO
-
 This page records high-level development ideas that survived the Trac/wiki
 documentation migration but are not accepted designs, release blockers, or
 scheduled work. Move an item to a Trac ticket, design document, or pull request

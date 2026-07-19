@@ -5,8 +5,6 @@ weight: 90
 geekdocHidden: false
 ---
 
-# 2D and 3D Distance Internals
-
 This page is the maintained version of the useful design notes from the Trac
 `3DDistancecalc` page, checked against the current distance code in
 `liblwgeom/measures.c`, `liblwgeom/measures3d.c`, and the SQL wrappers in

@@ -5,8 +5,6 @@ weight: 80
 geekdocHidden: false
 ---
 
-# PostGIS Raster And The GDAL Driver
-
 The PostGIS Raster SQL type, loader, catalog views, and server-side GDAL use live
 in this repository. The `PostGISRaster` GDAL driver itself lives in GDAL, so
 developer documentation here should explain the boundary and the PostGIS-side

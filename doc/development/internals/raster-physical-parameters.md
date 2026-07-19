@@ -5,8 +5,6 @@ weight: 60
 geekdocHidden: false
 ---
 
-# Raster physical georeferencing parameters
-
 PostGIS raster stores georeferencing as six affine coefficients, but some SQL
 and C entry points expose a more physical model:
 

@@ -5,8 +5,6 @@ weight: 20
 geekdocHidden: false
 ---
 
-# PostgreSQL Internals for PostGIS Developers
-
 This page collects implementation notes for C code that crosses the PostgreSQL
 extension boundary. Use [Memory management](memory.md) for allocator ownership
 rules.

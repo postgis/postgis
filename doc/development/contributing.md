@@ -5,8 +5,6 @@ weight: 20
 geekdocHidden: false
 ---
 
-# Contributing Workflow
-
 PostGIS development planning happens in the
 [PostGIS Trac instance](https://trac.osgeo.org/postgis/). For non-trivial
 changes, file or find a Trac ticket and link your patch, pull request, or public
@@ -50,7 +48,7 @@ convenience. Pull requests on a mirror are welcome, but they are easier to miss
 unless they also have a matching Trac ticket.
 
 Maintainers landing mirror pull requests should follow the
-[Pull request and maintainer workflow](maintenance.md), including canonical
+[Pull request and maintainer workflow](maintenance/_index.md), including canonical
 branch readback, tracker trailers, and `NEWS` conventions.
 
 Subscribe to the
@@ -99,13 +97,13 @@ Patch submission basics:
 * Keep each patch focused on one ticket or reviewable topic.
 * Add regression or CUnit coverage for behavior changes.
 * Run the focused local validation described in [Ubuntu setup](environment/ubuntu.md)
-  and [Testing and debugging](testing.md).
+  and [Testing and debugging](testing/_index.md).
 * Follow [Coding style](style.md) for C naming, formatting, and Doxygen
   comments before writing or submitting source patches.
 * Add documentation in the same change when a feature adds or changes SQL
   user-visible behavior.
 * For SQL API, upgrade, and release-policy changes, read
-  [Release and upgrade rules](release.md) before opening a pull request.
+  [Release and upgrade rules](release/_index.md) before opening a pull request.
 * Git patches sent by email are also accepted; see
   <https://git-send-email.io/> for a practical walkthrough.
 

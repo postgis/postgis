@@ -5,8 +5,6 @@ weight: 30
 geekdocHidden: false
 ---
 
-# FreeBSD Development Environment
-
 The current FreeBSD pull-request build is defined in
 `.github/workflows/ci-freebsd.yml`. Use that workflow as the source of truth
 when checking platform-specific dependencies or flags.

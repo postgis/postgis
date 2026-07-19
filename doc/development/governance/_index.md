@@ -3,9 +3,8 @@ title: "Governance Notes"
 date: 2026-06-26
 weight: 120
 geekdocHidden: false
+geekdocCollapseSection: true
 ---
-
-# Governance Notes
 
 This page is the maintained source for current PostGIS governance text in this
 repository. Published governance pages on <https://postgis.net/development/>
@@ -77,12 +76,12 @@ historical RFC text.
 ## Project and Service Inventory
 
 Current umbrella projects, related repositories, and project-operated services
-are tracked in [PostGIS project inventory](governance/project-inventory.md). Keep source
+are tracked in [PostGIS project inventory](project-inventory.md). Keep source
 routing and service ownership there, rather than mixing it into the PSC process
 or historical RFC notes.
 
 For source-of-truth rules when landing pull requests or routing component work,
-see [Pull request and maintainer workflow](maintenance.md).
+see [Pull request and maintainer workflow](../maintenance/_index.md).
 
 ## Related Projects To Check Before Major Releases
 
