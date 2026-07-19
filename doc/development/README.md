@@ -2,8 +2,7 @@
 title: "PostGIS Development Guide"
 date: 2026-06-26
 weight: 10
-geekdocHidden: false
-geekdocCollapseSection: true
+geekdocHidden: true
 ---
 
 This directory is the repository home for PostGIS developer documentation.

@@ -41,13 +41,16 @@ may be copied into `postgis.net` content should include at least `title`,
 `date`, `weight`, and `geekdocHidden`. Do not repeat the front-matter title as a
 Markdown H1: the Geekdoc page layout renders that title already.
 
-The publisher maps this directory's `README.md` to the root `_index.md`.
-Nested section landing pages should live at `<section>/_index.md` and set
-`geekdocCollapseSection: true` to keep the file-tree menu compact. Do not use
-`layout: toplevel` for these pages; that layout appends another child-page list
-after the maintained section content. Draft-only migration aids should set
-`draft: true`, `geekdocHidden: true`, and `geekdocHiddenTocTree: false` so
-normal Hugo builds do not publish them accidentally.
+The publisher maps this directory's `README.md` to the root `_index.md`. The
+root sets `geekdocHidden: true` because the website links the guide from its
+`content/documentation/developer_docs.md` hub; hiding the imported root keeps
+the complete subtree out of the global file-tree menu. Nested section landing
+pages should live at `<section>/_index.md` and set
+`geekdocCollapseSection: true`. Do not use `layout: toplevel` for these pages;
+that layout appends another child-page list after the maintained section
+content. Draft-only migration aids should set `draft: true`,
+`geekdocHidden: true`, and `geekdocHiddenTocTree: false` so normal Hugo builds
+do not publish them accidentally.
 
 ## Content Areas
 
@@ -58,7 +61,7 @@ Website source content that overlaps with repository-maintained developer docs:
 | `content/development/source_code.md` | [Contributing workflow](contributing.md) and [Pull request and maintainer workflow](maintenance/_index.md) |
 | `content/development/getting_involved.md` | [Contributing workflow](contributing.md) |
 | `content/development/bug_reporting.md` | [Contributing workflow](contributing.md) |
-| `content/development/developer_docs.md` | [Documentation workflow](manual.md) and this `doc/development/` index |
+| `content/documentation/developer_docs.md` | [Documentation workflow](manual.md) and this `doc/development/` index |
 | `content/development/versions_eol.md` | [Release process](release-process.md) and [Release and upgrade rules](release/_index.md) |
 | `content/development/rfcs/*.md` | [Governance notes](governance/_index.md) and historical RFC pages |
 | New governance pages outside `rfcs/` | [Governance notes](governance/_index.md) and [PostGIS project inventory](governance/project-inventory.md) |
