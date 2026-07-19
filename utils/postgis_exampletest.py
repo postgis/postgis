@@ -58,8 +58,9 @@ FUNCTION_CAPABILITY_REQUIREMENTS = (
     ("geos", (3, 13, 0), re.compile(r"\bST_ClusterRelateWin\s*\(", re.I)),
     ("geos", (3, 14, 0), re.compile(r"\bST_CoverageClean\s*\(", re.I)),
     ("geos", (3, 15, 0), re.compile(r"\bST_CoverageEdges\s*\(", re.I)),
+    ("sfcgal", (2, 0, 0), re.compile(r"\bCG_3DBuffer\s*\(", re.I)),
     ("sfcgal", (2, 1, 0), re.compile(
-        r"\bCG_(?:3DAlphaWrapping|3DBuffer|3DDifference|3DUnion|AlphaShape|"
+        r"\bCG_(?:3DAlphaWrapping|3DDifference|3DUnion|AlphaShape|"
         r"ApproximateMedialAxis|ConstrainedDelaunayTriangles|"
         r"ExtrudeStraightSkeleton|OptimalAlphaShape|Simplify|"
         r"StraightSkeletonPartition|Volume)\s*\(",

@@ -450,6 +450,19 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         self.assertEqual((2, 3, 0), requirements["sfcgal"])
         self.assertEqual((6, 0, 0), requirements["cgal"])
 
+    def test_cg_3dbuffer_requires_sfcgal_2_0(self):
+        tester = ExampleTester.__new__(ExampleTester)
+
+        requirements = tester.inferred_capability_requirements(
+            "SELECT CG_3DBuffer('POINT EMPTY'::geometry, 1, 8, 0)"
+        )
+
+        self.assertEqual([{
+            "name": "sfcgal",
+            "minimum": (2, 0, 0),
+            "role": "auto-requires-sfcgal-2.0.0",
+        }], requirements)
+
     def test_legacy_2d_wkt_output_compares_against_2d_projection(self):
         tester = ExampleTester.__new__(ExampleTester)
         query = tester.geometry_comparison_query(
