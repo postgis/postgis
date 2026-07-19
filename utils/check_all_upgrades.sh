@@ -70,6 +70,16 @@ semver_compare()
       echo 1; return;
     fi
     V2=`echo "$V2" | cut -d. -sf2-`
+    v1_numeric=`echo "$v1" | sed 's/[^0-9].*//'`
+    v2_numeric=`echo "$v2" | sed 's/[^0-9].*//'`
+    if test -n "$v1_numeric" && test -n "$v2_numeric"; then
+      if [ "$v1_numeric" -lt "$v2_numeric" ]; then
+        echo -1; return;
+      fi
+      if [ "$v1_numeric" -gt "$v2_numeric" ]; then
+        echo 1; return;
+      fi
+    fi
     # echo "v: $v1 - $v2" >&2
     if expr "$v1" '<' "$v2" > /dev/null; then
       echo -1; return;
@@ -291,6 +301,21 @@ check_all_upgrades_selftest()
     exit 1
   fi
   grep -q '^FAIL: self-test downgrade gave some other error:' ${test_tmp}/other.out
+
+  if test "`semver_compare 3.2.7 3.2.11dev`" != "-1"; then
+    echo "FAIL: expected 3.2.7 to compare older than 3.2.11dev" >&2
+    exit 1
+  fi
+
+  if test "`semver_compare 3.2.11dev 3.2.7`" != "1"; then
+    echo "FAIL: expected 3.2.11dev to compare newer than 3.2.7" >&2
+    exit 1
+  fi
+
+  if test "`semver_compare 3.2.11dev 3.2.11dev`" != "0"; then
+    echo "FAIL: expected identical dev versions to compare equal" >&2
+    exit 1
+  fi
 }
 
 if test "${SELFTEST}" = 1; then
@@ -339,11 +364,16 @@ echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
 USERTESTFLAGS=${RUNTESTFLAGS}
 
-# Make use of all public functions defined by source version
-# and use double-upgrade
+# Make use of all public functions defined by source version when the
+# branch carries that hook, and use double-upgrade.
+if test -f "${SRCDIR}/regress/hooks/use-all-functions.sql"; then
+  USERTESTFLAGS="\
+    ${USERTESTFLAGS} \
+    --before-upgrade-script ${SRCDIR}/regress/hooks/use-all-functions.sql \
+  "
+fi
 USERTESTFLAGS="\
   ${USERTESTFLAGS} \
-  --before-upgrade-script ${SRCDIR}/regress/hooks/use-all-functions.sql \
   --after-upgrade-script ${SRCDIR}/regress/hooks/hook-after-upgrade.sql \
 "
 
