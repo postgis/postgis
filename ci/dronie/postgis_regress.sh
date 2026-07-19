@@ -3,7 +3,7 @@
 # Exit on first error
 set -e
 
-printf '%s\n' '-t 300' > /etc/postgresql/$PGVER/main/pg_ctl.conf
+printf '%s\n' "pg_ctl_options = '-t 300'" > /etc/postgresql/$PGVER/main/pg_ctl.conf
 service postgresql start $PGVER
 export PGPORT=`grep ^port /etc/postgresql/$PGVER/main/postgresql.conf | awk '{print $3}'`
 export PATH=/usr/lib/postgresql/$PGVER/bin:$PATH
