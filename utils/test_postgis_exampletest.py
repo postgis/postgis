@@ -492,6 +492,19 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         )
         self.assertIn("ST_HausdorffDistance(actual, expected) <= 9.9999999999999995e-07", query)
 
+    def test_surface_output_precision_preserves_canonical_face_comparison(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        query = tester.geometry_comparison_query(
+            "00",
+            expected_wkt="POLYHEDRALSURFACE Z EMPTY",
+            actual_type="POLYHEDRALSURFACE",
+            expected_wkt_digits=0,
+        )
+        self.assertEqual(2, query.count("jsonb_agg(face_key ORDER BY face_key)"))
+        self.assertIn("round((CASE WHEN abs(ST_Z(point.geom))", query)
+        self.assertIn("::numeric, 0)", query)
+        self.assertNotIn("ST_HausdorffDistance", query)
+
     def test_psql_environment_sets_default_query_timeout(self):
         tester = ExampleTester.__new__(ExampleTester)
         with mock.patch.dict(os.environ, {}, clear=True):

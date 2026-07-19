@@ -564,6 +564,15 @@ class ExampleTester:
             if expected_hex is None else VALUE_DECIMAL_DIGITS
         )
 
+        if actual_type in UNORDERED_AREAL_TYPES + UNORDERED_SURFACE_TYPES:
+            return preamble + (
+                "SELECT " + metadata +
+                "AND " + self.areal_canonical_key_sql("actual", documented_digits) +
+                " IS NOT DISTINCT FROM " +
+                self.areal_canonical_key_sql("expected", documented_digits) + " "
+                "FROM canonical"
+            )
+
         if expected_hex is None and (
             expected_wkt_digits is not None or 0 < documented_digits < VALUE_DECIMAL_DIGITS
         ):
@@ -587,15 +596,6 @@ class ExampleTester:
                 "SELECT " + metadata +
                 "AND ST_AsHEXEWKB(actual, 'XDR') = "
                 "ST_AsHEXEWKB(expected, 'XDR') "
-                "FROM canonical"
-            )
-
-        if actual_type in UNORDERED_AREAL_TYPES + UNORDERED_SURFACE_TYPES:
-            return preamble + (
-                "SELECT " + metadata +
-                "AND " + self.areal_canonical_key_sql("actual", documented_digits) +
-                " IS NOT DISTINCT FROM " +
-                self.areal_canonical_key_sql("expected", documented_digits) + " "
                 "FROM canonical"
             )
 
