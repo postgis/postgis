@@ -12,10 +12,17 @@
 \usepackage{xcolor}
 \usepackage{needspace}
 \usepackage{listings}
-\DeclareUnicodeCharacter{2026}{\ldots}
-\DeclareUnicodeCharacter{1D62}{\ensuremath{_{i}}}
-\DeclareUnicodeCharacter{1D4F}{\ensuremath{^{k}}}
-\DeclareUnicodeCharacter{021B}{\c{t}}
+%% Keep characters used by examples independent of both the TeX engine and
+%% the selected font.  Unlike \DeclareUnicodeCharacter, newunicodechar works
+%% with the XeTeX builds used by the translated manuals as well as pdfTeX.
+%% Delay the definitions until language styles have configured xeCJK.
+\usepackage{newunicodechar}
+\AtBeginDocument{%
+  \newunicodechar{…}{\ldots}%
+  \newunicodechar{ᵢ}{\ensuremath{_{i}}}%
+  \newunicodechar{ᵏ}{\ensuremath{^{k}}}%
+  \newunicodechar{ț}{\c{t}}%
+}
 %% DocBook uses the readable language name while listings exposes C# as the
 %% C language's Sharp dialect.  Keep the HTML language metadata without
 %% making the PDF backend reject the same programlisting.
