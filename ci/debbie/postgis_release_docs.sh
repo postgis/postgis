@@ -15,6 +15,14 @@ export PGPATH=${PROJECTS}/pg/rel/pg${PG_VER}w${OS_BUILD}
 export PATH="${PGPATH}/bin:$PATH"
 export LD_LIBRARY_PATH="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/lib:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/lib:${PGPATH}/lib"
 
+LOCALIZED_HTML_JOBS=${LOCALIZED_HTML_JOBS:-$(nproc)}
+case "${LOCALIZED_HTML_JOBS}" in
+  ''|*[!0-9]*|0)
+    echo "LOCALIZED_HTML_JOBS must be a positive integer" >&2
+    exit 1
+    ;;
+esac
+
 release_docs_tmpdir=
 release_docs_pgdata=
 
@@ -128,7 +136,7 @@ fi
 
 make cheatsheets
 make -e chunked-html # TODO: do we really want this too in the doc-html-*.tar.gz package ?
-make -j2 html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
+make -j"${LOCALIZED_HTML_JOBS}" html-localized # TODO: do we really want this too in the doc-html-*.tar.gz package ?
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 tar -czf "$package" --exclude='static' --exclude='wkt' --exclude '*.o' html
@@ -139,7 +147,7 @@ make html-assets-install
 make html-install
 make html-install-localized
 make chunked-html-install
-make -j2 chunked-html-install-localized
+make -j"${LOCALIZED_HTML_JOBS}" chunked-html-install-localized
 make cheatsheet-install
 make cheatsheet-install-localized
 
