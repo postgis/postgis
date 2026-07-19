@@ -1173,6 +1173,18 @@ def overall_status(branches):
     return NOT_APPLICABLE
 
 
+def required_failures(branches):
+    failures = []
+    for branch in branches:
+        checks = [
+            check for check in branch["checks"]
+            if check.get("required") and check["status"] == FAILURE
+        ]
+        if checks:
+            failures.append((branch["label"], checks))
+    return failures
+
+
 def html_status_label(status):
     return {
         SUCCESS: "Passing",
@@ -1336,12 +1348,48 @@ def html_check_table(problem_checks, passing_checks=None):
     )
 
 
+def html_required_failures(branches):
+    failures = required_failures(branches)
+    if not failures:
+        return ""
+
+    count = sum(len(checks) for _, checks in failures)
+    branch_count = len(failures)
+    branch_word = "branch" if branch_count == 1 else "branches"
+    rows = []
+    for branch_label, checks in failures:
+        check_links = []
+        for check in checks:
+            check_name = html.escape(check["check"])
+            link = result_url(check)
+            check_links.append(
+                f"<a href='{html.escape(link)}'>{check_name}</a>" if link else check_name
+            )
+        rows.append(
+            f"<li><strong>{html.escape(branch_label)}</strong> — {', '.join(check_links)}</li>"
+        )
+
+    return (
+        "<div class='failure-attribution' aria-label='Required CI failures'>"
+        f"<div class='failure-attribution-title'>Required failures "
+        f"({count} across {branch_count} {branch_word})</div>"
+        f"<ul>{''.join(rows)}</ul></div>"
+    )
+
+
 def render_html(data):
     generated = html.escape(data["generated_at"])
     page_status = overall_status(data["branches"])
-    page_summary = html.escape(summary_text({"status": page_status, "checks": [
+    page_summary_text = summary_text({"status": page_status, "checks": [
         check for branch in data["branches"] for check in branch["checks"]
-    ]}))
+    ]})
+    if page_status == FAILURE:
+        page_summary_text = (
+            "Failing means one or more required checks failed on a supported branch. "
+            + page_summary_text
+        )
+    page_summary = html.escape(page_summary_text)
+    failure_attribution = html_required_failures(data["branches"])
     rows = []
     details = []
     for branch in data["branches"]:
@@ -1454,6 +1502,22 @@ h1 {{
 .banner-summary {{
   color: var(--muted);
   font-size: 14px;
+}}
+.failure-attribution {{
+  border-top: 1px solid #ffc9cf;
+  margin-top: 10px;
+  padding-top: 10px;
+}}
+.failure-attribution-title {{
+  color: var(--failure);
+  font-weight: 650;
+}}
+.failure-attribution ul {{
+  margin: 8px 0 0;
+  padding-left: 22px;
+}}
+.failure-attribution li + li {{
+  margin-top: 4px;
 }}
 .panel {{
   background: var(--panel);
@@ -1707,6 +1771,7 @@ a:hover {{ color: var(--brand-strong); }}
 <div>
 <div class="banner-title"><span aria-hidden="true">{html.escape(status_mark(page_status))}</span> {html.escape(html_status_label(page_status))}</div>
 <div class="banner-summary">{page_summary}</div>
+{failure_attribution}
 </div>
 </section>
 <section class="panel" aria-label="Supported branch status">
