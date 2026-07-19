@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
  - GH-831, Document why ST_Subdivide can change geography boundaries
      (Nikolai Berkoff)
  - #6020, Resolve ST_MPointFromText in the PostGIS schema (Paul Ramsey)
