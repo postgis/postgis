@@ -419,6 +419,11 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
 
     kept_label "${test_label}" || continue
 
+    if test $cmp -gt 0; then
+      echo "SKIP: ${test_label} (${to_version} is not newer than ${from_version})"
+      continue
+    fi
+
     path=$( psql -XAtc "
         SELECT path
         FROM pg_catalog.pg_extension_update_paths('${EXT}')
