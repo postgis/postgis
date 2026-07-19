@@ -141,6 +141,11 @@ POSTGIS_BLOCK_LABELS_COMMON_XSL=$(abs_srcdir)/xsl/postgis-block-labels-common.xs
 HTML_REF_INDEX_JSON=$(html_builddir)/postgis-ref-index.json
 HTML_REF_INDEX_JS=$(html_builddir)/postgis-ref-index.js
 HTML_REF_INDEX=$(HTML_REF_INDEX_JSON) $(HTML_REF_INDEX_JS)
+ifeq ($(DOCSUFFIX),-en)
+HTML_REF_INDEX_DEPS=$(HTML_REF_INDEX)
+else
+HTML_REF_INDEX_DEPS=
+endif
 
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
@@ -460,7 +465,7 @@ $(HTML_REF_INDEX_JS): $(HTML_REF_INDEX_JSON)
 		$(MAKE) $(HTML_REF_INDEX_JSON); \
 	fi
 
-$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) $(HTML_RUNTIME_ASSETS) | visual-examples
+$(html_builddir)/postgis$(DOCSUFFIX)/index.html: postgis-out.xml Makefile $(CHUNK_HTML_DOCBOOK_XSL) $(HTML_REF_INDEX_DEPS) $(HTML_RUNTIME_ASSETS) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		$(XSLTPROC_CHUNKED_HTML_OPTS) \
 		--stringparam postgis.visual.manifest "$(visual_examples_manifest)" \
@@ -494,7 +499,30 @@ review-html: html ## Compare this manual with REVIEW_HTML_BASE using synchronize
 # Localized render targets share translated XML files in each language
 # directory.  Build and validate those files once before recursive render
 # targets can run in parallel.
-html-localized: check-localized ## Generate a single-file html/postgis-<lang>.html for supported languages
+localized_html_targets = $(addprefix html-localized-,$(translations))
+localized_chunked_install_targets = $(addprefix chunked-html-install-localized-,$(translations))
+
+.PHONY: html-localized chunked-html-install-localized localized-html-ready
+
+html-localized: $(localized_html_targets) ## Generate a single-file html/postgis-<lang>.html for supported languages
+	@:
+
+chunked-html-install-localized: $(localized_chunked_install_targets) ## Install multi-file html for supported languages
+	@:
+
+# Localized builds share the English reference index installed alongside all
+# manuals.  Build it once before fan-out; recursive localized makes only read
+# it and never race to replace it with a translated index.
+localized-html-ready: check-localized $(HTML_REF_INDEX)
+	@:
+
+html-localized-%: | localized-html-ready
+	@echo "Making html for language $*..."
+	$(MAKE) -C po/$* local-html
+
+chunked-html-install-localized-%: | $(HTML_REF_INDEX)
+	@echo "Making chunked-html-install for language $*..."
+	$(MAKE) -C po/$* local-chunked-html-install
 
 %-localized:
 	rule=$(patsubst %-localized,%,$@); \
@@ -503,7 +531,7 @@ html-localized: check-localized ## Generate a single-file html/postgis-<lang>.ht
     $(MAKE) -C po/$$lang local-$$rule || exit 1; \
   done
 
-$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX) $(HTML_RUNTIME_ASSETS) | visual-examples
+$(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBOOK_XSL) $(HTML_REF_INDEX_DEPS) $(HTML_RUNTIME_ASSETS) | visual-examples
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--stringparam html.stylesheet style.css?v=$(HTML_ASSET_VERSION) \
 		--stringparam html.script "postgis-ref-index.js?v=$(HTML_ASSET_VERSION) example-blocks.js?v=$(HTML_ASSET_VERSION)" \
