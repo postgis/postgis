@@ -1,6 +1,7 @@
 import importlib.util
 import pathlib
 import unittest
+from unittest import mock
 
 
 MODULE_PATH = pathlib.Path(__file__).with_name("ci-status.py")
@@ -24,6 +25,77 @@ def check(name, status, *, required=True, url=None):
 
 
 class RequiredFailureHtmlTest(unittest.TestCase):
+    def test_apply_staleness_labels_passed_and_failed_results(self):
+        config = {
+            "stale_after_hours": 168,
+            "branches": [{"name": "stable-synthetic", "label": "Synthetic"}],
+        }
+        stale_check = {"name": "Synthetic CI"}
+        base = {
+            "branch": "stable-synthetic",
+            "branch_label": "Synthetic",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "revision": "0" * 40,
+        }
+
+        with mock.patch.object(CI_STATUS, "result_revision_distance", return_value=(3, "stable-synthetic")):
+            failed = CI_STATUS.apply_staleness({
+                **base,
+                "status": CI_STATUS.FAILURE,
+                "message": "build 1",
+            }, config, stale_check)
+            passed = CI_STATUS.apply_staleness({
+                **base,
+                "status": CI_STATUS.SUCCESS,
+                "completed_at": "2026-07-01T00:00:00Z",
+                "message": "build 2",
+            }, config, stale_check)
+
+        self.assertEqual(CI_STATUS.STALE, failed["status"])
+        self.assertEqual(CI_STATUS.FAILURE, failed["stale_base_status"])
+        self.assertEqual("Stale failed", failed["status_label"])
+        self.assertIn("3 commits behind stable-synthetic", failed["message"])
+
+        self.assertEqual(CI_STATUS.STALE, passed["status"])
+        self.assertEqual(CI_STATUS.SUCCESS, passed["stale_base_status"])
+        self.assertEqual("Stale passed", passed["status_label"])
+
+    def test_stale_summary_distinguishes_passed_and_failed(self):
+        branch = {
+            "name": "stable-synthetic",
+            "label": "Synthetic",
+            "status": CI_STATUS.UNKNOWN,
+            "failures": 0,
+            "checks": [
+                check("Required / Passed", CI_STATUS.STALE),
+                check("Required / Failed", CI_STATUS.STALE),
+                check("Required / Unknown", CI_STATUS.UNKNOWN),
+            ],
+        }
+        branch["checks"][0]["stale_base_status"] = CI_STATUS.SUCCESS
+        branch["checks"][0]["status_label"] = "Stale passed"
+        branch["checks"][1]["stale_base_status"] = CI_STATUS.FAILURE
+        branch["checks"][1]["status_label"] = "Stale failed"
+
+        self.assertEqual(
+            "no known failures; 1 unknown, 1 stale-passed, 1 stale-failed",
+            CI_STATUS.summary_text(branch),
+        )
+
+        rendered = CI_STATUS.render_html({
+            "generated_at": "2026-07-19T00:00:00+00:00",
+            "branches": [branch],
+        })
+
+        self.assertIn("1 stale-passed", rendered)
+        self.assertIn("1 stale-failed", rendered)
+        self.assertIn("Stale passed", rendered)
+        self.assertIn("Stale failed", rendered)
+        self.assertIn("status-stale stale-success", rendered)
+        self.assertIn("status-stale stale-failure", rendered)
+
     def test_failure_summary_names_only_required_failed_checks(self):
         branches = [
             {

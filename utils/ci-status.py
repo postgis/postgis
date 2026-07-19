@@ -817,7 +817,9 @@ def apply_staleness(result, config, check):
         stale["revision_commits_behind"] = distance_count
         stale["revision_compare_ref"] = distance_ref
         stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
+        stale["stale_base_status"] = result["status"]
         stale["status"] = STALE
+        stale["status_label"] = stale_status_label(result["status"])
         stale["message"] = f"{result.get('message', 'CI run')} ({stale['revision_distance']})"
         return stale
     if result["status"] != SUCCESS:
@@ -836,7 +838,9 @@ def apply_staleness(result, config, check):
         stale["revision_commits_behind"] = distance_count
         stale["revision_compare_ref"] = distance_ref
         stale["revision_distance"] = distance_text
+    stale["stale_base_status"] = result["status"]
     stale["status"] = STALE
+    stale["status_label"] = stale_status_label(result["status"])
     stale["message"] = f"{result.get('message', 'successful run')} (older than {threshold:g}h)"
     return stale
 
@@ -948,6 +952,47 @@ def check_counts(branch):
     return counts
 
 
+def stale_status_label(base_status):
+    return {
+        SUCCESS: "Stale passed",
+        FAILURE: "Stale failed",
+        UNKNOWN: "Stale unknown",
+    }.get(base_status, "Stale")
+
+
+def stale_count_bucket(check):
+    if check["status"] != STALE:
+        return None
+    base_status = check.get("stale_base_status")
+    if base_status in (SUCCESS, FAILURE):
+        return base_status
+    return UNKNOWN
+
+
+def stale_check_counts(branch):
+    counts = {
+        SUCCESS: 0,
+        FAILURE: 0,
+        UNKNOWN: 0,
+    }
+    for check in branch["checks"]:
+        if not check.get("required"):
+            continue
+        bucket = stale_count_bucket(check)
+        if bucket:
+            counts[bucket] += 1
+    return counts
+
+
+def stale_summary_parts(branch):
+    counts = stale_check_counts(branch)
+    return nonzero_parts(
+        (counts[SUCCESS], f"{counts[SUCCESS]} stale-passed"),
+        (counts[FAILURE], f"{counts[FAILURE]} stale-failed"),
+        (counts[UNKNOWN], f"{counts[UNKNOWN]} stale-unknown"),
+    )
+
+
 def plural(count, word):
     return f"{count} {word}" + ("" if count == 1 else "s")
 
@@ -959,7 +1004,7 @@ def nonzero_parts(*items):
 def summary_text(branch):
     status = branch["status"]
     counts = check_counts(branch)
-    unknown = counts[UNKNOWN] + counts[STALE]
+    stale_parts = stale_summary_parts(branch)
     if status == SUCCESS:
         return f"all {counts['required']} required CI checks OK"
     if status == FAILURE:
@@ -967,24 +1012,27 @@ def summary_text(branch):
             (counts[SUCCESS], f"{counts[SUCCESS]} OK"),
             (counts[FAILURE], plural(counts[FAILURE], "failure")),
             (counts[IN_PROGRESS], f"{counts[IN_PROGRESS]} running"),
-            (unknown, f"{unknown} unknown/stale"),
+            (counts[UNKNOWN], f"{counts[UNKNOWN]} unknown"),
         )
+        parts.extend(stale_parts)
         return "; ".join(parts)
     if status == IN_PROGRESS:
         previous = previous_summary(branch["checks"])
         parts = nonzero_parts(
             (counts[SUCCESS], f"{counts[SUCCESS]} OK"),
             (counts[IN_PROGRESS], f"{counts[IN_PROGRESS]} running"),
-            (unknown, f"{unknown} unknown/stale"),
+            (counts[UNKNOWN], f"{counts[UNKNOWN]} unknown"),
         )
+        parts.extend(stale_parts)
         prefix = "no known failures; " + ", ".join(parts)
         return f"{prefix}; {previous}" if previous else prefix
     if status == UNKNOWN:
         parts = nonzero_parts(
             (counts[SUCCESS], f"{counts[SUCCESS]} OK"),
             (counts[IN_PROGRESS], f"{counts[IN_PROGRESS]} running"),
-            (unknown, f"{unknown} unknown/stale"),
+            (counts[UNKNOWN], f"{counts[UNKNOWN]} unknown"),
         )
+        parts.extend(stale_parts)
         return "no known failures; " + ", ".join(parts)
     return "no required CI configured"
 
@@ -1114,7 +1162,8 @@ def print_terminal(data, use_color=True, verbose=False):
         heading_text = f"{glyph} {branch['label']} / {check['check']}"
         heading = terminal_link(heading_text, url, use_color)
         print(heading)
-        print(terminal_field("status", check["status"], use_color))
+        status_value = check.get("status_label") or check["status"]
+        print(terminal_field("status", status_value, use_color))
         if url:
             print(terminal_field("url", url, use_color))
         if check["status"] == IN_PROGRESS and check.get("previous_completed_status"):
@@ -1217,6 +1266,7 @@ def html_status_pill(status, label=None):
 
 def html_branch_progress(branch):
     counts = check_counts(branch)
+    stale_counts = stale_check_counts(branch)
     total = counts["required"]
     if not total:
         return ""
@@ -1224,7 +1274,10 @@ def html_branch_progress(branch):
         (SUCCESS, counts[SUCCESS], "OK"),
         (FAILURE, counts[FAILURE], "failing"),
         (IN_PROGRESS, counts[IN_PROGRESS], "running"),
-        (UNKNOWN, counts[UNKNOWN] + counts[STALE], "unknown or stale"),
+        (UNKNOWN, counts[UNKNOWN], "unknown"),
+        ("stale-passed", stale_counts[SUCCESS], "stale-passed"),
+        ("stale-failed", stale_counts[FAILURE], "stale-failed"),
+        ("stale-unknown", stale_counts[UNKNOWN], "stale-unknown"),
     ]
     labels = [f"{count} {label}" for status, count, label in segments if count]
     pieces = []
@@ -1242,7 +1295,7 @@ def html_branch_progress(branch):
 
 def html_branch_summary(branch):
     counts = check_counts(branch)
-    unknown = counts[UNKNOWN] + counts[STALE]
+    stale_counts = stale_check_counts(branch)
     parts = []
     if counts[SUCCESS]:
         parts.append((SUCCESS, f"{counts[SUCCESS]} OK"))
@@ -1250,8 +1303,14 @@ def html_branch_summary(branch):
         parts.append((FAILURE, plural(counts[FAILURE], "failure")))
     if counts[IN_PROGRESS]:
         parts.append((IN_PROGRESS, f"{counts[IN_PROGRESS]} running"))
-    if unknown:
-        parts.append((UNKNOWN, f"{unknown} unknown/stale"))
+    if counts[UNKNOWN]:
+        parts.append((UNKNOWN, f"{counts[UNKNOWN]} unknown"))
+    if stale_counts[SUCCESS]:
+        parts.append(("stale-passed", f"{stale_counts[SUCCESS]} stale-passed"))
+    if stale_counts[FAILURE]:
+        parts.append(("stale-failed", f"{stale_counts[FAILURE]} stale-failed"))
+    if stale_counts[UNKNOWN]:
+        parts.append(("stale-unknown", f"{stale_counts[UNKNOWN]} stale-unknown"))
     if not parts:
         return html.escape(summary_text(branch))
     return " ".join(
@@ -1313,7 +1372,10 @@ def html_check_rows(checks):
             status_text = f"{status_text} previous: {previous}"
             status = f"{status} <span class='previous-note'>previous: {html.escape(previous)}</span>"
         message = " ".join(str(check.get("message") or "").split())
-        check_status = html.escape(check["status"])
+        check_classes = [f"status-{check['status']}"]
+        if check["status"] == STALE:
+            check_classes.append(f"stale-{stale_count_bucket(check)}")
+        check_status = html.escape(" ".join(check_classes))
         revision = html_revision(check)
         revision_text = check.get("revision") or ""
         if revision_text:
@@ -1323,7 +1385,7 @@ def html_check_rows(checks):
         age = html_time(check.get("completed_at"))
         age_text_value = age_text(check.get("completed_at")) if check.get("completed_at") else ""
         detail_rows.append(
-            f"<tr class='status-{check_status}'>"
+            f"<tr class='{check_status}'>"
             f"<td class='check-name'>{check_html}{terminal_pad(check['check'], 27)}</td>"
             f"<td>{terminal_sep}{status}{terminal_pad(status_text, 30)}</td>"
             f"<td class='revision-cell'>{terminal_sep}{revision}{terminal_pad(revision_text, 44)}</td>"
@@ -1567,6 +1629,18 @@ h1 {{
   color: var(--unknown);
   background: #fff8e5;
 }}
+.chip-stale-passed {{
+  color: #5b6519;
+  background: #f5f8e8;
+}}
+.chip-stale-failed {{
+  color: #9a4f00;
+  background: #fff3e0;
+}}
+.chip-stale-unknown {{
+  color: var(--unknown);
+  background: #fff8e5;
+}}
 .branch-progress {{
   display: flex;
   height: 5px;
@@ -1589,8 +1663,14 @@ h1 {{
 .segment-in_progress {{
   background: #70a7db;
 }}
-.segment-unknown, .segment-stale {{
+.segment-unknown, .segment-stale, .segment-stale-unknown {{
   background: #c8a24b;
+}}
+.segment-stale-passed {{
+  background: #a4b85d;
+}}
+.segment-stale-failed {{
+  background: #d48a3a;
 }}
 .status-dot {{
   width: 10px;
@@ -1622,6 +1702,8 @@ h1 {{
 .status-failure .status-pill {{ color: var(--failure); border-color: #ffc9cf; background: #fff5f6; }}
 .status-in_progress .status-pill {{ color: var(--running); border-color: #bfdbfe; background: #f0f7ff; }}
 .status-unknown .status-pill, .status-stale .status-pill {{ color: var(--unknown); border-color: #f1d08a; background: #fff8e5; }}
+.status-stale.stale-success .status-pill {{ color: #5b6519; border-color: #d8df9f; background: #f5f8e8; }}
+.status-stale.stale-failure .status-pill {{ color: #9a4f00; border-color: #efc07a; background: #fff3e0; }}
 tr.status-success .status-pill {{ color: var(--success); border-color: #b7dfc1; background: #f0fff4; }}
 tr.status-failure .status-pill {{ color: var(--failure); border-color: #ffc9cf; background: #fff5f6; }}
 tr.status-in_progress .status-pill {{ color: var(--running); border-color: #bfdbfe; background: #f0f7ff; }}
