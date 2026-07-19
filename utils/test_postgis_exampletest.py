@@ -450,6 +450,19 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         self.assertEqual((2, 3, 0), requirements["sfcgal"])
         self.assertEqual((6, 0, 0), requirements["cgal"])
 
+    def test_cg_3dbuffer_requires_sfcgal_2_0(self):
+        tester = ExampleTester.__new__(ExampleTester)
+
+        requirements = tester.inferred_capability_requirements(
+            "SELECT CG_3DBuffer('POINT EMPTY'::geometry, 1, 8, 0)"
+        )
+
+        self.assertEqual([{
+            "name": "sfcgal",
+            "minimum": (2, 0, 0),
+            "role": "auto-requires-sfcgal-2.0.0",
+        }], requirements)
+
     def test_legacy_2d_wkt_output_compares_against_2d_projection(self):
         tester = ExampleTester.__new__(ExampleTester)
         query = tester.geometry_comparison_query(
@@ -478,6 +491,18 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             expected_wkt_digits=6,
         )
         self.assertIn("ST_HausdorffDistance(actual, expected) <= 9.9999999999999995e-07", query)
+
+    def test_surface_output_precision_preserves_canonical_face_comparison(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        query = tester.geometry_comparison_query(
+            "00",
+            expected_wkt="POLYHEDRALSURFACE Z EMPTY",
+            actual_type="POLYHEDRALSURFACE",
+            expected_wkt_digits=0,
+        )
+        self.assertEqual(2, query.count("jsonb_agg(face_key ORDER BY face_key)"))
+        self.assertEqual(2, query.count("ST_AsEWKT(point.geom, 0)"))
+        self.assertNotIn("ST_HausdorffDistance", query)
 
     def test_psql_environment_sets_default_query_timeout(self):
         tester = ExampleTester.__new__(ExampleTester)
@@ -684,7 +709,7 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertEqual(2, query.count("jsonb_agg(face_key ORDER BY face_key)"))
         self.assertEqual(2, query.count("ST_Dump("))
         self.assertIn("ST_Normalize", query)
-        self.assertNotIn("ST_AsEWKT", query)
+        self.assertEqual(2, query.count("ST_AsEWKT(point.geom, 12)"))
         self.assertNotIn("ST_GeomFromEWKT(ST_AsEWKT", query)
         self.assertNotIn("refentry", query.lower())
 
@@ -696,14 +721,12 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertIn("ST_AsEWKT(ST_Normalize(expected))", query)
         self.assertNotIn("actual_components AS", query)
 
-    def test_areal_comparison_uses_rounded_coordinate_keys(self):
+    def test_areal_comparison_uses_documented_wkt_coordinate_keys(self):
         query = self.tester.geometry_comparison_query(
             "00", expected_wkt="POLYGON Z EMPTY", actual_type="POLYGON",
         )
         self.assertEqual(2, query.count("generate_subscripts(points, 1)"))
-        self.assertEqual(2, query.count("concat_ws(' ',"))
-        self.assertIn("round((CASE WHEN abs(ST_X(point.geom))", query)
-        self.assertIn("round((CASE WHEN abs(ST_Z(point.geom))", query)
+        self.assertEqual(2, query.count("ST_AsEWKT(point.geom, 0)"))
         self.assertIn("points[rotation:array_length(points, 1)]", query)
         self.assertIn("IS NOT DISTINCT FROM", query)
         self.assertNotIn("regexp_replace", query)
@@ -893,6 +916,15 @@ class ExampleTestComparisonTest(unittest.TestCase):
         self.assertTrue(self.tester.expected_has_geometry_text([["POLYGON EMPTY"]]))
         self.assertFalse(self.tester.expected_has_geometry_text([["not geometry"]]))
 
+    def test_documented_visual_types_detect_readable_wkt_columns(self):
+        self.assertEqual(
+            ["geometry", ""],
+            self.tester.documented_visual_types([
+                ["POINT(1 2)", "label"],
+                ["SRID=4326;POLYGON EMPTY", "still text"],
+            ]),
+        )
+
 
 class ExampleTestRunnerTest(unittest.TestCase):
     def make_runner(self, actual_rows):
@@ -972,38 +1004,64 @@ class ExampleTestRunnerTest(unittest.TestCase):
         self.assertEqual(["second:2", ("visuals", ["second-visual"])], calls)
 
     def test_visual_only_renders_typed_documented_output_at_any_job_count(self):
-        hexwkb = "010300000000000000"
-        for jobs in (1, 2):
-            with self.subTest(jobs=jobs):
-                tester = self.make_runner({"SELECT 1": [[hexwkb]]})
-                example = tester.examples()[0]
-                example.update({
-                    "expected": [[hexwkb]],
-                    "documented_only": True,
-                    "expected_headers": ["documented_geom"],
-                    "visual_id": "documented-visual",
-                    "visual_kind": "explicit",
-                    "visual_preferred": True,
-                })
-                tester.examples = lambda: [example]
-                calls = []
-                tester.run_one_example = lambda database, selected: self.fail(
-                    "documented output was executed"
-                )
-                tester.render_visual_example = lambda database, selected, actual: calls.append(
-                    (selected["visual_id"], actual)
-                ) or {"id": selected["visual_id"], "source": selected["label"], "svg": "<svg/>\n"}
-                tester.publish_visual_examples = lambda render_dir, visuals: calls.append(
-                    (render_dir, [visual["id"] for visual in visuals])
-                )
+        for expected in (
+            [["010300000000000000"]],
+            [["POLYGON EMPTY"]],
+        ):
+            for jobs in (1, 2):
+                with self.subTest(expected=expected, jobs=jobs):
+                    tester = self.make_runner({"SELECT 1": expected})
+                    example = tester.examples()[0]
+                    example.update({
+                        "expected": expected,
+                        "documented_only": True,
+                        "expected_headers": ["documented_geom"],
+                        "visual_id": "documented-visual",
+                        "visual_kind": "explicit",
+                        "visual_preferred": True,
+                    })
+                    tester.examples = lambda: [example]
+                    calls = []
+                    tester.run_one_example = lambda database, selected: self.fail(
+                        "documented output was executed"
+                    )
+                    tester.render_visual_example = lambda database, selected, actual: calls.append(
+                        (selected["visual_id"], actual)
+                    ) or {"id": selected["visual_id"], "source": selected["label"], "svg": "<svg/>\n"}
+                    tester.publish_visual_examples = lambda render_dir, visuals: calls.append(
+                        (render_dir, [visual["id"] for visual in visuals])
+                    )
 
-                tester.run_examples("exampletest", render_dir="visuals", visual_only=True, jobs=jobs)
+                    tester.run_examples("exampletest", render_dir="visuals", visual_only=True, jobs=jobs)
 
-                self.assertEqual("documented-visual", calls[0][0])
-                self.assertEqual(example["expected"], calls[0][1])
-                self.assertEqual(["documented_geom"], calls[0][1].headers)
-                self.assertEqual(["geometry"], calls[0][1].types)
-                self.assertEqual(("visuals", ["documented-visual"]), calls[1])
+                    self.assertEqual("documented-visual", calls[0][0])
+                    self.assertEqual(example["expected"], calls[0][1])
+                    self.assertEqual(["documented_geom"], calls[0][1].headers)
+                    self.assertEqual(["geometry"], calls[0][1].types)
+                    self.assertEqual(("visuals", ["documented-visual"]), calls[1])
+
+    def test_visual_only_preserves_documented_scalar_output_types(self):
+        tester = self.make_runner({"SELECT 1": [["label", "POINT(1 2)"]]})
+        example = tester.examples()[0]
+        example.update({
+            "expected": [["label", "POINT(1 2)"]],
+            "documented_only": True,
+            "expected_headers": ["caption", "documented_geom"],
+            "visual_id": "documented-visual",
+            "visual_kind": "explicit",
+            "visual_preferred": True,
+        })
+        tester.examples = lambda: [example]
+        calls = []
+        tester.run_one_example = lambda database, selected: self.fail(
+            "documented output was executed"
+        )
+        tester.render_visual_example = lambda database, selected, actual: calls.append(actual)
+        tester.publish_visual_examples = lambda render_dir, visuals: None
+
+        tester.run_examples("exampletest", render_dir="visuals", visual_only=True)
+
+        self.assertEqual(["", "geometry"], calls[0].types)
 
     def test_native_geometry_output_is_described_when_input_uses_serializer(self):
         hexwkb = "010200000002000000000000000000F03F0000000000000040" \
