@@ -3,6 +3,7 @@ PostGIS 3.7.1dev
 
 * Bug Fixes *
 
+ - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
  - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
      (John Carmack)
  - GH-1191, [topology] Return SQL NULL for a NULL topology name in
