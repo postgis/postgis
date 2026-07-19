@@ -479,17 +479,11 @@ class ExampleTester:
         ST_Normalize canonicalizes polygon orientation and component order, but
         its ring-start choice is based on XY.  A 3D face may therefore retain
         different (but equivalent) cyclic starts when two vertices share XY
-        and differ only in Z.  Rotate each normalized ring using rounded point
-        coordinate keys, then sort the normalized areal components.
+        and differ only in Z.  Rotate each normalized ring using the same
+        precision-aware point formatter used by documented WKT output, then
+        sort the normalized areal components.
         """
-        tolerance = format(VALUE_TOLERANCE, ".17g")
-        point_key = (
-            "concat_ws(' ', "
-            f"round((CASE WHEN abs(ST_X(point.geom)) < {tolerance} THEN 0 ELSE ST_X(point.geom) END)::numeric, {digits}), "
-            f"round((CASE WHEN abs(ST_Y(point.geom)) < {tolerance} THEN 0 ELSE ST_Y(point.geom) END)::numeric, {digits}), "
-            f"round((CASE WHEN abs(ST_Z(point.geom)) < {tolerance} THEN 0 ELSE ST_Z(point.geom) END)::numeric, {digits}), "
-            f"round((CASE WHEN abs(ST_M(point.geom)) < {tolerance} THEN 0 ELSE ST_M(point.geom) END)::numeric, {digits}))"
-        )
+        point_key = f"ST_AsEWKT(point.geom, {digits})"
         return (
             "(SELECT jsonb_agg(face_key ORDER BY face_key) FROM (SELECT "
             "face_path, jsonb_agg(ring_key ORDER BY ring_path) AS face_key "
@@ -669,7 +663,13 @@ class ExampleTester:
         return [
             "geometry" if any(
                 column < len(row)
-                and self.hexwkb_geometry(row[column], allow_bytea_prefix=False) is not None
+                and (
+                    self.hexwkb_geometry(row[column], allow_bytea_prefix=False) is not None
+                    or (
+                        isinstance(row[column], str)
+                        and WKT_VALUE_RE.match(row[column])
+                    )
+                )
                 for row in expected
             ) else ""
             for column in range(width)
