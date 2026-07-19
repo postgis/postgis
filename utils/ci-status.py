@@ -1353,10 +1353,7 @@ def html_required_failures(branches):
     if not failures:
         return ""
 
-    count = sum(len(checks) for _, checks in failures)
-    branch_count = len(failures)
-    branch_word = "branch" if branch_count == 1 else "branches"
-    rows = []
+    groups = []
     for branch_label, checks in failures:
         check_links = []
         for check in checks:
@@ -1365,15 +1362,13 @@ def html_required_failures(branches):
             check_links.append(
                 f"<a href='{html.escape(link)}'>{check_name}</a>" if link else check_name
             )
-        rows.append(
-            f"<li><strong>{html.escape(branch_label)}</strong> — {', '.join(check_links)}</li>"
+        groups.append(
+            f"<strong>{html.escape(branch_label)}</strong> — {', '.join(check_links)}"
         )
 
     return (
-        "<div class='failure-attribution' aria-label='Required CI failures'>"
-        f"<div class='failure-attribution-title'>Required failures "
-        f"({count} across {branch_count} {branch_word})</div>"
-        f"<ul>{''.join(rows)}</ul></div>"
+        " <span aria-label='Required CI failures'>· <strong>Required:</strong> "
+        f"{' · '.join(groups)}</span>"
     )
 
 
@@ -1383,11 +1378,6 @@ def render_html(data):
     page_summary_text = summary_text({"status": page_status, "checks": [
         check for branch in data["branches"] for check in branch["checks"]
     ]})
-    if page_status == FAILURE:
-        page_summary_text = (
-            "Failing means one or more required checks failed on a supported branch. "
-            + page_summary_text
-        )
     page_summary = html.escape(page_summary_text)
     failure_attribution = html_required_failures(data["branches"])
     rows = []
@@ -1502,22 +1492,6 @@ h1 {{
 .banner-summary {{
   color: var(--muted);
   font-size: 14px;
-}}
-.failure-attribution {{
-  border-top: 1px solid #ffc9cf;
-  margin-top: 10px;
-  padding-top: 10px;
-}}
-.failure-attribution-title {{
-  color: var(--failure);
-  font-weight: 650;
-}}
-.failure-attribution ul {{
-  margin: 8px 0 0;
-  padding-left: 22px;
-}}
-.failure-attribution li + li {{
-  margin-top: 4px;
 }}
 .panel {{
   background: var(--panel);
@@ -1770,8 +1744,7 @@ a:hover {{ color: var(--brand-strong); }}
 <span class="status-dot" aria-hidden="true"></span>
 <div>
 <div class="banner-title"><span aria-hidden="true">{html.escape(status_mark(page_status))}</span> {html.escape(html_status_label(page_status))}</div>
-<div class="banner-summary">{page_summary}</div>
-{failure_attribution}
+<div class="banner-summary">{page_summary}{failure_attribution}</div>
 </div>
 </section>
 <section class="panel" aria-label="Supported branch status">

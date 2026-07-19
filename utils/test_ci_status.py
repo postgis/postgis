@@ -50,7 +50,7 @@ class RequiredFailureHtmlTest(unittest.TestCase):
 
         summary = CI_STATUS.html_required_failures(branches)
 
-        self.assertIn("Required failures (2 across 1 branch)", summary)
+        self.assertIn("<strong>Required:</strong>", summary)
         self.assertIn("Jenkins / Alpha", summary)
         self.assertIn("https://ci.example.test/a", summary)
         self.assertIn("Woodie / Beta", summary)
@@ -76,18 +76,17 @@ class RequiredFailureHtmlTest(unittest.TestCase):
             "branches": [branch],
         })
 
-        self.assertIn(
-            "Failing means one or more required checks failed on a supported branch. "
-            "1 OK; 1 failure; 1 running",
-            rendered,
-        )
-        self.assertIn("Required failures (1 across 1 branch)", rendered)
+        self.assertIn("1 OK; 1 failure; 1 running", rendered)
+        self.assertIn("<strong>Required:</strong>", rendered)
         banner_start = rendered.index('<section class="status-banner')
         banner_end = rendered.index("</section>", banner_start)
-        failure_start = rendered.index("<div class='failure-attribution'", banner_start)
+        failure_start = rendered.index("aria-label='Required CI failures'", banner_start)
         self.assertLess(failure_start, banner_end)
+        banner = rendered[banner_start:banner_end]
+        self.assertNotIn("Failing means", banner)
+        self.assertNotIn("<ul>", banner)
 
-    def test_failure_summary_pluralizes_branches(self):
+    def test_failure_summary_keeps_multiple_branches_inline(self):
         branches = [
             {
                 "name": f"stable-synthetic-{index}",
@@ -101,7 +100,8 @@ class RequiredFailureHtmlTest(unittest.TestCase):
 
         summary = CI_STATUS.html_required_failures(branches)
 
-        self.assertIn("Required failures (2 across 2 branches)", summary)
+        self.assertIn("Synthetic 1", summary)
+        self.assertIn("· <strong>Synthetic 2</strong>", summary)
 
     def test_failure_block_is_absent_without_required_failures(self):
         branch = {
@@ -117,7 +117,7 @@ class RequiredFailureHtmlTest(unittest.TestCase):
             "generated_at": "2026-07-19T00:00:00+00:00",
             "branches": [branch],
         })
-        self.assertNotIn("<div class='failure-attribution'", rendered)
+        self.assertNotIn("aria-label='Required CI failures'", rendered)
 
 
 if __name__ == "__main__":
