@@ -9,7 +9,7 @@ variables:
     - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
     # The test image can need crash recovery after clone-local startup. Under
     # multi-workflow I/O load, Debian's default 60-second pg_ctl wait is short.
-    - printf '%s\n' '-t 300' > /etc/postgresql/$${PGVER}/main/pg_ctl.conf
+    - printf '%s\n' "pg_ctl_options = '-t 300'" > /etc/postgresql/$${PGVER}/main/pg_ctl.conf
     - export RUNTESTFLAGS="-v
       --after-create-db-script $${CI_WORKSPACE}/regress/hooks/standard-conforming-strings-off.sql"
     - export SRCDIR=$${CI_WORKSPACE}
