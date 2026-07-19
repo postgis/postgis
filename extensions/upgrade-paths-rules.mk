@@ -6,6 +6,7 @@ install: install-upgrade-paths
 # revisions of the same version
 install-upgrade-paths:
 	tpl='$(EXTENSION)--ANY--$(EXTVERSION).sql'; \
+	rm -f "$(EXTDIR)/$(EXTENSION)--"*--"$(EXTVERSION).sql"; \
 	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
 	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
 	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql; \
