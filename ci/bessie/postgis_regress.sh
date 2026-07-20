@@ -1,6 +1,43 @@
 #BRANCH is passed in via jenkins which is set via svn hook
 export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 
+pg_config_major()
+{
+  "$1" --version 2>/dev/null | sed -n 's/^PostgreSQL \([0-9][0-9]*\).*/\1/p'
+}
+
+find_supported_pg_config()
+{
+  for candidate in \
+    "${PG_CONFIG:-}" \
+    /usr/local/bin/pg_config15 \
+    /usr/local/pgsql15/bin/pg_config \
+    /usr/local/pgsql-15/bin/pg_config \
+    /usr/local/postgresql15/bin/pg_config \
+    "$(command -v pg_config || true)"
+  do
+    test -n "${candidate}" || continue
+    test -x "${candidate}" || continue
+    major=$(pg_config_major "${candidate}")
+    test -n "${major}" || continue
+    if test "${major}" -le 15; then
+      printf '%s\n' "${candidate}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+PG_CONFIG_PATH=$(find_supported_pg_config || true)
+if test -z "${PG_CONFIG_PATH}"; then
+  pg_config_version=$(pg_config --version 2>/dev/null || true)
+  echo "Skipping Bessie: PostGIS 3.2 supports PostgreSQL <= 15, but no supported pg_config was found. Default pg_config: ${pg_config_version:-missing}."
+  exit 0
+fi
+
+PG_BINDIR=$(dirname "${PG_CONFIG_PATH}")
+export PATH="${PG_BINDIR}:${PATH}"
+
 PGIS_TMP_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/postgis-bessie.XXXXXX")
 export PGDATA="${PGIS_TMP_ROOT}/data"
 export PGHOST="${PGIS_TMP_ROOT}"
@@ -27,6 +64,7 @@ trap 'exit 1' HUP INT TERM
 
 sh autogen.sh
 ./configure \
+  --with-pgconfig="${PG_CONFIG_PATH}" \
   --with-projdir=/usr/local \
   --with-libiconv=/usr/local \
   --without-interrupt-tests \
