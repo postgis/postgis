@@ -802,7 +802,7 @@ INSERT INTO tiger.place_lookup
     JOIN tiger.state_lookup sl ON (pl.state = lpad(sl.st_code,2,'0'))
   GROUP BY pl.state, sl.abbrev, pl.placefp, pl.name;
 **/
-CREATE INDEX place_lookup_name_idx ON tiger.place_lookup (:fuzzystrmatch@.soundex(name));
+CREATE INDEX place_lookup_name_idx ON tiger.place_lookup ( @extschema:fuzzystrmatch@.soundex(name) );
 CREATE INDEX place_lookup_state_idx ON tiger.place_lookup (state);
 
 DROP TABLE IF EXISTS tiger.county_lookup;
@@ -826,7 +826,7 @@ INSERT INTO tiger.county_lookup
     JOIN tiger.state_lookup sl ON (co.state = lpad(sl.st_code,2,'0'))
   GROUP BY co.state, sl.abbrev, co.county, co.name;
 **/
-CREATE INDEX county_lookup_name_idx ON tiger.county_lookup (:fuzzystrmatch@.soundex(name));
+CREATE INDEX county_lookup_name_idx ON tiger.county_lookup ( @extschema:fuzzystrmatch@.soundex(name) );
 CREATE INDEX county_lookup_state_idx ON tiger.county_lookup (state);
 
 DROP TABLE IF EXISTS tiger.countysub_lookup;
@@ -855,7 +855,7 @@ INSERT INTO tiger.countysub_lookup
     JOIN tiger.county_lookup cl ON (cs.state = lpad(cl.st_code,2,'0') AND cs.county = cl.co_code)
   GROUP BY cs.state, sl.abbrev, cs.county, cl.name, cs.cousubfp, cs.name;
 **/
-CREATE INDEX countysub_lookup_name_idx ON tiger.countysub_lookup (:fuzzystrmatch@.soundex(name));
+CREATE INDEX countysub_lookup_name_idx ON tiger.countysub_lookup ( @extschema:fuzzystrmatch@.soundex(name) );
 CREATE INDEX countysub_lookup_state_idx ON tiger.countysub_lookup (state);
 
 DROP TABLE IF EXISTS tiger.zip_lookup_all;
@@ -1284,7 +1284,7 @@ CREATE TABLE tiger.featnames
   CONSTRAINT featnames_pkey PRIMARY KEY (gid)
 );
 ALTER TABLE tiger.featnames ADD COLUMN statefp character varying(2);
-CREATE INDEX idx_tiger_featnames_snd_name ON tiger.featnames USING btree (:fuzzystrmatch@.soundex(name));
+CREATE INDEX idx_tiger_featnames_snd_name ON tiger.featnames USING btree ( @extschema:fuzzystrmatch@.soundex(name) );
 CREATE INDEX idx_tiger_featnames_lname ON tiger.featnames USING btree (lower(name));
 CREATE INDEX idx_tiger_featnames_tlid_statefp ON tiger.featnames USING btree (tlid,statefp);
 
