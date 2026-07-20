@@ -298,8 +298,15 @@ sh autogen.sh
 
 	  <listitem>
 		<para>
-		  ImageMagick (<filename>convert</filename>) is required to generate the
-		  images used in the documentation. ImageMagick is available from
+		  GraphicsMagick (<filename>gm convert</filename>) is preferred to
+		  generate the images used in the documentation. If GraphicsMagick is
+		  unavailable, ImageMagick (<filename>convert</filename> or
+		  <filename>magick convert</filename>) provides the same command-line
+		  syntax. GraphicsMagick is available from
+		  <link xlink:href="http://www.graphicsmagick.org/">
+			http://www.graphicsmagick.org/
+		  </link>
+		  and ImageMagick from
 		  <link xlink:href="http://www.imagemagick.org/">
 			http://www.imagemagick.org/
 		  </link>
