@@ -16,7 +16,7 @@ CREATE OR REPLACE FUNCTION geocode_intersection(
     IN in_zip text DEFAULT ''::text,
     IN num_results integer DEFAULT 10,
     OUT addy norm_addy,
-    OUT geomout geometry,
+    OUT geomout @extschema:postgis@.geometry,
     OUT rating integer)
   RETURNS SETOF record AS
 $$
@@ -97,8 +97,8 @@ BEGIN
                              COALESCE(e1.suftypabrv,e1.pretypabrv)  As fetype, e1.sufdirabrv AS fedirs,
                                p.name As place, e1.zip,
                              CASE WHEN e1.tnidf = e2.tnidf OR e1.tnidf = e2.tnidt THEN
-                                ST_StartPoint(ST_GeometryN(ST_Multi(e1.the_geom),1))
-                             ELSE ST_EndPoint(ST_GeometryN(ST_Multi(e1.the_geom),1)) END AS geom ,
+                                @extschema:postgis@.ST_StartPoint(@extschema:postgis@.ST_GeometryN(@extschema:postgis@.ST_Multi(e1.the_geom),1))
+                             ELSE @extschema:postgis@.ST_EndPoint(@extschema:postgis@.ST_GeometryN(@extschema:postgis@.ST_Multi(e1.the_geom),1)) END AS geom ,
                                 CASE WHEN lower(p.name) = $3 THEN 0 ELSE 1 END
                                 + tiger.levenshtein_ignore_case(p.name, $3)
                                 + tiger.levenshtein_ignore_case(e1.name || COALESCE('' '' || e1.sufqualabr, ''''),$2) +
@@ -152,4 +152,4 @@ $$
   LANGUAGE plpgsql IMMUTABLE
   COST 1000
   ROWS 10;
-ALTER FUNCTION geocode_intersection(text, text, text, text, text, integer) SET join_collapse_limit='2';
+ALTER FUNCTION tiger.geocode_intersection(text, text, text, text, text, integer) SET join_collapse_limit='2';
