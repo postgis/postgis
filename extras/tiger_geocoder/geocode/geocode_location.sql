@@ -31,7 +31,7 @@ BEGIN
       JOIN tiger.state ON (state.statefp=zip.statefp)
     WHERE
       parsed.zip = zip.zip OR
-      (soundex(zip.city) = soundex(parsed.location) and zip.statefp = in_statefp)
+      (:fuzzystrmatch@.soundex(zip.city) = :fuzzystrmatch@.soundex(parsed.location) and zip.statefp = in_statefp)
     ORDER BY tiger.levenshtein_ignore_case(coalesce(zip.city), parsed.location), zip.zip
   LOOP
     ADDY.location := result.place;
@@ -61,7 +61,7 @@ BEGIN
        || ' 100::integer + tiger.levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ') as in_rating '
        || ' FROM (SELECT * FROM tiger.place WHERE statefp = ' ||  quote_literal(coalesce(in_statefp,'')) || ' ' || COALESCE(' AND ST_Intersects(' || quote_literal(restrict_geom::text) || '::geometry, the_geom)', '') || ') AS pl '
        || ' INNER JOIN tiger.state ON(pl.statefp = state.statefp)'
-       || ' WHERE soundex(pl.name) = soundex(' || quote_literal(coalesce(parsed.location,'')) || ') and pl.statefp = ' || quote_literal(COALESCE(in_statefp,''))
+       || ' WHERE :fuzzystrmatch@.soundex(pl.name) = :fuzzystrmatch@.soundex(' || quote_literal(coalesce(parsed.location,'')) || ') and pl.statefp = ' || quote_literal(COALESCE(in_statefp,''))
        || ' ORDER BY tiger.levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ');'
        ;
 
