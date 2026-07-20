@@ -60,10 +60,12 @@ cd $outdir && git checkout $tag && cd -
 echo "Removing make_dist.sh"
 rm -fv "$outdir"/make_dist.sh
 
-echo "Removing developer docs and top-level AGENTS.md"
+echo "Removing developer docs, ai skills, and top-level AGENTS.md"
 rm -rfv \
   "$outdir"/AGENTS.md \
-  "$outdir"/doc/development
+  "$outdir"/doc/development \
+  "$outdir"/doc/skills \
+  "$outdir"/doc/rfc
 
 echo "Removing ci files"
 rm -rfv \
@@ -177,6 +179,11 @@ fi
 
 if tar -tf "${package}.tar" | grep -Fxq "${outdir}/AGENTS.md"; then
   echo "Forbidden file in source distribution: ${outdir}/AGENTS.md"
+  exit 1
+fi
+
+if tar -tf "${package}.tar" | grep -Fxq "${outdir}/doc/skills/"; then
+  echo "Forbidden path in source distribution: ${outdir}/doc/skills/"
   exit 1
 fi
 
