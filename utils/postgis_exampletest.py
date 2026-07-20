@@ -3186,6 +3186,10 @@ SELECT json_build_object(
                     raise RuntimeError(f"Duplicate or missing visual example id: {visual['id']!r}")
                 seen.add(visual["id"])
                 (temporary / f"{visual['id']}.svg").write_text(visual["svg"], encoding="utf-8")
+                svg_match = re.search(
+                    r'<svg\b[^>]*\bwidth="([^"]+)"[^>]*\bheight="([^"]+)"',
+                    visual["svg"],
+                )
                 manifest_item = {
                     "id": visual["id"],
                     "kind": visual["kind"],
@@ -3194,6 +3198,8 @@ SELECT json_build_object(
                     "refentry": visual["refentry"],
                     "screen": visual["screen"],
                     "source": visual["source"],
+                    "width": svg_match.group(1) if svg_match else None,
+                    "height": svg_match.group(2) if svg_match else None,
                     "layers": visual.get("layers", []),
                 }
                 if visual.get("native_output"):

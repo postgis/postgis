@@ -624,6 +624,13 @@ table.postgis-example-grid td {
     width: auto;
 }
 
+.postgis-geometry-figure-fallback {
+    display: block;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+}
+
 .postgis-geometry-literal {
     border-radius: 0.16em;
     transition: background-color 90ms ease;
