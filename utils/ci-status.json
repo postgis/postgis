@@ -133,7 +133,12 @@
       "name": "Jenkins / Winnie",
       "provider": "jenkins",
       "required": true,
-      "job_url": "https://winnie.postgis.net/view/PostGIS/job/PostGIS_${version_or_trunk}/"
+      "job_url": "https://winnie.postgis.net/view/PostGIS/job/PostGIS_${version_or_trunk}/",
+      "branches": [
+        "master",
+        "stable-3.6",
+        "stable-3.5"
+      ]
     },
     {
       "name": "Jenkins / Bessie",
