@@ -26,6 +26,7 @@ INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 
 SHELL = @SHELL@
+PERL = @PERL@
 
 VPATH = $(srcdir)
 
@@ -72,14 +73,22 @@ visual-examples-pdf: visual-examples-check
 		target="$(PDF_IMAGES_BUILD_DIR)/$(VISUAL_EXAMPLES_DIR)/$$name.png"; \
 		temporary="$$target.tmp.png"; \
 		diagnostics="$$target.tmp.log"; \
+		embedded_tmpdir=; \
 		rm -f "$$temporary" "$$diagnostics"; \
 		if test "$$rasterizer" = rsvg; then \
 			rsvg-convert -w 1200 -b white -o "$$temporary" "$$source" 2>"$$diagnostics" || \
 				{ cat "$$diagnostics" >&2; exit 1; }; \
 		else \
-			$$converter -density 240 "$$source" -background white -flatten \
+			converter_source="$$source"; \
+			if grep -Eq "(xlink:)?href=['\"]data:image/[^;]+;base64," "$$source"; then \
+				embedded_tmpdir=$$(mktemp -d "$${TMPDIR:-/tmp}/postgis-visual-svg.XXXXXX"); \
+				converter_source="$$embedded_tmpdir/$$name.svg"; \
+				$(PERL) $(srcdir)/prepare-svg-for-converter.pl "$$source" "$$converter_source" "$$embedded_tmpdir" || exit 1; \
+			fi; \
+			$$converter -density 240 "$$converter_source" -background white -flatten \
 				-resize 1200x1200\> "$$temporary" 2>"$$diagnostics" || \
-				{ cat "$$diagnostics" >&2; exit 1; }; \
+				{ cat "$$diagnostics" >&2; test -z "$$embedded_tmpdir" || rm -rf "$$embedded_tmpdir"; exit 1; }; \
+			test -z "$$embedded_tmpdir" || rm -rf "$$embedded_tmpdir"; \
 		fi; \
 		test ! -s "$$diagnostics" || { cat "$$diagnostics" >&2; exit 1; }; \
 		test -s "$$temporary" || { echo "Failed to rasterize $$source" >&2; exit 1; }; \
