@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #5823, Build support for Pg18 (Paul Ramsey)
  - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
    with standard_conforming_strings off (Darafei Praliaskouski)
  - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
