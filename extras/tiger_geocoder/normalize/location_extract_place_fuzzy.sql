@@ -30,10 +30,10 @@ BEGIN
     lstate := statefp FROM tiger.state WHERE stusps = stateAbbrev;
     SELECT into tempInt count(*) FROM tiger.place
         WHERE place.statefp = lstate
-        AND soundex(tempString) = tiger.end_soundex(name);
+        AND :fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name);
   ELSE
     SELECT into tempInt count(*) FROM tiger.place
-        WHERE soundex(tempString) = tiger.end_soundex(name);
+        WHERE :fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name);
   END IF;
 
   IF tempInt > 0 THEN
@@ -42,13 +42,13 @@ BEGIN
     IF stateAbbrev IS NOT NULL THEN
       FOR rec IN SELECT name FROM tiger.place
           WHERE place.statefp = lstate
-          AND soundex(tempString) = tiger.end_soundex(name) LOOP
+          AND :fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name) LOOP
         word_count := tiger.count_words(rec.name);
         test := TRUE;
         tempString := tiger.get_last_words(fullStreet, word_count);
         FOR i IN 1..word_count LOOP
-          IF soundex(split_part(tempString, ' ', i)) !=
-            soundex(split_part(rec.name, ' ', i)) THEN
+          IF :fuzzystrmatch@.soundex(split_part(tempString, ' ', i)) !=
+            :fuzzystrmatch@.soundex(split_part(rec.name, ' ', i)) THEN
             test := FALSE;
           END IF;
         END LOOP;
@@ -62,13 +62,13 @@ BEGIN
       END LOOP;
     ELSE
       FOR rec IN SELECT name FROM tiger.place
-          WHERE soundex(tempString) = tiger.end_soundex(name) LOOP
+          WHERE :fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name) LOOP
         word_count := tiger.count_words(rec.name);
         test := TRUE;
         tempString := tiger.get_last_words(fullStreet, word_count);
         FOR i IN 1..word_count LOOP
-          IF soundex(split_part(tempString, ' ', i)) !=
-            soundex(split_part(rec.name, ' ', i)) THEN
+          IF :fuzzystrmatch@.soundex(split_part(tempString, ' ', i)) !=
+            :fuzzystrmatch@.soundex(split_part(rec.name, ' ', i)) THEN
             test := FALSE;
           END IF;
         END LOOP;
