@@ -15,7 +15,6 @@ three partition a|3|2|||
 three partition b|1|200
 three partition b|2|200
 three partition b|3|
-union 2|2.05|ST_MultiPolygon
 union 3|2|ST_Polygon
 grid lanes|0|110000
 grid lanes|1|110000
