@@ -58,16 +58,16 @@ BEGIN
     ELSE
       -- No direct match for state, so perform fuzzy match.
       SELECT INTO tempInt count(*) FROM tiger.state_lookup
-          WHERE :fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name);
+          WHERE @extschema:fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name);
       IF tempInt >= 1 THEN
         FOR rec IN SELECT name, abbrev FROM tiger.state_lookup
-            WHERE :fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name) LOOP
+            WHERE @extschema:fuzzystrmatch@.soundex(tempString) = tiger.end_soundex(name) LOOP
           tempInt := tiger.count_words(rec.name);
           tempString := tiger.get_last_words(rawInput, tempInt);
           test := TRUE;
           FOR i IN 1..tempInt LOOP
-            IF :fuzzystrmatch@.soundex(split_part(tempString, ' ', i)) !=
-               :fuzzystrmatch@.soundex(split_part(rec.name, ' ', i)) THEN
+            IF @extschema:fuzzystrmatch@.soundex(split_part(tempString, ' ', i)) !=
+               @extschema:fuzzystrmatch@.soundex(split_part(rec.name, ' ', i)) THEN
               test := FALSE;
             END IF;
           END LOOP;

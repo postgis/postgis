@@ -94,14 +94,14 @@ FROM (SELECT table_name, table_schema FROM
 WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data')
 -- Soundex indexes --
 UNION ALL
-SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_snd_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(:fuzzystrmatch@.soundex(' || c.column_name || '));' As index
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_snd_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(@extschema:fuzzystrmatch@.soundex(' || c.column_name || '));' As index
 FROM (SELECT table_name, table_schema FROM
 	information_schema.tables WHERE table_type OPERATOR(pg_catalog.=) 'BASE TABLE') As t  INNER JOIN
 	(SELECT * FROM information_schema.columns WHERE column_name IN('name', 'place', 'city') ) AS c
 		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
 		LEFT JOIN pg_catalog.pg_indexes i ON
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema
-				AND  indexdef LIKE '%:fuzzystrmatch@.soundex(%' || c.column_name || '%' AND indexdef LIKE '%_snd_' || c.column_name || '%' )
+				AND  indexdef LIKE '%soundex(%' || c.column_name || '%' AND indexdef LIKE '%_snd_' || c.column_name || '%' )
 WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data')
     AND (c.table_name LIKE '%county%' OR c.table_name LIKE '%featnames'
     OR c.table_name  LIKE '%place' or c.table_name LIKE '%zip%'  or c.table_name LIKE '%cousub')
