@@ -107,7 +107,7 @@ BEGIN
 		FROM tiger.featnames As f INNER JOIN tiger.addr As ad ON (f.tlid = ad.tlid)
                     WHERE $10 = f.statefp AND $10 = ad.statefp
 	'
-                    || CASE WHEN length(parsed.streetName) > 5  THEN ' AND (lower(f.fullname) LIKE (COALESCE($5 || '' '','''') || lower($2) || ''%'')::text OR lower(f.name) = lower($2) OR soundex(f.name) = soundex($2) ) ' ELSE  ' AND lower(f.name) = lower($2) ' END
+                    || CASE WHEN length(parsed.streetName) > 5  THEN ' AND (lower(f.fullname) LIKE (COALESCE($5 || '' '','''') || lower($2) || ''%'')::text OR lower(f.name) = lower($2) OR :fuzzystrmatch@.soundex(f.name) = :fuzzystrmatch@.soundex($2) ) ' ELSE  ' AND lower(f.name) = lower($2) ' END
                     || CASE WHEN zip_info.zip IS NOT NULL THEN '    AND ( ad.zip = ANY($9::varchar[]) )  ' ELSE '' END
             || ' ) AS foo ORDER BY rank LIMIT ' || max_results*3 || ' )
 	SELECT * FROM (
@@ -268,12 +268,12 @@ BEGIN
       UNION SELECT tiger.zip_state_loc.statefp,tiger.zip_state_loc.place As location,false As exact, array_agg(tiger.zip_state_loc.zip),3
               FROM tiger.zip_state_loc
              WHERE tiger.zip_state_loc.statefp = ' || quote_nullable(in_statefp) || '
-                   AND soundex($1) = soundex(tiger.zip_state_loc.place)
+                   AND :fuzzystrmatch@.soundex($1) = :fuzzystrmatch@.soundex(tiger.zip_state_loc.place)
              GROUP BY tiger.zip_state_loc.statefp,tiger.zip_state_loc.place
       UNION SELECT tiger.zip_lookup_base.statefp,tiger.zip_lookup_base.city As location,false As exact, array_agg(tiger.zip_lookup_base.zip),4
               FROM tiger.zip_lookup_base
              WHERE tiger.zip_lookup_base.statefp = ' || quote_nullable(in_statefp) || '
-                         AND (soundex($1) = soundex(tiger.zip_lookup_base.city) OR soundex($1) = soundex(tiger.zip_lookup_base.county))
+                         AND (:fuzzystrmatch@.soundex($1) = :fuzzystrmatch@.soundex(tiger.zip_lookup_base.city) OR :fuzzystrmatch@.soundex($1) = :fuzzystrmatch@.soundex(tiger.zip_lookup_base.county))
              GROUP BY tiger.zip_lookup_base.statefp,tiger.zip_lookup_base.city
       UNION SELECT ' || quote_nullable(in_statefp) || ' As statefp,$1 As location,false As exact,NULL, 5) as a '
       ' WHERE a.statefp IS NOT NULL
@@ -290,12 +290,12 @@ BEGIN
       UNION SELECT tiger.zip_state_loc.statefp,parsed.location,false As exact, array_agg(tiger.zip_state_loc.zip),3
               FROM tiger.zip_state_loc
              WHERE tiger.zip_state_loc.statefp = in_statefp
-                   AND soundex(parsed.location) = soundex(tiger.zip_state_loc.place)
+                   AND :fuzzystrmatch@.soundex(parsed.location) = :fuzzystrmatch@.soundex(tiger.zip_state_loc.place)
              GROUP BY tiger.zip_state_loc.statefp,parsed.location
       UNION SELECT tiger.zip_lookup_base.statefp,parsed.location,false As exact, array_agg(tiger.zip_lookup_base.zip),4
               FROM tiger.zip_lookup_base
              WHERE tiger.zip_lookup_base.statefp = in_statefp
-                         AND (soundex(parsed.location) = soundex(tiger.zip_lookup_base.city) OR soundex(parsed.location) = soundex(tiger.zip_lookup_base.county))
+                         AND (:fuzzystrmatch@.soundex(parsed.location) = :fuzzystrmatch@.soundex(tiger.zip_lookup_base.city) OR :fuzzystrmatch@.soundex(parsed.location) = :fuzzystrmatch@.soundex(tiger.zip_lookup_base.county))
              GROUP BY tiger.zip_lookup_base.statefp,parsed.location
       UNION SELECT in_statefp,parsed.location,false As exact,NULL, 5) as a
         --JOIN (VALUES (true),(false)) as b(exact) on TRUE
@@ -353,7 +353,7 @@ BEGIN
          || coalesce('    AND b.zip IN (''' || array_to_string(zip_info.zip,''',''') || ''') ','')
          || CASE WHEN zip_info.exact
                  THEN '    AND ( lower($2) = lower(a.name) OR  ( a.prequalabr > '''' AND trim(lower($2), lower(a.prequalabr) || '' '') = lower(a.name) ) OR tiger.numeric_streets_equal($2, a.name) ) '
-                 ELSE '    AND ( soundex($2) = soundex(a.name)  OR ( (length($2) > 15 or (length($2) > 7 AND a.prequalabr > '''') ) AND lower(a.fullname) LIKE lower(substring($2,1,15)) || ''%'' ) OR  tiger.numeric_streets_equal($2, a.name) ) '
+                 ELSE '    AND ( :fuzzystrmatch@.soundex($2) = :fuzzystrmatch@.soundex(a.name)  OR ( (length($2) > 15 or (length($2) > 7 AND a.prequalabr > '''') ) AND lower(a.fullname) LIKE lower(substring($2,1,15)) || ''%'' ) OR  tiger.numeric_streets_equal($2, a.name) ) '
             END
          || '  ORDER BY 11'
          || '  LIMIT 200'
