@@ -102,7 +102,7 @@ steps:
 
   installcheck-pg12:
     image: *test-image
-    depends_on: build-pg12
+    depends_on: check-pg12
     environment:
       PGVER: 12
     commands:
@@ -113,7 +113,7 @@ steps:
 
   installcheck-pg17:
     image: *test-image
-    depends_on: build-pg17
+    depends_on: check-pg17
     environment:
       PGVER: 17
     commands:
