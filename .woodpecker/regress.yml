@@ -24,10 +24,10 @@ variables:
   steps-pg-build: &steps-pg-build
     - mkdir -p "$${BUILDDIR}"
     - cd "$${BUILDDIR}"
+    # GCC 11 can ICE while relinking PGXS modules with LTO during installcheck.
     - $${SRCDIR}/configure
       --with-library-minor-version
-      --enable-lto
-      --enable-lto
+      --disable-lto
       CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
     - make -j
   steps-pg-test-preinstall: &steps-pg-test-preinstall
