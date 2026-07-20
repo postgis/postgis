@@ -5,9 +5,17 @@ Actual readme is [here](README.postgis).
 https://trac.osgeo.org/postgis/
 
 ## Build status and continuous integration:
+[CI Status](https://postgis.net/ci/)
+
 See the GitHub Actions workflows, OSGeo Woodie pipelines, and the CI scripts in
-the `ci/` directory. Developer setup notes are in
-[doc/development](https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/).
+the `ci/` directory.
+
+## Developer's Guide
+
+Developer setup notes are in
+[doc/development](https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/) if you want to contribute to them.
+
+These are also viewable at [PostGIS Development Guide](https://postgis.net/development/docs/).
 
 ## Translations
 We are using [Weblate software](https://weblate.org) for translation.  If you want to help out, log into [OSGeo Weblate](https://weblate.osgeo.org/projects/postgis/).

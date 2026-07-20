@@ -70,8 +70,7 @@ of implementation time.
 
 ## First Contribution Path
 
-1. Fork a public mirror such as <https://github.com/postgis/postgis> or clone
-   the canonical OSGeo repository directly.
+1. Fork a public repo listed in [Source Code Repository](https://postgis.net/development/source_code/).
 2. Build the tree with the setup documented in [Ubuntu setup](environment/ubuntu.md)
    or [Docker development environment](environment/docker.md).
 3. Create a branch with a name that describes the ticket, function, or topic.
