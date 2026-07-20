@@ -1514,7 +1514,11 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		notnull_cnt++;
 
 		/* Give backend a chance of interrupting us */
+#if POSTGIS_PGSQL_VERSION >= 180
+		vacuum_delay_point(true);
+#else
 		vacuum_delay_point();
+#endif
 	}
 
 	/*
@@ -1732,7 +1736,11 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		if ( ! nd_box ) continue; /* Skip Null'ed out hard deviants */
 
 		/* Give backend a chance of interrupting us */
+#if POSTGIS_PGSQL_VERSION >= 180
+		vacuum_delay_point(true);
+#else
 		vacuum_delay_point();
+#endif
 
 		/* Find the cells that overlap with this box and put them into the ND_IBOX */
 		nd_box_overlap(nd_stats, nd_box, &nd_ibox);
