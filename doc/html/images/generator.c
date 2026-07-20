@@ -98,6 +98,8 @@ typedef struct generator_job {
 	const char *converter_cli;
 	LAYERSTYLE *styles;
 	stringbuffer_t command;
+	const char *tmpdir;
+	unsigned int draw_num;
 } generator_job;
 
 static void
@@ -107,6 +109,8 @@ generator_job_init(generator_job *job, const generator_options *options)
 	job->converter_cli = NULL;
 	job->styles = NULL;
 	stringbuffer_init(&job->command);
+	job->tmpdir = NULL;
+	job->draw_num = 0;
 }
 
 static void
@@ -123,6 +127,8 @@ generator_job_reset(generator_job *job)
 
 typedef struct draw_context_t {
 	LAYERSTYLE *style;
+	const char *tmpdir;
+	unsigned int *draw_num;
 } GEOMETRY_DRAW_CONTEXT;
 
 static GEOMETRY_DRAW_CONTEXT
@@ -130,6 +136,8 @@ geometry_draw_context_init(void)
 {
 	GEOMETRY_DRAW_CONTEXT ctx;
 	ctx.style = NULL;
+	ctx.tmpdir = NULL;
+	ctx.draw_num = NULL;
 	return ctx;
 }
 
@@ -158,6 +166,20 @@ checked_system(const char *cmd)
 		fprintf(stderr, "Failure return code (%d) from command: %s\n", WEXITSTATUS(ret), cmd);
 		exit(EXIT_FAILURE);
 	}
+}
+
+static void
+cleanup_temp_dir(const char *dir)
+{
+	stringbuffer_t command;
+
+	if (!dir)
+		return;
+
+	stringbuffer_init(&command);
+	stringbuffer_aprintf(&command, "rm -rf %s", dir);
+	checked_system(stringbuffer_getstring(&command));
+	stringbuffer_release(&command);
 }
 
 /*
@@ -354,6 +376,39 @@ pointarrayToBuffer(stringbuffer_t *output, POINTARRAY *pa)
 	}
 }
 
+static int
+append_draw_file(stringbuffer_t *output, GEOMETRY_DRAW_CONTEXT *ctx, const char *draw_command)
+{
+	stringbuffer_t draw_path;
+	FILE *draw_file;
+
+	if (!ctx->tmpdir || !ctx->draw_num)
+	{
+		lwerror("Temporary draw-file context is not initialized");
+		return -1;
+	}
+
+	stringbuffer_init(&draw_path);
+	stringbuffer_aprintf(&draw_path, "%s/draw%u", ctx->tmpdir, (*ctx->draw_num)++);
+
+	draw_file = fopen(stringbuffer_getstring(&draw_path), "w");
+	if (!draw_file)
+	{
+		perror(stringbuffer_getstring(&draw_path));
+		stringbuffer_release(&draw_path);
+		return -1;
+	}
+
+	fputs(draw_command, draw_file);
+	fclose(draw_file);
+
+	stringbuffer_append(output, "-draw '@");
+	stringbuffer_append(output, stringbuffer_getstring(&draw_path));
+	stringbuffer_append(output, "' ");
+	stringbuffer_release(&draw_path);
+	return 0;
+}
+
 /**
  * Draws a point in a POINTARRAY to a char* using GraphicsMagick SVG for styling.
 
@@ -483,9 +538,11 @@ drawLineString(stringbuffer_t *output, LWLINE *lwl, GEOMETRY_DRAW_CONTEXT *ctx)
 	pointarrayToBuffer(&path, lwl->points);
 	stringbuffer_append(&path, "'");
 
-	stringbuffer_append(output, "-draw \"");
-	stringbuffer_append(output, stringbuffer_getstring(&path));
-	stringbuffer_append(output, "\" ");
+	if (append_draw_file(output, ctx, stringbuffer_getstring(&path)) < 0)
+	{
+		stringbuffer_release(&path);
+		return;
+	}
 
 	stringbuffer_release(&path);
 
@@ -530,9 +587,11 @@ drawPolygon(stringbuffer_t *output, LWPOLY *lwp, GEOMETRY_DRAW_CONTEXT *ctx)
 	}
 	stringbuffer_append(&path, "'");
 
-	stringbuffer_append(output, "-draw \"");
-	stringbuffer_append(output, stringbuffer_getstring(&path));
-	stringbuffer_append(output, "\" ");
+	if (append_draw_file(output, ctx, stringbuffer_getstring(&path)) < 0)
+	{
+		stringbuffer_release(&path);
+		return;
+	}
 
 	stringbuffer_release(&path);
 }
@@ -666,6 +725,8 @@ append_layers(generator_job *job, FILE *source)
 		LWDEBUGF(4, "geom = %s", lwgeom_to_ewkt(lwgeom));
 
 		ctx.style = getStyle(job->styles, style_name);
+		ctx.tmpdir = job->tmpdir;
+		ctx.draw_num = &job->draw_num;
 		if (!ctx.style)
 		{
 			lwgeom_free(lwgeom);
@@ -740,6 +801,7 @@ generator_render(const generator_options *options, const char *source_path, cons
 	char *target_path = NULL;
 	int rc = -1;
 	const char *converter_cli;
+	char tempdir_template[] = "generator-temp-XXXXXX";
 
 	generator_job_init(&job, options);
 
@@ -751,6 +813,12 @@ generator_render(const generator_options *options, const char *source_path, cons
 		goto cleanup;
 	}
 	job.converter_cli = converter_cli;
+	job.tmpdir = mkdtemp(tempdir_template);
+	if (!job.tmpdir)
+	{
+		perror("generator-temp");
+		goto cleanup;
+	}
 
 	source = fopen(source_path, "r");
 	if (!source)
@@ -800,6 +868,7 @@ cleanup:
 		lwfree(styles_path);
 	if (target_path)
 		lwfree(target_path);
+	cleanup_temp_dir(job.tmpdir);
 	generator_job_reset(&job);
 	return rc;
 }
