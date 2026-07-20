@@ -7127,6 +7127,57 @@ _lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
   return bg;
 }
 
+/*
+ * Compute the junction points between the overlay intersection linework
+ * (shared paths and crossings between the noded line and nearby edges)
+ * and the rest of the noded line: the 0-dimensional intersection
+ * components plus the mod-2 boundary of the 1-dimensional ones.
+ *
+ * These junctions must become topology nodes. GEOS >= 3.15 returns
+ * overlay output line-merged, which would otherwise hide them inside
+ * line interiors. Older GEOS keeps them as boundaries of the overlay
+ * output components, making a split at them a no-op.
+ *
+ * Returns a MULTIPOINT.
+ */
+static LWGEOM *
+_lwt_overlay_split_points(const LWGEOM *xset)
+{
+  LWGEOM *multi = lwgeom_as_multi(xset);
+  LWCOLLECTION *xcol = lwgeom_as_lwcollection(multi);
+  LWCOLLECTION *epoints = lwcollection_extract(xcol, POINTTYPE);
+  LWCOLLECTION *points = lwcollection_construct_empty(MULTIPOINTTYPE, xset->srid,
+    FLAGS_GET_Z(xset->flags), FLAGS_GET_M(xset->flags));
+  LWCOLLECTION *lines = lwcollection_extract(xcol, LINETYPE);
+  LWGEOM *bnd = lwgeom_boundary(lwcollection_as_lwgeom(lines));
+  uint32_t i;
+
+  for (i = 0; i < epoints->ngeoms; i++)
+    lwcollection_add_lwgeom(points, lwgeom_clone_deep(epoints->geoms[i]));
+
+  if (bnd)
+  {
+    LWCOLLECTION *bcol = lwgeom_as_lwcollection(bnd);
+    if (bcol)
+    {
+      for (i = 0; i < bcol->ngeoms; i++)
+        lwcollection_add_lwgeom(points, lwgeom_clone_deep(bcol->geoms[i]));
+    }
+    else if (!lwgeom_is_empty(bnd))
+    {
+      lwcollection_add_lwgeom(points, lwgeom_clone_deep(bnd));
+    }
+    lwgeom_free(bnd);
+  }
+
+  lwcollection_release(epoints);
+  lwcollection_release(lines);
+  lwgeom_release(multi);
+
+  points->srid = xset->srid;
+  return lwcollection_as_lwgeom(points);
+}
+
 static LWT_ELEMID*
 _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
             int handleFaceSplit)
@@ -7134,7 +7185,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   LWGEOM *geomsbuf[1];
   LWGEOM **geoms;
   uint32_t ngeoms;
-  LWGEOM *noded, *tmp;
+  LWGEOM *noded, *tmp, *xsplit = NULL;
   LWCOLLECTION *col;
   LWT_ELEMID *ids;
   LWT_ISO_EDGE *edges;
@@ -7343,6 +7394,9 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     xset = lwgeom_intersection(noded, iedges);
     LWDEBUGG(1, xset, "Intersected");
     lwgeom_free(noded);
+    /* Collect the junctions between shared and non-shared linework
+     * before line merging can hide them (see step 2.5) */
+    xsplit = _lwt_overlay_split_points(xset);
 
     /* We linemerge here because INTERSECTION, as of GEOS 3.8,
      * will result in shared segments being output as multiple
@@ -7431,6 +7485,25 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     LWDEBUGG(1, noded, "Node-split");
     /* will not release the geoms array */
     lwcollection_release(col);
+  }
+
+  /* 2.5. Split by overlay junctions
+   *
+   * GEOS >= 3.15 returns line-merged overlay output, hiding the
+   * junctions between shared and non-shared linework inside line
+   * interiors. Splitting restores them; older GEOS keeps them as
+   * component boundaries and the split is a no-op.
+   */
+  if ( xsplit )
+  {
+    if ( !lwgeom_is_empty(xsplit) )
+    {
+      tmp = _lwt_split_by_nodes(noded, xsplit);
+      lwgeom_free(noded);
+      noded = tmp;
+      LWDEBUGG(1, noded, "Overlay-junction-split");
+    }
+    lwgeom_free(xsplit);
   }
 
 

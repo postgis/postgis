@@ -38,9 +38,7 @@ cross|E|LINESTRING(47 14,47 17.6)
 cross|E|LINESTRING(47 17.6,47 22)
 cross|E|LINESTRING(47 17.6,44 17)
 cross|E|LINESTRING(49 18,47 17.6)
-snap|7
-snap|36
-snap|38
+snap|3
 snap|N||POINT(21.2 20.5)
 snap|N||POINT(22.35 22)
 snap|N||POINT(18 22.2)
@@ -48,9 +46,7 @@ snap|E|LINESTRING(22.35 22,35 22)
 snap|E|LINESTRING(22.35 22,21.2 20.5)
 snap|E|LINESTRING(21 22,22.35 22)
 snap|E|LINESTRING(18 22.2,21 22)
-snap_again|7
-snap_again|36
-snap_again|38
+snap_again|3
 crossover|4
 crossover|N||POINT(21 10)
 crossover|N||POINT(16.2 14)
