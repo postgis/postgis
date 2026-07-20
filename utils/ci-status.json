@@ -113,7 +113,12 @@
       "api_url": "https://woodie.osgeo.org/api/repos/30/pipelines",
       "web_url": "https://woodie.osgeo.org/repos/30",
       "branches": [
-        "master"
+        "master",
+        "stable-3.6",
+        "stable-3.5",
+        "stable-3.4",
+        "stable-3.3",
+        "stable-3.2"
       ]
     },
     {

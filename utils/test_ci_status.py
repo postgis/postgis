@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import pathlib
 import unittest
 from unittest import mock
@@ -25,6 +26,22 @@ def check(name, status, *, required=True, url=None):
 
 
 class RequiredFailureHtmlTest(unittest.TestCase):
+    def test_woodpecker_covers_supported_release_branches(self):
+        config = json.loads(MODULE_PATH.with_suffix(".json").read_text(encoding="utf-8"))
+        woodpecker = next(check for check in config["checks"] if check["name"] == "Woodpecker")
+
+        self.assertEqual(
+            [
+                "master",
+                "stable-3.6",
+                "stable-3.5",
+                "stable-3.4",
+                "stable-3.3",
+                "stable-3.2",
+            ],
+            woodpecker["branches"],
+        )
+
     def test_apply_staleness_labels_passed_and_failed_results(self):
         config = {
             "stale_after_hours": 168,
@@ -53,12 +70,12 @@ class RequiredFailureHtmlTest(unittest.TestCase):
                 "message": "build 2",
             }, config, stale_check)
 
-        self.assertEqual(CI_STATUS.STALE, failed["status"])
+        self.assertEqual(CI_STATUS.STALE_FAILED, failed["status"])
         self.assertEqual(CI_STATUS.FAILURE, failed["stale_base_status"])
-        self.assertEqual("Stale failed", failed["status_label"])
+        self.assertEqual("Stale fail", failed["status_label"])
         self.assertIn("3 commits behind stable-synthetic", failed["message"])
 
-        self.assertEqual(CI_STATUS.STALE, passed["status"])
+        self.assertEqual(CI_STATUS.STALE_PASSED, passed["status"])
         self.assertEqual(CI_STATUS.SUCCESS, passed["stale_base_status"])
         self.assertEqual("Stale passed", passed["status_label"])
 
@@ -69,18 +86,18 @@ class RequiredFailureHtmlTest(unittest.TestCase):
             "status": CI_STATUS.UNKNOWN,
             "failures": 0,
             "checks": [
-                check("Required / Passed", CI_STATUS.STALE),
-                check("Required / Failed", CI_STATUS.STALE),
+                check("Required / Passed", CI_STATUS.STALE_PASSED),
+                check("Required / Failed", CI_STATUS.STALE_FAILED),
                 check("Required / Unknown", CI_STATUS.UNKNOWN),
             ],
         }
         branch["checks"][0]["stale_base_status"] = CI_STATUS.SUCCESS
         branch["checks"][0]["status_label"] = "Stale passed"
         branch["checks"][1]["stale_base_status"] = CI_STATUS.FAILURE
-        branch["checks"][1]["status_label"] = "Stale failed"
+        branch["checks"][1]["status_label"] = "Stale fail"
 
         self.assertEqual(
-            "no known failures; 1 unknown, 1 stale-passed, 1 stale-failed",
+            "no known failures; 1 unknown, 1 stale-passed, 1 stale-fail",
             CI_STATUS.summary_text(branch),
         )
 
@@ -90,11 +107,11 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         })
 
         self.assertIn("1 stale-passed", rendered)
-        self.assertIn("1 stale-failed", rendered)
+        self.assertIn("1 stale-fail", rendered)
         self.assertIn("Stale passed", rendered)
-        self.assertIn("Stale failed", rendered)
-        self.assertIn("status-stale stale-success", rendered)
-        self.assertIn("status-stale stale-failure", rendered)
+        self.assertIn("Stale fail", rendered)
+        self.assertIn("status-stale-passed stale-success", rendered)
+        self.assertIn("status-stale-fail stale-failure", rendered)
 
     def test_failure_summary_names_only_required_failed_checks(self):
         branches = [

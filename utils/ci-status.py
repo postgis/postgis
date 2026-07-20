@@ -26,6 +26,8 @@ FAILURE = "failure"
 IN_PROGRESS = "in_progress"
 UNKNOWN = "unknown"
 STALE = "stale"
+STALE_PASSED = "stale-passed"
+STALE_FAILED = "stale-fail"
 DISABLED = "disabled"
 NOT_APPLICABLE = "not_applicable"
 
@@ -35,6 +37,8 @@ SYMBOLS = {
     IN_PROGRESS: ("🔄", "RUN"),
     UNKNOWN: ("⚠️", "UNKNOWN"),
     STALE: ("⚠️", "STALE"),
+    STALE_PASSED: ("⚠️", "STALE-OK"),
+    STALE_FAILED: ("⚠️", "STALE-FAIL"),
     DISABLED: ("➖", "DISABLED"),
     NOT_APPLICABLE: ("➖", "N/A"),
 }
@@ -45,6 +49,8 @@ COLORS = {
     IN_PROGRESS: "\033[36m",
     UNKNOWN: "\033[33m",
     STALE: "\033[33m",
+    STALE_PASSED: "\033[33m",
+    STALE_FAILED: "\033[33m",
     DISABLED: "\033[2m",
     NOT_APPLICABLE: "\033[2m",
 }
@@ -892,7 +898,7 @@ def apply_staleness(result, config, check):
         stale["revision_compare_ref"] = distance_ref
         stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
         stale["stale_base_status"] = result["status"]
-        stale["status"] = STALE
+        stale["status"] = stale_status(result["status"])
         stale["status_label"] = stale_status_label(result["status"])
         stale["message"] = f"{result.get('message', 'CI run')} ({stale['revision_distance']})"
         return stale
@@ -913,7 +919,7 @@ def apply_staleness(result, config, check):
         stale["revision_compare_ref"] = distance_ref
         stale["revision_distance"] = distance_text
     stale["stale_base_status"] = result["status"]
-    stale["status"] = STALE
+    stale["status"] = stale_status(result["status"])
     stale["status_label"] = stale_status_label(result["status"])
     stale["message"] = f"{result.get('message', 'successful run')} (older than {threshold:g}h)"
     return stale
@@ -980,7 +986,7 @@ def aggregate(config, results):
         required = [check for check in checks if check.get("required") and check["status"] not in (DISABLED, NOT_APPLICABLE)]
         if any(check["status"] == FAILURE for check in required):
             status = FAILURE
-        elif any(check["status"] in (UNKNOWN, STALE) for check in required):
+        elif any(check["status"] == UNKNOWN or is_stale_status(check["status"]) for check in required):
             status = UNKNOWN
         elif any(check["status"] == IN_PROGRESS for check in required):
             status = IN_PROGRESS
@@ -1018,6 +1024,8 @@ def check_counts(branch):
         IN_PROGRESS: 0,
         UNKNOWN: 0,
         STALE: 0,
+        STALE_PASSED: 0,
+        STALE_FAILED: 0,
     }
     for check in required:
         counts[check["status"]] = counts.get(check["status"], 0) + 1
@@ -1029,15 +1037,30 @@ def check_counts(branch):
 def stale_status_label(base_status):
     return {
         SUCCESS: "Stale passed",
-        FAILURE: "Stale failed",
+        FAILURE: "Stale fail",
         UNKNOWN: "Stale unknown",
     }.get(base_status, "Stale")
 
 
+def stale_status(base_status):
+    return {
+        SUCCESS: STALE_PASSED,
+        FAILURE: STALE_FAILED,
+    }.get(base_status, STALE)
+
+
+def is_stale_status(status):
+    return status in (STALE, STALE_PASSED, STALE_FAILED)
+
+
 def stale_count_bucket(check):
-    if check["status"] != STALE:
+    if not is_stale_status(check["status"]):
         return None
     base_status = check.get("stale_base_status")
+    if check["status"] == STALE_PASSED:
+        return SUCCESS
+    if check["status"] == STALE_FAILED:
+        return FAILURE
     if base_status in (SUCCESS, FAILURE):
         return base_status
     return UNKNOWN
@@ -1062,7 +1085,7 @@ def stale_summary_parts(branch):
     counts = stale_check_counts(branch)
     return nonzero_parts(
         (counts[SUCCESS], f"{counts[SUCCESS]} stale-passed"),
-        (counts[FAILURE], f"{counts[FAILURE]} stale-failed"),
+        (counts[FAILURE], f"{counts[FAILURE]} stale-fail"),
         (counts[UNKNOWN], f"{counts[UNKNOWN]} stale-unknown"),
     )
 
@@ -1130,13 +1153,15 @@ def interesting_checks(branch, verbose=False):
         return branch["checks"]
     has_visible_jenkins_problem = any(
         check.get("provider") == "jenkins"
-        and check["status"] in (FAILURE, UNKNOWN, STALE, IN_PROGRESS, NOT_APPLICABLE)
+        and (check["status"] in (FAILURE, UNKNOWN, IN_PROGRESS, NOT_APPLICABLE) or is_stale_status(check["status"]))
         for check in branch["checks"]
     )
     status_order = {
         FAILURE: 0,
         UNKNOWN: 1,
         STALE: 1,
+        STALE_FAILED: 1,
+        STALE_PASSED: 1,
         IN_PROGRESS: 2,
         SUCCESS: 3,
         NOT_APPLICABLE: 4,
@@ -1144,7 +1169,7 @@ def interesting_checks(branch, verbose=False):
     visible = []
     for index, check in enumerate(branch["checks"]):
         if (
-            check["status"] in (FAILURE, UNKNOWN, STALE, IN_PROGRESS)
+            (check["status"] in (FAILURE, UNKNOWN, IN_PROGRESS) or is_stale_status(check["status"]))
             or (check["status"] == NOT_APPLICABLE and check.get("provider") == "jenkins")
             or (
                 has_visible_jenkins_problem
@@ -1261,7 +1286,7 @@ def exit_code_for_terminal(data):
     statuses = [branch["status"] for branch in data["branches"]]
     if any(status == FAILURE for status in statuses):
         return 1
-    if any(status in (IN_PROGRESS, UNKNOWN, STALE) for status in statuses):
+    if any(status == IN_PROGRESS or status == UNKNOWN or is_stale_status(status) for status in statuses):
         return 2
     return 0
 
@@ -1287,7 +1312,7 @@ def overall_status(branches):
     statuses = [branch["status"] for branch in branches]
     if any(status == FAILURE for status in statuses):
         return FAILURE
-    if any(status in (UNKNOWN, STALE) for status in statuses):
+    if any(status == UNKNOWN or is_stale_status(status) for status in statuses):
         return UNKNOWN
     if any(status == IN_PROGRESS for status in statuses):
         return IN_PROGRESS
@@ -1315,6 +1340,8 @@ def html_status_label(status):
         IN_PROGRESS: "Running",
         UNKNOWN: "Unknown",
         STALE: "Stale",
+        STALE_PASSED: "Stale passed",
+        STALE_FAILED: "Stale fail",
         DISABLED: "Disabled",
         NOT_APPLICABLE: "Not applicable",
     }.get(status, "Unknown")
@@ -1327,6 +1354,8 @@ def status_mark(status):
         IN_PROGRESS: "↻",
         UNKNOWN: "?",
         STALE: "!",
+        STALE_PASSED: "!",
+        STALE_FAILED: "!",
         DISABLED: "–",
         NOT_APPLICABLE: "–",
     }.get(status, "?")
@@ -1350,7 +1379,7 @@ def html_branch_progress(branch):
         (IN_PROGRESS, counts[IN_PROGRESS], "running"),
         (UNKNOWN, counts[UNKNOWN], "unknown"),
         ("stale-passed", stale_counts[SUCCESS], "stale-passed"),
-        ("stale-failed", stale_counts[FAILURE], "stale-failed"),
+        (STALE_FAILED, stale_counts[FAILURE], "stale-fail"),
         ("stale-unknown", stale_counts[UNKNOWN], "stale-unknown"),
     ]
     labels = [f"{count} {label}" for status, count, label in segments if count]
@@ -1382,7 +1411,7 @@ def html_branch_summary(branch):
     if stale_counts[SUCCESS]:
         parts.append(("stale-passed", f"{stale_counts[SUCCESS]} stale-passed"))
     if stale_counts[FAILURE]:
-        parts.append(("stale-failed", f"{stale_counts[FAILURE]} stale-failed"))
+        parts.append((STALE_FAILED, f"{stale_counts[FAILURE]} stale-fail"))
     if stale_counts[UNKNOWN]:
         parts.append(("stale-unknown", f"{stale_counts[UNKNOWN]} stale-unknown"))
     if not parts:
@@ -1447,7 +1476,7 @@ def html_check_rows(checks):
             status = f"{status} <span class='previous-note'>previous: {html.escape(previous)}</span>"
         message = " ".join(str(check.get("message") or "").split())
         check_classes = [f"status-{check['status']}"]
-        if check["status"] == STALE:
+        if is_stale_status(check["status"]):
             check_classes.append(f"stale-{stale_count_bucket(check)}")
         check_status = html.escape(" ".join(check_classes))
         revision = html_revision(check)
@@ -1707,7 +1736,7 @@ h1 {{
   color: #5b6519;
   background: #f5f8e8;
 }}
-.chip-stale-failed {{
+.chip-stale-fail {{
   color: #9a4f00;
   background: #fff3e0;
 }}
@@ -1743,7 +1772,7 @@ h1 {{
 .segment-stale-passed {{
   background: #a4b85d;
 }}
-.segment-stale-failed {{
+.segment-stale-fail {{
   background: #d48a3a;
 }}
 .status-dot {{
@@ -1756,7 +1785,7 @@ h1 {{
 .status-success .status-dot {{ background: var(--success); }}
 .status-failure .status-dot {{ background: var(--failure); }}
 .status-in_progress .status-dot {{ background: var(--running); }}
-.status-unknown .status-dot, .status-stale .status-dot {{ background: var(--unknown); }}
+.status-unknown .status-dot, .status-stale .status-dot, .status-stale-passed .status-dot, .status-stale-fail .status-dot {{ background: var(--unknown); }}
 .status-disabled .status-dot, .status-not_applicable .status-dot {{ background: var(--disabled); }}
 .status-pill {{
   display: inline-flex;
@@ -1776,12 +1805,12 @@ h1 {{
 .status-failure .status-pill {{ color: var(--failure); border-color: #ffc9cf; background: #fff5f6; }}
 .status-in_progress .status-pill {{ color: var(--running); border-color: #bfdbfe; background: #f0f7ff; }}
 .status-unknown .status-pill, .status-stale .status-pill {{ color: var(--unknown); border-color: #f1d08a; background: #fff8e5; }}
-.status-stale.stale-success .status-pill {{ color: #5b6519; border-color: #d8df9f; background: #f5f8e8; }}
-.status-stale.stale-failure .status-pill {{ color: #9a4f00; border-color: #efc07a; background: #fff3e0; }}
+.status-stale-passed .status-pill, .status-stale.stale-success .status-pill {{ color: #5b6519; border-color: #d8df9f; background: #f5f8e8; }}
+.status-stale-fail .status-pill, .status-stale.stale-failure .status-pill {{ color: #9a4f00; border-color: #efc07a; background: #fff3e0; }}
 tr.status-success .status-pill {{ color: var(--success); border-color: #b7dfc1; background: #f0fff4; }}
 tr.status-failure .status-pill {{ color: var(--failure); border-color: #ffc9cf; background: #fff5f6; }}
 tr.status-in_progress .status-pill {{ color: var(--running); border-color: #bfdbfe; background: #f0f7ff; }}
-tr.status-unknown .status-pill, tr.status-stale .status-pill {{ color: var(--unknown); border-color: #f1d08a; background: #fff8e5; }}
+tr.status-unknown .status-pill, tr.status-stale .status-pill, tr.status-stale-passed .status-pill, tr.status-stale-fail .status-pill {{ color: var(--unknown); border-color: #f1d08a; background: #fff8e5; }}
 .detail-section {{
   background: var(--panel);
   border: 1px solid var(--line);
