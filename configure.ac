@@ -800,6 +800,7 @@ AC_ARG_WITH([sfcgal],
 	[with_sfcgal=auto])
 
 
+POSTGIS_SFCGAL_VERSION="0"
 if test "x$with_sfcgal" != "xno"; then
   if test "x$with_sfcgal" = "xyes" -o "x$with_sfcgal" = "xauto"; then
 	  AC_PATH_PROG([SFCGAL_CONFIG], [sfcgal-config], [])
@@ -816,7 +817,6 @@ if test "x$with_sfcgal" != "xno"; then
 		SFCGAL_NUMERIC_MINOR_VERSION=`printf "%02d" $SFCGAL_MINOR_VERSION`
 		POSTGIS_SFCGAL_VERSION="$SFCGAL_MAJOR_VERSION$SFCGAL_NUMERIC_MINOR_VERSION$SFCGAL_NUMERIC_PATCH_VERSION"
 		AC_DEFINE_UNQUOTED([POSTGIS_SFCGAL_VERSION], [$POSTGIS_SFCGAL_VERSION], [SFCGAL library version at build time])
-		AC_SUBST([POSTGIS_SFCGAL_VERSION])
 
 		SFCGAL_STATIC=`$SFCGAL_CONFIG --static`
 		if test "x$SFCGAL_STATIC" = "xON"; then
@@ -837,6 +837,7 @@ if test "x$with_sfcgal" != "xno"; then
 	fi
 fi
 
+AC_SUBST([POSTGIS_SFCGAL_VERSION])
 AC_SUBST([SFCGAL_VERSION])
 AC_SUBST([SFCGAL_CPPFLAGS])
 AC_SUBST([SFCGAL_LDFLAGS])
