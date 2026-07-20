@@ -2028,13 +2028,10 @@ WITH raw AS (
     COALESCE(total_points, ST_NPoints(framed.geom)) AS total_points,
     marker_scale,
     GeometryType(framed.geom) AS root_type,
-    part.geom
+    dumped.geom
   FROM framed
-  CROSS JOIN LATERAL generate_series(1, ST_NumGeometries(framed.geom)) AS part_num(n)
-  CROSS JOIN LATERAL (
-    SELECT ST_GeometryN(framed.geom, part_num.n) AS geom
-  ) AS part
-  WHERE NOT ST_IsEmpty(part.geom)
+  CROSS JOIN LATERAL ST_Dump(framed.geom) AS dumped(path, geom)
+  WHERE NOT ST_IsEmpty(dumped.geom)
 ), translated_parts AS (
   SELECT ord, source, label, row_num, column_num, parts.frame, source_point_count,
     total_points, marker_scale, root_type,
