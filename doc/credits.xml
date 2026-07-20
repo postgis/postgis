@@ -18,14 +18,6 @@
 	</para>
 	<variablelist>
 		<varlistentry>
-			<term>Raúl Marín Rodríguez</term>
-			<listitem>
-				<para>MVT support, Bug fixing, Performance and stability improvements, GitHub curation,  alignment of
-			PostGIS with PostgreSQL releases</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
 			<para>CI and website maintenance, Windows production and experimental builds, documentation, alignment of
@@ -113,13 +105,21 @@
 			</listitem>
 		</varlistentry>
 
-
 	</variablelist>
   </section>
 
   <section xml:id="credits_core_past">
 	<title>Core Contributors Past</title>
 	<variablelist>
+
+		<varlistentry>
+			<term>Raúl Marín Rodríguez</term>
+			<listitem>
+				<para>Prior PSC Member, MVT support, Bug fixing, Performance and stability improvements, GitHub curation,  alignment of
+			PostGIS with PostgreSQL releases</para>
+			</listitem>
+		</varlistentry>
+
 		<varlistentry>
             <term>Bborie Park</term>
             <listitem>
