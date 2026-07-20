@@ -34,9 +34,6 @@ steps:
       - ../configure --without-pg --without-protobuf --without-raster
       - make postgis_revision.h
       - xmllint --version
-    when:
-        - event: push
-          path: *when_path_full
 
   check-xml:
     image: *test_image
@@ -878,4 +875,3 @@ steps:
         path:
           include:
             - "doc/po/uk/*.po"
-

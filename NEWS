@@ -3,6 +3,8 @@ PostGIS 3.5.8
 
 * Bug Fixes *
 
+  - #6046, Prefer GraphicsMagick for documentation image generation
+           (Darafei Praliaskouski)
   - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
     with standard_conforming_strings off (Darafei Praliaskouski)
   - GH-897, [topology] Harden topology helper functions and
