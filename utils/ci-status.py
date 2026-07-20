@@ -641,6 +641,74 @@ def jenkins_matches_branch(build, check, branch):
     return any(value == expected for name, value in params.items() if name == branch_parameter or name.lower() == branch_parameter.lower())
 
 
+def jenkins_queue_url(job_url):
+    parsed = urllib.parse.urlparse(job_url)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        raise ConfigError(f"cannot build Jenkins queue URL for {job_url}")
+    return urllib.parse.urlunparse((parsed.scheme, parsed.netloc, "/queue/api/json", "", "", ""))
+
+
+def jenkins_project_url(job_url):
+    parsed = urllib.parse.urlparse(job_url)
+    path = parsed.path.rstrip("/") + "/"
+    if path.startswith("/view/") and "/job/" in path:
+        path = "/job/" + path.split("/job/", 1)[1]
+    if "/label=" in path:
+        path = path.split("/label=", 1)[0].rstrip("/") + "/"
+    return urllib.parse.urlunparse((parsed.scheme, parsed.netloc, path, "", "", ""))
+
+
+def jenkins_queue_items(job_url, timeout):
+    tree = (
+        "items[id,task[name,url],why,params,inQueueSince,url,blocked,buildable,stuck,"
+        "actions[parameters[name,value]]]"
+    )
+    url = jenkins_queue_url(job_url) + "?" + urllib.parse.urlencode({"tree": tree})
+    return http_json(url, timeout=timeout).get("items") or []
+
+
+def jenkins_queue_item_matches(item, job_url, check, branch):
+    task = item.get("task") or {}
+    task_url = (task.get("url") or "").rstrip("/") + "/"
+    if task_url != jenkins_project_url(job_url):
+        return False
+    branch_parameter = check.get("branch_parameter")
+    if not branch_parameter:
+        return True
+    expected = f"refs/heads/{branch['name']}"
+    params = jenkins_parameters(item)
+    return any(value == expected for name, value in params.items() if name == branch_parameter or name.lower() == branch_parameter.lower())
+
+
+def jenkins_queued_check(check, branch, job_url, timeout):
+    if not check.get("branch_parameter"):
+        return None
+    try:
+        queued = [
+            item for item in jenkins_queue_items(job_url, timeout)
+            if jenkins_queue_item_matches(item, job_url, check, branch)
+        ]
+    except RECOVERABLE_PROVIDER_ERRORS:
+        return None
+    if not queued:
+        return None
+    item = sorted(queued, key=lambda value: value.get("inQueueSince") or 0)[0]
+    params = jenkins_parameters(item)
+    message = f"queued item {item.get('id')}"
+    if item.get("why"):
+        message = f"{message}: {item['why']}"
+    return make_result(
+        check,
+        branch,
+        IN_PROGRESS,
+        url=job_url,
+        debug_url=jenkins_queue_url(job_url),
+        revision=params.get("after") or params.get("BRANCH"),
+        completed_at=item.get("inQueueSince"),
+        message=message,
+    )
+
+
 def jenkins_builds(job_url, check, timeout):
     try:
         limit = int(check.get("build_scan_limit", 200 if check.get("branch_parameter") else 25))
@@ -722,6 +790,7 @@ def jenkins_badge_check(check, branch, job_url, timeout, api_error=None):
 
 def jenkins_check(check, branch, timeout):
     job_url = render_template(check["job_url"], branch).rstrip("/") + "/"
+    queued_result = jenkins_queued_check(check, branch, job_url, timeout)
     try:
         builds = [
             build for build in jenkins_builds(job_url, check, timeout)
@@ -730,6 +799,8 @@ def jenkins_check(check, branch, timeout):
     except RECOVERABLE_PROVIDER_ERRORS as exc:
         return jenkins_badge_check(check, branch, job_url, timeout, api_error=exc)
     if not builds:
+        if queued_result:
+            return queued_result
         badge_result = jenkins_badge_check(check, branch, job_url, timeout)
         if badge_result["status"] != UNKNOWN or badge_result.get("status_label") == "Not run":
             return badge_result
@@ -737,6 +808,9 @@ def jenkins_check(check, branch, timeout):
 
     current = builds[0]
     previous = next((build for build in builds[1:] if not build.get("building")), None)
+    if queued_result and not current.get("building"):
+        queued_result.update(previous_fields(normalize_jenkins_status(current), current))
+        return queued_result
     result = make_result(
         check,
         branch,
