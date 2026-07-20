@@ -12,6 +12,7 @@ import unittest
 class FakePostgresTools:
     def __init__(self, repo_root):
         self.repo_root = repo_root
+        self.current_version = self._read_current_version()
         self.temp_dir = tempfile.TemporaryDirectory()
         self.root = Path(self.temp_dir.name)
         self.sharedir = self.root / "pg_sharedir"
@@ -123,6 +124,19 @@ sys.exit(0)
             script.write_text(body + "\n", encoding="utf-8")
             script.chmod(0o755)
 
+    def _read_current_version(self):
+        parts = []
+        version_keys = (
+            "POSTGIS_MAJOR_VERSION",
+            "POSTGIS_MINOR_VERSION",
+            "POSTGIS_MICRO_VERSION",
+        )
+        for line in (self.repo_root / "Version.config").read_text(encoding="utf-8").splitlines():
+            key, _, value = line.partition("=")
+            if key in version_keys:
+                parts.append(value.strip())
+        return ".".join(parts)
+
     def create_extension_files(self, extension, versions):
         for version in versions:
             (self.extension_dir / f"{extension}--{version}.sql").write_text("--", encoding="utf-8")
@@ -142,7 +156,7 @@ sys.exit(0)
         env["PATH"] = f"{self.bin_dir}:{env['PATH']}"
         env["CHECK_ALL_UPGRADES_SHAREDIR"] = str(self.sharedir)
         env["CHECK_ALL_UPGRADES_PG_VERSION"] = "PostgreSQL 16.2 (Debian)"
-        env["CHECK_ALL_UPGRADES_AUTO_VERSION"] = "3.7.0dev"
+        env["CHECK_ALL_UPGRADES_AUTO_VERSION"] = self.current_version
         env["CHECK_ALL_UPGRADES_PSQL_PATH_MAP"] = json.dumps(self.path_map)
         env["CHECK_ALL_UPGRADES_GMAKE_FAIL"] = json.dumps(self.fail_patterns)
         env["CHECK_ALL_UPGRADES_PSQL_LOG"] = str(self.psql_log)
@@ -185,25 +199,26 @@ class CheckAllUpgradesHarnessTest(unittest.TestCase):
         self.harness.close()
 
     def test_default_exhaustive_runs_packaged_and_unpacked_paths(self):
-        self.harness.create_extension_files("postgis", ["3.5.0", "3.6.0", "3.7.0dev"])
-        self.harness.create_extension_files("postgis_topology", ["3.7.0dev"])
+        current_version = self.harness.current_version
+        self.harness.create_extension_files("postgis", ["3.5.0", "3.6.0", current_version])
+        self.harness.create_extension_files("postgis_topology", [current_version])
         self.harness.create_contrib_files(["3.6.0"])
         self.harness.set_path_map(
             {
-                "postgis|3.5.0|3.7.0dev": "up",
-                "postgis|3.6.0|3.7.0dev": "up",
-                "postgis|unpackaged|3.7.0dev": "up",
-                "postgis_topology|3.7.0dev|3.7.0dev": "up",
-                "postgis_topology|unpackaged|3.7.0dev": "up",
+                f"postgis|3.5.0|{current_version}": "up",
+                f"postgis|3.6.0|{current_version}": "up",
+                f"postgis|unpackaged|{current_version}": "up",
+                f"postgis_topology|{current_version}|{current_version}": "up",
+                f"postgis_topology|unpackaged|{current_version}": "up",
             }
         )
 
-        result = self.harness.run("3.7.0dev")
+        result = self.harness.run(current_version)
         output = result.stdout + result.stderr
 
         self.assertEqual(0, result.returncode)
-        self.assertIn("Testing postgis extension upgrade 3.5.0--3.7.0dev", output)
-        self.assertIn("Testing postgis extension upgrade 3.6.0--3.7.0dev", output)
+        self.assertIn(f"Testing postgis extension upgrade 3.5.0--{current_version}", output)
+        self.assertIn(f"Testing postgis extension upgrade 3.6.0--{current_version}", output)
         self.assertIn("Testing postgis script soft upgrade", output)
         self.assertIn("Testing postgis script hard upgrade", output)
 
@@ -295,16 +310,17 @@ class CheckAllUpgradesHarnessTest(unittest.TestCase):
             self.assertIn("topology/test", cmd)
 
     def test_unpackaged_soft_and_hard_share_oldest_upgrade_source(self):
-        self.harness.create_extension_files("postgis", ["3.6.0", "3.7.0dev"])
+        current_version = self.harness.current_version
+        self.harness.create_extension_files("postgis", ["3.6.0", current_version])
         self.harness.create_contrib_files(["3.5.0", "3.6.0"])
         self.harness.set_path_map(
             {
-                "postgis|3.6.0|3.7.0dev": "up",
-                "postgis|unpackaged|3.7.0dev": "up",
+                f"postgis|3.6.0|{current_version}": "up",
+                f"postgis|unpackaged|{current_version}": "up",
             }
         )
 
-        result = self.harness.run("3.7.0dev", args=("--oldest",))
+        result = self.harness.run(current_version, args=("--oldest",))
         output = result.stdout + result.stderr
         calls = self.harness.make_calls()
 
