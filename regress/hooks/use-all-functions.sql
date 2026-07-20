@@ -31,6 +31,9 @@ BEGIN
 		-- We only consider normal and window functions
 		-- ( not aggregates or procedures )
 		AND prokind in ('f','w')
+		-- Skip upgrade shim functions that are intentionally removed or
+		-- replaced during extension upgrade.
+		AND proname !~ '_deprecated_by_postgis_[0-9]+$'
 		-- Skip function known to be problematic
 		AND proname NOT IN (
 			'st_approxquantile' -- https://trac.osgeo.org/postgis/ticket/5498
