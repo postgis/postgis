@@ -2514,6 +2514,7 @@ class VisualExampleTest(unittest.TestCase):
                     "id": "one", "kind": "geometry-output", "preferred": True,
                     "refentry": "ST_Buffer", "screen": 1, "source": "ST_Buffer:1",
                     "output_omitted": False,
+                    "width": None, "height": None,
                     "native_output": "01010000000000000000000000000000000000000000",
                     "layers": [{
                         "id": "one-code-1", "source": "Code", "label": "center",
@@ -2529,6 +2530,26 @@ class VisualExampleTest(unittest.TestCase):
             self.assertIn('<native-output format="hexewkb">01010000', manifest_xml)
             self.assertIn('<layer id="one-code-1" source="Code" label="center"', manifest_xml)
             self.assertIn('dimension="0" srid="0" frame="Overlay"', manifest_xml)
+
+    def test_publish_visual_examples_records_svg_dimensions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / "visual-examples"
+            self.tester.publish_visual_examples(
+                target,
+                [{
+                    "id": "one", "source": "ST_Buffer:1",
+                    "svg": '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="402"></svg>\n',
+                    "kind": "geometry-output", "preferred": True,
+                    "refentry": "ST_Buffer", "screen": 1, "output_omitted": False,
+                    "layers": [],
+                }],
+            )
+            manifest_json = json.loads((target / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual("600", manifest_json[0]["width"])
+            self.assertEqual("402", manifest_json[0]["height"])
+            manifest_xml = (target / "manifest.xml").read_text(encoding="utf-8")
+            self.assertIn('width="600"', manifest_xml)
+            self.assertIn('height="402"', manifest_xml)
 
 
 if __name__ == "__main__":

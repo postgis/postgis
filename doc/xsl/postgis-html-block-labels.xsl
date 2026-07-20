@@ -354,7 +354,19 @@
           </xsl:call-template>
         </div>
       </div>
+      <xsl:variable name="visual.src">
+        <xsl:value-of select="concat($img.src.path, 'images/visual-examples/', $visual.id, '.svg')"/>
+        <xsl:if test="$postgis.visual.version != ''">
+          <xsl:value-of select="concat('?v=', $postgis.visual.version)"/>
+        </xsl:if>
+      </xsl:variable>
       <object type="image/svg+xml">
+        <xsl:if test="$manifest.visual/@width">
+          <xsl:attribute name="width"><xsl:value-of select="$manifest.visual/@width"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="$manifest.visual/@height">
+          <xsl:attribute name="height"><xsl:value-of select="$manifest.visual/@height"/></xsl:attribute>
+        </xsl:if>
         <xsl:attribute name="class">
           <xsl:text>postgis-geometry-figure-body</xsl:text>
           <xsl:if test="$manifest.visual/@kind = 'image-output'">
@@ -362,12 +374,14 @@
           </xsl:if>
         </xsl:attribute>
         <xsl:attribute name="data">
-          <xsl:value-of select="concat($img.src.path, 'images/visual-examples/', $visual.id, '.svg')"/>
-          <xsl:if test="$postgis.visual.version != ''">
-            <xsl:value-of select="concat('?v=', $postgis.visual.version)"/>
-          </xsl:if>
+          <xsl:value-of select="$visual.src"/>
         </xsl:attribute>
-        <xsl:text>Geometry figure for </xsl:text><xsl:value-of select="$visual.id"/>
+        <img class="postgis-geometry-figure-fallback">
+          <xsl:attribute name="src"><xsl:value-of select="$visual.src"/></xsl:attribute>
+          <xsl:attribute name="alt">
+            <xsl:text>Geometry figure for </xsl:text><xsl:value-of select="$visual.id"/>
+          </xsl:attribute>
+        </img>
       </object>
     </div>
   </xsl:if>

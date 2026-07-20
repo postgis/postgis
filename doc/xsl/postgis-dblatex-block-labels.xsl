@@ -89,6 +89,15 @@
 		    <xsl:value-of select="translate(., '┌┐└┘├┤┬┴┼─│', '+++++++++-|')"/>
 		    <xsl:text>&#10;\end{lstlisting}&#10;\endgroup&#10;</xsl:text>
 		  </xsl:when>
+		  <xsl:when test="(contains(@xml:id, 'st-buffer-example-') or contains(@id, 'st-buffer-example-')) and contains(., ',')">
+		    <xsl:text>&#10;\begingroup\lstset{basicstyle=\ttfamily\scriptsize}&#10;</xsl:text>
+		    <xsl:text>\noindent\ttfamily\scriptsize{}</xsl:text>
+		    <xsl:call-template name="postgis-dblatex-breakable-geometry">
+		      <xsl:with-param name="text" select="."/>
+		    </xsl:call-template>
+		    <xsl:text>\par&#10;</xsl:text>
+		    <xsl:text>&#10;\endgroup&#10;</xsl:text>
+		  </xsl:when>
 		  <xsl:when test="contains($role.tokens, ' text-primary ') or string-length(normalize-space(.)) &gt; 600">
 		    <xsl:text>&#10;\begingroup\lstset{basicstyle=\ttfamily\scriptsize}&#10;</xsl:text>
 		    <xsl:apply-imports/>
