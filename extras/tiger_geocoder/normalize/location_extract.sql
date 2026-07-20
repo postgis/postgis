@@ -51,7 +51,7 @@ BEGIN
          || '   length(name) as len'
          || ' FROM tiger.place'
          || ' WHERE ' || CASE WHEN stateAbbrev IS NOT NULL THEN 'statefp = ' || quote_literal(lstate) || ' AND ' ELSE '' END
-         || '   soundex(' || quote_literal(tempString) || ') = soundex(name)'
+         || '   :fuzzystrmatch@.soundex(' || quote_literal(tempString) || ') = :fuzzystrmatch@.soundex(name)'
          || '   AND tiger.levenshtein_ignore_case(' || quote_literal(tempString) || ',name) <= 2 '
          || ' UNION ALL SELECT'
          || '   2,'
@@ -60,7 +60,7 @@ BEGIN
          || '   length(name) as len'
          || ' FROM tiger.cousub'
          || ' WHERE ' || CASE WHEN stateAbbrev IS NOT NULL THEN 'statefp = ' || quote_literal(lstate) || ' AND ' ELSE '' END
-         || '   soundex(' || quote_literal(tempString) || ') = soundex(name)'
+         || '   :fuzzystrmatch@.soundex(' || quote_literal(tempString) || ') = :fuzzystrmatch@.soundex(name)'
          || '   AND tiger.levenshtein_ignore_case(' || quote_literal(tempString) || ',name) <= 2 '
          || ' ORDER BY '
          || '   3 ASC, 1 ASC, 4 DESC'
