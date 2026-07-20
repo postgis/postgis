@@ -38,6 +38,8 @@ PostGIS 3.6.5
           grid size exceeds their extent (Darafei Praliaskouski)
 - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
   with standard_conforming_strings off (Darafei Praliaskouski)
+- GH-1160, [topology] Preserve overlay intersection boundaries when
+  noding lines with GEOS main (Darafei Praliaskouski)
 
 
 PostGIS 3.6.4
