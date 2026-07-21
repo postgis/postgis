@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-07-21 02:39+0000\n"
+"PO-Revision-Date: 2026-07-21 04:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -1561,15 +1561,13 @@ msgstr "integer"
 #. Tag: entry
 #, no-c-format
 msgid "Denotes the identifier of the edge, face, or node in error."
-msgstr "エラーの発生するエッジ、フェイス、ノードの識別子を表示します。"
+msgstr "エラーの発生するエッジ、フェイス、ノードの識別子を示します。"
 
 #. Tag: entry
 #, no-c-format
 msgid ""
 "For errors that involve two objects, denotes the secondary edge or node."
-msgstr ""
-"エラー用に二つのオブジェクトが入っています。第二のエッジまたはノードを表示し"
-"ます。"
+msgstr "二つのオブジェクトが関係するエラー用で、第二のエッジまたはノードを示します。"
 
 #. Tag: title
 #, no-c-format
@@ -1917,10 +1915,10 @@ msgid ""
 "topogeometries created before the upgrade. This function fixes this "
 "corruption in affected tables."
 msgstr ""
-"PostGISトポロジー 3.6.0未満から3.6.0以上にアップグレードする時、トポジオメト"
-"リーカラムの定義が変更されました。このためアップグレード前に作られたトポジオ"
-"メトリーで間違いが発生します。この関数は影響を受けるテーブルの該当する間違い"
-"を1修正します。"
+"PostGISトポロジー 3.6.0未満から3.6.0以上にアップグレードする時、"
+"トポジオメトリーカラムの定義が変更されました。このためアップグレード前に作ら"
+"れたトポジオメトリーで間違いが発生します。この関数は影響を受けるテーブルの該"
+"当する間違いを修正します。"
 
 #. Tag: para
 #, no-c-format
@@ -1928,6 +1926,8 @@ msgid ""
 "The function refuses to process tables with expression or partial indexes; "
 "drop or rebuild those indexes manually around the repair."
 msgstr ""
+"この関数は式インデックスまたは部分インデックスを持つテーブルの処理を拒否しま"
+"す。修正の際にこれらのインデックスを手動で削除または再構築します。"
 
 #. Tag: para
 #, no-c-format
