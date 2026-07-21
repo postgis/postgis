@@ -35,6 +35,8 @@ class ContributorCreditFixture:
         self.repo = Path(self.temporary_directory.name)
         (self.repo / "doc").mkdir()
         self.git("init", "--initial-branch=main")
+        self.git("config", "gc.auto", "0")
+        self.git("config", "maintenance.auto", "false")
         self.git("config", "user.name", "Fixture Committer")
         self.git("config", "user.email", "committer@example.com")
 
