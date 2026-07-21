@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-07-16 09:39+0000\n"
+"PO-Revision-Date: 2026-07-21 02:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -351,6 +351,8 @@ msgid ""
 "This second call is needed to rebundle the <varname>postgis_raster</varname> "
 "extension."
 msgstr ""
+"この二つ目の関数呼出は <varname>postgis_raster</varname>エクステンションの再"
+"同梱が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -416,6 +418,9 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support."
 msgstr ""
+"PostGISエクステンションを3.0.0より前からアップグレードする場合には新しい"
+"エクステンション<emphasis>postgis_raster</emphasis>が入ることになります。この"
+"エクステンションはラスター機能が不要な場合には安全に削除することができます。"
 
 #. Tag: title
 #, no-c-format
@@ -465,6 +470,11 @@ msgid ""
 "installed without getting duplicate symbol errors or bringing forward "
 "deprecated objects."
 msgstr ""
+"ダンプ/リロード作業は <command role=\"reference-target\">postgis_restore</"
+"command> スクリプトが補助します。このスクリプトを使うと、PostGIS (古いものを"
+"含む)に属する定義を全て飛ばしてダンプします。また、重複シンボルエラーや非推奨"
+"オブジェクトを得ることなく、スキーマとデータをPostGISをインストールした"
+"データベースにリストアできます 。"
 
 #. Tag: para
 #, no-c-format
@@ -647,6 +657,11 @@ msgid ""
 "IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">this "
 "script</link>. After these operations, import your data:"
 msgstr ""
+"<varname>newdb</varname>を生成し、PostGISエクステンションを有効にし、<link "
+"xlink:href=\"https://raw.githubusercontent.com/Remi-C/"
+"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">この"
+"スクリプト</link>を使ってフランスIGN空間参照系を挿入します。この処理の後、"
+"データをインポートします:"
 
 #. Tag: title
 #, no-c-format
@@ -694,6 +709,9 @@ msgid ""
 "use the change, and display the current value. Use <command>SHOW ALL</"
 "command> to list all settings."
 msgstr ""
+"<varname>work_mem</varname> を設定して、コンフィギュレーションの再読込みを実"
+"行すると、新しいコネクションでは変更が反映され、現在の値が表示されます。全て"
+"の設定を確認するには <command>SHOW ALL</command> を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -1099,7 +1117,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Check the transaction history."
-msgstr ""
+msgstr "トランザクション履歴を調べます。"
 
 #. Tag: title
 #, no-c-format
@@ -1180,6 +1198,8 @@ msgid ""
 "its primitive tables, TopoGeometry type, topology management functions, "
 "editing functions, validation functions, and conversion helpers."
 msgstr ""
+"本章では、リミティブテーブル、TopoGeometryタイプ、トポロジー管理関数、関数の"
+"編集、関数の評価、変換補助などのトポロジーモジュールの参照を維持しています。"
 
 #. Tag: para
 #, no-c-format
@@ -1356,7 +1376,7 @@ msgstr "順序番号とエッジ番号で構成される複合型。"
 #. Tag: title
 #, no-c-format
 msgid "<title>Description</title>"
-msgstr ""
+msgstr "<title>説明</title>"
 
 #. Tag: para
 #, no-c-format
@@ -1497,27 +1517,27 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "Field"
-msgstr ""
+msgstr "フィールド"
 
 #. Tag: entry
 #, no-c-format
 msgid "Type"
-msgstr ""
+msgstr "型"
 
 #. Tag: entry
 #, no-c-format
 msgid "<entry>Description</entry>"
-msgstr ""
+msgstr "<entry>説明</entry>"
 
 #. Tag: type
 #, no-c-format
 msgid "varchar"
-msgstr ""
+msgstr "varchar"
 
 #. Tag: para
 #, no-c-format
 msgid "Denotes the type of error."
-msgstr ""
+msgstr "エラーのタイプを示します。"
 
 #. Tag: para
 #, no-c-format
@@ -1526,22 +1546,30 @@ msgid ""
 "simple, edge end node geometry mismatch, edge start node geometry mismatch, "
 "face overlaps face, face within face."
 msgstr ""
+"現在のエラー記述は次の通りです: coincident nodes (訳注: 重複ノード)、edge "
+"crosses node (訳注: エッジとノードのクロス)、edge not simple (訳注: 単純でな"
+"いエッジ)、edge end node geometry mismatch (訳注: 終端ノードジオメトリの不整"
+"合)、edge start node geometry mismatch (訳注: 始端ノードジオメトリの不整合)、"
+"face overlaps face (訳注: フェイスをオーバーラップするフェイス)、face within "
+"face (訳注: フェイス内のフェイス)。"
 
 #. Tag: type
 #, no-c-format
 msgid "integer"
-msgstr ""
+msgstr "integer"
 
 #. Tag: entry
 #, no-c-format
 msgid "Denotes the identifier of the edge, face, or node in error."
-msgstr ""
+msgstr "エラーの発生するエッジ、フェイス、ノードの識別子を表示します。"
 
 #. Tag: entry
 #, no-c-format
 msgid ""
 "For errors that involve two objects, denotes the secondary edge or node."
 msgstr ""
+"エラー用に二つのオブジェクトが入っています。第二のエッジまたはノードを表示し"
+"ます。"
 
 #. Tag: title
 #, no-c-format
