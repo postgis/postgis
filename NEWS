@@ -1,7 +1,18 @@
+PostGIS 3.7.0rc1
+2026/xx/xx
+This version requires GEOS 3.10+, PostgreSQL 14-19beta2, Proj 6.1+, libgmp.
+To take advantage of all features postgis extension features, GEOS 3.15+ is needed.
+To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.
+
+* Bug Fixes *
+
+* Enhancements *
+
+
 PostGIS 3.7.0beta1
 2026/07/20
 
-This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp.
+This version requires GEOS 3.10+, PostgreSQL 14-19beta2, Proj 6.1+, libgmp.
 To take advantage of all features postgis extension features, GEOS 3.15+ is needed.
 To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.
 
