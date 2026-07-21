@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-07-21 04:39+0000\n"
+"PO-Revision-Date: 2026-07-21 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -2991,6 +2991,12 @@ msgid ""
 "before smaller contained lines can avoid expensive later splits. For loading "
 "a collection in one call, see <xref linkend=\"TopoGeo_LoadGeometry\"/>."
 msgstr ""
+"多数のラインを追加すると、ロード順序がパフォーマンスに大きな影響を与えること"
+"があります。ロードをするたびにラインがトポロジー要素としてロード済みかを確認"
+"をするためです。大量投入のワークフローでは、閉じられているか囲んでいる大きな"
+"ラインの追加を、小さい含まれているラインの追加より前に行うことで、後で行う計"
+"算量の多い分割を避けられます。一度でコレクションをロードする場合には <xref "
+"linkend=\"TopoGeo_LoadGeometry\"/> を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -4656,7 +4662,7 @@ msgstr "要素の配列を省略した場合、空のTopoGeometryオブジェク
 #. Tag: para
 #, no-c-format
 msgid "Form from existing edges."
-msgstr ""
+msgstr "既存エッジからの形成。"
 
 #. Tag: para
 #, no-c-format
@@ -4671,7 +4677,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Convert an areal geometry to best guess topogeometry."
-msgstr ""
+msgstr "面ジオメトリから最善と思われるトポジオメトリーに変換します。"
 
 #. Tag: para
 #, no-c-format
@@ -5131,7 +5137,7 @@ msgstr "TopoGeometryの空間参照識別子を返します。"
 msgid ""
 "Returns the spatial reference identifier of the topology containing the "
 "TopoGeometry."
-msgstr ""
+msgstr "TopoGeometryを含むトポロジーの空間参照系識別子を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -5139,6 +5145,8 @@ msgid ""
 "The identifier is recorded for the topology when it is created and refers to "
 "an entry in <xref linkend=\"spatial_ref_sys\"/>."
 msgstr ""
+"識別子はトポロジーが生成され、かつ <xref linkend=\"spatial_ref_sys\"/> 内の"
+"エントリーを参照するときにトポロジーに記録されます。"
 
 #. Tag: para
 #, no-c-format
@@ -5146,6 +5154,8 @@ msgid ""
 "Return the SRID of a TopoGeometry stored in the <varname>ri_topo</varname> "
 "topology."
 msgstr ""
+"<varname>ri_topo</varname> トポロジー内に格納されている TopoGeometry の SRID "
+"を返します。"
 
 #. Tag: para
 #, no-c-format
