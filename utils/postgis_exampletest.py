@@ -158,6 +158,7 @@ VISUAL_SEPARATE_OUTPUT_ROLE = "visual-separate-output"
 VISUAL_ROW_PANELS_ROLE = "visual-row-panels"
 VISUAL_MATRIX_3X3_ROLE = "visual-matrix-3x3"
 VISUAL_OVERLAY_ROLE = "visual-overlay"
+VISUAL_TESSELLATION_ROLE = "visual-tessellation"
 SVG_PALETTES = {
     "Code": ("#2878b8", "#59a4d8", "#0f5f9c"),
     "Output": ("#a62c2b", "#d95f3d", "#ef8a47"),
@@ -1314,6 +1315,7 @@ class ExampleTester:
                 VISUAL_ROW_PANELS_ROLE,
                 VISUAL_MATRIX_3X3_ROLE,
                 VISUAL_OVERLAY_ROLE,
+                VISUAL_TESSELLATION_ROLE,
             )
         )
         skip_reason = self.obvious_skip_reason(text)
@@ -1348,6 +1350,9 @@ class ExampleTester:
         )
         visual_matrix_3x3 = screen is not None and self.has_role(screen, VISUAL_MATRIX_3X3_ROLE)
         visual_overlay = screen is not None and self.has_role(screen, VISUAL_OVERLAY_ROLE)
+        visual_tessellation = screen is not None and self.has_role(
+            screen, VISUAL_TESSELLATION_ROLE
+        )
         visual_direction = screen is not None and self.has_role(screen, VISUAL_DIRECTION_ROLE)
         visual_output_only = screen is not None and self.has_role(screen, VISUAL_OUTPUT_ONLY_ROLE)
         visual_hide_output_area_vertices = screen is not None and self.has_role(
@@ -1388,6 +1393,7 @@ class ExampleTester:
             "visual_row_panels": visual_row_panels,
             "visual_matrix_3x3": visual_matrix_3x3,
             "visual_overlay": visual_overlay,
+            "visual_tessellation": visual_tessellation,
             "geometry_output_precision": self.geometry_output_precision(screen),
             "visual_refentry": refentry,
             "visual_screen": screen_ordinal,
@@ -1812,7 +1818,13 @@ class ExampleTester:
                     example.get("expected_headers", []),
                     self.documented_visual_types(example["expected"]),
                 )
-                visual = self.render_visual_example(database, example, rows)
+                try:
+                    visual = self.render_visual_example(database, example, rows)
+                except RuntimeError as exc:
+                    raise RuntimeError(
+                        "Documented visual failed to render: "
+                        f"{example['label']} ({example['visual_id']})\n{exc}"
+                    ) from exc
                 if visual is not None:
                     rendered.append(visual)
             return rendered
@@ -1964,7 +1976,7 @@ class ExampleTester:
             json.dumps(layers, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         ).decode("ascii")
         query = f"""
-WITH raw AS (
+WITH RECURSIVE raw AS (
   SELECT ord, source, label, row_num, column_num, requested_frame, wkt, hexwkb,
     source_point_count, total_points, marker_scale
   FROM jsonb_to_recordset(
@@ -2022,19 +2034,51 @@ WITH raw AS (
     ST_YMax(box) - ST_YMin(box) AS height
   FROM frame_bounds_raw
   WHERE box IS NOT NULL
-), parts AS (
+), geometry_tree AS (
   SELECT ord, source, label, row_num, column_num, frame,
     source_point_count,
     COALESCE(total_points, ST_NPoints(framed.geom)) AS total_points,
     marker_scale,
-    GeometryType(framed.geom) AS root_type,
-    dumped.geom
+    upper(substring(ST_GeometryType(framed.geom) from 4)) AS root_type,
+    ARRAY[]::integer[] AS part_path,
+    ST_GeometryType(framed.geom) AS part_type,
+    framed.geom
   FROM framed
-  CROSS JOIN LATERAL ST_Dump(framed.geom) AS dumped(path, geom)
-  WHERE NOT ST_IsEmpty(dumped.geom)
+  UNION ALL
+  SELECT parent.ord, parent.source, parent.label, parent.row_num,
+    parent.column_num, parent.frame, parent.source_point_count,
+    parent.total_points, parent.marker_scale, parent.root_type,
+    parent.part_path || child.path AS part_path,
+    ST_GeometryType(child.geom) AS part_type, child.geom
+  FROM geometry_tree AS parent
+  -- ST_Dump exposes native solid faces, but turns CurvePolygon surfaces into rings.
+  CROSS JOIN LATERAL (
+    SELECT dumped.path, dumped.geom
+    FROM ST_Dump(parent.geom) AS dumped
+    WHERE parent.part_type IN ('ST_PolyhedralSurface', 'ST_Tin')
+    UNION ALL
+    SELECT ARRAY[part_num.n], ST_GeometryN(parent.geom, part_num.n)
+    FROM generate_series(1, ST_NumGeometries(parent.geom)) AS part_num(n)
+    WHERE parent.part_type IN (
+      'ST_GeometryCollection', 'ST_MultiPoint', 'ST_MultiLineString',
+      'ST_MultiPolygon', 'ST_MultiCurve', 'ST_MultiSurface'
+    )
+  ) AS child
+  WHERE NOT ST_IsEmpty(child.geom)
+), parts AS (
+  SELECT ord, source, label, row_num, column_num, frame,
+    source_point_count, total_points, marker_scale, root_type, part_path, geom
+  FROM geometry_tree
+  WHERE part_type NOT IN (
+    'ST_GeometryCollection', 'ST_MultiPoint', 'ST_MultiLineString',
+    'ST_MultiPolygon', 'ST_MultiCurve', 'ST_MultiSurface',
+    'ST_PolyhedralSurface', 'ST_Tin'
+  )
+  AND NOT ST_IsEmpty(geom)
 ), translated_parts AS (
   SELECT ord, source, label, row_num, column_num, parts.frame, source_point_count,
-    total_points, marker_scale, root_type,
+    total_points, marker_scale, root_type, part_path,
+    geom AS raw_geom,
     ST_Translate(geom, -min_x, -min_y) AS geom
   FROM parts JOIN frame_bounds USING (frame)
 ), render_parts AS (
@@ -2057,14 +2101,14 @@ SELECT json_build_object(
       'row', row_num, 'column', column_num, 'frame', frame,
       'root_type', root_type, 'source_point_count', source_point_count,
       'total_points', total_points, 'marker_scale', marker_scale,
-      'type', GeometryType(geom),
+      'type', upper(substring(ST_GeometryType(geom) from 4)),
       'svg', CASE
         WHEN ST_Dimension(render_geom) = 0 THEN NULL
         ELSE ST_AsSVG(ST_Force2D(render_geom), 0, 12)
       END,
       'dimension', ST_Dimension(geom), 'srid', ST_SRID(geom),
-      'x', CASE WHEN GeometryType(geom) = 'POINT' THEN ST_X(geom) END,
-      'y', CASE WHEN GeometryType(geom) = 'POINT' THEN -ST_Y(geom) END,
+      'x', CASE WHEN ST_GeometryType(geom) = 'ST_Point' THEN ST_X(geom) END,
+      'y', CASE WHEN ST_GeometryType(geom) = 'ST_Point' THEN -ST_Y(geom) END,
       'points', CASE
         WHEN ST_Dimension(render_geom) = 0
         THEN (
@@ -2073,7 +2117,7 @@ SELECT json_build_object(
         )
       END,
       'closed', CASE
-        WHEN GeometryType(geom) IN ('LINESTRING', 'CIRCULARSTRING', 'COMPOUNDCURVE')
+        WHEN ST_GeometryType(geom) IN ('ST_LineString', 'ST_CircularString', 'ST_CompoundCurve')
           THEN ST_IsClosed(geom)
       END,
       'vertices', CASE
@@ -2085,7 +2129,7 @@ SELECT json_build_object(
         )
       END,
       'direction_paths', CASE
-        WHEN GeometryType(render_geom) IN ('POLYGON', 'TRIANGLE')
+        WHEN ST_GeometryType(render_geom) IN ('ST_Polygon', 'ST_Triangle')
           AND total_points <= 128
         THEN (
           SELECT json_agg(points ORDER BY ring_num)
@@ -2100,11 +2144,11 @@ SELECT json_build_object(
           ) AS rings
         )
       END,
-      'has_z', ST_Zmflag(geom) IN (2, 3),
+      'has_z', ST_Zmflag(raw_geom) IN (2, 3),
       'points_xyz', CASE
-        WHEN GeometryType(render_geom) IN (
-          'POINT', 'LINESTRING', 'POLYGON', 'TRIANGLE',
-          'TIN', 'POLYHEDRALSURFACE'
+        WHEN ST_GeometryType(raw_geom) IN (
+          'ST_Point', 'ST_LineString', 'ST_Polygon', 'ST_CurvePolygon',
+          'ST_Triangle', 'ST_Tin', 'ST_PolyhedralSurface'
         )
         THEN (
           SELECT json_agg(
@@ -2116,10 +2160,16 @@ SELECT json_build_object(
               )
             ) ORDER BY vertex3d.path
           )
-          FROM ST_DumpPoints(render_geom) AS vertex3d
+          FROM ST_DumpPoints(
+            CASE
+              WHEN ST_GeometryType(raw_geom) = 'ST_CurvePolygon'
+                THEN ST_CurveToLine(raw_geom)
+              ELSE raw_geom
+            END
+          ) AS vertex3d
         )
       END
-    ) ORDER BY ord)
+    ) ORDER BY ord, part_path)
     FROM render_parts
   )
 )::text
@@ -2452,12 +2502,13 @@ SELECT json_build_object(
             ),
             "layers": rendered_layers,
             "svg": self.visual_svg(
-                example["visual_id"], payload,
+                example["visual_id"], payload, database=database,
                 show_direction=example.get("visual_direction", False),
                 hide_output_area_vertices=example.get(
                     "visual_hide_output_area_vertices", False
                 ),
                 matrix_3x3=example.get("visual_matrix_3x3", False),
+                show_tessellation=example.get("visual_tessellation", False),
             ),
         }
 
@@ -2477,6 +2528,19 @@ SELECT json_build_object(
         return "0" if label == "-0" else label
 
     DEFAULT_3D_VIEW = (-1.35, -1.0, 0.8)
+    SMOOTH_3D_EDGE_MAX_ANGLE = 40.0
+    SMOOTH_3D_EDGE_MIN_COUNT = 16
+    SMOOTH_3D_JOIN_LENGTH_RATIO = 0.12
+    FACETED_3D_FACE_MIN_COUNT = 16
+    FACETED_3D_SHALLOW_EDGE_MIN_COUNT = 8
+    FACETED_3D_LENGTH_GAP_RATIO = 4.0
+    FACETED_3D_LENGTH_CLUSTER_MIN_COUNT = 3
+    FACETED_3D_SMOOTH_EDGE_MAX_ANGLE = 35.0
+    FACETED_3D_SKINNY_FACE_EDGE_MIN_RATIO = 0.8
+    FACETED_3D_SCREEN_CONTINUATION_MAX_ANGLE = 15.0
+    SMOOTH_3D_SIDE_SHADE = 0.82
+    SMOOTH_3D_CAP_MIN_SHADE = 0.68
+    SMOOTH_3D_FACE_OVERLAP_PIXELS = 1.1
     CANDIDATE_3D_VIEWS = (
         DEFAULT_3D_VIEW,
         (-0.45, -1.6, 0.85),
@@ -2546,13 +2610,13 @@ SELECT json_build_object(
                 best = (score, view)
         return best[1]
 
-    def face_shade(self, rings):
-        """Return an orientation-independent light factor for a polygon face."""
+    def face_normal(self, rings):
+        """Return a Newell normal for the exterior ring of a polygon face."""
         points = rings[0] if rings else []
         if len(points) > 1 and points[0] == points[-1]:
             points = points[:-1]
         if len(points) < 3:
-            return 0.72
+            return (0.0, 0.0, 0.0)
         normal_x = normal_y = normal_z = 0.0
         for index, current in enumerate(points):
             following = points[(index + 1) % len(points)]
@@ -2561,6 +2625,25 @@ SELECT json_build_object(
             normal_x += (y1 - y2) * (z1 + z2)
             normal_y += (z1 - z2) * (x1 + x2)
             normal_z += (x1 - x2) * (y1 + y2)
+        return (normal_x, normal_y, normal_z)
+
+    def face_view_dot(self, rings, view):
+        """Return the signed face orientation relative to the 3D view vector."""
+        normal_x, normal_y, normal_z = self.face_normal(rings)
+        normal_length = math.sqrt(normal_x ** 2 + normal_y ** 2 + normal_z ** 2)
+        if normal_length == 0:
+            return 1.0
+        view = self.DEFAULT_3D_VIEW if view is None else view
+        view_length = math.sqrt(sum(value ** 2 for value in view))
+        if view_length == 0:
+            return 1.0
+        return (
+            normal_x * view[0] + normal_y * view[1] + normal_z * view[2]
+        ) / (normal_length * view_length)
+
+    def face_shade(self, rings):
+        """Return an orientation-independent light factor for a polygon face."""
+        normal_x, normal_y, normal_z = self.face_normal(rings)
         length = math.sqrt(normal_x ** 2 + normal_y ** 2 + normal_z ** 2)
         if length == 0:
             return 0.72
@@ -2576,6 +2659,838 @@ SELECT json_build_object(
         channels = [int(color[index:index + 2], 16) for index in (1, 3, 5)]
         return "#" + "".join(f"{max(0, min(255, round(channel * factor))):02x}" for channel in channels)
 
+    def edge_key_3d(self, start, end):
+        """Return an orientation-independent key for a 3D edge."""
+        points = tuple(
+            tuple(round(float(value), 12) for value in point)
+            for point in (start, end)
+        )
+        return tuple(sorted(points))
+
+    def edge_length_3d(self, edge_key):
+        return math.sqrt(sum(
+            (edge_key[1][index] - edge_key[0][index]) ** 2
+            for index in range(3)
+        ))
+
+    def edge_screen_continuation_degrees(self, first_edge, second_edge, view):
+        """Return the deviation from a straight projected edge continuation."""
+        shared_vertices = set(first_edge) & set(second_edge)
+        if len(shared_vertices) != 1:
+            return None
+        shared = next(iter(shared_vertices))
+        first_other = next(point for point in first_edge if point != shared)
+        second_other = next(point for point in second_edge if point != shared)
+        shared_x, shared_y, _ = self.project_3d_point(shared, view)
+        first_x, first_y, _ = self.project_3d_point(first_other, view)
+        second_x, second_y, _ = self.project_3d_point(second_other, view)
+        first_vector = (first_x - shared_x, first_y - shared_y)
+        second_vector = (second_x - shared_x, second_y - shared_y)
+        first_length = math.hypot(*first_vector)
+        second_length = math.hypot(*second_vector)
+        if first_length == 0 or second_length == 0:
+            return None
+        cosine = (
+            first_vector[0] * second_vector[0]
+            + first_vector[1] * second_vector[1]
+        ) / (first_length * second_length)
+        angle = math.degrees(math.acos(max(-1.0, min(1.0, cosine))))
+        return abs(180.0 - angle)
+
+    def separated_short_edge_limit(self, lengths):
+        """Return the upper edge length of a clearly separated short cluster."""
+        ordered = sorted(length for length in lengths if length > 0)
+        cluster_size = self.FACETED_3D_LENGTH_CLUSTER_MIN_COUNT
+        if len(ordered) < cluster_size * 2:
+            return None
+        gaps = [
+            (ordered[index + 1] / ordered[index], index)
+            for index in range(cluster_size - 1, len(ordered) - cluster_size)
+        ]
+        ratio, index = max(gaps, default=(0.0, 0))
+        if ratio < self.FACETED_3D_LENGTH_GAP_RATIO:
+            return None
+        return ordered[index]
+
+    def face_angle_degrees(self, first_normal, second_normal):
+        first_length = math.sqrt(sum(value ** 2 for value in first_normal))
+        second_length = math.sqrt(sum(value ** 2 for value in second_normal))
+        if first_length == 0 or second_length == 0:
+            return None
+        cosine = abs(
+            sum(first * second for first, second in zip(first_normal, second_normal))
+            / (first_length * second_length)
+        )
+        return math.degrees(math.acos(max(-1.0, min(1.0, cosine))))
+
+    def faceted_smooth_edge_max_angle(self, face_records):
+        """Use the wider smoothing angle only for a seam between two skinny facets."""
+        if len(face_records) == 2 and all(
+            record.get("edge_to_other_length_ratio", 0)
+            >= self.FACETED_3D_SKINNY_FACE_EDGE_MIN_RATIO
+            for record in face_records
+        ):
+            return self.SMOOTH_3D_EDGE_MAX_ANGLE
+        return self.FACETED_3D_SMOOTH_EDGE_MAX_ANGLE
+
+    def face_vertex_count(self, paths):
+        return sum(
+            len(path) - 1 if len(path) > 1 and path[0] == path[-1] else len(path)
+            for path in paths
+        )
+
+    def face_depth_plane(self, rings):
+        points = rings[0] if rings else []
+        for first in range(len(points)):
+            x1, y1, depth1 = points[first]
+            for second in range(first + 1, len(points)):
+                x2, y2, depth2 = points[second]
+                for third in range(second + 1, len(points)):
+                    x3, y3, depth3 = points[third]
+                    denominator = (
+                        x1 * (y2 - y3)
+                        + x2 * (y3 - y1)
+                        + x3 * (y1 - y2)
+                    )
+                    if abs(denominator) < 1e-12:
+                        continue
+                    a = (
+                        depth1 * (y2 - y3)
+                        + depth2 * (y3 - y1)
+                        + depth3 * (y1 - y2)
+                    ) / denominator
+                    b = (
+                        depth1 * (x3 - x2)
+                        + depth2 * (x1 - x3)
+                        + depth3 * (x2 - x1)
+                    ) / denominator
+                    c = (
+                        depth1 * (x2 * y3 - x3 * y2)
+                        + depth2 * (x3 * y1 - x1 * y3)
+                        + depth3 * (x1 * y2 - x2 * y1)
+                    ) / denominator
+                    return (a, b, c)
+        return None
+
+    def same_depth_plane(self, first, second, tolerance=1e-9):
+        if first is None or second is None:
+            return False
+        return all(abs(a - b) <= tolerance for a, b in zip(first, second))
+
+    def projected_3d_edges(self, paths, projected_paths, projected_depth_paths):
+        edges = []
+        for path, projected_path, depth_path in zip(paths, projected_paths, projected_depth_paths):
+            if len(path) < 2 or len(projected_path) < 2 or len(depth_path) < 2:
+                continue
+            for index, (start, end) in enumerate(zip(path, path[1:])):
+                if start == end:
+                    continue
+                projected_start = projected_path[index]
+                projected_end = projected_path[index + 1]
+                if projected_start == projected_end:
+                    continue
+                edges.append({
+                    "key": self.edge_key_3d(start, end),
+                    "start": [projected_start[0], projected_start[1]],
+                    "end": [projected_end[0], projected_end[1]],
+                    "start_depth": depth_path[index],
+                    "end_depth": depth_path[index + 1],
+                })
+        return edges
+
+    def projected_3d_face(self, paths, projected_paths, projected_depth_paths):
+        rings = [
+            [
+                [projected[0], projected[1], depth]
+                for projected, depth in zip(projected_path, depth_path)
+            ]
+            for projected_path, depth_path in zip(projected_paths, projected_depth_paths)
+        ]
+        edge_keys = [
+            self.edge_key_3d(start, end)
+            for path in paths
+            for start, end in zip(path, path[1:])
+            if start != end
+        ]
+        return {
+            "rings": rings,
+            "depth_plane": self.face_depth_plane(rings),
+            "edge_keys": edge_keys,
+            "normal": self.face_normal(paths),
+            "vertex_count": self.face_vertex_count(paths),
+        }
+
+    def wkt_ring_2d(self, ring):
+        points = [[float(point[0]), float(point[1])] for point in ring]
+        if points and points[0] != points[-1]:
+            points.append(points[0])
+        return "(" + ",".join(f"{x:.12g} {y:.12g}" for x, y in points) + ")"
+
+    def wkt_polygon_2d(self, rings):
+        return "POLYGON(" + ",".join(self.wkt_ring_2d(ring) for ring in rings) + ")"
+
+    def split_3d_edge_segments(self, database, parts, face_patches_by_part=None):
+        faces = []
+        edges = []
+        visible_patches = []
+        for part_index, part in enumerate(parts):
+            if not part.get("is_3d_face"):
+                continue
+            frame_id = str(part.get("frame", "Overlay"))
+            face = part.get("face_3d")
+            group_id = str(part.get("visibility_group", frame_id))
+            if face and part.get("occlude_3d_face", part.get("fill_3d_face", True)):
+                faces.append({
+                    "face_id": part_index,
+                    "frame": frame_id,
+                    "group": group_id,
+                    "wkt": self.wkt_polygon_2d(face["rings"]),
+                    "plane": face["depth_plane"],
+                    "edge_keys": face["edge_keys"],
+                })
+                for patch in (face_patches_by_part or {}).get(part_index, []):
+                    if patch.get("wkt") and patch.get("edge_visibility", True):
+                        visible_patches.append({
+                            "face_id": part_index,
+                            "frame": frame_id,
+                            "group": group_id,
+                            "wkt": patch["wkt"],
+                            "edge_keys": face["edge_keys"],
+                        })
+            for edge_index, edge in enumerate(part.get("edges_3d") or []):
+                edges.append({
+                    "part_id": part_index,
+                    "edge_id": len(edges),
+                    "key": edge["key"],
+                    "wkt": (
+                        f'LINESTRING({edge["start"][0]:.12g} {edge["start"][1]:.12g},'
+                        f'{edge["end"][0]:.12g} {edge["end"][1]:.12g})'
+                    ),
+                    "start_depth": edge["start_depth"],
+                    "end_depth": edge["end_depth"],
+                    "visible_boundary": edge.get("visible_boundary", False),
+                    "silhouette_only": edge.get("silhouette_only", False),
+                    "frame": frame_id,
+                    "group": group_id,
+                })
+        if not edges:
+            return {}
+        encoded = base64.b64encode(
+            json.dumps(
+                {"faces": faces, "edges": edges, "visible_patches": visible_patches},
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).decode("ascii")
+        query = f"""
+WITH payload AS (
+  SELECT convert_from(decode('{encoded}', 'base64'), 'UTF8')::jsonb AS data
+), raw_faces AS (
+  SELECT
+    (item->>'face_id')::integer AS face_id,
+    item->>'frame' AS frame_id,
+    item->>'group' AS group_id,
+    ST_GeomFromText(item->>'wkt') AS geom,
+    ARRAY(
+      SELECT jsonb_array_elements_text(item->'edge_keys')
+    ) AS edge_keys,
+    (item->'plane'->>0)::double precision AS plane_a,
+    (item->'plane'->>1)::double precision AS plane_b,
+    (item->'plane'->>2)::double precision AS plane_c
+  FROM payload, jsonb_array_elements(data->'faces') AS item
+), faces AS MATERIALIZED (
+  SELECT f.face_id, f.frame_id, f.group_id, normalized.geom, f.edge_keys,
+    f.plane_a, f.plane_b, f.plane_c
+  FROM raw_faces AS f
+  CROSS JOIN LATERAL (
+    SELECT ST_CollectionExtract(ST_MakeValid(f.geom), 3) AS geom
+  ) AS normalized
+  WHERE NOT ST_IsEmpty(normalized.geom)
+), edges AS (
+  SELECT
+    (item->>'part_id')::integer AS part_id,
+    (item->>'edge_id')::integer AS edge_id,
+    item->>'key' AS edge_key,
+    item->>'frame' AS frame_id,
+    item->>'group' AS group_id,
+    ST_GeomFromText(item->>'wkt') AS geom,
+    (item->>'start_depth')::double precision AS start_depth,
+    (item->>'end_depth')::double precision AS end_depth,
+    (item->>'visible_boundary')::boolean AS visible_boundary,
+    (item->>'silhouette_only')::boolean AS silhouette_only
+  FROM payload, jsonb_array_elements(data->'edges') AS item
+), unique_edges AS (
+  SELECT DISTINCT ON (group_id, edge_key)
+    edge_key, part_id, edge_id, frame_id, group_id, geom, start_depth, end_depth,
+    visible_boundary, silhouette_only
+  FROM edges
+  ORDER BY group_id, edge_key, silhouette_only, visible_boundary DESC, part_id, edge_id
+), projected_extents AS (
+  SELECT frame_id, group_id, ST_Extent(geom) AS extent
+  FROM (
+    SELECT frame_id, group_id, geom FROM faces
+    UNION ALL
+    SELECT frame_id, group_id, geom FROM unique_edges
+  ) AS projected
+  GROUP BY frame_id, group_id
+), overlay_precision AS MATERIALIZED (
+  SELECT frame_id, group_id,
+    scene_span * 1e-4 AS grid_size,
+    scene_span * 4e-4 AS cleanup_grid_size
+  FROM projected_extents
+  CROSS JOIN LATERAL (
+    SELECT greatest(
+      ST_XMax(extent) - ST_XMin(extent),
+      ST_YMax(extent) - ST_YMin(extent)
+    ) AS scene_span
+  ) AS dimensions
+  WHERE scene_span > 0
+), face_projection_union AS MATERIALIZED (
+  SELECT f.frame_id, f.group_id,
+    ST_UnaryUnion(ST_Collect(f.geom), p.grid_size) AS geom
+  FROM faces AS f
+  JOIN overlay_precision AS p USING (frame_id, group_id)
+  GROUP BY f.frame_id, f.group_id, p.grid_size
+), face_projection_boundary AS MATERIALIZED (
+  SELECT frame_id, group_id, ST_Boundary(geom) AS geom
+  FROM face_projection_union
+), drawable_edges AS MATERIALIZED (
+  SELECT e.edge_key, e.part_id, e.edge_id, e.frame_id, e.group_id,
+    e.geom AS original_geom,
+    e.start_depth + (e.end_depth - e.start_depth)
+      * ST_LineLocatePoint(e.geom, ST_StartPoint((dumped).geom)) AS start_depth,
+    e.start_depth + (e.end_depth - e.start_depth)
+      * ST_LineLocatePoint(e.geom, ST_EndPoint((dumped).geom)) AS end_depth,
+    e.visible_boundary,
+    e.silhouette_only, (dumped).geom AS geom
+  FROM unique_edges AS e
+  JOIN overlay_precision AS p USING (frame_id, group_id)
+  LEFT JOIN face_projection_boundary AS b USING (frame_id, group_id)
+  CROSS JOIN LATERAL ST_Dump(
+    CASE
+      WHEN NOT e.silhouette_only THEN e.geom
+      WHEN b.geom IS NULL THEN ST_GeomFromText('LINESTRING EMPTY')
+      ELSE ST_CollectionExtract(
+        ST_Intersection(e.geom, b.geom, p.grid_size),
+        2
+      )
+    END
+  ) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+), boundary_intersections AS (
+  SELECT e.frame_id, e.group_id, e.edge_key,
+    ST_Intersection(e.geom, ST_Boundary(f.geom)) AS geom
+  FROM drawable_edges AS e
+  JOIN faces AS f ON e.group_id = f.group_id AND NOT e.edge_key = ANY(f.edge_keys)
+  WHERE ST_Intersects(e.geom, f.geom)
+), depth_crossings AS (
+  SELECT e.frame_id, e.group_id, e.edge_key,
+    ST_LineInterpolatePoint(e.geom, values.crossing_fraction) AS geom
+  FROM drawable_edges AS e
+  JOIN faces AS f
+    ON e.group_id = f.group_id
+    AND NOT e.edge_key = ANY(f.edge_keys)
+  CROSS JOIN LATERAL (
+    SELECT
+      (
+        f.plane_a * ST_X(ST_StartPoint(e.geom))
+        + f.plane_b * ST_Y(ST_StartPoint(e.geom))
+        + f.plane_c
+      ) - e.start_depth AS start_delta,
+      (
+        f.plane_a * ST_X(ST_EndPoint(e.geom))
+        + f.plane_b * ST_Y(ST_EndPoint(e.geom))
+        + f.plane_c
+      ) - e.end_depth AS end_delta
+  ) AS delta
+  CROSS JOIN LATERAL (
+    SELECT delta.start_delta / (delta.start_delta - delta.end_delta) AS crossing_fraction
+  ) AS values
+  WHERE delta.start_delta * delta.end_delta < -1e-18
+    AND values.crossing_fraction > 1e-9
+    AND values.crossing_fraction < 1 - 1e-9
+    AND ST_Covers(f.geom, ST_LineInterpolatePoint(e.geom, values.crossing_fraction))
+), splitter_points AS (
+  SELECT frame_id, group_id, edge_key, (dumped).geom AS geom
+  FROM boundary_intersections
+  CROSS JOIN LATERAL ST_Dump(ST_CollectionExtract(geom, 1)) AS dumped
+  UNION ALL
+  SELECT frame_id, group_id, edge_key, (dumped).geom AS geom
+  FROM boundary_intersections
+  CROSS JOIN LATERAL ST_Dump(ST_Boundary(ST_CollectionExtract(geom, 2))) AS dumped
+  UNION ALL
+  SELECT frame_id, group_id, edge_key, geom
+  FROM depth_crossings
+), splitters AS (
+  SELECT frame_id, group_id, edge_key,
+    ST_UnaryUnion(ST_Collect(geom)) AS geom
+  FROM splitter_points
+  GROUP BY frame_id, group_id, edge_key
+), split_edges AS (
+  SELECT e.edge_key, e.part_id, e.edge_id, e.original_geom,
+    e.frame_id, e.group_id, e.start_depth, e.end_depth, e.visible_boundary,
+    e.silhouette_only,
+    (dumped).geom AS geom
+  FROM drawable_edges AS e
+  LEFT JOIN splitters AS s USING (frame_id, group_id, edge_key)
+  CROSS JOIN LATERAL ST_Dump(
+    CASE WHEN s.geom IS NULL THEN e.geom ELSE ST_CollectionExtract(ST_Split(e.geom, s.geom), 2) END
+  ) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+), candidate_segments AS MATERIALIZED (
+  SELECT row_number() OVER () AS segment_id, *,
+    ST_LineInterpolatePoint(geom, 0.5) AS midpoint
+  FROM split_edges
+), raw_visible_face_patches AS (
+  SELECT
+    (item->>'face_id')::integer AS face_id,
+    item->>'frame' AS frame_id,
+    item->>'group' AS group_id,
+    ST_GeomFromText(item->>'wkt') AS geom,
+    ARRAY(
+      SELECT jsonb_array_elements_text(item->'edge_keys')
+    ) AS edge_keys
+  FROM payload, jsonb_array_elements(data->'visible_patches') AS item
+), visible_face_patches AS MATERIALIZED (
+  SELECT f.face_id, f.frame_id, f.group_id, normalized.geom, f.edge_keys
+  FROM raw_visible_face_patches AS f
+  CROSS JOIN LATERAL (
+    SELECT ST_CollectionExtract(ST_MakeValid(f.geom), 3) AS geom
+  ) AS normalized
+  WHERE NOT ST_IsEmpty(normalized.geom)
+), visible_patch_edges AS (
+  SELECT face_id, frame_id, group_id, edge_key, geom
+  FROM visible_face_patches
+  CROSS JOIN LATERAL unnest(edge_keys) AS edge_key
+), visible_coverage AS MATERIALIZED (
+  SELECT segment_id,
+    ST_UnaryUnion(ST_Collect(geom), grid_size) AS geom
+  FROM (
+    SELECT s.segment_id, p.grid_size,
+      ST_CollectionExtract(
+        ST_Intersection(
+          s.geom,
+          f.geom,
+          p.grid_size
+        ),
+        2
+      ) AS geom
+    FROM candidate_segments AS s
+    JOIN visible_patch_edges AS f
+      ON s.frame_id = f.frame_id
+      AND s.group_id = f.group_id
+      AND s.edge_key = f.edge_key
+    JOIN overlay_precision AS p
+      ON p.frame_id = s.frame_id
+      AND p.group_id = s.group_id
+  ) AS coverage
+  WHERE NOT ST_IsEmpty(geom)
+  GROUP BY segment_id, grid_size
+), visible_pieces AS (
+  SELECT s.edge_key, s.part_id, s.edge_id, s.original_geom, s.frame_id, s.group_id,
+    s.silhouette_only, true AS visible,
+    (dumped).geom AS geom
+  FROM candidate_segments AS s
+  JOIN visible_coverage AS v USING (segment_id)
+  CROSS JOIN LATERAL ST_Dump(ST_CollectionExtract(v.geom, 2)) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+), visible_union AS (
+  SELECT v.frame_id, v.group_id,
+    ST_UnaryUnion(ST_Collect(v.geom), p.cleanup_grid_size) AS geom
+  FROM visible_pieces AS v
+  JOIN overlay_precision AS p USING (frame_id, group_id)
+  GROUP BY v.frame_id, v.group_id, p.cleanup_grid_size
+), hidden_candidates AS (
+  SELECT s.edge_key, s.part_id, s.edge_id, s.original_geom, s.frame_id, s.group_id,
+    s.silhouette_only, false AS visible,
+    (dumped).geom AS geom
+  FROM candidate_segments AS s
+  LEFT JOIN visible_coverage AS v USING (segment_id)
+  JOIN face_projection_union AS f USING (frame_id, group_id)
+  JOIN overlay_precision AS p USING (frame_id, group_id)
+  CROSS JOIN LATERAL ST_Dump(
+    ST_CollectionExtract(
+      ST_Intersection(
+        CASE
+          WHEN v.geom IS NULL THEN s.geom
+          ELSE ST_Difference(s.geom, v.geom, p.grid_size)
+        END,
+        f.geom,
+        p.grid_size
+      ),
+      2
+    )
+  ) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+), hidden_pieces AS (
+  SELECT h.edge_key, h.part_id, h.edge_id, h.original_geom, h.frame_id, h.group_id,
+    h.silhouette_only, false AS visible,
+    (dumped).geom AS geom
+  FROM hidden_candidates AS h
+  LEFT JOIN visible_union AS v USING (frame_id, group_id)
+  JOIN overlay_precision AS p USING (frame_id, group_id)
+  CROSS JOIN LATERAL ST_Dump(
+    ST_CollectionExtract(
+      CASE
+        WHEN v.geom IS NULL THEN h.geom
+        ELSE ST_Difference(h.geom, v.geom, p.cleanup_grid_size)
+      END,
+      2
+    )
+  ) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+), classified AS (
+  SELECT * FROM hidden_pieces
+  UNION ALL
+  SELECT * FROM visible_pieces
+), straightened AS (
+  SELECT edge_key, part_id, edge_id, original_geom, frame_id, group_id,
+    silhouette_only, visible,
+    ST_LineSubstring(
+      original_geom,
+      CASE
+        WHEN start_fraction * ST_Length(original_geom) <= p.cleanup_grid_size THEN 0
+        ELSE start_fraction
+      END,
+      CASE
+        WHEN (1 - end_fraction) * ST_Length(original_geom) <= p.cleanup_grid_size THEN 1
+        ELSE end_fraction
+      END
+    ) AS geom
+  FROM classified
+  JOIN overlay_precision AS p USING (frame_id, group_id)
+  CROSS JOIN LATERAL (
+    SELECT least(
+      ST_LineLocatePoint(original_geom, ST_StartPoint(geom)),
+      ST_LineLocatePoint(original_geom, ST_EndPoint(geom))
+    ) AS start_fraction,
+    greatest(
+      ST_LineLocatePoint(original_geom, ST_StartPoint(geom)),
+      ST_LineLocatePoint(original_geom, ST_EndPoint(geom))
+    ) AS end_fraction
+  ) AS bounds
+  WHERE end_fraction - start_fraction > 1e-12
+), merged_classified AS (
+  SELECT edge_key, part_id, edge_id, original_geom, frame_id, group_id,
+    silhouette_only, visible,
+    ST_LineMerge(ST_UnaryUnion(ST_Collect(geom))) AS geom
+  FROM straightened
+  GROUP BY edge_key, part_id, edge_id, original_geom, frame_id, group_id,
+    silhouette_only, visible
+), classified_segments AS (
+  SELECT edge_key, part_id, edge_id, original_geom, frame_id, group_id,
+    silhouette_only, visible,
+    (dumped).geom AS geom
+  FROM merged_classified
+  CROSS JOIN LATERAL ST_Dump(ST_CollectionExtract(geom, 2)) AS dumped
+)
+SELECT json_agg(json_build_object(
+  'part_id', part_id,
+  'visible', visible,
+  'svg', ST_AsSVG(geom, 0, 12)
+) ORDER BY edge_key, ST_LineLocatePoint(original_geom, ST_StartPoint(geom)))::text
+FROM classified_segments
+JOIN overlay_precision AS p USING (frame_id, group_id)
+WHERE (visible OR NOT silhouette_only)
+  AND (NOT silhouette_only OR ST_Length(geom) > 5 * p.cleanup_grid_size)
+"""
+        result = self.run_psql_scalar(database, query)
+        segments = json.loads(result or "[]") or []
+        by_part = {}
+        for segment in segments:
+            by_part.setdefault(int(segment["part_id"]), []).append(segment)
+        return by_part
+
+    def split_3d_face_patches(self, database, parts):
+        faces = []
+        fill_planes_by_group = {}
+        for part_index, part in enumerate(parts):
+            if (
+                not part.get("is_3d_face")
+                or not part.get("occlude_3d_face", part.get("fill_3d_face", True))
+            ):
+                continue
+            face = part.get("face_3d")
+            if not face or not face.get("depth_plane"):
+                continue
+            frame_id = str(part.get("frame", "Overlay"))
+            group_id = str(part.get("visibility_group", frame_id))
+            paint_group = str(part.get("paint_group", part.get("ord", part_index)))
+            fill_planes = fill_planes_by_group.setdefault((group_id, paint_group), [])
+            fill_group = next(
+                (
+                    index
+                    for index, plane in enumerate(fill_planes)
+                    if self.same_depth_plane(plane, face["depth_plane"])
+                ),
+                None,
+            )
+            if fill_group is None:
+                fill_group = len(fill_planes)
+                fill_planes.append(face["depth_plane"])
+            faces.append({
+                "part_id": part_index,
+                "frame": frame_id,
+                "group": group_id,
+                "fill_group": f"{group_id}|{paint_group}|{fill_group}",
+                "draw_fill": bool(part.get("fill_3d_face", True)),
+                "wkt": self.wkt_polygon_2d(face["rings"]),
+                "plane": face["depth_plane"],
+                "edge_keys": face.get("edge_keys", []),
+            })
+        if not faces:
+            return {}
+        encoded = base64.b64encode(
+            json.dumps({"faces": faces}, separators=(",", ":")).encode("utf-8")
+        ).decode("ascii")
+        query = f"""
+WITH payload AS (
+  SELECT convert_from(decode('{encoded}', 'base64'), 'UTF8')::jsonb AS data
+), raw_faces AS (
+  SELECT
+    (item->>'part_id')::integer AS part_id,
+    item->>'frame' AS frame_id,
+    item->>'group' AS group_id,
+    item->>'fill_group' AS fill_group,
+    (item->>'draw_fill')::boolean AS draw_fill,
+    ST_GeomFromText(item->>'wkt') AS geom,
+    ARRAY(
+      SELECT jsonb_array_elements_text(item->'edge_keys')
+    ) AS edge_keys,
+    (item->'plane'->>0)::double precision AS plane_a,
+    (item->'plane'->>1)::double precision AS plane_b,
+    (item->'plane'->>2)::double precision AS plane_c
+  FROM payload, jsonb_array_elements(data->'faces') AS item
+), faces AS MATERIALIZED (
+  SELECT f.part_id, f.frame_id, f.group_id, f.fill_group, f.draw_fill,
+    normalized.geom, f.edge_keys,
+    f.plane_a, f.plane_b, f.plane_c
+  FROM raw_faces AS f
+  CROSS JOIN LATERAL (
+    SELECT ST_CollectionExtract(ST_MakeValid(f.geom), 3) AS geom
+  ) AS normalized
+  WHERE NOT ST_IsEmpty(normalized.geom)
+), frame_extent AS (
+  SELECT frame_id, group_id,
+    ST_XMin(extent) AS min_x,
+    ST_YMin(extent) AS min_y,
+    ST_XMax(extent) AS max_x,
+    ST_YMax(extent) AS max_y
+  FROM (
+    SELECT frame_id, group_id, ST_Envelope(ST_Extent(geom)) AS extent
+    FROM faces
+    GROUP BY frame_id, group_id
+  ) AS bounds
+), patch_precision AS MATERIALIZED (
+  SELECT frame_id, group_id,
+    scene_span * scene_span * 1e-12 AS min_patch_area
+  FROM frame_extent
+  CROSS JOIN LATERAL (
+    SELECT greatest(max_x - min_x, max_y - min_y) AS scene_span
+  ) AS dimensions
+  WHERE scene_span > 0
+), depth_split_lines AS (
+  SELECT f.frame_id, f.group_id,
+    ST_Intersection(
+      ST_MakeLine(
+        CASE
+          WHEN abs(f.plane_b - o.plane_b) > abs(f.plane_a - o.plane_a) THEN
+            ST_MakePoint(
+              b.min_x - greatest(b.max_x - b.min_x, b.max_y - b.min_y),
+              -(
+                (f.plane_a - o.plane_a)
+                * (b.min_x - greatest(b.max_x - b.min_x, b.max_y - b.min_y))
+                + (f.plane_c - o.plane_c)
+              ) / (f.plane_b - o.plane_b)
+            )
+          ELSE
+            ST_MakePoint(
+              -(
+                (f.plane_b - o.plane_b)
+                * (b.min_y - greatest(b.max_x - b.min_x, b.max_y - b.min_y))
+                + (f.plane_c - o.plane_c)
+              ) / (f.plane_a - o.plane_a),
+              b.min_y - greatest(b.max_x - b.min_x, b.max_y - b.min_y)
+            )
+        END,
+        CASE
+          WHEN abs(f.plane_b - o.plane_b) > abs(f.plane_a - o.plane_a) THEN
+            ST_MakePoint(
+              b.max_x + greatest(b.max_x - b.min_x, b.max_y - b.min_y),
+              -(
+                (f.plane_a - o.plane_a)
+                * (b.max_x + greatest(b.max_x - b.min_x, b.max_y - b.min_y))
+                + (f.plane_c - o.plane_c)
+              ) / (f.plane_b - o.plane_b)
+            )
+          ELSE
+            ST_MakePoint(
+              -(
+                (f.plane_b - o.plane_b)
+                * (b.max_y + greatest(b.max_x - b.min_x, b.max_y - b.min_y))
+                + (f.plane_c - o.plane_c)
+              ) / (f.plane_a - o.plane_a),
+              b.max_y + greatest(b.max_x - b.min_x, b.max_y - b.min_y)
+            )
+        END
+      ),
+      ST_Intersection(f.geom, o.geom, 1e-9)
+    ) AS geom
+  FROM faces AS f
+  JOIN faces AS o
+    ON f.group_id = o.group_id
+    AND f.part_id < o.part_id
+    AND ST_Intersects(f.geom, o.geom)
+  JOIN frame_extent AS b ON f.group_id = b.group_id
+  WHERE abs(f.plane_a - o.plane_a) > 1e-12
+    OR abs(f.plane_b - o.plane_b) > 1e-12
+), linework AS (
+  SELECT frame_id, group_id,
+    ST_UnaryUnion(ST_Collect(geom), 1e-9) AS geom
+  FROM (
+    SELECT frame_id, group_id, ST_Boundary(geom) AS geom
+    FROM faces
+    UNION ALL
+    SELECT frame_id, group_id, geom
+    FROM depth_split_lines
+    WHERE NOT ST_IsEmpty(geom)
+  ) AS lines
+  GROUP BY frame_id, group_id
+), line_geoms AS (
+  SELECT frame_id, group_id, (dumped).geom AS geom
+  FROM linework
+  CROSS JOIN LATERAL ST_Dump(geom) AS dumped
+), polygonized AS (
+  SELECT frame_id, group_id,
+    ST_CollectionExtract(ST_Polygonize(geom), 3) AS geom
+  FROM line_geoms
+  GROUP BY frame_id, group_id
+), cells AS (
+  SELECT frame_id, group_id, (dumped).geom AS geom
+  FROM polygonized
+  CROSS JOIN LATERAL ST_Dump(geom) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+), patches AS (
+  SELECT f.part_id, f.frame_id, f.group_id, f.fill_group, f.draw_fill,
+    f.edge_keys, f.geom AS original_geom,
+    f.plane_a, f.plane_b, f.plane_c,
+    ST_CollectionExtract(ST_Intersection(f.geom, c.geom, 1e-9), 3) AS geom
+  FROM faces AS f
+  JOIN cells AS c
+    ON f.group_id = c.group_id
+    AND ST_Intersects(f.geom, c.geom)
+), candidate_patches AS MATERIALIZED (
+  SELECT row_number() OVER () AS patch_id, p.*,
+    ST_PointOnSurface(p.geom) AS sample_point,
+    (
+      p.plane_a * ST_X(ST_PointOnSurface(p.geom))
+      + p.plane_b * ST_Y(ST_PointOnSurface(p.geom))
+      + p.plane_c
+    ) AS patch_depth
+  FROM patches AS p
+  WHERE NOT ST_IsEmpty(p.geom)
+), front_coverage AS (
+  SELECT p.patch_id,
+    ST_CollectionExtract(
+      ST_Intersection(p.geom, f.geom, 1e-9),
+      3
+    ) AS geom
+  FROM candidate_patches AS p
+  JOIN faces AS f
+    ON f.group_id = p.group_id
+    AND f.part_id <> p.part_id
+    AND ST_Intersects(p.geom, f.geom)
+  WHERE (
+    f.plane_a * ST_X(p.sample_point)
+    + f.plane_b * ST_Y(p.sample_point)
+    + f.plane_c
+  ) > p.patch_depth + 1e-9
+), hidden_by_patch AS (
+  SELECT patch_id,
+    ST_UnaryUnion(ST_Collect(geom), 1e-9) AS geom
+  FROM front_coverage
+  WHERE NOT ST_IsEmpty(geom)
+  GROUP BY patch_id
+), visible_patch_parts AS (
+  SELECT p.part_id, p.frame_id, p.group_id, p.fill_group, p.draw_fill,
+    p.plane_a, p.plane_b, p.plane_c,
+    (dumped).geom AS geom
+  FROM candidate_patches AS p
+  LEFT JOIN hidden_by_patch AS h USING (patch_id)
+  CROSS JOIN LATERAL ST_Dump(
+    ST_CollectionExtract(
+      CASE
+        WHEN h.geom IS NULL THEN p.geom
+        ELSE ST_Difference(p.geom, h.geom, 1e-9)
+      END,
+      3
+    )
+  ) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+), visible_face_unions AS (
+  SELECT part_id, frame_id, group_id, fill_group, draw_fill,
+    plane_a, plane_b, plane_c,
+    ST_UnaryUnion(ST_Collect(geom), 1e-9) AS geom
+  FROM visible_patch_parts AS v
+  GROUP BY part_id, frame_id, group_id, fill_group, draw_fill,
+    plane_a, plane_b, plane_c
+), visible_patches AS (
+  SELECT f.part_id, f.frame_id, f.group_id, f.fill_group, f.draw_fill,
+    f.plane_a, f.plane_b, f.plane_c,
+    (
+      f.plane_a * ST_X(ST_PointOnSurface((dumped).geom))
+      + f.plane_b * ST_Y(ST_PointOnSurface((dumped).geom))
+      + f.plane_c
+    ) AS patch_depth,
+    (dumped).geom AS geom
+  FROM visible_face_unions AS f
+  JOIN patch_precision AS p USING (frame_id, group_id)
+  CROSS JOIN LATERAL ST_Dump(ST_CollectionExtract(f.geom, 3)) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+    AND ST_Area((dumped).geom) > p.min_patch_area
+), visible_fill_unions AS (
+  SELECT min(part_id) AS part_id, frame_id, group_id, fill_group,
+    min(plane_a) AS plane_a, min(plane_b) AS plane_b, min(plane_c) AS plane_c,
+    ST_UnaryUnion(ST_Collect(geom), 1e-9) AS geom
+  FROM visible_patches AS v
+  WHERE draw_fill
+  GROUP BY frame_id, group_id, fill_group
+), visible_fill_patches AS (
+  SELECT f.part_id,
+    (
+      f.plane_a * ST_X(ST_PointOnSurface((dumped).geom))
+      + f.plane_b * ST_Y(ST_PointOnSurface((dumped).geom))
+      + f.plane_c
+    ) AS patch_depth,
+    (dumped).geom AS geom
+  FROM visible_fill_unions AS f
+  JOIN patch_precision AS p USING (frame_id, group_id)
+  CROSS JOIN LATERAL ST_Dump(ST_CollectionExtract(f.geom, 3)) AS dumped
+  WHERE NOT ST_IsEmpty((dumped).geom)
+    AND ST_Area((dumped).geom) > p.min_patch_area
+), rendered_and_edge_patches AS (
+  SELECT part_id, patch_depth, geom, false AS draw, true AS edge_visibility
+  FROM visible_patches
+  UNION ALL
+  SELECT part_id, patch_depth, geom, true AS draw, false AS edge_visibility
+  FROM visible_fill_patches
+)
+SELECT json_agg(json_build_object(
+  'part_id', part_id,
+  'depth', patch_depth,
+  'wkt', ST_AsText(geom, 12),
+  'svg', ST_AsSVG(geom, 0, 12),
+  'draw', draw,
+  'edge_visibility', edge_visibility
+) ORDER BY draw, patch_depth, part_id, ST_AsText(geom))::text
+FROM rendered_and_edge_patches
+"""
+        result = self.run_psql_scalar(database, query)
+        patches = json.loads(result or "[]") or []
+        by_part = {}
+        for patch in patches:
+            by_part.setdefault(int(patch["part_id"]), []).append(patch)
+        return by_part
+
     def xyz_paths(self, part):
         """Rebuild deterministic point/line/ring paths from ST_DumpPoints paths."""
         paths = {}
@@ -2585,7 +3500,7 @@ SELECT json_build_object(
             paths.setdefault(parent_path, []).append(vertex["point"])
         return list(paths.values())
 
-    def project_3d_payload(self, payload):
+    def project_3d_payload(self, payload, database=None, show_tessellation=False):
         """Project every frame consistently when the visual contains a Z surface."""
         frames = payload.get("frames") or [{"id": "Overlay", "bounds": payload["bounds"]}]
         area_types = {
@@ -2632,17 +3547,21 @@ SELECT json_build_object(
                 projected_parts.append(original)
                 continue
             projected_paths = []
+            projected_depth_paths = []
             depths = []
             for path in paths:
                 projected_path = []
+                depth_path = []
                 for point in path:
                     projected_x, projected_y, depth = self.project_3d_point(
                         point, frame_views.get(frame_id)
                     )
                     projected_path.append((projected_x, projected_y))
+                    depth_path.append(depth)
                     depths.append(depth)
                 if projected_path:
                     projected_paths.append(projected_path)
+                    projected_depth_paths.append(depth_path)
             if not projected_paths:
                 projected_parts.append(original)
                 continue
@@ -2657,7 +3576,16 @@ SELECT json_build_object(
             geometry_type = original.get("type", "").upper()
             if geometry_type in POINT_TYPES:
                 projected_x, projected_y = projected_paths[0][0]
-                projected.update({"x": projected_x, "y": -projected_y, "vertices": []})
+                projected.update({
+                    "x": projected_x,
+                    "y": -projected_y,
+                    "points": [
+                        [x, -y]
+                        for path in projected_paths
+                        for x, y in path
+                    ],
+                    "vertices": [],
+                })
             else:
                 close_paths = geometry_type in area_types
                 projected["svg"] = " ".join(
@@ -2677,9 +3605,298 @@ SELECT json_build_object(
                 projected.update({
                     "is_3d_face": True,
                     "depth": sum(depths) / len(depths),
+                    "fill_3d_face": True,
+                    "edges_3d": self.projected_3d_edges(paths, projected_paths, projected_depth_paths),
+                    "face_3d": self.projected_3d_face(paths, projected_paths, projected_depth_paths),
                     "shade": self.face_shade(paths),
                 })
             projected_parts.append(projected)
+
+        code_3d_frames = {
+            str(part.get("frame", frames[0]["id"]))
+            for part in projected_parts
+            if part.get("is_3d_face") and part.get("source") == "Code"
+        }
+        for part in projected_parts:
+            if (
+                part.get("is_3d_face")
+                and part.get("source") == "Output"
+                and str(part.get("frame", frames[0]["id"])) in code_3d_frames
+                and str(part.get("root_type", "")).upper() == "TIN"
+            ):
+                part["fill_3d_face"] = False
+                part["occlude_3d_face"] = True
+                if show_tessellation:
+                    part["tessellation_overlay"] = True
+                    part["draw_hidden_3d_edges"] = False
+
+        edge_visibility = {}
+        coplanar_seam_keys = set()
+        edge_faces = {}
+        face_vertex_counts_by_paint_group = {}
+        face_root_types_by_paint_group = {}
+        paint_group_views = {}
+        for part_index, part in enumerate(projected_parts):
+            if not part.get("is_3d_face"):
+                continue
+            part_frame_id = str(part.get("frame", frames[0]["id"]))
+            visibility_group = "|".join((
+                part_frame_id,
+                str(part.get("source")),
+            ))
+            paint_group = "|".join((visibility_group, str(part.get("ord"))))
+            part["visibility_group"] = visibility_group
+            part["paint_group"] = paint_group
+            paint_group_views.setdefault(
+                paint_group, frame_views.get(part_frame_id)
+            )
+            face = part.get("face_3d") or {}
+            plane = face.get("depth_plane")
+            face_edge_keys = face.get("edge_keys") or []
+            face_edge_length_sum = sum(
+                self.edge_length_3d(edge_key) for edge_key in face_edge_keys
+            )
+            face_vertex_counts_by_paint_group.setdefault(paint_group, []).append(
+                int(face.get("vertex_count") or 0)
+            )
+            face_root_types_by_paint_group.setdefault(paint_group, set()).add(
+                str(part.get("root_type", "")).upper()
+            )
+            for edge_key in face_edge_keys:
+                edge_length = self.edge_length_3d(edge_key)
+                other_edge_length = face_edge_length_sum - edge_length
+                edge_faces.setdefault((visibility_group, edge_key), []).append({
+                    "part_index": part_index,
+                    "paint_group": paint_group,
+                    "plane": plane,
+                    "normal": face.get("normal") or (0.0, 0.0, 0.0),
+                    "vertex_count": int(face.get("vertex_count") or 0),
+                    "edge_to_other_length_ratio": (
+                        edge_length / other_edge_length
+                        if other_edge_length > 0 else 0
+                    ),
+                })
+
+        shallow_edge_lengths_by_paint_group = {}
+        shared_edge_lengths_by_paint_group = {}
+        for (visibility_group, edge_key), face_records in edge_faces.items():
+            part_indexes = {record["part_index"] for record in face_records}
+            if len(part_indexes) < 2:
+                continue
+            first_paint_group = face_records[0]["paint_group"]
+            first_plane = face_records[0]["plane"]
+            if all(
+                record["paint_group"] == first_paint_group
+                and self.same_depth_plane(first_plane, record["plane"])
+                for record in face_records[1:]
+            ):
+                coplanar_seam_keys.add((visibility_group, edge_key))
+            records_by_paint_group = {}
+            for record in face_records:
+                records_by_paint_group.setdefault(record["paint_group"], []).append(record)
+            for paint_group, records in records_by_paint_group.items():
+                if len(records) != 2 or not all(
+                    record["vertex_count"] <= 4 for record in records
+                ):
+                    continue
+                edge_length = self.edge_length_3d(edge_key)
+                shared_edge_lengths_by_paint_group.setdefault(paint_group, []).append(
+                    edge_length
+                )
+                angle = self.face_angle_degrees(
+                    records[0]["normal"], records[1]["normal"]
+                )
+                if angle is not None and angle <= self.SMOOTH_3D_EDGE_MAX_ANGLE:
+                    shallow_edge_lengths_by_paint_group.setdefault(paint_group, []).append(
+                        edge_length
+                    )
+
+        smooth_join_lengths = {}
+        # Dense capped sweeps use shallow quads for a smooth wall and short
+        # non-manifold edges at joins.  Keep cap and long hard creases, while
+        # restricting the generated wall seams to the projected silhouette.
+        for paint_group, lengths in shallow_edge_lengths_by_paint_group.items():
+            vertex_counts = face_vertex_counts_by_paint_group.get(paint_group, [])
+            if (
+                len(lengths) < self.SMOOTH_3D_EDGE_MIN_COUNT
+                or sum(count <= 4 for count in vertex_counts) < self.SMOOTH_3D_EDGE_MIN_COUNT
+                or not any(count >= 8 for count in vertex_counts)
+            ):
+                continue
+            ordered_lengths = sorted(lengths)
+            midpoint = len(ordered_lengths) // 2
+            median_length = (
+                ordered_lengths[midpoint]
+                if len(ordered_lengths) % 2
+                else (ordered_lengths[midpoint - 1] + ordered_lengths[midpoint]) / 2
+            )
+            smooth_join_lengths[paint_group] = (
+                median_length * self.SMOOTH_3D_JOIN_LENGTH_RATIO
+            )
+        # A triangulated PolyhedralSurface with several shallow shared edges is
+        # a faceted approximation.  Restrict shallow seams and clearly shorter
+        # bevel edges to its silhouette, while retaining long sharp creases.
+        faceted_surface_paint_groups = {
+            paint_group
+            for paint_group, vertex_counts in face_vertex_counts_by_paint_group.items()
+            if (
+                len(vertex_counts) >= self.FACETED_3D_FACE_MIN_COUNT
+                and all(count <= 4 for count in vertex_counts)
+                and face_root_types_by_paint_group.get(paint_group)
+                == {"POLYHEDRALSURFACE"}
+                and len(shallow_edge_lengths_by_paint_group.get(paint_group, []))
+                >= self.FACETED_3D_SHALLOW_EDGE_MIN_COUNT
+            )
+        }
+        short_facet_edge_limits = {}
+        for paint_group in faceted_surface_paint_groups:
+            limit = self.separated_short_edge_limit(
+                shared_edge_lengths_by_paint_group.get(paint_group, [])
+            )
+            if limit is not None:
+                short_facet_edge_limits[paint_group] = limit
+        faceted_crease_connector_keys = set()
+        for paint_group, short_limit in short_facet_edge_limits.items():
+            short_sharp_edges = []
+            long_sharp_edges = []
+            for (_, edge_key), face_records in edge_faces.items():
+                matching_faces = [
+                    record for record in face_records
+                    if record["paint_group"] == paint_group
+                ]
+                if len(matching_faces) != 2 or not all(
+                    record["vertex_count"] <= 4 for record in matching_faces
+                ):
+                    continue
+                angle = self.face_angle_degrees(
+                    matching_faces[0]["normal"], matching_faces[1]["normal"]
+                )
+                if (
+                    angle is None
+                    or angle <= self.faceted_smooth_edge_max_angle(matching_faces)
+                ):
+                    continue
+                if self.edge_length_3d(edge_key) <= short_limit:
+                    short_sharp_edges.append(edge_key)
+                else:
+                    long_sharp_edges.append(edge_key)
+            view = paint_group_views.get(paint_group)
+            for short_edge in short_sharp_edges:
+                if any(
+                    continuation is not None
+                    and continuation
+                    <= self.FACETED_3D_SCREEN_CONTINUATION_MAX_ANGLE
+                    for continuation in (
+                        self.edge_screen_continuation_degrees(
+                            short_edge, long_edge, view
+                        )
+                        for long_edge in long_sharp_edges
+                    )
+                ):
+                    faceted_crease_connector_keys.add((paint_group, short_edge))
+        smooth_surface_paint_groups = (
+            set(smooth_join_lengths) | faceted_surface_paint_groups
+        )
+        for part in projected_parts:
+            if not part.get("is_3d_face"):
+                continue
+            for edge in part.get("edges_3d") or []:
+                visibility_key = (part["visibility_group"], edge["key"])
+                edge_visibility[visibility_key] = (
+                    edge_visibility.get(visibility_key, False)
+                    or bool(part.get("fill_3d_face", True))
+                )
+        for part in projected_parts:
+            if not part.get("is_3d_face"):
+                continue
+            keep_coplanar_seams = bool(part.get("tessellation_overlay"))
+            face_vertex_count = int(
+                (part.get("face_3d") or {}).get("vertex_count") or 0
+            )
+            part["smooth_3d_surface"] = (
+                part["paint_group"] in smooth_surface_paint_groups
+            )
+            part["smooth_3d_side"] = (
+                part["paint_group"] in smooth_join_lengths
+                and face_vertex_count <= 4
+            )
+            part["smooth_3d_cap"] = (
+                part["paint_group"] in smooth_join_lengths
+                and face_vertex_count >= 8
+            )
+            classified_edges = []
+            for edge in part.get("edges_3d") or []:
+                visibility_key = (part["visibility_group"], edge["key"])
+                if ((visibility_key in coplanar_seam_keys) != keep_coplanar_seams):
+                    continue
+                matching_faces = [
+                    record for record in edge_faces.get(visibility_key, [])
+                    if record["paint_group"] == part["paint_group"]
+                ]
+                silhouette_only = False
+                short_join_limit = smooth_join_lengths.get(part["paint_group"])
+                if (
+                    part["paint_group"] in faceted_surface_paint_groups
+                    and len(matching_faces) == 2
+                    and all(record["vertex_count"] <= 4 for record in matching_faces)
+                ):
+                    angle = self.face_angle_degrees(
+                        matching_faces[0]["normal"], matching_faces[1]["normal"]
+                    )
+                    edge_length = self.edge_length_3d(edge["key"])
+                    short_facet_limit = short_facet_edge_limits.get(
+                        part["paint_group"]
+                    )
+                    silhouette_only = (
+                        (
+                            angle is not None
+                            and angle
+                            <= self.faceted_smooth_edge_max_angle(matching_faces)
+                        )
+                        or (
+                            short_facet_limit is not None
+                            and edge_length <= short_facet_limit
+                        )
+                    )
+                    if (
+                        part["paint_group"], edge["key"]
+                    ) in faceted_crease_connector_keys:
+                        silhouette_only = False
+                elif short_join_limit is not None and matching_faces and all(
+                    record["vertex_count"] <= 4 for record in matching_faces
+                ):
+                    edge_length = self.edge_length_3d(edge["key"])
+                    if len(matching_faces) == 2:
+                        angle = self.face_angle_degrees(
+                            matching_faces[0]["normal"], matching_faces[1]["normal"]
+                        )
+                        silhouette_only = (
+                            angle is not None
+                            and angle <= self.SMOOTH_3D_EDGE_MAX_ANGLE
+                        )
+                    elif len(matching_faces) >= 3:
+                        silhouette_only = edge_length <= short_join_limit
+                classified_edges.append({
+                    **edge,
+                    "visible_boundary": edge_visibility.get(visibility_key, False),
+                    "silhouette_only": silhouette_only,
+                })
+            part["edges_3d"] = classified_edges
+        if database:
+            face_patches_by_part = self.split_3d_face_patches(database, projected_parts)
+            edge_segments_by_part = self.split_3d_edge_segments(
+                database, projected_parts, face_patches_by_part
+            )
+            for part_index, part in enumerate(projected_parts):
+                if part.get("is_3d_face"):
+                    part["face_patches_3d"] = face_patches_by_part.get(part_index, [])
+                    part["face_patches_3d_ready"] = True
+                    part["edge_segments_3d"] = edge_segments_by_part.get(part_index, [])
+                    part["edge_segments_3d_ready"] = True
+                part.pop("face_3d", None)
+        else:
+            for part in projected_parts:
+                part.pop("face_3d", None)
 
         projected_frames = []
         if len(projected_bounds) > 1:
@@ -2706,9 +3923,10 @@ SELECT json_build_object(
         return projected_payload
 
     def visual_svg(
-        self, visual_id, payload, show_direction=False,
+        self, visual_id, payload, database=None, show_direction=False,
         hide_output_area_vertices=False,
         matrix_3x3=False,
+        show_tessellation=False,
     ):
         if any(
             part.get("has_z") and part.get("points_xyz")
@@ -2718,7 +3936,9 @@ SELECT json_build_object(
             }
             for part in payload.get("parts") or []
         ):
-            payload = self.project_3d_payload(payload)
+            payload = self.project_3d_payload(
+                payload, database=database, show_tessellation=show_tessellation
+            )
         frames = payload.get("frames") or [{
             "id": "Overlay",
             "bounds": payload["bounds"],
@@ -2889,10 +4109,13 @@ SELECT json_build_object(
                     break
                 value = next_value
 
-        hidden_edge_groups = []
         area_groups = []
         line_groups = []
         point_groups = []
+        three_d_scenes = {}
+        three_d_sequence = 0
+        frame_order = {str(frame["id"]): index for index, frame in enumerate(frames)}
+        source_order = {"Code": 0, "Output": 1}
         legend = []
         source_indexes = {"Code": 0, "Output": 0}
         parts_by_ord = {}
@@ -2900,10 +4123,11 @@ SELECT json_build_object(
             parts_by_ord.setdefault(part["ord"], []).append(part)
         for ordinal, parts in sorted(parts_by_ord.items()):
             if any(part.get("is_3d_face") for part in parts):
-                # Paint larger projected-depth faces first so nearer faces hide
-                # the far side of the solid.
+                # Paint smaller projected-depth faces first.  The view-vector
+                # dot product grows toward the camera, and SVG later paths
+                # cover earlier paths.
                 parts.sort(
-                    key=lambda part: (-float(part.get("depth", 0)), part.get("svg") or ""),
+                    key=lambda part: (float(part.get("depth", 0)), part.get("svg") or ""),
                 )
             source = parts[0]["source"]
             frame_id = str(parts[0].get("frame", frames[0]["id"]))
@@ -2914,12 +4138,21 @@ SELECT json_build_object(
             color = SVG_PALETTES[source][source_index % len(SVG_PALETTES[source])]
             geometry_id = f"{visual_id}-{source.lower()}-{source_index + 1}"
             hidden_edge_shapes = []
+            visible_edge_shapes = []
             shapes = []
+            face_shapes_3d = []
+            is_3d_geometry = any(part.get("is_3d_face") for part in parts)
             root_type = parts[0].get("root_type", "").upper()
-            multipart_areas = len(parts) > 1 and all(part["type"].upper() in {
-                "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
-                "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
-            } for part in parts) and root_type != "POLYHEDRALSURFACE"
+            # Projected 3D faces share a base color; their normals supply shading.
+            multipart_areas = (
+                len(parts) > 1
+                and all(part["type"].upper() in {
+                    "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
+                    "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
+                } for part in parts)
+                and root_type != "POLYHEDRALSURFACE"
+                and not any(part.get("is_3d_face") for part in parts)
+            )
             for part_index, part in enumerate(parts):
                 part_color = (
                     SVG_PALETTES[source][(source_index + part_index) % len(SVG_PALETTES[source])]
@@ -2961,12 +4194,17 @@ SELECT json_build_object(
                     fill = color if dimension_class == "area" else "none"
                     stroke_color = part_color
                     if part.get("is_3d_face"):
-                        part_color = self.shade_color(part_color, float(part["shade"]))
-                        # 3D solids need visible face boundaries to read as
-                        # faceted surfaces.  Using the fill color as the stroke
-                        # makes rounded polyhedral buffers collapse visually
-                        # into a flat disk.
+                        shade = float(part["shade"])
+                        if part.get("smooth_3d_side"):
+                            shade = self.SMOOTH_3D_SIDE_SHADE
+                        elif part.get("smooth_3d_cap"):
+                            shade = max(shade, self.SMOOTH_3D_CAP_MIN_SHADE)
+                        part_color = self.shade_color(part_color, shade)
+                        # Separate edge paths carry the visible/hidden linework.
                         stroke_color = self.shade_color(part_color, 0.68)
+                        edge_stroke_color = self.shade_color(color, 0.34)
+                    else:
+                        edge_stroke_color = stroke_color
                     stroke_pixels = (
                         5 if source == "Code" and dimension_class == "line"
                         else 1.2 if part.get("is_3d_face")
@@ -2974,29 +4212,115 @@ SELECT json_build_object(
                         else 3
                     )
                     stroke_width = stroke_pixels / scale
-                    if part.get("is_3d_face"):
+                    edge_segments_3d = part.get("edge_segments_3d") or []
+                    edge_segments_3d_ready = part.get("edge_segments_3d_ready", bool(edge_segments_3d))
+                    if edge_segments_3d:
+                        for segment in edge_segments_3d:
+                            segment_svg = html.escape(segment["svg"], quote=True)
+                            if segment.get("visible"):
+                                visible_edge_shapes.append(
+                                    f'<path class="visible-edge" d="{segment_svg}" '
+                                    f'stroke="{edge_stroke_color}" fill="none" '
+                                    f'stroke-opacity="1" fill-rule="evenodd" '
+                                    f'stroke-width="{max(stroke_width, 1.45 / scale):.12g}" '
+                                    'stroke-linecap="round" stroke-linejoin="round" '
+                                    'pointer-events="none"/>'
+                                )
+                            elif part.get("draw_hidden_3d_edges", True):
+                                hidden_edge_shapes.append(
+                                    f'<path class="hidden-edge" d="{segment_svg}" '
+                                    f'stroke="{edge_stroke_color}" fill="none" '
+                                    f'stroke-width="{1.05 / scale:.12g}" '
+                                    f'stroke-dasharray="{2.8 / scale:.12g} {2.2 / scale:.12g}" '
+                                    f'stroke-dashoffset="{2.8 / scale:.12g}" '
+                                    'stroke-opacity="0.86" fill-rule="evenodd" '
+                                    'stroke-linecap="round" stroke-linejoin="round" '
+                                    'pointer-events="none"/>'
+                                )
+                    elif (
+                        part.get("is_3d_face")
+                        and not edge_segments_3d_ready
+                        and not part.get("fill_3d_face", True)
+                        and part.get("draw_hidden_3d_edges", True)
+                    ):
                         hidden_edge_shapes.append(
                             f'<path class="hidden-edge" d="{svg_data}" '
                             f'stroke="{part_color}" fill="none" '
-                            f'stroke-width="{0.9 / scale:.12g}" '
-                            f'stroke-dasharray="{2.4 / scale:.12g} {2.4 / scale:.12g}" '
-                            'stroke-opacity="0.48" fill-rule="evenodd" '
+                            f'stroke-width="{1.1 / scale:.12g}" '
+                            f'stroke-dasharray="{2.8 / scale:.12g} {2.2 / scale:.12g}" '
+                            f'stroke-dashoffset="{2.8 / scale:.12g}" '
+                            'stroke-opacity="0.86" fill-rule="evenodd" '
                             'stroke-linecap="round" stroke-linejoin="round" '
                             'pointer-events="none"/>'
                         )
-                    face_attributes = (
-                        f' data-postgis-face="{part_index + 1}"'
-                        f' data-postgis-depth="{float(part["depth"]):.12g}"'
-                        if part.get("is_3d_face") else ""
+                    fill_opacity = (
+                        1 if part.get("fill_3d_face", True)
+                        else 0
+                    ) if part.get("is_3d_face") else 0.24 if dimension_class == "area" else 0
+                    stroke_opacity = (
+                        0 if edge_segments_3d_ready
+                        else 1 if part.get("fill_3d_face", True)
+                        else 0
+                    ) if part.get("is_3d_face") else 1
+                    face_patches_3d = part.get("face_patches_3d") or []
+                    face_patches_3d_ready = part.get(
+                        "face_patches_3d_ready", bool(face_patches_3d)
                     )
-                    shapes.append(
-                        f'<path class="{dimension_class}"{face_attributes} d="{svg_data}" '
-                        f'stroke="{stroke_color}" fill="{part_color if dimension_class == "area" else fill}" '
-                        f'fill-opacity="{1 if part.get("is_3d_face") else 0.24 if dimension_class == "area" else 0}" stroke-opacity="1" '
-                        'fill-rule="evenodd" '
-                        f'stroke-width="{stroke_width:.12g}" '
-                        'stroke-linecap="round" stroke-linejoin="round"/>'
-                    )
+                    if part.get("is_3d_face") and not part.get("fill_3d_face", True):
+                        face_svg_paths = []
+                    elif face_patches_3d:
+                        face_svg_paths = [
+                            (
+                                html.escape(patch["svg"], quote=True),
+                                float(patch.get("depth", part.get("depth", 0))),
+                            )
+                            for patch in face_patches_3d
+                            if patch.get("draw", True)
+                        ]
+                    elif face_patches_3d_ready:
+                        face_svg_paths = []
+                    else:
+                        face_svg_paths = [(svg_data, float(part.get("depth", 0)))]
+                    for face_svg, face_depth in face_svg_paths:
+                        smooth_face = bool(part.get("smooth_3d_surface"))
+                        face_stroke_color = part_color if smooth_face else stroke_color
+                        face_stroke_opacity = 1 if smooth_face else stroke_opacity
+                        face_stroke_width = (
+                            self.SMOOTH_3D_FACE_OVERLAP_PIXELS / scale
+                            if smooth_face else stroke_width
+                        )
+                        face_attributes = (
+                            f' data-postgis-face="{part_index + 1}"'
+                            f' data-postgis-depth="{face_depth:.12g}"'
+                            if part.get("is_3d_face") else ""
+                        )
+                        face_shape = (
+                            f'<path class="{dimension_class}"{face_attributes} d="{face_svg}" '
+                            f'stroke="{face_stroke_color}" '
+                            f'fill="{part_color if dimension_class == "area" else fill}" '
+                            f'fill-opacity="{fill_opacity}" '
+                            f'stroke-opacity="{face_stroke_opacity}" '
+                            'fill-rule="evenodd" '
+                            f'stroke-width="{face_stroke_width:.12g}" '
+                            'stroke-linecap="round" stroke-linejoin="round"/>'
+                        )
+                        if part.get("is_3d_face"):
+                            face_shapes_3d.append((face_depth, face_shape))
+                        else:
+                            shapes.append(face_shape)
+                    if (
+                        part.get("is_3d_face")
+                        and part.get("fill_3d_face", True)
+                        and not edge_segments_3d_ready
+                    ):
+                        visible_edge_shapes.append(
+                            f'<path class="visible-edge" d="{svg_data}" '
+                            f'stroke="{stroke_color}" fill="none" '
+                            f'stroke-opacity="1" fill-rule="evenodd" '
+                            f'stroke-width="{stroke_width:.12g}" '
+                            'stroke-linecap="round" stroke-linejoin="round" '
+                            'pointer-events="none"/>'
+                        )
                     vertices = part.get("vertices") or []
                     if len(vertices) > 1 and vertices[0] == vertices[-1]:
                         vertices = vertices[:-1]
@@ -3112,33 +4436,60 @@ SELECT json_build_object(
                             f'fill="{part_color}" font-family="sans-serif" font-weight="700" '
                             f'pointer-events="none">1</text></g>'
                         )
-            hidden_edge_svg = (
-                f'<g class="hidden-edge-layer" aria-hidden="true" '
-                f'data-postgis-geometry-id="{geometry_id}" '
-                f'data-postgis-frame="{html.escape(frame_id, quote=True)}" '
-                f'transform="matrix({scale:.12g} 0 0 {scale:.12g} '
-                f'{layout["translate_x"]:.12g} {layout["translate_y"]:.12g})">' +
-                "".join(hidden_edge_shapes) + "</g>"
-                if hidden_edge_shapes else ""
-            )
-            group_svg = (
-                f'<g class="geometry-layer" opacity="1" data-postgis-geometry-id="{geometry_id}" '
-                f'data-postgis-frame="{html.escape(frame_id, quote=True)}" '
-                f'transform="matrix({scale:.12g} 0 0 {scale:.12g} '
-                f'{layout["translate_x"]:.12g} {layout["translate_y"]:.12g})">' +
-                "".join(shapes) + "</g>"
-            )
-            if all(part["type"].upper() in POINT_TYPES for part in parts):
-                point_groups.append(group_svg)
-            elif all(part["type"].upper() in {
-                "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
-                "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
-            } for part in parts):
-                if hidden_edge_svg:
-                    hidden_edge_groups.append(hidden_edge_svg)
-                area_groups.append(group_svg)
+            def geometry_group(contents):
+                return (
+                    f'<g class="geometry-layer" opacity="1" '
+                    f'data-postgis-geometry-id="{geometry_id}" '
+                    f'data-postgis-frame="{html.escape(frame_id, quote=True)}" '
+                    f'transform="matrix({scale:.12g} 0 0 {scale:.12g} '
+                    f'{layout["translate_x"]:.12g} {layout["translate_y"]:.12g})">'
+                    + contents + "</g>"
+                )
+
+            if is_3d_geometry:
+                scene_key = (
+                    frame_order.get(frame_id, 0),
+                    source_order.get(source, 2),
+                    frame_id,
+                    source,
+                )
+                scene = three_d_scenes.setdefault(scene_key, {
+                    "faces": [],
+                    "hidden_edges": [],
+                    "visible_edges": [],
+                    "annotations": [],
+                })
+                for face_depth, face_shape in face_shapes_3d:
+                    scene["faces"].append((
+                        face_depth,
+                        three_d_sequence,
+                        geometry_group(face_shape),
+                    ))
+                    three_d_sequence += 1
+                if hidden_edge_shapes:
+                    scene["hidden_edges"].append(
+                        geometry_group("".join(hidden_edge_shapes))
+                    )
+                if visible_edge_shapes:
+                    scene["visible_edges"].append(
+                        geometry_group("".join(visible_edge_shapes))
+                    )
+                if shapes:
+                    scene["annotations"].append(geometry_group("".join(shapes)))
             else:
-                line_groups.append(group_svg)
+                group_svg = geometry_group(
+                    "".join(shapes) + "".join(hidden_edge_shapes)
+                    + "".join(visible_edge_shapes)
+                )
+                if all(part["type"].upper() in POINT_TYPES for part in parts):
+                    point_groups.append(group_svg)
+                elif all(part["type"].upper() in {
+                    "POLYGON", "MULTIPOLYGON", "CURVEPOLYGON", "MULTISURFACE",
+                    "TRIANGLE", "TIN", "POLYHEDRALSURFACE",
+                } for part in parts):
+                    area_groups.append(group_svg)
+                else:
+                    line_groups.append(group_svg)
             legend.append((geometry_id, color, parts[0]["label"]))
 
         legend_svg = []
@@ -3158,6 +4509,14 @@ SELECT json_build_object(
             cursor_x += item_width
 
         svg_height = cursor_y + 26
+        three_d_groups = []
+        for scene_key in sorted(three_d_scenes):
+            scene = three_d_scenes[scene_key]
+            scene["faces"].sort(key=lambda item: item[:2])
+            three_d_groups.extend(group for _depth, _sequence, group in scene["faces"])
+            three_d_groups.extend(scene["hidden_edges"])
+            three_d_groups.extend(scene["visible_edges"])
+            three_d_groups.extend(scene["annotations"])
 
         safe_id = html.escape(visual_id, quote=True)
         return (
@@ -3167,7 +4526,7 @@ SELECT json_build_object(
             '<style>.plot-grid line{stroke:#dce2e7;stroke-width:1}.plot-grid text{font-family:sans-serif;font-size:9px;fill:#667887;fill-opacity:.56;paint-order:stroke;stroke:#fbfcfd;stroke-width:2.5px;stroke-opacity:.76}.frame-label{font-family:sans-serif;font-size:12px;font-weight:600;fill:#344}.geometry-layer{opacity:1;transition:opacity 90ms ease}.line,.area{stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke}.point,.vertex{pointer-events:all}.legend-row{cursor:default}.legend-row text{font-family:sans-serif;font-size:12px;fill:#344}svg:has(.geometry-layer.active) .geometry-layer:not(.active){opacity:.18}.geometry-layer.active{filter:brightness(.72)}</style>\n'
             + "".join(backgrounds) + "\n" + "".join(frame_labels) + "\n"
             '<g class="plot-grid" aria-hidden="true">' + "".join(grid) + '</g>\n'
-            + "".join(hidden_edge_groups + area_groups + line_groups + point_groups)
+            + "".join(area_groups + three_d_groups + line_groups + point_groups)
             + '\n' + "".join(legend_svg) + '\n</svg>\n'
         )
 

@@ -6,6 +6,7 @@ from collections import Counter
 import hashlib
 import io
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -320,6 +321,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             ("visual-overlay", "visual_overlay"),
             ("visual-direction", "visual_direction"),
             ("visual-separate-output", "visual_separate_output"),
+            ("visual-tessellation", "visual_tessellation"),
         ):
             with self.subTest(role=role):
                 xml = f"""<book xmlns="http://docbook.org/ns/docbook">
@@ -1063,6 +1065,30 @@ class ExampleTestRunnerTest(unittest.TestCase):
 
         self.assertEqual(["", "geometry"], calls[0].types)
 
+    def test_documented_visual_render_failure_names_the_example(self):
+        tester = self.make_runner({"SELECT 1": [["POLYGON EMPTY"]]})
+        example = tester.examples()[0]
+        example.update({
+            "expected": [["POLYGON EMPTY"]],
+            "documented_only": True,
+            "expected_headers": ["documented_geom"],
+            "visual_id": "documented-visual",
+            "visual_kind": "explicit",
+            "visual_preferred": True,
+        })
+        tester.examples = lambda: [example]
+
+        def fail_render(database, selected, actual):
+            raise RuntimeError("GEOS overlay failed")
+
+        tester.render_visual_example = fail_render
+
+        with self.assertRaisesRegex(
+            RuntimeError,
+            r"(?s)Documented visual failed to render: first:1 \(documented-visual\).*GEOS overlay failed",
+        ):
+            tester.run_examples("exampletest", render_dir="visuals", visual_only=True)
+
     def test_native_geometry_output_is_described_when_input_uses_serializer(self):
         hexwkb = "010200000002000000000000000000F03F0000000000000040" \
                  "00000000000008400000000000001040"
@@ -1375,21 +1401,30 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("COALESCE(requested_frame", queries[0])
         self.assertIn("ST_Translate(geom, -min_x, -min_y)", queries[0])
         self.assertNotIn("frame_bounds_geoms AS", queries[0])
-        self.assertNotIn("ST_CurveToLine", queries[0])
+        self.assertNotIn("ST_CurveToLine(ST_Force2D(geom))", queries[0])
         self.assertIn("ST_Extent(ST_Force2D(all_geometries.geom))", queries[0])
         self.assertIn("ELSE ST_Extent(ST_Force2D(geom))", queries[0])
         self.assertIn("ELSE ST_AsSVG(ST_Force2D(render_geom), 0, 12)", queries[0])
         self.assertIn("WHEN ST_Dimension(render_geom) = 0 THEN NULL", queries[0])
         self.assertIn("'points'", queries[0])
         self.assertIn("ST_DumpPoints(render_geom) AS point", queries[0])
-        self.assertIn("ST_Zmflag(geom) IN (2, 3)", queries[0])
+        self.assertIn("ST_Zmflag(raw_geom) IN (2, 3)", queries[0])
         self.assertIn("'has_z'", queries[0])
         self.assertIn("'points_xyz'", queries[0])
-        self.assertIn("CROSS JOIN LATERAL", queries[0])
-        self.assertIn("CROSS JOIN LATERAL ST_Dump(framed.geom)", queries[0])
-        self.assertIn("WHERE NOT ST_IsEmpty(dumped.geom)", queries[0])
-        self.assertNotIn("generate_series(1, ST_NumGeometries(framed.geom))", queries[0])
-        self.assertNotIn("ST_GeometryN(framed.geom, part_num.n) AS geom", queries[0])
+        self.assertIn("WITH RECURSIVE raw AS", queries[0])
+        self.assertIn("FROM ST_Dump(parent.geom) AS dumped", queries[0])
+        self.assertIn(
+            "parent.part_type IN ('ST_PolyhedralSurface', 'ST_Tin')",
+            queries[0],
+        )
+        self.assertIn("ST_GeometryN(parent.geom, part_num.n)", queries[0])
+        self.assertIn("FROM geometry_tree", queries[0])
+        self.assertIn("parent.part_path || child.path AS part_path", queries[0])
+        self.assertIn("ORDER BY ord, part_path", queries[0])
+        self.assertIn("'ST_MultiCurve', 'ST_MultiSurface'", queries[0])
+        self.assertIn("'ST_Polygon', 'ST_CurvePolygon'", queries[0])
+        self.assertIn("THEN ST_CurveToLine(raw_geom)", queries[0])
+        self.assertNotIn("ST_Dump(framed.geom)", queries[0])
         self.assertNotIn("WHERE GeometryType(framed.geom) = 'CURVEPOLYGON'", queries[0])
         self.assertNotIn("WHERE GeometryType(framed.geom) <> 'CURVEPOLYGON'", queries[0])
         self.assertIn("geom AS render_geom", queries[0])
@@ -1400,7 +1435,22 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("COALESCE(ST_Z(vertex3d.geom), 0)", queries[0])
         self.assertIn("ST_Z(vertex3d.geom)", queries[0])
         self.assertIn("COALESCE(total_points, ST_NPoints(framed.geom)) AS total_points", queries[0])
-        self.assertIn("GeometryType(framed.geom) AS root_type", queries[0])
+        self.assertIn(
+            "upper(substring(ST_GeometryType(framed.geom) from 4)) AS root_type",
+            queries[0],
+        )
+        self.assertIn(
+            "'type', upper(substring(ST_GeometryType(geom) from 4))",
+            queries[0],
+        )
+        self.assertIn("ST_GeometryType(geom) = 'ST_Point'", queries[0])
+        self.assertIn(
+            "ST_GeometryType(render_geom) IN ('ST_Polygon', 'ST_Triangle')",
+            queries[0],
+        )
+        self.assertNotIn("GeometryType(framed.geom) AS root_type", queries[0])
+        self.assertIn("geom AS raw_geom", queries[0])
+        self.assertIn(") AS vertex3d", queries[0])
         self.assertIn("'root_type', root_type", queries[0])
         self.assertIn("'source_point_count', source_point_count", queries[0])
         self.assertIn("'marker_scale', marker_scale", queries[0])
@@ -1431,6 +1481,102 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn("∩", payload)
         self.assertNotIn(r"\u2229", payload)
 
+    def test_3d_edge_splitter_uses_postgis_overlay(self):
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "[]"
+        self.tester.split_3d_edge_segments("manual", [{
+            "is_3d_face": True,
+            "fill_3d_face": True,
+            "face_3d": {
+                "rings": [[[0, 0, 0], [2, 0, 0], [2, 2, 0], [0, 2, 0], [0, 0, 0]]],
+                "depth_plane": (0, 0, 0),
+                "edge_keys": [(("0", "0", "0"), ("2", "0", "0"))],
+            },
+            "edges_3d": [{
+                "key": (("0", "0", "0"), ("2", "0", "0")),
+                "start": [0, 0],
+                "end": [2, 0],
+                "start_depth": -1,
+                "end_depth": -1,
+                "visible_boundary": True,
+            }],
+        }], {
+            0: [{
+                "wkt": "POLYGON((0 0,2 0,2 2,0 2,0 0))",
+                "svg": "M 0 0 L 2 0 L 2 -2 L 0 -2 Z",
+                "draw": False,
+                "edge_visibility": True,
+            }, {
+                "wkt": "POLYGON((0 0,1 0,1 1,0 1,0 0))",
+                "svg": "M 0 0 L 1 0 L 1 -1 L 0 -1 Z",
+                "draw": True,
+                "edge_visibility": False,
+            }],
+        })
+        encoded = re.search(r"decode\('([^']+)', 'base64'\)", queries[0]).group(1)
+        edge_payload = json.loads(base64.b64decode(encoded))
+        self.assertEqual(1, len(edge_payload["visible_patches"]))
+        self.assertEqual(
+            "POLYGON((0 0,2 0,2 2,0 2,0 0))",
+            edge_payload["visible_patches"][0]["wkt"],
+        )
+        self.assertIn("ST_Split", queries[0])
+        self.assertIn("ST_Intersection(e.geom, ST_Boundary(f.geom))", queries[0])
+        self.assertIn("ST_CollectionExtract(geom, 1)", queries[0])
+        self.assertIn("ST_Boundary(ST_CollectionExtract(geom, 2))", queries[0])
+        self.assertIn("depth_crossings AS", queries[0])
+        self.assertIn("delta.start_delta / (delta.start_delta - delta.end_delta)", queries[0])
+        self.assertIn("ST_LineInterpolatePoint(e.geom, values.crossing_fraction)", queries[0])
+        self.assertIn("visible_face_patches AS", queries[0])
+        self.assertIn("data->'visible_patches'", queries[0])
+        self.assertIn("visible_patch_edges AS", queries[0])
+        self.assertIn("face_projection_union AS", queries[0])
+        self.assertIn("face_projection_boundary AS MATERIALIZED", queries[0])
+        self.assertIn("drawable_edges AS MATERIALIZED", queries[0])
+        self.assertIn("ST_Intersection(e.geom, b.geom, p.grid_size)", queries[0])
+        self.assertIn("WHERE (visible OR NOT silhouette_only)", queries[0])
+        self.assertIn(
+            "NOT silhouette_only OR ST_Length(geom) > 5 * p.cleanup_grid_size",
+            queries[0],
+        )
+        self.assertIn("ST_LineLocatePoint(e.geom, ST_StartPoint((dumped).geom))", queries[0])
+        self.assertIn("raw_faces AS", queries[0])
+        self.assertIn("faces AS MATERIALIZED", queries[0])
+        self.assertIn("visible_face_patches AS MATERIALIZED", queries[0])
+        self.assertIn("ST_CollectionExtract(ST_MakeValid(f.geom), 3)", queries[0])
+        self.assertIn("projected_extents AS", queries[0])
+        self.assertIn("overlay_precision AS MATERIALIZED", queries[0])
+        self.assertIn("scene_span * 1e-4 AS grid_size", queries[0])
+        self.assertIn("scene_span * 4e-4 AS cleanup_grid_size", queries[0])
+        self.assertIn("ST_Intersection(\n          s.geom,\n          f.geom,\n          p.grid_size", queries[0])
+        self.assertIn("ON s.frame_id = f.frame_id", queries[0])
+        self.assertIn("s.edge_key = f.edge_key", queries[0])
+        self.assertNotIn("AND ST_Intersects(s.geom, f.geom)", queries[0])
+        self.assertIn("ST_UnaryUnion(ST_Collect(v.geom), p.cleanup_grid_size)", queries[0])
+        self.assertIn("JOIN face_projection_union AS f USING (frame_id, group_id)", queries[0])
+        self.assertIn("ST_Difference(s.geom, v.geom, p.grid_size)", queries[0])
+        self.assertIn("ST_Difference(h.geom, v.geom, p.cleanup_grid_size)", queries[0])
+        self.assertNotIn("2e-2", queries[0])
+        self.assertNotIn("8e-2", queries[0])
+        self.assertNotIn("ST_SnapToGrid", queries[0])
+        self.assertNotIn("ST_Buffer", queries[0])
+        self.assertIn("straightened AS", queries[0])
+        self.assertIn("ST_LineSubstring(", queries[0])
+        self.assertIn(
+            "start_fraction * ST_Length(original_geom) <= p.cleanup_grid_size",
+            queries[0],
+        )
+        self.assertIn(
+            "(1 - end_fraction) * ST_Length(original_geom) <= p.cleanup_grid_size",
+            queries[0],
+        )
+        self.assertIn("ST_LineMerge(ST_UnaryUnion(ST_Collect(geom)))", queries[0])
+        self.assertIn("FROM classified_segments", queries[0])
+        self.assertIn("ST_LineLocatePoint(original_geom", queries[0])
+        self.assertIn("plane_a * ST_X", queries[0])
+        self.assertIn("'visible', visible", queries[0])
+        self.assertNotIn("'visible', visible_boundary AND", queries[0])
+
     def test_ordinary_2d_svg_remains_byte_stable(self):
         svg = self.tester.visual_svg(
             "buffer-example",
@@ -1453,7 +1599,7 @@ class VisualExampleTest(unittest.TestCase):
             hashlib.sha256(svg.encode()).hexdigest(),
         )
 
-    def test_z_surface_faces_are_projected_depth_sorted_shaded_and_opaque(self):
+    def test_z_surface_faces_are_projected_back_to_front_without_culling_fill(self):
         payload = {
             "bounds": [0, 0, 2, 1],
             "parts": [
@@ -1476,8 +1622,13 @@ class VisualExampleTest(unittest.TestCase):
         svg = self.tester.visual_svg("solid-3d", payload)
         self.assertEqual(svg, self.tester.visual_svg("solid-3d", payload))
         self.assertIn(">3D view</text>", svg)
+        projected = self.tester.project_3d_payload(payload)
+        self.assertEqual(
+            [True, True],
+            [part["fill_3d_face"] for part in projected["parts"]],
+        )
         depths = [float(value) for value in re.findall(r'data-postgis-depth="([^"]+)"', svg)]
-        self.assertEqual(sorted(depths, reverse=True), depths)
+        self.assertEqual(sorted(depths), depths)
         fills = re.findall(
             r'data-postgis-face="[12]"[^>]+fill="(#[0-9a-f]{6})"', svg
         )
@@ -1490,6 +1641,9 @@ class VisualExampleTest(unittest.TestCase):
         self.assertEqual(2, len(face_colors))
         self.assertTrue(all(stroke != fill for stroke, fill in face_colors))
         self.assertEqual(2, svg.count('fill-opacity="1"'))
+        self.assertNotIn('fill-opacity="0"', svg)
+        self.assertNotIn('class="hidden-edge"', svg)
+        self.assertEqual(2, svg.count('class="visible-edge"'))
         self.assertNotIn('fill-opacity="0.82"', svg)
         self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
 
@@ -1509,24 +1663,301 @@ class VisualExampleTest(unittest.TestCase):
         self.assertGreater(dx, 0)
         self.assertLess(abs(dy / dx), 0.1)
 
-    def test_z_surface_draws_dashed_hidden_edges_beneath_opaque_faces(self):
+    def test_z_surface_draws_split_hidden_edges_between_fills_and_visible_edges(self):
         payload = {
-            "bounds": [0, 0, 1, 1],
+            "bounds": [0, 0, 2, 1],
             "parts": [
                 {"ord": 1, "source": "Output", "label": "solid",
                  "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
                  "svg": "unused", "has_z": True,
                  "points_xyz": xyz_vertices(points, ring=True)}
                 for points in (
-                    [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]],
-                    [[0, 0, 0], [1, 1, 0], [0, 0, 1], [0, 0, 0]],
+                    [[2, 0, 0], [2, 1, 0], [2, 1, 1], [2, 0, 1], [2, 0, 0]],
+                    [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0], [0, 0, 0]],
                 )
             ],
         }
-        svg = self.tester.visual_svg("hidden-edges", payload)
-        self.assertEqual(2, svg.count('class="hidden-edge"'))
+        self.tester.split_3d_edge_segments = lambda database, parts, face_patches_by_part=None: {
+            0: [{"visible": False, "svg": "M 0 0 L 1 0"}],
+            1: [{"visible": True, "svg": "M 0 0 L 0 1"}],
+        }
+        self.tester.split_3d_face_patches = lambda database, parts: {
+            0: [{"depth": 0, "svg": "M 0 0 L 1 0 L 1 -1 Z"}],
+            1: [{"depth": 0, "svg": "M 1 0 L 2 0 L 2 -1 Z"}],
+        }
+        svg = self.tester.visual_svg("hidden-edges", payload, database="manual")
+        self.assertEqual(1, svg.count('class="hidden-edge"'))
+        self.assertNotIn('class="hidden-edge-halo"', svg)
+        self.assertEqual(1, svg.count('class="visible-edge"'))
         self.assertIn('stroke-dasharray=', svg)
-        self.assertLess(svg.index('class="hidden-edge-layer"'), svg.index('class="geometry-layer"'))
+        self.assertIn('stroke-dashoffset=', svg)
+        self.assertLess(svg.index('fill-opacity="1"'), svg.index('class="hidden-edge"'))
+        self.assertLess(svg.index('class="hidden-edge"'), svg.index('class="visible-edge"'))
+
+    def test_separate_3d_layers_share_scene_depth_and_edge_phases(self):
+        svg = self.tester.visual_svg("layered-solid", {
+            "bounds": [0, 0, 2, 2],
+            "parts": [
+                {
+                    "ord": 1, "source": "Output", "label": "front",
+                    "root_type": "POLYGON", "type": "POLYGON",
+                    "svg": "M 0 0 L 2 0 L 0 -2 Z",
+                    "is_3d_face": True, "depth": 10, "shade": 1,
+                    "fill_3d_face": True, "face_patches_3d_ready": True,
+                    "face_patches_3d": [{
+                        "depth": 10, "svg": "M 0 0 L 2 0 L 0 -2 Z",
+                    }],
+                    "edge_segments_3d_ready": True,
+                    "edge_segments_3d": [{
+                        "visible": False, "svg": "M 0 0 L 2 0",
+                    }],
+                },
+                {
+                    "ord": 2, "source": "Output", "label": "back",
+                    "root_type": "POLYGON", "type": "POLYGON",
+                    "svg": "M 0 -1 L 2 -1 L 0 -2 Z",
+                    "is_3d_face": True, "depth": -10, "shade": 1,
+                    "fill_3d_face": True, "face_patches_3d_ready": True,
+                    "face_patches_3d": [{
+                        "depth": -10, "svg": "M 0 -1 L 2 -1 L 0 -2 Z",
+                    }],
+                    "edge_segments_3d_ready": True,
+                    "edge_segments_3d": [{
+                        "visible": True, "svg": "M 0 -1 L 2 -1",
+                    }],
+                },
+            ],
+        })
+
+        depths = [float(value) for value in re.findall(
+            r'data-postgis-depth="([^"]+)"', svg
+        )]
+        self.assertEqual([-10, 10], depths)
+        self.assertLess(svg.index('data-postgis-depth="10"'), svg.index('class="hidden-edge"'))
+        self.assertLess(svg.index('class="hidden-edge"'), svg.index('class="visible-edge"'))
+        self.assertEqual(2, svg.count('class="legend-row"'))
+
+    def test_3d_output_scene_paints_after_code_scene(self):
+        parts = []
+        for ordinal, source, depth in (
+            (1, "Code", 10),
+            (2, "Output", -10),
+        ):
+            parts.append({
+                "ord": ordinal, "source": source, "label": source,
+                "root_type": "POLYGON", "type": "POLYGON",
+                "svg": "M 0 0 L 1 0 L 0 -1 Z",
+                "is_3d_face": True, "depth": depth, "shade": 1,
+                "fill_3d_face": True, "face_patches_3d_ready": True,
+                "face_patches_3d": [{
+                    "depth": depth, "svg": "M 0 0 L 1 0 L 0 -1 Z",
+                }],
+                "edge_segments_3d_ready": True,
+                "edge_segments_3d": ([{
+                    "visible": True, "svg": "M 0 0 L 1 0",
+                }] if source == "Code" else []),
+            })
+
+        svg = self.tester.visual_svg(
+            "source-overlay", {"bounds": [0, 0, 1, 1], "parts": parts}
+        )
+
+        drawing = svg.split('<g class="legend-row"', 1)[0]
+        code_groups = [match.start() for match in re.finditer(
+            'data-postgis-geometry-id="source-overlay-code-1"', drawing
+        )]
+        output_groups = [match.start() for match in re.finditer(
+            'data-postgis-geometry-id="source-overlay-output-1"', drawing
+        )]
+        self.assertEqual(2, len(code_groups))
+        self.assertEqual(1, len(output_groups))
+        self.assertLess(max(code_groups), min(output_groups))
+
+    def test_z_surface_draws_visible_face_patches_instead_of_whole_faces(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "solid",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "unused", "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]], ring=True
+                 )},
+            ],
+        }
+        self.tester.split_3d_face_patches = lambda database, parts: {
+            0: [
+                {"depth": 0, "svg": "M 0 0 L 0.5 0 L 0 -0.5 Z"},
+                {"depth": 0, "svg": "M 0.5 0 L 1 0 L 1 -0.5 Z"},
+            ],
+        }
+        self.tester.split_3d_edge_segments = lambda database, parts, face_patches_by_part=None: {}
+
+        svg = self.tester.visual_svg("face-patches", payload, database="manual")
+
+        self.assertEqual(2, svg.count('data-postgis-face='))
+        self.assertIn("M 0 0 L 0.5 0 L 0 -0.5 Z", svg)
+        self.assertIn("M 0.5 0 L 1 0 L 1 -0.5 Z", svg)
+        self.assertNotIn('d="unused"', svg)
+        self.assertNotIn('class="visible-edge"', svg)
+        self.assertNotIn('class="face-underpaint"', svg)
+        face_colors = re.findall(
+            r'data-postgis-face="1"[^>]+stroke="(#[0-9a-f]{6})" fill="(#[0-9a-f]{6})"[^>]+stroke-opacity="([^"]+)"',
+            svg,
+        )
+        self.assertEqual(2, len(face_colors))
+        self.assertTrue(all(stroke != fill for stroke, fill, _opacity in face_colors))
+        self.assertTrue(all(opacity == "0" for _stroke, _fill, opacity in face_colors))
+
+    def test_z_surface_does_not_fall_back_to_fully_occluded_face(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "solid",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "unused-front", "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 0, 1]], ring=True
+                 )},
+                {"ord": 1, "source": "Output", "label": "solid",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "unused-back", "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]], ring=True
+                 )},
+            ],
+        }
+        self.tester.split_3d_face_patches = lambda database, parts: {
+            0: [{"depth": 1, "svg": "M 0 0 L 1 0 L 1 -1 Z"}],
+        }
+        self.tester.split_3d_edge_segments = (
+            lambda database, parts, face_patches_by_part=None: {}
+        )
+
+        svg = self.tester.visual_svg("occluded-face", payload, database="manual")
+
+        self.assertEqual(1, svg.count('class="area"'))
+        self.assertIn('d="M 0 0 L 1 0 L 1 -1 Z"', svg)
+        self.assertNotIn("unused-front", svg)
+        self.assertNotIn("unused-back", svg)
+
+    def test_z_surface_face_patches_split_on_depth_order_changes(self):
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "[]"
+
+        self.tester.split_3d_face_patches("manual", [
+            {
+                "is_3d_face": True,
+                "fill_3d_face": False,
+                "occlude_3d_face": True,
+                "frame": "Overlay",
+                "face_3d": {
+                    "rings": [[[0, 0], [1, 0], [0, 1], [0, 0]]],
+                    "depth_plane": (1, 0, 0),
+                },
+            },
+            {
+                "is_3d_face": True,
+                "fill_3d_face": True,
+                "frame": "Overlay",
+                "face_3d": {
+                    "rings": [[[0, 0], [1, 0], [0, 1], [0, 0]]],
+                    "depth_plane": (-1, 0, 1),
+                },
+            },
+        ])
+
+        encoded = re.search(r"decode\('([^']+)', 'base64'\)", queries[0]).group(1)
+        face_payload = json.loads(base64.b64decode(encoded))["faces"]
+        self.assertEqual(2, len(face_payload))
+        self.assertEqual(2, len({face["fill_group"] for face in face_payload}))
+        self.assertEqual([False, True], [face["draw_fill"] for face in face_payload])
+        self.assertIn("depth_split_lines AS", queries[0])
+        self.assertIn("raw_faces AS", queries[0])
+        self.assertIn("faces AS MATERIALIZED", queries[0])
+        self.assertIn("ST_CollectionExtract(ST_MakeValid(f.geom), 3)", queries[0])
+        self.assertIn("ST_Intersection(f.geom, o.geom, 1e-9)", queries[0])
+        self.assertIn("ST_Polygonize", queries[0])
+        self.assertIn("ST_UnaryUnion(ST_Collect(geom), 1e-9)", queries[0])
+        self.assertIn("ST_Difference(p.geom, h.geom, 1e-9)", queries[0])
+        self.assertIn("patch_precision AS MATERIALIZED", queries[0])
+        self.assertIn("scene_span * scene_span * 1e-12 AS min_patch_area", queries[0])
+        self.assertIn("ST_Area((dumped).geom) > p.min_patch_area", queries[0])
+        self.assertIn("visible_face_unions AS", queries[0])
+        self.assertIn("visible_fill_unions AS", queries[0])
+        self.assertIn("rendered_and_edge_patches AS", queries[0])
+        self.assertIn(
+            "GROUP BY frame_id, group_id, fill_group",
+            queries[0],
+        )
+        self.assertIn("'edge_visibility', edge_visibility", queries[0])
+        self.assertNotIn("ST_ReducePrecision", queries[0])
+
+    def test_coplanar_fill_groups_share_3d_render_style(self):
+        queries = []
+        self.tester.run_psql_scalar = lambda database, query: queries.append(query) or "[]"
+        parts = []
+        for root_type, visibility_group, ordinal in (
+            ("POLYHEDRALSURFACE", "polyhedral", 1),
+            ("POLYHEDRALSURFACE", "polyhedral", 1),
+            ("TIN", "tin", 2),
+            ("TIN", "tin", 2),
+            ("POLYGON", "dump", 3),
+            ("POLYGON", "dump", 4),
+        ):
+            parts.append({
+                "is_3d_face": True,
+                "fill_3d_face": True,
+                "root_type": root_type,
+                "frame": "Overlay",
+                "visibility_group": visibility_group,
+                "ord": ordinal,
+                "face_3d": {
+                    "rings": [[[0, 0], [1, 0], [0, 1], [0, 0]]],
+                    "depth_plane": (0, 0, 1),
+                },
+            })
+
+        self.tester.split_3d_face_patches("manual", parts)
+
+        encoded = re.search(r"decode\('([^']+)', 'base64'\)", queries[0]).group(1)
+        faces = json.loads(base64.b64decode(encoded))["faces"]
+        self.assertEqual(faces[0]["fill_group"], faces[1]["fill_group"])
+        self.assertEqual(faces[2]["fill_group"], faces[3]["fill_group"])
+        self.assertNotEqual(faces[4]["fill_group"], faces[5]["fill_group"])
+
+    def test_3d_output_layers_share_visibility_but_keep_paint_identity(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {
+                    "ord": ordinal, "source": source, "label": label,
+                    "root_type": "POLYGON", "type": "POLYGON", "svg": "unused",
+                    "has_z": True,
+                    "points_xyz": xyz_vertices(points, ring=True),
+                }
+                for ordinal, source, label, points in (
+                    (1, "Output", "face 1",
+                     [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]]),
+                    (2, "Output", "face 2",
+                     [[0, 0, 0], [1, 1, 0], [0, 1, 0], [0, 0, 0]]),
+                    (3, "Code", "input",
+                     [[0, 0, 1], [1, 0, 1], [0, 1, 1], [0, 0, 1]]),
+                )
+            ],
+        }
+
+        output_1, output_2, code = self.tester.project_3d_payload(payload)["parts"]
+
+        self.assertEqual(output_1["visibility_group"], output_2["visibility_group"])
+        self.assertNotEqual(output_1["paint_group"], output_2["paint_group"])
+        self.assertNotEqual(output_1["visibility_group"], code["visibility_group"])
+        shared_edge = self.tester.edge_key_3d([0, 0, 0], [1, 1, 0])
+        self.assertEqual(2, sum(
+            edge["key"] == shared_edge
+            for part in (output_1, output_2)
+            for edge in part["edges_3d"]
+        ))
 
     def test_2d_surface_does_not_draw_hidden_edges(self):
         svg = self.tester.visual_svg(
@@ -1540,7 +1971,7 @@ class VisualExampleTest(unittest.TestCase):
         )
         self.assertNotIn('class="hidden-edge"', svg)
 
-    def test_tin_faces_do_not_alpha_stack_when_their_projections_overlap(self):
+    def test_tin_faces_keep_fills_when_their_projections_overlap(self):
         payload = {
             "bounds": [0, 0, 1, 1],
             "parts": [
@@ -1558,7 +1989,141 @@ class VisualExampleTest(unittest.TestCase):
         svg = self.tester.visual_svg("tetrahedron", payload)
         self.assertEqual(4, svg.count('data-postgis-face='))
         self.assertEqual(4, svg.count('fill-opacity="1"'))
+        self.assertNotIn('fill-opacity="0"', svg)
+        self.assertNotIn('class="hidden-edge"', svg)
+        self.assertEqual(4, svg.count('class="visible-edge"'))
         self.assertNotIn('fill-opacity="0.82"', svg)
+
+    def test_output_tin_over_code_solid_renders_as_wire_overlay(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "cube",
+                 "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                 "svg": "unused", "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 0]], ring=True
+                 )}
+            ] + [
+                {"ord": 2, "source": "Output", "label": "tessellation",
+                 "root_type": "TIN", "type": "TRIANGLE",
+                 "svg": "unused", "has_z": True,
+                 "points_xyz": xyz_vertices(points, ring=True)}
+                for points in (
+                    [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]],
+                    [[0, 0, 0], [1, 1, 0], [0, 1, 0], [0, 0, 0]],
+                )
+            ],
+        }
+        ordinary = self.tester.project_3d_payload(payload)
+        self.assertEqual([2, 2], [len(part["edges_3d"]) for part in ordinary["parts"][1:]])
+        self.assertTrue(
+            all(not part.get("tessellation_overlay") for part in ordinary["parts"][1:])
+        )
+
+        projected = self.tester.project_3d_payload(payload, show_tessellation=True)
+        code_part, *output_parts = projected["parts"]
+
+        self.assertTrue(code_part["fill_3d_face"])
+        self.assertTrue(all(not part["fill_3d_face"] for part in output_parts))
+        self.assertTrue(all(part["occlude_3d_face"] for part in output_parts))
+        self.assertTrue(all(part["tessellation_overlay"] for part in output_parts))
+        self.assertTrue(all(not part["draw_hidden_3d_edges"] for part in output_parts))
+        seam_key = self.tester.edge_key_3d([0, 0, 0], [1, 1, 0])
+        self.assertEqual(
+            [[seam_key], [seam_key]],
+            [[edge["key"] for edge in part["edges_3d"]] for part in output_parts],
+        )
+
+    def test_3d_wire_overlay_does_not_draw_hidden_segments_or_empty_faces(self):
+        svg = self.tester.visual_svg("wire-overlay", {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": 1, "source": "Output", "label": "tessellation",
+                "root_type": "TIN", "type": "TRIANGLE",
+                "svg": "M 0 0 L 1 0 L 1 -1 Z", "has_z": False,
+                "is_3d_face": True, "depth": 0, "shade": 1,
+                "fill_3d_face": False, "draw_hidden_3d_edges": False,
+                "face_patches_3d_ready": True,
+                "face_patches_3d": [{"svg": "M 0 0 L 1 0 L 1 -1 Z"}],
+                "edge_segments_3d_ready": True,
+                "edge_segments_3d": [
+                    {"visible": True, "svg": "M 0 0 L 1 -1"},
+                    {"visible": False, "svg": "M 0 0 L 1 0"},
+                ],
+            }],
+        })
+
+        self.assertEqual(1, svg.count('class="visible-edge"'))
+        self.assertNotIn('class="hidden-edge"', svg)
+        self.assertNotIn('class="area"', svg)
+
+    def test_separate_frame_3d_output_keeps_face_fill(self):
+        payload = {
+            "frames": [
+                {"id": "Code", "bounds": [0, 0, 5, 5]},
+                {"id": "Output", "bounds": [0, 0, 5, 5]},
+            ],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "Code", "frame": "Code",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "unused",
+                 "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 2], [5, 0, 2], [0, 5, 2], [0, 0, 2]],
+                     ring=True,
+                 )},
+                {"ord": 2, "source": "Output", "label": "Output", "frame": "Output",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "unused",
+                 "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 2], [0, 5, 2], [5, 0, 2], [0, 0, 2]],
+                     ring=True,
+                 )},
+            ],
+        }
+
+        projected = self.tester.project_3d_payload(payload)
+        self.assertEqual(
+            [True, True],
+            [part["fill_3d_face"] for part in projected["parts"]],
+        )
+
+        svg = self.tester.visual_svg("separate-fill", payload)
+        self.assertEqual(2, svg.count('fill-opacity="1"'))
+        self.assertNotIn('fill-opacity="0"', svg)
+        self.assertIn('data-postgis-frame="Code"', svg)
+        self.assertIn('data-postgis-frame="Output"', svg)
+
+    def test_separate_frame_2d_input_and_3d_output_keeps_output_fill(self):
+        payload = {
+            "frames": [
+                {"id": "Code", "bounds": [0, 0, 5, 5]},
+                {"id": "Output", "bounds": [0, 0, 5, 5]},
+            ],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "Code", "frame": "Code",
+                 "root_type": "POLYGON", "type": "POLYGON",
+                 "svg": "M 0 0 L 0 -5 L 5 0 Z M 1 -1 L 3 -1 L 1 -3 Z",
+                 "has_z": False,
+                 "vertices": [[0, 0], [0, -5], [5, 0], [0, 0]]},
+                {"ord": 2, "source": "Output", "label": "Output", "frame": "Output",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "unused",
+                 "has_z": True,
+                 "points_xyz": xyz_vertices(
+                     [[0, 0, 0], [0, 5, 0], [5, 0, 0], [0, 0, 0]],
+                     ring=True,
+                 )},
+            ],
+        }
+
+        projected = self.tester.project_3d_payload(payload)
+        self.assertNotIn("fill_3d_face", projected["parts"][0])
+        self.assertTrue(projected["parts"][1]["fill_3d_face"])
+
+        svg = self.tester.visual_svg("separate-2d-3d-fill", payload)
+        self.assertEqual(1, svg.count('fill-opacity="0.24"'))
+        self.assertEqual(1, svg.count('fill-opacity="1"'))
+        self.assertNotIn('fill-opacity="0"', svg)
 
     def test_mixed_frame_projects_2d_footprint_with_3d_roof(self):
         payload = {
@@ -1585,6 +2150,600 @@ class VisualExampleTest(unittest.TestCase):
         svg = self.tester.visual_svg("mixed-roof", payload)
         self.assertEqual(2, svg.count("data-postgis-face="))
         self.assertNotIn('stroke="#dce2e7" stroke-width="1"', svg)
+
+    def test_z_surface_draws_coplanar_fill_union_not_edge_visibility_patches(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                "ord": 1, "source": "Output", "label": "solid",
+                "root_type": "POLYHEDRALSURFACE", "type": "POLYGON",
+                "svg": "unused", "has_z": True,
+                "points_xyz": xyz_vertices(
+                    [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]], ring=True
+                ),
+            }],
+        }
+        self.tester.split_3d_face_patches = lambda database, parts: {
+            0: [
+                {
+                    "depth": 0,
+                    "svg": "M 0 0 L 0.5 0 L 0 -0.5 Z",
+                    "wkt": "POLYGON((0 0,0.5 0,0 0.5,0 0))",
+                    "draw": False,
+                    "edge_visibility": True,
+                },
+                {
+                    "depth": 0,
+                    "svg": "M 0 0 L 1 0 L 1 -1 Z",
+                    "wkt": "POLYGON((0 0,1 0,1 1,0 0))",
+                    "draw": True,
+                    "edge_visibility": False,
+                },
+            ],
+        }
+        self.tester.split_3d_edge_segments = (
+            lambda database, parts, face_patches_by_part=None: {}
+        )
+
+        svg = self.tester.visual_svg("coplanar-fill", payload, database="manual")
+
+        self.assertEqual(1, svg.count('class="area"'))
+        self.assertIn('d="M 0 0 L 1 0 L 1 -1 Z"', svg)
+        self.assertNotIn('d="M 0 0 L 0.5 0 L 0 -0.5 Z"', svg)
+
+    def test_coplanar_3d_triangle_seams_are_not_drawn_as_edges(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "surface",
+                 "root_type": "TIN", "type": "TRIANGLE", "svg": "unused",
+                 "has_z": True, "points_xyz": xyz_vertices(points, ring=True)}
+                for points in (
+                    [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]],
+                    [[0, 0, 0], [1, 1, 0], [0, 1, 0], [0, 0, 0]],
+                )
+            ],
+        }
+        projected = self.tester.project_3d_payload(payload)
+        edge_keys = [
+            edge["key"]
+            for part in projected["parts"]
+            for edge in part.get("edges_3d") or []
+        ]
+        self.assertEqual(4, len(edge_keys))
+        self.assertNotIn(self.tester.edge_key_3d([0, 0, 0], [1, 1, 0]), edge_keys)
+
+    def test_coplanar_3d_triangle_faces_share_the_geometry_palette(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "surface",
+                 "root_type": "TIN", "type": "TRIANGLE", "svg": "unused",
+                 "has_z": True, "points_xyz": xyz_vertices(points, ring=True)}
+                for points in (
+                    [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]],
+                    [[0, 0, 0], [1, 1, 0], [0, 1, 0], [0, 0, 0]],
+                )
+            ],
+        }
+
+        svg = self.tester.visual_svg("coplanar-tin", payload)
+
+        fills = re.findall(r'data-postgis-face="[12]"[^>]+fill="(#[0-9a-f]{6})"', svg)
+        self.assertEqual(2, len(fills))
+        self.assertEqual(1, len(set(fills)))
+
+    def test_non_coplanar_3d_triangle_shared_edges_are_kept(self):
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [
+                {"ord": 1, "source": "Output", "label": "surface",
+                 "root_type": "TIN", "type": "TRIANGLE", "svg": "unused",
+                 "has_z": True, "points_xyz": xyz_vertices(points, ring=True)}
+                for points in (
+                    [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]],
+                    [[0, 0, 0], [1, 1, 0], [0, 1, 1], [0, 0, 0]],
+                )
+            ],
+        }
+        projected = self.tester.project_3d_payload(payload)
+        edge_keys = [
+            edge["key"]
+            for part in projected["parts"]
+            for edge in part.get("edges_3d") or []
+        ]
+        self.assertIn(self.tester.edge_key_3d([0, 0, 0], [1, 1, 0]), edge_keys)
+
+    def test_dense_capped_surface_marks_side_facets_as_silhouette_only(self):
+        segment_count = 32
+        ring = [
+            [
+                round(10 * math.cos(2 * math.pi * index / segment_count), 12),
+                round(10 * math.sin(2 * math.pi * index / segment_count), 12),
+            ]
+            for index in range(segment_count)
+        ]
+        faces = []
+        for index in range(segment_count):
+            start = ring[index]
+            end = ring[(index + 1) % segment_count]
+            faces.append([
+                [start[0], start[1], 0],
+                [end[0], end[1], 0],
+                [end[0], end[1], 100],
+                [start[0], start[1], 100],
+                [start[0], start[1], 0],
+            ])
+        sharp_edge = [[20, 0, 0], [20, 0, 0.1]]
+        faces.extend([
+            [
+                [20, 0, 0], [21, 0, 0], [21, 0, 0.1],
+                [20, 0, 0.1], [20, 0, 0],
+            ],
+            [
+                [20, 0, 0], [20, 0, 0.1], [20, 1, 0.1],
+                [20, 1, 0], [20, 0, 0],
+            ],
+        ])
+        faces.extend([
+            [[x, y, 0] for x, y in ring] + [[ring[0][0], ring[0][1], 0]],
+            [[x, y, 100] for x, y in reversed(ring)]
+            + [[ring[-1][0], ring[-1][1], 100]],
+        ])
+        payload = {
+            "bounds": [-10, -10, 10, 10],
+            "parts": [
+                {
+                    "ord": 1,
+                    "source": "Output",
+                    "label": "tube",
+                    "root_type": "POLYHEDRALSURFACE",
+                    "type": "POLYGON",
+                    "svg": "unused",
+                    "has_z": True,
+                    "points_xyz": xyz_vertices(points, ring=True),
+                }
+                for points in faces
+            ],
+        }
+
+        projected = self.tester.project_3d_payload(payload)
+        self.assertEqual(
+            [True] * (segment_count + 2) + [False, False],
+            [part["smooth_3d_side"] for part in projected["parts"]],
+        )
+        self.assertEqual(
+            [False] * (segment_count + 2) + [True, True],
+            [part["smooth_3d_cap"] for part in projected["parts"]],
+        )
+        flags_by_key = {}
+        for part in projected["parts"]:
+            self.assertTrue(part["smooth_3d_surface"])
+            for edge in part["edges_3d"]:
+                flags_by_key.setdefault(edge["key"], set()).add(edge["silhouette_only"])
+
+        side_keys = {
+            self.tester.edge_key_3d([x, y, 0], [x, y, 100])
+            for x, y in ring
+        }
+        cap_keys = {
+            self.tester.edge_key_3d(
+                [ring[index][0], ring[index][1], z],
+                [
+                    ring[(index + 1) % segment_count][0],
+                    ring[(index + 1) % segment_count][1],
+                    z,
+                ],
+            )
+            for index in range(segment_count)
+            for z in (0, 100)
+        }
+        self.assertEqual({True}, set().union(*(flags_by_key[key] for key in side_keys)))
+        self.assertEqual({False}, set().union(*(flags_by_key[key] for key in cap_keys)))
+        self.assertEqual(
+            {False}, flags_by_key[self.tester.edge_key_3d(*sharp_edge)]
+        )
+
+    def test_smooth_face_fill_overlaps_without_white_seams(self):
+        payload_part = {
+            "ord": 1,
+            "source": "Output",
+            "label": "shell",
+            "root_type": "POLYHEDRALSURFACE",
+            "type": "POLYGON",
+            "svg": "unused",
+            "has_z": True,
+            "is_3d_face": True,
+            "depth": 0,
+            "shade": 0.8,
+            "fill_3d_face": True,
+            "smooth_3d_surface": True,
+            "smooth_3d_side": True,
+            "face_patches_3d_ready": True,
+            "face_patches_3d": [{
+                "svg": "M 0 0 L 1 0 L 0 -1 Z",
+                "depth": 0,
+                "draw": True,
+            }],
+            "edge_segments_3d_ready": True,
+            "edge_segments_3d": [],
+        }
+        svg = self.tester.visual_svg("smooth-shell", {
+            "bounds": [0, 0, 1, 1],
+            "parts": [payload_part],
+        })
+
+        face = re.search(r'<path class="area"[^>]+>', svg).group(0)
+        fill = re.search(r'fill="(#[0-9a-f]{6})"', face).group(1)
+        self.assertEqual(
+            self.tester.shade_color("#a62c2b", self.tester.SMOOTH_3D_SIDE_SHADE),
+            fill,
+        )
+        self.assertIn(f'stroke="{fill}"', face)
+        self.assertIn('stroke-opacity="1"', face)
+        self.assertNotIn('stroke="white"', face)
+
+        payload = {
+            "bounds": [0, 0, 1, 1],
+            "parts": [{
+                **payload_part,
+                "shade": 0.2,
+                "smooth_3d_side": False,
+                "smooth_3d_cap": True,
+            }],
+        }
+        cap_svg = self.tester.visual_svg("smooth-cap", payload)
+        cap_face = re.search(r'<path class="area"[^>]+>', cap_svg).group(0)
+        cap_fill = re.search(r'fill="(#[0-9a-f]{6})"', cap_face).group(1)
+        self.assertEqual(
+            self.tester.shade_color(
+                "#a62c2b", self.tester.SMOOTH_3D_CAP_MIN_SHADE
+            ),
+            cap_fill,
+        )
+
+    def test_dense_triangular_surface_keeps_only_silhouette_edges(self):
+        segment_count = 32
+        ring = [
+            [
+                round(10 * math.cos(2 * math.pi * index / segment_count), 12),
+                round(10 * math.sin(2 * math.pi * index / segment_count), 12),
+            ]
+            for index in range(segment_count)
+        ]
+        faces = []
+        for index in range(segment_count):
+            start = ring[index]
+            end = ring[(index + 1) % segment_count]
+            start_bottom = [start[0], start[1], 0]
+            end_bottom = [end[0], end[1], 0]
+            start_top = [start[0], start[1], 100]
+            end_top = [end[0], end[1], 100]
+            faces.extend([
+                [start_bottom, end_bottom, end_top, start_bottom],
+                [start_bottom, end_top, start_top, start_bottom],
+            ])
+        payload = {
+            "bounds": [-10, -10, 10, 10],
+            "parts": [
+                {
+                    "ord": 1,
+                    "source": "Output",
+                    "label": "smooth mesh",
+                    "root_type": "POLYHEDRALSURFACE",
+                    "type": "POLYGON",
+                    "svg": "unused",
+                    "has_z": True,
+                    "points_xyz": xyz_vertices(points, ring=True),
+                }
+                for points in faces
+            ],
+        }
+
+        projected = self.tester.project_3d_payload(payload)
+        self.assertTrue(all(part["smooth_3d_surface"] for part in projected["parts"]))
+        self.assertTrue(all(not part["smooth_3d_side"] for part in projected["parts"]))
+        flags_by_key = {}
+        for part in projected["parts"]:
+            for edge in part["edges_3d"]:
+                flags_by_key.setdefault(edge["key"], set()).add(edge["silhouette_only"])
+
+        side_keys = {
+            self.tester.edge_key_3d([x, y, 0], [x, y, 100])
+            for x, y in ring
+        }
+        boundary_keys = {
+            self.tester.edge_key_3d(
+                [ring[index][0], ring[index][1], z],
+                [
+                    ring[(index + 1) % segment_count][0],
+                    ring[(index + 1) % segment_count][1],
+                    z,
+                ],
+            )
+            for index in range(segment_count)
+            for z in (0, 100)
+        }
+        self.assertEqual({True}, set().union(*(flags_by_key[key] for key in side_keys)))
+        self.assertEqual(
+            {False}, set().union(*(flags_by_key[key] for key in boundary_keys))
+        )
+
+    def test_faceted_shell_hides_short_bevels_and_shallow_mesh_seams(self):
+        vertices = (
+            (0.0, 0.0, 0.0),
+            (4.0, 0.0, 0.0),
+            (0.0, 4.0, 0.0),
+            (0.0, 0.0, 4.0),
+        )
+        fraction = 0.04
+
+        def truncated(start, end):
+            return [
+                (1 - fraction) * vertices[start][axis]
+                + fraction * vertices[end][axis]
+                for axis in range(3)
+            ]
+
+        faces = []
+        for vertex in range(4):
+            cap = [truncated(vertex, other) for other in range(4) if other != vertex]
+            faces.append(cap + [cap[0]])
+
+        shallow_edge = None
+        for first, second, third in ((0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3)):
+            boundary = [
+                truncated(first, second),
+                truncated(second, first),
+                truncated(second, third),
+                truncated(third, second),
+                truncated(third, first),
+                truncated(first, third),
+            ]
+            first_vector = [
+                vertices[second][axis] - vertices[first][axis]
+                for axis in range(3)
+            ]
+            second_vector = [
+                vertices[third][axis] - vertices[first][axis]
+                for axis in range(3)
+            ]
+            normal = [
+                first_vector[1] * second_vector[2] - first_vector[2] * second_vector[1],
+                first_vector[2] * second_vector[0] - first_vector[0] * second_vector[2],
+                first_vector[0] * second_vector[1] - first_vector[1] * second_vector[0],
+            ]
+            normal_length = math.sqrt(sum(value ** 2 for value in normal))
+            center = [
+                sum(point[axis] for point in boundary) / len(boundary)
+                + 0.02 * normal[axis] / normal_length
+                for axis in range(3)
+            ]
+            if shallow_edge is None:
+                shallow_edge = self.tester.edge_key_3d(boundary[0], center)
+            for index, start in enumerate(boundary):
+                end = boundary[(index + 1) % len(boundary)]
+                faces.append([start, end, center, start])
+
+        payload = {
+            "bounds": [0, 0, 4, 4],
+            "parts": [
+                {
+                    "ord": 1,
+                    "source": "Output",
+                    "label": "faceted shell",
+                    "root_type": "POLYHEDRALSURFACE",
+                    "type": "POLYGON",
+                    "svg": "unused",
+                    "has_z": True,
+                    "points_xyz": xyz_vertices(points, ring=True),
+                }
+                for points in faces
+            ],
+        }
+
+        projected = self.tester.project_3d_payload(payload)
+        flags_by_key = {}
+        for part in projected["parts"]:
+            self.assertTrue(part["smooth_3d_surface"])
+            for edge in part["edges_3d"]:
+                flags_by_key.setdefault(edge["key"], set()).add(
+                    edge["silhouette_only"]
+                )
+
+        short_bevel = self.tester.edge_key_3d(truncated(0, 1), truncated(0, 2))
+        long_crease = self.tester.edge_key_3d(truncated(0, 1), truncated(1, 0))
+        self.assertEqual({True}, flags_by_key[short_bevel])
+        self.assertEqual({True}, flags_by_key[shallow_edge])
+        self.assertEqual({False}, flags_by_key[long_crease])
+
+        tetrahedron = {
+            "bounds": [0, 0, 4, 4],
+            "parts": [
+                {
+                    "ord": 1,
+                    "source": "Code",
+                    "label": "tetrahedron",
+                    "root_type": "POLYHEDRALSURFACE",
+                    "type": "POLYGON",
+                    "svg": "unused",
+                    "has_z": True,
+                    "points_xyz": xyz_vertices(
+                        [vertices[index] for index in face] + [vertices[face[0]]],
+                        ring=True,
+                    ),
+                }
+                for face in ((0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3))
+            ],
+        }
+        tetrahedron_parts = self.tester.project_3d_payload(tetrahedron)["parts"]
+        self.assertTrue(all(
+            not part["smooth_3d_surface"] for part in tetrahedron_parts
+        ))
+        self.assertTrue(all(
+            not edge["silhouette_only"]
+            for part in tetrahedron_parts
+            for edge in part["edges_3d"]
+        ))
+
+    def test_faceted_shell_keeps_short_screen_space_crease_connector(self):
+        vertices = [
+            (-0.193132, 0.126622, 4.000118),
+            (-0.034518, -0.228316, 4.003695),
+            (0.087369, 0.087369, 4.195106),
+            (0.083342, 0.081596, 3.800677),
+            (0.047923, 3.840255, 0.159745),
+            (3.866667, 0.133333, 0.133333),
+            (0.091495, 3.926447, -0.198877),
+            (3.919597, 0.080403, -0.201008),
+            (0.037318, -0.006838, -0.227802),
+            (3.877427, -0.195387, 0.011527),
+            (4.22786, -0.006276, 0.037067),
+            (0.012489, -0.196238, 0.121111),
+            (-0.202457, 0.079493, 0.077623),
+            (0.101221, 4.198699, 0.060053),
+            (-0.228261, 4.028106, -0.020978),
+        ]
+        faces = [
+            (0, 1, 2), (3, 2, 1), (2, 3, 0), (4, 5, 6),
+            (7, 8, 6), (5, 7, 6), (5, 9, 10), (5, 10, 7),
+            (9, 7, 10), (11, 1, 12), (12, 8, 11), (5, 3, 9),
+            (6, 13, 4), (13, 14, 4), (6, 14, 13), (5, 4, 3),
+            (9, 8, 7), (11, 8, 9), (3, 4, 0), (14, 0, 4),
+            (14, 12, 0), (12, 1, 0), (9, 3, 1), (11, 9, 1),
+            (6, 8, 14), (14, 8, 12),
+        ]
+        payload = {
+            "frames": [
+                {"id": "faceted", "bounds": [0, 0, 4, 4]},
+                {"id": "labels", "bounds": [0, 0, 4, 4]},
+            ],
+            "bounds": [0, 0, 4, 4],
+            "parts": [
+                {
+                    "ord": 1,
+                    "frame": "faceted",
+                    "source": "Output",
+                    "label": "faceted shell",
+                    "root_type": "POLYHEDRALSURFACE",
+                    "type": "POLYGON",
+                    "svg": "unused",
+                    "has_z": True,
+                    "points_xyz": xyz_vertices(
+                        [vertices[index] for index in face]
+                        + [vertices[face[0]]],
+                        ring=True,
+                    ),
+                }
+                for face in faces
+            ] + [{
+                "ord": 2,
+                "frame": "labels",
+                "source": "Output",
+                "label": "2D control",
+                "root_type": "POINT",
+                "type": "POINT",
+                "svg": "unused",
+                "has_z": False,
+                "x": 0,
+                "y": 0,
+                "points": [],
+                "vertices": [],
+            }],
+        }
+
+        projected = self.tester.project_3d_payload(payload)
+        flags_by_key = {}
+        for part in projected["parts"]:
+            if not part.get("is_3d_face"):
+                continue
+            self.assertTrue(part["smooth_3d_surface"])
+            for edge in part["edges_3d"]:
+                flags_by_key.setdefault(edge["key"], set()).add(
+                    edge["silhouette_only"]
+                )
+
+        connector = self.tester.edge_key_3d(vertices[0], vertices[3])
+        long_crease = self.tester.edge_key_3d(vertices[3], vertices[5])
+        rear_left_crease = self.tester.edge_key_3d(vertices[8], vertices[7])
+        rear_right_crease = self.tester.edge_key_3d(vertices[12], vertices[14])
+        short_bevel = self.tester.edge_key_3d(vertices[1], vertices[2])
+        self.assertEqual({False}, flags_by_key[connector])
+        self.assertEqual({False}, flags_by_key[long_crease])
+        self.assertEqual({False}, flags_by_key[rear_left_crease])
+        self.assertEqual({False}, flags_by_key[rear_right_crease])
+        self.assertEqual({True}, flags_by_key[short_bevel])
+
+    def test_faceted_skinny_strip_uses_broader_smoothing_angle(self):
+        skinny_strip_faces = [
+            {"edge_to_other_length_ratio": 0.91},
+            {"edge_to_other_length_ratio": 0.88},
+        ]
+        supported_crease_faces = [
+            {"edge_to_other_length_ratio": 0.91},
+            {"edge_to_other_length_ratio": 0.45},
+        ]
+
+        self.assertEqual(
+            self.tester.SMOOTH_3D_EDGE_MAX_ANGLE,
+            self.tester.faceted_smooth_edge_max_angle(skinny_strip_faces),
+        )
+        self.assertEqual(
+            self.tester.FACETED_3D_SMOOTH_EDGE_MAX_ANGLE,
+            self.tester.faceted_smooth_edge_max_angle(supported_crease_faces),
+        )
+
+    def test_dense_smooth_surface_keeps_an_individual_sharp_crease(self):
+        heights = [round(0.01 * index * index, 12) for index in range(32)]
+        faces = [
+            [
+                [index, 0, heights[index]],
+                [index + 1, 0, heights[index + 1]],
+                [index + 1, 1, heights[index + 1]],
+                [index, 1, heights[index]],
+                [index, 0, heights[index]],
+            ]
+            for index in range(31)
+        ]
+        faces.append([
+            [31, 0, heights[31]],
+            [32, 0, 100],
+            [32, 1, 100],
+            [31, 1, heights[31]],
+            [31, 0, heights[31]],
+        ])
+        payload = {
+            "bounds": [0, 0, 32, 1],
+            "parts": [
+                {
+                    "ord": 1,
+                    "source": "Output",
+                    "label": "mostly smooth mesh",
+                    "root_type": "POLYHEDRALSURFACE",
+                    "type": "POLYGON",
+                    "svg": "unused",
+                    "has_z": True,
+                    "points_xyz": xyz_vertices(points, ring=True),
+                }
+                for points in faces
+            ],
+        }
+
+        projected = self.tester.project_3d_payload(payload)
+        flags_by_key = {}
+        for part in projected["parts"]:
+            self.assertTrue(part["smooth_3d_surface"])
+            for edge in part["edges_3d"]:
+                flags_by_key.setdefault(edge["key"], set()).add(edge["silhouette_only"])
+
+        shallow_key = self.tester.edge_key_3d(
+            [15, 0, heights[15]], [15, 1, heights[15]]
+        )
+        sharp_key = self.tester.edge_key_3d(
+            [31, 0, heights[31]], [31, 1, heights[31]]
+        )
+        self.assertEqual({True}, flags_by_key[shallow_key])
+        self.assertEqual({False}, flags_by_key[sharp_key])
 
     def test_mixed_frame_projects_3d_line_with_3d_polygon(self):
         line_points = [[0, 0, 0], [4, 0, 1], [4, 3, 2]]
@@ -1644,6 +2803,38 @@ class VisualExampleTest(unittest.TestCase):
         self.assertIn(">Code (3D view)</text>", svg)
         self.assertIn(">Output (3D view)</text>", svg)
 
+    def test_separate_3d_curvepolygon_keeps_surface_fill_and_hole(self):
+        outer = [[0, 0, 2], [5, 0, 2], [0, 5, 2], [0, 0, 2]]
+        inner = [[1, 1, 2], [1, 3, 2], [3, 1, 2], [1, 1, 2]]
+        points_xyz = [
+            {"path": [ring_number, point_number], "point": point}
+            for ring_number, ring in enumerate((outer, inner), 1)
+            for point_number, point in enumerate(ring, 1)
+        ]
+        payload = {
+            "frames": [
+                {"id": "Code", "bounds": [0, 0, 5, 5]},
+                {"id": "Output", "bounds": [0, 0, 5, 5]},
+            ],
+            "parts": [
+                {"ord": 1, "source": "Code", "label": "Code", "frame": "Code",
+                 "root_type": "POLYGON", "type": "POLYGON", "svg": "unused",
+                 "has_z": True, "points_xyz": points_xyz},
+                {"ord": 2, "source": "Output", "label": "Output", "frame": "Output",
+                 "root_type": "CURVEPOLYGON", "type": "CURVEPOLYGON", "svg": "unused",
+                 "has_z": True, "points_xyz": points_xyz},
+            ],
+        }
+
+        projected = self.tester.project_3d_payload(payload)
+        self.assertTrue(all(part["is_3d_face"] for part in projected["parts"]))
+        self.assertEqual(2, projected["parts"][1]["svg"].count("M "))
+
+        svg = self.tester.visual_svg("forcecurve", payload)
+        self.assertEqual(2, svg.count('class="area"'))
+        self.assertEqual(2, svg.count('fill-opacity="1"'))
+        self.assertNotIn('class="start-vertex"', svg)
+
     def test_separate_2d_output_is_not_projected_with_3d_input(self):
         ring_3d = [[0, 0, 2], [0, 5, 2], [5, 0, 2], [0, 0, 2]]
         ring_2d = [[0, 0, 0], [0, 5, 0], [5, 0, 0], [0, 0, 0]]
@@ -1700,6 +2891,7 @@ class VisualExampleTest(unittest.TestCase):
         expected_x, expected_y, _ = self.tester.project_3d_point([2, 1, 0], view)
         self.assertEqual(expected_x, projected["parts"][1]["x"])
         self.assertEqual(-expected_y, projected["parts"][1]["y"])
+        self.assertEqual([[expected_x, -expected_y]], projected["parts"][1]["points"])
         self.assertNotEqual(payload["parts"][2]["svg"], projected["parts"][2]["svg"])
         svg = self.tester.visual_svg("mixed-zero-z", payload)
         self.assertIn('data-postgis-geometry-id="mixed-zero-z-code-1"', svg)
