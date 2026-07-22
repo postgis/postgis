@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-07-21 06:39+0000\n"
+"PO-Revision-Date: 2026-07-22 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -5837,6 +5837,9 @@ msgid ""
 "xlink:href=\"https://postgis.net/development/versions_eol/\">https://"
 "postgis.net/development/versions_eol/</link>"
 msgstr ""
+"現在のリリースラインサポートとサポート集終了については <link "
+"xlink:href=\"https://postgis.net/development/versions_eol/\">https://"
+"postgis.net/development/versions_eol/</link> をご覧下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -6052,6 +6055,10 @@ msgid ""
 "use GraphicsMagick (<filename>gm convert</filename>) or ImageMagick "
 "(<filename>magick</filename> or <filename>convert</filename>)."
 msgstr ""
+"PDF文書化は、高解像度図形の後退のためにSVGラスター化ツールが必要です。ビルド"
+"では <filename>rsvg-convert</filename> が好ましく、またGraphicsMagick "
+"(<filename>gm convert</filename>) か ImageMagick (<filename>magick</"
+"filename> または <filename>convert</filename>) を使用することができます。"
 
 #. Tag: title
 #, no-c-format
@@ -6120,6 +6127,9 @@ msgid ""
 "default, utilities are installed in the executable directory reported by the "
 "detected PostgreSQL installation."
 msgstr ""
+"PostGIS コマンドラインユーティリティのインストール先です。デフォルトでは"
+"ユーティリティは検出された PostgreSQL から報告される実行可能ディレクトリーに"
+"インストールされます。"
 
 #. Tag: para
 #, no-c-format
@@ -6130,6 +6140,11 @@ msgid ""
 "pgconfig=FILE</option> to choose the PostgreSQL installation that PostGIS "
 "builds and installs against."
 msgstr ""
+"PostgreSQL エクステンションファイルは <command>pg_config</command> から報告さ"
+"れるディレクトリーにインストールして、サーバーはロード可能になります。これに"
+"は PostGIS 共有ライブラリーと SQL エクステンションファイルが入っています。"
+"PostGIS のビルドとインストールを行っている PostgreSQL インストールを選択する"
+"には <option>--with-pgconfig=FILE</option> を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -6422,6 +6437,8 @@ msgid ""
 "user, then test before installing. After installation, run the extension "
 "regression tests."
 msgstr ""
+"psql接続ユーザーを上書きしたいときには <varname>PGUSER</varname> を設定します"
+"。インストール後にエクステンションの回帰テストを行います。"
 
 #. Tag: para
 #, no-c-format
@@ -6768,7 +6785,7 @@ msgstr ""
 #. Tag: emphasis
 #, no-c-format
 msgid "PostgreSQL version mismatch."
-msgstr ""
+msgstr "PostgreSQL バージョン不整合。"
 
 #. Tag: para
 #, no-c-format
@@ -6799,11 +6816,14 @@ msgid ""
 "existence of pre-installed packages using the <command>rpm</command> command "
 "as follows:"
 msgstr ""
+"RPMベースのディストリビューションを実行している場合には、 <command>rpm</"
+"command> コマンドでプリインストール済みパッケージの存在の確認が必要です。次の"
+"ようにします:"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "Restoring an upgrade into a database without PostGIS."
-msgstr ""
+msgstr "PostGIS の無いデータベースへのアップグレードの格納。"
 
 #. Tag: para
 #, no-c-format
@@ -6845,7 +6865,7 @@ msgstr "導入"
 #. Tag: title
 #, no-c-format
 msgid "What Is PostGIS?"
-msgstr ""
+msgstr "PostGIS ってなに?"
 
 #. Tag: para
 #, no-c-format
@@ -6857,11 +6877,16 @@ msgid ""
 "controls, backup tools, and application connections as the rest of a "
 "PostgreSQL database."
 msgstr ""
+"PostGISは <link xlink:href=\"https://www.postgresql.org/\">PostgreSQL</link> "
+"を拡張して、データベース内での空間データの格納、インデックス、クエリー、処理"
+"を可能にするものです。通常の関係データ内に位置データを保持することで、空間"
+"クエリーが同じ SQL、トランザクション、制約、アクセス制御、バックアップツール"
+"、アプリケーションからの接続を利用できるようになります。"
 
 #. Tag: para
 #, no-c-format
 msgid "The main <literal>postgis</literal> extension adds:"
-msgstr ""
+msgstr "<literal>postgis</literal> エクステンションは次の物を追加します:"
 
 #. Tag: para
 #, no-c-format
@@ -6869,6 +6894,8 @@ msgid ""
 "<varname>geometry</varname> for planar coordinate systems and "
 "<varname>geography</varname> for geodetic coordinates on the earth."
 msgstr ""
+"平面座標系用の <varname>geometry</varname> と地理座標系用の <varname>"
+"geography</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -6876,6 +6903,8 @@ msgid ""
 "Spatial indexes that let the PostgreSQL planner avoid scanning every row "
 "when objects can be filtered by location."
 msgstr ""
+"位置によるフィルタリングが可能な時に PostgreSQL の平面において全タプルの"
+"スキャンを避ける空間インデックス。"
 
 #. Tag: para
 #, no-c-format
@@ -6884,6 +6913,8 @@ msgid ""
 "and editing, coordinate transformation, clustering, and spatial data "
 "exchange."
 msgstr ""
+"計測関数、関係関数、オーバーレイ関数、ジオメトリー構築関数、ジオメトリー編集"
+"関数、座標変換関数、クラスタリング関数、空間データ交換関数。"
 
 #. Tag: para
 #, no-c-format
@@ -6891,6 +6922,8 @@ msgid ""
 "Support for common geospatial encodings and formats, including WKT, WKB, "
 "GeoJSON, GML, KML, FlatGeobuf, Geobuf, and Mapbox Vector Tiles."
 msgstr ""
+"WKT、WKB、GeoJSON、GML、KML、FlatGeobuf、Geobuf、Mapbox Vector Tilesなどの一"
+"般的な空間データの符号化と書式への対応。"
 
 #. Tag: para
 #, no-c-format
@@ -6900,11 +6933,15 @@ msgid ""
 "processing system. Desktop GIS, map servers, ETL tools, and application "
 "frameworks can connect through normal PostgreSQL interfaces."
 msgstr ""
+"PostgreSQL 空間データベースを作ります。アプリケーションは別の GIS 処理"
+"システムに移動させることなく普通の問合せも位置に関係した問い合わせもできます"
+"。デスクトップ GIS、地図サーバー、ETL ツール、アプリケーションフレームワーク"
+"は通常の PostgreSQL インターフェイスを通じて接続することができます。"
 
 #. Tag: title
 #, no-c-format
 msgid "What Is in the PostGIS Distribution?"
-msgstr ""
+msgstr "PostGIS ディストリビューションとは ?"
 
 #. Tag: para
 #, no-c-format
@@ -6913,11 +6950,14 @@ msgid ""
 "PostGIS was built and packaged, it can provide several PostgreSQL extensions "
 "and command-line tools:"
 msgstr ""
+"このマニュアルでは PostGIS ソースのディストリビューションについて書いています"
+"。PostGIS がどのようにビルドされたか、またパッケージされたかによりますが、い"
+"くつかの PostgreSQL エクステンションとコマンドラインツールが供給されています:"
 
 #. Tag: literal
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "postgis"
-msgstr ""
+msgstr "postgis"
 
 #. Tag: para
 #, no-c-format
@@ -6925,11 +6965,13 @@ msgid ""
 "The core geometry and geography types, spatial indexes, and most spatial "
 "functions."
 msgstr ""
+"中核となるジオメトリー型とジオグラフィー型、空間インテックス、ほとんどの空間"
+"関数。"
 
 #. Tag: literal
 #, no-c-format
 msgid "postgis_raster"
-msgstr ""
+msgstr "postgis_raster"
 
 #. Tag: para
 #, no-c-format
@@ -6937,11 +6979,13 @@ msgid ""
 "Raster storage, analysis, loading, and export. Raster support uses GDAL and "
 "can be omitted from a build."
 msgstr ""
+"ラスターの保存、分析、ロード、エクスポート。ラスター機能は GDAL を使用してい"
+"ます。ビルドから除外することもできます。"
 
 #. Tag: literal
 #, no-c-format
 msgid "postgis_topology"
-msgstr ""
+msgstr "postgis_topology"
 
 #. Tag: para
 #, no-c-format
@@ -6949,6 +6993,8 @@ msgid ""
 "SQL/MM topology types and functions for models based on shared nodes, edges, "
 "and faces."
 msgstr ""
+"SQL/MM ノード、エッジ、フェイスの共有を基にしたモデルのトポロジータイプと関数"
+"。"
 
 #. Tag: literal
 #, no-c-format
