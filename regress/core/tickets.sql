@@ -1623,3 +1623,8 @@ DROP TABLE IF EXISTS test5829, test5978;
 
 -- #5357
 SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
+
+-- ST_MakePolygon with NULL holes
+SELECT 'makepolygon-null-holes', ST_NPoints(ST_MakePolygon(
+	'LINESTRING ZM (0 0 0 0,0 1 0 0,1 1 0 0,0 0 0 0)'::geometry,
+	ARRAY[NULL::geometry]));

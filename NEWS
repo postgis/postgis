@@ -16,6 +16,8 @@ PostGIS 3.5.8
     cancellation state (Darafei Praliaskouski)
   - GH-1160, [topology] Preserve overlay intersection boundaries when
     noding lines with GEOS main (Darafei Praliaskouski)
+  - GT-496, Avoid ST_MakePolygon crashes with NULL hole array entries
+    (Darafei Praliaskouski)
 
 PostGIS 3.5.7
 2026/06/10
