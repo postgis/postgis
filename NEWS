@@ -79,6 +79,11 @@ These are only changes since 3.7.0alpha1.
  - #1168, [raster] Support curved geometry inputs in ST_AsRaster
           (Darafei Praliaskouski)
 
+* Enhancements *
+
+ - #1582, [raster] Add ST_CreateIndexRaster wrapper around map algebra
+          (Darafei Praliaskouski)
+
 
 PostGIS 3.7.0dev
 2026/xx/xx
@@ -124,7 +129,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #5941, [raster] Support GDT_Float16 pixel type (Darafei Praliaskouski)
  - #5992, Optimize GiST index for repeated edge subdivision in topology (Darafei Praliaskouski)
  - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
- - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
+- #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
  - #5950, Document POSTGIS_REGRESS_DB_OWNER for sandboxed regression roles (Darafei Praliaskouski)
  - #4332, Clarify the scope of several Function Reference categories (Darafei Praliaskouski)
  - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
@@ -142,7 +147,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - [fuzzers] Centralize OSS-Fuzz build/dependency logic in PostGIS scripts,
           prefer requested CXX over pg_config --cc for internal C++ checks, and
           make fuzzer linking/runtime dependency packaging portable
-          (Darafei Praliaskouski)
 
 * Enhancements *
 

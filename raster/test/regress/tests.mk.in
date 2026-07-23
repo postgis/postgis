@@ -106,6 +106,7 @@ RASTER_TEST_MAPALGEBRA = \
 	$(top_srcdir)/raster/test/regress/rt_clip \
 	$(top_srcdir)/raster/test/regress/rt_mapalgebra \
 	$(top_srcdir)/raster/test/regress/rt_mapalgebra_expr \
+	$(top_srcdir)/raster/test/regress/rt_createindexraster \
 	$(top_srcdir)/raster/test/regress/rt_mapalgebra_mask \
 	$(top_srcdir)/raster/test/regress/rt_union \
 	$(top_srcdir)/raster/test/regress/rt_invdistweight4ma \
