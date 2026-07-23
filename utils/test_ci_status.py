@@ -79,6 +79,99 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         self.assertEqual(CI_STATUS.SUCCESS, passed["stale_base_status"])
         self.assertEqual("Stale passed", passed["status_label"])
 
+    def test_jenkins_matrix_failure_names_failing_axis(self):
+        check_config = {
+            "name": "Jenkins / Winnie",
+            "provider": "jenkins",
+            "required": True,
+            "job_url": "https://ci.example.test/job/PostGIS_trunk/",
+        }
+        branch = {
+            "name": "master",
+            "label": "master",
+            "version_or_trunk": "trunk",
+        }
+        current = {
+            "number": 5284,
+            "result": "FAILURE",
+            "url": "https://ci.example.test/job/PostGIS_trunk/5284/",
+            "timestamp": 1784791530000,
+            "actions": [
+                {"lastBuiltRevision": {"SHA1": "a" * 40}},
+            ],
+        }
+        matrix = [
+            {
+                "name": "PG_VER=15,OS_BUILD=64",
+                "lastBuild": {
+                    "number": 5279,
+                    "result": "SUCCESS",
+                    "url": "https://ci.example.test/job/PostGIS_trunk/PG_VER=15/5279/",
+                },
+            },
+            {
+                "name": "PG_VER=19,OS_BUILD=64",
+                "lastBuild": {
+                    "number": 5284,
+                    "result": "FAILURE",
+                    "url": "https://ci.example.test/job/PostGIS_trunk/PG_VER=19/5284/",
+                },
+            },
+        ]
+
+        with (
+            mock.patch.object(CI_STATUS, "jenkins_queued_check", return_value=None),
+            mock.patch.object(CI_STATUS, "jenkins_builds", return_value=[current]),
+            mock.patch.object(CI_STATUS, "jenkins_matrix_configurations", return_value=matrix),
+        ):
+            result = CI_STATUS.jenkins_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.FAILURE, result["status"])
+        self.assertEqual("build 5284; failed: PG19", result["message"])
+        self.assertEqual("https://ci.example.test/job/PostGIS_trunk/PG_VER=19/5284/", result["url"])
+        self.assertEqual("a" * 40, result["revision"])
+
+    def test_jenkins_single_configuration_matrix_keeps_parent_message(self):
+        check_config = {
+            "name": "Jenkins / Make Dist",
+            "provider": "jenkins",
+            "required": True,
+            "job_url": "https://ci.example.test/job/PostGIS_Make_Dist/",
+        }
+        branch = {
+            "name": "master",
+            "label": "master",
+            "version_or_trunk": "trunk",
+        }
+        current = {
+            "number": 7808,
+            "building": True,
+            "result": None,
+            "url": "https://ci.example.test/job/PostGIS_Make_Dist/7808/",
+        }
+        matrix = [
+            {
+                "name": "label=debbie",
+                "lastBuild": {
+                    "number": 7808,
+                    "building": True,
+                    "result": None,
+                    "url": "https://ci.example.test/job/PostGIS_Make_Dist/label=debbie/7808/",
+                },
+            },
+        ]
+
+        with (
+            mock.patch.object(CI_STATUS, "jenkins_queued_check", return_value=None),
+            mock.patch.object(CI_STATUS, "jenkins_builds", return_value=[current]),
+            mock.patch.object(CI_STATUS, "jenkins_matrix_configurations", return_value=matrix),
+        ):
+            result = CI_STATUS.jenkins_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.IN_PROGRESS, result["status"])
+        self.assertEqual("build 7808", result["message"])
+        self.assertEqual("https://ci.example.test/job/PostGIS_Make_Dist/7808/", result["url"])
+
     def test_stale_summary_distinguishes_passed_and_failed(self):
         branch = {
             "name": "stable-synthetic",

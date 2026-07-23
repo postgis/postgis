@@ -740,6 +740,117 @@ def jenkins_builds(job_url, check, timeout):
     return builds
 
 
+def jenkins_matrix_configurations(job_url, timeout):
+    tree = (
+        "activeConfigurations[name,url,color,"
+        "lastBuild[number,url,result,building,timestamp,duration],"
+        "lastCompletedBuild[number,url,result,timestamp],"
+        "lastFailedBuild[number,url,result,timestamp]]"
+    )
+    url = job_url + "api/json?" + urllib.parse.urlencode({"tree": tree})
+    return http_json(url, timeout=timeout).get("activeConfigurations") or []
+
+
+def jenkins_matrix_axes(configuration):
+    axes = {}
+    for item in str(configuration.get("name") or "").split(","):
+        if "=" not in item:
+            continue
+        name, value = item.split("=", 1)
+        axes[name.strip()] = value.strip()
+    return axes
+
+
+def jenkins_matrix_axis_text(name, value):
+    if name == "PG_VER":
+        return f"PG{value}"
+    if name == "label":
+        return value
+    return f"{name}={value}"
+
+
+def jenkins_matrix_summary_axes(configurations):
+    parsed = [jenkins_matrix_axes(configuration) for configuration in configurations]
+    priority = (
+        "label",
+        "PG_VER",
+        "POSTGIS_TAG",
+        "OS_BUILD",
+        "GEOS_VER",
+        "GDAL_VER",
+        "GCC_TYPE",
+        "SFCGAL_VER",
+        "CGAL_VER",
+    )
+    varying = []
+    for name in priority:
+        values = {axes.get(name) for axes in parsed if axes.get(name)}
+        if len(values) > 1:
+            varying.append(name)
+    return varying[:3]
+
+
+def jenkins_matrix_configuration_label(configuration, selected):
+    axes = jenkins_matrix_axes(configuration)
+    parts = [
+        jenkins_matrix_axis_text(name, axes[name])
+        for name in selected
+        if name in axes
+    ]
+    if parts:
+        return ", ".join(parts)
+    return configuration.get("name") or configuration.get("url") or "configuration"
+
+
+def jenkins_matrix_details(job_url, timeout):
+    try:
+        configurations = jenkins_matrix_configurations(job_url, timeout)
+    except RECOVERABLE_PROVIDER_ERRORS:
+        return None
+    if len(configurations) < 2:
+        return None
+
+    selected = jenkins_matrix_summary_axes(configurations)
+
+    by_status = {
+        FAILURE: [],
+        IN_PROGRESS: [],
+        UNKNOWN: [],
+    }
+    for configuration in configurations:
+        build = configuration.get("lastBuild") or {}
+        status = normalize_jenkins_status(build)
+        if status == SUCCESS:
+            continue
+        label = jenkins_matrix_configuration_label(configuration, selected)
+        by_status.setdefault(status, []).append((label, build))
+
+    parts = []
+    for status, prefix in (
+        (FAILURE, "failed"),
+        (IN_PROGRESS, "running"),
+        (UNKNOWN, "unknown"),
+    ):
+        items = by_status.get(status) or []
+        if not items:
+            continue
+        item_labels = [label for label, build in items]
+        parts.append(f"{prefix}: {', '.join(item_labels)}")
+    if not parts:
+        return None
+
+    non_success = [
+        item
+        for status in (FAILURE, IN_PROGRESS, UNKNOWN)
+        for item in by_status.get(status) or []
+    ]
+    url = non_success[0][1].get("url") if len(non_success) == 1 else None
+    return {
+        "message": "; ".join(parts),
+        "url": url,
+    }
+
+
 def jenkins_badge_url(job_url, check, branch):
     parsed = urllib.parse.urlparse(job_url)
     if parsed.scheme not in ("http", "https") or not parsed.netloc or "/job/" not in parsed.path:
@@ -827,6 +938,12 @@ def jenkins_check(check, branch, timeout):
         completed_at=current.get("timestamp"),
         message=f"build {current.get('number')}",
     )
+    if result["status"] != SUCCESS:
+        details = jenkins_matrix_details(job_url, timeout)
+        if details:
+            result["message"] = f"{result['message']}; {details['message']}"
+            if details.get("url"):
+                result["url"] = details["url"]
     if previous:
         result.update(previous_fields(normalize_jenkins_status(previous), previous))
     return result
