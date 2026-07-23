@@ -764,6 +764,31 @@ def jenkins_queue_item_matches(item, job_url, check, branch):
     return any(value == expected for name, value in params.items() if name == branch_parameter or name.lower() == branch_parameter.lower())
 
 
+def queued_jenkins_revision(item):
+    params = jenkins_parameters(item)
+    for name in ("after", "BRANCH", "commit", "GIT_COMMIT"):
+        value = params.get(name)
+        if value and len(value) == 40 and all(ch in "0123456789abcdefABCDEF" for ch in value):
+            return value
+    return None
+
+
+def jenkins_queue_item_rank(item, branch):
+    revision = queued_jenkins_revision(item)
+    is_current = False
+    if revision:
+        for ref in branch_compare_refs(branch):
+            distance = git_commit_distance(revision, ref)
+            if distance == 0:
+                is_current = True
+                break
+    return (
+        0 if is_current else 1,
+        -(item.get("inQueueSince") or 0),
+        item.get("id") or 0,
+    )
+
+
 def jenkins_queued_check(check, branch, job_url, timeout):
     if not check.get("branch_parameter"):
         return None
@@ -776,7 +801,7 @@ def jenkins_queued_check(check, branch, job_url, timeout):
         return None
     if not queued:
         return None
-    item = sorted(queued, key=lambda value: value.get("inQueueSince") or 0)[0]
+    item = sorted(queued, key=lambda value: jenkins_queue_item_rank(value, branch))[0]
     params = jenkins_parameters(item)
     message = f"queued item {item.get('id')}"
     if item.get("why"):
