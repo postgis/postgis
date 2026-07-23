@@ -40,6 +40,8 @@ PostGIS 3.6.5
   with standard_conforming_strings off (Darafei Praliaskouski)
 - GH-1160, [topology] Preserve overlay intersection boundaries when
   noding lines with GEOS main (Darafei Praliaskouski)
+- GT-493, Fix 32-bit topology and coverage crashes
+  (Darafei Praliaskouski)
 
 
 PostGIS 3.6.4
