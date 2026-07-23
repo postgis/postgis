@@ -32,22 +32,20 @@
 #include "lwgeom_log.h"
 #include "liblwgeom.h"
 
-#if POSTGIS_PGSQL_VERSION < 180
-typedef enum					/* type categories for datum_to_json */
+typedef enum /* type categories for datum_to_json */
 {
-	JSONTYPE_NULL,				/* null, so we didn't bother to identify */
-	JSONTYPE_BOOL,				/* boolean (built-in types only) */
-	JSONTYPE_NUMERIC,			/* numeric (ditto) */
-	JSONTYPE_DATE,				/* we use special formatting for datetimes */
+	JSONTYPE_NULL,    /* null, so we didn't bother to identify */
+	JSONTYPE_BOOL,    /* boolean (built-in types only) */
+	JSONTYPE_NUMERIC, /* numeric (ditto) */
+	JSONTYPE_DATE,    /* we use special formatting for datetimes */
 	JSONTYPE_TIMESTAMP,
 	JSONTYPE_TIMESTAMPTZ,
-	JSONTYPE_JSON,				/* JSON itself (and JSONB) */
-	JSONTYPE_ARRAY,				/* array */
-	JSONTYPE_COMPOSITE,			/* composite */
-	JSONTYPE_CAST,				/* something with an explicit cast to JSON */
-	JSONTYPE_OTHER				/* all else */
+	JSONTYPE_JSON,      /* JSON itself (and JSONB) */
+	JSONTYPE_ARRAY,     /* array */
+	JSONTYPE_COMPOSITE, /* composite */
+	JSONTYPE_CAST,      /* something with an explicit cast to JSON */
+	JSONTYPE_OTHER      /* all else */
 } JsonTypeCategory;
-#endif
 
 static void array_dim_to_json(StringInfo result, int dim, int ndims, int *dims,
 				  Datum *vals, bool *nulls, int *valcount,
@@ -65,14 +63,12 @@ static void composite_to_geojson(FunctionCallInfo fcinfo,
 				 Oid geog_oid);
 static void composite_to_json(Datum composite, StringInfo result,
 							  bool use_line_feeds);
-static void datum_to_json(Datum val, bool is_null, StringInfo result,
-						  JsonTypeCategory tcategory, Oid outfuncoid,
-						  bool key_scalar);
-#if POSTGIS_PGSQL_VERSION < 180
+static void
+datum_to_json(Datum val, bool is_null, StringInfo result, JsonTypeCategory tcategory, Oid outfuncoid, bool key_scalar);
 static void json_categorize_type(Oid typoid,
 								 JsonTypeCategory *tcategory,
 								 Oid *outfuncoid);
-#endif
+
 static char * postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid);
 static int postgis_time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec);
 static int postgis_timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp);
@@ -244,7 +240,6 @@ composite_to_geojson(FunctionCallInfo fcinfo,
  * output function OID.  If the returned category is JSONTYPE_CAST, we
  * return the OID of the type->JSON cast function instead.
  */
-#if POSTGIS_PGSQL_VERSION < 180
 static void
 json_categorize_type(Oid typoid,
 					 JsonTypeCategory *tcategory,
@@ -337,7 +332,6 @@ json_categorize_type(Oid typoid,
 			break;
 	}
 }
-#endif
 /*
  * Turn a Datum into JSON text, appending the string to "result".
  *
