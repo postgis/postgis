@@ -13,6 +13,14 @@ export CONFIG_FILE="$CUR_DIR/configs.sh"
 . $CONFIG_FILE
 echo $PATH
 
+pg_stop()
+{
+	if [ -n "${PGDATA:-}" ] && test -s "${PGDATA}/postmaster.pid"; then
+		"${PGPATH}/bin/pg_ctl" stop -D "${PGDATA}" -s -m fast || true
+	fi
+}
+trap pg_stop EXIT
+
 cd ${WORKSPACE}/PostGIS_Worker_Run/label/${label}/$BRANCH
 
 sh autogen.sh
@@ -35,7 +43,4 @@ utils/check_all_upgrades.sh \
  err_status=$?
 
 
-if [ -d $PGDATA/postmaster.pid ] ; then
-	$PGCTL stop -D $PGDATA -s -m fast
-fi
 exit $err_status
