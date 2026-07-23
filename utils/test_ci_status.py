@@ -172,6 +172,79 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         self.assertEqual("build 7808", result["message"])
         self.assertEqual("https://ci.example.test/job/PostGIS_Make_Dist/7808/", result["url"])
 
+    def test_woodpecker_failure_names_single_failed_workflow(self):
+        check_config = {
+            "name": "Woodpecker",
+            "provider": "woodpecker",
+            "required": True,
+            "api_url": "https://woodie.example.test/api/repos/30/pipelines",
+            "web_url": "https://woodie.example.test/repos/30",
+        }
+        branch = {"name": "master", "label": "master"}
+        pipeline = {
+            "number": 5430,
+            "event": "push",
+            "branch": "master",
+            "ref": "refs/heads/master",
+            "status": "killed",
+            "commit": "a" * 40,
+            "message": "opaque commit message",
+        }
+        pipeline_detail = {
+            **pipeline,
+            "workflows": [
+                {"pid": 1, "id": 24450, "name": "regress", "state": "success"},
+                {"pid": 18, "id": 24467, "name": "regress", "state": "killed"},
+                {"pid": 27, "id": 24476, "name": "tools", "state": "success"},
+            ],
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", side_effect=([pipeline], pipeline_detail)) as http_json:
+            result = CI_STATUS.woodpecker_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.FAILURE, result["status"])
+        self.assertEqual("failed: regress/18", result["message"])
+        self.assertEqual("https://woodie.example.test/repos/30/pipeline/5430/18", result["url"])
+        self.assertEqual("a" * 40, result["revision"])
+        self.assertEqual(
+            "https://woodie.example.test/api/repos/30/pipelines/5430",
+            http_json.call_args_list[1].args[0],
+        )
+
+    def test_woodpecker_running_workflows_are_summarized(self):
+        check_config = {
+            "name": "Woodpecker",
+            "provider": "woodpecker",
+            "required": True,
+            "api_url": "https://woodie.example.test/api/repos/30/pipelines",
+            "web_url": "https://woodie.example.test/repos/30",
+        }
+        branch = {"name": "stable-3.6", "label": "3.6"}
+        pipeline = {
+            "number": 5434,
+            "event": "pull_request",
+            "branch": "stable-3.6",
+            "ref": "refs/heads/stable-3.6",
+            "status": "running",
+            "commit": "b" * 40,
+            "workflows": [
+                {"pid": 1, "id": 24484, "name": "docs", "state": "success"},
+                {"pid": 2, "id": 24485, "name": "regress", "state": "running"},
+                {"pid": 3, "id": 24486, "name": "tools", "state": "success"},
+            ],
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", return_value=[pipeline]):
+            result = CI_STATUS.woodpecker_check(
+                {**check_config, "event": "pull_request"},
+                branch,
+                timeout=5,
+            )
+
+        self.assertEqual(CI_STATUS.IN_PROGRESS, result["status"])
+        self.assertEqual("running: regress", result["message"])
+        self.assertEqual("https://woodie.example.test/repos/30/pipeline/5434/2", result["url"])
+
     def test_stale_summary_distinguishes_passed_and_failed(self):
         branch = {
             "name": "stable-synthetic",

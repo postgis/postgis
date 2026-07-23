@@ -382,6 +382,72 @@ def woodpecker_matches_branch(build, check, branch):
     return build.get("ref") in (None, expected_ref)
 
 
+def woodpecker_workflow_label(workflow, duplicate_names):
+    name = workflow.get("name") or f"workflow {workflow.get('pid') or workflow.get('id')}"
+    pid = workflow.get("pid")
+    if pid is not None and name in duplicate_names:
+        return f"{name}/{pid}"
+    return name
+
+
+def woodpecker_workflow_url(web_url, pipeline, workflow):
+    if not web_url or not pipeline.get("number") or workflow.get("pid") is None:
+        return None
+    return f"{web_url}/pipeline/{pipeline['number']}/{workflow['pid']}"
+
+
+def woodpecker_pipeline_detail_url(api_url, pipeline):
+    if not pipeline.get("number"):
+        return None
+    return f"{api_url.rstrip('/')}/{pipeline['number']}"
+
+
+def woodpecker_workflow_details(pipeline, web_url):
+    workflows = pipeline.get("workflows") or []
+    if not workflows:
+        return None
+
+    name_counts = {}
+    for workflow in workflows:
+        name = workflow.get("name") or f"workflow {workflow.get('pid') or workflow.get('id')}"
+        name_counts[name] = name_counts.get(name, 0) + 1
+    duplicate_names = {name for name, count in name_counts.items() if count > 1}
+
+    buckets = [
+        ("failed", []),
+        ("running", []),
+        ("unknown", []),
+    ]
+    by_bucket = dict(buckets)
+    for workflow in sorted(workflows, key=lambda item: item.get("pid") or item.get("id") or 0):
+        status = normalize_woodpecker_status(workflow.get("state") or workflow.get("status"))
+        if status == SUCCESS:
+            continue
+        label = woodpecker_workflow_label(workflow, duplicate_names)
+        if status == FAILURE:
+            by_bucket["failed"].append((label, workflow))
+        elif status == IN_PROGRESS:
+            by_bucket["running"].append((label, workflow))
+        else:
+            by_bucket["unknown"].append((label, workflow))
+
+    parts = []
+    non_success = []
+    for heading, items in buckets:
+        if not items:
+            continue
+        labels = [label for label, workflow in items]
+        parts.append(f"{heading}: {', '.join(labels)}")
+        non_success.extend(workflow for label, workflow in items)
+    if not parts:
+        return None
+
+    details = {"message": "; ".join(parts)}
+    if len(non_success) == 1:
+        details["url"] = woodpecker_workflow_url(web_url, pipeline, non_success[0])
+    return details
+
+
 def woodpecker_check(check, branch, timeout):
     query = urllib.parse.urlencode({
         "branch": branch["name"],
@@ -404,6 +470,18 @@ def woodpecker_check(check, branch, timeout):
     run_url = current.get("link") or current.get("url")
     if not run_url and web_url and current.get("number"):
         run_url = f"{web_url}/pipeline/{current['number']}"
+    detail_url = woodpecker_pipeline_detail_url(api_url, current)
+    if detail_url and "workflows" not in current:
+        try:
+            current = {**current, **http_json(detail_url, timeout=timeout)}
+        except RECOVERABLE_PROVIDER_ERRORS:
+            pass
+    message = current.get("message")
+    if normalize_woodpecker_status(current.get("status")) != SUCCESS:
+        details = woodpecker_workflow_details(current, web_url)
+        if details:
+            message = details["message"]
+            run_url = details.get("url") or run_url
     result = make_result(
         check,
         branch,
@@ -412,7 +490,7 @@ def woodpecker_check(check, branch, timeout):
         debug_url=url,
         revision=current.get("commit"),
         completed_at=current.get("finished") or current.get("updated") or current.get("created"),
-        message=current.get("message"),
+        message=message,
     )
     if previous:
         result.update(previous_fields(normalize_woodpecker_status(previous.get("status")), previous))
