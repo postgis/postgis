@@ -92,6 +92,9 @@ staged-install:
 	$(MAKE) staged-install-topology
 	$(MAKE) staged-install-sfcgal
 	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
+	# Upgrade tests may load the staged extension as the postgres OS user,
+	# so the staged tree must remain traversable regardless of the builder umask.
+	chmod -R a+rX $(REGRESS_INSTALLDIR)
 
 garden: staged-install
 	createdb postgis_garden
