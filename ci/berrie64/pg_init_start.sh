@@ -17,16 +17,16 @@ DAEMON="$PGPATH/bin/pg_ctl -D $PGDATA -o '-F' -l logfile start"
 PGCTL="$PGPATH/bin/pg_ctl"
 
 # remove cluster if exists
-if [ -d $PGDATA ] ; then
-    if [ -d $PGDATA/postmaster.pid] ; then
-    	$PGCTL stop -D $PGDATA -s -m fast
+if [ -d "$PGDATA" ] ; then
+    if test -s "$PGDATA/postmaster.pid" ; then
+        "$PGCTL" stop -D "$PGDATA" -s -m fast
     fi;
 
-    rm -rf $PGDATA
+    rm -rf "$PGDATA"
 fi;
 
 #initialize cluster
-$PGPATH/bin/initdb
+"$PGPATH/bin/initdb"
 
 echo -n "Starting PostgreSQL: "
 $DAEMON &

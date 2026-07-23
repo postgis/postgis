@@ -13,6 +13,14 @@ export CONFIG_FILE="$CUR_DIR/configs.sh"
 echo $PATH
 echo $WORKSPACE
 
+pg_stop()
+{
+	if [ -n "${PGDATA:-}" ] && test -s "${PGDATA}/postmaster.pid"; then
+		"${PGPATH}/bin/pg_ctl" stop -D "${PGDATA}" -s -m fast || true
+	fi
+}
+trap pg_stop EXIT
+
 sh autogen.sh
 ./configure --with-pgconfig=${PGPATH}/bin/pg_config \
   --with-geosconfig=${GEOS_PATH}/bin/geos-config \
@@ -32,7 +40,4 @@ err_status=$?
 #make garden
 #err_status=$?
 
-if [ -d $PGDATA/postmaster.pid ] ; then
-	$PGCTL stop -D $PGDATA -s -m fast
-fi
 exit $err_status
