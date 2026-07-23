@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-07-22 10:39+0000\n"
+"PO-Revision-Date: 2026-07-23 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -6999,19 +6999,19 @@ msgstr ""
 #. Tag: literal
 #, no-c-format
 msgid "postgis_sfcgal"
-msgstr ""
+msgstr "postgis_sfcgal"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Additional 2D and 3D processing functions backed by the optional SFCGAL "
 "library."
-msgstr ""
+msgstr "任意ライブラリの SFCGAL を裏で使った2次元と3次元の追加機能。"
 
 #. Tag: term
 #, no-c-format
 msgid "Loaders and utilities"
-msgstr ""
+msgstr "ローダーとユーティリティ"
 
 #. Tag: para
 #, no-c-format
@@ -7020,6 +7020,10 @@ msgid ""
 "<command>raster2pgsql</command> move data between common file formats and "
 "PostGIS. Other utilities support upgrades, profiling, and development."
 msgstr ""
+"<command>shp2pgsql</command>、<command>pgsql2shp</command>、<command>"
+"raster2pgsql</command> は一般的なファイル書式とPostGISとの間のデータ移動をす"
+"るものです。他のユーティリティとしてはアップグレード、プロファイリング、開発"
+"を補助するものがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -7032,11 +7036,18 @@ msgid ""
 "linkend=\"postgis_installation\"/> for available components and build "
 "options."
 msgstr ""
+"ソースツリーは <filename>liblwgeom</filename> や <filename>libpgcommon</"
+"filename> といった内部ライブラリーも持ちます。これらは PostGIS コンポーネント"
+"で共有される実装レイヤーであって、PostgreSQL エクステンションと別に配布される"
+"ものではありません。ほとんどのユーザーは中核エクステンションを <code>CREATE "
+"EXTENSION postgis</code> で有効化することで利用開始します。有効な"
+"コンポーネントと構築オプションについては <xref "
+"linkend=\"postgis_installation\"/> を参照して下さい。"
 
 #. Tag: title
 #, no-c-format
 msgid "The PostGIS Project Family"
-msgstr ""
+msgstr "PostGIS プロジェクトファミリー"
 
 #. Tag: para
 #, no-c-format
@@ -7047,6 +7058,12 @@ msgid ""
 "These projects have their own release cycles, installation instructions, and "
 "documentation; installing the core extension does not install them."
 msgstr ""
+"このマニュアルは主要ディストリビューション <literal>postgis/postgis</"
+"literal> を対象にしています。公式の <link xlink:href=\"https://"
+"gitea.osgeo.org/postgis/\">PostGIS source organization</link> では全"
+"プロジェクトのホスティングまたはミラーリングを行っています。これらの"
+"プロジェクトのリリースサイクル、インストール手順、文書はそれぞれ独自です。ま"
+"た、中核エクステンションはこれらのインストールを行いません。"
 
 #. Tag: para
 #, no-c-format
@@ -7056,6 +7073,9 @@ msgid ""
 "the main PostGIS source tree to a separate repository for the PostGIS 3.7 "
 "development cycle."
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/address_standardizer\">Address "
+"Standardizer</link> は、住所の構文解析と正規化を行います。PostGIS 3.7 で "
+"PostGIS 主要ソースツリーから分離されました。"
 
 #. Tag: para
 #, no-c-format
@@ -7065,6 +7085,10 @@ msgid ""
 "States address geocoding and reverse geocoding using Census TIGER data. It "
 "is also maintained separately from the main distribution."
 msgstr ""
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis_tiger_geocoder\">"
+"PostGIS TIGER Geocoder</link> は、米国国勢調査局の TIGER データを使って米国住"
+"所のジオコーディング機能と逆ジオコーディング機能を提供します。これも主要"
+"ディストリビューションから分離して維持管理されるようになりました。"
 
 #. Tag: para
 #, no-c-format
@@ -7073,6 +7097,9 @@ msgid ""
 "PostgreSQL bindings for the H3 hierarchical hexagonal indexing system and "
 "interoperates with PostGIS."
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/h3-pg\">H3-pg</link> は H3 階層"
+"型六角形インデックスシステムの PostgreSQL 利用とPostGIS との相互運用を提供し"
+"ています。"
 
 #. Tag: para
 #, no-c-format
@@ -7080,6 +7107,8 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis-java\">PostGIS Java</"
 "link> provides Java bindings for PostGIS types."
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis-java\">PostGIS Java</"
+"link> は Java での PostGIS の型のバインディングを提供しています。"
 
 #. Tag: para
 #, no-c-format
@@ -7088,6 +7117,9 @@ msgid ""
 "\">Introduction to PostGIS</link> is the hands-on workshop maintained by the "
 "PostGIS project."
 msgstr ""
+"<link xlink:href=\"https://postgis.net/workshops/postgis-intro/\">"
+"Introduction to PostGIS</link> は PostGIS プロジェクトが管理する"
+"ハンズオンワークショップです。"
 
 #. Tag: para
 #, no-c-format
@@ -7097,11 +7129,15 @@ msgid ""
 "\">pgRouting</link> adds routing and graph analysis. Use each project's own "
 "manual for its functions and support policy."
 msgstr ""
+"その他の PostgreSQL 空間エクステンションは、独立したプロジェクトを維持すると"
+"同時に PostGIS を補完するものです。例えば <link xlink:href=\"https://"
+"pgrouting.org/\">pgRouting</link> は経路探索やグラフ解析の機能を追加します。"
+"プロジェクトごとに独自のマニュアルやサポートポリシーがあります。"
 
 #. Tag: title
 #, no-c-format
 msgid "How to Use This Manual"
-msgstr ""
+msgstr "このマニュアルの使い方"
 
 #. Tag: para
 #, no-c-format
@@ -7110,11 +7146,14 @@ msgid ""
 "reference for the SQL interface. Choose a starting point based on what you "
 "are trying to do:"
 msgstr ""
+"このマニュアルは PostGIS データモデルのガイドであり、かつ SQL "
+"インターフェースの完全な参照です。開始点は皆さんの行おうとしていることに応じ"
+"て次から選択します:"
 
 #. Tag: term
 #, no-c-format
 msgid "If you are new to spatial SQL"
-msgstr ""
+msgstr "空間 SQL が初めての場合"
 
 #. Tag: para
 #, no-c-format
@@ -7124,11 +7163,15 @@ msgid ""
 "<xref linkend=\"using_postgis_dbmanagement\"/> to understand spatial types, "
 "coordinate systems, validity, loading, and indexes."
 msgstr ""
+"チュートリアルとして <link xlink:href=\"https://postgis.net/workshops/"
+"postgis-intro/\">Introduction to PostGIS workshop</link> から始めるといいでし"
+"ょう。その後 <xref linkend=\"using_postgis_dbmanagement\"/> を使って空間型、"
+"座標系、妥当性、ロード、インデックスといったことを理解していきます。"
 
 #. Tag: term
 #, no-c-format
 msgid "If you are installing or upgrading PostGIS"
-msgstr ""
+msgstr "PostGISのインストールまたはアップグレードを行う場合"
 
 #. Tag: para
 #, no-c-format
@@ -7139,11 +7182,16 @@ msgid ""
 "xlink:href=\"https://postgis.net/documentation/getting_started/\">PostGIS "
 "website</link>."
 msgstr ""
+"<xref linkend=\"postgis_installation\"/> と <xref "
+"linkend=\"postgis_administration\"/> を読んで下さい。パッケージ独自の"
+"インストールとサポート対象リリース情報は <link xlink:href=\"https://"
+"postgis.net/documentation/getting_started/\">PostGIS website</link> にありま"
+"す。"
 
 #. Tag: term
 #, no-c-format
 msgid "If you are writing spatial queries"
-msgstr ""
+msgstr "空間クエリーを書く場合"
 
 #. Tag: para
 #, no-c-format
@@ -7152,11 +7200,14 @@ msgid ""
 "index-aware query patterns, and <xref linkend=\"performance_tips\"/> for "
 "common performance problems."
 msgstr ""
+"空間関係とインデックスを意識したクエリーパターンについては <xref "
+"linkend=\"using_postgis_query\"/> を、また一般的な効率上の問題については "
+"<xref linkend=\"performance_tips\"/> を読んで下さい。"
 
 #. Tag: term
 #, no-c-format
 msgid "If you need a particular function"
-msgstr ""
+msgstr "特定の関数が必要な場合"
 
 #. Tag: para
 #, no-c-format
@@ -7166,11 +7217,15 @@ msgid ""
 "types, dimensional support, standards conformance, dependency requirements, "
 "and version availability."
 msgstr ""
+"<xref linkend=\"reference\"/> または <xref "
+"linkend=\"PostGIS_Special_Functions_Index\"/> を使います。関数のページでは受"
+"け付ける型、次元対応、標準準拠、必要ライブラリー、利用可能なバージョンが書か"
+"れています。"
 
 #. Tag: term
 #, no-c-format
 msgid "If you use an optional component"
-msgstr ""
+msgstr "任意コンポーネントを使う場合"
 
 #. Tag: para
 #, no-c-format
@@ -7178,11 +7233,14 @@ msgid ""
 "See <xref linkend=\"Topology\"/>, <xref linkend=\"using_raster_dataman\"/>, "
 "<xref linkend=\"RT_reference\"/>, or <xref linkend=\"reference_sfcgal\"/>."
 msgstr ""
+"<xref linkend=\"Topology\"/>、<xref linkend=\"using_raster_dataman\"/>"
+"、<xref linkend=\"RT_reference\"/>、<xref linkend=\"reference_sfcgal\"/> を読"
+"んで下さい。"
 
 #. Tag: term
 #, no-c-format
 msgid "If something goes wrong"
-msgstr ""
+msgstr "問題が発生した場合"
 
 #. Tag: para
 #, no-c-format
@@ -7191,6 +7249,9 @@ msgid ""
 "and follow <xref linkend=\"reporting\"/>. Check <xref "
 "linkend=\"release_notes\"/> when behavior differs between release lines."
 msgstr ""
+"<xref linkend=\"PostGIS_Full_Version\"/> でバージョン情報を得たうえで <xref "
+"linkend=\"reporting\"/> に従ってください。リリース系列間でふるまいが異なる時"
+"は <xref linkend=\"release_notes\"/> を確認して下さい。"
 
 #. Tag: title
 #, no-c-format
