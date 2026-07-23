@@ -172,6 +172,61 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         self.assertEqual("build 7808", result["message"])
         self.assertEqual("https://ci.example.test/job/PostGIS_Make_Dist/7808/", result["url"])
 
+    def test_jenkins_queue_prefers_current_branch_revision(self):
+        check_config = {
+            "name": "Jenkins / Berrie",
+            "provider": "jenkins",
+            "required": True,
+            "job_url": "https://ci.example.test/job/PostGIS_Worker_Run/label=berrie/",
+            "branch_parameter": "reference",
+        }
+        branch = {
+            "name": "master",
+            "label": "master",
+        }
+        old_revision = "7" * 40
+        current_revision = "4" * 40
+        queued = [
+            {
+                "id": 108699,
+                "task": {"url": "https://ci.example.test/job/PostGIS_Worker_Run/"},
+                "why": "Build #8,030 is already in progress",
+                "inQueueSince": 1784820000000,
+                "actions": [{"parameters": [
+                    {"name": "reference", "value": "refs/heads/master"},
+                    {"name": "after", "value": old_revision},
+                ]}],
+            },
+            {
+                "id": 108746,
+                "task": {"url": "https://ci.example.test/job/PostGIS_Worker_Run/"},
+                "why": "Build #8,030 is already in progress",
+                "inQueueSince": 1784821000000,
+                "actions": [{"parameters": [
+                    {"name": "reference", "value": "refs/heads/master"},
+                    {"name": "after", "value": current_revision},
+                ]}],
+            },
+        ]
+
+        def fake_distance(revision, ref):
+            return 0 if revision == current_revision else 26
+
+        with (
+            mock.patch.object(CI_STATUS, "jenkins_queue_items", return_value=queued),
+            mock.patch.object(CI_STATUS, "git_commit_distance", side_effect=fake_distance),
+        ):
+            result = CI_STATUS.jenkins_queued_check(
+                check_config,
+                branch,
+                "https://ci.example.test/job/PostGIS_Worker_Run/label=berrie/",
+                timeout=5,
+            )
+
+        self.assertEqual(CI_STATUS.IN_PROGRESS, result["status"])
+        self.assertEqual(current_revision, result["revision"])
+        self.assertEqual("queued item 108746: Build #8,030 is already in progress", result["message"])
+
     def test_woodpecker_failure_names_single_failed_workflow(self):
         check_config = {
             "name": "Woodpecker",
