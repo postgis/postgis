@@ -5,7 +5,7 @@ postgis_restore - restore a PostGIS database from an archive file created by pg_
 
 .SH "SYNTAX"
 .LP
-postgis_restore [\fI-v\fR] [\fI-L TOC\fR] [\fI-s schema\fR] \fIdumpfile\fR
+postgis_restore [\fI-v\fR] [\fI-L TOC\fR] [\fI-s schema\fR] \fIdumpfile\fR [\fI-- pg_restore-arg ...\fR]
 
 .SH "DESCRIPTION"
 .LP
@@ -26,6 +26,8 @@ those created with \fIpg_dump -Fc\fR.
 Usage information is printed when the script is invoked with no
 arguments.
 
+Arguments after \fI--\fR are passed through to \fIpg_restore\fR.
+
 .SH "EXAMPLES"
 .LP
 
@@ -44,6 +46,10 @@ PostGIS-enable the new database:
 Restore your data:
 
 	postgis_restore.pl olddb.dump | psql newdb
+
+Restore schema objects only by passing an option through to \fIpg_restore\fR:
+
+	postgis_restore.pl olddb.dump -- --schema-only | psql newdb
 
 .SH "AUTHORS"
 .LP

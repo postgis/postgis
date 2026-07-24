@@ -291,6 +291,14 @@ string, and next time you'll need to drop the "next" suffix again:
 
 	  <programlisting language="bash">postgis_restore "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
 
+	  <para>
+		To pass additional options to the underlying
+		<application>pg_restore</application> calls, put them after a
+		<literal>--</literal> separator following the dump path.
+	  </para>
+
+	  <programlisting>postgis_restore "/somepath/olddb.backup" -- --schema-only | psql -h localhost -p 5432 -U postgres newdb 2&gt; errors.txt</programlisting>
+
 	</listitem>
 
 	</orderedlist>
