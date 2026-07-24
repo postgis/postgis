@@ -117,6 +117,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - ST_CoverageEdges, returns MultiLinestring of distinct shared edges in
           polygonal coverage (Paul Ramsey)
  - ST_MinimumSpanningTree, window function to calculate MST (Paul Ramsey)
+ - #5996, ST_FilterHolesByArea removes polygon holes below an area threshold
+          (Darafei Praliaskouski)
  - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
           (Sandro Santilli)
  - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)

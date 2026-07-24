@@ -1808,6 +1808,52 @@ view       | POLYGON((12 12,12 18,18 18,18 12,12 12))</screen>
 
 	</refentry>
 
+	<refentry xml:id="ST_FilterHolesByArea">
+	  <refnamediv>
+		<refname>ST_FilterHolesByArea</refname>
+		<refpurpose>Removes polygon interior rings with an area below a threshold.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_FilterHolesByArea</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>double precision </type> <parameter>minArea</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <xref linkend="geometry"/> with interior rings removed from polygonal components when the ring area is smaller than <parameter>minArea</parameter>.</para>
+		<para>The function evaluates <varname>POLYGON</varname> and <varname>CURVEPOLYGON</varname> components, including components inside collection types. Exterior rings and non-polygonal components remain unchanged.</para>
+		<para>For curved rings, area is evaluated with the same curve linearization used by <xref linkend="ST_Area"/>.</para>
+		<para><parameter>minArea</parameter> is measured in square coordinate-system units of the geometry.</para>
+
+		<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_AsText(
+				ST_FilterHolesByArea(
+					ST_GeomFromText('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),
+						(1 1, 2 1, 2 2, 1 2, 1 1),
+						(4 4, 8 4, 8 8, 4 8, 4 4))'),
+					2.0::float8));</programlisting>
+<screen>POLYGON((0 0,10 0,10 10,0 10,0 0),(4 4,8 4,8 8,4 8,4 4))</screen>
+
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Area"/>, <xref linkend="ST_RemoveSmallParts"/></para>
+	  </refsection>
+	</refentry>
+
 	<refentry xml:id="ST_Reverse">
 	  <refnamediv>
 		<refname>ST_Reverse</refname>

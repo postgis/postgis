@@ -7341,6 +7341,15 @@ AS 'MODULE_PATHNAME','ST_RemoveSmallParts'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+-----------------------------------------------------------------------
+-- ST_FilterHolesByArea
+-----------------------------------------------------------------------
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_FilterHolesByArea(geometry, double precision)
+RETURNS geometry
+AS 'MODULE_PATHNAME','ST_FilterHolesByArea'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
 
 #include "postgis_nurbs.sql.in"
 
