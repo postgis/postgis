@@ -46,7 +46,7 @@
 #include <string.h>
 
 /* Prototype */
-static LWGEOM *parse_geojson(json_object *geojson, int *hasz);
+LWGEOM *parse_geojson_internal(json_object *geojson, int *hasz);
 
 static inline json_object *
 findMemberByName(json_object *poObj, const char *pszName)
@@ -345,7 +345,7 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 		for (int i = 0; i < nGeoms; ++i)
 		{
 			json_object *poObjGeom = json_object_array_get_idx(poObjGeoms, i);
-			LWGEOM *t = parse_geojson(poObjGeom, hasz);
+			LWGEOM *t = parse_geojson_internal(poObjGeom, hasz);
 			if (t)
 				geom = (LWGEOM *)lwcollection_add_lwgeom((LWCOLLECTION *)geom, t);
 			else
@@ -359,8 +359,8 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 	return geom;
 }
 
-static inline LWGEOM *
-parse_geojson(json_object *geojson, int *hasz)
+LWGEOM *
+parse_geojson_internal(json_object *geojson, int *hasz)
 {
 	json_object *type = NULL;
 	const char *name;
@@ -455,7 +455,7 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	}
 
 	int hasz = LW_FALSE;
-	LWGEOM *lwgeom = parse_geojson(poObj, &hasz);
+	LWGEOM *lwgeom = parse_geojson_internal(poObj, &hasz);
 	json_object_put(poObj);
 	if (!lwgeom)
 		return NULL;
