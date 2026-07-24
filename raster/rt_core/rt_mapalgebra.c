@@ -5,6 +5,7 @@
  *
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
@@ -1274,7 +1275,11 @@ rt_raster_iterator(
 				/* neighborhood */
 				npixels = NULL;
 				status = 0;
-				if (distancex > 0 && distancey > 0) {
+				/* One-dimensional masks still require a neighborhood on the
+				 * non-zero axis; otherwise the callback sees only the center
+				 * pixel and NULLs for the rest of the row or column. */
+				if (distancex > 0 || distancey > 0)
+				{
 					RASTER_DEBUG(4, "getting neighborhood");
 
 					status = rt_band_get_nearest_pixel(

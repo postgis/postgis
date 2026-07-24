@@ -34,6 +34,27 @@ CREATE OR REPLACE FUNCTION raster_nmapalgebra_test(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION raster_nmapalgebra_dims(
+	value double precision[][][],
+	pos int[][],
+	VARIADIC userargs text[]
+)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		cell double precision;
+		cellcount int := 0;
+	BEGIN
+		FOREACH cell IN ARRAY value LOOP
+			IF cell IS NOT NULL THEN
+				cellcount := cellcount + 1;
+			END IF;
+		END LOOP;
+
+		RETURN array_length(value, 2) * 30 + array_length(value, 3) * 5 + cellcount;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
 SET client_min_messages TO notice;
 
 select st_mapalgebra(rast,1,'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,ARRAY[[1,1],[1,1],[1,1]]::double precision[],false) from raster_nmapalgebra_mask_in;
@@ -120,5 +141,36 @@ FROM (SELECT rid, st_dumpvalues(st_mapalgebra(rast,1,'raster_nmapalgebra_test(do
     from raster_nmapalgebra_mask_in) AS f
 ORDER BY rid, (dv).nband;
 
+SELECT '#3318', ST_Value(ST_MapAlgebra(
+	ST_AddBand(ST_MakeEmptyRaster(7, 7, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+	1,
+	'raster_nmapalgebra_dims(double precision[], int[], text[])'::regprocedure,
+	ARRAY[
+		[1,1,1,1,1],
+		[1,1,1,1,1],
+		[1,1,1,1,1],
+		[1,1,1,1,1],
+		[1,1,1,1,1]
+	]::double precision[],
+	false
+), 4, 4);
+
+SELECT '#3318-1x3', ST_Value(ST_MapAlgebra(
+	ST_AddBand(ST_MakeEmptyRaster(7, 7, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+	1,
+	'raster_nmapalgebra_dims(double precision[], int[], text[])'::regprocedure,
+	ARRAY[[1,1,1]]::double precision[],
+	false
+), 4, 4);
+
+SELECT '#3318-3x1', ST_Value(ST_MapAlgebra(
+	ST_AddBand(ST_MakeEmptyRaster(7, 7, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+	1,
+	'raster_nmapalgebra_dims(double precision[], int[], text[])'::regprocedure,
+	ARRAY[[1],[1],[1]]::double precision[],
+	false
+), 4, 4);
+
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
+DROP FUNCTION IF EXISTS raster_nmapalgebra_dims(double precision[], int[], text[]);
 DROP TABLE IF EXISTS raster_nmapalgebra_mask_in;
