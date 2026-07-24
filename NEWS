@@ -113,6 +113,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
           (Darafei Praliaskouski)
+ - #2428, Add perQuadrant parameter to ST_LineToCurve (Darafei Praliaskouski)
  - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)
  - ST_CoverageEdges, returns MultiLinestring of distinct shared edges in
           polygonal coverage (Paul Ramsey)

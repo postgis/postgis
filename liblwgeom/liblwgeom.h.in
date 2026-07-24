@@ -2393,6 +2393,7 @@ LWGEOM *lwgeom_stroke(const LWGEOM *geom, uint32_t perQuad);
 * strokes where possible.
 */
 LWGEOM *lwgeom_unstroke(const LWGEOM *geom);
+LWGEOM *lwgeom_unstroke_per_quad(const LWGEOM *geom, uint32_t perQuad);
 
 /**
  * Semantic of the `tolerance` argument passed to
