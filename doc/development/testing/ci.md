@@ -35,6 +35,45 @@ When a dashboard row describes dependency versions, operating systems, branch
 coverage, or test modes, the row should be regenerated from those sources or
 checked against them before publication.
 
+## Woodie API and Pipeline Approvals
+
+Use a Woodie personal access token for the Woodie API and
+[`woodpecker-cli`](https://woodpecker-ci.org/docs/cli). A Gitea access token is
+a separate credential and is not accepted by the Woodie API.
+
+Generate the token from the Woodie user page at
+<https://woodie.osgeo.org/user>. Do not print it, commit it, or put the literal
+value in shell history. Configure a named CLI context and verify the account
+before changing a pipeline:
+
+```bash
+read -rs WOODPECKER_TOKEN
+printf '\n'
+umask 077
+woodpecker-cli setup --context osgeo \
+  --server https://woodie.osgeo.org \
+  --token "$WOODPECKER_TOKEN"
+unset WOODPECKER_TOKEN
+woodpecker-cli context use osgeo
+woodpecker-cli info
+```
+
+Before approving a blocked pipeline, inspect its API record at
+`/api/repos/<repo-id>/pipelines/<pipeline-number>`. Confirm the repository,
+pipeline number, commit, ref, event, and current state all match the pull request
+that needs approval. Approve only that pipeline:
+
+```sh
+woodpecker-cli pipeline show <repo-id-or-full-name> <pipeline-number>
+woodpecker-cli pipeline approve <repo-id-or-full-name> <pipeline-number>
+woodpecker-cli pipeline show <repo-id-or-full-name> <pipeline-number>
+```
+
+An accepted approval command is not a successful build. Read the pipeline back,
+verify that the reviewer and commit are unchanged, and wait for a terminal
+state. Check every required workflow and failed child step before reporting the
+pipeline as green or diagnosing a source failure.
+
 ## Badge Inventory Rules
 
 For every badge entry, record enough metadata for another maintainer to verify
