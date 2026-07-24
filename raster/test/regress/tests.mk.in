@@ -109,6 +109,7 @@ RASTER_TEST_MAPALGEBRA = \
 	$(top_srcdir)/raster/test/regress/rt_mapalgebra_mask \
 	$(top_srcdir)/raster/test/regress/rt_union \
 	$(top_srcdir)/raster/test/regress/rt_invdistweight4ma \
+	$(top_srcdir)/raster/test/regress/rt_edgedetect \
 	$(top_srcdir)/raster/test/regress/rt_4ma \
 	$(top_srcdir)/raster/test/regress/rt_setvalues_geomval \
 	$(top_srcdir)/raster/test/regress/rt_elevation_functions \

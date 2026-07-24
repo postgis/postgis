@@ -13021,6 +13021,80 @@ WHERE rid = 2;</programlisting>
         <section xml:id="Raster_Processing_DEM">
             <title>Raster Processing: DEM (Elevation)</title>
 
+            <refentry xml:id="RT_ST_EdgeDetect">
+                <refnamediv>
+                    <refname>ST_EdgeDetect</refname>
+                    <refpurpose>Returns a raster with edges detected from a raster band using the Sobel operator.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_EdgeDetect</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>method=Sobel</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_EdgeDetect</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>method=Sobel</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+                        </funcprototype>
+
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <para>Returns a raster whose pixel values are the Sobel edge magnitude computed from the 3 by 3 neighborhood around each input pixel. The only supported <varname>method</varname> is Sobel.</para>
+
+                    <para>If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma"/> before computing the edge magnitude. Otherwise, a NODATA center pixel returns NODATA and NODATA neighbors use the center pixel value.</para>
+
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting language="sql">
+WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 3],
+            [1, 1, 3],
+            [1, 1, 3]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT
+    ST_DumpValues(ST_EdgeDetect(rast))
+FROM foo;
+
+                    </programlisting>
+                    <screen role="visual-primary text-primary">          st_dumpvalues
+----------------------------------
+ (1,"{{0,6.324555397033691,6.324555397033691},{0,8,8},{0,6.324555397033691,6.324555397033691}}")
+(1 row)</screen>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_MapAlgebra"/>,
+                        <xref linkend="RT_ST_HillShade"/>,
+                        <xref linkend="RT_ST_Slope"/>
+                    </para>
+                </refsection>
+            </refentry>
+
             <refentry xml:id="RT_ST_Aspect">
                 <refnamediv>
                     <refname>ST_Aspect</refname>
