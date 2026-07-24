@@ -206,6 +206,10 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           PDF builds while keeping HTML images transparent (Darafei Praliaskouski)
  - #2838, Emit valid X3D Coordinate nodes for 2D polygon output
           (Darafei Praliaskouski)
+ - #2924, [raster] Preserve requested GDAL warp skew for rasters with
+          default geotransforms (Darafei Praliaskouski)
+ - #3103, Add regression coverage for exact-schema find_srid and
+          geometry_columns lookups (Darafei Praliaskouski)
  - #1705, Infer constraint metadata for direct view and materialized view
           geometry columns (Darafei Praliaskouski)
  - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL
