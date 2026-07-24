@@ -64,6 +64,7 @@ RASTER_TEST_BANDPROPS = \
 	$(top_srcdir)/raster/test/regress/rt_pixelaspoints \
 	$(top_srcdir)/raster/test/regress/rt_pixelascentroids \
 	$(top_srcdir)/raster/test/regress/rt_setvalues_array \
+	$(top_srcdir)/raster/test/regress/rt_setvalues_raster \
 	$(top_srcdir)/raster/test/regress/rt_summarystats \
 	$(top_srcdir)/raster/test/regress/rt_count \
 	$(top_srcdir)/raster/test/regress/rt_histogram \
