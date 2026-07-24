@@ -2227,7 +2227,7 @@ MULTILINESTRING((76 175,101 150),(126 125,126 156.25)))</screen>
     <refentry xml:id="ST_Simplify">
       <refnamediv>
         <refname>ST_Simplify</refname>
-        <refpurpose>Returns a simplified representation of a geometry, using the Douglas-Peucker algorithm.</refpurpose>
+        <refpurpose>Returns a simplified representation of a geometry or geography, using the Douglas-Peucker algorithm.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2243,6 +2243,17 @@ MULTILINESTRING((76 175,101 150),(126 125,126 156.25)))</screen>
             <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
             <paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></paramdef>
           </funcprototype>
+          <funcprototype>
+            <funcdef>geography <function>ST_Simplify</function></funcdef>
+            <paramdef><type>geography</type> <parameter>geog</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+          </funcprototype>
+          <funcprototype>
+            <funcdef>geography <function>ST_Simplify</function></funcdef>
+            <paramdef><type>geography</type> <parameter>geog</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+            <paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></paramdef>
+          </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
 
@@ -2253,6 +2264,11 @@ MULTILINESTRING((76 175,101 150),(126 125,126 156.25)))</screen>
             The simplification <varname>tolerance</varname> is a distance value, in the units of the input SRS.
             Simplification removes vertices which are within the tolerance distance of the simplified linework.
             The result may not be valid even if the input is.
+            </para>
+          <para>
+            For geography inputs, the tolerance is specified in meters.
+            The geography is transformed to a best-fit planar spatial reference system,
+            simplified there, and transformed back to geography.
             </para>
           <para>
             The function can be called with any kind of geometry (including GeometryCollections),
@@ -2272,6 +2288,7 @@ MULTILINESTRING((76 175,101 150),(126 125,126 156.25)))</screen>
         <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
 
         <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
+        <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for geography was introduced.</para>
       </refsection>
 
           <refsection>
@@ -2301,6 +2318,12 @@ np100_geometrygoesaway   | t</screen>
     <programlisting>SELECT ST_Simplify('MULTIPOLYGON (((90 110,80 180,50 160,10 170,10 140,20 110,90 110)),((40 80,100 100,120 160,170 180,190 70,140 10,110 40,60 40,40 80),(180 70,170 110,142.5 128.5,128.5 77.5,90 60,180 70)))'::geometry,
 40);</programlisting>
 <screen role="visual-primary text-primary">MULTIPOLYGON(((90 110,80 180,10 170,20 110,90 110)),((40 80,170 180,140 10,40 80),(180 70,142.5 128.5,90 60,180 70)))</screen>
+
+    <para>Simplifying a geographic line, using a tolerance in meters.</para>
+    <programlisting>SELECT ST_AsText(ST_Simplify(
+  'LINESTRING(-71.060316 48.432044,-71.0608 48.4327,-71.0612 48.4334,-71.062 48.434)'::geography,
+    75), 6);</programlisting>
+<screen>LINESTRING(-71.060316 48.432044,-71.062 48.434)</screen>
 
           </refsection>
           <refsection>

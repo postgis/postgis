@@ -30,6 +30,20 @@ geog_precision_pazafir|0|0
 segmentize_geography|39092
 segmentize_geography2|t
 segmentize_geography_3667|t
+simplify_geography|4|2|4326
+simplify_geography_preserve_collapsed|2|2|4326
+simplify_geography_collapse_polygon|t|POLYGON|4
+simplify_geography_drop_collapsed_hole|0|1
+simplify_text_literal|LINESTRING|LINESTRING
+simplify_geography_empty|LINESTRING EMPTY|LINESTRING EMPTY|4326
+simplify_geography_antimeridian|LINESTRING(-170 0,0 0,170 0)|37848626.870|37848626.870
+simplify_geography_existing_dateline|4|2226389.816|2226389.816
+simplify_geography_preserve_wide_route|LINESTRING(-80 45,0 45,80 45)|LINESTRING(-80 45,0 45,80 45)|12057688.485|12057688.485
+simplify_geography_preserve_antipodal_candidate|LINESTRING(0 0,90 0,180 0)|0.000
+simplify_geography_preserve_near_antipodal_candidate|LINESTRING(0 0,90 0,179.999999999998 0)|0.000
+simplify_geography_collection_polygon_point|6|5|POINT(10 10)
+simplify_geography_collection_line_point|4|3|POINT(1 1)
+simplify_geography_preserve_collection_components|f
 typmod_point_4326|(Point,4326)
 typmod_point_0|(Point,4326)
 NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
