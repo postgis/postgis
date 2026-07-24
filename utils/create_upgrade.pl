@@ -198,6 +198,25 @@ while(<INPUT>)
     }
 
     #
+    # Preserve explicitly marked top-level statements that must run in both
+    # install and upgrade scripts.
+    #
+    if ( $comment =~ /^\-\- Upgrade pass-through\s*$/m )
+    {
+        print $comment;
+        print;
+        while ( !/;\s*$/ )
+        {
+            $_ = <INPUT>;
+            die "ERROR: unterminated upgrade pass-through statement\n"
+              if !defined;
+            print;
+        }
+        $comment = '';
+        next;
+    }
+
+    #
     # Allow through deprecations from postgis_drop.sql
     #
     print if (/^drop function /i);
@@ -1067,4 +1086,3 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql';
-

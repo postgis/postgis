@@ -13,6 +13,11 @@ cat > "${TMPDIR}/postgis.sql" <<'SQL'
 CREATE OR REPLACE FUNCTION ST_Test(geometry, float8 DEFAULT 0.0) RETURNS geometry
 AS 'MODULE_PATHNAME', 'ST_Test'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+-- Upgrade pass-through
+SELECT check_upgrade_guard(
+	'3.7.0dev',
+	postgis_lib_version()
+);
 SQL
 
 "${PERL:-perl}" "${srcdir:-.}/create_upgrade.pl" "${TMPDIR}/postgis.sql" > "${TMPDIR}/upgrade.sql"
@@ -25,4 +30,8 @@ grep -Fq \
 
 grep -Fq \
 	"retry SELECT postgis_extensions_upgrade()" \
+	"${TMPDIR}/upgrade.sql"
+
+grep -Fq \
+	"SELECT check_upgrade_guard(" \
 	"${TMPDIR}/upgrade.sql"

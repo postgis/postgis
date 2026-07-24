@@ -1,5 +1,38 @@
 BEGIN;
 
+SELECT 'matching_library',
+	_postgis_check_library_version('3.7.0beta1', '3.7.0beta1');
+
+SELECT 'newer_library',
+	_postgis_check_library_version('3.6.4', '3.7.0beta1');
+
+SELECT 'dev_library_with_prerelease_scripts',
+	_postgis_check_library_version('3.7.0beta1', '3.7.0dev');
+
+SELECT 'dev_library_with_final_scripts',
+	_postgis_check_library_version('3.7.0', '3.7.0dev');
+
+SELECT 'dev_scripts_with_final_library',
+	_postgis_check_library_version('3.7.0dev', '3.7.0');
+
+SELECT 'same_minor_micro_versions',
+	_postgis_check_library_version('3.7.1', '3.7.0');
+
+SELECT 'same_minor_official_suffixes',
+	_postgis_check_library_version('3.7.0beta1', '3.7.0alpha1');
+
+DO $$
+DECLARE
+	error_hint text;
+BEGIN
+	PERFORM _postgis_check_library_version('3.7.0beta1', '3.6.4');
+EXCEPTION WHEN raise_exception THEN
+	GET STACKED DIAGNOSTICS error_hint = PG_EXCEPTION_HINT;
+	RAISE NOTICE '%', SQLERRM;
+	RAISE NOTICE 'HINT: %', error_hint;
+END
+$$;
+
 DO $$
 BEGIN
 	IF NOT EXISTS (

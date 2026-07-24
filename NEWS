@@ -8,6 +8,9 @@ These are only changes since 3.7.0beta1.
 
 * Bug Fixes *
 
+ - GT-504, Report extension script/library version mismatches before loading
+          functions unavailable in an older library (Darafei Praliaskouski)
+
 * Enhancements *
 
 

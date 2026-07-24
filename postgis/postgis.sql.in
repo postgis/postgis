@@ -61,6 +61,81 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
+CREATE OR REPLACE FUNCTION _postgis_scripts_version_cmp_key(ver text)
+	RETURNS int[]
+	AS $$
+	DECLARE
+		ver_match text[];
+	BEGIN
+		ver_match := pg_catalog.regexp_match(
+			pg_catalog.lower(ver),
+			E'^([0-9]+)\\.([0-9]+)\\.([0-9]+)(dev|alpha|beta|rc)?([0-9]*)([^0-9a-z].*)?$'
+		);
+		IF ver_match IS NULL THEN
+			RETURN NULL;
+		END IF;
+
+		RETURN ARRAY[
+			ver_match[1]::int,
+			ver_match[2]::int,
+			ver_match[3]::int,
+			CASE coalesce(ver_match[4], '')
+				WHEN 'dev' THEN 0
+				WHEN 'alpha' THEN 1
+				WHEN 'beta' THEN 2
+				WHEN 'rc' THEN 3
+				ELSE 4
+			END,
+			CASE coalesce(ver_match[5], '')
+				WHEN '' THEN 0
+				ELSE ver_match[5]::int
+			END
+		];
+	EXCEPTION WHEN OTHERS THEN
+		RETURN NULL;
+	END
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION postgis_lib_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE; -- a new lib will require a new session
+
+CREATE OR REPLACE FUNCTION _postgis_check_library_version(
+	scripts_version text,
+	library_version text
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		scripts_key int[];
+		library_key int[];
+	BEGIN
+		scripts_key := @extschema@._postgis_scripts_version_cmp_key(scripts_version);
+		library_key := @extschema@._postgis_scripts_version_cmp_key(library_version);
+
+		-- Shared-library compatibility follows the major.minor release line.
+		-- Micro versions and postfixes do not establish C-symbol availability.
+		IF library_key[1:2] < scripts_key[1:2]
+		THEN
+			RAISE EXCEPTION
+				'PostGIS extension scripts version % cannot use older library version %',
+				scripts_version,
+				library_version
+			USING HINT =
+				'Install matching PostGIS shared-library and extension-script packages, reconnect, and retry.';
+		END IF;
+
+		RETURN true;
+	END
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-- Upgrade pass-through
+SELECT @extschema@._postgis_check_library_version(
+	POSTGIS_LIB_VERSION,
+	@extschema@.postgis_lib_version()
+);
 
 -- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
@@ -3143,51 +3218,11 @@ CREATE OR REPLACE FUNCTION postgis_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION postgis_lib_version() RETURNS text
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE; -- a new lib will require a new session
-
 -- NOTE: from 1.1.0 to 1.5.x this was the same of postgis_lib_version()
 -- NOTE: from 2.0.0 up it includes postgis revision
 CREATE OR REPLACE FUNCTION postgis_scripts_released() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION _postgis_scripts_version_cmp_key(ver text)
-	RETURNS int[]
-	AS $$
-	DECLARE
-		ver_match text[];
-	BEGIN
-		ver_match := pg_catalog.regexp_match(
-			pg_catalog.lower(ver),
-			E'^([0-9]+)\\.([0-9]+)\\.([0-9]+)(dev|alpha|beta|rc)?([0-9]*)([^0-9a-z].*)?$'
-		);
-		IF ver_match IS NULL THEN
-			RETURN NULL;
-		END IF;
-
-		RETURN ARRAY[
-			ver_match[1]::int,
-			ver_match[2]::int,
-			ver_match[3]::int,
-			CASE coalesce(ver_match[4], '')
-				WHEN 'dev' THEN 0
-				WHEN 'alpha' THEN 1
-				WHEN 'beta' THEN 2
-				WHEN 'rc' THEN 3
-				ELSE 4
-			END,
-			CASE coalesce(ver_match[5], '')
-				WHEN '' THEN 0
-				ELSE ver_match[5]::int
-			END
-		];
-	EXCEPTION WHEN OTHERS THEN
-		RETURN NULL;
-	END
-	$$
-	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION postgis_geos_version() RETURNS text
 	AS 'MODULE_PATHNAME'
