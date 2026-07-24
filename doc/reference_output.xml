@@ -1566,7 +1566,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
         <para>Below is how we currently map PostGIS 2D/3D types to X3D types</para>
     </note>
 
-        <para>The 'options' argument is a bitfield that denotes whether to represent coordinates with the X3D GeoCoordinates geospatial node and whether to flip the x/y axis.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred.</para>
+        <para>The 'options' argument is a bitfield that denotes whether to represent coordinates with the X3D GeoCoordinates geospatial node, whether to flip the x/y axis, and whether GeometryCollection members should be emitted as geometry nodes without enclosing Shape tags.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred.</para>
 
         <itemizedlist>
             <listitem>
@@ -1580,6 +1580,10 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
             <listitem>
               <para>2: Output coordinates in GeoSpatial GeoCoordinates.  This option will throw an error if geometries are not in WGS 84 long lat (srid: 4326). This is currently the only GeoCoordinate type supported.  <link xlink:href="http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference">Refer to X3D specs specifying a spatial reference system.</link>. Default output will be <code>GeoCoordinate geoSystem='"GD" "WE" "longitude_first"'</code>.  If
               you prefer the X3D default of  <code>GeoCoordinate geoSystem='"GD" "WE" "latitude_first"'</code> use <code>(2 + 1)</code> = <code>3</code> </para>
+            </listitem>
+
+            <listitem>
+              <para>4: For GeometryCollection output, omit the default Shape wrappers around child geometry nodes.</para>
             </listitem>
         </itemizedlist>
 
@@ -1616,7 +1620,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
             </row>
             <row>
             <entry>(MULTI) POLYGON, POLYHEDRALSURFACE</entry>
-            <entry>Invalid X3D markup</entry>
+            <entry>IndexedFaceSet with Z set to 0</entry>
             <entry>IndexedFaceSet (inner rings currently output as another faceset)</entry>
             </row>
             <row>
@@ -1633,6 +1637,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     <para>Also check out <link xlink:href="https://git.osgeo.org/gitea/robe/postgis_x3d_viewer">PostGIS minimalist X3D viewer</link>  that utilizes this function and <link xlink:href="http://www.x3dom.org/">x3dDom html/js open source toolkit</link>.</para>
     <para role="availability" conformance="2.0.0">Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
     <para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
+    <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0: Option 4 can emit GeometryCollection child geometry nodes without Shape wrappers.</para>
     <!-- Optionally mention 3d support -->
     <para>&Z_support;</para>
         <!-- Optionally mention supports Polyhedral Surface  -->

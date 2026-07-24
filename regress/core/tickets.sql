@@ -819,6 +819,23 @@ SELECT '#2424', ST_AsText(ST_SnapToGrid(ST_CurveToLine(
 
 SELECT '#2427', st_astext(st_pointn(ST_CurveToLine('CIRCULARSTRING(-1 0,0 1,0 -1)'),1));
 
+SELECT '#3472.1', ST_AsX3D(
+  'GEOMETRYCOLLECTION(POINT(0 1 3),LINESTRING(2 3 3,4 5 3))'::geometry, 0);
+SELECT '#3472.2', ST_AsX3D(
+  'GEOMETRYCOLLECTION(POINT(0 1 3),LINESTRING(2 3 3,4 5 3))'::geometry, 0, 4);
+SELECT '#3472.3', ST_AsX3D(
+  'GEOMETRYCOLLECTION(POINT(0 1 3),POINT(2 3 4))'::geometry, 0, 4);
+SELECT '#3472.4', ST_AsX3D(
+  'GEOMETRYCOLLECTION(POINT(0 1 3),POLYGON((2 3 3,4 5 3,6 7 3,2 3 3)))'::geometry, 0, 4);
+SELECT '#3472.5', ST_AsX3D(
+  'GEOMETRYCOLLECTION(POINT(0 1),POLYGON((2 3,4 5,6 7,2 3)))'::geometry, 0, 4);
+SELECT '#3472.6', ST_AsX3D(
+  'GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))'::geometry, 0, 4);
+SELECT '#3472.7', ST_AsX3D(
+  'GEOMETRYCOLLECTION(POINT(0 1 3),GEOMETRYCOLLECTION(LINESTRING(2 3 3,4 5 3)))'::geometry, 0, 4);
+SELECT '#3472.8', ST_AsX3D(
+  'POLYHEDRALSURFACE(((0 0,0 1,1 1,0 0)))'::geometry, 0);
+
 SELECT '#2168',  ST_Distance(g1,g2)::numeric(16,8)  As dist_g1_g2, ST_Distance(g2,g1)::numeric(16,8) AS dist_g2_g1,ST_Distance(g1,g2) - ST_Distance(g2,g1)
   FROM (SELECT 'POINT(18.5107234 54.7587757)'::geography As g1, 'POINT(18.58218 54.7344227)'::geography As g2) As a;
 
