@@ -28,6 +28,7 @@ RUNTESTFLAGS_INTERNAL += \
   --before-uninstall-script $(top_srcdir)/regress/hooks/hook-before-uninstall.sql
 
 TESTS += \
+	$(top_srcdir)/regress/core/3dslope \
 	$(top_srcdir)/regress/core/affine \
 	$(top_srcdir)/regress/core/azimuth \
 	$(top_srcdir)/regress/core/bestsrid \

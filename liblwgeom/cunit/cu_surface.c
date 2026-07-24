@@ -10,6 +10,7 @@
  **********************************************************************/
 
 #include "cu_surface.h"
+#include <math.h>
 
 void triangle_parse(void)
 {
@@ -105,6 +106,96 @@ void triangle_parse(void)
 	lwfree(g);
 }
 
+static void
+check_geom_slope(const char *wkt, double expected)
+{
+	LWGEOM *geom;
+	double slope = -1.0;
+
+	geom = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_slope(geom, &slope), LW_SUCCESS);
+	CU_ASSERT_DOUBLE_EQUAL(slope, expected, 0.0000001);
+	lwgeom_free(geom);
+}
+
+void
+triangle_slope(void)
+{
+	LWGEOM *geom;
+	double slope = -1.0;
+
+	check_geom_slope("TRIANGLE Z((0 0 0,1 0 0,0 1 0,0 0 0))", 0.0);
+	check_geom_slope("TRIANGLE Z((0 0 0,0 0 1,0 1 0,0 0 0))", M_PI_2);
+	check_geom_slope("TRIANGLE Z((0 0 0,1 0 1,0 1 0,0 0 0))", M_PI_4);
+	check_geom_slope("TRIANGLE Z((0 0 0,0 1 0,1 0 1,0 0 0))", M_PI_4);
+	check_geom_slope("TRIANGLE((0 0,1 0,0 1,0 0))", 0.0);
+	check_geom_slope("LINESTRING Z(0 0 0,1 0 1)", M_PI_4);
+	check_geom_slope("LINESTRING Z(0 0 0,0 0 1)", M_PI_2);
+	check_geom_slope("LINESTRING(0 0,1 0)", 0.0);
+	check_geom_slope("LINESTRING Z(0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)", M_PI_4);
+	check_geom_slope("MULTILINESTRING Z((0 0 0,1 0 1),(2 0 2,3 0 3))", M_PI_4);
+	check_geom_slope("MULTILINESTRING Z((0 0 0,0 1 0),(0 0 0,1 0 1))", M_PI_4);
+	check_geom_slope("POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0))", M_PI_4);
+	check_geom_slope(
+	    "POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0),"
+	    "(0.25 0.25 0.25,0.75 0.25 0.75,0.75 0.75 0.75,0.25 0.75 0.25,0.25 0.25 0.25))",
+	    M_PI_4);
+	check_geom_slope(
+	    "MULTIPOLYGON Z(((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)),"
+	    "((2 0 2,3 0 3,3 1 3,2 1 2,2 0 2)))",
+	    M_PI_4);
+	check_geom_slope(
+	    "TIN Z(((0 0 0,1 0 1,0 1 0,0 0 0)),"
+	    "((1 0 1,1 1 1,0 1 0,1 0 1)))",
+	    M_PI_4);
+
+	geom = lwgeom_from_wkt("TRIANGLE Z((0 0 0,1 1 1,2 2 2,0 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_slope(geom, &slope), LW_FAILURE);
+	CU_ASSERT_DOUBLE_EQUAL(slope, -1.0, 0.0);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("TRIANGLE EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_slope(geom, &slope), LW_FAILURE);
+	CU_ASSERT_DOUBLE_EQUAL(slope, -1.0, 0.0);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POLYGON Z((0 0 0,1 0 0,1 1 1,0 1 0,0 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_slope(geom, &slope), LW_FAILURE);
+	CU_ASSERT_DOUBLE_EQUAL(slope, -1.0, 0.0);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("LINESTRING Z(0 0 0,0 0 0)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_slope(geom, &slope), LW_FAILURE);
+	CU_ASSERT_DOUBLE_EQUAL(slope, -1.0, 0.0);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTILINESTRING Z((0 0 0,1 0 1,0 1 0),(2 0 0,3 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_slope(geom, &slope), LW_FAILURE);
+	CU_ASSERT_DOUBLE_EQUAL(slope, -1.0, 0.0);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt(
+	    "GEOMETRYCOLLECTION Z("
+	    "POLYGON((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)),"
+	    "POLYGON((2 0 0,3 0 0,3 1 1,2 1 1,2 0 0)))",
+	    LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_slope(geom, &slope), LW_FAILURE);
+	CU_ASSERT_DOUBLE_EQUAL(slope, -1.0, 0.0);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	CU_ASSERT_EQUAL(lwgeom_slope(geom, &slope), LW_FAILURE);
+	CU_ASSERT_DOUBLE_EQUAL(slope, -1.0, 0.0);
+	lwgeom_free(geom);
+}
 
 void tin_parse(void)
 {
@@ -461,6 +552,7 @@ void surface_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("surface", NULL,  NULL);
 	PG_ADD_TEST(suite, triangle_parse);
+	PG_ADD_TEST(suite, triangle_slope);
 	PG_ADD_TEST(suite, tin_parse);
 	PG_ADD_TEST(suite, polyhedralsurface_parse);
 	PG_ADD_TEST(suite, surface_dimension);
