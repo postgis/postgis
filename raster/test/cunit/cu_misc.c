@@ -115,7 +115,7 @@ static void test_util_gdal_open(void) {
 
 	char *disable_all = GDAL_DISABLE_ALL;
 	char *enabled = "GTiff JPEG PNG";
-	// char *enabled_vsi = "GTiff JPEG PNG VSICURL";
+	char *enabled_vsi = "GTiff JPEG PNG VSICURL";
 
 	rt_util_gdal_register_all(1);
 
@@ -126,20 +126,30 @@ static void test_util_gdal_open(void) {
 
 	/* can't test VSICURL if HTTP driver not found */
 	if (!rt_util_gdal_driver_registered("HTTP"))
+	{
+		gdal_enabled_drivers = NULL;
 		return;
+	}
 
 	/* enabled drivers, no VSICURL */
 	gdal_enabled_drivers = enabled;
-	ds = rt_util_gdal_open("/vsicurl/http://download.osgeo.org/gdal/data/gtiff/small_world.tif", GA_ReadOnly, 0);
+	ds = rt_util_gdal_open("/vsicurl/http://127.0.0.1/postgis-test.tif", GA_ReadOnly, 0);
 	CU_ASSERT(ds == NULL);
 
-	/* enabled drivers with VSICURL */
-	/* disabled as we don't want network access as a requirement */
-	// gdal_enabled_drivers = enabled_vsi;
-	// ds = rt_util_gdal_open("/vsicurl/http://download.osgeo.org/gdal/data/gtiff/small_world.tif", GA_ReadOnly, 0);
-	// CU_ASSERT(ds != NULL);
-	// GDALClose(ds);
+	CPLSetConfigOption("GDAL_HTTP_TIMEOUT", "1");
+	CPLSetConfigOption("GDAL_HTTP_CONNECTTIMEOUT", "1");
 
+	/* enabled drivers with VSICURL reach GDALOpenEx instead of PostGIS' gate */
+	gdal_enabled_drivers = enabled_vsi;
+	ds = rt_util_gdal_open("/vsicurl/http://127.0.0.1:1/postgis-test.tif", GA_ReadOnly, 0);
+	CU_ASSERT(ds == NULL);
+	if (ds != NULL)
+		GDALClose(ds);
+
+	CPLSetConfigOption("GDAL_HTTP_TIMEOUT", NULL);
+	CPLSetConfigOption("GDAL_HTTP_CONNECTTIMEOUT", NULL);
+
+	gdal_enabled_drivers = NULL;
 }
 
 /* register tests */
@@ -151,4 +161,3 @@ void misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_hsv_to_rgb);
 	PG_ADD_TEST(suite, test_util_gdal_open);
 }
-
