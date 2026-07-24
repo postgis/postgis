@@ -277,6 +277,24 @@ select 'spheroidLength1', round(ST_LengthSpheroid('MULTILINESTRING((-118.584 38.
 select 'length2d_spheroid', ST_Length2DSpheroid('LINESTRING(0 0 0, 0 0 100)'::geometry, 'SPHEROID["GRS_1980",6378137,298.257222101]');
 select 'length_spheroid', ST_LengthSpheroid('LINESTRING(0 0 0, 0 0 100)'::geometry, 'SPHEROID["GRS_1980",6378137,298.257222101]');
 
+WITH data AS (
+	SELECT
+		ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[[[-93.751932270476971,32.089230804932349],[-93.753830066356031,32.089181143046332],[-93.753864556452115,32.090802706180867],[-93.751940314782857,32.09084654939128],[-93.751932270476971,32.089230804932349]]]}') AS pol,
+		ST_GeomFromGeoJSON('{"type":"Point","coordinates":[52.41828388240291,28.68513149020453]}') AS pt
+)
+SELECT '#5895', round(ST_DistanceSphere(pol, pt)::numeric, 3) FROM data;
+SELECT '#5895.empty', ST_DistanceSphere('POINT EMPTY'::geometry, 'POINT(0 0)'::geometry);
+SELECT '#5895.empty_projected', ST_DistanceSphere(ST_SetSRID('POINT EMPTY'::geometry,3857), 'POINT(0 0)'::geometry);
+SELECT '#5895.collection', round(ST_DistanceSphere('GEOMETRYCOLLECTION(POINT(0 0))'::geometry, 'POINT(1 1)'::geometry)::numeric, 3);
+SELECT '#5895.collection_later_member', round(ST_DistanceSphere('POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))'::geometry, 'MULTIPOINT(10 0,0 0)'::geometry)::numeric, 3);
+SELECT '#5895.collection_later_member_reversed', round(ST_DistanceSphere('MULTIPOINT(10 0,0 0)'::geometry, 'POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))'::geometry)::numeric, 3);
+SELECT '#5895.collection_polygonal', round(ST_Distance(geography 'GEOMETRYCOLLECTION(POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1)))', geography 'POINT(0 0)')::numeric, 3);
+SELECT '#5895.srid_default', round(ST_DistanceSphere(ST_SetSRID('POINT(0 0)'::geometry,0), ST_SetSRID('POINT(1 1)'::geometry,4326))::numeric, 3);
+SET client_min_messages TO warning;
+SELECT '#5895.coerce', round(ST_DistanceSphere('POINT(0 100)'::geometry, 'POINT(0 80)'::geometry)::numeric, 3);
+RESET client_min_messages;
+SELECT '#5895.parallel', proparallel FROM pg_proc WHERE oid = 'ST_DistanceSphere(geometry,geometry)'::regprocedure;
+SELECT '#5895.projected', ST_DistanceSphere(ST_SetSRID('POINT(0 0)'::geometry,3857), ST_SetSRID('POINT(1 1)'::geometry,3857));
 
 -- Solid intersects solid when contains it
 select '#4278.1', ST_3DIntersects('BOX3D(0 0 0, 1 1 1)'::box3d::geometry, 'BOX3D(-1 -1 -1, 2 2 2)'::box3d::geometry);

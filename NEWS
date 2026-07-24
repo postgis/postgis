@@ -243,6 +243,14 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #5904, [topology] Avoid MinGW format warnings when logging topology ids
           (Darafei Praliaskouski)
+ - #5895, ST_DistanceSphere no longer returns zero for distant points outside
+          clockwise geometry polygons (Darafei Praliaskouski)
+ - GH-885, [topology] Avoid GMP overflow in ring orientation for very large
+          finite coordinates (Darafei Praliaskouski)
+ - GH-892, Add OSS-Fuzz coverage for TWKB and serialized raster inputs,
+          including guards for malformed TWKB reads and counts (Darafei Praliaskouski)
+ - #6073, #6074, Stabilize geography LRS endpoint interpolation and pole
+          centroid regressions on 32-bit systems (Darafei Praliaskouski)
  - #6082, Fix Japanese PDF build by avoiding non-ASCII arrows in SQL
           program listings (Darafei Praliaskouski)
  - GH-888, [sfcgal] Avoid stale detoasted geometry access in

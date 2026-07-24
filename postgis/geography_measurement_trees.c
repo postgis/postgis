@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * ^copyright^
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -89,6 +90,22 @@ static GeomCacheMethods CircTreeCacheMethods =
 	CircTreeAllocator
 };
 
+static double
+circ_tree_distance_tree_edges(const CIRC_NODE *n1, const CIRC_NODE *n2, const SPHEROID *spheroid, double threshold)
+{
+	double min_dist = FLT_MAX;
+	double max_dist = FLT_MAX;
+	GEOGRAPHIC_POINT closest1, closest2;
+	double threshold_radians = 0.95 * threshold / spheroid->radius;
+
+	circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
+
+	if (spheroid->a == spheroid->b)
+		return spheroid->radius * sphere_distance(&closest1, &closest2);
+
+	return spheroid_distance(&closest1, &closest2, spheroid);
+}
+
 static CircTreeGeomCache *
 GetCircTreeGeomCache(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *g1, SHARED_GSERIALIZED *g2)
 {
@@ -96,55 +113,108 @@ GetCircTreeGeomCache(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *g1, SHARED_GSE
 }
 
 static int
-CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const POINT4D* in_point)
+lwgeom_covers_point2d(const LWGEOM *lwgeom, const POINT2D *pt)
+{
+	uint32_t i;
+	const LWCOLLECTION *col;
+
+	if (!lwgeom || lwgeom_is_empty(lwgeom))
+		return LW_FALSE;
+
+	if (lwgeom->type == POLYGONTYPE)
+		return lwpoly_covers_point2d((const LWPOLY *)lwgeom, pt);
+
+	if (!lwtype_is_collection(lwgeom->type))
+		return LW_FALSE;
+
+	col = (const LWCOLLECTION *)lwgeom;
+	for (i = 0; i < col->ngeoms; i++)
+	{
+		if (lwgeom_covers_point2d(col->geoms[i], pt))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static int
+lwgeom_has_polygonal_component(const LWGEOM *lwgeom)
+{
+	uint32_t i;
+	const LWCOLLECTION *col;
+
+	if (!lwgeom || lwgeom_is_empty(lwgeom))
+		return LW_FALSE;
+
+	if (lwgeom->type == POLYGONTYPE)
+		return LW_TRUE;
+
+	if (!lwtype_is_collection(lwgeom->type))
+		return LW_FALSE;
+
+	col = (const LWCOLLECTION *)lwgeom;
+	for (i = 0; i < col->ngeoms; i++)
+	{
+		if (lwgeom_has_polygonal_component(col->geoms[i]))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static int
+lwgeom_covers_any_startpoint2d(const LWGEOM *polygonal, const LWGEOM *points)
+{
+	uint32_t i;
+	const LWCOLLECTION *col;
+	POINT4D p4d;
+	POINT2D pt2d;
+
+	if (!points || lwgeom_is_empty(points))
+		return LW_FALSE;
+
+	if (lwtype_is_collection(points->type))
+	{
+		col = (const LWCOLLECTION *)points;
+		for (i = 0; i < col->ngeoms; i++)
+		{
+			if (lwgeom_covers_any_startpoint2d(polygonal, col->geoms[i]))
+				return LW_TRUE;
+		}
+		return LW_FALSE;
+	}
+
+	/*
+	 * The distance tree can use only one representative point per primitive.
+	 * For collections, recurse so a covered later member is not hidden behind
+	 * an uncovered first member.
+	 */
+	if (lwgeom_startpoint(points, &p4d) != LW_SUCCESS)
+		return LW_FALSE;
+
+	pt2d.x = p4d.x;
+	pt2d.y = p4d.y;
+	return lwgeom_covers_point2d(polygonal, &pt2d);
+}
+
+static int
+CircTreePIP(const CIRC_NODE *tree1, const GSERIALIZED *g1, const LWGEOM *lwgeom2)
 {
 	int tree1_type = gserialized_get_type(g1);
-	GBOX gbox1;
-	GEOGRAPHIC_POINT in_gpoint;
-	POINT3D in_point3d;
+	LWGEOM *lwgeom1;
+	int covers;
 
 	POSTGIS_DEBUGF(3, "tree1_type=%d", tree1_type);
 
-	/* If the tree'ed argument is a polygon, do the P-i-P using the tree-based P-i-P */
-	if ( tree1_type == POLYGONTYPE || tree1_type == MULTIPOLYGONTYPE )
+	/* If the tree'ed argument contains polygons, do the P-i-P using the geodetic predicate. */
+	if (tree1_type == POLYGONTYPE || tree1_type == MULTIPOLYGONTYPE || lwtype_is_collection(tree1_type))
 	{
-		POSTGIS_DEBUG(3, "tree is a polygon, using tree PiP");
-		/* Need a gbox to calculate an outside point */
-		if ( LW_FAILURE == gserialized_get_gbox_p(g1, &gbox1) )
-		{
-			LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
-			POSTGIS_DEBUG(3, "unable to read gbox from gserialized, calculating from scratch");
-			lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1);
-			lwgeom_free(lwgeom1);
-		}
-
-		/* Flip the candidate point into geographics */
-		geographic_point_init(in_point->x, in_point->y, &in_gpoint);
-		geog2cart(&in_gpoint, &in_point3d);
-
-		/* If the candidate isn't in the tree box, it's not in the tree area */
-		if ( ! gbox_contains_point3d(&gbox1, &in_point3d) )
-		{
-			POSTGIS_DEBUG(3, "in_point3d is not inside the tree gbox, CircTreePIP returning FALSE");
-			return LW_FALSE;
-		}
-		/* The candidate point is in the box, so it *might* be inside the tree */
-		else
-		{
-			POINT2D pt2d_outside; /* latlon */
-			POINT2D pt2d_inside;
-			pt2d_inside.x = in_point->x;
-			pt2d_inside.y = in_point->y;
-			/* Calculate a definitive outside point */
-			if (gbox_pt_outside(&gbox1, &pt2d_outside) == LW_FAILURE)
-				if (circ_tree_get_point_outside(tree1, &pt2d_outside) == LW_FAILURE)
-					lwpgerror("%s: Unable to generate outside point!", __func__);
-
-			POSTGIS_DEBUGF(3, "p2d_inside=POINT(%g %g) p2d_outside=POINT(%g %g)", pt2d_inside.x, pt2d_inside.y, pt2d_outside.x, pt2d_outside.y);
-			/* Test the candidate point for strict containment */
-			POSTGIS_DEBUG(3, "calling circ_tree_contains_point for PiP test");
-			return circ_tree_contains_point(tree1, &pt2d_inside, &pt2d_outside, 0, NULL);
-		}
+		(void)tree1;
+		POSTGIS_DEBUG(3, "tree contains polygons, using geodetic PiP");
+		lwgeom1 = lwgeom_from_gserialized(g1);
+		covers = lwgeom_has_polygonal_component(lwgeom1) && lwgeom_covers_any_startpoint2d(lwgeom1, lwgeom2);
+		lwgeom_free(lwgeom1);
+		return covers;
 	}
 	else
 	{
@@ -188,10 +258,10 @@ geography_distance_cache_tolerance(FunctionCallInfo fcinfo,
 		LWGEOM* lwgeom = NULL;
 		int geomtype_cached;
 		int geomtype;
-		POINT4D p4d;
+		LWGEOM *lwgeom_cached = NULL;
 
 		/* We need to dynamically build a tree for the uncached side of the function call */
-		if ( tree_cache->gcache.argnum == 1 )
+		if (tree_cache->gcache.argnum == 1)
 		{
 			g_cached = g1;
 			g = g2;
@@ -212,10 +282,10 @@ geography_distance_cache_tolerance(FunctionCallInfo fcinfo,
 		}
 
 		lwgeom = lwgeom_from_gserialized(g);
-		if ( geomtype_cached == POLYGONTYPE || geomtype_cached == MULTIPOLYGONTYPE )
+		if (geomtype_cached == POLYGONTYPE || geomtype_cached == MULTIPOLYGONTYPE ||
+		    lwtype_is_collection(geomtype_cached))
 		{
-			lwgeom_startpoint(lwgeom, &p4d);
-			if ( CircTreePIP(circtree_cached, g_cached, &p4d) )
+			if (CircTreePIP(circtree_cached, g_cached, lwgeom))
 			{
 				*distance = 0.0;
 				lwgeom_free(lwgeom);
@@ -224,22 +294,27 @@ geography_distance_cache_tolerance(FunctionCallInfo fcinfo,
 		}
 
 		circtree = lwgeom_calculate_circ_tree(lwgeom);
-		if ( geomtype == POLYGONTYPE || geomtype == MULTIPOLYGONTYPE )
+		if (geomtype == POLYGONTYPE || geomtype == MULTIPOLYGONTYPE || lwtype_is_collection(geomtype))
 		{
-			POINT2D p2d;
-			circ_tree_get_point(circtree_cached, &p2d);
-			p4d.x = p2d.x;
-			p4d.y = p2d.y;
-			if ( CircTreePIP(circtree, g, &p4d) )
+			lwgeom_cached = lwgeom_from_gserialized(g_cached);
+			if (CircTreePIP(circtree, g, lwgeom_cached))
 			{
 				*distance = 0.0;
+				lwgeom_free(lwgeom_cached);
 				circ_tree_free(circtree);
 				lwgeom_free(lwgeom);
 				return LW_SUCCESS;
 			}
+			lwgeom_free(lwgeom_cached);
 		}
 
-		*distance = circ_tree_distance_tree(circtree_cached, circtree, s, tolerance);
+		/*
+		 * Public liblwgeom tree distance keeps a tree-only containment shortcut
+		 * for external callers. Geography SQL reaches this point only after
+		 * checking containment against the original polygonal geometry, so use
+		 * edge distance here to avoid reintroducing tree-metadata false zeros.
+		 */
+		*distance = circ_tree_distance_tree_edges(circtree_cached, circtree, s, tolerance);
 		circ_tree_free(circtree);
 		lwgeom_free(lwgeom);
 		return LW_SUCCESS;
@@ -289,24 +364,28 @@ geography_tree_distance(const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHE
 	CIRC_NODE* circ_tree1 = NULL;
 	CIRC_NODE* circ_tree2 = NULL;
 	LWGEOM* lwgeom1 = NULL;
-	LWGEOM* lwgeom2 = NULL;
-	POINT4D pt1, pt2;
-
+	LWGEOM *lwgeom2 = NULL;
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
 	circ_tree1 = lwgeom_calculate_circ_tree(lwgeom1);
 	circ_tree2 = lwgeom_calculate_circ_tree(lwgeom2);
-	lwgeom_startpoint(lwgeom1, &pt1);
-	lwgeom_startpoint(lwgeom2, &pt2);
 
-	if ( CircTreePIP(circ_tree1, g1, &pt2) || CircTreePIP(circ_tree2, g2, &pt1) )
+	if (lwgeom_has_polygonal_component(lwgeom1) && lwgeom_covers_any_startpoint2d(lwgeom1, lwgeom2))
+	{
+		*distance = 0.0;
+	}
+	else if (lwgeom_has_polygonal_component(lwgeom2) && lwgeom_covers_any_startpoint2d(lwgeom2, lwgeom1))
 	{
 		*distance = 0.0;
 	}
 	else
 	{
-		/* Calculate tree/tree distance */
-		*distance = circ_tree_distance_tree(circ_tree1, circ_tree2, s, tolerance);
+		/*
+		 * Containment against original geometries has already failed above; the
+		 * remaining distance must come from tree edge/point pairs rather than the
+		 * public tree-only containment shortcut.
+		 */
+		*distance = circ_tree_distance_tree_edges(circ_tree1, circ_tree2, s, tolerance);
 	}
 
 	circ_tree_free(circ_tree1);
