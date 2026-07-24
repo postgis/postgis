@@ -30,6 +30,10 @@
 #include "gdal_vrt.h"
 #include "ogr_srs_api.h"
 #include <assert.h>
+#include <float.h>
+#include <limits.h>
+#include <math.h>
+#include <stdint.h>
 
 #define xstr(s) str(s)
 #define str(s) #s
@@ -393,6 +397,11 @@ usage() {
 	    _("  -P, --pad Pad right-most and bottom-most tiles to guarantee that all tiles\n"
 	      "     have the same width and height.\n"));
 	printf(
+	    _("  -A, --tile-origin <x>x<y> Align the -t tile grid to the given map\n"
+	      "      coordinate. The coordinate must fall on the raster pixel grid.\n"
+	      "      Requires -t. Edge tiles are padded as needed. This option is not\n"
+	      "      supported with -R.\n"));
+	printf(
 	    _("  -R, --register Register the raster as an out-of-db (filesystem) raster. Provided\n"
 	      "      raster should have absolute path to the file\n"));
 	printf(
@@ -517,6 +526,202 @@ init_rastinfo(RASTERINFO *info) {
 	info->nodataval = NULL;
 	memset(info->gt, 0, sizeof(double) * 6);
 	memset(info->tile_size, 0, sizeof(int) * 2);
+}
+
+typedef struct rtloader_tile_grid_t {
+	int start[2];
+	int count[2];
+	int size[2];
+} RTLOADER_TILEGRID;
+
+static int
+rtloader_parse_xy(const char *arg, double xy[2], const char *optname)
+{
+	char *endptr = NULL;
+	char *sep = strchr(arg, 'x');
+
+	if (!sep)
+		sep = strchr(arg, 'X');
+
+	if (!sep)
+	{
+		rterror(_("Could not process %s"), optname);
+		return 0;
+	}
+	if (sep == arg || *(sep + 1) == '\0')
+	{
+		rterror(_("Could not process %s"), optname);
+		return 0;
+	}
+
+	xy[0] = strtod(arg, &endptr);
+	if (endptr != sep)
+	{
+		rterror(_("Could not process %s"), optname);
+		return 0;
+	}
+
+	xy[1] = strtod(sep + 1, &endptr);
+	if (!endptr || *endptr != '\0')
+	{
+		rterror(_("Could not process %s"), optname);
+		return 0;
+	}
+	if (!isfinite(xy[0]) || !isfinite(xy[1]))
+	{
+		rterror(_("Could not process %s"), optname);
+		return 0;
+	}
+
+	return 1;
+}
+
+static int
+rtloader_tile_origin_cell(const RTLOADERCFG *config, const double gt[6], double cell[2])
+{
+	double gt_work[6] = {0};
+	double igt[6] = {0};
+
+	if (!config->tile_origin_set)
+	{
+		cell[0] = 0;
+		cell[1] = 0;
+		return 1;
+	}
+
+	memcpy(gt_work, gt, sizeof(double) * 6);
+	if (!GDALInvGeoTransform(gt_work, igt))
+	{
+		rterror(_("Could not invert raster geotransform for tile origin"));
+		return 0;
+	}
+
+	GDALApplyGeoTransform(igt, config->tile_origin[0], config->tile_origin[1], &(cell[0]), &(cell[1]));
+
+	for (int i = 0; i < 2; i++)
+	{
+		double nearest = round(cell[i]);
+		double pixel_size = hypot(gt[i == 0 ? 1 : 2], gt[i == 0 ? 4 : 5]);
+		double coord_magnitude = fmax(fmax(fabs(config->tile_origin[0]), fabs(config->tile_origin[1])),
+					      fmax(fabs(gt[0]), fabs(gt[3])));
+		double tolerance = 1e-8;
+
+		if (pixel_size > 0)
+			tolerance += 64 * DBL_EPSILON * coord_magnitude / pixel_size;
+
+		if (fabs(cell[i] - nearest) > tolerance)
+		{
+			rterror(_("Tile origin must align with the raster pixel grid"));
+			return 0;
+		}
+		cell[i] = nearest;
+	}
+
+	return 1;
+}
+
+static int
+rtloader_init_tile_grid_from_cell(RTLOADER_TILEGRID *grid,
+				  const double origin_cell[2],
+				  int width,
+				  int height,
+				  const int tile_size[2])
+{
+	int dim[2] = {width, height};
+
+	for (int i = 0; i < 2; i++)
+	{
+		grid->size[i] = tile_size[i];
+		if (origin_cell)
+		{
+			double start = fmod(origin_cell[i], tile_size[i]);
+			if (start > 0)
+				start -= tile_size[i];
+			if (start < INT_MIN || start > INT_MAX)
+			{
+				rterror(_("Tile origin is outside the supported integer range"));
+				return 0;
+			}
+			grid->start[i] = (int)llround(start);
+		}
+		else
+			grid->start[i] = 0;
+
+		int64_t count = ((int64_t)dim[i] - grid->start[i] + tile_size[i] - 1) / tile_size[i];
+		if (count > INT_MAX)
+		{
+			rterror(_("Tile grid is too large"));
+			return 0;
+		}
+		grid->count[i] = (int)count;
+	}
+
+	return 1;
+}
+
+static int
+rtloader_init_tile_grid(RTLOADER_TILEGRID *grid,
+			const RTLOADERCFG *config,
+			const double gt[6],
+			int width,
+			int height,
+			const int tile_size[2])
+{
+	double origin_cell[2] = {0};
+
+	if (!config->tile_origin_set)
+		return rtloader_init_tile_grid_from_cell(grid, NULL, width, height, tile_size);
+
+	if (!rtloader_tile_origin_cell(config, gt, origin_cell))
+		return 0;
+
+	return rtloader_init_tile_grid_from_cell(grid, origin_cell, width, height, tile_size);
+}
+
+static int
+rtloader_tile_window(const RTLOADER_TILEGRID *grid,
+		     int xtile,
+		     int ytile,
+		     int width,
+		     int height,
+		     int src_offset[2],
+		     int src_size[2],
+		     int dst_offset[2],
+		     int dst_size[2],
+		     int tile_origin[2],
+		     int pad_tile,
+		     int preserve_single_tile_size)
+{
+	int64_t src_min[2] = {(int64_t)grid->start[0] + (int64_t)xtile * grid->size[0],
+			      (int64_t)grid->start[1] + (int64_t)ytile * grid->size[1]};
+	int64_t src_max[2] = {src_min[0] + grid->size[0], src_min[1] + grid->size[1]};
+	int dim[2] = {width, height};
+
+	if (src_min[0] < INT_MIN || src_min[0] > INT_MAX || src_min[1] < INT_MIN || src_min[1] > INT_MAX)
+	{
+		rterror(_("Tile offset is outside the supported integer range"));
+		return 0;
+	}
+
+	tile_origin[0] = (int)src_min[0];
+	tile_origin[1] = (int)src_min[1];
+
+	for (int i = 0; i < 2; i++)
+	{
+		src_offset[i] = (src_min[i] < 0) ? 0 : (int)src_min[i];
+		if (src_max[i] > dim[i])
+			src_max[i] = dim[i];
+
+		if (src_max[i] - src_offset[i] <= 0)
+			return 0;
+		src_size[i] = (int)(src_max[i] - src_offset[i]);
+
+		dst_offset[i] = src_offset[i] - (int)src_min[i];
+		dst_size[i] =
+		    (pad_tile || (preserve_single_tile_size && grid->count[i] == 1)) ? grid->size[i] : src_size[i];
+	}
+
+	return 1;
 }
 
 static void
@@ -702,6 +907,8 @@ init_config(RTLOADERCFG *config) {
 	config->nband = NULL;
 	config->nband_count = 0;
 	memset(config->tile_size, 0, sizeof(int) * 2);
+	config->tile_origin_set = 0;
+	memset(config->tile_origin, 0, sizeof(double) * 2);
 	config->pad_tile = 0;
 	config->outdb = 0;
 	config->opt = 'c';
@@ -1500,6 +1707,13 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 	int ntiles[2] = {1, 1};
 	int xtile = 0;
 	int ytile = 0;
+	int src_offset[2] = {0};
+	int src_size[2] = {0};
+	int dst_offset[2] = {0};
+	int tile_origin[2] = {0};
+	RTLOADER_TILEGRID grid;
+	double source_origin_cell[2] = {0};
+	double overview_origin_cell[2] = {0};
 	double gt[6] = {0.};
 
 	rt_raster rast = NULL;
@@ -1601,10 +1815,31 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 		tile_size[1] = config->tile_size[1];
 
 	/* number of tiles */
-	if (tile_size[0] != dimOv[0])
-		ntiles[0] = (dimOv[0] + tile_size[0] -  1) / tile_size[0];
-	if (tile_size[1] != dimOv[1])
-		ntiles[1] = (dimOv[1] + tile_size[1] - 1) / tile_size[1];
+	if (config->tile_origin_set)
+	{
+		if (!rtloader_tile_origin_cell(config, info->gt, source_origin_cell))
+		{
+			GDALClose(hdsOv);
+			GDALClose(hdsSrc);
+			return 0;
+		}
+		overview_origin_cell[0] = floor(source_origin_cell[0] / factor);
+		overview_origin_cell[1] = floor(source_origin_cell[1] / factor);
+		if (!rtloader_init_tile_grid_from_cell(&grid, overview_origin_cell, dimOv[0], dimOv[1], tile_size))
+		{
+			GDALClose(hdsOv);
+			GDALClose(hdsSrc);
+			return 0;
+		}
+	}
+	else if (!rtloader_init_tile_grid(&grid, config, gtOv, dimOv[0], dimOv[1], tile_size))
+	{
+		GDALClose(hdsOv);
+		GDALClose(hdsSrc);
+		return 0;
+	}
+	ntiles[0] = grid.count[0];
+	ntiles[1] = grid.count[1];
 
 	/* working copy of geotransform matrix */
 	memcpy(gt, gtOv, sizeof(double) * 6);
@@ -1613,30 +1848,28 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 	/* each tile is a VRT with constraints set for just the data required for the tile */
 	for (ytile = 0; ytile < ntiles[1]; ytile++) {
 
-		/* edge y tile */
-		if (!config->pad_tile && (ytile + 1) == ntiles[1])
-			_tile_size[1] = dimOv[1] - (ytile * tile_size[1]);
-		else
-			_tile_size[1] = tile_size[1];
-
 		for (xtile = 0; xtile < ntiles[0]; xtile++) {
 			/*
 			char fn[100];
 			sprintf(fn, "/tmp/ovtile%d.vrt", (ytile * ntiles[0]) + xtile);
 			*/
 
-			/* edge x tile */
-			if (!config->pad_tile && (xtile + 1) == ntiles[0])
-				_tile_size[0] = dimOv[0] - (xtile * tile_size[0]);
-			else
-				_tile_size[0] = tile_size[0];
+			if (!rtloader_tile_window(&grid,
+						  xtile,
+						  ytile,
+						  dimOv[0],
+						  dimOv[1],
+						  src_offset,
+						  src_size,
+						  dst_offset,
+						  _tile_size,
+						  tile_origin,
+						  config->pad_tile || config->tile_origin_set,
+						  0))
+				continue;
 
 			/* compute tile's upper-left corner */
-			GDALApplyGeoTransform(
-				gtOv,
-				xtile * tile_size[0], ytile * tile_size[1],
-				&(gt[0]), &(gt[3])
-			);
+			GDALApplyGeoTransform(gtOv, tile_origin[0], tile_origin[1], &(gt[0]), &(gt[3]));
 
 			/* create VRT dataset */
 			hdsDst = VRTCreate(_tile_size[0], _tile_size[1]);
@@ -1654,14 +1887,18 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 				if (info->hasnodata[j])
 					GDALSetRasterNoDataValue(hbandDst, info->nodataval[j]);
 
-				VRTAddSimpleSource(
-					hbandDst, GDALGetRasterBand(hdsOv, j + 1),
-					xtile * tile_size[0], ytile * tile_size[1],
-					_tile_size[0], _tile_size[1],
-					0, 0,
-					_tile_size[0], _tile_size[1],
-					"near", VRT_NODATA_UNSET
-				);
+				VRTAddSimpleSource(hbandDst,
+						   GDALGetRasterBand(hdsOv, j + 1),
+						   src_offset[0],
+						   src_offset[1],
+						   src_size[0],
+						   src_size[1],
+						   dst_offset[0],
+						   dst_offset[1],
+						   src_size[0],
+						   src_size[1],
+						   "near",
+						   VRT_NODATA_UNSET);
 			}
 
 			/* make sure VRT reflects all changes */
@@ -1726,6 +1963,11 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int _tile_size[2] = {0, 0};
 	int xtile = 0;
 	int ytile = 0;
+	int src_offset[2] = {0};
+	int src_size[2] = {0};
+	int dst_offset[2] = {0};
+	int tile_origin[2] = {0};
+	RTLOADER_TILEGRID grid;
 	int naturalx = 1;
 	int naturaly = 1;
 	double gt[6] = {0.};
@@ -1925,10 +2167,13 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->tile_size[1] = config->tile_size[1];
 
 	/* number of tiles */
-	if ((uint32_t)info->tile_size[0] != info->dim[0])
-		ntiles[0] = (info->dim[0] + info->tile_size[0] - 1) / info->tile_size[0];
-	if ((uint32_t)info->tile_size[1] != info->dim[1])
-		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
+	if (!rtloader_init_tile_grid(&grid, config, info->gt, info->dim[0], info->dim[1], info->tile_size))
+	{
+		GDALClose(hdsSrc);
+		return 0;
+	}
+	ntiles[0] = grid.count[0];
+	ntiles[1] = grid.count[1];
 
 	/* estimate size of 1 tile */
 	tilesize *= info->tile_size[0] * info->tile_size[1];
@@ -2045,12 +2290,6 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		/* each tile is a VRT with constraints set for just the data required for the tile */
 		for (ytile = 0; ytile < ntiles[1]; ytile++) {
 
-			/* edge y tile */
-			if (!config->pad_tile && ntiles[1] > 1 && (ytile + 1) == ntiles[1])
-				_tile_size[1] = info->dim[1] - (ytile * info->tile_size[1]);
-			else
-				_tile_size[1] = info->tile_size[1];
-
 			for (xtile = 0; xtile < ntiles[0]; xtile++) {
 				int tile_is_nodata = !config->skip_nodataval_check;
 				/*
@@ -2058,18 +2297,22 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				sprintf(fn, "/tmp/tile%d.vrt", (ytile * ntiles[0]) + xtile);
 				*/
 
-				/* edge x tile */
-				if (!config->pad_tile && ntiles[0] > 1 && (xtile + 1) == ntiles[0])
-					_tile_size[0] = info->dim[0] - (xtile * info->tile_size[0]);
-				else
-					_tile_size[0] = info->tile_size[0];
+				if (!rtloader_tile_window(&grid,
+							  xtile,
+							  ytile,
+							  info->dim[0],
+							  info->dim[1],
+							  src_offset,
+							  src_size,
+							  dst_offset,
+							  _tile_size,
+							  tile_origin,
+							  config->pad_tile || config->tile_origin_set,
+							  1))
+					continue;
 
 				/* compute tile's upper-left corner */
-				GDALApplyGeoTransform(
-					info->gt,
-					xtile * info->tile_size[0], ytile * info->tile_size[1],
-					&(gt[0]), &(gt[3])
-				);
+				GDALApplyGeoTransform(info->gt, tile_origin[0], tile_origin[1], &(gt[0]), &(gt[3]));
 				/*
 				rtinfo(_("tile (%d, %d) gt = (%f, %f, %f, %f, %f, %f)"),
 					xtile, ytile,
@@ -2093,14 +2336,18 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 					if (info->hasnodata[i])
 						GDALSetRasterNoDataValue(hbandDst, info->nodataval[i]);
 
-					VRTAddSimpleSource(
-						hbandDst, GDALGetRasterBand(hdsSrc, info->nband[i]),
-						xtile * info->tile_size[0], ytile * info->tile_size[1],
-						_tile_size[0], _tile_size[1],
-						0, 0,
-						_tile_size[0], _tile_size[1],
-						"near", VRT_NODATA_UNSET
-					);
+					VRTAddSimpleSource(hbandDst,
+							   GDALGetRasterBand(hdsSrc, info->nband[i]),
+							   src_offset[0],
+							   src_offset[1],
+							   src_size[0],
+							   src_size[1],
+							   dst_offset[0],
+							   dst_offset[1],
+							   src_size[0],
+							   src_size[1],
+							   "near",
+							   VRT_NODATA_UNSET);
 				}
 
 				/* make sure VRT reflects all changes */
@@ -2665,6 +2912,17 @@ main(int argc, char **argv) {
 		{
 			config->pad_tile = 1;
 		}
+		/* tile grid origin */
+		else if (option_matches(argv[argit], "-A", "--tile-origin") &&
+			 (optarg = option_value(argc, argv, &argit, "--tile-origin")) != NULL)
+		{
+			if (!rtloader_parse_xy(optarg, config->tile_origin, "-A/--tile-origin"))
+			{
+				rtdealloc_config(config);
+				exit(1);
+			}
+			config->tile_origin_set = 1;
+		}
 		/* out-of-db raster */
 		else if (CSEQUAL(argv[argit], "-R") || CSEQUAL(argv[argit], "--register"))
 		{
@@ -3000,6 +3258,19 @@ main(int argc, char **argv) {
 			rterror(_("Invalid argument combination - cannot use -Y with -s FROM_SRID:TO_SRID"));
 			exit(1);
 		}
+	}
+
+	if (config->tile_origin_set && config->outdb)
+	{
+		rterror(_("Invalid argument combination - cannot use -A/--tile-origin with -R"));
+		rtdealloc_config(config);
+		exit(1);
+	}
+	if (config->tile_origin_set && !config->tile_size[0] && !config->tile_size[1])
+	{
+		rterror(_("Invalid argument combination - cannot use -A/--tile-origin without -t"));
+		rtdealloc_config(config);
+		exit(1);
 	}
 
 	if (!apply_action_presets(config))
