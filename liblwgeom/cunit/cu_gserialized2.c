@@ -17,7 +17,7 @@
 #include "liblwgeom_internal.h"
 #include "gserialized2.c" /* for gserialized_peek_gbox_p */
 #include "cu_tester.h"
-
+#include "cu_standard_geoms.h"
 
 static void test_g2flags_macros(void)
 {
@@ -180,43 +180,34 @@ static void test_lwgeom_from_gserialized2(void)
 {
 	LWGEOM *geom1, *geom2;
 	GSERIALIZED *g1, *g2;
-	char *in_ewkt, *out_ewkt;
+	const char *in_ewkt;
+	char *out_ewkt;
 	size_t i = 0;
-
-	char *ewkt[] =
-	{
-		"POINT EMPTY",
-		"POINT(0 0.2)",
-		"LINESTRING EMPTY",
-		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
-		"MULTIPOINT EMPTY",
-		"MULTIPOINT(0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9)",
-		"MULTIPOINT(0.9 0.9,0.9 0.9,EMPTY,0.9 0.9,0.9 0.9,0.9 0.9)",
-		"SRID=1;MULTILINESTRING EMPTY",
-		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"POLYGON EMPTY",
-		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;POLYGON EMPTY",
-		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))",
-		"SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;MULTIPOLYGON EMPTY",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-		"SRID=4326;GEOMETRYCOLLECTION EMPTY",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT EMPTY,MULTIPOLYGON EMPTY)",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 0.2),POINT EMPTY,POINT(0 0.2))",
-		"MULTICURVE((5 5 1 3,3 5 2 2,3 3 3 1,0 3 1 1),CIRCULARSTRING(0 0 0 0,0.26794 1 3 -2,0.5857864 1.414213 1 2))",
-		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
-		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING EMPTY))",
-		"POLYHEDRALSURFACE(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)),((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),((1 0 0,1 1 0,1 1 1,1 0 1,1 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)))",
+	const cu_standard_geom *geoms[32];
+	size_t geom_count;
+	static const cu_standard_geom v2_only_geoms[] = {
+	    {"multipoint-with-empty",
+	     "MULTIPOINT(0.9 0.9,0.9 0.9,EMPTY,0.9 0.9,0.9 0.9,0.9 0.9)",
+	     CU_STANDARD_GEOM_EMPTY | CU_STANDARD_GEOM_COLLECTION | CU_STANDARD_GEOM_GSERIALIZED2},
+	    {"collection-point-empty-srid4326",
+	     "SRID=4326;GEOMETRYCOLLECTION(POINT(0 0.2),POINT EMPTY,POINT(0 0.2))",
+	     CU_STANDARD_GEOM_EMPTY | CU_STANDARD_GEOM_COLLECTION | CU_STANDARD_GEOM_GSERIALIZED2},
+	    {"polyhedralsurface-cube",
+	     "POLYHEDRALSURFACE(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)),((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),((1 0 0,1 1 0,1 1 1,1 0 1,1 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)))",
+	     CU_STANDARD_GEOM_Z | CU_STANDARD_GEOM_SURFACE | CU_STANDARD_GEOM_GSERIALIZED2},
 	};
 
-	for ( i = 0; i < (sizeof ewkt/sizeof(char*)); i++ )
+	geom_count = cu_standard_geoms_select(geoms, sizeof(geoms) / sizeof(geoms[0]), CU_STANDARD_GEOM_GSERIALIZED2, 0);
+	CU_ASSERT_FATAL(geom_count + sizeof(v2_only_geoms) / sizeof(v2_only_geoms[0]) <=
+			sizeof(geoms) / sizeof(geoms[0]));
+	for (i = 0; i < sizeof(v2_only_geoms) / sizeof(v2_only_geoms[0]); i++)
+		geoms[geom_count++] = &v2_only_geoms[i];
+
+	for (i = 0; i < geom_count; i++)
 	{
 		size_t size1, size2;
 
-		in_ewkt = ewkt[i];
+		in_ewkt = geoms[i]->ewkt;
 		geom1 = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		lwgeom_add_bbox(geom1);
 		if (geom1->bbox) gbox_float_round(geom1->bbox);
