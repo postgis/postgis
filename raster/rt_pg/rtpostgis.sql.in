@@ -550,6 +550,21 @@ CREATE OR REPLACE FUNCTION _st_summarystats_finalfn(internal)
 	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_finalfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION _st_summarystats_combinefn(internal, internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_combinefn'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION _st_summarystats_serialfn(internal)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_serialfn'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION _st_summarystats_deserialfn(bytea, internal)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_deserialfn'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
+
 CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
 	internal,
 	raster, integer,
@@ -565,6 +580,9 @@ CREATE AGGREGATE st_summarystatsagg(raster, integer, boolean, double precision) 
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
 	parallel = safe,
+	COMBINEFUNC = _st_summarystats_combinefn,
+	SERIALFUNC = _st_summarystats_serialfn,
+	DESERIALFUNC = _st_summarystats_deserialfn,
 	FINALFUNC = _st_summarystats_finalfn
 );
 
@@ -582,6 +600,9 @@ CREATE AGGREGATE st_summarystatsagg(raster, boolean, double precision) (
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
 	parallel = safe,
+	COMBINEFUNC = _st_summarystats_combinefn,
+	SERIALFUNC = _st_summarystats_serialfn,
+	DESERIALFUNC = _st_summarystats_deserialfn,
 	FINALFUNC = _st_summarystats_finalfn
 );
 
@@ -599,7 +620,9 @@ CREATE AGGREGATE st_summarystatsagg(raster, int, boolean) (
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
 	parallel = safe,
-#
+	COMBINEFUNC = _st_summarystats_combinefn,
+	SERIALFUNC = _st_summarystats_serialfn,
+	DESERIALFUNC = _st_summarystats_deserialfn,
 	FINALFUNC = _st_summarystats_finalfn
 );
 
@@ -678,6 +701,34 @@ CREATE OR REPLACE FUNCTION _st_countagg_finalfn(agg agg_count)
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION _st_countagg_combinefn(
+	agg1 agg_count,
+	agg2 agg_count
+)
+	RETURNS agg_count
+	AS $$
+	DECLARE
+		rtn_agg agg_count;
+	BEGIN
+		IF agg1 IS NULL THEN
+			RETURN agg2;
+		END IF;
+		IF agg2 IS NULL THEN
+			RETURN agg1;
+		END IF;
+
+		IF agg1.nband IS DISTINCT FROM agg2.nband OR
+		   agg1.exclude_nodata_value IS DISTINCT FROM agg2.exclude_nodata_value OR
+		   agg1.sample_percent IS DISTINCT FROM agg2.sample_percent THEN
+			RAISE EXCEPTION 'Cannot combine ST_CountAgg states with different aggregate parameters';
+		END IF;
+
+		rtn_agg := agg1;
+		rtn_agg.count := agg1.count + agg2.count;
+		RETURN rtn_agg;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
 CREATE OR REPLACE FUNCTION __st_countagg_transfn(
 	agg agg_count,
 	rast raster,
@@ -687,7 +738,7 @@ CREATE OR REPLACE FUNCTION __st_countagg_transfn(
 	RETURNS agg_count
 	AS $$
 	DECLARE
-		_count bigint;
+		_count bigint := 0;
 		rtn_agg agg_count;
 	BEGIN
 
@@ -759,6 +810,7 @@ CREATE AGGREGATE st_countagg(raster, integer, boolean, double precision) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
 	parallel = safe,
+	COMBINEFUNC = _st_countagg_combinefn,
 	FINALFUNC = _st_countagg_finalfn
 );
 
@@ -787,6 +839,7 @@ CREATE AGGREGATE st_countagg(raster, integer, boolean) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
 	parallel = safe,
+	COMBINEFUNC = _st_countagg_combinefn,
 	FINALFUNC = _st_countagg_finalfn
 );
 
@@ -816,6 +869,7 @@ CREATE AGGREGATE st_countagg(raster, boolean) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
 	parallel = safe,
+	COMBINEFUNC = _st_countagg_combinefn,
 	FINALFUNC = _st_countagg_finalfn
 );
 

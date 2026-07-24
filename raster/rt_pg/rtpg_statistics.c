@@ -11,6 +11,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -51,6 +52,9 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS);
 
 Datum RASTER_summaryStats_transfn(PG_FUNCTION_ARGS);
 Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS);
+Datum RASTER_summaryStats_combinefn(PG_FUNCTION_ARGS);
+Datum RASTER_summaryStats_serialfn(PG_FUNCTION_ARGS);
+Datum RASTER_summaryStats_deserialfn(PG_FUNCTION_ARGS);
 
 /* get histogram */
 Datum RASTER_histogram(PG_FUNCTION_ARGS);
@@ -504,6 +508,22 @@ struct rtpg_summarystats_arg_t {
 	double sample; /* value between 0 and 1 */
 };
 
+typedef struct rtpg_summarystats_serialized_t {
+	double sample;
+	uint64_t count;
+	double min;
+	double max;
+	double sum;
+	double mean;
+	double stddev;
+	uint64_t cK;
+	double cM;
+	double cQ;
+	int32_t band_index;
+	bool exclude_nodata_value;
+	double arg_sample;
+} rtpg_summarystats_serialized;
+
 static void
 rtpg_summarystats_arg_destroy(rtpg_summarystats_arg arg) {
 	if (arg->stats != NULL)
@@ -554,6 +574,135 @@ rtpg_summarystats_arg_init(void) {
 	arg->sample = 1;
 
 	return arg;
+}
+
+static rtpg_summarystats_arg
+rtpg_summarystats_arg_copy(rtpg_summarystats_arg src)
+{
+	rtpg_summarystats_arg dst = rtpg_summarystats_arg_init();
+
+	memcpy(dst->stats, src->stats, sizeof(struct rt_bandstats_t));
+	dst->stats->values = NULL;
+
+	dst->cK = src->cK;
+	dst->cM = src->cM;
+	dst->cQ = src->cQ;
+
+	dst->band_index = src->band_index;
+	dst->exclude_nodata_value = src->exclude_nodata_value;
+	dst->sample = src->sample;
+
+	return dst;
+}
+
+static void
+rtpg_summarystats_arg_merge(rtpg_summarystats_arg dst, rtpg_summarystats_arg src)
+{
+	uint64_t dst_count = dst->cK;
+	uint64_t src_count = src->cK;
+
+	if (dst->band_index != src->band_index || dst->exclude_nodata_value != src->exclude_nodata_value ||
+	    !FLT_EQ(dst->sample, src->sample))
+		elog(ERROR, "RASTER_summaryStats_combinefn: Cannot combine states with different aggregate parameters");
+
+	if (src->stats->count < 1)
+		return;
+
+	if (dst->stats->count < 1)
+	{
+		memcpy(dst->stats, src->stats, sizeof(struct rt_bandstats_t));
+		dst->stats->values = NULL;
+		dst->cK = src->cK;
+		dst->cM = src->cM;
+		dst->cQ = src->cQ;
+		dst->band_index = src->band_index;
+		dst->exclude_nodata_value = src->exclude_nodata_value;
+		dst->sample = src->sample;
+		return;
+	}
+
+	dst->stats->count += src->stats->count;
+	dst->stats->sum += src->stats->sum;
+
+	if (src->stats->min < dst->stats->min)
+		dst->stats->min = src->stats->min;
+	if (src->stats->max > dst->stats->max)
+		dst->stats->max = src->stats->max;
+
+	if (dst_count > 0 && src_count > 0)
+	{
+		double delta = src->cM - dst->cM;
+		uint64_t count = dst_count + src_count;
+
+		dst->cQ += src->cQ + (delta * delta * dst_count * src_count) / count;
+		dst->cM += delta * src_count / count;
+		dst->cK = count;
+	}
+	else if (src_count > 0)
+	{
+		dst->cK = src->cK;
+		dst->cM = src->cM;
+		dst->cQ = src->cQ;
+	}
+
+	dst->stats->stddev = -1;
+	dst->stats->mean = 0;
+}
+
+static bytea *
+rtpg_summarystats_arg_serialize(rtpg_summarystats_arg state)
+{
+	bytea *result;
+	rtpg_summarystats_serialized serialized;
+
+	serialized.sample = state->stats->sample;
+	serialized.count = state->stats->count;
+	serialized.min = state->stats->min;
+	serialized.max = state->stats->max;
+	serialized.sum = state->stats->sum;
+	serialized.mean = state->stats->mean;
+	serialized.stddev = state->stats->stddev;
+	serialized.cK = state->cK;
+	serialized.cM = state->cM;
+	serialized.cQ = state->cQ;
+	serialized.band_index = state->band_index;
+	serialized.exclude_nodata_value = state->exclude_nodata_value;
+	serialized.arg_sample = state->sample;
+
+	result = (bytea *)palloc(VARHDRSZ + sizeof(rtpg_summarystats_serialized));
+	SET_VARSIZE(result, VARHDRSZ + sizeof(rtpg_summarystats_serialized));
+	memcpy(VARDATA(result), &serialized, sizeof(rtpg_summarystats_serialized));
+
+	return result;
+}
+
+static rtpg_summarystats_arg
+rtpg_summarystats_arg_deserialize(bytea *serialized_bytea)
+{
+	rtpg_summarystats_arg state;
+	rtpg_summarystats_serialized serialized;
+
+	if (VARSIZE(serialized_bytea) != VARHDRSZ + sizeof(rtpg_summarystats_serialized))
+		elog(ERROR, "RASTER_summaryStats_deserialfn: Invalid serialized state size");
+
+	memcpy(&serialized, VARDATA(serialized_bytea), sizeof(rtpg_summarystats_serialized));
+
+	state = rtpg_summarystats_arg_init();
+	state->stats->sample = serialized.sample;
+	state->stats->count = serialized.count;
+	state->stats->min = serialized.min;
+	state->stats->max = serialized.max;
+	state->stats->sum = serialized.sum;
+	state->stats->mean = serialized.mean;
+	state->stats->stddev = serialized.stddev;
+	state->cK = serialized.cK;
+	state->cM = serialized.cM;
+	state->cQ = serialized.cQ;
+	state->band_index = serialized.band_index;
+	state->exclude_nodata_value = serialized.exclude_nodata_value;
+	state->sample = serialized.arg_sample;
+
+	return state;
 }
 
 PG_FUNCTION_INFO_V1(RASTER_summaryStats_transfn);
@@ -820,6 +969,96 @@ Datum RASTER_summaryStats_transfn(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(state);
 }
 
+PG_FUNCTION_INFO_V1(RASTER_summaryStats_combinefn);
+Datum
+RASTER_summaryStats_combinefn(PG_FUNCTION_ARGS)
+{
+	MemoryContext aggcontext;
+	MemoryContext oldcontext;
+	rtpg_summarystats_arg state1 = NULL;
+	rtpg_summarystats_arg state2 = NULL;
+
+	if (!AggCheckCallContext(fcinfo, &aggcontext))
+	{
+		elog(ERROR, "RASTER_summaryStats_combinefn: Cannot be called in a non-aggregate context");
+		PG_RETURN_NULL();
+	}
+
+	if (PG_ARGISNULL(0) && PG_ARGISNULL(1))
+		PG_RETURN_NULL();
+
+	oldcontext = MemoryContextSwitchTo(aggcontext);
+
+	if (!PG_ARGISNULL(0))
+		state1 = (rtpg_summarystats_arg)PG_GETARG_POINTER(0);
+	if (!PG_ARGISNULL(1))
+		state2 = (rtpg_summarystats_arg)PG_GETARG_POINTER(1);
+
+	if (state1 == NULL && state2 != NULL)
+	{
+		state1 = rtpg_summarystats_arg_copy(state2);
+		rtpg_summarystats_arg_destroy(state2);
+	}
+	else if (state1 != NULL && state2 != NULL)
+	{
+		rtpg_summarystats_arg_merge(state1, state2);
+		rtpg_summarystats_arg_destroy(state2);
+	}
+
+	MemoryContextSwitchTo(oldcontext);
+
+	PG_RETURN_POINTER(state1);
+}
+
+PG_FUNCTION_INFO_V1(RASTER_summaryStats_serialfn);
+Datum
+RASTER_summaryStats_serialfn(PG_FUNCTION_ARGS)
+{
+	rtpg_summarystats_arg state = NULL;
+
+	if (!AggCheckCallContext(fcinfo, NULL))
+	{
+		elog(ERROR, "RASTER_summaryStats_serialfn: Cannot be called in a non-aggregate context");
+		PG_RETURN_NULL();
+	}
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	state = (rtpg_summarystats_arg)PG_GETARG_POINTER(0);
+
+	PG_RETURN_BYTEA_P(rtpg_summarystats_arg_serialize(state));
+}
+
+PG_FUNCTION_INFO_V1(RASTER_summaryStats_deserialfn);
+Datum
+RASTER_summaryStats_deserialfn(PG_FUNCTION_ARGS)
+{
+	MemoryContext aggcontext;
+	MemoryContext oldcontext;
+	bytea *serialized_bytea;
+	rtpg_summarystats_arg state;
+
+	if (!AggCheckCallContext(fcinfo, &aggcontext))
+	{
+		elog(ERROR, "RASTER_summaryStats_deserialfn: Cannot be called in a non-aggregate context");
+		PG_RETURN_NULL();
+	}
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	oldcontext = MemoryContextSwitchTo(aggcontext);
+
+	serialized_bytea = PG_GETARG_BYTEA_P(0);
+	state = rtpg_summarystats_arg_deserialize(serialized_bytea);
+	PG_FREE_IF_COPY(serialized_bytea, 0);
+
+	MemoryContextSwitchTo(oldcontext);
+
+	PG_RETURN_POINTER(state);
+}
+
 PG_FUNCTION_INFO_V1(RASTER_summaryStats_finalfn);
 Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS)
 {
@@ -855,7 +1094,8 @@ Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS)
 		state->stats->mean = state->stats->sum / state->stats->count;
 		/* sample deviation */
 		if (state->stats->sample > 0 && state->stats->sample < 1)
-			state->stats->stddev = sqrt(state->cQ / (state->stats->count - 1));
+			state->stats->stddev =
+			    state->stats->count > 1 ? sqrt(state->cQ / (state->stats->count - 1)) : -1;
 		/* standard deviation */
 		else
 			state->stats->stddev = sqrt(state->cQ / state->stats->count);
@@ -2077,4 +2317,3 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		SRF_RETURN_DONE(funcctx);
 	}
 }
-
