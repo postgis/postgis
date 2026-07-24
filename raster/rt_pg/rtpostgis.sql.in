@@ -4444,8 +4444,15 @@ CREATE OR REPLACE FUNCTION st_grayscale(
 		stats @extschema@.summarystats;
 		nodata double precision;
 		nodataval integer;
+		pixtype text;
 		reclassexpr text;
 		hasnodata boolean DEFAULT FALSE;
+		reservenodata boolean;
+		can_synthesize_gaps boolean DEFAULT FALSE;
+		mapalgebra_extenttype text;
+		extenttype_upper text;
+		refidx integer;
+		refrast @extschema@.raster;
 		grayscale @extschema@.raster;
 
 	BEGIN
@@ -4478,9 +4485,59 @@ CREATE OR REPLACE FUNCTION st_grayscale(
 				hasnodata := TRUE;
 			END IF;
 
-			-- check that each band is 8BUI. if not, reclassify to 8BUI
-			IF @extschema@.ST_BandPixelType(rast, nband) != _PIXTYPE THEN
-				stats := @extschema@.ST_SummaryStats(rast, nband);
+		END LOOP;
+
+		extenttype_upper := upper(extenttype);
+		IF extenttype_upper != 'INTERSECTION' THEN
+			refidx := CASE
+				WHEN extenttype_upper = 'SECOND' THEN 2
+				WHEN extenttype_upper = 'LAST' THEN _NBANDS
+				ELSE 1
+			END;
+			refrast := _set[refidx].rast;
+
+			FOR idx IN 1.._NBANDS LOOP
+				IF extenttype_upper = 'UNION' THEN
+					IF NOT @extschema@.ST_SameAlignment(refrast, _set[idx].rast)
+						OR NOT @extschema@.ST_Equals(
+							@extschema@.ST_ConvexHull(refrast),
+							@extschema@.ST_ConvexHull(_set[idx].rast)
+						)
+					THEN
+						can_synthesize_gaps := TRUE;
+						EXIT;
+					END IF;
+				ELSIF NOT @extschema@.ST_SameAlignment(refrast, _set[idx].rast)
+					OR NOT @extschema@.ST_Covers(_set[idx].rast, refrast)
+				THEN
+					can_synthesize_gaps := TRUE;
+					EXIT;
+				END IF;
+			END LOOP;
+		END IF;
+		mapalgebra_extenttype := CASE
+			WHEN can_synthesize_gaps THEN extenttype
+			ELSE 'INTERSECTION'
+		END;
+		reservenodata := hasnodata OR can_synthesize_gaps;
+
+		FOR idx IN 1.._NBANDS LOOP
+
+			rast := _set[idx].rast;
+			nband := _set[idx].nband;
+
+			nodata := @extschema@.ST_BandNoDataValue(rast, nband);
+			pixtype := @extschema@.ST_BandPixelType(rast, nband);
+
+			-- Check that each band is 8BUI and reserve 255 when NULL input
+			-- values must survive as output NODATA.
+			IF pixtype != _PIXTYPE OR reservenodata THEN
+				IF pixtype = _PIXTYPE AND nodata IS NULL AND reservenodata THEN
+					stats.min := 0;
+					stats.max := _NODATA;
+				ELSE
+					stats := @extschema@.ST_SummaryStats(rast, nband);
+				END IF;
 
 				IF nodata IS NOT NULL THEN
 					nodataval := _NODATA;
@@ -4488,6 +4545,9 @@ CREATE OR REPLACE FUNCTION st_grayscale(
 						concat('[', nodata , '-', nodata, ']:', _NODATA, '-', _NODATA, ','),
 						concat('[', stats.min , '-', stats.max , ']:0-', _NODATA - 1)
 					);
+				ELSIF reservenodata THEN
+					nodataval := _NODATA;
+					reclassexpr := concat('[', stats.min , '-', stats.max , ']:0-', _NODATA - 1);
 				ELSE
 					nodataval := NULL;
 					reclassexpr := concat('[', stats.min , '-', stats.max , ']:0-', _NODATA);
@@ -4510,10 +4570,10 @@ CREATE OR REPLACE FUNCTION st_grayscale(
 			_set,
 			'@extschema@._ST_Grayscale4MA(double precision[][][], integer[][], text[])'::regprocedure,
 			'8BUI',
-			extenttype
+			mapalgebra_extenttype
 		);
 
-		IF hasnodata THEN
+		IF hasnodata OR can_synthesize_gaps THEN
 			grayscale := @extschema@.ST_SetBandNoDataValue(grayscale, 1, _NODATA);
 		END IF;
 

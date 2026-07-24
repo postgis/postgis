@@ -160,6 +160,154 @@ SELECT
 	(ST_DumpValues(rast)).valarray
 FROM mixed;
 
+WITH src AS (
+	SELECT ST_SetValues(
+		ST_AddBand(
+			ST_MakeEmptyRaster(2, 1, 0, 0, 1, -1, 0, 0, 0),
+			1, '8BUI', 0, 0
+		),
+		1, 1, 1, ARRAY[[0, 255]]::double precision[]
+	) AS rast
+), gray AS (
+	SELECT ST_Grayscale(
+		ARRAY[
+			ROW(rast, 1)::rastbandarg,
+			ROW(rast, 1)::rastbandarg,
+			ROW(rast, 1)::rastbandarg
+		]::rastbandarg[]
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.grayscale.8bui-nodata',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM gray;
+
+WITH red AS (
+	SELECT ST_SetValues(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0),
+			1, '8BUI', 255, NULL
+		),
+		1, 1, 1, ARRAY[[255]]::double precision[]
+	) AS rast
+), gb AS (
+	SELECT ST_SetValues(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 1, 0, 1, -1, 0, 0, 0),
+			1, '8BUI', 0, NULL
+		),
+		1, 1, 1, ARRAY[[0]]::double precision[]
+	) AS rast
+), gray AS (
+	SELECT ST_Grayscale(
+		ARRAY[
+			ROW(red.rast, 1)::rastbandarg,
+			ROW(gb.rast, 1)::rastbandarg,
+			ROW(gb.rast, 1)::rastbandarg
+		]::rastbandarg[],
+		'UNION'
+	) AS rast
+	FROM red CROSS JOIN gb
+)
+SELECT
+	'#2807.grayscale.union-gap',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM gray;
+
+WITH src AS (
+	SELECT ST_SetValues(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0),
+			1, '8BUI', 0, NULL
+		),
+		1, 1, 1, ARRAY[[255]]::double precision[]
+	) AS rast
+), gray AS (
+	SELECT ST_Grayscale(
+		ARRAY[
+			ROW(rast, 1)::rastbandarg,
+			ROW(rast, 1)::rastbandarg,
+			ROW(rast, 1)::rastbandarg
+		]::rastbandarg[],
+		'UNION'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.grayscale.union-coextensive-white',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM gray;
+
+WITH red AS (
+	SELECT ST_SetValues(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0),
+			1, '8BUI', 0, NULL
+		),
+		1, 1, 1, ARRAY[[255]]::double precision[]
+	) AS rast
+), gb AS (
+	SELECT ST_SetValues(
+		ST_AddBand(
+			ST_MakeEmptyRaster(2, 1, 0, 0, 1, -1, 0, 0, 0),
+			1, '8BUI', 0, NULL
+		),
+		1, 1, 1, ARRAY[[255, 0]]::double precision[]
+	) AS rast
+), gray AS (
+	SELECT ST_Grayscale(
+		ARRAY[
+			ROW(red.rast, 1)::rastbandarg,
+			ROW(gb.rast, 1)::rastbandarg,
+			ROW(gb.rast, 1)::rastbandarg
+		]::rastbandarg[],
+		'FIRST'
+	) AS rast
+	FROM red CROSS JOIN gb
+)
+SELECT
+	'#2807.grayscale.first-covered-white',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM gray;
+
+WITH red AS (
+	SELECT ST_SetValues(
+		ST_AddBand(
+			ST_MakeEmptyRaster(2, 1, 0, 0, 1, -1, 0, 0, 0),
+			1, '8BUI', 0, NULL
+		),
+		1, 1, 1, ARRAY[[255, 255]]::double precision[]
+	) AS rast
+), gb AS (
+	SELECT ST_SetValues(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0),
+			1, '8BUI', 0, NULL
+		),
+		1, 1, 1, ARRAY[[255]]::double precision[]
+	) AS rast
+), gray AS (
+	SELECT ST_Grayscale(
+		ARRAY[
+			ROW(red.rast, 1)::rastbandarg,
+			ROW(gb.rast, 1)::rastbandarg,
+			ROW(gb.rast, 1)::rastbandarg
+		]::rastbandarg[],
+		'FIRST'
+	) AS rast
+	FROM red CROSS JOIN gb
+)
+SELECT
+	'#2807.grayscale.first-gap-white',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM gray;
+
 -- error because of insufficient bands
 BEGIN;
 SELECT
