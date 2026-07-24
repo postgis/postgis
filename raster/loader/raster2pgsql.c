@@ -1304,7 +1304,7 @@ add_raster_constraints(
 	_column = strreplace(_tmp, "'", "''", NULL);
 	rtdealloc(_tmp);
 
-	len = strlen("SELECT AddRasterConstraints('','','',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE);") + 1;
+	len = strlen("CALL AddRasterConstraints('','','',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE);") + 1;
 	if (_schema != NULL)
 		len += strlen(_schema);
 	len += strlen(_table);
@@ -1315,7 +1315,7 @@ add_raster_constraints(
 		rterror(_("add_raster_constraints: Could not allocate memory for AddRasterConstraints statement"));
 		return 0;
 	}
-	sprintf(sql, "SELECT AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s);",
+	sprintf(sql, "CALL AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s,TRUE);",
 		(_schema != NULL ? _schema : ""),
 		_table,
 		_column,
@@ -2381,6 +2381,13 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		}
 	}
 
+	if (config->transaction && config->plan.add_constraints) {
+		if (!append_sql_to_buffer(buffer, strdup("END;"))) {
+			rterror(_("process_rasters: Could not add END statement to string buffer"));
+			return 0;
+		}
+	}
+
 	/* add constraints */
 	if (config->plan.add_constraints)
 	{
@@ -2422,7 +2429,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		}
 	}
 
-	if (config->transaction) {
+	if (config->transaction && !config->plan.add_constraints) {
 		if (!append_sql_to_buffer(buffer, strdup("END;"))) {
 			rterror(_("process_rasters: Could not add END statement to string buffer"));
 			return 0;

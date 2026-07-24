@@ -171,6 +171,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #2137, [raster] Reuse matching source raster overviews in raster2pgsql -l
           (Darafei Praliaskouski)
+ - #4402, [raster] Let raster2pgsql commit AddRasterConstraints work
+          between requested constraints (Darafei Praliaskouski)
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections (Darafei Praliaskouski)
  - #5532, Validate the manual against DocBook XMLSchema in check-xml

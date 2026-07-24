@@ -40,6 +40,7 @@ eval "exec perl -w $0 $@"
 my @aggs = ();
 my @casts = ();
 my @funcs = ();
+my @procs = ();
 my @types = ();
 my %type_funcs = ();
 my @type_funcs = (); # function to drop _after_ type drop
@@ -99,6 +100,13 @@ while( my $line = <INPUT>)
 		}
 		push (@funcs, $defn) if ! $supp;
 		push (@supp_funcs, $defn) if $supp;
+	}
+	elsif ($line =~ /^create (or replace )?procedure/i) {
+		my $defn = $line;
+		while( not $defn =~ /\)/ ) {
+			$defn .= <INPUT>;
+		}
+		push (@procs, $defn);
 	}
 	elsif ($line =~ /^create or replace view\s*([\w\.]+)/i) {
 		push (@views, $1);
@@ -246,6 +254,25 @@ print "-- Drop all table triggers.\n";
 foreach my $tr (@triggers)
 {
 	print "DROP TRIGGER IF EXISTS $tr;\n";
+}
+
+print "-- Drop all procedures.\n";
+foreach my $proc (@procs)
+{
+	if ($proc =~ /.* procedure ([^(]+)\((.*)\)/is ) # can be multiline
+	{
+		my $proc_nm = $1;
+		my $proc_arg = $2;
+		$proc_arg =~ s/\-\-.*\n//g;
+		$proc_arg =~ s/\n//g;
+
+		$proc_arg = strip_default($proc_arg);
+		print "DROP PROCEDURE IF EXISTS $proc_nm ($proc_arg);\n";
+	}
+	else
+	{
+		die "Couldn't parse PROCEDURE line: $proc\n";
+	}
 }
 
 print "-- Drop all functions except " . (keys %type_funcs) . " needed for type definition.\n";

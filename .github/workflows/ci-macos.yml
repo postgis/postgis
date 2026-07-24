@@ -39,8 +39,14 @@ jobs:
             gdal geos icu4c json-c libpq libxml2 \
             proj protobuf-c sfcgal cunit \
             docbook docbook-xsl \
-            postgresql@${PG} gettext
+            gettext
           brew link --force gettext
+          HOMEBREW_GITHUB_ACTIONS=1 brew install "postgresql@${PG}"
+          pg_version="$(brew info --json=v2 "postgresql@${PG}" | python3 -c 'import json,sys; data=json.load(sys.stdin); print(data["formulae"][0]["installed"][0]["version"])')"
+          ln -sfn "${HOMEBREW_PREFIX}/Cellar/postgresql@${PG}/${pg_version}/share/postgresql@${PG}" "${HOMEBREW_PREFIX}/share/postgresql@${PG}"
+          if [ ! -f "${HOMEBREW_PREFIX}/var/postgresql@${PG}/PG_VERSION" ]; then
+            "${HOMEBREW_PREFIX}/opt/postgresql@${PG}/bin/initdb" --locale=en_US.UTF-8 -E UTF-8 "${HOMEBREW_PREFIX}/var/postgresql@${PG}"
+          fi
           ccache --max-size="${CCACHE_MAXSIZE}"
           sudo ln -sfn "${HOMEBREW_PREFIX}/opt/postgresql@${PG}/bin/postgres" /usr/local/bin/postgres
 

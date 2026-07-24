@@ -7833,13 +7833,14 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_index(rastschema name, rastta
 -- AddRasterConstraints
 ------------------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION AddRasterConstraints (
+CREATE OR REPLACE PROCEDURE _AddRasterConstraints (
 	rastschema name,
 	rasttable name,
 	rastcolumn name,
+	commit_between_constraints boolean,
+	INOUT added boolean,
 	VARIADIC constraints text[]
 )
-	RETURNS boolean
 	AS $$
 	DECLARE
 		max int;
@@ -7851,10 +7852,11 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 		rtn boolean;
 	BEGIN
 		cnt := 0;
-		max := array_length(constraints, 1);
+		max := COALESCE(array_length(constraints, 1), 0);
 		IF max < 1 THEN
 			RAISE NOTICE 'No constraints indicated to be added.  Doing nothing';
-			RETURN TRUE;
+			added := TRUE;
+			RETURN;
 		END IF;
 
 		-- validate schema
@@ -7867,7 +7869,8 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 
 			IF schema IS NULL THEN
 				RAISE EXCEPTION 'The value provided for schema is invalid';
-				RETURN FALSE;
+				added := FALSE;
+				RETURN;
 			END IF;
 		END IF;
 
@@ -7884,7 +7887,8 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 
 			IF schema IS NULL THEN
 				RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal($2);
-				RETURN FALSE;
+				added := FALSE;
+				RETURN;
 			END IF;
 		END IF;
 
@@ -7955,16 +7959,127 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 				RAISE WARNING 'Unable to add constraint: %.  Skipping', quote_literal(constraints[x]);
 			END IF;
 
+			IF commit_between_constraints IS TRUE THEN
+				COMMIT AND CHAIN;
+			END IF;
 		END LOOP kwloop;
 
 		IF cnt = max THEN
 			RAISE EXCEPTION 'None of the constraints specified could be added.  Is the schema name, table name or column name incorrect?';
-			RETURN FALSE;
+			added := FALSE;
+			RETURN;
 		END IF;
 
-		RETURN TRUE;
+		added := TRUE;
+		RETURN;
+	END;
+	$$ LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION AddRasterConstraints (
+	rastschema name,
+	rasttable name,
+	rastcolumn name,
+	VARIADIC constraints text[]
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		added boolean;
+	BEGIN
+		CALL @extschema@._AddRasterConstraints($1, $2, $3, FALSE, added, VARIADIC constraints);
+		RETURN added;
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT;
+
+CREATE OR REPLACE PROCEDURE AddRasterConstraints (
+	rastschema name,
+	rasttable name,
+	rastcolumn name,
+	commit_between_constraints boolean,
+	VARIADIC constraints text[]
+)
+	AS $$
+	DECLARE
+		added boolean;
+	BEGIN
+		CALL @extschema@._AddRasterConstraints($1, $2, $3, commit_between_constraints, added, VARIADIC constraints);
+	END;
+	$$ LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE PROCEDURE AddRasterConstraints (
+	rastschema name,
+	rasttable name,
+	rastcolumn name,
+	srid boolean,
+	scale_x boolean,
+	scale_y boolean,
+	blocksize_x boolean,
+	blocksize_y boolean,
+	same_alignment boolean,
+	regular_blocking boolean, -- false as regular_blocking is an enhancement
+	num_bands boolean,
+	pixel_types boolean,
+	nodata_values boolean,
+	out_db boolean,
+	extent boolean,
+	commit_between_constraints boolean
+)
+	AS $$
+	DECLARE
+		constraints text[];
+		added boolean;
+	BEGIN
+		IF srid IS TRUE THEN
+			constraints := constraints || 'srid'::text;
+		END IF;
+
+		IF scale_x IS TRUE THEN
+			constraints := constraints || 'scale_x'::text;
+		END IF;
+
+		IF scale_y IS TRUE THEN
+			constraints := constraints || 'scale_y'::text;
+		END IF;
+
+		IF blocksize_x IS TRUE THEN
+			constraints := constraints || 'blocksize_x'::text;
+		END IF;
+
+		IF blocksize_y IS TRUE THEN
+			constraints := constraints || 'blocksize_y'::text;
+		END IF;
+
+		IF same_alignment IS TRUE THEN
+			constraints := constraints || 'same_alignment'::text;
+		END IF;
+
+		IF regular_blocking IS TRUE THEN
+			constraints := constraints || 'regular_blocking'::text;
+		END IF;
+
+		IF num_bands IS TRUE THEN
+			constraints := constraints || 'num_bands'::text;
+		END IF;
+
+		IF pixel_types IS TRUE THEN
+			constraints := constraints || 'pixel_types'::text;
+		END IF;
+
+		IF nodata_values IS TRUE THEN
+			constraints := constraints || 'nodata_values'::text;
+		END IF;
+
+		IF out_db IS TRUE THEN
+			constraints := constraints || 'out_db'::text;
+		END IF;
+
+		IF extent IS TRUE THEN
+			constraints := constraints || 'extent'::text;
+		END IF;
+
+		CALL @extschema@._AddRasterConstraints($1, $2, $3, commit_between_constraints, added, VARIADIC constraints);
+	END;
+	$$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION AddRasterConstraints (
 	rasttable name,
@@ -7974,6 +8089,18 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 	RETURNS boolean AS
 	$$ SELECT @extschema@.AddRasterConstraints('', $1, $2, VARIADIC $3) $$
 	LANGUAGE 'sql' VOLATILE STRICT;
+
+CREATE OR REPLACE PROCEDURE AddRasterConstraints (
+	rasttable name,
+	rastcolumn name,
+	commit_between_constraints boolean,
+	VARIADIC constraints text[]
+)
+	AS $$
+	BEGIN
+		CALL @extschema@.AddRasterConstraints('', $1, $2, $3, VARIADIC $4);
+	END;
+	$$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION AddRasterConstraints (
 	rastschema name,
@@ -8068,6 +8195,29 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 	RETURNS boolean AS
 	$$ SELECT @extschema@.AddRasterConstraints('', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) $$
 	LANGUAGE 'sql' VOLATILE STRICT;
+
+CREATE OR REPLACE PROCEDURE AddRasterConstraints (
+	rasttable name,
+	rastcolumn name,
+	srid boolean,
+	scale_x boolean,
+	scale_y boolean,
+	blocksize_x boolean,
+	blocksize_y boolean,
+	same_alignment boolean,
+	regular_blocking boolean, -- false as regular_blocking is an enhancement
+	num_bands boolean,
+	pixel_types boolean,
+	nodata_values boolean,
+	out_db boolean,
+	extent boolean,
+	commit_between_constraints boolean
+)
+	AS $$
+	BEGIN
+		CALL @extschema@.AddRasterConstraints('', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15);
+	END;
+	$$ LANGUAGE 'plpgsql';
 
 ------------------------------------------------------------------------------
 -- DropRasterConstraints
