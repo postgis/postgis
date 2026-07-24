@@ -66,6 +66,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS);
 Datum LWGEOM_recv(PG_FUNCTION_ARGS);
 Datum LWGEOM_send(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS);
+Datum LWGEOM_from_latlon(PG_FUNCTION_ARGS);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
 Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS);
 Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS);
@@ -276,6 +277,51 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
   pfree(formatted_str);
 
 	PG_RETURN_POINTER(formatted_text);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_from_latlon);
+Datum
+LWGEOM_from_latlon(PG_FUNCTION_ARGS)
+{
+	text *latlon_text = PG_GETARG_TEXT_P(0);
+	char *latlon_str = text_to_cstring(latlon_text);
+	char *lon_str = NULL;
+	char *tmp;
+	LWPOINT *lwpoint;
+	GSERIALIZED *geom;
+
+	tmp = (char *)pg_do_encoding_conversion(
+	    (uint8_t *)latlon_str, strlen(latlon_str), GetDatabaseEncoding(), PG_UTF8);
+	if (tmp != latlon_str)
+	{
+		pfree(latlon_str);
+		latlon_str = tmp;
+	}
+
+	if (PG_NARGS() == 1)
+		lwpoint = lwpoint_from_latlon(latlon_str);
+	else
+	{
+		text *lon_text = PG_GETARG_TEXT_P(1);
+		lon_str = text_to_cstring(lon_text);
+		tmp = (char *)pg_do_encoding_conversion(
+		    (uint8_t *)lon_str, strlen(lon_str), GetDatabaseEncoding(), PG_UTF8);
+		if (tmp != lon_str)
+		{
+			pfree(lon_str);
+			lon_str = tmp;
+		}
+
+		lwpoint = lwpoint_from_latlon_parts(latlon_str, lon_str);
+	}
+
+	geom = geometry_serialize(lwpoint_as_lwgeom(lwpoint));
+	lwpoint_free(lwpoint);
+	pfree(latlon_str);
+	if (lon_str)
+		pfree(lon_str);
+
+	PG_RETURN_POINTER(geom);
 }
 
 /*
@@ -769,4 +815,3 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
-

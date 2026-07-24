@@ -142,6 +142,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - [fuzzers] Centralize OSS-Fuzz build/dependency logic in PostGIS scripts,
           prefer requested CXX over pg_config --cc for internal C++ checks, and
           make fuzzer linking/runtime dependency packaging portable
+ - #2564, Add ST_FromLatLonText to parse latitude/longitude text
           (Darafei Praliaskouski)
 
 * Enhancements *
