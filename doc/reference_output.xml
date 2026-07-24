@@ -1566,7 +1566,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
         <para>Below is how we currently map PostGIS 2D/3D types to X3D types</para>
     </note>
 
-        <para>The 'options' argument is a bitfield that denotes whether to represent coordinates with the X3D GeoCoordinates geospatial node and whether to flip the x/y axis.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred.</para>
+        <para>The 'options' argument is a bitfield that denotes whether to represent coordinates with the X3D GeoCoordinates geospatial node, whether to flip the x/y axis, and whether to output the axis-aligned bounding box instead of the input geometry.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred.</para>
 
         <itemizedlist>
             <listitem>
@@ -1580,6 +1580,10 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
             <listitem>
               <para>2: Output coordinates in GeoSpatial GeoCoordinates.  This option will throw an error if geometries are not in WGS 84 long lat (srid: 4326). This is currently the only GeoCoordinate type supported.  <link xlink:href="http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference">Refer to X3D specs specifying a spatial reference system.</link>. Default output will be <code>GeoCoordinate geoSystem='"GD" "WE" "longitude_first"'</code>.  If
               you prefer the X3D default of  <code>GeoCoordinate geoSystem='"GD" "WE" "latitude_first"'</code> use <code>(2 + 1)</code> = <code>3</code> </para>
+            </listitem>
+
+            <listitem>
+              <para>4: Output the axis-aligned bounding box of the geometry. This may be combined with the coordinate-flipping and GeoCoordinates options.  For 2D inputs, the bounding box is emitted with Z=0 coordinates.</para>
             </listitem>
         </itemizedlist>
 
@@ -1632,6 +1636,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     <para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <link xlink:href="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</link> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
     <para>Also check out <link xlink:href="https://git.osgeo.org/gitea/robe/postgis_x3d_viewer">PostGIS minimalist X3D viewer</link>  that utilizes this function and <link xlink:href="http://www.x3dom.org/">x3dDom html/js open source toolkit</link>.</para>
     <para role="availability" conformance="2.0.0">Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
+    <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0: Support for axis-aligned bounding box output with option 4.</para>
     <para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
     <!-- Optionally mention 3d support -->
     <para>&Z_support;</para>
