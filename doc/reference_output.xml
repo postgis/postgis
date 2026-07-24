@@ -700,15 +700,12 @@ Conversely, passing the parameter will save column type lookups.
     <title>Examples</title>
 
 <para>Generate a FeatureCollection:</para>
-<programlisting language="sql">SELECT json_build_object(
-    'type', 'FeatureCollection',
-    'features', json_agg(ST_AsGeoJSON(t.*, id_column => 'id')::json)
-    )
+<programlisting language="sql">SELECT ST_AsGeoJSONAgg(t.*, 'id')
 FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
               (2, 'two', 'POINT(2 2)'),
               (3, 'three', 'POINT(3 3)')
      ) as t(id, name, geom);</programlisting>
-<screen role="text-primary">{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "id": 2, "properties": {"name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "id": 3, "properties": {"name": "three"}}]}</screen>
+<screen role="text-primary">{"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "id": 1, "properties": {"name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "id": 2, "properties": {"name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "id": 3, "properties": {"name": "three"}}]}</screen>
 
 <para>Generate a Feature:</para>
     <programlisting language="sql">SELECT ST_AsGeoJSON(t.*, id_column => 'id')

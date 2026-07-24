@@ -5235,6 +5235,104 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', m
 	LANGUAGE 'c' STABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION pgis_asgeojsonagg_transfn(internal, anyelement)
+	RETURNS internal
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' STABLE PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION pgis_asgeojsonagg_transfn(internal, anyelement, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' STABLE PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION pgis_asgeojsonagg_transfn(internal, anyelement, text, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' STABLE PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION pgis_asgeojsonagg_transfn(internal, anyelement, text, integer, boolean, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' STABLE PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION pgis_asgeojsonagg_finalfn(internal, anyelement)
+	RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION pgis_asgeojsonagg_finalfn(internal, anyelement, text)
+	RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION pgis_asgeojsonagg_finalfn(internal, anyelement, text, text)
+	RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION pgis_asgeojsonagg_finalfn(internal, anyelement, text, integer, boolean, text)
+	RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	_COST_LOW;
+
+-- PostgreSQL aggregates cannot use default or named arguments, so provide
+-- focused positional overloads for common row-to-feature options.
+-- Availability: 3.7.0
+CREATE AGGREGATE ST_AsGeoJSONAgg(anyelement)
+(
+	sfunc = pgis_asgeojsonagg_transfn,
+	stype = internal,
+	parallel = safe,
+	finalfunc = pgis_asgeojsonagg_finalfn,
+	finalfunc_extra
+);
+
+-- Availability: 3.7.0
+CREATE AGGREGATE ST_AsGeoJSONAgg(anyelement, text)
+(
+	sfunc = pgis_asgeojsonagg_transfn,
+	stype = internal,
+	parallel = safe,
+	finalfunc = pgis_asgeojsonagg_finalfn,
+	finalfunc_extra
+);
+
+-- Availability: 3.7.0
+CREATE AGGREGATE ST_AsGeoJSONAgg(anyelement, text, text)
+(
+	sfunc = pgis_asgeojsonagg_transfn,
+	stype = internal,
+	parallel = safe,
+	finalfunc = pgis_asgeojsonagg_finalfn,
+	finalfunc_extra
+);
+
+-- Availability: 3.7.0
+CREATE AGGREGATE ST_AsGeoJSONAgg(anyelement, text, integer, boolean, text)
+(
+	sfunc = pgis_asgeojsonagg_transfn,
+	stype = internal,
+	parallel = safe,
+	finalfunc = pgis_asgeojsonagg_finalfn,
+	finalfunc_extra
+);
+
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION "json"(geometry)
 	RETURNS json
