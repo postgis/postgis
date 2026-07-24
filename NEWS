@@ -177,6 +177,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Darafei Praliaskouski)
  - #6087, Add a repository-owned CI status checker and static dashboard
           generator (Darafei Praliaskouski)
+ - #2838, Complete ST_AsX3D output for curved geometry inputs and
+          mixed geometry collections (Darafei Praliaskouski)
  - #2807, [raster] Preserve missing NODATA values in ST_MapAlgebra outputs
           (Darafei Praliaskouski)
  - #2832, [raster] Avoid padding single-tile raster2pgsql overviews

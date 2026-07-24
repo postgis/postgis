@@ -33,6 +33,7 @@
 
 /** defid is the id of the coordinate can be used to hold other elements DEF='abc' transform='' etc. **/
 static int lwgeom_to_x3d3_sb(const LWGEOM *geom, int precision, int opts, const char *defid, stringbuffer_t *sb);
+static int lwgeom_type_needs_stroke(uint8_t type);
 
 static int asx3d3_point_sb(const LWPOINT *point, int precision, int opts, const char *defid, stringbuffer_t *sb);
 static int asx3d3_line_sb(const LWLINE *line, int precision, int opts, const char *defid, stringbuffer_t *sb);
