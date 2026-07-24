@@ -252,6 +252,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           dropping the tail (Darafei Praliaskouski)
  - #6003, Avoid size_t formats in liblwgeom logging/error wrappers for
           MinGW builds (Darafei Praliaskouski)
+ - #6063, Keep postgis_restore from skipping application tables that share
+          names with PostGIS-owned tables in other schemas
+          (Darafei Praliaskouski)
  - GH-886, ST_ClusterRelateWin validates NULL relate matrices before
           detoasting them (Darafei Praliaskouski)
  - GH-889, ST_Relate pattern inversion avoids out-of-bounds access on
