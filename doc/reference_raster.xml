@@ -10587,7 +10587,9 @@ WHERE t1.rid = 1
                     <para>
                         <xref linkend="rastbandarg"/>,
                         <xref linkend="RT_ST_Union"/>,
-                        <xref linkend="RT_ST_MapAlgebra"/>
+                        <xref linkend="RT_ST_MapAlgebra"/>,
+                        <xref linkend="RT_Raster_MapAlgebra_Reclass_Rendering"/>,
+                        <xref linkend="RT_PLPGSQL_MapAlgebra"/>
                     </para>
                 </refsection>
             </refentry>
@@ -12055,6 +12057,7 @@ UPDATE wind
                         <xref linkend="RT_ST_BandPixelType"/>,
                         <xref linkend="RT_ST_MakeEmptyRaster"/>,
                         <xref linkend="reclassarg"/>,
+                        <xref linkend="RT_Raster_MapAlgebra_Reclass_Rendering"/>,
                         <xref linkend="RT_ST_Value"/>
                     </para>
                 </refsection>

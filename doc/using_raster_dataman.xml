@@ -609,6 +609,70 @@ AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting
 		<title>Building Custom Applications with PostGIS Raster</title>
 		<para>The fact that PostGIS raster provides you with SQL functions to render rasters in known image formats gives  you a lot of options for rendering them.
 		For example you can use OpenOffice / LibreOffice for rendering as demonstrated in <link xlink:href="http://www.postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports.html">Rendering PostGIS Raster graphics with LibreOffice Base Reports</link>.  In addition you can use a wide variety of languages as demonstrated in this section.</para>
+		<section xml:id="RT_Raster_MapAlgebra_Reclass_Rendering">
+			<title>Rendering Map Algebra and Reclass Results</title>
+			<para><xref linkend="RT_ST_MapAlgebra"/> and <xref linkend="RT_ST_Reclass"/> can be used together to turn analysis rasters into viewable images.  A common pattern is to build a derived raster with map algebra, convert numeric ranges into display classes with reclassification, and render the result with <xref linkend="RT_ST_AsPNG"/> or another <xref linkend="RT_ST_AsGDALRaster"/> output format.</para>
+			<para>The raster reference includes executable visual examples for these workflows:</para>
+			<itemizedlist>
+				<listitem><para><xref linkend="RT_ST_MapAlgebraExpr2"/> compares two-raster intersection and union results.</para></listitem>
+				<listitem><para><xref linkend="RT_ST_MapAlgebra"/> demonstrates neighborhood processing and renders the source and result rasters.</para></listitem>
+			</itemizedlist>
+			<para>For a classification-style output, reclassify a continuous band into a small display palette and render it directly.</para>
+			<programlisting><![CDATA[
+WITH classified AS (
+    SELECT ST_Reclass(
+        rast,
+        1,
+        '[0-50]:1, [51-100]:80, [101-150]:160, [151-255]:255',
+        '8BUI',
+        0
+    ) AS rast
+    FROM my_analysis_rasters
+    WHERE rid = 1
+)
+SELECT ST_AsPNG(rast) AS png
+FROM classified;
+]]></programlisting>
+		</section>
+		<section xml:id="RT_PLPGSQL_MapAlgebra">
+			<title>PL/pgSQL Map Algebra Callback Example</title>
+			<para>Map algebra callbacks are ordinary PostgreSQL functions.  The following example uses PL/pgSQL to scale one raster band while keeping the callback argument types compatible with the <type>double precision[][][]</type> value matrix passed by <xref linkend="RT_ST_MapAlgebra"/>.</para>
+			<programlisting><![CDATA[
+CREATE OR REPLACE FUNCTION plpgsql_scale_pixel(
+    value double precision[][][],
+    positions integer[][],
+    VARIADIC userargs text[]
+)
+RETURNS double precision
+AS $$
+DECLARE
+    pixel double precision := value[1][1][1];
+    factor double precision := COALESCE(userargs[1]::double precision, 1);
+BEGIN
+    IF pixel IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    RETURN greatest(0, least(255, pixel * factor));
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+SELECT ST_MapAlgebra(
+    rast,
+    1,
+    'plpgsql_scale_pixel(double precision[][][], integer[][], text[])'::regprocedure,
+    '8BUI',
+    'FIRST',
+    NULL,
+    0,
+    0,
+    '1.5'
+) AS rast
+FROM my_analysis_rasters
+WHERE rid = 1;
+]]></programlisting>
+			<para>The first callback argument is a PostgreSQL <type>double precision[][][]</type> value matrix.  With no neighborhood distance, the current pixel value for the first raster is available as <code>value[1][1][1]</code>.</para>
+		</section>
 		<section xml:id="RT_PHP_Output">
 			<title>PHP Example Outputting using ST_AsPNG in concert with other raster functions</title>
 			<para>In this section, we'll demonstrate how to use the PHP PostgreSQL driver and the <xref linkend="RT_ST_AsGDALRaster"/> family of functions to
