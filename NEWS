@@ -143,6 +143,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           prefer requested CXX over pg_config --cc for internal C++ checks, and
           make fuzzer linking/runtime dependency packaging portable
           (Darafei Praliaskouski)
+ - #2310, #2311, #2312, [raster] Add ST_Wedge, ST_Annulus, and ST_Circle
+          focal statistics helpers (Darafei Praliaskouski)
 
 * Enhancements *
 

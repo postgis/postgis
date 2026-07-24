@@ -3086,6 +3086,168 @@ CREATE OR REPLACE FUNCTION st_stddev4ma(value double precision[][][], pos intege
 	AS $$ SELECT stddev(unnest) FROM unnest($1) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
+-----------------------------------------------------------------------
+-- Focal-statistics mask helpers
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_focal_mask(
+	fillvalue double precision,
+	innerradius integer,
+	outerradius integer,
+	thetastart double precision DEFAULT 0,
+	thetaend double precision DEFAULT 2 * pi()
+)
+	RETURNS double precision[][]
+	AS $$
+	DECLARE
+		twopi double precision := 2 * pi();
+		width integer;
+		center integer;
+		x integer;
+		y integer;
+		dx integer;
+		dy integer;
+		dist double precision;
+		theta double precision;
+		thetaoffset double precision;
+		startnorm double precision;
+		span double precision;
+		mask double precision[][];
+	BEGIN
+		IF innerradius < 0 THEN
+			RAISE EXCEPTION 'Inner radius must be greater than or equal to zero';
+		END IF;
+
+		IF outerradius < 0 THEN
+			RAISE EXCEPTION 'Outer radius must be greater than or equal to zero';
+		END IF;
+
+		IF innerradius > outerradius THEN
+			RAISE EXCEPTION 'Inner radius cannot be greater than outer radius';
+		END IF;
+
+		IF thetaend <= thetastart THEN
+			RAISE EXCEPTION 'End angle must be greater than start angle';
+		END IF;
+
+		width := 2 * outerradius + 1;
+		center := outerradius + 1;
+		span := thetaend - thetastart;
+		startnorm := thetastart - floor(thetastart / twopi) * twopi;
+		mask := array_fill(0.0::double precision, ARRAY[width, width]);
+
+		FOR y IN 1..width LOOP
+			FOR x IN 1..width LOOP
+				dx := x - center;
+				dy := center - y;
+				dist := sqrt((dx * dx + dy * dy)::double precision);
+
+				IF dist < innerradius OR dist > outerradius THEN
+					CONTINUE;
+				END IF;
+
+				IF dx = 0 AND dy = 0 THEN
+					mask[y][x] := fillvalue;
+					CONTINUE;
+				END IF;
+
+				IF span < twopi THEN
+					theta := atan2(dx::double precision, dy::double precision);
+					IF theta < 0 THEN
+						theta := theta + twopi;
+					END IF;
+
+					thetaoffset := theta - startnorm;
+					IF thetaoffset < 0 THEN
+						thetaoffset := thetaoffset + twopi;
+					END IF;
+
+					IF thetaoffset > span THEN
+						CONTINUE;
+					END IF;
+				END IF;
+
+				mask[y][x] := fillvalue;
+			END LOOP;
+		END LOOP;
+
+		RETURN mask;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION _st_focal_callback(operation text)
+	RETURNS regprocedure
+	AS $$
+	BEGIN
+		CASE upper(operation)
+		WHEN 'MAX' THEN
+			RETURN '@extschema@.st_max4ma(double precision[][][],integer[][],text[])'::regprocedure;
+		WHEN 'MEAN' THEN
+			RETURN '@extschema@.st_mean4ma(double precision[][][],integer[][],text[])'::regprocedure;
+		WHEN 'MIN' THEN
+			RETURN '@extschema@.st_min4ma(double precision[][][],integer[][],text[])'::regprocedure;
+		WHEN 'RANGE' THEN
+			RETURN '@extschema@.st_range4ma(double precision[][][],integer[][],text[])'::regprocedure;
+		WHEN 'STDDEV' THEN
+			RETURN '@extschema@.st_stddev4ma(double precision[][][],integer[][],text[])'::regprocedure;
+		WHEN 'SUM' THEN
+			RETURN '@extschema@.st_sum4ma(double precision[][][],integer[][],text[])'::regprocedure;
+		WHEN 'DISTINCT' THEN
+			RETURN '@extschema@.st_distinct4ma(double precision[][][],integer[][],text[])'::regprocedure;
+		ELSE
+			RAISE EXCEPTION 'Operation "%" is not supported', operation;
+		END CASE;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_wedge(
+	rast raster, nband integer,
+	innerradius integer, outerradius integer,
+	thetastart double precision, thetaend double precision,
+	operation text,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	customextent raster DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+		SELECT CASE
+			WHEN $3 IS NULL OR $4 IS NULL OR $5 IS NULL OR $6 IS NULL OR $7 IS NULL THEN NULL
+			ELSE @extschema@._ST_MapAlgebra(
+				ARRAY[ROW($1, $2)]::@extschema@.rastbandarg[],
+				@extschema@._st_focal_callback($7),
+				$8,
+				$4, $4,
+				$9, $10,
+				@extschema@._st_focal_mask(1.0, $3, $4, $5, $6),
+				false
+			)
+		END
+	$$ LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_annulus(
+	rast raster, nband integer,
+	innerradius integer, outerradius integer,
+	operation text,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	customextent raster DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+		SELECT @extschema@.ST_Wedge($1, $2, $3, $4, 0, 2 * pi(), $5, $6, $7, $8)
+	$$ LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_circle(
+	rast raster, nband integer,
+	radius integer,
+	operation text,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	customextent raster DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+		SELECT @extschema@.ST_Wedge($1, $2, 0, $3, 0, 2 * pi(), $4, $5, $6, $7)
+	$$ LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
 -- Inverse distance weight equation is based upon Equation 3.51 from the book
 -- Spatial Analysis A Guide for Ecologists
 -- by Marie-Josee Fortin and Mark Dale
