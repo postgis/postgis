@@ -130,6 +130,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
  - #5109, Document the meaning of topology.next_left_edge and topology.next_right_edge links (Darafei Praliaskouski)
  - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
+ - #3173, ST_3DAddMeasure measures linear referencing by 3D length
+          (Darafei Praliaskouski)
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
  - #6022, Document ST_AsMVTGeom tile-coordinate simplification (Darafei Praliaskouski)
  - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
