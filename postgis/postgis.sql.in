@@ -1893,6 +1893,27 @@ CREATE OR REPLACE FUNCTION ST_MakeLine(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_MakeCurveLine (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_makecurveline_garray'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_MakeCurveLine(geom1 geometry, geom2 geometry, geom3 geometry)
+	RETURNS geometry
+	AS 'SELECT @extschema@.ST_MakeCurveLine(ARRAY[$1, $2, $3])'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_MakeCompoundCurve (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_makecompoundcurve_garray'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AddPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
