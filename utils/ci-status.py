@@ -382,6 +382,15 @@ def woodpecker_matches_branch(build, check, branch):
     return build.get("ref") in (None, expected_ref)
 
 
+def woodpecker_build_sort_key(build):
+    return (
+        build.get("created") or build.get("created_at") or 0,
+        build.get("started") or build.get("started_at") or 0,
+        build.get("finished") or build.get("finished_at") or 0,
+        build.get("number") or 0,
+    )
+
+
 def woodpecker_workflow_label(workflow, duplicate_names):
     name = workflow.get("name") or f"workflow {workflow.get('pid') or workflow.get('id')}"
     pid = workflow.get("pid")
@@ -394,6 +403,13 @@ def woodpecker_workflow_url(web_url, pipeline, workflow):
     if not web_url or not pipeline.get("number") or workflow.get("pid") is None:
         return None
     return f"{web_url}/pipeline/{pipeline['number']}/{workflow['pid']}"
+
+
+def woodpecker_pipeline_url(web_url, pipeline):
+    run_url = pipeline.get("link") or pipeline.get("url")
+    if not run_url and web_url and pipeline.get("number"):
+        run_url = f"{web_url}/pipeline/{pipeline['number']}"
+    return run_url
 
 
 def woodpecker_pipeline_detail_url(api_url, pipeline):
@@ -464,12 +480,14 @@ def woodpecker_check(check, branch, timeout):
     if not builds:
         return make_result(check, branch, UNKNOWN, message="no Woodpecker builds found", debug_url=url)
 
+    builds = sorted(builds, key=woodpecker_build_sort_key, reverse=True)
     current = builds[0]
-    previous = next((build for build in builds[1:] if normalize_woodpecker_status(build.get("status")) not in (IN_PROGRESS, UNKNOWN)), None)
+    previous = next(
+        (build for build in builds[1:] if normalize_woodpecker_status(build.get("status")) not in (IN_PROGRESS, UNKNOWN)),
+        None,
+    )
     web_url = check.get("web_url")
-    run_url = current.get("link") or current.get("url")
-    if not run_url and web_url and current.get("number"):
-        run_url = f"{web_url}/pipeline/{current['number']}"
+    run_url = woodpecker_pipeline_url(web_url, current)
     detail_url = woodpecker_pipeline_detail_url(api_url, current)
     if detail_url and "workflows" not in current:
         try:
@@ -493,6 +511,9 @@ def woodpecker_check(check, branch, timeout):
         message=message,
     )
     if previous:
+        previous_url = woodpecker_pipeline_url(web_url, previous)
+        if previous_url and not (previous.get("link") or previous.get("url")):
+            previous = {**previous, "url": previous_url}
         result.update(previous_fields(normalize_woodpecker_status(previous.get("status")), previous))
     return result
 
