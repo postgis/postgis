@@ -4946,6 +4946,12 @@ CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer, noda
     AS 'MODULE_PATHNAME','RASTER_setBandNoDataValue'
     LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
+-- This function can not be STRICT, because nodatavalue can contain NULL values indicating that no nodata value should be set
+CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, bands integer[], nodatavalues float8[], forceChecking boolean DEFAULT FALSE)
+    RETURNS raster
+    AS 'MODULE_PATHNAME','RASTER_setBandNoDataValues'
+    LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
+
 -- This function can not be STRICT, because nodatavalue can be NULL indicating that no nodata value should be set
 CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8)
     RETURNS raster

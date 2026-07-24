@@ -7215,7 +7215,7 @@ FROM baz</programlisting>
         <refentry xml:id="RT_ST_SetBandNoDataValue">
             <refnamediv>
                 <refname>ST_SetBandNoDataValue</refname>
-                <refpurpose>Sets the value for the given band that represents no data. Band 1 is assumed if no band is specified.  To mark a band as having no nodata value, set the nodata value = NULL.</refpurpose>
+                <refpurpose>Sets the value for the given band or bands that represents no data. Band 1 is assumed if no band is specified.  To mark a band as having no nodata value, set the nodata value = NULL.</refpurpose>
             </refnamediv>
 
             <refsynopsisdiv>
@@ -7234,13 +7234,21 @@ FROM baz</programlisting>
                     <paramdef choice="opt"><type>boolean </type> <parameter>forcechecking=false</parameter></paramdef>
                   </funcprototype>
 
+                  <funcprototype>
+                    <funcdef>raster <function>ST_SetBandNoDataValue</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>integer[] </type> <parameter>bands</parameter></paramdef>
+                    <paramdef><type>double precision[] </type> <parameter>nodatavalues</parameter></paramdef>
+                    <paramdef choice="opt"><type>boolean </type> <parameter>forcechecking=false</parameter></paramdef>
+                  </funcprototype>
+
                 </funcsynopsis>
             </refsynopsisdiv>
 
             <refsection>
                 <title>Description</title>
 
-                <para>Sets the value that represents no data for the band.  Band 1 is assumed if not specified. This will affect results from <xref linkend="RT_ST_Polygon"/>, <xref linkend="RT_ST_DumpAsPolygons"/>, and the ST_PixelAs...() functions.</para>
+                <para>Sets the value that represents no data for the band or bands.  Band 1 is assumed if not specified.  When using the array variant, the <varname>bands</varname> and <varname>nodatavalues</varname> arrays must have the same length. This will affect results from <xref linkend="RT_ST_Polygon"/>, <xref linkend="RT_ST_DumpAsPolygons"/>, and the ST_PixelAs...() functions.</para>
                 </refsection>
 
                 <refsection>
@@ -7265,6 +7273,16 @@ UPDATE dummy_rast
                     <programlisting language="sql">
 UPDATE dummy_rast
     SET rast = ST_SetBandNoDataValue(rast, 1, NULL)
+WHERE rid = 2;
+
+-- change no data band values of bands 1,2,3 with one call
+UPDATE dummy_rast
+    SET rast = ST_SetBandNoDataValue(rast, ARRAY[1,2,3], ARRAY[254,99,108]::double precision[])
+WHERE rid = 2;
+
+-- wipe out the nodata value on bands 1,2,3
+UPDATE dummy_rast
+    SET rast = ST_SetBandNoDataValue(rast, ARRAY[1,2,3], ARRAY[NULL,NULL,NULL]::double precision[])
 WHERE rid = 2;
                     </programlisting>
 
