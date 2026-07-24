@@ -1808,3 +1808,100 @@ DROP TABLE IF EXISTS fault6028;
 
 -- #5357
 SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
+
+-- #5772
+SELECT '#5772.1', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-1 -1, 1 -1, 1 1, -1 1)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 2, 0 -2)') AS line_b
+) AS f;
+SELECT '#5772.1.swap', ST_LineCrossingDirection(line_b, line_a)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-1 -1, 1 -1, 1 1, -1 1)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 2, 0 -2)') AS line_b
+) AS f;
+
+SELECT '#5772.2', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-1 1, 1 1, 1 -1, -1 -1)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 -2, 0 2)') AS line_b
+) AS f;
+SELECT '#5772.2.swap', ST_LineCrossingDirection(line_b, line_a)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-1 1, 1 1, 1 -1, -1 -1)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 -2, 0 2)') AS line_b
+) AS f;
+
+SELECT '#5772.3', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(0.7 -1e-13, 0.9 1e-13, 0.3 1e-13, 0.1 -1e-13)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 0, 1 0)') AS line_b
+) AS f;
+SELECT '#5772.3.swap', ST_LineCrossingDirection(line_b, line_a)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(0.7 -1e-13, 0.9 1e-13, 0.3 1e-13, 0.1 -1e-13)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 0, 1 0)') AS line_b
+) AS f;
+
+SELECT '#5772.4', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(0 0, 10 0)') AS line_a,
+  ST_GeomFromText('LINESTRING(5 1, 5 -1, 6 -1, 6 1)') AS line_b
+) AS f;
+SELECT '#5772.4.swap', ST_LineCrossingDirection(line_b, line_a)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(0 0, 10 0)') AS line_a,
+  ST_GeomFromText('LINESTRING(5 1, 5 -1, 6 -1, 6 1)') AS line_b
+) AS f;
+SELECT '#5772.5', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(0 0, 10 0)') AS line_a,
+  ST_GeomFromText('LINESTRING(6 1, 6 -1, 5 -1, 5 1)') AS line_b
+) AS f;
+SELECT '#5772.5.swap', ST_LineCrossingDirection(line_b, line_a)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(0 0, 10 0)') AS line_a,
+  ST_GeomFromText('LINESTRING(6 1, 6 -1, 5 -1, 5 1)') AS line_b
+) AS f;
+
+SELECT '#5772.6', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-1e200 -1e200, 1e200 -1e200, 1e200 1e200, -1e200 1e200)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 2e200, 0 -2e200)') AS line_b
+) AS f;
+
+SELECT '#5772.7', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-1e308 8e-21, 1 8e-21, 1 2e-21, -1 2e-21)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 0, 0 1e-20)') AS line_b
+) AS f;
+
+SELECT '#5772.8', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-9.490276334636329e307 -1.0398609634832246e-87, 9.490276334636329e307 -1.0398609634832246e-87, 9.490276334636329e307 -7.820019109879485e-88, -9.490276334636329e307 -7.820019109879485e-88)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 0, 0 -1.809874562489349e-87)') AS line_b
+) AS f;
+
+SELECT '#5772.9', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-1e-20 -2e307, 1e-20 -2e307, 1e-20 -8e307, -1e-20 -8e307)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 -1e308, 0 1e308)') AS line_b
+) AS f;
+
+SELECT '#5772.10', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-3.867735677825654e-228 -2.9103510386030046e-88, 3.867735677825654e-228 -2.9103510386030046e-88, 3.867735677825654e-228 -2.910351034406687e-88, -3.867735677825654e-228 -2.910351034406687e-88)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 -2.9103510300040655e-88, 0 -2.910351042014122e-88)') AS line_b
+) AS f;
+
+SELECT '#5772.11', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(91911698341.7423 9.061403607735386e171, -129758289998.81676 -1.2792628776775185e172, -1e11 5.634114033509661e155, 1e11 5.634114033509661e155)') AS line_a,
+  ST_GeomFromText('LINESTRING(8.982920108504714e-71 68062294664.936295, 1.3324983574109928e-35 1.1268228067019321e156)') AS line_b
+) AS f;
+
+SELECT '#5772.12', ST_LineCrossingDirection(line_a, line_b)
+FROM (SELECT
+  ST_GeomFromText('LINESTRING(-5.176960838108165e73 -3.0058516310273976e-290, 9.671078660198053e73 -3.0058516310273976e-290, 8.04553740243431e77 3.258442677637667e-276, -6.820281823668116e77 -2.762214163721793e-276)') AS line_a,
+  ST_GeomFromText('LINESTRING(0 0, -1e-40 -1.23456789e-289)') AS line_b
+) AS f;
