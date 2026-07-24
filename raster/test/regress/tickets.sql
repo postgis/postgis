@@ -162,3 +162,25 @@ SELECT '#4724.b', ST_SummaryStatsAgg(NULL::raster, NULL::int4, NULL::bool)
  FROM generate_series(1,2) AS e(q);
 
 SELECT '#5854',Round(ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 430, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))::numeric,3);
+
+-- #5914, ST_Resample should not loop indefinitely on skewed rasters
+BEGIN;
+SET LOCAL statement_timeout = '5s';
+SELECT '#5914',
+	md.upperleftx,
+	md.upperlefty,
+	md.width,
+	md.height,
+	round(md.scalex::numeric, 6),
+	round(md.scaley::numeric, 6),
+	md.skewx,
+	md.skewy,
+	md.srid,
+	md.numbands
+FROM (
+	SELECT (ST_Metadata(ST_Resample(
+		ST_RastFromHexWKB('01000003009A9999999999A93F9A9999999999A9BF000000E02B274A4100000000771956410000000000000000000000000000000000000000050005000400FDFEFDFEFEFDFEFEFDF9FAFEFEFCF9FBFDFEFEFDFCFAFEFEFE04004E627AADD16076B4F9FE6370A9F5FE59637AB0E54F58617087040046566487A1506CA2E3FA5A6CAFFBFE4D566DA4CB3E454C5665'),
+		1, 1, 1, 1, 1, 1, 'NearestNeighbour', 1
+	))).*
+) AS md;
+COMMIT;

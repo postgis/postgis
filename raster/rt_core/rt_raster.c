@@ -12,6 +12,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -879,6 +880,12 @@ rt_raster_compute_skewed_raster(
 	rt_raster raster;
 	int i;
 
+	/*
+	 * GDAL progress callbacks do not cover this local extent calculation,
+	 * so poll the registered interrupt callback in the PostGIS loop too.
+	 */
+	LW_ON_INTERRUPT(return NULL);
+
 	if (scale == NULL || skew == NULL)
 		return NULL;
 
@@ -911,6 +918,7 @@ rt_raster_compute_skewed_raster(
 	col_min = col_max = col_nums[0];
 	row_min = row_max = row_nums[0];
 	for (i = 1; i < 4; i++) {
+		LW_ON_INTERRUPT(return NULL);
 		if (col_nums[i] < col_min) col_min = col_nums[i];
 		if (col_nums[i] > col_max) col_max = col_nums[i];
 		if (row_nums[i] < row_min) row_min = row_nums[i];
@@ -1990,6 +1998,11 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 
 	/* copy bands */
 	for (i = 1; i <= numBands; i++) {
+		/*
+		 * The raster-from-GDAL copy path can spend a long time outside GDAL
+		 * progress callbacks, so make PostgreSQL cancellation visible here.
+		 */
+		LW_ON_INTERRUPT(rt_raster_destroy(rast); return NULL);
 		RASTER_DEBUGF(3, "Processing band %d of %d", i, numBands);
 		gdband = NULL;
 		gdband = GDALGetRasterBand(ds, i);
@@ -2053,6 +2066,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 
 		for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++) {
 			for (iXBlock = 0; iXBlock < nXBlocks; iXBlock++) {
+				LW_ON_INTERRUPT(rtdealloc(values); rt_raster_destroy(rast); return NULL);
 				x = iXBlock * nXBlockSize;
 				y = iYBlock * nYBlockSize;
 				RASTER_DEBUGF(4, "(iXBlock, iYBlock) = (%d, %d)", iXBlock, iYBlock);
