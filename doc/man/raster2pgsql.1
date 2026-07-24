@@ -88,6 +88,10 @@ Overview table names follow the pattern o_<overview factor>_<table>. Created
 overviews are stored in the database and are not affected by \-R. If a source
 raster already has an overview with matching dimensions, that overview is reused.
 .TP
+\fB\-A\fR, \fB\-\-overview\-resampling\fR <\fIalgorithm\fR>
+Set the resampling algorithm for overview tables created with \-l. Supported
+values are near and average. The default is near.
+.TP
 \fB\-q\fR, \fB\-\-quote\fR
 Wrap PostgreSQL identifiers in quotes.
 .TP

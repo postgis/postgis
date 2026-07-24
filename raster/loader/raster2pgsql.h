@@ -93,6 +93,7 @@ typedef struct raster_loader_config {
 	uint32_t overview_count;
 	int *overview;
 	char **overview_table;
+	char *overview_resampling;
 
 	/* case-sensitive of identifiers, 1 = yes, 0 = no (default) */
 	int quoteident;
