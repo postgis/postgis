@@ -50,6 +50,9 @@ loader_rt_error_handler(const char *fmt, va_list ap) {
 static void
 loader_rt_warning_handler(const char *fmt, va_list ap) __attribute__ ((format (printf, 1, 0)));
 
+static int rastinfo_same_alignment(RASTERINFO *x, RASTERINFO *ref, int *aligned);
+static GDALRasterBandH get_matching_overview_band(GDALRasterBandH hbandSrc, const int dimOv[2]);
+
 static void
 loader_rt_warning_handler(const char *fmt, va_list ap) {
 	static const char *label = "WARNING: ";
@@ -589,6 +592,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 	}
 	memcpy(dst->gt, src->gt, sizeof(double) * 6);
 	memcpy(dst->tile_size, src->tile_size, sizeof(int) * 2);
+	dst->srid = src->srid;
 
 	return 1;
 }
@@ -639,32 +643,12 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	}
 
 	/* alignment */
-	if (!msg[4]) {
-		rt_raster rx = NULL;
-		rt_raster rref = NULL;
-		int err;
+	if (!msg[4])
+	{
 		int aligned;
 
-		if (
-			(rx = rt_raster_new(1, 1)) == NULL ||
-			(rref = rt_raster_new(1, 1)) == NULL
-		) {
-			rterror(_("diff_rastinfo: Could not allocate memory for raster alignment test"));
-			if (rx != NULL) rt_raster_destroy(rx);
-			if (rref != NULL) rt_raster_destroy(rref);
+		if (!rastinfo_same_alignment(x, ref, &aligned))
 			return;
-		}
-
-		rt_raster_set_geotransform_matrix(rx, x->gt);
-		rt_raster_set_geotransform_matrix(rref, ref->gt);
-
-		err = rt_raster_same_alignment(rx, rref, &aligned, NULL);
-		rt_raster_destroy(rx);
-		rt_raster_destroy(rref);
-		if (err != ES_NONE) {
-			rterror(_("diff_rastinfo: Could not run raster alignment test"));
-			return;
-		}
 
 		if (!aligned) {
 			rtwarn(_("Raster with different alignment found in the set of rasters being converted to PostGIS raster"));
@@ -682,6 +666,114 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 			}
 		}
 	}
+}
+
+static int
+rastinfo_same_alignment(RASTERINFO *x, RASTERINFO *ref, int *aligned)
+{
+	rt_raster rx = NULL;
+	rt_raster rref = NULL;
+	int err;
+
+	if ((rx = rt_raster_new(1, 1)) == NULL || (rref = rt_raster_new(1, 1)) == NULL)
+	{
+		rterror(_("rastinfo_same_alignment: Could not allocate memory for raster alignment test"));
+		if (rx != NULL)
+			rt_raster_destroy(rx);
+		if (rref != NULL)
+			rt_raster_destroy(rref);
+		return 0;
+	}
+
+	rt_raster_set_geotransform_matrix(rx, x->gt);
+	rt_raster_set_geotransform_matrix(rref, ref->gt);
+	rt_raster_set_srid(rx, x->srid);
+	rt_raster_set_srid(rref, ref->srid);
+
+	err = rt_raster_same_alignment(rx, rref, aligned, NULL);
+	rt_raster_destroy(rx);
+	rt_raster_destroy(rref);
+	if (err != ES_NONE)
+	{
+		rterror(_("rastinfo_same_alignment: Could not run raster alignment test"));
+		return 0;
+	}
+
+	return 1;
+}
+
+static GDALDatasetH
+open_aligned_overview_vrt(GDALDatasetH hdsSrc,
+			  RASTERINFO *info,
+			  const double *gt,
+			  const int *dim,
+			  double dst_xoff,
+			  double dst_yoff,
+			  double dst_xsize,
+			  double dst_ysize,
+			  int use_source_overview)
+{
+	uint32_t i = 0;
+	GDALDatasetH hdsOv = NULL;
+
+	hdsOv = VRTCreate(dim[0], dim[1]);
+	if (hdsOv == NULL)
+	{
+		rterror(_("open_aligned_overview_vrt: Could not create temporary VRT"));
+		return NULL;
+	}
+	GDALSetProjection(hdsOv, info->srs);
+	GDALSetGeoTransform(hdsOv, (double *)gt);
+
+	for (i = 0; i < info->nband_count; i++)
+	{
+		GDALRasterBandH hbandSrc = GDALGetRasterBand(hdsSrc, info->nband[i]);
+		VRTSourcedRasterBandH hbandOv = NULL;
+		int source_dim[2] = {info->dim[0], info->dim[1]};
+
+		if (hbandSrc == NULL)
+		{
+			rterror(_("open_aligned_overview_vrt: Could not get source raster band"));
+			GDALClose(hdsOv);
+			return NULL;
+		}
+
+		if (use_source_overview)
+		{
+			hbandSrc = get_matching_overview_band(hbandSrc, dim);
+			source_dim[0] = dim[0];
+			source_dim[1] = dim[1];
+		}
+
+		if (hbandSrc == NULL)
+		{
+			rterror(_("open_aligned_overview_vrt: Could not get source overview band"));
+			GDALClose(hdsOv);
+			return NULL;
+		}
+
+		GDALAddBand(hdsOv, info->gdalbandtype[i], NULL);
+		hbandOv = (VRTSourcedRasterBandH)GDALGetRasterBand(hdsOv, i + 1);
+
+		if (info->hasnodata[i])
+			GDALSetRasterNoDataValue(hbandOv, info->nodataval[i]);
+
+		VRTAddSimpleSource(hbandOv,
+				   hbandSrc,
+				   0,
+				   0,
+				   source_dim[0],
+				   source_dim[1],
+				   dst_xoff,
+				   dst_yoff,
+				   dst_xsize,
+				   dst_ysize,
+				   "near",
+				   VRT_NODATA_UNSET);
+	}
+
+	VRTFlushCache(hdsOv);
+	return hdsOv;
 }
 
 static void
@@ -1481,12 +1573,24 @@ source_has_matching_overviews(GDALDatasetH hdsSrc, RASTERINFO *info, const int d
 }
 
 static int
-build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STRINGBUFFER *tileset, STRINGBUFFER *buffer) {
+build_overview(int idx,
+	       RTLOADERCFG *config,
+	       RASTERINFO *info,
+	       RASTERINFO *refinfo,
+	       int align_to_ref,
+	       uint32_t ovx,
+	       STRINGBUFFER *tileset,
+	       STRINGBUFFER *buffer)
+{
 	GDALDatasetH hdsSrc;
 	VRTDatasetH hdsOv;
 	VRTSourcedRasterBandH hbandOv;
 	double gtOv[6] = {0.};
 	int dimOv[2] = {0};
+	double dst_xoff = 0;
+	double dst_yoff = 0;
+	double dst_xsize = 0;
+	double dst_ysize = 0;
 
 	uint32_t j = 0;
 	int factor;
@@ -1517,6 +1621,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 
 	if (ovx >= config->overview_count) {
 		rterror(_("build_overview: Invalid overview index: %d"), ovx);
+		GDALClose(hdsSrc);
 		return 0;
 	}
 	factor = config->overview[ovx];
@@ -1525,70 +1630,135 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 	/* factor must be within valid range */
 	if (factor < MINOVFACTOR || factor > MAXOVFACTOR) {
 		rterror(_("build_overview: Overview factor %d is not between %d and %d"), factor, MINOVFACTOR, MAXOVFACTOR);
+		GDALClose(hdsSrc);
 		return 0;
 	}
 
 	dimOv[0] = (int) (info->dim[0] + (factor / 2)) / factor;
 	dimOv[1] = (int) (info->dim[1] + (factor / 2)) / factor;
-	/*
-	 * Match by dimensions instead of overview index or nominal factor. GDAL
-	 * datasets can carry differently ordered overview levels, while the loader
-	 * needs the level that exactly matches the target overview table size.
-	 */
-	use_source_overview = source_has_matching_overviews(hdsSrc, info, dimOv);
-
-	/* create VRT dataset */
-	hdsOv = VRTCreate(dimOv[0], dimOv[1]);
-	/*
-	GDALSetDescription(hdsOv, "/tmp/ov.vrt");
-	*/
-	GDALSetProjection(hdsOv, info->srs);
+	dst_xsize = dimOv[0];
+	dst_ysize = dimOv[1];
 
 	/* adjust scale */
 	gtOv[1] *= factor;
 	gtOv[5] *= factor;
 
-	GDALSetGeoTransform(hdsOv, gtOv);
+	if (align_to_ref)
+	{
+		double invgt[6] = {0.};
+		double ulx = 0;
+		double uly = 0;
+		double snapped_ulx = 0;
+		double snapped_uly = 0;
+		double source_xsize = 0;
+		double source_ysize = 0;
 
-	/* add bands as simple sources */
-	for (j = 0; j < info->nband_count; j++) {
-		GDALRasterBandH hbandSrc = GDALGetRasterBand(hdsSrc, info->nband[j]);
-		int sourceDim[2] = {info->dim[0], info->dim[1]};
-
-		if (use_source_overview)
+		if (!GDALInvGeoTransform(refinfo->gt, invgt))
 		{
-			/*
-			 * The selected source is already reduced to dimOv, so VRT should
-			 * copy it 1:1. Otherwise it reads the full-resolution band and
-			 * resamples down into the target overview dimensions.
-			 */
-			hbandSrc = get_matching_overview_band(hbandSrc, dimOv);
-			sourceDim[0] = dimOv[0];
-			sourceDim[1] = dimOv[1];
+			rterror(_("build_overview: Could not invert reference raster geotransform"));
+			GDALClose(hdsSrc);
+			return 0;
 		}
 
-		GDALAddBand(hdsOv, info->gdalbandtype[j], NULL);
-		hbandOv = (VRTSourcedRasterBandH) GDALGetRasterBand(hdsOv, j + 1);
-
-		if (info->hasnodata[j])
-			GDALSetRasterNoDataValue(hbandOv, info->nodataval[j]);
-
-		VRTAddSimpleSource(hbandOv,
-				   hbandSrc,
-				   0,
-				   0,
-				   sourceDim[0],
-				   sourceDim[1],
-				   0,
-				   0,
-				   dimOv[0],
-				   dimOv[1],
-				   "near",
-				   VRT_NODATA_UNSET);
+		/* Keep per-input overviews on the same factor grid as the first
+		 * aligned source raster. Without this, aligned inputs with offsets
+		 * not divisible by the overview factor produce misaligned overviews. */
+		GDALApplyGeoTransform(invgt, info->gt[0], info->gt[3], &ulx, &uly);
+		snapped_ulx = floor((ulx / factor) + 1e-12) * factor;
+		snapped_uly = floor((uly / factor) + 1e-12) * factor;
+		dst_xoff = (ulx - snapped_ulx) / factor;
+		dst_yoff = (uly - snapped_uly) / factor;
+		source_xsize = info->dim[0] / (double)factor;
+		source_ysize = info->dim[1] / (double)factor;
+		if (dst_xoff > 1e-12)
+		{
+			dimOv[0] = (int)floor(dst_xoff + source_xsize + 0.5 - 1e-12);
+			dst_xsize = source_xsize;
+		}
+		else
+			dst_xsize = dimOv[0];
+		if (dst_yoff > 1e-12)
+		{
+			dimOv[1] = (int)floor(dst_yoff + source_ysize + 0.5 - 1e-12);
+			dst_ysize = source_ysize;
+		}
+		else
+			dst_ysize = dimOv[1];
+		GDALApplyGeoTransform(refinfo->gt, snapped_ulx, snapped_uly, &(gtOv[0]), &(gtOv[3]));
+		use_source_overview =
+		    dst_xoff <= 1e-12 && dst_yoff <= 1e-12 && source_has_matching_overviews(hdsSrc, info, dimOv);
+	}
+	else
+	{
+		/*
+		 * Match by dimensions instead of overview index or nominal factor. GDAL
+		 * datasets can carry differently ordered overview levels, while the loader
+		 * needs the level that exactly matches the target overview table size.
+		 */
+		use_source_overview = source_has_matching_overviews(hdsSrc, info, dimOv);
 	}
 
-	/* make sure VRT reflects all changes */
-	VRTFlushCache(hdsOv);
+	/* create VRT dataset */
+	if (align_to_ref)
+	{
+		hdsOv = open_aligned_overview_vrt(
+		    hdsSrc, info, gtOv, dimOv, dst_xoff, dst_yoff, dst_xsize, dst_ysize, use_source_overview);
+		if (hdsOv == NULL)
+		{
+			GDALClose(hdsSrc);
+			return 0;
+		}
+	}
+	else
+	{
+		hdsOv = VRTCreate(dimOv[0], dimOv[1]);
+		/*
+		GDALSetDescription(hdsOv, "/tmp/ov.vrt");
+		*/
+		GDALSetProjection(hdsOv, info->srs);
+		GDALSetGeoTransform(hdsOv, gtOv);
+
+		/* add bands as simple sources */
+		for (j = 0; j < info->nband_count; j++)
+		{
+			GDALRasterBandH hbandSrc = GDALGetRasterBand(hdsSrc, info->nband[j]);
+			int sourceDim[2] = {info->dim[0], info->dim[1]};
+
+			if (use_source_overview)
+			{
+				/*
+				 * The selected source is already reduced to dimOv, so VRT should
+				 * copy it 1:1. Otherwise it reads the full-resolution band and
+				 * resamples down into the target overview dimensions.
+				 */
+				hbandSrc = get_matching_overview_band(hbandSrc, dimOv);
+				sourceDim[0] = dimOv[0];
+				sourceDim[1] = dimOv[1];
+			}
+
+			GDALAddBand(hdsOv, info->gdalbandtype[j], NULL);
+			hbandOv = (VRTSourcedRasterBandH)GDALGetRasterBand(hdsOv, j + 1);
+
+			if (info->hasnodata[j])
+				GDALSetRasterNoDataValue(hbandOv, info->nodataval[j]);
+
+			VRTAddSimpleSource(hbandOv,
+					   hbandSrc,
+					   0,
+					   0,
+					   sourceDim[0],
+					   sourceDim[1],
+					   0,
+					   0,
+					   dimOv[0],
+					   dimOv[1],
+					   "near",
+					   VRT_NODATA_UNSET);
+		}
+
+		/* make sure VRT reflects all changes */
+		VRTFlushCache(hdsOv);
+	}
 
 	/* decide on tile size */
 	if (!config->tile_size[0])
@@ -1672,6 +1842,8 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 			if (rast == NULL) {
 				rterror(_("build_overview: Could not convert VRT dataset to PostGIS raster"));
 				GDALClose(hdsDst);
+				GDALClose(hdsOv);
+				GDALClose(hdsSrc);
 				return 0;
 			}
 
@@ -1685,6 +1857,8 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 			if (hex == NULL) {
 				rterror(_("build_overview: Could not convert PostGIS raster to hex WKB"));
 				GDALClose(hdsDst);
+				GDALClose(hdsOv);
+				GDALClose(hdsSrc);
 				return 0;
 			}
 
@@ -1702,6 +1876,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 					tileset, buffer
 				)) {
 					rterror(_("build_overview: Could not convert raster tiles into INSERT or COPY statements"));
+					GDALClose(hdsOv);
 					GDALClose(hdsSrc);
 					return 0;
 				}
@@ -2285,7 +2460,21 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 				for (j = 0; j < config->overview_count; j++) {
 
-					if (!build_overview(i, config, &rastinfo, j, &tileset, buffer)) {
+					int align_to_ref = 0;
+					if (config->rt_file_count > 1)
+					{
+						if (i > 0 &&
+						    !rastinfo_same_alignment(&rastinfo, &refinfo, &align_to_ref))
+						{
+							rtdealloc_rastinfo(&rastinfo);
+							rtdealloc_stringbuffer(&tileset, 0);
+							return 0;
+						}
+					}
+
+					if (!build_overview(
+						i, config, &rastinfo, &refinfo, align_to_ref, j, &tileset, buffer))
+					{
 						rterror(_("process_rasters: Could not create overview of factor %d for raster %s"), config->overview[j], config->rt_file[i]);
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
