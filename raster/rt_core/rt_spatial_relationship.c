@@ -10,6 +10,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,6 +31,38 @@
 #include "librtcore.h"
 #include "librtcore_internal.h"
 
+static rt_errorstate
+rt_raster_origin_on_grid(rt_raster grid, rt_raster rast, int *aligned)
+{
+	double xr;
+	double yr;
+	double xw;
+	double yw;
+
+	/* raster coordinates in context of grid raster of rast's upper-left corner */
+	if (rt_raster_geopoint_to_cell(grid, rast->ipX, rast->ipY, &xr, &yr, NULL) != ES_NONE)
+	{
+		rterror("rt_raster_same_alignment: Could not get raster coordinates from spatial coordinates");
+		*aligned = 0;
+		return ES_ERROR;
+	}
+
+	/* spatial coordinates of raster coordinates from above */
+	if (rt_raster_cell_to_geopoint(grid, xr, yr, &xw, &yw, NULL) != ES_NONE)
+	{
+		rterror("rt_raster_same_alignment: Could not get spatial coordinates from raster coordinates");
+		*aligned = 0;
+		return ES_ERROR;
+	}
+
+	RASTER_DEBUGF(4, "rast(ipX, ipxY) = (%f, %f)", rast->ipX, rast->ipY);
+	RASTER_DEBUGF(4, "grid(xr, yr) = (%f, %f)", xr, yr);
+	RASTER_DEBUGF(4, "grid(xw, yw) = (%f, %f)", xw, yw);
+
+	*aligned = FLT_EQ(xw, rast->ipX) && FLT_EQ(yw, rast->ipY);
+	return ES_NONE;
+}
+
 /*
  * Return ES_ERROR if error occurred in function.
  * Parameter aligned returns non-zero if two rasters are aligned
@@ -47,10 +80,8 @@ rt_raster_same_alignment(
 	rt_raster rast2,
 	int *aligned, char **reason
 ) {
-	double xr;
-	double yr;
-	double xw;
-	double yw;
+	int aligned1;
+	int aligned2;
 	int err = 0;
 
 	assert(NULL != rast1);
@@ -87,36 +118,25 @@ rt_raster_same_alignment(
 		return ES_NONE;
 	}
 
-	/* raster coordinates in context of second raster of first raster's upper-left corner */
-	if (rt_raster_geopoint_to_cell(
-			rast2,
-			rast1->ipX, rast1->ipY,
-			&xr, &yr,
-			NULL
-	) != ES_NONE) {
-		rterror("rt_raster_same_alignment: Could not get raster coordinates of second raster from first raster's spatial coordinates");
+	if (rt_raster_origin_on_grid(rast2, rast1, &aligned1) != ES_NONE)
+	{
+		*aligned = 0;
+		return ES_ERROR;
+	}
+	if (rt_raster_origin_on_grid(rast1, rast2, &aligned2) != ES_NONE)
+	{
 		*aligned = 0;
 		return ES_ERROR;
 	}
 
-	/* spatial coordinates of raster coordinates from above */
-	if (rt_raster_cell_to_geopoint(
-		rast2,
-		xr, yr,
-		&xw, &yw,
-		NULL
-	) != ES_NONE) {
-		rterror("rt_raster_same_alignment: Could not get spatial coordinates of second raster from raster coordinates");
-		*aligned = 0;
-		return ES_ERROR;
-	}
-
-	RASTER_DEBUGF(4, "rast1(ipX, ipxY) = (%f, %f)", rast1->ipX, rast1->ipY);
-	RASTER_DEBUGF(4, "rast2(xr, yr) = (%f, %f)", xr, yr);
-	RASTER_DEBUGF(4, "rast2(xw, yw) = (%f, %f)", xw, yw);
-
-	/* spatial coordinates are identical to that of first raster's upper-left corner */
-	if (FLT_EQ(xw, rast1->ipX) && FLT_EQ(yw, rast1->ipY)) {
+	/*
+	 * Scale and skew equality are tolerance based.  Requiring both origins
+	 * to land on the other raster's integer grid keeps the result symmetric
+	 * without accepting pairs that later directional offset calculations
+	 * cannot place safely.
+	 */
+	if (aligned1 && aligned2)
+	{
 		if (reason != NULL) *reason = "The rasters are aligned";
 		*aligned = 1;
 		return ES_NONE;
