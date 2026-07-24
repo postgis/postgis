@@ -103,6 +103,146 @@ raster_destroy(rt_raster raster) {
 }
 
 static int
+raster_value_away_from_nodata(rt_band band, double *val)
+{
+	double nodataval = 0;
+	double corrected = 0;
+	int wascorrected = 0;
+	double minval = 0;
+
+	if (!rt_band_clamped_value_is_nodata(band, *val))
+		return 1;
+
+	if (rt_band_corrected_clamped_value(band, *val, &corrected, &wascorrected) != ES_NONE)
+		return 0;
+
+	if (!rt_band_clamped_value_is_nodata(band, corrected))
+	{
+		*val = corrected;
+		return 1;
+	}
+
+	if (rt_band_get_nodata(band, &nodataval) != ES_NONE)
+		return 0;
+
+	minval = rt_pixtype_get_min_value(rt_band_get_pixtype(band));
+	if (FLT_EQ(nodataval, minval))
+		*val = minval + 1;
+	else
+		*val = nodataval - 1;
+
+	return 1;
+}
+
+static int
+raster_cast_bands(rt_raster raster, rt_pixtype pixtype, const char *caller)
+{
+	uint16_t i;
+	uint16_t nbands = rt_raster_get_num_bands(raster);
+	uint16_t width = rt_raster_get_width(raster);
+	uint16_t height = rt_raster_get_height(raster);
+
+	for (i = 0; i < nbands; i++)
+	{
+		rt_band oldband = rt_raster_get_band(raster, i);
+		rt_band band = NULL;
+		uint8_t *data = NULL;
+		int hasnodata = 0;
+		double nodataval = 0;
+		int x = 0;
+		int y = 0;
+
+		if (oldband == NULL)
+		{
+			rterror(_("%s: Could not get band %d of output raster"), caller, i + 1);
+			return 0;
+		}
+
+		if (rt_band_get_pixtype(oldband) == pixtype)
+			continue;
+
+		hasnodata = rt_band_get_hasnodata_flag(oldband);
+		if (hasnodata && rt_band_get_nodata(oldband, &nodataval) != ES_NONE)
+		{
+			rterror(_("%s: Could not get NODATA value for band %d"), caller, i + 1);
+			return 0;
+		}
+
+		data = rtalloc((size_t)rt_pixtype_size(pixtype) * width * height);
+		if (data == NULL)
+		{
+			rterror(_("%s: Could not allocate memory for band data"), caller);
+			return 0;
+		}
+		memset(data, 0, (size_t)rt_pixtype_size(pixtype) * width * height);
+
+		band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, data);
+		if (band == NULL)
+		{
+			rterror(_("%s: Could not create band"), caller);
+			rtdealloc(data);
+			return 0;
+		}
+		rt_band_set_ownsdata_flag(band, 1);
+		if (hasnodata && rt_band_get_nodata(band, &nodataval) != ES_NONE)
+		{
+			rterror(_("%s: Could not get adjusted NODATA value for band %d"), caller, i + 1);
+			rt_band_destroy(band);
+			return 0;
+		}
+
+		for (y = 0; y < height; y++)
+		{
+			for (x = 0; x < width; x++)
+			{
+				double val = 0;
+				int nodata = 0;
+
+				if (rt_band_get_pixel(oldband, x, y, &val, &nodata) != ES_NONE)
+				{
+					rterror(_("%s: Could not get pixel value"), caller);
+					rt_band_destroy(band);
+					return 0;
+				}
+
+				if (nodata)
+					val = nodataval;
+				else if (hasnodata && !raster_value_away_from_nodata(band, &val))
+				{
+					rterror(_("%s: Could not adjust pixel value away from NODATA"), caller);
+					rt_band_destroy(band);
+					return 0;
+				}
+
+				if (rt_band_set_pixel(band, x, y, val, NULL) != ES_NONE)
+				{
+					rterror(_("%s: Could not set pixel value"), caller);
+					rt_band_destroy(band);
+					return 0;
+				}
+			}
+		}
+
+		oldband = rt_raster_replace_band(raster, band, i);
+		if (oldband == NULL)
+		{
+			rterror(_("%s: Could not replace band %d of output raster"), caller, i + 1);
+			rt_band_destroy(band);
+			return 0;
+		}
+		if (!rt_band_is_offline(oldband) && !rt_band_get_ownsdata_flag(oldband))
+		{
+			void *mem = rt_band_get_data(oldband);
+			if (mem)
+				rtdealloc(mem);
+		}
+		rt_band_destroy(oldband);
+	}
+
+	return 1;
+}
+
+static int
 array_range(int min, int max, int step, int **range, uint32_t *len) {
 	int i = 0;
 	int j = 0;
@@ -383,6 +523,11 @@ usage() {
 	      "      than one band index, separate with comma (,). Ranges can be\n"
 	      "      defined by separating with dash (-). If unspecified, all bands\n"
 	      "      of raster will be extracted.\n"));
+	printf(
+	    _("  -B, --pixel-type <pixeltype> Pixel type to use for all output bands. If unspecified,\n"
+	      "      raster2pgsql uses each source band's pixel type. One of: 1BB, 2BUI,\n"
+	      "      4BUI, 8BSI, 8BUI, 16BSI, 16BUI, 16BF, 32BSI, 32BUI, 32BF, 64BF.\n"
+	      "      Cannot be used with -R.\n"));
 	printf(
 	    _("  -t, --tile-size <tile size> Cut raster into tiles to be inserted one per\n"
 	      "      table row. <tile size> is expressed as WIDTHxHEIGHT.\n"
@@ -701,6 +846,7 @@ init_config(RTLOADERCFG *config) {
 	config->srid = config->out_srid = SRID_UNKNOWN;
 	config->nband = NULL;
 	config->nband_count = 0;
+	config->pixtype = PT_END;
 	memset(config->tile_size, 0, sizeof(int) * 2);
 	config->pad_tile = 0;
 	config->outdb = 0;
@@ -1678,6 +1824,15 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 			/* set srid if provided */
 			rt_raster_set_srid(rast, info->srid);
 
+			if (config->pixtype != PT_END && !raster_cast_bands(rast, config->pixtype, "build_overview"))
+			{
+				raster_destroy(rast);
+				GDALClose(hdsDst);
+				GDALClose(hdsOv);
+				GDALClose(hdsSrc);
+				return 0;
+			}
+
 			/* convert rt_raster to hexwkb */
 			hex = rt_raster_to_hexwkb(rast, FALSE, &hexlen);
 			raster_destroy(rast);
@@ -1885,7 +2040,14 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		GDALGetBlockSize(hbandSrc, &naturalx, &naturaly);
 
 		/* convert data type to that of postgis raster */
-		info->bandtype[i] = rt_util_gdal_datatype_to_pixtype(info->gdalbandtype[i]);
+		if (config->pixtype != PT_END)
+		{
+			info->bandtype[i] = config->pixtype;
+		}
+		else
+		{
+			info->bandtype[i] = rt_util_gdal_datatype_to_pixtype(info->gdalbandtype[i]);
+		}
 
 		/* hasnodata and nodataval */
 		info->nodataval[i] = GDALGetRasterNoDataValue(hbandSrc, &(info->hasnodata[i]));
@@ -2116,6 +2278,15 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 				/* set srid if provided */
 				rt_raster_set_srid(rast, info->srid);
+
+				if (config->pixtype != PT_END &&
+				    !raster_cast_bands(rast, config->pixtype, "convert_raster"))
+				{
+					raster_destroy(rast);
+					GDALClose(hdsDst);
+					GDALClose(hdsSrc);
+					return 0;
+				}
 
 				/* inspect each band of raster where band is NODATA */
 				numbands = rt_raster_get_num_bands(rast);
@@ -2624,6 +2795,25 @@ main(int argc, char **argv) {
 				}
 			}
 		}
+		/* output pixel type */
+		else if (option_matches(argv[argit], "-B", "--pixel-type") &&
+			 (optarg = option_value(argc, argv, &argit, "--pixel-type")) != NULL)
+		{
+			config->pixtype = rt_pixtype_index_from_name(optarg);
+			if (config->pixtype == PT_END)
+			{
+				rterror(_("Invalid pixel type: %s"), optarg);
+				rtdealloc_config(config);
+				exit(1);
+			}
+			else if (rt_util_pixtype_to_gdal_datatype(config->pixtype) == GDT_Unknown)
+			{
+				rterror(_("Pixel type %s is not supported by the GDAL library used by raster2pgsql"),
+					optarg);
+				rtdealloc_config(config);
+				exit(1);
+			}
+		}
 		/* tile size */
 		else if (option_matches(argv[argit], "-t", "--tile-size") &&
 			 (optarg = option_value(argc, argv, &argit, "--tile-size")) != NULL)
@@ -3004,6 +3194,13 @@ main(int argc, char **argv) {
 
 	if (!apply_action_presets(config))
 	{
+		rtdealloc_config(config);
+		exit(1);
+	}
+
+	if (config->outdb && config->pixtype != PT_END)
+	{
+		rterror(_("Invalid argument combination - cannot use -B with -R"));
 		rtdealloc_config(config);
 		exit(1);
 	}

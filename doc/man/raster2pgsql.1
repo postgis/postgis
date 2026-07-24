@@ -30,6 +30,12 @@ Index, starting from 1, of the band to extract from the raster. Separate
 multiple band indexes with commas. Ranges can be written with a dash. If this
 option is omitted, all bands are extracted.
 .TP
+\fB\-B\fR, \fB\-\-pixel\-type\fR <\fIpixeltype\fR>
+Pixel type to use for all output bands. If unspecified, raster2pgsql uses each
+source band's pixel type. Supported values are 1BB, 2BUI, 4BUI, 8BSI, 8BUI,
+16BSI, 16BUI, 16BF, 32BSI, 32BUI, 32BF, and 64BF. This option cannot be used
+with out-of-db registration.
+.TP
 \fB\-t\fR, \fB\-\-tile\-size\fR <\fItile_size\fR>
 Cut each raster into tiles inserted one per table row. The tile size is written
 as WIDTHxHEIGHT. Use "auto" to let the loader choose a tile size from the first

@@ -230,6 +230,15 @@ Available GDAL raster formats:
                 </varlistentry>
 
                 <varlistentry>
+                    <term><option>-B PIXELTYPE, --pixel-type PIXELTYPE</option></term>
+                    <listitem>
+                        <para>
+                           Pixel type to use for all output bands.  If unspecified, raster2pgsql uses each source band's pixel type.  Supported values are 1BB, 2BUI, 4BUI, 8BSI, 8BUI, 16BSI, 16BUI, 16BF, 32BSI, 32BUI, 32BF, and 64BF.  This option cannot be used with out-db registration.
+                        </para>
+                    </listitem>
+                </varlistentry>
+
+                <varlistentry>
                     <term><option>-t, --tile-size TILE_SIZE</option></term>
                     <listitem>
                         <para>
