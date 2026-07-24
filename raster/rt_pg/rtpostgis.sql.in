@@ -5555,6 +5555,26 @@ CREATE CAST (raster AS geometry)
 CREATE CAST (raster AS bytea)
     WITH FUNCTION bytea(raster) AS ASSIGNMENT;
 
+------------------------------------------------------------------------------
+-- Aggregates and their supporting functions
+------------------------------------------------------------------------------
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_CombineBBox(box3d, raster)
+	RETURNS box3d
+	AS $$ SELECT @extschema@.ST_CombineBBox($1, $2::@extschema@.geometry) $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.7.0
+CREATE AGGREGATE ST_Extent(raster) (
+	sfunc = ST_CombineBBox,
+	stype = box3d,
+	combinefunc = ST_CombineBBox,
+	parallel = safe,
+	finalfunc = box2d
+	);
+
 -------------------------------------------------------------------
 -- HASH operators
 -------------------------------------------------------------------

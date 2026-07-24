@@ -68,6 +68,10 @@ These are only changes since 3.7.0alpha1.
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
+ - #1662, [raster] Add ST_Extent aggregate for raster inputs
+          (Darafei Praliaskouski)
+
+
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
  - #3676, Mark geometry and geography btree comparison support functions
