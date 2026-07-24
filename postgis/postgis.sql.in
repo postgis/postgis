@@ -4163,6 +4163,12 @@ CREATE OR REPLACE FUNCTION ST_Split(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+CREATE OR REPLACE FUNCTION ST_Split(geom1 geometry, geom2 geometry, tolerance float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Split'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 --------------------------------------------------------------------------------
 -- ST_SharedPaths
 --------------------------------------------------------------------------------
