@@ -1596,12 +1596,12 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
           <tbody>
             <row>
             <entry>LINESTRING</entry>
-            <entry>not yet implemented - will be PolyLine2D</entry>
+            <entry>LineSet (coordinates are promoted to 3D)</entry>
             <entry>LineSet</entry>
             </row>
             <row>
             <entry>MULTILINESTRING</entry>
-            <entry>not yet implemented - will be PolyLine2D</entry>
+            <entry>IndexedLineSet (coordinates are promoted to 3D)</entry>
             <entry>IndexedLineSet</entry>
             </row>
             <row>
@@ -1616,7 +1616,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
             </row>
             <row>
             <entry>(MULTI) POLYGON, POLYHEDRALSURFACE</entry>
-            <entry>Invalid X3D markup</entry>
+            <entry>IndexedFaceSet (coordinates are promoted to 3D; inner rings currently output as another faceset)</entry>
             <entry>IndexedFaceSet (inner rings currently output as another faceset)</entry>
             </row>
             <row>
@@ -1624,15 +1624,27 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
             <entry>TriangleSet2D (Not Yet Implemented)</entry>
             <entry>IndexedTriangleSet</entry>
             </row>
+            <row>
+            <entry>CIRCULARSTRING, COMPOUNDCURVE, CURVEPOLYGON, MULTICURVE, MULTISURFACE</entry>
+            <entry>linearized, then emitted with the linear geometry mapping</entry>
+            <entry>linearized, then emitted with the linear geometry mapping</entry>
+            </row>
+            <row>
+            <entry>NURBSCURVE</entry>
+            <entry>NurbsCurve with controlPoint, knot, weight, and order fields</entry>
+            <entry>NurbsCurve with controlPoint, knot, weight, and order fields</entry>
+            </row>
         </tbody>
       </tgroup>
     </informaltable>
     <note><para>2D geometry support not yet complete.  Inner rings currently just drawn as separate polygons.  We are working on these.</para></note>
+    <para>M coordinates are not represented in X3D output.</para>
     <para>Lots of advancements happening in 3D space particularly with <link xlink:href="https://www.web3d.org/wiki/index.php/X3D_and_HTML5">X3D Integration with HTML5</link></para>
     <para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <link xlink:href="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</link> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
     <para>Also check out <link xlink:href="https://git.osgeo.org/gitea/robe/postgis_x3d_viewer">PostGIS minimalist X3D viewer</link>  that utilizes this function and <link xlink:href="http://www.x3dom.org/">x3dDom html/js open source toolkit</link>.</para>
     <para role="availability" conformance="2.0.0">Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
     <para role="enhanced" conformance="2.2.0">Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
+    <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0: Support for curve geometries. NURBSCURVE is emitted as X3D NurbsCurve; other curve types are linearized before output.</para>
     <!-- Optionally mention 3d support -->
     <para>&Z_support;</para>
         <!-- Optionally mention supports Polyhedral Surface  -->

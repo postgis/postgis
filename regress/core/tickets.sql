@@ -1012,6 +1012,12 @@ SELECT '#3627b', ST_Equals(geom, ST_LineFromEncodedPolyline(ST_AsEncodedPolyline
 -- #3704
 SELECT '#3704', ST_AsX3D('LINESTRING EMPTY') = '';
 
+-- #3705
+SELECT '#3705a', ST_AsX3D('MULTILINESTRING((2 3,4 5))'::geometry, 0) LIKE '<IndexedLineSet%<Coordinate%';
+SELECT '#3705b', ST_AsX3D('MULTIPOLYGON(((0 0,1 0,0 1,0 0)))'::geometry, 0) LIKE '<IndexedFaceSet%<Coordinate%';
+SELECT '#3705c', ST_AsX3D('GEOMETRYCOLLECTION(POINT(1 2),POINT(3 4))'::geometry, 0) LIKE '<Shape><Polypoint2D%';
+SELECT '#3705d', ST_AsX3D('POINTM(1 2 3)'::geometry, 0);
+
 -- #3709
 select '#3709', ST_SnapToGrid(ST_Project('SRID=4326;POINT(1 1)'::geography, 100000, 20)::geometry, 0.0001) = ST_SnapToGrid(ST_Project('SRID=4326;POINT(1 1)'::geography, -100000, 20+pi())::geometry, 0.0001);
 
@@ -1402,6 +1408,18 @@ select '#4399', 'ST_AsGeoJSON', ST_AsGeoJSON(geom)::text from geom;
 SELECT '#4599-1', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
 SELECT '#4599-2', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), 0));
 SELECT '#4599-3', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), -1));
+
+SELECT '#1416a', ST_AsX3D('CIRCULARSTRING(0 0 1,1 1 1,2 0 1)'::geometry, 0) LIKE '<LineSet%';
+SELECT '#1416b', ST_AsX3D('COMPOUNDCURVE(CIRCULARSTRING(0 0 1,1 1 1,2 0 1),(2 0 1,3 1 1))'::geometry, 0) LIKE '<LineSet%';
+SELECT '#1416c', ST_AsX3D('CURVEPOLYGON(CIRCULARSTRING(0 0 1,1 1 1,2 0 1,1 -1 1,0 0 1))'::geometry, 0) LIKE '<IndexedFaceSet%';
+SELECT '#1416d', ST_AsX3D('MULTICURVE(CIRCULARSTRING(0 0 1,1 1 1,2 0 1))'::geometry, 0) LIKE '<IndexedLineSet%';
+SELECT '#1416e', ST_AsX3D('MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(0 0 1,1 1 1,2 0 1,1 -1 1,0 0 1)))'::geometry, 0) LIKE '<IndexedFaceSet%';
+SELECT '#1416f', ST_AsX3D('GEOMETRYCOLLECTION(CIRCULARSTRING(0 0 1,1 1 1,2 0 1))'::geometry, 0) LIKE '<Shape><LineSet%';
+SELECT '#1416g', ST_AsX3D('GEOMETRYCOLLECTION(COMPOUNDCURVE(CIRCULARSTRING(0 0 1,1 1 1,1 0 1),(1 0 1,0 1 1)))'::geometry, 0) LIKE '<Shape><LineSet%';
+SELECT '#1416h', ST_AsX3D('GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(0 0 1,1 1 1,2 0 1,1 -1 1,0 0 1)))'::geometry, 0) LIKE '<Shape><IndexedFaceSet%';
+SELECT '#1416i', ST_AsX3D('CIRCULARSTRING(0 0 1,1 1 1,2 0 1,1 -1 1,0 0 1)'::geometry, 0) LIKE '<LineSet  vertexCount=''129''><Coordinate point=%';
+SELECT '#1416j', ST_AsX3D('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0);
+SELECT '#1416k', ST_AsX3D('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry, 0) NOT LIKE '%<LineSet%';
 
 SELECT '#4670-0', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 0));
 SELECT '#4670-1', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 1));

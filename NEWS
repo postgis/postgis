@@ -28,6 +28,8 @@ These are only changes since 3.7.0alpha1.
           preprocessed with AltiVec vector macros (Darafei Praliaskouski)
  - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
           with standard_conforming_strings off (Darafei Praliaskouski)
+ - #3705, ST_AsX3D outputs valid coordinate nodes for 2D multi-geometries
+          and GeometryCollections (Darafei Praliaskouski)
  - #5423, Use a DTD-free expanded DocBook input for EPUB builds so
           out-of-tree builds do not need dbtoepub entity path support
           (Darafei Praliaskouski)
@@ -143,7 +145,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           prefer requested CXX over pg_config --cc for internal C++ checks, and
           make fuzzer linking/runtime dependency packaging portable
           (Darafei Praliaskouski)
-
+ - #1416, ST_AsX3D outputs NURBSCURVE as X3D NurbsCurve
+          and linearizes other curve geometries
+          (Darafei Praliaskouski)
 * Enhancements *
 
  - #2045, pgsql2shp query dumps no longer require temporary table

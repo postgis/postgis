@@ -306,6 +306,10 @@ ERROR:  invalid KML representation
 #3627a|o}~~|AdshNoSsBgd@eGoBlm@wKhj@~@?
 #3627b|t
 #3704|t
+#3705a|t
+#3705b|t
+#3705c|t
+#3705d|1 2
 #3709|t
 NOTICE:  Hole lies outside shell at or near point 25495368.044100001 6671726.9312000005
 #3719a|f
@@ -436,6 +440,17 @@ ERROR:  BOX2D_construct: args can not be empty points
 #4599-1|LINESTRING(0 0 1,1 1 1,1 2 3)
 #4599-2|LINESTRING(1 2 3,0 0 1,1 1 1)
 #4599-3|LINESTRING(0 0 1,1 1 1,1 2 3)
+#1416a|t
+#1416b|t
+#1416c|t
+#1416d|t
+#1416e|t
+#1416f|t
+#1416g|t
+#1416h|t
+#1416i|t
+#1416j|<NurbsCurve  order='3' knot='0 0 0 1 1 1' weight='1 1 1'><Coordinate containerField='controlPoint' point='0 0 0 1 1 0 2 0 0' /></NurbsCurve>
+#1416k|t
 #4670-0|LINESTRING(2 2,0 0,1 1,3 3,4 4)
 #4670-1|LINESTRING(0 0,2 2,1 1,3 3,4 4)
 #4670-2|LINESTRING(0 0,1 1,2 2,3 3,4 4)
