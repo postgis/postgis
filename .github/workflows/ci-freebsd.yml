@@ -47,7 +47,7 @@ jobs:
             ASSUME_ALWAYS_YES=yes pkg bootstrap -f
             env IGNORE_OSVERSION=yes pkg update -f
             env IGNORE_OSVERSION=yes pkg install -y \
-              autoconf automake bison ccache-static cunit docbook \
+              autoconf automake bison ccache-static cunit docbook flex \
               gdal geos gmake iconv json-c libtool libxml2 libxslt \
               pkgconf postgresql17-contrib postgresql17-server \
               proj protobuf-c sfcgal

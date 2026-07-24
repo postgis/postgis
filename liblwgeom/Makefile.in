@@ -53,6 +53,7 @@ VERSION_INFO = $(IFACE_CURRENT):$(IFACE_REV):$(IFACE_AGE)
 
 YACC=@YACC@
 LEX=@LEX@
+FLEX=@FLEX@
 
 # Standalone LWGEOM objects
 SA_OBJS = \
@@ -207,6 +208,7 @@ maintainer-clean: clean
 	rm -f lwin_wkt_lex.c
 	rm -f lwin_wkt_parse.h
 	rm -f lwin_wkt_parse.c
+	rm -f lwin_wkt_parse.stamp
 
 clean:
 	$(MAKE) -C cunit clean
@@ -235,19 +237,40 @@ $(LT_SA_OBJS): %.lo: %.c
 $(LT_NM_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
-lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
+lwin_wkt_parse.stamp: lwin_wkt_parse.y
 	@test -n "$(YACC)" || { \
 			echo "No yacc found, cannot build parser" >&2; \
 			false; \
 	}
 	$(YACC) -p wkt_yy -o'lwin_wkt_parse.c' -d $<
+	touch $@
+	touch lwin_wkt_parse.c lwin_wkt_parse.h
+
+lwin_wkt_parse.c: lwin_wkt_parse.stamp
+	@test -f lwin_wkt_parse.c -a -f lwin_wkt_parse.h || { \
+			if test "$(srcdir)" != "." -a -f "$(srcdir)/lwin_wkt_parse.c" -a -f "$(srcdir)/lwin_wkt_parse.h"; then \
+				cp -p "$(srcdir)/lwin_wkt_parse.c" lwin_wkt_parse.c; \
+				cp -p "$(srcdir)/lwin_wkt_parse.h" lwin_wkt_parse.h; \
+				exit 0; \
+			fi; \
+			rm -f lwin_wkt_parse.stamp; \
+			$(MAKE) lwin_wkt_parse.stamp; \
+	}
+
+lwin_wkt_parse.h: lwin_wkt_parse.c
+	@:
 
 lwin_wkt_lex.c: lwin_wkt_lex.l
-	@test -n "$(LEX)" || { \
-			echo "No lex found, cannot build parser" >&2; \
-			false; \
-	}
-	$(LEX) -i $<
+	@test -n "$(FLEX)" -a "$(FLEX)" != ":" || { \
+				echo "No flex found, cannot build parser" >&2; \
+				false; \
+		}
+	rm -f $@
+	$(FLEX) -i $<
+	@test -f $@ || { \
+				echo "$(FLEX) did not create $@" >&2; \
+				false; \
+		}
 
 liblwgeom.h: liblwgeom.h.in
 	cd $(top_builddir) && ./config.status

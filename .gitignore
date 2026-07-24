@@ -119,6 +119,10 @@ liblwgeom/geobuf.pb-c.h
 liblwgeom/liblwgeom.a
 liblwgeom/liblwgeom.h
 liblwgeom/Makefile
+liblwgeom/lwin_wkt_lex.c
+liblwgeom/lwin_wkt_parse.c
+liblwgeom/lwin_wkt_parse.h
+liblwgeom/lwin_wkt_parse.stamp
 libtool
 loader/cunit/cu_tester
 loader/cunit/Makefile

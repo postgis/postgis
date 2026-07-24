@@ -161,6 +161,7 @@ dnl Search for flex/bison to build the parser
 dnl
 
 AC_PROG_LEX(noyywrap)
+AC_PATH_PROG([FLEX], [flex], [:])
 AC_PATH_PROG(YACC, bison)
 AC_SUBST([LEX])
 AC_SUBST([YACC])
