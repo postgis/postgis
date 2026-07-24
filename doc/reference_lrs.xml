@@ -845,7 +845,7 @@ ST_AddMeasure(
 	  <refnamediv>
 		<refname>ST_AddMeasure</refname>
 
-		<refpurpose>Interpolates measures along a linear geometry.</refpurpose>
+		<refpurpose>Interpolates measures along a linear geometry or geography.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -856,6 +856,12 @@ ST_AddMeasure(
 			<paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef>
 			<paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geography <function>ST_AddMeasure</function></funcdef>
+			<paramdef><type>geography </type> <parameter>geog_mline</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef>
+		  </funcprototype>
 
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -863,9 +869,12 @@ ST_AddMeasure(
 	  <refsection>
 		<title>Description</title>
 
-		   <para>Return a derived geometry with measure values linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>
+		   <para>Return a derived geometry or geography with measure values linearly interpolated between the start and end points. If the input has no measure dimension, one is added. If the input has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>
+
+		   <para>For geography inputs, measures are interpolated using spheroidal segment lengths.</para>
 
 			<para role="availability" conformance="1.5.0">Availability: 1.5.0</para>
+			<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 - Support for geography was introduced.</para>
 
 		<para>&Z_support;</para>
 	  </refsection>

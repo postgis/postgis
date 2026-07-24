@@ -68,6 +68,12 @@ lrs_llp_2|0.00
 lrs_llp_3|1.00
 ERROR:  geography_line_locate_point: 2nd arg is not a point
 lrs_substr_1|LINESTRING(9.28 23.25,18.97 25.93)
+lrs_addmeasure_empty|
+lrs_addmeasure_geog_1|67.31
+lrs_addmeasure_geog_2|SRID=4326;MULTILINESTRINGM((0 0 10,0 10 20.04),(0 10 20.04,10 10 30))
+lrs_addmeasure_geog_3|SRID=4326;LINESTRING(0 0 1 5,0 0 3 9)
+lrs_addmeasure_geog_4|SRID=4326;MULTILINESTRINGM((0 0 10,0 0 20),(0 0 20,0 0 30))
+lrs_addmeasure_text_literal|LINESTRINGM(0 0 7,1 0 9)
 ticket_6076_length|110574.389
 ticket_6076_perimeter|378793.448
 lrs_sl_1|LINESTRING(25 42.79,25 40)
