@@ -755,8 +755,13 @@ else
 garden: postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql sfcgal_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql topology_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 endif
 
+RASTER_GARDEN_OUTDBFILE=/tmp/postgis_raster_garden_outdb_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.tif
+
 %_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/%_gardentest.sql.xsl postgis-out.xml
-	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
+	$(INSTALL_DATA) "$(abs_top_srcdir)/raster/test/regress/loader/SourceOverview.tif" "$(RASTER_GARDEN_OUTDBFILE)"
+	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) \
+		--stringparam raster_garden_outdbfile "$(RASTER_GARDEN_OUTDBFILE)" \
+		$^
 
 exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py $(abs_top_srcdir)/utils/xml_tree.py ## Report manual examples selected, parseable, or skipped for known reasons
 ifeq ($(PYTHON3),)
