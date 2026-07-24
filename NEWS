@@ -132,6 +132,7 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
  - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
  - #6022, Document ST_AsMVTGeom tile-coordinate simplification (Darafei Praliaskouski)
+ - #534, ST_AddGeometry appends a geometry to an existing collection (Darafei Praliaskouski)
  - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
  - #4398, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul Ramsey)
  - #4560, ST_3DInterpolatePoint for M interpolation from XYZ inputs (Paul Ramsey)
