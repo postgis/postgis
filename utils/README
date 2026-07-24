@@ -39,10 +39,17 @@ ci-status.py
 
 		python3 utils/ci-status.py --format html --output-dir /var/www/postgis/ci
 
+	For no-404 live publishing, make the live path a symbolic link to a release
+	directory and switch it with:
+
+		python3 utils/ci-status.py --format html --atomic-switch --output-dir /var/www/postgis/ci
+
 	The script writes index.html and status.json atomically, so a publishing
-	job can run periodically without leaving a half-written page behind.  A
-	red CI status is valid page content and does not make HTML generation
-	fail.
+	job can run periodically without leaving a half-written page behind.
+	`--atomic-switch` writes a complete sibling directory first and then
+	atomically replaces the output symlink, so the web server never observes the
+	live CI path as missing during publication.  A red CI status is valid page
+	content and does not make HTML generation fail.
 
 	Add new CI by adding a check object to utils/ci-status.json.  Retire old
 	CI by changing the check provider to `disabled`, setting `required` to

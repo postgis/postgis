@@ -1,6 +1,7 @@
 import importlib.util
 import json
 import pathlib
+import tempfile
 import unittest
 from unittest import mock
 
@@ -23,6 +24,22 @@ def check(name, status, *, required=True, url=None):
     if url:
         result["url"] = url
     return result
+
+
+def html_data():
+    return {
+        "generated_at": "2026-07-24T15:20:00+00:00",
+        "branches": [
+            {
+                "name": "master",
+                "label": "master",
+                "status": CI_STATUS.SUCCESS,
+                "checks": [
+                    check("Synthetic CI", CI_STATUS.SUCCESS),
+                ],
+            },
+        ],
+    }
 
 
 class RequiredFailureHtmlTest(unittest.TestCase):
@@ -78,6 +95,46 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         self.assertEqual(CI_STATUS.STALE_PASSED, passed["status"])
         self.assertEqual(CI_STATUS.SUCCESS, passed["stale_base_status"])
         self.assertEqual("Stale passed", passed["status_label"])
+
+    def test_write_html_output_can_atomically_switch_symlink(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = pathlib.Path(tmpdir)
+            old_release = root / "ci-old"
+            old_release.mkdir()
+            (old_release / "index.html").write_text("old page", encoding="utf-8")
+            live = root / "ci"
+            live.symlink_to(old_release.name)
+
+            CI_STATUS.write_html_output(html_data(), live, atomic_switch=True)
+
+            self.assertTrue(live.is_symlink())
+            self.assertTrue(old_release.exists())
+            self.assertEqual("old page", (old_release / "index.html").read_text(encoding="utf-8"))
+            self.assertIn("CI status", (live / "index.html").read_text(encoding="utf-8"))
+            status = json.loads((live / "status.json").read_text(encoding="utf-8"))
+            self.assertEqual("2026-07-24T15:20:00+00:00", status["generated_at"])
+
+    def test_write_html_output_atomic_switch_rejects_real_directory(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            live = pathlib.Path(tmpdir) / "ci"
+            live.mkdir()
+            (live / "index.html").write_text("old page", encoding="utf-8")
+
+            with self.assertRaisesRegex(CI_STATUS.ConfigError, "symbolic link"):
+                CI_STATUS.write_html_output(html_data(), live, atomic_switch=True)
+
+            self.assertEqual("old page", (live / "index.html").read_text(encoding="utf-8"))
+
+    def test_rendered_html_refreshes_status_json_without_breaking_on_errors(self):
+        rendered = CI_STATUS.render_html(html_data())
+
+        self.assertIn('data-generated-at="2026-07-24T15:20:00+00:00"', rendered)
+        self.assertIn('new URL("status.json", window.location.href)', rendered)
+        self.assertIn('fetch(url, { cache: "no-store" })', rendered)
+        self.assertIn("if (!response.ok) return;", rendered)
+        self.assertIn("window.location.reload();", rendered)
+        self.assertIn("catch (error)", rendered)
+        self.assertIn("Local file previews", rendered)
 
     def test_jenkins_matrix_failure_names_failing_axis(self):
         check_config = {
