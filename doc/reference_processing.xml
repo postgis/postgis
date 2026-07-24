@@ -2564,6 +2564,7 @@ SELECT ST_SimplifyVW(geom, 30) simplified
             <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float</type> <parameter>threshold = 0</parameter></paramdef>
             <paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>
+            <paramdef><type>boolean</type> <parameter>preserve_ring_endpoint = true</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -2575,6 +2576,9 @@ SELECT ST_SimplifyVW(geom, 30) simplified
             The effective area is stored as the M-value of the vertex.
             If the optional "threshold" parameter is used, a simplified geometry will be returned, containing only vertices with an effective area
             greater than or equal to the threshold value.
+            By default polygon rings preserve the start/end vertex for backward compatibility. Set
+            <parameter>preserve_ring_endpoint</parameter> to false to allow a polygon ring's start/end
+            vertex to be simplified using cyclic effective areas.
             </para><para>
             This function can be used for server-side simplification when a threshold is specified.  Another option is to use a threshold value of zero.
             In this case, the full geometry will be returned with effective areas as M-values, which can be used by the client to simplify very quickly.
@@ -2593,6 +2597,7 @@ SELECT ST_SimplifyVW(geom, 30) simplified
         <note><para>The output geometry will lose all previous information in the M-values</para></note>
         <note><para>This function handles 3D and the third dimension will affect the effective area</para></note>
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+        <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 added the <parameter>preserve_ring_endpoint</parameter> parameter.</para>
       </refsection>
 
           <refsection>

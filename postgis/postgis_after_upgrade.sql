@@ -192,6 +192,7 @@ SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_transfn(internal, ge
 SELECT _postgis_drop_function_by_signature('pgis_twkb_accum_finalfn(internal)'); -- temporarily introduced before 2.2.0 final
 
 SELECT _postgis_drop_function_by_signature('st_seteffectivearea(geometry, double precision)'); -- temporarily introduced before 2.2.0 final
+SELECT _postgis_drop_function_by_signature('st_seteffectivearea(geometry, double precision, integer)'); -- changed to use default args
 
 SELECT _postgis_drop_function_by_signature('geometry_distance_box_nd(geometry, geometry)'); -- temporarily introduced before 2.2.0 final
 
