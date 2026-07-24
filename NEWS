@@ -82,6 +82,9 @@ These are only changes since 3.7.0alpha1.
 
 PostGIS 3.7.0dev
 2026/xx/xx
+ - #2800, [raster] Make ST_Rescale expand output to cover input extent (Darafei Praliaskouski)
+PostGIS 3.7.0alpha1
+2026/07/05
 
 This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp.
 To take advantage of all features postgis extension features, GEOS 3.15+ is needed.

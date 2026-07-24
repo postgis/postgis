@@ -888,6 +888,30 @@ SELECT
 	ST_Metadata(ST_Resize(rast, 0.5, 0.5)) AS resize
 FROM foo;
 
+-- ticket #2800: ST_Rescale should expand, not shrink, to cover the input extent
+WITH src AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(256, 256, -180, 90, 0.00719999999999928, -0.00719999999999928, 0, 0, 4326),
+		1, '8BUI', 1, 0
+	) AS rast
+), rescaled AS (
+	SELECT rast, ST_Rescale(rast, 0.6, 0.6) AS rescale
+	FROM src
+), meta AS (
+	SELECT ST_Metadata(rescale) AS meta,
+		ST_Covers(ST_Envelope(rescale), ST_Envelope(rast)) AS covers_input
+	FROM rescaled
+)
+SELECT '#2800',
+	covers_input,
+	(meta).width,
+	(meta).height,
+	round((meta).scalex::numeric, 3) AS scalex,
+	round((meta).scaley::numeric, 3) AS scaley,
+	round((meta).upperleftx::numeric, 3) AS upperleftx,
+	round((meta).upperlefty::numeric, 3) AS upperlefty
+FROM meta;
+
 -- Mixed nodata/no-nodata bands keep declared nodata without treating no-nodata NaN as invalid
 WITH src AS (
 	SELECT ST_SetValue(

@@ -102,6 +102,31 @@ _rti_warp_arg_init() {
 	return arg;
 }
 
+/*
+ * Use ceiling semantics so fractional output dimensions cover the source
+ * extent, but keep nearly integral dimensions rounded for compatibility.
+ */
+static int
+_rti_warp_ceil_dimension(double extent_size, double scale)
+{
+	double pixels;
+	double rounded;
+
+	if (FLT_EQ(scale, 0.0))
+	{
+		rterror("rt_raster_gdal_warp: Scale cannot be zero");
+		return 0;
+	}
+
+	pixels = fabs(extent_size) / scale;
+	rounded = floor(pixels + 0.5);
+
+	if (FLT_EQ(pixels, rounded))
+		return (int)fmax(rounded, 1);
+
+	return (int)fmax(ceil(pixels), 1);
+}
+
 static void
 _rti_warp_arg_destroy(_rti_warp_arg arg) {
 	int i = 0;
@@ -561,9 +586,9 @@ rt_raster rt_raster_gdal_warp(
 
 	/* dimensions not defined, compute from extent */
 	if (!_dim[0])
-		_dim[0] = (int) fmax((fabs(extent.MaxX - extent.MinX) + (_scale[0] / 2.)) / _scale[0], 1);
+		_dim[0] = _rti_warp_ceil_dimension(extent.MaxX - extent.MinX, _scale[0]);
 	if (!_dim[1])
-		_dim[1] = (int) fmax((fabs(extent.MaxY - extent.MinY) + (_scale[1] / 2.)) / _scale[1], 1);
+		_dim[1] = _rti_warp_ceil_dimension(extent.MaxY - extent.MinY, _scale[1]);
 
 	/* temporary raster */
 	rast = rt_raster_new(_dim[0], _dim[1]);
