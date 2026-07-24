@@ -40,6 +40,7 @@
 #include <utils/memutils.h> /* For TopMemoryContext */
 #include <ctype.h>
 #include <strings.h>
+#include <math.h>
 
 #include "../../postgis_config.h"
 
@@ -57,6 +58,9 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS);
 
 /* warp a raster using GDAL Warp API */
 Datum RASTER_GDALWarp(PG_FUNCTION_ARGS);
+
+/* test raster line of sight using GDAL Viewshed API */
+Datum RASTER_isVisible(PG_FUNCTION_ARGS);
 
 /* ----------------------------------------------------------------
  * Returns raster from GDAL raster
@@ -628,6 +632,312 @@ Datum RASTER_Contour(PG_FUNCTION_ARGS)
 	}
 }
 
+/************************************************************************
+ * ST_IsVisible(
+ *   rast raster,
+ *   bandnumber integer,
+ *   pointa geometry,
+ *   pointb geometry,
+ *   curvature_coef double precision
+ * )
+ ************************************************************************/
+PG_FUNCTION_INFO_V1(RASTER_isVisible);
+Datum
+RASTER_isVisible(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GDAL_VERSION < 30101
+	elog(ERROR, "%s: ST_IsVisible requires GDAL 3.1.1 or later", __func__);
+	PG_RETURN_NULL();
+#else
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	GSERIALIZED *gser_a = NULL;
+	GSERIALIZED *gser_b = NULL;
+	LWGEOM *geom_a = NULL;
+	LWGEOM *geom_b = NULL;
+	LWPOINT *point_a = NULL;
+	LWPOINT *point_b = NULL;
+	POINT4D pa;
+	POINT4D pb;
+	int band_number;
+	int num_bands;
+	int src_srid;
+	char *src_srs = NULL;
+	double curv_coeff;
+	double max_distance;
+	GDALDriverH src_drv = NULL;
+	int destroy_src_drv = 0;
+	GDALDatasetH src_ds = NULL;
+	GDALDatasetH dst_ds = NULL;
+	GDALRasterBandH src_band = NULL;
+	GDALRasterBandH dst_band = NULL;
+	static uint64 dst_file_seq = 0;
+	char dst_filename[64];
+	double src_gt[6] = {0};
+	double dst_gt[6] = {0};
+	double dst_igt[6] = {0};
+	double dst_x = 0.0;
+	double dst_y = 0.0;
+	int dst_col = 0;
+	int dst_row = 0;
+	GByte visibility = 0;
+	CPLErr cplerr;
+
+	band_number = PG_GETARG_INT32(1);
+	if (band_number < 1)
+		elog(ERROR, "%s: Invalid band number %d", __func__, band_number);
+
+	gser_a = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	gser_b = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(3));
+
+	if (gserialized_get_type(gser_a) != POINTTYPE || gserialized_is_empty(gser_a))
+		elog(ERROR, "%s: point A must be a non-empty point geometry", __func__);
+	if (gserialized_get_type(gser_b) != POINTTYPE || gserialized_is_empty(gser_b))
+		elog(ERROR, "%s: point B must be a non-empty point geometry", __func__);
+
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster)
+	{
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: Could not deserialize raster", __func__);
+	}
+
+	src_srid = clamp_srid(rt_raster_get_srid(raster));
+	if (gserialized_get_srid(gser_a) != src_srid || gserialized_get_srid(gser_b) != src_srid)
+	{
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: Raster and point geometries do not have the same SRID", __func__);
+	}
+
+	num_bands = rt_raster_get_num_bands(raster);
+	if (band_number > num_bands)
+	{
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: band number must be between 1 and %d inclusive", __func__, num_bands);
+	}
+
+	curv_coeff = PG_GETARG_FLOAT8(4);
+	if (!isfinite(curv_coeff) || curv_coeff < 0.0)
+	{
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: curvature coefficient must be finite and non-negative", __func__);
+	}
+
+	geom_a = lwgeom_from_gserialized(gser_a);
+	geom_b = lwgeom_from_gserialized(gser_b);
+	point_a = lwgeom_as_lwpoint(geom_a);
+	point_b = lwgeom_as_lwpoint(geom_b);
+	lwpoint_getPoint4d_p(point_a, &pa);
+	lwpoint_getPoint4d_p(point_b, &pb);
+
+	if (!isfinite(pa.x) || !isfinite(pa.y) || (gserialized_has_z(gser_a) && !isfinite(pa.z)) || !isfinite(pb.x) ||
+	    !isfinite(pb.y) || (gserialized_has_z(gser_b) && !isfinite(pb.z)))
+	{
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: point coordinates must be finite", __func__);
+	}
+
+	max_distance = hypot(pa.x - pb.x, pa.y - pb.y);
+	if (!isfinite(max_distance))
+	{
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: point distance must be finite", __func__);
+	}
+
+	if (src_srid != SRID_UNKNOWN)
+		src_srs = rtpg_getSR(src_srid);
+
+	rt_util_gdal_register_all(0);
+	src_ds = rt_raster_to_gdal_mem(raster, src_srs, NULL, NULL, 0, &src_drv, &destroy_src_drv);
+	if (!src_ds)
+	{
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		if (src_srs)
+			pfree(src_srs);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: Could not convert raster to GDAL MEM format", __func__);
+	}
+
+	src_band = GDALGetRasterBand(src_ds, band_number);
+	if (!src_band)
+	{
+		GDALClose(src_ds);
+		if (src_drv != NULL && destroy_src_drv)
+		{
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+		}
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		if (src_srs)
+			pfree(src_srs);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: Could not get GDAL raster band", __func__);
+	}
+
+	if (GDALGetGeoTransform(src_ds, src_gt) != CE_None)
+	{
+		GDALClose(src_ds);
+		if (src_drv != NULL && destroy_src_drv)
+		{
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+		}
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		if (src_srs)
+			pfree(src_srs);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: Could not compute source raster coordinates", __func__);
+	}
+
+	/*
+	 * GDAL uses dfMaxDistance both as a search limit and as an output window
+	 * limit. If point B is not at its pixel center, the sampled pixel center
+	 * can be farther from point A than point B itself.
+	 */
+	max_distance += 0.5 * (hypot(src_gt[1], src_gt[4]) + hypot(src_gt[2], src_gt[5]));
+	if (!isfinite(max_distance) || max_distance <= 0.0)
+	{
+		GDALClose(src_ds);
+		if (src_drv != NULL && destroy_src_drv)
+		{
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+		}
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		if (src_srs)
+			pfree(src_srs);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: viewshed distance must be finite and positive", __func__);
+	}
+
+	snprintf(dst_filename,
+		 sizeof(dst_filename),
+		 "/vsimem/postgis_isvisible_%d_%llu.tif",
+		 MyProcPid,
+		 (unsigned long long)dst_file_seq++);
+
+	dst_ds = GDALViewshedGenerate(src_band,
+				      "GTiff",
+				      dst_filename,
+				      NULL,
+				      pa.x,
+				      pa.y,
+				      gserialized_has_z(gser_a) ? pa.z : 0.0,
+				      gserialized_has_z(gser_b) ? pb.z : 0.0,
+				      1.0,
+				      0.0,
+				      0.0,
+				      0.0,
+				      curv_coeff,
+				      GVM_Edge,
+				      max_distance,
+				      rt_util_gdal_progress_func,
+				      (void *)"GDALViewshedGenerate",
+				      GVOT_NORMAL,
+				      NULL);
+
+	if (!dst_ds)
+	{
+		VSIUnlink(dst_filename);
+		GDALClose(src_ds);
+		if (src_drv != NULL && destroy_src_drv)
+		{
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+		}
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		if (src_srs)
+			pfree(src_srs);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: GDAL viewshed generation failed: %s", __func__, CPLGetLastErrorMsg());
+	}
+
+	if (GDALGetGeoTransform(dst_ds, dst_gt) != CE_None || GDALInvGeoTransform(dst_gt, dst_igt) == 0)
+	{
+		GDALClose(dst_ds);
+		VSIUnlink(dst_filename);
+		GDALClose(src_ds);
+		if (src_drv != NULL && destroy_src_drv)
+		{
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+		}
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		if (src_srs)
+			pfree(src_srs);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "%s: Could not compute output viewshed coordinates", __func__);
+	}
+
+	GDALApplyGeoTransform(dst_igt, pb.x, pb.y, &dst_x, &dst_y);
+	if (!isfinite(dst_x) || !isfinite(dst_y) || dst_x < 0.0 || dst_y < 0.0 || dst_x >= GDALGetRasterXSize(dst_ds) ||
+	    dst_y >= GDALGetRasterYSize(dst_ds))
+	{
+		GDALClose(dst_ds);
+		VSIUnlink(dst_filename);
+		GDALClose(src_ds);
+		if (src_drv != NULL && destroy_src_drv)
+		{
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+		}
+		lwgeom_free(geom_a);
+		lwgeom_free(geom_b);
+		if (src_srs)
+			pfree(src_srs);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_BOOL(false);
+	}
+	dst_col = (int)floor(dst_x);
+	dst_row = (int)floor(dst_y);
+
+	dst_band = GDALGetRasterBand(dst_ds, 1);
+	cplerr = GDALRasterIO(dst_band, GF_Read, dst_col, dst_row, 1, 1, &visibility, 1, 1, GDT_Byte, 0, 0);
+
+	GDALClose(dst_ds);
+	VSIUnlink(dst_filename);
+	GDALClose(src_ds);
+	if (src_drv != NULL && destroy_src_drv)
+	{
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+	}
+	lwgeom_free(geom_a);
+	lwgeom_free(geom_b);
+	if (src_srs)
+		pfree(src_srs);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+
+	if (cplerr != CE_None)
+		elog(ERROR, "%s: Could not read target cell from viewshed raster", __func__);
+
+	PG_RETURN_BOOL(visibility == 1);
+#endif
+}
 
 static int rtpg_util_gdal_progress_func(
 	double dfComplete,
