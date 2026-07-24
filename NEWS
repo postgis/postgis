@@ -62,6 +62,11 @@ These are only changes since 3.7.0alpha1.
             (Bas Couwenberg)
 
 * Enhancements *
+* New Features *
+
+ - #3973, Add binary geography variants of ST_Difference and ST_Union
+          (Darafei Praliaskouski)
+
 
  - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
           (Darafei Praliaskouski)

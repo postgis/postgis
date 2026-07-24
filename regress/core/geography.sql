@@ -103,6 +103,35 @@ SELECT 'segmentize_geography2', st_dwithin(st_pointn(st_segmentize('linestring(1
 SELECT 'segmentize_geography_3667', abs(ST_Length(geog) - ST_Length(ST_Segmentize(geog, 30000))) < 0.00001
   FROM (SELECT ST_GeographyFromText('LINESTRING(38.769917 10.780694, 38.769917 9.106194)') As geog) AS f;
 
+WITH geogs AS (
+	SELECT
+		'SRID=4326;POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geography AS a,
+		'SRID=4326;POLYGON((0.5 0, 0.5 1, 1.5 1, 1.5 0, 0.5 0))'::geography AS b
+), overlay AS (
+	SELECT a, b, ST_Difference(a, b) AS difference FROM geogs
+)
+SELECT 'geography_difference', GeometryType(difference::geometry), ST_Area(difference) > 0, ST_Area(difference) < ST_Area(a) FROM overlay;
+SELECT 'geography_difference_text', ST_AsText(ST_Normalize(ST_Difference('POLYGON((0 0,0 1,1 1,1 0,0 0))', 'POLYGON((0.5 0,0.5 1,1.5 1,1.5 0,0.5 0))')));
+SELECT 'geography_difference_empty', ST_AsText(ST_Difference('POLYGON EMPTY'::geography, 'POLYGON EMPTY'::geography)::geometry);
+SELECT 'geography_difference_empty_identity',
+	ST_AsText(ST_Difference('SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))'::geography, 'SRID=4326;POLYGON EMPTY'::geography)::geometry);
+
+WITH geogs AS (
+	SELECT
+		'SRID=4326;POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geography AS a,
+		'SRID=4326;POLYGON((0.5 0, 0.5 1, 1.5 1, 1.5 0, 0.5 0))'::geography AS b
+), overlay AS (
+	SELECT a, b, ST_Union(a, b) AS unioned FROM geogs
+)
+SELECT 'geography_union', GeometryType(unioned::geometry), ST_Area(unioned) > ST_Area(a), ST_Area(unioned) < ST_Area(a) + ST_Area(b), ST_Covers(unioned, a), ST_Covers(unioned, b) FROM overlay;
+SELECT 'geography_union_text', ST_AsText(ST_Normalize(ST_Union('POINT(0 0)', 'POINT(1 1)')));
+SELECT 'geography_union_empty', ST_AsText(ST_Union('POLYGON EMPTY'::geography, 'POLYGON EMPTY'::geography)::geometry);
+SELECT 'geography_union_empty_identity',
+	ST_AsText(ST_Union('SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))'::geography, 'SRID=4326;POLYGON EMPTY'::geography)::geometry),
+	ST_AsText(ST_Union('SRID=4326;POLYGON EMPTY'::geography, 'SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))'::geography)::geometry);
+SELECT 'geography_union_empty_first_srid',
+	ST_SRID(ST_Union('SRID=4326;POINT EMPTY'::geography, 'SRID=4269;POINT(0 0)'::geography)::geometry);
+
 -- typmod checks
 select 'typmod_point_4326', geography_typmod_out(geography_typmod_in('{Point,4326}'));
 select 'typmod_point_0', geography_typmod_out(geography_typmod_in('{Point,0}'));
