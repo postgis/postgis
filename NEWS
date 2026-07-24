@@ -24,6 +24,7 @@ PostGIS 3.3.11
  - GH-895, Qualify pg_class lookup during SRID/PROJ validation
    (Darafei Praliaskouski)
  - Fix PostgreSQL 19 GeoJSON output builds (Regina Obe)
+ - Fix PostgreSQL 19 SFCGAL builds (Paul Ramsey)
  - GH-897, [topology] Harden topology helper functions and
    maintenance SQL against identifier, tolerance, bigint, and cleanup
    regressions (Darafei Praliaskouski)
