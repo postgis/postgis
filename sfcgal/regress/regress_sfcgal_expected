@@ -2,6 +2,13 @@ postgis_sfcgal_version|1
 postgis_sfcgal_noop|33
 CG_Tesselate|GEOMETRYCOLLECTION(POINT(4 4),TIN(((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1))))
 CG_3DArea|1
+CG_IsValid.2d_polygon|t
+CG_IsValid.invalid_polygon|f
+CG_IsValid.3d_vertical_line|t
+CG_IsValid.polyhedralsurface|t
+CG_IsValid.solid|t
+CG_IsValidDetail.valid_polygon|t|t|t
+CG_IsValidDetail.invalid_polygon|f|t|t
 CG_Extrude_point|LINESTRING Z (0 0 0,1 0 0)
 CG_Extrude_line|POLYHEDRALSURFACE Z (((0 0 0,1 0 0,1 1 0,0 1 0,0 0 0)))
 CG_Extrude_surface|POLYHEDRALSURFACE Z (((1 1 0,1 0 0,0 1 0,1 1 0)),((0 1 1,1 0 1,1 1 1,0 1 1)),((1 0 0,0 0 0,0 1 0,1 0 0)),((0 1 1,0 0 1,1 0 1,0 1 1)),((1 0 0,1 1 0,1 1 1,1 0 1,1 0 0)),((1 1 0,0 1 0,0 1 1,1 1 1,1 1 0)),((0 1 0,0 0 0,0 0 1,0 1 1,0 1 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)))
