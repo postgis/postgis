@@ -176,7 +176,70 @@ FROM street;
 			<para>
 				<xref linkend="ST_LineInterpolatePoint"/>,
 				<xref linkend="ST_LineInterpolatePoints"/>,
+				<xref linkend="ST_3DLineSubstring"/>,
 				<xref linkend="ST_LineLocatePoint"/>
+			</para>
+		  </refsection>
+		</refentry>
+
+		<refentry xml:id="ST_3DLineSubstring">
+		  <refnamediv>
+			<refname>ST_3DLineSubstring</refname>
+
+			<refpurpose>Returns the part of a 3D line between two fractional locations.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_3DLineSubstring</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>startfraction</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>endfraction</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Computes the line which is the section of the input line
+			starting and ending at the given fractional locations.
+			The second and third arguments are values in the range [0, 1]
+			representing the start and end locations as fractions of line length.
+			The fractions are measured in 3D line length. If the input does
+			not have Z values, the fractions are measured in 2D line length.
+			The M value is interpolated for added endpoints if present.</para>
+
+			<para>If <varname>startfraction</varname> and <varname>endfraction</varname>
+			have the same value the result is a POINT.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<para>Return the first half of a 3D line by 3D length.</para>
+			<programlisting>
+WITH data AS (
+  SELECT 'LINESTRING Z (0 0 0, 0 2 5, 0 10 10)'::geometry AS geom
+)
+SELECT ST_AsText(ST_3DLineSubstring(geom, 0, 0.5), 6) AS substring,
+       round(ST_3DLength(ST_3DLineSubstring(geom, 0, 0.5))::numeric, 6) AS substring_length,
+			   round(ST_3DLength(geom)::numeric, 6) AS total_length
+FROM data;</programlisting>
+<screen>LINESTRING Z (0 0 0,0 2 5,0 3.716695 6.072934) | 7.409573 | 14.819146</screen>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="ST_3DLength"/>,
+				<xref linkend="ST_3DLineInterpolatePoint"/>,
+				<xref linkend="ST_LineSubstring"/>
 			</para>
 		  </refsection>
 		</refentry>
@@ -544,7 +607,7 @@ FROM data;</programlisting>
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Length"/>, <xref linkend="ST_LineExtend"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineLocatePoint"/>, <xref linkend="ST_LineMerge"/>, <xref linkend="ST_Split"/></para>
+			<para><xref linkend="ST_Length"/>, <xref linkend="ST_3DLineSubstring"/>, <xref linkend="ST_LineExtend"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineLocatePoint"/>, <xref linkend="ST_LineMerge"/>, <xref linkend="ST_Split"/></para>
 		  </refsection>
 	</refentry>
 
