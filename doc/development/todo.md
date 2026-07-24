@@ -10,6 +10,12 @@ documentation migration but are not accepted designs, release blockers, or
 scheduled work. Move an item to a Trac ticket, design document, or pull request
 when someone takes ownership of it.
 
+Historical source names in backticks are canonical Trac wiki identifiers. The
+corresponding source is available as plain text by appending the identifier and
+`?format=txt` to <https://trac.osgeo.org/postgis/wiki/>. Preserve those source
+snapshots in the OSGeo archive before retiring Trac. This source route replaces
+an import commit identifier that was removed during branch history cleanup.
+
 ## Geometry And Precision
 
 * Investigate polygon partitioning below a maximum vertex budget. The old
@@ -31,16 +37,23 @@ when someone takes ownership of it.
   storage, typmods, TWKB output, and PostGIS 3 flag changes cover only parts of
   this historical discussion. Source provenance: `PostGIS3` and
   `DevelopmentDiscussion` in the Trac import, plus the serialization discussion
-  in `UsersWikiSprint2009Notes`; local import commit `7fee744c33af`.
+  in `UsersWikiSprint2009Notes`.
 * Investigate sparse-polygon containment performance. Current PostGIS has
   selectivity estimators and user-visible tools such as `ST_Subdivide`, but the
   old wishlist asked for better selectivity or decomposition strategies for
   large sparse polygons where the bounding box is a poor proxy for occupied
-  area. Source provenance: `UsersWikiWishList`; local import commit
-  `7fee744c33af`.
+  area. Source provenance: `UsersWikiWishList`.
 
 ## Indexing And Planner
 
+* Investigate a typed bounding-box or envelope API that can carry SRID and
+  dimensionality without the size and semantics of a polygon. The historical
+  sprint discussion also proposed using casts to this shared box type so
+  extensions such as raster could reuse core spatial indexing rather than
+  defining parallel operator infrastructure. Current `box2d`, `box3d`,
+  geometry-cached boxes, and raster convex-hull indexing cover adjacent cases
+  but not this common typed-box contract. Source provenance:
+  `DevFOSS4GCodeSprintNotes`.
 * Investigate future geometry index tuple designs. Historical proposals include
   carrying SRID in the index tuple, storing very small geometries directly in
   index entries for possible index-only scans, using compact fixed-size
@@ -48,40 +61,45 @@ when someone takes ownership of it.
   `GEOMETRYCOLLECTION` trees. Current GiST/SP-GiST support and PostgreSQL 15+
   sort support cover adjacent work, but not these storage/index-tuple designs.
   Source provenance: `PostGIS3`, with SRID mismatch context linked there to
-  <https://trac.osgeo.org/postgis/ticket/4096>; local import commit
-  `7fee744c33af`.
+  <https://trac.osgeo.org/postgis/ticket/4096>.
 * Investigate geography indexing based on S2-style cells or another cell-based
   strategy, including whether a fast geography `ST_Intersects` GIN index is
   possible and useful. Current geography indexes remain GiST-oriented. Source
-  provenance: `PostGIS3`; local import commit `7fee744c33af`.
+  provenance: `PostGIS3`.
 * Investigate PostgreSQL-core-dependent spatial index build and clustering
   improvements, such as building GiST pages from spatially adjacent tuple runs
   or preserving heap clustering by inserting near index sibling tuples. Current
   PostGIS sort support addresses part of index build ordering, but these ideas
   remain broader PostgreSQL storage/index research. Source provenance:
-  `PostGIS3`; local import commit `7fee744c33af`.
+  `PostGIS3`.
 
 ## Backend Libraries And Robustness
 
+* Investigate streaming execution for spatial workloads that cannot reasonably
+  materialize one global intermediate geometry. The historical wishlist called
+  out noding very large line sets, constructing polygonal coverages from
+  linework, creating TINs from large DEM point sets, and spatial aggregates
+  that could emit completed regions as input advances. Current aggregate,
+  coverage, noding, and triangulation functions do not provide that general
+  feature-stream execution model. Source provenance: `UsersWikiWishList`.
 * Investigate deeper backend-library integration. Historical ideas include GEOS
   memory management through PostgreSQL allocation, GEOS coordinate sequences on
   PostGIS point arrays, moving suitable algorithms such as build-area or
   validity repair into upstream GEOS/SFCGAL/CGAL, and adding LWGEOM adapters to
   external geometry-library types. Current SFCGAL/GEOS integration covers many
   operations, but not these ownership and architecture changes. Source
-  provenance: `PostGIS3` and `DevelopmentDiscussion`; local import commit
-  `7fee744c33af`.
+  provenance: `PostGIS3` and `DevelopmentDiscussion`.
 * Investigate stronger robustness guarantees for predicates and overlays. The
   old planning notes proposed validity-aware guarantees, cached validity state,
   fallback or retry through another backend library after robustness failures,
   and empirical performance/cost frameworks for regression and planner-cost
   testing. Current GEOS/SFCGAL behavior, validity functions, and regression
   suites do not make this a settled design. Source provenance: `PostGIS3` and
-  `DevelopmentDiscussion`; local import commit `7fee744c33af`.
+  `DevelopmentDiscussion`.
 * Investigate curve-completeness policy: which curve operations should become
   complete in core, which should linearize explicitly, and which should remain
   unsupported until GEOS/SFCGAL or another backend owns the operation. Source
-  provenance: `DevelopmentDiscussion`; local import commit `7fee744c33af`.
+  provenance: `DevelopmentDiscussion`.
 
 ## Raster
 
@@ -92,9 +110,7 @@ when someone takes ownership of it.
   interpolation from input points, but this density-surface workflow is not a
   maintained first-class raster API. Trac provenance: the item was already
   present in `GoogleSummerCode` version 1, authored by `robe` on
-  2013-04-02 15:34:22 -0700. Local import provenance: commit `7fee744c33af`
-  imported the source Trac page into this repository on
-  2026-06-17 07:58:14 +0400.
+  2013-04-02 15:34:22 -0700.
 * Investigate internal sub-tiling for very large rasters. The historical
   `WKTRaster/SpecificationWorking03` roadmap described this as sub-tiling of
   rasters for PostGIS 3.0, or possibly a new raster type: rewrite the raster
@@ -104,9 +120,7 @@ when someone takes ownership of it.
   currently open pull request checked on 2026-06-28 owns this one-row
   internal-tiling storage redesign. Trac provenance: version 211 was the first
   version found with the sub-tiling item, authored by `pracine` on
-  2012-07-25 06:42:29 -0700. Local import provenance: commit `7fee744c33af`
-  imported the source Trac page into this repository on
-  2026-06-17 07:58:14 +0400.
+  2012-07-25 06:42:29 -0700.
 * Investigate first-class raster coverage validation helpers. The historical
   `WKTRaster/SpecificationWorking03` roadmap introduced this as Objective FV.20:
   being able to determine topological characteristics of a coverage, with
@@ -116,9 +130,7 @@ when someone takes ownership of it.
   and overviews, but no currently open pull request checked on 2026-06-28 owns
   this coverage-validation proposal. Trac provenance: version 173 was the first
   version found with the objective, authored by `pracine` on
-  2011-11-11 07:51:13 -0800. Local import provenance: commit `7fee744c33af`
-  imported the source Trac page into this repository on
-  2026-06-17 07:58:14 +0400.
+  2011-11-11 07:51:13 -0800.
 * Investigate named raster bands. The historical
   `WKTRaster/SpecificationWorking03` roadmap introduced this as Objective FV.17:
   being able to refer to a band by textual name, later described as "band by
@@ -126,9 +138,7 @@ when someone takes ownership of it.
   WKB format, importer support for assigning band names, and overloads so raster
   functions can address bands by name. Trac provenance: version 31 was the first
   version found with the objective, authored by `pracine` on
-  2010-09-21 06:53:05 -0700. Local import provenance: commit `7fee744c33af`
-  imported the source Trac page into this repository on
-  2026-06-17 07:58:14 +0400.
+  2010-09-21 06:53:05 -0700.
 * Investigate first-class raster distance surfaces, historically proposed as
   `ST_EuclideanDistance` for nearest-source distance rasters and
   `ST_CostDistance` for cost-weighted distance over a cost raster. Compare that
@@ -138,11 +148,15 @@ when someone takes ownership of it.
   weighted map-algebra masks and ordinary `ST_SummaryStats` /
   `ST_SummaryStatsAgg` aggregates. The historical sprint notes kept this as an
   open raster analysis idea after the core statistics aggregates existed.
-  Source provenance: `DevFOSS4GCodeSprintNotes`; local import commit
-  `7fee744c33af`.
+  Source provenance: `DevFOSS4GCodeSprintNotes`.
 
 ## 3D And Output Formats
 
+* Investigate 3D-aware geography/cartesian conversion so the internal
+  geodetic-to-cartesian and cartesian-to-geodetic paths have a defined policy
+  for a third coordinate instead of treating geography as a purely surface
+  model. This needs explicit altitude semantics and compatibility rules before
+  changing current geography calculations. Source provenance: `PostGIS3`.
 * Investigate deeper 3D primitive completeness. Current PostGIS supports
   PolyhedralSurface, Triangle, TIN, X3D/GML output, and many SFCGAL-backed 3D
   operations including 3D intersects, distance, area, volume, intersection,
@@ -151,12 +165,12 @@ when someone takes ownership of it.
   centroid behavior, line-of-sight or visibility APIs, and interchange behavior
   that should be either designed or explicitly declared out of scope. Source
   provenance: `DevelopmentDiscussion`, `DevFOSS4GCodeSprintNotes`, and
-  `UsersWikiSprint2009Notes`; local import commit `7fee744c33af`.
+  `UsersWikiSprint2009Notes`.
 * Investigate richer `ST_AsKML` output metadata. The old wishlist asked for KML
   `extrude`, `tessellate`, and altitude-mode support. Current `ST_AsKML`
   signatures accept geometry or geography, precision, and namespace prefix, and
   current KML parsing code explicitly does not handle `kml:extrude`. Source
-  provenance: `UsersWikiWishList`; local import commit `7fee744c33af`.
+  provenance: `UsersWikiWishList`.
 
 ## Extension Packaging
 
@@ -165,8 +179,16 @@ when someone takes ownership of it.
   lower priority because the core extensions are not movable. Current
   `postgis`, `postgis_raster`, and `postgis_topology` extension control files
   remain `relocatable = false`, while `postgis_sfcgal` is relocatable. Source
-  provenance: `PostGIS3` and `UsersWikiWishList`; local import commit
-  `7fee744c33af`.
+  provenance: `PostGIS3` and `UsersWikiWishList`.
+
+## Developer Workflow
+
+* Investigate repository policy for PostGIS AI skills files. The 2026
+  development meeting raised whether project-owned AI skills files should live
+  in the core repository, in a separate repository, and how they should be
+  structured as versioned developer assets. No maintained developer policy
+  currently settles that question, so keep it as planning work until a design
+  is accepted and documented. Source provenance: `PostGISDevelopment2026-1`.
 
 ## Topology
 
@@ -181,9 +203,7 @@ when someone takes ownership of it.
   already present in `GoogleSummerCode` version 1, authored by `robe` on
   2013-04-02 15:34:22 -0700; the broader 2022 framing first appeared in
   `GoogleSummerCode2022` version 7, authored by `robe` on
-  2022-02-19 14:23:10 -0800. Local import provenance: commit `7fee744c33af`
-  imported both source Trac pages into this repository on
-  2026-06-17 07:58:14 +0400.
+  2022-02-19 14:23:10 -0800.
 * Investigate a no-new-primitives mode for `toTopoGeom`. The historical
   `GoogleSummerCode` page proposed an extra argument allowing `toTopoGeom` to
   fail instead of adding topology primitives when the input cannot be expressed
@@ -191,9 +211,7 @@ when someone takes ownership of it.
   geometry, topology/layer or TopoGeometry target, and tolerance, but no
   primitive-creation policy flag. Trac provenance: the item was already present
   in `GoogleSummerCode` version 1, authored by `robe` on
-  2013-04-02 15:34:22 -0700. Local import provenance: commit `7fee744c33af`
-  imported the source Trac page into this repository on
-  2026-06-17 07:58:14 +0400.
+  2013-04-02 15:34:22 -0700.
 * Investigate topology-aware `ST_EstimatedExtent`. The historical
   `GoogleSummerCode` page proposed making `ST_EstimatedExtent` recognize a
   schema/table/column that refers to a `topology.layer` entry and return a useful
@@ -201,12 +219,18 @@ when someone takes ownership of it.
   table statistics. Current `ST_EstimatedExtent` is documented and implemented
   against geometry/geography columns and table statistics. Trac provenance: the
   item was already present in `GoogleSummerCode` version 1, authored by `robe`
-  on 2013-04-02 15:34:22 -0700. Local import provenance: commit `7fee744c33af`
-  imported the source Trac page into this repository on
-  2026-06-17 07:58:14 +0400.
+  on 2013-04-02 15:34:22 -0700.
 * Investigate topology import paths for OSM and E00-style coverage sources.
   Historical planning notes asked for an `osm2topology` converter and for
   importing E00 coverage/topology data. Current in-tree topology tools focus on
   SQL/topology management and `pgtopo_export` / `pgtopo_import`; OSM, E00, and
   routing-specific import design remains unowned. Source provenance:
-  `PostGIS3` and `UsersWikiWishList`; local import commit `7fee744c33af`.
+  `PostGIS3` and `UsersWikiWishList`.
+* Investigate first-class detached-layer attach/detach APIs for copied
+  TopoGeometry layers. The historical `TopologyCopy` design notes proposed
+  allowing copied `topology.layer` definitions to exist without immediate
+  binding to a physical table column, followed by explicit functions to attach,
+  detach, or drop those conceptual layers later. Current `CopyTopology`,
+  `pgtopo_export`, and `pgtopo_import` cover copying and transfer workflows,
+  but they do not provide this detached-layer lifecycle API. Source
+  provenance: `TopologyCopy`.
