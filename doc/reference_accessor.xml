@@ -1191,6 +1191,11 @@ GROUP BY gid;</programlisting>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>setof geometry <function>ST_GeometryN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer[] </type> <parameter>narray</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -1203,6 +1208,8 @@ GROUP BY gid;</programlisting>
 			an index of 1 returns the input geometry and any other index returns NULL.
 			Use <xref linkend="ST_PatchN"/> and <xref linkend="ST_NumPatches"/> to
 			access and count the faces of a TIN or PolyhedralSurface.</para>
+		<para>The integer array variant returns one row for each array entry in array order,
+			emitting NULL rows for NULL or out-of-range indexes.</para>
 
 		<note>
 		  <para>Index is 1-based as for OGC specs since version 0.8.0.
@@ -1213,6 +1220,7 @@ GROUP BY gid;</programlisting>
 		  <para>To extract all elements of a geometry, <xref linkend="ST_Dump"/> is more efficient and works for atomic geometries.</para>
 		</note>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for selecting multiple elements with an integer array was introduced.</para>
 		<para role="changed" conformance="2.0.0">Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
 		<para role="changed" conformance="3.6.0">Changed: 3.6.0 TIN and PolyhedralSurface are treated as unitary geometries and are not decomposed into patches; use ST_PatchN to access faces.</para>
 		<para>&sfs_compliant;</para>
@@ -1423,6 +1431,11 @@ FROM
 			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>setof geometry <function>ST_InteriorRingN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+			<paramdef><type>integer[] </type> <parameter>n_array</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -1430,6 +1443,8 @@ FROM
 		<title>Description</title>
 
 		<para>Returns the Nth interior ring (hole) of a POLYGON geometry as a LINESTRING. The index starts at 1. Returns NULL if the geometry is not a polygon or the index is out of range.</para>
+		<para>The integer array variant returns one row for each array entry in array order,
+			emitting NULL rows for NULL or out-of-range indexes.</para>
 
 		<!-- optionally mention that this function uses indexes if appropriate -->
 		<note>
@@ -1440,6 +1455,7 @@ FROM
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5</para>
 		<para>&Z_support;</para>
+		<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for selecting multiple rings with an integer array was introduced.</para>
 
 	  </refsection>
 
@@ -2569,6 +2585,11 @@ VALUES ('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>setof geometry <function>ST_PointN</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>integer[] </type> <parameter>narray</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -2578,6 +2599,8 @@ VALUES ('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 		<para>Return the Nth point in a single linestring or circular linestring in the
 			geometry. Negative values are counted backwards from the end of the LineString, so that -1 is the last point. Returns NULL if there is no linestring in the
 			geometry.</para>
+		<para>The integer array variant returns one row for each array entry in array order,
+			emitting NULL rows for NULL or out-of-range indexes.</para>
 
 		<note>
 			  <para>Index is 1-based as for OGC specs since version 0.8.0.
@@ -2599,6 +2622,7 @@ VALUES ('POLYHEDRALSURFACE( ((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.</para>
 		<para role="changed" conformance="2.3.0"> Changed: 2.3.0 : negative indexing available (-1 is last point)
     </para>
+      <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for selecting multiple points with an integer array was introduced.</para>
 
 	  </refsection>
 
