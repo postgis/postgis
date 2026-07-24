@@ -126,7 +126,10 @@ check: check-unit
 create_upgrade_replaced_function_errors_check:
 	srcdir=$(srcdir) PERL=$(PERL) $(SHELL) $(srcdir)/check_create_upgrade_replaced_function_errors.sh
 
-check-unit: postgis_restore-check create_upgrade_replaced_function_errors_check
+postgis_restore-typmod-check: postgis_restore.pl
+	$(PERL) $(srcdir)/test_postgis_restore_typmod.pl ./postgis_restore.pl
+
+check-unit: postgis_restore-check create_upgrade_replaced_function_errors_check postgis_restore-typmod-check
 
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
