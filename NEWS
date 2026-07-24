@@ -60,6 +60,8 @@ These are only changes since 3.7.0alpha1.
           safely (Darafei Praliaskouski)
  - #6092, [fuzzingengine] fuzzingengine doesn't use hardening CPPFLAGS
             (Bas Couwenberg)
+ - #4122, Preserve geography _ST_Expand index filtering across text and
+          binary serialization round trips (Darafei Praliaskouski)
 
 * Enhancements *
 
