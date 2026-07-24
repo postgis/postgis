@@ -137,6 +137,8 @@ RASTER_TEST_LOADER = \
 	$(top_srcdir)/raster/test/regress/loader/LongMaintenance \
 	$(top_srcdir)/raster/test/regress/loader/BasicCopy \
 	$(top_srcdir)/raster/test/regress/loader/BasicFilename \
+	$(top_srcdir)/raster/test/regress/loader/BasicMetadata \
+	$(top_srcdir)/raster/test/regress/loader/BasicMetadataQuoted \
 	$(top_srcdir)/raster/test/regress/loader/BasicOutDB \
 	$(top_srcdir)/raster/test/regress/loader/Tiled10x10 \
 	$(top_srcdir)/raster/test/regress/loader/Tiled10x10Copy \
