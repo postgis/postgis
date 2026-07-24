@@ -300,6 +300,49 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         self.assertEqual("running: regress", result["message"])
         self.assertEqual("https://woodie.example.test/repos/30/pipeline/5434/2", result["url"])
 
+    def test_woodpecker_uses_newest_pipeline_when_api_order_is_unstable(self):
+        check_config = {
+            "name": "Woodpecker",
+            "provider": "woodpecker",
+            "required": True,
+            "api_url": "https://woodie.example.test/api/repos/30/pipelines",
+            "web_url": "https://woodie.example.test/repos/30",
+        }
+        branch = {"name": "stable-3.4", "label": "3.4"}
+        older_failed = {
+            "number": 5415,
+            "event": "push",
+            "branch": "stable-3.4",
+            "ref": "refs/heads/stable-3.4",
+            "status": "failure",
+            "commit": "5" * 40,
+            "created": 1784787793,
+            "started": 1784787796,
+            "finished": 1784794269,
+            "message": "older failed pipeline",
+        }
+        newer_success = {
+            "number": 5425,
+            "event": "push",
+            "branch": "stable-3.4",
+            "ref": "refs/heads/stable-3.4",
+            "status": "success",
+            "commit": "5" * 40,
+            "created": 1784806066,
+            "started": 1784806067,
+            "finished": 1784812852,
+            "message": "newer successful pipeline",
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", side_effect=([older_failed, newer_success], newer_success)):
+            result = CI_STATUS.woodpecker_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.SUCCESS, result["status"])
+        self.assertEqual("https://woodie.example.test/repos/30/pipeline/5425", result["url"])
+        self.assertEqual("newer successful pipeline", result["message"])
+        self.assertEqual(CI_STATUS.FAILURE, result["previous_completed_status"])
+        self.assertEqual("https://woodie.example.test/repos/30/pipeline/5415", result["previous_completed_url"])
+
     def test_stale_summary_distinguishes_passed_and_failed(self):
         branch = {
             "name": "stable-synthetic",
