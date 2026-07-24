@@ -13021,6 +13021,90 @@ WHERE rid = 2;</programlisting>
         <section xml:id="Raster_Processing_DEM">
             <title>Raster Processing: DEM (Elevation)</title>
 
+            <refentry xml:id="RT_ST_Sharpen">
+                <refnamediv>
+                    <refname>ST_Sharpen</refname>
+                    <refpurpose>Returns a sharpened raster from a raster band.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Sharpen</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>method=UMM</parameter></paramdef>
+                            <paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Sharpen</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>method=UMM</parameter></paramdef>
+                            <paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Sharpen</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>method=UMM</parameter></paramdef>
+                            <paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+                        </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <para>Returns a raster whose pixel values are sharpened using the selected method. The only supported <varname>method</varname> is <varname>UMM</varname>, an unsharp mask using the mean value of the 3 by 3 neighborhood around each input pixel.</para>
+
+                    <para>The <varname>options</varname> array accepts <varname>amount=&lt;value&gt;</varname>. The amount must be a finite non-negative number and defaults to 1.0. Larger values increase the sharpening strength.</para>
+
+                    <para>If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma"/> before sharpening. Otherwise, a NODATA center pixel returns NODATA and NODATA neighbors use the center pixel value.</para>
+
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting language="sql">
+WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+        1, 1, 1, ARRAY[
+            [1, 1, 1],
+            [1, 5, 1],
+            [1, 1, 1]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT
+    ST_DumpValues(ST_Sharpen(rast, 'UMM'))
+FROM foo;
+
+                    </programlisting>
+                    <screen role="visual-primary text-primary">          st_dumpvalues
+-----------------------------------
+ (1,"{{0.5555555820465088,0.5555555820465088,0.5555555820465088},{0.5555555820465088,8.55555534362793,0.5555555820465088},{0.5555555820465088,0.5555555820465088,0.5555555820465088}}")
+(1 row)</screen>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_MapAlgebra"/>,
+                        <xref linkend="RT_ST_InvDistWeight4ma"/>,
+                        <xref linkend="RT_ST_Slope"/>
+                    </para>
+                </refsection>
+            </refentry>
+
             <refentry xml:id="RT_ST_Aspect">
                 <refnamediv>
                     <refname>ST_Aspect</refname>

@@ -112,6 +112,7 @@ RASTER_TEST_MAPALGEBRA = \
 	$(top_srcdir)/raster/test/regress/rt_4ma \
 	$(top_srcdir)/raster/test/regress/rt_setvalues_geomval \
 	$(top_srcdir)/raster/test/regress/rt_elevation_functions \
+	$(top_srcdir)/raster/test/regress/rt_sharpen \
 	$(top_srcdir)/raster/test/regress/rt_colormap \
 	$(top_srcdir)/raster/test/regress/rt_grayscale
 
