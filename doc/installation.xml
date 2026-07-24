@@ -562,10 +562,16 @@ PostGIS was built successfully. Ready to install.</screen>
           <para>
                 All the functions have comments generated from the
                 documentation. If you wish to install these comments into your spatial
-                databases later, run the command which requires docbook.  The postgis_comments.sql and other
-                package comment files are
-                        also packaged in the tar.gz distribution in the doc folder so no need to make comments
-                        if installing from the tar ball.  Comments are also included as part of the CREATE EXTENSION install.
+                databases later, run the command which requires docbook. If your
+                documentation toolchain is unavailable or broken, pass
+                <option>--without-comments</option> to <command>configure</command>
+                to skip building and installing generated SQL comments. The
+                postgis_comments.sql and other package comment files are also
+                packaged in the tar.gz distribution in the doc folder so no need to
+                make comments if installing from the tar ball. Source checkout
+                installs that need database comments should run
+                <command>make comments-install</command> after the comments are
+                available.
           </para>
 
     <programlisting language="bash">make comments</programlisting>
@@ -589,7 +595,7 @@ PostGIS was built successfully. Ready to install.</screen>
     <para>If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:
     </para>
     <programlisting language="bash">make comments</programlisting>
-    <para>Building the comments is not necessary if you are building from a release tar ball since these are packaged pre-built with the tar ball already.</para>
+    <para>Building the comments is not necessary if you are building from a release tar ball since these are packaged pre-built with the tar ball already. To skip building and installing generated SQL comments from a source checkout, run <command>configure</command> with <option>--without-comments</option>.</para>
     <para>The extensions should automatically build as part of the make install process.  You can if needed build from the extensions
     folders or copy files if you need them on a different server. </para>
 	    <para>Set <varname>PGUSER</varname> if you need to override the psql connection user, then test before installing. After installation, run the extension regression tests.</para>
