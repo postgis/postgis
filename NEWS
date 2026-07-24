@@ -68,6 +68,8 @@ These are only changes since 3.7.0alpha1.
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
+ - #2689, Emit deprecation warnings from common legacy_minimal.sql aliases
+          (Darafei Praliaskouski)
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
  - #3676, Mark geometry and geography btree comparison support functions
