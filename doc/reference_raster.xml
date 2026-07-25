@@ -13075,13 +13075,13 @@ WITH foo AS (
     ) AS rast
 )
 SELECT
-    ST_DumpValues(ST_EdgeDetect(rast))
+    ST_AsPNG(ST_EdgeDetect(rast, 1, '8BUI')) AS image
 FROM foo;
 
                     </programlisting>
-                    <screen role="visual-primary text-primary">          st_dumpvalues
-----------------------------------
- (1,"{{0,6.324555397033691,6.324555397033691},{0,8,8},{0,6.324555397033691,6.324555397033691}}")
+                    <screen role="visual-primary"> image
+------------------------
+ PNG image, 3 x 3 pixels
 (1 row)</screen>
                 </refsection>
 
