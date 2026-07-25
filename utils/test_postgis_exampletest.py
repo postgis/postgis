@@ -452,6 +452,28 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         self.assertEqual((2, 3, 0), requirements["sfcgal"])
         self.assertEqual((6, 0, 0), requirements["cgal"])
 
+    def test_explicit_capability_requirement_overrides_inferred_minimum(self):
+        xml = """<book xmlns="http://docbook.org/ns/docbook">
+  <refentry xml:id="capability"><refsection>
+    <programlisting role="requires-geos-3.12">SELECT ST_LargestEmptyCircle(
+      'MULTIPOINT((0 0),(1 1))'::geometry
+    );</programlisting>
+    <screen>dummy</screen>
+  </refsection></refentry>
+</book>"""
+        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+            source.write(xml)
+            source.flush()
+            example = ExampleTester(source.name).examples()[0]
+
+        self.assertEqual(
+            {"geos": (3, 12)},
+            {
+                requirement["name"]: requirement["minimum"]
+                for requirement in example["requirements"]
+            },
+        )
+
     def test_cg_3dbuffer_requires_sfcgal_2_0(self):
         tester = ExampleTester.__new__(ExampleTester)
 

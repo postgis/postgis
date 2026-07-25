@@ -1668,15 +1668,18 @@ SELECT ST_3DMaxDistance(
 <screen role="visual-primary text-primary">845.227713366825</screen>
 
 			<para>Return perimeter in meters and feet for Polygon and MultiPolygon. Note this is geography (WGS 84 long lat)</para>
-			<programlisting language="sql">SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog)/0.3048 As per_ft
+			<programlisting language="sql">SELECT round(ST_Perimeter(geog)::numeric, 8) As per_meters,
+       round((ST_Perimeter(geog)/0.3048)::numeric, 8) As per_ft
 FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
 -71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.1776848522251 42.3902896512902))') As geog;</programlisting>
-<screen role="visual-primary text-primary">   per_meters    |      per_ft
------------------+------------------
-37.37904625414049 | 122.63466618812497</screen>
+<screen role="visual-primary text-primary"> per_meters  |    per_ft
+-------------+--------------
+ 37.37904625 | 122.63466619</screen>
 <para>This example uses a MultiPolygon.</para>
 <programlisting language="sql">
-SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog, false) As per_sphere_meters, ST_Perimeter(geog)/0.3048 As per_ft
+SELECT round(ST_Perimeter(geog)::numeric, 8) As per_meters,
+       round(ST_Perimeter(geog, false)::numeric, 8) As per_sphere_meters,
+       round((ST_Perimeter(geog)/0.3048)::numeric, 8) As per_ft
 FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.1044542869917 42.3406744369506,
 -71.1044553562977 42.340673886454,-71.1044543107478 42.340674480411)),
 ((-71.1044543107478 42.340674480411,-71.1044860600303 42.3407237015564,-71.1045215770124 42.3407653385914,
@@ -1685,9 +1688,9 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 -71.1048878050242 42.3410084812078,-71.1044020965803 42.3414730072048,
 -71.1039672113619 42.3412202916693,-71.1037740497748 42.3410666421308,
 -71.1044280218456 42.3406894151355,-71.1044543107478 42.340674480411)))') As geog;</programlisting>
-<screen role="visual-primary text-primary">    per_meters    | per_sphere_meters |      per_ft
-------------------+-------------------+------------------
- 257.634283683311 |  257.412311446337 | 845.256836231335
+<screen role="visual-primary text-primary">  per_meters  | per_sphere_meters |    per_ft
+--------------+-------------------+--------------
+ 257.63428368 |      257.41231145 | 845.25683623
                         </screen>
 		  </refsection>
 		<refsection>

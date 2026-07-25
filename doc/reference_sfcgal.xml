@@ -1667,7 +1667,7 @@ FROM data;</programlisting>
 
             <para><xref linkend="ST_DelaunayTriangles"/> applied to the same input.
                 Triangle edges cross polygon boundaries.</para>
-            <programlisting language="sql">SELECT
+            <programlisting language="sql" role="requires-geos-3.12">SELECT
   ST_DelaunayTriangles(
     ST_Union(
       'POLYGON((175 150,20 40,50 60,125 100,175 150))'::geometry,
