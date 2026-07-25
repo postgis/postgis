@@ -1,0 +1,83 @@
+labels:
+  platform: linux/amd64
+when:
+  event: [push, pull_request, tag]
+variables:
+  test-image: &test-image repo.osgeo.org/postgis/build-test:debian13
+  steps-env: &steps-env
+    - export PGVER=18
+    - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
+    - export PGHOST=/tmp
+    - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
+    - export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
+    - export SRCDIR=$${CI_WORKSPACE}
+    - export BUILDDIR=$${SRCDIR}/build/qa-$${QA_MODE}-pg$${PGVER}
+    - export QA_REGRESS_HOOKS="--after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql"
+    - pg_config --version
+  steps-start-postgresql: &steps-start-postgresql
+    - runuser -u postgres -- pg_ctl
+      -D /var/lib/postgresql/$${PGVER}/main
+      -l /tmp/postgresql-$${PGVER}-$${QA_MODE}.log
+      -o "-c config_file=/etc/postgresql/$${PGVER}/main/postgresql.conf -c unix_socket_directories=/tmp"
+      -t 300 start
+    - psql -c 'select version()' template1
+
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 50
+      partial: false
+
+steps:
+  autogen:
+    image: *test-image
+    pull: true
+    commands:
+      - ./autogen.sh
+
+  usan-clang:
+    image: *test-image
+    depends_on: autogen
+    # Current master trips this sanitizer in liblwgeom/cunit/cu_misc.c;
+    # keep the signal visible without blocking unrelated pull requests.
+    failure: ignore
+    when:
+      - matrix:
+          QA_MODE: usan_clang
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - mkdir -p "$${BUILDDIR}"
+      - cd "$${BUILDDIR}"
+      - clang-19 --version
+      - $${SRCDIR}/configure
+        CC=clang-19
+        CFLAGS="-g3 -O0 -mtune=generic -fno-omit-frame-pointer -fsanitize=undefined -fsanitize-undefined-trap-on-error -fno-sanitize-recover"
+        LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
+      - make -j1
+      - make check RUNTESTFLAGS="--verbose $${QA_REGRESS_HOOKS}"
+
+  standard-conforming-strings-off:
+    image: *test-image
+    depends_on: autogen
+    when:
+      - matrix:
+          QA_MODE: standard_conforming_strings_off
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - mkdir -p "$${BUILDDIR}"
+      - cd "$${BUILDDIR}"
+      - $${SRCDIR}/configure
+        CFLAGS="-g -O2 -mtune=generic -fno-omit-frame-pointer -Werror -Wall -Wextra -Wformat -Werror=format-security -Wno-unused-parameter -Wno-implicit-fallthrough -Wno-cast-function-type"
+        LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
+      - make -j1
+      - make check RUNTESTFLAGS="--verbose $${QA_REGRESS_HOOKS} --after-create-db-script $${SRCDIR}/regress/hooks/standard-conforming-strings-off.sql"
+
+# Every matrix entry is an independent workflow. Keep this file to cheap modes
+# that should protect every pull request; expensive modes live in qa-expensive.
+matrix:
+  include:
+    - QA_MODE: usan_clang
+    - QA_MODE: standard_conforming_strings_off

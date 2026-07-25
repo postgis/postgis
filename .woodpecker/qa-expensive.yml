@@ -1,0 +1,94 @@
+labels:
+  platform: linux/amd64
+when:
+  - event: push
+    branch: master
+  - event: tag
+variables:
+  test-image: &test-image repo.osgeo.org/postgis/build-test:debian13
+  steps-env: &steps-env
+    - export PGVER=18
+    - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
+    - export PGHOST=/tmp
+    - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
+    - export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
+    - export SRCDIR=$${CI_WORKSPACE}
+    - export BUILDDIR=$${SRCDIR}/build/qa-$${QA_MODE}-pg$${PGVER}
+    - export QA_REGRESS_HOOKS="--after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql"
+    - pg_config --version
+  steps-start-postgresql: &steps-start-postgresql
+    - runuser -u postgres -- pg_ctl
+      -D /var/lib/postgresql/$${PGVER}/main
+      -l /tmp/postgresql-$${PGVER}-$${QA_MODE}.log
+      -o "-c config_file=/etc/postgresql/$${PGVER}/main/postgresql.conf -c unix_socket_directories=/tmp"
+      -t 300 start
+    - psql -c 'select version()' template1
+
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 50
+      partial: false
+
+steps:
+  autogen:
+    image: *test-image
+    pull: true
+    commands:
+      - ./autogen.sh
+
+  coverage:
+    image: *test-image
+    depends_on: autogen
+    when:
+      - matrix:
+          QA_MODE: coverage
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - mkdir -p "$${BUILDDIR}"
+      - cd "$${BUILDDIR}"
+      - apt-get update
+      - apt-get install -y --no-install-recommends lcov
+      - rm -rf /var/lib/apt/lists/*
+      - $${SRCDIR}/configure
+        CFLAGS="-g -O0 --coverage"
+        LDFLAGS="--coverage"
+        --enable-debug
+      - make -j1
+      - make check RUNTESTFLAGS="--verbose $${QA_REGRESS_HOOKS}"
+      - lcov --capture --directory "$${BUILDDIR}" --output-file "$${BUILDDIR}/coverage.info"
+      - lcov --list "$${BUILDDIR}/coverage.info"
+
+  garden:
+    image: *test-image
+    depends_on: autogen
+    # Current master exposes a long-running generated
+    # ST_LargestEmptyCircle case; keep the signal visible but bounded.
+    failure: ignore
+    when:
+      - matrix:
+          QA_MODE: garden
+    commands:
+      - <<: *steps-env
+      - <<: *steps-start-postgresql
+      - mkdir -p "$${BUILDDIR}"
+      - cd "$${BUILDDIR}"
+      - apt-get update
+      - apt-get install -y --no-install-recommends proj-bin
+      - rm -rf /var/lib/apt/lists/*
+      - projsync --system-directory --file au_icsm_GDA94_GDA2020_conformal_and_distortion.tif
+      - $${SRCDIR}/configure
+        CFLAGS="-g -O0 -mtune=generic -fno-omit-frame-pointer --coverage"
+        LDFLAGS="--coverage"
+        --enable-debug
+      - make -j1
+      - timeout 90m make garden
+
+# Coverage and garden are much more expensive than the sanitizer and
+# string-literal smoke modes, so keep them off pull-request fan-out.
+matrix:
+  include:
+    - QA_MODE: coverage
+    - QA_MODE: garden
