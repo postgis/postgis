@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 import os
+import shutil
 import subprocess
 import tempfile
 import textwrap
 import unittest
+from unittest import mock
 from pathlib import Path
 
 
@@ -27,6 +29,30 @@ PostGIS 3.9.0
           with historical detail
  - Another released fix
 """
+
+
+def msys_shell_path(path):
+    text = str(path)
+    if os.name == "nt":
+        text = text.replace("\\", "/")
+        if len(text) >= 3 and text[1] == ":" and text[2] == "/":
+            return f"/{text[0].lower()}{text[2:]}"
+    return text
+
+
+def posix_shell():
+    shell = shutil.which("sh")
+    if shell is None:
+        raise unittest.SkipTest("NEWS unit tests require a POSIX sh on PATH")
+    return shell
+
+
+def check_news_command(script, repo, base_ref=None):
+    command = [posix_shell(), msys_shell_path(script)]
+    if base_ref is not None:
+        command.append(f"--base-ref={base_ref}")
+    command.append(msys_shell_path(repo))
+    return command
 
 
 class NewsFixture:
@@ -60,16 +86,12 @@ class NewsFixture:
         )
 
     def check_news(self, base_ref=None, environment_base_ref=None):
-        command = [str(CHECK_NEWS)]
-        if base_ref is not None:
-            command.append(f"--base-ref={base_ref}")
-        command.append(str(self.repo))
         environment = os.environ.copy()
         environment.pop("NEWS_CHECK_BASE_REF", None)
         if environment_base_ref is not None:
             environment["NEWS_CHECK_BASE_REF"] = environment_base_ref
         return subprocess.run(
-            command,
+            check_news_command(CHECK_NEWS, self.repo, base_ref),
             env=environment,
             text=True,
             capture_output=True,
@@ -291,11 +313,11 @@ class NewsValidationTest(unittest.TestCase):
                 ).stdout.strip(),
             )
             result = subprocess.run(
-                [
-                    str(CHECK_NEWS),
-                    "--base-ref=refs/news-check/target",
-                    str(clone),
-                ],
+                check_news_command(
+                    CHECK_NEWS,
+                    clone,
+                    "refs/news-check/target",
+                ),
                 text=True,
                 capture_output=True,
             )
@@ -306,6 +328,30 @@ class NewsValidationTest(unittest.TestCase):
         result = self.fixture.check_news("refs/heads/missing")
         self.assertNotEqual(0, result.returncode)
         self.assertIn("does not resolve to a commit", result.stdout)
+
+
+class NewsShellInvocationTest(unittest.TestCase):
+    def test_check_news_command_uses_posix_shell_interpreter(self):
+        command = check_news_command(CHECK_NEWS, Path("/tmp/news-repo"), "main")
+
+        # On a native Windows interpreter the script path is rewritten for the
+        # MSYS2 shell, so compare against the same translation the command uses.
+        self.assertEqual(posix_shell(), command[0])
+        self.assertEqual(msys_shell_path(CHECK_NEWS), command[1])
+        self.assertEqual("--base-ref=main", command[2])
+        self.assertEqual("/tmp/news-repo", command[3])
+
+    def test_native_windows_paths_are_rewritten_for_msys_shell(self):
+        with mock.patch("os.name", "nt"):
+            self.assertEqual(
+                "/d/a/postgis/postgis",
+                msys_shell_path(r"D:\a\postgis\postgis"),
+            )
+
+    def test_missing_posix_shell_is_reported_as_unittest_skip(self):
+        with mock.patch("shutil.which", return_value=None):
+            with self.assertRaisesRegex(unittest.SkipTest, "POSIX sh"):
+                check_news_command(CHECK_NEWS, Path("/tmp/news-repo"))
 
 
 if __name__ == "__main__":
