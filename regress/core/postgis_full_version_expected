@@ -1,3 +1,12 @@
+matching_library|t
+newer_library|t
+dev_library_with_prerelease_scripts|t
+dev_library_with_final_scripts|t
+dev_scripts_with_final_library|t
+same_minor_micro_versions|t
+same_minor_official_suffixes|t
+NOTICE:  PostGIS extension scripts version 3.7.0beta1 cannot use older library version 3.6.4
+NOTICE:  HINT: Install matching PostGIS shared-library and extension-script packages, reconnect, and retry.
 topology_old_scripts|t
 topology_newer_scripts|t
 raster_newer_scripts|t

@@ -13,6 +13,20 @@ cat > "${TMPDIR}/postgis.sql" <<'SQL'
 CREATE OR REPLACE FUNCTION ST_Test(geometry, float8 DEFAULT 0.0) RETURNS geometry
 AS 'MODULE_PATHNAME', 'ST_Test'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+-- Upgrade pass-through
+SELECT check_upgrade_guard(
+	'3.7.0dev',
+	postgis_lib_version()
+);
+SELECT discarded_without_upgrade_pass_through();
+SQL
+
+cat > "${TMPDIR}/expected-pass-through.sql" <<'SQL'
+-- Upgrade pass-through
+SELECT check_upgrade_guard(
+	'3.7.0dev',
+	postgis_lib_version()
+);
 SQL
 
 "${PERL:-perl}" "${srcdir:-.}/create_upgrade.pl" "${TMPDIR}/postgis.sql" > "${TMPDIR}/upgrade.sql"
@@ -26,3 +40,15 @@ grep -Fq \
 grep -Fq \
 	"retry SELECT postgis_extensions_upgrade()" \
 	"${TMPDIR}/upgrade.sql"
+
+sed -n \
+	'/^-- Upgrade pass-through$/,/^);$/p' \
+	"${TMPDIR}/upgrade.sql" > "${TMPDIR}/actual-pass-through.sql"
+diff -u \
+	"${TMPDIR}/expected-pass-through.sql" \
+	"${TMPDIR}/actual-pass-through.sql"
+
+if grep -Fq "discarded_without_upgrade_pass_through" "${TMPDIR}/upgrade.sql"; then
+	echo "ERROR: unmarked top-level statement leaked into upgrade SQL" >&2
+	exit 1
+fi
