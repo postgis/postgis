@@ -1375,7 +1375,7 @@ TRUE);</programlisting>
         <title>Examples</title>
 		<para>Maximum inscribed circle of a polygon. Center, nearest point, radius,
 		circle, and radius line are returned.</para>
-<programlisting>WITH mic AS (
+<programlisting role="requires-geos-3.12">WITH mic AS (
   SELECT * FROM ST_MaximumInscribedCircle(
     'POLYGON ((40 180,110 160,180 180,180 120,140 90,160 40,80 10,70 40,20 50,40 180),
               (60 140,50 90,90 140,60 140))')
@@ -1394,7 +1394,7 @@ circle      | POLYGON((142 76,141 68,139 59,135 51,129 44,122 39,114 35,106 32,9
 radius_line | LINESTRING(97 76,62 105)</screen>
 
 		<para>Maximum inscribed circle of a MultiLineString.</para>
-<programlisting>WITH mic AS (
+<programlisting role="requires-geos-3.12">WITH mic AS (
   SELECT * FROM ST_MaximumInscribedCircle(
     'MULTILINESTRING((100 40,10 150),(10 160,100 150),(190 150,80 40))')
 )
@@ -1458,7 +1458,7 @@ radius_line | LINESTRING(94 110,63 85)</screen>
         <title>Examples</title>
 
 <para>Largest empty circle within a set of lines.</para>
-<programlisting language="sql">WITH obstacles(geom) AS (VALUES ('MULTILINESTRING (
+<programlisting language="sql" role="requires-geos-3.12">WITH obstacles(geom) AS (VALUES ('MULTILINESTRING (
         (10 100,60 180,130 150,190 160),
         (20 50,70 70,90 20,110 40),
         (160 30,100 100,180 100))'::geometry)),
@@ -1482,7 +1482,7 @@ circle      | POLYGON((101 108,100 101,98 93,94 87,89 81,83 76,77 72,69 70,62 69
 
 <para>Largest empty circle within a set of points, constrained to lie in a polygon.
 The constraint polygon boundary is included both as an obstacle and as the constraint for the circle center.</para>
-<programlisting language="sql">WITH inputs(points, boundary) AS (VALUES (
+<programlisting language="sql" role="requires-geos-3.12">WITH inputs(points, boundary) AS (VALUES (
   'MULTIPOINT ((70 50),(60 130),(130 150),(80 90))'::geometry,
   'POLYGON ((90 190,10 100,60 10,190 40,120 100,190 180,90 190))'::geometry
 )),
@@ -1660,7 +1660,7 @@ ST_Point(20, 80)), 8
 SELECT ST_OrientedEnvelope(ST_Collect('LINESTRING(55 75,125 150)',
                 ST_Point(20, 80))
                 ) As wktenv;</programlisting>
-<screen role="visual-primary text-primary">POLYGON((20 80,125 150,138.0769230769241 130.38461538461573,33.07692307692291 60.384615384615195,20 80))</screen>
+<screen role="visual-primary text-primary geometry-output-precision-11">POLYGON((20 80,125 150,138.0769230769241 130.38461538461573,33.07692307692291 60.384615384615195,20 80))</screen>
 
         </refsection>
 
@@ -2277,7 +2277,7 @@ MULTILINESTRING((76 175,101 150),(126 125,126 156.25)))</screen>
           <refsection>
             <title>Examples</title>
             <para>A circle simplified with a medium tolerance becomes an octagon, and with a large tolerance disappears.</para>
-                <programlisting>SELECT ST_NPoints(geom) AS np_before,
+                <programlisting role="requires-geos-3.12">SELECT ST_NPoints(geom) AS np_before,
      ST_NPoints(ST_Simplify(geom, 0.1)) AS np01_notbadcircle,
      ST_NPoints(ST_Simplify(geom, 0.5)) AS np05_notquitecircle,
      ST_NPoints(ST_Simplify(geom, 1)) AS np1_octagon,
@@ -2450,7 +2450,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10, 12) AS geom) AS t;</programlisting>
     <screen role="visual-primary text-primary">POLYGON((161 165,173 156,186 144,190 137,185 131,174 124,166 119,166 79,158 57,68 32,40 31,25 34,17 41,14 46,11 57,56 91,33 97,23 100,22 107,28 131,80 135,73 145,85 157,99 162,122 170,161 165))</screen>
 
     <para>Inner hull of a Polygon.</para>
-    <programlisting>SELECT ST_SimplifyPolygonHull(
+    <programlisting role="requires-geos-3.12">SELECT ST_SimplifyPolygonHull(
   'POLYGON ((131 158,136 163,161 165,173 156,179 148,169 140,186 144,190 137,185 131,174 128,174 124,166 119,158 121,158 115,165 107,161 97,166 88,166 79,158 57,145 57,112 53,111 47,93 43,90 48,88 40,80 39,68 32,51 33,40 31,39 34,49 38,34 38,25 34,28 39,36 40,44 46,24 41,17 41,14 46,19 50,33 54,21 55,13 52,11 57,22 60,34 59,41 68,75 72,62 77,56 70,46 72,31 69,46 76,52 82,47 84,56 90,66 90,64 94,56 91,33 97,36 100,23 100,22 107,29 106,31 112,46 116,36 118,28 131,53 132,59 127,62 131,76 130,80 135,89 137,87 143,73 145,80 150,88 150,85 157,99 162,116 158,115 165,123 165,122 170,134 164,131 158))'::geometry,
   0.3, false
 );</programlisting>
