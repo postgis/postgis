@@ -31,10 +31,7 @@ generate_row()
 || [[Image(https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=bessie&build=last:\${params.reference=refs/heads/${BRANCH}}, link=https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie, alt=status, height="20", title='PG 18.4, GDAL 3.11.5, GEOS 3.14.1')]] || \\
 || [[Image(https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie&build=last:\${params.reference=refs/heads/${BRANCH}}, link=https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie, alt=status, height="20", title='PG 12(branch), GDAL 2.4.0 branch, GEOS 3.7.1')]] || \\
 || [[Image(https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie64&build=last:\${params.reference=refs/heads/${BRANCH}}, link=https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie64, alt=status, height="20", title='PG 12(branch), GDAL 2.4.0 branch, GEOS 3.7.1')]] || \\
-|| [[Image(https://github.com/postgis/postgis/actions/workflows/ci-freebsd.yml/badge.svg?branch=${BRANCH}, link=https://github.com/postgis/postgis/actions/workflows/ci-freebsd.yml?query=branch%3A${BRANCH}, alt=status, height="20", title='FreeBSD')]] || \\
-|| [[Image(https://github.com/postgis/postgis/actions/workflows/ci-macos.yml/badge.svg?branch=${BRANCH}, link=https://github.com/postgis/postgis/actions/workflows/ci-macos.yml?query=branch%3A${BRANCH}, alt=status, height="20", title='macOS')]] || \\
-|| [[Image(https://gitlab.com/postgis/postgis/badges/${BRANCH}/pipeline.svg, link=https://gitlab.com/postgis/postgis/-/commits/${BRANCH}, alt=status, height="20", title='32/64 bit trixie, PG 15, GDAL 2.4.0, GEOS 3.7.1, PROJ 5.2.0')]] || \\
-|| [[Image(https://www.ict.inaf.it/gitlab/postgis/postgis/badges/master/pipeline.svg?ref=refs/heads/${BRANCH}, link=https://www.ict.inaf.it/gitlab/postgis/postgis/-/commits/${BRANCH}, alt=inaf/${BRANCH})]] ||
+|| [[Image(https://github.com/postgis/postgis/actions/workflows/codeql.yml/badge.svg?branch=${BRANCH}, link=https://github.com/postgis/postgis/actions/workflows/codeql.yml?query=branch%3A${BRANCH}, alt=status, height="20", title='CodeQL')]] ||
 EOF
 }
 

@@ -172,21 +172,21 @@
       "provider": "disabled",
       "required": false,
       "status": "retired",
-      "message": "Cirrus coverage was replaced by repository GitHub Actions FreeBSD and macOS workflows."
+      "message": "Cirrus coverage was replaced by repository GitHub Actions FreeBSD and macOS workflows; the retired api.cirrus-ci.com badge endpoint now fails TLS instead of returning a usable status."
     },
     {
       "name": "GitLab mirror",
       "provider": "disabled",
       "required": false,
       "status": "retired",
-      "message": "The GitLab.com mirror is out of CI minutes, so release gating uses GitHub Actions, Woodie, and Jenkins."
+      "message": "The GitLab.com mirror badge endpoint still resolves, but mirror jobs fail immediately with ci_quota_exceeded, so release gating uses GitHub Actions, Woodie, and Jenkins."
     },
     {
       "name": "INAF GitLab mirror",
       "provider": "disabled",
       "required": false,
       "status": "retired",
-      "message": "The INAF GitLab mirror is stale and no longer provides a current release-gating signal."
+      "message": "The INAF GitLab mirror badge endpoint still resolves, but its pipelines are stale failed mirror results and no longer provide a current release-gating signal."
     }
   ]
 }

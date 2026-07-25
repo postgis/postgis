@@ -106,8 +106,9 @@ Update the inventory when any of these change:
   should have badges.
 
 Use `utils/ci-trac-line.sh` when maintaining the Trac badge table or a copied
-badge inventory. Fetch or export the current Trac table into a temporary file
-before using `--check` or `--replace`:
+badge inventory. The generated row covers the maintained repository-owned
+status inventory and omits retired mirror badges. Fetch or export the current
+Trac table into a temporary file before using `--check` or `--replace`:
 
 ```sh
 utils/ci-trac-line.sh 3.7

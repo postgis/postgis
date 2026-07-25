@@ -286,6 +286,31 @@ class RequiredFailureHtmlTest(unittest.TestCase):
             woodpecker["branches"],
         )
 
+    def test_retired_badges_record_current_non_gating_reason(self):
+        config = json.loads(MODULE_PATH.with_suffix(".json").read_text(encoding="utf-8"))
+        serialized = json.dumps(config)
+
+        self.assertNotIn("bessie32", serialized.lower())
+
+        checks = {check["name"]: check for check in config["checks"]}
+        self.assertIn("api.cirrus-ci.com", checks["Cirrus CI"]["message"])
+        self.assertIn("fails TLS", checks["Cirrus CI"]["message"])
+        self.assertIn("ci_quota_exceeded", checks["GitLab mirror"]["message"])
+        self.assertIn("badge endpoint still resolves", checks["GitLab mirror"]["message"])
+        self.assertIn("stale failed mirror results", checks["INAF GitLab mirror"]["message"])
+
+    def test_trac_row_helper_does_not_generate_retired_badges(self):
+        script = MODULE_PATH.with_name("ci-trac-line.sh")
+        row = subprocess.check_output([str(script), "3.7"], text=True)
+
+        self.assertNotIn("bessie32", row.lower())
+        self.assertNotIn("api.cirrus-ci.com", row)
+        self.assertNotIn("gitlab.com/postgis/postgis/badges", row)
+        self.assertNotIn("www.ict.inaf.it/gitlab/postgis/postgis/badges", row)
+        self.assertNotIn("ci-freebsd.yml", row)
+        self.assertNotIn("ci-macos.yml", row)
+        self.assertIn("codeql.yml", row)
+
     def test_apply_staleness_labels_passed_and_failed_results(self):
         config = {
             "stale_after_hours": 168,
