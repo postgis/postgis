@@ -1,6 +1,7 @@
 import importlib.util
 import json
 import pathlib
+import subprocess
 import tempfile
 import unittest
 from unittest import mock
@@ -43,6 +44,232 @@ def html_data():
 
 
 class RequiredFailureHtmlTest(unittest.TestCase):
+    def test_current_success_cache_skips_provider(self):
+        config = {
+            "branches": [{"name": "master", "label": "master"}],
+            "checks": [{
+                "name": "Synthetic CI",
+                "provider": "synthetic",
+                "required": True,
+            }],
+        }
+        cached_result = {
+            "branch": "master",
+            "branch_label": "master",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "status": CI_STATUS.SUCCESS,
+            "revision": "a" * 40,
+            "message": "build 7",
+        }
+        cache = CI_STATUS.index_status_cache({
+            "generated_at": "2026-07-25T12:00:00+00:00",
+            "branches": [{
+                "name": "master",
+                "checks": [cached_result],
+            }],
+        })
+        provider = mock.Mock()
+
+        with (
+            mock.patch.dict(CI_STATUS.PROVIDERS, {"synthetic": provider}),
+            mock.patch.object(
+                CI_STATUS,
+                "resolve_cache_heads",
+                return_value={"master": "a" * 40},
+            ),
+        ):
+            data = CI_STATUS.collect_status(config, cache=cache)
+
+        provider.assert_not_called()
+        result = data["branches"][0]["checks"][0]
+        self.assertEqual(CI_STATUS.SUCCESS, result["status"])
+        self.assertTrue(result["cached"])
+        self.assertEqual("2026-07-25T12:00:00+00:00", result["cached_at"])
+        self.assertEqual("build 7 (cached; unchanged revision)", result["message"])
+
+    def test_cache_does_not_hide_new_revision_result(self):
+        config = {
+            "branches": [{"name": "master", "label": "master"}],
+            "checks": [{
+                "name": "Synthetic CI",
+                "provider": "synthetic",
+                "required": True,
+            }],
+        }
+        cache = CI_STATUS.index_status_cache({
+            "generated_at": "2026-07-25T12:00:00+00:00",
+            "branches": [{
+                "name": "master",
+                "checks": [{
+                    "branch": "master",
+                    "branch_label": "master",
+                    "check": "Synthetic CI",
+                    "provider": "synthetic",
+                    "required": True,
+                    "status": CI_STATUS.SUCCESS,
+                    "revision": "a" * 40,
+                }],
+            }],
+        })
+        live_result = check("Synthetic CI", CI_STATUS.FAILURE)
+        live_result.update({"branch": "master", "branch_label": "master"})
+        provider = mock.Mock(return_value=live_result)
+
+        with (
+            mock.patch.dict(CI_STATUS.PROVIDERS, {"synthetic": provider}),
+            mock.patch.object(
+                CI_STATUS,
+                "resolve_cache_heads",
+                return_value={"master": "b" * 40},
+            ),
+        ):
+            data = CI_STATUS.collect_status(config, cache=cache)
+
+        provider.assert_called_once()
+        self.assertEqual(CI_STATUS.FAILURE, data["branches"][0]["checks"][0]["status"])
+
+    def test_cache_rejects_non_success_revisionless_and_changed_provider_results(self):
+        config = {
+            "branches": [{"name": "master", "label": "master"}],
+            "checks": [{
+                "name": "Synthetic CI",
+                "provider": "synthetic",
+                "required": True,
+            }],
+        }
+        branch = config["branches"][0]
+        check_config = config["checks"][0]
+        base = {
+            "branch": "master",
+            "branch_label": "master",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "status": CI_STATUS.SUCCESS,
+            "revision": "a" * 40,
+        }
+        rejected = [
+            {**base, "status": CI_STATUS.FAILURE},
+            {**base, "status": CI_STATUS.IN_PROGRESS},
+            {**base, "status": CI_STATUS.UNKNOWN},
+            {key: value for key, value in base.items() if key != "revision"},
+            {**base, "branch": "stable-3.6"},
+            {**base, "check": "Other CI"},
+            {**base, "provider": "other"},
+            {**base, "required": False},
+        ]
+
+        for cached in rejected:
+            with self.subTest(cached=cached):
+                cache = CI_STATUS.index_status_cache({
+                    "branches": [{"name": "master", "checks": [cached]}],
+                })
+                self.assertIsNone(
+                    CI_STATUS.cached_success_result(
+                        branch,
+                        check_config,
+                        cache,
+                        {"master": "a" * 40},
+                    )
+                )
+
+    def test_cache_uses_fresh_remote_head_not_stale_local_ref(self):
+        config = {
+            "branches": [{"name": "master", "label": "master"}],
+            "checks": [{
+                "name": "Synthetic CI",
+                "provider": "synthetic",
+                "required": True,
+            }],
+        }
+        cache = CI_STATUS.index_status_cache({
+            "branches": [{
+                "name": "master",
+                "checks": [{
+                    "branch": "master",
+                    "branch_label": "master",
+                    "check": "Synthetic CI",
+                    "provider": "synthetic",
+                    "required": True,
+                    "status": CI_STATUS.SUCCESS,
+                    "revision": "a" * 40,
+                }],
+            }],
+        })
+        live_result = check("Synthetic CI", CI_STATUS.FAILURE)
+        live_result.update({"branch": "master", "branch_label": "master"})
+        provider = mock.Mock(return_value=live_result)
+
+        with (
+            mock.patch.dict(CI_STATUS.PROVIDERS, {"synthetic": provider}),
+            mock.patch.object(CI_STATUS, "git_commit_distance", return_value=0),
+            mock.patch.object(
+                CI_STATUS,
+                "resolve_cache_heads",
+                return_value={"master": "b" * 40},
+            ),
+        ):
+            data = CI_STATUS.collect_status(config, cache=cache)
+
+        provider.assert_called_once()
+        self.assertEqual(CI_STATUS.FAILURE, data["branches"][0]["checks"][0]["status"])
+
+    def test_cache_head_lookup_queries_remote_once_for_all_branches(self):
+        config = {"cache_head_remote": "https://example.test/postgis.git"}
+        branches = [
+            {"name": "master", "label": "master"},
+            {"name": "stable-3.6", "label": "3.6"},
+        ]
+        work = [(branch, {"name": "Synthetic CI"}) for branch in branches]
+        cache = CI_STATUS.index_status_cache({
+            "branches": [
+                {
+                    "name": branch["name"],
+                    "checks": [{
+                        "check": "Synthetic CI",
+                        "status": CI_STATUS.SUCCESS,
+                    }],
+                }
+                for branch in branches
+            ],
+        })
+        completed = subprocess.CompletedProcess(
+            args=[],
+            returncode=0,
+            stdout=(
+                f"{'a' * 40}\trefs/heads/master\n"
+                f"{'b' * 40}\trefs/heads/stable-3.6\n"
+            ),
+            stderr="",
+        )
+
+        with mock.patch.object(CI_STATUS.subprocess, "run", return_value=completed) as run:
+            heads = CI_STATUS.resolve_cache_heads(config, work, cache, timeout=7)
+
+        self.assertEqual({"master": "a" * 40, "stable-3.6": "b" * 40}, heads)
+        run.assert_called_once_with(
+            [
+                "git",
+                "ls-remote",
+                "--exit-code",
+                "--heads",
+                "https://example.test/postgis.git",
+                "refs/heads/master",
+                "refs/heads/stable-3.6",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=7,
+        )
+
+    def test_missing_optional_status_cache_starts_empty(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            missing = pathlib.Path(tmpdir) / "status.json"
+            self.assertIsNone(CI_STATUS.load_status_cache(missing))
+
     def test_woodpecker_covers_supported_release_branches(self):
         config = json.loads(MODULE_PATH.with_suffix(".json").read_text(encoding="utf-8"))
         woodpecker = next(check for check in config["checks"] if check["name"] == "Woodpecker")

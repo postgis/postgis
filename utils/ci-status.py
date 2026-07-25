@@ -1119,6 +1119,113 @@ def result_from_exception(check, branch, exc):
     return make_result(check, branch, UNKNOWN, message=str(exc), debug_url=debug_url)
 
 
+def index_status_cache(data):
+    if data is None:
+        return None
+    if not isinstance(data, dict) or not isinstance(data.get("branches"), list):
+        raise ConfigError("status cache must contain a branches array")
+    checks = {}
+    for branch in data["branches"]:
+        if not isinstance(branch, dict):
+            continue
+        branch_name = branch.get("name")
+        for result in branch.get("checks") or []:
+            if not isinstance(result, dict):
+                continue
+            check_name = result.get("check")
+            if branch_name and check_name:
+                checks[(branch_name, check_name)] = result
+    return {
+        "generated_at": data.get("generated_at"),
+        "checks": checks,
+    }
+
+
+def load_status_cache(path):
+    if not path:
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            return index_status_cache(json.load(handle))
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise ConfigError(f"cannot read status cache {path}: {exc}") from exc
+    except json.JSONDecodeError as exc:
+        raise ConfigError(f"invalid JSON in status cache {path}: {exc}") from exc
+
+
+def resolve_cache_heads(config, work, cache, timeout):
+    if not cache:
+        return {}
+    remote = config.get("cache_head_remote")
+    if not remote:
+        return {}
+    branch_names = sorted({
+        branch["name"]
+        for branch, _check in work
+        if any(
+            cached.get("status") == SUCCESS
+            for (cached_branch, _cached_check), cached in cache["checks"].items()
+            if cached_branch == branch["name"]
+        )
+    })
+    if not branch_names:
+        return {}
+    refs = [f"refs/heads/{name}" for name in branch_names]
+    try:
+        completed = subprocess.run(
+            ["git", "ls-remote", "--exit-code", "--heads", remote, *refs],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return {}
+
+    heads = {}
+    wanted = set(refs)
+    for line in completed.stdout.splitlines():
+        fields = line.split()
+        if len(fields) != 2 or fields[1] not in wanted:
+            continue
+        heads[fields[1].removeprefix("refs/heads/")] = fields[0]
+    return heads
+
+
+def cached_success_result(branch, check, cache, cache_heads):
+    if not cache:
+        return None
+    cached = cache["checks"].get((branch["name"], check["name"]))
+    if not cached or cached.get("status") != SUCCESS:
+        return None
+    if cached.get("branch") != branch["name"] or cached.get("check") != check["name"]:
+        return None
+    if cached.get("provider") != check.get("provider"):
+        return None
+    if cached.get("required") != bool(check.get("required", True)):
+        return None
+    revision = cached.get("revision")
+    if not revision or revision != cache_heads.get(branch["name"]):
+        return None
+
+    result = dict(cached)
+    result.update({
+        "branch": branch["name"],
+        "branch_label": branch["label"],
+        "check": check["name"],
+        "provider": check.get("provider"),
+        "required": bool(check.get("required", True)),
+        "cached": True,
+        "cached_at": cache.get("generated_at"),
+    })
+    message = result.get("message") or "successful run"
+    suffix = " (cached; unchanged revision)"
+    result["message"] = message if message.endswith(suffix) else f"{message}{suffix}"
+    return result
+
+
 def stale_after_hours(config, check):
     value = check.get("stale_after_hours", config.get("stale_after_hours"))
     if value is None:
@@ -1191,12 +1298,16 @@ def default_concurrency():
     return min(32, max(1, os.cpu_count() or 1))
 
 
-async def collect_status_async(config, selected_branch=None, include_eol=False, timeout=30):
+async def collect_status_async(config, selected_branch=None, include_eol=False, timeout=30, cache=None):
     work = list(branch_checks(config, selected_branch, include_eol))
+    cache_heads = await asyncio.to_thread(resolve_cache_heads, config, work, cache, timeout)
     semaphore = asyncio.Semaphore(min(default_concurrency(), max(1, len(work))))
 
     def collect_one(item):
         branch, check = item
+        cached = cached_success_result(branch, check, cache, cache_heads)
+        if cached:
+            return apply_staleness(cached, config, check)
         provider = PROVIDERS.get(check.get("provider"))
         if provider is None:
             raise ConfigError(f"unsupported provider for {check['name']}: {check.get('provider')}")
@@ -1213,8 +1324,8 @@ async def collect_status_async(config, selected_branch=None, include_eol=False, 
     return aggregate(config, results)
 
 
-def collect_status(config, selected_branch=None, include_eol=False, timeout=30):
-    return asyncio.run(collect_status_async(config, selected_branch, include_eol, timeout))
+def collect_status(config, selected_branch=None, include_eol=False, timeout=30, cache=None):
+    return asyncio.run(collect_status_async(config, selected_branch, include_eol, timeout, cache))
 
 
 def aggregate(config, results):
@@ -2291,6 +2402,10 @@ def parse_args(argv):
     parser.add_argument("--format", choices=("terminal", "json", "html"), default="terminal", help="output format")
     parser.add_argument("--output-dir", default="ci-status")
     parser.add_argument(
+        "--cache",
+        help="reuse successful results from this status.json when their revision is still the branch head",
+    )
+    parser.add_argument(
         "--atomic-switch",
         action="store_true",
         help="write HTML output to a complete staging directory, then atomically switch the output symlink",
@@ -2316,7 +2431,8 @@ def main(argv=None):
     args = parse_args(sys.argv[1:] if argv is None else argv)
     try:
         config = load_config(args.config)
-        data = collect_status(config, args.branch, args.include_eol, args.timeout)
+        cache = load_status_cache(args.cache)
+        data = collect_status(config, args.branch, args.include_eol, args.timeout, cache)
         if args.format == "html":
             write_html_output(data, args.output_dir, atomic_switch=args.atomic_switch)
             return 0

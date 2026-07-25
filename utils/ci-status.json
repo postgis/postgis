@@ -1,5 +1,6 @@
 {
   "stale_after_hours": 168,
+  "cache_head_remote": "https://gitea.osgeo.org/postgis/postgis.git",
   "branches": [
     { "name": "master", "label": "master", "eol": false, "version": "3.7" },
     { "name": "stable-3.6", "label": "3.6", "eol": false, "version": "3.6" },
