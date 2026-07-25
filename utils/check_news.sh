@@ -1,7 +1,7 @@
 #!/bin/sh
 
 usage() {
-  echo "Usage: $0 [-v] [--ticket-refs] [--ticket-refs-skip-commits=<file>] [<sourcedir>]"
+  echo "Usage: $0 [-v] [--base-ref=<ref>] [--ticket-refs] [--ticket-refs-skip-commits=<file>] [<sourcedir>]"
   echo "Sourcedir defaults to one directory above this script"
 }
 
@@ -10,6 +10,7 @@ usage() {
 VERBOSE=no
 TICKET_REFS=no
 RD= # Root source dir
+NEWS_BASE_REF=${NEWS_CHECK_BASE_REF:-}
 TICKET_REFS_SKIP_COMMITS=/dev/null
 while [ $# -gt 0 ]; do
   if [ "$1" = "--help" ]; then
@@ -19,6 +20,16 @@ while [ $# -gt 0 ]; do
     VERBOSE=yes
   elif [ "$1" = "--ticket-refs" ]; then
     TICKET_REFS="yes"
+  elif [ "$1" = "--base-ref" ]; then
+    shift
+    if [ $# -eq 0 ]; then
+      echo "ERROR: --base-ref requires a Git ref" >&2
+      usage >&2
+      exit 1
+    fi
+    NEWS_BASE_REF=$1
+  elif [ "${1#--base-ref=}" != "$1" ]; then
+    NEWS_BASE_REF=${1#--base-ref=}
   elif [ "$1" = "--ticket-refs-skip-commits" ]; then
     shift
     TICKET_REFS_SKIP_COMMITS=$( cd $( dirname $1 ) && pwd )
@@ -69,6 +80,84 @@ grep -B1 '^[0-9]\{4\}/[0-9]\{2\}/[0-9]\{2\}' NEWS |
   done
 test $? = 0 || exit 1
 echo "PASS: NEWS file entries are in good order"
+
+if test -n "${NEWS_BASE_REF}"; then
+  if ! git rev-parse --verify "${NEWS_BASE_REF}^{commit}" >/dev/null 2>&1; then
+    echo "FAIL: NEWS base ref does not resolve to a commit: ${NEWS_BASE_REF}"
+    exit 1
+  fi
+
+  news_target_file=$(mktemp "${TMPDIR:-/tmp}/check-news-target.XXXXXX") || {
+    exit 1
+  }
+  trap 'rm -f "${news_target_file}"' EXIT HUP INT TERM
+  if ! git show "${NEWS_BASE_REF}:NEWS" > "${news_target_file}"; then
+    echo "FAIL: NEWS is unavailable at target ref ${NEWS_BASE_REF}"
+    exit 1
+  fi
+
+  if ! awk '
+    function is_unreleased(date) {
+      return date ~ /^[0-9][0-9][0-9][0-9]\/xx\/xx$/
+    }
+    function section_accepts_new_entries() {
+      target_section_is_open = release == target_first &&
+        is_unreleased(target_dates[target_first])
+      current_section_is_open = release == current_first &&
+        is_unreleased(release_date) &&
+        !(release in target_dates)
+      return target_section_is_open || current_section_is_open
+    }
+    function emit_release() {
+      if (release == "")
+        return
+
+      if (file_number == 1) {
+        target_dates[release] = release_date
+        if (target_first == "")
+          target_first = release
+      }
+    }
+    FNR == 1 {
+      if (file_number != 0)
+        emit_release()
+      file_number++
+      release = ""
+    }
+    /^PostGIS [0-9]/ {
+      emit_release()
+      release = $0
+      release_date = ""
+      if (file_number == 2 && current_first == "")
+        current_first = release
+      next
+    }
+    release != "" && release_date == "" &&
+      /^[0-9][0-9][0-9][0-9]\/([0-9][0-9]|xx)\/([0-9][0-9]|xx)$/ {
+      release_date = $0
+      next
+    }
+    release != "" && /^[[:space:]]+-[[:space:]]/ {
+      entry_key = release SUBSEP $0
+      if (file_number == 1) {
+        target_entries[entry_key]++
+      } else if (file_number == 2 &&
+          !section_accepts_new_entries() &&
+          ++current_entries[entry_key] > target_entries[entry_key]) {
+        print "FAIL: " release \
+          " has a new NEWS entry outside the current unreleased section: " $0
+        failures++
+      }
+    }
+    END {
+      emit_release()
+      exit failures != 0
+    }
+  ' "${news_target_file}" NEWS; then
+    exit 1
+  fi
+  echo "PASS: New NEWS entries are in the current unreleased section"
+fi
 
 if test "${TICKET_REFS}" = "yes"; then
 
