@@ -51,8 +51,28 @@ jobs:
     - name: 'Prepare Image'
       run: |
         set -e
+        retry() {
+          max_attempts="$1"
+          delay="$2"
+          shift 2
+          attempt=1
+          while true; do
+            "$@" && return 0
+            status="$?"
+            if test "$attempt" -ge "$max_attempts"; then
+              echo "Command failed after ${attempt} attempts: $*"
+              return "$status"
+            fi
+            echo "Command failed with exit code ${status}; retrying in ${delay}s (${attempt}/${max_attempts}): $*"
+            sleep "$delay"
+            attempt=$((attempt + 1))
+          done
+        }
+
         uname -a
-        echo "FROM postgis/postgis-build-env:${{ matrix.ci.tag }}" > Dockerfile
+        build_image="postgis/postgis-build-env:${{ matrix.ci.tag }}"
+        retry 3 15 docker pull "${build_image}"
+        echo "FROM ${build_image}" > Dockerfile
         if test "${{ matrix.ci.mode }}" = "garden"; then
           echo "USER root" >> Dockerfile
           echo "RUN apt-get update && apt-get install -y --no-install-recommends python3 proj-bin && rm -rf /var/lib/apt/lists/*" >> Dockerfile
@@ -61,7 +81,7 @@ jobs:
         fi
         echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
         echo "CMD bash ci/github/run_${{ matrix.ci.mode }}.sh" >> Dockerfile
-        docker build -t pgtest .
+        docker build --pull=false -t pgtest .
 
     - name: 'Build & Test'
       run: |
