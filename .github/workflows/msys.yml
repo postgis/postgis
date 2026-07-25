@@ -3,18 +3,14 @@ on: [push, pull_request]
 
 jobs:
   mingw:
-    # TODO: check to see if we need to disable again
-    #if: github.repository == 'master'
-    if: true
     name: mingw
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
-        #fail-fast: false
         include:
-          # mingw32 fail: addface
-         # - { icon: '🟦', sys: mingw64 }
-         # - { icon: '🟨', sys: ucrt64  } # Experimental!
+          - { icon: '🟦', sys: mingw64 }
+          - { icon: '🟨', sys: ucrt64  } # Experimental!
           - { icon: '🟧', sys: clang64 } # Experimental!
     defaults:
       run:
