@@ -1503,11 +1503,13 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 	dimOv[0] = (int) (info->dim[0] + (factor / 2)) / factor;
 	dimOv[1] = (int) (info->dim[1] + (factor / 2)) / factor;
 	/*
-	 * Match by dimensions instead of overview index or nominal factor. GDAL
-	 * datasets can carry differently ordered overview levels, while the loader
-	 * needs the level that exactly matches the target overview table size.
+	 * Match by dimensions instead of overview index or nominal factor when the
+	 * requested algorithm can safely reuse existing source pixels. Non-near
+	 * algorithms must resample from the full-resolution source because GDAL
+	 * performs a 1:1 copy when the source overview already matches dimOv.
 	 */
-	use_source_overview = source_has_matching_overviews(hdsSrc, info, dimOv);
+	use_source_overview =
+	    CSEQUAL(config->overview_resampling, "near") && source_has_matching_overviews(hdsSrc, info, dimOv);
 
 	/* create VRT dataset */
 	hdsOv = VRTCreate(dimOv[0], dimOv[1]);
