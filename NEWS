@@ -37,6 +37,7 @@ These are only changes since 3.7.0beta1.
 
  - Add Woodpecker linux/arm64 build and regression coverage under
           QEMU to match the Jenkins Berrie64 platform (Darafei Praliaskouski)
+ - #2474, [raster] Add two-raster ST_Union variant (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta1
 2026/07/20
@@ -90,9 +91,6 @@ These are only changes since 3.7.0alpha1.
 
 * Enhancements *
 * New Features *
-
- - #2474, [raster] Add two-raster ST_Union variant (Darafei Praliaskouski)
-
 
  - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
           (Darafei Praliaskouski)
