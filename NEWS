@@ -16,6 +16,8 @@ These are only changes since 3.7.0beta1.
           spend unbounded time on them (Darafei Praliaskouski)
  - GT-484, Use column-level SELECT privileges for metadata views
           (Arthur Bazin)
+ - GT-521, Reject malformed GSERIALIZED payload counts before deserializing
+          geometry data (Darafei Praliaskouski)
 
 * Enhancements *
 
