@@ -20,9 +20,8 @@ when:
 # the big-endian and unsigned-char parts of the bug class.
 #
 # QEMU depends on persistent binfmt_misc registrations on the amd64 Woodie agent
-# host. The host should be provisioned with Debian qemu-user, qemu-user-binfmt,
-# and binfmt-support so the handlers are available without privileged pipeline
-# steps. This workflow fails early instead of hiding that infrastructure gap.
+# host. Woodpecker starts the foreign-architecture step image directly; steps do
+# not need a Docker socket or a nested docker run probe.
 variables:
   native-image: &native-image repo.osgeo.org/postgis/build-test:debian13
   prepare-debian: &prepare-debian |
@@ -94,47 +93,6 @@ clone:
       partial: false
 
 steps:
-  preflight-binfmt:
-    image: debian:trixie
-    pull: true
-    commands:
-      - |
-        export DEBIAN_FRONTEND=noninteractive
-        dpkg --add-architecture armhf
-        dpkg --add-architecture s390x
-        apt-get update
-        mkdir -p "$${CI_WORKSPACE}/.tmp/binfmt-preflight"
-
-        check_foreign_uname() {
-          arch="$1"
-          expected_re="$2"
-          platform="$3"
-          root="$${CI_WORKSPACE}/.tmp/binfmt-preflight/$${arch}"
-          mkdir -p "$${root}"
-          apt-get download "busybox-static:$${arch}"
-          deb="$$(ls -1 busybox-static_*_$${arch}.deb | tail -n 1)"
-          dpkg-deb -x "$${deb}" "$${root}"
-
-          if ! output="$$("$${root}/bin/busybox" uname -m 2>&1)"; then
-            echo "Woodie agent host cannot execute $${arch} binaries through binfmt_misc/QEMU."
-            echo "Install Debian packages on the amd64 agent host: qemu-user qemu-user-binfmt binfmt-support."
-            echo "Agent operator check: docker run --rm --platform=$${platform} debian:trixie uname -m"
-            echo "Observed error: $${output}"
-            exit 1
-          fi
-
-          if ! printf '%s\n' "$${output}" | grep -Eq "$${expected_re}"; then
-            echo "Woodie agent host executed $${arch}, but uname -m returned unexpected value: $${output}"
-            echo "Agent operator check: docker run --rm --platform=$${platform} debian:trixie uname -m"
-            exit 1
-          fi
-
-          echo "$${arch} foreign execution ok: uname -m -> $${output}"
-        }
-        check_foreign_uname armhf '^(armv7l|armv8l)$' linux/arm/v7
-        check_foreign_uname s390x '^s390x$' linux/s390x
-        echo "Debian Ports powerpc remains blocked until a maintained OCI image or OSGeo-hosted rootfs exists"
-
   native-unsigned-char:
     image: *native-image
     pull: true
@@ -169,8 +127,8 @@ steps:
   armhf-berrie-qemu:
     image: arm32v7/debian:trixie
     pull: true
-    depends_on: preflight-binfmt
     commands:
+      - uname -m | grep -E '^(armv7l|armv8l)$'
       - export PORTABILITY_TIER=armhf-berrie-qemu
       - export PORTABILITY_CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer"
       - *prepare-debian
@@ -182,7 +140,6 @@ steps:
   s390x-big-endian-qemu:
     image: s390x/debian:trixie
     pull: true
-    depends_on: preflight-binfmt
     failure: ignore
     # s390x is the only realistic big-endian coverage. It is intentionally not
     # run on every pull request: QEMU plus the geospatial dependency closure is
@@ -195,6 +152,7 @@ steps:
         branch: master
       - event: tag
     commands:
+      - uname -m | grep -E '^s390x$'
       - export PORTABILITY_TIER=s390x-big-endian-qemu
       - export PORTABILITY_CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer"
       - *prepare-debian
