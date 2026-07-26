@@ -440,37 +440,6 @@ gserialized2_validate_geometry_buffer(uint8_t *data_ptr, uint8_t *data_end, lwfl
 		break;
 	}
 
-	case NURBSCURVETYPE: {
-		uint32_t nweights, nknots;
-		size_t weight_bytes, knot_bytes, point_bytes;
-		consumed = 6 * sizeof(uint32_t);
-		if (!gserialized2_range_available(data_ptr, data_end, consumed))
-		{
-			lwerror("%s: GSERIALIZED NURBS header exceeds payload size", __func__);
-			return LW_FAILURE;
-		}
-		nweights =
-		    gserialized2_read_uint32_checked(data_ptr + 3 * sizeof(uint32_t), data_end, "NURBS weight count");
-		nknots =
-		    gserialized2_read_uint32_checked(data_ptr + 4 * sizeof(uint32_t), data_end, "NURBS knot count");
-		if (gserialized2_checked_mul((size_t)nweights, sizeof(double), &weight_bytes) == LW_FAILURE ||
-		    gserialized2_checked_mul((size_t)nknots, sizeof(double), &knot_bytes) == LW_FAILURE)
-		{
-			lwerror("%s: GSERIALIZED NURBS vector size overflows", __func__);
-			return LW_FAILURE;
-		}
-		if (gserialized2_pointarray_payload_size(count, lwflags, &point_bytes) == LW_FAILURE)
-			return LW_FAILURE;
-		if (gserialized2_checked_add(consumed, weight_bytes, &consumed) == LW_FAILURE ||
-		    gserialized2_checked_add(consumed, knot_bytes, &consumed) == LW_FAILURE ||
-		    gserialized2_checked_add(consumed, point_bytes, &consumed) == LW_FAILURE)
-		{
-			lwerror("%s: GSERIALIZED NURBS size overflows", __func__);
-			return LW_FAILURE;
-		}
-		break;
-	}
-
 	default:
 		lwerror("Unknown geometry type: %d - %s", type, lwtype_name(type));
 		return LW_FAILURE;
