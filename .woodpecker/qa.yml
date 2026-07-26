@@ -68,6 +68,7 @@ steps:
         LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
       - make -j1
       - make check RUNTESTFLAGS="--verbose $${QA_REGRESS_HOOKS} --after-create-db-script $${SRCDIR}/regress/hooks/standard-conforming-strings-off.sql"
+      - make check-fuzzers FUZZER_CHECK_REQUIRED=1
 
 # Every matrix entry is an independent workflow. Keep this file to cheap modes
 # that should protect every pull request; expensive modes live in qa-expensive.
