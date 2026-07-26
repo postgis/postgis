@@ -445,10 +445,8 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
     double jmag;
     double theta_i;
     double theta_ij;
-		/*
     double xoffset;
     double yoffset;
-		*/
 
     TupleDesc result_tuple; /* for returning a composite */
     Datum values[VALUES_LENGTH];
@@ -478,6 +476,8 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
             rt_raster_get_y_skew(raster),
             rt_raster_get_y_scale(raster),
             &imag, &jmag, &theta_i, &theta_ij) ;
+    xoffset = rt_raster_get_x_offset(raster);
+    yoffset = rt_raster_get_y_offset(raster);
 
     rt_raster_destroy(raster);
     PG_FREE_IF_COPY(pgraster, 0);
@@ -501,8 +501,8 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
     values[1] = Float8GetDatum(jmag);
     values[2] = Float8GetDatum(theta_i);
     values[3] = Float8GetDatum(theta_ij);
-    values[4] = Float8GetDatum(rt_raster_get_x_offset(raster));
-    values[5] = Float8GetDatum(rt_raster_get_y_offset(raster));
+    values[4] = Float8GetDatum(xoffset);
+    values[5] = Float8GetDatum(yoffset);
 
     memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
