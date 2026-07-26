@@ -115,6 +115,9 @@ These are only changes since 3.7.0alpha1.
 
 PostGIS 3.7.0dev
 2026/xx/xx
+
+* Bug Fixes *
+
  - #2800, [raster] Make ST_Rescale expand output to cover input extent (Darafei Praliaskouski)
 PostGIS 3.7.0alpha1
 2026/07/05
