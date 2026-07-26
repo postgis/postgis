@@ -353,6 +353,7 @@ while( my $l = <INPUT> ) {
   print STDOUT $l;
 
 }
+close(INPUT) || die "$me: pg_restore returned an error\n";
 
 print STDOUT "SET search_path = \"" . $postgis_schema . "\";\n";
 
