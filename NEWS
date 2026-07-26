@@ -37,6 +37,8 @@ These are only changes since 3.7.0beta1.
 
  - Add Woodpecker linux/arm64 build and regression coverage under
           QEMU to match the Jenkins Berrie64 platform (Darafei Praliaskouski)
+ - #1582, [raster] Add ST_CreateIndexRaster wrapper around map algebra
+          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta1
 2026/07/20
@@ -107,10 +109,6 @@ These are only changes since 3.7.0alpha1.
           (Darafei Praliaskouski)
 
 * Enhancements *
-
- - #1582, [raster] Add ST_CreateIndexRaster wrapper around map algebra
-          (Darafei Praliaskouski)
-
 
 PostGIS 3.7.0dev
 2026/xx/xx
