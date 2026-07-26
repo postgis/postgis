@@ -5,6 +5,8 @@ PostGIS 3.4.7
 
   - GT-522, Reject malformed GSERIALIZED payload counts before deserializing
     geometry data (Darafei Praliaskouski)
+  - GT-523, [raster] Fix invalid reads in geotransform property access
+    (Darafei Praliaskouski)
   - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
     with standard_conforming_strings off (Darafei Praliaskouski)
   - #6042, Skip downgrade checks when source extension libraries cannot
