@@ -38,17 +38,17 @@ LWPOINT *GeometryReader::readPoint()
 		return lwpoint_construct(0, NULL, pa);
 	}
 
-	const auto xy = m_geometry->xy()->data();
+	const auto xy = m_geometry->xy();
 
-	double x = xy[m_offset + 0];
-	double y = xy[m_offset + 1];
+	double x = xy->Get(m_offset + 0);
+	double y = xy->Get(m_offset + 1);
 	double z = 0;
 	double m = 0;
 
 	if (m_has_z)
-		z = m_geometry->z()->data()[m_offset];
+		z = m_geometry->z()->Get(m_offset);
 	if (m_has_m)
-		m = m_geometry->m()->data()[m_offset];
+		m = m_geometry->m()->Get(m_offset);
 
 	pt = (POINT4D) { x, y, z, m };
 	ptarray_append_point(pa, &pt, LW_TRUE);
@@ -61,21 +61,21 @@ POINTARRAY *GeometryReader::readPA()
 	POINT4D pt;
 	uint32_t npoints;
 
-	const double *xy = m_geometry->xy()->data();
-	const double *z = m_has_z ? m_geometry->z()->data() : nullptr;
-	const double *m = m_has_m ? m_geometry->m()->data() : nullptr;
+	const auto xy = m_geometry->xy();
+	const auto z = m_has_z ? m_geometry->z() : nullptr;
+	const auto m = m_has_m ? m_geometry->m() : nullptr;
 
 	pa = ptarray_construct_empty(m_has_z, m_has_m, m_length);
 
 	for (uint32_t i = m_offset; i < m_offset + m_length; i++) {
-		double xv = xy[i * 2 + 0];
-		double yv = xy[i * 2 + 1];
+		double xv = xy->Get(i * 2 + 0);
+		double yv = xy->Get(i * 2 + 1);
 		double zv = 0;
 		double mv = 0;
 		if (m_has_z)
-			zv = z[i];
+			zv = z->Get(i);
 		if (m_has_m)
-			mv = m[i];
+			mv = m->Get(i);
 		pt = (POINT4D) { xv, yv, zv, mv };
 		ptarray_append_point(pa, &pt, LW_TRUE);
 	}

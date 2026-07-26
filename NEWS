@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta1.
 
 * Bug Fixes *
 
+ - GT-545, Fix FlatGeobuf geometry, property, and spatial-index byte order on
+          big-endian platforms (Darafei Praliaskouski)
  - GT-504, Report extension script/library version mismatches before loading
           functions unavailable in an older library (Darafei Praliaskouski)
  - GT-515, Reject invalid ST_LargestEmptyCircle boundaries before GEOS can
