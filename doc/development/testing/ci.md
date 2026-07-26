@@ -26,10 +26,12 @@ service that owns the behavior:
 | macOS GitHub Actions job | `.github/workflows/ci-macos.yml`; see [macOS development environment](../environment/macos.md) |
 | MSYS2/MinGW GitHub Actions job | `.github/workflows/msys.yml` |
 | GitHub CodeQL, codespell, and contributor-credit jobs | `.github/workflows/codeql.yml`, `.github/workflows/codespell.yml`, and `.github/workflows/contributor-credits.yml` |
+| Woodpecker pull-request and branch pipelines | `.woodpecker/*.yml`, with pipeline status published by Woodie at <https://woodie.osgeo.org/repos/30> |
 | Debbie build, docs, and release jobs | `ci/debbie/`, the Debbie Jenkins jobs, and release-process notes |
 | Winnie Windows jobs | `ci/winnie/` and the Winnie Jenkins jobs |
 | Bessie and Berrie/Berrie64 jobs | `ci/bessie/`, `ci/berrie*`, and the corresponding Jenkins worker labels |
 | Docker build images used by GitHub Actions | `postgis/postgis-build-env` image tags referenced from `.github/workflows/ci.yml` |
+| Docker build images used by Woodpecker | `repo.osgeo.org/postgis/build-test:*` image tags referenced from `.woodpecker/*.yml` |
 | Woodpecker MinGW Wine job | `.woodpecker/mingw-wine.yml` and `ci/woodie/postgis_mingw_wine.sh` |
 
 When a dashboard row describes dependency versions, operating systems, branch
@@ -63,6 +65,20 @@ following overrides:
 
 The result is clamped to at least `1`, and if memory detection fails the function
 falls back to the CPU-based maximum.
+
+Woodpecker is the CI surface attached to canonical Gitea pull requests. Its
+status contexts are produced from the checked-in `.woodpecker/` workflows, so a
+new Woodpecker job belongs there first, then in the generated dashboard
+inventory described below. Do not document the current split count by hand:
+parallel matrix expansion and retries change the number of published
+`ci/woodpecker/...` contexts for a commit.
+
+On `master`, the maintained Woodpecker workflows include regression, docs,
+tools, codespell, contributor-credit, and QA coverage. The QA workflow runs
+sanitizer and `standard_conforming_strings=off` checks for pull requests, while
+the expensive QA workflow is branch-limited and owns coverage and garden
+checks. Read `.woodpecker/qa.yml` and `.woodpecker/qa-expensive.yml` before
+changing that split.
 
 ## Woodie API and Pipeline Approvals
 
@@ -127,8 +143,10 @@ same check path as the badge URL.
 Update the inventory when any of these change:
 
 * a workflow file under `.github/workflows/`;
+* a workflow file under `.woodpecker/`;
 * a script under `ci/`;
 * a `postgis/postgis-build-env` tag used by the GitHub Actions matrix;
+* a `repo.osgeo.org/postgis/build-test` tag used by a Woodpecker workflow;
 * a Jenkins job, worker label, or badge URL referenced from Trac or website
   dashboards;
 * a supported release branch or support-window row that affects which branches
