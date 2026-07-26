@@ -10,3 +10,4 @@ rp-2|POINT(1 19)
 rp-3|POINT(0 20)
 ERROR:  Geometry contains invalid coordinates
 lec-1|2.121|POINT(5.5 4.5)|POINT(4 3)
+ERROR:  Boundary geometry must have positive area
