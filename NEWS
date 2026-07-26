@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - GT-522, Reject malformed GSERIALIZED payload counts before deserializing
+   geometry data (Darafei Praliaskouski)
  - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
    with standard_conforming_strings off (Darafei Praliaskouski)
  - [upgrade] Fix ST_TileEnvelope upgrade marker syntax
