@@ -507,8 +507,18 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 		GEOSGeometry *ginput, *gcircle, *gcenter, *gnearest;
 		GEOSGeometry *gboundary = NULL;
 		double width, height, size;
-		GBOX gbox;
-		LWGEOM *lwg;
+		double boundary_area;
+		GBOX gbox, boundary_gbox;
+		LWGEOM *lwg, *lwboundary;
+
+		if (hasBoundary &&
+		    (!gserialized_get_gbox_p(boundary, &boundary_gbox) ||
+		     !(boundary_gbox.xmax > boundary_gbox.xmin && boundary_gbox.ymax > boundary_gbox.ymin)))
+		{
+			lwpgerror("Boundary geometry must have positive area");
+			PG_RETURN_NULL();
+		}
+
 		lwg = lwgeom_from_gserialized(geom);
 		if (!lwgeom_isfinite(lwg))
 		{
@@ -529,6 +539,24 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 			tolerance = size / 1000.0;
 		}
 
+		if (hasBoundary)
+		{
+			lwboundary = lwgeom_from_gserialized(boundary);
+			if (!lwgeom_isfinite(lwboundary))
+			{
+				lwgeom_free(lwboundary);
+				lwpgerror("Boundary geometry contains invalid coordinates");
+				PG_RETURN_NULL();
+			}
+			boundary_area = lwgeom_area(lwboundary);
+			lwgeom_free(lwboundary);
+			if (!(boundary_area > 0.0))
+			{
+				lwpgerror("Boundary geometry must have positive area");
+				PG_RETURN_NULL();
+			}
+		}
+
 		initGEOS(lwpgnotice, lwgeom_geos_error);
 
 		ginput = POSTGIS2GEOS(geom);
@@ -537,9 +565,24 @@ Datum ST_LargestEmptyCircle(PG_FUNCTION_ARGS)
 
 		if (hasBoundary)
 		{
+			char boundary_valid;
 			gboundary = POSTGIS2GEOS(boundary);
 			if (!gboundary)
 				HANDLE_GEOS_ERROR("Boundary could not be converted to GEOS");
+			boundary_valid = GEOSisValid(gboundary);
+			if (boundary_valid == 2)
+			{
+				GEOSGeom_destroy(ginput);
+				GEOSGeom_destroy(gboundary);
+				HANDLE_GEOS_ERROR("GEOSisValid");
+			}
+			if (!boundary_valid)
+			{
+				GEOSGeom_destroy(ginput);
+				GEOSGeom_destroy(gboundary);
+				lwpgerror("Boundary geometry is invalid");
+				PG_RETURN_NULL();
+			}
 		}
 
 		gcircle = GEOSLargestEmptyCircle(ginput, gboundary, tolerance);
