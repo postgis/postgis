@@ -142,6 +142,8 @@ rt_band_init_value(
 		memset(mem, 0, memsize);
 		return;
 	}
+	if (numval == 0)
+		return;
 
 	switch (pixtype) {
 		case PT_1BB:
