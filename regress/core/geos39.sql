@@ -61,3 +61,9 @@ SELECT 'lec-1', round(radius::numeric,3),
   ST_AsText(nearest,3) AS nearest
 FROM ST_LargestEmptyCircle(
   'MULTIPOINT ((4 3), (7 6), (4 6))');
+
+SELECT 'lec-invalid-boundary', radius
+FROM ST_LargestEmptyCircle(
+  'POINT(0 0)'::geometry,
+  20.1,
+  'POLYGON((1 2,1 2,1 2,1 2,3 2,1 2))'::geometry);

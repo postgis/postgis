@@ -10,6 +10,8 @@ These are only changes since 3.7.0beta1.
 
  - GT-504, Report extension script/library version mismatches before loading
           functions unavailable in an older library (Darafei Praliaskouski)
+ - GT-515, Reject invalid ST_LargestEmptyCircle boundaries before GEOS can
+          spend unbounded time on them (Darafei Praliaskouski)
 
 * Enhancements *
 
