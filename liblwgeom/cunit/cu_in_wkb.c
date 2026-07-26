@@ -319,6 +319,24 @@ test_wkb_in_nurbscurve_count_exceeds_payload(void)
 	cu_error_msg_reset();
 }
 
+static void
+test_wkb_in_invalid_endian_flag(void)
+{
+	const uint8_t wkb[] = {0x02, /* invalid endian flag */
+			       0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	LWGEOM *geom;
+
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_wkb(wkb, sizeof(wkb), LW_PARSER_CHECK_NONE);
+
+	ASSERT_STRING_EQUAL(cu_error_msg, "Invalid endian flag value encountered.");
+	if (geom != NULL)
+		lwgeom_free(geom);
+	cu_error_msg_reset();
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -342,4 +360,5 @@ void wkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_wkb_fuzz);
 	PG_ADD_TEST(suite, test_wkb_in_linestring_zm_count_exceeds_payload);
 	PG_ADD_TEST(suite, test_wkb_in_nurbscurve_count_exceeds_payload);
+	PG_ADD_TEST(suite, test_wkb_in_invalid_endian_flag);
 }
