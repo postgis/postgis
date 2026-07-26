@@ -52,7 +52,7 @@ steps:
         --enable-debug
       - make -j1
       - make check RUNTESTFLAGS="--verbose $${QA_REGRESS_HOOKS}"
-      - lcov --capture --directory "$${BUILDDIR}" --output-file "$${BUILDDIR}/coverage.info"
+      - lcov --capture --directory "$${BUILDDIR}" --output-file "$${BUILDDIR}/coverage.info" --ignore-errors source
       - lcov --list "$${BUILDDIR}/coverage.info"
 
   garden:
