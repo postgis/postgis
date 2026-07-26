@@ -122,7 +122,7 @@ package_runtime_libs()
     fi
 }
 
-for F in "$FUZZERS_DIR"/*.cpp; do
+for F in "$FUZZERS_DIR"/*_fuzzer.cpp; do
     [ -e "$F" ] || continue
     fuzzerName=$(basename "$F" .cpp)
     build_fuzzer "$fuzzerName" "$F"

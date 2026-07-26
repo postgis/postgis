@@ -26,7 +26,7 @@ dummyfuzzers: fuzzingengine.o
 	mkdir -p "$(FUZZER_OUT)"
 	$(AR) r libFuzzingEngine.a fuzzingengine.o
 	CC="${CC}" CXX="${CXX}" CPPFLAGS="$(POSTGIS_FUZZER_CPPFLAGS)" CXXFLAGS="-L$(CURDIR) ${CXXFLAGS}" LDFLAGS="$(POSTGIS_FUZZER_LDFLAGS)" POSTGIS_BUILD_DIR="$(POSTGIS_BUILD_DIR)" SRC="$(FUZZER_SRC_DIR)" OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_google_oss_fuzzers.sh
-	OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_seed_corpus.sh
+	CC="${CC}" CXX="${CXX}" CPPFLAGS="$(POSTGIS_FUZZER_CPPFLAGS)" CXXFLAGS="-L$(CURDIR) ${CXXFLAGS}" LDFLAGS="$(POSTGIS_FUZZER_LDFLAGS)" POSTGIS_BUILD_DIR="$(POSTGIS_BUILD_DIR)" SRC="$(FUZZER_SRC_DIR)" OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_seed_corpus.sh
 
 check:
 	@cxx="$${CXX:-$(CXX)}"; \
@@ -70,8 +70,8 @@ check-corpus: dummyfuzzers
 	rm -rf "$(FUZZER_WORK)"; \
 	mkdir -p "$(FUZZER_WORK)"; \
 	trap 'rm -rf "$(FUZZER_WORK)"' EXIT HUP INT TERM; \
-	for corpus in $(SEED_CORPORA) __none__; do \
-		if [ "$${corpus}" = "__none__" ]; then \
+	for corpus in $(SEED_CORPORA) "$(FUZZER_OUT)"/*_seed_corpus.zip __none__; do \
+		if [ "$${corpus}" = "__none__" ] || [ ! -e "$${corpus}" ]; then \
 			continue; \
 		fi; \
 		corpus_name=$$(basename "$${corpus}"); \

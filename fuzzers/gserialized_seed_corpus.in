@@ -1,0 +1,20 @@
+# Regression-suite geometries used to seed the GSERIALIZED fuzzers.
+# Keep names filesystem-safe: they become seed file names.
+# regress/core/wkt.sql and regress/core/regress.sql
+point|POINT(0 0)
+point_zm_srid|SRID=4326;POINT ZM(1 2 3 4)
+linestring|LINESTRING(0 0,1 1,2 1)
+polygon|POLYGON((0 0,0 4,4 4,4 0,0 0),(1 1,2 1,2 2,1 1))
+multipoint|MULTIPOINT((0 0),(1 2),(3 4))
+multilinestring|MULTILINESTRING((0 0,1 1),(2 2,3 3,4 4))
+multipolygon|MULTIPOLYGON(((0 0,0 2,2 2,2 0,0 0)),((3 3,3 5,5 5,5 3,3 3)))
+collection|GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(0 0,1 1))
+empty_collection|GEOMETRYCOLLECTION EMPTY
+# regress/core/sql-mm-circularstring.sql and related curve tests
+circularstring|CIRCULARSTRING(0 0,1 1,2 0)
+compoundcurve|COMPOUNDCURVE((0 0,1 1),CIRCULARSTRING(1 1,2 2,3 1))
+curvepolygon|CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 0,1 -1,0 0))
+# regress/core/triangulatedsurface.sql and regress/core/polyhedralsurface.sql
+triangle|TRIANGLE((0 0,1 0,0 1,0 0))
+tin|TIN(((0 0,1 0,0 1,0 0)))
+polyhedralsurface|POLYHEDRALSURFACE(((0 0,0 1,1 1,1 0,0 0)))
