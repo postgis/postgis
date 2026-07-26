@@ -47,8 +47,24 @@ jobs:
 
     - name: 'Check Out'
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 50
+
+    - name: Check changed surface
+      id: changed-surface
+      run: |
+        set +e
+        python3 utils/ci_need_suite.py github-ci
+        gate_status=$?
+        set -e
+        if test "${gate_status}" = 78; then
+          echo "skip=true" >> "${GITHUB_OUTPUT}"
+          exit 0
+        fi
+        exit "${gate_status}"
 
     - name: 'Prepare Image'
+      if: steps.changed-surface.outputs.skip != 'true'
       run: |
         set -e
         retry() {
@@ -89,13 +105,14 @@ jobs:
         docker build --pull=false -t pgtest .
 
     - name: 'Build & Test'
+      if: steps.changed-surface.outputs.skip != 'true'
       run: |
         echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern
         ci_env=`bash .github/codecov_env.bash`
         docker run -e RUNTESTFLAGS=-v $ci_env --name pgtest-${GITHUB_RUN_NUMBER} pgtest
 
     - name: 'Clean Up Image'
-      if: ${{ success() }}
+      if: ${{ success() && steps.changed-surface.outputs.skip != 'true' }}
       run: |
         docker rm pgtest-${GITHUB_RUN_NUMBER}
 

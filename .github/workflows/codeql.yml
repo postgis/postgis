@@ -2,7 +2,7 @@ name: "CodeQL"
 
 on:
   push:
-  pull_request:
+  pull_request: ~
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -38,9 +38,25 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 50
+
+    - name: Check changed surface
+      id: changed-surface
+      run: |
+        set +e
+        python3 utils/ci_need_suite.py github-ci
+        gate_status=$?
+        set -e
+        if test "${gate_status}" = 78; then
+          echo "skip=true" >> "${GITHUB_OUTPUT}"
+          exit 0
+        fi
+        exit "${gate_status}"
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
+      if: steps.changed-surface.outputs.skip != 'true'
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
@@ -52,17 +68,20 @@ jobs:
         # queries: security-extended,security-and-quality
 
     - name: Install dependencies
+      if: steps.changed-surface.outputs.skip != 'true'
       run: |
           sudo apt-get update
           sudo apt-get install -y g++ autoconf automake libgeos-dev libproj-dev libgdal-dev libjson-c-dev libsfcgal-dev gettext libxml2-dev postgresql-server-dev-16 postgresql-client-16 libprotobuf-c-dev libprotoc-dev protobuf-c-compiler clang-19
 
     - name: Build
+      if: steps.changed-surface.outputs.skip != 'true'
       run: |
           ./autogen.sh
           ./configure
           make -j$(nproc)
 
     - name: Perform CodeQL Analysis
+      if: steps.changed-surface.outputs.skip != 'true'
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"

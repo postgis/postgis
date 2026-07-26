@@ -1,5 +1,7 @@
 name: MSYS2
-on: [push, pull_request]
+on:
+  push:
+  pull_request: ~
 
 jobs:
   mingw:
@@ -19,7 +21,23 @@ jobs:
       # see https://github.com/msys2/setup-msys2
     - name: checkout
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 50
+    - name: Check changed surface
+      id: changed-surface
+      shell: bash
+      run: |
+        set +e
+        python3 utils/ci_need_suite.py github-ci
+        gate_status=$?
+        set -e
+        if test "${gate_status}" = 78; then
+          echo "skip=true" >> "${GITHUB_OUTPUT}"
+          exit 0
+        fi
+        exit "${gate_status}"
     - name: '${{ matrix.icon }} Setup MSYS2'
+      if: steps.changed-surface.outputs.skip != 'true'
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.sys }}
@@ -42,6 +60,7 @@ jobs:
           postgresql:p
 
     - name: '🚧 Build TOOL'
+      if: steps.changed-surface.outputs.skip != 'true'
       run: |
         MSYSTEM= /${{ matrix.sys }}/bin/initdb -D D:/a/_tmp/psql
         MSYSTEM= /${{ matrix.sys }}/bin/pg_ctl -D D:/a/_tmp/psql -l logfile start
