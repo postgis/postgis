@@ -1,4 +1,6 @@
 *~
+.tmp/
+build-mingw-wine/
 *.a
 *.la
 .libs
