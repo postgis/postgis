@@ -3,6 +3,8 @@ PostGIS 3.5.8
 
 * Bug Fixes *
 
+  - GT-522, Reject malformed GSERIALIZED payload counts before deserializing
+    geometry data (Darafei Praliaskouski)
   - #6046, Prefer GraphicsMagick for documentation image generation
            (Darafei Praliaskouski)
   - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
