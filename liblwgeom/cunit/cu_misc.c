@@ -242,10 +242,15 @@ static void test_clone(void)
 	lwgeom_free(geom1);
 }
 
+static LWGEOM *
+lwmpoint_from_lwgeom_as_lwgeom(LWGEOM *geom)
+{
+	return lwmpoint_as_lwgeom(lwmpoint_from_lwgeom(geom));
+}
+
 static void test_lwmpoint_from_lwgeom(void)
 {
-	/* This cast is so ugly, we only want to do it once.  And not even that. */
-	LWGEOM* (*to_points)(LWGEOM*) = (LWGEOM* (*)(LWGEOM*)) &lwmpoint_from_lwgeom;
+	LWGEOM *(*to_points)(LWGEOM *) = lwmpoint_from_lwgeom_as_lwgeom;
 
 	do_fn_test(to_points, "MULTIPOLYGON (EMPTY)", "MULTIPOINT EMPTY");
 	do_fn_test(to_points, "POINT (30 10)", "MULTIPOINT ((30 10))");
