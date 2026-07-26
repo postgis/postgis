@@ -332,6 +332,7 @@ test_wkb_in_invalid_endian_flag(void)
 	geom = lwgeom_from_wkb(wkb, sizeof(wkb), LW_PARSER_CHECK_NONE);
 
 	ASSERT_STRING_EQUAL(cu_error_msg, "Invalid endian flag value encountered.");
+	CU_ASSERT_PTR_NULL(geom);
 	if (geom != NULL)
 		lwgeom_free(geom);
 	cu_error_msg_reset();

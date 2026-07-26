@@ -54,6 +54,7 @@ typedef struct
 	uint8_t has_z;
 	uint8_t has_m;
 	uint8_t is_empty;
+	uint8_t error;
 
 	/* Precision factors to convert ints to double */
 	double factor;
@@ -86,10 +87,14 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s);
 */
 static inline void twkb_parse_state_advance(twkb_parse_state *s, size_t next)
 {
-	if (next > (size_t)(s->twkb_end - s->pos))
+	size_t remaining = (s->pos <= s->twkb_end) ? (size_t)(s->twkb_end - s->pos) : 0;
+
+	if (next > remaining)
 	{
+		s->error = LW_TRUE;
 		lwerror("%s: TWKB structure does not match expected size!", __func__);
-		// lwnotice("TWKB structure does not match expected size!");
+		s->pos = s->twkb_end;
+		return;
 	}
 
 	s->pos += next;
@@ -99,6 +104,8 @@ static inline int64_t twkb_parse_state_varint(twkb_parse_state *s)
 {
 	size_t size;
 	int64_t val = varint_s64_decode(s->pos, s->twkb_end, &size);
+	if (size == 0)
+		s->error = LW_TRUE;
 	twkb_parse_state_advance(s, size);
 	return val;
 }
@@ -107,6 +114,8 @@ static inline uint64_t twkb_parse_state_uvarint(twkb_parse_state *s)
 {
 	size_t size;
 	uint64_t val = varint_u64_decode(s->pos, s->twkb_end, &size);
+	if (size == 0)
+		s->error = LW_TRUE;
 	twkb_parse_state_advance(s, size);
 	return val;
 }
@@ -115,6 +124,8 @@ static inline double twkb_parse_state_double(twkb_parse_state *s, double factor)
 {
 	size_t size;
 	int64_t val = varint_s64_decode(s->pos, s->twkb_end, &size);
+	if (size == 0)
+		s->error = LW_TRUE;
 	twkb_parse_state_advance(s, size);
 	return val / factor;
 }
@@ -124,7 +135,10 @@ static inline void twkb_parse_state_varint_skip(twkb_parse_state *s)
 	size_t size = varint_size(s->pos, s->twkb_end);
 
 	if ( ! size )
+	{
+		s->error = LW_TRUE;
 		lwerror("%s: no varint to skip", __func__);
+	}
 
 	twkb_parse_state_advance(s, size);
 	return;
@@ -137,6 +151,7 @@ twkb_parse_state_uvarint32(twkb_parse_state *s)
 
 	if (val > UINT32_MAX)
 	{
+		s->error = LW_TRUE;
 		lwerror("%s: TWKB count exceeds uint32_t", __func__);
 		return 0;
 	}
@@ -155,6 +170,7 @@ twkb_parse_state_has_min_bytes(twkb_parse_state *s, uint32_t count, size_t min_b
 	 */
 	if (min_bytes != 0 && count > remaining / min_bytes)
 	{
+		s->error = LW_TRUE;
 		lwerror("%s: TWKB element count exceeds remaining payload", __func__);
 		return LW_FALSE;
 	}
@@ -727,8 +743,15 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 			break;
 		/* Unknown type! */
 		default:
+			s->error = LW_TRUE;
 			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(s->lwtype));
 			break;
+	}
+
+	if (s->error)
+	{
+		lwgeom_free(geom);
+		return NULL;
 	}
 
 	if (has_bbox && geom)
