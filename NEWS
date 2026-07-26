@@ -7,6 +7,8 @@ PostGIS 3.5.8
     geometry data (Darafei Praliaskouski)
   - GT-523, [raster] Fix invalid reads in geotransform property access
     (Darafei Praliaskouski)
+  - GT-519, Reject invalid ST_LargestEmptyCircle boundaries before GEOS can
+    spend unbounded time on them (Darafei Praliaskouski)
   - #6046, Prefer GraphicsMagick for documentation image generation
            (Darafei Praliaskouski)
   - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks

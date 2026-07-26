@@ -1648,6 +1648,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
       <refsection>
         <title>Description</title>
         <para>Finds the largest circle which does not overlap a set of point and line obstacles. (Polygonal geometries may be included as obstacles, but only their boundary lines are used.) The center of the circle is constrained to lie inside a polygonal boundary, which by default is the convex hull of the input geometry. The circle center is the point in the interior of the boundary which has the farthest distance from the obstacles. The circle itself is provided by the center point and a nearest point lying on an obstacle determining the circle radius.</para>
+        <para>If a boundary is supplied it must be a valid polygonal geometry with positive area.</para>
         <para>The circle center is determined to a given  accuracy specified by a distance tolerance, using an iterative algorithm. If the accuracy distance is not specified a reasonable default is used.</para>
         <para>Returns a record with fields:</para>
 
