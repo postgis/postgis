@@ -213,6 +213,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #2850, Preserve pgsql2shp numeric precision and scale in DBF metadata
           (Darafei Praliaskouski)
  - #2386, Add raster2pgsql man page (Darafei Praliaskouski)
+ - [raster] Document the VRT loading workflow for tile-set overviews
+          (Darafei Praliaskouski)
  - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
           available so LTO can optimize same-DSO calls to exported PostGIS
           entry points directly instead of routing through the module PLT; in
@@ -269,8 +271,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #5975, Initialize skipped union-find cluster ids deterministically
           (Darafei Praliaskouski)
  - #5904, [topology] Avoid MinGW format warnings when logging topology ids
-          (Darafei Praliaskouski)
- - #5958, [raster] Document VRT loading workflow for tile-set overviews
           (Darafei Praliaskouski)
  - GH-885, [topology] Avoid GMP overflow in ring orientation for very large
           finite coordinates (Darafei Praliaskouski)
