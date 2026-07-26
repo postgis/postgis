@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GT-522, Reject malformed GSERIALIZED payload counts before deserializing
+    geometry data (Darafei Praliaskouski)
   - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
     with standard_conforming_strings off (Darafei Praliaskouski)
   - #6042, Skip downgrade checks when source extension libraries cannot
