@@ -54,7 +54,8 @@ jobs:
         retry() {
           max_attempts="$1"
           delay="$2"
-          shift 2
+          max_delay="$3"
+          shift 3
           attempt=1
           while true; do
             "$@" && return 0
@@ -66,12 +67,16 @@ jobs:
             echo "Command failed with exit code ${status}; retrying in ${delay}s (${attempt}/${max_attempts}): $*"
             sleep "$delay"
             attempt=$((attempt + 1))
+            delay=$((delay * 2))
+            if test "$delay" -gt "$max_delay"; then
+              delay="$max_delay"
+            fi
           done
         }
 
         uname -a
         build_image="postgis/postgis-build-env:${{ matrix.ci.tag }}"
-        retry 3 15 docker pull "${build_image}"
+        retry 6 20 180 docker pull "${build_image}"
         echo "FROM ${build_image}" > Dockerfile
         if test "${{ matrix.ci.mode }}" = "garden"; then
           echo "USER root" >> Dockerfile
