@@ -6793,6 +6793,12 @@ SELECT current_database()::character varying(256) AS f_table_catalog,
       WHERE acl.privilege_type = 'SELECT'
         AND (acl.grantee = 0 OR pg_has_role(acl.grantee, 'USAGE'))
     )
+    OR EXISTS (
+      SELECT 1
+      FROM aclexplode(a.attacl) AS acl
+      WHERE acl.privilege_type = 'SELECT'
+        AND (acl.grantee = 0 OR pg_has_role(acl.grantee, 'USAGE'))
+    )
   );
 
 -- TODO: support RETURNING and raise a WARNING
