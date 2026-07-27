@@ -1322,9 +1322,12 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	state->widths = malloc(state->num_fields * sizeof(int));
 	state->precisions = malloc(state->num_fields * sizeof(int));
 	state->pgfieldtypes = malloc(state->num_fields * sizeof(char *));
-	state->col_names = malloc((state->num_fields + 2) * sizeof(char) * MAXFIELDNAMELEN);
+	state->col_names = calloc(
+		(size_t)state->num_fields * (MAXFIELDNAMELEN + 2) +
+			(state->config->readshape ? strlen(state->geo_col) : 0) + 1,
+		sizeof(char)
+	);
 
-	strcpy(state->col_names, "" );
 	/* Generate a string of comma separated column names of the form "col1, col2 ... colN" for the SQL
 	   insertion string */
 
