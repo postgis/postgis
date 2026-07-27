@@ -536,6 +536,16 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         self.assertEqual(current_revision, result["revision"])
         self.assertEqual("queued item 108746: Build #8,030 is already in progress", result["message"])
 
+    def test_jenkins_old_queue_item_is_labeled_stale(self):
+        queued = {
+            "id": 108746,
+            "inQueueSince": 1784821000000,
+        }
+
+        now = CI_STATUS.dt.datetime.fromtimestamp(1784840000, CI_STATUS.dt.timezone.utc)
+        with mock.patch.object(CI_STATUS, "utc_now", return_value=now):
+            self.assertEqual("Queued stale", CI_STATUS.jenkins_queued_status_label(queued))
+
     def test_woodpecker_failure_names_single_failed_workflow(self):
         check_config = {
             "name": "Woodpecker",
@@ -574,6 +584,79 @@ class RequiredFailureHtmlTest(unittest.TestCase):
             "https://woodie.example.test/api/repos/30/pipelines/5430",
             http_json.call_args_list[1].args[0],
         )
+
+    def test_woodpecker_error_without_workflows_shows_error_message(self):
+        check_config = {
+            "name": "Woodpecker",
+            "provider": "woodpecker",
+            "required": True,
+            "api_url": "https://woodie.example.test/api/repos/30/pipelines",
+            "web_url": "https://woodie.example.test/repos/30",
+        }
+        branch = {"name": "master", "label": "master"}
+        pipeline = {
+            "number": 5733,
+            "event": "push",
+            "branch": "master",
+            "ref": "refs/heads/master",
+            "status": "error",
+            "commit": "c" * 40,
+            "message": "opaque commit message",
+            "errors": [{"message": "step 'html-ja' depends on unknown step 'html-de'"}],
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", return_value=[pipeline]) as http_json:
+            result = CI_STATUS.woodpecker_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.FAILURE, result["status"])
+        self.assertEqual("Config error", result["status_label"])
+        self.assertEqual("step 'html-ja' depends on unknown step 'html-de'", result["message"])
+        http_json.assert_called_once()
+
+    def test_woodpecker_killed_zero_exit_steps_are_agent_loss(self):
+        check_config = {
+            "name": "Woodpecker",
+            "provider": "woodpecker",
+            "required": True,
+            "api_url": "https://woodie.example.test/api/repos/30/pipelines",
+            "web_url": "https://woodie.example.test/repos/30",
+        }
+        branch = {"name": "stable-3.6", "label": "3.6"}
+        pipeline = {
+            "number": 5696,
+            "event": "pull_request",
+            "branch": "stable-3.6",
+            "ref": "refs/heads/stable-3.6",
+            "status": "failure",
+            "commit": "d" * 40,
+            "message": "opaque commit message",
+        }
+        pipeline_detail = {
+            **pipeline,
+            "workflows": [
+                {
+                    "pid": 1,
+                    "name": "docs",
+                    "state": "failure",
+                    "children": [
+                        {"pid": 4, "name": "clone", "state": "killed", "exit_code": 0},
+                        {"pid": 5, "name": "prepare", "state": "killed", "exit_code": 0},
+                        {"pid": 6, "name": "check-xml", "state": "killed", "exit_code": 0},
+                    ],
+                },
+            ],
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", side_effect=([pipeline], pipeline_detail)):
+            result = CI_STATUS.woodpecker_check(
+                {**check_config, "event": "pull_request"},
+                branch,
+                timeout=5,
+            )
+
+        self.assertEqual(CI_STATUS.FAILURE, result["status"])
+        self.assertEqual("Agent lost", result["status_label"])
+        self.assertEqual("agent lost: 3 steps killed at exit 0 (clone, prepare, check-xml)", result["message"])
 
     def test_woodpecker_running_workflows_are_summarized(self):
         check_config = {
