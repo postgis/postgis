@@ -447,6 +447,33 @@ quote_pg_identifier(const char *identifier)
 	return quoted;
 }
 
+static char *
+quote_pg_identifier_with_suffix(const char *identifier, const char *suffix)
+{
+	char *quoted = quote_pg_identifier(identifier);
+	size_t quoted_len;
+	size_t suffix_len;
+	char *result = NULL;
+
+	if (quoted == NULL)
+		return NULL;
+
+	quoted_len = strlen(quoted);
+	suffix_len = strlen(suffix);
+	result = rtalloc(quoted_len + suffix_len + 1);
+	if (result == NULL)
+	{
+		rtdealloc(quoted);
+		return NULL;
+	}
+
+	memcpy(result, quoted, quoted_len);
+	memcpy(result + quoted_len, suffix, suffix_len + 1);
+	rtdealloc(quoted);
+
+	return result;
+}
+
 static int
 append_gdal_metadata_items(char **xml, size_t *len, size_t *cap, char **metadata, const char *domain_name)
 {
@@ -4026,7 +4053,7 @@ main(int argc, char **argv)
 
 	if (config->schema != NULL)
 	{
-		tmp = rtloader_alloc_sprintf("\"%s\".", config->schema);
+		tmp = quote_pg_identifier_with_suffix(config->schema, ".");
 		if (tmp == NULL)
 		{
 			rterror(_("Could not allocate memory for quoting schema name"));
@@ -4039,7 +4066,7 @@ main(int argc, char **argv)
 	}
 	if (config->table != NULL)
 	{
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->table);
+		tmp = quote_pg_identifier(config->table);
 		if (tmp == NULL)
 		{
 			rterror(_("Could not allocate memory for quoting table name"));
@@ -4052,7 +4079,7 @@ main(int argc, char **argv)
 	}
 	if (config->raster_column != NULL)
 	{
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->raster_column);
+		tmp = quote_pg_identifier(config->raster_column);
 		if (tmp == NULL)
 		{
 			rterror(_("Could not allocate memory for quoting raster column name"));
@@ -4065,7 +4092,7 @@ main(int argc, char **argv)
 	}
 	if (config->file_column_name != NULL)
 	{
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->file_column_name);
+		tmp = quote_pg_identifier(config->file_column_name);
 		if (tmp == NULL)
 		{
 			rterror(_("Could not allocate memory for quoting filename column name"));
@@ -4091,7 +4118,7 @@ main(int argc, char **argv)
 	}
 	if (config->tablespace != NULL)
 	{
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->tablespace);
+		tmp = quote_pg_identifier(config->tablespace);
 		if (tmp == NULL)
 		{
 			rterror(_("Could not allocate memory for quoting tablespace name"));
@@ -4104,7 +4131,7 @@ main(int argc, char **argv)
 	}
 	if (config->idx_tablespace != NULL)
 	{
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->idx_tablespace);
+		tmp = quote_pg_identifier(config->idx_tablespace);
 		if (tmp == NULL)
 		{
 			rterror(_("Could not allocate memory for quoting index tablespace name"));
@@ -4119,7 +4146,7 @@ main(int argc, char **argv)
 	{
 		for (i = 0; i < config->overview_count; i++)
 		{
-			tmp = rtloader_alloc_sprintf("\"%s\"", config->overview_table[i]);
+			tmp = quote_pg_identifier(config->overview_table[i]);
 			if (tmp == NULL)
 			{
 				rterror(_("Could not allocate memory for quoting overview table name"));
