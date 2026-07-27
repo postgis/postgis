@@ -80,10 +80,20 @@ variables:
       $${SRCDIR}/regress/core/twkb \
       $${SRCDIR}/regress/core/sql-mm-serialize \
       $${SRCDIR}/regress/core/in_geojson \
+      $${SRCDIR}/regress/core/out_geojson \
+      $${SRCDIR}/regress/core/in_gml \
+      $${SRCDIR}/regress/core/out_gml \
+      $${SRCDIR}/regress/core/in_kml \
+      $${SRCDIR}/regress/core/in_geohash \
+      $${SRCDIR}/regress/core/in_flatgeobuf \
+      $${SRCDIR}/regress/core/out_flatgeobuf \
+      $${SRCDIR}/regress/core/flatgeobuf \
       $${SRCDIR}/raster/test/regress/check_gdal \
       $${SRCDIR}/raster/test/regress/loader/load_outdb \
       $${SRCDIR}/raster/test/regress/rt_bytea \
       $${SRCDIR}/raster/test/regress/rt_wkb \
+      $${SRCDIR}/raster/test/regress/rt_fromgdalraster \
+      $${SRCDIR}/raster/test/regress/rt_asgdalraster \
       $${SRCDIR}/raster/test/regress/rt_band \
       $${SRCDIR}/raster/test/regress/clean"
     echo "portability tier $${PORTABILITY_TIER} completed in $$(($$(date +%s) - $${PORTABILITY_STARTED}))s"
