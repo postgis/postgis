@@ -3,6 +3,10 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - GT-522, Reject malformed GSERIALIZED payload counts before deserializing
+   geometry data (Darafei Praliaskouski)
+ - GT-523, [raster] Fix invalid reads in geotransform property access
+   (Darafei Praliaskouski)
  - #5823, Build support for Pg18 (Paul Ramsey)
  - #5851, Fix regress_index test with PostgreSQL 18 fractional actual rows
    (Regina Obe)
