@@ -493,10 +493,11 @@ rt_raster_generate_new_band(
 	int index
 ) {
     rt_band band = NULL;
-    int width = 0;
-    int height = 0;
-    int numval = 0;
-    int datasize = 0;
+    uint16_t width = 0;
+    uint16_t height = 0;
+    size_t numval = 0;
+    size_t datasize = 0;
+    int pixbytes = 0;
     int oldnumbands = 0;
     int numbands = 0;
     void * mem = NULL;
@@ -513,8 +514,19 @@ rt_raster_generate_new_band(
     /* Determine size of memory block to allocate and allocate it */
     width = rt_raster_get_width(raster);
     height = rt_raster_get_height(raster);
-    numval = width * height;
-    datasize = rt_pixtype_size(pixtype) * numval;
+    pixbytes = rt_pixtype_size(pixtype);
+    if (pixbytes < 1)
+    {
+	    rterror("rt_raster_generate_new_band: Invalid pixel type for band allocation");
+	    return -1;
+    }
+    numval = (size_t)width * height;
+    if (numval > UINT32_MAX / (size_t)pixbytes)
+    {
+	    rterror("rt_raster_generate_new_band: Raster dimensions are too large for band allocation");
+	    return -1;
+    }
+    datasize = numval * (size_t)pixbytes;
 
     mem = (int *)rtalloc(datasize);
     if (!mem) {

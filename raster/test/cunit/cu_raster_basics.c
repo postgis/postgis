@@ -4,6 +4,7 @@
  *
  * Copyright (C) 2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -204,6 +205,24 @@ static void test_raster_replace_band(void) {
 	cu_free_raster(raster);
 }
 
+static void
+test_raster_generate_new_band_size_overflow(void)
+{
+	rt_raster raster;
+	int bandnum;
+
+	raster = rt_raster_new(UINT16_MAX, UINT16_MAX);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(raster);
+
+	cu_error_msg_reset();
+	bandnum = rt_raster_generate_new_band(raster, PT_64BF, 0, 0, 0, -1);
+	CU_ASSERT_EQUAL(bandnum, -1);
+	CU_ASSERT_STRING_EQUAL(cu_error_msg,
+			       "rt_raster_generate_new_band: Raster dimensions are too large for band allocation");
+
+	rt_raster_destroy(raster);
+}
+
 /* register tests */
 void raster_basics_suite_setup(void);
 void raster_basics_suite_setup(void)
@@ -215,5 +234,5 @@ void raster_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_clone);
 	PG_ADD_TEST(suite, test_raster_from_band);
 	PG_ADD_TEST(suite, test_raster_replace_band);
+	PG_ADD_TEST(suite, test_raster_generate_new_band_size_overflow);
 }
-
