@@ -16,8 +16,8 @@ import sys
 CODEQL_GLOBS = (
     ".woodpecker/codeql.yml",
     ".github/workflows/codeql.yml",
-    "ci/dronie/codeql_build.sh",
-    "ci/dronie/codeql_should_run.py",
+    "ci/woodie/codeql_build.sh",
+    "ci/woodie/codeql_should_run.py",
     "configure.ac",
     "configure.in",
     "autogen.sh",
