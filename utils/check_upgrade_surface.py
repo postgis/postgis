@@ -75,7 +75,7 @@ def match_any(path: str, globs: tuple[str, ...]) -> str | None:
 
 
 def resolve_base(base: str | None, head: str) -> tuple[str, list[str]]:
-    cmd = ["python3", "utils/ci_changed_paths.py", "--head", head]
+    cmd = ["python3", "ci/ci_changed_paths.py", "--head", head]
     if base:
         cmd.extend(["--base", base])
     result = run(cmd, check=False)

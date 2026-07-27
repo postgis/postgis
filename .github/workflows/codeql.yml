@@ -45,7 +45,7 @@ jobs:
       id: changed-surface
       run: |
         set +e
-        python3 utils/ci_need_suite.py github-ci
+        python3 ci/ci_need_suite.py github-ci
         gate_status=$?
         set -e
         if test "${gate_status}" = 78; then

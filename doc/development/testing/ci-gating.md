@@ -26,7 +26,7 @@ The gated pull-request bodies are:
 | GitHub Actions mirror workflows | Linux Docker, FreeBSD, macOS, MSYS2, and CodeQL build or analysis bodies |
 
 The status context still appears. A skipped body exits successfully after
-printing a `SKIP:` reason from `utils/ci_need_suite.py`.
+printing a `SKIP:` reason from `ci/ci_need_suite.py`.
 
 Documentation checks owned by `.woodpecker/docs.yml` are not reduced by this
 gate. Cheap setup steps that exist only to keep workflow structure intact may
@@ -80,7 +80,7 @@ pull-request events. Once a change lands, push CI runs the full set.
 ## How To Tell Whether A Pull Request Was Gated
 
 Open the CI job log for a skipped or unexpectedly short context and look for
-the `utils/ci_need_suite.py` verdict near the start of the job body.
+the `ci/ci_need_suite.py` verdict near the start of the job body.
 
 `RUN:` means the expensive body was kept. The line includes the file or rule
 that required the suite, or says that discovery failed open.
@@ -97,8 +97,8 @@ To reproduce a decision locally, fetch the pull-request base and run the same
 helper against the branch:
 
 ```sh
-python3 utils/ci_need_suite.py install --target check --extension none --base upstream/master
-python3 utils/ci_need_suite.py extension-upgrade --target check --extension postgis --upgrade-surface --base upstream/master
+python3 ci/ci_need_suite.py install --target check --extension none --base upstream/master
+python3 ci/ci_need_suite.py extension-upgrade --target check --extension postgis --upgrade-surface --base upstream/master
 ```
 
 Status `0` means run. Status `78` means skip.
@@ -117,6 +117,6 @@ force the expensive pull-request bodies. Remove the temporary forcing change
 before merge if it is not part of the intended patch.
 
 If a forced run exposes that the gate skipped a suite it should have run, fix
-the glob or ABI rule in `utils/ci_need_suite.py` or
+the glob or ABI rule in `ci/ci_need_suite.py` or
 `utils/check_upgrade_surface.py` instead of relying on the temporary forcing
 change.

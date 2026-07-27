@@ -41,7 +41,7 @@ steps:
           QA_MODE: usan_clang
     commands:
       - <<: *steps-env
-      - python3 $${SRCDIR}/utils/ci_need_suite.py qa; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
+      - python3 $${SRCDIR}/ci/ci_need_suite.py qa; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
       - <<: *steps-start-postgresql
       - mkdir -p "$${BUILDDIR}"
       - cd "$${BUILDDIR}"
@@ -61,7 +61,7 @@ steps:
           QA_MODE: standard_conforming_strings_off
     commands:
       - <<: *steps-env
-      - python3 $${SRCDIR}/utils/ci_need_suite.py qa; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
+      - python3 $${SRCDIR}/ci/ci_need_suite.py qa; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
       - <<: *steps-start-postgresql
       - mkdir -p "$${BUILDDIR}"
       - cd "$${BUILDDIR}"

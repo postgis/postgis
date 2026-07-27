@@ -89,7 +89,7 @@ def match_any(path: str, globs: tuple[str, ...]) -> str | None:
 
 
 def changed_paths(base: str | None, head: str) -> tuple[list[str], str]:
-    cmd = ["python3", "utils/ci_changed_paths.py", "--head", head]
+    cmd = ["python3", "ci/ci_changed_paths.py", "--head", head]
     if base:
         cmd.extend(["--base", base])
     result = subprocess.run(
