@@ -10,6 +10,8 @@ variables:
     # The test image can need crash recovery after clone-local startup. Under
     # multi-workflow I/O load, Debian's default 60-second pg_ctl wait is short.
     - printf '%s\n' "pg_ctl_options = '-t 300'" > /etc/postgresql/$${PGVER}/main/pg_ctl.conf
+    - install -d /etc/postgresql/$${PGVER}/main/conf.d
+    - printf '%s\n' "fsync = off" "full_page_writes = off" "synchronous_commit = off" > /etc/postgresql/$${PGVER}/main/conf.d/postgis-ci-durability.conf
     - export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
     - export RUNTESTFLAGS="-v
       --after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql
