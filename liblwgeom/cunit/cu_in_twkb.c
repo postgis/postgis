@@ -243,7 +243,7 @@ test_twkb_in_truncated_extended_dims(void)
 	 * out-of-buffer read while constructing the header.
 	 */
 	ASSERT_STRING_EQUAL(cu_error_msg, "twkb_parse_state_advance: TWKB structure does not match expected size!");
-	CU_ASSERT_PTR_NOT_NULL(geom);
+	CU_ASSERT_PTR_NULL(geom);
 	if (geom != NULL)
 		lwgeom_free(geom);
 	cu_error_msg_reset();
@@ -275,6 +275,7 @@ test_twkb_in_overlong_varint(void)
 	 * than the C type width before the parser could report malformed input.
 	 */
 	ASSERT_STRING_EQUAL(cu_error_msg, "varint_u64_decode: varint exceeds 64 bits");
+	CU_ASSERT_PTR_NULL(geom);
 	if (geom != NULL)
 		lwgeom_free(geom);
 	cu_error_msg_reset();
@@ -303,6 +304,7 @@ test_twkb_in_count_exceeds_payload(void)
 	 */
 	ASSERT_STRING_EQUAL(cu_error_msg,
 			    "twkb_parse_state_has_min_bytes: TWKB element count exceeds remaining payload");
+	CU_ASSERT_PTR_NULL(geom);
 	if (geom != NULL)
 		lwgeom_free(geom);
 	cu_error_msg_reset();
@@ -359,6 +361,7 @@ test_twkb_in_coordinate_delta_wraparound(void)
 	 * wrap hostile inputs into the int64_t accumulator range.
 	 */
 	CU_ASSERT(strstr(cu_error_msg, "called with n=0 and npoints=0") != NULL);
+	CU_ASSERT_PTR_NULL(geom);
 	if (geom != NULL)
 		lwgeom_free(geom);
 	cu_error_msg_reset();
@@ -387,6 +390,24 @@ test_twkb_in_linestring_coordinate_delta_wraparound(void)
 	cu_error_msg_reset();
 }
 
+static void
+test_twkb_in_unsupported_type(void)
+{
+	const uint8_t twkb[] = {0x08, /* unsupported TWKB type with default precision. */
+				0x00};
+	LWGEOM *geom;
+
+	cu_error_msg_reset();
+
+	geom = lwgeom_from_twkb(twkb, sizeof(twkb), LW_PARSER_CHECK_NONE);
+
+	ASSERT_STRING_EQUAL(cu_error_msg, "lwgeom_from_twkb_state: Unsupported geometry type: Unknown");
+	CU_ASSERT_PTR_NULL(geom);
+	if (geom != NULL)
+		lwgeom_free(geom);
+	cu_error_msg_reset();
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -408,4 +429,5 @@ void twkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_twkb_in_deep_collection);
 	PG_ADD_TEST(suite, test_twkb_in_coordinate_delta_wraparound);
 	PG_ADD_TEST(suite, test_twkb_in_linestring_coordinate_delta_wraparound);
+	PG_ADD_TEST(suite, test_twkb_in_unsupported_type);
 }

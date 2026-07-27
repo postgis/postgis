@@ -398,7 +398,10 @@ static void wkb_swap_bytes(wkb_parse_state *s)
 		lwerror("Invalid endian flag value encountered.");
 
 	if( wkb_little_endian != 1 && wkb_little_endian != 0 )
+	{
+		s->error = LW_TRUE;
 		lwerror("Invalid endian flag value encountered.");
+	}
 
 	/* Check the endianness of our input  */
 	s->swap_bytes = LW_FALSE;
