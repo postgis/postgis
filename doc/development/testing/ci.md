@@ -30,6 +30,7 @@ service that owns the behavior:
 | Winnie Windows jobs | `ci/winnie/` and the Winnie Jenkins jobs |
 | Bessie and Berrie/Berrie64 jobs | `ci/bessie/`, `ci/berrie*`, and the corresponding Jenkins worker labels |
 | Docker build images used by GitHub Actions | `postgis/postgis-build-env` image tags referenced from `.github/workflows/ci.yml` |
+| Woodpecker MinGW Wine job | `.woodpecker/mingw-wine.yml` and `ci/dronie/postgis_mingw_wine.sh` |
 
 When a dashboard row describes dependency versions, operating systems, branch
 coverage, or test modes, the row should be regenerated from those sources or
@@ -180,3 +181,27 @@ present. Use [Release process](../release-process.md) for release-manager
 greenlight checks, Debbie release jobs, and branch-opening steps. Use [Website
 maintenance](../website.md) and the public website compatibility matrix for
 user-facing support status.
+
+## MinGW Wine Coverage Limits
+
+The Woodpecker MinGW Wine job cross-builds Windows binaries with MinGW and runs
+them under Wine against a Windows PostgreSQL binary distribution. This gives the
+project pull-request-visible Windows binary coverage when native Windows CI is
+not available, but it is not native Windows parity.
+
+Keep the remaining gaps explicit when changing this job:
+
+* Native Windows filesystem behavior is not covered: NT path handling and path
+  length, drive-letter and UNC semantics, and MSYS2 path translation are outside
+  Wine's Linux-hosted process model.
+* Native Windows service behavior is not covered: service registration and SCM
+  operation are not exercised by a Wine-started PostgreSQL process.
+* Native Windows runtime behavior is only partially covered: Wine can expose
+  Windows CRT, locale, codepage, threading, file-locking, and DLL-search
+  issues, but it is not a substitute for running the same binaries on Windows.
+* SFCGAL is not built in this job unless the script also provides a MinGW
+  SFCGAL dependency stack. The job must not report SFCGAL coverage merely
+  because the rest of PostGIS was configured.
+* `address_standardizer` and the tiger geocoder are not part of this repository.
+  They need their own repository-owned Windows or Wine coverage if that scope is
+  required.

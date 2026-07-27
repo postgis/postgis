@@ -40,7 +40,7 @@ export WINEPREFIX=${DEFAULT_WINEPREFIX}
 export WINEARCH=${WINEARCH:-win64}
 WINE_TMPDIR=${WINE_TMPDIR:-${TMP_ROOT}/wine-tmp}
 WINE=${WINE:-wine}
-XVFB_WINE=(env -u XDG_RUNTIME_DIR TMPDIR="${WINE_TMPDIR}" xvfb-run -a "${WINE}")
+XVFB_WINE=(env -u XDG_RUNTIME_DIR -u DISPLAY -u WAYLAND_DISPLAY TMPDIR="${WINE_TMPDIR}" xvfb-run -a "${WINE}")
 CURL=(curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 30 -fL)
 
 phase_log()
@@ -615,13 +615,21 @@ build_postgis_targets()
 {
 	cd "${REPO_ROOT}/${BUILD_DIR}"
 	run_logged "${LOG_DIR}/postgis.make.log" make -j1
-	run_logged "${LOG_DIR}/postgis.cunit.make.log" make -C liblwgeom/cunit -j1
+	run_logged "${LOG_DIR}/postgis.cunit.make.log" make -C liblwgeom/cunit all -j1
+	run_logged "${LOG_DIR}/postgis.backend-cunit.make.log" make -C postgis/cunit all -j1
+	run_logged "${LOG_DIR}/postgis.loader-cunit.make.log" make -C loader/cunit all -j1
+	run_logged "${LOG_DIR}/postgis.raster-cunit.make.log" make -C raster/test/cunit all -j1
 	run_logged "${LOG_DIR}/postgis.install.log" make install
+	run_logged "${LOG_DIR}/postgis.install-upgrades.log" make install-extension-upgrades-from-known-versions
 
 	echo "BUILD_TAIL_BEGIN"
 	tail -120 "${LOG_DIR}/postgis.make.log"
 	tail -80 "${LOG_DIR}/postgis.cunit.make.log"
+	tail -80 "${LOG_DIR}/postgis.backend-cunit.make.log"
+	tail -80 "${LOG_DIR}/postgis.loader-cunit.make.log"
+	tail -80 "${LOG_DIR}/postgis.raster-cunit.make.log"
 	tail -120 "${LOG_DIR}/postgis.install.log"
+	tail -80 "${LOG_DIR}/postgis.install-upgrades.log"
 	echo "BUILD_TAIL_END"
 }
 
@@ -633,13 +641,45 @@ copy_mingw_runtime_dlls()
 		path=$(find "/usr/lib/gcc/${TARGET}" "/usr/${TARGET}" "${PREFIX}" -name "${dll}" -print -quit 2>/dev/null || true)
 		if test -n "${path}"; then
 			cp "${path}" liblwgeom/cunit/
+			cp "${path}" postgis/cunit/
+			cp "${path}" loader/cunit/
 			cp "${path}" loader/
 			if test -d raster/loader; then
 				cp "${path}" raster/loader/
 			fi
+			if test -d raster/test/cunit; then
+				cp "${path}" raster/test/cunit/
+			fi
 			cp "${path}" "${PGWIN_ROOT}/bin/" || true
 		fi
 	done
+}
+
+cunit_runner()
+{
+	local dir=$1
+	local runner
+	for runner in "${dir}/cu_tester.exe" "${dir}/.libs/cu_tester.exe" "${dir}/cu_tester"; do
+		if test -f "${runner}"; then
+			printf '%s\n' "${runner}"
+			return 0
+		fi
+	done
+	echo "CUnit runner not found under ${dir}" >&2
+	exit 1
+}
+
+run_cunit_wine_suite()
+{
+	local name=$1
+	local dir=$2
+	local runner
+	runner=$(cunit_runner "${dir}")
+	"${XVFB_WINE[@]}" "${runner}" > "${LOG_DIR}/${name}.cunit.wine.log" 2>&1 \
+		|| log_tail "$?" "${LOG_DIR}/${name}.cunit.wine.log"
+	echo "CUNIT_WINE_${name}_BEGIN"
+	tail -80 "${LOG_DIR}/${name}.cunit.wine.log"
+	echo "CUNIT_WINE_${name}_END"
 }
 
 prepare_wine_prefix()
@@ -659,23 +699,17 @@ prepare_wine_prefix()
 
 run_wine_checks()
 {
-	local cunit_runner
 	cd "${REPO_ROOT}/${BUILD_DIR}"
-	cunit_runner=liblwgeom/cunit/cu_tester.exe
-	if test ! -f "${cunit_runner}"; then
-		cunit_runner=liblwgeom/cunit/cu_tester
-	fi
 
 	case "${WINEPREFIX}" in
 		"${TMP_ROOT}"/*) rm -rf "${WINEPREFIX}" ;;
 	esac
 	prepare_wine_prefix
 	copy_mingw_runtime_dlls
-	"${XVFB_WINE[@]}" "${cunit_runner}" > "${LOG_DIR}/postgis.cunit.wine.log" 2>&1 \
-		|| log_tail "$?" "${LOG_DIR}/postgis.cunit.wine.log"
-	echo "CUNIT_WINE_BEGIN"
-	tail -80 "${LOG_DIR}/postgis.cunit.wine.log"
-	echo "CUNIT_WINE_END"
+	run_cunit_wine_suite liblwgeom liblwgeom/cunit
+	run_cunit_wine_suite postgis postgis/cunit
+	run_cunit_wine_suite loader loader/cunit
+	run_cunit_wine_suite raster raster/test/cunit
 
 	"${XVFB_WINE[@]}" loader/shp2pgsql.exe -s 4326 "${REPO_ROOT}/regress/loader/Point" public.point \
 		> "${LOG_DIR}/point.sql" 2>"${LOG_DIR}/shp2pgsql.stderr" \
@@ -813,19 +847,48 @@ install_regression_wrappers()
 		fi
 		cat >"${wrapdir}/${exe}" <<EOF
 #!/bin/sh
-exec env -u XDG_RUNTIME_DIR TMPDIR='${WINE_TMPDIR}' '${WINE}' '${exe_path}' "\$@"
+exec env -u XDG_RUNTIME_DIR -u DISPLAY -u WAYLAND_DISPLAY TMPDIR='${WINE_TMPDIR}' xvfb-run -a '${WINE}' '${exe_path}' "\$@"
+EOF
+		chmod +x "${wrapdir}/${exe}"
+	done
+	for exe in pg_dump pg_restore; do
+		cat >"${wrapdir}/${exe}" <<EOF
+#!/bin/sh
+exec env -u XDG_RUNTIME_DIR -u DISPLAY -u WAYLAND_DISPLAY TMPDIR='${WINE_TMPDIR}' xvfb-run -a '${WINE}' '${PGWIN_RUN_ROOT}/bin/${exe}.exe' "\$@"
 EOF
 		chmod +x "${wrapdir}/${exe}"
 	done
 	export PATH="${wrapdir}:${PATH}"
 }
 
+run_regression_target()
+{
+	local name=$1
+	shift
+	local log="${LOG_DIR}/${name}.log"
+	local started
+	started=$(date +%s)
+	run_logged "${log}" "$@"
+	phase_log "TEST_SECONDS ${name} $(( $(date +%s) - started ))"
+}
+
+print_regression_summary()
+{
+	local label=$1
+	local log=$2
+	echo "${label}_BEGIN"
+	grep -E '^(Run tests|Running|PASS|FAIL|SKIP|ERROR|Failed|Summary|Suite|INFO)' "${log}" | tail -240 || tail -240 "${log}"
+	echo "${label}_END"
+}
+
 run_regressions()
 {
+	local currentversion
 	local regress_installdir
 	cd "${REPO_ROOT}/${BUILD_DIR}"
 	install_regression_wrappers
 	regress_installdir="${REPO_ROOT}/${BUILD_DIR}/regress/00-regress-install"
+	currentversion=$(grep '^POSTGIS_' "${REPO_ROOT}/Version.config" | cut -d= -f2 | paste -sd '.')
 	export PGHOST PGPORT PGUSER
 	export PGDATABASE=postgres
 	export PGIS_REG_TMPDIR="${TMP_ROOT}/pgis_reg"
@@ -836,10 +899,22 @@ run_regressions()
 	echo "POSTGIS_FULL_VERSION_BEGIN"
 	cat "${LOG_DIR}/postgis.full-version.log"
 	echo "POSTGIS_FULL_VERSION_END"
-	run_logged "${LOG_DIR}/postgis.installcheck.log" make installcheck RUNTESTFLAGS="${RUNTESTFLAGS}" REGRESS_INSTALLDIR="${regress_installdir}"
-	echo "REGRESSION_SUMMARY_BEGIN"
-	grep -E '^(Run tests|Running|PASS|FAIL|SKIP|ERROR|Failed|Summary|Suite)' "${LOG_DIR}/postgis.installcheck.log" | tail -200 || tail -200 "${LOG_DIR}/postgis.installcheck.log"
-	echo "REGRESSION_SUMMARY_END"
+	run_regression_target postgis.installcheck-base make installcheck-base RUNTESTFLAGS="${RUNTESTFLAGS}" REGRESS_INSTALLDIR="${regress_installdir}"
+	run_regression_target postgis.installcheck-upgrade-unpackaged make installcheck-upgrade-from-unpackaged RUNTESTFLAGS="${RUNTESTFLAGS}" REGRESS_INSTALLDIR="${regress_installdir}"
+	run_regression_target postgis.installcheck-upgrade-unpackaged-by-func make installcheck-upgrade-from-unpackaged-by-func RUNTESTFLAGS="${RUNTESTFLAGS}" REGRESS_INSTALLDIR="${regress_installdir}"
+	run_regression_target postgis.installcheck-upgrade-packaged-by-func make installcheck-upgrade-from-packaged-by-func RUNTESTFLAGS="${RUNTESTFLAGS}" REGRESS_INSTALLDIR="${regress_installdir}"
+	run_regression_target postgis.dumprestore make check-regress RUNTESTFLAGS="${RUNTESTFLAGS} --dumprestore --extension" REGRESS_INSTALLDIR="${regress_installdir}"
+	run_regression_target postgis.all-upgrades-postgis "${REPO_ROOT}/utils/check_all_upgrades.sh" -s --extension postgis "${currentversion}!"
+	run_regression_target postgis.all-upgrades-raster "${REPO_ROOT}/utils/check_all_upgrades.sh" -s --extension postgis_raster "${currentversion}!"
+	run_regression_target postgis.all-upgrades-topology "${REPO_ROOT}/utils/check_all_upgrades.sh" -s --extension postgis_topology "${currentversion}!"
+	print_regression_summary REGRESSION_INSTALLCHECK_BASE "${LOG_DIR}/postgis.installcheck-base.log"
+	print_regression_summary REGRESSION_INSTALLCHECK_UPGRADE_UNPACKAGED "${LOG_DIR}/postgis.installcheck-upgrade-unpackaged.log"
+	print_regression_summary REGRESSION_INSTALLCHECK_UPGRADE_UNPACKAGED_BY_FUNC "${LOG_DIR}/postgis.installcheck-upgrade-unpackaged-by-func.log"
+	print_regression_summary REGRESSION_INSTALLCHECK_UPGRADE_PACKAGED_BY_FUNC "${LOG_DIR}/postgis.installcheck-upgrade-packaged-by-func.log"
+	print_regression_summary REGRESSION_DUMPRESTORE "${LOG_DIR}/postgis.dumprestore.log"
+	print_regression_summary REGRESSION_ALL_UPGRADES_POSTGIS "${LOG_DIR}/postgis.all-upgrades-postgis.log"
+	print_regression_summary REGRESSION_ALL_UPGRADES_RASTER "${LOG_DIR}/postgis.all-upgrades-raster.log"
+	print_regression_summary REGRESSION_ALL_UPGRADES_TOPOLOGY "${LOG_DIR}/postgis.all-upgrades-topology.log"
 }
 
 main()
