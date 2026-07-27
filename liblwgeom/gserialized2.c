@@ -48,18 +48,43 @@
 #include "gserialized2.h"
 
 #include <stddef.h>
+#if defined(__has_feature)
+#if __has_feature(address_sanitizer)
+#define POSTGIS_ASAN_ALLOCATOR_SIZE 1
+#endif
+#endif
+#if defined(__SANITIZE_ADDRESS__)
+#define POSTGIS_ASAN_ALLOCATOR_SIZE 1
+#endif
+#if defined(POSTGIS_ASAN_ALLOCATOR_SIZE)
+#include <sanitizer/allocator_interface.h>
+#endif
 
 /***********************************************************************
 * GSERIALIZED metadata utility functions.
 */
 
 static int gserialized2_read_gbox_p(const GSERIALIZED *g, GBOX *gbox);
+static int gserialized2_payload_bounds(const GSERIALIZED *g, uint8_t **start, uint8_t **end);
+static int gserialized2_validate_geometry_buffer(uint8_t *data_ptr, uint8_t *data_end, lwflags_t lwflags, size_t *size);
 
+static size_t
+gserialized2_buffer_size(const GSERIALIZED *g)
+{
+	size_t gsize = LWSIZE_GET(g->size);
+#if defined(POSTGIS_ASAN_ALLOCATOR_SIZE)
+	size_t allocated_size = __sanitizer_get_allocated_size(g);
+	if (allocated_size > 0 && allocated_size < gsize)
+		return allocated_size;
+#endif
+	return gsize;
+}
 
 lwflags_t gserialized2_get_lwflags(const GSERIALIZED *g)
 {
 	lwflags_t lwflags = 0;
 	uint8_t gflags = g->gflags;
+	size_t gsize = gserialized2_buffer_size(g);
 	FLAGS_SET_Z(lwflags, G2FLAGS_GET_Z(gflags));
 	FLAGS_SET_M(lwflags, G2FLAGS_GET_M(gflags));
 	FLAGS_SET_BBOX(lwflags, G2FLAGS_GET_BBOX(gflags));
@@ -67,6 +92,11 @@ lwflags_t gserialized2_get_lwflags(const GSERIALIZED *g)
 	if (G2FLAGS_GET_EXTENDED(gflags))
 	{
 		uint64_t xflags = 0;
+		if (gsize < offsetof(GSERIALIZED, data) + sizeof(uint64_t))
+		{
+			lwerror("%s: GSERIALIZED too small for extended flags", __func__);
+			return lwflags;
+		}
 		memcpy(&xflags, g->data, sizeof(uint64_t));
 		FLAGS_SET_SOLID(lwflags, xflags & G2FLAG_X_SOLID);
 	}
@@ -185,24 +215,31 @@ uint32_t gserialized2_max_header_size(void)
 uint32_t gserialized2_get_type(const GSERIALIZED *g)
 {
 	uint8_t *ptr = gserialized2_get_geometry_p(g);
+	size_t hsz = gserialized2_header_size(g);
+	size_t gsize = gserialized2_buffer_size(g);
+	if (gsize < hsz + sizeof(uint32_t))
+	{
+		lwerror("%s: GSERIALIZED too small for geometry type", __func__);
+		return 0;
+	}
 	return *((uint32_t*)(ptr));
 }
 
 int32_t gserialized2_get_srid(const GSERIALIZED *g)
 {
-	int32_t srid = 0;
-	srid = srid | (g->srid[0] << 16);
-	srid = srid | (g->srid[1] << 8);
-	srid = srid | (g->srid[2]);
-	/* Only the first 21 bits are set. Slide up and back to pull
-	   the negative bits down, if we need them. */
-	srid = (srid<<11)>>11;
+	uint32_t srid = 0;
+	srid = srid | ((uint32_t)g->srid[0] << 16);
+	srid = srid | ((uint32_t)g->srid[1] << 8);
+	srid = srid | (uint32_t)g->srid[2];
+	/* Only the first 21 bits are set. Sign-extend without signed shift UB. */
+	if (srid & 0x00100000)
+		srid |= 0xFFE00000;
 
 	/* 0 is our internal unknown value. We'll map back and forth here for now */
 	if (srid == 0)
 		return SRID_UNKNOWN;
 	else
-		return srid;
+		return (int32_t)srid;
 }
 
 void gserialized2_set_srid(GSERIALIZED *g, int32_t srid)
@@ -219,6 +256,204 @@ void gserialized2_set_srid(GSERIALIZED *g, int32_t srid)
 	g->srid[0] = (srid & 0x001F0000) >> 16;
 	g->srid[1] = (srid & 0x0000FF00) >> 8;
 	g->srid[2] = (srid & 0x000000FF);
+}
+
+static int
+gserialized2_range_available(const uint8_t *ptr, const uint8_t *end, size_t len)
+{
+	return ptr <= end && len <= (size_t)(end - ptr);
+}
+
+static int
+gserialized2_checked_mul(size_t a, size_t b, size_t *out)
+{
+	if (a != 0 && b > SIZE_MAX / a)
+		return LW_FAILURE;
+	*out = a * b;
+	return LW_SUCCESS;
+}
+
+static int
+gserialized2_checked_add(size_t a, size_t b, size_t *out)
+{
+	if (b > SIZE_MAX - a)
+		return LW_FAILURE;
+	*out = a + b;
+	return LW_SUCCESS;
+}
+
+static int
+gserialized2_payload_bounds(const GSERIALIZED *g, uint8_t **start, uint8_t **end)
+{
+	size_t hsz;
+	size_t gsize;
+
+	if (!g)
+		return LW_FAILURE;
+
+	hsz = gserialized2_header_size(g);
+	gsize = gserialized2_buffer_size(g);
+	if (gsize < hsz)
+		return LW_FAILURE;
+
+	if (start)
+		*start = (uint8_t *)g + hsz;
+	if (end)
+		*end = (uint8_t *)g + gsize;
+	return LW_SUCCESS;
+}
+
+static uint32_t
+gserialized2_read_uint32_checked(uint8_t *ptr, uint8_t *end, const char *field)
+{
+	uint32_t value = 0;
+	if (!gserialized2_range_available(ptr, end, sizeof(uint32_t)))
+	{
+		lwerror("%s: GSERIALIZED too small for %s", __func__, field);
+		return 0;
+	}
+	memcpy(&value, ptr, sizeof(uint32_t));
+	return value;
+}
+
+static int
+gserialized2_pointarray_payload_size(uint32_t npoints, lwflags_t lwflags, size_t *nbytes)
+{
+	if (gserialized2_checked_mul((size_t)npoints, sizeof(double) * FLAGS_NDIMS(lwflags), nbytes) == LW_FAILURE)
+	{
+		lwerror("%s: GSERIALIZED point count overflows payload size", __func__);
+		return LW_FAILURE;
+	}
+	return LW_SUCCESS;
+}
+
+static int
+gserialized2_validate_geometry_buffer(uint8_t *data_ptr, uint8_t *data_end, lwflags_t lwflags, size_t *size)
+{
+	uint32_t type, count;
+	size_t consumed = 0;
+
+	if (!gserialized2_range_available(data_ptr, data_end, 2 * sizeof(uint32_t)))
+	{
+		lwerror("%s: GSERIALIZED geometry payload is too short", __func__);
+		return LW_FAILURE;
+	}
+
+	type = gserialized2_read_uint32_checked(data_ptr, data_end, "geometry type");
+	count = gserialized2_read_uint32_checked(data_ptr + sizeof(uint32_t), data_end, "geometry count");
+
+	switch (type)
+	{
+	case POINTTYPE:
+		if (count > 1)
+		{
+			lwerror("%s: invalid point count %u", __func__, count);
+			return LW_FAILURE;
+		}
+		/* fall through */
+	case LINETYPE:
+	case CIRCSTRINGTYPE:
+	case TRIANGLETYPE: {
+		size_t point_bytes;
+		if (gserialized2_pointarray_payload_size(count, lwflags, &point_bytes) == LW_FAILURE)
+			return LW_FAILURE;
+		consumed = 2 * sizeof(uint32_t) + point_bytes;
+		break;
+	}
+
+	case POLYGONTYPE: {
+		size_t ring_counts_size, ring_counts_padded_size, point_bytes_sum = 0;
+		uint8_t *ring_counts = data_ptr + 2 * sizeof(uint32_t);
+		uint32_t i;
+
+		if (gserialized2_checked_mul((size_t)count, sizeof(uint32_t), &ring_counts_size) == LW_FAILURE)
+		{
+			lwerror("%s: GSERIALIZED ring count overflows payload size", __func__);
+			return LW_FAILURE;
+		}
+		ring_counts_padded_size = ring_counts_size + ((count % 2) ? sizeof(uint32_t) : 0);
+		if (!gserialized2_range_available(ring_counts, data_end, ring_counts_padded_size))
+		{
+			lwerror("%s: GSERIALIZED polygon ring table exceeds payload size", __func__);
+			return LW_FAILURE;
+		}
+
+		for (i = 0; i < count; i++)
+		{
+			size_t ring_point_bytes;
+			uint32_t npoints = gserialized2_read_uint32_checked(
+			    ring_counts + i * sizeof(uint32_t), data_end, "ring point count");
+			if (gserialized2_pointarray_payload_size(npoints, lwflags, &ring_point_bytes) == LW_FAILURE)
+				return LW_FAILURE;
+			if (gserialized2_checked_add(point_bytes_sum, ring_point_bytes, &point_bytes_sum) == LW_FAILURE)
+			{
+				lwerror("%s: GSERIALIZED polygon coordinate size overflows", __func__);
+				return LW_FAILURE;
+			}
+		}
+		consumed = 2 * sizeof(uint32_t) + ring_counts_padded_size;
+		if (gserialized2_checked_add(consumed, point_bytes_sum, &consumed) == LW_FAILURE)
+		{
+			lwerror("%s: GSERIALIZED polygon size overflows", __func__);
+			return LW_FAILURE;
+		}
+		break;
+	}
+
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+	case COLLECTIONTYPE: {
+		uint32_t i;
+		uint8_t *subgeom_ptr = data_ptr + 2 * sizeof(uint32_t);
+		lwflags_t subflags = lwflags;
+		FLAGS_SET_BBOX(subflags, 0);
+		for (i = 0; i < count; i++)
+		{
+			size_t subsize = 0;
+			uint32_t subtype =
+			    gserialized2_read_uint32_checked(subgeom_ptr, data_end, "collection subtype");
+			if (!lwcollection_allows_subtype(type, subtype))
+			{
+				lwerror("Invalid subtype (%s) for collection type (%s)",
+					lwtype_name(subtype),
+					lwtype_name(type));
+				return LW_FAILURE;
+			}
+			if (gserialized2_validate_geometry_buffer(subgeom_ptr, data_end, subflags, &subsize) ==
+			    LW_FAILURE)
+				return LW_FAILURE;
+			if (subsize == 0)
+			{
+				lwerror("%s: GSERIALIZED collection member has zero size", __func__);
+				return LW_FAILURE;
+			}
+			subgeom_ptr += subsize;
+		}
+		consumed = (size_t)(subgeom_ptr - data_ptr);
+		break;
+	}
+
+	default:
+		lwerror("Unknown geometry type: %d - %s", type, lwtype_name(type));
+		return LW_FAILURE;
+	}
+
+	if (!gserialized2_range_available(data_ptr, data_end, consumed))
+	{
+		lwerror("%s: GSERIALIZED geometry payload exceeds declared size", __func__);
+		return LW_FAILURE;
+	}
+
+	if (size)
+		*size = consumed;
+	return LW_SUCCESS;
 }
 
 static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty);
@@ -285,7 +520,14 @@ static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty)
 int gserialized2_is_empty(const GSERIALIZED *g)
 {
 	int isempty = LW_TRUE;
-	uint8_t *p = gserialized2_get_geometry_p(g);
+	uint8_t *p, *end;
+	if (gserialized2_payload_bounds(g, &p, &end) == LW_FAILURE)
+	{
+		lwerror("%s: invalid GSERIALIZED header size", __func__);
+		return LW_TRUE;
+	}
+	if (gserialized2_validate_geometry_buffer(p, end, gserialized2_get_lwflags(g), NULL) == LW_FAILURE)
+		return LW_TRUE;
 	gserialized2_is_empty_recurse(p, &isempty);
 	return isempty;
 }
@@ -329,6 +571,8 @@ const float * gserialized2_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 {
 	uint8_t *ptr = (uint8_t*)(g->data);
 	size_t bndims = G2FLAGS_NDIMS_BOX(g->gflags);
+	size_t box_offset = offsetof(GSERIALIZED, data);
+	size_t box_size = gserialized2_box_size(g);
 
 	if (ndims)
 		*ndims = bndims;
@@ -339,7 +583,13 @@ const float * gserialized2_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 
 	/* Advance past optional extended flags */
 	if (gserialized2_has_extended(g))
+	{
 		ptr += 8;
+		box_offset += 8;
+	}
+
+	if (gserialized2_buffer_size(g) < box_offset + box_size)
+		return NULL;
 
 	return (const float *)(ptr);
 }
@@ -358,6 +608,8 @@ int gserialized2_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 	{
 		int i = 0;
 		const float *fbox = gserialized2_get_float_box_p(g, NULL);
+		if (!fbox)
+			return LW_FAILURE;
 		gbox->xmin = fbox[i++];
 		gbox->xmax = fbox[i++];
 		gbox->ymin = fbox[i++];
@@ -393,10 +645,20 @@ int gserialized2_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 int
 gserialized2_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
-	uint32_t type = gserialized2_get_type(g);
-	uint8_t *geometry_start = gserialized2_get_geometry_p(g);
-	double *dptr = (double *)(geometry_start);
-	int32_t *iptr = (int32_t *)(geometry_start);
+	uint32_t type;
+	uint8_t *geometry_start = NULL;
+	uint8_t *geometry_end = NULL;
+	double *dptr = NULL;
+	int32_t *iptr = NULL;
+
+	if (gserialized2_payload_bounds(g, &geometry_start, &geometry_end) == LW_FAILURE)
+		return LW_FAILURE;
+	if (gserialized2_validate_geometry_buffer(geometry_start, geometry_end, gserialized2_get_lwflags(g), NULL) ==
+	    LW_FAILURE)
+		return LW_FAILURE;
+	type = gserialized2_get_type(g);
+	dptr = (double *)(geometry_start);
+	iptr = (int32_t *)(geometry_start);
 
 	/* Peeking doesn't help if you already have a box or are geodetic */
 	if (G2FLAGS_GET_GEODETIC(g->gflags) || G2FLAGS_GET_BBOX(g->gflags))
@@ -581,7 +843,14 @@ gserialized2_copy_point(double *dptr, lwflags_t flags, POINT4D *out_point)
 int
 gserialized2_peek_first_point(const GSERIALIZED *g, POINT4D *out_point)
 {
-	uint8_t *geometry_start = gserialized2_get_geometry_p(g);
+	uint8_t *geometry_start = NULL;
+	uint8_t *geometry_end = NULL;
+
+	if (gserialized2_payload_bounds(g, &geometry_start, &geometry_end) == LW_FAILURE)
+		return LW_FAILURE;
+	if (gserialized2_validate_geometry_buffer(geometry_start, geometry_end, gserialized2_get_lwflags(g), NULL) ==
+	    LW_FAILURE)
+		return LW_FAILURE;
 
 	uint32_t isEmpty = (((uint32_t *)geometry_start)[1]) == 0;
 	if (isEmpty)
@@ -1540,22 +1809,19 @@ LWGEOM* lwgeom_from_gserialized2(const GSERIALIZED *g)
 	assert(g);
 
 	srid = gserialized2_get_srid(g);
-	lwtype = gserialized2_get_type(g);
 	lwflags = gserialized2_get_lwflags(g);
 
-	LWDEBUGF(4, "Got type %d (%s), srid=%d", lwtype, lwtype_name(lwtype), srid);
-
-	data_ptr = (uint8_t*)g->data;
-
-	/* Skip optional flags */
-	if (G2FLAGS_GET_EXTENDED(g->gflags))
+	if (gserialized2_payload_bounds(g, &data_ptr, NULL) == LW_FAILURE)
 	{
-		data_ptr += sizeof(uint64_t);
+		lwerror("%s: invalid GSERIALIZED header size", __func__);
+		return NULL;
 	}
+	if (gserialized2_validate_geometry_buffer(
+		data_ptr, (uint8_t *)g + gserialized2_buffer_size(g), lwflags, NULL) == LW_FAILURE)
+		return NULL;
+	lwtype = gserialized2_get_type(g);
 
-	/* Skip over optional bounding box */
-	if (FLAGS_GET_BBOX(lwflags))
-		data_ptr += gbox_serialized_size(lwflags);
+	LWDEBUGF(4, "Got type %d (%s), srid=%d", lwtype, lwtype_name(lwtype), srid);
 
 	lwgeom = lwgeom_from_gserialized2_buffer(data_ptr, lwflags, &size, srid);
 
