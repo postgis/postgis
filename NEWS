@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
+      (Darafei Praliaskouski)
   - GT-779, [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
     metadata and pixel-read restrictions after upgrade
     (reported by Sarath Kumar, IITM Pravartak Security Team;
