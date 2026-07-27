@@ -1583,8 +1583,8 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	LWPOLY *outpoly;
 	LWCURVEPOLY *outcurvepoly;
 	uint32 nholes = 0;
+	uint32 nitems = 0;
 	uint32 i;
-	size_t offset = 0;
 	int has_curve_ring = LW_FALSE;
 	int32_t srid;
 	int has_z;
@@ -1607,31 +1607,34 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	/* Get input holes if any */
 	if (PG_NARGS() > 1)
 	{
+		ArrayIterator iterator;
+		Datum value;
+		bool isnull;
+
 		array = PG_GETARG_ARRAYTYPE_P(1);
-		nholes = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-		rings = lwalloc(sizeof(LWGEOM *) * (nholes + 1));
-		holes = lwalloc(sizeof(LWLINE *) * nholes);
-		for (i = 0; i < nholes; i++)
+		nitems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		rings = lwalloc(sizeof(LWGEOM *) * (nitems + 1));
+		holes = lwalloc(sizeof(LWLINE *) * nitems);
+		iterator = array_create_iterator(array, 0, NULL);
+		while (array_iterate(iterator, &value, &isnull))
 		{
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsign-compare"
-#endif
-			GSERIALIZED *g = (GSERIALIZED *)(ARR_DATA_PTR(array) + offset);
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-#pragma GCC diagnostic pop
-#endif
+			GSERIALIZED *g;
 			LWGEOM *hole;
-			offset += INTALIGN(VARSIZE(g));
+
+			if (isnull)
+				continue;
+
+			g = (GSERIALIZED *)DatumGetPointer(value);
 			if (!lwgeom_is_makepoly_ring_type(gserialized_get_type(g)))
 			{
-				lwpgerror("Hole %d is not a line", i);
+				lwpgerror("Hole %d is not a line", nholes);
 			}
 			hole = lwgeom_from_gserialized(g);
 			has_curve_ring |= hole->type != LINETYPE;
-			rings[i + 1] = hole;
-			holes[i] = lwgeom_as_lwline(hole);
+			rings[nholes + 1] = hole;
+			holes[nholes++] = lwgeom_as_lwline(hole);
 		}
+		array_free_iterator(iterator);
 	}
 
 	if (has_curve_ring)
