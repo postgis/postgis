@@ -6,8 +6,11 @@ when:
 # This workflow keeps the existing amd64 CI honest by attacking ABI properties
 # that normal amd64 builds cannot falsify.
 #
-# Tier 1: armhf via arm32v7/debian under QEMU. This mirrors berrie: 32-bit
-# pointers and long, unsigned char, and stricter alignment than amd64.
+# Tier 1: armhf via arm32v7/debian under QEMU. The step pins the arm/v7
+# manifest digest because the Docker backend does not pass a per-step platform
+# override; a tag-only pull from an amd64 daemon asks Docker Hub for an amd64
+# variant and fails before QEMU can run. This mirrors berrie: 32-bit pointers
+# and long, unsigned char, and stricter alignment than amd64.
 #
 # Tier 2: s390x via s390x/debian under QEMU. This is the practical big-endian
 # target for WKB/EWKB, TWKB, raster byte order, hashes, and integer memcpy paths.
@@ -125,7 +128,7 @@ steps:
       - *build-and-test
 
   armhf-berrie-qemu:
-    image: arm32v7/debian:trixie
+    image: arm32v7/debian@sha256:743aca1ad24c5e48132df88f561f8d1365bfb6da33e006eb44b44fe32a7a30eb
     pull: true
     commands:
       - uname -m | grep -E '^(armv7l|armv8l)$'
