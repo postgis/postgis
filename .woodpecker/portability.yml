@@ -79,6 +79,8 @@ variables:
       $${SRCDIR}/regress/core/wkb \
       $${SRCDIR}/regress/core/twkb \
       $${SRCDIR}/regress/core/sql-mm-serialize \
+      $${SRCDIR}/regress/core/curvetoline \
+      $${SRCDIR}/regress/core/geography_centroid \
       $${SRCDIR}/regress/core/in_geojson \
       $${SRCDIR}/regress/core/out_geojson \
       $${SRCDIR}/regress/core/in_gml \
@@ -88,6 +90,12 @@ variables:
       $${SRCDIR}/regress/core/in_flatgeobuf \
       $${SRCDIR}/regress/core/out_flatgeobuf \
       $${SRCDIR}/regress/core/flatgeobuf \
+      $${SRCDIR}/regress/core/setpoint \
+      $${SRCDIR}/regress/core/tickets \
+      $${SRCDIR}/regress/core/nurbs_wkt \
+      $${SRCDIR}/regress/core/mvt \
+      $${SRCDIR}/regress/loader/LongOptions \
+      $${SRCDIR}/regress/loader/TestANALYZE \
       $${SRCDIR}/raster/test/regress/check_gdal \
       $${SRCDIR}/raster/test/regress/loader/load_outdb \
       $${SRCDIR}/raster/test/regress/rt_bytea \

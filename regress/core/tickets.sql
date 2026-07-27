@@ -1377,15 +1377,15 @@ WITH geom AS (
 	union all
 	SELECT 'TRIANGLE EMPTY'::geometry geom
 )
-select '#4399', 'ST_AsBinary', ST_AsBinary(geom)::text from geom
+select '#4399', 'ST_AsBinary', ST_AsBinary(geom, 'NDR')::text from geom
 union all
-select '#4399', 'ST_AsEWKB', ST_AsEWKB(geom)::text from geom
+select '#4399', 'ST_AsEWKB', ST_AsEWKB(geom, 'NDR')::text from geom
 union all
 select '#4399', 'ST_AsEWKT', ST_AsEWKT(geom)::text from geom
 union all
 select '#4399', 'ST_AsGML', ST_AsGML(3,geom)::text from geom
 union all
-select '#4399', 'ST_AsHEXEWKB', ST_AsHEXEWKB(geom)::text from geom
+select '#4399', 'ST_AsHEXEWKB', ST_AsHEXEWKB(geom, 'NDR')::text from geom
 union all
 select '#4399', 'ST_AsKML', ST_AsKML(ST_SetSRID(geom, 4326))::text from geom
 union all
@@ -1803,7 +1803,7 @@ CREATE TABLE fault6028 (fid integer, geom geometry(Polygon,5015));
 CREATE INDEX fault6028_x ON fault6028 USING GIST (geom);
 INSERT INTO fault6028 (fid, geom)
   VALUES (1, '0103000020971300000100000000000000'::GEOMETRY);
-SELECT * FROM fault6028;
+SELECT fid, ST_AsHEXEWKB(geom, 'NDR') FROM fault6028;
 DROP TABLE IF EXISTS fault6028;
 
 -- #5357

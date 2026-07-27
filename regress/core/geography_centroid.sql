@@ -16,7 +16,7 @@ FROM
 ) AS u(c, g), geometry(ST_Centroid(g::geography)) AS gc(geom);
 
 -- point should return itself
-SELECT c, ST_Centroid(g::geography) FROM
+SELECT c, ST_AsHEXEWKB(ST_Centroid(g::geography)::geometry, 'NDR') FROM
 ( VALUES
     ('geog_centroid_pt_self_1', 'POINT ( 4 8)'),
     ('geog_centroid_pt_self_2', 'POINT ( -15 16)'),
