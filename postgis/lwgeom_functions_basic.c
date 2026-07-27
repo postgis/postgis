@@ -1562,8 +1562,8 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	const LWLINE **holes = NULL;
 	LWPOLY *outpoly;
 	uint32 nholes = 0;
+	uint32 nitems = 0;
 	uint32 i;
-	size_t offset = 0;
 
 	POSTGIS_DEBUG(2, "LWGEOM_makepoly called.");
 
@@ -1578,28 +1578,31 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	/* Get input holes if any */
 	if (PG_NARGS() > 1)
 	{
+		ArrayIterator iterator;
+		Datum value;
+		bool isnull;
+
 		array = PG_GETARG_ARRAYTYPE_P(1);
-		nholes = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-		holes = lwalloc(sizeof(LWLINE *) * nholes);
-		for (i = 0; i < nholes; i++)
+		nitems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		holes = lwalloc(sizeof(LWLINE *) * nitems);
+		iterator = array_create_iterator(array, 0, NULL);
+		while (array_iterate(iterator, &value, &isnull))
 		{
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsign-compare"
-#endif
-			GSERIALIZED *g = (GSERIALIZED *)(ARR_DATA_PTR(array) + offset);
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-#pragma GCC diagnostic pop
-#endif
+			GSERIALIZED *g;
 			LWLINE *hole;
-			offset += INTALIGN(VARSIZE(g));
+
+			if (isnull)
+				continue;
+
+			g = (GSERIALIZED *)DatumGetPointer(value);
 			if (gserialized_get_type(g) != LINETYPE)
 			{
-				lwpgerror("Hole %d is not a line", i);
+				lwpgerror("Hole %d is not a line", nholes);
 			}
 			hole = lwgeom_as_lwline(lwgeom_from_gserialized(g));
-			holes[i] = hole;
+			holes[nholes++] = hole;
 		}
+		array_free_iterator(iterator);
 	}
 
 	outpoly = lwpoly_from_lwlines(shell, nholes, holes);
@@ -1613,6 +1616,8 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	{
 		lwline_free((LWLINE *)holes[i]);
 	}
+	if (holes)
+		lwfree(holes);
 
 	PG_RETURN_POINTER(result);
 }
