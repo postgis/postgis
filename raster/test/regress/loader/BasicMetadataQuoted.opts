@@ -1,1 +1,1 @@
--m 'bad"col'
+-f 'rast"col' -n 'file"col' -m 'bad"col'
