@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-07-23 01:39+0000\n"
+"PO-Revision-Date: 2026-07-27 02:18+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -7256,7 +7256,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Standards Support"
-msgstr ""
+msgstr "標準への対応"
 
 #. Tag: para
 #, no-c-format
@@ -7270,6 +7270,14 @@ msgid ""
 "functions. PostGIS also implements many <link xlink:href=\"https://"
 "www.iso.org/standard/60343.html\">SQL/MM Spatial</link> types and functions."
 msgstr ""
+"このマニュアルでは個々の関数について空間関係の標準に準拠している場合にはその"
+"旨を表示します。どの振る舞いが移植可能でどの振る舞いが PostGIS 独自かを知るこ"
+"とができます。PostGISは、ジオメトリー型、Well-Known Text (WKT)、Well-Known "
+"Binary (WKB)、一般的な空間アクセス関数、コンストラクター関数、述語関数、処理"
+"関数からなる <link xlink:href=\"https://www.ogc.org/standard/sfs/\">OGC "
+"Simple Features for SQL</link> モデルを実装しています。PostGIS は多数の "
+"<link xlink:href=\"https://www.iso.org/standard/60343.html\">SQL/MM Spatial</"
+"link> 準拠の型と関数の実装もされています。"
 
 #. Tag: para
 #, no-c-format
