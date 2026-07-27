@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - GH-1169, Handle connection-string allocation failure in the shapefile loader
+     (Svyatoslav Bogdanov)
  - Initialize output column metadata in pgsql2shp (Maksim Korotkov)
  - Clear the shapefile loader GUI progress path after freeing it (Maksim Korotkov)
  - Avoid a use-after-free in the shapefile loader GUI (Maksim Korotkov)
