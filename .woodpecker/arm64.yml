@@ -2,7 +2,7 @@ labels:
   platform: linux/arm64
 when:
   - event: [push, tag, cron]
-    branch: master
+    branch: [master, stable-*]
   - event: tag
 
 # Native 64-bit ARM coverage for the Berrie64 defect class. This workflow is
