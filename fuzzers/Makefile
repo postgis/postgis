@@ -14,7 +14,7 @@ POSTGIS_CONFIGURED_SANITIZE_FLAGS := $(shell cxx="$(CXX)"; set -- $$cxx; test "$
 POSTGIS_FUZZER_CPPFLAGS = $(POSTGIS_CONFIGURED_CPPFLAGS) $(CPPFLAGS)
 POSTGIS_FUZZER_LDFLAGS = $(POSTGIS_CONFIGURED_SANITIZE_FLAGS) $(POSTGIS_CONFIGURED_LDFLAGS) $(LDFLAGS)
 
-.PHONY: clean dummyfuzzers check check-corpus
+.PHONY: clean dummyfuzzers check check-required check-corpus
 
 clean:
 	$(RM) -f *.o *.a
@@ -26,32 +26,40 @@ dummyfuzzers: fuzzingengine.o
 	mkdir -p "$(FUZZER_OUT)"
 	$(AR) r libFuzzingEngine.a fuzzingengine.o
 	CC="${CC}" CXX="${CXX}" CPPFLAGS="$(POSTGIS_FUZZER_CPPFLAGS)" CXXFLAGS="-L$(CURDIR) ${CXXFLAGS}" LDFLAGS="$(POSTGIS_FUZZER_LDFLAGS)" POSTGIS_BUILD_DIR="$(POSTGIS_BUILD_DIR)" SRC="$(FUZZER_SRC_DIR)" OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_google_oss_fuzzers.sh
-	OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_seed_corpus.sh
+	CC="${CC}" CXX="${CXX}" CPPFLAGS="$(POSTGIS_FUZZER_CPPFLAGS)" CXXFLAGS="-L$(CURDIR) ${CXXFLAGS}" LDFLAGS="$(POSTGIS_FUZZER_LDFLAGS)" POSTGIS_BUILD_DIR="$(POSTGIS_BUILD_DIR)" SRC="$(FUZZER_SRC_DIR)" OUT="$(FUZZER_OUT)" $(FUZZER_SRC_DIR)/build_seed_corpus.sh
 
 check:
-	@cxx="$${CXX:-$(CXX)}"; \
+	@required="$(FUZZER_CHECK_REQUIRED)"; \
+	skip_fuzzer_check() { \
+		echo "FUZZER CORPUS REPLAY SKIPPED: $$1"; \
+		if [ "$$required" = "1" ]; then \
+			echo "FUZZER_CHECK_REQUIRED=1, failing because corpus replay did not run."; \
+			exit 1; \
+		fi; \
+		exit 0; \
+	}; \
+	cxx="$${CXX:-$(CXX)}"; \
 	set -- $${cxx}; \
 	if [ "$$#" -eq 0 ] || ! command -v "$$1" >/dev/null 2>&1 || ! "$$@" --version >/dev/null 2>&1; then \
-		echo "C++ compiler '$${cxx}' not available; skipping fuzzer smoke check."; \
+		skip_fuzzer_check "C++ compiler '$${cxx}' not available."; \
 	elif ! command -v pkg-config >/dev/null 2>&1 || ! pkg-config --exists json-c proj; then \
-		echo "pkg-config metadata for fuzzer dependencies not found; skipping fuzzer smoke check."; \
+		skip_fuzzer_check "pkg-config metadata for json-c/proj not found."; \
 	elif ! command -v xml2-config >/dev/null 2>&1 && ! pkg-config --exists libxml-2.0; then \
-		echo "libxml2 fuzzer dependency helper not found; skipping fuzzer smoke check."; \
+		skip_fuzzer_check "libxml2 dependency helper not found."; \
 	elif ! command -v geos-config >/dev/null 2>&1 || ! command -v gdal-config >/dev/null 2>&1; then \
-		echo "GEOS/GDAL fuzzer dependency helpers not found; skipping fuzzer smoke check."; \
+		skip_fuzzer_check "GEOS/GDAL dependency helpers not found."; \
 	else \
 		set -e; \
 		if { command -v python3 >/dev/null 2>&1 && python3 -m zipfile --help >/dev/null 2>&1; } || \
 		   { command -v unzip >/dev/null 2>&1 && unzip -v >/dev/null 2>&1; }; then \
 			$(MAKE) -f "$(FUZZER_MAKEFILE)" check-corpus; \
 		else \
-			echo "No seed corpus zip extractor found; running fuzzer smoke check without corpus replay."; \
-			$(MAKE) -f "$(FUZZER_MAKEFILE)" dummyfuzzers; \
-			for fuzzer in $(FUZZER_NAMES); do \
-				"$(FUZZER_OUT)/$${fuzzer}"; \
-			done; \
+			skip_fuzzer_check "No seed corpus zip extractor found; install python3 or unzip."; \
 		fi; \
 	fi
+
+check-required:
+	$(MAKE) -f "$(FUZZER_MAKEFILE)" check FUZZER_CHECK_REQUIRED=1
 
 check-corpus: dummyfuzzers
 	@set -e; \
@@ -70,13 +78,14 @@ check-corpus: dummyfuzzers
 	rm -rf "$(FUZZER_WORK)"; \
 	mkdir -p "$(FUZZER_WORK)"; \
 	trap 'rm -rf "$(FUZZER_WORK)"' EXIT HUP INT TERM; \
-	for corpus in $(SEED_CORPORA) __none__; do \
-		if [ "$${corpus}" = "__none__" ]; then \
+	for corpus in $(SEED_CORPORA) "$(FUZZER_OUT)"/*_seed_corpus.zip __none__; do \
+		if [ "$${corpus}" = "__none__" ] || [ ! -e "$${corpus}" ]; then \
 			continue; \
 		fi; \
 		corpus_name=$$(basename "$${corpus}"); \
 		fuzzer=$${corpus_name%_seed_corpus.zip}; \
 		corpus_dir="$(FUZZER_WORK)/$${fuzzer}"; \
+		echo "Replaying seed corpus for $${fuzzer}: $${corpus_name}"; \
 		mkdir -p "$${corpus_dir}"; \
 		if [ "$${extract_zip}" = "python3" ]; then \
 			python3 -m zipfile -e "$${corpus}" "$${corpus_dir}"; \
