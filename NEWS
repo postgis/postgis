@@ -38,6 +38,8 @@ These are only changes since 3.7.0beta1.
  - Add Woodpecker linux/arm64 build and regression coverage under
           QEMU to match the Jenkins Berrie64 platform (Darafei Praliaskouski)
 
+ - #5715, Add configure --without-comments to skip generated SQL comments
+          (Darafei Praliaskouski)
 PostGIS 3.7.0beta1
 2026/07/20
 
@@ -189,8 +191,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #5638, Move and reorganize developer, maintainer, governance,
           website, internals, style, release-process, Trac wiki, and
           postgis.net documentation into doc/
-          (Darafei Praliaskouski)
- - #5715, Add configure --without-comments to skip generated SQL comments
           (Darafei Praliaskouski)
  - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
  - #6065, Improved winding order computation robustness for rings having collapsed elements
