@@ -9,19 +9,13 @@ variables:
   steps-env: &steps-env
     - export PGVER=18
     - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
-    - export PGHOST=/tmp
-    - export PGPORT=$$(grep ^port /etc/postgresql/$${PGVER}/main/postgresql.conf | awk '{print $$3}')
     - export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
     - export SRCDIR=$${CI_WORKSPACE}
     - export BUILDDIR=$${SRCDIR}/build/qa-$${QA_MODE}-pg$${PGVER}
     - export QA_REGRESS_HOOKS="--after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql"
     - pg_config --version
   steps-start-postgresql: &steps-start-postgresql
-    - runuser -u postgres -- pg_ctl
-      -D /var/lib/postgresql/$${PGVER}/main
-      -l /tmp/postgresql-$${PGVER}-$${QA_MODE}.log
-      -o "-c config_file=/etc/postgresql/$${PGVER}/main/postgresql.conf -c unix_socket_directories=/tmp"
-      -t 300 start
+    - . ci/start-postgresql.sh
     - psql -c 'select version()' template1
 
 clone:

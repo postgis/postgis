@@ -1,10 +1,17 @@
 #!/bin/sh
 
-TMPDIR=/tmp/pgis_upgrade_test-$$/
+TMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/pgis_upgrade_test.XXXXXX") || exit 1
 DATADIR=${TMPDIR}/cluster
 LOGFILE=${TMPDIR}/log
 INIT_SCRIPT=
-export PGPORT=15432
+if test -z "${PGPORT:-}"; then
+  pipeline=${CI_PIPELINE_NUMBER:-0}
+  workflow=${CI_WORKFLOW_NUMBER:-30}
+  case "${pipeline}" in ''|*[!0-9]*) pipeline=0 ;; esac
+  case "${workflow}" in ''|*[!0-9]*) workflow=30 ;; esac
+  PGPORT=$((20000 + (pipeline % 1000) * 32 + (workflow % 32)))
+fi
+export PGPORT
 export PGHOST=${TMPDIR}
 export PGDATABASE=postgis_cluster_upgrade_test
 PG_CONFIG_OLD=
