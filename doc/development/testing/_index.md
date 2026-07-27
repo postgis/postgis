@@ -135,6 +135,9 @@ Other useful targets:
 * [CI inventory standards](ci.md) describe how to keep build-bot and badge
   inventories checkable instead of copying stale dashboard markup into
   maintained prose.
+* [Pull request CI gating](ci-gating.md) explains why expensive pull-request
+  suites may be skipped, how upgrade ABI decisions are made, and how to force a
+  full run when the gate is wrong.
 
 ## Garden Checks
 
