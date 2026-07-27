@@ -48,6 +48,22 @@ pgstart_stop()
   fi
 }
 
+pgstart_create_role()
+{
+  role=$1
+  test -n "${role}" || return 0
+
+  psql -XAt --set ON_ERROR_STOP=1 --set role="${role}" template1 <<'SQL'
+SELECT format('CREATE ROLE %I LOGIN', :'role')
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM pg_catalog.pg_roles
+  WHERE rolname = :'role'
+)
+\gexec
+SQL
+}
+
 PGROOT=${PGROOT:-$(mktemp -d "${TMPDIR:-/tmp}/postgis-pg${PGVER}.XXXXXX")}
 PGDATA=${PGDATA:-${PGROOT}/data}
 PGHOST=${PGHOST:-${PGROOT}/socket}
@@ -80,3 +96,6 @@ if ! runuser -u "${PGSTART_USER}" -- "${PGCTL}" -D "${PGDATA}" -l "${PGLOG}" \
   echo "ci/start-postgresql.sh: PostgreSQL ${PGVER} failed to start" >&2
   exit 1
 fi
+
+pgstart_create_role "${POSTGIS_REGRESS_DB_OWNER:-}"
+pgstart_create_role "${POSTGIS_REGRESS_ROLE_EXT_CREATOR:-}"
