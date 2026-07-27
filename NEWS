@@ -8,7 +8,7 @@ PostGIS 3.3.11
    (Regina Obe)
  - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
    with standard_conforming_strings off (Darafei Praliaskouski)
- - GT-547, Fix ST_Split recursion with GEOS 3.15 (Paul Ramsey)
+ - #5916, Fix ST_Split recursion with GEOS 3.15 (Paul Ramsey)
  - Flatgeobuf schema mismatch vulnerability (NeuroWinter)
  - #5899, pg_upgrade issue for non-standard geography SRID (Paul Ramsey)
  - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
