@@ -3,6 +3,8 @@ PostGIS 3.6.5
 
 * Fixes *
 
+- GT-569, Initialize GSERIALIZED peek test fixtures so check-unit stays
+  clean under Valgrind (Darafei Praliaskouski)
 - GT-575, Scope interrupt regression timeouts to the statements being
   canceled (Darafei Praliaskouski)
 - GT-522, Reject malformed GSERIALIZED payload counts before deserializing
