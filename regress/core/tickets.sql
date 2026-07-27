@@ -1496,3 +1496,8 @@ WHERE ST_DFullyWithin(
 );
 
 RESET enable_seqscan;
+
+-- ST_MakePolygon with NULL holes
+SELECT 'makepolygon-null-holes', ST_NPoints(ST_MakePolygon(
+	'LINESTRING ZM (0 0 0 0,0 1 0 0,1 1 0 0,0 0 0 0)'::geometry,
+	ARRAY[NULL::geometry]));
