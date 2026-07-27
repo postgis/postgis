@@ -98,7 +98,7 @@ only overlap part of its defect class.
 | 32-bit ARM and extra portability tiers | Jenkins Berrie | Covered by `.woodpecker/portability.yml` from <https://gitea.osgeo.org/postgis/postgis/pulls/516>, with hostile type-default coverage proposed in <https://gitea.osgeo.org/postgis/postgis/pulls/550>. Plain armhf emulation is useful for pointer-width and alignment assumptions, but the valuable tier is the hostile configuration with explicit type, signedness, alignment, and sanitizer probes. |
 | 64-bit ARM | Jenkins Berrie64 | Covered by `.woodpecker/arm64.yml` only when the fleet has a native `linux/arm64` agent. The workflow intentionally has no QEMU fallback. |
 | CodeQL | GitHub Actions | In flight as Woodpecker configuration carried separately. Woodpecker can build a CodeQL database and produce SARIF, but GitHub remains authoritative for code-scanning upload, annotations, and alert management unless Woodie artifact retention and SARIF consumption are also configured. |
-| macOS | GitHub Actions macOS | Not coverable by Woodpecker YAML on Linux. Keep GitHub Actions as the Darwin lane, operate an Apple Woodpecker agent, or accept no Darwin coverage. |
+| macOS | GitHub Actions macOS | Not coverable by Woodpecker YAML on Linux. See [macOS coverage options](macos-coverage-options.md) for the actual choices, costs, licensing boundary, and current recommendation. |
 | Native Windows MSYS2 and Winnie | GitHub Actions MSYS2 and Jenkins Winnie | Not covered natively by Linux Woodpecker. MinGW+Wine coverage is valuable ABI/runtime coverage but not native Windows parity. |
 
 The companion inventory and debugging documents are deliberately narrower than
@@ -125,8 +125,10 @@ component.
 macOS cannot be covered by Linux containers, Wine, or cross-compilation. Darwin
 libc, the Mach-O dynamic loader, Homebrew's dependency graph, Apple clang, the
 filesystem, and codesign or SIP-adjacent behavior have to run on macOS to be
-meaningful. The realistic choices are an Apple Woodpecker agent, GitHub Actions
-as the Darwin lane, or no Darwin parity.
+meaningful. The realistic choices are documented in
+[macOS coverage options](macos-coverage-options.md): keep GitHub Actions as the
+Darwin lane, run a hosted or project-owned Apple Woodpecker agent, or accept no
+Darwin coverage.
 
 ### ARM
 

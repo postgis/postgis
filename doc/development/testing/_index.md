@@ -168,6 +168,9 @@ Other useful targets:
   full run when the gate is wrong.
 * [CI images and runners](ci-images-runners.md) maps the container image
   families, Woodie agents, and Jenkins worker setup repositories used by CI.
+* [macOS coverage options](macos-coverage-options.md) records why Woodpecker
+  cannot cover Darwin by Linux configuration alone, the real Apple-runner
+  options, and the current recommendation.
 
 ## Garden Checks
 
