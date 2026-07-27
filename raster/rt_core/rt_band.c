@@ -11,7 +11,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
- * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (C) 2025-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -119,15 +119,23 @@ rt_band_init_value(
 	rt_pixtype pixtype = band->pixtype;
 	uint32_t width = band->width;
 	uint32_t height = band->height;
-	uint32_t numval = width * height;
+	size_t numval = (size_t)width * height;
 	void *mem = band->data.mem;
-	size_t memsize = numval * rt_pixtype_size(pixtype);
+	int pixbytes = rt_pixtype_size(pixtype);
+	size_t memsize;
 
 	/* initialize to nodataval */
 	int32_t checkvalint = 0;
 	uint32_t checkvaluint = 0;
 	double checkvaldouble = 0;
 	float checkvalfloat = 0;
+
+	if (pixbytes < 1 || numval > SIZE_MAX / (size_t)pixbytes)
+	{
+		rterror("rt_band_init_value: Raster dimensions are too large for band initialization");
+		return;
+	}
+	memsize = numval * (size_t)pixbytes;
 
 	/* initialize to zero */
 	if (FLT_EQ(initval, 0.0)) {
@@ -140,7 +148,7 @@ rt_band_init_value(
 		{
 			uint8_t *ptr = mem;
 			uint8_t clamped_initval = rt_util_clamp_to_1BB(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalint = ptr[0];
 			break;
@@ -149,7 +157,7 @@ rt_band_init_value(
 		{
 			uint8_t *ptr = mem;
 			uint8_t clamped_initval = rt_util_clamp_to_2BUI(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalint = ptr[0];
 			break;
@@ -158,7 +166,7 @@ rt_band_init_value(
 		{
 			uint8_t *ptr = mem;
 			uint8_t clamped_initval = rt_util_clamp_to_4BUI(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalint = ptr[0];
 			break;
@@ -167,7 +175,7 @@ rt_band_init_value(
 		{
 			int8_t *ptr = mem;
 			int8_t clamped_initval = rt_util_clamp_to_8BSI(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalint = ptr[0];
 			break;
@@ -176,7 +184,7 @@ rt_band_init_value(
 		{
 			uint8_t *ptr = mem;
 			uint8_t clamped_initval = rt_util_clamp_to_8BUI(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalint = ptr[0];
 			break;
@@ -185,7 +193,7 @@ rt_band_init_value(
 		{
 			int16_t *ptr = mem;
 			int16_t clamped_initval = rt_util_clamp_to_16BSI(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalint = ptr[0];
 			break;
@@ -193,7 +201,7 @@ rt_band_init_value(
 		case PT_16BUI: {
 			uint16_t *ptr = mem;
 			uint16_t clamped_initval = rt_util_clamp_to_16BUI(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalint = ptr[0];
 			break;
@@ -202,7 +210,7 @@ rt_band_init_value(
 			uint16_t *ptr = mem;
 			float clamped_initval = rt_util_clamp_to_16F(initval);
 			uint16_t packed = rt_util_float_to_float16(clamped_initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = packed;
 			checkvalfloat = rt_util_float16_to_float(ptr[0]);
 			break;
@@ -210,7 +218,7 @@ rt_band_init_value(
 		case PT_32BSI: {
 			int32_t *ptr = mem;
 			int32_t clamped_initval = rt_util_clamp_to_32BSI(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalint = ptr[0];
 			break;
@@ -219,7 +227,7 @@ rt_band_init_value(
 		{
 			uint32_t *ptr = mem;
 			uint32_t clamped_initval = rt_util_clamp_to_32BUI(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvaluint = ptr[0];
 			break;
@@ -228,7 +236,7 @@ rt_band_init_value(
 		{
 			float *ptr = mem;
 			float clamped_initval = rt_util_clamp_to_32F(initval);
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = clamped_initval;
 			checkvalfloat = ptr[0];
 			break;
@@ -236,7 +244,7 @@ rt_band_init_value(
 		case PT_64BF:
 		{
 			double *ptr = mem;
-			for (uint32_t i = 0; i < numval; i++)
+			for (size_t i = 0; i < numval; i++)
 				ptr[i] = initval;
 			checkvaldouble = ptr[0];
 			break;
