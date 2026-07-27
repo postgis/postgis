@@ -15,6 +15,7 @@ steps:
     image: repo.osgeo.org/postgis/build-test:debian13
     pull: true
     commands:
+      - python3 ci/dronie/codeql_should_run.py; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
       - export CODEQL_TMP="$${CI_WORKSPACE}/.tmp/codeql"
       - export CODEQL_HOME="$${CODEQL_TMP}/codeql"
       - export CODEQL_DB="$${CODEQL_TMP}/db"
