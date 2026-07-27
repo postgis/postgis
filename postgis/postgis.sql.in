@@ -6769,10 +6769,10 @@ SELECT current_database()::character varying(256) AS f_table_catalog,
   -- re-resolution guard so PostgreSQL cannot evaluate it for a stale OID.
   AND CASE WHEN has_schema_privilege(c.relnamespace, 'USAGE'::text)
            THEN CASE WHEN pg_catalog.to_regclass(pg_catalog.format('%I.%I', n.nspname, c.relname)) = c.oid
-                     THEN pg_catalog.has_table_privilege(c.oid, 'SELECT')
+                     THEN pg_catalog.has_column_privilege(c.oid, a.attname, 'SELECT'::text)
                      ELSE false
                 END
-           ELSE pg_catalog.has_table_privilege(c.oid, 'SELECT')
+           ELSE pg_catalog.has_column_privilege(c.oid, a.attname, 'SELECT'::text)
       END
   AND (
     EXISTS (
