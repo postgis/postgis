@@ -99,7 +99,7 @@ only overlap part of its defect class.
 | 64-bit ARM | Jenkins Berrie64 | Covered by `.woodpecker/arm64.yml` only when the fleet has a native `linux/arm64` agent. The workflow intentionally has no QEMU fallback. |
 | CodeQL | GitHub Actions | In flight as Woodpecker configuration carried separately. Woodpecker can build a CodeQL database and produce SARIF, but GitHub remains authoritative for code-scanning upload, annotations, and alert management unless Woodie artifact retention and SARIF consumption are also configured. |
 | macOS | GitHub Actions macOS | Not coverable by Woodpecker YAML on Linux. See [macOS coverage options](macos-coverage-options.md) for the actual choices, costs, licensing boundary, and current recommendation. |
-| Native Windows MSYS2 and Winnie | GitHub Actions MSYS2 and Jenkins Winnie | Not covered natively by Linux Woodpecker. MinGW+Wine coverage is valuable ABI/runtime coverage but not native Windows parity. |
+| Native Windows MSYS2 and Winnie | GitHub Actions MSYS2 and Jenkins Winnie | Not covered natively by Linux Woodpecker. MinGW+Wine coverage is valuable ABI/runtime coverage but not native Windows parity. A Woodpecker replacement would need a licensed native Windows agent, registered with Woodie and owned like any other CI host. |
 
 The companion inventory and debugging documents are deliberately narrower than
 this parity map. Dashboard ownership, CI image provenance, and failure-debugging
@@ -119,6 +119,34 @@ MSYS2 path translation, service registration and Service Control Manager
 behavior, Windows CRT, locale and codepage behavior, native threading and file
 locking, DLL search order, and failures where Wine itself may be the broken
 component.
+
+Do not treat a Linux-hosted cross build as closure of the native Windows gap.
+The practical replacement shape is a Windows agent registered with Woodie,
+running either the MSYS2 workflow or the Winnie script family on a licensed
+Windows installation, with an owner who keeps the host patched and credentials
+rotated.
+
+The project investigated Microsoft evaluation VM images as a possible
+zero-cost route for such an agent in July 2026. That investigation downloaded
+the Windows 11 development environment Hyper-V VHDX, converted it for QEMU/KVM,
+and reached the UEFI handoff to Windows Boot Manager. It did not reach a login
+prompt, run PostGIS, or prove an unattended Windows CI path; the attempts ended
+when the driving automation session lost its connection, not because Windows
+refused to boot.
+
+Licensing is the durable blocker for making that experiment a standing CI
+service. Microsoft documents Windows 11 Enterprise evaluation media as a
+90-day evaluation and notes that an expired or unactivated evaluation shuts down
+periodically. The Windows development VM is an evaluation image, not a stable
+renewable CI entitlement. Windows Server evaluation media are similarly trial
+media, with a 180-day duration, while the Windows Server license terms limit
+evaluation software to evaluation, test, or demonstration use and prohibit
+production-environment use after the evaluation period. A legitimate unattended
+PostGIS Windows agent therefore needs OSGeo-provided Windows licensing, such as
+proper Windows Server VM licensing or Windows Enterprise/VDA licensing for a
+desktop VM, plus a named host owner. Until that exists, keep GitHub Actions
+MSYS2 and Jenkins Winnie authoritative for native Windows behavior and describe
+Linux Woodpecker's MinGW+Wine job as MinGW ABI/runtime coverage only.
 
 ### macOS
 
