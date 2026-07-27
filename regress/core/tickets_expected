@@ -491,3 +491,4 @@ public|test5829|geom|2|4326|GEOMETRY
 public|test5978|geometry|2|4326|POINT
 public|test5978|shape|2|4326|POINT
 #5357|LINESTRING(38.903876 55.336448,38.903875 55.336448)
+makepolygon-null-holes|4

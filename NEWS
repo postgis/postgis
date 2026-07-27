@@ -48,6 +48,8 @@ PostGIS 3.6.5
   noding lines with GEOS main (Darafei Praliaskouski)
 - GT-493, Fix 32-bit topology and coverage crashes
   (Darafei Praliaskouski)
+- GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
+  (Darafei Praliaskouski)
 
 
 PostGIS 3.6.4
