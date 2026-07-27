@@ -3,6 +3,8 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - GH-1168, Handle an empty MVT aggregate context during serialization
+      (Svyatoslav Bogdanov)
   - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
       (John Carmack)
   - #6160, Clarify the vector tile format schema license (Bas Couwenberg)
