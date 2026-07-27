@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include "shpcommon.h"
+#include "lwgeom_log.h"
 
 typedef struct
 {
@@ -143,6 +144,9 @@ escape_connection_string(char *str)
 
 	size = ptr - str + toescape + 1;
 	result = calloc(1, size);
+	if (!result) {
+		lwerror("Memory allocation failed!");
+	}
 	optr = result;
 	ptr = str;
 
