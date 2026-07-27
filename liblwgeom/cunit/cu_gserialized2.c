@@ -509,6 +509,133 @@ test_gserialized2_peek_first_point(void)
 	CU_ASSERT(peek2_point_helper("POLYGON((0 0, 1 1, 1 0, 0 0))", &p) == LW_FAILURE);
 }
 
+static GSERIALIZED *
+gserialized2_from_hexbytes(const char *hex)
+{
+	uint8_t *bytes;
+	size_t size;
+	GSERIALIZED *g;
+
+	size = strlen(hex) / 2;
+	bytes = bytes_from_hexbytes(hex, strlen(hex));
+	g = lwalloc(size);
+	memcpy(g, bytes, size);
+	lwfree(bytes);
+	return g;
+}
+
+static void
+test_gserialized2_malformed_collection_count(void)
+{
+	const char *hex =
+	    "8001000000000044000000000000803f0000000000000040"
+	    "070000000200000001000000f03f000000000000f03f";
+	GSERIALIZED *g = gserialized2_from_hexbytes(hex);
+	LWGEOM *geom;
+
+	cu_error_msg_reset();
+	geom = lwgeom_from_gserialized2(g);
+
+	CU_ASSERT_PTR_NULL(geom);
+	CU_ASSERT_NOT_EQUAL(strlen(cu_error_msg), 0);
+
+	lwfree(g);
+}
+
+static void
+assert_gserialized2_malformed_rejected(GSERIALIZED *g)
+{
+	LWGEOM *geom;
+	GBOX box;
+	POINT4D point;
+
+	memset(&box, 0, sizeof(box));
+	memset(&point, 0, sizeof(point));
+
+	cu_error_msg_reset();
+	geom = lwgeom_from_gserialized2(g);
+	CU_ASSERT_PTR_NULL(geom);
+	CU_ASSERT_NOT_EQUAL(strlen(cu_error_msg), 0);
+
+	CU_ASSERT_TRUE(gserialized2_is_empty(g));
+	CU_ASSERT_EQUAL(gserialized2_peek_gbox_p(g, &box), LW_FAILURE);
+	CU_ASSERT_EQUAL(gserialized2_peek_first_point(g, &point), LW_FAILURE);
+}
+
+static void
+test_gserialized2_malformed_declared_size(void)
+{
+	const char *declared_size_0 =
+	    "0000000000000044000000000000803f0000000000000040"
+	    "070000000200000001000000f03f000000000000f03f";
+	const char *declared_size_23 =
+	    "5c00000000000044000000000000803f0000000000000040"
+	    "070000000200000001000000f03f000000000000f03f";
+	GSERIALIZED *g;
+
+	g = gserialized2_from_hexbytes(declared_size_0);
+	assert_gserialized2_malformed_rejected(g);
+	lwfree(g);
+
+	g = gserialized2_from_hexbytes(declared_size_23);
+	assert_gserialized2_malformed_rejected(g);
+	lwfree(g);
+}
+
+static void
+test_gserialized2_malformed_short_allocation(void)
+{
+#if defined(POSTGIS_ASAN_ALLOCATOR_SIZE)
+	const char *hex = "8001000000000044";
+	uint8_t *bytes = bytes_from_hexbytes(hex, strlen(hex));
+	GSERIALIZED *g = malloc(strlen(hex) / 2);
+
+	CU_ASSERT_PTR_NOT_NULL_FATAL(g);
+	memcpy(g, bytes, strlen(hex) / 2);
+	assert_gserialized2_malformed_rejected(g);
+
+	free(g);
+	lwfree(bytes);
+#else
+	CU_PASS("shorter-than-declared allocation validation requires AddressSanitizer allocation metadata");
+#endif
+}
+
+static void
+test_gserialized2_wkb_roundtrip_float_rounded_box(void)
+{
+	const char *hex =
+	    "0102000000030000000000000000000000000000f03f0000000000000040"
+	    "0101000000000000000f03f0000000000000040000000000000f03f";
+	size_t wkb_size = strlen(hex) / 2;
+	uint8_t *wkb = bytes_from_hexbytes(hex, strlen(hex));
+	LWGEOM *input = lwgeom_from_wkb(wkb, wkb_size, LW_PARSER_CHECK_NONE);
+	GSERIALIZED *serialized;
+	LWGEOM *roundtrip;
+	size_t serialized_size = 0;
+	GBOX input_box;
+	GBOX roundtrip_box;
+
+	CU_ASSERT_PTR_NOT_NULL_FATAL(input);
+	serialized = gserialized2_from_lwgeom(input, &serialized_size);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(serialized);
+	roundtrip = lwgeom_from_gserialized2(serialized);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(roundtrip);
+
+	CU_ASSERT_EQUAL(serialized_size, LWSIZE_GET(serialized->size));
+	CU_ASSERT_PTR_NOT_NULL(input->bbox);
+	CU_ASSERT_PTR_NOT_NULL(roundtrip->bbox);
+	CU_ASSERT_FALSE(gbox_same(input->bbox, roundtrip->bbox));
+	CU_ASSERT_EQUAL(lwgeom_calculate_gbox_cartesian(input, &input_box), LW_SUCCESS);
+	CU_ASSERT_EQUAL(lwgeom_calculate_gbox_cartesian(roundtrip, &roundtrip_box), LW_SUCCESS);
+	CU_ASSERT_TRUE(gbox_same(&input_box, &roundtrip_box));
+
+	lwgeom_free(input);
+	lwgeom_free(roundtrip);
+	lwfree(serialized);
+	lwfree(wkb);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -527,4 +654,8 @@ void gserialized2_suite_setup(void)
 	PG_ADD_TEST(suite, test_gserialized2_peek_gbox_p_fails_for_unsupported_cases);
 	PG_ADD_TEST(suite, test_gserialized2_extended_flags);
 	PG_ADD_TEST(suite, test_gserialized2_peek_first_point);
+	PG_ADD_TEST(suite, test_gserialized2_malformed_collection_count);
+	PG_ADD_TEST(suite, test_gserialized2_malformed_declared_size);
+	PG_ADD_TEST(suite, test_gserialized2_malformed_short_allocation);
+	PG_ADD_TEST(suite, test_gserialized2_wkb_roundtrip_float_rounded_box);
 }

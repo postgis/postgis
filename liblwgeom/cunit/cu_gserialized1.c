@@ -1228,6 +1228,47 @@ test_gserialized1_peek_first_point(void)
 	CU_ASSERT(peek1_point_helper("POLYGON((0 0, 1 1, 1 0, 0 0))", &p) == LW_FAILURE);
 }
 
+static void
+assert_gserialized1_malformed_rejected(GSERIALIZED *g)
+{
+	LWGEOM *geom;
+	GBOX box;
+	POINT4D point;
+
+	memset(&box, 0, sizeof(box));
+	memset(&point, 0, sizeof(point));
+
+	cu_error_msg_reset();
+	geom = lwgeom_from_gserialized1(g);
+	CU_ASSERT_PTR_NULL(geom);
+	CU_ASSERT_NOT_EQUAL(strlen(cu_error_msg), 0);
+
+	CU_ASSERT_TRUE(gserialized1_is_empty(g));
+	CU_ASSERT_EQUAL(gserialized1_peek_gbox_p(g, &box), LW_FAILURE);
+	CU_ASSERT_EQUAL(gserialized1_peek_first_point(g, &point), LW_FAILURE);
+}
+
+static void
+test_gserialized1_malformed_declared_size(void)
+{
+	LWGEOM *lwgeom = lwgeom_from_wkt("POINT(1 1)", LW_PARSER_CHECK_NONE);
+	GSERIALIZED *g;
+	size_t size = 0;
+
+	CU_ASSERT_PTR_NOT_NULL_FATAL(lwgeom);
+	g = gserialized1_from_lwgeom(lwgeom, &size);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(g);
+
+	LWSIZE_SET(g->size, 0);
+	assert_gserialized1_malformed_rejected(g);
+
+	LWSIZE_SET(g->size, offsetof(GSERIALIZED, data) - 1);
+	assert_gserialized1_malformed_rejected(g);
+
+	lwfree(g);
+	lwgeom_free(lwgeom);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1261,4 +1302,5 @@ void gserialized1_suite_setup(void)
 	PG_ADD_TEST(suite, test_gbox_same_2d);
 	PG_ADD_TEST(suite, test_signum_macro);
 	PG_ADD_TEST(suite, test_gserialized1_peek_first_point);
+	PG_ADD_TEST(suite, test_gserialized1_malformed_declared_size);
 }
