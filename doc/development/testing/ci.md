@@ -126,7 +126,9 @@ readback.
 ## Relationship To Other Docs
 
 Use [Testing and debugging](_index.md) for test commands and local validation
-workflows. Use [Release process](../release-process.md) for release-manager
-greenlight checks, Debbie release jobs, and branch-opening steps. Use
-[Website maintenance](../website.md) and the public website compatibility matrix
-for user-facing support status.
+workflows. Use [Pull request CI gating](ci-gating.md) for the changed-surface
+rules that can skip expensive pull-request bodies while keeping status contexts
+present. Use [Release process](../release-process.md) for release-manager
+greenlight checks, Debbie release jobs, and branch-opening steps. Use [Website
+maintenance](../website.md) and the public website compatibility matrix for
+user-facing support status.

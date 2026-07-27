@@ -18,6 +18,7 @@ variables:
     - . ci/start-postgresql.sh
     - psql -c 'select version()' template1
   steps-pg-build: &steps-pg-build
+    - python3 $${SRCDIR}/ci/ci_need_suite.py "$${REGRESS_SUITE}" --target "$${REGRESS_TARGET}" --extension "$${UPGRADE_EXTENSION}" --upgrade-surface; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
     - mkdir -p "$${BUILDDIR}"
     - cd "$${BUILDDIR}"
     - $${SRCDIR}/configure
@@ -30,6 +31,7 @@ variables:
     # make graph can otherwise race generation of files such as postgis.control.
     - make -j1
   steps-pg-test-all-upgrades: &steps-pg-test-all-upgrades
+    - python3 $${SRCDIR}/ci/ci_need_suite.py "$${REGRESS_SUITE}" --target "$${REGRESS_TARGET}" --extension "$${UPGRADE_EXTENSION}" --upgrade-surface; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
     - cd "$${BUILDDIR}"
     - export CHECK_FIFO=check-$${UPGRADE_EXTENSION}.fifo
     - export CHECK_LOG=check-$${UPGRADE_EXTENSION}.log
@@ -84,6 +86,7 @@ steps:
           REGRESS_SUITE: preinstall
     commands:
       - <<: *steps-env
+      - python3 $${SRCDIR}/ci/ci_need_suite.py "$${REGRESS_SUITE}" --target "$${REGRESS_TARGET}" --extension "$${UPGRADE_EXTENSION}"; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
       - <<: *steps-start-postgresql
       - make -C "$${BUILDDIR}" $${REGRESS_TARGET}
 
@@ -95,6 +98,7 @@ steps:
           REGRESS_SUITE: install
     commands:
       - <<: *steps-env
+      - python3 $${SRCDIR}/ci/ci_need_suite.py "$${REGRESS_SUITE}" --target "$${REGRESS_TARGET}" --extension "$${UPGRADE_EXTENSION}" --upgrade-surface; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
       - <<: *steps-start-postgresql
       - make -C "$${BUILDDIR}" install
       - make -C "$${BUILDDIR}" $${REGRESS_TARGET}
@@ -106,6 +110,8 @@ steps:
       - matrix:
           REGRESS_SUITE: extension-upgrade
     commands:
+      - export SRCDIR=$${CI_WORKSPACE}
+      - python3 $${SRCDIR}/ci/ci_need_suite.py "$${REGRESS_SUITE}" --target "$${REGRESS_TARGET}" --extension "$${UPGRADE_EXTENSION}" --upgrade-surface; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - make -C "$${BUILDDIR}" staged-install
@@ -119,6 +125,8 @@ steps:
       - matrix:
           REGRESS_SUITE: cluster-upgrade
     commands:
+      - export SRCDIR=$${CI_WORKSPACE}
+      - python3 $${SRCDIR}/ci/ci_need_suite.py "$${REGRESS_SUITE}" --target "$${REGRESS_TARGET}" --extension "$${UPGRADE_EXTENSION}" --upgrade-surface; gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
       - make -C build/pg$${PGVER} install
       - make -C build/pg$${SECOND_PGVER} install
       - export PGPORT=$$((20000 + ($${CI_PIPELINE_NUMBER:-0} % 1000) * 32 + ($${CI_WORKFLOW_NUMBER:-30} % 32)))
