@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - GH-1168, Handle an empty MVT aggregate context during serialization
+     (Svyatoslav Bogdanov)
  - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
      (John Carmack)
  - GH-1178, Handle allocation failures and partial cleanup in loader column maps
