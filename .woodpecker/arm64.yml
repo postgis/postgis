@@ -1,36 +1,34 @@
 labels:
-  platform: linux/amd64
-  qemu: "true"
+  platform: linux/arm64
 when:
-  - event: push
-    branch:
-      - master
-      - stable-*
-  - event: cron
+  - event: [push, tag, cron]
+    branch: master
+  - event: tag
 
-# This workflow gives Woodpecker a 64-bit ARM row matching Jenkins Berrie64.
-# It catches little beyond that platform parity: unlike armhf it exercises the
-# aarch64 64-bit ABI, and unlike s390x it stays little-endian. Keep it off pull
-# requests because arm64 emulation is expensive.
+# Native 64-bit ARM coverage for the Berrie64 defect class. This workflow is
+# intentionally not a QEMU job: the garden and all-upgrades suites are expensive
+# under emulation, and emulation is a poor proxy for native ARM64 timing,
+# alignment, atomic, and kernel behavior.
 #
-# The image is pinned to the linux/arm64/v8 manifest digest. A tag-only pull
-# from an amd64 Docker backend can resolve an amd64 variant and fail before QEMU
-# is involved, so do not replace this with arm64v8/debian:trixie-slim alone.
+# Required infrastructure: a Woodpecker agent registered with
+# platform=linux/arm64. The current OSGeo build-test image is amd64-only, so the
+# workflow starts from Debian's multi-arch base image and installs build
+# dependencies inside the job.
 variables:
-  arm64-image: &arm64-image arm64v8/debian:trixie-slim@sha256:8b5033c95ca60cdffb0e0f4c446e5f714e82d8960a9ef4153c0eaf13e988b0ea
+  test-image: &test-image debian:trixie-slim
   prepare-debian: &prepare-debian |
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get install -y --no-install-recommends \
       autoconf automake libtool build-essential ca-certificates pkg-config \
-      bison flex \
       postgresql postgresql-server-dev-all \
-      libcunit1-dev libgeos-dev libproj-dev libgdal-dev libjson-c-dev \
-      libprotobuf-c-dev protobuf-c-compiler libxml2-dev gettext zlib1g-dev
+      libcunit1-dev libgeos-dev libproj-dev proj-bin libgdal-dev libjson-c-dev \
+      libprotobuf-c-dev protobuf-c-compiler libxml2-dev libxml2-utils \
+      xsltproc docbook-xsl docbook-xml gettext zlib1g-dev
     rm -rf /var/lib/apt/lists/*
   arm64-env: &arm64-env |
     export SRCDIR=$${CI_WORKSPACE}
-    export BUILDDIR=$${SRCDIR}/build/arm64-qemu
+    export BUILDDIR=$${SRCDIR}/build/arm64-berrie64
     export PG_MAJOR=$$(pg_config --version | awk '{print $$2}' | cut -d. -f1)
     export PATH=/usr/lib/postgresql/$${PG_MAJOR}/bin:$${PATH}
     export PGROOT=$$(mktemp -d)
@@ -38,7 +36,7 @@ variables:
     export PGHOST=$${PGROOT}/socket
     export PGUSER=postgres
     export PGDATABASE=postgres
-    uname -m
+    uname -m | grep -E '^(aarch64|arm64)$'
     dpkg-architecture -qDEB_HOST_GNU_TYPE
     pg_config --version
   start-postgresql: &start-postgresql |
@@ -51,6 +49,18 @@ variables:
       -w start
     trap 'runuser -u postgres -- pg_ctl -D "$${PGDATA}" -m fast -w stop || true' EXIT
     psql -c 'select version()' template1
+  build-install-and-check: &build-install-and-check |
+    mkdir -p "$${BUILDDIR}"
+    cd "$${BUILDDIR}"
+    "$${SRCDIR}/configure" \
+      --with-raster \
+      --with-library-minor-version \
+      --without-interrupt-tests \
+      CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer"
+    make -j1
+    make check RUNTESTFLAGS="-v"
+    make install
+    make check RUNTESTFLAGS="-v --extension"
 
 clone:
   git:
@@ -60,24 +70,28 @@ clone:
       partial: false
 
 steps:
-  build-regress:
-    image: *arm64-image
+  berrie64-native-regress:
+    image: *test-image
     pull: true
     commands:
-      - uname -m | grep -E '^aarch64$'
       - *prepare-debian
       - *arm64-env
       - *start-postgresql
       - ./autogen.sh
-      - mkdir -p "$${BUILDDIR}"
+      - *build-install-and-check
+
+  berrie64-native-garden-upgrades:
+    image: *test-image
+    pull: true
+    depends_on: berrie64-native-regress
+    commands:
+      - *prepare-debian
+      - *arm64-env
+      - *start-postgresql
+      - ./autogen.sh
+      - *build-install-and-check
       - cd "$${BUILDDIR}"
-      - >-
-        "$${SRCDIR}/configure"
-        --with-raster
-        --without-topology
-        --without-sfcgal
-        --without-interrupt-tests
-      - make -j1
-      - make -C liblwgeom check-unit
-      - make install
-      - make -C regress check RUNTESTFLAGS="-v --extension"
+      - make garden EXAMPLETEST_CHECK_ENVIRONMENT=no
+      - |
+        "$${SRCDIR}/utils/check_all_upgrades.sh" \
+          "$$(grep '^POSTGIS_' "$${SRCDIR}/Version.config" | cut -d= -f2 | paste -sd '.')"
