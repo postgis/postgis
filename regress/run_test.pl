@@ -22,6 +22,8 @@ use Cwd 'abs_path';
 use Getopt::Long;
 use strict;
 
+my $RUNNING_BIGENDIAN = unpack("S", pack("n", 1)) == 1;
+
 ##################################################################
 # Add . to @INC if removed for CVE-2016-1238
 ##################################################################
@@ -1043,6 +1045,15 @@ sub run_simple_test
 	return 1;
 }
 
+sub endian_expected_file
+{
+	my $expected = shift;
+	my $bigendian_expected = "${expected}.bigendian";
+
+	return $bigendian_expected if ( $RUNNING_BIGENDIAN && -r $bigendian_expected );
+	return $expected;
+}
+
 ##################################################################
 # This runs the loader once and checks the output of it.
 # It will NOT run if neither the expected SQL nor the expected
@@ -1093,6 +1104,7 @@ sub run_loader_and_check_output
 		if ( -r $expected_sql_file )
 		{
 			show_progress();
+			$expected_sql_file = endian_expected_file($expected_sql_file);
 			my $diff = diff($expected_sql_file, $outfile);
 			if ( $diff )
 			{

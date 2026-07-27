@@ -60,4 +60,4 @@ SELECT 'multiarc1.maxerr20.sym', ST_AsText(ST_SnapToGrid(ST_CurveToLine(
 	1  -- Symmetric
 ), 2));
 
-SELECT 'ST_CurveToLine EMPTY', ST_CurveToLine('CIRCULARSTRING EMPTY');
+SELECT 'ST_CurveToLine EMPTY', ST_AsHEXEWKB(ST_CurveToLine('CIRCULARSTRING EMPTY'), 'NDR');

@@ -1,0 +1,183 @@
+labels:
+  platform: linux/amd64
+when:
+  event: [push, pull_request, tag, cron]
+
+# This workflow keeps the existing amd64 CI honest by attacking ABI properties
+# that normal amd64 builds cannot falsify.
+#
+# Tier 1: armhf via arm32v7/debian under QEMU. The step pins the arm/v7
+# manifest digest because the Docker backend does not pass a per-step platform
+# override; a tag-only pull from an amd64 daemon asks Docker Hub for an amd64
+# variant and fails before QEMU can run. This mirrors berrie: 32-bit pointers
+# and long, unsigned char, and stricter alignment than amd64.
+#
+# Tier 2: s390x via s390x/debian under QEMU. This is the practical big-endian
+# target for WKB/EWKB, TWKB, raster byte order, hashes, and integer memcpy paths.
+#
+# Tier 3 was investigated as Debian Ports powerpc: 32-bit, big-endian, unsigned
+# char. Docker Hub currently has no official linux/ppc Debian manifest, and the
+# only discovered powerpc Debian image is a removed schema-1 image. Keep this
+# tier out of the required pipeline until there is a maintained OCI image or an
+# OSGeo-hosted Debian Ports rootfs. Do not replace it with i386; that would miss
+# the big-endian and unsigned-char parts of the bug class.
+#
+# QEMU depends on persistent binfmt_misc registrations on the amd64 Woodie agent
+# host. Woodpecker starts the foreign-architecture step image directly; steps do
+# not need a Docker socket or a nested docker run probe.
+variables:
+  native-image: &native-image repo.osgeo.org/postgis/build-test:debian13
+  prepare-debian: &prepare-debian |
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends \
+      autoconf automake libtool build-essential ca-certificates pkg-config \
+      postgresql postgresql-server-dev-all \
+      libcunit1-dev libgeos-dev libproj-dev libgdal-dev libjson-c-dev \
+      libprotobuf-c-dev protobuf-c-compiler libxml2-dev gettext zlib1g-dev
+    rm -rf /var/lib/apt/lists/*
+  abi-env: &abi-env |
+    export SRCDIR=$${CI_WORKSPACE}
+    export BUILDDIR=$${SRCDIR}/build/portability-$${PORTABILITY_TIER}
+    export PG_MAJOR=$$(pg_config --version | awk '{print $$2}' | cut -d. -f1)
+    export PATH=/usr/lib/postgresql/$${PG_MAJOR}/bin:$${PATH}
+    export PGROOT=$$(mktemp -d)
+    export PGDATA=$${PGROOT}/data
+    export PGHOST=$${PGROOT}/socket
+    export PGUSER=postgres
+    export PGDATABASE=postgres
+    export RUNTESTFLAGS="-v --extension --raster"
+    uname -m
+    dpkg-architecture -qDEB_HOST_GNU_TYPE
+    pg_config --version
+  start-postgresql: &start-postgresql |
+    chown postgres:postgres "$${PGROOT}"
+    runuser -u postgres -- mkdir "$${PGDATA}" "$${PGHOST}"
+    runuser -u postgres -- initdb -D "$${PGDATA}" -A trust --no-sync
+    runuser -u postgres -- pg_ctl -D "$${PGDATA}" \
+      -l "$${PGROOT}/postgresql.log" \
+      -o "-F -k $${PGHOST} -c synchronous_commit=off -c full_page_writes=off" \
+      -w start
+    trap 'runuser -u postgres -- pg_ctl -D "$${PGDATA}" -m fast -w stop || true' EXIT
+    psql -c 'select version()' template1
+  build-and-test: &build-and-test |
+    export PORTABILITY_STARTED=$$(date +%s)
+    mkdir -p "$${BUILDDIR}"
+    cd "$${BUILDDIR}"
+    "$${SRCDIR}/configure" \
+      --with-raster \
+      --without-topology \
+      --without-sfcgal \
+      --without-interrupt-tests \
+      CC="$${PORTABILITY_CC:-cc}" \
+      CFLAGS="$${PORTABILITY_CFLAGS}" \
+      LDFLAGS="$${PORTABILITY_LDFLAGS:-}"
+    make -j1
+    make -C liblwgeom check-unit
+    make install
+    make -C regress check RUNTESTFLAGS="$${RUNTESTFLAGS}" TESTS=" \
+      $${SRCDIR}/regress/core/wkb \
+      $${SRCDIR}/regress/core/twkb \
+      $${SRCDIR}/regress/core/sql-mm-serialize \
+      $${SRCDIR}/regress/core/curvetoline \
+      $${SRCDIR}/regress/core/geography_centroid \
+      $${SRCDIR}/regress/core/in_geojson \
+      $${SRCDIR}/regress/core/out_geojson \
+      $${SRCDIR}/regress/core/in_gml \
+      $${SRCDIR}/regress/core/out_gml \
+      $${SRCDIR}/regress/core/in_kml \
+      $${SRCDIR}/regress/core/in_geohash \
+      $${SRCDIR}/regress/core/in_flatgeobuf \
+      $${SRCDIR}/regress/core/out_flatgeobuf \
+      $${SRCDIR}/regress/core/flatgeobuf \
+      $${SRCDIR}/regress/core/setpoint \
+      $${SRCDIR}/regress/core/tickets \
+      $${SRCDIR}/regress/core/nurbs_wkt \
+      $${SRCDIR}/regress/core/mvt \
+      $${SRCDIR}/regress/loader/LongOptions \
+      $${SRCDIR}/regress/loader/TestANALYZE \
+      $${SRCDIR}/raster/test/regress/check_gdal \
+      $${SRCDIR}/raster/test/regress/loader/load_outdb \
+      $${SRCDIR}/raster/test/regress/rt_bytea \
+      $${SRCDIR}/raster/test/regress/rt_wkb \
+      $${SRCDIR}/raster/test/regress/rt_fromgdalraster \
+      $${SRCDIR}/raster/test/regress/rt_asgdalraster \
+      $${SRCDIR}/raster/test/regress/rt_band \
+      $${SRCDIR}/raster/test/regress/clean"
+    echo "portability tier $${PORTABILITY_TIER} completed in $$(($$(date +%s) - $${PORTABILITY_STARTED}))s"
+
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 50
+      partial: false
+
+steps:
+  native-unsigned-char:
+    image: *native-image
+    pull: true
+    commands:
+      - export PORTABILITY_TIER=native-unsigned-char
+      - export PORTABILITY_CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer -funsigned-char"
+      - *abi-env
+      - *start-postgresql
+      - ./autogen.sh
+      - *build-and-test
+
+  native-alignment-ubsan:
+    image: *native-image
+    pull: true
+    commands:
+      - export PORTABILITY_TIER=native-alignment-ubsan
+      - export PORTABILITY_CC=clang
+      - export DEBIAN_FRONTEND=noninteractive
+      - apt-get update
+      - apt-get install -y --no-install-recommends clang
+      - rm -rf /var/lib/apt/lists/*
+      # GitHub Actions already has a broad undefined-sanitizer run. This job is
+      # narrower: fail immediately on alignment UB that strict-alignment CPUs
+      # would trap, while also keeping integer/undefined checks enabled.
+      - export PORTABILITY_CFLAGS="-g3 -O0 -fno-omit-frame-pointer -fsanitize=alignment,undefined -fno-sanitize-recover=alignment"
+      - export PORTABILITY_LDFLAGS="-fsanitize=alignment,undefined"
+      - *abi-env
+      - *start-postgresql
+      - ./autogen.sh
+      - *build-and-test
+
+  armhf-berrie-qemu:
+    image: arm32v7/debian@sha256:743aca1ad24c5e48132df88f561f8d1365bfb6da33e006eb44b44fe32a7a30eb
+    pull: true
+    commands:
+      - uname -m | grep -E '^(armv7l|armv8l)$'
+      - export PORTABILITY_TIER=armhf-berrie-qemu
+      - export PORTABILITY_CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer"
+      - *prepare-debian
+      - *abi-env
+      - *start-postgresql
+      - ./autogen.sh
+      - *build-and-test
+
+  s390x-big-endian-qemu:
+    image: s390x/debian:trixie
+    pull: true
+    failure: ignore
+    # s390x is the only realistic big-endian coverage. It is intentionally not
+    # run on every pull request: QEMU plus the geospatial dependency closure is
+    # expensive, so master pushes, tags, and scheduled runs keep the signal
+    # without making every contributor wait for full emulation. Keep it
+    # non-blocking while the first big-endian findings are still being triaged;
+    # Woodpecker will show the failed step without failing the whole workflow.
+    when:
+      - event: [push, tag, cron]
+        branch: master
+      - event: tag
+    commands:
+      - uname -m | grep -E '^s390x$'
+      - export PORTABILITY_TIER=s390x-big-endian-qemu
+      - export PORTABILITY_CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer"
+      - *prepare-debian
+      - *abi-env
+      - *start-postgresql
+      - ./autogen.sh
+      - *build-and-test
