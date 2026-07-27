@@ -18,6 +18,13 @@ BEGIN
 	IF can_switch_role THEN
 		DROP SCHEMA IF EXISTS test6038_private CASCADE;
 		DROP TABLE IF EXISTS public.test6038_visible_geom;
+		DROP TABLE IF EXISTS public.test6038_column_geom;
+		IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'test6038_invisible') THEN
+			DROP OWNED BY test6038_invisible;
+		END IF;
+		IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'test6038_visible') THEN
+			DROP OWNED BY test6038_visible;
+		END IF;
 		DROP ROLE IF EXISTS test6038_invisible;
 		DROP ROLE IF EXISTS test6038_visible;
 		CREATE ROLE test6038_invisible;
@@ -44,6 +51,20 @@ BEGIN
 		END IF;
 		EXECUTE 'RESET ROLE';
 
+		CREATE TABLE public.test6038_column_geom(
+			visible_geom geometry(Point, 4326),
+			hidden_geom geometry(Point, 4326)
+		);
+		GRANT SELECT (visible_geom) ON public.test6038_column_geom TO test6038_visible;
+		EXECUTE 'SET LOCAL ROLE test6038_visible';
+		IF 1 != (SELECT count(*) FROM geometry_columns WHERE f_table_schema = 'public' AND f_table_name = 'test6038_column_geom' AND f_geometry_column = 'visible_geom') THEN
+			RAISE EXCEPTION 'geometry_columns did not expose metadata for selectable geometry column';
+		END IF;
+		IF 0 != (SELECT count(*) FROM geometry_columns WHERE f_table_schema = 'public' AND f_table_name = 'test6038_column_geom' AND f_geometry_column = 'hidden_geom') THEN
+			RAISE EXCEPTION 'geometry_columns exposed metadata for non-selectable geometry column';
+		END IF;
+		EXECUTE 'RESET ROLE';
+
 		-- The view must not resolve names inside schemas hidden from the caller.
 		EXECUTE 'SET LOCAL ROLE test6038_invisible';
 		IF 1 != (SELECT count(*) FROM geometry_columns WHERE f_table_schema = 'test6038_private') THEN
@@ -60,6 +81,8 @@ BEGIN
 
 		DROP SCHEMA test6038_private CASCADE;
 		DROP TABLE public.test6038_visible_geom;
+		REVOKE SELECT (visible_geom) ON public.test6038_column_geom FROM test6038_visible;
+		DROP TABLE public.test6038_column_geom;
 		DROP ROLE test6038_invisible;
 		DROP ROLE test6038_visible;
 	END IF;

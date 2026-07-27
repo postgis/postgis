@@ -12,6 +12,8 @@ These are only changes since 3.7.0beta1.
           functions unavailable in an older library (Darafei Praliaskouski)
  - GT-515, Reject invalid ST_LargestEmptyCircle boundaries before GEOS can
           spend unbounded time on them (Darafei Praliaskouski)
+ - GT-484, Use column-level SELECT privileges for metadata views
+          (Arthur Bazin)
 
 * Enhancements *
 

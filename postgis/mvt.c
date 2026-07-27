@@ -1100,17 +1100,23 @@ static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 	size_t len;
 	bytea *ba;
 
+	if (!ctx)
+	{
+		ba = palloc(VARHDRSZ);
+		SET_VARSIZE(ba, VARHDRSZ);
+		return ba;
+	}
 	if (!ctx->tile)
 	{
 		ctx->tile = mvt_ctx_to_tile(ctx);
 	}
 
 	/* Zero features => empty bytea output */
-	if (ctx && ctx->layer && ctx->layer->n_features == 0)
+	if (ctx->layer && ctx->layer->n_features == 0)
 	{
-		bytea* ba_empty = palloc(VARHDRSZ);
-		SET_VARSIZE(ba_empty, VARHDRSZ);
-		return ba_empty;
+		ba = palloc(VARHDRSZ);
+		SET_VARSIZE(ba, VARHDRSZ);
+		return ba;
 	}
 
 	/* Serialize the Tile */

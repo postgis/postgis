@@ -503,6 +503,11 @@ FROM (
 		ST_MakeBox2D(ST_Point(0, 0), ST_Point(48, 48))
 	) AS geom
 ) AS q;
+SELECT 'TA10_empty', length(ST_AsMVT(q))
+FROM (
+	SELECT NULL::integer AS c1, NULL::geometry AS geom
+	WHERE false
+) AS q;
 
 -- Strings and text
 SELECT 'TA11', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
