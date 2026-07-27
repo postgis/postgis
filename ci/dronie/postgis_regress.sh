@@ -4,6 +4,12 @@
 set -e
 
 printf '%s\n' "pg_ctl_options = '-t 300'" > /etc/postgresql/$PGVER/main/pg_ctl.conf
+install -d /etc/postgresql/$PGVER/main/conf.d
+cat > /etc/postgresql/$PGVER/main/conf.d/postgis-ci-durability.conf <<'EOF'
+fsync = off
+full_page_writes = off
+synchronous_commit = off
+EOF
 service postgresql start $PGVER
 export PGPORT=`grep ^port /etc/postgresql/$PGVER/main/postgresql.conf | awk '{print $3}'`
 export PATH=/usr/lib/postgresql/$PGVER/bin:$PATH
