@@ -20,6 +20,8 @@ These are only changes since 3.7.0beta1.
           (Arthur Bazin)
  - GT-521, Reject malformed GSERIALIZED payload counts before deserializing
           geometry data (Darafei Praliaskouski)
+ - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
+          (Darafei Praliaskouski)
 
 * Enhancements *
 
