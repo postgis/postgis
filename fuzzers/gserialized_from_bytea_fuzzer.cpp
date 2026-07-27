@@ -42,26 +42,44 @@ postgis_fuzzer_assert(int condition)
 		abort();
 }
 
+static lwvarlena_t *
+geometry_to_bytea(const LWGEOM *lwgeom)
+{
+	return lwgeom_to_wkb_varlena(lwgeom, WKB_NDR | WKB_EXTENDED);
+}
+
 static void
-assert_idempotent_serialization(LWGEOM *lwgeom)
+assert_equal_gserialized(const GSERIALIZED *left, size_t left_size, const GSERIALIZED *right, size_t right_size)
+{
+	postgis_fuzzer_assert(left_size == LWSIZE_GET(left->size));
+	postgis_fuzzer_assert(right_size == LWSIZE_GET(right->size));
+	postgis_fuzzer_assert(left_size == right_size);
+	postgis_fuzzer_assert(memcmp(left, right, left_size) == 0);
+}
+
+static void
+assert_gserialized_bytea_roundtrip(LWGEOM *lwgeom)
 {
 	size_t first_size = 0;
 	size_t second_size = 0;
 	GSERIALIZED *first = gserialized_from_lwgeom(lwgeom, &first_size);
-	LWGEOM *roundtrip = lwgeom_from_gserialized(first);
-	GSERIALIZED *second = gserialized_from_lwgeom(roundtrip, &second_size);
-
 	postgis_fuzzer_assert(first != NULL);
-	postgis_fuzzer_assert(roundtrip != NULL);
-	postgis_fuzzer_assert(second != NULL);
-	postgis_fuzzer_assert(first_size == LWSIZE_GET(first->size));
-	postgis_fuzzer_assert(second_size == LWSIZE_GET(second->size));
-	postgis_fuzzer_assert(first_size == second_size);
-	postgis_fuzzer_assert(memcmp(first, second, first_size) == 0);
 
-	lwgeom_free(roundtrip);
+	lwvarlena_t *bytea = geometry_to_bytea(lwgeom);
+	postgis_fuzzer_assert(bytea != NULL);
+
+	LWGEOM *from_bytea =
+	    lwgeom_from_wkb((uint8_t *)bytea->data, LWSIZE_GET(bytea->size) - LWVARHDRSZ, LW_PARSER_CHECK_ALL);
+	postgis_fuzzer_assert(from_bytea != NULL);
+
+	GSERIALIZED *second = gserialized_from_lwgeom(from_bytea, &second_size);
+	postgis_fuzzer_assert(second != NULL);
+	assert_equal_gserialized(first, first_size, second, second_size);
+
+	lwgeom_free(from_bytea);
 	lwfree(first);
 	lwfree(second);
+	lwfree(bytea);
 }
 
 int
@@ -92,7 +110,7 @@ LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
 	LWGEOM *lwgeom = lwgeom_from_gserialized(gserialized);
 	if (lwgeom != NULL)
 	{
-		assert_idempotent_serialization(lwgeom);
+		assert_gserialized_bytea_roundtrip(lwgeom);
 		lwgeom_free(lwgeom);
 	}
 
