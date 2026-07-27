@@ -3,6 +3,12 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GT-522, Reject malformed GSERIALIZED payload counts before deserializing
+    geometry data (Darafei Praliaskouski)
+  - GT-523, [raster] Fix invalid reads in geotransform property access
+    (Darafei Praliaskouski)
+  - GT-519, Reject invalid ST_LargestEmptyCircle boundaries before GEOS can
+    spend unbounded time on them (Darafei Praliaskouski)
   - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
     with standard_conforming_strings off (Darafei Praliaskouski)
   - #6042, Skip downgrade checks when source extension libraries cannot
