@@ -31,6 +31,7 @@
 #include "postgres.h"
 #include "catalog/pg_type.h" /* for INT4OID */
 #include "executor/spi.h"
+#include <stdint.h>
 #include "utils/builtins.h"
 #include "utils/jsonb.h"
 
@@ -96,7 +97,16 @@ lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
 PGDLLEXPORT size_t
 lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 {
-	return lwgeom_to_wkb_size_internal(geom, variant);
+	size_t b_size = lwgeom_to_wkb_size_internal(geom, variant);
+
+	if (variant & WKB_HEX)
+	{
+		if (b_size > SIZE_MAX / 2)
+			lwerror("%s: WKB size overflow", __func__);
+		b_size *= 2;
+	}
+
+	return b_size;
 }
 
 /**

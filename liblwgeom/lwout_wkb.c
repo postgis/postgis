@@ -24,6 +24,7 @@
 
 
 #include <math.h>
+#include <stdint.h>
 #include <stddef.h> // for ptrdiff_t
 
 #include "liblwgeom_internal.h"
@@ -1008,6 +1009,30 @@ lwgeom_to_wkb_size_internal(const LWGEOM *geom, uint8_t variant)
 	return size;
 }
 
+static size_t
+lwgeom_to_wkb_output_size(const LWGEOM *geom, uint8_t variant, int add_hex_nul, size_t header_size)
+{
+	size_t b_size = lwgeom_to_wkb_size_internal(geom, variant);
+
+	if (variant & WKB_HEX)
+	{
+		if (b_size > SIZE_MAX / 2)
+			lwerror("%s: WKB size overflow", __func__);
+		b_size *= 2;
+		if (add_hex_nul)
+		{
+			if (b_size == SIZE_MAX)
+				lwerror("%s: WKB size overflow", __func__);
+			b_size++;
+		}
+	}
+
+	if (header_size > SIZE_MAX - b_size)
+		lwerror("%s: WKB size overflow", __func__);
+
+	return b_size + header_size;
+}
+
 /**
  * Serialize a LWGEOM into WKB format, writing into the provided buffer.
  *
@@ -1108,12 +1133,7 @@ lwgeom_to_wkb_write_buf(const LWGEOM *geom, uint8_t variant, uint8_t *buffer)
 uint8_t *
 lwgeom_to_wkb_buffer(const LWGEOM *geom, uint8_t variant)
 {
-	size_t b_size = lwgeom_to_wkb_size_internal(geom, variant);
-	/* Hex string takes twice as much space as binary + a null character */
-	if (variant & WKB_HEX)
-	{
-		b_size = 2 * b_size + 1;
-	}
+	size_t b_size = lwgeom_to_wkb_output_size(geom, variant, LW_TRUE, 0);
 
 	uint8_t *buffer = (uint8_t *)lwalloc(b_size);
 	ptrdiff_t written_size = lwgeom_to_wkb_write_buf(geom, variant, buffer);
@@ -1144,14 +1164,10 @@ lwgeom_to_hexwkb_buffer(const LWGEOM *geom, uint8_t variant)
 lwvarlena_t *
 lwgeom_to_wkb_varlena(const LWGEOM *geom, uint8_t variant)
 {
-	size_t b_size = lwgeom_to_wkb_size_internal(geom, variant);
-	/* Hex string takes twice as much space as binary, but No NULL ending in varlena */
-	if (variant & WKB_HEX)
-	{
-		b_size = 2 * b_size;
-	}
+	size_t b_size = lwgeom_to_wkb_output_size(geom, variant, LW_FALSE, 0);
+	size_t alloc_size = lwgeom_to_wkb_output_size(geom, variant, LW_FALSE, LWVARHDRSZ);
 
-	lwvarlena_t *buffer = (lwvarlena_t *)lwalloc(b_size + LWVARHDRSZ);
+	lwvarlena_t *buffer = (lwvarlena_t *)lwalloc(alloc_size);
 	int written_size = lwgeom_to_wkb_write_buf(geom, variant, (uint8_t *)buffer->data);
 	if (written_size != (ptrdiff_t)b_size)
 	{
