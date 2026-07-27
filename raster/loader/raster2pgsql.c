@@ -3152,6 +3152,7 @@ main(int argc, char **argv) {
 	if (config->srid != config->out_srid && config->out_srid != SRID_UNKNOWN) {
 		if (config->copy_statements) {
 			rterror(_("Invalid argument combination - cannot use -Y with -s FROM_SRID:TO_SRID"));
+			rtdealloc_config(config);
 			exit(1);
 		}
 	}
