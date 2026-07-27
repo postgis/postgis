@@ -285,7 +285,14 @@ void PackedRTree::fromData(const void *data)
     for (uint64_t i = 0; i < _numNodes; i++)
     {
         NodeItem n = *pn++;
-        _nodeItems[i] = n;
+#if !FLATBUFFERS_LITTLEENDIAN
+	n.minX = flatbuffers::EndianScalar(n.minX);
+	n.minY = flatbuffers::EndianScalar(n.minY);
+	n.maxX = flatbuffers::EndianScalar(n.maxX);
+	n.maxY = flatbuffers::EndianScalar(n.maxY);
+	n.offset = flatbuffers::EndianScalar(n.offset);
+#endif
+	_nodeItems[i] = n;
         _extent.expand(n);
     }
 }
@@ -389,15 +396,15 @@ std::vector<SearchResultItem> PackedRTree::streamSearch(
         uint64_t length = end - nodeIndex;
         readNode(nodesBuf, static_cast<size_t>(nodeIndex * sizeof(NodeItem)),
                  static_cast<size_t>(length * sizeof(NodeItem)));
-#if !CPL_IS_LSB
-        for (size_t i = 0; i < static_cast<size_t>(length); i++)
+#if !FLATBUFFERS_LITTLEENDIAN
+	for (size_t i = 0; i < static_cast<size_t>(length); i++)
         {
-            CPL_LSBPTR64(&nodeItems[i].minX);
-            CPL_LSBPTR64(&nodeItems[i].minY);
-            CPL_LSBPTR64(&nodeItems[i].maxX);
-            CPL_LSBPTR64(&nodeItems[i].maxY);
-            CPL_LSBPTR64(&nodeItems[i].offset);
-        }
+		nodeItems[i].minX = flatbuffers::EndianScalar(nodeItems[i].minX);
+		nodeItems[i].minY = flatbuffers::EndianScalar(nodeItems[i].minY);
+		nodeItems[i].maxX = flatbuffers::EndianScalar(nodeItems[i].maxX);
+		nodeItems[i].maxY = flatbuffers::EndianScalar(nodeItems[i].maxY);
+		nodeItems[i].offset = flatbuffers::EndianScalar(nodeItems[i].offset);
+	}
 #endif
         // search through child nodes
         for (uint64_t pos = nodeIndex; pos < end; pos++)
@@ -446,27 +453,19 @@ uint64_t PackedRTree::size(const uint64_t numItems, const uint16_t nodeSize)
 void PackedRTree::streamWrite(
     const std::function<void(uint8_t *, size_t)> &writeData)
 {
-#if !CPL_IS_LSB
-    for (size_t i = 0; i < static_cast<size_t>(_numNodes); i++)
-    {
-        CPL_LSBPTR64(&_nodeItems[i].minX);
-        CPL_LSBPTR64(&_nodeItems[i].minY);
-        CPL_LSBPTR64(&_nodeItems[i].maxX);
-        CPL_LSBPTR64(&_nodeItems[i].maxY);
-        CPL_LSBPTR64(&_nodeItems[i].offset);
-    }
-#endif
-    writeData(reinterpret_cast<uint8_t *>(_nodeItems),
-              static_cast<size_t>(_numNodes * sizeof(NodeItem)));
-#if !CPL_IS_LSB
-    for (size_t i = 0; i < static_cast<size_t>(_numNodes); i++)
-    {
-        CPL_LSBPTR64(&_nodeItems[i].minX);
-        CPL_LSBPTR64(&_nodeItems[i].minY);
-        CPL_LSBPTR64(&_nodeItems[i].maxX);
-        CPL_LSBPTR64(&_nodeItems[i].maxY);
-        CPL_LSBPTR64(&_nodeItems[i].offset);
-    }
+#if !FLATBUFFERS_LITTLEENDIAN
+	std::vector<NodeItem> nodeItems(_nodeItems, _nodeItems + _numNodes);
+	for (size_t i = 0; i < static_cast<size_t>(_numNodes); i++)
+	{
+		nodeItems[i].minX = flatbuffers::EndianScalar(nodeItems[i].minX);
+		nodeItems[i].minY = flatbuffers::EndianScalar(nodeItems[i].minY);
+		nodeItems[i].maxX = flatbuffers::EndianScalar(nodeItems[i].maxX);
+		nodeItems[i].maxY = flatbuffers::EndianScalar(nodeItems[i].maxY);
+		nodeItems[i].offset = flatbuffers::EndianScalar(nodeItems[i].offset);
+	}
+	writeData(reinterpret_cast<uint8_t *>(nodeItems.data()), static_cast<size_t>(_numNodes * sizeof(NodeItem)));
+#else
+	writeData(reinterpret_cast<uint8_t *>(_nodeItems), static_cast<size_t>(_numNodes * sizeof(NodeItem)));
 #endif
 }
 

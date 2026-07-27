@@ -33,6 +33,119 @@
 #include "utils/datetime.h"
 #include "utils/jsonb.h"
 
+static uint16_t
+flatgeobuf_le16(uint16_t v)
+{
+#if IS_BIG_ENDIAN
+	return (uint16_t)((v << 8) | (v >> 8));
+#else
+	return v;
+#endif
+}
+
+static uint32_t
+flatgeobuf_le32(uint32_t v)
+{
+#if IS_BIG_ENDIAN
+	return ((v & UINT32_C(0x000000ff)) << 24) | ((v & UINT32_C(0x0000ff00)) << 8) |
+	       ((v & UINT32_C(0x00ff0000)) >> 8) | ((v & UINT32_C(0xff000000)) >> 24);
+#else
+	return v;
+#endif
+}
+
+static uint64_t
+flatgeobuf_le64(uint64_t v)
+{
+#if IS_BIG_ENDIAN
+	return ((v & UINT64_C(0x00000000000000ff)) << 56) | ((v & UINT64_C(0x000000000000ff00)) << 40) |
+	       ((v & UINT64_C(0x0000000000ff0000)) << 24) | ((v & UINT64_C(0x00000000ff000000)) << 8) |
+	       ((v & UINT64_C(0x000000ff00000000)) >> 8) | ((v & UINT64_C(0x0000ff0000000000)) >> 24) |
+	       ((v & UINT64_C(0x00ff000000000000)) >> 40) | ((v & UINT64_C(0xff00000000000000)) >> 56);
+#else
+	return v;
+#endif
+}
+
+static void
+flatgeobuf_write_le16(uint8_t *dst, uint16_t v)
+{
+	v = flatgeobuf_le16(v);
+	memcpy(dst, &v, sizeof(v));
+}
+
+static void
+flatgeobuf_write_le32(uint8_t *dst, uint32_t v)
+{
+	v = flatgeobuf_le32(v);
+	memcpy(dst, &v, sizeof(v));
+}
+
+static void
+flatgeobuf_write_le64(uint8_t *dst, uint64_t v)
+{
+	v = flatgeobuf_le64(v);
+	memcpy(dst, &v, sizeof(v));
+}
+
+static uint16_t
+flatgeobuf_read_le16(const uint8_t *src)
+{
+	uint16_t v;
+	memcpy(&v, src, sizeof(v));
+	return flatgeobuf_le16(v);
+}
+
+static uint32_t
+flatgeobuf_read_le32(const uint8_t *src)
+{
+	uint32_t v;
+	memcpy(&v, src, sizeof(v));
+	return flatgeobuf_le32(v);
+}
+
+static uint64_t
+flatgeobuf_read_le64(const uint8_t *src)
+{
+	uint64_t v;
+	memcpy(&v, src, sizeof(v));
+	return flatgeobuf_le64(v);
+}
+
+static float
+flatgeobuf_read_float_le(const uint8_t *src)
+{
+	uint32_t bits = flatgeobuf_read_le32(src);
+	float value;
+	memcpy(&value, &bits, sizeof(value));
+	return value;
+}
+
+static double
+flatgeobuf_read_double_le(const uint8_t *src)
+{
+	uint64_t bits = flatgeobuf_read_le64(src);
+	double value;
+	memcpy(&value, &bits, sizeof(value));
+	return value;
+}
+
+static void
+flatgeobuf_write_float_le(uint8_t *dst, float value)
+{
+	uint32_t bits;
+	memcpy(&bits, &value, sizeof(bits));
+	flatgeobuf_write_le32(dst, bits);
+}
+
+static void
+flatgeobuf_write_double_le(uint8_t *dst, double value)
+{
+	uint64_t bits;
+	memcpy(&bits, &value, sizeof(bits));
+	flatgeobuf_write_le64(dst, bits);
+}
+
 static uint8_t get_column_type(Oid typoid) {
 	switch (typoid)
 	{
@@ -176,7 +289,7 @@ static void encode_properties(flatgeobuf_agg_ctx *ctx)
 		if (isnull)
 			continue;
 		ensure_properties_size(ctx, offset + sizeof(ci));
-		memcpy(ctx->ctx->properties + offset, &ci, sizeof(ci));
+		flatgeobuf_write_le16(ctx->ctx->properties + offset, ci);
 		offset += sizeof(ci);
 		typoid = getBaseType(TupleDescAttr(ctx->tupdesc, i)->atttypid);
 		switch (typoid) {
@@ -189,38 +302,38 @@ static void encode_properties(flatgeobuf_agg_ctx *ctx)
 		case INT2OID:
 			short_value = DatumGetInt16(datum);
 			ensure_properties_size(ctx, offset + sizeof(short_value));
-			memcpy(ctx->ctx->properties + offset, &short_value, sizeof(short_value));
+			flatgeobuf_write_le16(ctx->ctx->properties + offset, (uint16_t)short_value);
 			offset += sizeof(short_value);
 			break;
 		case INT4OID:
 			int_value = DatumGetInt32(datum);
 			ensure_properties_size(ctx, offset + sizeof(int_value));
-			memcpy(ctx->ctx->properties + offset, &int_value, sizeof(int_value));
+			flatgeobuf_write_le32(ctx->ctx->properties + offset, (uint32_t)int_value);
 			offset += sizeof(int_value);
 			break;
 		case INT8OID:
 			long_value = DatumGetInt64(datum);
 			ensure_properties_size(ctx, offset + sizeof(long_value));
-			memcpy(ctx->ctx->properties + offset, &long_value, sizeof(long_value));
+			flatgeobuf_write_le64(ctx->ctx->properties + offset, (uint64_t)long_value);
 			offset += sizeof(long_value);
 			break;
 		case FLOAT4OID:
 			float_value = DatumGetFloat4(datum);
 			ensure_properties_size(ctx, offset + sizeof(float_value));
-			memcpy(ctx->ctx->properties + offset, &float_value, sizeof(float_value));
+			flatgeobuf_write_float_le(ctx->ctx->properties + offset, float_value);
 			offset += sizeof(float_value);
 			break;
 		case FLOAT8OID:
 			double_value = DatumGetFloat8(datum);
 			ensure_properties_size(ctx, offset + sizeof(double_value));
-			memcpy(ctx->ctx->properties + offset, &double_value, sizeof(double_value));
+			flatgeobuf_write_double_le(ctx->ctx->properties + offset, double_value);
 			offset += sizeof(double_value);
 			break;
 		case TEXTOID:
 			string_value = text_to_cstring(DatumGetTextP(datum));
 			len = strlen(string_value);
 			ensure_properties_size(ctx, offset + sizeof(len));
-			memcpy(ctx->ctx->properties + offset, &len, sizeof(len));
+			flatgeobuf_write_le32(ctx->ctx->properties + offset, len);
 			offset += sizeof(len);
 			ensure_properties_size(ctx, offset + len);
 			memcpy(ctx->ctx->properties + offset, string_value, len);
@@ -238,7 +351,7 @@ static void encode_properties(flatgeobuf_agg_ctx *ctx)
 			EncodeDateTime(&tm, fsec, true, tz, tzn, USE_ISO_DATES, string_value);
 			len = strlen(string_value);
 			ensure_properties_size(ctx, offset + sizeof(len));
-			memcpy(ctx->ctx->properties + offset, &len, sizeof(len));
+			flatgeobuf_write_le32(ctx->ctx->properties + offset, len);
 			offset += sizeof(len);
 			ensure_properties_size(ctx, offset + len);
 			memcpy(ctx->ctx->properties + offset, string_value, len);
@@ -292,7 +405,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 	while (offset + 1 < size) {
 		if (offset + sizeof(uint16_t) > size)
 			elog(ERROR, "flatgeobuf: decode_properties: Unexpected offset %d", offset);
-		memcpy(&i, data + offset, sizeof(uint16_t));
+		i = flatgeobuf_read_le16(data + offset);
 		ci = i + 2;
 		offset += sizeof(uint16_t);
 		if (i >= ctx->ctx->columns_size)
@@ -332,7 +445,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			int16_t value;
 			if (offset + sizeof(int16_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for short value");
-			memcpy(&value, data + offset, sizeof(int16_t));
+			value = (int16_t)flatgeobuf_read_le16(data + offset);
 			values[ci] = Int16GetDatum(value);
 			offset += sizeof(int16_t);
 			break;
@@ -341,7 +454,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			uint16_t value;
 			if (offset + sizeof(uint16_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ushort value");
-			memcpy(&value, data + offset, sizeof(uint16_t));
+			value = flatgeobuf_read_le16(data + offset);
 			values[ci] = UInt16GetDatum(value);
 			offset += sizeof(uint16_t);
 			break;
@@ -350,7 +463,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			int32_t value;
 			if (offset + sizeof(int32_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for int value");
-			memcpy(&value, data + offset, sizeof(int32_t));
+			value = (int32_t)flatgeobuf_read_le32(data + offset);
 			values[ci] = Int32GetDatum(value);
 			offset += sizeof(int32_t);
 			break;
@@ -359,7 +472,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			uint32_t value;
 			if (offset + sizeof(uint32_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for uint value");
-			memcpy(&value, data + offset, sizeof(uint32_t));
+			value = flatgeobuf_read_le32(data + offset);
 			values[ci] = Int64GetDatum((int64_t)(uint64_t) value);
 			offset += sizeof(uint32_t);
 			break;
@@ -368,7 +481,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			int64_t value;
 			if (offset + sizeof(int64_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for long value");
-			memcpy(&value, data + offset, sizeof(int64_t));
+			value = (int64_t)flatgeobuf_read_le64(data + offset);
 			values[ci] = Int64GetDatum(value);
 			offset += sizeof(int64_t);
 			break;
@@ -377,7 +490,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			uint64_t value;
 			if (offset + sizeof(uint64_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ulong value");
-			memcpy(&value, data + offset, sizeof(uint64_t));
+			value = flatgeobuf_read_le64(data + offset);
 			values[ci] = UInt64GetDatum(value);
 			offset += sizeof(uint64_t);
 			break;
@@ -386,7 +499,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			float value;
 			if (offset + sizeof(float) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for float value");
-			memcpy(&value, data + offset, sizeof(float));
+			value = flatgeobuf_read_float_le(data + offset);
 			values[ci] = Float4GetDatum(value);
 			offset += sizeof(float);
 			break;
@@ -395,7 +508,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			double value;
 			if (offset + sizeof(double) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for double value");
-			memcpy(&value, data + offset, sizeof(double));
+			value = flatgeobuf_read_double_le(data + offset);
 			values[ci] = Float8GetDatum(value);
 			offset += sizeof(double);
 			break;
@@ -404,7 +517,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			uint32_t len;
 			if (offset + sizeof(len) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
-			memcpy(&len, data + offset, sizeof(uint32_t));
+			len = flatgeobuf_read_le32(data + offset);
 			offset += sizeof(len);
 			values[ci] = PointerGetDatum(cstring_to_text_with_len((const char *) data + offset, len));
 			offset += len;
@@ -427,7 +540,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 #endif
 			if (offset + sizeof(len) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
-			memcpy(&len, data + offset, sizeof(uint32_t));
+			len = flatgeobuf_read_le32(data + offset);
 			offset += sizeof(len);
 			buf = palloc0(len + 1);
 			memcpy(buf, (const char *) data + offset, len);
