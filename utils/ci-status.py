@@ -31,6 +31,7 @@ STALE_PASSED = "stale-passed"
 STALE_FAILED = "stale-fail"
 DISABLED = "disabled"
 NOT_APPLICABLE = "not_applicable"
+JENKINS_STALE_QUEUE_HOURS = 4
 
 SYMBOLS = {
     SUCCESS: ("✅", "OK"),
@@ -465,6 +466,57 @@ def woodpecker_workflow_details(pipeline, web_url):
     return details
 
 
+def woodpecker_error_details(pipeline):
+    errors = [
+        error.get("message")
+        for error in pipeline.get("errors") or []
+        if isinstance(error, dict) and error.get("message") and not error.get("is_warning")
+    ]
+    if not errors:
+        return None
+    return {
+        "message": "; ".join(errors),
+        "status_label": "Config error",
+    }
+
+
+def woodpecker_leaf_steps(workflow):
+    children = workflow.get("children") or []
+    if children:
+        return children
+    return [workflow]
+
+
+def woodpecker_killed_details(pipeline):
+    workflows = pipeline.get("workflows") or []
+    if not workflows:
+        return None
+
+    non_success = []
+    killed_zero = []
+    for workflow in workflows:
+        for step in woodpecker_leaf_steps(workflow):
+            status = normalize_woodpecker_status(step.get("state") or step.get("status"))
+            if status == SUCCESS:
+                continue
+            non_success.append(step)
+            if str(step.get("state") or step.get("status")).lower() == "killed" and step.get("exit_code") == 0:
+                killed_zero.append(step)
+
+    if not non_success or len(non_success) != len(killed_zero):
+        return None
+
+    labels = [
+        str(step.get("name") or f"step {step.get('pid') or step.get('id')}")
+        for step in killed_zero[:3]
+    ]
+    suffix = f" ({', '.join(labels)}" + (", ..." if len(killed_zero) > len(labels) else "") + ")"
+    return {
+        "message": f"agent lost: {plural(len(killed_zero), 'step')} killed at exit 0{suffix}",
+        "status_label": "Agent lost",
+    }
+
+
 def woodpecker_check(check, branch, timeout):
     query = urllib.parse.urlencode({
         "branch": branch["name"],
@@ -490,17 +542,32 @@ def woodpecker_check(check, branch, timeout):
     web_url = check.get("web_url")
     run_url = woodpecker_pipeline_url(web_url, current)
     detail_url = woodpecker_pipeline_detail_url(api_url, current)
-    if detail_url and "workflows" not in current:
+    needs_detail = "workflows" not in current
+    if (
+        normalize_woodpecker_status(current.get("status")) == FAILURE
+        and str(current.get("status")).lower() == "error"
+        and current.get("errors")
+    ):
+        needs_detail = False
+    if detail_url and needs_detail:
         try:
             current = {**current, **http_json(detail_url, timeout=timeout)}
         except RECOVERABLE_PROVIDER_ERRORS:
             pass
     message = current.get("message")
+    extra = {}
     if normalize_woodpecker_status(current.get("status")) != SUCCESS:
-        details = woodpecker_workflow_details(current, web_url)
+        details = None
+        if str(current.get("status")).lower() == "error" and not (current.get("workflows") or []):
+            details = woodpecker_error_details(current)
+        if not details and str(current.get("status")).lower() == "failure":
+            details = woodpecker_killed_details(current)
+        if not details:
+            details = woodpecker_workflow_details(current, web_url)
         if details:
             message = details["message"]
             run_url = details.get("url") or run_url
+            extra.update({key: details[key] for key in ("status_label",) if key in details})
     result = make_result(
         check,
         branch,
@@ -510,6 +577,7 @@ def woodpecker_check(check, branch, timeout):
         revision=current.get("commit"),
         completed_at=current.get("finished") or current.get("updated") or current.get("created"),
         message=message,
+        **extra,
     )
     if previous:
         previous_url = woodpecker_pipeline_url(web_url, previous)
@@ -795,6 +863,18 @@ def queued_jenkins_revision(item):
     return None
 
 
+def jenkins_queued_status_label(item):
+    queued_at = parse_time(item.get("inQueueSince"))
+    if not queued_at:
+        return "Queued"
+    age = utc_now() - queued_at
+    if age.total_seconds() > JENKINS_STALE_QUEUE_HOURS * 3600:
+        return "Queued stale"
+    if item.get("stuck"):
+        return "Queued stuck"
+    return "Queued"
+
+
 def jenkins_queue_item_rank(item, branch):
     revision = queued_jenkins_revision(item)
     is_current = False
@@ -837,6 +917,7 @@ def jenkins_queued_check(check, branch, job_url, timeout):
         revision=params.get("after") or params.get("BRANCH"),
         completed_at=item.get("inQueueSince"),
         message=message,
+        status_label=jenkins_queued_status_label(item),
     )
 
 
