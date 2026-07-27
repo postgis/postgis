@@ -30,6 +30,7 @@
 #include "gdal_vrt.h"
 #include "ogr_srs_api.h"
 #include <assert.h>
+#include <stdarg.h>
 
 #define xstr(s) str(s)
 #define str(s) #s
@@ -83,6 +84,37 @@ rt_init_allocators(void) {
 		loader_rt_info_handler,
 		loader_rt_warning_handler
 	);
+}
+
+static char *
+rtloader_alloc_sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+
+static char *
+rtloader_alloc_sprintf(const char *fmt, ...)
+{
+	int len;
+	char *result;
+	va_list ap;
+	va_list ap2;
+
+	va_start(ap, fmt);
+	va_copy(ap2, ap);
+	len = vsnprintf(NULL, 0, fmt, ap);
+	va_end(ap);
+	if (len < 0) {
+		va_end(ap2);
+		return NULL;
+	}
+
+	result = rtalloc((size_t)len + 1);
+	if (result == NULL) {
+		va_end(ap2);
+		return NULL;
+	}
+
+	vsnprintf(result, (size_t)len + 1, fmt, ap2);
+	va_end(ap2);
+	return result;
 }
 
 static void
@@ -906,31 +938,21 @@ copy_from(const char *schema, const char *table, const char *column,
           STRINGBUFFER *buffer)
 {
 	char *sql = NULL;
-	uint32_t len = 0;
 
 	assert(table != NULL);
 	assert(column != NULL);
 
-	len = strlen("COPY  () FROM stdin;") + 1;
-	if (schema != NULL)
-		len += strlen(schema);
-	len += strlen(table);
-	len += strlen(column);
-	if (filename != NULL)
-		len += strlen(",") + strlen(file_column_name);
-
-	sql = rtalloc(sizeof(char) * len);
-	if (sql == NULL) {
-		rterror(_("copy_from: Could not allocate memory for COPY statement"));
-		return 0;
-	}
-	sprintf(sql, "COPY %s%s (%s%s%s) FROM stdin;",
+	sql = rtloader_alloc_sprintf("COPY %s%s (%s%s%s) FROM stdin;",
 		(schema != NULL ? schema : ""),
 		table,
 		column,
 		(filename != NULL ? "," : ""),
 		(filename != NULL ? file_column_name : "")
 	);
+	if (sql == NULL) {
+		rterror(_("copy_from: Could not allocate memory for COPY statement"));
+		return 0;
+	}
 
 	append_sql_to_buffer(buffer, sql);
 	sql = NULL;
@@ -955,7 +977,6 @@ insert_records(
 	STRINGBUFFER *tileset, STRINGBUFFER *buffer
 ) {
 	char *fn = NULL;
-	uint32_t len = 0;
 	char *sql = NULL;
 	uint32_t x = 0;
 
@@ -981,21 +1002,15 @@ insert_records(
 
 		/* rows */
 		for (x = 0; x < tileset->length; x++) {
-			len = strlen(tileset->line[x]) + 1;
-
-			if (filename != NULL)
-				len += strlen(fn) + 1;
-
-			sql = rtalloc(sizeof(char) * len);
-			if (sql == NULL) {
-				rterror(_("insert_records: Could not allocate memory for COPY statement"));
-				return 0;
-			}
-			sprintf(sql, "%s%s%s",
+			sql = rtloader_alloc_sprintf("%s%s%s",
 				tileset->line[x],
 				(filename != NULL ? "\t" : ""),
 				(filename != NULL ? fn : "")
 			);
+			if (sql == NULL) {
+				rterror(_("insert_records: Could not allocate memory for COPY statement"));
+				return 0;
+			}
 
 			append_sql_to_buffer(buffer, sql);
 			sql = NULL;
@@ -1009,52 +1024,39 @@ insert_records(
 	}
 	/* INSERT statements */
 	else {
-		len = strlen("INSERT INTO  () VALUES (ST_Transform(''::raster,xxxxxxxxx));") + 1;
-		if (schema != NULL)
-			len += strlen(schema);
-		len += strlen(table);
-		len += strlen(column);
-		if (filename != NULL)
-			len += strlen(",") + strlen(file_column_name);
-
 		/* escape single-quotes in filename */
 		if (filename != NULL)
 			fn = strreplace(filename, "'", "''", NULL);
 
 		for (x = 0; x < tileset->length; x++) {
-			char *ptr;
-			int sqllen = len;
-
-			sqllen += strlen(tileset->line[x]);
-			if (filename != NULL)
-				sqllen += strlen(",''") + strlen(fn);
-
-			sql = rtalloc(sizeof(char) * sqllen);
+			if (out_srid != SRID_UNKNOWN && filename != NULL) {
+				sql = rtloader_alloc_sprintf(
+					"INSERT INTO %s%s (%s,%s) VALUES (ST_Transform('%s'::raster, %d),'%s');",
+					(schema != NULL ? schema : ""), table, column,
+					file_column_name, tileset->line[x], out_srid, fn);
+			}
+			else if (out_srid != SRID_UNKNOWN) {
+				sql = rtloader_alloc_sprintf(
+					"INSERT INTO %s%s (%s) VALUES (ST_Transform('%s'::raster, %d));",
+					(schema != NULL ? schema : ""), table, column,
+					tileset->line[x], out_srid);
+			}
+			else if (filename != NULL) {
+				sql = rtloader_alloc_sprintf(
+					"INSERT INTO %s%s (%s,%s) VALUES ('%s'::raster,'%s');",
+					(schema != NULL ? schema : ""), table, column,
+					file_column_name, tileset->line[x], fn);
+			}
+			else {
+				sql = rtloader_alloc_sprintf(
+					"INSERT INTO %s%s (%s) VALUES ('%s'::raster);",
+					(schema != NULL ? schema : ""), table, column,
+					tileset->line[x]);
+			}
 			if (sql == NULL) {
 				rterror(_("insert_records: Could not allocate memory for INSERT statement"));
 				return 0;
 			}
-			ptr = sql;
-			ptr += sprintf(sql, "INSERT INTO %s%s (%s%s%s) VALUES (",
-					(schema != NULL ? schema : ""),
-					table,
-					column,
-					(filename != NULL ? "," : ""),
-					(filename != NULL ? file_column_name : "")
-				);
-			if (out_srid != SRID_UNKNOWN) {
-				ptr += sprintf(ptr, "ST_Transform(");
-			}
-			ptr += sprintf(ptr, "'%s'::raster",
-					tileset->line[x]
-				);
-			if (out_srid != SRID_UNKNOWN) {
-				ptr += sprintf(ptr, ", %d)", out_srid);
-			}
-			if (filename != NULL) {
-				ptr += sprintf(ptr, ",'%s'", fn);
-			}
-			ptr += sprintf(ptr, ");");
 
 			append_sql_to_buffer(buffer, sql);
 			sql = NULL;
@@ -1068,22 +1070,15 @@ insert_records(
 static int
 drop_table(const char *schema, const char *table, STRINGBUFFER *buffer) {
 	char *sql = NULL;
-	uint32_t len = 0;
 
-	len = strlen("DROP TABLE IF EXISTS ;") + 1;
-	if (schema != NULL)
-		len += strlen(schema);
-	len += strlen(table);
-
-	sql = rtalloc(sizeof(char) * len);
+	sql = rtloader_alloc_sprintf("DROP TABLE IF EXISTS %s%s;",
+		(schema != NULL ? schema : ""),
+		table
+	);
 	if (sql == NULL) {
 		rterror(_("drop_table: Could not allocate memory for DROP TABLE statement"));
 		return 0;
 	}
-	sprintf(sql, "DROP TABLE IF EXISTS %s%s;",
-		(schema != NULL ? schema : ""),
-		table
-	);
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -1102,29 +1097,11 @@ create_table(const char *schema,
 	     STRINGBUFFER *buffer)
 {
 	char *sql = NULL;
-	uint32_t len = 0;
 
 	assert(table != NULL);
 	assert(column != NULL);
 
-	len = strlen("CREATE TABLE IF NOT EXISTS  (\"rid\" serial PRIMARY KEY, raster);") + 1;
-	if (schema != NULL)
-		len += strlen(schema);
-	len += strlen(table);
-	len += strlen(column);
-	if (file_column)
-		len += strlen(", text") + strlen(file_column_name);
-	if (tablespace != NULL)
-		len += strlen(" TABLESPACE ") + strlen(tablespace);
-	if (idx_tablespace != NULL)
-		len += strlen(" USING INDEX TABLESPACE ") + strlen(idx_tablespace);
-
-	sql = rtalloc(sizeof(char) * len);
-	if (sql == NULL) {
-		rterror(_("create_table: Could not allocate memory for CREATE TABLE statement"));
-		return 0;
-	}
-	sprintf(sql,
+	sql = rtloader_alloc_sprintf(
 		"CREATE TABLE %s%s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s%s%s)%s%s;",
 		(if_not_exists ? "IF NOT EXISTS " : ""),
 		(schema != NULL ? schema : ""),
@@ -1137,6 +1114,10 @@ create_table(const char *schema,
 		(file_column ? " text" : ""),
 		(tablespace != NULL ? " TABLESPACE " : ""),
 		(tablespace != NULL ? tablespace : ""));
+	if (sql == NULL) {
+		rterror(_("create_table: Could not allocate memory for CREATE TABLE statement"));
+		return 0;
+	}
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -1218,24 +1199,17 @@ analyze_table(
 	STRINGBUFFER *buffer
 ) {
 	char *sql = NULL;
-	uint32_t len = 0;
 
 	assert(table != NULL);
 
-	len = strlen("ANALYZE ;") + 1;
-	if (schema != NULL)
-		len += strlen(schema);
-	len += strlen(table);
-
-	sql = rtalloc(sizeof(char) * len);
+	sql = rtloader_alloc_sprintf("ANALYZE %s%s;",
+		(schema != NULL ? schema : ""),
+		table
+	);
 	if (sql == NULL) {
 		rterror(_("analyze_table: Could not allocate memory for ANALYZE TABLE statement"));
 		return 0;
 	}
-	sprintf(sql, "ANALYZE %s%s;",
-		(schema != NULL ? schema : ""),
-		table
-	);
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -1246,21 +1220,18 @@ static int
 vacuum_table(const char *schema, const char *table, int analyze, STRINGBUFFER *buffer)
 {
 	char *sql = NULL;
-	uint32_t len = 0;
 
 	assert(table != NULL);
 
-	len = strlen("VACUUM ANALYZE ;") + 1;
-	if (schema != NULL)
-		len += strlen(schema);
-	len += strlen(table);
-
-	sql = rtalloc(sizeof(char) * len);
+	sql = rtloader_alloc_sprintf("VACUUM%s %s%s;",
+		(analyze ? " ANALYZE" : ""),
+		(schema != NULL ? schema : ""),
+		table
+	);
 	if (sql == NULL) {
 		rterror(_("vacuum_table: Could not allocate memory for VACUUM statement"));
 		return 0;
 	}
-	sprintf(sql, "VACUUM%s %s%s;", (analyze ? " ANALYZE" : ""), (schema != NULL ? schema : ""), table);
 
 	append_sql_to_buffer(buffer, sql);
 
@@ -1274,7 +1245,6 @@ add_raster_constraints(
 	STRINGBUFFER *buffer
 ) {
 	char *sql = NULL;
-	uint32_t len = 0;
 
 	char *_tmp = NULL;
 	char *_schema = NULL;
@@ -1304,24 +1274,22 @@ add_raster_constraints(
 	_column = strreplace(_tmp, "'", "''", NULL);
 	rtdealloc(_tmp);
 
-	len = strlen("SELECT AddRasterConstraints('','','',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE);") + 1;
-	if (_schema != NULL)
-		len += strlen(_schema);
-	len += strlen(_table);
-	len += strlen(_column);
-
-	sql = rtalloc(sizeof(char) * len);
-	if (sql == NULL) {
-		rterror(_("add_raster_constraints: Could not allocate memory for AddRasterConstraints statement"));
-		return 0;
-	}
-	sprintf(sql, "SELECT AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s);",
+	sql = rtloader_alloc_sprintf(
+		"SELECT AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s);",
 		(_schema != NULL ? _schema : ""),
 		_table,
 		_column,
 		(regular_blocking ? "TRUE" : "FALSE"),
 		(max_extent ? "TRUE" : "FALSE")
 	);
+	if (sql == NULL) {
+		rterror(_("add_raster_constraints: Could not allocate memory for AddRasterConstraints statement"));
+		if (_schema != NULL)
+			rtdealloc(_schema);
+		rtdealloc(_table);
+		rtdealloc(_column);
+		return 0;
+	}
 
 	if (_schema != NULL)
 		rtdealloc(_schema);
@@ -1341,7 +1309,6 @@ add_overview_constraints(
 	STRINGBUFFER *buffer
 ) {
 	char *sql = NULL;
-	uint32_t len = 0;
 
 	char *_tmp = NULL;
 
@@ -1399,22 +1366,8 @@ add_overview_constraints(
 	_column = strreplace(_tmp, "'", "''", NULL);
 	rtdealloc(_tmp);
 
-	len = strlen("SELECT AddOverviewConstraints('','','','','','',);") + 5;
-	if (_ovschema != NULL)
-		len += strlen(_ovschema);
-	len += strlen(_ovtable);
-	len += strlen(_ovcolumn);
-	if (_schema != NULL)
-		len += strlen(_schema);
-	len += strlen(_table);
-	len += strlen(_column);
-
-	sql = rtalloc(sizeof(char) * len);
-	if (sql == NULL) {
-		rterror(_("add_overview_constraints: Could not allocate memory for AddOverviewConstraints statement"));
-		return 0;
-	}
-	sprintf(sql, "SELECT AddOverviewConstraints('%s','%s','%s','%s','%s','%s',%d);",
+	sql = rtloader_alloc_sprintf(
+		"SELECT AddOverviewConstraints('%s','%s','%s','%s','%s','%s',%d);",
 		(_ovschema != NULL ? _ovschema : ""),
 		_ovtable,
 		_ovcolumn,
@@ -1423,6 +1376,18 @@ add_overview_constraints(
 		_column,
 		factor
 	);
+	if (sql == NULL) {
+		rterror(_("add_overview_constraints: Could not allocate memory for AddOverviewConstraints statement"));
+		if (_ovschema != NULL)
+			rtdealloc(_ovschema);
+		rtdealloc(_ovtable);
+		rtdealloc(_ovcolumn);
+		if (_schema != NULL)
+			rtdealloc(_schema);
+		rtdealloc(_table);
+		rtdealloc(_column);
+		return 0;
+	}
 
 	if (_ovschema != NULL)
 		rtdealloc(_ovschema);
@@ -3202,7 +3167,6 @@ main(int argc, char **argv) {
 	****************************************************************************/
 
 	if (config->overview_count) {
-		char factor[4];
 		config->overview_table = rtalloc(sizeof(char *) * config->overview_count);
 		if (config->overview_table == NULL) {
 			rterror(_("Could not allocate memory for overview table names"));
@@ -3211,15 +3175,15 @@ main(int argc, char **argv) {
 		}
 
 		for (i = 0; i < config->overview_count; i++) {
-			sprintf(factor, "%d", config->overview[i]);
-
-			config->overview_table[i] = rtalloc(sizeof(char) * (strlen("o__") + strlen(factor) + strlen(config->table) + 1));
+			config->overview_table[i] = rtloader_alloc_sprintf("o_%d_%s",
+				config->overview[i],
+				config->table
+			);
 			if (config->overview_table[i] == NULL) {
 				rterror(_("Could not allocate memory for overview table name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
-			sprintf(config->overview_table[i], "o_%d_%s", config->overview[i], config->table);
 		}
 	}
 
@@ -3279,87 +3243,80 @@ main(int argc, char **argv) {
 	****************************************************************************/
 
 	if (config->schema != NULL) {
-		tmp = rtalloc(sizeof(char) * (strlen(config->schema) + 4));
+		tmp = rtloader_alloc_sprintf("\"%s\".", config->schema);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting schema name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
 
-		sprintf(tmp, "\"%s\".", config->schema);
 		rtdealloc(config->schema);
 		config->schema = tmp;
 	}
 	if (config->table != NULL) {
-		tmp = rtalloc(sizeof(char) * (strlen(config->table) + 3));
+		tmp = rtloader_alloc_sprintf("\"%s\"", config->table);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting table name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
 
-		sprintf(tmp, "\"%s\"", config->table);
 		rtdealloc(config->table);
 		config->table = tmp;
 	}
 	if (config->raster_column != NULL) {
-		tmp = rtalloc(sizeof(char) * (strlen(config->raster_column) + 3));
+		tmp = rtloader_alloc_sprintf("\"%s\"", config->raster_column);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting raster column name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
 
-		sprintf(tmp, "\"%s\"", config->raster_column);
 		rtdealloc(config->raster_column);
 		config->raster_column = tmp;
 	}
 	if (config->file_column_name != NULL) {
-		tmp = rtalloc(sizeof(char) * (strlen(config->file_column_name) + 3));
+		tmp = rtloader_alloc_sprintf("\"%s\"", config->file_column_name);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting raster column name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
 
-		sprintf(tmp, "\"%s\"", config->file_column_name);
 		rtdealloc(config->file_column_name);
 		config->file_column_name = tmp;
 	}
 	if (config->tablespace != NULL) {
-		tmp = rtalloc(sizeof(char) * (strlen(config->tablespace) + 3));
+		tmp = rtloader_alloc_sprintf("\"%s\"", config->tablespace);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting tablespace name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
 
-		sprintf(tmp, "\"%s\"", config->tablespace);
 		rtdealloc(config->tablespace);
 		config->tablespace = tmp;
 	}
 	if (config->idx_tablespace != NULL) {
-		tmp = rtalloc(sizeof(char) * (strlen(config->idx_tablespace) + 3));
+		tmp = rtloader_alloc_sprintf("\"%s\"", config->idx_tablespace);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting index tablespace name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
 
-		sprintf(tmp, "\"%s\"", config->idx_tablespace);
 		rtdealloc(config->idx_tablespace);
 		config->idx_tablespace = tmp;
 	}
 	if (config->overview_count) {
 		for (i = 0; i < config->overview_count; i++) {
-			tmp = rtalloc(sizeof(char) * (strlen(config->overview_table[i]) + 3));
+			tmp = rtloader_alloc_sprintf("\"%s\"", config->overview_table[i]);
 			if (tmp == NULL) {
 				rterror(_("Could not allocate memory for quoting overview table name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
 
-			sprintf(tmp, "\"%s\"", config->overview_table[i]);
 			rtdealloc(config->overview_table[i]);
 			config->overview_table[i] = tmp;
 		}
