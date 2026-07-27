@@ -15,4 +15,4 @@ steps:
     image: debian:bookworm
     pull: true
     commands:
-      - bash ci/dronie/postgis_mingw_wine.sh
+      - bash ci/woodie/postgis_mingw_wine.sh

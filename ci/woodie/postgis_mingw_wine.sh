@@ -592,6 +592,9 @@ configure_postgis()
 	export PROTOBUFC_CFLAGS="-I${PREFIX}/include"
 	export PROTOBUFC_LIBS="-L${PREFIX}/lib -lprotobuf-c"
 
+	# Debian does not package a MinGW SFCGAL/CGAL stack. Enabling SFCGAL here
+	# requires cross-building SFCGAL, CGAL, Boost thread/serialization, GMP,
+	# MPFR, and nlohmann-json before running PostGIS configure.
 	run_logged "${LOG_DIR}/postgis.configure.log" "${REPO_ROOT}/configure" \
 		--host="${TARGET}" \
 		--prefix="${PREFIX}" \

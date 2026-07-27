@@ -30,7 +30,7 @@ service that owns the behavior:
 | Winnie Windows jobs | `ci/winnie/` and the Winnie Jenkins jobs |
 | Bessie and Berrie/Berrie64 jobs | `ci/bessie/`, `ci/berrie*`, and the corresponding Jenkins worker labels |
 | Docker build images used by GitHub Actions | `postgis/postgis-build-env` image tags referenced from `.github/workflows/ci.yml` |
-| Woodpecker MinGW Wine job | `.woodpecker/mingw-wine.yml` and `ci/dronie/postgis_mingw_wine.sh` |
+| Woodpecker MinGW Wine job | `.woodpecker/mingw-wine.yml` and `ci/woodie/postgis_mingw_wine.sh` |
 
 When a dashboard row describes dependency versions, operating systems, branch
 coverage, or test modes, the row should be regenerated from those sources or
@@ -199,9 +199,7 @@ Keep the remaining gaps explicit when changing this job:
 * Native Windows runtime behavior is only partially covered: Wine can expose
   Windows CRT, locale, codepage, threading, file-locking, and DLL-search
   issues, but it is not a substitute for running the same binaries on Windows.
-* SFCGAL is not built in this job unless the script also provides a MinGW
-  SFCGAL dependency stack. The job must not report SFCGAL coverage merely
-  because the rest of PostGIS was configured.
-* `address_standardizer` and the tiger geocoder are not part of this repository.
-  They need their own repository-owned Windows or Wine coverage if that scope is
-  required.
+* SFCGAL is not built in this job because Debian does not provide MinGW-targeted
+  SFCGAL or CGAL packages. Enabling it requires cross-building at least the
+  SFCGAL, CGAL, Boost thread/serialization, GMP, MPFR, and nlohmann-json stack
+  before PostGIS is configured with `--with-sfcgal`.
