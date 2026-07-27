@@ -22,6 +22,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef _WIN32
+#include <direct.h>
+#endif
+
 #include <fstream>
 #include <string>
 
@@ -37,7 +41,15 @@ extern "C" GSERIALIZED *gserialized1_from_lwgeom(LWGEOM *geom, size_t *size);
 static int
 mkdir_if_needed(const std::string &path)
 {
-	if (mkdir(path.c_str(), 0777) == 0 || errno == EEXIST)
+	int result;
+
+#ifdef _WIN32
+	result = _mkdir(path.c_str());
+#else
+	result = mkdir(path.c_str(), 0777);
+#endif
+
+	if (result == 0 || errno == EEXIST)
 		return 1;
 	perror(path.c_str());
 	return 0;
