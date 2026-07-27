@@ -49,6 +49,7 @@ typedef struct
 	int8_t has_srid;    /* SRID? */
 	int8_t error;       /* An error was found (not enough bytes to read) */
 	uint8_t depth;      /* Current recursion level (to prevent stack overflows). Maxes at LW_PARSER_MAX_DEPTH */
+	size_t pos_offset;  /* Current parse offset from wkb */
 	const uint8_t *pos; /* Current parse position */
 } wkb_parse_state;
 
@@ -128,11 +129,38 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 */
 static inline void wkb_parse_state_check(wkb_parse_state *s, size_t next)
 {
-	if( (s->pos + next) > (s->wkb + s->wkb_size) )
+	if (next > s->wkb_size || s->pos_offset > s->wkb_size - next)
 	{
 		lwerror("WKB structure does not match expected size!");
 		s->error = LW_TRUE;
 	}
+}
+
+static inline void
+wkb_parse_state_advance(wkb_parse_state *s, size_t next)
+{
+	s->pos_offset += next;
+	s->pos += next;
+}
+
+static inline int
+wkb_checked_mul_size(size_t a, size_t b, size_t *result)
+{
+	if (a != 0 && b > SIZE_MAX / a)
+		return LW_FALSE;
+
+	*result = a * b;
+	return LW_TRUE;
+}
+
+static inline int
+wkb_checked_add_size(size_t a, size_t b, size_t *result)
+{
+	if (b > SIZE_MAX - a)
+		return LW_FALSE;
+
+	*result = a + b;
+	return LW_TRUE;
 }
 
 /**
@@ -283,7 +311,7 @@ static char byte_from_wkb_state(wkb_parse_state *s)
 
 	char_value = s->pos[0];
 	LWDEBUGF(4, "Read byte value: %x", char_value);
-	s->pos += WKB_BYTE_SIZE;
+	wkb_parse_state_advance(s, WKB_BYTE_SIZE);
 
 	return char_value;
 }
@@ -317,7 +345,7 @@ static uint32_t integer_from_wkb_state(wkb_parse_state *s)
 		}
 	}
 
-	s->pos += WKB_INT_SIZE;
+	wkb_parse_state_advance(s, WKB_INT_SIZE);
 	return i;
 }
 
@@ -349,7 +377,7 @@ static double double_from_wkb_state(wkb_parse_state *s)
 		}
 	}
 
-	s->pos += WKB_DOUBLE_SIZE;
+	wkb_parse_state_advance(s, WKB_DOUBLE_SIZE);
 	return d;
 }
 
@@ -417,7 +445,13 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 		return ptarray_construct(s->has_z, s->has_m, npoints);
 
 	/* Does the data we want to read exist? */
-	pa_size = (size_t)npoints * ndims * WKB_DOUBLE_SIZE;
+	if (!wkb_checked_mul_size((size_t)npoints, ndims, &pa_size) ||
+	    !wkb_checked_mul_size(pa_size, WKB_DOUBLE_SIZE, &pa_size))
+	{
+		s->error = LW_TRUE;
+		lwerror("Pointarray length (%d) is too large", npoints);
+		return NULL;
+	}
 	wkb_parse_state_check(s, pa_size);
 	if (s->error)
 		return NULL;
@@ -426,7 +460,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	if( ! s->swap_bytes )
 	{
 		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uint8_t*)s->pos);
-		s->pos += pa_size;
+		wkb_parse_state_advance(s, pa_size);
 	}
 	/* Otherwise we have to read each double, separately. */
 	else
@@ -475,7 +509,7 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 	if( ! s->swap_bytes )
 	{
 		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uint8_t*)s->pos);
-		s->pos += pa_size;
+		wkb_parse_state_advance(s, pa_size);
 	}
 	/* Otherwise we have to read each double, separately */
 	else
@@ -833,7 +867,7 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 	double *weights = NULL, *knots = NULL;
 	POINTARRAY *points = NULL;
 	int all_weights_one = 1;
-	size_t pa_size;
+	size_t pa_size, point_payload_size, weights_size, point_tags_size;
 	static const uint32_t MAXPOINTS = (uint32_t)(UINT_MAX / (WKB_DOUBLE_SIZE * 4));
 
 	/* ISO/IEC 13249-3:2016 compliant parsing */
@@ -861,15 +895,27 @@ static LWNURBSCURVE* lwnurbscurve_from_wkb_state(wkb_parse_state *s)
 		return NULL;
 	}
 	const size_t min_point_size = 2 + (2 + (s->has_z ? 1 : 0) + (s->has_m ? 1 : 0)) * WKB_DOUBLE_SIZE;
-	wkb_parse_state_check(s, (size_t)npoints * min_point_size);
+	if (!wkb_checked_mul_size((size_t)npoints, min_point_size, &pa_size))
+	{
+		lwerror("WKB NURBSCURVE: control point count (%u) too large", npoints);
+		return NULL;
+	}
+	wkb_parse_state_check(s, pa_size);
 	if (s->error)
 		return NULL;
 
 	/* Does the data we want to read exist? */
 	ndims = 2 + s->has_z + s->has_m;
-	pa_size = (size_t)npoints * ndims * WKB_DOUBLE_SIZE; /* coord */
-	pa_size += npoints * sizeof(double); /* weight */
-	pa_size += npoints * sizeof(char) * 2; /* endian_byte + weight_byte */
+	if (!wkb_checked_mul_size((size_t)npoints, ndims, &point_payload_size) ||
+	    !wkb_checked_mul_size(point_payload_size, WKB_DOUBLE_SIZE, &point_payload_size) ||
+	    !wkb_checked_mul_size((size_t)npoints, sizeof(double), &weights_size) ||
+	    !wkb_checked_mul_size((size_t)npoints, sizeof(char) * 2, &point_tags_size) ||
+	    !wkb_checked_add_size(point_payload_size, weights_size, &pa_size) ||
+	    !wkb_checked_add_size(pa_size, point_tags_size, &pa_size))
+	{
+		lwerror("WKB NURBSCURVE: control point count (%u) too large", npoints);
+		return NULL;
+	}
 	wkb_parse_state_check(s, pa_size);
 	if (s->error)
 		return NULL;
@@ -1145,6 +1191,7 @@ LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char ch
 	s.has_srid = LW_FALSE;
 	s.error = LW_FALSE;
 	s.pos = wkb;
+	s.pos_offset = 0;
 	s.depth = 1;
 
 	if (!wkb || !wkb_size)
