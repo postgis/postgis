@@ -8,6 +8,10 @@ These are only changes since 3.7.0beta1.
 
 * Bug Fixes *
 
+ - Make the computed-columns regression test assert the query plan instead of racing two
+          stopwatches, so it no longer fails at random under CI load
+          (Darafei Praliaskouski)
+
  - GT-545, Fix FlatGeobuf geometry, property, and spatial-index byte order on
           big-endian platforms (Darafei Praliaskouski)
  - [raster] Fix invalid reads in raster band initialization and
