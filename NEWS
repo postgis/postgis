@@ -3,6 +3,9 @@ PostGIS 3.6.5
 
 * Fixes *
 
+- GT-582, Make the computed-columns regression test assert the query plan
+  instead of racing two stopwatches, so it no longer fails at random under
+  CI load (Darafei Praliaskouski)
 - GT-569, Initialize GSERIALIZED peek test fixtures so check-unit stays
   clean under Valgrind (Darafei Praliaskouski)
 - GT-575, Scope interrupt regression timeouts to the statements being
