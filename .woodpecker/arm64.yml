@@ -1,5 +1,6 @@
 labels:
   platform: linux/amd64
+  qemu: "true"
 when:
   - event: [push, cron]
     branch: [master, stable-*]
@@ -23,8 +24,9 @@ when:
 # maintainer publishes the multi-architecture tag.
 #
 # Host requirement: the amd64 Woodie agent host must have persistent
-# binfmt_misc handlers for qemu-aarch64. On Debian-family hosts this is provided
-# by qemu-user, qemu-user-binfmt, and binfmt-support.
+# binfmt_misc handlers for qemu-aarch64 and advertise the qemu scheduler label.
+# On Debian-family hosts this is provided by qemu-user, qemu-user-binfmt, and
+# binfmt-support.
 variables:
   arm64-deps: &arm64-deps >-
     autoconf
@@ -158,7 +160,7 @@ steps:
         echo "arm64 foreign execution ok: uname -m -> $${output}"
 
   arm64-qemu-regress:
-    image: arm64v8/debian:trixie-slim
+    image: arm64v8/debian:trixie-slim@sha256:8b5033c95ca60cdffb0e0f4c446e5f714e82d8960a9ef4153c0eaf13e988b0ea
     pull: true
     depends_on: preflight-arm64-binfmt
     commands:
