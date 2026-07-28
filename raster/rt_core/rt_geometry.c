@@ -1000,6 +1000,7 @@ rt_raster_gdal_polygonize(
 	double dValue = 0.0;
 	int iBandHasNodataValue = FALSE;
 	double dBandNoData = 0.0;
+	rt_pixtype pixtype = PT_END;
 
 	uint32_t bandNums[1] = {nband};
 	int excludeNodataValues[1] = {exclude_nodata_value};
@@ -1020,6 +1021,7 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Error getting band %d from raster", nband);
 		return NULL;
 	}
+	pixtype = rt_band_get_pixtype(band);
 
 	if (exclude_nodata_value) {
 
@@ -1141,12 +1143,22 @@ rt_raster_gdal_polygonize(
 	 * unwind promptly when PostgreSQL requests cancellation (#4222).
 	 * Use the band's nodata mask so large/infinite nodata values are excluded
 	 * before polygonizing, bypassing the broken %f string-format filter (#6010).
+	 * Polygonize integer bands through GDAL's integer buffer so nearby large
+	 * values do not coalesce in GDALFPolygonize's Float32 buffer (#3776).
 	 */
 	GDALRasterBandH mask_band = iBandHasNodataValue
 	    ? GDALGetMaskBand(gdal_band)
 	    : NULL;
-	cplerr = GDALFPolygonize(
-	    gdal_band, mask_band, hLayer, iPixVal, NULL, rt_util_gdal_progress_func, (void *)"GDALFPolygonize");
+	if (pixtype == PT_16BF || pixtype == PT_32BF || pixtype == PT_64BF)
+	{
+		cplerr = GDALFPolygonize(
+		    gdal_band, mask_band, hLayer, iPixVal, NULL, rt_util_gdal_progress_func, (void *)"GDALFPolygonize");
+	}
+	else
+	{
+		cplerr = GDALPolygonize(
+		    gdal_band, mask_band, hLayer, iPixVal, NULL, rt_util_gdal_progress_func, (void *)"GDALPolygonize");
+	}
 
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_polygonize: Could not polygonize GDAL band");
@@ -1276,4 +1288,3 @@ rt_raster_gdal_polygonize(
 
 	return pols;
 }
-

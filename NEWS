@@ -12,6 +12,8 @@ These are only changes since 3.7.0beta1.
           big-endian platforms (Darafei Praliaskouski)
  - [raster] Fix invalid reads in raster band initialization and
           geotransform property access (Darafei Praliaskouski)
+ - #3776, [raster] Keep distinct 32-bit integer pixel values separate in
+          ST_DumpAsPolygons (Darafei Praliaskouski)
  - GT-504, Report extension script/library version mismatches before loading
           functions unavailable in an older library (Darafei Praliaskouski)
  - GT-515, Reject invalid ST_LargestEmptyCircle boundaries before GEOS can
