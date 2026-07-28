@@ -1052,6 +1052,7 @@ LWGEOM *
 lwgeom_pointonsurface(const LWGEOM *geom)
 {
 	LWGEOM *result;
+	LWGEOM *geos_input = NULL;
 	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
@@ -1066,17 +1067,41 @@ lwgeom_pointonsurface(const LWGEOM *geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
+	if (lwgeom_is_collection(geom))
+	{
+		const LWCOLLECTION *col = (const LWCOLLECTION *)geom;
+		LWCOLLECTION *clean = lwcollection_construct_empty(geom->type, geom->srid, is3d, lwgeom_has_m(geom));
+		for (uint32_t i = 0; i < col->ngeoms; i++)
+		{
+			if (!lwgeom_is_empty(col->geoms[i]))
+				lwcollection_add_lwgeom(clean, lwgeom_clone_deep(col->geoms[i]));
+		}
+		geos_input = lwcollection_as_lwgeom(clean);
+	}
+
+	if (!(g1 = LWGEOM2GEOS(geos_input ? geos_input : geom, AUTOFIX)))
+	{
+		lwgeom_free(geos_input);
+		GEOS_FAIL();
+	}
 
 	g3 = GEOSPointOnSurface(g1);
 
-	if (!g3) GEOS_FREE_AND_FAIL(g1);
+	if (!g3)
+	{
+		lwgeom_free(geos_input);
+		GEOS_FREE_AND_FAIL(g1);
+	}
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))
+	{
+		lwgeom_free(geos_input);
 		GEOS_FREE_AND_FAIL(g1, g3);
+	}
 
 	GEOS_FREE(g1, g3);
+	lwgeom_free(geos_input);
 
 	return result;
 }

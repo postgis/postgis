@@ -782,6 +782,7 @@ FROM (SELECT 'POLYGON((1 1 1, 5 1 1,5 5 1, 1 5 1,1 1 1))'::geometry as a, 'LINES
 
 SELECT '#2108', ST_AsEWKT(ST_LineInterpolatePoint('SRID=3395;LINESTRING M EMPTY'::geometry, 0.5));
 SELECT '#2117', ST_AsEWKT(ST_PointOnSurface('SRID=3395;MULTIPOLYGON M EMPTY'::geometry));
+SELECT 'pointonsurface_mixed_empty_multipoint', ST_AsEWKT(ST_PointOnSurface('SRID=4326;MULTIPOINT(EMPTY,2 1,2 4,4 5)'::geometry));
 
 SELECT '#2110.1', 'POINT(0 0)'::geometry = 'POINT EMPTY'::geometry;
 SELECT '#2110.2', 'POINT EMPTY'::geometry = 'POINT EMPTY'::geometry;
