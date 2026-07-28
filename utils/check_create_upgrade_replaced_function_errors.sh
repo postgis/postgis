@@ -2,7 +2,11 @@
 
 set -e
 
-TMPDIR="$(mktemp -d "${TMPDIR:-/tmp}/check_create_upgrade_replaced_function_errors.XXXXXX")"
+tmp_parent="${TMPDIR:-/tmp}"
+if ! test -d "${tmp_parent}"; then
+	tmp_parent="/tmp"
+fi
+TMPDIR="$(mktemp -d "${tmp_parent}/check_create_upgrade_replaced_function_errors.XXXXXX")"
 trap 'rm -rf "${TMPDIR}"' EXIT
 
 cat > "${TMPDIR}/postgis.sql" <<'SQL'
