@@ -294,6 +294,7 @@ SET client_min_messages TO warning;
 SELECT '#5895.coerce', round(ST_DistanceSphere('POINT(0 100)'::geometry, 'POINT(0 80)'::geometry)::numeric, 3);
 RESET client_min_messages;
 SELECT '#5895.parallel', proparallel FROM pg_proc WHERE oid = 'ST_DistanceSphere(geometry,geometry)'::regprocedure;
+SELECT '#5895.parallel_radius', proparallel FROM pg_proc WHERE oid = 'ST_DistanceSphere(geometry,geometry,float8)'::regprocedure;
 SELECT '#5895.projected', ST_DistanceSphere(ST_SetSRID('POINT(0 0)'::geometry,3857), ST_SetSRID('POINT(1 1)'::geometry,3857));
 
 -- Solid intersects solid when contains it
