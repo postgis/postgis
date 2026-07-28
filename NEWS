@@ -144,6 +144,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
  - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
  - #5950, Document POSTGIS_REGRESS_DB_OWNER for sandboxed regression roles (Darafei Praliaskouski)
  - #4332, Clarify the scope of several Function Reference categories (Darafei Praliaskouski)
+ - #3973, Add two-input ST_Difference(geography, geography) and
+          ST_Union(geography, geography) wrappers (Darafei Praliaskouski)
  - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
  - #5109, Document the meaning of topology.next_left_edge and topology.next_right_edge links (Darafei Praliaskouski)
  - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)

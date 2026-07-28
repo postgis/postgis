@@ -49,6 +49,10 @@ dwithin_poly_line_1|t
 dwithin_poly_poly_1|f
 dwithin_poly_poly_2|t
 dwithin_poly_poly_3|t
+#3973_difference_regproc|t
+#3973_difference_planar|t
+#3973_union_regproc|t
+#3973_union_planar|t
 #5456|0
 lrs_empty_1|
 lrs_empty_2|

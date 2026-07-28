@@ -125,6 +125,30 @@ select 'dwithin_poly_poly_1', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geo
 select 'dwithin_poly_poly_2', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
 select 'dwithin_poly_poly_3', ST_DWithin('POLYGON((1 1, -2 -2, -3 0, 1 1))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
 
+-- #3973 geography overlay wrappers
+select '#3973_difference_regproc', to_regprocedure('st_difference(geography,geography)') is not null;
+with geog as (
+  select 'POLYGON((-1 0,-1 2,1 2,1 0,-1 0))'::geography as a,
+         'POLYGON((0 1,0 3,2 3,2 1,0 1))'::geography as b,
+         _ST_BestSRID('POLYGON((-1 0,-1 2,1 2,1 0,-1 0))'::geography,
+                      'POLYGON((0 1,0 3,2 3,2 1,0 1))'::geography) as srid
+)
+select '#3973_difference_planar',
+       abs(ST_Area(ST_Transform(ST_Difference(a, b)::geometry, srid)) -
+           ST_Area(ST_Difference(ST_Transform(a::geometry, srid), ST_Transform(b::geometry, srid)))) < 1
+from geog;
+select '#3973_union_regproc', to_regprocedure('st_union(geography,geography)') is not null;
+with geog as (
+  select 'POLYGON((-1 0,-1 2,1 2,1 0,-1 0))'::geography as a,
+         'POLYGON((0 1,0 3,2 3,2 1,0 1))'::geography as b,
+         _ST_BestSRID('POLYGON((-1 0,-1 2,1 2,1 0,-1 0))'::geography,
+                      'POLYGON((0 1,0 3,2 3,2 1,0 1))'::geography) as srid
+)
+select '#3973_union_planar',
+       abs(ST_Area(ST_Transform(ST_Union(a, b)::geometry, srid)) -
+           ST_Area(ST_Union(ST_Transform(a::geometry, srid), ST_Transform(b::geometry, srid)))) < 1
+from geog;
+
 
 -- Linear Referencing functions
 -- #5456 garden crash
