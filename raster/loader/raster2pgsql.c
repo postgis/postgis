@@ -1312,14 +1312,13 @@ copy_from(const char *schema,
 	assert(column != NULL);
 
 	sql = rtloader_alloc_sprintf("COPY %s%s (%s%s%s%s%s) FROM stdin;",
-		(schema != NULL ? schema : ""),
-		table,
-		column,
-		(filename != NULL ? "," : ""),
-		(filename != NULL ? file_column_name : ""),
-		(metadata != NULL ? "," : ""),
-		(metadata != NULL ? metadata_column_name : "")
-	);
+				     (schema != NULL ? schema : ""),
+				     table,
+				     column,
+				     (filename != NULL ? "," : ""),
+				     (filename != NULL ? file_column_name : ""),
+				     (metadata != NULL ? "," : ""),
+				     (metadata != NULL ? metadata_column_name : ""));
 	if (sql == NULL) {
 		rterror(_("copy_from: Could not allocate memory for COPY statement"));
 		return 0;
@@ -1395,12 +1394,11 @@ insert_records(const char *schema,
 		/* rows */
 		for (x = 0; x < tileset->length; x++) {
 			sql = rtloader_alloc_sprintf("%s%s%s%s%s",
-				tileset->line[x],
-				(filename != NULL ? "\t" : ""),
-				(filename != NULL ? fn : ""),
-				(metadata != NULL ? "\t" : ""),
-				(metadata != NULL ? md : "")
-			);
+						     tileset->line[x],
+						     (filename != NULL ? "\t" : ""),
+						     (filename != NULL ? fn : ""),
+						     (metadata != NULL ? "\t" : ""),
+						     (metadata != NULL ? md : ""));
 			if (sql == NULL) {
 				rterror(_("insert_records: Could not allocate memory for COPY statement"));
 				if (fn != NULL)
@@ -1446,13 +1444,12 @@ insert_records(const char *schema,
 
 			if (out_srid != SRID_UNKNOWN)
 				raster_sql = rtloader_alloc_sprintf(
-					"ST_Transform('%s'::raster, %d)",
-					tileset->line[x], out_srid);
+				    "ST_Transform('%s'::raster, %d)", tileset->line[x], out_srid);
 			else
-				raster_sql = rtloader_alloc_sprintf(
-					"'%s'::raster", tileset->line[x]);
+				raster_sql = rtloader_alloc_sprintf("'%s'::raster", tileset->line[x]);
 
-			if (raster_sql == NULL) {
+			if (raster_sql == NULL)
+			{
 				rterror(_("insert_records: Could not allocate memory for raster value"));
 				if (fn != NULL)
 					rtdealloc(fn);
@@ -1461,22 +1458,21 @@ insert_records(const char *schema,
 				return 0;
 			}
 
-			sql = rtloader_alloc_sprintf(
-				"INSERT INTO %s%s (%s%s%s%s%s) VALUES (%s%s%s%s%s%s%s);",
-				(schema != NULL ? schema : ""),
-				table,
-				column,
-				(filename != NULL ? "," : ""),
-				(filename != NULL ? file_column_name : ""),
-				(metadata != NULL ? "," : ""),
-				(metadata != NULL ? metadata_column_name : ""),
-				raster_sql,
-				(filename != NULL ? ",'" : ""),
-				(filename != NULL ? fn : ""),
-				(filename != NULL ? "'" : ""),
-				(metadata != NULL ? ",'" : ""),
-				(metadata != NULL ? md : ""),
-				(metadata != NULL ? "'" : ""));
+			sql = rtloader_alloc_sprintf("INSERT INTO %s%s (%s%s%s%s%s) VALUES (%s%s%s%s%s%s%s);",
+						     (schema != NULL ? schema : ""),
+						     table,
+						     column,
+						     (filename != NULL ? "," : ""),
+						     (filename != NULL ? file_column_name : ""),
+						     (metadata != NULL ? "," : ""),
+						     (metadata != NULL ? metadata_column_name : ""),
+						     raster_sql,
+						     (filename != NULL ? ",'" : ""),
+						     (filename != NULL ? fn : ""),
+						     (filename != NULL ? "'" : ""),
+						     (metadata != NULL ? ",'" : ""),
+						     (metadata != NULL ? md : ""),
+						     (metadata != NULL ? "'" : ""));
 			rtdealloc(raster_sql);
 			if (sql == NULL) {
 				rterror(_("insert_records: Could not allocate memory for INSERT statement"));
@@ -1534,22 +1530,21 @@ create_table(const char *schema,
 	assert(table != NULL);
 	assert(column != NULL);
 
-	sql = rtloader_alloc_sprintf(
-		"CREATE TABLE %s%s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s%s%s%s%s%s)%s%s;",
-		(if_not_exists ? "IF NOT EXISTS " : ""),
-		(schema != NULL ? schema : ""),
-		table,
-		(idx_tablespace != NULL ? " USING INDEX TABLESPACE " : ""),
-		(idx_tablespace != NULL ? idx_tablespace : ""),
-		column,
-		(file_column ? "," : ""),
-		(file_column ? file_column_name : ""),
-		(file_column ? " text" : ""),
-		(metadata_column ? "," : ""),
-		(metadata_column ? metadata_column_name : ""),
-		(metadata_column ? " text" : ""),
-		(tablespace != NULL ? " TABLESPACE " : ""),
-		(tablespace != NULL ? tablespace : ""));
+	sql = rtloader_alloc_sprintf("CREATE TABLE %s%s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s%s%s%s%s%s)%s%s;",
+				     (if_not_exists ? "IF NOT EXISTS " : ""),
+				     (schema != NULL ? schema : ""),
+				     table,
+				     (idx_tablespace != NULL ? " USING INDEX TABLESPACE " : ""),
+				     (idx_tablespace != NULL ? idx_tablespace : ""),
+				     column,
+				     (file_column ? "," : ""),
+				     (file_column ? file_column_name : ""),
+				     (file_column ? " text" : ""),
+				     (metadata_column ? "," : ""),
+				     (metadata_column ? metadata_column_name : ""),
+				     (metadata_column ? " text" : ""),
+				     (tablespace != NULL ? " TABLESPACE " : ""),
+				     (tablespace != NULL ? tablespace : ""));
 	if (sql == NULL) {
 		rterror(_("create_table: Could not allocate memory for CREATE TABLE statement"));
 		return 0;
@@ -3799,9 +3794,11 @@ main(int argc, char **argv) {
 		rtdealloc(config->file_column_name);
 		config->file_column_name = tmp;
 	}
-	if (config->metadata_column_name != NULL) {
+	if (config->metadata_column_name != NULL)
+	{
 		tmp = quote_pg_identifier(config->metadata_column_name);
-		if (tmp == NULL) {
+		if (tmp == NULL)
+		{
 			rterror(_("Could not allocate memory for quoting metadata column name"));
 			rtdealloc_config(config);
 			exit(1);
