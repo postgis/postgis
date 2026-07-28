@@ -242,6 +242,9 @@
             <warning>
                 <para><function>ST_StraightSkeleton</function> is deprecated as of 3.1.0. Use <xref linkend="CG_StraightSkeleton" /> instead.</para>
             </warning>
+            <note><para>Like <function>CG_StraightSkeleton</function>, this
+            function ignores the Z dimension and always gives a 2D result,
+            even when used on a 3D geometry.</para></note>
             <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
             <para>&sfcgal_required;</para>
         </refsection>
@@ -265,6 +268,9 @@
             <warning>
                 <para><function>ST_ApproximateMedialAxis</function> is deprecated as of 3.5.0. Use <xref linkend="CG_ApproximateMedialAxis" /> instead.</para>
             </warning>
+            <note><para>Like <function>CG_ApproximateMedialAxis</function>,
+            this function ignores the Z dimension and always gives a 2D
+            result, even when used on a 3D geometry.</para></note>
             <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
             <para>&sfcgal_required;</para>
         </refsection>

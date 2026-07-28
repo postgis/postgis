@@ -2084,8 +2084,9 @@ FROM data;</programlisting>
             </para>
             <para role="availability" conformance="3.5.0">Availability: 3.5.0</para>
             <para role="sfcgal_requirement" conformance="1.3.8">Requires SFCGAL &gt;= 1.3.8 for option use_distance_as_m</para>
+            <note><para>This function ignores the Z dimension.
+It always gives a 2D result even when used on a 3D geometry.</para></note>
             <para>&sfcgal_required;</para>
-            <para>&Z_support;</para>
             <para>&P_support;</para>
             <para>&T_support;</para>
         </refsection>

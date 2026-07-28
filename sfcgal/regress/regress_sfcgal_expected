@@ -23,6 +23,8 @@ CG_3DConvexHull|80.9227
 CG_3DUnion|t
 CG_3DUnion (aggregate)|t
 CG_StraightSkeleton|MULTILINESTRING((1 1,1.5 1.5),(2 1,1.5 1.5),(2 2,1.5 1.5),(1 2,1.5 1.5))
+CG_StraightSkeletonDropsZ|2
+CG_ApproximateMedialAxisDropsZ|2
 CG_StraightSkeletonUseMDistance|MULTILINESTRING M ((0 0 0,0.5 0.5 0.5),(1 0 0,0.5 0.5 0.5),(1 1 0,0.5 0.5 0.5),(0 1 0,0.5 0.5 0.5))
 CG_Distance|5
 CG_3DDistance|1

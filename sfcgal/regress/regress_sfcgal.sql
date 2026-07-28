@@ -75,6 +75,9 @@ SELECT 'CG_3DUnion (aggregate)', ABS(CG_Volume(CG_3DUnion(g))) - 40 < 1e-12 FROM
     SELECT CG_Extrude(ST_GeomFromText('POLYGON((-1 -1 -2, 1 -1 -2, 1 1 -2, -1 1 -2, -1 -1 -2))'), 0, 0, 4) AS g
 ) AS f;
 SELECT 'CG_StraightSkeleton', ST_AsText(CG_StraightSkeleton('POLYGON((1 1,2 1,2 2,1 2,1 1))'));
+-- #4323: both skeleton operations ignore an input Z dimension.
+SELECT 'CG_StraightSkeletonDropsZ', ST_NDims(CG_StraightSkeleton('POLYGON Z((0 0 10,0 50 10,10 50 10,10 0 10,0 0 10))'));
+SELECT 'CG_ApproximateMedialAxisDropsZ', ST_NDims(CG_ApproximateMedialAxis('POLYGON Z((0 0 10,0 50 10,10 50 10,10 0 10,0 0 10))'));
 SELECT 'CG_StraightSkeletonUseMDistance',
 CASE WHEN string_to_array(postgis_sfcgal_version(), '.')::int[] >= string_to_array('1.3.8', '.')::int[]
 THEN
