@@ -1,5 +1,6 @@
 labels:
   platform: linux/amd64
+  qemu: "true"
 when:
   event: [push, pull_request, tag, cron]
 
@@ -23,8 +24,9 @@ when:
 # the big-endian and unsigned-char parts of the bug class.
 #
 # QEMU depends on persistent binfmt_misc registrations on the amd64 Woodie agent
-# host. Woodpecker starts the foreign-architecture step image directly; steps do
-# not need a Docker socket or a nested docker run probe.
+# host, so the scheduler label selects hosts where foreign images can start.
+# Without that label, these jobs can silently land on amd64 hosts without
+# emulation and fail before the step commands run.
 variables:
   native-image: &native-image repo.osgeo.org/postgis/build-test:debian13
   prepare-debian: &prepare-debian |
