@@ -1566,7 +1566,7 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
         <para>Below is how we currently map PostGIS 2D/3D types to X3D types</para>
     </note>
 
-        <para>The 'options' argument is a bitfield that denotes whether to represent coordinates with the X3D GeoCoordinates geospatial node and whether to flip the x/y axis.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred.</para>
+        <para>The 'options' argument is a bitfield that denotes whether to represent coordinates with the X3D GeoCoordinates geospatial node, whether to flip the x/y axis, and whether to omit the wrapper <code>Shape</code> node around GeometryCollection members.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but the X3D default of lat/lon, y/x may be preferred.</para>
 
         <itemizedlist>
             <listitem>
@@ -1580,6 +1580,10 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
             <listitem>
               <para>2: Output coordinates in GeoSpatial GeoCoordinates.  This option will throw an error if geometries are not in WGS 84 long lat (srid: 4326). This is currently the only GeoCoordinate type supported.  <link xlink:href="http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference">Refer to X3D specs specifying a spatial reference system.</link>. Default output will be <code>GeoCoordinate geoSystem='"GD" "WE" "longitude_first"'</code>.  If
               you prefer the X3D default of  <code>GeoCoordinate geoSystem='"GD" "WE" "latitude_first"'</code> use <code>(2 + 1)</code> = <code>3</code> </para>
+            </listitem>
+
+            <listitem>
+              <para>4: In GeometryCollections, omit the wrapper <code>Shape</code> node around each member and return the geometry node itself.  This is useful when client code already controls the surrounding X3D appearance or transform tags.</para>
             </listitem>
         </itemizedlist>
 
@@ -1696,6 +1700,13 @@ M 7 -8 L 10 -10 6 -14 4 -11 Z</screen>
     </Shape>', '')
 FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);
 ]]></programlisting>
+        <para>Return GeometryCollection members as geometry fragments without the wrapper <code>Shape</code> nodes.</para>
+        <programlisting language="sql"><![CDATA[SELECT ST_AsX3D(
+  'GEOMETRYCOLLECTION(POINT(1 2),POLYGON((0 0,1 0,1 1,0 0)))'::geometry,
+  15,
+  4
+);]]></programlisting>
+<screen><![CDATA[<Polypoint2D  point='1 2 ' /><IndexedFaceSet  convex='false' coordIndex='0 1 2'><Coordinate point='0 0 0 1 0 0 1 1 0 ' /></IndexedFaceSet>]]></screen>
         <para>The following preview shows the extruded geometry generated from a simplified version of the same source lettering.
           It is a geometry preview, not X3D markup; use the preceding <function>ST_AsX3D</function> query output in an X3D viewer to inspect the native X3D scene.</para>
         <programlisting language="sql" role="documented-output">SELECT

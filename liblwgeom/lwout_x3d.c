@@ -465,6 +465,7 @@ asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const cha
 {
 	uint32_t i;
 	LWGEOM *subgeom;
+	int skip_shape = (opts & LW_X3D_SKIP_COLLECTION_SHAPES);
 
 	/* Open outmost tag */
 	/** @TODO: if collection should be grouped, we'll wrap in a group tag.  Still needs cleanup
@@ -476,10 +477,20 @@ asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const cha
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
-		stringbuffer_aprintf(sb, "<Shape%s>", defid);
+		if (!skip_shape)
+			stringbuffer_aprintf(sb, "<Shape%s>", defid);
 		if ( subgeom->type == POINTTYPE )
 		{
-			asx3d3_point_sb((LWPOINT *)subgeom, precision, opts, defid, sb);
+			if (skip_shape)
+			{
+				LWCOLLECTION *tmp = (LWCOLLECTION *)lwgeom_as_multi(subgeom);
+				asx3d3_multi_sb(tmp, precision, opts, defid, sb);
+				lwcollection_free(tmp);
+			}
+			else
+			{
+				asx3d3_point_sb((LWPOINT *)subgeom, precision, opts, defid, sb);
+			}
 		}
 		else if ( subgeom->type == LINETYPE )
 		{
@@ -509,7 +520,8 @@ asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const cha
 		else
 			lwerror("asx3d3_collection_buf: unknown geometry type");
 
-		stringbuffer_aprintf(sb, "</Shape>");
+		if (!skip_shape)
+			stringbuffer_aprintf(sb, "</Shape>");
 	}
 
 	/* Close outmost tag */

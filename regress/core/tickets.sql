@@ -1399,6 +1399,12 @@ select '#4399', 'ST_GeoHash', ST_GeoHash(geom)::text from geom
 union all
 select '#4399', 'ST_AsGeoJSON', ST_AsGeoJSON(geom)::text from geom;
 
+SELECT '#3472', ST_AsX3D(
+	'GEOMETRYCOLLECTION(POINT(1 2),POLYGON((0 0,1 0,1 1,0 0)))'::geometry,
+	15,
+	4
+);
+
 SELECT '#4599-1', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
 SELECT '#4599-2', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), 0));
 SELECT '#4599-3', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), -1));

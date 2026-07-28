@@ -151,6 +151,20 @@ static void out_x3d3_test_geoms(void)
 	    0,
 	    0);
 
+	/* GeometryCollection fragment output with point and 2D polygon */
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(POINT(1 2),POLYGON((0 0,1 0,1 1,0 0)))",
+	    "<Polypoint2D  point='1 2 ' /><IndexedFaceSet  convex='false' coordIndex='0 1 2'><Coordinate point='0 0 0 1 0 0 1 1 0 ' /></IndexedFaceSet>",
+	    0,
+	    4);
+
+	/* Nested GeometryCollection fragment output keeps geometry node tags */
+	do_x3d3_test(
+	    "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(1 2)),LINESTRING(0 1,2 3,4 5))",
+	    "<Polypoint2D  point='1 2 ' /><LineSet  vertexCount='3'><Coordinate point='0 1 0 2 3 0 4 5 0' /></LineSet>",
+	    0,
+	    4);
+
 	/* TODO:  Implement Empty GeometryCollection correctly or throw a not-implemented */
 	/** do_x3d3_test(
 	    "GEOMETRYCOLLECTION EMPTY",
