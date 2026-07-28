@@ -608,7 +608,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 <!--Test functions that take no arguments and take no geometries/geographies -->
 	<xsl:when test="($numparamgeoms = '0' and $numparamgeogs = '0') and not(contains($fnexclude,db:funcdef/db:function))">SELECT  'Starting <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />)';
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, log_sql)
-			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" />','<xsl:value-of select="$fnname" />', clock_timestamp(),
+				VALUES('<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /></xsl:with-param></xsl:call-template>','<xsl:value-of select="$fnname" />', clock_timestamp(),
 			  	    '<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT  <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnfakeparams" />) As output;</xsl:with-param></xsl:call-template>');
 
@@ -626,7 +626,7 @@ SELECT  'Ending <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of s
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing';
 
 	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql)
-			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" />  <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text>','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@ID" />', clock_timestamp(),
+				VALUES('<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" />  <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text></xsl:with-param></xsl:call-template>','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@ID" />', clock_timestamp(),
 			  	'<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)<xsl:value-of select="$over_clause" />  As result
 							FROM (<xsl:value-of select="." />) As foo1
@@ -651,7 +651,7 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 			<xsl:choose>
 			  <xsl:when test="($numparamgeogs > '0' or $numparamgeoms > '0')">
 	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2,  log_start, log_sql)
-			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text> <xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />','<xsl:value-of select="$geom1id" />', '<xsl:value-of select="@ID" />', clock_timestamp(),
+				VALUES('<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text> <xsl:value-of select="@ID" /></xsl:with-param></xsl:call-template>','<xsl:value-of select="$fnname" />','<xsl:value-of select="$geom1id" />', '<xsl:value-of select="@ID" />', clock_timestamp(),
 			  			'<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) As result, ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
 	FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
@@ -664,7 +664,7 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 			</xsl:when>
 			  <xsl:otherwise>
 			  	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql)
-			  	VALUES('<xsl:value-of select="$log_label" /> Other <xsl:text> </xsl:text><xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@DI" />', clock_timestamp(),
+				VALUES('<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$log_label" /> Other <xsl:text> </xsl:text><xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /></xsl:with-param></xsl:call-template>','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@DI" />', clock_timestamp(),
 			  	'<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)</xsl:with-param></xsl:call-template>');
 
@@ -852,15 +852,15 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
      <xsl:param name="arg1"/>
      <xsl:variable name="apostrophe">'</xsl:variable>
      <xsl:choose>
-      <!-- this string has at least on single quote -->
+      <!-- this string has at least one single quote -->
       <xsl:when test="contains($arg1, $apostrophe)">
-      <xsl:if test="string-length(normalize-space(substring-before($arg1, $apostrophe))) > 0"><xsl:value-of select="substring-before($arg1, $apostrophe)" disable-output-escaping="yes"/>''</xsl:if>
+      <xsl:value-of select="substring-before($arg1, $apostrophe)"/><xsl:text>''</xsl:text>
        <xsl:call-template name="escapesinglequotes">
-        <xsl:with-param name="arg1"><xsl:value-of select="substring-after($arg1, $apostrophe)" disable-output-escaping="yes"/></xsl:with-param>
+        <xsl:with-param name="arg1" select="substring-after($arg1, $apostrophe)"/>
        </xsl:call-template>
       </xsl:when>
-      <!-- no quotes found in string, just print it -->
-      <xsl:when test="string-length(normalize-space($arg1)) > 0"><xsl:value-of select="normalize-space($arg1)"/></xsl:when>
+      <!-- no quotes found in string, so preserve it verbatim -->
+      <xsl:otherwise><xsl:value-of select="$arg1"/></xsl:otherwise>
      </xsl:choose>
     </xsl:template>
 

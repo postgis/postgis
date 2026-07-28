@@ -353,6 +353,12 @@ endif
 CHECK_UNIT_TARGET = check-docbook-qa-unit
 CHECK_HTML_BLOCK_LABELS_DEPS =
 
+ifneq ($(PYTHON3),)
+ifneq ($(XSLTPROC),)
+CHECK_UNIT_TARGET += check-gardentest-escaping
+endif
+endif
+
 ifeq ($(CAN_CHECK_XML),yes)
 CHECK_UNIT_TARGET += check-xml check-docbook-markup
 ifneq ($(PYTHON3),)
@@ -782,6 +788,9 @@ ifeq ($(PYTHON3),)
 else
 	$(PYTHON3) $(abs_top_srcdir)/utils/test_docbook_qa.py
 endif
+
+check-gardentest-escaping: $(abs_top_srcdir)/utils/test_gardentest_escaping.py $(srcdir)/xsl/test_gardentest_escaping.xsl $(srcdir)/xsl/postgis_gardentest.sql.xsl
+	$(PYTHON3) $(abs_top_srcdir)/utils/test_gardentest_escaping.py --xsltproc "$(XSLTPROC)"
 
 check-html-block-labels: $(CHECK_HTML_BLOCK_LABELS_DEPS)
 ifeq ($(PYTHON3),)
