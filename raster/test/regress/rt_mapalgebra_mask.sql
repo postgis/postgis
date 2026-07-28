@@ -237,23 +237,13 @@ SELECT 'st_convolution_null_pixeltype',
 	)
 FROM src;
 
-WITH src AS (
-	SELECT ST_AddBand(
-		ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0),
-		1, '32BF', 1, NULL
-	) AS rast
-)
-SELECT 'st_convolution_rejects_5x5';
-
-WITH src AS (
-	SELECT ST_AddBand(
-		ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0),
-		1, '32BF', 1, NULL
-	) AS rast
-)
-SELECT
-	ST_Convolution(
-		rast,
+DO $$
+BEGIN
+	PERFORM ST_Convolution(
+		ST_AddBand(
+			ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0),
+			1, '32BF', 1, NULL
+		),
 		ARRAY[
 			[1, 1, 1, 1, 1],
 			[1, 1, 1, 1, 1],
@@ -261,8 +251,17 @@ SELECT
 			[1, 1, 1, 1, 1],
 			[1, 1, 1, 1, 1]
 		]::double precision[][]
-	)
-FROM src;
+	);
+	RAISE EXCEPTION 'ST_Convolution accepted a 5x5 matrix';
+EXCEPTION
+	WHEN OTHERS THEN
+		IF SQLERRM <> 'Convolution matrix must be 1x1 or 3x3' THEN
+			RAISE;
+		END IF;
+END;
+$$;
+
+SELECT 'st_convolution_rejects_5x5', true;
 
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
 DROP TABLE IF EXISTS raster_nmapalgebra_mask_in;
