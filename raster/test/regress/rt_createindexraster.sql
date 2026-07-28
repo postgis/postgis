@@ -60,6 +60,11 @@ SELECT 'bad-column-increment', ST_CreateIndexRaster(
 	'16BUI', 0, true, true, true, true, 1, NULL
 );
 
+SELECT 'zero-column-increment', ST_CreateIndexRaster(
+	ST_MakeEmptyRaster(3, 2, 10, 20, 5, -5, 0, 0, 4326),
+	'16BUI', 0, true, true, true, true, 0, NULL
+);
+
 SELECT 'zero-row-increment', ST_CreateIndexRaster(
 	ST_MakeEmptyRaster(3, 2, 10, 20, 5, -5, 0, 0, 4326),
 	'16BUI', 0, true, true, true, true, NULL, 0
@@ -68,4 +73,9 @@ SELECT 'zero-row-increment', ST_CreateIndexRaster(
 SELECT 'negative-column-increment', ST_CreateIndexRaster(
 	ST_MakeEmptyRaster(3, 2, 10, 20, 5, -5, 0, 0, 4326),
 	'16BUI', 0, true, true, true, true, -1, NULL
+);
+
+SELECT 'negative-row-increment', ST_CreateIndexRaster(
+	ST_MakeEmptyRaster(3, 2, 10, 20, 5, -5, 0, 0, 4326),
+	'16BUI', 0, true, true, true, true, NULL, -1
 );
