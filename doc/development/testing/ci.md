@@ -96,7 +96,7 @@ only overlap part of its defect class.
 | Make Dist | Jenkins Debbie | In flight in <https://gitea.osgeo.org/postgis/postgis/pulls/534>. Until that lands, Woodpecker does not check source distribution tarballs. |
 | FreeBSD and Bessie | GitHub Actions FreeBSD and Jenkins Bessie | In flight in <https://gitea.osgeo.org/postgis/postgis/pulls/549>. YAML running on a Linux container is not FreeBSD parity; this needs a FreeBSD VM or agent surface. |
 | 32-bit ARM and extra portability tiers | Jenkins Berrie | Covered by `.woodpecker/portability.yml` from <https://gitea.osgeo.org/postgis/postgis/pulls/516>, with hostile type-default coverage proposed in <https://gitea.osgeo.org/postgis/postgis/pulls/550>. Plain armhf emulation is useful for pointer-width and alignment assumptions, but the valuable tier is the hostile configuration with explicit type, signedness, alignment, and sanitizer probes. |
-| 64-bit ARM | Jenkins Berrie64 | Partly covered by `.woodpecker/arm64.yml` on amd64 agents through QEMU arm64 emulation. This is core-extension build, ABI, CUnit, install, and targeted SQL smoke coverage, not Berrie64 parity. |
+| 64-bit ARM | Jenkins Berrie64 | Partly covered by the `arm64-berrie64-qemu` child in `.woodpecker/portability.yml` on amd64 agents through QEMU arm64 emulation. This is build, ABI, CUnit, install, and focused regression coverage, not Berrie64 parity. |
 | CodeQL | GitHub Actions | In flight as Woodpecker configuration carried separately. Woodpecker can build a CodeQL database and produce SARIF, but GitHub remains authoritative for code-scanning upload, annotations, and alert management unless Woodie artifact retention and SARIF consumption are also configured. |
 | macOS | GitHub Actions macOS | Not coverable by Woodpecker YAML on Linux. See [macOS coverage options](macos-coverage-options.md) for the actual choices, costs, licensing boundary, and current recommendation. |
 | Native Windows MSYS2 and Winnie | GitHub Actions MSYS2 and Jenkins Winnie | Not covered natively by Linux Woodpecker. MinGW+Wine coverage is valuable ABI/runtime coverage but not native Windows parity. A Woodpecker replacement would need a licensed native Windows agent, registered with Woodie and owned like any other CI host. |
@@ -170,15 +170,14 @@ garden and all-upgrades coverage. QEMU can compile and run a smaller smoke
 suite, but it makes the expensive suites too slow and can hide timing,
 atomic-operation, kernel, and native scheduling behavior.
 
-The Woodpecker arm64 workflow is therefore an explicit stopgap, not parity. It
-runs on amd64 agents through QEMU because the current fleet has no registered
-`linux/arm64` agent. The covered signal is still useful for the core extension:
+The `arm64-berrie64-qemu` Woodpecker portability child is therefore an explicit
+stopgap, not parity. It runs on amd64 agents through QEMU because the current
+fleet has no registered `linux/arm64` agent. The covered signal is still useful:
 64-bit ARM ABI shape, pointer width, alignment-sensitive execution, char
 signedness, byte order, dependency detection, build correctness, liblwgeom
-CUnit, extension install, and targeted SQL regressions. It does not cover
-native CPU timing, atomic operations, kernel behavior, scheduler behavior,
-raster, topology, SFCGAL, garden, all-upgrades, or release-grade Berrie64
-evidence.
+CUnit, extension install, and focused regressions. It does not cover native CPU
+timing, atomic operations, kernel behavior, scheduler behavior, garden,
+all-upgrades, or release-grade Berrie64 evidence.
 
 ## Woodie API and Pipeline Approvals
 
