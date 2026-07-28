@@ -4,5 +4,7 @@ row-first-custom-increments|16BUI|{{5,15,25},{35,45,55}}
 null-raster|t
 wide-32bui|32BUI|{{2147483647,2147483648}}
 ERROR:  Column increment (now 1) must be greater than the number of index on one column (now 1 pixel x 1 = 1)
+ERROR:  Column increment must be greater than zero
 ERROR:  Row increment must be greater than zero
 ERROR:  Column increment must be greater than zero
+ERROR:  Row increment must be greater than zero
