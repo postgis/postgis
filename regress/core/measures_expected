@@ -75,6 +75,7 @@ ERROR:  Only lon/lat coordinate systems are supported in geography.
 #5895.srid_default|157249.598
 #5895.coerce|0.000
 #5895.parallel|s
+#5895.parallel_radius|s
 ERROR:  Only lon/lat coordinate systems are supported in geography.
 #4278.1|t
 #4278.2|0
