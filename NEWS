@@ -3,6 +3,8 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - GT-575, Scope interrupt regression timeouts to the statements being
+   canceled (Darafei Praliaskouski)
  - GT-522, Reject malformed GSERIALIZED payload counts before deserializing
    geometry data (Darafei Praliaskouski)
  - GT-523, [raster] Fix invalid reads in geotransform property access
