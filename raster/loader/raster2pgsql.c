@@ -1238,11 +1238,14 @@ vacuum_table(const char *schema, const char *table, int analyze, STRINGBUFFER *b
 }
 
 static int
-add_raster_constraints(
-	const char *schema, const char *table, const char *column,
-	int regular_blocking, int max_extent,
-	STRINGBUFFER *buffer
-) {
+add_raster_constraints(const char *schema,
+		       const char *table,
+		       const char *column,
+		       int regular_blocking,
+		       int max_extent,
+		       int commit_between_constraints,
+		       STRINGBUFFER *buffer)
+{
 	char *sql = NULL;
 
 	char *_tmp = NULL;
@@ -1274,12 +1277,13 @@ add_raster_constraints(
 	rtdealloc(_tmp);
 
 	sql = rtloader_alloc_sprintf(
-	    "CALL AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s,TRUE);",
+	    "CALL AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s,%s);",
 	    (_schema != NULL ? _schema : ""),
 	    _table,
 	    _column,
 	    (regular_blocking ? "TRUE" : "FALSE"),
-	    (max_extent ? "TRUE" : "FALSE"));
+	    (max_extent ? "TRUE" : "FALSE"),
+	    (commit_between_constraints ? "TRUE" : "FALSE"));
 	if (sql == NULL) {
 		rterror(_("add_raster_constraints: Could not allocate memory for AddRasterConstraints statement"));
 		if (_schema != NULL)
@@ -2347,22 +2351,28 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	/* add constraints */
 	if (config->plan.add_constraints)
 	{
-		if (!add_raster_constraints(
-			config->schema, config->table, config->raster_column,
-			config->regular_blocking, config->max_extent,
-			buffer
-		)) {
+		if (!add_raster_constraints(config->schema,
+					    config->table,
+					    config->raster_column,
+					    config->regular_blocking,
+					    config->max_extent,
+					    !config->transaction,
+					    buffer))
+		{
 			rterror(_("process:rasters: Could not add AddRasterConstraints statement to string buffer"));
 			return 0;
 		}
 
 		if (config->overview_count) {
 			for (i = 0; i < config->overview_count; i++) {
-				if (!add_raster_constraints(
-					config->schema, config->overview_table[i], config->raster_column,
-					config->regular_blocking, config->max_extent,
-					buffer
-				)) {
+				if (!add_raster_constraints(config->schema,
+							    config->overview_table[i],
+							    config->raster_column,
+							    config->regular_blocking,
+							    config->max_extent,
+							    !config->transaction,
+							    buffer))
+				{
 					rterror(_("process_rasters: Could not add an overview's AddRasterConstraints statement to string buffer"));
 					return 0;
 				}
