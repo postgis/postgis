@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #3776, [raster] Preserve distinct integer pixels in ST_DumpAsPolygons
+     (Darafei Praliaskouski)
  - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
      (Darafei Praliaskouski)
  - [raster] Fix ST_AsRaster builds with GDAL headers that omit MIN

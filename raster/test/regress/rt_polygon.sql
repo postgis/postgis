@@ -150,3 +150,22 @@ FROM (
 
 DROP FUNCTION temp_geos_version();
 DROP TABLE IF EXISTS raster_polygon;
+
+-- #3776: integer values on either side of 2^20 must not be grouped together
+WITH r AS (
+	SELECT ST_SetValue(
+		ST_AddBand(ST_MakeEmptyRaster(1, 2, 0, 0, 1), '32BUI'::text, 1048575),
+		1, 1, 1, 1048576) AS rast
+)
+SELECT '#3776.before', count(*), count(DISTINCT val), array_agg(val ORDER BY val)
+FROM r
+CROSS JOIN LATERAL ST_DumpAsPolygons(r.rast) AS gv;
+
+WITH r AS (
+	SELECT ST_SetValue(
+		ST_AddBand(ST_MakeEmptyRaster(1, 2, 0, 0, 1), '32BUI'::text, 1048576),
+		1, 1, 1, 1048577) AS rast
+)
+SELECT '#3776.after', count(*), count(DISTINCT val), array_agg(val ORDER BY val)
+FROM r
+CROSS JOIN LATERAL ST_DumpAsPolygons(r.rast) AS gv;
