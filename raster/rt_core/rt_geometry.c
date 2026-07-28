@@ -1137,7 +1137,11 @@ rt_raster_gdal_polygonize(
 	}
 
 	/* We don't need a raster mask band. Each band has a nodata value. */
-	cplerr = GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
+	/* Preserve distinct integer pixels outside the floating buffer's precision. */
+	if (rt_band_get_pixtype(band) == PT_32BF || rt_band_get_pixtype(band) == PT_64BF)
+		cplerr = GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
+	else
+		cplerr = GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
 
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_polygonize: Could not polygonize GDAL band");
