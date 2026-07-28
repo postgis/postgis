@@ -1,12 +1,16 @@
 CREATE SCHEMA testc;
-CREATE OR REPLACE FUNCTION testc.compute_exection_time(param_sql text) RETURNS interval
+-- Does the plan for this query call the named function? The point of a stored generated column
+-- is that the value is read rather than recomputed, and that is a property of the plan. Timing the
+-- two queries against each other instead makes the test a race between adjacent measurements, which
+-- an autovacuum or a cold buffer on one side is enough to lose.
+CREATE OR REPLACE FUNCTION testc.plan_calls(param_sql text, fname text) RETURNS boolean
 AS $$
-DECLARE var_start_time timestamptz; var_end_time timestamptz;
+DECLARE var_line text; var_found boolean := false;
 BEGIN
-var_start_time = clock_timestamp();
-EXECUTE param_sql;
-var_end_time = clock_timestamp();
-RETURN var_end_time - var_start_time;
+FOR var_line IN EXECUTE 'EXPLAIN (COSTS OFF) ' || param_sql LOOP
+	IF var_line ILIKE '%' || fname || '%' THEN var_found := true; END IF;
+END LOOP;
+RETURN var_found;
 END;
 $$ language plpgsql;
 
@@ -48,9 +52,9 @@ CREATE INDEX gix_random_way_buffer_geom
 analyze testc.random_points;
 analyze testc.streets;
 
--- time using computed column should always be less than adhoc
-SELECT testc.compute_exection_time('SELECT COUNT(*) FROM testc.random_points AS p INNER JOIN testc.streets AS s ON ST_Contains(p.way_buffer, s.geom)') <
-testc.compute_exection_time('SELECT COUNT(*) FROM testc.random_points AS p INNER JOIN testc.streets AS s ON ST_Contains(ST_Buffer(p.geom, 500), s.geom);');
+-- the computed column is read, not recomputed, while the ad-hoc form does call ST_Buffer
+SELECT NOT testc.plan_calls('SELECT COUNT(*) FROM testc.random_points AS p INNER JOIN testc.streets AS s ON ST_Contains(p.way_buffer, s.geom)', 'st_buffer')
+AND testc.plan_calls('SELECT COUNT(*) FROM testc.random_points AS p INNER JOIN testc.streets AS s ON ST_Contains(ST_Buffer(p.geom, 500), s.geom)', 'st_buffer');
 
 -- confirm results are the same
 SELECT (SELECT COUNT(*) FROM testc.random_points AS p INNER JOIN testc.streets AS s ON ST_Contains(p.way_buffer, s.geom) ) =
