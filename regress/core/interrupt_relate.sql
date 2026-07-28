@@ -1,90 +1,139 @@
 set client_min_messages to WARNING;
 
-CREATE TEMPORARY TABLE _time AS SELECT now() t;
-
-CREATE FUNCTION _timecheck(label text, tolerated interval) RETURNS text
-AS $$
-DECLARE
-  ret TEXT;
-  lap INTERVAL;
-BEGIN
-  lap := now()-t FROM _time;
-  -- The preceding query's expected ERROR proves it was cancelled. Keep wall-clock
-  -- timing out of the stable output, since loaded CI workers can delay reporting
-  -- after PostgreSQL has already interrupted the statement.
-  ret := label || ' interrupted';
-  UPDATE _time SET t = now();
-  RETURN ret;
-END;
-$$ LANGUAGE 'plpgsql' VOLATILE;
-
 CREATE TEMP TABLE _inputs AS
 SELECT 1::int as id, ST_Collect(g) g FROM (
  SELECT ST_MakeLine(
    ST_Point(cos(radians(x)),sin(radians(270-x))),
    ST_Point(sin(radians(x)),cos(radians(60-x)))
    ) g
- FROM generate_series(1,720) x
+ FROM generate_series(1,1440) x
  ) foo
 ;
 
-UPDATE _time SET t = now(); -- reset time as creating tables spends some
+\i :regdir/utils/timecheck.sql
 
 -----------------------------
 -- IM9 based predicates
 -----------------------------
 
+DO $$
+BEGIN
+  PERFORM _timecheck_start();
+  PERFORM ST_Contains(g,g) FROM _inputs WHERE id = 1;
+  PERFORM _timecheck_baseline('contains');
+END;
+$$;
+
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Contains(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('contains', '200ms');
+SELECT _timecheck('contains');
+
+DO $$
+BEGIN
+  PERFORM _timecheck_start();
+  PERFORM ST_Covers(g,g) FROM _inputs WHERE id = 1;
+  PERFORM _timecheck_baseline('covers');
+END;
+$$;
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Covers(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('covers', '200ms');
+SELECT _timecheck('covers');
+
+DO $$
+BEGIN
+  PERFORM _timecheck_start();
+  PERFORM ST_CoveredBy(g,g) FROM _inputs WHERE id = 1;
+  PERFORM _timecheck_baseline('coveredby');
+END;
+$$;
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_CoveredBy(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('coveredby', '200ms');
+SELECT _timecheck('coveredby');
+
+DO $$
+BEGIN
+  PERFORM _timecheck_start();
+  PERFORM ST_Crosses(g,g) FROM _inputs WHERE id = 1;
+  PERFORM _timecheck_baseline('crosses');
+END;
+$$;
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Crosses(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('crosses', '200ms');
+SELECT _timecheck('crosses');
 
+DO $$
+BEGIN
+  PERFORM _timecheck_start();
+  PERFORM ST_Equals(g,st_reverse(g)) FROM _inputs WHERE id = 1;
+  PERFORM _timecheck_baseline('equals');
+END;
+$$;
+
+BEGIN;
+SET LOCAL statement_timeout TO 100;
 -- NOTE: we're reversing one of the operands to avoid the
 --       short-circuit described in #3226
-BEGIN;
-SET LOCAL statement_timeout TO 100;
 select ST_Equals(g,st_reverse(g)) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('equals', '200ms');
+SELECT _timecheck('equals');
 
--- NOTE: intersects became very fast, so we segmentize
---       input to make it slower
+DO $$
+BEGIN
+  PERFORM _timecheck_start();
+  PERFORM ST_Intersects(g,ST_Segmentize(g,1e-4)) FROM _inputs WHERE id = 1;
+  PERFORM _timecheck_baseline('intersects');
+END;
+$$;
+
 BEGIN;
 SET LOCAL statement_timeout TO 100;
+-- NOTE: intersects became very fast, so we segmentize
+--       input to make it slower
 select ST_Intersects(g,ST_Segmentize(g,1e-4)) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('intersects', '200ms');
+SELECT _timecheck('intersects');
+
+DO $$
+BEGIN
+  PERFORM _timecheck_start();
+  PERFORM ST_Overlaps(g,g) FROM _inputs WHERE id = 1;
+  PERFORM _timecheck_baseline('overlaps');
+END;
+$$;
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Overlaps(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('overlaps', '200ms');
+SELECT _timecheck('overlaps');
+
+DO $$
+BEGIN
+  PERFORM _timecheck_start();
+  PERFORM ST_Relate(g,g) FROM _inputs WHERE id = 1;
+  PERFORM _timecheck_baseline('relate');
+END;
+$$;
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Relate(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('relate', '200ms');
+SELECT _timecheck('relate');
 
+DROP FUNCTION _timecheck(text);
 DROP FUNCTION _timecheck(text, interval);
+DROP FUNCTION _timecheck_baseline(text);
+DROP FUNCTION _timecheck_start();
 DROP TABLE _inputs;
