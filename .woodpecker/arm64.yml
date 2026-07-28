@@ -1,0 +1,83 @@
+labels:
+  platform: linux/amd64
+  qemu: "true"
+when:
+  - event: push
+    branch:
+      - master
+      - stable-*
+  - event: cron
+
+# This workflow gives Woodpecker a 64-bit ARM row matching Jenkins Berrie64.
+# It catches little beyond that platform parity: unlike armhf it exercises the
+# aarch64 64-bit ABI, and unlike s390x it stays little-endian. Keep it off pull
+# requests because arm64 emulation is expensive.
+#
+# The image is pinned to the linux/arm64/v8 manifest digest. A tag-only pull
+# from an amd64 Docker backend can resolve an amd64 variant and fail before QEMU
+# is involved, so do not replace this with arm64v8/debian:trixie-slim alone.
+variables:
+  arm64-image: &arm64-image arm64v8/debian:trixie-slim@sha256:8b5033c95ca60cdffb0e0f4c446e5f714e82d8960a9ef4153c0eaf13e988b0ea
+  prepare-debian: &prepare-debian |
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends \
+      autoconf automake libtool build-essential ca-certificates pkg-config \
+      bison flex \
+      postgresql postgresql-server-dev-all \
+      libcunit1-dev libgeos-dev libproj-dev libgdal-dev libjson-c-dev \
+      libprotobuf-c-dev protobuf-c-compiler libxml2-dev gettext zlib1g-dev
+    rm -rf /var/lib/apt/lists/*
+  arm64-env: &arm64-env |
+    export SRCDIR=$${CI_WORKSPACE}
+    export BUILDDIR=$${SRCDIR}/build/arm64-qemu
+    export PG_MAJOR=$$(pg_config --version | awk '{print $$2}' | cut -d. -f1)
+    export PATH=/usr/lib/postgresql/$${PG_MAJOR}/bin:$${PATH}
+    export PGROOT=$$(mktemp -d)
+    export PGDATA=$${PGROOT}/data
+    export PGHOST=$${PGROOT}/socket
+    export PGUSER=postgres
+    export PGDATABASE=postgres
+    uname -m
+    dpkg-architecture -qDEB_HOST_GNU_TYPE
+    pg_config --version
+  start-postgresql: &start-postgresql |
+    chown postgres:postgres "$${PGROOT}"
+    runuser -u postgres -- mkdir "$${PGDATA}" "$${PGHOST}"
+    runuser -u postgres -- initdb -D "$${PGDATA}" -A trust --no-sync
+    runuser -u postgres -- pg_ctl -D "$${PGDATA}" \
+      -l "$${PGROOT}/postgresql.log" \
+      -o "-F -k $${PGHOST} -c synchronous_commit=off -c full_page_writes=off" \
+      -w start
+    trap 'runuser -u postgres -- pg_ctl -D "$${PGDATA}" -m fast -w stop || true' EXIT
+    psql -c 'select version()' template1
+
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 50
+      partial: false
+
+steps:
+  build-regress:
+    image: *arm64-image
+    pull: true
+    commands:
+      - uname -m | grep -E '^aarch64$'
+      - *prepare-debian
+      - *arm64-env
+      - *start-postgresql
+      - ./autogen.sh
+      - mkdir -p "$${BUILDDIR}"
+      - cd "$${BUILDDIR}"
+      - >-
+        "$${SRCDIR}/configure"
+        --with-raster
+        --without-topology
+        --without-sfcgal
+        --without-interrupt-tests
+      - make -j1
+      - make -C liblwgeom check-unit
+      - make install
+      - make -C regress check RUNTESTFLAGS="-v --extension"
