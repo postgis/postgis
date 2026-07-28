@@ -7244,7 +7244,6 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 		cn name;
 		sql text;
 		attr text;
-		rasttype text;
 	BEGIN
 		fqtn := '';
 		IF length($1) > 0 THEN
@@ -7253,7 +7252,6 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 		fqtn := fqtn || quote_ident($2);
 
 		cn := 'enforce_same_alignment_' || $3;
-		rasttype := @extschema@._raster_type_name();
 
 		sql := 'SELECT @extschema@.st_makeemptyraster(1, 1, upperleftx, upperlefty, scalex, scaley, skewx, skewy, srid) FROM @extschema@.st_metadata((SELECT '
 			|| quote_ident($3)
@@ -7272,7 +7270,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
-			' CHECK (@extschema@.st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::' || rasttype || '))';
+			' CHECK (@extschema@.st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::raster))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -7385,7 +7383,6 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		fqtn text;
 		cn name;
 		sql text;
-		rasttype text;
 
 		_scalex double precision;
 		_scaley double precision;
@@ -7405,7 +7402,6 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		fqtn := fqtn || quote_ident($2);
 
 		cn := 'enforce_coverage_tile_' || $3;
-		rasttype := @extschema@._raster_type_name();
 
 		-- metadata
 		BEGIN
@@ -7435,7 +7431,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
-			' CHECK (@extschema@.st_iscoveragetile(' || quote_ident($3) || ', ''' || _covrast || '''::' || rasttype || ', ' || _tilewidth || ', ' || _tileheight || '))';
+			' CHECK (@extschema@.st_iscoveragetile(' || quote_ident($3) || ', ''' || _covrast || '''::raster, ' || _tilewidth || ', ' || _tileheight || '))';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -8354,3 +8350,608 @@ CREATE OR REPLACE VIEW raster_columns AS
 		AND c.relnamespace = n.oid
 		AND c.relkind = ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"] )
 		AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace) AND pg_catalog.has_column_privilege(c.oid, a.attname,'SELECT'::text);
+
+------------------------------------------------------------------------------
+-- overview constraint functions
+-------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refschema name, reftable name, refcolumn name)
+	RETURNS boolean AS $$
+	SELECT COALESCE((
+		SELECT TRUE
+		FROM pg_catalog.pg_class c
+		JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+		JOIN pg_catalog.pg_attribute a ON a.attrelid = c.oid
+		WHERE n.nspname = $3
+			AND c.relname = $4
+			AND a.attname = $5
+			AND a.attisdropped = false
+			AND a.atttypid = '@extschema@.raster'::regtype
+			AND c.relkind = ANY (ARRAY[
+				'r'::pg_catalog."char",
+				'v'::pg_catalog."char",
+				'm'::pg_catalog."char",
+				'f'::pg_catalog."char",
+				'p'::pg_catalog."char"
+			])
+	), FALSE)
+	$$ LANGUAGE 'sql' STABLE
+	COST 100;
+
+-- Changed: 3.1.2
+CREATE OR REPLACE FUNCTION _overview_constraint_info(
+	ovschema name, ovtable name, ovcolumn name,
+		OUT refschema name,
+		OUT reftable name,
+		OUT refcolumn name,
+		OUT factor integer
+	)
+	AS $$
+	SELECT
+		split_part(split_part(s.consrc, '''::name', 1), '''', 2)::name,
+		split_part(split_part(s.consrc, '''::name', 2), '''', 2)::name,
+		split_part(split_part(s.consrc, '''::name', 3), '''', 2)::name,
+		trim(both from split_part(s.consrc, ',', 2))::integer
+	FROM pg_class c, pg_namespace n, pg_attribute a
+		, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%_overview_constraint(%' LIMIT 1
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_overview_constraint(
+	ovschema name, ovtable name, ovcolumn name,
+	refschema name, reftable name, refcolumn name,
+	factor integer
+)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_overview_' || $3;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK ( @extschema@._overview_constraint(' || quote_ident($3)
+			|| ',' || $7
+			|| ',' || quote_literal($4)
+			|| ',' || quote_literal($5)
+			|| ',' || quote_literal($6)
+			|| '))';
+
+		RETURN  @extschema@._add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT;
+
+CREATE OR REPLACE FUNCTION _drop_overview_constraint(ovschema name, ovtable name, ovcolumn name)
+	RETURNS boolean AS
+	$$ SELECT  @extschema@._drop_raster_constraint($1, $2, 'enforce_overview_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT;
+
+------------------------------------------------------------------------------
+-- RASTER_OVERVIEWS
+------------------------------------------------------------------------------
+-- Availability: 2.0.0
+-- Changed: 2.2.0
+CREATE OR REPLACE VIEW raster_overviews AS
+	SELECT
+		current_database() AS o_table_catalog,
+		n.nspname AS o_table_schema,
+		c.relname AS o_table_name,
+		a.attname AS o_raster_column,
+		current_database() AS r_table_catalog,
+		split_part(split_part(s.consrc, '''::name', 1), '''', 2)::name AS r_table_schema,
+		split_part(split_part(s.consrc, '''::name', 2), '''', 2)::name AS r_table_name,
+		split_part(split_part(s.consrc, '''::name', 3), '''', 2)::name AS r_raster_column,
+		trim(both from split_part(s.consrc, ',', 2))::integer AS overview_factor
+	FROM
+		pg_class c,
+		pg_attribute a,
+		pg_namespace n,
+		(SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS s
+	WHERE a.attisdropped = false
+		AND a.atttypid = '@extschema@.raster'::regtype
+		AND a.attrelid = c.oid
+		AND c.relnamespace = n.oid
+		AND c.relkind = ANY(ARRAY[
+			'r'::pg_catalog."char",
+			'v'::pg_catalog."char",
+			'm'::pg_catalog."char",
+			'f'::pg_catalog."char"
+		])
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND s.consrc LIKE '%_overview_constraint(%'
+		AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace) AND pg_catalog.has_column_privilege(c.oid, a.attname,'SELECT'::text);
+
+------------------------------------------------------------------------------
+-- AddOverviewConstraints
+------------------------------------------------------------------------------
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION AddOverviewConstraints (
+	ovschema name, ovtable name, ovcolumn name,
+	refschema name, reftable name, refcolumn name,
+	ovfactor int
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		x int;
+		s name;
+		t name;
+		oschema name;
+		rschema name;
+		sql text;
+		rtn boolean;
+	BEGIN
+		FOR x IN 1..2 LOOP
+			s := '';
+
+			IF x = 1 THEN
+				s := $1;
+				t := $2;
+			ELSE
+				s := $4;
+				t := $5;
+			END IF;
+
+			-- validate user-provided schema
+			IF length(s) > 0 THEN
+				sql := 'SELECT nspname FROM pg_namespace '
+					|| 'WHERE nspname = ' || quote_literal(s)
+					|| 'LIMIT 1';
+				EXECUTE sql INTO s;
+
+				IF s IS NULL THEN
+					RAISE EXCEPTION 'The value % is not a valid schema', quote_literal(s);
+					RETURN FALSE;
+				END IF;
+			END IF;
+
+			-- no schema, determine what it could be using the table
+			IF length(s) < 1 THEN
+				sql := 'SELECT n.nspname AS schemaname '
+					|| 'FROM pg_catalog.pg_class c '
+					|| 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
+					|| 'WHERE c.relkind = ' || quote_literal('r')
+					|| ' AND n.nspname NOT IN (' || quote_literal('pg_catalog')
+					|| ', ' || quote_literal('pg_toast')
+					|| ') AND pg_catalog.pg_table_is_visible(c.oid)'
+					|| ' AND c.relname = ' || quote_literal(t);
+				EXECUTE sql INTO s;
+
+				IF s IS NULL THEN
+					RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal(t);
+					RETURN FALSE;
+				END IF;
+			END IF;
+
+			IF x = 1 THEN
+				oschema := s;
+			ELSE
+				rschema := s;
+			END IF;
+		END LOOP;
+
+		-- reference raster
+		rtn :=  @extschema@._add_overview_constraint(oschema, $2, $3, rschema, $5, $6, $7);
+		IF rtn IS FALSE THEN
+			RAISE EXCEPTION 'Unable to add the overview constraint.  Is the schema name, table name or column name incorrect?';
+			RETURN FALSE;
+		END IF;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION AddOverviewConstraints (
+	ovtable name, ovcolumn name,
+	reftable name, refcolumn name,
+	ovfactor int
+)
+	RETURNS boolean
+	AS $$ SELECT  @extschema@.AddOverviewConstraints('', $1, $2, '', $3, $4, $5) $$
+	LANGUAGE 'sql' VOLATILE STRICT;
+
+------------------------------------------------------------------------------
+-- DropOverviewConstraints
+------------------------------------------------------------------------------
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION DropOverviewConstraints (
+	ovschema name,
+	ovtable name,
+	ovcolumn name
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		schema name;
+		sql text;
+		rtn boolean;
+	BEGIN
+		-- validate schema
+		schema := NULL;
+		IF length($1) > 0 THEN
+			sql := 'SELECT nspname FROM pg_namespace '
+				|| 'WHERE nspname = ' || quote_literal($1)
+				|| 'LIMIT 1';
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The value provided for schema is invalid';
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		IF schema IS NULL THEN
+			sql := 'SELECT n.nspname AS schemaname '
+				|| 'FROM pg_catalog.pg_class c '
+				|| 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
+				|| 'WHERE c.relkind = ' || quote_literal('r')
+				|| ' AND n.nspname NOT IN (' || quote_literal('pg_catalog')
+				|| ', ' || quote_literal('pg_toast')
+				|| ') AND pg_catalog.pg_table_is_visible(c.oid)'
+				|| ' AND c.relname = ' || quote_literal($2);
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal($2);
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		rtn :=  @extschema@._drop_overview_constraint(schema, $2, $3);
+		IF rtn IS FALSE THEN
+			RAISE EXCEPTION 'Unable to drop the overview constraint .  Is the schema name, table name or column name incorrect?';
+			RETURN FALSE;
+		END IF;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION DropOverviewConstraints (
+	ovtable name,
+	ovcolumn name
+)
+	RETURNS boolean
+	AS $$ SELECT  @extschema@.DropOverviewConstraints('', $1, $2) $$
+	LANGUAGE 'sql' VOLATILE STRICT;
+
+------------------------------------------------------------------------------
+-- UpdateRasterSRID
+------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _UpdateRasterSRID(
+	schema_name name, table_name name, column_name name,
+	new_srid integer
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		fqtn text;
+		schema name;
+		sql text;
+		srid integer;
+		ct boolean;
+	BEGIN
+		-- validate schema
+		schema := NULL;
+		IF length($1) > 0 THEN
+			sql := 'SELECT nspname FROM pg_namespace '
+				|| 'WHERE nspname = ' || quote_literal($1)
+				|| 'LIMIT 1';
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The value provided for schema is invalid';
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		IF schema IS NULL THEN
+			sql := 'SELECT n.nspname AS schemaname '
+				|| 'FROM pg_catalog.pg_class c '
+				|| 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
+				|| 'WHERE c.relkind = ' || quote_literal('r')
+				|| ' AND n.nspname NOT IN (' || quote_literal('pg_catalog')
+				|| ', ' || quote_literal('pg_toast')
+				|| ') AND pg_catalog.pg_table_is_visible(c.oid)'
+				|| ' AND c.relname = ' || quote_literal($2);
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal($2);
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		-- clamp SRID
+		IF new_srid < 0 THEN
+			srid :=  @extschema@.ST_SRID('POINT EMPTY'::@extschema@.geometry);
+			RAISE NOTICE 'SRID % converted to the officially unknown SRID %', new_srid, srid;
+		ELSE
+			srid := new_srid;
+		END IF;
+
+		-- drop coverage tile constraint
+		-- done separately just in case constraint doesn't exist
+		ct := @extschema@._raster_constraint_info_coverage_tile(schema, $2, $3);
+		IF ct IS TRUE THEN
+			PERFORM  @extschema@._drop_raster_constraint_coverage_tile(schema, $2, $3);
+		END IF;
+
+		-- drop SRID, extent, alignment constraints
+		PERFORM  @extschema@.DropRasterConstraints(schema, $2, $3, 'extent', 'alignment', 'srid');
+
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		-- update SRID
+		sql := 'UPDATE ' || fqtn ||
+			' SET ' || quote_ident($3) ||
+			' =  @extschema@.ST_SetSRID(' || quote_ident($3) ||
+			'::@extschema@.raster, ' || srid || ')';
+		RAISE NOTICE 'sql = %', sql;
+		EXECUTE sql;
+
+		-- add SRID constraint
+		PERFORM  @extschema@.AddRasterConstraints(schema, $2, $3, 'srid', 'extent', 'alignment');
+
+		-- add coverage tile constraint if needed
+		IF ct IS TRUE THEN
+			PERFORM  @extschema@._add_raster_constraint_coverage_tile(schema, $2, $3);
+		END IF;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION UpdateRasterSRID(
+	schema_name name, table_name name, column_name name,
+	new_srid integer
+)
+	RETURNS boolean
+	AS $$ SELECT  @extschema@._UpdateRasterSRID($1, $2, $3, $4) $$
+	LANGUAGE 'sql' VOLATILE STRICT;
+
+CREATE OR REPLACE FUNCTION UpdateRasterSRID(
+	table_name name, column_name name,
+	new_srid integer
+)
+	RETURNS boolean
+	AS $$ SELECT  @extschema@._UpdateRasterSRID('', $1, $2, $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT;
+
+------------------------------------------------------------------------------
+-- ST_Retile
+------------------------------------------------------------------------------
+
+-- Availability: 2.2.0
+-- @param ext extent to create overviews for, also used for grid origin
+--            SRID must match source tile srid.
+-- @param sfx scale factor x (pixel width)
+-- @param sfy scale factor y (pixel height, usually negative)
+-- @param tw max tile width
+-- @param th max tile height
+--
+CREATE OR REPLACE FUNCTION ST_Retile(tab regclass, col name, ext geometry, sfx float8, sfy float8, tw int, th int, algo text DEFAULT 'NearestNeighbour')
+RETURNS SETOF raster AS $$
+DECLARE
+  rec RECORD;
+  ipx FLOAT8;
+  ipy FLOAT8;
+  tx int;
+  ty int;
+  te @extschema@.GEOMETRY; -- tile extent
+  ncols int;
+  nlins int;
+  srid int;
+  sql TEXT;
+BEGIN
+
+  RAISE DEBUG 'Target coverage will have sfx=%, sfy=%', sfx, sfy;
+
+  -- 2. Loop over each target tile and build it from source tiles
+  ipx := st_xmin(ext);
+  ncols := ceil((@extschema@.st_xmax(ext)-ipx)/sfx/tw);
+  IF sfy < 0 THEN
+    ipy := @extschema@.st_ymax(ext);
+    nlins := ceil((@extschema@.st_ymin(ext)-ipy)/sfy/th);
+  ELSE
+    ipy := @extschema@.st_ymin(ext);
+    nlins := ceil((@extschema@.st_ymax(ext)-ipy)/sfy/th);
+  END IF;
+
+  srid := @extschema@.ST_Srid(ext);
+
+  RAISE DEBUG 'Target coverage will have % x % tiles, each of approx size % x %', ncols, nlins, tw, th;
+  RAISE DEBUG 'Target coverage will cover extent %', ext::box2d;
+
+  FOR tx IN 0..ncols-1 LOOP
+    FOR ty IN 0..nlins-1 LOOP
+      te := @extschema@.ST_MakeEnvelope(ipx + tx     *  tw  * sfx,
+                             ipy + ty     *  th  * sfy,
+                             ipx + (tx+1) *  tw  * sfx,
+                             ipy + (ty+1) *  th  * sfy,
+                             srid);
+      --RAISE DEBUG 'sfx/sfy: %, %', sfx, sfy;
+      --RAISE DEBUG 'tile extent %', te;
+      sql := 'SELECT count(*),  @extschema@.ST_Clip(  @extschema@.ST_Union(  @extschema@.ST_SnapToGrid(  @extschema@.ST_Rescale(  @extschema@.ST_Clip(' || quote_ident(col)
+          || ',  @extschema@.ST_Expand($3, greatest($1,$2))),$1, $2, $6), $4, $5, $1, $2)), $3) g FROM ' || tab::text
+          || ' WHERE  @extschema@.ST_Intersects(' || quote_ident(col) || ', $3)';
+      --RAISE DEBUG 'SQL: %', sql;
+      FOR rec IN EXECUTE sql USING sfx, sfy, te, ipx, ipy, algo LOOP
+        --RAISE DEBUG '% source tiles intersect target tile %,% with extent %', rec.count, tx, ty, te::@extschema@.box2d;
+        IF rec.g IS NULL THEN
+          RAISE WARNING 'No source tiles cover target tile %,% with extent %',
+            tx, ty, te::@extschema@.box2d;
+        ELSE
+          --RAISE DEBUG 'Tile for extent % has size % x %', te::@extschema@.box2d, @extschema@.st_width(rec.g), @extschema@.st_height(rec.g);
+          RETURN NEXT rec.g;
+        END IF;
+      END LOOP;
+    END LOOP;
+  END LOOP;
+
+  RETURN;
+END;
+$$ LANGUAGE 'plpgsql' STABLE STRICT;
+
+------------------------------------------------------------------------------
+-- ST_CreateOverview
+------------------------------------------------------------------------------
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_CreateOverview(tab regclass, col name, factor int, algo text DEFAULT 'NearestNeighbour')
+RETURNS regclass AS $$
+DECLARE
+  sinfo RECORD; -- source info
+  sql TEXT;
+  ttab TEXT;
+BEGIN
+
+  -- 0. Check arguments, we need to ensure:
+  --    a. Source table has a raster column with given name
+  --    b. Source table has a fixed scale (or "factor" would have no meaning)
+  --    c. Source table has a known extent ? (we could actually compute it)
+  --    d. Source table has a fixed tile size (or "factor" would have no meaning?)
+  -- # all of the above can be checked with a query to raster_columns
+  sql := 'SELECT r.r_table_schema sch, r.r_table_name tab, '
+      || 'r.scale_x sfx, r.scale_y sfy, r.blocksize_x tw, '
+      || 'r.blocksize_y th, r.extent ext, r.srid FROM @extschema@.raster_columns r, '
+      || 'pg_class c, pg_catalog.pg_namespace n WHERE r.r_table_schema = n.nspname '
+      || 'AND r.r_table_name = c.relname AND r_raster_column = $2 AND '
+      || ' c.relnamespace = n.oid AND c.oid = $1'
+  ;
+  EXECUTE sql INTO sinfo USING tab, col;
+  IF sinfo IS NULL THEN
+      RAISE EXCEPTION '%.% raster column does not exist', tab::text, col;
+  END IF;
+  IF sinfo.sfx IS NULL or sinfo.sfy IS NULL THEN
+    RAISE EXCEPTION 'cannot create overview without scale constraint, try select AddRasterConstraints(''%'', ''%'');', tab::text, col;
+  END IF;
+  IF sinfo.tw IS NULL or sinfo.tw IS NULL THEN
+    RAISE EXCEPTION 'cannot create overview without tilesize constraint, try select AddRasterConstraints(''%'', ''%'');', tab::text, col;
+  END IF;
+  IF sinfo.ext IS NULL THEN
+    RAISE EXCEPTION 'cannot create overview without extent constraint, try select AddRasterConstraints(''%'', ''%'');', tab::text, col;
+  END IF;
+
+  -- TODO: lookup in raster_overviews to see if there's any
+  --       lower-resolution table to start from
+
+  ttab := 'o_' || factor || '_' || sinfo.tab;
+  sql := 'CREATE TABLE ' || quote_ident(sinfo.sch)
+      || '.' || quote_ident(ttab)
+      || ' AS SELECT @extschema@.ST_Retile($1, $2, $3, $4, $5, $6, $7) '
+      || quote_ident(col);
+  EXECUTE sql USING tab, col, sinfo.ext,
+                    sinfo.sfx * factor, sinfo.sfy * factor,
+                    sinfo.tw, sinfo.th, algo;
+
+  -- TODO: optimize this using knowledge we have about
+  --       the characteristics of the target column ?
+  PERFORM @extschema@.AddRasterConstraints(sinfo.sch, ttab, col);
+
+  PERFORM  @extschema@.AddOverviewConstraints(sinfo.sch, ttab, col,
+                                 sinfo.sch, sinfo.tab, col, factor);
+
+    -- return the schema as well as the table
+  RETURN sinfo.sch||'.'||ttab;
+END;
+$$ LANGUAGE 'plpgsql' VOLATILE STRICT;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION st_makeemptycoverage(tilewidth int, tileheight int, width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8, srid integer DEFAULT 0)
+    RETURNS SETOF RASTER AS $$
+    DECLARE
+        ulx double precision;  -- upper left x of raster
+        uly double precision;  -- upper left y of raster
+        rw int;                -- raster width (may change at edges)
+        rh int;                -- raster height (may change at edges)
+        x int;                 -- x index of coverage
+        y int;                 -- y index of coverage
+        template @extschema@.raster;       -- an empty template raster, where each cell
+                               -- represents a tile in the coverage
+        minY double precision;
+        maxX double precision;
+    BEGIN
+        template := @extschema@.ST_MakeEmptyRaster(
+            ceil(width::float8/tilewidth)::int,
+            ceil(height::float8/tileheight)::int,
+            upperleftx,
+            upperlefty,
+            tilewidth * scalex,
+            tileheight * scaley,
+            tileheight * skewx,
+            tilewidth * skewy,
+            srid
+        );
+
+        FOR y IN 1..st_height(template) LOOP
+            maxX := @extschema@.ST_RasterToWorldCoordX(template, 1, y) + width * scalex;
+            FOR x IN 1..st_width(template) LOOP
+                minY := @extschema@.ST_RasterToWorldCoordY(template, x, 1) + height * scaley;
+                uly := @extschema@.ST_RasterToWorldCoordY(template, x, y);
+                IF uly + (tileheight * scaley) < minY THEN
+                    --raise notice 'uly, minY: %, %', uly, minY;
+                    rh := ceil((minY - uly)/scaleY)::int;
+                ELSE
+                    rh := tileheight;
+                END IF;
+
+                ulx := @extschema@.ST_RasterToWorldCoordX(template, x, y);
+                IF ulx + (tilewidth * scalex) > maxX THEN
+                    --raise notice 'ulx, maxX: %, %', ulx, maxX;
+                    rw := ceil((maxX - ulx)/scaleX)::int;
+                ELSE
+                    rw := tilewidth;
+                END IF;
+
+                RETURN NEXT @extschema@.ST_MakeEmptyRaster(rw, rh, ulx, uly, scalex, scaley, skewx, skewy, srid);
+            END LOOP;
+        END LOOP;
+    END;
+    $$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
+
+-------------------------------------------------------------------
+--  Debugging
+-------------------------------------------------------------------
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION postgis_noop(raster)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'RASTER_noop'
+	LANGUAGE 'c' STABLE STRICT;
+
+-------------------------------------------------------------------
+--  END
+-------------------------------------------------------------------
+-- make views public viewable --
+GRANT SELECT ON TABLE raster_columns TO public;
+GRANT SELECT ON TABLE raster_overviews TO public;
+COMMIT;
