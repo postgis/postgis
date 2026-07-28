@@ -647,6 +647,10 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 	case SFCGAL_TYPE_MULTISOLID:
 	case SFCGAL_TYPE_GEOMETRYCOLLECTION: {
 		ngeoms = sfcgal_geometry_collection_num_geometries(geom);
+		/* SFCGAL reports the dimension of the first member, which may be empty. */
+		for (uint32_t member = 0; member < ngeoms && !want3d; member++)
+			want3d = sfcgal_geometry_is_3d(sfcgal_geometry_collection_geometry_n(geom, member));
+
 		LWGEOM **geoms = NULL;
 		if (ngeoms)
 		{
@@ -655,7 +659,7 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 			for (i = 0; i < ngeoms; i++)
 			{
 				const sfcgal_geometry_t *g = sfcgal_geometry_collection_geometry_n(geom, i);
-				geoms[i] = SFCGAL2LWGEOM(g, 0, srid);
+				geoms[i] = SFCGAL2LWGEOM(g, want3d && sfcgal_geometry_is_empty(g), srid);
 				if (FLAGS_GET_SOLID(geoms[i]->flags))
 					++nsolids;
 			}
@@ -708,6 +712,12 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t srid)
 
 		for (ngeoms = 0, i = 0; i < nshells; i++)
 			ngeoms += sfcgal_polyhedral_surface_num_polygons(sfcgal_solid_shell_n(geom, i));
+		if (!ngeoms)
+		{
+			LWGEOM *rgeom = (LWGEOM *)lwcollection_construct_empty(POLYHEDRALSURFACETYPE, srid, want3d, 0);
+			FLAGS_SET_SOLID(rgeom->flags, 1);
+			return rgeom;
+		}
 
 		LWGEOM **geoms = 0;
 		if (ngeoms)

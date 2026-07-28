@@ -32,6 +32,50 @@ ELSE
     E'\\(\\(0 1 0,1 0 0,0 0 0,0 1 0\\)\\)', '((1 0 0,0 0 0,0 1 0,1 0 0))')
 END;
 
+-- Ticket #6031: an empty member must retain the extruded collection's Z dimension.
+WITH extrusion AS (
+    SELECT CG_Extrude(
+        ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326),
+        20.1, 20.1, 20.1
+    ) AS geom
+)
+SELECT 'CG_Extrude #6031 mixed empty', ST_NDims(geom), ST_NumGeometries(geom),
+    ST_IsEmpty(ST_GeometryN(geom, 1)), ST_IsEmpty(ST_GeometryN(geom, 2)),
+    ST_NDims(ST_GeometryN(geom, 2)), ST_AsEWKT(ST_GeometryN(geom, 2))
+FROM extrusion;
+WITH extrusion AS (
+    SELECT CG_Extrude(
+        ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)))', 4326),
+        20.1, 20.1, 20.1
+    ) AS geom
+)
+SELECT 'CG_Extrude #6031 nonempty', ST_NDims(geom), ST_NumGeometries(geom),
+    ST_IsEmpty(geom), Box3D(geom)
+FROM extrusion;
+SELECT 'CG_Extrude #6031 all empty',
+    ST_AsEWKT(CG_Extrude(ST_GeomFromText('MULTIPOLYGON EMPTY', 4326), 20.1, 20.1, 20.1));
+
+WITH extrusion AS (
+    SELECT CG_Extrude(
+        'MULTIPOLYGON (EMPTY, ((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)))'::geometry, 0, 0, 1
+    ) AS geom
+)
+SELECT 'CG_Extrude #6031 empty first', ST_NDims(geom), ST_NumGeometries(geom),
+    ST_IsEmpty(ST_GeometryN(geom, 1)), ST_IsEmpty(ST_GeometryN(geom, 2))
+FROM extrusion;
+
+SET client_min_messages TO ERROR;
+WITH extrusion AS (
+    SELECT ST_Extrude(
+        ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326),
+        20.1, 20.1, 20.1
+    ) AS geom
+)
+SELECT 'ST_Extrude #6031 mixed empty', ST_NDims(geom), ST_NumGeometries(geom),
+    ST_SRID(geom), ST_IsEmpty(ST_GeometryN(geom, 2))
+FROM extrusion;
+RESET client_min_messages;
+
 SELECT 'CG_ForceLHR', ST_AsText(CG_ForceLHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
 SELECT 'CG_MinkowskiSum', ST_AsText(CG_MinkowskiSum('LINESTRING(0 0,4 0)','POLYGON((0 0,1 0,1 1,0 1,0 0))'));
 SELECT 'CG_ConstrainedDelaunayTriangles', ST_AsText(CG_ConstrainedDelaunayTriangles('GEOMETRYCOLLECTION(POINT(0 0), POLYGON((2 2, 2 -2, 4 0, 2 2)))'));
