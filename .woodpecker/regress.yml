@@ -25,7 +25,6 @@ variables:
       --with-library-minor-version
       --disable-spellcheck-tests
       --enable-lto
-      --without-interrupt-tests
       CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
     # Matrix jobs provide the parallelism. Keep each build serial: the PostGIS
     # make graph can otherwise race generation of files such as postgis.control.
