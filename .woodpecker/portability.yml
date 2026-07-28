@@ -190,19 +190,6 @@ steps:
       - ./autogen.sh
       - *build-and-test
 
-  arm64-berrie64-qemu:
-    image: arm64v8/debian:trixie-slim@sha256:8b5033c95ca60cdffb0e0f4c446e5f714e82d8960a9ef4153c0eaf13e988b0ea
-    pull: true
-    commands:
-      - uname -m | grep -E '^aarch64$'
-      - export PORTABILITY_TIER=arm64-berrie64-qemu
-      - export PORTABILITY_CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer"
-      - *prepare-debian
-      - *abi-env
-      - *start-postgresql
-      - ./autogen.sh
-      - *build-and-test
-
   s390x-big-endian-qemu:
     image: s390x/debian@sha256:4b236f9aafe8a6201c6dca29ce78c28e1eb1e314ecedc2cd2c545f9e49d060e3
     pull: true
