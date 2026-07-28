@@ -32,6 +32,7 @@ variables:
     apt-get update
     apt-get install -y --no-install-recommends \
       autoconf automake libtool build-essential ca-certificates pkg-config \
+      bison flex \
       postgresql postgresql-server-dev-all \
       libcunit1-dev libgeos-dev libproj-dev libgdal-dev libjson-c-dev \
       libprotobuf-c-dev protobuf-c-compiler libxml2-dev gettext zlib1g-dev
