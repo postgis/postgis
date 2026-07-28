@@ -3,6 +3,9 @@ PostGIS 3.5.8
 
 * Bug Fixes *
 
+  - GT-619, Make interrupt regression tests compare timeout latency to
+    same-machine uninterrupted runtime, avoiding false failures under
+    slow CI load (Darafei Praliaskouski)
   - GT-569, Initialize GSERIALIZED peek test fixtures so check-unit stays
     clean under Valgrind (Darafei Praliaskouski)
   - GT-582, Make the computed-columns regression test assert the query plan
