@@ -12,6 +12,8 @@ These are only changes since 3.7.0beta1.
           stopwatches, so it no longer fails at random under CI load
           (Darafei Praliaskouski)
 
+ - #4323, GT-584, [sfcgal] Document that straight-skeleton and approximate-medial-axis
+          functions ignore input Z and return 2D geometries (Darafei Praliaskouski)
  - GT-545, Fix FlatGeobuf geometry, property, and spatial-index byte order on
           big-endian platforms (Darafei Praliaskouski)
  - [raster] Fix invalid reads in raster band initialization and
