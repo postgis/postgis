@@ -71,6 +71,25 @@ FROM pg_proc p
 JOIN pg_aggregate a ON a.aggfnoid = p.oid
 WHERE p.proname = 'st_summarystatsagg';
 
+CREATE FUNCTION countagg_rejects_null_parameter_mismatch() RETURNS boolean
+LANGUAGE plpgsql AS
+$$
+BEGIN
+	PERFORM _st_countagg_combinefn(
+		ROW(1, NULL, TRUE, 1)::agg_count,
+		ROW(2, 1, TRUE, 1)::agg_count
+	);
+	RETURN FALSE;
+EXCEPTION WHEN OTHERS THEN
+	RETURN SQLERRM = 'Cannot combine ST_CountAgg states with different aggregate parameters';
+END;
+$$;
+
+SELECT 'countagg_null_parameter_mismatch',
+	countagg_rejects_null_parameter_mismatch();
+
+DROP FUNCTION countagg_rejects_null_parameter_mismatch();
+
 CALL p_force_parallel_mode('off');
 
 CREATE TEMP TABLE raster_parallel_agg_serial AS
