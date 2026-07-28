@@ -19,13 +19,17 @@ BEGIN
 
 	RAISE DEBUG 'Resulting tolerance: %', tolerated;
 
-	-- The preceding query's expected ERROR proves it was cancelled. Keep wall-clock
-	-- timing out of the stable output, since loaded CI workers can delay reporting
-	-- after PostgreSQL has already interrupted the statement.
-	ret := format(
-		'%s interrupted',
-		label
-	);
+  IF rec.lap <= tolerated THEN
+		ret := format(
+			'%s interrupted on time',
+			label
+		);
+  ELSE
+		ret := format(
+			'%s interrupted late: %s (%s tolerated)',
+			label, rec.lap, tolerated
+		);
+  END IF;
 
   UPDATE _time SET t = clock_timestamp();
 
@@ -40,3 +44,4 @@ SELECT
     current_setting('test.executor_slow_factor', true),
     '1'
   )::float8 sf;
+

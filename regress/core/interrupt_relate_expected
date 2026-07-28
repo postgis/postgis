@@ -1,16 +1,16 @@
 ERROR:  canceling statement due to statement timeout
-contains interrupted
+contains interrupted on time
 ERROR:  canceling statement due to statement timeout
-covers interrupted
+covers interrupted on time
 ERROR:  canceling statement due to statement timeout
-coveredby interrupted
+coveredby interrupted on time
 ERROR:  canceling statement due to statement timeout
-crosses interrupted
+crosses interrupted on time
 ERROR:  canceling statement due to statement timeout
-equals interrupted
+equals interrupted on time
 ERROR:  canceling statement due to statement timeout
-intersects interrupted
+intersects interrupted on time
 ERROR:  canceling statement due to statement timeout
-overlaps interrupted
+overlaps interrupted on time
 ERROR:  canceling statement due to statement timeout
-relate interrupted
+relate interrupted on time
