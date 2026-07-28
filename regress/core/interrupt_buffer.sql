@@ -16,9 +16,11 @@ SELECT 1::int as id, ST_Collect(g) g FROM (
 -- ST_Buffer
 -----------------
 
-SET statement_timeout TO 100;
+BEGIN;
+SET LOCAL statement_timeout TO 100;
 
 select ST_Buffer(g,100) from _inputs WHERE id = 1;
+ROLLBACK;
 --( select (st_dumppoints(st_buffer(st_makepoint(0,0),10000,100000))).geom g) foo;
 -- it may take some more to interrupt st_buffer, see
 SELECT _timecheck('buffer', '350ms');
