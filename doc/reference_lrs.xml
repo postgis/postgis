@@ -300,17 +300,17 @@ FROM street;
 
 			<para>This example approximates the street number of a house by locating the closest point on a street line. The subquery generates sample house and street data, and <function>ST_DWithin</function> excludes houses that are too far from the street.</para>
 			<programlisting>SELECT house_loc As as_text_house_loc,
-    startstreet_num +
-        CAST( (endstreet_num - startstreet_num)
-            * ST_LineLocatePoint(street_line, house_loc) As integer) As street_num
+    start_house_num +
+        CAST( (end_house_num - start_house_num)
+            * ST_LineLocatePoint(street_line, house_loc) As integer) As house_num
 FROM
 (SELECT 'LINESTRING(1 2,3 4)'::geometry As street_line,
-    ST_Point(x*1.01, y*1.03) As house_loc, 10 As startstreet_num,
-        20 As endstreet_num
+    ST_Point(x*1.01, y*1.03) As house_loc, 10 As start_house_num,
+        20 As end_house_num
 FROM generate_series(1, 3) x CROSS JOIN generate_series(2, 4) As y)
 As foo
 WHERE ST_DWithin(street_line, house_loc, 0.2);</programlisting>
-<screen> as_text_house_loc | street_num
+<screen> as_text_house_loc | house_num
 -------------------+------------
  POINT(1.01 2.06)  |         10
  POINT(2.02 3.09)  |         15
