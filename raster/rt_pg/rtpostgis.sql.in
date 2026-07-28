@@ -8366,7 +8366,7 @@ CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refsc
 			AND c.relname = $4
 			AND a.attname = $5
 			AND a.attisdropped = false
-			AND a.atttypid = '@extschema@.raster'::regtype
+			AND a.atttypid = pg_catalog.pg_typeof($1)::pg_catalog.oid
 			AND c.relkind = ANY (ARRAY[
 				'r'::pg_catalog."char",
 				'v'::pg_catalog."char",
