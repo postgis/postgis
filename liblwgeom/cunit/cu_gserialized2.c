@@ -449,9 +449,12 @@ static void test_gserialized2_peek_gbox_p_fails_for_unsupported_cases(void)
 		GSERIALIZED* gser = lwalloc(expected_size);
 		uint8_t* ptr = (uint8_t*) gser;
 
-		ptr += 8; // Skip header
-		gserialized2_from_lwgeom_any(geom, ptr);
+		LWSIZE_SET(gser->size, expected_size);
+		gserialized2_set_srid(gser, geom->srid);
 		gser->gflags = lwflags_get_g2flags(geom->flags);
+
+		ptr += 8; /* Skip header */
+		gserialized2_from_lwgeom_any(geom, ptr);
 
 		CU_ASSERT_FALSE(gserialized2_has_bbox(gser));
 		CU_ASSERT_EQUAL(LW_FAILURE, gserialized2_peek_gbox_p(gser, &box));
