@@ -3,6 +3,8 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- #3776, [raster] Preserve distinct integer pixels in ST_DumpAsPolygons
+    (Darafei Praliaskouski)
 - GH-1178, Avoid NULL dereferences when column-map allocation fails and make
   partial column-map cleanup safe (Maksim Korotkov)
 - GT-779, [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
