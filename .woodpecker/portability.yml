@@ -7,11 +7,13 @@ when:
 # This workflow keeps the existing amd64 CI honest by attacking ABI properties
 # that normal amd64 builds cannot falsify.
 #
-# Tier 1: armhf via arm32v7/debian under QEMU. The step pins the arm/v7
-# manifest digest because the Docker backend does not pass a per-step platform
-# override; a tag-only pull from an amd64 daemon asks Docker Hub for an amd64
-# variant and fails before QEMU can run. This mirrors berrie: 32-bit pointers
-# and long, unsigned char, and stricter alignment than amd64.
+# Both emulated tier images pin their platform manifest digest because the
+# Docker backend does not pass a per-step platform override; a tag-only pull
+# from an amd64 daemon asks Docker Hub for an amd64 variant and fails before
+# QEMU can run.
+#
+# Tier 1: armhf via arm32v7/debian under QEMU. This mirrors berrie: 32-bit
+# pointers and long, unsigned char, and stricter alignment than amd64.
 #
 # Tier 2: s390x via s390x/debian under QEMU. This is the practical big-endian
 # target for WKB/EWKB, TWKB, raster byte order, hashes, and integer memcpy paths.
@@ -162,19 +164,25 @@ steps:
       - *build-and-test
 
   s390x-big-endian-qemu:
-    image: s390x/debian:trixie
+    image: s390x/debian@sha256:4b236f9aafe8a6201c6dca29ce78c28e1eb1e314ecedc2cd2c545f9e49d060e3
     pull: true
     failure: ignore
     # s390x is the only realistic big-endian coverage. It is intentionally not
     # run on every pull request: QEMU plus the geospatial dependency closure is
     # expensive, so master pushes, tags, and scheduled runs keep the signal
-    # without making every contributor wait for full emulation. Keep it
-    # non-blocking while the first big-endian findings are still being triaged;
-    # Woodpecker will show the failed step without failing the whole workflow.
+    # without making every contributor wait for full emulation. Pull requests
+    # that change this workflow also run it so image and startup changes prove
+    # themselves before merge. Keep it non-blocking while the first big-endian
+    # findings are still being triaged; Woodpecker will show the failed step
+    # without failing the whole workflow.
     when:
       - event: [push, tag, cron]
         branch: master
       - event: tag
+      - event: pull_request
+        path:
+          include:
+            - .woodpecker/portability.yml
     commands:
       - uname -m | grep -E '^s390x$'
       - export PORTABILITY_TIER=s390x-big-endian-qemu
