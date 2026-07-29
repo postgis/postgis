@@ -6,7 +6,7 @@ SELECT 1::int as id, ST_Collect(g) g FROM (
    ST_Point(cos(radians(x)),sin(radians(270-x))),
    ST_Point(sin(radians(x)),cos(radians(60-x)))
    ) g
- FROM generate_series(1,1440) x
+ FROM generate_series(1,720) x
  ) foo
 ;
 
