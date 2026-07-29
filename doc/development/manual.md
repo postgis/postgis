@@ -111,6 +111,21 @@ For a new function:
    one self-contained query and let the visual-example manifest supply the
    figure to HTML and PDF.
 
+Before submitting the patch, verify that the documentation feeds every public
+surface generated from it:
+
+```sh
+make -C doc comments
+make -C doc html
+```
+
+The comments target regenerates `postgis_comments.sql`,
+`raster_comments.sql`, `topology_comments.sql`, and `sfcgal_comments.sql` from
+the reference text. These comments are what users see through database clients
+such as psql, pgAdmin, and other tools that display PostgreSQL object comments,
+so the `refpurpose`, signatures, and examples should make sense outside the
+HTML manual too.
+
 Run `make -C regress visual-examples` before building HTML or PDF. It verifies
 every runnable example and automatically generates a figure for geometry found
 in the result or in SQL literals. The staged PostGIS library supplies the SVG

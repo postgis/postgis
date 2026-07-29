@@ -223,7 +223,8 @@ string, and next time you'll need to drop the "next" suffix again:
 		symbol errors or bringing forward deprecated objects.
 	  </para>
 
-	 <para>Supplementary instructions for windows users are available at  <link xlink:href="http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade">Windows Hard upgrade</link>.</para>
+	 <para>Supplementary instructions for windows users are available in the
+	 <link xlink:href="https://postgis.net/documentation/getting_started/install_windows/">PostGIS Windows installation guide</link>.</para>
 
 
 	  <para>

@@ -100,7 +100,9 @@ Patch submission basics:
 * Follow [Coding style](style.md) for C naming, formatting, and Doxygen
   comments before writing or submitting source patches.
 * Add documentation in the same change when a feature adds or changes SQL
-  user-visible behavior.
+  user-visible behavior. New SQL functions must follow the
+  [manual documentation workflow](manual.md#documenting-new-sql-features),
+  including `Availability:` notes and generated SQL comments.
 * For SQL API, upgrade, and release-policy changes, read
   [Release and upgrade rules](release/_index.md) before opening a pull request.
 * Git patches sent by email are also accepted; see

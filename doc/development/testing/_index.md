@@ -57,6 +57,29 @@ When testing against several PostgreSQL installs, put the target PostgreSQL
 client binaries first in `PATH` and set `PGPORT`, `PGUSER`, and `PGHOST`
 explicitly.
 
+If the harness connects to the wrong cluster, inspect the active PostgreSQL
+binary and connection settings before changing the test:
+
+```sh
+which pg_config
+pg_config --version
+env | grep '^PG'
+```
+
+The test cluster must allow the selected user to connect locally and create the
+temporary regression database. A local throw-away test cluster often uses a
+topmost `pg_hba.conf` rule such as:
+
+```text
+host all all 127.0.0.1/32 trust
+```
+
+Use a narrower or password-based rule on shared machines, then reload the
+cluster before rerunning the tests. On Windows or mixed checkout environments,
+unexpected diffs in otherwise unchanged `_expected` files can come from line
+endings; normalize the affected regression files before treating the output as
+a behavior change.
+
 ### Sandboxed Regression Roles
 
 Continuous integration workers are frequently configured with sandboxed
