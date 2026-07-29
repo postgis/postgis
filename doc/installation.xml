@@ -33,9 +33,10 @@ in each individual database you want to use it in.
     In many cases compilation is only necessary if you want the most
     bleeding edge versions or you are a package maintainer.
     </para>
-    <para>This section includes general compilation instructions, if you are compiling for Windows etc
-    or another OS, you may find additional more detailed help at <link xlink:href="https://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile guides</link> and <link xlink:href="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</link>.</para>
-    <para>Pre-Built Packages for various OS are listed in <link xlink:href="https://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</link></para>
+    <para>This section includes general compilation instructions. If you are compiling for Windows
+    or another operating system, see the <link xlink:href="https://postgis.net/documentation/getting_started/">PostGIS getting started guides</link>
+    and the <link xlink:href="https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/environment/">development environment guides</link>.</para>
+    <para>Pre-Built Packages for various OS are listed in the <link xlink:href="https://postgis.net/documentation/getting_started/">PostGIS getting started guides</link></para>
     <para>If you are a windows user, you can get stable builds via Stackbuilder or <link xlink:href="https://postgis.net/windows_downloads">PostGIS Windows download site</link>
     We also have <link xlink:href="https://postgis.net/windows_downloads">very bleeding-edge windows experimental builds</link> that are built usually once or twice a week or whenever anything exciting happens.  You can
     use these to experiment with the in progress releases of PostGIS</para>
@@ -525,7 +526,7 @@ sh autogen.sh
     <note>
     <para>
       If you obtained PostGIS from the
-      <link xlink:href="https://trac.osgeo.org/postgis/wiki/CodeRepository">
+      <link xlink:href="https://postgis.net/development/source_code/">
       code repository
       </link>
       , the first step is really to run the script

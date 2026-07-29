@@ -49,6 +49,30 @@ make -j"$(nproc)"
 make check
 ```
 
+For interactive debugging, keep the container alive and enter it with:
+
+```sh
+docker exec -it postgis-dev /bin/bash
+pg_lsclusters
+```
+
+`pg_lsclusters` shows which PostgreSQL major uses each port inside the
+container. To connect from the host, expose the matching port in `docker run`,
+allow PostgreSQL to listen beyond the container loopback interface, and reload
+the cluster:
+
+```sh
+export PGVER=15
+export PGPORT="$(grep ^port /etc/postgresql/${PGVER}/main/postgresql.conf | awk '{print $3}')"
+psql -d postgres -c "ALTER SYSTEM SET listen_addresses='*';"
+printf '%s\n' "host all all 0.0.0.0/0 scram-sha-256" >> "/etc/postgresql/${PGVER}/main/pg_hba.conf"
+psql -d postgres -c "ALTER ROLE postgres PASSWORD 'change-me';"
+service postgresql restart "${PGVER}"
+```
+
+Use a stronger password and narrower `pg_hba.conf` rule on shared hosts. The
+example is intended for a short-lived local development container.
+
 From the host, connect to the PostgreSQL version whose container port you
 exposed. For example, if PostgreSQL inside the container listens on `5436` and
 the host port mapping is `6436:5436`, use:

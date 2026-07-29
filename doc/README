@@ -61,8 +61,8 @@ manual at https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/developm
 for layout roles, labels, textual-output policy, native geometry/EWKT output
 handling, and the visual review procedure.
 
-To run garden tests against functions, follow these instructions on the PostGIS
-dev wiki: http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
+To run garden tests against functions, see the Garden Checks section in
+https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/testing/.
 
 Manual example tests are opt-out. A parseable SQL ``programlisting`` with
 expected output is tested by default. Add ``role="requires-external-state"`` when
@@ -155,5 +155,6 @@ features used elsewhere in the manual.
 For contributor workflow, local testing, and garden checks, see
 https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/.
 
-The audited Trac wiki migration record and recovered attachments live in
-``doc/trac-wiki/``.
+Historical Trac wiki material that is still maintained has been folded into the
+developer documentation under ``doc/development/``, the user manual, or the
+public website.
