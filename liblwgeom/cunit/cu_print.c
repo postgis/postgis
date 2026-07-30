@@ -16,6 +16,7 @@
 
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
+#include "ryu/d2s_intrinsics.h"
 
 static void
 test_lwpoint_to_latlon_assert_format(char *point_wkt, const char *format, const char *expected)
@@ -566,6 +567,23 @@ test_lwprint_roundtrip(void)
 	 */
 }
 
+static void
+test_ryu_pow5factor(void)
+{
+	CU_ASSERT_EQUAL(pow5Factor(1ull), 0);
+	CU_ASSERT_EQUAL(pow5Factor(2ull), 0);
+	CU_ASSERT_EQUAL(pow5Factor(5ull), 1);
+	CU_ASSERT_EQUAL(pow5Factor(10ull), 1);
+	CU_ASSERT_EQUAL(pow5Factor(25ull), 2);
+	CU_ASSERT_EQUAL(pow5Factor(125ull), 3);
+	CU_ASSERT_EQUAL(pow5Factor(3125ull), 5);
+	CU_ASSERT_EQUAL(pow5Factor(42ull), 0);
+	CU_ASSERT_EQUAL(pow5Factor(42 * 5 * 5 * 5ull), 3);
+	CU_ASSERT_EQUAL(pow5Factor(7450580596923828125ull), 27);
+	CU_ASSERT_EQUAL(pow5Factor(18446744073709551615ull), 1);
+	CU_ASSERT_EQUAL(pow5Factor(18446744073709551614ull), 0);
+}
+
 /*
 ** Callback used by the test harness to register the tests in this file.
 */
@@ -580,5 +598,5 @@ void print_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_bad_formats);
 	PG_ADD_TEST(suite, test_lwprint);
 	PG_ADD_TEST(suite, test_lwprint_roundtrip);
+	PG_ADD_TEST(suite, test_ryu_pow5factor);
 }
-

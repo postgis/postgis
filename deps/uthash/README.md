@@ -2,7 +2,7 @@
 
 Uthash is a single header library to manage hash tables.
 
-The full documentation can be found at its [User Guide](http://troydhanson.github.io/uthash/userguide.html) and the original code at [Github](https://github.com/troydhanson/uthash/).
+The full documentation can be found at its [User Guide](https://troydhanson.github.io/uthash/userguide.html) and the original code at [GitHub](https://github.com/troydhanson/uthash/).
 
 # Changes from source
 
@@ -11,3 +11,4 @@ The full documentation can be found at its [User Guide](http://troydhanson.githu
 # Changelog
 
   - 2019-03-22 - Code was moved from postgis/ and updated to 2.1.0.
+  - 2026-07-30 - Update `uthash.h` to 2.4.0 from https://github.com/troydhanson/uthash/tree/v2.4.0/src.

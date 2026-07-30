@@ -18,7 +18,7 @@ Ryu Printf implements %f and %e formatting in a way that should be drop-in compa
 
 ## Implementation
 
-The C implementation of Ryu comes from the ryu/ directory in the git repostitory (https://github.com/ulfjack/ryu).
+The C implementation of Ryu comes from the ryu/ directory in the git repository (https://github.com/ulfjack/ryu).
 
 We've only copied the necessary files, that is `d2s.c` and its headers. It is integrated in the project by generating a static library, libryu.la.
 
@@ -37,7 +37,24 @@ The output has also been changed to match the old behaviour:
 - Uses "e-1" instead of E-1.
 - Never outputs negative 0. It always returns "0".
 
+This is not only a compiler-warning delta. The first PostGIS extraction did
+include small UBSan fixes, but the current vendored snapshot exposes
+PostGIS-specific `d2sfixed_buffered_n` and `d2sexp_buffered_n` APIs and
+PostGIS output semantics. The earlier trailing-zero behavior was discussed
+upstream in https://github.com/ulfjack/ryu/issues/142 and was not accepted as a
+drop-in upstream change.
+
+Upstream `master` has unreleased changes after `v2.0`, mostly for parsing,
+float conversion, build/test integration, and table-size options. This copy
+includes the `pow5Factor()` optimization from
+https://github.com/ulfjack/ryu/pull/188, which applies cleanly to the PostGIS
+printing path. Also note that this vendored copy still has an inactive
+`RYU_OPTIMIZE_SIZE` include path for `d2s_small_table.h`, but does not vendor
+that header; PostGIS does not define `RYU_OPTIMIZE_SIZE`, so the default build
+is unaffected.
+
 ### Dependency changelog
 
   - 2019-01-10 - [Ryu] Library extraction from https://github.com/ulfjack/ryu/tree/master/ryu. Added changes to remove trailing zeros from the output and minor changes to please ubsan.
   - 2020-07-20 - [Ryu] Switch from d2fixed/d2exp to d2sfixed/d2sexp, that is, using the shortest notation
+  - 2026-07-30 - Confirmed v2.0 is still the latest upstream Ryu release tag; this copy keeps PostGIS-specific precision and formatting changes, plus the unreleased upstream pow5Factor optimization from https://github.com/ulfjack/ryu/pull/188.
