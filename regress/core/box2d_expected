@@ -1,0 +1,6 @@
+out|BOX(0 0,1 1)
+out_3d|BOX(0 0,2 3)
+roundtrip|BOX(1.5 2.5,3.5 4.5)
+extent|BOX(0 0,5 7)
+expand_d|BOX(-1 -1,11 11)
+expand_dxdy|BOX(-2 -3,12 13)
