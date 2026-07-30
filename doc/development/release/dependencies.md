@@ -93,6 +93,20 @@ For GEOS, revision-level runtime and header information is tracked upstream in
 PostGIS can decide how much of it belongs in `postgis_full_version()` and the
 GEOS version helper functions.
 
+## Vendored Dependency Refreshes
+
+PostGIS vendors a small number of source dependencies under `deps/`. Treat
+these directories as maintained source snapshots, not as package-manager
+inputs. Before refreshing one, read its local README, compare the PostGIS-local
+bridge patches, and record the exact upstream release tag or commit used.
+
+| Dependency | Local version or snapshot | Upstream source | Refresh notes |
+|------------|---------------------------|-----------------|---------------|
+| Wagyu | 0.5.0 | <https://github.com/mapbox/wagyu> | Used only when protobuf-c support enables MVT. The vendored copy includes PostGIS bridge code in `deps/wagyu/lwgeom_wagyu.*`; upstream 0.5.0 is the latest release tag as of 2026-07-30. |
+| Ryu | v2.0-derived snapshot | <https://github.com/ulfjack/ryu> | `deps/ryu/README.md` documents substantial PostGIS precision and formatting changes. Do not overwrite it from upstream without preserving those changes and validating `lwprint_double` output. This copy includes the unreleased upstream `pow5Factor()` optimization from <https://github.com/ulfjack/ryu/pull/188>. Upstream v2.0 is the latest release tag as of 2026-07-30. |
+| FlatGeobuf | unversioned FlatGeobuf snapshot, FlatBuffers 23.3.3 headers | <https://github.com/flatgeobuf/flatgeobuf> | The FlatGeobuf files do not embed an upstream package version. Refresh by recording the exact upstream tag or commit, regenerating the FlatGeobuf headers, preserving the unique FlatBuffers namespace, and keeping PostGIS big-endian fixes. The portable `packedrtree.cpp` big-endian fix is proposed upstream in <https://github.com/flatgeobuf/flatgeobuf/pull/512>. Upstream 3.26.2 is the latest FlatGeobuf release tag as of 2026-07-30. |
+| uthash | 2.4.0 | <https://github.com/troydhanson/uthash> | `deps/uthash/include/uthash.h` comes from upstream `v2.4.0/src/uthash.h` with PostGIS' `HASH_FUNCTION` collision fix retained as `UTHASH_FUNCTION`. |
+
 ## Removing Support for PostgreSQL Versions
 
 When dropping support for an older PostgreSQL major version:
