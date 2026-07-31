@@ -1,11 +1,9 @@
-#!/usr/bin/env python3
 """Validate and export the PostGIS compatibility support matrix."""
 
 from __future__ import annotations
 
 import argparse
 import datetime as dt
-import importlib.util
 import json
 import re
 import subprocess
@@ -14,19 +12,13 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-try:
-    from utils.support_matrix_payload import (
-        build_payload_model,
-        validate_payload_model,
-    )
-except ModuleNotFoundError:
-    from support_matrix_payload import build_payload_model, validate_payload_model
+from ..ci_status import DEFAULT_CONFIG as DEFAULT_CI_CONFIG
+from . import DEFAULT_CACHE, DEFAULT_MATRIX, REPOSITORY_ROOT
+from . import update as update_module
+from .payload import build_payload_model, validate_payload_model
 
 
-ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_MATRIX = ROOT / "doc" / "development" / "compatibility" / "data" / "matrix.json"
-DEFAULT_CACHE = ROOT / "doc" / "development" / "compatibility" / "data" / "cache.json"
-DEFAULT_CI_CONFIG = ROOT / "utils" / "ci-status.json"
+ROOT = REPOSITORY_ROOT
 GENERATED_MATRIX_KEYS = {
     "dependency_versions",
     "packaged_versions",
@@ -486,7 +478,10 @@ def validate_matrix(data: dict[str, Any]) -> list[str]:
             errors.append(f"{minor}: invalid status {status!r}")
         branch = item.get("branch")
         if minor in branches and branches[minor] != branch:
-            errors.append(f"{minor}: branch {branch!r} does not match utils/ci-status.json {branches[minor]!r}")
+            errors.append(
+                f"{minor}: branch {branch!r} does not match "
+                f"utils/docs/ci_status/config.json {branches[minor]!r}"
+            )
         pg = item.get("postgresql", {})
         for override in pg.get("minor_overrides", []):
             if override.get("status") not in STATUS_VALUES:
@@ -610,7 +605,10 @@ def validate_matrix(data: dict[str, Any]) -> list[str]:
     known = data.get("upgrade_paths", {}).get("known_versions", [])
     actual = upgradeable_versions()
     if known and known != actual:
-        errors.append("upgrade_paths.known_versions is stale; run support-matrix.py update")
+        errors.append(
+            "upgrade_paths.known_versions is stale; run "
+            "python3 -m utils.docs.support_matrix update"
+        )
     return errors
 
 
@@ -690,18 +688,8 @@ def validated_output(data: dict[str, Any]) -> dict[str, Any]:
     return rendered(data, refresh_upgrades=True)
 
 
-def load_update_module() -> Any:
-    path = ROOT / "utils" / "support_matrix_update.py"
-    spec = importlib.util.spec_from_file_location("support_matrix_update", path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load {path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 def load_source_matrix(updater: Any | None = None) -> dict[str, Any]:
-    updater = updater or load_update_module()
+    updater = updater or update_module
     matrix = load_json(DEFAULT_MATRIX)
     generated_keys = sorted(GENERATED_MATRIX_KEYS.intersection(matrix))
     if generated_keys:
@@ -715,7 +703,7 @@ def load_source_matrix(updater: Any | None = None) -> dict[str, Any]:
 
 
 def load_cached_matrix(updater: Any | None = None) -> dict[str, Any]:
-    updater = updater or load_update_module()
+    updater = updater or update_module
     matrix = load_source_matrix(updater)
     try:
         return updater.apply_cache(matrix, load_json(DEFAULT_CACHE))
@@ -729,7 +717,7 @@ def print_errors(prefix: str, error: Exception) -> None:
 
 
 def update_matrix() -> int:
-    updater = load_update_module()
+    updater = update_module
     try:
         matrix = load_source_matrix(updater)
         cache = load_json(DEFAULT_CACHE)
@@ -769,7 +757,3 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "build":
         write_json(args.output, output)
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

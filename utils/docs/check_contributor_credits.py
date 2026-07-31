@@ -368,7 +368,7 @@ def parse_args(argv=None):
     parser.add_argument(
         "--repo",
         type=Path,
-        default=Path(__file__).resolve().parent.parent,
+        default=Path(__file__).resolve().parents[2],
         help="PostGIS worktree root (default: repository containing this script)",
     )
     parser.add_argument(

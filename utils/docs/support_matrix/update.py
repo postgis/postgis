@@ -12,10 +12,9 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from . import DEFAULT_CACHE, DEFAULT_MATRIX, REPOSITORY_ROOT
 
-ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_MATRIX = ROOT / "doc" / "development" / "compatibility" / "data" / "matrix.json"
-DEFAULT_CACHE = ROOT / "doc" / "development" / "compatibility" / "data" / "cache.json"
+ROOT = REPOSITORY_ROOT
 USER_AGENT = "PostGIS support matrix updater (curl/8.5.0 compatible)"
 SOURCE_DATE = dt.datetime.now(dt.timezone.utc).date().isoformat()
 CACHE_SCHEMA_VERSION = 1

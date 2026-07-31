@@ -36,9 +36,10 @@ Modules:
 * [Release and upgrade rules](release/_index.md) indexes SQL/C API compatibility,
   upgrade scripting, dependency guards, regression roles, and support-window
   changes.
-* [Compatibility and support](https://postgis.net/development/compatibility/) publishes the
-  repository-owned compatibility facts, fallback cache, and generated payload
-  for PostGIS, PostgreSQL, dependency, packaging, and upgrade-path metadata.
+* [Compatibility data maintenance](compatibility/_index.md) explains the
+  repository-owned compatibility facts, fallback cache, updater, validator,
+  website handoff, and generated payload. The resulting browser is published
+  at <https://postgis.net/development/compatibility/>.
 * [Release process](release-process.md) covers version numbering, release
   preparation, publishing, announcements, and opening the next development
   cycle.

@@ -2,7 +2,7 @@
 
 usage() {
   echo "Usage: $0 [-v] [--base-ref=<ref>] [--ticket-refs] [--ticket-refs-skip-commits=<file>] [<sourcedir>]"
-  echo "Sourcedir defaults to one directory above this script"
+  echo "Sourcedir defaults to the repository containing this script"
 }
 
 
@@ -44,7 +44,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "${RD}" ]; then
-  RD=`dirname $0`/..
+  RD=`dirname $0`/../..
 fi
 
 cd ${RD}

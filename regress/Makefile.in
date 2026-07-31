@@ -157,7 +157,7 @@ visual-examples-run: EXAMPLETEST_CHECK_ENVIRONMENT = no
 visual-examples-run: exampletest-run
 
 exampletest-unit:
-	python3 $(top_srcdir)/utils/test_postgis_exampletest.py
+	python3 $(top_srcdir)/utils/docs/test_postgis_exampletest.py
 
 exampletest-run: exampletest-unit
 	$(MAKE) -C ../doc postgis-out.xml
@@ -175,10 +175,10 @@ exampletest-run: exampletest-unit
 		psql -qX -v ON_ERROR_STOP=true -d $(EXAMPLETESTDB) < $(REGRESS_INSTALLDIR)/share/contrib/postgis/sfcgal.sql; \
 	fi
 	@if test x"$(EXAMPLETEST_CHECK_ENVIRONMENT)" != xno; then \
-		$(top_srcdir)/utils/postgis_exampletest.py --check-environment --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
+		$(top_srcdir)/utils/docs/postgis_exampletest.py --check-environment --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
 			> postgis_exampletest_environment.txt 2>&1 || { \
 			cat postgis_exampletest_environment.txt; false; }; \
 	fi
-	$(top_srcdir)/utils/postgis_exampletest.py --run --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
+	$(top_srcdir)/utils/docs/postgis_exampletest.py --run --database $(EXAMPLETESTDB) ../doc/postgis-out.xml \
 		$(EXAMPLETEST_RUN_FLAGS) \
 		--render-dir $(abs_top_builddir)/doc/html/images/visual-examples

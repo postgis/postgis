@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd $(dirname $0)/..
+cd "$(dirname "$0")/../.." || exit 1
 
 perl -CSDL -pi \
 	-e 's/\&([_a-zA-Z]*)[\s\h][\s\h]*;/&\1;/g;' \

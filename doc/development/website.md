@@ -63,7 +63,7 @@ Website source content that overlaps with repository-maintained developer docs:
 | `content/development/bug_reporting.md` | [Contributing workflow](contributing.md) |
 | `content/documentation/developer_docs.md` | [Documentation workflow](manual.md) and this `doc/development/` index |
 | `content/development/versions_eol.md` | [Release process](release-process.md) and [Release and upgrade rules](release/_index.md) |
-| `content/development/compatibility/` | Website-owned compatibility page and UI, fed by PostGIS-reviewed matrix statements, generated fallback cache, and the JSON payload emitted by `utils/support_matrix*.py` |
+| `content/development/compatibility/` | Website-owned compatibility page and UI, fed by PostGIS-reviewed matrix statements, generated fallback cache, and the JSON payload emitted by `utils.docs.support_matrix` |
 | `content/development/rfcs/*.md` | [Governance notes](governance/_index.md) and historical RFC pages |
 | New governance pages outside `rfcs/` | [Governance notes](governance/_index.md) and [PostGIS project inventory](governance/project-inventory.md) |
 | `content/community/mailinglists.md` and `content/community/chat.md` | [Contributing workflow](contributing.md) |

@@ -489,7 +489,7 @@ class DocBookSourceLintTest(unittest.TestCase):
 
     def test_xsl_sql_detection_covers_all_block_starters(self):
         xsl = (
-            Path(__file__).resolve().parents[1]
+            Path(__file__).resolve().parents[2]
             / "doc"
             / "xsl"
             / "postgis-html-block-labels.xsl"

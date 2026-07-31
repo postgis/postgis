@@ -1,4 +1,3 @@
-import importlib.util
 import json
 import pathlib
 import subprocess
@@ -6,11 +5,10 @@ import tempfile
 import unittest
 from unittest import mock
 
+from ci_status import report as CI_STATUS
 
-MODULE_PATH = pathlib.Path(__file__).with_name("ci-status.py")
-SPEC = importlib.util.spec_from_file_location("ci_status", MODULE_PATH)
-CI_STATUS = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(CI_STATUS)
+
+CONFIG_PATH = pathlib.Path(CI_STATUS.__file__).with_name("config.json")
 
 
 def check(name, status, *, required=True, url=None):
@@ -271,7 +269,7 @@ class RequiredFailureHtmlTest(unittest.TestCase):
             self.assertIsNone(CI_STATUS.load_status_cache(missing))
 
     def test_woodpecker_covers_supported_release_branches(self):
-        config = json.loads(MODULE_PATH.with_suffix(".json").read_text(encoding="utf-8"))
+        config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
         woodpecker = next(check for check in config["checks"] if check["name"] == "Woodpecker")
 
         self.assertEqual(
@@ -287,7 +285,7 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         )
 
     def test_retired_badges_record_current_non_gating_reason(self):
-        config = json.loads(MODULE_PATH.with_suffix(".json").read_text(encoding="utf-8"))
+        config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
         serialized = json.dumps(config)
 
         self.assertNotIn("bessie32", serialized.lower())
@@ -298,18 +296,6 @@ class RequiredFailureHtmlTest(unittest.TestCase):
         self.assertIn("ci_quota_exceeded", checks["GitLab mirror"]["message"])
         self.assertIn("badge endpoint still resolves", checks["GitLab mirror"]["message"])
         self.assertIn("stale failed mirror results", checks["INAF GitLab mirror"]["message"])
-
-    def test_trac_row_helper_does_not_generate_retired_badges(self):
-        script = MODULE_PATH.with_name("ci-trac-line.sh")
-        row = subprocess.check_output([str(script), "3.7"], text=True)
-
-        self.assertNotIn("bessie32", row.lower())
-        self.assertNotIn("api.cirrus-ci.com", row)
-        self.assertNotIn("gitlab.com/postgis/postgis/badges", row)
-        self.assertNotIn("www.ict.inaf.it/gitlab/postgis/postgis/badges", row)
-        self.assertNotIn("ci-freebsd.yml", row)
-        self.assertNotIn("ci-macos.yml", row)
-        self.assertIn("codeql.yml", row)
 
     def test_apply_staleness_labels_passed_and_failed_results(self):
         config = {

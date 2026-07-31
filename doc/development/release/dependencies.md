@@ -126,15 +126,16 @@ When dropping support for an older PostgreSQL major version:
 The compatibility data, updater, validator, fallback cache, and generated JSON
 payload belong to this repository. The website consumes that payload for its
 own compatibility page and should not maintain a second compatibility table.
-The support-policy summary remains at
+See [Compatibility data maintenance](../compatibility/_index.md) for the full
+data and publication contract. The support-policy summary remains at
 <https://postgis.net/development/versions_eol/>.
 
 When updating release or dependency support:
 
-1. Run `python3 utils/support-matrix.py update`; a changed upstream format
+1. Run `python3 -m utils.docs.support_matrix update`; a changed upstream format
    retains the corresponding last-known-good fields in `cache.json` and
    records a visible warning without rewriting `matrix.json`.
-2. Run `python3 utils/support-matrix.py check` before publishing. It validates
+2. Run `python3 -m utils.docs.support_matrix check` before publishing. It validates
    the source data, resolved compatibility cells, patch overlays, dependency
    inventory, and generated payload schema.
 3. Check the website support policy before changing branch, release, or

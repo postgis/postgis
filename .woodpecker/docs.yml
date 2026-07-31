@@ -17,8 +17,8 @@ variables:
       - "doc/html/*.js"
       - "doc/html/*.css"
       # Build-time geometry renderer
-      - "utils/postgis_exampletest.py"
-      - "utils/test_postgis_exampletest.py"
+      - "utils/docs/postgis_exampletest.py"
+      - "utils/docs/test_postgis_exampletest.py"
       - "liblwgeom/lwout_svg.c"
       - "liblwgeom/cunit/cu_out_svg.c"
       # Internationalization Makefiles
