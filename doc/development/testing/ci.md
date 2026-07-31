@@ -45,18 +45,20 @@ export POSTGIS_BUILD_JOBS=$$(postgis_ci_parallel_jobs)
 make -j"$${POSTGIS_BUILD_JOBS}" SUBDIRS="deps liblwgeom libpgcommon postgis"
 ```
 
-`postgis_ci_parallel_jobs()` uses the following overrides:
+This keeps small shared Woodpecker agents from multiplying memory pressure until
+the server reports `received oom kill`. `postgis_ci_parallel_jobs()` uses the
+following overrides:
 
 - `POSTGIS_CI_MEM_AVAILABLE_KB` sets the available memory (KB) used by scheduling.
   Default: auto-detected from cgroup `memory.max` and `/proc/meminfo` (the
-  smaller value is used). Set this when a CI worker reports wrong available memory
-  and the detected value is not suitable.
+  smaller value is used). Set this when CI memory reporting is missing, noisy,
+  or known to disagree with the worker capacity assigned to the job.
 - `POSTGIS_CI_MAX_JOBS` sets the hard upper limit on parallel jobs.
   Default: detected CPU count, and then clamped to detected CPU count.
   Set this when CI capacity should be capped regardless of available memory.
 - `POSTGIS_CI_JOB_MEMORY_MB` sets the per-job memory estimate (MB).
-  Default: `1024`. Set this when one job class needs materially more/less memory
-  than the default and parallelism must be reduced/increased.
+  Default: `1024`. Set this when one job class needs materially more or less
+  memory than the default docs build assumption.
 
 The result is clamped to at least `1`, and if memory detection fails the function
 falls back to the CPU-based maximum.

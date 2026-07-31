@@ -1,10 +1,16 @@
 #!/bin/sh
 
-# Helper used by PostGIS CI jobs to choose a safe level of parallelism without
-# overcommitting memory.
-# It was introduced to avoid CI runs being killed by the Linux OOM killer with
-# code 137 on small shared agents (for example, geocint/smallcat/nucat runner
-# nodes) when too many tests run simultaneously.
+# Helper used by PostGIS CI jobs to choose a safe level of parallelism for
+# memory-bound build steps.
+#
+# Woodpecker pipelines were failing with "received oom kill" on small shared
+# agents such as 145045 (capacity 4) and 145144 (capacity 2). An unbounded
+# make -j sizes itself to the host CPU count, while a CI container may have only
+# a fraction of the host memory.
+#
+# The selected job count is bounded by CPU count and by an assumed per-job
+# memory cost. Available memory is treated as the smaller of the cgroup memory
+# limit and /proc/meminfo MemAvailable, when both are available.
 
 postgis_ci_positive_integer()
 {
@@ -58,8 +64,10 @@ postgis_ci_cgroup_memory_kb()
 
 postgis_ci_available_memory_kb()
 {
-	# POSTGIS_CI_MEM_AVAILABLE_KB: manual override in KiB for deterministic CI
-	# sizing. Set this on hosts where memory reporting is noisy or unstable.
+	# POSTGIS_CI_MEM_AVAILABLE_KB: manual override for available memory in KiB.
+	# Default: auto-detect the smaller of the cgroup memory limit and
+	# MemAvailable. Set it when CI memory reporting is missing, noisy, or known
+	# to disagree with the worker capacity assigned to the job.
 	if postgis_ci_positive_integer "${POSTGIS_CI_MEM_AVAILABLE_KB:-}"; then
 		echo "${POSTGIS_CI_MEM_AVAILABLE_KB}"
 		return 0
@@ -98,8 +106,9 @@ postgis_ci_parallel_jobs()
 {
 	cpus=$(postgis_ci_cpu_count)
 
-	# POSTGIS_CI_MAX_JOBS: explicit job cap from CI; defaults to CPU count.
-	# Set this to lower-than-CPU when runners are noisy/shared.
+	# POSTGIS_CI_MAX_JOBS: explicit job cap from CI. Default: detected CPU
+	# count. Set it to keep a shared worker below its CPU-based maximum even
+	# when memory would otherwise allow more jobs.
 	if postgis_ci_positive_integer "${POSTGIS_CI_MAX_JOBS:-}"; then
 		max_jobs=${POSTGIS_CI_MAX_JOBS}
 	else
@@ -109,8 +118,9 @@ postgis_ci_parallel_jobs()
 		max_jobs=${cpus}
 	fi
 
-	# POSTGIS_CI_JOB_MEMORY_MB: estimated memory per job in MiB, default 1024.
-	# Adjust upward/downward when workloads have heavier/lighter memory profiles.
+	# POSTGIS_CI_JOB_MEMORY_MB: estimated memory cost per parallel job in MiB.
+	# Default: 1024. Set it when a job family is measured to use materially more
+	# or less memory than the default docs build assumption.
 	if postgis_ci_positive_integer "${POSTGIS_CI_JOB_MEMORY_MB:-}"; then
 		job_memory_mb=${POSTGIS_CI_JOB_MEMORY_MB}
 	else
