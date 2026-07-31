@@ -3,6 +3,9 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- [address_standardizer] Load lexicon rows by documented tuple order so
+  copied or upgraded lexicon tables do not change parser priority
+  (Darafei Praliaskouski)
 - [tiger_geocoder] Resolve the fuzzy location helper in the tiger schema
   (Regina Obe)
 - GH-836, Correct the ST_Boundary multiline example (Peter Nguyen)
