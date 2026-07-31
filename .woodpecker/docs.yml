@@ -112,6 +112,7 @@ steps:
     depends_on: [ build-images, check-xml ]
     commands:
       - apt-get update
+      # Install librsvg2-bin here because PDF generation invokes SVG rendering tooling in this step.
       - apt-get install -y --no-install-recommends librsvg2-bin
       - rm -rf /var/lib/apt/lists/*
       - make -C build-docs/doc/ pdf
@@ -120,6 +121,8 @@ steps:
 
   # DO NOT EDIT PAST THIS LINE, use update-docs-localized.sh to update #
 ### TARGET check-xml
+  # Localized check-xml steps are intentionally chained to cap memory per step; this is a memory-control
+  # measure, not a language dependency chain. Splitting/fan-out restores parallelism but can trigger OOM kills.
   check-xml-it_IT:
     image: *test_image
     pull: true
