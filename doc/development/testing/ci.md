@@ -35,6 +35,32 @@ When a dashboard row describes dependency versions, operating systems, branch
 coverage, or test modes, the row should be regenerated from those sources or
 checked against them before publication.
 
+## Build Parallelism Sizing
+
+The docs pipeline in `.woodpecker/docs.yml` sets job parallelism through:
+
+```sh
+. ../ci/parallel-jobs.sh
+export POSTGIS_BUILD_JOBS=$$(postgis_ci_parallel_jobs)
+make -j"$${POSTGIS_BUILD_JOBS}" SUBDIRS="deps liblwgeom libpgcommon postgis"
+```
+
+`postgis_ci_parallel_jobs()` uses the following overrides:
+
+- `POSTGIS_CI_MEM_AVAILABLE_KB` sets the available memory (KB) used by scheduling.
+  Default: auto-detected from cgroup `memory.max` and `/proc/meminfo` (the
+  smaller value is used). Set this when a CI worker reports wrong available memory
+  and the detected value is not suitable.
+- `POSTGIS_CI_MAX_JOBS` sets the hard upper limit on parallel jobs.
+  Default: detected CPU count, and then clamped to detected CPU count.
+  Set this when CI capacity should be capped regardless of available memory.
+- `POSTGIS_CI_JOB_MEMORY_MB` sets the per-job memory estimate (MB).
+  Default: `1024`. Set this when one job class needs materially more/less memory
+  than the default and parallelism must be reduced/increased.
+
+The result is clamped to at least `1`, and if memory detection fails the function
+falls back to the CPU-based maximum.
+
 ## Woodie API and Pipeline Approvals
 
 Use a Woodie personal access token for the Woodie API and
