@@ -19,6 +19,91 @@ how is it used, and various FOSS4G tools that support it in <link xlink:href="ht
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
         <para>Topology support is built by default and can be disabled by specifying the --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
 
+        <section xml:id="Topology_Linework_Faces_Example">
+            <title>Building Faces from Linework</title>
+            <para>This example builds topology faces from noded linework and
+            associates point attributes with the resulting faces. It uses
+            <xref linkend="ST_CreateTopoGeo"/> to populate an empty topology,
+            <xref linkend="ValidateTopology"/> to check the result,
+            <xref linkend="GetFaceByPoint"/> to locate each attribute point,
+            and <xref linkend="ST_GetFaceGeometry"/> to materialize ordinary
+            polygon geometries.</para>
+
+            <para>Create an empty topology and populate it with linework that
+            encloses two faces:</para>
+<programlisting language="sql" role="requires-external-state">CREATE EXTENSION IF NOT EXISTS postgis_topology;
+
+SELECT topology.CreateTopology('topo_example', 3857);
+
+WITH lines(geom) AS (VALUES
+    ('SRID=3857;LINESTRING(0 0, 2 0)'::geometry),
+    ('SRID=3857;LINESTRING(0 1, 2 1)'::geometry),
+    ('SRID=3857;LINESTRING(0 0, 0 1)'::geometry),
+    ('SRID=3857;LINESTRING(1 0, 1 1)'::geometry),
+    ('SRID=3857;LINESTRING(2 0, 2 1)'::geometry)
+)
+SELECT topology.ST_CreateTopoGeo(
+    'topo_example',
+    ST_Collect(geom)
+)
+FROM lines;
+
+SELECT * FROM topology.ValidateTopology('topo_example');</programlisting>
+
+            <para>An empty result from <function>ValidateTopology</function>
+            means that no topology errors were found. Attribute points can now
+            be matched to faces. A face identifier of <literal>0</literal>
+            denotes the universal face, so the point is outside every bounded
+            face.</para>
+<programlisting language="sql" role="requires-external-state">WITH labels(name, geom) AS (VALUES
+    ('west', 'SRID=3857;POINT(0.5 0.5)'::geometry),
+    ('east', 'SRID=3857;POINT(1.5 0.5)'::geometry),
+    ('outside', 'SRID=3857;POINT(3 0.5)'::geometry)
+),
+located AS (
+    SELECT name,
+           topology.GetFaceByPoint('topo_example', geom, 0) AS face_id
+    FROM labels
+)
+SELECT name,
+       face_id,
+       CASE WHEN face_id = 0 THEN NULL
+            ELSE topology.ST_GetFaceGeometry('topo_example', face_id)
+       END AS geom
+FROM located
+ORDER BY name;</programlisting>
+
+            <para>Before copying attributes into a face table, check both for
+            points outside bounded faces and for multiple source points assigned
+            to the same face:</para>
+<programlisting language="sql" role="requires-external-state">WITH labels(name, geom) AS (VALUES
+    ('west', 'SRID=3857;POINT(0.5 0.5)'::geometry),
+    ('east', 'SRID=3857;POINT(1.5 0.5)'::geometry),
+    ('outside', 'SRID=3857;POINT(3 0.5)'::geometry)
+),
+located AS (
+    SELECT name,
+           topology.GetFaceByPoint('topo_example', geom, 0) AS face_id
+    FROM labels
+)
+SELECT 'outside face' AS problem,
+       array_agg(name ORDER BY name) AS labels
+FROM located
+WHERE face_id = 0
+HAVING count(*) &gt; 0
+UNION ALL
+SELECT 'duplicate face ' || face_id,
+       array_agg(name ORDER BY name)
+FROM located
+WHERE face_id != 0
+GROUP BY face_id
+HAVING count(*) &gt; 1;</programlisting>
+
+            <para>Use <xref linkend="DropTopology"/> to remove the example
+            topology when it is no longer needed:</para>
+<programlisting language="sql" role="requires-external-state">SELECT topology.DropTopology('topo_example');</programlisting>
+        </section>
+
         <section xml:id="Topology_PrimitiveTables">
             <title>Topology Primitive Tables</title>
             <para>The core primitives of any topology are stored in the <varname>edge_data</varname>, <varname>node</varname>, and <varname>face</varname> tables that live in the schema created by <xref linkend="CreateTopology"/>.  Each row of <varname>edge_data</varname> represents an oriented edge: it records a directed curve from <varname>start_node</varname> to <varname>end_node</varname> together with the identifier of the face encountered on the left of that direction (<varname>left_face</varname>) and the face encountered on the right (<varname>right_face</varname>).  The same geometric segment may therefore appear twice—once for each orientation—when it belongs to two faces.</para>

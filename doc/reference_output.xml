@@ -269,6 +269,16 @@
 <screen role="text-primary">\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
 00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
 00000000000000000000000000</screen>
+
+      <para>Use the PostgreSQL <link xlink:href="https://www.postgresql.org/docs/current/functions-binarystring.html"><function>encode</function></link>
+      function to produce a hexadecimal WKB string without the <literal>\x</literal>
+      prefix used for <type>bytea</type> display. Specifying <literal>NDR</literal>
+      makes the byte order deterministic.</para>
+      <programlisting language="sql">SELECT encode(
+    ST_AsBinary('POINT(15.123 21.456)'::geometry, 'NDR'),
+    'hex'
+) AS wkb_hex;</programlisting>
+<screen role="text-primary">0101000000e5d022dbf93e2e40dbf97e6abc743540</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
