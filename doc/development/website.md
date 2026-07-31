@@ -63,6 +63,7 @@ Website source content that overlaps with repository-maintained developer docs:
 | `content/development/bug_reporting.md` | [Contributing workflow](contributing.md) |
 | `content/documentation/developer_docs.md` | [Documentation workflow](manual.md) and this `doc/development/` index |
 | `content/development/versions_eol.md` | [Release process](release-process.md) and [Release and upgrade rules](release/_index.md) |
+| `content/development/compatibility/` | Website-owned compatibility page and UI, fed by PostGIS-reviewed matrix statements, generated fallback cache, and the JSON payload emitted by `utils/support_matrix*.py` |
 | `content/development/rfcs/*.md` | [Governance notes](governance/_index.md) and historical RFC pages |
 | New governance pages outside `rfcs/` | [Governance notes](governance/_index.md) and [PostGIS project inventory](governance/project-inventory.md) |
 | `content/community/mailinglists.md` and `content/community/chat.md` | [Contributing workflow](contributing.md) |
@@ -72,12 +73,13 @@ Website source content that overlaps with repository-maintained developer docs:
 
 The website declares its content license as CC BY-SA 4.0 in `config.toml`.
 
-The public support-policy page, `content/development/versions_eol.md`, is the
-website home for PostGIS, PostgreSQL, and dependency support status. If the
-project publishes a detailed compatibility matrix again, generate it or express
-it as version ranges from release and dependency metadata. Do not restore a
-hand-maintained Trac-style table in the manual or repository developer docs;
-keep repository guidance in [Dependency support](release/dependencies.md).
+The public support-policy page, `content/development/versions_eol.md`, summarizes
+PostGIS support policy. PostGIS owns the reviewed compatibility facts, fallback
+cache, updater, validator, and generated JSON payload; `postgis.net` owns the
+page markup, Hugo integration, and browser UI that renders that payload. Do not
+restore a hand-maintained Trac-style table in either repository; update the
+generated sources described in
+[Dependency support](release/dependencies.md).
 
 The maintained governance text in this repository should publish to ordinary
 website governance pages instead of replacing the old numbered RFC files in

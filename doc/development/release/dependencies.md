@@ -123,11 +123,9 @@ When dropping support for an older PostgreSQL major version:
 
 ## Support Matrix Maintenance
 
-The compatibility data, updater, validator, and interactive browser belong to
-this repository. The website publishes the repository-owned page bundle from
-`doc/development/compatibility/` and the JSON composed from the reviewed
-`matrix.json` statements and generated `cache.json` fallback; it does not
-maintain another compatibility table.
+The compatibility data, updater, validator, fallback cache, and generated JSON
+payload belong to this repository. The website consumes that payload for its
+own compatibility page and should not maintain a second compatibility table.
 The support-policy summary remains at
 <https://postgis.net/development/versions_eol/>.
 
@@ -138,7 +136,7 @@ When updating release or dependency support:
    records a visible warning without rewriting `matrix.json`.
 2. Run `python3 utils/support-matrix.py check` before publishing. It validates
    the source data, resolved compatibility cells, patch overlays, dependency
-   inventory, and browser assets.
+   inventory, and generated payload schema.
 3. Check the website support policy before changing branch, release, or
    announcement wording.
 4. Treat all rows marked EOL as historical context only. EOL PostGIS versions
