@@ -16,36 +16,49 @@ exec >> docs.yml.new
 for target in ${TARGETS}
 do
   echo "### TARGET ${target}"
-  previous_html=
+  previous_step=
   for lang in ${SUPPORTED_LANGUAGES};
   do
     case ${target} in
       check-xml)
-        depends_on=prepare
+        if test -n "${previous_step}"; then
+          depends_on="[ prepare, ${previous_step} ]"
+        else
+          depends_on=prepare
+        fi
         ;;
       html)
-        if test -n "${previous_html}"; then
-          depends_on="[ check-xml-${lang}, ${previous_html} ]"
+        if test -n "${previous_step}"; then
+          depends_on="[ check-xml-${lang}, ${previous_step} ]"
         else
           depends_on=check-xml-${lang}
         fi
-        previous_html=html-${lang}
         ;;
       cheatsheets)
-        depends_on=check-xml-${lang}
+        if test -n "${previous_step}"; then
+          depends_on="[ check-xml-${lang}, ${previous_step} ]"
+        else
+          depends_on=check-xml-${lang}
+        fi
         ;;
       pdf)
         depends_on="[ build-images, check-xml-${lang} ]"
         ;;
       check-cheatsheets)
-        depends_on="[ cheatsheets-${lang}, build-cheatsheets ]"
+        if test -n "${previous_step}"; then
+          depends_on="[ cheatsheets-${lang}, build-cheatsheets, ${previous_step} ]"
+        else
+          depends_on="[ cheatsheets-${lang}, build-cheatsheets ]"
+        fi
         ;;
       *)
         echo "Unexpected target ${target}" >&2
         exit 1
     esac
     sed "s/@LANG@/${lang}/;s/@TARGET@/${target}/;s/@DEP@/${depends_on}/" docs-localized.yml.in
+    previous_step=${target}-${lang}
   done
 done
 
+sed -i '${/^$/d;}' docs.yml.new
 mv -b docs.yml.new docs.yml
