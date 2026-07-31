@@ -1189,13 +1189,22 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
 <programlisting language="sql">SELECT ST_GeomFromWKB(ST_AsEWKB('POINT(2 5)'::geometry)
   );</programlisting>
 <screen role="visual-primary text-primary">POINT(2 5)</screen>
+
+		<para>The PostgreSQL <link xlink:href="https://www.postgresql.org/docs/current/functions-binarystring.html"><function>decode</function></link>
+		function converts a hexadecimal WKB string to the <type>bytea</type> value
+		accepted by <function>ST_GeomFromWKB</function>.</para>
+		<programlisting language="sql">SELECT ST_AsEWKT(ST_GeomFromWKB(
+    decode('0101000000e5d022dbf93e2e40dbf97e6abc743540', 'hex'),
+    4326
+)) AS geom;</programlisting>
+<screen role="text-primary">SRID=4326;POINT(15.123 21.456)</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_WKBToSQL"/>, <xref linkend="ST_AsBinary"/>, <xref linkend="ST_GeomFromEWKB"/></para>
+		<para><xref linkend="ST_WKBToSQL"/>, <xref linkend="ST_AsBinary"/>, <xref linkend="ST_AsEWKT"/>, <xref linkend="ST_GeomFromEWKB"/></para>
 	  </refsection>
 	</refentry>
 
