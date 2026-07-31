@@ -55,3 +55,21 @@ ci-status.py
 	CI by changing the check provider to `disabled`, setting `required` to
 	false, and recording the reason in `message`.  Mark unsupported release
 	branches with `"eol": true` so they stay out of the default report.
+
+support-matrix.py
+	Update, validate, and build repository-owned compatibility data for the
+	public browser:
+
+		python3 utils/support-matrix.py update
+		python3 utils/support-matrix.py check
+		python3 utils/support-matrix.py build compatibility.json
+
+	`update` refreshes release, lifecycle, packaging, vendored-source, and
+	compile-time feature-gate metadata in the generated fallback cache.  If an
+	upstream format changes, it keeps the cached data and records a warning for
+	the browser.  Reviewable project statements live in
+	`doc/development/compatibility/data/matrix.json`; the compact `cache.json`
+	is tracked but excluded from normal diffs.  The public `compatibility.json`
+	browser payload is a disposable build artifact.  `check` validates both the
+	source data and the fully generated browser model before anything is
+	published.

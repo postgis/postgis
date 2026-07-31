@@ -102,9 +102,9 @@ bridge patches, and record the exact upstream release tag or commit used.
 
 | Dependency | Local version or snapshot | Upstream source | Refresh notes |
 |------------|---------------------------|-----------------|---------------|
-| Wagyu | 0.5.0 | <https://github.com/mapbox/wagyu> | Used only when protobuf-c support enables MVT. The vendored copy includes PostGIS bridge code in `deps/wagyu/lwgeom_wagyu.*`; upstream 0.5.0 is the latest release tag as of 2026-07-30. |
-| Ryu | v2.0-derived snapshot | <https://github.com/ulfjack/ryu> | `deps/ryu/README.md` documents substantial PostGIS precision and formatting changes. Do not overwrite it from upstream without preserving those changes and validating `lwprint_double` output. This copy includes the unreleased upstream `pow5Factor()` optimization from <https://github.com/ulfjack/ryu/pull/188>. Upstream v2.0 is the latest release tag as of 2026-07-30. |
-| FlatGeobuf | unversioned FlatGeobuf snapshot, FlatBuffers 23.3.3 headers | <https://github.com/flatgeobuf/flatgeobuf> | The FlatGeobuf files do not embed an upstream package version. Refresh by recording the exact upstream tag or commit, regenerating the FlatGeobuf headers, preserving the unique FlatBuffers namespace, and keeping PostGIS big-endian fixes. The portable `packedrtree.cpp` big-endian fix is proposed upstream in <https://github.com/flatgeobuf/flatgeobuf/pull/512>. Upstream 3.26.2 is the latest FlatGeobuf release tag as of 2026-07-30. |
+| Wagyu | 0.5.0 | <https://github.com/mapbox/wagyu> | Used only when protobuf-c support enables MVT. The vendored copy includes PostGIS bridge code in `deps/wagyu/lwgeom_wagyu.*`. |
+| Ryu | v2.0-derived snapshot | <https://github.com/ulfjack/ryu> | `deps/ryu/README.md` documents substantial PostGIS precision and formatting changes. Do not overwrite it from upstream without preserving those changes and validating `lwprint_double` output. This copy includes the unreleased upstream `pow5Factor()` optimization from <https://github.com/ulfjack/ryu/pull/188>. |
+| FlatGeobuf | 3.25.0 with FlatBuffers 23.3.3 | <https://github.com/flatgeobuf/flatgeobuf> | Imported from FlatGeobuf 3.25.0 in PostGIS PR 726. The version is tracked here because the upstream source files do not embed it. Regenerate the FlatGeobuf headers, preserve the unique FlatBuffers namespace, and keep PostGIS big-endian fixes when refreshing. The portable `packedrtree.cpp` big-endian fix is proposed upstream in FlatGeobuf PR 512. |
 | uthash | 2.4.0 | <https://github.com/troydhanson/uthash> | `deps/uthash/include/uthash.h` comes from upstream `v2.4.0/src/uthash.h` with PostGIS' `HASH_FUNCTION` collision fix retained as `UTHASH_FUNCTION`. |
 
 ## Removing Support for PostgreSQL Versions
@@ -123,22 +123,29 @@ When dropping support for an older PostgreSQL major version:
 
 ## Support Matrix Maintenance
 
-The public support-policy surface belongs on the website at
-<https://postgis.net/development/versions_eol/>. Keep repository docs focused
-on the rules for changing support, not on hand-maintained copies of old
-PostgreSQL, GEOS, PROJ, or GDAL version tables.
+The compatibility data, updater, validator, and interactive browser belong to
+this repository. The website publishes the repository-owned page bundle from
+`doc/development/compatibility/` and the JSON composed from the reviewed
+`matrix.json` statements and generated `cache.json` fallback; it does not
+maintain another compatibility table.
+The support-policy summary remains at
+<https://postgis.net/development/versions_eol/>.
 
 When updating release or dependency support:
 
-1. Check the website support policy before changing branch, release, or
+1. Run `python3 utils/support-matrix.py update`; a changed upstream format
+   retains the corresponding last-known-good fields in `cache.json` and
+   records a visible warning without rewriting `matrix.json`.
+2. Run `python3 utils/support-matrix.py check` before publishing. It validates
+   the source data, resolved compatibility cells, patch overlays, dependency
+   inventory, and browser assets.
+3. Check the website support policy before changing branch, release, or
    announcement wording.
-2. Treat all rows marked EOL as historical context only. EOL PostGIS versions
+4. Treat all rows marked EOL as historical context only. EOL PostGIS versions
    do not receive micro updates or security fixes.
-3. Distinguish "supported", "builds but not recommended", and "assumed to work
+5. Distinguish "supported", "builds but not recommended", and "assumed to work
    but not tested" when writing release notes or compatibility text.
-4. Prefer a generated or range-based matrix over a manually edited table if
-   compatibility data needs to be published again.
-5. Remember the historical project rule of thumb: support at least two
+6. Remember the historical project rule of thumb: support at least two
    PostgreSQL major versions for each PostGIS release line, usually more when
    dependency requirements allow it, but rarely more than five.
 

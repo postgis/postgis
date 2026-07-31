@@ -6,3 +6,4 @@ GNUmakefile.in eol=lf
 *_expected  eol=lf
 *.dmp       eol=lf
 ChangeLog eol=lf
+doc/development/compatibility/data/cache.json -diff linguist-generated=true

@@ -1,11 +1,12 @@
 # FlatGeobuf
 
-This directory contains the FlatGeobuf C++ support code and a vendored
-FlatBuffers header snapshot used by PostGIS FlatGeobuf input/output.
+This directory contains the FlatGeobuf 3.25.0 C++ support code and vendored
+FlatBuffers 23.3.3 headers used by PostGIS FlatGeobuf input/output.
 
-The upstream project is <https://github.com/flatgeobuf/flatgeobuf>. The
-vendored FlatGeobuf files do not carry an embedded upstream package version, so
-refreshes must record the exact upstream commit or release tag used.
+The upstream project is <https://github.com/flatgeobuf/flatgeobuf>. The current
+source was imported as FlatGeobuf 3.25.0 by
+<https://github.com/postgis/postgis/pull/726>. The FlatGeobuf files do not
+embed that package version, so keep this record current when refreshing them.
 
 The FlatBuffers headers under `include/flatbuffers/` currently report version
 23.3.3 in `include/flatbuffers/base.h`. Keep those headers in the
@@ -26,5 +27,5 @@ upstream.
 
   - 2021-09-20 - Add FlatGeobuf format input/output support.
   - 2022-05-08 - Upgrade FlatBuffers and generated FlatGeobuf headers.
-  - 2023-05-05 - Upgrade FlatGeobuf dependencies.
+  - 2023-05-05 - Upgrade to FlatGeobuf 3.25.0 and FlatBuffers 23.3.3.
   - 2026-07-27 - Handle FlatGeobuf byte order on big-endian platforms.

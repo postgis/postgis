@@ -131,7 +131,7 @@ rm -rf %{buildroot}
 %if %utils
 %files utils
 %defattr(-,root,root)
-%doc utils/README
+%doc utils/README.md
 %attr(755,root,root) %{_datadir}/%{name}/test_estimation.pl
 %attr(755,root,root) %{_datadir}/%{name}/profile_intersects.pl
 %attr(755,root,root) %{_datadir}/%{name}/test_joinestimation.pl
