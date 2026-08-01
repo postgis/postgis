@@ -24,8 +24,8 @@ CREATE OR REPLACE FUNCTION hasbbox(geometry)
 -- Availability: 1.2.2 -- never deprecated but don't think anyone uses it
 CREATE OR REPLACE FUNCTION getsrid(geometry)
 	RETURNS integer
-	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	AS 'SELECT @extschema@.ST_SRID($1)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeometryFromText(text, integer)
@@ -2210,4 +2210,3 @@ CREATE OR REPLACE FUNCTION ST_AsKML(version integer, geom geometry, maxdecimaldi
 	RETURNS text AS
 	$$ SELECT ST_AsKML($2::geometry,$3,$4); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
-

@@ -92,7 +92,7 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasz(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasm(PG_FUNCTION_ARGS);
-Datum LWGEOM_ndims(PG_FUNCTION_ARGS);
+Datum ST_NDims(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
@@ -2108,8 +2108,9 @@ Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 }
 
 /** Return: 2,3 or 4 */
-PG_FUNCTION_INFO_V1(LWGEOM_ndims);
-Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_NDims);
+Datum
+ST_NDims(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	int ret = gserialized_ndims(in);
