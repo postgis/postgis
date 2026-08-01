@@ -365,7 +365,7 @@ ifneq ($(PYTHON3),)
 ifneq ($(XSLTPROC),)
 ifneq ($(XSLBASE),)
 CHECK_UNIT_TARGET += check-html-block-labels
-CHECK_HTML_BLOCK_LABELS_DEPS = postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+CHECK_HTML_BLOCK_LABELS_DEPS = postgis-out.xml $(abs_top_srcdir)/utils/docs/docbook_qa.py $(abs_top_srcdir)/utils/docs/xml_tree.py
 endif
 endif
 endif
@@ -455,14 +455,14 @@ chunked-html: $(html_builddir)/postgis$(DOCSUFFIX)/index.html
 $(HTML_DOCBOOK_XSL) $(CHUNK_HTML_DOCBOOK_XSL): $(builddir)/%: $(abs_srcdir)/xsl/%.in $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) Makefile
 	$(PERL) -pe "s!\@\@XSLBASE\@\@!$(XSLBASE)!g; s!\@\@ABS_SRCDIR\@\@!$(abs_srcdir)!g;" $< > $@
 
-$(HTML_REF_INDEX_JSON): postgis-out.xml Makefile $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+$(HTML_REF_INDEX_JSON): postgis-out.xml Makefile $(abs_top_srcdir)/utils/docs/docbook_qa.py $(abs_top_srcdir)/utils/docs/xml_tree.py
 	mkdir -p $(html_builddir)
 ifeq ($(PYTHON3),)
 	@echo "Skipping rich PostGIS reference index: python3 is not available."
 	@printf '{"functions":{},"operators":{},"keywords":[]}\n' > $(HTML_REF_INDEX_JSON)
 	@printf 'window.POSTGIS_REF_INDEX = {"functions":{},"operators":{},"keywords":[]};\n' > $(HTML_REF_INDEX_JS)
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py ref-index $< $(HTML_REF_INDEX_JSON)
+	$(PYTHON3) $(abs_top_srcdir)/utils/docs/docbook_qa.py ref-index $< $(HTML_REF_INDEX_JSON)
 endif
 
 $(HTML_REF_INDEX_JS): $(HTML_REF_INDEX_JSON)
@@ -764,11 +764,11 @@ endif
 %_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql: xsl/%_gardentest.sql.xsl postgis-out.xml
 	$(XSLTPROC) -o $@ $(XSLTPROC_PATH_OPT) $^
 
-exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/postgis_exampletest.py $(abs_top_srcdir)/utils/xml_tree.py ## Report manual examples selected, parseable, or skipped for known reasons
+exampletest-report: postgis-out.xml $(abs_top_srcdir)/utils/docs/postgis_exampletest.py $(abs_top_srcdir)/utils/docs/xml_tree.py ## Report manual examples selected, parseable, or skipped for known reasons
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/postgis_exampletest.py --report $<
+	$(PYTHON3) $(abs_top_srcdir)/utils/docs/postgis_exampletest.py --report $<
 endif
 
 check: check-unit ## Check structural correctness of XML documentation and generated HTML block labels
@@ -782,11 +782,11 @@ check-regress:
 
 check-unit: $(CHECK_UNIT_TARGET)
 
-check-docbook-qa-unit: $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/test_docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+check-docbook-qa-unit: $(abs_top_srcdir)/utils/docs/docbook_qa.py $(abs_top_srcdir)/utils/docs/tests/test_docbook_qa.py $(abs_top_srcdir)/utils/docs/xml_tree.py
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/test_docbook_qa.py
+	$(PYTHON3) $(abs_top_srcdir)/utils/docs/tests/test_docbook_qa.py
 endif
 
 check-gardentest-escaping: $(abs_top_srcdir)/utils/test_gardentest_escaping.py $(srcdir)/xsl/test_gardentest_escaping.xsl $(srcdir)/xsl/postgis_gardentest.sql.xsl
@@ -804,15 +804,15 @@ else
 		echo "Skipping $@: visual examples are missing. Run 'make -C regress visual-examples' first."; \
 	else \
 		$(MAKE) $(html_builddir)/postgis$(DOCSUFFIX)/index.html; \
-		$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-html --expect-from postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/*.html; \
+		$(PYTHON3) $(abs_top_srcdir)/utils/docs/docbook_qa.py lint-html --expect-from postgis-out.xml $(html_builddir)/postgis$(DOCSUFFIX)/*.html; \
 	fi
 endif
 
-check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/docbook_qa.py $(abs_top_srcdir)/utils/xml_tree.py
+check-docbook-markup: postgis-out.xml $(abs_top_srcdir)/utils/docs/docbook_qa.py $(abs_top_srcdir)/utils/docs/xml_tree.py
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/docbook_qa.py lint-source --fail-on warning --max-warnings 0 $<
+	$(PYTHON3) $(abs_top_srcdir)/utils/docs/docbook_qa.py lint-source --fail-on warning --max-warnings 0 $<
 endif
 
 check-xml: postgis-out.xml
@@ -828,7 +828,7 @@ check-xml: postgis-out.xml
 
 check-cheatsheets: cheatsheets
 	for f in $(html_builddir)/*_cheatsheet-en.html; do \
-		$(abs_top_srcdir)/utils/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)) || exit 1; \
+		$(abs_top_srcdir)/utils/docs/check_localized_cheatsheets.sh $${f} en $(patsubst -%,%,$(DOCSUFFIX)) || exit 1; \
 	done
 
 requirements_not_met_xsltproc:

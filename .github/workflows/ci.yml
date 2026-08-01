@@ -129,8 +129,8 @@ jobs:
           libxml2-utils python3
     - name: 'DocBook QA unit tests'
       run: |
-        python3 utils/test_docbook_qa.py
+        python3 utils/docs/tests/test_docbook_qa.py
     - name: 'DocBook source lint'
       run: |
         xmllint --xinclude --noent doc/postgis.xml > postgis-out.xml 2>/dev/null
-        python3 utils/docbook_qa.py lint-source --fail-on warning --max-warnings 0 postgis-out.xml
+        python3 utils/docs/docbook_qa.py lint-source --fail-on warning --max-warnings 0 postgis-out.xml

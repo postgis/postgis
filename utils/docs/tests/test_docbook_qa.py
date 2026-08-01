@@ -5,9 +5,13 @@ from __future__ import annotations
 import contextlib
 import io
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from docbook_qa import (
     SQL_BLOCK_STARTER_KEYWORDS,
@@ -489,7 +493,7 @@ class DocBookSourceLintTest(unittest.TestCase):
 
     def test_xsl_sql_detection_covers_all_block_starters(self):
         xsl = (
-            Path(__file__).resolve().parents[1]
+            Path(__file__).resolve().parents[3]
             / "doc"
             / "xsl"
             / "postgis-html-block-labels.xsl"

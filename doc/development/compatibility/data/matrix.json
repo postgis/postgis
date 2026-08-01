@@ -1,0 +1,2020 @@
+{
+  "schema_version": 1,
+  "policy_url": "https://postgis.net/development/versions_eol/",
+  "source_repository": "https://gitea.osgeo.org/postgis/postgis.git",
+  "project": {
+    "name": "PostGIS",
+    "current_development_version": "3.7.0dev",
+    "current_development_minor": "3.7"
+  },
+  "status_definitions": {
+    "supported": "Supported by the PostGIS project policy for the listed release series.",
+    "feature-limited": "Builds in a supported or compatible stack, but some PostGIS features are not available with that dependency version.",
+    "known-compatible": "Expected to build or run from release/dependency metadata, but not shown as a current CI lane here.",
+    "packaged": "Seen in downstream packaging metadata. Packaging is informational and does not define project support.",
+    "historical": "End-of-life or older combinations retained for upgrade and historical context.",
+    "unsupported": "Known not to work, unsupported by the project, or explicitly listed as No in the source compatibility matrix.",
+    "not-applicable": "The dependency or extension did not participate in that PostGIS release line.",
+    "unknown": "No compatibility statement is recorded in the cited sources yet."
+  },
+  "compatibility_sources": [
+    {
+      "id": "news-sfcgal",
+      "url": "https://gitea.osgeo.org/postgis/postgis/src/branch/master/NEWS",
+      "title": "PostGIS NEWS SFCGAL release notes"
+    },
+    {
+      "id": "news-geos-315",
+      "url": "https://gitea.osgeo.org/postgis/postgis/src/branch/master/NEWS",
+      "title": "PostGIS NEWS GEOS 3.15 feature requirement"
+    },
+    {
+      "id": "postgis-ci-dashboard",
+      "url": "https://postgis.net/ci/",
+      "title": "PostGIS CI dashboard"
+    },
+    {
+      "id": "postgis-master-configure-ac",
+      "url": "https://gitea.osgeo.org/postgis/postgis/src/branch/master/configure.ac",
+      "title": "PostGIS configure.ac"
+    },
+    {
+      "id": "news-postgresql-support-functions",
+      "url": "https://gitea.osgeo.org/postgis/postgis/src/branch/master/NEWS",
+      "title": "PostGIS NEWS planner support-function entry"
+    },
+    {
+      "id": "news-postgresql-index-features",
+      "url": "https://gitea.osgeo.org/postgis/postgis/src/branch/master/NEWS",
+      "title": "PostGIS NEWS PostgreSQL index feature entries"
+    },
+    {
+      "id": "news-postgresql-feature-gates",
+      "url": "https://gitea.osgeo.org/postgis/postgis/src/branch/master/NEWS",
+      "title": "PostGIS NEWS PostgreSQL feature gates"
+    },
+    {
+      "id": "postgis-release-range-inference",
+      "url": "https://gitea.osgeo.org/postgis/postgis/tags",
+      "title": "Derived from PostGIS release support metadata"
+    },
+    {
+      "id": "postgis-libxml2-minimum-history-2012",
+      "url": "https://gitea.osgeo.org/postgis/postgis/commit/cc957d0c48facf3fccb38f4ddefd45ce87b2e34e",
+      "title": "PostGIS README libxml2 2.5.0 minimum introduction",
+      "as_of": "2012-03-07"
+    },
+    {
+      "id": "postgis-json-c-minimum-history-2014",
+      "url": "https://gitea.osgeo.org/postgis/postgis/commit/fdce90e48328aed1a539d575356b4dc04ca67165",
+      "title": "PostGIS JSON-C 0.9 support restoration",
+      "as_of": "2014-06-25"
+    }
+  ],
+  "compatibility_edges": {
+    "postgresql": [
+      {
+        "postgis": "3.7",
+        "versions": ["19"],
+        "status": "supported",
+        "note": "Development branch CI coverage for PostgreSQL 19 beta is shown as the PostgreSQL 19 major line.",
+        "source": "postgis-ci-dashboard"
+      },
+      {
+        "postgis": "3.7",
+        "versions": ["18", "17", "16", "15"],
+        "status": "supported",
+        "source": "postgis-master-configure-ac"
+      },
+      {
+        "postgis": "3.7",
+        "versions": ["14"],
+        "status": "feature-limited",
+        "note": "PostgreSQL 14 is supported, but GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "source": "postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150"
+      },
+      {
+        "postgis": "3.6",
+        "versions": ["14", "13", "12"],
+        "status": "feature-limited",
+        "note": "Supported build range, but GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "source": "tag:3.6.4:postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150"
+      },
+      {
+        "postgis": "3.5",
+        "versions": ["14", "13", "12"],
+        "status": "feature-limited",
+        "note": "Supported build range, but GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "source": "tag:3.5.7:postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150"
+      },
+      {
+        "postgis": "3.5",
+        "versions": ["18"],
+        "status": "known-compatible",
+        "note": "Newer-than-release metadata; PostGIS 3.5 support summary stops at PostgreSQL 17.",
+        "source": "postgis-release-range-inference"
+      },
+      {
+        "postgis": "3.4",
+        "versions": ["14", "13", "12"],
+        "status": "feature-limited",
+        "note": "Supported build range, but GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "source": "tag:3.4.6:postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150"
+      },
+      {
+        "postgis": "3.3",
+        "versions": ["14", "13", "12", "11"],
+        "status": "feature-limited",
+        "note": "GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "source": "tag:3.3.8:postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150"
+      },
+      {
+        "postgis": "3.1",
+        "versions": ["11"],
+        "status": "feature-limited",
+        "note": "Compatible historical PostgreSQL, but PostgreSQL 12 and later is needed for the planner support function API used by PostGIS 3.x index-aware predicates.",
+        "source": "news-postgresql-support-functions"
+      },
+      {
+        "postgis": "3.0",
+        "versions": ["11"],
+        "status": "feature-limited",
+        "note": "Compatible historical PostgreSQL, but PostgreSQL 12 and later is needed for the planner support function API used by PostGIS 3.x index-aware predicates.",
+        "source": "news-postgresql-support-functions"
+      },
+      {
+        "postgis": "2.5",
+        "versions": ["10", "9.6", "9.5", "9.4"],
+        "status": "feature-limited",
+        "note": "Compatible historical PostgreSQL, but PostgreSQL 11 and later is needed for PostGIS 2.5 SP-GiST 2D/3D support; PostgreSQL 9.6 and later is needed for parallel query support.",
+        "source": "news-postgresql-index-features"
+      },
+      {
+        "postgis": "1.2",
+        "versions": ["8.2", "8.1", "8.0", "7.4"],
+        "status": "historical",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.2",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "7.3", "7.2", "7.1"],
+        "status": "unsupported",
+        "note": "Outside the PostgreSQL range documented by the release README/NEWS/Makefile archaeology for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.1",
+        "versions": ["8.2", "8.1", "8.0", "7.4", "7.3", "7.2"],
+        "status": "historical",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.1",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "7.1"],
+        "status": "unsupported",
+        "note": "Outside the PostgreSQL range documented by the release README/NEWS/Makefile archaeology for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.0",
+        "versions": ["8.2", "8.1", "8.0", "7.4", "7.3", "7.2"],
+        "status": "historical",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.0",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "7.1"],
+        "status": "unsupported",
+        "note": "Outside the PostgreSQL range documented by the release README/NEWS/Makefile archaeology for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.9",
+        "versions": ["8.1", "8.0", "7.4", "7.3", "7.2", "7.1"],
+        "status": "historical",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.9",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "8.2"],
+        "status": "unsupported",
+        "note": "Outside the PostgreSQL range documented by the release README/NEWS/Makefile archaeology for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.8",
+        "versions": ["7.4", "7.3", "7.2", "7.1"],
+        "status": "historical",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.8",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "8.2", "8.1", "8.0"],
+        "status": "unsupported",
+        "note": "Outside the PostgreSQL range documented by the release README/NEWS/Makefile archaeology for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.7",
+        "versions": ["7.3", "7.2", "7.1"],
+        "status": "historical",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.7",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "8.2", "8.1", "8.0", "7.4"],
+        "status": "unsupported",
+        "note": "Outside the PostgreSQL range documented by the release README/NEWS/Makefile archaeology for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.6",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "8.2", "8.1", "8.0", "7.4", "7.3", "7.2", "7.1"],
+        "status": "unknown",
+        "note": "The release evidence requires a PostgreSQL source tree but does not name exact PostgreSQL majors; keep this as an evidence gap rather than inferring a green cell from release date.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.5",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "8.2", "8.1", "8.0", "7.4", "7.3", "7.2", "7.1"],
+        "status": "unknown",
+        "note": "The release evidence requires a PostgreSQL source tree but does not name exact PostgreSQL majors; keep this as an evidence gap rather than inferring a green cell from release date.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.2",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "8.2", "8.1", "8.0", "7.4", "7.3", "7.2", "7.1"],
+        "status": "unknown",
+        "note": "The release evidence requires a PostgreSQL source tree but does not name exact PostgreSQL majors; keep this as an evidence gap rather than inferring a green cell from release date.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.1",
+        "versions": ["19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.4", "8.3", "8.2", "8.1", "8.0", "7.4", "7.3", "7.2", "7.1"],
+        "status": "unknown",
+        "note": "The release evidence requires a PostgreSQL source tree but does not name exact PostgreSQL majors; keep this as an evidence gap rather than inferring a green cell from release date.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      }
+    ],
+    "geos": [
+      {
+        "postgis": "3.7",
+        "versions": ["3.15"],
+        "status": "supported",
+        "note": "PostGIS 3.7 NEWS and release notes say GEOS 3.15 and later is needed for all PostGIS extension features.",
+        "source": "news-geos-315"
+      },
+      {
+        "postgis": "3.7",
+        "versions": ["3.14", "3.13", "3.12", "3.11", "3.10"],
+        "status": "feature-limited",
+        "note": "PostGIS 3.7 builds with GEOS 3.10 and later, but GEOS 3.15 and later is needed for all PostGIS extension features.",
+        "source": "news-geos-315"
+      },
+      {
+        "postgis": "1.2",
+        "versions": ["2.2"],
+        "status": "historical",
+        "note": "PostGIS 1.1 NEWS records GEOS C-API support for GEOS 2.2.0 and higher.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.2",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.0"],
+        "status": "unsupported",
+        "note": "Outside the GEOS family documented for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.1",
+        "versions": ["2.2"],
+        "status": "historical",
+        "note": "PostGIS 1.1 NEWS records GEOS C-API support for GEOS 2.2.0 and higher.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.1",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.0"],
+        "status": "unsupported",
+        "note": "Outside the GEOS family documented for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.0",
+        "versions": ["2.0"],
+        "status": "historical",
+        "note": "PostGIS NEWS/README records GEOS 2.0 era support for SFSQL predicates/operations.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.0",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.2"],
+        "status": "unsupported",
+        "note": "Outside the GEOS family documented for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.9",
+        "versions": ["2.0"],
+        "status": "historical",
+        "note": "PostGIS NEWS/README records GEOS 2.0 era support for SFSQL predicates/operations.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.9",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.2"],
+        "status": "unsupported",
+        "note": "Outside the GEOS family documented for this legacy PostGIS line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.8",
+        "versions": ["2.0"],
+        "status": "feature-limited",
+        "note": "GEOS-backed SFSQL predicates/operations are documented in 0.8, but explicit GEOS 2.0 support is first recorded in 0.9.0.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.8",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.2"],
+        "status": "unsupported",
+        "note": "Outside the old GEOS family implied by this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.7",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.2", "2.0"],
+        "status": "not-applicable",
+        "note": "No GEOS support is documented for this release line; GEOS appears in later 0.8 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.6",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.2", "2.0"],
+        "status": "not-applicable",
+        "note": "No GEOS support is documented for this release line; GEOS appears in later 0.8 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.5",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.2", "2.0"],
+        "status": "not-applicable",
+        "note": "No GEOS support is documented for this release line; GEOS appears in later 0.8 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.2",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.2", "2.0"],
+        "status": "not-applicable",
+        "note": "No GEOS support is documented for this release line; GEOS appears in later 0.8 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.1",
+        "versions": ["3.15", "3.14", "3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.1", "2.2", "2.0"],
+        "status": "not-applicable",
+        "note": "No GEOS support is documented for this release line; GEOS appears in later 0.8 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "3.6",
+        "versions": ["3.14"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.6 recorded geos minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.5",
+        "versions": ["3.14"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.5 recorded geos minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.4",
+        "versions": ["3.14"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.4 recorded geos minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.3",
+        "versions": ["3.14"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.3 recorded geos minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.2",
+        "versions": ["3.14"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.2 recorded geos minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      }
+    ],
+    "proj": [
+      {
+        "postgis": "1.2",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5"],
+        "status": "feature-limited",
+        "note": "PROJ support was optional transform() support in this legacy line; exact old PROJ release matrix is not encoded in the release README.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.1",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5"],
+        "status": "feature-limited",
+        "note": "PROJ support was optional transform() support in this legacy line; exact old PROJ release matrix is not encoded in the release README.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.0",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5"],
+        "status": "feature-limited",
+        "note": "PROJ support was optional transform() support in this legacy line; exact old PROJ release matrix is not encoded in the release README.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.9",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5"],
+        "status": "feature-limited",
+        "note": "PROJ support was optional transform() support in this legacy line; exact old PROJ release matrix is not encoded in the release README.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.8",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5"],
+        "status": "feature-limited",
+        "note": "PROJ support was optional transform() support in this legacy line; exact old PROJ release matrix is not encoded in the release README.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.7",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5"],
+        "status": "feature-limited",
+        "note": "PROJ support was optional transform() support in this legacy line; exact old PROJ release matrix is not encoded in the release README.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.6",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5", "4.4"],
+        "status": "not-applicable",
+        "note": "No PROJ support is documented in this release line; optional PROJ appears in later 0.7 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.5",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5", "4.4"],
+        "status": "not-applicable",
+        "note": "No PROJ support is documented in this release line; optional PROJ appears in later 0.7 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.2",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5", "4.4"],
+        "status": "not-applicable",
+        "note": "No PROJ support is documented in this release line; optional PROJ appears in later 0.7 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.1",
+        "versions": ["9.8", "9.7", "9.6", "9.5", "9.4", "9.3", "9.2", "9.1", "9.0", "8.2", "8.1", "8.0", "7.2", "7.1", "7.0", "6.3", "6.2", "6.1", "6.0", "5.2", "5.1", "5.0", "4.9", "4.8", "4.7", "4.6", "4.5", "4.4"],
+        "status": "not-applicable",
+        "note": "No PROJ support is documented in this release line; optional PROJ appears in later 0.7 era evidence.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "3.7",
+        "versions": ["9.8"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.7 recorded proj minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.3",
+        "versions": ["9.8"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.3 recorded proj minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.2",
+        "versions": ["9.8"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.2 recorded proj minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.6",
+        "versions": ["9.8"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.6 recorded proj minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.5",
+        "versions": ["9.8"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.5 recorded proj minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.4",
+        "versions": ["9.8"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.4 recorded proj minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      }
+    ],
+    "gdal": [
+      {
+        "postgis": "1.2",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.1",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.0",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.9",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.8",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.7",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.6",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.5",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.2",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.1",
+        "versions": ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8", "3.7", "3.6", "3.5", "3.4", "3.3", "3.2", "3.1", "3.0", "2.4", "2.3", "2.2", "2.1", "2.0", "1.11", "1.10", "1.9", "1.8", "1.7", "1.6", "1.5", "1.4"],
+        "status": "not-applicable",
+        "note": "PostGIS raster/GDAL extension support was introduced later; no raster tree is present in this release line.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "3.7",
+        "versions": ["3.13"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.7 recorded gdal minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.3",
+        "versions": ["3.13"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.3 recorded gdal minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.2",
+        "versions": ["3.13"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.2 recorded gdal minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.6",
+        "versions": ["3.13"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.6 recorded gdal minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.5",
+        "versions": ["3.13"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.5 recorded gdal minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      },
+      {
+        "postgis": "3.4",
+        "versions": ["3.13"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.4 recorded gdal minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      }
+    ],
+    "sfcgal": [
+      {
+        "postgis": "3.7",
+        "versions": ["2.3"],
+        "status": "supported",
+        "note": "Current branch records SFCGAL 2.3 and later for all postgis_sfcgal features.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.7",
+        "versions": ["2.2", "2.1", "2.0", "1.5", "1.4"],
+        "status": "feature-limited",
+        "note": "Builds, but not all postgis_sfcgal features are available.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.6",
+        "versions": ["2.3"],
+        "status": "supported",
+        "note": "PostGIS 3.6 NEWS records SFCGAL 2.3 and later for all postgis_sfcgal features.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.6",
+        "versions": ["2.2", "2.1", "2.0", "1.5", "1.4"],
+        "status": "feature-limited",
+        "note": "Builds, but not all postgis_sfcgal features are available.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.5",
+        "versions": ["2.3", "2.2"],
+        "status": "supported",
+        "note": "PostGIS 3.5 NEWS records SFCGAL 2.2 and later for all SFCGAL features; this browser collapses the minor family.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.5",
+        "versions": ["2.1", "2.0", "1.5", "1.4"],
+        "status": "feature-limited",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.4",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5"],
+        "status": "supported",
+        "note": "PostGIS 3.4 NEWS records SFCGAL 1.5 and later for all features; this browser collapses the minor family.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.4",
+        "versions": ["1.4"],
+        "status": "feature-limited",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.3",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4"],
+        "status": "supported",
+        "note": "PostGIS 3.3 NEWS records SFCGAL 1.4.1 and later for specific alpha-shape features.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "3.2",
+        "versions": ["2.2", "2.1", "2.0", "1.5", "1.4"],
+        "status": "known-compatible",
+        "source": "postgis-master-configure-ac"
+      },
+      {
+        "postgis": "3.1",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4"],
+        "status": "historical",
+        "source": "postgis-master-configure-ac"
+      },
+      {
+        "postgis": "3.0",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4"],
+        "status": "historical",
+        "note": "PostGIS 3.0 bumped the minimum SFCGAL version to 1.3.1 and removed shared core/backend SFCGAL hooks.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "2.4",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1"],
+        "status": "feature-limited",
+        "note": "PostGIS 2.4 configure.ac accepts SFCGAL 1.1 and later; SFCGAL features are historical and not feature-complete against current SFCGAL lines.",
+        "source": "postgis-release-configure-ac-2026-07-29"
+      },
+      {
+        "postgis": "2.3",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1"],
+        "status": "feature-limited",
+        "note": "PostGIS 2.3 configure.ac accepts SFCGAL 1.1 and later; SFCGAL features are historical and not feature-complete against current SFCGAL lines.",
+        "source": "postgis-release-configure-ac-2026-07-29"
+      },
+      {
+        "postgis": "2.2",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1"],
+        "status": "feature-limited",
+        "note": "PostGIS 2.2 NEWS records SFCGAL 1.1 support and postgis_sfcgal extension packaging.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "2.1",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1"],
+        "status": "feature-limited",
+        "note": "PostGIS 2.1 NEWS records first SFCGAL backend support.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "2.0",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "1.5",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "1.4",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "1.3",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "news-sfcgal"
+      },
+      {
+        "postgis": "1.2",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.1",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "1.0",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.9",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.8",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.7",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.6",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.5",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.2",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "0.1",
+        "versions": ["2.3", "2.2", "2.1", "2.0", "1.5", "1.4", "1.3", "1.2", "1.1", "1.0"],
+        "status": "not-applicable",
+        "note": "SFCGAL backend was introduced in PostGIS 2.1.",
+        "source": "postgis-legacy-readme-news-2026-07-29"
+      },
+      {
+        "postgis": "3.2",
+        "versions": ["2.3"],
+        "status": "supported",
+        "note": "Latest dependency line satisfying the PostGIS 3.2 recorded sfcgal minimum.",
+        "source": "postgis-release-configure-ac-2026-07-30"
+      }
+    ]
+  },
+  "postgis_series": [
+    {
+      "minor": "3.7",
+      "branch": "master",
+      "latest": "3.7.0beta1",
+      "status": "supported",
+      "release_stage": "development",
+      "first_release_date": "2026-07-21",
+      "lifecycle": "development",
+      "postgresql": {
+        "supported": "14-19",
+        "default_summary": "PostgreSQL 14-19",
+        "feature_complete": "15",
+        "minor_overrides": [
+          {
+            "versions": ["19"],
+            "status": "supported",
+            "note": "PostgreSQL 19 coverage is currently beta-series coverage on the current development PostGIS line."
+          }
+        ],
+        "source": "tag:HEAD:configure.ac"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.10.0",
+          "feature_complete": "3.15.0",
+          "recommended": "3.15 and later for all PostGIS extension features; 3.10 and later is the build minimum",
+          "source": "tag:HEAD:configure.ac"
+        },
+        "proj": {
+          "minimum": "6.1.0",
+          "source": "tag:HEAD:configure.ac",
+          "feature_complete": "8.1.0"
+        },
+        "gdal": {
+          "minimum": "2.4.0",
+          "scope": "raster",
+          "source": "tag:HEAD:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "feature_complete": "2.3.0",
+          "recommended": "2.3.0 and later for current release documentation builds",
+          "source": "tag:HEAD:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.1.0",
+          "scope": "MVT and Geobuf output",
+          "source": "tag:HEAD:configure.ac"
+        },
+        "json-c": {
+          "minimum": "0.9",
+          "scope": "GeoJSON input",
+          "source": "postgis-json-c-minimum-history-2014"
+        },
+        "libxml2": {
+          "minimum": "2.5.0",
+          "scope": "GML and KML input",
+          "source": "postgis-libxml2-minimum-history-2012"
+        }
+      }
+    },
+    {
+      "minor": "3.6",
+      "branch": "stable-3.6",
+      "latest": "3.6.4",
+      "status": "supported",
+      "first_release_date": "2025-09-02",
+      "lifecycle": "stable",
+      "postgresql": {
+        "supported": "12-18",
+        "default_summary": "PostgreSQL 12-18",
+        "feature_complete": "15",
+        "feature_note": "Works on PostgreSQL 12-14, but GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "feature_source": "tag:3.6.4:postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150",
+        "minor_overrides": [],
+        "source": "postgis_series.supported curated; tag:3.6.4:configure.ac minimum"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.8.0",
+          "feature_complete": "3.12.0",
+          "recommended": "3.12 and later for all features",
+          "source": "tag:3.6.4:configure.ac"
+        },
+        "proj": {
+          "minimum": "6.1.0",
+          "source": "tag:3.6.4:configure.ac"
+        },
+        "gdal": {
+          "minimum": "2.4.0",
+          "scope": "raster",
+          "source": "tag:3.6.4:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "source": "tag:3.6.4:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.1.0",
+          "source": "tag:3.6.4:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "3.5",
+      "branch": "stable-3.5",
+      "latest": "3.5.7",
+      "status": "supported",
+      "first_release_date": "2024-09-26",
+      "lifecycle": "stable",
+      "postgresql": {
+        "supported": "12-17",
+        "default_summary": "PostgreSQL 12-17",
+        "feature_complete": "15",
+        "feature_note": "Works on PostgreSQL 12-14, but GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "feature_source": "tag:3.5.7:postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150",
+        "minor_overrides": [
+          {
+            "versions": ["18"],
+            "status": "known-compatible",
+            "note": "PostgreSQL 18 should be treated as newer-than-release metadata until explicit branch coverage is recorded."
+          }
+        ],
+        "source": "postgis_series.supported curated; tag:3.5.7:configure.ac minimum"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.8.0",
+          "source": "tag:3.5.7:configure.ac"
+        },
+        "proj": {
+          "minimum": "6.1.0",
+          "source": "tag:3.5.7:configure.ac"
+        },
+        "gdal": {
+          "minimum": "2.4.0",
+          "scope": "raster",
+          "source": "tag:3.5.7:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "source": "tag:3.5.7:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.1.0",
+          "source": "tag:3.5.7:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "3.4",
+      "branch": "stable-3.4",
+      "latest": "3.4.6",
+      "status": "supported",
+      "first_release_date": "2023-08-15",
+      "lifecycle": "stable",
+      "postgresql": {
+        "supported": "12-16",
+        "default_summary": "PostgreSQL 12-16",
+        "feature_complete": "15",
+        "feature_note": "Works on PostgreSQL 12-14, but GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "feature_source": "tag:3.4.6:postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150",
+        "minor_overrides": [
+          {
+            "versions": ["17", "18"],
+            "status": "known-compatible",
+            "note": "Newer PostgreSQL minors may build in downstreams, but are outside the default supported summary for this series."
+          }
+        ],
+        "source": "postgis_series.supported curated; tag:3.4.6:configure.ac minimum"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.6.0",
+          "source": "tag:3.4.6:configure.ac"
+        },
+        "proj": {
+          "minimum": "6.1.0",
+          "source": "tag:3.4.6:configure.ac"
+        },
+        "gdal": {
+          "minimum": "2.0.0",
+          "scope": "raster",
+          "source": "tag:3.4.6:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "source": "tag:3.4.6:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.1.0",
+          "source": "tag:3.4.6:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "3.3",
+      "branch": "stable-3.3",
+      "latest": "3.3.10",
+      "status": "supported",
+      "first_release_date": "2022-08-27",
+      "lifecycle": "stable",
+      "postgresql": {
+        "supported": "11-15",
+        "default_summary": "PostgreSQL 11-15",
+        "feature_complete": "15",
+        "feature_note": "Works on PostgreSQL 12-14, but GiST bulk index build sort support is only installed in the default opclass on PostgreSQL 15 and later.",
+        "feature_source": "tag:3.3.8:postgis/postgis.sql.in:POSTGIS_PGSQL_VERSION >= 150",
+        "minor_overrides": [
+          {
+            "versions": ["16", "17", "18"],
+            "status": "known-compatible",
+            "note": "Collapsed out of the default row until explicit support metadata is added."
+          }
+        ],
+        "source": "postgis_series.supported curated; tag:3.3.10:configure.ac minimum"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.6.0",
+          "source": "tag:3.3.10:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.9.0",
+          "source": "tag:3.3.10:configure.ac"
+        },
+        "gdal": {
+          "minimum": "2.0.0",
+          "scope": "raster",
+          "source": "tag:3.3.10:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "source": "tag:3.3.10:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.1.0",
+          "source": "tag:3.3.10:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "3.2",
+      "branch": "stable-3.2",
+      "latest": "3.2.10",
+      "status": "supported",
+      "first_release_date": "2021-12-18",
+      "lifecycle": "stable",
+      "postgresql": {
+        "supported": "9.6-15",
+        "default_summary": "PostgreSQL 9.6-15",
+        "feature_complete": "12",
+        "feature_note": "PostgreSQL 12 and later has the planner support function API used by PostGIS 3.x index-aware predicates; PostGIS 3.2 keeps GiST bulk sort support disabled by default.",
+        "feature_source": "news-postgresql-feature-gates",
+        "minor_overrides": [
+          {
+            "versions": ["15", "16", "17", "18"],
+            "status": "known-compatible",
+            "note": "Visible only when minor-detail expansion is enabled."
+          }
+        ],
+        "source": "tag:3.2.10:configure.ac"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.6.0",
+          "source": "tag:3.2.10:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.9.0",
+          "source": "tag:3.2.10:configure.ac"
+        },
+        "gdal": {
+          "minimum": "2.0.0",
+          "scope": "raster",
+          "source": "tag:3.2.10:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "source": "tag:3.2.10:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.1.0",
+          "source": "tag:3.2.10:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "3.1",
+      "branch": "stable-3.1",
+      "latest": "3.1.13",
+      "status": "historical",
+      "first_release_date": "2020-12-18",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "9.6-14",
+        "default_summary": "historical PostgreSQL 9.6-14",
+        "feature_complete": "12",
+        "feature_note": "Works on PostgreSQL 9.6-11, but PostgreSQL 12 and later is needed for the planner support function API used by PostGIS 3.x index-aware predicates.",
+        "feature_source": "news-postgresql-support-functions",
+        "minor_overrides": [],
+        "source": "postgis_series.supported curated; tag:3.1.13:configure.ac minimum"
+      },
+      "dependencies": {
+        "proj": {
+          "minimum": "4.6.0",
+          "source": "tag:3.1.13:configure.ac"
+        },
+        "gdal": {
+          "minimum": "1.8.0",
+          "source": "tag:3.1.13:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "source": "tag:3.1.13:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.1.0",
+          "source": "tag:3.1.13:configure.ac"
+        },
+        "geos": {
+          "minimum": "3.6.0",
+          "source": "tag:3.1.13:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "3.0",
+      "branch": "stable-3.0",
+      "latest": "3.0.12",
+      "status": "historical",
+      "first_release_date": "2019-10-20",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "9.5-13",
+        "default_summary": "historical PostgreSQL 9.5-13",
+        "feature_complete": "12",
+        "feature_note": "Works on PostgreSQL 9.5-11, but PostgreSQL 12 and later is needed for the planner support function API used by PostGIS 3.x index-aware predicates.",
+        "feature_source": "news-postgresql-support-functions",
+        "minor_overrides": [],
+        "source": "tag:3.0.12:configure.ac"
+      },
+      "dependencies": {
+        "proj": {
+          "minimum": "4.6.0",
+          "source": "tag:3.0.12:configure.ac"
+        },
+        "gdal": {
+          "minimum": "1.8.0",
+          "source": "tag:3.0.12:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "source": "tag:3.0.12:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.0.0",
+          "source": "tag:3.0.12:configure.ac"
+        },
+        "geos": {
+          "minimum": "3.6.0",
+          "source": "tag:3.0.12:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "2.5",
+      "branch": "stable-2.5",
+      "latest": "2.5.11",
+      "status": "historical",
+      "first_release_date": "2018-09-23",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "9.4-12",
+        "default_summary": "historical PostgreSQL 9.4-12",
+        "feature_complete": "11",
+        "feature_note": "Works on PostgreSQL 9.4-10, but PostgreSQL 11 and later is needed for PostGIS 2.5 SP-GiST 2D/3D support; PostgreSQL 9.6 and later is needed for parallel query support.",
+        "feature_source": "news-postgresql-index-features",
+        "minor_overrides": [],
+        "source": "tag:2.5.11:configure.ac"
+      },
+      "dependencies": {
+        "proj": {
+          "minimum": "4.6.0",
+          "source": "tag:2.5.11:configure.ac"
+        },
+        "gdal": {
+          "minimum": "1.8.0",
+          "source": "tag:2.5.11:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.1.0",
+          "source": "tag:2.5.11:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.0.0",
+          "source": "tag:2.5.11:configure.ac"
+        },
+        "geos": {
+          "minimum": "3.5.0",
+          "source": "tag:2.5.11:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "2.4",
+      "branch": "stable-2.4",
+      "latest": "2.4.10",
+      "status": "historical",
+      "first_release_date": "2017-09-30",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "9.3-11",
+        "default_summary": "historical PostgreSQL 9.3-11",
+        "minor_overrides": [],
+        "source": "tag:2.4.10:configure.ac"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.4.0",
+          "source": "tag:2.4.10:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.6.0",
+          "source": "tag:2.4.10:configure.ac"
+        },
+        "gdal": {
+          "minimum": "1.8.0",
+          "source": "tag:2.4.10:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.1.0",
+          "source": "tag:2.4.10:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.0.0",
+          "source": "tag:2.4.10:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "2.3",
+      "branch": "stable-2.3",
+      "latest": "2.3.11",
+      "status": "historical",
+      "first_release_date": "2016-09-26",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "9.2-9.6",
+        "default_summary": "historical PostgreSQL 9.2-9.6",
+        "minor_overrides": [],
+        "source": "postgis_series.supported curated; tag:2.3.11:configure.ac minimum"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.3.0",
+          "source": "tag:2.3.11:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.6.0",
+          "source": "tag:2.3.11:configure.ac"
+        },
+        "gdal": {
+          "minimum": "1.8.0",
+          "source": "tag:2.3.11:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.1.0",
+          "source": "tag:2.3.11:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "2.2",
+      "branch": "stable-2.2",
+      "latest": "2.2.8",
+      "status": "historical",
+      "first_release_date": "2015-10-07",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "9.1-9.5",
+        "default_summary": "historical PostgreSQL 9.1-9.5",
+        "minor_overrides": [],
+        "source": "postgis_series.supported curated; tag:2.2.8:configure.ac minimum"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.3.0",
+          "source": "tag:2.2.8:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.6.0",
+          "source": "tag:2.2.8:configure.ac"
+        },
+        "gdal": {
+          "minimum": "1.8.0",
+          "source": "tag:2.2.8:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.1.0",
+          "source": "tag:2.2.8:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "2.1",
+      "branch": "stable-2.1",
+      "latest": "2.1.9",
+      "status": "historical",
+      "first_release_date": "2013-08-17",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "9.1-9.4",
+        "default_summary": "historical PostgreSQL 9.1-9.4",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.3.0",
+          "source": "tag:2.1.9:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.6.0",
+          "source": "tag:2.1.9:configure.ac"
+        },
+        "gdal": {
+          "minimum": "1.8.0",
+          "source": "tag:2.1.9:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "2.0",
+      "branch": "stable-2.0",
+      "latest": "2.0.7",
+      "status": "historical",
+      "first_release_date": "2012-04-03",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "9.1-9.2",
+        "default_summary": "historical PostgreSQL 9.1-9.2",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.1.1",
+          "source": "tag:2.0.7:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.5.0",
+          "source": "tag:2.0.7:configure.ac"
+        },
+        "gdal": {
+          "minimum": "1.6.0",
+          "source": "tag:2.0.7:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "1.5",
+      "branch": "stable-1.5",
+      "latest": "1.5.8",
+      "status": "historical",
+      "first_release_date": "2010-02-04",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "8.3-9.1",
+        "default_summary": "historical PostgreSQL 8.3-9.1",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.1.1",
+          "source": "tag:1.5.8:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.5.0",
+          "source": "tag:1.5.8:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "1.4",
+      "branch": "stable-1.4",
+      "latest": "1.4.2",
+      "status": "historical",
+      "first_release_date": "2009-07-24",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "8.2-8.4",
+        "default_summary": "historical PostgreSQL 8.2-8.4",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.0",
+          "source": "tag:1.4.2:configure.ac"
+        },
+        "proj": {
+          "minimum": "4.5.0",
+          "source": "tag:1.4.2:configure.ac"
+        }
+      }
+    },
+    {
+      "minor": "1.3",
+      "branch": "stable-1.3",
+      "latest": "1.3.6",
+      "status": "historical",
+      "first_release_date": "2007-08-09",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "8.1-9.5",
+        "default_summary": "historical PostgreSQL 8.1-9.5",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "proj": {
+          "minimum": "4.5.0",
+          "source": "tag:1.3.6:configure.in"
+        }
+      }
+    },
+    {
+      "minor": "1.2",
+      "branch": "stable-1.2",
+      "latest": "1.2.1",
+      "status": "historical",
+      "first_release_date": "2006-12-08",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "7.4-8.2",
+        "default_summary": "README.postgis says PostgreSQL 7.4 and later; NEWS 1.2.1 records PostgreSQL 8.2 index/null handling fixes.",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "2.2.0",
+          "source": "postgis-legacy-readme-news-2026-07-29"
+        },
+        "proj": {
+          "minimum": "4.5.0",
+          "source": "tag:1.2.1:configure.in"
+        }
+      }
+    },
+    {
+      "minor": "1.1",
+      "branch": "stable-1.1",
+      "latest": "1.1.7",
+      "status": "historical",
+      "first_release_date": "2005-12-21",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "7.2-8.2",
+        "default_summary": "README.postgis says PostgreSQL 7.2 and later; NEWS records initial PostgreSQL 8.2 support in 1.1.x.",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "2.2.0",
+          "source": "postgis-legacy-readme-news-2026-07-29"
+        },
+        "proj": {
+          "minimum": "4.5.0",
+          "source": "tag:1.1.7:configure.in"
+        }
+      }
+    },
+    {
+      "minor": "1.0",
+      "branch": "stable-1.0",
+      "latest": "1.0.6",
+      "status": "historical",
+      "first_release_date": "2005-04-19",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "7.2-8.2",
+        "default_summary": "README.postgis says PostgreSQL 7.2 and later; NEWS 1.0.2/1.0.6 records initial PostgreSQL 8.1/8.2 support.",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "2.0.0",
+          "source": "postgis-legacy-readme-news-2026-07-29"
+        },
+        "proj": {
+          "minimum": "4.5.0",
+          "source": "tag:1.0.6:configure.in"
+        }
+      }
+    },
+    {
+      "minor": "0.9",
+      "branch": "stable-0.9",
+      "latest": "0.9.2",
+      "status": "historical",
+      "first_release_date": "2004-09-10",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "7.1-8.1",
+        "default_summary": "README.postgis says PostgreSQL 7.1 and later; NEWS 0.9.0 records PostgreSQL 8.0 support and 0.9.2 Makefile adds PostgreSQL 8.1 handling.",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "2.0.0",
+          "source": "postgis-legacy-readme-news-2026-07-29"
+        },
+        "proj": {
+          "minimum": "optional",
+          "source": "postgis-legacy-readme-news-2026-07-29"
+        }
+      }
+    },
+    {
+      "minor": "0.8",
+      "branch": "stable-0.8",
+      "latest": "0.8.2",
+      "status": "historical",
+      "first_release_date": "2003-11-24",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "7.1-7.4",
+        "default_summary": "README.postgis says PostgreSQL 7.1 and later; NEWS 0.8.0 records PostgreSQL 7.4 support and 0.8.2 records PostgreSQL 7.5-dev support.",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "optional",
+          "source": "postgis-legacy-readme-news-2026-07-29"
+        },
+        "proj": {
+          "minimum": "optional",
+          "source": "postgis-legacy-readme-news-2026-07-29"
+        }
+      }
+    },
+    {
+      "minor": "0.7",
+      "branch": "stable-0.7",
+      "latest": "0.7.5",
+      "status": "historical",
+      "first_release_date": "2002-05-04",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "7.1-7.3",
+        "default_summary": "README.postgis documents PostgreSQL 7.1 plus optional PostgreSQL 7.2 support in 0.7.0; NEWS 0.7.4 adds PostgreSQL 7.3 support.",
+        "minor_overrides": []
+      },
+      "dependencies": {
+        "proj": {
+          "minimum": "optional",
+          "source": "postgis-legacy-readme-news-2026-07-29"
+        }
+      }
+    },
+    {
+      "minor": "0.6",
+      "branch": "stable-0.6",
+      "latest": "0.6.2",
+      "status": "historical",
+      "first_release_date": "2001-09-20",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "source-tree build; exact PostgreSQL version not recorded",
+        "default_summary": "README.postgis requires a PostgreSQL source tree but does not name an exact compatible PostgreSQL major.",
+        "minor_overrides": []
+      },
+      "dependencies": {}
+    },
+    {
+      "minor": "0.5",
+      "branch": "stable-0.5",
+      "latest": "0.5.0",
+      "status": "historical",
+      "first_release_date": "2001-07-20",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "source-tree build; exact PostgreSQL version not recorded",
+        "default_summary": "README.postgis requires a PostgreSQL source tree but does not name an exact compatible PostgreSQL major.",
+        "minor_overrides": []
+      },
+      "dependencies": {}
+    },
+    {
+      "minor": "0.2",
+      "branch": "stable-0.2",
+      "latest": "0.2.0",
+      "status": "historical",
+      "first_release_date": "2001-06-19",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "source-tree build; exact PostgreSQL version not recorded",
+        "default_summary": "NEWS records this as a pre-0.5 source-tree era release; no exact PostgreSQL major is recorded in current release archaeology.",
+        "minor_overrides": []
+      },
+      "dependencies": {}
+    },
+    {
+      "minor": "0.1",
+      "branch": "stable-0.1",
+      "latest": "0.1.0",
+      "status": "historical",
+      "first_release_date": "2001-05-25",
+      "lifecycle": "eol",
+      "eol": true,
+      "postgresql": {
+        "supported": "source-tree build; exact PostgreSQL version not recorded",
+        "default_summary": "NEWS records this as the initial release; no exact PostgreSQL major is recorded in current release archaeology.",
+        "minor_overrides": []
+      },
+      "dependencies": {}
+    }
+  ],
+  "upgrade_paths": {
+    "source": "extensions/upgradeable_versions.mk",
+    "rules_source": "extensions/upgrade-paths-rules.mk",
+    "summary": "Known released extension versions are installed as explicit upgrade sources, with ANY bridge scripts kept for postgis_extensions_upgrade() and PostgreSQL extension discovery."
+  },
+  "dependency_catalog": [
+    {
+      "id": "postgresql-server-dev",
+      "label": "PostgreSQL server + PGXS",
+      "kind": "core",
+      "requirement": "required unless --without-pgconfig",
+      "minimum": "14",
+      "detected_by": ["pg_config", "PGXS", "libpq-fe.h", "libpq PQserverVersion"],
+      "used_for": ["extension build", "libpq-linked loader tools"],
+      "source": "postgis-configure-ac-2026-07-31"
+    },
+    {
+      "id": "geos",
+      "label": "GEOS C API",
+      "kind": "core",
+      "requirement": "required",
+      "minimum": "3.10.0",
+      "detected_by": ["pkg-config geos", "geos-config", "geos_c.h", "libgeos_c initGEOS"],
+      "used_for": ["geometry predicates and operations", "feature-complete current line at GEOS 3.15 and later"],
+      "source": "postgis-configure-ac-2026-07-31"
+    },
+    {
+      "id": "proj",
+      "label": "PROJ",
+      "kind": "core",
+      "requirement": "required",
+      "minimum": "6.1.0",
+      "detected_by": ["pkg-config proj", "proj.h/proj_api.h", "libproj pj_get_release/proj_info"],
+      "used_for": ["coordinate transformations", "spatial_ref_sys metadata"],
+      "source": "postgis-configure-ac-2026-07-31"
+    },
+    {
+      "id": "libxml2",
+      "label": "libxml2",
+      "kind": "core",
+      "requirement": "required",
+      "minimum": "2.5.0",
+      "detected_by": ["xml2-config", "pkg-config libxml-2.0", "libxml/tree.h", "libxml/parser.h", "libxml/xpath.h", "libxml2 xmlInitParser"],
+      "used_for": ["GML input", "KML input", "XML parsing paths"],
+      "source": "postgis-libxml2-minimum-history-2012"
+    },
+    {
+      "id": "libiconv",
+      "label": "iconv/libiconv",
+      "kind": "core",
+      "requirement": "required",
+      "minimum": null,
+      "detected_by": ["iconv.h", "libiconv_open/iconv_open", "iconvctl/libiconvctl"],
+      "used_for": ["shp2pgsql encoding conversion"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "gmp",
+      "label": "GMP",
+      "kind": "core",
+      "requirement": "required",
+      "minimum": null,
+      "detected_by": ["pkg-config gmp"],
+      "used_for": ["liblwgeom numeric support"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "gdal",
+      "label": "GDAL/OGR",
+      "kind": "extension",
+      "requirement": "required for raster unless --without-raster",
+      "minimum": "2.4.0",
+      "detected_by": ["gdal-config", "gdal.h", "ogr_api.h", "cpl_conv.h", "GDALAllRegister", "OGRRegisterAll"],
+      "used_for": ["postgis_raster", "raster loader", "raster regressions"],
+      "source": "postgis-configure-ac-2026-07-31"
+    },
+    {
+      "id": "sfcgal",
+      "label": "SFCGAL",
+      "kind": "extension",
+      "requirement": "optional auto/--with-sfcgal",
+      "minimum": "1.3.1",
+      "detected_by": ["sfcgal-config", "dynamic SFCGAL library", "SFCGAL/version.h for CGAL version"],
+      "used_for": ["postgis_sfcgal extension", "CG_* 3D/solid geometry functions"],
+      "source": "postgis-configure-ac-2026-07-31"
+    },
+    {
+      "id": "cgal",
+      "label": "CGAL",
+      "kind": "transitive",
+      "requirement": "transitive through SFCGAL",
+      "minimum": null,
+      "detected_by": ["CGAL/version.h", "SFCGAL version header macros"],
+      "used_for": ["SFCGAL implementation dependency", "release documentation build contract"],
+      "source": "postgis-release-docs-ci-2026-07-31",
+      "release_docs_ci": {
+        "selected": "6.2",
+        "minimum": "6.2",
+        "source": "postgis-release-docs-ci-2026-07-31"
+      }
+    },
+    {
+      "id": "json-c",
+      "label": "json-c",
+      "kind": "feature",
+      "requirement": "optional; --without-json disables JSON-C support",
+      "minimum": "0.9",
+      "detected_by": ["pkg-config json-c", "json-c/json.h", "json/json.h", "json_object_get"],
+      "used_for": ["GeoJSON output/input support paths"],
+      "source": "postgis-json-c-minimum-history-2014"
+    },
+    {
+      "id": "protobuf-c",
+      "label": "protobuf-c + protoc-c",
+      "kind": "feature",
+      "requirement": "optional; --without-protobuf disables MVT and Geobuf support",
+      "minimum": "1.1.0",
+      "detected_by": ["pkg-config libprotobuf-c >= 1.1.0", "protobuf-c/protobuf-c.h", "libprotobuf-c protobuf_c_message_init", "protoc-c"],
+      "used_for": ["ST_AsMVT", "ST_AsGeobuf", "Wagyu-backed MVT clipping"],
+      "source": "postgis-configure-ac-2026-07-31"
+    },
+    {
+      "id": "wagyu",
+      "label": "Wagyu",
+      "kind": "vendored",
+      "requirement": "built when protobuf-c support is enabled",
+      "minimum": null,
+      "detected_by": ["deps/wagyu", "C++11 compiler", "libc++ or libstdc++"],
+      "used_for": ["MVT polygon clipping backend"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "ryu",
+      "label": "Ryu",
+      "kind": "vendored",
+      "requirement": "vendored build dependency",
+      "minimum": null,
+      "detected_by": ["deps/ryu"],
+      "used_for": ["fast floating-point text conversion paths"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "flatgeobuf",
+      "label": "FlatGeobuf",
+      "kind": "vendored",
+      "requirement": "vendored build dependency",
+      "minimum": null,
+      "detected_by": ["deps/flatgeobuf", "C++11 compiler", "libc++ or libstdc++"],
+      "used_for": ["FlatGeobuf input/output support"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "uthash",
+      "label": "uthash",
+      "kind": "vendored",
+      "requirement": "vendored single-header build dependency",
+      "minimum": null,
+      "detected_by": ["deps/uthash/include/uthash.h"],
+      "used_for": ["internal hash tables"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "gettext",
+      "label": "gettext",
+      "kind": "tooling",
+      "requirement": "optional; --with-gettext=no disables NLS",
+      "minimum": null,
+      "detected_by": ["AM_GNU_GETTEXT", "xgettext/msgmerge/msgcat/msgcomm/msgattrib/msginit for docs/translations"],
+      "used_for": ["loader translations", "documentation translation maintenance"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "gtk2",
+      "label": "GTK+ 2.0",
+      "kind": "tooling",
+      "requirement": "optional --with-gui",
+      "minimum": "2.8.0",
+      "detected_by": ["AM_PATH_GTK_2_0"],
+      "used_for": ["shp2pgsql GUI"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "cunit",
+      "label": "CUnit",
+      "kind": "test",
+      "requirement": "optional but required for unit test binaries",
+      "minimum": null,
+      "detected_by": ["pkg-config cunit", "CUnit/CUnit.h", "libcunit CU_initialize_registry"],
+      "used_for": ["liblwgeom/loader/raster CUnit suites"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "docbook-xsl",
+      "label": "DocBook XSL stylesheets",
+      "kind": "documentation",
+      "requirement": "required for HTML/manual transform targets",
+      "minimum": null,
+      "detected_by": ["xmlcatalog docbook.xsl", "docbook-xsl package"],
+      "used_for": ["HTML manual", "localized docs"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "docbook-xml",
+      "label": "DocBook XML schemas",
+      "kind": "documentation",
+      "requirement": "required for full documentation validation",
+      "minimum": null,
+      "detected_by": ["xmlcatalog DocBook 5 RNG/XSD/DTD"],
+      "used_for": ["manual XML validation", "localized docs"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "libxslt",
+      "label": "libxslt / xsltproc",
+      "kind": "documentation",
+      "requirement": "required for XSLT documentation transforms",
+      "minimum": null,
+      "detected_by": ["xsltproc"],
+      "used_for": ["HTML manual", "comments generation"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "xmlto",
+      "label": "xmlto",
+      "kind": "documentation",
+      "requirement": "required for selected documentation output targets",
+      "minimum": null,
+      "detected_by": ["xmlto"],
+      "used_for": ["documentation output conversion"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "dblatex",
+      "label": "dblatex",
+      "kind": "documentation",
+      "requirement": "required for PDF documentation target",
+      "minimum": null,
+      "detected_by": ["dblatex"],
+      "used_for": ["PDF manual"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "imagemagick",
+      "label": "ImageMagick",
+      "kind": "documentation",
+      "requirement": "required for documentation image conversion targets",
+      "minimum": null,
+      "detected_by": ["ImageMagick convert"],
+      "used_for": ["documentation image conversion"],
+      "source": "postgis-configure-ac-2026-07-29"
+    },
+    {
+      "id": "zlib",
+      "label": "zlib",
+      "kind": "packaging",
+      "requirement": "Windows package runtime dependency",
+      "minimum": null,
+      "detected_by": ["ci/winnie/winnie_common.sh", "ci/winnie/package_postgis.sh"],
+      "used_for": ["Winnie Windows binaries/runtime packaging"],
+      "source": "postgis-ci-winnie-deps-2026-07-31",
+      "pin": {
+        "value": "1.2.13",
+        "context": "Winnie default",
+        "source": "postgis-ci-winnie-deps-2026-07-31",
+        "maintenance_note": "Verify or build the matching Windows dependency bundle before changing the CI selection."
+      }
+    },
+    {
+      "id": "lz4",
+      "label": "LZ4",
+      "kind": "packaging",
+      "requirement": "Windows CI/package runtime dependency",
+      "minimum": null,
+      "detected_by": ["ci/winnie/winnie_common.sh", "LZ4_PATH"],
+      "used_for": ["Winnie Windows build/runtime link path"],
+      "source": "postgis-ci-winnie-deps-2026-07-31",
+      "pin": {
+        "value": "1.9.3",
+        "context": "Winnie default",
+        "source": "postgis-ci-winnie-deps-2026-07-31",
+        "maintenance_note": "Verify or build the matching Windows dependency bundle before changing the CI selection."
+      }
+    },
+    {
+      "id": "sqlite",
+      "label": "SQLite",
+      "kind": "packaging",
+      "requirement": "Windows CI pkg-config path dependency",
+      "minimum": null,
+      "detected_by": ["ci/winnie/winnie_common.sh PKG_CONFIG_PATH"],
+      "used_for": ["PROJ/GDAL dependency stack in Windows packaging"],
+      "source": "postgis-ci-winnie-deps-2026-07-29"
+    },
+    {
+      "id": "boost",
+      "label": "Boost",
+      "kind": "packaging",
+      "requirement": "Windows SFCGAL/CGAL stack dependency",
+      "minimum": null,
+      "detected_by": ["ci/winnie/winnie_common.sh BOOST_VER"],
+      "used_for": ["CGAL/SFCGAL Windows packaging stack"],
+      "source": "postgis-ci-winnie-deps-2026-07-31",
+      "pin": {
+        "value": "1.84.0",
+        "context": "Winnie default",
+        "overrides": [
+          {
+            "value": "1.78.0",
+            "context": "SFCGAL package override",
+            "source": "postgis-ci-winnie-package-2026-07-31"
+          }
+        ],
+        "source": "postgis-ci-winnie-deps-2026-07-31",
+        "maintenance_note": "Verify or build the matching Windows dependency bundle before changing the CI selection."
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "postgis-legacy-readme-news-2026-07-29",
+      "title": "PostGIS legacy NEWS, release README and Makefile archaeology",
+      "url": "https://gitea.osgeo.org/postgis/postgis/tags",
+      "as_of": "2026-07-29"
+    }
+  ]
+}

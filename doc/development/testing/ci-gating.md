@@ -48,7 +48,7 @@ Subsystem source changes run the matching subsystem coverage:
 | `topology/**`, `extensions/postgis_topology/**` | topology regression and topology upgrade coverage |
 | `loader/**`, `regress/loader/**` | loader regression coverage |
 | `Version.config`, `extensions/**`, SQL template files, upgrade generators, `postgis_restore.pl`, `utils/check_all_upgrades.sh`, `utils/check_cluster_upgrade.sh` | extension, double-upgrade, locked-upgrade, cluster-upgrade, and platform workflow coverage |
-| `NEWS`, `utils/check_news.sh`, `utils/test_check_news.py` | NEWS checker coverage when that suite uses the gate |
+| `NEWS`, `utils/docs/check_news.sh`, `utils/docs/tests/test_check_news.py` | NEWS checker coverage when that suite uses the gate |
 
 Unknown suites run rather than skip.
 

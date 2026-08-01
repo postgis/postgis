@@ -225,6 +225,8 @@ utils/Makefile
 utils/postgis_restore.pl
 utils/postgis_restore_data.*
 utils/__pycache__/
+utils/**/__pycache__/
+doc/development/compatibility/compatibility.json
 doc/sfcgal_comments.sql
 postgis/sfcgal.sql
 postgis/uninstall_sfcgal.sql

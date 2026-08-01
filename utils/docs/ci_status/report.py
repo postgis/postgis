@@ -1,19 +1,12 @@
-#!/usr/bin/env python3
-#
-# Query the PostGIS CI providers and print a compact status report, or write a
-# static status page suitable for publishing from cron.
+"""Collect PostGIS CI provider status and render terminal or static reports."""
 
-import argparse
 import asyncio
 import datetime as dt
-import html
 import http.client
 import json
 import os
 import pathlib
-import shutil
 import subprocess
-import sys
 import tempfile
 import threading
 import urllib.error
@@ -32,6 +25,18 @@ STALE_FAILED = "stale-fail"
 DISABLED = "disabled"
 NOT_APPLICABLE = "not_applicable"
 JENKINS_STALE_QUEUE_HOURS = 4
+
+STATUS_DISPLAY_ORDER = {
+    FAILURE: 0,
+    UNKNOWN: 1,
+    STALE: 1,
+    STALE_PASSED: 1,
+    STALE_FAILED: 1,
+    IN_PROGRESS: 2,
+    SUCCESS: 3,
+    NOT_APPLICABLE: 4,
+    DISABLED: 5,
+}
 
 SYMBOLS = {
     SUCCESS: ("✅", "OK"),
@@ -70,6 +75,29 @@ class ConfigError(Exception):
 
 class ProviderContentError(Exception):
     pass
+
+
+def check_status_sort_key(check):
+    status = check.get("status")
+    if isinstance(status, str):
+        return STATUS_DISPLAY_ORDER.get(status, STATUS_DISPLAY_ORDER[FAILURE])
+    return STATUS_DISPLAY_ORDER[FAILURE]
+
+
+def normalize_check_status(check):
+    status = check.get("status")
+    if isinstance(status, str) and status in STATUS_DISPLAY_ORDER:
+        return check
+
+    normalized = dict(check)
+    normalized["reported_status"] = status
+    normalized["status"] = FAILURE
+    normalized["status_label"] = "Unsupported status"
+    diagnostic = f"provider reported unsupported status {status!r}"
+    if check.get("message"):
+        diagnostic += f"; {check['message']}"
+    normalized["message"] = diagnostic
+    return normalized
 
 
 RECOVERABLE_PROVIDER_ERRORS = (
@@ -1414,9 +1442,11 @@ def aggregate(config, results):
     by_branch = {}
     branch_order = {branch["name"]: branch for branch in config["branches"]}
     for result in results:
+        result = normalize_check_status(result)
         by_branch.setdefault(result["branch"], []).append(result)
 
     for branch_name, checks in by_branch.items():
+        checks.sort(key=check_status_sort_key)
         required = [check for check in checks if check.get("required") and check["status"] not in (DISABLED, NOT_APPLICABLE)]
         if any(check["status"] == FAILURE for check in required):
             status = FAILURE
@@ -1590,18 +1620,8 @@ def interesting_checks(branch, verbose=False):
         and (check["status"] in (FAILURE, UNKNOWN, IN_PROGRESS, NOT_APPLICABLE) or is_stale_status(check["status"]))
         for check in branch["checks"]
     )
-    status_order = {
-        FAILURE: 0,
-        UNKNOWN: 1,
-        STALE: 1,
-        STALE_FAILED: 1,
-        STALE_PASSED: 1,
-        IN_PROGRESS: 2,
-        SUCCESS: 3,
-        NOT_APPLICABLE: 4,
-    }
     visible = []
-    for index, check in enumerate(branch["checks"]):
+    for check in branch["checks"]:
         if (
             (check["status"] in (FAILURE, UNKNOWN, IN_PROGRESS) or is_stale_status(check["status"]))
             or (check["status"] == NOT_APPLICABLE and check.get("provider") == "jenkins")
@@ -1611,9 +1631,9 @@ def interesting_checks(branch, verbose=False):
                 and check["status"] == SUCCESS
             )
         ) and check["status"] != DISABLED:
-            visible.append((index, check))
-    visible.sort(key=lambda item: (status_order.get(item[1]["status"], 99), item[0]))
-    return [check for index, check in visible]
+            visible.append(check)
+    visible.sort(key=check_status_sort_key)
+    return visible
 
 
 def safe_http_href(value):
@@ -1742,714 +1762,8 @@ def write_atomic(path, content, mode="w"):
             raise
 
 
-def relative_symlink_target(target, link_path):
-    return os.path.relpath(target, start=link_path.parent)
-
-
-def write_html_files(data, output_dir):
-    output_dir = pathlib.Path(output_dir)
-    json_text = json.dumps(data, indent=2, sort_keys=True) + "\n"
-    write_atomic(output_dir / "status.json", json_text)
-    write_atomic(output_dir / "index.html", render_html(data))
-
-
-def switch_html_output(data, output_dir):
-    output_dir = pathlib.Path(output_dir)
-    output_dir.parent.mkdir(parents=True, exist_ok=True)
-    staging = pathlib.Path(tempfile.mkdtemp(prefix=f".{output_dir.name}.", dir=str(output_dir.parent)))
-    link_tmp = None
-    try:
-        write_html_files(data, staging)
-        has_output = output_dir.exists() or output_dir.is_symlink()
-        if has_output and not output_dir.is_symlink():
-            raise ConfigError(f"{output_dir} must be absent or a symbolic link for --atomic-switch")
-        if has_output:
-            link_fd, link_name = tempfile.mkstemp(prefix=f".{output_dir.name}.link.", dir=str(output_dir.parent))
-            os.close(link_fd)
-            os.unlink(link_name)
-            link_tmp = pathlib.Path(link_name)
-            os.symlink(relative_symlink_target(staging, output_dir), link_tmp)
-            os.replace(link_tmp, output_dir)
-        else:
-            os.replace(staging, output_dir)
-            staging = None
-    except Exception:
-        if link_tmp and (link_tmp.exists() or link_tmp.is_symlink()):
-            link_tmp.unlink()
-        if staging and staging.exists():
-            shutil.rmtree(staging)
-        raise
-
-
-def overall_status(branches):
-    statuses = [branch["status"] for branch in branches]
-    if any(status == FAILURE for status in statuses):
-        return FAILURE
-    if any(status == UNKNOWN or is_stale_status(status) for status in statuses):
-        return UNKNOWN
-    if any(status == IN_PROGRESS for status in statuses):
-        return IN_PROGRESS
-    if statuses:
-        return SUCCESS
-    return NOT_APPLICABLE
-
-
-def required_failures(branches):
-    failures = []
-    for branch in branches:
-        checks = [
-            check for check in branch["checks"]
-            if check.get("required") and check["status"] == FAILURE
-        ]
-        if checks:
-            failures.append((branch["label"], checks))
-    return failures
-
-
-def html_status_label(status):
-    return {
-        SUCCESS: "Passing",
-        FAILURE: "Failing",
-        IN_PROGRESS: "Running",
-        UNKNOWN: "Unknown",
-        STALE: "Stale",
-        STALE_PASSED: "Stale passed",
-        STALE_FAILED: "Stale fail",
-        DISABLED: "Disabled",
-        NOT_APPLICABLE: "Not applicable",
-    }.get(status, "Unknown")
-
-
-def status_mark(status):
-    return {
-        SUCCESS: "✓",
-        FAILURE: "✕",
-        IN_PROGRESS: "↻",
-        UNKNOWN: "?",
-        STALE: "!",
-        STALE_PASSED: "!",
-        STALE_FAILED: "!",
-        DISABLED: "–",
-        NOT_APPLICABLE: "–",
-    }.get(status, "?")
-
-
-def html_status_pill(status, label=None):
-    label = html.escape(label or html_status_label(status))
-    mark = html.escape(status_mark(status))
-    return f"<span class='status-pill'><span aria-hidden='true'>{mark} </span><span>{label}</span></span>"
-
-
-def html_branch_progress(branch):
-    counts = check_counts(branch)
-    stale_counts = stale_check_counts(branch)
-    total = counts["required"]
-    if not total:
-        return ""
-    segments = [
-        (SUCCESS, counts[SUCCESS], "OK"),
-        (FAILURE, counts[FAILURE], "failing"),
-        (IN_PROGRESS, counts[IN_PROGRESS], "running"),
-        (UNKNOWN, counts[UNKNOWN], "unknown"),
-        ("stale-passed", stale_counts[SUCCESS], "stale-passed"),
-        (STALE_FAILED, stale_counts[FAILURE], "stale-fail"),
-        ("stale-unknown", stale_counts[UNKNOWN], "stale-unknown"),
-    ]
-    labels = [f"{count} {label}" for status, count, label in segments if count]
-    pieces = []
-    for status, count, label in segments:
-        if not count:
-            continue
-        width = count / total * 100
-        pieces.append(
-            f"<span class='progress-segment segment-{html.escape(status)}' "
-            f"style='width:{width:.3f}%' title='{html.escape(f'{count} {label}')}'></span>"
-        )
-    aria = html.escape("; ".join(labels) or "no required checks")
-    return f"<div class='branch-progress' role='img' aria-label='{aria}'>{''.join(pieces)}</div>"
-
-
-def html_branch_summary(branch):
-    counts = check_counts(branch)
-    stale_counts = stale_check_counts(branch)
-    parts = []
-    if counts[SUCCESS]:
-        parts.append((SUCCESS, f"{counts[SUCCESS]} OK"))
-    if counts[FAILURE]:
-        parts.append((FAILURE, plural(counts[FAILURE], "failure")))
-    if counts[IN_PROGRESS]:
-        parts.append((IN_PROGRESS, f"{counts[IN_PROGRESS]} running"))
-    if counts[UNKNOWN]:
-        parts.append((UNKNOWN, f"{counts[UNKNOWN]} unknown"))
-    if stale_counts[SUCCESS]:
-        parts.append(("stale-passed", f"{stale_counts[SUCCESS]} stale-passed"))
-    if stale_counts[FAILURE]:
-        parts.append((STALE_FAILED, f"{stale_counts[FAILURE]} stale-fail"))
-    if stale_counts[UNKNOWN]:
-        parts.append(("stale-unknown", f"{stale_counts[UNKNOWN]} stale-unknown"))
-    if not parts:
-        return html.escape(summary_text(branch))
-    return " ".join(
-        f"<span class='summary-chip chip-{html.escape(status)}'>{html.escape(text)}</span>"
-        for status, text in parts
-    )
-
-
-def html_id(value):
-    return "branch-" + "".join(char if char.isalnum() else "-" for char in value.lower()).strip("-")
-
-
-def html_time(value):
-    age = age_text(value)
-    if not age:
-        return ""
-    timestamp = parse_time(value)
-    if not timestamp:
-        return html.escape(age)
-    iso = timestamp.isoformat(timespec="seconds")
-    return f"<time datetime='{html.escape(iso)}' title='{html.escape(iso)}'>{html.escape(age)}</time>"
-
-
-def revision_url(revision):
-    if not revision:
-        return ""
-    return f"https://gitea.osgeo.org/postgis/postgis/commit/{urllib.parse.quote(revision)}"
-
-
-def html_revision(check):
-    revision = check.get("revision") or ""
-    if not revision:
-        return ""
-    text = revision[:12]
-    if check.get("revision_distance"):
-        text = f"{text} ({check['revision_distance']})"
-    href = revision_url(revision)
-    return f"<a class='revision-link' href='{html.escape(href)}'>{html.escape(text)}</a>"
-
-
-def terminal_pad(text, width):
-    pad = max(1, width - len(text))
-    return "<span class='terminal-pad'>" + ("&nbsp;" * pad) + "</span>"
-
-
-def html_check_rows(checks):
-    detail_rows = []
-    terminal_sep = "<span class='terminal-sep'> | </span>"
-    for check in checks:
-        link = result_url(check)
-        check_name = html.escape(check["check"])
-        check_html = f"<a href='{html.escape(link)}'>{check_name}</a>" if link else check_name
-        status_label = check.get("status_label") or ("Passing" if check["status"] == SUCCESS else None)
-        status_text = status_label or html_status_label(check["status"])
-        status_text = f"{status_mark(check['status'])} {status_text}"
-        status = html_status_pill(check["status"], status_label)
-        previous = check.get("previous_completed_status")
-        if previous and check["status"] == IN_PROGRESS:
-            status_text = f"{status_text} previous: {previous}"
-            status = f"{status} <span class='previous-note'>previous: {html.escape(previous)}</span>"
-        message = " ".join(str(check.get("message") or "").split())
-        check_classes = [f"status-{check['status']}"]
-        if is_stale_status(check["status"]):
-            check_classes.append(f"stale-{stale_count_bucket(check)}")
-        check_status = html.escape(" ".join(check_classes))
-        revision = html_revision(check)
-        revision_text = check.get("revision") or ""
-        if revision_text:
-            revision_text = revision_text[:12]
-            if check.get("revision_distance"):
-                revision_text = f"{revision_text} ({check['revision_distance']})"
-        age = html_time(check.get("completed_at"))
-        age_text_value = age_text(check.get("completed_at")) if check.get("completed_at") else ""
-        detail_rows.append(
-            f"<tr class='{check_status}'>"
-            f"<td class='check-name'>{check_html}{terminal_pad(check['check'], 27)}</td>"
-            f"<td>{terminal_sep}{status}{terminal_pad(status_text, 30)}</td>"
-            f"<td class='revision-cell'>{terminal_sep}{revision}{terminal_pad(revision_text, 44)}</td>"
-            f"<td class='age-cell'>{terminal_sep}{age}{terminal_pad(age_text_value, 8)}</td>"
-            f"<td class='message-cell'>{terminal_sep}{html.escape(message)}</td>"
-            "</tr>"
-        )
-    return "".join(detail_rows)
-
-
-def html_check_table(problem_checks, passing_checks=None):
-    rows = [html_check_rows(problem_checks)]
-    if passing_checks:
-        rows.append(html_check_rows(passing_checks))
-    return (
-        "<div class='table-wrap'><table class='check-table'>"
-        "<thead><tr><th>Check</th><th><span class='terminal-sep'> | </span>Status</th>"
-        "<th><span class='terminal-sep'> | </span>Revision</th><th><span class='terminal-sep'> | </span>Age</th>"
-        "<th><span class='terminal-sep'> | </span>Message</th></tr></thead><tbody>"
-        + "".join(rows)
-        + "</tbody></table></div>"
-    )
-
-
-def html_required_failures(branches):
-    failures = required_failures(branches)
-    if not failures:
-        return ""
-
-    groups = []
-    for branch_label, checks in failures:
-        check_links = []
-        for check in checks:
-            check_name = html.escape(check["check"])
-            link = result_url(check)
-            check_links.append(
-                f"<a href='{html.escape(link)}'>{check_name}</a>" if link else check_name
-            )
-        groups.append(
-            f"<strong>{html.escape(branch_label)}</strong> — {', '.join(check_links)}"
-        )
-
-    return (
-        " <span aria-label='Required CI failures'>· <strong>Required:</strong> "
-        f"{' · '.join(groups)}</span>"
-    )
-
-
-def html_auto_refresh_script():
-    return """
-<script>
-(() => {
-  const page = document.querySelector("[data-generated-at]");
-  const generatedAt = page ? page.dataset.generatedAt : "";
-  const refresh = async () => {
-    try {
-      const url = new URL("status.json", window.location.href);
-      url.searchParams.set("_", Date.now().toString());
-      const response = await fetch(url, { cache: "no-store" });
-      if (!response.ok) return;
-      const data = await response.json();
-      if (data && data.generated_at && data.generated_at !== generatedAt) {
-        window.location.reload();
-      }
-    } catch (error) {
-      // Local file previews and transient publish windows can make fetch fail.
-    }
-  };
-  window.setInterval(refresh, 60000);
-})();
-</script>
-"""
-
-
-def render_html(data):
-    generated = html.escape(data["generated_at"])
-    page_status = overall_status(data["branches"])
-    page_summary_text = summary_text({"status": page_status, "checks": [
-        check for branch in data["branches"] for check in branch["checks"]
-    ]})
-    page_summary = html.escape(page_summary_text)
-    failure_attribution = html_required_failures(data["branches"])
-    rows = []
-    details = []
-    for branch in data["branches"]:
-        branch_status = html.escape(branch["status"])
-        branch_label = html.escape(branch["label"])
-        branch_id = html.escape(html_id(branch["name"]))
-        branch_summary = html_branch_summary(branch)
-        rows.append(
-            f"<tr class='component-row status-{branch_status}' role='link' tabindex='0' "
-            f"onclick=\"location.hash='{branch_id}'\" "
-            f"onkeydown=\"if(event.key==='Enter'||event.key===' '){{event.preventDefault();location.hash='{branch_id}';}}\">"
-            f"<td><span class='status-dot' aria-hidden='true'></span><strong>{branch_label}</strong></td>"
-            f"<td><span class='terminal-sep'> | </span>{html_status_pill(branch['status'])}</td>"
-            f"<td><span class='terminal-sep'> | </span><div class='summary-metrics'>"
-            f"{html_branch_progress(branch)}<span class='branch-summary'>{branch_summary}</span></div></td>"
-            "</tr>"
-        )
-        branch_details = interesting_checks(branch)
-        passing_checks = [
-            check for check in branch["checks"]
-            if check["status"] == SUCCESS and check not in branch_details
-        ]
-        if branch_details or passing_checks:
-            details.append(
-                f"<details id='{branch_id}' class='detail-section status-{branch_status}' open><summary>"
-                "<span class='status-dot' aria-hidden='true'></span>"
-                f"<span>{branch_label} checks</span>"
-                "<span class='disclosure-mark' aria-hidden='true'></span>"
-                f"</summary>{html_check_table(branch_details, passing_checks)}</details>"
-            )
-
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PostGIS CI status</title>
-<link rel="icon" href="data:,">
-<style>
-:root {{
-  color-scheme: light;
-  --bg: #f6f8f7;
-  --panel: #ffffff;
-  --text: #24292e;
-  --muted: #667085;
-  --line: #dfe5e2;
-  --header: #f3f6f4;
-  --brand: #336791;
-  --brand-strong: #2f5f47;
-  --success: #1a7f37;
-  --failure: #cf222e;
-  --running: #0969da;
-  --unknown: #9a6700;
-  --disabled: #6e7781;
-}}
-* {{ box-sizing: border-box; }}
-body {{
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}}
-.page {{
-  max-width: 1040px;
-  margin: 0 auto;
-  padding: 32px 20px 40px;
-}}
-.masthead {{
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-}}
-.brand {{
-  color: var(--brand);
-  font-weight: 700;
-  margin: 0 0 4px;
-}}
-h1 {{
-  font-size: 28px;
-  line-height: 1.2;
-  margin: 0;
-}}
-.generated {{
-  color: var(--muted);
-  margin: 6px 0 0;
-  font-size: 13px;
-}}
-.status-banner {{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-left: 5px solid var(--unknown);
-  border-radius: 8px;
-  padding: 14px 16px;
-  margin-bottom: 16px;
-}}
-.status-banner.status-success {{ border-left-color: var(--success); }}
-.status-banner.status-failure {{ border-left-color: var(--failure); }}
-.status-banner.status-in_progress {{ border-left-color: var(--running); }}
-.status-banner.status-unknown, .status-banner.status-stale {{ border-left-color: var(--unknown); }}
-.status-banner.status-disabled, .status-banner.status-not_applicable {{ border-left-color: var(--disabled); }}
-.banner-title {{
-  font-size: 17px;
-  font-weight: 650;
-}}
-.banner-summary {{
-  color: var(--muted);
-  font-size: 14px;
-}}
-.panel {{
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  margin-top: 16px;
-  overflow: hidden;
-}}
-.panel-heading {{
-  background: var(--header);
-  border-bottom: 1px solid var(--line);
-  padding: 12px 16px;
-  font-weight: 650;
-}}
-.component-list {{ width: 100%; }}
-.component-row {{
-  border-bottom: 1px solid var(--line);
-  cursor: pointer;
-}}
-.component-row:hover {{
-  background: #fbfcfb;
-}}
-.component-row:focus {{
-  outline: 2px solid var(--brand);
-  outline-offset: -2px;
-}}
-.component-row:last-child {{ border-bottom: 0; }}
-.component-row td {{
-  padding: 12px 16px;
-  vertical-align: middle;
-}}
-.component-row td:first-child {{
-  width: 24%;
-  white-space: nowrap;
-}}
-.component-row td:nth-child(2) {{
-  width: 120px;
-  white-space: nowrap;
-}}
-.component-row strong {{
-  margin-left: 10px;
-}}
-.summary-metrics {{
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}}
-.branch-summary {{
-  white-space: nowrap;
-}}
-.summary-chip {{
-  display: inline-block;
-  border-radius: 4px;
-  padding: 1px 5px;
-  margin: 1px 2px 1px 0;
-  font-size: 13px;
-  line-height: 1.35;
-}}
-.chip-success {{
-  color: var(--success);
-  background: #f0fff4;
-}}
-.chip-failure {{
-  color: var(--failure);
-  background: #fff5f6;
-}}
-.chip-in_progress {{
-  color: var(--running);
-  background: #f0f7ff;
-}}
-.chip-unknown, .chip-stale {{
-  color: var(--unknown);
-  background: #fff8e5;
-}}
-.chip-stale-passed {{
-  color: #5b6519;
-  background: #f5f8e8;
-}}
-.chip-stale-fail {{
-  color: #9a4f00;
-  background: #fff3e0;
-}}
-.chip-stale-unknown {{
-  color: var(--unknown);
-  background: #fff8e5;
-}}
-.branch-progress {{
-  display: flex;
-  height: 5px;
-  width: 170px;
-  flex: 0 0 170px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: #eef2f1;
-  opacity: 0.72;
-}}
-.progress-segment {{
-  min-width: 2px;
-}}
-.segment-success {{
-  background: #3f9d61;
-}}
-.segment-failure {{
-  background: #d8757d;
-}}
-.segment-in_progress {{
-  background: #70a7db;
-}}
-.segment-unknown, .segment-stale, .segment-stale-unknown {{
-  background: #c8a24b;
-}}
-.segment-stale-passed {{
-  background: #a4b85d;
-}}
-.segment-stale-fail {{
-  background: #d48a3a;
-}}
-.status-dot {{
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--unknown);
-  display: inline-block;
-}}
-.status-success .status-dot {{ background: var(--success); }}
-.status-failure .status-dot {{ background: var(--failure); }}
-.status-in_progress .status-dot {{ background: var(--running); }}
-.status-unknown .status-dot, .status-stale .status-dot, .status-stale-passed .status-dot, .status-stale-fail .status-dot {{ background: var(--unknown); }}
-.status-disabled .status-dot, .status-not_applicable .status-dot {{ background: var(--disabled); }}
-.status-pill {{
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  width: max-content;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 2px 9px;
-  color: var(--muted);
-  background: #ffffff;
-  font-size: 12px;
-  font-weight: 650;
-  white-space: nowrap;
-}}
-.status-success .status-pill {{ color: var(--success); border-color: #b7dfc1; background: #f0fff4; }}
-.status-failure .status-pill {{ color: var(--failure); border-color: #ffc9cf; background: #fff5f6; }}
-.status-in_progress .status-pill {{ color: var(--running); border-color: #bfdbfe; background: #f0f7ff; }}
-.status-unknown .status-pill, .status-stale .status-pill {{ color: var(--unknown); border-color: #f1d08a; background: #fff8e5; }}
-.status-stale-passed .status-pill, .status-stale.stale-success .status-pill {{ color: #5b6519; border-color: #d8df9f; background: #f5f8e8; }}
-.status-stale-fail .status-pill, .status-stale.stale-failure .status-pill {{ color: #9a4f00; border-color: #efc07a; background: #fff3e0; }}
-tr.status-success .status-pill {{ color: var(--success); border-color: #b7dfc1; background: #f0fff4; }}
-tr.status-failure .status-pill {{ color: var(--failure); border-color: #ffc9cf; background: #fff5f6; }}
-tr.status-in_progress .status-pill {{ color: var(--running); border-color: #bfdbfe; background: #f0f7ff; }}
-tr.status-unknown .status-pill, tr.status-stale .status-pill, tr.status-stale-passed .status-pill, tr.status-stale-fail .status-pill {{ color: var(--unknown); border-color: #f1d08a; background: #fff8e5; }}
-.detail-section {{
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  margin-top: 14px;
-  scroll-margin-top: 18px;
-}}
-.detail-section summary {{
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  list-style: none;
-  padding: 12px 16px;
-  font-weight: 650;
-}}
-.detail-section summary::-webkit-details-marker {{ display: none; }}
-.disclosure-mark {{
-  margin-left: auto;
-  color: var(--muted);
-  font-size: 18px;
-  line-height: 1;
-}}
-.detail-section[open] .disclosure-mark::before {{ content: "⌃"; }}
-.detail-section:not([open]) .disclosure-mark::before {{ content: "⌄"; }}
-.table-wrap {{ overflow-x: auto; border-top: 1px solid var(--line); }}
-table {{
-  border-collapse: collapse;
-  width: 100%;
-  font-size: 13px;
-}}
-.check-table {{
-  min-width: 940px;
-  table-layout: fixed;
-}}
-.check-table th:nth-child(1), .check-table td:nth-child(1) {{
-  width: 180px;
-}}
-.check-table th:nth-child(2), .check-table td:nth-child(2) {{
-  width: 140px;
-}}
-.check-table th:nth-child(3), .check-table td:nth-child(3) {{
-  width: 220px;
-}}
-.check-table th:nth-child(4), .check-table td:nth-child(4) {{
-  width: 80px;
-}}
-th, td {{
-  border-bottom: 1px solid var(--line);
-  padding: 9px 12px;
-  text-align: left;
-  vertical-align: top;
-}}
-tr:last-child td {{ border-bottom: 0; }}
-th {{
-  background: var(--header);
-  color: var(--muted);
-  font-weight: 650;
-}}
-.check-name {{ font-weight: 600; }}
-.previous-note {{
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 12px;
-  white-space: nowrap;
-}}
-.revision-link {{
-  white-space: normal;
-  overflow-wrap: anywhere;
-}}
-.revision-cell {{
-  max-width: 210px;
-}}
-.age-cell {{
-  white-space: nowrap;
-}}
-.message-cell {{
-  min-width: 260px;
-}}
-.terminal-sep {{
-  display: none;
-}}
-.terminal-pad {{
-  display: none;
-}}
-time {{
-  white-space: nowrap;
-}}
-a {{ color: var(--brand); text-decoration-thickness: 1px; text-underline-offset: 2px; }}
-a:hover {{ color: var(--brand-strong); }}
-.footer {{
-  margin-top: 18px;
-  color: var(--muted);
-  font-size: 13px;
-}}
-@media (max-width: 700px) {{
-  .page {{ padding: 24px 14px 32px; }}
-  .masthead {{ display: block; }}
-  h1 {{ font-size: 24px; }}
-  .component-row td {{ padding: 10px 12px; }}
-  .status-banner {{ align-items: flex-start; }}
-}}
-</style>
-</head>
-<body>
-<main class="page" data-generated-at="{generated}">
-<header class="masthead">
-<div>
-<p class="brand">PostGIS</p>
-<h1>CI status</h1>
-<p class="generated">Generated {generated} · <a class="raw-json-link" href="status.json">Raw JSON</a></p>
-</div>
-</header>
-<section class="status-banner status-{html.escape(page_status)}" aria-label="Overall CI status">
-<span class="status-dot" aria-hidden="true"></span>
-<div>
-<div class="banner-title"><span aria-hidden="true">{html.escape(status_mark(page_status))}</span> {html.escape(html_status_label(page_status))}</div>
-<div class="banner-summary">{page_summary}{failure_attribution}</div>
-</div>
-</section>
-<section class="panel" aria-label="Supported branch status">
-<div class="panel-heading">Supported branches</div>
-<table class="component-list"><thead><tr><th>Branch</th><th><span class="terminal-sep"> | </span>Status</th><th><span class="terminal-sep"> | </span>Summary</th></tr></thead><tbody>
-{''.join(rows)}
-</tbody></table>
-</section>
-{''.join(details)}
-</main>
-{html_auto_refresh_script()}
-</body>
-</html>
-"""
-
-
-def write_html_output(data, output_dir, atomic_switch=False):
-    if atomic_switch:
-        switch_html_output(data, output_dir)
-    else:
-        write_html_files(data, output_dir)
+def write_json_output(data, output_file):
+    write_atomic(output_file, json.dumps(data, indent=2, sort_keys=True) + "\n")
 
 
 def load_config(path):
@@ -2463,70 +1777,3 @@ def load_config(path):
     if "branches" not in config or "checks" not in config:
         raise ConfigError("configuration must contain branches and checks")
     return config
-
-
-def positive_int(value):
-    try:
-        parsed = int(value)
-    except ValueError as exc:
-        raise argparse.ArgumentTypeError("must be an integer") from exc
-    if parsed <= 0:
-        raise argparse.ArgumentTypeError("must be greater than 0")
-    return parsed
-
-
-def parse_args(argv):
-    parser = argparse.ArgumentParser(description="Report PostGIS CI status")
-    parser.add_argument("legacy_mode", nargs="?", choices=("html",), help=argparse.SUPPRESS)
-    parser.add_argument("--branch", help="check one branch name or label")
-    parser.add_argument("--config", default=str(pathlib.Path(__file__).with_suffix(".json")))
-    parser.add_argument("--format", choices=("terminal", "json", "html"), default="terminal", help="output format")
-    parser.add_argument("--output-dir", default="ci-status")
-    parser.add_argument(
-        "--cache",
-        help="reuse successful results from this status.json when their revision is still the branch head",
-    )
-    parser.add_argument(
-        "--atomic-switch",
-        action="store_true",
-        help="write HTML output to a complete staging directory, then atomically switch the output symlink",
-    )
-    parser.add_argument("--json", action="store_true", help=argparse.SUPPRESS)
-    parser.add_argument("--no-color", action="store_true")
-    parser.add_argument("--verbose", action="store_true", help="show all checks, including passing checks")
-    parser.add_argument("--include-eol", action="store_true", help="include configured EOL branches")
-    parser.add_argument("--timeout", type=positive_int, default=30, help="per-request timeout in seconds")
-    args = parser.parse_args(argv)
-    if args.legacy_mode and args.format != "terminal":
-        parser.error("legacy html mode cannot be combined with --format")
-    if args.json and args.format != "terminal":
-        parser.error("--json cannot be combined with --format")
-    if args.legacy_mode:
-        args.format = "html"
-    if args.json:
-        args.format = "json"
-    return args
-
-
-def main(argv=None):
-    args = parse_args(sys.argv[1:] if argv is None else argv)
-    try:
-        config = load_config(args.config)
-        cache = load_status_cache(args.cache)
-        data = collect_status(config, args.branch, args.include_eol, args.timeout, cache)
-        if args.format == "html":
-            write_html_output(data, args.output_dir, atomic_switch=args.atomic_switch)
-            return 0
-        if args.format == "json":
-            print(json.dumps(data, indent=2, sort_keys=True))
-        else:
-            use_color = not args.no_color and sys.stdout.isatty()
-            print_terminal(data, use_color=use_color, verbose=args.verbose)
-        return exit_code_for_terminal(data)
-    except ConfigError as exc:
-        print(f"ci-status: {exc}", file=sys.stderr)
-        return 3
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
