@@ -1,8 +1,8 @@
 # Documentation utilities
 
-Run these tools from the PostGIS repository root. Standalone scripts stay at
-this level; multi-file applications are importable Python packages with one
-`python3 -m` entry point.
+Run these tools from the PostGIS repository root. User-facing commands and
+standalone scripts stay at this level, implementation modules live in
+subpackages, and unit tests live under `tests/`.
 
 ## Generated inventories
 
@@ -12,19 +12,18 @@ this level; multi-file applications are importable Python packages with one
 Actions, GitLab, Woodpecker, and Jenkins:
 
 ```sh
-python3 -m utils.docs.ci_status
-python3 -m utils.docs.ci_status --branch stable-3.6
-python3 -m utils.docs.ci_status --format html --output-dir ci-status
-python3 -m utils.docs.ci_status --format html --atomic-switch \
-  --output-dir /var/www/postgis/ci
+python3 utils/docs/ci_status.py
+python3 utils/docs/ci_status.py --branch stable-3.6
+python3 utils/docs/ci_status.py --format json
+python3 utils/docs/ci_status.py --format json --output status.json
 ```
 
 * `ci_status/config.json` is the reviewable inventory of branches and checks.
 * `ci_status/report.py` contains provider collection, status reduction, and
-  terminal/HTML report generation.
+  terminal and JSON report generation.
 * `ci_status/cli.py` owns command-line parsing and process exit codes.
-* `test_ci_status.py` covers provider responses, cache safety, status summaries,
-  and atomic publication.
+* `tests/test_ci_status.py` covers provider responses, cache safety, status
+  summaries, and JSON publication.
 
 Add a CI service or branch in `config.json`. Retire a service by changing its
 provider to `disabled`, setting `required` to false, and recording the reason in
@@ -38,9 +37,9 @@ rules.
 compatibility model:
 
 ```sh
-python3 -m utils.docs.support_matrix update
-python3 -m utils.docs.support_matrix check
-python3 -m utils.docs.support_matrix build compatibility.json
+python3 utils/docs/support_matrix.py update
+python3 utils/docs/support_matrix.py check
+python3 utils/docs/support_matrix.py build compatibility.json
 ```
 
 * `support_matrix/update.py` refreshes source-derived metadata and preserves
@@ -65,6 +64,6 @@ for the data contract and website handoff.
 * `check_news.sh` validates release ordering, duplicate headings, and changed
   release notes.
 
-The `test_*.py` files beside these tools exercise their parsers and failure
-paths. Build and CI callers use the same paths; when moving a tool, update those
+The `tests/test_*.py` files exercise these tools' parsers and failure paths.
+Build and CI callers use the same paths; when moving a tool, update those
 callers in the same change.

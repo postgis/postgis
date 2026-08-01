@@ -157,7 +157,7 @@ visual-examples-run: EXAMPLETEST_CHECK_ENVIRONMENT = no
 visual-examples-run: exampletest-run
 
 exampletest-unit:
-	python3 $(top_srcdir)/utils/docs/test_postgis_exampletest.py
+	python3 $(top_srcdir)/utils/docs/tests/test_postgis_exampletest.py
 
 exampletest-run: exampletest-unit
 	$(MAKE) -C ../doc postgis-out.xml

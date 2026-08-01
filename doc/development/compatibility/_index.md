@@ -46,9 +46,9 @@ upstream service is unavailable.
 Run commands from the repository root:
 
 ```sh
-python3 -m utils.docs.support_matrix update
-python3 -m utils.docs.support_matrix check
-python3 -m utils.docs.support_matrix build /tmp/compatibility.json
+python3 utils/docs/support_matrix.py update
+python3 utils/docs/support_matrix.py check
+python3 utils/docs/support_matrix.py build /tmp/compatibility.json
 ```
 
 `update` is the only command that mutates repository data. It refreshes

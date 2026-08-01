@@ -607,7 +607,7 @@ def validate_matrix(data: dict[str, Any]) -> list[str]:
     if known and known != actual:
         errors.append(
             "upgrade_paths.known_versions is stale; run "
-            "python3 -m utils.docs.support_matrix update"
+            "python3 utils/docs/support_matrix.py update"
         )
     return errors
 

@@ -129,7 +129,7 @@ jobs:
           libxml2-utils python3
     - name: 'DocBook QA unit tests'
       run: |
-        python3 utils/docs/test_docbook_qa.py
+        python3 utils/docs/tests/test_docbook_qa.py
     - name: 'DocBook source lint'
       run: |
         xmllint --xinclude --noent doc/postgis.xml > postgis-out.xml 2>/dev/null

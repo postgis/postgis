@@ -782,11 +782,11 @@ check-regress:
 
 check-unit: $(CHECK_UNIT_TARGET)
 
-check-docbook-qa-unit: $(abs_top_srcdir)/utils/docs/docbook_qa.py $(abs_top_srcdir)/utils/docs/test_docbook_qa.py $(abs_top_srcdir)/utils/docs/xml_tree.py
+check-docbook-qa-unit: $(abs_top_srcdir)/utils/docs/docbook_qa.py $(abs_top_srcdir)/utils/docs/tests/test_docbook_qa.py $(abs_top_srcdir)/utils/docs/xml_tree.py
 ifeq ($(PYTHON3),)
 	@echo "Skipping $@: python3 is not available."
 else
-	$(PYTHON3) $(abs_top_srcdir)/utils/docs/test_docbook_qa.py
+	$(PYTHON3) $(abs_top_srcdir)/utils/docs/tests/test_docbook_qa.py
 endif
 
 check-gardentest-escaping: $(abs_top_srcdir)/utils/test_gardentest_escaping.py $(srcdir)/xsl/test_gardentest_escaping.xsl $(srcdir)/xsl/postgis_gardentest.sql.xsl

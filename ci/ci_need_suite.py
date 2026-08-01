@@ -77,7 +77,7 @@ UPGRADE_GLOBS = (
 NEWS_GLOBS = (
     "NEWS",
     "utils/docs/check_news.sh",
-    "utils/docs/test_check_news.py",
+    "utils/docs/tests/test_check_news.py",
 )
 
 

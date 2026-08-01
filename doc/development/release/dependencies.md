@@ -132,10 +132,10 @@ data and publication contract. The support-policy summary remains at
 
 When updating release or dependency support:
 
-1. Run `python3 -m utils.docs.support_matrix update`; a changed upstream format
+1. Run `python3 utils/docs/support_matrix.py update`; a changed upstream format
    retains the corresponding last-known-good fields in `cache.json` and
    records a visible warning without rewriting `matrix.json`.
-2. Run `python3 -m utils.docs.support_matrix check` before publishing. It validates
+2. Run `python3 utils/docs/support_matrix.py check` before publishing. It validates
    the source data, resolved compatibility cells, patch overlays, dependency
    inventory, and generated payload schema.
 3. Check the website support policy before changing branch, release, or

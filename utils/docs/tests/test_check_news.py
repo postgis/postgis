@@ -10,7 +10,7 @@ from unittest import mock
 from pathlib import Path
 
 
-CHECK_NEWS = Path(__file__).with_name("check_news.sh")
+CHECK_NEWS = Path(__file__).resolve().parents[1] / "check_news.sh"
 
 BASE_NEWS = """\
 PostGIS 4.0.0rc1

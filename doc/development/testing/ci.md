@@ -134,18 +134,18 @@ Update the inventory when any of these change:
   should have badges.
 
 The checked-in inventory is `utils/docs/ci_status/config.json`. Update that file
-instead of copying badge rows into prose. Run the package from the repository
+instead of copying badge rows into prose. Run the command from the repository
 root:
 
 ```sh
-python3 -m utils.docs.ci_status
-python3 -m utils.docs.ci_status --branch stable-3.6
-python3 -m utils.docs.ci_status --format json
-python3 -m utils.docs.ci_status --format html --output-dir /tmp/postgis-ci
+python3 utils/docs/ci_status.py
+python3 utils/docs/ci_status.py --branch stable-3.6
+python3 utils/docs/ci_status.py --format json
+python3 utils/docs/ci_status.py --format json --output /tmp/postgis-ci/status.json
 ```
 
-The default report checks non-EOL branches and expands only checks that need
-attention. Use `--verbose` for the complete matrix and `--include-eol` for
+The default terminal report checks non-EOL branches and prints details only for
+checks that need attention. Use `--verbose` for the complete inventory and `--include-eol` for
 historical branches. GitHub access can use `GITHUB_TOKEN` or `GH_TOKEN`; when the
 API is unavailable, eligible workflow checks fall back to their public badge.
 
@@ -156,16 +156,16 @@ provider to `disabled`, setting `required` to false, and preserving a concise
 reason in `message`. Do not delete retired entries until their history is no
 longer useful for interpreting the dashboard.
 
-For publication, the HTML command writes `index.html` and `status.json`
-atomically. `--atomic-switch` additionally builds a complete sibling directory
-and switches a live output symlink only after both files exist. A red status is
-valid report content, so HTML generation succeeds even when required CI is red.
-Release work still needs a current provider readback; a generated page proves
-inventory and reporting behavior, not that every external service is healthy.
+For publication, `--output` writes the JSON file atomically and succeeds even
+when required CI is red, because a red status is valid dashboard data. The
+`postgis.net` repository owns the Hugo page and browser renderer that consume
+this file; this repository does not emit website HTML or CSS. Release work still
+needs a current provider readback: generated data proves inventory and reporting
+behavior, not that every external service is healthy.
 
-Run `python3 utils/docs/test_ci_status.py` after changing provider parsing,
-cache behavior, summary reduction, or publication. The package layout and the
-other documentation utilities are described in `utils/docs/README.md`.
+Run `python3 utils/docs/tests/test_ci_status.py` after changing provider parsing,
+cache behavior, summary reduction, or JSON publication. The package layout and
+the other documentation utilities are described in `utils/docs/README.md`.
 
 ## Relationship To Other Docs
 

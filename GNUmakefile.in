@@ -103,7 +103,7 @@ check-news:
 	@if test -z "$(PYTHON3)"; then \
 		echo "SKIP: NEWS unit tests require python3"; \
 	else \
-		$(PYTHON3) -B $(top_srcdir)/utils/docs/test_check_news.py; \
+		$(PYTHON3) -B $(top_srcdir)/utils/docs/tests/test_check_news.py; \
 	fi
 	$(top_srcdir)/utils/docs/check_news.sh $(top_srcdir)
 
@@ -114,7 +114,7 @@ check-contributor-credits:
 	elif test -z "$(PYTHON3)"; then \
 		echo "SKIP: contributor credits require python3"; \
 	else \
-		$(PYTHON3) -B $(top_srcdir)/utils/docs/test_check_contributor_credits.py && \
+		$(PYTHON3) -B $(top_srcdir)/utils/docs/tests/test_check_contributor_credits.py && \
 		$(PYTHON3) -B $(top_srcdir)/utils/docs/check_contributor_credits.py --repo $(top_srcdir); \
 	fi
 

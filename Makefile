@@ -33,6 +33,6 @@ check-contributor-credits:
 	@if test ! -e ".git"; then \
 		echo "SKIP: contributor credits require a Git worktree"; \
 	else \
-		python3 -B utils/docs/test_check_contributor_credits.py && \
+		python3 -B utils/docs/tests/test_check_contributor_credits.py && \
 		python3 -B utils/docs/check_contributor_credits.py --repo .; \
 	fi
