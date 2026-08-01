@@ -167,15 +167,18 @@ steps:
   s390x-big-endian-qemu:
     image: s390x/debian@sha256:4b236f9aafe8a6201c6dca29ce78c28e1eb1e314ecedc2cd2c545f9e49d060e3
     pull: true
-    failure: ignore
     # s390x is the only realistic big-endian coverage. It is intentionally not
     # run on every pull request: QEMU plus the geospatial dependency closure is
     # expensive, so master pushes, tags, and scheduled runs keep the signal
     # without making every contributor wait for full emulation. Pull requests
     # that change this workflow also run it so image and startup changes prove
-    # themselves before merge. Keep it non-blocking while the first big-endian
-    # findings are still being triaged; Woodpecker will show the failed step
-    # without failing the whole workflow.
+    # themselves before merge.
+    #
+    # It used to carry `failure: ignore`, kept "while the first big-endian
+    # findings are still being triaged". Over the 200 most recent pipelines this
+    # step completed four times and passed all four; there were no findings under
+    # triage, so the mute had nothing left to justify it and a failure here now
+    # fails the workflow like any other.
     when:
       - event: [push, tag, cron]
         branch: master
