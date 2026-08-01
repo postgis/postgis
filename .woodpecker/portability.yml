@@ -61,7 +61,7 @@ variables:
     runuser -u postgres -- initdb -D "$${PGDATA}" -A trust --no-sync
     runuser -u postgres -- pg_ctl -D "$${PGDATA}" \
       -l "$${PGROOT}/postgresql.log" \
-      -o "-F -k $${PGHOST} -c synchronous_commit=off -c full_page_writes=off" \
+      -o "-F -k $${PGHOST} -c synchronous_commit=off -c full_page_writes=off $${PORTABILITY_PG_SETTINGS:-}" \
       -w start
     trap 'runuser -u postgres -- pg_ctl -D "$${PGDATA}" -m fast -w stop || true' EXIT
     psql -c 'select version()' template1
@@ -157,6 +157,7 @@ steps:
       - uname -m | grep -E '^(armv7l|armv8l)$'
       - export PORTABILITY_TIER=armhf-berrie-qemu
       - export PORTABILITY_CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer"
+      - export PORTABILITY_PG_SETTINGS="-c autovacuum=off"
       - *prepare-debian
       - *abi-env
       - *start-postgresql
