@@ -6704,7 +6704,7 @@ $$
 LANGUAGE 'plpgsql' STABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE VIEW geometry_columns AS
-WITH constraint_defs AS (
+WITH constraint_defs AS NOT MATERIALIZED (
     -- Trim trailing NOT VALID so metadata inference works before constraint validation (#4828).
     SELECT connamespace,
            conrelid,
