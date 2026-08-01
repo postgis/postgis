@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta1.
 
 * Bug Fixes *
 
+ - [liblwgeom] Reject malformed GSERIALIZED NURBS before curve
+          evaluation (Darafei Praliaskouski)
  - Make the computed-columns regression test assert the query plan instead of racing two
           stopwatches, so it no longer fails at random under CI load
           (Darafei Praliaskouski)
