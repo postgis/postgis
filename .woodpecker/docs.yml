@@ -120,10 +120,6 @@ steps:
     pull: true
     depends_on: [ build-images, check-xml ]
     commands:
-      - apt-get update
-      # Install librsvg2-bin here because the PDF target renders SVG assets during this step.
-      - apt-get install -y --no-install-recommends librsvg2-bin
-      - rm -rf /var/lib/apt/lists/*
       - make -C build-docs/doc/ pdf
     when:
       - path: *when_path
@@ -726,5 +722,155 @@ steps:
     commands:
       - make -C build-docs/doc/po/be local-check-cheatsheets
     depends_on: [ cheatsheets-be, build-cheatsheets, check-cheatsheets-uk ]
+    when:
+      - path: *when_localized
+
+### TARGET pdf
+  # Localized pdf steps are intentionally chained to cap memory per step; this is a memory-control
+  # measure, not a dependency between languages. Breaking the chain restores the fan-out that caused the kills.
+  # The chain is why every localized step carries the same when_localized filter: Woodpecker refuses a whole
+  # pipeline when an included step depends on one its conditions filtered out, so the languages are included
+  # or excluded together. Per-language filters broke every single-language translation commit.
+  pdf-it_IT:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/it_IT local-pdf
+    depends_on: [ build-images, check-xml-it_IT ]
+    when:
+      - path: *when_localized
+
+  pdf-pt_BR:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/pt_BR local-pdf
+    depends_on: [ build-images, check-xml-pt_BR, pdf-it_IT ]
+    when:
+      - path: *when_localized
+
+  pdf-fr:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/fr local-pdf
+    depends_on: [ build-images, check-xml-fr, pdf-pt_BR ]
+    when:
+      - path: *when_localized
+
+  pdf-es:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/es local-pdf
+    depends_on: [ build-images, check-xml-es, pdf-fr ]
+    when:
+      - path: *when_localized
+
+  pdf-pl:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/pl local-pdf
+    depends_on: [ build-images, check-xml-pl, pdf-es ]
+    when:
+      - path: *when_localized
+
+  pdf-ka:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/ka local-pdf
+    depends_on: [ build-images, check-xml-ka, pdf-pl ]
+    when:
+      - path: *when_localized
+
+  pdf-ko_KR:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/ko_KR local-pdf
+    depends_on: [ build-images, check-xml-ko_KR, pdf-ka ]
+    when:
+      - path: *when_localized
+
+  pdf-da:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/da local-pdf
+    depends_on: [ build-images, check-xml-da, pdf-ko_KR ]
+    when:
+      - path: *when_localized
+
+  pdf-de:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/de local-pdf
+    depends_on: [ build-images, check-xml-de, pdf-da ]
+    when:
+      - path: *when_localized
+
+  pdf-ja:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/ja local-pdf
+    depends_on: [ build-images, check-xml-ja, pdf-de ]
+    when:
+      - path: *when_localized
+
+  pdf-ru:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/ru local-pdf
+    depends_on: [ build-images, check-xml-ru, pdf-ja ]
+    when:
+      - path: *when_localized
+
+  pdf-zh_Hans:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/zh_Hans local-pdf
+    depends_on: [ build-images, check-xml-zh_Hans, pdf-ru ]
+    when:
+      - path: *when_localized
+
+  pdf-ro:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/ro local-pdf
+    depends_on: [ build-images, check-xml-ro, pdf-zh_Hans ]
+    when:
+      - path: *when_localized
+
+  pdf-sv:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/sv local-pdf
+    depends_on: [ build-images, check-xml-sv, pdf-ro ]
+    when:
+      - path: *when_localized
+
+  pdf-uk:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/uk local-pdf
+    depends_on: [ build-images, check-xml-uk, pdf-sv ]
+    when:
+      - path: *when_localized
+
+  pdf-be:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc/po/be local-pdf
+    depends_on: [ build-images, check-xml-be, pdf-uk ]
     when:
       - path: *when_localized

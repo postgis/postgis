@@ -30,6 +30,7 @@ service that owns the behavior:
 | Debbie build, docs, and release jobs | `ci/debbie/`, the Debbie Jenkins jobs, and release-process notes |
 | Winnie Windows jobs | `ci/winnie/` and the Winnie Jenkins jobs |
 | Bessie and Berrie64 jobs | `ci/bessie/`, `ci/berrie64/`, and the corresponding Jenkins worker labels |
+| OSGeo build-test images used by Woodpecker | Gitea `postgis/postgis-docker`, publishing `repo.osgeo.org/postgis/build-test:*` |
 | Docker build images used by GitHub Actions | `postgis/postgis-build-env` image tags referenced from `.github/workflows/ci.yml` |
 | Docker build images used by Woodpecker | `repo.osgeo.org/postgis/build-test:*` image tags referenced from `.woodpecker/*.yml` |
 | Woodpecker MinGW Wine job | `.woodpecker/mingw-wine.yml` and `ci/woodie/postgis_mingw_wine.sh` |
@@ -37,6 +38,19 @@ service that owns the behavior:
 When a dashboard row describes dependency versions, operating systems, branch
 coverage, or test modes, the row should be regenerated from those sources or
 checked against them before publication.
+
+## Image Prerequisites
+
+Missing packages, tools, fonts, or system libraries in CI images are image
+defects. Do not fix them by installing packages inside downstream workflow
+steps. Patch the image source, rebuild the image, and let the downstream
+workflow fail fast until the rebuilt image is available.
+
+For Woodpecker jobs that use `repo.osgeo.org/postgis/build-test:*`, the current
+image source is Gitea `postgis/postgis-docker`. For GitHub Actions jobs that use
+`postgis/postgis-build-env:*`, the current image source is
+`postgis/postgis-build-env`. Trac ticket #6108 tracks consolidating those
+development/build-environment image repositories under a clearer Gitea owner.
 
 ## Build Parallelism Sizing
 
