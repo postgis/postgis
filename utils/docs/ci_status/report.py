@@ -26,6 +26,18 @@ DISABLED = "disabled"
 NOT_APPLICABLE = "not_applicable"
 JENKINS_STALE_QUEUE_HOURS = 4
 
+STATUS_DISPLAY_ORDER = {
+    FAILURE: 0,
+    UNKNOWN: 1,
+    STALE: 1,
+    STALE_PASSED: 1,
+    STALE_FAILED: 1,
+    IN_PROGRESS: 2,
+    SUCCESS: 3,
+    NOT_APPLICABLE: 4,
+    DISABLED: 5,
+}
+
 SYMBOLS = {
     SUCCESS: ("✅", "OK"),
     FAILURE: ("❌", "FAIL"),
@@ -63,6 +75,14 @@ class ConfigError(Exception):
 
 class ProviderContentError(Exception):
     pass
+
+
+def check_status_sort_key(check):
+    status = check.get("status")
+    try:
+        return STATUS_DISPLAY_ORDER[status]
+    except KeyError as exc:
+        raise ConfigError(f"unsupported check status: {status!r}") from exc
 
 
 RECOVERABLE_PROVIDER_ERRORS = (
@@ -1410,6 +1430,7 @@ def aggregate(config, results):
         by_branch.setdefault(result["branch"], []).append(result)
 
     for branch_name, checks in by_branch.items():
+        checks.sort(key=check_status_sort_key)
         required = [check for check in checks if check.get("required") and check["status"] not in (DISABLED, NOT_APPLICABLE)]
         if any(check["status"] == FAILURE for check in required):
             status = FAILURE
@@ -1583,18 +1604,8 @@ def interesting_checks(branch, verbose=False):
         and (check["status"] in (FAILURE, UNKNOWN, IN_PROGRESS, NOT_APPLICABLE) or is_stale_status(check["status"]))
         for check in branch["checks"]
     )
-    status_order = {
-        FAILURE: 0,
-        UNKNOWN: 1,
-        STALE: 1,
-        STALE_FAILED: 1,
-        STALE_PASSED: 1,
-        IN_PROGRESS: 2,
-        SUCCESS: 3,
-        NOT_APPLICABLE: 4,
-    }
     visible = []
-    for index, check in enumerate(branch["checks"]):
+    for check in branch["checks"]:
         if (
             (check["status"] in (FAILURE, UNKNOWN, IN_PROGRESS) or is_stale_status(check["status"]))
             or (check["status"] == NOT_APPLICABLE and check.get("provider") == "jenkins")
@@ -1604,9 +1615,9 @@ def interesting_checks(branch, verbose=False):
                 and check["status"] == SUCCESS
             )
         ) and check["status"] != DISABLED:
-            visible.append((index, check))
-    visible.sort(key=lambda item: (status_order.get(item[1]["status"], 99), item[0]))
-    return [check for index, check in visible]
+            visible.append(check)
+    visible.sort(key=check_status_sort_key)
+    return visible
 
 
 def safe_http_href(value):
