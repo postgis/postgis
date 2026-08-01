@@ -6,6 +6,14 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 These are only changes since 3.7.0beta1.
 
+* Breaking Changes *
+
+ - #2630, Recreate five-argument UpdateGeometrySRID during extension upgrade
+          to correct the first argument name from catalogn_name to catalog_name
+          (Darafei Praliaskouski)
+ - #2630, Fix typo in five-argument UpdateGeometrySRID catalog_name parameter
+          (Darafei Praliaskouski)
+
 * Bug Fixes *
 
  - Stop the extension upgrade script running ANALYZE inside its transaction,
@@ -38,8 +46,6 @@ These are only changes since 3.7.0beta1.
  - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
           (Darafei Praliaskouski)
  - #6110, regression in speed with geometry_columns
- - #2630, Fix typo in five-argument UpdateGeometrySRID catalog_name parameter
-          (Darafei Praliaskouski)
 
 * Enhancements *
 
