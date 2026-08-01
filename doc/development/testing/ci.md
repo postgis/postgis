@@ -159,7 +159,9 @@ longer useful for interpreting the dashboard.
 For publication, `--output` writes the JSON file atomically and succeeds even
 when required CI is red, because a red status is valid dashboard data. The
 checks in each branch are ordered by operational status, with failures and
-uncertain results before running and passing checks. The
+uncertain results before running and passing checks. An unrecognized provider
+status is published as a red failure row with the reported value instead of
+preventing the rest of the dashboard from being generated. The
 `postgis.net` repository owns the Hugo page and browser renderer that consume
 this file; this repository does not emit website HTML or CSS. Release work still
 needs a current provider readback: generated data proves inventory and reporting

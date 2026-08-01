@@ -79,10 +79,25 @@ class ProviderContentError(Exception):
 
 def check_status_sort_key(check):
     status = check.get("status")
-    try:
-        return STATUS_DISPLAY_ORDER[status]
-    except KeyError as exc:
-        raise ConfigError(f"unsupported check status: {status!r}") from exc
+    if isinstance(status, str):
+        return STATUS_DISPLAY_ORDER.get(status, STATUS_DISPLAY_ORDER[FAILURE])
+    return STATUS_DISPLAY_ORDER[FAILURE]
+
+
+def normalize_check_status(check):
+    status = check.get("status")
+    if isinstance(status, str) and status in STATUS_DISPLAY_ORDER:
+        return check
+
+    normalized = dict(check)
+    normalized["reported_status"] = status
+    normalized["status"] = FAILURE
+    normalized["status_label"] = "Unsupported status"
+    diagnostic = f"provider reported unsupported status {status!r}"
+    if check.get("message"):
+        diagnostic += f"; {check['message']}"
+    normalized["message"] = diagnostic
+    return normalized
 
 
 RECOVERABLE_PROVIDER_ERRORS = (
@@ -1427,6 +1442,7 @@ def aggregate(config, results):
     by_branch = {}
     branch_order = {branch["name"]: branch for branch in config["branches"]}
     for result in results:
+        result = normalize_check_status(result)
         by_branch.setdefault(result["branch"], []).append(result)
 
     for branch_name, checks in by_branch.items():
