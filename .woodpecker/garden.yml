@@ -1,9 +1,17 @@
+# Dedicated Woodpecker garden workflow.
+# Garden currently exceeds the five-hour Woodpecker deadline before generating
+# its SQL, so keep it out of push fan-out and run it only by cron or manually.
+
 labels:
   platform: linux/amd64
 when:
-  - event: push
-    branch: master
-  - event: tag
+  - event: pull_request
+    path:
+      include:
+        - .woodpecker/garden.yml
+        - .woodpecker/qa-expensive.yml
+  - event: manual
+  - event: cron
 variables:
   test-image: &test-image repo.osgeo.org/postgis/build-test:debian13
   steps-env: &steps-env
@@ -11,7 +19,7 @@ variables:
     - export PATH=/usr/lib/postgresql/$${PGVER}/bin:$${PATH}
     - export POSTGIS_REGRESS_DB_OWNER=postgis_reg_unprivileged_user
     - export SRCDIR=$${CI_WORKSPACE}
-    - export BUILDDIR=$${SRCDIR}/build/qa-$${QA_MODE}-pg$${PGVER}
+    - export BUILDDIR=$${SRCDIR}/build/garden-pg$${PGVER}
     - export QA_REGRESS_HOOKS="--after-create-db-script $${CI_WORKSPACE}/regress/hooks/configure-pgextwlist.sql"
     - pg_config --version
   steps-start-postgresql: &steps-start-postgresql
@@ -26,32 +34,20 @@ clone:
       partial: false
 
 steps:
-  autogen:
+  garden:
     image: *test-image
     pull: true
     commands:
-      - ./autogen.sh
-
-  coverage:
-    image: *test-image
-    depends_on: autogen
-    commands:
-      - export QA_MODE=coverage
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - mkdir -p "$${BUILDDIR}"
       - cd "$${BUILDDIR}"
       - apt-get update
-      - apt-get install -y --no-install-recommends lcov
+      - apt-get install -y --no-install-recommends proj-bin
       - rm -rf /var/lib/apt/lists/*
+      - projsync --system-directory --file au_icsm_GDA94_GDA2020_conformal_and_distortion.tif
       - $${SRCDIR}/configure
-        CFLAGS="-g -O0 --coverage"
-        LDFLAGS="--coverage"
-        --enable-debug
+        CFLAGS="-g -O2 -mtune=generic -fno-omit-frame-pointer"
+        LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
       - make -j1
-      - make check RUNTESTFLAGS="--verbose $${QA_REGRESS_HOOKS}"
-      - lcov --capture --directory "$${BUILDDIR}" --output-file "$${BUILDDIR}/coverage.info" --ignore-errors source
-      - lcov --list "$${BUILDDIR}/coverage.info"
-
-# Coverage is much more expensive than the sanitizer and string-literal smoke
-# modes, so keep it off pull-request fan-out.
+      - timeout 270m make garden
