@@ -33,9 +33,6 @@ steps:
   usan-clang:
     image: *test-image
     depends_on: autogen
-    # Current master trips this sanitizer in liblwgeom/cunit/cu_misc.c;
-    # keep the signal visible without blocking unrelated pull requests.
-    failure: ignore
     when:
       - matrix:
           QA_MODE: usan_clang
