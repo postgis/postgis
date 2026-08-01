@@ -68,6 +68,77 @@ static int gserialized2_read_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 static int gserialized2_payload_bounds(const GSERIALIZED *g, uint8_t **start, uint8_t **end);
 static int gserialized2_validate_geometry_buffer(uint8_t *data_ptr, uint8_t *data_end, lwflags_t lwflags, size_t *size);
 
+static int
+gserialized2_validate_nurbs(uint32_t npoints,
+			    uint32_t degree,
+			    uint32_t nweights,
+			    uint32_t nknots,
+			    const double *weights,
+			    const double *knots)
+{
+	uint32_t i;
+	size_t expected_nknots;
+
+	if (degree < 1 || degree > 10)
+	{
+		lwerror("NURBS: degree %u outside valid range [1,10]", degree);
+		return LW_FAILURE;
+	}
+
+	if (npoints == 0)
+	{
+		if (nweights != 0 || nknots != 0)
+		{
+			lwerror("NURBS: empty curve cannot declare weights or knots");
+			return LW_FAILURE;
+		}
+		return LW_SUCCESS;
+	}
+
+	if (npoints < degree + 1)
+	{
+		lwerror("NURBS: npoints (%u) must be at least degree + 1 (%u)", npoints, degree + 1);
+		return LW_FAILURE;
+	}
+
+	if (nweights > 0 && nweights != npoints)
+	{
+		lwerror("NURBS: nweights (%u) must equal number of control points (%u)", nweights, npoints);
+		return LW_FAILURE;
+	}
+
+	expected_nknots = (size_t)npoints + degree + 1;
+	if (nknots > 0 && nknots != expected_nknots)
+	{
+		lwerror("NURBS: nknots (%u) must equal npoints + degree + 1 (%zu)", nknots, expected_nknots);
+		return LW_FAILURE;
+	}
+
+	for (i = 0; i < nweights; i++)
+	{
+		if (!isfinite(weights[i]) || weights[i] <= 0.0)
+		{
+			lwerror("NURBS: weight[%u] = %g must be finite and > 0", i, weights[i]);
+			return LW_FAILURE;
+		}
+	}
+
+	for (i = 1; i < nknots; i++)
+	{
+		if (!isfinite(knots[i]) || knots[i] < knots[i - 1])
+		{
+			lwerror("NURBS: knot[%u] = %g must be finite and >= knot[%u] = %g",
+				i,
+				knots[i],
+				i - 1,
+				knots[i - 1]);
+			return LW_FAILURE;
+		}
+	}
+
+	return LW_SUCCESS;
+}
+
 static size_t
 gserialized2_buffer_size(const GSERIALIZED *g)
 {
@@ -441,14 +512,16 @@ gserialized2_validate_geometry_buffer(uint8_t *data_ptr, uint8_t *data_end, lwfl
 	}
 
 	case NURBSCURVETYPE: {
-		uint32_t nweights, nknots;
+		uint32_t degree, nweights, nknots;
 		size_t weight_bytes, knot_bytes, point_bytes;
+		const uint8_t *weights_ptr, *knots_ptr;
 		consumed = 6 * sizeof(uint32_t);
 		if (!gserialized2_range_available(data_ptr, data_end, consumed))
 		{
 			lwerror("%s: GSERIALIZED NURBS header exceeds payload size", __func__);
 			return LW_FAILURE;
 		}
+		degree = gserialized2_read_uint32_checked(data_ptr + 2 * sizeof(uint32_t), data_end, "NURBS degree");
 		nweights =
 		    gserialized2_read_uint32_checked(data_ptr + 3 * sizeof(uint32_t), data_end, "NURBS weight count");
 		nknots =
@@ -468,6 +541,12 @@ gserialized2_validate_geometry_buffer(uint8_t *data_ptr, uint8_t *data_end, lwfl
 			lwerror("%s: GSERIALIZED NURBS size overflows", __func__);
 			return LW_FAILURE;
 		}
+		weights_ptr = data_ptr + 6 * sizeof(uint32_t);
+		knots_ptr = weights_ptr + weight_bytes;
+		if (gserialized2_validate_nurbs(
+			count, degree, nweights, nknots, (const double *)weights_ptr, (const double *)knots_ptr) ==
+		    LW_FAILURE)
+			return LW_FAILURE;
 		break;
 	}
 
@@ -2218,6 +2297,17 @@ lwnurbscurve_from_gserialized2_buffer(uint8_t *data_ptr, lwflags_t lwflags, size
 
     /* Skip 4-byte pad to align following doubles (weights/knots/coords) */
     data_ptr += sizeof(uint32_t);
+
+    if (gserialized2_validate_nurbs(npoints,
+				    degree,
+				    nweights,
+				    nknots,
+				    (const double *)data_ptr,
+				    (const double *)(data_ptr + sizeof(double) * nweights)) == LW_FAILURE)
+    {
+	    lwfree(curve);
+	    return NULL;
+    }
 
     /*
      * VARIABLE SECTION 1: Read weight values (if any)

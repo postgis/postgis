@@ -527,6 +527,8 @@ gserialized2_from_hexbytes(const char *hex)
 	return g;
 }
 
+static void assert_gserialized2_malformed_rejected(GSERIALIZED *g);
+
 static void
 test_gserialized2_malformed_collection_count(void)
 {
@@ -542,6 +544,28 @@ test_gserialized2_malformed_collection_count(void)
 	CU_ASSERT_PTR_NULL(geom);
 	CU_ASSERT_NOT_EQUAL(strlen(cu_error_msg), 0);
 
+	lwfree(g);
+}
+
+static void
+test_gserialized2_malformed_nurbs_degree(void)
+{
+	LWGEOM *lwgeom = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0))", LW_PARSER_CHECK_NONE);
+	GSERIALIZED *g;
+	uint32_t *payload;
+
+	CU_ASSERT_PTR_NOT_NULL_FATAL(lwgeom);
+	g = gserialized2_from_lwgeom(lwgeom, NULL);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(g);
+
+	payload = (uint32_t *)gserialized2_get_geometry_p(g);
+	CU_ASSERT_EQUAL(payload[0], NURBSCURVETYPE);
+	CU_ASSERT_EQUAL(payload[1], 3);
+	payload[2] = 3; /* Three control points cannot support a degree-3 curve. */
+
+	assert_gserialized2_malformed_rejected(g);
+
+	lwgeom_free(lwgeom);
 	lwfree(g);
 }
 
@@ -658,6 +682,7 @@ void gserialized2_suite_setup(void)
 	PG_ADD_TEST(suite, test_gserialized2_extended_flags);
 	PG_ADD_TEST(suite, test_gserialized2_peek_first_point);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_collection_count);
+	PG_ADD_TEST(suite, test_gserialized2_malformed_nurbs_degree);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_declared_size);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_short_allocation);
 	PG_ADD_TEST(suite, test_gserialized2_wkb_roundtrip_float_rounded_box);
