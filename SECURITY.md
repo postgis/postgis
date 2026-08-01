@@ -36,6 +36,6 @@ Upon receiving a vulnerability report, the security team will:
   including the fix.
 
 Please note that issues in unsupported releases
-(https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS)
+(https://postgis.net/development/compatibility/)
 will likely not be addressed, and issues with third party dependencies
 need to be reported to the team maintaining them.

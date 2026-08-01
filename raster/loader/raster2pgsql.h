@@ -1,7 +1,6 @@
 /*
  *
  * PostGIS Raster loader
- * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright 2001-2003 Refractions Research Inc.
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>

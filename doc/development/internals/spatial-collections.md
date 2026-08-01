@@ -5,14 +5,10 @@ weight: 40
 geekdocHidden: false
 ---
 
-The historical `DevWikiSpatialCollectionTutorial` page described an internal
-`SPATIAL_COLLECTION` abstraction intended to erase the difference between
-vector geometries and rasters. That abstraction is not present in the current
-source tree: there are no remaining `sc_create_*`, `SPATIAL_COLLECTION`, or
-`sc_sampling_engine` implementation paths.
-
-The useful idea is still worth keeping: PostGIS has two kinds of collection
-work that should not be confused.
+PostGIS does not implement a shared `SPATIAL_COLLECTION` abstraction for
+vector geometries and rasters: there are no `sc_create_*`,
+`SPATIAL_COLLECTION`, or `sc_sampling_engine` implementation paths. It has two
+kinds of collection work that should not be confused.
 
 * Geometry collections are real geometry values: `MULTI*`,
   `GEOMETRYCOLLECTION`, curves, TINs, and polyhedral surfaces.
@@ -20,8 +16,7 @@ work that should not be confused.
   and overlay workflows that move values between rasters and geometries.
 
 Current code keeps those areas separate. When changing collection behavior,
-check which side of that boundary the function is on before reusing examples
-from the old spatial-collection tutorial.
+check which side of that boundary the function is on.
 
 ## Geometry Collections
 
@@ -117,7 +112,7 @@ or SQL `NULL`. Those are four different questions.
 
 ## Raster/Vector Crossings
 
-The old spatial-collection abstraction tried to model both raster and vector
+A shared raster/vector abstraction would need to model both raster and vector
 objects as things that can answer:
 
 1. Does point `P` belong to this object?
@@ -143,9 +138,8 @@ rows are intersected with the input geometry using the normal geometry
 `ST_Intersection`. Raster-returning variants and clipping paths instead
 construct or modify raster cells.
 
-This is close to the old tutorial's intent, but the implementation boundary is
-different. There is no single current "spatial collection" object that a caller
-wraps around a raster or geometry and samples through a shared interface.
+There is no single current "spatial collection" object that a caller wraps
+around a raster or geometry and samples through a shared interface.
 
 ## Practical Guidance
 
@@ -158,7 +152,7 @@ When touching code near this topic:
    C files, especially `raster/rt_pg/rtpostgis.sql.in`,
    `raster/rt_pg/rtpg_geometry.c`, `raster/rt_pg/rtpg_mapalgebra.c`, and
    `raster/rt_pg/rtpg_spatial_relationship.c`.
-3. Do not revive the old `SPATIAL_COLLECTION` API without a new design review.
+3. Do not introduce a `SPATIAL_COLLECTION` API without a design review.
    Current code has evolved around explicit SQL functions rather than a shared
    internal wrapper.
 4. Preserve the distinction between container operations and topology
@@ -167,6 +161,3 @@ When touching code near this topic:
 5. Preserve the distinction between raster values and geometry membership.
    Raster workflows often carry a numeric `geomval`; geometry collections do
    not have a generic per-point value vector.
-
-The old tutorial remains useful as design history, but maintained developer
-documentation should describe the current implementation boundary first.

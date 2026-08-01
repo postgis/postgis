@@ -212,6 +212,38 @@
 	</variablelist>
 </section>
 
+<section xml:id="credits_raster_origins">
+	<title>PostGIS Raster Origins</title>
+	<para>PostGIS raster discussions date to 2002 and included early PGCHIP
+	experiments. Xing Lin developed the <command>geotiff2pgraster</command>
+	PGRaster prototype during Google Summer of Code 2007. The WKT Raster project
+	began in 2008, Jorge Arévalo developed the first GDAL driver prototype during
+	Google Summer of Code 2009, and the 2010 FOSS4G code sprint agreed to make WKT
+	Raster the PostGIS raster type. Raster support shipped as part of PostGIS 2.0
+	in 2012.</para>
+	<para>The early implementation team included Pierre Racine, Mateusz Loskot,
+	Sandro Santilli, Jorge Arévalo, Bborie Park, David Zwarg, and Regina Obe.
+	Their work established the raster type, loader, GDAL integration,
+	raster/vector operations, map algebra, documentation, and testing that became
+	the current raster subsystem.</para>
+	<para>Other recorded contributions include Jeff Adams's early sprint work,
+	Qing Liu's raster distance analysis, Maurício Carvalho Mathias de Paulo's
+	QGIS raster plugin and related paper with Lubia Vinhas, and Ignacio Brodin's
+	gvSIG raster plugin and presentation with Jorge Sanz. Bryce L. Nordgren
+	created early raster coverage and seamless-architecture diagrams. Pierre
+	Racine wrote the original raster/vector tutorial and
+	created its walkthrough and early API diagrams.</para>
+	<para>The historical project planning record credits Steve Cumming and
+	Université Laval with funding Pierre Racine's work from June 2008 through
+	July 2012; Martin Daly and Cadcorp with funding about six months of Mateusz
+	Loskot's work through June 2009; Tyler Erickson and Michigan Tech Research
+	Institute with a $1,200 USD contribution; Miguel Lizondo and Deimos Space
+	with support for about two years of Jorge Arévalo's work through June 2011;
+	and the Center for
+	Vectorborne Diseases at UC Davis with funding Bborie Park's work from March
+	2010 through July 2012.</para>
+</section>
+
 <section xml:id="credits_other_contributors"><title>Other Contributors</title>
 	<variablelist>
 	  <varlistentry>
@@ -303,6 +335,7 @@
 					<member>Haribabu Kommi</member>
 					<member>Harrissou Sant-anna</member>
 					<member>Havard Tveite</member>
+					<member>Ignacio Brodin</member>
 					<member>IIDA Tetsushi</member>
 					<member>Ingvild Nystuen</member>
 					<member>Jackie Leng</member>
@@ -342,6 +375,7 @@
 					<member>Luca S. Percich</member>
 					<member>Lucas C. Villa Real</member>
 					<member>Ludovic Hirlimann</member>
+					<member>Lubia Vinhas</member>
 					<member>Maksim Korotkov</member>
 					<member>Manuel Morillo</member>
 					<member>Maria Arias de Reyna</member>
@@ -352,6 +386,7 @@
 					<member>Matt Amos</member>
 					<member>Matt Bretl</member>
 					<member>Matthias Bay</member>
+					<member>Maurício Carvalho Mathias de Paulo</member>
 					<member>Maxim Kochetkov</member>
 					<member>Maxime Guillaud</member>
 					<member>Maxime van Noppen</member>
@@ -375,6 +410,7 @@
 					<member>Pawel Ostrowski</member>
 					<member>Peter Nguyen</member>
 					<member>Pierre Cardinal</member>
+					<member>Qing Liu</member>
 					<member>Rafal Magda</member>
 					<member>Ralph Mason</member>
 					<member>Rémi Cura</member>
@@ -389,6 +425,7 @@
 					<member>Shinichi Sugiyama</member>
 					<member>Shoaib Burq</member>
 					<member>Silvio Grosso</member>
+					<member>Simon Greener</member>
 					<member>Stefan Corneliu Petrea</member>
 					<member>Steffen Macke</member>
 					<member>Stepan Kuzmin</member>
@@ -409,6 +446,7 @@
 					<member>Vincent Mora</member>
 					<member>Vincent Picavet</member>
 					<member>Volf Tomáš</member>
+					<member>Xing Lin</member>
 					<member>Yoichi Kayama</member>
 					<member>Yuri Astrakhan</member>
 					<member>Zuo Chenwei</member>

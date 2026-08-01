@@ -147,6 +147,17 @@
         <xref linkend="performance_tips"/> for common performance problems.</para></listitem>
       </varlistentry>
       <varlistentry>
+        <term>If you are connecting a desktop GIS</term>
+        <listitem><para>Use the client's current database documentation for its
+        user interface and supported geometry types. For example, the
+        <link xlink:href="https://docs.qgis.org/latest/en/docs/training_manual/databases/db_manager.html">QGIS
+        DB Manager lesson</link> covers PostgreSQL connections, table layers,
+        SQL query layers, import, and export. A query layer should return a
+        stable unique identifier and a geometry column with a known SRID and
+        geometry type. Expensive read-only queries can be exposed through a
+        view or materialized view and indexed as appropriate.</para></listitem>
+      </varlistentry>
+      <varlistentry>
         <term>If you need a particular function</term>
         <listitem><para>Use <xref linkend="reference"/> or
         <xref linkend="PostGIS_Special_Functions_Index"/>. Function pages state
