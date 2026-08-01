@@ -31,7 +31,9 @@ variables:
       --enable-lto
       --enable-lto
       CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror"
-    - make -j
+    # Matrix jobs provide the parallelism. Keep each build serial: the PostGIS
+    # make graph can otherwise race generated protobuf headers.
+    - make -j1
   steps-pg-test-preinstall: &steps-pg-test-preinstall
     - cd build/pg$${PGVER}
     - make check
@@ -57,91 +59,70 @@ clone:
     depth: 50
 
 steps:
-
   autogen:
     image: *test-image
     pull: true
     commands:
       - ./autogen.sh
 
-  build-pg12:
+  build:
     image: *test-image
     depends_on: autogen
-    environment:
-      PGVER: 12
     commands:
       - <<: *steps-env
       - <<: *steps-pg-build
 
-  build-pg17:
+  test-preinstall:
     image: *test-image
-    depends_on: autogen
-    environment:
-       PGVER: 17
-    commands:
-      - <<: *steps-env
-      - <<: *steps-pg-build
-
-  check-pg12:
-    image: *test-image
-    depends_on: build-pg12
-    environment:
-      PGVER: 12
+    depends_on: build
+    when:
+      - matrix:
+          REGRESS_SUITE: preinstall
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - <<: *steps-pg-test-preinstall
 
-  check-pg17:
+  test-install:
     image: *test-image
-    depends_on: build-pg17
-    environment:
-       PGVER: 17
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
-      - <<: *steps-pg-test-preinstall
-
-  installcheck-pg12:
-    image: *test-image
-    depends_on: check-pg12
-    environment:
-      PGVER: 12
+    depends_on: build
+    when:
+      - matrix:
+          REGRESS_SUITE: install
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
       - <<: *steps-pg-install
       - <<: *steps-pg-test-install
 
-  installcheck-pg17:
+  test-upgrades:
     image: *test-image
-    depends_on: check-pg17
-    environment:
-      PGVER: 17
+    depends_on: build
+    when:
+      - matrix:
+          REGRESS_SUITE: extension-upgrade
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
-      - <<: *steps-pg-test-install
-
-  upgradecheck-pg12:
-    image: *test-image
-    depends_on: installcheck-pg12
-    environment:
-      PGVER: 12
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
+      - make -C "$${BUILDDIR}" staged-install
       - <<: *steps-pg-install
       - <<: *steps-pg-test-all-upgrades
 
-  upgradecheck-pg17:
-    image: *test-image
-    depends_on: installcheck-pg17
-    environment:
-      PGVER: 17
-    commands:
-      - <<: *steps-env
-      - <<: *steps-start-postgresql
-      - <<: *steps-pg-install
-      - <<: *steps-pg-test-all-upgrades
+# Each matrix entry is an independent Woodpecker workflow with its own clone,
+# build tree, PostgreSQL instance, and five-hour runner deadline. The entries
+# below preserve the previous stable-3.5 coverage units while removing the
+# single serial regress workflow that could not finish inside the deadline.
+matrix:
+  include:
+    - PGVER: "12"
+      REGRESS_SUITE: preinstall
+    - PGVER: "17"
+      REGRESS_SUITE: preinstall
+    - PGVER: "12"
+      REGRESS_SUITE: install
+    - PGVER: "17"
+      REGRESS_SUITE: install
+    - PGVER: "12"
+      REGRESS_SUITE: extension-upgrade
+    - PGVER: "17"
+      REGRESS_SUITE: extension-upgrade
