@@ -8345,10 +8345,10 @@ CREATE OR REPLACE VIEW raster_columns AS
 		pg_attribute a,
 		pg_namespace n
 	WHERE a.attisdropped = false
-		AND a.atttypid = 'raster'::regtype
+		AND a.atttypid = '@extschema@.raster'::regtype
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"] )
+		AND c.relkind = ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"] )
 		AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace) AND pg_catalog.has_column_privilege(c.oid, a.attname,'SELECT'::text);
 
 ------------------------------------------------------------------------------
@@ -8356,9 +8356,28 @@ CREATE OR REPLACE VIEW raster_columns AS
 -------------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refschema name, reftable name, refcolumn name)
-	RETURNS boolean AS
-	$$ SELECT COALESCE((SELECT TRUE FROM @extschema@.raster_columns WHERE r_table_catalog = current_database() AND r_table_schema = $3 AND r_table_name = $4 AND r_raster_column = $5), FALSE) $$
-	LANGUAGE 'sql' STABLE
+	RETURNS boolean AS $$
+	SELECT COALESCE((
+		SELECT TRUE
+		FROM pg_catalog.pg_class c
+		JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+		JOIN pg_catalog.pg_attribute a ON a.attrelid = c.oid
+		WHERE n.nspname = $3
+			AND c.relname = $4
+			AND a.attname = $5
+			AND a.attisdropped = false
+			AND a.atttypid = pg_catalog.pg_typeof($1)::pg_catalog.oid
+			AND c.relkind = ANY (ARRAY[
+				'r'::pg_catalog."char",
+				'v'::pg_catalog."char",
+				'm'::pg_catalog."char",
+				'f'::pg_catalog."char",
+				'p'::pg_catalog."char"
+			])
+			AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace)
+			AND pg_catalog.has_column_privilege(c.oid, a.attname, 'SELECT'::text)
+	), FALSE)
+	$$ LANGUAGE 'sql' STABLE
 	COST 100;
 
 -- Changed: 3.1.2
@@ -8445,16 +8464,19 @@ CREATE OR REPLACE VIEW raster_overviews AS
 	FROM
 		pg_class c,
 		pg_attribute a,
-		pg_type t,
 		pg_namespace n,
 		(SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 		    FROM pg_constraint) AS s
-	WHERE t.typname = 'raster'::name
-		AND a.attisdropped = false
-		AND a.atttypid = t.oid
+	WHERE a.attisdropped = false
+		AND a.atttypid = '@extschema@.raster'::regtype
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND c.relkind = ANY(ARRAY['r'::char, 'v'::char, 'm'::char, 'f'::char])
+		AND c.relkind = ANY(ARRAY[
+			'r'::pg_catalog."char",
+			'v'::pg_catalog."char",
+			'm'::pg_catalog."char",
+			'f'::pg_catalog."char"
+		])
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND s.consrc LIKE '%_overview_constraint(%'
