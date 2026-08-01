@@ -439,13 +439,34 @@ SELECT ST_Scale('LINESTRING(1 2 3 4,1 1 1 1)',
 <para>This example scales X and Y values using a false origin.</para>
 		<programlisting>SELECT ST_Scale('LINESTRING(1 1,2 2)', 'POINT(2 2)', 'POINT(1 1)'::geometry);</programlisting>
 <screen>LINESTRING(1 1,3 3)</screen>
+
+		<para>This example constructs an ellipse centered at (10, 20), with X radius 8,
+		Y radius 4, and rotated 30 degrees counter-clockwise. Scaling and rotation use
+		the center as their origin, so the ellipse keeps both its position and SRID.</para>
+		<programlisting>WITH params AS (
+  SELECT
+    ST_SetSRID(ST_Point(10, 20), 3857) AS center,
+    8.0 AS x_radius,
+    4.0 AS y_radius,
+    radians(30) AS angle
+)
+SELECT ST_Rotate(
+         ST_Scale(
+           ST_Buffer(center, 1, 'quad_segs=32'),
+           ST_MakePoint(x_radius, y_radius),
+           center
+         ),
+         angle,
+         center
+       ) AS ellipse
+FROM params;</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_TransScale"/></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_Buffer"/>, <xref linkend="ST_MakePoint"/>, <xref linkend="ST_Rotate"/>, <xref linkend="ST_TransScale"/></para>
 	  </refsection>
 	</refentry>
 

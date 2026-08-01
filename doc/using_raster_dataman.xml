@@ -482,6 +482,104 @@ AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting
     </para>
     </section>
   </section>
+  <section xml:id="RT_Raster_Coverages">
+		<title>Raster Coverages and Raster/Vector Analysis</title>
+		<para>A coverage is a way to interpret spatial data as a mapping from a
+		<emphasis>domain</emphasis> of locations to a <emphasis>range</emphasis> of
+		values. Evaluating a coverage means asking for the value at a location;
+		an inverse query asks for the locations whose values match a condition.
+		PostGIS does not expose a generic ISO 19123 coverage SQL type, but geometry
+		tables and raster values provide the building blocks for both directions.</para>
+		<para>A coverage can be continuous, with values calculated or interpolated
+		for arbitrary locations, or discrete, with values supplied by stored spatial
+		objects or grid cells. The coverage model describes how locations map to
+		values, independently of whether those values come from an equation, a table,
+		or one or more raster values. A time column or function argument can add a
+		temporal dimension without changing that distinction.</para>
+		<para>In a vector coverage, a geometry column supplies the domain and other
+		columns supply attributes in the range. A vector range can contain text,
+		numbers, or another spatial value, provided its meaning and type are
+		consistent wherever the coverage is defined. In a raster, each cell location
+		is part of the domain and the band values at that cell form the range. Other
+		columns in the same table row describe the raster value or tile as a whole;
+		they do not attach separate values to individual cells.</para>
+		<para>A logical raster coverage may be stored as one raster value or as many
+		tiles in a table. Tiles that belong to one coverage should have compatible
+		SRIDs, scales, alignment, band counts, pixel types, and NODATA conventions.
+		The constraints exposed by <xref linkend="RT_Raster_Columns"/> record and
+		validate those properties.</para>
+		<formalpara>
+		  <title>Raster table arrangements.</title>
+		  <para>A raster column can represent an image warehouse, a tiled coverage,
+		  or a collection of rasterized objects. These arrangements have different
+		  assumptions about tile size, alignment, gaps, and overlaps. PostGIS does
+		  not infer the intended arrangement from the column type alone.</para>
+		</formalpara>
+		<informaltable>
+		  <tgroup cols="3">
+		    <thead>
+		      <row><entry>Arrangement</entry><entry>Row relationship</entry><entry>Typical use</entry></row>
+		    </thead>
+		    <tbody>
+		      <row><entry>Image warehouse</entry><entry>Independent rasters; sizes,
+		      alignment, and extents may differ or overlap</entry><entry>Cataloging
+		      unrelated source images</entry></row>
+		      <row><entry>Irregular tiled coverage</entry><entry>One logical coverage
+		      with gaps allowed, variable tile sizes, and normally no overlap</entry><entry>Incremental or
+		      source-driven mosaics</entry></row>
+		      <row><entry>Regular tiled coverage</entry><entry>One alignment and tile
+		      size with no overlap; gaps may remain at the boundary or inside the coverage</entry><entry>
+		      Indexed analysis over a large coverage</entry></row>
+		      <row><entry>Rectangular regular coverage</entry><entry>Equal aligned
+		      tiles fill a rectangular extent without gaps or overlaps</entry><entry>Predictable
+		      block processing and overview generation</entry></row>
+		      <row><entry>Separate tiled images</entry><entry>Each image is internally
+		      regular but stored in its own table or partition</entry><entry>Keeping
+		      source-image identity and lifecycle separate</entry></row>
+		      <row><entry>Raster-object coverage</entry><entry>Each row is a rasterized
+		      feature; extents and sizes may differ and overlap</entry><entry>Object
+		      models where cells replace or supplement vector geometry</entry></row>
+		    </tbody>
+		  </tgroup>
+		</informaltable>
+		<para>Use <xref linkend="RT_AddRasterConstraints"/> to record common
+		SRID, scale, alignment, band, extent, and regular-blocking properties, and
+		use spatial indexes and application constraints for relationships that the
+		catalog cannot express.</para>
+		<para>Queries against a tiled coverage normally have two stages:</para>
+		<orderedlist>
+		  <listitem><para>Use the raster spatial index and
+		  <xref linkend="RT_ST_Intersects"/> to select candidate tiles.</para></listitem>
+		  <listitem><para>Read, clip, aggregate, or vectorize values inside those
+		  tiles with functions such as <xref linkend="RT_ST_Value"/>,
+		  <xref linkend="RT_ST_Clip"/>,
+		  <xref linkend="RT_ST_SummaryStatsAgg"/>, and
+		  <xref linkend="RT_ST_DumpAsPolygons"/>.</para></listitem>
+		</orderedlist>
+		<para><xref linkend="RT_ST_DumpAsPolygons"/> returns
+		<xref linkend="geomval"/> rows that pair geometries with cell values. This
+		allows ordinary geometry overlay and filtering to answer inverse coverage
+		queries, but polygonizing many cells is usually more expensive than keeping
+		the operation in raster space.</para>
+		<para>Choose boundary semantics deliberately. Clipping and aggregating raster
+		pixels is usually the shorter and faster path. If a partial boundary cell must
+		contribute in proportion to its covered area, intersect the geometry with the
+		<xref linkend="geomval"/> rows and calculate an area-weighted result in an
+		appropriate projected coordinate system. That exact partial-cell method costs
+		more because it vectorizes the selected cells.</para>
+		<para>Tile size affects both sides of the indexed query: smaller tiles reduce
+		the amount of raster data inspected for each candidate row, while increasing
+		row and index overhead. Benchmark representative queries instead of treating
+		one tile size as a universal default.</para>
+		<para>For a current end-to-end raster/vector pattern, load and tile data with
+		<xref linkend="RT_Raster_Loader"/>, then see the building example in
+		<xref linkend="RT_ST_SummaryStats"/>. It selects intersecting tiles, clips
+		them to each polygon, and combines per-tile statistics into one result per
+		feature. For point observations such as animal locations, first buffer the
+		points in an appropriate projected coordinate system, then apply the same
+		tile selection, clipping, and aggregation pattern to an elevation or other
+		continuous raster coverage.</para>
+  </section>
   <section xml:id="RT_Raster_Catalog">
 		<title>Raster Catalogs</title>
 		<para>There are two raster catalog views that come packaged with PostGIS.  Both views utilize information embedded in the constraints of the raster tables.  As a result

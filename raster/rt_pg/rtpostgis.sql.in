@@ -2,7 +2,6 @@
 --
 --
 -- PostGIS Raster - Raster Type for PostGIS
--- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
 -- Copyright (c) 2015-2017 Regina Obe <lr@pcorp.us>
 -- Copyright (c) 2009-2024 Sandro Santilli <strk@kbt.io>

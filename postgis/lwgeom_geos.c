@@ -2370,9 +2370,7 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
  * from Regione Toscana - Sistema Informativo per il Governo
  * del Territorio e dell'Ambiente (RT-SIGTA).
  *
- * Thanks to the PostGIS community for sharing poly/line ideas [1]
- *
- * [1] http://trac.osgeo.org/postgis/wiki/UsersWikiSplitPolygonWithLineString
+ * Thanks to the PostGIS community for sharing poly/line ideas.
  *
  */
 Datum ST_Split(PG_FUNCTION_ARGS);

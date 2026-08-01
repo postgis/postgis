@@ -30,7 +30,7 @@ SELECT 'T3.16', ST_AsGML(3,'MULTIPOLYGON EMPTY'::geometry);
 SELECT 'T3.17', ST_AsGML(3,'MULTILINESTRING EMPTY'::geometry);
 SELECT 'T3.18', ST_AsGML(3,'GEOMETRYCOLLECTION EMPTY'::geometry);
 
--- See http://trac.osgeo.org/postgis/wiki/DevWikiEmptyGeometry
+-- See https://postgis.net/development/docs/internals/empty-geometry/
 
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,

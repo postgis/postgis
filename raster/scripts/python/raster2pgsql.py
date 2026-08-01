@@ -4,8 +4,6 @@
 # This is a simple utility used to dump GDAL dataset into HEX WKB stream.
 # It's considered as a prototype of raster2pgsql tool planned to develop
 # in future.
-# For more details about raster2pgsql tool, see Specification page:
-# http://trac.osgeo.org/postgis/wiki/WKTRaster
 #
 # The script requires Python bindings for GDAL.
 # Available at http://trac.osgeo.org/gdal/wiki/GdalOgrInPython

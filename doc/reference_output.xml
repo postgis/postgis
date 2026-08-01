@@ -1078,6 +1078,24 @@ SELECT ST_AsGML(
 <para>Decimal degrees.</para>
 <programlisting language="sql">SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));</programlisting>
 <screen role="text-primary">2.3250 degrees S 3.2342 degrees W</screen>
+<para>To convert parsed degree, minute, and second components to decimal
+degrees, apply the cardinal-direction sign explicitly.</para>
+<programlisting language="sql"><![CDATA[WITH dms(label, degrees, minutes, seconds, hemisphere) AS (
+  VALUES
+    ('latitude', 43::numeric, 0::numeric, 50.60::numeric, 'S'),
+    ('longitude', 147::numeric, 12::numeric, 18.20::numeric, 'E')
+)
+SELECT label,
+       round(
+         (CASE WHEN hemisphere IN ('S', 'W') THEN -1 ELSE 1 END)
+         * (degrees + minutes / 60 + seconds / 3600),
+         9
+       ) AS decimal_degrees
+FROM dms;]]></programlisting>
+<screen role="text-primary"><![CDATA[   label   | decimal_degrees
+-----------+-----------------
+ latitude  |   -43.014055556
+ longitude |   147.205055556]]></screen>
 <para>Excessively large values are normalized.</para>
 <programlisting language="sql">SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));</programlisting>
 <screen role="text-primary">72°19'29.928"S 57°45'56.757"E</screen>

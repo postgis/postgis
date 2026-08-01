@@ -148,7 +148,7 @@ minimum_postgis_version_for_postgresql_major_version()
   supportfile=${TMPDIR}/minimum_supported_version_for_postgresql
 
   if ! test -e ${supportfile}; then
-    # Source: https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS
+    # Source: https://postgis.net/development/compatibility/
     cat > ${supportfile} <<EOF
 9.6:2.3
 10:2.4

@@ -332,6 +332,7 @@ FROM (SELECT 'LINESTRING(1 2,4 5,6 7)'::geometry As the_line) As foo;</programli
 segments AS (
   SELECT
     s.i,
+    d.line,
     d.pt,
     ST_MakeLine(ST_PointN(d.line, s.i), ST_PointN(d.line, s.i + 1)) AS segment
   FROM data AS d
@@ -340,20 +341,21 @@ segments AS (
 SELECT
   i AS segment_number,
   round(ST_Distance(segment, pt)::numeric, 3) AS distance,
-  ST_ClosestPoint(segment, pt) AS closest_point
+  ST_ClosestPoint(segment, pt) AS closest_point,
+  ST_AddPoint(line, ST_ClosestPoint(segment, pt), i) AS line_with_closest_point
 FROM segments
 ORDER BY ST_Distance(segment, pt)
 LIMIT 1;</programlisting>
-<screen> segment_number | distance |   closest_point
-----------------+----------+--------------------
-              2 |    0.071 | POINT(15.05 15.05)</screen>
+<screen> segment_number | distance |   closest_point    |              line_with_closest_point
+----------------+----------+--------------------+----------------------------------------------------
+              2 |    0.071 | POINT(15.05 15.05) | LINESTRING(0 0,10 10,15.05 15.05,20 20,30 30)</screen>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_Length2D"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineSubstring"/></para>
+			<para><xref linkend="ST_AddPoint"/>, <xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_Length2D"/>, <xref linkend="ST_LineInterpolatePoint"/>, <xref linkend="ST_LineSubstring"/></para>
 		  </refsection>
 		</refentry>
 
