@@ -40,6 +40,10 @@ steps:
     commands:
       - <<: *steps-env
       - <<: *steps-start-postgresql
+      # configure is generated, not committed.  qa-expensive.yml runs autogen.sh
+      # as its own step and every build step depends_on it; this workflow is a
+      # single step, so it has to generate configure itself before using it.
+      - ./autogen.sh
       - mkdir -p "$${BUILDDIR}"
       - cd "$${BUILDDIR}"
       - apt-get update
