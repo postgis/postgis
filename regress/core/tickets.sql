@@ -1813,3 +1813,56 @@ SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
 SELECT 'makepolygon-null-holes', ST_NPoints(ST_MakePolygon(
 	'LINESTRING ZM (0 0 0 0,0 1 0 0,1 1 0 0,0 0 0 0)'::geometry,
 	ARRAY[NULL::geometry]));
+
+-- -------------------------------------------------------------------------------------
+-- #6110, geometry_columns view should be fast even with many spatial tables
+CREATE SCHEMA test6110;
+
+CREATE FUNCTION test6110_check() RETURNS text AS $$
+DECLARE
+    t0 timestamptz;
+    t1 timestamptz;
+    elapsed interval;
+    n bigint;
+    tolerance interval;
+BEGIN
+    tolerance := interval '2 seconds' * COALESCE(
+        NULLIF(current_setting('test.executor_slow_factor', true), ''), '1'
+    )::double precision;
+
+    SELECT count(*) INTO n FROM geometry_columns
+      WHERE f_table_schema = 'test6110';
+    IF n <> 1000 THEN
+        RETURN 'FAIL: count=' || n || ' (expected 1000)';
+    END IF;
+
+    t0 := clock_timestamp();
+    SELECT count(*) INTO n FROM geometry_columns
+      WHERE f_table_schema = 'test6110';
+    t1 := clock_timestamp();
+    elapsed := t1 - t0;
+
+    RAISE LOG 'geometry_columns count of test6110 took % (rows=%)', elapsed, n;
+    IF elapsed > tolerance THEN
+        RETURN 'FAIL: count took ' || elapsed || ' > ' || tolerance;
+    END IF;
+    RETURN 'PASS';
+END;
+$$ LANGUAGE plpgsql;
+
+DO $$
+DECLARE i integer;
+BEGIN
+    FOR i IN 1..500 LOOP
+        EXECUTE format('CREATE TABLE test6110.typmod_%s (geom geometry(Point, 4326))', i);
+        EXECUTE format('CREATE TABLE test6110.constraint_%s (id integer)', i);
+        EXECUTE format('SELECT AddGeometryColumn(%L, %L, %L, 4326, %L, 2, false)',
+                       'test6110', 'constraint_' || i, 'geom', 'POINT');
+    END LOOP;
+END
+$$;
+
+SELECT '#6110', test6110_check();
+
+DROP FUNCTION test6110_check();
+DROP SCHEMA test6110 CASCADE;

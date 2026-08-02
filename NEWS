@@ -35,6 +35,7 @@ These are only changes since 3.7.0beta1.
           geometry data (Darafei Praliaskouski)
  - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
           (Darafei Praliaskouski)
+ - #6110, regression in speed with geometry_columns
 
 * Enhancements *
 
