@@ -1864,5 +1864,7 @@ $$;
 
 SELECT '#6110', test6110_check();
 
+SET client_min_messages TO WARNING;
 DROP FUNCTION test6110_check();
 DROP SCHEMA test6110 CASCADE;
+RESET client_min_messages;
