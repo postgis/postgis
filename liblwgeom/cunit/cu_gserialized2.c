@@ -529,6 +529,20 @@ gserialized2_from_hexbytes(const char *hex)
 
 static void assert_gserialized2_malformed_rejected(GSERIALIZED *g);
 
+#if defined(__GNUC__) || defined(__clang__)
+#define CUNIT_NOINLINE __attribute__((noinline))
+#else
+#define CUNIT_NOINLINE
+#endif
+
+static CUNIT_NOINLINE uint8_t *
+gserialized2_test_payload_p(GSERIALIZED *g)
+{
+	return (uint8_t *)(void *)gserialized2_get_geometry_p(g);
+}
+
+#undef CUNIT_NOINLINE
+
 static void
 test_gserialized2_malformed_collection_count(void)
 {
@@ -552,16 +566,22 @@ test_gserialized2_malformed_nurbs_degree(void)
 {
 	LWGEOM *lwgeom = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0))", LW_PARSER_CHECK_NONE);
 	GSERIALIZED *g;
-	uint32_t *payload;
+	uint8_t *payload;
+	uint32_t type;
+	uint32_t npoints;
+	uint32_t degree = 3;
 
 	CU_ASSERT_PTR_NOT_NULL_FATAL(lwgeom);
 	g = gserialized2_from_lwgeom(lwgeom, NULL);
 	CU_ASSERT_PTR_NOT_NULL_FATAL(g);
 
-	payload = (uint32_t *)gserialized2_get_geometry_p(g);
-	CU_ASSERT_EQUAL(payload[0], NURBSCURVETYPE);
-	CU_ASSERT_EQUAL(payload[1], 3);
-	payload[2] = 3; /* Three control points cannot support a degree-3 curve. */
+	payload = gserialized2_test_payload_p(g);
+	memcpy(&type, payload, sizeof(type));
+	memcpy(&npoints, payload + sizeof(uint32_t), sizeof(npoints));
+	CU_ASSERT_EQUAL(type, NURBSCURVETYPE);
+	CU_ASSERT_EQUAL(npoints, 3);
+	/* Three control points cannot support a degree-3 curve. */
+	memcpy(payload + 2 * sizeof(uint32_t), &degree, sizeof(degree));
 
 	assert_gserialized2_malformed_rejected(g);
 
