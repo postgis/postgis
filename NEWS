@@ -6,6 +6,14 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 These are only changes since 3.7.0beta1.
 
+* Breaking Changes *
+
+ - #2630, Recreate five-argument UpdateGeometrySRID during extension upgrade
+          to correct the first argument name from catalogn_name to catalog_name
+          (Darafei Praliaskouski)
+ - #2630, Fix typo in five-argument UpdateGeometrySRID catalog_name parameter
+          (Darafei Praliaskouski)
+
 * Bug Fixes *
 
  - Stop the extension upgrade script running ANALYZE inside its transaction,
@@ -43,6 +51,12 @@ These are only changes since 3.7.0beta1.
 
  - Add Woodpecker linux/arm64 build and regression coverage under
           QEMU to match the Jenkins Berrie64 platform (Darafei Praliaskouski)
+
+* Breaking Changes *
+
+ - #2630, Recreate five-argument UpdateGeometrySRID during extension upgrade
+          to correct the first argument name from catalogn_name to catalog_name
+          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta1
 2026/07/20
