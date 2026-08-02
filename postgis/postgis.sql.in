@@ -6439,7 +6439,7 @@ CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry, radius float8)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_sphere'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
  	_COST_HIGH;
 
 ---------------------------------------------------------------
