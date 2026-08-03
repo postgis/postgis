@@ -26,10 +26,12 @@ service that owns the behavior:
 | macOS GitHub Actions job | `.github/workflows/ci-macos.yml`; see [macOS development environment](../environment/macos.md) |
 | MSYS2/MinGW GitHub Actions job | `.github/workflows/msys.yml` |
 | GitHub CodeQL, codespell, and contributor-credit jobs | `.github/workflows/codeql.yml`, `.github/workflows/codespell.yml`, and `.github/workflows/contributor-credits.yml` |
+| Woodpecker pull-request and branch pipelines | `.woodpecker/*.yml`, with pipeline status published by Woodie at <https://woodie.osgeo.org/repos/30> |
 | Debbie build, docs, and release jobs | `ci/debbie/`, the Debbie Jenkins jobs, and release-process notes |
 | Winnie Windows jobs | `ci/winnie/` and the Winnie Jenkins jobs |
 | Bessie and Berrie/Berrie64 jobs | `ci/bessie/`, `ci/berrie*`, and the corresponding Jenkins worker labels |
 | Docker build images used by GitHub Actions | `postgis/postgis-build-env` image tags referenced from `.github/workflows/ci.yml` |
+| Docker build images used by Woodpecker | `repo.osgeo.org/postgis/build-test:*` image tags referenced from `.woodpecker/*.yml` |
 | Woodpecker MinGW Wine job | `.woodpecker/mingw-wine.yml` and `ci/woodie/postgis_mingw_wine.sh` |
 
 When a dashboard row describes dependency versions, operating systems, branch
@@ -63,6 +65,119 @@ following overrides:
 
 The result is clamped to at least `1`, and if memory detection fails the function
 falls back to the CPU-based maximum.
+
+Woodpecker is the CI surface attached to canonical Gitea pull requests. Its
+status contexts are produced from the checked-in `.woodpecker/` workflows, so a
+new Woodpecker job belongs there first, then in the generated dashboard
+inventory described below. Do not document the current split count by hand:
+parallel matrix expansion and retries change the number of published
+`ci/woodpecker/...` contexts for a commit.
+
+On `master`, the maintained Woodpecker workflows include regression, docs,
+tools, codespell, contributor-credit, and QA coverage. The QA workflow runs
+sanitizer and `standard_conforming_strings=off` checks for pull requests, while
+the expensive QA workflow is branch-limited and owns coverage and garden
+checks. Read `.woodpecker/qa.yml` and `.woodpecker/qa-expensive.yml` before
+changing that split.
+
+## CI Parity Map
+
+The repository now keeps CI ownership split across several services. Use this
+map to decide which service is authoritative for a platform-specific failure,
+and whether a Woodpecker workflow is intended to replace another service or
+only overlap part of its defect class.
+
+| Surface | Current authoritative provider | Woodpecker coverage |
+| ------- | ------------------------------ | ------------------- |
+| Linux build and regression checks | Woodpecker and GitHub Actions | Covered on amd64 by `.woodpecker/regress.yml`, `.woodpecker/qa.yml`, and `.woodpecker/qa-expensive.yml`. The Woodpecker matrix is not byte-for-byte identical to GitHub's Docker matrix, but it covers the standard Linux build, CUnit, install, extension-upgrade, cluster-upgrade, sanitizer, standard-conforming-strings-off, coverage, and garden classes. |
+| Codespell | Woodpecker and GitHub Actions | Covered by `.woodpecker/codespell.yml`. GitHub pins a specific `codespell` package version; Woodpecker follows the OSGeo build image unless that workflow is pinned separately. |
+| Contributor credits | Woodpecker and GitHub Actions | Covered by `.woodpecker/contributor-credits.yml`. |
+| Debbie Linux regression classes | Jenkins Debbie and Woodpecker | Mostly covered by Woodpecker's Linux regression and expensive QA workflows. Debbie still remains useful for its exact Jenkins host, dependency, and release-job environment. |
+| Make Dist | Jenkins Debbie | In flight in <https://gitea.osgeo.org/postgis/postgis/pulls/534>. Until that lands, Woodpecker does not check source distribution tarballs. |
+| FreeBSD and Bessie | GitHub Actions FreeBSD and Jenkins Bessie | In flight in <https://gitea.osgeo.org/postgis/postgis/pulls/549>. YAML running on a Linux container is not FreeBSD parity; this needs a FreeBSD VM or agent surface. |
+| 32-bit ARM and extra portability tiers | Jenkins Berrie | Covered by `.woodpecker/portability.yml` from <https://gitea.osgeo.org/postgis/postgis/pulls/516>, with hostile type-default coverage proposed in <https://gitea.osgeo.org/postgis/postgis/pulls/550>. Plain armhf emulation is useful for pointer-width and alignment assumptions, but the valuable tier is the hostile configuration with explicit type, signedness, alignment, and sanitizer probes. |
+| 64-bit ARM | Jenkins Berrie64 | Partly covered by the `arm64-berrie64-qemu` child in `.woodpecker/portability.yml` on amd64 agents through QEMU arm64 emulation. This is build, ABI, CUnit, install, and focused regression coverage, not Berrie64 parity. |
+| CodeQL | GitHub Actions | In flight as Woodpecker configuration carried separately. Woodpecker can build a CodeQL database and produce SARIF, but GitHub remains authoritative for code-scanning upload, annotations, and alert management unless Woodie artifact retention and SARIF consumption are also configured. |
+| macOS | GitHub Actions macOS | Not coverable by Woodpecker YAML on Linux. See [macOS coverage options](macos-coverage-options.md) for the actual choices, costs, licensing boundary, and current recommendation. |
+| Native Windows MSYS2 and Winnie | GitHub Actions MSYS2 and Jenkins Winnie | Not covered natively by Linux Woodpecker. MinGW+Wine coverage is valuable ABI/runtime coverage but not native Windows parity. A Woodpecker replacement would need a licensed native Windows agent, registered with Woodie and owned like any other CI host. |
+
+The companion inventory and debugging documents are deliberately narrower than
+this parity map. Dashboard ownership, CI image provenance, and failure-debugging
+procedures should stay in their own sections rather than being repeated here;
+use this section to answer the parity question.
+
+### MinGW And Native Windows
+
+MinGW+Wine coverage is not native Windows coverage. The Woodpecker MinGW+Wine
+workflow cross-compiles PostGIS and dependencies, links Windows binaries and
+DLLs, starts Windows PostgreSQL binaries under Wine, and runs loaders, CUnit,
+and SQL regressions in that environment. That is strong MinGW ABI coverage.
+
+It does not replace GitHub MSYS2 or Winnie. Native Windows remains authoritative
+for NT path handling and path-length behavior, drive-letter and UNC semantics,
+MSYS2 path translation, service registration and Service Control Manager
+behavior, Windows CRT, locale and codepage behavior, native threading and file
+locking, DLL search order, and failures where Wine itself may be the broken
+component.
+
+Do not treat a Linux-hosted cross build as closure of the native Windows gap.
+The practical replacement shape is a Windows agent registered with Woodie,
+running either the MSYS2 workflow or the Winnie script family on a licensed
+Windows installation, with an owner who keeps the host patched and credentials
+rotated.
+
+The project investigated Microsoft evaluation VM images as a possible
+zero-cost route for such an agent in July 2026. That investigation downloaded
+the Windows 11 development environment Hyper-V VHDX, converted it for QEMU/KVM,
+and reached the UEFI handoff to Windows Boot Manager. It did not reach a login
+prompt, run PostGIS, or prove an unattended Windows CI path; the attempts ended
+when the driving automation session lost its connection, not because Windows
+refused to boot.
+
+Licensing is the durable blocker for making that experiment a standing CI
+service. Microsoft documents Windows 11 Enterprise evaluation media as a
+90-day evaluation and notes that an expired or unactivated evaluation shuts down
+periodically. The Windows development VM is an evaluation image, not a stable
+renewable CI entitlement. Windows Server evaluation media are similarly trial
+media, with a 180-day duration, while the Windows Server license terms limit
+evaluation software to evaluation, test, or demonstration use and prohibit
+production-environment use after the evaluation period. A legitimate unattended
+PostGIS Windows agent therefore needs OSGeo-provided Windows licensing, such as
+proper Windows Server VM licensing or Windows Enterprise/VDA licensing for a
+desktop VM, plus a named host owner. Until that exists, keep GitHub Actions
+MSYS2 and Jenkins Winnie authoritative for native Windows behavior and describe
+Linux Woodpecker's MinGW+Wine job as MinGW ABI/runtime coverage only.
+
+### macOS
+
+macOS cannot be covered by Linux containers, Wine, or cross-compilation. Darwin
+libc, the Mach-O dynamic loader, Homebrew's dependency graph, Apple clang, the
+filesystem, and codesign or SIP-adjacent behavior have to run on macOS to be
+meaningful. The realistic choices are documented in
+[macOS coverage options](macos-coverage-options.md): keep GitHub Actions as the
+Darwin lane, run a hosted or project-owned Apple Woodpecker agent, or accept no
+Darwin coverage.
+
+### ARM
+
+Treat 32-bit and 64-bit ARM as separate defect classes. The 32-bit lane is most
+useful when it is hostile: explicit `char` signedness, enum-width, alignment,
+and sanitizer settings catch assumptions that amd64 and a plain Berrie rerun do
+not falsify.
+
+The 64-bit lane should be native. Berrie64's value is 64-bit ARM execution plus
+garden and all-upgrades coverage. QEMU can compile and run a smaller smoke
+suite, but it makes the expensive suites too slow and can hide timing,
+atomic-operation, kernel, and native scheduling behavior.
+
+The `arm64-berrie64-qemu` Woodpecker portability child is therefore an explicit
+stopgap, not parity. It runs on amd64 agents through QEMU because the current
+fleet has no registered `linux/arm64` agent. The covered signal is still useful:
+64-bit ARM ABI shape, pointer width, alignment-sensitive execution, char
+signedness, byte order, dependency detection, build correctness, liblwgeom
+CUnit, extension install, and focused regressions. It does not cover native CPU
+timing, atomic operations, kernel behavior, scheduler behavior, garden,
+all-upgrades, or release-grade Berrie64 evidence.
 
 ## Woodie API and Pipeline Approvals
 
@@ -127,8 +242,10 @@ same check path as the badge URL.
 Update the inventory when any of these change:
 
 * a workflow file under `.github/workflows/`;
+* a workflow file under `.woodpecker/`;
 * a script under `ci/`;
 * a `postgis/postgis-build-env` tag used by the GitHub Actions matrix;
+* a `repo.osgeo.org/postgis/build-test` tag used by a Woodpecker workflow;
 * a Jenkins job, worker label, or badge URL referenced from Trac or website
   dashboards;
 * a supported release branch or support-window row that affects which branches

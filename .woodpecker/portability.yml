@@ -15,10 +15,14 @@ when:
 # Tier 1: armhf via arm32v7/debian under QEMU. This mirrors berrie: 32-bit
 # pointers and long, unsigned char, and stricter alignment than amd64.
 #
-# Tier 2: s390x via s390x/debian under QEMU. This is the practical big-endian
+# Tier 2: arm64 via arm64v8/debian under QEMU. This is an emulated stopgap for
+# the Berrie64 class, not native Berrie64 parity. It proves 64-bit ARM build and
+# regression execution while the project has no native linux/arm64 Woodie agent.
+#
+# Tier 3: s390x via s390x/debian under QEMU. This is the practical big-endian
 # target for WKB/EWKB, TWKB, raster byte order, hashes, and integer memcpy paths.
 #
-# Tier 3 was investigated as Debian Ports powerpc: 32-bit, big-endian, unsigned
+# Tier 4 was investigated as Debian Ports powerpc: 32-bit, big-endian, unsigned
 # char. Docker Hub currently has no official linux/ppc Debian manifest, and the
 # only discovered powerpc Debian image is a removed schema-1 image. Keep this
 # tier out of the required pipeline until there is a maintained OCI image or an
@@ -26,9 +30,9 @@ when:
 # the big-endian and unsigned-char parts of the bug class.
 #
 # QEMU depends on persistent binfmt_misc registrations on the amd64 Woodie agent
-# host, so the scheduler label selects hosts where foreign images can start.
-# Without that label, these jobs can silently land on amd64 hosts without
-# emulation and fail before the step commands run.
+# host and the qemu scheduler label. Woodpecker starts the foreign-architecture
+# step image directly; steps do not need a Docker socket or a nested docker run
+# probe.
 variables:
   native-image: &native-image repo.osgeo.org/postgis/build-test:debian13
   prepare-debian: &prepare-debian |
@@ -145,6 +149,28 @@ steps:
       # would trap, while also keeping integer/undefined checks enabled.
       - export PORTABILITY_CFLAGS="-g3 -O0 -fno-omit-frame-pointer -fsanitize=alignment,undefined -fno-sanitize-recover=alignment"
       - export PORTABILITY_LDFLAGS="-fsanitize=alignment,undefined"
+      - *abi-env
+      - *start-postgresql
+      - ./autogen.sh
+      - *build-and-test
+
+  arm64-berrie64-qemu:
+    image: arm64v8/debian:trixie-slim@sha256:8b5033c95ca60cdffb0e0f4c446e5f714e82d8960a9ef4153c0eaf13e988b0ea
+    pull: true
+    # Keep this off broad pull-request runs. The emulated arm64 tier preserves
+    # the former standalone arm64 workflow's branch and cron coverage without
+    # making every contributor wait for expensive QEMU regression coverage.
+    when:
+      - event: push
+        branch:
+          - master
+          - stable-*
+      - event: cron
+    commands:
+      - uname -m | grep -E '^aarch64$'
+      - export PORTABILITY_TIER=arm64-berrie64-qemu
+      - export PORTABILITY_CFLAGS="-O2 -Wall -Werror -fno-omit-frame-pointer"
+      - *prepare-debian
       - *abi-env
       - *start-postgresql
       - ./autogen.sh
