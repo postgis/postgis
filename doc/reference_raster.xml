@@ -558,7 +558,7 @@ VALUES (1,
         must be an integer value reference to an entry in the SPATIAL_REF_SYS
         table.</para>
 
-        <para><varname>raster2pgsql</varname> loader uses this function to register raster tables</para>
+        <para><varname>raster2pgsql</varname> loader uses the procedure form of this routine to register raster tables, so each requested constraint can be committed independently.</para>
         <para>Valid constraint names to pass in: refer to <xref linkend="RT_Raster_Columns"/> for more details.</para>
         <itemizedlist>
             <listitem><para><varname>blocksize</varname> sets both X and Y blocksize</para></listitem>
@@ -582,6 +582,9 @@ VALUES (1,
             <para>If you need to load more data in your tables after you have already applied constraints, you may want to run the DropRasterConstraints
                 if the extent of your data has changed.
             </para>
+        </note>
+        <note>
+            <para>For large raster tables, call the procedure form with the extra <varname>commit_between_constraints</varname> argument set to <code>true</code> outside an explicit transaction block to commit after each requested constraint.</para>
         </note>
         <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
       </refsection>
