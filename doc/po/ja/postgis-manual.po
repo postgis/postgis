@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-08-03 06:39+0000\n"
+"PO-Revision-Date: 2026-08-03 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -11360,6 +11360,9 @@ msgid ""
 "coordinate bounding box. It is assumed here that the geometries are stored "
 "with SRID=2163 (US National Atlas equal area)."
 msgstr ""
+"地物のうち、米国ナショナルアトラスのバウンディングボックス内に全体が入ったも"
+"のか、一部が入ったものを全て返します。ここでジオメトリーは SRID=2163 (米国"
+"ナショナルアトラス正積図法) で保存します。"
 
 #. Tag: para
 #, no-c-format
@@ -11834,6 +11837,8 @@ msgid ""
 "Cluster polygons within 50 units of each other, requiring at least two "
 "polygons per cluster. The isolated polygon is reported as noise."
 msgstr ""
+"ポリゴンを 50単位以内で、クラスターごとに少なくとも二つのポリゴンが必要という"
+"条件でクラスタリングします。孤立ポリゴンはノイズとして報告されます。"
 
 #. Tag: para
 #, no-c-format
@@ -12010,6 +12015,8 @@ msgid ""
 "These six edges describe a square with both diagonals. The minimum spanning "
 "tree keeps three edges and excludes the rest."
 msgstr ""
+"この6本のエッジは正方形と対角線です。最小接続木は3本のエッジを保持して残りを"
+"除外します。"
 
 #. Tag: para
 #, no-c-format
@@ -12073,12 +12080,12 @@ msgstr "Enhanced: 3.1.0 3次元ジオメトリと重みに対応するように�
 msgid ""
 "Define the parcel geometries once in a CTE and reuse them across the "
 "executable examples."
-msgstr ""
+msgstr "一度CTE内で小包ジオメトリーを定義して、実行可能な例で再利用します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Parcels color-coded by cluster number (<varname>cid</varname>)."
-msgstr ""
+msgstr "クラスター番号 (<varname>cid</varname>) ごとに色符号を指定された小包。"
 
 #. Tag: para
 #, no-c-format
@@ -12094,6 +12101,11 @@ msgid ""
 "dataset\">Kontur Population Data</link> that do not span more than 3000 km "
 "from their center:"
 msgstr ""
+"例: 3次元クラスタリングと重みづけを使って、事前集約している惑星全体レベルの人"
+"口データセットにクラスタリングを行います。<link xlink:href=\"https://"
+"data.humdata.org/dataset/kontur-population-dataset\">Kontur Population Data</"
+"link> に基づいて、中心から 3000 km を超えて及ばないように、少なくとも 20地域"
+"に分割します。"
 
 #. Tag: para
 #, no-c-format
