@@ -29,6 +29,9 @@ PostGIS 3.5.8
     cancellation state (Darafei Praliaskouski)
   - GH-1160, [topology] Preserve overlay intersection boundaries when
     noding lines with GEOS main (Darafei Praliaskouski)
+  - GT-619, Make interrupt regression tests compare timeout latency to
+    same-machine uninterrupted runtime, avoiding false failures under
+    slow CI load (Darafei Praliaskouski)
   - GT-564, Avoid ST_MakePolygon crashes with NULL hole array entries
     (Darafei Praliaskouski)
 

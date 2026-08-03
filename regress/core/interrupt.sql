@@ -17,4 +17,7 @@ SELECT _timecheck('segmentize', '300ms');
 -- Not affected by old timeout
 SELECT '1',ST_AsText(ST_Segmentize('LINESTRING(0 0,4 0)'::geometry, 2));
 
+DROP FUNCTION _timecheck(text);
 DROP FUNCTION _timecheck(text, interval);
+DROP FUNCTION _timecheck_baseline(text);
+DROP FUNCTION _timecheck_start();

@@ -29,3 +29,6 @@ SELECT _timecheck('buffer', '350ms');
 SELECT '1', ST_NPoints(ST_Buffer('POINT(4 0)'::geometry, 2, 1));
 
 DROP FUNCTION _timecheck(text, interval);
+DROP FUNCTION _timecheck(text);
+DROP FUNCTION _timecheck_baseline(text);
+DROP FUNCTION _timecheck_start();
