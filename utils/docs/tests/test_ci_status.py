@@ -519,6 +519,52 @@ class CIStatusTest(unittest.TestCase):
             http_json.call_args_list[1].args[0],
         )
 
+    def test_woodpecker_failure_names_single_failed_workflow_child_step(self):
+        check_config = {
+            "name": "Woodpecker",
+            "provider": "woodpecker",
+            "required": True,
+            "api_url": "https://woodie.example.test/api/repos/30/pipelines",
+            "web_url": "https://woodie.example.test/repos/30",
+        }
+        branch = {"name": "stable-3.6", "label": "3.6"}
+        pipeline = {
+            "number": 5431,
+            "event": "push",
+            "branch": "stable-3.6",
+            "ref": "refs/heads/stable-3.6",
+            "status": "failure",
+            "commit": "b" * 40,
+            "message": "opaque commit message",
+        }
+        pipeline_detail = {
+            **pipeline,
+            "workflows": [
+                {"pid": 9, "id": 24470, "name": "regress", "state": "success"},
+                {
+                    "pid": 29,
+                    "id": 24477,
+                    "name": "regress",
+                    "state": "failure",
+                    "children": [
+                        {"pid": 100, "name": "test-upgrades", "state": "failure"},
+                    ],
+                },
+            ],
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", side_effect=([pipeline], pipeline_detail)) as http_json:
+            result = CI_STATUS.woodpecker_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.FAILURE, result["status"])
+        self.assertEqual("failed: regress/29 (test-upgrades)", result["message"])
+        self.assertEqual("https://woodie.example.test/repos/30/pipeline/5431/29", result["url"])
+        self.assertEqual("b" * 40, result["revision"])
+        self.assertEqual(
+            "https://woodie.example.test/api/repos/30/pipelines/5431",
+            http_json.call_args_list[1].args[0],
+        )
+
     def test_woodpecker_error_without_workflows_shows_error_message(self):
         check_config = {
             "name": "Woodpecker",

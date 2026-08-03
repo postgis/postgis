@@ -421,12 +421,34 @@ def woodpecker_build_sort_key(build):
     )
 
 
-def woodpecker_workflow_label(workflow, duplicate_names):
+def woodpecker_workflow_base_label(workflow, duplicate_names):
+    """Return the human workflow label, disambiguating duplicate names by pid."""
     name = workflow.get("name") or f"workflow {workflow.get('pid') or workflow.get('id')}"
     pid = workflow.get("pid")
     if pid is not None and name in duplicate_names:
         return f"{name}/{pid}"
     return name
+
+
+def woodpecker_failed_step_labels(workflow):
+    """Return failed child step labels already included in a workflow record."""
+    return [
+        str(step.get("name") or f"step {step.get('pid') or step.get('id')}")
+        for step in workflow.get("children") or []
+        if normalize_woodpecker_status(step.get("state") or step.get("status")) == FAILURE
+    ]
+
+
+def woodpecker_workflow_label(workflow, duplicate_names, status):
+    base_label = woodpecker_workflow_base_label(workflow, duplicate_names)
+    if status != FAILURE:
+        return base_label
+
+    failed_children = woodpecker_failed_step_labels(workflow)
+    if not failed_children:
+        return base_label
+
+    return f"{base_label} ({', '.join(failed_children)})"
 
 
 def woodpecker_workflow_url(web_url, pipeline, workflow):
@@ -469,7 +491,7 @@ def woodpecker_workflow_details(pipeline, web_url):
         status = normalize_woodpecker_status(workflow.get("state") or workflow.get("status"))
         if status == SUCCESS:
             continue
-        label = woodpecker_workflow_label(workflow, duplicate_names)
+        label = woodpecker_workflow_label(workflow, duplicate_names, status)
         if status == FAILURE:
             by_bucket["failed"].append((label, workflow))
         elif status == IN_PROGRESS:
