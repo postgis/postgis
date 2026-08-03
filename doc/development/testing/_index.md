@@ -153,8 +153,13 @@ Other useful targets:
   person under multiple names in the manual. If only a public handle can be
   verified, use a linked `@handle (GitHub user)` credit. If only a partial name
   is public, use `@handle (GitHub user: partial name)` to credit both forms and
-  keep all handle-first entries together at the start of the list. Do not infer
-  a person's name from an email address.
+  keep all handle-first entries together at the start of the list. Keep
+  `.mailmap` canonical names to person names only. In `NEWS` attribution
+  parentheses, comma-separated affiliations such as `Name, Organization` are
+  allowed when the organization is recognized by the checker. If the checker
+  reports the organization as a missing contributor, teach the checker that the
+  organization is not a person instead of adding the organization to
+  `doc/credits.xml`. Do not infer a person's name from an email address.
 * [CI inventory standards](ci.md) describe how to keep build-bot and badge
   inventories checkable instead of copying stale dashboard markup into
   maintained prose.

@@ -112,6 +112,27 @@ After pushing a branch update, re-read the remote pull request head SHA, body,
 merge state, checks, and active review threads. A green check belongs to the
 head commit that produced it, not to a later force-push.
 
+### Contributor Credits CI
+
+When the `contributor-credits` Woodpecker workflow fails, read the failing child
+step log before changing credits. The workflow runs:
+
+```sh
+make check-contributor-credits
+```
+
+The check compares `doc/credits.xml` with Git authors, co-authors, and
+unreleased `NEWS` attributions after applying `.mailmap`. If it reports a
+missing person, either add that person's canonical display name to
+`doc/credits.xml` or normalize an alias in `.mailmap`.
+
+Keep `.mailmap` canonical names to person names only. In `NEWS` attribution
+parentheses, comma-separated affiliations such as `Name, Organization` are
+allowed when the organization is recognized by the checker. If the checker
+reports the organization as a missing contributor, teach the checker that the
+organization is not a person instead of adding the organization to
+`doc/credits.xml`.
+
 ## Commit Messages
 
 The maintained commit-message and branch-target rules live in
