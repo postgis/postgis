@@ -74,7 +74,7 @@ lwgeom_to_x3d3_sb(const LWGEOM *geom, int precision, int opts, const char *defid
 		return asx3d3_point_sb((LWPOINT *)geom, precision, opts, defid, sb);
 
 	case LINETYPE:
-		return asx3d3_line_sb((LWLINE *)geom, precision, opts, defid, sb);
+		return asx3d3_line_sb((LWLINE *)geom, precision, opts, defid, 0, sb);
 
 	case POLYGONTYPE:
 	{
@@ -223,6 +223,7 @@ asx3d3_line_sb(const LWLINE *line,
 	       int precision,
 	       int opts,
 	       __attribute__((__unused__)) const char *defid,
+	       int force_3d,
 	       stringbuffer_t *sb)
 {
 
@@ -253,13 +254,14 @@ asx3d3_poly_sb(const LWPOLY *poly,
 	       int opts,
 	       __attribute__((__unused__)) int is_patch,
 	       __attribute__((__unused__)) const char *defid,
+	       int force_3d,
 	       stringbuffer_t *sb)
 {
 	uint32_t i;
 	for (i=0; i<poly->nrings; i++)
 	{
 		if (i) stringbuffer_aprintf(sb, " "); /* inner ring points start */
-		ptarray_to_x3d3_sb(poly->rings[i], precision, opts, 1, LW_TRUE, sb);
+		ptarray_to_x3d3_sb(poly->rings[i], precision, opts, 1, force_3d, sb);
 	}
 	return LW_SUCCESS;
 }
@@ -352,7 +354,14 @@ asx3d3_multi_sb(const LWCOLLECTION *col, int precision, int opts, const char *de
 		}
 		else if (subgeom->type == POLYGONTYPE)
 		{
-			asx3d3_poly_sb((LWPOLY *)subgeom, precision, opts, 0, defid, sb);
+			LWPOLY *poly = (LWPOLY *)subgeom;
+			uint32_t j;
+			for (j = 0; j < poly->nrings; j++)
+			{
+				if (j)
+					stringbuffer_aprintf(sb, " ");
+				ptarray_to_x3d3_sb(poly->rings[j], precision, opts, 1, has_coordinate_node, sb);
+			}
 			stringbuffer_aprintf(sb, " ");
 		}
 	}
@@ -409,7 +418,7 @@ asx3d3_psurface_sb(const LWPSURFACE *psur, int precision, int opts, const char *
 
 	for (i=0; i<psur->ngeoms; i++)
 	{
-		asx3d3_poly_sb(psur->geoms[i], precision, opts, 1, defid, sb);
+		asx3d3_poly_sb(psur->geoms[i], precision, opts, 1, defid, 1, sb);
 		if (i < (psur->ngeoms - 1) )
 		{
 			stringbuffer_aprintf(sb, " "); /* only add a trailing space if its not the last polygon in the set */
@@ -465,6 +474,7 @@ asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const cha
 {
 	uint32_t i;
 	LWGEOM *subgeom;
+	int wrap_shapes = !X3D_SKIP_COLLECTION_SHAPES(opts);
 
 	/* Open outmost tag */
 	/** @TODO: if collection should be grouped, we'll wrap in a group tag.  Still needs cleanup
@@ -476,14 +486,24 @@ asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const cha
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
-		stringbuffer_aprintf(sb, "<Shape%s>", defid);
+		if (wrap_shapes)
+			stringbuffer_aprintf(sb, "<Shape%s>", defid);
+		else if (i > 0)
+			stringbuffer_aprintf(sb, " ");
 		if ( subgeom->type == POINTTYPE )
 		{
-			asx3d3_point_sb((LWPOINT *)subgeom, precision, opts, defid, sb);
+			if (wrap_shapes)
+				asx3d3_point_sb((LWPOINT *)subgeom, precision, opts, defid, sb);
+			else
+			{
+				LWCOLLECTION *tmp = (LWCOLLECTION *)lwgeom_as_multi(subgeom);
+				asx3d3_multi_sb(tmp, precision, opts, defid, sb);
+				lwcollection_free(tmp);
+			}
 		}
-		else if ( subgeom->type == LINETYPE )
+		else if (subgeom->type == LINETYPE)
 		{
-			asx3d3_line_sb((LWLINE *)subgeom, precision, opts, defid, sb);
+			asx3d3_line_sb((LWLINE *)subgeom, precision, opts, defid, !wrap_shapes, sb);
 		}
 		else if ( subgeom->type == POLYGONTYPE )
 		{
@@ -509,7 +529,8 @@ asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const cha
 		else
 			lwerror("asx3d3_collection_buf: unknown geometry type");
 
-		stringbuffer_aprintf(sb, "</Shape>");
+		if (wrap_shapes)
+			stringbuffer_aprintf(sb, "</Shape>");
 	}
 
 	/* Close outmost tag */
@@ -546,9 +567,9 @@ ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, int f
 				if ( i ) stringbuffer_append_len(sb," ",1);
 
 				if ( ( opts & LW_X3D_FLIP_XY) )
-					stringbuffer_aprintf(sb, "%s %s", y, x);
+					stringbuffer_aprintf(sb, force_3d ? "%s %s 0" : "%s %s", y, x);
 				else
-					stringbuffer_aprintf(sb, "%s %s", x, y);
+					stringbuffer_aprintf(sb, force_3d ? "%s %s 0" : "%s %s", x, y);
 			}
 		}
 	}
