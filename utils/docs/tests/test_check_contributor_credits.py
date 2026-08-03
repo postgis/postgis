@@ -288,6 +288,18 @@ class ContributorCreditValidationTest(unittest.TestCase):
             ["Dan Baston"],
             split_news_people("Dan Baston / City of Helsinki"),
         )
+        self.assertEqual(
+            ["Dennis Tighe"],
+            split_news_people("Dennis Tighe, Google"),
+        )
+        self.assertEqual(
+            ["Dennis Tighe"],
+            split_news_people("Dennis Tighe from Google"),
+        )
+        self.assertEqual(
+            ["Jan Katins", "Regina Obe"],
+            split_news_people("Jan Katins of Aiven, Regina Obe"),
+        )
 
     def test_released_news_parentheses_are_not_attributions(self):
         self.fixture.initial_commit("Alice Example", "Bob News")

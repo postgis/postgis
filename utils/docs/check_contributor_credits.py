@@ -41,8 +41,8 @@ NON_HUMAN_NAMES = {
     ("claude", "fable", "5"),
 }
 NON_PERSON_NEWS_RE = re.compile(
-    r"\b(?:bureau|city of|company|corporation|foundation|highgo|inc\.?|"
-    r"koordinates|llc|osgeo|team|university)\b",
+    r"\b(?:bureau|city|company|corporation|foundation|highgo|inc\.?|"
+    r"google|koordinates|llc|osgeo|team|university)\b",
     re.I,
 )
 TECHNICAL_NEWS_RE = re.compile(
@@ -259,7 +259,7 @@ def unreleased_news_lines(news_path):
 def split_news_people(value):
     people = []
     for candidate in NEWS_PERSON_SEPARATOR_RE.split(value):
-        candidate = re.sub(r"\s+from\s+.*$", "", candidate, flags=re.I).strip()
+        candidate = re.sub(r"\s+(?:from|of)\s+.*$", "", candidate, flags=re.I).strip()
         if (
             not candidate
             or NON_PERSON_NEWS_RE.search(candidate)
