@@ -57,7 +57,8 @@ PostGIS 3.6.5
   (Darafei Praliaskouski)
 - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
   (Darafei Praliaskouski)
-
+- #6109, Out-of-bounds heap read in BOX2D_out and BOX2D_expand
+  on 65-byte box2d under ASAN (Dennis Tighe, Google)
 
 PostGIS 3.6.4
 2026/06/08
