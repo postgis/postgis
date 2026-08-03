@@ -3,6 +3,9 @@ PostGIS 3.6.5
 
 * Fixes *
 
+- GT-619, Make interrupt regression tests compare timeout latency to
+  same-machine uninterrupted runtime, avoiding false failures under
+  slow CI load (Darafei Praliaskouski)
 - GT-582, Make the computed-columns regression test assert the query plan
   instead of racing two stopwatches, so it no longer fails at random under
   CI load (Darafei Praliaskouski)
