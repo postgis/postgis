@@ -32,6 +32,16 @@ variables:
         # Any localized assets
         - "doc/po/*/Makefile.in"
         - "doc/po/*/*.po"
+  # Every localized step shares this one filter on purpose. The localized steps are
+  # chained to each other to cap memory (see the generated section below), and
+  # Woodpecker rejects a whole pipeline when an included step depends on a step that
+  # its conditions filtered out. Per-language filters made that happen on every
+  # single-language translation commit, so the languages must be included or
+  # excluded together.
+  - &when_localized
+      include:
+        - "doc/po/*/Makefile.in"
+        - "doc/po/*/*.po"
 
 steps:
   prepare:
@@ -123,6 +133,9 @@ steps:
 ### TARGET check-xml
   # Localized check-xml steps are intentionally chained to cap memory per step; this is a memory-control
   # measure, not a dependency between languages. Breaking the chain restores the fan-out that caused the kills.
+  # The chain is why every localized step carries the same when_localized filter: Woodpecker refuses a whole
+  # pipeline when an included step depends on one its conditions filtered out, so the languages are included
+  # or excluded together. Per-language filters broke every single-language translation commit.
   check-xml-it_IT:
     image: *test_image
     pull: true
@@ -130,9 +143,7 @@ steps:
       - make -C build-docs/doc/po/it_IT local-check-xml
     depends_on: prepare
     when:
-       - path:
-          include:
-            - "doc/po/it_IT/*.po"
+      - path: *when_localized
 
   check-xml-pt_BR:
     image: *test_image
@@ -141,9 +152,7 @@ steps:
       - make -C build-docs/doc/po/pt_BR local-check-xml
     depends_on: [ prepare, check-xml-it_IT ]
     when:
-       - path:
-          include:
-            - "doc/po/pt_BR/*.po"
+      - path: *when_localized
 
   check-xml-fr:
     image: *test_image
@@ -152,9 +161,7 @@ steps:
       - make -C build-docs/doc/po/fr local-check-xml
     depends_on: [ prepare, check-xml-pt_BR ]
     when:
-       - path:
-          include:
-            - "doc/po/fr/*.po"
+      - path: *when_localized
 
   check-xml-es:
     image: *test_image
@@ -163,9 +170,7 @@ steps:
       - make -C build-docs/doc/po/es local-check-xml
     depends_on: [ prepare, check-xml-fr ]
     when:
-       - path:
-          include:
-            - "doc/po/es/*.po"
+      - path: *when_localized
 
   check-xml-pl:
     image: *test_image
@@ -174,9 +179,7 @@ steps:
       - make -C build-docs/doc/po/pl local-check-xml
     depends_on: [ prepare, check-xml-es ]
     when:
-       - path:
-          include:
-            - "doc/po/pl/*.po"
+      - path: *when_localized
 
   check-xml-ka:
     image: *test_image
@@ -185,9 +188,7 @@ steps:
       - make -C build-docs/doc/po/ka local-check-xml
     depends_on: [ prepare, check-xml-pl ]
     when:
-       - path:
-          include:
-            - "doc/po/ka/*.po"
+      - path: *when_localized
 
   check-xml-ko_KR:
     image: *test_image
@@ -196,9 +197,7 @@ steps:
       - make -C build-docs/doc/po/ko_KR local-check-xml
     depends_on: [ prepare, check-xml-ka ]
     when:
-       - path:
-          include:
-            - "doc/po/ko_KR/*.po"
+      - path: *when_localized
 
   check-xml-da:
     image: *test_image
@@ -207,9 +206,7 @@ steps:
       - make -C build-docs/doc/po/da local-check-xml
     depends_on: [ prepare, check-xml-ko_KR ]
     when:
-       - path:
-          include:
-            - "doc/po/da/*.po"
+      - path: *when_localized
 
   check-xml-de:
     image: *test_image
@@ -218,9 +215,7 @@ steps:
       - make -C build-docs/doc/po/de local-check-xml
     depends_on: [ prepare, check-xml-da ]
     when:
-       - path:
-          include:
-            - "doc/po/de/*.po"
+      - path: *when_localized
 
   check-xml-ja:
     image: *test_image
@@ -229,9 +224,7 @@ steps:
       - make -C build-docs/doc/po/ja local-check-xml
     depends_on: [ prepare, check-xml-de ]
     when:
-       - path:
-          include:
-            - "doc/po/ja/*.po"
+      - path: *when_localized
 
   check-xml-ru:
     image: *test_image
@@ -240,9 +233,7 @@ steps:
       - make -C build-docs/doc/po/ru local-check-xml
     depends_on: [ prepare, check-xml-ja ]
     when:
-       - path:
-          include:
-            - "doc/po/ru/*.po"
+      - path: *when_localized
 
   check-xml-zh_Hans:
     image: *test_image
@@ -251,9 +242,7 @@ steps:
       - make -C build-docs/doc/po/zh_Hans local-check-xml
     depends_on: [ prepare, check-xml-ru ]
     when:
-       - path:
-          include:
-            - "doc/po/zh_Hans/*.po"
+      - path: *when_localized
 
   check-xml-ro:
     image: *test_image
@@ -262,9 +251,7 @@ steps:
       - make -C build-docs/doc/po/ro local-check-xml
     depends_on: [ prepare, check-xml-zh_Hans ]
     when:
-       - path:
-          include:
-            - "doc/po/ro/*.po"
+      - path: *when_localized
 
   check-xml-sv:
     image: *test_image
@@ -273,9 +260,7 @@ steps:
       - make -C build-docs/doc/po/sv local-check-xml
     depends_on: [ prepare, check-xml-ro ]
     when:
-       - path:
-          include:
-            - "doc/po/sv/*.po"
+      - path: *when_localized
 
   check-xml-uk:
     image: *test_image
@@ -284,9 +269,7 @@ steps:
       - make -C build-docs/doc/po/uk local-check-xml
     depends_on: [ prepare, check-xml-sv ]
     when:
-       - path:
-          include:
-            - "doc/po/uk/*.po"
+      - path: *when_localized
 
   check-xml-be:
     image: *test_image
@@ -295,11 +278,14 @@ steps:
       - make -C build-docs/doc/po/be local-check-xml
     depends_on: [ prepare, check-xml-uk ]
     when:
-       - path:
-          include:
-            - "doc/po/be/*.po"
+      - path: *when_localized
 
 ### TARGET html
+  # Localized html steps are intentionally chained to cap memory per step; this is a memory-control
+  # measure, not a dependency between languages. Breaking the chain restores the fan-out that caused the kills.
+  # The chain is why every localized step carries the same when_localized filter: Woodpecker refuses a whole
+  # pipeline when an included step depends on one its conditions filtered out, so the languages are included
+  # or excluded together. Per-language filters broke every single-language translation commit.
   html-it_IT:
     image: *test_image
     pull: true
@@ -307,9 +293,7 @@ steps:
       - make -C build-docs/doc/po/it_IT local-html
     depends_on: check-xml-it_IT
     when:
-       - path:
-          include:
-            - "doc/po/it_IT/*.po"
+      - path: *when_localized
 
   html-pt_BR:
     image: *test_image
@@ -318,9 +302,7 @@ steps:
       - make -C build-docs/doc/po/pt_BR local-html
     depends_on: [ check-xml-pt_BR, html-it_IT ]
     when:
-       - path:
-          include:
-            - "doc/po/pt_BR/*.po"
+      - path: *when_localized
 
   html-fr:
     image: *test_image
@@ -329,9 +311,7 @@ steps:
       - make -C build-docs/doc/po/fr local-html
     depends_on: [ check-xml-fr, html-pt_BR ]
     when:
-       - path:
-          include:
-            - "doc/po/fr/*.po"
+      - path: *when_localized
 
   html-es:
     image: *test_image
@@ -340,9 +320,7 @@ steps:
       - make -C build-docs/doc/po/es local-html
     depends_on: [ check-xml-es, html-fr ]
     when:
-       - path:
-          include:
-            - "doc/po/es/*.po"
+      - path: *when_localized
 
   html-pl:
     image: *test_image
@@ -351,9 +329,7 @@ steps:
       - make -C build-docs/doc/po/pl local-html
     depends_on: [ check-xml-pl, html-es ]
     when:
-       - path:
-          include:
-            - "doc/po/pl/*.po"
+      - path: *when_localized
 
   html-ka:
     image: *test_image
@@ -362,9 +338,7 @@ steps:
       - make -C build-docs/doc/po/ka local-html
     depends_on: [ check-xml-ka, html-pl ]
     when:
-       - path:
-          include:
-            - "doc/po/ka/*.po"
+      - path: *when_localized
 
   html-ko_KR:
     image: *test_image
@@ -373,9 +347,7 @@ steps:
       - make -C build-docs/doc/po/ko_KR local-html
     depends_on: [ check-xml-ko_KR, html-ka ]
     when:
-       - path:
-          include:
-            - "doc/po/ko_KR/*.po"
+      - path: *when_localized
 
   html-da:
     image: *test_image
@@ -384,9 +356,7 @@ steps:
       - make -C build-docs/doc/po/da local-html
     depends_on: [ check-xml-da, html-ko_KR ]
     when:
-       - path:
-          include:
-            - "doc/po/da/*.po"
+      - path: *when_localized
 
   html-de:
     image: *test_image
@@ -395,9 +365,7 @@ steps:
       - make -C build-docs/doc/po/de local-html
     depends_on: [ check-xml-de, html-da ]
     when:
-       - path:
-          include:
-            - "doc/po/de/*.po"
+      - path: *when_localized
 
   html-ja:
     image: *test_image
@@ -406,9 +374,7 @@ steps:
       - make -C build-docs/doc/po/ja local-html
     depends_on: [ check-xml-ja, html-de ]
     when:
-       - path:
-          include:
-            - "doc/po/ja/*.po"
+      - path: *when_localized
 
   html-ru:
     image: *test_image
@@ -417,9 +383,7 @@ steps:
       - make -C build-docs/doc/po/ru local-html
     depends_on: [ check-xml-ru, html-ja ]
     when:
-       - path:
-          include:
-            - "doc/po/ru/*.po"
+      - path: *when_localized
 
   html-zh_Hans:
     image: *test_image
@@ -428,9 +392,7 @@ steps:
       - make -C build-docs/doc/po/zh_Hans local-html
     depends_on: [ check-xml-zh_Hans, html-ru ]
     when:
-       - path:
-          include:
-            - "doc/po/zh_Hans/*.po"
+      - path: *when_localized
 
   html-ro:
     image: *test_image
@@ -439,9 +401,7 @@ steps:
       - make -C build-docs/doc/po/ro local-html
     depends_on: [ check-xml-ro, html-zh_Hans ]
     when:
-       - path:
-          include:
-            - "doc/po/ro/*.po"
+      - path: *when_localized
 
   html-sv:
     image: *test_image
@@ -450,9 +410,7 @@ steps:
       - make -C build-docs/doc/po/sv local-html
     depends_on: [ check-xml-sv, html-ro ]
     when:
-       - path:
-          include:
-            - "doc/po/sv/*.po"
+      - path: *when_localized
 
   html-uk:
     image: *test_image
@@ -461,9 +419,7 @@ steps:
       - make -C build-docs/doc/po/uk local-html
     depends_on: [ check-xml-uk, html-sv ]
     when:
-       - path:
-          include:
-            - "doc/po/uk/*.po"
+      - path: *when_localized
 
   html-be:
     image: *test_image
@@ -472,11 +428,14 @@ steps:
       - make -C build-docs/doc/po/be local-html
     depends_on: [ check-xml-be, html-uk ]
     when:
-       - path:
-          include:
-            - "doc/po/be/*.po"
+      - path: *when_localized
 
 ### TARGET cheatsheets
+  # Localized cheatsheets steps are intentionally chained to cap memory per step; this is a memory-control
+  # measure, not a dependency between languages. Breaking the chain restores the fan-out that caused the kills.
+  # The chain is why every localized step carries the same when_localized filter: Woodpecker refuses a whole
+  # pipeline when an included step depends on one its conditions filtered out, so the languages are included
+  # or excluded together. Per-language filters broke every single-language translation commit.
   cheatsheets-it_IT:
     image: *test_image
     pull: true
@@ -484,9 +443,7 @@ steps:
       - make -C build-docs/doc/po/it_IT local-cheatsheets
     depends_on: check-xml-it_IT
     when:
-       - path:
-          include:
-            - "doc/po/it_IT/*.po"
+      - path: *when_localized
 
   cheatsheets-pt_BR:
     image: *test_image
@@ -495,9 +452,7 @@ steps:
       - make -C build-docs/doc/po/pt_BR local-cheatsheets
     depends_on: [ check-xml-pt_BR, cheatsheets-it_IT ]
     when:
-       - path:
-          include:
-            - "doc/po/pt_BR/*.po"
+      - path: *when_localized
 
   cheatsheets-fr:
     image: *test_image
@@ -506,9 +461,7 @@ steps:
       - make -C build-docs/doc/po/fr local-cheatsheets
     depends_on: [ check-xml-fr, cheatsheets-pt_BR ]
     when:
-       - path:
-          include:
-            - "doc/po/fr/*.po"
+      - path: *when_localized
 
   cheatsheets-es:
     image: *test_image
@@ -517,9 +470,7 @@ steps:
       - make -C build-docs/doc/po/es local-cheatsheets
     depends_on: [ check-xml-es, cheatsheets-fr ]
     when:
-       - path:
-          include:
-            - "doc/po/es/*.po"
+      - path: *when_localized
 
   cheatsheets-pl:
     image: *test_image
@@ -528,9 +479,7 @@ steps:
       - make -C build-docs/doc/po/pl local-cheatsheets
     depends_on: [ check-xml-pl, cheatsheets-es ]
     when:
-       - path:
-          include:
-            - "doc/po/pl/*.po"
+      - path: *when_localized
 
   cheatsheets-ka:
     image: *test_image
@@ -539,9 +488,7 @@ steps:
       - make -C build-docs/doc/po/ka local-cheatsheets
     depends_on: [ check-xml-ka, cheatsheets-pl ]
     when:
-       - path:
-          include:
-            - "doc/po/ka/*.po"
+      - path: *when_localized
 
   cheatsheets-ko_KR:
     image: *test_image
@@ -550,9 +497,7 @@ steps:
       - make -C build-docs/doc/po/ko_KR local-cheatsheets
     depends_on: [ check-xml-ko_KR, cheatsheets-ka ]
     when:
-       - path:
-          include:
-            - "doc/po/ko_KR/*.po"
+      - path: *when_localized
 
   cheatsheets-da:
     image: *test_image
@@ -561,9 +506,7 @@ steps:
       - make -C build-docs/doc/po/da local-cheatsheets
     depends_on: [ check-xml-da, cheatsheets-ko_KR ]
     when:
-       - path:
-          include:
-            - "doc/po/da/*.po"
+      - path: *when_localized
 
   cheatsheets-de:
     image: *test_image
@@ -572,9 +515,7 @@ steps:
       - make -C build-docs/doc/po/de local-cheatsheets
     depends_on: [ check-xml-de, cheatsheets-da ]
     when:
-       - path:
-          include:
-            - "doc/po/de/*.po"
+      - path: *when_localized
 
   cheatsheets-ja:
     image: *test_image
@@ -583,9 +524,7 @@ steps:
       - make -C build-docs/doc/po/ja local-cheatsheets
     depends_on: [ check-xml-ja, cheatsheets-de ]
     when:
-       - path:
-          include:
-            - "doc/po/ja/*.po"
+      - path: *when_localized
 
   cheatsheets-ru:
     image: *test_image
@@ -594,9 +533,7 @@ steps:
       - make -C build-docs/doc/po/ru local-cheatsheets
     depends_on: [ check-xml-ru, cheatsheets-ja ]
     when:
-       - path:
-          include:
-            - "doc/po/ru/*.po"
+      - path: *when_localized
 
   cheatsheets-zh_Hans:
     image: *test_image
@@ -605,9 +542,7 @@ steps:
       - make -C build-docs/doc/po/zh_Hans local-cheatsheets
     depends_on: [ check-xml-zh_Hans, cheatsheets-ru ]
     when:
-       - path:
-          include:
-            - "doc/po/zh_Hans/*.po"
+      - path: *when_localized
 
   cheatsheets-ro:
     image: *test_image
@@ -616,9 +551,7 @@ steps:
       - make -C build-docs/doc/po/ro local-cheatsheets
     depends_on: [ check-xml-ro, cheatsheets-zh_Hans ]
     when:
-       - path:
-          include:
-            - "doc/po/ro/*.po"
+      - path: *when_localized
 
   cheatsheets-sv:
     image: *test_image
@@ -627,9 +560,7 @@ steps:
       - make -C build-docs/doc/po/sv local-cheatsheets
     depends_on: [ check-xml-sv, cheatsheets-ro ]
     when:
-       - path:
-          include:
-            - "doc/po/sv/*.po"
+      - path: *when_localized
 
   cheatsheets-uk:
     image: *test_image
@@ -638,9 +569,7 @@ steps:
       - make -C build-docs/doc/po/uk local-cheatsheets
     depends_on: [ check-xml-uk, cheatsheets-sv ]
     when:
-       - path:
-          include:
-            - "doc/po/uk/*.po"
+      - path: *when_localized
 
   cheatsheets-be:
     image: *test_image
@@ -649,11 +578,14 @@ steps:
       - make -C build-docs/doc/po/be local-cheatsheets
     depends_on: [ check-xml-be, cheatsheets-uk ]
     when:
-       - path:
-          include:
-            - "doc/po/be/*.po"
+      - path: *when_localized
 
 ### TARGET check-cheatsheets
+  # Localized check-cheatsheets steps are intentionally chained to cap memory per step; this is a memory-control
+  # measure, not a dependency between languages. Breaking the chain restores the fan-out that caused the kills.
+  # The chain is why every localized step carries the same when_localized filter: Woodpecker refuses a whole
+  # pipeline when an included step depends on one its conditions filtered out, so the languages are included
+  # or excluded together. Per-language filters broke every single-language translation commit.
   check-cheatsheets-it_IT:
     image: *test_image
     pull: true
@@ -661,9 +593,7 @@ steps:
       - make -C build-docs/doc/po/it_IT local-check-cheatsheets
     depends_on: [ cheatsheets-it_IT, build-cheatsheets ]
     when:
-       - path:
-          include:
-            - "doc/po/it_IT/*.po"
+      - path: *when_localized
 
   check-cheatsheets-pt_BR:
     image: *test_image
@@ -672,9 +602,7 @@ steps:
       - make -C build-docs/doc/po/pt_BR local-check-cheatsheets
     depends_on: [ cheatsheets-pt_BR, build-cheatsheets, check-cheatsheets-it_IT ]
     when:
-       - path:
-          include:
-            - "doc/po/pt_BR/*.po"
+      - path: *when_localized
 
   check-cheatsheets-fr:
     image: *test_image
@@ -683,9 +611,7 @@ steps:
       - make -C build-docs/doc/po/fr local-check-cheatsheets
     depends_on: [ cheatsheets-fr, build-cheatsheets, check-cheatsheets-pt_BR ]
     when:
-       - path:
-          include:
-            - "doc/po/fr/*.po"
+      - path: *when_localized
 
   check-cheatsheets-es:
     image: *test_image
@@ -694,9 +620,7 @@ steps:
       - make -C build-docs/doc/po/es local-check-cheatsheets
     depends_on: [ cheatsheets-es, build-cheatsheets, check-cheatsheets-fr ]
     when:
-       - path:
-          include:
-            - "doc/po/es/*.po"
+      - path: *when_localized
 
   check-cheatsheets-pl:
     image: *test_image
@@ -705,9 +629,7 @@ steps:
       - make -C build-docs/doc/po/pl local-check-cheatsheets
     depends_on: [ cheatsheets-pl, build-cheatsheets, check-cheatsheets-es ]
     when:
-       - path:
-          include:
-            - "doc/po/pl/*.po"
+      - path: *when_localized
 
   check-cheatsheets-ka:
     image: *test_image
@@ -716,9 +638,7 @@ steps:
       - make -C build-docs/doc/po/ka local-check-cheatsheets
     depends_on: [ cheatsheets-ka, build-cheatsheets, check-cheatsheets-pl ]
     when:
-       - path:
-          include:
-            - "doc/po/ka/*.po"
+      - path: *when_localized
 
   check-cheatsheets-ko_KR:
     image: *test_image
@@ -727,9 +647,7 @@ steps:
       - make -C build-docs/doc/po/ko_KR local-check-cheatsheets
     depends_on: [ cheatsheets-ko_KR, build-cheatsheets, check-cheatsheets-ka ]
     when:
-       - path:
-          include:
-            - "doc/po/ko_KR/*.po"
+      - path: *when_localized
 
   check-cheatsheets-da:
     image: *test_image
@@ -738,9 +656,7 @@ steps:
       - make -C build-docs/doc/po/da local-check-cheatsheets
     depends_on: [ cheatsheets-da, build-cheatsheets, check-cheatsheets-ko_KR ]
     when:
-       - path:
-          include:
-            - "doc/po/da/*.po"
+      - path: *when_localized
 
   check-cheatsheets-de:
     image: *test_image
@@ -749,9 +665,7 @@ steps:
       - make -C build-docs/doc/po/de local-check-cheatsheets
     depends_on: [ cheatsheets-de, build-cheatsheets, check-cheatsheets-da ]
     when:
-       - path:
-          include:
-            - "doc/po/de/*.po"
+      - path: *when_localized
 
   check-cheatsheets-ja:
     image: *test_image
@@ -760,9 +674,7 @@ steps:
       - make -C build-docs/doc/po/ja local-check-cheatsheets
     depends_on: [ cheatsheets-ja, build-cheatsheets, check-cheatsheets-de ]
     when:
-       - path:
-          include:
-            - "doc/po/ja/*.po"
+      - path: *when_localized
 
   check-cheatsheets-ru:
     image: *test_image
@@ -771,9 +683,7 @@ steps:
       - make -C build-docs/doc/po/ru local-check-cheatsheets
     depends_on: [ cheatsheets-ru, build-cheatsheets, check-cheatsheets-ja ]
     when:
-       - path:
-          include:
-            - "doc/po/ru/*.po"
+      - path: *when_localized
 
   check-cheatsheets-zh_Hans:
     image: *test_image
@@ -782,9 +692,7 @@ steps:
       - make -C build-docs/doc/po/zh_Hans local-check-cheatsheets
     depends_on: [ cheatsheets-zh_Hans, build-cheatsheets, check-cheatsheets-ru ]
     when:
-       - path:
-          include:
-            - "doc/po/zh_Hans/*.po"
+      - path: *when_localized
 
   check-cheatsheets-ro:
     image: *test_image
@@ -793,9 +701,7 @@ steps:
       - make -C build-docs/doc/po/ro local-check-cheatsheets
     depends_on: [ cheatsheets-ro, build-cheatsheets, check-cheatsheets-zh_Hans ]
     when:
-       - path:
-          include:
-            - "doc/po/ro/*.po"
+      - path: *when_localized
 
   check-cheatsheets-sv:
     image: *test_image
@@ -804,9 +710,7 @@ steps:
       - make -C build-docs/doc/po/sv local-check-cheatsheets
     depends_on: [ cheatsheets-sv, build-cheatsheets, check-cheatsheets-ro ]
     when:
-       - path:
-          include:
-            - "doc/po/sv/*.po"
+      - path: *when_localized
 
   check-cheatsheets-uk:
     image: *test_image
@@ -815,9 +719,7 @@ steps:
       - make -C build-docs/doc/po/uk local-check-cheatsheets
     depends_on: [ cheatsheets-uk, build-cheatsheets, check-cheatsheets-sv ]
     when:
-       - path:
-          include:
-            - "doc/po/uk/*.po"
+      - path: *when_localized
 
   check-cheatsheets-be:
     image: *test_image
@@ -826,6 +728,4 @@ steps:
       - make -C build-docs/doc/po/be local-check-cheatsheets
     depends_on: [ cheatsheets-be, build-cheatsheets, check-cheatsheets-uk ]
     when:
-       - path:
-          include:
-            - "doc/po/be/*.po"
+      - path: *when_localized
