@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-08-03 08:39+0000\n"
+"PO-Revision-Date: 2026-08-03 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -11916,6 +11916,9 @@ msgid ""
 "conventional <varname>cid</varname> alias keeps the geometry column ready "
 "for color-by-cluster rendering."
 msgstr ""
+"入力ジオメトリーごとに明示的なクラスター ID を返します。慣用的な <varname>"
+"cid</varname> エイリアスを使って、ジオメトリーカラムがクラスターの色の塗分け"
+"に使えるようにします。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12115,11 +12118,15 @@ msgid ""
 "island clusters span the antimeridian, and cluster edges follow the Earth's "
 "curvature."
 msgstr ""
+"クラスタリングで 46領域が生成されます。クラスターは、ニューヨークやモスクワな"
+"どの人口が集中している点を中心とします。グリーンランドは一つのクラスターで、"
+"いくつかの島のクラスターは緯度180度線をまたぎ、クラスターのエッジは地球の曲率"
+"に従っています。"
 
 #. Tag: para
 #, no-c-format
 msgid "Kontur population clustered with 3000 km maximum radius."
-msgstr ""
+msgstr "最大半径 3000km でクラスタリング下 Kontur 人口。"
 
 #. Tag: para
 #, no-c-format
@@ -12128,6 +12135,9 @@ msgid ""
 "The maximum radius is specified in meters, while the returned geometries "
 "stay in WGS 84 for display."
 msgstr ""
+"地心座標系で地球上の都市人口を重みとしてクラスタリングを行います。最大半径は"
+"メートル単位で指定します。ただし表示用に WGS 84 のままのジオメトリーが返され"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -12298,6 +12308,13 @@ msgid ""
 "<function>ST_Union</function> also splits linestrings at intersections and "
 "may return a single geometry after dissolving boundaries."
 msgstr ""
+"<function>ST_Collect</function> は境界のディソルブやオーバーラップの"
+"ディゾルブを行いません。オーバーラップしているポリゴンの収集は不正な <type>"
+"MultiPolygon</type> を生成する恐れがあります。結果ジオメトリーが、"
+"オーバーラップ部をマージしていて妥当なポリゴンジオメトリーでなければならない"
+"のでしたら、代わりに <xref linkend=\"ST_Union\"/> を使います。<function>"
+"ST_Union</function> もインターセクトする位置でラインストリングを分割し、境界"
+"のディゾルブを行った単一ジオメトリーを返します。"
 
 #. Tag: para
 #, no-c-format
