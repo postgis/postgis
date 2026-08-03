@@ -16,6 +16,14 @@ exec >> docs.yml.new
 for target in ${TARGETS}
 do
   echo "### TARGET ${target}"
+  # This comment has to be printed, not written into docs.yml by hand: everything
+  # past the DO NOT EDIT line is regenerated, so a warning left there is deleted by
+  # the next run of this script.
+  echo "  # Localized ${target} steps are intentionally chained to cap memory per step; this is a memory-control"
+  echo "  # measure, not a dependency between languages. Breaking the chain restores the fan-out that caused the kills."
+  echo "  # The chain is why every localized step carries the same when_localized filter: Woodpecker refuses a whole"
+  echo "  # pipeline when an included step depends on one its conditions filtered out, so the languages are included"
+  echo "  # or excluded together. Per-language filters broke every single-language translation commit."
   previous_step=
   for lang in ${SUPPORTED_LANGUAGES};
   do
