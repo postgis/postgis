@@ -45,6 +45,9 @@ These are only changes since 3.7.0beta1.
 
  - Add Woodpecker linux/arm64 build and regression coverage under
           QEMU to match the Jenkins Berrie64 platform (Darafei Praliaskouski)
+ - #2838, Complete ST_AsX3D output for curved geometry inputs and
+          mixed geometry collections (Darafei Praliaskouski)
+
 
 PostGIS 3.7.0beta1
 2026/07/20
