@@ -30,6 +30,105 @@
 
 #include "lwout_x3d.h"
 
+static LWGEOM *
+lwgeom_x3d_bbox_poly(int32_t srid, int hasz, POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *p4)
+{
+	LWPOLY *poly = lwpoly_construct_rectangle(hasz, LW_FALSE, p1, p2, p3, p4);
+	LWGEOM *geom = lwpoly_as_lwgeom(poly);
+	lwgeom_set_srid(geom, srid);
+	return geom;
+}
+
+static LWGEOM *
+lwgeom_x3d_bbox_as_lwgeom(const LWGEOM *geom)
+{
+	GBOX box;
+	POINT4D pt;
+	int geom_hasz = lwgeom_has_z(geom);
+	int hasz = LW_TRUE;
+	int xeq, yeq, zeq, varying;
+
+	if (lwgeom_calculate_gbox(geom, &box) == LW_FAILURE)
+		return NULL;
+	if (!geom_hasz)
+	{
+		box.zmin = 0.0;
+		box.zmax = 0.0;
+	}
+
+	xeq = (box.xmin == box.xmax);
+	yeq = (box.ymin == box.ymax);
+	zeq = (box.zmin == box.zmax);
+	varying = (!xeq) + (!yeq) + (!zeq);
+
+	if (varying == 0)
+	{
+		POINTARRAY *pa = ptarray_construct_empty(hasz, LW_FALSE, 1);
+		pt = (POINT4D){box.xmin, box.ymin, box.zmin, 0.0};
+		ptarray_append_point(pa, &pt, LW_TRUE);
+		return lwpoint_as_lwgeom(lwpoint_construct(geom->srid, NULL, pa));
+	}
+
+	if (varying == 1)
+	{
+		POINTARRAY *pa = ptarray_construct_empty(hasz, LW_FALSE, 2);
+		pt = (POINT4D){box.xmin, box.ymin, box.zmin, 0.0};
+		ptarray_append_point(pa, &pt, LW_TRUE);
+		pt = (POINT4D){box.xmax, box.ymax, box.zmax, 0.0};
+		ptarray_append_point(pa, &pt, LW_TRUE);
+		return lwline_as_lwgeom(lwline_construct(geom->srid, NULL, pa));
+	}
+
+	if (zeq)
+	{
+		POINT4D points[4] = {{box.xmin, box.ymin, box.zmin, 0.0},
+				     {box.xmin, box.ymax, box.zmin, 0.0},
+				     {box.xmax, box.ymax, box.zmin, 0.0},
+				     {box.xmax, box.ymin, box.zmin, 0.0}};
+		return lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[0], &points[1], &points[2], &points[3]);
+	}
+
+	if (xeq)
+	{
+		POINT4D points[4] = {{box.xmin, box.ymin, box.zmin, 0.0},
+				     {box.xmin, box.ymax, box.zmin, 0.0},
+				     {box.xmin, box.ymax, box.zmax, 0.0},
+				     {box.xmin, box.ymin, box.zmax, 0.0}};
+		return lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[0], &points[1], &points[2], &points[3]);
+	}
+
+	if (yeq)
+	{
+		POINT4D points[4] = {{box.xmin, box.ymin, box.zmin, 0.0},
+				     {box.xmax, box.ymin, box.zmin, 0.0},
+				     {box.xmax, box.ymin, box.zmax, 0.0},
+				     {box.xmin, box.ymin, box.zmax, 0.0}};
+		return lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[0], &points[1], &points[2], &points[3]);
+	}
+
+	POINT4D points[8] = {{box.xmin, box.ymin, box.zmin, 0.0},
+			     {box.xmin, box.ymax, box.zmin, 0.0},
+			     {box.xmax, box.ymax, box.zmin, 0.0},
+			     {box.xmax, box.ymin, box.zmin, 0.0},
+			     {box.xmin, box.ymin, box.zmax, 0.0},
+			     {box.xmin, box.ymax, box.zmax, 0.0},
+			     {box.xmax, box.ymax, box.zmax, 0.0},
+			     {box.xmax, box.ymin, box.zmax, 0.0}};
+	LWGEOM **geoms = lwalloc(sizeof(LWGEOM *) * 6);
+	LWGEOM *bbox_geom;
+
+	geoms[0] = lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[0], &points[1], &points[2], &points[3]);
+	geoms[1] = lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[4], &points[7], &points[6], &points[5]);
+	geoms[2] = lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[0], &points[4], &points[5], &points[1]);
+	geoms[3] = lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[3], &points[2], &points[6], &points[7]);
+	geoms[4] = lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[0], &points[3], &points[7], &points[4]);
+	geoms[5] = lwgeom_x3d_bbox_poly(geom->srid, hasz, &points[1], &points[5], &points[6], &points[2]);
+
+	bbox_geom = (LWGEOM *)lwcollection_construct(POLYHEDRALSURFACETYPE, geom->srid, NULL, 6, geoms);
+	FLAGS_SET_SOLID(bbox_geom->flags, 1);
+	return bbox_geom;
+}
+
 /*
  * VERSION X3D 3.0.2 http://www.web3d.org/specifications/x3d-3.0.dtd
  */
@@ -38,6 +137,8 @@ lwvarlena_t *
 lwgeom_to_x3d3(const LWGEOM *geom, int precision, int opts, const char *defid)
 {
 	stringbuffer_t *sb;
+	LWGEOM *bbox_geom = NULL;
+	const LWGEOM *x3d_geom = geom;
 	int rv;
 
 	/* Empty varlena for empties */
@@ -48,16 +149,32 @@ lwgeom_to_x3d3(const LWGEOM *geom, int precision, int opts, const char *defid)
 		return v;
 	}
 
+	if (opts & LW_X3D_USE_BBOX)
+	{
+		bbox_geom = lwgeom_x3d_bbox_as_lwgeom(geom);
+		if (!bbox_geom)
+		{
+			lwvarlena_t *v = lwalloc(LWVARHDRSZ);
+			LWSIZE_SET(v->size, LWVARHDRSZ);
+			return v;
+		}
+		x3d_geom = bbox_geom;
+	}
+
 	sb = stringbuffer_create();
-	rv = lwgeom_to_x3d3_sb(geom, precision, opts, defid, sb);
+	rv = lwgeom_to_x3d3_sb(x3d_geom, precision, opts, defid, sb);
 
 	if ( rv == LW_FAILURE )
 	{
+		if (bbox_geom)
+			lwgeom_free(bbox_geom);
 		stringbuffer_destroy(sb);
 		return NULL;
 	}
 
 	lwvarlena_t *v = stringbuffer_getvarlenacopy(sb);
+	if (bbox_geom)
+		lwgeom_free(bbox_geom);
 	stringbuffer_destroy(sb);
 
 	return v;

@@ -188,6 +188,33 @@ static void out_x3d3_test_option(void)
 	    "SRID=4326;POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",
 	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"' point='10 15 3 6.464 13.536 3 5 10 3 6.464 6.464 3 10 5 3 13.536 6.464 3 15 10 3 13.536 13.536 3 ' /></IndexedFaceSet>",
 	    3, 3);
+
+	/* axis-aligned bounding box */
+	do_x3d3_test(
+	    "LINESTRING(2 8,3 7,10 11)",
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3'><Coordinate point='2 7 0 2 11 0 10 11 0 10 7 0 ' /></IndexedFaceSet>",
+	    0,
+	    4);
+
+	do_x3d3_test(
+	    "LINESTRING(0 0,5e-13 1)",
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3'><Coordinate point='0 0 0 0 1 0 5e-13 1 0 5e-13 0 0 ' /></IndexedFaceSet>",
+	    15,
+	    4);
+
+	/* bounding box with flipped coordinates */
+	do_x3d3_test(
+	    "LINESTRING(2 8,3 7,10 11)",
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3'><Coordinate point='7 2 0 11 2 0 11 10 0 7 10 0 ' /></IndexedFaceSet>",
+	    0,
+	    5);
+
+	/* bounding box of a planar 3D input */
+	do_x3d3_test(
+	    "LINESTRING Z(1 2 3,4 6 3)",
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3'><Coordinate point='1 2 3 1 6 3 4 6 3 4 2 3 ' /></IndexedFaceSet>",
+	    0,
+	    4);
 }
 
 

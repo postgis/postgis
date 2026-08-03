@@ -1012,6 +1012,10 @@ SELECT '#3627b', ST_Equals(geom, ST_LineFromEncodedPolyline(ST_AsEncodedPolyline
 -- #3704
 SELECT '#3704', ST_AsX3D('LINESTRING EMPTY') = '';
 
+-- #1332
+SELECT '#1332a', ST_AsX3D('LINESTRING(2 8,3 7,10 11)', 0, 4);
+SELECT '#1332b', ST_AsX3D('LINESTRING(2 8,3 7,10 11)', 0, 5);
+
 -- #3709
 select '#3709', ST_SnapToGrid(ST_Project('SRID=4326;POINT(1 1)'::geography, 100000, 20)::geometry, 0.0001) = ST_SnapToGrid(ST_Project('SRID=4326;POINT(1 1)'::geography, -100000, 20+pi())::geometry, 0.0001);
 
