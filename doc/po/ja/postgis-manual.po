@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-07-29 03:39+0000\n"
+"PO-Revision-Date: 2026-08-03 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -7320,11 +7320,15 @@ msgid ""
 "PostGIS behavior. <xref linkend=\"PostGIS_Special_Functions_Index\"/> "
 "summarizes SQL/MM compliance and geometry-type support across functions."
 msgstr ""
+"意図的に標準と異なる実装をしていたり、標準で定められている振舞いが曖昧な時は"
+"、関連する関数のページでは、PostGIS の振舞いを記載します。<xref "
+"linkend=\"PostGIS_Special_Functions_Index\"/> に関数横断的に SQL/MM 準拠と対"
+"応ジオメトリータイプをまとめています。"
 
 #. Tag: title
 #, no-c-format
 msgid "Project and Community"
-msgstr ""
+msgstr "プロジェクトとコミュニティー"
 
 #. Tag: para
 #, no-c-format
@@ -7337,6 +7341,12 @@ msgid ""
 "contributor and sponsor record is in <xref linkend=\"postgis_credits\"/> at "
 "the end of this manual."
 msgstr ""
+"PostGIS は2001年に Refractions Research 社の空間データベース研究プロジェクト"
+"として始まりました。現在は世界中の貢献者と組織によって開発される <link "
+"xlink:href=\"https://www.osgeo.org/projects/postgis/\">OSGeo project</link> "
+"となっています。プロジェクト運営委員会はリリース、プロジェクト方針、開発概要"
+"方針を決めています。完全な貢献者と提供者の記録は、このマニュアルの <xref "
+"linkend=\"postgis_credits\"/> にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -7344,6 +7354,8 @@ msgid ""
 "The manual is the authoritative reference for the released SQL interface. "
 "The project website and source tree provide the surrounding material:"
 msgstr ""
+"このマニュアルはリリースされた SQL インターフェイスの公式情報です。"
+"プロジェクトのウェブサイトとソースツリーは次の関連情報を提供しています:"
 
 #. Tag: para
 #, no-c-format
@@ -7352,6 +7364,9 @@ msgid ""
 "routes readers to getting-started instructions, versioned manuals, tips, "
 "training material, and the FAQ."
 msgstr ""
+"<link xlink:href=\"https://postgis.net/documentation/\">Documentation</link> "
+"では、利用開始案内、バージョンごとのマニュアル、小技集、訓練資料、よくある質"
+"問に誘導しています。"
 
 #. Tag: para
 #, no-c-format
@@ -7359,6 +7374,9 @@ msgid ""
 "<link xlink:href=\"https://postgis.net/community/\">Community</link> lists "
 "mailing lists, chat, events, videos, and other support channels."
 msgstr ""
+"<link xlink:href=\"https://postgis.net/community/\">Community</link> では"
+"メーリングリスト、チャット、イベント、動画などの各種支援の一覧を挙げています"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -7368,6 +7386,10 @@ msgid ""
 "environments, testing, coding style, internals, maintenance, governance, "
 "releases, and website work."
 msgstr ""
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/src/branch/master/"
+"doc/development\">Developer documentation</link> では、開発環境、テスト、"
+"コーディング規約、内部、メンテナンス、統括、リリース、ウェブサイト管理に対応"
+"しています。"
 
 #. Tag: title
 #, no-c-format
@@ -7545,6 +7567,9 @@ msgid ""
 "an index. For a mostly read-only table whose queries frequently use the same "
 "spatial index, this can reduce I/O and improve cache locality."
 msgstr ""
+"PostgreSQL CLUSTER コマンドはテーブル行をインデックスに応じて物理的に整列させ"
+"ます。読込限定で同じインデックスを繰り返し使うクエリーのテーブルで、この"
+"コマンドを実行すると、入出力の減少とローカルのキャッシュの改善が可能です。"
 
 #. Tag: para
 #, no-c-format
@@ -7552,6 +7577,9 @@ msgid ""
 "PostgreSQL supports clustering on GiST indices, including indices on "
 "nullable geometry columns. To cluster a table using a geometry index:"
 msgstr ""
+"PostgreSQL はGiST インデックスを用いたクラスタリングに対応しています。NULL 可"
+"能なジオメトリーカラム上のインデックスも含みます。ジオメトリーインデックスを"
+"使ったクラスタリングは次のようにします:"
 
 #. Tag: title
 #, no-c-format
@@ -8220,12 +8248,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "LineString with boundary points overlaid."
-msgstr ""
+msgstr "境界ポイントと併せて表示したラインストリング。"
 
 #. Tag: para
 #, no-c-format
 msgid "Polygon holes with the boundary MultiLineString overlaid."
-msgstr ""
+msgstr "境界マルチラインストリングと併せて表示したポリゴン。"
 
 #. Tag: para
 #, no-c-format
@@ -8309,7 +8337,7 @@ msgstr "&M_support;"
 #, no-c-format
 msgid ""
 "This example shows a polygon together with the diagonal of its bounding box."
-msgstr ""
+msgstr "この例では、ポリゴンとバウンダリーボックスの対角線とを一緒に示しています。"
 
 #. Tag: para
 #, no-c-format
@@ -8385,6 +8413,11 @@ msgid ""
 "Solid geometry semantics, such as volume, are handled separately by the SQL/"
 "MM 3D solid functions (SQL-MM IEC 13249-3: 9.1)."
 msgstr ""
+"<varname>TIN</varname> (TIN サーフェスを含む) は、サーフェスジオメトリーで次"
+"元は 2 です。立体表現を明示的にするには <xref linkend=\"CG_MakeSolid\"/> を使"
+"います。この関数の結果は三次元の立体を返します。体積などの立体ジオメトリーの"
+"属性情報は SQL/MM 3次元立体関数 (SQL-MM IEC 13249-3: 9.1) で別途処理されます"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -8405,7 +8438,7 @@ msgstr "2.0.0より前では、空ジオメトリを与えると例外を投げ�
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_Volume\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_MakeSolid\"/>, <xref linkend=\"CG_Volume\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -8471,13 +8504,13 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Dump the components of geometries stored in a table."
-msgstr ""
+msgstr "テーブルに保存されているジオメトリーの要素をダンプします。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Break a CompoundCurve into its constituent LineStrings and CircularStrings."
-msgstr ""
+msgstr "複合曲線をラインストリングと曲線ストリングの各要素に分けます。"
 
 #. Tag: para
 #, no-c-format
@@ -8568,7 +8601,7 @@ msgstr "Enhanced: 2.1.0 速度向上しました。C言語で実装しなおし�
 #. Tag: para
 #, no-c-format
 msgid "Explode a table of LineStrings into their vertices."
-msgstr ""
+msgstr "ラインストリングのテーブルを頂点に分けます。"
 
 #. Tag: para
 #, no-c-format
