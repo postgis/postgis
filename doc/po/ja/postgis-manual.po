@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-08-03 03:39+0000\n"
+"PO-Revision-Date: 2026-08-03 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -14865,7 +14865,7 @@ msgstr ""
 msgid ""
 "A Polygon is converted to a single-element MultiPolygon. The coordinates are "
 "unchanged."
-msgstr ""
+msgstr "一つのポリゴンを 1要素マルチポリゴンに変換します。座標値は変わりません。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15289,17 +15289,19 @@ msgid ""
 "The input polygon has 55 points. The result retains 15 points, while "
 "rendering the same shape inside the view envelope."
 msgstr ""
+"入力ポリゴンは 55ポイントです。結果では 15 ポイントを保持します。どちらも表示"
+"エンベロープ内の形状は同じです。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Only linework affecting the view is retained; existing vertices are reused."
-msgstr ""
+msgstr "表示範囲に影響が出るラインは保持されます。既存の頂点を再利用します。"
 
 #. Tag: para
 #, no-c-format
 msgid "A line with no segment relevant to the view becomes empty."
-msgstr ""
+msgstr "表示範囲と関係する線分が無いラインは空になります。"
 
 #. Tag: para
 #, no-c-format
@@ -15307,6 +15309,8 @@ msgid ""
 "Removing vertices without computing intersections can introduce self-"
 "intersections in the result."
 msgstr ""
+"インターセクトしている箇所を計算しないまま頂点を削除すると、結果に自己"
+"インターセクションが入ってくる可能性があります。"
 
 #. Tag: para
 #, no-c-format
@@ -15314,6 +15318,8 @@ msgid ""
 "With the default <parameter>cartesian_hint</parameter>, the function removes "
 "only points known to be irrelevant to the view."
 msgstr ""
+"デフォルトの <parameter>cartesian_hint</parameter> を付けると、この関数は表示"
+"範囲と関係ないと分かるポイントだけを削除します。"
 
 #. Tag: para
 #, no-c-format
