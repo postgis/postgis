@@ -166,22 +166,22 @@ CREATE OR REPLACE VIEW geography_columns AS
 		n.nspname AS f_table_schema,
 		c.relname AS f_table_name,
 		a.attname AS f_geography_column,
-		postgis_typmod_dims(a.atttypmod) AS coord_dimension,
-		postgis_typmod_srid(a.atttypmod) AS srid,
-		postgis_typmod_type(a.atttypmod) AS type
+		@extschema@.postgis_typmod_dims(a.atttypmod) AS coord_dimension,
+		@extschema@.postgis_typmod_srid(a.atttypmod) AS srid,
+		@extschema@.postgis_typmod_type(a.atttypmod) AS type
 	FROM
-		pg_class c,
-		pg_attribute a,
-		pg_type t,
-		pg_namespace n
-	WHERE t.typname = 'geography'
-		AND a.attisdropped = false
-		AND a.atttypid = t.oid
-		AND a.attrelid = c.oid
-		AND c.relnamespace = n.oid
-		AND c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"] )
+		pg_catalog.pg_class c,
+		pg_catalog.pg_attribute a,
+		pg_catalog.pg_type t,
+		pg_catalog.pg_namespace n
+	WHERE t.typname OPERATOR(pg_catalog.=) 'geography'::pg_catalog.name
+		AND a.attisdropped OPERATOR(pg_catalog.=) false
+		AND a.atttypid OPERATOR(pg_catalog.=) t.oid
+		AND a.attrelid OPERATOR(pg_catalog.=) c.oid
+		AND c.relnamespace OPERATOR(pg_catalog.=) n.oid
+		AND c.relkind OPERATOR(pg_catalog.=) ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"] )
 		AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace)
-		AND pg_catalog.has_column_privilege(c.oid, a.attname,'SELECT'::text);
+		AND pg_catalog.has_column_privilege(c.oid, a.attname, 'SELECT'::pg_catalog.text);
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography(geometry)

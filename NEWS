@@ -40,6 +40,8 @@ These are only changes since 3.7.0beta1.
  - #6109, Out-of-bounds heap read in BOX2D_out and BOX2D_expand
    on 65-byte box2d under ASAN (Dennis Tighe, Google)
  - #6110, regression in speed with geometry_columns (Regina Obe)
+ - Schema qualify references to pg_catalog and postgis
+   in geometry_columns and geography_columns views (Regina Obe)
 
 * Enhancements *
 
