@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-08-04 05:39+0000\n"
+"PO-Revision-Date: 2026-08-04 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -13604,7 +13604,7 @@ msgstr "この例では有理のNURBS曲線を独自の重みを指定して生�
 #. Tag: para
 #, no-c-format
 msgid "This example creates a NURBS curve with a non-uniform knot vector."
-msgstr ""
+msgstr "この例では均一でないノットベクトルで NURBS 曲線を生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -13720,7 +13720,7 @@ msgstr "GEOS 3.12.0以上が必要です"
 #. Tag: para
 #, no-c-format
 msgid "Invalid edges caused by overlap and non-matching vertices."
-msgstr ""
+msgstr "オーバーラップおよび合致しない頂点によって不正なエッジが発生します。"
 
 #. Tag: para
 #, no-c-format
@@ -13870,6 +13870,8 @@ msgid ""
 "Clean a coverage containing overlaps and narrow gaps, and compare the "
 "cleaned polygons with the original invalid edges."
 msgstr ""
+"オーバーラップと小さい隙間があるカバレッジをきれいにして、そのポリゴンと元の"
+"不正なエッジとを比較します。"
 
 #. Tag: para
 #, no-c-format
@@ -13925,13 +13927,17 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Use this function to simplify adjacent polygon layers when shared boundaries "
 "must remain edge-matched. For a single geometry where only self-intersection "
 "and ring validity matter, see <xref linkend=\"ST_SimplifyPreserveTopology\"/"
 ">."
 msgstr ""
+"共有された境界がエッジに合致している時は、隣接ポリゴンレイヤーを単純化するた"
+"めにこの関数を使います。自己インターセクションして、リングの評価の問題がある"
+"単一ジオメトリーについては <xref linkend=\"ST_SimplifyPreserveTopology\"/> を"
+"参照して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -13949,7 +13955,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Simplify a polygonal coverage while preserving shared boundaries."
-msgstr ""
+msgstr "共有する境界を維持しながらポリゴンカバレッジを単純化します。"
 
 #. Tag: para
 #, no-c-format
@@ -14070,7 +14076,7 @@ msgstr "Availability: 3.4.0 - GEOS 3.8.0以上が必要です"
 #. Tag: para
 #, no-c-format
 msgid "Union a polygonal coverage."
-msgstr ""
+msgstr "ポリゴンカバレッジを結合します。"
 
 #. Tag: para
 #, no-c-format
@@ -14451,6 +14457,8 @@ msgid ""
 "Ensure the approximated line is no more than 20 units away from the original "
 "curve, and make the result direction-neutral."
 msgstr ""
+"近似ラインが元の曲線から20単位より大きく離れないように保証して、結果を方向中"
+"立にします。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14469,7 +14477,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Make a closed line start at its 3rd vertex."
-msgstr ""
+msgstr "閉じたラインを3番目の頂点から始まるようにします。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14712,7 +14720,7 @@ msgstr ""
 msgid ""
 "Force a polygon and its hole to use counter-clockwise exterior rings and "
 "clockwise interior rings."
-msgstr ""
+msgstr "ポリゴンの外側リングを反時計回りに強制し、内側リングを時計回りに強制します。"
 
 #. Tag: para
 #, no-c-format
@@ -14743,12 +14751,12 @@ msgstr ""
 msgid ""
 "Force a polygon and its hole to use clockwise exterior rings and counter-"
 "clockwise interior rings."
-msgstr ""
+msgstr "ポリゴンの外側リングを時計回りに強制し、内側リングを版時計回りに強制します。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid "Force geometries to use SFS 1.1 or 1.2 geometry types."
-msgstr ""
+msgstr "ジオメトリーを SFS 1.1 または 1.2 のジオメトリータイプに強制します。"
 
 #. Tag: para
 #, no-c-format
@@ -14761,6 +14769,12 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname> values containing <varname>POLYGON</"
 "varname> elements."
 msgstr ""
+"ジオメトリーを OGC Simple Features Specification の指定したバージョンで定義さ"
+"れているジオメトリータイプを使うよう強制します。デフォールトは SFS 1.1. 曲線"
+"ジオメトリーは直線表現に変換され、<varname>TRIANGLE</varname> は <varname>"
+"POLYGON</varname> に変換され、<varname>TIN</varname> と <varname>"
+"POLYHEDRALSURFACE</varname> は <varname>GEOMETRYCOLLECTION</varname> とし、要"
+"素として <varname>POLYGON</varname> を入れます。"
 
 #. Tag: para
 #, no-c-format
@@ -14772,18 +14786,25 @@ msgid ""
 "the default SFS 1.1 behavior. Geometry collections are processed "
 "recursively, and the SRID and Z/M coordinates are preserved."
 msgstr ""
+"<parameter>version</parameter> が <literal>1.2</literal> で始まる場合には、曲"
+"線ジオメトリーはなお直線表現に変換されますが、<varname>TRIANGLE</varname>"
+"、<varname>TIN</varname>、<varname>POLYHEDRALSURFACE</varname> は維持されます"
+"。他のバージョン値ではデフォルトの SFS 1.1 を使います。"
+"ジオメトリーコレクションは再帰的に処理され、SRID と Z値、M値 は維持されます。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Compare the geometry types produced for SFS 1.1 (the default) and SFS 1.2. "
 "Read each row from the input type in the direction of the result columns."
 msgstr ""
+"SFS 1.1 (デフォルト) と SFS 1.2 で生成したジオメトリータイプ。それぞれの行を"
+"入力タイプから結果カラムに向いて読みます。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_ForceCurve\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_ForceCurve\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14883,14 +14904,14 @@ msgstr ""
 msgid ""
 "This example converts a linear Polygon approximating a circle to a "
 "CurvePolygon."
-msgstr ""
+msgstr "この例では直線ポリゴンによる近似円を CURVEPOLYGON に変換します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example converts a 3D linear ring to a CircularString while preserving "
 "Z."
-msgstr ""
+msgstr "この例では 3次元直線リングを Z 値を維持しつつ CIRCULARSTRING に変換します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15791,6 +15812,8 @@ msgid ""
 "Move all components whose bounding boxes fall completely to the left of "
 "<literal>x = 0</literal> by +360."
 msgstr ""
+"バウンディングボックスが完全に <literal>x = 0</literal> の左側にあるときには"
+"全要素を+360 で移動させます。"
 
 #. Tag: para
 #, no-c-format
@@ -15798,6 +15821,8 @@ msgid ""
 "Move all components whose bounding boxes fall completely to the left of "
 "<literal>x = -30</literal> by +360."
 msgstr ""
+"バウンディングボックスが完全に <literal>x = -30</literal> の左側にあるときに"
+"は全要素を+360 で移動させます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15866,12 +15891,12 @@ msgstr "Availability: 1.1.0 - Z値とM値に対応しました"
 #. Tag: para
 #, no-c-format
 msgid "Snap a geometry column to a precision grid of 10^-3."
-msgstr ""
+msgstr "ジオメトリーカラムの 10^-3 精度グリッドへのスナップ。"
 
 #. Tag: para
 #, no-c-format
 msgid "Display how the same grid size rounds a LineString."
-msgstr ""
+msgstr "同じグリッドサイズでどれだけ LINESTRING を丸めるかの表示。"
 
 #. Tag: para
 #, no-c-format
@@ -15955,26 +15980,26 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "A MultiPolygon snapped to a LineString at 1.01 times their distance."
-msgstr ""
+msgstr "MULTIPOLYGON を LINESTRING に双方の距離の 1.01 倍でスナップする。"
 
 #. Tag: para
 #, no-c-format
 msgid "A MultiPolygon snapped to a LineString at 1.25 times their distance."
-msgstr ""
+msgstr "MULTIPOLYGON を LINESTRING に双方の距離の 1.25 倍でスナップする。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The LineString snapped to the original MultiPolygon at 1.01 times their "
 "distance."
-msgstr ""
+msgstr "LINESTRING を MULTIPOLYGON に双方の距離の 1.01 倍でスナップする。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The LineString snapped to the original MultiPolygon at 1.25 times their "
 "distance."
-msgstr ""
+msgstr "LINESTRING を MULTIPOLYGON に双方の距離の 1.25 倍でスナップする。"
 
 #. Tag: refpurpose
 #, no-c-format
