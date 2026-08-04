@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-08-03 10:39+0000\n"
+"PO-Revision-Date: 2026-08-04 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -12325,6 +12325,11 @@ msgid ""
 "<xref linkend=\"ST_Dump\"/> in a subquery to expand input collections to "
 "their atomic elements (see example below)."
 msgstr ""
+"入力ジオメトリーがコレクション (マルチ系または GEOMETRYCOLLECTION) の場合には"
+"、<function>ST_Collect</function> は GEOMETRYCOLLECTION を返します。"
+"GEOMETRYCOLLECTION がコレクションのネストが可能な唯一のタイプだからです。これ"
+"を避けるにはサブクエリーで <xref linkend=\"ST_Dump\"/> を使って入力"
+"コレクションを単一ジオメトリー要素に展開します。"
 
 #. Tag: para
 #, no-c-format
@@ -12338,7 +12343,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Two-input variant."
-msgstr ""
+msgstr "2入力形式。"
 
 #. Tag: para
 #, no-c-format
@@ -12358,7 +12363,7 @@ msgstr "曲線を収集します。"
 #. Tag: para
 #, no-c-format
 msgid "Array variant."
-msgstr ""
+msgstr "配列形式。"
 
 #. Tag: para
 #, no-c-format
@@ -12373,7 +12378,7 @@ msgstr "値から配列を生成するコンストラクタの使用。"
 #. Tag: para
 #, no-c-format
 msgid "Aggregate variant."
-msgstr ""
+msgstr "集約形式。"
 
 #. Tag: para
 #, no-c-format
@@ -12450,7 +12455,7 @@ msgstr "Enhanced: 2.0 SRID指定なしでエンベロープを指定できるよ
 #. Tag: para
 #, no-c-format
 msgid "Building a bounding box polygon."
-msgstr ""
+msgstr "バウンディングボックスのポリゴンを構築します。"
 
 #. Tag: para
 #, no-c-format
@@ -12795,7 +12800,7 @@ msgstr "Enhanced: 3.7.0 - 曲線の入力リングへの対応が導入されま
 #. Tag: para
 #, no-c-format
 msgid "Single input variant."
-msgstr ""
+msgstr "1入力形式。"
 
 #. Tag: para
 #, no-c-format
@@ -12829,7 +12834,7 @@ msgstr "CURVEPOLYGONからCIRCULARSTRINGの外側リングを生成します。"
 #. Tag: para
 #, no-c-format
 msgid "Outer shell with inner holes variant."
-msgstr ""
+msgstr "外側リングと内側リングを別に与える形式。"
 
 #. Tag: para
 #, no-c-format
@@ -12904,7 +12909,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.2"
 #. Tag: para
 #, no-c-format
 msgid "Geometry."
-msgstr ""
+msgstr "ジオメトリー。"
 
 #. Tag: para
 #, no-c-format
@@ -13168,7 +13173,7 @@ msgstr "Availability: 3.0.0"
 #. Tag: para
 #, no-c-format
 msgid "Show tile (2, 1, 1) within the root tile (0, 0, 0)."
-msgstr ""
+msgstr "タイル (2, 1, 1) とルートタイル (0, 0, 0) の表示。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -13188,6 +13193,12 @@ msgid ""
 "tiling of the plane, Tiling(SRS, Size). This function answers the question: "
 "what hexagons in a given Tiling(SRS, Size) overlap with a given bounds."
 msgstr ""
+"平面の六角形タイルという考えから始まりました (地球全体の六角形タイルではあり"
+"ません。H3 については <link xlink:href=\"https://github.com/postgis/h3-pg\">"
+"h3-pg</link> を使います)。与えた平面 SRS と辺サイズで得られる初期タイルを得る"
+"と、独自の平面の六角形タイルができて、Tiling(SRS, Size) となります。この関数"
+"は、与えられた Tiling(SRS, Size) 内のどの六角形が与えた境界を覆うかという問い"
+"の答を出します。"
 
 #. Tag: para
 #, no-c-format
@@ -13214,7 +13225,7 @@ msgstr "Availability: 3.1.0"
 #. Tag: para
 #, no-c-format
 msgid "Unit hexagons covering rectangular bounds."
-msgstr ""
+msgstr "四角形境界を覆う六角形。"
 
 #. Tag: para
 #, no-c-format
@@ -13222,11 +13233,13 @@ msgid ""
 "Child tiles that intersect a doubled-size parent hexagon share the tiling "
 "origin, but do not nest perfectly inside the parent."
 msgstr ""
+"2倍の大きさの親六角形とインターセクトしていて原点が同じになっている子タイル。"
+"親の内側に完全に入れ子になるわけではありません。"
 
 #. Tag: para
 #, no-c-format
 msgid "Counting points in hexagons."
-msgstr ""
+msgstr "六角形内のポイント数の計測。"
 
 #. Tag: para
 #, no-c-format
@@ -13241,7 +13254,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Generating hex coverage of polygons."
-msgstr ""
+msgstr "ポリゴンの六角形カバレッジの生成。"
 
 #. Tag: para
 #, no-c-format
