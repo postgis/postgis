@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-08-04 08:39+0000\n"
+"PO-Revision-Date: 2026-08-04 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -16128,12 +16128,16 @@ msgid ""
 "function> forces a recalculation, while <function>Box2D(geom)</function> "
 "reads the cached value."
 msgstr ""
+"この例ではキャッシュされたけれども古くなったバウンディングボックスを削除しま"
+"す。<function>Box2D</function> を <function>ST_AsBinary(geom)</function> に適"
+"用することで再計算を強制できます。<function>Box2D(geom)</function> が"
+"キャッシュされた値を読みます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "After clearing stale caches, re-add bounding boxes where they are missing."
-msgstr ""
+msgstr "古いキャッシュを消した後にバウンディングボックスを再追加します。"
 
 #. Tag: para
 #, no-c-format
@@ -16672,17 +16676,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Add a WGS 84 geography point column to a table."
-msgstr ""
+msgstr "WGS 84 ジオグラフィーのポイントのカラムをテーブルに追加します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Populate the geography column from longitude and latitude columns."
-msgstr ""
+msgstr "経度カラムと緯度カラムからジオグラフィーカラムに値を投入します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Specify a geography point using EPSG:4267, NAD27."
-msgstr ""
+msgstr "ジオグラフィーの EPSG 4267, NAD27 のポイントデータを指定します。"
 
 #. Tag: para
 #, no-c-format
@@ -16774,37 +16778,37 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a LineString with SRID 4269."
-msgstr ""
+msgstr "SRID 4269 での LINESTRING の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a MultiLineString with SRID 4269."
-msgstr ""
+msgstr "SRID 4269 での MULTILINESTRING の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a Point with SRID 4269."
-msgstr ""
+msgstr "SRID 4269 での POINT の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a Polygon with SRID 4269."
-msgstr ""
+msgstr "SRID 4269 での POLYGON の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a MultiPolygon with SRID 4269."
-msgstr ""
+msgstr "SRID 4269 での MULTIPOLYGONの生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a 3D CircularString without an SRID."
-msgstr ""
+msgstr "SRID なしの 3次元曲線ストリングの生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a PolyhedralSurface without an SRID."
-msgstr ""
+msgstr "SRID なしでの POLYHEDRALSURFACE の生成。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -16899,6 +16903,8 @@ msgstr ""
 msgid ""
 "Returns a geometry from Well-Known Text (WKT). Alias for ST_GeomFromText."
 msgstr ""
+"Well-Known Text (WKT) からジオメトリーを返します。ST_GeomFromText の別名です"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -16906,6 +16912,8 @@ msgid ""
 "This function is an alias for <xref linkend=\"ST_GeomFromText\"/> and "
 "provides the same signatures."
 msgstr ""
+"この関数は <xref linkend=\"ST_GeomFromText\"/> の別名で、同じ引数型、返り値型"
+"を提供します。"
 
 #. Tag: para
 #, no-c-format
@@ -16974,37 +16982,37 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Create a LineString with SRID 0."
-msgstr ""
+msgstr "SRID 0 の LINESTRING の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create the same LineString with SRID 4269."
-msgstr ""
+msgstr "同じ LINESTRING だが SRID 4269 になっているものの生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a MultiLineString."
-msgstr ""
+msgstr "MULTILINESTRING の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a Point."
-msgstr ""
+msgstr "POINT の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a Polygon."
-msgstr ""
+msgstr "POLYGON の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a MultiPolygon with SRID 4326."
-msgstr ""
+msgstr "SRID 4326 の MULTIPOLYGON の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a CircularString."
-msgstr ""
+msgstr "CIRCULARSTRING の生成。"
 
 #. Tag: para
 #, no-c-format
@@ -17160,7 +17168,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 9.6.4"
 #. Tag: para
 #, no-c-format
 msgid "Create a 3D MultiPolygon with an interior ring and SRID 0."
-msgstr ""
+msgstr "内側リングを持ち SRID 0 の 3次元 MULTIPOLYGON の生成"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17221,12 +17229,12 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.8"
 #. Tag: para
 #, no-c-format
 msgid "Create a point with the default SRID 0."
-msgstr ""
+msgstr "SRID 0 の POINT の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a point with SRID 4326."
-msgstr ""
+msgstr "SRID 4326 の POINT の生成。"
 
 #. Tag: para
 #, no-c-format
@@ -17276,6 +17284,8 @@ msgid ""
 "Returns a geometry from Well-Known Text (WKT). SQL/MM alias for "
 "ST_GeomFromText."
 msgstr ""
+"Well-Known Text (WKT) からジオメトリーを返します。ST_GeomFromText の SQL/MM "
+"用の別名です。"
 
 #. Tag: para
 #, no-c-format
@@ -17283,6 +17293,8 @@ msgid ""
 "This function is the SQL/MM alias for <xref linkend=\"ST_GeomFromText\"/> "
 "with no SRID argument."
 msgstr ""
+"この関数は <xref linkend=\"ST_GeomFromText\"/> のSQL/MM 用の別名で、SRID引数"
+"がありません。"
 
 #. Tag: para
 #, no-c-format
@@ -17347,7 +17359,7 @@ msgstr "拡張Well-Known Binary表現 (EWKB)から指定したST_Geometry値を�
 msgid ""
 "Constructs a PostGIS geometry from an Extended Well-Known Binary (EWKB) "
 "representation."
-msgstr ""
+msgstr "Extended Well-Known Binary (EWKB) 表現からPostGIS ジオメトリーを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -17365,6 +17377,9 @@ msgid ""
 "42.259113,-71.161144 42.25932)</literal> in NAD83 longitude/latitude (SRID "
 "4269) from its EWKB representation."
 msgstr ""
+"この例では EWKB 表現から NAD83 経度緯度 (SRID 4269) の <literal>LINESTRING(-"
+"71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)</literal> を構"
+"築します。"
 
 #. Tag: para
 #, no-c-format
