@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-07-20 08:06+0000\n"
+"POT-Creation-Date: 2026-08-04 15:37+0000\n"
 "PO-Revision-Date: 2026-08-04 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -418,9 +418,9 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support."
 msgstr ""
-"PostGISエクステンションを3.0.0より前からアップグレードする場合には新しい"
-"エクステンション<emphasis>postgis_raster</emphasis>が入ることになります。この"
-"エクステンションはラスター機能が不要な場合には安全に削除することができます。"
+"PostGISエクステンションを3.0.0より前からアップグレードする場合には新しいエク"
+"ステンション<emphasis>postgis_raster</emphasis>が入ることになります。このエク"
+"ステンションはラスター機能が不要な場合には安全に削除することができます。"
 
 #. Tag: title
 #, no-c-format
@@ -473,18 +473,16 @@ msgstr ""
 "ダンプ/リロード作業は <command role=\"reference-target\">postgis_restore</"
 "command> スクリプトが補助します。このスクリプトを使うと、PostGIS (古いものを"
 "含む)に属する定義を全て飛ばしてダンプします。また、重複シンボルエラーや非推奨"
-"オブジェクトを得ることなく、スキーマとデータをPostGISをインストールした"
-"データベースにリストアできます 。"
+"オブジェクトを得ることなく、スキーマとデータをPostGISをインストールしたデータ"
+"ベースにリストアできます 。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Supplementary instructions for windows users are available at <link "
-"xlink:href=\"http://trac.osgeo.org/postgis/wiki/"
-"UsersWikiWinUpgrade\">Windows Hard upgrade</link>."
+"Supplementary instructions for windows users are available in the <link "
+"xlink:href=\"https://postgis.net/documentation/getting_started/"
+"install_windows/\">PostGIS Windows installation guide</link>."
 msgstr ""
-"Windows用に関する追加情報は <link xlink:href=\"http://trac.osgeo.org/postgis/"
-"wiki/UsersWikiWinUpgrade\">Windows Hard upgrade</link>にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -659,9 +657,9 @@ msgid ""
 msgstr ""
 "<varname>newdb</varname>を生成し、PostGISエクステンションを有効にし、<link "
 "xlink:href=\"https://raw.githubusercontent.com/Remi-C/"
-"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">この"
-"スクリプト</link>を使ってフランスIGN空間参照系を挿入します。この処理の後、"
-"データをインポートします:"
+"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\">このスクリ"
+"プト</link>を使ってフランスIGN空間参照系を挿入します。この処理の後、データを"
+"インポートします:"
 
 #. Tag: title
 #, no-c-format
@@ -1232,6 +1230,52 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
+msgid "Building Faces from Linework"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This example builds topology faces from noded linework and associates point "
+"attributes with the resulting faces. It uses <xref "
+"linkend=\"ST_CreateTopoGeo\"/> to populate an empty topology, <xref "
+"linkend=\"ValidateTopology\"/> to check the result, <xref "
+"linkend=\"GetFaceByPoint\"/> to locate each attribute point, and <xref "
+"linkend=\"ST_GetFaceGeometry\"/> to materialize ordinary polygon geometries."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Create an empty topology and populate it with linework that encloses two "
+"faces:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"An empty result from <function>ValidateTopology</function> means that no "
+"topology errors were found. Attribute points can now be matched to faces. A "
+"face identifier of <literal>0</literal> denotes the universal face, so the "
+"point is outside every bounded face."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Before copying attributes into a face table, check both for points outside "
+"bounded faces and for multiple source points assigned to the same face:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Use <xref linkend=\"DropTopology\"/> to remove the example topology when it "
+"is no longer needed:"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
 msgid "Topology Primitive Tables"
 msgstr "トポロジープリミティブテーブル"
 
@@ -1567,7 +1611,8 @@ msgstr "エラーの発生するエッジ、フェイス、ノードの識別子
 #, no-c-format
 msgid ""
 "For errors that involve two objects, denotes the secondary edge or node."
-msgstr "二つのオブジェクトが関係するエラー用で、第二のエッジまたはノードを示します。"
+msgstr ""
+"二つのオブジェクトが関係するエラー用で、第二のエッジまたはノードを示します。"
 
 #. Tag: title
 #, no-c-format
@@ -1915,10 +1960,10 @@ msgid ""
 "topogeometries created before the upgrade. This function fixes this "
 "corruption in affected tables."
 msgstr ""
-"PostGISトポロジー 3.6.0未満から3.6.0以上にアップグレードする時、"
-"トポジオメトリーカラムの定義が変更されました。このためアップグレード前に作ら"
-"れたトポジオメトリーで間違いが発生します。この関数は影響を受けるテーブルの該"
-"当する間違いを修正します。"
+"PostGISトポロジー 3.6.0未満から3.6.0以上にアップグレードする時、トポジオメト"
+"リーカラムの定義が変更されました。このためアップグレード前に作られたトポジオ"
+"メトリーで間違いが発生します。この関数は影響を受けるテーブルの該当する間違い"
+"を修正します。"
 
 #. Tag: para
 #, no-c-format
@@ -5145,8 +5190,8 @@ msgid ""
 "The identifier is recorded for the topology when it is created and refers to "
 "an entry in <xref linkend=\"spatial_ref_sys\"/>."
 msgstr ""
-"識別子はトポロジーが生成され、かつ <xref linkend=\"spatial_ref_sys\"/> 内の"
-"エントリーを参照するときにトポロジーに記録されます。"
+"識別子はトポロジーが生成され、かつ <xref linkend=\"spatial_ref_sys\"/> 内のエ"
+"ントリーを参照するときにトポロジーに記録されます。"
 
 #. Tag: para
 #, no-c-format
@@ -5658,29 +5703,21 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"This section includes general compilation instructions, if you are compiling "
-"for Windows etc or another OS, you may find additional more detailed help at "
-"<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiInstall\">PostGIS User contributed compile guides</link> and <link "
-"xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
-"Wiki</link>."
+"This section includes general compilation instructions. If you are compiling "
+"for Windows or another operating system, see the <link xlink:href=\"https://"
+"postgis.net/documentation/getting_started/\">PostGIS getting started guides</"
+"link> and the <link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/src/"
+"branch/master/doc/development/environment/\">development environment guides</"
+"link>."
 msgstr ""
-"本節では、一般的なコンパイル手順を示します。Windows用や他のOS用等にコンパイル"
-"するなら、<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
-"UsersWikiInstall\">PostGIS User contributed compile guides</link>や<link "
-"xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
-"Wiki</link>で、より詳細な助けが見つかるかも知れません。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Pre-Built Packages for various OS are listed in <link xlink:href=\"https://"
-"trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</"
-"link>"
+"Pre-Built Packages for various OS are listed in the <link "
+"xlink:href=\"https://postgis.net/documentation/getting_started/\">PostGIS "
+"getting started guides</link>"
 msgstr ""
-"多くのOS用のビルド済みパッケージの一覧は<link xlink:href=\"http://"
-"trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</"
-"link>にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -6127,9 +6164,9 @@ msgid ""
 "default, utilities are installed in the executable directory reported by the "
 "detected PostgreSQL installation."
 msgstr ""
-"PostGIS コマンドラインユーティリティのインストール先です。デフォルトでは"
-"ユーティリティは検出された PostgreSQL から報告される実行可能ディレクトリーに"
-"インストールされます。"
+"PostGIS コマンドラインユーティリティのインストール先です。デフォルトではユー"
+"ティリティは検出された PostgreSQL から報告される実行可能ディレクトリーにイン"
+"ストールされます。"
 
 #. Tag: para
 #, no-c-format
@@ -6302,13 +6339,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"If you obtained PostGIS from the <link xlink:href=\"https://trac.osgeo.org/"
-"postgis/wiki/CodeRepository\"> code repository </link> , the first step is "
+"If you obtained PostGIS from the <link xlink:href=\"https://postgis.net/"
+"development/source_code/\"> code repository </link> , the first step is "
 "really to run the script"
 msgstr ""
-"PostGISを<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
-"CodeRepository\">コードレポジトリ</link>から得る場合には、はじめに次のスクリ"
-"プトを実行します。"
 
 #. Tag: para
 #, no-c-format
@@ -6437,8 +6471,8 @@ msgid ""
 "user, then test before installing. After installation, run the extension "
 "regression tests."
 msgstr ""
-"psql接続ユーザーを上書きしたいときには <varname>PGUSER</varname> を設定します"
-"。インストール後にエクステンションの回帰テストを行います。"
+"psql接続ユーザーを上書きしたいときには <varname>PGUSER</varname> を設定しま"
+"す。インストール後にエクステンションの回帰テストを行います。"
 
 #. Tag: para
 #, no-c-format
@@ -6879,9 +6913,9 @@ msgid ""
 msgstr ""
 "PostGISは <link xlink:href=\"https://www.postgresql.org/\">PostgreSQL</link> "
 "を拡張して、データベース内での空間データの格納、インデックス、クエリー、処理"
-"を可能にするものです。通常の関係データ内に位置データを保持することで、空間"
-"クエリーが同じ SQL、トランザクション、制約、アクセス制御、バックアップツール"
-"、アプリケーションからの接続を利用できるようになります。"
+"を可能にするものです。通常の関係データ内に位置データを保持することで、空間ク"
+"エリーが同じ SQL、トランザクション、制約、アクセス制御、バックアップツール、"
+"アプリケーションからの接続を利用できるようになります。"
 
 #. Tag: para
 #, no-c-format
@@ -6894,8 +6928,8 @@ msgid ""
 "<varname>geometry</varname> for planar coordinate systems and "
 "<varname>geography</varname> for geodetic coordinates on the earth."
 msgstr ""
-"平面座標系用の <varname>geometry</varname> と地理座標系用の <varname>"
-"geography</varname>。"
+"平面座標系用の <varname>geometry</varname> と地理座標系用の "
+"<varname>geography</varname>。"
 
 #. Tag: para
 #, no-c-format
@@ -6903,8 +6937,8 @@ msgid ""
 "Spatial indexes that let the PostgreSQL planner avoid scanning every row "
 "when objects can be filtered by location."
 msgstr ""
-"位置によるフィルタリングが可能な時に PostgreSQL の平面において全タプルの"
-"スキャンを避ける空間インデックス。"
+"位置によるフィルタリングが可能な時に PostgreSQL の平面において全タプルのス"
+"キャンを避ける空間インデックス。"
 
 #. Tag: para
 #, no-c-format
@@ -6933,10 +6967,10 @@ msgid ""
 "processing system. Desktop GIS, map servers, ETL tools, and application "
 "frameworks can connect through normal PostgreSQL interfaces."
 msgstr ""
-"PostgreSQL 空間データベースを作ります。アプリケーションは別の GIS 処理"
-"システムに移動させることなく普通の問合せも位置に関係した問い合わせもできます"
-"。デスクトップ GIS、地図サーバー、ETL ツール、アプリケーションフレームワーク"
-"は通常の PostgreSQL インターフェイスを通じて接続することができます。"
+"PostgreSQL 空間データベースを作ります。アプリケーションは別の GIS 処理システ"
+"ムに移動させることなく普通の問合せも位置に関係した問い合わせもできます。デス"
+"クトップ GIS、地図サーバー、ETL ツール、アプリケーションフレームワークは通常"
+"の PostgreSQL インターフェイスを通じて接続することができます。"
 
 #. Tag: title
 #, no-c-format
@@ -6950,9 +6984,10 @@ msgid ""
 "PostGIS was built and packaged, it can provide several PostgreSQL extensions "
 "and command-line tools:"
 msgstr ""
-"このマニュアルでは PostGIS ソースのディストリビューションについて書いています"
-"。PostGIS がどのようにビルドされたか、またパッケージされたかによりますが、い"
-"くつかの PostgreSQL エクステンションとコマンドラインツールが供給されています:"
+"このマニュアルでは PostGIS ソースのディストリビューションについて書いていま"
+"す。PostGIS がどのようにビルドされたか、またパッケージされたかによりますが、"
+"いくつかの PostgreSQL エクステンションとコマンドラインツールが供給されていま"
+"す:"
 
 #. Tag: literal
 #, fuzzy, no-c-format
@@ -6993,8 +7028,8 @@ msgid ""
 "SQL/MM topology types and functions for models based on shared nodes, edges, "
 "and faces."
 msgstr ""
-"SQL/MM ノード、エッジ、フェイスの共有を基にしたモデルのトポロジータイプと関数"
-"。"
+"SQL/MM ノード、エッジ、フェイスの共有を基にしたモデルのトポロジータイプと関"
+"数。"
 
 #. Tag: literal
 #, no-c-format
@@ -7020,10 +7055,10 @@ msgid ""
 "<command>raster2pgsql</command> move data between common file formats and "
 "PostGIS. Other utilities support upgrades, profiling, and development."
 msgstr ""
-"<command>shp2pgsql</command>、<command>pgsql2shp</command>、<command>"
-"raster2pgsql</command> は一般的なファイル書式とPostGISとの間のデータ移動をす"
-"るものです。他のユーティリティとしてはアップグレード、プロファイリング、開発"
-"を補助するものがあります。"
+"<command>shp2pgsql</command>、<command>pgsql2shp</command>、"
+"<command>raster2pgsql</command> は一般的なファイル書式とPostGISとの間のデータ"
+"移動をするものです。他のユーティリティとしてはアップグレード、プロファイリン"
+"グ、開発を補助するものがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -7040,9 +7075,9 @@ msgstr ""
 "filename> といった内部ライブラリーも持ちます。これらは PostGIS コンポーネント"
 "で共有される実装レイヤーであって、PostgreSQL エクステンションと別に配布される"
 "ものではありません。ほとんどのユーザーは中核エクステンションを <code>CREATE "
-"EXTENSION postgis</code> で有効化することで利用開始します。有効な"
-"コンポーネントと構築オプションについては <xref "
-"linkend=\"postgis_installation\"/> を参照して下さい。"
+"EXTENSION postgis</code> で有効化することで利用開始します。有効なコンポーネン"
+"トと構築オプションについては <xref linkend=\"postgis_installation\"/> を参照"
+"して下さい。"
 
 #. Tag: title
 #, no-c-format
@@ -7060,10 +7095,10 @@ msgid ""
 msgstr ""
 "このマニュアルは主要ディストリビューション <literal>postgis/postgis</"
 "literal> を対象にしています。公式の <link xlink:href=\"https://"
-"gitea.osgeo.org/postgis/\">PostGIS source organization</link> では全"
-"プロジェクトのホスティングまたはミラーリングを行っています。これらの"
-"プロジェクトのリリースサイクル、インストール手順、文書はそれぞれ独自です。ま"
-"た、中核エクステンションはこれらのインストールを行いません。"
+"gitea.osgeo.org/postgis/\">PostGIS source organization</link> では全プロジェ"
+"クトのホスティングまたはミラーリングを行っています。これらのプロジェクトのリ"
+"リースサイクル、インストール手順、文書はそれぞれ独自です。また、中核エクステ"
+"ンションはこれらのインストールを行いません。"
 
 #. Tag: para
 #, no-c-format
@@ -7085,10 +7120,11 @@ msgid ""
 "States address geocoding and reverse geocoding using Census TIGER data. It "
 "is also maintained separately from the main distribution."
 msgstr ""
-"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis_tiger_geocoder\">"
-"PostGIS TIGER Geocoder</link> は、米国国勢調査局の TIGER データを使って米国住"
-"所のジオコーディング機能と逆ジオコーディング機能を提供します。これも主要"
-"ディストリビューションから分離して維持管理されるようになりました。"
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/"
+"postgis_tiger_geocoder\">PostGIS TIGER Geocoder</link> は、米国国勢調査局の "
+"TIGER データを使って米国住所のジオコーディング機能と逆ジオコーディング機能を"
+"提供します。これも主要ディストリビューションから分離して維持管理されるように"
+"なりました。"
 
 #. Tag: para
 #, no-c-format
@@ -7117,9 +7153,9 @@ msgid ""
 "\">Introduction to PostGIS</link> is the hands-on workshop maintained by the "
 "PostGIS project."
 msgstr ""
-"<link xlink:href=\"https://postgis.net/workshops/postgis-intro/\">"
-"Introduction to PostGIS</link> は PostGIS プロジェクトが管理する"
-"ハンズオンワークショップです。"
+"<link xlink:href=\"https://postgis.net/workshops/postgis-intro/"
+"\">Introduction to PostGIS</link> は PostGIS プロジェクトが管理するハンズオン"
+"ワークショップです。"
 
 #. Tag: para
 #, no-c-format
@@ -7146,9 +7182,9 @@ msgid ""
 "reference for the SQL interface. Choose a starting point based on what you "
 "are trying to do:"
 msgstr ""
-"このマニュアルは PostGIS データモデルのガイドであり、かつ SQL "
-"インターフェースの完全な参照です。開始点は皆さんの行おうとしていることに応じ"
-"て次から選択します:"
+"このマニュアルは PostGIS データモデルのガイドであり、かつ SQL インターフェー"
+"スの完全な参照です。開始点は皆さんの行おうとしていることに応じて次から選択し"
+"ます:"
 
 #. Tag: term
 #, no-c-format
@@ -7164,9 +7200,9 @@ msgid ""
 "coordinate systems, validity, loading, and indexes."
 msgstr ""
 "チュートリアルとして <link xlink:href=\"https://postgis.net/workshops/"
-"postgis-intro/\">Introduction to PostGIS workshop</link> から始めるといいでし"
-"ょう。その後 <xref linkend=\"using_postgis_dbmanagement\"/> を使って空間型、"
-"座標系、妥当性、ロード、インデックスといったことを理解していきます。"
+"postgis-intro/\">Introduction to PostGIS workshop</link> から始めるといいで"
+"しょう。その後 <xref linkend=\"using_postgis_dbmanagement\"/> を使って空間"
+"型、座標系、妥当性、ロード、インデックスといったことを理解していきます。"
 
 #. Tag: term
 #, no-c-format
@@ -7183,10 +7219,9 @@ msgid ""
 "website</link>."
 msgstr ""
 "<xref linkend=\"postgis_installation\"/> と <xref "
-"linkend=\"postgis_administration\"/> を読んで下さい。パッケージ独自の"
-"インストールとサポート対象リリース情報は <link xlink:href=\"https://"
-"postgis.net/documentation/getting_started/\">PostGIS website</link> にありま"
-"す。"
+"linkend=\"postgis_administration\"/> を読んで下さい。パッケージ独自のインス"
+"トールとサポート対象リリース情報は <link xlink:href=\"https://postgis.net/"
+"documentation/getting_started/\">PostGIS website</link> にあります。"
 
 #. Tag: term
 #, no-c-format
@@ -7203,6 +7238,24 @@ msgstr ""
 "空間関係とインデックスを意識したクエリーパターンについては <xref "
 "linkend=\"using_postgis_query\"/> を、また一般的な効率上の問題については "
 "<xref linkend=\"performance_tips\"/> を読んで下さい。"
+
+#. Tag: term
+#, no-c-format
+msgid "If you are connecting a desktop GIS"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Use the client's current database documentation for its user interface and "
+"supported geometry types. For example, the <link xlink:href=\"https://"
+"docs.qgis.org/latest/en/docs/training_manual/databases/"
+"db_manager.html\">QGIS DB Manager lesson</link> covers PostgreSQL "
+"connections, table layers, SQL query layers, import, and export. A query "
+"layer should return a stable unique identifier and a geometry column with a "
+"known SRID and geometry type. Expensive read-only queries can be exposed "
+"through a view or materialized view and indexed as appropriate."
+msgstr ""
 
 #. Tag: term
 #, no-c-format
@@ -7233,9 +7286,9 @@ msgid ""
 "See <xref linkend=\"Topology\"/>, <xref linkend=\"using_raster_dataman\"/>, "
 "<xref linkend=\"RT_reference\"/>, or <xref linkend=\"reference_sfcgal\"/>."
 msgstr ""
-"<xref linkend=\"Topology\"/>、<xref linkend=\"using_raster_dataman\"/>"
-"、<xref linkend=\"RT_reference\"/>、<xref linkend=\"reference_sfcgal\"/> を読"
-"んで下さい。"
+"<xref linkend=\"Topology\"/>、<xref linkend=\"using_raster_dataman\"/>、"
+"<xref linkend=\"RT_reference\"/>、<xref linkend=\"reference_sfcgal\"/> を読ん"
+"で下さい。"
 
 #. Tag: term
 #, no-c-format
@@ -7306,10 +7359,10 @@ msgid ""
 "specific function or format says so."
 msgstr ""
 "PostGIS は幅広く使われている拡張と統合を含んでいます。PostGIS 拡張の例として"
-"は SRID メタデータを含んだ拡張書式の Extended WKT (EWKT)、Extended WKB (EWKB)"
-"、ジオグラフィー、ラスターが当てはまります。PostGIS はまた、GeoJSON、GML、"
-"KML といった他の標準データ交換書式の入出力に対応しています。これらの機能は別"
-"途文書化されていて、特定の関数や書式で書かれていない限りは、OGC Simple "
+"は SRID メタデータを含んだ拡張書式の Extended WKT (EWKT)、Extended WKB "
+"(EWKB)、ジオグラフィー、ラスターが当てはまります。PostGIS はまた、GeoJSON、"
+"GML、KML といった他の標準データ交換書式の入出力に対応しています。これらの機能"
+"は別途文書化されていて、特定の関数や書式で書かれていない限りは、OGC Simple "
 "Features や SQL/MM 要求とは別と考えてください。"
 
 #. Tag: para
@@ -7320,8 +7373,8 @@ msgid ""
 "PostGIS behavior. <xref linkend=\"PostGIS_Special_Functions_Index\"/> "
 "summarizes SQL/MM compliance and geometry-type support across functions."
 msgstr ""
-"意図的に標準と異なる実装をしていたり、標準で定められている振舞いが曖昧な時は"
-"、関連する関数のページでは、PostGIS の振舞いを記載します。<xref "
+"意図的に標準と異なる実装をしていたり、標準で定められている振舞いが曖昧な時"
+"は、関連する関数のページでは、PostGIS の振舞いを記載します。<xref "
 "linkend=\"PostGIS_Special_Functions_Index\"/> に関数横断的に SQL/MM 準拠と対"
 "応ジオメトリータイプをまとめています。"
 
@@ -7354,8 +7407,8 @@ msgid ""
 "The manual is the authoritative reference for the released SQL interface. "
 "The project website and source tree provide the surrounding material:"
 msgstr ""
-"このマニュアルはリリースされた SQL インターフェイスの公式情報です。"
-"プロジェクトのウェブサイトとソースツリーは次の関連情報を提供しています:"
+"このマニュアルはリリースされた SQL インターフェイスの公式情報です。プロジェク"
+"トのウェブサイトとソースツリーは次の関連情報を提供しています:"
 
 #. Tag: para
 #, no-c-format
@@ -7374,9 +7427,8 @@ msgid ""
 "<link xlink:href=\"https://postgis.net/community/\">Community</link> lists "
 "mailing lists, chat, events, videos, and other support channels."
 msgstr ""
-"<link xlink:href=\"https://postgis.net/community/\">Community</link> では"
-"メーリングリスト、チャット、イベント、動画などの各種支援の一覧を挙げています"
-"。"
+"<link xlink:href=\"https://postgis.net/community/\">Community</link> ではメー"
+"リングリスト、チャット、イベント、動画などの各種支援の一覧を挙げています。"
 
 #. Tag: para
 #, no-c-format
@@ -7387,9 +7439,9 @@ msgid ""
 "releases, and website work."
 msgstr ""
 "<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/src/branch/master/"
-"doc/development\">Developer documentation</link> では、開発環境、テスト、"
-"コーディング規約、内部、メンテナンス、統括、リリース、ウェブサイト管理に対応"
-"しています。"
+"doc/development\">Developer documentation</link> では、開発環境、テスト、コー"
+"ディング規約、内部、メンテナンス、統括、リリース、ウェブサイト管理に対応して"
+"います。"
 
 #. Tag: title
 #, no-c-format
@@ -7568,8 +7620,8 @@ msgid ""
 "spatial index, this can reduce I/O and improve cache locality."
 msgstr ""
 "PostgreSQL CLUSTER コマンドはテーブル行をインデックスに応じて物理的に整列させ"
-"ます。読込限定で同じインデックスを繰り返し使うクエリーのテーブルで、この"
-"コマンドを実行すると、入出力の減少とローカルのキャッシュの改善が可能です。"
+"ます。読込限定で同じインデックスを繰り返し使うクエリーのテーブルで、このコマ"
+"ンドを実行すると、入出力の減少とローカルのキャッシュの改善が可能です。"
 
 #. Tag: para
 #, no-c-format
@@ -8337,7 +8389,8 @@ msgstr "&M_support;"
 #, no-c-format
 msgid ""
 "This example shows a polygon together with the diagonal of its bounding box."
-msgstr "この例では、ポリゴンとバウンダリーボックスの対角線とを一緒に示しています。"
+msgstr ""
+"この例では、ポリゴンとバウンダリーボックスの対角線とを一緒に示しています。"
 
 #. Tag: para
 #, no-c-format
@@ -8416,8 +8469,8 @@ msgstr ""
 "<varname>TIN</varname> (TIN サーフェスを含む) は、サーフェスジオメトリーで次"
 "元は 2 です。立体表現を明示的にするには <xref linkend=\"CG_MakeSolid\"/> を使"
 "います。この関数の結果は三次元の立体を返します。体積などの立体ジオメトリーの"
-"属性情報は SQL/MM 3次元立体関数 (SQL-MM IEC 13249-3: 9.1) で別途処理されます"
-"。"
+"属性情報は SQL/MM 3次元立体関数 (SQL-MM IEC 13249-3: 9.1) で別途処理されま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -9097,12 +9150,11 @@ msgid ""
 "varname>. Use <xref linkend=\"ST_PatchN\"/> and <xref "
 "linkend=\"ST_NumPatches\"/> to access individual faces."
 msgstr ""
-"POLYHEDRALSURFACE または TIN が単一ジオメトリーとして扱われ、フェイスの"
-"コレクションとしては扱われません。<function>ST_GeometryN</function> は"
-"サーフェイスをパッチに分解しないので、1 より大きいインデックス値を与えると"
-"、<varname>NULL</varname> を返します。個々のフェイスにアクセスするには"
-"、<xref linkend=\"ST_PatchN\"/> と <xref linkend=\"ST_NumPatches\"/> を使いま"
-"す。"
+"POLYHEDRALSURFACE または TIN が単一ジオメトリーとして扱われ、フェイスのコレク"
+"ションとしては扱われません。<function>ST_GeometryN</function> はサーフェイス"
+"をパッチに分解しないので、1 より大きいインデックス値を与えると、"
+"<varname>NULL</varname> を返します。個々のフェイスにアクセスするには、<xref "
+"linkend=\"ST_PatchN\"/> と <xref linkend=\"ST_NumPatches\"/> を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -9821,7 +9873,8 @@ msgstr ", <xref linkend=\"ST_InteriorRingN\"/>"
 msgid ""
 "Returns the number of interior rings (holes) of a Polygon. Alias for "
 "ST_NumInteriorRings."
-msgstr "POLYGON の内側リング (穴) の数を返します。ST_NumInteriorRings の別名です。"
+msgstr ""
+"POLYGON の内側リング (穴) の数を返します。ST_NumInteriorRings の別名です。"
 
 #. Tag: para
 #, no-c-format
@@ -9846,8 +9899,8 @@ msgid ""
 "counts individual faces."
 msgstr ""
 "POLYHEDRALSURFACE または TIN のフェイス数を返します。他のジオメトリーの場合に"
-"は NULL を返します。<xref linkend=\"ST_NumGeometries\"/> と違い、この関数は個"
-"々のフェイスを数えます。"
+"は NULL を返します。<xref linkend=\"ST_NumGeometries\"/> と違い、この関数は"
+"個々のフェイスを数えます。"
 
 #. Tag: para
 #, no-c-format
@@ -9896,11 +9949,10 @@ msgid ""
 "faces, because <xref linkend=\"ST_GeometryN\"/> treats PolyhedralSurface and "
 "TIN as unitary geometries."
 msgstr ""
-"POLYHEDRALSURFACE または TIN の 1始まりで N番目のフェイスを返します。他の"
-"ジオメトリーの場合またはインデックス番号が範囲外の場合には NULL を返します。"
-"フェイスにアクセスする場合にはこの関数を使います。<xref "
-"linkend=\"ST_GeometryN\"/> は POLYHEDRALSURFACE と TIN を単一ジオメトリーとし"
-"て扱うためです。"
+"POLYHEDRALSURFACE または TIN の 1始まりで N番目のフェイスを返します。他のジオ"
+"メトリーの場合またはインデックス番号が範囲外の場合には NULL を返します。フェ"
+"イスにアクセスする場合にはこの関数を使います。<xref linkend=\"ST_GeometryN\"/"
+"> は POLYHEDRALSURFACE と TIN を単一ジオメトリーとして扱うためです。"
 
 #. Tag: para
 #, no-c-format
@@ -11361,8 +11413,8 @@ msgid ""
 "with SRID=2163 (US National Atlas equal area)."
 msgstr ""
 "地物のうち、米国ナショナルアトラスのバウンディングボックス内に全体が入ったも"
-"のか、一部が入ったものを全て返します。ここでジオメトリーは SRID=2163 (米国"
-"ナショナルアトラス正積図法) で保存します。"
+"のか、一部が入ったものを全て返します。ここでジオメトリーは SRID=2163 (米国ナ"
+"ショナルアトラス正積図法) で保存します。"
 
 #. Tag: para
 #, no-c-format
@@ -11916,9 +11968,9 @@ msgid ""
 "conventional <varname>cid</varname> alias keeps the geometry column ready "
 "for color-by-cluster rendering."
 msgstr ""
-"入力ジオメトリーごとに明示的なクラスター ID を返します。慣用的な <varname>"
-"cid</varname> エイリアスを使って、ジオメトリーカラムがクラスターの色の塗分け"
-"に使えるようにします。"
+"入力ジオメトリーごとに明示的なクラスター ID を返します。慣用的な "
+"<varname>cid</varname> エイリアスを使って、ジオメトリーカラムがクラスターの色"
+"の塗分けに使えるようにします。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -12308,13 +12360,13 @@ msgid ""
 "<function>ST_Union</function> also splits linestrings at intersections and "
 "may return a single geometry after dissolving boundaries."
 msgstr ""
-"<function>ST_Collect</function> は境界のディソルブやオーバーラップの"
-"ディゾルブを行いません。オーバーラップしているポリゴンの収集は不正な <type>"
-"MultiPolygon</type> を生成する恐れがあります。結果ジオメトリーが、"
-"オーバーラップ部をマージしていて妥当なポリゴンジオメトリーでなければならない"
-"のでしたら、代わりに <xref linkend=\"ST_Union\"/> を使います。<function>"
-"ST_Union</function> もインターセクトする位置でラインストリングを分割し、境界"
-"のディゾルブを行った単一ジオメトリーを返します。"
+"<function>ST_Collect</function> は境界のディソルブやオーバーラップのディゾル"
+"ブを行いません。オーバーラップしているポリゴンの収集は不正な "
+"<type>MultiPolygon</type> を生成する恐れがあります。結果ジオメトリーが、オー"
+"バーラップ部をマージしていて妥当なポリゴンジオメトリーでなければならないので"
+"したら、代わりに <xref linkend=\"ST_Union\"/> を使います。"
+"<function>ST_Union</function> もインターセクトする位置でラインストリングを分"
+"割し、境界のディゾルブを行った単一ジオメトリーを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -12325,11 +12377,11 @@ msgid ""
 "<xref linkend=\"ST_Dump\"/> in a subquery to expand input collections to "
 "their atomic elements (see example below)."
 msgstr ""
-"入力ジオメトリーがコレクション (マルチ系または GEOMETRYCOLLECTION) の場合には"
-"、<function>ST_Collect</function> は GEOMETRYCOLLECTION を返します。"
+"入力ジオメトリーがコレクション (マルチ系または GEOMETRYCOLLECTION) の場合に"
+"は、<function>ST_Collect</function> は GEOMETRYCOLLECTION を返します。"
 "GEOMETRYCOLLECTION がコレクションのネストが可能な唯一のタイプだからです。これ"
-"を避けるにはサブクエリーで <xref linkend=\"ST_Dump\"/> を使って入力"
-"コレクションを単一ジオメトリー要素に展開します。"
+"を避けるにはサブクエリーで <xref linkend=\"ST_Dump\"/> を使って入力コレクショ"
+"ンを単一ジオメトリー要素に展開します。"
 
 #. Tag: para
 #, no-c-format
@@ -13194,11 +13246,11 @@ msgid ""
 "what hexagons in a given Tiling(SRS, Size) overlap with a given bounds."
 msgstr ""
 "平面の六角形タイルという考えから始まりました (地球全体の六角形タイルではあり"
-"ません。H3 については <link xlink:href=\"https://github.com/postgis/h3-pg\">"
-"h3-pg</link> を使います)。与えた平面 SRS と辺サイズで得られる初期タイルを得る"
-"と、独自の平面の六角形タイルができて、Tiling(SRS, Size) となります。この関数"
-"は、与えられた Tiling(SRS, Size) 内のどの六角形が与えた境界を覆うかという問い"
-"の答を出します。"
+"ません。H3 については <link xlink:href=\"https://github.com/postgis/h3-"
+"pg\">h3-pg</link> を使います)。与えた平面 SRS と辺サイズで得られる初期タイル"
+"を得ると、独自の平面の六角形タイルができて、Tiling(SRS, Size) となります。こ"
+"の関数は、与えられた Tiling(SRS, Size) 内のどの六角形が与えた境界を覆うかとい"
+"う問いの答を出します。"
 
 #. Tag: para
 #, no-c-format
@@ -14720,7 +14772,8 @@ msgstr ""
 msgid ""
 "Force a polygon and its hole to use counter-clockwise exterior rings and "
 "clockwise interior rings."
-msgstr "ポリゴンの外側リングを反時計回りに強制し、内側リングを時計回りに強制します。"
+msgstr ""
+"ポリゴンの外側リングを反時計回りに強制し、内側リングを時計回りに強制します。"
 
 #. Tag: para
 #, no-c-format
@@ -14751,7 +14804,8 @@ msgstr ""
 msgid ""
 "Force a polygon and its hole to use clockwise exterior rings and counter-"
 "clockwise interior rings."
-msgstr "ポリゴンの外側リングを時計回りに強制し、内側リングを版時計回りに強制します。"
+msgstr ""
+"ポリゴンの外側リングを時計回りに強制し、内側リングを版時計回りに強制します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14771,10 +14825,10 @@ msgid ""
 msgstr ""
 "ジオメトリーを OGC Simple Features Specification の指定したバージョンで定義さ"
 "れているジオメトリータイプを使うよう強制します。デフォールトは SFS 1.1. 曲線"
-"ジオメトリーは直線表現に変換され、<varname>TRIANGLE</varname> は <varname>"
-"POLYGON</varname> に変換され、<varname>TIN</varname> と <varname>"
-"POLYHEDRALSURFACE</varname> は <varname>GEOMETRYCOLLECTION</varname> とし、要"
-"素として <varname>POLYGON</varname> を入れます。"
+"ジオメトリーは直線表現に変換され、<varname>TRIANGLE</varname> は "
+"<varname>POLYGON</varname> に変換され、<varname>TIN</varname> と "
+"<varname>POLYHEDRALSURFACE</varname> は <varname>GEOMETRYCOLLECTION</"
+"varname> とし、要素として <varname>POLYGON</varname> を入れます。"
 
 #. Tag: para
 #, no-c-format
@@ -14787,10 +14841,10 @@ msgid ""
 "recursively, and the SRID and Z/M coordinates are preserved."
 msgstr ""
 "<parameter>version</parameter> が <literal>1.2</literal> で始まる場合には、曲"
-"線ジオメトリーはなお直線表現に変換されますが、<varname>TRIANGLE</varname>"
-"、<varname>TIN</varname>、<varname>POLYHEDRALSURFACE</varname> は維持されます"
-"。他のバージョン値ではデフォルトの SFS 1.1 を使います。"
-"ジオメトリーコレクションは再帰的に処理され、SRID と Z値、M値 は維持されます。"
+"線ジオメトリーはなお直線表現に変換されますが、<varname>TRIANGLE</varname>、"
+"<varname>TIN</varname>、<varname>POLYHEDRALSURFACE</varname> は維持されます。"
+"他のバージョン値ではデフォルトの SFS 1.1 を使います。ジオメトリーコレクション"
+"は再帰的に処理され、SRID と Z値、M値 は維持されます。"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -14911,7 +14965,8 @@ msgstr "この例では直線ポリゴンによる近似円を CURVEPOLYGON に�
 msgid ""
 "This example converts a 3D linear ring to a CircularString while preserving "
 "Z."
-msgstr "この例では 3次元直線リングを Z 値を維持しつつ CIRCULARSTRING に変換します。"
+msgstr ""
+"この例では 3次元直線リングを Z 値を維持しつつ CIRCULARSTRING に変換します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -14932,7 +14987,8 @@ msgstr ""
 msgid ""
 "A Polygon is converted to a single-element MultiPolygon. The coordinates are "
 "unchanged."
-msgstr "一つのポリゴンを 1要素マルチポリゴンに変換します。座標値は変わりません。"
+msgstr ""
+"一つのポリゴンを 1要素マルチポリゴンに変換します。座標値は変わりません。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -15376,8 +15432,8 @@ msgid ""
 "Removing vertices without computing intersections can introduce self-"
 "intersections in the result."
 msgstr ""
-"インターセクトしている箇所を計算しないまま頂点を削除すると、結果に自己"
-"インターセクションが入ってくる可能性があります。"
+"インターセクトしている箇所を計算しないまま頂点を削除すると、結果に自己イン"
+"ターセクションが入ってくる可能性があります。"
 
 #. Tag: para
 #, no-c-format
@@ -16130,8 +16186,8 @@ msgid ""
 msgstr ""
 "この例ではキャッシュされたけれども古くなったバウンディングボックスを削除しま"
 "す。<function>Box2D</function> を <function>ST_AsBinary(geom)</function> に適"
-"用することで再計算を強制できます。<function>Box2D(geom)</function> が"
-"キャッシュされた値を読みます。"
+"用することで再計算を強制できます。<function>Box2D(geom)</function> がキャッ"
+"シュされた値を読みます。"
 
 #. Tag: para
 #, no-c-format
@@ -16903,8 +16959,8 @@ msgstr ""
 msgid ""
 "Returns a geometry from Well-Known Text (WKT). Alias for ST_GeomFromText."
 msgstr ""
-"Well-Known Text (WKT) からジオメトリーを返します。ST_GeomFromText の別名です"
-"。"
+"Well-Known Text (WKT) からジオメトリーを返します。ST_GeomFromText の別名で"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -17359,7 +17415,8 @@ msgstr "拡張Well-Known Binary表現 (EWKB)から指定したST_Geometry値を�
 msgid ""
 "Constructs a PostGIS geometry from an Extended Well-Known Binary (EWKB) "
 "representation."
-msgstr "Extended Well-Known Binary (EWKB) 表現からPostGIS ジオメトリーを生成します。"
+msgstr ""
+"Extended Well-Known Binary (EWKB) 表現からPostGIS ジオメトリーを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -17377,9 +17434,9 @@ msgid ""
 "42.259113,-71.161144 42.25932)</literal> in NAD83 longitude/latitude (SRID "
 "4269) from its EWKB representation."
 msgstr ""
-"この例では EWKB 表現から NAD83 経度緯度 (SRID 4269) の <literal>LINESTRING(-"
-"71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)</literal> を構"
-"築します。"
+"この例では EWKB 表現から NAD83 経度緯度 (SRID 4269) の "
+"<literal>LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 "
+"42.25932)</literal> を構築します。"
 
 #. Tag: para
 #, no-c-format
@@ -17452,8 +17509,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
-msgstr ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
+msgid ""
+"The PostgreSQL <link xlink:href=\"https://www.postgresql.org/docs/current/"
+"functions-binarystring.html\"><function>decode</function></link> function "
+"converts a hexadecimal WKB string to the <type>bytea</type> value accepted "
+"by <function>ST_GeomFromWKB</function>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
+"linkend=\"ST_GeomFromEWKB\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18333,8 +18401,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_Length2D\"/>, <xref "
-"linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineSubstring\"/>"
+", <xref linkend=\"ST_ClosestPoint\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
+"linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/>, "
+"<xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
 
 #. Tag: refpurpose
@@ -22368,6 +22437,16 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.37"
 #. Tag: para
 #, no-c-format
 msgid ""
+"Use the PostgreSQL <link xlink:href=\"https://www.postgresql.org/docs/"
+"current/functions-binarystring.html\"><function>encode</function></link> "
+"function to produce a hexadecimal WKB string without the <literal>\\x</"
+"literal> prefix used for <type>bytea</type> display. Specifying "
+"<literal>NDR</literal> makes the byte order deterministic."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref "
 "linkend=\"ST_AsText\"/>,"
 msgstr ""
@@ -23101,6 +23180,13 @@ msgstr "十進の度。"
 
 #. Tag: para
 #, no-c-format
+msgid ""
+"To convert parsed degree, minute, and second components to decimal degrees, "
+"apply the cardinal-direction sign explicitly."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
 msgid "Excessively large values are normalized."
 msgstr "過大な値が正常化されます。"
 
@@ -23799,8 +23885,8 @@ msgstr "LINESTRING"
 
 #. Tag: entry
 #, no-c-format
-msgid "not yet implemented - will be PolyLine2D"
-msgstr "未実装 - PolyLine2Dの予定"
+msgid "LineSet (coordinates are promoted to 3D)"
+msgstr ""
 
 #. Tag: entry
 #, no-c-format
@@ -23811,6 +23897,11 @@ msgstr "LineSet"
 #, no-c-format
 msgid "MULTILINESTRING"
 msgstr "MULTILINESTRING"
+
+#. Tag: entry
+#, no-c-format
+msgid "IndexedLineSet (coordinates are promoted to 3D)"
+msgstr ""
 
 #. Tag: entry
 #, no-c-format
@@ -23849,8 +23940,10 @@ msgstr "(MULTI) POLYGON, POLYHEDRALSURFACE"
 
 #. Tag: entry
 #, no-c-format
-msgid "Invalid X3D markup"
-msgstr "不正なX3Dマークアップ"
+msgid ""
+"IndexedFaceSet (coordinates are promoted to 3D; inner rings currently output "
+"as another faceset)"
+msgstr ""
 
 #. Tag: entry
 #, no-c-format
@@ -23872,6 +23965,26 @@ msgstr "TriangleSet2D (未実装)"
 msgid "IndexedTriangleSet"
 msgstr "IndexedTriangleSet"
 
+#. Tag: entry
+#, no-c-format
+msgid "CIRCULARSTRING, COMPOUNDCURVE, CURVEPOLYGON, MULTICURVE, MULTISURFACE"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "linearized, then emitted with the linear geometry mapping"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "NURBSCURVE"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "NurbsCurve with controlPoint, knot, weight, and order fields"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid ""
@@ -23880,6 +23993,11 @@ msgid ""
 msgstr ""
 "2次元ジオメトリ対応はまだ不完全です。 内環は現在は分けられたポリゴンとして描"
 "画されるだけです。作業中です。"
+
+#. Tag: para
+#, no-c-format
+msgid "M coordinates are not represented in X3D output."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -23931,6 +24049,13 @@ msgid ""
 msgstr ""
 "Enhanced: 2.2.0: GeoCoordinatesと軸 (x/y, 経度/緯度)の反転に対応しました。詳"
 "細はoptionsを見て下さい。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Enhanced: 3.7.0: Support for curve geometries. NURBSCURVE is emitted as X3D "
+"NurbsCurve; other curve types are linearized before output."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -26347,6 +26472,13 @@ msgstr ""
 "ルトでは入力ジオメトリの凸包です。円の中心は、障害物から最も遠い距離を持つ境"
 "界の内部の点です。円自体は中心点と、円半径を決める障害物上にある点の最近傍点"
 "から決まります。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If a boundary is supplied it must be a valid polygonal geometry with "
+"positive area."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -42716,8 +42848,18 @@ msgstr "この例では仮原点を使ってX,Y値を拡大縮小します。"
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"ST_TransScale\"/>"
-msgstr ", <xref linkend=\"ST_TransScale\"/>"
+msgid ""
+"This example constructs an ellipse centered at (10, 20), with X radius 8, Y "
+"radius 4, and rotated 30 degrees counter-clockwise. Scaling and rotation use "
+"the center as their origin, so the ellipse keeps both its position and SRID."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
+"linkend=\"ST_Rotate\"/>, <xref linkend=\"ST_TransScale\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -49753,6 +49895,253 @@ msgstr ""
 
 #. Tag: title
 #, no-c-format
+msgid "Raster Coverages and Raster/Vector Analysis"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A coverage is a way to interpret spatial data as a mapping from a "
+"<emphasis>domain</emphasis> of locations to a <emphasis>range</emphasis> of "
+"values. Evaluating a coverage means asking for the value at a location; an "
+"inverse query asks for the locations whose values match a condition. PostGIS "
+"does not expose a generic ISO 19123 coverage SQL type, but geometry tables "
+"and raster values provide the building blocks for both directions."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A coverage can be continuous, with values calculated or interpolated for "
+"arbitrary locations, or discrete, with values supplied by stored spatial "
+"objects or grid cells. The coverage model describes how locations map to "
+"values, independently of whether those values come from an equation, a "
+"table, or one or more raster values. A time column or function argument can "
+"add a temporal dimension without changing that distinction."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"In a vector coverage, a geometry column supplies the domain and other "
+"columns supply attributes in the range. A vector range can contain text, "
+"numbers, or another spatial value, provided its meaning and type are "
+"consistent wherever the coverage is defined. In a raster, each cell location "
+"is part of the domain and the band values at that cell form the range. Other "
+"columns in the same table row describe the raster value or tile as a whole; "
+"they do not attach separate values to individual cells."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A logical raster coverage may be stored as one raster value or as many tiles "
+"in a table. Tiles that belong to one coverage should have compatible SRIDs, "
+"scales, alignment, band counts, pixel types, and NODATA conventions. The "
+"constraints exposed by <xref linkend=\"RT_Raster_Columns\"/> record and "
+"validate those properties."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Raster table arrangements."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A raster column can represent an image warehouse, a tiled coverage, or a "
+"collection of rasterized objects. These arrangements have different "
+"assumptions about tile size, alignment, gaps, and overlaps. PostGIS does not "
+"infer the intended arrangement from the column type alone."
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Arrangement"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Row relationship"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Typical use"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Image warehouse"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid ""
+"Independent rasters; sizes, alignment, and extents may differ or overlap"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Cataloging unrelated source images"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Irregular tiled coverage"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid ""
+"One logical coverage with gaps allowed, variable tile sizes, and normally no "
+"overlap"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Incremental or source-driven mosaics"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid ""
+"One alignment and tile size with no overlap; gaps may remain at the boundary "
+"or inside the coverage"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Regular tiled coverage"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Indexed analysis over a large coverage"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Equal aligned tiles fill a rectangular extent without gaps or overlaps"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Rectangular regular coverage"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Predictable block processing and overview generation"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid ""
+"Each image is internally regular but stored in its own table or partition"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Separate tiled images"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Keeping source-image identity and lifecycle separate"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid ""
+"Each row is a rasterized feature; extents and sizes may differ and overlap"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Raster-object coverage"
+msgstr ""
+
+#. Tag: entry
+#, no-c-format
+msgid "Object models where cells replace or supplement vector geometry"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Use <xref linkend=\"RT_AddRasterConstraints\"/> to record common SRID, "
+"scale, alignment, band, extent, and regular-blocking properties, and use "
+"spatial indexes and application constraints for relationships that the "
+"catalog cannot express."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Queries against a tiled coverage normally have two stages:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Use the raster spatial index and <xref linkend=\"RT_ST_Intersects\"/> to "
+"select candidate tiles."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Read, clip, aggregate, or vectorize values inside those tiles with functions "
+"such as <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Clip\"/>, "
+"<xref linkend=\"RT_ST_SummaryStatsAgg\"/>, and <xref "
+"linkend=\"RT_ST_DumpAsPolygons\"/>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"returns <xref linkend=\"geomval\"/> rows that pair geometries with cell "
+"values. This allows ordinary geometry overlay and filtering to answer "
+"inverse coverage queries, but polygonizing many cells is usually more "
+"expensive than keeping the operation in raster space."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Choose boundary semantics deliberately. Clipping and aggregating raster "
+"pixels is usually the shorter and faster path. If a partial boundary cell "
+"must contribute in proportion to its covered area, intersect the geometry "
+"with the <xref linkend=\"geomval\"/> rows and calculate an area-weighted "
+"result in an appropriate projected coordinate system. That exact partial-"
+"cell method costs more because it vectorizes the selected cells."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Tile size affects both sides of the indexed query: smaller tiles reduce the "
+"amount of raster data inspected for each candidate row, while increasing row "
+"and index overhead. Benchmark representative queries instead of treating one "
+"tile size as a universal default."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For a current end-to-end raster/vector pattern, load and tile data with "
+"<xref linkend=\"RT_Raster_Loader\"/>, then see the building example in <xref "
+"linkend=\"RT_ST_SummaryStats\"/>. It selects intersecting tiles, clips them "
+"to each polygon, and combines per-tile statistics into one result per "
+"feature. For point observations such as animal locations, first buffer the "
+"points in an appropriate projected coordinate system, then apply the same "
+"tile selection, clipping, and aggregation pattern to an elevation or other "
+"continuous raster coverage."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
 msgid "Raster Catalogs"
 msgstr "ラスタカタログ"
 
@@ -50628,6 +51017,68 @@ msgstr "2.5次元/3次元対応"
 #, no-c-format
 msgid "Supports geography"
 msgstr "ジオグラフィ対応"
+
+#, no-c-format
+#~ msgid ""
+#~ "Supplementary instructions for windows users are available at <link "
+#~ "xlink:href=\"http://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiWinUpgrade\">Windows Hard upgrade</link>."
+#~ msgstr ""
+#~ "Windows用に関する追加情報は <link xlink:href=\"http://trac.osgeo.org/"
+#~ "postgis/wiki/UsersWikiWinUpgrade\">Windows Hard upgrade</link>にあります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "This section includes general compilation instructions, if you are "
+#~ "compiling for Windows etc or another OS, you may find additional more "
+#~ "detailed help at <link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiInstall\">PostGIS User contributed compile guides</link> and "
+#~ "<link xlink:href=\"http://trac.osgeo.org/postgis/wiki/"
+#~ "DevWikiMain\">PostGIS Dev Wiki</link>."
+#~ msgstr ""
+#~ "本節では、一般的なコンパイル手順を示します。Windows用や他のOS用等にコンパ"
+#~ "イルするなら、<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiInstall\">PostGIS User contributed compile guides</link>や<link "
+#~ "xlink:href=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
+#~ "Wiki</link>で、より詳細な助けが見つかるかも知れません。"
+
+#, no-c-format
+#~ msgid ""
+#~ "Pre-Built Packages for various OS are listed in <link "
+#~ "xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+#~ "UsersWikiPackages\">PostGIS Pre-built Packages</link>"
+#~ msgstr ""
+#~ "多くのOS用のビルド済みパッケージの一覧は<link xlink:href=\"http://"
+#~ "trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built "
+#~ "Packages</link>にあります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "If you obtained PostGIS from the <link xlink:href=\"https://"
+#~ "trac.osgeo.org/postgis/wiki/CodeRepository\"> code repository </link> , "
+#~ "the first step is really to run the script"
+#~ msgstr ""
+#~ "PostGISを<link xlink:href=\"https://trac.osgeo.org/postgis/wiki/"
+#~ "CodeRepository\">コードレポジトリ</link>から得る場合には、はじめに次のスク"
+#~ "リプトを実行します。"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
+
+#, no-c-format
+#~ msgid "not yet implemented - will be PolyLine2D"
+#~ msgstr "未実装 - PolyLine2Dの予定"
+
+#, no-c-format
+#~ msgid "Invalid X3D markup"
+#~ msgstr "不正なX3Dマークアップ"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_TransScale\"/>"
+#~ msgstr ", <xref linkend=\"ST_TransScale\"/>"
 
 #, no-c-format
 #~ msgid ""
