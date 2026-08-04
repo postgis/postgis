@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-20 08:06+0000\n"
-"PO-Revision-Date: 2026-08-04 01:39+0000\n"
+"PO-Revision-Date: 2026-08-04 05:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -13239,7 +13239,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Counting points in hexagons."
-msgstr "六角形内のポイント数の計測。"
+msgstr "六角形内のポイント数の計数。"
 
 #. Tag: para
 #, no-c-format
@@ -13265,11 +13265,15 @@ msgid ""
 "place of an external administrative-boundary table, so the example is self-"
 "contained."
 msgstr ""
+"ポリゴン境界線ごとにグリッドを生成してインターセクトするセルを抽出すると、隣"
+"接領域での共有境界線に沿って六角形がオーバーラップします。さらに下に、二つの"
+"行政区域境界として単純な領域を使って構築した場合の図を下に示します。この例は"
+"自己完結しています。"
 
 #. Tag: para
 #, no-c-format
 msgid "The same pattern applies to a real administrative-boundary table:"
-msgstr ""
+msgstr "同じ方法を実際の行政区域境界のテーブルに適用します:"
 
 #. Tag: para
 #, no-c-format
@@ -13323,7 +13327,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Creating a hexagon at the origin."
-msgstr ""
+msgstr "原点への六角形の生成。"
 
 #. Tag: para
 #, no-c-format
@@ -13373,7 +13377,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Generating a 1 degree grid for a country."
-msgstr ""
+msgstr "国家用として1度のグリッドの生成。"
 
 #. Tag: para
 #, no-c-format
@@ -13388,7 +13392,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Counting points in squares (using single chopped grid)."
-msgstr ""
+msgstr "正方形あたりポイント数の計数 (単一の切断されたグリッドを仕様)。"
 
 #. Tag: para
 #, no-c-format
@@ -13406,7 +13410,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Counting points in squares using set of grid per point."
-msgstr ""
+msgstr "ポイントあたりのグリッド集合を使った正方形あたりのポイント数の計数。"
 
 #. Tag: para
 #, no-c-format
@@ -13458,7 +13462,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Creating a square at the origin."
-msgstr ""
+msgstr "原点への四角形の生成。"
 
 #. Tag: para
 #, no-c-format
@@ -13505,17 +13509,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Generating the word 'Yo'."
-msgstr ""
+msgstr "'Yo' という文字の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Generating the word 'PostGIS'."
-msgstr ""
+msgstr "'PostGIS' という文字の生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Scaling and moving words."
-msgstr ""
+msgstr "文字の拡大縮小と移動。"
 
 #. Tag: para
 #, no-c-format
