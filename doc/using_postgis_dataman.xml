@@ -1601,10 +1601,9 @@ ON my_special_pois USING gist(geom gist_geometry_ops_nd);</programlisting>
 		<para>To retain constraint-based definition behavior, such as for inherited tables where all children do not have the same type and SRID, set the optional <varname>use_typmod</varname> argument to false.</para>
 	<programlisting language="sql">SELECT Populate_Geometry_Columns('myschema.my_special_pois'::regclass, false);</programlisting>
 
-<para>Although the old constraint-based method is still supported, direct
-pass-through view columns register correctly in <varname>geometry_columns</varname>
-for both typmod-based and constraint-based source columns. In this example we
-define a column using typmod and another using constraints.</para>
+<para>Although the old-constraint based method is still supported, a constraint-based geometry column used directly
+in a view, will not register correctly in geometry_columns, as will a typmod one.
+In this example we define a column using typmod and another using constraints.</para>
 	<programlisting language="sql">CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom geometry(POINT, 4326));
 SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
 <para>If we run <command>\d pois_ny</command> in psql, we observe they are defined differently -- one is typmod, one is constraint.</para>
@@ -1642,21 +1641,20 @@ SELECT *
 SELECT f_table_name, f_geometry_column, srid, type
     FROM geometry_columns
     WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
-<para>Both the typmod based geom view column and the direct constraint based
-view column register correctly.</para>
+<para>The typmod based geom view column registers correctly,
+but the constraint based one does not.</para>
 	<screen role="text-primary">   f_table_name   | f_geometry_column | srid |   type
 ------------------+-------------------+------+----------
  vw_pois_ny_parks | geom              | 4326 | POINT
- vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
+ vw_pois_ny_parks | geom_2160         |    0 | GEOMETRY</screen>
 
-<para>If the view applies a spatial function to the geometry, such as
-<function>ST_Transform</function>, you still need to cast the transformed
-column explicitly so the view can expose the correct type and SRID:</para>
+<para>This may change in future versions of PostGIS, but for now
+to force the constraint-based view column to register correctly, you need to do this:</para>
 	<programlisting language="sql">DROP VIEW vw_pois_ny_parks;
 CREATE VIEW vw_pois_ny_parks AS
 SELECT gid, poi_name, cat,
   geom,
-  ST_Transform(geom, 2160)::geometry(POINT, 2160) As geom_2160
+  geom_2160::geometry(POINT,2160) As geom_2160
   FROM pois_ny
   WHERE cat = 'park';
 SELECT f_table_name, f_geometry_column, srid, type

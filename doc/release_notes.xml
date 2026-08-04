@@ -74,7 +74,6 @@
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/5645">#5645</link>, Docs: keep code operators (&quot;=&gt;&quot;) intact in translated manuals by enforcing verbatim CSS (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/1408">#1408</link>, Docs: flatten transparent manual images onto white backgrounds for PDF builds while keeping HTML images transparent (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/2838">#2838</link>, Emit valid X3D Coordinate nodes for 2D polygon output (Darafei Praliaskouski)</para>
-      <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/1705">#1705</link>, Infer constraint metadata for direct view and materialized view geometry columns (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://github.com/postgis/postgis/pull/899">GH-899</link>, [raster] Honor PostgreSQL interrupts in long-running GDAL progress callbacks (Darafei Praliaskouski)</para>
       <para><link xlink:href="https://trac.osgeo.org/postgis/ticket/2583">#2583</link>, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN (Darafei Praliaskouski)</para>
     </simplesect>

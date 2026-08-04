@@ -1704,7 +1704,7 @@ SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, t
  ORDER BY f_table_name, f_geometry_column;
 DROP TABLE IF EXISTS test5829, test5978;
 
--- #1705, constraint-based geometry metadata for direct view columns
+-- #1705, view columns do not inherit constraint-based geometry metadata; only typmod-based view columns and constraint-based table columns register
 CREATE TABLE test1705 (
   gid integer,
   geom geometry(Point, 4326),

@@ -39,7 +39,10 @@ These are only changes since 3.7.0beta1.
           (Darafei Praliaskouski)
  - #6109, Out-of-bounds heap read in BOX2D_out and BOX2D_expand
    on 65-byte box2d under ASAN (Dennis Tighe, Google)
- - #6110, regression in speed with geometry_columns (Regina Obe)
+ - #6110, Fix regression in speed with geometry_columns (Regina Obe)
+ - Revert feature  #1705 (constraint geometry column detection in views)
+    Added too much overhead to geometry_columns performance (Regina Obe)
+
  - Schema qualify references to pg_catalog and postgis
    in geometry_columns and geography_columns views (Regina Obe)
 
@@ -251,8 +254,6 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           PDF builds while keeping HTML images transparent (Darafei Praliaskouski)
  - #2838, Emit valid X3D Coordinate nodes for 2D polygon output
           (Darafei Praliaskouski)
- - #1705, Infer constraint metadata for direct view and materialized view
-          geometry columns (Darafei Praliaskouski)
  - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL
           progress callbacks (Darafei Praliaskouski)
  - #6073, #6074, Stabilize geography LRS endpoint interpolation and pole
