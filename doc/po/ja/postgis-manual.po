@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-04 10:39+0000\n"
+"PO-Revision-Date: 2026-08-05 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -483,6 +483,9 @@ msgid ""
 "xlink:href=\"https://postgis.net/documentation/getting_started/"
 "install_windows/\">PostGIS Windows installation guide</link>."
 msgstr ""
+"Windows ユーザー向けの捕捉手順は <link xlink:href=\"https://postgis.net/"
+"documentation/getting_started/install_windows/\">PostGIS Windows "
+"installation guide</link> にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -1231,7 +1234,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Building Faces from Linework"
-msgstr ""
+msgstr "ラインからフェイスを構築する"
 
 #. Tag: para
 #, no-c-format
@@ -1243,13 +1246,19 @@ msgid ""
 "linkend=\"GetFaceByPoint\"/> to locate each attribute point, and <xref "
 "linkend=\"ST_GetFaceGeometry\"/> to materialize ordinary polygon geometries."
 msgstr ""
+"この例では、ノードを与えたラインからトポロジーのフェイスを構築し、結果"
+"フェイスにポイント属性を関連付けます。トポロジーに投入するために <xref "
+"linkend=\"ST_CreateTopoGeo\"/> を使い、結果の確認に <xref "
+"linkend=\"ValidateTopology\"/> を使い、各属性が指すフェイスの特定に <xref "
+"linkend=\"GetFaceByPoint\"/> を使い、通常のポリゴンジオメトリーを作るのに "
+"<xref linkend=\"ST_GetFaceGeometry\"/> を使います。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Create an empty topology and populate it with linework that encloses two "
 "faces:"
-msgstr ""
+msgstr "からトポロジーを生成し、二つのフェイスをラインを取り囲むラインを投入します:"
 
 #. Tag: para
 #, no-c-format
@@ -1259,6 +1268,10 @@ msgid ""
 "face identifier of <literal>0</literal> denotes the universal face, so the "
 "point is outside every bounded face."
 msgstr ""
+"<function>ValidateTopology</function> からの返り値が空の場合には、トポロジー"
+"のエラーがありません。属性のポイントはフェイスに合致させることができます。ID "
+"が <literal>0</literal> のフェイスはユニバーサルフェイスで、ポイントが全ての"
+"フェイスの外側にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -1266,6 +1279,8 @@ msgid ""
 "Before copying attributes into a face table, check both for points outside "
 "bounded faces and for multiple source points assigned to the same face:"
 msgstr ""
+"属性をフェイスのテーブルに複製する前に、ポイントがフェイスの外側に無いかを確"
+"認し、同じフェイスに複数のポイントが割り当てられないかを確認します。"
 
 #. Tag: para
 #, no-c-format
@@ -1273,6 +1288,8 @@ msgid ""
 "Use <xref linkend=\"DropTopology\"/> to remove the example topology when it "
 "is no longer needed:"
 msgstr ""
+"例で使ったトポロジーが不要であって削除するには <xref "
+"linkend=\"DropTopology\"/> を使います:"
 
 #. Tag: title
 #, no-c-format
@@ -5710,6 +5727,12 @@ msgid ""
 "branch/master/doc/development/environment/\">development environment guides</"
 "link>."
 msgstr ""
+"この節では一般的なコンパイル手順を紹介します。Windows または他の"
+"オペレーティングシステム用に困憊する場合には、<link xlink:href=\"https://"
+"postgis.net/documentation/getting_started/\">PostGIS getting started guides</"
+"link> と <link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/src/"
+"branch/master/doc/development/environment/\">development environment guides</"
+"link> とをご覧ください。"
 
 #. Tag: para
 #, no-c-format
@@ -5718,6 +5741,9 @@ msgid ""
 "xlink:href=\"https://postgis.net/documentation/getting_started/\">PostGIS "
 "getting started guides</link>"
 msgstr ""
+"各種 OS 用の事前ビルドパッケージの一覧は <link xlink:href=\"https://"
+"postgis.net/documentation/getting_started/\">PostGIS getting started guides</"
+"link> にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -6343,6 +6369,9 @@ msgid ""
 "development/source_code/\"> code repository </link> , the first step is "
 "really to run the script"
 msgstr ""
+"PostGIS を <link xlink:href=\"https://postgis.net/development/source_code/"
+"\"> code repository </link> から得た場合には、最初の手続は本当に次の"
+"スクリプトの実行です"
 
 #. Tag: para
 #, no-c-format
@@ -7242,10 +7271,10 @@ msgstr ""
 #. Tag: term
 #, no-c-format
 msgid "If you are connecting a desktop GIS"
-msgstr ""
+msgstr "デスクトップ GIS に接続している場合"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Use the client's current database documentation for its user interface and "
 "supported geometry types. For example, the <link xlink:href=\"https://"
@@ -7256,6 +7285,15 @@ msgid ""
 "known SRID and geometry type. Expensive read-only queries can be exposed "
 "through a view or materialized view and indexed as appropriate."
 msgstr ""
+"クライアントのユーザーインターフェイスや対応するジオメトリータイプに関する現"
+"在のデータベースの文書を使います。たとえば <link xlink:href=\"https://"
+"docs.qgis.org/latest/en/docs/training_manual/databases/db_manager.html\">"
+"QGIS DB Manager lesson</link> では PostgreSQL 接続、テーブルレイヤー、SQL "
+"クエリーレイヤー、インポート、エクスポートを記載しています。クエリーレイヤは"
+"安定した一意の識別子と、知られた SRID とジオメトリータイプを持つ"
+"ジオメトリーカラムとを返すべきです。高コストな読み取り専用クエリーに対して"
+"ビューまたはマテリアライズドビューを通して出てこさせることが可能で、適切に"
+"インデックスを作ることが可能です。"
 
 #. Tag: term
 #, no-c-format
@@ -17333,6 +17371,8 @@ msgid ""
 "compares that value directly with the readable EWKT shown below and uses the "
 "same geometry for the generated figure."
 msgstr ""
+"結果は PostGIS 固有のジオメトリーとして返されます。文書テストのランナーは値と"
+"下に示す読取可能な EWKT と比較し、同じジオメトリーを図形の生成に使います。"
 
 #. Tag: refpurpose
 #, no-c-format
