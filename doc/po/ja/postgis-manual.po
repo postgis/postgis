@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-05 03:39+0000\n"
+"PO-Revision-Date: 2026-08-05 05:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -19690,7 +19690,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Find the closest point on polygon A to polygon B."
-msgstr ""
+msgstr "ポリゴン A とポリゴン B の最近点の検索。"
 
 #. Tag: para
 #, no-c-format
@@ -19736,21 +19736,21 @@ msgstr ""
 msgid ""
 "Compare the 3D closest point to the 2D closest point for a LineString and a "
 "Point."
-msgstr ""
+msgstr "LINESTRING と POINT との 3次元最近点と 2次元最近点との比較。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Compare the 3D closest point to the 2D closest point for a LineString and a "
 "MultiPoint."
-msgstr ""
+msgstr "LINESTRING と MULTIPOINT との 3次元最近点と 2次元最近点との比較。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Compare the 3D closest point to the 2D closest point for a Polygon and a "
 "MultiLineString."
-msgstr ""
+msgstr "POLYGONと MULTILINESTRINGとの 3次元最近点と 2次元最近点との比較。"
 
 #. Tag: para
 #, no-c-format
@@ -20123,6 +20123,8 @@ msgid ""
 "matters, so keeping both inputs in the same direction makes the comparison "
 "clearer."
 msgstr ""
+"両方のラインは左から右へと横切っている。最初のラインはまっすぐで、二つ目の"
+"ラインは中間頂点が上にあり、上がって降りる構造になっている。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -20180,6 +20182,8 @@ msgid ""
 "witness segment from the original illustration is retained and its length is "
 "checked against the computed distance."
 msgstr ""
+"二つのラインの間のハウスドルフ距離と最小距離。元のイラストから出ている"
+"ハウスドルフ距離を示す辺を保持し、辺の長さと計算された距離とを確認します。"
 
 #. Tag: para
 #, no-c-format
@@ -20423,6 +20427,8 @@ msgid ""
 "Measure a table geometry directly on a spheroid when the coordinates are "
 "stored in longitude and latitude."
 msgstr ""
+"経度と緯度で座標を保存している場合のテーブルのジオメトリーに対する回転楕円体"
+"面上での計測。"
 
 #. Tag: para
 #, no-c-format
@@ -20430,11 +20436,13 @@ msgid ""
 "This example measures a 2D MultiLineString and each component separately on "
 "the same spheroid."
 msgstr ""
+"この例では 2次元 MULTILINESTRING を計測し、要素ごとに同じ回転楕円体面で計算し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
 msgid "This example uses 3D input; Z contributes to the measured result."
-msgstr ""
+msgstr "この例では 3次元入力を使います。Z値は計測結果に影響します。"
 
 #. Tag: para
 #, no-c-format
@@ -20487,12 +20495,12 @@ msgstr "Enhanced: 3.7.0 - 単一ジオメトリー入力に対応しました。
 #. Tag: para
 #, no-c-format
 msgid "Longest line between a Point and a LineString."
-msgstr ""
+msgstr "POINT と LINESTRING との間の最長ライン。"
 
 #. Tag: para
 #, no-c-format
 msgid "Longest line between two polygons."
-msgstr ""
+msgstr "二つの POLYGON 間の最長ライン"
 
 #. Tag: para
 #, no-c-format
@@ -20535,21 +20543,21 @@ msgstr ""
 msgid ""
 "Longest line between a LineString and a Point, comparing the 3D and 2D "
 "results."
-msgstr ""
+msgstr "LINESTRING と POINT の間の最長線。3次元と 2次元との比較。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Longest line between a LineString and a MultiPoint, comparing the 3D and 2D "
 "results."
-msgstr ""
+msgstr "LINESTRING と MULTIPOINT の間の最長線。3次元と 2次元との比較。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Longest line between a Polygon and a MultiLineString, comparing the 3D and "
 "2D results."
-msgstr ""
+msgstr "POLYGON と MULTILINESTRING の間の最長線。3次元と 2次元との比較。"
 
 #. Tag: para
 #, no-c-format
@@ -20917,12 +20925,12 @@ msgstr "Enhanced: 3.4.0 - ジオグラフィに対応しました。"
 #. Tag: para
 #, no-c-format
 msgid "Shortest line between a Point and a LineString."
-msgstr ""
+msgstr "POINT と LINESTRING の間の最短線。"
 
 #. Tag: para
 #, no-c-format
 msgid "Shortest line between polygons."
-msgstr ""
+msgstr "POLYGON 間の最短線。"
 
 #. Tag: para
 #, no-c-format
@@ -20963,21 +20971,21 @@ msgstr ""
 msgid ""
 "Compare the 3D shortest line to the 2D shortest line for a LineString and a "
 "Point."
-msgstr ""
+msgstr "LINESTRING と POINT との間の 3次元最短線と 2次元最短線の比較。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Compare the 3D shortest line to the 2D shortest line for a LineString and a "
 "MultiPoint."
-msgstr ""
+msgstr "LINESTRING と MULTIPOINT との間の 3次元最短線と 2次元最短線の比較。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Compare the 3D shortest line to the 2D shortest line for a Polygon and a "
 "MultiLineString."
-msgstr ""
+msgstr "POLYGON と MULTILINESTRING との間の 3次元最短線と 2次元最短線の比較。"
 
 #. Tag: para
 #, no-c-format
@@ -21217,12 +21225,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "3D LineStrings."
-msgstr ""
+msgstr "3次元 LINESTRING。"
 
 #. Tag: para
 #, no-c-format
 msgid "3M LineStrings."
-msgstr ""
+msgstr "M値を持つ LINESTRING。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21527,12 +21535,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Note: the GROUP BY uses the \"=\" to compare for geometry equivalency."
-msgstr ""
+msgstr "ご注意: GROUP BY はジオメトリーの同等性を比較するために \"=\" を使います。"
 
 #. Tag: para
 #, no-c-format
 msgid "In versions prior to 2.0, this used to return true."
-msgstr ""
+msgstr "2.0より前ではこれは TRUE を返していました。"
 
 #. Tag: para
 #, no-c-format
