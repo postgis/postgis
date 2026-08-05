@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-05 05:39+0000\n"
+"PO-Revision-Date: 2026-08-05 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -17794,6 +17794,8 @@ msgid ""
 "The cells are returned together so their relative sizes remain visible in a "
 "shared coordinate frame."
 msgstr ""
+"セルがまとめて返るので、相対サイズを共通の座標フレーム内で見ることができます"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -22538,6 +22540,11 @@ msgid ""
 "literal> prefix used for <type>bytea</type> display. Specifying "
 "<literal>NDR</literal> makes the byte order deterministic."
 msgstr ""
+"PostgreSQLの <link xlink:href=\"https://www.postgresql.jp/document/current/"
+"html/functions-binarystring.html\"><function>encode</function></link> 関数で"
+"、 <type>bytea</type> 表示に使われる <literal>\\x</literal> が無い 16進数 "
+"WKB 文字列を作ります。<literal>NDR</literal> などを指定することで"
+"バイトオーダーを決定します。"
 
 #. Tag: para
 #, no-c-format
@@ -22635,6 +22642,10 @@ msgid ""
 "after multiplying coordinates by 10 raised to the requested "
 "<varname>precision</varname>."
 msgstr ""
+"<link xlink:href=\"https://developers.google.com/maps/documentation/"
+"utilities/polylinealgorithm\">Encoded Polyline Algorithm Format</link> による"
+"ジオメトリーを返します。書式は 10の <varname>precision</varname> 乗を掛けてか"
+"ら、緯度、経度、これらの差分を整数で保存します。"
 
 #. Tag: para
 #, no-c-format
