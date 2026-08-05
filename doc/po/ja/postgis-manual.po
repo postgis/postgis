@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-05 01:39+0000\n"
+"PO-Revision-Date: 2026-08-05 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -17485,6 +17485,9 @@ msgid ""
 "interprets backslash escapes. Each backslash therefore has to be doubled so "
 "that the <type>bytea</type> input parser receives the octal escapes."
 msgstr ""
+"PostgreSQL エスケープ文字列定数 (<literal>E'...'</literal>) は常に"
+"バックスラッシュによるエスケープを解釈します。バックスラッシュは常に二重にす"
+"ると <type>bytea</type> 入力パーサーは8進数バイト値を受け付けます。"
 
 #. Tag: para
 #, no-c-format
@@ -17493,6 +17496,9 @@ msgid ""
 "ordinary string literals preserve backslashes. The same EWKB can therefore "
 "be written with a single backslash before each octal byte value."
 msgstr ""
+"<varname>standard_conforming_strings</varname> が有効な場合 (デフォルト) には"
+"、通常の文字列リテラルはバックスラッシュを保存します。同じ EWKB でも"
+"バックスラッシュ一つで 8進数バイト値を記述できます。"
 
 #. Tag: para
 #, no-c-format
@@ -17555,6 +17561,10 @@ msgid ""
 "converts a hexadecimal WKB string to the <type>bytea</type> value accepted "
 "by <function>ST_GeomFromWKB</function>."
 msgstr ""
+"PostgreSQL <link xlink:href=\"https://www.postgresql.org/docs/current/"
+"functions-binarystring.html\"><function>decode</function></link> 関数は 16進"
+"数 WKB 文字列を <type>bytea</type> 値に変換すると <function>ST_GeomFromWKB</"
+"function> が受け付けてくれます。"
 
 #. Tag: para
 #, no-c-format
@@ -17562,6 +17572,8 @@ msgid ""
 ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
 "linkend=\"ST_GeomFromEWKB\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
+"linkend=\"ST_GeomFromEWKB\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -17569,6 +17581,8 @@ msgid ""
 "Creates a <varname>LINESTRING</varname> from a WKB representation, "
 "optionally using a given SRID."
 msgstr ""
+"<varname>LINESTRING</varname> を WKB 表現から生成し、SRID を与えた場合にはそ"
+"れを付けます。"
 
 #. Tag: para
 #, no-c-format
@@ -17578,6 +17592,10 @@ msgid ""
 "ID (<varname>SRID</varname>), and creates a <varname>LINESTRING</varname> "
 "geometry. It is a type-specific geometry factory in SQL."
 msgstr ""
+"<function>ST_LineFromWKB</function> 関数はジオメトリーの Well-Known Binary "
+"(WKB) 表現と必要に応じて空間参照系 ID (<varname>SRID</varname>) を含めて得て"
+"、 <varname>LINESTRING</varname> ジオメトリーを生成します。タイプ限定の SQL "
+"のジオメトリーファクトリーです。"
 
 #. Tag: para
 #, no-c-format
@@ -17586,6 +17604,9 @@ msgid ""
 "returned if the input <varname>bytea</varname> does not represent a "
 "<varname>LINESTRING</varname> geometry."
 msgstr ""
+"SRID が指定されていない場合には、デフォルトの 0 になります。入力 <varname>"
+"bytea</varname> が <varname>LINESTRING</varname> ジオメトリーを表現していない"
+"場合には、<varname>NULL</varname> が返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -17595,6 +17616,10 @@ msgid ""
 "function calls <xref linkend=\"ST_GeomFromWKB\"/> and adds validation that "
 "the result is a <varname>LINESTRING</varname>."
 msgstr ""
+"全てのジオメトリーが <varname>LINESTRING</varname> であることが分かっている場"
+"合には、<xref linkend=\"ST_GeomFromWKB\"/> を直接使う方が効率的です。<xref "
+"linkend=\"ST_GeomFromWKB\"/> は <varname>LINESTRING</varname> かどうかの追加"
+"の評価を行うためです。"
 
 #. Tag: para
 #, no-c-format
@@ -17614,6 +17639,10 @@ msgid ""
 "System ID (<varname>SRID</varname>), and creates a <varname>LINESTRING</"
 "varname> geometry. It is an alias for <xref linkend=\"ST_LineFromWKB\"/>."
 msgstr ""
+"<function>ST_LinestringFromWKB</function> 関数はジオメトリーの Well-Known "
+"Binary (WKB) と任意引数の空間参照系 ID (<varname>SRID</varname>) とを取って"
+"、<varname>LINESTRING</varname> ジオメトリーを生成します。<xref "
+"linkend=\"ST_LineFromWKB\"/> の別名です。"
 
 #. Tag: para
 #, no-c-format
@@ -17666,6 +17695,8 @@ msgid ""
 "Returns a geometry from Well-Known Binary (WKB). SQL/MM alias for "
 "ST_GeomFromWKB without an SRID argument."
 msgstr ""
+"Well-Known Binary (WKB) からジオメトリーを返します。ST_GeomFromWKB の SRID を"
+"除いた形式の SQL/MM 用の別名です。"
 
 #. Tag: para
 #, no-c-format
@@ -17673,6 +17704,8 @@ msgid ""
 "This function is the SQL/MM alias for <xref linkend=\"ST_GeomFromWKB\"/> "
 "with no SRID argument."
 msgstr ""
+"この関数は <xref linkend=\"ST_GeomFromWKB\"/> の SRID を除いた形式の SQL/MM "
+"用の別名です。"
 
 #. Tag: para
 #, no-c-format
@@ -17826,6 +17859,8 @@ msgid ""
 "Enhanced: 3.7.0 support for GML ArcString, curved Ring, and CurvePolygon "
 "geometries was introduced."
 msgstr ""
+"Enhanced: 3.7.0 GML ArcString、曲線の Ring、CurvePolygon ジオメトリーが導入さ"
+"れました。"
 
 #. Tag: para
 #, no-c-format
@@ -17865,17 +17900,17 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "A single geometry with srsName."
-msgstr ""
+msgstr "srsName 付の一つのジオメトリー。"
 
 #. Tag: para
 #, no-c-format
 msgid "XLink usage."
-msgstr ""
+msgstr "XLink の使用法。"
 
 #. Tag: para
 #, no-c-format
 msgid "Polyhedral Surface."
-msgstr ""
+msgstr "多面体サーフェス。"
 
 #. Tag: para
 #, no-c-format
@@ -17961,7 +17996,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Constructs a PostGIS geometry from an OGC KML representation."
-msgstr ""
+msgstr "OGC KML 表現からの PostGIS ジオメトリーの構築。"
 
 #. Tag: para
 #, no-c-format
@@ -17993,12 +18028,12 @@ msgstr "Availability: 1.5 libxml2 2.6以上が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "ST_GeomFromKML does not support SQL/MM curve geometries."
-msgstr ""
+msgstr "ST_GeomFromKML は SQL/MM 曲線ジオメトリーに対応していません。"
 
 #. Tag: para
 #, no-c-format
 msgid "A single LineString geometry."
-msgstr ""
+msgstr "一つの LINESTRING ジオメトリー。"
 
 #. Tag: para
 #, no-c-format
@@ -18032,7 +18067,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a geometry from GML. Alias for ST_GeomFromGML."
-msgstr ""
+msgstr "GML からジオメトリーを返します。ST_GeomFromGML の別名です。"
 
 #. Tag: para
 #, no-c-format
@@ -18040,11 +18075,13 @@ msgid ""
 "This function is an alias for <xref linkend=\"ST_GeomFromGML\"/> and "
 "provides the same signatures."
 msgstr ""
+"この関数は <xref linkend=\"ST_GeomFromGML\"/> のエイリアスで、引数型の順序と"
+"返り値型が同じです。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.50."
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.50."
 
 #. Tag: para
 #, no-c-format
@@ -18284,6 +18321,9 @@ msgid ""
 "<xref linkend=\"ST_OffsetCurve\"/> before interpolation. This is useful for "
 "locating an address point beside a street centerline."
 msgstr ""
+"補間前に <xref linkend=\"ST_OffsetCurve\"/> を使うと、補間点をラインの左側ま"
+"たは右側に平行移動できます。これは住所ポイントを道路中心線のそばに置くのに使"
+"います。"
 
 #. Tag: para
 #, no-c-format
@@ -18291,6 +18331,8 @@ msgid ""
 ", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref "
 "linkend=\"ST_LineLocatePoint\"/>, <xref linkend=\"ST_OffsetCurve\"/>"
 msgstr ""
+", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineLocatePoint\"/>, <xref linkend=\"ST_OffsetCurve\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18437,6 +18479,8 @@ msgstr ""
 #, no-c-format
 msgid "This example locates the closest segment and point on a LineString."
 msgstr ""
+"この例は最も近い辺の番号と、最も近いラインストリング上のポイントとを求めてい"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -18445,6 +18489,9 @@ msgid ""
 "linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/>, "
 "<xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClosestPoint\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
+"linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/>, "
+"<xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18513,7 +18560,7 @@ msgstr "Availability: 1.1.0 Z軸とM軸のサポートが1.1.1で追加されま
 #. Tag: para
 #, no-c-format
 msgid "Extract the middle third of a LineString, from 0.333 to 0.666."
-msgstr ""
+msgstr "LINESTRING の中央三分の一を抽出します。小数で言うと 0.333 から 0.666 です。"
 
 #. Tag: para
 #, no-c-format
