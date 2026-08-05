@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-05 07:39+0000\n"
+"PO-Revision-Date: 2026-08-05 09:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -18586,6 +18586,8 @@ msgid ""
 "The final generated step is filtered out when the line length is an exact "
 "multiple of the requested section length."
 msgstr ""
+"ライン長がリクエストしたセクションの長さの正確な倍数であるとき、最後に生成さ"
+"れる段は除外されます。"
 
 #. Tag: para
 #, no-c-format
@@ -18593,6 +18595,8 @@ msgid ""
 "Split a LineString by points by locating the points along the line, adding "
 "the 0 and 1 endpoints, and extracting substrings between adjacent locations."
 msgstr ""
+"LINESTRING を POINT で分割します。ラインに沿ってポイントを設定して、0 と 1 端"
+"点を追加し、隣接ポイントとの部分ラインを抽出します。"
 
 #. Tag: para
 #, no-c-format
@@ -18619,6 +18623,9 @@ msgid ""
 "linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineLocatePoint\"/"
 ">, <xref linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_Split\"/>"
 msgstr ""
+", <xref linkend=\"ST_LineExtend\"/>, <xref "
+"linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineLocatePoint\"/>"
+", <xref linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_Split\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -18747,6 +18754,9 @@ msgid ""
 "example is intended for a single overlay panel rather than separate side-by-"
 "side figures."
 msgstr ""
+"M値が 2 と 8 の間にある部分を抽出し、左に平行移動させます。クリップしたライン"
+"と平行移動の結果とは同じ座標空間にあります。この例では分割して並べた図にせず"
+"に単一のオーバーレイパネルを用意しています。"
 
 #. Tag: para
 #, no-c-format
@@ -19035,6 +19045,10 @@ msgid ""
 "<varname>geometry_columns</varname> view updates automatically from the "
 "system catalogs."
 msgstr ""
+"<function>DropGeometryColumn</function> は後方互換のために残していて、新たな"
+"アプリケーションでは使うことを推奨しません。標準的な <command>ALTER TABLE "
+"... DROP COLUMN</command> コマンドを代りに使います。<varname>"
+"geometry_columns</varname> ビューはシステムカタログから自動的に更新されます。"
 
 #. Tag: para
 #, no-c-format
@@ -19042,6 +19056,8 @@ msgid ""
 "Changed: 2.0.0. Retained for backward compatibility after "
 "<varname>geometry_columns</varname> became a view of the system catalogs."
 msgstr ""
+"Changed: 2.0.0. <varname>geometry_columns</varname> がシステムカタログの"
+"ビューになった後に後方互換のため残置。"
 
 #. Tag: para
 #, no-c-format
@@ -19049,11 +19065,13 @@ msgid ""
 "Use standard SQL to drop the geometry column. The <varname>geometry_columns</"
 "varname> view updates automatically."
 msgstr ""
+"標準 SQL を使ってジオメトリーカラムを削除します。<varname>geometry_columns</"
+"varname> ビューは自動的に更新されます。"
 
 #. Tag: para
 #, no-c-format
 msgid "The legacy compatibility function performs the equivalent operation."
-msgstr ""
+msgstr "過去のものとなった互換関数で同等の処理ができます。"
 
 #. Tag: para
 #, no-c-format
@@ -19086,6 +19104,10 @@ msgid ""
 "<varname>geometry_columns</varname> view updates automatically from the "
 "system catalogs."
 msgstr ""
+"<function>DropGeometryTable</function> は後方互換のために残していて、新たな"
+"アプリケーションでは使うことを推奨しません。標準的な <command>DROP TABLE</"
+"command> コマンドを代りに使います。<varname>geometry_columns</varname> ビュー"
+"はシステムカタログから自動的に更新されます。"
 
 #. Tag: para
 #, no-c-format
@@ -19093,6 +19115,8 @@ msgid ""
 "Use standard SQL to drop a table containing geometry columns. The "
 "<varname>geometry_columns</varname> view updates automatically."
 msgstr ""
+"標準 SQL を使ってジオメトリーカラムを含むテーブルを削除します。<varname>"
+"geometry_columns</varname> ビューは自動的に更新されます。"
 
 #. Tag: para
 #, no-c-format
@@ -19268,7 +19292,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Describe the table to see the typmod-based geometry column."
-msgstr ""
+msgstr "typmod を使ったジオメトリーカラムを見るためにテーブルの説明を表示します。"
 
 #. Tag: para
 #, no-c-format
@@ -19283,7 +19307,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Describe the table to see the constraint-based geometry column."
-msgstr ""
+msgstr "制約を使ったジオメトリーカラムを見るためにテーブルの説明を表示します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -19524,12 +19548,15 @@ msgstr ""
 "<varname>degrees()</varname>で度に変換できます。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "For offsetting lines relative to their direction, use <xref "
 "linkend=\"ST_OffsetCurve\"/>. For projecting a point by distance and "
 "bearing, use <xref linkend=\"ST_Project\"/>."
 msgstr ""
+"ラインをその方向に平行移動させるには <xref linkend=\"ST_OffsetCurve\"/> を使"
+"います。ポイントを距離と方向とで移動させるには <xref "
+"linkend=\"ST_Project\"/> を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -19555,7 +19582,7 @@ msgstr "度単位のジオメトリの方位"
 #. Tag: para
 #, no-c-format
 msgid "Compass direction labels can be computed from the azimuth."
-msgstr ""
+msgstr "方位からコンパスの方位ラベルを計算することができます。"
 
 #. Tag: para
 #, no-c-format
@@ -19563,11 +19590,13 @@ msgid ""
 "Azimuth from Point(25, 45) to Point(75, 100), shown against the positive Y "
 "axis (north)."
 msgstr ""
+"(25, 45) の位置から (75, 100) の位置を見た際のY軸正方向 (北) を基準とした方位"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid "Reverse azimuth from Point(75, 100) to Point(25, 45)."
-msgstr ""
+msgstr "逆に (75, 100) の位置から (25, 45) の位置を見た際の方位。"
 
 #. Tag: para
 #, no-c-format
@@ -22655,6 +22684,10 @@ msgid ""
 "must match when encoding and decoding; otherwise the coordinates are scaled "
 "incorrectly."
 msgstr ""
+"非公式名の <emphasis>polyline5</emphasis> と <emphasis>polyline6</emphasis> "
+"は同じジオメトリーをエンコードしていますが精度は 5 と 6 です。精度は"
+"エンコードと出コードの時に一致していなければなりません。合っていない場合には"
+"座標は正しく拡大縮小されません。"
 
 #. Tag: para
 #, no-c-format
@@ -22663,9 +22696,12 @@ msgid ""
 "Y. Use <xref linkend=\"ST_Transform\"/> to transform geometries in other "
 "coordinate systems before encoding."
 msgstr ""
+"入力ジオメトリは SRID 4326 を使い、経度が X、緯度が Y でなければなりません。"
+"ジオメトリーを他の座標系に変換する場合にはエンコード前に <xref "
+"linkend=\"ST_Transform\"/> を使います。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <link xlink:href=\"https://project-osrm.org/docs/v5.24.0/api/#general-"
 "options\">OSRM API</link> returns precision 5 for "
@@ -22674,11 +22710,16 @@ msgid ""
 "<literal>route.geometry</literal> with <xref "
 "linkend=\"ST_LineFromEncodedPolyline\"/> using the matching precision."
 msgstr ""
+"<link xlink:href=\"https://project-osrm.org/docs/v5.24.0/api/#general-"
+"options\">OSRM API</link> は <literal>geometries=polyline</literal> の時は精"
+"度 5 を返し、<literal>geometries=polyline6</literal> の時は精度 6 を返します"
+"。<literal>route.geometry</literal> を出コードします。これは同じ精度を指定し"
+"た <xref linkend=\"ST_LineFromEncodedPolyline\"/> を使います。"
 
 #. Tag: para
 #, no-c-format
 msgid "Encode the same WGS 84 LineString using precision 5 and 6."
-msgstr ""
+msgstr "同じ WGS84 LINESTRING を精度 5 と精度 6 でエンコードします。"
 
 #. Tag: para
 #, no-c-format
