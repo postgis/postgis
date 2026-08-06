@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-06 04:39+0000\n"
+"PO-Revision-Date: 2026-08-06 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -25463,12 +25463,15 @@ msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30"
 msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The textual results are rounded to whole coordinate units for readability. "
 "Each result remains available as text, while the manual initially favors the "
 "shared input/output figure."
 msgstr ""
+"文字の結果は読みやすくするために全体の整数に丸められています。結果は文字とし"
+"ても出ていますが、マニュアルは最初は入出力の共有された図の方がいいと思います"
+"。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -25478,7 +25481,7 @@ msgstr "quad_segs=8 (デフォルト)"
 #. Tag: emphasis
 #, no-c-format
 msgid "quad_segs=2"
-msgstr ""
+msgstr "quad_segs=2"
 
 #. Tag: emphasis
 #, no-c-format
@@ -25528,12 +25531,12 @@ msgstr "side=left join=mitre"
 #. Tag: emphasis
 #, no-c-format
 msgid "right-hand winding, polygon boundary side=left"
-msgstr ""
+msgstr "右回りに強制し、ポリゴンの境界に対して side=left"
 
 #. Tag: emphasis
 #, no-c-format
 msgid "right-hand winding, polygon boundary side=right"
-msgstr ""
+msgstr "右回りに強制し、ポリゴン境界に対して site=right"
 
 #. Tag: para
 #, no-c-format
@@ -25563,6 +25566,9 @@ msgid ""
 "and then buffering. The figure shows the input and output in separate panels "
 "because the coordinates are in different SRIDs."
 msgstr ""
+"次の例では NAD83 緯度/経度からメートル単位マサチューセッツ州平面に投影変換し"
+"てからバッファーを生成する手順で 100m 八角形を生成します。下図では、入力と出"
+"力は別 SRID になっているので別パネルで表示しています。"
 
 #. Tag: para
 #, no-c-format
