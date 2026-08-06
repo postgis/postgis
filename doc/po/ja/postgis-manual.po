@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-06 06:39+0000\n"
+"PO-Revision-Date: 2026-08-06 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -25582,6 +25582,13 @@ msgid ""
 "operation first; for cartographic visualization in Web Mercator, using that "
 "display SRS can be appropriate."
 msgstr ""
+"ポリゴンに対して正の距離でバッファーを施し、同じだけ負の距離でバッファーを施"
+"すのは、数学的形態学ではクロージング処理と言います。海岸線の狭い入江を除くこ"
+"とで行う簡略化など、ノイズが多い境界線を平滑化するのに使います。結果は、入力"
+"の形状や面積が変化しますが、指定する距離は入力 SRS の単位で選択しなければなり"
+"ません。ジオグラフィーの SRS のデータは、最初に処理に適した投影座標系の SRS "
+"に変換します。Web メルカトルで地図表示をする場合には、表示 SRS を使うといいで"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -25589,6 +25596,8 @@ msgid ""
 "Smooth a coastline using a 1 km closing operation, then simplify the result. "
 "The example uses Massachusetts State Plane meter units for the operation."
 msgstr ""
+"1km クロージング処理を使って海岸線を平滑化します。この例ではメートル単位"
+"マサチューセッツ州平面を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -25600,6 +25609,12 @@ msgid ""
 "and check the result against the cartographic or analytical tolerance "
 "required by the application."
 msgstr ""
+"同じ技術は Paul Ramsey さんの <link xlink:href=\"https://"
+"blog.cleverelephant.ca/2010/11/removing-complexities.html\">Removing "
+"Complexities</link> に記述があります。単純化の最後の手順は任意です。ポリゴン"
+"妥当性評価が問題となる時には <xref linkend=\"ST_SimplifyPreserveTopology\"/> "
+"を使い、結果に対してアプリケーションが求める地図表示または分析に関する許容範"
+"囲に対する確認をします。"
 
 #. Tag: para
 #, no-c-format
@@ -25611,6 +25626,10 @@ msgid ""
 "preselection aid; the threshold and buffer distance must be chosen for the "
 "data units and the kind of spike being checked."
 msgstr ""
+"小さい負数は狭いポリゴンの突起を探す時に経験則的に使われます。下のクエリーは"
+"収縮後の面積と周囲長の大きさを比較します。大きな <varname>erosion_index</"
+"varname> は、この値に比例して、面積よりも多く周囲長が減っていることを示してい"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -25620,11 +25639,14 @@ msgid ""
 "each consecutive pair of vertex buffers, and unioning the segment hulls. As "
 "with any geometry buffer, distances are in the units of the input SRS."
 msgstr ""
+"可変距離バッファーはラインに沿った補間点のバッファーを生成し、バッファーの連"
+"続する二個組の凸包を構築し、辺の凸包を結合することで近似できます。いずれの"
+"ジオメトリーバッファーであっても距離の単位は入力 SRS の単位です。"
 
 #. Tag: para
 #, no-c-format
 msgid "Taper a line buffer from 5 to 25 units along the line."
-msgstr ""
+msgstr "ラインのバッファーの先をラインに沿って 5単位から 25単位に細くします。"
 
 #. Tag: para
 #, no-c-format
@@ -25635,6 +25657,11 @@ msgid ""
 "<xref linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref "
 "linkend=\"ST_MakeValid\"/>"
 msgstr ""
+", <xref linkend=\"ST_ConvexHull\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
+"linkend=\"ST_DumpPoints\"/>, <xref linkend=\"ST_LineLocatePoint\"/>, <xref "
+"linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SimplifyPreserveTopology\"/>, "
+"<xref linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_MakeValid\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25695,12 +25722,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Building an area from five input lines."
-msgstr ""
+msgstr "5本の入力ラインからの領域の構築。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a donut from two circular polygons."
-msgstr ""
+msgstr "2個の円ポリゴンからドーナツポリゴンを生成する。"
 
 #. Tag: para
 #, no-c-format
@@ -25708,6 +25735,8 @@ msgid ""
 "Input linework that crosses at non-endpoint intersections must be noded "
 "before building areas:"
 msgstr ""
+"端点でない位置でクロスする入力ラインは領域構築前にノードを追加しなければなり"
+"ません:"
 
 #. Tag: para
 #, no-c-format
@@ -25799,27 +25828,27 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 #. Tag: para
 #, no-c-format
 msgid "Centroid of a MultiPoint."
-msgstr ""
+msgstr "MULTIPOINT の重心。"
 
 #. Tag: para
 #, no-c-format
 msgid "Centroid of a LineString."
-msgstr ""
+msgstr "LINESTRING の重心"
 
 #. Tag: para
 #, no-c-format
 msgid "Centroid of a Polygon."
-msgstr ""
+msgstr "POLYGON の重心。"
 
 #. Tag: para
 #, no-c-format
 msgid "Centroid of the highest-dimension components of a GeometryCollection."
-msgstr ""
+msgstr "GEOMETRYCOLLECTION の要素で最も空間次元の高いものの重心。"
 
 #. Tag: para
 #, no-c-format
 msgid "Centroids of the parts of a MultiPolygon."
-msgstr ""
+msgstr "MULTIPOLYGON の要素ごとの重心。"
 
 #. Tag: para
 #, no-c-format
@@ -25827,6 +25856,8 @@ msgid ""
 ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_PointOnSurface\"/>, <xref "
 "linkend=\"ST_GeometricMedian\"/>"
 msgstr ""
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_PointOnSurface\"/>, <xref "
+"linkend=\"ST_GeometricMedian\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -25886,18 +25917,18 @@ msgstr "結果には、Z値とM値が存在する場合には、これらの補�
 #. Tag: para
 #, no-c-format
 msgid "Smoothing a Polygon using 1, 2 and 3 iterations."
-msgstr ""
+msgstr "1、2、3のイテレーションを使った POLYGON の平滑化。"
 
 #. Tag: para
 #, no-c-format
 msgid "Smoothing a LineString using 1, 2 and 3 iterations."
-msgstr ""
+msgstr "1、2、3のイテレーションを使った LINESTRING の平滑化。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Smoothing a triangle shows the weakest visual change, so it is kept last."
-msgstr ""
+msgstr "三角形の平滑化は見た目の変化について最も弱いので最後にしています。"
 
 #. Tag: para
 #, no-c-format
@@ -25978,7 +26009,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Smoothing a LineString using nSegments = 5 and 10."
-msgstr ""
+msgstr "nSegments = 5 と 10 を使った LINESTRING の平滑化。"
 
 #. Tag: para
 #, no-c-format
@@ -25986,13 +26017,15 @@ msgid ""
 "Smoothing a 4-point collinear line with default nSegments=5 shows the "
 "minimal change case."
 msgstr ""
+"ポイント 4個の共線をデフォルトの nSegments=5 で平滑化することで変化が最小とな"
+"る事例を示しています。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Smoothing a Polygon using nSegments = 5 and 10. This larger example is kept "
 "last."
-msgstr ""
+msgstr "nSegments = 5、10 を使った POLYGON の平滑化。大きな例で最後に置いています。"
 
 #. Tag: para
 #, no-c-format
@@ -26103,12 +26136,12 @@ msgstr "Enhanced: 3.3.0, GEOS 3.11からGEOSネイティブ実装が有効にな
 #. Tag: para
 #, no-c-format
 msgid "Concave hull of a MultiPoint."
-msgstr ""
+msgstr "MULTIPOING の凹包。"
 
 #. Tag: para
 #, no-c-format
 msgid "Concave hull of a MultiPoint, allowing holes."
-msgstr ""
+msgstr "穴を許容する MULTIPOINT の凹包。"
 
 #. Tag: para
 #, no-c-format
@@ -26136,6 +26169,8 @@ msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"CG_AlphaShape\"/>, <xref "
 "linkend=\"CG_OptimalAlphaShape\"/>"
 msgstr ""
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"CG_AlphaShape\"/>, <xref "
+"linkend=\"CG_OptimalAlphaShape\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26194,7 +26229,7 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.16"
 #. Tag: para
 #, no-c-format
 msgid "Compute the convex hull of a MultiLineString and a MultiPoint."
-msgstr ""
+msgstr "MULTILINESTRING と MULTIPOINT の凹包の計算。"
 
 #. Tag: para
 #, no-c-format
@@ -26258,17 +26293,17 @@ msgstr "<code>2</code> - 三角形のTIN"
 #. Tag: para
 #, no-c-format
 msgid "Triangulation of the vertices of a polygon and a buffered point."
-msgstr ""
+msgstr "ポリゴンとバッファーを施したポイントの頂点の三角網。"
 
 #. Tag: para
 #, no-c-format
 msgid "Triangulation edges returned as a <varname>MULTILINESTRING</varname>."
-msgstr ""
+msgstr "<varname>MULTILINESTRING</varname> として返される三角網のエッジ。"
 
 #. Tag: para
 #, no-c-format
 msgid "Triangulation of 42 points forming an L shape."
-msgstr ""
+msgstr "Lの形状をなす42ポイントの三角網。"
 
 #. Tag: para
 #, no-c-format
@@ -26282,6 +26317,9 @@ msgid ""
 "linkend=\"CG_ConstrainedDelaunayTriangles\"/>, <xref "
 "linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
 msgstr ""
+", <xref linkend=\"ST_TriangulatePolygon\"/>, <xref "
+"linkend=\"CG_ConstrainedDelaunayTriangles\"/>, <xref "
+"linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_ConvexHull\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26381,6 +26419,8 @@ msgid ""
 "Generate 12 points inside a buffered LineString using the deterministic seed "
 "1996."
 msgstr ""
+"バッファーを施した LINESTRING の内側の12ポイントの生成。決定シードに 1996を仕"
+"様。"
 
 #. Tag: para
 #, no-c-format
@@ -26398,6 +26438,8 @@ msgid ""
 "of an attribute as the number of points and keeping the sign of the "
 "attribute for styling."
 msgstr ""
+"ポリゴンテーブルからドット密度地図のポイントの生成。ポイント数として属性値の"
+"絶対値を使い、スタイルのために属性値の正負を維持しています。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26456,7 +26498,7 @@ msgstr "Enhanced: 2.5.0 ポイントの重みとしてのM値の対応が追加�
 #. Tag: para
 #, no-c-format
 msgid "Compare the geometric median and centroid of a MultiPoint."
-msgstr ""
+msgstr "MULTIPOINT の幾何中央値と重心との比較。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26555,6 +26597,8 @@ msgid ""
 "Lines with opposite directions are not merged if <parameter>directed</"
 "parameter> is <literal>TRUE</literal>."
 msgstr ""
+"<parameter>directed</parameter> が <literal>TRUE</literal> の場合には反対方向"
+"のラインはマージされません。"
 
 #. Tag: title
 #, no-c-format
@@ -26623,12 +26667,12 @@ msgstr "GEOS 3.9.0以上が必要です。"
 msgid ""
 "Maximum inscribed circle of a polygon. Center, nearest point, radius, "
 "circle, and radius line are returned."
-msgstr ""
+msgstr "ポリゴンの最大内接円。中心、最近点、半径、円、半径線が返ります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Maximum inscribed circle of a MultiLineString."
-msgstr ""
+msgstr "MULTILINESTRING の最大内接円。"
 
 #. Tag: para
 #, no-c-format
@@ -26638,7 +26682,7 @@ msgstr ", <xref linkend=\"ST_LargestEmptyCircle\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the largest circle not overlapping a geometry."
-msgstr "ジオメトリとオーバラップ市内最大の円を計算します。"
+msgstr "ジオメトリとオーバラップしない最大の円を計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -26665,6 +26709,8 @@ msgid ""
 "If a boundary is supplied it must be a valid polygonal geometry with "
 "positive area."
 msgstr ""
+"境界が与えられている場合には、その境界は妥当なポリゴン系ジオメトリーで、面積"
+"が正でなければなりません。"
 
 #. Tag: para
 #, no-c-format
@@ -26698,7 +26744,7 @@ msgstr "Availability: 3.4.0."
 #. Tag: para
 #, no-c-format
 msgid "Largest empty circle within a set of lines."
-msgstr ""
+msgstr "ラインの集合内にある最大空円。"
 
 #. Tag: para
 #, no-c-format
