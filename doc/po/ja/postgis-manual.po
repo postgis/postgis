@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-06 08:39+0000\n"
+"PO-Revision-Date: 2026-08-06 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -26753,6 +26753,8 @@ msgid ""
 "polygon. The constraint polygon boundary is included both as an obstacle and "
 "as the constraint for the circle center."
 msgstr ""
+"ポイント集合内でポリゴン内の制約が付いている最大空円。制約用ポリゴンの境界は"
+"障害物として、また円の中心として使われます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26818,6 +26820,8 @@ msgid ""
 "Minimum bounding circle of a point and linestring, using 8 segments to "
 "approximate a quarter circle."
 msgstr ""
+"ポイントとラインストリングの最小バウンディング円で、四分円の近似に8辺を使って"
+"います。"
 
 #. Tag: para
 #, no-c-format
@@ -26887,7 +26891,7 @@ msgstr "GEOS 3.6.0以上が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "Oriented envelope of a Point and LineString."
-msgstr ""
+msgstr "POINT と LINESTRING の最小回転四角形。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -26985,17 +26989,17 @@ msgstr "Enhanced: 2.5 - GEOMETRYCOLLECTIONとULTILINESTRINGへの対応追加"
 #. Tag: para
 #, no-c-format
 msgid "Compute an open buffer around roads."
-msgstr ""
+msgstr "道路回りに施した閉じていないバッファーを計算。"
 
 #. Tag: para
 #, no-c-format
 msgid "Offset 15 units with <code>quad_segs=4 join=round</code>."
-msgstr ""
+msgstr "15単位ずらし、<code>quad_segs=4 join=round</code> を指定。"
 
 #. Tag: para
 #, no-c-format
 msgid "Offset -15 units with <code>quad_segs=4 join=round</code>."
-msgstr ""
+msgstr "-15単位ずらし、<code>quad_segs=4 join=round</code> を指定。"
 
 #. Tag: para
 #, no-c-format
@@ -27003,23 +27007,25 @@ msgid ""
 "Apply two negative offsets to obtain a smoother curve; the distances combine "
 "to -45 units."
 msgstr ""
+"二つの負の移動量を適用して、滑らかな曲線を得ます。距離は組み合わせて -45単位"
+"となります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Collect the positive offset and the double-offset to produce parallel curves."
-msgstr ""
+msgstr "正の移動量と二倍の移動量とを合わせて平行曲線を作ります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Offset 15 units with a bevel join."
-msgstr ""
+msgstr "15単位移動かつ面取り結合。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Collect offsets on both sides using a mitre join and a mitre limit of 2.2."
-msgstr ""
+msgstr "正負両方の移動を合わせた平行曲線。マイター結合で、割合制限を 2.2にしている。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27062,23 +27068,23 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a MultiPoint."
-msgstr ""
+msgstr "MULTIPOINT で形成されるサーフェス上のポイント。"
 
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a LineString."
-msgstr ""
+msgstr "LINERSTRING で形成されるサーフェス上のポイント。"
 
 #. Tag: para
 #, no-c-format
 msgid "Point on surface of a Polygon."
-msgstr ""
+msgstr "POLYGON で形成されるサーフェス上のポイント。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Point on surface of the highest-dimension components of a GeometryCollection."
-msgstr ""
+msgstr "GEOMETRYCOLLECTION の最大次元要素で形成されるサーフェス上のポイント。"
 
 #. Tag: para
 #, no-c-format
@@ -27151,7 +27157,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Polygonize a set of input lines."
-msgstr ""
+msgstr "入力ライン集合のポリゴン化。"
 
 #. Tag: para
 #, no-c-format
