@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-06 02:39+0000\n"
+"PO-Revision-Date: 2026-08-06 04:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -22722,11 +22722,13 @@ msgid "Encode the same WGS 84 LineString using precision 5 and 6."
 msgstr "同じ WGS84 LINESTRING を精度 5 と精度 6 でエンコードします。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Decode an OSRM <literal>route.geometry</literal> returned with "
 "<literal>geometries=polyline6</literal>."
 msgstr ""
+"<literal>geometries=polyline6</literal> で返った OSRM <literal>"
+"route.geometry</literal> をデコードする。"
 
 #. Tag: para
 #, no-c-format
@@ -24038,7 +24040,7 @@ msgstr "LINESTRING"
 #. Tag: entry
 #, no-c-format
 msgid "LineSet (coordinates are promoted to 3D)"
-msgstr ""
+msgstr "LineSet (3次元になります)"
 
 #. Tag: entry
 #, no-c-format
@@ -24053,7 +24055,7 @@ msgstr "MULTILINESTRING"
 #. Tag: entry
 #, no-c-format
 msgid "IndexedLineSet (coordinates are promoted to 3D)"
-msgstr ""
+msgstr "IndexedLineSet (3次元になります)"
 
 #. Tag: entry
 #, no-c-format
@@ -24096,6 +24098,8 @@ msgid ""
 "IndexedFaceSet (coordinates are promoted to 3D; inner rings currently output "
 "as another faceset)"
 msgstr ""
+"IndexedFaceSet (3次元になります。内側リングは現在は他のフェイスセットとして出"
+"力されます)"
 
 #. Tag: entry
 #, no-c-format
@@ -24576,6 +24580,10 @@ msgid ""
 "geometries. Although this function works with Z-coordinate, it does an "
 "averaging of Z-Coordinate."
 msgstr ""
+"3次元ジオメトリーで使う場合には、SFCGAL による <xref "
+"linkend=\"CG_3DIntersection\"/> がいいかも知れません。3次元ジオメトリーに対し"
+"て確実に3次元の共有部を出します。この関数は Z 値を持たせられますが、Z 値は平"
+"均値を取ります。"
 
 #. Tag: para
 #, no-c-format
@@ -24642,6 +24650,9 @@ msgid ""
 "input is compared with <xref linkend=\"CG_3DIntersection\"/>, which performs "
 "a true 3D intersection."
 msgstr ""
+"本当の 3次元共有部計算ではありません。2.5次元ジオメトリー (Z 値は持つけど2次"
+"元で計算する)を使います。本当の 3次元共有部計算である <xref "
+"linkend=\"CG_3DIntersection\"/> と同じ入力で比較します。"
 
 #. Tag: para
 #, no-c-format
@@ -24744,7 +24755,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Noding a 3D LineString which self-intersects."
-msgstr ""
+msgstr "自己インターセクトしている 3次元 LINESTRING にノードを追加します。"
 
 #. Tag: para
 #, no-c-format
@@ -24828,7 +24839,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Split a circular polygon by a diagonal line."
-msgstr ""
+msgstr "曲線ポリゴンを対角線で分割します。"
 
 #. Tag: para
 #, no-c-format
@@ -25027,7 +25038,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "In 3D, this example does not produce the expected result."
-msgstr ""
+msgstr "3次元では、この例で期待した結果が得られません。"
 
 #. Tag: refpurpose
 #, no-c-format
