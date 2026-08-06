@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-05 09:39+0000\n"
+"PO-Revision-Date: 2026-08-06 02:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -22735,11 +22735,14 @@ msgid ""
 "This browser example assumes that <varname>map</varname> is an initialized "
 "Google map."
 msgstr ""
+"Google Maps JavaScript Geometry ライブラリーは精度 5 の文字列を出コードします"
+"。このブラウザーの例は <varname>map</varname> が初期化済みの Googleの地図だと"
+"仮定しています。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"ST_Transform\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23161,12 +23164,12 @@ msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2"
 #. Tag: para
 #, no-c-format
 msgid "Version 2."
-msgstr ""
+msgstr "GML バージョン 2。"
 
 #. Tag: para
 #, no-c-format
 msgid "Version 3."
-msgstr ""
+msgstr "GML バージョン 3。"
 
 #. Tag: para
 #, no-c-format
@@ -23177,7 +23180,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Output the envelope (32)."
-msgstr ""
+msgstr "エンベロープの出力 (32)。"
 
 #. Tag: para
 #, no-c-format
@@ -23185,6 +23188,8 @@ msgid ""
 "Output the envelope (32), reverse (lat lon instead of lon lat) (16), long "
 "srs (1) = 32 | 16 | 1 = 49."
 msgstr ""
+"エンベロープの出力 (32)、逆順 (経度、緯度でなく緯度、経度) (16)、長い SRS "
+"(1) = 32 | 16 | 1 = 49。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -23237,7 +23242,7 @@ msgstr "AsKML出力はSRIDを持たないジオメトリでは動作しません
 #. Tag: para
 #, no-c-format
 msgid "This example outputs a 3D LineString."
-msgstr ""
+msgstr "この例では 3次元 LINESTRING を出力します。"
 
 #. Tag: para
 #, no-c-format
@@ -23330,7 +23335,7 @@ msgstr "十進の度。"
 msgid ""
 "To convert parsed degree, minute, and second components to decimal degrees, "
 "apply the cardinal-direction sign explicitly."
-msgstr ""
+msgstr "度分秒を十進の度に変換するには方位記号を明示的に適用します。"
 
 #. Tag: para
 #, no-c-format
@@ -24115,22 +24120,22 @@ msgstr "IndexedTriangleSet"
 #. Tag: entry
 #, no-c-format
 msgid "CIRCULARSTRING, COMPOUNDCURVE, CURVEPOLYGON, MULTICURVE, MULTISURFACE"
-msgstr ""
+msgstr "CIRCULARSTRING、COMPOUNDCURVE、CURVEPOLYGON、MULTICURVE、MULTISURFACE"
 
 #. Tag: entry
 #, no-c-format
 msgid "linearized, then emitted with the linear geometry mapping"
-msgstr ""
+msgstr "線形化してから対応する線形ジオメトリーで出力"
 
 #. Tag: entry
 #, no-c-format
 msgid "NURBSCURVE"
-msgstr ""
+msgstr "NURBSCURVE"
 
 #. Tag: entry
 #, no-c-format
 msgid "NurbsCurve with controlPoint, knot, weight, and order fields"
-msgstr ""
+msgstr "NurbsCurve (controlPoint、knot、weight、order フィールドを持ちます)"
 
 #. Tag: para
 #, no-c-format
@@ -24144,7 +24149,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "M coordinates are not represented in X3D output."
-msgstr ""
+msgstr "M値は X3D 出力では表現されません。"
 
 #. Tag: para
 #, no-c-format
@@ -24203,6 +24208,8 @@ msgid ""
 "Enhanced: 3.7.0: Support for curve geometries. NURBSCURVE is emitted as X3D "
 "NurbsCurve; other curve types are linearized before output."
 msgstr ""
+"Enhanced: 3.7.0: 曲線ジオメトリーへの対応。NURBCURVE は X3D NurbsCurve として"
+"出力され、他の曲線ジオメトリータイプは線形化してから出力します。"
 
 #. Tag: para
 #, no-c-format
@@ -24210,11 +24217,13 @@ msgid ""
 "Create a complete X3D document containing a cube that is viewable in FreeWRL "
 "and other X3D viewers."
 msgstr ""
+"FreeWRL をはじめとした X3D ビューアーで表示できる立方体の完全な X3D 文書の生"
+"成。"
 
 #. Tag: para
 #, no-c-format
 msgid "PostGIS buildings."
-msgstr ""
+msgstr "PostGIS ビルディング群。"
 
 #. Tag: para
 #, no-c-format
@@ -24235,21 +24244,25 @@ msgid ""
 "not X3D markup; use the preceding <function>ST_AsX3D</function> query output "
 "in an X3D viewer to inspect the native X3D scene."
 msgstr ""
+"次のプレビューでは、同じ文字を単純化したうえで押出で生成したジオメトリーです"
+"。ジオメトリープレビューですので X3D 符号化は行っていません。X3D でどう見える"
+"かを確認するには、X3D ビューアーで上述の <function>ST_AsX3D</function> "
+"クエリー出力を表示します。"
 
 #. Tag: para
 #, no-c-format
 msgid "An Octagon elevated 3 Units and decimal precision of 6."
-msgstr ""
+msgstr "3単位ぶん上に移動した八角形で精度が 6 です。"
 
 #. Tag: para
 #, no-c-format
 msgid "TIN."
-msgstr ""
+msgstr "TIN。"
 
 #. Tag: para
 #, no-c-format
 msgid "Closed multilinestring (the boundary of a polygon with holes)."
-msgstr ""
+msgstr "閉じたマルチラインストリング (穴付きポリゴンの境界)。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -24511,7 +24524,7 @@ msgstr ""
 "場合に使う領域クエリといったようなジオメトリの切り抜きに使えます。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Spatial predicates such as <xref linkend=\"ST_Intersects\"/> and overlay "
 "functions such as <function>ST_Intersection</function> are computed by "
@@ -24523,6 +24536,15 @@ msgid ""
 "linkend=\"ST_ReducePrecision\"/>, or use the <varname>gridSize</varname> "
 "parameter when all input vertices already lie on the grid."
 msgstr ""
+"<xref linkend=\"ST_Intersects\"/> のような空間述語や <function>"
+"ST_Intersection</function> のようなオーバーレイ関数は異なるアルゴリズムで計算"
+"されます。非常に近い座標値では浮動小数点数の精度やジオメトリー計算の堅牢性を"
+"確保することで、空間述語から TRUE が返ったり、インターセクトした部分の計算結"
+"果が空ジオメトリーになったり、補間ポイントが少しだけ入力ラインからずれるとい"
+"ったことが起こります。反復可能なオーバーレイの結果では、たとえば <xref "
+"linkend=\"ST_ReducePrecision\"/> を使ったり、全ての入力頂点がグリッド上に乗っ"
+"ている時には <varname>gridSize</varname> パラメーターを使ったりして、先に入力"
+"を適切なグリッドにスナップさせます。"
 
 #. Tag: para
 #, no-c-format
