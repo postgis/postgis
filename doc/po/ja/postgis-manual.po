@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-07 01:39+0000\n"
+"PO-Revision-Date: 2026-08-07 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -28782,7 +28782,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This example turns a few common GeoTIFF creator options into a compact table."
-msgstr ""
+msgstr "この例では、よく使われる GeoTIFF 生成オプションを小さな表にしています。"
 
 #. Tag: para
 #, no-c-format
@@ -28791,6 +28791,9 @@ msgid ""
 "as rows. The same pattern can be used without the name filter to inspect the "
 "full XML document."
 msgstr ""
+"選択した GeoTIFF 生成オプションを行で表示するには <function>XMLTABLE</"
+"function> を使います。完全な XML 文書を調べるための名前フィルターなしでも同じ"
+"パターンを使えます。"
 
 #. Tag: para
 #, no-c-format
@@ -28997,7 +29000,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Output metadata for the raster bands to verify they are correct."
-msgstr ""
+msgstr "ラスターバンドのメタデータが正しいかどうかを確認するための出力。"
 
 #. Tag: para
 #, no-c-format
@@ -29007,7 +29010,7 @@ msgstr "この例ではラスターのメタデータを出力しています。
 #. Tag: para
 #, no-c-format
 msgid "Multiple New Bands."
-msgstr ""
+msgstr "複数の新規バンド。"
 
 #. Tag: para
 #, no-c-format
@@ -29027,7 +29030,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "New Out-db band."
-msgstr ""
+msgstr "新規のデータベース外バンド。"
 
 #. Tag: para
 #, no-c-format
@@ -29182,6 +29185,8 @@ msgid ""
 "NURBSCurve inputs handled by PostGIS. TIN and PolyhedralSurface inputs are "
 "not supported."
 msgstr ""
+"曲線ジオメトリー入力はラスター化前に線形化されます。PostGISで操作する NURBS "
+"曲線の入力も含みます。TIN と POLYHEDRALSURFACE にた対応していません。"
 
 #. Tag: title
 #, no-c-format
@@ -29193,7 +29198,7 @@ msgstr "例: ジオメトリをPNGファイルとして出力"
 msgid ""
 "This example outputs a black circle on a white background, occupying 150 by "
 "150 pixels."
-msgstr ""
+msgstr "この例では、白い背景に 150 × 150 ピクセルの領域を占める黒い円を出力します。"
 
 #. Tag: para
 #, no-c-format
@@ -29305,11 +29310,14 @@ msgid ""
 "a synthetic raster. It compares the original RGB raster with band 2 followed "
 "by band 1 twice, and with band 3 alone."
 msgstr ""
+"この例では、三つの異なる形状を赤、緑、青の各バンドに書き込んで合成した"
+"ラスターを使います。元の RGB ラスターの 2番バンド、1番バンド、1番バンドを使い"
+"、元ラスターの 3番バンドを使わずに作ったラスターと比較します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Band selection from a multi-band raster."
-msgstr ""
+msgstr "複数バンドのラスターからのバンドの選択。"
 
 #. Tag: para
 #, no-c-format
@@ -29451,6 +29459,8 @@ msgid ""
 "Use an existing raster as a template and output metadata of the rasters we "
 "added."
 msgstr ""
+"既存ラスターをテンプレートとして使い、追加したラスターのメタデータを出力する"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -29731,12 +29741,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Rasters with no skew."
-msgstr ""
+msgstr "スキューが無いラスター。"
 
 #. Tag: para
 #, no-c-format
 msgid "Rasters with skew different than 0."
-msgstr ""
+msgstr "0 でないスキューが施されたラスター。"
 
 #. Tag: para
 #, no-c-format
