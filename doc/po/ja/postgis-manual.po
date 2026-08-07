@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-07 05:39+0000\n"
+"PO-Revision-Date: 2026-08-07 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -30766,6 +30766,8 @@ msgid ""
 "This example returns point features together with a derived marker size that "
 "a client can use for value-scaled point rendering."
 msgstr ""
+"ポイント地物とともに、クライアントが値に応じたサイズでポイントを描画するため"
+"に生成されるマーカーサイズとともに返します。"
 
 #. Tag: para
 #, no-c-format
@@ -30948,7 +30950,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "General fictitious example using a real table."
-msgstr ""
+msgstr "実際のテーブルを使った一般的な架空の例。"
 
 #. Tag: para
 #, no-c-format
@@ -30970,6 +30972,8 @@ msgid ""
 "Get a polygon formed by union of all pixels that fall in a particular value "
 "range and intersect a particular polygon."
 msgstr ""
+"特定の値範囲にあり、かつ特定のポリゴンと交差するピクセル全てを結合して形成し"
+"たポリゴンを得る。"
 
 #. Tag: para
 #, fuzzy, no-c-format
