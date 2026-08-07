@@ -30,6 +30,11 @@ WARNING:  Only the first three elements of 'rastbandargset' will be used
 #2807.grayscale|3|3|255
 #2807.grayscale|3|5|
 #2807.grayscale.mixed|255|{{NULL,38},{254,254}}
+#2807.grayscale.8bui-nodata|255|{{NULL,0}}
+#2807.grayscale.union-gap|255|{{NULL,NULL}}
+#2807.grayscale.union-coextensive-white||{{255}}
+#2807.grayscale.first-covered-white||{{255}}
+#2807.grayscale.first-gap-white|255|{{254,NULL}}
 ERROR:  'rastbandargset' must have three bands for red, green and blue
 ERROR:  Band at index '2' not found for raster '2'
 ERROR:  Band at index '2' not found for raster '2'
