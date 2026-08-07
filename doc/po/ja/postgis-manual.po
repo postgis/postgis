@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-07 03:39+0000\n"
+"PO-Revision-Date: 2026-08-07 05:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -29781,11 +29781,15 @@ msgid ""
 "direction</literal> vector is <literal>(scaleX, skewY)</literal>; the "
 "<literal>j direction</literal> vector is <literal>(skewX, scaleY)</literal>."
 msgstr ""
+"次の実行例では二つのピクセル規定ベクトルとスキューありラスターの外形とを同じ"
+"座標フレームで描きます。<literal>i direction</literal> ベクトルは <literal>"
+"(scaleX, skewY)</literal>、<literal>j direction</literal> ベクトルは "
+"<literal>(skewX, scaleY)</literal> です。"
 
 #. Tag: para
 #, no-c-format
 msgid "Pixel basis vectors and footprint for a raster with non-zero skew."
-msgstr ""
+msgstr "ピクセルの基底ベクトルと 0でないスキューのあるラスターの外形。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30312,12 +30316,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Variant 1."
-msgstr ""
+msgstr "形式 1。"
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 2."
-msgstr ""
+msgstr "形式 2。"
 
 #. Tag: para
 #, no-c-format
@@ -30378,6 +30382,9 @@ msgid ""
 "pixel value are both 3. In the second band, the NODATA value is 13 and the "
 "pixel value is 4."
 msgstr ""
+"この例ではラスターカラムを一つ持つダミーテーブルを生成します。ラスターは二つ"
+"のバンドを持っていて、バンドごとのピクセル数は 1で、NODATA 値とピクセル値は両"
+"方とも 3です。二つ目のバンドでは NODATA 値は 13で、ピクセル値は 4です。"
 
 #. Tag: para
 #, no-c-format
@@ -30414,6 +30421,8 @@ msgid ""
 ", <xref linkend=\"RT_ST_SetBandPath\"/>, <xref "
 "linkend=\"RT_ST_SetBandIndex\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_SetBandPath\"/>, <xref "
+"linkend=\"RT_ST_SetBandIndex\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -30665,6 +30674,10 @@ msgid ""
 "linkend=\"RT_ST_DumpAsPolygons\"/>, this function returns one polygon per "
 "pixel rather than merging adjacent pixels with the same value."
 msgstr ""
+"<parameter>exclude_nodata_value</parameter> が <literal>TRUE</literal> の時、"
+"NODATA 値でないピクセルだけが返ります。<xref "
+"linkend=\"RT_ST_DumpAsPolygons\"/> と違って、この関数はピクセルごとにポリゴン"
+"を返して、同一値を持っている隣接ピクセルをマージしません。"
 
 #. Tag: para
 #, no-c-format
@@ -31349,12 +31362,16 @@ msgid ""
 "remains visible. NODATA cells display the band's NODATA value, which is "
 "<literal>0</literal> here."
 msgstr ""
+"これらの例では <literal>FALSE</literal> が <parameter>exclude_nodata_value</"
+"parameter> に渡っているので、ラスターの全てのセルが表示されたままです。"
+"NODATA セルにはバンドの NODATA 値を表示します。ここでは <literal>0</literal> "
+"になります。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Set the lower-right 2 by 2 block of a 3 by 3 raster to <literal>9</literal>."
-msgstr ""
+msgstr "3 x 3 ラスターの右下 2 x 2 ブロックの値を <literal>9</literal> に設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -31362,6 +31379,8 @@ msgid ""
 "Replace the complete raster from an array; the central <literal>NULL</"
 "literal> becomes NODATA."
 msgstr ""
+"配列から完全なラスターを置き換えます。中心の <literal>NULL</literal> は "
+"NODATA になります。"
 
 #. Tag: para
 #, no-c-format
