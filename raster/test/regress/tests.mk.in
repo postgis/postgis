@@ -131,7 +131,9 @@ RASTER_TEST_LOADER = \
 	$(top_srcdir)/raster/test/regress/loader/Basic \
 	$(top_srcdir)/raster/test/regress/loader/Projected \
 	$(top_srcdir)/raster/test/regress/loader/OverviewNoPadding \
+	$(top_srcdir)/raster/test/regress/loader/OverviewResampling \
 	$(top_srcdir)/raster/test/regress/loader/SourceOverview \
+	$(top_srcdir)/raster/test/regress/loader/SourceOverviewNearAverage \
 	$(top_srcdir)/raster/test/regress/loader/IfNotExists \
 	$(top_srcdir)/raster/test/regress/loader/LongOptions \
 	$(top_srcdir)/raster/test/regress/loader/LongMaintenance \
