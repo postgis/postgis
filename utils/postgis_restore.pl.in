@@ -36,7 +36,7 @@ use strict;
 my $me = $0;
 
 my $usage = qq{
-Usage:	$me [-v] [-L TOC] [-s schema] <dumpfile>
+Usage:	$me [-v] [-L TOC] [-s schema] [--convert-to-typmod] <dumpfile>
         Restore a custom dump (pg_dump -Fc) of a PostGIS-enabled database.
         First dump the old database: pg_dump -Fc MYDB > MYDB.dmp
         Then create a new database: createdb NEWDB
@@ -50,12 +50,15 @@ Usage:	$me [-v] [-L TOC] [-s schema] <dumpfile>
         The -v switch writes detailed report on stderr.
         Use -L to provide a TOC rather than extracting it from the dump.
         Use -s if you installed PostGIS in a custom schema.
+        Use --convert-to-typmod to convert simple 2D constraint-based
+        geometry columns to typmod geometry columns while restoring.
 
 };
 
 my $DEBUG = 0;
 my $POSTGIS_SCHEMA;
 my $POSTGIS_TOC;
+my $CONVERT_TO_TYPMOD = 0;
 
 # NOTE: the SRID limits here are being discussed:
 # http://lists.osgeo.org/pipermail/postgis-devel/2012-February/018440.html
@@ -72,6 +75,9 @@ while (@ARGV && $ARGV[0] =~ /^-/) {
   }
   elsif ( $arg eq '-L' ) {
     $POSTGIS_TOC = shift(@ARGV);
+  }
+  elsif ( $arg eq '--convert-to-typmod' ) {
+    $CONVERT_TO_TYPMOD = 1;
   }
   elsif ( $arg eq '--' ) {
     last;
@@ -292,25 +298,14 @@ while( my $l = <INPUT> ) {
   #
   elsif ( $l =~ /CREATE TABLE *([^ ,]*)/)
   {
-    print STDOUT $l;
+    my @sublines = ($l);
     while( my $subline = <INPUT>)
     {
-      if ( $subline =~ /CONSTRAINT "?enforce_dims_/i ) {
-        $subline =~ s/\bndims\(/st_ndims(/;
-      }
-      if ( $subline =~ /CONSTRAINT "?enforce_srid_/i ) {
-        $subline =~ s/\bsrid\(/st_srid(/;
-        if ( $subline =~ /=\s\(?([-0-9][0-9]*)\)/ ) {
-          my $oldsrid = $1;
-          my $newsrid = clamp_srid($oldsrid);
-          $subline =~ s/=\s*(\(?)[-0-9][0-9]*/= $1$newsrid/;
-        } else {
-          print STDERR "WARNING: could not find SRID value in: $subline";
-        }
-      }
-      print STDOUT $subline;
+      push(@sublines, $subline);
       last if $subline =~ /;[\t ]*$/;
     }
+
+    print STDOUT rewrite_table_spatial_constraints(@sublines);
     next;
   }
 
@@ -573,6 +568,133 @@ sub strip_argument_names {
 	}
 	#print "XXX striped: " . join(',', @out) . "\n";
 	return @out;
+}
+
+sub normalize_sql_identifier
+{
+	my $ident = shift;
+	if ( $ident =~ /^"(.*)"$/s )
+	{
+		$ident = $1;
+		$ident =~ s/""/"/g;
+		return $ident;
+	}
+	return lc($ident);
+}
+
+sub rewrite_table_spatial_constraints
+{
+	my @sublines = @_;
+	my %columns = ();
+	my %constraints = ();
+	my @output = ();
+	my $ident = qr/"(?:[^"]|"")*"|[A-Za-z_][A-Za-z0-9_\$]*/;
+	my $qualified_fn = qr/(?:$ident\.)?/;
+
+	for (my $i = 0; $i <= $#sublines; $i++)
+	{
+		my $subline = $sublines[$i];
+
+		if ( $subline =~ /^(\s*)($ident)\s+((?:(?:$ident)\.)?geometry)(\s*,?\s*)$/i )
+		{
+			$columns{normalize_sql_identifier($2)} = {
+				'index' => $i,
+				'indent' => $1,
+				'name' => $2,
+				'type' => $3,
+				'suffix' => $4
+			};
+		}
+
+		if ( $subline =~ /CONSTRAINT "?enforce_dims_/i )
+		{
+			$subline =~ s/\bndims\(/st_ndims(/;
+			if ( $subline =~ /${qualified_fn}st_ndims\(($ident)\)\s*=\s*\(?([0-9]+)\)?/i )
+			{
+				my $col = normalize_sql_identifier($1);
+				$constraints{$col}{'dims'} = $2;
+				$constraints{$col}{'dims_line'} = $i;
+			}
+		}
+
+		if ( $subline =~ /CONSTRAINT "?enforce_geotype_/i )
+		{
+			if ( $subline =~ /${qualified_fn}geometrytype\(($ident)\)\s*=\s*'([^']+)'::text/i )
+			{
+				my $col = normalize_sql_identifier($1);
+				$constraints{$col}{'geotype'} = $2;
+				$constraints{$col}{'geotype_line'} = $i;
+			}
+		}
+
+		if ( $subline =~ /CONSTRAINT "?enforce_srid_/i )
+		{
+			$subline =~ s/\bsrid\(/st_srid(/;
+			if ( $subline =~ /${qualified_fn}st_srid\(($ident)\)\s*=\s*\(?([-0-9][0-9]*)\)?/i )
+			{
+				my $col = normalize_sql_identifier($1);
+				my $oldsrid = $2;
+				my $newsrid = clamp_srid($oldsrid);
+				$subline =~ s/=\s*(\(?)[-0-9][0-9]*/= $1$newsrid/;
+				$constraints{$col}{'srid'} = $newsrid;
+				$constraints{$col}{'srid_line'} = $i;
+			}
+			else
+			{
+				print STDERR "WARNING: could not find SRID value in: $subline";
+			}
+		}
+
+		$sublines[$i] = $subline;
+	}
+
+	if ( $CONVERT_TO_TYPMOD )
+	{
+		foreach my $col (keys %columns)
+		{
+			next unless defined $constraints{$col};
+			next unless defined $constraints{$col}{'dims'};
+			next unless defined $constraints{$col}{'geotype'};
+			next unless defined $constraints{$col}{'srid'};
+
+			if ( $constraints{$col}{'dims'} != 2 )
+			{
+				print STDERR "  Leaving $columns{$col}{'name'} as constraint-based geometry: only 2D typmod conversion is supported\n" if $DEBUG;
+				next;
+			}
+
+			my $geotype = $constraints{$col}{'geotype'};
+			if ( $geotype !~ /^[A-Z][A-Z0-9]*$/ )
+			{
+				print STDERR "  Leaving $columns{$col}{'name'} as constraint-based geometry: unsupported geometry type $geotype\n" if $DEBUG;
+				next;
+			}
+
+			$sublines[$columns{$col}{'index'}] =
+				$columns{$col}{'indent'} . $columns{$col}{'name'} . ' ' .
+				$columns{$col}{'type'} . '(' . $geotype . ',' .
+				$constraints{$col}{'srid'} . ')' . $columns{$col}{'suffix'};
+			$sublines[$constraints{$col}{'dims_line'}] = undef;
+			$sublines[$constraints{$col}{'geotype_line'}] = undef;
+			$sublines[$constraints{$col}{'srid_line'}] = undef;
+			print STDERR "  Converted $columns{$col}{'name'} to typmod geometry($geotype,$constraints{$col}{'srid'})\n" if $DEBUG;
+		}
+	}
+
+	foreach my $subline (@sublines)
+	{
+		push @output, $subline if defined $subline;
+	}
+
+	for (my $i = 1; $i <= $#output; $i++)
+	{
+		if ( $output[$i] =~ /^\s*\)\s*;?\s*$/ && $output[$i - 1] =~ /,\s*$/ )
+		{
+			$output[$i - 1] =~ s/,\s*$/\n/;
+		}
+	}
+
+	return @output;
 }
 
 
