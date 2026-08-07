@@ -809,6 +809,11 @@ SELECT '#2412', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,20 0)'));
 SELECT '#2420.1', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,10 10,0 10,0 0)'));
 SELECT '#2420.2', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,10 10,0 10)'));
 
+SELECT '#2428.1', ST_AsText(ST_LineToCurve(ST_CurveToLine('CIRCULARSTRING(0 0,1 1,2 0)', 4), 4));
+SELECT '#2428.2', ST_AsText(ST_LineToCurve(ST_CurveToLine('CIRCULARSTRING(0 0,1 1,2 0)', 4), 17));
+SELECT '#2428.3', ST_AsText(ST_LineToCurve(ST_CurveToLine('COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,2 0),(2 0,2 -1))', 4), 4));
+SELECT '#2428.4', ST_AsText(ST_LineToCurve(ST_CurveToLine('CIRCULARSTRING(0 0,1 1,2 0)', 1), 1));
+
 SELECT '#2423', ST_AsText(ST_SnapToGrid(ST_CurveToLine(ST_LineToCurve(
     ST_Normalize(ST_Intersection(ST_Buffer(ST_Point(0,0),10),ST_MakeEnvelope(-10,0,10,10)))
 ), 4), 0.0001), 3);
