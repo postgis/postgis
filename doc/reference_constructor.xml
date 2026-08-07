@@ -451,6 +451,116 @@ GROUP BY gps.track_id;</programlisting>
         </refsection>
     </refentry>
 
+    <refentry xml:id="ST_MakeCurveLine">
+        <refnamediv>
+        <refname>ST_MakeCurveLine</refname>
+
+        <refpurpose>Creates a CircularString from Point inputs.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakeCurveLine</function></funcdef>
+            <paramdef><type>geometry[]</type> <parameter>point_array</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakeCurveLine</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>point1</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>point2</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>point3</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Creates a CircularString from an array of Point inputs, or from three Point inputs.
+            CircularStrings require at least three points and an odd number of points.
+            The inputs must have the same SRID. NULL array entries are ignored; an empty array
+            or an array containing only NULL values returns NULL.</para>
+
+            <para>&Z_support;</para>
+            <para>&M_support;</para>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        </refsection>
+
+        <refsection>
+        <title>Examples</title>
+<programlisting language="sql">
+SELECT ST_AsText( ST_MakeCurveLine(ST_MakePoint(1,2), ST_MakePoint(3,4), ST_MakePoint(5,6)) );
+</programlisting>
+<screen role="visual-primary text-primary">       st_astext
+------------------------
+ CIRCULARSTRING(1 2,3 4,5 6)</screen>
+<programlisting language="sql">
+SELECT ST_AsText( ST_MakeCurveLine(ARRAY[
+  ST_MakePoint(1,2), ST_MakePoint(3,4), ST_MakePoint(5,6),
+  ST_MakePoint(7,8), ST_MakePoint(9,10)]));
+</programlisting>
+<screen role="visual-primary text-primary">               st_astext
+---------------------------------------
+ CIRCULARSTRING(1 2,3 4,5 6,7 8,9 10)</screen>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_MakeLine"/>, <xref linkend="ST_MakePoint"/>,
+            <xref linkend="ST_MakeCompoundCurve"/></para>
+        </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_MakeCompoundCurve">
+        <refnamediv>
+        <refname>ST_MakeCompoundCurve</refname>
+
+        <refpurpose>Creates a CompoundCurve from curve components.</refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakeCompoundCurve</function></funcdef>
+            <paramdef><type>geometry[]</type> <parameter>curve_array</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Creates a CompoundCurve from an array of continuous LineString, CircularString,
+            or NURBSCurve components. Components must have the same SRID and dimensionality,
+            and must join end-to-end. NULL array entries are ignored; an empty array or an array
+            containing only NULL values returns NULL.</para>
+
+            <para>&Z_support;</para>
+            <para>&M_support;</para>
+            <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        </refsection>
+
+        <refsection>
+        <title>Examples</title>
+<programlisting language="sql">
+SELECT ST_AsText( ST_MakeCompoundCurve(ARRAY[
+  'CIRCULARSTRING(0 0,2 0,2 1,2 3,4 3)'::geometry,
+  'LINESTRING(4 3,4 5,1 4,0 0)'::geometry]));
+</programlisting>
+<screen role="visual-primary text-primary">                                st_astext
+----------------------------------------------------------------------
+ COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0,2 1,2 3,4 3),(4 3,4 5,1 4,0 0))</screen>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_MakeCurveLine"/>, <xref linkend="ST_MakeLine"/>,
+            <xref linkend="ST_MakePolygon"/></para>
+        </refsection>
+    </refentry>
+
     <refentry xml:id="ST_MakePolygon">
         <refnamediv>
         <refname>ST_MakePolygon</refname>
