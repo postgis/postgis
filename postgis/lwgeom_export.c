@@ -31,6 +31,7 @@
 #include "postgres.h"
 #include "catalog/pg_type.h" /* for INT4OID */
 #include "executor/spi.h"
+#include <stdint.h>
 #include "utils/builtins.h"
 #include "utils/jsonb.h"
 
@@ -48,6 +49,65 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
 Datum geometry_to_json(PG_FUNCTION_ARGS);
 Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
+
+struct json_object;
+
+#if defined(HAVE_LIBJSON)
+LWGEOM *parse_geojson_internal(struct json_object *geojson, int *hasz);
+#endif
+uint8_t *lwgeom_to_wkb_buf_internal(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
+size_t lwgeom_to_wkb_size_internal(const LWGEOM *geom, uint8_t variant);
+PGDLLEXPORT LWGEOM *parse_geojson(struct json_object *geojson, int *hasz);
+PGDLLEXPORT uint8_t *lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
+PGDLLEXPORT size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
+
+PGDLLEXPORT LWGEOM *
+parse_geojson(struct json_object *geojson, int *hasz)
+{
+#if !defined(HAVE_LIBJSON)
+	lwerror("You need JSON-C for parse_geojson");
+	return NULL;
+#else
+	int local_hasz = LW_FALSE;
+	int *parsed_hasz = hasz ? hasz : &local_hasz;
+	LWGEOM *lwgeom;
+	*parsed_hasz = LW_FALSE;
+
+	lwgeom = parse_geojson_internal(geojson, parsed_hasz);
+	if (!lwgeom)
+		return NULL;
+
+	if (!*parsed_hasz)
+	{
+		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = tmp;
+	}
+
+	return lwgeom;
+#endif
+}
+
+PGDLLEXPORT uint8_t *
+lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
+{
+	return lwgeom_to_wkb_buf_internal(geom, buf, variant);
+}
+
+PGDLLEXPORT size_t
+lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
+{
+	size_t b_size = lwgeom_to_wkb_size_internal(geom, variant);
+
+	if (variant & WKB_HEX)
+	{
+		if (b_size > SIZE_MAX / 2)
+			lwerror("%s: WKB size overflow", __func__);
+		b_size *= 2;
+	}
+
+	return b_size;
+}
 
 /**
  * Encode feature in GML
