@@ -334,6 +334,36 @@ CREATE OR REPLACE FUNCTION CG_IsPlanar(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION CG_IsValid(geometry)
+       RETURNS boolean
+       AS 'MODULE_PATHNAME','CG_IsValid'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION CG_IsValidDetail(geometry)
+       RETURNS valid_detail
+       AS 'MODULE_PATHNAME','CG_IsValidDetail'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0
+#if POSTGIS_SFCGAL_VERSION >= 20300
+CREATE OR REPLACE FUNCTION CG_IsSimple(geometry)
+       RETURNS boolean
+       AS 'MODULE_PATHNAME','CG_IsSimple'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+
+-- Availability: 3.7.0 - requires SFCGAL >= 2.3.0
+CREATE OR REPLACE FUNCTION CG_IsSimpleDetail(geometry)
+       RETURNS text
+       AS 'MODULE_PATHNAME','CG_IsSimpleDetail'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+#endif
+
 -- Availability: 2.2.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_IsPlanar(geometry)
