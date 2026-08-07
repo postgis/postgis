@@ -21,6 +21,9 @@ These are only changes since 3.7.0beta1.
 
  - #4323, GT-584, [sfcgal] Document that straight-skeleton and approximate-medial-axis
           functions ignore input Z and return 2D geometries (Darafei Praliaskouski)
+ - #6063, Keep postgis_restore from skipping application tables that share
+          names with PostGIS-owned tables in other schemas
+          (Darafei Praliaskouski)
  - GT-545, Fix FlatGeobuf geometry, property, and spatial-index byte order on
           big-endian platforms (Darafei Praliaskouski)
  - [raster] Fix invalid reads in raster band initialization and
