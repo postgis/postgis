@@ -40,7 +40,9 @@ OPTIONS
               The port to connect to on the database host.
 
        -P <password>
-              The password to use when connecting to the database.
+              The password to use when connecting to the database. If omitted,
+              pgsql2shp prompts when a password is required and stdin is a
+              terminal.
 
        -u <user>
               The username to use when connecting to the database.

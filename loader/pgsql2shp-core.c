@@ -42,6 +42,10 @@
 #include "../liblwgeom/liblwgeom.h" /* for LWGEOM struct and funx */
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
 
+#if HAVE_TERMIOS_H
+#include <termios.h>
+#endif
+
 /* Maximum DBF field width (according to ARCGIS) */
 #define MAX_DBF_FIELD_SIZE 254
 #define USERQUERY_SOURCE_ALIAS "__pgsql2shp_query"
@@ -80,13 +84,13 @@ core_asprintf(const char* format, ...)
 {
 	va_list ap;
 	char *value;
-    int err;
+	int err;
 	va_start(ap, format);
-    err = vasprintf(&value, format, ap);
-    if (err < 0)
-    	exit(-1);
-    va_end(ap);
-    return value;
+	err = vasprintf(&value, format, ap);
+	if (err < 0)
+		exit(-1);
+	va_end(ap);
+	return value;
 }
 
 static int
@@ -1333,7 +1337,12 @@ ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
 		stringbuffer_aprintf(&cs, " user=%s", conn->username);
 
 	if (conn->password)
-		stringbuffer_aprintf(&cs, " password='%s'", conn->password);
+	{
+		char *password = escape_connection_string(conn->password);
+		stringbuffer_aprintf(&cs, " password='%s'", password);
+		if (password != conn->password)
+			free(password);
+	}
 
 	if (conn->database)
 		stringbuffer_aprintf(&cs, " dbname=%s", conn->database);
@@ -1344,6 +1353,71 @@ ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
 	return cs.str_start;
 }
 
+static PGconn *
+ShpDumperConnectWithConn(SHPCONNECTIONCONFIG *conn)
+{
+	PGconn *pgconn;
+	char *connstring = ShpDumperGetConnectionStringFromConn(conn);
+	pgconn = PQconnectdb(connstring);
+	free(connstring);
+	return pgconn;
+}
+
+static char *
+ShpDumperPromptPassword(void)
+{
+	char password[1024];
+	size_t length;
+
+#if HAVE_TERMIOS_H
+	struct termios old_termios;
+	struct termios new_termios;
+	int has_termios = (tcgetattr(fileno(stdin), &old_termios) == 0);
+#endif
+
+	if (!isatty(fileno(stdin)))
+		return NULL;
+
+#if HAVE_TERMIOS_H
+	if (has_termios)
+	{
+		new_termios = old_termios;
+		new_termios.c_lflag &= ~ECHO;
+		if (tcsetattr(fileno(stdin), TCSAFLUSH, &new_termios) != 0)
+			has_termios = 0;
+	}
+#endif
+
+	fprintf(stderr, "%s", _("Password: "));
+	fflush(stderr);
+
+	if (!fgets(password, sizeof(password), stdin))
+	{
+#if HAVE_TERMIOS_H
+		if (has_termios)
+		{
+			(void)tcsetattr(fileno(stdin), TCSAFLUSH, &old_termios);
+			fprintf(stderr, "\n");
+		}
+#endif
+		return NULL;
+	}
+
+#if HAVE_TERMIOS_H
+	if (has_termios)
+	{
+		(void)tcsetattr(fileno(stdin), TCSAFLUSH, &old_termios);
+		fprintf(stderr, "\n");
+	}
+#endif
+
+	length = strlen(password);
+	while (length > 0 && (password[length - 1] == '\n' || password[length - 1] == '\r'))
+		password[--length] = '\0';
+
+	return strdup(password);
+}
+
 /* Connect to the database and identify the version of PostGIS (and any other
 capabilities required) */
 int
@@ -1352,15 +1426,27 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	PGresult *res;
 	char *tmpvalue;
 
-	/* Generate the PostgreSQL connection string */
-	char *connstring = ShpDumperGetConnectionStringFromConn(state->config->conn);
-
 	/* Connect to the database */
-	state->conn = PQconnectdb(connstring);
+	state->conn = ShpDumperConnectWithConn(state->config->conn);
+	if (PQstatus(state->conn) == CONNECTION_BAD)
+	{
+		if (!state->config->conn->password && PQconnectionNeedsPassword(state->conn))
+		{
+			char *password = ShpDumperPromptPassword();
+			if (password)
+			{
+				SHPCONNECTIONCONFIG retry_conn = *state->config->conn;
+				retry_conn.password = password;
+				PQfinish(state->conn);
+				state->conn = ShpDumperConnectWithConn(&retry_conn);
+				free(password);
+			}
+		}
+	}
+
 	if (PQstatus(state->conn) == CONNECTION_BAD)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, "%s", PQerrorMessage(state->conn));
-		free(connstring);
 		return SHPDUMPERERR;
 	}
 
@@ -1370,7 +1456,6 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, "%s", PQresultErrorMessage(res));
 		PQclear(res);
-		free(connstring);
 		return SHPDUMPERERR;
 	}
 
@@ -1382,7 +1467,6 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, "%s", PQresultErrorMessage(res));
 		PQclear(res);
-		free(connstring);
 		return SHPDUMPERERR;
 	}
 
@@ -1397,7 +1481,6 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, _("Error looking up geometry oid: %s"), PQresultErrorMessage(res));
 		PQclear(res);
-		free(connstring);
 		return SHPDUMPERERR;
 	}
 
@@ -1410,7 +1493,6 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, _("Geometry type unknown (have you enabled postgis?)"));
 		PQclear(res);
-		free(connstring);
 		return SHPDUMPERERR;
 	}
 
@@ -1422,7 +1504,6 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, _("Error looking up geography oid: %s"), PQresultErrorMessage(res));
 		PQclear(res);
-		free(connstring);
 		return SHPDUMPERERR;
 	}
 
@@ -1434,8 +1515,6 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	}
 
 	PQclear(res);
-
-	free(connstring);
 
 	return SHPDUMPEROK;
 }
