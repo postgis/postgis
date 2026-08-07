@@ -198,6 +198,66 @@
       </refsection>
     </refentry>
 
+    <refentry xml:id="ST_FindExtent">
+      <refnamediv>
+        <refname>ST_FindExtent</refname>
+
+        <refpurpose>Returns the exact extent of a geometry column.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>box2d <function>ST_FindExtent</function></funcdef>
+            <paramdef><type>text </type> <parameter>schema_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>box2d <function>ST_FindExtent</function></funcdef>
+            <paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the exact extent of a geometry column as a <xref linkend="box2d_type"/>.
+        The current schema is used if not specified.</para>
+
+        <para>This function computes the exact table extent by scanning the table.
+        For a faster estimate based on table statistics, use
+        <xref linkend="ST_EstimatedExtent"/>.</para>
+
+        <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
+        <para role="changed" conformance="2.2.0">Changed: 2.2.0. In prior versions this was called ST_Find_Extent.</para>
+
+        <para>&curve_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_FindExtent('ny', 'edges', 'geom');
+--result--
+BOX(-8877653 4912316,-8010225.5 5589284)
+
+SELECT ST_FindExtent('feature_poly', 'geom');
+--result--
+BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
+        </programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_EstimatedExtent"/>, <xref linkend="ST_Extent"/>, <xref linkend="ST_3DExtent"/></para>
+      </refsection>
+    </refentry>
+
     <refentry xml:id="ST_Expand">
       <refnamediv>
         <refname>ST_Expand</refname>
