@@ -43,11 +43,12 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"
 
-
 /* ---- SRID(geometry) */
 Datum LWGEOM_get_srid(PG_FUNCTION_ARGS);
+Datum ST_SRID(PG_FUNCTION_ARGS);
 /* ---- SetSRID(geometry, integer) */
 Datum LWGEOM_set_srid(PG_FUNCTION_ARGS);
+Datum ST_SetSRID(PG_FUNCTION_ARGS);
 /* ---- GeometryType(geometry) */
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS);
 Datum geometry_geometrytype(PG_FUNCTION_ARGS);
@@ -93,8 +94,10 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS);
 /* ---- AsText(geometry) */
 Datum LWGEOM_asText(PG_FUNCTION_ARGS);
+Datum ST_AsText(PG_FUNCTION_ARGS);
 /* ---- AsBinary(geometry, [XDR|NDR]) */
 Datum LWGEOM_asBinary(PG_FUNCTION_ARGS);
+Datum ST_AsBinary(PG_FUNCTION_ARGS);
 /* ---- GeometryFromText(text, integer) */
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
 /* ---- GeomFromWKB(bytea, integer) */
@@ -139,7 +142,8 @@ lwnurbscurve_endpoint_is_clamped(const LWNURBSCURVE *curve, int at_start)
 
 /* getSRID(lwgeom) :: int4 */
 PG_FUNCTION_INFO_V1(LWGEOM_get_srid);
-Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_get_srid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_HEADER(0);
 	int32_t srid = gserialized_get_srid(geom);
@@ -147,14 +151,31 @@ Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(srid);
 }
 
+/* ST_SRID(lwgeom) :: int4 */
+PG_FUNCTION_INFO_V1(ST_SRID);
+Datum
+ST_SRID(PG_FUNCTION_ARGS)
+{
+	return LWGEOM_get_srid(fcinfo);
+}
+
 /* setSRID(lwgeom, int4) :: lwgeom */
 PG_FUNCTION_INFO_V1(LWGEOM_set_srid);
-Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_set_srid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	int32_t srid = PG_GETARG_INT32(1);
 	gserialized_set_srid(g, srid);
 	PG_RETURN_POINTER(g);
+}
+
+/* ST_SetSRID(lwgeom, int4) :: lwgeom */
+PG_FUNCTION_INFO_V1(ST_SetSRID);
+Datum
+ST_SetSRID(PG_FUNCTION_ARGS)
+{
+	return LWGEOM_set_srid(fcinfo);
 }
 
 /* returns a string representation of this geometry's type */
@@ -1367,7 +1388,8 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 
 /** convert LWGEOM to wkt (in TEXT format) */
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
-Datum LWGEOM_asText(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_asText(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
@@ -1378,10 +1400,17 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(lwgeom_to_wkt_varlena(lwgeom, WKT_ISO, dbl_dig_for_wkt));
 }
 
+PG_FUNCTION_INFO_V1(ST_AsText);
+Datum
+ST_AsText(PG_FUNCTION_ARGS)
+{
+	return LWGEOM_asText(fcinfo);
+}
 
 /** convert LWGEOM to wkb (in BINARY format) */
 PG_FUNCTION_INFO_V1(LWGEOM_asBinary);
-Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_asBinary(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
@@ -1415,7 +1444,12 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 	PG_RETURN_BYTEA_P(lwgeom_to_wkb_varlena(lwgeom, variant));
 }
 
-
+PG_FUNCTION_INFO_V1(ST_AsBinary);
+Datum
+ST_AsBinary(PG_FUNCTION_ARGS)
+{
+	return LWGEOM_asBinary(fcinfo);
+}
 
 /**
  * @brief IsClosed(GEOMETRY) if geometry is a linestring then returns
