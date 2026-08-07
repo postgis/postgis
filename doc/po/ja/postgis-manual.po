@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-07 07:39+0000\n"
+"PO-Revision-Date: 2026-08-07 09:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -30316,12 +30316,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Variant 1."
-msgstr "形式 1。"
+msgstr "形式 1."
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 2."
-msgstr "形式 2。"
+msgstr "形式 2."
 
 #. Tag: para
 #, no-c-format
@@ -31392,6 +31392,8 @@ msgid ""
 "Use the <parameter>noset</parameter> mask to retain the left-middle source "
 "pixel while replacing the other cells."
 msgstr ""
+"<parameter>noset</parameter> マスクを使って、他のセルの値は変更していますが、"
+"左列、中央行のピクセルの値を保持します。"
 
 #. Tag: para
 #, no-c-format
@@ -31399,6 +31401,8 @@ msgid ""
 "With <parameter>keepnodata</parameter> enabled, an existing NODATA pixel is "
 "not overwritten."
 msgstr ""
+"<parameter>keepnodata</parameter> を有効にすると、既存の NODATA ピクセルは上"
+"書きされません。"
 
 #. Tag: para
 #, no-c-format
@@ -31406,23 +31410,25 @@ msgid ""
 "Use <literal>-1</literal> as the value that should not be written; only the "
 "lower-right 2 by 2 block changes."
 msgstr ""
+"<literal>1</literal> を書かない値として使用して、右下の 2 x 2 ブロックを変更"
+"します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The same update can use <literal>NULL</literal> as the value that should not "
 "be written."
-msgstr ""
+msgstr "同じ更新で <literal>NULL</literal> を書き込まない値として使うことができます。"
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 3."
-msgstr ""
+msgstr "形式 3."
 
 #. Tag: para
 #, no-c-format
 msgid "Set a 2 by 2 rectangle starting at column 2, row 2."
-msgstr ""
+msgstr "2列、2行から始まる 2 x 2 四角形に値を設定する。"
 
 #. Tag: para
 #, no-c-format
@@ -31430,11 +31436,13 @@ msgid ""
 "When <parameter>keepnodata</parameter> is true, the NODATA cell inside the "
 "rectangle remains unchanged."
 msgstr ""
+"<parameter>keepnodata</parameter> が TRUE の時には、四角形内の NODATA セルは"
+"変更されません。"
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 5."
-msgstr ""
+msgstr "形式 5."
 
 #. Tag: para
 #, no-c-format
@@ -31526,12 +31534,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>GDAL</varname> uses the value order shown below."
-msgstr ""
+msgstr "<varname>GDAL</varname> での値の順序は次の通りです。"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>ESRI</varname> uses the value order shown below."
-msgstr ""
+msgstr "<varname>ESRI</varname> での値の順序は次の通りです。"
 
 #. Tag: para
 #, no-c-format
@@ -32011,7 +32019,7 @@ msgstr "この例では元の回転していないラスターを使います。
 #. Tag: para
 #, no-c-format
 msgid "The reskewed raster rotation."
-msgstr ""
+msgstr "スキューの再設定を施したラスターの回転。"
 
 #. Tag: para
 #, no-c-format
@@ -32098,7 +32106,7 @@ msgstr "この例では元のラスターの左上のX座標値を返します�
 #. Tag: para
 #, no-c-format
 msgid "The upper left of raster after snapping."
-msgstr ""
+msgstr "スナップ後のラスターの左上座標値。"
 
 #. Tag: para
 #, no-c-format
@@ -32271,26 +32279,30 @@ msgid ""
 "keeps hard pixel steps, while bilinear smooths values between pixels. All "
 "three figures are generated from this query at manual build time."
 msgstr ""
+"元ラスターに対する最近傍補間と双線形補間との比較。斜めの帯は再サンプリングの"
+"振舞いが見えます。最近傍ではピクセルの段差が保存され、バイリニアではピクセル"
+"間の値が滑らかになっています。三つの図はマニュアル作成時にこのクエリーから作"
+"られました。"
 
 #. Tag: para
 #, no-c-format
 msgid "Raster reprojection and resampling."
-msgstr ""
+msgstr "ラスターの投影変換と再サンプリング。"
 
 #. Tag: para
 #, no-c-format
 msgid "Massachusetts State Plane source"
-msgstr ""
+msgstr "マサチューセッツ州平面の元ラスター"
 
 #. Tag: para
 #, no-c-format
 msgid "WGS 84 nearest-neighbor"
-msgstr ""
+msgstr "WGS 84 最近傍補間"
 
 #. Tag: para
 #, no-c-format
 msgid "WGS 84 bilinear"
-msgstr ""
+msgstr "WGS 84 双線形補間"
 
 #. Tag: para
 #, no-c-format
@@ -32343,14 +32355,14 @@ msgstr "この例では1番バンドのNODATA値だけを変更します。"
 #. Tag: para
 #, no-c-format
 msgid "This example changes the NODATA value for bands 1, 2, and 3."
-msgstr ""
+msgstr "この例では、バンド 1、2、3の NODATA 値を変えます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "This example removes the NODATA value so that all pixels are considered by "
 "processing functions."
-msgstr ""
+msgstr "この例では NODATA 値を削除して、全てのピクセルは処理関数で処理されます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -32373,7 +32385,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The <varname>isnodata</varname> flag is dirty, so set it to true."
-msgstr ""
+msgstr "<varname>isnodata</varname> フラグが汚れているので TRUE をセットする。"
 
 #. Tag: para
 #, no-c-format
@@ -32653,11 +32665,13 @@ msgid ""
 "Single raster tile - compute histograms for bands 1, 2, 3 and autocompute "
 "bins."
 msgstr ""
+"単一のラスタータイル - 1番、2番、3番バンドのヒストグラムを計算。ビン数は自動"
+"計算。"
 
 #. Tag: para
 #, no-c-format
 msgid "Just band 2 but for 6 bins."
-msgstr ""
+msgstr "2番バンドで 6ビン。"
 
 #. Tag: para
 #, no-c-format
