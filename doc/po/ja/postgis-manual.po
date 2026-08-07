@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-06 10:39+0000\n"
+"PO-Revision-Date: 2026-08-07 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -2459,7 +2459,7 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "face has multiple shells"
-msgstr "face has multiple shells (訳注: 複数の外殻を持つフェイス)"
+msgstr "face has multiple shells (訳注: 複数の外側リングを持つフェイス)"
 
 #. Tag: entry
 #, no-c-format
@@ -8857,7 +8857,7 @@ msgstr "全てのリングのポリゴンとしての抽出。"
 #. Tag: para
 #, no-c-format
 msgid "Extracting shell and holes from a polygon."
-msgstr "ポリゴンから外殻と穴の抽出。"
+msgstr "ポリゴンから外側リングと穴の抽出。"
 
 #. Tag: para
 #, no-c-format
@@ -12839,7 +12839,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Creates a Polygon or CurvePolygon from a shell and optional list of holes."
-msgstr "外殻と任意の穴リストとでポリゴンまたは曲線ポリゴンを生成します。"
+msgstr "外側リングと任意の穴リストとでポリゴンまたは曲線ポリゴンを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -12849,10 +12849,10 @@ msgid ""
 "CircularStrings, CompoundCurves, or NURBSCurves (rings). If any input ring "
 "is curved, the result is a CurvePolygon."
 msgstr ""
-"外殻と任意の穴配列とでポリゴンまたは曲線ポリゴンを生成します。入力ジオメト"
-"リーは閉じたLINESTRING、CIRCULARSTRING、COMPOUNDCURVE、NURBSCURVEでなければな"
-"りません。いずれかのリングが曲線の場合には結果ジオメトリーはCURVEPOLYGONにな"
-"ります。"
+"外側リングと任意の穴配列とでポリゴンまたは曲線ポリゴンを生成します。入力"
+"ジオメトリーは閉じたLINESTRING、CIRCULARSTRING、COMPOUNDCURVE、NURBSCURVEでな"
+"ければなりません。いずれかのリングが曲線の場合には結果ジオメトリーは"
+"CURVEPOLYGONになります。"
 
 #. Tag: para
 #, no-c-format
@@ -27164,7 +27164,7 @@ msgstr "入力ライン集合のポリゴン化。"
 msgid ""
 "Polygonizing two polygon coverages and transferring attributes to the "
 "resultants:"
-msgstr ""
+msgstr "二つのポリゴンカバレッジのポリゴン化と、結果ポリゴンへの属性の転送:"
 
 #. Tag: para
 #, no-c-format
@@ -27174,7 +27174,7 @@ msgstr "ラインストリングのテーブルのポリゴン化:"
 #. Tag: para
 #, no-c-format
 msgid "Use ST_Dump to dump out the polygonize geoms into individual polygons."
-msgstr ""
+msgstr "ポリゴン化したジオメトリーを個々のポリゴンにするには ST_Dump を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -27184,6 +27184,10 @@ msgid ""
 "linkend=\"ST_PointOnSurface\"/>, <xref linkend=\"ST_UnaryUnion\"/>, <xref "
 "linkend=\"ST_Within\"/>"
 msgstr ""
+", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Node\"/>, <xref "
+"linkend=\"ST_PointOnSurface\"/>, <xref linkend=\"ST_UnaryUnion\"/>, <xref "
+"linkend=\"ST_Within\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27292,18 +27296,20 @@ msgid ""
 "Adjacent shared path segments may be returned as separate or merged "
 "LineStrings depending on the GEOS version."
 msgstr ""
+"隣接との共有パスの辺は LINESTRING を返しますが分離しているかマージされている"
+"かは GEOS のバージョンによります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Find the shared paths of a MultiLineString and a LineString."
-msgstr ""
+msgstr "MULTILINESTRING と LINESTRING の共有パスの探索。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Flip the LineString orientation to return the same paths in the opposite-"
 "direction member."
-msgstr ""
+msgstr "LINESTRING の方向を反転して、同じパスで向きが反対のものを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -27569,17 +27575,17 @@ msgstr "GEOS 3.11.0以上が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "Outer hull of a Polygon."
-msgstr ""
+msgstr "ポリゴンの外殻。"
 
 #. Tag: para
 #, no-c-format
 msgid "Inner hull of a Polygon."
-msgstr ""
+msgstr "ポリゴンの内殻。"
 
 #. Tag: para
 #, no-c-format
 msgid "Outer hull simplification of a MultiPolygon, with segmentization."
-msgstr ""
+msgstr "細分化したマルチポリゴンに対する外殻の単純化。"
 
 #. Tag: para
 #, no-c-format
@@ -27610,6 +27616,12 @@ msgid ""
 "\"corners\" with area less than the tolerance. The result may not be valid "
 "even if the input is."
 msgstr ""
+"<link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam-Whyatt algorithm</link> を"
+"使ったジオメトリーの簡略化した表現を返します。簡略化の <varname>tolerance</"
+"varname> は面積値で入力 SRS の単位の 2乗です。簡略化によって許容値より小さい"
+"面積では「角」を構成する頂点が削除されます。入力ジオメトリーが妥当であっても"
+"返り値が妥当であるとは限りません。"
 
 #. Tag: para
 #, no-c-format
@@ -27637,6 +27649,11 @@ msgid ""
 "linkend=\"ST_IsValid\"/> to check the result and <xref "
 "linkend=\"ST_MakeValid\"/> to repair invalid polygonal output if needed."
 msgstr ""
+"これは汎用単純化関数です。有効面積が許容値より小さい場合にはポリゴンの狭い突"
+"起を削除することがありますが、突起除去専用処理でもポリゴン修復専門処理でもあ"
+"りません。必要に応じて、結果が妥当かを <xref linkend=\"ST_IsValid\"/> を使っ"
+"て確認し、<xref linkend=\"ST_MakeValid\"/> を使って不正なポリゴン出力を修復し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -27649,7 +27666,7 @@ msgstr "この関数は3次元を扱います。第3次元は結果に影響を�
 msgid ""
 "This polygon has a narrow spike whose effective area is small enough to be "
 "removed by a tolerance of 20 square units."
-msgstr ""
+msgstr "このポリゴンは有効面積が許容値20平方単位より十分小さい突起を持っています。"
 
 #. Tag: para
 #, no-c-format
@@ -27659,6 +27676,9 @@ msgid ""
 "would be a length in input-SRS units, so the value here is roughly that "
 "linear tolerance squared."
 msgstr ""
+"<xref linkend=\"ST_Simplify\"/> を使用するラインの単純化について、比較する許"
+"容値は入力 SRS を単位とした長さで、ここの値はだいたいでラインの許容値の 2乗で"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -27810,13 +27830,14 @@ msgstr "文字Pの三角分割。"
 msgid ""
 "Triangulation of the polygon used in the <xref linkend=\"CG_Tesselate\"/> "
 "example."
-msgstr ""
+msgstr "<xref linkend=\"CG_Tesselate\"/> の例の中で使われたポリゴンの三角分割。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"CG_Tesselate\"/>"
 msgstr ""
+", <xref linkend=\"ST_DelaunayTriangles\"/>, <xref linkend=\"CG_Tesselate\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -27874,7 +27895,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Voronoi diagram lines with a tolerance of 30 units."
-msgstr ""
+msgstr "30単位を許容値としたラインのボロノイ図。"
 
 #. Tag: para
 #, no-c-format
@@ -27907,12 +27928,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Points overlaid on top of the Voronoi diagram."
-msgstr ""
+msgstr "ボロノイ図の上にポイントを乗せた図。"
 
 #. Tag: para
 #, no-c-format
 msgid "Voronoi diagram with a tolerance of 30 units."
-msgstr ""
+msgstr "30単位を許容値としたボロノイ図。"
 
 #. Tag: para
 #, no-c-format
@@ -28036,16 +28057,18 @@ msgid ""
 "Pixel type of the new band. One of the pixel types described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>."
 msgstr ""
+"新しいバンドのピクセルタイプ。<xref linkend=\"RT_ST_BandPixelType\"/> に記載"
+"されているピクセルタイプの一つを選びます。"
 
 #. Tag: type
 #, no-c-format
 msgid "double precision"
-msgstr ""
+msgstr "double precision"
 
 #. Tag: entry
 #, no-c-format
 msgid "Initial value that all pixels of the new band will be set to."
-msgstr ""
+msgstr "新バンドの全てのピクセルが設定される初期値。"
 
 #. Tag: entry
 #, no-c-format
@@ -28077,17 +28100,17 @@ msgstr ""
 #. Tag: type
 #, no-c-format
 msgid "<type>raster</type>"
-msgstr ""
+msgstr "<type>raster</type>"
 
 #. Tag: entry
 #, no-c-format
 msgid "The raster in question."
-msgstr ""
+msgstr "問合せの中のラスター。"
 
 #. Tag: entry
 #, no-c-format
 msgid "1-based value indicating the raster band."
-msgstr ""
+msgstr "1始まりのラスターバンドの番号。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -28147,6 +28170,8 @@ msgid ""
 "Comma-delimited <literal>range:map_range</literal> mappings that define how "
 "old band values map to new band values."
 msgstr ""
+"コンマ区切りの、古いバンド値から新しいバンド値への変換を定める <literal>"
+"range:map_range</literal> マッピング。"
 
 #. Tag: entry
 #, no-c-format
@@ -28154,6 +28179,8 @@ msgid ""
 "One of defined pixel types as described in <xref "
 "linkend=\"RT_ST_BandPixelType\"/>."
 msgstr ""
+"<xref linkend=\"RT_ST_BandPixelType\"/> に定義が書かれているピクセルタイプの"
+"うちの一つ。"
 
 #. Tag: entry
 #, no-c-format
@@ -28169,26 +28196,35 @@ msgid ""
 "literal> greater than, <literal>)</literal> less than, <literal>]</literal> "
 "less than or equal, and <literal>[</literal> greater than or equal."
 msgstr ""
+"<varname>reclassexpr</varname> の範囲指定は次の通り: <literal>(</literal> 超"
+"、<literal>)</literal> 未満 <literal>]</literal> 以下、<literal>[</literal> "
+"以上。"
 
 #. Tag: para
 #, no-c-format
 msgid "<literal>[a-b]</literal> means <literal>a &lt;= x &lt;= b</literal>."
 msgstr ""
+"<literal>[a-b]</literal> は <literal>a &lt;= x &lt;= b</literal> を意味します"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid "<literal>(a-b]</literal> means <literal>a &lt; x &lt;= b</literal>."
 msgstr ""
+"<literal>(a-b]</literal> は <literal>a &lt; x &lt;= b</literal> を意味します"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid "<literal>[a-b)</literal> means <literal>a &lt;= x &lt; b</literal>."
 msgstr ""
+"<literal>[a-b)</literal> は <literal>a &lt;= x &lt; b</literal> を意味します"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid "<literal>(a-b)</literal> means <literal>a &lt; x &lt; b</literal>."
-msgstr ""
+msgstr "<literal>(a-b)</literal> は <literal>a &lt; x &lt; b</literal> を意味します。"
 
 #. Tag: para
 #, no-c-format
@@ -28196,16 +28232,18 @@ msgid ""
 "Opening-parenthesis notation is optional, so <literal>a-b</literal> means "
 "the same as <literal>(a-b)</literal>."
 msgstr ""
+"開区間記号は任意です。<literal>a-b</literal> は <literal>(a-b)</literal> と同"
+"じ意味です。"
 
 #. Tag: para
 #, no-c-format
 msgid "Reclassify band 2 as an 8BUI where 255 is nodata value."
-msgstr ""
+msgstr "2番バンドを、ピクセルタイプ 8BUI、NODATA値を255に変更します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Reclassify band 1 as an 1BB and no nodata value defined."
-msgstr ""
+msgstr "1番バンドについて、ピクセルタイプを 1BB、NODATA 値設定なしに変更します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -28318,7 +28356,7 @@ msgstr "処理する入力ラスタごとのバンドを示す1始まりの値�
 msgid ""
 "Type of union operation. One of the types described in <xref "
 "linkend=\"RT_ST_Union\"/>."
-msgstr ""
+msgstr "結合処理タイプ。<xref linkend=\"RT_ST_Union\"/> で記述されるタイプの一つ。"
 
 #. Tag: title
 #, no-c-format
@@ -28470,18 +28508,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Apply all possible constraints on column based on data."
-msgstr ""
+msgstr "カラムについてデータに基づいて全ての可能性のある制約を適用する。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Verify the raster table is registered correctly in the raster_columns view."
-msgstr ""
+msgstr "ラスターテーブルが raster_columns ビューで正しく登録されたかの確認をする。"
 
 #. Tag: para
 #, no-c-format
 msgid "Apply single constraint."
-msgstr ""
+msgstr "単一の制約の適応。"
 
 #. Tag: para
 #, no-c-format
@@ -28520,7 +28558,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "To drop a raster table use standard SQL: <code>DROP TABLE mytable</code>."
-msgstr ""
+msgstr "標準 SQL によるラスターテーブルの削除: <code>DROP TABLE mytable</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -28528,6 +28566,8 @@ msgid ""
 "To drop just a raster column and leave the rest of the table, use standard "
 "SQL: <code>ALTER TABLE mytable DROP COLUMN rast</code>."
 msgstr ""
+"ラスターカラムだけを削除して、他のカラムを残す場合の標準 SQL: <code>ALTER "
+"TABLE mytable DROP COLUMN rast</code>。"
 
 #. Tag: para
 #, no-c-format
@@ -28546,7 +28586,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Verify change in raster_columns."
-msgstr ""
+msgstr "raster_columns の変更の確認。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -28585,7 +28625,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Verify the raster table is registered correctly in the raster_overviews view."
-msgstr ""
+msgstr "ラスターテーブルが正しく raster_overviews ビューに登録されたかを確認する。"
 
 #. Tag: para
 #, no-c-format
@@ -28722,12 +28762,12 @@ msgstr "Availability: 2.0.0 - GDAL 1.6.0以上が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "List of Drivers."
-msgstr ""
+msgstr "ドライバーのリスト。"
 
 #. Tag: para
 #, no-c-format
 msgid "List of options for each driver."
-msgstr ""
+msgstr "ドライバーごとのオプションのリスト。"
 
 #. Tag: para
 #, no-c-format
@@ -28934,7 +28974,7 @@ msgstr "Enhanced: 2.1.0 out-dbバンドが追加されました。"
 #. Tag: para
 #, no-c-format
 msgid "Single New Band."
-msgstr ""
+msgstr "単一の新規バンド。"
 
 #. Tag: para
 #, no-c-format
@@ -45544,8 +45584,8 @@ msgid ""
 "Example: A CurvePolygon with the shell defined by a CompoundCurve containing "
 "a CircularString and a LineString, and a hole defined by a CircularString"
 msgstr ""
-"例: CIRCULARSTRINGとLINESTRINGからなるCOMPOUNDCURVEで定義される外殻を持ち、"
-"CIRCULARSTRINGで定義される穴を持つCURVEPOLYGON"
+"例: CIRCULARSTRINGとLINESTRINGからなるCOMPOUNDCURVEで定義される外側リングを持"
+"ち、CIRCULARSTRINGで定義される穴を持つCURVEPOLYGON"
 
 #. Tag: title
 #, no-c-format
