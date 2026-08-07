@@ -762,6 +762,167 @@ lwgeom_intersection(const LWGEOM* g1, const LWGEOM* g2)
 	return lwgeom_intersection_prec(g1, g2, -1.0);
 }
 
+static int
+point_on_gbox_corner_2d(const POINT2D *pt, const GBOX *gbox)
+{
+	if (FP_EQUALS(pt->x, gbox->xmin))
+	{
+		if (FP_EQUALS(pt->y, gbox->ymin))
+			return 1;
+		if (FP_EQUALS(pt->y, gbox->ymax))
+			return 2;
+	}
+	else if (FP_EQUALS(pt->x, gbox->xmax))
+	{
+		if (FP_EQUALS(pt->y, gbox->ymin))
+			return 4;
+		if (FP_EQUALS(pt->y, gbox->ymax))
+			return 8;
+	}
+
+	return 0;
+}
+
+static int
+lwpoly_is_axis_aligned_rectangle(const LWPOLY *poly, GBOX *gbox)
+{
+	int i;
+	int corners = 0;
+	const POINTARRAY *ring;
+
+	if (!poly || poly->nrings != 1)
+		return LW_FALSE;
+
+	ring = poly->rings[0];
+	if (!ring || ring->npoints != 5 || !ptarray_is_closed_2d(ring))
+		return LW_FALSE;
+
+	if (lwgeom_calculate_gbox_cartesian((const LWGEOM *)poly, gbox) == LW_FAILURE)
+		return LW_FALSE;
+
+	if (FP_EQUALS(gbox->xmin, gbox->xmax) || FP_EQUALS(gbox->ymin, gbox->ymax))
+		return LW_FALSE;
+
+	for (i = 0; i < 4; i++)
+	{
+		POINT2D pt;
+		POINT2D next;
+		int corner;
+
+		if (!getPoint2d_p(ring, i, &pt))
+			return LW_FALSE;
+		if (!getPoint2d_p(ring, i + 1, &next))
+			return LW_FALSE;
+		if (pt.x != next.x && pt.y != next.y)
+			return LW_FALSE;
+
+		corner = point_on_gbox_corner_2d(&pt, gbox);
+		if (!corner || (corners & corner))
+			return LW_FALSE;
+
+		corners |= corner;
+	}
+
+	return corners == 15;
+}
+
+static int
+ptarray_has_repeated_consecutive_xy(const POINTARRAY *points)
+{
+	uint32_t i;
+
+	for (i = 1; i < points->npoints; i++)
+	{
+		if (P2D_SAME_STRICT(getPoint2d_cp(points, i - 1), getPoint2d_cp(points, i)))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static int
+lwgeom_valid_for_rectangle_shortcut(const LWGEOM *geom)
+{
+	GEOSGeometry *geos;
+	char simple;
+
+	switch (geom->type)
+	{
+	case POINTTYPE:
+		return LW_TRUE;
+	case LINETYPE:
+		if (lwline_length_2d((const LWLINE *)geom) == 0.0 ||
+		    ptarray_has_repeated_consecutive_xy(((const LWLINE *)geom)->points))
+			return LW_FALSE;
+		break;
+	default:
+		/* GEOS overlay changes semantics for all other geometry families. */
+		return LW_FALSE;
+	}
+
+	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
+	geos = LWGEOM2GEOS(geom, LW_FALSE);
+	if (!geos)
+		return LW_FALSE;
+
+	simple = GEOSisSimple(geos);
+	GEOSGeom_destroy(geos);
+	return simple == 1;
+}
+
+static LWGEOM *
+lwgeom_intersection_rectangle_shortcut(const LWGEOM *geom1, const LWGEOM *geom2)
+{
+	GBOX rect_box;
+	GBOX geom_box;
+	const LWGEOM *rect;
+	const LWGEOM *geom;
+
+	if (FLAGS_GET_GEODETIC(geom1->flags) || FLAGS_GET_GEODETIC(geom2->flags))
+		return NULL;
+
+	if (geom1->type == POLYGONTYPE && lwpoly_is_axis_aligned_rectangle((const LWPOLY *)geom1, &rect_box))
+	{
+		rect = geom1;
+		geom = geom2;
+	}
+	else if (geom2->type == POLYGONTYPE && lwpoly_is_axis_aligned_rectangle((const LWPOLY *)geom2, &rect_box))
+	{
+		rect = geom2;
+		geom = geom1;
+	}
+	else
+	{
+		return NULL;
+	}
+
+	if (geom == rect)
+		return NULL;
+	/* A 3D clipping polygon can source or interpolate result Z values. */
+	if (FLAGS_GET_Z(rect->flags))
+		return NULL;
+	if (geom->type != POINTTYPE && geom->type != LINETYPE)
+		return NULL;
+
+	if (lwgeom_calculate_gbox_cartesian(geom, &geom_box) == LW_FAILURE)
+		return NULL;
+
+	if (!gbox_contains_2d(&rect_box, &geom_box))
+		return NULL;
+
+	/* GEOS nodes a line at internal vertices which touch the clip boundary. */
+	if (geom->type == LINETYPE &&
+	    (FP_EQUALS(geom_box.xmin, rect_box.xmin) || FP_EQUALS(geom_box.xmax, rect_box.xmax) ||
+	     FP_EQUALS(geom_box.ymin, rect_box.ymin) || FP_EQUALS(geom_box.ymax, rect_box.ymax)))
+		return NULL;
+
+	/* GEOS predicates are only worthwhile after the cheap containment check. */
+	if (!lwgeom_valid_for_rectangle_shortcut(geom))
+		return NULL;
+
+	return lwgeom_force_dims(geom, FLAGS_GET_Z(geom->flags), 0, 0, 0);
+}
+
 LWGEOM*
 lwgeom_intersection_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 {
@@ -779,6 +940,13 @@ lwgeom_intersection_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 
 	/* Empty.Intersection(A) == Empty */
 	if (lwgeom_is_empty(geom1)) return lwgeom_clone_deep(geom1); /* match empty type? */
+
+	if (prec < 0)
+	{
+		result = lwgeom_intersection_rectangle_shortcut(geom1, geom2);
+		if (result)
+			return result;
+	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
