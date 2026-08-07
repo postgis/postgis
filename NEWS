@@ -74,6 +74,8 @@ These are only changes since 3.7.0alpha1.
           preprocessed with AltiVec vector macros (Darafei Praliaskouski)
  - #6094, [upgrade] Avoid legacy string literal warnings in downgrade checks
           with standard_conforming_strings off (Darafei Praliaskouski)
+ - #3705, ST_AsX3D outputs valid coordinate nodes for 2D multi-geometries
+          and GeometryCollections (Darafei Praliaskouski)
  - #5423, Use a DTD-free expanded DocBook input for EPUB builds so
           out-of-tree builds do not need dbtoepub entity path support
           (Darafei Praliaskouski)
