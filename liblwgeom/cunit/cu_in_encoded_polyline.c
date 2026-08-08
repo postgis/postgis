@@ -62,6 +62,13 @@ static void in_encoded_polyline_test_close_points(void)
 		"SRID=4326;LINESTRING(38.903876 55.336448,38.903875 55.336448)");
 }
 
+static void in_encoded_polyline_test_truncated_input(void)
+{
+	/* A latitude without a longitude and an unterminated latitude varint. */
+	CU_ASSERT_PTR_NULL(lwgeom_from_encoded_polyline("A", 5));
+	CU_ASSERT_PTR_NULL(lwgeom_from_encoded_polyline("`", 5));
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -72,4 +79,5 @@ void in_encoded_polyline_suite_setup(void)
 	PG_ADD_TEST(suite, in_encoded_polyline_test_geoms);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_precision);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_close_points);
+	PG_ADD_TEST(suite, in_encoded_polyline_test_truncated_input);
 }
