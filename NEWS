@@ -3,6 +3,8 @@ PostGIS 3.5.8
 
 * Bug Fixes *
 
+  - OSSFuzz 5877056525893632, reject truncated encoded polyline input
+    (Darafei Praliaskouski)
   - Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
   - GT-619, Make interrupt regression tests compare timeout latency to
     same-machine uninterrupted runtime, avoiding false failures under
