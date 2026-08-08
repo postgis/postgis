@@ -34,7 +34,122 @@
 #include "utils/datetime.h"
 #include "utils/jsonb.h"
 
-static uint8_t get_column_type(Oid typoid) {
+static uint16_t
+flatgeobuf_le16(uint16_t v)
+{
+#if IS_BIG_ENDIAN
+	return (uint16_t)((v << 8) | (v >> 8));
+#else
+	return v;
+#endif
+}
+
+static uint32_t
+flatgeobuf_le32(uint32_t v)
+{
+#if IS_BIG_ENDIAN
+	return ((v & UINT32_C(0x000000ff)) << 24) | ((v & UINT32_C(0x0000ff00)) << 8) |
+	       ((v & UINT32_C(0x00ff0000)) >> 8) | ((v & UINT32_C(0xff000000)) >> 24);
+#else
+	return v;
+#endif
+}
+
+static uint64_t
+flatgeobuf_le64(uint64_t v)
+{
+#if IS_BIG_ENDIAN
+	return ((v & UINT64_C(0x00000000000000ff)) << 56) | ((v & UINT64_C(0x000000000000ff00)) << 40) |
+	       ((v & UINT64_C(0x0000000000ff0000)) << 24) | ((v & UINT64_C(0x00000000ff000000)) << 8) |
+	       ((v & UINT64_C(0x000000ff00000000)) >> 8) | ((v & UINT64_C(0x0000ff0000000000)) >> 24) |
+	       ((v & UINT64_C(0x00ff000000000000)) >> 40) | ((v & UINT64_C(0xff00000000000000)) >> 56);
+#else
+	return v;
+#endif
+}
+
+static void
+flatgeobuf_write_le16(uint8_t *dst, uint16_t v)
+{
+	v = flatgeobuf_le16(v);
+	memcpy(dst, &v, sizeof(v));
+}
+
+static void
+flatgeobuf_write_le32(uint8_t *dst, uint32_t v)
+{
+	v = flatgeobuf_le32(v);
+	memcpy(dst, &v, sizeof(v));
+}
+
+static void
+flatgeobuf_write_le64(uint8_t *dst, uint64_t v)
+{
+	v = flatgeobuf_le64(v);
+	memcpy(dst, &v, sizeof(v));
+}
+
+static uint16_t
+flatgeobuf_read_le16(const uint8_t *src)
+{
+	uint16_t v;
+	memcpy(&v, src, sizeof(v));
+	return flatgeobuf_le16(v);
+}
+
+static uint32_t
+flatgeobuf_read_le32(const uint8_t *src)
+{
+	uint32_t v;
+	memcpy(&v, src, sizeof(v));
+	return flatgeobuf_le32(v);
+}
+
+static uint64_t
+flatgeobuf_read_le64(const uint8_t *src)
+{
+	uint64_t v;
+	memcpy(&v, src, sizeof(v));
+	return flatgeobuf_le64(v);
+}
+
+static float
+flatgeobuf_read_float_le(const uint8_t *src)
+{
+	uint32_t bits = flatgeobuf_read_le32(src);
+	float value;
+	memcpy(&value, &bits, sizeof(value));
+	return value;
+}
+
+static double
+flatgeobuf_read_double_le(const uint8_t *src)
+{
+	uint64_t bits = flatgeobuf_read_le64(src);
+	double value;
+	memcpy(&value, &bits, sizeof(value));
+	return value;
+}
+
+static void
+flatgeobuf_write_float_le(uint8_t *dst, float value)
+{
+	uint32_t bits;
+	memcpy(&bits, &value, sizeof(bits));
+	flatgeobuf_write_le32(dst, bits);
+}
+
+static void
+flatgeobuf_write_double_le(uint8_t *dst, double value)
+{
+	uint64_t bits;
+	memcpy(&bits, &value, sizeof(bits));
+	flatgeobuf_write_le64(dst, bits);
+}
+
+static uint8_t
+get_column_type(Oid typoid)
+{
 	switch (typoid)
 	{
 	case BOOLOID:
@@ -62,11 +177,11 @@ static uint8_t get_column_type(Oid typoid) {
 	case TIMESTAMPTZOID:
 		return flatgeobuf_column_type_datetime;
 	}
-	elog(ERROR, "flatgeobuf: get_column_type: '%d' column type not supported",
-		typoid);
+	elog(ERROR, "flatgeobuf: get_column_type: '%d' column type not supported", typoid);
 }
 
-static void inspect_table(struct flatgeobuf_agg_ctx *ctx)
+static void
+inspect_table(struct flatgeobuf_agg_ctx *ctx)
 {
 	flatgeobuf_column *c;
 	flatgeobuf_column **columns;
@@ -84,18 +199,24 @@ static void inspect_table(struct flatgeobuf_agg_ctx *ctx)
 
 	// inspect columns
 	// NOTE: last element will be unused if geom attr is found
-	for (int i = 0; i < natts; i++) {
+	for (int i = 0; i < natts; i++)
+	{
 		Oid typoid = getBaseType(TupleDescAttr(tupdesc, i)->atttypid);
 		const char *key = TupleDescAttr(tupdesc, i)->attname.data;
 		POSTGIS_DEBUGF(2, "inspecting column definition for %s with oid %d", key, typoid);
-		if (ctx->geom_name == NULL) {
-			if (!geom_found && typoid == postgis_oid(GEOMETRYOID)) {
+		if (ctx->geom_name == NULL)
+		{
+			if (!geom_found && typoid == postgis_oid(GEOMETRYOID))
+			{
 				ctx->geom_index = i;
 				geom_found = true;
 				continue;
 			}
-		} else {
-			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
+		}
+		else
+		{
+			if (!geom_found && strcmp(key, ctx->geom_name) == 0)
+			{
 				ctx->geom_index = i;
 				geom_found = true;
 				continue;
@@ -103,7 +224,7 @@ static void inspect_table(struct flatgeobuf_agg_ctx *ctx)
 		}
 		POSTGIS_DEBUGF(2, "creating column definition for %s with oid %d", key, typoid);
 
-		c = (flatgeobuf_column *) palloc0(sizeof(flatgeobuf_column));
+		c = (flatgeobuf_column *)palloc0(sizeof(flatgeobuf_column));
 		c->name = pstrdup(key);
 		c->type = get_column_type(typoid);
 		columns[columns_size] = c;
@@ -113,21 +234,25 @@ static void inspect_table(struct flatgeobuf_agg_ctx *ctx)
 	if (!geom_found)
 		elog(ERROR, "no geom column found");
 
-	if (columns_size > 0) {
+	if (columns_size > 0)
+	{
 		ctx->ctx->columns = columns;
 		ctx->ctx->columns_size = columns_size;
 	}
 }
 
 // ensure properties has room for at least size
-static void ensure_properties_size(struct flatgeobuf_agg_ctx *ctx, size_t size)
+static void
+ensure_properties_size(struct flatgeobuf_agg_ctx *ctx, size_t size)
 {
-	if (ctx->ctx->properties_size == 0) {
+	if (ctx->ctx->properties_size == 0)
+	{
 		ctx->ctx->properties_size = 1024 * 4;
 		POSTGIS_DEBUGF(2, "flatgeobuf: properties buffer to size %d", ctx->ctx->properties_size);
 		ctx->ctx->properties = palloc(ctx->ctx->properties_size);
 	}
-	if (ctx->ctx->properties_size < size) {
+	if (ctx->ctx->properties_size < size)
+	{
 		ctx->ctx->properties_size = ctx->ctx->properties_size * 2;
 		POSTGIS_DEBUGF(2, "flatgeobuf: reallocating properties buffer to size %d", ctx->ctx->properties_size);
 		ctx->ctx->properties = repalloc(ctx->ctx->properties, ctx->ctx->properties_size);
@@ -136,21 +261,25 @@ static void ensure_properties_size(struct flatgeobuf_agg_ctx *ctx, size_t size)
 }
 
 // ensure items have room for at least ctx->ctx->features_count + 1
-static void ensure_items_len(struct flatgeobuf_agg_ctx *ctx)
+static void
+ensure_items_len(struct flatgeobuf_agg_ctx *ctx)
 {
-	if (ctx->ctx->features_count == 0) {
+	if (ctx->ctx->features_count == 0)
+	{
 		ctx->ctx->items_len = 32;
 		ctx->ctx->items = palloc(sizeof(flatgeobuf_item *) * ctx->ctx->items_len);
 	}
-	if (ctx->ctx->items_len < (ctx->ctx->features_count + 1)) {
+	if (ctx->ctx->items_len < (ctx->ctx->features_count + 1))
+	{
 		ctx->ctx->items_len = ctx->ctx->items_len * 2;
-		POSTGIS_DEBUGF(2, "flatgeobuf: reallocating items to len %ld", ctx->ctx->items_len);
+		POSTGIS_DEBUGF(2, "flatgeobuf: reallocating items to len %lld", ctx->ctx->items_len);
 		ctx->ctx->items = repalloc(ctx->ctx->items, sizeof(flatgeobuf_item *) * ctx->ctx->items_len);
 		ensure_items_len(ctx);
 	}
 }
 
-static void encode_properties(flatgeobuf_agg_ctx *ctx)
+static void
+encode_properties(flatgeobuf_agg_ctx *ctx)
 {
 	uint16_t ci = 0;
 	size_t offset = 0;
@@ -168,19 +297,21 @@ static void encode_properties(flatgeobuf_agg_ctx *ctx)
 	double double_value;
 	char *string_value;
 
-	//Jsonb *jb;
+	// Jsonb *jb;
 
-	for (i = 0; i < (uint32_t) ctx->tupdesc->natts; i++) {
+	for (i = 0; i < (uint32_t)ctx->tupdesc->natts; i++)
+	{
 		if (ctx->geom_index == i)
 			continue;
 		datum = GetAttributeByNum(ctx->row, i + 1, &isnull);
 		if (isnull)
 			continue;
 		ensure_properties_size(ctx, offset + sizeof(ci));
-		memcpy(ctx->ctx->properties + offset, &ci, sizeof(ci));
+		flatgeobuf_write_le16(ctx->ctx->properties + offset, ci);
 		offset += sizeof(ci);
 		typoid = getBaseType(TupleDescAttr(ctx->tupdesc, i)->atttypid);
-		switch (typoid) {
+		switch (typoid)
+		{
 		case BOOLOID:
 			byte_value = DatumGetBool(datum) ? 1 : 0;
 			ensure_properties_size(ctx, offset + sizeof(byte_value));
@@ -190,38 +321,38 @@ static void encode_properties(flatgeobuf_agg_ctx *ctx)
 		case INT2OID:
 			short_value = DatumGetInt16(datum);
 			ensure_properties_size(ctx, offset + sizeof(short_value));
-			memcpy(ctx->ctx->properties + offset, &short_value, sizeof(short_value));
+			flatgeobuf_write_le16(ctx->ctx->properties + offset, (uint16_t)short_value);
 			offset += sizeof(short_value);
 			break;
 		case INT4OID:
 			int_value = DatumGetInt32(datum);
 			ensure_properties_size(ctx, offset + sizeof(int_value));
-			memcpy(ctx->ctx->properties + offset, &int_value, sizeof(int_value));
+			flatgeobuf_write_le32(ctx->ctx->properties + offset, (uint32_t)int_value);
 			offset += sizeof(int_value);
 			break;
 		case INT8OID:
 			long_value = DatumGetInt64(datum);
 			ensure_properties_size(ctx, offset + sizeof(long_value));
-			memcpy(ctx->ctx->properties + offset, &long_value, sizeof(long_value));
+			flatgeobuf_write_le64(ctx->ctx->properties + offset, (uint64_t)long_value);
 			offset += sizeof(long_value);
 			break;
 		case FLOAT4OID:
 			float_value = DatumGetFloat4(datum);
 			ensure_properties_size(ctx, offset + sizeof(float_value));
-			memcpy(ctx->ctx->properties + offset, &float_value, sizeof(float_value));
+			flatgeobuf_write_float_le(ctx->ctx->properties + offset, float_value);
 			offset += sizeof(float_value);
 			break;
 		case FLOAT8OID:
 			double_value = DatumGetFloat8(datum);
 			ensure_properties_size(ctx, offset + sizeof(double_value));
-			memcpy(ctx->ctx->properties + offset, &double_value, sizeof(double_value));
+			flatgeobuf_write_double_le(ctx->ctx->properties + offset, double_value);
 			offset += sizeof(double_value);
 			break;
 		case TEXTOID:
 			string_value = text_to_cstring(DatumGetTextP(datum));
 			len = strlen(string_value);
 			ensure_properties_size(ctx, offset + sizeof(len));
-			memcpy(ctx->ctx->properties + offset, &len, sizeof(len));
+			flatgeobuf_write_le32(ctx->ctx->properties + offset, len);
 			offset += sizeof(len);
 			ensure_properties_size(ctx, offset + len);
 			memcpy(ctx->ctx->properties + offset, string_value, len);
@@ -239,45 +370,70 @@ static void encode_properties(flatgeobuf_agg_ctx *ctx)
 			EncodeDateTime(&tm, fsec, true, tz, tzn, USE_ISO_DATES, string_value);
 			len = strlen(string_value);
 			ensure_properties_size(ctx, offset + sizeof(len));
-			memcpy(ctx->ctx->properties + offset, &len, sizeof(len));
+			flatgeobuf_write_le32(ctx->ctx->properties + offset, len);
 			offset += sizeof(len);
 			ensure_properties_size(ctx, offset + len);
 			memcpy(ctx->ctx->properties + offset, string_value, len);
 			offset += len;
 			break;
 		}
-		// TODO: handle date/time types
-		// case JSONBOID:
-		// 	jb = DatumGetJsonbP(datum);
-		// 	string_value = JsonbToCString(NULL, &jb->root, VARSIZE(jb));
-		// 	len = strlen(string_value);
-		// 	memcpy(data + offset, &len, sizeof(len));
-		// 	offset += sizeof(len);
-		// 	memcpy(data + offset, string_value, len);
-		// 	offset += len;
-		// 	break;
+			// TODO: handle date/time types
+			// case JSONBOID:
+			// 	jb = DatumGetJsonbP(datum);
+			// 	string_value = JsonbToCString(NULL, &jb->root, VARSIZE(jb));
+			// 	len = strlen(string_value);
+			// 	memcpy(data + offset, &len, sizeof(len));
+			// 	offset += sizeof(len);
+			// 	memcpy(data + offset, string_value, len);
+			// 	offset += len;
+			// 	break;
 		}
 		ci++;
 	}
 
-	if (offset > 0) {
+	if (offset > 0)
+	{
 		POSTGIS_DEBUGF(3, "offset %ld", offset);
 		ctx->ctx->properties_len = offset;
 	}
 }
 
-void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx)
+void
+flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx)
 {
-	uint8_t *buf = ctx->ctx->buf + ctx->ctx->offset;
+	uint8_t *buf;
 	uint32_t i;
 
+	if (ctx->ctx->offset > ctx->ctx->size || FLATGEOBUF_MAGICBYTES_SIZE > ctx->ctx->size - ctx->ctx->offset)
+		elog(ERROR, "Data is not FlatGeobuf");
+
+	buf = ctx->ctx->buf + ctx->ctx->offset;
 	for (i = 0; i < FLATGEOBUF_MAGICBYTES_SIZE / 2; i++)
 		if (buf[i] != flatgeobuf_magicbytes[i])
 			elog(ERROR, "Data is not FlatGeobuf");
 	ctx->ctx->offset += FLATGEOBUF_MAGICBYTES_SIZE;
 }
 
-static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, bool *isnull)
+void
+flatgeobuf_check_sizeprefix(flatgeobuf_ctx *ctx)
+{
+	uint64_t remaining;
+	uint32_t size;
+
+	if (ctx->offset > ctx->size)
+		elog(ERROR, "flatgeobuf: read past end of input");
+
+	remaining = ctx->size - ctx->offset;
+	if (remaining < sizeof(uint32_t))
+		elog(ERROR, "flatgeobuf: truncated size prefix");
+
+	size = flatgeobuf_read_le32(ctx->buf + ctx->offset);
+	if ((uint64_t)size > remaining - sizeof(uint32_t))
+		elog(ERROR, "flatgeobuf: size prefix exceeds remaining input");
+}
+
+static void
+decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, bool *isnull)
 {
 	uint16_t i, ci;
 	flatgeobuf_column *column;
@@ -290,10 +446,11 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 
 	if (size > 0 && size < (sizeof(uint16_t) + sizeof(uint8_t)))
 		elog(ERROR, "flatgeobuf: decode_properties: Unexpected properties data size %d", size);
-	while (offset + 1 < size) {
+	while (offset + 1 < size)
+	{
 		if (offset + sizeof(uint16_t) > size)
 			elog(ERROR, "flatgeobuf: decode_properties: Unexpected offset %d", offset);
-		memcpy(&i, data + offset, sizeof(uint16_t));
+		i = flatgeobuf_read_le16(data + offset);
 		ci = i + 2;
 		offset += sizeof(uint16_t);
 		if (i >= ctx->ctx->columns_size)
@@ -301,7 +458,8 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 		column = ctx->ctx->columns[i];
 		type = column->type;
 		isnull[ci] = false;
-		switch (type) {
+		switch (type)
+		{
 		case flatgeobuf_column_type_bool: {
 			uint8_t value;
 			if (offset + sizeof(uint8_t) > size)
@@ -333,7 +491,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			int16_t value;
 			if (offset + sizeof(int16_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for short value");
-			memcpy(&value, data + offset, sizeof(int16_t));
+			value = (int16_t)flatgeobuf_read_le16(data + offset);
 			values[ci] = Int16GetDatum(value);
 			offset += sizeof(int16_t);
 			break;
@@ -342,7 +500,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			uint16_t value;
 			if (offset + sizeof(uint16_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ushort value");
-			memcpy(&value, data + offset, sizeof(uint16_t));
+			value = flatgeobuf_read_le16(data + offset);
 			values[ci] = UInt16GetDatum(value);
 			offset += sizeof(uint16_t);
 			break;
@@ -351,7 +509,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			int32_t value;
 			if (offset + sizeof(int32_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for int value");
-			memcpy(&value, data + offset, sizeof(int32_t));
+			value = (int32_t)flatgeobuf_read_le32(data + offset);
 			values[ci] = Int32GetDatum(value);
 			offset += sizeof(int32_t);
 			break;
@@ -360,8 +518,8 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			uint32_t value;
 			if (offset + sizeof(uint32_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for uint value");
-			memcpy(&value, data + offset, sizeof(uint32_t));
-			values[ci] = Int64GetDatum((int64_t)(uint64_t) value);
+			value = flatgeobuf_read_le32(data + offset);
+			values[ci] = Int64GetDatum((int64_t)(uint64_t)value);
 			offset += sizeof(uint32_t);
 			break;
 		}
@@ -369,7 +527,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			int64_t value;
 			if (offset + sizeof(int64_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for long value");
-			memcpy(&value, data + offset, sizeof(int64_t));
+			value = (int64_t)flatgeobuf_read_le64(data + offset);
 			values[ci] = Int64GetDatum(value);
 			offset += sizeof(int64_t);
 			break;
@@ -378,7 +536,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			uint64_t value;
 			if (offset + sizeof(uint64_t) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ulong value");
-			memcpy(&value, data + offset, sizeof(uint64_t));
+			value = flatgeobuf_read_le64(data + offset);
 			values[ci] = UInt64GetDatum(value);
 			offset += sizeof(uint64_t);
 			break;
@@ -387,7 +545,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			float value;
 			if (offset + sizeof(float) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for float value");
-			memcpy(&value, data + offset, sizeof(float));
+			value = flatgeobuf_read_float_le(data + offset);
 			values[ci] = Float4GetDatum(value);
 			offset += sizeof(float);
 			break;
@@ -396,7 +554,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			double value;
 			if (offset + sizeof(double) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for double value");
-			memcpy(&value, data + offset, sizeof(double));
+			value = flatgeobuf_read_double_le(data + offset);
 			values[ci] = Float8GetDatum(value);
 			offset += sizeof(double);
 			break;
@@ -405,9 +563,11 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			uint32_t len;
 			if (offset + sizeof(len) > size)
 				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
-			memcpy(&len, data + offset, sizeof(uint32_t));
+			len = flatgeobuf_read_le32(data + offset);
 			offset += sizeof(len);
-			values[ci] = PointerGetDatum(cstring_to_text_with_len((const char *) data + offset, len));
+			if (len > size - offset)
+				elog(ERROR, "flatgeobuf: decode_properties: string length exceeds buffer");
+			values[ci] = PointerGetDatum(cstring_to_text_with_len((const char *)data + offset, len));
 			offset += len;
 			break;
 		}
@@ -424,12 +584,15 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			int tzp;
 			TimestampTz dttz;
 			if (offset + sizeof(len) > size)
-				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
-			memcpy(&len, data + offset, sizeof(uint32_t));
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for datetime value");
+			len = flatgeobuf_read_le32(data + offset);
 			offset += sizeof(len);
-			buf = palloc0(len + 1);
-			memcpy(buf, (const char *) data + offset, len);
-			ParseDateTime((const char *) buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf);
+			if (len > size - offset)
+				elog(ERROR, "flatgeobuf: decode_properties: datetime length exceeds buffer");
+			buf = palloc0((Size)len + 1);
+			memcpy(buf, (const char *)data + offset, len);
+			ParseDateTime((const char *)buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf);
+
 			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp);
 			tm2timestamp(tm, fsec, &tzp, &dttz);
 			values[ci] = TimestampTzGetDatum(dttz);
@@ -449,27 +612,33 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, 
 			elog(ERROR, "flatgeobuf: decode_properties: Unknown type %d", type);
 		}
 	}
-
 }
 
-void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
+void
+flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
 {
 	HeapTuple heapTuple;
 	uint32_t natts = ctx->tupdesc->natts;
 
 	Datum *values = palloc0(natts * sizeof(Datum));
-	bool *isnull = palloc0(natts * sizeof(bool));
-	for (uint32_t j = 0; j < natts; j++) isnull[j] = true;
+	bool *isnull = palloc(natts * sizeof(bool));
+	for (uint32_t j = 0; j < natts; j++)
+		isnull[j] = true;
 	isnull[0] = false;
+
 	values[0] = Int32GetDatum(ctx->fid);
 
+	flatgeobuf_check_sizeprefix(ctx->ctx);
 	if (flatgeobuf_decode_feature(ctx->ctx))
 		elog(ERROR, "flatgeobuf_decode_feature: unsuccessful");
 
-	if (ctx->ctx->lwgeom != NULL) {
+	if (ctx->ctx->lwgeom != NULL)
+	{
 		values[1] = PointerGetDatum(geometry_serialize(ctx->ctx->lwgeom));
 		isnull[1] = false;
-	} else {
+	}
+	else
+	{
 		POSTGIS_DEBUG(3, "geometry is null");
 		isnull[1] = true;
 	}
@@ -483,8 +652,12 @@ void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
 
 	POSTGIS_DEBUGF(3, "fid now %d", ctx->fid);
 
-	if (ctx->ctx->offset == ctx->ctx->size) {
-		POSTGIS_DEBUGF(3, "reached end at %ld", ctx->ctx->offset);
+	if (ctx->ctx->offset > ctx->ctx->size)
+		elog(ERROR, "flatgeobuf_decode_row: read past end of input");
+
+	if (ctx->ctx->offset == ctx->ctx->size)
+	{
+		POSTGIS_DEBUGF(3, "reached end at %lld", ctx->ctx->offset);
 		ctx->done = true;
 	}
 }
@@ -492,7 +665,8 @@ void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx)
 /**
  * Initialize aggregation context.
  */
-struct flatgeobuf_agg_ctx *flatgeobuf_agg_ctx_init(const char *geom_name, const bool create_index)
+struct flatgeobuf_agg_ctx *
+flatgeobuf_agg_ctx_init(const char *geom_name, const bool create_index)
 {
 	struct flatgeobuf_agg_ctx *ctx;
 	size_t size = VARHDRSZ + FLATGEOBUF_MAGICBYTES_SIZE;
@@ -516,7 +690,8 @@ struct flatgeobuf_agg_ctx *flatgeobuf_agg_ctx_init(const char *geom_name, const 
  * Allocates a new feature, increment feature counter and
  * encode properties into it.
  */
-void flatgeobuf_agg_transfn(struct flatgeobuf_agg_ctx *ctx)
+void
+flatgeobuf_agg_transfn(struct flatgeobuf_agg_ctx *ctx)
 {
 	LWGEOM *lwgeom = NULL;
 	bool isnull = false;
@@ -527,8 +702,9 @@ void flatgeobuf_agg_transfn(struct flatgeobuf_agg_ctx *ctx)
 		inspect_table(ctx);
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
-	if (!isnull) {
-		gs = (GSERIALIZED *) PG_DETOAST_DATUM_COPY(datum);
+	if (!isnull)
+	{
+		gs = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(datum);
 		lwgeom = lwgeom_from_gserialized(gs);
 	}
 	ctx->ctx->lwgeom = lwgeom;
@@ -547,21 +723,24 @@ void flatgeobuf_agg_transfn(struct flatgeobuf_agg_ctx *ctx)
  *
  * Encode into Data message and return it packed as a bytea.
  */
-uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_agg_ctx *ctx)
+uint8_t *
+flatgeobuf_agg_finalfn(struct flatgeobuf_agg_ctx *ctx)
 {
-	POSTGIS_DEBUGF(3, "called at offset %ld", ctx->ctx->offset);
+	POSTGIS_DEBUGF(3, "called at offset %lld", ctx->ctx->offset);
 	if (ctx == NULL)
 		flatgeobuf_agg_ctx_init(NULL, false);
 	// header only result
-	if (ctx->ctx->features_count == 0) {
+	if (ctx->ctx->features_count == 0)
+	{
 		flatgeobuf_encode_header(ctx->ctx);
-	} else if (ctx->ctx->create_index) {
+	}
+	else if (ctx->ctx->create_index)
+	{
 		ctx->ctx->index_node_size = 16;
 		flatgeobuf_create_index(ctx->ctx);
 	}
 	if (ctx->tupdesc != NULL)
 		ReleaseTupleDesc(ctx->tupdesc);
 	SET_VARSIZE(ctx->ctx->buf, ctx->ctx->offset);
-	POSTGIS_DEBUGF(3, "returning at offset %ld", ctx->ctx->offset);
 	return ctx->ctx->buf;
 }

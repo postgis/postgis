@@ -209,6 +209,11 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 					 errmsg("function returning record called in context "
 							"that cannot accept type record")));
 
+		if (PG_ARGISNULL(1)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
 		data = PG_GETARG_BYTEA_PP(1);
 
 		ctx = palloc0(sizeof(*ctx));
@@ -231,6 +236,7 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		}
 
 		flatgeobuf_check_magicbytes(ctx);
+		flatgeobuf_check_sizeprefix(ctx->ctx);
 		flatgeobuf_decode_header(ctx->ctx);
 
 		POSTGIS_DEBUGF(2, "header decoded now at offset %ld", ctx->ctx->offset);
