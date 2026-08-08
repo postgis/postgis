@@ -12,6 +12,8 @@ These are only changes since 3.7.0beta1.
           where it could deadlock with autovacuum (Darafei Praliaskouski)
  - [liblwgeom] Reject malformed GSERIALIZED NURBS before curve
           evaluation (Darafei Praliaskouski)
+ - OSSFuzz 5877056525893632, reject truncated encoded polyline input
+          (Darafei Praliaskouski)
  - GT-619, Make interrupt regression tests compare timeout latency to
           same-machine uninterrupted runtime, avoiding false failures under
           slow CI load (Darafei Praliaskouski)
