@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta1.
 
 * Bug Fixes *
 
+ - OSSFuzz 6302177757560832, account for GSERIALIZED float bbox rounding
+          in fuzzer round trips (Darafei Praliaskouski)
  - Stop the extension upgrade script running ANALYZE inside its transaction,
           where it could deadlock with autovacuum (Darafei Praliaskouski)
  - [liblwgeom] Reject malformed GSERIALIZED NURBS before curve
