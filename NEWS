@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - OSSFuzz 5877056525893632, reject truncated encoded polyline input
+   (Darafei Praliaskouski)
  - Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
  - GT-569, Initialize GSERIALIZED peek test fixtures so check-unit stays
    clean under Valgrind (Darafei Praliaskouski)
