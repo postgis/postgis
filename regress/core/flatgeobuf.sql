@@ -176,6 +176,17 @@ select 'MM1' from ST_FromFlatGeobuf(null::flatgeobuf_mm_text, (
 select 'MM2' from ST_FromFlatGeobuf(null::flatgeobuf_mm_long, (
     select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 42::bigint as val1, 43::bigint as val2) q));
 
+select '--- Malformed input detection ---';
+
+-- Magic bytes plus a truncated size prefix.
+select 'MI1' from ST_FromFlatGeobuf(null::flatgeobuf_t1, '\x6667620366676201010203'::bytea);
+
+-- Valid magic bytes plus a header size prefix that exceeds the remaining input.
+select 'MI2' from ST_FromFlatGeobuf(null::flatgeobuf_t1, '\x6667620366676201ffffffff'::bytea);
+
+-- NULL bytea input should be handled by STRICT rather than reaching the C decoder.
+select 'MI3', count(*) from ST_FromFlatGeobuf(null::flatgeobuf_t1, null::bytea);
+
 select '--- Quoted identifiers ---';
 
 -- Verify that special characters in column names are properly quoted

@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #include <assert.h>
 
 #include "postgres.h"
@@ -36,8 +35,11 @@
 #include <utils/builtins.h>
 #include "flatgeobuf.h"
 
-static char *get_pgtype(uint8_t column_type) {
-	switch (column_type) {
+static char *
+get_pgtype(uint8_t column_type)
+{
+	switch (column_type)
+	{
 	case flatgeobuf_column_type_bool:
 		return "boolean";
 	case flatgeobuf_column_type_byte:
@@ -71,11 +73,21 @@ static const char *
 flatgeobuf_type_name(uint8_t fgb_type)
 {
 	/* Names match FlatGeobuf::EnumNamesColumnType() in header_generated.h */
-	static const char * const names[] = {
-		"Byte", "UByte", "Bool", "Short", "UShort",
-		"Int", "UInt", "Long", "ULong",
-		"Float", "Double", "String", "Json", "DateTime", "Binary"
-	};
+	static const char *const names[] = {"Byte",
+					    "UByte",
+					    "Bool",
+					    "Short",
+					    "UShort",
+					    "Int",
+					    "UInt",
+					    "Long",
+					    "ULong",
+					    "Float",
+					    "Double",
+					    "String",
+					    "Json",
+					    "DateTime",
+					    "Binary"};
 	if (fgb_type >= sizeof(names) / sizeof(names[0]))
 		return "unknown";
 	return names[fgb_type];
@@ -106,8 +118,7 @@ flatgeobuf_type_compatible(uint8_t fgb_type, Oid pgtype)
 	case flatgeobuf_column_type_string:
 		return pgtype == TEXTOID || pgtype == VARCHAROID;
 	case flatgeobuf_column_type_datetime:
-		return pgtype == DATEOID || pgtype == TIMEOID ||
-		       pgtype == TIMESTAMPOID || pgtype == TIMESTAMPTZOID;
+		return pgtype == DATEOID || pgtype == TIMEOID || pgtype == TIMESTAMPOID || pgtype == TIMESTAMPTZOID;
 	case flatgeobuf_column_type_json:
 		return pgtype == JSONBOID;
 	case flatgeobuf_column_type_binary:
@@ -117,7 +128,8 @@ flatgeobuf_type_compatible(uint8_t fgb_type, Oid pgtype)
 }
 
 PG_FUNCTION_INFO_V1(pgis_tablefromflatgeobuf);
-Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
+Datum
+pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 {
 	struct flatgeobuf_decode_ctx *ctx;
 	text *schema_input;
@@ -150,14 +162,16 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	ctx->ctx->offset = 0;
 
 	flatgeobuf_check_magicbytes(ctx);
+	flatgeobuf_check_sizeprefix(ctx->ctx);
 	flatgeobuf_decode_header(ctx->ctx);
 
 	initStringInfo(&sql);
-	appendStringInfo(&sql, "create table %s.%s (id int, geom geometry",
-		quote_identifier(schema), quote_identifier(table));
+	appendStringInfo(
+	    &sql, "create table %s.%s (id int, geom geometry", quote_identifier(schema), quote_identifier(table));
 
 	POSTGIS_DEBUGF(2, "found %d columns", ctx->ctx->columns_size);
-	for (i = 0; i < ctx->ctx->columns_size; i++) {
+	for (i = 0; i < ctx->ctx->columns_size; i++)
+	{
 		flatgeobuf_column *column = ctx->ctx->columns[i];
 		const char *name = column->name;
 		uint8_t column_type = column->type;
@@ -187,7 +201,8 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 
 // https://stackoverflow.com/questions/11740256/refactor-a-pl-pgsql-function-to-return-the-output-of-various-select-queries
 PG_FUNCTION_INFO_V1(pgis_fromflatgeobuf);
-Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
+Datum
+pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
 
@@ -197,7 +212,8 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 
 	struct flatgeobuf_decode_ctx *ctx;
 
-	if (SRF_IS_FIRSTCALL()) {
+	if (SRF_IS_FIRSTCALL())
+	{
 		funcctx = SRF_FIRSTCALL_INIT();
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
@@ -205,8 +221,14 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)
 			ereport(ERROR,
-					(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-					 errmsg("first argument of function must be composite type")));
+				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				 errmsg("first argument of function must be composite type")));
+
+		if (PG_ARGISNULL(1))
+		{
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 
 		data = PG_GETARG_BYTEA_PP(1);
 
@@ -223,18 +245,21 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 
 		funcctx->user_fctx = ctx;
 
-		if (ctx->ctx->size == 0) {
+		if (ctx->ctx->size == 0)
+		{
 			POSTGIS_DEBUG(2, "no data");
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
 		flatgeobuf_check_magicbytes(ctx);
+		flatgeobuf_check_sizeprefix(ctx->ctx);
 		flatgeobuf_decode_header(ctx->ctx);
 
 		POSTGIS_DEBUGF(2, "header decoded now at offset %lld", ctx->ctx->offset);
 
-		if (ctx->ctx->size == ctx->ctx->offset) {
+		if (ctx->ctx->size == ctx->ctx->offset)
+		{
 			POSTGIS_DEBUGF(2, "no feature data offset %lld", ctx->ctx->offset);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
@@ -246,8 +271,9 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 			ereport(ERROR,
 				(errcode(ERRCODE_DATATYPE_MISMATCH),
 				 errmsg("flatgeobuf: column count mismatch: "
-				        "file has %u columns, target type has %d",
-				        ctx->ctx->columns_size, tupdesc->natts - 2)));
+					"file has %u columns, target type has %d",
+					ctx->ctx->columns_size,
+					tupdesc->natts - 2)));
 
 		for (uint16_t col_i = 0; col_i < ctx->ctx->columns_size; col_i++)
 		{
@@ -257,10 +283,10 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 				ereport(ERROR,
 					(errcode(ERRCODE_DATATYPE_MISMATCH),
 					 errmsg("flatgeobuf: column \"%s\" type mismatch: "
-					        "file type \"%s\" is not compatible with PostgreSQL type %s",
-					        col->name,
-					        flatgeobuf_type_name(col->type),
-					        format_type_be(pgtype))));
+						"file type \"%s\" is not compatible with PostgreSQL type %s",
+						col->name,
+						flatgeobuf_type_name(col->type),
+						format_type_be(pgtype))));
 		}
 
 		MemoryContextSwitchTo(oldcontext);
@@ -269,11 +295,14 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 	funcctx = SRF_PERCALL_SETUP();
 	ctx = funcctx->user_fctx;
 
-	if (!ctx->done) {
+	if (!ctx->done)
+	{
 		flatgeobuf_decode_row(ctx);
 		POSTGIS_DEBUG(2, "Calling SRF_RETURN_NEXT");
 		SRF_RETURN_NEXT(funcctx, ctx->result);
-	} else {
+	}
+	else
+	{
 		POSTGIS_DEBUG(2, "Calling SRF_RETURN_DONE");
 		SRF_RETURN_DONE(funcctx);
 	}
