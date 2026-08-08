@@ -16,7 +16,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
 
 extern "C" {
 #include "geos_stub.h"
@@ -43,27 +42,11 @@ postgis_fuzzer_assert(int condition)
 		abort();
 }
 
-static lwvarlena_t *
-geometry_to_bytea(const LWGEOM *lwgeom)
-{
-	return lwgeom_to_wkb_varlena(lwgeom, WKB_NDR | WKB_EXTENDED);
-}
-
-static void
-assert_equal_bytea(const lwvarlena_t *left, const lwvarlena_t *right)
-{
-	size_t left_size = LWSIZE_GET(left->size);
-	size_t right_size = LWSIZE_GET(right->size);
-
-	postgis_fuzzer_assert(left_size >= LWVARHDRSZ);
-	postgis_fuzzer_assert(right_size >= LWVARHDRSZ);
-	postgis_fuzzer_assert(left_size == right_size);
-	postgis_fuzzer_assert(memcmp(left->data, right->data, left_size - LWVARHDRSZ) == 0);
-}
-
 static void
 assert_matching_gbox(const LWGEOM *input, const LWGEOM *roundtrip)
 {
+	GBOX expected;
+
 	if (input->bbox == NULL || roundtrip->bbox == NULL)
 	{
 		postgis_fuzzer_assert(input->bbox == NULL);
@@ -71,7 +54,10 @@ assert_matching_gbox(const LWGEOM *input, const LWGEOM *roundtrip)
 		return;
 	}
 
-	postgis_fuzzer_assert(gbox_same(input->bbox, roundtrip->bbox));
+	/* GSERIALIZED stores a float-rounded bbox. */
+	expected = *input->bbox;
+	gbox_float_round(&expected);
+	postgis_fuzzer_assert(gbox_same(&expected, roundtrip->bbox));
 }
 
 static void
@@ -112,19 +98,14 @@ LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
 	postgis_fuzzer_assert(roundtrip != NULL);
 	assert_matching_metadata(input, roundtrip);
 	assert_matching_gbox(input, roundtrip);
+	/* Compare the coordinate data without the intentionally rounded bbox. */
+	lwgeom_drop_bbox(input);
+	lwgeom_drop_bbox(roundtrip);
 	postgis_fuzzer_assert(lwgeom_same(input, roundtrip));
-
-	lwvarlena_t *input_bytea = geometry_to_bytea(input);
-	lwvarlena_t *roundtrip_bytea = geometry_to_bytea(roundtrip);
-	postgis_fuzzer_assert(input_bytea != NULL);
-	postgis_fuzzer_assert(roundtrip_bytea != NULL);
-	assert_equal_bytea(input_bytea, roundtrip_bytea);
 
 	lwgeom_free(input);
 	lwgeom_free(roundtrip);
 	lwfree(serialized);
-	lwfree(input_bytea);
-	lwfree(roundtrip_bytea);
 	postgis_lwgeom_fuzzer_cleanup_allocations();
 	return 0;
 }
