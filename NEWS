@@ -3,6 +3,7 @@ PostGIS 3.5.8
 
 * Bug Fixes *
 
+  - Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
   - GT-619, Make interrupt regression tests compare timeout latency to
     same-machine uninterrupted runtime, avoiding false failures under
     slow CI load (Darafei Praliaskouski)
