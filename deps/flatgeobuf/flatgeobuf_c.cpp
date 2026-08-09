@@ -41,6 +41,19 @@ struct FeatureItem : FlatGeobuf::Item {
     uint64_t offset;
 };
 
+static bool
+flatgeobuf_size_prefixed_buffer_size(const ctx *ctx, uoffset_t *size)
+{
+	uint64_t remaining;
+	if (ctx->offset > ctx->size)
+		return false;
+	remaining = ctx->size - ctx->offset;
+	if (remaining < sizeof(uoffset_t))
+		return false;
+	*size = flatbuffers::GetPrefixedSize(ctx->buf + ctx->offset);
+	return *size <= remaining - sizeof(uoffset_t);
+}
+
 int flatgeobuf_encode_header(ctx *ctx)
 {
     FlatBufferBuilder fbb;
@@ -230,11 +243,13 @@ void flatgeobuf_create_index(ctx *ctx)
 int flatgeobuf_decode_feature(ctx *ctx)
 {
     LWDEBUGF(2, "reading size prefix at %ld", ctx->offset);
-    auto size = flatbuffers::GetPrefixedSize(ctx->buf + ctx->offset);
+	uoffset_t size;
+	if (!flatgeobuf_size_prefixed_buffer_size(ctx, &size))
+		return -1;
 	LWDEBUGF(2, "size is %ld (without size prefix)", size);
 
-    Verifier verifier(ctx->buf + ctx->offset, size);
-	if (VerifySizePrefixedFeatureBuffer(verifier)) {
+    Verifier verifier(ctx->buf + ctx->offset, size + sizeof(uoffset_t));
+	if (!VerifySizePrefixedFeatureBuffer(verifier)) {
         lwerror("buffer did not pass verification");
         return -1;
     }
@@ -268,11 +283,13 @@ int flatgeobuf_decode_feature(ctx *ctx)
 int flatgeobuf_decode_header(ctx *ctx)
 {
     LWDEBUGF(2, "reading size prefix at %ld", ctx->offset);
-    auto size = flatbuffers::GetPrefixedSize(ctx->buf + ctx->offset);
+	uoffset_t size;
+	if (!flatgeobuf_size_prefixed_buffer_size(ctx, &size))
+		return -1;
 	LWDEBUGF(2, "size is %ld (without size prefix)", size);
 
-    Verifier verifier(ctx->buf + ctx->offset, size);
-	if (VerifySizePrefixedHeaderBuffer(verifier)) {
+    Verifier verifier(ctx->buf + ctx->offset, size + sizeof(uoffset_t));
+	if (!VerifySizePrefixedHeaderBuffer(verifier)) {
         lwerror("buffer did not pass verification");
         return -1;
     }
