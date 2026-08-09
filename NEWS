@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta1.
 
 * Bug Fixes *
 
+ - OSSFuzz 544223869, compare GSERIALIZED bytea round trips by geometry
+          semantics instead of volatile bbox bytes (Darafei Praliaskouski)
  - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
           (Darafei Praliaskouski)
  - GT-677, Fix memory leaks in ST_GeometryN and ST_DWithin
