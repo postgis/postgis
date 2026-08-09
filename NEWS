@@ -14,6 +14,10 @@ These are only changes since 3.7.0beta1.
           fixed by Darafei Praliaskouski)
  - OSSFuzz 6302177757560832, account for GSERIALIZED float bbox rounding
           in fuzzer round trips (Darafei Praliaskouski)
+ - GT-669, Validate FlatGeobuf size-prefixed buffers and variable-length
+          property values before decoding
+          (reported by Sarath Kumar, IITM Pravartak Security Team;
+          fixed by Darafei Praliaskouski)
  - Stop the extension upgrade script running ANALYZE inside its transaction,
           where it could deadlock with autovacuum (Darafei Praliaskouski)
  - [liblwgeom] Reject malformed GSERIALIZED NURBS before curve
