@@ -43,8 +43,7 @@
 #include "lwgeom_log.h"
 #include "flatgeobuf_c.h"
 
-typedef struct flatgeobuf_agg_ctx
-{
+typedef struct flatgeobuf_agg_ctx {
 	flatgeobuf_ctx *ctx;
 	const char *geom_name;
 	uint32_t geom_index;
@@ -52,13 +51,11 @@ typedef struct flatgeobuf_agg_ctx
 	HeapTupleHeader row;
 } flatgeobuf_agg_ctx;
 
-
 flatgeobuf_agg_ctx *flatgeobuf_agg_ctx_init(const char *geom_name, const bool create_index);
 void flatgeobuf_agg_transfn(flatgeobuf_agg_ctx *ctx);
 uint8_t *flatgeobuf_agg_finalfn(flatgeobuf_agg_ctx *ctx);
 
-typedef struct flatgeobuf_decode_ctx
-{
+typedef struct flatgeobuf_decode_ctx {
 	flatgeobuf_ctx *ctx;
 	TupleDesc tupdesc;
 	Datum result;
@@ -68,6 +65,7 @@ typedef struct flatgeobuf_decode_ctx
 } flatgeobuf_decode_ctx;
 
 void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx);
+void flatgeobuf_check_sizeprefix(flatgeobuf_ctx *ctx);
 void flatgeobuf_decode_row(struct flatgeobuf_decode_ctx *ctx);
 
 #endif

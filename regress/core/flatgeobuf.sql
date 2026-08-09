@@ -158,6 +158,35 @@ select 'E1', id, bool_1, ST_AsText(geom), bool_2 from ST_FromFlatGeobuf(null::fl
     ) q)
 );
 
+select '--- Type mismatch detection ---';
+
+-- Setup: a long (bigint) column and a text column in separate tables
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_mm_long', (select ST_AsFlatGeobuf(q) fgb from (select
+    null::geometry, null::bigint as val) q));
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_mm_text', (select ST_AsFlatGeobuf(q) fgb from (select
+    null::geometry, null::text as val) q));
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_mm_twocols', (select ST_AsFlatGeobuf(q) fgb from (select
+    null::geometry, null::bigint as val1, null::bigint as val2) q));
+
+-- Type mismatch: file has bigint (long), target expects text
+select 'MM1' from ST_FromFlatGeobuf(null::flatgeobuf_mm_text, (
+    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 42::bigint as val) q));
+
+-- Count mismatch: file has 2 property columns, target type has 1
+select 'MM2' from ST_FromFlatGeobuf(null::flatgeobuf_mm_long, (
+    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 42::bigint as val1, 43::bigint as val2) q));
+
+select '--- Malformed input detection ---';
+
+-- Magic bytes plus a truncated size prefix.
+select 'MI1' from ST_FromFlatGeobuf(null::flatgeobuf_t1, '\x6667620366676201010203'::bytea);
+
+-- Valid magic bytes plus a header size prefix that exceeds the remaining input.
+select 'MI2' from ST_FromFlatGeobuf(null::flatgeobuf_t1, '\x6667620366676201ffffffff'::bytea);
+
+-- NULL bytea input should be handled by STRICT rather than reaching the C decoder.
+select 'MI3', count(*) from ST_FromFlatGeobuf(null::flatgeobuf_t1, null::bytea);
+
 select '--- Quoted identifiers ---';
 
 -- Verify that special characters in column names are properly quoted
@@ -181,3 +210,6 @@ drop table if exists public.flatgeobuf_t1;
 drop table if exists public.flatgeobuf_a1;
 drop table if exists public.flatgeobuf_e1;
 drop table if exists public.flatgeobuf_qi;
+drop table if exists public.flatgeobuf_mm_long;
+drop table if exists public.flatgeobuf_mm_text;
+drop table if exists public.flatgeobuf_mm_twocols;
