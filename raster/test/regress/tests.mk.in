@@ -15,6 +15,7 @@ POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
 
 override RUNTESTFLAGS_INTERNAL := \
+  --after-create-db-script $(top_srcdir)/raster/test/regress/hooks/hook-before-create-raster.sql \
   --before-upgrade-script $(top_srcdir)/raster/test/regress/hooks/hook-before-upgrade-raster.sql \
   $(RUNTESTFLAGS_INTERNAL) \
   --after-upgrade-script $(top_srcdir)/raster/test/regress/hooks/hook-after-upgrade-raster.sql
@@ -27,6 +28,7 @@ RASTER_TEST_LAST = \
 	$(top_srcdir)/raster/test/regress/clean
 
 RASTER_TEST_METADATA = \
+	$(top_srcdir)/raster/test/regress/security_raster_columns \
 	$(top_srcdir)/raster/test/regress/check_raster_columns \
 	$(top_srcdir)/raster/test/regress/check_raster_overviews
 

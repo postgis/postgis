@@ -17,6 +17,19 @@ override RUNTESTFLAGS_INTERNAL := \
   $(RUNTESTFLAGS_INTERNAL) \
   --after-upgrade-script $(top_srcdir)/topology/test/regress/hooks/hook-after-upgrade-topology.sql
 
+ifneq (,$(findstring --extension,$(RUNTESTFLAGS)))
+# The hook is for a fresh extension install. It conflicts with restored objects
+# and cannot change an installation script from a historical source version.
+ifeq (,$(filter --upgrade-path% --dumprestore,$(RUNTESTFLAGS)))
+override RUNTESTFLAGS_INTERNAL := \
+  --before-install-script $(top_srcdir)/topology/test/regress/hooks/hook-before-create-topology.sql \
+  $(RUNTESTFLAGS_INTERNAL)
+
+TESTS += \
+	$(top_srcdir)/topology/test/regress/addtosearchpath.sql
+endif
+endif
+
 TESTS += \
 	$(top_srcdir)/topology/test/regress/addedge.sql \
 	$(top_srcdir)/topology/test/regress/addface2.5d.sql \
@@ -101,4 +114,3 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/verifylargeids.sql \
 	$(top_srcdir)/topology/test/regress/fix_topogeometry_columns.sql \
 	$(top_srcdir)/topology/test/regress/findvertexsegmentpairsbelowdistance.sql
-

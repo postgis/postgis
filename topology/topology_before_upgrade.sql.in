@@ -13,10 +13,10 @@
 -- argument names changed --
 -- we might want to take toTopoGeom one out before release since
 -- I don't think too many people installed the bad name
-SELECT _postgis_drop_function_by_signature('topology.toTopoGeom(Geometry, varchar, int, float8)');
+SELECT _postgis_drop_function_by_signature('topology.toTopoGeom(Geometry, varchar, int, float8)', 'xxx');
 
 -- used to be in public, will now be moved to topology
-SELECT _postgis_drop_function_by_signature('public.postgis_topology_scripts_installed()');
+SELECT _postgis_drop_function_by_signature('public.postgis_topology_scripts_installed()', 'xxx');
 
 -- Removed in 2.2.0 when topology API moved to liblwgeom
 SELECT _postgis_drop_function_by_signature('topology._ST_RemEdgeCheck(varchar, integer, integer, integer, integer)', '2.2.0');
@@ -44,7 +44,7 @@ SELECT _postgis_drop_function_by_signature('topology.CreateTopology(varchar)', '
 SELECT _postgis_drop_cast_by_types('topogeometry', 'integer[]', '3.6.0');
 SELECT _postgis_topology_upgrade_domain_type('topoelement','integer[]','bigint[]','3.6.0');
 SELECT _postgis_topology_upgrade_domain_type('topoelementarray','integer[][]','bigint[][]','3.6.0');
-SELECT _postgis_add_column_to_table('topology.topology', 'useslargeids', 'BOOLEAN', true, 'false','3.6.0');
+SELECT _postgis_add_column_to_table('topology.topology'::regclass, 'useslargeids'::name, 'BOOLEAN'::text, true, 'false'::text, '3.6.0'::text);
 
 -- 3.7.0
 -- Return edge identifiers as bigint instead of integer
@@ -52,7 +52,7 @@ DO $postgis_upgrade$
 DECLARE
 	old_result text;
 BEGIN
-	old_result := pg_get_function_result('topology.findVertexSegmentPairsBelowDistance(varchar, float8)'::regprocedure);
+	old_result := pg_catalog.pg_get_function_result('topology.findVertexSegmentPairsBelowDistance(varchar, float8)'::regprocedure);
 	IF old_result LIKE '%seg_edge integer%' AND old_result LIKE '%vert_edge integer%' THEN
 		PERFORM _postgis_drop_function_by_signature('topology.findVertexSegmentPairsBelowDistance(varchar, float8)', '3.7.0');
 	END IF;

@@ -8,6 +8,10 @@ These are only changes since 3.7.0beta1.
 
 * Bug Fixes *
 
+ - GT-671, Harden extension install and upgrade SQL against attacker-controlled
+          object resolution in writable schemas
+          (reported by Eric Ridge, PlanetScale;
+          fixed by Darafei Praliaskouski)
  - OSSFuzz 6302177757560832, account for GSERIALIZED float bbox rounding
           in fuzzer round trips (Darafei Praliaskouski)
  - Stop the extension upgrade script running ANALYZE inside its transaction,
