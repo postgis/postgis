@@ -28,6 +28,7 @@
 #include <math.h>
 
 #include "liblwgeom.h"
+#include "lwgeom_log.h"
 #include "../postgis_config.h"
 
 LWGEOM*
@@ -51,6 +52,11 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
     int res = 0;
     char shift = 0;
     do {
+      if (idx >= length) {
+        lwerror("lwgeom_from_encoded_polyline: input is truncated");
+        ptarray_free(pa);
+        return NULL;
+      }
       byte = encodedpolyline[idx++] - 63;
       res |= (byte & 0x1F) << shift;
       shift += 5;
@@ -61,6 +67,11 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
     shift = 0;
     res = 0;
     do {
+      if (idx >= length) {
+        lwerror("lwgeom_from_encoded_polyline: input is truncated");
+        ptarray_free(pa);
+        return NULL;
+      }
       byte = encodedpolyline[idx++] - 63;
       res |= (byte & 0x1F) << shift;
       shift += 5;

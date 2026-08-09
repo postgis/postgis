@@ -116,9 +116,21 @@ sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 sql:
 	mkdir -p $@
 
-#strip BEGIN/COMMIT since these are not allowed in extensions
+# Strip BEGIN/COMMIT since these are not allowed in extensions, and the trailing
+# ANALYZE with them.  In spatial_ref_sys.sql that ANALYZE deliberately sits *after*
+# COMMIT, so run standalone it refreshes statistics outside any transaction.  Removing
+# only the COMMIT moves it inside the extension's transaction, where it takes
+# ShareUpdateExclusiveLock on spatial_ref_sys and can deadlock against autovacuum
+# doing the same work:
+#
+#   ERROR:  deadlock detected
+#   CONTEXT:  SQL statement "ANALYZE "spatial_ref_sys""
+#             extension script file "postgis--ANY--<version>.sql"
+#
+# That aborts ALTER EXTENSION postgis UPDATE on any busy database.  Autovacuum will
+# analyse the table on its own schedule, so the extension script does not need to.
 sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql
-	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g ; s/^ANALYZE "spatial_ref_sys";\s*$$//g' $< > $@
 
 ../../doc/postgis_comments.sql:
 	$(MAKE) -C ../../doc comments
