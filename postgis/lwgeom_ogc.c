@@ -438,7 +438,11 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	subgeom = lwgeom_extract_geometry_n(lwgeom, idx, false);
 
 	if (!subgeom)
+	{
+		lwgeom_free(lwgeom);
+		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
+	}
 
 	/* If not returning the original geometry */
 	if (subgeom != lwgeom)
@@ -448,6 +452,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 		if (lwgeom->bbox) lwgeom_add_bbox(subgeom);
 	}
 	result = geometry_serialize(subgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 }
