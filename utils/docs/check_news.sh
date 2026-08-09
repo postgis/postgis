@@ -98,7 +98,8 @@ if test -n "${NEWS_BASE_REF}"; then
 
   if ! awk '
     function is_unreleased(date) {
-      return date ~ /^[0-9][0-9][0-9][0-9]\/xx\/xx$/
+      return date ~ /^[0-9][0-9][0-9][0-9]\/([0-9x][0-9x])\/([0-9x][0-9x])$/ &&
+        date ~ /x/
     }
     function section_accepts_new_entries() {
       target_section_is_open = release == target_first &&
@@ -133,7 +134,7 @@ if test -n "${NEWS_BASE_REF}"; then
       next
     }
     release != "" && release_date == "" &&
-      /^[0-9][0-9][0-9][0-9]\/([0-9][0-9]|xx)\/([0-9][0-9]|xx)$/ {
+      /^[0-9][0-9][0-9][0-9]\/([0-9][0-9]|[0-9x][0-9x])\/([0-9][0-9]|[0-9x][0-9x])$/ {
       release_date = $0
       next
     }

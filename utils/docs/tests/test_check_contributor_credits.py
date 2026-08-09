@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from check_contributor_credits import (
     CreditValidationError,
+    news_non_person_attribution_names,
     normalized_name,
     split_news_people,
     validate,
@@ -280,6 +281,15 @@ class ContributorCreditValidationTest(unittest.TestCase):
         self.assertEqual(0, result.git_coauthors)
 
     def test_news_slashes_separate_people_from_people_and_affiliations(self):
+        corporate_sponsors = news_non_person_attribution_names(
+            Path(__file__).resolve().parents[3] / "doc" / "credits.xml"
+        )
+        self.assertIn(
+            normalized_name("PlanetScale"),
+            corporate_sponsors,
+        )
+        self.assertIn(normalized_name("Jirotech"), corporate_sponsors)
+        self.assertIn(normalized_name("LISAsoft"), corporate_sponsors)
         self.assertEqual(
             ["Regina Obe", "Sandro Santilli"],
             split_news_people("Regina Obe / Sandro Santilli"),
@@ -300,6 +310,26 @@ class ContributorCreditValidationTest(unittest.TestCase):
             ["Jan Katins", "Regina Obe"],
             split_news_people("Jan Katins of Aiven, Regina Obe"),
         )
+        self.assertEqual(
+            ["Eric Ridge", "Darafei Praliaskouski"],
+            split_news_people(
+                "reported by Eric Ridge, PlanetScale; "
+                "fixed by Darafei Praliaskouski"
+            ),
+        )
+
+    def test_news_organization_attribution_must_be_registered(self):
+        self.fixture.initial_commit(
+            "Alice Example",
+            "Bob News",
+            news_credit="Alice Example, Example Company",
+        )
+
+        with self.assertRaisesRegex(
+            CreditValidationError,
+            "Example Company.*Corporate Sponsors",
+        ):
+            validate(self.fixture.repo)
 
     def test_released_news_parentheses_are_not_attributions(self):
         self.fixture.initial_commit("Alice Example", "Bob News")

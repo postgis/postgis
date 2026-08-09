@@ -128,10 +128,11 @@ missing person, either add that person's canonical display name to
 
 Keep `.mailmap` canonical names to person names only. In `NEWS` attribution
 parentheses, comma-separated affiliations such as `Name, Organization` are
-allowed when the organization is recognized by the checker. If the checker
-reports the organization as a missing contributor, teach the checker that the
-organization is not a person instead of adding the organization to
-`doc/credits.xml`.
+allowed when the organization is listed under the `Corporate Sponsors` section
+of `doc/credits.xml`. If the checker reports the organization as a missing
+contributor, add the organization to that corporate list rather than adding it
+to the individual contributor list. Human reporters and patch authors still
+belong in the individual contributor credits.
 
 ## Commit Messages
 
