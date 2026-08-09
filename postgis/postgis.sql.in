@@ -6611,13 +6611,14 @@ LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 -- Changed: 2.5.2 replace use of pg_constraint.consrc with pg_get_constraintdef, consrc removed pg12
 
 CREATE OR REPLACE VIEW geometry_columns AS
-WITH constraint_defs AS NOT MATERIALIZED (
+WITH s AS NOT MATERIALIZED (
     -- Trim trailing NOT VALID so metadata inference works before constraint validation (#4828).
     SELECT connamespace,
            conrelid,
            conkey,
            pg_catalog.regexp_replace(pg_catalog.pg_get_constraintdef(oid), $$\s+NOT\s+VALID$$, '', 'i') AS consrc
       FROM pg_catalog.pg_constraint
+			WHERE contype OPERATOR(pg_catalog.=) 'c'::pg_catalog."char"
 )
 SELECT pg_catalog.current_database()::pg_catalog.varchar(256) AS f_table_catalog,
     n.nspname AS f_table_schema,
@@ -6635,7 +6636,7 @@ SELECT pg_catalog.current_database()::pg_catalog.varchar(256) AS f_table_catalog
                   s.conrelid,
                   s.conkey,
                   (pg_catalog.regexp_match(s.consrc, $$geometrytype\(\w+\)\s*=\s*'(\w+)'$$, 'i'))[1]::pg_catalog.text AS type
-             FROM constraint_defs AS s
+             FROM s
             WHERE s.consrc OPERATOR(pg_catalog.~*) $$geometrytype\(\w+\)\s*=\s*'\w+'$$::pg_catalog.text
      ) st ON st.conrelid OPERATOR(pg_catalog.=) c.oid AND (a.attnum OPERATOR(pg_catalog.=) ANY (st.conkey))
      LEFT JOIN (
@@ -6643,7 +6644,7 @@ SELECT pg_catalog.current_database()::pg_catalog.varchar(256) AS f_table_catalog
                   s.conrelid,
                   s.conkey,
                   (pg_catalog.regexp_match(s.consrc, $$ndims\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer AS ndims
-             FROM constraint_defs AS s
+             FROM s
             WHERE s.consrc OPERATOR(pg_catalog.~*) $$ndims\(\w+\)\s*=\s*\d+$$::pg_catalog.text
      ) sn ON sn.conrelid OPERATOR(pg_catalog.=) c.oid AND (a.attnum OPERATOR(pg_catalog.=) ANY (sn.conkey))
      LEFT JOIN (
@@ -6651,7 +6652,7 @@ SELECT pg_catalog.current_database()::pg_catalog.varchar(256) AS f_table_catalog
                   s.conrelid,
                   s.conkey,
                   (pg_catalog.regexp_match(s.consrc, $$srid\(\w+\)\s*=\s*(\d+)$$, 'i'))[1]::integer As srid
-             FROM constraint_defs AS s
+             FROM s
             WHERE s.consrc OPERATOR(pg_catalog.~*) $$srid\(\w+\)\s*=\s*\d+$$::pg_catalog.text
      ) sr ON sr.conrelid OPERATOR(pg_catalog.=) c.oid AND (a.attnum OPERATOR(pg_catalog.=) ANY (sr.conkey))
   WHERE (c.relkind OPERATOR(pg_catalog.=) ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"]))
