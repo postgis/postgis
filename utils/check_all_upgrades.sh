@@ -339,7 +339,6 @@ USERTESTFLAGS=${RUNTESTFLAGS}
 USERTESTFLAGS="\
   ${USERTESTFLAGS} \
   --before-upgrade-script ${SRCDIR}/regress/hooks/use-all-functions.sql \
-  --after-upgrade-script ${SRCDIR}/regress/hooks/hook-after-upgrade.sql \
 "
 
 for EXT in ${INSTALLED_EXTENSIONS}; do #{
@@ -353,6 +352,12 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     REGDIR=${BUILDDIR}/sfcgal/regress
   else
     echo "SKIP: don't know where to find regress tests for extension ${EXT}"
+  fi
+
+  EXT_USERTESTFLAGS=${USERTESTFLAGS}
+  if test "${EXT}" != "postgis"; then
+    EXT_USERTESTFLAGS="${EXT_USERTESTFLAGS} \
+      --after-upgrade-script ${SRCDIR}/regress/hooks/hook-after-upgrade.sql"
   fi
 
   # Check extension->extension upgrades
@@ -409,7 +414,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     echo "Testing ${test_label}"
 
     if expr "${test_label}" : '^.*upgrade' > /dev/null; then
-      RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${EXT_USERTESTFLAGS}" \
       ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
@@ -462,7 +467,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
       continue
     fi
     echo "Testing ${test_label}"
-    RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+    RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${EXT_USERTESTFLAGS}" \
     ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
       echo "PASS: ${test_label}"
     } || {

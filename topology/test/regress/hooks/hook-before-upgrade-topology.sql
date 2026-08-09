@@ -34,7 +34,7 @@ END;
 $$;
 
 -- Simulate the pre-3.6.0 catalog state that needs the upgrade helper.
-ALTER TABLE topology.topology DROP COLUMN useslargeids;
+ALTER TABLE topology.topology DROP COLUMN IF EXISTS useslargeids;
 
 -- This harmless overload records an unsafe function-resolution result.
 CREATE TABLE public.upgrade_add_column_overload_marker (
