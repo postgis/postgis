@@ -3,6 +3,10 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+ - GT-671, Harden extension install and upgrade SQL against attacker-controlled
+   object resolution in writable schemas
+   (reported by Eric Ridge, PlanetScale;
+   fixed by Darafei Praliaskouski)
 - [address_standardizer] Load lexicon rows by documented tuple order so
   copied or upgraded lexicon tables do not change parser priority
   (Darafei Praliaskouski)

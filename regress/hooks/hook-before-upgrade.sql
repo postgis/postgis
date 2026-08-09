@@ -90,3 +90,73 @@ WHERE probin like '%postgis%';
 --       function names
 --
 ALTER FUNCTION postgis_version() SECURITY DEFINER;
+
+-- Shorter overloads must not make default-argument upgrade helper calls
+-- ambiguous. The callbacks only record that they ran.
+CREATE TABLE upgrade_test_helper_overload_calls (
+	helper_name text NOT NULL
+);
+
+CREATE FUNCTION _postgis_drop_function_by_identity(
+	function_name text,
+	function_arguments text
+)
+RETURNS void
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	INSERT INTO upgrade_test_helper_overload_calls
+	VALUES ('_postgis_drop_function_by_identity');
+END;
+$$;
+
+CREATE FUNCTION _postgis_drop_function_by_signature(
+	function_signature text
+)
+RETURNS void
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	INSERT INTO upgrade_test_helper_overload_calls
+	VALUES ('_postgis_drop_function_by_signature');
+END;
+$$;
+
+-- Verify generated named-argument guards do not use an exact operator from
+-- the extension schema. The callback only records that it ran.
+CREATE SCHEMA IF NOT EXISTS postgis_upgrade_test_data;
+
+CREATE TABLE postgis_upgrade_test_data.issue004_named_argument_operator_calls (
+	called boolean NOT NULL
+);
+
+CREATE FUNCTION postgis_upgrade_test_data.issue004_named_argument_operator_callback(
+	text[], text[]
+)
+RETURNS boolean
+LANGUAGE plpgsql
+AS $postgis_upgrade_test$
+BEGIN
+	INSERT INTO postgis_upgrade_test_data.issue004_named_argument_operator_calls
+	VALUES (true);
+	RETURN false;
+END
+$postgis_upgrade_test$;
+
+CREATE OPERATOR <> (
+	FUNCTION = postgis_upgrade_test_data.issue004_named_argument_operator_callback,
+	LEFTARG = text[],
+	RIGHTARG = text[]
+);
+
+-- Add the deprecated shape that makes the generated replacement guard run.
+CREATE FUNCTION ST_TileEnvelope(
+	zoom integer,
+	x integer,
+	y integer,
+	bounds geometry
+)
+RETURNS geometry
+LANGUAGE sql
+IMMUTABLE STRICT
+AS 'SELECT bounds';
