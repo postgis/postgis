@@ -1200,6 +1200,8 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 		LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 		LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
 		mindist = lwgeom_mindistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
 		is_dwithin = (tolerance >= mindist);
 	}
 

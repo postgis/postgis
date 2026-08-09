@@ -10,6 +10,8 @@ These are only changes since 3.7.0beta1.
 
  - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
           (Darafei Praliaskouski)
+ - GT-677, Fix memory leaks in ST_GeometryN and ST_DWithin
+          (Darafei Praliaskouski)
  - GT-671, Harden extension install and upgrade SQL against attacker-controlled
           object resolution in writable schemas
           (reported by Eric Ridge, PlanetScale;
