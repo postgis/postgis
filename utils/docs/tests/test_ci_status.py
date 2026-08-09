@@ -415,6 +415,58 @@ class CIStatusTest(unittest.TestCase):
         self.assertEqual("build 7808", result["message"])
         self.assertEqual("https://ci.example.test/job/PostGIS_Make_Dist/7808/", result["url"])
 
+    def test_jenkins_matrix_ignores_another_parent_build(self):
+        check_config = {
+            "name": "Jenkins / Debbie main",
+            "provider": "jenkins",
+            "required": True,
+            "job_url": "https://ci.example.test/job/PostGIS_trunk/",
+        }
+        branch = {
+            "name": "master",
+            "label": "master",
+            "version_or_trunk": "trunk",
+        }
+        current = {
+            "number": 5212,
+            "building": True,
+            "result": None,
+            "url": "https://ci.example.test/job/PostGIS_trunk/5212/",
+        }
+        matrix = [
+            {
+                "name": "PG_VER=14,OS_BUILD=64",
+                "lastBuild": {
+                    "number": 5208,
+                    "result": "FAILURE",
+                    "url": "https://ci.example.test/job/PostGIS_trunk/PG_VER=14/5208/",
+                },
+            },
+            {
+                "name": "PG_VER=18,OS_BUILD=64",
+                "lastBuild": {
+                    "number": 5212,
+                    "building": True,
+                    "result": None,
+                    "url": "https://ci.example.test/job/PostGIS_trunk/PG_VER=18/5212/",
+                },
+            },
+        ]
+
+        with (
+            mock.patch.object(CI_STATUS, "jenkins_queued_check", return_value=None),
+            mock.patch.object(CI_STATUS, "jenkins_builds", return_value=[current]),
+            mock.patch.object(CI_STATUS, "jenkins_matrix_configurations", return_value=matrix),
+        ):
+            result = CI_STATUS.jenkins_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.IN_PROGRESS, result["status"])
+        self.assertEqual("build 5212; running: PG18", result["message"])
+        self.assertEqual(
+            "https://ci.example.test/job/PostGIS_trunk/PG_VER=18/5212/",
+            result["url"],
+        )
+
     def test_jenkins_queue_prefers_current_branch_revision(self):
         check_config = {
             "name": "Jenkins / Berrie",
