@@ -1552,12 +1552,6 @@ sub create_db
 
 	return 0 if system($createcmd);
 
-	foreach my $hook (@OPT_HOOK_AFTER_CREATE_DB)
-	{
-		print "Running after-create-db-script $hook\n";
-		die unless load_sql_file($hook, 1);
-	}
-
 	return 1;
 }
 
@@ -1567,6 +1561,12 @@ sub create_spatial
     print "Creating database '$DB'.\n";
 
     $rv = create_db();
+
+    foreach my $hook (@OPT_HOOK_AFTER_CREATE_DB)
+    {
+        print "Running after-create-db-script $hook\n";
+        die unless load_sql_file($hook, 1);
+    }
 
     # Count database objects before installing anything
     $OBJ_COUNT_PRE = count_db_objects();
