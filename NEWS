@@ -9,8 +9,9 @@ PostGIS 3.5.8
     dropped or SELECT privilege is revoked (Darafei Praliaskouski)
   - #6109, Avoid out-of-bounds reads in BOX2D_out and BOX2D_expand
     (Dennis Tighe, Google)
-  - GT-669, Reject truncated size-prefixed header and feature buffers
-    before decoding (Darafei Praliaskouski)
+  - GT-669, Validate FlatGeobuf size-prefixed buffers and variable-length
+    property values before decoding (reported by Mehmet Ince; reported by
+    Sarath Kumar, IITM Pravartak Security Team; fixed by Darafei Praliaskouski)
   - Stop the extension upgrade script running ANALYZE inside its transaction,
     where it can deadlock with autovacuum (Darafei Praliaskouski)
   - OSSFuzz 5877056525893632, reject truncated encoded polyline input
