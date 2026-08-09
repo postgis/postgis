@@ -115,6 +115,22 @@ class NewsValidationTest(unittest.TestCase):
         result = self.fixture.check_news(self.fixture.base_commit)
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
+    def test_x_placeholder_date_section_accepts_new_entries(self):
+        base_news = BASE_NEWS.replace("2026/xx/xx", "2026/08/0x")
+        self.fixture.write_news(base_news)
+        self.fixture.git("add", "NEWS")
+        self.fixture.git("commit", "-m", "x placeholder NEWS")
+        target_commit = self.fixture.git("rev-parse", "HEAD").stdout.strip()
+        self.fixture.write_news(
+            base_news.replace(
+                " - Existing unreleased fix",
+                " - New unreleased fix\n - Existing unreleased fix",
+            )
+        )
+
+        result = self.fixture.check_news(target_commit)
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+
     def test_new_entry_in_released_section_fails(self):
         self.fixture.write_news(
             BASE_NEWS.replace(

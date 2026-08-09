@@ -41,8 +41,8 @@ NON_HUMAN_NAMES = {
     ("claude", "fable", "5"),
 }
 NON_PERSON_NEWS_RE = re.compile(
-    r"\b(?:bureau|city|company|corporation|foundation|highgo|inc\.?|"
-    r"google|koordinates|llc|osgeo|team|university)\b",
+    r"\b(?:bureau|city|company|corporation|foundation|inc\.?|llc|team|"
+    r"university)\b",
     re.I,
 )
 TECHNICAL_NEWS_RE = re.compile(
@@ -114,6 +114,40 @@ def credit_keys(name):
     if suffix and suffix not in NON_ALIAS_CREDIT_SUFFIXES:
         keys.add(suffix)
     return {key for key in keys if key}
+
+
+def node_text(node):
+    return " ".join("".join(node.itertext()).split())
+
+
+def news_non_person_attribution_names(credits_path):
+    credits_path = Path(credits_path)
+    if not credits_path.exists():
+        return set()
+
+    try:
+        root = ET.parse(credits_path).getroot()
+    except ET.ParseError as exc:
+        raise CreditValidationError(f"cannot parse {credits_path}: {exc}") from exc
+
+    names = set()
+    for entry in root.findall(".//db:varlistentry", DOCBOOK):
+        term = entry.find("db:term", DOCBOOK)
+        if term is None or node_text(term) != "Corporate Sponsors":
+            continue
+        for simpara in entry.findall(".//db:simpara", DOCBOOK):
+            text = node_text(simpara)
+            suffix_match = re.search(
+                r"\s*\((?:formerly|now)\s+([^()]*)\)\s*$", text, re.I
+            )
+            candidate_names = [text, re.sub(r"\s*\([^()]*\)\s*$", "", text).strip()]
+            if suffix_match:
+                candidate_names.append(suffix_match.group(1).strip())
+            for name in candidate_names:
+                key = normalized_name(name)
+                if key:
+                    names.add(key)
+    return names
 
 
 def person_is_credited(name, credits):
@@ -256,16 +290,37 @@ def unreleased_news_lines(news_path):
     return lines
 
 
-def split_news_people(value):
+def split_news_people(value, non_person_names=None):
+    if non_person_names is None:
+        default_credits = Path(__file__).resolve().parents[2] / "doc" / "credits.xml"
+        non_person_names = news_non_person_attribution_names(default_credits)
     people = []
     for candidate in NEWS_PERSON_SEPARATOR_RE.split(value):
-        candidate = re.sub(r"\s+(?:from|of)\s+.*$", "", candidate, flags=re.I).strip()
-        if (
-            not candidate
-            or NON_PERSON_NEWS_RE.search(candidate)
-            or TECHNICAL_NEWS_RE.search(candidate)
-        ):
+        candidate = re.sub(
+            r"^\s*(?:reported|fixed|patched|implemented)\s+by\s+",
+            "",
+            candidate,
+            flags=re.I,
+        ).strip()
+        if not candidate or normalized_name(candidate) in non_person_names:
             continue
+        if TECHNICAL_NEWS_RE.search(candidate):
+            continue
+        if NON_PERSON_NEWS_RE.search(candidate):
+            raise CreditValidationError(
+                f"NEWS attribution {candidate!r} looks like an organization; "
+                "add it to the Corporate Sponsors section in doc/credits.xml"
+            )
+        candidate = re.sub(r"\s+(?:from|of)\s+.*$", "", candidate, flags=re.I).strip()
+        if not candidate or normalized_name(candidate) in non_person_names:
+            continue
+        if TECHNICAL_NEWS_RE.search(candidate):
+            continue
+        if NON_PERSON_NEWS_RE.search(candidate):
+            raise CreditValidationError(
+                f"NEWS attribution {candidate!r} looks like an organization; "
+                "add it to the Corporate Sponsors section in doc/credits.xml"
+            )
         if normalized_name(candidate) and re.search(
             r"[^\W\d_]", candidate, re.UNICODE
         ):
@@ -274,6 +329,10 @@ def split_news_people(value):
 
 
 def news_contributors(news_path):
+    news_path = Path(news_path)
+    non_person_names = news_non_person_attribution_names(
+        news_path.parent / "doc" / "credits.xml"
+    )
     lines = unreleased_news_lines(news_path)
     contributors = []
     current = []
@@ -286,7 +345,8 @@ def news_contributors(news_path):
             match = NEWS_ATTRIBUTION_RE.search(text)
             if match:
                 contributors.extend(
-                    (name, current_line) for name in split_news_people(match.group(1))
+                    (name, current_line)
+                    for name in split_news_people(match.group(1), non_person_names)
                 )
         current = []
         current_line = None
@@ -305,7 +365,8 @@ def news_contributors(news_path):
             match = NEWS_TEAM_RE.match(line)
             if match:
                 contributors.extend(
-                    (name, line_number) for name in split_news_people(match.group(1))
+                    (name, line_number)
+                    for name in split_news_people(match.group(1), non_person_names)
                 )
     finish_entry()
     return contributors
