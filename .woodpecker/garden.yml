@@ -46,12 +46,24 @@ steps:
       - ./autogen.sh
       - mkdir -p "$${BUILDDIR}"
       - cd "$${BUILDDIR}"
-      - apt-get update
-      - apt-get install -y --no-install-recommends proj-bin
-      - rm -rf /var/lib/apt/lists/*
+      - xsltproc --version
+      - 'dpkg --compare-versions "$$(dpkg-query -W -f=''$${Version}'' libsfcgal-dev)" ge 2.3.0'
       - projsync --system-directory --file au_icsm_GDA94_GDA2020_conformal_and_distortion.tif
       - $${SRCDIR}/configure
         CFLAGS="-g -O2 -mtune=generic -fno-omit-frame-pointer"
         LDFLAGS="-Wl,-Bsymbolic-functions -Wl,-z,relro"
+      - mkdir -p
+        extensions/postgis/sql
+        extensions/postgis_raster/sql
+        extensions/postgis_topology/sql
+        extensions/postgis_sfcgal/sql
+      - make -C postgis
+        postgis.sql
+        uninstall_postgis.sql
+        postgis_upgrade.sql
+        legacy.sql
+        uninstall_legacy.sql
+        legacy_minimal.sql
+        legacy_gist.sql
       - make -j1
       - timeout 270m make garden
