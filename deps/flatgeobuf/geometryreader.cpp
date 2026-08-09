@@ -27,92 +27,105 @@
 using namespace flatbuffers;
 using namespace FlatGeobuf;
 
-LWPOINT *GeometryReader::readPoint()
+LWPOINT *
+GeometryReader::readPoint()
 {
 	POINTARRAY *pa;
 	POINT4D pt;
 
 	pa = ptarray_construct_empty(m_has_z, m_has_m, 1);
 
-	if (m_geometry->xy() == nullptr || m_geometry->xy()->size() == 0) {
+	if (m_geometry->xy() == nullptr || m_geometry->xy()->size() == 0)
+	{
 		return lwpoint_construct(0, NULL, pa);
 	}
 
-	const auto xy = m_geometry->xy()->data();
+	const auto xy = m_geometry->xy();
 
-	double x = xy[m_offset + 0];
-	double y = xy[m_offset + 1];
+	double x = xy->Get(m_offset + 0);
+	double y = xy->Get(m_offset + 1);
 	double z = 0;
 	double m = 0;
 
 	if (m_has_z)
-		z = m_geometry->z()->data()[m_offset];
+		z = m_geometry->z()->Get(m_offset);
 	if (m_has_m)
-		m = m_geometry->m()->data()[m_offset];
+		m = m_geometry->m()->Get(m_offset);
 
-	pt = (POINT4D) { x, y, z, m };
+	pt = (POINT4D){x, y, z, m};
 	ptarray_append_point(pa, &pt, LW_TRUE);
 	return lwpoint_construct(0, NULL, pa);
 }
 
-POINTARRAY *GeometryReader::readPA()
+POINTARRAY *
+GeometryReader::readPA()
 {
 	POINTARRAY *pa;
 	POINT4D pt;
-	uint32_t npoints;
 
-	const double *xy = m_geometry->xy()->data();
-	const double *z = m_has_z ? m_geometry->z()->data() : nullptr;
-	const double *m = m_has_m ? m_geometry->m()->data() : nullptr;
+	const auto xy = m_geometry->xy();
+	const auto z = m_has_z ? m_geometry->z() : nullptr;
+	const auto m = m_has_m ? m_geometry->m() : nullptr;
 
 	pa = ptarray_construct_empty(m_has_z, m_has_m, m_length);
 
-	for (uint32_t i = m_offset; i < m_offset + m_length; i++) {
-		double xv = xy[i * 2 + 0];
-		double yv = xy[i * 2 + 1];
+	for (uint32_t i = m_offset; i < m_offset + m_length; i++)
+	{
+		double xv = xy->Get(i * 2 + 0);
+		double yv = xy->Get(i * 2 + 1);
 		double zv = 0;
 		double mv = 0;
 		if (m_has_z)
-			zv = z[i];
+			zv = z->Get(i);
 		if (m_has_m)
-			mv = m[i];
-		pt = (POINT4D) { xv, yv, zv, mv };
+			mv = m->Get(i);
+		pt = (POINT4D){xv, yv, zv, mv};
 		ptarray_append_point(pa, &pt, LW_TRUE);
 	}
 
 	return pa;
 }
 
-LWMPOINT *GeometryReader::readMultiPoint()
+LWMPOINT *
+GeometryReader::readMultiPoint()
 {
 	POINTARRAY *pa = readPA();
 	return lwmpoint_construct(0, pa);
 }
 
-LWLINE *GeometryReader::readLineString()
+LWLINE *
+GeometryReader::readLineString()
 {
 	POINTARRAY *pa = readPA();
 	return lwline_construct(0, NULL, pa);
 }
 
-LWMLINE *GeometryReader::readMultiLineString()
+LWMLINE *
+GeometryReader::readMultiLineString()
 {
 	auto ends = m_geometry->ends();
+	const uint32_t totalPoints = m_length;
 
 	uint32_t ngeoms = 1;
 	if (ends != nullptr && ends->size() > 1)
 		ngeoms = ends->size();
 
 	auto *lwmline = lwmline_construct_empty(0, m_has_z, m_has_m);
-	if (ngeoms > 1) {
-		for (uint32_t i = 0; i < ngeoms; i++) {
+	if (ngeoms > 1)
+	{
+		for (uint32_t i = 0; i < ngeoms; i++)
+		{
 			const auto e = ends->Get(i);
+			if (e < m_offset || e > totalPoints)
+				lwerror("flatgeobuf: invalid geometry ends");
 			m_length = e - m_offset;
 			POINTARRAY *pa = readPA();
 			lwmline_add_lwline(lwmline, lwline_construct(0, NULL, pa));
 			m_offset = e;
 		}
-	} else {
+	}
+	else
+	{
 		POINTARRAY *pa = readPA();
 		lwmline_add_lwline(lwmline, lwline_construct(0, NULL, pa));
 	}
@@ -120,86 +133,125 @@ LWMLINE *GeometryReader::readMultiLineString()
 	return lwmline;
 }
 
-LWPOLY *GeometryReader::readPolygon()
+LWPOLY *
+GeometryReader::readPolygon()
 {
 	const auto ends = m_geometry->ends();
+	const uint32_t totalPoints = m_length;
 
 	uint32_t nrings = 1;
 	if (ends != nullptr && ends->size() > 1)
 		nrings = ends->size();
 
-	auto **ppa = (POINTARRAY **) lwalloc(sizeof(POINTARRAY *) * nrings);
-	if (nrings > 1) {
-		for (uint32_t i = 0; i < nrings; i++) {
+	auto **ppa = (POINTARRAY **)lwalloc(sizeof(POINTARRAY *) * nrings);
+	if (nrings > 1)
+	{
+		for (uint32_t i = 0; i < nrings; i++)
+		{
 			const auto e = ends->Get(i);
+			if (e < m_offset || e > totalPoints)
+				lwerror("flatgeobuf: invalid geometry ends");
 			m_length = e - m_offset;
 			ppa[i] = readPA();
 			m_offset = e;
 		}
-	} else {
+	}
+	else
+	{
 		ppa[0] = readPA();
 	}
 
 	return lwpoly_construct(0, NULL, nrings, ppa);
 }
 
-LWMPOLY *GeometryReader::readMultiPolygon()
+LWMPOLY *
+GeometryReader::readMultiPolygon()
 {
 	auto parts = m_geometry->parts();
+	if (parts == nullptr)
+		lwerror("flatgeobuf: missing geometry parts");
+
 	auto *mp = lwmpoly_construct_empty(0, m_has_z, m_has_m);
-	for (uoffset_t i = 0; i < parts->size(); i++) {
-		GeometryReader reader { parts->Get(i), GeometryType::Polygon, m_has_z, m_has_m };
-		const auto p = (LWPOLY *) reader.read();
+	for (uoffset_t i = 0; i < parts->size(); i++)
+	{
+		GeometryReader reader{parts->Get(i), GeometryType::Polygon, m_has_z, m_has_m};
+		const auto p = (LWPOLY *)reader.read();
 		lwmpoly_add_lwpoly(mp, p);
 	}
 	return mp;
 }
 
-LWCOLLECTION *GeometryReader::readGeometryCollection()
+LWCOLLECTION *
+GeometryReader::readGeometryCollection()
 {
 	auto parts = m_geometry->parts();
+	if (parts == nullptr)
+		lwerror("flatgeobuf: missing geometry parts");
+
 	auto *gc = lwcollection_construct_empty(COLLECTIONTYPE, 0, m_has_z, m_has_m);
-	for (uoffset_t i = 0; i < parts->size(); i++) {
+	for (uoffset_t i = 0; i < parts->size(); i++)
+	{
 		auto part = parts->Get(i);
-		GeometryReader reader { part, part->type(), m_has_z, m_has_m };
+		GeometryReader reader{part, part->type(), m_has_z, m_has_m};
 		const auto g = reader.read();
 		lwcollection_add_lwgeom(gc, g);
 	}
 	return gc;
 }
 
-LWGEOM *GeometryReader::read()
+LWGEOM *
+GeometryReader::read()
 {
 	// nested types
-	switch (m_geometry_type) {
-		case GeometryType::GeometryCollection: return (LWGEOM *) readGeometryCollection();
-		case GeometryType::MultiPolygon: return (LWGEOM *) readMultiPolygon();
-		/*case GeometryType::CompoundCurve: return readCompoundCurve();
-		case GeometryType::CurvePolygon: return readCurvePolygon();
-		case GeometryType::MultiCurve: return readMultiCurve();
-		case GeometryType::MultiSurface: return readMultiSurface();
-		case GeometryType::PolyhedralSurface: return readPolyhedralSurface();*/
-		default: break;
+	switch (m_geometry_type)
+	{
+	case GeometryType::GeometryCollection:
+		return (LWGEOM *)readGeometryCollection();
+	case GeometryType::MultiPolygon:
+		return (LWGEOM *)readMultiPolygon();
+	/*case GeometryType::CompoundCurve: return readCompoundCurve();
+	case GeometryType::CurvePolygon: return readCurvePolygon();
+	case GeometryType::MultiCurve: return readMultiCurve();
+	case GeometryType::MultiSurface: return readMultiSurface();
+	case GeometryType::PolyhedralSurface: return readPolyhedralSurface();*/
+	default:
+		break;
 	}
 
 	// if not nested must have geometry data
 	const auto pXy = m_geometry->xy();
-	const auto xySize = pXy->size();
-	m_length = xySize / 2;
+	if (pXy == nullptr)
+		lwerror("flatgeobuf: missing geometry coordinates");
 
-	switch (m_geometry_type) {
-		case GeometryType::Point: return (LWGEOM *) readPoint();
-		case GeometryType::MultiPoint: return (LWGEOM *) readMultiPoint();
-		case GeometryType::LineString: return (LWGEOM *) readLineString();
-		case GeometryType::MultiLineString: return (LWGEOM *) readMultiLineString();
-		case GeometryType::Polygon: return (LWGEOM *) readPolygon();
-		/*
-		case GeometryType::CircularString: return readSimpleCurve<OGRCircularString>(true);
-		case GeometryType::Triangle: return readTriangle();
-		case GeometryType::TIN: return readTIN();
-		*/
-		default:
-			lwerror("flatgeobuf: GeometryReader::read: Unknown type %d", (int) m_geometry_type);
+	const auto xySize = pXy->size();
+	if (xySize % 2 != 0)
+		lwerror("flatgeobuf: invalid xy coordinate count");
+
+	m_length = xySize / 2;
+	if (m_has_z && (m_geometry->z() == nullptr || m_geometry->z()->size() < m_length))
+		lwerror("flatgeobuf: invalid z coordinate count");
+	if (m_has_m && (m_geometry->m() == nullptr || m_geometry->m()->size() < m_length))
+		lwerror("flatgeobuf: invalid m coordinate count");
+
+	switch (m_geometry_type)
+	{
+	case GeometryType::Point:
+		return (LWGEOM *)readPoint();
+	case GeometryType::MultiPoint:
+		return (LWGEOM *)readMultiPoint();
+	case GeometryType::LineString:
+		return (LWGEOM *)readLineString();
+	case GeometryType::MultiLineString:
+		return (LWGEOM *)readMultiLineString();
+	case GeometryType::Polygon:
+		return (LWGEOM *)readPolygon();
+	/*
+	case GeometryType::CircularString: return readSimpleCurve<OGRCircularString>(true);
+	case GeometryType::Triangle: return readTriangle();
+	case GeometryType::TIN: return readTIN();
+	*/
+	default:
+		lwerror("flatgeobuf: GeometryReader::read: Unknown type %d", (int)m_geometry_type);
 	}
 	return nullptr;
 }

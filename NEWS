@@ -3,6 +3,11 @@ PostGIS 3.6.5
 
 * Fixes *
 
+- GT-674, [flatgeobuf] Validate size-prefixed buffers and variable-length property
+  values before decoding
+  (reported by Mehmet Ince;
+  reported by Sarath Kumar, IITM Pravartak Security Team;
+  fixed by Darafei Praliaskouski)
 - GT-619, Make interrupt regression tests compare timeout latency to
   same-machine uninterrupted runtime, avoiding false failures under
   slow CI load (Darafei Praliaskouski)
