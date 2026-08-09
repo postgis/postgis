@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
  - GT-569, Initialize GSERIALIZED peek test fixtures so check-unit stays
    clean under Valgrind (Darafei Praliaskouski)
  - GT-575, Scope interrupt regression timeouts to the statements being
