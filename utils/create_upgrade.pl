@@ -496,7 +496,7 @@ EOF
             {
                 print <<"EOF";
         -- Check if the deprecated function has the expected $numnamedargs argument names
-        IF argnames[1:$numnamedargs] != ARRAY[$argnames]::text[]
+        IF argnames[1:$numnamedargs] OPERATOR(pg_catalog.<>) ARRAY[$argnames]::text[]
         THEN
             RAISE DEBUG
                 'Function $name($argtypes) exist but has argnames % (not %)',
@@ -1021,7 +1021,7 @@ BEGIN
     END;
 
     -- Guard against downgrade
-    IF new_ver_int < old_ver_int
+    IF new_ver_int OPERATOR(pg_catalog.<) old_ver_int
     THEN
         RAISE EXCEPTION 'Downgrade of MODULE from version % to version % is forbidden', old_scripts, new_scripts;
     END IF;

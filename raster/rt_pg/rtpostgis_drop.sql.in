@@ -48,81 +48,81 @@ DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision);
 DROP AGGREGATE IF EXISTS ST_Union(raster, record[]);
 
 -- Removed in 2.0.0 ? see ticket #5489
-SELECT _postgis_drop_function_by_signature('ST_Intersects(raster,boolean,geometry)');
+SELECT _postgis_drop_function_by_signature('ST_Intersects(raster,boolean,geometry)', 'xxx');
 -- Removed in 2.0.0 ? see ticket #5489
-SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry,raster,boolean)');
+SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry,raster,boolean)', 'xxx');
 -- Removed in 2.0.0 ? see ticket #5489
-SELECT _postgis_drop_function_by_signature('ST_Intersects(raster,geometry)');
+SELECT _postgis_drop_function_by_signature('ST_Intersects(raster,geometry)', 'xxx');
 -- Removed in 2.0.0 ? see ticket #5489
-SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry,raster)');
+SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry,raster)', 'xxx');
 -- Removed in 2.0.0 ? see ticket #5489
-SELECT _postgis_drop_function_by_signature('ST_Intersects(raster, integer, boolean, geometry)');
+SELECT _postgis_drop_function_by_signature('ST_Intersects(raster, integer, boolean, geometry)', 'xxx');
 -- Removed in 2.0.0 ? see ticket #5489
-SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry, raster, integer, boolean)');
+SELECT _postgis_drop_function_by_signature('ST_Intersects(geometry, raster, integer, boolean)', 'xxx');
 -- Removed in 2.1.0, see ticket #5489
-SELECT _postgis_drop_function_by_signature('_st_intersects(raster, geometry, integer)');
+SELECT _postgis_drop_function_by_signature('_st_intersects(raster, geometry, integer)', 'xxx');
 
 -- Removed in 2.1.0, see ticket #5490
-SELECT _postgis_drop_function_by_signature('_st_slope4ma(float8[], text, text[])');
+SELECT _postgis_drop_function_by_signature('_st_slope4ma(float8[], text, text[])', 'xxx');
 -- Removed in 2.0.0 ? see ticket #5490
-SELECT _postgis_drop_function_by_signature('st_slope(raster, integer, text, boolean)');
+SELECT _postgis_drop_function_by_signature('st_slope(raster, integer, text, boolean)', 'xxx');
 
 -- Removed in 2.1.0, see ticket #5491
-SELECT _postgis_drop_function_by_signature('_st_aspect4ma(float8[], text, text[])');
+SELECT _postgis_drop_function_by_signature('_st_aspect4ma(float8[], text, text[])', 'xxx');
 -- Removed before 2.0.0 ? see ticket #5491
-SELECT _postgis_drop_function_by_signature('st_aspect(raster, integer, text, boolean)');
+SELECT _postgis_drop_function_by_signature('st_aspect(raster, integer, text, boolean)', 'xxx');
 
-SELECT _postgis_drop_function_by_signature('ST_Intersection(raster,raster, integer, integer)');
-SELECT _postgis_drop_function_by_signature('ST_Intersection(geometry,raster)');
+SELECT _postgis_drop_function_by_signature('ST_Intersection(raster,raster, integer, integer)', 'xxx');
+SELECT _postgis_drop_function_by_signature('ST_Intersection(geometry,raster)', 'xxx');
 
 -- Never made it into 2.0.0, see https://trac.osgeo.org/postgis/ticket/5500
-SELECT _postgis_drop_function_by_signature('ST_MapAlgebraFct(raster, raster, regprocedure, text[])');
+SELECT _postgis_drop_function_by_signature('ST_MapAlgebraFct(raster, raster, regprocedure, text[])', 'xxx');
 -- Removed in 2.1.0
-SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionfinal1(raster)');
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionfinal1(raster)', 'xxx');
 -- Removed in 2.1.0
-SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, int4)');
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, int4)', 'xxx');
 -- Removed in 2.1.0
-SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster)');
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster)', 'xxx');
 -- Removed in 2.1.0
-SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, text)');
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, text)', 'xxx');
 -- Removed in 2.1.0
-SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, int4, text)');
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, int4, text)', 'xxx');
 -- Removed in 2.1.0
-SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8)');
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8)', 'xxx');
 -- Removed in 2.1.0
-SELECT _postgis_drop_function_by_signature('st_clip(raster, int, geometry, float8[], boolean)');
+SELECT _postgis_drop_function_by_signature('st_clip(raster, int, geometry, float8[], boolean)', 'xxx');
 -- Removed in 2.2.0
-SELECT _postgis_drop_function_by_signature('_st_mapalgebra(rastbandarg[],regprocedure,text,integer,integer,text,raster,text[])');
+SELECT _postgis_drop_function_by_signature('_st_mapalgebra(rastbandarg[],regprocedure,text,integer,integer,text,raster,text[])', 'xxx');
 
 -- Removed in 3.1.0
-SELECT _postgis_drop_function_by_signature('_st_count(text, text, integer, boolean, double precision)');
-SELECT _postgis_drop_function_by_signature('st_count(text, text, int, boolean)');
-SELECT _postgis_drop_function_by_signature('st_count(text, text, boolean)');
-SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, boolean, double precision)');
-SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, boolean, double precision)');
-SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, double precision)');
-SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, boolean, double precision)');
-SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, double precision)');
+SELECT _postgis_drop_function_by_signature('_st_count(text, text, integer, boolean, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_count(text, text, int, boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_count(text, text, boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, boolean, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, boolean, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, int, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, boolean, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxcount(text, text, double precision)', 'xxx');
 
-SELECT _postgis_drop_function_by_signature('_st_summarystats(text, text, integer, boolean, double precision)');
-SELECT _postgis_drop_function_by_signature('st_summarystats(text, text, integer, boolean)');
-SELECT _postgis_drop_function_by_signature('st_summarystats(text, text, boolean)');
-SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, integer, boolean, double precision)');
-SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, integer, double precision)');
-SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, boolean)');
-SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, double precision)');
+SELECT _postgis_drop_function_by_signature('_st_summarystats(text, text, integer, boolean, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_summarystats(text, text, integer, boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_summarystats(text, text, boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, integer, boolean, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, integer, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxsummarystats(text, text, double precision)', 'xxx');
 
-SELECT _postgis_drop_function_by_signature('_st_histogram(text, text, int, boolean, double precision, int,double precision[], boolean)');
-SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, boolean, int, double precision[], boolean)');
-SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, boolean, int, boolean)');
-SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, int, double precision[], boolean)');
+SELECT _postgis_drop_function_by_signature('_st_histogram(text, text, int, boolean, double precision, int,double precision[], boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, boolean, int, double precision[], boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, boolean, int, boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, int, double precision[], boolean)', 'xxx');
 SELECT _postgis_drop_function_by_signature('st_histogram(text, text, int, int, boolean)', '3.1.0');
-SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, boolean, double precision, int, double precision[], boolean)');
-SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, boolean, double precision, int, boolean)');
-SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int,double precision)');
-SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, double precision)');
-SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, double precision, int, double precision[], boolean)');
-SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, double precision, int, boolean)');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, boolean, double precision, int, double precision[], boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, boolean, double precision, int, boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int,double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, double precision)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, double precision, int, double precision[], boolean)', 'xxx');
+SELECT _postgis_drop_function_by_signature('st_approxhistogram(text, text, int, double precision, int, boolean)', 'xxx');
 
 SELECT _postgis_drop_function_by_identity('st_quantile', 'rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, quantile double precision','3.0');
 SELECT _postgis_drop_function_by_identity('st_quantile', 'rastertable text, rastercolumn text, nband integer, quantile double precision','3.0');
@@ -134,9 +134,9 @@ SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text
 SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision','3.0');
 SELECT _postgis_drop_function_by_identity('st_approxquantile', 'rastertable text, rastercolumn text, quantile double precision','3.0');
 
-SELECT _postgis_drop_function_by_identity('st_value','rast raster, band integer, pt geometry, exclude_nodata_value boolean');
+SELECT _postgis_drop_function_by_identity('st_value','rast raster, band integer, pt geometry, exclude_nodata_value boolean', 'xxx');
 
-SELECT _postgis_drop_function_by_signature('st_gdalopenoptions(text[])');
+SELECT _postgis_drop_function_by_signature('st_gdalopenoptions(text[])', 'xxx');
 
 SELECT _postgis_drop_function_by_identity('st_clip','rast raster, geom geometry, nodataval float8[], crop boolean', '3.5');
 
