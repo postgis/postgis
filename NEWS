@@ -3,6 +3,7 @@ PostGIS 3.6.5
 
 * Fixes *
 
+- Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
 - GT-674, [flatgeobuf] Validate size-prefixed buffers and variable-length property
   values before decoding
   (reported by Mehmet Ince;

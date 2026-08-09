@@ -751,6 +751,8 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	}
 
 	mindist = lwgeom_mindistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
