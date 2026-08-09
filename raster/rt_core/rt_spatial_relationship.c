@@ -1304,6 +1304,7 @@ rt_raster_intersection_fractions(
 	rt_band band_out = NULL;
 	int band_num;
 	unsigned int width, height;
+	float *geos_fractions = NULL;
 	GEOSGeometry *geos_geom = NULL;
 	int geos_result;
 
@@ -1333,8 +1334,11 @@ rt_raster_intersection_fractions(
 
 	/* Shallow clone a new raster with no bands */
 	rast_out = rt_raster_clone(rast_in, 0);
-	/* GEOSGridIntersectionFractions writes float values into float* buf,
-	 * so the output band must stay PT_32BF rather than PT_64BF. */
+	/*
+	 * GEOSGridIntersectionFractions is declared with a float *buf output
+	 * parameter in the GEOS 3.14+ C API. Keep this band PT_32BF; using
+	 * PT_64BF/double would mismatch the GEOS API rather than make it safer.
+	 */
 	band_num = rt_raster_generate_new_band(
 		rast_out, /* rast */
 		PT_32BF, /* pixel type */
@@ -1350,6 +1354,14 @@ rt_raster_intersection_fractions(
 		rterror("%s: Failed to create output band", __func__);
 		return NULL;
 	}
+	if (rt_pixtype_size(PT_32BF) != (int)sizeof(*geos_fractions))
+	{
+		rt_raster_destroy(rast_out);
+		rterror("%s: PT_32BF size does not match GEOS float buffer", __func__);
+		return NULL;
+	}
+	geos_fractions = rt_band_get_data(band_out);
+	assert(geos_fractions != NULL);
 
 	/* Prepare for GEOS call */
 	/* Initialize GEOS to handle notices and errors */
@@ -1367,12 +1379,7 @@ rt_raster_intersection_fractions(
 
 	/* Call the core GEOS function */
 	geos_result = GEOSGridIntersectionFractions(
-		geos_geom,
-		rast_env.MinX, rast_env.MinY,
-		rast_env.MaxX, rast_env.MaxY,
-		width, height,
-		rt_band_get_data(band_out)
-	);
+	    geos_geom, rast_env.MinX, rast_env.MinY, rast_env.MaxX, rast_env.MaxY, width, height, geos_fractions);
 
 	/* The GEOS geometry is no longer needed after this call, so we can clean it up */
 	GEOSGeom_destroy(geos_geom);
