@@ -1058,7 +1058,7 @@ def jenkins_matrix_configuration_label(configuration, selected):
     return configuration.get("name") or configuration.get("url") or "configuration"
 
 
-def jenkins_matrix_details(job_url, timeout):
+def jenkins_matrix_details(job_url, timeout, parent_build_number):
     try:
         configurations = jenkins_matrix_configurations(job_url, timeout)
     except RECOVERABLE_PROVIDER_ERRORS:
@@ -1075,6 +1075,8 @@ def jenkins_matrix_details(job_url, timeout):
     }
     for configuration in configurations:
         build = configuration.get("lastBuild") or {}
+        if build.get("number") != parent_build_number:
+            continue
         status = normalize_jenkins_status(build)
         if status == SUCCESS:
             continue
@@ -1195,7 +1197,7 @@ def jenkins_check(check, branch, timeout):
         message=f"build {current.get('number')}",
     )
     if result["status"] != SUCCESS:
-        details = jenkins_matrix_details(job_url, timeout)
+        details = jenkins_matrix_details(job_url, timeout, current.get("number"))
         if details:
             result["message"] = f"{result['message']}; {details['message']}"
             if details.get("url"):
