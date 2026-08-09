@@ -682,22 +682,31 @@ lwgeom_compare_by_xdr_ewkb(const void *a, const void *b)
 }
 
 static LWGEOM *
-lwgeom_normalized_polygon_to_triangle(LWGEOM *geom)
+lwgeom_normalized_triangle_or_clone(const LWGEOM *triangle_in, LWGEOM *normalized)
 {
 	LWPOLY *poly;
 	LWTRIANGLE *triangle;
 	POINTARRAY *points;
 
-	if (!geom || geom->type != POLYGONTYPE)
-		return geom;
+	if (normalized && normalized->type == TRIANGLETYPE)
+		return normalized;
 
-	poly = lwgeom_as_lwpoly(geom);
-	if (poly->nrings != 1 || !poly->rings[0] || poly->rings[0]->npoints != 4)
-		return geom;
+	if (!normalized || normalized->type != POLYGONTYPE)
+	{
+		lwgeom_free(normalized);
+		return lwgeom_clone_deep(triangle_in);
+	}
+
+	poly = lwgeom_as_lwpoly(normalized);
+	if (poly->nrings != 1 || !poly->rings[0])
+	{
+		lwgeom_free(normalized);
+		return lwgeom_clone_deep(triangle_in);
+	}
 
 	points = ptarray_clone_deep(poly->rings[0]);
 	triangle = lwtriangle_construct(poly->srid, NULL, points);
-	lwgeom_free(geom);
+	lwgeom_free(normalized);
 	return lwtriangle_as_lwgeom(triangle);
 }
 
@@ -717,7 +726,7 @@ lwgeom_normalize_lwgeom(const LWGEOM *geom)
 
 		normalized = lwgeom_normalize(col->geoms[i]);
 		if (col->type == TINTYPE && col->geoms[i]->type == TRIANGLETYPE)
-			normalized = lwgeom_normalized_polygon_to_triangle(normalized);
+			normalized = lwgeom_normalized_triangle_or_clone(col->geoms[i], normalized);
 
 		lwgeom_free(col->geoms[i]);
 		col->geoms[i] = normalized;
