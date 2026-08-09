@@ -1850,7 +1850,7 @@ BEGIN
 
     SELECT count(*) INTO n FROM geometry_columns
       WHERE f_table_schema = 'test6110';
-    IF n <> 1501 THEN
+    IF n <> 2002 THEN
         RETURN 'FAIL: count=' || n || ' (expected 1000)';
     END IF;
 
@@ -1871,15 +1871,18 @@ $$ LANGUAGE plpgsql;
 DO $$
 DECLARE i integer;
 BEGIN
-		CREATE TABLE test6110.typmod_partition(id bigint, geom geometry(LINESTRING, 4269), part_key integer)
+		CREATE TABLE test6110.geom_partition(id bigint, part_key integer)
 			PARTITION BY LIST (part_key);
     FOR i IN 1..500 LOOP
         EXECUTE format('CREATE TABLE test6110.typmod_%s (geom geometry(Point, 4326))', i);
         EXECUTE format('CREATE TABLE test6110.constraint_%s (id integer)', i);
         EXECUTE format('SELECT AddGeometryColumn(%L, %L, %L, 4326, %L, 2, false)',
                        'test6110', 'constraint_' || i, 'geom', 'POINT');
-				EXECUTE format('CREATE TABLE test6110.partition_%s PARTITION OF test6110.typmod_partition FOR VALUES IN(%s)', i, i);
+				EXECUTE format('CREATE TABLE test6110.geom_partition_%s PARTITION OF test6110.geom_partition FOR VALUES IN(%s)', i, i);
     END LOOP;
+		ALTER TABLE test6110.geom_partition ADD COLUMN geom_typmod geometry(LINESTRING, 4269);
+		EXECUTE format('SELECT AddGeometryColumn(%L, %L, %L, 4326, %L, 2, false)',
+                       'test6110', 'geom_partition', 'geom_constraint', 'POINT');
 END
 $$;
 

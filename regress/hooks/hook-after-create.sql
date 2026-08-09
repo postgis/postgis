@@ -19,6 +19,9 @@ BEGIN
         IF obj.object_identity = 'public.spatial_ref_sys' THEN
             CONTINUE;
         END IF;
+		IF (SELECT relkind FROM pg_catalog.pg_class WHERE oid = obj.objid) = 'p' THEN
+            CONTINUE;
+        END IF;
         EXECUTE format('ALTER TABLE %s SET (autovacuum_enabled = false);',obj.object_identity);
     END LOOP;
 END;
