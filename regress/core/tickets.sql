@@ -1871,7 +1871,7 @@ $$ LANGUAGE plpgsql;
 DO $$
 DECLARE i integer;
 BEGIN
-		CREATE TABLE test6110.typmod_partition(id bigint, geom geometry(LINESTRING, 4269), part_key integer, CONSTRAINT pk_typmod_partition PRIMARY KEY(id, part_key))
+		CREATE TABLE test6110.typmod_partition(id bigint, geom geometry(LINESTRING, 4269), part_key integer)
 			PARTITION BY LIST (part_key);
     FOR i IN 1..500 LOOP
         EXECUTE format('CREATE TABLE test6110.typmod_%s (geom geometry(Point, 4326))', i);
