@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - [flatgeobuf] Reject truncated size-prefixed header and feature buffers
+    before decoding (Darafei Praliaskouski)
   - OSSFuzz 5877056525893632, reject truncated encoded polyline input
     (Darafei Praliaskouski)
   - Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
