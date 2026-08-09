@@ -30,6 +30,11 @@ CI_AND_BUILD_GLOBS = (
     "*/Makefile.in",
     "macros/**",
     "build-aux/**",
+    "regress/run_test.pl",
+    "regress/runtest.mk",
+    "regress/hooks/**",
+    "regress/utils/**",
+    "fuzzers/**",
 )
 
 CORE_GLOBS = (
