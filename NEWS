@@ -16,7 +16,8 @@ These are only changes since 3.7.0beta1.
           in fuzzer round trips (Darafei Praliaskouski)
  - GT-669, Validate FlatGeobuf size-prefixed buffers and variable-length
           property values before decoding
-          (reported by Sarath Kumar, IITM Pravartak Security Team;
+          (reported by Mehmet Ince;
+          reported by Sarath Kumar, IITM Pravartak Security Team;
           fixed by Darafei Praliaskouski)
  - Stop the extension upgrade script running ANALYZE inside its transaction,
           where it could deadlock with autovacuum (Darafei Praliaskouski)
