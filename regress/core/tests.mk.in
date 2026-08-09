@@ -24,7 +24,8 @@ current_dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 RUNTESTFLAGS_INTERNAL += \
   --after-create-db-script $(top_srcdir)/regress/hooks/hook-after-create-db.sql \
   --before-upgrade-script $(top_srcdir)/regress/hooks/hook-before-upgrade.sql \
-  --after-upgrade-script  $(top_srcdir)/regress/hooks/hook-after-upgrade.sql \
+  --after-upgrade-script $(top_srcdir)/regress/hooks/hook-after-upgrade-check-sql-object-resolution.sql \
+  --after-upgrade-script $(top_srcdir)/regress/hooks/hook-after-upgrade.sql \
   --after-create-script   $(top_srcdir)/regress/hooks/hook-after-create.sql \
   --before-uninstall-script $(top_srcdir)/regress/hooks/hook-before-uninstall.sql
 
