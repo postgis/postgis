@@ -31,6 +31,7 @@ TESTS += \
 	$(topsrcdir)/regress/core/bestsrid \
 	$(topsrcdir)/regress/core/binary \
 	$(topsrcdir)/regress/core/boundary \
+	$(topsrcdir)/regress/core/box2d \
 	$(topsrcdir)/regress/core/chaikin \
 	$(topsrcdir)/regress/core/filterm \
 	$(topsrcdir)/regress/core/cluster \
