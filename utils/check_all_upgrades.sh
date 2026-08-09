@@ -502,7 +502,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     kept_label "${test_label}" || run_soft_upgrade=0
     if test ${run_soft_upgrade} != 0; then #{
       echo "Testing ${test_label}"
-      RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${EXT_USERTESTFLAGS}" \
       ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
@@ -516,7 +516,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do #{
     kept_label "${test_label}" || run_hard_upgrade=0
     if test ${run_hard_upgrade} != 0; then #{
       echo "Testing ${test_label}"
-      RUNTESTFLAGS="-v --dumprestore --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+      RUNTESTFLAGS="-v --dumprestore --upgrade-path=${UPGRADE_PATH} ${EXT_USERTESTFLAGS}" \
       ${MAKE} -C ${REGDIR} check ${MAKE_ARGS} && {
         echo "PASS: ${test_label}"
       } || {
