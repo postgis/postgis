@@ -179,10 +179,10 @@ select 'MM2' from ST_FromFlatGeobuf(null::flatgeobuf_mm_long, (
 select '--- Malformed input detection ---';
 
 -- Magic bytes plus a truncated size prefix.
-select 'MI1' from ST_FromFlatGeobuf(null::flatgeobuf_t1, '\x6667620366676201010203'::bytea);
+select 'MI1' from ST_FromFlatGeobuf(null::flatgeobuf_t1, decode('6667620366676201010203', 'hex'));
 
 -- Valid magic bytes plus a header size prefix that exceeds the remaining input.
-select 'MI2' from ST_FromFlatGeobuf(null::flatgeobuf_t1, '\x6667620366676201ffffffff'::bytea);
+select 'MI2' from ST_FromFlatGeobuf(null::flatgeobuf_t1, decode('6667620366676201ffffffff', 'hex'));
 
 -- NULL bytea input should be handled by STRICT rather than reaching the C decoder.
 select 'MI3', count(*) from ST_FromFlatGeobuf(null::flatgeobuf_t1, null::bytea);
