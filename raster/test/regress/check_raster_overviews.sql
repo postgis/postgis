@@ -98,3 +98,36 @@ SELECT o_table_name, o_raster_column, r_table_name, r_raster_column, overview_fa
 DROP FUNCTION make_test_raster(integer, integer, integer, double precision, double precision, double precision, double precision, double precision, double precision);
 DROP TABLE IF EXISTS test_raster_overviews;
 DROP TABLE IF EXISTS test_raster_columns;
+
+-----------------------------------------------------------------------
+--- Ticket 2821: AddOverviewConstraints should not depend on
+--- raster_columns view ACLs
+-----------------------------------------------------------------------
+
+CREATE ROLE ticket_2821_user;
+GRANT CREATE ON SCHEMA public TO ticket_2821_user;
+REVOKE SELECT ON raster_columns FROM PUBLIC;
+
+SET ROLE ticket_2821_user;
+CREATE TABLE ticket_2821_raster_columns (
+	rid integer,
+	rast raster
+);
+INSERT INTO ticket_2821_raster_columns VALUES
+	(0, ST_AddBand(ST_MakeEmptyRaster(2, 2, -2, -2, 1, 1, 0, 0, 0), 1, '8BUI', 1, 0)),
+	(1, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, 1, 0, 0, 0), 1, '8BUI', 2, 0));
+SELECT AddRasterConstraints(current_schema(), 'ticket_2821_raster_columns', 'rast'::name);
+CREATE TABLE ticket_2821_raster_overviews AS
+	SELECT * FROM ticket_2821_raster_columns;
+SELECT AddOverviewConstraints('ticket_2821_raster_overviews', 'rast', 'ticket_2821_raster_columns', 'rast', 1);
+RESET ROLE;
+
+SELECT o_table_name, o_raster_column, r_table_name, r_raster_column, overview_factor
+FROM raster_overviews
+WHERE o_table_name = 'ticket_2821_raster_overviews';
+
+REVOKE CREATE ON SCHEMA public FROM ticket_2821_user;
+GRANT SELECT ON raster_columns TO PUBLIC;
+DROP TABLE IF EXISTS ticket_2821_raster_overviews;
+DROP TABLE IF EXISTS ticket_2821_raster_columns;
+DROP ROLE ticket_2821_user;

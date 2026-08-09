@@ -41,6 +41,8 @@ These are only changes since 3.7.0beta1.
           spend unbounded time on them (Darafei Praliaskouski)
  - GT-484, Use column-level SELECT privileges for metadata views
           (Arthur Bazin)
+ - #2821, [raster] Avoid raster_columns ACL dependency in overview
+          constraints (Darafei Praliaskouski)
  - GT-521, Reject malformed GSERIALIZED payload counts before deserializing
           geometry data (Darafei Praliaskouski)
  - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
