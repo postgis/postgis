@@ -49,15 +49,6 @@ geometry_to_bytea(const LWGEOM *lwgeom)
 }
 
 static void
-assert_equal_gserialized(const GSERIALIZED *left, size_t left_size, const GSERIALIZED *right, size_t right_size)
-{
-	postgis_fuzzer_assert(left_size == LWSIZE_GET(left->size));
-	postgis_fuzzer_assert(right_size == LWSIZE_GET(right->size));
-	postgis_fuzzer_assert(left_size == right_size);
-	postgis_fuzzer_assert(memcmp(left, right, left_size) == 0);
-}
-
-static void
 assert_gserialized_bytea_roundtrip(LWGEOM *lwgeom)
 {
 	size_t first_size = 0;
@@ -74,7 +65,21 @@ assert_gserialized_bytea_roundtrip(LWGEOM *lwgeom)
 
 	GSERIALIZED *second = gserialized_from_lwgeom(from_bytea, &second_size);
 	postgis_fuzzer_assert(second != NULL);
-	assert_equal_gserialized(first, first_size, second, second_size);
+	postgis_fuzzer_assert(first_size == LWSIZE_GET(first->size));
+	postgis_fuzzer_assert(second_size == LWSIZE_GET(second->size));
+	postgis_fuzzer_assert(lwgeom->type == from_bytea->type);
+	postgis_fuzzer_assert(lwgeom->srid == from_bytea->srid);
+	postgis_fuzzer_assert(FLAGS_GET_Z(lwgeom->flags) == FLAGS_GET_Z(from_bytea->flags));
+	postgis_fuzzer_assert(FLAGS_GET_M(lwgeom->flags) == FLAGS_GET_M(from_bytea->flags));
+	postgis_fuzzer_assert(FLAGS_GET_GEODETIC(lwgeom->flags) == FLAGS_GET_GEODETIC(from_bytea->flags));
+
+	/* WKB bytea does not preserve GSERIALIZED bounding boxes. Arbitrary
+	 * GSERIALIZED input can carry a bbox that is not byte-for-byte reproduced
+	 * after geometry->bytea->geometry, so compare the semantic geometry.
+	 */
+	lwgeom_drop_bbox(lwgeom);
+	lwgeom_drop_bbox(from_bytea);
+	postgis_fuzzer_assert(lwgeom_same(lwgeom, from_bytea));
 
 	lwgeom_free(from_bytea);
 	lwfree(first);
