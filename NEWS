@@ -3,7 +3,16 @@ PostGIS 3.6.5
 
 * Fixes *
 
-- GT-674, [flatgeobuf] Validate size-prefixed buffers and variable-length property
+ - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
+   (Darafei Praliaskouski)
+ - #6038, Avoid stale geometry_columns relation lookups after relations are
+   dropped or SELECT privilege is revoked (Darafei Praliaskouski)
+ - Stop the extension upgrade script running ANALYZE inside its transaction,
+  where it can deadlock with autovacuum (Darafei Praliaskouski)
+- OSSFuzz 5877056525893632, reject truncated encoded polyline input
+  (Darafei Praliaskouski)
+- GT-677, Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
+- GT-674, Validate size-prefixed buffers and variable-length property
   values before decoding
   (reported by Mehmet Ince;
   reported by Sarath Kumar, IITM Pravartak Security Team;
