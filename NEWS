@@ -10,7 +10,7 @@ PostGIS 3.6.5
 - OSSFuzz 5877056525893632, reject truncated encoded polyline input
   (Darafei Praliaskouski)
 - GT-677, Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
-- GT-674, [flatgeobuf] Validate size-prefixed buffers and variable-length property
+- GT-674, Validate size-prefixed buffers and variable-length property
   values before decoding
   (reported by Mehmet Ince;
   reported by Sarath Kumar, IITM Pravartak Security Team;
