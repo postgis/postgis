@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
   - Stop the extension upgrade script running ANALYZE inside its
     transaction, where it could deadlock with autovacuum analysing
     spatial_ref_sys (Darafei Praliaskouski)
