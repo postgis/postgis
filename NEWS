@@ -3,6 +3,17 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
+    (Darafei Praliaskouski)
+  - #6038, Avoid stale geometry_columns relation lookups after relations are
+    dropped or SELECT privilege is revoked (Darafei Praliaskouski)
+  - #6109, Avoid out-of-bounds reads in BOX2D_out and BOX2D_expand
+    (Dennis Tighe, Google)
+  - GT-669, Reject truncated size-prefixed header and feature buffers
+    before decoding (Darafei Praliaskouski)
+  - OSSFuzz 5877056525893632, reject truncated encoded polyline input
+    (Darafei Praliaskouski)
+  - GT-677, Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
   - Stop the extension upgrade script running ANALYZE inside its
     transaction, where it could deadlock with autovacuum analysing
     spatial_ref_sys (Darafei Praliaskouski)
