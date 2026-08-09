@@ -3,6 +3,8 @@ PostGIS 3.5.8
 
 * Bug Fixes *
 
+  - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
+    (Darafei Praliaskouski)
   - #6038, Avoid stale geometry_columns relation lookups after relations are
     dropped or SELECT privilege is revoked (Darafei Praliaskouski)
   - #6109, Avoid out-of-bounds reads in BOX2D_out and BOX2D_expand
