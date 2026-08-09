@@ -100,9 +100,15 @@ Datum BOX2D_out(PG_FUNCTION_ARGS)
 	int size = 0;
 
 	GBOX *box = (GBOX *)PG_GETARG_POINTER(0);
-	/* Avoid unaligned access to the gbox struct */
+	/* Avoid unaligned access to the gbox struct.
+	 *
+	 * box2d can be 65 bytes, which is 7 bytes short of sizeof(GBOX) (72)
+	 * so just copy the required part (xy/min, xy/max) and zero the rest
+	 * (matches BOX2d_expand).
+	 */
 	GBOX box_aligned;
-	memcpy(&box_aligned, box, sizeof(GBOX));
+	memset(&box_aligned, 0, sizeof(box_aligned));
+	memcpy(&box_aligned, box, offsetof(GBOX, zmin));
 
 	size = 4;
 	size += lwprint_double(box_aligned.xmin, precision, &tmp[size]);
@@ -387,8 +393,10 @@ PG_FUNCTION_INFO_V1(BOX2D_expand);
 Datum BOX2D_expand(PG_FUNCTION_ARGS)
 {
 	GBOX *box = (GBOX *)PG_GETARG_POINTER(0);
-	GBOX *result = (GBOX *)palloc(sizeof(GBOX));
-	memcpy(result, box, sizeof(GBOX));
+	/* box2d is 65 bytes (7 bytes short of sizeof(GBOX)) and is a purely
+	 * 2D box; copy only the 2D header */
+	GBOX *result = (GBOX *)palloc0(sizeof(GBOX));
+	memcpy(result, box, offsetof(GBOX, zmin));
 
 	if (PG_NARGS() == 2)
 	{
@@ -582,4 +590,3 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
-
