@@ -50,5 +50,6 @@ check-locked-upgrade:
 	$(MAKE) check-regress \
     RUNTESTFLAGS="$(RUNTESTFLAGS) --upgrade \
       --before-upgrade-script $(top_srcdir)/regress/hooks/use-all-functions.sql \
-      --after-upgrade-script $(top_srcdir)/regress/hooks/hook-after-upgrade.sql " \
+      $(if $(filter $(top_srcdir)/regress/hooks/hook-after-upgrade.sql,$(RUNTESTFLAGS_INTERNAL)),,\
+        --after-upgrade-script $(top_srcdir)/regress/hooks/hook-after-upgrade.sql) " \
     TESTS=$(top_srcdir)/regress/core/regress.sql
