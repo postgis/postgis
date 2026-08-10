@@ -11,7 +11,10 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
+* Enhancements *
 
+ - #2599, [raster] Add ST_Sharpen with unsharp mask method
+          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
