@@ -138,11 +138,10 @@ or pull request when someone takes ownership of it.
 
 ## Developer Tooling
 
-* Decide whether PostGIS should maintain a repository-owned AI-agent skills
-  file for recurring contributor and maintainer workflows. Any proposal should
-  define the authoritative source, review and update ownership, validation, and
-  how generated or provider-specific copies avoid drifting from the normal
-  developer documentation.
+* Define review and update ownership for the repository-owned AI-agent skills
+  under `doc/skills/`, add validation for their maintained-documentation links,
+  and document how generated or provider-specific copies avoid drifting from
+  the repository source.
 
 ## Topology
 
