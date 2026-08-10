@@ -388,7 +388,7 @@ def normalize_woodpecker_status(value):
         "success": SUCCESS,
         "failure": FAILURE,
         "error": FAILURE,
-        "killed": FAILURE,
+        "killed": UNKNOWN,
         "blocked": IN_PROGRESS,
         "declined": FAILURE,
         "running": IN_PROGRESS,
@@ -604,13 +604,14 @@ def woodpecker_check(check, branch, timeout):
             current = {**current, **http_json(detail_url, timeout=timeout)}
         except RECOVERABLE_PROVIDER_ERRORS:
             pass
+    current_status = normalize_woodpecker_status(current.get("status"))
     message = current.get("message")
     extra = {}
-    if normalize_woodpecker_status(current.get("status")) != SUCCESS:
+    if current_status != SUCCESS:
         details = None
         if str(current.get("status")).lower() == "error" and not (current.get("workflows") or []):
             details = woodpecker_error_details(current)
-        if not details and str(current.get("status")).lower() == "failure":
+        if not details and str(current.get("status")).lower() in ("failure", "killed"):
             details = woodpecker_killed_details(current)
         if not details:
             details = woodpecker_workflow_details(current, web_url)
@@ -618,10 +619,12 @@ def woodpecker_check(check, branch, timeout):
             message = details["message"]
             run_url = details.get("url") or run_url
             extra.update({key: details[key] for key in ("status_label",) if key in details})
+            if details.get("status_label") == "Agent lost":
+                current_status = UNKNOWN
     result = make_result(
         check,
         branch,
-        normalize_woodpecker_status(current.get("status")),
+        current_status,
         url=run_url or web_url,
         debug_url=url,
         revision=current.get("commit"),
