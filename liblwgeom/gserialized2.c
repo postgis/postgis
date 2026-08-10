@@ -399,6 +399,17 @@ gserialized2_pointarray_payload_size(uint32_t npoints, lwflags_t lwflags, size_t
 }
 
 static int
+gserialized2_validate_polygon_ring_count(uint32_t npoints)
+{
+	if (npoints > 0 && npoints < 4)
+	{
+		lwerror("%s: invalid non-empty polygon ring point count %u", __func__, npoints);
+		return LW_FAILURE;
+	}
+	return LW_SUCCESS;
+}
+
+static int
 gserialized2_validate_geometry_buffer(uint8_t *data_ptr, uint8_t *data_end, lwflags_t lwflags, size_t *size)
 {
 	uint32_t type, count;
@@ -2054,6 +2065,12 @@ lwpoly_from_gserialized2_buffer(uint8_t *data_ptr, lwflags_t lwflags, size_t *si
 		/* Read in the number of points. */
 		npoints = gserialized2_get_uint32_t(data_ptr);
 		data_ptr += 4;
+		if (gserialized2_validate_polygon_ring_count(npoints) == LW_FAILURE)
+		{
+			poly->nrings = i;
+			lwpoly_free(poly);
+			return NULL;
+		}
 
 		/* Make a point array for the ring, and move the ordinate pointer past the ring ordinates. */
 		poly->rings[i] = ptarray_construct_reference_data(FLAGS_GET_Z(lwflags), FLAGS_GET_M(lwflags), npoints, ordinate_ptr);
@@ -2484,7 +2501,10 @@ LWGEOM* lwgeom_from_gserialized2(const GSERIALIZED *g)
 	lwgeom = lwgeom_from_gserialized2_buffer(data_ptr, lwflags, &size, srid);
 
 	if (!lwgeom)
+	{
 		lwerror("%s: unable create geometry", __func__); /* Ooops! */
+		return NULL;
+	}
 
 	lwgeom->type = lwtype;
 	lwgeom->flags = lwflags;

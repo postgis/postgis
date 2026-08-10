@@ -590,6 +590,37 @@ test_gserialized2_malformed_nurbs_degree(void)
 }
 
 static void
+test_gserialized2_malformed_polygon_ring_count(void)
+{
+	LWGEOM *lwgeom = lwgeom_from_wkt("POLYGON((0 0, 1 0, 1 1, 0 0))", LW_PARSER_CHECK_NONE);
+	LWGEOM *malformed_lwgeom;
+	GSERIALIZED *g;
+	uint8_t *payload;
+	uint32_t type;
+	uint32_t nrings;
+	uint32_t npoints = 1;
+
+	CU_ASSERT_PTR_NOT_NULL_FATAL(lwgeom);
+	g = gserialized2_from_lwgeom(lwgeom, NULL);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(g);
+
+	payload = gserialized2_test_payload_p(g);
+	memcpy(&type, payload, sizeof(type));
+	memcpy(&nrings, payload + sizeof(uint32_t), sizeof(nrings));
+	CU_ASSERT_EQUAL(type, POLYGONTYPE);
+	CU_ASSERT_EQUAL(nrings, 1);
+	memcpy(payload + 2 * sizeof(uint32_t), &npoints, sizeof(npoints));
+
+	cu_error_msg_reset();
+	malformed_lwgeom = lwgeom_from_gserialized2(g);
+	CU_ASSERT_PTR_NULL(malformed_lwgeom);
+	CU_ASSERT_NOT_EQUAL(strlen(cu_error_msg), 0);
+
+	lwgeom_free(lwgeom);
+	lwfree(g);
+}
+
+static void
 assert_gserialized2_malformed_rejected(GSERIALIZED *g)
 {
 	LWGEOM *geom;
@@ -703,6 +734,7 @@ void gserialized2_suite_setup(void)
 	PG_ADD_TEST(suite, test_gserialized2_peek_first_point);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_collection_count);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_nurbs_degree);
+	PG_ADD_TEST(suite, test_gserialized2_malformed_polygon_ring_count);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_declared_size);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_short_allocation);
 	PG_ADD_TEST(suite, test_gserialized2_wkb_roundtrip_float_rounded_box);
