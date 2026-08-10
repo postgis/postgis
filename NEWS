@@ -40,10 +40,12 @@ PostGIS 3.6.5
 - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
 - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
 - Avoid Inf loop in Geohash calculation (Paul Ramsey)
-- [address_standardizer] Avoid unsafe table-name handling and out-of-bounds
-  rule parsing (Paul Ramsey)
-- [tiger_geocoder] Harden schema qualification and dynamic table names
-  (Paul Ramsey)
+- [address_standardizer] Guard scanner tokens, rule parsing, and cleanup
+  paths against oversized input, invalid rule types, and partial allocation
+  failures (Paul Ramsey, Darafei Praliaskouski, Maksim Korotkov)
+- [tiger_geocoder] Qualify PostGIS and fuzzystrmatch calls, generated table
+  DDL, PAGC tables, loader scripts, topology loader, and dynamic SQL
+  against unsafe search paths (Regina Obe, Paul Ramsey)
 - #6081, Fix SFCGAL 2.3 regression tests (Darafei Praliaskouski)
 - GH-888, [sfcgal] Avoid stale detoasted geometry access in
   CG_Visibility empty-input handling for SFCGAL < 2.2
