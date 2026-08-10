@@ -1178,22 +1178,25 @@ ogrErrorHandler(CPLErr eErrClass, int err_no, const char* msg)
     {
         gdalErrType = gdalErrorTypes[err_no];
     }
+
+    ereport(LOG_SERVER_ONLY, (errmsg_internal("GDAL %s [%d] %s", gdalErrType, err_no, redacted)));
+
     switch (eErrClass)
     {
     case CE_None:
-        elog(NOTICE, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
-        break;
+	    elog(NOTICE, "GDAL %s [%d] notice; see server log for details", gdalErrType, err_no);
+	    break;
     case CE_Debug:
-        elog(DEBUG2, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
-        break;
+	    elog(DEBUG2, "GDAL %s [%d] debug message; see server log for details", gdalErrType, err_no);
+	    break;
     case CE_Warning:
-        elog(WARNING, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
-        break;
+	    elog(WARNING, "GDAL %s [%d] warning; see server log for details", gdalErrType, err_no);
+	    break;
     case CE_Failure:
     case CE_Fatal:
     default:
-        elog(ERROR, "GDAL %s [%d] %s", gdalErrType, err_no, redacted);
-        break;
+	    elog(ERROR, "GDAL %s [%d] error; see server log for details", gdalErrType, err_no);
+	    break;
     }
     pfree(redacted);
     return;
