@@ -69,6 +69,13 @@ static void in_encoded_polyline_test_truncated_input(void)
 	CU_ASSERT_PTR_NULL(lwgeom_from_encoded_polyline("`", 5));
 }
 
+static void
+in_encoded_polyline_test_overlong_varint(void)
+{
+	/* OSSFuzz 6152109301760000: 17 << 30 must be rejected before shifting. */
+	CU_ASSERT_PTR_NULL(lwgeom_from_encoded_polyline("~~~~~~P", 5));
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -80,4 +87,5 @@ void in_encoded_polyline_suite_setup(void)
 	PG_ADD_TEST(suite, in_encoded_polyline_test_precision);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_close_points);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_truncated_input);
+	PG_ADD_TEST(suite, in_encoded_polyline_test_overlong_varint);
 }

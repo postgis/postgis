@@ -32,6 +32,50 @@
 #include "lwgeom_log.h"
 #include "../postgis_config.h"
 
+static int
+encoded_polyline_read_varint(const char *encodedpolyline, int length, int *idx, uint32_t *value)
+{
+	uint32_t res = 0;
+	unsigned int shift = 0;
+
+	while (1)
+	{
+		int byte;
+		if (*idx >= length)
+		{
+			lwerror("lwgeom_from_encoded_polyline: input is truncated");
+			return LW_FALSE;
+		}
+
+		byte = (unsigned char)encodedpolyline[(*idx)++] - 63;
+		if (byte < 0)
+		{
+			lwerror("lwgeom_from_encoded_polyline: input contains an invalid byte");
+			return LW_FALSE;
+		}
+		if (shift > 30 || (shift == 30 && ((byte & 0x1C) || (byte >= 0x20))))
+		{
+			lwerror("lwgeom_from_encoded_polyline: coordinate value is too large");
+			return LW_FALSE;
+		}
+
+		res |= (uint32_t)(byte & 0x1F) << shift;
+		if (byte < 0x20)
+			break;
+
+		shift += 5;
+	}
+
+	*value = res;
+	return LW_TRUE;
+}
+
+static int32_t
+encoded_polyline_zigzag_decode(uint32_t value)
+{
+	return (int32_t)((value >> 1) ^ (uint32_t)(-(int32_t)(value & 1)));
+}
+
 LWGEOM*
 lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
 {
@@ -48,36 +92,22 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
 
   while (idx < length) {
     POINT4D pt;
-    char byte = 0;
+    uint32_t res = 0;
 
-    int res = 0;
-    char shift = 0;
-    do {
-      if (idx >= length) {
-        lwerror("lwgeom_from_encoded_polyline: input is truncated");
-        ptarray_free(pa);
-        return NULL;
-      }
-      byte = encodedpolyline[idx++] - 63;
-      res |= (byte & 0x1F) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-    int32_t deltaLat = ((res & 1) ? ~(res >> 1) : (res >> 1));
+    if (!encoded_polyline_read_varint(encodedpolyline, length, &idx, &res))
+    {
+	    ptarray_free(pa);
+	    return NULL;
+    }
+    int32_t deltaLat = encoded_polyline_zigzag_decode(res);
     latitude += deltaLat;
 
-    shift = 0;
-    res = 0;
-    do {
-      if (idx >= length) {
-        lwerror("lwgeom_from_encoded_polyline: input is truncated");
-        ptarray_free(pa);
-        return NULL;
-      }
-      byte = encodedpolyline[idx++] - 63;
-      res |= (byte & 0x1F) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-    int32_t deltaLon = ((res & 1) ? ~(res >> 1) : (res >> 1));
+    if (!encoded_polyline_read_varint(encodedpolyline, length, &idx, &res))
+    {
+	    ptarray_free(pa);
+	    return NULL;
+    }
+    int32_t deltaLon = encoded_polyline_zigzag_decode(res);
     longitude += deltaLon;
 
     pt.x = longitude/scale;
