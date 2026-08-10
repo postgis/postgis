@@ -571,6 +571,11 @@ main (int argc, char **argv)
 
 	/* Create the shapefile state object */
 	state = ShpLoaderCreate(config);
+	if (!state)
+	{
+		fprintf(stderr, "Unable to allocate memory for loader state\n");
+		exit(1);
+	}
 
 	/* Open the shapefile */
 	ret = ShpLoaderOpenShape(state);

@@ -1219,6 +1219,11 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 				{
 					/* If we have a row then lets do some simple column validation... */
 					state = ShpLoaderCreate(config);
+					if (!state)
+					{
+						pgui_logf(_("Warning: Could not load shapefile %s"), config->shp_file);
+						return SHPLOADERERR;
+					}
 					ret = ShpLoaderOpenShape(state);
 					if (ret != SHPLOADEROK)
 					{
@@ -1571,6 +1576,11 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 		/* Create the shapefile state object */
 		state = ShpLoaderCreate(loader_file_config);
+		if (!state)
+		{
+			pgui_logf(_("Warning: Could not load shapefile %s"), loader_file_config->shp_file);
+			goto import_cleanup;
+		}
 
 		/* Open the shapefile */
 		ret = ShpLoaderOpenShape(state);
@@ -1768,7 +1778,9 @@ import_cleanup:
 		pg_connection = NULL;
 
 		/* If we didn't finish inserting all of the items (and we expected to), an error occurred */
-		if ((state->config->plan.load_data && i != ShpLoaderGetRecordCount(state)) || !ret)
+		if (state && ((state->config->plan.load_data && i != ShpLoaderGetRecordCount(state)) || !ret))
+			pgui_logf(_("Shapefile import failed."));
+		else if (!state)
 			pgui_logf(_("Shapefile import failed."));
 		else
 			pgui_logf(_("Shapefile import completed."));
