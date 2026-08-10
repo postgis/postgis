@@ -3,6 +3,9 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GT-619, Make interrupt regression tests compare timeout latency to
+    same-machine uninterrupted runtime, avoiding false failures under
+    slow CI load (Darafei Praliaskouski)
   - GH-1160, [topology] Preserve overlay junctions when noding lines
     with GEOS 3.15 and later (Darafei Praliaskouski)
   - [tiger_geocoder] Resolve the fuzzy location helper in the tiger schema
