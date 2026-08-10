@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - #5914, [raster] Keep ST_Resample skew handling responsive to interrupts
+          (Darafei Praliaskouski)
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
