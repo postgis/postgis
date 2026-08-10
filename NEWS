@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - #4402, [raster] Let raster2pgsql commit AddRasterConstraints work
+          between requested constraints (Darafei Praliaskouski)
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
@@ -241,6 +243,8 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
           (Sandro Santilli)
  - #2137, [raster] Reuse matching source raster overviews in raster2pgsql -l
           (Darafei Praliaskouski)
+ - #4402, [raster] Let raster2pgsql commit AddRasterConstraints work
+          between requested constraints (Darafei Praliaskouski)
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections (Darafei Praliaskouski)
  - #2807, [raster] Preserve missing NODATA values in ST_MapAlgebra outputs
