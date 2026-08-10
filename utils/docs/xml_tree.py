@@ -75,7 +75,21 @@ class _TreeBuilder(ContentHandler):
             current.text = (current.text or "") + content
 
 
+def _reject_doctype(path):
+    with Path(path).open("rb") as handle:
+        previous = b""
+        while True:
+            chunk = handle.read(8192)
+            if not chunk:
+                return
+            haystack = previous + chunk.upper()
+            if b"<!DOCTYPE" in haystack:
+                raise xml.sax.SAXException("DOCTYPE declarations are not supported")
+            previous = haystack[-8:]
+
+
 def parse(path):
+    _reject_doctype(path)
     parser = xml.sax.make_parser()
     parser.setFeature(feature_namespaces, True)
     for feature in (feature_external_ges, feature_external_pes):

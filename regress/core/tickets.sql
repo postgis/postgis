@@ -1852,7 +1852,7 @@ BEGIN
     SELECT count(*) INTO n FROM geometry_columns
       WHERE f_table_schema = 'test6110';
     IF n <> 2002 THEN
-        RETURN 'FAIL: count=' || n || ' (expected 1000)';
+        RETURN 'FAIL: count=' || n || ' (expected 2002)';
     END IF;
 
     t0 := clock_timestamp();

@@ -461,7 +461,7 @@ class ExampleTester:
 
     def documented_wkt_uses_explicit_z_token(self, expected_wkt):
         return bool(re.search(
-            rf"\b(?:{WKT_TYPES})\s+Z(?:M)?\s*(?:\(|EMPTY\b)",
+            rf"\b(?:{WKT_TYPES})\s+(?:Z|M|ZM)\s*(?:\(|EMPTY\b)",
             expected_wkt or "",
             re.I,
         ))
@@ -575,7 +575,7 @@ class ExampleTester:
                 f"ST_AsText(actual, {documented_digits}) = "
                 f"ST_AsText(expected, {documented_digits})"
             )
-            if expected_wkt_digits is not None:
+            if expected_wkt_digits is not None and self.documented_wkt_is_2d(expected_wkt):
                 shape_match = (
                     f"({shape_match} OR "
                     f"ST_HausdorffDistance(actual, expected) <= {10 ** -expected_wkt_digits:.17g})"

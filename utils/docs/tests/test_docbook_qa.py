@@ -25,6 +25,7 @@ from docbook_qa import (
     load_xml,
     main,
 )
+from xml_tree import parse as parse_xml
 
 DOCBOOK_OPEN = '<book xmlns="http://docbook.org/ns/docbook" xmlns:xml="http://www.w3.org/XML/1998/namespace">'
 DOCBOOK_CLOSE = '</book>'
@@ -54,6 +55,18 @@ class DocBookSourceLintTest(unittest.TestCase):
             {"mixed-programlisting-output"},
         )
         self.assertCategories('<refentry xml:id="f"><programlisting>SELECT 1;</programlisting></refentry>', set())
+
+    def test_xml_tree_rejects_doctype(self):
+        path = write_tmp(
+            ".xml",
+            '<!DOCTYPE book [<!ENTITY expand "expanded">]>'
+            + DOCBOOK_OPEN
+            + '<para>&expand;</para>'
+            + DOCBOOK_CLOSE,
+        )
+
+        with self.assertRaises(Exception):
+            parse_xml(path)
 
     def test_mixed_programlisting_dash_run_markers_and_sql_comments(self):
         for output in ("left | right\n----|----\n1 | 2", "----RESULT output ---\n1"):
