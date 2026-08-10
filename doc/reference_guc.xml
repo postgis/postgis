@@ -273,7 +273,7 @@ SET postgis.enable_outdb_rasters = False;
             <refsection>
                 <title>Description</title>
                 <para>
-                    By default, GDAL logging is printed to stderr, and lower level debug messages are not printed at all. Turning this GUC to true will cause GDAL logging to be sent into the PostgreSQL logging stream, so you can see more or less of it by altering the <code>client_min_message</code> PostgreSQL GUC.
+                    By default, GDAL logging is printed to stderr, and lower level debug messages are not printed at all. Turning this GUC to true will cause detailed GDAL logging to be sent into the PostgreSQL server log. PostgreSQL clients receive only generic GDAL notice, debug, warning, or error messages.
                 </para>
 
                 <para role="availability" conformance="3.6.0">Availability: 3.6.0</para>
