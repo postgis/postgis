@@ -161,7 +161,7 @@ for EXTNAME in $extensions_to_install; do
 	cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$POSTGIS_MICRO_VER--${POSTGIS_MINOR_MAX_VER}.sql;
 
 	for OLD_VERSION in $UPGRADEABLE_VERSIONS; do \
-		if [ "$OLD_VERSION" > "2.5" ] || [ "$OLD_VERSION" in $WIN_RELEASED_VERSIONS ]; then
+		if [[ "$OLD_VERSION" > "2.5" ]] || [[ " $WIN_RELEASED_VERSIONS " == *" $OLD_VERSION "* ]]; then
 			cp extensions/$EXTNAME/sql/$EXTNAME--TEMPLATED--TO--ANY.sql  ${PGPATHEDB}/share/extension/$EXTNAME--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
 		fi
 	done
