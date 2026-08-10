@@ -8,6 +8,9 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - #5772, Fix ST_LineCrossingDirection first-crossing direction when a
+          single segment crosses another line multiple times
+          (Darafei Praliaskouski)
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
