@@ -35,6 +35,8 @@ LLVMFuzzerInitialize(int * /*argc*/, char *** /*argv*/)
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len);
 
+static const size_t POSTGIS_FUZZER_MAX_GSERIALIZED_SIZE = 16 * 1024 * 1024;
+
 static void
 postgis_fuzzer_assert(int condition)
 {
@@ -99,17 +101,25 @@ LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
 		return 0;
 	}
 
-	/* Copy exactly the bytes supplied by the fuzzer and leave g->size
-	 * untouched. The first four bytes are the PostgreSQL varlena size
-	 * header read through LWSIZE_GET(), and they are attacker-controlled
-	 * when GSERIALIZED arrives from a damaged page, binary COPY, bytea cast,
-	 * or hostile dump. Rewriting the header to len would make every input
-	 * self-consistent and hide the over-declared-size cases this target is
-	 * meant to exercise.
+	uint32_t size_header;
+	memcpy(&size_header, buf, sizeof(size_header));
+	const size_t declared_size = LWSIZE_GET(size_header);
+	if (declared_size > POSTGIS_FUZZER_MAX_GSERIALIZED_SIZE)
+		return 0;
+
+	const size_t allocation_size = declared_size > len ? declared_size : len;
+
+	/* Leave the varlena size header untouched. The first four bytes are
+	 * attacker-controlled when GSERIALIZED arrives from a damaged page,
+	 * binary COPY, bytea cast, or hostile dump. When the declared size is
+	 * larger than the supplied testcase, zero-fill the missing tail so the
+	 * parser can validate the declared buffer without UBSAN builds reading
+	 * past the fuzzer allocation.
 	 */
-	GSERIALIZED *gserialized = static_cast<GSERIALIZED *>(postgis_lwgeom_fuzzer_malloc(len));
+	GSERIALIZED *gserialized = static_cast<GSERIALIZED *>(postgis_lwgeom_fuzzer_malloc(allocation_size));
 	if (gserialized == NULL)
 		return 0;
+	memset(gserialized, 0, allocation_size);
 	memcpy(gserialized, buf, len);
 
 	LWGEOM *lwgeom = lwgeom_from_gserialized(gserialized);
