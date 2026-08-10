@@ -136,6 +136,14 @@ or pull request when someone takes ownership of it.
   `postgis`, `postgis_raster`, and `postgis_topology` extension control files
   remain `relocatable = false`, while `postgis_sfcgal` is relocatable.
 
+## Developer Tooling
+
+* Decide whether PostGIS should maintain a repository-owned AI-agent skills
+  file for recurring contributor and maintainer workflows. Any proposal should
+  define the authoritative source, review and update ownership, validation, and
+  how generated or provider-specific copies avoid drifting from the normal
+  developer documentation.
+
 ## Topology
 
 * Investigate topology-aware shapefile loader and dumper workflows, including
@@ -154,3 +162,8 @@ or pull request when someone takes ownership of it.
   importing E00 coverage/topology data. Current in-tree topology tools focus on
   SQL/topology management and `pgtopo_export` / `pgtopo_import`; OSM, E00, and
   routing-specific import design remains unowned.
+* Investigate a first-class attach/detach workflow for TopoGeometry layers that
+  are copied or imported independently of their user tables. A design would
+  need stable layer identity, ownership and privilege rules, relation-table
+  validation, and explicit behavior when the corresponding feature table is
+  absent or later reattached.
