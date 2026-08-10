@@ -11,7 +11,10 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
+* Enhancements *
 
+ - #2310, #2311, #2312, [raster] Add ST_Wedge, ST_Annulus, and
+          ST_Circle focal statistics helpers (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
