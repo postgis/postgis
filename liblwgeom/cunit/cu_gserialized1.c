@@ -155,6 +155,56 @@ static void test_lwgeom_calculate_gbox(void)
 	CU_ASSERT_DOUBLE_EQUAL(b.ymax, 0.5, 0.0000001);
 	lwgeom_free(g);
 
+	/* The curve apex is inside the parameter range, not at a control point. */
+	g = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1000000000, 2 -62000000000))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.ymin, -62000000000.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 2.0, 0.0000001);
+	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(15625000.0));
+	lwgeom_free(g);
+
+	/* The bbox must expand through the extremum's outward float boundary. */
+	g = lwgeom_from_wkt("NURBSCURVE(2, (0 0.99898996343746105, 1 1.000999975937461, 2 0.99900998843746103))",
+			    LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 2.0, 0.0000001);
+	CU_ASSERT(b.ymax >= 1.000000001);
+	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(1.000000001));
+	lwgeom_free(g);
+
+	/* This entire Bezier arch lies between two adjacent samples of the old
+	 * uniform derivative scan. Knot-span decomposition must still find it. */
+	g = lwgeom_from_wkt(
+	    "NURBSCURVE(2, (0 0, 0.25 0, 0.5 0, 0.5 0, 0.5005 1, 0.501 0, 0.501 0, 0.75 0, 1 0), "
+	    "(1, 1, 1, 1, 1, 1, 1, 1, 1), "
+	    "(0, 0, 0, 0.5, 0.5, 0.5, 0.501, 0.501, 0.501, 1, 1, 1))",
+	    LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 1.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.ymin, 0.0, 0.0000001);
+	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(0.5));
+	lwgeom_free(g);
+
+	/* Rational Bezier spans use the projected weighted control hull. */
+	g = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0), (1, 3, 1), (0, 0, 0, 1, 1, 1))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 2.0, 0.0000001);
+	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(0.75));
+	lwgeom_free(g);
+
+	/* Repeated knots split the curve into independent Bezier spans. */
+	g = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0, 3 1, 4 0), (1, 1, 1, 1, 1), (0, 0, 0, 0.5, 0.5, 1, 1, 1))",
+			    LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 4.0, 0.0000001);
+	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(0.5));
+	lwgeom_free(g);
+
 	/* Inf = 0x7FF0000000000000 */
 	/* POINT(0 0) = 00 00000001 0000000000000000 0000000000000000 */
 	/* POINT(0 Inf) = 00 00000001 0000000000000000 7FF0000000000000 */

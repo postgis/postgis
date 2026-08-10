@@ -25,9 +25,25 @@
 #include "liblwgeom_internal.h"
 #include "lwgeodetic.h"
 #include "lwgeom_log.h"
+#include <float.h>
 #include <stdlib.h>
 #include <math.h>
 
+typedef struct {
+	double x;
+	double y;
+	double z;
+	double m;
+	double w;
+} NURBS_BBOX_HPOINT;
+
+typedef struct {
+	uint32_t degree;
+	uint32_t npoints;
+	uint32_t nknots;
+	NURBS_BBOX_HPOINT *points;
+	double *knots;
+} NURBS_BBOX_WORK;
 
 GBOX* gbox_new(lwflags_t flags)
 {
@@ -688,6 +704,468 @@ static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox
 	return LW_SUCCESS;
 }
 
+/**
+ * Projects a homogeneous control point by dividing its weighted coordinates
+ * by w, failing when w is zero and the Cartesian point is undefined.
+ */
+static int
+lwnurbscurve_hpoint_project(const NURBS_BBOX_HPOINT *hpoint, POINT4D *point)
+{
+	if (hpoint->w == 0.0)
+		return LW_FAILURE;
+
+	point->x = hpoint->x / hpoint->w;
+	point->y = hpoint->y / hpoint->w;
+	point->z = hpoint->z / hpoint->w;
+	point->m = hpoint->m / hpoint->w;
+	return LW_SUCCESS;
+}
+
+/**
+ * Interpolates in homogeneous space, as required by rational de Casteljau
+ * subdivision and Boehm knot insertion; interpolating projected points would
+ * describe a different curve.
+ */
+static NURBS_BBOX_HPOINT
+lwnurbscurve_hpoint_lerp(const NURBS_BBOX_HPOINT *a, const NURBS_BBOX_HPOINT *b, double t)
+{
+	NURBS_BBOX_HPOINT out;
+	double s = 1.0 - t;
+
+	out.x = s * a->x + t * b->x;
+	out.y = s * a->y + t * b->y;
+	out.z = s * a->z + t * b->z;
+	out.m = s * a->m + t * b->m;
+	out.w = s * a->w + t * b->w;
+	return out;
+}
+
+/**
+ * Expands a Cartesian box in each enabled dimension, keeping dimensionality
+ * decisions out of the projection and subdivision helpers.
+ */
+static void
+lwnurbscurve_add_point_to_gbox(const POINT4D *point, GBOX *gbox)
+{
+	gbox->xmin = FP_MIN(gbox->xmin, point->x);
+	gbox->xmax = FP_MAX(gbox->xmax, point->x);
+	gbox->ymin = FP_MIN(gbox->ymin, point->y);
+	gbox->ymax = FP_MAX(gbox->ymax, point->y);
+
+	if (FLAGS_GET_Z(gbox->flags))
+	{
+		gbox->zmin = FP_MIN(gbox->zmin, point->z);
+		gbox->zmax = FP_MAX(gbox->zmax, point->z);
+	}
+
+	if (FLAGS_GET_M(gbox->flags))
+	{
+		gbox->mmin = FP_MIN(gbox->mmin, point->m);
+		gbox->mmax = FP_MAX(gbox->mmax, point->m);
+	}
+}
+
+/**
+ * Projects and merges one homogeneous control point, centralizing zero-weight
+ * rejection before any coordinate reaches a box accumulator.
+ */
+static int
+lwnurbscurve_add_hpoint_to_gbox(const NURBS_BBOX_HPOINT *hpoint, GBOX *gbox)
+{
+	POINT4D point;
+
+	if (lwnurbscurve_hpoint_project(hpoint, &point) == LW_FAILURE)
+		return LW_FAILURE;
+
+	lwnurbscurve_add_point_to_gbox(&point, gbox);
+	return LW_SUCCESS;
+}
+
+/**
+ * Initializes an empty double-precision accumulator for the requested
+ * dimensions, using inverted extrema for later additions. Float rounding is
+ * deferred until the subdivision stop test.
+ */
+static void
+lwnurbscurve_gbox_init(GBOX *gbox, lwflags_t flags)
+{
+	gbox->flags = flags;
+	gbox->xmin = gbox->ymin = gbox->zmin = gbox->mmin = DBL_MAX;
+	gbox->xmax = gbox->ymax = gbox->zmax = gbox->mmax = -DBL_MAX;
+}
+
+/**
+ * Bounds the projected control-point hull of a positive-weight rational Bezier
+ * span, providing the conservative outer bound used during subdivision.
+ */
+static int
+lwnurbscurve_bezier_hull_gbox(const NURBS_BBOX_HPOINT *points, uint32_t npoints, lwflags_t flags, GBOX *gbox)
+{
+	uint32_t i;
+
+	lwnurbscurve_gbox_init(gbox, flags);
+	for (i = 0; i < npoints; i++)
+	{
+		if (lwnurbscurve_add_hpoint_to_gbox(&points[i], gbox) == LW_FAILURE)
+			return LW_FAILURE;
+	}
+
+	return LW_SUCCESS;
+}
+
+/**
+ * Bounds the projected endpoints of a Bezier span, providing an inner
+ * coordinate-range bound to compare with the control hull's outer bound.
+ */
+static int
+lwnurbscurve_bezier_endpoint_gbox(const NURBS_BBOX_HPOINT *points, uint32_t degree, lwflags_t flags, GBOX *gbox)
+{
+	lwnurbscurve_gbox_init(gbox, flags);
+
+	if (lwnurbscurve_add_hpoint_to_gbox(&points[0], gbox) == LW_FAILURE ||
+	    lwnurbscurve_add_hpoint_to_gbox(&points[degree], gbox) == LW_FAILURE)
+		return LW_FAILURE;
+
+	return LW_SUCCESS;
+}
+
+/**
+ * Tests whether two boxes round outward to the same float bounds, so refinement
+ * stops once it can no longer change the serialized bounding box. The caller
+ * supplies boxes with identical dimensional flags.
+ */
+static int
+lwnurbscurve_gbox_same_float(const GBOX *a, const GBOX *b)
+{
+	if (next_float_down(a->xmin) != next_float_down(b->xmin) || next_float_up(a->xmax) != next_float_up(b->xmax) ||
+	    next_float_down(a->ymin) != next_float_down(b->ymin) || next_float_up(a->ymax) != next_float_up(b->ymax))
+		return LW_FALSE;
+
+	if (FLAGS_GET_Z(a->flags) &&
+	    (next_float_down(a->zmin) != next_float_down(b->zmin) || next_float_up(a->zmax) != next_float_up(b->zmax)))
+		return LW_FALSE;
+
+	if (FLAGS_GET_M(a->flags) &&
+	    (next_float_down(a->mmin) != next_float_down(b->mmin) || next_float_up(a->mmax) != next_float_up(b->mmax)))
+		return LW_FALSE;
+
+	return LW_TRUE;
+}
+
+/**
+ * Detects when floating-point subdivision no longer changes a control net.
+ * Exact equality is intentional: any changed component permits more progress;
+ * otherwise recursion stops with the current conservative hull.
+ */
+static int
+lwnurbscurve_hpoints_same(const NURBS_BBOX_HPOINT *a, const NURBS_BBOX_HPOINT *b, uint32_t npoints)
+{
+	uint32_t i;
+
+	for (i = 0; i < npoints; i++)
+	{
+		if (a[i].x != b[i].x || a[i].y != b[i].y || a[i].z != b[i].z || a[i].m != b[i].m || a[i].w != b[i].w)
+			return LW_FALSE;
+	}
+
+	return LW_TRUE;
+}
+
+/**
+ * Splits a homogeneous Bezier control net at t = 1/2, producing two control
+ * nets that represent the same curve on their respective half-intervals. For
+ * positive weights, each child's projected control hull is contained in the
+ * parent's hull, so subdivision can only tighten the conservative outer box.
+ */
+static void
+lwnurbscurve_bezier_split(const NURBS_BBOX_HPOINT *points,
+			  uint32_t degree,
+			  NURBS_BBOX_HPOINT *left,
+			  NURBS_BBOX_HPOINT *right)
+{
+	uint32_t i, r;
+	NURBS_BBOX_HPOINT tmp[degree + 1];
+
+	for (i = 0; i <= degree; i++)
+		tmp[i] = points[i];
+
+	left[0] = tmp[0];
+	right[degree] = tmp[degree];
+
+	for (r = 1; r <= degree; r++)
+	{
+		for (i = 0; i <= degree - r; i++)
+			tmp[i] = lwnurbscurve_hpoint_lerp(&tmp[i], &tmp[i + 1], 0.5);
+
+		left[r] = tmp[0];
+		right[degree - r] = tmp[degree - r];
+	}
+}
+
+/**
+ * Recursively bounds one rational Bezier span. Its projected control hull is a
+ * conservative outer box, while its endpoints give an inner box. Subdivision
+ * narrows the two child hulls and adds their shared split point to the endpoint
+ * sample set. Once inner and outer boxes outward-round to the same float box,
+ * the stored GSERIALIZED box is fixed.
+ *
+ * This helper owns the stop test, splitting, and recursion. In particular, it
+ * does not merge an oversized parent hull before descending: only terminal
+ * child hulls are merged into gbox.
+ */
+static int
+lwnurbscurve_add_bezier_span_gbox(const NURBS_BBOX_HPOINT *points,
+				  uint32_t degree,
+				  lwflags_t flags,
+				  uint32_t depth,
+				  GBOX *gbox)
+{
+	GBOX hull_gbox, endpoint_gbox;
+	NURBS_BBOX_HPOINT left[degree + 1];
+	NURBS_BBOX_HPOINT right[degree + 1];
+
+	if (lwnurbscurve_bezier_hull_gbox(points, degree + 1, flags, &hull_gbox) == LW_FAILURE ||
+	    lwnurbscurve_bezier_endpoint_gbox(points, degree, flags, &endpoint_gbox) == LW_FAILURE)
+		return LW_FAILURE;
+
+	/* Positive NURBS weights put each rational Bezier span inside the convex
+	 * hull of its projected control points. Subdivision tightens that hull
+	 * until further refinement cannot change the float bbox that PostGIS stores
+	 * in GSERIALIZED. If arithmetic stops changing the control net first, merge
+	 * the current hull; it is still conservative. */
+	if (depth >= DBL_MANT_DIG || lwnurbscurve_gbox_same_float(&hull_gbox, &endpoint_gbox))
+	{
+		gbox_merge(&hull_gbox, gbox);
+		return LW_SUCCESS;
+	}
+
+	/* Keep splitting behind this helper so every child is subjected to the same
+	 * conservative stop and fallback rules before anything is merged. */
+	lwnurbscurve_bezier_split(points, degree, left, right);
+	if (lwnurbscurve_hpoints_same(left, points, degree + 1) || lwnurbscurve_hpoints_same(right, points, degree + 1))
+	{
+		gbox_merge(&hull_gbox, gbox);
+		return LW_SUCCESS;
+	}
+
+	if (lwnurbscurve_add_bezier_span_gbox(left, degree, flags, depth + 1, gbox) == LW_FAILURE ||
+	    lwnurbscurve_add_bezier_span_gbox(right, degree, flags, depth + 1, gbox) == LW_FAILURE)
+		return LW_FAILURE;
+
+	return LW_SUCCESS;
+}
+
+/**
+ * Counts exact copies of a knot value. Exact comparison is intentional: this
+ * code queries values already present in, or copied directly into, the vector.
+ */
+static uint32_t
+lwnurbscurve_knot_multiplicity(const double *knots, uint32_t nknots, double knot)
+{
+	uint32_t i, multiplicity = 0;
+
+	for (i = 0; i < nknots; i++)
+	{
+		if (knots[i] == knot)
+			multiplicity++;
+	}
+
+	return multiplicity;
+}
+
+/**
+ * Finds the half-open knot span [U[i], U[i + 1]) used by knot insertion,
+ * clamping either domain endpoint to its valid boundary span. The work knot
+ * vector has already been validated as nondecreasing.
+ */
+static uint32_t
+lwnurbscurve_gbox_find_span(const NURBS_BBOX_WORK *work, double knot)
+{
+	uint32_t npoints = work->npoints;
+	uint32_t degree = work->degree;
+	uint32_t low, high, mid;
+
+	if (knot >= work->knots[npoints])
+		return npoints - 1;
+	if (knot <= work->knots[degree])
+		return degree;
+
+	low = degree;
+	high = npoints;
+	mid = (low + high) / 2;
+	while (knot < work->knots[mid] || knot >= work->knots[mid + 1])
+	{
+		if (knot < work->knots[mid])
+			high = mid;
+		else
+			low = mid;
+		mid = (low + high) / 2;
+	}
+
+	return mid;
+}
+
+/**
+ * Inserts one knot into the homogeneous B-spline work arrays while preserving
+ * the curve, allowing its spans to be converted into Bezier form.
+ */
+static int
+lwnurbscurve_insert_knot_once(NURBS_BBOX_WORK *work, double knot)
+{
+	uint32_t i;
+	uint32_t degree = work->degree;
+	uint32_t n = work->npoints - 1;
+	uint32_t k = lwnurbscurve_gbox_find_span(work, knot);
+	uint32_t s = lwnurbscurve_knot_multiplicity(work->knots, work->nknots, knot);
+	NURBS_BBOX_HPOINT *points;
+	double *knots;
+
+	/* Boehm knot insertion in homogeneous coordinates preserves the rational
+	 * curve while replacing the affected control points by convex blends. */
+	if (s > degree)
+		return LW_FAILURE;
+
+	points = lwalloc(sizeof(NURBS_BBOX_HPOINT) * (work->npoints + 1));
+	knots = lwalloc(sizeof(double) * (work->nknots + 1));
+
+	for (i = 0; i <= k; i++)
+		knots[i] = work->knots[i];
+	knots[k + 1] = knot;
+	for (i = k + 1; i < work->nknots; i++)
+		knots[i + 1] = work->knots[i];
+
+	for (i = 0; i <= k - degree; i++)
+		points[i] = work->points[i];
+	for (i = k - s + 1; i <= n + 1; i++)
+		points[i] = work->points[i - 1];
+
+	for (i = k - degree + 1; i <= k - s; i++)
+	{
+		double denom = work->knots[i + degree] - work->knots[i];
+		double alpha;
+
+		if (denom == 0.0)
+		{
+			lwfree(points);
+			lwfree(knots);
+			return LW_FAILURE;
+		}
+
+		alpha = (knot - work->knots[i]) / denom;
+		points[i] = lwnurbscurve_hpoint_lerp(&work->points[i - 1], &work->points[i], alpha);
+	}
+
+	lwfree(work->points);
+	lwfree(work->knots);
+	work->points = points;
+	work->knots = knots;
+	work->npoints++;
+	work->nknots++;
+
+	return LW_SUCCESS;
+}
+
+/**
+ * Raises a knot to the requested multiplicity through curve-preserving
+ * insertions, preparing domain boundaries and interior Bezier breaks.
+ */
+static int
+lwnurbscurve_ensure_knot_multiplicity(NURBS_BBOX_WORK *work, double knot, uint32_t target)
+{
+	while (lwnurbscurve_knot_multiplicity(work->knots, work->nknots, knot) < target)
+	{
+		if (lwnurbscurve_insert_knot_once(work, knot) == LW_FAILURE)
+			return LW_FAILURE;
+	}
+
+	return LW_SUCCESS;
+}
+
+/**
+ * Refines the working knot vector into independent Bezier spans, making each
+ * non-empty part suitable for conservative convex-hull bounding.
+ */
+static int
+lwnurbscurve_make_bezier_work(NURBS_BBOX_WORK *work, double domain_min, double domain_max)
+{
+	uint32_t i;
+
+	/* A B-spline decomposes into Bezier spans once the domain endpoints have
+	 * multiplicity p + 1 and every interior knot has multiplicity p. Zero-width
+	 * spans remain in the knot vector and are skipped by the caller. */
+	if (lwnurbscurve_ensure_knot_multiplicity(work, domain_min, work->degree + 1) == LW_FAILURE ||
+	    lwnurbscurve_ensure_knot_multiplicity(work, domain_max, work->degree + 1) == LW_FAILURE)
+		return LW_FAILURE;
+
+	for (i = 0; i < work->nknots;)
+	{
+		double knot = work->knots[i];
+		uint32_t multiplicity = 1;
+
+		while (i + multiplicity < work->nknots && work->knots[i + multiplicity] == knot)
+			multiplicity++;
+
+		if (knot > domain_min && knot < domain_max && multiplicity < work->degree)
+		{
+			if (lwnurbscurve_insert_knot_once(work, knot) == LW_FAILURE)
+				return LW_FAILURE;
+			i = 0;
+		}
+		else
+		{
+			i += multiplicity;
+		}
+	}
+
+	return LW_SUCCESS;
+}
+
+/**
+ * Releases the owned arrays used for refinement. Both pointers may be NULL
+ * because initialization can fail after allocating only part of the workset.
+ */
+static void
+lwnurbscurve_free_work(NURBS_BBOX_WORK *work)
+{
+	if (work->points)
+		lwfree(work->points);
+	if (work->knots)
+		lwfree(work->knots);
+}
+
+/**
+ * Builds owned homogeneous control-point and knot arrays for bounding, so knot
+ * insertion can refine the curve without modifying the input geometry.
+ */
+static int
+lwnurbscurve_init_work(const LWNURBSCURVE *curve, NURBS_BBOX_WORK *work)
+{
+	uint32_t i;
+
+	memset(work, 0, sizeof(NURBS_BBOX_WORK));
+	work->degree = curve->degree;
+	work->npoints = curve->points->npoints;
+	work->knots = lwnurbscurve_get_or_generate_knots(curve, &work->nknots);
+	if (!work->knots || work->nknots == 0)
+		return LW_FAILURE;
+
+	work->points = lwalloc(sizeof(NURBS_BBOX_HPOINT) * work->npoints);
+	for (i = 0; i < work->npoints; i++)
+	{
+		POINT4D point;
+		double weight = (curve->weights && i < curve->nweights) ? curve->weights[i] : 1.0;
+
+		getPoint4d_p(curve->points, i, &point);
+		work->points[i].x = point.x * weight;
+		work->points[i].y = point.y * weight;
+		work->points[i].z = FLAGS_GET_Z(curve->flags) ? point.z * weight : 0.0;
+		work->points[i].m = FLAGS_GET_M(curve->flags) ? point.m * weight : 0.0;
+		work->points[i].w = weight;
+	}
+
+	return LW_SUCCESS;
+}
+
 static int lwpoint_calculate_gbox_cartesian(LWPOINT *point, GBOX *gbox)
 {
 	if ( ! point ) return LW_FAILURE;
@@ -698,6 +1176,56 @@ static int lwline_calculate_gbox_cartesian(LWLINE *line, GBOX *gbox)
 {
 	if ( ! line ) return LW_FAILURE;
 	return ptarray_calculate_gbox_cartesian( line->points, gbox );
+}
+
+/**
+ * Computes a conservative Cartesian box for the whole NURBS curve by
+ * subdividing Bezier spans, which can tighten the box beyond what the original
+ * control points or endpoints show. It submits each complete span to
+ * lwnurbscurve_add_bezier_span_gbox(), which decides whether to split and owns
+ * the recursive merge; splitting here would duplicate that policy.
+ */
+static int
+lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
+{
+	uint32_t i;
+	int found_span = LW_FALSE;
+	double domain_min, domain_max;
+	NURBS_BBOX_WORK work;
+
+	if (!curve || !curve->points || curve->points->npoints == 0)
+		return LW_FAILURE;
+
+	if (lwnurbscurve_init_work(curve, &work) == LW_FAILURE)
+		return LW_FAILURE;
+
+	domain_min = work.knots[work.degree];
+	domain_max = work.knots[work.npoints];
+	if (domain_max <= domain_min || lwnurbscurve_make_bezier_work(&work, domain_min, domain_max) == LW_FAILURE)
+	{
+		lwnurbscurve_free_work(&work);
+		return LW_FAILURE;
+	}
+
+	lwnurbscurve_gbox_init(gbox, lwflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0));
+
+	for (i = work.degree; i < work.npoints; i++)
+	{
+		if (work.knots[i] < domain_min || work.knots[i + 1] > domain_max || work.knots[i + 1] <= work.knots[i])
+			continue;
+
+		if (lwnurbscurve_add_bezier_span_gbox(
+			&work.points[i - work.degree], work.degree, gbox->flags, 0, gbox) == LW_FAILURE)
+		{
+			lwnurbscurve_free_work(&work);
+			return LW_FAILURE;
+		}
+		found_span = LW_TRUE;
+	}
+
+	lwnurbscurve_free_work(&work);
+
+	return found_span ? LW_SUCCESS : LW_FAILURE;
 }
 
 static int lwtriangle_calculate_gbox_cartesian(LWTRIANGLE *triangle, GBOX *gbox)
@@ -790,18 +1318,7 @@ int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox)
 	case COLLECTIONTYPE:
 		return lwcollection_calculate_gbox_cartesian((LWCOLLECTION *)lwgeom, gbox);
 	case NURBSCURVETYPE:
-	{
-		int rv;
-		LWLINE *line;
-		const LWNURBSCURVE *nurbs = (const LWNURBSCURVE*)lwgeom;
-		if (!nurbs->points || nurbs->points->npoints == 0)
-			return LW_FAILURE; /* Empty curve has no bounding box */
-
-		line = lwnurbscurve_to_linestring(nurbs, 32);
-		rv = lwline_calculate_gbox_cartesian(line, gbox);
-		lwline_free(line);
-		return rv;
-	}
+		return lwnurbscurve_calculate_gbox_cartesian((const LWNURBSCURVE *)lwgeom, gbox);
 	}
 	/* Never get here, please. */
 	lwerror("unsupported type (%d) - %s", lwgeom->type, lwtype_name(lwgeom->type));
