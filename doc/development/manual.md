@@ -35,7 +35,7 @@ the old HTML directory:
 ```sh
 make -C /path/to/old-postgis/doc html
 make -C doc review-html REVIEW_HTML_BASE=/path/to/old-postgis/doc/html
-python3 -m http.server --directory . 8000
+python3 -m http.server --bind 127.0.0.1 --directory . 8000
 ```
 
 Open `http://127.0.0.1:8000/doc/html/review/`. The page keeps the old manual on

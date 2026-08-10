@@ -520,6 +520,18 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
         )
         self.assertIn("ST_HausdorffDistance(actual, expected) <= 9.9999999999999995e-07", query)
 
+    def test_explicit_geometry_output_precision_keeps_z_textual(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        query = tester.geometry_comparison_query(
+            "0101000080000000000000F03F00000000000000400000000000000840",
+            expected_wkt="POINT Z (1.000000 2.000000 3.000000)",
+            actual_type="POINT",
+            expected_wkt_digits=6,
+        )
+
+        self.assertIn("ST_AsText(actual, 6) = ST_AsText(expected, 6)", query)
+        self.assertNotIn("ST_HausdorffDistance", query)
+
     def test_surface_output_precision_preserves_canonical_face_comparison(self):
         tester = ExampleTester.__new__(ExampleTester)
         query = tester.geometry_comparison_query(

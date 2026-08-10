@@ -231,8 +231,8 @@ WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';</progr
 		<title>Description</title>
 
 		<para>Removes a geometry column from a spatial table. Note that
-		schema_name will need to match the f_table_schema field of the table's
-		row in the geometry_columns table.</para>
+		schema_name will need to match the f_table_schema field shown by the
+		<varname>geometry_columns</varname> view.</para>
 
 		<warning>
 		  <para><function>DropGeometryColumn</function> is retained for backward

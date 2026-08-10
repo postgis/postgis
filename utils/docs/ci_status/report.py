@@ -1331,6 +1331,9 @@ def resolve_cache_heads(config, work, cache, timeout):
     remote = config.get("cache_head_remote")
     if not remote:
         return {}
+    parsed = urllib.parse.urlparse(remote)
+    if parsed.scheme not in ("https", "http") or not parsed.netloc or remote.startswith("-"):
+        raise ConfigError("cache_head_remote must be an HTTP(S) URL")
     branch_names = sorted({
         branch["name"]
         for branch, _check in work
@@ -1345,7 +1348,7 @@ def resolve_cache_heads(config, work, cache, timeout):
     refs = [f"refs/heads/{name}" for name in branch_names]
     try:
         completed = subprocess.run(
-            ["git", "ls-remote", "--exit-code", "--heads", remote, *refs],
+            ["git", "ls-remote", "--exit-code", "--heads", "--", remote, *refs],
             check=True,
             capture_output=True,
             text=True,
@@ -1738,7 +1741,7 @@ def print_branch_table(branches, use_color):
     print(terminal_style("-" * len(header), dim=True, enabled=use_color))
     for branch in branches:
         counts = check_counts(branch)
-        unknown = counts[UNKNOWN] + counts[STALE]
+        unknown = counts[UNKNOWN] + counts[STALE] + counts[STALE_PASSED] + counts[STALE_FAILED]
         label = f"{branch['label']:<10}"
         print(
             f"{label} "

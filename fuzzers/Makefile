@@ -78,7 +78,7 @@ check-corpus: dummyfuzzers
 	rm -rf "$(FUZZER_WORK)"; \
 	mkdir -p "$(FUZZER_WORK)"; \
 	trap 'rm -rf "$(FUZZER_WORK)"' EXIT HUP INT TERM; \
-	for corpus in $(SEED_CORPORA) "$(FUZZER_OUT)"/*_seed_corpus.zip __none__; do \
+	for corpus in $(SEED_CORPORA) __none__; do \
 		if [ "$${corpus}" = "__none__" ] || [ ! -e "$${corpus}" ]; then \
 			continue; \
 		fi; \

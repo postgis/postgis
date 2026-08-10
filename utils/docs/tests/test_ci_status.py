@@ -1,4 +1,5 @@
 import json
+import io
 import pathlib
 import subprocess
 import sys
@@ -241,6 +242,7 @@ class CIStatusTest(unittest.TestCase):
                 "ls-remote",
                 "--exit-code",
                 "--heads",
+                "--",
                 "https://example.test/postgis.git",
                 "refs/heads/master",
                 "refs/heads/stable-3.6",
@@ -250,6 +252,40 @@ class CIStatusTest(unittest.TestCase):
             text=True,
             timeout=7,
         )
+
+    def test_cache_head_lookup_rejects_option_like_remote(self):
+        config = {"cache_head_remote": "--upload-pack=sh"}
+        work = [({"name": "master", "label": "master"}, {"name": "Synthetic CI"})]
+        cache = CI_STATUS.index_status_cache({
+            "branches": [{
+                "name": "master",
+                "checks": [{
+                    "check": "Synthetic CI",
+                    "status": CI_STATUS.SUCCESS,
+                }],
+            }],
+        })
+
+        with self.assertRaises(CI_STATUS.ConfigError):
+            CI_STATUS.resolve_cache_heads(config, work, cache, timeout=7)
+
+    def test_branch_table_counts_all_stale_statuses_as_unknown(self):
+        branch = {
+            "name": "stable-synthetic",
+            "label": "Synthetic",
+            "status": CI_STATUS.UNKNOWN,
+            "checks": [
+                check("Required / Unknown", CI_STATUS.UNKNOWN),
+                check("Required / Stale", CI_STATUS.STALE),
+                check("Required / Passed", CI_STATUS.STALE_PASSED),
+                check("Required / Failed", CI_STATUS.STALE_FAILED),
+            ],
+        }
+
+        with mock.patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            CI_STATUS.print_branch_table([branch], use_color=False)
+
+        self.assertIn("  4  ", stdout.getvalue())
 
     def test_missing_optional_status_cache_starts_empty(self):
         with tempfile.TemporaryDirectory() as tmpdir:

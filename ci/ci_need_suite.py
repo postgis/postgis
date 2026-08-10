@@ -64,6 +64,7 @@ LOADER_GLOBS = (
 
 UPGRADE_GLOBS = (
     "Version.config",
+    "spatial_ref_sys.sql",
     "extensions/**",
     "postgis/*.sql.in",
     "raster/rt_pg/*.sql.in",

@@ -194,9 +194,8 @@ before changing a pipeline:
 read -rs WOODPECKER_TOKEN
 printf '\n'
 umask 077
-woodpecker-cli setup --context osgeo \
-  --server https://woodie.osgeo.org \
-  --token "$WOODPECKER_TOKEN"
+WOODPECKER_TOKEN="$WOODPECKER_TOKEN" woodpecker-cli setup --context osgeo \
+  --server https://woodie.osgeo.org
 unset WOODPECKER_TOKEN
 woodpecker-cli context use osgeo
 woodpecker-cli info
