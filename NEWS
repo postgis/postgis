@@ -30,6 +30,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #5914, GT-718, [raster] Keep ST_Resample responsive to interrupts
+          (Darafei Praliaskouski)
  - GT-889, Avoid generating indices for empty ST_AsX3D rings (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data)
  - GT-874, [raster] Bound histogram bin initialization for repeating widths
           (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
