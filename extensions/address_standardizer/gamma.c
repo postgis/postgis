@@ -36,9 +36,6 @@ static void classify_link( RULE_PARAM * , KW ***, KW *, NODE , SYMB , SYMB  ) ;
 static void add_failure_linkage( KW ***, NODE , NODE  ) ;
 static NODE **precompute_gamma_function( ERR_PARAM *, NODE ** , KW ***, NODE  ) ;
 static void set_memory_error( ERR_PARAM * ) ;
-#ifdef BUILD_API
-static int rules_allocated_node_count( const RULES * ) ;
-#endif
 
 static double load_value[ NUMBER_OF_WEIGHTS ] = {
    0.00, 0.325, 0.35 , 0.375 , 0.4 ,
@@ -49,25 +46,6 @@ static double load_value[ NUMBER_OF_WEIGHTS ] = {
 static void set_memory_error( ERR_PARAM *err_p ) {
    LOG_MESS( "Insufficient Memory", err_p ) ;
 }
-
-#ifdef BUILD_API
-static int rules_allocated_node_count( const RULES *rules ) {
-   int node_count;
-
-   if ( rules == NULL ) {
-      return 0;
-   }
-
-   node_count = rules -> last_node + 1;
-   if ( node_count < 0 ) {
-      return 0;
-   }
-   if ( node_count > MAXNODES ) {
-      return MAXNODES;
-   }
-   return node_count;
-}
-#endif
 
 /*---------------------------------------------------------------------------
 gamma.c (refresh_transducer)
@@ -134,77 +112,84 @@ api interface to replace (create_rules)
 ---------------------------------------------------------------------------*/
 RULES *rules_init( ERR_PARAM *err_p ) {
     RULES *rules;
-    /* -- returns size of Gamma Function Matrix -- */
     SYMB a ;
-    KW *k_s ;
-    KW ***o_l ;
-    NODE **Trie ;
-    SYMB *r_s ;
-    RULE_PARAM *r_p ;
 
-
-    PAGC_CALLOC_STRUC(rules,RULES,1,err_p,NULL);
+    rules = calloc(1, sizeof(RULES));
+    if (!rules) {
+       set_memory_error(err_p);
+       return NULL;
+    }
     rules->err_p = err_p;
     rules->ready = 0;
     rules->rule_number = 0;
     rules->last_node = EPSILON;
 
-    PAGC_CALLOC_STRUC(r_p,RULE_PARAM,1,err_p,NULL) ;
-    rules->r_p = r_p;
+    rules->r_p = calloc(1, sizeof(RULE_PARAM));
+    if (!rules->r_p) {
+       set_memory_error(err_p);
+       goto fail;
+    }
 
     /* -- initialize the statistics record -- */
-    r_p -> collect_statistics = FALSE ;
-    r_p -> total_best_keys = 0 ;
-    r_p -> total_key_hits = 0 ;
+    rules->r_p->collect_statistics = FALSE ;
+    rules->r_p->total_best_keys = 0 ;
+    rules->r_p->total_key_hits = 0 ;
 
     /* -- storage for input and output records -- */
-    PAGC_CALLOC_STRUC(r_s,SYMB,RULESPACESIZE,err_p,NULL);
+    rules->r_p->rule_space = calloc(RULESPACESIZE, sizeof(SYMB));
+    if (!rules->r_p->rule_space) {
+       set_memory_error(err_p);
+       goto fail;
+    }
 
     /* -- storage for temporary trie for rules -- */
-    PAGC_CALLOC_STRUC(Trie,NODE *,MAXNODES,err_p,NULL);
-    rules -> Trie = Trie ;
+    rules->Trie = calloc(MAXNODES, sizeof(NODE *));
+    if (!rules->Trie) {
+       set_memory_error(err_p);
+       goto fail;
+    }
 
     /* -- initialize the first( EPSILON ) node of the trie -- */
-    PAGC_CALLOC_STRUC(Trie[EPSILON],NODE,MAXINSYM,err_p,NULL);
+    rules->Trie[EPSILON] = calloc(MAXINSYM, sizeof(NODE));
+    if (!rules->Trie[EPSILON]) {
+       set_memory_error(err_p);
+       goto fail;
+    }
+    rules->r_p->num_nodes = 1;
 
     for ( a = 0 ;
           a < MAXINSYM ;
           a++ ) {
-       Trie[ EPSILON ][ a ] = FAIL ;
+       rules->Trie[ EPSILON ][ a ] = FAIL ;
     }
 
     /* -- storage for global output_link -- */
-    PAGC_CALLOC_STRUC(o_l,KW **,MAXNODES,err_p,NULL);
-    PAGC_CALLOC_STRUC(k_s,KW,MAXRULES,err_p,NULL);
-
-    if ( !initialize_link( err_p ,
-                           o_l ,
-                           EPSILON ) ) {
-
-       /* Cleanup allocated resources */
-       FREE_AND_NULL(o_l);
-       FREE_AND_NULL(k_s);
-       FREE_AND_NULL(r_s);
-       FREE_AND_NULL(r_p);
-       rules -> r_p = NULL;
-
-       PAGC_DESTROY_2D_ARRAY(rules -> Trie,NODE,rules_allocated_node_count(rules));
-       rules -> Trie = NULL;
-
-       rules_free(rules);
-
-       return NULL;
+    rules->r_p->output_link = calloc(MAXNODES, sizeof(KW **));
+    if (!rules->r_p->output_link) {
+       set_memory_error(err_p);
+       goto fail;
+    }
+    rules->r_p->key_space = calloc(MAXRULES, sizeof(KW));
+    if (!rules->r_p->key_space) {
+       set_memory_error(err_p);
+       goto fail;
     }
 
-    rules -> r_p -> rule_space = r_s ;
-    rules -> r_p -> key_space = k_s ;
-    rules -> r_p -> output_link = o_l ;
+    if ( !initialize_link( err_p ,
+                           rules->r_p->output_link ,
+                           EPSILON ) ) {
+       goto fail;
+    }
 
-    rules -> rule_end = r_s + RULESPACESIZE ;
+    rules -> rule_end = rules->r_p->rule_space + RULESPACESIZE ;
 
-    rules -> r = r_s ;
+    rules -> r = rules->r_p->rule_space ;
 
     return rules;
+
+fail:
+    rules_free(rules);
+    return NULL;
 }
 
 
@@ -278,6 +263,7 @@ int rules_add_rule(RULES *rules, int num, int *rule) {
             }
             Trie[ u ][ *r ] = rules -> last_node ;
             PAGC_CALLOC_STRUC(Trie[rules -> last_node],NODE,MAXINSYM,rules -> err_p,9) ;
+            rules->r_p->num_nodes = rules->last_node + 1;
             for ( a = 0 ;
                   a < MAXINSYM ;
                   a++ ) {
@@ -410,15 +396,11 @@ int rules_ready(RULES *rules) {
 void rules_free(RULES *rules) {
 
     if (!rules) return;
-    if (rules->r_p) {
-        if (!rules->ready && rules->r_p->num_nodes == 0) {
-            rules -> r_p -> num_nodes = rules_allocated_node_count(rules) ;
-        }
-        destroy_rules(rules->r_p);
-    }
     if (rules->Trie) {
-        PAGC_DESTROY_2D_ARRAY(rules -> Trie,NODE,rules_allocated_node_count(rules));
+        int num_nodes = rules->r_p ? rules->r_p->num_nodes : 0;
+        PAGC_DESTROY_2D_ARRAY(rules->Trie,NODE,num_nodes);
     }
+    if (rules->r_p) destroy_rules(rules->r_p);
     free(rules);
     rules = NULL;
 }

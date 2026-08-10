@@ -534,18 +534,18 @@ CreateStd(char *lextab, char *gaztab, char *rultab)
 static int parse_rule(char *buf, int *rule)
 {
     int nr = 0;
-    int *r = rule;
+    int value;
     char *p = buf;
     char *q;
 
 
     while (1) {
-        if (nr >= MAX_RULE_LENGTH) return -1;
-        *r = strtol( p, &q, 10 );
+        value = strtol( p, &q, 10 );
         if (p == q) break;
+        if (nr >= MAX_RULE_LENGTH) return -1;
+        rule[nr] = value;
         p = q;
         nr++;
-        r++;
     }
 
     return nr;

@@ -87,6 +87,11 @@ staged-install-raster:
 		$(MAKE) -C ../raster/rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
 	fi
 
+staged-install-address-standardizer:
+	@if test x"@ADDRESS_STANDARDIZER@" != "x"; then \
+		$(MAKE) -C ../extensions/address_standardizer REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
+	fi
+
 staged-install-core:
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 	$(MAKE) -C ../ REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) comments-install
@@ -97,6 +102,7 @@ staged-install:
 	$(MAKE) staged-install-raster
 	$(MAKE) staged-install-topology
 	$(MAKE) staged-install-sfcgal
+	$(MAKE) staged-install-address-standardizer
 	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 
 garden: staged-install

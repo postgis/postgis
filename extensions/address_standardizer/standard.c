@@ -718,4 +718,3 @@ static int _Close_Stand_Field_(STAND_PARAM *__stand_param__)
 	}
 	RET_ERR("_Close_Stand_Field_: Address failed to standardize",__stand_param__->errors,FALSE) ;
 }
-
