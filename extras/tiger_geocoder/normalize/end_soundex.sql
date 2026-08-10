@@ -8,9 +8,9 @@ DECLARE
 BEGIN
   tempString := substring($1, E'[ ,.\n\t\f]([a-zA-Z0-9]*)$');
   IF tempString IS NOT NULL THEN
-    tempString := soundex(tempString);
+    tempString := @extschema:fuzzystrmatch@.soundex(tempString);
   ELSE
-    tempString := soundex($1);
+    tempString := @extschema:fuzzystrmatch@.soundex($1);
   END IF;
   return tempString;
 END;

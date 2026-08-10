@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION geocode_location(
     parsed NORM_ADDY,
-    restrict_geom geometry DEFAULT null,
+    restrict_geom @extschema:postgis@.geometry DEFAULT null,
     OUT ADDY NORM_ADDY,
-    OUT GEOMOUT GEOMETRY,
+    OUT GEOMOUT @extschema:postgis@.GEOMETRY,
     OUT RATING INTEGER
 ) RETURNS SETOF RECORD
 AS $_$
@@ -22,7 +22,7 @@ BEGIN
     SELECT
         coalesce(zip.city)::varchar as place,
         zip.zip as zip,
-        ST_Centroid(zcta5.the_geom) as address_geom,
+        @extschema:postgis@.ST_Centroid(zcta5.the_geom) as address_geom,
         stusps as state,
         100::integer + coalesce(tiger.levenshtein_ignore_case(coalesce(zip.city), parsed.location),0) as in_rating
     FROM
@@ -31,7 +31,7 @@ BEGIN
       JOIN tiger.state ON (state.statefp=zip.statefp)
     WHERE
       parsed.zip = zip.zip OR
-      (soundex(zip.city) = soundex(parsed.location) and zip.statefp = in_statefp)
+      (@extschema:fuzzystrmatch@.soundex(zip.city) = @extschema:fuzzystrmatch@.soundex(parsed.location) and zip.statefp = in_statefp)
     ORDER BY tiger.levenshtein_ignore_case(coalesce(zip.city), parsed.location), zip.zip
   LOOP
     ADDY.location := result.place;
@@ -57,11 +57,11 @@ BEGIN
   stmt := 'SELECT '
        || ' pl.name as place, '
        || ' state.stusps as stateAbbrev, '
-       || ' ST_Centroid(pl.the_geom) as address_geom, '
+       || ' @extschema:postgis@.ST_Centroid(pl.the_geom) as address_geom, '
        || ' 100::integer + tiger.levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ') as in_rating '
-       || ' FROM (SELECT * FROM tiger.place WHERE statefp = ' ||  quote_literal(coalesce(in_statefp,'')) || ' ' || COALESCE(' AND ST_Intersects(' || quote_literal(restrict_geom::text) || '::geometry, the_geom)', '') || ') AS pl '
+       || ' FROM (SELECT * FROM tiger.place WHERE statefp = ' ||  quote_literal(coalesce(in_statefp,'')) || ' ' || COALESCE(' AND @extschema:postgis@.ST_Intersects(' || quote_literal(restrict_geom::text) || '::@extschema:postgis@.geometry, the_geom)', '') || ') AS pl '
        || ' INNER JOIN tiger.state ON(pl.statefp = state.statefp)'
-       || ' WHERE soundex(pl.name) = soundex(' || quote_literal(coalesce(parsed.location,'')) || ') and pl.statefp = ' || quote_literal(COALESCE(in_statefp,''))
+       || ' WHERE @extschema:fuzzystrmatch@.soundex(pl.name) = @extschema:fuzzystrmatch@.soundex(' || quote_literal(coalesce(parsed.location,'')) || ') and pl.statefp = ' || quote_literal(COALESCE(in_statefp,''))
        || ' ORDER BY tiger.levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ');'
        ;
 

@@ -1,0 +1,119 @@
+CREATE TEMP TABLE scanner_lex (
+	id integer,
+	seq integer,
+	word text,
+	stdword text,
+	token integer
+);
+
+INSERT INTO scanner_lex VALUES (1, 1, 'ST', 'STREET', 2);
+
+CREATE TEMP TABLE scanner_gaz (
+	id integer,
+	seq integer,
+	word text,
+	stdword text,
+	token integer
+);
+
+CREATE TEMP TABLE scanner_rules (
+	id integer,
+	rule text
+);
+
+INSERT INTO scanner_rules VALUES (1, '0 1 -1 1 5 -1 1 7');
+
+DO $scanner_bounds$
+DECLARE
+	standardized stdaddr;
+BEGIN
+	standardized := standardize_address(
+		'scanner_lex', 'scanner_gaz', 'scanner_rules',
+		'1 ' || repeat('A', 254), '');
+	IF standardized IS NULL
+	   OR standardized.house_num IS DISTINCT FROM '1'
+	   OR standardized.name IS DISTINCT FROM repeat('A', 254) THEN
+		RAISE EXCEPTION 'scanner changed a 254-byte token';
+	END IF;
+
+	standardized := standardize_address(
+		'scanner_lex', 'scanner_gaz', 'scanner_rules',
+		'1 ' || repeat('A', 255), '');
+	IF standardized IS NULL
+	   OR standardized.house_num IS DISTINCT FROM '1'
+	   OR standardized.name IS DISTINCT FROM repeat('A', 255) THEN
+		RAISE EXCEPTION 'scanner changed a 255-byte token';
+	END IF;
+
+	standardized := standardize_address(
+		'scanner_lex', 'scanner_gaz', 'scanner_rules',
+		'1 ' || repeat('A', 256), '');
+	IF NOT (standardized IS NULL) THEN
+		RAISE EXCEPTION 'scanner accepted a 256-byte token';
+	END IF;
+
+	standardized := standardize_address(
+		'scanner_lex', 'scanner_gaz', 'scanner_rules',
+		'1 ' || repeat('A', 300), '');
+	IF NOT (standardized IS NULL) THEN
+		RAISE EXCEPTION 'scanner accepted a 300-byte token';
+	END IF;
+
+	standardized := standardize_address(
+		'scanner_lex', 'scanner_gaz', 'scanner_rules',
+		'1 MAIN' || repeat(' ', 300), '');
+	IF standardized IS NULL
+	   OR standardized.house_num IS DISTINCT FROM '1'
+	   OR standardized.name IS DISTINCT FROM 'MAIN' THEN
+		RAISE EXCEPTION 'scanner changed an address with trailing spaces';
+	END IF;
+END
+$scanner_bounds$;
+
+SELECT 'scanner_bounds_ok' AS scanner_bounds_ok;
+
+CREATE TEMP TABLE t_long_rule(id serial, rule text);
+INSERT INTO t_long_rule(rule)
+SELECT string_agg('1', ' ')
+FROM generate_series(1, 130);
+
+DO $$
+DECLARE
+	rejected boolean := false;
+BEGIN
+	BEGIN
+		PERFORM standardize_address('us_lex', 'us_gaz', 't_long_rule', '1 Main St', 'Boston, MA');
+	EXCEPTION WHEN OTHERS THEN
+		IF SQLERRM <> 'CreateStd: failed to load ''t_long_rule'' for rules' THEN
+			RAISE;
+		END IF;
+		rejected := true;
+		RAISE NOTICE 'long-rule: %', SQLERRM;
+	END;
+
+	IF NOT rejected THEN
+		RAISE EXCEPTION 'oversized rule was accepted';
+	END IF;
+END
+$$;
+
+CREATE TEMP TABLE t_bad_rule_type(id serial, rule text);
+INSERT INTO t_bad_rule_type(rule) VALUES ('1 -1 5 -1 5 0');
+DO $$
+DECLARE
+	rejected boolean := false;
+BEGIN
+	BEGIN
+		PERFORM standardize_address('us_lex', 'us_gaz', 't_bad_rule_type', '1 Main St', 'Boston, MA');
+	EXCEPTION WHEN OTHERS THEN
+		rejected := true;
+		RAISE NOTICE 'bad-rule-type: %', SQLERRM;
+	END;
+
+	IF NOT rejected THEN
+		RAISE EXCEPTION 'invalid rule type was accepted';
+	END IF;
+END
+$$;
+
+SELECT 'security_bounds_ok' AS security_bounds_ok;

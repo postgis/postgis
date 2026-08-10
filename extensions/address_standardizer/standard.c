@@ -41,8 +41,26 @@ static char * _Scan_Next_(STAND_PARAM *, char *) ;
 
 static char __spacer__[] = " \\-.)}>_" ;
 
+#define NO_STANDARDIZATION_PREFIX "std_standardize_mm: No standardization of "
+#define MAX_STANDARDIZATION_ERROR_INPUT \
+	((int) (MAXSTRLEN - sizeof(NO_STANDARDIZATION_PREFIX) - 1))
+
+#define ENSURE_SCAN_ROOM(CHARS) \
+	do { \
+		if ((size_t) (__dest__ - __scan_buf__) + (CHARS) >= sizeof(__scan_buf__)) \
+		{ \
+			CLIENT_ERR(__stand_param__->errors) ; \
+			RET_ERR("_Scan_Next_: Token exceeds maximum length", \
+			        __stand_param__->errors, NULL) ; \
+		} \
+	} while (0)
+
+#define TERMINATE_SCAN_BUFFER \
+	ENSURE_SCAN_ROOM(0) ; \
+	*__dest__ = SENTINEL
+
 #define TERM_AND_LENGTH \
-	*__dest__ = SENTINEL ; \
+	TERMINATE_SCAN_BUFFER ; \
 	n = strlen(__scan_buf__)
 
 #define RETURN_NEW_MORPH(TOKEN_ARG) \
@@ -53,13 +71,17 @@ static char __spacer__[] = " \\-.)}>_" ;
 	return __src__
 
 #define COLLECT_LOOKAHEAD \
+	ENSURE_SCAN_ROOM(2) ; \
 	*__dest__++ = a ; __src__++ ; *__dest__++ = b ; __src__++
 
 #define COLLECT_WHILE(COND) \
-	do { *__dest__++ = a ; __src__++ ; a = *__src__ ; } while (COND)
+	do { \
+		ENSURE_SCAN_ROOM(1) ; \
+		*__dest__++ = a ; __src__++ ; a = *__src__ ; \
+	} while (COND)
 
 #define NO_COLLECT_WHILE(COND) \
-	do { __dest__++ ; __src__++ ; a = *__src__ ; } while (COND)
+	do { __src__++ ; a = *__src__ ; } while (COND)
 
 #define TEST_FOR_ORD_DIGIT(N,NEXT_LOW,NEXT_UP) \
 	if ((b == NEXT_LOW) || (b == NEXT_UP)) \
@@ -150,13 +172,14 @@ static char * _Scan_Next_( STAND_PARAM *__stand_param__,char * __in_ptr__)
 	char *__src__ = __in_ptr__ ;
 	char a = *__src__ ;
 	char *__dest__ = __scan_buf__ ;
-	*__dest__ = SENTINEL ;
+	TERMINATE_SCAN_BUFFER ;
 
 	/*-- <remarks> Type one terminators </remarks> --*/
 	if ((a == ',') || (a == '\t') || (a == ';'))
 	{
+		ENSURE_SCAN_ROOM(1) ;
 		*__dest__++ = a ;
-		*__dest__ = SENTINEL;
+		TERMINATE_SCAN_BUFFER ;
 		set_term(__stand_param__,1,__scan_buf__) ;
 		/*-- <remarks> Point to next input char </remarks> --*/
 		return (__src__ + 1) ;
@@ -279,7 +302,8 @@ static char * _Scan_Next_( STAND_PARAM *__stand_param__,char * __in_ptr__)
 	/*-- <remarks> Type 2 terminators ( spacing ) </remarks> --*/
 	if (strchr(__spacer__,a) != NULL)
 	{
-		NO_COLLECT_WHILE(strchr(__spacer__,a) != NULL) ;
+		NO_COLLECT_WHILE(a != SENTINEL &&
+		                 strchr(__spacer__,a) != NULL) ;
 		set_term(__stand_param__,2,__scan_buf__) ;
 		/*-- <remarks> Retain position </remarks> --*/
 		return (__src__) ;
@@ -470,8 +494,9 @@ STDADDR *std_standardize_mm(STANDARDIZER *std, char *micro, char *macro, int opt
     if (macro && macro[0] != '\0') {
         err = standardize_field( stand_address, macro, MACRO );
         if (!err) {
-            RET_ERR1("std_standardize_mm: No standardization of %s!",
-                     macro, std -> err_p, NULL);
+            RET_ERR2(NO_STANDARDIZATION_PREFIX "%.*s!",
+                     MAX_STANDARDIZATION_ERROR_INPUT, macro,
+                     std -> err_p, NULL);
         }
 
         if (options & 1) {
@@ -483,8 +508,9 @@ STDADDR *std_standardize_mm(STANDARDIZER *std, char *micro, char *macro, int opt
 
     err = standardize_field( stand_address, micro, MICRO_M );
     if (!err) {
-        RET_ERR1("std_standardize_mm: No standardization of %s!",
-                 micro, std -> err_p, NULL);
+        RET_ERR2(NO_STANDARDIZATION_PREFIX "%.*s!",
+                 MAX_STANDARDIZATION_ERROR_INPUT, micro,
+                 std -> err_p, NULL);
     }
 
     if (options & 1) {

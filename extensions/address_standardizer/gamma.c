@@ -35,12 +35,39 @@ static int initialize_link( ERR_PARAM *, KW *** , NODE ) ;
 static void classify_link( RULE_PARAM * , KW ***, KW *, NODE , SYMB , SYMB  ) ;
 static void add_failure_linkage( KW ***, NODE , NODE  ) ;
 static NODE **precompute_gamma_function( ERR_PARAM *, NODE ** , KW ***, NODE  ) ;
+static void set_memory_error( ERR_PARAM * ) ;
+#ifdef BUILD_API
+static int rules_allocated_node_count( const RULES * ) ;
+#endif
 
 static double load_value[ NUMBER_OF_WEIGHTS ] = {
    0.00, 0.325, 0.35 , 0.375 , 0.4 ,
    0.475 , 0.55, 0.6 , 0.65 , 0.675 ,
    0.7 , 0.75 , 0.8 , 0.825 , 0.85 ,
    0.9 , 0.95 , 1.00 } ;
+
+static void set_memory_error( ERR_PARAM *err_p ) {
+   LOG_MESS( "Insufficient Memory", err_p ) ;
+}
+
+#ifdef BUILD_API
+static int rules_allocated_node_count( const RULES *rules ) {
+   int node_count;
+
+   if ( rules == NULL ) {
+      return 0;
+   }
+
+   node_count = rules -> last_node + 1;
+   if ( node_count < 0 ) {
+      return 0;
+   }
+   if ( node_count > MAXNODES ) {
+      return MAXNODES;
+   }
+   return node_count;
+}
+#endif
 
 /*---------------------------------------------------------------------------
 gamma.c (refresh_transducer)
@@ -135,6 +162,7 @@ RULES *rules_init( ERR_PARAM *err_p ) {
 
     /* -- storage for temporary trie for rules -- */
     PAGC_CALLOC_STRUC(Trie,NODE *,MAXNODES,err_p,NULL);
+    rules -> Trie = Trie ;
 
     /* -- initialize the first( EPSILON ) node of the trie -- */
     PAGC_CALLOC_STRUC(Trie[EPSILON],NODE,MAXINSYM,err_p,NULL);
@@ -156,9 +184,11 @@ RULES *rules_init( ERR_PARAM *err_p ) {
        /* Cleanup allocated resources */
        FREE_AND_NULL(o_l);
        FREE_AND_NULL(k_s);
+       FREE_AND_NULL(r_s);
        FREE_AND_NULL(r_p);
+       rules -> r_p = NULL;
 
-       PAGC_DESTROY_2D_ARRAY(rules -> Trie,NODE,MAXINSYM);
+       PAGC_DESTROY_2D_ARRAY(rules -> Trie,NODE,rules_allocated_node_count(rules));
        rules -> Trie = NULL;
 
        rules_free(rules);
@@ -171,7 +201,6 @@ RULES *rules_init( ERR_PARAM *err_p ) {
     rules -> r_p -> key_space = k_s ;
     rules -> r_p -> output_link = o_l ;
 
-    rules -> Trie = Trie ;
     rules -> rule_end = r_s + RULESPACESIZE ;
 
     rules -> r = r_s ;
@@ -303,6 +332,13 @@ int rules_add_rule(RULES *rules, int num, int *rule) {
     t = rule[i] ;
     i++ ;
     w = rule[i] ;
+    if ( t < 0 || t >= MAX_CL ) {
+        RET_ERR2( "rules_add_rule: Rule File: Bad Type %d in Rule #%d\n",
+                  t ,
+                  rules -> rule_number ,
+                  rules -> err_p,
+                  7 ) ;
+    }
 
     classify_link( rules -> r_p ,
                    o_l ,
@@ -340,20 +376,22 @@ int rules_ready(RULES *rules) {
        }
     }
 
+    rules -> r_p -> num_nodes = rules -> last_node ;
+
     /* -- create the global Gamma function matrix -- */
     if ( ( rules -> r_p -> gamma_matrix =
             precompute_gamma_function( rules -> err_p,
                                        rules -> Trie ,
                                        rules -> r_p -> output_link ,
                                        rules -> last_node ) ) == NULL ) {
+       PAGC_DESTROY_2D_ARRAY(rules -> Trie,NODE,rules -> last_node) ;
+       rules -> Trie = NULL ;
        return 5 ;
     }
 
     /* -- no longer need the Trie -- */
     PAGC_DESTROY_2D_ARRAY(rules -> Trie,NODE,rules -> last_node) ;
     rules -> Trie = NULL ;
-
-    rules -> r_p -> num_nodes = rules -> last_node ;
 
 /*
     if ( glo_p -> log_init ) {
@@ -373,7 +411,15 @@ int rules_ready(RULES *rules) {
 void rules_free(RULES *rules) {
 
     if (!rules) return;
-    if (rules->r_p) destroy_rules(rules->r_p);
+    if (rules->r_p) {
+        if (!rules->ready && rules->r_p->num_nodes == 0) {
+            rules -> r_p -> num_nodes = rules_allocated_node_count(rules) ;
+        }
+        destroy_rules(rules->r_p);
+    }
+    if (rules->Trie) {
+        PAGC_DESTROY_2D_ARRAY(rules -> Trie,NODE,rules_allocated_node_count(rules));
+    }
     free(rules);
     rules = NULL;
 }
@@ -628,9 +674,13 @@ void destroy_rules( RULE_PARAM * r_p ) {
       DBG("destroy_rules 2");
       FREE_AND_NULL( r_p -> key_space ) ;
       DBG("destroy_rules 3");
-      PAGC_DESTROY_2D_ARRAY(r_p->output_link,KW*,r_p->num_nodes) ;
+      if (r_p->output_link) {
+         PAGC_DESTROY_2D_ARRAY(r_p->output_link,KW*,r_p->num_nodes) ;
+      }
       DBG("destroy_rules 4");
-      PAGC_DESTROY_2D_ARRAY(r_p->gamma_matrix,NODE,r_p->num_nodes) ;
+      if (r_p->gamma_matrix) {
+         PAGC_DESTROY_2D_ARRAY(r_p->gamma_matrix,NODE,r_p->num_nodes) ;
+      }
       DBG(" destroy_rules 5");
       FREE_AND_NULL( r_p ) ;
    }
@@ -751,11 +801,36 @@ static NODE **precompute_gamma_function( ERR_PARAM *err_p ,
         *Queue ;
 
    /* -- Storage for Failure Function -- */
-   PAGC_CALLOC_STRUC(Failure,NODE,n,err_p,NULL) ;
+   Failure = calloc(n, sizeof(NODE));
+   if (!Failure) {
+      set_memory_error(err_p);
+      return NULL;
+   }
    /* -- Storage for Breadth First Search Queue -- */
-   PAGC_CALLOC_STRUC(Queue,NODE,n,err_p,NULL) ;
+   Queue = calloc(n, sizeof(NODE));
+   if (!Queue) {
+      set_memory_error(err_p);
+      FREE_AND_NULL(Failure);
+      return NULL;
+   }
 
-   PAGC_CALLOC_2D_ARRAY(Gamma,NODE,n,MAXINSYM,err_p,NULL) ;
+   Gamma = calloc(n, sizeof(NODE *));
+   if (!Gamma) {
+      set_memory_error(err_p);
+      FREE_AND_NULL(Failure);
+      FREE_AND_NULL(Queue);
+      return NULL;
+   }
+   for (i = 0; i < n; i++) {
+      Gamma[i] = calloc(MAXINSYM, sizeof(NODE));
+      if (!Gamma[i]) {
+         set_memory_error(err_p);
+         PAGC_DESTROY_2D_ARRAY(Gamma,NODE,i);
+         FREE_AND_NULL(Failure);
+         FREE_AND_NULL(Queue);
+         return NULL;
+      }
+   }
 
    u = EPSILON ;
    i = 0 ;

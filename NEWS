@@ -37,11 +37,13 @@ PostGIS 3.2.11
  - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
  - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
  - Avoid Inf loop in Geohash calculation (Paul Ramsey)
- - [address_standardizer] Avoid NULL dereferences, unsafe table-name handling,
-   and out-of-bounds rule parsing
-   (Maksim Korotkov, Paul Ramsey)
- - [tiger_geocoder] Harden schema qualification and dynamic table names
-   (Paul Ramsey)
+ - [address_standardizer] Avoid NULL dereferences, and guard scanner tokens,
+   rule parsing, and cleanup paths against oversized input, invalid rule
+   types, and partial allocation failures
+   (Maksim Korotkov, Paul Ramsey, Darafei Praliaskouski)
+ - [tiger_geocoder] Qualify PostGIS and fuzzystrmatch calls, generated table
+   DDL, PAGC tables, loader scripts, topology loader, and dynamic SQL
+   against unsafe search paths (Regina Obe, Paul Ramsey)
  - #6044, Skip doc XML validation without DocBook XSL stylesheets (Regina Obe)
  - GH-894, [raster] Fix Float16 import, mixed nodata warping,
    band replacement cleanup, GDAL credential redaction, and Python
