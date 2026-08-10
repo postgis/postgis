@@ -11,7 +11,9 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
+* Enhancements *
 
+ - #2600, [raster] Add Sobel ST_EdgeDetect (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
