@@ -91,6 +91,29 @@ WHERE probin like '%postgis%';
 --
 ALTER FUNCTION postgis_version() SECURITY DEFINER;
 
+-- An extension update must not call an exact operator from its search path.
+CREATE TABLE public.upgrade_test_operator_calls (
+	called boolean NOT NULL
+);
+
+CREATE FUNCTION public.upgrade_test_integer_array_lt(integer[], integer[])
+RETURNS boolean
+LANGUAGE plpgsql
+VOLATILE
+SECURITY INVOKER
+AS $upgrade_test_operator$
+BEGIN
+	INSERT INTO public.upgrade_test_operator_calls VALUES (true);
+	RETURN false;
+END
+$upgrade_test_operator$;
+
+CREATE OPERATOR public.< (
+	FUNCTION = public.upgrade_test_integer_array_lt,
+	LEFTARG = integer[],
+	RIGHTARG = integer[]
+);
+
 -- Shorter overloads must not make default-argument upgrade helper calls
 -- ambiguous. The callbacks only record that they ran.
 CREATE TABLE upgrade_test_helper_overload_calls (

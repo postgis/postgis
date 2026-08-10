@@ -1,4 +1,16 @@
 -- TODO: move all these views and tables under postgis_upgrade_test_data
+DO $upgrade_test_operator$
+BEGIN
+	IF EXISTS (SELECT 1 FROM public.upgrade_test_operator_calls) THEN
+		RAISE EXCEPTION 'generated upgrade selected a non-catalog integer-array operator';
+	END IF;
+END
+$upgrade_test_operator$;
+
+DROP OPERATOR public.< (integer[], integer[]);
+DROP FUNCTION public.upgrade_test_integer_array_lt(integer[], integer[]);
+DROP TABLE public.upgrade_test_operator_calls;
+
 DROP VIEW IF EXISTS upgrade_view_test_overlay;
 DROP VIEW IF EXISTS upgrade_view_test_unaryunion;
 DROP VIEW IF EXISTS upgrade_view_test_subdivide;
