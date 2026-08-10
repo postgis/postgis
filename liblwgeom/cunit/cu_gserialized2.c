@@ -621,6 +621,34 @@ test_gserialized2_malformed_polygon_ring_count(void)
 }
 
 static void
+test_gserialized2_malformed_nurbs_short_vectors(void)
+{
+#if defined(POSTGIS_ASAN_ALLOCATOR_SIZE)
+	LWGEOM *lwgeom = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0))", LW_PARSER_CHECK_NONE);
+	GSERIALIZED *full;
+	GSERIALIZED *short_g;
+	size_t short_size;
+
+	CU_ASSERT_PTR_NOT_NULL_FATAL(lwgeom);
+	full = gserialized2_from_lwgeom(lwgeom, NULL);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(full);
+
+	short_size = (size_t)(gserialized2_test_payload_p(full) - (uint8_t *)(void *)full) + 6 * sizeof(uint32_t);
+	short_g = malloc(short_size);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(short_g);
+	memcpy(short_g, full, short_size);
+
+	assert_gserialized2_malformed_rejected(short_g);
+
+	free(short_g);
+	lwfree(full);
+	lwgeom_free(lwgeom);
+#else
+	CU_PASS("short NURBS vector validation requires AddressSanitizer allocation metadata");
+#endif
+}
+
+static void
 assert_gserialized2_malformed_rejected(GSERIALIZED *g)
 {
 	LWGEOM *geom;
@@ -735,6 +763,7 @@ void gserialized2_suite_setup(void)
 	PG_ADD_TEST(suite, test_gserialized2_malformed_collection_count);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_nurbs_degree);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_polygon_ring_count);
+	PG_ADD_TEST(suite, test_gserialized2_malformed_nurbs_short_vectors);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_declared_size);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_short_allocation);
 	PG_ADD_TEST(suite, test_gserialized2_wkb_roundtrip_float_rounded_box);

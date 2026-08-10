@@ -552,6 +552,11 @@ gserialized2_validate_geometry_buffer(uint8_t *data_ptr, uint8_t *data_end, lwfl
 			lwerror("%s: GSERIALIZED NURBS size overflows", __func__);
 			return LW_FAILURE;
 		}
+		if (!gserialized2_range_available(data_ptr, data_end, consumed))
+		{
+			lwerror("%s: GSERIALIZED NURBS payload exceeds declared size", __func__);
+			return LW_FAILURE;
+		}
 		weights_ptr = data_ptr + 6 * sizeof(uint32_t);
 		knots_ptr = weights_ptr + weight_bytes;
 		if (gserialized2_validate_nurbs(
