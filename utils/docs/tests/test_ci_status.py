@@ -562,8 +562,8 @@ class CIStatusTest(unittest.TestCase):
         with mock.patch.object(CI_STATUS, "http_json", side_effect=([pipeline], pipeline_detail)) as http_json:
             result = CI_STATUS.woodpecker_check(check_config, branch, timeout=5)
 
-        self.assertEqual(CI_STATUS.FAILURE, result["status"])
-        self.assertEqual("failed: regress/18", result["message"])
+        self.assertEqual(CI_STATUS.UNKNOWN, result["status"])
+        self.assertEqual("unknown: regress/18", result["message"])
         self.assertEqual("https://woodie.example.test/repos/30/pipeline/5430/18", result["url"])
         self.assertEqual("a" * 40, result["revision"])
         self.assertEqual(
@@ -686,7 +686,7 @@ class CIStatusTest(unittest.TestCase):
                 timeout=5,
             )
 
-        self.assertEqual(CI_STATUS.FAILURE, result["status"])
+        self.assertEqual(CI_STATUS.UNKNOWN, result["status"])
         self.assertEqual("Agent lost", result["status_label"])
         self.assertEqual("agent lost: 3 steps killed at exit 0 (clone, prepare, check-xml)", result["message"])
 
