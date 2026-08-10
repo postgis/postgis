@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - #4402, [raster] Let raster2pgsql commit AddRasterConstraints work
+          between requested constraints (Darafei Praliaskouski)
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
