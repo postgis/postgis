@@ -5,7 +5,7 @@ cd $(dirname $0)
 SUPPORTED_LANGUAGES=$(grep ^translations ../doc/Makefile.in | cut -d= -f2)
 #SUPPORTED_LANGUAGES="ja de fr zh_Hans" # restrict built translations
 
-TARGETS="check-xml html cheatsheets check-cheatsheets pdf"
+TARGETS="check-xml html cheatsheets check-cheatsheets"
 
 cat docs.yml | sed '/DO NOT EDIT/q' > docs.yml.new
 
@@ -68,6 +68,21 @@ do
     previous_step=${target}-${lang}
   done
 done
+
+# Build all localized PDFs sequentially inside one honest job.  The Makefile's
+# pdf-localized target already performs the language loop, so expressing the
+# memory limit there avoids fake dependencies between unrelated languages.
+cat <<'EOF'
+### TARGET pdf
+  pdf-localized:
+    image: *test_image
+    pull: true
+    commands:
+      - make -C build-docs/doc pdf-localized
+    depends_on: build-images
+    when:
+      - path: *when_localized
+EOF
 
 sed -i '${/^$/d;}' docs.yml.new
 mv -b docs.yml.new docs.yml
