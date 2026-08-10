@@ -94,7 +94,7 @@ FROM (SELECT table_name, table_schema FROM
 WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data')
 -- Soundex indexes --
 UNION ALL
-SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_snd_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(soundex(' || c.column_name || '));' As index
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_snd_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(@extschema:fuzzystrmatch@.soundex(' || c.column_name || '));' As index
 FROM (SELECT table_name, table_schema FROM
 	information_schema.tables WHERE table_type OPERATOR(pg_catalog.=) 'BASE TABLE') As t  INNER JOIN
 	(SELECT * FROM information_schema.columns WHERE column_name IN('name', 'place', 'city') ) AS c

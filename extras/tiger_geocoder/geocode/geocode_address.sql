@@ -1,5 +1,5 @@
---DROP FUNCTION IF EXISTS geocode_address(norm_addy, integer , geometry);
-CREATE OR REPLACE FUNCTION geocode_address(IN parsed norm_addy, max_results integer DEFAULT 10, restrict_geom geometry DEFAULT NULL, OUT addy norm_addy, OUT geomout geometry, OUT rating integer)
+--DROP FUNCTION IF EXISTS geocode_address(norm_addy, integer , @extschema:postgis@.geometry);
+CREATE OR REPLACE FUNCTION geocode_address(IN parsed norm_addy, max_results integer DEFAULT 10, restrict_geom @extschema:postgis@.geometry DEFAULT NULL, OUT addy norm_addy, OUT geomout @extschema:postgis@.geometry, OUT rating integer)
   RETURNS SETOF record AS
 $$
 DECLARE
@@ -11,7 +11,7 @@ DECLARE
   var_debug boolean := tiger.get_geocode_setting('debug_geocode_address')::boolean;
   var_sql text := '';
   var_n integer := 0;
-  var_restrict_geom geometry := NULL;
+  var_restrict_geom @extschema:postgis@.geometry := NULL;
   var_bfilter text := null;
   var_bestrating integer := NULL;
   var_zip_penalty numeric := tiger.get_geocode_setting('zip_penalty')::numeric*1.00;
@@ -33,17 +33,17 @@ BEGIN
   END IF;
 
   IF restrict_geom IS NOT NULL THEN
-		IF ST_SRID(restrict_geom) < 1 OR ST_SRID(restrict_geom) = 4236 THEN
+		IF @extschema:postgis@.ST_SRID(restrict_geom) < 1 OR @extschema:postgis@.ST_SRID(restrict_geom) = 4236 THEN
 		-- basically has no srid or if wgs84 close enough to NAD 83 -- assume same as data
-			var_restrict_geom = ST_SetSRID(restrict_geom,4269);
+			var_restrict_geom = @extschema:postgis@.ST_SetSRID(restrict_geom,4269);
 		ELSE
 		--transform and snap
-			var_restrict_geom = ST_SnapToGrid(ST_Transform(restrict_geom, 4269), 0.000001);
+			var_restrict_geom = @extschema:postgis@.ST_SnapToGrid(@extschema:postgis@.ST_Transform(restrict_geom, 4269), 0.000001);
 		END IF;
   END IF;
   var_bfilter := ' SELECT zcta5ce FROM tiger.zcta5 AS zc
                     WHERE zc.statefp = ' || quote_nullable(in_statefp) || '
-                        AND ST_Intersects(zc.the_geom, ' || quote_literal(var_restrict_geom::text) || '::geometry)  ' ;
+                        AND @extschema:postgis@.ST_Intersects(zc.the_geom, ' || quote_literal(var_restrict_geom::text) || '::@extschema:postgis@.geometry)  ' ;
 
   SELECT NULL::varchar[] As zip INTO zip_info;
 
@@ -107,7 +107,7 @@ BEGIN
 		FROM tiger.featnames As f INNER JOIN tiger.addr As ad ON (f.tlid = ad.tlid)
                     WHERE $10 = f.statefp AND $10 = ad.statefp
 	'
-                    || CASE WHEN length(parsed.streetName) > 5  THEN ' AND (lower(f.fullname) LIKE (COALESCE($5 || '' '','''') || lower($2) || ''%'')::text OR lower(f.name) = lower($2) OR soundex(f.name) = soundex($2) ) ' ELSE  ' AND lower(f.name) = lower($2) ' END
+                    || CASE WHEN length(parsed.streetName) > 5  THEN ' AND (lower(f.fullname) LIKE (COALESCE($5 || '' '','''') || lower($2) || ''%'')::text OR lower(f.name) = lower($2) OR @extschema:fuzzystrmatch@.soundex(f.name) = @extschema:fuzzystrmatch@.soundex($2) ) ' ELSE  ' AND lower(f.name) = lower($2) ' END
                     || CASE WHEN zip_info.zip IS NOT NULL THEN '    AND ( ad.zip = ANY($9::varchar[]) )  ' ELSE '' END
             || ' ) AS foo ORDER BY rank LIMIT ' || max_results*3 || ' )
 	SELECT * FROM (
@@ -168,7 +168,7 @@ BEGIN
           || CASE WHEN parsed.location > '' AND zip_info.zip IS NULL THEN ' AND ( lower(p.name) LIKE (lower($3::text) || ''%'')  ) ' ELSE '' END
           || ')
                 WHERE a.statefp = $10  AND  b.statefp = $10   '
-             ||   CASE WHEN var_restrict_geom IS NOT NULL THEN ' AND ST_Intersects(b.the_geom, $8::geometry) '  ELSE '' END
+             ||   CASE WHEN var_restrict_geom IS NOT NULL THEN ' AND @extschema:postgis@.ST_Intersects(b.the_geom, $8::@extschema:postgis@.geometry) '  ELSE '' END
              || '
 
           )   As b
@@ -268,12 +268,12 @@ BEGIN
       UNION SELECT tiger.zip_state_loc.statefp,tiger.zip_state_loc.place As location,false As exact, array_agg(tiger.zip_state_loc.zip),3
               FROM tiger.zip_state_loc
              WHERE tiger.zip_state_loc.statefp = ' || quote_nullable(in_statefp) || '
-                   AND soundex($1) = soundex(tiger.zip_state_loc.place)
+                   AND @extschema:fuzzystrmatch@.soundex($1) = @extschema:fuzzystrmatch@.soundex(tiger.zip_state_loc.place)
              GROUP BY tiger.zip_state_loc.statefp,tiger.zip_state_loc.place
       UNION SELECT tiger.zip_lookup_base.statefp,tiger.zip_lookup_base.city As location,false As exact, array_agg(tiger.zip_lookup_base.zip),4
               FROM tiger.zip_lookup_base
              WHERE tiger.zip_lookup_base.statefp = ' || quote_nullable(in_statefp) || '
-                         AND (soundex($1) = soundex(tiger.zip_lookup_base.city) OR soundex($1) = soundex(tiger.zip_lookup_base.county))
+                         AND (@extschema:fuzzystrmatch@.soundex($1) = @extschema:fuzzystrmatch@.soundex(tiger.zip_lookup_base.city) OR @extschema:fuzzystrmatch@.soundex($1) = @extschema:fuzzystrmatch@.soundex(tiger.zip_lookup_base.county))
              GROUP BY tiger.zip_lookup_base.statefp,tiger.zip_lookup_base.city
       UNION SELECT ' || quote_nullable(in_statefp) || ' As statefp,$1 As location,false As exact,NULL, 5) as a '
       ' WHERE a.statefp IS NOT NULL
@@ -290,12 +290,12 @@ BEGIN
       UNION SELECT tiger.zip_state_loc.statefp,parsed.location,false As exact, array_agg(tiger.zip_state_loc.zip),3
               FROM tiger.zip_state_loc
              WHERE tiger.zip_state_loc.statefp = in_statefp
-                   AND soundex(parsed.location) = soundex(tiger.zip_state_loc.place)
+                   AND @extschema:fuzzystrmatch@.soundex(parsed.location) = @extschema:fuzzystrmatch@.soundex(tiger.zip_state_loc.place)
              GROUP BY tiger.zip_state_loc.statefp,parsed.location
       UNION SELECT tiger.zip_lookup_base.statefp,parsed.location,false As exact, array_agg(tiger.zip_lookup_base.zip),4
               FROM tiger.zip_lookup_base
              WHERE tiger.zip_lookup_base.statefp = in_statefp
-                         AND (soundex(parsed.location) = soundex(tiger.zip_lookup_base.city) OR soundex(parsed.location) = soundex(tiger.zip_lookup_base.county))
+                         AND (@extschema:fuzzystrmatch@.soundex(parsed.location) = @extschema:fuzzystrmatch@.soundex(tiger.zip_lookup_base.city) OR @extschema:fuzzystrmatch@.soundex(parsed.location) = @extschema:fuzzystrmatch@.soundex(tiger.zip_lookup_base.county))
              GROUP BY tiger.zip_lookup_base.statefp,parsed.location
       UNION SELECT in_statefp,parsed.location,false As exact,NULL, 5) as a
         --JOIN (VALUES (true),(false)) as b(exact) on TRUE
@@ -353,13 +353,13 @@ BEGIN
          || coalesce('    AND b.zip IN (''' || array_to_string(zip_info.zip,''',''') || ''') ','')
          || CASE WHEN zip_info.exact
                  THEN '    AND ( lower($2) = lower(a.name) OR  ( a.prequalabr > '''' AND trim(lower($2), lower(a.prequalabr) || '' '') = lower(a.name) ) OR tiger.numeric_streets_equal($2, a.name) ) '
-                 ELSE '    AND ( soundex($2) = soundex(a.name)  OR ( (length($2) > 15 or (length($2) > 7 AND a.prequalabr > '''') ) AND lower(a.fullname) LIKE lower(substring($2,1,15)) || ''%'' ) OR  tiger.numeric_streets_equal($2, a.name) ) '
+                 ELSE '    AND ( @extschema:fuzzystrmatch@.soundex($2) = @extschema:fuzzystrmatch@.soundex(a.name)  OR ( (length($2) > 15 or (length($2) > 7 AND a.prequalabr > '''') ) AND lower(a.fullname) LIKE lower(substring($2,1,15)) || ''%'' ) OR  tiger.numeric_streets_equal($2, a.name) ) '
             END
          || '  ORDER BY 11'
          || '  LIMIT 200'
          || '    ) AS sub'
          || '  JOIN tiger.edges e ON (' || quote_literal(zip_info.statefp) || ' = e.statefp AND sub.tlid = e.tlid AND e.mtfcc LIKE ''S%'' '
-         ||   CASE WHEN var_restrict_geom IS NOT NULL THEN ' AND ST_Intersects(e.the_geom, $8) '  ELSE '' END || ') '
+         ||   CASE WHEN var_restrict_geom IS NOT NULL THEN ' AND @extschema:postgis@.ST_Intersects(e.the_geom, $8) '  ELSE '' END || ') '
          || '  JOIN tiger.state s ON (' || quote_literal(zip_info.statefp) || ' = s.statefp)'
          || '  JOIN tiger.faces f ON (' || quote_literal(zip_info.statefp) || ' = f.statefp AND (e.tfidl = f.tfid OR e.tfidr = f.tfid))'
          || '  LEFT JOIN tiger.zip_lookup_base zip ON (sub.zip = zip.zip AND zip.statefp=' || quote_literal(zip_info.statefp) || ')'

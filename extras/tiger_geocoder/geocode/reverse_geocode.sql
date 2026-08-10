@@ -4,10 +4,10 @@
  **/
 -- This function given a point try to determine the approximate street address (norm_addy form)
 -- and array of cross streets, as well as interpolated points along the streets
--- Use case example an address at the intersection of 3 streets: SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3, array_to_string(r.street, ',') FROM reverse_geocode(ST_GeomFromText('POINT(-71.057811 42.358274)',4269)) As r;
+-- Use case example an address at the intersection of 3 streets: SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3, array_to_string(r.street, ',') FROM reverse_geocode(@extschema:postgis@.ST_GeomFromText('POINT(-71.057811 42.358274)',4269)) As r;
 --set search_path=tiger,public;
 
-CREATE OR REPLACE FUNCTION reverse_geocode(IN pt geometry, IN include_strnum_range boolean DEFAULT false, OUT intpt geometry[], OUT addy norm_addy[], OUT street character varying[])
+CREATE OR REPLACE FUNCTION reverse_geocode(IN pt @extschema:postgis@.geometry, IN include_strnum_range boolean DEFAULT false, OUT intpt @extschema:postgis@.geometry[], OUT addy norm_addy[], OUT street character varying[])
   RETURNS record AS
 $BODY$
 DECLARE
@@ -18,9 +18,9 @@ DECLARE
   var_addy NORM_ADDY;
   var_addy_alt NORM_ADDY;
   var_nstrnum numeric(10);
-  var_primary_line geometry := NULL;
+  var_primary_line @extschema:postgis@.geometry := NULL;
   var_primary_dist numeric(10,2) ;
-  var_pt geometry;
+  var_pt @extschema:postgis@.geometry;
   var_place varchar;
   var_county varchar;
   var_stmt text;
@@ -32,21 +32,21 @@ BEGIN
 	IF pt IS NULL THEN
 		RETURN;
 	ELSE
-		IF ST_SRID(pt) = 4269 THEN
+		IF @extschema:postgis@.ST_SRID(pt) = 4269 THEN
 			var_pt := pt;
-		ELSIF ST_SRID(pt) > 0 THEN
-			var_pt := ST_Transform(pt, 4269);
+		ELSIF @extschema:postgis@.ST_SRID(pt) > 0 THEN
+			var_pt := @extschema:postgis@.ST_Transform(pt, 4269);
 		ELSE --If srid is unknown, assume its 4269
-			var_pt := ST_SetSRID(pt, 4269);
+			var_pt := @extschema:postgis@.ST_SetSRID(pt, 4269);
 		END IF;
-		var_pt := ST_SnapToGrid(var_pt, 0.00005); /** Get rid of floating point junk that would prevent intersections **/
+		var_pt := @extschema:postgis@.ST_SnapToGrid(var_pt, 0.00005); /** Get rid of floating point junk that would prevent intersections **/
 	END IF;
 	-- Determine state tables to check
 	-- this is needed to take advantage of constraint exclusion
 	IF var_debug THEN
 		RAISE NOTICE 'Get matching states start: %', clock_timestamp();
 	END IF;
-	SELECT statefp, stusps INTO var_state, var_stusps FROM tiger.state WHERE ST_Intersects(the_geom, var_pt) LIMIT 1;
+	SELECT statefp, stusps INTO var_state, var_stusps FROM tiger.state WHERE @extschema:postgis@.ST_Intersects(the_geom, var_pt) LIMIT 1;
 	IF var_debug THEN
 		RAISE NOTICE 'Get matching states end: % -  %', var_state, clock_timestamp();
 	END IF;
@@ -58,23 +58,23 @@ BEGIN
 		RAISE NOTICE 'Get matching counties start: %', clock_timestamp();
 	END IF;
 	-- locate tiger.county
-	var_stmt := 'SELECT countyfp, name  FROM  tiger.county WHERE  statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
+	var_stmt := 'SELECT countyfp, name  FROM  tiger.county WHERE  statefp =  $1 AND @extschema:postgis@.ST_Intersects(the_geom, $2) LIMIT 1;';
 	EXECUTE var_stmt INTO var_countyfp, var_county USING var_state, var_pt ;
 
 	--locate zip
-	var_stmt := 'SELECT zcta5ce  FROM tiger.zcta5 WHERE statefp = $1 AND ST_Intersects(the_geom, $2)  LIMIT 1;';
+	var_stmt := 'SELECT zcta5ce  FROM tiger.zcta5 WHERE statefp = $1 AND @extschema:postgis@.ST_Intersects(the_geom, $2)  LIMIT 1;';
 	EXECUTE var_stmt INTO var_zip USING var_state, var_pt;
 	-- locate city
 	IF var_zip > '' THEN
 	      var_addy.zip := var_zip ;
 	END IF;
 
-	var_stmt := 'SELECT z.name  FROM tiger.place As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
+	var_stmt := 'SELECT z.name  FROM tiger.place As z WHERE  z.statefp =  $1 AND @extschema:postgis@.ST_Intersects(the_geom, $2) LIMIT 1;';
 	EXECUTE var_stmt INTO var_place USING var_state, var_pt ;
 	IF var_place > '' THEN
 			var_addy.location := var_place;
 	ELSE
-		var_stmt := 'SELECT z.name  FROM tiger.cousub As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
+		var_stmt := 'SELECT z.name  FROM tiger.cousub As z WHERE  z.statefp =  $1 AND @extschema:postgis@.ST_Intersects(the_geom, $2) LIMIT 1;';
 		EXECUTE var_stmt INTO var_place USING var_state, var_pt ;
 		IF var_place > '' THEN
 			var_addy.location := var_place;
@@ -102,19 +102,19 @@ BEGIN
 
 	var_stmt := '
 	    WITH ref AS (
-	        SELECT ' || quote_literal(var_pt::text) || '::geometry As ref_geom ) ,
+	        SELECT ' || quote_literal(var_pt::text) || '::@extschema:postgis@.geometry As ref_geom ) ,
 			f AS
 			( SELECT tiger.faces.* FROM tiger.faces  CROSS JOIN ref
 			WHERE tiger.faces.statefp = ' || quote_literal(var_state) || ' AND tiger.faces.countyfp = ' || quote_literal(var_countyfp) || '
-				AND ST_Intersects(tiger.faces.the_geom, ref_geom)
+				AND @extschema:postgis@.ST_Intersects(tiger.faces.the_geom, ref_geom)
 				    ),
 			e AS
 			( SELECT tiger.edges.tlid , tiger.edges.statefp, tiger.edges.the_geom, CASE WHEN tiger.edges.tfidr = f.tfid THEN ''R'' WHEN tiger.edges.tfidl = f.tfid THEN ''L'' ELSE NULL END::varchar As eside,
-                    ST_ClosestPoint(tiger.edges.the_geom,ref_geom) As center_pt, ref_geom
+                    @extschema:postgis@.ST_ClosestPoint(tiger.edges.the_geom,ref_geom) As center_pt, ref_geom
 				FROM tiger.edges INNER JOIN f ON (f.statefp = tiger.edges.statefp AND (tiger.edges.tfidr = f.tfid OR tiger.edges.tfidl = f.tfid))
 				    CROSS JOIN ref
 			WHERE tiger.edges.statefp = ' || quote_literal(var_state) || ' AND tiger.edges.countyfp = ' || quote_literal(var_countyfp) || '
-				AND ST_DWithin(tiger.edges.the_geom, ref.ref_geom, 0.01) AND (tiger.edges.mtfcc LIKE ''S%'') --only consider streets and roads
+				AND @extschema:postgis@.ST_DWithin(tiger.edges.the_geom, ref.ref_geom, 0.01) AND (tiger.edges.mtfcc LIKE ''S%'') --only consider streets and roads
 				  )	,
 			ea AS
 			(SELECT e.statefp, e.tlid, a.fromhn, a.tohn, e.center_pt, ref_geom, a.zip, a.side, e.the_geom
@@ -123,11 +123,11 @@ BEGIN
 		SELECT *
 		FROM (SELECT DISTINCT ON(tlid,side)  foo.fullname, foo.predirabrv, foo.streetname, foo.sufdirabrv, foo.streettypeabbrev, foo.zip,  foo.center_pt,
 			  side, to_number(CASE WHEN trim(fromhn) ~ ''^[0-9]+$'' THEN fromhn ELSE NULL END,''99999999'')  As fromhn, to_number(CASE WHEN trim(tohn) ~ ''^[0-9]+$'' THEN tohn ELSE NULL END,''99999999'') As tohn,
-			  ST_GeometryN(ST_Multi(line),1) As line, dist
+			  @extschema:postgis@.ST_GeometryN(@extschema:postgis@.ST_Multi(line),1) As line, dist
 		FROM
 		  (SELECT e.tlid, e.the_geom As line, n.fullname, COALESCE(n.prequalabr || '' '','''')  || n.name AS streetname, n.predirabrv, COALESCE(suftypabrv, pretypabrv) As streettypeabbrev,
 		      n.sufdirabrv, e.zip, e.side, e.fromhn, e.tohn , e.center_pt,
-		          ST_DistanceSphere(ST_SetSRID(e.center_pt,4326),ST_SetSRID(ref_geom,4326)) As dist
+		          @extschema:postgis@.ST_DistanceSphere(@extschema:postgis@.ST_SetSRID(e.center_pt,4326),@extschema:postgis@.ST_SetSRID(ref_geom,4326)) As dist
 				FROM ea AS e
 					LEFT JOIN (SELECT tiger.featnames.* FROM tiger.featnames
 			    WHERE tiger.featnames.statefp = ' || quote_literal(var_state) ||'   ) AS n ON (n.statefp =  e.statefp AND n.tlid = e.tlid)
@@ -163,14 +163,14 @@ BEGIN
 			var_addy.postDirAbbrev := var_redge.sufdirabrv;
         END IF;
 
-        IF ST_Intersects(var_redge.line, var_primary_line) THEN
+        IF @extschema:postgis@.ST_Intersects(var_redge.line, var_primary_line) THEN
             var_addy.streetname := var_redge.streetname;
 
             var_addy.streettypeabbrev := var_redge.streettypeabbrev;
             var_addy.address := var_nstrnum;
             IF  var_redge.fromhn IS NOT NULL THEN
                 --interpolate the number -- note that if fromhn > tohn we will be subtracting which is what we want
-                var_nstrnum := (var_redge.fromhn + ST_LineLocatePoint(var_redge.line, var_pt)*(var_redge.tohn - var_redge.fromhn))::numeric(10);
+                var_nstrnum := (var_redge.fromhn + @extschema:postgis@.ST_LineLocatePoint(var_redge.line, var_pt)*(var_redge.tohn - var_redge.fromhn))::numeric(10);
                 -- The odd even street number side of street rule
                 IF (var_nstrnum  % 2)  != (var_redge.tohn % 2) THEN
                     var_nstrnum := CASE WHEN var_nstrnum + 1 NOT BETWEEN var_redge.fromhn AND var_redge.tohn THEN var_nstrnum - 1 ELSE var_nstrnum + 1 END;

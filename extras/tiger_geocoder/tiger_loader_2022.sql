@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS tiger.tabblock20
     awater double precision,
     intptlat character varying(11) ,
     intptlon character varying(12) ,
-    the_geom geometry(MultiPolygon,4269), housing float, pop float,
+    the_geom @extschema:postgis@.geometry(MultiPolygon,4269), housing float, pop float,
     CONSTRAINT pk_tabblock20 PRIMARY KEY (geoid)
 );
 
@@ -227,7 +227,7 @@ $$
 
 -- Helper function that generates script to drop all nation tables (county, state) in a particular schema
 -- This is useful for loading 2011 because state and county tables aren't broken out into separate state files
-DROP FUNCTION IF EXISTS drop_national_tables_generate_script(text);
+DROP FUNCTION IF EXISTS tiger.drop_national_tables_generate_script(text);
 CREATE OR REPLACE FUNCTION drop_nation_tables_generate_script(param_schema text DEFAULT 'tiger_data')
   RETURNS text AS
 $$
@@ -386,7 +386,7 @@ INSERT INTO tiger.loader_lookuptables(process_order, lookup_name, table_name, lo
 VALUES(3, 'place', 'place', true, false, true,false, 'c',
 	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${table_name} PRIMARY KEY (plcidfp) ) INHERITS(tiger.place);" ',
 	'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid TO plcidfp;SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT uidx_${state_abbrev}_${lookup_name}_gid UNIQUE (gid);"
-${psql} -c "CREATE INDEX idx_${state_abbrev}_${lookup_name}_soundex_name ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (soundex(name));"
+${psql} -c "CREATE INDEX idx_${state_abbrev}_${lookup_name}_soundex_name ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (@extschema:fuzzystrmatch@.soundex(name));"
 ${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"'
 	);
@@ -400,7 +400,7 @@ ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_count
 
 INSERT INTO tiger.loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, level_nation, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(13, 'zcta5_raw', 'zcta520', false,false, false,true, false, 'c',
-	'${psql} -c "CREATE TABLE ${data_schema}.${lookup_name}( zcta5 character varying(5), classfp character varying(2),mtfcc character varying(5), funcstat character varying(1), aland double precision, awater double precision, intptlat character varying(11), intptlon character varying(12), the_geom geometry(MultiPolygon,4269) );"',
+	'${psql} -c "CREATE TABLE ${data_schema}.${lookup_name}( zcta5 character varying(5), classfp character varying(2),mtfcc character varying(5), funcstat character varying(1), aland double precision, awater double precision, intptlat character varying(11), intptlon character varying(12), the_geom @extschema:postgis@.geometry(MultiPolygon,4269) );"',
 $post_load$${psql} -c "ALTER TABLE tiger.zcta5 DROP CONSTRAINT IF EXISTS enforce_geotype_the_geom; CREATE TABLE ${data_schema}.zcta5_all(CONSTRAINT pk_zcta5_all PRIMARY KEY (zcta5ce,statefp), CONSTRAINT uidx_${lookup_name}_all_gid UNIQUE (gid)) INHERITS(tiger.zcta5);"
 ${psql} -c "SELECT loader_load_staged_data(lower('${table_name}'), lower('${lookup_name}'));"
 ${psql} -c "INSERT INTO ${data_schema}.zcta5_all(statefp, zcta5ce, classfp, mtfcc, funcstat, aland, awater, intptlat, intptlon, partflg, the_geom) SELECT  s.statefp, z.zcta5,  z.classfp, z.mtfcc, z.funcstat, z.aland, z.awater, z.intptlat, z.intptlon, CASE WHEN ST_Covers(s.the_geom, z.the_geom) THEN 'N' ELSE 'Y' END, ST_SnapToGrid(ST_Transform(CASE WHEN ST_Covers(s.the_geom, z.the_geom) THEN ST_SimplifyPreserveTopology(ST_Transform(z.the_geom,2163),1000) ELSE ST_SimplifyPreserveTopology(ST_Intersection(ST_Transform(s.the_geom,2163), ST_Transform(z.the_geom,2163)),1000)  END,4269), 0.000001) As geom FROM ${data_schema}.zcta5_raw AS z INNER JOIN tiger.state AS s ON (ST_Covers(s.the_geom, z.the_geom) or ST_Overlaps(s.the_geom, z.the_geom) );"
@@ -424,7 +424,7 @@ VALUES(6, 'faces', 'faces', true, true, false,false, 'c',
 INSERT INTO tiger.loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(7, 'featnames', 'featnames', true, true, false,false, 'a',
 '${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${table_name}(CONSTRAINT pk_${state_abbrev}_${table_name} PRIMARY KEY (gid)) INHERITS(tiger.${table_name});ALTER TABLE ${data_schema}.${state_abbrev}_${table_name} ALTER COLUMN statefp SET DEFAULT ''${state_fips}'';" ',
-'${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_snd_name ON ${data_schema}.${state_abbrev}_${table_name} USING btree (soundex(name));"
+'${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_snd_name ON ${data_schema}.${state_abbrev}_${table_name} USING btree (@extschema:fuzzystrmatch@.soundex(name));"
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_lname ON ${data_schema}.${state_abbrev}_${table_name} USING btree (lower(name));"
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_tlid_statefp ON ${data_schema}.${state_abbrev}_${table_name} USING btree (tlid,statefp);"
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
@@ -442,14 +442,14 @@ ${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${table_name}_the_geom_g
 ${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_zipl ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (zipl);"
 ${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_zip_state_loc(CONSTRAINT pk_${state_abbrev}_zip_state_loc PRIMARY KEY(zip,stusps,place)) INHERITS(tiger.zip_state_loc);"
 ${psql} -c "INSERT INTO ${data_schema}.${state_abbrev}_zip_state_loc(zip,stusps,statefp,place) SELECT DISTINCT e.zipl, ''${state_abbrev}'', ''${state_fips}'', p.name FROM ${data_schema}.${state_abbrev}_edges AS e INNER JOIN ${data_schema}.${state_abbrev}_faces AS f ON (e.tfidl = f.tfid OR e.tfidr = f.tfid) INNER JOIN ${data_schema}.${state_abbrev}_place As p ON(f.statefp = p.statefp AND f.placefp = p.placefp ) WHERE e.zipl IS NOT NULL;"
-${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_state_loc_place ON ${data_schema}.${state_abbrev}_zip_state_loc USING btree(soundex(place));"
+${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_state_loc_place ON ${data_schema}.${state_abbrev}_zip_state_loc USING btree(@extschema:fuzzystrmatch@.soundex(place));"
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_zip_state_loc ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 ${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"
 ${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_zip_state_loc;"
 ${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_zip_lookup_base(CONSTRAINT pk_${state_abbrev}_zip_state_loc_city PRIMARY KEY(zip,state, county, city, statefp)) INHERITS(tiger.zip_lookup_base);"
 ${psql} -c "INSERT INTO ${data_schema}.${state_abbrev}_zip_lookup_base(zip,state,county,city, statefp) SELECT DISTINCT e.zipl, ''${state_abbrev}'', c.name,p.name,''${state_fips}''  FROM ${data_schema}.${state_abbrev}_edges AS e INNER JOIN tiger.county As c  ON (e.countyfp = c.countyfp AND e.statefp = c.statefp AND e.statefp = ''${state_fips}'') INNER JOIN ${data_schema}.${state_abbrev}_faces AS f ON (e.tfidl = f.tfid OR e.tfidr = f.tfid) INNER JOIN ${data_schema}.${state_abbrev}_place As p ON(f.statefp = p.statefp AND f.placefp = p.placefp ) WHERE e.zipl IS NOT NULL;"
 ${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_zip_lookup_base ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_lookup_base_citysnd ON ${data_schema}.${state_abbrev}_zip_lookup_base USING btree(soundex(city));"',  ARRAY['gid', 'geoid','divroad'] );
+${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_zip_lookup_base_citysnd ON ${data_schema}.${state_abbrev}_zip_lookup_base USING btree(@extschema:fuzzystrmatch@.soundex(city));"',  ARRAY['gid', 'geoid','divroad'] );
 
 INSERT INTO tiger.loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process,columns_exclude )
 VALUES(9, 'addr', 'addr', true, true, false,false, 'a',
@@ -476,15 +476,15 @@ WITH lu AS (SELECT lookup_name, table_name, pre_load_process,post_load_process, 
     FROM tiger.loader_lookuptables
 				WHERE level_nation = true AND load = true)
 SELECT
-	loader_macro_replace(
+	tiger.loader_macro_replace(
 		replace(
-			loader_macro_replace(declare_sect
+			tiger.loader_macro_replace(declare_sect
 				, ARRAY['staging_fold', 'website_root', 'psql',  'data_schema', 'staging_schema'],
 				ARRAY[variables.staging_fold, variables.website_root, platform.psql, variables.data_schema, variables.staging_schema]
 			), '/', platform.path_sep) || '
 '  ||
 	-- Nation level files
-	array_to_string( ARRAY(SELECT loader_macro_replace('cd ' || replace(variables.staging_fold,'/', platform.path_sep) || '
+	array_to_string( ARRAY(SELECT tiger.loader_macro_replace('cd ' || replace(variables.staging_fold,'/', platform.path_sep) || '
 ' || platform.wget || ' ' || variables.website_root  || '/'
 
 -- hardcoding zcta5 path since doesn't follow convention
@@ -516,9 +516,9 @@ CREATE OR REPLACE FUNCTION loader_generate_script(param_states text[], os text)
   RETURNS SETOF text AS
 $BODY$
 SELECT
-	loader_macro_replace(
+	tiger.loader_macro_replace(
 		replace(
-			loader_macro_replace(declare_sect
+			tiger.loader_macro_replace(declare_sect
 				, ARRAY['staging_fold', 'state_fold','website_root', 'psql', 'state_abbrev', 'data_schema', 'staging_schema', 'state_fips'],
 				ARRAY[variables.staging_fold, s.state_fold, variables.website_root, platform.psql, s.state_abbrev, variables.data_schema, variables.staging_schema, s.state_fips::text]
 			), '/', platform.path_sep) || '
@@ -529,7 +529,7 @@ SELECT
 '
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(regexp_replace(COALESCE(lu.website_root_override, variables.website_root || '/' || upper(lookup_name) ), 'http[s]?://', ''),'ftp://','')    || '
 ' || replace(platform.unzip_command, '*.zip', 'tl_' || variables.tiger_year || '_' || s.state_fips || '*_' || table_name || '.zip ') || '
-' ||loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -D -' ||  lu.insert_mode || ' -s 4269 -g the_geom '
+' ||tiger.loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -D -' ||  lu.insert_mode || ' -s 4269 -g the_geom '
 		|| CASE WHEN lu.single_geom_mode THEN ' -S ' ELSE ' ' END::text || ' -W "latin1" tl_' || variables.tiger_year || '_' || s.state_fips
 	|| '_' || lu.table_name || '.dbf tiger_staging.' || lower(s.state_abbrev) || '_' || lu.table_name || ' | '::text || platform.psql
 		|| COALESCE(E'\n' ||
@@ -547,7 +547,7 @@ FROM tiger.county As c
 WHERE c.statefp = s.state_fips), ' ')
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(regexp_replace(COALESCE(lu.website_root_override,variables.website_root || '/' || upper(lookup_name)  || '/'), 'http[s]?://', ''),'ftp://','')  || '
 ' || replace(platform.unzip_command, '*.zip', 'tl_*_' || s.state_fips || '*_' || table_name || '*.zip ') || '
-' || loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || COALESCE(county_process_command || E'\n','')
+' || tiger.loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || COALESCE(county_process_command || E'\n','')
 				|| COALESCE(E'\n' ||lu.post_load_process , '') , ARRAY['loader','table_name','lookup_name'], ARRAY[platform.loader  || ' -D ' || CASE WHEN lu.single_geom_mode THEN ' -S' ELSE ' ' END::text, lu.table_name, lu.lookup_name ])
 				FROM tiger.loader_lookuptables AS lu
 				WHERE level_county = true AND load = true
@@ -595,7 +595,7 @@ BEGIN
 	RAISE NOTICE '%', var_sql;
 	EXECUTE (var_sql);
 	GET DIAGNOSTICS var_num_records = ROW_COUNT;
-	SELECT DropGeometryTable(var_staging_schema,param_staging_table) INTO var_temp;
+	SELECT @extschema:postgis@.DropGeometryTable(var_staging_schema,param_staging_table) INTO var_temp;
 	RETURN var_num_records;
 END;
 $$
@@ -618,11 +618,11 @@ language 'sql' VOLATILE;
 CREATE OR REPLACE FUNCTION loader_generate_census_script(param_states text[], os text)
   RETURNS SETOF text AS
 $$
-SELECT create_census_base_tables();
+SELECT tiger.create_census_base_tables();
 SELECT
-	loader_macro_replace(
+	tiger.loader_macro_replace(
 		replace(
-			loader_macro_replace(declare_sect
+			tiger.loader_macro_replace(declare_sect
 				, ARRAY['staging_fold', 'state_fold','website_root', 'psql', 'state_abbrev', 'data_schema', 'staging_schema', 'state_fips'],
 				ARRAY[variables.staging_fold, s.state_fold, variables.website_root, platform.psql, s.state_abbrev, variables.data_schema, variables.staging_schema, s.state_fips::text]
 			), '/', platform.path_sep) || '
@@ -633,7 +633,7 @@ SELECT
 '
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(regexp_replace(COALESCE(lu.website_root_override,variables.website_root || '/' || upper(lookup_name) ), 'http[s]+://', ''),'ftp://','')    || '
 ' || replace(platform.unzip_command, '*.zip', 'tl_' || variables.tiger_year || '_' || s.state_fips || '*_' || table_name || '.zip ') || '
-' ||loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -D -' ||  lu.insert_mode || ' -s 4269 -g the_geom '
+' ||tiger.loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -D -' ||  lu.insert_mode || ' -s 4269 -g the_geom '
 		|| CASE WHEN lu.single_geom_mode THEN ' -S ' ELSE ' ' END::text || ' -W "latin1" tl_' || variables.tiger_year || '_' || s.state_fips
 	|| '_' || lu.table_name || '.dbf tiger_staging.' || lower(s.state_abbrev) || '_' || lu.table_name || ' | '::text || platform.psql
 		|| COALESCE(E'\n' ||
@@ -651,7 +651,7 @@ FROM tiger.county As c
 WHERE c.statefp = s.state_fips), ' ')
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(regexp_replace(COALESCE(lu.website_root_override,variables.website_root || '/' || upper(lookup_name)  || '/'), 'http[s]+://', ''),'ftp://','')  || '
 ' || replace(platform.unzip_command, '*.zip', 'tl_*_' || s.state_fips || '*_' || table_name || '*.zip ') || '
-' || loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || COALESCE(county_process_command || E'\n','')
+' || tiger.loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || COALESCE(county_process_command || E'\n','')
 				|| COALESCE(E'\n' ||lu.post_load_process , '') , ARRAY['loader','table_name','lookup_name'], ARRAY[platform.loader  || ' -D ' || CASE WHEN lu.single_geom_mode THEN ' -S' ELSE ' ' END::text, lu.table_name, lu.lookup_name ])
 				FROM tiger.loader_lookuptables AS lu
 				WHERE level_county = true AND lu.lookup_name IN('bg','tract', 'tabblock')
@@ -670,5 +670,5 @@ AND platform.os = $2  -- generate script for selected platform
 $$
   LANGUAGE sql VOLATILE;
 
-SELECT create_census_base_tables();
+SELECT tiger.create_census_base_tables();
 COMMIT;
