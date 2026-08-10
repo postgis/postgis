@@ -827,13 +827,13 @@ static size_t lwnurbscurve_to_wkb_size(const LWNURBSCURVE *curve, uint8_t varian
     uint32_t nknots_for_size = 0;
     double *knots_for_size = lwnurbscurve_get_or_generate_knots(curve, &nknots_for_size);
     if (knots_for_size) {
-			size += WKB_DOUBLE_SIZE * nknots_for_size;
-			lwfree(knots_for_size); /* Just needed the count */
-		} else if (nknots_for_size > 0) {
-			/* Inconsistent state - got count but no array */
-			lwerror("Failed to get knots for NURBS curve");
-			return 0;
-		}
+        size += WKB_DOUBLE_SIZE * nknots_for_size;
+        lwfree(knots_for_size); /* Just needed the count */
+    } else if (nknots_for_size > 0 || npoints > 0) {
+        /* A non-empty curve must have a knot vector */
+        lwerror("Failed to get knots for NURBS curve");
+        return 0;
+    }
 
 	return size;
 }
