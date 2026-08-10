@@ -71,3 +71,5 @@ CREATE VIEW upgrade_test_raster_view_st_aspect AS
 SELECT
 	st_aspect(NULL::raster, NULL::int, NULL::raster) sig1,
 	st_aspect(NULL::raster) sig2;
+
+\i :regdir/hooks/issue-009-signature-helper-before.sql

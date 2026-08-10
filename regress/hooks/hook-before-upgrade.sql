@@ -114,11 +114,8 @@ CREATE OPERATOR public.< (
 	RIGHTARG = integer[]
 );
 
--- Shorter overloads must not make default-argument upgrade helper calls
--- ambiguous. The callbacks only record that they ran.
-CREATE TABLE upgrade_test_helper_overload_calls (
-	helper_name text NOT NULL
-);
+-- A shorter overload must not make identity-helper calls ambiguous.
+CREATE TABLE upgrade_test_identity_helper_call(marker text);
 
 CREATE FUNCTION _postgis_drop_function_by_identity(
 	function_name text,
@@ -128,22 +125,11 @@ RETURNS void
 LANGUAGE plpgsql
 AS $$
 BEGIN
-	INSERT INTO upgrade_test_helper_overload_calls
-	VALUES ('_postgis_drop_function_by_identity');
+	INSERT INTO upgrade_test_identity_helper_call VALUES (function_name);
 END;
 $$;
 
-CREATE FUNCTION _postgis_drop_function_by_signature(
-	function_signature text
-)
-RETURNS void
-LANGUAGE plpgsql
-AS $$
-BEGIN
-	INSERT INTO upgrade_test_helper_overload_calls
-	VALUES ('_postgis_drop_function_by_signature');
-END;
-$$;
+\i :regdir/hooks/issue-009-signature-helper-before.sql
 
 -- Verify generated named-argument guards do not use an exact operator from
 -- the extension schema. The callback only records that it ran.

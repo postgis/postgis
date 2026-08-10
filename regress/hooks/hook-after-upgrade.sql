@@ -24,15 +24,26 @@ DROP TABLE IF EXISTS upgrade_test;
 
 DO $$
 BEGIN
-	IF EXISTS (SELECT 1 FROM upgrade_test_helper_overload_calls) THEN
-		RAISE EXCEPTION 'upgrade helper overload was called';
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_catalog.pg_proc AS p
+		WHERE p.oid = pg_catalog.to_regprocedure(
+			'_postgis_drop_function_by_identity(text,text)'
+		)
+	) THEN
+		RAISE EXCEPTION 'identity-helper collision function is absent';
+	END IF;
+
+	IF EXISTS (SELECT 1 FROM upgrade_test_identity_helper_call) THEN
+		RAISE EXCEPTION 'identity-helper collision function ran';
 	END IF;
 END;
 $$;
 
 DROP FUNCTION _postgis_drop_function_by_identity(text, text);
-DROP FUNCTION _postgis_drop_function_by_signature(text);
-DROP TABLE upgrade_test_helper_overload_calls;
+DROP TABLE upgrade_test_identity_helper_call;
+
+\i :regdir/hooks/issue-009-signature-helper-after.sql
 
 DO LANGUAGE plpgsql $postgis_upgrade_test$
 BEGIN

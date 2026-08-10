@@ -83,3 +83,6 @@ BEGIN
 	RETURN pg_catalog.array_lower($1, $2);
 END
 $callback$;
+
+SET search_path = topology, public;
+\i :regdir/hooks/issue-009-signature-helper-before.sql

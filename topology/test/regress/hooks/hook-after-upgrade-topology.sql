@@ -82,3 +82,6 @@ INSERT INTO upgrade_test.domain_test values (
 SELECT * FROM upgrade_test.domain_test;
 SELECT topology.DropTopology('upgrade_test');
 SELECT topology.DropTopology('upgrade_test_copy');
+
+SET search_path = topology, public;
+\i :regdir/hooks/issue-009-signature-helper-after.sql
