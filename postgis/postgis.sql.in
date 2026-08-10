@@ -6454,7 +6454,7 @@ SELECT current_database()::character varying(256) AS f_table_catalog,
     )
     OR EXISTS (
       SELECT 1
-      FROM aclexplode(COALESCE(c.relacl, acldefault('r', c.relowner))) AS acl
+      FROM aclexplode(COALESCE(c.relacl, pg_catalog.acldefault('r', c.relowner))) AS acl
       WHERE acl.privilege_type = 'SELECT'
         AND (acl.grantee = 0 OR pg_has_role(acl.grantee, 'USAGE'))
     )
