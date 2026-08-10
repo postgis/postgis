@@ -159,13 +159,23 @@ CREATE OPERATOR <> (
 );
 
 -- Add the deprecated shape that makes the generated replacement guard run.
-CREATE FUNCTION ST_TileEnvelope(
-	zoom integer,
-	x integer,
-	y integer,
-	bounds geometry
-)
-RETURNS geometry
-LANGUAGE sql
-IMMUTABLE STRICT
-AS 'SELECT bounds';
+-- PostGIS 3.0 already provides it, with parameter defaults that a
+-- replacement without defaults cannot remove.
+DO $postgis_upgrade_test$
+BEGIN
+	IF pg_catalog.to_regprocedure(
+		'ST_TileEnvelope(integer, integer, integer, geometry)'
+	) IS NULL THEN
+		CREATE FUNCTION ST_TileEnvelope(
+			zoom integer,
+			x integer,
+			y integer,
+			bounds geometry
+		)
+		RETURNS geometry
+		LANGUAGE sql
+		IMMUTABLE STRICT
+		AS 'SELECT bounds';
+	END IF;
+END
+$postgis_upgrade_test$;
