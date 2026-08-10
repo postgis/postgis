@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
+          varints (Darafei Praliaskouski)
 
 
 
