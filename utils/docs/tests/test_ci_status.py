@@ -688,7 +688,77 @@ class CIStatusTest(unittest.TestCase):
 
         self.assertEqual(CI_STATUS.UNKNOWN, result["status"])
         self.assertEqual("Agent lost", result["status_label"])
-        self.assertEqual("agent lost: 3 steps killed at exit 0 (clone, prepare, check-xml)", result["message"])
+        self.assertEqual("agent lost: 3 steps stopped at exit 0 (clone, prepare, check-xml)", result["message"])
+
+    def test_woodpecker_killed_pipeline_with_deadline_exceeded_is_agent_loss(self):
+        check_config = {
+            "name": "Woodpecker",
+            "provider": "woodpecker",
+            "required": True,
+            "api_url": "https://woodie.example.test/api/repos/30/pipelines",
+            "web_url": "https://woodie.example.test/repos/30",
+        }
+        branch = {"name": "stable-3.6", "label": "3.6"}
+        pipeline = {
+            "number": 6852,
+            "event": "push",
+            "branch": "stable-3.6",
+            "ref": "refs/heads/stable-3.6",
+            "status": "killed",
+            "commit": "e" * 40,
+            "workflows": [
+                {
+                    "pid": 1,
+                    "name": "regress",
+                    "state": "killed",
+                    "children": [{
+                        "pid": 4,
+                        "name": "test-upgrades",
+                        "state": "failure",
+                        "exit_code": 0,
+                        "error": "Post docker.sock/wait: context deadline exceeded",
+                    }],
+                },
+            ],
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", return_value=[pipeline]):
+            result = CI_STATUS.woodpecker_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.UNKNOWN, result["status"])
+        self.assertEqual("Agent lost", result["status_label"])
+
+    def test_woodpecker_killed_pipeline_with_nonzero_failure_is_failure(self):
+        check_config = {
+            "name": "Woodpecker",
+            "provider": "woodpecker",
+            "required": True,
+            "api_url": "https://woodie.example.test/api/repos/30/pipelines",
+            "web_url": "https://woodie.example.test/repos/30",
+        }
+        branch = {"name": "master", "label": "master"}
+        pipeline = {
+            "number": 6874,
+            "event": "push",
+            "branch": "master",
+            "ref": "refs/heads/master",
+            "status": "killed",
+            "commit": "f" * 40,
+            "workflows": [
+                {
+                    "pid": 1,
+                    "name": "tools",
+                    "state": "failure",
+                    "children": [{"pid": 4, "name": "build", "state": "failure", "exit_code": 2}],
+                },
+            ],
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", return_value=[pipeline]):
+            result = CI_STATUS.woodpecker_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.FAILURE, result["status"])
+        self.assertEqual("failed: tools (build)", result["message"])
 
     def test_woodpecker_running_workflows_are_summarized(self):
         check_config = {

@@ -537,32 +537,61 @@ def woodpecker_leaf_steps(workflow):
     return [workflow]
 
 
+def woodpecker_step_is_agent_loss(step):
+    state = str(step.get("state") or step.get("status")).lower()
+    if step.get("exit_code") != 0:
+        return False
+    if state == "killed":
+        return True
+    if state != "failure":
+        return False
+
+    error = " ".join(
+        str(step.get(key) or "")
+        for key in ("error", "message")
+    ).lower()
+    return (
+        "context deadline exceeded" in error
+        or "canceled" in error
+        or "cancelled" in error
+    )
+
+
+def woodpecker_has_conclusive_failure(pipeline):
+    for workflow in pipeline.get("workflows") or []:
+        for step in woodpecker_leaf_steps(workflow):
+            status = normalize_woodpecker_status(step.get("state") or step.get("status"))
+            if status == FAILURE and not woodpecker_step_is_agent_loss(step):
+                return True
+    return False
+
+
 def woodpecker_killed_details(pipeline):
     workflows = pipeline.get("workflows") or []
     if not workflows:
         return None
 
     non_success = []
-    killed_zero = []
+    agent_loss = []
     for workflow in workflows:
         for step in woodpecker_leaf_steps(workflow):
             status = normalize_woodpecker_status(step.get("state") or step.get("status"))
             if status == SUCCESS:
                 continue
             non_success.append(step)
-            if str(step.get("state") or step.get("status")).lower() == "killed" and step.get("exit_code") == 0:
-                killed_zero.append(step)
+            if woodpecker_step_is_agent_loss(step):
+                agent_loss.append(step)
 
-    if not non_success or len(non_success) != len(killed_zero):
+    if not non_success or len(non_success) != len(agent_loss):
         return None
 
     labels = [
         str(step.get("name") or f"step {step.get('pid') or step.get('id')}")
-        for step in killed_zero[:3]
+        for step in agent_loss[:3]
     ]
-    suffix = f" ({', '.join(labels)}" + (", ..." if len(killed_zero) > len(labels) else "") + ")"
+    suffix = f" ({', '.join(labels)}" + (", ..." if len(agent_loss) > len(labels) else "") + ")"
     return {
-        "message": f"agent lost: {plural(len(killed_zero), 'step')} killed at exit 0{suffix}",
+        "message": f"agent lost: {plural(len(agent_loss), 'step')} stopped at exit 0{suffix}",
         "status_label": "Agent lost",
     }
 
@@ -605,6 +634,11 @@ def woodpecker_check(check, branch, timeout):
         except RECOVERABLE_PROVIDER_ERRORS:
             pass
     current_status = normalize_woodpecker_status(current.get("status"))
+    if (
+        str(current.get("status")).lower() == "killed"
+        and woodpecker_has_conclusive_failure(current)
+    ):
+        current_status = FAILURE
     message = current.get("message")
     extra = {}
     if current_status != SUCCESS:
