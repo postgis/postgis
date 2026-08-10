@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION geocode(
     input VARCHAR, max_results integer DEFAULT 10,
-    restrict_geom geometry DEFAULT NULL,
+    restrict_geom @extschema:postgis@.geometry DEFAULT NULL,
     OUT ADDY NORM_ADDY,
-    OUT GEOMOUT GEOMETRY,
+    OUT GEOMOUT @extschema:postgis@.GEOMETRY,
     OUT RATING INTEGER
 ) RETURNS SETOF RECORD
 AS $_$
@@ -40,9 +40,9 @@ ROWS 1;
 CREATE OR REPLACE FUNCTION geocode(
     IN_ADDY NORM_ADDY,
     max_results integer DEFAULT 10,
-    restrict_geom geometry DEFAULT null,
+    restrict_geom @extschema:postgis@.geometry DEFAULT null,
     OUT ADDY NORM_ADDY,
-    OUT GEOMOUT GEOMETRY,
+    OUT GEOMOUT @extschema:postgis@.GEOMETRY,
     OUT RATING INTEGER
 ) RETURNS SETOF RECORD
 AS $_$

@@ -1095,7 +1095,16 @@ int tokenize_landmark_words(char *, char **) ;
       int row_num ; \
       PAGC_CALLOC_STRUC(temp_ptr,TYP*,ROWS,WHERE,EXIT_TYPE) ; \
       for ( row_num = 0 ; row_num < ROWS ; row_num++ ) { \
-        PAGC_CALLOC_STRUC(temp_ptr[row_num],TYP,COLS,WHERE,EXIT_TYPE) ; \
+        /* Manual calloc: PAGC_CALLOC_STRUC can't clean up prior rows */ \
+        temp_ptr[row_num] = (TYP*)calloc(COLS, sizeof(TYP)); \
+        if (temp_ptr[row_num] == NULL) { \
+          while (row_num) { \
+            row_num--; \
+            free(temp_ptr[row_num]); \
+          } \
+          FREE_AND_NULL(temp_ptr); \
+          RET_ERR("Insufficient Memory", WHERE, EXIT_TYPE); \
+        } \
       } \
       PTR = temp_ptr ; \
    }
