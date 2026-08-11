@@ -45,17 +45,17 @@ endif
 SFCGAL guards appear in C files:
 
 ```c
-#if POSTGIS_SFCGAL_VERSION >= 20100
-/* SFCGAL 2.1+ required */
+#if POSTGIS_SFCGAL_VERSION >= 20300
+/* SFCGAL 2.3+ required */
 #endif
 ```
 
 Add matching test guards in `sfcgal/regress/tests.mk.in`:
 
 ```make
-ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 20100),1)
+ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 20300),1)
 TESTS += \
-  my_sfcgal_201_test
+  my_sfcgal_203_test
 endif
 ```
 

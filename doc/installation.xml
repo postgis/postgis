@@ -185,7 +185,7 @@ sh autogen.sh
 
     <listitem>
     <para>
-      GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.14+ is required to take full advantage of all the new functions and features. GEOS is available for download from
+      GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.15+ is required to take full advantage of all the new functions and features. GEOS is available for download from
       <link xlink:href="https://libgeos.org/">
       https://libgeos.org
       </link>.
@@ -216,8 +216,8 @@ sh autogen.sh
 
     <listitem>
     <para>
-      GDAL, version 3+ is preferred.  This is required for raster
-      support.
+      GDAL, version 2.4 or higher, is required for raster support.
+      GDAL 3+ is preferred.
       <link xlink:href="https://gdal.org/download.html">https://gdal.org/download.html</link>.
     </para>
     </listitem>
@@ -255,7 +255,7 @@ sh autogen.sh
 
     <listitem>
     <para>
-        SFCGAL, 1.4.1 or higher is required,
+        SFCGAL, 1.3.1 or higher is required,
         2.3+ is needed to be able to use all functionality.
         SFCGAL can be used to provide additional 2D and 3D advanced
         analysis functions to PostGIS cf <xref linkend="reference_sfcgal"/>.
