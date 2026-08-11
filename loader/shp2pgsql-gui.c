@@ -1579,7 +1579,15 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		if (!state)
 		{
 			pgui_logf(_("Warning: Could not load shapefile %s"), loader_file_config->shp_file);
-			goto import_cleanup;
+			ret = SHPLOADERERR;
+			is_running = FALSE;
+			PQfinish(pg_connection);
+			pg_connection = NULL;
+			pgui_logf(_("Shapefile import failed."));
+			free(progress_shapefile);
+			progress_shapefile = NULL;
+			is_valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(import_file_list_store), &iter);
+			continue;
 		}
 
 		/* Open the shapefile */

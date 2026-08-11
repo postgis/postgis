@@ -16,7 +16,7 @@
 #include "../postgis_config.h"
 
 #include <math.h> /* for isnan */
-#include <limits.h>
+#include <stdint.h>
 #include <strings.h>
 
 #include "shp2pgsql-core.h"
@@ -469,6 +469,39 @@ PIP(Point P, Point *V, int n)
 	return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
 }
 
+static void
+ShpLoaderFreeFieldMetadata(SHPLOADERSTATE *state)
+{
+	for (int j = 0; j < state->num_fields; j++)
+	{
+		if (state->field_names)
+			free(state->field_names[j]);
+		if (state->pgfieldtypes)
+			free(state->pgfieldtypes[j]);
+	}
+
+	free(state->field_names);
+	state->field_names = NULL;
+	free(state->types);
+	state->types = NULL;
+	free(state->widths);
+	state->widths = NULL;
+	free(state->precisions);
+	state->precisions = NULL;
+	free(state->pgfieldtypes);
+	state->pgfieldtypes = NULL;
+	free(state->col_names);
+	state->col_names = NULL;
+	state->num_fields = 0;
+}
+
+static int
+ShpLoaderOpenShapeFieldAllocFailure(SHPLOADERSTATE *state)
+{
+	ShpLoaderFreeFieldMetadata(state);
+	snprintf(state->message, SHPLOADERMSGLEN, "unable to allocate memory for field information");
+	return SHPLOADERERR;
+}
 
 int
 FindPolygons(SHPObject *obj, Ring ***Out)
@@ -516,7 +549,23 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 
 		/* Compute number of vertices */
 		nv = ve - vs;
-		assert(nv >= 0 && nv < INT_MAX / sizeof(Point));
+		if (nv <= 0 || (size_t)nv > SIZE_MAX / sizeof(*ring->list))
+		{
+			for (pi = 0; pi < out_index; pi++)
+			{
+				free(Outer[pi]->list);
+				free(Outer[pi]);
+			}
+			for (pi = 0; pi < in_index; pi++)
+			{
+				free(Inner[pi]->list);
+				free(Inner[pi]);
+			}
+			free(Outer);
+			free(Inner);
+			return -1;
+		}
+		size_t ring_list_size = sizeof(*ring->list) * (size_t)nv;
 
 		/* Allocate memory for a ring */
 		ring = (Ring *)malloc(sizeof(Ring));
@@ -537,7 +586,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 			free(Inner);
 			return -1;
 		}
-		ring->list = (Point *)malloc(sizeof(Point) * (size_t)nv);
+		ring->list = (Point *)malloc(ring_list_size);
 		if (!ring->list)
 		{
 			free(ring);
@@ -1391,7 +1440,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	 * field_names and pgfieldtypes hold per-field strings that are freed
 	 * individually; use calloc so any slot never assigned stays NULL and
 	 * free(NULL) is safe on the allocation-failure cleanup path. */
-	state->field_names = calloc(state->num_fields, sizeof(char*));
+	state->field_names = calloc(state->num_fields, sizeof(char *));
 	state->types = (DBFFieldType *)malloc(state->num_fields * sizeof(int));
 	state->widths = malloc(state->num_fields * sizeof(int));
 	state->precisions = malloc(state->num_fields * sizeof(int));
@@ -1401,12 +1450,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			(state->config->readshape ? strlen(state->geo_col) : 0) + 1,
 		sizeof(char)
 	);
-	if (!state->col_names ||
-		(state->num_fields && (!state->field_names || !state->types ||
-			!state->widths || !state->precisions || !state->pgfieldtypes)))
+	int fields_allocated = !state->num_fields || (state->field_names && state->types && state->widths &&
+						      state->precisions && state->pgfieldtypes);
+	if (!state->col_names || !fields_allocated)
 	{
-		state->num_fields = 0;
-		goto open_shape_field_alloc_failure;
+		return ShpLoaderOpenShapeFieldAllocFailure(state);
 	}
 
 	/* Generate a string of comma separated column names of the form "col1, col2 ... colN" for the SQL
@@ -1496,7 +1544,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		state->field_names[j] = strdup(name);
 		if (!state->field_names[j])
-			goto open_shape_field_alloc_failure;
+			return ShpLoaderOpenShapeFieldAllocFailure(state);
 
 		/* Now generate the PostgreSQL type name string and width based upon the shapefile type */
 		switch (state->types[j])
@@ -1553,7 +1601,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		}
 
 		if (!state->pgfieldtypes[j])
-			goto open_shape_field_alloc_failure;
+			return ShpLoaderOpenShapeFieldAllocFailure(state);
 
 		strcat(state->col_names, "\"");
 		strcat(state->col_names, name);
@@ -1575,31 +1623,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 	/* Return status */
 	return ret;
-
-open_shape_field_alloc_failure:
-	/* Release the per-field strings populated so far; free(NULL) is safe for
-	 * the slots that were never assigned. */
-	for (int j = 0; j < state->num_fields; j++)
-	{
-		free(state->field_names[j]);
-		free(state->pgfieldtypes[j]);
-	}
-	free(state->field_names);
-	state->field_names = NULL;
-	free(state->types);
-	state->types = NULL;
-	free(state->widths);
-	state->widths = NULL;
-	free(state->precisions);
-	state->precisions = NULL;
-	free(state->pgfieldtypes);
-	state->pgfieldtypes = NULL;
-	free(state->col_names);
-	state->col_names = NULL;
-	state->num_fields = 0;
-	state->num_records = 0;
-	snprintf(state->message, SHPLOADERMSGLEN, "unable to allocate memory for field information");
-	return SHPLOADERERR;
 }
 
 /* Return a pointer to an allocated string containing the header for the specified loader state */
@@ -1983,7 +2006,9 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 			if (!escval)
 			{
-				snprintf(state->message, SHPLOADERMSGLEN, "unable to allocate memory for escaped attribute value");
+				snprintf(state->message,
+					 SHPLOADERMSGLEN,
+					 "unable to allocate memory for escaped attribute value");
 				SHPDestroyObject(obj);
 				stringbuffer_destroy(sbwarn);
 				stringbuffer_destroy(sb);
@@ -2233,35 +2258,13 @@ void
 ShpLoaderDestroy(SHPLOADERSTATE *state)
 {
 	/* Destroy a state object created with ShpLoaderOpenShape */
-	int i;
 	if (state != NULL)
 	{
 		if (state->hSHPHandle)
 			SHPClose(state->hSHPHandle);
 		if (state->hDBFHandle)
 			DBFClose(state->hDBFHandle);
-		if (state->field_names)
-		{
-			for (i = 0; i < state->num_fields; i++)
-				free(state->field_names[i]);
-
-			free(state->field_names);
-		}
-		if (state->pgfieldtypes)
-		{
-			for (i = 0; i < state->num_fields; i++)
-				free(state->pgfieldtypes[i]);
-
-			free(state->pgfieldtypes);
-		}
-		if (state->types)
-			free(state->types);
-		if (state->widths)
-			free(state->widths);
-		if (state->precisions)
-			free(state->precisions);
-		if (state->col_names)
-			free(state->col_names);
+		ShpLoaderFreeFieldMetadata(state);
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);
