@@ -100,7 +100,9 @@ visual-examples: staged-install
 	$(MAKE) -C regress visual-examples-run
 
 check-news:
-	@if test -z "$(PYTHON3)"; then \
+	@if test ! -e "$(top_srcdir)/.git"; then \
+		echo "SKIP: NEWS unit tests require a Git worktree"; \
+	elif test -z "$(PYTHON3)"; then \
 		echo "SKIP: NEWS unit tests require python3"; \
 	else \
 		$(PYTHON3) -B $(top_srcdir)/utils/docs/tests/test_check_news.py; \

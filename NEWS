@@ -10,6 +10,8 @@ These are only changes since 3.7.0beta2.
 
  - OSSFuzz 5607611131822080, keep GSERIALIZED bytea fuzzer allocations
           consistent with hostile varlena size headers (Darafei Praliaskouski)
+ - #6111, Skip NEWS unit tests outside Git worktrees, fixing source
+          package documentation checks without git (Bas Couwenberg)
  - #6112, Document GMP and current build dependency requirements in
           README.postgis (Darafei Praliaskouski)
  - OSSFuzz 544800490, reject malformed GSERIALIZED polygon rings before
