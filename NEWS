@@ -12,6 +12,8 @@ These are only changes since 3.7.0beta2.
           consistent with hostile varlena size headers (Darafei Praliaskouski)
  - OSSFuzz 544800490, reject malformed GSERIALIZED polygon rings before
           deserializing geometry data (Darafei Praliaskouski)
+ - OSSFuzz 544936363, keep GSERIALIZED LWGEOM fuzzer bbox
+          comparisons aligned with serialized bbox flags (Darafei Praliaskouski)
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
 
