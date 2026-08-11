@@ -2070,6 +2070,12 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, uint64_t num
   *isccw = lwt_IsTopoRingCCW(full_ring_pa);
 
   POINTARRAY **points = lwalloc(sizeof(POINTARRAY*));
+  if (!points)
+  {
+	  ptarray_free(full_ring_pa);
+	  lwerror("Could not allocate ring shell rings array");
+	  return NULL;
+  }
   points[0] = full_ring_pa;
 
   /* NOTE: the ring may very well have collapsed components,

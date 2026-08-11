@@ -16,6 +16,7 @@
 #include "../postgis_config.h"
 
 #include <math.h> /* for isnan */
+#include <stdint.h>
 #include <strings.h>
 
 #include "shp2pgsql-core.h"
@@ -170,6 +171,8 @@ escape_copy_string(char *str)
 
 	size = ptr - str + toescape + 1;
 	result = calloc(1, size);
+	if (!result)
+		return NULL;
 	optr = result;
 	ptr = str;
 
@@ -223,6 +226,8 @@ escape_insert_string(char *str)
 
 	size = ptr - str + toescape + 1;
 	result = calloc(1, size);
+	if (!result)
+		return NULL;
 	optr = result;
 	ptr = str;
 
@@ -271,6 +276,11 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	{
 		/* Allocate memory for our array of LWPOINTs and our dynptarrays */
 		lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
+		if (!lwmultipoints)
+		{
+			snprintf(state->message, SHPLOADERMSGLEN, "unable to allocate memory for point geometry");
+			return SHPLOADERERR;
+		}
 
 		/* We need an array of pointers to each of our sub-geometries */
 		for (u = 0; u < obj->nVertices; u++)
@@ -361,6 +371,11 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 
 	/* Allocate memory for our array of LWLINEs and our dynptarrays */
 	lwmultilinestrings = malloc(sizeof(LWPOINT *) * obj->nParts);
+	if (!lwmultilinestrings)
+	{
+		snprintf(state->message, SHPLOADERMSGLEN, "unable to allocate memory for linestring geometry");
+		return SHPLOADERERR;
+	}
 
 	/* We need an array of pointers to each of our sub-geometries */
 	for (u = 0; u < obj->nParts; u++)
@@ -454,6 +469,39 @@ PIP(Point P, Point *V, int n)
 	return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
 }
 
+static void
+ShpLoaderFreeFieldMetadata(SHPLOADERSTATE *state)
+{
+	for (int j = 0; j < state->num_fields; j++)
+	{
+		if (state->field_names)
+			free(state->field_names[j]);
+		if (state->pgfieldtypes)
+			free(state->pgfieldtypes[j]);
+	}
+
+	free(state->field_names);
+	state->field_names = NULL;
+	free(state->types);
+	state->types = NULL;
+	free(state->widths);
+	state->widths = NULL;
+	free(state->precisions);
+	state->precisions = NULL;
+	free(state->pgfieldtypes);
+	state->pgfieldtypes = NULL;
+	free(state->col_names);
+	state->col_names = NULL;
+	state->num_fields = 0;
+}
+
+static int
+ShpLoaderOpenShapeFieldAllocFailure(SHPLOADERSTATE *state)
+{
+	ShpLoaderFreeFieldMetadata(state);
+	snprintf(state->message, SHPLOADERMSGLEN, "unable to allocate memory for field information");
+	return SHPLOADERERR;
+}
 
 int
 FindPolygons(SHPObject *obj, Ring ***Out)
@@ -474,6 +522,12 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	/* Allocate initial memory */
 	Outer = (Ring **)malloc(sizeof(Ring *) * obj->nParts);
 	Inner = (Ring **)malloc(sizeof(Ring *) * obj->nParts);
+	if (!Outer || !Inner)
+	{
+		free(Outer);
+		free(Inner);
+		return -1;
+	}
 
 	/* Iterate over rings dividing in Outers and Inners */
 	for (pi=0; pi < obj->nParts; pi++)
@@ -495,10 +549,62 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 
 		/* Compute number of vertices */
 		nv = ve - vs;
+		if (nv <= 0 || (size_t)nv > SIZE_MAX / sizeof(*ring->list))
+		{
+			for (pi = 0; pi < out_index; pi++)
+			{
+				free(Outer[pi]->list);
+				free(Outer[pi]);
+			}
+			for (pi = 0; pi < in_index; pi++)
+			{
+				free(Inner[pi]->list);
+				free(Inner[pi]);
+			}
+			free(Outer);
+			free(Inner);
+			return -1;
+		}
+		size_t ring_list_size = sizeof(*ring->list) * (size_t)nv;
 
 		/* Allocate memory for a ring */
 		ring = (Ring *)malloc(sizeof(Ring));
-		ring->list = (Point *)malloc(sizeof(Point) * nv);
+		if (!ring)
+		{
+			/* Free rings allocated so far (stored in Outer/Inner) */
+			for (pi = 0; pi < out_index; pi++)
+			{
+				free(Outer[pi]->list);
+				free(Outer[pi]);
+			}
+			for (pi = 0; pi < in_index; pi++)
+			{
+				free(Inner[pi]->list);
+				free(Inner[pi]);
+			}
+			free(Outer);
+			free(Inner);
+			return -1;
+		}
+		ring->list = (Point *)malloc(ring_list_size);
+		if (!ring->list)
+		{
+			free(ring);
+			/* Free rings allocated so far (stored in Outer/Inner) */
+			for (pi = 0; pi < out_index; pi++)
+			{
+				free(Outer[pi]->list);
+				free(Outer[pi]);
+			}
+			for (pi = 0; pi < in_index; pi++)
+			{
+				free(Inner[pi]->list);
+				free(Inner[pi]);
+			}
+			free(Outer);
+			free(Inner);
+			return -1;
+		}
 		ring->n = nv;
 		ring->next = NULL;
 		ring->linked = 0;
@@ -660,6 +766,12 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 	polygon_total = FindPolygons(obj, &Outer);
 
+	if (polygon_total < 0)
+	{
+		snprintf(state->message, SHPLOADERMSGLEN, "unable to allocate memory for polygon rings");
+		return SHPLOADERERR;
+	}
+
 	if (state->config->simple_geometries == 1 && polygon_total != 1) /* We write Non-MULTI geometries, but have several parts: */
 	{
 		snprintf(state->message, SHPLOADERMSGLEN, _("We have a Multipolygon with %d parts, can't use -S switch!"), polygon_total);
@@ -669,6 +781,12 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 	/* Allocate memory for our array of LWPOLYs */
 	lwpolygons = malloc(sizeof(LWPOLY *) * polygon_total);
+	if (!lwpolygons)
+	{
+		ReleasePolygons(Outer, polygon_total);
+		snprintf(state->message, SHPLOADERMSGLEN, "unable to allocate memory for polygon geometry");
+		return SHPLOADERERR;
+	}
 
 	/* Cycle through each individual polygon */
 	for (pi = 0; pi < polygon_total; pi++)
@@ -1000,6 +1118,8 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 
 	/* Create a new state object and assign the config to it */
 	state = malloc(sizeof(SHPLOADERSTATE));
+	if (!state)
+		return NULL;
 	state->config = config;
 
 	/* Set any state defaults */
@@ -1316,17 +1436,26 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 	state->num_records = DBFGetRecordCount(state->hDBFHandle);
 
-	/* Allocate storage for field information */
-	state->field_names = malloc(state->num_fields * sizeof(char*));
+	/* Allocate storage for field information.
+	 * field_names and pgfieldtypes hold per-field strings that are freed
+	 * individually; use calloc so any slot never assigned stays NULL and
+	 * free(NULL) is safe on the allocation-failure cleanup path. */
+	state->field_names = calloc(state->num_fields, sizeof(char *));
 	state->types = (DBFFieldType *)malloc(state->num_fields * sizeof(int));
 	state->widths = malloc(state->num_fields * sizeof(int));
 	state->precisions = malloc(state->num_fields * sizeof(int));
-	state->pgfieldtypes = malloc(state->num_fields * sizeof(char *));
+	state->pgfieldtypes = calloc(state->num_fields, sizeof(char *));
 	state->col_names = calloc(
 		(size_t)state->num_fields * (MAXFIELDNAMELEN + 2) +
 			(state->config->readshape ? strlen(state->geo_col) : 0) + 1,
 		sizeof(char)
 	);
+	int fields_allocated = !state->num_fields || (state->field_names && state->types && state->widths &&
+						      state->precisions && state->pgfieldtypes);
+	if (!state->col_names || !fields_allocated)
+	{
+		return ShpLoaderOpenShapeFieldAllocFailure(state);
+	}
 
 	/* Generate a string of comma separated column names of the form "col1, col2 ... colN" for the SQL
 	   insertion string */
@@ -1414,6 +1543,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		}
 
 		state->field_names[j] = strdup(name);
+		if (!state->field_names[j])
+			return ShpLoaderOpenShapeFieldAllocFailure(state);
 
 		/* Now generate the PostgreSQL type name string and width based upon the shapefile type */
 		switch (state->types[j])
@@ -1468,6 +1599,9 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			snprintf(state->message, SHPLOADERMSGLEN, _("Invalid type %x in DBF file"), state->types[j]);
 			return SHPLOADERERR;
 		}
+
+		if (!state->pgfieldtypes[j])
+			return ShpLoaderOpenShapeFieldAllocFailure(state);
 
 		strcat(state->col_names, "\"");
 		strcat(state->col_names, name);
@@ -1864,13 +1998,27 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			if (state->config->dump_format)
 			{
 				escval = escape_copy_string(val);
-				stringbuffer_aprintf(sb, "%s", escval);
 			}
 			else
 			{
 				escval = escape_insert_string(val);
-				stringbuffer_aprintf(sb, "'%s'", escval);
 			}
+
+			if (!escval)
+			{
+				snprintf(state->message,
+					 SHPLOADERMSGLEN,
+					 "unable to allocate memory for escaped attribute value");
+				SHPDestroyObject(obj);
+				stringbuffer_destroy(sbwarn);
+				stringbuffer_destroy(sb);
+				return SHPLOADERERR;
+			}
+
+			if (state->config->dump_format)
+				stringbuffer_aprintf(sb, "%s", escval);
+			else
+				stringbuffer_aprintf(sb, "'%s'", escval);
 
 			/* Free the escaped version if required */
 			if (val != escval)
@@ -2110,35 +2258,13 @@ void
 ShpLoaderDestroy(SHPLOADERSTATE *state)
 {
 	/* Destroy a state object created with ShpLoaderOpenShape */
-	int i;
 	if (state != NULL)
 	{
 		if (state->hSHPHandle)
 			SHPClose(state->hSHPHandle);
 		if (state->hDBFHandle)
 			DBFClose(state->hDBFHandle);
-		if (state->field_names)
-		{
-			for (i = 0; i < state->num_fields; i++)
-				free(state->field_names[i]);
-
-			free(state->field_names);
-		}
-		if (state->pgfieldtypes)
-		{
-			for (i = 0; i < state->num_fields; i++)
-				free(state->pgfieldtypes[i]);
-
-			free(state->pgfieldtypes);
-		}
-		if (state->types)
-			free(state->types);
-		if (state->widths)
-			free(state->widths);
-		if (state->precisions)
-			free(state->precisions);
-		if (state->col_names)
-			free(state->col_names);
+		ShpLoaderFreeFieldMetadata(state);
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);
