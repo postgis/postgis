@@ -16,6 +16,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <math.h>
 
 extern "C" {
 #include "geos_stub.h"
@@ -42,6 +43,39 @@ postgis_fuzzer_assert(int condition)
 		abort();
 }
 
+static int
+same_serialized_double(double expected, double actual)
+{
+	if (isnan(expected) && isnan(actual))
+		return LW_TRUE;
+
+	return expected == actual;
+}
+
+static int
+same_serialized_gbox(const GBOX *expected, const GBOX *actual)
+{
+	if (FLAGS_GET_ZM(expected->flags) != FLAGS_GET_ZM(actual->flags))
+		return LW_FALSE;
+
+	if (!same_serialized_double(expected->xmin, actual->xmin) ||
+	    !same_serialized_double(expected->xmax, actual->xmax) ||
+	    !same_serialized_double(expected->ymin, actual->ymin) ||
+	    !same_serialized_double(expected->ymax, actual->ymax))
+		return LW_FALSE;
+
+	if ((FLAGS_GET_Z(expected->flags) || FLAGS_GET_GEODETIC(expected->flags)) &&
+	    (!same_serialized_double(expected->zmin, actual->zmin) ||
+	     !same_serialized_double(expected->zmax, actual->zmax)))
+		return LW_FALSE;
+
+	if (FLAGS_GET_M(expected->flags) && (!same_serialized_double(expected->mmin, actual->mmin) ||
+					     !same_serialized_double(expected->mmax, actual->mmax)))
+		return LW_FALSE;
+
+	return LW_TRUE;
+}
+
 static void
 assert_matching_gbox(const LWGEOM *input, const LWGEOM *roundtrip)
 {
@@ -56,8 +90,14 @@ assert_matching_gbox(const LWGEOM *input, const LWGEOM *roundtrip)
 
 	/* GSERIALIZED stores a float-rounded bbox. */
 	expected = *input->bbox;
+	expected.flags = input->flags;
 	gbox_float_round(&expected);
-	postgis_fuzzer_assert(gbox_same(&expected, roundtrip->bbox));
+	if (FLAGS_GET_GEODETIC(expected.flags) && !FLAGS_GET_Z(expected.flags))
+	{
+		expected.zmin = next_float_down(expected.zmin);
+		expected.zmax = next_float_up(expected.zmax);
+	}
+	postgis_fuzzer_assert(same_serialized_gbox(&expected, roundtrip->bbox));
 }
 
 static void
