@@ -35,24 +35,31 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 12 and above.
+PostGIS is compatible with PostgreSQL 14 and above.
+Current release, PostgreSQL, dependency, and packaging support details are
+maintained in the PostGIS compatibility browser:
+
+  https://postgis.net/development/compatibility/
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
 
-For apt-based systems you can run this command to install the below dependencies (except for GTK):
+For apt-based GNU/Linux systems you can run this command to install most of the
+below dependencies (except for GTK):
 
   sudo apt-get install \
     docbook-xsl-ns \
     gettext \
     libgdal-dev \
     libgeos-dev \
+    libgmp-dev \
     libjson-c-dev \
     libproj-dev \
     libprotobuf-c-dev \
     libsfcgal-dev \
     libxml2-dev \
     libxml2-utils \
+    pkg-config \
     protobuf-c-compiler \
     xsltproc
 
@@ -82,11 +89,23 @@ For apt-based systems you can run this command to install the below dependencies
 
     http://xmlsoft.org/
 
-* GNU gettext
+* GMP (Required):
 
-  The loader, and hence PostGIS, requires GNU gettext 0.14 or higher
-  for translation support
-  (typically in libc on GNU/Linux, in which case 0.17 is required).
+  The GMP arbitrary precision arithmetic library is required by PostGIS
+  topology support.
+
+    https://gmplib.org
+
+* iconv/libiconv (Required):
+
+  The iconv conversion library is required by the shp2pgsql loader for encoding
+  conversion. On GNU/Linux systems it is typically provided by libc; on other
+  platforms you may need a separate libiconv package.
+
+* GNU gettext (Optional)
+
+  GNU gettext is used for loader and documentation translation support. It may
+  be disabled with ``--with-gettext=no``.
 
 * JSON-C (Optional, Version 0.9 or higher)
 
@@ -94,26 +113,26 @@ For apt-based systems you can run this command to install the below dependencies
 
     http://github.com/json-c/json-c/wiki
 
-* GDAL (Optional, Version 2 or higher 3+ is strongly recommended)
+* GDAL (Required for raster, Version 2.4 or higher 3+ is strongly recommended)
 
   GDAL (https://gdal.org) is *required* if you want to compile PostGIS
   with raster support. To compile without raster support you
   must ``./configure --without-raster``
 
-* CGAL 5+ and SFCGAL 1.4+ (Optional) needed for advanced 3D support
-* SFCGAL 2.1.0 is required for additional functionality.
+* SFCGAL 1.3.1+ (Optional) needed for advanced 3D support
+* SFCGAL 2.3+ is required for all postgis_sfcgal extension features.
 
   https://sfcgal.gitlab.io/sfcgal
 
 * protobuf-c (Optional, Version 1.1.0 or higher)
 
-  The protobuf-c library and compiler is required for ST_AsMVT and
+  The protobuf-c library and compiler are required to enable ST_AsMVT and
   ST_AsGeobuf output. Also, pkg-config is required to verify the correct
   minimum version of protobuf-c.
 
     https://github.com/protobuf-c/protobuf-c
 
-* GTK (Optional,  Version 2 series: 2.2.0 or higher)
+* GTK (Optional, Version 2 series: 2.8.0 or higher)
 
   The GTK library is required to build the GUI version of shp2pgsql
   loader.
