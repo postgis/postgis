@@ -76,6 +76,20 @@ encoded_polyline_zigzag_decode(uint32_t value)
 	return (int32_t)((value >> 1) ^ (uint32_t)(-(int32_t)(value & 1)));
 }
 
+static int
+encoded_polyline_add_delta(int32_t *coordinate, int32_t delta)
+{
+	int64_t next = (int64_t)*coordinate + delta;
+	if (next < INT32_MIN || next > INT32_MAX)
+	{
+		lwerror("lwgeom_from_encoded_polyline: coordinate value is too large");
+		return LW_FALSE;
+	}
+
+	*coordinate = next;
+	return LW_TRUE;
+}
+
 LWGEOM*
 lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
 {
@@ -100,7 +114,11 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
 	    return NULL;
     }
     int32_t deltaLat = encoded_polyline_zigzag_decode(res);
-    latitude += deltaLat;
+    if (!encoded_polyline_add_delta(&latitude, deltaLat))
+    {
+	    ptarray_free(pa);
+	    return NULL;
+    }
 
     if (!encoded_polyline_read_varint(encodedpolyline, length, &idx, &res))
     {
@@ -108,7 +126,11 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
 	    return NULL;
     }
     int32_t deltaLon = encoded_polyline_zigzag_decode(res);
-    longitude += deltaLon;
+    if (!encoded_polyline_add_delta(&longitude, deltaLon))
+    {
+	    ptarray_free(pa);
+	    return NULL;
+    }
 
     pt.x = longitude/scale;
     pt.y = latitude/scale;

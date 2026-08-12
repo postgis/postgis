@@ -76,6 +76,19 @@ in_encoded_polyline_test_overlong_varint(void)
 	CU_ASSERT_PTR_NULL(lwgeom_from_encoded_polyline("~~~~~~P", 5));
 }
 
+static void
+in_encoded_polyline_test_coordinate_overflow(void)
+{
+	char input[] = {(char)0xff, (char)0xff, (char)0xff, (char)0xff, (char)0xff, '\\', '?',
+			(char)0xff, (char)0xff, (char)0xff, (char)0xff, (char)0xff, '\\', '?',
+			(char)0xff, (char)0xff, (char)0xff, (char)0xff, '\\',       '?',  (char)0xff,
+			(char)0xff, (char)0xff, (char)0xff, (char)0xff, '\\',       '?',  (char)0xff,
+			(char)0xff, (char)0xff, (char)0xff, (char)0xff, '\\',       0};
+
+	/* OSSFuzz 4743900859006976: cumulative deltas must not overflow int32_t. */
+	CU_ASSERT_PTR_NULL(lwgeom_from_encoded_polyline(input, 2));
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -88,4 +101,5 @@ void in_encoded_polyline_suite_setup(void)
 	PG_ADD_TEST(suite, in_encoded_polyline_test_close_points);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_truncated_input);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_overlong_varint);
+	PG_ADD_TEST(suite, in_encoded_polyline_test_coordinate_overflow);
 }
