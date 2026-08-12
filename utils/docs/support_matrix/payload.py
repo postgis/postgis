@@ -200,6 +200,7 @@ BROWSER_DIMENSIONS = (
     ("gdal", "GDAL"),
     ("sfcgal", "SFCGAL"),
 )
+BROWSER_DIMENSION_LABELS = dict(BROWSER_DIMENSIONS)
 BROWSER_STATUSES = {
     "supported": {"symbol": "W", "label": "works, supported"},
     "feature-limited": {"symbol": "L", "label": "works with limited features"},
@@ -242,6 +243,13 @@ PROJECT_URLS = {
     "xmlto": "https://pagure.io/xmlto/",
     "dblatex": "https://dblatex.sourceforge.net/",
     "imagemagick": "https://imagemagick.org/",
+}
+RELEASE_TAGS = {
+    "postgresql": ("https://www.postgresql.org/docs/release/{version}/", ""),
+    "geos": ("https://github.com/libgeos/geos/releases/tag/{version}", ""),
+    "proj": ("https://github.com/OSGeo/PROJ/releases/tag/{version}", ""),
+    "gdal": ("https://github.com/OSGeo/gdal/releases/tag/v{version}", ""),
+    "sfcgal": ("https://gitlab.com/sfcgal/SFCGAL/-/releases/v{version}", ""),
 }
 DEPENDENCY_GROUPS = (
     (
@@ -338,6 +346,56 @@ def browser_gate_key(key: str) -> str:
         "postgresql-server-dev": "postgresql",
         "libiconv": "iconv",
     }.get(key, browser_project_key(key))
+
+
+def browser_link(value: str, url: str, title: str = "") -> dict[str, str]:
+    return {"value": value, "url": url, "title": title or value}
+
+
+def browser_postgis_news_link(version: str) -> dict[str, str]:
+    return browser_link(
+        "NEWS",
+        f"https://gitea.osgeo.org/postgis/postgis/src/tag/{quote(version, safe='')}/NEWS",
+        f"PostGIS {version} release notes",
+    )
+
+
+def browser_postgis_branch_news_link(series: dict[str, Any]) -> dict[str, str]:
+    minor = str(series.get("minor") or "")
+    if series.get("lifecycle") == "development":
+        return browser_link(
+            "Branch NEWS",
+            "https://gitea.osgeo.org/postgis/postgis/src/branch/master/NEWS",
+            "PostGIS development branch NEWS",
+        )
+    if browser_is_eol(series) and series.get("latest"):
+        return browser_link(
+            "Latest NEWS",
+            f"https://gitea.osgeo.org/postgis/postgis/src/tag/{quote(str(series['latest']), safe='')}/NEWS",
+            f"PostGIS {series['latest']} release notes",
+        )
+    branch = f"stable-{minor}"
+    return browser_link(
+        "Branch NEWS",
+        f"https://gitea.osgeo.org/postgis/postgis/src/branch/{quote(branch, safe='')}/NEWS",
+        f"PostGIS {branch} NEWS",
+    )
+
+
+def browser_dependency_release_link(key: str, item: dict[str, Any]) -> dict[str, str] | None:
+    template = RELEASE_TAGS.get(key)
+    version = str(item.get("current_minor") or item.get("version") or "")
+    if not template or not version:
+        return None
+    url_template, prefix = template
+    if key == "postgresql" and not re.fullmatch(r"\d+(?:\.\d+)+", version):
+        return None
+    linked_version = f"{prefix}{version}"
+    return browser_link(
+        "Release notes",
+        url_template.format(version=quote(linked_version, safe="")),
+        f"{BROWSER_DIMENSION_LABELS.get(key, key)} {version} release notes",
+    )
 
 
 def browser_dependency_group(item: dict[str, Any]) -> str:
@@ -600,6 +658,7 @@ def browser_column(
         if part
     )
     source = browser_source_detail(data, item.get("source") or "")
+    release = browser_dependency_release_link(key, item)
     return {
         "key": item["version"],
         "label": item["version"],
@@ -611,6 +670,7 @@ def browser_column(
         or str(item.get("current_minor") or "n/a"),
         "final_label": final_label,
         "detail": detail,
+        "release": release,
         "source": source if item.get("source") else None,
         "meta": item,
     }
@@ -681,11 +741,22 @@ def browser_lifecycle(series: dict[str, Any], current_year: int) -> list[dict[st
 def browser_matrix(data: dict[str, Any], current_year: int) -> dict[str, Any]:
     dimensions: list[dict[str, Any]] = []
     for key, label in BROWSER_DIMENSIONS:
+        source_item = next(
+            (item for item in data.get("dependency_versions", {}).get(key, []) if item.get("source")),
+            {},
+        )
         columns = [
             browser_column(data, key, label, item, current_year)
             for item in data.get("dependency_versions", {}).get(key, [])
         ]
-        dimensions.append({"key": key, "label": label, "columns": columns})
+        dimensions.append(
+            {
+                "key": key,
+                "label": label,
+                "source": browser_source_detail(data, source_item.get("source") or "") if source_item else None,
+                "columns": columns,
+            }
+        )
     supported_series = [series for series in data.get("postgis_series", []) if not browser_is_eol(series)]
     for dimension in dimensions:
         dimension["visible"] = {
@@ -706,21 +777,24 @@ def browser_matrix(data: dict[str, Any], current_year: int) -> dict[str, Any]:
             "eol": browser_is_eol(series),
             "visible": {"supported": not browser_is_eol(series), "history": True},
             "lifecycle": browser_lifecycle(series, current_year),
+            "source": browser_postgis_branch_news_link(series),
             "rows": {"series": [], "patches": []},
         }
 
         def make_row(patch: dict[str, Any] | None) -> dict[str, Any]:
             effective = browser_patch_series(series, patch)
+            version = str(patch.get("version") if patch else series.get("latest") or "")
             row = {
                 "key": patch.get("version") if patch else series["minor"],
                 "kind": "patch" if patch else "series",
-                "primary": patch.get("version") if patch else str(series.get("latest") or ""),
+                "primary": version,
                 "secondary": (
                     browser_release_age(patch.get("release_date"), current_year, month=True) or "patch" if patch else ""
                 ),
                 "eol": browser_is_eol(series),
                 "release_date": str(patch.get("release_date") or "") if patch else "",
-                "source": (browser_source_detail(data, str(patch.get("source") or "")) if patch else None),
+                "release": browser_postgis_news_link(version) if version else None,
+                "source": browser_source_detail(data, str(patch.get("source") or "")) if patch else None,
                 "cells": {},
             }
             for dimension in dimensions:
@@ -1106,9 +1180,12 @@ def browser_recommended(
             (patch for patch in data.get("patch_releases", []) if patch.get("version") == value),
             {},
         )
+        release = browser_postgis_news_link(value) if value else {}
         return {
             "value": value,
             "detail": f"released {patch['release_date']}" if patch.get("release_date") else "",
+            "url": release.get("url", ""),
+            "title": release.get("title", ""),
         }
     if key == "postgresql":
         value = browser_newest_version(
@@ -1124,9 +1201,12 @@ def browser_recommended(
             ),
         )
         if value:
+            release = browser_dependency_release_link("postgresql", value) or {}
             return {
                 "value": str(value.get("current_minor") or value.get("version") or ""),
                 "detail": (f"major since {value['first_release_date']}" if value.get("first_release_date") else ""),
+                "url": release.get("url", ""),
+                "title": release.get("title", ""),
             }
     if key in {dimension[0] for dimension in BROWSER_DIMENSIONS[1:]}:
         value = browser_newest_version(
@@ -1135,9 +1215,12 @@ def browser_recommended(
             lambda candidate: not browser_is_eol(candidate) and not browser_is_development(candidate),
         )
         if value:
+            release = browser_dependency_release_link(key, value) or {}
             return {
                 "value": str(value.get("current_minor") or value.get("version") or ""),
                 "detail": (f"line since {value['first_release_date']}" if value.get("first_release_date") else ""),
+                "url": release.get("url", ""),
+                "title": release.get("title", ""),
             }
     pin = item.get("pin") or {}
     if pin.get("value"):
@@ -1435,6 +1518,18 @@ def validate_payload_model(model: dict[str, Any]) -> list[str]:
                 errors.append(f"browser.{'.'.join(path)} exposes internal source id {match.group(0)!r}")
 
     validate_display_text(model)
+
+    def validate_link(link: Any, path: str, *, required: bool = False) -> None:
+        if not link:
+            if required:
+                errors.append(f"{path}: link is required")
+            return
+        if not isinstance(link, dict):
+            errors.append(f"{path}: link must be an object")
+            return
+        if not link.get("value") or not str(link.get("url") or "").startswith(("http://", "https://", "/")):
+            errors.append(f"{path}: human label and URL are required")
+
     for index, source in enumerate(sources):
         if not source.get("value") or not str(source.get("url") or "").startswith(("http://", "https://")):
             errors.append(f"browser.matrix.sources.{index}: human label and URL are required")
@@ -1495,6 +1590,10 @@ def validate_payload_model(model: dict[str, Any]) -> list[str]:
             if any(not isinstance(index, int) or index < 0 or index >= len(columns) for index in visible):
                 errors.append(f"browser.matrix.{dimension.get('key')}.{coverage}: invalid column index")
         for column in columns:
+            validate_link(
+                column.get("release"),
+                f"browser.matrix.{dimension.get('key')}.{column.get('key')}.release",
+            )
             source = column.get("source") or {}
             if not source.get("value") or not str(source.get("url") or "").startswith(("http://", "https://")):
                 errors.append(
@@ -1503,6 +1602,7 @@ def validate_payload_model(model: dict[str, Any]) -> list[str]:
                 )
     column_counts = {dimension.get("key"): len(dimension.get("columns", [])) for dimension in dimensions}
     for group in series:
+        validate_link(group.get("source"), f"browser.matrix.{group.get('key')}.source", required=True)
         base_rows = group.get("rows", {}).get("series", [])
         if len(base_rows) != 1:
             errors.append(f"browser.matrix.{group.get('key')}: expected one series row")
@@ -1574,6 +1674,8 @@ def validate_payload_model(model: dict[str, Any]) -> list[str]:
                 errors.append(
                     f"browser.matrix.{group.get('key')}.{row.get('key')}.source: human label and URL are required"
                 )
+        for row in [*base_rows, *group.get("rows", {}).get("patches", [])]:
+            validate_link(row.get("release"), f"browser.matrix.{group.get('key')}.{row.get('key')}.release")
     inventory = model.get("inventory", {})
     items = [item for group in inventory.get("groups", []) for item in group.get("items", [])]
     if not items:
