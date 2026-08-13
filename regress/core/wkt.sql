@@ -659,3 +659,8 @@ SELECT g,
 'TIN ZM ( ((0 0 0 0, 0 0 1 0, 0 1 0 4, 0 0 0 0)), ((0 0 0 1, 0 1 0 2, 1 1 0 3, 0 0 0 1)) )'
 ::text as g ) as foo;
 
+-- EWKT "SRID=" prefix: a valid prefix parses; a prefix with no ';' separator
+-- must stop at the NUL terminator (not scan past the end of the input) and
+-- fall through to the WKT parser, giving a clean parse error
+SELECT 'srid_prefix_ok', ST_AsEWKT(g::geometry) FROM (SELECT 'SRID=4326;POINT(1 2)'::text AS g) x;
+SELECT 'srid_prefix_no_semicolon', ST_AsEWKT(g::geometry) FROM (SELECT 'SRID=1'::text AS g) x;
