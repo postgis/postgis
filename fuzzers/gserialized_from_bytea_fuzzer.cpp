@@ -70,17 +70,19 @@ assert_gserialized_bytea_roundtrip(LWGEOM *lwgeom)
 	postgis_fuzzer_assert(first_size == LWSIZE_GET(first->size));
 	postgis_fuzzer_assert(second_size == LWSIZE_GET(second->size));
 	postgis_fuzzer_assert(lwgeom->type == from_bytea->type);
-	postgis_fuzzer_assert(lwgeom->srid == from_bytea->srid);
+	postgis_fuzzer_assert(clamp_srid(lwgeom->srid) == from_bytea->srid);
 	postgis_fuzzer_assert(FLAGS_GET_Z(lwgeom->flags) == FLAGS_GET_Z(from_bytea->flags));
 	postgis_fuzzer_assert(FLAGS_GET_M(lwgeom->flags) == FLAGS_GET_M(from_bytea->flags));
 	postgis_fuzzer_assert(FLAGS_GET_GEODETIC(lwgeom->flags) == FLAGS_GET_GEODETIC(from_bytea->flags));
 
-	/* WKB bytea does not preserve GSERIALIZED bounding boxes. Arbitrary
-	 * GSERIALIZED input can carry a bbox that is not byte-for-byte reproduced
-	 * after geometry->bytea->geometry, so compare the semantic geometry.
+	/* WKB bytea does not preserve GSERIALIZED-only metadata. Arbitrary
+	 * GSERIALIZED input can carry a bbox or out-of-range SRID that is
+	 * normalized after geometry->bytea->geometry, so compare the semantic
+	 * geometry after applying the same normalization.
 	 */
 	lwgeom_drop_bbox(lwgeom);
 	lwgeom_drop_bbox(from_bytea);
+	lwgeom_set_srid(lwgeom, from_bytea->srid);
 	postgis_fuzzer_assert(lwgeom_same(lwgeom, from_bytea));
 
 	lwgeom_free(from_bytea);
