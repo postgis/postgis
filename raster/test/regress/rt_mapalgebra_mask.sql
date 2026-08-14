@@ -120,5 +120,49 @@ FROM (SELECT rid, st_dumpvalues(st_mapalgebra(rast,1,'raster_nmapalgebra_test(do
     from raster_nmapalgebra_mask_in) AS f
 ORDER BY rid, (dv).nband;
 
-DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
+SET client_min_messages TO warning;
+
+SELECT 'odd-rectangular-mask', (dv).*
+FROM (
+	WITH src AS (
+		SELECT ST_SetValues(
+			ST_AddBand(ST_MakeEmptyRaster(5, 3, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 0, 0),
+			1, 1, 1,
+			ARRAY[[1,2,3,4,5],[10,20,30,40,50],[100,101,102,103,104]]::double precision[][]
+		) AS rast
+	)
+	SELECT st_dumpvalues(st_mapalgebra(rast, 1, 'st_sum4ma(double precision[][][],integer[][],text[])'::regprocedure, ARRAY[[0,0,0,0,0],[0,0,0,0,1],[0,0,0,0,0]]::double precision[], false)) AS dv
+	FROM src
+) AS f
+ORDER BY (dv).nband;
+
+SELECT 'one-dimensional-horizontal-mask', (dv).*
+FROM (
+	WITH src AS (
+		SELECT ST_SetValues(
+			ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 0, 0),
+			1, 1, 1,
+			ARRAY[[1,2,3],[10,20,30],[100,200,300]]::double precision[][]
+		) AS rast
+	)
+	SELECT st_dumpvalues(st_mapalgebra(rast, 1, 'st_sum4ma(double precision[][][],integer[][],text[])'::regprocedure, ARRAY[[1,1,1]]::double precision[], false)) AS dv
+	FROM src
+) AS f
+ORDER BY (dv).nband;
+
+SELECT 'one-dimensional-vertical-mask', (dv).*
+FROM (
+	WITH src AS (
+		SELECT ST_SetValues(
+			ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 0, 0),
+			1, 1, 1,
+			ARRAY[[1,2,3],[10,20,30],[100,200,300]]::double precision[][]
+		) AS rast
+	)
+	SELECT st_dumpvalues(st_mapalgebra(rast, 1, 'st_sum4ma(double precision[][][],integer[][],text[])'::regprocedure, ARRAY[[1],[1],[1]]::double precision[], false)) AS dv
+	FROM src
+) AS f
+ORDER BY (dv).nband;
+
+DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[][][], int[][], text[]);
 DROP TABLE IF EXISTS raster_nmapalgebra_mask_in;
