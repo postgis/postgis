@@ -108,6 +108,7 @@ These are only changes since 3.7.0beta1.
 
  - Add Woodpecker linux/arm64 build and regression coverage under
           QEMU to match the Jenkins Berrie64 platform (Darafei Praliaskouski)
+ - #2474, [raster] Add two-raster ST_Union variant (Darafei Praliaskouski)
 
  - #1416, ST_AsX3D outputs NURBSCURVE as X3D NurbsCurve
           and linearizes other curve geometries
@@ -166,6 +167,7 @@ These are only changes since 3.7.0alpha1.
             (Bas Couwenberg)
 
 * Enhancements *
+* New Features *
 
  - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
           (Darafei Praliaskouski)
