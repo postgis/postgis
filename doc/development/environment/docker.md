@@ -64,17 +64,15 @@ the cluster:
 ```sh
 export PGVER=15
 export PGPORT="$(grep ^port /etc/postgresql/${PGVER}/main/postgresql.conf | awk '{print $3}')"
-read -rs POSTGIS_DEV_PASSWORD
-printf '\n'
 psql -d postgres -c "ALTER SYSTEM SET listen_addresses='*';"
 printf '%s\n' "host all all 0.0.0.0/0 scram-sha-256" >> "/etc/postgresql/${PGVER}/main/pg_hba.conf"
-psql -d postgres -v password="$POSTGIS_DEV_PASSWORD" -c "ALTER ROLE postgres PASSWORD :'password';"
-unset POSTGIS_DEV_PASSWORD
+psql -d postgres -c '\password postgres'
 service postgresql restart "${PGVER}"
 ```
 
-Use a strong password and narrower `pg_hba.conf` rule on shared hosts. The
-example is intended for a short-lived local development container.
+Enter a strong password when `psql` prompts for it, and use a narrower
+`pg_hba.conf` rule on shared hosts. The example is intended for a short-lived
+local development container.
 
 From the host, connect to the PostgreSQL version whose container port you
 exposed. For example, if PostgreSQL inside the container listens on `5436` and
