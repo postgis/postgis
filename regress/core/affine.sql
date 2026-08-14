@@ -34,12 +34,25 @@ select 'ST_RotateY', ST_asewkt(ST_SnapToGrid(ST_RotateY('POINT(1 1 1)'::geometry
 select 'ST_RotateY', ST_asewkt(ST_SnapToGrid(ST_RotateY('POINT(1 1 1)'::geometry, pi()/2), 0.1));
 select 'ST_RotateY', ST_asewkt(ST_SnapToGrid(ST_RotateY('POINT(1 1 1)'::geometry, pi()+pi()/2), 0.1));
 select 'ST_RotateY', ST_asewkt(ST_SnapToGrid(ST_RotateY('POINT(1 1 1)'::geometry, 2*pi()), 0.1));
+select 'ST_RotateYOrigin', ST_asewkt(ST_SnapToGrid(ST_RotateY('POINT(1 2 3)'::geometry, pi()/2, 'POINT(1 1 1)'::geometry), 0.1));
+select 'ST_RotateYOrigin2D', ST_asewkt(ST_SnapToGrid(ST_RotateY('POINT(1 1)'::geometry, pi()/2, 'POINT(1 1 1)'::geometry), 0.1));
 
 -- ST_RotateX
 select 'ST_RotateX', ST_asewkt(ST_SnapToGrid(ST_RotateX('POINT(1 1 1)'::geometry, pi()), 0.1));
 select 'ST_RotateX', ST_asewkt(ST_SnapToGrid(ST_RotateX('POINT(1 1 1)'::geometry, pi()/2), 0.1));
 select 'ST_RotateX', ST_asewkt(ST_SnapToGrid(ST_RotateX('POINT(1 1 1)'::geometry, pi()+pi()/2), 0.1));
 select 'ST_RotateX', ST_asewkt(ST_SnapToGrid(ST_RotateX('POINT(1 1 1)'::geometry, 2*pi()), 0.1));
+select 'ST_RotateXOrigin', ST_asewkt(ST_SnapToGrid(ST_RotateX('POINT(1 2 3)'::geometry, pi()/2, 'POINT(1 1 1)'::geometry), 0.1));
+
+-- ST_RotateXYZ
+select 'ST_RotateXYZ', ST_asewkt(ST_SnapToGrid(ST_RotateXYZ('POINT(1 0 0)'::geometry, 0, pi()/2, pi()/2), 0.1));
+select 'ST_RotateXYZ2D', ST_asewkt(ST_SnapToGrid(ST_RotateXYZ('POINT(0 1)'::geometry, pi()/2, pi()/2, 0), 0.1));
+select 'ST_RotateXYZOrigin', ST_asewkt(ST_SnapToGrid(ST_RotateXYZ('POINT(1 2 3)'::geometry, pi()/2, 0, 0, 'POINT(1 1 1)'::geometry), 0.1));
+select 'ST_RotateXYZOrigin2D', ST_asewkt(ST_SnapToGrid(ST_RotateXYZ('POINT(1 1)'::geometry, pi()/2, 0, 0, 'POINT(1 1 1)'::geometry), 0.1));
+BEGIN;
+SET search_path TO pg_catalog;
+select 'ST_RotateXYZSchemaOrigin', :schema ST_asewkt(:schema ST_RotateXYZ('POINT(1 0)':: :schema geometry, 0, 0, 0));
+ROLLBACK;
 
 -- ST_TransScale
 select 'ST_TransScale', ST_asewkt(ST_snapToGrid(ST_TransScale('POINT(1 1)'::geometry,1, 1, 1, 1), 0.1));
