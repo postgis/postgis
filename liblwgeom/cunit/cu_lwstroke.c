@@ -374,6 +374,7 @@ static void test_lwcurve_linearize(void)
 static void test_unstroke()
 {
 	LWGEOM *in, *out;
+	POINT2D pt;
 	char *str;
 
 	/* It would be nice if this example returned two arcs (it's the intersection of two circles)
@@ -397,9 +398,37 @@ static void test_unstroke()
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1)");
-	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
+
+	out = lwgeom_unstroke_per_quad(in, 9);
+	CU_ASSERT_EQUAL(out->type, LINETYPE);
+	CU_ASSERT_EQUAL(((LWLINE *)out)->points->npoints, 25);
+	getPoint2d_p(((LWLINE *)out)->points, 0, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, -1.0, 1e-12);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.0, 1e-12);
+	getPoint2d_p(((LWLINE *)out)->points, 8, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.0, 1e-12);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 1.0, 1e-12);
+	getPoint2d_p(((LWLINE *)out)->points, 16, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 1.0, 1e-12);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.0, 1e-12);
+	getPoint2d_p(((LWLINE *)out)->points, 24, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.0, 1e-12);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, -1.0, 1e-12);
+	lwgeom_free(out);
+
+	cu_error_msg_reset();
+	out = lwgeom_unstroke_per_quad(in, 0);
+	CU_ASSERT(out == NULL);
+	ASSERT_STRING_EQUAL(cu_error_msg, "perQuadrant must be at least 2");
+	cu_error_msg_reset();
+
+	out = lwgeom_unstroke_per_quad(in, 1);
+	CU_ASSERT(out == NULL);
+	ASSERT_STRING_EQUAL(cu_error_msg, "perQuadrant must be at least 2");
+	cu_error_msg_reset();
+	lwgeom_free(in);
 
 	in = lwgeom_from_text("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,-1 -1))");
 	out = lwgeom_stroke(in,8);
