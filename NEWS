@@ -8,6 +8,9 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - Fix geometry input parsing to stop malformed SRID prefixes before the
+          end of the input string
+          (Dennis Tighe, Google)
  - OSSFuzz 545658571, compare GSERIALIZED bytea fuzzer SRIDs after
           normalizing out-of-range values (Darafei Praliaskouski)
  - OSSFuzz 5607611131822080, keep GSERIALIZED bytea fuzzer allocations
