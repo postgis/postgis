@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - [address_standardizer] Reject out-of-range rule weights (reported by Harsh Raj Singhania; fixed by Darafei Praliaskouski)
   - [tiger_geocoder] Skip soundex matching for numeric street names (Tag Spilman)
   - [tiger_geocoder] Resolve the PAGC lookup tables in the tiger schema (Regina Obe)
   - #2832, GH-995, [raster] Keep single-tile overviews unpadded (Darafei Praliaskouski)
