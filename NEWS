@@ -30,7 +30,10 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
 
+* Enhancements *
 
+ - #2596, [raster] Add ST_IsVisible for DEM line-of-sight checks using
+          GDAL >= 3.1.1 (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
@@ -166,6 +169,12 @@ These are only changes since 3.7.0alpha1.
             (Bas Couwenberg)
 
 * Enhancements *
+* New Features *
+
+ - #2596, [raster] Add ST_IsVisible for DEM line-of-sight checks
+          using GDAL >= 3.1.1
+          (Darafei Praliaskouski)
+
 
  - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
           (Darafei Praliaskouski)
