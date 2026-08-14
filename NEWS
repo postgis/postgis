@@ -28,7 +28,10 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
 
+* Enhancements *
 
+ - #3377, Add ST_Simplify support for geography
+          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
@@ -170,6 +173,10 @@ These are only changes since 3.7.0alpha1.
 
  - GH-1161, Render manual geometry examples as build-time SVG in HTML
           and PDF (Darafei Praliaskouski)
+ - #3377, Add ST_Simplify support for geography
+          (Darafei Praliaskouski)
+
+
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
  - #3676, Mark geometry and geography btree comparison support functions

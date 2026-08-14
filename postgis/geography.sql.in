@@ -791,6 +791,145 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geog1 geography, geog2 geography)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION _ST_GeographyHasAntipodalEdge(geom geometry)
+	RETURNS boolean AS
+	$$
+	WITH segments AS (
+		SELECT @extschema@.ST_StartPoint(segment.geom) AS start_pt,
+			@extschema@.ST_EndPoint(segment.geom) AS end_pt
+		FROM @extschema@.ST_DumpSegments($1) AS segment
+	)
+	SELECT EXISTS (
+		SELECT 1
+		FROM segments
+		WHERE abs(@extschema@.ST_Y(start_pt) + @extschema@.ST_Y(end_pt)) <= 1e-11
+			AND abs(abs(@extschema@.ST_X(start_pt) - @extschema@.ST_X(end_pt)) - 180) <= 1e-11
+	);
+	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION _ST_GeographySimplifyPreservesVertices(input geometry, candidate geometry, tolerance float8, preserveCollapsed boolean)
+	RETURNS boolean AS
+	$$
+	WITH components AS (
+		SELECT input_part.path, input_part.geom AS input_geom, candidate_part.geom AS candidate_geom
+		FROM @extschema@.ST_Dump($1) AS input_part
+		LEFT JOIN @extschema@.ST_Dump($2) AS candidate_part
+		ON input_part.path = candidate_part.path
+	),
+	component_points AS (
+		SELECT
+			components.candidate_geom,
+			@extschema@.ST_Dimension(components.input_geom) AS input_dimension,
+			dump.geom AS point_geom
+		FROM components
+		CROSS JOIN LATERAL @extschema@.ST_DumpPoints(input_geom) AS dump
+		WHERE @extschema@.ST_Dimension(input_geom) <> 2
+			AND (components.candidate_geom IS NOT NULL OR $4)
+		UNION ALL
+		SELECT
+			components.candidate_geom,
+			2 AS input_dimension,
+			dump.geom AS point_geom
+		FROM components
+		CROSS JOIN LATERAL @extschema@.ST_DumpRings(input_geom) AS input_ring
+		CROSS JOIN LATERAL @extschema@.ST_DumpPoints(input_ring.geom) AS dump
+		WHERE @extschema@.ST_Dimension(input_geom) = 2
+			AND (
+				input_ring.path[1] = 0 OR
+				$4 OR
+				(
+					components.candidate_geom IS NOT NULL AND
+					@extschema@.ST_Dimension(components.candidate_geom) = 2 AND
+					EXISTS (
+						SELECT 1
+						FROM @extschema@.ST_DumpRings(components.candidate_geom) AS candidate_ring
+						WHERE candidate_ring.path = input_ring.path
+					)
+				)
+			)
+	)
+	SELECT NOT EXISTS (
+		SELECT 1
+		FROM component_points
+		WHERE candidate_geom IS NULL OR
+			CASE
+				WHEN @extschema@._ST_GeographyHasAntipodalEdge(candidate_geom) THEN true
+				ELSE NOT @extschema@.ST_DWithin(
+					@extschema@.geography(point_geom),
+					@extschema@.geography(
+						CASE
+							WHEN input_dimension = 2 AND @extschema@.ST_Dimension(candidate_geom) = 2 THEN @extschema@.ST_Boundary(candidate_geom)
+							ELSE candidate_geom
+						END
+					),
+					$3
+				)
+			END
+	);
+	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_Simplify(geog geography, tolerance float8)
+	RETURNS geography
+	AS 'WITH input AS (
+			SELECT @extschema@.geometry($1) AS geom
+		)
+		SELECT CASE
+			WHEN @extschema@.ST_IsEmpty(geom) THEN $1
+			ELSE (
+				SELECT CASE
+					WHEN simplified.geom IS NULL OR @extschema@.ST_IsEmpty(simplified.geom) THEN @extschema@.geography(simplified.geom)
+					WHEN @extschema@._ST_GeographyHasAntipodalEdge(simplified.geom) THEN $1
+					WHEN @extschema@._ST_GeographySimplifyPreservesVertices(input.geom, simplified.geom, $2, false) THEN @extschema@.geography(simplified.geom)
+					ELSE $1
+				END
+				FROM (
+					SELECT @extschema@.ST_Transform(@extschema@.ST_Simplify(@extschema@.ST_Transform(input.geom, @extschema@._ST_BestSRID($1)), $2), @extschema@.ST_SRID($1)) AS geom
+				) AS simplified
+			)
+		END
+		FROM input'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_Simplify(geog geography, tolerance float8, preserveCollapsed boolean)
+	RETURNS geography
+	AS 'WITH input AS (
+			SELECT @extschema@.geometry($1) AS geom
+		)
+		SELECT CASE
+			WHEN @extschema@.ST_IsEmpty(geom) THEN $1
+			ELSE (
+				SELECT CASE
+					WHEN simplified.geom IS NULL OR @extschema@.ST_IsEmpty(simplified.geom) THEN @extschema@.geography(simplified.geom)
+					WHEN @extschema@._ST_GeographyHasAntipodalEdge(simplified.geom) THEN $1
+					WHEN @extschema@._ST_GeographySimplifyPreservesVertices(input.geom, simplified.geom, $2, $3) THEN @extschema@.geography(simplified.geom)
+					ELSE $1
+				END
+				FROM (
+					SELECT @extschema@.ST_Transform(@extschema@.ST_Simplify(@extschema@.ST_Transform(input.geom, @extschema@._ST_BestSRID($1)), $2, $3), @extschema@.ST_SRID($1)) AS geom
+				) AS simplified
+			)
+		END
+		FROM input'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.7.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Simplify(text, float8)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Simplify($1::@extschema@.geometry, $2);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.7.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Simplify(text, float8, boolean)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_Simplify($1::@extschema@.geometry, $2, $3);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
 	RETURNS geography
