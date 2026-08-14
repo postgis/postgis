@@ -25,6 +25,8 @@ These are only changes since 3.7.0beta2.
           comparisons aligned with serialized bbox flags (Darafei Praliaskouski)
  - Reject truncated GSERIALIZED NURBS vector payloads before validating vector
           contents (Darafei Praliaskouski)
+ - Include detected NURBS coordinate extrema in curve bounding boxes
+          (Darafei Praliaskouski)
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
