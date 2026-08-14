@@ -28,7 +28,10 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
 
+* Enhancements *
 
+ - #534, ST_AddGeometry appends a geometry to an existing collection
+          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
