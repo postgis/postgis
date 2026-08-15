@@ -89,6 +89,55 @@ class DocBookSourceLintTest(unittest.TestCase):
         tree = parse_xml(path)
         self.assertEqual("book", tree.tree.getroot().tag.rsplit("}", 1)[-1])
 
+    def test_xml_tree_rejects_non_ascii_entity_reference(self):
+        # A regex that only matches ASCII entity names, [A-Za-z_][\\w.-]*,
+        # never sees "&é;": the guard must not depend on predicting
+        # every spelling a reference can take, so this must still be rejected.
+        path = write_tmp(
+            ".xml",
+            '<!DOCTYPE book [<!ENTITY é "expanded">]>'
+            + DOCBOOK_OPEN
+            + '<para>&é;</para>'
+            + DOCBOOK_CLOSE,
+        )
+
+        with self.assertRaises(Exception):
+            parse_xml(path)
+
+    def test_xml_tree_rejects_parameter_entity_injected_general_entity(self):
+        # The general entity "expand" is never declared directly; a parameter
+        # entity's replacement text declares it instead. A pre-pass that
+        # collects only directly-declared general entity names never sees it,
+        # so the guard must not rely on predicting every declaration path.
+        path = write_tmp(
+            ".xml",
+            "<!DOCTYPE book [\n"
+            "<!ENTITY % pe \"<!ENTITY expand 'expanded'>\">\n"
+            "%pe;\n"
+            "]>\n"
+            + DOCBOOK_OPEN
+            + '<para>&expand;</para>'
+            + DOCBOOK_CLOSE,
+        )
+
+        with self.assertRaises(Exception):
+            parse_xml(path)
+
+    def test_xml_tree_rejects_entity_reference_in_attribute_value(self):
+        # Attribute-value normalization substitutes entity references before
+        # any element/attribute handler ever sees them, so a reference cannot
+        # be caught by inspecting element content alone.
+        path = write_tmp(
+            ".xml",
+            '<!DOCTYPE book [<!ENTITY expand "expanded">]>'
+            + DOCBOOK_OPEN
+            + '<para role="&expand;">text</para>'
+            + DOCBOOK_CLOSE,
+        )
+
+        with self.assertRaises(Exception):
+            parse_xml(path)
+
     def test_mixed_programlisting_dash_run_markers_and_sql_comments(self):
         for output in ("left | right\n----|----\n1 | 2", "----RESULT output ---\n1"):
             with self.subTest(output=output):
