@@ -8,6 +8,9 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - Codex security scan, guard the recursive NURBSCURVE bounding box
+          against non-finite control points to stop a backend CPU denial
+          of service reachable from WKT input (Darafei Praliaskouski)
  - Fix geometry input parsing to stop malformed SRID prefixes before the
           end of the input string
           (Dennis Tighe, Google)

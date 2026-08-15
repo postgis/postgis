@@ -205,6 +205,33 @@ static void test_lwgeom_calculate_gbox(void)
 	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(0.5));
 	lwgeom_free(g);
 
+	/* A non-finite control point coordinate must not make the recursive
+	 * Bezier-subdivision bbox spin: NaN never compares equal to itself, so
+	 * the stop tests in lwnurbscurve_add_bezier_span_gbox() could not
+	 * converge and depth-first recursion ran to DBL_MANT_DIG on every span
+	 * before this guard, an easy backend CPU denial of service from WKT
+	 * input. What matters here is that this call returns promptly instead of
+	 * spending exponential time; the exact ymax is a side effect of the
+	 * ordinary FP_MIN/FP_MAX/gbox_merge comparisons silently discarding a
+	 * NaN contender once a finite one has been recorded, same as elsewhere
+	 * in this file (see the NaN and Inf propagation cases below), not a
+	 * property this fix promises to preserve. */
+	g = lwgeom_from_wkt("NURBSCURVE(2, (0 NaN, 1 1, 2 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 2.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.ymin, 0.0, 0.0000001);
+	CU_ASSERT(isfinite(b.ymax) && b.ymax >= 0.0 && b.ymax < 1e-10);
+	lwgeom_free(g);
+
+	/* The same guard must terminate promptly for a NaN Z ordinate. */
+	g = lwgeom_from_wkt("NURBSCURVE Z(2, (0 0 NaN, 1 1 1, 2 0 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 2.0, 0.0000001);
+	CU_ASSERT(isfinite(b.zmax));
+	lwgeom_free(g);
+
 	/* Inf = 0x7FF0000000000000 */
 	/* POINT(0 0) = 00 00000001 0000000000000000 0000000000000000 */
 	/* POINT(0 Inf) = 00 00000001 0000000000000000 7FF0000000000000 */

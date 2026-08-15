@@ -1,0 +1,5 @@
+nurbs_bbox_finite|BOX(0 0,2 0.5)
+nurbs_bbox_nan_xy|t
+nurbs_bbox_nan_z|t
+nurbs_bbox_nan_m|t
+ERROR:  NURBS: weight[1] = NaN must be finite and > 0 at character 33

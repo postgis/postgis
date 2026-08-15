@@ -158,7 +158,8 @@ TESTS += \
   $(top_srcdir)/regress/core/wrapx \
 	$(top_srcdir)/regress/core/nurbs_eval \
 	$(top_srcdir)/regress/core/nurbs_wkt \
-	$(top_srcdir)/regress/core/nurbs_wkb
+	$(top_srcdir)/regress/core/nurbs_wkb \
+	$(top_srcdir)/regress/core/nurbs_bbox
 
 # Slow slow tests
 TESTS_SLOW = \
