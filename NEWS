@@ -44,6 +44,11 @@ PostGIS 3.2.11
  - [tiger_geocoder] Qualify PostGIS and fuzzystrmatch calls, generated table
    DDL, PAGC tables, loader scripts, topology loader, and dynamic SQL
    against unsafe search paths (Regina Obe, Paul Ramsey)
+ - GT-713, [tiger_geocoder] Strip the PostgreSQL 16-only @extschema:<name>@
+   qualification from the generated install script on PostgreSQL < 16,
+   fixing CREATE EXTENSION postgis_tiger_geocoder CASCADE failing with a
+   syntax error while keeping the qualification on PostgreSQL 16 and above
+   (Darafei Praliaskouski)
  - #6044, Skip doc XML validation without DocBook XSL stylesheets (Regina Obe)
  - GH-894, [raster] Fix Float16 import, mixed nodata warping,
    band replacement cleanup, GDAL credential redaction, and Python
