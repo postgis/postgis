@@ -1,5 +1,6 @@
 include @srcdir@/../upgradeable_versions.mk
 
+POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 EXTENSION    = postgis_tiger_geocoder
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = 2011.@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
@@ -30,6 +31,12 @@ DATA_built = \
 
 REGRESS = test-normalize_address test-upgrade
 REGRESS_OPTS = --load-extension=fuzzystrmatch --load-extension=postgis --load-extension=$(EXTENSION)
+EXTSCHEMA_SUPPORTED = yes
+
+## PostgreSQL < 16 doesn't understand new @extschema:extname@ syntax, so strip it
+ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" "<" 160),1)
+EXTSCHEMA_SUPPORTED = no
+endif
 
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN = sql expected ${SQL_BITS}
@@ -49,8 +56,15 @@ expected:
 sql:
 	mkdir -p $@
 
+ifeq ($(EXTSCHEMA_SUPPORTED),yes)
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
+else
+# PG < 16 doesn't support new @extschema:<extension_name>@
+# so we need to strip those out
+sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
+	$(PERL) -lpe "s/\@extschema:[^@]+\@\./ /g" < $< > $@
+endif
 
 expected/test-normalize_address.out: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/normalize_address_regress | expected
 	cat $^ > $@
@@ -198,9 +212,17 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/tiger_geocoder--unpack
 #aggregates are special
 #they can be dropped but we need to remove
 #them from the extension first
+ifeq ($(EXTSCHEMA_SUPPORTED),yes)
 sql/tiger_geocoder_upgrade_minor.sql:  sql/tiger_geocoder_minor.sql.in | sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
 	 	 $< > $@
+else
+# PG < 16 doesn't support new @extschema:<extension_name>@
+# so we need to strip those out
+sql/tiger_geocoder_upgrade_minor.sql:  sql/tiger_geocoder_minor.sql.in | sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e 's/@extschema:[^@]*@\.//g' \
+	 	 $< > $@
+endif
 
 #only extension files
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
