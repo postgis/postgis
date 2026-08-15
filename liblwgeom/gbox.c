@@ -928,6 +928,22 @@ lwnurbscurve_add_bezier_span_gbox(const NURBS_BBOX_HPOINT *points,
 	    lwnurbscurve_bezier_endpoint_gbox(points, degree, flags, &endpoint_gbox) == LW_FAILURE)
 		return LW_FAILURE;
 
+	/* A non-finite control point coordinate or weight (NaN or +/-Inf, accepted
+	 * by WKT input the same way LINESTRING accepts them) makes both stop tests
+	 * below unusable: NaN never compares equal to itself, so neither
+	 * lwnurbscurve_gbox_same_float() nor lwnurbscurve_hpoints_same() can ever
+	 * report convergence, and subdivision would run to the full DBL_MANT_DIG
+	 * recursion depth on every remaining span. hull_gbox already bounds every
+	 * control point in this span, so stop here and merge it directly, the same
+	 * way ptarray_calculate_gbox_cartesian() lets a non-finite point propagate
+	 * straight into the box for LINESTRING and the other simple types instead
+	 * of iterating further. */
+	if (!gbox_is_valid(&hull_gbox))
+	{
+		gbox_merge(&hull_gbox, gbox);
+		return LW_SUCCESS;
+	}
+
 	/* Positive NURBS weights put each rational Bezier span inside the convex
 	 * hull of its projected control points. Subdivision tightens that hull
 	 * until further refinement cannot change the float bbox that PostGIS stores
