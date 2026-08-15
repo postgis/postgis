@@ -14,6 +14,11 @@ PostGIS 3.5.8
     Sarath Kumar, IITM Pravartak Security Team; fixed by Darafei Praliaskouski)
   - Stop the extension upgrade script running ANALYZE inside its transaction,
     where it can deadlock with autovacuum (Darafei Praliaskouski)
+  - GT-710, [tiger_geocoder] Strip @extschema:<name>@ schema qualification
+    from the generated install SQL at build time on PostgreSQL < 16, fixing
+    CREATE EXTENSION postgis_tiger_geocoder CASCADE syntax errors on those
+    versions while keeping the qualification on PostgreSQL 16 and newer
+    (Darafei Praliaskouski)
   - OSSFuzz 5877056525893632, reject truncated encoded polyline input
     (Darafei Praliaskouski)
   - GT-677, Fix temporary geometry leaks in ST_DWithin (Darafei Praliaskouski)
