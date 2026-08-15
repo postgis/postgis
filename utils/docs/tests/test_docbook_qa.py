@@ -68,6 +68,27 @@ class DocBookSourceLintTest(unittest.TestCase):
         with self.assertRaises(Exception):
             parse_xml(path)
 
+    def test_xml_tree_allows_doctype_without_entity_references(self):
+        # postgis-out.xml itself carries a DOCTYPE: xmllint emits the DocBook DTD's
+        # public identifier plus dozens of unreferenced SYSTEM/literal entity
+        # declarations left over from assembling doc/*.xml at build time. None of
+        # that is an attack when nothing in the document body asks the parser to
+        # expand any of it, so a harmless DOCTYPE like this one must still parse.
+        path = write_tmp(
+            ".xml",
+            '<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML 5.0//EN" '
+            '"http://docbook.org/xml/5.0/dtd/docbook.dtd" ['
+            '<!ENTITY last_release_version "3.6.0">'
+            '<!ENTITY introduction SYSTEM "introduction.xml">'
+            ']>'
+            + DOCBOOK_OPEN
+            + '<para>no custom entity is referenced here</para>'
+            + DOCBOOK_CLOSE,
+        )
+
+        tree = parse_xml(path)
+        self.assertEqual("book", tree.tree.getroot().tag.rsplit("}", 1)[-1])
+
     def test_mixed_programlisting_dash_run_markers_and_sql_comments(self):
         for output in ("left | right\n----|----\n1 | 2", "----RESULT output ---\n1"):
             with self.subTest(output=output):
