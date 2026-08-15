@@ -13,6 +13,13 @@ insert_final_newline = true
 [*_expected]
 trim_trailing_whitespace = false
 
+# PGXS-style extension regression fixtures (extensions/*/expected/*.out)
+# use pg_regress's own naming convention instead of *_expected, and need
+# the same protection: aligned-mode psql output legitimately ends lines
+# in trailing whitespace.
+[**/expected/*.out]
+trim_trailing_whitespace = false
+
 # C files want tab indentation
 [*.{c,h,h.in}]
 indent_style = tab
