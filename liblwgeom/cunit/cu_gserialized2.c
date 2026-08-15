@@ -589,6 +589,13 @@ test_gserialized2_malformed_nurbs_degree(void)
 	lwfree(g);
 }
 
+/*
+ * A ring point count that claims far more points than the serialized
+ * buffer actually holds implies a read past the end of the payload; that
+ * is the memory-safety hazard OSSFuzz 544800490 found, and it must stay
+ * rejected regardless of whether the claimed count is itself a
+ * geometrically plausible ring size.
+ */
 static void
 test_gserialized2_malformed_polygon_ring_count(void)
 {
@@ -598,7 +605,7 @@ test_gserialized2_malformed_polygon_ring_count(void)
 	uint8_t *payload;
 	uint32_t type;
 	uint32_t nrings;
-	uint32_t npoints = 1;
+	uint32_t npoints = 0x10000000; /* claims ~4GB of ring ordinates */
 
 	CU_ASSERT_PTR_NOT_NULL_FATAL(lwgeom);
 	g = gserialized2_from_lwgeom(lwgeom, NULL);
@@ -618,6 +625,51 @@ test_gserialized2_malformed_polygon_ring_count(void)
 
 	lwgeom_free(lwgeom);
 	lwfree(g);
+}
+
+/*
+ * Rings with 1-3 points are geometrically invalid (not simple closed
+ * rings) but memory-safe: their declared point count still fits the
+ * serialized buffer. PostGIS intentionally stores and round-trips such
+ * polygons; ST_IsValid, not deserialization, is where that gets flagged.
+ * See Trac #408 and #4470, and ST_GeomFromGeoJSON's degenerate-ring
+ * handling.
+ */
+static void
+test_gserialized2_short_polygon_ring_roundtrip(void)
+{
+	const char *short_ring_wkt[] = {
+	    "POLYGON((0 0))",
+	    "POLYGON((0 0, 1 0, 1 1))",
+	};
+	const uint32_t expected_npoints[] = {1, 3};
+	size_t i;
+
+	for (i = 0; i < sizeof(short_ring_wkt) / sizeof(short_ring_wkt[0]); i++)
+	{
+		LWGEOM *lwgeom = lwgeom_from_wkt(short_ring_wkt[i], LW_PARSER_CHECK_NONE);
+		GSERIALIZED *g;
+		LWGEOM *roundtrip;
+		LWPOLY *poly;
+
+		CU_ASSERT_PTR_NOT_NULL_FATAL(lwgeom);
+		g = gserialized2_from_lwgeom(lwgeom, NULL);
+		CU_ASSERT_PTR_NOT_NULL_FATAL(g);
+
+		cu_error_msg_reset();
+		roundtrip = lwgeom_from_gserialized2(g);
+		CU_ASSERT_PTR_NOT_NULL_FATAL(roundtrip);
+		CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+
+		CU_ASSERT_EQUAL(roundtrip->type, POLYGONTYPE);
+		poly = (LWPOLY *)roundtrip;
+		CU_ASSERT_EQUAL(poly->nrings, 1);
+		CU_ASSERT_EQUAL(poly->rings[0]->npoints, expected_npoints[i]);
+
+		lwgeom_free(lwgeom);
+		lwgeom_free(roundtrip);
+		lwfree(g);
+	}
 }
 
 static void
@@ -763,6 +815,7 @@ void gserialized2_suite_setup(void)
 	PG_ADD_TEST(suite, test_gserialized2_malformed_collection_count);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_nurbs_degree);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_polygon_ring_count);
+	PG_ADD_TEST(suite, test_gserialized2_short_polygon_ring_roundtrip);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_nurbs_short_vectors);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_declared_size);
 	PG_ADD_TEST(suite, test_gserialized2_malformed_short_allocation);
