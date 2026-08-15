@@ -65,7 +65,7 @@ BEGIN
 END
 $scanner_bounds$;
 SELECT 'scanner_bounds_ok' AS scanner_bounds_ok;
- scanner_bounds_ok
+ scanner_bounds_ok 
 -------------------
  scanner_bounds_ok
 (1 row)
@@ -116,7 +116,8 @@ $$;
 NOTICE:  load_roles: failed to add rule 1 (7): 1 -1 5 -1 5 0
 NOTICE:  bad-rule-type: CreateStd: failed to load 't_bad_rule_type' for rules
 SELECT 'security_bounds_ok' AS security_bounds_ok;
- security_bounds_ok
+ security_bounds_ok 
 --------------------
  security_bounds_ok
 (1 row)
+
