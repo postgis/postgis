@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-17 01:39+0000\n"
+"PO-Revision-Date: 2026-08-17 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -33595,6 +33595,8 @@ msgstr ""
 #, no-c-format
 msgid "Comparing selecting all touched vs. not all touched."
 msgstr ""
+"touched を TRUE にした場合 (all touched) と、そうしなかった場合 (default "
+"clip) との比較。"
 
 #. Tag: para
 #, no-c-format
@@ -33603,41 +33605,44 @@ msgid ""
 "It compares cropping band 1, clipping band 1 without cropping and then "
 "restoring bands 2 and 3, and clipping every band without cropping."
 msgstr ""
+"次の自己完結の例では、三つの単純形状をRGB の 3バンドとして使います。1番バンド"
+"を矩形に切り詰める例、1番バンドを切詰め無しで切り抜きを行って 2番バンドと 3番"
+"バンドを保存する例、全バンドを矩形切詰め無しで切り抜きを行う例です。"
 
 #. Tag: para
 #, no-c-format
 msgid "Crop, single-band clipping, and all-band clipping."
-msgstr ""
+msgstr "矩形切詰め、単一バンドの切抜き、全バンドの切抜き。"
 
 #. Tag: para
 #, no-c-format
 msgid "Source tile"
-msgstr ""
+msgstr "元のタイル"
 
 #. Tag: para
 #, no-c-format
 msgid "Cropped"
-msgstr ""
+msgstr "矩形切詰め"
 
 #. Tag: para
 #, no-c-format
 msgid "One-band source"
-msgstr ""
+msgstr "1バンド切抜きの元データ"
 
 #. Tag: para
 #, no-c-format
 msgid "One-band clip"
-msgstr ""
+msgstr "1バンド切抜き"
 
 #. Tag: para
 #, no-c-format
 msgid "All-band source"
-msgstr ""
+msgstr "全バンド切抜きの元データ"
 
 #. Tag: para
 #, no-c-format
 msgid "All-band clip"
-msgstr ""
+msgstr "全バンド切抜き"
 
 #. Tag: para
 #, no-c-format
@@ -33818,6 +33823,9 @@ msgid ""
 "This example builds a raster from rotated buffered lines and compares the "
 "original values with predefined and custom color maps."
 msgstr ""
+"この例ではラインにバッファーを施したうえで回転させたラスターを構築し、元の値"
+"に対して定義済みのカラーマップを適用した場合と任意に定義したカラーマップを適"
+"用した場合との比較を行います。"
 
 #. Tag: para
 #, no-c-format
@@ -33873,21 +33881,24 @@ msgid ""
 "into three raster bands. It compares the original RGB raster with the "
 "equivalent grayscale results produced by both function variants."
 msgstr ""
+"この自己完結の例では 3バンドに勾配とハイライトを持つリンゴの画像を作成します"
+"。元の RGB ラスターと、そのラスターから二つの異なる形式で生成した等価の"
+"グレースケールのラスター二つとを比較しています。"
 
 #. Tag: para
 #, no-c-format
 msgid "Original photographic illustration:"
-msgstr ""
+msgstr "元の写真の絵:"
 
 #. Tag: para
 #, no-c-format
 msgid "original apple"
-msgstr ""
+msgstr "元のリンゴ"
 
 #. Tag: para
 #, no-c-format
 msgid "grayscale apple"
-msgstr ""
+msgstr "グレースケールのリンゴ"
 
 #. Tag: para
 #, no-c-format
@@ -34020,6 +34031,9 @@ msgid ""
 "raster-space intersection with a geometry, use <xref linkend=\"RT_ST_Clip\"/"
 ">."
 msgstr ""
+"結果範囲のより詳細な制御や NODATA 値の処理については、2ラスター版の <xref "
+"linkend=\"RT_ST_MapAlgebraExpr2\"/> を使います。ジオメトリーとインターセクト"
+"するラスター空間を算出するには　<xref linkend=\"RT_ST_Clip\"/> を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -34027,6 +34041,8 @@ msgid ""
 "Use this function together with <xref linkend=\"RT_ST_Intersects\"/> and an "
 "index on the raster or geometry column when filtering table data."
 msgstr ""
+"テーブルデータから抽出する時には、<xref linkend=\"RT_ST_Intersects\"/> を併用"
+"して、ラスターカラムやジオメトリーカラムのインデックスを使います。"
 
 #. Tag: para
 #, no-c-format
@@ -34050,6 +34066,8 @@ msgid ""
 "footprint and complete input line remain visible behind the returned "
 "intersection pieces."
 msgstr ""
+"同じラインの例を共通の座標範囲内で描画をしています。ラスターの外郭と全ての入"
+"力ラインは、返却されるインターセクトする部分の背後で表示されています。"
 
 #. Tag: para
 #, no-c-format
@@ -34150,6 +34168,10 @@ msgid ""
 "when the output band has a NODATA value. If the output band has no NODATA "
 "value, a <varname>NULL</varname> callback result raises an error."
 msgstr ""
+"コールバック関数の返り値は出力ピクセルの値として使われます。コールバック関数"
+"が <varname>NULL</varname> を返す場合には、NODATA 値が設定されているなら出力"
+"ピクセルは NODATA に設定されます。NODATA 値が設定されていない場合には "
+"<varname>NULL</varname> が返されるとエラーが発生します。"
 
 #. Tag: para
 #, no-c-format
@@ -34333,6 +34355,8 @@ msgid ""
 "Compare an unmasked mean with neighbor-only and weighted-neighbor masks. The "
 "weighted mask multiplies neighboring values by 2 before computing the result."
 msgstr ""
+"マスク無しの平均値と、隣接のみの平均値と重み付き隣接マスクの平均値との比較。"
+"重み付きマスクは結果計算前に近隣のピクセル値を 2倍にしています。"
 
 #. Tag: para
 #, no-c-format
@@ -34366,12 +34390,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Variants 2 and 3."
-msgstr ""
+msgstr "形式 2、3."
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 4."
-msgstr ""
+msgstr "形式 4."
 
 #. Tag: para
 #, no-c-format
@@ -34658,12 +34682,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Variants 1 and 2."
-msgstr ""
+msgstr "形式 1、2."
 
 #. Tag: para
 #, no-c-format
 msgid "Variant 3 and 4."
-msgstr ""
+msgstr "形式 3、4."
 
 #. Tag: para
 #, no-c-format
