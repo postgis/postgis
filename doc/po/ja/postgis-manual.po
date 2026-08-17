@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-17 08:39+0000\n"
+"PO-Revision-Date: 2026-08-17 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -36122,6 +36122,10 @@ msgid ""
 "The generated source raster is large enough for the PNG to show the "
 "directional field around the summit."
 msgstr ""
+"対称的な山によって四隅の期待される方位が分かります。また頂上で <literal>-1</"
+"literal> の傾斜方向 (傾斜が無い場合の数値) が示されます。生成された PNG で、"
+"手作業による図に頼らずに全体の傾斜方向が分かります。生成された元ラスターは、"
+"PNG が頂上周りの方向場を示すのに十分な大きさを持っています。"
 
 #. Tag: para
 #, no-c-format
@@ -36645,6 +36649,9 @@ msgid ""
 "scale, skew, and rotation terms that make the convex hull and envelope "
 "differ for skewed rasters."
 msgstr ""
+"スキューが施されたラスターに対する凸包とエンベロープとで差ができる拡大縮小、"
+"スキュー、回転の各項については <filename>doc/development/internals/raster-"
+"affine.md</filename> を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
