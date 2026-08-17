@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-17 06:39+0000\n"
+"PO-Revision-Date: 2026-08-17 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -34907,16 +34907,19 @@ msgid ""
 "the third band overlaid with the geometry. This query took 3.6 seconds on a "
 "64-bit PostGIS Windows installation."
 msgstr ""
+"新しい 3バンドのラスターを生成します。最初の二つは切り抜いたバンドで、三つ目"
+"のバンドはジオメトリーから生成します。クエリーは Windows 用 PostGIS で 3.6秒"
+"かかりました。"
 
 #. Tag: para
 #, no-c-format
 msgid "Parcel-boundary overlay."
-msgstr ""
+msgstr "区画境界による上書き。"
 
 #. Tag: para
 #, no-c-format
 msgid "The blue lines are the boundaries of selected parcels"
-msgstr ""
+msgstr "青線が選択した区画の境界です。"
 
 #. Tag: para
 #, no-c-format
@@ -34924,6 +34927,8 @@ msgid ""
 "The generated four-panel canvas example above shows the same band-overlay "
 "technique without requiring an external aerial-imagery or parcel table."
 msgstr ""
+"上の生成された 4個パネルのキャンバスの例では、外部空中写真や区画テーブルを求"
+"めることなしに同じバンド重ね合わせ技術を示しています。"
 
 #. Tag: para
 #, no-c-format
@@ -35060,13 +35065,16 @@ msgstr ""
 "行った値が入り、NODATA値をユーザ関数に渡される引数の値 (0)に設定します。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The deprecated callback form above is equivalent to a modern <xref "
 "linkend=\"RT_ST_MapAlgebra\"/> expression for simple per-pixel transforms. "
 "This build-time example renders the original raster and a modulo-2 "
 "classification."
 msgstr ""
+"上の非推奨のコールバック形式は、単純なピクセルごとの変換用の <xref "
+"linkend=\"RT_ST_MapAlgebra\"/> 表現と等価です。このビルド時の例では元の"
+"ラスターと、2の余剰による分類を行ったものとを描画します。"
 
 #. Tag: para
 #, no-c-format
@@ -35195,14 +35203,14 @@ msgstr "ユーザー定義関数を定義します。"
 #. Tag: para
 #, no-c-format
 msgid "Prepare a test table of rasters."
-msgstr ""
+msgstr "ラスターのテスト用テーブルの準備。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Map algebra on single-band rasters and then collect the result with <xref "
 "linkend=\"RT_ST_AddBand\"/>."
-msgstr ""
+msgstr "単一バンドの地図代数と <xref linkend=\"RT_ST_AddBand\"/> を使った結果の集約。"
 
 #. Tag: para
 #, no-c-format
@@ -35210,6 +35218,8 @@ msgid ""
 "A compact, executable callback example. The source rasters and their "
 "averaged overlap are rendered at build time."
 msgstr ""
+"小型で実行可能なコールバックの例。元のラスターと平均値で上書きしたものが"
+"ビルド時に描画されます。"
 
 #. Tag: title
 #, no-c-format
@@ -35365,6 +35375,8 @@ msgid ""
 "Apply the raster averaging callback within two pixels of each input pixel in "
 "the X and Y directions."
 msgstr ""
+"入力ピクセルの X 方向、Y 方向で各 2ピクセル以内のピクセル値を平均する"
+"コールバック関数を適用する。"
 
 #. Tag: para
 #, no-c-format
@@ -35375,11 +35387,16 @@ msgid ""
 "<literal>ignore</literal> averages background values with the square values, "
 "instead of treating the background as absent."
 msgstr ""
+"自己完結型の近隣ピクセルの平均計算。元ラスターには中心に鋭く値が立ち上がって"
+"いる正方形がありますが、結果では近隣ピクセルの向こう側に拡散しています。元"
+"データは NODATA でない値で背景を作っているので <varname>nodatamode</varname> "
+"<literal>ignore</literal> で、平均の値には背景の値と正方形の値とが使われ、背"
+"景の値を除けることはありません。"
 
 #. Tag: para
 #, no-c-format
 msgid "Neighborhood averaging."
-msgstr ""
+msgstr "近隣の平均化。"
 
 #. Tag: para
 #, no-c-format
@@ -35389,7 +35406,7 @@ msgstr "ラスタの1番バンド"
 #. Tag: para
 #, no-c-format
 msgid "Averaged result"
-msgstr ""
+msgstr "平均化の結果"
 
 #. Tag: para
 #, no-c-format
@@ -35443,7 +35460,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Basic."
-msgstr ""
+msgstr "基本。"
 
 #. Tag: para
 #, no-c-format
@@ -35457,7 +35474,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Advanced using multiple reclassargs."
-msgstr ""
+msgstr "複数の reclassargs による高度利用。"
 
 #. Tag: para
 #, no-c-format
@@ -35475,7 +35492,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Advanced Map a single band 32BF raster to multiple viewable bands."
-msgstr ""
+msgstr "単一の 32BF バンドのラスターの複数の可視バンドへの高度な割当て。"
 
 #. Tag: para
 #, no-c-format
@@ -35555,14 +35572,14 @@ msgstr "小さいラスターを作ってピクセルに新しい値をマップ
 #. Tag: para
 #, no-c-format
 msgid "Create a raster with four pixels: first row 1 2, second row 3 4."
-msgstr ""
+msgstr "4ピクセルでラスターを生成する: 最初の行は 1と 2、二つ目の行は 3と 4。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Reclass the values to new values and dump the values of the new raster for "
 "display."
-msgstr ""
+msgstr "値を新値に再分類して病児のために新しいラスターの値をダンプする。"
 
 #. Tag: para
 #, no-c-format
@@ -35643,7 +35660,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Reconstitute a single band chunked raster tile."
-msgstr ""
+msgstr "単一バンドのラスタータイルの断片の再構成。"
 
 #. Tag: para
 #, no-c-format
@@ -35658,7 +35675,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Return a multi-band raster that is the union of tiles intersecting geometry."
-msgstr ""
+msgstr "ジオメトリーとインターセクトするタイルを結合した複数バンドのラスターを返す。"
 
 #. Tag: para
 #, no-c-format
@@ -35678,6 +35695,8 @@ msgstr ""
 msgid ""
 "Select and reorder bands while unioning tiles that intersect a geometry."
 msgstr ""
+"ジオメトリーとインターセクトしたタイルを結合しつつバンドを選択して並べ替える"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -35806,12 +35825,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The basic inverse-distance weighted estimate is:"
-msgstr ""
+msgstr "距離の逆数を重みとした基本の見積もりは次の通りです:"
 
 #. Tag: mathphrase
 #, no-c-format
 msgid "z = (Σᵢ zᵢ / dᵢᵏ) / (Σᵢ 1 / dᵢᵏ)"
-msgstr ""
+msgstr "z = (Σᵢ zᵢ / dᵢᵏ) / (Σᵢ 1 / dᵢᵏ)"
 
 #. Tag: para
 #, no-c-format
@@ -35820,6 +35839,9 @@ msgid ""
 "literal> is its distance from the pixel being estimated, and <literal>k</"
 "literal> is a real-valued power factor between 0 and 1."
 msgstr ""
+"<literal>zᵢ</literal> は隣接ピクセル値、<literal>dᵢ</literal> は見積もり対象"
+"のピクセルからの距離、<literal>k</literal> は実値のべき乗計数で、0から 1が入"
+"ります。"
 
 #. Tag: para
 #, no-c-format
