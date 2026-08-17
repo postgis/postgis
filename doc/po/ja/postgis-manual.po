@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-07 09:39+0000\n"
+"PO-Revision-Date: 2026-08-17 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -32428,6 +32428,8 @@ msgid ""
 "In the second result set, band 2 now points at <literal>Projected2.tif</"
 "literal> and uses out-db band 1."
 msgstr ""
+"結果の二つ目では、2番バンドは <literal>Projected2.tif</literal> を指し、"
+"データベース外ラスターの 1番バンドを使います。"
 
 #. Tag: para
 #, no-c-format
@@ -32476,6 +32478,8 @@ msgid ""
 "In the second result set, band 2 still points at the same file but now reads "
 "external band 1."
 msgstr ""
+"結果の二つ目では、2番バンドは <literal>Projected2.tif</literal> を指しますが"
+"、今回はデータベース外ラスターの 1番バンドを読みます。"
 
 #. Tag: para
 #, no-c-format
@@ -32731,6 +32735,8 @@ msgid ""
 "Example will consider only pixels of band 1 that are not 249 and in named "
 "quantiles."
 msgstr ""
+"例では 1番バンドの 249でないピクセルで、かつ名前のある分位に限って考慮に入れ"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -32806,12 +32812,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Single raster tile."
-msgstr ""
+msgstr "単一のラスタータイル。"
 
 #. Tag: para
 #, no-c-format
 msgid "Summarize pixels that intersect buildings of interest."
-msgstr ""
+msgstr "対象とする建物にインターセクトするピクセルの統計情報の概要。"
 
 #. Tag: para
 #, no-c-format
@@ -32822,11 +32828,16 @@ msgid ""
 "Windows 64-bit with all of Boston Buildings and aerial Tiles (tiles each "
 "150x150 pixels ~ 134,000 tiles), ~102,000 building records."
 msgstr ""
+"この例では、対象建物と選択して、ラスタータイルの 2番バンドを建物境界で切取り"
+"、切り取った領域の統計情報を計算して、建物ごとの統計情報の要約を得ます。"
+"Windows 64ビットの PostGIS を使い、ボストン建物データの約 102,000件と空中写真"
+"タイル (1タイルは 150x150ピクセルで、約 134,000タイル) とで 574ミリ秒かかりま"
+"した。"
 
 #. Tag: para
 #, no-c-format
 msgid "Raster coverage."
-msgstr ""
+msgstr "ラスターカバレッジ。"
 
 #. Tag: para
 #, no-c-format
@@ -32839,6 +32850,8 @@ msgid ""
 "For a table, sampling less than 100% can improve speed. Here the sampling is "
 "set to 25%."
 msgstr ""
+"テーブルに対して 100%より小さい割合でのサンプリングで速度が改善します。ここで"
+"は 25%に設定しています。"
 
 #. Tag: para
 #, no-c-format
@@ -32933,7 +32946,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Example will count only pixels of band 1 that are not 249."
-msgstr ""
+msgstr "この例では 1番バンドで 249でないピクセルのピクセル数を数えます。"
 
 #. Tag: para
 #, no-c-format
@@ -33156,13 +33169,13 @@ msgstr ""
 msgid ""
 "<varname>srid</varname> the spatial reference identifier to embed in the "
 "output raster"
-msgstr ""
+msgstr "<varname>srid</varname> 出力ラスターに組み込む空間参照系識別子。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Export multiple raster tiles as a single JPEG image with 50 percent quality."
-msgstr ""
+msgstr "複数のラスタータイルを一つの 50%品質の JPEG 画像として出力する。"
 
 #. Tag: para
 #, no-c-format
@@ -33176,18 +33189,26 @@ msgid ""
 "psql equivalent lo_ functions which export to the local file system instead "
 "of the server file system."
 msgstr ""
+"ラスターを他の書式で出力する方法の一つに、 <link xlink:href=\"https://"
+"www.postgresql.jp/document/current/html/lo-funcs.html\">PostgreSQL "
+"ラージオブジェクト サーバ側の関数</link> を使うものがあります。次ではもう一"
+"度 JPEG の例を使って結果を出力します。この例では、サーバー側の"
+"ラージオブジェクト関数を使うため、スーパーユーザーのアクセスが求められること"
+"に注意して下さい。また、サーバーネットワーク上のパスに出力します。ローカル側"
+"に出力するには、psql から呼び出す等価な lo_ 関数 (訳注: \\lo_export など) を"
+"使います。"
 
 #. Tag: para
 #, no-c-format
 msgid "Export a raster as a GeoTIFF using the default creation options."
-msgstr ""
+msgstr "ラスターをデフォルトの生成オプションを使って GeoTIFF として出力する。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Export a GeoTIFF using JPEG compression at 90 percent quality and embed SRID "
 "4269."
-msgstr ""
+msgstr "GeoTIFF を、品質 90%のJPEG 圧縮、SRID 4269 として出力する。"
 
 #. Tag: para
 #, no-c-format
@@ -33377,7 +33398,7 @@ msgstr ""
 msgid ""
 "Export the first 3 bands and map band 3 to red, band 1 to green, and band 2 "
 "to blue."
-msgstr ""
+msgstr "最初の 3バンドを、3番バンドを赤、1番バンドを緑、2番バンドを青にして出力する。"
 
 #. Tag: para
 #, no-c-format
