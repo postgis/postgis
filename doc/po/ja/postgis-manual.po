@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-17 03:39+0000\n"
+"PO-Revision-Date: 2026-08-17 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -34193,6 +34193,9 @@ msgid ""
 "<type>double precision[]</type> and <type>integer[]</type> in the "
 "<type>regprocedure</type> signature."
 msgstr ""
+"PostgreSQL 配列型は関数の引数型では次元を指定できず、コールバック関数の多次元"
+"配列は <type>double precision[]</type> と <type>integer[]</type> が <type>"
+"regprocedure</type> の型指定として記述されます。"
 
 #. Tag: para
 #, no-c-format
@@ -34765,12 +34768,12 @@ msgstr ""
 msgid ""
 "A self-contained source raster and the raster produced by classifying its "
 "values into four display levels."
-msgstr ""
+msgstr "自己完結型の元ラスターと値表示のために 4段階で分類したラスターの再生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "Map algebra altering the first band of a three-band raster."
-msgstr ""
+msgstr "3バンドラスターの最初のバンドを変更する地図代数。"
 
 #. Tag: para
 #, no-c-format
@@ -34849,7 +34852,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "2 Band Intersection and Union."
-msgstr ""
+msgstr "2バンドのインターセクトしている部分と結合。"
 
 #. Tag: para
 #, no-c-format
@@ -34862,6 +34865,8 @@ msgid ""
 "Insert some cool shapes around Boston in Massachusetts state plane meters, "
 "then map their intersection and union."
 msgstr ""
+"メートル単位マサチューセッツ州平面でボストン周囲にイかした形状を挿入して、"
+"インターセクト部分と結合部分とを示します。"
 
 #. Tag: para
 #, no-c-format
@@ -34869,6 +34874,8 @@ msgid ""
 "The same intersection and union operations using two deterministic, self-"
 "contained rasters."
 msgstr ""
+"二つの決定的かつ自己完結型のラスターを使た同じインターセクト部分と結合部分の"
+"計算。"
 
 #. Tag: para
 #, no-c-format
@@ -34876,6 +34883,9 @@ msgid ""
 "Overlaying rasters on a one-unit-per-pixel canvas as separate bands. We use "
 "ST_AsPNG to render the image so all single band ones look grey."
 msgstr ""
+"別のバンドとして1単位 1ピクセルのキャンバスの上にオーバーレイしているラスタ。"
+"ST_AsPNG を使って画像を描画しています。単一バンドのラスターは全ての灰色に見え"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -34885,6 +34895,10 @@ msgid ""
 "the region, unions those smaller shards, and finally adds the first two "
 "bands plus a third-band map algebra overlay."
 msgstr ""
+"空中写真上に、選択した区画の 2メートル幅の境界線を重ねます。クエリーでは最初"
+"に区画ジオメトリーを結合して、元ラスターの破片を領域で切り抜き、小さい破片を"
+"結合し、最後に、バンドの先頭 2バンドと、地図代数で描いた第 3バンドを追加しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
