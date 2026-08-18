@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-18 01:39+0000\n"
+"PO-Revision-Date: 2026-08-18 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -38618,7 +38618,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Two LineStrings cross when they share an interior point."
-msgstr ""
+msgstr "二つの LINESTRING は、内部のポイントを共有している時には、クロスしています。"
 
 #. Tag: para
 #, no-c-format
@@ -39068,11 +39068,13 @@ msgstr ""
 #, no-c-format
 msgid "Two MultiPoints overlap when they share some, but not all, points."
 msgstr ""
+"二つの MULTIPOINT は、一部のポイントを共有し、かつ全てを共有しない時に、"
+"オーバーラップします。"
 
 #. Tag: para
 #, no-c-format
 msgid "Two LineStrings overlap along part of their paths."
-msgstr ""
+msgstr "二つの LINESTRING が一部でオーバーラップする例。"
 
 #. Tag: para
 #, no-c-format
@@ -39080,6 +39082,8 @@ msgid ""
 "Two Polygons overlap where their interiors intersect and neither contains "
 "the other."
 msgstr ""
+"二つの POLYGON は、内部同士がインターセクトし、一方のポリゴンにインターセクト"
+"していない部分がある時、オーバーラップしています。"
 
 #. Tag: para
 #, no-c-format
@@ -39505,32 +39509,32 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Two Polygons touching along a boundary segment."
-msgstr ""
+msgstr "境界部分に沿って接触する二つの POLYGON。"
 
 #. Tag: para
 #, no-c-format
 msgid "Two Polygons touching at a boundary point."
-msgstr ""
+msgstr "境界上のポイントで接触している二つの POLYGON。"
 
 #. Tag: para
 #, no-c-format
 msgid "A Polygon and a LineString touching at the line endpoint."
-msgstr ""
+msgstr "LINESTRING の終端で接触している POLYGON と LINESTRING。"
 
 #. Tag: para
 #, no-c-format
 msgid "Two LineStrings touching at their endpoints."
-msgstr ""
+msgstr "両方の端点で接触する二つの LINESTRING。"
 
 #. Tag: para
 #, no-c-format
 msgid "Two LineStrings touching where an endpoint meets the other line."
-msgstr ""
+msgstr "一方の端点がもう一方の端点でない点で接触している二つの LINESTRING。"
 
 #. Tag: para
 #, no-c-format
 msgid "A Point touching a Polygon boundary."
-msgstr ""
+msgstr "POLYGON と境界で接触している POINT。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -39635,6 +39639,8 @@ msgid ""
 "This example defines two concentric circles once in a CTE so the same inputs "
 "can be rendered and then reused in related predicate checks."
 msgstr ""
+"この例では、一度二つの同心円を CTE (WITH句) で定義すると、同じ入力を描画に使"
+"うことができ、かつ関連する述語の確認での再利用もできます。"
 
 #. Tag: para
 #, no-c-format
@@ -39644,6 +39650,10 @@ msgid ""
 "<function>ST_Union</function> only when the union does not extend beyond the "
 "larger circle."
 msgstr ""
+"同じ円を使って <function>ST_Within</function> は円ごとに反射的です (自分と自"
+"分との関係が成立する)。また、大きな円から小さな円に向かうと FALSE になります"
+"。<function>ST_Union</function> を施す場合には結合が大きな円の外に広がらない"
+"場合だけ TRUE になります。"
 
 #. Tag: para
 #, no-c-format
@@ -39691,6 +39701,8 @@ msgid ""
 "fails because the Z difference matters even though the 2D footprints are "
 "close enough."
 msgstr ""
+"同じ投影変換を施した 3次元と 2次元のポイントとラインの比較。2次元の場合は平面"
+"上では十分に近いのですが、3次元の場合は Z 値が違うので FALSE を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -39731,6 +39743,9 @@ msgid ""
 "distance-within the line in 3D, but the full 3D line is not within the same "
 "distance of the point."
 msgstr ""
+"この例では、距離が指定範囲内にあるかの述語を 2次元と 3次元とで比較します。"
+"ポイントは 3次元で指定距離内にありますが、3次元のライン全体については同じ距離"
+"になりません。"
 
 #. Tag: para
 #, no-c-format
@@ -39857,6 +39872,8 @@ msgid ""
 "This self-contained geometry example keeps the compared shapes visible while "
 "also returning the boolean results."
 msgstr ""
+"このジオメトリーの自己完結型の例では、真偽値を返すと同時に比較対象の形状を表"
+"示できるようにしています。"
 
 #. Tag: para
 #, no-c-format
@@ -39878,6 +39895,8 @@ msgid ""
 "within 3000 units away from the school. Units are in units of spatial "
 "reference (for example meters, feet, or degrees)."
 msgstr ""
+"近くに病院が無い学校。病院が 3000単位以内に無い学校を全て見つけます。単位は空"
+"間参照系の単位に従います (メートル、フィート、度など)。"
 
 #. Tag: para
 #, no-c-format
@@ -39886,6 +39905,8 @@ msgid ""
 "<literal>NOT EXISTS</literal> so that a location is returned only when no "
 "nearby hospital exists."
 msgstr ""
+"最も近い病院との距離が 3000単位を超える位置を見つける。<literal>NOT EXISTS</"
+"literal> を使って、病院が近くにない位置を返しています。"
 
 #. Tag: para
 #, no-c-format
