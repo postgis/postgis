@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-18 07:39+0000\n"
+"PO-Revision-Date: 2026-08-18 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -40407,16 +40407,19 @@ msgid ""
 "input. Unlike <xref linkend=\"ST_ConvexHull\"/>, this function uses Z "
 "coordinates when constructing the hull."
 msgstr ""
+"入力を包含する最小の 3次元の凸ジオメトリーを計算します。<xref "
+"linkend=\"ST_ConvexHull\"/> と違って、この関数は凸包を作る時に Z 値を使います"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid "Compute the 3D convex hull of a 3D LineString."
-msgstr ""
+msgstr "3次元 LINESTRING の 3次元凸包の計算。"
 
 #. Tag: para
 #, no-c-format
 msgid "Compare the extruded source geometry with its 3D convex hull."
-msgstr ""
+msgstr "元のジオメトリーを押し出して生成したものの 3次元凸包の計算。"
 
 #. Tag: para
 #, no-c-format
@@ -40436,12 +40439,12 @@ msgstr "geom1とgeom2の間で共有される部分のジオメトリを返し�
 #. Tag: para
 #, no-c-format
 msgid "3D linestrings and polygons can intersect in a 3D segment."
-msgstr ""
+msgstr "3次元ラインストリングとポリゴンは 3次元の一部区間とインターセクトします。"
 
 #. Tag: para
 #, no-c-format
 msgid "Intersect a cube shell with a vertical polygon."
-msgstr ""
+msgstr "立方体の面が垂直ポリゴンとインターセクトする。"
 
 #. Tag: para
 #, no-c-format
@@ -40449,6 +40452,8 @@ msgid ""
 "A smaller solid contained by a larger solid remains volumetric after "
 "intersection."
 msgstr ""
+"大きい立体に包含された小さい立体はインターセクトする部分を計算した後も体積が"
+"あります。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40487,7 +40492,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Union two overlapping tetrahedral solids."
-msgstr ""
+msgstr "二つのオーバーラップする四面体立体の結合。"
 
 #. Tag: para
 #, no-c-format
@@ -40578,18 +40583,18 @@ msgstr "Availability: 3.5.0 - SFCGAL &gt;= 1.4.1 が必要です。"
 #, no-c-format
 msgid ""
 "The original point cloud and the alpha-shape share one comparison frame."
-msgstr ""
+msgstr "元のポイントクラウドとアルファシェイプは一つの比較枠に同時に示しています。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The same point cloud can produce a shape with a hole when holes are allowed."
-msgstr ""
+msgstr "穴の付加が可能な時には、同じポイントクラウドでも穴のある形状を生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid "The second documented point cloud also produces a holed alpha-shape."
-msgstr ""
+msgstr "別のポイントクラウドも穴のあるαシェイプを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -40704,7 +40709,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "A polygon and its approximate medial axis."
-msgstr ""
+msgstr "ポリゴンと近似内側軸。"
 
 #. Tag: para
 #, no-c-format
@@ -40742,7 +40747,7 @@ msgstr "Availability: 3.7.0 - SFCGAL &gt;= 2.3.0 が必要。"
 #. Tag: para
 #, no-c-format
 msgid "Generate a flat roof two units above a rectangular footprint."
-msgstr ""
+msgstr "四角形の接地面の上方 2単位にある陸屋根。"
 
 #. Tag: para
 #, no-c-format
@@ -40775,6 +40780,8 @@ msgid ""
 "The footprint and hipped roof are shown side-by-side so the generated 3D "
 "faces do not hide behind the input footprint."
 msgstr ""
+"生成した 3次元のフェイスは入力の接地面の背後に隠れないようにするため、接地面"
+"と寄棟屋根とが並んでいます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40801,7 +40808,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Generate a gable roof using a height of 2 and a 30 degree slope."
-msgstr ""
+msgstr "高さ 2単位と傾斜角 30度を使った切妻屋根の生成。"
 
 #. Tag: para
 #, no-c-format
@@ -40864,7 +40871,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The height 2.0 result is shown with its footprint."
-msgstr ""
+msgstr "高さ 2.0の結果と接地面。"
 
 #. Tag: para
 #, no-c-format
@@ -40931,6 +40938,8 @@ msgid ""
 "The generic dispatcher returns the same 3D roofs as the specialized helpers "
 "for the same footprint."
 msgstr ""
+"同じ接地面に対する一般的な関数から指定に応じた専門関数に渡されて 3次元屋根を"
+"生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -41008,6 +41017,8 @@ msgid ""
 "Repair a self-intersecting bowtie polygon with the default "
 "<literal>EVEN_ODD</literal> rule."
 msgstr ""
+"自己インターセクトする蝶ネクタイ形状のポリゴンをデフォルトの <literal>"
+"EVEN_ODD</literal> 規則で修復する。"
 
 #. Tag: para
 #, no-c-format
@@ -41041,12 +41052,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Constrained Delaunay triangulation of the polygon and buffered point."
-msgstr ""
+msgstr "ポリゴンとバッファーを施したポイントの制約付きドロネー三角形。"
 
 #. Tag: para
 #, no-c-format
 msgid "applied to the same input. Triangle edges cross polygon boundaries."
-msgstr ""
+msgstr "を同じ入力に適用する。三角形の辺はポリゴン境界とクロスします。"
 
 #. Tag: para
 #, no-c-format
