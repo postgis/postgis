@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-17 10:39+0000\n"
+"PO-Revision-Date: 2026-08-18 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -35194,6 +35194,9 @@ msgid ""
 "modern two-raster <xref linkend=\"RT_ST_MapAlgebra\"/> expression variant. "
 "This build-time example renders two input rasters and their averaged overlap."
 msgstr ""
+"非推奨になっている 2ラスターのコールバック形式を、現在有効な 2ラスター用の "
+"<xref linkend=\"RT_ST_MapAlgebra\"/> の式形式で表現することができます。この例"
+"では二つの入力ラスターを描画し、重なる部分を平均化したラスターを構築します。"
 
 #. Tag: para
 #, no-c-format
@@ -35233,6 +35236,9 @@ msgid ""
 "overlap used by this variant; the exact callback result remains available as "
 "text."
 msgstr ""
+"上に示した生成されたコールバックの図はこの形式で使われるラスターの"
+"アライメントとオーバーラップを示します。正確なコールバックの結果はテキストで"
+"見ることができます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36658,7 +36664,7 @@ msgstr ""
 msgid ""
 "For regular non-skewed rasters, the envelope and convex hull are more or "
 "less the same."
-msgstr ""
+msgstr "通常のスキューなしラスターでは、エンベロープと凸包は概ね同じです。"
 
 #. Tag: para
 #, no-c-format
@@ -36872,6 +36878,8 @@ msgid ""
 "assigned as the NODATA value. The latter preserves the gap formed by zero-"
 "valued cells."
 msgstr ""
+"ピクセルごとのポリゴン化と、ポリゴン化の後に NODATA 値を 0にしたものとの比較"
+"。後者は 0値セルで形成される隙間を保存します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -36910,7 +36918,7 @@ msgstr "Availability: 3.6.0 GEOS 3.14以上が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "This rotated square polygon covers half of each cell in the raster."
-msgstr ""
+msgstr "この回転させた正方形はラスターのセルの半分を覆います。"
 
 #. Tag: title
 #, no-c-format
@@ -38150,23 +38158,23 @@ msgstr ""
 msgid ""
 "A LineString contains a MultiPoint whose points lie in its interior or "
 "boundary."
-msgstr ""
+msgstr "LINESTRING はその内部または境界にあるポイントからなる MULTIPOINT を含みます。"
 
 #. Tag: para
 #, no-c-format
 msgid "A Polygon contains a Point in its interior."
-msgstr ""
+msgstr "POLYGON はその内部の POINT を含みます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "A Polygon contains a LineString with interior points inside the Polygon."
-msgstr ""
+msgstr "POLYGON は、そのポリゴンの内側の点を内部として持つ LINESTRING を含みます。"
 
 #. Tag: para
 #, no-c-format
 msgid "A Polygon contains another Polygon in its interior."
-msgstr ""
+msgstr "POLYGON は、そのポリゴンの内側にある他の POLYGON を含みます。"
 
 #. Tag: para
 #, no-c-format
@@ -38180,12 +38188,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "A Polygon does not contain a MultiPoint when one point lies in a hole."
-msgstr ""
+msgstr "POLYGON は、そのポリゴンの穴に存在する点を持つ MULTIPOINT を含みません。"
 
 #. Tag: para
 #, no-c-format
 msgid "A Polygon does not contain a LineString extending outside it."
-msgstr ""
+msgstr "POLYGON は、その外側に出ている LINESTRING を含みません。"
 
 #. Tag: para
 #, no-c-format
@@ -38201,12 +38209,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "A LineString does not contain a Point lying only on its boundary."
-msgstr ""
+msgstr "LINESTRING は、そのラインストリングの境界にあるポイントは含みません。"
 
 #. Tag: para
 #, no-c-format
 msgid "A Polygon does not contain a LineString lying entirely on its boundary."
-msgstr ""
+msgstr "POLYGON は、その境界上にしかない LINESTRING を含みません。"
 
 #. Tag: para
 #, no-c-format
@@ -38471,7 +38479,7 @@ msgstr "この例ではある円がもう一つの円を覆っているかどう
 #. Tag: para
 #, no-c-format
 msgid "Geography example"
-msgstr ""
+msgstr "ジオグラフィーの例"
 
 #. Tag: para
 #, no-c-format
@@ -38586,6 +38594,8 @@ msgid ""
 "A LineString crosses a MultiPoint when some, but not all, points lie on the "
 "line."
 msgstr ""
+"LINESTRING は、全てでなく一部のポイントがそのラインストリング上にある "
+"MULTIPOINT とクロスします。"
 
 #. Tag: para
 #, no-c-format
@@ -38593,6 +38603,8 @@ msgid ""
 "A Polygon crosses a MultiPoint when some, but not all, points lie in its "
 "interior."
 msgstr ""
+"POLYGON は、全てでなく一部のポイントがそのポリゴンの内部にある MULTIPOINT と"
+"クロスします。"
 
 #. Tag: para
 #, no-c-format
@@ -38600,6 +38612,8 @@ msgid ""
 "A LineString crosses a Polygon when part of the line lies inside and part "
 "outside."
 msgstr ""
+"LINESTRING は、そのラインストリングの一部が内部にあり、かつ一部が外にある "
+"POLYGON とクロスします。"
 
 #. Tag: para
 #, no-c-format
