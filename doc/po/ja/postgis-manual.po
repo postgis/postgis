@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-18 05:39+0000\n"
+"PO-Revision-Date: 2026-08-18 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -39924,6 +39924,9 @@ msgid ""
 "two conditions are required because the shorter "
 "<literal>LEAST(b.sending_range, 4000)</literal> will not use an index."
 msgstr ""
+"ミンスクのハケルスペイスで距離制限 4kmの受信機が受信できる放送塔のクエリー。"
+"ご注意: 短い方の <literal>LEAST(b.sending_range, 4000)</literal> では"
+"インデックスを使わないので二つの条件が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -40078,11 +40081,14 @@ msgid ""
 "clockwise. Rings are reversed as needed; coordinates and dimensionality are "
 "preserved. The input must be valid."
 msgstr ""
+"ポリゴン系要素が左手規則に従う等価のジオメトリーを返します。この場合、外側"
+"リングは反時計回りで、内側リングは時計回りです。リングは必要に応じて逆順にし"
+"ます。座標と次元は維持されます。入力は妥当なものでなければなりません。"
 
 #. Tag: para
 #, no-c-format
 msgid "Reorient a polygon and its hole to the left-hand rule."
-msgstr ""
+msgstr "ポリゴンを左手規則に揃えなおす。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40092,7 +40098,7 @@ msgstr "サーフェスが平面であるかないかをチェックします。
 #. Tag: para
 #, no-c-format
 msgid "Tests whether the input geometry lies in a single plane in 3D."
-msgstr ""
+msgstr "入力ジオメトリーが 3次元の単一平面上にあるかどうかを見る。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40109,12 +40115,17 @@ msgid ""
 "explicitly converted. This tests the representation, not shell closure or "
 "validity; no validity check is performed."
 msgstr ""
+"入力が立体フラグを持つ時に <varname>TRUE</varname> を返します。<xref "
+"linkend=\"CG_MakeSolid\"/> が生成するジオメトリーなどが該当します。閉じ"
+"た<varname>PolyhedralSurface</varname> は、明示的に変換しない限りサーフェスの"
+"ままです。この関数では表現を調べるものであって、サーフェスが閉じていて妥当か"
+"といったことは調べません。立体の妥当性の確認は行いません。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Compare the same closed shell before and after converting it to a solid."
-msgstr ""
+msgstr "同じ面が閉じたものから立体に変換する前の物と変換した後の物との比較。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40133,6 +40144,9 @@ msgid ""
 "describe a closed shell; the function sets the solid representation and does "
 "not validate the shell."
 msgstr ""
+"POLYHEDRALSURFACE または TIN に立体を示すフラグを付けます。入力はサーフェスが"
+"閉じていることが期待されます。この関数は立体表現を設定しますが、立体としての"
+"妥当性評価はしません。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40224,6 +40238,9 @@ msgid ""
 "linkend=\"CG_MakeSolid\"/> when the geometry value itself must carry the "
 "solid flag."
 msgstr ""
+"閉じたサーフェスジオメトリーは 0でない体積を持つことができます。ジオメトリー"
+"値自体が立体フラグを持たなければならない場合には <xref "
+"linkend=\"CG_MakeSolid\"/> を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -40322,6 +40339,8 @@ msgid ""
 "Subtract a smaller tetrahedral solid and render the two inputs and the "
 "actual remaining solid separately."
 msgstr ""
+"大きい四面体から小さい四面体を引いて、二つの入力と引算の結果残った立体とを別"
+"々に表示します。"
 
 #. Tag: para
 #, no-c-format
