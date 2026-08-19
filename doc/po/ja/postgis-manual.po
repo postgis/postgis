@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-19 01:39+0000\n"
+"PO-Revision-Date: 2026-08-19 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -41167,7 +41167,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Computes approximal monotone convex partition of the polygon geometry."
-msgstr "ポリゴンジオメトリの近似的な単調凸分割を計算します。"
+msgstr "単調分割に基づくポリゴンジオメトリーの近似凸分割を計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -41175,6 +41175,8 @@ msgid ""
 "Greene's monotone-based approximation uses the same polygon and stays "
 "directly comparable in one panel."
 msgstr ""
+"グリーンの単調性に基づく近似法では同じポリゴンを使用して、1つのパネル内で直接"
+"比較できます。"
 
 #. Tag: para
 #, no-c-format
@@ -41240,6 +41242,8 @@ msgid ""
 "Minkowski sum of a LineString and a circular polygon. The line crosses the "
 "polygon, and the result sweeps the polygon along the line."
 msgstr ""
+"LINESTRING と曲線ポリゴンとのミンコフスキー和。ラインはポリゴンとクロスして、"
+"結果はラインに沿ってポリゴンを動かしたものです。"
 
 #. Tag: para
 #, no-c-format
@@ -41247,6 +41251,8 @@ msgid ""
 "Minkowski sum of a MultiPoint and a polygon. The result contains one "
 "translated copy of the polygon for each point."
 msgstr ""
+"MULTIPOINT とポリゴンのミンコフスキー和。結果は、ポリゴンを MULTIPOINT の各"
+"ポイントに移動させたものを含みます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41293,12 +41299,12 @@ msgstr ""
 msgid ""
 "The original point cloud and the optimal alpha-shape share one comparison "
 "frame."
-msgstr ""
+msgstr "同じ比較フレーム上に置いた、元のポイントクラウドと最適なアルファシェイプ。"
 
 #. Tag: para
 #, no-c-format
 msgid "Allowing holes keeps the same outer shell but carves a central hole."
-msgstr ""
+msgstr "穴を許容すると、外側リングは同じだけれども、中心に穴ができます。"
 
 #. Tag: para
 #, no-c-format
@@ -41333,6 +41339,8 @@ msgid ""
 "The optimal convex partition uses the same polygon and produces the smallest "
 "documented piece count."
 msgstr ""
+"同じポリゴンを使って最適凸分割を行っているが、本マニュアルで示されている中で"
+"は最小の分割数になる。"
 
 #. Tag: para
 #, no-c-format
@@ -41356,6 +41364,9 @@ msgid ""
 "<varname>true</varname>, the M coordinate of each output point stores its "
 "distance from the input boundary."
 msgstr ""
+"エッジの内側への伝播の追跡によってポリゴンのストレートスケルトンを計算します"
+"。<parameter>use_distance_as_m</parameter> が <varname>TRUE</varname> の場合"
+"には、 出力ポイントごとの M 値は入力が持つ境界からの距離を保存します。"
 
 #. Tag: para
 #, no-c-format
@@ -41401,12 +41412,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Tessellation divides each face of a cube into triangles."
-msgstr ""
+msgstr "テッセレーションによって立方体のフェイスを三角形に分割する。"
 
 #. Tag: para
 #, no-c-format
 msgid "Tessellation of a Polygon."
-msgstr ""
+msgstr "ポリゴンのテッセレーション。"
 
 #. Tag: para
 #, no-c-format
@@ -41446,16 +41457,18 @@ msgid ""
 "observer segment defined by <parameter>pointA</parameter> and "
 "<parameter>pointB</parameter>."
 msgstr ""
+"観測ポイントまたは <parameter>pointA</parameter> と <parameter>pointB</"
+"parameter> からなる線分から見えるポリゴンの一部が返ります。"
 
 #. Tag: para
 #, no-c-format
 msgid "Visibility from a point inside a polygon with holes."
-msgstr ""
+msgstr "穴あきポリゴンの内部のポイントからの可視領域。"
 
 #. Tag: para
 #, no-c-format
 msgid "Visibility from a segment inside the same polygon."
-msgstr ""
+msgstr "同じポリゴンの内部の線分からの可視領域。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41490,7 +41503,7 @@ msgstr ""
 msgid ""
 "The same polygon can also be partitioned into y-monotone pieces for "
 "downstream processing."
-msgstr ""
+msgstr "同じポリゴンを下流処理のために Y 単調の部分に分割することもできます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41520,7 +41533,7 @@ msgstr "Availability: 3.6.0 - SFCGAL &gt;= 2.0.0が必要です。"
 #. Tag: para
 #, no-c-format
 msgid "Straight skeleton partition of a polygon."
-msgstr ""
+msgstr "ポリゴンのストレートスケルトン分割。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41559,27 +41572,27 @@ msgstr "Availability: 3.6.0 - SFCGAL &gt;= 2.0.0が必要です"
 #. Tag: para
 #, no-c-format
 msgid "A rounded point buffer using 32 segments."
-msgstr ""
+msgstr "ポイント周りの 32辺による円形バッファー。"
 
 #. Tag: para
 #, no-c-format
 msgid "A coarser rounded point buffer using 5 segments."
-msgstr ""
+msgstr "5辺にして荒くしたバッファー。"
 
 #. Tag: para
 #, no-c-format
 msgid "A rounded buffer around a line using 32 segments."
-msgstr ""
+msgstr "ライン周りの 32辺による円形バッファー。"
 
 #. Tag: para
 #, no-c-format
 msgid "A square buffer around the same line using 32 segments."
-msgstr ""
+msgstr "同じライン周りで 32辺による正方形バッファー。"
 
 #. Tag: para
 #, no-c-format
 msgid ", <xref linkend=\"CG_3DConvexHull\"/>, <xref linkend=\"ST_AsX3D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"CG_3DConvexHull\"/>, <xref linkend=\"ST_AsX3D\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -41919,13 +41932,15 @@ msgid ""
 "The topology-preserving variant keeps the shared anchor point at the "
 "collection intersection."
 msgstr ""
+"トポロジー保存の形式ではコレクションのインターセクトした部分にある共有基準点"
+"を維持します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Compare simplification with and without topology preservation, using a "
 "threshold of 50."
-msgstr ""
+msgstr "単純化におけるトポロジー保存の有無の比較。閾値は 50とする。"
 
 #. Tag: para
 #, no-c-format
