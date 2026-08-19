@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-19 07:39+0000\n"
+"PO-Revision-Date: 2026-08-19 09:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -4292,14 +4292,14 @@ msgid ""
 msgstr "許容距離内にあるトポロジーの頂点/辺の組を検索します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a relation in which each tuple is a pair of vertex/segment where the "
 "vertex is NOT an endpoint of the segment but the distance between them is "
 "below the given tolerance."
 msgstr ""
-"個々のタプルが頂点/辺の組合せで、頂点は辺の終端でなく、かつ頂点と辺の間の距離"
-"が指定した許容値より小さくなるリレーションを返します。"
+"個々のタプルが頂点/辺のペアで、頂点は辺の終端でなく、かつ頂点と辺の間の距離が"
+"指定した許容値より小さくなるリレーションを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -5168,17 +5168,17 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of element_id,element_type (topoelements) corresponding to "
 "primitive topology elements <xref linkend=\"topoelement\"/> (1: nodes, 2: "
 "edges, 3: faces) that a given topogeometry object in <varname>toponame</"
 "varname> schema is composed of."
 msgstr ""
-"<varname>toponame</varname>スキーマ内で与えられたTopoGeometryオブジェクトを形"
-"成するプリミティブなトポロジ要素 <xref linkend=\"topoelement\"/> (1:ノード、"
-"2:エッジ、3:フェイス)に対応したelement_id, element_type (topoelements)の集合"
-"を返します。"
+"<xref linkend=\"topoelement\"/> (1:ノード、2:エッジ、3:フェイス) に対応した "
+"element_id, element_type (TopoElement) の集合を返します。TopoElement は"
+"、<varname>toponame</varname> スキーマ内で与えられた TopoGeometry "
+"オブジェクトを形成するプリミティブなトポロジ要素です。"
 
 #. Tag: para
 #, no-c-format
@@ -5656,10 +5656,10 @@ msgid ""
 "AFTER resolving the naming conflicts or to link layers to a different "
 "topology (say a spatially-simplified version of the starting topology)."
 msgstr ""
-"ロードして、レイヤを名前付きトポロジにリンクするSQLは<code>--only-layers</"
-"code>スイッチで生成できます。これは、名前の競合を解決した*後に*レイヤをロード"
-"したり、異なるトポロジのレイヤ (開始トポロジで空間的に単純化されたもの等が挙"
-"げられます)にリンクするのに使えます。"
+"ロードして、レイヤを名前付きトポロジにリンクする SQL は <code>--only-layers</"
+"code> スイッチで生成できます。これは、名前の競合を解決した*後に*レイヤを"
+"ロードしたり、異なるトポロジのレイヤ (開始トポロジで空間的に簡略化されたもの"
+"等が挙げられます) にリンクするのに使えます。"
 
 #. Tag: para
 #, no-c-format
@@ -7019,7 +7019,7 @@ msgstr ""
 "す:"
 
 #. Tag: literal
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "postgis"
 msgstr "postgis"
 
@@ -11872,15 +11872,15 @@ msgid "An input geometry is added to a cluster if it is either:"
 msgstr "入力ジオメトリは、次のいずれかの場合にはクラスタに追加されます:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A \"core\" geometry, that is within <varname>eps</varname> <link "
 "linkend=\"ST_Distance\">distance</link> of at least <varname>minpoints</"
 "varname> input geometries (including itself); or"
 msgstr ""
-"「核」ジオメトリという、入力ジオメトリ (自分を含む)のうち少なくとも"
-"<varname>minpoints</varname>個が<varname>eps</varname>で指定した<link "
-"linkend=\"ST_Distance\">距離</link>の範囲内にあるもの。または"
+"「核」ジオメトリという、入力ジオメトリ (自分を含む) のうち <varname>eps</"
+"varname> で指定した <link linkend=\"ST_Distance\">距離</link> の範囲内にある"
+"ものが少なくとも <varname>minpoints</varname> 個ある。または"
 
 #. Tag: para
 #, no-c-format
@@ -13978,7 +13978,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Window function that simplifies the edges of a polygonal coverage."
-msgstr "ポリゴンカバレッジのエッジを単純化するウィンドウ関数。"
+msgstr "ポリゴンカバレッジのエッジを簡略化するウィンドウ関数。"
 
 #. Tag: para
 #, no-c-format
@@ -13988,8 +13988,8 @@ msgid ""
 "simplified output polygons are consistent along shared edges, and still form "
 "a valid coverage."
 msgstr ""
-"ポリゴンカバレッジ内でポリゴンのエッジを単純化するウィンドウ関数です。この単"
-"純化ではカバレッジのトポロジが保持されます。単純化した出力ポリゴンは共有する"
+"ポリゴンカバレッジ内でポリゴンのエッジを簡略化するウィンドウ関数です。この簡"
+"略化ではカバレッジのトポロジが保持されます。簡略化した出力ポリゴンは共有する"
 "エッジに沿って構成され、妥当なカバレッジを形成します。"
 
 #. Tag: para
@@ -14001,10 +14001,10 @@ msgid ""
 "units of distance, and is roughly equal to the square root of triangular "
 "areas to be simplified."
 msgstr ""
-"単純化では<link xlink:href=\"https://en.wikipedia.org/wiki/"
-"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</link>版"
-"を使います。<parameter>tolerance</parameter>パラメータは距離の単位を持ち、単"
-"純化する三角形面積の平方根とだいたい同じです。"
+"簡略化では <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Visvalingam%E2%80%93Whyatt_algorithm\">Visvalingam–Whyatt algorithm</link> 版"
+"を使います。 <parameter>tolerance</parameter> パラメータは距離の単位を持ち、"
+"簡略化する三角形面積の平方根とだいたい同じです。"
 
 #. Tag: para
 #, no-c-format
@@ -14013,19 +14013,19 @@ msgid ""
 "shared by two polygons) set the <parameter>simplifyBoundary</parameter> "
 "parameter to false."
 msgstr ""
-"カバレッジの「内部の」エッジ (二つのポリゴンに共有されている)だけを単純化する"
-"には、<parameter>simplifyBoundary</parameter>パラメーターをFALSEに設定しま"
+"カバレッジの「内部の」エッジ (二つのポリゴンに共有されている)だけを簡略化する"
+"には、<parameter>simplifyBoundary</parameter> パラメーターを FALSE に設定しま"
 "す。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Use this function to simplify adjacent polygon layers when shared boundaries "
 "must remain edge-matched. For a single geometry where only self-intersection "
 "and ring validity matter, see <xref linkend=\"ST_SimplifyPreserveTopology\"/"
 ">."
 msgstr ""
-"共有された境界がエッジに合致している時は、隣接ポリゴンレイヤーを単純化するた"
+"共有された境界がエッジに合致している時は、隣接ポリゴンレイヤーを簡略化するた"
 "めにこの関数を使います。自己インターセクションして、リングの評価の問題がある"
 "単一ジオメトリーについては <xref linkend=\"ST_SimplifyPreserveTopology\"/> を"
 "参照して下さい。"
@@ -14046,7 +14046,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Simplify a polygonal coverage while preserving shared boundaries."
-msgstr "共有する境界を維持しながらポリゴンカバレッジを単純化します。"
+msgstr "共有する境界を維持しながらポリゴンカバレッジを簡略化します。"
 
 #. Tag: para
 #, no-c-format
@@ -14886,13 +14886,13 @@ msgstr ""
 "は再帰的に処理され、SRID と Z値、M値 は維持されます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Compare the geometry types produced for SFS 1.1 (the default) and SFS 1.2. "
 "Read each row from the input type in the direction of the result columns."
 msgstr ""
-"SFS 1.1 (デフォルト) と SFS 1.2 で生成したジオメトリータイプ。それぞれの行を"
-"入力タイプから結果カラムに向いて読みます。"
+"SFS 1.1 (デフォルト) と SFS 1.2 で生成したジオメトリータイプの比較。行ごとに"
+"を入力タイプから 2個の結果カラムに向いて読みます。"
 
 #. Tag: para
 #, no-c-format
@@ -18082,7 +18082,7 @@ msgstr ""
 "返り値型が同じです。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.50."
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.50."
 
@@ -19549,14 +19549,14 @@ msgstr ""
 "<varname>degrees()</varname>で度に変換できます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For offsetting lines relative to their direction, use <xref "
 "linkend=\"ST_OffsetCurve\"/>. For projecting a point by distance and "
 "bearing, use <xref linkend=\"ST_Project\"/>."
 msgstr ""
-"ラインをその方向に平行移動させるには <xref linkend=\"ST_OffsetCurve\"/> を使"
-"います。ポイントを距離と方向とで移動させるには <xref "
+"ラインを向きに対して平行移動させるには <xref linkend=\"ST_OffsetCurve\"/> を"
+"使います。ポイントを距離と方位角とで移動させるには <xref "
 "linkend=\"ST_Project\"/> を使います。"
 
 #. Tag: para
@@ -22702,7 +22702,7 @@ msgstr ""
 "linkend=\"ST_Transform\"/> を使います。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <link xlink:href=\"https://project-osrm.org/docs/v5.24.0/api/#general-"
 "options\">OSRM API</link> returns precision 5 for "
@@ -22714,8 +22714,8 @@ msgstr ""
 "<link xlink:href=\"https://project-osrm.org/docs/v5.24.0/api/#general-"
 "options\">OSRM API</link> は <literal>geometries=polyline</literal> の時は精"
 "度 5 を返し、<literal>geometries=polyline6</literal> の時は精度 6 を返します"
-"。<literal>route.geometry</literal> を出コードします。これは同じ精度を指定し"
-"た <xref linkend=\"ST_LineFromEncodedPolyline\"/> を使います。"
+"。<literal>route.geometry</literal> のデコードには対応する精度を指定して "
+"<xref linkend=\"ST_LineFromEncodedPolyline\"/> を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -22723,12 +22723,12 @@ msgid "Encode the same WGS 84 LineString using precision 5 and 6."
 msgstr "同じ WGS84 LINESTRING を精度 5 と精度 6 でエンコードします。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Decode an OSRM <literal>route.geometry</literal> returned with "
 "<literal>geometries=polyline6</literal>."
 msgstr ""
-"<literal>geometries=polyline6</literal> で返った OSRM <literal>"
+"<literal>geometries=polyline6</literal> で返った OSRM の <literal>"
 "route.geometry</literal> をデコードする。"
 
 #. Tag: para
@@ -23515,12 +23515,12 @@ msgid ""
 "detail before tile conversion, simplify the geometry in map coordinates "
 "before calling <function>ST_AsMVTGeom</function>."
 msgstr ""
-"この関数は整数タイル座標空間に適切なジオメトリーの単純化を行います。タイル座"
+"この関数は整数タイル座標空間に適切なジオメトリーの簡略化を行います。タイル座"
 "標への変換の後、整数グリッドに座標値をスナップさせ、重複ポイントは除去され、"
-"直線上のポイントも除去されます。この関数は <xref linkend=\"ST_Simplify\"/>.の"
-"ような多目的、縮尺依存の単純化関数とは異なります。タイル変換前に細かい物を減"
-"らすには、<function>ST_AsMVTGeom</function>の前に地図の座標系のジオメトリーを"
-"単純化します。"
+"直線上のポイントも除去されます。この関数は <xref linkend=\"ST_Simplify\"/> の"
+"ような多目的、縮尺依存の簡略化関数とは異なります。タイル変換前に細かい物を減"
+"らすには、<function>ST_AsMVTGeom</function> の前に地図の座標系のジオメトリー"
+"を簡略化します。"
 
 #. Tag: para
 #, no-c-format
@@ -24249,7 +24249,7 @@ msgid ""
 "not X3D markup; use the preceding <function>ST_AsX3D</function> query output "
 "in an X3D viewer to inspect the native X3D scene."
 msgstr ""
-"次のプレビューでは、同じ文字を単純化したうえで押出で生成したジオメトリーです"
+"次のプレビューでは、同じ文字を簡略化したうえで押出で生成したジオメトリーです"
 "。ジオメトリープレビューですので X3D 符号化は行っていません。X3D でどう見える"
 "かを確認するには、X3D ビューアーで上述の <function>ST_AsX3D</function> "
 "クエリー出力を表示します。"
@@ -25030,11 +25030,11 @@ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "This example shows a 2D-safe symmetric difference of two LineStrings."
 msgstr ""
-"この例では二つのラインストリングの違いを2次元では正しく動作するのを示していま"
-"す。"
+"この例では二つの LINESTRING について 2次元で正しく処理できる対称差を示します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -25612,7 +25612,7 @@ msgid ""
 msgstr ""
 "同じ技術は Paul Ramsey さんの <link xlink:href=\"https://"
 "blog.cleverelephant.ca/2010/11/removing-complexities.html\">Removing "
-"Complexities</link> に記述があります。単純化の最後の手順は任意です。ポリゴン"
+"Complexities</link> に記述があります。簡略化の最後の手順は任意です。ポリゴン"
 "妥当性評価が問題となる時には <xref linkend=\"ST_SimplifyPreserveTopology\"/> "
 "を使い、結果に対してアプリケーションが求める地図表示または分析に関する許容範"
 "囲に対する確認をします。"
@@ -25903,10 +25903,10 @@ msgid ""
 ">, <xref linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
 "linkend=\"ST_SimplifyVW\"/>)."
 msgstr ""
-"頂点数は繰り返し回数の2倍です。結果ジオメトリは入力ジオメトリより多くのポイン"
-"トを含むことになります。ポイント数を減らすには、結果に対して単純化関数を実行"
-"します (<xref linkend=\"ST_Simplify\"/>, <xref "
-"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
+"頂点数は繰り返し回数の 2倍です。結果ジオメトリーは入力ジオメトリーより多くの"
+"ポイントを含むことになります。ポイント数を減らすには、結果に対して簡略化関数"
+"を実行します (<xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SimplifyVW\"/> "
 "を参照して下さい)。"
 
 #. Tag: para
@@ -26000,12 +26000,12 @@ msgid ""
 "linkend=\"ST_SimplifyPreserveTopology\"/> and <xref "
 "linkend=\"ST_SimplifyVW\"/>)."
 msgstr ""
-"出力曲線の頂点数は、閉じていないラインストリングの場合は<literal>1 + (N-1) * "
-"nSegments</literal>で、閉じてリングになっている場合には <literal>1 + N * "
-"nSegments</literal>です。ここでNは入力頂点数です。大きなジオメトリの場合に"
-"は、ポイント数を減らすために結果に対して単純化を施します (<xref "
+"出力曲線の頂点数は、閉じていないラインストリングの場合は <literal>1 + (N-1) "
+"* nSegments</literal> で、閉じてリングになっている場合には <literal>1 + N * "
+"nSegments</literal> です。ここで N は入力頂点数です。大きなジオメトリの場合に"
+"は、ポイント数を減らすために結果に対して簡略化を施します (<xref "
 "linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_SimplifyPreserveTopology\"/>, "
-"<xref linkend=\"ST_SimplifyVW\"/>を参照して下さい)。"
+"<xref linkend=\"ST_SimplifyVW\"/> を参照して下さい)。"
 
 #. Tag: para
 #, no-c-format
@@ -27337,13 +27337,12 @@ msgid ""
 "within the tolerance distance of the simplified linework. The result may not "
 "be valid even if the input is."
 msgstr ""
-"単純化したジオメトリの表現を計算します。<link xlink:href=\"https://"
-"en.wikipedia.org/wiki/"
-"Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</"
-"link> を使います。単純化の <varname>tolerance</varname> (許容値) は、距離の値"
-"で、単位は入力 SRS (空間参照系) の単位です。単純化によって、単純化された線の"
-"許容値距離内にある頂点は削除されます。入力が有効であっても結果が有効にならな"
-"いことがあります。"
+"簡略化したジオメトリの表現を計算します。<link xlink:href=\"https://"
+"en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">"
+"Douglas-Peucker algorithm</link> を使います。簡略化の <varname>tolerance</"
+"varname> (許容値) は、距離の値で、単位は入力 SRS (空間参照系) の単位です。簡"
+"略化によって、簡略化された線の許容値距離内にある頂点は削除されます。入力が有"
+"効であっても結果が有効にならないことがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -27353,7 +27352,7 @@ msgid ""
 "Endpoints of linear geometry are preserved."
 msgstr ""
 "この関数は、どの種類のジオメトリでも (GEOMETRYCOLLECTION であっても) 呼ぶこと"
-"ができますが、ライン要素とポリゴン要素だけが単純化されます。線ジオメトリの端"
+"ができますが、ライン要素とポリゴン要素だけが簡略化されます。線ジオメトリの端"
 "点は保持されます。"
 
 #. Tag: para
@@ -27401,8 +27400,8 @@ msgid ""
 "A circle simplified with a medium tolerance becomes an octagon, and with a "
 "large tolerance disappears."
 msgstr ""
-"中ぐらいの許容値で円を単純化すると八角形になり、許容値を大きくすると消えま"
-"す。"
+"中ぐらいの許容値で円を簡略化すると八角形になり、許容値を大きくすると消えます"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -27431,8 +27430,7 @@ msgstr ""
 msgid ""
 "Returns a simplified and valid representation of a geometry, using the "
 "Douglas-Peucker algorithm."
-msgstr ""
-"Douglas-Peuckerアルゴリズムを使用して、単純化した妥当なジオメトリを返します。"
+msgstr "Douglas-Peuckerアルゴリズムを使用して、簡略化した妥当なジオメトリを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -27448,8 +27446,8 @@ msgid ""
 msgstr ""
 "<link xlink:href=\"https://en.wikipedia.org/wiki/"
 "Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker algorithm</"
-"link>の一種を用いて単純化したジオメトリを計算します。結果のトポロジが入力と同"
-"じになるように単純化を制限します。簡略化の<varname>tolerance</varname> (許容"
+"link>の一種を用いて簡略化したジオメトリを計算します。結果のトポロジが入力と同"
+"じになるように簡略化を制限します。簡略化の<varname>tolerance</varname> (許容"
 "値)は距離値で、単位は入力SRSの単位です。簡略化によって、トポロジが保持される"
 "限り、簡略化された線の許容距離値内の頂点が削除されます。入力が妥当かつ単純な"
 "場合には、結果は妥当かつ単純です。"
@@ -27465,10 +27463,10 @@ msgid ""
 "not intersect if they did not do so in the original geometry. Endpoints of "
 "linear geometry are preserved."
 msgstr ""
-"この関数は、どの種類のジオメトリ (GEOMETRYCOLLECTIONも含む)を引数にとっても呼"
-"ぶことができますが、ラインとポリゴン要素だけを単純化します。結果はリングの数"
-"は同じで、入力が相互にインタセクトしていないなら結果も相互にインタセクトしま"
-"せん。線ジオメトリの端点は保持されます。"
+"この関数は、どの種類のジオメトリ (GEOMETRYCOLLECTION も含む) を引数にとっても"
+"呼ぶことができますが、ラインとポリゴン要素だけを簡略化します。結果はリングの"
+"数は同じで、入力が相互にインターセクトしていないなら結果も相互にインタセクト"
+"しません。線ジオメトリの端点は保持されます。"
 
 #. Tag: para
 #, no-c-format
@@ -27488,12 +27486,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Simplifying a set of lines, preserving topology of non-intersecting lines."
-msgstr "非交差ラインのトポロジを保全した、ラインの集合の単純化を行います。"
+msgstr "非交差ラインのトポロジを保全した、ラインの集合の簡略化を行います。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a MultiPolygon, preserving topology of shells and holes."
-msgstr "外側リングと内側リングのトポロジを保全したMULTIPOLYGONを単純化します。"
+msgstr "外側リングと内側リングのトポロジを保全したMULTIPOLYGONを簡略化します。"
 
 #. Tag: para
 #, no-c-format
@@ -27550,9 +27548,9 @@ msgid ""
 "is reached. It prevents edges from crossing, so the result is always a valid "
 "polygonal geometry."
 msgstr ""
-"単純化処理では、頂点数が目標に達するまで、最も少ない面積を持つ凹の角を徐々に"
-"削除しています。これによりエッジがクロスするのを防ぎ、常に妥当なポリゴンジオ"
-"メトリを返します。"
+"簡略化処理では、頂点数が目標に達するまで、最も少ない面積を持つ凹の角を徐々に"
+"削除しています。これによりエッジがクロスするのを防ぎ、常に妥当な"
+"ポリゴンジオメトリを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -27586,7 +27584,7 @@ msgstr "ポリゴンの内殻。"
 #. Tag: para
 #, no-c-format
 msgid "Outer hull simplification of a MultiPolygon, with segmentization."
-msgstr "細分化したマルチポリゴンに対する外殻の単純化。"
+msgstr "細分化したマルチポリゴンに対する外殻の簡略化。"
 
 #. Tag: para
 #, no-c-format
@@ -27650,7 +27648,7 @@ msgid ""
 "linkend=\"ST_IsValid\"/> to check the result and <xref "
 "linkend=\"ST_MakeValid\"/> to repair invalid polygonal output if needed."
 msgstr ""
-"これは汎用単純化関数です。有効面積が許容値より小さい場合にはポリゴンの狭い突"
+"これは汎用簡略化関数です。有効面積が許容値より小さい場合にはポリゴンの狭い突"
 "起を削除することがありますが、突起除去専用処理でもポリゴン修復専門処理でもあ"
 "りません。必要に応じて、結果が妥当かを <xref linkend=\"ST_IsValid\"/> を使っ"
 "て確認し、<xref linkend=\"ST_MakeValid\"/> を使って不正なポリゴン出力を修復し"
@@ -27677,19 +27675,19 @@ msgid ""
 "would be a length in input-SRS units, so the value here is roughly that "
 "linear tolerance squared."
 msgstr ""
-"<xref linkend=\"ST_Simplify\"/> を使用するラインの単純化について、比較する許"
+"<xref linkend=\"ST_Simplify\"/> を使用するラインの簡略化について、比較する許"
 "容値は入力 SRS を単位とした長さで、ここの値はだいたいでラインの許容値の 2乗で"
 "す。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a line."
-msgstr "線の単純化。"
+msgstr "線の簡略化。"
 
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a polygon."
-msgstr "ポリゴンの単純化。"
+msgstr "ポリゴンの簡略化。"
 
 #. Tag: para
 #, no-c-format
@@ -41831,9 +41829,9 @@ msgid ""
 "the number of points or vertices while preserving the essential features of "
 "the geometry. This function preserves Z and M values during simplification."
 msgstr ""
-"SFCGALの単純化アルゴリズムを使ってジオメトリを単純化します。ジオメトリの主要"
-"な特徴を保存しつつポイントや頂点の数を減らします。この関数はZ値やM値の保存も"
-"します。"
+"SFCGAL の簡略化アルゴリズムを使ってジオメトリーを簡略化します。ジオメトリーの"
+"主要な特徴を保存しつつポイントや頂点の数を減らします。この関数は Z 値や M 値"
+"の保存もします。"
 
 #. Tag: para
 #, no-c-format
@@ -41885,8 +41883,8 @@ msgid ""
 "Maximum distance threshold (in geometry unit) for simplification. The higher "
 "this value, the more simplified the resulting geometry will be."
 msgstr ""
-"単純化に関する最大距離のしきい値 (ジオメトリの単位)。この値が大きいほど結果ジ"
-"オメトリが単純になります。"
+"簡略化に関する最大距離のしきい値 (ジオメトリの単位)。この値が大きいほど結果"
+"ジオメトリが単純になります。"
 
 #. Tag: parameter
 #, no-c-format
@@ -41912,7 +41910,7 @@ msgstr "返り値"
 #. Tag: para
 #, no-c-format
 msgid "Returns a simplified geometry with preserved Z and M values."
-msgstr "Z値とM値を保存した単純化されたジオメトリが返ります。"
+msgstr "Z 値と M 値を保存した簡略化されたジオメトリが返ります。"
 
 #. Tag: para
 #, no-c-format
@@ -41942,7 +41940,7 @@ msgstr ""
 msgid ""
 "Compare simplification with and without topology preservation, using a "
 "threshold of 50."
-msgstr "単純化におけるトポロジー保存の有無の比較。閾値は 50とする。"
+msgstr "簡略化におけるトポロジー保存の有無の比較。閾値は 50とする。"
 
 #. Tag: para
 #, no-c-format
@@ -44853,6 +44851,9 @@ msgid ""
 "link>, Allow the compiler to detect the parallelism -flto=auto (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5702\">#5702</link>"
+", コンパイラーが並列処理数を自動判定するために -flto=auto を使えるようにする "
+"(Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44871,6 +44872,9 @@ msgid ""
 "link>, Document POSTGIS_REGRESS_DB_OWNER for sandboxed regression roles "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5950\">#5950</link>"
+", サンドボックス化された回帰テストに使うロール向けの設定 "
+"POSTGIS_REGRESS_DB_OWNER の文書化 (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44879,6 +44883,9 @@ msgid ""
 "link>, Clarify the scope of several Function Reference categories (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4332\">#4332</link>"
+", 関数リファレンスのいくつかのカテゴリーについての対象の明確化 (Darafei "
+"Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44909,6 +44916,9 @@ msgid ""
 "link>, [topology] Include representative locations in topology build errors "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5889\">#5889</link>"
+", [topology] トポロジー構築エラーに代表位置を含めるように変更 (Darafei "
+"Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44917,6 +44927,9 @@ msgid ""
 "link>, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul "
 "Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2614\">#2614</link>"
+", ST_DWithin の高速化のために GEOSPreparedDistance を使ってキャッシュを作成し"
+"て (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44925,6 +44938,8 @@ msgid ""
 "link>, Document ST_AsMVTGeom tile-coordinate simplification (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6022\">#6022</link>"
+", ST_AsMVTGeom のタイル座標の簡略化に関する文書化 (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44932,6 +44947,9 @@ msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/839\">GH-839</"
 "link>, ST_Multi support for TIN and surfaces (Loïc Bartoletti)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/839\">GH-839</"
+"link>, ST_Multi が TIN とサーフェスに対応するように変更 (Loïc Bartoletti さ"
+"ん)"
 
 #. Tag: para
 #, no-c-format
