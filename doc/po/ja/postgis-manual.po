@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-18 10:39+0000\n"
+"PO-Revision-Date: 2026-08-19 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -8471,7 +8471,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the topological dimension of a geometry."
-msgstr "ST_Geometry値の座標次元を返します。"
+msgstr "ST_Geometry値の幾何次元を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -8483,12 +8483,13 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>. If the dimension is unknown (e.g. for "
 "an empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned."
 msgstr ""
-"ジオメトリの固有次元を返します。ジオメトリは座標次元以下でなければなりませ"
-"ん。OGC SPEC s2.1.1.1 - 0なら<varname>POINT</varname>、1なら"
-"<varname>LINESTRING</varname>、2なら<varname>POLYGON</varname>で、"
-"<varname>GEOMETRYCOLLECTION</varname>の場合は要素ごとの次元の最大値です。不明"
-"なジオメトリ (空の<varname>GEOMETRYCOLLECTION</varname>等)の場合はNULLが返り"
-"ます。"
+"ジオメトリーの位相次元 (訳注: \"topological dimension\" と示されない箇所では"
+"「幾何次元」と言っています) を返します。ジオメトリーは座標次元以下でなければ"
+"なりません。OGC SPEC s2.1.1.1 - 0なら <varname>POINT</varname>、1なら "
+"<varname>LINESTRING</varname>、2なら <varname>POLYGON</varname> で、<varname>"
+"GEOMETRYCOLLECTION</varname> の場合は要素ごとの次元の最大値です。不明な"
+"ジオメトリー (空の <varname>GEOMETRYCOLLECTION</varname> 等) の場合はNULLが返"
+"ります。"
 
 #. Tag: para
 #, no-c-format
@@ -25843,7 +25844,7 @@ msgstr "POLYGON の重心。"
 #. Tag: para
 #, no-c-format
 msgid "Centroid of the highest-dimension components of a GeometryCollection."
-msgstr "GEOMETRYCOLLECTION の要素で最も空間次元の高いものの重心。"
+msgstr "GEOMETRYCOLLECTION の要素で最も幾何次元の高いものの重心。"
 
 #. Tag: para
 #, no-c-format
@@ -40653,7 +40654,7 @@ msgstr "SFCGAL &gt;= 1.5.0 が必要"
 msgid ""
 "Approximate convex partition of the same polygon used by the other partition "
 "examples."
-msgstr ""
+msgstr "他の分割の例で使用されている同じポリゴンの近似の凸分割。"
 
 #. Tag: para
 #, no-c-format
@@ -41021,11 +41022,13 @@ msgstr ""
 "EVEN_ODD</literal> 規則で修復する。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "With the <literal>UNION</literal> rule, all winding area is kept. This rule "
 "requires CGAL 6.1 or later."
 msgstr ""
+"<literal>UNION</literal> ルールでは、巻き方向に基づく領域がすべて保持されます"
+"。このルールを使用するには CGAL 6.1 以降が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -41081,6 +41084,9 @@ msgid ""
 "copy. Extrusion can raise the dimensionality of the result, for example from "
 "a surface to a volume."
 msgstr ""
+"入力図形をベクトル (<parameter>x</parameter>, <parameter>y</parameter>, "
+"<parameter>z</parameter>) に沿って平行移動させ、元の図形と接続します。押出に"
+"よって、面から体と言ったように幾何次元を上げることができます。"
 
 #. Tag: para
 #, no-c-format
@@ -41089,16 +41095,19 @@ msgid ""
 "XY after extrusion. The returned geometry from <function>CG_Extrude</"
 "function> remains a 3D PolyhedralSurface."
 msgstr ""
+"この図では <xref linkend=\"ST_Affine\"/> を使って Z 値に応じて斜めに平行移動"
+"させて XY 平面に投影しています。<function>CG_Extrude</function> から返される"
+"ジオメトリーは 3次元 POLYHEDRALSURFACE を維持しています。"
 
 #. Tag: para
 #, no-c-format
 msgid "Extruding an octagonal Polygon 30 units along Z."
-msgstr ""
+msgstr "八角形を Z 軸に沿って 30単位押し出す。"
 
 #. Tag: para
 #, no-c-format
 msgid "Extruding a LineString 10 units along Z."
-msgstr ""
+msgstr "LINESTRING を Z 軸に沿って 10単位押し出す。"
 
 #. Tag: para
 #, no-c-format
@@ -41113,7 +41122,9 @@ msgstr "ストレートスケルトンの押し出し"
 #. Tag: para
 #, no-c-format
 msgid "Computes an extrusion with a maximal height of the polygon geometry."
-msgstr "ポリゴンジオメトリの最大高での押出しを計算します。"
+msgstr ""
+"本体部高さと屋根部最大高さを指定してポリゴンジオメトリーを押し出します。屋根"
+"部はストレートスケルトンに基づいて押し出します。"
 
 #. Tag: para
 #, no-c-format
@@ -41140,7 +41151,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Extrude a polygon with a hole into a body and straight-skeleton roof."
-msgstr ""
+msgstr "穴あきポリゴンを押し出して、躯体とストレートスケルトン屋根とを生成する。"
 
 #. Tag: para
 #, no-c-format
@@ -44056,7 +44067,7 @@ msgid ""
 "linestring will be dropped."
 msgstr ""
 "\"keepcollapsed\"のデフォルト値は\"false\"です。頂点が1個のラインストリングな"
-"どの低い空間次元に崩壊するジオメトリーは削除されます。"
+"どの低い幾何次元に崩壊するジオメトリーは削除されます。"
 
 #. Tag: para
 #, no-c-format
@@ -44064,7 +44075,7 @@ msgid ""
 "Keep collapsed of \"true\" means geometry components that collapse to a "
 "lower dimensionality will be retained."
 msgstr ""
-"\"keepcollapsed\"が\"true\"の場合には、低い空間次元に崩壊するジオメトリー要素"
+"\"keepcollapsed\"が\"true\"の場合には、低い幾何次元に崩壊するジオメトリー要素"
 "も保持されます。"
 
 #. Tag: para
