@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-19 03:39+0000\n"
+"PO-Revision-Date: 2026-08-19 05:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -41974,6 +41974,9 @@ msgid ""
 "appear in the output. It can have values from 0 to infinity. Higher "
 "relative_alpha values produce coarser wraps; lower values retain more detail."
 msgstr ""
+"<varname>relative_alpha</varname> パラメーターは、どの地物が出力に現れるかを"
+"制御するものです。0 から無限大まで指定可能です。relative_alpha が高いほど荒く"
+"なり、低いほど詳細さを保ちます。"
 
 #. Tag: para
 #, no-c-format
@@ -41983,6 +41986,9 @@ msgid ""
 "to 0, its value is automatically determined based on the relative_alpha "
 "parameter."
 msgstr ""
+"<varname>relative_offset</varname> パラメーターは結果の密着度を制御します。0"
+"から無限大まで指定できます。このパラメーターを 0に設定する場合には、"
+"relative_alpha パラメーターに基づいて自動決定されます。"
 
 #. Tag: para
 #, no-c-format
@@ -42029,13 +42035,13 @@ msgstr "<varname>degree</varname> - NURBS曲線の次数 (通常は 2 か 3)。"
 #. Tag: para
 #, no-c-format
 msgid "Interpolate a degree-3 NURBS curve through four 2D points."
-msgstr ""
+msgstr "四つの二次元ポイントを通る次数 3の NURBS 曲線の補間。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Interpolate a 3D degree-3 NURBS curve through the documented control points."
-msgstr ""
+msgstr "クエリーで示している制御点を通る次数 3の三次元 NURBS 曲線の補間。"
 
 #. Tag: para
 #, no-c-format
@@ -42091,14 +42097,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Approximate noisy 2D data with a degree-2 curve and a tolerance of 0.5."
-msgstr ""
+msgstr "次数 2の曲線と許容値 0.5を与えてノイズの多い二次元データを近似する。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Approximate a 3D point set while preserving the Z dimension in the fitted "
 "curve."
-msgstr ""
+msgstr "当てはめた曲線の Z 値を保存したうえでの三次元ポイントの近似。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -42164,23 +42170,23 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The first derivative gives the tangent vector at the evaluation parameter."
-msgstr ""
+msgstr "一階導関数で指定したパラメーターにおける正接を得る。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "The second derivative exposes curvature change for a higher-degree curve."
-msgstr ""
+msgstr "二階導関数で高次曲線の曲率の変化を得る。"
 
 #. Tag: para
 #, no-c-format
 msgid "The same derivative call also works for 3D NURBS curves."
-msgstr ""
+msgstr "同じ導関数を 3次元 NURBS 曲線にも適用できます。"
 
 #. Tag: chapter
 #, no-c-format
 msgid "&reference_sfcgal_legacy;"
-msgstr ""
+msgstr "&reference_sfcgal_legacy;"
 
 #. Tag: title
 #, no-c-format
@@ -42910,6 +42916,8 @@ msgid ""
 "Return the time in which two objects moving between 10:00 and 11:00 are "
 "closest to each other and their distance at that point."
 msgstr ""
+"10:00から 11:00の間に移動する二つの物体が最接近する時刻を得て、併せて距離も得"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -42938,7 +42946,7 @@ msgstr "二つのトラジェクトリの最接近する時の (2次元)距離�
 #, no-c-format
 msgid ""
 "Return the minimum distance of two objects moving between 10:00 and 11:00."
-msgstr ""
+msgstr "10:00から 11:00の間に移動する二つの物体の最短距離を得ます。"
 
 #. Tag: para
 #, no-c-format
@@ -43359,6 +43367,9 @@ msgid ""
 "radius 4, and rotated 30 degrees counter-clockwise. Scaling and rotation use "
 "the center as their origin, so the ellipse keeps both its position and SRID."
 msgstr ""
+"この例では (10, 20) に中心を置き、X 半径が 8、Y 波形が 4で、時計回しに 30度回"
+"転した楕円を構築します。拡大縮小と回転の原点は楕円の中心点としたので、楕円の"
+"位置と空間参照系は維持されます。"
 
 #. Tag: para
 #, no-c-format
@@ -43366,6 +43377,8 @@ msgid ""
 ", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
 "linkend=\"ST_Rotate\"/>, <xref linkend=\"ST_TransScale\"/>"
 msgstr ""
+", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
+"linkend=\"ST_Rotate\"/>, <xref linkend=\"ST_TransScale\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
