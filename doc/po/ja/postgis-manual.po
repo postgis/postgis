@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-19 05:39+0000\n"
+"PO-Revision-Date: 2026-08-19 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -41925,6 +41925,8 @@ msgid ""
 "Preserving topology can keep additional support points in a mixed ZM "
 "collection."
 msgstr ""
+"トポロジーの保持によって、Z 値 M 値を持ちジオメトリータイプが混在している"
+"コレクションでは、補助的な点が追加で保持されることがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -41995,7 +41997,7 @@ msgstr ""
 msgid ""
 "Wrap a tetrahedral surface and show the native 3D input beside the actual "
 "enclosing mesh."
-msgstr ""
+msgstr "四面体の表面を包み、元の三次元入力と包んだ結果とを並べて表示します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -43483,11 +43485,16 @@ msgid ""
 "forces a fresh box calculation, while <function>Box2D</function> on the "
 "table geometry reads the cached box."
 msgstr ""
+"この例では、キャッシュとして格納されているバウンディングボックスがおかしい時"
+"にキャッシュを削除します。 <function>Box2D</function> を <function>"
+"ST_AsBinary</function> に適用することで、新しいボックスを強制的に計算させるこ"
+"とができますが、その一方で、テーブル上のジオメトリーの <function>Box2D</"
+"function> はキャッシュのボックスを読みます。"
 
 #. Tag: para
 #, no-c-format
 msgid "After dropping corrupt cached boxes, re-add them where needed."
-msgstr ""
+msgstr "邪悪なボックスのキャッシュを削除してから必要な時に追加する。"
 
 #. Tag: title
 #, no-c-format
@@ -43859,6 +43866,8 @@ msgstr ""
 #, no-c-format
 msgid "Find tables with invalid geometries in registered geometry columns."
 msgstr ""
+"登録されているジオメトリーカラム内の不正なジオメトリーがあるテーブルを探索す"
+"る。"
 
 #. Tag: para
 #, no-c-format
@@ -43935,7 +43944,7 @@ msgstr "この例では5行が成功する試験から拒否された最初の3�
 #. Tag: para
 #, no-c-format
 msgid "This example reports a valid LineString."
-msgstr ""
+msgstr "この例では妥当な LINESTRING を報告します。"
 
 #. Tag: para
 #, no-c-format
@@ -43985,7 +43994,7 @@ msgstr "この例では蝶ネクタイ型の不正ポリゴンを使います。
 #. Tag: para
 #, no-c-format
 msgid "Simple example."
-msgstr ""
+msgstr "単純な例。"
 
 #. Tag: para
 #, no-c-format
@@ -44136,6 +44145,8 @@ msgid ""
 "Make valid a MultiPolygon of two overlapping polygons using the linework and "
 "structure methods."
 msgstr ""
+"二つのオーバーラップしているポリゴンからなる MULTIPOLYGON を \"linework\" と "
+"\"structure\" の各メソッドで妥当にする。"
 
 #. Tag: para
 #, no-c-format
@@ -44143,11 +44154,13 @@ msgid ""
 "Make valid a MultiPolygon of six overlapping polygons using the linework and "
 "structure methods."
 msgstr ""
+"六つのオーバーラップするポリゴンからなる MULTIPOLYGON を \"linework\" と "
+"\"structure\" の各メソッドで妥当にする。"
 
 #. Tag: title
 #, no-c-format
 msgid "Collapsed Geometry Examples"
-msgstr ""
+msgstr "つぶれたジオメトリーの例"
 
 #. Tag: para
 #, no-c-format
@@ -44848,6 +44861,8 @@ msgid ""
 "link>, ST_AsGeoJSON warns about duplicate property keys (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4798\">#4798</link>"
+", ST_AsGeoJSON がプロパティー名の重複で警告を出す (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44872,6 +44887,9 @@ msgid ""
 "link>, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4222\">#4222</link>"
+", [raster] ST_DumpAsPolygons を PostgreSQL の割り込みを受け入れるようにしまし"
+"た (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -44880,6 +44898,9 @@ msgid ""
 "link>, Document the meaning of topology.next_left_edge and "
 "topology.next_right_edge links (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5109\">#5109</link>"
+", topology.next_left_edge と topology.next_right_edge のリンクの意味を"
+"マニュアルに記述しました (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
