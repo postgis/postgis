@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-19 09:39+0000\n"
+"PO-Revision-Date: 2026-08-20 02:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -7274,7 +7274,7 @@ msgid "If you are connecting a desktop GIS"
 msgstr "デスクトップ GIS に接続している場合"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Use the client's current database documentation for its user interface and "
 "supported geometry types. For example, the <link xlink:href=\"https://"
@@ -7285,15 +7285,15 @@ msgid ""
 "known SRID and geometry type. Expensive read-only queries can be exposed "
 "through a view or materialized view and indexed as appropriate."
 msgstr ""
-"クライアントのユーザーインターフェイスや対応するジオメトリータイプに関する現"
-"在のデータベースの文書を使います。たとえば <link xlink:href=\"https://"
-"docs.qgis.org/latest/en/docs/training_manual/databases/db_manager.html\">"
-"QGIS DB Manager lesson</link> では PostgreSQL 接続、テーブルレイヤー、SQL "
-"クエリーレイヤー、インポート、エクスポートを記載しています。クエリーレイヤは"
-"安定した一意の識別子と、知られた SRID とジオメトリータイプを持つ"
-"ジオメトリーカラムとを返すべきです。高コストな読み取り専用クエリーに対して"
-"ビューまたはマテリアライズドビューを通して出てこさせることが可能で、適切に"
-"インデックスを作ることが可能です。"
+"ユーザーインターフェイスや対応するジオメトリータイプに関するクライアントの現"
+"行データベースに関する文書を参照して下さい。たとえば <link "
+"xlink:href=\"https://docs.qgis.org/latest/en/docs/training_manual/databases/"
+"db_manager.html\">QGIS DB Manager lesson</link> では PostgreSQL 接続、"
+"テーブルレイヤー、SQL クエリーレイヤー、インポート、エクスポートを記載してい"
+"ます。クエリーレイヤーは安定した一意の識別子と、知られた SRID と"
+"ジオメトリータイプを持つジオメトリーカラムとを返すべきです。高コストな読み取"
+"り専用クエリーに対してビューまたはマテリアライズドビューを通して出力させるこ"
+"とが可能で、適切なインデックスを作成することが可能です。"
 
 #. Tag: term
 #, no-c-format
@@ -24529,7 +24529,7 @@ msgstr ""
 "場合に使う領域クエリといったようなジオメトリの切り抜きに使えます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Spatial predicates such as <xref linkend=\"ST_Intersects\"/> and overlay "
 "functions such as <function>ST_Intersection</function> are computed by "
@@ -24544,12 +24544,12 @@ msgstr ""
 "<xref linkend=\"ST_Intersects\"/> のような空間述語や <function>"
 "ST_Intersection</function> のようなオーバーレイ関数は異なるアルゴリズムで計算"
 "されます。非常に近い座標値では浮動小数点数の精度やジオメトリー計算の堅牢性を"
-"確保することで、空間述語から TRUE が返ったり、インターセクトした部分の計算結"
-"果が空ジオメトリーになったり、補間ポイントが少しだけ入力ラインからずれるとい"
-"ったことが起こります。反復可能なオーバーレイの結果では、たとえば <xref "
+"確保するために、空間述語から TRUE が返ったのにインターセクトした部分の計算結"
+"果が空ジオメトリーになったり、インターセクトするポイントが少しだけ入力ライン"
+"からずれるといったことが起こります。再現性のあるオーバーレイの結果を得るには"
+"、先に入力を適切なグリッドにスナップさせます。たとえば <xref "
 "linkend=\"ST_ReducePrecision\"/> を使ったり、全ての入力頂点がグリッド上に乗っ"
-"ている時には <varname>gridSize</varname> パラメーターを使ったりして、先に入力"
-"を適切なグリッドにスナップさせます。"
+"ている時には <varname>gridSize</varname> パラメーターを使ったりします。"
 
 #. Tag: para
 #, no-c-format
@@ -25464,15 +25464,14 @@ msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30"
 msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The textual results are rounded to whole coordinate units for readability. "
 "Each result remains available as text, while the manual initially favors the "
 "shared input/output figure."
 msgstr ""
 "文字の結果は読みやすくするために全体の整数に丸められています。結果は文字とし"
-"ても出ていますが、マニュアルは最初は入出力の共有された図の方がいいと思います"
-"。"
+"ても出ていますが、マニュアルでは初めに入出力をまとめた図の方を優先します。"
 
 #. Tag: emphasis
 #, no-c-format
@@ -25967,16 +25966,16 @@ msgstr ""
 "れます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>nSegments</varname> parameter controls the density of the "
 "output. With <varname>nSegments</varname> = 5 (the default), each original "
 "span is divided into 5 sub-segments (inserting 4 new points per span). The "
 "minimum value is 2."
 msgstr ""
-"<varname>nSegments</varname>パラメーターで出力の密度を制御します。"
-"<varname>nSegments</varname> = 5 (デフォルト)では、スパンごとに5個の辺に分か"
-"れます (スパンごとに4個のポイントが新設されます)。最小値は2です。"
+"<varname>nSegments</varname> パラメーターで出力の密度を制御します。<varname>"
+"nSegments</varname> = 5 (デフォルト) では、区間ごとに 5個の辺に分かれます (区"
+"間ごとに 4個のポイントが新設されます)。最小値は 2です。"
 
 #. Tag: para
 #, no-c-format
@@ -28730,13 +28729,14 @@ msgid ""
 "varname>, <varname>description</varname> and set of <varname>VALUE</varname> "
 "for each creator option for the specific driver."
 msgstr ""
-"使用しているGDALライブラリが対応するラスタ書式のshort_name, long_nameと作成オ"
-"プションの一覧を返します。short_nameは、<xref linkend=\"RT_ST_AsGDALRaster\"/"
-">の<varname>format</varname>パラメーターに使います。オプションはGDALライブラ"
-"リのコンパイルに使ったドライバーに依存します。<varname>create_options</"
-"varname>は、XML形式のCretionOptionList/Optionの集合で、ドライバーごとの生成オ"
-"プションごとに、名前を持ち、追加情報の<varname>type</varname>, "
-"<varname>description</varname>と<varname>VALUE</varname>の集合を持ちます。"
+"使用している GDAL が対応するラスター書式の short_name, long_name と作成"
+"オプションの一覧を返します。short_name は、<xref "
+"linkend=\"RT_ST_AsGDALRaster\"/> の <varname>format</varname> パラメーターに"
+"使います。オプションは GDAL のコンパイルに使ったドライバーに依存します"
+"。<varname>create_options</varname>は、XML 形式の CretionOptionList/Option の"
+"集合で、ドライバーごとの生成オプションごとに、名前を持ち、追加情報の "
+"<varname>type</varname>, <varname>description</varname> と <varname>VALUE</"
+"varname> の集合を持ちます。"
 
 #. Tag: para
 #, no-c-format
@@ -30975,7 +30975,7 @@ msgstr ""
 "たポリゴンを得る。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Checking all the pixels of a large raster tile can take a long time. You can "
 "dramatically improve speed at some lose of precision by orders of magnitude. "
@@ -30985,9 +30985,9 @@ msgid ""
 "as the value for subsequent 4."
 msgstr ""
 "大きなラスタータイルの全てのピクセルを調べるには長い時間がかかります。"
-"generate_seriesの任意パラメーターstepを使ったサンプリングによって、精度の低下"
-"はありますが、劇的に改善できます。この次の例では上と同じですが、4 (2x2)ピクセ"
-"ルごとに1回調べ、調べたピクセル値を続く4ピクセルの値とします。"
+"generate_series の任意パラメーター step を使ったサンプリングを使うと、精度の"
+"低下はありますが、劇的に速度の改善ができます。この次の例では上と同じですが、"
+"4 (2x2) ピクセルごとに 1回調べ、そのピクセル値を 4ピクセルの代表値とします。"
 
 #. Tag: para
 #, no-c-format
@@ -35064,16 +35064,16 @@ msgstr ""
 "行った値が入り、NODATA値をユーザ関数に渡される引数の値 (0)に設定します。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The deprecated callback form above is equivalent to a modern <xref "
 "linkend=\"RT_ST_MapAlgebra\"/> expression for simple per-pixel transforms. "
 "This build-time example renders the original raster and a modulo-2 "
 "classification."
 msgstr ""
-"上の非推奨のコールバック形式は、単純なピクセルごとの変換用の <xref "
-"linkend=\"RT_ST_MapAlgebra\"/> 表現と等価です。このビルド時の例では元の"
-"ラスターと、2の余剰による分類を行ったものとを描画します。"
+"上の非推奨のコールバック形式は、単純なピクセルごとの変換については <xref "
+"linkend=\"RT_ST_MapAlgebra\"/> の式と等価です。この例では元のラスターと、2で"
+"割った剰余による分類を行ったものとを示します。"
 
 #. Tag: para
 #, no-c-format
