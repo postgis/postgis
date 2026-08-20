@@ -101,11 +101,20 @@ def changed_paths(base: str) -> list[str]:
     if not merge_base:
         # PR clones are intentionally shallow.  Use the available PR window
         # rather than downloading the entire repository just for this gate.
-        window = run_git(
-            ["diff", "--name-only", "HEAD~20...HEAD"], check=False
+        commits = run_git(
+            ["log", "--format=%H", "--max-count=20", "HEAD"], check=False
         )
-        if window.returncode == 0:
-            return [line for line in window.stdout.splitlines() if line]
+        if commits.returncode == 0:
+            paths: set[str] = set()
+            for commit in commits.stdout.splitlines():
+                tree = run_git(
+                    ["diff-tree", "--no-commit-id", "--name-only", "-r", commit],
+                    check=False,
+                )
+                if tree.returncode == 0:
+                    paths.update(line for line in tree.stdout.splitlines() if line)
+            if paths:
+                return sorted(paths)
         raise RuntimeError(f"no merge base between {base} and HEAD")
     diff = run_git(["diff", "--name-only", f"{merge_base}...HEAD"]).stdout
     return [line for line in diff.splitlines() if line]
