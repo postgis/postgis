@@ -96,8 +96,16 @@ def resolve_base() -> str:
 
 
 def changed_paths(base: str) -> list[str]:
-    merge_base = run_git(["merge-base", base, "HEAD"]).stdout.strip()
+    merge_result = run_git(["merge-base", base, "HEAD"], check=False)
+    merge_base = merge_result.stdout.strip()
     if not merge_base:
+        # PR clones are intentionally shallow.  Use the available PR window
+        # rather than downloading the entire repository just for this gate.
+        window = run_git(
+            ["diff", "--name-only", "HEAD~20...HEAD"], check=False
+        )
+        if window.returncode == 0:
+            return [line for line in window.stdout.splitlines() if line]
         raise RuntimeError(f"no merge base between {base} and HEAD")
     diff = run_git(["diff", "--name-only", f"{merge_base}...HEAD"]).stdout
     return [line for line in diff.splitlines() if line]
