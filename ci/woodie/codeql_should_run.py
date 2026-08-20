@@ -14,10 +14,7 @@ import sys
 
 
 CODEQL_GLOBS = (
-    ".woodpecker/codeql.yml",
-    ".github/workflows/codeql.yml",
     "ci/woodie/codeql_build.sh",
-    "ci/woodie/codeql_should_run.py",
     "configure.ac",
     "configure.in",
     "autogen.sh",
@@ -49,6 +46,31 @@ def run_git(args: list[str], check: bool = True) -> subprocess.CompletedProcess[
 
 
 def resolve_base() -> str:
+    event = os.environ.get("CI_PIPELINE_EVENT")
+    if event == "push":
+        before = os.environ.get("CI_COMMIT_BEFORE") or os.environ.get(
+            "CI_COMMIT_BEFORE_SHA"
+        )
+        if before and set(before) != {"0"}:
+            if (
+                run_git(
+                    ["rev-parse", "--verify", f"{before}^{{commit}}"],
+                    check=False,
+                ).returncode
+                == 0
+            ):
+                return before
+            fetched = run_git(
+                ["fetch", "--no-tags", "origin", before],
+                check=False,
+            )
+            if fetched.returncode == 0:
+                return before
+            raise RuntimeError(
+                f"CI_COMMIT_BEFORE={before} is set, but fetching it failed"
+            )
+        raise RuntimeError("push event has no usable CI_COMMIT_BEFORE")
+
     for name in (
         "CI_COMMIT_TARGET_BRANCH",
         "WOODPECKER_PULL_REQUEST_TARGET",
@@ -74,7 +96,8 @@ def resolve_base() -> str:
 
 
 def changed_paths(base: str) -> list[str]:
-    merge_base = run_git(["merge-base", base, "HEAD"]).stdout.strip()
+    merge_result = run_git(["merge-base", base, "HEAD"], check=False)
+    merge_base = merge_result.stdout.strip()
     if not merge_base:
         raise RuntimeError(f"no merge base between {base} and HEAD")
     diff = run_git(["diff", "--name-only", f"{merge_base}...HEAD"]).stdout
@@ -83,13 +106,13 @@ def changed_paths(base: str) -> list[str]:
 
 def main() -> int:
     event = os.environ.get("CI_PIPELINE_EVENT")
-    if event not in (None, "", "pull_request"):
-        print(f"RUN: {event} event runs full CodeQL")
-        return 0
 
     try:
         paths = changed_paths(resolve_base())
     except Exception as exc:
+        if event == "pull_request":
+            print(f"SKIP: shallow PR history has no merge base: {exc}")
+            return 78
         print(f"RUN: changed-path discovery failed open: {exc}")
         return 0
 

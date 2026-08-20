@@ -7,14 +7,15 @@ clone:
   git:
     image: woodpeckerci/plugin-git
     settings:
-      depth: 0
-      partial: false
+      depth: 100
+      partial: true
 
 steps:
   analyze:
     image: repo.osgeo.org/postgis/build-test:debian13
     pull: true
     commands:
+      - git fetch --no-tags --depth=100 origin refs/heads/master:refs/ci-target/master
       - gate_status=0; python3 ci/woodie/codeql_should_run.py || gate_status=$$?; if test "$${gate_status}" = 78; then exit 0; elif test "$${gate_status}" != 0; then exit "$${gate_status}"; fi
       - export CODEQL_TMP="$${CI_WORKSPACE}/.tmp/codeql"
       - export CODEQL_HOME="$${CODEQL_TMP}/codeql"
@@ -30,11 +31,15 @@ steps:
       - >-
         "$${CODEQL_HOME}/codeql" database create "$${CODEQL_DB}"
         --language=cpp
+        --threads=1
+        --ram=2048
         --source-root="$${CI_WORKSPACE}"
         --command=ci/woodie/codeql_build.sh
       - >-
         "$${CODEQL_HOME}/codeql" database analyze "$${CODEQL_DB}"
         cpp-security-and-quality.qls
+        --threads=1
+        --ram=2048
         --format=sarif-latest
         --output="$${CODEQL_SARIF}"
       - >-
