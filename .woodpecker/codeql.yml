@@ -7,8 +7,8 @@ clone:
   git:
     image: woodpeckerci/plugin-git
     settings:
-      depth: 0
-      partial: false
+      depth: 100
+      partial: true
 
 steps:
   analyze:
