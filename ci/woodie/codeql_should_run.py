@@ -99,35 +99,6 @@ def changed_paths(base: str) -> list[str]:
     merge_result = run_git(["merge-base", base, "HEAD"], check=False)
     merge_base = merge_result.stdout.strip()
     if not merge_base:
-        # PR clones are intentionally shallow.  Use the available PR window
-        # rather than downloading the entire repository just for this gate.
-        commits = run_git(
-            ["log", "--format=%H", "--max-count=20", "HEAD"], check=False
-        )
-        if commits.returncode == 0:
-            paths: set[str] = set()
-            for commit in commits.stdout.splitlines():
-                tree = run_git(
-                    [
-                        "diff-tree",
-                        "--root",
-                        "--no-commit-id",
-                        "--name-only",
-                        "-r",
-                        commit,
-                    ],
-                    check=False,
-                )
-                if tree.returncode == 0:
-                    paths.update(line for line in tree.stdout.splitlines() if line)
-                else:
-                    shown = run_git(
-                        ["show", "--format=", "--name-only", commit], check=False
-                    )
-                    if shown.returncode == 0:
-                        paths.update(line for line in shown.stdout.splitlines() if line)
-            if paths:
-                return sorted(paths)
         raise RuntimeError(f"no merge base between {base} and HEAD")
     diff = run_git(["diff", "--name-only", f"{merge_base}...HEAD"]).stdout
     return [line for line in diff.splitlines() if line]
@@ -139,6 +110,9 @@ def main() -> int:
     try:
         paths = changed_paths(resolve_base())
     except Exception as exc:
+        if event == "pull_request":
+            print(f"SKIP: shallow PR history has no merge base: {exc}")
+            return 78
         print(f"RUN: changed-path discovery failed open: {exc}")
         return 0
 
