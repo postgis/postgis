@@ -31,12 +31,14 @@ steps:
         "$${CODEQL_HOME}/codeql" database create "$${CODEQL_DB}"
         --language=cpp
         --threads=1
+        --ram=2048
         --source-root="$${CI_WORKSPACE}"
         --command=ci/woodie/codeql_build.sh
       - >-
         "$${CODEQL_HOME}/codeql" database analyze "$${CODEQL_DB}"
         cpp-security-and-quality.qls
         --threads=1
+        --ram=2048
         --format=sarif-latest
         --output="$${CODEQL_SARIF}"
       - >-
