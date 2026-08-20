@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-20 06:39+0000\n"
+"PO-Revision-Date: 2026-08-20 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -28718,7 +28718,7 @@ msgstr ""
 "can_write=TrueとなっているものだけがST_AsGDALRasterで使えます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a list of raster formats short_name,long_name and creator options of "
 "each format supported by GDAL. Use the short_name as input in the "
@@ -28730,13 +28730,13 @@ msgid ""
 "for each creator option for the specific driver."
 msgstr ""
 "使用している GDAL が対応するラスター書式の short_name, long_name と作成"
-"オプションの一覧を返します。short_name は、<xref "
-"linkend=\"RT_ST_AsGDALRaster\"/> の <varname>format</varname> パラメーターに"
-"使います。オプションは GDAL のコンパイルに使ったドライバーに依存します"
-"。<varname>create_options</varname>は、XML 形式の CretionOptionList/Option の"
-"集合で、ドライバーごとの生成オプションごとに、名前を持ち、追加情報の "
-"<varname>type</varname>, <varname>description</varname> と <varname>VALUE</"
-"varname> の集合を持ちます。"
+"オプションの一覧を返します。short_name は、<varname>format</varname> "
+"パラメーターとして <xref linkend=\"RT_ST_AsGDALRaster\"/> に渡す値として使い"
+"ます。オプションは libgdal のコンパイルに組み込まれたドライバーに依存します"
+"。<varname>create_options</varname> は、ドライバーごとの各作成オプションにつ"
+"いて、名前を持ち、追加情報の <varname>type</varname>, <varname>description</"
+"varname> と <varname>VALUE</varname> の集合からなる CreationOptionList/"
+"Option の集合を XML 形式で返します。"
 
 #. Tag: para
 #, no-c-format
@@ -41020,13 +41020,13 @@ msgstr ""
 "EVEN_ODD</literal> 規則で修復する。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "With the <literal>UNION</literal> rule, all winding area is kept. This rule "
 "requires CGAL 6.1 or later."
 msgstr ""
-"<literal>UNION</literal> ルールでは、巻き方向に基づいて内部と判定される全ての"
-"領域が保持されます。このルールを使用するには CGAL 6.1 以降が必要です。"
+"<literal>UNION</literal> ルールでは、の巻き数を持つすべての領域が保持されます"
+"。このルールを使用するには CGAL 6.1 以降が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -45021,6 +45021,9 @@ msgid ""
 "link>, pgsql2shp query dumps no longer require temporary table privileges "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2045\">#2045</link>"
+", pgsql2shp のクエリーのダンプで、一時テーブル作成権限が不要になりました "
+"(Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -45029,6 +45032,9 @@ msgid ""
 "link>, [loader] Report unsupported .zip archive input before trying to open "
 "shapefile sidecar files (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1577\">#1577</link>"
+", [loader] シェープファイルの付随ファイルを開く前に対応していない .zip "
+"アーカイブ入力を報告する (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45037,6 +45043,9 @@ msgid ""
 "link>, Move geometry and geography typmod bit helpers out of the public "
 "liblwgeom header (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3158\">#3158</link>"
+", ジオメトリーとジオグラフィーの型修飾子のビット関係のマクロを公開の "
+"liblwgeom ヘッダファイルに移動させました (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45045,6 +45054,9 @@ msgid ""
 "link>, [raster] Move st_sum4ma neighborhood callback to C (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4678\">#4678</link>"
+", [raster] st_sum4ma のコールバック関数を C に移動しました (Darafei "
+"Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
