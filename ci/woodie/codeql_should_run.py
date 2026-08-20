@@ -108,11 +108,24 @@ def changed_paths(base: str) -> list[str]:
             paths: set[str] = set()
             for commit in commits.stdout.splitlines():
                 tree = run_git(
-                    ["diff-tree", "--no-commit-id", "--name-only", "-r", commit],
+                    [
+                        "diff-tree",
+                        "--root",
+                        "--no-commit-id",
+                        "--name-only",
+                        "-r",
+                        commit,
+                    ],
                     check=False,
                 )
                 if tree.returncode == 0:
                     paths.update(line for line in tree.stdout.splitlines() if line)
+                else:
+                    shown = run_git(
+                        ["show", "--format=", "--name-only", commit], check=False
+                    )
+                    if shown.returncode == 0:
+                        paths.update(line for line in shown.stdout.splitlines() if line)
             if paths:
                 return sorted(paths)
         raise RuntimeError(f"no merge base between {base} and HEAD")
