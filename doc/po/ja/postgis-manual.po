@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-20 02:39+0000\n"
+"PO-Revision-Date: 2026-08-20 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -4286,10 +4286,10 @@ msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 msgstr ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
 
 #. Tag: refpurpose
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Find pairs of topology vertex/segment that are closer than tolerated distance"
-msgstr "許容距離内にあるトポロジーの頂点/辺の組を検索します。"
+msgstr "許容距離内にあるトポロジーの頂点/線分の組を検索します。"
 
 #. Tag: para
 #, no-c-format
@@ -41025,8 +41025,8 @@ msgid ""
 "With the <literal>UNION</literal> rule, all winding area is kept. This rule "
 "requires CGAL 6.1 or later."
 msgstr ""
-"<literal>UNION</literal> ルールでは、巻き方向に基づく領域がすべて保持されます"
-"。このルールを使用するには CGAL 6.1 以降が必要です。"
+"<literal>UNION</literal> ルールでは、巻き方向に基づいて内部と判定される全ての"
+"領域が保持されます。このルールを使用するには CGAL 6.1 以降が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -44641,16 +44641,16 @@ msgid "Breaking Changes"
 msgstr "大幅な変更"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5688\">#5688</"
 "link>, [topology] topology building functions now interpret tolerance 0 (old "
 "default) to really mean 0 and want -1 (new default) to mean &quot;use "
 "topology precision&quot; (Sandro Santilli)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5688\">#5688</"
-"link>, [topology] トポロジー構築関数が許容値0 (以前のデフォルト値)を実際の0に"
-"して、-1 (新しいデフォルト値)が「トポロジーの精度」にするようにしました "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5688\">#5688</link>"
+", [topology] トポロジー構築関数が許容値 0 (以前のデフォルト値)を実際の 0にし"
+"て、-1 (新しいデフォルト値) が「トポロジーの精度」にするようにしました "
 "(Sandro Santilliさん)"
 
 #. Tag: para
@@ -44958,6 +44958,9 @@ msgid ""
 "link>, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul "
 "Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4398\">#4398</link>"
+", 平滑化を行うが元の頂点を維持する ST_CatmullSmoothing の追加 (Paul Ramseyさ"
+"ん)"
 
 #. Tag: para
 #, no-c-format
@@ -44966,6 +44969,8 @@ msgid ""
 "link>, ST_3DInterpolatePoint for M interpolation from XYZ inputs (Paul "
 "Ramsey)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4560\">#4560</link>"
+", XYZ 入力から M 値の補間を行う ST_3DInterpolatePoint (Paul Ramseyさん)"
 
 #. Tag: para
 #, no-c-format
@@ -51469,72 +51474,72 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Code"
-msgstr ""
+msgstr "コード"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Output"
-msgstr "出力:"
+msgstr "出力"
 
 #. Tag: para
 #, no-c-format
 msgid "Figure"
-msgstr ""
+msgstr "図"
 
 #. Tag: para
 #, no-c-format
 msgid "Copy"
-msgstr ""
+msgstr "コピー"
 
 #. Tag: para
 #, no-c-format
 msgid "Copied"
-msgstr ""
+msgstr "コピー済"
 
 #. Tag: para
 #, no-c-format
 msgid "Failed"
-msgstr ""
+msgstr "失敗"
 
 #. Tag: para
 #, no-c-format
 msgid "Show text"
-msgstr ""
+msgstr "文字表示"
 
 #. Tag: para
 #, no-c-format
 msgid "Hide text"
-msgstr ""
+msgstr "文字非表示"
 
 #. Tag: para
 #, no-c-format
 msgid "Show output text"
-msgstr ""
+msgstr "出力文字表示"
 
 #. Tag: para
 #, no-c-format
 msgid "Hide output text"
-msgstr ""
+msgstr "出力文字非表示"
 
 #. Tag: para
 #, no-c-format
 msgid "Show HEXEWKB"
-msgstr ""
+msgstr "HEXEWKB 表示"
 
 #. Tag: para
 #, no-c-format
 msgid "Show native HEXEWKB"
-msgstr ""
+msgstr "元の HEXEWKB 表示"
 
 #. Tag: para
 #, no-c-format
 msgid "Show EWKT"
-msgstr ""
+msgstr "EWKT 表示"
 
 #. Tag: para
 #, no-c-format
 msgid "Show readable EWKT"
-msgstr ""
+msgstr "読みやすい EWKT 表示"
 
 #. Tag: para
 #, no-c-format
