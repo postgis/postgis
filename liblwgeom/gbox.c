@@ -1030,8 +1030,10 @@ lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
 	lwnurbscurve_gbox_init(gbox, lwflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0));
 
 	/* Stream the standard B-spline to Bezier decomposition with one current
-	 * and one next control net. This preserves the exact span geometry while
-	 * avoiding whole-curve knot refinement and its quadratic memory churn. */
+	 * and one next control net. This is Boehm knot insertion arranged so the
+	 * insertions for one knot block are applied only to the local control net,
+	 * preserving the exact span geometry while avoiding whole-curve knot
+	 * refinement and its quadratic memory churn. */
 	{
 		NURBS_BBOX_HPOINT bezier[degree + 1];
 		NURBS_BBOX_HPOINT next_bezier[degree + 1];
@@ -1048,6 +1050,8 @@ lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
 		{
 			uint32_t knot_block_start = b;
 
+			/* Exact comparison is intentional: these values come directly from
+			 * the validated knot vector or its generated uniform replacement. */
 			while (b < m && knots[b + 1] == knots[b])
 				b++;
 
@@ -1056,6 +1060,9 @@ lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
 			{
 				double numer = knots[b] - knots[a];
 
+				/* Precompute the knot-insertion blend factors for this block.
+				 * A zero denominator would mean the validated active span has
+				 * collapsed, so fail instead of feeding NaNs to the bbox code. */
 				for (j = degree; j > multiplicity; j--)
 				{
 					double denom = knots[a + j] - knots[a];
@@ -1074,6 +1081,9 @@ lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
 				{
 					uint32_t save = r - j;
 
+					/* Each pass raises the current knot multiplicity by one.
+					 * The rightmost point saved on every pass becomes the left
+					 * side of the next span's control net. */
 					s = multiplicity + j;
 					for (i = degree; i >= s; i--)
 					{
@@ -1086,6 +1096,9 @@ lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
 				}
 			}
 
+			/* Only bbox spans inside the NURBS active parameter domain
+			 * [U[p], U[n]]. Unclamped explicit knot vectors can contain valid
+			 * knots before or after that domain, and those must not contribute. */
 			if (knots[b] > knots[a] && knots[a] >= domain_min && knots[b] <= domain_max)
 			{
 				if (lwnurbscurve_add_bezier_span_gbox(bezier, degree, gbox->flags, 0, gbox) ==
@@ -1100,6 +1113,8 @@ lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
 			if (knots[b] >= domain_max || b >= m)
 				break;
 
+			/* Complete the next span from the saved right edge and the untouched
+			 * original control points that are entering the moving local window. */
 			for (i = degree - FP_MIN(multiplicity, degree); i <= degree; i++)
 				lwnurbscurve_get_hpoint(curve, b - degree + i, &next_bezier[i]);
 
