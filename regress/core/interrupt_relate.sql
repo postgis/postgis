@@ -20,25 +20,25 @@ BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Contains(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('contains');
+SELECT _timecheck('contains', '500ms');
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Covers(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('covers');
+SELECT _timecheck('covers', '500ms');
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_CoveredBy(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('coveredby');
+SELECT _timecheck('coveredby', '500ms');
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Crosses(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('crosses');
+SELECT _timecheck('crosses', '500ms');
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
@@ -46,7 +46,7 @@ SET LOCAL statement_timeout TO 100;
 --       short-circuit described in #3226
 select ST_Equals(g,st_reverse(g)) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('equals');
+SELECT _timecheck('equals', '500ms');
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
@@ -54,19 +54,19 @@ SET LOCAL statement_timeout TO 100;
 --       input to make it slower
 select ST_Intersects(g,ST_Segmentize(g,1e-4)) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('intersects');
+SELECT _timecheck('intersects', '500ms');
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Overlaps(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('overlaps');
+SELECT _timecheck('overlaps', '500ms');
 
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 select ST_Relate(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
-SELECT _timecheck('relate');
+SELECT _timecheck('relate', '500ms');
 
 DROP FUNCTION _timecheck(text);
 DROP FUNCTION _timecheck(text, interval);
