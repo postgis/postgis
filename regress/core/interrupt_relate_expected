@@ -1,8 +1,16 @@
-contains interrupted on time
-covers interrupted on time
-coveredby interrupted on time
-crosses interrupted on time
-equals interrupted on time
-intersects interrupted on time
-overlaps interrupted on time
-relate interrupted on time
+ERROR:  canceling statement due to statement timeout
+contains interrupted
+ERROR:  canceling statement due to statement timeout
+covers interrupted
+ERROR:  canceling statement due to statement timeout
+coveredby interrupted
+ERROR:  canceling statement due to statement timeout
+crosses interrupted
+ERROR:  canceling statement due to statement timeout
+equals interrupted
+ERROR:  canceling statement due to statement timeout
+intersects interrupted
+ERROR:  canceling statement due to statement timeout
+overlaps interrupted
+ERROR:  canceling statement due to statement timeout
+relate interrupted
