@@ -1837,37 +1837,51 @@ SELECT 'makepolygon-null-holes', ST_NPoints(ST_MakePolygon(
 -- #6110, geometry_columns view should be fast even with many spatial tables
 CREATE SCHEMA test6110;
 
-CREATE FUNCTION test6110_check() RETURNS text AS $$
+CREATE FUNCTION test6110_plan_has(param_sql text, needle text) RETURNS boolean
+AS $$
 DECLARE
-    t0 timestamptz;
-    t1 timestamptz;
-    elapsed interval;
-    n bigint;
-    tolerance interval;
+    plan_line text;
 BEGIN
-    tolerance := interval '0.25 seconds' * COALESCE(
-        NULLIF(current_setting('test.executor_slow_factor', true), ''), '1'
-    )::double precision;
+    FOR plan_line IN EXECUTE 'EXPLAIN (COSTS OFF) ' || param_sql LOOP
+        IF plan_line LIKE '%' || needle || '%' THEN
+            RETURN true;
+        END IF;
+    END LOOP;
+    RETURN false;
+END;
+$$ LANGUAGE plpgsql;
 
+CREATE FUNCTION test6110_check() RETURNS text AS $check$
+DECLARE
+    n bigint;
+BEGIN
     SELECT count(*) INTO n FROM geometry_columns
       WHERE f_table_schema = 'test6110';
     IF n <> 2002 THEN
         RETURN 'FAIL: count=' || n || ' (expected 2002)';
     END IF;
 
-    t0 := clock_timestamp();
-    SELECT count(*) INTO n FROM geometry_columns
-      WHERE f_table_schema = 'test6110';
-    t1 := clock_timestamp();
-    elapsed := t1 - t0;
+    /* The #6110 fix depends on inlining the three-use CTE in
+     * geometry_columns.  Wall-clock time also measures concurrent CI work. */
+    IF test6110_plan_has(
+        $sql$SELECT count(*) FROM geometry_columns
+              WHERE f_table_schema = 'test6110'$sql$,
+        'CTE Scan on s'
+    ) THEN
+        RETURN 'FAIL: geometry_columns materialized CTE s';
+    END IF;
 
-    RAISE LOG 'geometry_columns count of test6110 took % (rows=%)', elapsed, n;
-    IF elapsed > tolerance THEN
-        RETURN 'FAIL: count took ' || elapsed || ' > ' || tolerance;
+    /* Verify the assertion with a deliberately materialized three-use CTE. */
+    IF NOT test6110_plan_has(
+        $sql$WITH s AS MATERIALIZED (SELECT 1 AS n)
+              SELECT count(*) FROM s AS s1, s AS s2, s AS s3$sql$,
+        'CTE Scan on s'
+    ) THEN
+        RETURN 'FAIL: test did not detect materialized CTE';
     END IF;
     RETURN 'PASS';
 END;
-$$ LANGUAGE plpgsql;
+$check$ LANGUAGE plpgsql;
 
 DO $$
 DECLARE i integer;
@@ -1891,5 +1905,6 @@ SELECT '#6110', test6110_check();
 
 SET client_min_messages TO WARNING;
 DROP FUNCTION test6110_check();
+DROP FUNCTION test6110_plan_has(text, text);
 DROP SCHEMA test6110 CASCADE;
 RESET client_min_messages;
