@@ -348,6 +348,12 @@ class CIStatusTest(unittest.TestCase):
                 "completed_at": "2026-07-01T00:00:00Z",
                 "message": "build 2",
             }, config, stale_check)
+            recent_passed = CI_STATUS.apply_staleness({
+                **base,
+                "status": CI_STATUS.SUCCESS,
+                "completed_at": CI_STATUS.utc_now().isoformat(),
+                "message": "build 3",
+            }, config, stale_check)
 
         self.assertEqual(CI_STATUS.STALE_FAILED, failed["status"])
         self.assertEqual(CI_STATUS.FAILURE, failed["stale_base_status"])
@@ -357,6 +363,8 @@ class CIStatusTest(unittest.TestCase):
         self.assertEqual(CI_STATUS.STALE_PASSED, passed["status"])
         self.assertEqual(CI_STATUS.SUCCESS, passed["stale_base_status"])
         self.assertEqual("Stale passed", passed["status_label"])
+        self.assertEqual(CI_STATUS.STALE_PASSED, recent_passed["status"])
+        self.assertIn("3 commits behind stable-synthetic", recent_passed["message"])
 
     def test_jenkins_matrix_failure_names_failing_axis(self):
         check_config = {
@@ -398,16 +406,30 @@ class CIStatusTest(unittest.TestCase):
             },
         ]
 
+        child_console = (
+            "Waiting for the completion of PostGIS_2_windows_PGVERSION_winnie\n"
+            "PostGIS_2_windows_PGVERSION_winnie #20003 completed. Result was FAILURE\n"
+        )
         with (
             mock.patch.object(CI_STATUS, "jenkins_queued_check", return_value=None),
             mock.patch.object(CI_STATUS, "jenkins_builds", return_value=[current]),
             mock.patch.object(CI_STATUS, "jenkins_matrix_configurations", return_value=matrix),
+            mock.patch.object(CI_STATUS, "http_text", side_effect=[child_console, "Finished: FAILURE\n"]),
         ):
             result = CI_STATUS.jenkins_check(check_config, branch, timeout=5)
 
         self.assertEqual(CI_STATUS.FAILURE, result["status"])
         self.assertEqual("build 5284; failed: PG19", result["message"])
-        self.assertEqual("https://ci.example.test/job/PostGIS_trunk/PG_VER=19/5284/", result["url"])
+        self.assertEqual("https://ci.example.test/job/PostGIS_2_windows_PGVERSION_winnie/20003/", result["url"])
+        self.assertEqual(
+            "https://ci.example.test/job/PostGIS_2_windows_PGVERSION_winnie/20003/console",
+            result["console_url"],
+        )
+        self.assertEqual(result["console_url"], CI_STATUS.result_url(result))
+        self.assertEqual(
+            "PG19: PostGIS_2_windows_PGVERSION_winnie #20003",
+            result["failure_details"][0]["label"],
+        )
         self.assertEqual("a" * 40, result["revision"])
 
     def test_jenkins_single_configuration_matrix_keeps_parent_message(self):
@@ -450,6 +472,35 @@ class CIStatusTest(unittest.TestCase):
         self.assertEqual(CI_STATUS.IN_PROGRESS, result["status"])
         self.assertEqual("build 7808", result["message"])
         self.assertEqual("https://ci.example.test/job/PostGIS_Make_Dist/7808/", result["url"])
+
+    def test_jenkins_downstream_parse_failure_keeps_matrix_build(self):
+        build_url = "https://ci.example.test/job/PostGIS_3.5/PG_VER=17/208/"
+        with mock.patch.object(CI_STATUS, "http_text", return_value="unstructured failure"):
+            result = CI_STATUS.jenkins_terminal_failures(build_url, timeout=5)
+
+        self.assertIsNone(result)
+
+    def test_jenkins_downstream_failure_fanout_keeps_each_leaf_console(self):
+        build_url = "https://ci.example.test/job/PostGIS_3.5/PG_VER=17/208/"
+        parent_console = (
+            "PostGIS_2_windows_PGVERSION_winnie #20003 completed. Result was FAILURE\n"
+            "PostGIS_EDB_Regress_winnie #23462 completed. Result was FAILURE\n"
+        )
+        leaf_console = "Finished: FAILURE\n"
+        with mock.patch.object(
+            CI_STATUS, "http_text", side_effect=[parent_console, leaf_console, leaf_console]
+        ):
+            failures = CI_STATUS.jenkins_terminal_failures(build_url, timeout=5)
+
+        self.assertEqual(2, len(failures))
+        self.assertEqual(
+            "https://ci.example.test/job/PostGIS_2_windows_PGVERSION_winnie/20003/console",
+            failures[0]["console_url"],
+        )
+        self.assertEqual(
+            "https://ci.example.test/job/PostGIS_EDB_Regress_winnie/23462/console",
+            failures[1]["console_url"],
+        )
 
     def test_jenkins_matrix_ignores_another_parent_build(self):
         check_config = {
