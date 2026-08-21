@@ -366,6 +366,83 @@ class CIStatusTest(unittest.TestCase):
         self.assertEqual(CI_STATUS.STALE_PASSED, recent_passed["status"])
         self.assertIn("3 commits behind stable-synthetic", recent_passed["message"])
 
+    def test_github_actions_requests_history_for_the_named_workflow(self):
+        check_config = {
+            "name": "GitHub Actions / Linux",
+            "provider": "github_actions",
+            "required": True,
+            "workflow": "ci.yml",
+        }
+        branch = {"name": "master", "label": "master"}
+        current = {
+            "head_sha": "a" * 40,
+            "status": "completed",
+            "conclusion": "success",
+            "html_url": "https://github.example.test/actions/runs/42",
+            "display_title": "current Linux run",
+        }
+
+        with mock.patch.object(CI_STATUS, "http_json", return_value={"workflow_runs": [current]}) as http_json:
+            result = CI_STATUS.github_actions_check(check_config, branch, timeout=5)
+
+        self.assertEqual(CI_STATUS.SUCCESS, result["status"])
+        self.assertEqual("a" * 40, result["revision"])
+        self.assertEqual(
+            "https://api.github.com/repos/postgis/postgis/actions/workflows/ci.yml/runs?branch=master&event=push&per_page=100",
+            http_json.call_args.args[0],
+        )
+
+    def test_github_actions_does_not_share_one_hundred_runs_between_workflows(self):
+        branch = {"name": "master", "label": "master"}
+        linux = {"name": "GitHub Actions / Linux", "provider": "github_actions", "required": True, "workflow": "ci.yml"}
+        codeql = {"name": "GitHub Actions / CodeQL", "provider": "github_actions", "required": True, "workflow": "codeql.yml"}
+        linux_run = {"head_sha": "a" * 40, "status": "completed", "conclusion": "success", "html_url": "https://github.example.test/actions/runs/1"}
+        codeql_run = {"head_sha": "b" * 40, "status": "completed", "conclusion": "success", "html_url": "https://github.example.test/actions/runs/2"}
+
+        with mock.patch.object(
+            CI_STATUS,
+            "http_json",
+            side_effect=[{"workflow_runs": [linux_run]}, {"workflow_runs": [codeql_run]}],
+        ) as http_json:
+            linux_result = CI_STATUS.github_actions_check(linux, branch, timeout=5)
+            codeql_result = CI_STATUS.github_actions_check(codeql, branch, timeout=5)
+
+        self.assertEqual("a" * 40, linux_result["revision"])
+        self.assertEqual("b" * 40, codeql_result["revision"])
+        self.assertEqual(2, http_json.call_count)
+
+    def test_github_actions_cache_does_not_survive_a_new_collection(self):
+        config = {
+            "branches": [{"name": "master", "label": "master"}],
+            "checks": [{
+                "name": "GitHub Actions / Linux",
+                "provider": "github_actions",
+                "required": True,
+                "workflow": "ci.yml",
+            }],
+        }
+        old_run = {
+            "head_sha": "a" * 40,
+            "status": "completed",
+            "conclusion": "success",
+            "html_url": "https://github.example.test/actions/runs/1",
+        }
+        new_run = {**old_run, "head_sha": "b" * 40, "html_url": "https://github.example.test/actions/runs/2"}
+
+        with (
+            mock.patch.object(
+                CI_STATUS,
+                "http_json",
+                side_effect=[{"workflow_runs": [old_run]}, {"workflow_runs": [new_run]}],
+            ) as http_json,
+        ):
+            first = CI_STATUS.collect_status(config, timeout=5)
+            second = CI_STATUS.collect_status(config, timeout=5)
+
+        self.assertEqual("a" * 40, first["branches"][0]["checks"][0]["revision"])
+        self.assertEqual("b" * 40, second["branches"][0]["checks"][0]["revision"])
+        self.assertEqual(2, http_json.call_count)
+
     def test_jenkins_matrix_failure_names_failing_axis(self):
         check_config = {
             "name": "Jenkins / Winnie",
