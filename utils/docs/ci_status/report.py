@@ -25,6 +25,7 @@ STALE_FAILED = "stale-fail"
 DISABLED = "disabled"
 NOT_APPLICABLE = "not_applicable"
 JENKINS_STALE_QUEUE_HOURS = 4
+JENKINS_DOWNSTREAM_DEPTH = 4
 
 STATUS_DISPLAY_ORDER = {
     FAILURE: 0,
@@ -1095,6 +1096,78 @@ def jenkins_matrix_configuration_label(configuration, selected):
     return configuration.get("name") or configuration.get("url") or "configuration"
 
 
+def jenkins_console_url(build_url):
+    return build_url.rstrip("/") + "/console"
+
+
+def jenkins_console_text_url(build_url):
+    return build_url.rstrip("/") + "/consoleText"
+
+
+def jenkins_downstream_build_url(parent_url, job_name, build_number):
+    parsed = urllib.parse.urlparse(parent_url)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        return None
+    job_parts = job_name.split("/")
+    if not job_parts or any(not part for part in job_parts):
+        return None
+    path = "/job/" + "/job/".join(
+        urllib.parse.quote(part, safe="") for part in job_parts
+    ) + f"/{build_number}/"
+    return urllib.parse.urlunparse((parsed.scheme, parsed.netloc, path, "", "", ""))
+
+
+def jenkins_failed_downstream_builds(console_text):
+    marker = " completed. Result was "
+    failures = []
+    for line in console_text.splitlines():
+        before, separator, result = line.partition(marker)
+        if not separator or result.strip() != "FAILURE":
+            continue
+        job_name, separator, build_number = before.rpartition(" #")
+        if not separator or not job_name or not build_number.isdecimal():
+            continue
+        failures.append((job_name, int(build_number)))
+    return failures
+
+
+def jenkins_terminal_failures(build_url, timeout, depth=JENKINS_DOWNSTREAM_DEPTH, seen=None, job=None):
+    if depth < 0 or build_url in (seen or set()):
+        return None
+    try:
+        console_text = http_text(jenkins_console_text_url(build_url), timeout=timeout)
+    except RECOVERABLE_PROVIDER_ERRORS:
+        return None
+    failed = jenkins_failed_downstream_builds(console_text)
+    if not failed:
+        if "Finished: FAILURE" not in console_text:
+            return None
+        return [{
+            "url": build_url,
+            "console_url": jenkins_console_url(build_url),
+            "job": job,
+        }]
+
+    leaves = []
+    next_seen = set(seen or ())
+    next_seen.add(build_url)
+    for job_name, build_number in failed:
+        child_url = jenkins_downstream_build_url(build_url, job_name, build_number)
+        if not child_url:
+            return None
+        child_leaves = jenkins_terminal_failures(
+            child_url,
+            timeout,
+            depth - 1,
+            next_seen,
+            f"{job_name} #{build_number}",
+        )
+        if child_leaves is None:
+            return None
+        leaves.extend(child_leaves)
+    return leaves
+
+
 def jenkins_matrix_details(job_url, timeout, parent_build_number):
     try:
         configurations = jenkins_matrix_configurations(job_url, timeout)
@@ -1139,11 +1212,32 @@ def jenkins_matrix_details(job_url, timeout, parent_build_number):
         for status in (FAILURE, IN_PROGRESS, UNKNOWN)
         for item in by_status.get(status) or []
     ]
-    url = non_success[0][1].get("url") if len(non_success) == 1 else None
-    return {
+    details = {
         "message": "; ".join(parts),
-        "url": url,
     }
+    failures = []
+    for label, build in by_status[FAILURE]:
+        build_url = build.get("url")
+        if not build_url:
+            continue
+        leaves = jenkins_terminal_failures(build_url, timeout)
+        if leaves is None:
+            continue
+        for failure in leaves:
+            failure["label"] = ": ".join(
+                part for part in (label, failure.pop("job", None)) if part
+            )
+            failures.append(failure)
+    if failures:
+        details["failures"] = failures
+    if len(non_success) == 1:
+        build_url = non_success[0][1].get("url")
+        if build_url:
+            failure = failures[0] if len(failures) == 1 else {"url": build_url}
+            details["url"] = failure["url"]
+            if failure.get("console_url"):
+                details["console_url"] = failure["console_url"]
+    return details
 
 
 def jenkins_badge_url(job_url, check, branch):
@@ -1239,6 +1333,10 @@ def jenkins_check(check, branch, timeout):
             result["message"] = f"{result['message']}; {details['message']}"
             if details.get("url"):
                 result["url"] = details["url"]
+            if details.get("console_url"):
+                result["console_url"] = details["console_url"]
+            if details.get("failures"):
+                result["failure_details"] = details["failures"]
     if previous:
         result.update(previous_fields(normalize_jenkins_status(previous), previous))
     return result
@@ -1414,7 +1512,7 @@ def apply_staleness(result, config, check):
     distance_count, distance_ref = None, None
     if result["status"] != IN_PROGRESS:
         distance_count, distance_ref = result_revision_distance(config, result)
-    if result["status"] not in (IN_PROGRESS, SUCCESS) and distance_count and distance_count > 0:
+    if result["status"] != IN_PROGRESS and distance_count and distance_count > 0:
         stale = dict(result)
         stale["revision_commits_behind"] = distance_count
         stale["revision_compare_ref"] = distance_ref
@@ -1710,7 +1808,7 @@ def safe_http_href(value):
 
 
 def result_url(check):
-    return safe_http_href(check.get("url") or check.get("debug_url") or "")
+    return safe_http_href(check.get("console_url") or check.get("url") or check.get("debug_url") or "")
 
 
 def terminal_link(text, url, enabled):
@@ -1797,6 +1895,10 @@ def print_terminal(data, use_color=True, verbose=False):
         if check.get("message"):
             message = " ".join(str(check["message"]).split())
             print(terminal_field("message", message, use_color))
+        for failure in check.get("failure_details") or []:
+            label = failure.get("label") or "failed child"
+            url = safe_http_href(failure.get("console_url") or failure.get("url") or "")
+            print(terminal_field("failure", terminal_link(label, url, use_color), use_color))
         print()
 
 
