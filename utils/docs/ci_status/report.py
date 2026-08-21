@@ -8,7 +8,6 @@ import os
 import pathlib
 import subprocess
 import tempfile
-import threading
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -65,9 +64,6 @@ COLORS = {
 RESET = "\033[0m"
 BOLD = "\033[1m"
 DIM = "\033[2m"
-_GITHUB_RUNS_CACHE = {}
-_GITHUB_RUNS_INFLIGHT = {}
-_GITHUB_RUNS_LOCK = threading.Lock()
 
 
 class ConfigError(Exception):
@@ -243,11 +239,6 @@ def normalize_github_status(run):
     return UNKNOWN
 
 
-def github_workflow_matches(run, workflow):
-    path = run.get("path") or ""
-    return path == workflow or path.endswith(f"/{workflow}")
-
-
 def github_workflow_url(repo, workflow, branch):
     query = urllib.parse.quote(f"branch:{branch['name']}", safe="")
     return f"https://github.com/{repo}/actions/workflows/{urllib.parse.quote(workflow)}?query={query}"
@@ -298,50 +289,12 @@ def github_badge_check(check, branch, repo, workflow, timeout, api_error=None):
     )
 
 
-def github_runs_for_branch(repo, branch, token, timeout):
-    cache_key = (repo, branch["name"], token or "")
-    with _GITHUB_RUNS_LOCK:
-        cached = _GITHUB_RUNS_CACHE.get(cache_key)
-        if cached is not None:
-            runs, url, exc = cached
-            if exc is not None:
-                raise exc
-            return runs, url
-
-        event = _GITHUB_RUNS_INFLIGHT.get(cache_key)
-        if event is None:
-            event = threading.Event()
-            _GITHUB_RUNS_INFLIGHT[cache_key] = event
-            owner = True
-        else:
-            owner = False
-
-    if not owner:
-        event.wait()
-        with _GITHUB_RUNS_LOCK:
-            runs, url, exc = _GITHUB_RUNS_CACHE[cache_key]
-        if exc is not None:
-            raise exc
-        return runs, url
-
+def github_runs_for_workflow(repo, branch, workflow, token, timeout):
     query = urllib.parse.urlencode({"branch": branch["name"], "event": "push", "per_page": "100"})
-    url = f"https://api.github.com/repos/{repo}/actions/runs?{query}"
-    try:
-        data = http_json(url, token=token, timeout=timeout)
-    except Exception as exc:
-        cached = ([], url, exc)
-    else:
-        cached = (data.get("workflow_runs", []), url, None)
-
-    with _GITHUB_RUNS_LOCK:
-        _GITHUB_RUNS_CACHE[cache_key] = cached
-        _GITHUB_RUNS_INFLIGHT.pop(cache_key, None)
-        event.set()
-
-    runs, url, exc = cached
-    if exc is not None:
-        raise exc
-    return runs, url
+    workflow_path = urllib.parse.quote(workflow, safe="")
+    url = f"https://api.github.com/repos/{repo}/actions/workflows/{workflow_path}/runs?{query}"
+    data = http_json(url, token=token, timeout=timeout)
+    return data.get("workflow_runs", []), url
 
 
 def github_actions_check(check, branch, timeout):
@@ -349,10 +302,9 @@ def github_actions_check(check, branch, timeout):
     repo = check.get("repo", "postgis/postgis")
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     try:
-        runs, debug_url = github_runs_for_branch(repo, branch, token, timeout)
+        runs, debug_url = github_runs_for_workflow(repo, branch, workflow, token, timeout)
     except RECOVERABLE_PROVIDER_ERRORS as exc:
         return github_badge_check(check, branch, repo, workflow, timeout, api_error=exc)
-    runs = [run for run in runs if github_workflow_matches(run, workflow)]
     if not runs:
         try:
             return github_badge_check(check, branch, repo, workflow, timeout)
