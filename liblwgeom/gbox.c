@@ -1058,7 +1058,7 @@ lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
 			multiplicity = b - knot_block_start + 1;
 			if (multiplicity < degree)
 			{
-				double numer = knots[b] - knots[a];
+				double numerator = knots[b] - knots[a];
 
 				/* Precompute the knot-insertion blend factors for this block.
 				 * A zero denominator would mean the validated active span has
@@ -1073,7 +1073,7 @@ lwnurbscurve_calculate_gbox_cartesian(const LWNURBSCURVE *curve, GBOX *gbox)
 						return LW_FAILURE;
 					}
 
-					alphas[j - multiplicity - 1] = numer / denom;
+					alphas[j - multiplicity - 1] = numerator / denom;
 				}
 
 				r = degree - multiplicity;
