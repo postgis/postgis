@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-21 01:39+0000\n"
+"PO-Revision-Date: 2026-08-21 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -45145,6 +45145,9 @@ msgid ""
 "link>, Use point-in-polygon predicate fast paths for point-only "
 "GeometryCollections (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4749\">#4749</link>"
+", ポイントのみのジオメトリーコレクションで速度向上のためにポリゴン内の"
+"ポイント述語を仕様 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45153,6 +45156,9 @@ msgid ""
 "link>, Validate the manual against DocBook XMLSchema in check-xml (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5532\">#5532</link>"
+", check-xml 内でマニュアルの検証を DocBook XMLSchema に対して行う (Darafei "
+"Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45169,6 +45175,9 @@ msgid ""
 "link>, [raster] Preserve missing NODATA values in ST_MapAlgebra outputs "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2807\">#2807</link>"
+", [raster] ST_MapAlgebra 出力で NODATA 値なしを維持する (Darafei "
+"Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45177,6 +45186,9 @@ msgid ""
 "link>, [raster] Avoid padding single-tile raster2pgsql overviews when "
 "padding is not requested (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2832\">#2832</link>"
+", [raster] raster2pgsql のオーバービューにパディングを求めていない時に、単一"
+"タイルへパディングを付加するのを避ける (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45185,6 +45197,9 @@ msgid ""
 "link>, Generate a pgsql2shp GID field when exporting geometry-only "
 "shapefiles (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2623\">#2623</link>"
+", pgsql2shp でジオメトリーだけのシェープファイルを出力する際に GID フィールド"
+"を生成するように変更 (Darafei Praliaskouski)"
 
 #. Tag: para
 #, no-c-format
@@ -45193,6 +45208,9 @@ msgid ""
 "link>, Preserve pgsql2shp numeric precision and scale in DBF metadata "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2850\">#2850</link>"
+", pgsql2shp の数値の精度とスケールが DBF メタデータ保持されるように変更 "
+"(Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45200,6 +45218,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2386\">#2386</"
 "link>, Add raster2pgsql man page (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2386\">#2386</link>"
+", raster2pgsql を man に追加 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
