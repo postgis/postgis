@@ -11,6 +11,9 @@ These are only changes since 3.7.0beta2.
  - Codex security scan, guard the recursive NURBSCURVE bounding box
           against non-finite control points to stop a backend CPU denial
           of service reachable from WKT input (Darafei Praliaskouski)
+ - GT-755, OSSFuzz 547330051, stream NURBSCURVE bounding box Bezier extraction
+          to avoid repeated full-array knot insertion on large valid curves
+          (Darafei Praliaskouski)
  - Fix geometry input parsing to stop malformed SRID prefixes before the
           end of the input string
           (Dennis Tighe, Google)

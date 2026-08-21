@@ -196,6 +196,17 @@ static void test_lwgeom_calculate_gbox(void)
 	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(0.75));
 	lwgeom_free(g);
 
+	/* The same rational span logic must honor Z and M ordinates. */
+	g = lwgeom_from_wkt("NURBSCURVE ZM(2, (0 0 0 0, 1 1 1 2, 2 0 0 0), (1, 3, 1), (0, 0, 0, 1, 1, 1))",
+			    LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 2.0, 0.0000001);
+	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(0.75));
+	CU_ASSERT_EQUAL(next_float_up(b.zmax), next_float_up(0.75));
+	CU_ASSERT_EQUAL(next_float_up(b.mmax), next_float_up(1.5));
+	lwgeom_free(g);
+
 	/* Repeated knots split the curve into independent Bezier spans. */
 	g = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0, 3 1, 4 0), (1, 1, 1, 1, 1), (0, 0, 0, 0.5, 0.5, 1, 1, 1))",
 			    LW_PARSER_CHECK_NONE);
@@ -203,6 +214,26 @@ static void test_lwgeom_calculate_gbox(void)
 	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
 	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 4.0, 0.0000001);
 	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(0.5));
+	lwgeom_free(g);
+
+	/* An explicit unclamped knot vector only exposes the active parameter
+	 * domain, so local extraction must not emit off-domain spans. */
+	g = lwgeom_from_wkt("NURBSCURVE(2, (0 0, 1 1, 2 0), (1, 1, 1), (0, 1, 2, 3, 4, 5))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.ymin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 1.5, 0.0000001);
+	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(2.0 / 3.0));
+	lwgeom_free(g);
+
+	/* A high-degree implicit-knot NURBS must keep the exact span bbox rather
+	 * than falling back to the control-point hull ymax of 100. */
+	g = lwgeom_from_wkt("NURBSCURVE(6, (0 0, 1 100, 2 100, 3 100, 4 100, 5 100, 6 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmax, 6.0, 0.0000001);
+	CU_ASSERT_EQUAL(next_float_up(b.ymax), next_float_up(96.875));
+	CU_ASSERT(b.ymax < 100.0);
 	lwgeom_free(g);
 
 	/* A non-finite control point coordinate must not make the recursive
