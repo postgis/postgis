@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-20 08:39+0000\n"
+"PO-Revision-Date: 2026-08-21 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -45065,6 +45065,8 @@ msgid ""
 "link>, [raster] Add ST_Value nearest-neighbor boundary options (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2116\">#2116</link>"
+", [raster] ST_Value 最近傍補間の境界オプション (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45074,6 +45076,10 @@ msgid ""
 "4315\">#4315</link>, [raster] Support two-argument ST_MapAlgebra callbacks "
 "and pass callback call data as actual arguments (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2804\">#2804</link>"
+", <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4315\">#4315</"
+"link>, [raster] ST_MapAlgebra の 2引数コールバック関数対応とコールバックの"
+"データを実引数で渡す (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45081,6 +45087,8 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2898\">#2898</"
 "link>, Document SQL function cost tiers for contributors"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2898\">#2898</link>"
+", 開発者向けに SQL 関数のコストレベルの文書化"
 
 #. Tag: para
 #, no-c-format
@@ -45089,6 +45097,9 @@ msgid ""
 "link>, [topology] Stop using recursive snapping, for improved robustness "
 "(Sandro Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6062\">#6062</link>"
+", [topology] 堅牢性向上のためスナップの再帰実行をしないように変更 (Sandro "
+"Santilli さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45097,6 +45108,9 @@ msgid ""
 "link>, Improved winding order computation robustness for rings having "
 "collapsed elements (Sandro Santilli)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6065\">#6065</link>"
+", 崩壊した要素を持つリングに対する巻き方向計算の堅牢性向上 (Sandro Santilli "
+"さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45107,6 +45121,11 @@ msgid ""
 "reprojection support and clarify index creation timing for append loads "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3743\">#3743</link>"
+", <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4385\">#4385</"
+"link>, [raster loader] raster2pgsql -s FROM_SRID:SRID による投影変換機能の記"
+"載と追加ロード時のインデックス生成タイミングの明示 (Darafei Praliaskouski さ"
+"ん)"
 
 #. Tag: para
 #, no-c-format
@@ -45115,6 +45134,9 @@ msgid ""
 "link>, [raster] Reuse matching source raster overviews in raster2pgsql -l "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2137\">#2137</link>"
+", [raster] raster2pgsql -l で対応する元ラスターの既存オーバービューを再利用す"
+"る (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
