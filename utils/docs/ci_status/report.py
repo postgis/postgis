@@ -1449,6 +1449,20 @@ def stale_after_hours(config, check):
         raise ConfigError(f"invalid stale_after_hours for {check['name']}: {value}")
 
 
+def stale_running_result(result, distance_count=None, distance_ref=None, detail=None):
+    stale = dict(result)
+    stale["stale_base_status"] = result["status"]
+    stale["status"] = UNKNOWN
+    stale["status_label"] = "Stale running"
+    if distance_count and distance_count > 0:
+        stale["revision_commits_behind"] = distance_count
+        stale["revision_compare_ref"] = distance_ref
+        stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
+    message_detail = stale.get("revision_distance") or detail
+    stale["message"] = f"{result.get('message', 'CI run')} ({message_detail})"
+    return stale
+
+
 def apply_staleness(result, config, check, branch_heads=None):
     threshold = stale_after_hours(config, check)
     distance_count, distance_ref = result_revision_distance(config, result)
@@ -1457,44 +1471,26 @@ def apply_staleness(result, config, check, branch_heads=None):
         exact_head = branch_heads.get(result.get("branch"))
     exact_head_required = bool(config.get("cache_head_remote"))
     if result["status"] == IN_PROGRESS and result.get("revision") and exact_head_required and not exact_head:
-        stale = dict(result)
-        stale["stale_base_status"] = result["status"]
-        stale["status"] = UNKNOWN
-        stale["status_label"] = "Stale running"
-        if distance_count and distance_count > 0:
-            stale["revision_commits_behind"] = distance_count
-            stale["revision_compare_ref"] = distance_ref
-            stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
-        detail = stale.get("revision_distance") or "branch head unavailable"
-        stale["message"] = f"{result.get('message', 'CI run')} ({detail})"
-        return stale
+        return stale_running_result(
+            result,
+            distance_count=distance_count,
+            distance_ref=distance_ref,
+            detail="branch head unavailable",
+        )
     if (
         result["status"] == IN_PROGRESS
         and exact_head
         and result.get("revision")
-        and result["revision"] != exact_head
+        and result["revision"].lower() != exact_head.lower()
     ):
-        stale = dict(result)
-        stale["stale_base_status"] = result["status"]
-        stale["status"] = UNKNOWN
-        stale["status_label"] = "Stale running"
-        if distance_count and distance_count > 0:
-            stale["revision_commits_behind"] = distance_count
-            stale["revision_compare_ref"] = distance_ref
-            stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
-        detail = stale.get("revision_distance") or f"not at {result['branch']} head"
-        stale["message"] = f"{result.get('message', 'CI run')} ({detail})"
-        return stale
+        return stale_running_result(
+            result,
+            distance_count=distance_count,
+            distance_ref=distance_ref,
+            detail=f"not at {result['branch']} head",
+        )
     if result["status"] == IN_PROGRESS and distance_count and distance_count > 0:
-        stale = dict(result)
-        stale["revision_commits_behind"] = distance_count
-        stale["revision_compare_ref"] = distance_ref
-        stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
-        stale["stale_base_status"] = result["status"]
-        stale["status"] = UNKNOWN
-        stale["status_label"] = "Stale running"
-        stale["message"] = f"{result.get('message', 'CI run')} ({stale['revision_distance']})"
-        return stale
+        return stale_running_result(result, distance_count=distance_count, distance_ref=distance_ref)
     if result["status"] != IN_PROGRESS and distance_count and distance_count > 0:
         stale = dict(result)
         stale["revision_commits_behind"] = distance_count

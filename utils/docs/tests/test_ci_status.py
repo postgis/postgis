@@ -492,6 +492,30 @@ class CIStatusTest(unittest.TestCase):
         self.assertNotIn("stale_base_status", current)
         self.assertNotIn("revision_distance", current)
 
+    def test_apply_staleness_keeps_running_result_at_branch_head_case_insensitively(self):
+        config = {
+            "stale_after_hours": 168,
+            "branches": [{"name": "master", "label": "master"}],
+        }
+        stale_check = {"name": "Synthetic CI"}
+        running = {
+            "branch": "master",
+            "branch_label": "master",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "revision": "ab" * 20,
+            "status": CI_STATUS.IN_PROGRESS,
+            "message": "build 8186; running: Winnie",
+        }
+
+        with mock.patch.object(CI_STATUS, "result_revision_distance", return_value=(0, "master")):
+            current = CI_STATUS.apply_staleness(running, config, stale_check, {"master": ("AB" * 20)})
+
+        self.assertEqual(CI_STATUS.IN_PROGRESS, current["status"])
+        self.assertNotIn("stale_base_status", current)
+        self.assertNotIn("revision_distance", current)
+
     def test_apply_staleness_marks_running_result_unknown_when_exact_head_differs(self):
         config = {
             "stale_after_hours": 168,
