@@ -1463,32 +1463,36 @@ def stale_running_result(result, distance_count=None, distance_ref=None, detail=
     return stale
 
 
+def exact_head_distance(result, exact_head):
+    revision = result.get("revision")
+    branch_name = result.get("branch")
+    if not revision or not exact_head or not branch_name:
+        return None, None
+    return git_commit_distance(revision, exact_head), branch_name
+
+
 def apply_staleness(result, config, check, branch_heads=None):
     threshold = stale_after_hours(config, check)
-    distance_count, distance_ref = result_revision_distance(config, result)
     exact_head = None
     if branch_heads is not None:
         exact_head = branch_heads.get(result.get("branch"))
     exact_head_required = bool(config.get("cache_head_remote"))
-    if result["status"] == IN_PROGRESS and result.get("revision") and exact_head_required and not exact_head:
-        return stale_running_result(
-            result,
-            distance_count=distance_count,
-            distance_ref=distance_ref,
-            detail="branch head unavailable",
-        )
-    if (
-        result["status"] == IN_PROGRESS
-        and exact_head
-        and result.get("revision")
-        and result["revision"].lower() != exact_head.lower()
-    ):
-        return stale_running_result(
-            result,
-            distance_count=distance_count,
-            distance_ref=distance_ref,
-            detail=f"not at {result['branch']} head",
-        )
+    if result["status"] == IN_PROGRESS and exact_head_required:
+        if not result.get("revision"):
+            return stale_running_result(result, detail="running revision unavailable")
+        if not exact_head:
+            return stale_running_result(result, detail="branch head unavailable")
+        if result["revision"].lower() != exact_head.lower():
+            distance_count, distance_ref = exact_head_distance(result, exact_head)
+            return stale_running_result(
+                result,
+                distance_count=distance_count,
+                distance_ref=distance_ref,
+                detail=f"not at {result['branch']} head",
+            )
+        return result
+
+    distance_count, distance_ref = result_revision_distance(config, result)
     if result["status"] == IN_PROGRESS and distance_count and distance_count > 0:
         return stale_running_result(result, distance_count=distance_count, distance_ref=distance_ref)
     if result["status"] != IN_PROGRESS and distance_count and distance_count > 0:

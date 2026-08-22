@@ -278,6 +278,80 @@ class CIStatusTest(unittest.TestCase):
         self.assertEqual("Stale running", result["status_label"])
         self.assertIn("branch head unavailable", result["message"])
 
+    def test_collect_status_running_result_fails_closed_when_revision_unavailable(self):
+        config = {
+            "cache_head_remote": "https://example.test/postgis.git",
+            "branches": [{"name": "master", "label": "master"}],
+            "checks": [{
+                "name": "Synthetic CI",
+                "provider": "synthetic",
+                "required": True,
+            }],
+        }
+        provider = mock.Mock(return_value={
+            "branch": "master",
+            "branch_label": "master",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "status": CI_STATUS.IN_PROGRESS,
+            "message": "badge: running",
+        })
+
+        with (
+            mock.patch.dict(CI_STATUS.PROVIDERS, {"synthetic": provider}),
+            mock.patch.object(CI_STATUS, "resolve_cache_heads", return_value={"master": "f" * 40}),
+        ):
+            data = CI_STATUS.collect_status(config)
+
+        result = data["branches"][0]["checks"][0]
+        self.assertEqual(CI_STATUS.UNKNOWN, result["status"])
+        self.assertEqual(CI_STATUS.IN_PROGRESS, result["stale_base_status"])
+        self.assertIn("running revision unavailable", result["message"])
+
+    def test_collect_status_running_mismatch_uses_canonical_sha_distance_only(self):
+        config = {
+            "cache_head_remote": "https://example.test/postgis.git",
+            "branches": [{"name": "master", "label": "master"}],
+            "checks": [{
+                "name": "Synthetic CI",
+                "provider": "synthetic",
+                "required": True,
+            }],
+        }
+        provider = mock.Mock(return_value={
+            "branch": "master",
+            "branch_label": "master",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "revision": "e" * 40,
+            "status": CI_STATUS.IN_PROGRESS,
+            "message": "build 8178; running: Winnie",
+        })
+
+        def fake_distance(revision, ref):
+            if ref == "b" * 40:
+                return 7
+            return 999
+
+        with (
+            mock.patch.dict(CI_STATUS.PROVIDERS, {"synthetic": provider}),
+            mock.patch.object(CI_STATUS, "git_commit_distance", side_effect=fake_distance),
+            mock.patch.object(
+                CI_STATUS,
+                "resolve_cache_heads",
+                return_value={"master": "b" * 40},
+            ),
+        ):
+            data = CI_STATUS.collect_status(config)
+
+        result = data["branches"][0]["checks"][0]
+        self.assertEqual(CI_STATUS.UNKNOWN, result["status"])
+        self.assertEqual(7, result["revision_commits_behind"])
+        self.assertEqual("7 commits behind master", result["revision_distance"])
+        self.assertIn("7 commits behind master", result["message"])
+
     def test_cache_head_lookup_queries_remote_once_for_all_branches(self):
         config = {"cache_head_remote": "https://example.test/postgis.git"}
         branches = [
@@ -518,6 +592,7 @@ class CIStatusTest(unittest.TestCase):
 
     def test_apply_staleness_marks_running_result_unknown_when_exact_head_differs(self):
         config = {
+            "cache_head_remote": "https://example.test/postgis.git",
             "stale_after_hours": 168,
             "branches": [{"name": "master", "label": "master"}],
         }
@@ -533,7 +608,7 @@ class CIStatusTest(unittest.TestCase):
             "message": "build 8178; running: Winnie",
         }
 
-        with mock.patch.object(CI_STATUS, "result_revision_distance", return_value=(0, "master")):
+        with mock.patch.object(CI_STATUS, "git_commit_distance", return_value=None):
             stale = CI_STATUS.apply_staleness(running, config, stale_check, {"master": "4" * 40})
 
         self.assertEqual(CI_STATUS.UNKNOWN, stale["status"])
@@ -541,6 +616,30 @@ class CIStatusTest(unittest.TestCase):
         self.assertEqual("Stale running", stale["status_label"])
         self.assertNotIn("revision_distance", stale)
         self.assertIn("not at master head", stale["message"])
+
+    def test_apply_staleness_marks_running_result_unknown_when_revision_unavailable(self):
+        config = {
+            "cache_head_remote": "https://example.test/postgis.git",
+            "stale_after_hours": 168,
+            "branches": [{"name": "master", "label": "master"}],
+        }
+        stale_check = {"name": "Synthetic CI"}
+        running = {
+            "branch": "master",
+            "branch_label": "master",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "status": CI_STATUS.IN_PROGRESS,
+            "message": "badge: running",
+        }
+
+        stale = CI_STATUS.apply_staleness(running, config, stale_check, {"master": "4" * 40})
+
+        self.assertEqual(CI_STATUS.UNKNOWN, stale["status"])
+        self.assertEqual(CI_STATUS.IN_PROGRESS, stale["stale_base_status"])
+        self.assertEqual("Stale running", stale["status_label"])
+        self.assertIn("running revision unavailable", stale["message"])
 
     def test_github_actions_requests_history_for_the_named_workflow(self):
         check_config = {
