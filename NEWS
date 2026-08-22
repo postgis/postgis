@@ -8,6 +8,8 @@ These are only changes since 3.7.0beta2.
 
 * Bug Fixes *
 
+ - GH-1172, GH-1173, GH-1174, guard lwgeom_wrapx and raster OOM cleanup paths
+          against NULL dereferences (Maksim Korotkov, Postgres Pro)
  - Codex security scan, guard the recursive NURBSCURVE bounding box
           against non-finite control points to stop a backend CPU denial
           of service reachable from WKT input (Darafei Praliaskouski)
