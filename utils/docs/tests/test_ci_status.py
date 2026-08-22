@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import urllib.error
 from unittest import mock
 
 
@@ -666,6 +667,56 @@ class CIStatusTest(unittest.TestCase):
             "https://api.github.com/repos/postgis/postgis/actions/workflows/ci.yml/runs?branch=master&event=push&per_page=100",
             http_json.call_args.args[0],
         )
+
+    def test_github_actions_rate_limit_uses_exact_head_cached_result(self):
+        check_config = {
+            "name": "GitHub Actions / Linux",
+            "provider": "github_actions",
+            "required": True,
+            "workflow": "ci.yml",
+        }
+        branch = {"name": "master", "label": "master"}
+        revision = "a" * 40
+        cached = {
+            "branch": "master",
+            "branch_label": "master",
+            "check": check_config["name"],
+            "provider": "github_actions",
+            "required": True,
+            "status": CI_STATUS.SUCCESS,
+            "revision": revision,
+            "message": "current Linux run",
+        }
+        headers = {"X-RateLimit-Remaining": "0"}
+        error = urllib.error.HTTPError("https://api.github.com", 403, "forbidden", headers, io.BytesIO(b"{}"))
+        with mock.patch.object(CI_STATUS, "github_runs_for_workflow", side_effect=error):
+            result = CI_STATUS.github_actions_check(check_config, branch, timeout=5, cached_result=cached)
+
+        self.assertEqual(CI_STATUS.SUCCESS, result["status"])
+        self.assertEqual(revision, result["revision"])
+        self.assertTrue(result["cached"])
+        self.assertIn("rate limit exceeded", result["message"])
+
+    def test_github_actions_ordinary_forbidden_does_not_use_cache(self):
+        check_config = {
+            "name": "GitHub Actions / Linux",
+            "provider": "github_actions",
+            "required": True,
+            "workflow": "ci.yml",
+        }
+        branch = {"name": "master", "label": "master"}
+        error = urllib.error.HTTPError(
+            "https://api.github.com", 403, "forbidden", {"X-RateLimit-Remaining": "1"}, io.BytesIO(b"{}")
+        )
+        badge = {"status": CI_STATUS.FAILURE, "message": "badge: failing"}
+        with (
+            mock.patch.object(CI_STATUS, "github_runs_for_workflow", side_effect=error),
+            mock.patch.object(CI_STATUS, "github_badge_check", return_value=badge) as fallback,
+        ):
+            result = CI_STATUS.github_actions_check(check_config, branch, timeout=5, cached_result={"revision": "a" * 40})
+
+        fallback.assert_called_once()
+        self.assertEqual(badge, result)
 
     def test_github_actions_does_not_share_one_hundred_runs_between_workflows(self):
         branch = {"name": "master", "label": "master"}

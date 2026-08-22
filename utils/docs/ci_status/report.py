@@ -297,13 +297,38 @@ def github_runs_for_workflow(repo, branch, workflow, token, timeout):
     return data.get("workflow_runs", []), url
 
 
-def github_actions_check(check, branch, timeout):
+def github_rate_limit_error(exc):
+    if not isinstance(exc, urllib.error.HTTPError) or exc.code != 403:
+        return False
+    remaining = exc.headers.get("X-RateLimit-Remaining") if exc.headers else None
+    if remaining == "0":
+        exc.close()
+        return True
+    try:
+        body = json.loads(exc.read().decode("utf-8"))
+    except (AttributeError, UnicodeDecodeError, json.JSONDecodeError, OSError):
+        return False
+    finally:
+        exc.close()
+    message = body.get("message") if isinstance(body, dict) else None
+    return isinstance(message, str) and message.startswith("API rate limit exceeded")
+
+
+def github_actions_check(check, branch, timeout, cached_result=None):
     workflow = check["workflow"]
     repo = check.get("repo", "postgis/postgis")
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     try:
         runs, debug_url = github_runs_for_workflow(repo, branch, workflow, token, timeout)
     except RECOVERABLE_PROVIDER_ERRORS as exc:
+        if github_rate_limit_error(exc) and cached_result:
+            result = dict(cached_result)
+            result["cached"] = True
+            result["message"] = (
+                f"{result.get('message') or 'cached GitHub Actions result'} "
+                "(cached; GitHub API rate limit exceeded)"
+            )
+            return result
         return github_badge_check(check, branch, repo, workflow, timeout, api_error=exc)
     if not runs:
         try:
@@ -1439,6 +1464,35 @@ def cached_success_result(branch, check, cache, cache_heads):
     return result
 
 
+def cached_current_result(branch, check, cache, cache_heads):
+    """Return an exact-head cached provider result for rate-limit fallback."""
+    if not cache:
+        return None
+    cached = cache["checks"].get((branch["name"], check["name"]))
+    if not cached:
+        return None
+    if cached.get("branch") != branch["name"] or cached.get("check") != check["name"]:
+        return None
+    if cached.get("provider") != check.get("provider"):
+        return None
+    if cached.get("required") != bool(check.get("required", True)):
+        return None
+    if cached.get("status") not in STATUS_DISPLAY_ORDER:
+        return None
+    revision = cached.get("revision")
+    if not revision or revision != cache_heads.get(branch["name"]):
+        return None
+    result = dict(cached)
+    result.update({
+        "branch": branch["name"],
+        "branch_label": branch["label"],
+        "check": check["name"],
+        "provider": check.get("provider"),
+        "required": bool(check.get("required", True)),
+    })
+    return result
+
+
 def stale_after_hours(config, check):
     value = check.get("stale_after_hours", config.get("stale_after_hours"))
     if value is None:
@@ -1566,7 +1620,12 @@ async def collect_status_async(config, selected_branch=None, include_eol=False, 
         if provider is None:
             raise ConfigError(f"unsupported provider for {check['name']}: {check.get('provider')}")
         try:
-            return apply_staleness(provider(check, branch, timeout), config, check, cache_heads)
+            cached_fallback = cached_current_result(branch, check, cache, cache_heads)
+            if check.get("provider") == "github_actions":
+                result = provider(check, branch, timeout, cached_fallback)
+            else:
+                result = provider(check, branch, timeout)
+            return apply_staleness(result, config, check, cache_heads)
         except RECOVERABLE_PROVIDER_ERRORS as exc:
             return result_from_exception(check, branch, exc)
 
