@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - Handle a failed point clone during ST_WrapX (Maksim Korotkov)
   - GH-1169, Handle connection-string allocation failure in the shapefile loader
       (Svyatoslav Bogdanov)
   - Initialize output column metadata in pgsql2shp (Maksim Korotkov)
