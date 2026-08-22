@@ -1376,23 +1376,13 @@ def load_status_cache(path):
 
 
 def resolve_cache_heads(config, work, cache, timeout):
-    if not cache:
-        return {}
     remote = config.get("cache_head_remote")
     if not remote:
         return {}
     parsed = urllib.parse.urlparse(remote)
     if parsed.scheme not in ("https", "http") or not parsed.netloc or remote.startswith("-"):
         raise ConfigError("cache_head_remote must be an HTTP(S) URL")
-    branch_names = sorted({
-        branch["name"]
-        for branch, _check in work
-        if any(
-            cached.get("status") == SUCCESS
-            for (cached_branch, _cached_check), cached in cache["checks"].items()
-            if cached_branch == branch["name"]
-        )
-    })
+    branch_names = sorted({branch["name"] for branch, _check in work})
     if not branch_names:
         return {}
     refs = [f"refs/heads/{name}" for name in branch_names]
@@ -1459,9 +1449,42 @@ def stale_after_hours(config, check):
         raise ConfigError(f"invalid stale_after_hours for {check['name']}: {value}")
 
 
-def apply_staleness(result, config, check):
+def apply_staleness(result, config, check, branch_heads=None):
     threshold = stale_after_hours(config, check)
     distance_count, distance_ref = result_revision_distance(config, result)
+    exact_head = None
+    if branch_heads is not None:
+        exact_head = branch_heads.get(result.get("branch"))
+    exact_head_required = bool(config.get("cache_head_remote"))
+    if result["status"] == IN_PROGRESS and result.get("revision") and exact_head_required and not exact_head:
+        stale = dict(result)
+        stale["stale_base_status"] = result["status"]
+        stale["status"] = UNKNOWN
+        stale["status_label"] = "Stale running"
+        if distance_count and distance_count > 0:
+            stale["revision_commits_behind"] = distance_count
+            stale["revision_compare_ref"] = distance_ref
+            stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
+        detail = stale.get("revision_distance") or "branch head unavailable"
+        stale["message"] = f"{result.get('message', 'CI run')} ({detail})"
+        return stale
+    if (
+        result["status"] == IN_PROGRESS
+        and exact_head
+        and result.get("revision")
+        and result["revision"] != exact_head
+    ):
+        stale = dict(result)
+        stale["stale_base_status"] = result["status"]
+        stale["status"] = UNKNOWN
+        stale["status_label"] = "Stale running"
+        if distance_count and distance_count > 0:
+            stale["revision_commits_behind"] = distance_count
+            stale["revision_compare_ref"] = distance_ref
+            stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
+        detail = stale.get("revision_distance") or f"not at {result['branch']} head"
+        stale["message"] = f"{result.get('message', 'CI run')} ({detail})"
+        return stale
     if result["status"] == IN_PROGRESS and distance_count and distance_count > 0:
         stale = dict(result)
         stale["revision_commits_behind"] = distance_count
@@ -1538,12 +1561,12 @@ async def collect_status_async(config, selected_branch=None, include_eol=False, 
         branch, check = item
         cached = cached_success_result(branch, check, cache, cache_heads)
         if cached:
-            return apply_staleness(cached, config, check)
+            return apply_staleness(cached, config, check, cache_heads)
         provider = PROVIDERS.get(check.get("provider"))
         if provider is None:
             raise ConfigError(f"unsupported provider for {check['name']}: {check.get('provider')}")
         try:
-            return apply_staleness(provider(check, branch, timeout), config, check)
+            return apply_staleness(provider(check, branch, timeout), config, check, cache_heads)
         except RECOVERABLE_PROVIDER_ERRORS as exc:
             return result_from_exception(check, branch, exc)
 
