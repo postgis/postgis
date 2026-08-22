@@ -366,6 +366,57 @@ class CIStatusTest(unittest.TestCase):
         self.assertEqual(CI_STATUS.STALE_PASSED, recent_passed["status"])
         self.assertIn("3 commits behind stable-synthetic", recent_passed["message"])
 
+    def test_apply_staleness_marks_running_result_from_old_revision_unknown(self):
+        config = {
+            "stale_after_hours": 168,
+            "branches": [{"name": "master", "label": "master"}],
+        }
+        stale_check = {"name": "Synthetic CI"}
+        running = {
+            "branch": "master",
+            "branch_label": "master",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "revision": "1" * 40,
+            "status": CI_STATUS.IN_PROGRESS,
+            "message": "build 8178; running: Winnie",
+        }
+
+        with mock.patch.object(CI_STATUS, "result_revision_distance", return_value=(467, "master")):
+            stale = CI_STATUS.apply_staleness(running, config, stale_check)
+
+        self.assertEqual(CI_STATUS.UNKNOWN, stale["status"])
+        self.assertEqual(CI_STATUS.IN_PROGRESS, stale["stale_base_status"])
+        self.assertEqual("Stale running", stale["status_label"])
+        self.assertEqual(467, stale["revision_commits_behind"])
+        self.assertEqual("467 commits behind master", stale["revision_distance"])
+        self.assertIn("467 commits behind master", stale["message"])
+
+    def test_apply_staleness_keeps_running_result_at_branch_head(self):
+        config = {
+            "stale_after_hours": 168,
+            "branches": [{"name": "master", "label": "master"}],
+        }
+        stale_check = {"name": "Synthetic CI"}
+        running = {
+            "branch": "master",
+            "branch_label": "master",
+            "check": "Synthetic CI",
+            "provider": "synthetic",
+            "required": True,
+            "revision": "2" * 40,
+            "status": CI_STATUS.IN_PROGRESS,
+            "message": "build 8185; running: Winnie",
+        }
+
+        with mock.patch.object(CI_STATUS, "result_revision_distance", return_value=(0, "master")):
+            current = CI_STATUS.apply_staleness(running, config, stale_check)
+
+        self.assertEqual(CI_STATUS.IN_PROGRESS, current["status"])
+        self.assertNotIn("stale_base_status", current)
+        self.assertNotIn("revision_distance", current)
+
     def test_github_actions_requests_history_for_the_named_workflow(self):
         check_config = {
             "name": "GitHub Actions / Linux",

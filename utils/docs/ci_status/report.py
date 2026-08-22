@@ -1461,9 +1461,17 @@ def stale_after_hours(config, check):
 
 def apply_staleness(result, config, check):
     threshold = stale_after_hours(config, check)
-    distance_count, distance_ref = None, None
-    if result["status"] != IN_PROGRESS:
-        distance_count, distance_ref = result_revision_distance(config, result)
+    distance_count, distance_ref = result_revision_distance(config, result)
+    if result["status"] == IN_PROGRESS and distance_count and distance_count > 0:
+        stale = dict(result)
+        stale["revision_commits_behind"] = distance_count
+        stale["revision_compare_ref"] = distance_ref
+        stale["revision_distance"] = revision_distance_text(distance_count, distance_ref)
+        stale["stale_base_status"] = result["status"]
+        stale["status"] = UNKNOWN
+        stale["status_label"] = "Stale running"
+        stale["message"] = f"{result.get('message', 'CI run')} ({stale['revision_distance']})"
+        return stale
     if result["status"] != IN_PROGRESS and distance_count and distance_count > 0:
         stale = dict(result)
         stale["revision_commits_behind"] = distance_count
