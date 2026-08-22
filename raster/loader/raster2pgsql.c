@@ -2943,6 +2943,7 @@ main(int argc, char **argv) {
 			config->rt_file_count++;
 			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
+				config->rt_file_count = 0;
 				rterror(_("Could not allocate memory for storing raster files"));
 				rtdealloc_config(config);
 				exit(1);
@@ -3027,6 +3028,7 @@ main(int argc, char **argv) {
 			rtdealloc(config->rt_file[--(config->rt_file_count)]);
 			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
+				config->rt_file_count = 0;
 				rterror(_("Could not reallocate the memory holding raster names"));
 				rtdealloc_config(config);
 				exit(1);
