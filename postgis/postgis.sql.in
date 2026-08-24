@@ -3768,7 +3768,7 @@ CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, bool
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
--- Availability: 3.6.0
+-- Availability: 3.7.0
 CREATE OR REPLACE FUNCTION ST_CatmullRomSmoothing(geometry, integer default 5)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_CatmullRomSmoothing'
