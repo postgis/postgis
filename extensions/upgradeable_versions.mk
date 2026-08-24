@@ -131,4 +131,4 @@ UPGRADEABLE_VERSIONS = \
 	3.7.0alpha1 \
 	3.7.0beta1 \
 	3.7.0beta2 \
-	3.7.0dev
+	3.7.0rc1
