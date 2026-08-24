@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-24 03:39+0000\n"
+"PO-Revision-Date: 2026-08-24 09:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -45167,6 +45167,9 @@ msgid ""
 "link>, Add a repository-owned CI status checker and static dashboard "
 "generator (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6087\">#6087</link>"
+", レポジトリー側で管理する CI ステータスチェッカーと性的ダッシュボード生成"
+"ツールを追加 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45246,6 +45249,10 @@ msgid ""
 "document `pg_config`-derived install paths more accurately (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5973\">#5973</link>"
+", デフォルトで `pg_config --bindir`のフォルダの下に PostGIS ユーティリティを"
+"インストールし、`pg_config` 関連のインストールパスの記述の精度を上げました "
+"(Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45280,6 +45287,9 @@ msgid ""
 "link>, Docs: keep code operators (&quot;=&gt;&quot;) intact in translated "
 "manuals by enforcing verbatim CSS (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5645\">#5645</link>"
+", 文書: コードブロックの CSS を強制することで、翻訳マニュアルでコード演算子 "
+"(&quot;=&gt;&quot;) が崩れないようにします (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45288,6 +45298,9 @@ msgid ""
 "link>, Docs: flatten transparent manual images onto white backgrounds for "
 "PDF builds while keeping HTML images transparent (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1408\">#1408</link>"
+", 文書: マニュアル画像の透明な背景を、HTML 用はそのままで、PDF 構築時には白背"
+"景にします (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45296,6 +45309,9 @@ msgid ""
 "link>, Emit valid X3D Coordinate nodes for 2D polygon output (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2838\">#2838</link>"
+",2次元ポリゴン出力の X3D 座標ノードについて妥当なものを出します (Darafei "
+"Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -46062,9 +46078,9 @@ msgstr ""
 "-2,-2 -1,-1 -1)))"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "GEOMETRYCOLLECTION(POINT(2 3), LINESTRING(2 3,3 4))"
-msgstr ""
+msgstr "GEOMETRYCOLLECTION(POINT(2 3), LINESTRING(2 3,3 4))"
 
 #. Tag: para
 #, no-c-format
@@ -46086,6 +46102,8 @@ msgid ""
 "For example, a statement to create and insert a spatial object from WKT with "
 "SRID 312 is:"
 msgstr ""
+"例えば、SRID 312 で WKT から空間オブジェクトを生成、挿入する手続きは次の通り"
+"です:"
 
 #. Tag: para
 #, no-c-format
@@ -51294,6 +51312,9 @@ msgid ""
 "band 1,2,3 of a raster to the HTTP response stream so it can be embedded in "
 "an <code>img</code> tag."
 msgstr ""
+"本節では Npgsql PostgreSQL.NET ドライバーと <xref "
+"linkend=\"RT_ST_AsGDALRaster\"/> 系の使い方を示します。1, 2, 3 バンドを HTTP "
+"応答ストリームに出力するので、<code>img</code> タグに埋め込むことができます。"
 
 #. Tag: para
 #, no-c-format
@@ -51325,16 +51346,19 @@ msgid ""
 "srid=2249</literal> to get the raster image in Massachusetts state plane "
 "feet."
 msgstr ""
+"<literal>http://mywebserver/TestRaster.ashx?srid=2249</literal> でフィート単"
+"位マサチューセッツ州平面のラスター画像を得るための処理プログラムを呼び出しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
 msgid "web.config connection string section:"
-msgstr ""
+msgstr "web.config の接続文字列設定部分:"
 
 #. Tag: para
 #, no-c-format
 msgid "Code for <filename>TestRaster.ashx</filename>:"
-msgstr ""
+msgstr "<filename>TestRaster.ashx</filename> のコード:"
 
 #. Tag: title
 #, no-c-format
@@ -51364,22 +51388,22 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "You can compile the following code with commands like:"
-msgstr ""
+msgstr "後で示すコードは次のようなコマンドでコンパイルできます:"
 
 #. Tag: para
 #, no-c-format
 msgid "And call it from the command line with something like:"
-msgstr ""
+msgstr "そしてコマンドラインから次のように実行します:"
 
 #. Tag: para
 #, no-c-format
 msgid "<filename>Manifest.txt</filename>:"
-msgstr ""
+msgstr "<filename>Manifest.txt</filename>:"
 
 #. Tag: para
 #, no-c-format
 msgid "Code for <filename>SaveQueryImage.java</filename>:"
-msgstr ""
+msgstr "<filename>SaveQueryImage.java</filename> のコード:"
 
 #. Tag: title
 #, no-c-format
@@ -51403,6 +51427,9 @@ msgid ""
 "daemon account needs write access to the folder; this echoes back the file "
 "names created."
 msgstr ""
+"5個の画像を異なるサイズで PostgreSQL サーバーに書き込みます。PostgreSQL "
+"デーモンアカウントはフォルダーへの書き込み権限が必要です。この例では生成した"
+"ファイル名が表示されます。"
 
 #. Tag: title
 #, no-c-format
@@ -51417,6 +51444,10 @@ msgid ""
 "legacy large object support. To use it, first launch your <command>psql</"
 "command> command line connected to your database."
 msgstr ""
+"悲しいことに PSQL はバイナリー出力の使いやすい組込み機能がありません。ここで"
+"示すのは PostgreSQL の少しレガシーなラージオブジェクト機能に便乗する"
+"ハッキングです。使用するにはデータベースへの <command>psql</command> "
+"コマンドライン接続が必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -51431,6 +51462,8 @@ msgid ""
 "Note the large object OID and export it to a file on your local computer, "
 "replacing the example path with the desired file path."
 msgstr ""
+"ラージオブジェクトの OID を記録して、例のパスを求めるファイルパスに入れ替えて"
+"ローカルのファイルにエクスポートします。"
 
 #. Tag: para
 #, no-c-format
