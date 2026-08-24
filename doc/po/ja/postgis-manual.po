@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-21 09:39+0000\n"
+"PO-Revision-Date: 2026-08-24 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -51435,7 +51435,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This deletes the file from large object storage in the database."
-msgstr ""
+msgstr "これはデータベース内のラージオブジェクトストレージからファイルを削除します。"
 
 #. Tag: title
 #, no-c-format
@@ -51540,6 +51540,11 @@ msgid ""
 "may contain small artifacts produced during grid alignment, see <xref "
 "linkend=\"ST_ReducePrecision\"/>."
 msgstr ""
+"任意パラメーター <code>gridSize</code> が与えらえれると (GEOS-3.9.0 が必要で"
+"す)、全ての結果の頂点が指定サイズのスナップ用グリッドに落ちることが保証されま"
+"す。グリッド上で行われる処理は、グリッドに揃える際に意図しない小さな変更が発"
+"生する可能性があることに注意して下さい。<xref "
+"linkend=\"ST_ReducePrecision\"/> を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
