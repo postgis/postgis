@@ -71,6 +71,7 @@ below dependencies (except for GTK):
     https://proj.org
 
 * GEOS (Required, Version 3.10 or higher)
+  - 3.15+ for ST_CoverageEdges
   - 3.14+ for ST_CoverageClean, raster ST_IntersectionFractions
   - 3.12+ for ST_CoverageSimplify and ST_CoverageInvalidEdges
   - 3.11+ for improved ST_ConcaveHull, ST_lineMerge,
