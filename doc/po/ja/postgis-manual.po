@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-25 01:39+0000\n"
+"PO-Revision-Date: 2026-08-25 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -45708,6 +45708,14 @@ msgid ""
 "boundary of a Polygon is its rings (LineStrings), the boundary of a "
 "LineString is its endpoints (Points), and the boundary of a Point is empty."
 msgstr ""
+"<xref linkend=\"DE-9IM\"/> に書かれている通りジオメトリーモデルによって"
+"トポロジー面での空間関係の評価が可能になります。これに対応するために、"
+"ジオメトリータイプごとに <emphasis role=\"bold\">内部</emphasis>、<emphasis "
+"role=\"bold\">境界</emphasis>、<emphasis role=\"bold\">外部</emphasis> が定義"
+"されています。ジオメトリーはトポロジー的に閉じていて、常に境界を持っています"
+"。境界はジオメトリーの幾何次元数から 1引いた幾何次元になります。たとえば、"
+"POLYGON の境界はリング (LINESTRING) で、LINESTRING の境界は端点 (POINT) で、"
+"POINTの境界は空です。"
 
 #. Tag: para
 #, no-c-format
@@ -45719,6 +45727,13 @@ msgid ""
 "storing and manipulating invalid geometry values. This allows detecting and "
 "fixing them if needed. See <xref linkend=\"OGC_Validity\"/>"
 msgstr ""
+"OGC ジオメトリーモデルでは、ジオメトリータイプごとに妥当性規則を規定していま"
+"す。これらの規則によってジオメトリー値が現実的な状況を表現することが保証され"
+"ます (例えば、穴が外側リングのさらに外にあるポリゴンを生成できますが、"
+"ジオメトリーとしては意味をなさないものであり、不正となります)。PostGIS は、ま"
+"た不正なジオメトリー値を格納、処理できます。これにより、必要に応じて"
+"ジオメトリーの検出、修正が可能です。<xref linkend=\"OGC_Validity\"/> を参照し"
+"て下さい。"
 
 #. Tag: title
 #, no-c-format
@@ -45825,6 +45840,11 @@ msgid ""
 "points or edges on their boundaries). For more details on MultiPolygon "
 "validity, see <xref linkend=\"OGC_Validity\"/>."
 msgstr ""
+"MULTIPOLYGON はポリゴンの重なりも隣接も無いコレクションです。コレクション内の"
+"ポリゴンは有限数のポイントで接触することがあります (二つのポリゴンがエッジを"
+"居有する場合には隣接します。境界のポイントまたはエッジで共有されている場合に"
+"は接触しています)。MULTIPOLGYON の詳細情報については <xref "
+"linkend=\"OGC_Validity\"/> をご覧下さい。"
 
 #. Tag: title
 #, no-c-format
@@ -46216,6 +46236,14 @@ msgid ""
 "option</emphasis></link> (SFS) specification, as well many others. See <xref "
 "linkend=\"reference\"/> for the full list of functions."
 msgstr ""
+"<varname>geometry</varname> データ型は <emphasis>透過</emphasis>、すなわち"
+"ジオメトリー値に関する関数の実行で全てのアクセスが可能です。関数で"
+"ジオメトリーオブジェクトの生成、全ての内部フィールドのアクセスと更新、および"
+"新しいジオメトリー値の計算が可能です。PostGIS は OGC <link "
+"xlink:href=\"https://portal.ogc.org/files/?artifact_id=25354\"><emphasis>"
+"Simple feature access - Part 2: SQL option</emphasis></link> (SFS) 仕様で指定"
+"されている全ての関数およびその他の多数の関数に対応しています。関数の完全な一"
+"覧については <xref linkend=\"reference\"/> を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -47063,6 +47091,10 @@ msgid ""
 "stated classification; example <emphasis role=\"bold\">(c)</emphasis> also "
 "verifies that the simple LineString is closed."
 msgstr ""
+"線ジオメトリーを分類するには <xref linkend=\"ST_IsSimple\"/> を使います。下に"
+"示すラベル付けした各結果は、関数が示された分類に合致すると判定したときだけ返"
+"されます。たとえば <emphasis role=\"bold\">(c)</emphasis> は LINESTRING が単"
+"純かつ閉じているかの確認をします。"
 
 #. Tag: para
 #, no-c-format
@@ -47083,6 +47115,9 @@ msgid ""
 "lines meet only at a shared endpoint, while in <emphasis role=\"bold\">(g)</"
 "emphasis> they cross in their interiors."
 msgstr ""
+"次の例では、三つの MULTILINESTRING に同じ分類を適用します。<emphasis "
+"role=\"bold\">(f)</emphasis> では、要素のラインが共有している端点だけで繋がり"
+"、<emphasis role=\"bold\">(g)</emphasis> では内部でクロスします。"
 
 #. Tag: para
 #, no-c-format
