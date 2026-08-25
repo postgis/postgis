@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-25 08:39+0000\n"
+"PO-Revision-Date: 2026-08-25 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -47223,6 +47223,11 @@ msgid ""
 "indistinguishable from a single vertex. PostGIS therefore treats them as "
 "redundant vertices, so they do not make an otherwise valid polygon invalid."
 msgstr ""
+"ポリゴン境界リングの連続重複点があるとリングは単純でないと判定されません。"
+"SFS 曲線モデルでは、曲線は連続的にたどれる経路になっています。連続で同じ座標"
+"になることはトポロジー的に頂点が一つだけの場合と判別がつきません。そのため "
+"PostGIS は連続重複点を冗長な頂点として扱い、連続重複点があるだけでは不正と判"
+"別しないようにしています。"
 
 #. Tag: para
 #, no-c-format
@@ -48043,6 +48048,9 @@ msgid ""
 "where all children do not have the same type and SRID, set the optional "
 "<varname>use_typmod</varname> argument to false."
 msgstr ""
+"子テーブル間で異なるジオメトリータイプや SRID を持つ継承テーブルのように、制"
+"約による定義を維持したい場合には、任意引数 <varname>use_typmod</varname> を "
+"FALSE にします。"
 
 #. Tag: para
 #, no-c-format
@@ -48052,6 +48060,9 @@ msgid ""
 "varname> for both typmod-based and constraint-based source columns. In this "
 "example we define a column using typmod and another using constraints."
 msgstr ""
+"従来の制約方式も使えますが、元のカラムを直接参照するビューのカラムは型修飾子"
+"方式と制約方式の両方について <varname>geometry_columns</varname> に正しく登録"
+"されます。この例では型修飾子方式のカラムと制約方式のカラムを定義します。"
 
 #. Tag: para
 #, no-c-format
@@ -48300,6 +48311,9 @@ msgid ""
 "loading transient staging data, but PostgreSQL does not preserve unlogged "
 "table contents after a crash or unclean shutdown."
 msgstr ""
+"対象テーブルを <literal>UNLOGGED</literal> とします。これにより一時的な中間"
+"データのロード速度が上がりますが、PostgreSQL は異常終了や正常でない"
+"シャットダウンの後に UNLOGGED テーブルの内容を保持しません。"
 
 #. Tag: para
 #, no-c-format
@@ -48309,6 +48323,9 @@ msgid ""
 "two names separated by white space and no trailing or leading space. For "
 "example:"
 msgstr ""
+"長いカラム名を 10文字の DBF カラム名に対応付けるファイルを指定します。"
+"ファイルの内容は 1行以上の空白区切りの 2項目で、行頭行末に空白を入れません。"
+"例えば次のようになります:"
 
 #. Tag: para
 #, no-c-format
@@ -48459,6 +48476,10 @@ msgid ""
 "use a single percent sign interactively and double percent signs in a batch "
 "file:"
 msgstr ""
+"シェープファイルのディレクトリーをロードするのに、ローダーをファイルごとに実"
+"行して、ファイル名からテーブル名を導きます。Windows では次のようにします。 "
+"<filename>cmd.exe</filename> 上ではパーセント記号は一つで、バッチファイルでは"
+"二つです:"
 
 #. Tag: para
 #, no-c-format
@@ -48467,6 +48488,9 @@ msgid ""
 "appended into one table, create the table from the first file and use "
 "<option>-a</option> for the remaining files."
 msgstr ""
+"全てのシェープファイルが同じ属性とデータ型を持っていて、これらを一つの"
+"テーブルに追加したいとき、最初のファイルを作り、残りのファイルは <option>-a</"
+"option> を使います。"
 
 #. Tag: title
 #, no-c-format
