@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-24 09:39+0000\n"
+"PO-Revision-Date: 2026-08-25 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -45008,6 +45008,10 @@ msgid ""
 "prefer requested CXX over pg_config --cc for internal C++ checks, and make "
 "fuzzer linking/runtime dependency packaging portable (Darafei Praliaskouski)"
 msgstr ""
+"[fuzzers] OSS-Fuzz のビルド/依存のロジックを PostGIS スクリプトに一元化し、内"
+"部 C++ チェックでは pg_config --cc より CXX の指定を優先し、fuzzer のリンク"
+"時/実行時の依存関係のパッケージ化を移植可能にしました (Darafei Praliaskouski "
+"さん)"
 
 #. Tag: title
 #, no-c-format
@@ -45320,6 +45324,9 @@ msgid ""
 "link>, Infer constraint metadata for direct view and materialized view "
 "geometry columns (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1705\">#1705</link>"
+", 通常のビューとマテリアライズドビューにおける、制約で定義された"
+"ジオメトリーカラムの制約メタデータの推測 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45328,6 +45335,9 @@ msgid ""
 "link>, [raster] Honor PostgreSQL interrupts in long-running GDAL progress "
 "callbacks (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/899\">GH-899</"
+"link>, [raster] GDAL で長時間実行する際の進捗コールバックで PostgreSQL の割込"
+"みを処理するよう変更 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45336,6 +45346,9 @@ msgid ""
 "link>, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2583\">#2583</link>"
+", TIN の ST_AsEWKT 出力での座標次元の修飾子 Z/ZM を維持するように変更 "
+"(Darafei Praliaskouski さん)"
 
 #. Tag: title
 #, no-c-format
@@ -45456,6 +45469,10 @@ msgid ""
 "executable example, generated figure, validation, HTML, and PDF workflows "
 "used by the manual."
 msgstr ""
+"マニュアルの編集または構築の前にレポジトリーの <link xlink:href=\"https://"
+"git.osgeo.org/gitea/postgis/postgis/src/branch/master/doc/development\">"
+"documentation development guide</link> を読んで下さい。マニュアルで使用する実"
+"行例、図の生成、評価、HTML、PDF の手順を説明しています。"
 
 #. Tag: para
 #, no-c-format
@@ -45608,6 +45625,13 @@ msgid ""
 "is 4D. The coordinate dimension is at least 2, because every geometry has at "
 "least X and Y coordinates."
 msgstr ""
+"座標には Z 座標や M 座標が含まれることがあります。Z 座標はしばしば高さを示し"
+"ます。M 座標は時刻や距離と言った計測された値を持ちます。ジオメトリーに Z 値ま"
+"たは M 値がある場合には、ジオメトリーの個々の点において値が設定されなければな"
+"りません。ジオメトリーが Z 値または M 値を持つ場合には、<emphasis "
+"role=\"bold\">座標次元</emphasis> は 3次元になります。Z 値と M 値の両方を持つ"
+"場合には、4次元になります。座標次元は少なくとも X 座標と Y 座標を持つので、少"
+"なくとも 2です。"
 
 #. Tag: para
 #, no-c-format
@@ -45638,6 +45662,10 @@ msgid ""
 "polygonal types have dimension 2, and solid types have dimension 3. "
 "Collections have the dimension of the maximum element dimension."
 msgstr ""
+"ジオメトリーの <emphasis role=\"bold\">次元</emphasis> はジオメトリータイプの"
+"属性です。ポイントタイプの次元は 0、ライン系タイプの次元は 1、ポリゴン系"
+"タイプの次元は 2、立体系タイプの次元は 3です。コレクションの次元は含まれる要"
+"素の次元の最大値です。"
 
 #. Tag: para
 #, no-c-format
@@ -46078,7 +46106,7 @@ msgstr ""
 "-2,-2 -1,-1 -1)))"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "GEOMETRYCOLLECTION(POINT(2 3), LINESTRING(2 3,3 4))"
 msgstr "GEOMETRYCOLLECTION(POINT(2 3), LINESTRING(2 3,3 4))"
 
@@ -46713,18 +46741,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "A NAD83 longitude/latitude geography value:"
-msgstr ""
+msgstr "NAD83 経度/緯度 地理座標系値:"
 
 #. Tag: para
 #, no-c-format
 msgid "A NAD27 longitude/latitude geography value:"
-msgstr ""
+msgstr "NAD27 経度/緯度 地理座標系値:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "NAD83 UTM zone meters fails because it is a meter-based planar projection."
-msgstr ""
+msgstr "NAD83 UTM はメートル単位の投影座標系なので失敗します。"
 
 #. Tag: para
 #, no-c-format
@@ -46739,7 +46767,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This query finds rows within a 1000 km tolerance:"
-msgstr ""
+msgstr "1000 km 範囲内の行を検索する:"
 
 #. Tag: para
 #, no-c-format
