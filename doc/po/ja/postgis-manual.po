@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-25 06:39+0000\n"
+"PO-Revision-Date: 2026-08-25 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -46930,6 +46930,11 @@ msgid ""
 "curvature and non-spherical shape of the Earth, whereas planar calculations "
 "assume a flat surface."
 msgstr ""
+"デフォルトでは、全ての距離と面積の計算が回転楕円体面上で行われます。局所域で"
+"の計算結果が適切な投影法に基づく平面での結果とよく一致します。広い領域に渡る"
+"回転楕円体面での計算は、投影座標系の平面上の計算より精度が上がります。回転楕"
+"円体面は地球の曲率と非球面形状を考慮に入れているのに対して、平面計算は平らな"
+"表面を仮定している点が違います。"
 
 #. Tag: para
 #, no-c-format
@@ -47226,6 +47231,9 @@ msgid ""
 "validity rules. Each labeled geometry is returned only if its computed "
 "validity agrees with the label."
 msgstr ""
+"次の例では <xref linkend=\"ST_IsValid\"/> を使って、妥当性規則を確認します。"
+"ラベルを付けたジオメトリーは、妥当性計算とラベルとが合っている場合にのみ返さ"
+"れます。"
 
 #. Tag: para
 #, no-c-format
@@ -47237,6 +47245,11 @@ msgid ""
 "role=\"bold\">(j)</emphasis> can instead be represented as a valid "
 "<varname>MULTIPOLYGON</varname>."
 msgstr ""
+"次の例の <emphasis role=\"bold\">(j-m)</emphasis> は不正です。ジオメトリーは"
+"それぞれ、内部での非接続、クロスするリング、ラインによる切断、外側リングの外"
+"にある穴です。評価理由は <xref linkend=\"ST_IsValidReason\"/> で確認していま"
+"す。<emphasis role=\"bold\">(j)</emphasis> で内部非接続ポリゴンは、妥当な "
+"<varname>MULTIPOLYGON</varname> として表現できます。"
 
 #. Tag: para
 #, no-c-format
@@ -47267,6 +47280,10 @@ msgid ""
 "<emphasis role=\"bold\">(o)</emphasis> they share an edge, and in <emphasis "
 "role=\"bold\">(p)</emphasis> their interiors overlap."
 msgstr ""
+"次の例では MULTIPOLYGON 規則を確認します。<emphasis role=\"bold\">(n)</"
+"emphasis> でポリゴンは一点だけで接触しています。<emphasis role=\"bold\">(o)</"
+"emphasis> でエッジを共有しています。<emphasis role=\"bold\">(p)</emphasis> で"
+"は内部が重なっています。"
 
 #. Tag: para
 #, no-c-format
@@ -47704,6 +47721,18 @@ msgid ""
 "varname>; the EPSG code is <varname>32600 + zone</varname> in the northern "
 "hemisphere or <varname>32700 + zone</varname> in the southern hemisphere."
 msgstr ""
+"一般的に使われる空間参照系には <link xlink:href=\"http://"
+"spatialreference.org/ref/epsg/4326/\">4326 - WGS 84 地理座標系</link>、<link "
+"xlink:href=\"http://spatialreference.org/ref/epsg/4269/\">4269 - NAD 83 地理"
+"座標系</link> (訳注: 日本では使いません)、<link xlink:href=\"http://"
+"spatialreference.org/ref/epsg/3395/\">3395 - WGS 84 メルカトル図法</link>"
+"、<link xlink:href=\"http://spatialreference.org/ref/epsg/2163/\">2163 - 米国"
+"ナショナルアトラス正積図法</link> (訳注: 日本では使いません)、WGS84 UTM 60個"
+"のゾーンがあります。UTM ゾーンは計測に最も適していますが、対応領域は経度 6度"
+"幅です。WGS84 経度緯度データからUTM ゾーンは <varname>least(floor((longitude "
+"+ 180) / 6) + 1, 60)</varname> (訳注: 北欧の一部ではズレがあります) となり、"
+"EPSG コードは、 北半球では <varname>32600 + zone</varname> となり、南半球で"
+"は <varname>32700 + zone</varname> となります。"
 
 #. Tag: para
 #, no-c-format
@@ -47903,7 +47932,7 @@ msgstr "フィーチャーテーブル内のジオメトリカラムの名前。
 msgid ""
 "The coordinate dimension (2, 3 or 4) of the column. The coordinate dimension "
 "is at least 2, representing X and Y coordinates."
-msgstr ""
+msgstr "カラムの座標次元 (2, 3, 4)。座標次元は、X, Y 座標があるので最低で 2です。"
 
 #. Tag: para
 #, no-c-format
@@ -47960,43 +47989,52 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "For example, suppose you have a view created like this."
-msgstr ""
+msgstr "例えば、次のようなビューを作ったとします。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "To register the geometry column correctly, cast the transformed geometry."
 msgstr ""
+"ジオメトリーカラムを正しく登録するには、ST_Transform の結果ジオメトリーに対し"
+"てキャストします。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If the geometry type is known to be a 2D Polygon, specify it in the cast."
 msgstr ""
+"ジオメトリータイプが 2次元ポリゴンになると分かっているならキャストで指定でき"
+"ます。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "For a derivative table created by a bulk insert, create the table first."
-msgstr ""
+msgstr "バルクインサートで派生テーブルを生成する場合には、先にテーブルを生成します。"
 
 #. Tag: para
 #, no-c-format
 msgid "Create a 2D spatial index on the new table."
-msgstr ""
+msgstr "新しいテーブル上での 2次元空間インデックスの生成。"
 
 #. Tag: para
 #, no-c-format
 msgid "If the points are 3D or measured, an n-D index may be more appropriate."
 msgstr ""
+"ポイントが 3次元または M 値を持つ場合には、n次元インデックスがより適切になり"
+"えます。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Manually register the new table's geometry column in "
 "<varname>geometry_columns</varname>. This also changes the underlying table "
 "structure to make the column typmod-based."
 msgstr ""
+"新しいテーブルのジオメトリーカラムを <varname>geometry_columns</varname> に手"
+"動登録します。これによって基礎となるテーブルの構造を変更してカラムを型修飾子"
+"が使われるように変わることにもなります。"
 
 #. Tag: para
 #, no-c-format
@@ -48021,6 +48059,8 @@ msgid ""
 "If we run <command>\\d pois_ny</command> in psql, we observe they are "
 "defined differently -- one is typmod, one is constraint."
 msgstr ""
+"psql で <command>\\d pois_ny</command> を使うと異なる定義になることが分かりま"
+"す。一方は型修飾子方式で、もう一方は制約方式です。"
 
 #. Tag: para
 #, no-c-format
@@ -48038,14 +48078,19 @@ msgid ""
 "Both the typmod based geom view column and the direct constraint based view "
 "column register correctly."
 msgstr ""
+"型修飾子方式のビューのジオメトリーカラムと制約方式のビューのカラムで正しく登"
+"録されたものの両方。"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If the view applies a spatial function to the geometry, such as "
 "<function>ST_Transform</function>, you still need to cast the transformed "
 "column explicitly so the view can expose the correct type and SRID:"
 msgstr ""
+"<function>ST_Transform</function> などの空間関数をジオメトリーに適用すると、"
+"変換されたカラムを明示的にキャストする必要があり、ビューは正しいタイプと "
+"SRID を見せることができます。"
 
 #. Tag: title
 #, no-c-format
@@ -48125,6 +48170,10 @@ msgid ""
 "filename>, <filename>.shx</filename>, and <filename>.dbf</filename> files "
 "before loading."
 msgstr ""
+"入力は、固めていないシェープファイルのパスでなければなりません。ローダーは "
+"<filename>.zip</filename> アーカイブを直接読めません。ロード前に <filename>"
+".shp</filename>、<filename>.shx</filename>、<filename>.dbf</filename> "
+"ファイルを展開します。"
 
 #. Tag: para
 #, no-c-format
@@ -48206,6 +48255,9 @@ msgid ""
 "literal>. The value must be a simple PostgreSQL identifier and cannot use a "
 "PostgreSQL system column name."
 msgstr ""
+"地物識別子のカラム名を指定します。デフォルトは <literal>gid</literal> です。"
+"値は単純な PostgreSQL 識別子でなければなりません。PostgreSQL システムカラム名"
+"は使えません。"
 
 #. Tag: para
 #, no-c-format
