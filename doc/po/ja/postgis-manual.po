@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-26 05:39+0000\n"
+"PO-Revision-Date: 2026-08-26 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -50757,10 +50757,10 @@ msgid ""
 "does not expose a generic ISO 19123 coverage SQL type, but geometry tables "
 "and raster values provide the building blocks for both directions."
 msgstr ""
-"カバレッジは、空間データを解釈する手法の一つで、<emphasis>位置</emphasis> か"
-"ら <emphasis>値</emphasis> に対応付けします。カバレッジの評価は、ある位置の値"
-"を尋ねることです。逆の問合せでは条件に合う値になる位置を尋ねます。PostGIS は"
-"包括的な ISO 19123 coverage SQL タイプを出していませんが、"
+"カバレッジは、空間データを解釈する手法の一つで、<emphasis>位置集合</"
+"emphasis> から <emphasis>値集合</emphasis> に対応付けます。カバレッジの評価は"
+"、ある位置の値を尋ねることです。逆の問合せでは条件に合う値になる位置を尋ねま"
+"す。PostGIS は包括的な ISO 19123 coverage SQL タイプを出していませんが、"
 "ジオメトリーテーブルとラスター値は順逆両方向のクエリーの構成要素となります。"
 
 #. Tag: para
@@ -50791,6 +50791,12 @@ msgid ""
 "columns in the same table row describe the raster value or tile as a whole; "
 "they do not attach separate values to individual cells."
 msgstr ""
+"ベクターカバレッジでは、ジオメトリーカラムは位置集合を提供し、他のカラムは属"
+"性値集合を提供します。ベクター値集合は、意味と型がカバレッジがどこで定義され"
+"ても首尾一貫するなら、文字、数値、他の空間値を含むことができます。"
+"ラスターカバレッジでは、各セルの位置は位置集合の一部でセルのバンド値は値集合"
+"を構成します。同じテーブル行の他のカラムはラスター値またはタイル全体を記述す"
+"るもので、個々のセルに個別の値を付けません。"
 
 #. Tag: para
 #, no-c-format
@@ -50801,11 +50807,16 @@ msgid ""
 "constraints exposed by <xref linkend=\"RT_Raster_Columns\"/> record and "
 "validate those properties."
 msgstr ""
+"論理的なラスターカバレッジは一つのラスターまたは一つのテーブルの多数のタイル"
+"として保存することができます。一つのカバレッジに属するタイルは SRID、解像度、"
+"アラインメント、バンド数、ピクセル型、NODATA の扱いに互換性があるべきです"
+"。<xref linkend=\"RT_Raster_Columns\"/> で見ることができる制約は、これらの"
+"プロパティを記録し、検証します。"
 
 #. Tag: title
 #, no-c-format
 msgid "Raster table arrangements."
-msgstr ""
+msgstr "ラスターテーブル構成。"
 
 #. Tag: para
 #, no-c-format
@@ -50815,54 +50826,58 @@ msgid ""
 "assumptions about tile size, alignment, gaps, and overlaps. PostGIS does not "
 "infer the intended arrangement from the column type alone."
 msgstr ""
+"ラスターカラムは画像ウェアハウス、タイル化されたカバレッジ、ラスター化された"
+"オブジェクトのコレクションを表現できます。これらの構成はタイルサイズ、"
+"アラインメント、隙間、重なりに関する前提が異なります。PostGIS はカラムタイプ"
+"だけから意図した構成を推論しません。"
 
 #. Tag: entry
 #, no-c-format
 msgid "Arrangement"
-msgstr ""
+msgstr "構成"
 
 #. Tag: entry
 #, no-c-format
 msgid "Row relationship"
-msgstr ""
+msgstr "行の関係"
 
 #. Tag: entry
 #, no-c-format
 msgid "Typical use"
-msgstr ""
+msgstr "代表的な使用法"
 
 #. Tag: entry
 #, no-c-format
 msgid "Image warehouse"
-msgstr ""
+msgstr "画像ウェアハウス"
 
 #. Tag: entry
 #, no-c-format
 msgid ""
 "Independent rasters; sizes, alignment, and extents may differ or overlap"
-msgstr ""
+msgstr "独立したラスター。サイズ、アラインメント、範囲は離れるか一部重複します"
 
 #. Tag: entry
 #, no-c-format
 msgid "Cataloging unrelated source images"
-msgstr ""
+msgstr "関連しない元画像のカタログ化"
 
 #. Tag: entry
 #, no-c-format
 msgid "Irregular tiled coverage"
-msgstr ""
+msgstr "不規則タイルカバレッジ"
 
 #. Tag: entry
 #, no-c-format
 msgid ""
 "One logical coverage with gaps allowed, variable tile sizes, and normally no "
 "overlap"
-msgstr ""
+msgstr "一つの論理カバレッジ、隙間可、可変タイルサイズ、通常は重複箇所無し"
 
 #. Tag: entry
 #, no-c-format
 msgid "Incremental or source-driven mosaics"
-msgstr ""
+msgstr "逐次追加型またはソース駆動型モザイク"
 
 #. Tag: entry
 #, no-c-format
@@ -50870,63 +50885,71 @@ msgid ""
 "One alignment and tile size with no overlap; gaps may remain at the boundary "
 "or inside the coverage"
 msgstr ""
+"一つのアラインメントとタイルサイズで重複箇所なし。隙間はカバレッジの境界また"
+"は内部に残る可能性あり"
 
 #. Tag: entry
 #, no-c-format
 msgid "Regular tiled coverage"
-msgstr ""
+msgstr "規則的タイルカバレッジ"
 
 #. Tag: entry
 #, no-c-format
 msgid "Indexed analysis over a large coverage"
-msgstr ""
+msgstr "大きなカバレッジの上でのインデックスを使った解析"
 
 #. Tag: entry
 #, no-c-format
 msgid "Equal aligned tiles fill a rectangular extent without gaps or overlaps"
 msgstr ""
+"隙間も重複も無い長方形範囲を満たす同じサイズかつ同じアラインメントを持つ"
+"タイル"
 
 #. Tag: entry
 #, no-c-format
 msgid "Rectangular regular coverage"
-msgstr ""
+msgstr "規則的長方形カバレッジ"
 
 #. Tag: entry
 #, no-c-format
 msgid "Predictable block processing and overview generation"
-msgstr ""
+msgstr "予測可能なブロック処理とオーバービュー生成"
 
 #. Tag: entry
 #, no-c-format
 msgid ""
 "Each image is internally regular but stored in its own table or partition"
 msgstr ""
+"個々の画像は内部では規則的だがそれぞれ別個のテーブルまたはパーティションに格"
+"納"
 
 #. Tag: entry
 #, no-c-format
 msgid "Separate tiled images"
-msgstr ""
+msgstr "分離タイル画像"
 
 #. Tag: entry
 #, no-c-format
 msgid "Keeping source-image identity and lifecycle separate"
-msgstr ""
+msgstr "元画像の識別性の維持と画像ごとの管理できる状態の維持"
 
 #. Tag: entry
 #, no-c-format
 msgid ""
 "Each row is a rasterized feature; extents and sizes may differ and overlap"
 msgstr ""
+"個々の行はラスター化された地物で、範囲とサイズは異なることがあり、かつ"
+"オーバーラップすることがある"
 
 #. Tag: entry
 #, no-c-format
 msgid "Raster-object coverage"
-msgstr ""
+msgstr "地物ラスター化カバレッジ"
 
 #. Tag: entry
 #, no-c-format
 msgid "Object models where cells replace or supplement vector geometry"
-msgstr ""
+msgstr "セルがベクトルジオメトリーを置き換えるか補完する地物モデル"
 
 #. Tag: para
 #, no-c-format
