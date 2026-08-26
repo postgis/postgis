@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-26 07:39+0000\n"
+"PO-Revision-Date: 2026-08-26 09:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -48031,15 +48031,15 @@ msgstr ""
 "えます。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Manually register the new table's geometry column in "
 "<varname>geometry_columns</varname>. This also changes the underlying table "
 "structure to make the column typmod-based."
 msgstr ""
 "新しいテーブルのジオメトリーカラムを <varname>geometry_columns</varname> に手"
-"動登録します。これによって基礎となるテーブルの構造を変更してカラムを型修飾子"
-"が使われるように変わることにもなります。"
+"動登録します。これによって基礎となるテーブルの構造を変更して、カラムで型修飾"
+"子が使われるようになります。"
 
 #. Tag: para
 #, no-c-format
@@ -48093,15 +48093,15 @@ msgstr ""
 "録されたものの両方。"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If the view applies a spatial function to the geometry, such as "
 "<function>ST_Transform</function>, you still need to cast the transformed "
 "column explicitly so the view can expose the correct type and SRID:"
 msgstr ""
-"<function>ST_Transform</function> などの空間関数をジオメトリーに適用すると、"
-"変換されたカラムを明示的にキャストする必要があり、ビューは正しいタイプと "
-"SRID を見せることができます。"
+"ビューが <function>ST_Transform</function> などの空間関数をジオメトリーに適用"
+"する場合でも、変換されたカラムを明示的にキャストする必要があります。これによ"
+"りビューは正しいタイプと SRID を示すことができます。"
 
 #. Tag: title
 #, no-c-format
@@ -50959,11 +50959,15 @@ msgid ""
 "spatial indexes and application constraints for relationships that the "
 "catalog cannot express."
 msgstr ""
+"共通の SRID、解像度、アラインメント、バンド、範囲、規則的ブロックのプロパティ"
+"の記録には <xref linkend=\"RT_AddRasterConstraints\"/> を使います。カタログが"
+"表現できない関係のために空間インデックスとアプリケーション側の制約を使います"
+"。"
 
 #. Tag: para
 #, no-c-format
 msgid "Queries against a tiled coverage normally have two stages:"
-msgstr ""
+msgstr "タイルカバレッジに対するクエリーには通常は二つの段階があります:"
 
 #. Tag: para
 #, no-c-format
@@ -50971,6 +50975,8 @@ msgid ""
 "Use the raster spatial index and <xref linkend=\"RT_ST_Intersects\"/> to "
 "select candidate tiles."
 msgstr ""
+"ラスター空間インデックスと <xref linkend=\"RT_ST_Intersects\"/> を使い候補"
+"タイルを選択します。"
 
 #. Tag: para
 #, no-c-format
@@ -50980,6 +50986,10 @@ msgid ""
 "<xref linkend=\"RT_ST_SummaryStatsAgg\"/>, and <xref "
 "linkend=\"RT_ST_DumpAsPolygons\"/>."
 msgstr ""
+"<xref linkend=\"RT_ST_Value\"/>、<xref linkend=\"RT_ST_Clip\"/>、<xref "
+"linkend=\"RT_ST_SummaryStatsAgg\"/>、<xref "
+"linkend=\"RT_ST_DumpAsPolygons\"/> といった関数を使って、これらのタイルの内側"
+"の値を読み、切り取り、集約し、ベクトル化します。"
 
 #. Tag: para
 #, no-c-format
@@ -50989,6 +50999,10 @@ msgid ""
 "inverse coverage queries, but polygonizing many cells is usually more "
 "expensive than keeping the operation in raster space."
 msgstr ""
+"は、ジオメトリーとセル値の組合せとなる <xref linkend=\"geomval\"/> の行を返し"
+"ます。これにより通常のジオメトリーのオーバーレイとフィルタによって逆"
+"カバレッジクエリーの答えを出せるようになりますが、多数のセルのポリゴン化は通"
+"常はラスターで処理を続ける場合よりも計算コストが高くなります。"
 
 #. Tag: para
 #, no-c-format
@@ -51000,6 +51014,12 @@ msgid ""
 "result in an appropriate projected coordinate system. That exact partial-"
 "cell method costs more because it vectorizes the selected cells."
 msgstr ""
+"境界の扱いを慎重に選択します。ラスターピクセルの切抜きと集約は通常は短く早い"
+"手順です。境界セルの一部を、そのセルに覆われる面積に比例して寄与させなければ"
+"ならない場合には、そのジオメトリーと <xref linkend=\"geomval\"/> 行とで"
+"インターセクトさせて、適切な投影座標系上の面積で重みづけした結果を計算します"
+"。この正確な部分セル法は選択セルのベクトル化を行うので、よりコストがかかりま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -51009,6 +51029,10 @@ msgid ""
 "and index overhead. Benchmark representative queries instead of treating one "
 "tile size as a universal default."
 msgstr ""
+"タイルサイズはインデックスを使うクエリーに影響を与えます: 小さいタイルでは、"
+"行とインデックスのオーバーヘッダが増える半面、個々の候補行で調査する"
+"ラスターデーターの数が減ります。一つのタイルサイズを共通のデフォルトとして扱"
+"う代わりに、代表クエリーでベンチマークを行います。"
 
 #. Tag: para
 #, no-c-format
@@ -51022,6 +51046,13 @@ msgid ""
 "tile selection, clipping, and aggregation pattern to an elevation or other "
 "continuous raster coverage."
 msgstr ""
+"現在の一連のラスター/ベクトル処理パターンでは、<xref "
+"linkend=\"RT_Raster_Loader\"/> によるデータのロードとタイル化をし、<xref "
+"linkend=\"RT_ST_SummaryStats\"/> で建物の例を参照します。インターセクトする"
+"タイルを選択し、個々のポリゴンで切り抜き、タイルごとの統計情報を地物ごとの結"
+"果とまとめます。動物の位置情報といったポイント観察では、最初にポイントに対し"
+"て適切な投影座標系の上でバッファーを施して、同じようにタイル選択、切抜き、集"
+"約のパターンを、標高や他の連続系ラスターカバレッジに適用します。"
 
 #. Tag: title
 #, no-c-format
