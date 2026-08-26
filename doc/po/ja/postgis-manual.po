@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-26 01:39+0000\n"
+"PO-Revision-Date: 2026-08-26 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -50218,6 +50218,8 @@ msgid ""
 "Long options that take values also accept the <option>--option=value</"
 "option> spelling."
 msgstr ""
+"ロングオプションは値を取り、<option>--option=value</option> の書き方を受け取"
+"ります。"
 
 #. Tag: para
 #, no-c-format
@@ -50264,11 +50266,16 @@ msgid ""
 "literal> for index creation too. This option cannot be used with <option>-d</"
 "option>. Append mode requires an explicit creation action."
 msgstr ""
+"テーブル生成には <literal>IF NOT EXISTS</literal> を使います。<option>-c</"
+"option> と <option>-p</option> モードが該当します。<option>-I</option> また"
+"は <option>--create-index</option> も指定されている時は <literal>IF NOT "
+"EXISTS</literal> を使います。<option>-d</option> と併用できません。追加モード"
+"は明示的にテーブルなどの生成が必要です。"
 
 #. Tag: term
 #, no-c-format
 msgid "Atomic loader actions"
-msgstr ""
+msgstr "ローダーの個別処理"
 
 #. Tag: para
 #, no-c-format
@@ -50283,6 +50290,15 @@ msgid ""
 "before the selected actions. With no mode specified, the default create/load "
 "actions still apply."
 msgstr ""
+"短形式のモードは明示的な処理をまとめたプリセットです。対応する"
+"ロングオプションは <option>--drop-table</option>、<option>--create-table</"
+"option>、<option>--load-data</option>、<option>--create-index</option>"
+"、<option>--add-constraints</option>、<option>--vacuum</option>、<option>--"
+"analyze</option>、<option>--no-transaction</option> です。<option>--if-not-"
+"exists</option> を追加すると、有効な生成処理で <literal>IF NOT EXISTS</"
+"literal> を使います。<option>--drop-table</option> は選択した処理の前に "
+"<literal>DROP TABLE IF EXISTS</literal> を出力します。モード指定をしない場合"
+"には、デフォルトの生成/ロード処理を行います。"
 
 #. Tag: term
 #, no-c-format
@@ -50306,6 +50322,8 @@ msgid ""
 "Disable setting the max extent constraint. Only applied if -C or --add-"
 "constraints is also used."
 msgstr ""
+"最大範囲制約を無効にします。-C または --add-constraints が併せて指定されてい"
+"る場合のみ適用されます。"
 
 #. Tag: para
 #, no-c-format
@@ -50313,6 +50331,9 @@ msgid ""
 "Set the constraints (spatially unique and coverage tile) for regular "
 "blocking. Only applied if -C or --add-constraints is also used."
 msgstr ""
+"規則的なブロック配置に対して、空間的に一意かつカバレッジタイルである制約を課"
+"します。-C または --add-constraints が併せて指定されている場合のみ適用されま"
+"す。"
 
 #. Tag: term
 #, no-c-format
@@ -50330,6 +50351,11 @@ msgid ""
 "or is zero, the raster metadata will be checked to determine an appropriate "
 "source SRID. Reprojection cannot be used with copy mode."
 msgstr ""
+"出力ラスターに指定した SRID を割り当てます。FROM_SRID も与えられた時、"
+"raster2pgsql は入力ラスターに FROM_SRID を設定して、ラスターを指定 SRID に投"
+"影変換した SQL を出力します。元の SRID が省略されるか 0に設定される場合には、"
+"適切な SRID を決定するためにラスターのメタデータを確認します。投影変換は複写"
+"モードでは使うことができません。"
 
 #. Tag: para
 #, no-c-format
@@ -50388,6 +50414,15 @@ msgid ""
 "overview is stored in the database and is not affected by -R. Note that your "
 "generated sql file will contain both the main table and overview tables."
 msgstr ""
+"ラスターのオーバービューを生成します。縮小係数が 2個以上の場合にはコンマ (,) "
+"区切ります。オーバービュー用のテーブルの名前は o_<varname>overview factor</"
+"varname>_<varname>table</varname> のパターンに従います。ここで <varname>"
+"overview factor</varname> にはオーバービューの縮小係数が入り、<varname>"
+"table</varname> は元となるテーブル名に置き換わります。元ラスターが既に寸法の"
+"一致するオーバービューを持っている場合には、そのオーバービューは再利用されま"
+"す。生成されたオーバービューはデータベース内に格納され、-R の影響を受けません"
+"。出力される SQL ファイルには主テーブルとオーバービューテーブルの両方が入るこ"
+"とにご注意下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -50422,7 +50457,7 @@ msgstr "PostgreSQL識別子に引用符を付けます。"
 #. Tag: para
 #, no-c-format
 msgid "Alias for <option>--create-index</option>."
-msgstr ""
+msgstr "<option>--create-index</option> の別名。"
 
 #. Tag: para
 #, no-c-format
@@ -50710,7 +50745,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Raster Coverages and Raster/Vector Analysis"
-msgstr ""
+msgstr "ラスターカバレッジとラスター/ベクター解析"
 
 #. Tag: para
 #, no-c-format
