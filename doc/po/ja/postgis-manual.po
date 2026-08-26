@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-26 03:39+0000\n"
+"PO-Revision-Date: 2026-08-26 05:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -50757,6 +50757,11 @@ msgid ""
 "does not expose a generic ISO 19123 coverage SQL type, but geometry tables "
 "and raster values provide the building blocks for both directions."
 msgstr ""
+"カバレッジは、空間データを解釈する手法の一つで、<emphasis>位置</emphasis> か"
+"ら <emphasis>値</emphasis> に対応付けします。カバレッジの評価は、ある位置の値"
+"を尋ねることです。逆の問合せでは条件に合う値になる位置を尋ねます。PostGIS は"
+"包括的な ISO 19123 coverage SQL タイプを出していませんが、"
+"ジオメトリーテーブルとラスター値は順逆両方向のクエリーの構成要素となります。"
 
 #. Tag: para
 #, no-c-format
@@ -50768,6 +50773,12 @@ msgid ""
 "table, or one or more raster values. A time column or function argument can "
 "add a temporal dimension without changing that distinction."
 msgstr ""
+"カバレッジは連続系になることができ、任意位置の計算値または補間値を得ます。離"
+"散系になることもでき、格納された空間オブジェクトまたはグリッドセルから値を得"
+"ます。カバレッジモデルはどうやって位置を値に対応付けるかを示したもので、"
+"モデルは、これらの値が数式から来たのか、テーブルから来たのか、一つ以上の"
+"ラスター値から来たのかは関係ありません。時刻型のカラムまたは関数引数によって"
+"連続/離散の区別の変更なしに時刻次元が追加できます。"
 
 #. Tag: para
 #, no-c-format
@@ -51494,6 +51505,9 @@ msgid ""
 "srid=2249</literal> to get the raster image in Massachusetts state plane "
 "feet."
 msgstr ""
+"このスクリプトは <literal>http://mywebserver/test_raster.php?srid=2249</"
+"literal> で呼んで、フィート単位マサチューセッツ州平面座標系のラスター画像を得"
+"ます。"
 
 #. Tag: title
 #, no-c-format
