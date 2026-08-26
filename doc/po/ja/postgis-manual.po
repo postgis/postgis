@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-25 10:39+0000\n"
+"PO-Revision-Date: 2026-08-26 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -49620,6 +49620,10 @@ msgid ""
 "matches the overlap pattern <literal>T*T***T**</literal> used by <xref "
 "linkend=\"ST_Overlaps\"/>."
 msgstr ""
+"下に重なっているポリゴンを具体例としてしまします。<xref "
+"linkend=\"ST_Relate\"/> は行列 <literal>212101212</literal> を算出し"
+"、<literal>T*T***T**</literal> パターンと合致します。このパターンは <xref "
+"linkend=\"ST_Overlaps\"/> で使われます。"
 
 #. Tag: para
 #, no-c-format
@@ -49630,6 +49634,9 @@ msgid ""
 "clipped to a finite viewport, since the true exterior/exterior intersection "
 "is unbounded."
 msgstr ""
+"実行可能クエリーと生成されるオーバーレイの上の部分が関係を見る元図です。"
+"クエリーの下の部分で、3x3 で 9要素の同種の例を生成しています。最後の外部/外部"
+"の要素は無限に広がるので有限範囲のビューポートで切り抜いています。"
 
 #. Tag: para
 #, no-c-format
@@ -49731,6 +49738,9 @@ msgid ""
 "computing the full DE-9IM intersection matrix with <xref "
 "linkend=\"ST_Relate\"/>."
 msgstr ""
+"名前のある空間関係は、求める空間フィルター条件を十分に満たせない場合がありま"
+"す。この場合には、<xref linkend=\"ST_Relate\"/> を使って完全な DE-9IM 交差行"
+"列による計算によって表現することができます。"
 
 #. Tag: para
 #, no-c-format
@@ -49765,6 +49775,9 @@ msgid ""
 "evaluated succinctly. The <xref linkend=\"ST_Relate\"/> and <xref "
 "linkend=\"ST_RelateMatch\"/> functions can both test these patterns."
 msgstr ""
+"交差行列のパターンを使って、特定の空間関係が簡潔に評価できます。<xref "
+"linkend=\"ST_Relate\"/> と <xref linkend=\"ST_RelateMatch\"/> は両方ともこの"
+"パターンと合致するかの判定ができます。"
 
 #. Tag: para
 #, no-c-format
@@ -49775,6 +49788,11 @@ msgid ""
 "pattern <literal>1*1***1**</literal> tests for a one-dimensional "
 "intersection instead."
 msgstr ""
+"次に示す二つの道路区間は、ラインの一部を共有しています。<xref "
+"linkend=\"ST_Crosses\"/> にラインを与えた場合には、内部の点でインターセクトす"
+"る時にだけ <varname>TRUE</varname> を返すので、この関係を判定できません"
+"。<literal>1*1***1**</literal> パターンはラインのインターセクションを判定しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -49784,6 +49802,9 @@ msgid ""
 "nearby counterexamples in the figure. The pattern <literal>102101FF2</"
 "literal> expresses the complete required relationship in one test."
 msgstr ""
+"次の例では、湖の内部から水涯線上に伸びるふ頭を検索します。端点の一方が水涯線"
+"上にあることを条件とします。他のふ頭は該当しない例です。<literal>102101FF2</"
+"literal> は、求める関係の完全なものを表現しています。"
 
 #. Tag: title
 #, no-c-format
@@ -50137,6 +50158,9 @@ msgid ""
 "analyzes the loaded table, records source filenames, and stores the input "
 "rasters in 100 by 100 pixel tiles."
 msgstr ""
+"ローダーが SRID を 4326にし、インデックスを作成し、標準の制約を作成し、ロード"
+"されたテーブルに ANALYZE をかけ、ソースファイル名を記録して、入力ラスターを "
+"100x100 ピクセルのタイルで保存します。"
 
 #. Tag: para
 #, no-c-format
@@ -50176,12 +50200,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "List the raster formats supported by this build:"
-msgstr ""
+msgstr "このコマンドが対応するラスターフォーマットの一覧:"
 
 #. Tag: para
 #, no-c-format
 msgid "The <option>-G</option> command outputs a list something like:"
-msgstr ""
+msgstr "<option>-G</option> コマンドの出力は次のようになります:"
 
 #. Tag: title
 #, no-c-format
