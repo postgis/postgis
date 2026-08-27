@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-26 09:39+0000\n"
+"PO-Revision-Date: 2026-08-27 00:14+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -29,19 +29,19 @@ msgstr "&database_tuning;"
 #. Tag: title
 #, no-c-format
 msgid "PostGIS Administration"
-msgstr "PostGIS管理"
+msgstr "PostGIS 管理"
 
 #. Tag: title
 #, no-c-format
 msgid "Configuring raster support"
-msgstr "ラスタ機能の設定"
+msgstr "ラスター機能の設定"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
-msgstr "ラスタ機能を有効にしたら、下に示す確実な設定方法を読んだ方がいいです。"
+msgstr "ラスター機能を有効にしたら、下に示す確実な設定方法を読んだ方がいいです。"
 
 #. Tag: para
 #, no-c-format
@@ -2207,8 +2207,8 @@ msgstr "2番目のエッジの識別子。"
 msgid ""
 "Two edges have an interior intersection. See <xref linkend=\"ST_Relate\"/>."
 msgstr ""
-"二つのエッジが内部でインタセクトしています。<xref linkend=\"ST_Relate\"/>をご"
-"覧下さい。"
+"二つのエッジが内部でインターセクトしています。<xref linkend=\"ST_Relate\"/> "
+"をご覧下さい。"
 
 #. Tag: entry
 #, no-c-format
@@ -3202,11 +3202,11 @@ msgid ""
 "boundaries) then an exception is thrown. If the point already exists as a "
 "node, an exception is thrown."
 msgstr ""
-"ポイントジオメトリの空間参照系 (SRID)がトポロジと同じでない場合、"
-"<varname>apoint</varname>がポイントジオメトリでない場合、ポイントがNULLである"
-"場合、または、ポイントが既存のエッジ (境界も含む)とインタセクトする場合には、"
-"例外が投げられます。また、ポイントが既にノードとして存在する場合、例外が投げ"
-"られます。"
+"ポイントジオメトリの空間参照系 (SRID) がトポロジと同じでない場合、<varname>"
+"apoint</varname> がポイントジオメトリでない場合、ポイントがNULLである場合、ま"
+"たは、ポイントが既存のエッジ (境界も含む) とインターセクトする場合には、例外"
+"が投げられます。また、ポイントが既にノードとして存在する場合、例外が投げられ"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -3692,10 +3692,11 @@ msgid ""
 "the new location is in a different face (since 3.2.0) then an exception is "
 "thrown."
 msgstr ""
-"引数がNULLの場合、<varname>apoint</varname>がポイントでない場合、既存のノード"
-"が孤立していない (既存のエッジの始端か終端になっている)場合、新しいノード位置"
-"が既存のエッジとインタセクトする場合 (終端であっても)、新しい位置が異なるフェ"
-"イス内にある場合 (3.2.0以降)のいずれかの場合には、例外が投げられます。"
+"引数が NULL の場合、<varname>apoint</varname> がポイントでない場合、既存の"
+"ノードが孤立していない (既存のエッジの始端か終端になっている)場合、新しい"
+"ノード位置が既存のエッジとインターセクトする場合 (終端であっても)、新しい位置"
+"が異なるフェイス内にある場合 (3.2.0以降) のいずれかの場合には、例外が投げられ"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -3844,7 +3845,7 @@ msgstr "トポロジアクセサ"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Finds the edge-id of an edge that intersects a given point."
-msgstr "与えられたポイントにインタセクトするエッジの識別番号を探索します。"
+msgstr "与えられたポイントにインターセクトするエッジの識別番号を探索します。"
 
 #. Tag: para
 #, no-c-format
@@ -13676,9 +13677,9 @@ msgid ""
 "If provided, the knot vector must have exactly (<varname>npoints</varname> + "
 "<varname>degree</varname> + 1) elements and must be non-decreasing."
 msgstr ""
-"任意パラメーター<varname>knots</varname>配列はパラメーター空間を定義します。"
-"NULLまたは省略された場合には、クランプされた一様のノットベクトルが自動的に生"
-"成されます。ノットベクトルを与えた場合には、(<varname>npoints</varname> + "
+"任意パラメーター <varname>knots</varname> 配列はパラメーター空間を定義します"
+"。NULLまたは省略された場合には、クランプされた一様のノットベクトルが自動的に"
+"生成されます。ノットベクトルを与えた場合には、(<varname>npoints</varname> + "
 "<varname>degree</varname> + 1)を確実に持たなければならず、かつ降順であっては"
 "なりません。"
 
@@ -19545,8 +19546,8 @@ msgid ""
 "<varname>degrees()</varname>."
 msgstr ""
 "方位角は参照ベクトルと一つのポイントとの間の角度と定義される数学的概念で、角"
-"度の単位はラジアンです。ラジアン単位の結果はPostgreSQL関数"
-"<varname>degrees()</varname>で度に変換できます。"
+"度の単位はラジアンです。ラジアン単位の結果は PostgreSQL 関数 <varname>degrees"
+"()</varname> で度に変換できます。"
 
 #. Tag: para
 #, no-c-format
@@ -19628,8 +19629,8 @@ msgid ""
 "the points P1-P2-P3. If a 4th point provided computes the angle points P1-P2 "
 "and P3-P4"
 msgstr ""
-"<emphasis role=\"bold\">形式1:</emphasis>P1-P2-P3がなす角度を計算します。4番"
-"目のポイントが充てられた場合には、P1-P2とP3-P4がなす角度を計算します。"
+"<emphasis role=\"bold\">形式1:</emphasis> P1-P2-P3がなす角度を計算します。4番"
+"目のポイントが充てられた場合にはP1-P2とP3-P4がなす角度を計算します"
 
 #. Tag: para
 #, no-c-format
@@ -19638,8 +19639,8 @@ msgid ""
 "vectors S1-E1 and S2-E2, defined by the start and end points of the input "
 "lines"
 msgstr ""
-"<emphasis role=\"bold\">形式2:</emphasis> 入力ラインで定義される始端と終端ベ"
-"クトルS1-E1とS2-E2の間の角度を計算します。"
+"<emphasis role=\"bold\">形式2:</emphasis> 入力ラインで定義される始端と終端"
+"ベクトルS1-E1とS2-E2の間の角度を計算します"
 
 #. Tag: para
 #, no-c-format
@@ -33939,13 +33940,13 @@ msgid ""
 "results by the proper usage of <xref linkend=\"RT_ST_Intersects\"/> in the "
 "WHERE clause."
 msgstr ""
-"前半の三つの形式は、geomvalの集合を返すもので、ベクタ空間で動作します。ラスタ"
-"は初めにgeomval行の集合にベクトル化されます (<xref "
-"linkend=\"RT_ST_DumpAsPolygons\"/>を使用)。これらの行はPostGIS関数の<xref "
-"linkend=\"ST_Intersection\"/>(geometry, geometry)を使ってジオメトリとインタセ"
-"クトさせます。NODATA値の領域とだけインタセクトするジオメトリについては空ジオ"
-"メトリを返します。通常はWHERE節で<xref linkend=\"RT_ST_Intersects\"/>を使って"
-"結果から確実に排除します。"
+"前半の三つの形式は、geomval の集合を返すもので、ベクター空間で動作します。"
+"ラスタは初めに geomval 行の集合にベクター化されます (<xref "
+"linkend=\"RT_ST_DumpAsPolygons\"/> を使用)。これらの行は PostGIS 関数の "
+"<xref linkend=\"ST_Intersection\"/>(geometry, geometry) を使ってジオメトリー"
+"とインターセクトさせます。NODATA値の領域とだけインターセクトするジオメトリー"
+"については空ジオメトリーを返します。通常はWHERE節で <xref "
+"linkend=\"RT_ST_Intersects\"/> を使って結果から確実に排除します。"
 
 #. Tag: para
 #, no-c-format
@@ -41641,7 +41642,7 @@ msgstr ", <xref linkend=\"CG_3DRotate\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Rotates a geometry in 3D space around an axis vector."
-msgstr "ジオメトリを指定したベクトルを軸に3次元空間で回転させます。"
+msgstr "ジオメトリーを指定したベクトルを軸に 3次元空間で回転させます。"
 
 #. Tag: para
 #, no-c-format
@@ -41651,9 +41652,10 @@ msgid ""
 "parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) passing "
 "through the origin (0,0,0)."
 msgstr ""
-"入力ジオメトリ<parameter>geom</parameter>を (0,0)と (<parameter>ax</"
-"parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) とを結ぶベ"
-"クトルを軸に<parameter>angle</parameter>ラジアンで3次元空間で回転させます。"
+"入力ジオメトリー <parameter>geom</parameter> を (0,0) と (<parameter>ax</"
+"parameter>, <parameter>ay</parameter>, <parameter>az</parameter>) とを結ぶ"
+"ベクトルを軸に <parameter>angle</parameter> ラジアンで 3次元空間で回転させま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -42130,7 +42132,7 @@ msgstr "1階: 正接ベクトル (方向と速度)"
 #. Tag: para
 #, no-c-format
 msgid "Order 2: Curvature vector (how the tangent changes)"
-msgstr "2階: 曲率ベクトル (正接の変更)"
+msgstr "2階: 曲率ベクトル (正接の変化)"
 
 #. Tag: para
 #, no-c-format
@@ -42163,8 +42165,8 @@ msgid ""
 "Returns a POINT geometry representing the derivative vector at the specified "
 "parameter."
 msgstr ""
-"指定したパラメーターにおける導関数ベクトルを表現するPOINTジオメトリーを返しま"
-"す。"
+"指定したパラメーターにおける導関数ベクトルを表現する POINT ジオメトリーを返し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -46553,10 +46555,10 @@ msgid ""
 "simpler to implement and faster to execute, but also makes them inaccurate "
 "for data on the spheroidal surface of the earth."
 msgstr ""
-"PostGISジオメトリ型の基礎は平面です。平面上の2点間の最短経路は直線です。ジオ"
-"メトリに関する関数 (面積、距離、長さ、インタセクション等)は直線ベクトルとデカ"
-"ルト平面を使って計算しています。これで実装が簡単になり実行速度も上がります"
-"が、地球の球面の上にあるデータについては不正確になります。"
+"PostGIS ジオメトリー型の基礎は平面です。平面上の 2点間の最短経路は直線です。"
+"ジオメトリーに関する関数 (面積、距離、長さ、インタセクション等) は直線"
+"ベクトルとデカルト平面を使って計算しています。これで実装が簡単になり実行速度"
+"も上がりますが、地球の球面の上にあるデータについては不正確になります。"
 
 #. Tag: para
 #, no-c-format
@@ -50949,7 +50951,7 @@ msgstr "地物ラスター化カバレッジ"
 #. Tag: entry
 #, no-c-format
 msgid "Object models where cells replace or supplement vector geometry"
-msgstr "セルがベクトルジオメトリーを置き換えるか補完する地物モデル"
+msgstr "セルがベクタージオメトリーを置き換えるか補完する地物モデル"
 
 #. Tag: para
 #, no-c-format
@@ -50989,7 +50991,7 @@ msgstr ""
 "<xref linkend=\"RT_ST_Value\"/>、<xref linkend=\"RT_ST_Clip\"/>、<xref "
 "linkend=\"RT_ST_SummaryStatsAgg\"/>、<xref "
 "linkend=\"RT_ST_DumpAsPolygons\"/> といった関数を使って、これらのタイルの内側"
-"の値を読み、切り取り、集約し、ベクトル化します。"
+"の値を読み、切り取り、集約し、ベクター化します。"
 
 #. Tag: para
 #, no-c-format
@@ -51018,7 +51020,7 @@ msgstr ""
 "手順です。境界セルの一部を、そのセルに覆われる面積に比例して寄与させなければ"
 "ならない場合には、そのジオメトリーと <xref linkend=\"geomval\"/> 行とで"
 "インターセクトさせて、適切な投影座標系上の面積で重みづけした結果を計算します"
-"。この正確な部分セル法は選択セルのベクトル化を行うので、よりコストがかかりま"
+"。この正確な部分セル法は選択セルのベクター化を行うので、よりコストがかかりま"
 "す。"
 
 #. Tag: para
@@ -51046,7 +51048,7 @@ msgid ""
 "tile selection, clipping, and aggregation pattern to an elevation or other "
 "continuous raster coverage."
 msgstr ""
-"現在の一連のラスター/ベクトル処理パターンでは、<xref "
+"現在の一連のラスター/ベクター処理パターンでは、<xref "
 "linkend=\"RT_Raster_Loader\"/> によるデータのロードとタイル化をし、<xref "
 "linkend=\"RT_ST_SummaryStats\"/> で建物の例を参照します。インターセクトする"
 "タイルを選択し、個々のポリゴンで切り抜き、タイルごとの統計情報を地物ごとの結"
