@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-28 01:39+0000\n"
+"PO-Revision-Date: 2026-08-28 07:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -121,9 +121,9 @@ msgstr ""
 "Windows でサービスとして実行している場合には、システム変数で設定します。"
 "Windows 7 では、コンピューターを右クリック -&gt; プロパティをクリックするか、"
 "エクスプローラーの検索バーに <varname>コントロール パネル\\すべてのコ"
-"ントロール パネル項目\\システム</varname> を指定します。 それから、<emphasis>"
-"システムの詳細設定 -&gt; 詳細設定 -&gt; 環境変数 </emphasis> を順にクリックし"
-"て、新しいシステム環境変数を追加します。"
+"ントロール パネル項目\\システム</varname> を指定します。 それから、 "
+"<emphasis>システムの詳細設定 -&gt; 詳細設定 -&gt; 環境変数 </emphasis> を順に"
+"クリックして、新しいシステム環境変数を追加します。"
 
 #. Tag: para
 #, no-c-format
@@ -209,9 +209,9 @@ msgid ""
 msgstr ""
 "中核の PostGIS オブジェクト (ジオメトリ型とジオグラフィ型、これらに対応する関"
 "数) は <filename>postgis.sql</filename> スクリプトにあります。"
-"ラスタオブジェクトは <filename>rtpostgis.sql</filename> スクリプトにあります"
-"。トポロジオブジェクトは <filename>topology.sql</filename> スクリプトにありま"
-"す。"
+"ラスターオブジェクトは <filename>rtpostgis.sql</filename> スクリプトにありま"
+"す。トポロジオーブジェクトは <filename>topology.sql</filename> スクリプトにあ"
+"ります。"
 
 #. Tag: para
 #, no-c-format
@@ -235,9 +235,9 @@ msgid ""
 "<command>psql</command> terminal window."
 msgstr ""
 "PostGIS 関数にコメントを追加したい場合には、<filename>postgis_comments.sql</"
-"filename> スクリプト内にコメントがあるのが分かると思います。コメントは "
-"<command>psql</command> のターミナルウィンドウから単に <command>\\dd [関数"
-"名]</command> と打ち込むだけで見ることができます。"
+"filename> スクリプト内にコメントがあります。コメントは <command>\\dd [関数"
+"名]</command> を <command>psql</command> のターミナルウィンドウから打ち込むだ"
+"けで見ることができます。"
 
 #. Tag: para
 #, no-c-format
@@ -301,10 +301,10 @@ msgid ""
 "way, you are advised to switch your install to extensions because the script "
 "way is no longer supported."
 msgstr ""
-"エクステンションを使ってデータベースをインストールした場合には、エクステン"
-"ションモデルでアップグレードしなければなりません。 古いSQLスクリプトを使って"
-"インストールした場合には、SQLスクリプトは既にサポートされていませんので、エク"
-"ステンションに切り替えるべきです。"
+"エクステンションを使ってデータベースをインストールした場合には、"
+"エクステンションモデルでアップグレードしなければなりません。 古い SQL "
+"スクリプトを使ってインストールした場合には、SQL スクリプトは既にサポートされ"
+"ていませんので、エクステンションに切り替えるべきです。"
 
 #. Tag: title
 #, no-c-format
@@ -328,8 +328,8 @@ msgid ""
 "Use the <xref linkend=\"PostGIS_Extensions_Upgrade\"/> function to upgrade "
 "to the latest version you have installed."
 msgstr ""
-"インストール済みのバージョンのうち最新バージョンにアップグレードするに"
-"は<xref linkend=\"PostGIS_Extensions_Upgrade\"/> 関数を使います。"
+"インストール済みのバージョンのうち最新のものにアップグレードするには <xref "
+"linkend=\"PostGIS_Extensions_Upgrade\"/> 関数を使います。"
 
 #. Tag: para
 #, no-c-format
@@ -2833,8 +2833,8 @@ msgid ""
 "Create a topology for Rhode Island called <varname>ri_topo</varname> in "
 "spatial reference system State Plane-feet (SRID = 3438)"
 msgstr ""
-"<varname>ri_topo</varname>という名前の、空間参照系をフィート平面 (SRID = "
-"3438)としたロードアイランドのトポロジの生成"
+"<varname>ri_topo</varname> という名前の、空間参照系をフィート平面 (SRID = "
+"3438) としたロードアイランドのトポロジーの生成"
 
 #. Tag: para
 #, no-c-format
