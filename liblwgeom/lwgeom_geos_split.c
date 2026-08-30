@@ -32,10 +32,14 @@
 
 static LWGEOM* lwline_split_by_line(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
 static LWGEOM* lwline_split_by_point(const LWLINE* lwgeom_in, const LWPOINT* blade_in);
+static LWGEOM *lwline_split_by_point_tolerance(const LWLINE *lwgeom_in, const LWPOINT *blade_in, double tolerance);
 static LWGEOM* lwline_split_by_mpoint(const LWLINE* lwgeom_in, const LWMPOINT* blade_in);
+static LWGEOM *lwline_split_by_mpoint_tolerance(const LWLINE *lwgeom_in, const LWMPOINT *blade_in, double tolerance);
 static LWGEOM* lwline_split(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
+static LWGEOM *lwline_split_tolerance(const LWLINE *lwgeom_in, const LWGEOM *blade_in, double tolerance);
 static LWGEOM* lwpoly_split_by_line(const LWPOLY* lwgeom_in, const LWGEOM* blade_in);
 static LWGEOM* lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in);
+static LWGEOM *lwcollection_split_tolerance(const LWCOLLECTION *lwcoll_in, const LWGEOM *blade_in, double tolerance);
 static LWGEOM* lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in);
 
 /* Initializes and uses GEOS internally */
@@ -163,12 +167,18 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWGEOM* blade_in)
 static LWGEOM*
 lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 {
+	return lwline_split_by_point_tolerance(lwline_in, blade_in, 0.0);
+}
+
+static LWGEOM *
+lwline_split_by_point_tolerance(const LWLINE *lwline_in, const LWPOINT *blade_in, double tolerance)
+{
 	LWMLINE* out;
 
 	out = lwmline_construct_empty(lwline_in->srid,
 		FLAGS_GET_Z(lwline_in->flags),
 		FLAGS_GET_M(lwline_in->flags));
-	if ( lwline_split_by_point_to(lwline_in, blade_in, out) < 2 )
+	if (lwline_split_by_point_to_tolerance(lwline_in, blade_in, out, tolerance) < 2)
 	{
 		lwmline_add_lwline(out, lwline_clone_deep(lwline_in));
 	}
@@ -181,6 +191,12 @@ lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 
 static LWGEOM*
 lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
+{
+	return lwline_split_by_mpoint_tolerance(lwline_in, mp, 0.0);
+}
+
+static LWGEOM *
+lwline_split_by_mpoint_tolerance(const LWLINE *lwline_in, const LWMPOINT *mp, double tolerance)
 {
   LWMLINE* out;
   uint32_t i, j;
@@ -196,7 +212,7 @@ lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
     {
       lwline_in = out->geoms[j];
       LWPOINT *blade_in = mp->geoms[i];
-      int ret = lwline_split_by_point_to(lwline_in, blade_in, out);
+      int ret = lwline_split_by_point_to_tolerance(lwline_in, blade_in, out, tolerance);
       if ( 2 == ret )
       {
         /* the point splits this line,
@@ -219,6 +235,12 @@ lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
 int
 lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
                          LWMLINE* v)
+{
+	return lwline_split_by_point_to_tolerance(lwline_in, blade_in, v, 0.0);
+}
+
+int
+lwline_split_by_point_to_tolerance(const LWLINE *lwline_in, const LWPOINT *blade_in, LWMLINE *v, double tolerance)
 {
 	double mindist_sqr = -1;
 	POINT4D pt, pt_projected;
@@ -270,7 +292,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	LWDEBUGF(3, "mindist: %.15g", mindist_sqr);
 
 	/* No intersection */
-	if (mindist_sqr > 0)
+	if (mindist_sqr > tolerance * tolerance)
 		return 0;
 
 	/* empty or single-point line, intersection on boundary */
@@ -284,19 +306,21 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	getPoint4d_p(ipa, seg, &p1);
 	getPoint4d_p(ipa, seg+1, &p2);
 	closest_point_on_segment(&pt, &p1, &p2, &pt_projected);
-	/* But X and Y we want the ones of the input point,
+	/* In exact mode, X and Y we want the ones of the input point,
 	 * as on some architectures the interpolation math moves the
 	 * coordinates (see #3422)
 	 */
-	pt_projected.x = pt.x;
-	pt_projected.y = pt.y;
+	if (tolerance == 0.0)
+	{
+		pt_projected.x = pt.x;
+		pt_projected.y = pt.y;
+	}
 
 	LWDEBUGF(3, "Projected point:(%.15g %.15g), seg:%d, p1:(%.15g %.15g), p2:(%.15g %.15g)", pt_projected.x, pt_projected.y, seg, p1.x, p1.y, p2.x, p2.y);
 
 	/* When closest point == an endpoint, this is a boundary intersection.
-	 * Compare only X and Y since pt_projected.x/y were forced to pt.x/y above,
-	 * and Z/M may be NaN when line coordinates are very large (causing Inf/Inf
-	 * in closest_point_on_segment). See #5916. */
+	 * Compare only X and Y because Z/M may be NaN when line coordinates are
+	 * very large (causing Inf/Inf in closest_point_on_segment). See #5916. */
 	if ( ( (seg == nsegs-1) && (pt_projected.x == p2.x) && (pt_projected.y == p2.y) ) ||
 	     ( (seg == 0)       && (pt_projected.x == p1.x) && (pt_projected.y == p1.y) ) )
 	{
@@ -358,6 +382,20 @@ lwline_split(const LWLINE* lwline_in, const LWGEOM* blade_in)
 		return NULL;
 	}
 	return NULL;
+}
+
+static LWGEOM *
+lwline_split_tolerance(const LWLINE *lwline_in, const LWGEOM *blade_in, double tolerance)
+{
+	switch (blade_in->type)
+	{
+	case POINTTYPE:
+		return lwline_split_by_point_tolerance(lwline_in, (LWPOINT *)blade_in, tolerance);
+	case MULTIPOINTTYPE:
+		return lwline_split_by_mpoint_tolerance(lwline_in, (LWMPOINT *)blade_in, tolerance);
+	default:
+		return lwline_split(lwline_in, blade_in);
+	}
 }
 
 /* Initializes and uses GEOS internally */
@@ -626,6 +664,63 @@ lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in)
 	return (LWGEOM*)out;
 }
 
+static LWGEOM *
+lwcollection_split_tolerance(const LWCOLLECTION *lwcoll_in, const LWGEOM *blade_in, double tolerance)
+{
+	LWGEOM **split_vector = NULL;
+	LWCOLLECTION *out;
+	size_t split_vector_capacity;
+	size_t split_vector_size = 0;
+	size_t i, j;
+
+	split_vector_capacity = 8;
+	split_vector = lwalloc(split_vector_capacity * sizeof(LWGEOM *));
+	if (!split_vector)
+	{
+		lwerror("Out of virtual memory");
+		return NULL;
+	}
+
+	for (i = 0; i < lwcoll_in->ngeoms; ++i)
+	{
+		LWCOLLECTION *col;
+		LWGEOM *split = lwgeom_split_with_tolerance(lwcoll_in->geoms[i], blade_in, tolerance);
+		/* an exception should prevent this from ever returning NULL */
+		if (!split)
+			return NULL;
+
+		col = lwgeom_as_lwcollection(split);
+		/* Output, if any, will always be a collection */
+		assert(col);
+
+		/* Reallocate split_vector if needed */
+		if (split_vector_size + col->ngeoms > split_vector_capacity)
+		{
+			/* NOTE: we could be smarter on reallocations here */
+			split_vector_capacity += col->ngeoms;
+			split_vector = lwrealloc(split_vector, split_vector_capacity * sizeof(LWGEOM *));
+			if (!split_vector)
+			{
+				lwerror("Out of virtual memory");
+				return NULL;
+			}
+		}
+
+		for (j = 0; j < col->ngeoms; ++j)
+		{
+			col->geoms[j]->srid = SRID_UNKNOWN; /* strip srid */
+			split_vector[split_vector_size++] = col->geoms[j];
+		}
+		lwfree(col->geoms);
+		lwfree(col);
+	}
+
+	/* Now split_vector has split_vector_size geometries */
+	out = lwcollection_construct(COLLECTIONTYPE, lwcoll_in->srid, NULL, split_vector_size, split_vector);
+
+	return (LWGEOM *)out;
+}
+
 static LWGEOM*
 lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 {
@@ -667,3 +762,22 @@ lwgeom_split(const LWGEOM* lwgeom_in, const LWGEOM* blade_in)
 
 }
 
+LWGEOM *
+lwgeom_split_with_tolerance(const LWGEOM *lwgeom_in, const LWGEOM *blade_in, double tolerance)
+{
+	if (tolerance == 0.0)
+		return lwgeom_split(lwgeom_in, blade_in);
+
+	switch (lwgeom_in->type)
+	{
+	case LINETYPE:
+		return lwline_split_tolerance((const LWLINE *)lwgeom_in, blade_in, tolerance);
+
+	case MULTILINETYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_split_tolerance((const LWCOLLECTION *)lwgeom_in, blade_in, tolerance);
+
+	default:
+		return lwgeom_split(lwgeom_in, blade_in);
+	}
+}
