@@ -6,6 +6,11 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 These are only changes since 3.7.0beta2.
 
+* Enhancements *
+
+ - #4048, Add public ST_BestSRID geography helper
+          (Darafei Praliaskouski)
+
 * Bug Fixes *
 
  - GH-1172, GH-1173, GH-1174, guard lwgeom_wrapx and raster OOM cleanup paths
