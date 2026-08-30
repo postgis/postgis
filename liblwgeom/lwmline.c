@@ -52,13 +52,15 @@ LWMLINE* lwmline_add_lwline(LWMLINE *mobj, const LWLINE *obj)
 * Re-write the measure ordinate (or add one, if it isn't already there) interpolating
 * the measure between the supplied start and end values.
 */
-LWMLINE*
-lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end)
+static LWMLINE *
+lwmline_measured_from_lwmline_internal(const LWMLINE *lwmline, double m_start, double m_end, int use_3d)
 {
 	uint32_t i = 0;
 	int hasm = 0, hasz = 0;
 	double length = 0.0, length_so_far = 0.0;
 	double m_range = m_end - m_start;
+	uint32_t non_empty_count = 0;
+	uint32_t non_empty_index = 0;
 	LWGEOM **geoms = NULL;
 
 	if ( lwmline->type != MULTILINETYPE )
@@ -76,8 +78,10 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 		LWLINE *lwline = (LWLINE*)lwmline->geoms[i];
 		if ( lwline->points && lwline->points->npoints > 1 )
 		{
-			length += ptarray_length_2d(lwline->points);
+			length += use_3d ? ptarray_length(lwline->points) : ptarray_length_2d(lwline->points);
 		}
+		if (lwline->points && lwline->points->npoints > 0)
+			non_empty_count++;
 	}
 
 	if ( lwgeom_is_empty((LWGEOM*)lwmline) )
@@ -95,18 +99,48 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 
 		if ( lwline->points && lwline->points->npoints > 1 )
 		{
-			sub_length = ptarray_length_2d(lwline->points);
+			sub_length = use_3d ? ptarray_length(lwline->points) : ptarray_length_2d(lwline->points);
 		}
 
-		sub_m_start = (m_start + m_range * length_so_far / length);
-		sub_m_end = (m_start + m_range * (length_so_far + sub_length) / length);
+		if (length > 0.0)
+		{
+			sub_m_start = (m_start + m_range * length_so_far / length);
+			sub_m_end = (m_start + m_range * (length_so_far + sub_length) / length);
+		}
+		else
+		{
+			if (lwline->points && lwline->points->npoints > 0)
+			{
+				sub_m_start = m_start + m_range * (double)non_empty_index / (double)non_empty_count;
+				sub_m_end = m_start + m_range * (double)(non_empty_index + 1) / (double)non_empty_count;
+				non_empty_index++;
+			}
+			else
+			{
+				sub_m_start = m_start + m_range * (double)non_empty_index / (double)non_empty_count;
+				sub_m_end = sub_m_start;
+			}
+		}
 
-		geoms[i] = (LWGEOM*)lwline_measured_from_lwline(lwline, sub_m_start, sub_m_end);
+		geoms[i] = use_3d ? (LWGEOM *)lwline_measured_from_lwline_3d(lwline, sub_m_start, sub_m_end)
+				  : (LWGEOM *)lwline_measured_from_lwline(lwline, sub_m_start, sub_m_end);
 
 		length_so_far += sub_length;
 	}
 
 	return (LWMLINE*)lwcollection_construct(lwmline->type, lwmline->srid, NULL, lwmline->ngeoms, geoms);
+}
+
+LWMLINE *
+lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end)
+{
+	return lwmline_measured_from_lwmline_internal(lwmline, m_start, m_end, LW_FALSE);
+}
+
+LWMLINE *
+lwmline_measured_from_lwmline_3d(const LWMLINE *lwmline, double m_start, double m_end)
+{
+	return lwmline_measured_from_lwmline_internal(lwmline, m_start, m_end, LW_TRUE);
 }
 
 void lwmline_free(LWMLINE *mline)
