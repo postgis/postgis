@@ -1,0 +1,30 @@
+<VRTDataset rasterXSize="90" rasterYSize="50">
+  <GeoTransform>20000000, 0.29, 0, 1000, 0, -0.29</GeoTransform>
+  <VRTRasterBand dataType="Byte" band="1">
+    <SimpleSource>
+      <SourceFilename relativeToVRT="1">testraster.tif</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="90" RasterYSize="50" DataType="Byte" BlockXSize="90" BlockYSize="50" />
+      <SrcRect xOff="0" yOff="0" xSize="90" ySize="50" />
+      <DstRect xOff="0" yOff="0" xSize="90" ySize="50" />
+    </SimpleSource>
+  </VRTRasterBand>
+  <VRTRasterBand dataType="Byte" band="2">
+    <SimpleSource>
+      <SourceFilename relativeToVRT="1">testraster.tif</SourceFilename>
+      <SourceBand>2</SourceBand>
+      <SourceProperties RasterXSize="90" RasterYSize="50" DataType="Byte" BlockXSize="90" BlockYSize="50" />
+      <SrcRect xOff="0" yOff="0" xSize="90" ySize="50" />
+      <DstRect xOff="0" yOff="0" xSize="90" ySize="50" />
+    </SimpleSource>
+  </VRTRasterBand>
+  <VRTRasterBand dataType="Byte" band="3">
+    <SimpleSource>
+      <SourceFilename relativeToVRT="1">testraster.tif</SourceFilename>
+      <SourceBand>3</SourceBand>
+      <SourceProperties RasterXSize="90" RasterYSize="50" DataType="Byte" BlockXSize="90" BlockYSize="50" />
+      <SrcRect xOff="0" yOff="0" xSize="90" ySize="50" />
+      <DstRect xOff="0" yOff="0" xSize="90" ySize="50" />
+    </SimpleSource>
+  </VRTRasterBand>
+</VRTDataset>
