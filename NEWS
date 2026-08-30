@@ -40,6 +40,10 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
 
+* Enhancements *
+
+ - #3197, Add ST_EqualsExact as a GEOS exact-equality wrapper with
+          coordinate tolerance semantics (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0beta2
