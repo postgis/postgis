@@ -103,6 +103,101 @@ SELECT 'segmentize_geography2', st_dwithin(st_pointn(st_segmentize('linestring(1
 SELECT 'segmentize_geography_3667', abs(ST_Length(geog) - ST_Length(ST_Segmentize(geog, 30000))) < 0.00001
   FROM (SELECT ST_GeographyFromText('LINESTRING(38.769917 10.780694, 38.769917 9.106194)') As geog) AS f;
 
+-- Test simplify on geography
+WITH geog AS (
+    SELECT 'LINESTRING(-71.060316 48.432044,-71.0608 48.4327,-71.0612 48.4334,-71.062 48.434)'::geography AS g
+)
+SELECT 'simplify_geography',
+  ST_NPoints(g::geometry),
+  ST_NPoints(ST_Simplify(g, 75)::geometry),
+  ST_SRID(ST_Simplify(g, 75)) FROM geog;
+
+SELECT 'simplify_geography_preserve_collapsed',
+  ST_NPoints(ST_Simplify('LINESTRING(0 0, 0.0001 0)'::geography, 1000, false)::geometry),
+  ST_NPoints(ST_Simplify('LINESTRING(0 0, 0.0001 0)'::geography, 1000, true)::geometry),
+  ST_SRID(ST_Simplify('LINESTRING(0 0, 0.0001 0)'::geography, 1000, true));
+
+SELECT 'simplify_geography_collapse_polygon',
+  ST_Simplify('POLYGON((0 0, 0.0001 0, 0.0001 0.0001, 0 0))'::geography, 1000, false) IS NULL,
+  GeometryType(ST_Simplify('POLYGON((0 0, 0.0001 0, 0.0001 0.0001, 0 0))'::geography, 1000, true)::geometry),
+  ST_NPoints(ST_Simplify('POLYGON((0 0, 0.0001 0, 0.0001 0.0001, 0 0))'::geography, 1000, true)::geometry);
+
+SELECT 'simplify_geography_drop_collapsed_hole',
+  ST_NumInteriorRings(ST_Simplify('POLYGON((0 0, 0 0.01, 0.01 0.01, 0.01 0, 0 0),(0.005 0.005, 0.00501 0.005, 0.005 0.00501, 0.005 0.005))'::geography, 100, false)::geometry),
+  ST_NumInteriorRings(ST_Simplify('POLYGON((0 0, 0 0.01, 0.01 0.01, 0.01 0, 0 0),(0.005 0.005, 0.00501 0.005, 0.005 0.00501, 0.005 0.005))'::geography, 100, true)::geometry);
+
+SELECT 'simplify_text_literal',
+  GeometryType(ST_Simplify('LINESTRING(0 0, 0.5 0, 1 0)', 0.1)),
+  GeometryType(ST_Simplify('LINESTRING(0 0, 0.5 0, 1 0)', 0.1, true));
+
+SELECT 'simplify_geography_empty',
+  ST_AsText(ST_Simplify('SRID=4326;LINESTRING EMPTY'::geography, 75)::geometry),
+  ST_AsText(ST_Simplify('SRID=4326;LINESTRING EMPTY'::geography, 75, true)::geometry),
+  ST_SRID(ST_Simplify('SRID=4326;LINESTRING EMPTY'::geography, 75));
+
+WITH geog AS (
+    SELECT 'LINESTRING(-170 0,0 0,170 0)'::geography AS g
+)
+SELECT 'simplify_geography_antimeridian',
+  ST_AsText(ST_Simplify(g, 1)::geometry),
+  round(ST_Length(g)::numeric, 3),
+  round(ST_Length(ST_Simplify(g, 1))::numeric, 3) FROM geog;
+
+WITH geog AS (
+    SELECT 'LINESTRING(170 0,179 0,-179 0,-170 0)'::geography AS g
+)
+SELECT 'simplify_geography_existing_dateline',
+  ST_NPoints(ST_Simplify(g, 1)::geometry),
+  round(ST_Length(g)::numeric, 3),
+  round(ST_Length(ST_Simplify(g, 1))::numeric, 3) FROM geog;
+
+WITH geog AS (
+    SELECT 'LINESTRING(-80 45,0 45,80 45)'::geography AS g
+)
+SELECT 'simplify_geography_preserve_wide_route',
+  ST_AsText(ST_Simplify(g, 1)::geometry),
+  ST_AsText(ST_Simplify(g, 1, true)::geometry),
+  round(ST_Length(g)::numeric, 3),
+  round(ST_Length(ST_Simplify(g, 1))::numeric, 3) FROM geog;
+
+WITH geog AS (
+    SELECT 'LINESTRING(0 0,90 0,180 0)'::geography AS g
+)
+SELECT 'simplify_geography_preserve_antipodal_candidate',
+  ST_AsText(ST_Simplify(g, 1)::geometry),
+  round((ST_Length(g) - ST_Length(ST_Simplify(g, 1)))::numeric, 3) FROM geog;
+
+WITH geog AS (
+    SELECT 'LINESTRING(0 0,90 0,179.999999999998 0)'::geography AS g
+)
+SELECT 'simplify_geography_preserve_near_antipodal_candidate',
+  ST_AsText(ST_Simplify(g, 1)::geometry),
+  round((ST_Length(g) - ST_Length(ST_Simplify(g, 1)))::numeric, 3) FROM geog;
+
+WITH geog AS (
+    SELECT 'GEOMETRYCOLLECTION(POLYGON((0 0, 0.001 0, 0.002 0, 0.002 0.002, 0 0)), POINT(10 10))'::geography AS g
+)
+SELECT 'simplify_geography_collection_polygon_point',
+  ST_NPoints(g::geometry),
+  ST_NPoints(ST_Simplify(g, 75)::geometry),
+  ST_AsText(ST_GeometryN(ST_Simplify(g, 75)::geometry, 2), 6) FROM geog;
+
+WITH geog AS (
+    SELECT 'GEOMETRYCOLLECTION(LINESTRING(0 0, 0.0001 0, 0.0002 0), POINT(1 1))'::geography AS g
+)
+SELECT 'simplify_geography_collection_line_point',
+  ST_NPoints(g::geometry),
+  ST_NPoints(ST_Simplify(g, 20)::geometry),
+  ST_AsText(ST_GeometryN(ST_Simplify(g, 20)::geometry, 2)) FROM geog;
+
+SELECT 'simplify_geography_preserve_collection_components',
+  _ST_GeographySimplifyPreservesVertices(
+    'GEOMETRYCOLLECTION(POLYGON((0 0, 0 0.001, 0.001 0.001, 0.001 0, 0 0)), LINESTRING(0 0.0005, 0.0005 0, 0.001 0.0005))'::geometry,
+    'GEOMETRYCOLLECTION(POLYGON((0 0, 0 0.001, 0.001 0.001, 0.001 0, 0 0)), LINESTRING(0 0.0005, 0.001 0.0005))'::geometry,
+    1,
+    false
+  );
+
 -- typmod checks
 select 'typmod_point_4326', geography_typmod_out(geography_typmod_in('{Point,4326}'));
 select 'typmod_point_0', geography_typmod_out(geography_typmod_in('{Point,0}'));
