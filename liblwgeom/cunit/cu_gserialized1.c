@@ -444,6 +444,14 @@ static void test_geometry_type_from_string(void)
 	//printf("\n in type: %s\nout type: %d\n out z: %d\n out m: %d", str, type, z, m);
 	CU_ASSERT_EQUAL(rv, LW_FAILURE);
 
+	str = "";
+	rv = geometry_type_from_string(str, &type, &z, &m);
+	CU_ASSERT_EQUAL(rv, LW_FAILURE);
+
+	str = "   ";
+	rv = geometry_type_from_string(str, &type, &z, &m);
+	CU_ASSERT_EQUAL(rv, LW_FAILURE);
+
 }
 
 static void test_lwgeom_count_vertices(void)
