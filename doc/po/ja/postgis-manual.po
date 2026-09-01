@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-31 01:39+0000\n"
+"PO-Revision-Date: 2026-09-01 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -29313,12 +29313,12 @@ msgstr "元画像 (rast カラム)"
 #. Tag: para
 #, no-c-format
 msgid "dupe_band"
-msgstr "dupe_band"
+msgstr "dupe_band (訳注: 元画像の 2番, 2番, 1番を順に割り当てた画像)"
 
 #. Tag: para
 #, no-c-format
 msgid "sing_band"
-msgstr "sing_band"
+msgstr "sing_band (訳注: 元画像の 3番バンドの単色画像)"
 
 #. Tag: para
 #, no-c-format
