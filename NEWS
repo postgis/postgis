@@ -1,3 +1,174 @@
+PostGIS 3.7.0rc2
+2026/xx/xx
+
+This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, and libgmp.
+To take advantage of all postgis extension features, GEOS 3.15+ is needed.
+To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.
+
+* Breaking Changes *
+
+ - #5688, [topology] topology building functions now interpret tolerance 0
+          (old default) to really mean 0 and want -1 (new default) to mean
+          "use topology precision" (Sandro Santilli)
+ - #6024, Remove support for PostgreSQL 12 and 13 (Regina Obe)
+ - #6040, ST_GeoHash round trip through ST_GeomFromGeoHash (Paul Ramsey)
+ - #6053, [address_standardizer] Extension removed and moved to
+          https://github.com/postgis/address_standardizer (Paul Ramsey)
+ - #6052, [tiger_geocoder] Extension removed and moved to
+          https://git.osgeo.org/postgis/postgis_tiger_geocoder (Regina Obe)
+ - #6079, Remove support for GEOS < 3.10 (Sandro Santilli)
+ - #1793, Remove ST_MemCollect aggregate (Darafei Praliaskouski)
+ - GH-848, CG_AlphaShape now returns a MultiPolygon (Jean Felder)
+ - [docs] Python 3 and an SVG rasterizer (rsvg-convert preferred,
+          GraphicsMagick or ImageMagick supported) now required for doc
+          building (Darafei Praliaskouski)
+
+* New Features *
+
+ - #1124, #2935, #3033, #4658, #4659, [loader] Rework loader arguments:
+          shp2pgsql can create UNLOGGED tables and choose the feature id column
+          name, shp2pgsql --drop-table can emit DROP TABLE before prepare
+          output, raster2pgsql/shp2pgsql expose loader actions as long options,
+          both loaders accept long aliases for existing options, and
+          --if-not-exists makes creation actions idempotent
+          (Darafei Praliaskouski)
+ - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
+          (Darafei Praliaskouski)
+ - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)
+ - ST_CoverageEdges, returns MultiLinestring of distinct shared edges in
+          polygonal coverage (Paul Ramsey)
+ - ST_MinimumSpanningTree, window function to calculate MST (Paul Ramsey)
+ - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
+          (Sandro Santilli)
+ - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
+ - #2858, ST_MMin and ST_MMax (Paul Ramsey)
+ - #5941, [raster] Support GDT_Float16 pixel type (Darafei Praliaskouski)
+ - #5992, Optimize GiST index for repeated edge subdivision in topology (Darafei Praliaskouski)
+ - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
+ - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
+ - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
+ - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
+ - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
+ - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
+ - #4398, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul Ramsey)
+ - #4560, ST_3DInterpolatePoint for M interpolation from XYZ inputs (Paul Ramsey)
+ - #1291, ST_MakePolygon support for curved rings (Darafei Praliaskouski)
+ - GT-270, Add NURBSCurve (Loïc Bartoletti)
+ - #2863, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers
+          (Darafei Praliaskouski)
+
+* Enhancements *
+
+ - #2045, pgsql2shp query dumps no longer require temporary table
+          privileges (Darafei Praliaskouski)
+ - #1577, [loader] Report unsupported .zip archive input before trying
+          to open shapefile sidecar files (Darafei Praliaskouski)
+ - #3158, Move geometry and geography typmod bit helpers out of the
+          public liblwgeom header (Darafei Praliaskouski)
+ - #3776, [raster] Keep distinct 32-bit integer pixel values separate in
+          ST_DumpAsPolygons (Darafei Praliaskouski)
+ - #4678, [raster] Move st_sum4ma neighborhood callback to C
+          (Darafei Praliaskouski)
+ - #2116, [raster] Add ST_Value nearest-neighbor boundary options
+          (Darafei Praliaskouski)
+ - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks
+          and pass callback call data as actual arguments (Darafei Praliaskouski)
+ - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
+ - #6065, Improved winding order computation robustness for rings having collapsed elements
+          (Sandro Santilli)
+ - #2137, [raster] Reuse matching source raster overviews in raster2pgsql -l
+          (Darafei Praliaskouski)
+ - #4749, Use point-in-polygon predicate fast paths for point-only
+          GeometryCollections (Darafei Praliaskouski)
+ - #2807, [raster] Preserve missing NODATA values in ST_MapAlgebra outputs
+          (Darafei Praliaskouski)
+ - #2832, [raster] Avoid padding single-tile raster2pgsql overviews
+          when padding is not requested (Darafei Praliaskouski)
+ - #2623, Generate a pgsql2shp GID field when exporting geometry-only
+          shapefiles (Darafei Praliaskouski)
+ - #2850, Preserve pgsql2shp numeric precision and scale in DBF metadata
+          (Darafei Praliaskouski)
+ - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
+          available so LTO can optimize same-DSO calls to exported PostGIS
+          entry points directly instead of routing through the module PLT; in
+          a local PostgreSQL 18 `pgbench` microbenchmark over 100k four-point
+          groups this reduced `ST_Collect` aggregate latency by about 4%
+          (Darafei Praliaskouski)
+ - #5973, Install PostGIS utilities under `pg_config --bindir` by default
+          and document `pg_config`-derived install paths more accurately
+          (Darafei Praliaskouski)
+ - #2808, Clarify postgis_full_version() output when installed component
+          scripts are newer than core scripts (Darafei Praliaskouski)
+ - #2838, Emit valid X3D Coordinate nodes for 2D polygon output
+          (Darafei Praliaskouski)
+ - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL
+          progress callbacks (Darafei Praliaskouski)
+ - #6073, #6074, Stabilize geography LRS endpoint interpolation and pole
+          centroid regressions on 32-bit systems (Darafei Praliaskouski)
+ - #2583, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN
+          (Darafei Praliaskouski)
+ - #4616, Detect pgsql2shp query keywords case-insensitively
+          (Darafei Praliaskouski)
+ - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
+          (Darafei Praliaskouski)
+ - #4749, Use point-in-polygon predicate fast paths for point-only
+          GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
+ - #3676, Mark geometry and geography btree comparison support functions
+          as leakproof (Darafei Praliaskouski)
+ - GH-875, Allow ST_OrderingEquals joins to use hash and merge join plans
+          (Darafei Praliaskouski)
+ - #1168, [raster] Support curved geometry inputs in ST_AsRaster
+          (Darafei Praliaskouski)
+ - #1416, ST_AsX3D outputs NURBSCURVE as X3D NurbsCurve
+          and linearizes other curve geometries
+          (Darafei Praliaskouski)
+ - #3705, ST_AsX3D outputs valid coordinate nodes for 2D multi-geometries
+          and GeometryCollections (Darafei Praliaskouski)
+ - GT-484, Use column-level SELECT privileges for metadata views
+          (Arthur Bazin)
+ - #1408, #2386, #2557, #2805, #2898, #3743, #4323, #4332, #4385, #5109,
+          #5532, #5593, #5638, #5645, #5950, #6022, #6082, GH-1161, GT-584,
+          Numerous doc enhancements (Darafei Praliaskouski)
+
+* Bug Fixes *
+
+ - Fix WKB and TWKB parser resource exhaustion on malformed input
+          (Darafei Praliaskouski)
+ - #6038, Avoid stale relation lookups in geometry_columns after topology
+          objects are dropped (Darafei Praliaskouski)
+ - #5487, Improve error detail for repeated upgrades after an incomplete
+          deprecated-function cleanup (Darafei Praliaskouski)
+ - #5975, Initialize skipped union-find cluster ids deterministically
+          (Darafei Praliaskouski)
+ - #5904, [topology] Avoid MinGW format warnings when logging topology ids
+          (Darafei Praliaskouski)
+ - GH-888, [sfcgal] Avoid stale detoasted geometry access in
+          CG_Visibility empty-input handling for SFCGAL < 2.2
+          (Darafei Praliaskouski)
+ - #3179, Mark truncated libpgcommon PostgreSQL messages instead of silently
+          dropping the tail (Darafei Praliaskouski)
+ - #6003, Avoid size_t formats in liblwgeom logging/error wrappers for
+          MinGW builds (Darafei Praliaskouski)
+ - GH-886, ST_ClusterRelateWin validates NULL relate matrices before
+          detoasting them (Darafei Praliaskouski)
+ - GH-889, ST_Relate pattern inversion avoids out-of-bounds access on
+          short DE-9IM patterns (Darafei Praliaskouski)
+ - GH-890, Avoid GIDX BRIN summary merges across mismatched dimensions
+          (Darafei Praliaskouski)
+ - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
+ - #6080, Avoid out-of-bounds hex WKB lookup for high-bit input bytes
+          (Darafei Praliaskouski)
+ - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
+ - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
+          selections (Darafei Praliaskouski)
+ - GH-894, [raster] Fix Float16 import, mixed nodata warping,
+          band replacement cleanup, GDAL credential redaction, and Python
+          GDAL compatibility (Darafei Praliaskouski)
+
+
+
+
+
 PostGIS 3.7.0rc1
 2026/08/24
 This version requires GEOS 3.10+, PostgreSQL 14-19beta2, Proj 6.1+, libgmp.
@@ -192,170 +363,6 @@ These are only changes since 3.7.0alpha1.
           signatures and return semantics (Darafei Praliaskouski)
  - #1168, [raster] Support curved geometry inputs in ST_AsRaster
           (Darafei Praliaskouski)
-
-
-PostGIS 3.7.0dev
-2026/xx/xx
-
-This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp.
-To take advantage of all features postgis extension features, GEOS 3.15+ is needed.
-To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.
-
-* Breaking Changes *
-
- - #5688, [topology] topology building functions now interpret tolerance 0
-          (old default) to really mean 0 and want -1 (new default) to mean
-          "use topology precision" (Sandro Santilli)
- - #6024, Remove support for PostgreSQL 12 and 13 (Regina Obe)
- - #6040, ST_GeoHash round trip through ST_GeomFromGeoHash (Paul Ramsey)
- - #6053, [address_standardizer] Extension removed and moved to
-          https://github.com/postgis/address_standardizer (Paul Ramsey)
- - #6052, [tiger_geocoder] Extension removed and moved to
-          https://git.osgeo.org/postgis/postgis_tiger_geocoder (Regina Obe)
- - #6079, Remove support for GEOS < 3.10 (Sandro Santilli)
- - #1793, Remove ST_MemCollect aggregate (Darafei Praliaskouski)
- - GH-848, CG_AlphaShape now returns a MultiPolygon (Jean Felder)
-
-* New Features *
-
- - #1124, #2935, #3033, #4658, #4659, [loader] Rework loader arguments:
-          shp2pgsql can create UNLOGGED tables and choose the feature id column
-          name, shp2pgsql --drop-table can emit DROP TABLE before prepare
-          output, raster2pgsql/shp2pgsql expose loader actions as long options,
-          both loaders accept long aliases for existing options, and
-          --if-not-exists makes creation actions idempotent
-          (Darafei Praliaskouski)
- - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
-          (Darafei Praliaskouski)
- - [topology] FindVertexSegmentPairsBelowDistance function (Sandro Santilli)
- - ST_CoverageEdges, returns MultiLinestring of distinct shared edges in
-          polygonal coverage (Paul Ramsey)
- - ST_MinimumSpanningTree, window function to calculate MST (Paul Ramsey)
- - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
-          (Sandro Santilli)
- - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
- - #2858, ST_MMin and ST_MMax (Paul Ramsey)
- - #5941, [raster] Support GDT_Float16 pixel type (Darafei Praliaskouski)
- - #5992, Optimize GiST index for repeated edge subdivision in topology (Darafei Praliaskouski)
- - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
- - #4798, ST_AsGeoJSON warns about duplicate property keys (Darafei Praliaskouski)
- - #4222, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei Praliaskouski)
- - #5889, [topology] Include representative locations in topology build errors (Darafei Praliaskouski)
- - #2614, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul Ramsey)
- - GH-839, ST_Multi support for TIN and surfaces (Loïc Bartoletti)
- - #4398, Add ST_CatmullSmoothing smoothes but retains original vertices (Paul Ramsey)
- - #4560, ST_3DInterpolatePoint for M interpolation from XYZ inputs (Paul Ramsey)
- - #1291, ST_MakePolygon support for curved rings (Darafei Praliaskouski)
- - GT-270, Add NURBSCurve (Loïc Bartoletti)
- - #2863, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers
-          (Darafei Praliaskouski)
-* Enhancements *
-
- - #2045, pgsql2shp query dumps no longer require temporary table
-          privileges (Darafei Praliaskouski)
- - #1577, [loader] Report unsupported .zip archive input before trying
-          to open shapefile sidecar files (Darafei Praliaskouski)
- - #3158, Move geometry and geography typmod bit helpers out of the
-          public liblwgeom header (Darafei Praliaskouski)
- - #3776, [raster] Keep distinct 32-bit integer pixel values separate in
-          ST_DumpAsPolygons (Darafei Praliaskouski)
- - #4678, [raster] Move st_sum4ma neighborhood callback to C
-          (Darafei Praliaskouski)
- - #2116, [raster] Add ST_Value nearest-neighbor boundary options
-          (Darafei Praliaskouski)
- - #2804, #4315, [raster] Support two-argument ST_MapAlgebra callbacks
-          and pass callback call data as actual arguments (Darafei Praliaskouski)
- - #6062, [topology] Stop using recursive snapping, for improved robustness (Sandro Santilli)
- - #6065, Improved winding order computation robustness for rings having collapsed elements
-          (Sandro Santilli)
- - #2137, [raster] Reuse matching source raster overviews in raster2pgsql -l
-          (Darafei Praliaskouski)
- - #4749, Use point-in-polygon predicate fast paths for point-only
-          GeometryCollections (Darafei Praliaskouski)
- - #2807, [raster] Preserve missing NODATA values in ST_MapAlgebra outputs
-          (Darafei Praliaskouski)
- - #2832, [raster] Avoid padding single-tile raster2pgsql overviews
-          when padding is not requested (Darafei Praliaskouski)
- - #2623, Generate a pgsql2shp GID field when exporting geometry-only
-          shapefiles (Darafei Praliaskouski)
- - #2850, Preserve pgsql2shp numeric precision and scale in DBF metadata
-          (Darafei Praliaskouski)
- - Build PostgreSQL extension modules with `-fno-semantic-interposition` when
-          available so LTO can optimize same-DSO calls to exported PostGIS
-          entry points directly instead of routing through the module PLT; in
-          a local PostgreSQL 18 `pgbench` microbenchmark over 100k four-point
-          groups this reduced `ST_Collect` aggregate latency by about 4%
-          (Darafei Praliaskouski)
- - #5973, Install PostGIS utilities under `pg_config --bindir` by default
-          and document `pg_config`-derived install paths more accurately
-          (Darafei Praliaskouski)
- - #2808, Clarify postgis_full_version() output when installed component
-          scripts are newer than core scripts (Darafei Praliaskouski)
- - #2838, Emit valid X3D Coordinate nodes for 2D polygon output
-          (Darafei Praliaskouski)
- - GH-899, [raster] Honor PostgreSQL interrupts in long-running GDAL
-          progress callbacks (Darafei Praliaskouski)
- - #6073, #6074, Stabilize geography LRS endpoint interpolation and pole
-          centroid regressions on 32-bit systems (Darafei Praliaskouski)
- - #2583, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN
-          (Darafei Praliaskouski)
- - #4616, Detect pgsql2shp query keywords case-insensitively
-          (Darafei Praliaskouski)
- - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
-          (Darafei Praliaskouski)
- - #4749, Use point-in-polygon predicate fast paths for point-only
-          GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)
- - #3676, Mark geometry and geography btree comparison support functions
-          as leakproof (Darafei Praliaskouski)
- - GH-875, Allow ST_OrderingEquals joins to use hash and merge join plans
-          (Darafei Praliaskouski)
- - #1168, [raster] Support curved geometry inputs in ST_AsRaster
-          (Darafei Praliaskouski)
- - #1416, ST_AsX3D outputs NURBSCURVE as X3D NurbsCurve
-          and linearizes other curve geometries
-          (Darafei Praliaskouski)
- - #3705, ST_AsX3D outputs valid coordinate nodes for 2D multi-geometries
-          and GeometryCollections (Darafei Praliaskouski)
- - GT-484, Use column-level SELECT privileges for metadata views
-          (Arthur Bazin)
- - #1408, #2386, #2557, #2805, #2898, #3743, #4323, #4332, #4385, #5109,
-          #5532, #5593, #5638, #5645, #5950, #6022, #6082, GH-1161, GT-584,
-          Numerous doc enhancements (Darafei Praliaskouski)
-
-* Bug Fixes *
-
- - Fix WKB and TWKB parser resource exhaustion on malformed input
-          (Darafei Praliaskouski)
- - #6038, Avoid stale relation lookups in geometry_columns after topology
-          objects are dropped (Darafei Praliaskouski)
- - #5487, Improve error detail for repeated upgrades after an incomplete
-          deprecated-function cleanup (Darafei Praliaskouski)
- - #5975, Initialize skipped union-find cluster ids deterministically
-          (Darafei Praliaskouski)
- - #5904, [topology] Avoid MinGW format warnings when logging topology ids
-          (Darafei Praliaskouski)
- - GH-888, [sfcgal] Avoid stale detoasted geometry access in
-          CG_Visibility empty-input handling for SFCGAL < 2.2
-          (Darafei Praliaskouski)
- - #3179, Mark truncated libpgcommon PostgreSQL messages instead of silently
-          dropping the tail (Darafei Praliaskouski)
- - #6003, Avoid size_t formats in liblwgeom logging/error wrappers for
-          MinGW builds (Darafei Praliaskouski)
- - GH-886, ST_ClusterRelateWin validates NULL relate matrices before
-          detoasting them (Darafei Praliaskouski)
- - GH-889, ST_Relate pattern inversion avoids out-of-bounds access on
-          short DE-9IM patterns (Darafei Praliaskouski)
- - GH-890, Avoid GIDX BRIN summary merges across mismatched dimensions
-          (Darafei Praliaskouski)
- - #5959, Prevent histogram target overflow when analysing massive tables (Darafei Praliaskouski)
- - #6080, Avoid out-of-bounds hex WKB lookup for high-bit input bytes
-          (Darafei Praliaskouski)
- - #4828, geometry_columns handles NOT VALID SRID checks without errors (Darafei Praliaskouski)
- - #6048, [raster] ST_Clip no longer crashes when clipping sparse band
-          selections (Darafei Praliaskouski)
- - GH-894, [raster] Fix Float16 import, mixed nodata warping,
-          band replacement cleanup, GDAL credential redaction, and Python
-          GDAL compatibility (Darafei Praliaskouski)
 
 
 PostGIS 3.6.0

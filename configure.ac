@@ -236,11 +236,15 @@ fi
 AC_PATH_PROG([XMLLINT], [xmllint], [])
 if test "x$XMLLINT" = "x"; then
 	dnl AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
-	AC_MSG_WARN([xmlcatalog is not installed so documentation cannot be built])
+	AC_MSG_WARN([xmllint is not installed so documentation cannot be built])
 	CAN_BUILD_COMMENTS=no
 fi
 
-
+AC_PATH_PROG([PYTHON3], [python3], [])
+if test "x$PYTHON3" = "x"; then
+	AC_MSG_WARN([python3 is not installed so documentation visual examples cannot be generated])
+	AC_MSG_WARN([documentation build will fail: run 'make -C regress visual-examples' first])
+fi
 
 AC_PATH_PROG([XML2POT], [xml2pot], [])
 if test "x$XML2POT" = "x"; then
@@ -2011,6 +2015,7 @@ AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
 AC_MSG_RESULT([  docbook xsl base:     ${XSLBASE}])
 AC_MSG_RESULT([  dblatex:              ${DBLATEX}])
 AC_MSG_RESULT([  convert:              ${CONVERT}])
+AC_MSG_RESULT([  python3:              ${PYTHON3}])
 AC_MSG_RESULT()
 
 if test "$POSTGIS_GEOS_VERSION" -lt 31200; then

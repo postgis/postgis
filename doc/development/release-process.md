@@ -75,7 +75,11 @@ documentation -- that means having the required software:
 * For the docs:
   - xsltproc
   - DocBook XSL scripts
-  - ImageMagic
+  - Python 3 (required to run the example tester and generate the visual
+    examples that HTML and PDF embed; the SVGs come from running the staged
+    PostGIS build against a live PostgreSQL server)
+  - rsvg-convert (preferred) or GraphicsMagick/ImageMagick (to rasterize the
+    generated SVGs for PDF)
   - DbLatex (for PDF)
 
 ## Release Procedure
