@@ -556,3 +556,18 @@ SELECT NULL FROM topology.TopoGeo_addLinestring('t5782',
 );
 SELECT '#5782', 'valid_after', * FROM topology.ValidateTopology('t5782');
 ROLLBACK;
+
+-- See https://trac.osgeo.org/postgis/ticket/6120
+BEGIN;
+SELECT NULL FROM topology.CreateTopology( 't6120' );
+-- Start condition: single closed edge forming very tiny area
+-- TODO: create the starting condition with COPY instead?
+SELECT 't6120.start', topology.TopoGeo_addLinestring('t6120',
+  '01020000000500000010526CDB36DE34406BEE28A10F5451404313671D53DE34404E64FC3B1054514010526CDB36DE34406CEE28A10F545140169A989329DE3440E00C65580F54514010526CDB36DE34406BEE28A10F545140'
+,-1);
+
+-- Incoming: line very similar to the existing one, with just one vertex off by 5.038095382105394e-15
+SELECT 't6120.works', count(*) > 0 FROM topology.TopoGeo_addLinestring('t6120',
+  '0102000000050000004313671D53DE34404E64FC3B10545140169A989329DE3440E00C65580F54514010526CDB36DE34406BEE28A10F545140EBE8402451DE344060A52C31105451404313671D53DE34404E64FC3B10545140'
+,-1);
+ROLLBACK;

@@ -1,8 +1,10 @@
-PostGIS 3.5.8
+PostGIS 3.5.8dev
 2026/xx/xx
 
 * Bug Fixes *
 
+  - #6120, Improve topology robustness by restoring edge collapse handling
+           during building (Sandro Santilli)
   - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
     (Darafei Praliaskouski)
   - #6038, Avoid stale geometry_columns relation lookups after relations are
@@ -73,7 +75,7 @@ PostGIS 3.5.7
   - #5916, ST_Split hang with very large ordinates (Paul Ramsey)
   - #5989, CurvePolygon distance corner case (Paul Ramsey)
   - #5357, ST_LineFromEncodedPolyline dropping close points (Paul Ramsey)
-  - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)   
+  - OSSFuzz 525554772, avoid signed integer overflow (Even Rouault)
   - OSSFuzz 525548201, avoid overly nested inputs (Darafei Praliaskouski)
   - Avoid Inf loop in Geohash calculation (Paul Ramsey)
   - [address_standardizer] Avoid unsafe table-name handling and out-of-bounds

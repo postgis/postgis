@@ -6991,12 +6991,12 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
 
     if ( nn ) _lwt_release_nodes(node, nn);
 
-    LWDEBUGG(2, lwline_as_lwgeom(edge), "Snapped after drifted endpoints snap");
+    LWDEBUGG(1, lwline_as_lwgeom(edge), "Snapped after drifted endpoints snap");
 
-    /* make valid, after snap (to handle collapses) */
-    tmp = lwgeom_make_valid(lwline_as_lwgeom(edge));
+    /* node after snap (to handle collapses) */
+    tmp = lwgeom_node(lwline_as_lwgeom(edge));
 
-    LWDEBUGG(2, tmp, "Made-valid after snap to drifted endpoints");
+    LWDEBUGG(1, tmp, "Noded after snap to drifted endpoints");
 
     col = lwgeom_as_lwcollection(tmp);
     if ( col )
