@@ -1,13 +1,15 @@
-PostGIS 3.6.5
+PostGIS 3.6.5dev
 2026/xx/xx
 
 * Fixes *
 
- - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
-   (Darafei Praliaskouski)
- - #6038, Avoid stale geometry_columns relation lookups after relations are
-   dropped or SELECT privilege is revoked (Darafei Praliaskouski)
- - Stop the extension upgrade script running ANALYZE inside its transaction,
+- #6120, Improve topology robustness by restoring edge collapse handling
+         during building (Sandro Santilli)
+- GT-675, Preserve TRIANGLE children while normalizing malformed TINs
+          (Darafei Praliaskouski)
+- #6038, Avoid stale geometry_columns relation lookups after relations are
+         dropped or SELECT privilege is revoked (Darafei Praliaskouski)
+- Stop the extension upgrade script running ANALYZE inside its transaction,
   where it can deadlock with autovacuum (Darafei Praliaskouski)
 - OSSFuzz 5877056525893632, reject truncated encoded polyline input
   (Darafei Praliaskouski)
