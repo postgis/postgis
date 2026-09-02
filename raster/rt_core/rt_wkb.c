@@ -442,7 +442,7 @@ rt_raster_from_hexwkb(const char* hexwkb, uint32_t hexwkbsize) {
 
 static uint32_t
 rt_raster_wkb_size(rt_raster raster, int outasin) {
-	uint32_t size = RT_WKB_HDR_SZ;
+	size_t size = RT_WKB_HDR_SZ;
 	uint16_t i = 0;
 
 	assert(NULL != raster);
@@ -477,11 +477,16 @@ rt_raster_wkb_size(rt_raster raster, int outasin) {
 		}
 		else {
 			/* Add space for actual data */
-			size += pixbytes * raster->width * raster->height;
+			size += (size_t)pixbytes * raster->width * raster->height;
 		}
 	}
 
-	return size;
+	if (size > UINT32_MAX) {
+		rterror("rt_raster_wkb_size: Raster WKB size exceeds maximum representable size");
+		return 0;
+	}
+
+	return (uint32_t)size;
 }
 
 /**
@@ -654,7 +659,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 		}
 		else {
 			/* Write data */
-			uint32_t datasize = raster->width * raster->height * pixbytes;
+			size_t datasize = (size_t)raster->width * raster->height * (size_t)pixbytes;
 			RASTER_DEBUGF(4, "rt_raster_to_wkb: Copying %d bytes", datasize);
 
 			memcpy(ptr, rt_band_get_data(band), datasize);
