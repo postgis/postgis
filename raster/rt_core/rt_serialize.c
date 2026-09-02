@@ -474,9 +474,8 @@ write_float64(uint8_t** to, uint8_t littleEndian, double v) {
 */
 
 static uint32_t
-rt_raster_serialized_size(rt_raster raster)
-{
-	uint32_t size = sizeof(struct rt_raster_serialized_t);
+rt_raster_serialized_size(rt_raster raster) {
+	size_t size = sizeof (struct rt_raster_serialized_t);
 	uint16_t i = 0;
 
 	assert(NULL != raster);
@@ -512,7 +511,7 @@ rt_raster_serialized_size(rt_raster raster)
 		else
 		{
 			/* Add space for raster band data */
-			size += pixbytes * raster->width * raster->height;
+			size += (size_t)pixbytes * raster->width * raster->height;
 		}
 
 		RASTER_DEBUGF(3, "Size before alignment is %d", size);
@@ -527,6 +526,11 @@ rt_raster_serialized_size(rt_raster raster)
 		RASTER_DEBUGF(3, "Size after alignment is %d", size);
 	}
 
+	if (size > UINT32_MAX) {
+		rterror("rt_raster_serialized_size: Raster serialized size exceeds maximum representable size");
+		return 0;
+	}
+
 	return size;
 }
 
@@ -536,12 +540,11 @@ rt_raster_serialized_size(rt_raster raster)
  *
  * Serialized form is documented in doc/RFC1-SerializedFormat.
  */
-void *
-rt_raster_serialize(rt_raster raster)
-{
-	uint32_t size = 0;
-	uint8_t *ret = NULL;
-	uint8_t *ptr = NULL;
+void*
+rt_raster_serialize(rt_raster raster) {
+	size_t size = 0;
+	uint8_t* ret = NULL;
+	uint8_t* ptr = NULL;
 	uint16_t i = 0;
 
 	assert(NULL != raster);
@@ -565,7 +568,7 @@ rt_raster_serialize(rt_raster raster)
 	 * returned object, for instance, by rt_pg layer to
 	 * store value calculated by SET_VARSIZE.
 	 */
-	raster->size = size;
+	raster->size = (uint32_t)size;
 
 	/* Set version */
 	raster->version = 0;
@@ -722,7 +725,7 @@ rt_raster_serialize(rt_raster raster)
 		else
 		{
 			/* Write data */
-			uint32_t datasize = raster->width * raster->height * pixbytes;
+			size_t datasize = (size_t)raster->width * raster->height * (size_t)pixbytes;
 			memcpy(ptr, band->data.mem, datasize);
 			ptr += datasize;
 		}
@@ -852,6 +855,12 @@ rt_raster_deserialize(void *serialized, int header_only)
 
 		/* Advance by data padding */
 		pixbytes = rt_pixtype_size(band->pixtype);
+		if (pixbytes < 1) {
+			rterror("rt_raster_deserialize: Invalid pixel type for band %d", i);
+			for (j = 0; j <= i; j++) rt_band_destroy(rast->bands[j]);
+			rt_raster_destroy(rast);
+			return NULL;
+		}
 		ptr += pixbytes - 1;
 
 		/* Read nodata value */
@@ -949,8 +958,8 @@ rt_raster_deserialize(void *serialized, int header_only)
 		else
 		{
 			/* Register data */
-			const uint32_t datasize = rast->width * rast->height * pixbytes;
-			band->data.mem = (uint8_t *)ptr;
+			const size_t datasize = (size_t)rast->width * rast->height * (size_t)pixbytes;
+			band->data.mem = (uint8_t*) ptr;
 			ptr += datasize;
 		}
 
