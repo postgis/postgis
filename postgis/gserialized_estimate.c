@@ -2052,6 +2052,13 @@ gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
 		return DEFAULT_ND_SEL;
 	}
 
+	if (other == NULL)
+	{
+		ReleaseVariableStats(vardata);
+		POSTGIS_DEBUGF(2, "%s: no other argument, returning default selectivity %g", __func__, DEFAULT_ND_SEL);
+		return DEFAULT_ND_SEL;
+	}
+
 	if (!IsA(other, Const))
 	{
 		ReleaseVariableStats(vardata);
@@ -2060,7 +2067,7 @@ gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
 	}
 
 	otherConst = (Const*)other;
-	if ((!otherConst) || otherConst->constisnull)
+	if (otherConst->constisnull)
 	{
 		ReleaseVariableStats(vardata);
 		POSTGIS_DEBUGF(2, "%s: constant argument is NULL", __func__);
