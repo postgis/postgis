@@ -471,11 +471,17 @@ int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 	char *tmpstr;
 	size_t tmpstartpos, tmpendpos;
 	size_t i;
+	size_t str_len;
 
 	assert(str);
 	assert(type);
 	assert(z);
 	assert(m);
+
+	str_len = strlen(str);
+	/* Empty string is not a valid type */
+	if(str_len == 0)
+		return LW_FAILURE;
 
 	/* Initialize. */
 	*type = 0;
@@ -484,7 +490,7 @@ int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 
 	/* Locate any leading/trailing spaces */
 	tmpstartpos = 0;
-	for (i = 0; i < strlen(str); i++)
+	for (i = 0; i < str_len; i++)
 	{
 		if (str[i] != ' ')
 		{
@@ -493,8 +499,8 @@ int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 		}
 	}
 
-	tmpendpos = strlen(str) - 1;
-	for (i = strlen(str) - 1; i != 0; i--)
+	tmpendpos = str_len - 1;
+	for (i = str_len - 1; i != 0; i--)
 	{
 		if (str[i] != ' ')
 		{
