@@ -224,11 +224,55 @@ test_raster_generate_new_band_size_overflow(void)
 
 static size_t raster_overflow_alloc_size;
 
+static void *poisoned_allocations[32];
+static size_t poisoned_allocation_count;
+static size_t poisoned_largest_allocation;
+static size_t poisoned_foreign_deallocations;
+
 static void *
 raster_overflow_allocator(size_t size)
 {
 	raster_overflow_alloc_size = size;
 	return NULL;
+}
+
+static void *
+poisoned_allocator(size_t size)
+{
+	void *mem = default_rt_allocator(size);
+
+	if (mem != NULL) {
+		if (size > poisoned_largest_allocation)
+			poisoned_largest_allocation = size;
+		memset(mem, 0xa5, size);
+		CU_ASSERT_FATAL(poisoned_allocation_count < 32);
+		poisoned_allocations[poisoned_allocation_count++] = mem;
+	}
+	return mem;
+}
+
+static void
+poisoned_deallocator(void *mem)
+{
+	size_t i;
+
+	for (i = 0; i < poisoned_allocation_count; i++) {
+		if (poisoned_allocations[i] == mem) {
+			poisoned_allocations[i] = NULL;
+			default_rt_deallocator(mem);
+			return;
+		}
+	}
+	poisoned_foreign_deallocations++;
+}
+
+static void
+poisoned_allocator_reset(void)
+{
+	memset(poisoned_allocations, 0, sizeof(poisoned_allocations));
+	poisoned_allocation_count = 0;
+	poisoned_largest_allocation = 0;
+	poisoned_foreign_deallocations = 0;
 }
 
 static void
@@ -299,6 +343,100 @@ test_raster_deserialize_rejects_truncated_band(void)
 	CU_ASSERT_PTR_NULL(raster);
 }
 
+static void
+test_raster_readers_destroy_only_initialized_bands(void)
+{
+	uint8_t serialized[sizeof(struct rt_raster_serialized_t) + 4] = {0};
+	uint8_t wkb[sizeof(struct rt_raster_serialized_t) + 1 + 4] = {0};
+	struct rt_raster_serialized_t *header = (struct rt_raster_serialized_t *)serialized;
+	size_t wkb_header_size = sizeof(struct rt_raster_serialized_t) - 3;
+	rt_raster raster;
+
+	header->numBands = 1;
+	wkb[0] = 1;
+	wkb[3] = 1;
+
+	poisoned_allocator_reset();
+	rt_set_handlers(poisoned_allocator, default_rt_reallocator,
+		poisoned_deallocator, default_rt_error_handler,
+		default_rt_info_handler, default_rt_warning_handler);
+
+	/* No band byte, invalid offline pixtype, and missing offline path. */
+	header->size = sizeof(*header);
+	raster = rt_raster_deserialize_with_size(serialized, header->size, FALSE);
+	CU_ASSERT_PTR_NULL(raster);
+	serialized[sizeof(*header)] = 0x80 | PT_END;
+	header->size = sizeof(*header) + 1;
+	raster = rt_raster_deserialize_with_size(serialized, header->size, FALSE);
+	CU_ASSERT_PTR_NULL(raster);
+	serialized[sizeof(*header)] = 0x80 | PT_8BUI;
+	serialized[sizeof(*header) + 1] = 0;
+	serialized[sizeof(*header) + 2] = 0;
+	serialized[sizeof(*header) + 3] = 'x';
+	header->size = sizeof(serialized);
+	raster = rt_raster_deserialize_with_size(serialized, header->size, FALSE);
+	CU_ASSERT_PTR_NULL(raster);
+
+	/* The same malformed cases through the WKB reader. */
+	raster = rt_raster_from_wkb(wkb, wkb_header_size);
+	CU_ASSERT_PTR_NULL(raster);
+	wkb[wkb_header_size] = 0x80 | PT_END;
+	raster = rt_raster_from_wkb(wkb, wkb_header_size + 1);
+	CU_ASSERT_PTR_NULL(raster);
+	wkb[wkb_header_size] = 0x80 | PT_8BUI;
+	wkb[wkb_header_size + 1] = 0;
+	wkb[wkb_header_size + 2] = 0;
+	wkb[wkb_header_size + 3] = 'x';
+	raster = rt_raster_from_wkb(wkb, wkb_header_size + 4);
+	CU_ASSERT_PTR_NULL(raster);
+
+	CU_ASSERT_EQUAL(poisoned_foreign_deallocations, 0);
+	CU_ASSERT_TRUE(poisoned_largest_allocation < 1024);
+	for (size_t i = 0; i < poisoned_allocation_count; i++)
+		CU_ASSERT_PTR_NULL(poisoned_allocations[i]);
+	rt_install_default_allocators();
+}
+
+static void
+test_raster_size_aware_roundtrips(void)
+{
+	rt_raster raster;
+	rt_raster copy;
+	rt_band band;
+	uint8_t *serialized;
+	size_t serialized_size;
+
+	raster = rt_raster_new(0, 0);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(raster);
+	serialized = rt_raster_serialize(raster);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(serialized);
+	serialized_size = ((struct rt_raster_serialized_t *)serialized)->size;
+	copy = rt_raster_deserialize_with_size(serialized, serialized_size, FALSE);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(copy);
+	CU_ASSERT_EQUAL(copy->width, 0);
+	CU_ASSERT_EQUAL(copy->height, 0);
+	CU_ASSERT_EQUAL(copy->numBands, 0);
+	cu_free_raster(copy);
+	free(serialized);
+	cu_free_raster(raster);
+
+	raster = rt_raster_new(1, 1);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(raster);
+	band = cu_add_band(raster, PT_8BUI, 0, 0);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(band);
+	serialized = rt_raster_serialize(raster);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(serialized);
+	serialized_size = ((struct rt_raster_serialized_t *)serialized)->size;
+	copy = rt_raster_deserialize_with_size(serialized, serialized_size, FALSE);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(copy);
+	CU_ASSERT_EQUAL(copy->width, 1);
+	CU_ASSERT_EQUAL(copy->height, 1);
+	CU_ASSERT_EQUAL(copy->numBands, 1);
+	cu_free_raster(copy);
+	free(serialized);
+	cu_free_raster(raster);
+}
+
 /* register tests */
 void raster_basics_suite_setup(void);
 void
@@ -314,4 +452,6 @@ raster_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_generate_new_band_size_overflow);
 	PG_ADD_TEST(suite, test_raster_serializers_reject_oversized_band);
 	PG_ADD_TEST(suite, test_raster_deserialize_rejects_truncated_band);
+	PG_ADD_TEST(suite, test_raster_readers_destroy_only_initialized_bands);
+	PG_ADD_TEST(suite, test_raster_size_aware_roundtrips);
 }

@@ -54,6 +54,7 @@ rt_band_from_wkb(
 		rterror("rt_band_from_wkb: Out of memory allocating rt_band during WKB parsing");
 		return NULL;
 	}
+	memset(band, 0, sizeof(struct rt_band_t));
 	band->ownsdata = 0; /* assume we don't own data */
 
 	if (end - *ptr < 1) {
@@ -202,20 +203,12 @@ rt_band_from_wkb(
 	}
 
 	/* This is an on-disk band */
-	if ((size_t)height != 0 && (size_t)width > SIZE_MAX / (size_t)height)
+	if (!rt_util_size_mul(width, height, &sz) || !rt_util_size_mul(sz, (size_t)pixbytes, &sz))
 	{
 		rterror("rt_band_from_wkb: Raster dimensions are too large");
 		rt_band_destroy(band);
 		return NULL;
 	}
-	sz = (size_t)width * (size_t)height;
-	if (sz != 0 && (size_t)pixbytes > SIZE_MAX / sz)
-	{
-		rterror("rt_band_from_wkb: Raster dimensions are too large");
-		rt_band_destroy(band);
-		return NULL;
-	}
-	sz *= (size_t)pixbytes;
 	if (sz > (size_t)(end - *ptr))
 	{
 		rterror("rt_band_from_wkb: Premature end of WKB on band data reading (%s:%d)", __FILE__, __LINE__);
@@ -713,7 +706,7 @@ rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize)
 		else {
 			/* Write data */
 			size_t datasize = (size_t)raster->width * raster->height * (size_t)pixbytes;
-			RASTER_DEBUGF(4, "rt_raster_to_wkb: Copying %d bytes", datasize);
+			RASTER_DEBUGF(4, "rt_raster_to_wkb: Copying %zu bytes", datasize);
 
 			memcpy(ptr, rt_band_get_data(band), datasize);
 
