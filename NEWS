@@ -3,6 +3,8 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - Fix geometry input parsing to stop malformed SRID prefixes before the
+    end of the input string (Dennis Tighe, Google)
   - #6118, GT-769, Reject empty geometry type modifiers before they can read past the
     input buffer (Egor Ivkov)
   - GT-771, GH-1175, Guard missing operands before reading node tags in spatial
