@@ -1,7 +1,6 @@
 /*
  *
  * WKTRaster - Raster Types for PostGIS
- * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
@@ -10,6 +9,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -458,42 +458,93 @@ write_float64(uint8_t** to, uint8_t littleEndian, double v) {
 }
 */
 
+static int
+rt_raster_serialized_size_add(size_t *size, size_t add)
+{
+	if (add > UINT32_C(0x3fffffff) - *size)
+	{
+		rterror("rt_raster_serialized_size: Raster serialized size exceeds PostgreSQL maximum");
+		return 0;
+	}
+
+	*size += add;
+	return 1;
+}
+
+static int
+rt_raster_serialized_size_mul(size_t left, size_t right, size_t *result)
+{
+	if (left != 0 && right > SIZE_MAX / left)
+		return 0;
+
+	*result = left * right;
+	return 1;
+}
+
 static uint32_t
-rt_raster_serialized_size(rt_raster raster) {
-	size_t size = sizeof (struct rt_raster_serialized_t);
+rt_raster_serialized_size(rt_raster raster)
+{
+	size_t size = sizeof(struct rt_raster_serialized_t);
 	uint16_t i = 0;
 
 	assert(NULL != raster);
 
-	RASTER_DEBUGF(3, "Serialized size with just header:%d - now adding size of %d bands",
-		size, raster->numBands);
+	RASTER_DEBUGF(3, "Serialized size with just header:%d - now adding size of %d bands", size, raster->numBands);
 
-	for (i = 0; i < raster->numBands; ++i) {
+	for (i = 0; i < raster->numBands; ++i)
+	{
 		rt_band band = raster->bands[i];
 		rt_pixtype pixtype = band->pixtype;
 		int pixbytes = rt_pixtype_size(pixtype);
 
-		if (pixbytes < 1) {
+		if (pixbytes < 1)
+		{
 			rterror("rt_raster_serialized_size: Corrupted band: unknown pixtype");
 			return 0;
 		}
 
-		/* Add space for band type, hasnodata flag and data padding */
-		size += pixbytes;
+		/*
+		 * PostgreSQL varlena values and palloc are limited to 1 GiB - 1.
+		 * Check every addition against that limit so a 32-bit size_t cannot
+		 * wrap before the final size check.
+		 */
+		if (!rt_raster_serialized_size_add(&size, (size_t)pixbytes) ||
+		    !rt_raster_serialized_size_add(&size, (size_t)pixbytes))
+			return 0;
 
-		/* Add space for nodata value */
-		size += pixbytes;
+		if (band->offline)
+		{
+			size_t pathlen;
 
-		if (band->offline) {
 			/* Add space for band number */
-			size += 1;
+			if (!rt_raster_serialized_size_add(&size, 1))
+				return 0;
 
 			/* Add space for null-terminated path */
-			size += strlen(band->data.offline.path) + 1;
+			pathlen = strlen(band->data.offline.path);
+			if (pathlen == SIZE_MAX || !rt_raster_serialized_size_add(&size, pathlen + 1))
+				return 0;
 		}
-		else {
+		else
+		{
 			/* Add space for raster band data */
-			size += (size_t)pixbytes * raster->width * raster->height;
+			size_t numval;
+			size_t datasize;
+
+			if ((size_t)raster->height != 0 && (size_t)raster->width > SIZE_MAX / (size_t)raster->height)
+			{
+				rterror("rt_raster_serialized_size: Raster dimensions are too large");
+				return 0;
+			}
+			numval = (size_t)raster->width * (size_t)raster->height;
+			if (numval != 0 && (size_t)pixbytes > SIZE_MAX / numval)
+			{
+				rterror("rt_raster_serialized_size: Raster dimensions are too large");
+				return 0;
+			}
+			datasize = (size_t)pixbytes * numval;
+			if (!rt_raster_serialized_size_add(&size, datasize))
+				return 0;
 		}
 
 		RASTER_DEBUGF(3, "Size before alignment is %d", size);
@@ -503,17 +554,16 @@ rt_raster_serialized_size(rt_raster raster) {
 		   this line will add 8 bytes trailing padding, and it's not necessary */
 		/*size += 8 - (size % 8);*/
 		if (size % 8)
-			size += 8 - (size % 8);
+		{
+			size_t padding = 8 - (size % 8);
+			if (!rt_raster_serialized_size_add(&size, padding))
+				return 0;
+		}
 
 		RASTER_DEBUGF(3, "Size after alignment is %d", size);
 	}
 
-	if (size > UINT32_MAX) {
-		rterror("rt_raster_serialized_size: Raster serialized size exceeds maximum representable size");
-		return 0;
-	}
-
-	return size;
+	return (uint32_t)size;
 }
 
 /**
@@ -522,27 +572,31 @@ rt_raster_serialized_size(rt_raster raster) {
  *
  * Serialized form is documented in doc/RFC1-SerializedFormat.
  */
-void*
-rt_raster_serialize(rt_raster raster) {
+void *
+rt_raster_serialize(rt_raster raster)
+{
 	size_t size = 0;
-	uint8_t* ret = NULL;
-	uint8_t* ptr = NULL;
+	uint8_t *ret = NULL;
+	uint8_t *ptr = NULL;
 	uint16_t i = 0;
 
 	assert(NULL != raster);
 
 	size = rt_raster_serialized_size(raster);
-	ret = (uint8_t*) rtalloc(size);
-	if (!ret) {
-		rterror("rt_raster_serialize: Out of memory allocating %d bytes for serializing a raster", size);
+	if (size == 0)
+		return NULL;
+	ret = (uint8_t *)rtalloc(size);
+	if (!ret)
+	{
+		rterror("rt_raster_serialize: Out of memory allocating %d bytes for serializing a raster", (int)size);
 		return NULL;
 	}
 	memset(ret, '-', size);
 	ptr = ret;
 
-	RASTER_DEBUGF(3, "sizeof(struct rt_raster_serialized_t):%u",
+	RASTER_DEBUGF(3, "sizeof(struct rt_raster_serialized_t):%lu",
 		sizeof (struct rt_raster_serialized_t));
-	RASTER_DEBUGF(3, "sizeof(struct rt_raster_t):%u",
+	RASTER_DEBUGF(3, "sizeof(struct rt_raster_t):%lu",
 		sizeof (struct rt_raster_t));
 	RASTER_DEBUGF(3, "serialized size:%lu", (long unsigned) size);
 
@@ -727,10 +781,12 @@ rt_raster_serialize(rt_raster raster) {
  * form (including band data), which must be kept alive.
  */
 rt_raster
-rt_raster_deserialize(void* serialized, int header_only) {
+rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, int header_only)
+{
 	rt_raster rast = NULL;
 	const uint8_t *ptr = NULL;
 	const uint8_t *beg = NULL;
+	const uint8_t *end = NULL;
 	uint16_t i = 0;
 	uint16_t j = 0;
 #ifdef WORDS_BIGENDIAN
@@ -740,6 +796,11 @@ rt_raster_deserialize(void* serialized, int header_only) {
 #endif
 
 	assert(NULL != serialized);
+	if (serialized_size < sizeof(struct rt_raster_serialized_t))
+	{
+		rterror("rt_raster_deserialize: Serialized raster is too short for its header");
+		return NULL;
+	}
 
 	RASTER_DEBUG(2, "rt_raster_deserialize: Entering...");
 
@@ -750,27 +811,46 @@ rt_raster_deserialize(void* serialized, int header_only) {
 
 	/* Allocate memory for deserialized raster header */
 	RASTER_DEBUG(3, "rt_raster_deserialize: Allocating memory for deserialized raster header");
-	rast = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
-	if (!rast) {
+	rast = (rt_raster)rtalloc(sizeof(struct rt_raster_t));
+	if (!rast)
+	{
 		rterror("rt_raster_deserialize: Out of memory allocating raster for deserialization");
 		return NULL;
 	}
 
 	/* Deserialize raster header */
 	RASTER_DEBUG(3, "rt_raster_deserialize: Deserialize raster header");
-	memcpy(rast, serialized, sizeof (struct rt_raster_serialized_t));
+	memcpy(rast, serialized, sizeof(struct rt_raster_serialized_t));
+	if (rast->size != serialized_size)
+	{
+		rterror("rt_raster_deserialize: Serialized raster size does not match input length");
+		rtdealloc(rast);
+		return NULL;
+	}
 
-	if (0 == rast->numBands || header_only) {
+	if (0 == rast->numBands || header_only)
+	{
 		rast->bands = 0;
 		return rast;
 	}
 
-	beg = (const uint8_t*) serialized;
+	beg = (const uint8_t *)serialized;
+	end = beg + serialized_size;
 
 	/* Allocate registry of raster bands */
 	RASTER_DEBUG(3, "rt_raster_deserialize: Allocating memory for bands");
-	rast->bands = rtalloc(rast->numBands * sizeof (rt_band));
-	if (rast->bands == NULL) {
+	{
+		size_t bands_size;
+		if (!rt_raster_serialized_size_mul(rast->numBands, sizeof(rt_band), &bands_size))
+		{
+			rterror("rt_raster_deserialize: Too many bands");
+			rtdealloc(rast);
+			return NULL;
+		}
+		rast->bands = rtalloc(bands_size);
+	}
+	if (rast->bands == NULL)
+	{
 		rterror("rt_raster_deserialize: Out of memory allocating bands");
 		rtdealloc(rast);
 		return NULL;
@@ -780,29 +860,41 @@ rt_raster_deserialize(void* serialized, int header_only) {
 
 	/* Move to the beginning of first band */
 	ptr = beg;
-	ptr += sizeof (struct rt_raster_serialized_t);
+	ptr += sizeof(struct rt_raster_serialized_t);
 
 	/* Deserialize bands now */
-	for (i = 0; i < rast->numBands; ++i) {
+	for (i = 0; i < rast->numBands; ++i)
+	{
 		rt_band band = NULL;
 		uint8_t type = 0;
 		int pixbytes = 0;
 
 		band = rtalloc(sizeof(struct rt_band_t));
-		if (!band) {
+		if (!band)
+		{
 			rterror("rt_raster_deserialize: Out of memory allocating rt_band during deserialization");
-			for (j = 0; j < i; j++) rt_band_destroy(rast->bands[j]);
+			for (j = 0; j < i; j++)
+				rt_band_destroy(rast->bands[j]);
 			rt_raster_destroy(rast);
 			return NULL;
 		}
 
 		rast->bands[i] = band;
+		if (ptr == end)
+		{
+			rterror("rt_raster_deserialize: Premature end of serialized raster reading band %d", i);
+			for (j = 0; j <= i; j++)
+				rt_band_destroy(rast->bands[j]);
+			rt_raster_destroy(rast);
+			return NULL;
+		}
 
 		type = *ptr;
 		ptr++;
 		band->pixtype = type & BANDTYPE_PIXTYPE_MASK;
 
-		RASTER_DEBUGF(3, "rt_raster_deserialize: band %d with pixel type %s", i, rt_pixtype_name(band->pixtype));
+		RASTER_DEBUGF(
+		    3, "rt_raster_deserialize: band %d with pixel type %s", i, rt_pixtype_name(band->pixtype));
 
 		band->offline = BANDTYPE_IS_OFFDB(type) ? 1 : 0;
 		band->hasnodata = BANDTYPE_HAS_NODATA(type) ? 1 : 0;
@@ -814,66 +906,78 @@ rt_raster_deserialize(void* serialized, int header_only) {
 
 		/* Advance by data padding */
 		pixbytes = rt_pixtype_size(band->pixtype);
-		if (pixbytes < 1) {
+		if (pixbytes < 1)
+		{
 			rterror("rt_raster_deserialize: Invalid pixel type for band %d", i);
-			for (j = 0; j <= i; j++) rt_band_destroy(rast->bands[j]);
+			for (j = 0; j <= i; j++)
+				rt_band_destroy(rast->bands[j]);
+			rt_raster_destroy(rast);
+			return NULL;
+		}
+		if ((size_t)(2 * pixbytes - 1) > (size_t)(end - ptr))
+		{
+			rterror("rt_raster_deserialize: Premature end of serialized raster reading band %d", i);
+			for (j = 0; j <= i; j++)
+				rt_band_destroy(rast->bands[j]);
 			rt_raster_destroy(rast);
 			return NULL;
 		}
 		ptr += pixbytes - 1;
 
 		/* Read nodata value */
-		switch (band->pixtype) {
-			case PT_1BB: {
-				band->nodataval = ((int) read_uint8(&ptr)) & 0x01;
-				break;
-			}
-			case PT_2BUI: {
-				band->nodataval = ((int) read_uint8(&ptr)) & 0x03;
-				break;
-			}
-			case PT_4BUI: {
-				band->nodataval = ((int) read_uint8(&ptr)) & 0x0F;
-				break;
-			}
-			case PT_8BSI: {
-				band->nodataval = read_int8(&ptr);
-				break;
-			}
-			case PT_8BUI: {
-				band->nodataval = read_uint8(&ptr);
-				break;
-			}
-			case PT_16BSI: {
-				band->nodataval = read_int16(&ptr, littleEndian);
-				break;
-			}
-			case PT_16BUI: {
-				band->nodataval = read_uint16(&ptr, littleEndian);
-				break;
-			}
-			case PT_32BSI: {
-				band->nodataval = read_int32(&ptr, littleEndian);
-				break;
-			}
-			case PT_32BUI: {
-				band->nodataval = read_uint32(&ptr, littleEndian);
-				break;
-			}
-			case PT_32BF: {
-				band->nodataval = read_float32(&ptr, littleEndian);
-				break;
-			}
-			case PT_64BF: {
-				band->nodataval = read_float64(&ptr, littleEndian);
-				break;
-			}
-			default: {
-				rterror("rt_raster_deserialize: Unknown pixeltype %d", band->pixtype);
-				for (j = 0; j <= i; j++) rt_band_destroy(rast->bands[j]);
-				rt_raster_destroy(rast);
-				return NULL;
-			}
+		switch (band->pixtype)
+		{
+		case PT_1BB: {
+			band->nodataval = ((int)read_uint8(&ptr)) & 0x01;
+			break;
+		}
+		case PT_2BUI: {
+			band->nodataval = ((int)read_uint8(&ptr)) & 0x03;
+			break;
+		}
+		case PT_4BUI: {
+			band->nodataval = ((int)read_uint8(&ptr)) & 0x0F;
+			break;
+		}
+		case PT_8BSI: {
+			band->nodataval = read_int8(&ptr);
+			break;
+		}
+		case PT_8BUI: {
+			band->nodataval = read_uint8(&ptr);
+			break;
+		}
+		case PT_16BSI: {
+			band->nodataval = read_int16(&ptr, littleEndian);
+			break;
+		}
+		case PT_16BUI: {
+			band->nodataval = read_uint16(&ptr, littleEndian);
+			break;
+		}
+		case PT_32BSI: {
+			band->nodataval = read_int32(&ptr, littleEndian);
+			break;
+		}
+		case PT_32BUI: {
+			band->nodataval = read_uint32(&ptr, littleEndian);
+			break;
+		}
+		case PT_32BF: {
+			band->nodataval = read_float32(&ptr, littleEndian);
+			break;
+		}
+		case PT_64BF: {
+			band->nodataval = read_float64(&ptr, littleEndian);
+			break;
+		}
+		default: {
+			rterror("rt_raster_deserialize: Unknown pixeltype %d", band->pixtype);
+			for (j = 0; j <= i; j++)
+				rt_band_destroy(rast->bands[j]);
+			rt_raster_destroy(rast);
+			return NULL;
+		}
 		}
 
 		RASTER_DEBUGF(3, "rt_raster_deserialize: has nodata flag %d", band->hasnodata);
@@ -882,19 +986,41 @@ rt_raster_deserialize(void* serialized, int header_only) {
 		/* Consistency checking (ptr is pixbytes-aligned) */
 		assert(!((ptr - beg) % pixbytes));
 
-		if (band->offline) {
-			int pathlen = 0;
+		if (band->offline)
+		{
+			size_t pathlen = 0;
+			const uint8_t *pathend;
 
 			/* Read band number */
+			if (ptr == end)
+			{
+				rterror(
+				    "rt_raster_deserialize: Premature end of serialized raster reading offline band");
+				for (j = 0; j <= i; j++)
+					rt_band_destroy(rast->bands[j]);
+				rt_raster_destroy(rast);
+				return NULL;
+			}
 			band->data.offline.bandNum = *ptr;
 			ptr += 1;
 
 			/* Register path */
-			pathlen = strlen((char*) ptr);
+			pathend = memchr(ptr, '\0', (size_t)(end - ptr));
+			if (pathend == NULL)
+			{
+				rterror("rt_raster_deserialize: Unterminated offline band path");
+				for (j = 0; j <= i; j++)
+					rt_band_destroy(rast->bands[j]);
+				rt_raster_destroy(rast);
+				return NULL;
+			}
+			pathlen = (size_t)(pathend - ptr);
 			band->data.offline.path = rtalloc(sizeof(char) * (pathlen + 1));
-			if (band->data.offline.path == NULL) {
+			if (band->data.offline.path == NULL)
+			{
 				rterror("rt_raster_deserialize: Could not allocate memory for offline band path");
-				for (j = 0; j <= i; j++) rt_band_destroy(rast->bands[j]);
+				for (j = 0; j <= i; j++)
+					rt_band_destroy(rast->bands[j]);
 				rt_raster_destroy(rast);
 				return NULL;
 			}
@@ -905,10 +1031,22 @@ rt_raster_deserialize(void* serialized, int header_only) {
 
 			band->data.offline.mem = NULL;
 		}
-		else {
+		else
+		{
 			/* Register data */
-			const size_t datasize = (size_t)rast->width * rast->height * (size_t)pixbytes;
-			band->data.mem = (uint8_t*) ptr;
+			size_t numval;
+			size_t datasize;
+			if (!rt_raster_serialized_size_mul(rast->width, rast->height, &numval) ||
+			    !rt_raster_serialized_size_mul(numval, (size_t)pixbytes, &datasize) ||
+			    datasize > (size_t)(end - ptr))
+			{
+				rterror("rt_raster_deserialize: Premature end of serialized raster reading band data");
+				for (j = 0; j <= i; j++)
+					rt_band_destroy(rast->bands[j]);
+				rt_raster_destroy(rast);
+				return NULL;
+			}
+			band->data.mem = (uint8_t *)ptr;
 			ptr += datasize;
 		}
 
@@ -916,15 +1054,33 @@ rt_raster_deserialize(void* serialized, int header_only) {
 #if POSTGIS_DEBUG_LEVEL > 0
 		const uint8_t *padbeg = ptr;
 #endif
-		while (0 != ((ptr - beg) % 8)) {
-			++ptr;
+		{
+			size_t padding = (8 - ((size_t)(ptr - beg) % 8)) % 8;
+			if (padding > (size_t)(end - ptr))
+			{
+				rterror("rt_raster_deserialize: Premature end of serialized raster reading padding");
+				for (j = 0; j <= i; j++)
+					rt_band_destroy(rast->bands[j]);
+				rt_raster_destroy(rast);
+				return NULL;
+			}
+			ptr += padding;
 		}
 
-		RASTER_DEBUGF(3, "rt_raster_deserialize: skip %d bytes of 8-bytes boundary padding", ptr - padbeg);
+		RASTER_DEBUGF(3, "rt_raster_deserialize: skip %ld bytes of 8-bytes boundary padding", ptr - padbeg);
 
 		/* Consistency checking (ptr is pixbytes-aligned) */
 		assert(!((ptr - beg) % pixbytes));
 	}
 
 	return rast;
+}
+
+rt_raster
+rt_raster_deserialize(void *serialized, int header_only)
+{
+	const struct rt_raster_serialized_t *rast = serialized;
+
+	assert(NULL != serialized);
+	return rt_raster_deserialize_with_size(serialized, rast->size, header_only);
 }
