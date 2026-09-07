@@ -1782,11 +1782,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
-	tilesize *= (size_t)info->tile_size[0] * (size_t)info->tile_size[1];
-
-	/* roughly estimate size of one tile and all bands */
-	tilesize *= 1.1;
-	if (tilesize > MAXTILESIZE)
+	if (!rt_util_size_mul(tilesize, (size_t)info->tile_size[0], &tilesize) ||
+	    !rt_util_size_mul(tilesize, (size_t)info->tile_size[1], &tilesize))
+		rtwarn(_("The size of each output tile may exceed 1 GB. Use -t to specify a reasonable tile size"));
+	else if (tilesize > MAXTILESIZE / 1.1 || (tilesize *= 1.1) > MAXTILESIZE)
 		rtwarn(_("The size of each output tile may exceed 1 GB. Use -t to specify a reasonable tile size"));
 
 	/* out-db raster */
