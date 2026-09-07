@@ -3,6 +3,12 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - #6118, GT-769, Reject empty geometry type modifiers before they can read past the
+    input buffer (Egor Ivkov)
+  - GT-771, GH-1175, Guard missing operands before reading node tags in spatial
+    selectivity estimation (Maksim Korotkov)
+  - GT-770, [topology] Report the actual face-update count when edge removal fails
+    (Egor Ivkov)
   - [address_standardizer] Load lexicon rows by documented tuple order so
     copied or upgraded lexicon tables do not change parser priority
     (Darafei Praliaskouski)
