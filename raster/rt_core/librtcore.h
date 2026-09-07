@@ -337,6 +337,8 @@ void rt_set_handlers_options(rt_allocator allocator,
  * @return the pixel type's byte size
  */
 int rt_pixtype_size(rt_pixtype pixtype);
+/* Report an invalid pixel type under the calling function's name. */
+int rt_pixtype_size_for(const char *caller, rt_pixtype pixtype);
 
 /**
  * Return alignment requirements for data in the given pixel type.
@@ -1581,6 +1583,33 @@ void *rt_raster_serialize(rt_raster raster);
  * form (including band data), which must be kept alive.
  */
 rt_raster rt_raster_deserialize(void *serialized, int header_only);
+
+/**
+ * Return a raster from a serialized form with an explicit input length.
+ * Use this for data received from an untrusted boundary.
+ */
+rt_raster rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, int header_only);
+
+/**
+ * Return a raster from a PostgreSQL varlena datum with its authoritative
+ * allocated length. The first datum word is PostgreSQL's length encoding,
+ * not a plain serialized-raster size.
+ */
+rt_raster rt_raster_deserialize_pgraster(const void *serialized, size_t serialized_size, int header_only);
+
+/* Return 0 on overflow and leave result untouched. */
+int rt_util_size_mul(size_t left, size_t right, size_t *result);
+/* Accumulate up to limit, leaving size unchanged on failure. */
+int rt_util_size_add(size_t *size, size_t add, size_t limit);
+/* Convert a size validated by the caller or a distance between ordered pointers. */
+static inline size_t
+rt_util_size_from_signed(intmax_t value)
+{
+	assert(value >= 0);
+	return (size_t)value;
+}
+/* Check the inline band payload against limit. Pixel width comes from rt_pixtype_size_for. */
+int rt_band_data_size(const char *caller, uint16_t width, uint16_t height, int pixbytes, size_t limit, size_t *size);
 
 /**
  * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0

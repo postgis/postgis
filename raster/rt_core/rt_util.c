@@ -9,7 +9,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
- * Copyright (C) 2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (C) 2025-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,6 +30,42 @@
 #include "librtcore.h"
 #include "librtcore_internal.h"
 #include "optionlist.h"
+
+int
+rt_util_size_mul(size_t left, size_t right, size_t *result)
+{
+	if (left != 0 && right > SIZE_MAX / left)
+		return 0;
+	*result = left * right;
+	return 1;
+}
+
+int
+rt_util_size_add(size_t *size, size_t add, size_t limit)
+{
+	if (*size > limit || add > limit - *size)
+		return 0;
+	*size += add;
+	return 1;
+}
+
+int
+rt_band_data_size(const char *caller, uint16_t width, uint16_t height, int pixbytes, size_t limit, size_t *size)
+{
+	size_t bytes;
+
+	/* The pixel type lookup has already reported this error. */
+	if (pixbytes < 1)
+		return 0;
+	if (!rt_util_size_mul(width, height, &bytes) ||
+	    !rt_util_size_mul(bytes, rt_util_size_from_signed(pixbytes), &bytes) || bytes > limit)
+	{
+		rterror("%s: Raster dimensions are too large for band data", caller);
+		return 0;
+	}
+	*size = bytes;
+	return 1;
+}
 
 uint8_t
 rt_util_clamp_to_1BB(double value)

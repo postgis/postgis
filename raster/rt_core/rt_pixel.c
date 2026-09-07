@@ -36,7 +36,8 @@
 ******************************************************************************/
 
 int
-rt_pixtype_size(rt_pixtype pixtype) {
+rt_pixtype_size_for(const char *caller, rt_pixtype pixtype)
+{
 	int pixbytes = -1;
 
 	switch (pixtype) {
@@ -61,9 +62,8 @@ rt_pixtype_size(rt_pixtype pixtype) {
 			pixbytes = 8;
 			break;
 		default:
-			rterror("rt_pixtype_size: Unknown pixeltype %d", pixtype);
-			pixbytes = -1;
-			break;
+			rterror("%s: Unknown pixeltype %d", caller, pixtype);
+			return -1;
 	}
 
 	RASTER_DEBUGF(3, "Pixel type = %s and size = %d bytes",
@@ -71,6 +71,10 @@ rt_pixtype_size(rt_pixtype pixtype) {
 
 	return pixbytes;
 }
+
+int
+rt_pixtype_size(rt_pixtype pixtype)
+{ return rt_pixtype_size_for(__func__, pixtype); }
 
 int
 rt_pixtype_alignment(rt_pixtype pixtype) {

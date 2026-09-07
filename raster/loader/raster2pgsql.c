@@ -94,6 +94,7 @@ rtloader_alloc_sprintf(const char *fmt, ...)
 {
 	int len;
 	char *result;
+	size_t result_size = 1; /* trailing NUL */
 	va_list ap;
 	va_list ap2;
 
@@ -101,20 +102,20 @@ rtloader_alloc_sprintf(const char *fmt, ...)
 	va_copy(ap2, ap);
 	len = vsnprintf(NULL, 0, fmt, ap);
 	va_end(ap);
-	if (len < 0)
+	if (len < 0 || !rt_util_size_add(&result_size, rt_util_size_from_signed(len), SIZE_MAX))
 	{
 		va_end(ap2);
 		return NULL;
 	}
 
-	result = rtalloc((size_t)len + 1);
-	if (result == NULL)
+	result = rtalloc(result_size);
+	if (!result)
 	{
 		va_end(ap2);
 		return NULL;
 	}
 
-	vsnprintf(result, (size_t)len + 1, fmt, ap2);
+	vsnprintf(result, result_size, fmt, ap2);
 	va_end(ap2);
 	return result;
 }
@@ -1908,7 +1909,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int naturalx = 1;
 	int naturaly = 1;
 	double gt[6] = {0.};
-	const char* pszProjectionRef = NULL;
+	const char *pszProjectionRef = NULL;
 	size_t tilesize = 0;
 
 	rt_raster rast = NULL;
@@ -2105,13 +2106,18 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 		/* update estimated byte size of 1 pixel */
 		{
-			int _pixbytes = rt_pixtype_size(info->bandtype[i]);
-			if (_pixbytes < 1) {
-				rterror(_("convert_raster: Invalid pixel type for band %d"), i + 1);
+			int pixbytes = rt_pixtype_size_for(__func__, info->bandtype[i]);
+			if (pixbytes < 1)
+			{
 				GDALClose(hdsSrc);
 				return 0;
 			}
-			tilesize += (size_t)_pixbytes;
+			if (!rt_util_size_add(&tilesize, rt_util_size_from_signed(pixbytes), SIZE_MAX))
+			{
+				rterror(_("%s: Combined pixel size is too large"), __func__);
+				GDALClose(hdsSrc);
+				return 0;
+			}
 		}
 	}
 
@@ -2135,8 +2141,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->tile_size[1] = info->dim[1];
 	else
 		info->tile_size[1] = config->tile_size[1];
-	if (info->tile_size[0] < 1 || info->tile_size[1] < 1) {
-		rterror(_("convert_raster: Invalid tile size: %dx%d"), info->tile_size[0], info->tile_size[1]);
+	if (info->tile_size[0] < 1 || info->tile_size[1] < 1)
+	{
+		rterror(_("%s: Invalid tile size: %dx%d"), __func__, info->tile_size[0], info->tile_size[1]);
 		GDALClose(hdsSrc);
 		return 0;
 	}
@@ -2148,11 +2155,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
-	tilesize *= (size_t)info->tile_size[0] * (size_t)info->tile_size[1];
-
-	/* roughly estimate size of one tile and all bands */
-	tilesize *= 1.1;
-	if (tilesize > MAXTILESIZE)
+	/* Reserve 10% for tile overhead. Divide the limit in a wider type. */
+	if (!rt_util_size_mul(tilesize, rt_util_size_from_signed(info->tile_size[0]), &tilesize) ||
+	    !rt_util_size_mul(tilesize, rt_util_size_from_signed(info->tile_size[1]), &tilesize) ||
+	    tilesize > (UINT64_C(10) * MAXTILESIZE) / 11)
 		rtwarn(_("The size of each output tile may exceed 1 GB. Use -t to specify a reasonable tile size"));
 
 	/* out-db raster */

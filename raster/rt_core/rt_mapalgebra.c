@@ -75,9 +75,8 @@ rt_band_reclass(rt_band srcband,
 		int exprcount)
 {
 	rt_band band = NULL;
-	uint32_t width = 0;
-	uint32_t height = 0;
-	uint32_t numval = 0;
+	uint16_t width = 0;
+	uint16_t height = 0;
 	size_t memsize = 0;
 	void *mem = NULL;
 	uint32_t src_hasnodata = 0;
@@ -108,17 +107,11 @@ rt_band_reclass(rt_band srcband,
 	/* size of memory block to allocate */
 	width = rt_band_get_width(srcband);
 	height = rt_band_get_height(srcband);
-	numval = width * height;
+	if (!rt_band_data_size(__func__, width, height, rt_pixtype_size_for(__func__, pixtype), SIZE_MAX, &memsize))
+		return NULL;
+	mem = rtalloc(memsize);
+	if (!mem)
 	{
-		int pixbytes = rt_pixtype_size(pixtype);
-		if (pixbytes < 1 || (numval != 0 && (size_t)pixbytes > SIZE_MAX / numval)) {
-			rterror("rt_band_reclass: Raster dimensions are too large for band allocation");
-			return 0;
-		}
-		memsize = (size_t)pixbytes * numval;
-	}
-	mem = (int *) rtalloc(memsize);
-	if (!mem) {
 		rterror("rt_band_reclass: Could not allocate memory for band");
 		return 0;
 	}
@@ -298,9 +291,8 @@ rt_band
 rt_band_reclass_exact(rt_band srcband, rt_reclassmap map, uint32_t hasnodata, double nodataval)
 {
 	rt_band band = NULL;
-	uint32_t width = 0;
-	uint32_t height = 0;
-	uint32_t numval = 0;
+	uint16_t width = 0;
+	uint16_t height = 0;
 	size_t memsize = 0;
 	void *mem = NULL;
 	uint32_t src_hasnodata = 0;
@@ -331,19 +323,15 @@ rt_band_reclass_exact(rt_band srcband, rt_reclassmap map, uint32_t hasnodata, do
 	/* size of memory block to allocate */
 	width = rt_band_get_width(srcband);
 	height = rt_band_get_height(srcband);
-	numval = width * height;
 	pixtype = map->dsttype;
-	{
-		int pixbytes = rt_pixtype_size(pixtype);
-		if (pixbytes < 1 || (numval != 0 && (size_t)pixbytes > SIZE_MAX / numval)) {
-			rterror("%s: Raster dimensions are too large for band allocation", __func__);
-			return NULL;
-		}
-		memsize = (size_t)pixbytes * numval;
-	}
-	mem = (int *) rtalloc(memsize);
+	if (!rt_band_data_size(__func__, width, height, rt_pixtype_size_for(__func__, pixtype), SIZE_MAX, &memsize))
+		return NULL;
+	mem = rtalloc(memsize);
 	if (!mem)
+	{
 		rterror("%s: Could not allocate memory for band", __func__);
+		return NULL;
+	}
 
 	band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, mem);
 	if (!band)
