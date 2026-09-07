@@ -2178,13 +2178,24 @@ rt_raster_to_gdal_mem(
 
 			/* this makes use of GDAL's "natural" blocks */
 			GDALGetBlockSize(band, &nXBlockSize, &nYBlockSize);
+			if (nXBlockSize <= 0 || nYBlockSize <= 0 ||
+			    !rt_util_size_mul((size_t)rt_pixtype_size(PT_16BSI), (size_t)nXBlockSize, &valueslen) ||
+			    !rt_util_size_mul(valueslen, (size_t)nYBlockSize, &valueslen))
+			{
+				rterror("rt_raster_to_gdal_mem: Invalid or oversized GDAL block size");
+				if (allocBandNums)
+					rtdealloc(bandNums);
+				if (allocNodataValues)
+					rtdealloc(excludeNodataValues);
+				GDALClose(ds);
+				return 0;
+			}
 			nXBlocks = (width + nXBlockSize - 1) / nXBlockSize;
 			nYBlocks = (height + nYBlockSize - 1) / nYBlockSize;
 			RASTER_DEBUGF(4, "(nXBlockSize, nYBlockSize) = (%d, %d)", nXBlockSize, nYBlockSize);
 			RASTER_DEBUGF(4, "(nXBlocks, nYBlocks) = (%d, %d)", nXBlocks, nYBlocks);
 
 			/* length is for the desired pixel type */
-			valueslen = (size_t)rt_pixtype_size(PT_16BSI) * (size_t)nXBlockSize * (size_t)nYBlockSize;
 			values = rtalloc(valueslen);
 			if (NULL == values) {
 				rterror("rt_raster_to_gdal_mem: Could not allocate memory for GDAL band pixel values");
@@ -2459,20 +2470,27 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 
 		/* this makes use of GDAL's "natural" blocks */
 		GDALGetBlockSize(gdband, &nXBlockSize, &nYBlockSize);
+		if (nXBlockSize <= 0 || nYBlockSize <= 0 ||
+		    !rt_util_size_mul((size_t)ptlen, (size_t)nXBlockSize, &valueslen) ||
+		    !rt_util_size_mul(valueslen, (size_t)nYBlockSize, &valueslen))
+		{
+			rterror("rt_raster_from_gdal_dataset: Invalid or oversized GDAL block size");
+			rt_raster_destroy(rast);
+			return NULL;
+		}
 		nXBlocks = (width + nXBlockSize - 1) / nXBlockSize;
 		nYBlocks = (height + nYBlockSize - 1) / nYBlockSize;
 		RASTER_DEBUGF(4, "(nXBlockSize, nYBlockSize) = (%d, %d)", nXBlockSize, nYBlockSize);
 		RASTER_DEBUGF(4, "(nXBlocks, nYBlocks) = (%d, %d)", nXBlocks, nYBlocks);
 
 		/* allocate memory for values */
-		valueslen = (size_t)ptlen * (size_t)nXBlockSize * (size_t)nYBlockSize;
 		values = rtalloc(valueslen);
 		if (values == NULL) {
 			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for GDAL band pixel values");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
-		RASTER_DEBUGF(3, "values @ %p of length = %d", values, valueslen);
+		RASTER_DEBUGF(3, "values @ %p of length = %zu", values, valueslen);
 
 		for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++) {
 			for (iXBlock = 0; iXBlock < nXBlocks; iXBlock++) {
