@@ -461,7 +461,8 @@ rt_pg_vsi_check_options(char **newval, void **extra, GucSource source)
 static char *gdal_datapath = NULL;
 static char *gdal_vsi_options = NULL;
 static char *gdal_enabled_drivers = NULL;
-static bool enable_outdb_rasters = false;
+/* Defined in rt_band.c and used by the offline-band access guards. */
+extern bool enable_outdb_rasters;
 
 /* ---------------------------------------------------------------- */
 /*  Useful variables                                                */
@@ -828,6 +829,5 @@ _PG_fini(void) {
 	/* Revert back to old context */
 	MemoryContextSwitchTo(old_context);
 }
-
 
 
