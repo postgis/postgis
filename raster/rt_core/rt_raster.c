@@ -529,7 +529,8 @@ rt_raster_generate_new_band(
         return -1;
     }
     numval = width * height;
-    if (numval > SIZE_MAX / (size_t)pixbytes) {
+    /* Serialized raster sizes are stored in uint32_t. */
+    if (numval > UINT32_MAX / (size_t)pixbytes) {
         rterror("rt_raster_generate_new_band: Raster dimensions are too large for band allocation");
         return -1;
     }
