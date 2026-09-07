@@ -4396,7 +4396,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
   if (result != 1)
   {
     _lwt_release_edges(edge, 1);
-    lwerror("Unexpected error: %" PRIu64 " faces updated when expecting 1", i);
+    lwerror("Unexpected error: %d faces updated when expecting 1", result);
     return -1;
   }
       }
