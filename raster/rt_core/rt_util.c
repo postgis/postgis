@@ -31,6 +31,15 @@
 #include "librtcore_internal.h"
 #include "optionlist.h"
 
+int
+rt_util_size_mul(size_t left, size_t right, size_t *result)
+{
+	if (left != 0 && right > SIZE_MAX / left)
+		return 0;
+	*result = left * right;
+	return 1;
+}
+
 uint8_t
 rt_util_clamp_to_1BB(double value) {
     return (uint8_t)fmin(fmax((value), 0), POSTGIS_RT_1BBMAX);

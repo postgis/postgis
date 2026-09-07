@@ -471,16 +471,6 @@ rt_raster_serialized_size_add(size_t *size, size_t add)
 	return 1;
 }
 
-static int
-rt_raster_serialized_size_mul(size_t left, size_t right, size_t *result)
-{
-	if (left != 0 && right > SIZE_MAX / left)
-		return 0;
-
-	*result = left * right;
-	return 1;
-}
-
 static uint32_t
 rt_raster_serialized_size(rt_raster raster)
 {
@@ -489,7 +479,7 @@ rt_raster_serialized_size(rt_raster raster)
 
 	assert(NULL != raster);
 
-	RASTER_DEBUGF(3, "Serialized size with just header:%d - now adding size of %d bands", size, raster->numBands);
+	RASTER_DEBUGF(3, "Serialized size with just header:%zu - now adding size of %d bands", size, raster->numBands);
 
 	for (i = 0; i < raster->numBands; ++i)
 	{
@@ -547,7 +537,7 @@ rt_raster_serialized_size(rt_raster raster)
 				return 0;
 		}
 
-		RASTER_DEBUGF(3, "Size before alignment is %d", size);
+		RASTER_DEBUGF(3, "Size before alignment is %zu", size);
 
 		/* Align size to 8-bytes boundary (trailing padding) */
 		/* XXX jorgearevalo: bug here. If the size is actually 8-bytes aligned,
@@ -560,7 +550,7 @@ rt_raster_serialized_size(rt_raster raster)
 				return 0;
 		}
 
-		RASTER_DEBUGF(3, "Size after alignment is %d", size);
+		RASTER_DEBUGF(3, "Size after alignment is %zu", size);
 	}
 
 	return (uint32_t)size;
@@ -787,6 +777,7 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 	const uint8_t *ptr = NULL;
 	const uint8_t *beg = NULL;
 	const uint8_t *end = NULL;
+	size_t bands_size;
 	uint16_t i = 0;
 	uint16_t j = 0;
 #ifdef WORDS_BIGENDIAN
@@ -840,8 +831,7 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 	/* Allocate registry of raster bands */
 	RASTER_DEBUG(3, "rt_raster_deserialize: Allocating memory for bands");
 	{
-		size_t bands_size;
-		if (!rt_raster_serialized_size_mul(rast->numBands, sizeof(rt_band), &bands_size))
+		if (!rt_util_size_mul(rast->numBands, sizeof(rt_band), &bands_size))
 		{
 			rterror("rt_raster_deserialize: Too many bands");
 			rtdealloc(rast);
@@ -855,6 +845,7 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 		rtdealloc(rast);
 		return NULL;
 	}
+	memset(rast->bands, 0, bands_size);
 
 	RASTER_DEBUGF(3, "rt_raster_deserialize: %d bands", rast->numBands);
 
@@ -878,6 +869,7 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 			rt_raster_destroy(rast);
 			return NULL;
 		}
+		memset(band, 0, sizeof(struct rt_band_t));
 
 		rast->bands[i] = band;
 		if (ptr == end)
@@ -1036,8 +1028,8 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 			/* Register data */
 			size_t numval;
 			size_t datasize;
-			if (!rt_raster_serialized_size_mul(rast->width, rast->height, &numval) ||
-			    !rt_raster_serialized_size_mul(numval, (size_t)pixbytes, &datasize) ||
+			if (!rt_util_size_mul(rast->width, rast->height, &numval) ||
+			    !rt_util_size_mul(numval, (size_t)pixbytes, &datasize) ||
 			    datasize > (size_t)(end - ptr))
 			{
 				rterror("rt_raster_deserialize: Premature end of serialized raster reading band data");

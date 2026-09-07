@@ -1649,6 +1649,8 @@ rt_raster rt_raster_deserialize(void *serialized, int header_only);
  */
 rt_raster rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, int header_only);
 
+int rt_util_size_mul(size_t left, size_t right, size_t *result);
+
 /**
  * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0
  *
