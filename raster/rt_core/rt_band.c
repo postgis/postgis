@@ -116,11 +116,19 @@ rt_band_init_value(
 	assert(band != NULL);
 	assert(band->data.mem != NULL);
 	rt_pixtype pixtype = band->pixtype;
-	uint32_t width = band->width;
-	uint32_t height = band->height;
-	uint32_t numval = width * height;
+	size_t width = band->width;
+	size_t height = band->height;
+	size_t numval;
 	void *mem = band->data.mem;
-	size_t memsize = numval * rt_pixtype_size(pixtype);
+	size_t memsize;
+
+	if (height != 0 && width > SIZE_MAX / height)
+	{
+		rterror("rt_band_init_value: Raster dimensions are too large for band initialization");
+		return;
+	}
+	numval = width * height;
+	memsize = numval * rt_pixtype_size(pixtype);
 
 	/* initialize to nodataval */
 	int32_t checkvalint = 0;
@@ -454,12 +462,19 @@ rt_band_duplicate(rt_band band) {
 	/* online */
 	else {
 		uint8_t *data = NULL;
-		data = rtalloc((size_t)rt_pixtype_size(band->pixtype) * band->width * band->height);
+		int _pixbytes = rt_pixtype_size(band->pixtype);
+		size_t _numval = (size_t)band->width * band->height;
+		if (_pixbytes < 1 || (_numval != 0 && (size_t)_pixbytes > SIZE_MAX / _numval)) {
+			rterror("rt_band_duplicate: Raster dimensions are too large for band data");
+			return NULL;
+		}
+		size_t _datasize = _numval * (size_t)_pixbytes;
+		data = rtalloc(_datasize);
 		if (data == NULL) {
 			rterror("rt_band_duplicate: Out of memory allocating online band data");
 			return NULL;
 		}
-		memcpy(data, band->data.mem, (size_t)rt_pixtype_size(band->pixtype) * band->width * band->height);
+		memcpy(data, band->data.mem, _datasize);
 
 		rtn = rt_band_new_inline(
 			band->width, band->height,
@@ -1026,6 +1041,11 @@ rt_band_set_pixel_line(
 	pixtype = band->pixtype;
 	size = rt_pixtype_size(pixtype);
 
+	if (size < 1) {
+		rterror("rt_band_set_pixel_line: Invalid pixel type for band");
+		return ES_ERROR;
+	}
+
 	if (
 		x < 0 || x >= band->width ||
 		y < 0 || y >= band->height
@@ -1039,7 +1059,7 @@ rt_band_set_pixel_line(
 	RASTER_DEBUGF(4, "offset = %d", offset);
 
 	/* make sure len of values to copy don't exceed end of data */
-	if (len > (band->width * band->height) - offset) {
+	if (len > (size_t)band->width * band->height - offset) {
 		rterror("rt_band_set_pixel_line: Could not apply pixels as values length exceeds end of data");
 		return ES_ERROR;
 	}
@@ -1298,7 +1318,7 @@ rt_errorstate rt_band_get_pixel_line(
 	uint8_t *data = NULL;
 	uint32_t offset = 0;
 	uint16_t _nvals = 0;
-	int maxlen = 0;
+	size_t maxlen = 0;
 	uint8_t *ptr = NULL;
 
 	assert(NULL != band);
@@ -1331,12 +1351,17 @@ rt_errorstate rt_band_get_pixel_line(
 	pixsize = rt_pixtype_size(band->pixtype);
 	RASTER_DEBUGF(4, "pixsize = %d", pixsize);
 
+	if (pixsize < 1) {
+		rterror("rt_band_get_pixel_line: Invalid pixel type for band");
+		return ES_ERROR;
+	}
+
 	/* cap _nvals so that it doesn't overflow */
 	_nvals = len;
-	maxlen = band->width * band->height;
+	maxlen = (size_t)band->width * band->height;
 
-	if (((int) (offset + _nvals)) > maxlen) {
-		_nvals = maxlen - offset;
+	if ((size_t)(offset + _nvals) > maxlen) {
+		_nvals = (uint16_t)(maxlen - offset);
 		rtwarn("Limiting returning number values to %d", _nvals);
 	}
 	RASTER_DEBUGF(4, "_nvals = %d", _nvals);
