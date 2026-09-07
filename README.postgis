@@ -2,7 +2,7 @@ PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
 :Version: 3.7.0
-:Date: 2026-08-24
+:Date: 2026-09-01
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -59,14 +59,16 @@ below dependencies (except for GTK):
     libsfcgal-dev \
     libxml2-dev \
     libxml2-utils \
+    perl \
     pkg-config \
     protobuf-c-compiler \
     xsltproc
 
 * PROJ (Required, Version 6.1 or higher):
 
-  The PROJ catographic projection library is required if you want to use the
-  ST_Transform() function to reproject features within the database.
+  The PROJ cartographic projection library is required for map projection /
+  datum transformation support such as the ST_Transform() function. It is a
+  hard build requirement; configure fails if it cannot be found.
 
     https://proj.org
 
@@ -83,17 +85,19 @@ below dependencies (except for GTK):
 
     https://libgeos.org
 
-* XML SUPPORT (Required, Version 2.5.0 or higher):
+* XML SUPPORT / libxml2 (Required):
 
   The LibXML2 library is required to use the ST_GeomFromGML() and
-  ST_GeomFromKML() functionality.
+  ST_GeomFromKML() functionality. It is a hard build requirement; configure
+  fails if it cannot be found.
 
     http://xmlsoft.org/
 
 * GMP (Required):
 
   The GMP arbitrary precision arithmetic library is required by PostGIS
-  topology support.
+  topology support. It is detected via pkg-config and has no fallback, so
+  ``pkg-config`` must be available for a default build.
 
     https://gmplib.org
 
@@ -108,9 +112,11 @@ below dependencies (except for GTK):
   GNU gettext is used for loader and documentation translation support. It may
   be disabled with ``--with-gettext=no``.
 
-* JSON-C (Optional, Version 0.9 or higher)
+* JSON-C (Optional)
 
   JSON-C is used to import GeoJSON via the function ST_GeomFromGeoJson().
+  It is enabled by default but optional; if it is not found configure only
+  warns and the build continues. Disable with ``--without-json``.
 
     http://github.com/json-c/json-c/wiki
 
@@ -125,11 +131,13 @@ below dependencies (except for GTK):
 
   https://sfcgal.gitlab.io/sfcgal
 
-* protobuf-c (Optional, Version 1.1.0 or higher)
+* protobuf-c (Optional, Version 1.1.0 or higher, enabled by default)
 
   The protobuf-c library and compiler are required to enable ST_AsMVT and
-  ST_AsGeobuf output. Also, pkg-config is required to verify the correct
-  minimum version of protobuf-c.
+  ST_AsGeobuf output. Both the ``libprotobuf-c`` library and the ``protoc-c``
+  compiler are needed; the compiler is a hard error if you request protobuf
+  support but cannot find it. Disable with ``--without-protobuf``. Also,
+  pkg-config is used to verify the correct minimum version of protobuf-c.
 
     https://github.com/protobuf-c/protobuf-c
 
@@ -141,6 +149,23 @@ below dependencies (except for GTK):
   To get packages on apt-based systems:
 
     apt-get install libgtk2.0-dev
+
+Documentation Building
+----------------------
+
+Building the documentation requires the following in addition to the apt
+packages listed above (``docbook-xsl-ns``, ``libxml2-utils`` and ``xsltproc``):
+
+* Python 3 -- required to run the manual example tester that generates the
+  visual examples which HTML and PDF embed. Those SVGs come from running the
+  staged PostGIS build against a live PostgreSQL server via ``make -C regress
+  visual-examples``; no Python database driver is required (the tooling talks
+  to the server through the ``psql`` client).
+
+* An SVG rasterizer for PDF output -- ``rsvg-convert`` (from librsvg) is
+  preferred, with GraphicsMagick (``gm``) or ImageMagick (``convert`` /
+  ``magick``) as fallbacks. HTML and EPUB embed the SVG files directly and do
+  not need a rasterizer.
 
 CONFIGURATION
 -------------

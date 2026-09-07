@@ -193,16 +193,27 @@ sh autogen.sh
     </listitem>
     <listitem>
     <para>
-      LibXML2, version 2.5.x or higher. LibXML2 is currently used in some imports
+      LibXML2. LibXML2 is currently used in some imports
       functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is available for download from
       <link xlink:href="https://gitlab.gnome.org/GNOME/libxml2/-/releases">https://gitlab.gnome.org/GNOME/libxml2/-/releases</link>.
     </para>
     </listitem>
+
     <listitem>
     <para>
-      JSON-C, version 0.9 or higher. JSON-C is currently used to import GeoJSON via the
-      function ST_GeomFromGeoJson. JSON-C is available for download from
-      <link xlink:href="https://github.com/json-c/json-c/releases">https://github.com/json-c/json-c/releases/</link>.
+      Perl is required to build PostGIS.
+      Perl is available for download from
+      <link xlink:href="https://www.perl.org/">https://www.perl.org/</link>.
+    </para>
+    </listitem>
+
+    <listitem>
+    <para>
+      The iconv library is required by the shp2pgsql loader for encoding
+      conversion. On GNU/Linux systems it is typically provided by libc; on
+      other platforms you may need a separate
+      <link xlink:href="https://www.gnu.org/software/libiconv/">libiconv</link>
+      package.
     </para>
     </listitem>
 
@@ -211,6 +222,8 @@ sh autogen.sh
       The GNU Multiple Precision Arithmetic Library (libgmp). Used to control precision of math operations in PostGIS Topology.
       GMP is available for download from
       <link xlink:href="https://gmplib.org/">https://gmplib.org/</link>.
+      It is detected via <command>pkg-config</command> and has no fallback, so
+      <command>pkg-config</command> must be available for a default build.
     </para>
     </listitem>
 
@@ -241,6 +254,23 @@ sh autogen.sh
       GDAL (pseudo optional) only if you don't want raster
       you can leave it out.  Also make sure to enable
       the drivers you want to use as described in <xref linkend="raster_configuration"/>.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      JSON-C. JSON-C is currently used to import GeoJSON via the
+      function ST_GeomFromGeoJson. JSON-C is available for download from
+      <link xlink:href="https://github.com/json-c/json-c/releases">https://github.com/json-c/json-c/releases/</link>.
+      It is enabled by default but optional; if it is not found configure
+      only warns and the build continues. Disable with
+      <varname>--without-json</varname>.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      GNU gettext for loader and documentation translation support. It may be
+      disabled with <varname>--with-gettext=no</varname>.
+      <link xlink:href="https://www.gnu.org/software/gettext/">https://www.gnu.org/software/gettext/</link>.
     </para>
     </listitem>
     <listitem>
@@ -285,6 +315,21 @@ sh autogen.sh
       documentation. Docbook is available from
       <link xlink:href="http://www.docbook.org/">
       http://www.docbook.org/
+      </link>
+      .
+    </para>
+    </listitem>
+
+    <listitem>
+    <para>
+      Python 3 is required to run the manual example tester that generates
+      the visual examples which the HTML and PDF documentation embed.
+      The examples are executed against a live PostgreSQL server running the
+      staged PostGIS build via <command>make -C regress visual-examples</command>;
+      no Python database driver is required, the tooling talks to the server
+      through the <command>psql</command> client. Python 3 is available from
+      <link xlink:href="https://www.python.org/">
+      https://www.python.org/
       </link>
       .
     </para>

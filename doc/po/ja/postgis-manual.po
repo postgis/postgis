@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-08-31 01:39+0000\n"
+"PO-Revision-Date: 2026-09-07 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -302,7 +302,7 @@ msgid ""
 "way is no longer supported."
 msgstr ""
 "エクステンションを使ってデータベースをインストールした場合には、"
-"エクステンションモデルでアップグレードしなければなりません。 古い SQL "
+"エクステンションモデルでアップグレードしなければなりません。古い SQL "
 "スクリプトを使ってインストールした場合には、SQL スクリプトは既にサポートされ"
 "ていませんので、エクステンションに切り替えるべきです。"
 
@@ -352,7 +352,7 @@ msgid ""
 "This second call is needed to rebundle the <varname>postgis_raster</varname> "
 "extension."
 msgstr ""
-"この二つ目の関数呼出は <varname>postgis_raster</varname>エクステンションの再"
+"この二つ目の関数呼出は <varname>postgis_raster</varname> エクステンションの再"
 "同梱が必要です。"
 
 #. Tag: para
@@ -420,8 +420,9 @@ msgid ""
 "safely drop, if you don't need raster support."
 msgstr ""
 "PostGIS エクステンションを 3.0.0より前からアップグレードする場合には新しい"
-"エクステンション<emphasis>postgis_raster</emphasis>が入ることになります。この"
-"エクステンションはラスター機能が不要な場合には安全に削除することができます。"
+"エクステンション<emphasis>postgis_raster</emphasis> が入ることになります。こ"
+"のエクステンションはラスター機能が不要な場合には安全に削除することができます"
+"。"
 
 #. Tag: title
 #, no-c-format
@@ -1063,8 +1064,8 @@ msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables. Creates a table called <varname>historic_information</varname>"
 msgstr ""
-"履歴テーブルの管理のための値を持つテーブルを生成します。テーブル名は<varname>"
-"historic_information</varname>になります。"
+"履歴テーブルの管理のための値を持つテーブルを生成します。テーブル名は "
+"<varname>historic_information</varname> になります。"
 
 #. Tag: para
 #, no-c-format
@@ -3886,7 +3887,7 @@ msgstr "GEOS モジュールで実現しています。"
 #. Tag: para
 #, no-c-format
 msgid "These examples use edges we created in <xref linkend=\"AddEdge\"/>"
-msgstr "本例では<xref linkend=\"AddEdge\"/>で作ったエッジを使います。"
+msgstr "本例では <xref linkend=\"AddEdge\"/> で作ったエッジを使います。"
 
 #. Tag: para
 #, no-c-format
@@ -5288,8 +5289,8 @@ msgstr ""
 msgid ""
 "This uses the topo geometry we created in <xref linkend=\"CreateTopoGeom\"/>"
 msgstr ""
-"ここでは<xref linkend=\"CreateTopoGeom\"/>で生成した TopoGeometry を使用して"
-"います。"
+"ここでは <xref linkend=\"CreateTopoGeom\"/> で生成した TopoGeometry を使用し"
+"ています。"
 
 #. Tag: para
 #, no-c-format
@@ -5823,8 +5824,8 @@ msgid ""
 "Retrieve the PostGIS source archive from the downloads website <link "
 "xlink:href=\"&postgis_download_url;\"> &postgis_download_url; </link>"
 msgstr ""
-"ダウンロードサイト<link xlink:href=\"&postgis_download_url;\"> "
-"&postgis_download_url; </link>からソースのアーカイブを入手します。"
+"ダウンロードサイト <link xlink:href=\"&postgis_download_url;\"> "
+"&postgis_download_url; </link> からソースのアーカイブを入手します。"
 
 #. Tag: para
 #, no-c-format
@@ -25388,7 +25389,7 @@ msgid ""
 msgstr ""
 "&geography_transform; ジオメトリーのバウンディングボックスに最適な平面空間参"
 "照系を決定します (UTM、ランベルト正積方位図法の北極/南極、最後はメルカトルで"
-"す)。バッファは平面空間で計算あｓれ、WGS84に戻されます。このため、入力が UTM"
+"す)。バッファは平面空間で計算され、WGS84に戻されます。このため、入力が UTM"
 "ゾーンと比べて非常に大きくなったり、日付変更線とクロスしたりする場合に、求め"
 "る動作をしないことがあります"
 
@@ -29313,12 +29314,12 @@ msgstr "元画像 (rast カラム)"
 #. Tag: para
 #, no-c-format
 msgid "dupe_band"
-msgstr "dupe_band"
+msgstr "dupe_band (訳注: 元画像の 2番, 2番, 1番を順に割り当てた画像)"
 
 #. Tag: para
 #, no-c-format
 msgid "sing_band"
-msgstr "sing_band"
+msgstr "sing_band (訳注: 元画像の 3番バンドの単色画像)"
 
 #. Tag: para
 #, no-c-format

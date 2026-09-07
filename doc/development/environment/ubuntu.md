@@ -51,13 +51,18 @@ sudo apt-get install -y --no-install-recommends \
   libxml2-dev libxslt1-dev libxml2-utils \
   libyaml-dev \
   postgresql postgresql-client postgresql-server-dev-all \
-  python3 python3-pip python3-venv python3-psycopg2 \
+  python3 python3-pip python3-venv \
   xsltproc docbook-xsl docbook-xsl-ns docbook-xml \
   zlib1g-dev
 ```
 
 This installs software so local workflow can exercise builds, sanitizers,
 formatters, and regression suites.
+
+Note that the documentation example and visual-example tooling talks to the
+PostgreSQL server through the `psql` client (spawned by the Python scripts),
+so no Python database driver such as `psycopg2` is required for documentation
+building or example tests.
 
 ## 2. Configure PostgreSQL for local testing
 
@@ -105,6 +110,8 @@ have:
 * PROTOBUF-C (for `ST_AsMVT`)
 * SFCGAL (for 3D/advanced geometry tests)
 * Libxml2, libxslt and docbook stylesheets (for documentation targets)
+* Python 3 (required to build documentation and to run the example /
+  visual-example tooling; see `make -C regress visual-examples`)
 * Valgrind (for CUnit leak checks)
 
 Verify their presence if `./configure` fails.

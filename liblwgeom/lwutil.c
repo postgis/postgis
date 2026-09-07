@@ -478,15 +478,15 @@ int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 	assert(z);
 	assert(m);
 
-	str_len = strlen(str);
-	/* Empty string is not a valid type */
-	if(str_len == 0)
-		return LW_FAILURE;
-
 	/* Initialize. */
 	*type = 0;
 	*z = 0;
 	*m = 0;
+
+	str_len = strlen(str);
+	/* Empty string is not a valid type. */
+	if (str_len == 0)
+		return LW_FAILURE;
 
 	/* Locate any leading/trailing spaces */
 	tmpstartpos = 0;
