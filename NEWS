@@ -3,6 +3,10 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - GT-779, [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
+    metadata and pixel-read restrictions after upgrade
+    (reported by Sarath Kumar, IITM Pravartak Security Team;
+    fixed by Darafei Praliaskouski)
   - #6120, Improve topology robustness by restoring edge collapse handling
            during building (Sandro Santilli)
   - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
