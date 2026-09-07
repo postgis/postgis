@@ -4729,7 +4729,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.14+ "
+"GEOS geometry library, version &min_geos_version; or greater, but GEOS 3.15+ "
 "is required to take full advantage of all the new functions and features. "
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
@@ -4738,19 +4738,26 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"LibXML2, version 2.5.x or higher. LibXML2 is currently used in some imports "
-"functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is available for "
-"download from <link xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
-"releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</link>."
+"LibXML2. LibXML2 is currently used in some imports functions (ST_GeomFromGML "
+"and ST_GeomFromKML). LibXML2 is available for download from <link "
+"xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2/-/releases\">https://"
+"gitlab.gnome.org/GNOME/libxml2/-/releases</link>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"JSON-C, version 0.9 or higher. JSON-C is currently used to import GeoJSON "
-"via the function ST_GeomFromGeoJson. JSON-C is available for download from "
-"<link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
-"github.com/json-c/json-c/releases/</link>."
+"Perl is required to build PostGIS. Perl is available for download from <link "
+"xlink:href=\"https://www.perl.org/\">https://www.perl.org/</link>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The iconv library is required by the shp2pgsql loader for encoding "
+"conversion. On GNU/Linux systems it is typically provided by libc; on other "
+"platforms you may need a separate <link xlink:href=\"https://www.gnu.org/"
+"software/libiconv/\">libiconv</link> package."
 msgstr ""
 
 #. Tag: para
@@ -4759,15 +4766,16 @@ msgid ""
 "The GNU Multiple Precision Arithmetic Library (libgmp). Used to control "
 "precision of math operations in PostGIS Topology. GMP is available for "
 "download from <link xlink:href=\"https://gmplib.org/\">https://gmplib.org/</"
-"link>."
+"link>. It is detected via <command>pkg-config</command> and has no fallback, "
+"so <command>pkg-config</command> must be available for a default build."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"GDAL, version 3+ is preferred. This is required for raster support. <link "
-"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/"
-"download.html</link>."
+"GDAL, version 2.4 or higher, is required for raster support. GDAL 3+ is "
+"preferred. <link xlink:href=\"https://gdal.org/download.html\">https://"
+"gdal.org/download.html</link>."
 msgstr ""
 
 #. Tag: para
@@ -4794,6 +4802,26 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"JSON-C. JSON-C is currently used to import GeoJSON via the function "
+"ST_GeomFromGeoJson. JSON-C is available for download from <link "
+"xlink:href=\"https://github.com/json-c/json-c/releases\">https://github.com/"
+"json-c/json-c/releases/</link>. It is enabled by default but optional; if it "
+"is not found configure only warns and the build continues. Disable with "
+"<varname>--without-json</varname>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"GNU gettext for loader and documentation translation support. It may be "
+"disabled with <varname>--with-gettext=no</varname>. <link "
+"xlink:href=\"https://www.gnu.org/software/gettext/\">https://www.gnu.org/"
+"software/gettext/</link>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader. "
 "<link xlink:href=\"http://www.gtk.org/\"> http://www.gtk.org/ </link> ."
 msgstr ""
@@ -4801,7 +4829,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"SFCGAL, 1.4.1 or higher is required, 2.3+ is needed to be able to use all "
+"SFCGAL, 1.3.1 or higher is required, 2.3+ is needed to be able to use all "
 "functionality. SFCGAL can be used to provide additional 2D and 3D advanced "
 "analysis functions to PostGIS cf <xref linkend=\"reference_sfcgal\"/>. <link "
 "xlink:href=\"https://sfcgal.gitlab.io/sfcgal/\">https://sfcgal.gitlab.io/"
@@ -4835,6 +4863,18 @@ msgid ""
 "DocBook (<filename>xsltproc</filename>) is required for building the "
 "documentation. Docbook is available from <link xlink:href=\"http://"
 "www.docbook.org/\"> http://www.docbook.org/ </link> ."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Python 3 is required to run the manual example tester that generates the "
+"visual examples which the HTML and PDF documentation embed. The examples are "
+"executed against a live PostgreSQL server running the staged PostGIS build "
+"via <command>make -C regress visual-examples</command>; no Python database "
+"driver is required, the tooling talks to the server through the "
+"<command>psql</command> client. Python 3 is available from <link "
+"xlink:href=\"https://www.python.org/\"> https://www.python.org/ </link> ."
 msgstr ""
 
 #. Tag: para
@@ -13382,9 +13422,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "By default, GDAL logging is printed to stderr, and lower level debug "
-"messages are not printed at all. Turning this GUC to true will cause GDAL "
-"logging to be sent into the PostgreSQL logging stream, so you can see more "
-"or less of it by altering the <code>client_min_message</code> PostgreSQL GUC."
+"messages are not printed at all. Turning this GUC to true will cause "
+"detailed GDAL logging to be sent into the PostgreSQL server log. PostgreSQL "
+"clients receive only generic GDAL notice, debug, warning, or error messages."
 msgstr ""
 
 #. Tag: title
@@ -15365,8 +15405,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Removes a geometry column from a spatial table. Note that schema_name will "
-"need to match the f_table_schema field of the table's row in the "
-"geometry_columns table."
+"need to match the f_table_schema field shown by the "
+"<varname>geometry_columns</varname> view."
 msgstr ""
 
 #. Tag: para
@@ -35916,10 +35956,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"This version requires GEOS 3.10+, PostgreSQL 14-19beta1, Proj 6.1+, libgmp. "
-"To take advantage of all features postgis extension features, GEOS 3.15+ is "
+"This version requires GEOS 3.10+, PostgreSQL 14-19beta3, Proj 6.1+, and "
+"libgmp. To take advantage of all postgis extension features, GEOS 3.15+ is "
 "needed. To take advantage of all postgis_sfcgal extension features SFCGAL "
-"2.3+ is needed."
+"2.3+ is needed. Python 3 is a new requirement to build the documentation."
 msgstr ""
 
 #. Tag: title
@@ -35987,6 +36027,14 @@ msgstr ""
 msgid ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/848\">GH-848</"
 "link>, CG_AlphaShape now returns a MultiPolygon (Jean Felder)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"[docs] Python 3 and an SVG rasterizer (rsvg-convert preferred, "
+"GraphicsMagick or ImageMagick supported) now required for doc building "
+"(Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: title
@@ -36097,33 +36145,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5950\">#5950</"
-"link>, Document POSTGIS_REGRESS_DB_OWNER for sandboxed regression roles "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4332\">#4332</"
-"link>, Clarify the scope of several Function Reference categories (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4222\">#4222</"
 "link>, [raster] ST_DumpAsPolygons honours PostgreSQL interrupts (Darafei "
 "Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5109\">#5109</"
-"link>, Document the meaning of topology.next_left_edge and "
-"topology.next_right_edge links (Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -36140,14 +36164,6 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2614\">#2614</"
 "link>, Use GEOSPreparedDistance and caching to accelerate ST_DWithin (Paul "
 "Ramsey)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6022\">#6022</"
-"link>, Document ST_AsMVTGeom tile-coordinate simplification (Darafei "
-"Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -36195,14 +36211,6 @@ msgid ""
 "(Darafei Praliaskouski)"
 msgstr ""
 
-#. Tag: para
-#, no-c-format
-msgid ""
-"[fuzzers] Centralize OSS-Fuzz build/dependency logic in PostGIS scripts, "
-"prefer requested CXX over pg_config --cc for internal C++ checks, and make "
-"fuzzer linking/runtime dependency packaging portable (Darafei Praliaskouski)"
-msgstr ""
-
 #. Tag: title
 #, no-c-format
 msgid "Enhancements"
@@ -36235,6 +36243,14 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3776\">#3776</"
+"link>, [raster] Keep distinct 32-bit integer pixel values separate in "
+"ST_DumpAsPolygons (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4678\">#4678</"
 "link>, [raster] Move st_sum4ma neighborhood callback to C (Darafei "
 "Praliaskouski)"
@@ -36260,13 +36276,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2898\">#2898</"
-"link>, Document SQL function cost tiers for contributors"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6062\">#6062</"
 "link>, [topology] Stop using recursive snapping, for improved robustness "
 "(Sandro Santilli)"
@@ -36283,16 +36292,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3743\">#3743</"
-"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
-"4385\">#4385</link>, [raster loader] Document raster2pgsql -s FROM_SRID:SRID "
-"reprojection support and clarify index creation timing for append loads "
-"(Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2137\">#2137</"
 "link>, [raster] Reuse matching source raster overviews in raster2pgsql -l "
 "(Darafei Praliaskouski)"
@@ -36304,22 +36303,6 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4749\">#4749</"
 "link>, Use point-in-polygon predicate fast paths for point-only "
 "GeometryCollections (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5532\">#5532</"
-"link>, Validate the manual against DocBook XMLSchema in check-xml (Darafei "
-"Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6087\">#6087</"
-"link>, Add a repository-owned CI status checker and static dashboard "
-"generator (Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -36357,13 +36340,6 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2386\">#2386</"
-"link>, Add raster2pgsql man page (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "Build PostgreSQL extension modules with `-fno-semantic-interposition` when "
 "available so LTO can optimize same-DSO calls to exported PostGIS entry "
 "points directly instead of routing through the module PLT; in a local "
@@ -36391,42 +36367,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5593\">#5593</"
-"link>, Docs: render manual images with GraphicsMagick without temporary "
-"files, enabling parallel builds, keeping ImageMagick fallbacks working, and "
-"documenting the generator workflow for contributors (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5645\">#5645</"
-"link>, Docs: keep code operators (&quot;=&gt;&quot;) intact in translated "
-"manuals by enforcing verbatim CSS (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1408\">#1408</"
-"link>, Docs: flatten transparent manual images onto white backgrounds for "
-"PDF builds while keeping HTML images transparent (Darafei Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2838\">#2838</"
 "link>, Emit valid X3D Coordinate nodes for 2D polygon output (Darafei "
 "Praliaskouski)"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1705\">#1705</"
-"link>, Infer constraint metadata for direct view and materialized view "
-"geometry columns (Darafei Praliaskouski)"
 msgstr ""
 
 #. Tag: para
@@ -36440,9 +36383,267 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6073\">#6073</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"6074\">#6074</link>, Stabilize geography LRS endpoint interpolation and pole "
+"centroid regressions on 32-bit systems (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2583\">#2583</"
 "link>, Preserve Z/ZM dimensional qualifiers in ST_AsEWKT output for TIN "
 "(Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4616\">#4616</"
+"link>, Detect pgsql2shp query keywords case-insensitively (Darafei "
+"Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1986\">#1986</"
+"link>, ST_GeomFromGML support for GML ArcString and curved polygon rings "
+"(Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4749\">#4749</"
+"link>, Use point-in-polygon predicate fast paths for point-only "
+"GeometryCollections, including ST_Disjoint (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3676\">#3676</"
+"link>, Mark geometry and geography btree comparison support functions as "
+"leakproof (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/875\">GH-875</"
+"link>, Allow ST_OrderingEquals joins to use hash and merge join plans "
+"(Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1168\">#1168</"
+"link>, [raster] Support curved geometry inputs in ST_AsRaster (Darafei "
+"Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1416\">#1416</"
+"link>, ST_AsX3D outputs NURBSCURVE as X3D NurbsCurve and linearizes other "
+"curve geometries (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3705\">#3705</"
+"link>, ST_AsX3D outputs valid coordinate nodes for 2D multi-geometries and "
+"GeometryCollections (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/pulls/"
+"484\">GT-484</link>, Use column-level SELECT privileges for metadata views "
+"(Arthur Bazin)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1408\">#1408</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"2386\">#2386</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/2557\">#2557</link>, <link xlink:href=\"https://trac.osgeo.org/"
+"postgis/ticket/2805\">#2805</link>, <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/ticket/2898\">#2898</link>, <link "
+"xlink:href=\"https://trac.osgeo.org/postgis/ticket/3743\">#3743</link>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4323\">#4323</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"4332\">#4332</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/4385\">#4385</link>, <link xlink:href=\"https://trac.osgeo.org/"
+"postgis/ticket/5109\">#5109</link>, <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/ticket/5532\">#5532</link>, <link "
+"xlink:href=\"https://trac.osgeo.org/postgis/ticket/5593\">#5593</link>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5638\">#5638</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"5645\">#5645</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/5950\">#5950</link>, <link xlink:href=\"https://trac.osgeo.org/"
+"postgis/ticket/6022\">#6022</link>, <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/ticket/6082\">#6082</link>, <link "
+"xlink:href=\"https://github.com/postgis/postgis/pull/1161\">GH-1161</link>, "
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/pulls/"
+"584\">GT-584</link>, Numerous doc enhancements (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Bug Fixes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/1175\">GH-1175</"
+"link>, Guard missing operands before reading node tags in spatial "
+"selectivity estimation (Maksim Korotkov)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6118\">#6118</"
+"link>, Reject empty geometry type modifiers without an out-of-bounds read "
+"(Egor Ivkov)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Fix WKB and TWKB parser resource exhaustion on malformed input (Darafei "
+"Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6038\">#6038</"
+"link>, Avoid stale relation lookups in geometry_columns after topology "
+"objects are dropped (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5487\">#5487</"
+"link>, Improve error detail for repeated upgrades after an incomplete "
+"deprecated-function cleanup (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5975\">#5975</"
+"link>, Initialize skipped union-find cluster ids deterministically (Darafei "
+"Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5904\">#5904</"
+"link>, [topology] Avoid MinGW format warnings when logging topology ids "
+"(Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/888\">GH-888</"
+"link>, [sfcgal] Avoid stale detoasted geometry access in CG_Visibility empty-"
+"input handling for SFCGAL &lt; 2.2 (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3179\">#3179</"
+"link>, Mark truncated libpgcommon PostgreSQL messages instead of silently "
+"dropping the tail (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6003\">#6003</"
+"link>, Avoid size_t formats in liblwgeom logging/error wrappers for MinGW "
+"builds (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/886\">GH-886</"
+"link>, ST_ClusterRelateWin validates NULL relate matrices before detoasting "
+"them (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/889\">GH-889</"
+"link>, ST_Relate pattern inversion avoids out-of-bounds access on short "
+"DE-9IM patterns (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/890\">GH-890</"
+"link>, Avoid GIDX BRIN summary merges across mismatched dimensions (Darafei "
+"Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5959\">#5959</"
+"link>, Prevent histogram target overflow when analysing massive tables "
+"(Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6080\">#6080</"
+"link>, Avoid out-of-bounds hex WKB lookup for high-bit input bytes (Darafei "
+"Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4828\">#4828</"
+"link>, geometry_columns handles NOT VALID SRID checks without errors "
+"(Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6048\">#6048</"
+"link>, [raster] ST_Clip no longer crashes when clipping sparse band "
+"selections (Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/894\">GH-894</"
+"link>, [raster] Fix Float16 import, mixed nodata warping, band replacement "
+"cleanup, GDAL credential redaction, and Python GDAL compatibility (Darafei "
+"Praliaskouski)"
 msgstr ""
 
 #. Tag: title
@@ -38543,10 +38744,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Although the old constraint-based method is still supported, direct pass-"
-"through view columns register correctly in <varname>geometry_columns</"
-"varname> for both typmod-based and constraint-based source columns. In this "
-"example we define a column using typmod and another using constraints."
+"Although the old-constraint based method is still supported, a constraint-"
+"based geometry column used directly in a view, will not register correctly "
+"in geometry_columns, as will a typmod one. In this example we define a "
+"column using typmod and another using constraints."
 msgstr ""
 
 #. Tag: para
@@ -38569,16 +38770,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Both the typmod based geom view column and the direct constraint based view "
-"column register correctly."
+"The typmod based geom view column registers correctly, but the constraint "
+"based one does not."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"If the view applies a spatial function to the geometry, such as "
-"<function>ST_Transform</function>, you still need to cast the transformed "
-"column explicitly so the view can expose the correct type and SRID:"
+"This may change in future versions of PostGIS, but for now to force the "
+"constraint-based view column to register correctly, you need to do this:"
 msgstr ""
 
 #. Tag: title
