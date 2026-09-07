@@ -113,7 +113,7 @@ package_runtime_libs()
                     ;;
             esac
 
-            cp -n "$lib" "$OUT/lib/" || true
+            cp --update=none "$lib" "$OUT/lib/" || true
         done < <(ldd "$fuzzer" | awk '/=> \// {print $3}')
     done
 

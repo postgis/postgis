@@ -4396,7 +4396,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
   if (result != 1)
   {
     _lwt_release_edges(edge, 1);
-    lwerror("Unexpected error: %" PRIu64 " faces updated when expecting 1", i);
+    lwerror("Unexpected error: %d faces updated when expecting 1", result);
     return -1;
   }
       }
@@ -7245,12 +7245,12 @@ _lwt_AddLineEdge(LWT_TOPOLOGY *topo,
 
     if ( nn ) _lwt_release_nodes(node, nn);
 
-    LWDEBUGG(2, lwline_as_lwgeom(edge), "Snapped after drifted endpoints snap");
+    LWDEBUGG(1, lwline_as_lwgeom(edge), "Snapped after drifted endpoints snap");
 
-    /* make valid, after snap (to handle collapses) */
-    tmp = lwgeom_make_valid(lwline_as_lwgeom(edge));
+    /* node after snap (to handle collapses) */
+    tmp = lwgeom_node(lwline_as_lwgeom(edge));
 
-    LWDEBUGG(2, tmp, "Made-valid after snap to drifted endpoints");
+    LWDEBUGG(1, tmp, "Noded after snap to drifted endpoints");
 
     col = lwgeom_as_lwcollection(tmp);
     if ( col )
