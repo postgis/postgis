@@ -132,6 +132,9 @@ To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed
 
 * Bug Fixes *
 
+ - GH-1175, Guard missing operands before reading node tags in
+          spatial selectivity estimation (Maksim Korotkov)
+
  - #6118, Reject empty geometry type modifiers without an out-of-bounds read
           (Egor Ivkov)
  - Fix WKB and TWKB parser resource exhaustion on malformed input
