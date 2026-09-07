@@ -496,6 +496,7 @@ rt_raster_generate_new_band(
     size_t height = 0;
     size_t numval = 0;
     size_t datasize = 0;
+    int pixbytes = 0;
     int oldnumbands = 0;
     int numbands = 0;
     void * mem = NULL;
@@ -517,16 +518,20 @@ rt_raster_generate_new_band(
         rterror("rt_raster_generate_new_band: Raster dimensions are too large for band allocation");
         return -1;
     }
-    numval = width * height;
+    pixbytes = rt_pixtype_size(pixtype);
+    if (pixbytes < 1)
     {
-        int pixbytes = rt_pixtype_size(pixtype);
-        if (pixbytes < 1 || (numval != 0 && (size_t)pixbytes > SIZE_MAX / numval))
-        {
-            rterror("rt_raster_generate_new_band: Raster dimensions are too large for band allocation");
-            return -1;
-        }
-        datasize = numval * (size_t)pixbytes;
+        rterror("rt_raster_generate_new_band: Invalid pixel type for band allocation");
+        return -1;
     }
+    numval = width * height;
+    /* Serialized raster band data is represented by a uint32_t byte count. */
+    if (numval > UINT32_MAX / (size_t)pixbytes)
+    {
+        rterror("rt_raster_generate_new_band: Raster dimensions are too large for band allocation");
+        return -1;
+    }
+    datasize = numval * (size_t)pixbytes;
 
     mem = (int *)rtalloc(datasize);
     if (!mem) {
