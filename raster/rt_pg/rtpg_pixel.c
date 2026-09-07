@@ -426,6 +426,9 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		int numbands = 0;
 		int j = 0;
 		bool exclude_nodata_value = TRUE;
+		size_t npixels;
+		size_t values_size;
+		size_t nodata_size;
 
 		ArrayType *array;
 		Oid etype;
@@ -588,6 +591,17 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 		arg1->rows = rt_raster_get_height(raster);
 		arg1->columns = rt_raster_get_width(raster);
+		if (!rt_util_size_mul(arg1->rows, arg1->columns, &npixels) ||
+		    !rt_util_size_mul(npixels, sizeof(Datum), &values_size) ||
+		    !rt_util_size_mul(npixels, sizeof(bool), &nodata_size) || !AllocSizeIsValid(values_size) ||
+		    !AllocSizeIsValid(nodata_size))
+		{
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			elog(ERROR, "RASTER_dumpValues: Raster dimensions are too large");
+			SRF_RETURN_DONE(funcctx);
+		}
 
 		/* exclude_nodata_value */
 		if (!PG_ARGISNULL(2))
@@ -626,8 +640,8 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			}
 
 			/* allocate memory for values and nodata flags */
-			arg1->values[z] = palloc(sizeof(Datum) * arg1->rows * arg1->columns);
-			arg1->nodata[z] = palloc(sizeof(bool) * arg1->rows * arg1->columns);
+			arg1->values[z] = palloc(values_size);
+			arg1->nodata[z] = palloc(nodata_size);
 			if (arg1->values[z] == NULL || arg1->nodata[z] == NULL) {
 				rtpg_dumpvalues_arg_destroy(arg1);
 				rt_raster_destroy(raster);
@@ -636,15 +650,14 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 				elog(ERROR, "RASTER_dumpValues: Could not allocate memory for pixel values");
 				SRF_RETURN_DONE(funcctx);
 			}
-			memset(arg1->values[z], 0, sizeof(Datum) * arg1->rows * arg1->columns);
-			memset(arg1->nodata[z], 0, sizeof(bool) * arg1->rows * arg1->columns);
+			memset(arg1->values[z], 0, values_size);
+			memset(arg1->nodata[z], 0, nodata_size);
 
 			i = 0;
 
 			/* shortcut if band is NODATA */
 			if (rt_band_get_isnodata_flag(band)) {
-				uint32_t npixels = arg1->rows * arg1->columns;
-				for (uint32_t pi = 0; pi < npixels; pi++)
+				for (size_t pi = 0; pi < npixels; pi++)
 					arg1->nodata[z][pi] = TRUE;
 				continue;
 			}
