@@ -176,18 +176,21 @@ void
 colmap_clean(colmap *map)
 {
 	int i;
-	if (map != NULL){
-		if (map->size)
+	if (map == NULL)
+	{
+		return;
+	}
+	if (map->size)
+	{
+		for (i = 0; i < map->size; i++)
 		{
-			for (i = 0; i < map->size; i++)
-			{
-				if (map->pgfieldnames[i]) free(map->pgfieldnames[i]);
-				if (map->dbffieldnames[i]) free(map->dbffieldnames[i]);
-			}
-			free(map->pgfieldnames);
-			free(map->dbffieldnames);
+			free(map->pgfieldnames[i]);
+			free(map->dbffieldnames[i]);
 		}
 	}
+	free(map->pgfieldnames);
+	free(map->dbffieldnames);
+	colmap_init(map);
 }
 
 const char *
@@ -237,13 +240,30 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
     return 0;
   }
 
+  /* Release any prior contents and reset the map so this call is safe to
+   * reuse on the same struct (and so ++map->size below starts from zero) */
+  colmap_clean(map);
+
   /* First count how many columns we have... */
   while (fgets(linebuffer, 1024, fptr) != NULL) ++map->size;
 
+  if (!map->size)
+  {
+    fclose(fptr);
+    return 1;
+  }
   /* Now we know the final size, allocate the arrays and load the data */
   fseek(fptr, 0, SEEK_SET);
-  map->pgfieldnames = (char **)malloc(sizeof(char *) * map->size);
-  map->dbffieldnames = (char **)malloc(sizeof(char *) * map->size);
+  map->pgfieldnames = (char **)calloc(map->size, sizeof(char *));
+  map->dbffieldnames = (char **)calloc(map->size, sizeof(char *));
+  if (!map->pgfieldnames || !map->dbffieldnames)
+  {
+    map->size = 0;
+    colmap_clean(map);
+    fclose(fptr);
+    snprintf(errbuf, errbuflen, _("ERROR: Unable to allocate memory for column map file %s"), filename);
+    return 0;
+  }
 
   /* Read in a line at a time... */
   curmapsize = 0;
@@ -256,6 +276,13 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
 
     /* Allocate memory and copy the string ensuring it is terminated */
     map->pgfieldnames[curmapsize] = malloc(fieldnamesize + 1);
+    if (!map->pgfieldnames[curmapsize])
+    {
+      colmap_clean(map);
+      fclose(fptr);
+      snprintf(errbuf, errbuflen, _("ERROR: Unable to allocate memory for column map file %s"), filename);
+      return 0;
+    }
     strncpy(map->pgfieldnames[curmapsize], tmpstr, fieldnamesize);
     map->pgfieldnames[curmapsize][fieldnamesize] = '\0';
 
@@ -268,6 +295,13 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
 
     /* Allocate memory and copy the string ensuring it is terminated */
     map->dbffieldnames[curmapsize] = malloc(fieldnamesize + 1);
+    if (!map->dbffieldnames[curmapsize])
+    {
+      colmap_clean(map);
+      fclose(fptr);
+      snprintf(errbuf, errbuflen, _("ERROR: Unable to allocate memory for column map file %s"), filename);
+      return 0;
+    }
     strncpy(map->dbffieldnames[curmapsize], tmpstr, fieldnamesize);
     map->dbffieldnames[curmapsize][fieldnamesize] = '\0';
 
