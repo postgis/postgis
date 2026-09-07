@@ -3,6 +3,8 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - GH-1178, Handle allocation failures and partial cleanup in loader column maps
+     (Maksim Korotkov)
  - GH-1184, [raster] Check deserialization before reading the band count
      (Maksim Korotkov)
  - [raster] Handle allocation failure when copying raster strings
