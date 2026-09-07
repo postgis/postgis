@@ -1615,7 +1615,13 @@ void* rt_raster_serialize(rt_raster raster);
  * NOTE: the raster will contain pointer to the serialized
  * form (including band data), which must be kept alive.
  */
-rt_raster rt_raster_deserialize(void* serialized, int header_only);
+rt_raster rt_raster_deserialize(void *serialized, int header_only);
+
+/**
+ * Return a raster from a serialized form with an explicit input length.
+ * Use this for data received from an untrusted boundary.
+ */
+rt_raster rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, int header_only);
 
 /**
  * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0

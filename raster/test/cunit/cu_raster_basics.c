@@ -1,9 +1,9 @@
 /*
  * PostGIS Raster - Raster Types for PostGIS
- * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_new() {
+static void test_raster_new(void) {
 	rt_raster raster = NULL;
 
 	raster = rt_raster_new(0, 0);
@@ -40,7 +40,7 @@ static void test_raster_new() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_empty() {
+static void test_raster_empty(void) {
 	rt_raster raster = NULL;
 
 	/* check that raster is empty */
@@ -59,7 +59,7 @@ static void test_raster_empty() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_metadata() {
+static void test_raster_metadata(void) {
 	rt_raster raster = NULL;
 
 	/* create raster */
@@ -96,7 +96,7 @@ static void test_raster_metadata() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_clone() {
+static void test_raster_clone(void) {
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band;
@@ -140,7 +140,7 @@ static void test_raster_clone() {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_from_band() {
+static void test_raster_from_band(void) {
 	uint32_t bandNums[] = {1,3};
 	int lenBandNums = 2;
 	rt_raster raster;
@@ -169,7 +169,7 @@ static void test_raster_from_band() {
 	cu_free_raster(raster);
 }
 
-static void test_raster_replace_band() {
+static void test_raster_replace_band(void) {
 	rt_raster raster;
 	rt_band band;
 	rt_band rband;
@@ -204,9 +204,105 @@ static void test_raster_replace_band() {
 	cu_free_raster(raster);
 }
 
+static void
+test_raster_generate_new_band_size_overflow(void)
+{
+	rt_raster raster;
+	int bandnum;
+
+	raster = rt_raster_new(UINT16_MAX, UINT16_MAX);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(raster);
+
+	cu_error_msg_reset();
+	bandnum = rt_raster_generate_new_band(raster, PT_64BF, 0, 0, 0, -1);
+	CU_ASSERT_EQUAL(bandnum, -1);
+	CU_ASSERT_STRING_EQUAL(cu_error_msg,
+			       "rt_raster_generate_new_band: Raster dimensions are too large for band allocation");
+
+	rt_raster_destroy(raster);
+}
+
+static size_t raster_overflow_alloc_size;
+
+static void *
+raster_overflow_allocator(size_t size)
+{
+	raster_overflow_alloc_size = size;
+	return NULL;
+}
+
+static void
+test_raster_serializers_reject_oversized_band(void)
+{
+	rt_raster raster;
+	rt_band band;
+	uint8_t *serialized;
+	uint8_t *wkb;
+	uint32_t wkbsize = UINT32_MAX;
+	uint32_t hexwkbsize = UINT32_MAX;
+	char *hexwkb;
+	void *data;
+
+	/* 32768 x 32768 x 32BUI is the supplied boundary without allocating it. */
+	raster = rt_raster_new(32768, 32768);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(raster);
+	data = rtalloc(1);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(data);
+	band = rt_band_new_inline(32768, 32768, PT_32BUI, 0, 0, data);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(band);
+	rt_band_set_ownsdata_flag(band, 1);
+	CU_ASSERT_EQUAL(rt_raster_add_band(raster, band, 0), 0);
+
+	/* A rejected size must not reach an allocator as a zero-byte request. */
+	raster_overflow_alloc_size = SIZE_MAX;
+	rt_set_handlers(raster_overflow_allocator,
+			default_rt_reallocator,
+			default_rt_deallocator,
+			default_rt_error_handler,
+			default_rt_info_handler,
+			default_rt_warning_handler);
+	serialized = rt_raster_serialize(raster);
+	CU_ASSERT_PTR_NULL(serialized);
+	CU_ASSERT_EQUAL(raster_overflow_alloc_size, SIZE_MAX);
+
+	raster_overflow_alloc_size = SIZE_MAX;
+	wkb = rt_raster_to_wkb(raster, FALSE, &wkbsize);
+	CU_ASSERT_PTR_NULL(wkb);
+	CU_ASSERT_EQUAL(wkbsize, 0);
+	CU_ASSERT_EQUAL(raster_overflow_alloc_size, SIZE_MAX);
+
+	raster_overflow_alloc_size = SIZE_MAX;
+	hexwkb = rt_raster_to_hexwkb(raster, FALSE, &hexwkbsize);
+	CU_ASSERT_PTR_NULL(hexwkb);
+	CU_ASSERT_EQUAL(hexwkbsize, 0);
+	CU_ASSERT_EQUAL(raster_overflow_alloc_size, SIZE_MAX);
+
+	rt_install_default_allocators();
+	cu_free_raster(raster);
+}
+
+static void
+test_raster_deserialize_rejects_truncated_band(void)
+{
+	uint8_t serialized[sizeof(struct rt_raster_serialized_t) + 8] = {0};
+	struct rt_raster_serialized_t *header = (struct rt_raster_serialized_t *)serialized;
+	rt_raster raster;
+
+	header->size = sizeof(serialized);
+	header->numBands = 1;
+	header->width = 32768;
+	header->height = 32768;
+	serialized[sizeof(*header)] = PT_32BUI;
+
+	/* The band header is present, but its 4 GiB inline payload is absent. */
+	raster = rt_raster_deserialize_with_size(serialized, sizeof(serialized), FALSE);
+	CU_ASSERT_PTR_NULL(raster);
+}
+
 /* register tests */
 void raster_basics_suite_setup(void);
-void raster_basics_suite_setup(void)
+void
+raster_basics_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("raster_basics", NULL, NULL);
 	PG_ADD_TEST(suite, test_raster_new);
@@ -215,5 +311,7 @@ void raster_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_clone);
 	PG_ADD_TEST(suite, test_raster_from_band);
 	PG_ADD_TEST(suite, test_raster_replace_band);
+	PG_ADD_TEST(suite, test_raster_generate_new_band_size_overflow);
+	PG_ADD_TEST(suite, test_raster_serializers_reject_oversized_band);
+	PG_ADD_TEST(suite, test_raster_deserialize_rejects_truncated_band);
 }
-
