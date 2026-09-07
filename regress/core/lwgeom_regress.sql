@@ -220,4 +220,5 @@ select 'typmod_point_-1', geometry_typmod_out(geometry_typmod_in('{Point,-1}'));
 select 'typmod_pointzm_0', geometry_typmod_out(geometry_typmod_in('{PointZM,0}'));
 select 'typmod_geometry_0', geometry_typmod_out(geometry_typmod_in('{Geometry,0}'));
 select 'typmod_geometry_4326', geometry_typmod_out(geometry_typmod_in('{Geometry,4326}'));
+select 'typmod_empty', geometry_typmod_out(geometry_typmod_in('{""}'));
 select 'typmod_geography_0', geometry_typmod_out(geometry_typmod_in('{Geogrpahy,0}'));
