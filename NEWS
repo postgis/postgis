@@ -3,6 +3,8 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - [raster] Handle allocation failure when copying raster strings
+     (Maksim Korotkov)
  - #6159, Avoid negative geography areas when subtracting polygon holes
      (Sandro Santilli)
  - #3776, [raster] Preserve distinct integer pixels in ST_DumpAsPolygons
