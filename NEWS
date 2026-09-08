@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GH-1173, GH-1174, guard raster OOM cleanup paths against NULL dereferences
+    (Maksim Korotkov, Postgres Pro)
   - Fix geometry input parsing to stop malformed SRID prefixes before the
     end of the input string (Dennis Tighe, Google)
   - #6118, GT-769, Reject empty geometry type modifiers before they can read past the
