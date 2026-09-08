@@ -1623,6 +1623,13 @@ rt_raster rt_raster_deserialize(void *serialized, int header_only);
  */
 rt_raster rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, int header_only);
 
+/**
+ * Return a raster from a PostgreSQL varlena datum with its authoritative
+ * allocated length.  The first datum word is PostgreSQL's length encoding,
+ * not a plain serialized-raster size.
+ */
+rt_raster rt_raster_deserialize_pgraster(const void *serialized, size_t serialized_size, int header_only);
+
 int rt_util_size_mul(size_t left, size_t right, size_t *result);
 
 /**
