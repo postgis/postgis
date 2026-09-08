@@ -770,8 +770,8 @@ rt_raster_serialize(rt_raster raster)
  * NOTE: the raster will contain pointer to the serialized
  * form (including band data), which must be kept alive.
  */
-rt_raster
-rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, int header_only)
+static rt_raster
+rt_raster_deserialize_with_size_internal(const void *serialized, size_t serialized_size, int header_only, int pg_varlena)
 {
 	rt_raster rast = NULL;
 	const uint8_t *ptr = NULL;
@@ -787,7 +787,7 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 #endif
 
 	assert(NULL != serialized);
-	if (serialized_size < sizeof(struct rt_raster_serialized_t))
+	if (serialized_size < sizeof(struct rt_raster_serialized_t) || serialized_size > UINT32_MAX)
 	{
 		rterror("rt_raster_deserialize: Serialized raster is too short for its header");
 		return NULL;
@@ -812,12 +812,14 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 	/* Deserialize raster header */
 	RASTER_DEBUG(3, "rt_raster_deserialize: Deserialize raster header");
 	memcpy(rast, serialized, sizeof(struct rt_raster_serialized_t));
-	if (rast->size != serialized_size)
+	if (!pg_varlena && rast->size != serialized_size)
 	{
 		rterror("rt_raster_deserialize: Serialized raster size does not match input length");
 		rtdealloc(rast);
 		return NULL;
 	}
+	if (pg_varlena)
+		rast->size = (uint32_t)serialized_size;
 
 	if (0 == rast->numBands || header_only)
 	{
@@ -1066,6 +1068,18 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 	}
 
 	return rast;
+}
+
+rt_raster
+rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, int header_only)
+{
+	return rt_raster_deserialize_with_size_internal(serialized, serialized_size, header_only, FALSE);
+}
+
+rt_raster
+rt_raster_deserialize_pgraster(const void *serialized, size_t serialized_size, int header_only)
+{
+	return rt_raster_deserialize_with_size_internal(serialized, serialized_size, header_only, TRUE);
 }
 
 rt_raster

@@ -364,6 +364,33 @@ test_raster_deserialize_rejects_truncated_band(void)
 }
 
 static void
+test_raster_deserialize_uses_correct_size_contract(void)
+{
+	uint8_t serialized[sizeof(struct rt_raster_serialized_t)] = {0};
+	struct rt_raster_serialized_t *header = (struct rt_raster_serialized_t *)serialized;
+	rt_raster raster;
+
+	/* Raw serialized input cannot claim bytes that were not supplied. */
+	header->size = sizeof(serialized) + 1;
+	header->numBands = 0;
+	raster = rt_raster_deserialize_with_size(serialized, sizeof(serialized), FALSE);
+	CU_ASSERT_PTR_NULL(raster);
+
+	/* PostgreSQL overlays this word with a varlena length encoding. */
+	raster = rt_raster_deserialize_pgraster(serialized, sizeof(serialized), FALSE);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(raster);
+	CU_ASSERT_EQUAL(raster->size, sizeof(serialized));
+	cu_free_raster(raster);
+
+	/* Header-only calls use the same authoritative datum boundary. */
+	header->numBands = 1;
+	raster = rt_raster_deserialize_pgraster(serialized, sizeof(serialized), TRUE);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(raster);
+	CU_ASSERT_PTR_NULL(raster->bands);
+	rtdealloc(raster);
+}
+
+static void
 test_raster_readers_destroy_only_initialized_bands(void)
 {
 	uint8_t serialized[sizeof(struct rt_raster_serialized_t) + 4] = {0};
@@ -553,6 +580,7 @@ raster_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_generate_new_band_size_overflow);
 	PG_ADD_TEST(suite, test_raster_serializers_reject_oversized_band);
 	PG_ADD_TEST(suite, test_raster_deserialize_rejects_truncated_band);
+	PG_ADD_TEST(suite, test_raster_deserialize_uses_correct_size_contract);
 	PG_ADD_TEST(suite, test_raster_readers_destroy_only_initialized_bands);
 	PG_ADD_TEST(suite, test_raster_band_init_value);
 	PG_ADD_TEST(suite, test_raster_band_allocation_failure_cleanup);
