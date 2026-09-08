@@ -3,6 +3,8 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - GH-1173, GH-1174, guard raster OOM cleanup paths against NULL dereferences
+    (Maksim Korotkov, Postgres Pro)
   - GT-778, [raster] Reject malformed and oversized raster bands before allocation or
     serialization can wrap (Paul Wouters)
   - Fix geometry input parsing to stop malformed SRID prefixes before the
