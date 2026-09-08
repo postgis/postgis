@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-08 01:06+0000\n"
+"PO-Revision-Date: 2026-09-08 02:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -6013,6 +6013,11 @@ msgid ""
 "link>. It is detected via <command>pkg-config</command> and has no fallback, "
 "so <command>pkg-config</command> must be available for a default build."
 msgstr ""
+"GNU 多倍長精度演算ライブラリー (libgmp)。PostGIS トポロジーでの数学演算の精度"
+"を制御するために使います。GMP は <link xlink:href=\"https://gmplib.org/\">"
+"https://gmplib.org/</link> からダウンロードできます。このライブラリーの検出"
+"は <command>pkg-config</command> が行い、かつ代替手段が無いので、デフォルトの"
+"ビルドでは <command>pkg-config</command> が利用できなければなりません。"
 
 #. Tag: para
 #, no-c-format
@@ -6160,6 +6165,11 @@ msgid ""
 "<command>psql</command> client. Python 3 is available from <link "
 "xlink:href=\"https://www.python.org/\"> https://www.python.org/ </link> ."
 msgstr ""
+"Python 3 はマニュアルの例をテスト実行するために必要です。テスト実行によって "
+"HTML と PDF の文書に組み込まれる図が生成されます。これらの例は <command>"
+"make -C regress visual-examples</command> によって、テスト用に PostGIS を配備"
+"した動作中の PostgreSQL サーバーで実行されます。テスト実行ツールは <command>"
+"psql</command> クライアントを介してサーバーと通信します。"
 
 #. Tag: para
 #, no-c-format
@@ -44990,6 +45000,9 @@ msgid ""
 "GraphicsMagick or ImageMagick supported) now required for doc building "
 "(Darafei Praliaskouski)"
 msgstr ""
+"[docs] 文書構築には Python 3 と SVG ラスター化ツール (rsvg-convert が好ましい"
+"が、GraphicsMagick と ImageMagick にも対応) が必要となっています (Darafei "
+"Praliaskouski さん)"
 
 #. Tag: title
 #, no-c-format
@@ -45272,6 +45285,9 @@ msgid ""
 "link>, [raster] Keep distinct 32-bit integer pixel values separate in "
 "ST_DumpAsPolygons (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3776\">#3776</link>"
+", [raster] ST_DumpAsPolygons で異なる 32ビット整数ピクセル値を分かれた状態で"
+"維持するように改善 (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -45487,6 +45503,9 @@ msgid ""
 "link>, Detect pgsql2shp query keywords case-insensitively (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4616\">#4616</link>"
+", pgsql2shp がクエリーのキーワードを大文字小文字の区別なく検出するように変更 "
+"(Darafei Praliaskouski)"
 
 #. Tag: para
 #, no-c-format
@@ -45495,6 +45514,9 @@ msgid ""
 "link>, ST_GeomFromGML support for GML ArcString and curved polygon rings "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1986\">#1986</link>"
+", ST_GeomFromGML で GML ArcString と曲線ポリゴンに対応するように変更 "
+"(Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
