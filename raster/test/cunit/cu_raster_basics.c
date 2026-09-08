@@ -364,6 +364,45 @@ test_raster_deserialize_rejects_truncated_band(void)
 }
 
 static void
+test_raster_deserialize_rejects_declared_size_past_input(void)
+{
+	uint8_t serialized[sizeof(struct rt_raster_serialized_t)] = {0};
+	struct rt_raster_serialized_t *header = (struct rt_raster_serialized_t *)serialized;
+	rt_raster raster;
+
+	/* A raw serialization cannot claim bytes outside its supplied input. */
+	header->size = sizeof(serialized) + 1;
+	header->numBands = 0;
+	raster = rt_raster_deserialize_with_size(serialized, sizeof(serialized), FALSE);
+	CU_ASSERT_PTR_NULL(raster);
+	raster = rt_raster_deserialize_with_size(serialized, sizeof(serialized), TRUE);
+	CU_ASSERT_PTR_NULL(raster);
+}
+
+static void
+test_raster_deserialize_pgraster_uses_input_length(void)
+{
+	uint8_t serialized[sizeof(struct rt_raster_serialized_t)] = {0};
+	struct rt_raster_serialized_t *header = (struct rt_raster_serialized_t *)serialized;
+	rt_raster raster;
+
+	/* PostgreSQL overlays this word with a varlena length encoding. */
+	header->size = sizeof(serialized) + 1;
+	header->numBands = 1;
+	raster = rt_raster_deserialize_pgraster(serialized, sizeof(serialized), TRUE);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(raster);
+	CU_ASSERT_EQUAL(raster->size, sizeof(serialized));
+	CU_ASSERT_EQUAL(raster->numBands, 1);
+	CU_ASSERT_PTR_NULL(raster->bands);
+	/* Header-only rasters deliberately have no materialized band array. */
+	rt_raster_destroy(raster);
+
+	/* Full parsing keeps rejecting the absent band payload. */
+	raster = rt_raster_deserialize_pgraster(serialized, sizeof(serialized), FALSE);
+	CU_ASSERT_PTR_NULL(raster);
+}
+
+static void
 test_raster_readers_destroy_only_initialized_bands(void)
 {
 	uint8_t serialized[sizeof(struct rt_raster_serialized_t) + 4] = {0};
@@ -498,6 +537,8 @@ raster_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_generate_new_band_size_overflow);
 	PG_ADD_TEST(suite, test_raster_serializers_reject_oversized_band);
 	PG_ADD_TEST(suite, test_raster_deserialize_rejects_truncated_band);
+	PG_ADD_TEST(suite, test_raster_deserialize_rejects_declared_size_past_input);
+	PG_ADD_TEST(suite, test_raster_deserialize_pgraster_uses_input_length);
 	PG_ADD_TEST(suite, test_raster_readers_destroy_only_initialized_bands);
 	PG_ADD_TEST(suite, test_raster_band_duplicate_allocation_failure_cleanup);
 	PG_ADD_TEST(suite, test_raster_size_aware_roundtrips);
