@@ -12,17 +12,17 @@ export MSYS2_ARG_CONV_EXCL=/config/tags
 export XML_CATALOG_FILES="/projects/docbook/docbook-5.0.1/catalog.xml"
 
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.13.1
-	export GDAL_VER=3.9.2
-	export PROJ_VER=8.2.1
+	export GEOS_VER=3.15.0
+	export GDAL_VER=3.13.1
+	export PROJ_VER=9.8.1
 	export SFCGAL_VER=2.3.0
-	export CGAL_VER=6.0.1
+	export CGAL_VER=6.0.2
 	export ICON_VER=1.17
 	export ZLIB_VER=1.2.13
 	export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.16
-	export PROJSO=libproj_8_2.dll
+	export PROJSO=libproj_9.dll
 	export LZ4_VER=1.9.3
 fi;
 
@@ -43,6 +43,11 @@ fi;
 #otherwise use the ones jenkins passes thru
 if  [[ "${ICON_VER}" == '' ]] ; then
   export ICON_VER=1.17
+fi;
+
+
+if  [[ "${NPROC}" == '' ]] ; then
+  export NPROC=2
 fi;
 
 echo "ICON_VER ${ICON_VER}"

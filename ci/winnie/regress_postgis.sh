@@ -98,7 +98,7 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
 #patch liblwgeom generated make to get rid of dynamic linking
 #sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
 
-make -j 2
+make -j $NPROC
 make install
 
 # don't run tests twice. Only run regular if extension test is not asked for
