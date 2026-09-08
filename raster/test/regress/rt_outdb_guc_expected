@@ -1,0 +1,13 @@
+off
+off_metadata|f
+off_pixel|f
+off_indb_pixel|t
+on_metadata|t
+on_pixel|t
+off
+reset_metadata|f
+reset_pixel|f
+on
+off
+rollback_metadata|f
+rollback_pixel|f

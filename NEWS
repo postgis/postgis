@@ -3,6 +3,10 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GT-779, [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
+    metadata and pixel-read restrictions after upgrade
+    (reported by Sarath Kumar, IITM Pravartak Security Team;
+    fixed by Darafei Praliaskouski)
   - GT-675, Preserve TRIANGLE children while normalizing malformed TINs
     (Darafei Praliaskouski)
   - #6038, Avoid stale geometry_columns relation lookups after relations are
