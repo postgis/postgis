@@ -548,7 +548,7 @@ $(html_builddir)/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile $(HTML_DOCBO
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty $(POSTGIS_DBLATEX_BLOCK_LABELS_XSL) $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) $(visual_examples_inputs) | images pdf-images
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml $(abs_srcdir)/texstyle-common.sty $(abs_srcdir)/texstyle.sty $(POSTGIS_DBLATEX_BLOCK_LABELS_XSL) $(POSTGIS_HTML_BLOCK_LABELS_XSL) $(POSTGIS_BLOCK_LABELS_COMMON_XSL) $(visual_examples_inputs) | visual-examples images pdf-images
 ifeq ($(DBLATEX),)
 	@echo
 	@echo "configure was unable to find the 'dblatex' utility program."
@@ -623,9 +623,9 @@ images images-install images-uninstall images-clean:
 	$(MAKE) -C $(images_builddir) $@
 
 visual-examples:
-	$(MAKE) -C $(images_builddir) visual-examples-check
+	@$(if $(shell test -s '$(visual_examples_manifest)' && echo ok),true,$(error Visual examples are missing. Run 'make -C regress visual-examples' first.))
 
-pdf-images: images
+pdf-images: visual-examples images
 	$(MAKE) -C $(images_builddir) $@ PDF_IMAGES_BUILD_DIR="$(pdf_images_builddir)"
 
 html-clean:

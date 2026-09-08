@@ -49,14 +49,7 @@ images: visual-examples-check $(ALL_IMAGES)
 pdf-images: $(PDF_IMAGES) visual-examples-pdf
 
 visual-examples-check:
-	@test -s $(VISUAL_EXAMPLES_MANIFEST) || { \
-		echo "Visual examples are missing. Run 'make -C regress visual-examples' first." >&2; \
-		exit 1; \
-	}
-	@test -s $(VISUAL_EXAMPLES_XML_MANIFEST) || { \
-		echo "Visual example XML manifest is missing. Run 'make -C regress visual-examples' first." >&2; \
-		exit 1; \
-	}
+	@$(if $(shell test -s '$(VISUAL_EXAMPLES_MANIFEST)' && test -s '$(VISUAL_EXAMPLES_XML_MANIFEST)' && echo ok),true,$(error Visual examples are missing. Run 'make -C regress visual-examples' first.))
 
 visual-examples-pdf: visual-examples-check
 	@mkdir -p $(PDF_IMAGES_BUILD_DIR)/$(VISUAL_EXAMPLES_DIR)

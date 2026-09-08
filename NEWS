@@ -6,6 +6,12 @@ To take advantage of all postgis extension features, GEOS 3.15+ is needed.
 To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.
 Python 3 is a new requirement to build the documentation.
 
+To build docs, first run visual examples and make sure you have a running
+PostgreSQL instance.
+
+`make -C regress visual-examples`
+
+
 * Breaking Changes *
 
  - #5688, [topology] topology building functions now interpret tolerance 0
