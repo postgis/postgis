@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-07 07:39+0000\n"
+"PO-Revision-Date: 2026-09-08 01:06+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -5964,6 +5964,10 @@ msgid ""
 "GEOS is available for download from <link xlink:href=\"https://libgeos.org/"
 "\"> https://libgeos.org </link>."
 msgstr ""
+"GEOS ジオメトリーライブラリー、&min_geos_version; 以上ですが、新しい関数と機"
+"能を完全に活用するには GEOS 3.15 以上が必要です。GEOS は <link "
+"xlink:href=\"https://libgeos.org/\"> https://libgeos.org </link> から"
+"ダウンロードできます。"
 
 #. Tag: para
 #, no-c-format
@@ -5973,6 +5977,10 @@ msgid ""
 "xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2/-/releases\">https://"
 "gitlab.gnome.org/GNOME/libxml2/-/releases</link>."
 msgstr ""
+"LibXML2。現在はインポート関数 (ST_GeomFromGML と ST_GeomFromKML) で使われてい"
+"ます。LibXML2 は <link xlink:href=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
+"releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</link> から"
+"ダウンロードできます。"
 
 #. Tag: para
 #, no-c-format
@@ -5980,6 +5988,8 @@ msgid ""
 "Perl is required to build PostGIS. Perl is available for download from <link "
 "xlink:href=\"https://www.perl.org/\">https://www.perl.org/</link>."
 msgstr ""
+"Perl は PostGIS のビルドに必要です。Perl は <link xlink:href=\"https://"
+"www.perl.org/\">https://www.perl.org/</link> からダウンロードできます。"
 
 #. Tag: para
 #, no-c-format
@@ -5989,6 +5999,10 @@ msgid ""
 "platforms you may need a separate <link xlink:href=\"https://www.gnu.org/"
 "software/libiconv/\">libiconv</link> package."
 msgstr ""
+"iconv ライブラリーは shp2pgsql ローダーの文字コード変換に必要です。GNU/Linux "
+"システムでは、伝統的に libc で提供されていますが、他のプラットフォームでは別"
+"途 <link xlink:href=\"https://www.gnu.org/software/libiconv/\">libiconv</"
+"link> パッケージが必要です。"
 
 #. Tag: para
 #, no-c-format
@@ -6007,6 +6021,9 @@ msgid ""
 "preferred. <link xlink:href=\"https://gdal.org/download.html\">https://"
 "gdal.org/download.html</link>."
 msgstr ""
+"GDAL、2.4以上、ラスター機能に必要です。GDAL 3以上が望ましいです。<link "
+"xlink:href=\"https://gdal.org/download.html\">https://gdal.org/"
+"download.html</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -6045,6 +6062,12 @@ msgid ""
 "is not found configure only warns and the build continues. Disable with "
 "<varname>--without-json</varname>."
 msgstr ""
+"JSON-C。現在、ST_GeomFromGeoJson による GeoJSON の取り込みに使われます。JSON-"
+"C は link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
+"github.com/json-c/json-c/releases/</link> からダウンロードできます。"
+"デフォルトでは有効になっていますが、任意です。configure が警告を表示して"
+"ビルドを継続するだけで済まない場合には、 <varname>--without-json</varname> で"
+"無効にします。"
 
 #. Tag: para
 #, no-c-format
@@ -6054,6 +6077,9 @@ msgid ""
 "xlink:href=\"https://www.gnu.org/software/gettext/\">https://www.gnu.org/"
 "software/gettext/</link>."
 msgstr ""
+"GNU gettext、ローダーと文書翻訳機能に使われます。<varname>--with-gettext=no</"
+"varname> で無効にします。<link xlink:href=\"https://www.gnu.org/software/"
+"gettext/\">https://www.gnu.org/software/gettext/</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -6074,6 +6100,11 @@ msgid ""
 "xlink:href=\"https://sfcgal.gitlab.io/sfcgal/\">https://sfcgal.gitlab.io/"
 "sfcgal/</link>."
 msgstr ""
+"SFCGAL、1.3.1以上が必要ですが、全ての機能を使用できるようにするためには、"
+"2.3以上が必要です。SFCGALは、<xref linkend=\"reference_sfcgal\"/> のような、"
+"追加的な 2次元や 3次元の高度な解析機能を PostGIS に提供するために使います"
+"。<link xlink:href=\"https://sfcgal.gitlab.io/sfcgal/\">https://"
+"sfcgal.gitlab.io/sfcgal/</link>。"
 
 #. Tag: para
 #, no-c-format
@@ -16713,6 +16744,11 @@ msgid ""
 "detailed GDAL logging to be sent into the PostgreSQL server log. PostgreSQL "
 "clients receive only generic GDAL notice, debug, warning, or error messages."
 msgstr ""
+"デフォルトでは、GDAL のログは標準エラー出力に印字され、低水準"
+"デバッグメッセージは全く印字されません。この GUC を TRUE に変更することにより"
+"、詳細な GDAL ログが PostgreSQL サーバーログに送信されるようになります。ただ"
+"し PostgreSQL クライアントが受信するのは一般的な notice、debug、warning、"
+"error のメッセージまでです。"
 
 #. Tag: title
 #, no-c-format
@@ -19111,6 +19147,9 @@ msgid ""
 "need to match the f_table_schema field shown by the "
 "<varname>geometry_columns</varname> view."
 msgstr ""
+"ジオメトリーカラムを空間テーブルから削除します。schema_name は <varname>"
+"geometry_columns</varname> ビューの f_table_schema フィールドと合致する必要が"
+"あることに注意して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -44849,6 +44888,10 @@ msgid ""
 "needed. To take advantage of all postgis_sfcgal extension features SFCGAL "
 "2.3+ is needed. Python 3 is a new requirement to build the documentation."
 msgstr ""
+"このバージョンでは GEOS 3.10 以上、PostgreSQL 14-19beta3、Proj 6.1 以上、"
+"libgmp が必要です。全ての PostGIS エクステンションの機能を活用するには GEOS "
+"3.15 以上が必要です。全ての postgis_sfcgal エクステンションの機能を活用するに"
+"は SFCGAL 2.3 以上が必要です。Python 3 は文書構築に新たに必要になりました。"
 
 #. Tag: title
 #, no-c-format
