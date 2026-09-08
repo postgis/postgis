@@ -139,6 +139,10 @@ PostgreSQL instance.
 
 * Bug Fixes *
 
+ - [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
+          metadata and pixel-read restrictions after upgrade
+          (reported by Sarath Kumar, IITM Pravartak Security Team;
+          fixed by Darafei Praliaskouski)
  - GH-1175, Guard missing operands before reading node tags in
           spatial selectivity estimation (Maksim Korotkov)
 
