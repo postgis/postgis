@@ -275,6 +275,26 @@ poisoned_allocator_reset(void)
 	poisoned_foreign_deallocations = 0;
 }
 
+static size_t fail_nth_allocation;
+static size_t fail_nth_allocation_count;
+static size_t fail_nth_deallocation_count;
+
+static void *
+fail_nth_allocator(size_t size)
+{
+	fail_nth_allocation_count++;
+	if (fail_nth_allocation_count == fail_nth_allocation)
+		return NULL;
+	return default_rt_allocator(size);
+}
+
+static void
+fail_nth_deallocator(void *mem)
+{
+	fail_nth_deallocation_count++;
+	default_rt_deallocator(mem);
+}
+
 static void
 test_raster_serializers_reject_oversized_band(void)
 {
@@ -398,6 +418,87 @@ test_raster_readers_destroy_only_initialized_bands(void)
 }
 
 static void
+test_raster_band_init_value(void)
+{
+	uint8_t data = 0;
+	rt_band band;
+
+	band = rt_band_new_inline(1, 1, PT_8BUI, 0, 0, &data);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(band);
+	data = 0xa5;
+	rt_band_init_value(band, 0);
+	CU_ASSERT_EQUAL(data, 0);
+	rt_band_destroy(band);
+
+#if SIZE_MAX == UINT32_MAX
+	/* This boundary wraps to zero before the fixed product guard on 32-bit. */
+	band = rt_band_new_inline(32768, 32768, PT_32BUI, 0, 0, &data);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(band);
+	cu_error_msg_reset();
+	rt_set_handlers(default_rt_allocator,
+			default_rt_reallocator,
+			default_rt_deallocator,
+			default_rt_error_handler,
+			default_rt_info_handler,
+			default_rt_warning_handler);
+	rt_band_init_value(band, 0);
+	CU_ASSERT_STRING_EQUAL(cu_error_msg,
+			       "rt_band_init_value: Raster dimensions are too large for band initialization");
+	rt_install_default_allocators();
+	rt_band_destroy(band);
+#else
+	CU_ASSERT_TRUE(SIZE_MAX > UINT32_MAX);
+#endif
+}
+
+static void
+test_raster_band_allocation_failure_cleanup(void)
+{
+	uint8_t data = 0;
+	rt_band source;
+	rt_band duplicate;
+	rt_band reclassed;
+	struct rt_classpair_t pair = {0, 0};
+	struct rt_reclassmap_t map = {1, PT_8BUI, PT_8BUI, &pair};
+
+	source = rt_band_new_inline(1, 1, PT_8BUI, 1, 0, &data);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(source);
+	fail_nth_allocation = 2;
+	fail_nth_allocation_count = 0;
+	fail_nth_deallocation_count = 0;
+	rt_set_handlers(fail_nth_allocator,
+			default_rt_reallocator,
+			fail_nth_deallocator,
+			default_rt_error_handler,
+			default_rt_info_handler,
+			default_rt_warning_handler);
+	duplicate = rt_band_duplicate(source);
+	CU_ASSERT_PTR_NULL(duplicate);
+	CU_ASSERT_EQUAL(fail_nth_allocation_count, 2);
+	CU_ASSERT_EQUAL(fail_nth_deallocation_count, 1);
+	rt_install_default_allocators();
+	rt_band_destroy(source);
+
+	source = rt_band_new_inline(1, 1, PT_8BUI, 1, 0, &data);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(source);
+	fail_nth_allocation = 1;
+	fail_nth_allocation_count = 0;
+	fail_nth_deallocation_count = 0;
+	rt_set_handlers(fail_nth_allocator,
+			default_rt_reallocator,
+			fail_nth_deallocator,
+			default_rt_error_handler,
+			default_rt_info_handler,
+			default_rt_warning_handler);
+	reclassed = rt_band_reclass_exact(source, &map, 1, 0);
+	CU_ASSERT_PTR_NULL(reclassed);
+	CU_ASSERT_EQUAL(fail_nth_allocation_count, 1);
+	CU_ASSERT_EQUAL(fail_nth_deallocation_count, 0);
+	rt_install_default_allocators();
+	rt_band_destroy(source);
+}
+
+static void
 test_raster_size_aware_roundtrips(void)
 {
 	rt_raster raster;
@@ -453,6 +554,7 @@ raster_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_serializers_reject_oversized_band);
 	PG_ADD_TEST(suite, test_raster_deserialize_rejects_truncated_band);
 	PG_ADD_TEST(suite, test_raster_readers_destroy_only_initialized_bands);
+	PG_ADD_TEST(suite, test_raster_band_init_value);
+	PG_ADD_TEST(suite, test_raster_band_allocation_failure_cleanup);
 	PG_ADD_TEST(suite, test_raster_size_aware_roundtrips);
 }
-

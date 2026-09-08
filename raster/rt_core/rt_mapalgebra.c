@@ -341,7 +341,10 @@ rt_band_reclass_exact(
 	}
 	mem = (int *) rtalloc(memsize);
 	if (!mem)
+	{
 		rterror("%s: Could not allocate memory for band", __func__);
+		return NULL;
+	}
 
 	band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, mem);
     if (! band) {
