@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-08 03:51+0000\n"
-"Last-Translator: Regina Obe <robe@postgis.net>\n"
+"PO-Revision-Date: 2026-09-08 05:39+0000\n"
+"Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
 "Language: ja\n"
@@ -45568,6 +45568,9 @@ msgid ""
 "link>, ST_AsX3D outputs NURBSCURVE as X3D NurbsCurve and linearizes other "
 "curve geometries (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1416\">#1416</link>"
+", ST_AsX3D で NURBSCURVE を X3D NurbsCurve として出力するように変更、他の曲線"
+"ジオメトリーは線形化します (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45576,6 +45579,9 @@ msgid ""
 "link>, ST_AsX3D outputs valid coordinate nodes for 2D multi-geometries and "
 "GeometryCollections (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/3705\">#3705</link>"
+", ST_AsX3D で 2次元マルチ系ジオメトリーとジオメトリーコレクションについて妥当"
+"な Coordinate ノードを出力するように変更 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45584,6 +45590,9 @@ msgid ""
 "484\">GT-484</link>, Use column-level SELECT privileges for metadata views "
 "(Arthur Bazin)"
 msgstr ""
+"<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/pulls/484\">GT-"
+"484</link>, メタデータビューでカラムレベルの SELECT 権限を使用 (Arthur Bazin "
+"さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45612,11 +45621,33 @@ msgid ""
 "<link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/pulls/"
 "584\">GT-584</link>, Numerous doc enhancements (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/1408\">#1408</link>"
+", <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2386\">#2386</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2557\">"
+"#2557</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"2805\">#2805</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/2898\">#2898</link>, <link xlink:href=\"https://trac.osgeo.org/"
+"postgis/ticket/3743\">#3743</link>, <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/ticket/4323\">#4323</link>, <link "
+"xlink:href=\"https://trac.osgeo.org/postgis/ticket/4332\">#4332</link>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4385\">#4385</link>"
+", <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5109\">#5109</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5532\">"
+"#5532</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"5593\">#5593</link>, <link xlink:href=\"https://trac.osgeo.org/postgis/"
+"ticket/5638\">#5638</link>, <link xlink:href=\"https://trac.osgeo.org/"
+"postgis/ticket/5645\">#5645</link>, <link xlink:href=\"https://"
+"trac.osgeo.org/postgis/ticket/5950\">#5950</link>, <link "
+"xlink:href=\"https://trac.osgeo.org/postgis/ticket/6022\">#6022</link>, "
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6082\">#6082</link>"
+", <link xlink:href=\"https://github.com/postgis/postgis/pull/1161\">GH-1161</"
+"link>, <link xlink:href=\"https://gitea.osgeo.org/postgis/postgis/pulls/"
+"584\">GT-584</link>, ドキュメントの多数の強化 (Darafei Praliaskouski さん)"
 
 #. Tag: title
 #, no-c-format
 msgid "Bug Fixes"
-msgstr ""
+msgstr "誤り訂正"
 
 #. Tag: para
 #, no-c-format
@@ -45633,6 +45664,9 @@ msgid ""
 "link>, Reject empty geometry type modifiers without an out-of-bounds read "
 "(Egor Ivkov)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6118\">#6118</link>"
+", 空のジオメトリー型修飾子は範囲外を読むことなく拒絶するよう変更 (Egor Ivkov "
+"さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45640,6 +45674,8 @@ msgid ""
 "Fix WKB and TWKB parser resource exhaustion on malformed input (Darafei "
 "Praliaskouski)"
 msgstr ""
+"WKB と TWKB のパーサーが不正な入力があると資源枯渇に陥る問題を修正 (Darafei "
+"Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45648,6 +45684,9 @@ msgid ""
 "link>, Avoid stale relation lookups in geometry_columns after topology "
 "objects are dropped (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6038\">#6038</link>"
+", トポロジーオブジェクトが削除された後に geometry_columns の古いリレーション"
+"参照を避けるよう変更 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45656,6 +45695,9 @@ msgid ""
 "link>, Improve error detail for repeated upgrades after an incomplete "
 "deprecated-function cleanup (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5487\">#5487</link>"
+", 非推奨関数の不完全な消去の後に反復してアップグレードする時に出るエラー詳細"
+"表示の改善 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
