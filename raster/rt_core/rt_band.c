@@ -321,6 +321,11 @@ rt_band_duplicate(rt_band band) {
 			band->hasnodata, band->nodataval,
 			data
 		);
+		if (rtn == NULL) {
+			rterror("rt_band_duplicate: Could not copy band");
+			rtdealloc(data);
+			return NULL;
+		}
 		rt_band_set_ownsdata_flag(rtn, 1); /* we DO own this data!!! */
 	}
 
@@ -893,7 +898,7 @@ rt_band_set_pixel_line(
 	}
 
 	data = rt_band_get_data(band);
-	offset = x + (y * band->width);
+	offset = (uint32_t)x + ((uint32_t)y * band->width);
 	RASTER_DEBUGF(4, "offset = %d", offset);
 
 	/* make sure len of values to copy don't exceed end of data */
@@ -1036,7 +1041,7 @@ rt_band_set_pixel(
 	}
 
 	data = rt_band_get_data(band);
-	offset = x + (y * band->width);
+	offset = (uint32_t)x + ((uint32_t)y * band->width);
 
 	switch (pixtype) {
 		case PT_1BB: {
@@ -1183,7 +1188,7 @@ rt_errorstate rt_band_get_pixel_line(
 	}
 
 	/* +1 for the nodata value */
-	offset = x + (y * band->width);
+	offset = (uint32_t)x + ((uint32_t)y * band->width);
 	RASTER_DEBUGF(4, "offset = %d", offset);
 
 	pixsize = rt_pixtype_size(band->pixtype);
@@ -1191,10 +1196,10 @@ rt_errorstate rt_band_get_pixel_line(
 
 	/* cap _nvals so that it doesn't overflow */
 	_nvals = len;
-	maxlen = band->width * band->height;
+	maxlen = (size_t)band->width * band->height;
 
-	if (((int) (offset + _nvals)) > maxlen) {
-		_nvals = maxlen - offset;
+	if ((size_t)offset >= maxlen || _nvals > maxlen - (size_t)offset) {
+		_nvals = (uint16_t)(maxlen - offset);
 		rtwarn("Limiting returning number values to %d", _nvals);
 	}
 	RASTER_DEBUGF(4, "_nvals = %d", _nvals);
@@ -1424,7 +1429,7 @@ rt_band_get_pixel(
 	}
 
 	/* +1 for the nodata value */
-	offset = x + (y * band->width);
+	offset = (uint32_t)x + ((uint32_t)y * band->width);
 
 	pixtype = band->pixtype;
 
