@@ -55,8 +55,8 @@ rt_band_reclass(
 	rt_band band = NULL;
 	uint32_t width = 0;
 	uint32_t height = 0;
-	int numval = 0;
-	int memsize = 0;
+	uint32_t numval = 0;
+	size_t memsize = 0;
 	void *mem = NULL;
 	uint32_t src_hasnodata = 0;
 	double src_nodataval = 0.0;
@@ -87,7 +87,14 @@ rt_band_reclass(
 	width = rt_band_get_width(srcband);
 	height = rt_band_get_height(srcband);
 	numval = width * height;
-	memsize = rt_pixtype_size(pixtype) * numval;
+	{
+		int pixbytes = rt_pixtype_size(pixtype);
+		if (pixbytes < 1 || (numval != 0 && (size_t)pixbytes > SIZE_MAX / numval)) {
+			rterror("rt_band_reclass: Raster dimensions are too large for band allocation");
+			return 0;
+		}
+		memsize = (size_t)pixbytes * numval;
+	}
 	mem = (int *) rtalloc(memsize);
 	if (!mem) {
 		rterror("rt_band_reclass: Could not allocate memory for band");

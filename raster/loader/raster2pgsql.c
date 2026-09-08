@@ -1548,7 +1548,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int naturaly = 1;
 	double gt[6] = {0.};
 	const char* pszProjectionRef = NULL;
-	int tilesize = 0;
+	size_t tilesize = 0;
 
 	rt_raster rast = NULL;
 	uint32_t numbands = 0;
@@ -1718,7 +1718,15 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		}
 
 		/* update estimated byte size of 1 pixel */
-		tilesize += rt_pixtype_size(info->bandtype[i]);
+		{
+			int _pixbytes = rt_pixtype_size(info->bandtype[i]);
+			if (_pixbytes < 1) {
+				rterror(_("convert_raster: Invalid pixel type for band %d"), i + 1);
+				GDALClose(hdsSrc);
+				return 0;
+			}
+			tilesize += (size_t)_pixbytes;
+		}
 	}
 
 	/* tile size is "auto" */
@@ -1741,6 +1749,11 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->tile_size[1] = info->dim[1];
 	else
 		info->tile_size[1] = config->tile_size[1];
+	if (info->tile_size[0] < 1 || info->tile_size[1] < 1) {
+		rterror(_("convert_raster: Invalid tile size: %dx%d"), info->tile_size[0], info->tile_size[1]);
+		GDALClose(hdsSrc);
+		return 0;
+	}
 
 	/* number of tiles */
 	if ((uint32_t)info->tile_size[0] != info->dim[0])
@@ -1749,7 +1762,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
-	tilesize *= info->tile_size[0] * info->tile_size[1];
+	tilesize *= (size_t)info->tile_size[0] * (size_t)info->tile_size[1];
 
 	/* roughly estimate size of one tile and all bands */
 	tilesize *= 1.1;
