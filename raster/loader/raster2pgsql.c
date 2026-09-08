@@ -142,6 +142,12 @@ array_range(int min, int max, int step, int **range, uint32_t *len) {
 	*len = (uint32_t) ((abs(max - min) + 1 + (step / 2)) / step);
 	*range = rtalloc(sizeof(int) * *len);
 
+	if (!*range)
+	{
+		*len = 0;
+		return 0;
+	}
+
 	if (min < max) {
 		for (i = min, j = 0; i <= max; i += step, j++)
 			(*range)[j] = i;
@@ -156,6 +162,7 @@ array_range(int min, int max, int step, int **range, uint32_t *len) {
 	}
 	else {
 		*len = 0;
+		rtdealloc(*range);
 		*range = NULL;
 		return 0;
 	}
