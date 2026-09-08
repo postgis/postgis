@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-08 05:39+0000\n"
+"PO-Revision-Date: 2026-09-08 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -45714,6 +45714,9 @@ msgid ""
 "link>, [topology] Avoid MinGW format warnings when logging topology ids "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5904\">#5904</link>"
+", [topology] トポロジー ID のログを出力する時 MinGW ではフォーマット警告が出"
+"るのを回避するよう変更 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45738,6 +45741,9 @@ msgid ""
 "link>, Avoid size_t formats in liblwgeom logging/error wrappers for MinGW "
 "builds (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6003\">#6003</link>"
+", MinGW ビルドにおける liblwgeom のログ/エラーのラッパーで size_t の"
+"フォーマットの回避 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45786,6 +45792,9 @@ msgid ""
 "link>, geometry_columns handles NOT VALID SRID checks without errors "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4828\">#4828</link>"
+", geometry_columns が「妥当でない SRID」確認をエラーなしで処理するよう変更 "
+"(Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45794,6 +45803,9 @@ msgid ""
 "link>, [raster] ST_Clip no longer crashes when clipping sparse band "
 "selections (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6048\">#6048</link>"
+", [raster] バンド選択がまとまっていない場合の ST_Clip の異常終了が無くなるよ"
+"う変更 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
