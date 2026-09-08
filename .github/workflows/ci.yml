@@ -36,9 +36,9 @@ jobs:
         #- { tag: pg13-geos39-gdal31-proj71, mode: usan_gcc }
         #- { tag: pg14-clang-geos39-gdal31-proj71, mode: usan_clang }
         # Run tests with different dependency combinations
-        - { tag: latest, mode: tests }
+        - { tag: pg19-geosmain-gdalmaster-proj98, mode: tests }
         - { tag: pg18-geosmain-gdal311-proj96, mode: standard_conforming_strings_off }
-        - { tag: latest, mode: garden }
+        - { tag: pg19-geosmain-gdalmaster-proj98, mode: garden }
 
     runs-on: ubuntu-latest
     steps:
