@@ -5,13 +5,14 @@
 # Yoichi Kayama <yoichi.kayama@gmail.com>, 2024.
 # Weblate <noreply-mt-weblate@weblate.org>, 2025.
 # Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>, 2025, 2026.
+# Regina Obe <robe@postgis.net>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
 "PO-Revision-Date: 2026-09-08 03:51+0000\n"
-"Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
+"Last-Translator: Regina Obe <robe@postgis.net>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
 "Language: ja\n"
@@ -6068,7 +6069,7 @@ msgid ""
 "<varname>--without-json</varname>."
 msgstr ""
 "JSON-C。現在、ST_GeomFromGeoJson による GeoJSON の取り込みに使われます。JSON-"
-"C は link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
+"C は <link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
 "github.com/json-c/json-c/releases/</link> からダウンロードできます。"
 "デフォルトでは有効になっていますが、任意です。configure が警告を表示して"
 "ビルドを継続するだけで済まない場合には、 <varname>--without-json</varname> で"
