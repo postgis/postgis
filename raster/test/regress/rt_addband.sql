@@ -255,4 +255,15 @@ FROM raster
 UNION ALL
 SELECT
 	ST_Value(rast, 100, 100)
-FROM raster
+FROM raster;
+
+-- A normal varlena raster must use PostgreSQL's datum length, not its raw
+-- encoded first word, when ST_AddBand deserializes it.
+WITH raster AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 4326),
+		'8BUI'::text, 7, 0
+	) AS rast
+)
+SELECT ST_Width(rast), ST_Height(rast), ST_Value(rast, 1, 1, 1)
+FROM raster;
