@@ -341,8 +341,8 @@ Datum RASTER_getGeometryValues(PG_FUNCTION_ARGS)
 typedef struct rtpg_dumpvalues_arg_t *rtpg_dumpvalues_arg;
 struct rtpg_dumpvalues_arg_t {
 	int numbands;
-	int rows;
-	int columns;
+	uint32_t rows;
+	uint32_t columns;
 
 	int *nbands; /* 0-based */
 	Datum **values;
@@ -643,8 +643,9 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 			/* shortcut if band is NODATA */
 			if (rt_band_get_isnodata_flag(band)) {
-				for (i = (arg1->rows * arg1->columns) - 1; i >= 0; i--)
-					arg1->nodata[z][i] = TRUE;
+				uint32_t npixels = arg1->rows * arg1->columns;
+				for (uint32_t pi = 0; pi < npixels; pi++)
+					arg1->nodata[z][pi] = TRUE;
 				continue;
 			}
 
@@ -2506,4 +2507,3 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 
 	PG_RETURN_ARRAYTYPE_P(mdArray);
 }
-

@@ -301,12 +301,19 @@ rt_band_duplicate(rt_band band) {
 	/* online */
 	else {
 		uint8_t *data = NULL;
-		data = rtalloc(rt_pixtype_size(band->pixtype) * band->width * band->height);
+		int _pixbytes = rt_pixtype_size(band->pixtype);
+		size_t _numval = (size_t)band->width * band->height;
+		if (_pixbytes < 1 || (_numval != 0 && (size_t)_pixbytes > SIZE_MAX / _numval)) {
+			rterror("rt_band_duplicate: Raster dimensions are too large for band data");
+			return NULL;
+		}
+		size_t _datasize = _numval * (size_t)_pixbytes;
+		data = rtalloc(_datasize);
 		if (data == NULL) {
 			rterror("rt_band_duplicate: Out of memory allocating online band data");
 			return NULL;
 		}
-		memcpy(data, band->data.mem, rt_pixtype_size(band->pixtype) * band->width * band->height);
+		memcpy(data, band->data.mem, _datasize);
 
 		rtn = rt_band_new_inline(
 			band->width, band->height,
@@ -872,6 +879,10 @@ rt_band_set_pixel_line(
 
 	pixtype = band->pixtype;
 	size = rt_pixtype_size(pixtype);
+	if (size < 1) {
+		rterror("rt_band_set_pixel_line: Invalid pixel type for band");
+		return ES_ERROR;
+	}
 
 	if (
 		x < 0 || x >= band->width ||
@@ -886,7 +897,7 @@ rt_band_set_pixel_line(
 	RASTER_DEBUGF(4, "offset = %d", offset);
 
 	/* make sure len of values to copy don't exceed end of data */
-	if (len > (band->width * band->height) - offset) {
+	if (len > (size_t)band->width * band->height - offset) {
 		rterror("rt_band_set_pixel_line: Could not apply pixels as values length exceeds end of data");
 		return ES_ERROR;
 	}
@@ -899,43 +910,43 @@ rt_band_set_pixel_line(
 		case PT_8BSI: {
 			uint8_t *ptr = data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_16BUI: {
 			uint16_t *ptr = (uint16_t *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_16BSI: {
 			int16_t *ptr = (int16_t *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_32BUI: {
 			uint32_t *ptr = (uint32_t *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_32BSI: {
 			int32_t *ptr = (int32_t *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_32BF: {
 			float *ptr = (float *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		case PT_64BF: {
 			double *ptr = (double *) data;
 			ptr += offset;
-			memcpy(ptr, vals, size * len);
+			memcpy(ptr, vals, (size_t)size * len);
 			break;
 		}
 		default: {
