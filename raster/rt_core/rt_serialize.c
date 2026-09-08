@@ -812,9 +812,9 @@ rt_raster_deserialize_with_size(const void *serialized, size_t serialized_size, 
 	/* Deserialize raster header */
 	RASTER_DEBUG(3, "rt_raster_deserialize: Deserialize raster header");
 	memcpy(rast, serialized, sizeof(struct rt_raster_serialized_t));
-	if (rast->size != serialized_size)
+	if (rast->size > serialized_size)
 	{
-		rterror("rt_raster_deserialize: Serialized raster size does not match input length");
+		rterror("rt_raster_deserialize: Serialized raster size exceeds input length");
 		rtdealloc(rast);
 		return NULL;
 	}
