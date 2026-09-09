@@ -355,6 +355,15 @@ NOTICE:  userargs = {}
 2|
 #2807.expr|(8BUI,,f,,,,)|0
 #2807.callback|(8BUI,,f,,,,)|1
+#2807.nmap.union-coextensive||{{3}}
+#2807.nmap.union-gap|0|{{NULL,NULL}}
+#2807.nmap.first-covered||{{3}}
+#2807.nmap.expr-handled-extent-gap||{{1,0}}
+#2807.nmap.expr-handled-source-nodata||{{0}}
+#2807.nmap.callback-handled-source-nodata|5|{{0}}
+#2807.nmap.callback-later-band-nodata|5|{{0}}
+#2807.nmap.expr-missing-band-nodata|0|{{NULL}}
+#2807.nmap.callback-missing-band-nodata|0|{{NULL}}
 ERROR:  RASTER_nMapAlgebraExpr: Expression returned NULL but output raster has no NODATA value
 ERROR:  RASTER_nMapAlgebra: Callback returned NULL but output raster has no NODATA value
 ERROR:  RASTER_nMapAlgebra: Function provided must return a double precision, float, int or smallint
