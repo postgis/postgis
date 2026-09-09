@@ -41,7 +41,7 @@ rt_band_from_wkb(
 	rt_band band = NULL;
 	int pixbytes = 0;
 	uint8_t type = 0;
-	unsigned long sz = 0;
+	size_t sz = 0;
 	uint32_t v = 0;
 
 	assert(NULL != ptr);
