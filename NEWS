@@ -132,6 +132,9 @@ the docs (or explicitly with `make -C regress visual-examples`).
 
  - #6140, #6138, #6129, [topology] improve topology building and checking
           robustness (Sandro Santilli)
+ - [srs] Allow custom WKT2 definitions longer than 2048 characters in
+          spatial_ref_sys (Darafei Praliaskouski)
+
  - #2045, pgsql2shp query dumps no longer require temporary table
           privileges (Darafei Praliaskouski)
  - #1577, [loader] Report unsupported .zip archive input before trying
