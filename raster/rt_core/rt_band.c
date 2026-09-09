@@ -1161,7 +1161,7 @@ rt_errorstate rt_band_get_pixel_line(
 	uint8_t *data = NULL;
 	uint32_t offset = 0;
 	uint16_t _nvals = 0;
-	int maxlen = 0;
+	size_t maxlen = 0;
 	uint8_t *ptr = NULL;
 
 	assert(NULL != band);
@@ -1192,6 +1192,11 @@ rt_errorstate rt_band_get_pixel_line(
 	RASTER_DEBUGF(4, "offset = %d", offset);
 
 	pixsize = rt_pixtype_size(band->pixtype);
+	if (pixsize < 1)
+	{
+		rterror("rt_band_get_pixel_line: Invalid pixel type for band");
+		return ES_ERROR;
+	}
 	RASTER_DEBUGF(4, "pixsize = %d", pixsize);
 
 	/* cap _nvals so that it doesn't overflow */
@@ -1204,16 +1209,16 @@ rt_errorstate rt_band_get_pixel_line(
 	}
 	RASTER_DEBUGF(4, "_nvals = %d", _nvals);
 
-	ptr = data + (offset * pixsize);
+	ptr = data + ((size_t)offset * pixsize);
 
-	_vals = rtalloc(_nvals * pixsize);
+	_vals = rtalloc((size_t)_nvals * pixsize);
 	if (_vals == NULL) {
 		rterror("rt_band_get_pixel_line: Could not allocate memory for pixel values");
 		return ES_ERROR;
 	}
 
 	/* copy pixels */
-	memcpy(_vals, ptr, _nvals * pixsize);
+	memcpy(_vals, ptr, (size_t)_nvals * pixsize);
 
 	*vals = _vals;
 	*nvals = _nvals;

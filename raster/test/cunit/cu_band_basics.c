@@ -1252,6 +1252,13 @@ static void test_band_get_pixel_line() {
 	CU_ASSERT_EQUAL(nvals, 1);
 	CU_ASSERT_EQUAL(((int8_t *) vals)[0], 24);
 	rtdealloc(vals);
+	vals = NULL;
+
+	band->pixtype = PT_END;
+	err = rt_band_get_pixel_line(band, 0, 0, 1, &vals, &nvals);
+	CU_ASSERT_EQUAL(err, ES_ERROR);
+	CU_ASSERT_PTR_NULL(vals);
+	CU_ASSERT_EQUAL(nvals, 0);
 
 	err = rt_band_get_pixel_line(band, maxX, maxY, maxX, &vals, &nvals);
 	CU_ASSERT_NOT_EQUAL(err, ES_NONE);
@@ -1315,4 +1322,3 @@ void band_basics_suite_setup(void)
 	PG_ADD_TEST(suite, test_band_get_pixel_line);
 	PG_ADD_TEST(suite, test_band_new_offline_from_path);
 }
-
