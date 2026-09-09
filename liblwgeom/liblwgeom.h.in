@@ -1392,6 +1392,8 @@ extern int lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double 
 extern LWGEOM* lwgeom_reverse(const LWGEOM *lwgeom);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
+extern LWPOINT* lwpoint_from_latlon(const char *input);
+extern LWPOINT* lwpoint_from_latlon_parts(const char *lat, const char *lon);
 extern int lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt);
 
 extern void interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, double F);
