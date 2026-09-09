@@ -12166,7 +12166,7 @@ FROM rc;
             <refentry xml:id="RT_ST_Union">
                 <refnamediv>
                     <refname>ST_Union</refname>
-                    <refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 or more bands.</refpurpose>
+                    <refpurpose>Returns the union of a set of raster tiles, or two raster values, into a single raster composed of 1 or more bands.</refpurpose>
                 </refnamediv>
 
                 <refsynopsisdiv>
@@ -12200,13 +12200,20 @@ FROM rc;
                             <paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
                             <paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
                         </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>raster</type> <parameter>rast1</parameter></paramdef>
+                            <paramdef><type>raster</type> <parameter>rast2</parameter></paramdef>
+                            <paramdef choice="opt"><type>text</type> <parameter>uniontype=LAST</parameter></paramdef>
+                        </funcprototype>
                     </funcsynopsis>
                 </refsynopsisdiv>
 
                 <refsection>
                     <title>Description</title>
 
-                    <para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
+                    <para>Returns the union of a set of raster tiles, or the union of two raster values, into a single raster composed of at least one band.  The resulting raster's extent is the extent of all input rasters.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
 
                     <note>
                       <para>In order for rasters to be unioned, they must all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment"/> and <xref linkend="RT_ST_NotSameAlignmentReason"/> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample"/> and use the same reference raster for alignment.</para>
@@ -12217,6 +12224,7 @@ FROM rc;
                     <para role="availability" conformance="2.1.0">Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced.</para>
                     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input rasters.  Prior versions of PostGIS assumed the first band.</para>
                     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of all input rasters.</para>
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0 ST_Union(rast1, rast2, uniontype) variant was introduced.</para>
                 </refsection>
                 <refsection>
                     <title>Examples</title>
@@ -12242,6 +12250,13 @@ WHERE ST_Intersects(rast, ST_GeomFromText('LINESTRING(230486 887771,230500 88772
 SELECT ST_Union(rast, ARRAY[ROW(2, 'LAST'), ROW(1, 'LAST'), ROW(3, 'LAST')]::unionarg[])
 FROM aerials.boston
 WHERE ST_Intersects(rast, ST_GeomFromText('LINESTRING(230486 887771,230500 88772)', 26986) );
+                    </programlisting>
+                    <para>Union a generated raster with an existing raster without a subquery aggregate.</para>
+                    <programlisting language="sql">
+SELECT ST_Union(rast, ST_AsRaster(geom, rast), 'LAST')
+FROM raster_table
+JOIN geometry_table
+  ON ST_Intersects(rast, geom);
                     </programlisting>
                 </refsection>
 
