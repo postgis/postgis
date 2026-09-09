@@ -62,8 +62,8 @@
       <refnamediv>
         <refname>ST_Difference</refname>
 
-        <refpurpose>Computes a geometry representing the part of geometry A
-            that does not intersect geometry B.</refpurpose>
+        <refpurpose>Computes a geometry or geography representing the part of
+            input A that does not intersect input B.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -74,14 +74,19 @@
             <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
             <paramdef choice="opt"><type>float8 </type> <parameter>gridSize = -1</parameter></paramdef>
           </funcprototype>
+          <funcprototype>
+            <funcdef>geography <function>ST_Difference</function></funcdef>
+            <paramdef><type>geography </type> <parameter>geogA</parameter></paramdef>
+            <paramdef><type>geography </type> <parameter>geogB</parameter></paramdef>
+          </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
 
       <refsection>
         <title>Description</title>
 
-        <para>Returns a geometry representing the part of geometry A
-            that does not intersect geometry B.
+        <para>Returns a geometry or geography representing the part of input A
+            that does not intersect input B.
             This is equivalent to <code>A - ST_Intersection(A,B)</code>.
             If A is completely contained in B
             then an empty atomic geometry of appropriate type is returned.</para>
@@ -91,6 +96,11 @@
         &overlay_gridsize_arg;
 
         <para>Performed by the GEOS module</para>
+        <para>For geography, this function is a thin wrapper around the geometry implementation.
+            It first determines a best-fit planar spatial reference system for the bounding box
+            of the two geography objects, computes the difference in that planar space, and
+            transforms the result back to the SRID of the first geography input.</para>
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0 - support for geography.</para>
         <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 accept a gridSize parameter.</para>
         <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0 to use the gridSize parameter.</para>
 
@@ -787,6 +797,11 @@ CREATE TABLE subdivided_geoms AS
         <paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
       </funcprototype>
       <funcprototype>
+        <funcdef>geography <function>ST_Union</function></funcdef>
+        <paramdef><type>geography</type> <parameter>geog1</parameter></paramdef>
+        <paramdef><type>geography</type> <parameter>geog2</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
         <funcdef>geometry <function>ST_Union</function></funcdef>
         <paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
         <paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
@@ -816,9 +831,14 @@ CREATE TABLE subdivided_geoms AS
         Comes in several variants:</para>
 
     <para><emphasis role="bold">Two-input variant:</emphasis>
-        returns a geometry that is the union of two input geometries.
+        returns a geometry or geography that is the union of two inputs.
         If either input is NULL, then NULL is returned.
         </para>
+    <para>The two-input variant also accepts geography values. The geography
+        implementation is a thin wrapper around the geometry implementation.
+        It first determines a best-fit planar spatial reference system for the bounding box
+        of the two geography objects, computes the union in that planar space, and
+        transforms the result back to the SRID of the first geography input.</para>
 
     <para><emphasis role="bold">Array variant:</emphasis>
         returns a geometry that is the union of an array of geometries.
@@ -855,6 +875,7 @@ CREATE TABLE subdivided_geoms AS
     <para role="enhanced" conformance="3.1.0">Enhanced: 3.1.0 accept a gridSize parameter.</para>
     <para role="geos_requirement" conformance="3.9.0">Requires GEOS &gt;= 3.9.0 to use the gridSize parameter</para>
     <para role="changed" conformance="3.0.0">Changed: 3.0.0 does not depend on SFCGAL.</para>
+    <para role="availability" conformance="3.7.0">Availability: 3.7.0 - support for binary geography union.</para>
     <para role="availability" conformance="1.4.0">Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was introduced and also faster aggregate collection in PostgreSQL.</para>
 
     <para>&sfs_compliant; s2.1.1.3</para>
