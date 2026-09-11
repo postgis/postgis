@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-11 02:39+0000\n"
+"PO-Revision-Date: 2026-09-11 04:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -45795,6 +45795,9 @@ msgid ""
 "link>, Avoid GIDX BRIN summary merges across mismatched dimensions (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/890\">GH-890</"
+"link>, GIDX の BRIN での要約情報の統合において次元が異なる場合には行わないよ"
+"う変更 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
