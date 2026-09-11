@@ -599,7 +599,13 @@ make_geos_segment(double x1, double y1, double x2, double y2)
 const char*
 lwgeom_geos_version()
 {
+#if POSTGIS_GEOS_VERSION >= 31600
+	static char ver[256];
+	snprintf(ver, 256, "%s %s", GEOSversion(), GEOSrevision());
+	ver[255] = '\0';
+#else
 	const char* ver = GEOSversion();
+#endif
 	return ver;
 }
 
