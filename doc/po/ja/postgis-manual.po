@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-09 08:39+0000\n"
+"PO-Revision-Date: 2026-09-11 02:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -45663,6 +45663,9 @@ msgid ""
 "link>, Guard missing operands before reading node tags in spatial "
 "selectivity estimation (Maksim Korotkov)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/1175\">GH-1175</"
+"link>, 空間インデックスの選択性見積もりでノードタグを読む前に被演算子が無い場"
+"合の防護を追加 (Maksim Korotkov さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45713,6 +45716,9 @@ msgid ""
 "link>, Initialize skipped union-find cluster ids deterministically (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5975\">#5975</link>"
+", Union-Find でクラスター ID を必ず初期化するよう変更 (Darafei Praliaskouski "
+"さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45767,6 +45773,9 @@ msgid ""
 "link>, ST_ClusterRelateWin validates NULL relate matrices before detoasting "
 "them (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/886\">GH-886</"
+"link>, ST_ClusterRelateWin の交差行列文字列が NULL の場合に TOAST から戻す前"
+"に評価するよう変更 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45775,6 +45784,9 @@ msgid ""
 "link>, ST_Relate pattern inversion avoids out-of-bounds access on short "
 "DE-9IM patterns (Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/889\">GH-889</"
+"link>, ST_Relate のDE9IM 文字列を内部で転置させる際に短い文字列では範囲外"
+"エラーになるのを回避 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
@@ -45830,6 +45842,10 @@ msgid ""
 "cleanup, GDAL credential redaction, and Python GDAL compatibility (Darafei "
 "Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://github.com/postgis/postgis/pull/894\">GH-894</"
+"link>, [raster] Float16 のインポート、NODATA 混合時の変換処理、バンド入替時の"
+"古いバンドの消去、GDAL の資格情報消去、Python GDAL の互換性に関する修正 "
+"(Darafei Praliaskouski さん)"
 
 #. Tag: title
 #, no-c-format
@@ -48549,6 +48565,10 @@ msgid ""
 "in geometry_columns, as will a typmod one. In this example we define a "
 "column using typmod and another using constraints."
 msgstr ""
+"制約による定義にはまだ対応していますが、制約による定義がなされた"
+"ジオメトリーカラムはビュー内で直接使うと geometry_columns に正しく登録されま"
+"せん。型修飾子による定義は登録されます。この例では型修飾子による定義と制約に"
+"よる定義を 1件ずつ行っています。"
 
 #. Tag: para
 #, no-c-format
@@ -48575,6 +48595,8 @@ msgid ""
 "The typmod based geom view column registers correctly, but the constraint "
 "based one does not."
 msgstr ""
+"ビュー内で型修飾子による定義がされている geom カラムは正しく登録され、制約に"
+"よる定義カラムは正しくは登録されていません。"
 
 #. Tag: para
 #, no-c-format
@@ -48582,6 +48604,9 @@ msgid ""
 "This may change in future versions of PostGIS, but for now to force the "
 "constraint-based view column to register correctly, you need to do this:"
 msgstr ""
+"これは PostGIS の将来のバージョンで変更される可能性がありますが、現在は制約に"
+"よる定義がなされたビューカラムを強制的に正しく登録するには次のことを行う必要"
+"があります:"
 
 #. Tag: title
 #, no-c-format
