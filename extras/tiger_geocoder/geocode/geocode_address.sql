@@ -353,7 +353,7 @@ BEGIN
          || coalesce('    AND b.zip IN (''' || array_to_string(zip_info.zip,''',''') || ''') ','')
          || CASE WHEN zip_info.exact
                  THEN '    AND ( lower($2) = lower(a.name) OR  ( a.prequalabr > '''' AND trim(lower($2), lower(a.prequalabr) || '' '') = lower(a.name) ) OR tiger.numeric_streets_equal($2, a.name) ) '
-                 ELSE '    AND ( @extschema:fuzzystrmatch@.soundex($2) = @extschema:fuzzystrmatch@.soundex(a.name)  OR ( (length($2) > 15 or (length($2) > 7 AND a.prequalabr > '''') ) AND lower(a.fullname) LIKE lower(substring($2,1,15)) || ''%'' ) OR  tiger.numeric_streets_equal($2, a.name) ) '
+                 ELSE '    AND ( ($2 !~ ''^[0-9]'' AND @extschema:fuzzystrmatch@.soundex($2) = @extschema:fuzzystrmatch@.soundex(a.name)) OR ( (length($2) > 15 or (length($2) > 7 AND a.prequalabr > '''') ) AND lower(a.fullname) LIKE lower(substring($2,1,15)) || ''%'' ) OR  tiger.numeric_streets_equal($2, a.name) ) '
             END
          || '  ORDER BY 11'
          || '  LIMIT 200'
