@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-11 06:39+0000\n"
+"PO-Revision-Date: 2026-09-11 09:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -6072,8 +6072,8 @@ msgstr ""
 "C は <link xlink:href=\"https://github.com/json-c/json-c/releases\">https://"
 "github.com/json-c/json-c/releases/</link> からダウンロードできます。"
 "デフォルトでは有効になっていますが、任意です。configure が警告を表示して"
-"ビルドを継続するだけで済まない場合には、 <varname>--without-json</varname> で"
-"無効にします。"
+"ビルドを継続するだけでは済まない場合には、 <varname>--without-json</varname> "
+"で無効にします。"
 
 #. Tag: para
 #, no-c-format
@@ -45806,6 +45806,9 @@ msgid ""
 "link>, Prevent histogram target overflow when analysing massive tables "
 "(Darafei Praliaskouski)"
 msgstr ""
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/5959\">#5959</link>"
+", 巨大テーブルの解析時にヒストグラムのセル数計算でオーバーフローが発生しない"
+"よう変更 (Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
