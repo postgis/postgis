@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-14 06:39+0000\n"
+"PO-Revision-Date: 2026-09-14 08:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -420,9 +420,10 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support."
 msgstr ""
-"PostGIS エクステンションを 3.0.0より前からアップグレードする場合には新しいエ"
-"クステンション<emphasis>postgis_raster</emphasis> が入ることになります。この"
-"エクステンションはラスター機能が不要な場合には安全に削除することができます。"
+"PostGIS エクステンションを 3.0.0より前からアップグレードする場合には新しい"
+"エクステンション <emphasis>postgis_raster</emphasis> が入ることになります。こ"
+"のエクステンションはラスター機能が不要な場合には安全に削除することができます"
+"。"
 
 #. Tag: title
 #, no-c-format
@@ -830,8 +831,8 @@ msgstr "デフォルト: 1-4MB"
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
 msgstr ""
-"大きなデータベースの場合や、複雑なクエリの場合、RAMが多い場合は値を大きくする"
-"ように調整します。"
+"大きなデータベースの場合や、複雑なクエリの場合、RAM が多い場合は値を大きくす"
+"るように調整します。"
 
 #. Tag: para
 #, no-c-format
@@ -1699,7 +1700,7 @@ msgid ""
 "<type>topology.topoelement</type>. The domain requires a two-element array, "
 "so the dimension check fails."
 msgstr ""
-"この例では 3要素配列を <type>topology.topoelement</type>へのキャストで発生す"
+"この例では 3要素配列を <type>topology.topoelement</type> へのキャストで発生す"
 "ることを示しています。ここでは 2要素配列が求められるので次元チェックに失敗し"
 "ます。"
 
@@ -45739,8 +45740,8 @@ msgid ""
 msgstr ""
 "<link xlink:href=\"https://github.com/postgis/postgis/pull/888\">GH-888</"
 "link>, [sfcgal] SFCGAL &lt; 2.2 での CG_Visibility で空入力があった場合の処理"
-"で TOAST から戻したオブジェクトのうち無効になったものにアクセスしないように変"
-"更 (Darafei Praliaskouski さん)"
+"で TOAST から戻したオブジェクトが無効になった後にアクセスしないように変更 "
+"(Darafei Praliaskouski さん)"
 
 #. Tag: para
 #, no-c-format
