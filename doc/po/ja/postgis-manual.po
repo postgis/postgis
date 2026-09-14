@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-09-14 08:39+0000\n"
+"PO-Revision-Date: 2026-09-14 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -548,11 +548,11 @@ msgid ""
 "filename>."
 msgstr ""
 "データベースが本当に古くて、ビューや関数の中に、非推奨になってから長い関数が"
-"あるような場合には、それらの関数やビューを使えるようにする"
-"<filename>legacy.sql</filename>をロードする必要があるでしょう。ただし「本当"
-"に」必要な場合に限ります。可能なら、ビューや関数をダンプせずにアップグレード"
-"することを検討して下さい。非推奨関数は、<filename>uninstall_legacy.sql</"
-"filename>で後から削除することができます。"
+"あるような場合には、それらの関数やビューを使えるようにする <filename>"
+"legacy.sql</filename> をロードする必要があるでしょう。ただし「本当に」必要な"
+"場合に限ります。可能なら、ビューや関数をダンプせずにアップグレードすることを"
+"検討して下さい。非推奨関数は、<filename>uninstall_legacy.sql</filename> で後"
+"から削除することができます。"
 
 #. Tag: para
 #, no-c-format
@@ -561,9 +561,9 @@ msgid ""
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
-"バックアップを新しい<varname>newdb</varname>データベースにリストアするには、"
-"postgis_restoreを使います。psqlが予期せぬエラーを標準エラー出力に出すことがあ"
-"ります。このエラーのログは保存しておいて下さい。"
+"バックアップを新しい <varname>newdb</varname> データベースにリストアするには"
+"、postgis_restore を使います。psql が予期せぬエラーを標準エラー出力に出すこと"
+"があります。このエラーのログは保存しておいて下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -581,13 +581,13 @@ msgid ""
 "to fix your code to stop using deprecated functions and drop them loading "
 "<filename>uninstall_legacy.sql</filename>."
 msgstr ""
-"ビューまたは関数の中に非推奨のPostGISオブジェクトを使っているものがある場合。"
-"これの訂正には、リストア前に<filename>legacy.sql</filename>スクリプトのロード"
-"を試してみることができます。非推奨オブジェクトをまだ持っているバージョンの"
-"PostGISに戻して、コードを作り替えた後に再移行を試みることもできます。"
-"<filename>legacy.sql</filename>を利用する場合は、コードを非推奨関数を使わない"
-"ように訂正し、また<filename>uninstall_legacy.sql</filename>をロードして非推奨"
-"オブジェクトを削除するのを忘れないでください。"
+"ビューまたは関数の中に非推奨の PostGIS オブジェクトを使っているものがある場合"
+"。これの訂正には、リストア前に <filename>legacy.sql</filename> スクリプトの"
+"ロードを試してみることができます。非推奨オブジェクトをまだ持っている"
+"バージョンの PostGIS に戻して、コードを作り替えた後に再移行を試みることもでき"
+"ます。<filename>legacy.sql</filename> を利用する場合は、コードを非推奨関数を"
+"使わないように訂正し、また <filename>uninstall_legacy.sql</filename> をロード"
+"して非推奨オブジェクトを削除するのを忘れないでください。"
 
 #. Tag: para
 #, no-c-format
@@ -702,9 +702,9 @@ msgid ""
 "<code>postgresql.conf</code> or <code>postgresql.auto.conf</code> by using "
 "the <code>ALTER SYSTEM</code> command."
 msgstr ""
-"<code>postgresql.conf</code>または<code>postgresql.auto.conf</code>を触らなく"
-"ても、 <code>ALTER SYSTEM</code>コマンドでサーバーレベルのコンフィギュレー"
-"ションが可能です。"
+"<code>postgresql.conf</code> または <code>postgresql.auto.conf</code> を触ら"
+"なくても、 <code>ALTER SYSTEM</code> コマンドでサーバーレベルの"
+"コンフィギュレーションが可能です。"
 
 #. Tag: para
 #, no-c-format
@@ -723,8 +723,8 @@ msgid ""
 "In addition to the Postgres settings, PostGIS has some custom settings which "
 "are listed in <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"PostgreSQLの設定に加えて、PostGISには <xref linkend=\"PostGIS_GUC\"/>で挙げる"
-"独自設定があります。"
+"PostgreSQLの設定に加えて、PostGISには <xref linkend=\"PostGIS_GUC\"/> で挙げ"
+"る独自設定があります。"
 
 #. Tag: title
 #, no-c-format
@@ -734,7 +734,7 @@ msgstr "起動時"
 #. Tag: para
 #, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
-msgstr "次に示す設定は<code>postgresql.conf</code>にあります:"
+msgstr "次に示す設定は <code>postgresql.conf</code> にあります:"
 
 #. Tag: link
 #, no-c-format
@@ -903,8 +903,8 @@ msgstr ""
 "設定した場合には、これらの関係する <code>ST_Intersects</code> のような関係関"
 "数を含むクエリーが複数のプロセスを使うことができ、そうすると 2倍を超える速度"
 "になります。多数の予備プロセスがあるなら、この値を持っているプロセス数まで上"
-"げるべきです。ただし、これにあわせて<code>max_worker_processes</code>を少なく"
-"ともこの数と同じまで増やすのを忘れないでください。"
+"げるべきです。ただし、これにあわせて <code>max_worker_processes</code> を少な"
+"くともこの数と同じまで増やすのを忘れないでください。"
 
 #. Tag: para
 #, no-c-format
@@ -1813,8 +1813,8 @@ msgid ""
 "Once the layer is created (its id is returned by the AddTopoGeometryColumn "
 "function) you're ready to construct TopoGeometry objects in it"
 msgstr ""
-"レイヤが生成される (これの識別番号は、AddTopoGeometryColumn 関数が返します) "
-"と、TopoGeometry オブジェクトをこの中に構築する準備ができます。"
+"レイヤーが生成される (これの識別番号は、AddTopoGeometryColumn 関数が返しま"
+"す) と、TopoGeometry オブジェクトをこの中に構築する準備ができます。"
 
 #. Tag: para
 #, no-c-format
@@ -1838,9 +1838,9 @@ msgid ""
 "<varname>topology_name</varname> and <varname>schema_name</varname> would be "
 "different."
 msgstr ""
-"この例では、<varname>ma_topo</varname>の新しいテーブルを生成しています。異な"
+"この例では、<varname>ma_topo</varname> の新しいテーブルを生成しています。異な"
 "るスキーマでテーブルを作ることができ、この場合、<varname>topology_name</"
-"varname>と<varname>schema_name</varname> は異なります。"
+"varname> と <varname>schema_name</varname> は異なります。"
 
 #. Tag: para
 #, no-c-format
@@ -2540,9 +2540,9 @@ msgid ""
 "<varname>gridSize</varname> as a puntal geometry, optionally limiting the "
 "check to the area specified by the <varname>bbox</varname> parameter."
 msgstr ""
-"トポロジまたは与えられた<varname>gridSize</varname>に丸められた頂点のすべてを"
-"点ジオメトリーで返します。任意で、確認範囲を<varname>bbox</varname>パラメータ"
-"で指定される範囲に制限できます。"
+"トポロジーまたは与えられた <varname>gridSize</varname> に丸められた頂点のすべ"
+"てを点ジオメトリーで返します。任意で、確認範囲を <varname>bbox</varname> "
+"パラメータで指定される範囲に制限できます。"
 
 #. Tag: para
 #, no-c-format
@@ -2575,10 +2575,10 @@ msgid ""
 "This safeguards adjacent topological relationships by preventing precision "
 "snapping from removing primitives altogether."
 msgstr ""
-"最小エッジ範囲より大きい<varname>gridSize</varname>を使うと、エッジが空ジオメ"
-"トリに縮退するのでなく例外が発生します。これにより、精密なスナップ処理の際に"
-"プリミティブを完全に削除しないようにすることで、隣接するトポロジー関係を保護"
-"します。"
+"最小エッジ範囲より大きい <varname>gridSize</varname> を使うと、エッジが空"
+"ジオメトリーに縮退するのでなく例外が発生します。これにより、精密なスナップ処"
+"理の際にプリミティブを完全に削除しないようにすることで、隣接するトポロジー関"
+"係を保護します。"
 
 #. Tag: para
 #, no-c-format
@@ -3209,11 +3209,11 @@ msgid ""
 "boundaries) then an exception is thrown. If the point already exists as a "
 "node, an exception is thrown."
 msgstr ""
-"ポイントジオメトリーの空間参照系 (SRID) がトポロジと同じでない場合、"
-"<varname>apoint</varname> がポイントジオメトリーでない場合、ポイントが NULL "
-"である場合、または、ポイントが既存のエッジ (境界も含む) とインターセクトする"
-"場合には、例外が投げられます。また、ポイントが既にノードとして存在する場合、"
-"例外が投げられます。"
+"ポイントジオメトリーの空間参照系 (SRID) がトポロジーと同じでない場合"
+"、<varname>apoint</varname> がポイントジオメトリーでない場合、ポイントが "
+"NULL である場合、または、ポイントが既存のエッジ (境界も含む) とインターセクト"
+"する場合には、例外が投げられます。また、ポイントが既にノードとして存在する場"
+"合、例外が投げられます。"
 
 #. Tag: para
 #, no-c-format
