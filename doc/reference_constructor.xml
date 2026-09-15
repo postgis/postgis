@@ -107,7 +107,61 @@ GROUP BY stusps;</programlisting>
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Dump"/>, <xref linkend="ST_Union"/></para>
+        <para><xref linkend="ST_AddGeometry"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Union"/></para>
+      </refsection>
+    </refentry>
+
+    <refentry xml:id="ST_AddGeometry">
+      <refnamediv>
+        <refname>ST_AddGeometry</refname>
+        <refpurpose>Appends a geometry to a collection.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_AddGeometry</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>collection</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Appends a geometry to an existing collection. If the appended geometry
+        is compatible with the input collection type, the result keeps that type.
+        Otherwise the result is a GeometryCollection.</para>
+
+        <para>The input collection is expanded by its top-level members before the
+        new geometry is appended. This differs from the two-input
+        <xref linkend="ST_Collect"/> variant, which keeps collection inputs as
+        nested collection elements.</para>
+
+        <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+<programlisting>SELECT ST_AsText(ST_AddGeometry('MULTIPOINT((0 0),(1 1))', 'POINT(2 2)'));</programlisting>
+<screen>MULTIPOINT((0 0),(1 1),(2 2))</screen>
+
+<programlisting>
+SELECT ST_AsText(ST_AddGeometry(
+    'MULTIPOLYGON(((0 0,0 1,1 1,0 0)))',
+    'POLYGON((2 2,2 3,3 3,2 2))'));</programlisting>
+<screen>MULTIPOLYGON(((0 0,0 1,1 1,0 0)),((2 2,2 3,3 3,2 2)))</screen>
+
+<programlisting>
+SELECT ST_AsText(ST_AddGeometry('MULTIPOINT((0 0),(1 1))', 'LINESTRING(2 2,3 3)'));</programlisting>
+<screen>GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1),LINESTRING(2 2,3 3))</screen>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_AddPoint"/>, <xref linkend="ST_Collect"/>, <xref linkend="ST_Dump"/></para>
       </refsection>
     </refentry>
 
