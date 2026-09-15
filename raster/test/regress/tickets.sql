@@ -162,3 +162,52 @@ SELECT '#4724.b', ST_SummaryStatsAgg(NULL::raster, NULL::int4, NULL::bool)
  FROM generate_series(1,2) AS e(q);
 
 SELECT '#5854',Round(ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 430, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))::numeric,3);
+
+-- #2310, #2311, #2312 focal statistics over wedge/annulus/circle masks
+WITH test AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 1, 0) AS rast
+)
+SELECT '#2312', ST_Value(ST_Circle(rast, 1, 1, 'SUM', '32BF'), 3, 3)
+FROM test;
+
+WITH test AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 1, 0) AS rast
+)
+SELECT '#2311', ST_Value(ST_Annulus(rast, 1, 1, 2, 'SUM', '32BF'), 3, 3)
+FROM test;
+
+WITH test AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 1, 0) AS rast
+)
+SELECT '#2310', ST_Value(ST_Wedge(rast, 1, 0, 1, 0, pi(), 'SUM', '32BF'), 3, 3)
+FROM test;
+
+WITH test AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 1, 0) AS rast
+)
+SELECT '#2310.zero-radius-rotated', ST_Value(ST_Wedge(rast, 1, 0, 0, pi() / 2, 3 * pi() / 2, 'SUM', '32BF'), 3, 3)
+FROM test;
+
+WITH test AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 1, 0) AS rast
+)
+SELECT '#2312.NULL-radius', ST_Circle(rast, 1, NULL, 'SUM', '32BF') IS NULL
+FROM test;
+
+WITH test AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 1, 0) AS rast
+)
+SELECT '#2311.NULL-radius', ST_Annulus(rast, 1, NULL, 2, 'SUM', '32BF') IS NULL
+FROM test;
+
+WITH test AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 1, 0) AS rast
+)
+SELECT '#2310.NULL-angle', ST_Wedge(rast, 1, 0, 1, NULL, pi(), 'SUM', '32BF') IS NULL
+FROM test;
+
+WITH test AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI'::text, 1, 0) AS rast
+)
+SELECT '#2312.NULL-operation', ST_Circle(rast, 1, 1, NULL, '32BF') IS NULL
+FROM test;
