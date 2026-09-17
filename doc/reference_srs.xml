@@ -77,6 +77,70 @@
     </refsection>
   </refentry>
 
+  <refentry xml:id="ST_BestSRID">
+    <refnamediv>
+    <refname>ST_BestSRID</refname>
+
+    <refpurpose>Return a planar SRID suitable for a geography value or pair.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>integer <function>ST_BestSRID</function></funcdef>
+      <paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+      </funcprototype>
+
+      <funcprototype>
+      <funcdef>integer <function>ST_BestSRID</function></funcdef>
+      <paramdef><type>geography </type> <parameter>geog1</parameter></paramdef>
+      <paramdef><type>geography </type> <parameter>geog2</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Returns the SRID of a planar coordinate reference system suitable for
+      operations over the bounding box of a geography value or pair of
+      geography values.</para>
+
+    <para>The selection uses the same heuristic as geography wrappers such as
+      <xref linkend="ST_Buffer"/> and <xref linkend="ST_Intersection"/>. It
+      prefers UTM zones for data fitting within one zone, then Lambert
+      Azimuthal Equal Area (LAEA) north or south pole projections, then
+      smaller custom LAEA zones, and falls back to World Mercator for large
+      extents.</para>
+
+    <para>Where the selected projection has an EPSG identifier,
+      <function>ST_BestSRID</function> returns that EPSG SRID. Custom LAEA
+      zones do not have EPSG identifiers, so they are returned as PostGIS
+      reserved SRIDs.</para>
+
+    <para>Returns NULL if all input geographies are empty.</para>
+
+    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+    <programlisting>SELECT ST_BestSRID('POINT(-3 60)'::geography);</programlisting>
+    <screen>32630</screen>
+
+    <programlisting>SELECT ST_BestSRID(
+  'POINT(-160 -40)'::geography,
+  'POINT(160 40)'::geography);</programlisting>
+    <screen>3395</screen>
+    </refsection>
+
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_Buffer"/>, <xref linkend="ST_Intersection"/>, <xref linkend="ST_Transform"/></para>
+    </refsection>
+  </refentry>
+
   <refentry xml:id="ST_SetSRID">
     <refnamediv>
     <refname>ST_SetSRID</refname>
