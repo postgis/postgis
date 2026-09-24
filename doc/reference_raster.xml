@@ -13865,6 +13865,54 @@ FROM dummy_rast;</programlisting>
                 </refsection>
             </refentry>
 
+            <refentry xml:id="RT_ST_Extent">
+                <refnamediv>
+                    <refname>ST_Extent</refname>
+                    <refpurpose>Aggregate function that returns the bounding box of rasters.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                      <funcprototype>
+                        <funcdef>box2d <function>ST_Extent</function></funcdef>
+                        <paramdef><type>raster set</type> <parameter>rastfield</parameter></paramdef>
+                    </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <para>An aggregate function that returns a <xref linkend="box2d_type"/> bounding box enclosing a set of rasters.</para>
+                    <para>The aggregate uses each raster's convex hull footprint, so skewed and rotated rasters are included by their actual corner coordinates instead of only their unrotated upper-left and lower-right coordinates. The returned <type>box2d</type> does not include an SRID.</para>
+
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+
+                    <programlisting>
+WITH rast AS (
+    SELECT ST_MakeEmptyRaster(2, 2, 0, 0, 10, -10, 1, 2, 0) AS rast
+    UNION ALL
+    SELECT ST_MakeEmptyRaster(1, 1, 100, 100, 10, -10, 2, 1, 0)
+)
+SELECT ST_Extent(rast) AS rast_extent
+FROM rast;</programlisting>
+                    <screen>BOX(0 -20,112 101)</screen>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="ST_Extent"/>,
+                        <xref linkend="RT_ST_ConvexHull"/>,
+                        <xref linkend="RT_ST_Envelope"/>
+                    </para>
+                </refsection>
+            </refentry>
+
             <refentry xml:id="RT_ST_ConvexHull">
                 <refnamediv>
                     <refname>ST_ConvexHull</refname>
