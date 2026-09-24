@@ -593,3 +593,9 @@ NOTICE:  userargs = <NULL>
 2|(1,"{{255,255},{255,255}}")
 3|(1,"{{255,255},{255,255}}")
 4|(1,"{{255,255},{255,255}}")
+st_blur_empty_args
+ERROR:  Sigma must be provided
+st_blur_null_sigma
+ERROR:  Sigma must be finite and greater than zero
+st_blur_impulse|20.417996|14.253696
+st_blur_nodata|100.000000
