@@ -122,6 +122,108 @@ NOTICE:  Extension postgis_topology is not available or not packagable for some 
 	  </refsection>
 	</refentry>
 
+	<refentry xml:id="PostGIS_Full_Version_JSON">
+	  <refnamediv>
+		<refname>PostGIS_Full_Version_JSON</refname>
+
+		<refpurpose>Reports full PostGIS version and build configuration
+		information as JSON.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>jsonb <function>PostGIS_Full_Version_JSON</function></funcdef>
+
+			<paramdef></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Reports full PostGIS version and build configuration
+		information as a structured JSON object. This is intended for tools
+		that need to inspect PostGIS, PostgreSQL, dependency, and extension
+		version state without parsing the human-readable
+		<xref linkend="PostGIS_Full_Version"/> output.</para>
+
+		<para>The JSON object contains <varname>postgis</varname>,
+		<varname>postgresql</varname>, dependency version members such as
+		<varname>geos</varname> and <varname>proj</varname>, optional extension
+		members such as <varname>topology</varname> and <varname>raster</varname>,
+		and a machine-readable <varname>warnings</varname> array. Optional
+		dependency and extension members are omitted when the corresponding
+		support is not available in the current database.</para>
+
+		<para>Each <varname>warnings</varname> entry is an object with a stable
+		<varname>code</varname> field and a human-readable
+		<varname>message</varname> field. Warning codes include
+		<literal>liblwgeom_version_mismatch</literal>,
+		<literal>postgresql_procs_need_upgrade</literal>,
+		<literal>geos_compiled_version_mismatch</literal>,
+		<literal>proj_compiled_version_mismatch</literal>,
+		<literal>core_procs_need_upgrade</literal>,
+		<literal>topology_procs_need_upgrade</literal>,
+		<literal>topology_unpacked</literal>,
+		<literal>raster_lib_need_upgrade</literal>,
+		<literal>raster_unpacked</literal>,
+		<literal>raster_procs_need_upgrade</literal>,
+		<literal>sfcgal_procs_need_upgrade</literal>, and
+		<literal>deprecated_functions_exist</literal>.</para>
+
+		<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT jsonb_pretty(PostGIS_Full_Version_JSON());
+{
+    "postgis": {
+        "version": "3.7.0dev",
+        "extension": true,
+        "liblwgeom": "3.7.0dev",
+        "needs_upgrade": false,
+        "scripts_released": "3.7.0dev",
+        "scripts_installed": "3.7.0dev"
+    },
+    "geos": {
+        "runtime": "3.14.1-CAPI-1.20.5",
+        "compiled": "3.14.1-CAPI-1.20.5"
+    },
+    "proj": {
+        "runtime": "9.8.1",
+        "compiled": "9.8.1"
+    },
+    "gdal": "GDAL 3.13.1, released 2026/06/01",
+    "libxml": "2.14.6",
+    "libjson": "0.18",
+    "libprotobuf": "1.5.2",
+    "postgresql": {
+        "runtime": "180",
+        "scripts": "180",
+        "procs_need_upgrade": false
+    },
+    "warnings": []
+}</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+		<xref linkend="upgrading"/>,
+		<xref linkend="PostGIS_Full_Version"/>,
+		<xref linkend="PostGIS_GEOS_Version"/>,
+		<xref linkend="PostGIS_Lib_Version"/>,
+		<xref linkend="PostGIS_PROJ_Version"/>,
+		<xref linkend="PostGIS_Version"/>
+		</para>
+	  </refsection>
+	</refentry>
+
 	<refentry xml:id="PostGIS_GEOS_Version">
 	  <refnamediv>
 		<refname>PostGIS_GEOS_Version</refname>
