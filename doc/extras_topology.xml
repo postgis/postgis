@@ -3277,6 +3277,7 @@ This function uses edge ring linking metadata.
 				<para>
 <xref linkend="ST_GetFaceEdges"/>,
 <xref linkend="GetNodeEdges"/>
+<xref linkend="getfaceedges_returntype"/>
 				</para>
 			</refsection>
 		</refentry>
