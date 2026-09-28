@@ -84,6 +84,7 @@ PostGIS 3.6.5dev
   (Darafei Praliaskouski)
 - #6109, Out-of-bounds heap read in BOX2D_out and BOX2D_expand
   on 65-byte box2d under ASAN (Dennis Tighe, Google)
+- #6127, ToastCacheGetGeometry error on PG20 (Laurenz Albe)
 
 PostGIS 3.6.4
 2026/06/08
