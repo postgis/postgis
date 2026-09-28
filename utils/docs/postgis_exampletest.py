@@ -73,6 +73,17 @@ FUNCTION_CAPABILITY_REQUIREMENTS = (
     )),
     ("cgal", (6, 0, 0), re.compile(r"\bCG_PolygonRepair\s*\(", re.I)),
 )
+# Chapters that document an optional backend wholesale.  Every runnable example
+# in them needs that backend, and most carry no per-example role, so the chapter
+# itself supplies the requirement.  The minimum is the oldest SFCGAL PostGIS can
+# be configured against at all (configure.ac rejects anything below 1.3.1), so
+# this only ever tests for presence: an absent backend reports an empty version
+# and fails the comparison.  Documented-output examples are exempt at example
+# level, because they are rendered from their recorded output and never execute.
+CHAPTER_CAPABILITY_REQUIREMENTS = {
+    "reference_sfcgal": ("sfcgal", (1, 0, 0)),
+    "reference_sfcgal_legacy": ("sfcgal", (1, 0, 0)),
+}
 ENVIRONMENT_CHECKS = (
     {
         "label": "PROJ grid au_icsm_GDA94_GDA2020_conformal_and_distortion.tif",
@@ -195,9 +206,14 @@ CATALOG_QUERY_RE = re.compile(r"\bpg_available_extensions\b", re.I)
 
 
 class ExampleTester:
-    def __init__(self, xml_file):
+    # Class-level default so helpers keep working on instances built with
+    # __new__ (the parser-only callers in the unit tests).
+    disabled_capabilities = frozenset()
+
+    def __init__(self, xml_file, disabled_capabilities=()):
         self.index = parse_xml(xml_file)
         self.doc = self.index.tree
+        self.disabled_capabilities = frozenset(disabled_capabilities)
 
     def node_text(self, node):
         return "".join(node.itertext()).replace("\r\n", "\n").replace("\r", "\n")
@@ -239,6 +255,24 @@ class ExampleTester:
                 })
         return requirements
 
+    def chapter_capability_requirements(self, node):
+        requirements = []
+        for ancestor in self.index.ancestors(node):
+            if ancestor.tag != f"{{{DOCBOOK_NS}}}chapter":
+                continue
+            requirement = CHAPTER_CAPABILITY_REQUIREMENTS.get(
+                ancestor.get(f"{{{XML_NS}}}id")
+            )
+            if requirement is None:
+                continue
+            name, minimum = requirement
+            requirements.append({
+                "name": name,
+                "minimum": minimum,
+                "role": f"requires-{name}-" + ".".join(str(part) for part in minimum),
+            })
+        return requirements
+
     def merge_capability_requirements(self, requirements):
         merged = {}
         for requirement in requirements:
@@ -251,6 +285,9 @@ class ExampleTester:
     def runtime_capabilities(self, database, names):
         capabilities = {}
         for name in sorted(names):
+            if name in self.disabled_capabilities:
+                capabilities[name] = ()
+                continue
             query = CAPABILITY_VERSION_QUERIES[name]
             try:
                 value = self.run_psql_scalar(database, query)
@@ -1380,6 +1417,7 @@ class ExampleTester:
             "requirements": self.merge_capability_requirements(
                 self.capability_requirements(node)
                 + self.inferred_capability_requirements(query)
+                + ([] if documented_only else self.chapter_capability_requirements(node))
             ),
             "documented_only": documented_only,
             "volatile": self.query_is_version_example(query) or self.query_is_catalog_example(query),
@@ -1794,6 +1832,8 @@ class ExampleTester:
             example for example in all_examples
             if not self.requirements_satisfied(example.get("requirements", []), capabilities)
         ]
+        # Documented-output figures are drawn from their recorded screen and never
+        # touch a backend, so they are deliberately not capability filtered.
         documented_visuals = [
             example for example in all_examples
             if example.get("documented_only") and example["visual_id"]
@@ -4639,6 +4679,11 @@ def parse_args():
     parser.add_argument("--render-dir", help="write selected build-time SVG assets after a successful --run")
     parser.add_argument("--visual-only", action="store_true", help="run only selected visual examples")
     parser.add_argument("--jobs", type=int, default=1, help="parallel workers for --visual-only (default: 1)")
+    parser.add_argument(
+        "--disable-sfcgal",
+        action="store_true",
+        help="treat the SFCGAL backend as unavailable without probing the server",
+    )
     parser.add_argument("xml_file")
     return parser.parse_args()
 
@@ -4647,7 +4692,8 @@ def main():
     args = parse_args()
 
     try:
-        tester = ExampleTester(args.xml_file)
+        disabled_capabilities = {"sfcgal", "cgal"} if args.disable_sfcgal else ()
+        tester = ExampleTester(args.xml_file, disabled_capabilities=disabled_capabilities)
 
         if args.report:
             tester.print_report()

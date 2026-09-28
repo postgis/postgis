@@ -29,8 +29,18 @@ POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 #
 GARDENDB=postgis_garden
 EXAMPLETESTDB=postgis_exampletest
-EXAMPLETEST_RUN_FLAGS = --keep-going
 EXAMPLETEST_VISUAL_JOBS ?= 2
+
+# A build without the SFCGAL backend cannot run the SFCGAL chapter examples or
+# produce their figures.  Tell the tester so it skips them instead of probing
+# for functions that were never installed.  Each target spells out its own
+# EXAMPLETEST_RUN_FLAGS below, so this has to be repeated there too.
+ifeq ($(HAVE_SFCGAL),yes)
+EXAMPLETEST_SFCGAL_FLAGS =
+else
+EXAMPLETEST_SFCGAL_FLAGS = --disable-sfcgal
+endif
+EXAMPLETEST_RUN_FLAGS = --keep-going $(EXAMPLETEST_SFCGAL_FLAGS)
 
 # Where we put our regression installation
 # See https://trac.osgeo.org/postgis/ticket/5066
@@ -152,7 +162,7 @@ exampletest: staged-install exampletest-run
 
 visual-examples: staged-install visual-examples-run
 
-visual-examples-run: EXAMPLETEST_RUN_FLAGS = --keep-going --visual-only --jobs $(EXAMPLETEST_VISUAL_JOBS)
+visual-examples-run: EXAMPLETEST_RUN_FLAGS = --keep-going --visual-only --jobs $(EXAMPLETEST_VISUAL_JOBS) $(EXAMPLETEST_SFCGAL_FLAGS)
 visual-examples-run: EXAMPLETEST_CHECK_ENVIRONMENT = no
 visual-examples-run: exampletest-run
 

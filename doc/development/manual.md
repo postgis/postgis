@@ -78,6 +78,32 @@ Raster-returning SQL examples are also executed at build time; their exact
 pixels are embedded in the generated SVG container rather than checked in as a
 manual screenshot.
 
+### Optional backends and figures
+
+An example is rendered only when the backend it needs is present. Two mechanisms
+cooperate:
+
+* A `requires-<backend>-<version>` role on the `programlisting` or `screen`
+  gates a single example, and `requires-cgal-<version>` gates on the CGAL
+  version. A version the server does not report is treated as unavailable, so
+  the example is skipped rather than failed.
+* A whole chapter can be gated instead. `CHAPTER_CAPABILITY_REQUIREMENTS` in
+  [`utils/docs/postgis_exampletest.py`](../../utils/docs/postgis_exampletest.py)
+  maps a chapter `xml:id` to the backend every runnable example in it needs.
+  The SFCGAL reference chapter is gated this way because most of its examples
+  carry no per-example role. Documented-output examples are exempt, because they
+  are drawn from their recorded `<screen>` output and never execute.
+
+A figure is emitted only when the manifest holds an entry for that block, so a
+skipped example degrades to its recorded text output instead of a broken image.
+Do not add a figure for an example that a backend gate will skip.
+
+A build configured `--without-sfcgal` passes `--disable-sfcgal`, which tells the
+renderer to treat SFCGAL and CGAL as unavailable without probing the server.
+The SFCGAL reference chapter is still documented and its SFCGAL cheatsheet,
+comment script, and garden script are still built, but the examples in that
+chapter that would have to execute are omitted along with their figures.
+
 Garden checks combine documentation examples with behavior validation. Keep the
 command and review guidance in [Testing and debugging](testing/_index.md#garden-checks)
 and link back here when manual examples need attention.

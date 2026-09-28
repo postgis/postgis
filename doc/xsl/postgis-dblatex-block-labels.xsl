@@ -61,18 +61,24 @@
   </xsl:variable>
   <xsl:variable name="manifest.visual"
                 select="document($postgis.visual.manifest)/visual-examples/visual[@refentry = $refentry.id and @screen = string($screen.ordinal)]"/>
+	<!-- A figure is only emitted when the manifest actually holds an entry for
+	     this block.  Examples skipped at build time (unavailable backend, or
+	     the visual-skip role) never reach the manifest, and referencing their
+	     SVG would break the PDF include.  The same test guards
+	     visual.preferred so the text output is not dropped in favour of a
+	     figure that was never built. -->
 	<xsl:variable name="visual.id">
     <xsl:choose>
-      <xsl:when test="contains($role.tokens, ' visual-primary ') and (@xml:id or @id)">
+      <xsl:when test="$manifest.visual and contains($role.tokens, ' visual-primary ') and (@xml:id or @id)">
         <xsl:value-of select="(@xml:id | @id)[1]"/>
       </xsl:when>
       <xsl:otherwise><xsl:value-of select="$manifest.visual/@id"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 	<xsl:variable name="visual.preferred"
-	              select="not(contains($role.tokens, ' text-primary '))
-	                      and ($manifest.visual/@preferred = 'true'
-	                           or (not($manifest.visual) and contains($role.tokens, ' visual-primary ')))"/>
+	              select="string($visual.id) != ''
+	                      and not(contains($role.tokens, ' text-primary '))
+	                      and $manifest.visual/@preferred = 'true'"/>
 	<!--
 	  HTML can keep a large WKT output collapsed next to its interactive figure.
 	  In the non-interactive PDF the preferred figure carries the same geometry,
