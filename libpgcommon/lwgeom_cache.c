@@ -232,7 +232,11 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 		return shared_gserialized_new_nocache(datum);
 
 	/* Retrieve the unique keys for this object */
+#if POSTGIS_PGSQL_VERSION < 200
 	struct varatt_external ve;
+#else
+	struct varatt_external_oid ve;
+#endif
 	VARATT_EXTERNAL_GET_POINTER(ve, attr);
 	Oid valueid = ve.va_valueid;
 	Oid toastrelid = ve.va_toastrelid;
