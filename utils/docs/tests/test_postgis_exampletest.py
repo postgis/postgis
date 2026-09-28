@@ -491,6 +491,96 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             "role": "auto-requires-sfcgal-2.0.0",
         }], requirements)
 
+    def _example_in_chapter(self, chapter_id, roles=""):
+        xml = f"""<book xmlns="http://docbook.org/ns/docbook">
+  <chapter xml:id="{chapter_id}">
+    <refentry xml:id="CG_Extrude"><refsection>
+      <programlisting{roles}>SELECT ST_AsText(
+        CG_Extrude('POLYGON((0 0,1 0,1 1,0 0))'::geometry, 0, 0, 10)
+      );</programlisting>
+      <screen role="visual-primary text-primary">POLYGON Z ((0 0 0,1 0 0,1 1 0,0 0 0))</screen>
+    </refsection></refentry>
+  </chapter>
+</book>"""
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "chapter.xml"
+            path.write_text(xml, encoding="utf-8")
+            examples = ExampleTester(path).examples()
+
+        self.assertEqual(1, len(examples))
+        return examples[0]
+
+    def test_sfcgal_chapter_example_requires_sfcgal_backend(self):
+        example = self._example_in_chapter("reference_sfcgal")
+
+        self.assertEqual(
+            [{"name": "sfcgal", "minimum": (1, 0, 0), "role": "requires-sfcgal-1.0.0"}],
+            example["requirements"],
+        )
+        self.assertFalse(example["documented_only"])
+        self.assertEqual("visual-cg-extrude-01", example["visual_id"])
+
+    def test_sfcgal_legacy_chapter_example_requires_sfcgal_backend(self):
+        example = self._example_in_chapter("reference_sfcgal_legacy")
+
+        self.assertEqual(
+            [{"name": "sfcgal", "minimum": (1, 0, 0), "role": "requires-sfcgal-1.0.0"}],
+            example["requirements"],
+        )
+
+    def test_example_outside_sfcgal_chapter_is_not_gated(self):
+        example = self._example_in_chapter("reference_processing")
+
+        self.assertEqual([], example["requirements"])
+
+    def test_documented_output_in_sfcgal_chapter_keeps_its_figure(self):
+        # Documented-output examples are drawn from their recorded screen and
+        # never execute, so they must not be gated on the backend.
+        example = self._example_in_chapter("reference_sfcgal", ' role="documented-output"')
+
+        self.assertTrue(example["documented_only"])
+        self.assertEqual([], example["requirements"])
+        self.assertEqual("visual-cg-extrude-01", example["visual_id"])
+
+    def test_disabled_sfcgal_capability_skips_chapter_examples(self):
+        tester = ExampleTester.__new__(ExampleTester)
+        requirement = [
+            {"name": "sfcgal", "minimum": (1, 0, 0), "role": "requires-sfcgal-1.0.0"}
+        ]
+
+        # A backend that is absent, disabled at configure time, or whose version
+        # function is missing all report an empty version and must not satisfy
+        # the chapter requirement.
+        self.assertFalse(tester.requirements_satisfied(requirement, {"sfcgal": ()}))
+        self.assertFalse(tester.requirements_satisfied(requirement, {}))
+        self.assertTrue(tester.requirements_satisfied(requirement, {"sfcgal": (1, 5, 0)}))
+        self.assertTrue(tester.requirements_satisfied(requirement, {"sfcgal": (2, 3, 0)}))
+
+    def test_disable_sfcgal_short_circuits_runtime_capabilities(self):
+        calls = []
+        tester = ExampleTester.__new__(ExampleTester)
+
+        def record(database, query):
+            calls.append(query)
+            return "2.3.0"
+
+        tester.run_psql_scalar = record
+
+        tester.disabled_capabilities = frozenset({"sfcgal", "cgal"})
+        self.assertEqual(
+            {"cgal": (), "sfcgal": ()},
+            tester.runtime_capabilities("db", {"sfcgal", "cgal"}),
+        )
+        self.assertEqual([], calls)
+
+        calls.clear()
+        tester.disabled_capabilities = frozenset()
+        self.assertEqual(
+            {"sfcgal": (2, 3, 0)},
+            tester.runtime_capabilities("db", {"sfcgal"}),
+        )
+        self.assertEqual(["SELECT postgis_sfcgal_version()"], calls)
+
     def test_legacy_2d_wkt_output_compares_against_2d_projection(self):
         tester = ExampleTester.__new__(ExampleTester)
         query = tester.geometry_comparison_query(

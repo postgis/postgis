@@ -160,7 +160,7 @@
                 select="document($postgis.visual.manifest)/visual-examples/visual[@refentry = $next.refentry.id and @screen = string($next.screen.ordinal)]"/>
   <xsl:variable name="visual.id">
     <xsl:choose>
-      <xsl:when test="$next.screen and contains($next.screen.role.tokens, ' visual-primary ') and $next.screen/@xml:id">
+      <xsl:when test="$next.screen and $next.manifest.visual and contains($next.screen.role.tokens, ' visual-primary ') and $next.screen/@xml:id">
         <xsl:value-of select="$next.screen/@xml:id"/>
       </xsl:when>
       <xsl:when test="$next.screen"><xsl:value-of select="$next.manifest.visual/@id"/></xsl:when>
@@ -281,18 +281,23 @@
       <xsl:with-param name="kind" select="'show-readable-ewkt'"/>
     </xsl:call-template>
   </xsl:variable>
+  <!-- A figure is only emitted when the manifest actually holds an entry for
+       this block.  Examples skipped at build time (unavailable backend, or the
+       visual-skip role) never reach the manifest, and referencing their SVG
+       would emit a broken image.  The same test guards visual.preferred so the
+       text output is not hidden in favour of a figure that was never built. -->
   <xsl:variable name="visual.id">
     <xsl:choose>
-      <xsl:when test="contains($role.tokens, ' visual-primary ') and @xml:id">
+      <xsl:when test="$manifest.visual and contains($role.tokens, ' visual-primary ') and @xml:id">
         <xsl:value-of select="@xml:id"/>
       </xsl:when>
       <xsl:otherwise><xsl:value-of select="$manifest.visual/@id"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="visual.preferred"
-                select="not(contains($role.tokens, ' text-primary '))
-                        and ($manifest.visual/@preferred = 'true'
-                             or (not($manifest.visual) and contains($role.tokens, ' visual-primary ')))"/>
+                select="string($visual.id) != ''
+                        and not(contains($role.tokens, ' text-primary '))
+                        and $manifest.visual/@preferred = 'true'"/>
 
   <div role="group" data-postgis-block="output">
     <xsl:attribute name="class">

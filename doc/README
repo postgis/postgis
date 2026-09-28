@@ -61,6 +61,11 @@ manual at https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/developm
 for layout roles, labels, textual-output policy, native geometry/EWKT output
 handling, and the visual review procedure.
 
+A build configured ``--without-sfcgal`` still documents the SFCGAL reference
+chapter, but the renderer skips the SFCGAL examples that would have to execute,
+and no figures are emitted for them. The examples that render from their
+recorded documented output are unaffected and keep their figures.
+
 To run garden tests against functions, see the Garden Checks section in
 https://gitea.osgeo.org/postgis/postgis/src/branch/master/doc/development/testing/.
 
