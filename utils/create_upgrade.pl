@@ -549,12 +549,15 @@ EOF
     if (/^create type ([\w.]+)/i)
     {
         my $newtype = $1;
-        my $def .= $_;
+        my $def = $_;
         my @replaced_array = parse_replaces($comment);
 
         my @attributes;
         my $attr_comment = '';
         while(<INPUT>) {
+
+            $def .= $_;
+
             # End of type definition
             last if /^\s*\)\s*;?\s*$/;
 
