@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- Preserve complete type definitions in generated upgrade SQL (Sandro Santilli)
 - [raster] Allocate the right size for GDAL option strings (Maksim Korotkov)
 - [topology] Initialize the edge linkage when snapping an edge to a node (Darafei Praliaskouski)
 - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
