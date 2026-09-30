@@ -196,6 +196,11 @@ ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" "<=" 31200),1)
 		$(top_srcdir)/regress/core/relate_bnr
 endif
 
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31600),1)
+	TESTS += \
+    $(top_srcdir)/regress/core/issimpledetail
+endif
+
 ifeq ($(INTERRUPTTESTS),yes)
 	# Allow CI servers to configure --with-interrupt-tests
 	TESTS += \

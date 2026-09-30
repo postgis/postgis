@@ -5043,6 +5043,18 @@ CREATE OR REPLACE FUNCTION ST_IsSimple(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.7.0
+CREATE TYPE simple_detail AS (
+	simple bool,
+	location geometry
+);
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_IsSimpleDetail(geom geometry, findAllLocations integer DEFAULT 0, boundaryNodeRule integer DEFAULT 1, OUT simple boolean, OUT location geometry)
+	AS 'MODULE_PATHNAME', 'issimpledetail'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_IsCollection(geometry)
 	RETURNS boolean

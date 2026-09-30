@@ -1,0 +1,5 @@
+t1|t|
+t2|f|POINT(5 0)
+t3|f|MULTIPOINT((2.5 0),(5 0))
+t4|f|POINT(0 0)
+t5|t|

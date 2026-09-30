@@ -2004,6 +2004,72 @@ FROM (SELECT 'LINESTRING(0 0,0 1,1 0,1 1,0 0)'::geometry AS geom) AS foo;</progr
 		</refsection>
 	</refentry>
 
+  <refentry xml:id="ST_IsSimpleDetail">
+	  <refnamediv>
+		<refname>ST_IsSimpleDetail</refname>
+
+		<refpurpose>Report locations of self-intersection or self-tangency, if any.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>simple_detail <function>ST_IsSimpleDetail</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef choice="opt"><type>integer </type> <parameter>findAllLocations = 0</parameter></paramdef>
+			<paramdef choice="opt"><type>integer </type> <parameter>boundaryNodeRule = 1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a <varname>simple_detail</varname> row,
+        containing a boolean (<varname>simple</varname>) stating if a geometry is simple
+        and a geometry (<varname>location</varname>) pointing out where it is non-simple.</para>
+
+		<para>
+The optional <varname>findAllLocations</varname> parameter can be set to 1 to report all non-simple locations, rather than just one.
+        </para>
+
+        <para>
+The optional <varname>boundaryNodeRule</varname> values are:
+            </para>
+        <itemizedlist>
+            <listitem><para><code>1</code>: <emphasis role="bold">OGC-Mod2</emphasis> - line endpoints are in the Boundary if they occur an odd number of times.
+                This is the rule defined by the OGC SFS standard, and is the default for <function>ST_Relate</function>.
+                </para></listitem>
+            <listitem><para><code>2</code>: <emphasis role="bold">Endpoint</emphasis> - all endpoints are in the Boundary.
+                </para></listitem>
+            <listitem><para><code>3</code>: <emphasis role="bold">MultivalentEndpoint</emphasis> - endpoints are in the Boundary if they occur more than once.
+                In other words, the boundary is all the "attached" or "inner" endpoints (but not the "unattached/outer" ones).
+                </para></listitem>
+            <listitem><para><code>4</code>: <emphasis role="bold">MonovalentEndpoint</emphasis> - endpoints are in the Boundary if they occur only once.
+                In other words, the boundary is all the "unattached" or "outer" endpoints.
+                </para></listitem>
+        </itemizedlist>
+
+		<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_IsSimple('POLYGON((1 2,3 4,5 6,1 2))');</programlisting>
+<screen>f</screen>
+<programlisting>SELECT ST_IsSimple('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)');</programlisting>
+<screen>f</screen>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_IsSimple"/></para>
+		</refsection>
+	</refentry>
+
 	<refentry xml:id="ST_M">
 	  <refnamediv>
 		<refname>ST_M</refname>

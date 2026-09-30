@@ -53,6 +53,7 @@
 Datum isvalid(PG_FUNCTION_ARGS);
 Datum isvalidreason(PG_FUNCTION_ARGS);
 Datum isvaliddetail(PG_FUNCTION_ARGS);
+Datum issimpledetail(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
 Datum ST_Intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
@@ -1780,6 +1781,92 @@ Datum issimple(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(issimpledetail);
+Datum issimpledetail(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31600
+	lwpgerror("The GEOS version this PostGIS binary "
+				"was compiled against (%d) doesn't support "
+				"'GEOSisSimpleWithParams' function (3.16.0+ required)",
+				POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 31600 */
+	GSERIALIZED *geom = NULL;
+	const GEOSGeometry *g1 = NULL;
+	char *values[2]; /* simple bool, location geometry */
+	GEOSGeometry *geos_location = NULL;
+	LWGEOM *location = NULL;
+	int8_t simple = 0;
+	HeapTupleHeader result;
+	TupleDesc tupdesc;
+	HeapTuple tuple;
+	AttInMetadata *attinmeta;
+	int findAllLocations = 0;
+	int boundaryNodeRule = 0;
+
+	/*
+	 * Build a tuple description for a
+	 * simple_detail tuple
+	 */
+	get_call_result_type(fcinfo, 0, &tupdesc);
+	BlessTupleDesc(tupdesc);
+
+	/*
+	 * generate attribute metadata needed later to produce
+	 * tuples from raw C strings
+	 */
+	attinmeta = TupleDescGetAttInMetadata(tupdesc);
+
+	geom = PG_GETARG_GSERIALIZED_P(0);
+	findAllLocations = PG_GETARG_INT32(1);
+	boundaryNodeRule = PG_GETARG_INT32(2);
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	g1 = POSTGIS2GEOS(geom);
+
+	if ( ! g1 )
+	{
+		lwpgerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+		PG_RETURN_NULL();
+	}
+
+	{
+		GEOSisSimpleParams *params = GEOSisSimpleParams_create();
+		GEOSisSimpleParams_setBoundaryNodeRule(params, boundaryNodeRule);
+		GEOSisSimpleParams_setFindAllLocations(params, findAllLocations);
+		simple = GEOSisSimpleWithParams(g1, params, &geos_location);
+		GEOSisSimpleParams_destroy(params);
+		GEOSGeom_destroy((GEOSGeometry *)g1);
+	}
+
+	if (simple == 2)
+	{
+		/* NOTE: should only happen on OOM or similar */
+		lwpgerror("GEOSisSimpleDetail threw an exception!");
+		PG_RETURN_NULL(); /* never gets here */
+	}
+	if ( geos_location )
+	{
+		location = GEOS2LWGEOM(geos_location, GEOSHasZ(geos_location));
+		GEOSGeom_destroy(geos_location);
+	}
+
+	/* the boolean simplicity */
+	values[0] =  simple ? "t" : "f";
+
+	/* the location */
+	values[1] = location ? lwgeom_to_hexwkb_buffer(location, WKB_EXTENDED) : 0;
+
+	tuple = BuildTupleFromCStrings(attinmeta, values);
+	result = (HeapTupleHeader) palloc(tuple->t_len);
+	memcpy(result, tuple->t_data, tuple->t_len);
+	heap_freetuple(tuple);
+
+	PG_RETURN_HEAPTUPLEHEADER(result);
+#endif /* POSTGIS_GEOS_VERSION >= 31400 */
 }
 
 PG_FUNCTION_INFO_V1(isring);
