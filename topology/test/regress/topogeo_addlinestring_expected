@@ -185,10 +185,10 @@ t3412.start|t
 t3412.L1|1
 t3412.L2|4
 t3412.end|Topology 'bug3412' dropped
-t3371.start|t
-t3371.L1|1
-t3371.L2|2
-t3371.end|Topology 'bug3711' dropped
+t3711.start|t
+t3711.L1|1
+t3711.L2|2
+t3711.end|Topology 'bug3711' dropped
 t3838.start|t
 t3838.L1|1
 t3838.L2|6
