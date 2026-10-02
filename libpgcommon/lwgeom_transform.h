@@ -93,7 +93,7 @@ srs_precision srid_axis_precision(int32_t srid, int precision);
 /**  Start of UTM South zone, equivalent to EPSG:32760 */
 #define SRID_SOUTH_UTM_END   999160
 
-/** Lambert Azimuthal Equal Area (LAEA) South Pole, equivalent to EPSG:3409 */
+/** Lambert Azimuthal Equal Area (LAEA) South Pole, equivalent to EPSG:6932 */
 #define SRID_SOUTH_LAMBERT   999161
 
 /** PolarSteregraphic South, equivalent to EPSG:3031 */
@@ -105,6 +105,4 @@ srs_precision srid_axis_precision(int32_t srid, int precision);
 /** LAEA zones end (6 latitude bands x up to 20 longitude bands) */
 #define SRID_LAEA_END 999283
 
-
 /** @} */
-
