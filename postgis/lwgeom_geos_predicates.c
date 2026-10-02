@@ -28,6 +28,8 @@
 
 #include "../postgis_config.h"
 
+#include <math.h>
+
 /* PostgreSQL */
 #include "postgres.h"
 #include "funcapi.h"
@@ -61,7 +63,7 @@ Datum covers(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
-
+Datum ST_EqualsExact(PG_FUNCTION_ARGS);
 
 /*
  * Utility to quickly check for polygonal geometries
@@ -302,7 +304,48 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+PG_FUNCTION_INFO_V1(ST_EqualsExact);
+Datum
+ST_EqualsExact(PG_FUNCTION_ARGS)
+{
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
+	int32 decimal = PG_GETARG_INT32(2);
+	double tolerance = 0.5 * pow(10.0, -(double)decimal);
+	GEOSGeometry *g1, *g2;
+	int8_t result;
 
+	if (!isfinite(tolerance))
+	{
+		ereport(ERROR,
+			(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			 errmsg("ST_EqualsExact: decimal argument %d produces a non-finite tolerance", decimal)));
+	}
+
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	g1 = POSTGIS2GEOS(geom1);
+	if (!g1)
+		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+	g2 = POSTGIS2GEOS(geom2);
+	if (!g2)
+	{
+		GEOSGeom_destroy(g1);
+		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
+	}
+	result = GEOSEqualsExact(g1, g2, tolerance);
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSEqualsExact");
+
+	PG_RETURN_BOOL(result);
+}
 
 PG_FUNCTION_INFO_V1(touches);
 Datum touches(PG_FUNCTION_ARGS)
