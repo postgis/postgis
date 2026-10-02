@@ -28,6 +28,7 @@
 #include "raster2pgsql.h"
 #include "gdal_vrt.h"
 #include "ogr_srs_api.h"
+#include "cpl_string.h"
 #include <assert.h>
 #include <stdarg.h>
 
@@ -234,6 +235,351 @@ strtolower(char * str) {
 		str[j] = tolower(str[j]);
 
 	return str;
+}
+
+static int
+append_dynamic_string(char **str, size_t *len, size_t *cap, const char *append)
+{
+	size_t append_len = strlen(append);
+
+	if (*len + append_len + 1 > *cap)
+	{
+		char *resized = NULL;
+
+		while (*len + append_len + 1 > *cap)
+			*cap *= 2;
+		resized = rtrealloc(*str, *cap);
+		if (resized == NULL)
+		{
+			rterror(_("append_dynamic_string: Not enough memory"));
+			return 0;
+		}
+		*str = resized;
+	}
+
+	memcpy(*str + *len, append, append_len + 1);
+	*len += append_len;
+
+	return 1;
+}
+
+static char *
+xml_escape(const char *str)
+{
+	char *result = NULL;
+	char *ptr = NULL;
+	size_t len = 1;
+
+	if (str == NULL)
+		return NULL;
+
+	for (const char *src = str; *src; src++)
+	{
+		switch (*src)
+		{
+		case '&':
+			len += strlen("&amp;");
+			break;
+		case '<':
+			len += strlen("&lt;");
+			break;
+		case '>':
+			len += strlen("&gt;");
+			break;
+		case '"':
+			len += strlen("&quot;");
+			break;
+		case '\'':
+			len += strlen("&apos;");
+			break;
+		default:
+			len++;
+			break;
+		}
+	}
+
+	result = rtalloc(len);
+	if (result == NULL)
+	{
+		rterror(_("xml_escape: Not enough memory"));
+		return NULL;
+	}
+
+	ptr = result;
+	for (const char *src = str; *src; src++)
+	{
+		switch (*src)
+		{
+		case '&':
+			ptr += sprintf(ptr, "%s", "&amp;");
+			break;
+		case '<':
+			ptr += sprintf(ptr, "%s", "&lt;");
+			break;
+		case '>':
+			ptr += sprintf(ptr, "%s", "&gt;");
+			break;
+		case '"':
+			ptr += sprintf(ptr, "%s", "&quot;");
+			break;
+		case '\'':
+			ptr += sprintf(ptr, "%s", "&apos;");
+			break;
+		default:
+			*ptr++ = *src;
+			break;
+		}
+	}
+	*ptr = '\0';
+
+	return result;
+}
+
+static char *
+escape_copy_text(const char *str)
+{
+	char *result = NULL;
+	char *ptr = NULL;
+	size_t len = 1;
+
+	if (str == NULL)
+		return NULL;
+
+	for (const char *src = str; *src; src++)
+	{
+		switch (*src)
+		{
+		case '\\':
+		case '\t':
+		case '\n':
+		case '\r':
+			len += 2;
+			break;
+		default:
+			len++;
+			break;
+		}
+	}
+
+	result = rtalloc(len);
+	if (result == NULL)
+	{
+		rterror(_("escape_copy_text: Not enough memory"));
+		return NULL;
+	}
+
+	ptr = result;
+	for (const char *src = str; *src; src++)
+	{
+		switch (*src)
+		{
+		case '\\':
+			*ptr++ = '\\';
+			*ptr++ = '\\';
+			break;
+		case '\t':
+			*ptr++ = '\\';
+			*ptr++ = 't';
+			break;
+		case '\n':
+			*ptr++ = '\\';
+			*ptr++ = 'n';
+			break;
+		case '\r':
+			*ptr++ = '\\';
+			*ptr++ = 'r';
+			break;
+		default:
+			*ptr++ = *src;
+			break;
+		}
+	}
+	*ptr = '\0';
+
+	return result;
+}
+
+static char *
+quote_pg_identifier(const char *identifier)
+{
+	size_t len = 3;
+	char *quoted = NULL;
+	char *ptr = NULL;
+
+	for (const char *src = identifier; *src; src++)
+		len += (*src == '"') ? 2 : 1;
+
+	quoted = rtalloc(len);
+	if (quoted == NULL)
+		return NULL;
+
+	ptr = quoted;
+	*ptr++ = '"';
+	for (const char *src = identifier; *src; src++)
+	{
+		if (*src == '"')
+			*ptr++ = '"';
+		*ptr++ = *src;
+	}
+	*ptr++ = '"';
+	*ptr = '\0';
+
+	return quoted;
+}
+
+static char *
+quote_pg_identifier_with_suffix(const char *identifier, const char *suffix)
+{
+	char *quoted = quote_pg_identifier(identifier);
+	size_t quoted_len;
+	size_t suffix_len;
+	char *result = NULL;
+
+	if (quoted == NULL)
+		return NULL;
+
+	quoted_len = strlen(quoted);
+	suffix_len = strlen(suffix);
+	result = rtalloc(quoted_len + suffix_len + 1);
+	if (result == NULL)
+	{
+		rtdealloc(quoted);
+		return NULL;
+	}
+
+	memcpy(result, quoted, quoted_len);
+	memcpy(result + quoted_len, suffix, suffix_len + 1);
+	rtdealloc(quoted);
+
+	return result;
+}
+
+static int
+append_gdal_metadata_items(char **xml, size_t *len, size_t *cap, char **metadata, const char *domain_name)
+{
+	char **item = NULL;
+	char *escaped_domain = NULL;
+	int raw_items = domain_name != NULL && strncmp(domain_name, "xml:", 4) == 0;
+
+	if (metadata == NULL || *metadata == NULL)
+		return 1;
+
+	if (domain_name != NULL && domain_name[0] != '\0')
+	{
+		escaped_domain = xml_escape(domain_name);
+		if (escaped_domain == NULL)
+			return 0;
+	}
+
+	for (item = metadata; item != NULL && *item != NULL; item++)
+	{
+		char *equals = raw_items ? NULL : strchr(*item, '=');
+		char *name = NULL;
+		char *value = NULL;
+		char *escaped_name = NULL;
+		char *escaped_value = NULL;
+		int ok = 0;
+
+		if (equals != NULL)
+		{
+			name = rtalloc(equals - *item + 1);
+			if (name == NULL)
+			{
+				rterror(_("append_gdal_metadata_items: Not enough memory"));
+				rtdealloc(escaped_domain);
+				return 0;
+			}
+			snprintf(name, equals - *item + 1, "%s", *item);
+			value = equals + 1;
+			escaped_name = xml_escape(name);
+			rtdealloc(name);
+		}
+		else
+			value = *item;
+
+		escaped_value = xml_escape(value);
+		if ((equals != NULL && escaped_name == NULL) || escaped_value == NULL)
+		{
+			rtdealloc(escaped_domain);
+			rtdealloc(escaped_name);
+			rtdealloc(escaped_value);
+			return 0;
+		}
+
+		ok = append_dynamic_string(xml, len, cap, "<Item") &&
+		     (escaped_name == NULL || (append_dynamic_string(xml, len, cap, " name=\"") &&
+					       append_dynamic_string(xml, len, cap, escaped_name) &&
+					       append_dynamic_string(xml, len, cap, "\""))) &&
+		     (escaped_domain == NULL || (append_dynamic_string(xml, len, cap, " domain=\"") &&
+						 append_dynamic_string(xml, len, cap, escaped_domain) &&
+						 append_dynamic_string(xml, len, cap, "\""))) &&
+		     append_dynamic_string(xml, len, cap, ">") && append_dynamic_string(xml, len, cap, escaped_value) &&
+		     append_dynamic_string(xml, len, cap, "</Item>");
+
+		rtdealloc(escaped_name);
+		rtdealloc(escaped_value);
+		if (!ok)
+		{
+			rtdealloc(escaped_domain);
+			return 0;
+		}
+	}
+
+	rtdealloc(escaped_domain);
+	return 1;
+}
+
+static char *
+gdal_metadata_to_xml(GDALDatasetH hdsSrc)
+{
+	char **domains = NULL;
+	char **domain = NULL;
+	char *xml = NULL;
+	size_t len = 0;
+	size_t cap = 256;
+
+	xml = rtalloc(cap);
+	if (xml == NULL)
+	{
+		rterror(_("gdal_metadata_to_xml: Not enough memory"));
+		return NULL;
+	}
+	xml[0] = '\0';
+
+	if (!append_dynamic_string(&xml, &len, &cap, "<GDALMetadata>"))
+	{
+		rtdealloc(xml);
+		return NULL;
+	}
+
+	if (!append_gdal_metadata_items(&xml, &len, &cap, GDALGetMetadata(hdsSrc, NULL), NULL))
+	{
+		rtdealloc(xml);
+		return NULL;
+	}
+
+	domains = GDALGetMetadataDomainList(hdsSrc);
+	for (domain = domains; domain != NULL && *domain != NULL; domain++)
+	{
+		if ((*domain)[0] == '\0')
+			continue;
+
+		if (!append_gdal_metadata_items(&xml, &len, &cap, GDALGetMetadata(hdsSrc, *domain), *domain))
+		{
+			CSLDestroy(domains);
+			rtdealloc(xml);
+			return NULL;
+		}
+	}
+	CSLDestroy(domains);
+
+	if (!append_dynamic_string(&xml, &len, &cap, "</GDALMetadata>"))
+	{
+		rtdealloc(xml);
+		return NULL;
+	}
+
+	return xml;
 }
 
 /* split a string based on a delimiter */
@@ -452,6 +798,7 @@ usage() {
 	printf(_("  -f, --raster-column <column> Specify the name of the raster column\n"));
 	printf(_("  -F, --filename Add a column with the filename of the raster.\n"));
 	printf(_("  -n, --filename-column <column> Specify the name of the filename column. Implies -F.\n"));
+	printf(_("  -m, --metadata-column <column> Add a text column with GDAL metadata serialized as XML.\n"));
 	printf(
 	    _("  -l, --overview-factor <overview factor> Create overview of the raster. For more than\n"
 	      "      one factor, separate with comma(,). Overview table name follows\n"
@@ -539,6 +886,7 @@ static void
 init_rastinfo(RASTERINFO *info) {
 	info->srid = SRID_UNKNOWN;
 	info->srs = NULL;
+	info->metadata = NULL;
 	memset(info->dim, 0, sizeof(uint32_t) * 2);
 	info->nband_count = 0;
 	info->nband = NULL;
@@ -554,6 +902,8 @@ static void
 rtdealloc_rastinfo(RASTERINFO *info) {
 	if (info->srs != NULL)
 		rtdealloc(info->srs);
+	if (info->metadata != NULL)
+		rtdealloc(info->metadata);
 	if (info->nband_count > 0 && info->nband != NULL)
 		rtdealloc(info->nband);
 	if (info->gdalbandtype != NULL)
@@ -575,6 +925,16 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 			return 0;
 		}
 		strcpy(dst->srs, src->srs);
+	}
+	if (src->metadata != NULL)
+	{
+		dst->metadata = rtalloc(sizeof(char) * (strlen(src->metadata) + 1));
+		if (dst->metadata == NULL)
+		{
+			rterror(_("copy_rastinfo: Not enough memory"));
+			return 0;
+		}
+		strcpy(dst->metadata, src->metadata);
 	}
 	memcpy(dst->dim, src->dim, sizeof(uint32_t) * 2);
 	dst->nband_count = src->nband_count;
@@ -725,6 +1085,8 @@ init_config(RTLOADERCFG *config) {
 	config->raster_column = NULL;
 	config->file_column = 0;
 	config->file_column_name = NULL;
+	config->metadata_column = 0;
+	config->metadata_column_name = NULL;
 	config->overview_count = 0;
 	config->overview = NULL;
 	config->overview_table = NULL;
@@ -850,6 +1212,8 @@ rtdealloc_config(RTLOADERCFG *config) {
 		rtdealloc(config->raster_column);
 	if (config->file_column_name != NULL)
 		rtdealloc(config->file_column_name);
+	if (config->metadata_column_name != NULL)
+		rtdealloc(config->metadata_column_name);
 	if (config->overview_count > 0) {
 		if (config->overview != NULL)
 			rtdealloc(config->overview);
@@ -932,22 +1296,28 @@ append_sql_to_buffer(STRINGBUFFER *buffer, const char *str) {
 }
 
 static int
-copy_from(const char *schema, const char *table, const char *column,
-          const char *filename, const char *file_column_name,
-          STRINGBUFFER *buffer)
+copy_from(const char *schema,
+	  const char *table,
+	  const char *column,
+	  const char *filename,
+	  const char *file_column_name,
+	  const char *metadata,
+	  const char *metadata_column_name,
+	  STRINGBUFFER *buffer)
 {
 	char *sql = NULL;
 
 	assert(table != NULL);
 	assert(column != NULL);
 
-	sql = rtloader_alloc_sprintf("COPY %s%s (%s%s%s) FROM stdin;",
-		(schema != NULL ? schema : ""),
-		table,
-		column,
-		(filename != NULL ? "," : ""),
-		(filename != NULL ? file_column_name : "")
-	);
+	sql = rtloader_alloc_sprintf("COPY %s%s (%s%s%s%s%s) FROM stdin;",
+				     (schema != NULL ? schema : ""),
+				     table,
+				     column,
+				     (filename != NULL ? "," : ""),
+				     (filename != NULL ? file_column_name : ""),
+				     (metadata != NULL ? "," : ""),
+				     (metadata != NULL ? metadata_column_name : ""));
 	if (sql == NULL) {
 		rterror(_("copy_from: Could not allocate memory for COPY statement"));
 		return 0;
@@ -969,13 +1339,20 @@ copy_from_end(STRINGBUFFER *buffer)
 }
 
 static int
-insert_records(
-	const char *schema, const char *table, const char *column,
-	const char *filename, const char *file_column_name,
-	int copy_statements, int out_srid,
-	STRINGBUFFER *tileset, STRINGBUFFER *buffer
-) {
+insert_records(const char *schema,
+	       const char *table,
+	       const char *column,
+	       const char *filename,
+	       const char *file_column_name,
+	       const char *metadata,
+	       const char *metadata_column_name,
+	       int copy_statements,
+	       int out_srid,
+	       STRINGBUFFER *tileset,
+	       STRINGBUFFER *buffer)
+{
 	char *fn = NULL;
+	char *md = NULL;
 	char *sql = NULL;
 	uint32_t x = 0;
 
@@ -985,29 +1362,48 @@ insert_records(
 	/* COPY statements */
 	if (copy_statements) {
 
-    if (!copy_from(
-      schema, table, column,
-      (file_column_name ? filename : NULL), file_column_name,
-      buffer
-    )) {
-      rterror(_("insert_records: Could not add COPY statement to string buffer"));
-      return 0;
-    }
-
+		if (!copy_from(schema,
+			       table,
+			       column,
+			       (file_column_name ? filename : NULL),
+			       file_column_name,
+			       (metadata_column_name ? metadata : NULL),
+			       metadata_column_name,
+			       buffer))
+		{
+			rterror(_("insert_records: Could not add COPY statement to string buffer"));
+			return 0;
+		}
 
 		/* escape tabs in filename */
 		if (filename != NULL)
 			fn = strreplace(filename, "\t", "\\t", NULL);
+		if (metadata != NULL)
+			md = escape_copy_text(metadata);
+		if ((filename != NULL && fn == NULL) || (metadata != NULL && md == NULL))
+		{
+			rterror(_("insert_records: Could not allocate memory for COPY values"));
+			if (fn != NULL)
+				rtdealloc(fn);
+			if (md != NULL)
+				rtdealloc(md);
+			return 0;
+		}
 
 		/* rows */
 		for (x = 0; x < tileset->length; x++) {
-			sql = rtloader_alloc_sprintf("%s%s%s",
-				tileset->line[x],
-				(filename != NULL ? "\t" : ""),
-				(filename != NULL ? fn : "")
-			);
+			sql = rtloader_alloc_sprintf("%s%s%s%s%s",
+						     tileset->line[x],
+						     (filename != NULL ? "\t" : ""),
+						     (filename != NULL ? fn : ""),
+						     (metadata != NULL ? "\t" : ""),
+						     (metadata != NULL ? md : ""));
 			if (sql == NULL) {
 				rterror(_("insert_records: Could not allocate memory for COPY statement"));
+				if (fn != NULL)
+					rtdealloc(fn);
+				if (md != NULL)
+					rtdealloc(md);
 				return 0;
 			}
 
@@ -1015,45 +1411,74 @@ insert_records(
 			sql = NULL;
 		}
 
-    if (!copy_from_end(buffer)) {
-      rterror(_("process_rasters: Could not add COPY end statement to string buffer"));
-      return 0;
-    }
-
+		if (!copy_from_end(buffer))
+		{
+			rterror(_("insert_records: Could not add COPY end statement to string buffer"));
+			if (fn != NULL)
+				rtdealloc(fn);
+			if (md != NULL)
+				rtdealloc(md);
+			return 0;
+		}
 	}
 	/* INSERT statements */
 	else {
 		/* escape single-quotes in filename */
 		if (filename != NULL)
 			fn = strreplace(filename, "'", "''", NULL);
+		if (metadata != NULL)
+			md = strreplace(metadata, "'", "''", NULL);
+		if ((filename != NULL && fn == NULL) || (metadata != NULL && md == NULL))
+		{
+			rterror(_("insert_records: Could not allocate memory for INSERT values"));
+			if (fn != NULL)
+				rtdealloc(fn);
+			if (md != NULL)
+				rtdealloc(md);
+			return 0;
+		}
 
 		for (x = 0; x < tileset->length; x++) {
-			if (out_srid != SRID_UNKNOWN && filename != NULL) {
-				sql = rtloader_alloc_sprintf(
-					"INSERT INTO %s%s (%s,%s) VALUES (ST_Transform('%s'::raster, %d),'%s');",
-					(schema != NULL ? schema : ""), table, column,
-					file_column_name, tileset->line[x], out_srid, fn);
+			char *raster_sql;
+
+			if (out_srid != SRID_UNKNOWN)
+				raster_sql = rtloader_alloc_sprintf(
+				    "ST_Transform('%s'::raster, %d)", tileset->line[x], out_srid);
+			else
+				raster_sql = rtloader_alloc_sprintf("'%s'::raster", tileset->line[x]);
+
+			if (raster_sql == NULL)
+			{
+				rterror(_("insert_records: Could not allocate memory for raster value"));
+				if (fn != NULL)
+					rtdealloc(fn);
+				if (md != NULL)
+					rtdealloc(md);
+				return 0;
 			}
-			else if (out_srid != SRID_UNKNOWN) {
-				sql = rtloader_alloc_sprintf(
-					"INSERT INTO %s%s (%s) VALUES (ST_Transform('%s'::raster, %d));",
-					(schema != NULL ? schema : ""), table, column,
-					tileset->line[x], out_srid);
-			}
-			else if (filename != NULL) {
-				sql = rtloader_alloc_sprintf(
-					"INSERT INTO %s%s (%s,%s) VALUES ('%s'::raster,'%s');",
-					(schema != NULL ? schema : ""), table, column,
-					file_column_name, tileset->line[x], fn);
-			}
-			else {
-				sql = rtloader_alloc_sprintf(
-					"INSERT INTO %s%s (%s) VALUES ('%s'::raster);",
-					(schema != NULL ? schema : ""), table, column,
-					tileset->line[x]);
-			}
+
+			sql = rtloader_alloc_sprintf("INSERT INTO %s%s (%s%s%s%s%s) VALUES (%s%s%s%s%s%s%s);",
+						     (schema != NULL ? schema : ""),
+						     table,
+						     column,
+						     (filename != NULL ? "," : ""),
+						     (filename != NULL ? file_column_name : ""),
+						     (metadata != NULL ? "," : ""),
+						     (metadata != NULL ? metadata_column_name : ""),
+						     raster_sql,
+						     (filename != NULL ? ",'" : ""),
+						     (filename != NULL ? fn : ""),
+						     (filename != NULL ? "'" : ""),
+						     (metadata != NULL ? ",'" : ""),
+						     (metadata != NULL ? md : ""),
+						     (metadata != NULL ? "'" : ""));
+			rtdealloc(raster_sql);
 			if (sql == NULL) {
 				rterror(_("insert_records: Could not allocate memory for INSERT statement"));
+				if (fn != NULL)
+					rtdealloc(fn);
+				if (md != NULL)
+					rtdealloc(md);
 				return 0;
 			}
 
@@ -1063,6 +1488,8 @@ insert_records(
 	}
 
 	if (fn != NULL) rtdealloc(fn);
+	if (md != NULL)
+		rtdealloc(md);
 	return 1;
 }
 
@@ -1090,6 +1517,8 @@ create_table(const char *schema,
 	     const char *column,
 	     const int file_column,
 	     const char *file_column_name,
+	     const int metadata_column,
+	     const char *metadata_column_name,
 	     const char *tablespace,
 	     const char *idx_tablespace,
 	     int if_not_exists,
@@ -1100,19 +1529,21 @@ create_table(const char *schema,
 	assert(table != NULL);
 	assert(column != NULL);
 
-	sql = rtloader_alloc_sprintf(
-		"CREATE TABLE %s%s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s%s%s)%s%s;",
-		(if_not_exists ? "IF NOT EXISTS " : ""),
-		(schema != NULL ? schema : ""),
-		table,
-		(idx_tablespace != NULL ? " USING INDEX TABLESPACE " : ""),
-		(idx_tablespace != NULL ? idx_tablespace : ""),
-		column,
-		(file_column ? "," : ""),
-		(file_column ? file_column_name : ""),
-		(file_column ? " text" : ""),
-		(tablespace != NULL ? " TABLESPACE " : ""),
-		(tablespace != NULL ? tablespace : ""));
+	sql = rtloader_alloc_sprintf("CREATE TABLE %s%s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s%s%s%s%s%s)%s%s;",
+				     (if_not_exists ? "IF NOT EXISTS " : ""),
+				     (schema != NULL ? schema : ""),
+				     table,
+				     (idx_tablespace != NULL ? " USING INDEX TABLESPACE " : ""),
+				     (idx_tablespace != NULL ? idx_tablespace : ""),
+				     column,
+				     (file_column ? "," : ""),
+				     (file_column ? file_column_name : ""),
+				     (file_column ? " text" : ""),
+				     (metadata_column ? "," : ""),
+				     (metadata_column ? metadata_column_name : ""),
+				     (metadata_column ? " text" : ""),
+				     (tablespace != NULL ? " TABLESPACE " : ""),
+				     (tablespace != NULL ? tablespace : ""));
 	if (sql == NULL) {
 		rterror(_("create_table: Could not allocate memory for CREATE TABLE statement"));
 		return 0;
@@ -1659,12 +2090,18 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 
 			/* flush if tileset gets too big */
 			if (tileset->length >= config->max_tiles_per_copy) {
-				if (!insert_records(
-					config->schema, ovtable, config->raster_column,
-					(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-					config->copy_statements, config->out_srid,
-					tileset, buffer
-				)) {
+				if (!insert_records(config->schema,
+						    ovtable,
+						    config->raster_column,
+						    (config->file_column ? config->rt_filename[idx] : NULL),
+						    config->file_column_name,
+						    (config->metadata_column ? info->metadata : NULL),
+						    config->metadata_column_name,
+						    config->copy_statements,
+						    config->out_srid,
+						    tileset,
+						    buffer))
+				{
 					rterror(_("build_overview: Could not convert raster tiles into INSERT or COPY statements"));
 					GDALClose(hdsSrc);
 					return 0;
@@ -1715,6 +2152,16 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		rterror(_("convert_raster: No bands found in raster: %s"), config->rt_file[idx]);
 		GDALClose(hdsSrc);
 		return 0;
+	}
+
+	if (config->metadata_column)
+	{
+		info->metadata = gdal_metadata_to_xml(hdsSrc);
+		if (info->metadata == NULL)
+		{
+			GDALClose(hdsSrc);
+			return 0;
+		}
 	}
 
 	/* check that bands specified are available */
@@ -1986,12 +2433,18 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 				/* flush if tileset gets too big */
 				if (tileset->length >= config->max_tiles_per_copy ) {
-					if (!insert_records(
-						config->schema, config->table, config->raster_column,
-						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-						config->copy_statements, config->out_srid,
-						tileset, buffer
-					)) {
+					if (!insert_records(config->schema,
+							    config->table,
+							    config->raster_column,
+							    (config->file_column ? config->rt_filename[idx] : NULL),
+							    config->file_column_name,
+							    (config->metadata_column ? info->metadata : NULL),
+							    config->metadata_column_name,
+							    config->copy_statements,
+							    config->out_srid,
+							    tileset,
+							    buffer))
+					{
 						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
 						return 0;
 					}
@@ -2109,12 +2562,18 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 				/* flush if tileset gets too big */
 				if (tileset->length >= config->max_tiles_per_copy ) {
-					if (!insert_records(
-						config->schema, config->table, config->raster_column,
-						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-						config->copy_statements, config->out_srid,
-						tileset, buffer
-					)) {
+					if (!insert_records(config->schema,
+							    config->table,
+							    config->raster_column,
+							    (config->file_column ? config->rt_filename[idx] : NULL),
+							    config->file_column_name,
+							    (config->metadata_column ? info->metadata : NULL),
+							    config->metadata_column_name,
+							    config->copy_statements,
+							    config->out_srid,
+							    tileset,
+							    buffer))
+					{
 						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
 						GDALClose(hdsSrc);
 						return 0;
@@ -2172,6 +2631,8 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				  config->raster_column,
 				  config->file_column,
 				  config->file_column_name,
+				  config->metadata_column,
+				  config->metadata_column_name,
 				  config->tablespace,
 				  config->idx_tablespace,
 				  config->plan.create_table == LOADER_CREATE_IF_NOT_EXISTS,
@@ -2188,12 +2649,15 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						  config->raster_column,
 						  config->file_column,
 						  config->file_column_name,
+						  config->metadata_column,
+						  config->metadata_column_name,
 						  config->tablespace,
 						  config->idx_tablespace,
 						  config->plan.create_table == LOADER_CREATE_IF_NOT_EXISTS,
 						  buffer))
 				{
-					rterror(_("process_rasters: Could not add an overview's CREATE TABLE statement to string buffer"));
+					rterror(_(
+					    "process_rasters: Could not add an overview's CREATE TABLE statement to string buffer"));
 					return 0;
 				}
 			}
@@ -2225,13 +2689,18 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			}
 
 			/* process raster tiles into COPY or INSERT statements */
-			if (tileset.length && !insert_records(
-				config->schema, config->table, config->raster_column,
-				(config->file_column ? config->rt_filename[i] : NULL),
-        config->file_column_name,
-				config->copy_statements, config->out_srid,
-				&tileset, buffer
-			)) {
+			if (tileset.length && !insert_records(config->schema,
+							      config->table,
+							      config->raster_column,
+							      (config->file_column ? config->rt_filename[i] : NULL),
+							      config->file_column_name,
+							      (config->metadata_column ? rastinfo.metadata : NULL),
+							      config->metadata_column_name,
+							      config->copy_statements,
+							      config->out_srid,
+							      &tileset,
+							      buffer))
+			{
 				rterror(_("process_rasters: Could not convert raster tiles into INSERT or COPY statements"));
 				rtdealloc_rastinfo(&rastinfo);
 				rtdealloc_stringbuffer(&tileset, 0);
@@ -2256,12 +2725,19 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						return 0;
 					}
 
-					if (tileset.length && !insert_records(
-						config->schema, config->overview_table[j], config->raster_column,
-						(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
-						config->copy_statements, config->out_srid,
-						&tileset, buffer
-					)) {
+					if (tileset.length &&
+					    !insert_records(config->schema,
+							    config->overview_table[j],
+							    config->raster_column,
+							    (config->file_column ? config->rt_filename[i] : NULL),
+							    config->file_column_name,
+							    (config->metadata_column ? rastinfo.metadata : NULL),
+							    config->metadata_column_name,
+							    config->copy_statements,
+							    config->out_srid,
+							    &tileset,
+							    buffer))
+					{
 						rterror(_("process_rasters: Could not convert overview tiles into INSERT or COPY statements"));
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
@@ -2708,6 +3184,27 @@ main(int argc, char **argv) {
 			}
 			strncpy(config->file_column_name, optarg, len);
 			config->file_column = 1;
+		}
+		/* metadata column name */
+		else if (option_matches(argv[argit], "-m", "--metadata-column") &&
+			 (optarg = option_value(argc, argv, &argit, "--metadata-column")) != NULL)
+		{
+			const size_t len = (strlen(optarg) + 1);
+			config->metadata_column_name = rtalloc(sizeof(char) * len);
+			if (config->metadata_column_name == NULL)
+			{
+				rterror(_("Could not allocate memory for storing metadata column name"));
+				rtdealloc_config(config);
+				exit(1);
+			}
+			strncpy(config->metadata_column_name, optarg, len);
+			if (config->metadata_column_name[0] == '\0')
+			{
+				rterror(_("Metadata column name must not be empty"));
+				rtdealloc_config(config);
+				exit(1);
+			}
+			config->metadata_column = 1;
 		}
 		/* overview factors */
 		else if (option_matches(argv[argit], "-l", "--overview-factor") &&
@@ -3157,6 +3654,8 @@ main(int argc, char **argv) {
 			config->raster_column = strtolower(config->raster_column);
 		if (config->file_column_name != NULL)
 			config->file_column_name = strtolower(config->file_column_name);
+		if (config->metadata_column_name != NULL)
+			config->metadata_column_name = strtolower(config->metadata_column_name);
 		if (config->tablespace != NULL)
 			config->tablespace = strtolower(config->tablespace);
 		if (config->idx_tablespace != NULL)
@@ -3216,6 +3715,13 @@ main(int argc, char **argv) {
 			MAXNAMELEN
 		);
 	}
+	if (config->metadata_column_name != NULL && strlen(config->metadata_column_name) > MAXNAMELEN)
+	{
+		rtwarn(
+		    _("The column name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
+		    config->metadata_column_name,
+		    MAXNAMELEN);
+	}
 	if (config->tablespace != NULL && strlen(config->tablespace) > MAXNAMELEN) {
 		rtwarn(_("The tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
 			config->tablespace,
@@ -3244,7 +3750,7 @@ main(int argc, char **argv) {
 	****************************************************************************/
 
 	if (config->schema != NULL) {
-		tmp = rtloader_alloc_sprintf("\"%s\".", config->schema);
+		tmp = quote_pg_identifier_with_suffix(config->schema, ".");
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting schema name"));
 			rtdealloc_config(config);
@@ -3255,7 +3761,7 @@ main(int argc, char **argv) {
 		config->schema = tmp;
 	}
 	if (config->table != NULL) {
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->table);
+		tmp = quote_pg_identifier(config->table);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting table name"));
 			rtdealloc_config(config);
@@ -3266,7 +3772,7 @@ main(int argc, char **argv) {
 		config->table = tmp;
 	}
 	if (config->raster_column != NULL) {
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->raster_column);
+		tmp = quote_pg_identifier(config->raster_column);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting raster column name"));
 			rtdealloc_config(config);
@@ -3276,10 +3782,12 @@ main(int argc, char **argv) {
 		rtdealloc(config->raster_column);
 		config->raster_column = tmp;
 	}
-	if (config->file_column_name != NULL) {
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->file_column_name);
-		if (tmp == NULL) {
-			rterror(_("Could not allocate memory for quoting raster column name"));
+	if (config->file_column_name != NULL)
+	{
+		tmp = quote_pg_identifier(config->file_column_name);
+		if (tmp == NULL)
+		{
+			rterror(_("Could not allocate memory for quoting filename column name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -3287,8 +3795,22 @@ main(int argc, char **argv) {
 		rtdealloc(config->file_column_name);
 		config->file_column_name = tmp;
 	}
-	if (config->tablespace != NULL) {
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->tablespace);
+	if (config->metadata_column_name != NULL)
+	{
+		tmp = quote_pg_identifier(config->metadata_column_name);
+		if (tmp == NULL)
+		{
+			rterror(_("Could not allocate memory for quoting metadata column name"));
+			rtdealloc_config(config);
+			exit(1);
+		}
+
+		rtdealloc(config->metadata_column_name);
+		config->metadata_column_name = tmp;
+	}
+	if (config->tablespace != NULL)
+	{
+		tmp = quote_pg_identifier(config->tablespace);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting tablespace name"));
 			rtdealloc_config(config);
@@ -3299,7 +3821,7 @@ main(int argc, char **argv) {
 		config->tablespace = tmp;
 	}
 	if (config->idx_tablespace != NULL) {
-		tmp = rtloader_alloc_sprintf("\"%s\"", config->idx_tablespace);
+		tmp = quote_pg_identifier(config->idx_tablespace);
 		if (tmp == NULL) {
 			rterror(_("Could not allocate memory for quoting index tablespace name"));
 			rtdealloc_config(config);
@@ -3311,7 +3833,7 @@ main(int argc, char **argv) {
 	}
 	if (config->overview_count) {
 		for (i = 0; i < config->overview_count; i++) {
-			tmp = rtloader_alloc_sprintf("\"%s\"", config->overview_table[i]);
+			tmp = quote_pg_identifier(config->overview_table[i]);
 			if (tmp == NULL) {
 				rterror(_("Could not allocate memory for quoting overview table name"));
 				rtdealloc_config(config);
