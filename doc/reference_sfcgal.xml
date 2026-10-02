@@ -169,6 +169,182 @@ FROM data;</programlisting>
 
         </refentry>
 
+        <refentry xml:id="CG_IsValid">
+            <refnamediv>
+                <refname>CG_IsValid</refname>
+
+                <refpurpose>Tests whether a geometry is valid according to SFCGAL</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>boolean <function>CG_IsValid</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns true if the input geometry is valid according to SFCGAL.</para>
+                <para>This differs from <xref linkend="ST_IsValid"/>, which checks OGC validity through GEOS.</para>
+
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT CG_IsValid('LINESTRING Z (0 0 0,0 0 1)'::geometry);</programlisting>
+                <screen>t</screen>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="CG_IsValidDetail"/>, <xref linkend="CG_IsSimple"/>, <xref linkend="ST_IsValid"/>, <xref linkend="CG_IsSolid"/></para>
+            </refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_IsValidDetail">
+            <refnamediv>
+                <refname>CG_IsValidDetail</refname>
+
+                <refpurpose>Returns a <varname>valid_detail</varname> row stating whether a geometry is valid according to SFCGAL, and if not a reason and a location.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>valid_detail <function>CG_IsValidDetail</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns a <varname>valid_detail</varname> row with a boolean validity flag, a reason for invalidity, and the invalidity location when SFCGAL reports one.</para>
+                <para>This differs from <xref linkend="ST_IsValidDetail"/>, which checks OGC validity through GEOS.</para>
+
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT valid, reason, ST_AsText(location) AS location
+FROM CG_IsValidDetail('POLYGON((0 0,2 2,2 0,0 2,0 0))'::geometry);</programlisting>
+                <screen>f | ring 0 self intersects |</screen>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="CG_IsValid"/>, <xref linkend="CG_IsSimpleDetail"/>, <xref linkend="ST_IsValidDetail"/></para>
+            </refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_IsSimple">
+            <refnamediv>
+                <refname>CG_IsSimple</refname>
+
+                <refpurpose>Tests whether a geometry is simple according to SFCGAL</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>boolean <function>CG_IsSimple</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns true if the input geometry is simple according to SFCGAL.</para>
+                <para>This differs from <xref linkend="ST_IsSimple"/>, which checks simplicity through liblwgeom.</para>
+
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT CG_IsSimple('LINESTRING(0 0,2 2,2 0,0 2)'::geometry);</programlisting>
+                <screen>f</screen>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="CG_IsSimpleDetail"/>, <xref linkend="CG_IsValid"/>, <xref linkend="ST_IsSimple"/></para>
+            </refsection>
+
+        </refentry>
+
+        <refentry xml:id="CG_IsSimpleDetail">
+            <refnamediv>
+                <refname>CG_IsSimpleDetail</refname>
+
+                <refpurpose>Returns a reason when a geometry is not simple according to SFCGAL</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>text <function>CG_IsSimpleDetail</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns SFCGAL's reason when the input geometry is not simple. Returns <varname>NULL</varname> for simple geometries.</para>
+
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires SFCGAL &gt;= 2.3.0.</para>
+                <para>&sfcgal_required;</para>
+                <para>&Z_support;</para>
+                <para>&P_support;</para>
+                <para>&T_support;</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT CG_IsSimpleDetail('LINESTRING(0 0,2 2,2 0,0 2)'::geometry);</programlisting>
+                <screen>linestring self intersects</screen>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="CG_IsSimple"/>, <xref linkend="CG_IsValidDetail"/>, <xref linkend="ST_IsSimple"/></para>
+            </refsection>
+
+        </refentry>
+
         <refentry xml:id="CG_IsSolid">
             <refnamediv>
                 <refname>CG_IsSolid</refname>
