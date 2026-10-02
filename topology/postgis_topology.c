@@ -5909,7 +5909,7 @@ Datum TopoGeo_LoadGeometry(PG_FUNCTION_ARGS)
   PG_RETURN_VOID();
 }
 
-/*  TopoGeo_LoadGeometry(atopology, geom, tolerance) */
+/*  TopoRingIsCCW(areal geometry) */
 Datum TopoRingIsCCW(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(TopoRingIsCCW);
 Datum TopoRingIsCCW(PG_FUNCTION_ARGS)
