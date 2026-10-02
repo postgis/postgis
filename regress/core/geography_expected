@@ -30,6 +30,15 @@ geog_precision_pazafir|0|0
 segmentize_geography|39092
 segmentize_geography2|t
 segmentize_geography_3667|t
+geography_difference|POLYGON|t|t
+geography_difference_text|POLYGON((0 0,0 1,0.5 1,0.5 0,0 0))
+geography_difference_empty|POLYGON EMPTY
+geography_difference_empty_identity|POLYGON((0 0,0 1,1 1,1 0,0 0))
+geography_union|POLYGON|t|t|t|t
+geography_union_text|MULTIPOINT((1 1),(0 0))
+geography_union_empty|POLYGON EMPTY
+geography_union_empty_identity|POLYGON((0 0,0 1,1 1,1 0,0 0))|POLYGON((0 0,0 1,1 1,1 0,0 0))
+geography_union_empty_first_srid|4326
 typmod_point_4326|(Point,4326)
 typmod_point_0|(Point,4326)
 NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
