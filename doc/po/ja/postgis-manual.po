@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-10-02 04:39+0000\n"
+"PO-Revision-Date: 2026-10-02 10:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -8155,7 +8155,7 @@ msgstr ""
 #. Tag: simpara
 #, no-c-format
 msgid "PS - Polyhedral surfaces"
-msgstr "PS - 多面体サーフェス (Polyhedral Surface) に対応しています"
+msgstr "PS - 多面体サーフェス (Polyhedral Surface) に対応しています。"
 
 #. Tag: simpara
 #, no-c-format
@@ -12514,7 +12514,7 @@ msgstr "2次元ポイントを収集します。"
 #. Tag: para
 #, no-c-format
 msgid "Collect 3D points."
-msgstr "2次元ポイントの収集"
+msgstr "2次元ポイントの収集。"
 
 #. Tag: para
 #, no-c-format
