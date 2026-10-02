@@ -97,6 +97,8 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline(PG_FUNCTION_ARGS);
+Datum LWGEOM_makecurveline_garray(PG_FUNCTION_ARGS);
+Datum LWGEOM_makecompoundcurve_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoly(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
@@ -1563,6 +1565,184 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(pglwg2, 1);
 	lwgeom_free(lwgeoms[0]);
 	lwgeom_free(lwgeoms[1]);
+
+	PG_RETURN_POINTER(result);
+}
+
+/**
+ * makecurveline ( GEOMETRY[] ) returns a CIRCULARSTRING formed by
+ * the given point geometries.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_makecurveline_garray);
+Datum
+LWGEOM_makecurveline_garray(PG_FUNCTION_ARGS)
+{
+	ArrayType *array;
+	int nelems;
+	GSERIALIZED *result = NULL;
+	LWGEOM **geoms;
+	uint32 npoints = 0;
+	int32_t srid = SRID_UNKNOWN;
+	int has_z = 0;
+	int has_m = 0;
+	POINTARRAY *pa;
+	LWCIRCSTRING *outcurve;
+
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
+
+	POSTGIS_DEBUGF(2, "%s called", __func__);
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	array = PG_GETARG_ARRAYTYPE_P(0);
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+	if (nelems == 0)
+		PG_RETURN_NULL();
+
+	geoms = palloc(sizeof(LWGEOM *) * nelems);
+
+	iterator = array_create_iterator(array, 0, NULL);
+	while (array_iterate(iterator, &value, &isnull))
+	{
+		GSERIALIZED *geom;
+		LWGEOM *lwgeom;
+
+		if (isnull)
+			continue;
+
+		geom = (GSERIALIZED *)DatumGetPointer(value);
+		if (gserialized_get_type(geom) != POINTTYPE)
+			elog(ERROR, "ST_MakeCurveLine: input geometries must be points");
+
+		if (npoints == 0)
+			srid = gserialized_get_srid(geom);
+		else
+			gserialized_error_if_srid_mismatch_reference(geom, srid, __func__);
+
+		lwgeom = lwgeom_from_gserialized(geom);
+		if (lwgeom_is_empty(lwgeom))
+			elog(ERROR, "ST_MakeCurveLine: empty points are not allowed");
+
+		geoms[npoints] = lwgeom;
+		has_z |= FLAGS_GET_Z(lwgeom->flags);
+		has_m |= FLAGS_GET_M(lwgeom->flags);
+		npoints++;
+	}
+	array_free_iterator(iterator);
+
+	if (npoints == 0)
+		PG_RETURN_NULL();
+	if (npoints < 3)
+		elog(ERROR, "ST_MakeCurveLine: circular strings require at least 3 points");
+	if ((npoints % 2) == 0)
+		elog(ERROR, "ST_MakeCurveLine: circular strings require an odd number of points");
+
+	pa = ptarray_construct(has_z, has_m, npoints);
+	for (uint32 i = 0; i < npoints; i++)
+	{
+		POINT4D pt;
+		if (!getPoint4d_p(lwgeom_as_lwpoint(geoms[i])->point, 0, &pt))
+			elog(ERROR, "ST_MakeCurveLine: could not read input point");
+		ptarray_set_point4d(pa, i, &pt);
+	}
+
+	outcurve = lwcircstring_construct(srid, NULL, pa);
+	result = geometry_serialize(lwcircstring_as_lwgeom(outcurve));
+
+	for (uint32 i = 0; i < npoints; i++)
+		lwgeom_free(geoms[i]);
+	lwcircstring_free(outcurve);
+
+	PG_RETURN_POINTER(result);
+}
+
+/**
+ * makecompoundcurve ( GEOMETRY[] ) returns a COMPOUNDCURVE formed by
+ * continuous line, circular string, or NURBS curve components.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_makecompoundcurve_garray);
+Datum
+LWGEOM_makecompoundcurve_garray(PG_FUNCTION_ARGS)
+{
+	ArrayType *array;
+	int nelems;
+	GSERIALIZED *result = NULL;
+	LWCOMPOUND *outcurve = NULL;
+	int32_t srid = SRID_UNKNOWN;
+	int has_z = 0;
+	int has_m = 0;
+	uint32 ngeoms = 0;
+
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
+
+	POSTGIS_DEBUGF(2, "%s called", __func__);
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	array = PG_GETARG_ARRAYTYPE_P(0);
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+	if (nelems == 0)
+		PG_RETURN_NULL();
+
+	iterator = array_create_iterator(array, 0, NULL);
+	while (array_iterate(iterator, &value, &isnull))
+	{
+		GSERIALIZED *geom;
+		LWGEOM *lwgeom;
+		int geom_type;
+
+		if (isnull)
+			continue;
+
+		geom = (GSERIALIZED *)DatumGetPointer(value);
+		geom_type = gserialized_get_type(geom);
+		if (!lwcollection_allows_subtype(COMPOUNDTYPE, geom_type))
+			elog(ERROR, "ST_MakeCompoundCurve: input geometries must be curve components");
+
+		lwgeom = lwgeom_from_gserialized(geom);
+		if (lwgeom_is_empty(lwgeom))
+			elog(ERROR, "ST_MakeCompoundCurve: empty components are not allowed");
+
+		if (ngeoms == 0)
+		{
+			srid = lwgeom->srid;
+			has_z = FLAGS_GET_Z(lwgeom->flags);
+			has_m = FLAGS_GET_M(lwgeom->flags);
+			outcurve = lwcompound_construct_empty(srid, has_z, has_m);
+		}
+		else
+		{
+			gserialized_error_if_srid_mismatch_reference(geom, srid, __func__);
+			if (FLAGS_GET_Z(lwgeom->flags) != has_z || FLAGS_GET_M(lwgeom->flags) != has_m)
+				elog(ERROR, "ST_MakeCompoundCurve: mixed dimensioned components");
+		}
+
+		if (LW_FAILURE == lwcompound_add_lwgeom(outcurve, lwgeom))
+		{
+			lwgeom_free(lwgeom);
+			lwgeom_free(lwcompound_as_lwgeom(outcurve));
+			elog(ERROR, "ST_MakeCompoundCurve: components must join end-to-end");
+		}
+		ngeoms++;
+	}
+	array_free_iterator(iterator);
+
+	if (ngeoms == 0)
+		PG_RETURN_NULL();
+	if (!lwcompound_is_valid(outcurve))
+	{
+		lwgeom_free(lwcompound_as_lwgeom(outcurve));
+		elog(ERROR, "ST_MakeCompoundCurve: components must join end-to-end");
+	}
+
+	result = geometry_serialize(lwcompound_as_lwgeom(outcurve));
+	lwgeom_free(lwcompound_as_lwgeom(outcurve));
 
 	PG_RETURN_POINTER(result);
 }
