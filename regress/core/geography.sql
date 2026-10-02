@@ -156,6 +156,12 @@ SELECT 'lrs_llp_3', round(ST_LineLocatePoint(geography 'linestring(0 1, 50 1)', 
 SELECT 'lrs_llp_4', round(ST_LineLocatePoint(geography 'linestring(0 1, 50 1)', geography 'Linestring(25 0,26 1)')::numeric, 2);
 
 SELECT 'lrs_substr_1', ST_AsText(ST_LineSubstring(geography 'linestring(0 20, 100 20)', 0.1, 0.2),2);
+SELECT 'lrs_addmeasure_empty', ST_AddMeasure(geography 'Linestring empty', 1, 2);
+SELECT 'lrs_addmeasure_geog_1', round(ST_M(ST_PointN(ST_AddMeasure(geography 'LINESTRING(0 0,0 60,60 60)', 0, 100)::geometry, 2))::numeric, 2);
+SELECT 'lrs_addmeasure_geog_2', ST_AsEWKT(ST_AddMeasure(geography 'MULTILINESTRING((0 0,0 10),(0 10,10 10))', 10, 30)::geometry, 2);
+SELECT 'lrs_addmeasure_geog_3', ST_AsEWKT(ST_AddMeasure(geography 'LINESTRING ZM(0 0 1 99,0 0 3 99)', 5, 9)::geometry, 2);
+SELECT 'lrs_addmeasure_geog_4', ST_AsEWKT(ST_AddMeasure(geography 'MULTILINESTRING((0 0,0 0),(0 0,0 0))', 10, 30)::geometry, 2);
+SELECT 'lrs_addmeasure_text_literal', ST_AsEWKT(ST_AddMeasure('LINESTRING(0 0,1 0)', 7, 9));
 
 -- Ticket #6076
 SELECT 'ticket_6076_length', round(ST_Length(ST_GeogFromText('GEOMETRYCOLLECTION (POINT (5 5), LINESTRING (0 0, 0 1), POLYGON ((0 0, 0 1, 1 0, 0 0)))'))::numeric, 3);

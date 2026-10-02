@@ -939,4 +939,16 @@ CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(text, float8)
 	$$ SELECT @extschema@.ST_LineInterpolatePoint($1::@extschema@.geometry, $2);  $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_AddMeasure(geography, float8, float8)
+	RETURNS geography
+	AS 'MODULE_PATHNAME', 'geography_add_measure'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION ST_AddMeasure(text, float8, float8)
+	RETURNS geometry AS
+	$$ SELECT @extschema@.ST_AddMeasure($1::@extschema@.geometry, $2, $3);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
 ----------------------------------------------------------------
