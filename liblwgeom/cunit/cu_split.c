@@ -246,6 +246,49 @@ static void test_lwgeom_split(void)
 	lwgeom_free(geom);
 	lwgeom_free(blade);
 
+	/* Tolerance projects point blades onto the input line instead of moving the line. */
+	geom = lwgeom_from_wkt("LINESTRING(0 0,2 0)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FATAL(geom != NULL);
+	blade = lwgeom_from_wkt("MULTIPOINT(0 0,1 0.0001)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_split_with_tolerance(geom, blade, 0.001);
+	CU_ASSERT_FATAL(ret != NULL);
+	wkt = lwgeom_to_ewkt(ret);
+	CU_ASSERT_FATAL(wkt != NULL);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(1 0,2 0),LINESTRING(0 0,1 0))";
+	ASSERT_STRING_EQUAL(wkt, in_wkt);
+	lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
+
+	geom = lwgeom_from_wkt("LINESTRING(0 0,2 0)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FATAL(geom != NULL);
+	blade = lwgeom_from_wkt("POINT(1 0.1)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_split_with_tolerance(geom, blade, 0.01);
+	CU_ASSERT_FATAL(ret != NULL);
+	wkt = lwgeom_to_ewkt(ret);
+	CU_ASSERT_FATAL(wkt != NULL);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(0 0,2 0))";
+	ASSERT_STRING_EQUAL(wkt, in_wkt);
+	lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
+
+	geom = lwgeom_from_wkt("LINESTRING ZM (0 0 0 1,10 0 10 11)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FATAL(geom != NULL);
+	blade = lwgeom_from_wkt("POINT ZM (5 0.1 99 99)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_split_with_tolerance(geom, blade, 0.2);
+	CU_ASSERT_FATAL(ret != NULL);
+	wkt = lwgeom_to_ewkt(ret);
+	CU_ASSERT_FATAL(wkt != NULL);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(0 0 0 1,5 0 5 6),LINESTRING(5 0 5 6,10 0 10 11))";
+	ASSERT_STRING_EQUAL(wkt, in_wkt);
+	lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
+
 	/* See #3401 -- robustness issue */
 	geom = lwgeom_from_wkt("LINESTRING(-180 0,0 0)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT(geom != NULL);
