@@ -125,6 +125,31 @@ select 'dwithin_poly_poly_1', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geo
 select 'dwithin_poly_poly_2', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
 select 'dwithin_poly_poly_3', ST_DWithin('POLYGON((1 1, -2 -2, -3 0, 1 1))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
 
+WITH expanded AS (
+	SELECT _ST_Expand('POINT(-74.028349 40.737980)'::geography, 10000) AS geog
+)
+SELECT '#4122',
+       pg_typeof(geog),
+       near_probe && geog,
+       near_probe && geog::text::geography,
+       near_probe && geog::bytea::geography,
+       far_probe && geog,
+       far_probe && geog::text::geography,
+       far_probe && geog::bytea::geography
+FROM expanded,
+     (SELECT 'POINT(-73.95 40.737980)'::geography AS near_probe,
+             'POINT(-10 0)'::geography AS far_probe) AS p;
+
+WITH expanded AS (
+	SELECT _ST_Expand('POINT(112.43006556 -20.55138435)'::geography, 496381) AS geog
+)
+SELECT '#4122-expanded-carrier',
+       probe && geog,
+       probe && geog::text::geography,
+       probe && geog::bytea::geography
+FROM expanded,
+     (SELECT 'POINT(116.13433622 -23.40307415)'::geography AS probe) AS p;
+
 
 -- Linear Referencing functions
 -- #5456 garden crash
