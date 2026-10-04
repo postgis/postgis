@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-10-04 17:07+0000\n"
+"PO-Revision-Date: 2026-10-04 18:39+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/sv/>\n"
@@ -205,9 +205,9 @@ msgid ""
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
 "De centrala PostGIS-objekten (geometri- och geograftyper och deras "
-"stödfunktioner) finns i skriptet postgis <filename>.sql</filename>. "
+"stödfunktioner) finns i skriptet <filename>postgis.sql</filename>. "
 "Rasterobjekt finns i skriptet <filename>rtpostgis.sql</filename>. "
-"Topologiobjekt finns i skriptet topology <filename>.sql</filename>."
+"Topologiobjekt finns i skriptet <filename>topology.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -233,7 +233,7 @@ msgstr ""
 "Om du vill lägga till kommentarer till PostGIS-funktionerna kan du hitta dem "
 "i skriptet <filename>postgis_comments.sql</filename>. Kommentarer kan visas "
 "genom att helt enkelt skriva <command>\\dd [function_name]</command> från "
-"ett <command>psql-terminalfönster</command>."
+"ett <command>psql</command>-terminalfönster."
 
 #. Tag: para
 #, no-c-format
@@ -555,9 +555,9 @@ msgid ""
 "postgis_restore. Unexpected errors, if any, will be printed to the standard "
 "error stream by psql. Keep a log of those."
 msgstr ""
-"Återställ din säkerhetskopia till din <varname>nya newdb-databas</varname> "
+"Återställ din säkerhetskopia till din nya <varname>newdb</varname>-databas "
 "med postgis_restore. Oväntade fel, om några, kommer att skrivas ut till "
-"standardfelströmmen av psql. Förvara en logg över dessa."
+"standardfelströmmen av psql. Förvara en logg över dem."
 
 #. Tag: para
 #, no-c-format
@@ -576,13 +576,13 @@ msgid ""
 "<filename>uninstall_legacy.sql</filename>."
 msgstr ""
 "Några av dina vyer eller funktioner använder sig av föråldrade PostGIS-"
-"objekt. För att åtgärda detta kan du försöka läsa in <filename>legacy.sql-"
-"skriptet</filename> före återställningen eller så måste du återställa till "
-"en version av PostGIS som fortfarande innehåller dessa objekt och försöka "
-"migrera igen efter att ha portat din kod. Om <filename>legacy.sql</filename> "
-"fungerar för dig, glöm inte att fixa din kod så att den slutar använda "
-"föråldrade funktioner och ta bort dem genom att läsa in "
-"<filename>uninstall_legacy.sql</filename>."
+"objekt. För att åtgärda detta kan du försöka läsa in skriptet <filename>"
+"legacy.sql</filename> före återställningen, eller återställa till en version "
+"av PostGIS som fortfarande innehåller dessa objekt och försöka uppgradera "
+"igen när du har anpassat din kod. Om metoden med <filename>legacy.sql</"
+"filename> fungerar för dig, glöm inte att rätta koden så att den slutar "
+"använda föråldrade funktioner och ta bort dem genom att läsa in <filename>"
+"uninstall_legacy.sql</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -734,7 +734,7 @@ msgstr "Uppstart"
 #. Tag: para
 #, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
-msgstr "Dessa inställningar konfigureras i <code>postgresql.conf:</code>:"
+msgstr "Dessa inställningar konfigureras i <code>postgresql.conf</code>:"
 
 #. Tag: link
 #, no-c-format
@@ -914,13 +914,13 @@ msgid ""
 "may be inefficient. Setting this value to 0, which is the default, disables "
 "parallel query execution."
 msgstr ""
-"Ställer in det maximala antalet arbetare som kan startas av en enda "
-"<varname>Gather-nod</varname>. Parallella arbetare hämtas från den pool av "
-"processer som fastställs av <varname>max_worker_processes</varname>. "
-"Observera att det begärda antalet arbetare kanske inte är tillgängligt vid "
-"körningstillfället. Om detta inträffar kommer planen att köras med färre "
-"arbetare än förväntat, vilket kan vara ineffektivt. Om detta värde sätts "
-"till 0, vilket är standard, inaktiveras parallell frågeexekvering."
+"Ställer in det maximala antalet arbetare som kan startas av en enda <varname>"
+"Gather</varname>-nod. Parallella arbetare hämtas från den pool av processer "
+"som fastställs av <varname>max_worker_processes</varname>. Observera att det "
+"begärda antalet arbetare kanske inte faktiskt är tillgängligt vid körning. "
+"Om det inträffar körs planen med färre arbetare än väntat, vilket kan vara "
+"ineffektivt. Om värdet sätts till 0, vilket är standard, inaktiveras "
+"parallell frågekörning."
 
 #. Tag: title
 #, no-c-format
@@ -1049,8 +1049,8 @@ msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables."
 msgstr ""
-"Skapar en tabell som kommer att innehålla några intressanta värden för "
-"hantering av historiktabeller."
+"Skapar en tabell som innehåller intressanta värden för hantering av "
+"historiktabeller."
 
 #. Tag: title
 #, no-c-format
@@ -1063,9 +1063,9 @@ msgid ""
 "Creates a table that will hold some interesting values for managing history "
 "tables. Creates a table called <varname>historic_information</varname>"
 msgstr ""
-"Skapar en tabell som kommer att innehålla några intressanta värden för "
-"hantering av historiktabeller. Skapar en tabell som heter "
-"<varname>historisk_information</varname>"
+"Skapar en tabell som innehåller intressanta värden för hantering av "
+"historiktabeller. Skapar en tabell med namnet <varname>historic_information</"
+"varname>."
 
 #. Tag: para
 #, no-c-format
@@ -1118,7 +1118,7 @@ msgid ""
 msgstr ""
 "Denna funktion är för närvarande beroende av att en geometrikolumn är "
 "registrerad i <varname>geometry_columns</varname> och misslyckas om "
-"geometrikolumnen inte finns i <varname>geometry_columns-tabellen</varname>."
+"geometrikolumnen inte finns i tabellen <varname>geometry_columns</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -1217,8 +1217,8 @@ msgid ""
 "All functions and tables associated with this module are installed in a "
 "schema called <varname>topology</varname>."
 msgstr ""
-"Alla funktioner och tabeller som är kopplade till denna modul är "
-"installerade i ett schema som kallas <varname>topologi</varname>."
+"Alla funktioner och tabeller som är kopplade till denna modul installeras i "
+"ett schema med namnet <varname>topology</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -1840,7 +1840,7 @@ msgid ""
 "Valid <varname>feature_type</varname>s are: POINT, MULTIPOINT, LINE, "
 "MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 msgstr ""
-"Giltiga <varname>feature_types</varname>är: PUNKT, MULTIPOINT, LINE, "
+"Giltiga <varname>feature_type</varname>-värden är: POINT, MULTIPOINT, LINE, "
 "MULTILINE, POLYGON, MULTIPOLYGON, COLLECTION"
 
 #. Tag: para
@@ -1940,7 +1940,7 @@ msgid ""
 "<varname>topology.topology</varname> table."
 msgstr ""
 "Byter namn på ett topologischema och uppdaterar dess metadatapost i tabellen "
-"topology <varname>.</varname> topology."
+"<varname>topology.topology</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -2768,11 +2768,10 @@ msgid ""
 "varname> are created in the schema. It returns the id of the topology."
 msgstr ""
 "Skapar ett nytt topologischema med namnet <varname>topology_name</varname> "
-"och registrerar det i tabellen topology <varname>.</varname> topology. "
-"Topologierna måste ha unika namn. Topologitabellerna<varname>(edge_data</"
-"varname>, <varname>face</varname>, <varname>node</varname> och "
-"<varname>relation</varname> ) skapas i schemat. Den returnerar id för "
-"topologin."
+"och registrerar det i tabellen <varname>topology.topology</varname>. "
+"Topologier måste ha unika namn. Topologitabellerna (<varname>edge_data</"
+"varname>, <varname>face</varname>, <varname>node</varname> och <varname>"
+"relation</varname>) skapas i schemat. Returnerar topologins id."
 
 #. Tag: para
 #, no-c-format
@@ -2781,7 +2780,7 @@ msgid ""
 "reference system</link> SRID for the topology. The SRID defaults to -1 "
 "(unknown) if not specified."
 msgstr ""
-"<varname>Srid</varname> är det <link linkend=\"spatial_ref_sys\">spatiala "
+"<varname>srid</varname> är det <link linkend=\"spatial_ref_sys\">spatiala "
 "referenssystemets</link> SRID för topologin. Standardvärdet för SRID är -1 "
 "(okänt) om det inte anges."
 
@@ -3221,8 +3220,8 @@ msgid ""
 "<varname>atopology</varname> and returns the nodeid of the new node."
 msgstr ""
 "Lägger till en isolerad nod med punktläge <varname>apoint</varname> till en "
-"befintlig yta med faceid <varname>aface</varname> till en topologi "
-"<varname>atopologi</varname> och returnerar den nya nodens nodeid."
+"befintlig yta med faceid <varname>aface</varname> i en topologi <varname>"
+"atopology</varname> och returnerar den nya nodens nodeid."
 
 #. Tag: para
 #, no-c-format
@@ -3233,11 +3232,11 @@ msgid ""
 "boundaries) then an exception is thrown. If the point already exists as a "
 "node, an exception is thrown."
 msgstr ""
-"Om det spatiala referenssystemet (srid) för punktgeometrin inte är detsamma "
-"som topologin <varname>, apoint</varname> inte är en punktgeometri, punkten "
-"är null eller punkten skär en befintlig kant (även vid gränserna) kommer ett "
-"undantag att utlösas. Om punkten redan existerar som en nod, kommer ett "
-"undantag att kastas."
+"Om punktgeometrins spatiala referenssystem (srid) inte är detsamma som "
+"topologins, om <varname>apoint</varname> inte är en punktgeometri, om "
+"punkten är null eller om punkten skär en befintlig kant (även vid gränserna)"
+", utlöses ett undantag. Om punkten redan finns som en nod utlöses ett "
+"undantag."
 
 #. Tag: para
 #, no-c-format
@@ -3296,10 +3295,10 @@ msgid ""
 "null, or the nodes are contained in more than one face, or the nodes are "
 "start or end nodes of an existing edge, then an exception is thrown."
 msgstr ""
-"Om det spatiala referenssystemet (srid) för <varname>alinestring-geometrin</"
-"varname> inte är detsamma som topologin, om något av indatagumenten är null, "
-"om noderna finns i mer än en yta eller om noderna är start- eller slutnoder "
-"för en befintlig kant, så kastas ett undantag."
+"Om det spatiala referenssystemet (srid) för <varname>alinestring</varname>-"
+"geometrin inte är detsamma som topologin, om något av indatagumenten är "
+"null, om noderna finns i mer än en yta eller om noderna är start- eller "
+"slutnoder för en befintlig kant, så kastas ett undantag."
 
 #. Tag: para
 #, no-c-format
@@ -3308,9 +3307,9 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> belong to, then "
 "an exception is thrown."
 msgstr ""
-"Om <varname>alinestringen</varname> inte ligger inom ytan för den yta som "
-"<varname>anoden</varname> och <varname>anothernoden</varname> tillhör, "
-"kastas ett undantag."
+"Om <varname>alinestring</varname> inte ligger inom ytan för den yta som "
+"<varname>anode</varname> och <varname>anothernode</varname> tillhör, kastas "
+"ett undantag."
 
 #. Tag: para
 #, no-c-format
@@ -3319,8 +3318,8 @@ msgid ""
 "the start and end points of the <varname>alinestring</varname> then an "
 "exception is thrown."
 msgstr ""
-"Om <varname>anoden</varname> och <varname>anothernoden</varname> inte är "
-"start- och slutpunkterna för <varname>alinestringen</varname> kastas ett "
+"Om <varname>anode</varname> och <varname>anothernode</varname> inte är "
+"start- och slutpunkterna för <varname>alinestring</varname> kastas ett "
 "undantag."
 
 #. Tag: para
@@ -3373,9 +3372,9 @@ msgid ""
 "start and endpoints of <varname>acurve</varname> then an error is thrown."
 msgstr ""
 "Om något argument är null, de givna noderna är okända (måste redan finnas i "
-"<varname>nodtabellen</varname> i topologischemat), <varname>acurve</varname> "
-"inte är en <varname>LINESTRING</varname>, <varname>anode</varname> och "
-"<varname>anothernode</varname> inte är start- och slutpunkterna för "
+"tabellen <varname>node</varname> i topologischemat), <varname>acurve</"
+"varname> inte är en <varname>LINESTRING</varname>, <varname>anode</varname> "
+"och <varname>anothernode</varname> inte är start- och slutpunkterna för "
 "<varname>acurve</varname>, så kastas ett fel."
 
 #. Tag: para
@@ -3384,8 +3383,8 @@ msgid ""
 "If the spatial reference system (srid) of the <varname>acurve</varname> "
 "geometry is not the same as the topology an exception is thrown."
 msgstr ""
-"Om det spatiala referenssystemet (srid) för <varname>acurve-geometrin</"
-"varname> inte är detsamma som topologin kastas ett undantag."
+"Om det spatiala referenssystemet (srid) för <varname>acurve</varname>-"
+"geometrin inte är detsamma som topologin kastas ett undantag."
 
 #. Tag: para
 #, no-c-format
@@ -3486,9 +3485,9 @@ msgid ""
 "the <varname>edge</varname> table of the topology schema), the topology name "
 "is invalid then an error is thrown."
 msgstr ""
-"Om något av argumenten är null, den angivna kanten är okänd (måste redan "
-"finnas i <varname>kanttabellen</varname> i topologischemat), topologinamnet "
-"är ogiltigt, kastas ett fel."
+"Om något argument är null, den angivna kanten är okänd (den måste redan "
+"finnas i topologischemats tabell <varname>edge</varname>) eller "
+"topologinamnet är ogiltigt, kastas ett fel."
 
 #. Tag: para
 #, no-c-format
@@ -3553,16 +3552,16 @@ msgid ""
 "varname> is not a <varname>LINESTRING</varname>, or the modification would "
 "change the underlying topology then an error is thrown."
 msgstr ""
-"Om något av argumenten är null, den angivna kanten inte finns i "
-"<varname>kanttabellen</varname> i topologischemat, <varname>acurvan</"
-"varname> inte är en <varname>LINESTRING</varname> eller om modifieringen "
-"skulle ändra den underliggande topologin, så kastas ett fel."
+"Om något av argumenten är null, den angivna kanten inte finns i tabellen "
+"<varname>edge</varname> i topologischemat, <varname>acurve</varname> inte är "
+"en <varname>LINESTRING</varname> eller om modifieringen skulle ändra den "
+"underliggande topologin, så kastas ett fel."
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If the new <varname>acurve</varname> is not simple, then an error is thrown."
-msgstr "Om den nya <varname>akurvan</varname> inte är enkel, kastas ett fel."
+msgstr "Om den nya <varname>acurve</varname> inte är enkel, kastas ett fel."
 
 #. Tag: para
 #, no-c-format
@@ -3701,7 +3700,7 @@ msgid ""
 "Returns description of move."
 msgstr ""
 "Flyttar en isolerad nod i en topologi från en punkt till en annan. Om den "
-"nya <varname>apoint-geometrin</varname> existerar som en nod kastas ett fel. "
+"nya <varname>apoint</varname>-geometrin existerar som en nod kastas ett fel. "
 "Returnerar beskrivning av förflyttning."
 
 #. Tag: para
@@ -3711,7 +3710,7 @@ msgid ""
 "<varname>apoint</varname> geometry exists as a node an error is thrown."
 msgstr ""
 "Flyttar en isolerad nod i en topologi från en punkt till en annan. Om den "
-"nya <varname>apoint-geometrin</varname> finns som en nod kommer ett fel att "
+"nya <varname>apoint</varname>-geometrin finns som en nod kommer ett fel att "
 "uppstå."
 
 #. Tag: para
@@ -3895,8 +3894,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect an edge, returns 0 (zero)."
-msgstr ""
-"Om <varname>en punkt</varname> inte korsar en kant returneras 0 (noll)."
+msgstr "Om <varname>apoint</varname> inte skär en kant returneras 0 (noll)."
 
 #. Tag: para
 #, no-c-format
@@ -4044,7 +4042,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect a node, returns 0 (zero)."
-msgstr "Om <varname>en punkt</varname> inte korsar en nod returneras 0 (noll)."
+msgstr "Om <varname>apoint</varname> inte skär en nod returneras 0 (noll)."
 
 #. Tag: para
 #, no-c-format
@@ -4149,7 +4147,7 @@ msgstr ""
 #, no-c-format
 msgid "Returns a set of ordered edges that bound <varname>aface</varname>."
 msgstr ""
-"Returnerar en uppsättning ordnade kanter som <varname>avgränsar en yta.</"
+"Returnerar en uppsättning ordnade kanter som avgränsar <varname>aface</"
 "varname>."
 
 #. Tag: para
@@ -4159,9 +4157,9 @@ msgid ""
 "output consists of a sequence and edgeid. Sequence numbers start with value "
 "1."
 msgstr ""
-"Returnerar en uppsättning ordnade kanter som <varname>avgränsar en yta.</"
-"varname> Varje utdata består av en sekvens och edgeid. Sekvensnummer börjar "
-"med värde 1."
+"Returnerar en uppsättning ordnade kanter som avgränsar <varname>aface</"
+"varname>. Varje utdata består av en sekvens och ett edgeid. Sekvensnummer "
+"börjar på värdet 1."
 
 #. Tag: para
 #, no-c-format
@@ -4449,8 +4447,8 @@ msgid ""
 "If the <varname>apoint</varname> geometry already exists as a node, the node "
 "is not added but the existing nodeid is returned."
 msgstr ""
-"Om <varname>apoint-geometrin</varname> redan finns som en nod, läggs inte "
-"noden till utan det befintliga nodeid returneras."
+"Om geometrin <varname>apoint</varname> redan finns som en nod läggs inte "
+"noden till, utan det befintliga nodeid returneras."
 
 #. Tag: para
 #, no-c-format
@@ -4478,11 +4476,9 @@ msgid ""
 "linestring geometry and returns the edgeid of the new or existing record. "
 "The newly added edge has \"universe\" face on both sides and links to itself."
 msgstr ""
-"Lägger till en edge i edge-tabellen och associerade noder i nodes-tabellen i "
-"det angivna <varname>toponame-schemat</varname> med hjälp av den angivna "
-"geometrin för linestrings och returnerar edgeid för den nya eller befintliga "
-"posten. Den nyligen tillagda kanten har \"universe\"-yta på båda sidor och "
-"länkar till sig själv."
+"Lägger till en kant i edge-tabellen och associerade noder i nodes-tabellen i "
+"det angivna schemat <varname>toponame</varname> med den angivna linestring-"
+"geometrin och returnerar edgeid för den nya eller befintliga posten."
 
 #. Tag: para
 #, no-c-format
@@ -4491,8 +4487,8 @@ msgid ""
 "contained by an existing linestring edge, then an error is thrown and the "
 "edge is not added."
 msgstr ""
-"Om <varname>aline-geometrin</varname> korsar, överlappar, innehåller eller "
-"är innesluten av en befintlig linestringskant, så kastas ett fel och kanten "
+"Om geometrin <varname>aline</varname> korsar, överlappar, innehåller eller "
+"är innesluten av en befintlig linestring-kant kastas ett fel och kanten "
 "läggs inte till."
 
 #. Tag: para
@@ -4581,10 +4577,10 @@ msgid ""
 "existing face is returned; if <varname>force_new</varname> is true a new id "
 "will be assigned to the newly registered face."
 msgstr ""
-"Om <varname>apolygongeometrin</varname> redan finns som en yta, gäller "
-"följande: om <varname>force_new</varname> är false (standard) returneras den "
-"befintliga ytans id; om <varname>force_new</varname> är true tilldelas en ny "
-"id till den nyregistrerade ytan."
+"Om geometrin <varname>apolygon</varname> redan finns som en yta gäller "
+"följande: om <varname>force_new</varname> är false (standardvärdet) "
+"returneras den befintliga ytans id; om <varname>force_new</varname> är true "
+"tilldelas en ny yta."
 
 #. Tag: para
 #, no-c-format
@@ -4607,9 +4603,9 @@ msgid ""
 "varname> as defined for the topology otherwise an invalid spatial reference "
 "sys error will be thrown."
 msgstr ""
-"<varname>Apolygongeometrin</varname> måste ha samma <varname>srid</varname> "
-"som definierats för topologin, annars kommer ett ogiltigt sys-fel för "
-"spatial referens att uppstå."
+"Geometrin <varname>apolygon</varname> måste ha samma <varname>srid</varname> "
+"som definierats för topologin, annars kastas ett fel om ogiltig spatial "
+"referens."
 
 #. Tag: para
 #, no-c-format
@@ -4742,9 +4738,9 @@ msgid ""
 "varname> and registers it in the relations table in the <varname>toponame</"
 "varname> schema."
 msgstr ""
-"Skapar ett topogeometriobjekt för det lager som betecknas med "
-"<varname>layer_id</varname> och registrerar det i relationstabellen i "
-"<varname>toponame-schemat</varname>."
+"Skapar ett topogeometriobjekt för det lager som betecknas med <varname>"
+"layer_id</varname> och registrerar det i relationstabellen i schemat "
+"<varname>toponame</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -4873,10 +4869,10 @@ msgid ""
 "will be associated with the output TopoGeometry in the <varname>relation</"
 "varname> table."
 msgstr ""
-"De topologiska primitiver som krävs för att representera indatageometrin "
-"läggs till i den underliggande topologin, eventuellt genom att dela upp "
-"befintliga primitiver och de associeras med utdata TopoGeometry i <varname>"
-"relationstabellen</varname>."
+"Topologiska primitiver som krävs för att representera indatageometrin läggs "
+"till i den underliggande topologin, vilket kan dela upp befintliga "
+"primitiver och associeras med utdata-TopoGeometry i tabellen <varname>"
+"relation</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -4905,9 +4901,9 @@ msgid ""
 "(<varname>layer_id</varname>) of the given topology (<varname>toponame</"
 "varname>)."
 msgstr ""
-"I det första formuläret skapas en ny TopoGeometry för det givna "
-"lagret<varname>(layer_id) i</varname> den givna "
-"topologin<varname>(toponame)</varname>."
+"I den första formen skapas en ny TopoGeometry för det angivna lagret "
+"(<varname>layer_id</varname>) i den angivna topologin (<varname>toponame</"
+"varname>)."
 
 #. Tag: para
 #, no-c-format
@@ -4917,10 +4913,10 @@ msgid ""
 "possibly adding space to its final shape. To have the new shape completely "
 "replace the old one see <xref linkend=\"clearTopoGeom\"/>."
 msgstr ""
-"I den andra formen kommer de primitiver som konverteringen resulterar i att "
-"läggas till den redan existerande TopoGeometry<varname>(topogeom)</varname> "
-"och eventuellt lägga till utrymme i den slutliga formen. För att få den nya "
-"formen att helt ersätta den gamla, se <xref linkend=\"clearTopoGeom\"/>."
+"I den andra formen läggs de primitiver som följer av konverteringen till den "
+"befintliga TopoGeometry (<varname>topogeom</varname>), vilket eventuellt "
+"lägger till utrymme till dess slutliga form. För att låta den nya formen "
+"helt ersätta den gamla, se <xref linkend=\"clearTopoGeom\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -4997,8 +4993,8 @@ msgid ""
 "Returns a <varname>topoelementarray</varname> for a set of element_id, type "
 "arrays (topoelements)."
 msgstr ""
-"<varname>Returnerar en topoelementarray</varname> för en uppsättning "
-"element_id, typ arrayer (topoelements)."
+"Returnerar en <varname>topoelementarray</varname> för en uppsättning arrayer "
+"av element_id och type (topoelement)."
 
 #. Tag: para
 #, no-c-format
@@ -5204,9 +5200,9 @@ msgid ""
 "containing the topological elements and type of the given TopoGeometry "
 "(primitive elements)."
 msgstr ""
-"<varname>Returnerar en topoelementarray</varname> (en array av topoelements) "
-"som innehåller de topologiska elementen och typen för den givna TopoGeometry "
-"(primitiva element)."
+"Returnerar en <varname>topoelementarray</varname> (en array av topoelement) "
+"som innehåller de topologiska elementen och typen för den angivna "
+"TopoGeometry (primitiva element)."
 
 #. Tag: para
 #, no-c-format
@@ -5237,8 +5233,8 @@ msgid ""
 "topological element_id,element_type of the given TopoGeometry (primitive "
 "elements)."
 msgstr ""
-"Returnerar en uppsättning <varname>topoelement-objekt</varname> som "
-"innehåller topologiska element_id,element_type för den givna TopoGeometry "
+"Returnerar en uppsättning <varname>topoelement</varname>-objekt som "
+"innehåller element_id och element_type för den angivna TopoGeometry "
 "(primitiva element)."
 
 #. Tag: para
@@ -5249,10 +5245,10 @@ msgid ""
 "edges, 3: faces) that a given topogeometry object in <varname>toponame</"
 "varname> schema is composed of."
 msgstr ""
-"Returnerar en uppsättning element_id,element_type (topoelements) som "
+"Returnerar en uppsättning element_id,element_type (topoelement) som "
 "motsvarar primitiva topologielement <xref linkend=\"topoelement\"/> (1: "
-"noder, 2: kanter, 3: ytor) som ett givet topogeometriobjekt i "
-"<varname>toponame-schema</varname> består av."
+"noder, 2: kanter, 3: ytor) som ett angivet topogeometriobjekt i schemat "
+"<varname>toponame</varname> består av."
 
 #. Tag: para
 #, no-c-format
@@ -5618,7 +5614,7 @@ msgstr ""
 "Som standard skriver <filename>pgtopo_export</filename> dumpfilen till "
 "standardutdata så att den kan pipas till <filename>pgtopo_import</filename> "
 "eller omdirigeras till en fil (vägrar att skriva till terminalen). Du kan "
-"ange ett filnamn för utdata med kommandoradsalternativet <code>-f.</code>."
+"ange ett filnamn för utdata med flaggan <code>-f</code>."
 
 #. Tag: para
 #, no-c-format
@@ -5641,8 +5637,8 @@ msgid ""
 "Invoking <filename>pgtopo_export</filename> with the <code>--help</code> (or "
 "<code>-h</code> for short) switch will always print short usage string."
 msgstr ""
-"Om <filename>pgtopo_export an</filename> ropas med kommandot <code>--help</"
-"code> (eller <code>-h</code> förkortat) skrivs alltid en kort "
+"Om <filename>pgtopo_export</filename> anropas med flaggan <code>--help</"
+"code> (eller kortformen <code>-h</code>) skrivs alltid en kort "
 "användningssträng ut."
 
 #. Tag: para
@@ -5657,14 +5653,11 @@ msgid ""
 "<code>--skip-layers</code> is given) a custom-format PostgreSQL dump of "
 "tables reported as being layers of the given topology."
 msgstr ""
-"Dumpfilformatet är ett komprimerat tar-arkiv med en <filename>pgtopo_export-"
-"katalog</filename> som innehåller minst en <filename>pgtopo_dump_version-"
-"fil</filename> med information om formatversion. Från och med version "
-"<code>1</code> innehåller katalogen tabbavgränsade CSV-filer med data från "
-"de primitiva tabellerna för topologi (nod, kantdata, yta, relation), "
-"topologi- och lagerposterna som är associerade med den och (om inte <code>--"
-"skip-layers</code> ges) en PostgreSQL-dump i anpassat format av tabeller som "
-"rapporteras som lager i den givna topologin."
+"Dumpfilformatet är ett komprimerat tar-arkiv av katalogen <filename>"
+"pgtopo_export</filename> som innehåller minst filen <filename>"
+"pgtopo_dump_version</filename> med information om formatversion. Från och "
+"med version <code>1</code> innehåller katalogen tabbavgränsade CSV-filer för "
+"varje lager, som kan hoppas över med flaggan <code>--skip-layers</code>."
 
 #. Tag: title
 #, no-c-format
@@ -5678,10 +5671,9 @@ msgid ""
 "code> format topology dump and a name to give to the topology to be created "
 "and outputs an SQL script reconstructing the topology and associated layers."
 msgstr ""
-"Skriptet <filename>pgtopo_import</filename> tar en topologidump i "
-"<code>pgtopo_export-format</code> och ett namn på den topologi som ska "
-"skapas och matar ut ett SQL-skript som rekonstruerar topologin och "
-"tillhörande lager."
+"Skriptet <filename>pgtopo_import</filename> tar en topologidump i formatet "
+"<code>pgtopo_export</code> och ett namn för den topologi som ska skapas och "
+"matar ut ett SQL-skript som rekonstruerar topologin och tillhörande lager."
 
 #. Tag: para
 #, no-c-format
@@ -5949,7 +5941,7 @@ msgid ""
 "Change into the newly created <varname>postgis</varname> directory to "
 "continue the installation."
 msgstr ""
-"Byt till den nyskapade <varname>postgis-katalogen</varname> för att "
+"Byt till den nyskapade katalogen <varname>postgis</varname> för att "
 "fortsätta installationen."
 
 #. Tag: title
@@ -5998,9 +5990,9 @@ msgid ""
 "be used to compile PostGIS, but we find far fewer problems when compiling "
 "with <filename>gcc</filename>."
 msgstr ""
-"GNU C-kompilator<filename>(gcc)</filename>. Vissa andra ANSI C-kompilatorer "
-"kan användas för att kompilera PostGIS, men vi hittar mycket färre problem "
-"när vi kompilerar med <filename>gcc</filename>."
+"GNU C-kompilatorn (<filename>gcc</filename>). Vissa andra ANSI C-"
+"kompilatorer kan användas för att kompilera PostGIS, men vi hittar mycket "
+"färre problem när vi kompilerar med <filename>gcc</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -6011,11 +6003,11 @@ msgid ""
 "<filename>make</filename> may not process the PostGIS <filename>Makefile</"
 "filename> properly."
 msgstr ""
-"GNU Make<filename>(gmake</filename> eller <filename>make</filename>). För "
+"GNU Make (<filename>gmake</filename> eller <filename>make</filename>). För "
 "många system är GNU <filename>make</filename> standardversionen av make. "
 "Kontrollera versionen genom att anropa <filename>make -v</filename>. Andra "
-"versioner av <filename>make</filename> kanske inte bearbetar PostGIS "
-"<filename>Makefile</filename> på rätt sätt."
+"versioner av <filename>make</filename> kanske inte behandlar PostGIS-"
+"<filename>Makefile</filename> korrekt."
 
 #. Tag: para
 #, no-c-format
@@ -6216,7 +6208,7 @@ msgid ""
 "<link xlink:href=\"http://cunit.sourceforge.net/\">http://"
 "cunit.sourceforge.net/</link>"
 msgstr ""
-"CUnit<filename>(CUnit)</filename>. Detta behövs för regressionstestning. "
+"CUnit (<filename>CUnit</filename>). Detta behövs för regressionstestning. "
 "<link xlink:href=\"http://cunit.sourceforge.net/\">http://"
 "cunit.sourceforge.net/</link>"
 
@@ -6227,9 +6219,9 @@ msgid ""
 "documentation. Docbook is available from <link xlink:href=\"http://"
 "www.docbook.org/\"> http://www.docbook.org/ </link> ."
 msgstr ""
-"DocBook<filename>(xsltproc)</filename> krävs för att bygga upp "
-"dokumentationen. Docbook finns tillgängligt från <link xlink:href=\"http://"
-"www.docbook.org/\"> http://www.docbook.org/ </link>."
+"DocBook (<filename>xsltproc</filename>) krävs för att bygga dokumentationen. "
+"DocBook finns tillgängligt från <link xlink:href=\"http://www.docbook.org/"
+"\"> http://www.docbook.org/ </link>."
 
 #. Tag: para
 #, no-c-format
@@ -6258,8 +6250,8 @@ msgid ""
 "xlink:href=\"http://dblatex.sourceforge.net/\"> http://"
 "dblatex.sourceforge.net/ </link> ."
 msgstr ""
-"DBLatex<filename>(dblatex)</filename> krävs för att skapa dokumentationen i "
-"PDF-format. DBLatex är tillgängligt från <link xlink:href=\"http://"
+"DBLatex (<filename>dblatex</filename>) krävs för att skapa dokumentationen i "
+"PDF-format. DBLatex finns tillgängligt från <link xlink:href=\"http://"
 "dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </link>."
 
 #. Tag: para
@@ -6374,7 +6366,7 @@ msgid ""
 msgstr ""
 "PostgreSQL tillhandahåller ett verktyg som heter <command>pg_config</"
 "command> för att göra det möjligt för tillägg som PostGIS att hitta "
-"PostgreSQL-installationskatalogen. Använd den här parametern<command>(--with-"
+"PostgreSQL-installationskatalogen. Använd den här parametern(<command>--with-"
 "pgconfig=/path/to/pg_config</command>) för att manuellt ange en viss "
 "PostgreSQL-installation som PostGIS kommer att bygga mot."
 
@@ -6390,7 +6382,7 @@ msgstr ""
 "GDAL, ett obligatoriskt bibliotek, tillhandahåller funktionalitet som behövs "
 "för rasterstöd <command>gdal-config</command> för att göra det möjligt för "
 "programvaruinstallationer att hitta GDAL-installationskatalogen. Använd "
-"denna parameter<command>(--with-gdalconfig=/path/to/gdal-config</command>) "
+"denna parameter(<command>--with-gdalconfig=/path/to/gdal-config</command>) "
 "för att manuellt ange en viss GDAL-installation som PostGIS ska bygga mot."
 
 #. Tag: para
@@ -6405,7 +6397,7 @@ msgstr ""
 "GEOS, ett nödvändigt geometribibliotek, tillhandahåller ett verktyg som "
 "heter <command>geos-config</command> för att göra det möjligt för "
 "programvaruinstallationer att hitta GEOS installationskatalog. Använd denna "
-"parameter<command>(--with-geosconfig=/path/to/geos-config</command>) för att "
+"parameter(<command>--with-geosconfig=/path/to/geos-config</command>) för att "
 "manuellt ange en viss GEOS-installation som PostGIS ska bygga mot."
 
 #. Tag: para
@@ -6419,14 +6411,13 @@ msgid ""
 "(<command>&gt;--with-xml2config=/path/to/xml2-config</command>) to manually "
 "specify a particular LibXML installation that PostGIS will build against."
 msgstr ""
-"LibXML är det bibliotek som krävs för att göra GeomFromKML/GML-processer. "
-"Det hittas normalt om du har libxml installerat, men om inte eller om du "
-"vill att en specifik version ska användas, måste du peka PostGIS mot en "
-"specifik <filename>xml2-config</filename> confi-fil för att göra det möjligt "
-"för programvaruinstallationer att hitta LibXML-installationskatalogen. "
-"Använd denna parameter<command>(&gt;--with-xml2config=/path/to/xml2-config</"
-"command>) för att manuellt ange en viss LibXML-installation som PostGIS ska "
-"bygga mot."
+"LibXML är biblioteket som krävs för GeomFromKML/GML-processer. Det hittas "
+"normalt om libxml är installerat, men om det inte är det eller om du vill "
+"använda en viss version måste du peka PostGIS på en viss <filename>xml2-"
+"config</filename>-konfigurationsfil så att programinstallationer kan hitta "
+"LibXML-installationskatalogen. Använd den här parametern (<command>&gt;--"
+"with-xml2config=/path/to/xml2-config</command>) för att manuellt ange en "
+"viss LibXML-installation som PostGIS ska bygga mot."
 
 #. Tag: para
 #, no-c-format
@@ -6436,7 +6427,7 @@ msgid ""
 "particular Proj installation directory that PostGIS will build against."
 msgstr ""
 "Proj är ett reprojektionsbibliotek som krävs av PostGIS. Använd denna "
-"parameter<command>(--with-projdir=/path/to/projdir</command>) för att "
+"parameter(<command>--with-projdir=/path/to/projdir</command>) för att "
 "manuellt ange en viss Proj-installationskatalog som PostGIS ska bygga mot."
 
 #. Tag: para
@@ -6454,10 +6445,10 @@ msgid ""
 "will build against."
 msgstr ""
 "<link xlink:href=\"http://oss.metaparadigm.com/json-c/\">JSON-C</link> är "
-"ett MIT-licensierat JSON-bibliotek som krävs för PostGIS ST_GeomFromJSON-"
-"stöd. Använd denna parameter<command>(--with-jsondir=/path/to/jsondir</"
-"command>) för att manuellt ange en viss JSON-C-installationskatalog som "
-"PostGIS kommer att bygga mot."
+"ett MIT-licensierat JSON-bibliotek som krävs för stöd för PostGIS "
+"ST_GeomFromJSON. Använd den här parametern (<command>--with-jsondir=/path/to/"
+"jsondir</command>) för att manuellt ange en viss JSON-C-installationskatalog "
+"som PostGIS ska bygga mot."
 
 #. Tag: para
 #, no-c-format
@@ -6536,8 +6527,8 @@ msgid ""
 "This script will generate the <command>configure</command> script that in "
 "turn is used to customize the installation of PostGIS."
 msgstr ""
-"Detta skript kommer att generera <command>configure-skriptet</command> som i "
-"sin tur används för att anpassa installationen av PostGIS."
+"Detta skript genererar skriptet <command>configure</command>, som i sin tur "
+"används för att anpassa installationen av PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -6674,10 +6665,8 @@ msgid ""
 msgstr ""
 "<code>make check</code> använder psql för att köra tester och kan därför "
 "använda psql-miljövariabler. Vanliga variabler som är användbara att "
-"åsidosätta är <varname>PGUSER</varname><varname>,PGPORT</varname> och "
-"<varname>PGHOST</varname>. Hänvisa till <link xlink:href=\"https://"
-"www.postgresql.org/docs/current/libpq-envars.html\">psql-miljövariabler</"
-"link>"
+"åsidosätta är <varname>PGUSER</varname>, <varname>PGPORT</varname> och "
+"<varname>PGHOST</varname>. Se dokumentationen för psql för fler variabler."
 
 #. Tag: para
 #, no-c-format
@@ -6701,11 +6690,11 @@ msgid ""
 "filename> folder of your PostgreSQL install as well as the needed binaries "
 "for regular PostGIS if you don't have them already on the server."
 msgstr ""
-"Om du vill installera tillägg manuellt på en separat server som skiljer sig "
-"från din utveckling måste du kopiera följande filer från tilläggsmappen till "
-"mappen PostgreSQL <filename>/ share / extension</filename> i din PostgreSQL-"
-"installation samt de nödvändiga binärerna för vanlig PostGIS om du inte "
-"redan har dem på servern."
+"Om du vill installera tilläggen manuellt på en separat server som skiljer "
+"sig från din utvecklingsserver måste du kopiera följande filer från "
+"tilläggsmappen till mappen <filename>PostgreSQL / share / extension</"
+"filename> i din PostgreSQL-installation, samt de binärer som behövs för "
+"vanliga PostGIS om de inte redan finns på servern."
 
 #. Tag: para
 #, no-c-format
@@ -6716,7 +6705,7 @@ msgid ""
 msgstr ""
 "Det här är kontrollfilerna som anger information som t.ex. vilken version av "
 "tillägget som ska installeras om det inte anges. <filename>postgis.control, "
-"postgis_topology</filename>.control."
+"postgis_topology.control</filename>."
 
 #. Tag: para
 #, no-c-format
@@ -6761,13 +6750,12 @@ msgid ""
 "<varname>extensions</varname> section of the database browser tree and will "
 "even allow upgrade or uninstall by right-clicking."
 msgstr ""
-"Om du har tillägget installerat i den databas du frågar kommer du att se ett "
-"omnämnande i kolumnen <varname>installed_version</varname>. Om du inte får "
-"några poster tillbaka betyder det att du inte har några postgis-tillägg "
-"installerade på servern alls. PgAdmin III 1.14+ kommer också att "
-"tillhandahålla denna information i <varname>tilläggsavsnittet</varname> i "
-"databasbläddrarträdet och kommer till och med att tillåta uppgradering eller "
-"avinstallation genom att högerklicka."
+"Om du har tillägget installerat i databasen du frågar mot visas det i "
+"kolumnen <varname>installed_version</varname>. Om inga poster returneras har "
+"du inga PostGIS-tillägg installerade på servern. PgAdmin III 1.14+ visar "
+"också informationen i avsnittet <varname>extensions</varname> i "
+"databasbläddrarens träd och kan till och med uppgradera eller avinstallera "
+"efter högerklickning."
 
 #. Tag: para
 #, no-c-format
@@ -6874,13 +6862,12 @@ msgid ""
 "installation during configuration or be prepared to deal with the impending "
 "headaches."
 msgstr ""
-"För närvarande förlitar sig <command>make-kontrollen</command> på <code>PATH-"
-"</code> och <code>PGPORT-miljövariablerna</code> när de utför kontrollerna - "
-"den använder <emphasis>inte</emphasis> PostgreSQL-versionen som kan ha "
-"angetts med hjälp av konfigurationsparametern <command>--with-pgconfig</"
-"command>. Så se till att ändra din PATH så att den matchar den upptäckta "
-"PostgreSQL-installationen under konfigurationen eller var beredd att hantera "
-"de överhängande huvudvärkarna."
+"För närvarande är <command>make check</command> beroende av miljövariablerna "
+"<code>PATH</code> och <code>PGPORT</code> när kontrollerna körs – den "
+"använder <emphasis>inte</emphasis> PostgreSQL-versionen som kan ha angetts "
+"med konfigurationsparametern <command>--with-pgconfig</command>. Se därför "
+"till att ändra PATH så att den matchar den PostgreSQL-installation som "
+"hittades vid konfigurationen, eller var beredd på kommande huvudvärk."
 
 #. Tag: para
 #, no-c-format
@@ -6984,9 +6971,9 @@ msgid ""
 "running"
 msgstr ""
 "Om du tidigare körde kommandot <command>make comments</command> för att "
-"generera filen <filename>postgis_comments.sq</filename>l, "
-"<filename>raster_comments.sq</filename> l, installerar du sql-filen genom "
-"att köra"
+"generera filerna <filename>postgis_comments.sql</filename> och <filename>"
+"raster_comments.sql</filename>, installerar du SQL-filen genom att köra "
+"följande:"
 
 #. Tag: para
 #, no-c-format
@@ -7085,10 +7072,10 @@ msgid ""
 "varname> and <varname>POSTGIS_GEOS_VERSION</varname> variables have been set "
 "correctly."
 msgstr ""
-"Utdata från configure används för att generera filen "
-"<filename>postgis_config.h.</filename> Kontrollera att variablerna "
-"<varname>POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</"
-"varname> och <varname>POSTGIS_GEOS_VERSION</varname> har ställts in korrekt."
+"Utdata från configure används för att generera filen <filename>"
+"postgis_config.h</filename>. Kontrollera att variablerna <varname>"
+"POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</varname> och "
+"<varname>POSTGIS_GEOS_VERSION</varname> har ställts in korrekt."
 
 #. Tag: title
 #, no-c-format
@@ -7984,8 +7971,7 @@ msgid ""
 "<code>average</code>."
 msgstr ""
 "Funktionerna nedan är spatiala aggregatfunktioner som används på samma sätt "
-"som SQL-aggregatfunktioner <code>som summa</code> och <code>genomsnitt</"
-"code>."
+"som SQL-aggregatfunktioner som <code>sum</code> och <code>average</code>."
 
 #. Tag: title
 #, no-c-format
@@ -8742,8 +8728,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the components of "
 "a geometry."
 msgstr ""
-"Returnerar en uppsättning <varname>geometry_dump-rader</varname> för "
-"komponenterna i en geometri."
+"Returnerar en uppsättning rader av typen <varname>geometry_dump</varname> "
+"för komponenterna i en geometri."
 
 #. Tag: para
 #, no-c-format
@@ -8836,8 +8822,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the coordinates "
 "in a geometry."
 msgstr ""
-"Returnerar en uppsättning <varname>geometry_dump-rader</varname> för "
-"koordinaterna i en geometri."
+"Returnerar en uppsättning rader av typen <varname>geometry_dump</varname> "
+"för koordinaterna i en geometri."
 
 #. Tag: para
 #, no-c-format
@@ -8858,8 +8844,8 @@ msgid ""
 "the <parameter>geom</parameter> field <varname>POINT</varname>s represent "
 "the coordinates of the supplied geometry."
 msgstr ""
-"<parameter>geom-fältet</parameter> <varname>POINTs</varname>representerar "
-"koordinaterna för den medföljande geometrin."
+"Fältet <parameter>geom</parameter> innehåller <varname>POINT</varname>-"
+"värden som representerar koordinaterna för den angivna geometrin."
 
 #. Tag: para
 #, no-c-format
@@ -8874,13 +8860,13 @@ msgid ""
 "(1 is outer; inner rings follow) and <varname>j</varname> is the coordinate "
 "position in the ring."
 msgstr ""
-"<parameter>path-fältet</parameter> (ett <varname>integer[]</varname>) är ett "
+"Fältet <parameter>path</parameter> (en <varname>integer[]</varname>) är ett "
 "index som räknar upp koordinatpositionerna i elementen i den angivna "
-"geometrin. Indexen är 1-baserade. Till exempel för en <varname>LINESTRING</"
-"varname> är banorna <varname>{i}</varname> där <varname>i</varname> är den "
-"<varname>n:te</varname> koordinaten i <varname>LINESTRING</varname>. För en "
-"<varname>POLYGON</varname> är banorna <varname>{i,j}</varname> där "
-"<varname>i</varname> är ringnumret (1 är den yttre ringen; de inre ringarna "
+"geometrin. Indexen är 1-baserade. För en <varname>LINESTRING</varname> är "
+"exempelvis sökvägarna <varname>{i}</varname>, där <varname>i</varname> är "
+"den <varname>nth</varname> koordinaten i <varname>LINESTRING</varname>. För "
+"en <varname>POLYGON</varname> är sökvägarna <varname>{i,j}</varname>, där "
+"<varname>i</varname> är ringnumret (1 är den yttre ringen; inre ringar "
 "följer) och <varname>j</varname> är koordinatpositionen i ringen."
 
 #. Tag: para
@@ -8940,8 +8926,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the segments in a "
 "geometry."
 msgstr ""
-"Returnerar en uppsättning <varname>geometry_dump-rader</varname> för "
-"segmenten i en geometri."
+"Returnerar en uppsättning rader av typen <varname>geometry_dump</varname> "
+"för segmenten i en geometri."
 
 #. Tag: para
 #, no-c-format
@@ -8953,8 +8939,8 @@ msgid ""
 msgstr ""
 "En set-returning function (SRF) som extraherar segmenten i en geometri. Den "
 "returnerar en uppsättning <xref linkend=\"geometry_dump\"/> rader, var och "
-"en innehållande en geometri (fältet<parameter>geom)</parameter> och en array "
-"av heltal (fältet <parameter>path</parameter>)."
+"en innehållande en geometri (fältet <parameter>geom</parameter>) och en "
+"array av heltal (fältet <parameter>path</parameter>)."
 
 #. Tag: para
 #, no-c-format
@@ -8963,9 +8949,9 @@ msgid ""
 "represent the linear segments of the supplied geometry, while the "
 "<varname>CIRCULARSTRING</varname>s represent the arc segments."
 msgstr ""
-"<parameter>geom-fältet</parameter> <varname>LINESTRINGs</"
-"varname>representerar de linjära segmenten i den medföljande geometrin, "
-"medan <varname>CIRCULARSTRINGs</varname>representerar bågsegmenten."
+"Fältet <parameter>geom</parameter> innehåller <varname>LINESTRING</varname>-"
+"värden som representerar den angivna geometrins linjära segment, medan "
+"<varname>CIRCULARSTRING</varname>-värden representerar bågsegmenten."
 
 #. Tag: para
 #, no-c-format
@@ -8980,15 +8966,15 @@ msgid ""
 "number (1 is outer; inner rings follow) and <varname>j</varname> is the "
 "segment start point position in the ring."
 msgstr ""
-"<parameter>path</parameter>-fältet (ett <varname>integer[]</varname>) är ett "
-"index som räknar upp segmentets startpunktspositioner i elementen i den "
-"angivna geometrin. Indexen är 1-baserade. Till exempel för en "
-"<varname>LINESTRING</varname> är banorna <varname>{i}</varname> där "
-"<varname>i</varname> är den <varname>n:te</varname> startpunkten för "
-"segmentet i <varname>LINESTRING</varname>. För en <varname>POLYGON</varname> "
-"är banorna <varname>{i,j}</varname> där <varname>i</varname> är ringnumret "
-"(1 är yttre; inre ringar följer) och <varname>j</varname> är segmentets "
-"startpunktsposition i ringen."
+"Fältet <parameter>path</parameter> (en <varname>integer[]</varname>) är ett "
+"index som räknar upp segmentens startpunktspositioner i elementen i den "
+"angivna geometrin. Indexen är 1-baserade. För en <varname>LINESTRING</"
+"varname> är exempelvis sökvägarna <varname>{i}</varname>, där <varname>i</"
+"varname> är den <varname>nth</varname> segmentstartpunkten i <varname>"
+"LINESTRING</varname>. För en <varname>POLYGON</varname> är sökvägarna "
+"<varname>{i,j}</varname>, där <varname>i</varname> är ringnumret (1 är den "
+"yttre ringen; inre ringar följer) och <varname>j</varname> är "
+"segmentstartpunktens position i ringen."
 
 #. Tag: title
 #, no-c-format
@@ -9015,8 +9001,8 @@ msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the exterior and "
 "interior rings of a Polygon."
 msgstr ""
-"Returnerar en uppsättning <varname>geometry_dump-rader</varname> för de "
-"yttre och inre ringarna i en polygon."
+"Returnerar en uppsättning rader av typen <varname>geometry_dump</varname> "
+"för en Polygons yttre och inre ringar."
 
 #. Tag: para
 #, no-c-format
@@ -9028,8 +9014,8 @@ msgid ""
 msgstr ""
 "En set-returning function (SRF) som extraherar ringarna i en polygon. Den "
 "returnerar en uppsättning <xref linkend=\"geometry_dump\"/> rader, var och "
-"en innehållande en geometri<parameter>(geom-fält)</parameter> och en array "
-"av heltal<parameter>(path-fält)</parameter>."
+"en innehållande en geometri (fältet <parameter>geom</parameter>) och en "
+"array av heltal (fältet <parameter>path</parameter>)."
 
 #. Tag: para
 #, no-c-format
@@ -9053,7 +9039,7 @@ msgid ""
 msgstr ""
 "Detta fungerar endast för POLYGON-geometrier, inte MULTIPOLYGON. Använd "
 "<xref linkend=\"ST_Dump\"/> för att extrahera polygonelement från polygonala "
-"geometrier: <code>ST_DumpRings((ST_Dump(geom)).geom)</code>"
+"geometrier: <code>ST_DumpRings((ST_Dump(geom)).geom )</code>"
 
 #. Tag: para
 #, no-c-format
@@ -9187,14 +9173,14 @@ msgid ""
 "will add a <varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as "
 "well)."
 msgstr ""
-"Returnerar den minsta avgränsningsboxen med dubbel precision (float8) för "
+"Returnerar den minsta avgränsningsrutan med dubbel precision (float8) för "
 "den angivna geometrin, som en geometri. Polygonen definieras av "
-"hörnpunkterna i begränsningsboxen ((<varname>(MINX</varname>, <varname>MINY</"
-"varname>), (<varname>MINX</varname>, <varname>MAXY</varname>),"
-"(<varname>MAXX</varname>, <varname>MAXY</varname>),<varname>(MAXX</varname>, "
-"<varname>MINY</varname>), (<varname>MINX</varname>, <varname>MINY</"
-"varname>)). (PostGIS kommer även att lägga till en <varname>ZMIN</varname>/"
-"<varname>ZMAX</varname>-koordinat )."
+"hörnpunkterna i avgränsningsrutan ((<varname>MINX</varname>, <varname>MINY</"
+"varname>), (<varname>MINX</varname>, <varname>MAXY</varname>), (<varname>"
+"MAXX</varname>, <varname>MAXY</varname>), (<varname>MAXX</varname>, <varname>"
+"MINY</varname>), (<varname>MINX</varname>, <varname>MINY</varname>)). "
+"(PostGIS lägger även till en koordinat <varname>ZMIN</varname>/<varname>"
+"ZMAX</varname>)."
 
 #. Tag: para
 #, no-c-format
@@ -9590,9 +9576,9 @@ msgid ""
 "and end points are coincident. For Polyhedral Surfaces, reports if the "
 "surface is areal (open) or volumetric (closed)."
 msgstr ""
-"Returnerar <varname>TRUE</varname> om <varname>LINESTRINGs</varname> start- "
-"och slutpunkter är sammanfallande. För polyedriska ytor rapporteras om ytan "
-"är areell (öppen) eller volymetrisk (sluten)."
+"Returnerar <varname>TRUE</varname> om <varname>LINESTRING</varname>s start- "
+"och slutpunkter sammanfaller. För polyedriska ytor rapporteras om ytan är "
+"areell (öppen) eller volymetrisk (sluten)."
 
 #. Tag: para
 #, no-c-format
@@ -9605,8 +9591,8 @@ msgid ""
 "SQL-MM defines the result of <code>ST_IsClosed(NULL)</code> to be 0, while "
 "PostGIS returns <varname>NULL</varname>."
 msgstr ""
-"SQL-MM definierar att resultatet av <code>ST_IsClosed(NULL</code> ) ska vara "
-"0, medan PostGIS returnerar <varname>NULL</varname>."
+"SQL-MM definierar resultatet av <code>ST_IsClosed(NULL)</code> som 0, medan "
+"PostGIS returnerar <varname>NULL</varname>."
 
 #. Tag: title
 #, no-c-format
@@ -9817,8 +9803,8 @@ msgid ""
 "SQL-MM defines the result of <code>ST_IsRing(NULL)</code> to be 0, while "
 "PostGIS returns <varname>NULL</varname>."
 msgstr ""
-"SQL-MM definierar att resultatet av <code>ST_IsRing(NULL</code> ) ska vara "
-"0, medan PostGIS returnerar <varname>NULL</varname>."
+"SQL-MM definierar resultatet av <code>ST_IsRing(NULL)</code> som 0, medan "
+"PostGIS returnerar <varname>NULL</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -11467,10 +11453,10 @@ msgid ""
 "statistics are gathered by running <code>update_geometry_stats()</code> and "
 "the result extent is exact."
 msgstr ""
-"För PostgreSQL&gt; = 8.0.0 samlas statistik in av VACUUM ANALYZE och "
-"resultatomfattningen kommer att vara cirka 95 % of den faktiska. För "
-"PostgreSQL &lt;8.0.0 samlas statistik genom att köra <code>"
-"update_geometry_stats ()</code> och resultatomfattningen är exakt."
+"För PostgreSQL &gt;= 8.0.0 samlas statistik in av VACUUM ANALYZE och "
+"resultatomfattningen blir omkring 95 % av den faktiska. För PostgreSQL &lt; "
+"8.0.0 samlas statistik in genom att köra <code>update_geometry_stats()</"
+"code> och resultatomfattningen är exakt."
 
 #. Tag: para
 #, no-c-format
@@ -11573,9 +11559,9 @@ msgid ""
 msgstr ""
 "Före version 1.3 användes ST_Expand tillsammans med <xref "
 "linkend=\"ST_Distance\"/> för att göra indexerbara avståndsfrågor. Till "
-"exempel <code>geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND "
-"ST_Distance(geom, 'POINT(10 20)') &lt; 10.</code> Detta har ersatts av den "
-"enklare och mer effektiva funktionen <xref linkend=\"ST_DWithin\"/>."
+"exempel <code>geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance"
+"(geom, 'POINT(10 20)') &lt; 10</code>. Detta har ersatts av den enklare och "
+"mer effektiva funktionen <xref linkend=\"ST_DWithin\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -11675,7 +11661,7 @@ msgid ""
 "linkend=\"ST_SetSRID\"/> to convert it into a geometry with SRID metadata. "
 "The SRID is the same as the input geometries."
 msgstr ""
-"Det returnerade <code>box3d-värdet</code> innehåller inte någon SRID. Använd "
+"Det returnerade <code>box3d</code>-värdet innehåller inte någon SRID. Använd "
 "<xref linkend=\"ST_SetSRID\"/> för att konvertera det till en geometri med "
 "SRID-metadata. SRID:en är densamma som för indatageometrierna."
 
@@ -12216,15 +12202,15 @@ msgid ""
 "code> clause in the window definition. Ambiguous cluster assignments may "
 "differ from other DBSCAN implementations."
 msgstr ""
-"Observera att gränsgeometrier kan ligga inom <varname>eps-avstånd</varname> "
+"Observera att gränsgeometrier kan ligga inom <varname>eps</varname> avstånd "
 "från kärngeometrier i mer än ett kluster. Båda tilldelningarna skulle vara "
-"korrekta, så gränsgeometrin kommer godtyckligt att tilldelas ett av de "
-"tillgängliga klustren. I den här situationen är det möjligt att ett korrekt "
-"kluster genereras med färre än <varname>minpunktsgeometrier</varname>. För "
-"att säkerställa deterministisk tilldelning av gränsgeometrier (så att "
-"upprepade anrop till ST_ClusterDBSCAN ger identiska resultat), använd en "
-"<code>ORDER BY-klausul</code> i fönsterdefinitionen. Tvetydiga "
-"klustertilldelningar kan skilja sig från andra DBSCAN-implementeringar."
+"korrekta, så gränsgeometrin tilldelas godtyckligt till ett av de "
+"tillgängliga klustren. I den här situationen kan ett korrekt kluster "
+"genereras med färre än <varname>minpoints</varname> geometrier. För att "
+"säkerställa deterministisk tilldelning av gränsgeometrier (så att upprepade "
+"anrop till ST_ClusterDBSCAN ger identiska resultat) använder du en <code>"
+"ORDER BY</code>-sats i fönsterdefinitionen. Tvetydiga klustertilldelningar "
+"kan skilja sig från andra DBSCAN-implementationer."
 
 #. Tag: para
 #, no-c-format
@@ -12592,7 +12578,7 @@ msgid ""
 "> with <code>minpoints =&gt; 0</code>."
 msgstr ""
 "ST_ClusterWithin är likvärdigt med att köra <xref "
-"linkend=\"ST_ClusterDBSCAN\"/> med <code>minpoints=&gt; 0</code>."
+"linkend=\"ST_ClusterDBSCAN\"/> med <code>minpoints =&gt; 0</code>."
 
 #. Tag: para
 #, no-c-format
@@ -12625,9 +12611,9 @@ msgid ""
 msgstr ""
 "En fönsterfunktion som returnerar ett klusternummer för varje "
 "indatageometri. Klusterindelningen delar in geometrierna i uppsättningar där "
-"varje geometri ligger inom det angivna <varname>avståndet</varname> från "
-"minst en annan geometri i samma kluster. Avstånden är kartesiska avstånd i "
-"SRID-enheterna."
+"varje geometri ligger inom det angivna <varname>distance</varname>-avståndet "
+"från minst en annan geometri i samma kluster. Avstånden är kartesiska "
+"avstånd i SRID-enheterna."
 
 #. Tag: para
 #, no-c-format
@@ -12636,7 +12622,7 @@ msgid ""
 "linkend=\"ST_ClusterDBSCAN\"/> with <code>minpoints =&gt; 0</code>."
 msgstr ""
 "ST_ClusterWithinWin är likvärdigt med att köra <xref "
-"linkend=\"ST_ClusterDBSCAN\"/> med <code>minpoints=&gt; 0</code>."
+"linkend=\"ST_ClusterDBSCAN\"/> med <code>minpoints =&gt; 0</code>."
 
 #. Tag: para
 #, no-c-format
@@ -13580,20 +13566,19 @@ msgid ""
 "completely. Do not specify a margin when using with <varname>ST_AsMVTGeom</"
 "varname>. See the example for <xref linkend=\"ST_AsMVT\"/>."
 msgstr ""
-"Den valfria <varname>marginalparametern</varname> kan användas för att "
-"expandera en platta med den angivna procentsatsen. T.ex. <varname>"
-"margin=0,125</varname> expanderar plattan med 12,5 %, vilket motsvarar "
-"buffer=512 när plattans storlek är 4096, som används i <xref "
-"linkend=\"ST_AsMVTGeom\"/>. Detta är användbart för att skapa en "
-"plattbuffert för att inkludera data som ligger utanför plattans synliga "
-"område, men vars existens påverkar plattrenderingen. Ett stadsnamn (en "
-"punkt) kan t.ex. ligga nära kanten på en platta, så dess etikett bör återges "
-"på två plattor, även om punkten ligger i det synliga området på bara en "
-"platta. Om du använder expanderade plattor i en fråga kommer stadspunkten "
-"att inkluderas i båda plattorna. Använd ett negativt värde för att krympa "
-"plattan istället. Värden mindre än -0,5 är förbjudna eftersom det skulle "
-"eliminera plattan helt. Ange inte en marginal när du använder <varname>"
-"ST_AsMVTGeom</varname>. Se exemplet för <xref linkend=\"ST_AsMVT\"/>."
+"Den valfria parametern <varname>margin</varname> kan användas för att utöka "
+"en platta med den angivna procentsatsen. Till exempel utökar <varname>"
+"margin=0.125</varname> plattan med 12,5 %, vilket motsvarar buffer=512 när "
+"plattans utsträckning är 4096, som i <xref linkend=\"ST_AsMVTGeom\"/>. Detta "
+"är användbart för att skapa en plattbuffert som inkluderar data utanför "
+"plattans synliga område, men vars existens påverkar plattans rendering. Ett "
+"stadsnamn (en punkt) kan exempelvis ligga nära en plattkant, så dess etikett "
+"bör återges på två plattor, trots att punkten bara ligger i den ena plattans "
+"synliga område. Utökade plattor i en fråga inkluderar stadspunkten i båda "
+"plattorna. Använd ett negativt värde för att i stället krympa plattan. "
+"Värden mindre än -0.5 är förbjudna eftersom de skulle eliminera plattan "
+"helt. Ange inte en marginal tillsammans med <varname>ST_AsMVTGeom</varname>. "
+"Se exemplet för <xref linkend=\"ST_AsMVT\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -15587,20 +15572,19 @@ msgid ""
 "(i.e., <code>prec_x=-2</code> will preserve coordinate values to the nearest "
 "100."
 msgstr ""
-"<code>ST_QuantizeCoordinates</code> bestämmer antalet bitar<code>(N)</code> "
+"<code>ST_QuantizeCoordinates</code> bestämmer antalet bitar (<code>N</code>) "
 "som krävs för att representera ett koordinatvärde med ett angivet antal "
 "siffror efter decimalpunkten och sätter sedan alla utom de <code>N</code> "
-"mest signifikanta bitarna till noll. Det resulterande koordinatvärdet kommer "
-"fortfarande att avrundas till det ursprungliga värdet, men har förbättrad "
-"komprimerbarhet. Detta kan resultera i en betydande minskning av "
-"diskanvändningen, förutsatt att geometrikolumnen använder en <link "
-"xlink:href=\"https://www.postgresql.org/docs/current/static/storage-"
-"toast.html#STORAGE-TOAST-ONDISK\"> komprimerbar lagringstyp</link>. "
-"Funktionen tillåter specifikation av olika antal siffror efter "
-"decimaltecknet i varje dimension; ospecificerade dimensioner antas ha samma "
-"precision som <code>x-dimensionen</code>. Negativa siffror tolkas som "
-"siffror till vänster om decimaltecknet (t.ex. <code>prec_x=-2</code> bevarar "
-"koordinatvärden till närmaste 100-tal)."
+"mest signifikanta bitarna till noll. Det resulterande koordinatvärdet "
+"avrundas fortfarande till det ursprungliga värdet, men har förbättrad "
+"komprimerbarhet. Detta kan ge en betydande minskning av diskanvändningen, "
+"förutsatt att geometrikolumnen använder en <link xlink:href=\"https://"
+"www.postgresql.org/docs/current/static/storage-toast.html#STORAGE-TOAST-"
+"ONDISK\">komprimerbar lagringstyp</link>. Funktionen tillåter att olika "
+"antal siffror efter decimaltecknet anges i varje dimension; ospecificerade "
+"dimensioner antas ha samma precision som <code>x</code>-dimensionen. "
+"Negativa siffror tolkas som siffror till vänster om decimaltecknet (dvs. "
+"<code>prec_x=-2</code> bevarar koordinatvärden till närmaste 100-tal)."
 
 #. Tag: para
 #, no-c-format
@@ -17442,8 +17426,8 @@ msgid ""
 "Returned <varname>POLYGON</varname> geometries will always be clockwise "
 "oriented."
 msgstr ""
-"Återlämnade <varname>POLYGON-geometrier</varname> kommer alltid att vara "
-"orienterade medurs."
+"Återlämnade <varname>POLYGON</varname>-geometrier är alltid orienterade "
+"medurs."
 
 #. Tag: para
 #, no-c-format
@@ -18162,10 +18146,10 @@ msgid ""
 "the Geometry Factory in SQL."
 msgstr ""
 "Funktionen <varname>ST_PointFromWKB</varname> tar en välkänd binär "
-"representation av geometri och ett<varname>SRID</varname>(Spatial Reference "
-"System ID) och skapar en instans av lämplig geometrityp - i detta fall en "
-"<varname>POINT-geometri</varname>. Denna funktion har samma roll som "
-"Geometry Factory i SQL."
+"geometrirepresentation och ett Spatial Reference System ID (<varname>SRID</"
+"varname>) och skapar en instans av lämplig geometrityp – i det här fallet en "
+"<varname>POINT</varname>-geometri. Funktionen har rollen som Geometry "
+"Factory i SQL."
 
 #. Tag: para
 #, no-c-format
@@ -18174,9 +18158,9 @@ msgid ""
 "returned if the input <varname>bytea</varname> does not represent a "
 "<varname>POINT</varname> geometry."
 msgstr ""
-"Om en SRID inte anges är standardvärdet 0. <varname>NULL</varname> "
-"returneras om <varname>indatabytea</varname> inte representerar en "
-"<varname>POINT-geometri</varname>."
+"Om en SRID inte anges används standardvärdet 0. <varname>NULL</varname> "
+"returneras om indatan <varname>bytea</varname> inte representerar en "
+"<varname>POINT</varname>-geometri."
 
 #. Tag: para
 #, no-c-format
@@ -18731,7 +18715,7 @@ msgstr "<varname>tabletype</varname> referens till en tabelltyp."
 #. Tag: para
 #, no-c-format
 msgid "<varname>data</varname> input FlatGeobuf data."
-msgstr "<varname>datainmatning</varname> FlatGeobuf-data."
+msgstr "<varname>data</varname>-indata i FlatGeobuf-format."
 
 #. Tag: title
 #, no-c-format
@@ -19043,9 +19027,8 @@ msgid ""
 "the same value this is equivalent to <xref "
 "linkend=\"ST_LineInterpolatePoint\"/>."
 msgstr ""
-"Om <varname>startfraktion</varname> och <varname>slutfraktion</varname> har "
-"samma värde är detta likvärdigt med <xref "
-"linkend=\"ST_LineInterpolatePoint\"/>."
+"Om <varname>startfraction</varname> och <varname>endfraction</varname> har "
+"samma värde motsvarar detta <xref linkend=\"ST_LineInterpolatePoint\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -19446,13 +19429,13 @@ msgid ""
 "current search_path) or the specified SRID, geometry type, or dimension is "
 "invalid."
 msgstr ""
-"Lägger till en geometrikolumn i en befintlig tabell med attribut. "
-"<varname>Schema_name</varname> är namnet på tabellschemat. <varname>Srid</"
-"varname> måste vara en heltalsreferens till en post i tabellen "
-"SPATIAL_REF_SYS. <varname>Type</varname> måste vara en sträng som motsvarar "
-"geometritypen, t.ex. \"POLYGON\" eller \"MULTILINESTRING\". Ett fel uppstår "
-"om schemanamnet inte finns (eller inte är synligt i den aktuella sökvägen) "
-"eller om den angivna SRID:en, geometritypen eller dimensionen är ogiltig."
+"Lägger till en geometrikolumn i en befintlig attributtabell. <varname>"
+"schema_name</varname> är tabellschemats namn. <varname>srid</varname> måste "
+"vara ett heltalsvärde som refererar till en post i tabellen SPATIAL_REF_SYS. "
+"<varname>type</varname> måste vara en sträng som motsvarar geometritypen, "
+"exempelvis 'POLYGON' eller 'MULTILINESTRING'. Ett fel kastas om schemanamnet "
+"saknas (eller inte är synligt i den aktuella search_path) eller om angivet "
+"SRID, geometri-typ eller dimension är ogiltigt."
 
 #. Tag: para
 #, no-c-format
@@ -19466,10 +19449,10 @@ msgid ""
 msgstr ""
 "Ändrad: 2.0.0 Den här funktionen uppdaterar inte längre geometry_columns "
 "eftersom geometry_columns är en vy som läser från systemkataloger. Som "
-"standard skapar det inte heller begränsningar, utan använder istället det "
-"inbyggda typmodifieringsbeteendet för PostgreSQL. Så till exempel att bygga "
-"en wgs84 POINT-kolumn med den här funktionen motsvarar nu: <code>ALTER TABLE "
-"some_table ADD COLUMN geom geometry (Point,4326);</code>"
+"standard skapar den inte heller begränsningar utan använder i stället "
+"PostgreSQLs inbyggda typmodifieringsbeteende. Att till exempel bygga en "
+"WGS84-POINT-kolumn med den här funktionen är nu likvärdigt med: <code>ALTER "
+"TABLE some_table ADD COLUMN geom geometry(Point,4326);</code>"
 
 #. Tag: para
 #, no-c-format
@@ -19589,7 +19572,7 @@ msgid ""
 msgstr ""
 "<function>DropGeometryColumn</function> behålls för bakåtkompatibilitet och "
 "rekommenderas inte för nya program. Använd i stället standardkommandot "
-"<command>ALTER TABLE... DROP COLUMN</command>. Vyn <varname>"
+"<command>ALTER TABLE ... DROP COLUMN</command>. Vyn <varname>"
 "geometry_columns</varname> uppdateras automatiskt från systemkatalogerna."
 
 #. Tag: para
@@ -20097,10 +20080,10 @@ msgid ""
 "value in radians can be converted to degrees using the PostgreSQL function "
 "<varname>degrees()</varname>."
 msgstr ""
-"Azimuten är ett matematiskt koncept definierat som vinkeln mellan en "
-"referensvektor och en punkt, med vinkelenheter i radianer. Resultatvärdet i "
-"radianer kan konverteras till grader med hjälp av PostgreSQL-funktionen "
-"<varname>grader ().</varname>."
+"Azimuten är ett matematiskt begrepp som definieras som vinkeln mellan en "
+"referensvektor och en punkt, med vinkelmåttet i radianer. Resultatvärdet i "
+"radianer kan omvandlas till grader med PostgreSQL-funktionen <varname>degrees"
+"()</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -20812,11 +20795,11 @@ msgid ""
 "building listed only once. <code>ORDER BY .. ST_HausdorffDistance</code> "
 "selects the parcel that is most similar to the building."
 msgstr ""
-"<emphasis role=\"bold\">Exempel:</emphasis> För varje byggnad, hitta den "
-"tomt som bäst representerar den. Först krävs att tomten korsar byggnadens "
+"<emphasis role=\"bold\">Exempel:</emphasis> För varje byggnad hittar du den "
+"tomt som bäst representerar den. Först krävs att tomten skär byggnadens "
 "geometri. <code>DISTINCT ON</code> garanterar att varje byggnad bara listas "
-"en gång. <code>ORDER BY.. ST_HausdorffDistance</code> väljer det skifte som "
-"är mest likt byggnaden."
+"en gång. <code>ORDER BY .. ST_HausdorffDistance</code> väljer den tomt som "
+"liknar byggnaden mest."
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21309,7 +21292,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "If a geometry has a minimum clearance of <varname>e</varname>, then:"
-msgstr "Om en geometri har en minsta frihöjd på <varname>e,</varname> då:"
+msgstr ""
+"Om en geometri har ett minsta avstånd på <varname>e</varname>, gäller "
+"följande:"
 
 #. Tag: para
 #, no-c-format
@@ -22130,11 +22115,11 @@ msgid ""
 "orderings and comparison of geometries (ie. in a GROUP BY or ORDER BY "
 "clause)."
 msgstr ""
-"Operatorn <varname>=</varname> returnerar <varname>SANT</varname> om "
-"koordinaterna och koordinatordningen geometri / geografi A är desamma som "
-"koordinaterna och koordinatordningen för geometri / geografi B. PostgreSQL "
-"använder operatorerna =, &lt; och &gt; som definieras för geometrier för att "
-"utföra interna ordningar och jämförelse av geometrier (dvs. i en GROUP BY- "
+"Operatorn <varname>&#61;</varname> returnerar <varname>TRUE</varname> om "
+"koordinaterna och koordinatordningen för geometri/geografi A är desamma som "
+"koordinaterna och koordinatordningen för geometri/geografi B. PostgreSQL "
+"använder operatorerna =, &lt; och &gt; som definierats för geometrier för "
+"intern sortering och jämförelse av geometrier (det vill säga i en GROUP BY- "
 "eller ORDER BY-klausul)."
 
 #. Tag: para
@@ -23174,8 +23159,8 @@ msgstr ""
 "Ändrat: 2.0.0 Indata till den här funktionen får inte vara unknown, utan "
 "måste vara geometry. Konstruktioner som <code>ST_AsBinary('POINT(1 2)')</"
 "code> är inte längre giltiga och ger felet <code>n ST_AsBinary(unknown) is "
-"not unique</code>. Sådan kod måste ändras till <code>ST_AsBinary('POINT(1 2)"
-"'::geometry);</code>. Om det inte är möjligt, installera <filename>"
+"not unique error</code>. Sådan kod måste ändras till <code>ST_AsBinary('POINT"
+"(1 2)'::geometry);</code>. Om det inte är möjligt, installera <filename>"
 "legacy.sql</filename>."
 
 #. Tag: para
@@ -23393,7 +23378,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>row</varname> row data with at least a geometry column."
-msgstr "<varname>rad</varname> raddata med minst en geometrikolumn."
+msgstr "<varname>row</varname>-raddata med minst en geometrikolumn."
 
 #. Tag: para
 #, no-c-format
@@ -23492,9 +23477,9 @@ msgid ""
 "<varname>maxdecimaldigits</varname>=6 can be a good choice for many maps."
 msgstr ""
 "Argumentet <varname>maxdecimaldigits</varname> kan användas för att minska "
-"det maximala antalet decimaler som används i utdata (standard är 9). Om du "
-"använder EPSG:4326 och endast matar ut geometrin för visning, kan "
-"<varname>maxdecimaldigits=6</varname> vara ett bra val för många kartor."
+"det högsta antalet decimaler i utdata (standardvärdet är 9). Om du använder "
+"EPSG:4326 och endast skriver ut geometrin för visning kan <varname>"
+"maxdecimaldigits</varname>=6 vara ett bra val för många kartor."
 
 #. Tag: para
 #, no-c-format
@@ -23576,7 +23561,7 @@ msgstr ""
 "linkend=\"ST_ForcePolygonCCW\"/>. Specifikationen kräver även att geometri "
 "är i WGS84-koordinatsystemet (SRID = 4326). Vid behov kan geometri "
 "projiceras till WGS84 med <xref linkend=\"ST_Transform\"/>: <code>"
-"ST_Transform(geom, 4326)</code>."
+"ST_Transform(geom, 4326 )</code>."
 
 #. Tag: para
 #, no-c-format
@@ -24005,11 +23990,11 @@ msgid ""
 "and <varname>$g</varname> in all formats supported by the MARC21/XML "
 "standard. Valid formats are:"
 msgstr ""
-"Denna funktion returnerar en MARC21/XML-post med <link xlink:href=\"https://"
+"Funktionen returnerar en MARC21/XML-post med <link xlink:href=\"https://"
 "www.loc.gov/marc/bibliographic/bd034.html\">kodade kartografiska matematiska "
-"data</link> som representerar den begränsande boxen för en given geometri. "
-"<varname>Formatparametern</varname> gör det möjligt att koda koordinaterna i "
-"underfälten <varname>$d</varname><varname>,$e</varname><varname>,$f</"
+"data</link> som representerar en angiven geometris avgränsningsruta. "
+"Parametern <varname>format</varname> gör det möjligt att koda koordinaterna "
+"i delfälten <varname>$d</varname>, <varname>$e</varname>, <varname>$f</"
 "varname> och <varname>$g</varname> i alla format som stöds av MARC21/XML-"
 "standarden. Giltiga format är:"
 
@@ -24025,7 +24010,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "decimal degrees with cardinal direction: <varname>hddd.dddddd</varname>"
-msgstr "decimalgrader med kardinalriktning: <varname>hddd</varname>.dddddd"
+msgstr "decimalgrader med kardinalriktning: <varname>hddd.dddddd</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -24680,16 +24665,15 @@ msgid ""
 "default of <code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</"
 "code> use <code>(2 + 1)</code> = <code>3</code>"
 msgstr ""
-"2: Utdata av koordinater i GeoSpatial GeoCoordinates. Detta alternativ "
-"kommer att ge ett fel om geometrierna inte är i WGS 84 long lat (srid: "
-"4326). Detta är för närvarande den enda GeoCoordinate-typen som stöds. <link "
-"xlink:href=\"http://www.web3d.org/documents/specifications/19775-1/V3.2/"
-"Part01/components/geodata.html#Specifyingaspatialreference\">Se X3D-"
-"specifikationerna som anger ett spatialt referenssystem</link>. "
-"Standardutdata kommer att vara <code>GeoCoordinate geoSystem='\"GD\" \"WE\" "
-"\"longitude_first</code>\"'. Om du föredrar X3D-standarden "
-"<code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"</code> ' "
-"använder du <code>(2 + 1)</code> = <code>3</code>"
+"2: Utdata av koordinater i GeoSpatial GeoCoordinates. Detta alternativ ger "
+"ett fel om geometrierna inte är i WGS 84 long lat (srid: 4326). Detta är för "
+"närvarande den enda GeoCoordinate-typen som stöds. <link xlink:href=\"http://"
+"www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/"
+"geodata.html#Specifyingaspatialreference\">Se X3D-specifikationerna som "
+"anger ett spatialt referenssystem.</link> Standardutdata blir <code>"
+"GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"'</code>. Om du "
+"föredrar X3D-standarden <code>GeoCoordinate geoSystem='\"GD\" \"WE\" "
+"\"latitude_first\"'</code> använder du <code>(2 + 1)</code> = <code>3</code>"
 
 #. Tag: entry
 #, no-c-format
@@ -25100,7 +25084,7 @@ msgid ""
 "appropriate type is returned."
 msgstr ""
 "Returnerar en geometri som representerar den del av geometri A som inte skär "
-"geometri B. Detta är ekvivalent med <code>A - ST_Intersection(A,B).</code> "
+"geometri B. Detta är likvärdigt med <code>A - ST_Intersection(A,B)</code>. "
 "Om A är helt innesluten i B returneras en tom atomgeometri av lämplig typ."
 
 #. Tag: para
@@ -25709,10 +25693,10 @@ msgid ""
 "ST_Intersection(A,B)</code>. It is called a symmetric difference because "
 "<code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>."
 msgstr ""
-"Returnerar en geometri som representerar de delar av geonetrierna A och B "
+"Returnerar en geometri som representerar de delar av geometrierna A och B "
 "som inte skär varandra. Detta är likvärdigt med <code>ST_Union(A,B) - "
-"ST_Intersection(A,B)</code>. Det kallas en symmetrisk differens eftersom "
-"<code>ST_SymDifference(A,B) = ST_SymDifference(B,A).</code>."
+"ST_Intersection(A,B)</code>. Den kallas symmetrisk differens eftersom <code>"
+"ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -25771,8 +25755,8 @@ msgid ""
 msgstr ""
 "En annan användning av denna funktion är att nodera och lösa upp en samling "
 "linestrings som korsar eller överlappar varandra för att göra dem <link "
-"linkend=\"Simple_Geometry\">enkla.</link>(<xref linkend=\"ST_Node\"/> gör "
-"också detta, men det ger inte <code>gridSize-alternativet</code>.)"
+"linkend=\"Simple_Geometry\">enkla</link>. (<xref linkend=\"ST_Node\"/> gör "
+"också detta, men tillhandahåller inte alternativet <code>gridSize</code>.)"
 
 #. Tag: para
 #, no-c-format
@@ -26480,17 +26464,17 @@ msgid ""
 "supplied, they are converted to linestring with CurveToLine first, then same "
 "than for <varname>LINESTRING</varname>"
 msgstr ""
-"Beräknar en punkt som är den geometriska tyngdpunkten för en geometri. "
-"För<varname>[MULTI</varname><varname>]POINTs</varname>är centroiden det "
-"aritmetiska medelvärdet av de inmatade koordinaterna. För [<varname>MULTI</"
-"varname><varname>]LINESTRINGs</varname>beräknas centroiden med hjälp av den "
-"viktade längden för varje linjesegment. För [<varname>MULTI</"
-"varname><varname>]POLYGONER</varname>beräknas centroiden i termer av area. "
-"Om en tom geometri anges, returneras en tom <varname>GEOMETRYCOLLECTION</"
-"varname>. Om <varname>NULL</varname> anges, returneras <varname>NULL</"
-"varname>. Om <varname>CIRCULARSTRING</varname> eller <varname>COMPOUNDCURVE</"
-"varname> anges konverteras de till linestring med CurveToLine först, sedan "
-"på samma sätt som för <varname>LINESTRING</varname>"
+"Beräknar en punkt som är den geometriska tyngdpunkten för en geometri. För "
+"[<varname>MULTI</varname>]<varname>POINT</varname>s är centroiden det "
+"aritmetiska medelvärdet av indatakoordinaterna. För [<varname>MULTI</varname>"
+"]<varname>LINESTRING</varname>s beräknas centroiden med den viktade längden "
+"av varje linjesegment. För [<varname>MULTI</varname>]<varname>POLYGON</"
+"varname>s beräknas centroiden utifrån area. Om en tom geometri anges "
+"returneras en tom <varname>GEOMETRYCOLLECTION</varname>. Om <varname>NULL</"
+"varname> anges returneras <varname>NULL</varname>. Om <varname>"
+"CIRCULARSTRING</varname> eller <varname>COMPOUNDCURVE</varname> anges "
+"konverteras de först till linestring med CurveToLine och behandlas sedan som "
+"<varname>LINESTRING</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -26774,13 +26758,12 @@ msgid ""
 "is a Point. The polygon will not contain holes unless the optional "
 "<varname>param_allow_holes</varname> argument is specified as true."
 msgstr ""
-"Ett konkavt skrov är en (vanligtvis) konkav geometri som innehåller indata "
-"och vars hörn är en delmängd av indatans hörn. I det allmänna fallet är det "
-"konkava skrovet en polygon. Det konkava skrovet av två eller flera "
-"kollinjära punkter är en LineString med två punkter. Det konkava skrovet av "
-"en eller flera identiska punkter är en Point. Polygonen kommer inte att "
-"innehålla hål om inte det valfria <varname>param_allow_holes-argumentet</"
-"varname> anges som true."
+"Ett konkavt skrov är en (vanligen) konkav geometri som innehåller indata och "
+"vars hörn är en delmängd av indatans hörn. I det allmänna fallet är det "
+"konkava skrovet en Polygon. Det konkava skrovet av två eller fler kollineära "
+"punkter är en LineString med två punkter. Det konkava skrovet av en eller "
+"fler identiska punkter är en Point. Polygonen innehåller inga hål om inte "
+"det valfria argumentet <varname>param_allow_holes</varname> anges som true."
 
 #. Tag: para
 #, no-c-format
@@ -26807,11 +26790,11 @@ msgid ""
 "depends on the nature of the input data, but often values between 0.3 and "
 "0.1 produce reasonable results."
 msgstr ""
-"<varname>Param_pctconvex</varname> styr den beräknade skrovets konkavitet. "
-"Ett värde på 1 ger det konvexa skrovet. Värden mellan 1 och 0 ger skrov med "
-"ökande konkavitet. Ett värde på 0 ger ett skrov med maximal konkavitet (men "
-"fortfarande en enda polygon). Valet av ett lämpligt värde beror på hur "
-"indata ser ut, men ofta ger värden mellan 0,3 och 0,1 rimliga resultat."
+"<varname>param_pctconvex</varname> styr det beräknade skrovets konkavitet. "
+"Värdet 1 ger det konvexa skrovet. Värden mellan 1 och 0 ger skrov med ökande "
+"konkavitet. Värdet 0 ger ett skrov med maximal konkavitet (men fortfarande "
+"en enda polygon). Vilket värde som passar beror på indatans egenskaper, men "
+"värden mellan 0,3 och 0,1 ger ofta rimliga resultat."
 
 #. Tag: para
 #, no-c-format
@@ -26851,8 +26834,8 @@ msgid ""
 "<code>ST_ConcaveHull(ST_Collect(geom ), 0.80)</code>."
 msgstr ""
 "Detta är inte en aggregatfunktion. Använd <xref linkend=\"ST_Collect\"/> för "
-"att beräkna det konkava höljet för en uppsättning geometrier, till exempel "
-"<code>ST_ConcaveHull(ST_Collect(geom), 0.80)</code>."
+"att beräkna det konkava höljet för en uppsättning geometrier (t.ex. <code>"
+"ST_ConcaveHull(ST_Collect(geom ), 0.80)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -26949,10 +26932,9 @@ msgid ""
 "geometries, use <xref linkend=\"ST_Collect\"/> to aggregate them into a "
 "geometry collection (e.g. <code>ST_ConvexHull(ST_Collect(geom))</code>."
 msgstr ""
-"Detta är inte en aggregeringsfunktion. För att beräkna det konvexa skrovet "
-"av en uppsättning geometrier, använd <xref linkend=\"ST_Collect\"/> för att "
-"aggregera dem till en geometrisamling (t.ex. "
-"<code>ST_ConvexHull(ST_Collect(geom</code>))."
+"Detta är inte en aggregatfunktion. Använd <xref linkend=\"ST_Collect\"/> för "
+"att aggregera en uppsättning geometrier till en geometrisamling och beräkna "
+"dess konvexa hölje (t.ex. <code>ST_ConvexHull(ST_Collect(geom))</code>."
 
 #. Tag: para
 #, no-c-format
@@ -27005,12 +26987,11 @@ msgid ""
 "<varname>flags</varname> code:"
 msgstr ""
 "Beräknar <link xlink:href=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\">Delaunay-trianguleringen</link> av hörnen i "
-"indatageometrin. Den valfria <varname>toleransen</varname> kan användas för "
-"att fästa ihop närliggande indatavertikaler, vilket förbättrar robustheten i "
-"vissa situationer. Resultatgeometrin avgränsas av den konvexa skrovet av "
-"indatapunkterna. Representationen av resultatgeometrin bestäms av "
-"<varname>flaggkoden</varname>:"
+"Delaunay_triangulation\">Delaunay-trianguleringen</link> av indatageometrins "
+"hörn. Den valfria <varname>tolerance</varname> kan användas för att fästa "
+"ihop närliggande indatahörn, vilket förbättrar robustheten i vissa "
+"situationer. Resultatgeometrin avgränsas av indatageometrins konvexa skrov. "
+"Resultatgeometrins representation bestäms av koden <varname>flags</varname>:"
 
 #. Tag: para
 #, no-c-format
@@ -27149,10 +27130,10 @@ msgid ""
 "<varname>seed</varname> is used to regenerate a deterministic sequence of "
 "points, and must be greater than zero."
 msgstr ""
-"ST_GeneratePoints genererar en multipunkt som består av ett givet antal "
-"pseudoslumpmässiga punkter som ligger inom inmatningsområdet. Det valfria "
-"<varname>fröet</varname> används för att återskapa en deterministisk sekvens "
-"av punkter och måste vara större än noll."
+"ST_GeneratePoints genererar en multipunkt med ett angivet antal "
+"pseudoslumpmässiga punkter inom indataområdet. Den valfria <varname>seed</"
+"varname> används för att återskapa en deterministisk punktsekvens och måste "
+"vara större än noll."
 
 #. Tag: para
 #, no-c-format
@@ -27218,11 +27199,11 @@ msgid ""
 "default)."
 msgstr ""
 "Algoritmen itererar tills avståndsförändringen mellan på varandra följande "
-"iterationer är mindre än den angivna <varname>toleransparametern</varname>. "
-"Om detta villkor inte har uppfyllts efter <varname>max_iterations</varname> "
-"iterationer, producerar funktionen ett fel och avslutas, såvida inte "
-"<varname>fail_if_not_converged</varname> är satt till <code>false</code> "
-"(standard)."
+"iterationer är mindre än den angivna parametern <varname>tolerance</varname>"
+". Om villkoret inte är uppfyllt efter <varname>max_iterations</varname> "
+"iterationer ger funktionen ett fel och avslutas, om inte <varname>"
+"fail_if_not_converged</varname> är satt till <code>false</code> "
+"(standardvärdet)."
 
 #. Tag: para
 #, no-c-format
@@ -27230,8 +27211,8 @@ msgid ""
 "If a <varname>tolerance</varname> argument is not provided, the tolerance "
 "value is calculated based on the extent of the input geometry."
 msgstr ""
-"Om inget <varname>toleransargument</varname> anges beräknas toleransvärdet "
-"baserat på omfattningen av indatageometrin."
+"Om argumentet <varname>tolerance</varname> inte anges beräknas "
+"toleransvärdet utifrån indatageometrins utsträckning."
 
 #. Tag: para
 #, no-c-format
@@ -27392,7 +27373,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>radius</varname> - radius of the circle"
-msgstr "<varname>radie</varname> - cirkelns radie"
+msgstr "<varname>radius</varname> – cirkelns radie"
 
 #. Tag: para
 #, no-c-format
@@ -27818,8 +27799,8 @@ msgid ""
 "also works on line and point geometries."
 msgstr ""
 "Returnerar en <varname>POINT</varname> som garanterat ligger i det inre av "
-"en yta<varname>(POLYGON</varname>, <varname>MULTIPOLYGON</varname> och "
-"<varname>CURVEPOLYGON</varname>). I PostGIS fungerar denna funktion även på "
+"en yta (<varname>POLYGON</varname>, <varname>MULTIPOLYGON</varname> och "
+"<varname>CURVEPOLYGON</varname>). I PostGIS fungerar funktionen även på "
 "linje- och punktgeometrier."
 
 #. Tag: para
@@ -28127,13 +28108,13 @@ msgid ""
 "within the tolerance distance of the simplified linework. The result may not "
 "be valid even if the input is."
 msgstr ""
-"Beräknar en förenklad representation av en geometri med hjälp av <link "
+"Beräknar en förenklad representation av en geometri med <link "
 "xlink:href=\"https://en.wikipedia.org/wiki/"
 "Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker-"
-"algoritmen</link>. <varname>Förenklingstoleransen</varname> är ett "
-"avståndsvärde, i enheterna för indata SRS. Förenklingen tar bort hörn som "
-"ligger inom toleransavståndet för det förenklade linjearbetet. Resultatet "
-"kanske inte är giltigt även om indata är det."
+"algoritmen</link>. Förenklingens <varname>tolerance</varname> är ett "
+"avståndsvärde i indatans SRS-enheter. Förenklingen tar bort hörn som ligger "
+"inom toleransavståndet från det förenklade linjenätet. Resultatet kan vara "
+"ogiltigt även om indata är giltiga."
 
 #. Tag: para
 #, no-c-format
@@ -28239,15 +28220,14 @@ msgid ""
 "are within the tolerance distance of the simplified linework, as long as "
 "topology is preserved. The result will be valid and simple if the input is."
 msgstr ""
-"Beräknar en förenklad representation av en geometri med hjälp av en variant "
-"av <link xlink:href=\"https://en.wikipedia.org/wiki/"
+"Beräknar en förenklad representation av en geometri med en variant av <link "
+"xlink:href=\"https://en.wikipedia.org/wiki/"
 "Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm\">Douglas-Peucker-"
-"algoritmen</link> som begränsar förenklingen för att säkerställa att "
-"resultatet har samma topologi som indata. <varname>Förenklingstoleransen</"
-"varname> är ett avståndsvärde, i enheterna för indatans SRS. Förenklingen "
-"tar bort toppar som ligger inom toleransavståndet för det förenklade "
-"linjeverket, så länge som topologin bevaras. Resultatet kommer att vara "
-"giltigt och enkelt om indata är det."
+"algoritmen</link> som begränsar förenklingen så att resultatet har samma "
+"topologi som indata. Förenklingens <varname>tolerance</varname> är ett "
+"avståndsvärde i indatans SRS-enheter. Förenklingen tar bort hörn som ligger "
+"inom toleransavståndet från det förenklade linjenätet, så länge resultatets "
+"topologi bevaras. Resultatet är giltigt och enkelt om indata är det."
 
 #. Tag: para
 #, no-c-format
@@ -28682,8 +28662,8 @@ msgstr ""
 "wiki/Voronoi_diagram\">Voronoi-diagram</link> från hörnen i den angivna "
 "geometrin och returnerar gränserna mellan cellerna i diagrammet som en "
 "MultiLineString. Returnerar null om indatageometrin är null. Returnerar en "
-"tom geometrisamling om indatageometrin endast innehåller ett vertex. "
-"Returnerar en tom geometrisamling om <varname>extend_to-kuvertet</varname> "
+"tom geometrisamling om indatageometrin endast innehåller ett hörn. "
+"Returnerar en tom geometrisamling om kuvertet <varname>extend_to</varname> "
 "har noll area."
 
 #. Tag: para
@@ -28698,9 +28678,9 @@ msgid ""
 "considered equivalent. Robustness of the algorithm can be improved by "
 "supplying a nonzero tolerance distance. (default = 0.0)"
 msgstr ""
-"<varname>tolerans</varname>: Det avstånd inom vilket hörn anses vara "
+"<varname>tolerance</varname>: Avståndet inom vilket hörn anses vara "
 "likvärdiga. Algoritmens robusthet kan förbättras genom att ange ett "
-"toleransavstånd som inte är noll. (standard = 0,0)"
+"toleransavstånd som inte är noll. (standard = 0.0)"
 
 #. Tag: para
 #, no-c-format
@@ -28743,11 +28723,11 @@ msgid ""
 msgstr ""
 "Beräknar ett tvådimensionellt <link xlink:href=\"https://en.wikipedia.org/"
 "wiki/Voronoi_diagram\">Voronoi-diagram</link> från hörnen i den angivna "
-"geometrin. Resultatet är en GEOMETRYCOLLECTION av POLYGONER som täcker ett "
-"kuvert som är större än omfattningen av de ingående hörnen. Returnerar null "
-"om indatageometrin är null. Returnerar en tom geometrisamling om "
-"indatageometrin endast innehåller en vertex. Returnerar en tom "
-"geometrisamling om <varname>extend_to-kuvertet</varname> har noll area."
+"geometrin. Resultatet är en GEOMETRYCOLLECTION av POLYGONs som täcker ett "
+"kuvert större än indatahörnens utsträckning. Returnerar null om "
+"indatageometrin är null. Returnerar en tom geometrisamling om "
+"indatageometrin endast innehåller ett hörn. Returnerar en tom "
+"geometrisamling om kuvertet <varname>extend_to</varname> har noll area."
 
 #. Tag: para
 #, no-c-format
@@ -29225,10 +29205,10 @@ msgid ""
 "to an entry in the SPATIAL_REF_SYS table."
 msgstr ""
 "Skapar begränsningar för en rasterkolumn som används för att visa "
-"information i rasterkatalogen <varname>raster_columns</varname>. "
-"<varname>Rastschema</varname> är namnet på det tabellschema som tabellen "
-"finns i. <varname>Srid</varname> måste vara en heltalsreferens till en post "
-"i tabellen SPATIAL_REF_SYS."
+"information i rasterkatalogen <varname>raster_columns</varname>. <varname>"
+"rastschema</varname> är namnet på tabellschemat där tabellen finns. <varname>"
+"srid</varname> måste vara ett heltalsvärde som refererar till en post i "
+"tabellen SPATIAL_REF_SYS."
 
 #. Tag: para
 #, no-c-format
@@ -29236,8 +29216,8 @@ msgid ""
 "<varname>raster2pgsql</varname> loader uses this function to register raster "
 "tables"
 msgstr ""
-"<varname>raster2pgsql-laddaren</varname> använder denna funktion för att "
-"registrera rastertabeller"
+"Laddaren <varname>raster2pgsql</varname> använder funktionen för att "
+"registrera rastertabeller."
 
 #. Tag: para
 #, no-c-format
@@ -29466,8 +29446,8 @@ msgid ""
 "<varname>search_path</varname> will be used."
 msgstr ""
 "När parametrarna <varname>ovschema</varname> och <varname>refschema</"
-"varname> utelämnas används den första tabellen som hittas när "
-"<varname>sökvägen</varname> skannas."
+"varname> utelämnas används den första tabell som hittas vid sökning i "
+"<varname>search_path</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -29507,8 +29487,8 @@ msgid ""
 "When the <varname>ovschema</varname> parameter is omitted, the first table "
 "found scanning the <varname>search_path</varname> will be used."
 msgstr ""
-"Om parametern <varname>ovschema</varname> utelämnas används den första "
-"tabellen som hittas när <varname>sökvägen</varname> skannas."
+"När parametern <varname>ovschema</varname> utelämnas används den första "
+"tabell som hittas vid sökning i <varname>search_path</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -29697,9 +29677,9 @@ msgid ""
 "varname> of the original in both directions)."
 msgstr ""
 "Skapa en översiktstabell med omsamplade plattor från källtabellen. "
-"Utdatabrickorna kommer att ha samma storlek som indatabrickorna och täcka "
-"samma spatiala utsträckning med en lägre upplösning (pixelstorleken kommer "
-"att vara 1/<varname>faktor</varname> av originalet i båda riktningarna)."
+"Utdataplattorna har samma storlek som indataplattorna och täcker samma "
+"spatiala utsträckning med lägre upplösning (pixelstorleken blir 1/<varname>"
+"factor</varname> av originalet i båda riktningarna)."
 
 #. Tag: para
 #, no-c-format
@@ -29803,9 +29783,9 @@ msgid ""
 "<varname>torast</varname> is NULL then the <varname>fromband</varname> band "
 "of each raster in the array is accumulated into a new raster."
 msgstr ""
-"För den variant som tar en array av raster (variant 5), om <varname>torast</"
-"varname> är NULL, ackumuleras <varname>fromband-bandet</varname> för varje "
-"raster i arrayen till ett nytt raster."
+"För varianten som tar en rasterarray (variant 5), ackumuleras bandet "
+"<varname>fromband</varname> från varje raster i arrayen till ett nytt raster "
+"om <varname>torast</varname> är NULL."
 
 #. Tag: para
 #, no-c-format
@@ -29814,9 +29794,9 @@ msgid ""
 "the value must include the full path to the raster file. The file must also "
 "be accessible to the postgres server process."
 msgstr ""
-"För de varianter som tar <varname>utdbfile</varname> (variant 6 och 7) måste "
-"värdet innehålla den fullständiga sökvägen till rasterfilen. Filen måste "
-"också vara tillgänglig för postgres-serverprocessen."
+"För varianterna som tar <varname>outdbfile</varname> (variant 6 och 7) måste "
+"värdet innehålla hela sökvägen till rasterfilen. Filen måste också vara "
+"tillgänglig för postgres-serverprocessen."
 
 #. Tag: para
 #, no-c-format
@@ -29947,14 +29927,14 @@ msgid ""
 "<varname>scalex</varname> &amp; <varname>scaley</varname> arguments to "
 "double precision so that PostgreSQL choose the right variant."
 msgstr ""
-"Den andra gruppen, som består av fyra varianter, låter dig ställa in "
-"rastrets dimensioner genom att ange parametrarna för en "
-"pixelstorlek<varname>(scalex</varname> &amp; <varname>scaley</varname> och "
-"<varname>skewx</varname> &amp; <varname>skewy</varname>). <varname>Bredden</"
-"varname> och <varname>höjden</varname> på det resulterande rastret kommer "
-"att justeras för att passa geometrins omfattning. I de flesta fall måste du "
-"kasta heltal <varname>scalex</varname> &amp; <varname>scaley-argument</"
-"varname> till dubbel precision så att PostgreSQL väljer rätt variant."
+"Den andra gruppen, som består av fyra varianter, låter dig ange rastrets "
+"dimensioner med parametrar för pixelstorlek (<varname>scalex</varname> &amp; "
+"<varname>scaley</varname> och <varname>skewx</varname> &amp; <varname>skewy</"
+"varname>). Det resulterande rastrets <varname>width</varname> och <varname>"
+"height</varname> justeras för att passa geometrins utsträckning. I de flesta "
+"fall måste heltalsargumenten <varname>scalex</varname> och <varname>scaley</"
+"varname> omvandlas till dubbel precision så att PostgreSQL väljer rätt "
+"variant."
 
 #. Tag: para
 #, no-c-format
@@ -29998,12 +29978,12 @@ msgid ""
 "(<varname>nodataval</varname>). If not provided pixeltyped defaults to 8BUI, "
 "values to 1 and nodataval to 0."
 msgstr ""
-"Varje variantgrupp gör det möjligt att producera ett enbandsraster eller ett "
-"flerbandsraster. För att producera ett raster med flera band måste du "
-"tillhandahålla en array med pixeltyper<varname>(pixeltype[])</varname>, en "
-"array med initiala värden (<varname>value</varname>) och en array "
-"med<varname>nodatavärden (nodataval)</varname>. Om pixeltyped inte "
-"tillhandahålls är standardvärdet 8BUI, värdena 1 och nodataval 0."
+"Varje variantgrupp kan producera ett enbandsraster eller ett "
+"flerbandsraster. För att producera ett flerbandsraster måste du ange en "
+"array med pixeltyper (<varname>pixeltype[]</varname>), en array med "
+"startvärden (<varname>value</varname>) och en array med nodatavärden "
+"(<varname>nodataval</varname>). Om de inte anges används 8BUI för pixeltype, "
+"1 för value och 0 för nodataval."
 
 #. Tag: para
 #, no-c-format
@@ -30146,13 +30126,13 @@ msgid ""
 "<code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> "
 "list of bands form may be removed in future versions of PostGIS."
 msgstr ""
-"För funktionen <code>nbands</code> as textvariant är standardavgränsaren "
-"<code>,</code> vilket innebär att du kan be om <code>\"1,2,3\"</code> och om "
-"du vill använda en annan avgränsare gör du <code>ST_Band(rast, '1@2@3', '@')."
-"</code> För att be om flera band rekommenderar vi starkt att du använder "
-"array-formen av denna funktion, t.ex. <code>ST_Band(rast, '{1,2,3}'::int[]);"
-"</code> eftersom <code>textlistan</code> med band kan tas bort i framtida "
-"versioner av PostGIS."
+"För textvarianten av funktionen <code>nbands</code> är standardavgränsaren "
+"<code>,</code>, vilket innebär att du kan begära <code>'1,2,3'</code>. Om du "
+"vill använda en annan avgränsare använder du <code>ST_Band(rast, '1@2@3', "
+"'@')</code>. För att begära flera band rekommenderar vi starkt att du "
+"använder funktionsformen med array, t.ex. <code>ST_Band(rast, '{1,2,3}"
+"'::int[]);</code>, eftersom listformen <code>text</code> med band kan tas "
+"bort i framtida versioner av PostGIS."
 
 #. Tag: para
 #, no-c-format
@@ -30231,14 +30211,14 @@ msgid ""
 "varname> * <varname>scaley</varname>)."
 msgstr ""
 "Skapa en uppsättning rasterplattor med <xref "
-"linkend=\"RT_ST_MakeEmptyRaster\"/>. Grid-dimensionen är <varname>bredd</"
-"varname> och <varname>höjd</varname>. Plattdimensionen är "
-"<varname>tilewidth</varname> och <varname>tileheight</varname>. Det täckta "
-"georefererade området är från övre vänstra hörnet<varname>(upperleftx</"
-"varname>, <varname>upperlefty</varname>) till nedre högra hörnet<varname>(</"
-"varname> upperleftx + <varname>bredd</varname> * <varname>scalex</varname>, "
-"<varname>upperlefty</varname> + <varname>höjd</varname> * <varname>scaley</"
-"varname>)."
+"linkend=\"RT_ST_MakeEmptyRaster\"/>. Rutnätets dimension är <varname>width</"
+"varname> &amp; <varname>height</varname>. Plattans dimension är <varname>"
+"tilewidth</varname> &amp; <varname>tileheight</varname>. Det täckta "
+"georefererade området går från det övre vänstra hörnet (<varname>upperleftx</"
+"varname>, <varname>upperlefty</varname>) till det nedre högra hörnet "
+"(<varname>upperleftx</varname> + <varname>width</varname> * <varname>scalex</"
+"varname>, <varname>upperlefty</varname> + <varname>height</varname> * "
+"<varname>scaley</varname>)."
 
 #. Tag: para
 #, no-c-format
@@ -31793,12 +31773,12 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
-"Returnerar värdet för ett visst band i en viss kolumnx, radpixel eller vid "
-"en viss geometrisk punkt. Bandnummer börjar på 1 och antas vara 1 om det "
-"inte anges. Om <varname>exclude_nodata_value</varname> är satt till false, "
-"anses alla pixlar inklusive <varname>nodata-pixlar</varname> korsa varandra "
-"och returnerar värdet. Om <varname>värdet exclude_nodata_value</varname> "
-"inte anges läses det från rastrets metadata."
+"Returnerar värdet för ett angivet band i en angiven pixel med columnx, rowy "
+"eller vid en viss geometrisk punkt. Bandnummer börjar på 1 och antas vara 1 "
+"om inget anges. Om <varname>exclude_nodata_value</varname> är satt till "
+"false anses alla pixlar, inklusive <varname>nodata</varname>-pixlar, skära "
+"och deras värde returneras. Om <varname>exclude_nodata_value</varname> inte "
+"anges läses värdet från rastrets metadata."
 
 #. Tag: para
 #, no-c-format
@@ -31819,8 +31799,8 @@ msgid ""
 "<varname>exclude_nodata_value</varname> is set to false, then all pixels are "
 "considered."
 msgstr ""
-"Om <varname>värdet exclude_nodata_value</varname> är satt till true beaktas "
-"endast pixlar som inte är <varname>nodata</varname>. Om <varname>värdet "
+"Om <varname>exclude_nodata_value</varname> är satt till true beaktas endast "
+"pixlar som inte är <varname>nodata</varname>. Om <varname>"
 "exclude_nodata_value</varname> är satt till false beaktas alla pixlar."
 
 #. Tag: para
@@ -31945,9 +31925,9 @@ msgid ""
 "pixel specified by a columnx and rowy or a geometric point expressed in the "
 "same spatial reference coordinate system as the raster."
 msgstr ""
-"Returnerar det närmaste <varname>icke-NODATA-värdet</varname> för ett givet "
-"bands pixel som anges av en kolumnx och rowy eller en geometrisk punkt "
-"uttryckt i samma spatiala referenskoordinatsystem som rastret."
+"Returnerar det närmaste värdet som inte är <varname>NODATA</varname> för en "
+"pixel i ett angivet band, angiven med columnx och rowy eller en geometrisk "
+"punkt uttryckt i samma spatiala referenskoordinatsystem som rastret."
 
 #. Tag: para
 #, no-c-format
@@ -31958,11 +31938,11 @@ msgid ""
 "varname>, the function will find the nearest pixel to the columnx, rowy "
 "pixel or geometric point whose value is not <varname>NODATA</varname>."
 msgstr ""
-"Returnerar det närmaste <varname>icke-NODATA-värdet</varname> för ett givet "
-"band i en given kolumnx, rowy-pixel eller i en specifik geometrisk punkt. Om "
-"pixeln i kolumnx, rowy eller pixeln i den angivna geometriska punkten är "
-"<varname>NODATA</varname>, kommer funktionen att hitta den närmaste pixeln "
-"till pixeln i kolumnx, rowy eller den geometriska punkten vars värde inte är "
+"Returnerar det närmaste värdet som inte är <varname>NODATA</varname> för ett "
+"angivet band i en angiven pixel med columnx, rowy eller vid en särskild "
+"geometrisk punkt. Om pixeln med columnx, rowy eller pixeln vid den angivna "
+"geometriska punkten är <varname>NODATA</varname> hittar funktionen närmaste "
+"pixel till columnx, rowy eller den geometriska punkten vars värde inte är "
 "<varname>NODATA</varname>."
 
 #. Tag: para
@@ -31974,11 +31954,11 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
-"Bandnumren börjar på 1 och <varname>bandnum</varname> antas vara 1 om det "
-"inte anges. Om <varname>exclude_nodata_value</varname> är satt till false "
-"anses alla pixlar inklusive <varname>nodata-pixlar</varname> skära varandra "
-"och returnerar värdet. Om <varname>värdet exclude_nodata_value</varname> "
-"inte anges läses det från rastrets metadata."
+"Bandnummer börjar på 1 och <varname>bandnum</varname> antas vara 1 om inget "
+"anges. Om <varname>exclude_nodata_value</varname> är satt till false anses "
+"alla pixlar, inklusive <varname>nodata</varname>-pixlar, skära och deras "
+"värde returneras. Om <varname>exclude_nodata_value</varname> inte anges "
+"läses värdet från rastrets metadata."
 
 #. Tag: para
 #, no-c-format
@@ -32082,9 +32062,9 @@ msgid ""
 "a geometric point expressed in the same spatial reference coordinate system "
 "as the raster."
 msgstr ""
-"Returnerar en 2D-array med dubbel precision av <varname>icke-NODATA-värden</"
-"varname> runt ett visst bands pixel som anges av antingen en kolumnX och "
-"radY eller en geometrisk punkt uttryckt i samma spatiala "
+"Returnerar en tvådimensionell array med dubbel precision av värden som inte "
+"är <varname>NODATA</varname> runt en pixel i ett angivet band, angiven med "
+"columnX och rowY eller en geometrisk punkt uttryckt i samma spatiala "
 "referenskoordinatsystem som rastret."
 
 #. Tag: para
@@ -32100,15 +32080,16 @@ msgid ""
 "interest. The center value of the 2-D array will be the value at the pixel "
 "specified by the columnX and rowY or the geometric point."
 msgstr ""
-"Returnerar en 2D-array med dubbel precision av <varname>icke-NODATA-värdena</"
-"varname> runt ett visst bands pixel som anges av antingen en kolumnX och "
-"radY eller en geometrisk punkt uttryckt i samma spatiala "
+"Returnerar en tvådimensionell array med dubbel precision av värden som inte "
+"är <varname>NODATA</varname> runt en pixel i ett angivet band, angiven med "
+"columnX och rowY eller en geometrisk punkt uttryckt i samma spatiala "
 "referenskoordinatsystem som rastret. Parametrarna <varname>distanceX</"
 "varname> och <varname>distanceY</varname> definierar antalet pixlar runt den "
-"angivna pixeln i X- och Y-axlarna, t.ex. vill jag ha alla värden inom 3 "
-"pixlars avstånd längs X-axeln och 2 pixlars avstånd längs Y-axeln runt min "
-"intressanta pixel. Centrumvärdet för 2D-arrayen kommer att vara värdet på "
-"den pixel som anges av kolumnX och radY eller den geometriska punkten."
+"angivna pixeln längs X- och Y-axlarna. Om du exempelvis vill ha alla värden "
+"inom tre pixlars avstånd längs X-axeln och två pixlars avstånd längs Y-axeln "
+"runt den aktuella pixeln används dessa värden. Centrumvärdet i den "
+"tvådimensionella arrayen blir värdet för den pixel som anges av columnX och "
+"rowY eller den geometriska punkten."
 
 #. Tag: para
 #, no-c-format
@@ -32118,10 +32099,10 @@ msgid ""
 "<varname>distanceX</varname> and <varname>distanceY</varname> of 1, the "
 "returning array will be 3x3."
 msgstr ""
-"Antalet element längs varje axel i den returnerade 2D-arrayen är 2 * "
-"(<varname>avståndX</varname>|<varname>avståndY</varname>) + 1. För ett "
-"<varname>avståndX</varname> och ett <varname>avståndY</varname> på 1 blir "
-"den returnerade arrayen 3x3."
+"Antalet element längs varje axel i den returnerade tvådimensionella arrayen "
+"är 2 * (<varname>distanceX</varname>|<varname>distanceY</varname>) + 1. För "
+"<varname>distanceX</varname> och <varname>distanceY</varname> med värdet 1 "
+"blir den returnerade arrayen 3x3."
 
 #. Tag: para
 #, no-c-format
@@ -32239,12 +32220,12 @@ msgid ""
 "<varname>newvalueset</varname> from being set (due to PostgreSQL not "
 "permitting ragged/jagged arrays). See example Variant 1."
 msgstr ""
-"För variant 1 bestäms de specifika pixlarna som ska ställas in av "
-"<varname>kolumnx</varname>, <varname>rowy-pixelkoordinaterna</varname> och "
-"dimensionerna för <varname>newvalueset-arrayen</varname>. <varname>noset</"
-"varname> kan användas för att förhindra att pixlar med värden som finns i "
-"<varname>newvalueset</varname> ställs in (på grund av att PostgreSQL inte "
-"tillåter ragged / jagged arrays). Se exempel Variant 1."
+"För variant 1 bestäms pixlarna som ska anges av pixelkoordinaterna <varname>"
+"columnx</varname>, <varname>rowy</varname> och dimensionerna för arrayen "
+"<varname>newvalueset</varname>. <varname>noset</varname> kan användas för "
+"att förhindra att pixlar med värden som finns i <varname>newvalueset</"
+"varname> anges (eftersom PostgreSQL inte tillåter ojämna arraydimensioner). "
+"Se exempelvariant 1."
 
 #. Tag: para
 #, no-c-format
@@ -32254,10 +32235,10 @@ msgid ""
 "array. Elements in <varname>newvalueset</varname> with the "
 "<varname>nosetvalue</varname> value with be skipped. See example Variant 2."
 msgstr ""
-"Variant 2 är som variant 1 men med ett enkelt <varname>nosetvärde</varname> "
-"med dubbel precision i stället för en boolesk <varname>noset-array</"
-"varname>. Element i <varname>newvalueset</varname> med värdet "
-"<varname>nosetvalue</varname> hoppas över. Se exempel Variant 2."
+"Variant 2 är som variant 1 men använder ett enkelt <varname>nosetvalue</"
+"varname> med dubbel precision i stället för en boolesk array <varname>noset</"
+"varname>. Element i <varname>newvalueset</varname> med värdet <varname>"
+"nosetvalue</varname> hoppas över. Se exempelvariant 2."
 
 #. Tag: para
 #, no-c-format
@@ -33507,9 +33488,9 @@ msgid ""
 "all pixels"
 msgstr ""
 "Om <varname>exclude_nodata_value</varname> är satt till true räknas endast "
-"pixlar med ett värde som inte är lika med rastrets <varname>nodatavärde</"
-"varname>. Ställ in <varname>exclude_nodata_value</varname> till false för "
-"att räkna alla pixlar"
+"pixlar vars värde inte är lika med rastrets <varname>nodata</varname>-värde. "
+"Sätt <varname>exclude_nodata_value</varname> till false för att räkna alla "
+"pixlar."
 
 #. Tag: para
 #, no-c-format
@@ -33564,9 +33545,9 @@ msgid ""
 "all pixels"
 msgstr ""
 "Om <varname>exclude_nodata_value</varname> är satt till true räknas endast "
-"pixlar med ett värde som inte är lika med <varname>NODATA-värdet</varname> i "
-"rastret. Ställ in <varname>exclude_nodata_value</varname> till false för att "
-"räkna alla pixlar"
+"pixlar vars värde inte är lika med rastrets <varname>NODATA</varname>-värde. "
+"Sätt <varname>exclude_nodata_value</varname> till false för att räkna alla "
+"pixlar."
 
 #. Tag: para
 #, no-c-format
@@ -33606,9 +33587,9 @@ msgid ""
 "varname> value . Set <varname>exclude_nodata_value</varname> to false to get "
 "count all pixels."
 msgstr ""
-"Som standard beaktas endast pixelvärden som inte är lika med "
-"<varname>nodatavärdet</varname>. Ställ in <varname>exclude_nodata_value</"
-"varname> på false för att räkna alla pixlar."
+"Som standard beaktas endast pixelvärden som inte är lika med <varname>"
+"nodata</varname>-värdet. Sätt <varname>exclude_nodata_value</varname> till "
+"false för att räkna alla pixlar."
 
 #. Tag: para
 #, no-c-format
@@ -33712,8 +33693,8 @@ msgid ""
 "If <varname>exclude_nodata_value</varname> is set to false, will also count "
 "pixels with no data."
 msgstr ""
-"Om <varname>värdet för exclude_nodata_value</varname> är satt till false "
-"räknas även pixlar utan data."
+"Om <varname>exclude_nodata_value</varname> är satt till false räknas även "
+"pixlar utan data."
 
 #. Tag: para
 #, no-c-format
@@ -33777,9 +33758,9 @@ msgid ""
 "varname> value. Set <varname>exclude_nodata_value</varname> to false to get "
 "count of all pixels."
 msgstr ""
-"Som standard beaktas endast pixelvärden som inte är lika med "
-"<varname>nodatavärdet</varname>. Ställ in <varname>exclude_nodata_value</"
-"varname> på false för att få en räkning av alla pixlar."
+"Som standard beaktas endast pixelvärden som inte är lika med <varname>"
+"nodata</varname>-värdet. Sätt <varname>exclude_nodata_value</varname> till "
+"false för att räkna alla pixlar."
 
 #. Tag: para
 #, no-c-format
@@ -33870,9 +33851,9 @@ msgid ""
 "varname> value. Set <varname>exclude_nodata_value</varname> to False to get "
 "count of all pixels."
 msgstr ""
-"Som standard beaktas endast pixelvärden som inte är lika med <varname>NODATA-"
-"värdet</varname>. Ställ in <varname>exclude_nodata_value</varname> på False "
-"för att få en räkning av alla pixlar."
+"Som standard beaktas endast pixelvärden som inte är lika med <varname>"
+"NODATA</varname>-värdet. Sätt <varname>exclude_nodata_value</varname> till "
+"False för att räkna alla pixlar."
 
 #. Tag: para
 #, no-c-format
@@ -34271,8 +34252,8 @@ msgid ""
 "<varname>quality</varname> number from 0 to 100. The higher the number the "
 "crisper the image."
 msgstr ""
-"<varname>kvalitetssiffra</varname> från 0 till 100. Ju högre siffra desto "
-"skarpare blir bilden."
+"Talet <varname>quality</varname> från 0 till 100. Ju högre tal, desto "
+"skarpare bild."
 
 #. Tag: para
 #, no-c-format
@@ -34374,8 +34355,8 @@ msgid ""
 "<varname>compression</varname> number from 1 to 9. The higher the number the "
 "greater the compression."
 msgstr ""
-"<varname>kompressionsnummer</varname> från 1 till 9. Ju högre siffra desto "
-"större kompression."
+"Talet <varname>compression</varname> från 1 till 9. Ju högre tal, desto "
+"större komprimering."
 
 #. Tag: para
 #, no-c-format
@@ -34461,8 +34442,8 @@ msgid ""
 "<varname>compression</varname> Compression expression -- JPEG90 (or some "
 "other percent), LZW, JPEG, DEFLATE9."
 msgstr ""
-"<varname>komprimering</varname> Kompressionsuttryck -- JPEG90 (eller någon "
-"annan procent), LZW, JPEG, DEFLATE9."
+"<varname>compression</varname> Komprimeringsuttryck – JPEG90 (eller någon "
+"annan procentsats), LZW, JPEG, DEFLATE9."
 
 #. Tag: para
 #, no-c-format
@@ -34563,9 +34544,9 @@ msgid ""
 "the <varname>rast</varname> that intersect the geometry are selected."
 msgstr ""
 "Om <varname>crop</varname> inte anges antas true, vilket innebär att "
-"utdatarastret beskärs till skärningspunkten mellan <varname>geom- och</"
-"varname> <varname>rast-utbredningarna</varname>. Om <varname>crop</varname> "
-"är satt till false får det nya rastret samma utsträckning som <varname>rast</"
+"utdatarastret beskärs till skärningen mellan utsträckningarna för <varname>"
+"geom</varname> och <varname>rast</varname>. Om <varname>crop</varname> är "
+"satt till false får det nya rastret samma utsträckning som <varname>rast</"
 "varname>. Om <varname>touched</varname> är satt till true väljs alla pixlar "
 "i <varname>rast</varname> som skär geometrin."
 
@@ -34677,11 +34658,10 @@ msgid ""
 "8BUI bands. The number of 8BUI bands in the new raster is determined by the "
 "number of color components defined in <varname>colormap</varname>."
 msgstr ""
-"Tillämpa en <varname>färgkarta</varname> på bandet vid <varname>nband</"
-"varname> i <varname>rast</varname>, vilket resulterar i ett nytt raster som "
-"består av upp till fyra 8BUI-band. Antalet 8BUI-band i det nya rastret "
-"bestäms av antalet färgkomponenter som definieras i <varname>colormap</"
-"varname>."
+"Tillämpa en <varname>colormap</varname> på bandet <varname>nband</varname> i "
+"<varname>rast</varname>, vilket ger ett nytt raster med upp till fyra 8BUI-"
+"band. Antalet 8BUI-band i det nya rastret avgörs av antalet färgkomponenter "
+"som definieras i <varname>colormap</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -34701,7 +34681,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Valid pre-defined <varname>colormap</varname> keyword:"
-msgstr "Giltigt fördefinierat nyckelord för <varname>färgkartor</varname>:"
+msgstr "Giltigt fördefinierat nyckelord för <varname>colormap</varname>:"
 
 #. Tag: para
 #, no-c-format
@@ -34709,8 +34689,8 @@ msgid ""
 "<varname>grayscale</varname> or <varname>greyscale</varname> for a one 8BUI "
 "band raster of shades of gray."
 msgstr ""
-"<varname>gråskala</varname> eller <varname>gråskala</varname> för ett 8BUI-"
-"bandraster av nyanser av grått."
+"<varname>grayscale</varname> eller <varname>greyscale</varname> för ett "
+"raster med ett 8BUI-band i gråskalor."
 
 #. Tag: para
 #, no-c-format
@@ -34718,8 +34698,8 @@ msgid ""
 "<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with "
 "colors going from blue to green to red."
 msgstr ""
-"<varname>pseudofärg</varname> för ett raster med fyra 8BUI (RGBA)-band med "
-"färger från blått till grönt till rött."
+"<varname>pseudocolor</varname> för ett raster med fyra 8BUI-band (RGBA) där "
+"färgerna går från blått via grönt till rött."
 
 #. Tag: para
 #, no-c-format
@@ -34727,8 +34707,8 @@ msgid ""
 "<varname>fire</varname> for a four 8BUI (RGBA) band raster with colors going "
 "from black to red to pale yellow."
 msgstr ""
-"<varname>brand</varname> för ett raster med fyra 8BUI (RGBA)-band med färger "
-"från svart till rött till ljusgult."
+"<varname>fire</varname> för ett raster med fyra 8BUI-band (RGBA) där "
+"färgerna går från svart via rött till blekgult."
 
 #. Tag: para
 #, no-c-format
@@ -34776,7 +34756,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Valid keywords for <varname>method</varname>:"
-msgstr "Giltiga nyckelord för <varname>metod</varname>:"
+msgstr "Giltiga nyckelord för <varname>method</varname>:"
 
 #. Tag: para
 #, no-c-format
@@ -34993,13 +34973,12 @@ msgid ""
 "words, any pixel intersecting with a nodata value pixel becomes a nodata "
 "value pixel in the result."
 msgstr ""
-"Det resulterande rastrets utsträckning motsvarar den geometriska "
-"skärningspunkten mellan de två rasterutsträckningarna. Det resulterande "
-"rastret innehåller \"BAND1\", \"BAND2\" eller \"BOTH\" band, enligt vad som "
-"skickas som <varname>returbandparameter</varname>. Nodatavärdesområden som "
-"finns i något band resulterar i nodatavärdesområden i alla band i "
-"resultatet. Med andra ord blir varje pixel som korsas av en "
-"nodatavärdespixel en nodatavärdespixel i resultatet."
+"Det resulterande rastrets utsträckning motsvarar den geometriska skärningen "
+"mellan de två rasterutsträckningarna. Det resulterande rastret innehåller "
+"banden ”BAND1”, ”BAND2” eller ”BOTH”, enligt vad som anges i parametern "
+"<varname>returnband</varname>. Nodatavärdesområden i något band ger "
+"nodatavärdesområden i alla resultatets band. Med andra ord blir varje pixel "
+"som skär en nodatavärdespixel en nodatavärdespixel i resultatet."
 
 #. Tag: para
 #, no-c-format
@@ -35299,8 +35278,8 @@ msgid ""
 "the reference cell is considered (neighborhood of 0)."
 msgstr ""
 "Avståndet i pixlar från referenscellen i x-riktningen. Bredden på den "
-"resulterande matrisen skulle alltså vara <code>2*avståndx + 1.</code> Om "
-"inget anges beaktas endast referenscellen (grannskap 0)."
+"resulterande matrisen blir alltså <code>2*distancex + 1</code>. Om inget "
+"anges beaktas endast referenscellen (grannskap 0)."
 
 #. Tag: para
 #, no-c-format
@@ -35310,7 +35289,7 @@ msgid ""
 "only the reference cell is considered (neighborhood of 0)."
 msgstr ""
 "Avståndet i pixlar från referenscellen i y-riktningen. Höjden på den "
-"resulterande matrisen blir <code>2*avståndety + 1.</code> Om inget anges "
+"resulterande matrisen blir <code>2*distancey + 1</code>. Om inget anges "
 "beaktas endast referenscellen (grannskapet 0)."
 
 #. Tag: para
@@ -35346,9 +35325,9 @@ msgid ""
 "use of a map algebra operation on many rasters and/or many bands. See "
 "example Variant 1."
 msgstr ""
-"Variant 1 accepterar en array <varname>av rastbandarg</varname> som gör det "
+"Variant 1 tar en array av <varname>rastbandarg</varname>, vilket gör det "
 "möjligt att använda en map algebra-operation på många raster och/eller många "
-"band. Se exempel Variant 1."
+"band. Se exempelvariant 1."
 
 #. Tag: para
 #, no-c-format
@@ -35469,12 +35448,11 @@ msgid ""
 "provided, band 1 is assumed. The new raster will have the same georeference, "
 "width, and height as the original raster but will only have one band."
 msgstr ""
-"Skapar ett nytt raster med ett band som bildas genom att tillämpa en giltig "
-"PostgreSQL-algebraisk operation som definieras av <varname>uttrycket</"
-"varname> på inmatningsrastret<varname>(rast).</varname> Om <varname>nband</"
-"varname> inte tillhandahålls antas band 1. Den nya rastern kommer att ha "
-"samma georeferens, bredd och höjd som den ursprungliga rastern men kommer "
-"bara att ha ett band."
+"Skapar ett nytt enrastsband genom att tillämpa en giltig PostgreSQL-"
+"algebraisk operation som definieras av <varname>expression</varname> på "
+"indatarastret (<varname>rast</varname>). Om <varname>nband</varname> inte "
+"anges antas band 1. Det nya rastret får samma georeferens, bredd och höjd "
+"som originalrastret men har bara ett band."
 
 #. Tag: para
 #, no-c-format
@@ -35483,15 +35461,14 @@ msgid ""
 "a band of that pixeltype. If pixeltype is passed NULL, then the new raster "
 "band will have the same pixeltype as the input <varname>rast</varname> band."
 msgstr ""
-"Om <varname>pixeltyp</varname> skickas in kommer det nya rastret att ha ett "
-"band av den pixeltypen. Om pixeltyp skickas till NULL kommer det nya "
-"rasterbandet att ha samma pixeltyp som det ingående <varname>rasterbandet</"
-"varname>."
+"Om <varname>pixeltype</varname> skickas in får det nya rastret ett band av "
+"den pixeltypen. Om pixeltype skickas som NULL får det nya rasterbandet samma "
+"pixeltyp som bandet i indatarastret <varname>rast</varname>."
 
 #. Tag: para
 #, no-c-format
 msgid "Keywords permitted for <varname>expression</varname>"
-msgstr "Nyckelord som är tillåtna för <varname>uttryck</varname>"
+msgstr "Nyckelord som är tillåtna för <varname>expression</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35535,14 +35512,13 @@ msgid ""
 "raster. The resulting raster will have the extent defined by the "
 "<varname>extenttype</varname> parameter."
 msgstr ""
-"Skapar en ny enbandsraster som bildas genom att tillämpa en giltig "
-"PostgreSQL-algebraisk operation på de två banden som definieras av "
-"<varname>uttrycket</varname> på de två inmatningsrasterbanden "
-"<varname>rast1</varname>,<varname>(rast2)</varname>. Om inget "
-"<varname>band1</varname>, <varname>band2</varname> anges antas band 1. Det "
-"resulterande rastret kommer att vara justerat (skala, skevhet och pixelhörn) "
-"på det rutnät som definieras av det första rastret. Det resulterande rastret "
-"kommer att ha den utsträckning som definieras av parametern "
+"Skapar ett nytt enrastsband genom att tillämpa en giltig PostgreSQL-"
+"algebraisk operation på de två band som definieras av <varname>expression</"
+"varname> i de två indatarasterbanden <varname>rast1</varname>, (<varname>"
+"rast2</varname>). Om <varname>band1</varname> och <varname>band2</varname> "
+"inte anges antas band 1. Det resulterande rastret blir justerat (skala, "
+"skevhet och pixelhörn) mot rutnätet som definieras av det första rastret. "
+"Det resulterande rastret får den utsträckning som definieras av parametern "
 "<varname>extenttype</varname>."
 
 #. Tag: para
@@ -35648,8 +35624,8 @@ msgid ""
 "Keywords permitted in <varname>expression</varname>, <varname>nodata1expr</"
 "varname> and <varname>nodata2expr</varname>"
 msgstr ""
-"Nyckelord tillåtna i <varname>uttryck</varname>, <varname>nodata1expr</"
-"varname> och <varname>nodata2expr</varname>"
+"Nyckelord som är tillåtna i <varname>expression</varname>, <varname>"
+"nodata1expr</varname> och <varname>nodata2expr</varname>"
 
 #. Tag: para
 #, no-c-format
@@ -35768,12 +35744,11 @@ msgid ""
 "specified band 1 is assumed. The new raster will have the same georeference, "
 "width, and height as the original raster but will only have one band."
 msgstr ""
-"Skapar en ny raster med ett band som bildas genom att tillämpa en giltig "
-"PostgreSQL-algebraisk operation definierad av <varname>uttrycket</varname> "
-"på inmatningsrastern<varname>(rast).</varname> Om inget <varname>band</"
-"varname> anges antas band 1. Den nya rastern kommer att ha samma "
-"georeferens, bredd och höjd som den ursprungliga rastern men kommer bara att "
-"ha ett band."
+"Skapar ett nytt enrastsband genom att tillämpa en giltig PostgreSQL-"
+"algebraisk operation som definieras av <varname>expression</varname> på "
+"indatarastret (<varname>rast</varname>). Om <varname>band</varname> inte "
+"anges antas band 1. Det nya rastret får samma georeferens, bredd och höjd "
+"som originalrastret men har bara ett band."
 
 #. Tag: para
 #, no-c-format
@@ -35878,10 +35853,10 @@ msgid ""
 "specified, then the new raster band will have the same pixeltype as the "
 "input <varname>rast1</varname> band."
 msgstr ""
-"Om <varname>pixeltype</varname> skickas in kommer det nya rastret att ha ett "
-"band av den pixeltypen. Om pixeltype skickas till NULL eller ingen pixeltyp "
-"anges, kommer det nya rasterbandet att ha samma pixeltyp som det inmatade "
-"<varname>rast1-bandet</varname>."
+"Om <varname>pixeltype</varname> skickas in får det nya rastret ett band av "
+"den pixeltypen. Om pixeltype skickas som NULL eller ingen pixeltyp anges får "
+"det nya rasterbandet samma pixeltyp som bandet i indatarastret <varname>"
+"rast1</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -36021,11 +35996,11 @@ msgid ""
 "1 is assumed. The new raster will have the same georeference, width, and "
 "height as the original raster but will only have one band."
 msgstr ""
-"Skapar ett nytt ettbandsraster som bildas genom att tillämpa en giltig "
-"PostgreSQL-funktion som anges av <varname>onerasteruserfunc</varname> på "
-"inmatningsrastret<varname>(rast).</varname> Om inget <varname>band</varname> "
-"anges antas band 1. Det nya rastret kommer att ha samma georeferens, bredd "
-"och höjd som det ursprungliga rastret men kommer bara att ha ett band."
+"Skapar ett nytt enrastsband genom att tillämpa en giltig PostgreSQL-funktion "
+"som anges av <varname>onerasteruserfunc</varname> på indatarastret (<varname>"
+"rast</varname>). Om <varname>band</varname> inte anges antas band 1. Det nya "
+"rastret får samma georeferens, bredd och höjd som originalrastret men har "
+"bara ett band."
 
 #. Tag: para
 #, no-c-format
@@ -36050,13 +36025,13 @@ msgid ""
 "parameters to <xref linkend=\"RT_ST_MapAlgebraFct\"/> shall be passed "
 "through to the <varname>userfunction</varname>."
 msgstr ""
-"<varname>Användarfunktionen</varname> kan ta emot två eller tre argument: "
-"ett floatvärde, en valfri heltalsarray och en variadisk textarray. Det "
-"första argumentet är värdet för en enskild rastercell (oberoende av "
-"rasterdatatyp). Det andra argumentet är positionen för den aktuella "
-"bearbetningscellen i formen '{x,y}'. Det tredje argumentet anger att alla "
-"återstående parametrar till <xref linkend=\"RT_ST_MapAlgebraFct\"/> ska "
-"skickas vidare till <varname>användarfunktionen</varname>."
+"<varname>userfunction</varname> kan ta emot två eller tre argument: ett "
+"floatvärde, en valfri heltalsarray och en variadisk textarray. Det första "
+"argumentet är värdet för en enskild rastercell (oavsett rasterdatatyp). Det "
+"andra argumentet är positionen för den aktuella bearbetningscellen i formen ”"
+"{x,y}”. Det tredje argumentet anger att alla återstående parametrar till "
+"<xref linkend=\"RT_ST_MapAlgebraFct\"/> ska skickas vidare till <varname>"
+"userfunction</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -36091,11 +36066,11 @@ msgid ""
 "<varname>userfunction</varname>, and are contained in the <varname>args</"
 "varname> argument."
 msgstr ""
-"Det tredje argumentet till <varname>användarfunktionen</varname> är en "
-"<type>variadisk textmatris</type>. Alla efterföljande textargument i ett "
-"anrop till <xref linkend=\"RT_ST_MapAlgebraFct\"/> skickas vidare till den "
-"angivna <varname>användarfunktionen</varname> och ingår i argumentet "
-"<varname>args</varname>."
+"Det tredje argumentet till <varname>userfunction</varname> är en <type>"
+"variadic text</type>-array. Alla efterföljande textargument till ett anrop "
+"av <xref linkend=\"RT_ST_MapAlgebraFct\"/> skickas vidare till angiven "
+"<varname>userfunction</varname> och ingår i argumentet <varname>args</"
+"varname>."
 
 #. Tag: para
 #, no-c-format
@@ -36104,9 +36079,9 @@ msgid ""
 "required, regardless of whether you choose to pass any arguments to your "
 "user function for processing or not."
 msgstr ""
-"Argumentet <type>text[]</type> till <varname>användarfunktionen</varname> är "
-"obligatoriskt, oavsett om du väljer att skicka några argument till din "
-"användarfunktion för bearbetning eller inte."
+"Argumentet <type>text[]</type> till <varname>userfunction</varname> är "
+"obligatoriskt, oavsett om du väljer att skicka argument till "
+"användarfunktionen för bearbetning eller inte."
 
 #. Tag: para
 #, no-c-format
@@ -36179,10 +36154,10 @@ msgid ""
 "new raster band will have the same pixeltype as the input <varname>rast1</"
 "varname> band."
 msgstr ""
-"Om <varname>pixeltype</varname> skickas in kommer det nya rastret att ha ett "
-"band av den pixeltypen. Om pixeltype skickas som NULL eller utelämnas kommer "
-"det nya rasterbandet att ha samma pixeltype som det ingående <varname>rast1-"
-"bandet</varname>."
+"Om <varname>pixeltype</varname> skickas in får det nya rastret ett band av "
+"den pixeltypen. Om pixeltype skickas som NULL eller utelämnas får det nya "
+"rasterbandet samma pixeltyp som bandet i indatarastret <varname>rast1</"
+"varname>."
 
 #. Tag: para
 #, no-c-format
@@ -36208,15 +36183,15 @@ msgid ""
 "parameters to <xref linkend=\"RT_ST_MapAlgebraFct2\"/> shall be passed "
 "through to the <varname>tworastuserfunc</varname>."
 msgstr ""
-"<varname>Tworastuserfunc</varname> kan acceptera tre eller fyra argument: "
-"ett värde med dubbel precision, ett värde med dubbel precision, en valfri "
-"heltalsarray och en variadisk textarray. Det första argumentet är värdet för "
-"en enskild rastercell i <varname>rast1</varname> (oavsett rasterdatatyp). "
-"Det andra argumentet är ett individuellt rastercellsvärde i <varname>rast2</"
-"varname>. Det tredje argumentet är positionen för den aktuella "
-"bearbetningscellen i formen '{x,y}'. Det fjärde argumentet anger att alla "
-"återstående parametrar till <xref linkend=\"RT_ST_MapAlgebraFct2\"/> ska "
-"skickas vidare till <varname>tworastuserfunc</varname>."
+"<varname>tworastuserfunc</varname> kan ta emot tre eller fyra argument: två "
+"värden med dubbel precision, en valfri heltalsarray och en variadisk "
+"textarray. Det första argumentet är värdet för en enskild rastercell i "
+"<varname>rast1</varname> (oavsett rasterdatatyp). Det andra argumentet är "
+"värdet för en enskild rastercell i <varname>rast2</varname>. Det tredje "
+"argumentet är positionen för den aktuella bearbetningscellen i formen ”{x,y}"
+"”. Det fjärde argumentet anger att alla återstående parametrar till <xref "
+"linkend=\"RT_ST_MapAlgebraFct2\"/> ska skickas vidare till <varname>"
+"tworastuserfunc</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -36352,11 +36327,11 @@ msgid ""
 "varname>. Results are truncated if they are larger than what is allowed for "
 "the pixeltype."
 msgstr ""
-"Den resulterande pixeltypen för utdatarastern. Måste vara en som listas i "
-"<xref linkend=\"RT_ST_BandPixelType\"/> eller utelämnas eller sätts till "
-"NULL. Om den inte skickas in eller sätts till NULL, kommer pixeltypen för "
-"<varname>rastret</varname> att användas som standard. Resultaten trunkeras "
-"om de är större än vad som är tillåtet för pixeltypen."
+"Den resulterande pixeltypen för utdatarastret. Måste vara en av dem som "
+"listas i <xref linkend=\"RT_ST_BandPixelType\"/>, utelämnas eller sättas "
+"till NULL. Om värdet inte skickas in eller sätts till NULL används "
+"pixeltypen för <varname>rast</varname> som standard. Resultat trunkeras om "
+"de är större än vad pixeltypen tillåter."
 
 #. Tag: para
 #, no-c-format
@@ -36520,11 +36495,10 @@ msgid ""
 "reclassification expressions. If no <varname>band</varname> is specified "
 "band 1 is assumed."
 msgstr ""
-"Skapar ett nytt raster som bildas genom att tillämpa en "
-"omklassificeringsoperation som definieras av <varname>reclassexpr</varname> "
-"på indatarastret<varname>(rast).</varname> Se <xref linkend=\"reclassarg\"/> "
-"för en beskrivning av omklassificeringsuttryck. Om inget <varname>band</"
-"varname> anges antas band 1."
+"Skapar ett nytt raster genom att tillämpa en omklassificeringsoperation som "
+"definieras av <varname>reclassexpr</varname> på indatarastret (<varname>"
+"rast</varname>). Se <xref linkend=\"reclassarg\"/> för beskrivningen av "
+"omklassificeringsuttryck. Om <varname>band</varname> inte anges antas band 1."
 
 #. Tag: para
 #, no-c-format
@@ -36620,11 +36594,11 @@ msgid ""
 "corresponding value in the output array. All other pixel values are mapped "
 "to the <varname>nodatavalue</varname>."
 msgstr ""
-"Skapar ett nytt raster som bildas genom att tillämpa en "
-"omklassificeringsoperation som definieras av matriserna "
-"<varname>inputvalues</varname> och <varname>outputvalues</varname>. "
-"Pixelvärden som finns i input-arrayen mappas till motsvarande värde i output-"
-"arrayen. Alla andra pixelvärden mappas till <varname>nodatavärdet</varname>."
+"Skapar ett nytt raster genom att tillämpa en omklassificeringsoperation som "
+"definieras av arrayerna <varname>inputvalues</varname> och <varname>"
+"outputvalues</varname>. Pixelvärden i indataarrayen mappas till motsvarande "
+"värde i utdataarrayen. Alla andra pixelvärden mappas till <varname>"
+"nodatavalue</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -37283,7 +37257,7 @@ msgid ""
 "<varname>azimuth</varname> is a value between 0 and 360 degrees measured "
 "clockwise from North."
 msgstr ""
-"<varname>azimut</varname> är ett värde mellan 0 och 360 grader mätt medurs "
+"<varname>azimuth</varname> är ett värde mellan 0 och 360 grader, mätt medurs "
 "från norr."
 
 #. Tag: para
@@ -37292,8 +37266,8 @@ msgid ""
 "<varname>altitude</varname> is a value between 0 and 90 degrees where 0 "
 "degrees is at the horizon and 90 degrees is directly overhead."
 msgstr ""
-"<varname>höjden</varname> är ett värde mellan 0 och 90 grader där 0 grader "
-"är vid horisonten och 90 grader är rakt ovanför."
+"<varname>altitude</varname> är ett värde mellan 0 och 90 grader, där 0 "
+"grader är vid horisonten och 90 grader är rakt ovanför."
 
 #. Tag: para
 #, no-c-format
@@ -37310,9 +37284,9 @@ msgid ""
 "<varname>scale</varname> is the ratio of vertical units to horizontal. For "
 "Feet:LatLon use scale=370400, for Meters:LatLon use scale=111120."
 msgstr ""
-"<varname>skala</varname> är förhållandet mellan vertikala enheter och "
-"horisontella. För Feet:LatLon används scale=370400, för Meter:LatLon används "
-"scale=111120."
+"<varname>scale</varname> är förhållandet mellan vertikala och horisontella "
+"enheter. Använd scale=370400 för Feet:LatLon och scale=111120 för "
+"Meters:LatLon."
 
 #. Tag: para
 #, no-c-format
@@ -37721,9 +37695,9 @@ msgid ""
 "((<varname>MINX</varname>, <varname>MINY</varname>), (<varname>MAXX</"
 "varname>, <varname>MAXY</varname>))"
 msgstr ""
-"Polygonen definieras av hörnpunkterna i den avgränsande boxen "
-"(<varname>(MINX</varname>, <varname>MINY</varname>),<varname>(MAXX</"
-"varname>, <varname>MAXY</varname>))"
+"Polygonen definieras av hörnpunkterna i avgränsningsrutan ((<varname>MINX</"
+"varname>, <varname>MINY</varname>), (<varname>MAXX</varname>, <varname>MAXY</"
+"varname>))."
 
 #. Tag: para
 #, no-c-format
@@ -37931,11 +37905,11 @@ msgid ""
 "varname>), (<varname>MAXX</varname>, <varname>MINY</varname>), "
 "(<varname>MINX</varname>, <varname>MINY</varname>))"
 msgstr ""
-"Polygonen definieras av hörnpunkterna i den begränsande boxen "
-"(<varname>(MINX</varname>, <varname>MINY</varname>), (<varname>MINX</"
-"varname>, <varname>MAXY</varname>),<varname>(MAXX</varname>, <varname>MAXY</"
-"varname>),<varname>(MAXX</varname>, <varname>MINY</varname>), "
-"(<varname>MINX</varname>, <varname>MINY</varname>))"
+"Polygonen definieras av hörnpunkterna i avgränsningsrutan ((<varname>MINX</"
+"varname>, <varname>MINY</varname>), (<varname>MINX</varname>, <varname>MAXY</"
+"varname>), (<varname>MAXX</varname>, <varname>MAXY</varname>), (<varname>"
+"MAXX</varname>, <varname>MINY</varname>), (<varname>MINX</varname>, <varname>"
+"MINY</varname>))."
 
 #. Tag: para
 #, no-c-format
@@ -38144,11 +38118,11 @@ msgid ""
 "perform internal orderings and comparison of rasters (ie. in a GROUP BY or "
 "ORDER BY clause)."
 msgstr ""
-"Operatorn <varname>=</varname> returnerar <varname>SANT</varname> om "
-"gränsboxen för raster A är densamma som gränsboxen för raster B. PostgreSQL "
-"använder operatorerna =, &lt; och &gt; som definieras för raster för att "
-"utföra interna ordningar och jämförelse av raster (dvs. i en GROUP BY- eller "
-"ORDER BY-klausul)."
+"Operatorn <varname>&#61;</varname> returnerar <varname>TRUE</varname> om "
+"avgränsningsrutan för raster A är densamma som avgränsningsrutan för raster "
+"B. PostgreSQL använder operatorerna =, &lt; och &gt; som definierats för "
+"raster för intern sortering och jämförelse av raster (det vill säga i en "
+"GROUP BY- eller ORDER BY-klausul)."
 
 #. Tag: para
 #, no-c-format
@@ -39201,12 +39175,12 @@ msgid ""
 "<code>ST_Contains(B,A) = true</code>, then the two geometries must be "
 "topologically equal (<code>ST_Equals(A,B) = true</code>)."
 msgstr ""
-"Förhållandet contains är reflexivt: varje geometri innehåller sig själv. (I "
-"predikatet <xref linkend=\"ST_ContainsProperly\"/> innehåller däremot en "
-"geometri <emphasis>inte</emphasis> sig själv på rätt sätt.) Relationen är "
-"antisymmetrisk: om <code>ST_Contains(A,B) = true</code> och "
-"<code>ST_Contains(B,A) = true</code>, måste de två geometrierna vara "
-"topologiskt lika<code>(ST_Equals(A,B) = true)</code>."
+"Relationen contains är reflexiv: varje geometri innehåller sig själv. (I "
+"motsats till predikatet <xref linkend=\"ST_ContainsProperly\"/> innehåller "
+"en geometri <emphasis>inte</emphasis> sig själv korrekt.) Relationen är "
+"antisymmetrisk: om <code>ST_Contains(A,B) = true</code> och <code>ST_Contains"
+"(B,A) = true</code>, så måste de två geometrierna vara topologiskt lika "
+"(<code>ST_Equals(A,B) = true</code>)."
 
 #. Tag: para
 #, no-c-format
@@ -39214,8 +39188,8 @@ msgid ""
 "ST_Contains is the converse of <xref linkend=\"ST_Within\"/>. So, "
 "<code>ST_Contains(A,B) = ST_Within(B,A)</code>."
 msgstr ""
-"ST_Contains är motsatsen till <xref linkend=\"ST_Within\"/>. Så "
-"<code>ST_Contains(A,B) = ST_Within(B,A).</code>."
+"ST_Contains är det omvända av <xref linkend=\"ST_Within\"/>. Alltså <code>"
+"ST_Contains(A,B) = ST_Within(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -39403,8 +39377,8 @@ msgid ""
 "Returns <varname>true</varname> if every point of B lies in the interior of "
 "A (or equivalently, no point of B lies in the the boundary or exterior of A)."
 msgstr ""
-"Returnerar <varname>sant</varname> om varje punkt i B ligger i A:s inre "
-"(eller motsvarande, ingen punkt i B ligger i A:s gräns eller yttre)."
+"Returnerar <varname>true</varname> om varje punkt i B ligger i det inre av A "
+"(eller, likvärdigt, om ingen punkt i B ligger på gränsen eller utanför A)."
 
 #. Tag: para
 #, no-c-format
@@ -39508,8 +39482,8 @@ msgid ""
 "ST_CoveredBy is the converse of <xref linkend=\"ST_Covers\"/>. So, "
 "<code>ST_CoveredBy(A,B) = ST_Covers(B,A)</code>."
 msgstr ""
-"ST_CoveredBy är det omvända av <xref linkend=\"ST_Covers\"/>. Så "
-"<code>ST_CoveredBy(A,B) = ST_Covers(B,A).</code>."
+"ST_CoveredBy är det omvända av <xref linkend=\"ST_Covers\"/>. Alltså <code>"
+"ST_CoveredBy(A,B) = ST_Covers(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -39580,8 +39554,8 @@ msgid ""
 "ST_Covers is the converse of <xref linkend=\"ST_CoveredBy\"/>. So, "
 "<code>ST_Covers(A,B) = ST_CoveredBy(B,A)</code>."
 msgstr ""
-"ST_Covers är det omvända av <xref linkend=\"ST_CoveredBy\"/>. Alltså, "
-"ST_Covers <code>(A,B) = ST_CoveredBy(B,A).</code>."
+"ST_Covers är det omvända av <xref linkend=\"ST_CoveredBy\"/>. Alltså <code>"
+"ST_Covers(A,B) = ST_CoveredBy(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -39719,8 +39693,8 @@ msgid ""
 "the result is <varname>false</varname> for Point/Point and Area/Area "
 "situations"
 msgstr ""
-"resultatet är <varname>falskt</varname> för Point/Point- och Area/Area-"
-"situationer"
+"Resultatet är <varname>false</varname> för Point/Point- och Area/Area-"
+"situationer."
 
 #. Tag: para
 #, no-c-format
@@ -39815,7 +39789,7 @@ msgid ""
 "Returns <varname>true</varname> if two geometries are disjoint. Geometries "
 "are disjoint if they have no point in common."
 msgstr ""
-"Returnerar <varname>sant</varname> om två geometrier är disjunkta. "
+"Returnerar <varname>true</varname> om två geometrier är disjunkta. "
 "Geometrier är disjunkta om de inte har någon gemensam punkt."
 
 #. Tag: para
@@ -39876,14 +39850,13 @@ msgid ""
 "ST_OrderingEquals is a little more stringent than simply verifying order of "
 "points are the same)."
 msgstr ""
-"Returnerar <varname>sant</varname> om de givna geometrierna är \"topologiskt "
-"lika\". Använd detta för ett \"bättre\" svar än \"=\". Topologisk likhet "
-"innebär att geometrierna har samma dimension och att deras "
-"punktuppsättningar upptar samma utrymme. Detta innebär att ordningen på "
-"hörnen kan vara olika i topologiskt lika geometrier. För att verifiera att "
-"punktordningen är konsekvent använd <xref linkend=\"ST_OrderingEquals\"/> "
-"(det måste noteras att ST_OrderingEquals är lite strängare än att bara "
-"verifiera att punktordningen är densamma)."
+"Returnerar <varname>true</varname> om de angivna geometrierna är ”"
+"topologiskt lika”. Använd detta för ett bättre svar än ”=”. Topologisk "
+"likhet innebär att geometrierna har samma dimension och att deras "
+"punktuppsättningar upptar samma utrymme. Hörnordningen kan därför vara olika "
+"i topologiskt lika geometrier. Använd <xref linkend=\"ST_OrderingEquals\"/> "
+"för att kontrollera en konsekvent punktordning (ST_OrderingEquals är något "
+"striktare än att endast kontrollera att punktordningen är densamma)."
 
 #. Tag: para
 #, no-c-format
@@ -40050,9 +40023,9 @@ msgid ""
 "kind of crossing behavior exists between them. 0 indicates no crossing. This "
 "is only supported for <varname>LINESTRING</varname>s."
 msgstr ""
-"Givet två linestringsar returnerar ett heltal mellan -3 och 3 som indikerar "
-"vilken typ av korsningsbeteende som finns mellan dem. 0 indikerar ingen "
-"korsning. Detta stöds endast för <varname>LINESTRINGs</varname>."
+"För två linestrings returneras ett heltal mellan -3 och 3 som anger vilket "
+"korsningsbeteende som finns mellan dem. 0 anger ingen korsning. Detta stöds "
+"endast för <varname>LINESTRING</varname>s."
 
 #. Tag: para
 #, no-c-format
@@ -40324,9 +40297,9 @@ msgid ""
 "'F', '0', '1', '2' (e.g. <code>'FF1FF0102'</code>)."
 msgstr ""
 "DE-9IM specificeras som en matris med 9 element som anger dimensionen på "
-"skärningspunkterna mellan inre, yttre och yttre delar av två geometrier. Den "
-"representeras av en textsträng med 9 tecken som använder symbolerna \"F\", "
-"\"0\", \"1\", \"2\" (t.ex. <code>\"FF1FF0102</code>\")."
+"skärningarna mellan det inre, gränsen och det yttre hos två geometrier. Den "
+"representeras av en textsträng med 9 tecken som använder symbolerna 'F', "
+"'0', '1', '2' (t.ex. <code>'FF1FF0102'</code>)."
 
 #. Tag: para
 #, no-c-format
@@ -40531,9 +40504,9 @@ msgid ""
 "between a LineString and a MultiLineString with a duplicate endpoint "
 "<code>(3 3)</code>:"
 msgstr ""
-"Använda olika Boundary Node Rules för att beräkna det spatiala förhållandet "
-"mellan en LineString och en MultiLineString med en duplicerad ändpunkt "
-"<code>(3 3):</code>:"
+"Använd olika Boundary Node Rules för att beräkna det spatiala förhållandet "
+"mellan en LineString och en MultiLineString med en duplicerad ändpunkt <code>"
+"(3 3)</code>:"
 
 #. Tag: para
 #, no-c-format
@@ -40543,10 +40516,10 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>0</code> and "
 "[aB:bB] is <code>F</code>."
 msgstr ""
-"Med hjälp av <emphasis role=\"bold\">OGC-Mod2-regeln</emphasis> (1) är den "
-"duplicerade ändpunkten i det <emphasis role=\"bold\">inre</emphasis> av "
+"Med <emphasis role=\"bold\">OGC-Mod2-regeln</emphasis> (1) ligger den "
+"duplicerade ändpunkten i <emphasis role=\"bold\">det inre</emphasis> av "
 "MultiLineString, så DE-9IM-matrisposten [aB:bI] är <code>0</code> och "
-"[aB:bB] är <code>F.</code>."
+"[aB:bB] är <code>F</code>."
 
 #. Tag: para
 #, no-c-format
@@ -40556,10 +40529,10 @@ msgid ""
 "MultiLineString, so the DE-9IM matrix entry [aB:bI] is <code>F</code> and "
 "[aB:bB] is <code>0</code>."
 msgstr ""
-"Med hjälp av <emphasis role=\"bold\">ändpunktsregeln</emphasis> (2) ligger "
-"den duplicerade ändpunkten i <emphasis role=\"bold\">gränsen</emphasis> för "
-"MultiLineString, så DE-9IM-matrisens post [aB:bI] är <code>F</code> och "
-"[aB:bB] är <code>0.</code>."
+"Med <emphasis role=\"bold\">ändpunktsregeln</emphasis> (2) ligger den "
+"duplicerade ändpunkten i <emphasis role=\"bold\">gränsen</emphasis> för "
+"MultiLineString, så DE-9IM-matrisposten [aB:bI] är <code>F</code> och "
+"[aB:bB] är <code>0</code>."
 
 #. Tag: para
 #, no-c-format
@@ -40595,11 +40568,11 @@ msgid ""
 "<varname>intersectionMatrixPattern</varname>. Intersection matrix values can "
 "be computed by <xref linkend=\"ST_Relate\"/>."
 msgstr ""
-"Testar om ett <varname>intersectionMatrix-värde</varname> enligt <link "
+"Testar om värdet <varname>intersectionMatrix</varname> enligt <link "
 "xlink:href=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally Extended 9-"
-"Intersection Model</link> (DE-9IM) uppfyller ett "
-"<varname>intersectionMatrixPattern</varname>. Värden för "
-"intersektionsmatriser kan beräknas med <xref linkend=\"ST_Relate\"/>."
+"Intersection Model</link> (DE-9IM) uppfyller <varname>"
+"intersectionMatrixPattern</varname>. Värden för intersektionsmatriser kan "
+"beräknas med <xref linkend=\"ST_Relate\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -40634,11 +40607,10 @@ msgid ""
 "relationship is always <varname>FALSE</varname>, since points do not have a "
 "boundary."
 msgstr ""
-"Returnerar <varname>TRUE</varname> om A och B skär varandra, men deras "
-"interiörer inte skär varandra. På motsvarande sätt har A och B minst en "
-"gemensam punkt och de gemensamma punkterna ligger inom minst en gräns. För "
-"Point/Point-indata är relationen alltid <varname>FALSK</varname>, eftersom "
-"punkter inte har någon gräns."
+"Returnerar <varname>TRUE</varname> om A och B skär varandra, men deras inre "
+"inte skär varandra. Likvärdigt har A och B minst en gemensam punkt och de "
+"gemensamma punkterna ligger på minst en gräns. För Point/Point-indata är "
+"relationen alltid <varname>FALSE</varname>, eftersom punkter saknar gräns."
 
 #. Tag: para
 #, no-c-format
@@ -40776,9 +40748,9 @@ msgid ""
 "topologically equal (<code>ST_Equals(A,B) = true</code>)."
 msgstr ""
 "Within-relationen är reflexiv: varje geometri är inom sig själv. Relationen "
-"är antisymmetrisk: om <code>ST_Within(A,B) = true</code> och "
-"<code>ST_Within(B,A) = true</code>, så måste de två geometrierna vara "
-"topologiskt lika<code>(ST_Equals(A,B) = true</code>)."
+"är antisymmetrisk: om <code>ST_Within(A,B) = true</code> och <code>ST_Within"
+"(B,A) = true</code>, måste de två geometrierna vara topologiskt lika (<code>"
+"ST_Equals(A,B) = true</code>)."
 
 #. Tag: para
 #, no-c-format
@@ -40786,8 +40758,8 @@ msgid ""
 "ST_Within is the converse of <xref linkend=\"ST_Contains\"/>. So, "
 "<code>ST_Within(A,B) = ST_Contains(B,A)</code>."
 msgstr ""
-"ST_Within är det omvända av <xref linkend=\"ST_Contains\"/>. Så "
-"<code>ST_Within(A,B) = ST_Contains(B,A).</code>."
+"ST_Within är det omvända av <xref linkend=\"ST_Contains\"/>. Alltså <code>"
+"ST_Within(A,B) = ST_Contains(B,A)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -40964,9 +40936,9 @@ msgid ""
 "distance is specified in units defined by the spatial reference system of "
 "the geometries."
 msgstr ""
-"Returnerar true om <code>g2</code> är helt inom <code>avståndet</code> från "
-"<code>g1</code>. Visuellt är villkoret sant om <code>g2</code> ligger inom "
-"en <code>avståndsbuffert</code> för <code>g1</code>. Avståndet anges i "
+"Returnerar true om <code>g2</code> ligger helt inom <code>distance</code> "
+"från <code>g1</code>. Visuellt är villkoret true om <code>g2</code> ligger i "
+"en buffert med <code>distance</code> runt <code>g1</code>. Avståndet anges i "
 "enheter som definieras av geometriernas spatiala referenssystem."
 
 #. Tag: para
@@ -41149,9 +41121,9 @@ msgid ""
 "<varname>center_x</varname>,<varname>center_y</varname> and radius "
 "<varname>radius</varname>."
 msgstr ""
-"Returnerar true om geometrin är en punkt och ligger inom cirkeln med centrum "
-"<varname>center_x</varname><varname>,center_y</varname> och radie "
-"<varname>radius</varname>."
+"Returnerar true om geometrin är en punkt och ligger i cirkeln med centrum "
+"<varname>center_x</varname>, <varname>center_y</varname> och radien <varname>"
+"radius</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -41747,10 +41719,9 @@ msgid ""
 "produce more concave results. Alpha values greater than some data-dependent "
 "value produce the convex hull of the input."
 msgstr ""
-"\"Passningsgraden\" styrs av <varname>alfaparametern</varname>, som kan ha "
-"värden från 0 till oändligt. Mindre alfavärden ger mer konkava resultat. "
-"Alphavärden som är större än ett visst databeroende värde ger ett konvext "
-"skrov av indata."
+"”Passningsgraden” styrs av parametern <varname>alpha</varname>, som kan ha "
+"värden från 0 till oändligheten. Mindre alfavärden ger mer konkava resultat. "
+"Alphavärden som överstiger ett databeroende värde ger indatans konvexa skrov."
 
 #. Tag: para
 #, no-c-format
@@ -43822,14 +43793,14 @@ msgid ""
 "<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
 "varname> table."
 msgstr ""
-"Ibland kan koordinattransformation som involverar en rutnätsförskjutning "
-"misslyckas, t.ex. om PROJ.4 inte har byggts med rutnätsförskjutningsfiler "
-"eller om koordinaten inte ligger inom det område för vilket "
-"rutnätsförskjutningen är definierad. Som standard kommer PostGIS att ge ett "
-"felmeddelande om det inte finns någon gridskiftfil, men detta beteende kan "
-"konfigureras per SRID antingen genom att testa olika <varname>to_proj-"
-"värden</varname> för PROJ.4-text eller genom att ändra <varname>proj4text-"
-"värdet</varname> i tabellen <varname>spatial_ref_sys</varname>."
+"Ibland kan koordinattransformation med en rutnätsförskjutning misslyckas, "
+"exempelvis om PROJ.4 inte byggts med rutnätsförskjutningsfiler eller om "
+"koordinaten inte ligger inom det område som rutnätsförskjutningen är "
+"definierad för. Som standard ger PostGIS ett fel om en "
+"rutnätsförskjutningsfil saknas, men beteendet kan konfigureras per SRID "
+"genom att antingen testa olika <varname>to_proj</varname>-värden i PROJ.4-"
+"text eller ändra värdet <varname>proj4text</varname> i tabellen <varname>"
+"spatial_ref_sys</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -43935,10 +43906,10 @@ msgid ""
 "caller will need to add an additional pipeline step, or remove "
 "<varname>axisswap</varname> steps."
 msgstr ""
-"En PROJ-pipeline-sträng av formen: <varname>+proj=pipeline....</varname> "
-"Automatisk axelnormalisering kommer inte att tillämpas och vid behov måste "
-"den som ringer lägga till ytterligare ett pipelinesteg eller ta bort "
-"<varname>axelbytessteg</varname>."
+"En PROJ-pipeline-sträng av formen <varname>+proj=pipeline ...</varname>. "
+"Automatisk axelnormalisering tillämpas inte och anroparen kan vid behov "
+"behöva lägga till ytterligare ett pipeline-steg eller ta bort <varname>"
+"axisswap</varname>-steg."
 
 #. Tag: para
 #, no-c-format
@@ -44040,11 +44011,11 @@ msgid ""
 "corners of the area of usage, <varname>point_sw</varname> and "
 "<varname>point_ne</varname>."
 msgstr ""
-"Returnerar en metadatapost för den begärda <varname>auth_srid</varname> för "
-"det angivna <varname>auth_name</varname>. Posten kommer att innehålla "
-"<varname>auth_name</varname>, <varname>auth_srid</varname>, <varname>srname</"
-"varname>, <varname>srtext,</varname> <varname>proj4text</varname> och hörnen "
-"av användningsområdet, <varname>point_sw</varname> och <varname>point_ne</"
+"Returnerar en metadatapost för begärt <varname>auth_srid</varname> för "
+"angivet <varname>auth_name</varname>. Posten innehåller <varname>auth_name</"
+"varname>, <varname>auth_srid</varname>, <varname>srname</varname>, <varname>"
+"srtext</varname>, <varname>proj4text</varname> och hörnen för "
+"användningsområdet, <varname>point_sw</varname> och <varname>point_ne</"
 "varname>."
 
 #. Tag: para
@@ -44076,10 +44047,10 @@ msgid ""
 "<varname>point_sw</varname> and <varname>point_ne</varname>."
 msgstr ""
 "Returnerar en uppsättning av alla metadataposter i den underliggande Proj-"
-"databasen. Posterna kommer att ha <varname>auth_name</varname>, "
-"<varname>auth_srid</varname>, <varname>srname</varname>, <varname>srtext,</"
-"varname> <varname>proj4text</varname> och hörnen på användningsområdet, "
-"<varname>point_sw</varname> och <varname>point_ne</varname>."
+"databasen. Posterna innehåller <varname>auth_name</varname>, <varname>"
+"auth_srid</varname>, <varname>srname</varname>, <varname>srtext</varname>, "
+"<varname>proj4text</varname> och hörnen för användningsområdet, <varname>"
+"point_sw</varname> och <varname>point_ne</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -44112,12 +44083,12 @@ msgid ""
 "varname>, and the corners of the area of usage, <varname>point_sw</varname> "
 "and <varname>point_ne</varname>."
 msgstr ""
-"Returnerar en uppsättning metadataposter för projicerade koordinatsystem som "
-"har användningsområden som helt innehåller parametern bounds. Varje post "
-"kommer att innehålla <varname>auth_name</varname>, <varname>auth_srid</"
-"varname>, <varname>srname</varname>, <varname>srtext,</varname> "
-"<varname>proj4text</varname> och användningsområdets hörn, "
-"<varname>point_sw</varname> och <varname>point_ne</varname>."
+"Returnerar en uppsättning metadataposter för projicerade koordinatsystem "
+"vars användningsområden helt innehåller parametern bounds. Varje post "
+"innehåller <varname>auth_name</varname>, <varname>auth_srid</varname>, "
+"<varname>srname</varname>, <varname>srtext</varname>, <varname>proj4text</"
+"varname> och hörnen för användningsområdet, <varname>point_sw</varname> och "
+"<varname>point_ne</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -44368,15 +44339,16 @@ msgid ""
 "functions below are expressed via such an affine transformation."
 msgstr ""
 "Version 1: Anropet <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, "
-"i, xoff, yoff, zoff </programlisting> ) representerar "
-"transformationsmatrisen <programlisting>/ a b c xoff \\\n"
-"| d e f yoff | | g h i zoff\n"
-"| g h i zoff |\n"
-"\\ 0 0 0 1 /</programlisting> och topparna transformeras på följande sätt: "
-"<programlisting>x' = a*x + b*y + c*z + xoff\n"
+"i, xoff, yoff, zoff) </programlisting> representerar transformationsmatrisen "
+"<programlisting>/ a  b  c  xoff \\\n"
+"| d  e  f  yoff |\n"
+"| g  h  i  zoff |\n"
+"\\ 0  0  0     1 /</programlisting> och hörnen transformeras på följande "
+"sätt: <programlisting>x' = a*x + b*y + c*z + xoff\n"
 "y' = d*x + e*y + f*z + yoff\n"
-"z' = g*x + h*y + i*z + zoff</programlisting> Alla översättnings- / "
-"skalningsfunktioner nedan uttrycks via en sådan affin transformation."
+"z' = g*x + h*y + i*z + zoff</programlisting> Alla nedanstående "
+"förskjutnings-/skalningsfunktioner uttrycks via en sådan affin "
+"transformation."
 
 #. Tag: para
 #, no-c-format
@@ -44392,16 +44364,16 @@ msgid ""
 "y' = d*x + e*y + yoff\n"
 "z' = z </programlisting> This method is a subcase of the 3D method above."
 msgstr ""
-"Version 2: Tillämpar en 2D-affin transformation på geometrin. Anropet "
+"Version 2: Tillämpar en 2d-affin transformation på geometrin. Anropet "
 "<programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting> "
-"representerar transformationsmatrisen <programlisting>/ a b 0 xoff \\ / a b "
-"xoff \\\n"
-"| d e 0 yoff | rsp.  | d e yoff | | d e yoff\n"
-"| 0 0 1 0 | \\ 0 0 1 /\n"
-"\\ 0 0 0 1 /</programlisting> och topparna transformeras på följande sätt: "
+"representerar transformationsmatrisen <programlisting>/  a  b  0  xoff  \\ "
+"      /  a  b  xoff  \\\n"
+"|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n"
+"|  0  0  1     0  |       \\  0  0     1  /\n"
+"\\  0  0  0     1  /</programlisting> och hörnen transformeras så här: "
 "<programlisting>x' = a*x + b*y + xoff\n"
 "y' = d*x + e*y + yoff\n"
-"z' = z </programlisting> Denna metod är ett delfall av 3D-metoden ovan."
+"z' = z </programlisting> Metoden är ett specialfall av 3D-metoden ovan."
 
 #. Tag: para
 #, no-c-format
@@ -44508,9 +44480,9 @@ msgid ""
 "<code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, "
 "sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
-"<code>ST_RotateX(geomA, rotRadians</code> ) är en kortform av "
-"<code>ST_Affine(geomA, 1, 0, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, "
-"sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
+"<code>ST_RotateX(geomA, rotRadians)</code> är en kortform av <code>ST_Affine"
+"(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
+"cos(rotRadians), 0, 0, 0)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -44545,9 +44517,9 @@ msgid ""
 "<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, "
 "-sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
 msgstr ""
-"<code>ST_RotateY(geomA, rotRadians</code> ) är en förkortning av "
-"<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, "
-"-sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
+"<code>ST_RotateY(geomA, rotRadians)</code> är en kortform av <code>ST_Affine"
+"(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, "
+"cos(rotRadians), 0, 0, 0)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -44587,9 +44559,9 @@ msgid ""
 "ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
 "cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
 msgstr ""
-"<code>ST_RotateZ(geomA, rotRadians</code> ) är en förkortning av "
-"<code>SELECT ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, "
-"sin(rotRadians), cos(rotRadians), 0, 0, 0, 1, 0, 0, 0, 0).</code>."
+"<code>ST_RotateZ(geomA, rotRadians)</code> är en kortform av <code>SELECT "
+"ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos"
+"(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -44634,11 +44606,11 @@ msgid ""
 "supported dimensions. Missing dimensions in the <varname>factor</varname> "
 "point are equivalent to no scaling the corresponding dimension."
 msgstr ""
-"Den version som tar en geometri som <varname>faktorparameter</varname> gör "
-"det möjligt att skicka en 2d-, 3dm-, 3dz- eller 4d-punkt för att ställa in "
+"Versionen som tar en geometri som parametern <varname>factor</varname> gör "
+"det möjligt att skicka en 2d-, 3dm-, 3dz- eller 4d-punkt för att ange "
 "skalningsfaktorn för alla dimensioner som stöds. Saknade dimensioner i "
-"<varname>faktorpunkten</varname> motsvarar ingen skalning av motsvarande "
-"dimension."
+"punkten <varname>factor</varname> motsvarar att den motsvarande dimensionen "
+"inte skalas."
 
 #. Tag: para
 #, no-c-format
@@ -44666,8 +44638,8 @@ msgid ""
 "Enhanced: 2.2.0 support for scaling all dimension (<varname>factor</varname> "
 "parameter) was introduced."
 msgstr ""
-"Förbättrad: 2.2.0 stöd för skalning av alla "
-"dimensioner<varname>(faktorparameter)</varname> infördes."
+"Förbättrad: stöd för att skala alla dimensioner (parametern <varname>factor</"
+"varname>) introducerades i 2.2.0."
 
 #. Tag: para
 #, no-c-format
@@ -44787,8 +44759,8 @@ msgid ""
 "deltaX*XFactor, deltaY*YFactor, 0)</code>."
 msgstr ""
 "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> är en "
-"förkortning av <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
-"deltaX*XFactor, deltaY*YFactor, 0</code>)."
+"kortform av <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
+"deltaX*XFactor, deltaY*YFactor, 0)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -44883,15 +44855,15 @@ msgid ""
 "function\" error. To prevent the error use an explicit cast to the desired "
 "box type."
 msgstr ""
-"Vissa casts har ett <emphasis role=\"bold\">explicit</emphasis> beteende, "
-"vilket innebär att castet måste anges med syntaxen <varname>CAST(myval As "
-"sometype</varname> ) eller <varname>myval</varname>::sometype. Explicit "
-"casting undviker problemet med tvetydiga casts, som kan uppstå när man "
-"använder en överladdad funktion som inte stöder en viss typ. En funktion kan "
-"t.ex. acceptera en box2d eller en box3d, men inte en geometry. Eftersom "
-"geometry har en automatisk cast till båda box-typerna, ger detta ett "
-"\"tvetydig funktion\"-fel. För att förhindra felet ska du använda en "
-"explicit cast till önskad box-typ."
+"Vissa typomvandlingar har ett <emphasis role=\"bold\">explicit</emphasis> "
+"beteende, vilket innebär att omvandlingen måste anges med syntaxen <varname>"
+"CAST(myval As sometype)</varname> eller <varname>myval::sometype</varname>. "
+"Explicit typomvandling undviker tvetydiga omvandlingar, som kan uppstå när "
+"en överlagrad funktion inte stöder en viss typ. En funktion kan exempelvis "
+"acceptera box2d eller box3d, men inte geometry. Eftersom geometry har "
+"automatisk omvandling till båda boxtyperna ger detta ett fel om en tvetydig "
+"funktion. Använd en explicit omvandling till önskad boxtyp för att undvika "
+"felet."
 
 #. Tag: para
 #, no-c-format
@@ -44915,10 +44887,10 @@ msgid ""
 "For example, the <xref linkend=\"ST_Extent\"/> aggregate function returns a "
 "<varname>box2d</varname> object."
 msgstr ""
-"<varname>box2d</varname> är en spatial datatyp som används för att "
-"representera den tvådimensionella begränsningsbox som omsluter en geometri "
-"eller en samling geometrier. Aggregatfunktionen <xref linkend=\"ST_Extent\"/"
-"> returnerar t.ex. ett <varname>box2d-objekt</varname>."
+"<varname>box2d</varname> är en spatial datatyp som representerar den "
+"tvådimensionella avgränsningsrutan kring en geometri eller en "
+"geometrisamling. Aggregatfunktionen <xref linkend=\"ST_Extent\"/> returnerar "
+"exempelvis ett <varname>box2d</varname>-objekt."
 
 #. Tag: para
 #, no-c-format
@@ -44936,7 +44908,7 @@ msgid ""
 "<code>BOX(1 2,5 6)</code>."
 msgstr ""
 "<varname>box2d</varname>-objekt har en textrepresentation som ser ut som "
-"<code>BOX(1 2,5 6).</code>."
+"<code>BOX(1 2,5 6)</code>."
 
 #. Tag: para
 #, no-c-format
@@ -44969,11 +44941,10 @@ msgid ""
 "geometries. For example, the <xref linkend=\"ST_3DExtent\"/> aggregate "
 "function returns a <varname>box3d</varname> object."
 msgstr ""
-"<varname>box3d</varname> är en spatial datatyp i PostGIS som används för att "
-"representera den tredimensionella begränsningsbox som omsluter en geometri "
-"eller en samling geometrier. Aggregatfunktionen <xref "
-"linkend=\"ST_3DExtent\"/> returnerar till exempel ett <varname>box3d-objekt</"
-"varname>."
+"<varname>box3d</varname> är en spatial datatyp i PostGIS som representerar "
+"den tredimensionella avgränsningsrutan kring en geometri eller en "
+"geometrisamling. Aggregatfunktionen <xref linkend=\"ST_3DExtent\"/> "
+"returnerar exempelvis ett <varname>box3d</varname>-objekt."
 
 #. Tag: para
 #, no-c-format
@@ -44993,7 +44964,7 @@ msgid ""
 "<code>BOX3D(1 2 3,5 6 5)</code>."
 msgstr ""
 "<varname>box3d</varname>-objekt har en textrepresentation som ser ut som "
-"<code>BOX3D(1 2 3,5 6 5).</code>."
+"<code>BOX3D(1 2 3,5 6 5)</code>."
 
 #. Tag: entry
 #, no-c-format
@@ -45079,10 +45050,10 @@ msgid ""
 "The path array is 1-based (i.e. <varname>path[1]</varname> is the first "
 "element.)"
 msgstr ""
-"<varname>path[]</varname> - en heltalsarray som definierar navigeringsvägen "
-"inom den dumpade geometrin till <varname>geom-komponenten</varname>. Path-"
-"arrayen är 1-baserad (d.v.s. path <varname>[1]</varname> är det första "
-"elementet)"
+"<varname>path[]</varname> – en heltalsarray som anger navigeringsvägen i den "
+"dumpade geometrin till komponenten <varname>geom</varname>. Sökvägsarrayen "
+"är 1-baserad (det vill säga <varname>path[1]</varname> är det första "
+"elementet)."
 
 #. Tag: para
 #, no-c-format
@@ -45233,8 +45204,8 @@ msgid ""
 "Returns a <varname>valid_detail</varname> row stating if a geometry is valid "
 "or if not a reason and a location."
 msgstr ""
-"Returnerar en <varname>valid_detail-rad</varname> som anger om en geometri "
-"är giltig eller om den inte är det, en orsak och en plats."
+"Returnerar en rad av typen <varname>valid_detail</varname> som anger om en "
+"geometri är giltig eller, om den inte är det, en orsak och en plats."
 
 #. Tag: para
 #, no-c-format
@@ -45244,10 +45215,10 @@ msgid ""
 "(<varname>reason</varname>) stating a reason why it is invalid and a "
 "geometry (<varname>location</varname>) pointing out where it is invalid."
 msgstr ""
-"Returnerar en <varname>valid_detail-rad</varname> som innehåller en boolean "
-"(<varname>valid)</varname> som anger om en geometri är giltig, en varchar "
-"(<varname>reason)</varname> som anger varför den är ogiltig och en "
-"geometri<varname>(location)</varname> som pekar ut var den är ogiltig."
+"Returnerar en rad av typen <varname>valid_detail</varname> med en boolean "
+"(<varname>valid</varname>) som anger om en geometri är giltig, en varchar "
+"(<varname>reason</varname>) som anger varför den är ogiltig och en geometri "
+"(<varname>location</varname>) som anger var den är ogiltig."
 
 #. Tag: para
 #, no-c-format
@@ -45337,7 +45308,7 @@ msgid ""
 "Allowed <varname>flags</varname> are documented in <xref "
 "linkend=\"ST_IsValidDetail\"/>."
 msgstr ""
-"Tillåtna <varname>flaggor</varname> finns dokumenterade i <xref "
+"Tillåtna <varname>flags</varname> finns dokumenterade i <xref "
 "linkend=\"ST_IsValidDetail\"/>."
 
 #. Tag: para
@@ -47685,7 +47656,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "POINT(0 0)"
-msgstr "PUNKT(0 0)"
+msgstr "POINT(0 0)"
 
 #. Tag: para
 #, no-c-format
@@ -47743,8 +47714,8 @@ msgid ""
 "MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-2 "
 "-2,-2 -1,-1 -1)))"
 msgstr ""
-"MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-2 "
-"-2,-2 -1,-1 -1 -1)))"
+"MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-"
+"2 -2,-2 -1,-1 -1)))"
 
 #. Tag: para
 #, no-c-format
@@ -47788,7 +47759,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "WKT: POINT(1 1)"
-msgstr "WKT: PUNKT(1 1)"
+msgstr "WKT: POINT(1 1)"
 
 #. Tag: para
 #, no-c-format
@@ -47840,12 +47811,12 @@ msgid ""
 "allows modelling spatial features as rows of tables defined with a column of "
 "type <varname>geometry</varname>."
 msgstr ""
-"PostGIS implementerar OGC Simple Features-modellen genom att definiera en "
-"PostgreSQL-datatyp som heter <varname>geometry</varname>. Den representerar "
-"alla undertyper av geometri med hjälp av en intern typkod (se <xref "
-"linkend=\"GeometryType\"/> och <xref linkend=\"ST_GeometryType\"/>). Detta "
-"gör det möjligt att modellera spatiala funktioner som rader i tabeller som "
-"definieras med en kolumn av typen <varname>geometri</varname>."
+"PostGIS implementerar OGC Simple Features-modellen genom att definiera "
+"PostgreSQL-datatypen <varname>geometry</varname>. Den representerar alla "
+"geometrins undertyper med en intern typkod (se <xref "
+"linkend=\"GeometryType\"/> och <xref linkend=\"ST_GeometryType\"/>). Det gör "
+"det möjligt att modellera spatiala objekt som tabellrader med en kolumn av "
+"typen <varname>geometry</varname>."
 
 #. Tag: para
 #, no-c-format
@@ -47985,7 +47956,7 @@ msgstr "OGC: PUNKT Z (1 2 3)"
 #. Tag: para
 #, no-c-format
 msgid "EWKT: POINT (1 2 3)"
-msgstr "EWKT: PUNKT (1 2 3)"
+msgstr "EWKT: POINT (1 2 3)"
 
 #. Tag: para
 #, no-c-format
@@ -48015,7 +47986,7 @@ msgstr "OGC: PUNKT ZM (1 2 3 4)"
 #. Tag: para
 #, no-c-format
 msgid "EWKT: POINT (1 2 3 4)"
-msgstr "EWKT: PUNKT (1 2 3 4)"
+msgstr "EWKT: POINT (1 2 3 4)"
 
 #. Tag: para
 #, no-c-format
@@ -48039,7 +48010,7 @@ msgstr "PUNKT ZM (1 1 1)"
 #. Tag: para
 #, no-c-format
 msgid "POINT (1 1 1 1)"
-msgstr "PUNKT (1 1 1 1 1)"
+msgstr "POINT (1 1 1 1)"
 
 #. Tag: para
 #, no-c-format
@@ -48062,7 +48033,7 @@ msgstr "Exempel på EWKT-textrepresentation av spatiala objekt är:"
 #. Tag: para
 #, no-c-format
 msgid "POINT(0 0 0) -- XYZ"
-msgstr "PUNKT(0 0 0) -- XYZ"
+msgstr "POINT(0 0 0) -- XYZ"
 
 #. Tag: para
 #, no-c-format
@@ -48077,7 +48048,7 @@ msgstr "POINTM(0 0 0) -- XYM"
 #. Tag: para
 #, no-c-format
 msgid "POINT(0 0 0 0) -- XYZM"
-msgstr "PUNKT(0 0 0 0) -- XYZM"
+msgstr "POINT(0 0 0 0) -- XYZM"
 
 #. Tag: para
 #, no-c-format
@@ -48447,9 +48418,10 @@ msgid ""
 "link>)."
 msgstr ""
 "Du kan se geografins kraft i aktion genom att beräkna hur nära ett plan som "
-"flyger en cirkelrutt från Seattle till London (LINESTRING(-122,33 47,606, "
-"0,0 51,5)) kommer Reykjavik (POINT(-21,96 64,15))<link xlink:href=\"http://"
-"gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">(kartlägg rutten</link>)."
+"flyger en storcirkelrutt från Seattle till London (LINESTRING(-122.33 "
+"47.606, 0.0 51.5)) kommer Reykjavik (POINT(-21.96 64.15)) (<link "
+"xlink:href=\"http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">visa rutten</link>)"
+"."
 
 #. Tag: para
 #, no-c-format
@@ -48727,8 +48699,8 @@ msgid ""
 "coordinates (<varname>POINT</varname>s) are equal (have identical coordinate "
 "values)."
 msgstr ""
-"<varname>MULTIPOINTs</varname>är <emphasis>enkla</emphasis> om inte två "
-"koordinater<varname>(POINTs)</varname>är lika (har identiska "
+"<varname>MULTIPOINT</varname>s är <emphasis>enkla</emphasis> om inga två "
+"koordinater (<varname>POINT</varname>s) är lika (har identiska "
 "koordinatvärden)."
 
 #. Tag: para
@@ -48788,7 +48760,7 @@ msgid ""
 "<varname>POLYGON</varname>s are formed from linear rings, so valid polygonal "
 "geometry is always <emphasis>simple</emphasis>."
 msgstr ""
-"<varname>POLYGONER</varname>bildas av linjära ringar, så giltig polygonal "
+"<varname>POLYGON</varname>s bildas av linjära ringar, så giltig polygonal "
 "geometri är alltid <emphasis>enkel</emphasis>."
 
 #. Tag: para
@@ -48821,10 +48793,10 @@ msgid ""
 "Validity is defined by rules that allow polygonal geometry to model planar "
 "areas unambiguously."
 msgstr ""
-"Geometrisk validitet gäller främst för 2-dimensionella "
-"geometrier<varname>(POLYGONER</varname>och <varname>MULTIPOLYGONER</"
-"varname>). Validiteten definieras av regler som gör att polygonal geometri "
-"kan modellera plana områden på ett otvetydigt sätt."
+"Geometrisk giltighet gäller främst tvådimensionella geometrier (<varname>"
+"POLYGON</varname>s och <varname>MULTIPOLYGON</varname>s). Giltigheten "
+"definieras av regler som låter polygonal geometri entydigt modellera plana "
+"områden."
 
 #. Tag: para
 #, no-c-format
@@ -48925,7 +48897,7 @@ msgstr "En <varname>MULTIPOLYGON</varname> är <emphasis>giltig</emphasis> om:"
 #. Tag: para
 #, no-c-format
 msgid "its element <varname>POLYGON</varname>s are valid"
-msgstr "dess element <varname>POLYGONER</varname>är giltiga"
+msgstr "dess <varname>POLYGON</varname>-element är giltiga"
 
 #. Tag: para
 #, no-c-format
@@ -48969,9 +48941,9 @@ msgid ""
 "equivalently, have at least two distinct points.) Note that non-simple (self-"
 "intersecting) lines are valid."
 msgstr ""
-"För linjär geometri är den enda giltighetsregeln att <varname>LINESTRINGs</"
-"varname>måste ha minst två punkter och ha en längd som inte är noll (eller "
-"motsvarande, ha minst två distinkta punkter.) Observera att icke-enkla "
+"För linjär geometri är den enda giltighetsregeln att <varname>LINESTRING</"
+"varname>s måste ha minst två punkter och en längd som inte är noll (eller, "
+"likvärdigt, minst två distinkta punkter). Observera att icke-enkla "
 "(självskärande) linjer är giltiga."
 
 #. Tag: para
@@ -48980,7 +48952,7 @@ msgid ""
 "<varname>POINT</varname> and <varname>MULTIPOINT</varname> geometries have "
 "no validity rules."
 msgstr ""
-"<varname>POINT-</varname> och <varname>MULTIPOINT-geometrierna</varname> har "
+"<varname>POINT</varname>- och <varname>MULTIPOINT</varname>-geometrier har "
 "inga giltighetsregler."
 
 #. Tag: title
@@ -49080,10 +49052,10 @@ msgid ""
 "(<code>ST_MakeValid</code> is a case of a spatial function that "
 "<emphasis>does</emphasis> allow invalid input!)"
 msgstr ""
-"I vissa situationer är det önskvärt att korrigera ogiltig geometri "
-"automatiskt. Använd funktionen <xref linkend=\"ST_MakeValid\"/> för att göra "
-"detta.<code>(ST_MakeValid</code> är ett exempel på en spatial funktion som "
-"<emphasis>tillåter</emphasis> ogiltiga indata!)"
+"I vissa situationer är det önskvärt att automatiskt rätta ogiltig geometri. "
+"Använd funktionen <xref linkend=\"ST_MakeValid\"/> för detta. (<code>"
+"ST_MakeValid</code> är ett exempel på en spatial funktion som <emphasis>"
+"faktiskt</emphasis> tillåter ogiltiga indata!)"
 
 #. Tag: para
 #, no-c-format
@@ -49186,13 +49158,12 @@ msgid ""
 "linkend=\"EWKB_EWKT\">EWKT</link> format supports SRIDs with the "
 "<code>SRID=n;</code> prefix."
 msgstr ""
-"En geometri är associerad med ett spatialt referenssystem genom sitt SRID-"
-"värde, som nås via <xref linkend=\"ST_SRID\"/>. SRID för en geometri kan "
-"tilldelas med hjälp av <xref linkend=\"ST_SetSRID\"/>. Vissa geometry "
-"constructor-funktioner gör det möjligt att ange en SRID (t.ex. <xref "
-"linkend=\"ST_Point\"/> och <xref linkend=\"ST_MakeEnvelope\"/>). <link "
-"linkend=\"EWKB_EWKT\">EWKT-formatet</link> stöder SRID med prefixet "
-"<code>SRID=n;.</code>."
+"En geometri kopplas till ett spatialt referenssystem genom sitt SRID-värde, "
+"som nås med <xref linkend=\"ST_SRID\"/>. En geometris SRID kan tilldelas med "
+"<xref linkend=\"ST_SetSRID\"/>. Vissa geometri-konstruktorfunktioner "
+"tillåter att en SRID anges (som <xref linkend=\"ST_Point\"/> och <xref "
+"linkend=\"ST_MakeEnvelope\"/>). Formatet <link linkend=\"EWKB_EWKT\">EWKT</"
+"link> stöder SRID med prefixet <code>SRID=n;</code>."
 
 #. Tag: para
 #, no-c-format
@@ -49316,8 +49287,8 @@ msgid ""
 msgstr ""
 "Mer information finns på <link xlink:href=\"https://proj.org/\">PROJ-"
 "webbplatsen</link>. Filen <filename>spatial_ref_sys.sql</filename> "
-"innehåller både <varname>srtext-</varname> och <varname>proj4text-"
-"definitioner</varname> för alla EPSG-projektioner."
+"innehåller både definitionerna <varname>srtext</varname> och <varname>"
+"proj4text</varname> för alla EPSG-projektioner."
 
 #. Tag: para
 #, no-c-format
@@ -49444,12 +49415,11 @@ msgid ""
 "spheroidal), but you can use it with the <varname>geography</varname> type "
 "to obtain length and proximity measurements in meters instead of degrees."
 msgstr ""
-"Du kan även definiera koordinatsystem som inte är jordbaserade, t.ex. Mars "
-"<link xlink:href=\"http://spatialreference.org/ref/iau2000/"
-"mars-2000/\">2000</link> Mars koordinatsystem är inte planar (det är i "
-"grader sfäroidalt), men du kan använda det med <varname>geograftypen</"
-"varname> för att få längd- och avståndsmätningar i meter i stället för "
-"grader."
+"Du kan även definiera koordinatsystem som inte är jordbaserade, till exempel "
+"<link xlink:href=\"http://spatialreference.org/ref/iau2000/mars-2000/\">Mars "
+"2000</link>. Mars-koordinatsystemet är inte plant (det är sfäroidalt i "
+"grader), men du kan använda typen <varname>geography</varname> för att få "
+"längd- och avståndsmätningar i meter i stället för grader."
 
 #. Tag: para
 #, no-c-format
@@ -49494,8 +49464,8 @@ msgid ""
 "The <varname>geometry</varname> type supports two optional <emphasis "
 "role=\"bold\">type modifiers</emphasis>:"
 msgstr ""
-"<varname>Geometritypen</varname> har stöd för två valfria <emphasis "
-"role=\"bold\">typmodifierare</emphasis>:"
+"Typen <varname>geometry</varname> stöder två valfria <emphasis role=\"bold\">"
+"typmodifierare</emphasis>:"
 
 #. Tag: para
 #, no-c-format
@@ -49611,10 +49581,10 @@ msgid ""
 "left blank. For \"schema\" the PostgreSQL schema name is used "
 "(<varname>public</varname> is the default)."
 msgstr ""
-"Det fullständigt kvalificerade namnet på funktionstabellen som innehåller "
-"geometrikolumnen. Det finns ingen PostgreSQL-analog av \"katalog\" så den "
-"kolumnen lämnas tom. För \"schema\" används PostgreSQL-"
-"schemanamnet<varname>(offentligt</varname> är standard)."
+"Det fullständigt kvalificerade namnet på objekttabellen som innehåller "
+"geometrikolumnen. PostgreSQL har ingen motsvarighet till ”katalog”, så den "
+"kolumnen lämnas tom. För ”schema” används PostgreSQL-schemanamnet (<varname>"
+"public</varname> är standardvärdet)."
 
 #. Tag: para
 #, no-c-format
@@ -49825,10 +49795,10 @@ msgid ""
 "can be bulk-loaded into PostGIS/PostgreSQL by loading a text file of SQL "
 "<code>INSERT</code> statements using the <code>psql</code> SQL utility."
 msgstr ""
-"Om spatiala data kan konverteras till en textrepresentation (som antingen "
-"WKT eller WKB) kan SQL vara det enklaste sättet att få in data i PostGIS. "
-"Data kan bulk-laddas in i PostGIS/PostgreSQL genom att ladda en textfil med "
-"SQL <code>INSERT-satser</code> med hjälp av SQL-verktyget <code>psql</code>."
+"Om spatiala data kan omvandlas till en textrepresentation (WKT eller WKB) "
+"kan SQL vara det enklaste sättet att få in data i PostGIS. Data kan "
+"massinläsas i PostGIS/PostgreSQL genom att läsa in en textfil med SQL-<code>"
+"INSERT</code>-satser med SQL-verktyget <code>psql</code>."
 
 #. Tag: para
 #, no-c-format
@@ -49836,7 +49806,7 @@ msgid ""
 "A SQL load file (<filename>roads.sql</filename> for example) might look like "
 "this:"
 msgstr ""
-"En SQL-laddningsfil (till exempel<filename>roads.sql)</filename> kan se ut "
+"En SQL-inläsningsfil (till exempel <filename>roads.sql</filename>) kan se ut "
 "så här:"
 
 #. Tag: para
@@ -49857,10 +49827,10 @@ msgid ""
 "or geography format. The loader has several operating modes selected by "
 "command line flags."
 msgstr ""
-"<filename>Shp2pgsql-dataladdaren</filename> konverterar Shapefiles till SQL "
-"som är lämplig för införande i en PostGIS / PostgreSQL-databas antingen i "
-"geometri- eller geografiformat. Laddaren har flera driftlägen som väljs med "
-"kommandoradsflaggor."
+"Dataladdaren <filename>shp2pgsql</filename> omvandlar shapefiler till SQL "
+"som lämpar sig för infogning i en PostGIS/PostgreSQL-databas i antingen "
+"geometry- eller geography-format. Laddaren har flera driftlägen som väljs "
+"med kommandoradsflaggor."
 
 #. Tag: para
 #, no-c-format
@@ -50079,11 +50049,10 @@ msgid ""
 "that the backend will be able to reconvert from UTF8 to whatever encoding "
 "the database is configured to use internally."
 msgstr ""
-"Ange kodning av indata (dbf-fil). När detta används konverteras alla "
-"attribut i dbf-filen från den angivna kodningen till UTF8. Den resulterande "
-"SQL-utdata kommer att innehålla ett <code>SET CLIENT_ENCODING till UTF8-"
-"kommando</code>, så att backend kan konvertera om från UTF8 till den kodning "
-"som databasen är konfigurerad att använda internt."
+"Ange indatans kodning (dbf-fil). Då omvandlas dbf-filens alla attribut från "
+"angiven kodning till UTF8. SQL-utdata innehåller kommandot <code>SET "
+"CLIENT_ENCODING to UTF8</code>, så att serverdelen kan omvandla från UTF8 "
+"till den kodning som databasen använder internt."
 
 #. Tag: para
 #, no-c-format
@@ -50141,9 +50110,8 @@ msgid ""
 "statements. Without the -Z flag (default behavior), the <code>ANALYZE</code> "
 "statements will be generated."
 msgstr ""
-"När denna flagga används förhindrar den att <code>ANALYZE-satser</code> "
-"genereras. Utan flaggan -Z (standardbeteende) kommer <code>ANALYZE-satserna</"
-"code> att genereras."
+"Flaggan förhindrar att <code>ANALYZE</code>-satser genereras. Utan flaggan -"
+"Z (standardbeteendet) genereras <code>ANALYZE</code>-satserna."
 
 #. Tag: para
 #, no-c-format
@@ -50212,10 +50180,9 @@ msgid ""
 "is to use a SQL <code>SELECT</code> query to define the data set to be "
 "extracted and dump the resulting columns into a parsable text file:"
 msgstr ""
-"Det enklaste sättet att extrahera spatiala data ur databasen är att använda "
-"en SQL <code>SELECT-fråga</code> för att definiera den datauppsättning som "
-"ska extraheras och dumpa de resulterande kolumnerna i en textfil som kan "
-"analyseras:"
+"Det enklaste sättet att extrahera spatiala data från databasen är att "
+"definiera datauppsättningen med en SQL-<code>SELECT</code>-fråga och skriva "
+"de resulterande kolumnerna till en tolkbar textfil:"
 
 #. Tag: para
 #, no-c-format
@@ -50721,7 +50688,8 @@ msgstr ""
 msgid ""
 "The syntax for building a BRIN index on a <code>geometry</code> column is:"
 msgstr ""
-"Syntaxen för att bygga ett BRIN-index på en <code>geometrikolumn</code> är:"
+"Syntaxen för att skapa ett BRIN-index på en kolumn av typen <code>geometry</"
+"code> är:"
 
 #. Tag: para
 #, no-c-format
@@ -50788,10 +50756,10 @@ msgid ""
 "<code>geography</code>), and just the <varname>&amp;&amp;&amp;</varname> "
 "operator for 3D geometries. There is currently no support for kNN searches."
 msgstr ""
-"För närvarande finns endast \"inclusion support\", vilket innebär att endast "
+"För närvarande finns endast ”inclusion support”, vilket innebär att bara "
 "operatorerna <varname>&amp;&amp;</varname>, <varname>~</varname> och "
-"<varname>@</varname> kan användas för 2D-fall (för både <code>geometri</"
-"code> och <code>geografi</code>) och endast operatorn <varname>"
+"<varname>@</varname> kan användas för 2D-fallen (för både <code>geometry</"
+"code> och <code>geography</code>) och bara operatorn <varname>"
 "&amp;&amp;&amp;</varname> för 3D-geometrier. Det finns för närvarande inget "
 "stöd för kNN-sökningar."
 
@@ -51036,14 +51004,13 @@ msgid ""
 "forget to run <command>SET ENABLE_SEQSCAN TO ON;</command> so that the "
 "planner will operate normally for other queries."
 msgstr ""
-"Om det inte hjälper att dammsuga kan du tillfälligt tvinga planeraren att "
-"använda indexinformationen genom att använda kommandot <command>SET "
-"ENABLE_SEQSCAN TO OFF;.</command> På så sätt kan du kontrollera om "
-"planeraren överhuvudtaget kan generera en indexaccelererad frågeplan för din "
-"fråga. Du bör bara använda det här kommandot för felsökning; i allmänhet vet "
-"planeraren bättre än du när index ska användas. När du har kört din fråga, "
-"glöm inte att köra <command>SET ENABLE_SEQSCAN TO ON;</command> så att "
-"planeraren fungerar normalt för andra frågor."
+"Om vacuuming inte hjälper kan du tillfälligt tvinga planeraren att använda "
+"indexinformationen med kommandot <command>SET ENABLE_SEQSCAN TO OFF;</"
+"command>. Då kan du kontrollera om planeraren alls kan skapa en "
+"indexaccelererad frågeplan för frågan. Använd bara kommandot för felsökning; "
+"i allmänhet vet planeraren bättre än du när index ska användas. När frågan "
+"har körts ska du komma ihåg att köra <command>SET ENABLE_SEQSCAN TO ON;</"
+"command> så att planeraren fungerar normalt för andra frågor."
 
 #. Tag: para
 #, no-c-format
@@ -51057,15 +51024,14 @@ msgid ""
 "(for SSD) or 2.0 (for fast magnetic disks). Decreasing the value makes the "
 "planner more likely to use index scans."
 msgstr ""
-"Om <command>SET ENABLE_SEQSCAN TO OFF;</command> hjälper din fråga att köras "
-"snabbare är din Postgres sannolikt inte inställd för din maskinvara. Om du "
-"tycker att planeraren har fel om kostnaden för sekventiella skanningar "
-"jämfört med indexskanningar kan du försöka minska värdet på "
-"<varname>RANDOM_PAGE_COST</varname> i <code>postgresql.conf</code> eller "
-"använda <command>SET RANDOM_PAGE_COST TO 1.1;.</command> Standardvärdet för "
-"<varname>RANDOM_PAGE_COST</varname> är 4,0. Prova att ställa in det på 1,1 "
-"(för SSD) eller 2,0 (för snabba magnetiska diskar). Om du sänker värdet blir "
-"det mer sannolikt att planeraren använder indexskanningar."
+"Om <command>SET ENABLE_SEQSCAN TO OFF;</command> gör att frågan går snabbare "
+"är Postgres sannolikt inte justerat för maskinvaran. Om planeraren "
+"felbedömer kostnaden för sekventiella skanningar jämfört med indexskanningar "
+"kan du minska värdet för <varname>RANDOM_PAGE_COST</varname> i <code>"
+"postgresql.conf</code> eller använda <command>SET RANDOM_PAGE_COST TO 1.1;</"
+"command>. Standardvärdet för <varname>RANDOM_PAGE_COST</varname> är 4.0. "
+"Prova 1.1 för SSD eller 2.0 för snabba magnetiska diskar. Ett lägre värde "
+"gör att planeraren oftare använder indexskanningar."
 
 #. Tag: para
 #, no-c-format
@@ -51174,10 +51140,10 @@ msgid ""
 "is the two endpoints. For <varname>POLYGON</varname>s, the boundary is the "
 "linework of the exterior and interior rings."
 msgstr ""
-"Gränsen för en geometri är uppsättningen av geometrier med nästa lägre "
-"dimension. För <varname>POINTs</varname>, som har dimensionen 0, är gränsen "
-"den tomma mängden. Gränsen för en <varname>LINESTRING</varname> är de två "
-"ändpunkterna. För <varname>POLYGONER</varname>är gränsen linjeverket för de "
+"En geometris gräns är mängden av geometrier med näst lägre dimension. För "
+"<varname>POINT</varname>s, som har dimensionen 0, är gränsen den tomma "
+"mängden. Gränsen för en <varname>LINESTRING</varname> är de två "
+"ändpunkterna. För <varname>POLYGON</varname>s är gränsen linjenätet i de "
 "yttre och inre ringarna."
 
 #. Tag: glossterm
@@ -51194,11 +51160,10 @@ msgid ""
 "between the endpoints. For <varname>POLYGON</varname>s, the interior is the "
 "areal surface inside the polygon."
 msgstr ""
-"Det inre av en geometri är de punkter i en geometri som inte ligger i "
-"begränsningen. För <varname>POINTs</varname>är det inre själva punkten. Det "
-"inre av en <varname>LINESTRING</varname> är den uppsättning punkter som "
-"finns mellan ändpunkterna. För <varname>POLYGONER</varname>är det inre den "
-"areella ytan inuti polygonen."
+"En geometris inre är de av dess punkter som inte ligger på gränsen. För "
+"<varname>POINT</varname>s är det inre punkten själv. Det inre av en <varname>"
+"LINESTRING</varname> är mängden av punkter mellan ändpunkterna. För <varname>"
+"POLYGON</varname>s är det inre den yta som ligger inne i polygonen."
 
 #. Tag: glossterm
 #, no-c-format
@@ -51441,11 +51406,10 @@ msgid ""
 "a spatial index if one is available, so there is no need to use the bounding "
 "box operator <code>&amp;&amp;</code> as well. For example:"
 msgstr ""
-"Spatiala predikat används vanligtvis som villkor i SQL <code>WHERE-</code> "
-"eller <code>JOIN-klausuler</code>. De namngivna spatiala predikaten använder "
-"automatiskt ett spatialt index om ett sådant finns tillgängligt, så det "
-"finns inget behov av att använda bounding box-operatorn <code>&amp;&amp;</"
-"code> också. Till exempel:"
+"Spatiala predikat används vanligen som villkor i SQL-<code>WHERE</code>- "
+"eller <code>JOIN</code>-satser. De namngivna spatiala predikaten använder "
+"automatiskt ett spatialt index om ett sådant finns, så det behövs inte också "
+"en avgränsningsruteoperator <code>&amp;&amp;</code>. Till exempel:"
 
 #. Tag: para
 #, no-c-format
@@ -51555,11 +51519,11 @@ msgid ""
 "aware function must be used in a <code>WHERE</code> or <code>ON</code> "
 "clause of the query."
 msgstr ""
-"När du konstruerar frågor med spatiala villkor är det viktigt att se till "
-"att ett spatialt index används, om ett sådant finns (se <xref "
-"linkend=\"build-indexes\"/>), för bästa prestanda. För att göra detta måste "
-"en spatial operator eller en indexmedveten funktion användas i en "
-"<code>WHERE-</code> eller <code>ON-sats</code> i frågan."
+"När frågor byggs med spatiala villkor är det viktigt för bästa prestanda att "
+"säkerställa att ett spatialt index används, om ett finns (se <xref "
+"linkend=\"build-indexes\"/>). Då måste en spatial operator eller "
+"indexmedveten funktion användas i en <code>WHERE</code>- eller <code>ON</"
+"code>-sats i frågan."
 
 #. Tag: para
 #, no-c-format
@@ -51844,10 +51808,10 @@ msgid ""
 "raster table. It is capable of loading folders of raster files as well as "
 "creating overviews of rasters."
 msgstr ""
-"<varname>Raster2pgsql</varname> är en körbar rasterläsa inre som läsa inr "
-"GDAL-stödda rasterformat till SQL som lämpar sig för laddning i en PostGIS-"
-"rastertabell. Den kan läsa in mappar med rasterfiler samt skapa översikter "
-"över raster."
+"<varname>raster2pgsql</varname> är ett körbart rasterinläsningsprogram som "
+"läser in GDAL-stödda rasterformat till SQL som kan läsas in i en PostGIS-"
+"rastertabell. Det kan läsa in kataloger med rasterfiler och skapa "
+"rasteröversikter."
 
 #. Tag: para
 #, no-c-format
@@ -52482,12 +52446,11 @@ msgid ""
 "options can be set by space-separating the <varname>key=value</varname> "
 "pairs."
 msgstr ""
-"För icke-publika raster kan du behöva ange åtkomstnycklar för att läsa från "
-"molnrastern. Samma nycklar som du använde för att skriva "
-"<varname>raster2pgsql-anropet</varname> kan ställas in för användning i "
-"databasen med <xref linkend=\"postgis_gdal_vsi_options\"/> -konfigurationen. "
-"Observera att flera alternativ kan ställas in genom att mellanslag separerar "
-"<varname>nyckel=värde-paren</varname>."
+"För icke-offentliga raster kan du behöva ange åtkomstnycklar för att läsa "
+"från molnrastren. Samma nycklar som används i anropet <varname>raster2pgsql</"
+"varname> kan ställas in för användning i databasen med konfigurationen <xref "
+"linkend=\"postgis_gdal_vsi_options\"/>. Flera alternativ kan ställas in "
+"genom att separera paren <varname>key=value</varname> med mellanslag."
 
 #. Tag: para
 #, no-c-format
@@ -52876,12 +52839,12 @@ msgid ""
 "you restore one raster table from a backup of another database. The "
 "following columns exist in the <varname>raster_columns</varname> catalog."
 msgstr ""
-"<varname>Raster_columns</varname> är en katalog över alla kolumner i "
-"rastertabeller i databasen som är av typen raster. Det är en vy som "
-"utnyttjar begränsningarna i tabellerna så att informationen alltid är "
-"konsekvent även om du återställer en rastertabell från en säkerhetskopia av "
-"en annan databas. Följande kolumner finns i katalogen "
-"<varname>raster_columns</varname>."
+"<varname>raster_columns</varname> är en katalog över alla "
+"rastertabellkolumner i databasen som har typen raster. Det är en vy som "
+"använder begränsningarna i tabellerna, så informationen alltid är konsekvent "
+"även om en rastertabell återställs från en säkerhetskopia av en annan "
+"databas. Följande kolumner finns i katalogen <varname>raster_columns</"
+"varname>."
 
 #. Tag: para
 #, no-c-format
@@ -52892,12 +52855,11 @@ msgid ""
 "<varname>raster_columns</varname> catalog registers the common information "
 "about your raster tiles."
 msgstr ""
-"Om du inte skapade dina tabeller med inläsningsprogrammet eller glömde att "
-"ange flaggan <varname>-C</varname> under inläsningen kan du genomdriva "
-"begränsningarna i efterhand med hjälp av <xref "
-"linkend=\"RT_AddRasterConstraints\"/> så att <varname>raster_columns-"
-"katalogen</varname> registrerar den gemensamma informationen om dina "
-"rasterplattor."
+"Om du inte skapade tabellerna med inläsningsprogrammet eller glömde att ange "
+"flaggan <varname>-C</varname> vid inläsningen kan du tillämpa "
+"begränsningarna i efterhand med <xref linkend=\"RT_AddRasterConstraints\"/>, "
+"så att katalogen <varname>raster_columns</varname> registrerar den "
+"gemensamma informationen om rasterplattorna."
 
 #. Tag: para
 #, no-c-format
@@ -52920,7 +52882,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>r_table_name</varname> raster table"
-msgstr "<varname>r_table_namn</varname> rastertabell"
+msgstr "<varname>r_table_name</varname> rastertabell"
 
 #. Tag: para
 #, no-c-format
@@ -52968,10 +52930,11 @@ msgid ""
 "constraint is applied. Refer to <xref linkend=\"RT_ST_ScaleY\"/> for more "
 "details."
 msgstr ""
-"<varname>scale_y</varname> Skalningen mellan geometriska rumskoordinater och "
-"pixel. Detta är endast tillgängligt om alla tiles i rasterkolumnen har samma "
-"<varname>scale_y</varname> och <varname>scale_y-begränsningen</varname> "
-"tillämpas. Se <xref linkend=\"RT_ST_ScaleY\"/> för mer information."
+"<varname>scale_y</varname> Skalningen mellan geometriska spatiala "
+"koordinater och pixel. Detta är endast tillgängligt om alla plattor i "
+"rasterkolumnen har samma <varname>scale_y</varname> och begränsningen "
+"<varname>scale_y</varname> tillämpas. Se <xref linkend=\"RT_ST_ScaleY\"/> "
+"för mer information."
 
 #. Tag: para
 #, no-c-format
@@ -53045,12 +53008,11 @@ msgid ""
 "operations. This is similar information provided by <xref "
 "linkend=\"RT_ST_BandNoDataValue\"/>."
 msgstr ""
-"<varname>nodata_values</varname> En matris med tal med dubbel precision som "
-"anger <varname>nodata_värdet</varname> för varje band. Du kommer att ha "
-"samma antal element i den här matrisen som du har antal band. Dessa siffror "
-"definierar pixelvärdet för varje band som bör ignoreras för de flesta "
-"operationer. Detta är liknande information som tillhandahålls av <xref "
-"linkend=\"RT_ST_BandNoDataValue\"/>."
+"<varname>nodata_values</varname> En array av tal med dubbel precision som "
+"anger <varname>nodata_value</varname> för varje band. Arrayen har lika många "
+"element som antalet band. Talen definierar pixelvärdet för varje band som "
+"ska ignoreras för de flesta operationer. Detta motsvarar information från "
+"<xref linkend=\"RT_ST_BandNoDataValue\"/>."
 
 #. Tag: para
 #, no-c-format
@@ -53262,21 +53224,19 @@ msgid ""
 "number of pixels as its parent, but is of a lower resolution where each "
 "pixel of it represents (Power(2,overview_factor) pixels of the original)."
 msgstr ""
-"<varname>overview_factor</varname> - detta är pyramidnivån för "
-"översiktstabellen. Ju högre siffra desto lägre upplösning på tabellen. "
-"raster2pgsql kommer, om den får en mapp med bilder, att beräkna översikten "
-"för varje bildfil och läsa in den separat. Nivå 1 antas alltid vara "
-"originalfilen. Nivå 2 är att varje platta representerar 4 av originalet. Så "
-"om du till exempel har en mapp med bildfiler på 5000x5000 pixlar som du valt "
-"att dela upp i 125x125, kommer din bastabell för varje bildfil att ha "
-"(5000*5000)/(125*125) poster = 1600, din (l=2) <varname>o_2-tabell</varname> "
-"kommer att ha tak(1600/Power(2,2)) = 400 rader, din (l=3) <varname>o_3</"
-"varname> kommer att ha tak(1600/Power(2,3)) = 200 rader. Om dina pixlar inte "
-"är delbara med storleken på dina brickor kommer du att få några skrotbrickor "
-"(brickor som inte är helt fyllda). Observera att varje översiktsplatta som "
-"genereras av raster2pgsql har samma antal pixlar som sin förälder, men har "
-"en lägre upplösning där varje pixel i den representerar "
-"(Power(2,overview_factor) pixlar av originalet)."
+"<varname>overview_factor</varname> – pyramidnivån för översiktstabellen. Ju "
+"högre tal, desto lägre upplösning i tabellen. Om raster2pgsql får en katalog "
+"med bilder beräknas översikten för varje bildfil och läses in separat. Nivå "
+"1 antas alltid vara originalfilen. På nivå 2 representerar varje platta 4 av "
+"originalets plattor. Om en katalog med bildfiler på 5000x5000 pixlar delas "
+"upp i 125x125 blir bastabellen för varje bildfil (5000*5000)/(125*125) "
+"poster = 1600, tabellen (l=2) <varname>o_2</varname> får ceiling(1600/Power"
+"(2,2)) = 400 rader och (l=3) <varname>o_3</varname> får ceiling(1600/Power"
+"(2,3) ) = 200 rader. Om bildpunkterna inte är jämnt delbara med plattornas "
+"storlek uppstår restplattor (plattor som inte fylls helt). Observera att "
+"varje översiktsplatta som raster2pgsql skapar har samma antal bildpunkter "
+"som sin förälder, men lägre upplösning där varje bildpunkt representerar "
+"(Power(2,overview_factor) bildpunkter i originalet)."
 
 #. Tag: title
 #, no-c-format
