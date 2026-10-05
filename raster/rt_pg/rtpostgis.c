@@ -762,6 +762,10 @@ _PG_init(void) {
 		);
 	}
 
+	/* Initialize to boot value so backend doesn't crash on create extension
+		, needed because this is now extern to satisfy CUnit and raster2pgsql  */
+	enable_outdb_rasters = boot_postgis_enable_outdb_rasters;
+
 	if ( postgis_guc_find_option("postgis.enable_outdb_rasters") )
 	{
 		/* In this narrow case the previously installed GUC is tied to the callback in */
