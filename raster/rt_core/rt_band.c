@@ -414,7 +414,7 @@ rt_band_get_data(rt_band band) {
 }
 
 /* variable for PostgreSQL GUC: postgis.enable_outdb_rasters */
-char enable_outdb_rasters = 1;
+bool enable_outdb_rasters = true;
 
 /**
 	* Load offline band's data.  Loaded data is internally owned

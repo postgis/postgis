@@ -753,6 +753,9 @@ _PG_init(void) {
 		);
 	}
 
+	/* Initialize the raster flag even when an older library owns the GUC. */
+	enable_outdb_rasters = boot_postgis_enable_outdb_rasters;
+
 	if ( postgis_guc_find_option("postgis.enable_outdb_rasters") )
 	{
 		/* In this narrow case the previously installed GUC is tied to the callback in */
