@@ -371,6 +371,11 @@ RETURNS BOOLEAN AS
 	'MODULE_PATHNAME', 'TopoRingIsCCW'
 LANGUAGE 'c' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION topology.TopoEdgesHaveInteriorIntersection(line1 geometry, line2 geometry)
+RETURNS BOOLEAN AS
+	'MODULE_PATHNAME', 'TopoEdgesHaveInteriorIntersection'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
 --
 -- Check that the edges forming all rings
 -- (as advertised by their next_right_edge/next_left_edge)
@@ -770,7 +775,7 @@ BEGIN
       e2.edge_id as id2,
       e1.geom as g1,
       e2.geom as g2,
-      ST_Relate(e1.geom, e2.geom, 2) as im
+      topology.TopoEdgesHaveInteriorIntersection(e1.geom, e2.geom) as cross
     FROM
       edge e1,
       edge e2
@@ -794,15 +799,14 @@ BEGIN
       )
   LOOP --{
 
-    IF ST_RelateMatch(rec.im, 'FF*F*****') THEN
-      -- no interior-interior or interior-boundary intersections
-      CONTINUE;
+    IF rec.cross THEN
+      -- interior-interior or interior-boundary intersections found
+      retrec.error = 'edge crosses edge';
+      retrec.id1 = rec.id1;
+      retrec.id2 = rec.id2;
+      RETURN NEXT retrec;
     END IF;
 
-    retrec.error = 'edge crosses edge';
-    retrec.id1 = rec.id1;
-    retrec.id2 = rec.id2;
-    RETURN NEXT retrec;
   END LOOP; --}
 
   -- Check for edge start_node geometry mismatch

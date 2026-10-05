@@ -29,5 +29,5 @@ ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  SQL/MM Spatial exception - not isolated node
 ERROR:  Closed edges would not be isolated, try ST_AddEdgeNewFaces
 ERROR:  SQL/MM Spatial exception - not isolated node
-ERROR:  SQL/MM Spatial exception - geometry crosses edge 2 at POINT(10 3.33333333333333)
+ERROR:  SQL/MM Spatial exception - non-boundary intersection with edge 2 at or near POINT(10 3.33333333333333)
 Topology 'tt' dropped

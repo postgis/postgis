@@ -5952,3 +5952,48 @@ Datum TopoRingIsCCW(PG_FUNCTION_ARGS)
 
   PG_RETURN_BOOL(isCCW);
 }
+
+/*  TopoEdgesHaveInteriorIntersection(line1 geometry, line2 geometry) */
+Datum TopoEdgesHaveInteriorIntersection(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoEdgesHaveInteriorIntersection);
+Datum TopoEdgesHaveInteriorIntersection(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *geom1, *geom2;
+  LWGEOM *lwgeom1, *lwgeom2;
+  int ret;
+
+  geom1 = PG_GETARG_GSERIALIZED_P(0);
+  lwgeom1 = lwgeom_from_gserialized(geom1);
+
+  geom2 = PG_GETARG_GSERIALIZED_P(1);
+  lwgeom2 = lwgeom_from_gserialized(geom2);
+
+  if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+  {
+	  lwgeom_free(lwgeom1);
+	  lwgeom_free(lwgeom2);
+	  PG_FREE_IF_COPY(geom1, 0);
+	  PG_FREE_IF_COPY(geom2, 1);
+	  PG_RETURN_BOOL(false);
+  }
+
+
+  if (lwgeom1->type != LINETYPE || lwgeom2->type != LINETYPE)
+  {
+	  lwgeom_free(lwgeom1);
+	  lwgeom_free(lwgeom2);
+	  PG_FREE_IF_COPY(geom1, 0);
+	  PG_FREE_IF_COPY(geom2, 1);
+	  lwpgerror("Unsupported geometry type passed to TopoEdgesHaveInteriorIntersection");
+	  PG_RETURN_NULL();
+  }
+
+  ret = lwline_have_nonboundary_2d_intersection(lwgeom_as_lwline(lwgeom1), lwgeom_as_lwline(lwgeom2));
+  lwgeom_free(lwgeom1);
+  lwgeom_free(lwgeom2);
+
+  PG_FREE_IF_COPY(geom1, 0);
+  PG_FREE_IF_COPY(geom2, 1);
+
+  PG_RETURN_BOOL(ret);
+}

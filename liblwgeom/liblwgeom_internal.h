@@ -481,6 +481,7 @@ int ptarray_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *o
 int ptarrayarc_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on_boundary);
 int lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt);
 int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt);
+int lwline_have_nonboundary_2d_intersection(const LWLINE *line1, const LWLINE *line2);
 
 /**
 * Split a line by a point and push components to the provided multiline.
