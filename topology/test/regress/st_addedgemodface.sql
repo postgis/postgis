@@ -542,6 +542,20 @@ END;
 $TEST$ LANGUAGE 'plpgsql';
 ROLLBACK; -- restores the topology
 
+-----------------------------------------------------
+-- Very close segments
+-----------------------------------------------------
+
+BEGIN;
+SELECT 't6140', 'start';
+SELECT NULL FROM CreateTopology('t6140');
+SELECT NULL FROM ST_AddIsoNode('t6140', 0, '01010000005163B45884333540352259FDE66A5140'); -- start node of edge 1
+SELECT NULL FROM ST_AddIsoNode('t6140', 0, '0101000000685E205B88333540B7363CF4E66A5140'); -- start node of edge 2
+SELECT NULL FROM ST_AddIsoNode('t6140', 0, '0101000000831D215B88333540107B41F4E66A5140'); -- end node of both edges
+SELECT NULL FROM ST_AddEdgeModFace('t6140', 1, 3, '0102000000030000005163B45884333540352259FDE66A51406043FEC3BA333540C0BFF081E66A5140831D215B88333540107B41F4E66A5140');
+SELECT 't6140', 'unexpected success', * FROM ST_AddEdgeModFace('t6140', 2, 3, '010200000002000000685E205B88333540B7363CF4E66A5140831D215B88333540107B41F4E66A5140');
+ROLLBACK;
+
 ---------------------------------------------------------------------
 -- Cleanups
 ---------------------------------------------------------------------
