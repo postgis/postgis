@@ -47,3 +47,5 @@
 #5766.2|overlapping bbox|("face has wrong mbr",0,)
 #5766.2|disjoint bbox|
 #6065|invalidities|hole not in advertised face|-4|
+t6139|invalidity|edge crosses edge|1|2
+t6138|end of validation

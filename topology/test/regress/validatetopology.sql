@@ -243,3 +243,37 @@ VALUES
 SELECT '#6065', 'invalidities', * FROM topology.ValidateTopology('t6065');
 ROLLBACK;
 
+
+
+-- See https://trac.osgeo.org/postgis/ticket/6138
+BEGIN;
+SELECT NULL FROM CreateTopology('t6138');
+
+COPY t6138.node(node_id,geom) FROM stdin;
+1	0101000000831D215B88333540107B41F4E66A5140
+2	01010000005163B45884333540352259FDE66A5140
+3	0101000000685E205B88333540B7363CF4E66A5140
+\.
+
+COPY t6138.edge_data(
+  edge_id,
+  start_node,
+  end_node,
+  next_left_edge,
+  abs_next_left_edge,
+  next_right_edge,
+  abs_next_right_edge,
+  left_face,
+  right_face,
+  geom
+)
+FROM stdin;
+1	2	1	-2	2	1	1	0	0	0102000000030000005163B45884333540352259FDE66A51406043FEC3BA333540C0BFF081E66A5140831D215B88333540107B41F4E66A5140
+2	3	1	-1	1	2	2	0	0	010200000002000000685E205B88333540B7363CF4E66A5140831D215B88333540107B41F4E66A5140
+\.
+
+SELECT NULL FROM setval('t6138.edge_data_edge_id_seq', 2);
+SELECT NULL FROM setval('t6138.node_node_id_seq', 3);
+
+SELECT 't6139', 'invalidity', * FROM ValidateTopology('t6138');
+SELECT 't6138', 'end of validation';
