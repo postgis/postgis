@@ -61,26 +61,40 @@ _lwt_describe_point(const LWPOINT *pt, char *buf, size_t bufsize)
 static int
 _lwt_describe_intersection_point(const LWGEOM *g1, const LWGEOM *g2, char *buf, size_t bufsize)
 {
-	const POINT2D *p;
-	LWGEOM *isect;
-	LWGEOM *normalized;
-	LWGEOM *surface_pt;
+  const POINT2D *p;
+  LWGEOM *isect;
+  LWGEOM *normalized;
+  LWGEOM *surface_pt;
 
-	isect = lwgeom_intersection(g1, g2);
-	if (!isect) return 0;
+  isect = lwgeom_intersection(g1, g2);
+  if (!isect) return 0;
 
-	normalized = lwgeom_clone_deep(isect);
-	lwgeom_free(isect);
-	lwgeom_normalize(normalized);
+  normalized = lwgeom_clone_deep(isect);
+  lwgeom_free(isect);
+  if ( ! normalized ) {
+    return 0;
+  }
+  lwgeom_normalize(normalized);
 
-	surface_pt = lwgeom_pointonsurface(normalized);
-	lwgeom_free(normalized);
-	p = getPoint2d_cp(lwgeom_as_lwpoint(surface_pt)->point, 0);
+  surface_pt = lwgeom_pointonsurface(normalized);
+  lwgeom_free(normalized);
+  if ( ! surface_pt ) {
+    return 0;
+  }
 
-	snprintf(buf, bufsize, "POINT(%.15g %.15g)", p->x, p->y);
-	lwgeom_free(surface_pt);
+  if ( ! lwgeom_as_lwpoint(surface_pt) ) {
+    return 0;
+  }
+  p = getPoint2d_cp(lwgeom_as_lwpoint(surface_pt)->point, 0);
+  if ( ! p ) {
+    lwgeom_free(surface_pt);
+    return 0;
+  }
 
-	return 1;
+  snprintf(buf, bufsize, "POINT(%.15g %.15g)", p->x, p->y);
+  lwgeom_free(surface_pt);
+
+  return 1;
 }
 
 /*********************************************************************
