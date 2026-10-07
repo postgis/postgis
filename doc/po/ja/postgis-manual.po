@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-10-05 03:39+0000\n"
+"PO-Revision-Date: 2026-10-07 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -2275,7 +2275,7 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "face has no rings"
-msgstr "face has no rings (訳注: 環のないフェイス)"
+msgstr "face has no rings (訳注: リングのないフェイス)"
 
 #. Tag: entry
 #, no-c-format
@@ -2285,7 +2285,7 @@ msgstr "部分的に定義されたフェイスの識別子。"
 #. Tag: entry
 #, no-c-format
 msgid "Edges reporting a face on their sides do not form a ring."
-msgstr "環を形成しない側のフェイスを示すエッジ。"
+msgstr "リングを形成しない側のフェイスを示すエッジ。"
 
 #. Tag: entry
 #, no-c-format
@@ -2325,9 +2325,7 @@ msgstr ""
 msgid ""
 "A ring of edges reporting a face on its exterior is contained in different "
 "face."
-msgstr ""
-"エッジの環が、外環のフェイスが異なるフェイスに含まれているフェイスを示します"
-"。"
+msgstr "フェイスの外側にあるエッジのリングが別のフェイスに含まれています。"
 
 #. Tag: entry
 #, no-c-format
@@ -4243,7 +4241,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "This function uses edge ring linking metadata."
-msgstr "この関数はメタデータとリンクするエッジ環を使います。"
+msgstr "この関数はメタデータとリンクするエッジリングを使います。"
 
 #. Tag: para
 #, no-c-format
@@ -4277,7 +4275,7 @@ msgid ""
 "thus usable to build edge ring linking."
 msgstr ""
 "この関数は、並び順を計算していて、メタデータからのデータを使わないので、 連結"
-"しているエッジ環を構築するのに使えます。"
+"しているエッジリングを構築するのに使えます。"
 
 #. Tag: para
 #, no-c-format
@@ -8741,9 +8739,9 @@ msgstr ""
 "インデックスは 1始まりです。たとえば、<varname>LINESTRING</varname> に対して"
 "は、<varname>LINESTRING</varname> の <varname>n番目</varname> の座標を "
 "<varname>i</varname> とすると、<varname>{i}</varname> となります。<varname>"
-"POLYGON</varname> に対しては、<varname>i</varname> を環番号 (1が外環、続いて"
-"内環)、<varname>j</varname> を環の座標位置とすると、<varname>{i,j}</varname> "
-"となります。"
+"POLYGON</varname> に対しては、<varname>i</varname> をリング番号 (1が外側"
+"リング、続いて内側リング)、<varname>j</varname> をリングの座標位置とすると"
+"、<varname>{i,j}</varname> となります。"
 
 #. Tag: para
 #, no-c-format
@@ -8846,9 +8844,9 @@ msgstr ""
 "インデックスは 1始まりです。たとえば、<varname>LINESTRING</varname> に対して"
 "は、<varname>LINESTRING</varname> の <varname>n番目</varname> の辺を "
 "<varname>i</varname> とすると、<varname>{i}</varname> となります。<varname>"
-"POLYGON</varname> に対しては、<varname>i</varname> を環番号 (1が外環、続いて"
-"内環)、<varname>j</varname> を環の辺の始点位置とすると、<varname>{i,j}</"
-"varname> となります。"
+"POLYGON</varname> に対しては、<varname>i</varname> をリング番号 (1が外側"
+"リング、続いて内側リング)、<varname>j</varname> をリングの辺の始点位置とする"
+"と、<varname>{i,j}</varname> となります。"
 
 #. Tag: title
 #, no-c-format
@@ -9094,7 +9092,7 @@ msgstr ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns a LineString representing the exterior ring of a Polygon."
-msgstr "ポリゴンの外環を表現するラインストリングを返します。"
+msgstr "ポリゴンの外側リングを表現するラインストリングを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9102,8 +9100,8 @@ msgid ""
 "Returns a LINESTRING representing the exterior ring (shell) of a POLYGON. "
 "Returns NULL if the geometry is not a polygon."
 msgstr ""
-"POLYGON の外環を表現する LINESTRING を返します。ジオメトリーがポリゴンでない"
-"場合は NULL を返します。"
+"POLYGON の外側リングを表現する LINESTRING を返します。ジオメトリーがポリゴン"
+"でない場合は NULL を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9339,7 +9337,7 @@ msgstr ", <xref linkend=\"ST_LineToCurve\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the Nth interior ring (hole) of a Polygon."
-msgstr "ポリゴンの N番目の内環 (穴) を返します。"
+msgstr "ポリゴンの N番目の内側リング (穴) を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9348,8 +9346,8 @@ msgid ""
 "The index starts at 1. Returns NULL if the geometry is not a polygon or the "
 "index is out of range."
 msgstr ""
-"ポリゴンの N番目の内環を返します。ジオメトリーがポリゴンでないか N が範囲外の"
-"場合は NULL を返します。"
+"ポリゴンの N番目の内側リングを返します。ジオメトリーがポリゴンでないか N が範"
+"囲外の場合は NULL を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9562,8 +9560,8 @@ msgid ""
 "Tests if Polygons have exterior rings oriented counter-clockwise and "
 "interior rings oriented clockwise."
 msgstr ""
-"ポリゴンが反時計回りの外環を持っていて、時計回りの内環を持っているかをテスト"
-"します。"
+"ポリゴンが反時計回りの外側リングを持っていて、時計回りの内側リングを持ってい"
+"るかをテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -9572,8 +9570,8 @@ msgid ""
 "clockwise orientation for their exterior ring, and a clockwise direction for "
 "all interior rings."
 msgstr ""
-"入力ジオメトリーの全てのポリゴン要素の外環については反時計回りで、全ての内環"
-"については時計回りである場合には、TRUE を返します。"
+"入力ジオメトリーの全てのポリゴン要素の外側リングについては反時計回りで、全て"
+"の内側リングについては時計回りである場合には、TRUE を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9598,9 +9596,9 @@ msgid ""
 "an exterior ring) then both ST_IsPolygonCW and ST_IsPolygonCCW will return "
 "false."
 msgstr ""
-"ポリゴン要素の内環が逆回りになっていない (すなわち外環と同じ方向で回る内環が "
-"1個以上ある) 場合には、ST_IsPolygonCW と ST_IsPolygonCCW の両方ともに FALSE "
-"を返します。"
+"ポリゴン要素の内側リングが逆回りになっていない (すなわち外側リングと同じ方向"
+"で回る内側リングが 1個以上ある) 場合には、ST_IsPolygonCW と ST_IsPolygonCCW "
+"の両方ともに FALSE を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9620,8 +9618,8 @@ msgid ""
 "Tests if Polygons have exterior rings oriented clockwise and interior rings "
 "oriented counter-clockwise."
 msgstr ""
-"ポリゴンが時計回りの外環を持っていて、反時計回りの内環を持っているかをテスト"
-"します。"
+"ポリゴンが時計回りの外側リングを持っていて、反時計回りの内側リングを持ってい"
+"るかをテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -9630,8 +9628,8 @@ msgid ""
 "clockwise orientation for their exterior ring, and a counter-clockwise "
 "direction for all interior rings."
 msgstr ""
-"入力ジオメトリーの全てのポリゴン要素の外環については時計回りで、全ての内環に"
-"ついては反時計回りである場合には、TRUE を返します。"
+"入力ジオメトリーの全てのポリゴン要素の外側リングについては時計回りで、全ての"
+"内側リングについては反時計回りである場合には、TRUE を返します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -9873,7 +9871,7 @@ msgid ""
 "Unlike NumInteriorRings, it counts the outer rings as well."
 msgstr ""
 "ジオメトリーがポリゴンまたはマルチポリゴンの場合、リング数を返します。"
-"NumInteriorRings と違い、外環も数えます。"
+"NumInteriorRings と違い、外側リングも数えます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -9934,7 +9932,7 @@ msgstr ", <xref linkend=\"ST_Multi\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the number of interior rings (holes) of a Polygon."
-msgstr "ポリゴンの内環 (穴) の数を返します。"
+msgstr "ポリゴンの内側リング (穴) の数を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9942,8 +9940,8 @@ msgid ""
 "Return the number of interior rings of a polygon geometry. Return NULL if "
 "the geometry is not a polygon."
 msgstr ""
-"ポリゴンジオメトリーの内環の数を返します。ジオメトリーがポリゴンでない場合に"
-"は、NULL を返します。"
+"ポリゴンジオメトリーの内側リングの数を返します。ジオメトリーがポリゴンでない"
+"場合には、NULL を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9956,8 +9954,8 @@ msgid ""
 "Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, "
 "returning the number of interior rings of first POLYGON."
 msgstr ""
-"Changed: 2.0.0 - 以前の版では、MULTIPOLYGON を渡して最初の POLYGON の内環の数"
-"を返すことができました。"
+"Changed: 2.0.0 - 以前の版では、MULTIPOLYGON を渡して最初の POLYGON の内側"
+"リングの数を返すことができました。"
 
 #. Tag: para
 #, no-c-format
@@ -14859,7 +14857,9 @@ msgstr ""
 msgid ""
 "Orients all exterior rings counter-clockwise and all interior rings "
 "clockwise."
-msgstr "全ての外環を反時計回りに、全ての内環を時計回りに、それぞれ強制します。"
+msgstr ""
+"全ての外側リングを反時計回りに、全ての内側リングを時計回りに、それぞれ強制し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -14868,8 +14868,8 @@ msgid ""
 "exterior ring, and a clockwise orientation for their interior rings. Non-"
 "polygonal geometries are returned unchanged."
 msgstr ""
-"(マルチ) ポリゴンに対して、外環を反時計回りに、内環を時計回りに強制します。"
-"ポリゴンでないジオメトリーは、変更されずに返されます。"
+"(マルチ) ポリゴンに対して、外側リングを反時計回りに、内側リングを時計回りに強"
+"制します。ポリゴンでないジオメトリーは、変更されずに返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -14890,7 +14890,9 @@ msgstr ""
 msgid ""
 "Orients all exterior rings clockwise and all interior rings counter-"
 "clockwise."
-msgstr "全ての外環を時計回りに、全ての内環を反時計回りに、それぞれ強制します。"
+msgstr ""
+"全ての外側リングを時計回りに、全ての内側リングを反時計回りに、それぞれ強制し"
+"ます。"
 
 #. Tag: para
 #, no-c-format
@@ -14899,8 +14901,8 @@ msgid ""
 "ring, and a counter-clockwise orientation for their interior rings. Non-"
 "polygonal geometries are returned unchanged."
 msgstr ""
-"(マルチ) ポリゴンに対して、外環を時計回りに、内環を反時計回りに強制します。"
-"ポリゴンでないジオメトリーは、変更されずに返されます。"
+"(マルチ) ポリゴンに対して、外側リングを時計回りに、内側リングを反時計回りに強"
+"制します。ポリゴンでないジオメトリーは、変更されずに返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -14980,8 +14982,9 @@ msgid ""
 "function is a synonym for <xref linkend=\"ST_ForcePolygonCW\"/>"
 msgstr ""
 "ポリゴンの頂点の方向は Right-Hand-Rule に従います。この際、ポリゴンの領域は、"
-"境界線の右側になります。特に、外環は時計回りに強制され、内環は反時計回りに強"
-"制されます。この関数は <xref linkend=\"ST_ForcePolygonCW\"/> の別名です。"
+"境界線の右側になります。特に、外側リングは時計回りに強制され、内側リングは反"
+"時計回りに強制されます。この関数は <xref linkend=\"ST_ForcePolygonCW\"/> の別"
+"名です。"
 
 #. Tag: para
 #, no-c-format
@@ -15102,9 +15105,9 @@ msgid ""
 "Returns the geometry in its normalized/canonical form. May reorder vertices "
 "in polygon rings, rings in a polygon, elements in a multi-geometry complex."
 msgstr ""
-"正規化/標準化された形式のジオメトリーを返します。ポリゴンの環における頂点の順"
-"序、ポリゴンにおける環の順序、複合ジオメトリーにおける要素の順序が変更される"
-"ことがあります。"
+"正規化/標準化された形式のジオメトリーを返します。ポリゴンのリングにおける頂点"
+"の順序、ポリゴンにおけるリングの順序、複合ジオメトリーにおける要素の順序が変"
+"更されることがあります。"
 
 #. Tag: para
 #, no-c-format
@@ -24194,7 +24197,7 @@ msgstr ""
 #. Tag: entry
 #, no-c-format
 msgid "IndexedFaceSet (inner rings currently output as another faceset)"
-msgstr "IndexedFaceSet (内環は現在は他の faceset として出力)"
+msgstr "IndexedFaceSet (内側リングは現在は他の faceset として出力)"
 
 #. Tag: entry
 #, no-c-format
@@ -24237,8 +24240,8 @@ msgid ""
 "2D geometry support not yet complete. Inner rings currently just drawn as "
 "separate polygons. We are working on these."
 msgstr ""
-"2次元ジオメトリー対応はまだ不完全です。 内環は現在は分けられたポリゴンとして"
-"描画されるだけです。作業中です。"
+"2次元ジオメトリー対応はまだ不完全です。 内側リングは現在は分けられたポリゴン"
+"として描画されるだけです。作業中です。"
 
 #. Tag: para
 #, no-c-format
@@ -25981,8 +25984,8 @@ msgid ""
 "If <varname>preserveEndPoints</varname> is true, the endpoints of Polygon "
 "rings are not smoothed. The endpoints of LineStrings are always preserved."
 msgstr ""
-"<varname>preserveEndPoints</varname> が TRUE の場合には、ポリゴンの環の終端が"
-"平滑化されません。ラインストリングの終端は常に保存されます。"
+"<varname>preserveEndPoints</varname> が TRUE の場合には、ポリゴンのリングの終"
+"端が平滑化されません。ラインストリングの終端は常に保存されます。"
 
 #. Tag: para
 #, no-c-format
@@ -27302,7 +27305,7 @@ msgid ""
 "valid, with no ring self-intersections or collapsed components."
 msgstr ""
 "<xref linkend=\"ST_SnapToGrid\"/> と違い、返されるジオメトリーは妥当で、自己"
-"交差の環や崩壊した要素を伴いません。"
+"交差のリングや崩壊した要素を伴いません。"
 
 #. Tag: para
 #, no-c-format
@@ -48687,8 +48690,8 @@ msgid ""
 "shell, or or a MULTIPOINT with a single vertex)."
 msgstr ""
 "マルチ系ジオメトリーの替りに単一ジオメトリーを生成します。全てのジオメトリー"
-"が実際に単一である (たとえば単一の外環でなる MULTIPOLYGON や単一の頂点でなる "
-"MULTIPOINT) 場合にのみ成功します。"
+"が実際に単一である (たとえば単一の外側リングでなる MULTIPOLYGON や単一の頂点"
+"でなる MULTIPOINT) 場合にのみ成功します。"
 
 #. Tag: para
 #, no-c-format
@@ -49807,7 +49810,8 @@ msgid ""
 msgstr ""
 "ジオメトリーの境界は、一次元低いジオメトリーです。<varname>POINT</varname> で"
 "は、次元が 0になり、境界は空集合です。<varname>LINESTRING</varname> の境界は"
-"二つの端点です。<varname>POLYGON</varname> の境界は、外環と内環の線です。"
+"二つの端点です。<varname>POLYGON</varname> の境界は、外側リングと内側リングの"
+"線です。"
 
 #. Tag: glossterm
 #, no-c-format
