@@ -66,6 +66,8 @@ PostgreSQL instance.
 
 * Enhancements *
 
+ - #6140, #6138, #6129, [topology] improve topology building and checking
+          robustness (Sandro Santilli)
  - #2045, pgsql2shp query dumps no longer require temporary table
           privileges (Darafei Praliaskouski)
  - #1577, [loader] Report unsupported .zip archive input before trying
