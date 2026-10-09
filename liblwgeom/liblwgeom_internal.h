@@ -481,7 +481,23 @@ int ptarray_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *o
 int ptarrayarc_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on_boundary);
 int lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt);
 int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt);
-int lwline_have_nonboundary_2d_intersection(const LWLINE *line1, const LWLINE *line2);
+
+/*
+* The ways two line segments can intersect.
+* Returned by the exact segment intersection test used by the
+* topology module (lwt_segment_intersection_exact in lwgeom_topo.c).
+*/
+enum LWSEGMENT_INTERSECTION
+{
+	/* The segments do not intersect */
+	LWSEG_INTERSECT_NONE = 0,
+	/* The segments are collinear and overlap for a positive length */
+	LWSEG_INTERSECT_OVERLAP,
+	/* The segments cross at a point interior to both of them */
+	LWSEG_INTERSECT_CROSS,
+	/* The segments touch at a single point, an endpoint of one of them */
+	LWSEG_INTERSECT_POINT
+};
 
 /**
 * Split a line by a point and push components to the provided multiline.

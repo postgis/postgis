@@ -5988,7 +5988,7 @@ Datum TopoEdgesHaveInteriorIntersection(PG_FUNCTION_ARGS)
 	  PG_RETURN_NULL();
   }
 
-  ret = lwline_have_nonboundary_2d_intersection(lwgeom_as_lwline(lwgeom1), lwgeom_as_lwline(lwgeom2));
+  ret = lwt_LineHaveNonBoundary2DIntersection(lwgeom_as_lwline(lwgeom1), lwgeom_as_lwline(lwgeom2));
   lwgeom_free(lwgeom1);
   lwgeom_free(lwgeom2);
 

@@ -556,6 +556,40 @@ SELECT NULL FROM ST_AddEdgeModFace('t6140', 1, 3, '0102000000030000005163B458843
 SELECT 't6140', 'unexpected success', * FROM ST_AddEdgeModFace('t6140', 2, 3, '010200000002000000685E205B88333540B7363CF4E66A5140831D215B88333540107B41F4E66A5140');
 ROLLBACK;
 
+-----------------------------------------------------
+-- Very far-away but disjoint edges
+-----------------------------------------------------
+
+-- See https://trac.osgeo.org/postgis/ticket/6143
+-- The two edges are disjoint: with exact arithmetic the distance
+-- between them is about 0.000070710678, so GEOS computes an empty
+-- intersection for the pair. The floating point implementation of
+-- the internal edge crossing check used to report an interior
+-- intersection, making ST_AddEdgeModFace reject the (valid) second
+-- edge with
+--
+--   SQL/MM Spatial exception - non-boundary intersection
+--   with edge 1 at or near
+--
+-- and, on commit d03570c85 (first implementation of the internal
+-- crossing check), crashing the backend while computing that
+-- "at or near" location.
+--
+-- The predicate now evaluates the intersections with exact rational
+-- arithmetic, so the correct behaviour (edge 2 accepted) is what
+-- this test expects.
+BEGIN;
+SELECT 't6143', 'start';
+SELECT NULL FROM CreateTopology('t6143');
+SELECT NULL FROM ST_AddIsoNode('t6143', NULL, 'POINT(-1000000000000 -1000000000000)'); -- start node of edge 1
+SELECT NULL FROM ST_AddIsoNode('t6143', NULL, 'POINT(-1 0.0001)'); -- end node of edge 1
+SELECT NULL FROM ST_AddIsoEdge('t6143', 1, 2, 'LINESTRING(-1000000000000 -1000000000000, -1 0.0001)');
+SELECT NULL FROM ST_AddIsoNode('t6143', NULL, 'POINT(100000 -10000)'); -- start node of edge 2
+SELECT NULL FROM ST_AddIsoNode('t6143', NULL, 'POINT(-1 -0.00000000001)'); -- end node of edge 2
+-- This is the edge that used to be wrongly rejected
+SELECT 't6143', 'edge accepted', ST_AddEdgeModFace('t6143', 3, 4, 'LINESTRING(100000 -10000, -1 -0.00000000001)');
+ROLLBACK;
+
 ---------------------------------------------------------------------
 -- Cleanups
 ---------------------------------------------------------------------

@@ -1432,4 +1432,26 @@ LWGEOM* lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID face);
 
 int lwt_IsTopoRingCCW(const POINTARRAY *pa);
 
+/**
+ * Do two lines intersect anywhere but on a point shared by both of their
+ * boundaries, evaluated with exact arithmetic?
+ *
+ * Only 2D coordinates are considered. The classification of each pair of
+ * segments is evaluated with exact rational arithmetic, so that floating
+ * point cancellation between far-away coordinates cannot make a disjoint
+ * pair of lines look like an intersecting one. Single-point
+ * intersections are always a vertex of one of the two segments: the
+ * point is copied verbatim, never computed, so its comparison against
+ * the line boundary points is exact. Lines with non-finite
+ * coordinates (NaN or Inf) are reported as intersecting, so the caller
+ * rejects them as crossing.
+ *
+ * @param line1 first line
+ * @param line2 second line
+ *
+ * @return 1 if there's a non-boundary 2d intersection, 0 if there's NO
+ *         non-boundary 2d intersection
+ */
+int lwt_LineHaveNonBoundary2DIntersection(const LWLINE *line1, const LWLINE *line2);
+
 #endif /* LIBLWGEOM_TOPO_H */

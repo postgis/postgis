@@ -205,4 +205,6 @@ F35|POLYGON((9 14,9 22,21 22,21 14,9 14))
 ERROR:  Backend error: Corrupted topology: ring of edge 58 is topologically non-closed
 t6140|start
 ERROR:  SQL/MM Spatial exception - non-boundary intersection with edge 1 at or near POINT(21.2012993770454 69.6703463210545)
+t6143|start
+t6143|edge accepted|2
 Topology 'city_data' dropped
