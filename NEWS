@@ -85,6 +85,8 @@ PostGIS 3.6.5dev
 - #6109, Out-of-bounds heap read in BOX2D_out and BOX2D_expand
   on 65-byte box2d under ASAN (Dennis Tighe, Google)
 - #6127, ToastCacheGetGeometry error on PG20 (Laurenz Albe)
+- GH-1179, [raster] check array_range allocation and
+  free on the error branch (Maksim Korotkov, PostgresPro)
 - GH-1180, [raster] make rtstrdup return NULL
   on allocation failure (Maksim Korotkov, PostgresPro)
 
