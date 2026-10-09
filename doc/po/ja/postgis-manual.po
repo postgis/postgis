@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-10-09 03:39+0000\n"
+"PO-Revision-Date: 2026-10-09 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -8536,7 +8536,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the topological dimension of a geometry."
-msgstr "ST_Geometry 値の幾何次元を返します。"
+msgstr "ジオメトリーの幾何次元を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -8823,8 +8823,8 @@ msgid ""
 "<varname>CIRCULARSTRING</varname>s represent the arc segments."
 msgstr ""
 "<parameter>geom</parameter> フィールドの <varname>LINESTRING</varname> は与え"
-"られたジオメトリーの線分を表現し、<varname>CIRCULARSTRING</varname> は円弧線"
-"分を表現します。"
+"られたジオメトリーの線分を表現し、<varname>CIRCULARSTRING</varname> は線分を"
+"表現します。"
 
 #. Tag: para
 #, no-c-format
