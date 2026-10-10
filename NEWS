@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
+     (John Carmack)
  - GH-1178, Handle allocation failures and partial cleanup in loader column maps
      (Maksim Korotkov)
  - GH-1184, [raster] Check deserialization before reading the band count
