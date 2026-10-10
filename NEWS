@@ -136,6 +136,8 @@ PostgreSQL instance.
           and GeometryCollections (Darafei Praliaskouski)
  - GT-484, Use column-level SELECT privileges for metadata views
           (Arthur Bazin)
+ - #6145, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
+          (John Carmack)
  - #1408, #2386, #2557, #2805, #2898, #3743, #4323, #4332, #4385, #5109,
           #5532, #5593, #5638, #5645, #5950, #6022, #6082, GH-1161, GT-584,
           Numerous doc enhancements (Darafei Praliaskouski)
