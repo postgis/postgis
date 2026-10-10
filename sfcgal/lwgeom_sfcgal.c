@@ -26,7 +26,9 @@
 #include "SFCGAL/capi/sfcgal_c.h"
 
 #include "postgres.h"
+#include "access/htup_details.h"
 #include "fmgr.h"
+#include "funcapi.h"
 #include "libpq/pqsignal.h"
 #include "utils/builtins.h"
 #include "utils/elog.h"
@@ -73,6 +75,12 @@ Datum sfcgal_volume(PG_FUNCTION_ARGS);
 Datum sfcgal_extrude(PG_FUNCTION_ARGS);
 Datum sfcgal_straight_skeleton(PG_FUNCTION_ARGS);
 Datum sfcgal_approximate_medial_axis(PG_FUNCTION_ARGS);
+Datum CG_IsValid(PG_FUNCTION_ARGS);
+Datum CG_IsValidDetail(PG_FUNCTION_ARGS);
+#if POSTGIS_SFCGAL_VERSION >= 20300
+Datum CG_IsSimple(PG_FUNCTION_ARGS);
+Datum CG_IsSimpleDetail(PG_FUNCTION_ARGS);
+#endif
 Datum sfcgal_is_planar(PG_FUNCTION_ARGS);
 Datum sfcgal_orientation(PG_FUNCTION_ARGS);
 Datum sfcgal_force_lhr(PG_FUNCTION_ARGS);
@@ -275,6 +283,147 @@ sfcgal_is_planar(PG_FUNCTION_ARGS)
 
 	PG_RETURN_BOOL(result);
 }
+
+PG_FUNCTION_INFO_V1(CG_IsValid);
+Datum
+CG_IsValid(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input;
+	sfcgal_geometry_t *geom;
+	int result;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	geom = POSTGIS2SFCGALGeometry(input);
+
+	result = sfcgal_geometry_is_valid(geom);
+	sfcgal_geometry_delete(geom);
+
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_BOOL(result);
+}
+
+static void
+sfcgal_detail_reason_free(char *reason)
+{
+	/*
+	 * SFCGAL's detail APIs return reason strings allocated by the C++
+	 * validity/simplicity layer, not by the C API buffer helper. Releasing
+	 * these with lwfree() or sfcgal_free_buffer() corrupts memory with
+	 * SFCGAL 2.3, even after sfcgal_set_alloc_handlers().
+	 */
+	free(reason);
+}
+
+PG_FUNCTION_INFO_V1(CG_IsValidDetail);
+Datum
+CG_IsValidDetail(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input;
+	GSERIALIZED *location = NULL;
+	sfcgal_geometry_t *geom;
+	sfcgal_geometry_t *invalidity_location = NULL;
+	char *invalidity_reason = NULL;
+	Datum values[3];
+	bool nulls[3] = {false, true, true};
+	int result;
+	HeapTuple tuple;
+	TupleDesc tupdesc;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	geom = POSTGIS2SFCGALGeometry(input);
+
+	result = sfcgal_geometry_is_valid_detail(geom, &invalidity_reason, &invalidity_location);
+	sfcgal_geometry_delete(geom);
+
+	if (invalidity_reason)
+	{
+		values[1] = CStringGetTextDatum(invalidity_reason);
+		nulls[1] = false;
+		sfcgal_detail_reason_free(invalidity_reason);
+	}
+
+	if (invalidity_location)
+	{
+		location = SFCGALGeometry2POSTGIS(
+		    invalidity_location, FLAGS_GET_Z(input->gflags), gserialized_get_srid(input));
+		sfcgal_geometry_delete(invalidity_location);
+		values[2] = PointerGetDatum(location);
+		nulls[2] = false;
+	}
+
+	PG_FREE_IF_COPY(input, 0);
+
+	if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)
+		ereport(ERROR,
+			(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+			 errmsg("function returning record called in context that cannot accept type record")));
+	BlessTupleDesc(tupdesc);
+
+	values[0] = BoolGetDatum(result);
+	tuple = heap_form_tuple(tupdesc, values, nulls);
+
+	PG_RETURN_DATUM(HeapTupleGetDatum(tuple));
+}
+
+#if POSTGIS_SFCGAL_VERSION >= 20300
+PG_FUNCTION_INFO_V1(CG_IsSimple);
+Datum
+CG_IsSimple(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input;
+	sfcgal_geometry_t *geom;
+	int result;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	geom = POSTGIS2SFCGALGeometry(input);
+
+	result = sfcgal_geometry_is_simple(geom);
+	sfcgal_geometry_delete(geom);
+
+	PG_FREE_IF_COPY(input, 0);
+
+	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(CG_IsSimpleDetail);
+Datum
+CG_IsSimpleDetail(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input;
+	sfcgal_geometry_t *geom;
+	char *complexity_reason = NULL;
+	int result;
+	text *text_result;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	geom = POSTGIS2SFCGALGeometry(input);
+
+	result = sfcgal_geometry_is_simple_detail(geom, &complexity_reason);
+	sfcgal_geometry_delete(geom);
+
+	PG_FREE_IF_COPY(input, 0);
+
+	if (result || !complexity_reason)
+	{
+		if (complexity_reason)
+			sfcgal_detail_reason_free(complexity_reason);
+		PG_RETURN_NULL();
+	}
+
+	text_result = cstring_to_text(complexity_reason);
+	sfcgal_detail_reason_free(complexity_reason);
+	PG_RETURN_TEXT_P(text_result);
+}
+#endif
 
 PG_FUNCTION_INFO_V1(sfcgal_orientation);
 Datum
