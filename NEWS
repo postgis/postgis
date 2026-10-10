@@ -3,6 +3,8 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
+      (John Carmack)
   - #6160, Clarify the vector tile format schema license (Bas Couwenberg)
   - GH-1191, [topology] Return SQL NULL for a NULL topology name in
       _RegisterMissingFaces (Bilal Kahraman)
