@@ -30,6 +30,51 @@ select 'ST_MakeLine_agg2', ST_AsText(ST_MakeLine(g)) from (
         ('POINT(1 0)')
 ) as foo(g);
 
+SELECT 'ST_MakeCurveLine1', ST_AsText(ST_MakeCurveLine(
+  ST_MakePoint(1, 2), ST_MakePoint(3, 4), ST_MakePoint(5, 6)));
+
+SELECT 'ST_MakeCurveLine2', ST_AsText(ST_MakeCurveLine(ARRAY[
+  ST_MakePoint(1, 2), ST_MakePoint(3, 4), ST_MakePoint(5, 6),
+  ST_MakePoint(7, 8), ST_MakePoint(9, 10)]));
+
+SELECT 'ST_MakeCurveLineZM', ST_AsEWKT(ST_MakeCurveLine(ARRAY[
+  'POINT ZM (0 0 1 5)'::geometry,
+  'POINT ZM (1 1 2 6)'::geometry,
+  'POINT ZM (2 0 3 7)'::geometry]));
+
+SELECT 'ST_MakeCurveLineNullArray', ST_MakeCurveLine(ARRAY[NULL]::geometry[]) IS NULL;
+SELECT ST_MakeCurveLine(ARRAY['POINT(0 0)'::geometry, 'POINT(1 1)'::geometry]);
+SELECT ST_MakeCurveLine(ARRAY[
+  'POINT(0 0)'::geometry, 'POINT(1 1)'::geometry,
+  'POINT(2 0)'::geometry, 'POINT(3 1)'::geometry]);
+SELECT ST_MakeCurveLine(ARRAY['POINT(0 0)'::geometry, 'LINESTRING(1 1, 2 2)'::geometry, 'POINT(3 3)'::geometry]);
+SELECT ST_MakeCurveLine(ARRAY['POINT(0 0)'::geometry, 'SRID=3;POINT(1 1)'::geometry, 'POINT(2 0)'::geometry]);
+
+SELECT 'ST_MakeCompoundCurve1', ST_AsText(ST_MakeCompoundCurve(ARRAY[
+  'CIRCULARSTRING(0 0,2 0,2 1,2 3,4 3)'::geometry,
+  'LINESTRING(4 3,4 5,1 4,0 0)'::geometry]));
+
+SELECT 'ST_MakeCompoundCurveNurbs', ST_AsText(ST_MakeCompoundCurve(ARRAY[
+  'LINESTRING(0 0,1 1)'::geometry,
+  'NURBSCURVE(2, (1 1, 2 3, 4 1))'::geometry]));
+
+SELECT 'ST_MakeCompoundCurveEmptyArray', ST_MakeCompoundCurve(ARRAY[]::geometry[]) IS NULL;
+SELECT ST_MakeCompoundCurve(ARRAY[
+  'LINESTRING(0 0,1 1)'::geometry,
+  'LINESTRING(2 2,3 3)'::geometry]);
+SELECT ST_MakeCompoundCurve(ARRAY[
+  'LINESTRING Z (0 0 0,1 1 0)'::geometry,
+  'LINESTRING M (1 1 0,2 2 0)'::geometry]);
+SELECT ST_MakeCompoundCurve(ARRAY[
+  'LINESTRING Z (0 0 0,1 1 0)'::geometry,
+  'LINESTRING Z (1 1 1,2 2 0)'::geometry]);
+SELECT ST_MakeCompoundCurve(ARRAY[
+  'LINESTRING(0 0,1 1)'::geometry,
+  'SRID=3;LINESTRING(1 1,2 2)'::geometry]);
+SELECT ST_MakeCompoundCurve(ARRAY['POINT(0 0)'::geometry]);
+SELECT ST_MakeCompoundCurve(ARRAY[
+  'COMPOUNDCURVE((0 0,1 1),(1 1,2 2))'::geometry]);
+
 -- postgis-users/2006-July/012788.html
 select ST_makebox2d('SRID=3;POINT(0 0)', 'SRID=3;POINT(1 1)');
 select ST_makebox2d('POINT(0 0)', 'SRID=3;POINT(1 1)');
