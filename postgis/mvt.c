@@ -891,6 +891,252 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 	return ng;
 }
 
+/*
+ * Most polygons in a dense tile are single rings that lie inside the clip box
+ * and are still simple once snapped to the tile grid. Wagyu returns those
+ * unchanged apart from their orientation, their start vertex and any collinear
+ * vertex, so they are written out directly and only the rest go through wagyu.
+ * The tests below use exact integer arithmetic and send any doubt to wagyu.
+ */
+
+/** Most vertices a ring can have and still take the fast path */
+#define MVT_SIMPLE_RING_MAX_POINTS 128
+/** Coordinate limit that keeps every product in the fast path exact in int64 */
+#define MVT_SIMPLE_RING_MAX_COORD (1 << 26)
+
+static inline int64_t
+mvt_orient(int64_t ax, int64_t ay, int64_t bx, int64_t by, int64_t cx, int64_t cy)
+{ return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax); }
+
+static inline int
+mvt_sign(int64_t v)
+{ return (v > 0) - (v < 0); }
+
+/** Whether q, collinear with segment pr, lies within its bounding box */
+static inline bool
+mvt_on_segment(int64_t px, int64_t py, int64_t qx, int64_t qy, int64_t rx, int64_t ry)
+{ return qx >= Min(px, rx) && qx <= Max(px, rx) && qy >= Min(py, ry) && qy <= Max(py, ry); }
+
+/** Whether closed segments ab and cd share at least one point */
+static bool
+mvt_segments_touch(int64_t ax, int64_t ay, int64_t bx, int64_t by, int64_t cx, int64_t cy, int64_t dx, int64_t dy)
+{
+	int o1 = mvt_sign(mvt_orient(ax, ay, bx, by, cx, cy));
+	int o2 = mvt_sign(mvt_orient(ax, ay, bx, by, dx, dy));
+	int o3 = mvt_sign(mvt_orient(cx, cy, dx, dy, ax, ay));
+	int o4 = mvt_sign(mvt_orient(cx, cy, dx, dy, bx, by));
+	if (o1 != o2 && o3 != o4)
+		return true;
+	if (o1 == 0 && mvt_on_segment(ax, ay, cx, cy, bx, by))
+		return true;
+	if (o2 == 0 && mvt_on_segment(ax, ay, dx, dy, bx, by))
+		return true;
+	if (o3 == 0 && mvt_on_segment(cx, cy, ax, ay, dx, dy))
+		return true;
+	if (o4 == 0 && mvt_on_segment(cx, cy, bx, by, dx, dy))
+		return true;
+	return false;
+}
+
+/** Whether closed segment ab reaches the closed unit square centered on v, the pixel wagyu snaps to v */
+static bool
+mvt_segment_hits_pixel(int64_t ax, int64_t ay, int64_t bx, int64_t by, int64_t vx, int64_t vy)
+{
+	/* Doubled coordinates keep the half-pixel square in integers */
+	const int64_t x0 = 2 * vx - 1, x1 = 2 * vx + 1, y0 = 2 * vy - 1, y1 = 2 * vy + 1;
+	const int64_t sax = 2 * ax, say = 2 * ay, sbx = 2 * bx, sby = 2 * by;
+	int s1, s2, s3, s4;
+	if (Max(sax, sbx) < x0 || Min(sax, sbx) > x1 || Max(say, sby) < y0 || Min(say, sby) > y1)
+		return false;
+	s1 = mvt_sign(mvt_orient(sax, say, sbx, sby, x0, y0));
+	s2 = mvt_sign(mvt_orient(sax, say, sbx, sby, x1, y0));
+	s3 = mvt_sign(mvt_orient(sax, say, sbx, sby, x1, y1));
+	s4 = mvt_sign(mvt_orient(sax, say, sbx, sby, x0, y1));
+	if (s1 > 0 && s2 > 0 && s3 > 0 && s4 > 0)
+		return false;
+	if (s1 < 0 && s2 < 0 && s3 < 0 && s4 < 0)
+		return false;
+	return true;
+}
+
+/**
+ * Checks whether wagyu would return the polygon as it is, apart from its
+ * orientation, its start vertex and its collinear vertices.
+ * If so, fills x and y with the ring in wagyu's orientation, without the
+ * closing point, sets start to wagyu's first vertex and returns the vertex
+ * count. Otherwise returns 0, and the polygon has to go through wagyu.
+ */
+static uint32_t
+mvt_simple_ring(const LWGEOM *lwgeom, const GBOX *clip_box, int64_t *x, int64_t *y, uint32_t *start)
+{
+	const POINTARRAY *pa;
+	int64_t rx[MVT_SIMPLE_RING_MAX_POINTS], ry[MVT_SIMPLE_RING_MAX_POINTS];
+	int64_t ex0[MVT_SIMPLE_RING_MAX_POINTS], ex1[MVT_SIMPLE_RING_MAX_POINTS];
+	int64_t ey0[MVT_SIMPLE_RING_MAX_POINTS], ey1[MVT_SIMPLE_RING_MAX_POINTS];
+	int64_t keys[MVT_SIMPLE_RING_MAX_POINTS];
+	uint32_t n, m, i, i1, j, j1, k, a, b;
+	int64_t area2 = 0;
+	bool found = false;
+	uint32_t left = 0;
+
+	if (lwgeom->type != POLYGONTYPE || ((const LWPOLY *)lwgeom)->nrings != 1)
+		return 0;
+	if (FLAGS_GET_Z(lwgeom->flags) || FLAGS_GET_M(lwgeom->flags))
+		return 0;
+	pa = ((const LWPOLY *)lwgeom)->rings[0];
+	n = pa->npoints;
+	if (n < 4 || n - 1 > MVT_SIMPLE_RING_MAX_POINTS)
+		return 0;
+
+	/* Integer vertices inside the clip box, the closing point dropped */
+	for (i = 0; i < n; i++)
+	{
+		const POINT2D *p = getPoint2d_cp(pa, i);
+		if (p->x < clip_box->xmin || p->x > clip_box->xmax || p->y < clip_box->ymin || p->y > clip_box->ymax)
+			return 0;
+		if (p->x != floor(p->x) || p->y != floor(p->y) || fabs(p->x) > MVT_SIMPLE_RING_MAX_COORD ||
+		    fabs(p->y) > MVT_SIMPLE_RING_MAX_COORD)
+			return 0;
+		if (i < n - 1)
+		{
+			rx[i] = (int64_t)p->x;
+			ry[i] = (int64_t)p->y;
+		}
+		else if ((int64_t)p->x != rx[0] || (int64_t)p->y != ry[0])
+			return 0;
+	}
+	m = n - 1;
+
+	/* Drop straight-through collinear vertices as wagyu does, leave spikes to wagyu */
+	k = 0;
+	for (i = 0; i < m; i++)
+	{
+		const uint32_t prev = (i + m - 1) % m, next = (i + 1) % m;
+		if (rx[i] == rx[next] && ry[i] == ry[next])
+			return 0;
+		if (mvt_orient(rx[prev], ry[prev], rx[i], ry[i], rx[next], ry[next]) == 0)
+		{
+			if ((rx[i] - rx[prev]) * (rx[next] - rx[i]) + (ry[i] - ry[prev]) * (ry[next] - ry[i]) <= 0)
+				return 0;
+			continue;
+		}
+		x[k] = rx[i];
+		y[k] = ry[i];
+		k++;
+	}
+	m = k;
+	if (m < 3)
+		return 0;
+
+	for (i = 0; i < m; i++)
+		area2 += x[i] * y[(i + 1) % m] - x[(i + 1) % m] * y[i];
+	if (area2 == 0)
+		return 0;
+
+	/*
+	 * Sweep the edges in order of their smallest x and test only the pairs
+	 * whose bounding boxes overlap: two edges can only touch, and a vertex's
+	 * pixel can only reach an edge, inside both boxes. Every vertex starts an
+	 * edge, so these pairs cover every vertex an edge could snap to.
+	 */
+	for (i = 0; i < m; i++)
+	{
+		i1 = (i + 1) % m;
+		ex0[i] = Min(x[i], x[i1]);
+		ex1[i] = Max(x[i], x[i1]);
+		ey0[i] = Min(y[i], y[i1]);
+		ey1[i] = Max(y[i], y[i1]);
+		keys[i] = (ex0[i] + MVT_SIMPLE_RING_MAX_COORD) * MVT_SIMPLE_RING_MAX_POINTS + i;
+	}
+	for (a = 1; a < m; a++)
+	{
+		const int64_t key = keys[a];
+		for (b = a; b > 0 && keys[b - 1] > key; b--)
+			keys[b] = keys[b - 1];
+		keys[b] = key;
+	}
+	for (a = 0; a < m; a++)
+	{
+		i = keys[a] % MVT_SIMPLE_RING_MAX_POINTS;
+		i1 = (i + 1) % m;
+		for (b = a + 1; b < m; b++)
+		{
+			j = keys[b] % MVT_SIMPLE_RING_MAX_POINTS;
+			j1 = (j + 1) % m;
+			if (ex0[j] > ex1[i])
+				break;
+			if (ey1[i] < ey0[j] || ey1[j] < ey0[i])
+				continue;
+			/* No edge may reach the pixel of a vertex it does not end at, or wagyu would snap it there */
+			if (j != i1 && mvt_segment_hits_pixel(x[i], y[i], x[i1], y[i1], x[j], y[j]))
+				return 0;
+			if (i != j1 && mvt_segment_hits_pixel(x[j], y[j], x[j1], y[j1], x[i], y[i]))
+				return 0;
+			/* No two edges that are not neighbors may touch */
+			if (j != i1 && i != j1 &&
+			    mvt_segments_touch(x[i], y[i], x[i1], y[i1], x[j], y[j], x[j1], y[j1]))
+				return 0;
+		}
+	}
+
+	/* Wagyu returns a positive area in tile coordinates */
+	if (area2 < 0)
+	{
+		for (i = 0, j = m - 1; i < j; i++, j--)
+		{
+			int64_t t = x[i];
+			x[i] = x[j];
+			x[j] = t;
+			t = y[i];
+			y[i] = y[j];
+			y[j] = t;
+		}
+	}
+
+	/*
+	 * Wagyu sweeps towards smaller y and starts the ring where the sweep closes
+	 * it: at the vertex with the smallest y, the one with the largest x on a tie.
+	 * If that y has horizontal edges, it starts at the vertex that follows the
+	 * left end of the rightmost one in the input direction, so in the output
+	 * direction that edge runs left to right.
+	 */
+	k = 0;
+	for (i = 1; i < m; i++)
+		if (y[i] < y[k] || (y[i] == y[k] && x[i] > x[k]))
+			k = i;
+	for (i = 0; i < m; i++)
+	{
+		i1 = (i + 1) % m;
+		if (y[i] == y[k] && y[i1] == y[k] && (!found || x[i1] > x[(left + 1) % m]))
+		{
+			found = true;
+			left = i;
+		}
+	}
+	if (found)
+		k = area2 > 0 ? (left + 1) % m : (left + m - 1) % m;
+	*start = k;
+	return m;
+}
+
+/** Overwrites the polygon's ring with x and y, starting at start, and closes it */
+static LWGEOM *
+mvt_write_ring(LWGEOM *lwgeom, const int64_t *x, const int64_t *y, uint32_t m, uint32_t start)
+{
+	POINTARRAY *pa = ((LWPOLY *)lwgeom)->rings[0];
+	uint32_t i;
+	for (i = 0; i <= m; i++)
+	{
+		const uint32_t v = (start + i) % m;
+		POINT2D *p = (POINT2D *)getPoint_internal(pa, i);
+		p->x = (double)x[v];
+		p->y = (double)y[v];
+	}
+	pa->npoints = m + 1;
+	lwgeom_drop_bbox(lwgeom);
+	return lwgeom;
+}
+
 static LWGEOM *
 mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
 {
@@ -913,6 +1159,14 @@ mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint3
 	{
 		clip_box.xmax = clip_box.ymax = (double)extent + (double)buffer;
 		clip_box.xmin = clip_box.ymin = -(double)buffer;
+	}
+
+	{
+		int64_t x[MVT_SIMPLE_RING_MAX_POINTS], y[MVT_SIMPLE_RING_MAX_POINTS];
+		uint32_t start = 0;
+		const uint32_t m = mvt_simple_ring(lwgeom, &clip_box, x, y, &start);
+		if (m)
+			return mvt_write_ring(lwgeom, x, y, m, start);
 	}
 
 	clipped_lwgeom = lwgeom_wagyu_clip_by_box(lwgeom, &clip_box);
