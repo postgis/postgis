@@ -41,10 +41,10 @@
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
 
-	<!-- for queries that result data, we first log the sql in our log table and then use query_to_xml to output it as xml for easy storage
-	    with this approach our run statement is always exactly the same -->
-	<xsl:variable name='var_logresultsasxml'>INSERT INTO <xsl:value-of select="$var_logtable" />_output(logid, log_output)
-				SELECT logid, query_to_xml(log_sql, false,false,'') As log_output
+		<!-- for queries that result data, we first log the sql in our log table and then output it as jsonb for easy storage
+		    with this approach our run statement is always exactly the same -->
+	<xsl:variable name='var_logresultsasjsonb'>INSERT INTO <xsl:value-of select="$var_logtable" />_output(logid, log_output)
+				SELECT logid, <xsl:value-of select="$var_logtable" />_query_to_jsonb(log_sql) As log_output
 				    FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC LIMIT 1;</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='POINT' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
@@ -366,7 +366,19 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text, func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
-CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
+CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output jsonb);
+CREATE OR REPLACE FUNCTION <xsl:value-of select="$var_logtable" />_query_to_jsonb(query text)
+RETURNS jsonb
+LANGUAGE plpgsql
+AS $$
+DECLARE
+	result jsonb;
+BEGIN
+	EXECUTE format('SELECT COALESCE(jsonb_agg(to_jsonb(q)), ''[]''::jsonb) FROM (%s) AS q',
+		regexp_replace(query, ';\s*$', '')) INTO result;
+	RETURN result;
+END;
+$$;
 
                 <xsl:apply-templates select="/db:book/db:chapter[@xml:id='reference']" />
         </xsl:template>
@@ -424,7 +436,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geometry index overlaps: Start Test
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) VALUES('<xsl:value-of select="$log_label" /> gist index Geometry overlaps test','Gist index overlap', '<xsl:value-of select="@ID" />', clock_timestamp(),
     'SELECT count(*) As result FROM pgis_garden As foo1 INNER JOIN pgis_garden As foo2 ON foo1.the_geom &amp;&amp; foo2.the_geom');
 BEGIN;
-	<xsl:value-of select="$var_logresultsasxml" />
+	<xsl:value-of select="$var_logresultsasjsonb" />
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 
@@ -535,7 +547,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 
 			SELECT 'Geography <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1id" />, <xsl:value-of select="@ID" />';
 			BEGIN;
-			    <xsl:value-of select="$var_logresultsasxml" />
+			    <xsl:value-of select="$var_logresultsasjsonb" />
 				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:when>
@@ -550,7 +562,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 						(foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom) = false;</xsl:with-param></xsl:call-template>');
 
 			BEGIN;
-				<xsl:value-of select="$var_logresultsasxml" />
+				<xsl:value-of select="$var_logresultsasjsonb" />
 				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:otherwise>
@@ -613,7 +625,7 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, 
  <xsl:with-param name="arg1">SELECT  <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnfakeparams" />) As output;</xsl:with-param></xsl:call-template>');
 
 BEGIN;
-    <xsl:value-of select="$var_logresultsasxml" />
+    <xsl:value-of select="$var_logresultsasjsonb" />
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 SELECT  'Ending <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />)';
@@ -632,7 +644,7 @@ SELECT  'Ending <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of s
 							FROM (<xsl:value-of select="." />) As foo1
 				LIMIT 10;</xsl:with-param></xsl:call-template>');
 BEGIN;
-    <xsl:value-of select="$var_logresultsasxml" />
+    <xsl:value-of select="$var_logresultsasjsonb" />
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 			SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: End Testing';
@@ -658,7 +670,7 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 			LIMIT 10;</xsl:with-param></xsl:call-template>');
 
 			BEGIN;
-				 <xsl:value-of select="$var_logresultsasxml" />
+				 <xsl:value-of select="$var_logresultsasjsonb" />
 				 <xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:when>
@@ -670,7 +682,7 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 
 				SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1id" />, <xsl:value-of select="@GeometryType" />';
 				BEGIN;
-				 <xsl:value-of select="$var_logresultsasxml" />
+				 <xsl:value-of select="$var_logresultsasjsonb" />
 				 <xsl:value-of select="$var_logupdatesql" />
 				COMMIT;
 			  </xsl:otherwise>
