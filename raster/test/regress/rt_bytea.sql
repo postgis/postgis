@@ -175,5 +175,42 @@ WHERE
     encode(st_asbinary(rast), 'base64') != encode(rast::bytea, 'base64')
     ;
 
+-----------------------------------------------------------------------
+--- Test PostgreSQL binary send/receive hooks
+-----------------------------------------------------------------------
+
+SELECT
+	typreceive::regproc,
+	typsend::regproc
+FROM pg_type
+WHERE typname = 'raster';
+
+SELECT
+	id,
+    name
+FROM rt_bytea_test
+WHERE
+    encode(raster_send(rast), 'base64') != encode(rast::bytea, 'base64')
+    ;
+
+\! rm -f rt_bytea_binary.copy
+
+\copy (SELECT id, rast FROM rt_bytea_test ORDER BY id) TO 'rt_bytea_binary.copy' WITH (FORMAT binary)
+
+CREATE TEMP TABLE rt_bytea_binary_copy (
+        id numeric,
+        rast raster
+    );
+
+\copy rt_bytea_binary_copy FROM 'rt_bytea_binary.copy' WITH (FORMAT binary)
+
+SELECT
+	count(*) AS mismatched_rasters
+FROM rt_bytea_binary_copy copy_rasters
+JOIN rt_bytea_test source_rasters USING (id)
+WHERE copy_rasters.rast::bytea != source_rasters.rast::bytea;
+
+\! rm -f rt_bytea_binary.copy
+
 -- Cleanup
 DROP TABLE rt_bytea_test;
