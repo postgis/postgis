@@ -37,6 +37,7 @@
 
 #include <gmp.h>
 
+#include <float.h>
 #include <inttypes.h>
 #include <math.h>
 
@@ -694,6 +695,83 @@ lwt_segment_side_exact(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
   return side;
 }
 
+/*
+* Static error bound for the floating point filter of the orientation
+* predicate, from Jonathan Shewchuk's adaptive robust predicates
+* (constant ccwerrboundA there). It is (3 + 16 * epsilon) * epsilon with
+* epsilon the unit roundoff of a double. Shewchuk uses half of
+* DBL_EPSILON as epsilon, so using DBL_EPSILON here only makes the bound
+* more conservative, which means the exact fallback is used a bit more
+* often but never incorrectly skipped.
+*/
+#define LWT_ORIENT2D_ERRBOUND ((3.0 + 16.0 * DBL_EPSILON) * DBL_EPSILON)
+
+/**
+* Sign of the 2D cross product (q-p1) x (p2-p1), that is the orientation
+* of q with respect to the directed segment (p1,p2).
+*
+* The determinant is first evaluated in double precision together with a
+* rigorous bound on the rounding error. When its sign is certain the
+* result is returned immediately, which is the common case. Only when the
+* double result falls within the error band, where floating point
+* cancellation could fool the sign, the exact rational arithmetic of
+* lwt_segment_side_exact is used. This keeps the exactness of the
+* predicate while avoiding the cost of the GNU Multiple Precision
+* Library for well conditioned inputs.
+*
+* @return -1, 0 or 1, the sign of the exact cross product
+*/
+static int
+lwt_segment_side_robust(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
+{
+  double detleft, detright, det, detsum, errbound;
+
+  /*
+  * A point equal to a segment endpoint is trivially on its line, and
+  * this is a very common case for topologically connected edges, so it
+  * is worth short-circuiting before any arithmetic.
+  */
+  if ( (q->x == p1->x && q->y == p1->y) ||
+       (q->x == p2->x && q->y == p2->y) )
+    return 0;
+
+  detleft = (q->x - p1->x) * (p2->y - p1->y);
+  detright = (p2->x - p1->x) * (q->y - p1->y);
+  det = detleft - detright;
+
+  if ( detleft > 0.0 )
+  {
+    if ( detright <= 0.0 )
+      return SIGNUM(det); /* no cancellation, sign is safe */
+    detsum = detleft + detright;
+  }
+  else if ( detleft < 0.0 )
+  {
+    if ( detright >= 0.0 )
+      return SIGNUM(det); /* no cancellation, sign is safe */
+    detsum = -detleft - detright;
+  }
+  else
+  {
+    /*
+    * detleft is zero, either exactly or by underflow, then the sign of
+    * det is the opposite of the sign of detright. Trust a non-zero
+    * detright, fall back to the exact predicate when it is zero too.
+    */
+    if ( detright > 0.0 )
+      return -1;
+    if ( detright < 0.0 )
+      return 1;
+    return lwt_segment_side_exact(p1, p2, q);
+  }
+
+  errbound = LWT_ORIENT2D_ERRBOUND * detsum;
+  if ( det > errbound || -det > errbound )
+    return SIGNUM(det);
+
+  return lwt_segment_side_exact(p1, p2, q);
+}
+
 /**
 * Is P in the extent (bounding box) of the (A1,A2) segment?
 *
@@ -715,7 +793,7 @@ lwt_pt_in_extent(const POINT2D *A1, const POINT2D *A2, const POINT2D *P)
 static int
 lwt_pt_on_segment_exact(const POINT2D *A1, const POINT2D *A2, const POINT2D *P)
 {
-  if ( lwt_segment_side_exact(A1, A2, P) != 0 )
+  if ( lwt_segment_side_robust(A1, A2, P) != 0 )
     return LW_FALSE;
 
   /* The point is on the segment line, check it's within its extent */
@@ -725,9 +803,11 @@ lwt_pt_on_segment_exact(const POINT2D *A1, const POINT2D *A2, const POINT2D *P)
 /**
 * How do the segment (P1,P2) and the segment (Q1,Q2) intersect?
 *
-* All the orientation and projection tests are evaluated with exact
-* rational arithmetic, so the result is not affected by floating
-* point cancellation. Only finite coordinates are supported.
+* The orientation tests are exact (see lwt_segment_side_robust), so the
+* result is not affected by floating point cancellation. The extent and
+* segment bounding box comparisons are plain double comparisons, which
+* are exact, and collinear segments are ordered by comparing one
+* coordinate, which is exact too. Only finite coordinates are supported.
 *
 * The intersection point, when the segments intersect on a single
 * point, is never computed: any such point is a vertex of one of
@@ -752,14 +832,11 @@ lwt_segment_intersection_exact(const POINT2D *P1,
                              const POINT2D *Q2,
                              POINT2D *ipoint)
 {
-  mpq_t x1, y1, x2, y2, q1x, q1y, q2x, q2y;
-  mpq_t vx, vy, ux, uy;
-  mpq_t t1, t2, t3, t4;
-  mpq_t len2, tQ1, tQ2, tmin, tmax;
-  mpq_t zero;
   int s11, s12, s21, s22;
   int zeroP, zeroQ;
-  int ret;
+  int vertical;
+  double a1, a2, b1, b2;
+  double alo, ahi, blo, bhi, lo, hi;
 
   zeroP = P2D_SAME_STRICT(P1, P2);
   zeroQ = P2D_SAME_STRICT(Q1, Q2);
@@ -787,173 +864,82 @@ lwt_segment_intersection_exact(const POINT2D *P1,
     return LWSEG_INTERSECT_POINT;
   }
 
-  mpq_init(x1);
-  mpq_init(y1);
-  mpq_init(x2);
-  mpq_init(y2);
-  mpq_init(q1x);
-  mpq_init(q1y);
-  mpq_init(q2x);
-  mpq_init(q2y);
-  mpq_init(vx);
-  mpq_init(vy);
-  mpq_init(ux);
-  mpq_init(uy);
-  mpq_init(t1);
-  mpq_init(t2);
-  mpq_init(t3);
-  mpq_init(t4);
-  mpq_init(len2);
-  mpq_init(tQ1);
-  mpq_init(tQ2);
-  mpq_init(tmin);
-  mpq_init(tmax);
-  mpq_init(zero);
-  mpq_set_ui(zero, 0, 1);
-
-  /* Exact conversion of the double coordinates to rationals */
-  mpq_set_d(x1, P1->x);
-  mpq_set_d(y1, P1->y);
-  mpq_set_d(x2, P2->x);
-  mpq_set_d(y2, P2->y);
-  mpq_set_d(q1x, Q1->x);
-  mpq_set_d(q1y, Q1->y);
-  mpq_set_d(q2x, Q2->x);
-  mpq_set_d(q2y, Q2->y);
-
-  /* v = P2 - P1 */
-  mpq_sub(vx, x2, x1);
-  mpq_sub(vy, y2, y1);
-
-  /* s11 = sign( (Q1-P1) x (P2-P1) ) */
-  mpq_sub(t1, q1x, x1);
-  mpq_sub(t2, q1y, y1);
-  mpq_mul(t3, t1, vy);
-  mpq_mul(t4, vx, t2);
-  mpq_sub(t1, t3, t4);
-  s11 = mpq_sgn(t1);
-
-  /* s12 = sign( (Q2-P1) x (P2-P1) ) */
-  mpq_sub(t1, q2x, x1);
-  mpq_sub(t2, q2y, y1);
-  mpq_mul(t3, t1, vy);
-  mpq_mul(t4, vx, t2);
-  mpq_sub(t1, t3, t4);
-  s12 = mpq_sgn(t1);
+  /*
+  * Cheap and exact rejection: the bounding boxes of the two segments
+  * are compared with plain double comparisons, which are exact, so a
+  * non-overlapping pair cannot intersect. Most pairs of segments from
+  * unrelated parts of the lines are discarded here, before any
+  * orientation test.
+  */
+  if ( FP_MAX(P1->x, P2->x) < FP_MIN(Q1->x, Q2->x) ||
+       FP_MAX(Q1->x, Q2->x) < FP_MIN(P1->x, P2->x) ||
+       FP_MAX(P1->y, P2->y) < FP_MIN(Q1->y, Q2->y) ||
+       FP_MAX(Q1->y, Q2->y) < FP_MIN(P1->y, P2->y) )
+    return LWSEG_INTERSECT_NONE;
 
   /* Are both endpoints of the second segment on the same side of the first? */
+  s11 = lwt_segment_side_robust(P1, P2, Q1);
+  s12 = lwt_segment_side_robust(P1, P2, Q2);
   if ( (s11 > 0 && s12 > 0) || (s11 < 0 && s12 < 0) )
-  {
-    ret = LWSEG_INTERSECT_NONE;
-    goto cleanup;
-  }
-
-  /* u = Q2 - Q1 */
-  mpq_sub(ux, q2x, q1x);
-  mpq_sub(uy, q2y, q1y);
-
-  /* s21 = sign( (P1-Q1) x (Q2-Q1) ) */
-  mpq_sub(t1, x1, q1x);
-  mpq_sub(t2, y1, q1y);
-  mpq_mul(t3, t1, uy);
-  mpq_mul(t4, ux, t2);
-  mpq_sub(t1, t3, t4);
-  s21 = mpq_sgn(t1);
-
-  /* s22 = sign( (P2-Q1) x (Q2-Q1) ) */
-  mpq_sub(t1, x2, q1x);
-  mpq_sub(t2, y2, q1y);
-  mpq_mul(t3, t1, uy);
-  mpq_mul(t4, ux, t2);
-  mpq_sub(t1, t3, t4);
-  s22 = mpq_sgn(t1);
+    return LWSEG_INTERSECT_NONE;
 
   /* Are both endpoints of the first segment on the same side of the second? */
+  s21 = lwt_segment_side_robust(Q1, Q2, P1);
+  s22 = lwt_segment_side_robust(Q1, Q2, P2);
   if ( (s21 > 0 && s22 > 0) || (s21 < 0 && s22 < 0) )
-  {
-    ret = LWSEG_INTERSECT_NONE;
-    goto cleanup;
-  }
+    return LWSEG_INTERSECT_NONE;
 
   /*
   * Both endpoints of the second segment are on the line of the first,
   * the segments are collinear and the intersection is their overlap.
   *
-  * Use the projection on the (P1,P2) vector as the segment parameter,
-  * the overlap is the [0,len2] interval trimmed by the [tQ1,tQ2] one.
-  * All the computations are exact.
+  * The orientation tests above are exact, so collinearity here is exact.
+  * The four points can then be ordered along the line by comparing one
+  * coordinate: on a non-vertical line distinct points have distinct
+  * abscissas, on a vertical one distinct ordinates. Comparing the actual
+  * coordinates is exact, and avoids the rational projections and the
+  * associated multi-precision arithmetic.
   */
   if ( s11 == 0 && s12 == 0 )
   {
-    mpq_mul(len2, vx, vx);
-    mpq_mul(t1, vy, vy);
-    mpq_add(len2, len2, t1);
+    vertical = (P1->x == P2->x);
+    a1 = vertical ? P1->y : P1->x;
+    a2 = vertical ? P2->y : P2->x;
+    b1 = vertical ? Q1->y : Q1->x;
+    b2 = vertical ? Q2->y : Q2->x;
 
-    /* tQ1 = (Q1-P1) . (P2-P1) */
-    mpq_sub(t1, q1x, x1);
-    mpq_mul(t2, t1, vx);
-    mpq_sub(t1, q1y, y1);
-    mpq_mul(t3, t1, vy);
-    mpq_add(tQ1, t2, t3);
+    alo = FP_MIN(a1, a2);
+    ahi = FP_MAX(a1, a2);
+    blo = FP_MIN(b1, b2);
+    bhi = FP_MAX(b1, b2);
 
-    /* tQ2 = (Q2-P1) . (P2-P1) */
-    mpq_sub(t1, q2x, x1);
-    mpq_mul(t2, t1, vx);
-    mpq_sub(t1, q2y, y1);
-    mpq_mul(t3, t1, vy);
-    mpq_add(tQ2, t2, t3);
-
-    /* tmin = max(0, min(tQ1, tQ2)) */
-    if ( mpq_cmp(tQ1, tQ2) <= 0 )
-      mpq_set(tmin, tQ1);
-    else
-      mpq_set(tmin, tQ2);
-    if ( mpq_cmp(tmin, zero) < 0 )
-      mpq_set(tmin, zero);
-
-    /* tmax = min(len2, max(tQ1, tQ2)) */
-    if ( mpq_cmp(tQ1, tQ2) > 0 )
-      mpq_set(tmax, tQ1);
-    else
-      mpq_set(tmax, tQ2);
-    if ( mpq_cmp(tmax, len2) > 0 )
-      mpq_set(tmax, len2);
+    lo = FP_MAX(alo, blo);
+    hi = FP_MIN(ahi, bhi);
 
     /* No overlap at all */
-    if ( mpq_cmp(tmin, tmax) > 0 )
-    {
-      ret = LWSEG_INTERSECT_NONE;
-      goto cleanup;
-    }
+    if ( lo > hi )
+      return LWSEG_INTERSECT_NONE;
 
     /* The segments are collinear and share a positive length */
-    if ( mpq_cmp(tmin, tmax) < 0 )
-    {
-      ret = LWSEG_INTERSECT_OVERLAP;
-      goto cleanup;
-    }
+    if ( lo < hi )
+      return LWSEG_INTERSECT_OVERLAP;
 
     /*
     ** The segments touch on a single point. With non-zero-length
-    ** segments this is always one of the four segment endpoints:
-    ** tmin == tmax implies the touching parameter is 0, len2, tQ1
-    ** or tQ2, because otherwise tQ1 == tQ2 would make the second
-    ** segment zero-length. The point is copied verbatim from the
-    ** segment coordinates, never computed: no rounding of the
+    ** exactly collinear segments this point is one of the four segment
+    ** endpoints, copied verbatim, never computed: no rounding of the
     ** intersection point is involved.
     */
-    if ( mpq_cmp(tmin, zero) == 0 )
+    if ( a1 == lo )
       *ipoint = *P1;
-    else if ( mpq_cmp(tmin, len2) == 0 )
+    else if ( a2 == lo )
       *ipoint = *P2;
-    else if ( mpq_cmp(tmin, tQ1) == 0 )
+    else if ( b1 == lo )
       *ipoint = *Q1;
-    else if ( mpq_cmp(tmin, tQ2) == 0 )
-      *ipoint = *Q2;
     else
-      lwerror("%s: unreachable single-point collinear touch", __func__);
-    ret = LWSEG_INTERSECT_POINT;
-    goto cleanup;
+      *ipoint = *Q2;
+
+    return LWSEG_INTERSECT_POINT;
   }
 
   /*
@@ -964,58 +950,28 @@ lwt_segment_intersection_exact(const POINT2D *P1,
   if ( s11 == 0 && lwt_pt_in_extent(P1, P2, Q1) )
   {
     *ipoint = *Q1;
-    ret = LWSEG_INTERSECT_POINT;
-    goto cleanup;
+    return LWSEG_INTERSECT_POINT;
   }
 
   if ( s12 == 0 && lwt_pt_in_extent(P1, P2, Q2) )
   {
     *ipoint = *Q2;
-    ret = LWSEG_INTERSECT_POINT;
-    goto cleanup;
+    return LWSEG_INTERSECT_POINT;
   }
 
   if ( s21 == 0 && lwt_pt_in_extent(Q1, Q2, P1) )
   {
     *ipoint = *P1;
-    ret = LWSEG_INTERSECT_POINT;
-    goto cleanup;
+    return LWSEG_INTERSECT_POINT;
   }
 
   if ( s22 == 0 && lwt_pt_in_extent(Q1, Q2, P2) )
   {
     *ipoint = *P2;
-    ret = LWSEG_INTERSECT_POINT;
-    goto cleanup;
+    return LWSEG_INTERSECT_POINT;
   }
 
-  ret = LWSEG_INTERSECT_CROSS;
-
-cleanup:
-  mpq_clear(x1);
-  mpq_clear(y1);
-  mpq_clear(x2);
-  mpq_clear(y2);
-  mpq_clear(q1x);
-  mpq_clear(q1y);
-  mpq_clear(q2x);
-  mpq_clear(q2y);
-  mpq_clear(vx);
-  mpq_clear(vy);
-  mpq_clear(ux);
-  mpq_clear(uy);
-  mpq_clear(t1);
-  mpq_clear(t2);
-  mpq_clear(t3);
-  mpq_clear(t4);
-  mpq_clear(len2);
-  mpq_clear(tQ1);
-  mpq_clear(tQ2);
-  mpq_clear(tmin);
-  mpq_clear(tmax);
-  mpq_clear(zero);
-
-  return ret;
+  return LWSEG_INTERSECT_CROSS;
 }
 
 /*
@@ -1024,15 +980,17 @@ cleanup:
  *
  * Only 2D coordinates are considered.
  *
- * All the orientation and projection tests are evaluated with exact
- * rational arithmetic (see lwt_segment_intersection_exact above), so that
- * floating point cancellation between far-away coordinates cannot make a
- * disjoint pair of lines look like an intersecting one.
+ * The orientation tests are exact (see lwt_segment_side_robust and
+ * lwt_segment_intersection_exact above), so that floating point
+ * cancellation between far-away coordinates cannot make a disjoint pair
+ * of lines look like an intersecting one. Well conditioned inputs are
+ * handled by a floating point filter, so the exact rational arithmetic
+ * is only entered for the rare ambiguous cases.
  *
- * Coordinates that are not finite (NaN or Inf) cannot be converted to
- * rationals; lines with such coordinates are reported as having a
- * non-boundary intersection, which makes the caller reject them as
- * crossing.
+ * Coordinates that are not finite (NaN or Inf) can make the robust
+ * orientation predicate fail; lines with such coordinates are reported
+ * as having a non-boundary intersection, which makes the caller reject
+ * them as crossing.
  *
  * @param line1 first line
  * @param line2 second line
