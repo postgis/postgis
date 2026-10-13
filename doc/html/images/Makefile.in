@@ -37,6 +37,7 @@ ALL_IMAGES = $(STATIC_IMAGES)
 
 PDF_IMAGES_BUILD_DIR ?= pdf-images
 PDF_IMAGES = $(ALL_IMAGES:%=$(PDF_IMAGES_BUILD_DIR)/%)
+VISUAL_EXAMPLES = @VISUAL_EXAMPLES@
 VISUAL_EXAMPLES_DIR = visual-examples
 VISUAL_EXAMPLES_MANIFEST = $(VISUAL_EXAMPLES_DIR)/manifest.json
 VISUAL_EXAMPLES_XML_MANIFEST = $(VISUAL_EXAMPLES_DIR)/manifest.xml
@@ -49,9 +50,14 @@ images: visual-examples-check $(ALL_IMAGES)
 pdf-images: $(PDF_IMAGES) visual-examples-pdf
 
 visual-examples-check:
+ifeq ($(VISUAL_EXAMPLES),yes)
 	@$(if $(shell test -s '$(VISUAL_EXAMPLES_MANIFEST)' && test -s '$(VISUAL_EXAMPLES_XML_MANIFEST)' && echo ok),true,$(error Visual examples are missing. Run 'make -C regress visual-examples' first.))
+else
+	@true
+endif
 
 visual-examples-pdf: visual-examples-check
+ifeq ($(VISUAL_EXAMPLES),yes)
 	@mkdir -p $(PDF_IMAGES_BUILD_DIR)/$(VISUAL_EXAMPLES_DIR)
 	@converter=$${POSTGIS_DOC_CONVERTER:-}; rasterizer=convert; \
 	if test -z "$$converter"; then \
@@ -88,13 +94,18 @@ visual-examples-pdf: visual-examples-check
 		mv "$$temporary" "$$target"; \
 		rm -f "$$diagnostics"; \
 	done
+else
+	@true
+endif
 
 images-install: visual-examples-check $(ALL_IMAGES)
 	mkdir -p $(DESTDIR)$(htmldir)/images
 	$(INSTALL_DATA) $(ALL_IMAGES) $(DESTDIR)$(htmldir)/images/
+ifeq ($(VISUAL_EXAMPLES),yes)
 	mkdir -p $(DESTDIR)$(htmldir)/images/$(VISUAL_EXAMPLES_DIR)
 	$(INSTALL_DATA) $(VISUAL_EXAMPLES_DIR)/*.svg $(VISUAL_EXAMPLES_MANIFEST) $(VISUAL_EXAMPLES_XML_MANIFEST) \
 		$(DESTDIR)$(htmldir)/images/$(VISUAL_EXAMPLES_DIR)/
+endif
 
 images-uninstall:
 	rm -f $(ALL_IMAGES:%=$(DESTDIR)$(htmldir)/images/%)

@@ -62,9 +62,13 @@ renderer. Static raster files under `doc/html/images/static` are limited to
 branding and interface icons; the DocBook checker rejects other raster image
 references. Use DocBook markup for equations and tables.
 
-Run the example renderer before an HTML or PDF build:
+Visual examples are off by default. Configure with `--with-visual-examples`
+(requires Python 3 and a running PostgreSQL server) and `make -C doc html` or
+`make -C doc pdf` will render them automatically from a staged build when they
+are missing. They can also be rendered explicitly:
 
 ```sh
+./configure --with-visual-examples
 make -C regress visual-examples
 make -C doc html
 make -C doc pdf

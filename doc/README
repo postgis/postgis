@@ -49,7 +49,8 @@ How to
 ------
 
 Reference figures are generated from executable manual examples. Run
-``make -C regress visual-examples`` before HTML or PDF targets. The staged
+``make -C regress visual-examples`` before HTML or PDF targets (or configure
+with ``--with-visual-examples`` to have the doc targets do it). The staged
 PostGIS build supplies geometry paths and raster outputs; the renderer writes
 SVG plus a manifest under ``doc/html/images/visual-examples``. HTML embeds the
 SVG files directly, while PDF rasterizes the same files as a backend fallback.

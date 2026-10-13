@@ -322,7 +322,8 @@ sh autogen.sh
 
     <listitem>
     <para>
-      Python 3 is required to run the manual example tester that generates
+      Python 3 is required, when configured with
+      <command>--with-visual-examples</command> (off by default), to run the manual example tester that generates
       the visual examples which the HTML and PDF documentation embed.
       The examples are executed against a live PostgreSQL server running the
       staged PostGIS build via <command>make -C regress visual-examples</command>;

@@ -180,6 +180,7 @@ LDFLAGS="-L${SFCGALPATH}/lib -L${PROJPATH}/lib -L${GDALPATH}/lib -L${GEOSPATH}/l
   --with-gdalconfig=${GDAL_CONFIG} \
   --with-projdir=${PROJPATH} \
   --with-sfcgal=${SFCGAL_CONFIG} \
+  --with-visual-examples \
   --with-raster \
   --htmldir "${HTML_DIR}" \
   --docdir "${STUFF_DIR}"

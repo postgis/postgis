@@ -58,6 +58,10 @@ fi;
 
 echo "LZ4_VER ${LZ4_VER}"
 
+if  [[ "${WITH_VISUAL_EXAMPLES}" == '' ]] ; then
+  export WITH_VISUAL_EXAMPLES=0
+fi;
+
 if  [[ "${REGRESS_WITHOUT_TOPOLOGY}" == '' ]] ; then
   export REGRESS_WITHOUT_TOPOLOGY=0
 fi;

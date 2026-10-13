@@ -50,8 +50,14 @@ DOCSUFFIX=-en
 html_builddir=$(abs_builddir)/html
 images_builddir=$(html_builddir)/images
 pdf_images_builddir=$(abs_builddir)/pdf/images
+VISUAL_EXAMPLES=@VISUAL_EXAMPLES@
+ifeq ($(VISUAL_EXAMPLES),yes)
 visual_examples_manifest=$(images_builddir)/visual-examples/manifest.xml
 visual_examples_inputs=$(wildcard $(visual_examples_manifest) $(images_builddir)/visual-examples/*.svg)
+else
+visual_examples_manifest=
+visual_examples_inputs=
+endif
 
 ifneq (,$(findstring dev,$(POSTGIS_MICRO_VERSION)))
   POSTGIS_DOWNLOAD_URL=https://postgis.net/stuff
@@ -619,11 +625,22 @@ doxygen: doxygen.cfg ## Generate developer's documentation using Doxygen
 
 images: ## Generate images used in html and pdf targets
 
+images images-install: visual-examples
+
 images images-install images-uninstall images-clean:
 	$(MAKE) -C $(images_builddir) $@
 
+# With --with-visual-examples, render the examples from a staged build
+# when the manifest is missing; otherwise build without them.
 visual-examples:
-	@$(if $(shell test -s '$(visual_examples_manifest)' && echo ok),true,$(error Visual examples are missing. Run 'make -C regress visual-examples' first.))
+ifeq ($(VISUAL_EXAMPLES),yes)
+	@if ! test -s '$(visual_examples_manifest)'; then \
+		echo "Generating visual examples..."; \
+		$(MAKE) -C $(top_builddir) visual-examples || exit 1; \
+	fi
+else
+	@true
+endif
 
 pdf-images: visual-examples images
 	$(MAKE) -C $(images_builddir) $@ PDF_IMAGES_BUILD_DIR="$(pdf_images_builddir)"
@@ -800,7 +817,9 @@ else ifeq ($(XSLTPROC),)
 else ifeq ($(XSLBASE),)
 	@echo "Skipping $@: DocBook XSL stylesheets are not available."
 else
-	@if ! test -s "$(visual_examples_manifest)"; then \
+	@if test "$(VISUAL_EXAMPLES)" != yes; then \
+		echo "Skipping $@: configure was run without --with-visual-examples."; \
+	elif ! test -s "$(visual_examples_manifest)"; then \
 		echo "Skipping $@: visual examples are missing. Run 'make -C regress visual-examples' first."; \
 	else \
 		$(MAKE) $(html_builddir)/postgis$(DOCSUFFIX)/index.html; \

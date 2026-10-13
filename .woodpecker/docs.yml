@@ -50,7 +50,7 @@ steps:
     commands:
       - ./autogen.sh
       - mkdir -p build-docs && cd build-docs
-      - ../configure --with-pgconfig=/usr/lib/postgresql/18/bin/pg_config --without-protobuf --without-raster
+      - ../configure --with-pgconfig=/usr/lib/postgresql/18/bin/pg_config --without-protobuf --without-raster --with-visual-examples
       - make postgis_revision.h
       - . ../ci/parallel-jobs.sh
       - export POSTGIS_BUILD_JOBS=$$(postgis_ci_parallel_jobs)

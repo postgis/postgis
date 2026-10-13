@@ -70,6 +70,10 @@ if [ "${REGRESS_WITHOUT_RASTER:-0}" == "1" ]; then
    EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --without-raster"
 fi
 
+if [ "${WITH_VISUAL_EXAMPLES:-0}" == "1" ]; then
+   EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-visual-examples"
+fi
+
 #CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include" \
 #CFLAGS="-Wall -fno-omit-frame-pointer"
 

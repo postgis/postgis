@@ -243,8 +243,23 @@ fi
 AC_PATH_PROG([PYTHON3], [python3], [])
 if test "x$PYTHON3" = "x"; then
 	AC_MSG_WARN([python3 is not installed so documentation visual examples cannot be generated])
-	AC_MSG_WARN([documentation build will fail: run 'make -C regress visual-examples' first])
 fi
+
+dnl Visual examples are rendered from the manual by running the example
+dnl queries against a staged PostGIS build, so they are opt-in.
+VISUAL_EXAMPLES="no"
+AC_ARG_WITH([visual-examples],
+	[AS_HELP_STRING([--with-visual-examples],
+		[Generate visual example images when building the documentation (default is no)])],
+	[], [with_visual_examples="no"])
+
+if test "x$with_visual_examples" != "xno"; then
+	if test "x$PYTHON3" = "x"; then
+		AC_MSG_ERROR([--with-visual-examples requires python3])
+	fi
+	VISUAL_EXAMPLES="yes"
+fi
+AC_SUBST([VISUAL_EXAMPLES])
 
 AC_PATH_PROG([XML2POT], [xml2pot], [])
 if test "x$XML2POT" = "x"; then
@@ -2003,6 +2018,7 @@ if test "x$TOPOLOGY" = "xtopology"; then
 else
     AC_MSG_RESULT([  PostGIS Topology:                   disabled])
 fi
+AC_MSG_RESULT([  Doc visual examples:                ${VISUAL_EXAMPLES}])
 if test "x$SFCGAL" = "xsfcgal"; then
     AC_MSG_RESULT([  SFCGAL support:                     enabled])
 else
