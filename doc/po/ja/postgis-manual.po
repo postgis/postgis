@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-10-13 02:39+0000\n"
+"PO-Revision-Date: 2026-10-13 07:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -9822,7 +9822,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Returns the coordinate dimension of a geometry."
-msgstr "ST_Geometry 値の座標次元を返します。"
+msgstr "ジオメトリーの座標次元を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -9831,8 +9831,8 @@ msgid ""
 "(x,y) , 3 - (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure "
 "space x,y,z,m"
 msgstr ""
-"ジオメトリーの座標次元返します。PostGIS では、2 - (X,Y), 3 - (X,Y,Z), (X,Y,M)"
-", 4 - (X,Y,Z,M) に対応しています。"
+"ジオメトリーの座標次元を返します。PostGIS では、2 - (X,Y), 3 - (X,Y,Z), "
+"(X,Y,M), 4 - (X,Y,Z,M) に対応しています。"
 
 #. Tag: para
 #, no-c-format
