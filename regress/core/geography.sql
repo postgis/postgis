@@ -10,6 +10,14 @@ SELECT c, abs(ST_Distance(ply::geography, pt::geography) - _ST_DistanceUnCached(
 ('geog_distance_cached_1h', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(5 5)')
 ) AS u(c,ply,pt);
 
+-- Wide spherical polygon: interior point must stay distance 0 on cached ST_Distance
+SELECT c, ST_Distance(ply::geography, pt::geography) = 0 FROM
+( VALUES
+('geog_distance_cached_wide_a', 'POLYGON((-170 -10,0 -80,170 -10,0 80,-170 -10))', 'POINT(0 -70)'),
+('geog_distance_cached_wide_b', 'POLYGON((-170 -10,0 -80,170 -10,0 80,-170 -10))', 'POINT(0 -70)'),
+('geog_distance_cached_wide_c', 'POLYGON((-170 -10,0 -80,170 -10,0 80,-170 -10))', 'POINT(0 -70)')
+) AS u(c,ply,pt);
+
 -- Does tolerance based distance work cached? Inside tolerance
 SELECT c, ST_DWithin(ply::geography, pt::geography, 3000) from
 ( VALUES

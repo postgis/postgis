@@ -113,91 +113,6 @@ GetCircTreeGeomCache(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *g1, SHARED_GSE
 }
 
 static int
-lwgeom_covers_point2d(const LWGEOM *lwgeom, const POINT2D *pt)
-{
-	uint32_t i;
-	const LWCOLLECTION *col;
-
-	if (!lwgeom || lwgeom_is_empty(lwgeom))
-		return LW_FALSE;
-
-	if (lwgeom->type == POLYGONTYPE)
-		return lwpoly_covers_point2d((const LWPOLY *)lwgeom, pt);
-
-	if (!lwtype_is_collection(lwgeom->type))
-		return LW_FALSE;
-
-	col = (const LWCOLLECTION *)lwgeom;
-	for (i = 0; i < col->ngeoms; i++)
-	{
-		if (lwgeom_covers_point2d(col->geoms[i], pt))
-			return LW_TRUE;
-	}
-
-	return LW_FALSE;
-}
-
-static int
-lwgeom_has_polygonal_component(const LWGEOM *lwgeom)
-{
-	uint32_t i;
-	const LWCOLLECTION *col;
-
-	if (!lwgeom || lwgeom_is_empty(lwgeom))
-		return LW_FALSE;
-
-	if (lwgeom->type == POLYGONTYPE)
-		return LW_TRUE;
-
-	if (!lwtype_is_collection(lwgeom->type))
-		return LW_FALSE;
-
-	col = (const LWCOLLECTION *)lwgeom;
-	for (i = 0; i < col->ngeoms; i++)
-	{
-		if (lwgeom_has_polygonal_component(col->geoms[i]))
-			return LW_TRUE;
-	}
-
-	return LW_FALSE;
-}
-
-static int
-lwgeom_covers_any_startpoint2d(const LWGEOM *polygonal, const LWGEOM *points)
-{
-	uint32_t i;
-	const LWCOLLECTION *col;
-	POINT4D p4d;
-	POINT2D pt2d;
-
-	if (!points || lwgeom_is_empty(points))
-		return LW_FALSE;
-
-	if (lwtype_is_collection(points->type))
-	{
-		col = (const LWCOLLECTION *)points;
-		for (i = 0; i < col->ngeoms; i++)
-		{
-			if (lwgeom_covers_any_startpoint2d(polygonal, col->geoms[i]))
-				return LW_TRUE;
-		}
-		return LW_FALSE;
-	}
-
-	/*
-	 * The distance tree can use only one representative point per primitive.
-	 * For collections, recurse so a covered later member is not hidden behind
-	 * an uncovered first member.
-	 */
-	if (lwgeom_startpoint(points, &p4d) != LW_SUCCESS)
-		return LW_FALSE;
-
-	pt2d.x = p4d.x;
-	pt2d.y = p4d.y;
-	return lwgeom_covers_point2d(polygonal, &pt2d);
-}
-
-static int
 circ_tree_covers_any_startpoint2d(const CIRC_NODE *tree, const LWGEOM *points)
 {
 	uint32_t i;
@@ -334,8 +249,7 @@ geography_distance_cache_tolerance(FunctionCallInfo fcinfo,
 		/*
 		 * Public liblwgeom tree distance keeps a tree-only containment shortcut
 		 * for external callers. Geography SQL reaches this point only after
-		 * checking containment against the original polygonal geometry, so use
-		 * edge distance here to avoid reintroducing tree-metadata false zeros.
+		 * circ_tree_point_in_polygon() failed, so use edge distance here.
 		 */
 		*distance = circ_tree_distance_tree_edges(circtree_cached, circtree, s, tolerance);
 		circ_tree_free(circtree);
@@ -393,20 +307,23 @@ geography_tree_distance(const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHE
 	circ_tree1 = lwgeom_calculate_circ_tree(lwgeom1);
 	circ_tree2 = lwgeom_calculate_circ_tree(lwgeom2);
 
-	if (lwgeom_has_polygonal_component(lwgeom1) && lwgeom_covers_any_startpoint2d(lwgeom1, lwgeom2))
+	/*
+	 * Route containment through the same circ_tree_point_in_polygon() API used by
+	 * the cached SQL path. Do not deserialize polygons again for a parallel PiP.
+	 */
+	if (CircTreePIP(circ_tree1, g1, lwgeom2))
 	{
 		*distance = 0.0;
 	}
-	else if (lwgeom_has_polygonal_component(lwgeom2) && lwgeom_covers_any_startpoint2d(lwgeom2, lwgeom1))
+	else if (CircTreePIP(circ_tree2, g2, lwgeom1))
 	{
 		*distance = 0.0;
 	}
 	else
 	{
 		/*
-		 * Containment against original geometries has already failed above; the
-		 * remaining distance must come from tree edge/point pairs rather than the
-		 * public tree-only containment shortcut.
+		 * Tree containment failed above; remaining distance comes from edge/point
+		 * pairs rather than the public tree-distance containment shortcut.
 		 */
 		*distance = circ_tree_distance_tree_edges(circ_tree1, circ_tree2, s, tolerance);
 	}

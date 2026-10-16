@@ -61,6 +61,9 @@ circ_tree_free(CIRC_NODE* node)
 			circ_tree_free(node->nodes[i]);
 		lwfree(node->nodes);
 	}
+	/* Each non-NULL gbox is owned by exactly this node. */
+	if (node->gbox)
+		lwfree(node->gbox);
 	lwfree(node);
 }
 
@@ -111,11 +114,11 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	node->nodes = NULL;
 	node->edge_num = i;
 
-	/* Zero out metadata */
+	/* Zero out metadata; edge leaves carry no area GBOX. */
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
 	node->geom_type = 0;
-
+	node->gbox = NULL;
 	return node;
 }
 
@@ -126,6 +129,7 @@ static CIRC_NODE*
 circ_node_leaf_point_new(const POINTARRAY* pa)
 {
 	CIRC_NODE* tree = lwalloc(sizeof(CIRC_NODE));
+	POINT3D q;
 	tree->p1 = tree->p2 = (POINT2D*)getPoint_internal(pa, 0);
 	geographic_point_init(tree->p1->x, tree->p1->y, &(tree->center));
 	tree->radius = 0.0;
@@ -135,6 +139,10 @@ circ_node_leaf_point_new(const POINTARRAY* pa)
 	tree->geom_type = POINTTYPE;
 	tree->pt_outside.x = 0.0;
 	tree->pt_outside.y = 0.0;
+	/* A point bounds itself; same geodetic flags the canonical calculator emits. */
+	geog2cart(&(tree->center), &q);
+	tree->gbox = gbox_new(lwflags(0, 0, 1));
+	gbox_init_point3d(&q, tree->gbox);
 	return tree;
 }
 
@@ -238,6 +246,8 @@ circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 	double new_radius;
 	double offset1, dist, D, r1, ri;
 	uint32_t i, new_geom_type;
+	GBOX merged_box;
+	int merged_ok, have_merged;
 
 	LWDEBUGF(3, "called with %d nodes --", num_nodes);
 
@@ -348,6 +358,36 @@ circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 	node->geom_type = new_geom_type;
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
+	/*
+	 * Merge child bounds when every child has one. Edge leaves and unboxed
+	 * lines leave gbox NULL so ring trees stay cheap; point leaves and
+	 * polygon/collection constructors supply or merge bounds for pruning.
+	 * Never read a child's GBOX fields when its pointer is NULL.
+	 */
+	node->gbox = NULL;
+	merged_ok = LW_TRUE;
+	have_merged = LW_FALSE;
+	gbox_init(&merged_box);
+	for (i = 0; i < num_nodes; i++)
+	{
+		if (!c[i]->gbox)
+		{
+			merged_ok = LW_FALSE;
+			break;
+		}
+		if (!have_merged)
+		{
+			merged_box = *(c[i]->gbox);
+			have_merged = LW_TRUE;
+		}
+		else if (gbox_merge(c[i]->gbox, &merged_box) != LW_SUCCESS)
+		{
+			merged_ok = LW_FALSE;
+			break;
+		}
+	}
+	if (merged_ok && have_merged)
+		node->gbox = gbox_clone(&merged_box);
 	return node;
 }
 
@@ -949,6 +989,25 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 	/* selectively when doing distance calculations */
 	node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
 	lwpoly_pt_outside(lwpoly, &(node->pt_outside));
+	/*
+	 * Canonical area bound for this polygon. lwgeom_calculate_gbox_geodetic
+	 * accounts for great-circle edge bulge and pole wrapping
+	 * (lwpolygon_calculate_gbox_geodetic / gbox_check_poles), the same bound
+	 * lwpoly_covers_point2d trusts to reject outside points. On failure the
+	 * node stays unboxed and callers fall through to the exact test.
+	 * Replace any merged child box: the polygon calculator is authoritative.
+	 */
+	if (node->gbox)
+	{
+		lwfree(node->gbox);
+		node->gbox = NULL;
+	}
+	{
+		GBOX poly_box;
+		gbox_init(&poly_box);
+		if (lwgeom_calculate_gbox_geodetic((LWGEOM *)lwpoly, &poly_box) == LW_SUCCESS)
+			node->gbox = gbox_clone(&poly_box);
+	}
 
 	return node;
 }
@@ -1017,7 +1076,6 @@ int
 circ_tree_point_in_polygon(const CIRC_NODE *node, const POINT2D *pt)
 {
 	uint32_t i;
-	GEOGRAPHIC_POINT geographic_point;
 
 	if (!node || !node->geom_type)
 		return LW_FALSE;
@@ -1036,12 +1094,23 @@ circ_tree_point_in_polygon(const CIRC_NODE *node, const POINT2D *pt)
 		return LW_FALSE;
 
 	/*
-	 * The cap guard prevents the tree's ring-crossing test from accepting
-	 * a far-away point.
+	 * Area-safe precheck: reject only when the candidate lies outside the
+	 * canonical geodetic GBOX stored on this polygon node. That is the same
+	 * bound lwpoly_covers_point2d() trusts for its "point not in box" early
+	 * rejection (lwgeodetic.c), so a rejection here provably rejects actual
+	 * polygon area, never just the ring boundary's cap. Nodes without a
+	 * stored box fall through to the exact ring-crossing test below, which
+	 * is also what keeps the #5895 far-away point out in that case.
 	 */
-	geographic_point_init(pt->x, pt->y, &geographic_point);
-	if (sphere_distance(&(node->center), &geographic_point) > node->radius + FP_TOLERANCE)
-		return LW_FALSE;
+	if (node->gbox)
+	{
+		GEOGRAPHIC_POINT gpt;
+		POINT3D p3d;
+		geographic_point_init(pt->x, pt->y, &gpt);
+		geog2cart(&gpt, &p3d);
+		if (!gbox_contains_point3d(node->gbox, &p3d))
+			return LW_FALSE;
+	}
 
 	return circ_tree_contains_point(node, pt, &(node->pt_outside), 0, NULL);
 }
@@ -1068,6 +1137,45 @@ circ_tree_has_polygonal_component(const CIRC_NODE *node)
 	return LW_FALSE;
 }
 
+/*
+ * Area-safe containment prune.
+ *
+ * A candidate subtree can lie inside the container only when area bounds can
+ * overlap. Container boxes are canonical geodetic GBOXes (polygon calculator
+ * or merged fully-boxed children). Candidate boxes are the same when present
+ * (points, polygons, fully-boxed collections). When the candidate stores no
+ * GBOX, fall back to its circ-tree circle: a zero-radius circle is a point and
+ * may be rejected with gbox_contains_point3d; positive-radius edge/line
+ * circles stay conservative (no prune) so unboxed cases never false-reject.
+ * Missing container box also stays conservative. Never rejects true containment.
+ */
+static int
+circ_tree_pair_may_contain(const CIRC_NODE *container, const CIRC_NODE *candidate)
+{
+	if (!circ_tree_has_polygonal_component(container))
+		return LW_FALSE;
+	if (!container->gbox)
+		return LW_TRUE;
+	if (candidate->gbox)
+	{
+		if (!gbox_overlaps(container->gbox, candidate->gbox))
+			return LW_FALSE;
+		return LW_TRUE;
+	}
+	/*
+	 * Candidate bound is the circ-tree circle only. Zero-radius => point at
+	 * center; reject when outside the container area box. Else do not prune.
+	 */
+	if (candidate->radius == 0.0)
+	{
+		POINT3D p3d;
+		geog2cart(&(candidate->center), &p3d);
+		if (!gbox_contains_point3d(container->gbox, &p3d))
+			return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
 static int
 circ_tree_pair_set_inside_point_internal(const CIRC_NODE *n1,
 					 const CIRC_NODE *n2,
@@ -1079,6 +1187,15 @@ circ_tree_pair_set_inside_point_internal(const CIRC_NODE *n1,
 
 	if (!n1->geom_type || !n2->geom_type)
 		return LW_FALSE;
+	/*
+	 * Spatial prune before opening collections: subtrees whose canonical
+	 * area bounds are disjoint cannot contain one another. This keeps a
+	 * many-component polygon collection versus many distant points from
+	 * enumerating the full Cartesian product; overlapping or unboxed pairs
+	 * fall through to the exact test below.
+	 */
+	if (!circ_tree_pair_may_contain(n1, n2))
+		return LW_FALSE;
 
 	/*
 	 * Collections must be opened here because the shared tree-distance walker
@@ -1088,6 +1205,8 @@ circ_tree_pair_set_inside_point_internal(const CIRC_NODE *n1,
 	{
 		for (i = 0; i < n1->num_nodes; i++)
 		{
+			if (!circ_tree_pair_may_contain(n1->nodes[i], n2))
+				continue;
 			if (circ_tree_pair_set_inside_point_internal(n1->nodes[i], n2, closest1, closest2))
 				return LW_TRUE;
 		}
@@ -1098,6 +1217,8 @@ circ_tree_pair_set_inside_point_internal(const CIRC_NODE *n1,
 	{
 		for (i = 0; i < n2->num_nodes; i++)
 		{
+			if (!circ_tree_pair_may_contain(n1, n2->nodes[i]))
+				continue;
 			if (circ_tree_pair_set_inside_point_internal(n1, n2->nodes[i], closest1, closest2))
 				return LW_TRUE;
 		}
@@ -1110,8 +1231,9 @@ circ_tree_pair_set_inside_point_internal(const CIRC_NODE *n1,
 	/*
 	 * Tree-only callers historically treated any non-collection primitive as
 	 * contained when its representative point was inside the polygon. That
-	 * preserves zero distance for contained lines and polygons; the cap check
-	 * below is what keeps the #5895 far-away false positive out.
+	 * preserves zero distance for contained lines and polygons; the exact
+	 * ring-crossing test inside circ_tree_point_in_polygon (with its GBOX
+	 * precheck) is what keeps the #5895 far-away false positive out.
 	 */
 	circ_tree_get_point(n2, &pt);
 
