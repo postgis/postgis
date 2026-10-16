@@ -1,0 +1,8 @@
+isvisible-flat|t
+isvisible-curvature-bool|t
+isvisible-curvature-coef|t
+isvisible-target-off-center|t
+isvisible-blocked|f
+ERROR:  RASTER_isVisible: band number must be between 1 and 1 inclusive
+ERROR:  RASTER_isVisible: Raster and point geometries do not have the same SRID
+ERROR:  RASTER_isVisible: curvature coefficient must be finite and non-negative
