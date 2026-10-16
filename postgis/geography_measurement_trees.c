@@ -198,23 +198,46 @@ lwgeom_covers_any_startpoint2d(const LWGEOM *polygonal, const LWGEOM *points)
 }
 
 static int
+circ_tree_covers_any_startpoint2d(const CIRC_NODE *tree, const LWGEOM *points)
+{
+	uint32_t i;
+	const LWCOLLECTION *col;
+	POINT4D p4d;
+	POINT2D pt2d;
+
+	if (!tree || !points || lwgeom_is_empty(points))
+		return LW_FALSE;
+
+	if (lwtype_is_collection(points->type))
+	{
+		col = (const LWCOLLECTION *)points;
+		for (i = 0; i < col->ngeoms; i++)
+		{
+			if (circ_tree_covers_any_startpoint2d(tree, col->geoms[i]))
+				return LW_TRUE;
+		}
+		return LW_FALSE;
+	}
+
+	if (lwgeom_startpoint(points, &p4d) != LW_SUCCESS)
+		return LW_FALSE;
+
+	pt2d.x = p4d.x;
+	pt2d.y = p4d.y;
+	return circ_tree_point_in_polygon(tree, &pt2d);
+}
+
+static int
 CircTreePIP(const CIRC_NODE *tree1, const GSERIALIZED *g1, const LWGEOM *lwgeom2)
 {
 	int tree1_type = gserialized_get_type(g1);
-	LWGEOM *lwgeom1;
-	int covers;
 
 	POSTGIS_DEBUGF(3, "tree1_type=%d", tree1_type);
 
-	/* If the tree'ed argument contains polygons, do the P-i-P using the geodetic predicate. */
 	if (tree1_type == POLYGONTYPE || tree1_type == MULTIPOLYGONTYPE || lwtype_is_collection(tree1_type))
 	{
-		(void)tree1;
-		POSTGIS_DEBUG(3, "tree contains polygons, using geodetic PiP");
-		lwgeom1 = lwgeom_from_gserialized(g1);
-		covers = lwgeom_has_polygonal_component(lwgeom1) && lwgeom_covers_any_startpoint2d(lwgeom1, lwgeom2);
-		lwgeom_free(lwgeom1);
-		return covers;
+		POSTGIS_DEBUG(3, "tree contains polygons, using cached tree PiP");
+		return circ_tree_covers_any_startpoint2d(tree1, lwgeom2);
 	}
 	else
 	{

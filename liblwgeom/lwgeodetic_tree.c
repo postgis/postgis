@@ -1013,11 +1013,66 @@ lwgeom_calculate_circ_tree(const LWGEOM* lwgeom)
  * Closest point and closest line functions for geographies.
  ***********************************************************************/
 
+int
+circ_tree_point_in_polygon(const CIRC_NODE *node, const POINT2D *pt)
+{
+	uint32_t i;
+	GEOGRAPHIC_POINT geographic_point;
+
+	if (!node || !node->geom_type)
+		return LW_FALSE;
+
+	if (lwtype_is_collection(node->geom_type))
+	{
+		for (i = 0; i < node->num_nodes; i++)
+		{
+			if (circ_tree_point_in_polygon(node->nodes[i], pt))
+				return LW_TRUE;
+		}
+		return LW_FALSE;
+	}
+
+	if (node->geom_type != POLYGONTYPE)
+		return LW_FALSE;
+
+	/*
+	 * The cap guard prevents the tree's ring-crossing test from accepting
+	 * a far-away point.
+	 */
+	geographic_point_init(pt->x, pt->y, &geographic_point);
+	if (sphere_distance(&(node->center), &geographic_point) > node->radius + FP_TOLERANCE)
+		return LW_FALSE;
+
+	return circ_tree_contains_point(node, pt, &(node->pt_outside), 0, NULL);
+}
+
 static int
-circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
-				const CIRC_NODE *n2,
-				GEOGRAPHIC_POINT *closest1,
-				GEOGRAPHIC_POINT *closest2)
+circ_tree_has_polygonal_component(const CIRC_NODE *node)
+{
+	uint32_t i;
+
+	if (!node || !node->geom_type)
+		return LW_FALSE;
+
+	if (node->geom_type == POLYGONTYPE)
+		return LW_TRUE;
+
+	if (!lwtype_is_collection(node->geom_type))
+		return LW_FALSE;
+
+	for (i = 0; i < node->num_nodes; i++)
+	{
+		if (circ_tree_has_polygonal_component(node->nodes[i]))
+			return LW_TRUE;
+	}
+	return LW_FALSE;
+}
+
+static int
+circ_tree_pair_set_inside_point_internal(const CIRC_NODE *n1,
+					 const CIRC_NODE *n2,
+					 GEOGRAPHIC_POINT *closest1,
+					 GEOGRAPHIC_POINT *closest2)
 {
 	POINT2D pt;
 	uint32_t i;
@@ -1033,7 +1088,7 @@ circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
 	{
 		for (i = 0; i < n1->num_nodes; i++)
 		{
-			if (circ_tree_pair_set_inside_point(n1->nodes[i], n2, closest1, closest2))
+			if (circ_tree_pair_set_inside_point_internal(n1->nodes[i], n2, closest1, closest2))
 				return LW_TRUE;
 		}
 		return LW_FALSE;
@@ -1043,16 +1098,13 @@ circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
 	{
 		for (i = 0; i < n2->num_nodes; i++)
 		{
-			if (circ_tree_pair_set_inside_point(n1, n2->nodes[i], closest1, closest2))
+			if (circ_tree_pair_set_inside_point_internal(n1, n2->nodes[i], closest1, closest2))
 				return LW_TRUE;
 		}
 		return LW_FALSE;
 	}
 
 	if (n1->geom_type != POLYGONTYPE)
-		return LW_FALSE;
-
-	if (lwtype_is_collection(n2->geom_type))
 		return LW_FALSE;
 
 	/*
@@ -1063,24 +1115,24 @@ circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
 	 */
 	circ_tree_get_point(n2, &pt);
 
-	/*
-	 * circ_tree_contains_point() is a ring-crossing predicate, not a spatial
-	 * index check. The enclosing cap is a necessary condition for accepting
-	 * tree-only containment and filters the far-away false positive from #5895.
-	 */
-	{
-		GEOGRAPHIC_POINT gpt;
-		geographic_point_init(pt.x, pt.y, &gpt);
-		if (sphere_distance(&(n1->center), &gpt) > n1->radius + FP_TOLERANCE)
-			return LW_FALSE;
-	}
-
-	if (!circ_tree_contains_point(n1, &pt, &(n1->pt_outside), 0, NULL))
+	if (!circ_tree_point_in_polygon(n1, &pt))
 		return LW_FALSE;
 
 	geographic_point_init(pt.x, pt.y, closest1);
 	geographic_point_init(pt.x, pt.y, closest2);
 	return LW_TRUE;
+}
+
+static int
+circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
+				const CIRC_NODE *n2,
+				GEOGRAPHIC_POINT *closest1,
+				GEOGRAPHIC_POINT *closest2)
+{
+	if (!circ_tree_has_polygonal_component(n1) && !circ_tree_has_polygonal_component(n2))
+		return LW_FALSE;
+
+	return circ_tree_pair_set_inside_point_internal(n1, n2, closest1, closest2);
 }
 
 LWGEOM *
