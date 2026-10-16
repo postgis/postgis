@@ -119,6 +119,36 @@ check_geom_slope(const char *wkt, double expected)
 	lwgeom_free(geom);
 }
 
+static void
+check_geom_slope_reversal(const char *wkt, const char *reversed_wkt)
+{
+	LWGEOM *geom;
+	double slope = -1.0;
+	double reversed_slope = -1.0;
+	int status, reversed_status;
+
+	geom = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	status = lwgeom_slope(geom, &slope);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt(reversed_wkt, LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
+	reversed_status = lwgeom_slope(geom, &reversed_slope);
+	lwgeom_free(geom);
+
+	CU_ASSERT_EQUAL(status, reversed_status);
+	if (status == LW_SUCCESS)
+	{
+		CU_ASSERT_DOUBLE_EQUAL(slope, reversed_slope, 0.0000001);
+	}
+	else
+	{
+		CU_ASSERT_DOUBLE_EQUAL(slope, -1.0, 0.0);
+		CU_ASSERT_DOUBLE_EQUAL(reversed_slope, -1.0, 0.0);
+	}
+}
+
 void
 triangle_slope(void)
 {
@@ -131,12 +161,20 @@ triangle_slope(void)
 	check_geom_slope("TRIANGLE Z((0 0 0,0 1 0,1 0 1,0 0 0))", M_PI_4);
 	check_geom_slope("TRIANGLE((0 0,1 0,0 1,0 0))", 0.0);
 	check_geom_slope("LINESTRING Z(0 0 0,1 0 1)", M_PI_4);
+	check_geom_slope("LINESTRING Z(0 0 0,1e-13 0 1e-13)", M_PI_4);
 	check_geom_slope("LINESTRING Z(0 0 0,0 0 1)", M_PI_2);
 	check_geom_slope("LINESTRING(0 0,1 0)", 0.0);
 	check_geom_slope("LINESTRING Z(0 0 0,1 0 1,1 1 1,0 1 0,0 0 0)", M_PI_4);
 	check_geom_slope("MULTILINESTRING Z((0 0 0,1 0 1),(2 0 2,3 0 3))", M_PI_4);
 	check_geom_slope("MULTILINESTRING Z((0 0 0,0 1 0),(0 0 0,1 0 1))", M_PI_4);
 	check_geom_slope("POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0))", M_PI_4);
+	check_geom_slope("POLYGON Z((0 0 0,1 1 3,2 2.000001 6.000002,0 1 2,0 0 0))", atan2(sqrt(5.0), 1.0));
+	check_geom_slope("POLYGON Z((0 0 0,0 1 2,2 2.000001 6.000002,1 1 3,0 0 0))", atan2(sqrt(5.0), 1.0));
+	check_geom_slope("TRIANGLE Z((0 0 0,1 1 3,2 2.000001 6.000002,0 0 0))", atan2(sqrt(5.0), 1.0));
+	check_geom_slope("TRIANGLE((0 0,1000000 0,1000000 1e-13,0 0))", 0.0);
+	check_geom_slope("TRIANGLE((1000000 0,1000000 1e-13,0 0,1000000 0))", 0.0);
+	check_geom_slope("TRIANGLE((0 0,1000000 1000000,1000000 1000000.000000001,0 0))", 0.0);
+	check_geom_slope("TRIANGLE((1000000 1000000,1000000 1000000.000000001,0 0,1000000 1000000))", 0.0);
 	check_geom_slope(
 	    "POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0),"
 	    "(0.25 0.25 0.25,0.75 0.25 0.75,0.75 0.75 0.75,0.25 0.75 0.25,0.25 0.25 0.25))",
@@ -149,6 +187,8 @@ triangle_slope(void)
 	    "TIN Z(((0 0 0,1 0 1,0 1 0,0 0 0)),"
 	    "((1 0 1,1 1 1,0 1 0,1 0 1)))",
 	    M_PI_4);
+	check_geom_slope_reversal("LINESTRING Z(0 0 0,1 1 1,10000 10000.0001 10000,10000 10000 10000.0001)",
+				  "LINESTRING Z(10000 10000 10000.0001,10000 10000.0001 10000,1 1 1,0 0 0)");
 
 	geom = lwgeom_from_wkt("TRIANGLE Z((0 0 0,1 1 1,2 2 2,0 0 0))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
