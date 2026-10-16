@@ -104,6 +104,96 @@ lw_diff_of_products(double a, double b, double c, double d, double *value, doubl
 	return LW_TRUE;
 }
 
+static int
+lw_diff_of_products_with_diff_errors(double a, double b, double a_error, double b_error,
+				     double c, double d, double c_error, double d_error,
+				     double *value, double *error)
+{
+	double correction, correction_error;
+
+	if (!lw_diff_of_products(a, b, c, d, value, error))
+		return LW_FALSE;
+
+	/* Expand (a + a_error) * (b + b_error) -
+	 * (c + c_error) * (d + d_error) into the low-order terms. */
+	if (!lw_diff_of_products(a_error, b, c_error, d, &correction, &correction_error))
+		return LW_FALSE;
+	*error += correction + correction_error;
+
+	if (!lw_diff_of_products(a, b_error, c, d_error, &correction, &correction_error))
+		return LW_FALSE;
+	*error += correction + correction_error;
+
+	if (!lw_diff_of_products(a_error, b_error, c_error, d_error, &correction, &correction_error))
+		return LW_FALSE;
+	*error += correction + correction_error;
+
+	return LW_TRUE;
+}
+
+typedef struct
+{
+	double numerator;
+	double numerator_error;
+	double denominator;
+	double denominator_error;
+	double approximate;
+} LW_FRACTION_POSITION;
+
+static LW_FRACTION_POSITION
+lw_fraction_position_from_double(double fraction)
+{
+	LW_FRACTION_POSITION position;
+
+	position.numerator = fraction;
+	position.numerator_error = 0.0;
+	position.denominator = 1.0;
+	position.denominator_error = 0.0;
+	position.approximate = fraction;
+	return position;
+}
+
+static int
+lw_fraction_position_less(const LW_FRACTION_POSITION *left, const LW_FRACTION_POSITION *right)
+{
+	double difference, difference_error, rounded_difference, rounding_error;
+	double left_scale, right_scale;
+	double left_num, left_num_error, left_den, left_den_error;
+	double right_num, right_num_error, right_den, right_den_error;
+	int left_exponent, right_exponent;
+
+	left_scale = fmax(fmax(fabs(left->numerator), fabs(left->numerator_error)),
+			   fmax(fabs(left->denominator), fabs(left->denominator_error)));
+	right_scale = fmax(fmax(fabs(right->numerator), fabs(right->numerator_error)),
+			    fmax(fabs(right->denominator), fabs(right->denominator_error)));
+	if (left_scale == 0.0 || right_scale == 0.0 || !isfinite(left_scale) || !isfinite(right_scale))
+		return left->approximate < right->approximate;
+
+	/* Each ratio is unchanged when its numerator and denominator are scaled together. */
+	frexp(left_scale, &left_exponent);
+	frexp(right_scale, &right_exponent);
+	left_num = scalbn(left->numerator, -left_exponent);
+	left_num_error = scalbn(left->numerator_error, -left_exponent);
+	left_den = scalbn(left->denominator, -left_exponent);
+	left_den_error = scalbn(left->denominator_error, -left_exponent);
+	right_num = scalbn(right->numerator, -right_exponent);
+	right_num_error = scalbn(right->numerator_error, -right_exponent);
+	right_den = scalbn(right->denominator, -right_exponent);
+	right_den_error = scalbn(right->denominator_error, -right_exponent);
+
+	if (!lw_diff_of_products_with_diff_errors(left_num, right_den, left_num_error, right_den_error,
+						   right_num, left_den, right_num_error, left_den_error,
+						   &difference, &difference_error))
+		return left->approximate < right->approximate;
+
+	/* Compare the cross-products before rounding their quotient to double. */
+	rounded_difference = difference + difference_error;
+	lw_two_diff(difference, -difference_error, rounded_difference, &rounding_error);
+	if (rounded_difference != 0.0)
+		return rounded_difference < 0.0;
+	return rounding_error < 0.0;
+}
+
 /**
 * Returns the length of a linear segment
 */
@@ -435,17 +525,19 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 	return SEG_ERROR;
 }
 
-static double
+static LW_FRACTION_POSITION
 segment_intersection_fraction_on_q(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
 	double scale = fabs(p1->x);
 	double rscale;
 	double qscale;
 	double rx, ry, sx, sy, qpx, qpy;
+	double rx_error, ry_error, sx_error, sy_error, qpx_error, qpy_error;
 	double denom, fraction;
 	double denom_a, denom_b, fraction_a, fraction_b;
 	double denom_error, numerator, numerator_error;
 	int raw_products_are_normal;
+	LW_FRACTION_POSITION position;
 
 	rx = p2->x - p1->x;
 	ry = p2->y - p1->y;
@@ -453,6 +545,12 @@ segment_intersection_fraction_on_q(const POINT2D *p1, const POINT2D *p2, const P
 	sy = q2->y - q1->y;
 	qpx = q1->x - p1->x;
 	qpy = q1->y - p1->y;
+	lw_two_diff(p2->x, p1->x, rx, &rx_error);
+	lw_two_diff(p2->y, p1->y, ry, &ry_error);
+	lw_two_diff(q2->x, q1->x, sx, &sx_error);
+	lw_two_diff(q2->y, q1->y, sy, &sy_error);
+	lw_two_diff(q1->x, p1->x, qpx, &qpx_error);
+	lw_two_diff(q1->y, p1->y, qpy, &qpy_error);
 
 	denom_a = rx * sy;
 	denom_b = ry * sx;
@@ -473,20 +571,37 @@ segment_intersection_fraction_on_q(const POINT2D *p1, const POINT2D *p2, const P
 				  ((fraction_b != 0.0 && fabs(fraction_b) >= DBL_MIN) || qpy == 0.0 || rx == 0.0);
 	if (raw_products_are_normal && denom != 0.0 && isfinite(denom) && isfinite(fraction))
 	{
-		if (lw_diff_of_products(rx, sy, ry, sx, &denom, &denom_error) &&
-		    lw_diff_of_products(qpx, ry, qpy, rx, &numerator, &numerator_error))
+		if (lw_diff_of_products_with_diff_errors(rx, sy, rx_error, sy_error,
+							 ry, sx, ry_error, sx_error,
+							 &denom, &denom_error) &&
+		    lw_diff_of_products_with_diff_errors(qpx, ry, qpx_error, ry_error,
+							 qpy, rx, qpy_error, rx_error,
+							 &numerator, &numerator_error))
 		{
-			denom += denom_error;
-			numerator += numerator_error;
-			fraction = numerator / denom;
-			if (!isfinite(denom) || denom == 0.0 || !isfinite(fraction))
-				return 0.0;
+			if (!isfinite(denom + denom_error) || denom + denom_error == 0.0 ||
+			    !isfinite(numerator + numerator_error))
+				return lw_fraction_position_from_double(0.0);
+			if (denom + denom_error < 0.0)
+			{
+				denom = -denom;
+				denom_error = -denom_error;
+				numerator = -numerator;
+				numerator_error = -numerator_error;
+			}
+			fraction = (numerator + numerator_error) / (denom + denom_error);
+			if (!isfinite(fraction))
+				return lw_fraction_position_from_double(0.0);
 		}
 		if (fraction < 0.0)
-			return 0.0;
+			return lw_fraction_position_from_double(0.0);
 		if (fraction > 1.0)
-			return 1.0;
-		return fraction;
+			return lw_fraction_position_from_double(1.0);
+		position.numerator = numerator;
+		position.numerator_error = numerator_error;
+		position.denominator = denom;
+		position.denominator_error = denom_error;
+		position.approximate = fraction;
+		return position;
 	}
 
 	rscale = fabs(p1->x);
@@ -522,7 +637,7 @@ segment_intersection_fraction_on_q(const POINT2D *p1, const POINT2D *p2, const P
 			 * order for finite inputs.
 			 */
 			if (fraction >= 0.0 && fraction <= 1.0)
-				return fraction;
+				return lw_fraction_position_from_double(fraction);
 		}
 	}
 
@@ -554,10 +669,10 @@ segment_intersection_fraction_on_q(const POINT2D *p1, const POINT2D *p2, const P
 		if (denom != 0.0 && isfinite(denom) && isfinite(fraction))
 		{
 			if (fraction < 0.0)
-				return 0.0;
+				return lw_fraction_position_from_double(0.0);
 			if (fraction > 1.0)
-				return 1.0;
-			return fraction;
+				return lw_fraction_position_from_double(1.0);
+			return lw_fraction_position_from_double(fraction);
 		}
 	}
 
@@ -577,7 +692,7 @@ segment_intersection_fraction_on_q(const POINT2D *p1, const POINT2D *p2, const P
 		scale = fabs(q2->y);
 
 	if (scale == 0.0 || !isfinite(scale))
-		return 0.0;
+		return lw_fraction_position_from_double(0.0);
 
 	/*
 	 * Use normalized coordinates only as an overflow fallback.  Normalizing
@@ -593,19 +708,19 @@ segment_intersection_fraction_on_q(const POINT2D *p1, const POINT2D *p2, const P
 
 	denom = rx * sy - ry * sx;
 	if (denom == 0.0)
-		return 0.0;
+		return lw_fraction_position_from_double(0.0);
 
 	fraction = (qpx * ry - qpy * rx) / denom;
 
 	if (!isfinite(fraction))
-		return 0.0;
+		return lw_fraction_position_from_double(0.0);
 
 	if (fraction < 0.0)
-		return 0.0;
+		return lw_fraction_position_from_double(0.0);
 	if (fraction > 1.0)
-		return 1.0;
+		return lw_fraction_position_from_double(1.0);
 
-	return (double)fraction;
+	return lw_fraction_position_from_double(fraction);
 }
 
 /**
@@ -631,7 +746,8 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	int cross_right = 0;
 	int first_cross = 0;
 	int this_cross = 0;
-	double first_cross_pos = DBL_MAX;
+	LW_FRACTION_POSITION first_cross_pos;
+	int first_cross_pos_valid = 0;
 #if POSTGIS_DEBUG_LEVEL >= 4
 	char *geom_ewkt;
 #endif
@@ -691,10 +807,11 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 				cross_left++;
 				if ( ! first_cross )
 				{
-					double pos = segment_intersection_fraction_on_q(p1, p2, q1, q2);
-					if (pos < first_cross_pos)
+					LW_FRACTION_POSITION pos = segment_intersection_fraction_on_q(p1, p2, q1, q2);
+					if (!first_cross_pos_valid || lw_fraction_position_less(&pos, &first_cross_pos))
 					{
 						first_cross_pos = pos;
+						first_cross_pos_valid = 1;
 						first_segment_cross = SEG_CROSS_LEFT;
 					}
 				}
@@ -706,10 +823,11 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 				cross_right++;
 				if ( ! first_cross )
 				{
-					double pos = segment_intersection_fraction_on_q(p1, p2, q1, q2);
-					if (pos < first_cross_pos)
+					LW_FRACTION_POSITION pos = segment_intersection_fraction_on_q(p1, p2, q1, q2);
+					if (!first_cross_pos_valid || lw_fraction_position_less(&pos, &first_cross_pos))
 					{
 						first_cross_pos = pos;
+						first_cross_pos_valid = 1;
 						first_segment_cross = SEG_CROSS_RIGHT;
 					}
 				}

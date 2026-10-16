@@ -506,6 +506,38 @@ static void test_lwline_crossing_bugs(void)
 	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_RIGHT);
 	lwline_free(l1);
 	lwline_free(l2);
+
+	/* Coordinate subtraction residuals must be retained when ordering the
+	 * two intersections of a segment with a long, exactly representable line. */
+	l1 = (LWLINE *)lwgeom_from_wkt(
+	    "LINESTRING(-8 3,8 3,4503599627370496 6755399441055752,-2251799813685248 -3377699720527871)",
+	    LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0,0 8)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	/* Keep fraction residuals through the comparison: rounding each quotient
+	 * can put the slightly later crossing before the y=3 crossing. */
+	l1 = (LWLINE *)lwgeom_from_wkt(
+	    "LINESTRING(-8 3,8 3,9007199254740969 -3860228252031841,-9007199254740962 3860228252031844)",
+	    LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0,0 8)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
+
+	/* The ratio comparison must remain stable when its raw cross-products overflow. */
+	l1 = (LWLINE *)lwgeom_from_wkt(
+	    "LINESTRING(-8 3,8 3,9007199254740969 -3860228252031841,-9007199254740962 3860228252031844)",
+	    LW_PARSER_CHECK_NONE);
+	l2 = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 0,0 8)", LW_PARSER_CHECK_NONE);
+	POINT4D scale = {0x1p250, 0x1p250, 1.0, 1.0};
+	ptarray_scale(l1->points, &scale);
+	ptarray_scale(l2->points, &scale);
+	CU_ASSERT(lwline_crossing_direction(l1, l2) == LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(l1);
+	lwline_free(l2);
 }
 
 static void test_lwpoint_set_ordinate(void)
