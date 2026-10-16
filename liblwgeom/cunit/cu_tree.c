@@ -647,11 +647,12 @@ static void test_geography_tree_closestpoint(void)
 static void
 test_tree_circ_distance_contained_point(void)
 {
-	LWGEOM *lwg1, *lwg2, *lwg3, *lwg4, *lwg5, *lwg6, *lwg7, *lwg8, *lwg9, *lwg10, *lwg11, *lwg12, *lwg13, *lwg14;
+	LWGEOM *lwg1, *lwg2, *lwg3, *lwg4, *lwg5, *lwg6, *lwg7, *lwg8, *lwg9, *lwg10, *lwg11, *lwg12, *lwg13, *lwg14,
+	    *lwg15;
 	LWGEOM *cp_wide, *sl_wide;
 	LWPOINT *cp_pt;
 	LWLINE *sl_line;
-	CIRC_NODE *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12, *c13, *c14;
+	CIRC_NODE *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12, *c13, *c14, *c15;
 	SPHEROID s;
 	double d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14;
 	POINT2D pt_wide_inside, pt_wide_outside, pt_cp, pt_sl0, pt_sl1;
@@ -677,6 +678,8 @@ test_tree_circ_distance_contained_point(void)
 	lwg12 = lwgeom_from_wkt("POINT(50 50)", LW_PARSER_CHECK_NONE);
 	lwg13 = lwgeom_from_wkt("MULTIPOLYGON(EMPTY,((-1 -1,-1 1,1 1,1 -1,-1 -1)))", LW_PARSER_CHECK_NONE);
 	lwg14 = lwgeom_from_wkt("MULTIPOINT((0 0),(1 1))", LW_PARSER_CHECK_NONE);
+	lwg15 = lwgeom_from_wkt("MULTILINESTRING((30 0,31 0),(32 0,33 0))", LW_PARSER_CHECK_NONE);
+	c15 = lwgeom_calculate_circ_tree(lwg15);
 	c1 = lwgeom_calculate_circ_tree(lwg1);
 	c2 = lwgeom_calculate_circ_tree(lwg2);
 	c3 = lwgeom_calculate_circ_tree(lwg3);
@@ -721,7 +724,10 @@ test_tree_circ_distance_contained_point(void)
 	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c14, &pt_wide_inside), LW_FALSE);
 	pt_wide_outside.x = 50.0;
 	pt_wide_outside.y = 50.0;
-	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c11, &pt_wide_outside), LW_FALSE);
+	CU_ASSERT_NOT_EQUAL(c15->gbox, NULL);
+	CU_ASSERT_NOT_EQUAL(c15->nodes[0]->gbox, NULL);
+	CU_ASSERT_NOT_EQUAL(c15->nodes[1]->gbox, NULL);
+	CU_ASSERT_EQUAL(gbox_overlaps(c1->gbox, c15->gbox), LW_FALSE);
 
 	cp_wide = geography_tree_closestpoint(lwg8, lwg9, 0.0);
 	cp_pt = lwgeom_as_lwpoint(cp_wide);
@@ -752,6 +758,7 @@ test_tree_circ_distance_contained_point(void)
 	circ_tree_free(c12);
 	circ_tree_free(c13);
 	circ_tree_free(c14);
+	circ_tree_free(c15);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 	lwgeom_free(lwg3);
@@ -766,6 +773,7 @@ test_tree_circ_distance_contained_point(void)
 	lwgeom_free(lwg12);
 	lwgeom_free(lwg13);
 	lwgeom_free(lwg14);
+	lwgeom_free(lwg15);
 	lwgeom_free(cp_wide);
 	lwgeom_free(sl_wide);
 

@@ -361,10 +361,10 @@ circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
 	/*
-	 * Merge child bounds when every child has one. Edge leaves and unboxed
-	 * lines leave gbox NULL so ring trees stay cheap; point leaves and
-	 * polygon/collection constructors supply or merge bounds for pruning.
-	 * Never read a child's GBOX fields when its pointer is NULL.
+	 * Merge child bounds when every child has one. Edge leaves leave gbox NULL
+	 * so ring trees stay cheap; point leaves and line/polygon/collection
+	 * constructors supply or merge bounds for pruning. Never read a child's
+	 * GBOX fields when its pointer is NULL.
 	 */
 	node->gbox = NULL;
 	node->has_polygonal_component = LW_FALSE;
@@ -961,8 +961,17 @@ static CIRC_NODE*
 lwline_calculate_circ_tree(const LWLINE* lwline)
 {
 	CIRC_NODE* node;
+	GBOX line_box;
+
 	node = circ_tree_new(lwline->points);
 	node->geom_type = lwgeom_get_type((LWGEOM*)lwline);
+	/* Bound the complete geodesic line before collection pairs are opened. */
+	if (!node->gbox)
+	{
+		gbox_init(&line_box);
+		if (lwgeom_calculate_gbox_geodetic((LWGEOM *)lwline, &line_box) == LW_SUCCESS)
+			node->gbox = gbox_clone(&line_box);
+	}
 	return node;
 }
 
@@ -1135,12 +1144,12 @@ circ_tree_point_in_polygon(const CIRC_NODE *node, const POINT2D *pt)
  *
  * A candidate subtree can lie inside the container only when area bounds can
  * overlap. Container boxes are canonical geodetic GBOXes (polygon calculator
- * or merged fully-boxed children). Candidate boxes are the same when present
- * (points, polygons, fully-boxed collections). When the candidate stores no
- * GBOX, fall back to its circ-tree circle: a zero-radius circle is a point and
- * may be rejected with gbox_contains_point3d; positive-radius edge/line
- * circles stay conservative (no prune) so unboxed cases never false-reject.
- * Missing container box also stays conservative. Never rejects true containment.
+ * or merged fully-boxed children). Candidate boxes are the same when
+ * present (points, lines, polygons, fully-boxed collections). When an edge
+ * candidate stores no GBOX, fall back to its circ-tree circle: a zero-radius
+ * circle is a point and may be rejected with gbox_contains_point3d;
+ * positive-radius edge circles stay conservative (no prune). Missing
+ * container box also stays conservative. Never rejects true containment.
  */
 static int
 circ_tree_pair_may_contain(const CIRC_NODE *container, const CIRC_NODE *candidate)
