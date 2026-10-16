@@ -41,6 +41,7 @@ typedef struct circ_node
 	struct circ_node** nodes;
 	int edge_num;
 	uint32_t geom_type;
+	int has_polygonal_component; /* cached for point-in-polygon pruning */
 	double d;
 	POINT2D pt_outside;
 	POINT2D* p1;

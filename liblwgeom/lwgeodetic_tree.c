@@ -118,6 +118,7 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
 	node->geom_type = 0;
+	node->has_polygonal_component = LW_FALSE;
 	node->gbox = NULL;
 	return node;
 }
@@ -137,6 +138,7 @@ circ_node_leaf_point_new(const POINTARRAY* pa)
 	tree->num_nodes = 0;
 	tree->edge_num = 0;
 	tree->geom_type = POINTTYPE;
+	tree->has_polygonal_component = LW_FALSE;
 	tree->pt_outside.x = 0.0;
 	tree->pt_outside.y = 0.0;
 	/* A point bounds itself; same geodetic flags the canonical calculator emits. */
@@ -365,6 +367,15 @@ circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 	 * Never read a child's GBOX fields when its pointer is NULL.
 	 */
 	node->gbox = NULL;
+	node->has_polygonal_component = LW_FALSE;
+	for (i = 0; i < num_nodes; i++)
+	{
+		if (c[i]->has_polygonal_component)
+		{
+			node->has_polygonal_component = LW_TRUE;
+			break;
+		}
+	}
 	merged_ok = LW_TRUE;
 	have_merged = LW_FALSE;
 	gbox_init(&merged_box);
@@ -988,6 +999,7 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 	/* Metadata about polygons, we need this to apply P-i-P tests */
 	/* selectively when doing distance calculations */
 	node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
+	node->has_polygonal_component = LW_TRUE;
 	lwpoly_pt_outside(lwpoly, &(node->pt_outside));
 	/*
 	 * Canonical area bound for this polygon. lwgeom_calculate_gbox_geodetic
@@ -1084,8 +1096,23 @@ circ_tree_point_in_polygon(const CIRC_NODE *node, const POINT2D *pt)
 {
 	uint32_t i;
 
-	if (!node || !node->geom_type)
+	if (!node || !node->geom_type || !node->has_polygonal_component)
 		return LW_FALSE;
+
+	/*
+	 * Polygon nodes carry their canonical area box. Fully boxed collection
+	 * nodes carry the union of their children, so reject points outside that
+	 * union before descending. Missing boxes remain conservative.
+	 */
+	if (node->gbox)
+	{
+		GEOGRAPHIC_POINT gpt;
+		POINT3D p3d;
+		geographic_point_init(pt->x, pt->y, &gpt);
+		geog2cart(&gpt, &p3d);
+		if (!gbox_contains_point3d(node->gbox, &p3d))
+			return LW_FALSE;
+	}
 
 	if (lwtype_is_collection(node->geom_type))
 	{
@@ -1100,48 +1127,7 @@ circ_tree_point_in_polygon(const CIRC_NODE *node, const POINT2D *pt)
 	if (node->geom_type != POLYGONTYPE)
 		return LW_FALSE;
 
-	/*
-	 * Area-safe precheck: reject only when the candidate lies outside the
-	 * canonical geodetic GBOX stored on this polygon node. That is the same
-	 * bound lwpoly_covers_point2d() trusts for its "point not in box" early
-	 * rejection (lwgeodetic.c), so a rejection here provably rejects actual
-	 * polygon area, never just the ring boundary's cap. Nodes without a
-	 * stored box fall through to the exact ring-crossing test below, which
-	 * is also what keeps the #5895 far-away point out in that case.
-	 */
-	if (node->gbox)
-	{
-		GEOGRAPHIC_POINT gpt;
-		POINT3D p3d;
-		geographic_point_init(pt->x, pt->y, &gpt);
-		geog2cart(&gpt, &p3d);
-		if (!gbox_contains_point3d(node->gbox, &p3d))
-			return LW_FALSE;
-	}
-
 	return circ_tree_contains_point(node, pt, &(node->pt_outside), 0, NULL);
-}
-
-static int
-circ_tree_has_polygonal_component(const CIRC_NODE *node)
-{
-	uint32_t i;
-
-	if (!node || !node->geom_type)
-		return LW_FALSE;
-
-	if (node->geom_type == POLYGONTYPE)
-		return LW_TRUE;
-
-	if (!lwtype_is_collection(node->geom_type))
-		return LW_FALSE;
-
-	for (i = 0; i < node->num_nodes; i++)
-	{
-		if (circ_tree_has_polygonal_component(node->nodes[i]))
-			return LW_TRUE;
-	}
-	return LW_FALSE;
 }
 
 /*
@@ -1159,7 +1145,7 @@ circ_tree_has_polygonal_component(const CIRC_NODE *node)
 static int
 circ_tree_pair_may_contain(const CIRC_NODE *container, const CIRC_NODE *candidate)
 {
-	if (!circ_tree_has_polygonal_component(container))
+	if (!container->has_polygonal_component)
 		return LW_FALSE;
 	if (!container->gbox)
 		return LW_TRUE;
@@ -1258,7 +1244,7 @@ circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
 				GEOGRAPHIC_POINT *closest1,
 				GEOGRAPHIC_POINT *closest2)
 {
-	if (!circ_tree_has_polygonal_component(n1) && !circ_tree_has_polygonal_component(n2))
+	if (!n1->has_polygonal_component && !n2->has_polygonal_component)
 		return LW_FALSE;
 
 	return circ_tree_pair_set_inside_point_internal(n1, n2, closest1, closest2);
