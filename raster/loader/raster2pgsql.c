@@ -1681,7 +1681,7 @@ build_overview(int idx,
 				   dimOv[0],
 				   dimOv[1],
 				   config->overview_resampling,
-				   VRT_NODATA_UNSET);
+				   info->hasnodata[j] ? info->nodataval[j] : VRT_NODATA_UNSET);
 	}
 
 	/* make sure VRT reflects all changes */
