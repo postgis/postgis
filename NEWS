@@ -231,7 +231,10 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
 
+* Enhancements *
 
+ - #3173, ST_3DAddMeasure measures linear referencing by 3D length
+          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
@@ -432,6 +435,8 @@ Denys Kovshun (Ukrainian Team)
            (Maxime Schoemans)
   - GT-228, [sfcgal] Add new functions (Scale, Translate, Rotate, Buffer 3D and
            Straight Skeleton Partition) from SFCGAL 2 (Loïc Bartoletti)
+ - #3173, ST_3DAddMeasure measures linear referencing by 3D length
+          (Darafei Praliaskouski)
   - [raster] New GUC postgis.gdal_cpl_debug, enables GDAL debugging messages
     and routes them into the PostgreSQL logging system. (Paul Ramsey)
   - #5841, Change interrupt handling to remove use of pqsignal to support PG 18 (Paul Ramsey)
