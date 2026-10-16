@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-08-04 15:37+0000\n"
-"PO-Revision-Date: 2026-10-13 07:39+0000\n"
+"PO-Revision-Date: 2026-10-16 06:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -7608,13 +7608,13 @@ msgid ""
 "pages, too."
 msgstr ""
 "ここで、ジオメトリー演算子の&amp;&amp;を使って、ほとんどマッチしないような"
-"バウンダリボックスを検索するクエリーを出してみます。クエリーオプティマイザー"
-"にはテーブルは 3ページ 80行しかないように見えます。オプティマイザーは、小さな"
-"テーブルを順に走査する方がインデックスを使うよりも早いと見積もります。そして"
-"、GiST インデックスは無視すると決めます。通常なら、この見積もりは正しいです。"
-"しかし、この場合は&amp;&amp;演算子が全てのジオメトリーをディスクから呼び出し"
-"てバウンディングボックスと比較しなければならなくなり、ゆえに、全ての TOAST "
-"ページもまた呼び出す必要があります。"
+"バウンディングボックスを検索するクエリーを出してみます。"
+"クエリーオプティマイザーにはテーブルは 3ページ 80行しかないように見えます。"
+"オプティマイザーは、小さなテーブルを順に走査する方がインデックスを使うよりも"
+"早いと見積もります。そして、GiST インデックスは無視すると決めます。通常なら、"
+"この見積もりは正しいです。しかし、この場合は&amp;&amp;演算子が全ての"
+"ジオメトリーをディスクから呼び出してバウンディングボックスと比較しなければな"
+"らなくなり、ゆえに、全ての TOAST ページもまた呼び出す必要があります。"
 
 #. Tag: para
 #, no-c-format
@@ -7684,9 +7684,9 @@ msgid ""
 "are like:"
 msgstr ""
 "もう一つは、順に走査することをクエリープランナーが考える程度に早くすることで"
-"す。これは、バウンダリボックスの「キャッシュ」を行う追加カラムを作成し、この"
-"カラムにマッチさせるようにすることで達成することができます。ここでの例では次"
-"のようになります。"
+"す。これは、バウンディングボックスの「キャッシュ」を行う追加カラムを作成し、"
+"このカラムにマッチさせるようにすることで達成することができます。ここでの例で"
+"は次のようになります。"
 
 #. Tag: para
 #, no-c-format
@@ -8494,7 +8494,7 @@ msgstr "&M_support;"
 #, no-c-format
 msgid ""
 "This example shows a polygon together with the diagonal of its bounding box."
-msgstr "この例では、ポリゴンとバウンダリーボックスの対角線とを一緒に示しています。"
+msgstr "この例では、ポリゴンとバウンディングボックスの対角線とを一緒に示しています。"
 
 #. Tag: para
 #, no-c-format
@@ -11379,7 +11379,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "10-meter expanded box around bbox of a linestring."
-msgstr "ラインストリングのバウンダリーボックスの周囲を 10m 拡張したボックス。"
+msgstr "ラインストリングのバウンディングボックスの周囲を 10m 拡張したボックス。"
 
 #. Tag: para
 #, no-c-format
@@ -21533,8 +21533,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly to the left "
 "of B's."
 msgstr ""
-"A のバウンダリボックスが、厳密に B のバウンダリボックスの左にある場合に "
-"<varname>TRUE</varname> を返します。"
+"A のバウンディングボックスが、厳密に B のバウンディングボックスの左にある場合"
+"に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21543,8 +21543,8 @@ msgid ""
 "the bounding box of geometry A is strictly to the left of the bounding box "
 "of geometry B."
 msgstr ""
-"<varname>&lt;&lt;</varname> 演算子は A のバウンダリボックスが、厳密に B の"
-"バウンダリボックスの左にある場合に <varname>TRUE</varname> を返します。"
+"<varname>&lt;&lt;</varname> 演算子は A のバウンディングボックスが、厳密に B "
+"のバウンディングボックスの左にある場合に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21560,8 +21560,8 @@ msgstr ""
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly below B's."
 msgstr ""
-"A のバウンダリボックスが、厳密に B のバウンダリボックスの下にある場合に "
-"<varname>TRUE</varname> を返します。"
+"A のバウンディングボックスが、厳密に B のバウンディングボックスの下にある場合"
+"に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21570,8 +21570,9 @@ msgid ""
 "the bounding box of geometry A is strictly below the bounding box of "
 "geometry B."
 msgstr ""
-"<varname>&lt;&lt;|</varname> 演算子は、A のバウンダリボックスが、厳密に B の"
-"バウンダリボックスの下にある場合に <varname>TRUE</varname> を返します。"
+"<varname>&lt;&lt;|</varname> 演算子は、A のバウンディングボックスが、厳密に "
+"B のバウンディングボックスの下にある場合に <varname>TRUE</varname> を返します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -21670,8 +21671,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly to the right "
 "of B's."
 msgstr ""
-"A のバウンダリボックスが、厳密に B のバウンダリボックスの右にある場合に "
-"<varname>TRUE</varname> を返します。"
+"A のバウンディングボックスが、厳密に B のバウンディングボックスの右にある場合"
+"に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21680,16 +21681,16 @@ msgid ""
 "the bounding box of geometry A is strictly to the right of the bounding box "
 "of geometry B."
 msgstr ""
-"<varname>&gt;&gt;</varname> 演算子は、A のバウンダリボックスが、厳密に B の"
-"バウンダリボックスの右にある場合に <varname>TRUE</varname> を返します。"
+"<varname>&gt;&gt;</varname> 演算子は、A のバウンディングボックスが、厳密に B "
+"のバウンディングボックスの右にある場合に <varname>TRUE</varname> を返します。"
 
 #. Tag: refpurpose
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contained by B's."
 msgstr ""
-"A のバウンダリボックスが B のバウンダリボックスに含まれている場合に <varname>"
-"TRUE</varname> を返します。"
+"A のバウンディングボックスが B のバウンディングボックスに含まれている場合に "
+"<varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21698,9 +21699,9 @@ msgid ""
 "bounding box of geometry A is completely contained by the bounding box of "
 "geometry B."
 msgstr ""
-"<varname>@</varname> 演算子は、A のバウンダリボックスが B の"
-"バウンダリボックスに、完全に含まれている場合に <varname>TRUE</varname> を返し"
-"ます。"
+"<varname>@</varname> 演算子は、A のバウンディングボックスが B の"
+"バウンディングボックスに、完全に含まれている場合に <varname>TRUE</varname> を"
+"返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21872,8 +21873,8 @@ msgstr ""
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is strictly above B's."
 msgstr ""
-"A のバウンダリボックスが、厳密に B のバウンダリボックスの上にある場合に "
-"<varname>TRUE</varname> を返します。"
+"A のバウンディングボックスが、厳密に B のバウンディングボックスの上にある場合"
+"に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21882,8 +21883,9 @@ msgid ""
 "the bounding box of geometry A is strictly above the bounding box of "
 "geometry B."
 msgstr ""
-"<varname>|&gt;&gt;</varname> 演算子は、A のバウンダリボックスが、厳密に B の"
-"バウンダリボックスの上にある場合に <varname>TRUE</varname> を返します。"
+"<varname>|&gt;&gt;</varname> 演算子は、A のバウンディングボックスが、厳密に "
+"B のバウンディングボックスの上にある場合に <varname>TRUE</varname> を返します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -24424,7 +24426,7 @@ msgstr ""
 "<varname>maxchars</varname> が指定された場合には、この値は、返される"
 "ジオハッシュコードの最大文字数になります。入力ジオメトリーは (おそらく) より"
 "低い精度で表現されます。ポイントでない場合には、計算の最初のポイントは"
-"ジオメトリーのバウンダリボックスの中心となります。"
+"ジオメトリーのバウンディングボックスの中心となります。"
 
 #. Tag: para
 #, no-c-format
@@ -47354,10 +47356,10 @@ msgid ""
 "times (with N being the number of vertices in the other candidate feature)."
 msgstr ""
 "ポリゴンがとんでもなく大きいからです。二つの理由から、大きなエリアは悪いです"
-"。一つは、バウンダリボックスが大きいため、どのようなクエリーを走らせても、"
-"インデックスがフィーチャーを引っ張ってくる傾向にあるためです。もう一つは、頂"
-"点数が巨大で、テスト (距離、包含) 関数では、少なくとも 1回、通常は N (N は、"
-"もう一方のフィーチャーの頂点数) 回、頂点を横断しなければならないためです。"
+"。一つは、バウンディングボックスが大きいため、どのようなクエリーを走らせても"
+"、インデックスがフィーチャーを引っ張ってくる傾向にあるためです。もう一つは、"
+"頂点数が巨大で、テスト (距離、包含) 関数では、少なくとも 1回、通常は N (N は"
+"、もう一方のフィーチャーの頂点数) 回、頂点を横断しなければならないためです。"
 
 #. Tag: para
 #, no-c-format
