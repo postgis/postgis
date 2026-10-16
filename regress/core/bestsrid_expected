@@ -125,6 +125,15 @@
 -180|-60|999160
 180|-60|999160
 world|999000
+public.north_utm|32630
+public.south_utm|32730
+public.north_laea|3574
+public.south_laea|6932
+public.world_mercator|3395
+public.custom_laea|999229
+public.one_empty|
+public.two_empty|
+public.left_empty|32630
 NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY
 ERROR:  Error in geography_bestsrid calling with infinite coordinate geographies
 NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY at character 33
