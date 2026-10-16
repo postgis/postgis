@@ -267,3 +267,32 @@ SELECT '#4009',
 	ST_Width(crop_only),
 	ST_Height(crop_only)
 FROM clipped;
+
+-- #4009 ST_Clip resolves untyped WKT literals across the overload shapes
+WITH test_rast AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(5, 5, 0, 5, 1, -1, 0, 0),
+		'8BUI'::text, 7, 0
+	) AS rast
+), clipped AS (
+	SELECT
+		ST_Clip(rast, 'POLYGON((1 1,1 3,3 3,3 1,1 1))') AS literal_default_clip,
+		ST_Clip(rast, ST_GeomFromText('POLYGON((1 1,1 3,3 3,3 1,1 1))')) AS typed_default_clip,
+		ST_Clip(rast, 'POLYGON((1 1,1 3,3 3,3 1,1 1))', ARRAY[99]::float8[], TRUE) AS literal_array_nodata,
+		ST_Clip(rast, ST_GeomFromText('POLYGON((1 1,1 3,3 3,3 1,1 1))'), ARRAY[99]::float8[], TRUE) AS typed_array_nodata,
+		ST_Clip(rast, 'POLYGON((1 1,1 3,3 3,3 1,1 1))', 99.0, FALSE, TRUE) AS literal_scalar_nodata,
+		ST_Clip(rast, ST_GeomFromText('POLYGON((1 1,1 3,3 3,3 1,1 1))'), 99.0, FALSE, TRUE) AS typed_scalar_nodata,
+		ST_Clip(rast, 'POLYGON((1 1,1 3,3 3,3 1,1 1))', FALSE, TRUE) AS literal_crop_only,
+		ST_Clip(rast, ST_GeomFromText('POLYGON((1 1,1 3,3 3,3 1,1 1))'), FALSE, TRUE) AS typed_crop_only
+	FROM test_rast
+)
+SELECT '#4009-literal',
+	ST_AsBinary(literal_default_clip, TRUE) = ST_AsBinary(typed_default_clip, TRUE),
+	ST_AsBinary(literal_array_nodata, TRUE) = ST_AsBinary(typed_array_nodata, TRUE),
+	ST_AsBinary(literal_scalar_nodata, TRUE) = ST_AsBinary(typed_scalar_nodata, TRUE),
+	ST_AsBinary(literal_crop_only, TRUE) = ST_AsBinary(typed_crop_only, TRUE),
+	ST_Width(literal_default_clip),
+	ST_Height(literal_default_clip),
+	ST_Width(literal_crop_only),
+	ST_Height(literal_crop_only)
+FROM clipped;

@@ -6759,6 +6759,40 @@ CREATE OR REPLACE FUNCTION st_clip(
 	$$ SELECT @extschema@.ST_Clip(rast, @extschema@.ST_Union(geom), null::float8[], crop, touched) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 3.7.0
+-- Compatibility overloads for untyped string literal (WKT) arguments:
+-- with the geometry[] overloads present, PostgreSQL cannot resolve an
+-- unknown second argument between geometry and geometry[], while text
+-- is preferred as the string category and resolves unambiguously.
+-- These cast the literal and delegate to the geometry overloads, so
+-- existing literal calls keep their behavior without requiring casts.
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster,
+	geom text,
+	nodataval float8[] DEFAULT NULL, crop boolean DEFAULT true, touched boolean DEFAULT false
+)
+	RETURNS raster AS
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom::@extschema@.geometry, nodataval, crop, touched) $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster,
+	geom text,
+	nodataval double precision, crop boolean DEFAULT true, touched boolean DEFAULT false
+)
+	RETURNS raster AS
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom::@extschema@.geometry, ARRAY[nodataval]::float8[], crop, touched) $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster,
+	geom text,
+	crop boolean, touched boolean DEFAULT false
+)
+	RETURNS raster AS
+	$$ SELECT @extschema@.ST_Clip(rast, NULL, geom::@extschema@.geometry, null::float8[], crop, touched) $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
 -----------------------------------------------------------------------
 -- ST_NearestValue
 -----------------------------------------------------------------------
