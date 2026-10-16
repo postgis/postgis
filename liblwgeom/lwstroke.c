@@ -1244,8 +1244,11 @@ pta_unstroke(const POINTARRAY *points, int32_t srid, uint32_t perQuad)
 					 p2_side,
 					 num_quadrants);
 			}
-			/* first is the arc start point, a3 is the arc end point */
-			if (arc_edges < perQuad * num_quadrants)
+			/* first is the arc start point, a3 is the arc end point.
+			 * The quadrant requirement comes from a center reconstructed
+			 * in floating point, so an arc with exactly perQuad edges per
+			 * quadrant can land a few ulps above the integer; allow FP_TOLERANCE. */
+			if (arc_edges < perQuad * num_quadrants - FP_TOLERANCE)
 			{
 				LWDEBUGF(4,
 					 "Not enough edges for a %g quadrants arc, %g needed",

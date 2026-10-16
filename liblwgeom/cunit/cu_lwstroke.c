@@ -374,6 +374,7 @@ static void test_lwcurve_linearize(void)
 static void test_unstroke()
 {
 	LWGEOM *in, *out;
+	LWGEOM *threshold_in, *threshold_stroke, *threshold_out;
 	POINT2D pt;
 	char *str;
 
@@ -401,6 +402,13 @@ static void test_unstroke()
 	lwgeom_free(out);
 	lwfree(str);
 
+	threshold_in = lwgeom_from_text("CIRCULARSTRING(1 0,0 1,-1 0)");
+	threshold_stroke = lwgeom_stroke(threshold_in, 16);
+	lwgeom_free(threshold_in);
+	threshold_out = lwgeom_unstroke_per_quad(threshold_stroke, 16);
+	CU_ASSERT_EQUAL(threshold_out->type, CIRCSTRINGTYPE);
+	lwgeom_free(threshold_stroke);
+	lwgeom_free(threshold_out);
 	out = lwgeom_unstroke_per_quad(in, 9);
 	CU_ASSERT_EQUAL(out->type, LINETYPE);
 	CU_ASSERT_EQUAL(((LWLINE *)out)->points->npoints, 25);
