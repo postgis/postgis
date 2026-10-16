@@ -8,6 +8,9 @@ Python 3 is a new requirement to build the documentation.
 
 To build docs, first run visual examples and make sure you have a running
 PostgreSQL instance.
+ - #5772, Fix ST_LineCrossingDirection first-crossing direction when a
+          single segment crosses another line multiple times
+          (Darafei Praliaskouski)
 
 `make -C regress visual-examples`
 
