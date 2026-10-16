@@ -647,13 +647,13 @@ static void test_geography_tree_closestpoint(void)
 static void
 test_tree_circ_distance_contained_point(void)
 {
-	LWGEOM *lwg1, *lwg2, *lwg3, *lwg4, *lwg5, *lwg6, *lwg7, *lwg8, *lwg9, *lwg10, *lwg11, *lwg12;
+	LWGEOM *lwg1, *lwg2, *lwg3, *lwg4, *lwg5, *lwg6, *lwg7, *lwg8, *lwg9, *lwg10, *lwg11, *lwg12, *lwg13;
 	LWGEOM *cp_wide, *sl_wide;
 	LWPOINT *cp_pt;
 	LWLINE *sl_line;
-	CIRC_NODE *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12;
+	CIRC_NODE *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12, *c13;
 	SPHEROID s;
-	double d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13;
+	double d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14;
 	POINT2D pt_wide_inside, pt_wide_outside, pt_cp, pt_sl0, pt_sl1;
 
 	spheroid_init(&s, WGS84_RADIUS, WGS84_RADIUS);
@@ -675,6 +675,7 @@ test_tree_circ_distance_contained_point(void)
 	lwg11 = lwgeom_from_wkt("MULTIPOLYGON(((-1 -1,-1 1,1 1,1 -1,-1 -1)),((10 10,10 12,12 12,12 10,10 10)))",
 				LW_PARSER_CHECK_NONE);
 	lwg12 = lwgeom_from_wkt("POINT(50 50)", LW_PARSER_CHECK_NONE);
+	lwg13 = lwgeom_from_wkt("MULTIPOLYGON(EMPTY,((-1 -1,-1 1,1 1,1 -1,-1 -1)))", LW_PARSER_CHECK_NONE);
 	c1 = lwgeom_calculate_circ_tree(lwg1);
 	c2 = lwgeom_calculate_circ_tree(lwg2);
 	c3 = lwgeom_calculate_circ_tree(lwg3);
@@ -687,6 +688,7 @@ test_tree_circ_distance_contained_point(void)
 	c10 = lwgeom_calculate_circ_tree(lwg10);
 	c11 = lwgeom_calculate_circ_tree(lwg11);
 	c12 = lwgeom_calculate_circ_tree(lwg12);
+	c13 = lwgeom_calculate_circ_tree(lwg13);
 
 	d1 = circ_tree_distance_tree(c1, c2, &s, 0.0);
 	d2 = circ_tree_distance_tree(c2, c1, &s, 0.0);
@@ -701,6 +703,7 @@ test_tree_circ_distance_contained_point(void)
 	d11 = circ_tree_distance_tree(c8, c10, &s, 0.0);
 	d12 = circ_tree_distance_tree(c11, c2, &s, 0.0);
 	d13 = circ_tree_distance_tree(c11, c12, &s, 0.0);
+	d14 = circ_tree_distance_tree(c13, c2, &s, 0.0);
 
 	pt_wide_inside.x = 0.0;
 	pt_wide_inside.y = -70.0;
@@ -708,6 +711,10 @@ test_tree_circ_distance_contained_point(void)
 	pt_wide_outside.y = -85.0;
 	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c8, &pt_wide_inside), LW_TRUE);
 	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c8, &pt_wide_outside), LW_FALSE);
+	pt_wide_inside.x = 0.0;
+	pt_wide_inside.y = 0.0;
+	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c13, &pt_wide_inside), LW_TRUE);
+	CU_ASSERT_DOUBLE_EQUAL(d14, 0.0, 0.0);
 
 	cp_wide = geography_tree_closestpoint(lwg8, lwg9, 0.0);
 	cp_pt = lwgeom_as_lwpoint(cp_wide);
@@ -736,6 +743,7 @@ test_tree_circ_distance_contained_point(void)
 	circ_tree_free(c10);
 	circ_tree_free(c11);
 	circ_tree_free(c12);
+	circ_tree_free(c13);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 	lwgeom_free(lwg3);
@@ -748,6 +756,7 @@ test_tree_circ_distance_contained_point(void)
 	lwgeom_free(lwg10);
 	lwgeom_free(lwg11);
 	lwgeom_free(lwg12);
+	lwgeom_free(lwg13);
 	lwgeom_free(cp_wide);
 	lwgeom_free(sl_wide);
 

@@ -1031,6 +1031,13 @@ lwcollection_calculate_circ_tree(const LWCOLLECTION* lwcol)
 		if ( node )
 			nodes[j++] = node;
 	}
+	/* Empty members are skipped above; preserve the surviving child's type. */
+	if (j == 1)
+	{
+		node = nodes[0];
+		lwfree(nodes);
+		return node;
+	}
 	/* Put the trees into a spatially correlated order */
 	circ_nodes_sort(nodes, j);
 	/* Merge the trees pairwise up to a parent node and return */
