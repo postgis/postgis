@@ -1,0 +1,16 @@
+dms_two_arg|SRID=4326;POINT(-98.98 31.92)
+dms_one_arg|SRID=4326;POINT(-98.98 31.92)
+decimal_signed|SRID=4326;POINT(-122.61458 32.30642)
+lon_lat_by_dir|SRID=4326;POINT(-122.61458333333333 32.306416666666664)
+colon_prefix|-79.982195278|40.446195000
+negative_zero_pair|SRID=4326;POINT(-0.5 0)
+negative_zero_two_arg|SRID=4326;POINT(-0.5 -0.5)
+mixed_prefix_suffix|SRID=4326;POINT(-79 40)
+mixed_prefix_suffix_dms|-79.982195278|40.446195000
+roundtrip_default|SRID=4326;POINT(-3.234234166666666 -2.32498)
+ERROR:  Invalid latitude/longitude text
+ERROR:  Invalid latitude/longitude text
+ERROR:  Invalid latitude/longitude text
+ERROR:  Invalid latitude/longitude text
+ERROR:  Invalid latitude/longitude text
+ERROR:  Invalid latitude/longitude text

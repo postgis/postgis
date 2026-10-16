@@ -354,6 +354,63 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	  </refsection>
 	</refentry>
 
+	<refentry xml:id="ST_FromLatLonText">
+	  <refnamediv>
+		<refname>ST_FromLatLonText</refname>
+		<refpurpose>Return a point from latitude and longitude text.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_FromLatLonText</function></funcdef>
+			<paramdef><type>text </type> <parameter>latlon</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_FromLatLonText</function></funcdef>
+			<paramdef><type>text </type> <parameter>lat</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>lon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns a 2D point with SRID 4326 from latitude and longitude text.  The single-argument form accepts both coordinates in one string.  The two-argument form accepts latitude and longitude separately.</para>
+
+		<para>Input coordinates can contain decimal degrees, degrees and decimal minutes, or degrees, minutes, and seconds.  Components must be separated by non-numeric characters.  Cardinal directions (<varname>N</varname>, <varname>S</varname>, <varname>E</varname>, and <varname>W</varname>) can appear before or after the numeric components.  If cardinal directions are omitted, the coordinates are interpreted as latitude followed by longitude.</para>
+
+		<para>The latitude and longitude must use the same number of numeric components.  Ambiguous inputs, mixed decimal-degree and DMS inputs, compact undelimited formats such as <varname>DDMMSS</varname>, and values outside the latitude or longitude range raise an error.</para>
+
+		<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+<programlisting language="sql">SELECT ST_AsEWKT(ST_FromLatLonText('31°55''12.000"N', '98°58''48.000"W'));</programlisting>
+<screen role="visual-primary text-primary">              st_asewkt
+-------------------------------------
+ SRID=4326;POINT(-98.98 31.92)</screen>
+
+<programlisting language="sql">SELECT ST_AsEWKT(ST_FromLatLonText('31°55''12.000"N 98°58''48.000"W'));</programlisting>
+<screen role="visual-primary text-primary">              st_asewkt
+-------------------------------------
+ SRID=4326;POINT(-98.98 31.92)</screen>
+
+<programlisting language="sql">SELECT ST_AsEWKT(ST_FromLatLonText('the coordinates were 122°36''52.5" W and 32°18''23.1" N'));</programlisting>
+<screen role="visual-primary text-primary">                        st_asewkt
+---------------------------------------------------------
+ SRID=4326;POINT(-122.61458333333333 32.306416666666664)</screen>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsLatLonText"/>, <xref linkend="ST_MakePoint"/>, <xref linkend="ST_SetSRID"/></para>
+	  </refsection>
+	</refentry>
+
     <refentry xml:id="ST_GeomFromMARC21">
         <refnamediv>
             <refname>ST_GeomFromMARC21</refname>
