@@ -1,0 +1,4 @@
+CG_IsSimple.simple_line|t
+CG_IsSimple.crossing_line|f
+CG_IsSimpleDetail.simple_line|t
+CG_IsSimpleDetail.crossing_line|t
