@@ -13021,6 +13021,70 @@ WHERE rid = 2;</programlisting>
         <section xml:id="Raster_Processing_DEM">
             <title>Raster Processing: DEM (Elevation)</title>
 
+            <refentry xml:id="RT_ST_Blur">
+                <refnamediv>
+                    <refname>ST_Blur</refname>
+                    <refpurpose>Returns a raster band blurred with a Gaussian convolution filter.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Blur</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>radius</parameter></paramdef>
+                            <paramdef><type>double precision </type> <parameter>sigma</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=64BF</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Blur</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>radius</parameter></paramdef>
+                            <paramdef><type>double precision </type> <parameter>sigma</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=64BF</parameter></paramdef>
+                        </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+
+                    <para>Returns a raster band blurred with a Gaussian convolution filter. The <varname>radius</varname> parameter controls the neighborhood distance in pixels, and <varname>sigma</varname> controls the Gaussian standard deviation.</para>
+
+                    <para>NODATA pixels are ignored and the Gaussian weights are renormalized for the remaining values. This also prevents darkening along raster edges where the full neighborhood is not available.</para>
+
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>
+WITH foo AS (
+    SELECT ST_SetValues(
+        ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, NULL),
+        1, 1, 1, ARRAY[
+            [0, 0, 0],
+            [0, 100, 0],
+            [0, 0, 0]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_DumpValues(ST_Blur(rast, 1, 1.0))
+FROM foo;
+                    </programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_MapAlgebra"/>,
+                        <xref linkend="RT_ST_Neighborhood"/>
+                    </para>
+                </refsection>
+            </refentry>
+
             <refentry xml:id="RT_ST_Aspect">
                 <refnamediv>
                     <refname>ST_Aspect</refname>
