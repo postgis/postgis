@@ -13,6 +13,14 @@ select '2',ST_AsEWKT(ST_Normalize(ST_Split('SRID=10;LINESTRING(0 0, 10 0)', 'SRI
 
 -- Split line by point on the line exterior
 select '3',ST_AsEWKT(ST_Normalize(ST_Split('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;POINT(5 1)')));
+select '3.tol', ST_AsEWKT(ST_Normalize(ST_Split('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;POINT(5 0.1)', 0.2)));
+select '3.tol0', ST_AsEWKT(ST_Normalize(ST_Split('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;POINT(5 0.1)', 0.0)));
+select '3.tol_mpoint', ST_AsEWKT(ST_Normalize(ST_Split('LINESTRING(0 0, 2 0)', 'MULTIPOINT(0 0, 1 0.0001)', 0.001)));
+select '3.tol_outside', ST_AsEWKT(ST_Normalize(ST_Split('LINESTRING(0 0, 2 0)', 'POINT(1 0.1)', 0.01)));
+select '3.tol_z', ST_AsEWKT(ST_Normalize(ST_Split('LINESTRING Z (0 0 0, 10 0 10)', 'POINT Z (5 0.1 99)', 0.2)));
+select '3.tol_negative', ST_Split('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;POINT(5 0.1)', -0.1);
+select '3.tol_nan', ST_Split('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;POINT(5 0.1)', 'NaN'::float8);
+select '3.tol_inf', ST_Split('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;POINT(5 0.1)', 'Infinity'::float8);
 
 -- Split line by disjoint line
 select '4', ST_AsEWKT(ST_Normalize(ST_Split('SRID=10;LINESTRING(0 0, 10 0)', 'SRID=10;LINESTRING(20 0, 20 20)')));
