@@ -39,6 +39,7 @@ my $scriptname = @ARGV ? $ARGV[0] : '-';
 my @aggs = ();
 my @casts = ();
 my @funcs = ();
+my @procs = ();
 my @types = ();
 my %type_funcs = ();
 my @ops = ();
@@ -65,6 +66,13 @@ while( my $line = <>)
 			$defn .= <>;
 		}
 		push (@funcs, $defn)
+	}
+	elsif ($line =~ /^create (or replace )?procedure/i) {
+		my $defn = $line;
+		while (not $defn =~ /\)/) {
+			$defn .= <>;
+		}
+		push (@procs, $defn)
 	}
 	elsif ($line =~ /^create or replace view\s*(\w+)/i) {
 		push (@views, $1);
@@ -301,6 +309,25 @@ foreach my $fn ( @funcs )
 	else
 	{
 		die "Couldn't parse FUNCTION line: $fn\n";
+	}
+}
+
+print "-- Register all procedures.\n";
+foreach my $proc ( @procs )
+{
+	if ($proc =~ /.* procedure ([^(]+)\((.*)\)/is ) # can be multiline
+	{
+		my $proc_nm = $1;
+		my $proc_arg = $2;
+
+		$proc_arg =~ s/\-\-.*\n//g;
+		$proc_arg =~ s/\n//g;
+		$proc_arg = strip_default($proc_arg);
+		add_if_not_exists("PROCEDURE $proc_nm ($proc_arg)");
+	}
+	else
+	{
+		die "Couldn't parse PROCEDURE line: $proc\n";
 	}
 }
 
