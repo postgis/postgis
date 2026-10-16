@@ -20,6 +20,7 @@ endif
 
 HAVE_SFCGAL=@HAVE_SFCGAL@
 CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
+INSTALL_COMMENTS=@INSTALL_COMMENTS@
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -66,7 +67,7 @@ endif
 all: postgis_revision.h
 
 ifeq (@SUPPORT_POSTGRESQL@,yes)
-ifeq ($(CAN_BUILD_COMMENTS),yes)
+ifeq ($(INSTALL_COMMENTS),yes)
 install: comments-install
 uninstall: comments-uninstall
 endif
