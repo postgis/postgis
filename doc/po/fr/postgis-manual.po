@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-08-04 15:37+0000\n"
+"POT-Creation-Date: 2026-10-17 07:16+0000\n"
 "PO-Revision-Date: 2026-06-23 08:39+0000\n"
 "Last-Translator: Arthur Bazin <ab-osgeo@bazmap.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -4190,8 +4190,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"GetNodeEdges\"/>"
-msgstr ", <xref linkend=\"GetNodeEdges\"/>"
+msgid ""
+", <xref linkend=\"GetNodeEdges\"/> <xref linkend=\"getfaceedges_returntype\"/"
+">"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -9490,6 +9492,84 @@ msgstr "&sqlmm_compliant; SQL-MM 3 : 5.1.8"
 
 #. Tag: refpurpose
 #, no-c-format
+msgid "Report locations of self-intersection or self-tangency, if any."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a <varname>simple_detail</varname> row, containing a boolean "
+"(<varname>simple</varname>) stating if a geometry is simple and a geometry "
+"(<varname>location</varname>) pointing out where it is non-simple."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The optional <varname>findAllLocations</varname> parameter can be set to 1 "
+"to report all non-simple locations, rather than just one."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The optional <varname>boundaryNodeRule</varname> values are:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - line endpoints "
+"are in the Boundary if they occur an odd number of times. This is the rule "
+"defined by the OGC SFS standard, and is the default for <function>ST_Relate</"
+"function>."
+msgstr ""
+"<code>1</code> : <emphasis role=\"bold\">OGC-Mod2</emphasis> - les "
+"extrémités des lignes sont dans la frontière si elles apparaissent un nombre "
+"impair de fois. C'est la règle définie par la norme SFS de l'OGC, et c'est "
+"la valeur par défaut de la <function>ST_Relate</function>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
+"are in the Boundary."
+msgstr ""
+"<code>2</code> : <emphasis role=\"bold\">Endpoint</emphasis> - tous les "
+"points d'extrémité sont dans la frontière."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
+"endpoints are in the Boundary if they occur more than once. In other words, "
+"the boundary is all the \"attached\" or \"inner\" endpoints (but not the "
+"\"unattached/outer\" ones)."
+msgstr ""
+"<code>3</code> : <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
+"les points d'extrémité sont dans la frontière s'ils apparaissent plus d'une "
+"fois. En d'autres termes, la frontière est constituée de tous les points "
+"d'extrémité \"attachés\" ou \"internes\" (mais pas des points d'extrémité "
+"\"non attachés/externes\")."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<code>4</code>: <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - "
+"endpoints are in the Boundary if they occur only once. In other words, the "
+"boundary is all the \"unattached\" or \"outer\" endpoints."
+msgstr ""
+"<code>4</code> : <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - les "
+"points d'extrémité sont dans la frontière s'ils n'apparaissent qu'une seule "
+"fois. En d'autres termes, la frontière est constituée de tous les points "
+"d'extrémité \"non attachés\" ou \"extérieurs\"."
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0"
+msgstr ""
+
+#. Tag: refpurpose
+#, no-c-format
 msgid "Returns the M coordinate of a Point."
 msgstr "Renvoie la coordonnée M d'un point."
 
@@ -10553,11 +10633,6 @@ msgstr ""
 msgid ""
 "The function raises an error if the input is not a NURBS curve. Returns NULL "
 "if the input is NULL."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.7.0"
 msgstr ""
 
 #. Tag: para
@@ -39326,54 +39401,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - line endpoints "
-"are in the Boundary if they occur an odd number of times. This is the rule "
-"defined by the OGC SFS standard, and is the default for <function>ST_Relate</"
-"function>."
-msgstr ""
-"<code>1</code> : <emphasis role=\"bold\">OGC-Mod2</emphasis> - les "
-"extrémités des lignes sont dans la frontière si elles apparaissent un nombre "
-"impair de fois. C'est la règle définie par la norme SFS de l'OGC, et c'est "
-"la valeur par défaut de la <function>ST_Relate</function>."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
-"are in the Boundary."
-msgstr ""
-"<code>2</code> : <emphasis role=\"bold\">Endpoint</emphasis> - tous les "
-"points d'extrémité sont dans la frontière."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
-"endpoints are in the Boundary if they occur more than once. In other words, "
-"the boundary is all the \"attached\" or \"inner\" endpoints (but not the "
-"\"unattached/outer\" ones)."
-msgstr ""
-"<code>3</code> : <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
-"les points d'extrémité sont dans la frontière s'ils apparaissent plus d'une "
-"fois. En d'autres termes, la frontière est constituée de tous les points "
-"d'extrémité \"attachés\" ou \"internes\" (mais pas des points d'extrémité "
-"\"non attachés/externes\")."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"<code>4</code>: <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - "
-"endpoints are in the Boundary if they occur only once. In other words, the "
-"boundary is all the \"unattached\" or \"outer\" endpoints."
-msgstr ""
-"<code>4</code> : <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - les "
-"points d'extrémité sont dans la frontière s'ils n'apparaissent qu'une seule "
-"fois. En d'autres termes, la frontière est constituée de tous les points "
-"d'extrémité \"non attachés\" ou \"extérieurs\"."
-
-#. Tag: para
-#, no-c-format
 msgid "This function is not in the OGC spec, but is implied. see s2.1.13.2"
 msgstr ""
 "Cette fonction ne figure pas dans la spécification de l'OGC, mais elle est "
@@ -44698,6 +44725,15 @@ msgid ""
 "2.3+ is needed. Python 3 is a new requirement to build the documentation."
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"Visual examples in the docs are off by default. To build docs with them, "
+"configure with `--with-visual-examples` and make sure you have a running "
+"PostgreSQL instance; they are then generated automatically when building the "
+"docs (or explicitly with `make -C regress visual-examples`)."
+msgstr ""
+
 #. Tag: title
 #, no-c-format
 msgid "Breaking Changes"
@@ -44945,6 +44981,15 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2863\">#2863</"
 "link>, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers "
 "(Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://git.osgeo.org/postgis/postgis/pull/806\">GT-806</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"6124\">#6124</link> --with-visual-examples opt-in configure switch to build "
+"dynamic images (Regina Obe)"
 msgstr ""
 
 #. Tag: title
@@ -52083,6 +52128,10 @@ msgstr "Support 2.5/3D"
 #, no-c-format
 msgid "Supports geography"
 msgstr "Prise en charge du type geography"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"GetNodeEdges\"/>"
+#~ msgstr ", <xref linkend=\"GetNodeEdges\"/>"
 
 #, no-c-format
 #~ msgid ""

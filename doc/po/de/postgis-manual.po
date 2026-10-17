@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-08-04 15:37+0000\n"
+"POT-Creation-Date: 2026-10-17 07:16+0000\n"
 "PO-Revision-Date: 2026-02-20 12:51+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/postgis-"
@@ -4173,8 +4173,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ", <xref linkend=\"GetNodeEdges\"/>"
-msgstr ", <xref linkend=\"GetNodeEdges\"/>"
+msgid ""
+", <xref linkend=\"GetNodeEdges\"/> <xref linkend=\"getfaceedges_returntype\"/"
+">"
+msgstr ""
 
 #. Tag: refpurpose
 #, no-c-format
@@ -9490,6 +9492,83 @@ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 
 #. Tag: refpurpose
+#, no-c-format
+msgid "Report locations of self-intersection or self-tangency, if any."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Returns a <varname>simple_detail</varname> row, containing a boolean "
+"(<varname>simple</varname>) stating if a geometry is simple and a geometry "
+"(<varname>location</varname>) pointing out where it is non-simple."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The optional <varname>findAllLocations</varname> parameter can be set to 1 "
+"to report all non-simple locations, rather than just one."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The optional <varname>boundaryNodeRule</varname> values are:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - line endpoints "
+"are in the Boundary if they occur an odd number of times. This is the rule "
+"defined by the OGC SFS standard, and is the default for <function>ST_Relate</"
+"function>."
+msgstr ""
+"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - "
+"Linienendpunkte befinden sich in der Boundary, wenn sie eine ungerade Anzahl "
+"von Malen vorkommen. Dies ist die vom OGC SFS-Standard definierte Regel und "
+"ist die Vorgabe für <function>ST_Relate</function>."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
+"are in the Boundary."
+msgstr ""
+"<code>2</code>: <emphasis role=\"bold\">Endpunkt</emphasis> - alle Endpunkte "
+"befinden sich in der Boundary."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
+"endpoints are in the Boundary if they occur more than once. In other words, "
+"the boundary is all the \"attached\" or \"inner\" endpoints (but not the "
+"\"unattached/outer\" ones)."
+msgstr ""
+"<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
+"Endpunkte befinden sich in der Boundary, wenn sie mehr als einmal vorkommen. "
+"Mit anderen Worten, die Grenze sind alle \"verbundenen\" oder \"inneren\" "
+"Endpunkte (aber nicht die \"unverbundenen/äußeren\")."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<code>4</code>: <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - "
+"endpoints are in the Boundary if they occur only once. In other words, the "
+"boundary is all the \"unattached\" or \"outer\" endpoints."
+msgstr ""
+"<code>4</code>: <emphasis role=\"bold\">MonovalenterEndpunkt</emphasis> - "
+"Endpunkte befinden sich in der Boundary, wenn sie nur einmal vorkommen. Mit "
+"anderen Worten, die Begrenzung sind alle \"unverbundenen\" oder \"äußeren\" "
+"Endpunkte."
+
+#. Tag: para
+#, no-c-format
+msgid "Availability: 3.7.0"
+msgstr ""
+
+#. Tag: refpurpose
 #, fuzzy, no-c-format
 msgid "Returns the M coordinate of a Point."
 msgstr "Gibt die M-Koordinate eines Punktes zurück."
@@ -10564,11 +10643,6 @@ msgstr ""
 msgid ""
 "The function raises an error if the input is not a NURBS curve. Returns NULL "
 "if the input is NULL."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Availability: 3.7.0"
 msgstr ""
 
 #. Tag: para
@@ -39463,53 +39537,6 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - line endpoints "
-"are in the Boundary if they occur an odd number of times. This is the rule "
-"defined by the OGC SFS standard, and is the default for <function>ST_Relate</"
-"function>."
-msgstr ""
-"<code>1</code>: <emphasis role=\"bold\">OGC-Mod2</emphasis> - "
-"Linienendpunkte befinden sich in der Boundary, wenn sie eine ungerade Anzahl "
-"von Malen vorkommen. Dies ist die vom OGC SFS-Standard definierte Regel und "
-"ist die Vorgabe für <function>ST_Relate</function>."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<code>2</code>: <emphasis role=\"bold\">Endpoint</emphasis> - all endpoints "
-"are in the Boundary."
-msgstr ""
-"<code>2</code>: <emphasis role=\"bold\">Endpunkt</emphasis> - alle Endpunkte "
-"befinden sich in der Boundary."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
-"endpoints are in the Boundary if they occur more than once. In other words, "
-"the boundary is all the \"attached\" or \"inner\" endpoints (but not the "
-"\"unattached/outer\" ones)."
-msgstr ""
-"<code>3</code>: <emphasis role=\"bold\">MultivalentEndpoint</emphasis> - "
-"Endpunkte befinden sich in der Boundary, wenn sie mehr als einmal vorkommen. "
-"Mit anderen Worten, die Grenze sind alle \"verbundenen\" oder \"inneren\" "
-"Endpunkte (aber nicht die \"unverbundenen/äußeren\")."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid ""
-"<code>4</code>: <emphasis role=\"bold\">MonovalentEndpoint</emphasis> - "
-"endpoints are in the Boundary if they occur only once. In other words, the "
-"boundary is all the \"unattached\" or \"outer\" endpoints."
-msgstr ""
-"<code>4</code>: <emphasis role=\"bold\">MonovalenterEndpunkt</emphasis> - "
-"Endpunkte befinden sich in der Boundary, wenn sie nur einmal vorkommen. Mit "
-"anderen Worten, die Begrenzung sind alle \"unverbundenen\" oder \"äußeren\" "
-"Endpunkte."
-
-#. Tag: para
-#, fuzzy, no-c-format
 msgid "This function is not in the OGC spec, but is implied. see s2.1.13.2"
 msgstr ""
 "Diese Funktion ist nicht in der OGC-Spezifikation enthalten, wird aber "
@@ -44692,6 +44719,15 @@ msgid ""
 "2.3+ is needed. Python 3 is a new requirement to build the documentation."
 msgstr ""
 
+#. Tag: para
+#, no-c-format
+msgid ""
+"Visual examples in the docs are off by default. To build docs with them, "
+"configure with `--with-visual-examples` and make sure you have a running "
+"PostgreSQL instance; they are then generated automatically when building the "
+"docs (or explicitly with `make -C regress visual-examples`)."
+msgstr ""
+
 #. Tag: title
 #, fuzzy, no-c-format
 msgid "Breaking Changes"
@@ -44939,6 +44975,15 @@ msgid ""
 "<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/2863\">#2863</"
 "link>, Add ST_XSize, ST_YSize, ST_ZSize, and ST_MSize dimension helpers "
 "(Darafei Praliaskouski)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<link xlink:href=\"https://git.osgeo.org/postgis/postgis/pull/806\">GT-806</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/"
+"6124\">#6124</link> --with-visual-examples opt-in configure switch to build "
+"dynamic images (Regina Obe)"
 msgstr ""
 
 #. Tag: title
@@ -52050,6 +52095,10 @@ msgstr "2.5/3D-Unterstützung"
 #, fuzzy, no-c-format
 msgid "Supports geography"
 msgstr "Unterstützt Geographie"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"GetNodeEdges\"/>"
+#~ msgstr ", <xref linkend=\"GetNodeEdges\"/>"
 
 #, fuzzy, no-c-format
 #~ msgid ""
