@@ -21,6 +21,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from postgis_exampletest import ExampleTester, QueryRows, parse_source_example
 
 
+@contextlib.contextmanager
+def open_tmp_xml():
+    # Windows denies reopening a NamedTemporaryFile while its delete-on-close
+    # handle is open, so create it with delete=False and unlink it ourselves.
+    handle = tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8", delete=False)
+    try:
+        yield handle
+    finally:
+        handle.close()
+        os.unlink(handle.name)
+
+
 def xyz_vertices(points, ring=False):
     return [
         {"path": [1, index] if ring else [index], "point": point}
@@ -264,7 +276,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     </refsection>
   </refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             example = ExampleTester(source.name).examples()[0]
@@ -283,7 +295,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     </refsection>
   </refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             example = ExampleTester(source.name).examples()[0]
@@ -299,7 +311,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     </refsection>
   </refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             example = ExampleTester(source.name).examples()[0]
@@ -314,7 +326,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     </refsection>
   </refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             example = ExampleTester(source.name).examples()[0]
@@ -336,7 +348,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     </refsection>
   </refentry>
 </book>"""
-                with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+                with open_tmp_xml() as source:
                     source.write(xml)
                     source.flush()
                     example = ExampleTester(source.name).examples()[0]
@@ -353,7 +365,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     </refsection>
   </refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             example = ExampleTester(source.name).examples()[0]
@@ -370,7 +382,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     </refsection>
   </refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             example = ExampleTester(source.name).examples()[0]
@@ -397,7 +409,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     <screen>1</screen>
   </refsection></refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             tester = ExampleTester(source.name)
@@ -445,7 +457,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     <screen>dummy</screen>
   </refsection></refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             example = ExampleTester(source.name).examples()[0]
@@ -465,7 +477,7 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
     <screen>dummy</screen>
   </refsection></refentry>
 </book>"""
-        with tempfile.NamedTemporaryFile("w", suffix=".xml", encoding="utf-8") as source:
+        with open_tmp_xml() as source:
             source.write(xml)
             source.flush()
             example = ExampleTester(source.name).examples()[0]
