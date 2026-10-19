@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-17 07:16+0000\n"
-"PO-Revision-Date: 2026-10-16 10:39+0000\n"
+"PO-Revision-Date: 2026-10-19 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -4265,6 +4265,8 @@ msgid ""
 ", <xref linkend=\"GetNodeEdges\"/> <xref linkend=\"getfaceedges_returntype\"/"
 ">"
 msgstr ""
+", <xref linkend=\"GetNodeEdges\"/>, <xref "
+"linkend=\"getfaceedges_returntype\"/>"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -9738,7 +9740,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Report locations of self-intersection or self-tangency, if any."
-msgstr ""
+msgstr "自己交差または自己接触が存在する場合には、その位置を報告します。"
 
 #. Tag: para
 #, no-c-format
@@ -9747,6 +9749,9 @@ msgid ""
 "(<varname>simple</varname>) stating if a geometry is simple and a geometry "
 "(<varname>location</varname>) pointing out where it is non-simple."
 msgstr ""
+"<varname>simple_detail</varname> 行を返します。これにはジオメトリーが単純かど"
+"うかを明示する真偽値 (<varname>simple</varname>) と、どこが単純でないかを指摘"
+"するジオメトリー (<varname>location</varname>) が含まれます。"
 
 #. Tag: para
 #, no-c-format
@@ -9754,11 +9759,13 @@ msgid ""
 "The optional <varname>findAllLocations</varname> parameter can be set to 1 "
 "to report all non-simple locations, rather than just one."
 msgstr ""
+"任意パラメーター <varname>findAllLocations</varname> に 1を与えると、一つだけ"
+"でなく、すべての単純でない位置を報告します。"
 
 #. Tag: para
 #, no-c-format
 msgid "The optional <varname>boundaryNodeRule</varname> values are:"
-msgstr ""
+msgstr "任意パラメーター <varname>boundaryNodeRule</varname> の値は次の通りです:"
 
 #. Tag: para
 #, no-c-format
@@ -44984,6 +44991,10 @@ msgid ""
 "PostgreSQL instance; they are then generated automatically when building the "
 "docs (or explicitly with `make -C regress visual-examples`)."
 msgstr ""
+"この文書では例の図示はデフォルトでは行いません。例の図示を伴う文書をビルドす"
+"るにはコンフィギュアで `--with-visual-examples` を付けて、かつ動作している "
+"PostgreSQL インスタンスを用意します。例を示す図は文書ビルド時 (または `make -"
+"C regress visual-examples`と明示的に実行している時) に自動的に生成されます。"
 
 #. Tag: title
 #, no-c-format
@@ -45330,6 +45341,10 @@ msgid ""
 "6124\">#6124</link> --with-visual-examples opt-in configure switch to build "
 "dynamic images (Regina Obe)"
 msgstr ""
+"<link xlink:href=\"https://git.osgeo.org/postgis/postgis/pull/806\">GT-806</"
+"link>, <link xlink:href=\"https://trac.osgeo.org/postgis/ticket/6124\">"
+"#6124</link> 動的画像構築を有効にするためのコンフィギュレーションの"
+"スイッチ --with-visual-examples (Regina Obe さん)"
 
 #. Tag: title
 #, no-c-format
