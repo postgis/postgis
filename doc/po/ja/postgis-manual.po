@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-17 07:16+0000\n"
-"PO-Revision-Date: 2026-10-19 01:39+0000\n"
+"PO-Revision-Date: 2026-10-19 03:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -28693,22 +28693,19 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "<varname>blocksize</varname> sets both X and Y blocksize"
-msgstr ""
-"<varname>blocksize</varname> ブロックの X と Y 両方のサイズを指定します"
+msgstr "<varname>blocksize</varname> ブロックの X と Y 両方のサイズを指定します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>blocksize_x</varname> sets X tile (width in pixels of each tile)"
-msgstr ""
-"<varname>blocksize_x</varname> X タイル (タイル毎のピクセル幅) を設定します"
+msgstr "<varname>blocksize_x</varname> X タイル (タイル毎のピクセル幅) を設定します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "<varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)"
-msgstr ""
-"<varname>blocksize_y</varname> Y タイル (タイル毎のピクセル幅) を設定します"
+msgstr "<varname>blocksize_y</varname> Y タイル (タイル毎のピクセル幅) を設定します。"
 
 #. Tag: para
 #, no-c-format
@@ -28717,12 +28714,12 @@ msgid ""
 "constraint all rasters must be within that extent"
 msgstr ""
 "<varname>extent</varname> テーブル全体の範囲を計算し、全てのラスターがこの範"
-"囲内にある制約を適用します"
+"囲内にある制約を適用します。"
 
 #. Tag: para
 #, no-c-format
 msgid "<varname>num_bands</varname> number of bands"
-msgstr "<varname>num_bands</varname> バンド数"
+msgstr "<varname>num_bands</varname> バンド数。"
 
 #. Tag: para
 #, no-c-format
