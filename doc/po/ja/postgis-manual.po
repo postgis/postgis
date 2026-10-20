@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-17 07:16+0000\n"
-"PO-Revision-Date: 2026-10-19 03:39+0000\n"
+"PO-Revision-Date: 2026-10-20 02:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.16.2\n"
+"X-Generator: Weblate 2026.10.1\n"
 
 #. Tag: chapter
 #, no-c-format
@@ -2560,10 +2560,10 @@ msgid ""
 "optionally limiting the operation to the objects intersecting the area "
 "specified by the <varname>bbox</varname> parameter."
 msgstr ""
-"トポロジーの全ての頂点をトポロジーの精度グリッドにスナップするか、"
-"<varname>gridSize</varname> パラメーターで指定したサイズのにグリッドにスナッ"
-"プします。任意に <varname>bbox</varname> パラメーターで指定した領域とインタセ"
-"クとするものだけを処理することもできます。"
+"トポロジーの全ての頂点をトポロジーの精度グリッドにスナップするか、<varname>"
+"gridSize</varname> パラメーターで指定したサイズのにグリッドにスナップします。"
+"任意に <varname>bbox</varname> パラメーターで指定した領域とインターセクトする"
+"ものだけを処理することもできます。"
 
 #. Tag: para
 #, no-c-format
@@ -3860,7 +3860,7 @@ msgstr "与えられたポイントにインターセクトするエッジの識
 #. Tag: para
 #, no-c-format
 msgid "Retrieves the id of an edge that intersects a Point."
-msgstr "与えられたポイントにインタセクトするエッジの識別番号を探索します。"
+msgstr "与えられたポイントにインターセクトするエッジの識別番号を探索します。"
 
 #. Tag: para
 #, no-c-format
@@ -3869,15 +3869,16 @@ msgid ""
 "tolerance. If tolerance = 0 then the point has to intersect the edge."
 msgstr ""
 "この関数は、トポロジー、ポイント、許容差を引数にして、整数 (エッジの識別番"
-"号) を返します。許容差が 0の場合、ポイントはエッジとインタセクトしていなけれ"
-"ばなりません。"
+"号) を返します。許容差が 0の場合、ポイントはエッジとインターセクトしていなけ"
+"ればなりません。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect an edge, returns 0 (zero)."
 msgstr ""
-"<varname>apoint</varname> がエッジとインタセクトしない場合には、0を返します。"
+"<varname>apoint</varname> がエッジとインターセクトしない場合には、0を返します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -3921,7 +3922,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Finds face intersecting a given point."
-msgstr "与えたポイントとインタセクトするフェイスを見つけます。"
+msgstr "与えたポイントとインターセクトするフェイスを見つけます。"
 
 #. Tag: para
 #, no-c-format
@@ -3934,8 +3935,8 @@ msgid ""
 "The function will effectively look for a face intersecting a circle having "
 "the point as center and the tolerance as radius."
 msgstr ""
-"この関数は、ポイントを中心に持ち半径が許容値となる円とインタセクトするフェイ"
-"スを効率的に探します。"
+"この関数は、ポイントを中心に持ち半径が許容値となる円とインターセクトする"
+"フェイスを効率的に探します。"
 
 #. Tag: para
 #, no-c-format
@@ -3943,15 +3944,14 @@ msgid ""
 "If no face intersects the given query location, 0 is returned (universal "
 "face)."
 msgstr ""
-"与えられたクエリー位置とインタセクトするフェイスが無い場合には、0を返します "
-"(ユニバーサルフェイス)。"
+"与えられたクエリー位置とインターセクトするフェイスが無い場合には、0を返しま"
+"す (ユニバーサルフェイス)。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If more than one face intersect the query location an exception is thrown."
-msgstr ""
-"1以上のフェイスがクエリー位置とインタセクトする場合には例外が投げられます。"
+msgstr "1以上のフェイスがクエリー位置とインターセクトする場合には例外が投げられます。"
 
 #. Tag: para
 #, no-c-format
@@ -4018,15 +4018,16 @@ msgid ""
 "the node from an interval."
 msgstr ""
 "トポロジー、POINT、許容値が与えられ、整数 (ノード識別番号) が返ります。"
-"tolerance = 0 の場合には、確実にインタセクトするノードを取得し、そうでない場"
-"合には、指定した間隔の中からノードを取得します。"
+"tolerance = 0 の場合には、確実にインターセクトするノードを取得し、そうでない"
+"場合には、指定した間隔の中からノードを取得します。"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect a node, returns 0 (zero)."
 msgstr ""
-"<varname>apoint</varname> がノードとインタセクトしない場合には、0を返します。"
+"<varname>apoint</varname> がノードとインターセクトしない場合には、0を返します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -4350,7 +4351,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The target topology is assumed to contain no self-intersecting edges."
-msgstr "対象トポロジーは自己インタセクトするエッジが無いと仮定しています。"
+msgstr "対象トポロジーは自己インターションを持つエッジが無いと仮定しています。"
 
 #. Tag: para
 #, no-c-format
@@ -4495,8 +4496,8 @@ msgid ""
 "This query errors because the edge intersects an existing edge away from the "
 "endpoints."
 msgstr ""
-"このクエリーはエッジが既存のエッジと終端以外の場所でインタセクトするためエ"
-"ラーになります。"
+"このクエリーはエッジが既存のエッジと終端以外の場所でインターセクトするため"
+"エラーになります。"
 
 #. Tag: para
 #, no-c-format
@@ -4543,9 +4544,9 @@ msgid ""
 "edges). An exception is raised if: The polygon boundary is not fully defined "
 "by existing edges or the polygon overlaps an existing face."
 msgstr ""
-"対象トポロジーは妥当 (自己インタセクトするエッジが無い) と仮定しています。ポ"
-"リゴンの境界が既存のエッジでは完全には定義されない場合や、ポリゴンが既存の"
-"フェイスにオーバラップする場合には、例外が投げられます。"
+"対象トポロジーは妥当 (自己インターセクションを持つエッジが無い) と仮定してい"
+"ます。ポリゴンの境界が既存のエッジでは完全には定義されない場合や、ポリゴンが"
+"既存のフェイスにオーバラップする場合には、例外が投げられます。"
 
 #. Tag: para
 #, no-c-format
@@ -5469,8 +5470,8 @@ msgid ""
 "<refpurpose>Returns true if any pair of primitives from the two "
 "topogeometries intersect.</refpurpose>"
 msgstr ""
-"<refpurpose>二つの TopoGeometry からのプリミティブの組がインタセクトする場合"
-"に true を返します。</refpurpose>"
+"<refpurpose>二つの TopoGeometry からのプリミティブの組がインターセクトする場"
+"合に true を返します。</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -5478,8 +5479,8 @@ msgid ""
 "<para>Returns true if any pair of primitives from the two topogeometries "
 "intersect.</para>"
 msgstr ""
-"<para>二つの TopoGeometry からのプリミティブがインタセクトする場合に true を"
-"返します。</para>"
+"<para>二つの TopoGeometry からのプリミティブがインターセクトする場合に true "
+"を返します。</para>"
 
 #. Tag: para
 #, no-c-format
@@ -9707,8 +9708,8 @@ msgstr ""
 msgid ""
 "Tests if a geometry has no points of self-intersection or self-tangency."
 msgstr ""
-"ジオメトリーが自己インタセクトまたは自己接触となるポイントが無いかをテストし"
-"ます。"
+"ジオメトリーが自己インターセクションまたは自己接触となるポイントが無いかを"
+"テストします。"
 
 #. Tag: para
 #, no-c-format
@@ -9718,7 +9719,7 @@ msgid ""
 "definition of geometry simplicity and validity, refer to <link "
 "linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliance of geometries\"</link>"
 msgstr ""
-"ジオメトリーが自己インタセクションや自己接触のような異常な幾何学ポイントを"
+"ジオメトリーが自己インターセクションや自己接触のような異常な幾何学ポイントを"
 "持っていない場合に TRUE を返します。OGC のジオメトリー単純性と妥当性の定義に"
 "関する詳細情報については <link linkend=\"OGC_Validity\">「ジオメトリーの "
 "OpenGIS 準拠を確実にする」</link> をご覧ください。"
@@ -12155,9 +12156,10 @@ msgid ""
 "cluster, and does not intersect any geometry in other clusters."
 msgstr ""
 "入力ジオメトリーから接続されたものをクラスタとし、クラスタ間は接続されていな"
-"いように分割して GEOMETRYCOLLECTION の配列を返す集約関数です。クラスタ内の"
-"個々のジオメトリーは同一クラスタ内の他のジオメトリーの少なくとも一つとインタ"
-"セクトし、他のクラスタ内のいずれのジオメトリーともインタセクトしません。"
+"いように分割して GEOMETRYCOLLECTION の配列を返す集約関数です。クラスタ内の個"
+"々のジオメトリーは同一クラスタ内の他のジオメトリーの少なくとも一つと"
+"インターセクトし、他のクラスタ内のいずれのジオメトリーともインターセクトしま"
+"せん。"
 
 #. Tag: para
 #, no-c-format
@@ -12185,7 +12187,7 @@ msgid ""
 "leaving the cluster. The return value is the cluster number that the "
 "geometry argument participates in, or null for null inputs."
 msgstr ""
-"インタセクトするジオメトリーの接続されたクラスタを構築するウィンドウ関数で"
+"インターセクトするジオメトリーの接続されたクラスタを構築するウィンドウ関数で"
 "す。クラスタを離れることなく、クラスタ内の全てのジオメトリーを走査することが"
 "できます。返り値はジオメトリー引数が入っているクラスタの番号です。入力が "
 "NULL の場合には NULL を返します。"
@@ -13952,8 +13954,8 @@ msgid ""
 "<emphasis role=\"bold\">Non-overlapping</emphasis> - polygons do not overlap "
 "(their interiors do not intersect)"
 msgstr ""
-"<emphasis role=\"bold\">オーバラップなし</emphasis> - ポリゴン同士がオーバ"
-"ラップしない (ポリゴンの内部でインタセクトしない)"
+"<emphasis role=\"bold\">オーバラップなし</emphasis> - ポリゴン同士が"
+"オーバラップしない (ポリゴンの内部でインターセクトしない)"
 
 #. Tag: para
 #, no-c-format
@@ -14224,9 +14226,9 @@ msgid ""
 ">."
 msgstr ""
 "共有された境界がエッジに合致している時は、隣接ポリゴンレイヤーを簡略化するた"
-"めにこの関数を使います。自己インターセクションして、リングの評価の問題がある"
-"単一ジオメトリーについては <xref linkend=\"ST_SimplifyPreserveTopology\"/> を"
-"参照して下さい。"
+"めにこの関数を使います。自己インターセクションを持ち、リングの評価の問題があ"
+"る単一ジオメトリーについては <xref linkend=\"ST_SimplifyPreserveTopology\"/> "
+"を参照して下さい。"
 
 #. Tag: para
 #, no-c-format
@@ -14236,9 +14238,9 @@ msgid ""
 "appeared to be shared). Use <xref linkend=\"ST_CoverageInvalidEdges\"/> to "
 "determine if a coverage is valid."
 msgstr ""
-"入力が妥当なカバレッジでない場合には、出力に予期しない何か (境界のインタセク"
-"ト、共有されているように見えるのに分かれている境界) が出現する可能性がありま"
-"す。カバレッジが妥当かどうかを判断するには <xref "
+"入力が妥当なカバレッジでない場合には、出力に予期しない何か (境界の"
+"インターセクト、共有されているように見えるのに分かれている境界) が出現する可"
+"能性があります。カバレッジが妥当かどうかを判断するには <xref "
 "linkend=\"ST_CoverageInvalidEdges\"/> を使います。"
 
 #. Tag: para
@@ -15604,8 +15606,8 @@ msgid ""
 "sorts out points without computing new intersection points which avoids "
 "rounding errors and usually increases performance,"
 msgstr ""
-"この関数は、新しいインタセクトするポイントを計算することなくポイントの並べ替"
-"えを行うので、丸め誤差が回避され、通常は効率が向上し、"
+"この関数は、新しいインターセクトするポイントを計算することなくポイントの並べ"
+"替えを行うので、丸め誤差が回避され、通常は効率が向上し、"
 
 #. Tag: para
 #, no-c-format
@@ -16254,9 +16256,9 @@ msgid ""
 "operations by eliminating nearly-coincident edges (which cause problems "
 "during noding and intersection calculation)."
 msgstr ""
-"一つのジオメトリーからもう一つへの変換によって、近傍エッジ (ノード生成とイン"
-"タセクション計算で問題を引き起こします) を除くことになり、オーバレイ演算のロ"
-"バスト性が改善されます。"
+"一つのジオメトリーからもう一つへの変換によって、近傍エッジ (ノード生成と"
+"インターセクション計算で問題を引き起こします) を除くことになり、オーバレイ演"
+"算のロバスト性が改善されます。"
 
 #. Tag: para
 #, no-c-format
@@ -20472,10 +20474,10 @@ msgid ""
 "selects the parcel that is most similar to the building."
 msgstr ""
 "<emphasis role=\"bold\">例:</emphasis> 個々の建物について、最もよく表現する区"
-"画を見つけます。最初に建物ジオメトリーとインタセクトする区画を求めます。"
-"<code>DISTINCT ON</code> で、個々の建物が一回ずつしかリストに挙がらないことが"
-"保障されます。<code>ORDER BY .. ST_HausdorffDistance</code> で、最も建物に近"
-"い区画を選択します。"
+"画を見つけます。最初に建物ジオメトリーとインターセクトする区画を求めます"
+"。<code>DISTINCT ON</code> で、個々の建物が一回ずつしかリストに挙がらないこと"
+"が保障されます。<code>ORDER BY .. ST_HausdorffDistance</code> で、最も建物に"
+"近い区画を選択します。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21183,8 +21185,8 @@ msgid ""
 msgstr ""
 "二つのジオメトリーの間の 2次元の最短ラインを返します。返されるラインは "
 "<varname>geom1</varname> 内から始まり、<varname>geom2</varname> 内で終わりま"
-"す。<varname>geom1</varname> と <varname>geom2</varname> がインタセクトしてい"
-"る場合には、結果はインタセクションするポイントを始点と終点にしたラインになり"
+"す。<varname>geom1</varname> と <varname>geom2</varname> がインターセクトして"
+"いる場合には、結果はインターセクトするポイントを始点と終点にしたラインになり"
 "ます。ラインの長さは <xref linkend=\"ST_Distance\"/> で g1 と g2 を引数に取っ"
 "た時と同じになります。"
 
@@ -21231,12 +21233,12 @@ msgid ""
 "linkend=\"ST_3DDistance\"/> returns for g1 and g2."
 msgstr ""
 "二つのジオメトリーの 3次元長が最短となるラインを返します。見つかった最短線が"
-"複数ある場合は、最初のもののみ返します。g1 と g2 が 1点のみでインタセクトする"
-"場合は、インタセクション点を開始点と終了点とします。g1 と g2 が 1点より多くイ"
-"ンタセクトする場合は、同じ点を開始点と終了点としますが、その点は不定です。返"
-"されるラインは常に g1 側を始点、g2 側を終点とします。この関数が返すラインの長"
-"さは、常に g1 と g2 を指定した場合の <xref linkend=\"ST_3DDistance\"/> が返す"
-"値と同じになります。"
+"複数ある場合は、最初のもののみ返します。g1 と g2 が 1点のみでインターセクトす"
+"る場合は、インターセクトするポイントを開始点と終了点とします。g1 と g2 が 1点"
+"より多くインターセクトする場合は、同じ点を開始点と終了点としますが、その点は"
+"不定です。返されるラインは常に g1 側を始点、g2 側を終点とします。この関数が返"
+"すラインの長さは、常に g1 と g2 を指定した場合の <xref "
+"linkend=\"ST_3DDistance\"/> が返す値と同じになります。"
 
 #. Tag: para
 #, no-c-format
@@ -21298,8 +21300,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's 2D bounding box intersects B's 2D "
 "bounding box."
 msgstr ""
-"A の 2次元バウンディングボックスが B の 2次元バウンディングボックスとインタセ"
-"クトする場合に <varname>TRUE</varname> を返します。"
+"A の 2次元バウンディングボックスが B の 2次元バウンディングボックスと"
+"インターセクトする場合に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21309,7 +21311,7 @@ msgid ""
 "geometry B."
 msgstr ""
 "<varname>&amp;&amp;</varname> 演算子は、A の 2次元バウンディングボックスが B "
-"の 2次元バウンディングボックスとインタセクトする場合に <varname>TRUE</"
+"の 2次元バウンディングボックスとインターセクトする場合に <varname>TRUE</"
 "varname> を返します。"
 
 #. Tag: para
@@ -21346,7 +21348,7 @@ msgid ""
 "intersects a 2D float precision bounding box (BOX2DF)."
 msgstr ""
 "ジオメトリーの (キャッシュされている) 2次元バウンディングボックスが単精度浮動"
-"小数点数による 2次元バウンディングボックスとインタセクトする場合に "
+"小数点数による 2次元バウンディングボックスとインターセクトする場合に "
 "<varname>TRUE</varname> を返します。"
 
 #. Tag: para
@@ -21359,11 +21361,11 @@ msgid ""
 "(BOX2DF)"
 msgstr ""
 "<varname>&amp;&amp;</varname> 演算子は、ジオメトリー A のキャッシュされた 2次"
-"元バウンディングボックスが、2次元バウンディングボックス B とインタセクトする"
-"場合に、<varname>TRUE</varname> を返します。単精度浮動小数点数によるバウン"
-"ディングボックスを使います。B が倍精度浮動小数点数を使う box2d である場合に"
-"は、単精度浮動小数点数によるバウンディングボックス (BOX2DF) に変換されること"
-"になります。"
+"元バウンディングボックスが、2次元バウンディングボックス B とインターセクトす"
+"る場合に、<varname>TRUE</varname> を返します。単精度浮動小数点数による"
+"バウンディングボックスを使います。B が倍精度浮動小数点数を使う box2d である場"
+"合には、単精度浮動小数点数によるバウンディングボックス (BOX2DF) に変換される"
+"ことになります。"
 
 #. Tag: para
 #, no-c-format
@@ -21405,8 +21407,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) intersects a geometry's (cached) 2D bounding box."
 msgstr ""
-"単精度浮動小数点数による 2次元バウンディングボックスがジオメトリーの (キャッ"
-"シュされている) 2次元バウンディングボックスとインタセクトする場合に "
+"単精度浮動小数点数による 2次元バウンディングボックスがジオメトリーの "
+"(キャッシュされている) 2次元バウンディングボックスとインターセクトする場合に "
 "<varname>TRUE</varname> を返します。"
 
 #. Tag: para
@@ -21418,12 +21420,12 @@ msgid ""
 "box2d, it will be internally converted to a float precision 2D bounding box "
 "(BOX2DF)"
 msgstr ""
-"<varname>&amp;&amp;</varname> 演算子は、2次元バウンディングボックス A が、ジ"
-"オメトリー B のキャッシュされた 2次元バウンディングボックスとインタセクトする"
-"場合に、<varname>TRUE</varname> を返します。単精度浮動小数点数によるバウン"
-"ディングボックスを使います。A が倍精度浮動小数点数を使う box2d である場合に"
-"は、単精度浮動小数点数によるバウンディングボックス (BOX2DF) に変換されること"
-"になります。"
+"<varname>&amp;&amp;</varname> 演算子は、2次元バウンディングボックス A が、"
+"ジオメトリー B のキャッシュされた 2次元バウンディングボックスとインターセクト"
+"する場合に、<varname>TRUE</varname> を返します。単精度浮動小数点数による"
+"バウンディングボックスを使います。A が倍精度浮動小数点数を使う box2d である場"
+"合には、単精度浮動小数点数によるバウンディングボックス (BOX2DF) に変換される"
+"ことになります。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21432,7 +21434,7 @@ msgid ""
 "(BOX2DF) intersect each other."
 msgstr ""
 "二つの単精度浮動小数点数による 2次元バウンディングボックス (BOX2DF) が相互に"
-"インタセクトする場合に <varname>TRUE</varname> を返します。"
+"インターセクトする場合に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21443,10 +21445,10 @@ msgid ""
 "will be internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
 "<varname>&amp;&amp;</varname> 演算子は、2次元バウンディングボックス A と B が"
-"相互にインタセクトする場合に、<varname>TRUE</varname> を返します。単精度浮動"
-"小数点数によるバウンディングボックスを使います。A または B が倍精度浮動小数点"
-"数を使う box2d である場合には、バウンディングボックス (BOX2DF) に変換されるこ"
-"とになります。"
+"相互にインターセクトする場合に、<varname>TRUE</varname> を返します。単精度浮"
+"動小数点数によるバウンディングボックスを使います。A または B が倍精度浮動小数"
+"点数を使う box2d である場合には、バウンディングボックス (BOX2DF) に変換される"
+"ことになります。"
 
 #. Tag: para
 #, no-c-format
@@ -21482,8 +21484,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's n-D bounding box intersects B's n-D "
 "bounding box."
 msgstr ""
-"A の n 次元バウンディングボックスが B の n 次元バウンディングボックスとインタ"
-"セクトする場合に <varname>TRUE</varname> を返します。"
+"A の n 次元バウンディングボックスが B の n 次元バウンディングボックスと"
+"インターセクトする場合に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21492,9 +21494,9 @@ msgid ""
 "varname> if the n-D bounding box of geometry A intersects the n-D bounding "
 "box of geometry B."
 msgstr ""
-"<varname>&amp;&amp;&amp;</varname> 演算子は、A の n 次元バウンディングボック"
-"スが B の n 次元バウンディングボックスとインタセクトする場合に "
-"<varname>TRUE</varname> を返します。"
+"<varname>&amp;&amp;&amp;</varname> 演算子は、A の n 次元"
+"バウンディングボックスが B の n 次元バウンディングボックスとインターセクトす"
+"る場合に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21513,7 +21515,7 @@ msgid ""
 "intersects a n-D float precision bounding box (GIDX)."
 msgstr ""
 "ジオメトリーの (キャッシュされている) n 次元バウンディングボックスが単精度浮"
-"動小数点数による n 次元バウンディングボックス (GIDX) とインタセクトする場合"
+"動小数点数による n 次元バウンディングボックス (GIDX) とインターセクトする場合"
 "に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
@@ -21526,11 +21528,11 @@ msgid ""
 "bounding box (GIDX)"
 msgstr ""
 "<varname>&amp;&amp;&amp;</varname> 演算子は、ジオメトリー A のキャッシュされ"
-"た n 次元バウンディングボックスが、n 次元バウンディングボックス B とインタセ"
-"クトする場合に、<varname>TRUE</varname> を返します。単精度浮動小数点数による"
-"バウンディングボックスを使います。B が倍精度浮動小数点数を使う box3d である場"
-"合には、単精度浮動小数点数による 3次元バウンディングボックス (GIDX) に変換さ"
-"れることになります。"
+"た n 次元バウンディングボックスが、n 次元バウンディングボックス B と"
+"インターセクトする場合に、<varname>TRUE</varname> を返します。単精度浮動小数"
+"点数によるバウンディングボックスを使います。B が倍精度浮動小数点数を使う "
+"box3d である場合には、単精度浮動小数点数による 3次元バウンディングボックス "
+"(GIDX) に変換されることになります。"
 
 #. Tag: para
 #, no-c-format
@@ -21544,8 +21546,8 @@ msgid ""
 "intersects a geometry's (cached) n-D bounding box."
 msgstr ""
 "単精度浮動小数点数による n 次元バウンディングボックス (GIDX) がジオメトリー"
-"の (キャッシュされている) n 次元バウンディングボックスとインタセクトする場合"
-"に <varname>TRUE</varname> を返します。"
+"の (キャッシュされている) n 次元バウンディングボックスとインターセクトする場"
+"合に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21557,11 +21559,11 @@ msgid ""
 "bounding box (GIDX)"
 msgstr ""
 "<varname>&amp;&amp;&amp;</varname> 演算子は、n 次元バウンディングボックス A "
-"が、ジオメトリー B のキャッシュされた n 次元バウンディングボックスとインタセ"
-"クトする場合に、<varname>TRUE</varname> を返します。単精度浮動小数点数による"
-"バウンディングボックスを使います。A が倍精度浮動小数点数を使う box3d である場"
-"合には、単精度浮動小数点数による 3次元バウンディングボックス (GIDX) に変換さ"
-"れることになります。"
+"が、ジオメトリー B のキャッシュされた n 次元バウンディングボックスと"
+"インターセクトする場合に、<varname>TRUE</varname> を返します。単精度浮動小数"
+"点数によるバウンディングボックスを使います。A が倍精度浮動小数点数を使う "
+"box3d である場合には、単精度浮動小数点数による 3次元バウンディングボックス "
+"(GIDX) に変換されることになります。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -21569,8 +21571,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if two n-D float precision bounding boxes "
 "(GIDX) intersect each other."
 msgstr ""
-"二つの単精度浮動小数点数による n 次元バウンディングボックス (GIDX) が相互にイ"
-"ンタセクトする場合に <varname>TRUE</varname> を返します。"
+"二つの単精度浮動小数点数による n 次元バウンディングボックス (GIDX) が相互に"
+"インターセクトする場合に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -21581,10 +21583,10 @@ msgid ""
 "will be internally converted to a float precision 3D bounding box (GIDX)"
 msgstr ""
 "<varname>&amp;&amp;&amp;</varname> 演算子は、n 次元バウンディングボックス A "
-"と B が相互にインタセクトする場合に、<varname>TRUE</varname> を返します。単精"
-"度浮動小数点数によるバウンディングボックスを使います。A または B が倍精度浮動"
-"小数点数を使う box3d である場合には、単精度浮動小数点数による 3次元バウンディ"
-"ングボックス (GIDX) に変換されることになります。"
+"と B が相互にインターセクトする場合に、<varname>TRUE</varname> を返します。単"
+"精度浮動小数点数によるバウンディングボックスを使います。A または B が倍精度浮"
+"動小数点数を使う box3d である場合には、単精度浮動小数点数による 3次元"
+"バウンディングボックス (GIDX) に変換されることになります。"
 
 #. Tag: para
 #, no-c-format
@@ -24654,8 +24656,8 @@ msgid ""
 msgstr ""
 "2次元ボックスでジオメトリーを切り抜きます。高速ですが不正な方法になることもあ"
 "ります。トポロジー的に不正な入力ジオメトリーでは例外が投げられ結果を返しませ"
-"ん。出力ジオメトリーの妥当性は保証されません (ポリゴンで自己インタセクション"
-"ができるかも知れません)。"
+"ん。出力ジオメトリーの妥当性は保証されません (ポリゴンで自己"
+"インターセクションが発生するかも知れません)。"
 
 #. Tag: para
 #, no-c-format
@@ -24678,8 +24680,8 @@ msgid ""
 "Computes a geometry representing the part of geometry A that does not "
 "intersect geometry B."
 msgstr ""
-"ジオメトリー B とインタセクトしていないジオメトリー A の一部を表現するジオメ"
-"トリーを計算します。"
+"ジオメトリー B とインターセクトしていないジオメトリー A の一部を表現する"
+"ジオメトリーを計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -24689,10 +24691,10 @@ msgid ""
 "code>. If A is completely contained in B then an empty atomic geometry of "
 "appropriate type is returned."
 msgstr ""
-"ジオメトリー B とインタセクトしていないジオメトリー A の一部を表現するジオメ"
-"トリーを計算します。これは <code>A - ST_Intersection(A,B)</code> と同じです。"
-"A が完全に B に包含されている場合には、適切なタイプの空のジオメトリーが返され"
-"ます。"
+"ジオメトリー B とインターセクトしていないジオメトリー A の一部を表現する"
+"ジオメトリーを計算します。これは <code>A - ST_Intersection(A,B)</code> と同じ"
+"です。A が完全に B に包含されている場合には、適切なタイプの空のジオメトリーが"
+"返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -24831,8 +24833,8 @@ msgstr ""
 "&geography_transform; 最初に二つのジオグラフィ値のバウンディングボックスに適"
 "合する最適な SRID を決定します (二つのジオグラフィ値が UTM ゾーンの半分以内だ"
 "けど同じ UTM ゾーンでない場合はどちらか一つを選びます) (UTM またはランベルト"
-"正積方位図法の北極又は南極を優先し、最悪の場合にメルカトルに後退します)。次"
-"に、最適な平面空間参照系でインタセクトする領域を計算して、WGS84ジオグラフィに"
+"正積方位図法の北極又は南極を優先し、最悪の場合にメルカトルに後退します)。次に"
+"、最適な平面空間参照系でインターセクトする領域を計算して、WGS84ジオグラフィに"
 "再変換します。"
 
 #. Tag: para
@@ -24890,10 +24892,10 @@ msgid ""
 msgstr ""
 "国別に全てのライン (trains) を切り抜きます。 国のジオメトリーは POLYGON また"
 "は MULTIPOLYGON であると仮定します。ご注意: ポイントだけを共有する trails は"
-"気にしないので、LINESTRING または MULTILINESTRING の結果となるインタセクショ"
-"ンだけを保持しています。ジオメトリーコレクションを個々のマルチ系ジオメトリー"
-"の要素に分解するためにダンプが必要です。下の例は非常に汎用的で、WHERE 節を変"
-"更するだけでポリゴンでも動作します。"
+"気にしないので、LINESTRING または MULTILINESTRING の結果となる"
+"インターセクションだけを保持しています。ジオメトリーコレクションを個々の"
+"マルチ系ジオメトリーの要素に分解するためにダンプが必要です。下の例は非常に汎"
+"用的で、WHERE 節を変更するだけでポリゴンでも動作します。"
 
 #. Tag: para
 #, no-c-format
@@ -25023,7 +25025,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Noding a 3D LineString which self-intersects."
-msgstr "自己インターセクトしている 3次元 LINESTRING にノードを追加します。"
+msgstr "自己インターセクションを持つ 3次元 LINESTRING にノードを追加します。"
 
 #. Tag: para
 #, no-c-format
@@ -25077,8 +25079,8 @@ msgid ""
 "may be necessary to snap the input to the blade first, using <xref "
 "linkend=\"ST_Snap\"/> with a small tolerance."
 msgstr ""
-"入力と刃が数値の精度の問題でインタセクトしない場合には、入力が思ったように分"
-"割されない可能性があります。この状況を避けるには、先に、<xref "
+"入力と刃が数値の精度の問題でインターセクトしない場合には、入力が思ったように"
+"分割されない可能性があります。この状況を避けるには、先に、<xref "
 "linkend=\"ST_Snap\"/> に小さい許容値を与えて、入力を刃にスナップする必要があ"
 "るかも知れません。"
 
@@ -25275,8 +25277,8 @@ msgid ""
 "Computes a geometry representing the portions of geometries A and B that do "
 "not intersect."
 msgstr ""
-"ジオメトリー A とジオメトリー B がインタセクトしていない部分を表現するジオメ"
-"トリーを返します。"
+"ジオメトリー A とジオメトリー B がインターセクトしていない部分を表現する"
+"ジオメトリーを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -25286,10 +25288,10 @@ msgid ""
 "ST_Intersection(A,B)</code>. It is called a symmetric difference because "
 "<code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>."
 msgstr ""
-"ジオメトリー A とジオメトリー B がインタセクトしていない部分を表現するジオメ"
-"トリーを返します。この関数は、<code>ST_Union(A,B) - ST_Intersection(A,B)</"
-"code> と同じです。SymDifference (対象差) と呼ばれるのは <code>ST_Union(A,B) "
-"- ST_Intersection(A,B)</code> だからです。"
+"ジオメトリー A とジオメトリー B がインターセクトしていない部分を表現する"
+"ジオメトリーを返します。この関数は、<code>ST_Union(A,B) - ST_Intersection"
+"(A,B)</code> と同じです。SymDifference (対象差) と呼ばれるのは <code>ST_Union"
+"(A,B) - ST_Intersection(A,B)</code> だからです。"
 
 #. Tag: para
 #, no-c-format
@@ -26839,7 +26841,7 @@ msgstr "次数 3以上"
 #. Tag: para
 #, no-c-format
 msgid "Lines are not merged across intersections with degree &gt; 2."
-msgstr "インタセクト位置で方向数 &gt; 2 となるラインはマージされません。"
+msgstr "インターセクト位置で方向数 &gt; 2 となるラインはマージされません。"
 
 #. Tag: title
 #, no-c-format
@@ -27678,8 +27680,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Simplifying a set of lines. Lines may intersect after simplification."
-msgstr ""
-"ラインの集合の簡略化。ラインは簡略化後のインタセクトする場合があります。"
+msgstr "ラインの集合の簡略化。ラインは簡略化後のインターセクトする場合があります。"
 
 #. Tag: para
 #, no-c-format
@@ -27739,8 +27740,8 @@ msgid ""
 msgstr ""
 "この関数は、どの種類のジオメトリー (GEOMETRYCOLLECTION も含む) を引数にとって"
 "も呼ぶことができますが、ラインとポリゴン要素だけを簡略化します。結果はリング"
-"の数は同じで、入力が相互にインターセクトしていないなら結果も相互にインタセク"
-"トしません。線ジオメトリーの端点は保持されます。"
+"の数は同じで、入力が相互にインターセクトしていないなら結果も相互に"
+"インターセクトしません。線ジオメトリーの端点は保持されます。"
 
 #. Tag: para
 #, no-c-format
@@ -28292,7 +28293,7 @@ msgstr ""
 "geomval は.geom フィールドで参照されるジオメトリーオブジェクトと、特定の地理"
 "位置におけるラスターバンドのピクセル値を表現する浮動小数点数の val からなる複"
 "合型です。ポリゴンにラスターバンドを展開するための出力型として、"
-"ST_DumpAsPolygon とラスターのインタセクション関連関数群に使われます。"
+"ST_DumpAsPolygon とラスターのインターセクション関連関数群に使われます。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -31169,13 +31170,13 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
-"指定したバンドにおける columnx, rowy で指定したピクセルまたは指定したジオメト"
-"リーポイントに対応するピクセルの値を返します。 バンド番号は 1始まりで、指定し"
-"ない場合には、1番と仮定します。<varname>exclude_nodata_value</varname> が "
-"FALSE に設定された場合には、<varname>NODATA</varname> ピクセルを含む全てのピ"
-"クセルがインタセクトするかが考慮され、値を返します。"
-"<varname>exclude_nodata_value</varname> を渡さない場合には、ラスターのメタ"
-"データから読みます。"
+"指定したバンドにおける columnx, rowy で指定したピクセルまたは指定した"
+"ジオメトリーポイントに対応するピクセルの値を返します。 バンド番号は 1始まりで"
+"、指定しない場合には、1番と仮定します。<varname>exclude_nodata_value</"
+"varname> が FALSE に設定された場合には、<varname>NODATA</varname> ピクセルを"
+"含む全てのピクセルがインターセクトするかが考慮され、値を返します。<varname>"
+"exclude_nodata_value</varname> を渡さない場合には、ラスターのメタデータから読"
+"みます。"
 
 #. Tag: para
 #, no-c-format
@@ -31349,10 +31350,10 @@ msgid ""
 "intersect and return value. If <varname>exclude_nodata_value</varname> is "
 "not passed in then reads it from metadata of raster."
 msgstr ""
-"バンド番号は 1始まりで、<varname>bandnum</varname> が指定されていない場合に"
-"は、1番と仮定します。<varname>exclude_nodata_value</varname> が FALSE に設定"
-"された場合には、<varname>NODATA</varname> ピクセルを含む全てのピクセルがイン"
-"タセクトするかが考慮され、値を返します。<varname>exclude_nodata_value</"
+"バンド番号は 1始まりで、<varname>bandnum</varname> が指定されていない場合には"
+"、1番と仮定します。<varname>exclude_nodata_value</varname> が FALSE に設定さ"
+"れた場合には、<varname>NODATA</varname> ピクセルを含む全てのピクセルが"
+"インターセクトするかが考慮され、値を返します。<varname>exclude_nodata_value</"
 "varname> を渡さない場合には、ラスターのメタデータから読みます。"
 
 #. Tag: para
@@ -31524,10 +31525,11 @@ msgid ""
 "a given columnx, rowy pixel or the pixels that intersect a particular "
 "geometry. Band numbers start at 1 and assumed to be 1 if not specified."
 msgstr ""
-"与えられたバンドの columnX, columnY か、ラスターと同じ空間参照系のジオメト"
-"リーポイントで指定されたピクセルの値または指定したジオメトリーとインタセクト"
-"するピクセル群の値を設定することから得られる、変更されたラスターを返します。"
-"バンド番号は 1始まりで、指定しない場合には、1番と仮定します。"
+"与えられたバンドの columnX, columnY か、ラスターと同じ空間参照系の"
+"ジオメトリーポイントで指定されたピクセルの値または指定したジオメトリーと"
+"インターセクトするピクセル群の値を設定することから得られる、変更された"
+"ラスターを返します。バンド番号は 1始まりで、指定しない場合には、1番と仮定しま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -33057,8 +33059,8 @@ msgstr ""
 msgid ""
 "Real live example. Quantile of all pixels in band 2 intersecting a geometry."
 msgstr ""
-"実際の例。2番バンドのうちジオメトリーとインタセクトしているピクセル全ての分位"
-"数。"
+"実際の例。2番バンドのうちジオメトリーとインターセクトしているピクセル全ての分"
+"位数。"
 
 #. Tag: para
 #, no-c-format
@@ -33872,12 +33874,12 @@ msgid ""
 "varname>. If <varname>touched</varname> is set to true, then all pixels in "
 "the <varname>rast</varname> that intersect the geometry are selected."
 msgstr ""
-"<varname>crop</varname> が指定されていない場合には、TRUE として扱われ、出力ラ"
-"スターは <varname>geom</varname> と <varname>rast</varname> の範囲の共有領域"
-"で切り取ります。<varname>crop</varname> が FALSE に指定されている場合には、新"
-"しいラスターは <varname>rast</varname> と同じ範囲になります。"
-"<varname>touched</varname> が TRUE に指定されている場合には、ジオメトリーとイ"
-"ンタセクトする <varname>rast</varname> 内の全てのピクセルが選択されます。"
+"<varname>crop</varname> が指定されていない場合には、TRUE として扱われ、出力"
+"ラスターは <varname>geom</varname> と <varname>rast</varname> の範囲の共有領"
+"域で切り取ります。<varname>crop</varname> が FALSE に指定されている場合には、"
+"新しいラスターは <varname>rast</varname> と同じ範囲になります。<varname>"
+"touched</varname> が TRUE に指定されている場合には、ジオメトリーと"
+"インターセクトする <varname>rast</varname> 内の全てのピクセルが選択されます。"
 
 #. Tag: para
 #, no-c-format
@@ -34233,9 +34235,9 @@ msgid ""
 "representing the shared portion of two rasters or the geometrical "
 "intersection of a vectorization of the raster and a geometry.</refpurpose>"
 msgstr ""
-"<refpurpose>二つのラスターの共有部分またはベクター化したラスターとジオメト"
-"リーとのインタセクトした部分を表現する、ラスターまたはジオメトリーとピクセル"
-"値の組の集合を返します。</refpurpose>"
+"<refpurpose>二つのラスターの共有部分またはベクター化したラスターと"
+"ジオメトリーとのインターセクトした部分を表現する、ラスターまたはジオメトリー"
+"とピクセル値の組の集合を返します。</refpurpose>"
 
 #. Tag: para
 #, no-c-format
@@ -34245,8 +34247,8 @@ msgid ""
 "vectorization of the raster and a geometry.</para>"
 msgstr ""
 "<para>二つのラスターの共有部分またはベクター化したラスターとジオメトリーとの"
-"インタセクトした部分を表現する、ラスターまたはジオメトリーとピクセル値の組の"
-"集合を返します。</para>"
+"インターセクトした部分を表現する、ラスターまたはジオメトリーとピクセル値の組"
+"の集合を返します。</para>"
 
 #. Tag: para
 #, no-c-format
@@ -34287,7 +34289,7 @@ msgid ""
 "intersection."
 msgstr ""
 "他の形式は、ラスターを引数に取り、ラスターを返します。ST_MapAlgebraExpr の二"
-"つのラスターを取る形式を使って、インタセクトしている部分を取得します。"
+"つのラスターを取る形式を使って、インターセクトしている部分を取得します。"
 
 #. Tag: para
 #, no-c-format
@@ -34300,12 +34302,12 @@ msgid ""
 "words, any pixel intersecting with a nodata value pixel becomes a nodata "
 "value pixel in the result."
 msgstr ""
-"結果ラスターの範囲は、二つのラスターの範囲についてインタセクトしている部分で"
-"す。結果ラスターは、<varname>returnband</varname> 引数として渡されたものにあ"
-"わせられた'BAND1','BAND2','BOTH'バンドを含みます。どのバンドでも NODATA 値の"
-"領域は、結果ラスターの全てのバンドの NODATA 値領域に現れます。言い換えると、"
-"あらゆる NODATA 値ピクセルとインタセクトしているピクセルは、結果ラスターでは "
-"NODATA 値ピクセルになります。"
+"結果ラスターの範囲は、二つのラスターの範囲についてインターセクトしている部分"
+"です。結果ラスターは、<varname>returnband</varname> 引数として渡されたものに"
+"あわせられた'BAND1','BAND2','BOTH'バンドを含みます。どのバンドでも NODATA 値"
+"の領域は、結果ラスターの全てのバンドの NODATA 値領域に現れます。言い換えると"
+"、あらゆる NODATA 値ピクセルとインターセクトしているピクセルは、結果ラスター"
+"では NODATA 値ピクセルになります。"
 
 #. Tag: para
 #, no-c-format
@@ -34321,16 +34323,16 @@ msgid ""
 "an array of nodata value can also accept a single value which will be "
 "assigned to each requested band."
 msgstr ""
-"インタセクトしなかった領域に NODATA 値を入れるために、ST_Intersection からの"
-"結果ラスターは、NODATA 値を持たなければなりません。結果ラスターのどのバンドに"
-"も、一つか二つの NODATA 値を持つ <varname>nodataval[]</varname> 配列を与える"
-"ことで NODATA 値を定義したり置き換えたりできます。この配列は、引数で与え"
-"た'BAND1','BAND2','BOTH'バンドに依存します。 配列の一つ目の値は、一つ目のバン"
-"ドの NODATA 値を入れ替えるものです。二つ目の値は二つ目のバンドの NODATA 値を"
-"入れ替えるものです。入力バンドの一つが NODATA 値を持っておらず、かつ配列を渡"
-"さなかった場合には、ST_MinPossibleValue 関数を使って NODATA 値が選ばれます。"
-"NODATA 値の配列を受け付ける形式の全てが、単一値を受け付けます。単一値は結果ラ"
-"スターのそれぞれのバンドに適用されます。"
+"インターセクトしなかった領域に NODATA 値を入れるために、ST_Intersection から"
+"の結果ラスターは、NODATA 値を持たなければなりません。結果ラスターのどのバンド"
+"にも、一つか二つの NODATA 値を持つ <varname>nodataval[]</varname> 配列を与え"
+"ることで NODATA 値を定義したり置き換えたりできます。この配列は、引数で与え"
+"た'BAND1','BAND2','BOTH'バンドに依存します。 配列の一つ目の値は、一つ目の"
+"バンドの NODATA 値を入れ替えるものです。二つ目の値は二つ目のバンドの NODATA "
+"値を入れ替えるものです。入力バンドの一つが NODATA 値を持っておらず、かつ配列"
+"を渡さなかった場合には、ST_MinPossibleValue 関数を使って NODATA 値が選ばれま"
+"す。NODATA 値の配列を受け付ける形式の全てが、単一値を受け付けます。単一値は結"
+"果ラスターのそれぞれのバンドに適用されます。"
 
 #. Tag: para
 #, no-c-format
@@ -34371,8 +34373,8 @@ msgid ""
 "earlier pre-2.0.0 versions, only intersection performed in vector space were "
 "supported."
 msgstr ""
-"Enhanced: 2.0.0 - ラスター空間のインタセクションが導入されました。2.0.0より前"
-"の版では、ベクター空間でのインタセクションの計算のみに対応していました。"
+"Enhanced: 2.0.0 - ラスター空間のインターセクションが導入されました。2.0.0より"
+"前の版では、ベクター空間でのインターセクションの計算のみに対応していました。"
 
 #. Tag: title
 #, no-c-format
@@ -34843,8 +34845,8 @@ msgid ""
 "intersect. e.g. (([rast1] + [rast2])/2.0)::integer"
 msgstr ""
 "二つのラスターと PostgreSQL 定義済み関数/演算子を含む PostgreSQL 代数式です。"
-"関数と演算子は、二つのピクセルがインタセクトするピクセルの値を定めます。たと"
-"えば (([rast1] + [rast2])/2.0)::integer といったふうになります。"
+"関数と演算子は、二つのピクセルがインターセクトするピクセルの値を定めます。た"
+"とえば (([rast1] + [rast2])/2.0)::integer といったふうになります。"
 
 #. Tag: para
 #, no-c-format
@@ -34869,8 +34871,8 @@ msgid ""
 "<varname>INTERSECTION</varname> - The extent of the new raster is the "
 "intersection of the two rasters. This is the default."
 msgstr ""
-"<varname>INTERSECTION</varname> - 新しいラスターの範囲は二つのラスターのイン"
-"タセクトした領域です。これがデフォルトです。"
+"<varname>INTERSECTION</varname> - 新しいラスターの範囲は二つのラスターの"
+"インターセクトした領域です。これがデフォルトです。"
 
 #. Tag: para
 #, no-c-format
@@ -35946,9 +35948,9 @@ msgid ""
 "FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE."
 msgstr ""
 "ラスタータイルの集合を結合して少なくとも一つのバンドからなる単一ラスターを返"
-"します。結果ラスターの範囲は集合全体の範囲です。インタセクトする場合には、結"
-"果値は、LAST (デフォルト), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE のいずれ"
-"かとなる <varname>uniontype</varname> で定義されます。"
+"します。結果ラスターの範囲は集合全体の範囲です。インターセクトする場合には、"
+"結果値は、LAST (デフォルト), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE のいず"
+"れかとなる <varname>uniontype</varname> で定義されます。"
 
 #. Tag: para
 #, no-c-format
@@ -37269,8 +37271,8 @@ msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box intersects B's bounding "
 "box."
 msgstr ""
-"A のバウンディングボックスが B のバウンディングボックスとインタセクトする場合"
-"に <varname>TRUE</varname> を返します。"
+"A のバウンディングボックスが B のバウンディングボックスとインターセクトする場"
+"合に <varname>TRUE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -37279,9 +37281,9 @@ msgid ""
 "if the bounding box of raster/geometr A intersects the bounding box of "
 "raster/geometr B."
 msgstr ""
-"<varname>&amp;&amp;</varname> 演算子は、A のバウンディングボックスが B のバウ"
-"ンディングボックスにインタセクトする場合に <varname>TRUE</varname> を返しま"
-"す。"
+"<varname>&amp;&amp;</varname> 演算子は、A のバウンディングボックスが B の"
+"バウンディングボックスにインターセクトする場合に <varname>TRUE</varname> を返"
+"します。"
 
 #. Tag: para
 #, no-c-format
@@ -37533,8 +37535,8 @@ msgid ""
 "Return true if rastB intersects the interior of rastA but not the boundary "
 "or exterior of rastA."
 msgstr ""
-"rastB が rastA の内部でインタセクトし、かつ rastA の境界とも外部ともインタセ"
-"クトしない場合に TRUE を返します。"
+"rastB が rastA の内部でインターセクトし、かつ rastA の境界とも外部とも"
+"インターセクトしない場合に TRUE を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -37545,11 +37547,11 @@ msgid ""
 "in the test. If the band number is provided, only those pixels with value "
 "(not NODATA) are considered in the test."
 msgstr ""
-"rastB が rastA の内部でインタセクトし、かつ rastA の境界とも外部ともインタセ"
-"クトしない場合には、rastA は rastB に対して ContainsProperly (確実に包含して"
-"いる) です。バンド番号が指定されていないか NULL に指定されている場合には、ラ"
-"スターの凸包のみを考慮してテストします。バンド番号が指定されている場合には、"
-"値を持つ (NODATA でない) ピクセルについてテストします。"
+"rastB が rastA の内部でインターセクトし、かつ rastA の境界とも外部とも"
+"インターセクトしない場合には、rastA は rastB に対して ContainsProperly (確実"
+"に包含している) です。バンド番号が指定されていないか NULL に指定されている場"
+"合には、ラスターの凸包のみを考慮してテストします。バンド番号が指定されている"
+"場合には、値を持つ (NODATA でない) ピクセルについてテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -37646,7 +37648,7 @@ msgstr ", <xref linkend=\"RT_ST_Covers\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return true if raster rastA does not spatially intersect rastB."
-msgstr "rastA が rastB とインタセクトしない場合に TRUE を返します。"
+msgstr "rastA が rastB とインターセクトしない場合に TRUE を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -37657,7 +37659,7 @@ msgid ""
 "provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
-"rastA が rastB とインタセクトしない場合には、rastA と rastB は Disjoint で"
+"rastA が rastB とインターセクトしない場合には、rastA と rastB は Disjoint で"
 "す。バンド番号が指定されていないか NULL に指定されている場合には、ラスターの"
 "凸包のみを考慮してテストします。バンド番号が指定されている場合には、値を持つ "
 "(NODATA でない) ピクセルについてテストします。"
@@ -37693,7 +37695,7 @@ msgstr "今度はバンド番号の指定をしません。"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Return true if raster rastA spatially intersects raster rastB."
-msgstr "rastA が rastB とインタセクトする場合に TRUE を返します。"
+msgstr "rastA が rastB とインターセクトする場合に TRUE を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -37703,15 +37705,15 @@ msgid ""
 "is considered in the test. If the band number is provided, only those pixels "
 "with value (not NODATA) are considered in the test."
 msgstr ""
-"rastA が rastB とインタセクトする場合に TRUE を返します。バンド番号が指定され"
-"ていないか NULL に指定されている場合には、ラスターの凸包のみを考慮してテスト"
-"します。バンド番号が指定されている場合には、値を持つ (NODATA でない) ピクセル"
-"についてテストします。"
+"rastA が rastB とインターセクトする場合に TRUE を返します。バンド番号が指定さ"
+"れていないか NULL に指定されている場合には、ラスターの凸包のみを考慮して"
+"テストします。バンド番号が指定されている場合には、値を持つ (NODATA でない) "
+"ピクセルについてテストします。"
 
 #. Tag: para
 #, no-c-format
 msgid "Enhanced: 2.0.0 support raster/raster intersects was introduced."
-msgstr "Enhanced: 2.0.0 ラスター/ラスターのインタセクト対応が導入されました。"
+msgstr "Enhanced: 2.0.0 ラスター/ラスターのインターセクト対応が導入されました。"
 
 #. Tag: para
 #, no-c-format
@@ -37738,8 +37740,8 @@ msgid ""
 "Return true if raster rastA and rastB intersect but one does not completely "
 "contain the other."
 msgstr ""
-"rastA と rastB がインタセクトして、かつ一方がもう一方に完全には包含されない場"
-"合には TRUE を返します。"
+"rastA と rastB がインターセクトして、かつ一方がもう一方に完全には包含されない"
+"場合には TRUE を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -37750,11 +37752,11 @@ msgid ""
 "the raster is considered in the test. If the band number is provided, only "
 "those pixels with value (not NODATA) are considered in the test."
 msgstr ""
-"rastA が rastB をオーバラップする場合に TRUE を返します。rastA と rastB がイ"
-"ンタセクトして、かつ一方がもう一方に完全には包含されない場合にはいう意味で"
-"す。バンド番号が指定されていないか NULL に指定されている場合には、ラスターの"
-"凸包のみを考慮してテストします。バンド番号が指定されている場合には、値を持つ "
-"(NODATA でない) ピクセルについてテストします。"
+"rastA が rastB をオーバラップする場合に TRUE を返します。rastA と rastB が"
+"インターセクトして、かつ一方がもう一方に完全には包含されない場合にはいう意味"
+"です。バンド番号が指定されていないか NULL に指定されている場合には、ラスター"
+"の凸包のみを考慮してテストします。バンド番号が指定されている場合には、値を持"
+"つ (NODATA でない) ピクセルについてテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -37778,7 +37780,7 @@ msgid ""
 "their interiors do not intersect."
 msgstr ""
 "rastA と rastB が少なくとも一つの共通の点を持ち、かつ二つのラスターの内部同士"
-"がインタセクトしない場合に TRUE を返します。"
+"がインターセクトしない場合に TRUE を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -37791,10 +37793,10 @@ msgid ""
 "test."
 msgstr ""
 "rastA が rastB に接触する場合に TRUE を返します。rastA と rastB が少なくとも"
-"一つの共通の点を持ち、かつ二つのラスターの内部同士がインタセクトしないという"
-"意味です。バンド番号が指定されていないか NULL に指定されている場合には、ラス"
-"ターの凸包のみを考慮してテストします。バンド番号が指定されている場合には、値"
-"を持つ (NODATA でない) ピクセルについてテストします。"
+"一つの共通の点を持ち、かつ二つのラスターの内部同士がインターセクトしないとい"
+"う意味です。バンド番号が指定されていないか NULL に指定されている場合には、"
+"ラスターの凸包のみを考慮してテストします。バンド番号が指定されている場合には"
+"、値を持つ (NODATA でない) ピクセルについてテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -38309,9 +38311,9 @@ msgid ""
 "Tests if two geometries spatially intersect in 3D - only for points, "
 "linestrings, polygons, polyhedral surface (area)"
 msgstr ""
-"二つのジオメトリーが 3次元空間において空間的にインタセクトするかどうかをテス"
-"トします。ポイント、ラインストリング、ポリゴン、多面体サーフェス (面) につい"
-"てのみ動作します。"
+"二つのジオメトリーが 3次元空間において空間的にインターセクトするかどうかを"
+"テストします。ポイント、ラインストリング、ポリゴン、多面体サーフェス (面) に"
+"ついてのみ動作します。"
 
 #. Tag: para
 #, no-c-format
@@ -38320,9 +38322,9 @@ msgid ""
 "aforementioned returns true, then the geometries also spatially intersect. "
 "Disjoint implies false for spatial intersection."
 msgstr ""
-"オーバラップ、接触、包含は全て、ジオメトリーがインタセクトしていることを意味"
-"しています。これらが TRUE を返す場合は、空間的にインタセクトしています。非接"
-"続は、空間インタセクトについて FALSE となります。"
+"オーバラップ、接触、包含は全て、ジオメトリーがインターセクトしていることを意"
+"味しています。これらが TRUE を返す場合は、空間的にインターセクトしています。"
+"非接続は、空間インターセクトについて FALSE となります。"
 
 #. Tag: para
 #, no-c-format
@@ -38338,11 +38340,12 @@ msgid ""
 "kind of issues where a distance of a centimeter you want to just consider as "
 "intersecting, use <xref linkend=\"ST_3DDWithin\"/>."
 msgstr ""
-"浮動小数点数のロバスト性の障害のため、ジオメトリー処理後に期待するようなイン"
-"タセクトが常にあるわけではないことになります。たとえば、ジオメトリーに対する"
-"ラインストリング上の最接近点がラインストリング上に無いことがあります。インタ"
-"セクトと考えたいのにセンチメートル程度の距離があると、この問題は発生します"
-"が、この種の問題への対応には、<xref linkend=\"ST_3DDWithin\"/> を使います。"
+"浮動小数点数のロバスト性の障害のため、ジオメトリー処理後に期待するような"
+"インターセクトが常にあるわけではないことになります。たとえば、ジオメトリーに"
+"対するラインストリング上の最接近点がラインストリング上に無いことがあります。"
+"インターセクトと考えたいのにセンチメートル程度の距離があると、この問題は発生"
+"しますが、この種の問題への対応には、<xref linkend=\"ST_3DDWithin\"/> を使いま"
+"す。"
 
 #. Tag: para
 #, no-c-format
@@ -38553,9 +38556,9 @@ msgid ""
 "returns <varname>FALSE</varname> in the following situations (whereas "
 "<function>ST_Covers</function> returns <varname>TRUE</varname>):"
 msgstr ""
-"次に示す状況にあっては、内部のインタセクトの状態のために "
-"(<function>ST_Covers</function> だと <varname>TRUE</varname> を返すの"
-"に)<function>ST_Contains</function> は <varname>FALSE</varname> を返します。"
+"次に示す状況にあっては、内部のインターセクトの状態のために (<function>"
+"ST_Covers</function> だと <varname>TRUE</varname> を返すのに)<function>"
+"ST_Contains</function> は <varname>FALSE</varname> を返します。"
 
 #. Tag: para
 #, no-c-format
@@ -38636,11 +38639,11 @@ msgid ""
 "out test geometries which lie fully inside the area. In these cases the "
 "intersection is known a priori to be exactly the original test geometry."
 msgstr ""
-"大きいポリゴンジオメトリーでのジオメトリーの集合のインタセクションを計算する"
-"際にこの述語を使います。インタセクションはかなり遅いので、ContainsProperly を"
-"使って、対象ジオメトリーのうち全体が領域内にあるものを抜き出すことができ、効"
-"率的になります。これらの場面では、インタセクションは確実に元の対象ジオメト"
-"リーであることが直感的に分かります。"
+"大きいポリゴンジオメトリーでのジオメトリーの集合のインターセクションを計算す"
+"る際にこの述語を使います。インターセクションはかなり遅いので、"
+"ContainsProperly を使って、対象ジオメトリーのうち全体が領域内にあるものを抜き"
+"出すことができ、効率的になります。これらの場面では、インターセクションは確実"
+"に元の対象ジオメトリーであることが直感的に分かります。"
 
 #. Tag: para
 #, no-c-format
@@ -38688,7 +38691,7 @@ msgid ""
 "Equivalently, tests that no point of A lies outside (in the exterior of) B."
 msgstr ""
 "ジオメトリー/ジオグラフィ A の全ての点がジオメトリー/ジオグラフィ B の内側に"
-"ある (つまり B の境界か内部とインタセクトする) 場合に <varname>TRUE</"
+"ある (つまり B の境界か内部とインターセクトする) 場合に <varname>TRUE</"
 "varname> を返します。A に B の外側にある (B の外部にある) 点が無いかどうかを"
 "テストする、と言い換えられます。"
 
@@ -38758,8 +38761,8 @@ msgid ""
 "Equivalently, tests that no point of B lies outside (in the exterior of) A."
 msgstr ""
 "ジオメトリー/ジオグラフィ B の全てのポイントがジオメトリー/ジオグラフィ A の"
-"内側にある (内部または境界とインタセクトする) 場合に <varname>TRUE</varname> "
-"を返します。A の外部に B の点が無いことと等価です。"
+"内側にある (内部または境界とインターセクトする) 場合に <varname>TRUE</"
+"varname> を返します。A の外部に B の点が無いことと等価です。"
 
 #. Tag: para
 #, no-c-format
@@ -39118,8 +39121,8 @@ msgstr ""
 msgid ""
 "Tests if two geometries intersect (they have at least one point in common)"
 msgstr ""
-"二つのジオメトリーがインタセクトしている (少なくとも一つの共有点がある) かど"
-"うかテストします。"
+"二つのジオメトリーがインターセクトしている (少なくとも一つの共有点がある) か"
+"どうかテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -39127,7 +39130,7 @@ msgid ""
 "Returns <varname>true</varname> if two geometries intersect. Geometries "
 "intersect if they have any point in common."
 msgstr ""
-"二つのジオメトリーがインタセクトする場合に <varname>TRUE</varname> を返しま"
+"二つのジオメトリーがインターセクトする場合に <varname>TRUE</varname> を返しま"
 "す。任意の共有点を持つ場合を指します。"
 
 #. Tag: para
@@ -39137,7 +39140,7 @@ msgid ""
 "that are very close are considered to intersect)."
 msgstr ""
 "ジオグラフィに対しては、0.00001メートルの距離許容値が使われます (このため非常"
-"に近いポイントはインタセクトしているとみなされます)。"
+"に近いポイントはインターセクトしているとみなされます)。"
 
 #. Tag: para
 #, no-c-format
@@ -39149,8 +39152,7 @@ msgstr "数学用語では: <emphasis>ST_Intersects(A, B) ⇔ A ⋂ B ≠ ∅ </
 #, no-c-format
 msgid ""
 "Geometries intersect if their DE-9IM Intersection Matrix matches one of:"
-msgstr ""
-"DE-9IM 交差行列が次の通り合致するとジオメトリーはインタセクトしています:"
+msgstr "DE-9IM 交差行列が次の通り合致するとジオメトリーはインターセクトしています:"
 
 #. Tag: para
 #, no-c-format
@@ -39159,9 +39161,9 @@ msgid ""
 "except <xref linkend=\"ST_Disjoint\"/>, which tests that geometries do NOT "
 "intersect."
 msgstr ""
-"空間的なインタセクションは全ての他の空間関係テスト関数に含まれます。例外は "
-"<xref linkend=\"ST_Disjoint\"/> で、全てのジオメトリーがインタセクトしていな"
-"いかどうかをテストすることになります。"
+"空間的なインターセクションは全ての他の空間関係テスト関数に含まれます。例外は "
+"<xref linkend=\"ST_Disjoint\"/> で、全てのジオメトリーがインターセクトしてい"
+"ないかどうかをテストすることになります。"
 
 #. Tag: para
 #, no-c-format
@@ -39364,8 +39366,8 @@ msgid ""
 "Tests if two geometries have the same dimension and intersect, but each has "
 "at least one point not in the other"
 msgstr ""
-"二つのジオメトリーが同じ次元を持ち、インタセクトして、かつ相手と重ならない点"
-"少なくとも一つあるかをテストします。"
+"二つのジオメトリーが同じ次元を持ち、インターセクトして、かつ相手と重ならない"
+"点少なくとも一つあるかをテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -39376,11 +39378,11 @@ msgid ""
 "equivalently, neither one covers the other). The overlaps relation is "
 "symmetric and irreflexive."
 msgstr ""
-"ジオメトリー A と B が「空間的にオーバラップする」場合に TRUE を返します。ジ"
-"オメトリーが同じ次元で、内部のインタセクションも同じ次元で、少なくとも一つの"
-"点がもう一方の外側にある (一方がもう一方を覆っている状態でないのと等価です) "
-"と、二つのジオメトリーがオーバラップしていると言います。オーバラップの関係"
-"は、対称性があり、無反射性があります。"
+"ジオメトリー A と B が「空間的にオーバラップする」場合に TRUE を返します。"
+"ジオメトリーが同じ次元で、内部のインターセクションも同じ次元で、少なくとも一"
+"つの点がもう一方の外側にある (一方がもう一方を覆っている状態でないのと等価で"
+"す) と、二つのジオメトリーがオーバラップしていると言います。オーバラップの関"
+"係は、対称性があり、無反射性があります。"
 
 #. Tag: para
 #, no-c-format
@@ -39455,8 +39457,8 @@ msgid ""
 "A LineString that partly covers a Polygon intersects and crosses, but does "
 "not overlap since it has different dimension."
 msgstr ""
-"部分的にポリゴンを覆うラインストリングはインタセクトもクロスもしますが、異な"
-"り次元なのでオーバラップしません。"
+"部分的にポリゴンを覆うラインストリングはインターセクトもクロスもしますが、異"
+"なり次元なのでオーバラップしません。"
 
 #. Tag: para
 #, no-c-format
@@ -39464,8 +39466,8 @@ msgid ""
 "Two Polygons that intersect but with neither contained by the other overlap, "
 "but do not cross because their intersection has the same dimension."
 msgstr ""
-"二つのポリゴンがインタセクトするものの一方が他方のオーバラップを含んでいませ"
-"んが、インタセクトが同じ次元なのでクロスしません。"
+"二つのポリゴンがインターセクトするものの一方が他方のオーバラップを含んでいま"
+"せんが、インターセクトが同じ次元なのでクロスしません。"
 
 #. Tag: para
 #, no-c-format
@@ -39506,9 +39508,9 @@ msgid ""
 "geometries. It is represented by a 9-character text string using the symbols "
 "'F', '0', '1', '2' (e.g. <code>'FF1FF0102'</code>)."
 msgstr ""
-"DE-9IM は 9要素の行列で、二つのジオメトリーの内部、境界、外部のインタセクショ"
-"ンの次元を示しています。'F', '0', '1', '2'の文字による 9文字の文字列で表現し"
-"ます (例えば <code>'FF1FF0102'</code>)。"
+"DE-9IM は 9要素の行列で、二つのジオメトリーの内部、境界、外部の"
+"インターセクションの次元を示しています。'F', '0', '1', '2'の文字による 9文字"
+"の文字列で表現します (例えば <code>'FF1FF0102'</code>)。"
 
 #. Tag: para
 #, no-c-format
@@ -39529,20 +39531,20 @@ msgid ""
 "\"Interior-Intersects\" has the DE-9IM pattern <code>T********</code>, which "
 "is not evaluated by any named predicate."
 msgstr ""
-"<emphasis>intersection matrix pattern</emphasis> で、特定の種類の空間関係のテ"
-"ストができます。パターンでは追加の文字 'T' (「インタセクションが空でない」と"
-"いう意味) と '*' (「値はなんでもいい」という意味) を使うことができます。一般"
-"的な空間関係については、名前の付いた関数 <xref linkend=\"ST_Contains\"/>, "
-"<xref linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, "
+"<emphasis>intersection matrix pattern</emphasis> で、特定の種類の空間関係の"
+"テストができます。パターンでは追加の文字 'T' (「インターセクションが空でない"
+"」という意味) と '*' (「値はなんでもいい」という意味) を使うことができます。"
+"一般的な空間関係については、名前の付いた関数 <xref linkend=\"ST_Contains\"/>"
+", <xref linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, "
 "<xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Crosses\"/>, <xref "
 "linkend=\"ST_Disjoint\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
 "linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref "
 "linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/> として提供されます。"
-"明示的なパターンを使うことで、インタセクト、クロス等の複数のテストを一回でで"
-"きるようになります。また、名前のある空間関係関数を持たない空間関係のテストも"
-"可能になります。たとえば、「内部インタセクション」という空間関係は、名前の付"
-"いた空間関係関数では評価できませんが、<code>T********</code> の DE-9IM で評価"
-"できます。"
+"明示的なパターンを使うことで、インターセクト、クロス等の複数のテストを一回で"
+"できるようになります。また、名前のある空間関係関数を持たない空間関係のテスト"
+"も可能になります。たとえば、「内部インターセクション」という空間関係は、名前"
+"の付いた空間関係関数では評価できませんが、<code>T********</code> の DE-9IM で"
+"評価できます。"
 
 #. Tag: para
 #, no-c-format
@@ -39570,9 +39572,9 @@ msgid ""
 "&amp;&amp; index call."
 msgstr ""
 "他の名前の付いた空間関係述語の多くと異なり、この関数は自動ではインデックスの"
-"呼び出しを*行いません*。インタセクト*しない*ジオメトリーで TRUE になる関係が"
-"あるためです。インタセクションが求められる関係パターンを使用している場合に"
-"は、関数呼び出しに&amp;&amp;を取り入れてください。"
+"呼び出しを*行いません*。インターセクト*しない*ジオメトリーで TRUE になる関係"
+"があるためです。インターセクションが求められる関係パターンを使用している場合"
+"には、関数呼び出しに&amp;&amp;を取り入れてください。"
 
 #. Tag: para
 #, no-c-format
@@ -39744,8 +39746,8 @@ msgid ""
 "Tests if two geometries have at least one point in common, but their "
 "interiors do not intersect"
 msgstr ""
-"二つのジオメトリーが少なくとも一つの共有点を持ち、かつ内部でインタセクトして"
-"いないようになっているかテストします。"
+"二つのジオメトリーが少なくとも一つの共有点を持ち、かつ内部でインターセクトし"
+"ていないようになっているかテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -39756,10 +39758,11 @@ msgid ""
 "relationship is always <varname>FALSE</varname>, since points do not have a "
 "boundary."
 msgstr ""
-"A と B がインタセクトするが A の内部と B の内部がインタセクトしない場合には "
-"<varname>TRUE</varname> を返します。A と B が少なくとも一つの共有点があり、共"
-"有点が少なくとも一つの境界の上にあることと同じです。ポイント/ポイント入力で"
-"は、ポイントは境界を持たないため、常に <varname>FALSE</varname> を返します。"
+"A と B がインターセクトするが A の内部と B の内部がインターセクトしない場合に"
+"は <varname>TRUE</varname> を返します。A と B が少なくとも一つの共有点があり"
+"、共有点が少なくとも一つの境界の上にあることと同じです。ポイント/ポイント入力"
+"では、ポイントは境界を持たないため、常に <varname>FALSE</varname> を返します"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -40579,18 +40582,17 @@ msgstr "SFCGAL 処理関数および関係関数"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Computes the intersection of two geometries"
-msgstr "二つのジオメトリーのインタセクトする (共有する) 部分を計算します"
+msgstr "二つのジオメトリーのインターセクトする (共有する) 部分を計算します"
 
 #. Tag: para
 #, no-c-format
 msgid "Computes the intersection of two geometries."
-msgstr "二つのジオメトリーのインタセクトする (共有する) 部分を計算します。"
+msgstr "二つのジオメトリーのインターセクトする (共有する) 部分を計算します。"
 
 #. Tag: para
 #, no-c-format
 msgid "NOTE: this function returns a geometry representing the intersection."
-msgstr ""
-"ご注意: この関数はインタセクトした部分を表現するジオメトリーを返します。"
+msgstr "ご注意: この関数はインターセクトした部分を表現するジオメトリーを返します。"
 
 #. Tag: para
 #, no-c-format
@@ -40604,7 +40606,7 @@ msgstr ""
 #. Tag: refpurpose
 #, no-c-format
 msgid "Tests if two 3D geometries intersect"
-msgstr "二つの 3次元ジオメトリーがインタセクトするかどうかをテストします"
+msgstr "二つの 3次元ジオメトリーがインターセクトするかどうかをテストします"
 
 #. Tag: para
 #, no-c-format
@@ -40612,8 +40614,8 @@ msgid ""
 "Tests if two 3D geometries intersect. 3D geometries intersect if they have "
 "any point in common in the three-dimensional space."
 msgstr ""
-"二つの 3次元ジオメトリーがインタセクトするかどうかをテストします。3次元空間で"
-"共通する点が存在するなら、3次元ジオメトリーはインタセクトしています。"
+"二つの 3次元ジオメトリーがインターセクトするかどうかをテストします。3次元空間"
+"で共通する点が存在するなら、3次元ジオメトリーはインターセクトしています。"
 
 #. Tag: refpurpose
 #, no-c-format
@@ -40745,7 +40747,7 @@ msgstr ", <xref linkend=\"ST_AsX3D\"/>"
 #. Tag: refpurpose
 #, no-c-format
 msgid "Perform 3D intersection"
-msgstr "3次元のインタセクトした (共有する) 部分を計算します。"
+msgstr "3次元のインターセクトした (共有する) 部分を計算します。"
 
 #. Tag: para
 #, no-c-format
@@ -40949,14 +40951,15 @@ msgid ""
 "Though the triangulation-based approximation algorithm often results in "
 "fewer convex pieces, this is not always the case."
 msgstr ""
-"ポリゴン P の分割は、内部同士がインタセクトせず、結合すると元のポリゴン P の"
-"内部と同じになるようなポリゴンの集合です。CG_ApproxConvexPartition 関数と "
+"ポリゴン P の分割は、内部同士がインターセクトせず、結合すると元のポリゴン P "
+"の内部と同じになるようなポリゴンの集合です。CG_ApproxConvexPartition 関数と "
 "CG_GreeneApproxConvexPartition 関数は、概ね最適な凸分割を生成します。両方の関"
 "数は、最初にポリゴンをより単純なポリゴンに分解したうえで凸分解を行います。"
 "CG_ApproxConvexPartition は三角形を使い、CG_GreeneApproxConvexPartition は単"
 "調分割を使います。両方の関数は、凸分割の要素数について最適数の 4倍を超えない"
-"ことを保証しますが、実行時の複雑さが異なります。三角形ベースの近似アルゴリズ"
-"ムでは、しばしば、凸要素が少なくなりますが、常にそうなるとは限りません。"
+"ことを保証しますが、実行時の複雑さが異なります。三角形ベースの近似"
+"アルゴリズムでは、しばしば、凸要素が少なくなりますが、常にそうなるとは限りま"
+"せん。"
 
 #. Tag: para
 #, no-c-format
@@ -41337,8 +41340,8 @@ msgid ""
 "Repair a self-intersecting bowtie polygon with the default "
 "<literal>EVEN_ODD</literal> rule."
 msgstr ""
-"自己インターセクトする蝶ネクタイ形状のポリゴンをデフォルトの "
-"<literal>EVEN_ODD</literal> 規則で修復する。"
+"自己インターセクションを持つ蝶ネクタイ形状のポリゴンをデフォルトの <literal>"
+"EVEN_ODD</literal> 規則で修復する。"
 
 #. Tag: para
 #, no-c-format
@@ -41651,9 +41654,9 @@ msgid ""
 "interior of the original polygon P. CG_OptimalConvexPartition produces a "
 "partition that is optimal in the number of pieces."
 msgstr ""
-"ポリゴン P の分割は、内部同士がインタセクトせず、結合すると元のポリゴン P の"
-"内部と同じになるようなポリゴンの集合です。CG_OptimalConvexPartition は、分割"
-"要素数について最適な分割を生成します。"
+"ポリゴン P の分割は、内部同士がインターセクトせず、結合すると元のポリゴン P "
+"の内部と同じになるようなポリゴンの集合です。CG_OptimalConvexPartition は、分"
+"割要素数について最適な分割を生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -41813,12 +41816,12 @@ msgid ""
 "algorithm does not guarantee a bound on the number of polygons produced with "
 "respect to the optimal number."
 msgstr ""
-"ポリゴン P の分割は、内部同士がインタセクトせず、結合すると元のポリゴン P の"
-"内部と同じになるようなポリゴンの集合です。Y 単調のポリゴンとは、頂点 v1,… vn "
-"が、v1,…,vk と vk,…,vn,v1 の二つのチェーンに、水平線がどちらかのチェーンに、"
-"たかだか 1回インタセクトするようになるように分割することができるポリゴンで"
-"す。このアルゴリズムは、最適なポリゴン数に対して生成されるポリゴン数の限度を"
-"保証しません。"
+"ポリゴン P の分割は、内部同士がインターセクトせず、結合すると元のポリゴン P "
+"の内部と同じになるようなポリゴンの集合です。Y 単調のポリゴンとは、頂点 v1,… "
+"vn が、v1,…,vk と vk,…,vn,v1 の二つのチェーンに、水平線がどちらかのチェーンに"
+"、たかだか 1回インターセクトするようになるように分割することができるポリゴン"
+"です。このアルゴリズムは、最適なポリゴン数に対して生成されるポリゴン数の限度"
+"を保証しません。"
 
 #. Tag: para
 #, no-c-format
@@ -42173,8 +42176,9 @@ msgstr ""
 "アルゴリズムは制約付き三角分割を基にしていて、Z 値と M 値の保存のための追加操"
 "作を持つ <link xlink:href=\"https://doc.cgal.org/latest/"
 "Polyline_simplification_2/index.html\">CGAL Polyline Simplification 2</link> "
-"ライブラリを使っています。トポロジーが保存され、ジオメトリーどうしがインタセ"
-"クトしているとき、Z 値と M 値はインタセクトしているポイントで補間されます。"
+"ライブラリを使っています。トポロジーが保存され、ジオメトリーどうしが"
+"インターセクトしているとき、Z 値と M 値はインターセクトしているポイントで補間"
+"されます。"
 
 #. Tag: para
 #, no-c-format
@@ -42227,8 +42231,8 @@ msgid ""
 "intersection points are interpolated. The default value is false."
 msgstr ""
 "TRUE に設定すると、この関数はジオメトリーのトポロジーを確実に保存します。この"
-"モードでジオメトリーがインタセクとするとき、インタセクとするポイントにおける "
-"Z 値と M 値は補完値になります。デフォルト値は FALSE です。"
+"モードでジオメトリーがインターセクトするとき、インターセクトするポイントにお"
+"ける Z 値と M 値は補完値になります。デフォルト値は FALSE です。"
 
 #. Tag: title
 #, no-c-format
@@ -44383,7 +44387,8 @@ msgstr ""
 msgid ""
 "Single polygons may become multi-geometries in case of self-intersections."
 msgstr ""
-"単一ポリゴンは、自己インタセクトがある場合には、マルチポリゴンになります。"
+"単一ポリゴンは、自己インターセクショを持つ場合には、マルチポリゴンになります"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -47171,9 +47176,9 @@ msgid ""
 "for data on the spheroidal surface of the earth."
 msgstr ""
 "PostGIS ジオメトリー型の基礎は平面です。平面上の 2点間の最短経路は直線です。"
-"ジオメトリーに関する関数 (面積、距離、長さ、インタセクション等) は直線ベクト"
-"ルとデカルト平面を使って計算しています。これで実装が簡単になり実行速度も上が"
-"りますが、地球の球面の上にあるデータについては不正確になります。"
+"ジオメトリーに関する関数 (面積、距離、長さ、インターセクション等) は直線"
+"ベクトルとデカルト平面を使って計算しています。これで実装が簡単になり実行速度"
+"も上がりますが、地球の球面の上にあるデータについては不正確になります。"
 
 #. Tag: para
 #, no-c-format
@@ -47185,9 +47190,9 @@ msgid ""
 "account, the functions provide more accurate results."
 msgstr ""
 "PostGIS ジオグラフィというデータ型は球面モデルに基づいています。球面上の 2点"
-"の最短経路は大円の弧にあたります。ジオグラフィの関数 (面積、距離、長さ、イン"
-"タセクション等) は球面上の弧を使います。球面上の世界の形状を考慮に入れるの"
-"で、より正確な結果が得られます。"
+"の最短経路は大円の弧にあたります。ジオグラフィの関数 (面積、距離、長さ、"
+"インターセクション等) は球面上の弧を使います。球面上の世界の形状を考慮に入れ"
+"るので、より正確な結果が得られます。"
 
 #. Tag: para
 #, no-c-format
@@ -47727,7 +47732,7 @@ msgid ""
 "elements occurs at points that are on the boundaries of both elements."
 msgstr ""
 "<varname>MULTILINESTRING</varname> は、要素が全て単純で、かつ、全ての要素同士"
-"のインタセクションが要素の境界上でのみ出現する場合には、<emphasis>単純</"
+"のインターセクションが要素の境界上でのみ出現する場合には、<emphasis>単純</"
 "emphasis> です。"
 
 #. Tag: para
@@ -47889,7 +47894,7 @@ msgstr "要素となる <varname>POLYGON</varname> が妥当であること"
 #. Tag: para
 #, no-c-format
 msgid "elements do not overlap (i.e. their interiors must not intersect)"
-msgstr "要素がオーバラップしない (内部同士がインタセクトしない) こと"
+msgstr "要素がオーバラップしない (内部同士がインターセクトしない) こと"
 
 #. Tag: para
 #, no-c-format
@@ -49573,12 +49578,12 @@ msgid ""
 msgstr ""
 "BRIN インデックスは、連続するテーブルブロックの集合 (<emphasis>ブロック範囲</"
 "emphasis> と言います) の全てのジオメトリーを囲むバウンディングボックスを格納"
-"します。インデックスを使用した問い合わせを実行する時に、問い合わせ範囲とイン"
-"タセクトするブロック範囲を見つけるためにスキャンします。これは、データが物理"
-"的に整列していて、ブロック範囲のバウンディングボックスのオーバラップが最小で"
-"ある (理想的には相互に排他的である) 場合に限って効率的です。結果インデックス"
-"は非常に小さいサイズですが、通常、読み込み効率は、同じデータにおける GiST イ"
-"ンデックスより悪くなります。"
+"します。インデックスを使用した問い合わせを実行する時に、問い合わせ範囲と"
+"インターセクトするブロック範囲を見つけるためにスキャンします。これは、データ"
+"が物理的に整列していて、ブロック範囲のバウンディングボックスのオーバラップが"
+"最小である (理想的には相互に排他的である) 場合に限って効率的です。結果"
+"インデックスは非常に小さいサイズですが、通常、読み込み効率は、同じデータにお"
+"ける GiST インデックスより悪くなります。"
 
 #. Tag: para
 #, no-c-format
@@ -50056,8 +50061,8 @@ msgstr ""
 "<link xlink:href=\"http://www.opengeospatial.org/standards/sfs\">OpenGIS "
 "Simple Features Implementation Specification for SQL</link> によると「二つの"
 "ジオメトリーの比較の基本的なアプローチは、二つのジオメトリーの内部、境界、外"
-"部のインタセクションの比較と、『インタセクション行列』の要素に基づく 2ジオメ"
-"トリーの関係の分類です」。"
+"部のインターセクションの比較と、『インターセクション行列』の要素に基づく 2"
+"ジオメトリーの関係の分類です」。"
 
 #. Tag: para
 #, no-c-format
@@ -50391,8 +50396,8 @@ msgid ""
 "<literal>T</literal> =&gt; intersection dimension is non-empty; i.e. is in "
 "<literal>{0,1,2}</literal>"
 msgstr ""
-"<literal>T</literal> =&gt; インタセクションの次元は空ではないという意味です。"
-"すなわち <literal>{0,1,2}</literal> のいずれかです。"
+"<literal>T</literal> =&gt; インターセクションの次元は空ではないという意味です"
+"。すなわち <literal>{0,1,2}</literal> のいずれかです。"
 
 #. Tag: para
 #, no-c-format
@@ -52190,11 +52195,11 @@ msgid ""
 "specified projection using <xref linkend=\"RT_ST_Transform\"/>, and then "
 "outputs the results as a png using <xref linkend=\"RT_ST_AsPNG\"/>."
 msgstr ""
-"サンプルクエリーでは、 指定した WGS84バウンディングボックスにインタセクトする"
-"タイルを取って、 <xref linkend=\"RT_ST_Union\"/> でインタセクトしたタイルを結"
-"合して全てのバンドを返し、<xref linkend=\"RT_ST_Transform\"/> でユーザー指定"
-"投影法に変換し、<xref linkend=\"RT_ST_AsPNG\"/> を使って PNG で結果を出力する"
-"ためのラスター関数群全体をまとめる方法を示します。"
+"サンプルクエリーでは、 指定した WGS84バウンディングボックスにインターセクトす"
+"るタイルを取って、 <xref linkend=\"RT_ST_Union\"/> でインターセクトしたタイル"
+"を結合して全てのバンドを返し、<xref linkend=\"RT_ST_Transform\"/> でユーザー"
+"指定投影法に変換し、<xref linkend=\"RT_ST_AsPNG\"/> を使って PNG で結果を出力"
+"するためのラスター関数群全体をまとめる方法を示します。"
 
 #. Tag: para
 #, no-c-format
