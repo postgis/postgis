@@ -56,6 +56,14 @@ pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "pgis_asflatgeobuf_transfn: called in non-aggregate context");
+
+	if (PG_ARGISNULL(1))
+	{
+		if (PG_ARGISNULL(0))
+			PG_RETURN_NULL();
+		PG_RETURN_POINTER(PG_GETARG_POINTER(0));
+	}
+
 	oldcontext = MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0))
