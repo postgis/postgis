@@ -140,6 +140,13 @@ pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
+	if (PG_ARGISNULL(1))
+	{
+		if (PG_ARGISNULL(0))
+			PG_RETURN_NULL();
+		PG_RETURN_POINTER(PG_GETARG_POINTER(0));
+	}
+
 	if (PG_ARGISNULL(0))
 	{
 		old_context = MemoryContextSwitchTo(aggcontext);
