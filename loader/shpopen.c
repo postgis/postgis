@@ -1217,6 +1217,10 @@ SHPCreateObject( int nSHPType, int nShapeId, int nParts,
     int		i, bHasM, bHasZ;
 
     psObject = STATIC_CAST(SHPObject *, calloc(1,sizeof(SHPObject)));
+    if (!psObject)
+    {
+        return NULL;
+    }
     psObject->nSHPType = nSHPType;
     psObject->nShapeId = nShapeId;
     psObject->bMeasureIsUsed = FALSE;
@@ -1263,6 +1267,11 @@ SHPCreateObject( int nSHPType, int nShapeId, int nParts,
         psObject->panPartType = STATIC_CAST(int *,
             malloc(sizeof(int) * psObject->nParts));
 
+        if (!psObject->panPartStart || !psObject->panPartType)
+        {
+            SHPDestroyObject(psObject);
+            return NULL;
+        }
         psObject->panPartStart[0] = 0;
         psObject->panPartType[0] = SHPP_RING;
 
@@ -1295,6 +1304,11 @@ SHPCreateObject( int nSHPType, int nShapeId, int nParts,
                                              calloc(nVertices, sizeof(double)));
         psObject->padfM = STATIC_CAST(double *, padfM && bHasM ? malloc(nSize) :
                                              calloc(nVertices, sizeof(double)));
+        if (!psObject->padfX || !psObject->padfY || !psObject->padfZ || !psObject->padfM)
+        {
+            SHPDestroyObject(psObject);
+            return NULL;
+        }
         if( padfX != SHPLIB_NULLPTR )
             memcpy(psObject->padfX, padfX, nSize);
         if( padfY != SHPLIB_NULLPTR )
