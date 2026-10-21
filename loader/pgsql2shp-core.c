@@ -577,39 +577,17 @@ static int
 is_clockwise(int num_points, double *x, double *y, double *z)
 {
 	int i;
-	double x_change,y_change,area;
-	double *x_new, *y_new; /* the points, translated to the origin
-							* for safer accuracy */
-
-	x_new = (double *)malloc(sizeof(double) * num_points);
-	y_new = (double *)malloc(sizeof(double) * num_points);
-	area=0.0;
-	x_change = x[0];
-	y_change = y[0];
-
-	for (i=0; i < num_points ; i++)
-	{
-		x_new[i] = x[i] - x_change;
-		y_new[i] = y[i] - y_change;
-	}
+	double x0 = x[0], y0 = y[0];
+	double area = 0.0;
 
 	for (i=0; i < num_points - 1; i++)
 	{
-		/* calculate the area	 */
-		area += (x[i] * y[i+1]) - (y[i] * x[i+1]);
+		/* calculate the area relative to the first point
+		 * for safer accuracy with large coordinates */
+		area += (x[i] - x0) * (y[i+1] - y0) - (y[i] - y0) * (x[i+1] - x0);
 	}
-	if (area > 0 )
-	{
-		free(x_new);
-		free(y_new);
-		return 0; /*counter-clockwise */
-	}
-	else
-	{
-		free(x_new);
-		free(y_new);
-		return 1; /*clockwise */
-	}
+
+	return area > 0.0 ? 0 : 1;
 }
 
 static char *
