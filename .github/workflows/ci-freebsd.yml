@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - "14.3"
+          - "15.1"
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:
@@ -54,7 +54,7 @@ jobs:
 
       - name: Build and test on FreeBSD
         if: steps.changed-surface.outputs.skip != 'true'
-        uses: vmactions/freebsd-vm@a6de9343ef5747433d9c25784c90e84998b9d69a # v1.4.6
+        uses: vmactions/freebsd-vm@c46abacb49f09938ca4e1702d15d836285d694cc # v1.5.9
         with:
           release: ${{ matrix.version }}
           usesh: true
