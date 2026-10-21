@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - GH-1184, [raster] Check deserialization before reading the band count
+      (Maksim Korotkov)
   - [raster] Handle allocation failure when copying raster strings
       (Maksim Korotkov)
   - #6159, Avoid negative geography areas when subtracting polygon holes
