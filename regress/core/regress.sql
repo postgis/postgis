@@ -402,3 +402,19 @@ AND proleakproof;
 SELECT 'UNEXPECTED', postgis_full_version()
 	WHERE postgis_full_version() LIKE '%UNPACKAGED%'
 	   OR postgis_full_version() LIKE '%need upgrade%';
+
+WITH full_version AS (
+	SELECT postgis_full_version_json() AS doc
+)
+SELECT 'postgis_full_version_json',
+	(doc ? 'postgis') AS has_postgis,
+	(doc ? 'geos') AS has_geos,
+	(doc #>> '{postgis,version}') = postgis_lib_version() AS version_matches,
+	jsonb_typeof(doc #> '{postgis,extension}') AS extension_type,
+	jsonb_typeof(doc -> 'warnings') AS warnings_type,
+	CASE
+		WHEN pg_catalog.split_part(doc #>> '{proj,runtime}', ' ', 1) = (doc #>> '{proj,compiled}')
+		THEN NOT (doc -> 'warnings' @> '[{"code": "proj_compiled_version_mismatch"}]'::jsonb)
+		ELSE doc -> 'warnings' @> '[{"code": "proj_compiled_version_mismatch"}]'::jsonb
+	END AS proj_version_ok
+FROM full_version;

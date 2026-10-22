@@ -232,3 +232,4 @@ ERROR:  ST_TileEnvelope: Margin must not be less than -50%, margin=-0.510000
 315|0
 316|t|LINESTRING(40 8.660254037844387,35 8.660254037844387)
 leakproof_compare_support|14
+postgis_full_version_json|t|t|t|boolean|array|t
