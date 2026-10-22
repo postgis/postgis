@@ -504,7 +504,7 @@ CREATE OR REPLACE FUNCTION ST_Distance(text, text)
 	$$ SELECT @extschema@.ST_Distance($1::@extschema@.geometry, $2::@extschema@.geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
--- Only expands the bounding box, the actual geometry will remain unchanged, use with care.
+-- Expands the geocentric bounding box and returns a geography carrier for index filtering, use with care.
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 	RETURNS geography
