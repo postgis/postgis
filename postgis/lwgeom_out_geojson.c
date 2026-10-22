@@ -1,6 +1,10 @@
 
 #include "../postgis_config.h"
 
+/*
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
+ */
+
 /* PostgreSQL headers */
 #include "postgres.h"
 #include "funcapi.h"
@@ -48,6 +52,25 @@ typedef struct GeoJsonPropKey {
 	char key[NAMEDATALEN];
 } GeoJsonPropKey;
 
+typedef struct GeoJsonAggState {
+	StringInfoData features;
+	uint64 feature_count;
+} GeoJsonAggState;
+
+#define GEOJSON_RECORD_DEFAULT_DECIMAL_DIGITS 9
+
+static void
+pgis_asgeojsonagg_check_input_type(FunctionCallInfo fcinfo, int argno)
+{
+	/*
+	 * The transition and final functions both need this guard.  FILTER
+	 * clauses and empty result sets can bypass the transition function
+	 * entirely, so the final function must reject scalar aggregate inputs too.
+	 */
+	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, argno)))
+		elog(ERROR, "ST_AsGeoJSONAgg: input must be a record or composite row");
+}
+
 static void array_dim_to_json(StringInfo result,
 			      int dim,
 			      int ndims,
@@ -87,6 +110,119 @@ static int postgis_timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, in
 
 Datum row_to_geojson(PG_FUNCTION_ARGS);
 extern Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(pgis_asgeojsonagg_transfn);
+Datum
+pgis_asgeojsonagg_transfn(PG_FUNCTION_ARGS)
+{
+	MemoryContext aggcontext, oldcontext;
+	GeoJsonAggState *state;
+	char *geom_column = NULL;
+	char *id_column = NULL;
+	int32 maxdecimaldigits = GEOJSON_RECORD_DEFAULT_DECIMAL_DIGITS;
+	bool do_pretty = false;
+
+	if (!AggCheckCallContext(fcinfo, &aggcontext))
+		elog(ERROR, "%s called in non-aggregate context", __func__);
+
+	/* The row encoder needs cached PostGIS type OIDs to find geometry columns. */
+	postgis_initialize_cache();
+
+	oldcontext = MemoryContextSwitchTo(aggcontext);
+
+	if (PG_ARGISNULL(0))
+	{
+		state = palloc0(sizeof(*state));
+		initStringInfo(&state->features);
+	}
+	else
+		state = (GeoJsonAggState *)PG_GETARG_POINTER(0);
+
+	MemoryContextSwitchTo(oldcontext);
+
+	/*
+	 * Validate the declared input type before skipping NULL rows.  Otherwise
+	 * scalar calls such as NULL::geometry would be accepted when all rows are
+	 * NULL, even though non-NULL scalar input is rejected below.
+	 */
+	pgis_asgeojsonagg_check_input_type(fcinfo, 1);
+
+	if (PG_ARGISNULL(1))
+	{
+		PG_RETURN_POINTER(state);
+	}
+
+	if (PG_NARGS() == 3 && !PG_ARGISNULL(2))
+		id_column = text_to_cstring(PG_GETARG_TEXT_P(2));
+	else if (PG_NARGS() == 4)
+	{
+		if (!PG_ARGISNULL(2))
+			geom_column = text_to_cstring(PG_GETARG_TEXT_P(2));
+		if (!PG_ARGISNULL(3))
+			id_column = text_to_cstring(PG_GETARG_TEXT_P(3));
+	}
+	else if (PG_NARGS() == 6)
+	{
+		if (!PG_ARGISNULL(2))
+			geom_column = text_to_cstring(PG_GETARG_TEXT_P(2));
+		if (!PG_ARGISNULL(3))
+			maxdecimaldigits = PG_GETARG_INT32(3);
+		if (!PG_ARGISNULL(4))
+			do_pretty = PG_GETARG_BOOL(4);
+		if (!PG_ARGISNULL(5))
+			id_column = text_to_cstring(PG_GETARG_TEXT_P(5));
+	}
+
+	if (geom_column && strlen(geom_column) == 0)
+		geom_column = NULL;
+	if (id_column && strlen(id_column) == 0)
+		id_column = NULL;
+
+	/*
+	 * The aggregate state owns one growing StringInfo in the aggregate memory
+	 * context.  Appending each feature there avoids the quadratic behavior of
+	 * repeatedly building a new SQL text value from the whole prefix.
+	 */
+	if (state->feature_count > 0)
+		appendStringInfoString(&state->features, ", ");
+	composite_to_geojson(fcinfo,
+			     PG_GETARG_DATUM(1),
+			     geom_column,
+			     id_column,
+			     maxdecimaldigits,
+			     &state->features,
+			     do_pretty,
+			     postgis_oid(GEOMETRYOID),
+			     postgis_oid(GEOGRAPHYOID));
+	state->feature_count++;
+
+	PG_RETURN_POINTER(state);
+}
+
+PG_FUNCTION_INFO_V1(pgis_asgeojsonagg_finalfn);
+Datum
+pgis_asgeojsonagg_finalfn(PG_FUNCTION_ARGS)
+{
+	StringInfoData result;
+	GeoJsonAggState *state;
+
+	if (!AggCheckCallContext(fcinfo, NULL))
+		elog(ERROR, "%s called in non-aggregate context", __func__);
+
+	pgis_asgeojsonagg_check_input_type(fcinfo, 1);
+
+	initStringInfo(&result);
+	appendStringInfoString(&result, "{\"type\": \"FeatureCollection\", \"features\": [");
+
+	if (!PG_ARGISNULL(0))
+	{
+		state = (GeoJsonAggState *)PG_GETARG_POINTER(0);
+		appendBinaryStringInfo(&result, state->features.data, state->features.len);
+	}
+
+	appendStringInfoString(&result, "]}");
+	PG_RETURN_TEXT_P(cstring_to_text_with_len(result.data, result.len));
+}
 
 /*
  * SQL function row_to_geojson(row)
