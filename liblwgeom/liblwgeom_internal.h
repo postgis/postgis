@@ -298,6 +298,8 @@ int project_pt_pt(const POINT4D *A, const POINT4D *B, double distance, POINT4D *
 double lwpoly_area(const LWPOLY *poly);
 double lwcurvepoly_area(const LWCURVEPOLY *curvepoly);
 double lwtriangle_area(const LWTRIANGLE *triangle);
+int lwgeom_slope_is_supported(const LWGEOM *geom);
+int lwgeom_slope(const LWGEOM *geom, double *slope);
 
 /**
 * Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If

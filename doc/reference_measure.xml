@@ -103,6 +103,61 @@ FROM (
 		</refsection>
 	</refentry>
 
+	<refentry xml:id="ST_3DSlope">
+		<refnamediv>
+			<refname>ST_3DSlope</refname>
+
+			<refpurpose>Returns the slope angle of a linear or planar polygonal surface geometry.</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>float <function>ST_3DSlope</function></funcdef>
+					<paramdef><type>geometry </type><parameter>geom</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+
+			<para>Returns the slope angle of a linear geometry or planar polygonal surface geometry in radians.
+			A horizontal input has slope 0, and a vertical input has slope &#x03C0;/2.
+			For linear geometries with non-collinear vertices, the slope is the slope
+			of the plane defined by those vertices. For collinear linear geometries,
+			the slope is the grade angle from the first point to the last point.
+			Returns NULL for empty, degenerate, or non-coplanar geometries.
+			Passing a non-linear, non-surface geometry raises an error.</para>
+
+			<para>Supported inputs are <varname>LINESTRING</varname>,
+			<varname>MULTILINESTRING</varname>, <varname>TRIANGLE</varname>, <varname>POLYGON</varname>,
+			<varname>MULTIPOLYGON</varname>, <varname>TIN</varname>,
+			<varname>POLYHEDRALSURFACE</varname>, <varname>MULTISURFACE</varname>,
+			and geometry collections containing only supported linear or polygonal surface elements.
+			For 2D inputs, the Z value is treated as 0.</para>
+
+			<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+			<para>&Z_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+<programlisting>SELECT degrees(ST_3DSlope('TRIANGLE Z((0 0 0,1 0 1,0 1 0,0 0 0))'));</programlisting>
+<screen>45</screen>
+
+<programlisting>SELECT degrees(ST_3DSlope('POLYGON Z((0 0 0,1 0 1,1 1 1,0 1 0,0 0 0))'));</programlisting>
+<screen>45</screen>
+
+<programlisting>SELECT degrees(ST_3DSlope('LINESTRING Z(0 0 0,1 0 1)'));</programlisting>
+<screen>45</screen>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Azimuth"/>, <xref linkend="CG_3DArea"/></para>
+		</refsection>
+	</refentry>
+
 	<refentry xml:id="ST_Azimuth">
 		<refnamediv>
 		  <refname>ST_Azimuth</refname>
