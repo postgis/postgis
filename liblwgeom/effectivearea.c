@@ -400,7 +400,133 @@ void ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 	return ;
 }
 
+static double
+ptarray_calc_cyclic_area(const POINTARRAY *inpts, const int *prev, const int *next, int p)
+{
+	const double *P1 = (double *)getPoint_internal(inpts, prev[p]);
+	const double *P2 = (double *)getPoint_internal(inpts, p);
+	const double *P3 = (double *)getPoint_internal(inpts, next[p]);
 
+	if (FLAGS_GET_Z(inpts->flags))
+		return triarea3d(P1, P2, P3);
+	else
+		return triarea2d(P1, P2, P3);
+}
+
+static POINTARRAY *
+ptarray_set_effective_area_closed_ring(POINTARRAY *inpts, int avoid_collaps, int set_area, double trshld)
+{
+	int p;
+	const int npoints = inpts->npoints;
+	const int unique_points = npoints - 1;
+	int remaining_points = unique_points;
+	int set_m;
+	double check_order_min_area = 0;
+	int *prev;
+	int *next;
+	int *active;
+	areanode *arealist;
+	double *res_area;
+	MINHEAP tree;
+	POINTARRAY *opts;
+
+	if (set_area)
+		set_m = 1;
+	else
+		set_m = FLAGS_GET_M(inpts->flags);
+
+	opts = ptarray_construct_empty(FLAGS_GET_Z(inpts->flags), set_m, npoints);
+
+	prev = lwalloc(sizeof(int) * unique_points);
+	next = lwalloc(sizeof(int) * unique_points);
+	active = lwalloc(sizeof(int) * unique_points);
+	arealist = lwalloc(sizeof(areanode) * unique_points);
+	res_area = lwalloc(sizeof(double) * unique_points);
+	tree = initiate_minheap(unique_points);
+
+	for (p = 0; p < unique_points; p++)
+	{
+		prev[p] = (p == 0) ? unique_points - 1 : p - 1;
+		next[p] = (p == unique_points - 1) ? 0 : p + 1;
+		active[p] = LW_TRUE;
+		res_area[p] = FLT_MAX;
+		tree.key_array[p] = arealist + p;
+	}
+
+	for (p = 0; p < unique_points; p++)
+		arealist[p].area = ptarray_calc_cyclic_area(inpts, prev, next, p);
+
+	tree.usedSize = unique_points;
+	qsort(tree.key_array, unique_points, sizeof(void *), cmpfunc);
+
+	for (p = 0; p < unique_points; p++)
+		((areanode *)tree.key_array[p])->treeindex = p;
+
+	while (remaining_points > 3)
+	{
+		int current = minheap_pop(&tree, arealist) - arealist;
+		double min_area = arealist[current].area;
+
+		if (!set_area && min_area >= trshld)
+			break;
+
+		min_area = FP_MAX(min_area, check_order_min_area);
+		res_area[current] = min_area;
+		check_order_min_area = min_area;
+		active[current] = LW_FALSE;
+		remaining_points--;
+
+		next[prev[current]] = next[current];
+		prev[next[current]] = prev[current];
+		arealist[prev[current]].area =
+		    FP_MAX(ptarray_calc_cyclic_area(inpts, prev, next, prev[current]), min_area);
+		arealist[next[current]].area =
+		    FP_MAX(ptarray_calc_cyclic_area(inpts, prev, next, next[current]), min_area);
+		minheap_update(&tree, arealist, arealist[prev[current]].treeindex);
+		minheap_update(&tree, arealist, arealist[next[current]].treeindex);
+	}
+
+	if (avoid_collaps == 0 && remaining_points == 3)
+	{
+		double min_area = tree.usedSize ? ((areanode *)tree.key_array[0])->area : FLT_MAX;
+		min_area = FP_MAX(min_area, check_order_min_area);
+
+		if (set_area || min_area < trshld)
+		{
+			for (p = 0; p < unique_points; p++)
+			{
+				if (active[p])
+					res_area[p] = min_area;
+			}
+		}
+	}
+
+	for (p = 0; p < unique_points; p++)
+	{
+		if (res_area[p] >= trshld)
+		{
+			POINT4D pt = getPoint4d(inpts, p);
+			if (set_area)
+				pt.m = res_area[p];
+			ptarray_append_point(opts, &pt, LW_TRUE);
+		}
+	}
+
+	if (opts->npoints > 0)
+	{
+		POINT4D first_point = getPoint4d(opts, 0);
+		ptarray_append_point(opts, &first_point, LW_TRUE);
+	}
+
+	destroy_minheap(tree);
+	lwfree(prev);
+	lwfree(next);
+	lwfree(active);
+	lwfree(arealist);
+	lwfree(res_area);
+
+	return opts;
+}
 
 static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_collaps,int set_area, double trshld)
 {
@@ -477,8 +603,8 @@ static LWLINE* lwline_set_effective_area(const LWLINE *iline,int set_area, doubl
 
 }
 
-
-static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, double trshld)
+static LWPOLY *
+lwpoly_set_effective_area(const LWPOLY *ipoly, int set_area, double trshld, int preserve_ring_endpoint)
 {
 	LWDEBUG(2, "Entered  lwpoly_set_effective_area");
 	uint32_t i;
@@ -500,7 +626,10 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 		if (ipoly->rings[i]->npoints < 4)
 			continue;
 
-		pa = ptarray_set_effective_area(ipoly->rings[i],avoid_collapse,set_area,trshld);
+		if (preserve_ring_endpoint || !ptarray_is_closed_2d(ipoly->rings[i]))
+			pa = ptarray_set_effective_area(ipoly->rings[i], avoid_collapse, set_area, trshld);
+		else
+			pa = ptarray_set_effective_area_closed_ring(ipoly->rings[i], avoid_collapse, set_area, trshld);
 		/* Add ring to simplified polygon */
 		if(pa->npoints>=4)
 		{
@@ -521,8 +650,8 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 
 }
 
-
-static LWCOLLECTION* lwcollection_set_effective_area(const LWCOLLECTION *igeom,int set_area, double trshld)
+static LWCOLLECTION *
+lwcollection_set_effective_area(const LWCOLLECTION *igeom, int set_area, double trshld, int preserve_ring_endpoint)
 {
 	LWDEBUG(2, "Entered  lwcollection_set_effective_area");
 	uint32_t i;
@@ -538,15 +667,15 @@ static LWCOLLECTION* lwcollection_set_effective_area(const LWCOLLECTION *igeom,i
 
 	for( i = 0; i < igeom->ngeoms; i++ )
 	{
-		LWGEOM *ngeom = lwgeom_set_effective_area(igeom->geoms[i],set_area,trshld);
+		LWGEOM *ngeom = lwgeom_set_effective_area(igeom->geoms[i], set_area, trshld, preserve_ring_endpoint);
 		if ( ngeom ) out = lwcollection_add_lwgeom(out, ngeom);
 	}
 
 	return out;
 }
 
-
-LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom,int set_area, double trshld)
+LWGEOM *
+lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double trshld, int preserve_ring_endpoint)
 {
 	LWDEBUG(2, "Entered  lwgeom_set_effective_area");
 	switch (igeom->type)
@@ -557,14 +686,14 @@ LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom,int set_area, double trshl
 	case LINETYPE:
 		return (LWGEOM*)lwline_set_effective_area((LWLINE*)igeom,set_area, trshld);
 	case POLYGONTYPE:
-		return (LWGEOM*)lwpoly_set_effective_area((LWPOLY*)igeom,set_area, trshld);
+		return (LWGEOM *)lwpoly_set_effective_area((LWPOLY *)igeom, set_area, trshld, preserve_ring_endpoint);
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
-		return (LWGEOM*)lwcollection_set_effective_area((LWCOLLECTION *)igeom,set_area, trshld);
+		return (LWGEOM *)lwcollection_set_effective_area(
+		    (LWCOLLECTION *)igeom, set_area, trshld, preserve_ring_endpoint);
 	default:
 		lwerror("lwgeom_simplify: unsupported geometry type: %s",lwtype_name(igeom->type));
 	}
 	return NULL;
 }
-
