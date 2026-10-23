@@ -3,6 +3,8 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - GH-1187, [raster] Handle failed raster-to-geometry conversions
+     (Maksim Korotkov)
  - #6048, [raster] Preserve requested band order in ST_Clip
      (Darafei Praliaskouski)
  - Handle a failed point clone during ST_WrapX (Maksim Korotkov)
