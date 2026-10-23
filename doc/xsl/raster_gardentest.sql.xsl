@@ -10,6 +10,7 @@
 			using a garden variety of rasters.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
+	<xsl:param name="raster_garden_outdbfile" />
 	<xsl:variable name='testversion'>3.7.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddRasterColumn AddRasterConstraints DropRasterConstraints DropRasterColumn DropRasterTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
@@ -27,19 +28,44 @@
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
 	<xsl:variable name='var_options'>NULL::text</xsl:variable>
 	<xsl:variable name="var_onerasteruserfunc">'monkey_oneuserfunc(float,integer[],text[])'::regprocedure</xsl:variable>
+	<xsl:variable name="var_tworasteruserfunc">'monkey_twouserfunc(double precision,double precision,integer[],text[])'::regprocedure</xsl:variable>
+	<xsl:variable name="var_onerasterngbuserfunc">'monkey_ngbuserfunc(float[][],text,text[])'::regprocedure</xsl:variable>
+	<xsl:variable name="var_callbackfunc">'monkey_callbackfunc(double precision[][][],integer[][],text[])'::regprocedure</xsl:variable>
+	<xsl:variable name="var_nodatamode">'ignore'</xsl:variable>
+	<xsl:variable name="var_extenttype">'INTERSECTION'</xsl:variable>
+	<xsl:variable name="var_customextent">NULL::raster</xsl:variable>
+	<xsl:variable name="var_mask">ARRAY[[1,1,1],[1,0,1],[1,1,1]]::double precision[][]</xsl:variable>
+	<xsl:variable name="var_nbands">'1'</xsl:variable>
+	<xsl:variable name="var_delimiter">','</xsl:variable>
+	<xsl:variable name="var_resample">'nearest'</xsl:variable>
+	<xsl:variable name="var_uniontype">'LAST'</xsl:variable>
+	<xsl:variable name="var_unionargset">ARRAY[ROW(1, 'LAST')]::unionarg[]</xsl:variable>
 	<xsl:variable name='var_pixeltype'>'1BB'</xsl:variable>
 	<xsl:variable name='var_pixeltypenoq'>8BUI</xsl:variable>
 	<xsl:variable name='var_pixelvalue'>0</xsl:variable>
 	<xsl:variable name='var_rastercolumn'>'rast'</xsl:variable>
 	<xsl:variable name='var_rastertable'>'pgis_rgarden_1bb'</xsl:variable>
+	<xsl:variable name='var_overviewtable'>pgis_rgarden_overview_src</xsl:variable>
+	<xsl:variable name='var_overviewtable_schema'>pgis_rgarden_overview_schema</xsl:variable>
+	<xsl:variable name='var_overviewtable_noschema'>pgis_rgarden_overview_noschema</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_logtable'>raster_garden_log37</xsl:variable>
 	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_algorithm'>'Lanczos'</xsl:variable>
+	<xsl:variable name='var_overviewalgorithm'>'NearestNeighbour'</xsl:variable>
 	<xsl:variable name='var_pt'>ST_Centroid(rast1.rast::geometry)</xsl:variable>
+	<xsl:variable name='var_ext'>ST_MakeEnvelope(0, 0, 1, 1, 4326)</xsl:variable>
+	<xsl:variable name='var_ext_matching_srid'>ST_MakeEnvelope(0, 0, 1, 1, <xsl:value-of select="$var_srid" />)</xsl:variable>
+	<xsl:variable name='var_regclass'><xsl:value-of select="$var_rastertable" />::regclass</xsl:variable>
+	<xsl:variable name='var_overviewregclass'>'<xsl:value-of select="$var_overviewtable" />'::regclass</xsl:variable>
+	<xsl:variable name='var_outdbfile'>'<xsl:value-of select="$raster_garden_outdbfile" />'</xsl:variable>
 	<xsl:variable name='var_addbandarg'>ROW(NULL, '8BUI', 255, 0)::addbandarg</xsl:variable>
 	<xsl:variable name='var_addbandargset'>ARRAY[ROW(1, '1BB'::text, 0, NULL),ROW(2, '4BUI'::text, 0, NULL)]::addbandarg[]</xsl:variable>
+	<xsl:variable name='var_rastbandargset'>ARRAY[ROW(rast1.rast, 1), ROW(rast1.rast, 1), ROW(rast1.rast, 1)]::rastbandarg[]</xsl:variable>
+	<xsl:variable name='var_geomvalset'>ARRAY[ROW(ST_MakePoint(0, 0), 1)]::geomval[]</xsl:variable>
+	<xsl:variable name='var_newvalueset'>ARRAY[ARRAY[1.5, 1.5], ARRAY[1.5, 1.5]]::double precision[][]</xsl:variable>
+	<xsl:variable name='var_noset'>ARRAY[ARRAY[false, false], ARRAY[false, false]]::boolean[][]</xsl:variable>
 
 	<xsl:variable name='var_reclassarg'>ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)</xsl:variable>
 	<xsl:variable name='var_georefcoords'>'2 0 0 3 0.5 0.5'</xsl:variable>
@@ -127,9 +153,11 @@
 	</pgis:pixeltypes>
         <!-- We deal only with the reference chapter -->
         <xsl:template match="/">
-<!-- Create logging table -->
-<!-- Create logging tables -->
-DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
+	<!-- Create logging table -->
+	<!-- Create logging tables -->
+	SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
+	SET postgis.enable_outdb_rasters = true;
+	DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
 CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
@@ -142,6 +170,18 @@ DROP TABLE IF EXISTS pgis_rgarden_mega;
 CREATE TABLE pgis_rgarden_mega(rid serial PRIMARY KEY, rast raster);
 <!--define map algebra functions -->
 CREATE OR REPLACE FUNCTION monkey_oneuserfunc(pixel FLOAT, pos INTEGER[], VARIADIC args TEXT[])RETURNS FLOAT
+    AS $$ BEGIN
+        RETURN 0.0;
+    END; $$ LANGUAGE plpgsql IMMUTABLE;
+CREATE OR REPLACE FUNCTION monkey_twouserfunc(pixel1 DOUBLE PRECISION, pixel2 DOUBLE PRECISION, pos INTEGER[], VARIADIC args TEXT[])RETURNS DOUBLE PRECISION
+    AS $$ BEGIN
+        RETURN 0.0;
+    END; $$ LANGUAGE plpgsql IMMUTABLE;
+CREATE OR REPLACE FUNCTION monkey_ngbuserfunc(matrix FLOAT[][], nodatamode TEXT, VARIADIC args TEXT[])RETURNS FLOAT
+    AS $$ BEGIN
+        RETURN 0.0;
+    END; $$ LANGUAGE plpgsql IMMUTABLE;
+CREATE OR REPLACE FUNCTION monkey_callbackfunc(value DOUBLE PRECISION[][][], pos INTEGER[][], VARIADIC args TEXT[])RETURNS DOUBLE PRECISION
     AS $$ BEGIN
         RETURN 0.0;
     END; $$ LANGUAGE plpgsql IMMUTABLE;
@@ -187,11 +227,29 @@ BEGIN;
 	SELECT DropRasterConstraints(CAST(lower('pgis_rgarden_<xsl:value-of select="@ID" />') As name), CAST('rast' AS name));
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
-		</xsl:for-each>
-<!--End Test table creation  -->
+			</xsl:for-each>
+	<!--End Test table creation  -->
+
+	DROP TABLE IF EXISTS <xsl:value-of select="$var_overviewtable" />;
+	CREATE TABLE <xsl:value-of select="$var_overviewtable" />(rid serial PRIMARY KEY, rast raster);
+	INSERT INTO <xsl:value-of select="$var_overviewtable" />(rast)
+	SELECT rast FROM pgis_rgarden_1bb ORDER BY rid LIMIT 1;
+	SELECT AddRasterConstraints(CAST(lower('<xsl:value-of select="$var_overviewtable" />') AS name), CAST('rast' AS name));
+
+	DROP TABLE IF EXISTS <xsl:value-of select="$var_overviewtable_schema" />;
+	CREATE TABLE <xsl:value-of select="$var_overviewtable_schema" />(rid serial PRIMARY KEY, rast raster);
+	INSERT INTO <xsl:value-of select="$var_overviewtable_schema" />(rast)
+	SELECT rast FROM pgis_rgarden_1bb;
+	SELECT AddRasterConstraints(CAST(lower('<xsl:value-of select="$var_overviewtable_schema" />') AS name), CAST('rast' AS name));
+
+	DROP TABLE IF EXISTS <xsl:value-of select="$var_overviewtable_noschema" />;
+	CREATE TABLE <xsl:value-of select="$var_overviewtable_noschema" />(rid serial PRIMARY KEY, rast raster);
+	INSERT INTO <xsl:value-of select="$var_overviewtable_noschema" />(rast)
+	SELECT rast FROM pgis_rgarden_1bb;
+	SELECT AddRasterConstraints(CAST(lower('<xsl:value-of select="$var_overviewtable_noschema" />') AS name), CAST('rast' AS name));
 
 
-<!--Start test on operators  -->
+	<!--Start test on operators  -->
 	<xsl:for-each select="db:section[contains(@xml:id,'RT_Operator')]/db:refentry">
 		<xsl:sort select="@id"/>
 		<xsl:for-each select="db:refsynopsisdiv/db:funcsynopsis/db:funcprototype">
@@ -253,7 +311,7 @@ COMMIT;
 				<xsl:variable name='fndef'><xsl:value-of select="db:funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(db:paramdef/db:parameter)" /></xsl:variable>
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') ]) + count(db:paramdef/db:parameter[contains(text(),'WKT')]) + count(db:paramdef/db:parameter[contains(text(),'geomgml')])" /></xsl:variable>
-				<xsl:variable name='numparamrasts'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'raster') ] )" /></xsl:variable>
+				<xsl:variable name='numparamrasts'><xsl:value-of select="count(db:paramdef/db:type[contains(text(),'raster') or contains(text(),'rastbandarg') ] )" /></xsl:variable>
 				<xsl:variable name='log_label'><xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />) </xsl:variable>
 
 				<xsl:variable name="geoftype">
@@ -424,8 +482,17 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:parameter, 'georefcoords')">
 						<xsl:value-of select="$var_georefcoords" />
 					</xsl:when>
-					<xsl:when test="(db:type = 'integer[]'  )">
+					<xsl:when test="normalize-space(db:type) = 'integer[]' or normalize-space(db:type) = 'int[]'">
 						ARRAY[<xsl:value-of select="$var_integer1" />]
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'rastbandargset')">
+						<xsl:value-of select="$var_rastbandargset" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'nbands') and (normalize-space(db:type) = 'integer[]' or normalize-space(db:type) = 'int[]')">
+						ARRAY[<xsl:value-of select="$var_integer1" />]
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'nbands') and normalize-space(db:type) = 'text'">
+						<xsl:value-of select="$var_nbands" />
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'index') or contains(db:parameter, 'band') or contains(db:parameter, 'nband')">
 						<xsl:value-of select="$var_band" />
@@ -436,17 +503,89 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:parameter, 'rastertable')">
 						<xsl:value-of select="$var_rastertable" />
 					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'schema_name')">
+						current_schema()::name
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'table_name')">
+						<xsl:value-of select="$var_rastertable" />::name
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'column_name')">
+						<xsl:value-of select="$var_rastercolumn" />::name
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'ovschema') or contains(db:parameter, 'refschema')">
+						current_schema()::name
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'ovtable') and $func/db:paramdef/db:parameter[contains(., 'ovschema')]">
+						'<xsl:value-of select="$var_overviewtable_schema" />'::name
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'ovtable')">
+						'<xsl:value-of select="$var_overviewtable_noschema" />'::name
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'reftable')">
+						<xsl:value-of select="$var_rastertable" />::name
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'ovcolumn') or contains(db:parameter, 'refcolumn')">
+						<xsl:value-of select="$var_rastercolumn" />::name
+					</xsl:when>
+					<xsl:when test="normalize-space(db:parameter) = 'col'">
+						<xsl:value-of select="$var_rastercolumn" />::name
+					</xsl:when>
+					<xsl:when test="normalize-space(db:parameter) = 'tab' and $func/db:funcdef/db:function = 'ST_CreateOverview'">
+						<xsl:value-of select="$var_overviewregclass" />
+					</xsl:when>
+					<xsl:when test="normalize-space(db:parameter) = 'tab'">
+						<xsl:value-of select="$var_regclass" />
+					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'format')">
 						<xsl:value-of select="$var_format" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'algo') and $func/db:funcdef/db:function = 'ST_CreateOverview'">
+						<xsl:value-of select="$var_overviewalgorithm" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'algo')">
+						<xsl:value-of select="$var_algorithm" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'resample')">
+						<xsl:value-of select="$var_resample" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'uniontype')">
+						<xsl:value-of select="$var_uniontype" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'unionargset')">
+						<xsl:value-of select="$var_unionargset" />
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'options')">
 						<xsl:value-of select="$var_options" />
 					</xsl:when>
+					<xsl:when test="normalize-space(db:parameter) = 'ext' and $func/db:funcdef/db:function = 'ST_Retile'">
+						<xsl:value-of select="$var_ext_matching_srid" />
+					</xsl:when>
+					<xsl:when test="normalize-space(db:parameter) = 'ext'">
+						<xsl:value-of select="$var_ext" />
+					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'pt')">
 						<xsl:value-of select="$var_pt" />
 					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'newvalueset')">
+						<xsl:value-of select="$var_newvalueset" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'geomvalset')">
+						<xsl:value-of select="$var_geomvalset" />
+					</xsl:when>
+					<xsl:when test="normalize-space(db:parameter) = 'noset' or starts-with(normalize-space(db:parameter), 'noset=')">
+						<xsl:value-of select="$var_noset" />
+					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'pixeltype')">
 						<xsl:value-of select="$var_pixeltype" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'callbackfunc')">
+						<xsl:value-of select="$var_callbackfunc" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'mask')">
+						<xsl:value-of select="$var_mask" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'delimiter')">
+						<xsl:value-of select="$var_delimiter" />
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'distance')">
 						<xsl:value-of select="$var_distance" />
@@ -462,6 +601,21 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'onerasteruserfunc')">
 						<xsl:value-of select="$var_onerasteruserfunc" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'tworastuserfunc')">
+						<xsl:value-of select="$var_tworasteruserfunc" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'onerastngbuserfunc')">
+						<xsl:value-of select="$var_onerasterngbuserfunc" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'nodatamode')">
+						<xsl:value-of select="$var_nodatamode" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'extenttype')">
+						<xsl:value-of select="$var_extenttype" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'customextent')">
+						<xsl:value-of select="$var_customextent" />
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'version') and position() = 2">
 						<xsl:value-of select="$var_version1" />
@@ -516,11 +670,14 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:type, 'bytea')">
 						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(db:type, 'float') or contains(db:type, 'double')">
+					<xsl:when test="contains(db:type, 'float') or contains(db:type, 'float8') or contains(db:type, 'double')">
 						<xsl:value-of select="$var_float1" />
 					</xsl:when>
 					<xsl:when test="contains(db:type, 'spheroid')">
 						<xsl:value-of select="$var_spheroid" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'outdbfile')">
+						<xsl:value-of select="$var_outdbfile" />
 					</xsl:when>
 					<xsl:when test="contains(db:type, 'integer') and position() = 2">
 						<xsl:value-of select="$var_integer1" />
@@ -528,10 +685,15 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:type, 'integer')">
 						<xsl:value-of select="$var_integer2" />
 					</xsl:when>
-					<xsl:when test="contains(db:type,'reclassarg')">
+					<xsl:when test="contains(db:type, 'int')">
+						<xsl:value-of select="$var_integer2" />
+					</xsl:when>
+					<xsl:when test="contains(db:type, 'character')">
+						<xsl:value-of select="$var_delimiter" />
+					</xsl:when>
+					<xsl:when test="contains(db:type, 'reclassarg')">
 						<xsl:value-of select="$var_reclassarg" />
 					</xsl:when>
-
 					<xsl:when test="contains(db:type, 'text')">
 						<xsl:value-of select="$var_text" />
 					</xsl:when>
@@ -559,7 +721,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			<xsl:for-each select="db:paramdef">
 				<xsl:choose>
 					<xsl:when test="count(db:parameter) &gt; 0">
-						<xsl:value-of select="db:parameter" />
+						<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="db:parameter" /></xsl:with-param></xsl:call-template>
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
