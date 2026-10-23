@@ -3,6 +3,8 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - GH-1187, [raster] Handle failed raster-to-geometry conversions
+     (Maksim Korotkov)
  - Handle a failed point clone during ST_WrapX (Maksim Korotkov)
  - GH-1169, Handle connection-string allocation failure in the shapefile loader
      (Svyatoslav Bogdanov)
