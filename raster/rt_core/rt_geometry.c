@@ -364,6 +364,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	GEOSGeometry **geoms = NULL;
 	int geomscount = 0;
 	int i = 0;
+	int k = 0;
 
 	assert(surface != NULL);
 
@@ -453,6 +454,14 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 			return ES_ERROR;
 		}
 		for (i = 0; i < gvcount; i++) {
+			if (gv[i].geom == NULL) {
+				for (k = 0; k < i; k++) GEOSGeom_destroy(geoms[k]);
+				for (k = i; k < gvcount; k++) lwpoly_free(gv[k].geom);
+				rtdealloc(gv);
+				rtdealloc(geoms);
+				rterror("rt_raster_surface: Could not convert pixel polygon to LWGEOM");
+				return ES_ERROR;
+			}
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
 				char *wkt = lwgeom_to_wkt(lwpoly_as_lwgeom(gv[i].geom), WKT_ISO, DBL_DIG, NULL);
@@ -491,7 +500,11 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 
 		/* convert union result from GEOSGeometry to LWGEOM */
 		mpoly = GEOS2LWGEOM(gunion, 0);
-
+		if (mpoly == NULL) {
+			rterror("rt_raster_surface: Could not convert union result from GEOS");
+			GEOSGeom_destroy(gunion);
+			return ES_ERROR;
+		}
 		/*
 			is geometry valid?
 			if not, try to make valid
@@ -519,7 +532,10 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	else {
 		mpoly = lwpoly_as_lwgeom(gv[0].geom);
 		rtdealloc(gv);
-
+		if (mpoly == NULL) {
+			rterror("rt_raster_surface: Could not convert polygonized pixel geometry");
+			return ES_ERROR;
+		}
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
 				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
@@ -532,56 +548,57 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	/* specify SRID */
 	lwgeom_set_srid(mpoly, rt_raster_get_srid(raster));
 
-	if (mpoly != NULL) {
-		/* convert to multi */
-		if (!lwgeom_is_collection(mpoly)) {
-			tmp = mpoly;
-
-#if POSTGIS_DEBUG_LEVEL > 3
-			{
-				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
-				RASTER_DEBUGF(4, "before multi = %s", wkt);
-				rtdealloc(wkt);
-			}
-#endif
-
-			RASTER_DEBUGF(4, "mpoly @ %p", mpoly);
-
-			/*
-				lwgeom_as_multi() only does a shallow clone internally
-				so input and output geometries may share memory
-				hence the deep clone of the output geometry for returning
-				is the only way to guarantee the memory isn't shared
-			*/
-			mpoly = lwgeom_as_multi(tmp);
-			clone = lwgeom_clone_deep(mpoly);
-			lwgeom_free(tmp);
-			lwgeom_free(mpoly);
-			mpoly = clone;
-
-			RASTER_DEBUGF(4, "mpoly @ %p", mpoly);
-
-#if POSTGIS_DEBUG_LEVEL > 3
-			{
-				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
-				RASTER_DEBUGF(4, "after multi = %s", wkt);
-				rtdealloc(wkt);
-			}
-#endif
-		}
+	/* convert to multi */
+	if (!lwgeom_is_collection(mpoly)) {
+		tmp = mpoly;
 
 #if POSTGIS_DEBUG_LEVEL > 3
 		{
 			char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
-			RASTER_DEBUGF(4, "returning geometry = %s", wkt);
+			RASTER_DEBUGF(4, "before multi = %s", wkt);
 			rtdealloc(wkt);
 		}
 #endif
 
-		*surface = lwgeom_as_lwmpoly(mpoly);
-		return ES_NONE;
+		RASTER_DEBUGF(4, "mpoly @ %p", mpoly);
+
+		/*
+			lwgeom_as_multi() only does a shallow clone internally
+			so input and output geometries may share memory
+			hence the deep clone of the output geometry for returning
+			is the only way to guarantee the memory isn't shared
+		*/
+		mpoly = lwgeom_as_multi(tmp);
+		clone = lwgeom_clone_deep(mpoly);
+		lwgeom_free(tmp);
+		lwgeom_free(mpoly);
+		mpoly = clone;
+
+		RASTER_DEBUGF(4, "mpoly @ %p", mpoly);
+
+#if POSTGIS_DEBUG_LEVEL > 3
+		{
+			char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+			RASTER_DEBUGF(4, "after multi = %s", wkt);
+			rtdealloc(wkt);
+		}
+#endif
 	}
 
+#if POSTGIS_DEBUG_LEVEL > 3
+	{
+		char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+		RASTER_DEBUGF(4, "returning geometry = %s", wkt);
+		rtdealloc(wkt);
+	}
+#endif
+
+	*surface = lwgeom_as_lwmpoly(mpoly);
+	if (*surface == NULL) {
+		lwgeom_free(mpoly);
+		rterror("rt_raster_surface: Could not convert surface geometry to multipolygon");
+		return ES_ERROR;
+	}
 	return ES_NONE;
 }
 
