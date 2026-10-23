@@ -453,6 +453,17 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 			return ES_ERROR;
 		}
 		for (i = 0; i < gvcount; i++) {
+			if (!gv[i].geom)
+			{
+				for (int k = 0; k < i; k++)
+					GEOSGeom_destroy(geoms[k]);
+				for (int k = i; k < gvcount; k++)
+					lwpoly_free(gv[k].geom);
+				rtdealloc(gv);
+				rtdealloc(geoms);
+				rterror("rt_raster_surface: Could not convert pixel polygon to LWGEOM");
+				return ES_ERROR;
+			}
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
 				char *wkt = lwgeom_to_wkt(lwpoly_as_lwgeom(gv[i].geom), WKT_ISO, DBL_DIG, NULL);
@@ -491,6 +502,12 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 
 		/* convert union result from GEOSGeometry to LWGEOM */
 		mpoly = GEOS2LWGEOM(gunion, 0);
+		if (!mpoly)
+		{
+			GEOSGeom_destroy(gunion);
+			rterror("rt_raster_surface: Could not convert union result from GEOS");
+			return ES_ERROR;
+		}
 
 		/*
 			is geometry valid?
@@ -519,6 +536,11 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	else {
 		mpoly = lwpoly_as_lwgeom(gv[0].geom);
 		rtdealloc(gv);
+		if (!mpoly)
+		{
+			rterror("rt_raster_surface: Could not convert polygonized pixel geometry");
+			return ES_ERROR;
+		}
 
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
@@ -579,6 +601,12 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 #endif
 
 		*surface = lwgeom_as_lwmpoly(mpoly);
+		if (!*surface)
+		{
+			lwgeom_free(mpoly);
+			rterror("rt_raster_surface: Could not convert surface geometry to multipolygon");
+			return ES_ERROR;
+		}
 		return ES_NONE;
 	}
 
