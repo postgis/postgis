@@ -148,6 +148,9 @@ the docs (or explicitly with `make -C regress visual-examples`).
 
 * Bug Fixes *
 
+ - #5772, GH-904, Fix ST_LineCrossingDirection first-crossing direction
+          when a single segment crosses another line multiple times
+          (Darafei Praliaskouski)
  - [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
           metadata and pixel-read restrictions after upgrade
           (reported by Sarath Kumar, IITM Pravartak Security Team;
