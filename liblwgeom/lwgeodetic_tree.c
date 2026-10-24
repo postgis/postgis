@@ -20,6 +20,7 @@
  *
  * Copyright (C) 2012-2015 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2012-2015 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -30,7 +31,10 @@
 
 /* Internal prototype */
 static CIRC_NODE* circ_nodes_merge(CIRC_NODE** nodes, int num_nodes);
-
+static int circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
+					   const CIRC_NODE *n2,
+					   GEOGRAPHIC_POINT *closest1,
+					   GEOGRAPHIC_POINT *closest2);
 
 /**
 * Internal nodes have their point references set to NULL.
@@ -57,6 +61,9 @@ circ_tree_free(CIRC_NODE* node)
 			circ_tree_free(node->nodes[i]);
 		lwfree(node->nodes);
 	}
+	/* Each non-NULL gbox is owned by exactly this node. */
+	if (node->gbox)
+		lwfree(node->gbox);
 	lwfree(node);
 }
 
@@ -107,11 +114,12 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	node->nodes = NULL;
 	node->edge_num = i;
 
-	/* Zero out metadata */
+	/* Zero out metadata; edge leaves carry no area GBOX. */
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
 	node->geom_type = 0;
-
+	node->has_polygonal_component = LW_FALSE;
+	node->gbox = NULL;
 	return node;
 }
 
@@ -122,6 +130,7 @@ static CIRC_NODE*
 circ_node_leaf_point_new(const POINTARRAY* pa)
 {
 	CIRC_NODE* tree = lwalloc(sizeof(CIRC_NODE));
+	POINT3D q;
 	tree->p1 = tree->p2 = (POINT2D*)getPoint_internal(pa, 0);
 	geographic_point_init(tree->p1->x, tree->p1->y, &(tree->center));
 	tree->radius = 0.0;
@@ -129,8 +138,13 @@ circ_node_leaf_point_new(const POINTARRAY* pa)
 	tree->num_nodes = 0;
 	tree->edge_num = 0;
 	tree->geom_type = POINTTYPE;
+	tree->has_polygonal_component = LW_FALSE;
 	tree->pt_outside.x = 0.0;
 	tree->pt_outside.y = 0.0;
+	/* A point bounds itself; same geodetic flags the canonical calculator emits. */
+	geog2cart(&(tree->center), &q);
+	tree->gbox = gbox_new(lwflags(0, 0, 1));
+	gbox_init_point3d(&q, tree->gbox);
 	return tree;
 }
 
@@ -234,6 +248,8 @@ circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 	double new_radius;
 	double offset1, dist, D, r1, ri;
 	uint32_t i, new_geom_type;
+	GBOX merged_box;
+	int merged_ok, have_merged;
 
 	LWDEBUGF(3, "called with %d nodes --", num_nodes);
 
@@ -344,6 +360,45 @@ circ_node_internal_new(CIRC_NODE** c, uint32_t num_nodes)
 	node->geom_type = new_geom_type;
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
+	/*
+	 * Merge child bounds when every child has one. Edge leaves leave gbox NULL
+	 * so ring trees stay cheap; point leaves and line/polygon/collection
+	 * constructors supply or merge bounds for pruning. Never read a child's
+	 * GBOX fields when its pointer is NULL.
+	 */
+	node->gbox = NULL;
+	node->has_polygonal_component = LW_FALSE;
+	for (i = 0; i < num_nodes; i++)
+	{
+		if (c[i]->has_polygonal_component)
+		{
+			node->has_polygonal_component = LW_TRUE;
+			break;
+		}
+	}
+	merged_ok = LW_TRUE;
+	have_merged = LW_FALSE;
+	gbox_init(&merged_box);
+	for (i = 0; i < num_nodes; i++)
+	{
+		if (!c[i]->gbox)
+		{
+			merged_ok = LW_FALSE;
+			break;
+		}
+		if (!have_merged)
+		{
+			merged_box = *(c[i]->gbox);
+			have_merged = LW_TRUE;
+		}
+		else if (gbox_merge(c[i]->gbox, &merged_box) != LW_SUCCESS)
+		{
+			merged_ok = LW_FALSE;
+			break;
+		}
+	}
+	if (merged_ok && have_merged)
+		node->gbox = gbox_clone(&merged_box);
 	return node;
 }
 
@@ -615,7 +670,18 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	/* causing the return value to be larger than the threshold value */
 	double threshold_radians = 0.95 * threshold / spheroid->radius;
 
-	circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
+	/*
+	 * circ_tree_distance_tree() is a public liblwgeom entry point, so keep
+	 * its historical containment semantics for callers that only have trees.
+	 * The helper opens collections before testing polygon-vs-pointlike
+	 * primitive pairs, avoiding the tree-only merged-ring shortcut that caused
+	 * false zero distances for #5895.
+	 */
+	if (!circ_tree_pair_set_inside_point(n1, n2, &closest1, &closest2) &&
+	    !circ_tree_pair_set_inside_point(n2, n1, &closest2, &closest1))
+	{
+		circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
+	}
 
 	/* Spherical case */
 	if ( spheroid->a == spheroid->b )
@@ -703,39 +769,6 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 	LWDEBUGF(5, "max %.8g", max);
 	if( max < *max_dist )
 		*max_dist = max;
-
-	/* Polygon on one side, primitive type on the other. Check for point-in-polygon */
-	/* short circuit. */
-	if ( n1->geom_type == POLYGONTYPE && n2->geom_type && ! lwtype_is_collection(n2->geom_type) )
-	{
-		POINT2D pt;
-		circ_tree_get_point(n2, &pt);
-		LWDEBUGF(4, "n1 is polygon, testing if contains (%.5g,%.5g)", pt.x, pt.y);
-		if ( circ_tree_contains_point(n1, &pt, &(n1->pt_outside), 0, NULL) )
-		{
-			LWDEBUG(4, "it does");
-			*min_dist = 0.0;
-			geographic_point_init(pt.x, pt.y, closest1);
-			geographic_point_init(pt.x, pt.y, closest2);
-			return *min_dist;
-		}
-	}
-	/* Polygon on one side, primitive type on the other. Check for point-in-polygon */
-	/* short circuit. */
-	if ( n2->geom_type == POLYGONTYPE && n1->geom_type && ! lwtype_is_collection(n1->geom_type) )
-	{
-		POINT2D pt;
-		circ_tree_get_point(n1, &pt);
-		LWDEBUGF(4, "n2 is polygon, testing if contains (%.5g,%.5g)", pt.x, pt.y);
-		if ( circ_tree_contains_point(n2, &pt, &(n2->pt_outside), 0, NULL) )
-		{
-			LWDEBUG(4, "it does");
-			geographic_point_init(pt.x, pt.y, closest1);
-			geographic_point_init(pt.x, pt.y, closest2);
-			*min_dist = 0.0;
-			return *min_dist;
-		}
-	}
 
 	/* Both leaf nodes, do a real distance calculation */
 	if( circ_node_is_leaf(n1) && circ_node_is_leaf(n2) )
@@ -928,8 +961,17 @@ static CIRC_NODE*
 lwline_calculate_circ_tree(const LWLINE* lwline)
 {
 	CIRC_NODE* node;
+	GBOX line_box;
+
 	node = circ_tree_new(lwline->points);
 	node->geom_type = lwgeom_get_type((LWGEOM*)lwline);
+	/* Bound the complete geodesic line before collection pairs are opened. */
+	if (!node->gbox)
+	{
+		gbox_init(&line_box);
+		if (lwgeom_calculate_gbox_geodetic((LWGEOM *)lwline, &line_box) == LW_SUCCESS)
+			node->gbox = gbox_clone(&line_box);
+	}
 	return node;
 }
 
@@ -966,7 +1008,27 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 	/* Metadata about polygons, we need this to apply P-i-P tests */
 	/* selectively when doing distance calculations */
 	node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
+	node->has_polygonal_component = LW_TRUE;
 	lwpoly_pt_outside(lwpoly, &(node->pt_outside));
+	/*
+	 * Canonical area bound for this polygon. lwgeom_calculate_gbox_geodetic
+	 * accounts for great-circle edge bulge and pole wrapping
+	 * (lwpolygon_calculate_gbox_geodetic / gbox_check_poles), the same bound
+	 * lwpoly_covers_point2d trusts to reject outside points. On failure the
+	 * node stays unboxed and callers fall through to the exact test.
+	 * Replace any merged child box: the polygon calculator is authoritative.
+	 */
+	if (node->gbox)
+	{
+		lwfree(node->gbox);
+		node->gbox = NULL;
+	}
+	{
+		GBOX poly_box;
+		gbox_init(&poly_box);
+		if (lwgeom_calculate_gbox_geodetic((LWGEOM *)lwpoly, &poly_box) == LW_SUCCESS)
+			node->gbox = gbox_clone(&poly_box);
+	}
 
 	return node;
 }
@@ -989,6 +1051,13 @@ lwcollection_calculate_circ_tree(const LWCOLLECTION* lwcol)
 		node = lwgeom_calculate_circ_tree(lwcol->geoms[i]);
 		if ( node )
 			nodes[j++] = node;
+	}
+	/* Empty members are skipped above; preserve the surviving child's type. */
+	if (j == 1)
+	{
+		node = nodes[0];
+		lwfree(nodes);
+		return node;
 	}
 	/* Put the trees into a spatially correlated order */
 	circ_nodes_sort(nodes, j);
@@ -1031,6 +1100,165 @@ lwgeom_calculate_circ_tree(const LWGEOM* lwgeom)
  * Closest point and closest line functions for geographies.
  ***********************************************************************/
 
+int
+circ_tree_point_in_polygon(const CIRC_NODE *node, const POINT2D *pt)
+{
+	uint32_t i;
+
+	if (!node || !node->geom_type || !node->has_polygonal_component)
+		return LW_FALSE;
+
+	/*
+	 * Polygon nodes carry their canonical area box. Fully boxed collection
+	 * nodes carry the union of their children, so reject points outside that
+	 * union before descending. Missing boxes remain conservative.
+	 */
+	if (node->gbox)
+	{
+		GEOGRAPHIC_POINT gpt;
+		POINT3D p3d;
+		geographic_point_init(pt->x, pt->y, &gpt);
+		geog2cart(&gpt, &p3d);
+		if (!gbox_contains_point3d(node->gbox, &p3d))
+			return LW_FALSE;
+	}
+
+	if (lwtype_is_collection(node->geom_type))
+	{
+		for (i = 0; i < node->num_nodes; i++)
+		{
+			if (circ_tree_point_in_polygon(node->nodes[i], pt))
+				return LW_TRUE;
+		}
+		return LW_FALSE;
+	}
+
+	if (node->geom_type != POLYGONTYPE)
+		return LW_FALSE;
+
+	return circ_tree_contains_point(node, pt, &(node->pt_outside), 0, NULL);
+}
+
+/*
+ * Area-safe containment prune.
+ *
+ * A candidate subtree can lie inside the container only when area bounds can
+ * overlap. Container boxes are canonical geodetic GBOXes (polygon calculator
+ * or merged fully-boxed children). Candidate boxes are the same when
+ * present (points, lines, polygons, fully-boxed collections). When an edge
+ * candidate stores no GBOX, fall back to its circ-tree circle: a zero-radius
+ * circle is a point and may be rejected with gbox_contains_point3d;
+ * positive-radius edge circles stay conservative (no prune). Missing
+ * container box also stays conservative. Never rejects true containment.
+ */
+static int
+circ_tree_pair_may_contain(const CIRC_NODE *container, const CIRC_NODE *candidate)
+{
+	if (!container->has_polygonal_component)
+		return LW_FALSE;
+	if (!container->gbox)
+		return LW_TRUE;
+	if (candidate->gbox)
+	{
+		if (!gbox_overlaps(container->gbox, candidate->gbox))
+			return LW_FALSE;
+		return LW_TRUE;
+	}
+	/*
+	 * Candidate bound is the circ-tree circle only. Zero-radius => point at
+	 * center; reject when outside the container area box. Else do not prune.
+	 */
+	if (candidate->radius == 0.0)
+	{
+		POINT3D p3d;
+		geog2cart(&(candidate->center), &p3d);
+		if (!gbox_contains_point3d(container->gbox, &p3d))
+			return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
+static int
+circ_tree_pair_set_inside_point_internal(const CIRC_NODE *n1,
+					 const CIRC_NODE *n2,
+					 GEOGRAPHIC_POINT *closest1,
+					 GEOGRAPHIC_POINT *closest2)
+{
+	POINT2D pt;
+	uint32_t i;
+
+	if (!n1->geom_type || !n2->geom_type)
+		return LW_FALSE;
+	/*
+	 * Spatial prune before opening collections: subtrees whose canonical
+	 * area bounds are disjoint cannot contain one another. This keeps a
+	 * many-component polygon collection versus many distant points from
+	 * enumerating the full Cartesian product; overlapping or unboxed pairs
+	 * fall through to the exact test below.
+	 */
+	if (!circ_tree_pair_may_contain(n1, n2))
+		return LW_FALSE;
+
+	/*
+	 * Collections must be opened here because the shared tree-distance walker
+	 * no longer performs polygon/primitive PIP checks from tree metadata.
+	 */
+	if (lwtype_is_collection(n1->geom_type))
+	{
+		for (i = 0; i < n1->num_nodes; i++)
+		{
+			if (!circ_tree_pair_may_contain(n1->nodes[i], n2))
+				continue;
+			if (circ_tree_pair_set_inside_point_internal(n1->nodes[i], n2, closest1, closest2))
+				return LW_TRUE;
+		}
+		return LW_FALSE;
+	}
+
+	if (lwtype_is_collection(n2->geom_type))
+	{
+		for (i = 0; i < n2->num_nodes; i++)
+		{
+			if (!circ_tree_pair_may_contain(n1, n2->nodes[i]))
+				continue;
+			if (circ_tree_pair_set_inside_point_internal(n1, n2->nodes[i], closest1, closest2))
+				return LW_TRUE;
+		}
+		return LW_FALSE;
+	}
+
+	if (n1->geom_type != POLYGONTYPE)
+		return LW_FALSE;
+
+	/*
+	 * Tree-only callers historically treated any non-collection primitive as
+	 * contained when its representative point was inside the polygon. That
+	 * preserves zero distance for contained lines and polygons; the exact
+	 * ring-crossing test inside circ_tree_point_in_polygon (with its GBOX
+	 * precheck) is what keeps the #5895 far-away false positive out.
+	 */
+	circ_tree_get_point(n2, &pt);
+
+	if (!circ_tree_point_in_polygon(n1, &pt))
+		return LW_FALSE;
+
+	geographic_point_init(pt.x, pt.y, closest1);
+	geographic_point_init(pt.x, pt.y, closest2);
+	return LW_TRUE;
+}
+
+static int
+circ_tree_pair_set_inside_point(const CIRC_NODE *n1,
+				const CIRC_NODE *n2,
+				GEOGRAPHIC_POINT *closest1,
+				GEOGRAPHIC_POINT *closest2)
+{
+	if (!n1->has_polygonal_component && !n2->has_polygonal_component)
+		return LW_FALSE;
+
+	return circ_tree_pair_set_inside_point_internal(n1, n2, closest1, closest2);
+}
+
 LWGEOM *
 geography_tree_closestpoint(const LWGEOM* lwgeom1, const LWGEOM* lwgeom2, double threshold)
 {
@@ -1051,9 +1279,18 @@ geography_tree_closestpoint(const LWGEOM* lwgeom1, const LWGEOM* lwgeom2, double
 	// double threshold_radians = 0.95 * threshold / spheroid->radius;
 	double threshold_radians = threshold / WGS84_RADIUS;
 
-	circ_tree_distance_tree_internal(
-		circ_tree1, circ_tree2, threshold_radians,
-		&min_dist, &max_dist, &closest1, &closest2);
+	/*
+	 * DistanceSphere runs containment against original geometries before using
+	 * the tree walker. Closest-point callers use only trees here, so they need
+	 * their own primitive-in-polygon shortcut after the shared walker stopped
+	 * trusting tree-only ring metadata for distance results.
+	 */
+	if (!circ_tree_pair_set_inside_point(circ_tree1, circ_tree2, &closest1, &closest2) &&
+	    !circ_tree_pair_set_inside_point(circ_tree2, circ_tree1, &closest2, &closest1))
+	{
+		circ_tree_distance_tree_internal(
+		    circ_tree1, circ_tree2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
+	}
 
 	p.x = rad2deg(closest1.lon);
 	p.y = rad2deg(closest1.lat);
@@ -1087,8 +1324,16 @@ geography_tree_shortestline(const LWGEOM* lwgeom1, const LWGEOM* lwgeom2, double
   // double threshold_radians = 0.95 * threshold / spheroid->radius;
   double threshold_radians = threshold / spheroid->radius;
 
-  circ_tree_distance_tree_internal(circ_tree1, circ_tree2, threshold_radians,
-      &min_dist, &max_dist, &closest1, &closest2);
+  /*
+   * Keep contained points as zero-length geography shortest lines for callers
+   * that do not go through the SQL distance wrapper's geodetic containment path.
+   */
+  if (!circ_tree_pair_set_inside_point(circ_tree1, circ_tree2, &closest1, &closest2) &&
+      !circ_tree_pair_set_inside_point(circ_tree2, circ_tree1, &closest2, &closest1))
+  {
+	  circ_tree_distance_tree_internal(
+	      circ_tree1, circ_tree2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
+  }
 
   p1.x = rad2deg(closest1.lon);
   p1.y = rad2deg(closest1.lat);
