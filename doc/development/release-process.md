@@ -90,8 +90,7 @@ documentation -- that means having the required software:
   - Can commit to upstream git https://git.osgeo.org/gitea/postgis/postgis
   - Have SSH to upload.osgeo.org and can write to /osgeo/download/postgis.
   - Have SSH to postgis.net and can write to /etc/nginx/sites-enabled/postgis.net.
-  - Post to https://git.osgeo.org/gitea/postgis/postgis.net/ and get it added to feed
-  https://planet.postgresql.org/register/new/
+  - Post to https://gitea.osgeo.org/postgis/postgis.net/
   - Can alter https://debbie.postgis.net
 
 2. Check greenlight.
@@ -110,13 +109,12 @@ documentation -- that means having the required software:
 
 4. Update code.
 
-  - Update the README.md to reflect new to be created buildbot badges
-	   (this should only be needed for master release)
   - Edit README.postgis and set release date and version.
   - Add release notes in doc/release_notes.xml
   - Update Version.config to drop the "dev" suffix
   - Add the "dev" suffixed version in extensions/upgradeable_versions.mk
     and ensure all the previous released minor versions are listed in it
+  - When out of beta/rc, get rid of all the beta/rc upgrade targets in upgradeable_versions.mk
   - Commit all changes
   - If this is a minor or major release (no branch exists):
 	   $ rel=x.x # replace x.x with minor version (e.g. 2.3)
