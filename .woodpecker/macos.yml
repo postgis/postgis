@@ -1,0 +1,12 @@
+labels:
+  platform: darwin/arm64
+  osgeo-capability: macos-native
+when:
+  event: [push, pull_request, tag]
+steps:
+  native-macos:
+    image: /bin/bash
+    environment:
+      POSTGIS_BUILD_JOBS: 4
+    commands:
+      - bash ci/woodie/macos.sh
