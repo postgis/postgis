@@ -54,6 +54,9 @@ PGIS_REG_TMPDIR="${PGROOT}/regress"
 BUILDDIR="${PGROOT}/build"
 PGPORT=5432
 PG_PID=
+INSTALLROOT="${PGROOT}/install"
+EXTENSION_SHARE="${INSTALLROOT}$(${PG_CONFIG} --sharedir)"
+EXTENSION_LIB="${INSTALLROOT}$(${PG_CONFIG} --pkglibdir)"
 
 cleanup() {
   local status=$?
@@ -73,6 +76,7 @@ export PGHOST PGPORT
 export PGUSER="$(id -un)"
 export PGDATABASE=postgres
 export PGIS_REG_TMPDIR
+export PGIS_REG_SHAREDIR="${EXTENSION_SHARE}"
 
 export PATH="${PG_HOME}/bin:${HOMEBREW_PREFIX}/bin:${HOMEBREW_PREFIX}/sbin:${HOMEBREW_PREFIX}/opt/ccache/libexec:${PATH}"
 export PGCONFIG="${PG_CONFIG}"
@@ -104,6 +108,8 @@ mkdir -p "${PGHOST}"
 "${INITDB}" -D "${PGDATA}" -A trust --no-sync
 "${POSTGRES}" -D "${PGDATA}" -F -h '' -p "${PGPORT}" -k "${PGHOST}" \
   -c fsync=off -c full_page_writes=off -c synchronous_commit=off \
+  -c "extension_control_path=${EXTENSION_SHARE}:\$system" \
+  -c "dynamic_library_path=${EXTENSION_LIB}:\$libdir" \
   > "${PGROOT}/postgresql.log" 2>&1 &
 PG_PID=$!
 
@@ -125,9 +131,16 @@ if [[ "${postgres_ready}" -ne 1 ]]; then
 fi
 psql -XAt -d template1 -c 'SELECT version()'
 
-# The full make check stages PostGIS under the private build tree. Do not run
-# make install: /opt/homebrew is shared by every workflow on this agent.
+# Install only into the workflow directory. PostgreSQL 18 can discover the
+# private extension controls; their module paths must also point at this build.
 make -j"${BUILD_JOBS}"
+make install DESTDIR="${INSTALLROOT}"
+python3 - "${EXTENSION_SHARE}/extension" "${EXTENSION_LIB}" <<'PYCONTROLS'
+import pathlib
+import sys
+for control in pathlib.Path(sys.argv[1]).glob("postgis*.control"):
+    control.write_text(control.read_text().replace("$libdir", sys.argv[2]))
+PYCONTROLS
 if make check RUNTESTFLAGS="-v --extension --dumprestore"; then
   :
 else
