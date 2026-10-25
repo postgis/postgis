@@ -419,8 +419,11 @@ sub scriptdir
 	if ( $systemwide or ( $version and $version ne $libver ) ) {
 		my $pgis_majmin = $version;
 		$pgis_majmin =~ s/^([1-9]*\.[0-9]*).*/\1/;
-		$scriptdir = `pg_config --sharedir`;
-		chop $scriptdir;
+		$scriptdir = $ENV{PGIS_REG_SHAREDIR};
+		if ( ! $scriptdir ) {
+			$scriptdir = `pg_config --sharedir`;
+			chop $scriptdir;
+		}
 		$scriptdir .= "/contrib/postgis-" . $pgis_majmin;
 	} else {
 		$scriptdir = staged_scripts_dir()
