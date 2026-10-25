@@ -138,8 +138,9 @@ make install DESTDIR="${INSTALLROOT}"
 python3 - "${EXTENSION_SHARE}/extension" "${EXTENSION_LIB}" <<'PYCONTROLS'
 import pathlib
 import sys
-for control in pathlib.Path(sys.argv[1]).glob("postgis*.control"):
-    control.write_text(control.read_text().replace("$libdir", sys.argv[2]))
+for script in pathlib.Path(sys.argv[1]).iterdir():
+    if script.suffix in (".control", ".sql"):
+        script.write_text(script.read_text().replace("$libdir", sys.argv[2]))
 PYCONTROLS
 if make check RUNTESTFLAGS="-v --extension --dumprestore"; then
   :
