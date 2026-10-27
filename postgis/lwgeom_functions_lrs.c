@@ -72,6 +72,46 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gout);
 }
 
+/*
+ * Add a measure dimension to a line, interpolating linearly by 3D length
+ * from the start value to the end value.
+ * ST_3DAddMeasure(Geometry, StartMeasure, EndMeasure) returns Geometry
+ */
+Datum ST_3DAddMeasure(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_3DAddMeasure);
+Datum
+ST_3DAddMeasure(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gin = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *gout;
+	double start_measure = PG_GETARG_FLOAT8(1);
+	double end_measure = PG_GETARG_FLOAT8(2);
+	LWGEOM *lwin, *lwout;
+	int type = gserialized_get_type(gin);
+
+	/* Raise an error if input is not a linestring or multilinestring */
+	if (type != LINETYPE && type != MULTILINETYPE)
+	{
+		lwpgerror("Only LINESTRING and MULTILINESTRING are supported");
+		PG_RETURN_NULL();
+	}
+
+	lwin = lwgeom_from_gserialized(gin);
+	if (type == LINETYPE)
+		lwout = (LWGEOM *)lwline_measured_from_lwline_3d((LWLINE *)lwin, start_measure, end_measure);
+	else
+		lwout = (LWGEOM *)lwmline_measured_from_lwmline_3d((LWMLINE *)lwin, start_measure, end_measure);
+
+	lwgeom_free(lwin);
+
+	if (lwout == NULL)
+		PG_RETURN_NULL();
+
+	gout = geometry_serialize(lwout);
+	lwgeom_free(lwout);
+
+	PG_RETURN_POINTER(gout);
+}
 
 /*
 * Locate a point along a feature based on a measure value.
