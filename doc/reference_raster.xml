@@ -10334,6 +10334,74 @@ WHERE t1.rid = 1
 
             </refentry>
 
+            <refentry xml:id="RT_ST_Convolution">
+                <refnamediv>
+                    <refname>ST_Convolution</refname>
+                    <refpurpose>Return a raster computed by applying a weighted convolution matrix to the first band.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Convolution</function></funcdef>
+                            <paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>double precision[][]</type> <parameter>matrix</parameter></paramdef>
+                            <paramdef choice="opt"><type>text</type> <parameter>pixeltype=32BF</parameter></paramdef>
+                        </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+                    <para>
+                        Applies <varname>matrix</varname> as a weighted mask over the first band of <varname>rast</varname> and returns the summed result as a new raster. This is a convenience wrapper around <xref linkend="RT_ST_MapAlgebra"/> using <xref linkend="RT_ST_Sum4ma"/> as the callback and <varname>weighted</varname> set to true. The output band uses <varname>pixeltype</varname>, which defaults to <literal>32BF</literal> to avoid clipping or rounding integer source rasters.
+                    </para>
+                    <para>
+                        The matrix must currently be 1x1 or 3x3.
+                    </para>
+
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>WITH src AS (
+    SELECT ST_SetValues(
+        ST_AddBand(
+            ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+            1, '32BF', 0, NULL
+        ),
+        1, 1, 1, ARRAY[
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+        ]::double precision[][]
+    ) AS rast
+)
+SELECT ST_Value(
+    ST_Convolution(
+        rast,
+        ARRAY[
+            [0, 1, 0],
+            [1, 1, 1],
+            [0, 1, 0]
+        ]::double precision[][]
+    ),
+    2, 2
+)
+FROM src;</programlisting>
+                    <screen>25</screen>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_MapAlgebra"/>,
+                        <xref linkend="RT_ST_Sum4ma"/>
+                    </para>
+                </refsection>
+            </refentry>
+
             <refentry xml:id="RT_ST_MapAlgebra_expr">
                 <refnamediv>
                     <refname>ST_MapAlgebra (expression version)</refname>
