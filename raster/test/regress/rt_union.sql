@@ -505,3 +505,27 @@ SELECT 'none', ST_Union(r) from ( select null::raster r where false ) f;
 SELECT 'null', ST_Union(null::raster);
 --#4699 crash
 SELECT 'null-1', ST_Union(null::raster,1);
+
+WITH r AS (
+	SELECT
+		ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0) AS rast1,
+		ST_AddBand(ST_MakeEmptyRaster(2, 2, 1, -1, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0) AS rast2
+),
+u AS (
+	SELECT 'two-raster-last' AS label, ST_Union(rast1, rast2) AS rast FROM r UNION ALL
+	SELECT 'two-raster-first', ST_Union(rast1, rast2, 'FIRST') FROM r UNION ALL
+	SELECT 'two-raster-sum', ST_Union(rast1, rast2, 'SUM') FROM r
+)
+SELECT label, (ST_Metadata(rast)).width, (ST_Metadata(rast)).height, (ST_DumpValues(rast)).valarray
+FROM u
+ORDER BY label;
+
+WITH r AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 7, 0) AS rast
+)
+SELECT 'two-raster-null-left', (ST_Metadata(ST_Union(NULL::raster, rast))).width, (ST_DumpValues(ST_Union(NULL::raster, rast))).valarray FROM r
+UNION ALL
+SELECT 'two-raster-null-right', (ST_Metadata(ST_Union(rast, NULL::raster))).width, (ST_DumpValues(ST_Union(rast, NULL::raster))).valarray FROM r
+UNION ALL
+SELECT 'two-raster-null-both', NULL::integer, NULL::double precision[][] WHERE ST_Union(NULL::raster, NULL::raster) IS NULL
+ORDER BY 1;
