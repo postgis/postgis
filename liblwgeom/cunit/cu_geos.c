@@ -17,6 +17,7 @@
 
 #include "lwgeom_geos.h"
 #include "cu_tester.h"
+#include "cu_standard_geoms.h"
 
 #include "liblwgeom_internal.h"
 
@@ -24,28 +25,23 @@ static void
 test_geos_noop(void)
 {
 	size_t i;
-	char *in_ewkt;
+	const char *in_ewkt;
+	const cu_standard_geom *geom;
+	const cu_standard_geom *geoms[32];
+	size_t geom_count;
 	char *out_ewkt;
 	LWGEOM *geom_in;
 	LWGEOM *geom_out;
 
-	char *ewkt[] = {
-	    "POINT(0 0.2)",
-	    "LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
-	    "MULTIPOINT(0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9)",
-	    "SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-	    "SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-	    "POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-	    "SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-	    "SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))",
-	    "SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
-	    "SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-	    "SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-	};
+	geom = cu_standard_geom_by_id("point-2d");
+	CU_ASSERT_PTR_NOT_NULL_FATAL(geom);
+	ASSERT_STRING_EQUAL(geom->ewkt, "POINT(0 0.2)");
 
-	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
+	geom_count = cu_standard_geoms_select(geoms, sizeof(geoms) / sizeof(geoms[0]), CU_STANDARD_GEOM_GEOS_NOOP, 0);
+	CU_ASSERT_FATAL(geom_count <= sizeof(geoms) / sizeof(geoms[0]));
+	for (i = 0; i < geom_count; i++)
 	{
-		in_ewkt = ewkt[i];
+		in_ewkt = geoms[i]->ewkt;
 		geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		geom_out = lwgeom_geos_noop(geom_in);
 		CU_ASSERT_PTR_NOT_NULL_FATAL(geom_out);
