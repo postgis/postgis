@@ -148,6 +148,8 @@ the docs (or explicitly with `make -C regress visual-examples`).
 
 * Bug Fixes *
 
+ - #4502, GH-1045, [raster] Make ST_SameAlignment symmetric for nearly equal
+          geotransforms (Darafei Praliaskouski)
  - [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
           metadata and pixel-read restrictions after upgrade
           (reported by Sarath Kumar, IITM Pravartak Security Team;
