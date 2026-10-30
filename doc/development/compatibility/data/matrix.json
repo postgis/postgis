@@ -74,17 +74,24 @@
   "compatibility_edges": {
     "postgresql": [
       {
-        "postgis": "3.7",
-        "versions": ["19"],
+        "postgis": "3.8",
+        "versions": ["20", "19", "18", "17", "16"],
         "status": "supported",
-        "note": "Development branch CI coverage for PostgreSQL 19 beta is shown as the PostgreSQL 19 major line.",
+        "note": "Development branch CI coverage for PostgreSQL 19 is shown as the PostgreSQL 20 major line.",
         "source": "postgis-ci-dashboard"
       },
       {
-        "postgis": "3.7",
-        "versions": ["18", "17", "16", "15"],
+        "postgis": "3.8",
+        "versions": ["20", "19", "18", "17", "16", "15"],
         "status": "supported",
         "source": "postgis-master-configure-ac"
+      },
+      {
+        "postgis": "3.7",
+        "versions": ["20", "19", "18", "17", "16", "15"],
+        "status": "supported",
+        "note": "Latest stable branch ",
+        "source": "postgis-ci-dashboard"
       },
       {
         "postgis": "3.7",

@@ -190,7 +190,7 @@ documentation -- that means having the required software:
   - Adding new stable branch and flipping to master. Done after .0 release
       - Create a new stable branch e.g. stable-3.7 for future micros and push
       - Update master Version.config and doc\development\compatibility\data\matrix.json
-        to list the new master branch version
+        to list the new master branch version. Matrix version add rows for new dev version
       - Add to extensions\upgradeable_versions.mk the just release .0 e.g. 3.7.0
 
   - PostGIS doc release versioned doc - https://postgis.net/documentation/
