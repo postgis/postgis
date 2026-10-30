@@ -75,20 +75,20 @@
     "postgresql": [
       {
         "postgis": "3.8",
-        "versions": ["20", "19", "18", "17", "16"],
+        "versions": ["19", "18", "17", "16"],
         "status": "supported",
         "note": "Development branch CI coverage for PostgreSQL 19 is shown as the PostgreSQL 20 major line.",
         "source": "postgis-ci-dashboard"
       },
       {
         "postgis": "3.8",
-        "versions": ["20", "19", "18", "17", "16", "15"],
+        "versions": ["19", "18", "17", "16", "15"],
         "status": "supported",
         "source": "postgis-master-configure-ac"
       },
       {
         "postgis": "3.7",
-        "versions": ["20", "19", "18", "17", "16", "15"],
+        "versions": ["19", "18", "17", "16", "15"],
         "status": "supported",
         "note": "Latest stable branch ",
         "source": "postgis-ci-dashboard"
@@ -864,23 +864,23 @@
     ]
   },
   "postgis_series": [
-    {
-      "minor": "3.7",
+      {
+      "minor": "3.8",
       "branch": "master",
-      "latest": "3.7.0beta1",
+      "latest": "3.7.0dev",
       "status": "supported",
       "release_stage": "development",
-      "first_release_date": "2026-07-21",
+      "first_release_date": "2026-10-30",
       "lifecycle": "development",
       "postgresql": {
-        "supported": "14-19",
-        "default_summary": "PostgreSQL 14-19",
-        "feature_complete": "15",
+        "supported": "15-20",
+        "default_summary": "PostgreSQL 15-20",
+        "feature_complete": "16",
         "minor_overrides": [
           {
             "versions": ["19"],
             "status": "supported",
-            "note": "PostgreSQL 19 coverage is currently beta-series coverage on the current development PostGIS line."
+            "note": "PostgreSQL 19 coverage is currently release-series coverage on the current development PostGIS line."
           }
         ],
         "source": "tag:HEAD:configure.ac"
@@ -912,6 +912,67 @@
           "minimum": "1.1.0",
           "scope": "MVT and Geobuf output",
           "source": "tag:HEAD:configure.ac"
+        },
+        "json-c": {
+          "minimum": "0.9",
+          "scope": "GeoJSON input",
+          "source": "postgis-json-c-minimum-history-2014"
+        },
+        "libxml2": {
+          "minimum": "2.5.0",
+          "scope": "GML and KML input",
+          "source": "postgis-libxml2-minimum-history-2012"
+        }
+      }
+    },
+    {
+      "minor": "3.7",
+      "branch": "master",
+      "latest": "3.7.0",
+      "status": "supported",
+      "release_stage": "development",
+      "first_release_date": "2026-10-30",
+      "lifecycle": "development",
+      "postgresql": {
+        "supported": "14-19",
+        "default_summary": "PostgreSQL 14-19",
+        "feature_complete": "15",
+        "minor_overrides": [
+          {
+            "versions": ["19"],
+            "status": "supported",
+            "note": "PostgreSQL 19 coverage is currently release-series coverage on the current development PostGIS line."
+          }
+        ],
+        "source": "tag:HEAD:configure.ac"
+      },
+      "dependencies": {
+        "geos": {
+          "minimum": "3.10.0",
+          "feature_complete": "3.15.0",
+          "recommended": "3.15 and later for all PostGIS extension features; 3.10 and later is the build minimum",
+          "source": "tag:3.7.0:configure.ac"
+        },
+        "proj": {
+          "minimum": "6.1.0",
+          "source": "tag:3.7.0:configure.ac",
+          "feature_complete": "8.1.0"
+        },
+        "gdal": {
+          "minimum": "2.4.0",
+          "scope": "raster",
+          "source": "tag:3.7.0:configure.ac"
+        },
+        "sfcgal": {
+          "minimum": "1.3.1",
+          "feature_complete": "2.3.0",
+          "recommended": "2.3.0 and later for current release documentation builds",
+          "source": "tag:3.7.0:configure.ac"
+        },
+        "protobuf-c": {
+          "minimum": "1.1.0",
+          "scope": "MVT and Geobuf output",
+          "source": "tag:3.7.0:configure.ac"
         },
         "json-c": {
           "minimum": "0.9",
