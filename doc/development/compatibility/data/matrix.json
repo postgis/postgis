@@ -4,8 +4,8 @@
   "source_repository": "https://gitea.osgeo.org/postgis/postgis.git",
   "project": {
     "name": "PostGIS",
-    "current_development_version": "3.7.0dev",
-    "current_development_minor": "3.7"
+    "current_development_version": "3.8.0dev",
+    "current_development_minor": "3.8"
   },
   "status_definitions": {
     "supported": "Supported by the PostGIS project policy for the listed release series.",

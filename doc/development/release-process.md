@@ -1,6 +1,6 @@
 ---
 title: "Release Process"
-date: 2026-06-26
+date: 2026-10-30
 weight: 90
 geekdocHidden: false
 ---
@@ -87,7 +87,7 @@ documentation -- that means having the required software:
 1. Check access.
 
   - Can edit tickets and milestones on https://trac.osgeo.org/postgis/
-  - Can commit to upstream git https://git.osgeo.org/gitea/postgis/postgis
+  - Can commit to upstream git https://gitea.osgeo.org/postgis/postgis
   - Have SSH to upload.osgeo.org and can write to /osgeo/download/postgis.
   - Have SSH to postgis.net and can write to /etc/nginx/sites-enabled/postgis.net.
   - Post to https://gitea.osgeo.org/postgis/postgis.net/
@@ -187,11 +187,18 @@ documentation -- that means having the required software:
           postgis-${rev}.pdf \
       upload.osgeo.org:/osgeo/download/postgis/docs/
 
+  - Adding new stable branch and flipping to master. Done after .0 release
+      - Create a new stable branch e.g. stable-3.7 for future micros and push
+      - Update master Version.config and doc\development\compatibility\data\matrix.json
+        to list the new master branch version
+      - Add to extensions\upgradeable_versions.mk the just release .0 e.g. 3.7.0
+
   - PostGIS doc release versioned doc - https://postgis.net/documentation/
-    - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
+    - On postgis.net server, if this is a new minor release change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
          - nginx -t #to confirm you didn't break the config
          - service nginx reload
       Verify the documentation is up to date (might need to change the nginx config)
+
 
   - Post on website:
       - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config.toml#L155
