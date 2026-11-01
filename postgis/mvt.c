@@ -904,10 +904,12 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 /** Coordinate limit that keeps every product in the fast path exact in int64 */
 #define MVT_SIMPLE_RING_MAX_COORD (1 << 26)
 
+/** Twice the signed area of triangle abc, zero when a, b and c are collinear */
 static inline int64_t
 mvt_orient(int64_t ax, int64_t ay, int64_t bx, int64_t by, int64_t cx, int64_t cy)
 { return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax); }
 
+/** Sign of v: -1, 0 or 1 */
 static inline int
 mvt_sign(int64_t v)
 { return (v > 0) - (v < 0); }
@@ -1137,6 +1139,11 @@ mvt_write_ring(LWGEOM *lwgeom, const int64_t *x, const int64_t *y, uint32_t m, u
 	return lwgeom;
 }
 
+/* Clips a geometry in tile coordinates to the extent plus buffer, unless
+ * clip_geom is false, and makes polygons valid. Polygons mvt_simple_ring
+ * accepts are rewritten in place, other polygons go through wagyu and
+ * other types through GEOS. Might return NULL
+ */
 static LWGEOM *
 mvt_clip_and_validate(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, uint32_t buffer, bool clip_geom)
 {
