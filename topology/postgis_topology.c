@@ -3198,13 +3198,18 @@ cb_getClosestEdge( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt, uint64_t *num
   initStringInfo(sql);
 
 
+  /* we want ORDER BY geom <-> $1, edge_id LIMIT 1, but it confuses the query planner */
   appendStringInfoString(sql, "SELECT ");
-  addEdgeFields(sql, fields, 0);
-  appendStringInfo(sql,
-		   " FROM \"%s\".edge_data"
-		   " ORDER BY geom <-> $1 ASC, edge_id ASC"
-		   " LIMIT 1",
-		   topo->name);
+	addEdgeFields(sql, fields, 0);
+	appendStringInfoString(sql, " FROM (SELECT ");
+	/* make sure to read edge_id in the subquery without changing the returned fields */
+	addEdgeFields(sql, fields | LWT_COL_EDGE_EDGE_ID, 0);
+	appendStringInfo(sql,
+			 " FROM \"%s\".edge_data"
+			 " ORDER BY geom <-> $1 ASC"
+			 " FETCH FIRST 1 ROW WITH TIES) AS closest_edges"
+			 " ORDER BY edge_id ASC LIMIT 1",
+			 topo->name);
 
   POSTGIS_DEBUGF(1, "cb_getClosestEdge query: %s", sql->data);
 
