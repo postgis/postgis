@@ -31,7 +31,8 @@
 #include <postgres.h>
 #include <fmgr.h>
 #include <utils/builtins.h> /* for text_to_cstring() */
-#include "utils/lsyscache.h" /* for get_typlenbyvalalign */
+#include "utils/lsyscache.h" /* for get_typlenbyvalalign, get_func_namespace */
+#include "utils/syscache.h"  /* for GetSysCacheOid2 */
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 #include <executor/spi.h>
@@ -66,6 +67,22 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS);
 Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS);
 
 #define VALUES_LENGTH 6
+
+/*
+ * Resolve the OID of the "raster" type in the same namespace as the calling
+ * function (the raster extension schema). Coverage functions that read a
+ * caller-named column from a caller-named table use this to reject columns
+ * that are not actually rasters before handing their bytes to the
+ * deserializer, which trusts its input unconditionally.
+ */
+static Oid
+rtpg_raster_type_oid(FunctionCallInfo fcinfo)
+{
+	Oid nspoid = get_func_namespace(fcinfo->flinfo->fn_oid);
+	if (nspoid == InvalidOid)
+		return InvalidOid;
+	return GetSysCacheOid2(TYPENAMENSP, Anum_pg_type_oid, PointerGetDatum("raster"), ObjectIdGetDatum(nspoid));
+}
 
 /**
  * Get summary stats of a band
@@ -209,6 +226,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	int len = 0;
 	char *sql = NULL;
 	int spi_result;
+	Oid rasteroid = rtpg_raster_type_oid(fcinfo);
 	Portal portal;
 	TupleDesc tupdesc;
 	SPITupleTable *tuptable = NULL;
@@ -325,6 +343,17 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		else if (isNull) {
 			SPI_cursor_fetch(portal, TRUE, 1);
 			continue;
+		}
+		else if (SPI_gettypeid(tupdesc, 1) != rasteroid)
+		{
+			SPI_freetuptable(SPI_tuptable);
+			SPI_cursor_close(portal);
+			SPI_finish();
+
+			if (NULL != rtn)
+				pfree(rtn);
+			elog(ERROR, "RASTER_summaryStatsCoverage: Specified column does not contain rasters");
+			PG_RETURN_NULL();
 		}
 
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(datum);
@@ -1923,6 +1952,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		int len = 0;
 		char *sql = NULL;
 		int spi_result;
+		Oid rasteroid = rtpg_raster_type_oid(fcinfo);
 		Portal portal;
 		HeapTuple tuple;
 		Datum datum;
@@ -2103,6 +2133,22 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			else if (isNull) {
 				SPI_cursor_fetch(portal, TRUE, 1);
 				continue;
+			}
+			else if (SPI_gettypeid(tupdesc, 1) != rasteroid)
+			{
+
+				SPI_freetuptable(SPI_tuptable);
+				SPI_cursor_close(portal);
+				SPI_finish();
+
+				if (NULL != covvcnts)
+					pfree(covvcnts);
+				if (search_values_count)
+					pfree(search_values);
+
+				MemoryContextSwitchTo(oldcontext);
+				elog(ERROR, "RASTER_valueCountCoverage: Specified column does not contain rasters");
+				SRF_RETURN_DONE(funcctx);
 			}
 
 			pgraster = (rt_pgraster *) PG_DETOAST_DATUM(datum);
