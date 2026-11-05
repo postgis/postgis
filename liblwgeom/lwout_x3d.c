@@ -206,7 +206,8 @@ asx3d3_mpoly_coordindex_sb(const LWMPOLY *psur, stringbuffer_t *sb)
 		patch = (LWPOLY *)psur->geoms[i];
 		for (l = 0; l < patch->nrings; l++)
 		{
-			np = patch->rings[l]->npoints - 1;
+			/* guard npoints - 1 underflow for an empty (0-point) ring */
+			np = patch->rings[l]->npoints ? patch->rings[l]->npoints - 1 : 0;
 			for (k = 0; k < np; k++)
 			{
 				if (k)
