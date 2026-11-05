@@ -142,7 +142,9 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 		bool is_geodetic = gserialized_is_geodetic(gser);
 		LWPOINT *empty_point = lwpoint_construct_empty(geom_srid, geom_z, geom_m);
 		geom_type = POINTTYPE;
-		pfree(gser);
+		/* Do not pfree(gser): it may be the caller's own datum. Count on the
+		 * caller memory context cleaning up the dangling gserialized (as the
+		 * MULTI-promotion branch below does). */
 		if ( is_geodetic )
 			gser = geography_serialize(lwpoint_as_lwgeom(empty_point));
 		else
