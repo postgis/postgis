@@ -804,7 +804,9 @@ parse_values(mvt_agg_context *ctx, struct feature_builder *feature)
 			add_value_as_string(ctx, feature, text_to_cstring(DatumGetTextP(datum)), k);
 			break;
 		case CSTRINGOID:
-			add_value_as_string(ctx, feature, DatumGetCString(datum), k);
+			/* add_value_as_string takes ownership (stores or pfrees), so hand it a
+			 * palloc'd copy rather than a pointer into the input tuple. */
+			add_value_as_string(ctx, feature, pstrdup(DatumGetCString(datum)), k);
 			break;
 		default:
 			parse_datum_as_string(ctx, feature, typoid, datum, k);
