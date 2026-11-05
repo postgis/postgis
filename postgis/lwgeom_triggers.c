@@ -101,8 +101,11 @@ Datum cache_bbox(PG_FUNCTION_ARGS)
 		elog(ERROR, "trigger %s can't find attribute %s",
 		     trigger->tgname, trigger->tgargs[0]);
 
-	/* Find number of requested argument */
-	if ( strcmp(SPI_gettype(tupdesc, attno), "geometry") )
+	/* Make sure the target column really is the geometry type, by OID rather
+	 * than by type name (a domain named "geometry" over bytea would otherwise
+	 * pass and feed a raw datum to LWGEOM_addBBOX). */
+	postgis_initialize_cache();
+	if (SPI_gettypeid(tupdesc, attno) != postgis_oid(GEOMETRYOID))
 		elog(ERROR, "trigger %s requested to apply to a non-geometry field (%s)", trigger->tgname, trigger->tgargs[0]);
 
 	/* Get input lwgeom */
