@@ -49,6 +49,13 @@ DROP FUNCTION IF EXISTS ST_Length(text);
 DROP FUNCTION IF EXISTS ST_Covers(text, text);
 DROP FUNCTION IF EXISTS ST_CoveredBy(text, text);
 DROP FUNCTION IF EXISTS ST_Intersects(text, text);
+DROP FUNCTION IF EXISTS ST_Simplify(text, float8);
+DROP FUNCTION IF EXISTS ST_Simplify(text, float8, boolean);
+DROP FUNCTION IF EXISTS ST_Simplify(geography, float8);
+DROP FUNCTION IF EXISTS ST_Simplify(geography, float8, boolean);
+DROP FUNCTION IF EXISTS _ST_GeographyHasAntipodalEdge(geometry);
+DROP FUNCTION IF EXISTS _ST_GeographySimplifyPreservesVertices(geometry, geometry, float8);
+DROP FUNCTION IF EXISTS _ST_GeographySimplifyPreservesVertices(geometry, geometry, float8, boolean);
 DROP FUNCTION IF EXISTS ST_Buffer(text, float8);
 DROP FUNCTION IF EXISTS ST_Intersection(text, text);
 
@@ -139,4 +146,3 @@ DROP FUNCTION IF EXISTS geography_analyze(internal);
 -- DROP FUNCTION IF EXISTS gidx_in(cstring);
 -- DROP FUNCTION IF EXISTS gidx_out(gidx);
 DROP TYPE gidx CASCADE;
-
