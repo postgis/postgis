@@ -1510,8 +1510,8 @@ ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm, double zval, double
 	return pa_out;
 }
 
-POINTARRAY *
-ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
+static POINTARRAY *
+ptarray_substring_in_metric(POINTARRAY *ipa, double from, double to, double tolerance, int use_3d)
 {
 	POINTARRAY *dpa;
 	POINT4D pt;
@@ -1521,19 +1521,34 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 	int nsegs, i;
 	double length, slength, tlength;
 	int state = 0; /* 0=before, 1=inside */
+	int hasz = FLAGS_GET_Z(ipa->flags);
+	double from_fraction = from;
 
 	/*
 	 * Create a dynamic pointarray with an initial capacity
 	 * equal to full copy of input points
 	 */
-	dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), ipa->npoints);
+	dpa = ptarray_construct_empty(hasz, FLAGS_GET_M(ipa->flags), ipa->npoints);
 
 	/* Compute total line length */
-	length = ptarray_length_2d(ipa);
-
+	length = (use_3d && hasz) ? ptarray_length(ipa) : ptarray_length_2d(ipa);
 
 	LWDEBUGF(3, "Total length: %g", length);
 
+	if (FP_EQUALS(from, to) && FP_EQUALS(from_fraction, 1.0) && ipa->npoints > 0)
+	{
+		getPoint4d_p(ipa, ipa->npoints - 1, &pt);
+		ptarray_append_point(dpa, &pt, LW_FALSE);
+		return dpa;
+	}
+
+	if (length <= tolerance && fabs(from - to) <= tolerance && ipa->npoints > 0)
+	{
+		uint32_t point_index = FP_EQUALS(from_fraction, 1.0) ? ipa->npoints - 1 : 0;
+		getPoint4d_p(ipa, point_index, &pt);
+		ptarray_append_point(dpa, &pt, LW_FALSE);
+		return dpa;
+	}
 
 	/* Get 'from' and 'to' lengths */
 	from = length*from;
@@ -1558,7 +1573,10 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 
 
 		/* Find the length of this segment */
-		slength = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
+		if (use_3d && hasz)
+			slength = distance3d_pt_pt((POINT3D *)p1ptr, (POINT3D *)p2ptr);
+		else
+			slength = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
 
 		/*
 		 * We are before requested start.
@@ -1568,7 +1586,14 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 
 			LWDEBUG(3, " Before start");
 
-			if ( fabs ( from - ( tlength + slength ) ) <= tolerance )
+			if (slength <= tolerance && fabs(from - tlength) <= tolerance)
+			{
+				LWDEBUG(3, "  Zero-length segment starts at our start");
+
+				ptarray_append_point(dpa, &p1, LW_FALSE);
+				state = 1;
+			}
+			else if (fabs(from - (tlength + slength)) <= tolerance)
 			{
 
 				LWDEBUG(3, "  Second point is our start");
@@ -1701,6 +1726,18 @@ END:
 	LWDEBUGF(3, "Out of loop, ptarray has %d points", dpa->npoints);
 
 	return dpa;
+}
+
+POINTARRAY *
+ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
+{
+	return ptarray_substring_in_metric(ipa, from, to, tolerance, LW_FALSE);
+}
+
+POINTARRAY *
+ptarray_substring_3d(POINTARRAY *ipa, double from, double to, double tolerance)
+{
+	return ptarray_substring_in_metric(ipa, from, to, tolerance, LW_TRUE);
 }
 
 /*

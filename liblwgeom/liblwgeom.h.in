@@ -1118,6 +1118,8 @@ extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
  */
 extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2,
                                                           double tolerance);
+extern POINTARRAY *ptarray_substring_3d(POINTARRAY *pa, double d1, double d2,
+                                                          double tolerance);
 
 /**
  * @param pa the subject pointarray
@@ -1384,6 +1386,7 @@ extern uint32_t lwcompound_num_curves(const LWCOMPOUND *compound);
 extern const LWGEOM *lwcollection_getsubcurve(const LWCOMPOUND *compound, uint32_t gnum);
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
+extern double ptarray_length(const POINTARRAY *pts);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
 extern LWPOINT* lwpoint_project_lwpoint(const LWPOINT* lwpoint1, const LWPOINT* lwpoint2, double distance);
 extern LWPOINT* lwpoint_project(const LWPOINT* lwpoint1, double distance, double azimuth);
