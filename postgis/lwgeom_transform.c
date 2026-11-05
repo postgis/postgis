@@ -719,6 +719,11 @@ Datum postgis_srs_search(PG_FUNCTION_ARGS)
 		LWGEOM *bounds = lwgeom_from_gserialized(gbounds);
 		text *auth_name = PG_GETARG_TEXT_P(1);
 
+		/* An empty geometry has no bbox; srs_find_planar() would deref NULL */
+		if (lwgeom_is_empty(bounds))
+			elog(ERROR, "%s: cannot search with an empty bounds geometry", __func__);
+		lwgeom_add_bbox(bounds);
+
 		funcctx = SRF_FIRSTCALL_INIT();
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
