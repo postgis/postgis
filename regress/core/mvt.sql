@@ -418,6 +418,37 @@ SELECT 'PG64', ST_AsText(ST_AsMVTGeom(
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
 	100, 0, true));
 
+-- Simple rings inside the clip box skip wagyu and must still come out as wagyu returns them
+SELECT 'PG65', id, ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText(wkt),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
+	100, buffer, clip))
+FROM (VALUES
+	-- A square in both directions and from another start
+	(1, 'POLYGON((20 20, 20 80, 80 80, 80 20, 20 20))', 0, true),
+	(2, 'POLYGON((80 80, 80 20, 20 20, 20 80, 80 80))', 0, true),
+	(3, 'POLYGON((20 20, 80 20, 80 80, 20 80, 20 20))', 0, true),
+	-- One top vertex, two top vertices, two flat tops in both directions
+	(4, 'POLYGON((10 10, 50 90, 90 10, 10 10))', 0, true),
+	(5, 'POLYGON((10 10, 90 10, 80 90, 50 40, 20 90, 10 10))', 0, true),
+	(6, 'POLYGON((10 10, 90 10, 90 90, 70 90, 70 50, 30 50, 30 90, 10 90, 10 10))', 0, true),
+	(7, 'POLYGON((10 10, 10 90, 30 90, 30 50, 70 50, 70 90, 90 90, 90 10, 10 10))', 0, true),
+	-- Collinear vertices, the first one included
+	(8, 'POLYGON((50 20, 80 20, 80 50, 80 80, 20 80, 20 20, 50 20))', 0, true),
+	-- A one-part multipolygon, on the tile edge, in the buffer, clipping off
+	(9, 'MULTIPOLYGON(((20 20, 80 20, 80 80, 20 80, 20 20)))', 0, true),
+	(10, 'POLYGON((0 0, 100 0, 100 100, 0 100, 0 0))', 0, true),
+	(11, 'POLYGON((-10 20, 50 20, 50 80, -10 80, -10 20))', 10, true),
+	(12, 'POLYGON((-10 20, 50 20, 50 80, -10 80, -10 20))', 0, false),
+	-- Still through wagyu: a spike, a ring touching itself, an edge within
+	-- half a pixel of a vertex; one pixel further the ring skips wagyu
+	(13, 'POLYGON((20 20, 80 20, 80 80, 50 80, 50 95, 50 80, 20 80, 20 20))', 0, true),
+	(14, 'POLYGON((10 10, 90 10, 90 90, 50 10, 10 90, 10 10))', 0, true),
+	(15, 'POLYGON((10 10, 90 14, 90 60, 49 12, 10 60, 10 10))', 0, true),
+	(16, 'POLYGON((10 10, 90 14, 90 60, 49 13, 10 60, 10 10))', 0, true)
+) AS t(id, wkt, buffer, clip)
+ORDER BY id;
+
 -- geometry encoding tests
 SELECT 'TG1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
 	ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
