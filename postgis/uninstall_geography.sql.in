@@ -51,6 +51,8 @@ DROP FUNCTION IF EXISTS ST_CoveredBy(text, text);
 DROP FUNCTION IF EXISTS ST_Intersects(text, text);
 DROP FUNCTION IF EXISTS ST_Buffer(text, float8);
 DROP FUNCTION IF EXISTS ST_Intersection(text, text);
+DROP FUNCTION IF EXISTS ST_Difference(text, text);
+DROP FUNCTION IF EXISTS ST_Union(text, text);
 
 -- functions
 DROP FUNCTION IF EXISTS ST_AsText(geography);
@@ -127,6 +129,8 @@ DROP FUNCTION IF EXISTS _ST_BestSRID(geography, geography);
 DROP FUNCTION IF EXISTS _ST_BestSRID(geography);
 DROP FUNCTION IF EXISTS ST_Buffer(geography, float8);
 DROP FUNCTION IF EXISTS ST_Intersection(geography, geography);
+DROP FUNCTION IF EXISTS ST_Difference(geography, geography);
+DROP FUNCTION IF EXISTS ST_Union(geography, geography);
 DROP FUNCTION IF EXISTS geography(geography, integer, boolean);
 
 --DROP FUNCTION IF EXISTS geography_in(cstring, oid, integer);
@@ -139,4 +143,3 @@ DROP FUNCTION IF EXISTS geography_analyze(internal);
 -- DROP FUNCTION IF EXISTS gidx_in(cstring);
 -- DROP FUNCTION IF EXISTS gidx_out(gidx);
 DROP TYPE gidx CASCADE;
-

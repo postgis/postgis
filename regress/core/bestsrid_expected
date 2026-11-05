@@ -130,3 +130,9 @@ ERROR:  Error in geography_bestsrid calling with infinite coordinate geographies
 NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY at character 33
 NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY at character 234
 ERROR:  Error in geography_bestsrid calling with infinite coordinate geographies
+NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY at character 44
+ERROR:  Error in geography_bestsrid calling with infinite coordinate geographies
+NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY at character 71
+ERROR:  Error in geography_bestsrid calling with second arg infinite coordinate geographies
+NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY at character 48
+ERROR:  Error in geography_bestsrid calling with infinite coordinate geographies
