@@ -25,12 +25,12 @@ CREATE OR REPLACE FUNCTION AsText(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Estimated_Extent(text,text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
-	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
-	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromText(text, int4)
