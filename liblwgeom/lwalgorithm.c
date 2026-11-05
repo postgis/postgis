@@ -19,13 +19,15 @@
  **********************************************************************
  *
  * Copyright 2008 Paul Ramsey
+ * Copyright 2026 Darafei Praliaskouski
  *
  **********************************************************************/
-
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <ctype.h> /* for tolower */
+#include <float.h>
+#include <math.h>
 #include <stdbool.h>
 
 int
@@ -71,6 +73,125 @@ int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
 	double side = ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
 	return SIGNUM(side);
+}
+
+static void
+lw_two_diff(double a, double b, double diff, double *error)
+{
+	double bvirt = a - diff;
+	double avirt = diff + bvirt;
+	double bround = bvirt - b;
+	double around = a - avirt;
+
+	*error = around + bround;
+}
+
+static int
+lw_diff_of_products(double a, double b, double c, double d, double *value, double *error)
+{
+	double ab = a * b;
+	double cd = c * d;
+	double ab_error, cd_error, diff_error;
+
+	if (!isfinite(ab) || !isfinite(cd))
+		return LW_FALSE;
+
+	ab_error = fma(a, b, -ab);
+	cd_error = fma(c, d, -cd);
+	*value = ab - cd;
+	lw_two_diff(ab, cd, *value, &diff_error);
+	*error = diff_error + ab_error - cd_error;
+	return LW_TRUE;
+}
+
+static int
+lw_diff_of_products_with_diff_errors(double a, double b, double a_error, double b_error,
+				     double c, double d, double c_error, double d_error,
+				     double *value, double *error)
+{
+	double correction, correction_error;
+
+	if (!lw_diff_of_products(a, b, c, d, value, error))
+		return LW_FALSE;
+
+	/* Expand (a + a_error) * (b + b_error) -
+	 * (c + c_error) * (d + d_error) into the low-order terms. */
+	if (!lw_diff_of_products(a_error, b, c_error, d, &correction, &correction_error))
+		return LW_FALSE;
+	*error += correction + correction_error;
+
+	if (!lw_diff_of_products(a, b_error, c, d_error, &correction, &correction_error))
+		return LW_FALSE;
+	*error += correction + correction_error;
+
+	if (!lw_diff_of_products(a_error, b_error, c_error, d_error, &correction, &correction_error))
+		return LW_FALSE;
+	*error += correction + correction_error;
+
+	return LW_TRUE;
+}
+
+typedef struct
+{
+	double numerator;
+	double numerator_error;
+	double denominator;
+	double denominator_error;
+	double approximate;
+} LW_FRACTION_POSITION;
+
+static LW_FRACTION_POSITION
+lw_fraction_position_from_double(double fraction)
+{
+	LW_FRACTION_POSITION position;
+
+	position.numerator = fraction;
+	position.numerator_error = 0.0;
+	position.denominator = 1.0;
+	position.denominator_error = 0.0;
+	position.approximate = fraction;
+	return position;
+}
+
+static int
+lw_fraction_position_less(const LW_FRACTION_POSITION *left, const LW_FRACTION_POSITION *right)
+{
+	double difference, difference_error, rounded_difference, rounding_error;
+	double left_scale, right_scale;
+	double left_num, left_num_error, left_den, left_den_error;
+	double right_num, right_num_error, right_den, right_den_error;
+	int left_exponent, right_exponent;
+
+	left_scale = fmax(fmax(fabs(left->numerator), fabs(left->numerator_error)),
+			   fmax(fabs(left->denominator), fabs(left->denominator_error)));
+	right_scale = fmax(fmax(fabs(right->numerator), fabs(right->numerator_error)),
+			    fmax(fabs(right->denominator), fabs(right->denominator_error)));
+	if (left_scale == 0.0 || right_scale == 0.0 || !isfinite(left_scale) || !isfinite(right_scale))
+		return left->approximate < right->approximate;
+
+	/* Each ratio is unchanged when its numerator and denominator are scaled together. */
+	frexp(left_scale, &left_exponent);
+	frexp(right_scale, &right_exponent);
+	left_num = scalbn(left->numerator, -left_exponent);
+	left_num_error = scalbn(left->numerator_error, -left_exponent);
+	left_den = scalbn(left->denominator, -left_exponent);
+	left_den_error = scalbn(left->denominator_error, -left_exponent);
+	right_num = scalbn(right->numerator, -right_exponent);
+	right_num_error = scalbn(right->numerator_error, -right_exponent);
+	right_den = scalbn(right->denominator, -right_exponent);
+	right_den_error = scalbn(right->denominator_error, -right_exponent);
+
+	if (!lw_diff_of_products_with_diff_errors(left_num, right_den, left_num_error, right_den_error,
+						   right_num, left_den, right_num_error, left_den_error,
+						   &difference, &difference_error))
+		return left->approximate < right->approximate;
+
+	/* Compare the cross-products before rounding their quotient to double. */
+	rounded_difference = difference + difference_error;
+	lw_two_diff(difference, -difference_error, rounded_difference, &rounding_error);
+	if (rounded_difference != 0.0)
+		return rounded_difference < 0.0;
+	return rounding_error < 0.0;
 }
 
 /**
@@ -404,6 +525,204 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 	return SEG_ERROR;
 }
 
+static LW_FRACTION_POSITION
+segment_intersection_fraction_on_q(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
+{
+	double scale = fabs(p1->x);
+	double rscale;
+	double qscale;
+	double rx, ry, sx, sy, qpx, qpy;
+	double rx_error, ry_error, sx_error, sy_error, qpx_error, qpy_error;
+	double denom, fraction;
+	double denom_a, denom_b, fraction_a, fraction_b;
+	double denom_error, numerator, numerator_error;
+	int raw_products_are_normal;
+	LW_FRACTION_POSITION position;
+
+	rx = p2->x - p1->x;
+	ry = p2->y - p1->y;
+	sx = q2->x - q1->x;
+	sy = q2->y - q1->y;
+	qpx = q1->x - p1->x;
+	qpy = q1->y - p1->y;
+	lw_two_diff(p2->x, p1->x, rx, &rx_error);
+	lw_two_diff(p2->y, p1->y, ry, &ry_error);
+	lw_two_diff(q2->x, q1->x, sx, &sx_error);
+	lw_two_diff(q2->y, q1->y, sy, &sy_error);
+	lw_two_diff(q1->x, p1->x, qpx, &qpx_error);
+	lw_two_diff(q1->y, p1->y, qpy, &qpy_error);
+
+	denom_a = rx * sy;
+	denom_b = ry * sx;
+	fraction_a = qpx * ry;
+	fraction_b = qpy * rx;
+	denom = denom_a - denom_b;
+	numerator = fraction_a - fraction_b;
+	fraction = numerator / denom;
+	/*
+	 * Raw products that underflow to zero or subnormal values can give a
+	 * finite but rounded fraction.  In that case, use the scaled fallbacks
+	 * below so the first crossing on lineB is not chosen by lineA segment
+	 * order after both positions collapse to the same value.
+	 */
+	raw_products_are_normal = ((denom_a != 0.0 && fabs(denom_a) >= DBL_MIN) || rx == 0.0 || sy == 0.0) &&
+				  ((denom_b != 0.0 && fabs(denom_b) >= DBL_MIN) || ry == 0.0 || sx == 0.0) &&
+				  ((fraction_a != 0.0 && fabs(fraction_a) >= DBL_MIN) || qpx == 0.0 || ry == 0.0) &&
+				  ((fraction_b != 0.0 && fabs(fraction_b) >= DBL_MIN) || qpy == 0.0 || rx == 0.0);
+	if (raw_products_are_normal && denom != 0.0 && isfinite(denom) && isfinite(fraction))
+	{
+		if (lw_diff_of_products_with_diff_errors(rx, sy, rx_error, sy_error,
+							 ry, sx, ry_error, sx_error,
+							 &denom, &denom_error) &&
+		    lw_diff_of_products_with_diff_errors(qpx, ry, qpx_error, ry_error,
+							 qpy, rx, qpy_error, rx_error,
+							 &numerator, &numerator_error))
+		{
+			if (!isfinite(denom + denom_error) || denom + denom_error == 0.0 ||
+			    !isfinite(numerator + numerator_error))
+				return lw_fraction_position_from_double(0.0);
+			if (denom + denom_error < 0.0)
+			{
+				denom = -denom;
+				denom_error = -denom_error;
+				numerator = -numerator;
+				numerator_error = -numerator_error;
+			}
+			fraction = (numerator + numerator_error) / (denom + denom_error);
+			if (!isfinite(fraction))
+				return lw_fraction_position_from_double(0.0);
+		}
+		if (fraction < 0.0)
+			return lw_fraction_position_from_double(0.0);
+		if (fraction > 1.0)
+			return lw_fraction_position_from_double(1.0);
+		position.numerator = numerator;
+		position.numerator_error = numerator_error;
+		position.denominator = denom;
+		position.denominator_error = denom_error;
+		position.approximate = fraction;
+		return position;
+	}
+
+	rscale = fabs(p1->x);
+	if (fabs(p1->y) > rscale)
+		rscale = fabs(p1->y);
+	if (fabs(p2->x) > rscale)
+		rscale = fabs(p2->x);
+	if (fabs(p2->y) > rscale)
+		rscale = fabs(p2->y);
+
+	if (rscale != 0.0 && isfinite(rscale))
+	{
+		/*
+		 * If only the long p direction overflows, scale that vector alone.
+		 * Keeping q deltas unscaled preserves tiny movement along the line
+		 * whose traversal order decides the first crossing.
+		 */
+		rx = (p2->x / rscale) - (p1->x / rscale);
+		ry = (p2->y / rscale) - (p1->y / rscale);
+		sx = q2->x - q1->x;
+		sy = q2->y - q1->y;
+		qpx = q1->x - p1->x;
+		qpy = q1->y - p1->y;
+
+		denom = rx * sy - ry * sx;
+		fraction = (qpx * ry - qpy * rx) / denom;
+		if (denom != 0.0 && isfinite(denom) && isfinite(fraction))
+		{
+			/*
+			 * An out-of-range value here usually means that scaling the
+			 * long p segment erased a tiny p delta.  Do not clamp it: the
+			 * q-scaled fallback below can still preserve lineB traversal
+			 * order for finite inputs.
+			 */
+			if (fraction >= 0.0 && fraction <= 1.0)
+				return lw_fraction_position_from_double(fraction);
+		}
+	}
+
+	qscale = fabs(q1->x);
+	if (fabs(q1->y) > qscale)
+		qscale = fabs(q1->y);
+	if (fabs(q2->x) > qscale)
+		qscale = fabs(q2->x);
+	if (fabs(q2->y) > qscale)
+		qscale = fabs(q2->y);
+
+	if (qscale != 0.0 && isfinite(qscale))
+	{
+		/*
+		 * If only the long q direction overflows, scale q-origin terms
+		 * together while leaving p deltas unscaled. Fully normalizing all
+		 * coordinates can erase tiny p movements that choose the first
+		 * crossing on lineB.
+		 */
+		rx = p2->x - p1->x;
+		ry = p2->y - p1->y;
+		sx = (q2->x / qscale) - (q1->x / qscale);
+		sy = (q2->y / qscale) - (q1->y / qscale);
+		qpx = (q1->x / qscale) - (p1->x / qscale);
+		qpy = (q1->y / qscale) - (p1->y / qscale);
+
+		denom = rx * sy - ry * sx;
+		fraction = (qpx * ry - qpy * rx) / denom;
+		if (denom != 0.0 && isfinite(denom) && isfinite(fraction))
+		{
+			if (fraction < 0.0)
+				return lw_fraction_position_from_double(0.0);
+			if (fraction > 1.0)
+				return lw_fraction_position_from_double(1.0);
+			return lw_fraction_position_from_double(fraction);
+		}
+	}
+
+	if (fabs(p1->y) > scale)
+		scale = fabs(p1->y);
+	if (fabs(p2->x) > scale)
+		scale = fabs(p2->x);
+	if (fabs(p2->y) > scale)
+		scale = fabs(p2->y);
+	if (fabs(q1->x) > scale)
+		scale = fabs(q1->x);
+	if (fabs(q1->y) > scale)
+		scale = fabs(q1->y);
+	if (fabs(q2->x) > scale)
+		scale = fabs(q2->x);
+	if (fabs(q2->y) > scale)
+		scale = fabs(q2->y);
+
+	if (scale == 0.0 || !isfinite(scale))
+		return lw_fraction_position_from_double(0.0);
+
+	/*
+	 * Use normalized coordinates only as an overflow fallback.  Normalizing
+	 * first can erase tiny q deltas beside very large p ordinates, while the
+	 * unscaled local-delta path preserves them when it remains finite.
+	 */
+	rx = (p2->x / scale) - (p1->x / scale);
+	ry = (p2->y / scale) - (p1->y / scale);
+	sx = (q2->x / scale) - (q1->x / scale);
+	sy = (q2->y / scale) - (q1->y / scale);
+	qpx = (q1->x / scale) - (p1->x / scale);
+	qpy = (q1->y / scale) - (p1->y / scale);
+
+	denom = rx * sy - ry * sx;
+	if (denom == 0.0)
+		return lw_fraction_position_from_double(0.0);
+
+	fraction = (qpx * ry - qpy * rx) / denom;
+
+	if (!isfinite(fraction))
+		return lw_fraction_position_from_double(0.0);
+
+	if (fraction < 0.0)
+		return lw_fraction_position_from_double(0.0);
+	if (fraction > 1.0)
+		return lw_fraction_position_from_double(1.0);
+
+	return lw_fraction_position_from_double(fraction);
+}
+
 /**
 ** @brief lwline_crossing_direction: returns the kind of #CG_LINE_CROSS_TYPE behavior  of 2 linestrings
 ** @param l1 first line string
@@ -427,6 +746,8 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	int cross_right = 0;
 	int first_cross = 0;
 	int this_cross = 0;
+	LW_FRACTION_POSITION first_cross_pos;
+	int first_cross_pos_valid = 0;
 #if POSTGIS_DEBUG_LEVEL >= 4
 	char *geom_ewkt;
 #endif
@@ -457,10 +778,16 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 
 	for ( i = 1; i < pa2->npoints; i++ )
 	{
+		int first_segment_cross = 0;
 
 		/* Update second point of q to next value */
 		q2 = getPoint2d_cp(pa2, i);
 
+		/*
+		 * Ticket #5772 defines the balanced multicross "first" side
+		 * while traversing the second line, so ties inside this q segment
+		 * are ordered by their fraction on q instead of on l1.
+		 */
 		/* Initialize first point of p */
 		p1 = getPoint2d_cp(pa1, 0);
 
@@ -479,7 +806,15 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 				LWDEBUG(4,"this_cross == SEG_CROSS_LEFT");
 				cross_left++;
 				if ( ! first_cross )
-					first_cross = SEG_CROSS_LEFT;
+				{
+					LW_FRACTION_POSITION pos = segment_intersection_fraction_on_q(p1, p2, q1, q2);
+					if (!first_cross_pos_valid || lw_fraction_position_less(&pos, &first_cross_pos))
+					{
+						first_cross_pos = pos;
+						first_cross_pos_valid = 1;
+						first_segment_cross = SEG_CROSS_LEFT;
+					}
+				}
 			}
 
 			if ( this_cross == SEG_CROSS_RIGHT )
@@ -487,7 +822,15 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 				LWDEBUG(4,"this_cross == SEG_CROSS_RIGHT");
 				cross_right++;
 				if ( ! first_cross )
-					first_cross = SEG_CROSS_RIGHT;
+				{
+					LW_FRACTION_POSITION pos = segment_intersection_fraction_on_q(p1, p2, q1, q2);
+					if (!first_cross_pos_valid || lw_fraction_position_less(&pos, &first_cross_pos))
+					{
+						first_cross_pos = pos;
+						first_cross_pos_valid = 1;
+						first_segment_cross = SEG_CROSS_RIGHT;
+					}
+				}
 			}
 
 			/*
@@ -509,6 +852,9 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 			p1 = p2;
 
 		}
+
+		if (first_segment_cross)
+			first_cross = first_segment_cross;
 
 		/* Turn second point of q into first point */
 		q1 = q2;
