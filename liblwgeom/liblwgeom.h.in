@@ -1625,6 +1625,8 @@ extern double ptarray_locate_point(const POINTARRAY *pa, const POINT4D *pt, doub
 */
 extern LWLINE *lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end);
 extern LWMLINE* lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end);
+extern LWLINE *lwline_measured_from_lwline_3d(const LWLINE *lwline, double m_start, double m_end);
+extern LWMLINE* lwmline_measured_from_lwmline_3d(const LWMLINE *lwmline, double m_start, double m_end);
 
 /**
 * Determine the location(s) along a measured line where m occurs and
