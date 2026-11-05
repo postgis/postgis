@@ -4883,6 +4883,100 @@ WHERE
             </refsection>
         </refentry>
 
+        <refentry xml:id="RT_ST_IsVisible">
+            <refnamediv>
+                <refname>ST_IsVisible</refname>
+                <refpurpose>Tests whether one point is visible from another point using a raster band as a digital elevation model.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>boolean <function>ST_IsVisible</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>pointa</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>pointb</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>curvature=false</parameter></paramdef>
+                    </funcprototype>
+                    <funcprototype>
+                        <funcdef>boolean <function>ST_IsVisible</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>pointa</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>pointb</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>curvature=false</parameter></paramdef>
+                    </funcprototype>
+                    <funcprototype>
+                        <funcdef>boolean <function>ST_IsVisible</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>pointa</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>pointb</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>curvature_coef</parameter></paramdef>
+                    </funcprototype>
+                    <funcprototype>
+                        <funcdef>boolean <function>ST_IsVisible</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>pointa</parameter></paramdef>
+                        <paramdef><type>geometry </type> <parameter>pointb</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>curvature_coef</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns true if <varname>pointb</varname> is visible from <varname>pointa</varname> along the surface represented by the raster band. The point coordinates must use the same SRID as the raster. If a point has a Z coordinate, it is used as the observer or target height above the DEM surface; otherwise a height of zero is used.</para>
+                <para>If <varname>curvature</varname> is true, the GDAL viewshed curvature/refraction coefficient is set to 0.85714. The <varname>curvature_coef</varname> overload accepts an explicit coefficient. A coefficient of 0.0 does not adjust for earth curvature.</para>
+                <para>This function uses GDAL's viewshed algorithm, which is intended for projected coordinate reference systems. GDAL does not currently apply special processing for input DEM cells that have a nodata value. The GDAL <varname>GTiff</varname> driver must be enabled in <xref linkend="postgis_gdal_enabled_drivers"/>.</para>
+
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires GDAL &gt;= 3.1.1.</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+				<para>This example requires the <literal>GTiff</literal> driver in <varname>postgis.gdal_enabled_drivers</varname>.</para>
+
+                <programlisting language="sql" role="requires-external-state"><![CDATA[
+WITH dem AS (
+    SELECT ST_SetSRID(
+        ST_AddBand(
+            ST_MakeEmptyRaster(5, 5, 0, 5, 1, -1, 0, 0, 0),
+            '32BF'::text, 0, NULL
+        ),
+        3857
+    ) AS rast
+)
+SELECT
+    ST_IsVisible(
+        rast,
+        ST_SetSRID(ST_PointZ(0.5, 2.5, 1), 3857),
+        ST_SetSRID(ST_PointZ(4.5, 2.5, 1), 3857)
+    ) AS clear_path,
+    ST_IsVisible(
+        ST_SetValue(rast, 1, 3, 3, 10),
+        ST_SetSRID(ST_PointZ(0.5, 2.5, 1), 3857),
+        ST_SetSRID(ST_PointZ(4.5, 2.5, 1), 3857)
+    ) AS blocked_path
+FROM dem;
+                ]]></programlisting>
+                <screen role="visual-primary text-primary"><![CDATA[ clear_path | blocked_path
+------------+--------------
+ t          | f
+                ]]></screen>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_Value"/>,
+                    <xref linkend="RT_ST_SetValue"/>,
+                    <xref linkend="RT_ST_MakeEmptyRaster"/>
+                </para>
+            </refsection>
+        </refentry>
+
         <refentry xml:id="RT_ST_NearestValue">
             <refnamediv>
                 <refname>ST_NearestValue</refname>
