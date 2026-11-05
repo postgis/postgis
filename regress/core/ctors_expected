@@ -5,6 +5,23 @@ ERROR:  LWGEOM_makeline: Operation on mixed SRID geometries (Point, 0) != (Point
 ST_MakeLine1|LINESTRING(0 0,1 1,10 0)
 ST_MakeLine_agg1|LINESTRING(0 0,1 1,10 0,20 20,40 4,40 4,40 5,40 5,40 6,40 6,40 7,40 8)
 ST_MakeLine_agg2|LINESTRING(0 0,1 0,1 0)
+ST_MakeCurveLine1|CIRCULARSTRING(1 2,3 4,5 6)
+ST_MakeCurveLine2|CIRCULARSTRING(1 2,3 4,5 6,7 8,9 10)
+ST_MakeCurveLineZM|CIRCULARSTRING(0 0 1 5,1 1 2 6,2 0 3 7)
+ST_MakeCurveLineNullArray|t
+ERROR:  ST_MakeCurveLine: circular strings require at least 3 points
+ERROR:  ST_MakeCurveLine: circular strings require an odd number of points
+ERROR:  ST_MakeCurveLine: input geometries must be points
+ERROR:  LWGEOM_makecurveline_garray: Operation on mixed SRID geometries Point 3 != 0
+ST_MakeCompoundCurve1|COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0,2 1,2 3,4 3),(4 3,4 5,1 4,0 0))
+ST_MakeCompoundCurveNurbs|COMPOUNDCURVE((0 0,1 1),NURBSCURVE(DEGREE 2,CONTROLPOINTS(NURBSPOINT(WEIGHTEDPOINT(1 1),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(2 3),WEIGHT 1),NURBSPOINT(WEIGHTEDPOINT(4 1),WEIGHT 1)),KNOTS (KNOT(0,3),KNOT(1,3))))
+ST_MakeCompoundCurveEmptyArray|t
+ERROR:  ST_MakeCompoundCurve: components must join end-to-end
+ERROR:  ST_MakeCompoundCurve: mixed dimensioned components
+ERROR:  ST_MakeCompoundCurve: components must join end-to-end
+ERROR:  LWGEOM_makecompoundcurve_garray: Operation on mixed SRID geometries LineString 3 != 0
+ERROR:  ST_MakeCompoundCurve: input geometries must be curve components
+ERROR:  ST_MakeCompoundCurve: input geometries must be curve components
 BOX(0 0,1 1)
 ERROR:  BOX2D_construct: Operation on mixed SRID geometries (Point, 0) != (Point, 3)
 BOX3D(0 0 0,1 1 0)
