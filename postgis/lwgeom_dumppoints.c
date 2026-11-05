@@ -498,7 +498,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 			/* if a collection and we have more geoms */
 			if (node->idx < lwcoll->ngeoms)
 			{
-				if (state->stacklen > MAXDEPTH)
+				if (state->stacklen >= MAXDEPTH)
 					elog(ERROR, "Unable to dump overly nested collection");
 
 				/* push the next geom on the path and the stack */

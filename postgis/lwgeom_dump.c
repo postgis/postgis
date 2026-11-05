@@ -160,15 +160,25 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			lwgeom = lwcoll->geoms[node->idx];
 			if ( ! lwgeom_is_collection(lwgeom) )
 			{
-				/* write address of current geom */
+				/* write address of current geom (bounded to avoid overrun) */
 				ptr=address;
-				*ptr++='{';
+				if (ptr < address + sizeof(address) - 1)
+					*ptr++ = '{';
 				for (i=0; i<state->stacklen; i++)
 				{
-					if ( i ) ptr += sprintf(ptr, ",");
-					ptr += sprintf(ptr, "%d", state->stack[i]->idx+1);
+					int remaining = (int)(address + sizeof(address) - ptr);
+					int n =
+					    snprintf(ptr, remaining, "%s%d", i ? "," : "", state->stack[i]->idx + 1);
+					if (n < 0 || n >= remaining)
+					{
+						/* would overflow: stop safely */
+						ptr = address + sizeof(address) - 1;
+						break;
+					}
+					ptr += n;
 				}
-				*ptr++='}';
+				if (ptr < address + sizeof(address) - 1)
+					*ptr++ = '}';
 				*ptr='\0';
 
 				break;
@@ -180,7 +190,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			 * stack
 			 */
 
-			if (state->stacklen > MAXDEPTH)
+			if (state->stacklen >= MAXDEPTH)
 				elog(ERROR, "Unable to dump overly nested collection.");
 
 			oldcontext = MemoryContextSwitchTo(newcontext);
