@@ -35,6 +35,7 @@
 
 #include "liblwgeom.h"                  /* For standard geometry types. */
 #include "liblwgeom_internal.h"         /* For FP comparators. */
+#include "lwgeodetic.h"                 /* For geodetic length helpers. */
 #include "lwgeom_pg.h"                  /* For debugging macros. */
 #include "geography.h"                  /* For utility functions. */
 #include "geography_measurement_trees.h" /* For circ_tree caching */
@@ -69,6 +70,7 @@ Datum geography_segmentize(PG_FUNCTION_ARGS);
 Datum geography_line_locate_point(PG_FUNCTION_ARGS);
 Datum geography_line_interpolate_point(PG_FUNCTION_ARGS);
 Datum geography_line_substring(PG_FUNCTION_ARGS);
+Datum geography_add_measure(PG_FUNCTION_ARGS);
 Datum geography_closestpoint(PG_FUNCTION_ARGS);
 Datum geography_shortestline(PG_FUNCTION_ARGS);
 
@@ -1337,6 +1339,179 @@ Datum geography_line_interpolate_point(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+static double
+geography_segment_length_spheroid(const POINT4D *p1, const POINT4D *p2, const SPHEROID *s, int hasz)
+{
+	GEOGRAPHIC_POINT g1, g2;
+	double length;
+
+	geographic_point_init(p1->x, p1->y, &g1);
+	geographic_point_init(p2->x, p2->y, &g2);
+
+	if (s->a == s->b)
+		length = s->radius * sphere_distance(&g1, &g2);
+	else
+		length = spheroid_distance(&g1, &g2, s);
+
+	if (hasz)
+		length = sqrt((p2->z - p1->z) * (p2->z - p1->z) + length * length);
+
+	return length;
+}
+
+static LWLINE *
+geography_line_add_measure(const LWLINE *lwline, double m_start, double m_end, const SPHEROID *s)
+{
+	POINTARRAY *pa;
+	POINT4D p1, p2;
+	uint32_t i;
+	uint32_t npoints = 0;
+	int hasz = FLAGS_GET_Z(lwline->flags);
+	double length = 0.0;
+	double length_so_far = 0.0;
+	double m_range = m_end - m_start;
+
+	if (lwline->points)
+		npoints = lwline->points->npoints;
+
+	pa = ptarray_construct(hasz, LW_TRUE, npoints);
+
+	if (npoints == 0)
+		return lwline_construct(lwline->srid, NULL, pa);
+
+	length = ptarray_length_spheroid(lwline->points, s);
+	getPoint4d_p(lwline->points, 0, &p1);
+
+	for (i = 0; i < npoints; i++)
+	{
+		POINT4D q;
+		double m;
+
+		getPoint4d_p(lwline->points, i, &p2);
+		length_so_far += geography_segment_length_spheroid(&p1, &p2, s, hasz);
+
+		if (length > 0.0)
+			m = m_start + m_range * length_so_far / length;
+		else if (npoints > 1)
+			m = m_start + m_range * i / (npoints - 1);
+		else
+			m = 0.0;
+
+		q = p2;
+		q.m = m;
+		ptarray_set_point4d(pa, i, &q);
+		p1 = p2;
+	}
+
+	return lwline_construct(lwline->srid, NULL, pa);
+}
+
+static LWMLINE *
+geography_multiline_add_measure(const LWMLINE *lwmline, double m_start, double m_end, const SPHEROID *s)
+{
+	LWGEOM **geoms;
+	uint32_t i;
+	uint32_t total_steps = 0;
+	uint32_t steps_so_far = 0;
+	int hasz = FLAGS_GET_Z(lwmline->flags);
+	double length = 0.0;
+	double length_so_far = 0.0;
+	double m_range = m_end - m_start;
+
+	if (lwgeom_is_empty(lwmline_as_lwgeom(lwmline)))
+		return (LWMLINE *)lwcollection_construct_empty(MULTILINETYPE, lwmline->srid, hasz, LW_TRUE);
+
+	geoms = lwalloc(sizeof(LWGEOM *) * lwmline->ngeoms);
+
+	for (i = 0; i < lwmline->ngeoms; i++)
+	{
+		const LWLINE *lwline = (const LWLINE *)lwmline->geoms[i];
+		if (lwline->points && lwline->points->npoints > 1)
+		{
+			length += ptarray_length_spheroid(lwline->points, s);
+			total_steps += lwline->points->npoints - 1;
+		}
+	}
+
+	for (i = 0; i < lwmline->ngeoms; i++)
+	{
+		const LWLINE *lwline = (const LWLINE *)lwmline->geoms[i];
+		double sub_length = 0.0;
+		double sub_m_start = m_start;
+		double sub_m_end = m_start;
+
+		if (lwline->points && lwline->points->npoints > 1)
+			sub_length = ptarray_length_spheroid(lwline->points, s);
+
+		if (length > 0.0)
+		{
+			sub_m_start = m_start + m_range * length_so_far / length;
+			sub_m_end = m_start + m_range * (length_so_far + sub_length) / length;
+		}
+		else if (total_steps > 0)
+		{
+			uint32_t line_steps =
+			    (lwline->points && lwline->points->npoints > 1) ? lwline->points->npoints - 1 : 0;
+			sub_m_start = m_start + m_range * steps_so_far / total_steps;
+			sub_m_end = m_start + m_range * (steps_so_far + line_steps) / total_steps;
+			steps_so_far += line_steps;
+		}
+
+		geoms[i] = (LWGEOM *)geography_line_add_measure(lwline, sub_m_start, sub_m_end, s);
+		length_so_far += sub_length;
+	}
+
+	return (LWMLINE *)lwcollection_construct(MULTILINETYPE, lwmline->srid, NULL, lwmline->ngeoms, geoms);
+}
+
+/**
+ * ST_AddMeasure(geography line, float start_measure, float end_measure)
+ * Add a measure coordinate using spheroidal segment lengths.
+ */
+PG_FUNCTION_INFO_V1(geography_add_measure);
+Datum
+geography_add_measure(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P(0);
+	double start_measure = PG_GETARG_FLOAT8(1);
+	double end_measure = PG_GETARG_FLOAT8(2);
+	LWGEOM *lwgeom, *lwresult;
+	GSERIALIZED *result;
+	SPHEROID s;
+	int type = gserialized_get_type(gs);
+
+	if (gserialized_is_empty(gs))
+	{
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+
+	if (type != LINETYPE && type != MULTILINETYPE)
+	{
+		elog(ERROR, "%s: only LINESTRING and MULTILINESTRING are supported", __func__);
+		PG_FREE_IF_COPY(gs, 0);
+		PG_RETURN_NULL();
+	}
+
+	spheroid_init_from_srid(gserialized_get_srid(gs), &s);
+
+	lwgeom = lwgeom_from_gserialized(gs);
+	if (type == LINETYPE)
+		lwresult = lwline_as_lwgeom(
+		    geography_line_add_measure(lwgeom_as_lwline(lwgeom), start_measure, end_measure, &s));
+	else
+		lwresult = lwmline_as_lwgeom(
+		    geography_multiline_add_measure(lwgeom_as_lwmline(lwgeom), start_measure, end_measure, &s));
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(gs, 0);
+
+	lwgeom_set_geodetic(lwresult, true);
+	result = geography_serialize(lwresult);
+	lwgeom_free(lwresult);
+
+	PG_RETURN_POINTER(result);
+}
 
 /**
  * ST_LineLocatePoint(geography line, geography point, bool use_spheroid)
