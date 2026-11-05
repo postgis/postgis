@@ -673,7 +673,6 @@ static void header_from_twkb_state(twkb_parse_state *s)
 */
 LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 {
-	GBOX bbox;
 	LWGEOM *geom = NULL;
 	uint32_t has_bbox = LW_FALSE;
 	int i;
@@ -689,31 +688,31 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 		s->coords[i] = 0.0;
 	}
 
-	/* Read the bounding box, is there is one */
+	/* Consume the bounding box, if there is one. The embedded bbox is
+	 * attacker-controlled; trusting it would corrupt &&/GiST/BRIN results, so
+	 * we discard the values here and recompute from the geometry below. The
+	 * bytes must still be read to keep the stream position correct. */
 	if ( s->has_bbox )
 	{
-		/* Initialize */
 		has_bbox = s->has_bbox;
-		memset(&bbox, 0, sizeof(GBOX));
-		bbox.flags = lwflags(s->has_z, s->has_m, 0);
 
 		/* X */
-		bbox.xmin = twkb_parse_state_double(s, s->factor);
-		bbox.xmax = bbox.xmin + twkb_parse_state_double(s, s->factor);
+		(void)twkb_parse_state_double(s, s->factor);
+		(void)twkb_parse_state_double(s, s->factor);
 		/* Y */
-		bbox.ymin = twkb_parse_state_double(s, s->factor);
-		bbox.ymax = bbox.ymin + twkb_parse_state_double(s, s->factor);
+		(void)twkb_parse_state_double(s, s->factor);
+		(void)twkb_parse_state_double(s, s->factor);
 		/* Z */
 		if ( s->has_z )
 		{
-			bbox.zmin = twkb_parse_state_double(s, s->factor_z);
-			bbox.zmax = bbox.zmin + twkb_parse_state_double(s, s->factor_z);
+			(void)twkb_parse_state_double(s, s->factor_z);
+			(void)twkb_parse_state_double(s, s->factor_z);
 		}
 		/* M */
 		if ( s->has_m )
 		{
-			bbox.mmin = twkb_parse_state_double(s, s->factor_m);
-			bbox.mmax = bbox.mmin + twkb_parse_state_double(s, s->factor_m);
+			(void)twkb_parse_state_double(s, s->factor_m);
+			(void)twkb_parse_state_double(s, s->factor_m);
 		}
 	}
 
@@ -754,12 +753,12 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 		return NULL;
 	}
 
+	/* Recompute a trustworthy bbox from the actual coordinates */
 	if (has_bbox && geom)
-		geom->bbox = gbox_clone(&bbox);
+		lwgeom_add_bbox(geom);
 
 	return geom;
 }
-
 
 /**
 * WKB inputs *must* have a declared size, to prevent malformed WKB from reading
