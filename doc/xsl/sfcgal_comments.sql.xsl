@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:db="http://docbook.org/ns/docbook"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
 >
 <!-- ********************************************************************
      ********************************************************************
@@ -15,6 +16,7 @@
 	<xsl:include href="common_comments.xsl" />
 
 	<xsl:output method="text" />
+	<xsl:param name="postgis_sfcgal_version">0</xsl:param>
 
 	<!-- We deal only with the reference chapter -->
         <xsl:template match="/">
@@ -26,6 +28,15 @@
 		<xsl:variable name="apesc"><xsl:text>''</xsl:text></xsl:variable>
 <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 		<xsl:for-each select="db:section[not(contains(@xml:id,'Operator'))]/db:refentry">
+		  <!--
+		    CG_IsSimple and CG_IsSimpleDetail are not declared in sfcgal.sql
+		    when PostGIS is built against SFCGAL before 2.3.0, because the
+		    required SFCGAL C entry points do not exist there. Other documented
+		    SFCGAL 2.3 features keep SQL-visible stubs that raise a version
+		    error at execution time, so their COMMENT statements must remain.
+		  -->
+		  <xsl:variable name="skip-comment" select="number($postgis_sfcgal_version) &lt; 20300 and (@xml:id='CG_IsSimple' or @xml:id='CG_IsSimpleDetail')" />
+		  <xsl:if test="not($skip-comment)">
 		  <xsl:variable name='plaincomment'>
 		  	<xsl:value-of select="normalize-space(translate(translate(db:refnamediv/db:refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 		  </xsl:variable>
@@ -45,6 +56,7 @@ COMMENT ON <xsl:choose><xsl:when test="contains(db:paramdef/db:type,'geometry se
 <xsl:choose><xsl:when test="contains(db:parameter,'OUT')"></xsl:when><xsl:when test="contains(db:type,'geometry set')">geometry</xsl:when><xsl:otherwise><xsl:value-of select="db:type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last() and not(contains(db:parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if></xsl:when>
 </xsl:choose></xsl:for-each>) IS '<xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template> <xsl:value-of select='$comment' />';
 			</xsl:for-each>
+		  </xsl:if>
 		</xsl:for-each>
 	</xsl:template>
 

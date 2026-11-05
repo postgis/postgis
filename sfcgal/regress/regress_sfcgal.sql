@@ -9,6 +9,13 @@ SELECT 'postgis_sfcgal_version', count(*) FROM (SELECT postgis_sfcgal_version())
 SELECT 'postgis_sfcgal_noop', ST_NPoints(postgis_sfcgal_noop(ST_Buffer('POINT(0 0)', 5)));
 SELECT 'CG_Tesselate', ST_AsText(CG_Tesselate('GEOMETRYCOLLECTION(POINT(4 4),POLYGON((0 0,1 0,1 1,0 1,0 0)))'));
 SELECT 'CG_3DArea', CG_3DArea('POLYGON((0 0 0,1 0 0,1 1 0,0 1 0,0 0 0))');
+SELECT 'CG_IsValid.2d_polygon', CG_IsValid('POLYGON((0 0,1 0,1 1,0 0))');
+SELECT 'CG_IsValid.invalid_polygon', CG_IsValid('POLYGON((0 0,2 2,2 0,0 2,0 0))');
+SELECT 'CG_IsValid.3d_vertical_line', CG_IsValid('LINESTRING Z (0 0 0,0 0 1)');
+SELECT 'CG_IsValid.polyhedralsurface', CG_IsValid('POLYHEDRALSURFACE Z (((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))');
+SELECT 'CG_IsValid.solid', CG_IsValid(CG_MakeSolid('POLYHEDRALSURFACE Z (((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))'));
+SELECT 'CG_IsValidDetail.valid_polygon', valid, reason IS NULL, location IS NULL FROM CG_IsValidDetail('POLYGON((0 0,1 0,1 1,0 0))');
+SELECT 'CG_IsValidDetail.invalid_polygon', valid, reason IS NOT NULL, location IS NULL FROM CG_IsValidDetail('POLYGON((0 0,2 2,2 0,0 2,0 0))');
 SELECT 'CG_Extrude_point', ST_AsText(CG_Extrude('POINT(0 0)', 1, 0, 0));
 SELECT 'CG_Extrude_line', ST_AsText(CG_Extrude(CG_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0));
 -- In the first SFCGAL versions, the extruded face was wrongly oriented
