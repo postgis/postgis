@@ -33,6 +33,8 @@ the docs (or explicitly with `make -C regress visual-examples`).
 * New Features *
 
  - #6132, ST_IsSimpleDetail (Sandro Santilli)
+ - #2325, [raster] Allow ST_SetBandNoDataValue to set nodata values
+          for multiple bands in one call (Darafei Praliaskouski)
  - #1124, #2935, #3033, #4658, #4659, [loader] Rework loader arguments:
           shp2pgsql can create UNLOGGED tables and choose the feature id column
           name, shp2pgsql --drop-table can emit DROP TABLE before prepare
