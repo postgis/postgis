@@ -204,6 +204,12 @@ FROM (SELECT 'LINESTRING (50 160,50 50,100 50)'::geometry AS geom) AS foo;</prog
 			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateX</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>pointOrigin</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -215,8 +221,14 @@ FROM (SELECT 'LINESTRING (50 160,50 50,100 50)'::geometry AS geom) AS foo;</prog
 		<note><para><code>ST_RotateX(geomA,  rotRadians)</code>
 			is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>.</para></note>
 
-		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>The optional <varname>pointOrigin</varname> parameter rotates
+		around a point origin instead of the coordinate origin. If a 2D
+		geometry is rotated around a 3D point origin, the geometry Z is treated
+		as 0, so the origin Z can affect the output Y coordinate.</para>
+
 		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
+		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for rotating around a point origin was introduced.</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 		<para>&T_support;</para>
@@ -235,7 +247,7 @@ FROM (SELECT 'LINESTRING (50 160,50 50,100 50)'::geometry AS geom) AS foo;</prog
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateY"/>, <xref linkend="ST_RotateZ"/></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateXYZ"/>, <xref linkend="ST_RotateY"/>, <xref linkend="ST_RotateZ"/></para>
 	  </refsection>
 	</refentry>
 
@@ -253,6 +265,12 @@ FROM (SELECT 'LINESTRING (50 160,50 50,100 50)'::geometry AS geom) AS foo;</prog
 			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateY</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>pointOrigin</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -264,8 +282,14 @@ FROM (SELECT 'LINESTRING (50 160,50 50,100 50)'::geometry AS geom) AS foo;</prog
 		<note><para><code>ST_RotateY(geomA,  rotRadians)</code>
 			is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
 
+		<para>The optional <varname>pointOrigin</varname> parameter rotates
+		around a point origin instead of the coordinate origin. If a 2D
+		geometry is rotated around a 3D point origin, the geometry Z is treated
+		as 0, so the origin Z can affect the output X coordinate.</para>
+
 		<para role="availability" conformance="1.1.2.">Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
 		<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for rotating around a point origin was introduced.</para>
 
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
@@ -286,7 +310,7 @@ FROM (SELECT 'LINESTRING (50 160,50 50,100 50)'::geometry AS geom) AS foo;</prog
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateZ"/></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateXYZ"/>, <xref linkend="ST_RotateZ"/></para>
 	  </refsection>
 	</refentry>
 
@@ -345,7 +369,64 @@ FROM (SELECT ST_LineToCurve(ST_Buffer('POINT(234 567)'::geometry, 3)) As geom) A
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateY"/></para>
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateXYZ"/>, <xref linkend="ST_RotateY"/></para>
+	  </refsection>
+	</refentry>
+
+	<refentry xml:id="ST_RotateXYZ">
+	  <refnamediv>
+		<refname>ST_RotateXYZ</refname>
+
+		<refpurpose>Rotates a geometry about the X, Y and Z axes.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateXYZ</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadiansX</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadiansY</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadiansZ</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateXYZ</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadiansX</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadiansY</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadiansZ</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>pointOrigin</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Rotates a geometry about the X, Y and Z axes, applying the
+		rotations in X, Y, Z order. The optional
+		<varname>pointOrigin</varname> parameter rotates around a point origin
+		instead of the coordinate origin. If a 2D geometry is rotated around a
+		3D point origin, the geometry Z is treated as 0, so the origin Z can
+		affect the output X and Y coordinates.</para>
+
+		<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		<para>&P_support;</para>
+		<para>&Z_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_AsEWKT(ST_SnapToGrid(ST_RotateXYZ(ST_GeomFromEWKT('POINT(1 0 0)'), 0, pi()/2, pi()/2), 0.1));</programlisting>
+<screen>POINT(0 0 -1)</screen>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Affine"/>, <xref linkend="ST_RotateX"/>, <xref linkend="ST_RotateY"/>, <xref linkend="ST_RotateZ"/></para>
 	  </refsection>
 	</refentry>
 
