@@ -9069,7 +9069,25 @@ FROM dummy_rast WHERE rid=2;
                         <funcprototype>
                             <funcdef>raster <function>ST_Clip</function></funcdef>
                             <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>geometry[] </type> <parameter>geom</parameter></paramdef>
+                            <paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Clip</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                            <paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Clip</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>geometry[] </type> <parameter>geom</parameter></paramdef>
                             <paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
                             <paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
                             <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
@@ -9083,6 +9101,14 @@ FROM dummy_rast WHERE rid=2;
                             <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
                         </funcprototype>
 
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Clip</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>geometry[] </type> <parameter>geom</parameter></paramdef>
+                            <paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
+                            <paramdef choice="opt"><type>boolean </type> <parameter>touched=FALSE</parameter></paramdef>
+                        </funcprototype>
+
                     </funcsynopsis>
                 </refsynopsisdiv>
 
@@ -9090,7 +9116,9 @@ FROM dummy_rast WHERE rid=2;
                     <title>Description</title>
 
                     <para>
-                        Returns a raster that is clipped by the input geometry <varname>geom</varname>. If band index is not specified, all bands are processed.
+                        Returns a raster that is clipped by the input geometry <varname>geom</varname>.
+                        If <varname>geom</varname> is an array, the geometries are unioned before clipping.
+                        If band index is not specified, all bands are processed.
                     </para>
 
                     <para>
@@ -9102,6 +9130,7 @@ FROM dummy_rast WHERE rid=2;
                     </para>
                     <note><para>The default behavior is touched=false, which will only select pixels where the center of the pixel is covered by the geometry.</para></note>
 	                <para role="enhanced" conformance="3.5.0">Enhanced: 3.5.0 - touched argument added.</para>
+	                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 - geometry array variants added.</para>
                     <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
 
                     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Rewritten in C</para>
