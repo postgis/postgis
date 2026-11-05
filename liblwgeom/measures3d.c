@@ -141,6 +141,11 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int m
 	thedl.distance = initdistance;
 	thedl.tolerance = 0.0;
 
+	/* Distance to/from an empty geometry is undefined; an empty operand also
+	 * makes create_v_line() return NULL, which was dereferenced below. */
+	if (lwgeom_is_empty(lw1) || lwgeom_is_empty(lw2))
+		return (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+
 	/* Check if we really have 3D geometries
 	 * If not, send it to 2D-calculations which will give the same result
 	 * as an infinite z-value at one or two of the geometries */
@@ -245,6 +250,11 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int 
 	thedl.tolerance = 0;
 
 	LWDEBUG(2, "lw_dist3d_distancepoint is called");
+
+	/* Distance to/from an empty geometry is undefined; an empty operand also
+	 * makes create_v_line() return NULL, which was dereferenced below. */
+	if (lwgeom_is_empty(lw1) || lwgeom_is_empty(lw2))
+		return (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 
 	/* Check if we really have 3D geometries
 	 * If not, send it to 2D-calculations which will give the same result
