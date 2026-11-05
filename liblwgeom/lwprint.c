@@ -37,15 +37,14 @@
 static void
 lwprint_normalize_latlon(double *lat, double *lon)
 {
-	/* First remove all the truly excessive trips around the world via up or down. */
-	while (*lat > 270)
-	{
+	/* First remove all the truly excessive trips around the world via up or down.
+	 * fmod reduces in O(1); a plain subtraction loop never terminates for
+	 * magnitudes where the ULP exceeds 360 (above ~4.6e18). */
+	*lat = fmod(*lat, 360.0);
+	if (*lat > 270)
 		*lat -= 360;
-	}
-	while (*lat < -270)
-	{
+	else if (*lat < -270)
 		*lat += 360;
-	}
 
 	/* Now see if latitude is past the top or bottom of the world.
 	 * Past 90  or -90 puts us on the other side of the earth,
@@ -62,14 +61,11 @@ lwprint_normalize_latlon(double *lat, double *lon)
 	}
 	/* Now make sure lon is in the normal range.  Wrapping longitude
 	 * has no effect on latitude. */
-	while (*lon > 180)
-	{
+	*lon = fmod(*lon, 360.0);
+	if (*lon > 180)
 		*lon -= 360;
-	}
-	while (*lon < -180)
-	{
+	else if (*lon < -180)
 		*lon += 360;
-	}
 }
 
 /* Converts a single double to DMS given the specified DMS format string.
