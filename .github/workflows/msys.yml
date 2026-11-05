@@ -50,6 +50,7 @@ jobs:
           git
           make
           bison
+          flex
         pacboy: >-
           toolchain:p
           autotools:p
