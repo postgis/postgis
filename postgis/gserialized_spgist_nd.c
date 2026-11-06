@@ -186,11 +186,19 @@ initCubeBox(int ndims)
 static CubeGIDX *
 nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint16_t octant)
 {
-	int ndims = GIDX_NDIMS(centroid), i;
+	/*
+	 * The box inherited from the parent and this node's centroid need not
+	 * have the same number of dimensions once 2D and 4D geometries share an
+	 * index.  Keep the parent's size so the copy below fits, and only
+	 * constrain the dimensions the two have in common.
+	 */
+	int ndims = Min(GIDX_NDIMS(cube_box->left), GIDX_NDIMS(centroid)), i;
 	CubeGIDX *next_cube_box = (CubeGIDX *)palloc(sizeof(CubeGIDX));
-	GIDX *left = (GIDX *)palloc(GIDX_SIZE(ndims));
-	GIDX *right = (GIDX *)palloc(GIDX_SIZE(ndims));
+	GIDX *left = (GIDX *)palloc(VARSIZE(cube_box->left));
+	GIDX *right = (GIDX *)palloc(VARSIZE(cube_box->right));
 	uint16_t dim = 0x01;
+
+	ndims = Min(ndims, GIDX_NDIMS(cube_box->right));
 
 	memcpy(left, cube_box->left, VARSIZE(cube_box->left));
 	memcpy(right, cube_box->right, VARSIZE(cube_box->right));
