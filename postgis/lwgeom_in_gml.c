@@ -418,12 +418,18 @@ gml_is_srs_axis_order_gis_friendly(int32_t srid)
 	char *srtext;
 	char query[256];
 	int is_axis_order_gis_friendly, err;
+	const char *srs_table;
+
+	/* Resolve spatial_ref_sys in the install schema, not via search_path */
+	postgis_initialize_cache();
+	srs_table = postgis_spatial_ref_sys();
+	if (!srs_table)
+		return -1;
 
 	if (SPI_OK_CONNECT != SPI_connect ())
 		lwpgerror("gml_is_srs_axis_order_gis_friendly: could not connect to SPI manager");
 
-	sprintf(query, "SELECT srtext \
-                        FROM spatial_ref_sys WHERE srid='%d'", srid);
+	snprintf(query, sizeof(query), "SELECT srtext FROM %s WHERE srid='%d'", srs_table, srid);
 
 	err = SPI_exec(query, 1);
 	if (err < 0) lwpgerror("gml_is_srs_axis_order_gis_friendly: error executing query %d", err);
