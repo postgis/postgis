@@ -57,6 +57,7 @@ Datum
 RASTER_makeEmpty(PG_FUNCTION_ARGS)
 {
 	uint16 width = 0, height = 0;
+	int32_t arg_width = 0, arg_height = 0;
 	double ipx = 0, ipy = 0, scalex = 0, scaley = 0, skewx = 0, skewy = 0;
 	int32_t srid = SRID_UNKNOWN;
 	rt_pgraster *pgraster = NULL;
@@ -68,11 +69,24 @@ RASTER_makeEmpty(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	/* The SQL signature takes int4, so read it as such and range check it */
+	/* rather than let PG_GETARG_UINT16 silently drop the high bits */
 	if (!PG_ARGISNULL(0))
-		width = PG_GETARG_UINT16(0);
+		arg_width = PG_GETARG_INT32(0);
 
 	if (!PG_ARGISNULL(1))
-		height = PG_GETARG_UINT16(1);
+		arg_height = PG_GETARG_INT32(1);
+
+	if (
+		arg_width < 0 || arg_width > (int32_t) UINT16_MAX ||
+		arg_height < 0 || arg_height > (int32_t) UINT16_MAX
+	) {
+		elog(ERROR, "RASTER_makeEmpty: Raster dimensions must be between 0 and %d", UINT16_MAX);
+		PG_RETURN_NULL();
+	}
+
+	width = (uint16) arg_width;
+	height = (uint16) arg_height;
 
 	if (!PG_ARGISNULL(2))
 		ipx = PG_GETARG_FLOAT8(2);
