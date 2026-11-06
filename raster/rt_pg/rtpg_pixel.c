@@ -41,6 +41,7 @@
 #include "access/htup_details.h" /* for heap_form_tuple() */
 
 #include "rtpostgis.h"
+#include "rtpg_internal.h"
 
 /* Get pixel value */
 Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
@@ -2516,7 +2517,6 @@ RASTER_neighborhood(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
-	distance[0] = (uint16_t)distance[0];
 
 	/* distance Y axis */
 	distance[1] = PG_GETARG_INT32(5);
@@ -2527,7 +2527,15 @@ RASTER_neighborhood(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
-	distance[1] = (uint16_t)distance[1];
+	rtpg_assert_neighborhood_size("RASTER_neighborhood", distance[0], distance[1]);
+	if (distance[0] > UINT16_MAX || distance[1] > UINT16_MAX)
+	{
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		ereport(ERROR,
+			(errcode(ERRCODE_PROGRAM_LIMIT_EXCEEDED),
+			 errmsg("RASTER_neighborhood: Distance for X and Y axis must be at most %d", UINT16_MAX)));
+	}
 
 	/* exclude_nodata_value flag */
 	if (!PG_ARGISNULL(6))

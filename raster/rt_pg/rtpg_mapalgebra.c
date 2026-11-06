@@ -748,6 +748,14 @@ RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		elog(ERROR, "RASTER_nMapAlgebra: Distance for X and Y axis must be greater than or equal to zero");
 		PG_RETURN_NULL();
 	}
+	if (arg->distance[0] > UINT16_MAX || arg->distance[1] > UINT16_MAX)
+	{
+		rtpg_nmapalgebra_arg_destroy(arg);
+		ereport(ERROR,
+			(errcode(ERRCODE_PROGRAM_LIMIT_EXCEEDED),
+			 errmsg("RASTER_nMapAlgebra: Distance for X and Y axis must be at most %d", UINT16_MAX)));
+	}
+	rtpg_assert_neighborhood_size("RASTER_nMapAlgebra", arg->distance[0], arg->distance[1]);
 
 	/* extent type (5) */
 	if (!PG_ARGISNULL(5))
