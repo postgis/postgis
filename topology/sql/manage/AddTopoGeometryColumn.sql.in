@@ -141,7 +141,7 @@ BEGIN
   -- Add constraints on TopoGeom column
   --
   EXECUTE 'ALTER TABLE ' || tab::text
-    || ' ADD CONSTRAINT "check_topogeom_' || col || '" CHECK ('
+    || ' ADD CONSTRAINT ' || quote_ident('check_topogeom_' || col) || ' CHECK ('
        'topology_id(' || quote_ident(col) || ') = ' || topoid
     || ' AND '
        'layer_id(' || quote_ident(col) || ') = ' || newlayer_id
