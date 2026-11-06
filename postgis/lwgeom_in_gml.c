@@ -48,6 +48,7 @@
 
 #include "postgres.h"
 #include "executor/spi.h"
+#include "miscadmin.h"
 #include "utils/builtins.h"
 
 #include <libxml/tree.h>
@@ -1245,11 +1246,12 @@ gml_curve_segments_to_lwgeom(LWGEOM **segments, size_t nsegments, bool *hasz, in
 
 	for (size_t i = 0; i < nsegments; i++)
 	{
+		/* an empty segment has no endpoint to join to its neighbours */
+		if (lwgeom_is_empty(segments[i]))
+			gml_lwpgerror("invalid GML representation", 41);
+
 		if (segments[i]->type != LINETYPE)
-		{
 			has_curve = true;
-			break;
-		}
 	}
 
 	if (nsegments == 1)
@@ -2230,6 +2232,13 @@ static LWGEOM* parse_gml(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
 	xmlNodePtr xa = xnode;
 	gmlSrs srs;
+
+	/*
+	 * An xlink:href may point at a sibling subtree rather than an ancestor,
+	 * which get_xlink_node() does not treat as a circular reference, so two
+	 * subtrees referencing each other recurse until the stack is exhausted.
+	 */
+	check_stack_depth();
 
 	/* Scroll forward to the root node */
 	while (xa != NULL &&
