@@ -612,12 +612,11 @@ lwline_interpolate_points(const LWLINE *line, double length_fraction, char repea
 		p1 = p2;
 	}
 
-	/* Return the last point on the line. This shouldn't happen, but
-	 * could if there's some floating point rounding errors. */
+	/* Fill any uninitialized points with the last point, including for zero-length lines. */
 	if (points_found < points_to_interpolate)
-	{
 		getPoint4d_p(ipa, ipa->npoints - 1, &pt);
-		ptarray_set_point4d(opa, points_found, &pt);
+		while (points_found < points_to_interpolate)
+			ptarray_set_point4d(opa, points_found++, &pt);
 	}
 
 	return opa;

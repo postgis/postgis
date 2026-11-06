@@ -724,7 +724,12 @@ LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		if (poly->bbox)
 		{
 			bbox = lwalloc(sizeof(GBOX));
-			ptarray_calculate_gbox_cartesian(ring, bbox);
+			/* An empty ring has no box, and would leave bbox uninitialised */
+			if (ptarray_calculate_gbox_cartesian(ring, bbox) == LW_FAILURE)
+			{
+				lwfree(bbox);
+				bbox = NULL;
+			}
 		}
 
 		/* This is a LWLINE constructed by interior ring POINTARRAY */

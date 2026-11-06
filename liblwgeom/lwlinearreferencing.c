@@ -1166,6 +1166,10 @@ static int
 uniq(double *vals, int nvals)
 {
 	int i, last = 0;
+
+	if (nvals < 1)
+		return 0;
+
 	for (i = 1; i < nvals; ++i)
 	{
 		// lwnotice("(I%d):%g", i, vals[i]);
@@ -1283,6 +1287,14 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 
 	/* Remove duplicated values */
 	nmvals = uniq(mvals, nmvals);
+
+	if (nmvals < 1)
+	{
+		/* No measure is shared, which a NaN M range also looks like */
+		LWDEBUG(1, "Inputs never exist at the same time");
+		lwfree(mvals);
+		return -2;
+	}
 
 	if (nmvals < 2)
 	{
@@ -1449,6 +1461,14 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 
 	/* Remove duplicated values */
 	nmvals = uniq(mvals, nmvals);
+
+	if (nmvals < 1)
+	{
+		/* No measure is shared, which a NaN M range also looks like */
+		LWDEBUG(1, "Inputs never exist at the same time");
+		lwfree(mvals);
+		return LW_FALSE;
+	}
 
 	if (nmvals < 2)
 	{
