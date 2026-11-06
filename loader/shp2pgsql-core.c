@@ -1537,8 +1537,24 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		{
 			if (strcmp(state->field_names[z], name) == 0)
 			{
-				strncat(name, "__", MAXFIELDNAMELEN - 1);
-				snprintf(name + strlen(name), MAXFIELDNAMELEN - 1 - strlen(name), "%i", j);
+				char suffix[MAXFIELDNAMELEN];
+				size_t room;
+
+				snprintf(suffix,
+					 sizeof(suffix),
+					 "__%i",
+					 j);
+
+				/*
+				 * Cut the name back far enough for the suffix to fit.
+				 * strncat() used to be given MAXFIELDNAMELEN here, but its
+				 * third argument bounds the source, not the target, so a
+				 * name near the buffer size was appended past its end.
+				 */
+				room = strlen(suffix) < MAXFIELDNAMELEN ? MAXFIELDNAMELEN - 1 - strlen(suffix) : 0;
+				if (strlen(name) > room)
+					name[room] = '\0';
+				strcat(name, suffix);
 				break;
 			}
 		}
