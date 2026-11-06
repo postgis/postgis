@@ -30,9 +30,6 @@
 #include <math.h>
 #include <limits.h>
 
-/** Max depth in a geometry. Matches the default YYINITDEPTH for WKT */
-#define LW_PARSER_MAX_DEPTH 200
-
 /**
 * Used for passing the parse state between the parsing functions.
 */

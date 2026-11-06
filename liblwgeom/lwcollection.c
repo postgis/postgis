@@ -183,6 +183,33 @@ void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms)
 }
 
 /**
+* Return LW_TRUE if geom nests collections more than max_depth levels deep.
+* Bails out as soon as the limit is passed, so the recursion here is bounded
+* by max_depth.
+*/
+int
+lwgeom_depth_exceeds(const LWGEOM *geom, uint32_t max_depth)
+{
+	const LWCOLLECTION *col;
+	uint32_t i;
+
+	if (!geom || !lwgeom_is_collection(geom))
+		return LW_FALSE;
+
+	if (!max_depth)
+		return LW_TRUE;
+
+	col = (const LWCOLLECTION *)geom;
+	for (i = 0; i < col->ngeoms; i++)
+	{
+		if (lwgeom_depth_exceeds(col->geoms[i], max_depth - 1))
+			return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+/**
 * Appends geom to the collection managed by col. Does not copy or
 * clone, simply takes a reference on the passed geom.
 */
@@ -199,6 +226,13 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* Check type compatibility */
 	if ( ! lwcollection_allows_subtype(col->type, geom->type) ) {
 		lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
+		return NULL;
+	}
+
+	/* Recursive readers and writers cannot walk arbitrarily deep nesting */
+	if (lwgeom_depth_exceeds(geom, LW_PARSER_MAX_DEPTH - 1))
+	{
+		lwerror("Collection is nested more than %d levels deep", LW_PARSER_MAX_DEPTH);
 		return NULL;
 	}
 

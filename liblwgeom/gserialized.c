@@ -250,6 +250,18 @@ int gserialized_ndims(const GSERIALIZED *g)
 */
 GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size)
 {
+	/*
+	 * Serialization, and everything that later reads the result back, walks
+	 * one stack frame per nesting level.  Collections can also be built
+	 * without going through lwcollection_add_lwgeom(), so catch over-deep
+	 * nesting here rather than let a reader overflow its stack.
+	 */
+	if (lwgeom_depth_exceeds(geom, LW_PARSER_MAX_DEPTH))
+	{
+		lwerror("Geometry is nested more than %d levels deep", LW_PARSER_MAX_DEPTH);
+		return NULL;
+	}
+
 	return gserialized2_from_lwgeom(geom, size);
 }
 
