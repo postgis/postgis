@@ -38,6 +38,7 @@
 #include <utils/lsyscache.h>
 #include <utils/syscache.h>
 
+#include "lwgeom_pg.h" /* for postgis_spatial_ref_sys */
 #include "rtpg_internal.h"
 
 /**
@@ -365,6 +366,7 @@ rtpg_getSR(int32_t srid)
 	HeapTuple tuple;
 	char *tmp = NULL;
 	char *srs = NULL;
+	const char *srs_table = NULL;
 
 /*
 SELECT
@@ -382,7 +384,15 @@ WHERE srid = X
 LIMIT 1
 */
 
-	len = sizeof(char) * (strlen("SELECT CASE WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0 THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '') ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
+	/* Resolve spatial_ref_sys in the install schema, not via search_path */
+	postgis_initialize_cache();
+	srs_table = postgis_spatial_ref_sys();
+	if (NULL == srs_table) {
+		elog(ERROR, "rtpg_getSR: Could not find the PostGIS installation schema");
+		return NULL;
+	}
+
+	len = sizeof(char) * (strlen("SELECT CASE WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0 THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '') ELSE '' END, proj4text, srtext FROM  WHERE srid =  LIMIT 1") + strlen(srs_table) + MAX_INT_CHARLEN + 1);
 	sql = (char *) palloc(len);
 	if (NULL == sql) {
 		elog(ERROR, "rtpg_getSR: Could not allocate memory for sql\n");
@@ -397,7 +407,7 @@ LIMIT 1
 	}
 
 	/* execute query */
-	snprintf(sql, len, "SELECT CASE WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0 THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '') ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
+	snprintf(sql, len, "SELECT CASE WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0 THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '') ELSE '' END, proj4text, srtext FROM %s WHERE srid = %d LIMIT 1", srs_table, srid);
 	POSTGIS_RT_DEBUGF(4, "SRS query: %s", sql);
 	spi_result = SPI_execute(sql, TRUE, 0);
 	SPI_pfree(sql);
