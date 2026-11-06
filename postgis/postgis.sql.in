@@ -2307,15 +2307,17 @@ BEGIN
 	inserted := 0;
 
 	-- Count the number of geometry columns in all tables and views
+	--
+	-- Match the type by OID, not by name: a column of some other type that
+	-- happens to be called 'geometry' is not ours, and probing it below runs
+	-- whatever cast its owner put between that type and this one.
 	SELECT count(DISTINCT c.oid) INTO probed
 	FROM pg_class c,
 		 pg_attribute a,
-		 pg_type t,
 		 pg_namespace n
 	WHERE c.relkind IN('r','v','f', 'p')
-		AND t.typname = 'geometry'
 		AND a.attisdropped = false
-		AND a.atttypid = t.oid
+		AND a.atttypid = '@extschema@.geometry'::regtype
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns' ;
@@ -2327,12 +2329,10 @@ BEGIN
 	SELECT DISTINCT ON (c.oid) c.oid, n.nspname, c.relname
 		FROM pg_class c,
 			 pg_attribute a,
-			 pg_type t,
 			 pg_namespace n
 		WHERE c.relkind IN( 'r', 'f', 'p')
-		AND t.typname = 'geometry'
 		AND a.attisdropped = false
-		AND a.atttypid = t.oid
+		AND a.atttypid = '@extschema@.geometry'::regtype
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns'
@@ -2398,12 +2398,10 @@ BEGIN
 	SELECT n.nspname, c.relname, a.attname, c.relkind
 		FROM pg_class c,
 			 pg_attribute a,
-			 pg_type t,
 			 pg_namespace n
 		WHERE c.relkind IN('r', 'f', 'p')
-		AND t.typname = 'geometry'
 		AND a.attisdropped = false
-		AND a.atttypid = t.oid
+		AND a.atttypid = '@extschema@.geometry'::regtype
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND n.nspname NOT ILIKE 'pg_temp%'
@@ -6642,7 +6640,6 @@ SELECT pg_catalog.current_database()::pg_catalog.varchar(256) AS f_table_catalog
    FROM pg_catalog.pg_class c
      JOIN pg_catalog.pg_attribute a ON a.attrelid OPERATOR(pg_catalog.=) c.oid AND NOT a.attisdropped
      JOIN pg_catalog.pg_namespace n ON c.relnamespace OPERATOR(pg_catalog.=) n.oid
-     JOIN pg_catalog.pg_type t ON a.atttypid OPERATOR(pg_catalog.=) t.oid
      LEFT JOIN (
            SELECT s.connamespace,
                   s.conrelid,
@@ -6668,7 +6665,9 @@ SELECT pg_catalog.current_database()::pg_catalog.varchar(256) AS f_table_catalog
             WHERE s.consrc OPERATOR(pg_catalog.~*) $$srid\(\w+\)\s*=\s*\d+$$::pg_catalog.text
      ) sr ON sr.conrelid OPERATOR(pg_catalog.=) c.oid AND (a.attnum OPERATOR(pg_catalog.=) ANY (sr.conkey))
   WHERE (c.relkind OPERATOR(pg_catalog.=) ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"]))
-  AND NOT c.relname OPERATOR(pg_catalog.=) 'raster_columns'::pg_catalog.name AND t.typname OPERATOR(pg_catalog.=) 'geometry'::pg_catalog.name
+  AND NOT c.relname OPERATOR(pg_catalog.=) 'raster_columns'::pg_catalog.name
+  -- By OID, not by name: another type called 'geometry' is not ours
+  AND a.atttypid OPERATOR(pg_catalog.=) '@extschema@.geometry'::pg_catalog.regtype
   AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace)
   -- A stale MVCC snapshot can still see a dropped pg_class row (#6038).
   -- Re-resolve the qualified relation name only when the schema is visible,
