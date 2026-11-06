@@ -16,6 +16,7 @@
 use warnings;
 use strict;
 use POSIX 'strftime';
+use Text::Balanced qw(extract_bracketed);
 
 eval "exec perl -w $0 $@"
 	if (0);
@@ -40,6 +41,7 @@ eval "exec perl -w $0 $@"
 my @aggs = ();
 my @casts = ();
 my @funcs = ();
+my @procs = ();
 my @types = ();
 my %type_funcs = ();
 my @type_funcs = (); # function to drop _after_ type drop
@@ -55,11 +57,70 @@ my $version = $ARGV[1];
 
 sub strip_default {
 	my $line = shift;
-	# strip quotes first
-	$line =~ s/'[^']*'//ig;
-	# drop default then
-	$line =~ s/DEFAULT [^,)]*//ig;
-	return $line;
+	my @arguments = ();
+	my $argument = '';
+	my $depth = 0;
+	my $quote = '';
+	my $skip_default = 0;
+
+	for (my $i = 0; $i < length($line); $i++) {
+		my $character = substr($line, $i, 1);
+
+		if ($quote ne '') {
+			$argument .= $character unless $skip_default;
+			if ($quote eq "'" && $character eq "\\" && $i + 1 < length($line)) {
+				$argument .= substr($line, ++$i, 1) unless $skip_default;
+			} elsif ($character eq $quote) {
+				if ($i + 1 < length($line) && substr($line, $i + 1, 1) eq $quote) {
+					$argument .= substr($line, ++$i, 1) unless $skip_default;
+				} else {
+					$quote = '';
+				}
+			}
+		} elsif ($character eq "'" || $character eq '"') {
+			$quote = $character;
+			$argument .= $character unless $skip_default;
+		} elsif ($depth == 0 && substr($line, $i) =~ /^DEFAULT\b/i) {
+			$skip_default = 1;
+			$i += length('DEFAULT') - 1;
+		} elsif ($character eq '(' || $character eq '[') {
+			$depth++;
+			$argument .= $character unless $skip_default;
+		} elsif ($character eq ')' || $character eq ']') {
+			$depth--;
+			$argument .= $character unless $skip_default;
+		} elsif ($character eq ',' && $depth == 0) {
+			push(@arguments, $argument);
+			$argument = '';
+			$skip_default = 0;
+		} else {
+			$argument .= $character unless $skip_default;
+		}
+	}
+	push(@arguments, $argument);
+
+	return join(',', @arguments);
+}
+
+sub read_signature_definition {
+	my $defn = shift;
+	my $complete = 0;
+
+	while (!$complete) {
+		my $open = index($defn, '(');
+		if ($open >= 0) {
+			my ($arguments) = extract_bracketed(substr($defn, $open), '()');
+			$complete = defined $arguments;
+		}
+		last if $complete;
+
+		my $next_line = <INPUT>;
+		die "Unexpected end of input while reading function/procedure signature\n"
+			unless defined $next_line;
+		$defn .= $next_line;
+	}
+
+	return $defn;
 }
 
 my $time = POSIX::strftime("%F %T", gmtime(defined($ENV{SOURCE_DATE_EPOCH}) ? $ENV{SOURCE_DATE_EPOCH} : time));
@@ -91,14 +152,17 @@ while( my $line = <INPUT>)
 	if ($line =~ /^create (or replace )?function/i) {
 		my $supp = 0;
 		my $defn = $line;
-		while( not $defn =~ /\)/ ) {
-			$defn .= <INPUT>;
-		}
+		$defn = read_signature_definition($defn);
 		if ($defn =~ /_supportfn /) {
 			$supp = 1;
 		}
 		push (@funcs, $defn) if ! $supp;
 		push (@supp_funcs, $defn) if $supp;
+	}
+	elsif ($line =~ /^create (or replace )?procedure/i) {
+		my $defn = $line;
+		$defn = read_signature_definition($defn);
+		push (@procs, $defn);
 	}
 	elsif ($line =~ /^create or replace view\s*([\w\.]+)/i) {
 		push (@views, $1);
@@ -246,6 +310,25 @@ print "-- Drop all table triggers.\n";
 foreach my $tr (@triggers)
 {
 	print "DROP TRIGGER IF EXISTS $tr;\n";
+}
+
+print "-- Drop all procedures.\n";
+foreach my $proc (@procs)
+{
+	if ($proc =~ /.* procedure ([^(]+)\((.*)\)/is ) # can be multiline
+	{
+		my $proc_nm = $1;
+		my $proc_arg = $2;
+		$proc_arg =~ s/\-\-.*\n//g;
+		$proc_arg =~ s/\n//g;
+
+		$proc_arg = strip_default($proc_arg);
+		print "DROP PROCEDURE IF EXISTS $proc_nm ($proc_arg);\n";
+	}
+	else
+	{
+		die "Couldn't parse PROCEDURE line: $proc\n";
+	}
 }
 
 print "-- Drop all functions except " . (keys %type_funcs) . " needed for type definition.\n";

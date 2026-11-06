@@ -107,12 +107,12 @@ sub canonicalize_args {
 }
 
 sub handle_function_signature {
-	my $line = shift;
+	my ($line, $routine_type) = @_;
 
 	$line = lc($line);
 	$line =~ s/topology\.//g;
 
-	$line =~ m/ *([^\( ]*) *\((.*)\)/ or die "Unexpected FUNCTION signature: $line";
+	$line =~ m/ *([^\( ]*) *\((.*)\)/ or die "Unexpected $routine_type signature: $line";
 
 	my $name = $1;
 	my $args = $2;
@@ -122,13 +122,13 @@ sub handle_function_signature {
 	my @args = split('\s*,\s*', $args);
 	@args = canonicalize_args(@args);
 
-	# No inout indicator or out parameters for function signatures
+	# No inout indicator or out parameters are part of routine identity signatures.
 	my @inonly_args = clean_inout_arguments(@args);
 
-	# For *function* signature we are supposed to strip argument names
+	# Names and mode keywords are not part of routine identity signatures.
 	my @unnamed_args = strip_argument_names(@inonly_args);
 
-	print "FUNCTION $name(" . join(', ', @unnamed_args) . ")\n";
+	print "$routine_type $name(" . join(', ', @unnamed_args) . ")\n";
 }
 
 while (<>)
@@ -176,8 +176,18 @@ while (<>)
 		# at some point
 		$line =~ s/ *--.*//;
 
-		handle_function_signature($line);
+		handle_function_signature($line, 'FUNCTION');
 	}
+	# Procedure signature
+	elsif ( /^DROP PROCEDURE IF EXISTS/ )
+	{
+		my $line = $_;
+		$line =~ s/DROP PROCEDURE IF EXISTS //;
+		$line =~ s/ *--.*//;
+
+		handle_function_signature($line, 'PROCEDURE');
+	}
+
 
 	# Deprecated function signature
 	# EXAMPLE: ALTER FUNCTION _st_concavehull( geometry ) RENAME TO _st_concavehull_deprecated_by_postgis_303;
@@ -188,7 +198,7 @@ while (<>)
 
 		$line =~ s/ *ALTER FUNCTION (.*) RENAME TO .*_deprecated_by_postgis_.*/$1/;
 
-		handle_function_signature($line);
+		handle_function_signature($line, 'FUNCTION');
 	}
 
 	# Deprecated function signature using
@@ -201,6 +211,6 @@ while (<>)
 
 		$line =~ s/.*SELECT _postgis_drop_function_by_signature\('([^']*)'.*/$1/;
 
-		handle_function_signature($line);
+		handle_function_signature($line, 'FUNCTION');
 	}
 }
