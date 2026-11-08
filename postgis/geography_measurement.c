@@ -441,21 +441,212 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(distance <= tolerance);
 }
 
-
 /*
 ** geography_expand(GSERIALIZED *g) returns *GSERIALIZED
 **
-** warning, this tricky little function does not expand the
-** geometry at all, just re-writes bounding box value to be
-** a bit bigger. only useful when passing the result along to
-** an index operator (&&)
+** This internal helper expands the geocentric bounds used by geography indexes.
+** The returned geography is a multipoint surrogate whose calculated geocentric
+** box matches the expanded bounds so text and binary datum serialization keep
+** the same index-filter behavior after a round trip.
 */
+static double
+geography_expand_clamp(double v, double min, double max)
+{
+	if (v < min)
+		return min;
+	if (v > max)
+		return max;
+	return v;
+}
+
+static int
+geography_expand_try_axis_pair(double a, double radius2, double bmin, double bmax, double *b)
+{
+	double b_abs;
+
+	if (fabs(a) > 1.0 || a * a > radius2)
+		return LW_FALSE;
+
+	b_abs = sqrt(radius2 - a * a);
+	if (b_abs >= bmin && b_abs <= bmax)
+	{
+		*b = b_abs;
+		return LW_TRUE;
+	}
+
+	if (-b_abs >= bmin && -b_abs <= bmax)
+	{
+		*b = -b_abs;
+		return LW_TRUE;
+	}
+
+	return LW_FALSE;
+}
+
+static double
+geography_expand_interval_delta(double v, double min, double max)
+{
+	if (v < min)
+		return min - v;
+	if (v > max)
+		return v - max;
+	return 0.0;
+}
+
+static void
+geography_expand_box_axis_pair(double radius2, double amin, double amax, double bmin, double bmax, double *a, double *b)
+{
+	double candidates[10];
+	int candidate_count = 0;
+	double best_a = 0.0;
+	double best_b = 0.0;
+	double best_score = DBL_MAX;
+	int i;
+
+	candidates[candidate_count++] = geography_expand_clamp(0.0, amin, amax);
+	candidates[candidate_count++] = amin;
+	candidates[candidate_count++] = amax;
+
+	if (radius2 >= bmin * bmin)
+	{
+		double v = sqrt(radius2 - bmin * bmin);
+		candidates[candidate_count++] = v;
+		candidates[candidate_count++] = -v;
+	}
+
+	if (radius2 >= bmax * bmax)
+	{
+		double v = sqrt(radius2 - bmax * bmax);
+		candidates[candidate_count++] = v;
+		candidates[candidate_count++] = -v;
+	}
+
+	candidates[candidate_count++] = sqrt(radius2);
+	candidates[candidate_count++] = -sqrt(radius2);
+
+	for (i = 0; i < candidate_count; i++)
+	{
+		double candidate = candidates[i];
+		if (candidate < amin || candidate > amax)
+			continue;
+		if (geography_expand_try_axis_pair(candidate, radius2, bmin, bmax, b))
+		{
+			*a = candidate;
+			return;
+		}
+	}
+
+	/*
+	 * There may be no unit-circle point with both coordinates inside the
+	 * independently expanded off-axis intervals.  Keep the target-axis
+	 * extremum exact and choose the nearest unit-circle point rather than
+	 * clamping to a non-unit vector that cart2geog() would normalize inward.
+	 */
+	for (i = 0; i < candidate_count; i++)
+	{
+		double candidate = candidates[i];
+		double b_abs;
+		int sign;
+
+		if (fabs(candidate) > 1.0 || candidate * candidate > radius2)
+			continue;
+
+		b_abs = sqrt(radius2 - candidate * candidate);
+		for (sign = -1; sign <= 1; sign += 2)
+		{
+			double b_candidate = sign * b_abs;
+			double a_delta = geography_expand_interval_delta(candidate, amin, amax);
+			double b_delta = geography_expand_interval_delta(b_candidate, bmin, bmax);
+			double score = a_delta * a_delta + b_delta * b_delta;
+
+			if (score < best_score)
+			{
+				best_score = score;
+				best_a = candidate;
+				best_b = b_candidate;
+			}
+		}
+	}
+
+	*a = best_a;
+	*b = best_b;
+}
+
+static POINT3D
+geography_expand_box_axis_point(const GBOX *gbox, double v, int axis)
+{
+	POINT3D p = {0.0, 0.0, 0.0};
+	double radius2;
+
+	v = geography_expand_clamp(v, -1.0, 1.0);
+	radius2 = 1.0 - v * v;
+
+	switch (axis)
+	{
+	case 0:
+		p.x = v;
+		geography_expand_box_axis_pair(radius2, gbox->ymin, gbox->ymax, gbox->zmin, gbox->zmax, &p.y, &p.z);
+		break;
+	case 1:
+		p.y = v;
+		geography_expand_box_axis_pair(radius2, gbox->xmin, gbox->xmax, gbox->zmin, gbox->zmax, &p.x, &p.z);
+		break;
+	default:
+		p.z = v;
+		geography_expand_box_axis_pair(radius2, gbox->xmin, gbox->xmax, gbox->ymin, gbox->ymax, &p.x, &p.y);
+		break;
+	}
+
+	return p;
+}
+
+static LWPOINT *
+geography_expand_box_lwpoint(const GBOX *gbox, double v, int axis, int32_t srid)
+{
+	POINT3D cart = geography_expand_box_axis_point(gbox, v, axis);
+	GEOGRAPHIC_POINT geog;
+	POINT4D point = {0.0, 0.0, 0.0, 0.0};
+
+	cart2geog(&cart, &geog);
+	point.x = rad2deg(geog.lon);
+	point.y = rad2deg(geog.lat);
+
+	return lwpoint_make(srid, LW_FALSE, LW_FALSE, &point);
+}
+
+static GSERIALIZED *
+geography_expand_box_to_multipoint(const GBOX *gbox, int32_t srid)
+{
+	enum
+	{
+		NUM_AXIS_EXTREMES = 6
+	};
+	LWGEOM **points = lwalloc(sizeof(LWGEOM *) * NUM_AXIS_EXTREMES);
+	LWCOLLECTION *mpoint;
+	GSERIALIZED *g_out;
+
+	points[0] = lwpoint_as_lwgeom(geography_expand_box_lwpoint(gbox, gbox->xmin, 0, srid));
+	points[1] = lwpoint_as_lwgeom(geography_expand_box_lwpoint(gbox, gbox->xmax, 0, srid));
+	points[2] = lwpoint_as_lwgeom(geography_expand_box_lwpoint(gbox, gbox->ymin, 1, srid));
+	points[3] = lwpoint_as_lwgeom(geography_expand_box_lwpoint(gbox, gbox->ymax, 1, srid));
+	points[4] = lwpoint_as_lwgeom(geography_expand_box_lwpoint(gbox, gbox->zmin, 2, srid));
+	points[5] = lwpoint_as_lwgeom(geography_expand_box_lwpoint(gbox, gbox->zmax, 2, srid));
+
+	mpoint = lwcollection_construct(MULTIPOINTTYPE, srid, NULL, NUM_AXIS_EXTREMES, points);
+	lwgeom_set_geodetic(lwcollection_as_lwgeom(mpoint), true);
+	g_out = geography_serialize(lwcollection_as_lwgeom(mpoint));
+	lwcollection_free(mpoint);
+
+	return g_out;
+}
+
 PG_FUNCTION_INFO_V1(geography_expand);
 Datum geography_expand(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g = NULL;
-	GSERIALIZED *g_out = NULL;
+	GBOX gbox;
 	double unit_distance, distance;
+	int32_t srid;
 
 	/* Get a wholly-owned pointer to the geography */
 	g = PG_GETARG_GSERIALIZED_P_COPY(0);
@@ -467,21 +658,19 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 	/* calculated on sphere */
 	unit_distance = 1.01 * distance / WGS84_RADIUS;
 
-	/* Try the expansion */
-	g_out = gserialized_expand(g, unit_distance);
-
-	/* If the expansion fails, the return our input */
-	if ( g_out == NULL )
+	if (gserialized_get_gbox_p(g, &gbox) == LW_FAILURE)
 	{
 		PG_RETURN_POINTER(g);
 	}
 
-	if ( g_out != g )
-	{
-		pfree(g);
-	}
+	if (unit_distance <= 0.0)
+		PG_RETURN_POINTER(g);
 
-	PG_RETURN_POINTER(g_out);
+	gbox_expand(&gbox, unit_distance);
+	srid = gserialized_get_srid(g);
+	pfree(g);
+
+	PG_RETURN_POINTER(geography_expand_box_to_multipoint(&gbox, srid));
 }
 
 /*
