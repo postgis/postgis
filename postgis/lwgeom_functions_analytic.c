@@ -96,6 +96,7 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 	LWGEOM *out;
 	double area=0;
 	int set_area=0;
+	int preserve_ring_endpoint = 1;
 
 	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
 		PG_RETURN_POINTER(geom);
@@ -106,9 +107,12 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
 	set_area = PG_GETARG_INT32(2);
 
+	if ((PG_NARGS() > 3) && (!PG_ARGISNULL(3)))
+		preserve_ring_endpoint = PG_GETARG_BOOL(3);
+
 	in = lwgeom_from_gserialized(geom);
 
-	out = lwgeom_set_effective_area(in,set_area, area);
+	out = lwgeom_set_effective_area(in, set_area, area, preserve_ring_endpoint);
 	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
