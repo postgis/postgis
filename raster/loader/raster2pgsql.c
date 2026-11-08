@@ -464,6 +464,10 @@ usage() {
 	      "      one factor, separate with comma(,). Overview table name follows\n"
 	      "      the pattern o_<overview factor>_<table>. Created overview is\n"
 	      "      stored in the database and is not affected by -R.\n"));
+	printf(
+	    _("  -A, --overview-resampling <algorithm> Resampling algorithm for\n"
+	      "      overviews created with -l. Supported values: near, average.\n"
+	      "      Defaults to near.\n"));
 	printf(_("  -q, --quote Wrap PostgreSQL identifiers in quotes.\n"));
 	printf(_("  -I  Alias for --create-index.\n"));
 	printf(
@@ -735,6 +739,7 @@ init_config(RTLOADERCFG *config) {
 	config->overview_count = 0;
 	config->overview = NULL;
 	config->overview_table = NULL;
+	config->overview_resampling = rtstrdup("near");
 	config->quoteident = 0;
 	config->srid = config->out_srid = SRID_UNKNOWN;
 	config->nband = NULL;
@@ -866,6 +871,8 @@ rtdealloc_config(RTLOADERCFG *config) {
 			rtdealloc(config->overview_table);
 		}
 	}
+	if (config->overview_resampling != NULL)
+		rtdealloc(config->overview_resampling);
 	if (config->nband_count > 0 && config->nband != NULL)
 		rtdealloc(config->nband);
 	if (config->tablespace != NULL)
@@ -1502,11 +1509,13 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 	dimOv[0] = (int) (info->dim[0] + (factor / 2)) / factor;
 	dimOv[1] = (int) (info->dim[1] + (factor / 2)) / factor;
 	/*
-	 * Match by dimensions instead of overview index or nominal factor. GDAL
-	 * datasets can carry differently ordered overview levels, while the loader
-	 * needs the level that exactly matches the target overview table size.
+	 * Match by dimensions instead of overview index or nominal factor when the
+	 * requested algorithm can safely reuse existing source pixels. Non-near
+	 * algorithms must resample from the full-resolution source because GDAL
+	 * performs a 1:1 copy when the source overview already matches dimOv.
 	 */
-	use_source_overview = source_has_matching_overviews(hdsSrc, info, dimOv);
+	use_source_overview =
+	    CSEQUAL(config->overview_resampling, "near") && source_has_matching_overviews(hdsSrc, info, dimOv);
 
 	/* create VRT dataset */
 	hdsOv = VRTCreate(dimOv[0], dimOv[1]);
@@ -1554,8 +1563,8 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 				   0,
 				   dimOv[0],
 				   dimOv[1],
-				   "near",
-				   VRT_NODATA_UNSET);
+				   config->overview_resampling,
+				   info->hasnodata[j] ? info->nodataval[j] : VRT_NODATA_UNSET);
 	}
 
 	/* make sure VRT reflects all changes */
@@ -1625,14 +1634,18 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 				if (info->hasnodata[j])
 					GDALSetRasterNoDataValue(hbandDst, info->nodataval[j]);
 
-				VRTAddSimpleSource(
-					hbandDst, GDALGetRasterBand(hdsOv, j + 1),
-					xtile * tile_size[0], ytile * tile_size[1],
-					_tile_size[0], _tile_size[1],
-					0, 0,
-					_tile_size[0], _tile_size[1],
-					"near", VRT_NODATA_UNSET
-				);
+				VRTAddSimpleSource(hbandDst,
+						   GDALGetRasterBand(hdsOv, j + 1),
+						   xtile * tile_size[0],
+						   ytile * tile_size[1],
+						   _tile_size[0],
+						   _tile_size[1],
+						   0,
+						   0,
+						   _tile_size[0],
+						   _tile_size[1],
+						   "near",
+						   VRT_NODATA_UNSET);
 			}
 
 			/* make sure VRT reflects all changes */
@@ -2478,6 +2491,12 @@ main(int argc, char **argv) {
 		exit(1);
 	}
 	init_config(config);
+	if (config->overview_resampling == NULL)
+	{
+		rterror(_("Could not allocate memory for overview resampling algorithm"));
+		rtdealloc_config(config);
+		exit(1);
+	}
 
 	/****************************************************************************
 	* parse arguments
@@ -2750,6 +2769,28 @@ main(int argc, char **argv) {
 					rtdealloc_config(config);
 					exit(1);
 				}
+			}
+		}
+		/* overview resampling algorithm */
+		else if (option_matches(argv[argit], "-A", "--overview-resampling") &&
+			 (optarg = option_value(argc, argv, &argit, "--overview-resampling")) != NULL)
+		{
+			const char *resampling = optarg;
+
+			if (!CSEQUAL(resampling, "near") && !CSEQUAL(resampling, "average"))
+			{
+				rterror(_("Unsupported overview resampling algorithm: %s"), resampling);
+				rtdealloc_config(config);
+				exit(1);
+			}
+
+			rtdealloc(config->overview_resampling);
+			config->overview_resampling = rtstrdup(resampling);
+			if (config->overview_resampling == NULL)
+			{
+				rterror(_("Could not allocate memory for overview resampling algorithm"));
+				rtdealloc_config(config);
+				exit(1);
 			}
 		}
 		/* quote identifiers */
