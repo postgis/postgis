@@ -5462,6 +5462,33 @@ UPDATE dummy_rast SET rast = ST_SetValue(rast, 1, ST_Point(3427927.75, 5793243.9
                         <paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
                     </funcprototype>
 
+                  <funcprototype>
+                        <funcdef>raster <function>ST_SetValues</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>nband1</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+                        <paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>nband2</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>keepdestnodata</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>keepsourcenodata</parameter></paramdef>
+                    </funcprototype>
+
+                  <funcprototype>
+                        <funcdef>raster <function>ST_SetValues</function></funcdef>
+                        <paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+                        <paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>nband2</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>keepdestnodata</parameter></paramdef>
+                        <paramdef><type>boolean </type> <parameter>keepsourcenodata</parameter></paramdef>
+                    </funcprototype>
+
                 </funcsynopsis>
             </refsynopsisdiv>
 
@@ -5495,7 +5522,12 @@ UPDATE dummy_rast SET rast = ST_SetValue(rast, 1, ST_Point(3427927.75, 5793243.9
                     For Variant 5, an array of <xref linkend="geomval"/> is used to determine the specific pixels to be set.  If all the geometries in the array are of type POINT or MULTIPOINT, the function uses a shortcut where the longitude and latitude of each point is used to set a pixel directly.  Otherwise, the geometries are converted to rasters and then iterated through in one pass. See example Variant 5.
                 </para>
 
+                <para>
+                    For Variants 6 and 7, values are copied from the corresponding pixels of <varname>rast2</varname>.  The rasters must have the same SRID and alignment.  Only the portion of the requested destination window that overlaps <varname>rast1</varname> and <varname>rast2</varname> is copied.  If <varname>keepdestnodata</varname> is TRUE, NODATA pixels in the destination raster are not changed.  If <varname>keepsourcenodata</varname> is TRUE, NODATA pixels from the source raster are not copied.
+                </para>
+
                 <para role="availability" conformance="2.1.0">Availability: 2.1.0</para>
+                <para role="availability" conformance="3.7.0">Availability: 3.7.0: Ability to copy values from another raster band.</para>
 
             </refsection>
 
