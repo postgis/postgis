@@ -308,7 +308,14 @@ Available GDAL raster formats:
                   </listitem>
                 </varlistentry>
 
-               <varlistentry>
+                <varlistentry>
+                  <term><option>-m, --metadata-column COLUMN</option></term>
+                  <listitem>
+                    <para>Add a text column containing GDAL metadata serialized as XML.</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
                   <term><option>-q, --quote</option></term>
                   <listitem>
                     <para>Wrap PostgreSQL identifiers in quotes.</para>
