@@ -644,6 +644,156 @@ static void test_geography_tree_closestpoint(void)
 	lwgeom_free(lwg3);
 }
 
+static void
+test_tree_circ_distance_contained_point(void)
+{
+	LWGEOM *lwg1, *lwg2, *lwg3, *lwg4, *lwg5, *lwg6, *lwg7, *lwg8, *lwg9, *lwg10, *lwg11, *lwg12, *lwg13, *lwg14,
+	    *lwg15;
+	LWGEOM *cp_wide, *sl_wide;
+	LWPOINT *cp_pt;
+	LWLINE *sl_line;
+	CIRC_NODE *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8, *c9, *c10, *c11, *c12, *c13, *c14, *c15;
+	SPHEROID s;
+	double d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14;
+	POINT2D pt_wide_inside, pt_wide_outside, pt_cp, pt_sl0, pt_sl1;
+
+	spheroid_init(&s, WGS84_RADIUS, WGS84_RADIUS);
+
+	lwg1 = lwgeom_from_wkt("POLYGON((-1 -1,-1 1,1 1,1 -1,-1 -1))", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE);
+	lwg3 = lwgeom_from_wkt("GEOMETRYCOLLECTION(POINT(0 0))", LW_PARSER_CHECK_NONE);
+	lwg4 = lwgeom_from_wkt(
+	    "POLYGON((-93.751932270476971 32.089230804932349,-93.753830066356031 32.089181143046332,"
+	    "-93.753864556452115 32.090802706180867,-93.751940314782857 32.09084654939128,"
+	    "-93.751932270476971 32.089230804932349))",
+	    LW_PARSER_CHECK_NONE);
+	lwg5 = lwgeom_from_wkt("POINT(52.41828388240291 28.68513149020453)", LW_PARSER_CHECK_NONE);
+	lwg6 = lwgeom_from_wkt("LINESTRING(0 0,0.5 0)", LW_PARSER_CHECK_NONE);
+	lwg7 = lwgeom_from_wkt("POLYGON((-0.5 -0.5,-0.5 0.5,0.5 0.5,0.5 -0.5,-0.5 -0.5))", LW_PARSER_CHECK_NONE);
+	lwg8 = lwgeom_from_wkt("POLYGON((-170 -10,0 -80,170 -10,0 80,-170 -10))", LW_PARSER_CHECK_NONE);
+	lwg9 = lwgeom_from_wkt("POINT(0 -70)", LW_PARSER_CHECK_NONE);
+	lwg10 = lwgeom_from_wkt("POINT(0 -85)", LW_PARSER_CHECK_NONE);
+	lwg11 = lwgeom_from_wkt("MULTIPOLYGON(((-1 -1,-1 1,1 1,1 -1,-1 -1)),((10 10,10 12,12 12,12 10,10 10)))",
+				LW_PARSER_CHECK_NONE);
+	lwg12 = lwgeom_from_wkt("POINT(50 50)", LW_PARSER_CHECK_NONE);
+	lwg13 = lwgeom_from_wkt("MULTIPOLYGON(EMPTY,((-1 -1,-1 1,1 1,1 -1,-1 -1)))", LW_PARSER_CHECK_NONE);
+	lwg14 = lwgeom_from_wkt("MULTIPOINT((0 0),(1 1))", LW_PARSER_CHECK_NONE);
+	lwg15 = lwgeom_from_wkt("MULTILINESTRING((30 0,31 0),(32 0,33 0))", LW_PARSER_CHECK_NONE);
+	c15 = lwgeom_calculate_circ_tree(lwg15);
+	c1 = lwgeom_calculate_circ_tree(lwg1);
+	c2 = lwgeom_calculate_circ_tree(lwg2);
+	c3 = lwgeom_calculate_circ_tree(lwg3);
+	c4 = lwgeom_calculate_circ_tree(lwg4);
+	c5 = lwgeom_calculate_circ_tree(lwg5);
+	c6 = lwgeom_calculate_circ_tree(lwg6);
+	c7 = lwgeom_calculate_circ_tree(lwg7);
+	c8 = lwgeom_calculate_circ_tree(lwg8);
+	c9 = lwgeom_calculate_circ_tree(lwg9);
+	c10 = lwgeom_calculate_circ_tree(lwg10);
+	c11 = lwgeom_calculate_circ_tree(lwg11);
+	c12 = lwgeom_calculate_circ_tree(lwg12);
+	c13 = lwgeom_calculate_circ_tree(lwg13);
+	c14 = lwgeom_calculate_circ_tree(lwg14);
+
+	d1 = circ_tree_distance_tree(c1, c2, &s, 0.0);
+	d2 = circ_tree_distance_tree(c2, c1, &s, 0.0);
+	d3 = circ_tree_distance_tree(c1, c3, &s, 0.0);
+	d4 = circ_tree_distance_tree(c4, c5, &s, 0.0);
+	d5 = circ_tree_distance_tree(c1, c6, &s, 0.0);
+	d6 = circ_tree_distance_tree(c1, c7, &s, 0.0);
+	d7 = circ_tree_distance_tree(c6, c1, &s, 0.0);
+	d8 = circ_tree_distance_tree(c7, c1, &s, 0.0);
+	d9 = circ_tree_distance_tree(c8, c9, &s, 0.0);
+	d10 = circ_tree_distance_tree(c9, c8, &s, 0.0);
+	d11 = circ_tree_distance_tree(c8, c10, &s, 0.0);
+	d12 = circ_tree_distance_tree(c11, c2, &s, 0.0);
+	d13 = circ_tree_distance_tree(c11, c12, &s, 0.0);
+	d14 = circ_tree_distance_tree(c13, c2, &s, 0.0);
+
+	pt_wide_inside.x = 0.0;
+	pt_wide_inside.y = -70.0;
+	pt_wide_outside.x = 0.0;
+	pt_wide_outside.y = -85.0;
+	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c8, &pt_wide_inside), LW_TRUE);
+	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c8, &pt_wide_outside), LW_FALSE);
+	pt_wide_inside.x = 0.0;
+	pt_wide_inside.y = 0.0;
+	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c13, &pt_wide_inside), LW_TRUE);
+	CU_ASSERT_DOUBLE_EQUAL(d14, 0.0, 0.0);
+	CU_ASSERT_EQUAL(c14->has_polygonal_component, LW_FALSE);
+	CU_ASSERT_EQUAL(circ_tree_point_in_polygon(c14, &pt_wide_inside), LW_FALSE);
+	pt_wide_outside.x = 50.0;
+	pt_wide_outside.y = 50.0;
+	CU_ASSERT_NOT_EQUAL(c15->gbox, NULL);
+	CU_ASSERT_NOT_EQUAL(c15->nodes[0]->gbox, NULL);
+	CU_ASSERT_NOT_EQUAL(c15->nodes[1]->gbox, NULL);
+	CU_ASSERT_EQUAL(gbox_overlaps(c1->gbox, c15->gbox), LW_FALSE);
+
+	cp_wide = geography_tree_closestpoint(lwg8, lwg9, 0.0);
+	cp_pt = lwgeom_as_lwpoint(cp_wide);
+	lwpoint_getPoint2d_p(cp_pt, &pt_cp);
+	CU_ASSERT_DOUBLE_EQUAL(pt_cp.x, 0.0, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(pt_cp.y, -70.0, 0.0001);
+
+	sl_wide = geography_tree_shortestline(lwg8, lwg9, 0.0, &s);
+	sl_line = lwgeom_as_lwline(sl_wide);
+	getPoint2d_p(sl_line->points, 0, &pt_sl0);
+	getPoint2d_p(sl_line->points, 1, &pt_sl1);
+	CU_ASSERT_DOUBLE_EQUAL(pt_sl0.x, 0.0, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(pt_sl0.y, -70.0, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(pt_sl1.x, 0.0, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(pt_sl1.y, -70.0, 0.0001);
+
+	circ_tree_free(c1);
+	circ_tree_free(c2);
+	circ_tree_free(c3);
+	circ_tree_free(c4);
+	circ_tree_free(c5);
+	circ_tree_free(c6);
+	circ_tree_free(c7);
+	circ_tree_free(c8);
+	circ_tree_free(c9);
+	circ_tree_free(c10);
+	circ_tree_free(c11);
+	circ_tree_free(c12);
+	circ_tree_free(c13);
+	circ_tree_free(c14);
+	circ_tree_free(c15);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	lwgeom_free(lwg3);
+	lwgeom_free(lwg4);
+	lwgeom_free(lwg5);
+	lwgeom_free(lwg6);
+	lwgeom_free(lwg7);
+	lwgeom_free(lwg8);
+	lwgeom_free(lwg9);
+	lwgeom_free(lwg10);
+	lwgeom_free(lwg11);
+	lwgeom_free(lwg12);
+	lwgeom_free(lwg13);
+	lwgeom_free(lwg14);
+	lwgeom_free(lwg15);
+	lwgeom_free(cp_wide);
+	lwgeom_free(sl_wide);
+
+	CU_ASSERT_DOUBLE_EQUAL(d1, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d2, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d3, 0.0, 0.0);
+	CU_ASSERT(d4 > 10000000.0);
+	CU_ASSERT_DOUBLE_EQUAL(d5, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d6, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d7, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d8, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d9, 0.0, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d10, 0.0, 0.0);
+	CU_ASSERT(d11 > 0.0);
+	/* Contained in the first member of a collection container: pruning must not miss it. */
+	CU_ASSERT_DOUBLE_EQUAL(d12, 0.0, 0.0);
+	/* Distant from every member of a collection container: pruning must not invent zero. */
+	CU_ASSERT(d13 > 0.0);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -662,4 +812,5 @@ void tree_suite_setup(void)
 	PG_ADD_TEST(suite, test_tree_circ_distance);
 	PG_ADD_TEST(suite, test_tree_circ_distance_threshold);
 	PG_ADD_TEST(suite, test_geography_tree_closestpoint);
+	PG_ADD_TEST(suite, test_tree_circ_distance_contained_point);
 }

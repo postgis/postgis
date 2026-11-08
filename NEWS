@@ -228,6 +228,8 @@ These are only changes since 3.7.0beta2.
           contents (Darafei Praliaskouski)
  - Include detected NURBS coordinate extrema in curve bounding boxes
           (Darafei Praliaskouski)
+ - #5895, ST_DistanceSphere no longer returns zero for distant points
+          outside clockwise geometry polygons (Darafei Praliaskouski)
  - OSSFuzz 6152109301760000, reject overlong encoded polyline coordinate
           varints (Darafei Praliaskouski)
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
