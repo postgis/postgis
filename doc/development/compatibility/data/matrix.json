@@ -867,7 +867,7 @@
       {
       "minor": "3.8",
       "branch": "master",
-      "latest": "3.7.0dev",
+      "latest": "3.8.0dev",
       "status": "supported",
       "release_stage": "development",
       "first_release_date": "2026-10-30",
