@@ -959,10 +959,10 @@ class CIStatusTest(unittest.TestCase):
 
     def test_jenkins_queue_prefers_current_branch_revision(self):
         check_config = {
-            "name": "Jenkins / Berrie",
+            "name": "Jenkins / Synthetic worker",
             "provider": "jenkins",
             "required": True,
-            "job_url": "https://ci.example.test/job/PostGIS_Worker_Run/label=berrie/",
+            "job_url": "https://ci.example.test/job/PostGIS_Worker_Run/label=synthetic/",
             "branch_parameter": "reference",
         }
         branch = {
@@ -1004,7 +1004,7 @@ class CIStatusTest(unittest.TestCase):
             result = CI_STATUS.jenkins_queued_check(
                 check_config,
                 branch,
-                "https://ci.example.test/job/PostGIS_Worker_Run/label=berrie/",
+                "https://ci.example.test/job/PostGIS_Worker_Run/label=synthetic/",
                 timeout=5,
             )
 

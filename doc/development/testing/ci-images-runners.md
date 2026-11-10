@@ -39,7 +39,7 @@ without identifying a source defect.
 | -------------- | ----- | -------------- |
 | Woodie agents | <https://gitea.osgeo.org/sac/woodpecker-agent-config>, branch `woodie-3` | OSGeo Woodpecker agent startup scripts and deployment notes |
 | Jenkins buildbot hosts | <https://gitea.osgeo.org/postgis/postgis-buildbots> | Linux, Debian, FreeBSD, Raspberry Pi, and Windows worker setup notes |
-| In-tree Jenkins scripts | `ci/debbie/`, `ci/winnie/`, `ci/bessie/`, `ci/berrie*` | Commands run by PostGIS Jenkins jobs and worker labels |
+| In-tree Jenkins scripts | `ci/debbie/`, `ci/winnie/`, `ci/bessie/`, `ci/berrie64/` | Commands run by PostGIS Jenkins jobs and worker labels |
 
 Woodpecker pull-request jobs run on Woodie agents. Agent capacity, Docker
 socket access, `binfmt_misc` handlers, DNS, and registry access are runner
@@ -51,8 +51,7 @@ Jenkins worker setup lives outside this repository in
 `postgis/postgis-buildbots`. That repository still contains historical setup
 notes as well as active worker notes, so use the maintained inventory in
 `utils/docs/ci_status/config.json` and the live Jenkins job labels before
-reviving an old platform. Current 32-bit coverage is the Berrie Raspberry Pi
-worker, which is 32-bit ARM. The old `bessie32` FreeBSD worker is not part of
+reviving an old platform. The old `bessie32` FreeBSD worker is not part of
 the maintained CI inventory; do not rebuild 32-bit FreeBSD coverage from the old badge table
 without fresh maintainer approval and a live worker readback.
 
@@ -65,8 +64,7 @@ Use the owning workflow or worker label for architecture claims:
   cover the branches where those files exist.
 * Woodpecker jobs currently declare `platform: linux/amd64` unless the
   workflow says otherwise.
-* Jenkins `berrie` is the maintained 32-bit ARM surface, and `berrie64` is the
-  Raspberry Pi 64-bit surface.
+* Jenkins `berrie64` is the Raspberry Pi 64-bit surface.
 * Jenkins `bessie` is the maintained FreeBSD surface; `bessie32` is retired
   from the maintained inventory.
 

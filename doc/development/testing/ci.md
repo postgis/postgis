@@ -29,7 +29,7 @@ service that owns the behavior:
 | Woodpecker pull-request and branch pipelines | `.woodpecker/*.yml`, with pipeline status published by Woodie at <https://woodie.osgeo.org/repos/30> |
 | Debbie build, docs, and release jobs | `ci/debbie/`, the Debbie Jenkins jobs, and release-process notes |
 | Winnie Windows jobs | `ci/winnie/` and the Winnie Jenkins jobs |
-| Bessie and Berrie/Berrie64 jobs | `ci/bessie/`, `ci/berrie*`, and the corresponding Jenkins worker labels |
+| Bessie and Berrie64 jobs | `ci/bessie/`, `ci/berrie64/`, and the corresponding Jenkins worker labels |
 | Docker build images used by GitHub Actions | `postgis/postgis-build-env` image tags referenced from `.github/workflows/ci.yml` |
 | Docker build images used by Woodpecker | `repo.osgeo.org/postgis/build-test:*` image tags referenced from `.woodpecker/*.yml` |
 | Woodpecker MinGW Wine job | `.woodpecker/mingw-wine.yml` and `ci/woodie/postgis_mingw_wine.sh` |
@@ -95,7 +95,7 @@ only overlap part of its defect class.
 | Debbie Linux regression classes | Jenkins Debbie and Woodpecker | Mostly covered by Woodpecker's Linux regression and expensive QA workflows. Debbie still remains useful for its exact Jenkins host, dependency, and release-job environment. |
 | Make Dist | Jenkins Debbie | In flight in <https://gitea.osgeo.org/postgis/postgis/pulls/534>. Until that lands, Woodpecker does not check source distribution tarballs. |
 | FreeBSD and Bessie | GitHub Actions FreeBSD and Jenkins Bessie | In flight in <https://gitea.osgeo.org/postgis/postgis/pulls/549>. YAML running on a Linux container is not FreeBSD parity; this needs a FreeBSD VM or agent surface. |
-| 32-bit ARM and extra portability tiers | Jenkins Berrie | Covered by `.woodpecker/portability.yml` from <https://gitea.osgeo.org/postgis/postgis/pulls/516>, with hostile type-default coverage proposed in <https://gitea.osgeo.org/postgis/postgis/pulls/550>. Plain armhf emulation is useful for pointer-width and alignment assumptions, but the valuable tier is the hostile configuration with explicit type, signedness, alignment, and sanitizer probes. |
+| 32-bit ARM and extra portability tiers | Woodpecker portability | Covered by `.woodpecker/portability.yml` from <https://gitea.osgeo.org/postgis/postgis/pulls/516>, with hostile type-default coverage proposed in <https://gitea.osgeo.org/postgis/postgis/pulls/550>. Plain armhf emulation is useful for pointer-width and alignment assumptions, but the valuable tier is the hostile configuration with explicit type, signedness, alignment, and sanitizer probes. |
 | 64-bit ARM | Jenkins Berrie64 | Partly covered by the `arm64-berrie64-qemu` child in `.woodpecker/portability.yml` on amd64 agents through QEMU arm64 emulation. This is build, ABI, CUnit, install, and focused regression coverage, not Berrie64 parity. |
 | CodeQL | GitHub Actions | In flight as Woodpecker configuration carried separately. Woodpecker can build a CodeQL database and produce SARIF, but GitHub remains authoritative for code-scanning upload, annotations, and alert management unless Woodie artifact retention and SARIF consumption are also configured. |
 | macOS | GitHub Actions macOS | Not coverable by Woodpecker YAML on Linux. See [macOS coverage options](macos-coverage-options.md) for the actual choices, costs, licensing boundary, and current recommendation. |
@@ -162,7 +162,7 @@ Darwin coverage.
 
 Treat 32-bit and 64-bit ARM as separate defect classes. The 32-bit lane is most
 useful when it is hostile: explicit `char` signedness, enum-width, alignment,
-and sanitizer settings catch assumptions that amd64 and a plain Berrie rerun do
+and sanitizer settings catch assumptions that amd64 and a plain 32-bit rerun do
 not falsify.
 
 The 64-bit lane should be native. Berrie64's value is 64-bit ARM execution plus
