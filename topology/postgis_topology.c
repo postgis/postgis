@@ -5806,9 +5806,12 @@ Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
   PG_RETURN_INT64(face_id);
 }
 
-/*  RegisterMissingFaces(atopology) */
 Datum RegisterMissingFaces(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(RegisterMissingFaces);
+
+/**
+ * Register all missing faces in the named topology.
+ */
 Datum RegisterMissingFaces(PG_FUNCTION_ARGS)
 {
   text* toponame_text;
