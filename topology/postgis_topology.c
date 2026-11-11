@@ -5806,14 +5806,22 @@ Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
   PG_RETURN_INT64(face_id);
 }
 
-/*  RegisterMissingFaces(atopology) */
 Datum RegisterMissingFaces(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(RegisterMissingFaces);
+
+/**
+ * Register all missing faces in the named topology.
+ */
 Datum RegisterMissingFaces(PG_FUNCTION_ARGS)
 {
   text* toponame_text;
   char* toponame;
   LWT_TOPOLOGY *topo;
+
+  if (PG_ARGISNULL(0))
+  {
+	  PG_RETURN_NULL();
+  }
 
   toponame_text = PG_GETARG_TEXT_P(0);
   toponame = text_to_cstring(toponame_text);

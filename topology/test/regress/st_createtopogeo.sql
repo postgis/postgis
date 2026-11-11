@@ -1,6 +1,8 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
+SELECT topology._RegisterMissingFaces(NULL) IS NULL;
+
 -- Invalid topologies
 select topology.st_createtopogeo('', 'GEOMETRYCOLLECTION(POINT(0 0))');
 select topology.st_createtopogeo('t', 'GEOMETRYCOLLECTION(POINT(0 0))');
