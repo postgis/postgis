@@ -3,6 +3,8 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- GH-1191, [topology] Return SQL NULL for a NULL topology name in
+    _RegisterMissingFaces (Bilal Kahraman)
 - #6159, Avoid negative geography areas when subtracting polygon holes
     (Sandro Santilli)
 - #3776, [raster] Preserve distinct integer pixels in ST_DumpAsPolygons
