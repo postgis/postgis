@@ -3,6 +3,7 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - Remove process addresses from public errors and notices (Andrew Kroh)
   - [topology] Correct the CreateTopoGeom INSERT example (Darafei Praliaskouski)
   - [raster] Correct the documented ST_BandIsNoData forceChecking default (Darafei Praliaskouski)
   - Resolve the ST_GeomFromGeoHash cast in the PostGIS schema (Paul Ramsey)
