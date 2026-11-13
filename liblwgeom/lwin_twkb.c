@@ -441,7 +441,7 @@ static LWCOLLECTION* lwmultipoint_from_twkb_state(twkb_parse_state *s)
 		geom = lwpoint_as_lwgeom(lwpoint_from_twkb_state(s));
 		if ( lwcollection_add_lwgeom(col, geom) == NULL )
 		{
-			lwerror("Unable to add geometry (%p) to collection (%p)", (void *) geom, (void *) col);
+			lwerror("Unable to add geometry to collection");
 			return NULL;
 		}
 	}
@@ -486,7 +486,7 @@ static LWCOLLECTION* lwmultiline_from_twkb_state(twkb_parse_state *s)
 		geom = lwline_as_lwgeom(lwline_from_twkb_state(s));
 		if ( lwcollection_add_lwgeom(col, geom) == NULL )
 		{
-			lwerror("Unable to add geometry (%p) to collection (%p)", (void *) geom, (void *) col);
+			lwerror("Unable to add geometry to collection");
 			return NULL;
 		}
 	}
@@ -530,7 +530,7 @@ static LWCOLLECTION* lwmultipoly_from_twkb_state(twkb_parse_state *s)
 		geom = lwpoly_as_lwgeom(lwpoly_from_twkb_state(s));
 		if ( lwcollection_add_lwgeom(col, geom) == NULL )
 		{
-			lwerror("Unable to add geometry (%p) to collection (%p)", (void *) geom, (void *) col);
+			lwerror("Unable to add geometry to collection");
 			return NULL;
 		}
 	}

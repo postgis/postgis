@@ -731,7 +731,7 @@ lwgeom_to_ewkt(const LWGEOM *lwgeom)
 
 	if ( ! wkt )
 	{
-		lwerror("Error writing geom %p to WKT", (void *)lwgeom);
+		lwerror("Error writing geometry to WKT");
 	}
 
 	return wkt;
