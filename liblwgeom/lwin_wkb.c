@@ -760,7 +760,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 		{
 			lwgeom_free(geom);
 			lwgeom_free((LWGEOM *)cp);
-			lwerror("Unable to add geometry (%p) to curvepoly (%p)", (void *) geom, (void *) cp);
+			lwerror("Unable to add geometry to curvepoly");
 			return NULL;
 		}
 	}
@@ -835,7 +835,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 		{
 			lwgeom_free(geom);
 			lwgeom_free((LWGEOM *)col);
-			lwerror("Unable to add geometry (%p) to collection (%p)", (void *) geom, (void *) col);
+			lwerror("Unable to add geometry to collection");
 			s->check = prev_check;
 			s->depth = start_depth;
 			return NULL;
