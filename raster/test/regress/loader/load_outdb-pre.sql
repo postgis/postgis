@@ -3,6 +3,7 @@ WITH foo AS (
 )
 SELECT NULL FROM foo;
 SET postgis.gdal_enabled_drivers = 'GTiff';
+SET postgis.enable_outdb_rasters = true;
 DROP TABLE IF EXISTS raster_outdb_template;
 CREATE TABLE raster_outdb_template AS
 SELECT

@@ -2,8 +2,12 @@ off
 off_metadata|f
 off_pixel|f
 off_indb_pixel|t
+off_addband_outdb|RASTER_addBandOutDB: Access to out-db rasters disabled
+off_setbandpath|rt_band_new_offline_from_path: Access to offline bands disabled
 on_metadata|t
 on_pixel|t
+on_addband_outdb|RASTER_addBandOutDB: Cannot open out-db file with GDAL
+on_setbandpath|rt_band_new_offline_from_path: Cannot open offline raster: /nonexistent/path/outdb_guc.tif
 off
 reset_metadata|f
 reset_pixel|f
