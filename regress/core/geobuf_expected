@@ -15,3 +15,4 @@ T10|EAMYACILCgkKBwgAGgMCBAY=
 #4916.a|
 #4916.b|
 #4916.b|
+ERROR:  encode_keys: Column 'geom' is not of geometry type

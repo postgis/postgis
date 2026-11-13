@@ -36,3 +36,5 @@ FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
 SELECT '#4916.b', ST_AsGeobuf(NULL::pg_class) over (order by b)
 FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
 	         ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b);
+SELECT 'T11', encode(ST_AsGeobuf(q, 'geom'), 'base64')
+    FROM (SELECT 1::bigint AS geom) AS q;

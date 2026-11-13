@@ -213,3 +213,4 @@ drop table if exists public.flatgeobuf_qi;
 drop table if exists public.flatgeobuf_mm_long;
 drop table if exists public.flatgeobuf_mm_text;
 drop table if exists public.flatgeobuf_mm_twocols;
+select 'TG1', ST_AsFlatGeobuf(q, false, 'geom') from (select 1::bigint as geom) q;

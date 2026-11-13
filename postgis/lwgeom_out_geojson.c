@@ -218,6 +218,10 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 			val = heap_getattr(tuple, i + 1, tupdesc, &isnull);
 			if (!isnull)
 			{
+				Oid typoid = getBaseType(att->atttypid);
+				if (typoid != geom_oid && typoid != geog_oid)
+					elog(ERROR, "%s: Column '%s' is not of geometry type", __func__, attname);
+
 				appendStringInfo(
 				    result,
 				    "%s",

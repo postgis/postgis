@@ -614,6 +614,10 @@ SELECT 'TU2';
 SELECT encode(ST_AsMVT(1, 'test', 4096, 'geom'), 'base64');
 SELECT 'TU3', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64')
 	FROM (SELECT NULL::integer AS c1, NULL AS geom) AS q;
+SELECT 'TU4', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64')
+	FROM (SELECT 1 AS c1, 1::bigint AS geom) AS q;
+SELECT 'TU5', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64')
+	FROM (SELECT 1 AS c1, 'POINT(1 1)'::text AS geom) AS q;
 
 -- Ticket #3922 (Check for crash)
 SELECT '#3922', St_GeometryType(ST_AsMVTGeom(

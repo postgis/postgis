@@ -35,3 +35,5 @@ gj05|5|{"type": "Feature", "geometry": {"type":"Point","coordinates":[]}, "id": 
 gj05|6|{"type": "Feature", "geometry": null, "id": 6, "properties": {"f": 6.6, "t": "six", "d": "2006-06-06"}}
 gj05|7|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[]},{"type":"Point","coordinates":[1,2]}]}, "id": 7, "properties": {"f": 7.7, "t": "seven", "d": "2007-07-07"}}
 4695|{"type": "Feature", "geometry": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:2227"}},"coordinates":[0,1]}, "properties": {"v": 1}}
+ERROR:  composite_to_geojson: Column 'geom' is not of geometry type
+gj_named_null_text|{"type": "Feature", "geometry": null, "properties": {}}

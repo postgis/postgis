@@ -34,3 +34,4 @@ MI3|0
 --- Quoted identifiers ---
 QI1
 QI2
+ERROR:  inspect_table: Column 'geom' is not of geometry type

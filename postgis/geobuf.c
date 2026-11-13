@@ -68,6 +68,8 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 			}
 		} else {
 			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
+				if (typoid != postgis_oid(GEOMETRYOID))
+					elog(ERROR, "%s: Column '%s' is not of geometry type", __func__, key);
 				ctx->geom_index = i;
 				geom_found = 1;
 				continue;

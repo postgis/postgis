@@ -1323,6 +1323,12 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 	if (isnull) /* Skip rows that have null geometry */
 		return;
 
+	if (ctx->column_cache.column_oid[ctx->geom_index] != postgis_oid(GEOMETRYOID))
+		elog(ERROR,
+		     "%s: Column '%s' is not of geometry type",
+		     __func__,
+		     TupleDescAttr(ctx->column_cache.tupdesc, ctx->geom_index)->attname.data);
+
 	/* Allocate a new feature object */
 	feature_init(&feature_builder);
 
