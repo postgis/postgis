@@ -221,7 +221,7 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 		{
 			if (col->geoms[i] == geom)
 			{
-				lwerror("%s [%d] found duplicate geometry in collection %p == %p", __FILE__, __LINE__, col->geoms[i], geom);
+				lwerror("%s [%d] found duplicate geometry in collection", __FILE__, __LINE__);
 				return col;
 			}
 		}
