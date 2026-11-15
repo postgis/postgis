@@ -24,6 +24,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GH-1178, Harden loader column-map allocation checks and partial cleanup
+          (Maksim Korotkov)
  - #2299, GH-1084, [raster] Repair SQL argument generation in raster garden tests
           (Darafei Praliaskouski)
  - GH-1189, Correct LTO configuration guidance wording (dovkoy)
