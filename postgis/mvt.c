@@ -1629,17 +1629,19 @@ mvt_tile_pack(const VectorTile__Tile *tile)
 	uint8_t *p;
 	bytea *ba;
 
-	for (i = 0; i < tile->n_layers; i++)
+	for (i = 0; i < tile->n_layers && !tile->base.n_unknown_fields; i++)
 	{
-		if (tile->base.n_unknown_fields || !mvt_layer_size_of(tile->layers[i], &ls[i]))
-		{
-			len = vector_tile__tile__get_packed_size(tile);
-			ba = palloc(VARHDRSZ + len);
-			vector_tile__tile__pack(tile, (uint8_t *)VARDATA(ba));
-			SET_VARSIZE(ba, VARHDRSZ + len);
-			return ba;
-		}
+		if (!mvt_layer_size_of(tile->layers[i], &ls[i]))
+			break;
 		len += mvt_field_size(ls[i].size);
+	}
+	if (tile->base.n_unknown_fields || i < tile->n_layers)
+	{
+		len = vector_tile__tile__get_packed_size(tile);
+		ba = palloc(VARHDRSZ + len);
+		vector_tile__tile__pack(tile, (uint8_t *)VARDATA(ba));
+		SET_VARSIZE(ba, VARHDRSZ + len);
+		return ba;
 	}
 
 	ba = palloc(VARHDRSZ + len);
