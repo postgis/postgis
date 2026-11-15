@@ -11,6 +11,8 @@ PostGIS 3.8.0dev
 
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
+ - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
+          (John Carmack)
  - GT-811, Remove pointer addresses from error and notice messages
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
@@ -19,6 +21,8 @@ PostGIS 3.8.0dev
 * Bug Fixes *
 
  - GH-1189, Correct LTO configuration guidance wording (dovkoy)
+ - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
+          (John Carmack)
 
 
 PostGIS 3.7.0rc3
