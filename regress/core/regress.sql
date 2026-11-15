@@ -281,6 +281,12 @@ select '251', ST_AsText(ST_TileEnvelope(10,300,387, margin => 0.1), 2);
 select '252', ST_AsText(ST_TileEnvelope(10,300,387, margin => 0.5), 2);
 select '253', ST_AsText(ST_TileEnvelope(10,300,387, margin => 2), 2);
 select '254', ST_AsText(ST_TileEnvelope(10,300,387, margin => -0.3), 2);
+-- cached call sites whose arguments change from row to row, and repeat
+select '255', (select ST_AsText(ST_TileEnvelope(z, x, y), 2)) FROM (VALUES (1, 0, 0), (1, 0, 0), (1, 1, 0), (2, 3, 1), (2, 3, 1), (1, 0, 0), (1, 1, 0)) AS t(z, x, y);
+select '256', (select ST_AsText(ST_MakeEnvelope(a, b, a + 1, b + 1, 4326))) FROM (VALUES (0, 0), (0, 0), (1, 2), (0, 0), (1, 2)) AS t(a, b);
+select '257', (select Box2D(g)) FROM (VALUES ('POINT(1 2)'::geometry), ('POINT(1 2)'), ('LINESTRING(0 0,3 4)'), ('POINT EMPTY'), ('POINT(1 2)'), ('LINESTRING(0 0,3 4)')) AS t(g);
+CREATE FUNCTION pg_temp.tile_text(z int, x int) RETURNS text LANGUAGE plpgsql AS $$ BEGIN RETURN ST_AsText(ST_TileEnvelope(z, x, 0), 2) || ' ' || ST_AsText(ST_MakeEnvelope(x, z, x + 1, z + 1)) || ' ' || Box2D(ST_MakeEnvelope(z, x, z + 1, x + 1))::text; END $$;
+select '258', pg_temp.tile_text(z, x) FROM (VALUES (1, 0), (1, 0), (2, 1), (2, 1), (1, 0), (2, 1)) AS t(z, x);
 
 -- ST_Hexagon()
 select '300', ST_AsText(ST_Hexagon(10, 0, 0), 5);
