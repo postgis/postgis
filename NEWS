@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #5796, GH-986, Build SQL extension bundles without PGXS
+          (Darafei Praliaskouski)
  - GT-811, Remove pointer addresses from error and notice messages
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
