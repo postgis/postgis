@@ -15,6 +15,8 @@ PostGIS 3.8.0dev
           (John Carmack)
  - #3836, GH-1033, [raster] Add parallel aggregation support to ST_CountAgg
           and ST_SummaryStatsAgg (Darafei Praliaskouski)
+ - #2211, GH-1046, [raster] Add Map Algebra, Reclass, and PL/pgSQL raster
+          application examples to the manual (Darafei Praliaskouski)
  - GT-811, Remove pointer addresses from error and notice messages
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
