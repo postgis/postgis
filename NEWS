@@ -23,6 +23,8 @@ PostGIS 3.8.0dev
  - GH-1189, Correct LTO configuration guidance wording (dovkoy)
  - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
           (John Carmack)
+ - GH-1191, [topology] Return SQL NULL for a NULL topology name in
+          _RegisterMissingFaces (Bilal Kahraman)
 
 
 PostGIS 3.7.0rc3
