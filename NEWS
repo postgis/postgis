@@ -14,6 +14,10 @@ PostGIS 3.8.0dev
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
           (Darafei Praliaskouski)
 
+* Bug Fixes *
+
+ - GH-1189, Correct LTO configuration guidance wording (dovkoy)
+
 
 PostGIS 3.7.0rc3
 2026/10/20

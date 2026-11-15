@@ -174,7 +174,7 @@ To configure PostGIS, run::
 
   ./configure
 
-Far faster math processing use below, may not work on all platforms:
+For faster math processing use below, may not work on all platforms:
 
   ./configure --enable-lto
 
