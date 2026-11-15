@@ -26,7 +26,7 @@
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
-	<xsl:variable name='var_options'>NULL::text</xsl:variable>
+	<xsl:variable name='var_options'>NULL::text[]</xsl:variable>
 	<xsl:variable name="var_onerasteruserfunc">'monkey_oneuserfunc(float,integer[],text[])'::regprocedure</xsl:variable>
 	<xsl:variable name="var_tworasteruserfunc">'monkey_twouserfunc(double precision,double precision,integer[],text[])'::regprocedure</xsl:variable>
 	<xsl:variable name="var_onerasterngbuserfunc">'monkey_ngbuserfunc(float[][],text,text[])'::regprocedure</xsl:variable>
@@ -335,7 +335,7 @@ COMMIT;
 				<!-- is a window or aggregate function -->
 				<xsl:variable name='over_clause'>
 					 <xsl:choose>
-					 	<xsl:when test="db:paramdef/db:type[contains(text(),'set')]">
+					<xsl:when test="db:paramdef/db:type[contains(text(),'set')] or db:funcdef/db:function = 'ST_AsRasterAgg'">
 					 		<xsl:value-of select="'OVER(ORDER BY random())'"/>
 					 	</xsl:when>
 					<xsl:otherwise>
@@ -350,7 +350,7 @@ COMMIT;
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
 	<xsl:when test="$numparamrasts = '0' and not(contains($fnexclude,db:funcdef/db:function))">SELECT  'Starting <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnargs" />)';
-	<xsl:variable name='var_sql'>SELECT  <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnfakeparams" />);</xsl:variable>
+	<xsl:variable name='var_sql'>SELECT  <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of select="$fnfakeparams" />)<xsl:if test="$numparamgeoms &gt; 0 or db:paramdef/db:type[contains(., 'bytea')]"> FROM (SELECT rast FROM pgis_rgarden_1bb LIMIT 1) AS rast1</xsl:if>;</xsl:variable>
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" />','<xsl:value-of select="$fnname" />', clock_timestamp(),
 			  	'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
@@ -422,31 +422,31 @@ SELECT  'Ending <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of s
 			<!-- If input is raster show wkt rep -->
 			  <xsl:if test="contains($fndef, 'raster ') or contains($fndef, 'geometry ')">
 	 <!-- If output is raster or geometry show ewkt convexhull rep -->
-			SELECT ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) )
+			SELECT ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) <xsl:value-of select="$over_clause" /> )
 			</xsl:if>
 	<!-- else just output it -->
 			<xsl:if test="not(contains($fndef, 'raster ') or contains($fndef, 'geometry ') )">
-		SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+		SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) <xsl:value-of select="$over_clause" />
 			</xsl:if>
 			, ST_AsText(ST_ConvexHull(rast1.rast)) As ref1_geom, ST_AsText(ST_ConvexHull(rast2.rast)) As ref2_geom
 					  </xsl:when>
 					  <xsl:when test="$numparamgeoms > '0'">
 						SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@GeometryType" />';
 			<!-- If input is geometry show ewkt rep -->
-			  <xsl:if test="contains(db:funcdef, 'raster ') or contains(db:funcdef, 'geometry ')">
+			  <xsl:if test="contains($fndef, 'raster ') or contains($fndef, 'geometry ')">
 	 <!-- If output is raster or geometry show ewkt convexhull rep -->
-			SELECT ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) )
+			SELECT ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) <xsl:value-of select="$over_clause" /> )
 			</xsl:if>
 	<!-- else just output it -->
-			<xsl:if test="not(contains(db:funcdef, 'raster ') or contains(db:funcdef, 'geometry ') )">
-		SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+			<xsl:if test="not(contains($fndef, 'raster ') or contains($fndef, 'geometry ') )">
+		SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) <xsl:value-of select="$over_clause" />
 			</xsl:if>
 			, ST_AsEWKT(rast1.rast::geometry) As ref1_geom, ST_AsEWKT(rast2.rast::geometry) As ref2_geom
 					  </xsl:when>
 					  <xsl:otherwise>
 						SELECT 'Other <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$pix1type" />, <xsl:value-of select="@GeometryType" />';
 			<!-- If input is geography show wkt rep -->
-			SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
+			SELECT ST_AsText(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) <xsl:value-of select="$over_clause" />)
 					  </xsl:otherwise>
 					</xsl:choose>
 					FROM (<xsl:value-of select="$from1" />) As rast1 CROSS JOIN (<xsl:value-of select="." />) As rast2
@@ -482,6 +482,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:parameter, 'georefcoords')">
 						<xsl:value-of select="$var_georefcoords" />
 					</xsl:when>
+					<xsl:when test="normalize-space(db:type) = 'integer[][]' or normalize-space(db:type) = 'int[][]'">
+						ARRAY[[1,1],[1,1]]::integer[][]
+					</xsl:when>
 					<xsl:when test="normalize-space(db:type) = 'integer[]' or normalize-space(db:type) = 'int[]'">
 						ARRAY[<xsl:value-of select="$var_integer1" />]
 					</xsl:when>
@@ -493,6 +496,22 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'nbands') and normalize-space(db:type) = 'text'">
 						<xsl:value-of select="$var_nbands" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'addbandargset')">
+						<xsl:value-of select="$var_addbandargset" />
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'pixeltype') and contains(db:type, '[]')">
+						ARRAY[<xsl:value-of select="$var_pixeltype" />]::text[]
+					</xsl:when>
+					<xsl:when test="contains(db:parameter, 'pixeltype')">
+						<xsl:value-of select="$var_pixeltype" />
+					</xsl:when>
+					<xsl:when test="normalize-space(db:parameter) = 'returnband'">
+						'BOTH'::text
+					</xsl:when>
+					<!-- Keep the geometry aggregate fixture small across distant source tiles. -->
+					<xsl:when test="normalize-space(db:parameter) = 'ref' and $func/db:funcdef/db:function = 'ST_AsRasterAgg'">
+						ST_Rescale(rast2.rast, 1, -1, 'NearestNeighbor')
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'index') or contains(db:parameter, 'band') or contains(db:parameter, 'nband')">
 						<xsl:value-of select="$var_band" />
@@ -575,9 +594,6 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="normalize-space(db:parameter) = 'noset' or starts-with(normalize-space(db:parameter), 'noset=')">
 						<xsl:value-of select="$var_noset" />
 					</xsl:when>
-					<xsl:when test="contains(db:parameter, 'pixeltype')">
-						<xsl:value-of select="$var_pixeltype" />
-					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'callbackfunc')">
 						<xsl:value-of select="$var_callbackfunc" />
 					</xsl:when>
@@ -619,9 +635,6 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(db:parameter, 'version') and position() = 2">
 						<xsl:value-of select="$var_version1" />
-					</xsl:when>
-					<xsl:when test="contains(db:parameter, 'addbandargset')">
-						<xsl:value-of select="$var_addbandargset" />
 					</xsl:when>
 					<xsl:when test="(contains(db:type,'box') or db:type = 'geometry' or db:type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/db:type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>rast1.rast::geometry</xsl:text>
@@ -667,8 +680,20 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(db:parameter, 'EWKB')">
 						<xsl:text>ST_AsEWKB(foo1.the_geom)</xsl:text>
 					</xsl:when>
+					<xsl:when test="contains(db:type, 'bytea') and $func/db:funcdef/db:function = 'ST_FromGDALRaster'">
+						<xsl:text>ST_AsGDALRaster(rast1.rast, 'GTiff')</xsl:text>
+					</xsl:when>
 					<xsl:when test="contains(db:type, 'bytea')">
-						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
+						<xsl:text>ST_AsBinary(rast1.rast)</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(db:type, '[][][]') and (contains(db:type, 'float') or contains(db:type, 'double'))">
+						ARRAY[[[<xsl:value-of select="$var_float1" />]]]::<xsl:value-of select="normalize-space(db:type)" />
+					</xsl:when>
+					<xsl:when test="contains(db:type, '[][]') and (contains(db:type, 'float') or contains(db:type, 'double'))">
+						ARRAY[[<xsl:value-of select="$var_float1" />]]::<xsl:value-of select="normalize-space(db:type)" />
+					</xsl:when>
+					<xsl:when test="contains(db:type, '[]') and (contains(db:type, 'float') or contains(db:type, 'double'))">
+						ARRAY[<xsl:value-of select="$var_float1" />]::<xsl:value-of select="normalize-space(db:type)" />
 					</xsl:when>
 					<xsl:when test="contains(db:type, 'float') or contains(db:type, 'float8') or contains(db:type, 'double')">
 						<xsl:value-of select="$var_float1" />
