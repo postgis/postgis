@@ -13,6 +13,7 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
           (John Carmack)
+ - #6156, GH-1192, Faster ST_AsMVT tile packing (John Carmack)
  - #3836, GH-1033, [raster] Add parallel aggregation support to ST_CountAgg
           and ST_SummaryStatsAgg (Darafei Praliaskouski)
  - #2211, GH-1046, [raster] Add Map Algebra, Reclass, and PL/pgSQL raster
