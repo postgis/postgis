@@ -136,16 +136,26 @@ static void feature_add_property(struct feature_builder *builder, uint32_t key_i
 }
 
 
+/* Packs a command id and count into an MVT command integer */
 static inline uint32_t c_int(enum mvt_cmd_id id, uint32_t count)
 {
 	return (id & 0x7) | (count << 3);
 }
 
+/* Zigzag-encodes a coordinate delta into an MVT parameter integer:
+ * (value << 1) ^ (value >> 31) in the spec. The left shift is done on
+ * uint32_t, since left-shifting a negative int32_t is undefined behavior in C.
+ */
 static inline uint32_t p_int(int32_t value)
 {
-	return (value << 1) ^ (value >> 31);
+	return ((uint32_t)value << 1) ^ (uint32_t)(value >> 31);
 }
 
+/* Encodes a point array into buffer as MVT commands and zigzag deltas from
+ * the cursor at px, py, and leaves the cursor at the last point encoded.
+ * A ring skips its closing point and ends with ClosePath. Returns the
+ * number of integers written.
+ */
 static uint32_t encode_ptarray(enum mvt_type type, POINTARRAY *pa, uint32_t *buffer, int32_t *px, int32_t *py)
 {
 	uint32_t offset = 0;
@@ -195,6 +205,7 @@ static uint32_t encode_ptarray(enum mvt_type type, POINTARRAY *pa, uint32_t *buf
 	return offset;
 }
 
+/* Encodes a point array with the cursor at the origin, where each feature starts */
 static uint32_t encode_ptarray_initial(enum mvt_type type, POINTARRAY *pa, uint32_t *buffer)
 {
 	int32_t px = 0, py = 0;
