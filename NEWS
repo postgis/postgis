@@ -9,6 +9,9 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #3836, GH-1033, [raster] Add parallel aggregation support to ST_CountAgg
+          and ST_SummaryStatsAgg (Darafei Praliaskouski)
+
  - GT-811, Remove pointer addresses from error and notice messages
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
