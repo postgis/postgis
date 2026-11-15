@@ -135,7 +135,6 @@ static void feature_add_property(struct feature_builder *builder, uint32_t key_i
 	builder->n_tags = new_n_tags;
 }
 
-
 /* Packs a command id and count into an MVT command integer */
 static inline uint32_t c_int(enum mvt_cmd_id id, uint32_t count)
 {
@@ -918,17 +917,23 @@ mvt_clip_and_validate_geos(LWGEOM *lwgeom, uint8_t basic_type, uint32_t extent, 
 /** Twice the signed area of triangle abc, zero when a, b and c are collinear */
 static inline int64_t
 mvt_orient(int64_t ax, int64_t ay, int64_t bx, int64_t by, int64_t cx, int64_t cy)
-{ return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax); }
+{
+	return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+}
 
 /** Sign of v: -1, 0 or 1 */
 static inline int
 mvt_sign(int64_t v)
-{ return (v > 0) - (v < 0); }
+{
+	return (v > 0) - (v < 0);
+}
 
 /** Whether q, collinear with segment pr, lies within its bounding box */
 static inline bool
 mvt_on_segment(int64_t px, int64_t py, int64_t qx, int64_t qy, int64_t rx, int64_t ry)
-{ return qx >= Min(px, rx) && qx <= Max(px, rx) && qy >= Min(py, ry) && qy <= Max(py, ry); }
+{
+	return qx >= Min(px, rx) && qx <= Max(px, rx) && qy >= Min(py, ry) && qy <= Max(py, ry);
+}
 
 /** Whether closed segments ab and cd share at least one point */
 static bool
