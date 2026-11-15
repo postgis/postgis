@@ -1,6 +1,12 @@
 PostGIS 3.8.0dev
 2026/xx/xx
 
+* New Features *
+
+ - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
+          CG_IsSimple and CG_IsSimpleDetail predicates
+          (Darafei Praliaskouski)
+
 * Enhancements *
 
  - GT-811, Remove pointer addresses from error and notice messages

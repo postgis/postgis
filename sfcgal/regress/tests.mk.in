@@ -50,6 +50,7 @@ ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 20300),1)
 		$(top_srcdir)/sfcgal/regress/alphashape_components.sql \
 		$(top_srcdir)/sfcgal/regress/roofgeneration.sql \
 		$(top_srcdir)/sfcgal/regress/approximatemedialaxis_projected.sql \
+		$(top_srcdir)/sfcgal/regress/is_simple.sql \
 		$(top_srcdir)/sfcgal/regress/nurbs.sql
 	ifeq ($(shell expr "$(POSTGIS_CGAL_VERSION)" ">=" 600),1)
 		TESTS += $(top_srcdir)/sfcgal/regress/polygonrepair.sql
