@@ -1,0 +1,20 @@
+labels:
+  platform: linux/arm64
+when:
+  event: [tag, cron]
+
+# Native arm64 build and full portability regression tier on tags and cron.
+
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 50
+      partial: false
+
+steps:
+  arm64-native:
+    image: arm64v8/debian:trixie-slim@sha256:8b5033c95ca60cdffb0e0f4c446e5f714e82d8960a9ef4153c0eaf13e988b0ea
+    pull: true
+    commands:
+      - bash ci/woodie/linux-arm64.sh
