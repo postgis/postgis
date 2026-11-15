@@ -49,7 +49,7 @@
 	<xsl:variable name='var_overviewtable_schema'>pgis_rgarden_overview_schema</xsl:variable>
 	<xsl:variable name='var_overviewtable_noschema'>pgis_rgarden_overview_noschema</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>raster_garden_log37</xsl:variable>
+	<xsl:variable name='var_logtable'>raster_garden_log38</xsl:variable>
 	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_algorithm'>'Lanczos'</xsl:variable>
