@@ -149,6 +149,41 @@ SELECT 'parallel_empty_states',
 		'64BF'::text, 0, 0), TRUE, 1)).count = 0
 FROM raster_parallel_agg_test;
 
+-- Each column is constant, so sampling either row selects exactly [1,3].
+-- Included NODATA contributes [0,0], giving count=4, mean=1 and sample Q=6.
+CREATE TABLE raster_parallel_sample_test AS
+SELECT id, CASE WHEN id % 2 = 1 THEN
+	ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 2, 1, -1, 0, 0, 0), '64BF'::text, 0, 0)
+ELSE ST_SetValue(ST_SetValue(
+	ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 2, 1, -1, 0, 0, 0), '64BF'::text, 1, 0),
+	1, 2, 1, 3), 1, 2, 2, 3) END AS rast
+FROM generate_series(1, 20000) id;
+ALTER TABLE raster_parallel_sample_test SET (parallel_workers = 4);
+ANALYZE raster_parallel_sample_test (id);
+
+SELECT 'sampled_nodata_orders',
+	(a).count = 4 AND (a).sum = 4 AND (a).mean = 1
+		AND abs((a).stddev - sqrt(2.0)) < 1e-10 AND (a).min = 0 AND (a).max = 3,
+	(b).count = 4 AND (b).sum = 4 AND (b).mean = 1
+		AND abs((b).stddev - sqrt(2.0)) < 1e-10 AND (b).min = 0 AND (b).max = 3
+FROM (SELECT ST_SummaryStatsAgg(rast, 1, FALSE, 0.5 ORDER BY id) a,
+	ST_SummaryStatsAgg(rast, 1, FALSE, 0.5 ORDER BY id DESC) b
+	FROM raster_parallel_sample_test WHERE id <= 2) s;
+
+SELECT 'sampled_nodata_plan',
+	qnodes('SELECT ST_SummaryStatsAgg(rast, 1, FALSE, 0.5) FROM raster_parallel_sample_test');
+SELECT 'sampled_nodata_parallel', (s).count = 40000, (s).sum = 40000,
+	(s).mean = 1, abs((s).stddev - sqrt(60000.0 / 39999)) < 1e-10,
+	(s).min = 0, (s).max = 3
+FROM (SELECT ST_SummaryStatsAgg(rast, 1, FALSE, 0.5) s
+	FROM raster_parallel_sample_test) r;
+SELECT 'full_nodata_parallel', (s).count = 80000, (s).sum = 80000,
+	(s).mean = 1, abs((s).stddev - sqrt(1.5)) < 1e-10,
+	(s).min = 0, (s).max = 3
+FROM (SELECT ST_SummaryStatsAgg(rast, 1, FALSE, 1) s
+	FROM raster_parallel_sample_test) r;
+DROP TABLE raster_parallel_sample_test;
+
 RESET client_min_messages;
 RESET parallel_leader_participation;
 RESET max_parallel_workers_per_gather;

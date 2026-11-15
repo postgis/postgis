@@ -5,3 +5,7 @@ countagg_plan|Finalize Aggregate,Gather,Partial Aggregate,Parallel Seq Scan
 summarystatsagg_plan|Finalize Aggregate,Gather,Partial Aggregate,Parallel Seq Scan
 parallel_results|t|t|t|t|t|t|t|t|t|t|t
 parallel_empty_states|t|t|t
+sampled_nodata_orders|t|t
+sampled_nodata_plan|Finalize Aggregate,Gather,Partial Aggregate,Parallel Seq Scan
+sampled_nodata_parallel|t|t|t|t|t|t
+full_nodata_parallel|t|t|t|t|t|t

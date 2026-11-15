@@ -265,12 +265,69 @@ static void test_band_value_count(void) {
 	cu_free_raster(raster);
 }
 
+/* Included NODATA must use the same sampling and coverage moments as pixels. */
+static void
+test_band_stats_included_nodata(void)
+{
+	rt_raster raster = rt_raster_new(2, 2);
+	rt_band nodata_band = cu_add_band(raster, PT_64BF, 1, 0);
+	rt_band normal_band = cu_add_band(raster, PT_64BF, 1, 0);
+	rt_bandstats stats;
+	uint64_t count;
+	double mean, q;
+	int order, sampled, i;
+
+	CU_ASSERT_PTR_NOT_NULL_FATAL(nodata_band);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(normal_band);
+	rt_band_set_isnodata_flag(nodata_band, 1);
+	rt_band_set_pixel(normal_band, 0, 0, 1, NULL);
+	rt_band_set_pixel(normal_band, 0, 1, 1, NULL);
+	rt_band_set_pixel(normal_band, 1, 0, 3, NULL);
+	rt_band_set_pixel(normal_band, 1, 1, 3, NULL);
+	CU_ASSERT(rt_band_get_isnodata_flag(nodata_band));
+
+	for (sampled = 0; sampled < 2; sampled++)
+	{
+		for (order = 0; order < 2; order++)
+		{
+			count = 0;
+			mean = q = 0;
+			for (i = 0; i < 2; i++)
+			{
+				rt_band band = (i == order) ? nodata_band : normal_band;
+				stats = rt_band_get_summary_stats(band, 0, sampled ? 0.5 : 1, 1, &count, &mean, &q);
+				CU_ASSERT_PTR_NOT_NULL_FATAL(stats);
+				CU_ASSERT_EQUAL(stats->count, sampled ? 2 : 4);
+				CU_ASSERT_DOUBLE_EQUAL(stats->sample, sampled ? 0.5 : 1, DBL_EPSILON);
+				CU_ASSERT_PTR_NOT_NULL(stats->values);
+				if (stats->values)
+					rtdealloc(stats->values);
+				rtdealloc(stats);
+			}
+			/* Samples are [0,0,1,3], full data repeat every value twice. */
+			CU_ASSERT_EQUAL(count, sampled ? 4 : 8);
+			CU_ASSERT_DOUBLE_EQUAL(mean, 1, 1e-12);
+			CU_ASSERT_DOUBLE_EQUAL(q, sampled ? 6 : 12, 1e-12);
+		}
+	}
+
+	count = 0;
+	mean = q = 0;
+	stats = rt_band_get_summary_stats(nodata_band, 1, 0.5, 0, &count, &mean, &q);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(stats);
+	CU_ASSERT_EQUAL(stats->count, 0);
+	CU_ASSERT_EQUAL(count, 0);
+	rtdealloc(stats);
+	cu_free_raster(raster);
+}
+
 /* register tests */
 void band_stats_suite_setup(void);
 void band_stats_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("band_stats", NULL, NULL);
 	PG_ADD_TEST(suite, test_band_stats);
+	PG_ADD_TEST(suite, test_band_stats_included_nodata);
 	PG_ADD_TEST(suite, test_band_value_count);
 }
 
