@@ -13,6 +13,8 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
           (John Carmack)
+ - #3836, GH-1033, [raster] Add parallel aggregation support to ST_CountAgg
+          and ST_SummaryStatsAgg (Darafei Praliaskouski)
  - GT-811, Remove pointer addresses from error and notice messages
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
