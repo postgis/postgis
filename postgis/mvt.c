@@ -1368,13 +1368,298 @@ static VectorTile__Tile * mvt_ctx_to_tile(mvt_agg_context *ctx)
 	return tile;
 }
 
+/*
+ * The tile is written directly, in the bytes vector_tile__tile__pack writes:
+ * fields in number order, packed repeated fields and minimal varints.
+ * protobuf-c gets there by walking its field descriptors for every feature
+ * and every value, twice. A tile with unknown fields, which only an unpacked
+ * foreign tile could carry, is still packed by protobuf-c.
+ */
+typedef struct
+{
+	size_t size;
+	size_t tags_size;
+	size_t geometry_size;
+} mvt_feature_size;
+
+typedef struct
+{
+	size_t size;
+	mvt_feature_size *features;
+	size_t *values;
+} mvt_layer_size;
+
+static inline size_t
+mvt_varint_size(uint64_t v)
+{
+	size_t n = 1;
+	while (v >= 0x80)
+	{
+		v >>= 7;
+		n++;
+	}
+	return n;
+}
+
+static inline uint8_t *
+mvt_put_varint(uint8_t *p, uint64_t v)
+{
+	while (v >= 0x80)
+	{
+		*p++ = (uint8_t)(v | 0x80);
+		v >>= 7;
+	}
+	*p++ = (uint8_t)v;
+	return p;
+}
+
+static inline uint8_t *
+mvt_put_fixed(uint8_t *p, uint64_t v, int bytes)
+{
+	int i;
+	for (i = 0; i < bytes; i++)
+		*p++ = (uint8_t)(v >> (8 * i));
+	return p;
+}
+
+static inline uint64_t
+mvt_zigzag64(int64_t v)
+{
+	return ((uint64_t)v << 1) ^ (uint64_t)(v >> 63);
+}
+
+/* Size of a length-delimited field with a one-byte tag */
+static inline size_t
+mvt_field_size(size_t len)
+{
+	return 1 + mvt_varint_size(len) + len;
+}
+
+static inline size_t
+mvt_packed_size(const uint32_t *v, size_t n)
+{
+	size_t s = 0, i;
+	for (i = 0; i < n; i++)
+		s += mvt_varint_size(v[i]);
+	return s;
+}
+
+static inline uint8_t *
+mvt_put_bytes(uint8_t *p, uint8_t tag, const char *s, size_t len)
+{
+	*p++ = tag;
+	p = mvt_put_varint(p, len);
+	memcpy(p, s, len);
+	return p + len;
+}
+
+static size_t
+mvt_value_size(const VectorTile__Tile__Value *v)
+{
+	switch (v->test_oneof_case)
+	{
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE:
+		return mvt_field_size(strlen(v->string_value));
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_FLOAT_VALUE:
+		return 1 + 4;
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_DOUBLE_VALUE:
+		return 1 + 8;
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_INT_VALUE:
+		return 1 + mvt_varint_size((uint64_t)v->int_value);
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_UINT_VALUE:
+		return 1 + mvt_varint_size(v->uint_value);
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_SINT_VALUE:
+		return 1 + mvt_varint_size(mvt_zigzag64(v->sint_value));
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_BOOL_VALUE:
+		return 1 + 1;
+	default:
+		return 0;
+	}
+}
+
+static uint8_t *
+mvt_put_value(uint8_t *p, const VectorTile__Tile__Value *v)
+{
+	union {
+		float f;
+		uint32_t u;
+	} f32;
+	union {
+		double d;
+		uint64_t u;
+	} f64;
+
+	switch (v->test_oneof_case)
+	{
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE:
+		return mvt_put_bytes(p, (1 << 3) | 2, v->string_value, strlen(v->string_value));
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_FLOAT_VALUE:
+		*p++ = (2 << 3) | 5;
+		f32.f = v->float_value;
+		return mvt_put_fixed(p, f32.u, 4);
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_DOUBLE_VALUE:
+		*p++ = (3 << 3) | 1;
+		f64.d = v->double_value;
+		return mvt_put_fixed(p, f64.u, 8);
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_INT_VALUE:
+		*p++ = (4 << 3);
+		return mvt_put_varint(p, (uint64_t)v->int_value);
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_UINT_VALUE:
+		*p++ = (5 << 3);
+		return mvt_put_varint(p, v->uint_value);
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_SINT_VALUE:
+		*p++ = (6 << 3);
+		return mvt_put_varint(p, mvt_zigzag64(v->sint_value));
+	case VECTOR_TILE__TILE__VALUE__TEST_ONEOF_BOOL_VALUE:
+		*p++ = (7 << 3);
+		*p++ = v->bool_value ? 1 : 0;
+		return p;
+	default:
+		return p;
+	}
+}
+
+static size_t
+mvt_feature_size_of(const VectorTile__Tile__Feature *f, mvt_feature_size *fs)
+{
+	size_t s = 0;
+	if (f->has_id)
+		s += 1 + mvt_varint_size(f->id);
+	fs->tags_size = mvt_packed_size(f->tags, f->n_tags);
+	if (f->n_tags)
+		s += mvt_field_size(fs->tags_size);
+	s += 1 + mvt_varint_size((uint64_t)(int64_t)f->type);
+	fs->geometry_size = mvt_packed_size(f->geometry, f->n_geometry);
+	if (f->n_geometry)
+		s += mvt_field_size(fs->geometry_size);
+	fs->size = s;
+	return s;
+}
+
+static uint8_t *
+mvt_put_feature(uint8_t *p, const VectorTile__Tile__Feature *f, const mvt_feature_size *fs)
+{
+	size_t i;
+	if (f->has_id)
+	{
+		*p++ = (1 << 3);
+		p = mvt_put_varint(p, f->id);
+	}
+	if (f->n_tags)
+	{
+		*p++ = (2 << 3) | 2;
+		p = mvt_put_varint(p, fs->tags_size);
+		for (i = 0; i < f->n_tags; i++)
+			p = mvt_put_varint(p, f->tags[i]);
+	}
+	*p++ = (3 << 3);
+	p = mvt_put_varint(p, (uint64_t)(int64_t)f->type);
+	if (f->n_geometry)
+	{
+		*p++ = (4 << 3) | 2;
+		p = mvt_put_varint(p, fs->geometry_size);
+		for (i = 0; i < f->n_geometry; i++)
+			p = mvt_put_varint(p, f->geometry[i]);
+	}
+	return p;
+}
+
+/* Sizes the layer, or returns false when a message in it has unknown fields */
+static bool
+mvt_layer_size_of(const VectorTile__Tile__Layer *l, mvt_layer_size *ls)
+{
+	size_t s = mvt_field_size(strlen(l->name)), i;
+
+	if (l->base.n_unknown_fields)
+		return false;
+	ls->features = palloc(sizeof(mvt_feature_size) * (l->n_features ? l->n_features : 1));
+	ls->values = palloc(sizeof(size_t) * (l->n_values ? l->n_values : 1));
+	for (i = 0; i < l->n_features; i++)
+	{
+		if (l->features[i]->base.n_unknown_fields)
+			return false;
+		s += mvt_field_size(mvt_feature_size_of(l->features[i], &ls->features[i]));
+	}
+	for (i = 0; i < l->n_keys; i++)
+		s += mvt_field_size(strlen(l->keys[i]));
+	for (i = 0; i < l->n_values; i++)
+	{
+		if (l->values[i]->base.n_unknown_fields)
+			return false;
+		ls->values[i] = mvt_value_size(l->values[i]);
+		s += mvt_field_size(ls->values[i]);
+	}
+	s += 1 + mvt_varint_size(l->extent);
+	s += 1 + mvt_varint_size(l->version);
+	ls->size = s;
+	return true;
+}
+
+static uint8_t *
+mvt_put_layer(uint8_t *p, const VectorTile__Tile__Layer *l, const mvt_layer_size *ls)
+{
+	size_t i;
+	p = mvt_put_bytes(p, (1 << 3) | 2, l->name, strlen(l->name));
+	for (i = 0; i < l->n_features; i++)
+	{
+		*p++ = (2 << 3) | 2;
+		p = mvt_put_varint(p, ls->features[i].size);
+		p = mvt_put_feature(p, l->features[i], &ls->features[i]);
+	}
+	for (i = 0; i < l->n_keys; i++)
+		p = mvt_put_bytes(p, (3 << 3) | 2, l->keys[i], strlen(l->keys[i]));
+	for (i = 0; i < l->n_values; i++)
+	{
+		*p++ = (4 << 3) | 2;
+		p = mvt_put_varint(p, ls->values[i]);
+		p = mvt_put_value(p, l->values[i]);
+	}
+	*p++ = (5 << 3);
+	p = mvt_put_varint(p, l->extent);
+	*p++ = (15 << 3);
+	p = mvt_put_varint(p, l->version);
+	return p;
+}
+
+static bytea *
+mvt_tile_pack(const VectorTile__Tile *tile)
+{
+	mvt_layer_size *ls = palloc(sizeof(mvt_layer_size) * (tile->n_layers ? tile->n_layers : 1));
+	size_t len = 0, i;
+	uint8_t *p;
+	bytea *ba;
+
+	for (i = 0; i < tile->n_layers; i++)
+	{
+		if (tile->base.n_unknown_fields || !mvt_layer_size_of(tile->layers[i], &ls[i]))
+		{
+			len = vector_tile__tile__get_packed_size(tile);
+			ba = palloc(VARHDRSZ + len);
+			vector_tile__tile__pack(tile, (uint8_t *)VARDATA(ba));
+			SET_VARSIZE(ba, VARHDRSZ + len);
+			return ba;
+		}
+		len += mvt_field_size(ls[i].size);
+	}
+
+	ba = palloc(VARHDRSZ + len);
+	SET_VARSIZE(ba, VARHDRSZ + len);
+	p = (uint8_t *)VARDATA(ba);
+	for (i = 0; i < tile->n_layers; i++)
+	{
+		*p++ = (3 << 3) | 2;
+		p = mvt_put_varint(p, ls[i].size);
+		p = mvt_put_layer(p, tile->layers[i], &ls[i]);
+	}
+	return ba;
+}
+
 static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 {
 	/* Fill out the tile slot, if it's not already filled. */
 	/* We should only have a filled slot when all the work of building */
 	/* out the data is complete, so after a serialize/deserialize cycle */
 	/* or after a context combine */
-	size_t len;
 	bytea *ba;
 
 	if (!ctx)
@@ -1397,11 +1682,7 @@ static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 	}
 
 	/* Serialize the Tile */
-	len = VARHDRSZ + vector_tile__tile__get_packed_size(ctx->tile);
-	ba = palloc(len);
-	vector_tile__tile__pack(ctx->tile, (uint8_t*)VARDATA(ba));
-	SET_VARSIZE(ba, len);
-	return ba;
+	return mvt_tile_pack(ctx->tile);
 }
 
 
