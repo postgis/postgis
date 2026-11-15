@@ -24,6 +24,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #2299, GH-1084, [raster] Repair SQL argument generation in raster garden tests
+          (Darafei Praliaskouski)
  - GH-1189, Correct LTO configuration guidance wording (dovkoy)
  - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
           (John Carmack)
