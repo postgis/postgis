@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- [tiger_geocoder] Resolve the PAGC lookup tables in the tiger schema (Regina Obe)
 - Remove process addresses from public errors and notices (Andrew Kroh)
 - [topology] Correct the CreateTopoGeom INSERT example (Darafei Praliaskouski)
 - [raster] Correct the documented ST_BandIsNoData forceChecking default (Darafei Praliaskouski)
