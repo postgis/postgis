@@ -1608,11 +1608,13 @@ FROM data;</programlisting>
             <para>
                 Generate a skillion (single-slope, shed-style) roof as a 3D
                 <varname>PolyhedralSurface Z</varname> from a 2D footprint polygon.
-                The entire roof surface slopes in one direction.
-                <varname>height</varname> sets the maximum ridge height (default 3.0),
-                <varname>slope_angle</varname> sets the pitch in degrees (default
-                30.0), and <varname>primary_edge_index</varname> selects which
-                polygon edge defines the high side (0-based, default 0).
+                The roof is a single plane that rises in the direction of the edge
+                selected by <varname>primary_edge_index</varname> (0-based, default 0),
+                from its start point towards its end point.
+                <varname>slope_angle</varname> sets the pitch in degrees (default 30.0).
+                <varname>height</varname> sets the maximum roof height (default 3.0):
+                if the slope reaches this height before the far side of the footprint,
+                the rest of the roof is flat at that height.
             </para>
             <para>
                 When the combination of <varname>height</varname> and
