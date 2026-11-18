@@ -10328,10 +10328,167 @@ WHERE t1.rid = 1
                     <para>
                         <xref linkend="rastbandarg"/>,
                         <xref linkend="RT_ST_Union"/>,
+                        <xref linkend="RT_ST_Circle"/>,
+                        <xref linkend="RT_ST_Annulus"/>,
+                        <xref linkend="RT_ST_Wedge"/>,
                         <xref linkend="RT_ST_MapAlgebra_expr"/>
                     </para>
                 </refsection>
 
+            </refentry>
+
+            <refentry xml:id="RT_ST_Circle">
+                <refnamediv>
+                    <refname>ST_Circle</refname>
+                    <refpurpose>Returns focal statistics over a circular neighborhood.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Circle</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>radius</parameter></paramdef>
+                            <paramdef><type>text </type> <parameter>operation</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+                            <paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
+                        </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+                    <para>Applies one of the built-in focal-statistics operations to each pixel using a circular mask centered on that pixel. The supported operations are <code>MAX</code>, <code>MEAN</code>, <code>MIN</code>, <code>RANGE</code>, <code>STDDEV</code>, <code>SUM</code>, and <code>DISTINCT</code>.</para>
+                    <para>This is a convenience wrapper around <xref linkend="RT_ST_MapAlgebra"/> using the callback-function variant with a generated mask.</para>
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>
+WITH test AS (
+    SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI', 1, 0) AS rast
+)
+SELECT ST_Value(ST_Circle(rast, 1, 1, 'SUM', '32BF'), 3, 3)
+FROM test;
+-- 5
+                    </programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_Annulus"/>,
+                        <xref linkend="RT_ST_Wedge"/>,
+                        <xref linkend="RT_ST_MapAlgebra"/>
+                    </para>
+                </refsection>
+            </refentry>
+
+            <refentry xml:id="RT_ST_Annulus">
+                <refnamediv>
+                    <refname>ST_Annulus</refname>
+                    <refpurpose>Returns focal statistics over an annular neighborhood.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Annulus</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>innerradius</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>outerradius</parameter></paramdef>
+                            <paramdef><type>text </type> <parameter>operation</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+                            <paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
+                        </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+                    <para>Applies one of the built-in focal-statistics operations to each pixel using an annulus mask centered on that pixel. Pixels whose distance from the center pixel is between <varname>innerradius</varname> and <varname>outerradius</varname> are included.</para>
+                    <para>Supported operations are <code>MAX</code>, <code>MEAN</code>, <code>MIN</code>, <code>RANGE</code>, <code>STDDEV</code>, <code>SUM</code>, and <code>DISTINCT</code>.</para>
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>
+WITH test AS (
+    SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI', 1, 0) AS rast
+)
+SELECT ST_Value(ST_Annulus(rast, 1, 1, 2, 'SUM', '32BF'), 3, 3)
+FROM test;
+-- 12
+                    </programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_Circle"/>,
+                        <xref linkend="RT_ST_Wedge"/>,
+                        <xref linkend="RT_ST_MapAlgebra"/>
+                    </para>
+                </refsection>
+            </refentry>
+
+            <refentry xml:id="RT_ST_Wedge">
+                <refnamediv>
+                    <refname>ST_Wedge</refname>
+                    <refpurpose>Returns focal statistics over a wedge-shaped neighborhood.</refpurpose>
+                </refnamediv>
+
+                <refsynopsisdiv>
+                    <funcsynopsis>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Wedge</function></funcdef>
+                            <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>innerradius</parameter></paramdef>
+                            <paramdef><type>integer </type> <parameter>outerradius</parameter></paramdef>
+                            <paramdef><type>double precision </type> <parameter>thetastart</parameter></paramdef>
+                            <paramdef><type>double precision </type> <parameter>thetaend</parameter></paramdef>
+                            <paramdef><type>text </type> <parameter>operation</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+                            <paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+                            <paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
+                        </funcprototype>
+                    </funcsynopsis>
+                </refsynopsisdiv>
+
+                <refsection>
+                    <title>Description</title>
+                    <para>Applies one of the built-in focal-statistics operations to each pixel using a wedge mask centered on that pixel. Angles are in radians, measured clockwise from the positive Y axis. The start angle is inclusive and <varname>thetaend</varname> must be greater than <varname>thetastart</varname>.</para>
+                    <para>Supported operations are <code>MAX</code>, <code>MEAN</code>, <code>MIN</code>, <code>RANGE</code>, <code>STDDEV</code>, <code>SUM</code>, and <code>DISTINCT</code>.</para>
+                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>
+WITH test AS (
+    SELECT ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), '8BUI', 1, 0) AS rast
+)
+SELECT ST_Value(ST_Wedge(rast, 1, 0, 1, 0, pi(), 'SUM', '32BF'), 3, 3)
+FROM test;
+-- 4
+                    </programlisting>
+                </refsection>
+
+                <refsection>
+                    <title>See Also</title>
+                    <para>
+                        <xref linkend="RT_ST_Circle"/>,
+                        <xref linkend="RT_ST_Annulus"/>,
+                        <xref linkend="RT_ST_MapAlgebra"/>
+                    </para>
+                </refsection>
             </refentry>
 
             <refentry xml:id="RT_ST_MapAlgebra_expr">
