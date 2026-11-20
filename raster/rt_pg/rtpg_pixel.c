@@ -300,12 +300,12 @@ Datum RASTER_getGeometryValues(PG_FUNCTION_ARGS)
 	/* Raster */
 	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	raster = rt_raster_deserialize(pgraster, FALSE);
-	num_bands = rt_raster_get_num_bands(raster);
 	if (!raster) {
 		elog(ERROR, "Could not deserialize raster");
 		PG_RETURN_NULL();
 	}
 
+	num_bands = rt_raster_get_num_bands(raster);
 	/* Bandnidex is 1-based */
 	band = PG_GETARG_INT32(3);
 	if (band < 1 || band > num_bands) {
