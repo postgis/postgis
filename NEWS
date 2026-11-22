@@ -60,6 +60,12 @@ PostGIS 3.8.0dev
  - GH-1194, [raster] Stop rejecting or silently zeroing small non-zero scales
           and skews in ST_Reskew and raster warping (Darafei Praliaskouski)
 
+* Breaking Changes *
+
+ - #2630, Recreate five-argument UpdateGeometrySRID during extension upgrade
+          to correct the first argument name from catalogn_name to catalog_name
+          (Darafei Praliaskouski)
+
 
 PostGIS 3.7.0rc3
 2026/10/20
@@ -308,9 +314,6 @@ These are only changes since 3.7.0beta1.
 
 * Breaking Changes *
 
- - #2630, Recreate five-argument UpdateGeometrySRID during extension upgrade
-          to correct the first argument name from catalogn_name to catalog_name
-          (Darafei Praliaskouski)
 
 * Bug Fixes *
 
