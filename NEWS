@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #2599, [raster] Add ST_Sharpen with unsharp mask method
+          (Darafei Praliaskouski)
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
@@ -292,8 +294,6 @@ These are only changes since 3.7.0beta2.
 
 * Enhancements *
 
- - #2599, [raster] Add ST_Sharpen with unsharp mask method
-          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
