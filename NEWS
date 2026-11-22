@@ -30,6 +30,8 @@ PostGIS 3.8.0dev
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
  - GH-1183, Handle allocation failures during shape creation (Maksim Korotkov)
 
+ - #4502, GH-1045, [raster] Make ST_SameAlignment symmetric for nearly equal
+          geotransforms (Darafei Praliaskouski)
  - GH-1178, Harden loader column-map allocation checks and partial cleanup
           (Maksim Korotkov)
  - #2299, GH-1084, [raster] Repair SQL argument generation in raster garden tests
@@ -205,8 +207,6 @@ the docs (or explicitly with `make -C regress visual-examples`).
 
 * Bug Fixes *
 
- - #4502, GH-1045, [raster] Make ST_SameAlignment symmetric for nearly equal
-          geotransforms (Darafei Praliaskouski)
  - [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
           metadata and pixel-read restrictions after upgrade
           (reported by Sarath Kumar, IITM Pravartak Security Team;
