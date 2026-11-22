@@ -3,6 +3,8 @@ PostGIS 3.8.0dev
 
 * New Features *
 
+ - #4396, ST_3DSlope returns the slope angle of a linear or planar polygonal surface
+          (Darafei Praliaskouski)
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
@@ -87,8 +89,6 @@ the docs (or explicitly with `make -C regress visual-examples`).
           (Sandro Santilli)
  - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
  - #2858, ST_MMin and ST_MMax (Paul Ramsey)
- - #4396, ST_3DSlope returns the slope angle of a linear or planar polygonal surface
-          (Darafei Praliaskouski)
  - #5941, [raster] Support GDT_Float16 pixel type (Darafei Praliaskouski)
  - #5992, Optimize GiST index for repeated edge subdivision in topology (Darafei Praliaskouski)
  - #5702, Allow the compiler to detect the parallelism -flto=auto (Darafei Praliaskouski)
