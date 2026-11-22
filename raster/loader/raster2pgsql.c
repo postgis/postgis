@@ -605,10 +605,14 @@ static int
 rtloader_parse_xy(const char *arg, double xy[2], const char *optname)
 {
 	char *endptr = NULL;
-	char *sep = strchr(arg, 'x');
+	/* Use the last separator so that "0x0" is read as the origin (0, 0) and not as a hexadecimal number. */
+	char *sep = strrchr(arg, 'x');
+	char *sep_upper = strrchr(arg, 'X');
+	char xbuf[64];
+	size_t xlen;
 
-	if (!sep)
-		sep = strchr(arg, 'X');
+	if (!sep || (sep_upper && sep_upper > sep))
+		sep = sep_upper;
 
 	if (!sep || sep == arg || *(sep + 1) == '\0')
 	{
@@ -616,8 +620,17 @@ rtloader_parse_xy(const char *arg, double xy[2], const char *optname)
 		return 0;
 	}
 
-	xy[0] = strtod(arg, &endptr);
-	if (endptr != sep)
+	/* Parse only the text before the separator, so "0x0" cannot be consumed as one hexadecimal number. */
+	xlen = (size_t)(sep - arg);
+	if (xlen >= sizeof(xbuf))
+	{
+		rterror(_("Could not process %s"), optname);
+		return 0;
+	}
+	memcpy(xbuf, arg, xlen);
+	xbuf[xlen] = '\0';
+	xy[0] = strtod(xbuf, &endptr);
+	if (endptr == xbuf || *endptr != '\0')
 	{
 		rterror(_("Could not process %s"), optname);
 		return 0;
@@ -654,6 +667,12 @@ rtloader_tile_origin_cell(const RTLOADERCFG *config, const double gt[6], double 
 	}
 
 	GDALApplyGeoTransform(igt, config->tile_origin[0], config->tile_origin[1], &(cell[0]), &(cell[1]));
+
+	if (!isfinite(cell[0]) || !isfinite(cell[1]))
+	{
+		rterror(_("Tile origin is outside the range representable on the raster pixel grid"));
+		return 0;
+	}
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -3095,9 +3114,15 @@ main(int argc, char **argv)
 			config->pad_tile = 1;
 		}
 		/* tile origin */
-		else if (option_matches(argv[argit], "-A", "--tile-origin") &&
-			 (optarg = option_value(argc, argv, &argit, "--tile-origin")) != NULL)
+		else if (option_matches(argv[argit], "-A", "--tile-origin"))
 		{
+			optarg = option_value(argc, argv, &argit, "--tile-origin");
+			if (optarg == NULL)
+			{
+				rterror(_("-A/--tile-origin requires a value"));
+				rtdealloc_config(config);
+				exit(1);
+			}
 			if (!rtloader_parse_xy(optarg, config->tile_origin, "-A/--tile-origin"))
 			{
 				rtdealloc_config(config);
