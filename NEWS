@@ -3,6 +3,8 @@ PostGIS 3.8.0dev
 
 * New Features *
 
+ - #4009, [raster] Add ST_Clip overloads for geometry arrays
+          (Darafei Praliaskouski)
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
@@ -96,8 +98,6 @@ the docs (or explicitly with `make -C regress visual-examples`).
           output, raster2pgsql/shp2pgsql expose loader actions as long options,
           both loaders accept long aliases for existing options, and
           --if-not-exists makes creation actions idempotent
-          (Darafei Praliaskouski)
- - #4009, [raster] Add ST_Clip overloads for geometry arrays
           (Darafei Praliaskouski)
  - #4208, Add single-geometry variants of ST_MaxDistance and ST_LongestLine
           (Darafei Praliaskouski)
