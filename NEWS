@@ -23,6 +23,8 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
           packer (John Carmack)
+ - #2564, Add ST_FromLatLonText to parse latitude/longitude text
+          (Darafei Praliaskouski)
 
 * Bug Fixes *
 
@@ -292,8 +294,6 @@ These are only changes since 3.7.0beta2.
 
 * Enhancements *
 
- - #2564, Add ST_FromLatLonText to parse latitude/longitude text
-          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta2
 2026/08/09
