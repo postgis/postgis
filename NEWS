@@ -22,6 +22,7 @@ PostGIS 3.8.0dev
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
           (Darafei Praliaskouski)
  - #4565, Add geography support for ST_AddMeasure (Darafei Praliaskouski)
+ - #4565, Add geography support for ST_AddMeasure (Darafei Praliaskouski)
 
 * Bug Fixes *
 
@@ -349,7 +350,6 @@ These are only changes since 3.7.0beta1.
 
  - Add Woodpecker linux/arm64 build and regression coverage under
           QEMU to match the Jenkins Berrie64 platform (Darafei Praliaskouski)
- - #4565, Add geography support for ST_AddMeasure (Darafei Praliaskouski)
 
  - #1416, ST_AsX3D outputs NURBSCURVE as X3D NurbsCurve
           and linearizes other curve geometries
