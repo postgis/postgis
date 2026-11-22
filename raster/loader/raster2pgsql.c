@@ -677,13 +677,10 @@ rtloader_tile_origin_cell(const RTLOADERCFG *config, const double gt[6], double 
 	for (int i = 0; i < 2; i++)
 	{
 		double nearest = round(cell[i]);
-		double pixel_size = hypot(gt[i == 0 ? 1 : 2], gt[i == 0 ? 4 : 5]);
-		double coord_magnitude = fmax(fmax(fabs(config->tile_origin[0]), fabs(config->tile_origin[1])),
-					      fmax(fabs(gt[0]), fabs(gt[3])));
-		double tolerance = 1e-8;
-
-		if (pixel_size > 0)
-			tolerance += 64 * DBL_EPSILON * coord_magnitude / pixel_size;
+		/* Rounding error bound from the terms that make up this inverse-transform component only. */
+		double magnitude = fabs(igt[i * 3]) + fabs(igt[i * 3 + 1] * config->tile_origin[0]) +
+				   fabs(igt[i * 3 + 2] * config->tile_origin[1]);
+		double tolerance = 1e-8 + 64 * DBL_EPSILON * magnitude;
 
 		if (fabs(cell[i] - nearest) > tolerance)
 		{
