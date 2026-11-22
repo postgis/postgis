@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #2113, [raster] Add raster2pgsql near/average overview resampling option
+          (Darafei Praliaskouski)
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
@@ -150,8 +152,6 @@ the docs (or explicitly with `make -C regress visual-examples`).
  - #6065, Improved winding order computation robustness for rings having collapsed elements
           (Sandro Santilli)
  - #2137, [raster] Reuse matching source raster overviews in raster2pgsql -l
-          (Darafei Praliaskouski)
- - #2113, [raster] Add raster2pgsql near/average overview resampling option
           (Darafei Praliaskouski)
  - #4749, Use point-in-polygon predicate fast paths for point-only
           GeometryCollections (Darafei Praliaskouski)
