@@ -23,6 +23,8 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
           packer (John Carmack)
+ - #3472, GT-706, ST_AsX3D can emit collection members without Shape wrappers
+          (Darafei Praliaskouski)
 
 * Bug Fixes *
 
@@ -374,9 +376,6 @@ These are only changes since 3.7.0beta1.
           (Darafei Praliaskouski)
  - #3705, ST_AsX3D outputs valid coordinate nodes for 2D multi-geometries
           and GeometryCollections (Darafei Praliaskouski)
- - #3472, ST_AsX3D can omit wrapper Shape nodes around
-          GeometryCollection members with option 4
-          (Darafei Praliaskouski)
 
 PostGIS 3.7.0beta1
 2026/07/20
