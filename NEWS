@@ -3,6 +3,8 @@ PostGIS 3.8.0dev
 
 * New Features *
 
+ - #5996, ST_FilterHolesByArea removes polygon holes below an area threshold
+          (Darafei Praliaskouski)
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
@@ -83,8 +85,6 @@ the docs (or explicitly with `make -C regress visual-examples`).
  - ST_CoverageEdges, returns MultiLinestring of distinct shared edges in
           polygonal coverage (Paul Ramsey)
  - ST_MinimumSpanningTree, window function to calculate MST (Paul Ramsey)
- - #5996, ST_FilterHolesByArea removes polygon holes below an area threshold
-          (Darafei Praliaskouski)
  - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring
           (Sandro Santilli)
  - #6001, support MultiLineString in ST_MakeLine (Paul Ramsey)
