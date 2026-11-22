@@ -39,6 +39,11 @@ raster and apply it to all rasters.
 Pad right-most and bottom-most tiles so all tiles have the same width and
 height.
 .TP
+\fB\-A\fR <\fIx\fR>x<\fIy\fR>, \fB\-\-tile-origin\fR <\fIx\fR>x<\fIy\fR>
+Align the \fB\-t\fR tile grid to the given map coordinate. The coordinate must
+fall on the raster pixel grid. This option requires \fB\-t\fR. Edge tiles are
+padded as needed. This option is not supported with \fB\-R\fR.
+.TP
 \fB\-R\fR, \fB\-\-register\fR
 Register the raster as an out-of-db filesystem raster. Input raster paths must
 be absolute.
