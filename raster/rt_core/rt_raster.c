@@ -904,8 +904,9 @@ rt_raster_compute_skewed_raster(
 	ky  = skew[1];
 	det = sx * syg - kx * ky;
 
-	if (FLT_EQ(det, 0.0)) {
-		rterror("rt_raster_compute_skewed_raster: Degenerate geotransform (determinant is zero)");
+	if (!isfinite(det) ||
+	    fabs(det) <= 4.0 * DBL_EPSILON * (fabs(sx * syg) + fabs(kx * ky))) {
+		rterror("rt_raster_compute_skewed_raster: Degenerate or non-finite geotransform determinant");
 		return NULL;
 	}
 

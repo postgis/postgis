@@ -3,6 +3,8 @@ PostGIS 3.7.1dev
 
 * Bug Fixes *
 
+ - #6158, Fix ST_Reskew rejecting valid geotransforms with small
+          nonzero determinants (Waniya Badar)
  - GH-1178, Avoid NULL dereferences when column-map allocation fails and make
           partial column-map cleanup safe (Maksim Korotkov)
 
