@@ -548,7 +548,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	/* Something went wrong... */
 	if ( area < 0.0 )
 	{
-		elog(ERROR, "lwgeom_area_spher(oid) returned area < 0.0");
+		elog(ERROR, "lwgeom_area_spheroid returned area < 0.0");
 		PG_RETURN_NULL();
 	}
 
