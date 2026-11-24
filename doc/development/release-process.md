@@ -47,9 +47,10 @@ The liblwgeom versioning represents compatibility of the library
 within a PostGIS minor version.
 
 PostGIS normally aims to release a new minor version about once a year shortly
-before the PostgreSQL annual release, which is currently around early October.
-Patch releases happen as needed when the number or severity of fixes calls for
-them.
+before the annual PostgreSQL major release. See the
+[PostgreSQL roadmap](https://www.postgresql.org/developer/roadmap/) for its
+current schedule. Patch releases happen as needed when the number or severity
+of fixes calls for them.
 
 The project generally supports each PostGIS minor release for two to four years
 after initial release and at least until the lowest PostgreSQL version
@@ -125,7 +126,10 @@ documentation -- that means having the required software:
 	   b) Replace repository url with new branch repo url
 	   c) Update the PostGIS_trunk by updating the PostGIS_* string params
 
-	   Go to: https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
+	   Update the [compatibility browser data](compatibility/_index.md) for the
+	   released series and development branch. Refresh the cache when a tracked
+	   dependency releases or reaches end of life, then validate the generated
+	   payload before publication.
 
 5. Publish release
 
