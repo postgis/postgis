@@ -24,14 +24,14 @@
       "title": "PostGIS NEWS SFCGAL release notes"
     },
     {
-      "id": "news-geos-315",
-      "url": "https://gitea.osgeo.org/postgis/postgis/src/branch/master/NEWS",
-      "title": "PostGIS NEWS GEOS 3.15 feature requirement"
+      "id": "postgis-3.7-geos-simple-detail",
+      "url": "https://gitea.osgeo.org/postgis/postgis/src/tag/3.7.0/postgis/lwgeom_geos.c#L1789",
+      "title": "PostGIS 3.7 ST_IsSimpleDetail GEOS requirement"
     },
     {
-      "id": "postgis-ci-dashboard",
-      "url": "https://postgis.net/ci/",
-      "title": "PostGIS CI dashboard"
+      "id": "postgis-3.7-release",
+      "url": "https://postgis.net/2026/10/PostGIS-3.7.0/",
+      "title": "PostGIS 3.7.0 release announcement"
     },
     {
       "id": "postgis-master-configure-ac",
@@ -75,13 +75,6 @@
     "postgresql": [
       {
         "postgis": "3.8",
-        "versions": ["19", "18", "17", "16"],
-        "status": "supported",
-        "note": "Development branch CI coverage for PostgreSQL 19 is shown as the PostgreSQL 20 major line.",
-        "source": "postgis-ci-dashboard"
-      },
-      {
-        "postgis": "3.8",
         "versions": ["19", "18", "17", "16", "15"],
         "status": "supported",
         "source": "postgis-master-configure-ac"
@@ -90,8 +83,7 @@
         "postgis": "3.7",
         "versions": ["19", "18", "17", "16", "15"],
         "status": "supported",
-        "note": "Latest stable branch ",
-        "source": "postgis-ci-dashboard"
+        "source": "postgis-3.7-release"
       },
       {
         "postgis": "3.7",
@@ -267,16 +259,16 @@
       {
         "postgis": "3.7",
         "versions": ["3.15"],
-        "status": "supported",
-        "note": "PostGIS 3.7 NEWS and release notes say GEOS 3.15 and later is needed for all PostGIS extension features.",
-        "source": "news-geos-315"
+        "status": "feature-limited",
+        "note": "GEOS 3.15 enables split, coverage edges and minimum spanning trees. ST_IsSimpleDetail requires GEOS 3.16.",
+        "source": "postgis-3.7-geos-simple-detail"
       },
       {
         "postgis": "3.7",
         "versions": ["3.14", "3.13", "3.12", "3.11", "3.10"],
         "status": "feature-limited",
-        "note": "PostGIS 3.7 builds with GEOS 3.10 and later, but GEOS 3.15 and later is needed for all PostGIS extension features.",
-        "source": "news-geos-315"
+        "note": "PostGIS 3.7 builds with GEOS 3.10 and later. Split, coverage edges and minimum spanning trees require GEOS 3.15, and ST_IsSimpleDetail requires GEOS 3.16.",
+        "source": "postgis-3.7-geos-simple-detail"
       },
       {
         "postgis": "1.2",
@@ -870,26 +862,22 @@
       "latest": "3.8.0dev",
       "status": "supported",
       "release_stage": "development",
-      "first_release_date": "2026-10-30",
+      "planned_release": {
+        "year": 2027,
+        "url": "https://gitea.osgeo.org/postgis/postgis/milestone/72"
+      },
       "lifecycle": "development",
       "postgresql": {
-        "supported": "15-20",
-        "default_summary": "PostgreSQL 15-20",
-        "feature_complete": "16",
-        "minor_overrides": [
-          {
-            "versions": ["19"],
-            "status": "supported",
-            "note": "PostgreSQL 19 coverage is currently release-series coverage on the current development PostGIS line."
-          }
-        ],
+        "supported": "14-19",
+        "default_summary": "PostgreSQL 14-19",
+        "feature_complete": "15",
         "source": "tag:HEAD:configure.ac"
       },
       "dependencies": {
         "geos": {
           "minimum": "3.10.0",
-          "feature_complete": "3.15.0",
-          "recommended": "3.15 and later for all PostGIS extension features; 3.10 and later is the build minimum",
+          "feature_complete": "3.16.0",
+          "recommended": "3.15 for split, coverage edges and minimum spanning trees. ST_IsSimpleDetail requires 3.16.",
           "source": "tag:HEAD:configure.ac"
         },
         "proj": {
@@ -927,30 +915,23 @@
     },
     {
       "minor": "3.7",
-      "branch": "master",
+      "branch": "stable-3.7",
       "latest": "3.7.0",
       "status": "supported",
-      "release_stage": "development",
-      "first_release_date": "2026-10-30",
-      "lifecycle": "development",
+      "first_release_date": "2026-10-29",
+      "lifecycle": "stable",
       "postgresql": {
         "supported": "14-19",
         "default_summary": "PostgreSQL 14-19",
         "feature_complete": "15",
-        "minor_overrides": [
-          {
-            "versions": ["19"],
-            "status": "supported",
-            "note": "PostgreSQL 19 coverage is currently release-series coverage on the current development PostGIS line."
-          }
-        ],
-        "source": "tag:HEAD:configure.ac"
+        "feature_note": "PostgreSQL 14 builds but lacks GiST sort support in the default operator class.",
+        "source": "postgis-3.7-release"
       },
       "dependencies": {
         "geos": {
           "minimum": "3.10.0",
-          "feature_complete": "3.15.0",
-          "recommended": "3.15 and later for all PostGIS extension features; 3.10 and later is the build minimum",
+          "feature_complete": "3.16.0",
+          "recommended": "3.15 for split, coverage edges and minimum spanning trees. ST_IsSimpleDetail requires 3.16.",
           "source": "tag:3.7.0:configure.ac"
         },
         "proj": {
@@ -1783,7 +1764,7 @@
       "requirement": "required",
       "minimum": "3.10.0",
       "detected_by": ["pkg-config geos", "geos-config", "geos_c.h", "libgeos_c initGEOS"],
-      "used_for": ["geometry predicates and operations", "feature-complete current line at GEOS 3.15 and later"],
+      "used_for": ["geometry predicates and operations", "ST_IsSimpleDetail with GEOS 3.16 and later"],
       "source": "postgis-configure-ac-2026-07-31"
     },
     {

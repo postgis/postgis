@@ -721,13 +721,20 @@ def browser_supported_column_indexes(
 
 def browser_lifecycle(series: dict[str, Any], current_year: int) -> list[dict[str, str]]:
     release_date = series.get("first_release_date")
+    planned_release = series.get("planned_release") or {}
+    planned_year = planned_release.get("year")
+    date_label = browser_release_age(release_date, current_year) or "date n/a"
+    date_title = f"First release: {release_date}" if release_date else "First release date is not recorded"
+    if not release_date and planned_year:
+        date_label = f"Planned for {planned_year}"
+        date_title = f"Release milestone: {planned_release['url']}"
     lifecycle = (
         "End of Life (EOL)" if browser_is_eol(series) else str(series.get("lifecycle") or series.get("status") or "n/a")
     )
     return [
         {
-            "text": browser_release_age(release_date, current_year) or "date n/a",
-            "title": f"First release: {release_date}" if release_date else "First release date is not recorded",
+            "text": date_label,
+            "title": date_title,
             "class_name": "",
         },
         {
@@ -793,7 +800,10 @@ def browser_matrix(data: dict[str, Any], current_year: int) -> dict[str, Any]:
                 ),
                 "eol": browser_is_eol(series),
                 "release_date": str(patch.get("release_date") or "") if patch else "",
-                "release": browser_postgis_news_link(version) if version else None,
+                "release": (
+                    group["source"] if version.endswith("dev")
+                    else browser_postgis_news_link(version) if version else None
+                ),
                 "source": browser_source_detail(data, str(patch.get("source") or "")) if patch else None,
                 "cells": {},
             }
@@ -1459,7 +1469,10 @@ def browser_dependency_inventory(data: dict[str, Any]) -> dict[str, Any]:
             "Recommended targets, vendored source versions, and package freshness "
             "from configure.ac, CI scripts, release tags, and Repology."
         ),
-        "snapshot": f"{len(rows)} components · refreshed {str(data.get('generated_at') or '')[:10]}",
+        "snapshot": (
+            f"{len(rows)} components · source cache from {str(data['cache_generated_at'])[:10]}"
+            if data.get("cache_generated_at") else f"{len(rows)} components"
+        ),
         "groups": groups,
     }
 

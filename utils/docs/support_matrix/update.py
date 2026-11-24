@@ -120,6 +120,18 @@ SOURCE_GATE_MACROS = {
     "PROJ_GEODESIC": "proj",
 }
 SOURCE_GATE_CLASSIFICATION = {
+    ("libpgcommon/lwgeom_cache.c", "POSTGIS_PGSQL_VERSION<200"): (
+        "compatibility",
+        "PostgreSQL 20 changes the TOAST pointer type to varatt_external_oid.",
+    ),
+    ("liblwgeom/lwgeom_geos.c", "POSTGIS_GEOS_VERSION>=31600"): (
+        "diagnostic",
+        "GEOS 3.16 exposes the revision used in version reporting.",
+    ),
+    ("postgis/lwgeom_geos.c", "POSTGIS_GEOS_VERSION<31600"): (
+        "feature",
+        "ST_IsSimpleDetail requires the GEOS 3.16 geometry simplicity API.",
+    ),
     ("liblwgeom/liblwgeom.h.in", "POSTGIS_GEOS_VERSION>=31100"): (
         "feature",
         "GEOS 3.11 exposes concave hull support declarations.",
@@ -839,10 +851,10 @@ def parse_postgresql(page: str, existing: list[dict[str, Any]]) -> list[dict[str
         if item["lifecycle"] == "eol":
             item["eol"] = True
         parsed.append(item)
+    released = {item["version"] for item in parsed}
     development = [
-        dict(item, source=f"postgresql-versioning-{SOURCE_DATE}")
-        for item in existing
-        if item.get("lifecycle") == "development"
+        item for item in existing
+        if item.get("lifecycle") == "development" and item["version"] not in released
     ]
     result = development + parsed
     if not any(item["version"] in {"18", "17", "16"} for item in result):
@@ -959,7 +971,7 @@ def release_line_versions(
         result.append(
             {
                 "version": line,
-                "lifecycle": "current" if index == 0 else previous.get("lifecycle", "historical"),
+                "lifecycle": "current" if index == 0 else ("eol" if previous.get("eol") else "historical"),
                 **({"eol": True} if previous.get("eol") else {}),
                 "current_minor": latest[0],
                 "first_release_date": first,
@@ -1586,8 +1598,8 @@ def ensure_supported_dependency_edges(data: dict[str, Any]) -> None:
 def enrich_series_with_source_gates(series: list[dict[str, Any]], gates: list[dict[str, Any]]) -> list[dict[str, Any]]:
     enriched = json.loads(json.dumps(series))
     feature_summaries = {
-        "postgresql": "PostgreSQL 15 and later has the full PostGIS feature set recorded by current source gates: PostgreSQL 14 adds planner support-function API arguments, and PostgreSQL 15 enables GiST sort support declarations. PostgreSQL 16, 17, 18, and 19 gates are compatibility shims for PostgreSQL API changes, not PostGIS feature degradations on PostgreSQL 15.",
-        "geos": "GEOS gates include 3.11 directed line merge/triangulate/concave-hull paths, 3.12 coverage operations, 3.13 prepared relate/cluster paths, 3.14 coverage-clean and raster intersection fractions, and 3.15 split/coverage-edge/minimum-spanning-tree functions.",
+        "postgresql": "PostgreSQL 15 and later has the full PostGIS feature set recorded by current source gates: PostgreSQL 14 adds planner support-function API arguments, and PostgreSQL 15 enables GiST sort support declarations. PostgreSQL 16 through 20 gates are compatibility shims for PostgreSQL API changes, not PostGIS feature degradations on PostgreSQL 15.",
+        "geos": "GEOS gates include 3.11 directed line merge/triangulate/concave-hull paths, 3.12 coverage operations, 3.13 prepared relate/cluster paths, 3.14 coverage-clean and raster intersection fractions, 3.15 split/coverage-edge/minimum-spanning-tree functions, and 3.16 ST_IsSimpleDetail.",
         "proj": "PROJ gates include GeographicLib geodesic behavior, PROJ 7.1 proj-version network diagnostics, and PROJ 8.1 CRS search filtering by celestial body.",
         "gdal": "GDAL gates include 2.4 polygon contour output, 3.3.2 raster warp nodata behavior, 3.7 signed Int8 raster datatype mapping, 3.11 Float16 mapping, and 3.14 curve rasterization behavior.",
         "sfcgal": "SFCGAL gates include 1.3.8 measured-coordinate support, 1.5 XYM/XYZM point construction, 2.1 API renames, and 2.3 NURBSCURVE support.",
@@ -1596,7 +1608,7 @@ def enrich_series_with_source_gates(series: list[dict[str, Any]], gates: list[di
         "iconv": "iconvctl is optional and enables stricter shp2pgsql character-conversion behavior when available.",
     }
     feature_complete = {
-        "geos": "3.15.0",
+        "geos": "3.16.0",
         "proj": "8.1.0",
         "sfcgal": "2.3.0",
     }
@@ -1735,7 +1747,7 @@ def cache_from_matrix(data: dict[str, Any]) -> dict[str, Any]:
     return validated_cache(
         {
             "schema_version": CACHE_SCHEMA_VERSION,
-            "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+            "generated_at": data.get("cache_generated_at"),
             "generated": json.loads(json.dumps(data.get("dependency_versions", {}))),
             "packaged_versions": json.loads(json.dumps(data.get("packaged_versions", {}))),
             "vendored_inventory": json.loads(json.dumps(data.get("vendored_inventory", {}))),
@@ -1760,6 +1772,7 @@ def apply_cache(matrix: dict[str, Any], cache: dict[str, Any]) -> dict[str, Any]
 
     updated = json.loads(json.dumps(matrix))
     warnings = json.loads(json.dumps(cache.get("update_warnings", [])))
+    updated["cache_generated_at"] = str(cache.get("generated_at") or "").replace("+00:00", "Z")
     updated["dependency_versions"] = json.loads(json.dumps(generated))
     updated["packaged_versions"] = json.loads(json.dumps(cache.get("packaged_versions", {})))
     updated["vendored_inventory"] = json.loads(json.dumps(cache.get("vendored_inventory", {})))
@@ -1846,6 +1859,7 @@ def build_update(matrix: dict[str, Any], cache: dict[str, Any]) -> dict[str, Any
 
     next_cache = {
         "schema_version": CACHE_SCHEMA_VERSION,
+        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "generated": generated,
         "packaged_versions": packaged_versions,
         "vendored_inventory": vendored_inventory,

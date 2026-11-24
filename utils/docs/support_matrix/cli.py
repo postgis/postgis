@@ -292,12 +292,14 @@ def postgis_patch_releases(series: list[dict[str, Any]]) -> list[dict[str, Any]]
     versions.update(git_version_tags())
     for item in series:
         latest = item.get("latest")
-        if latest and minor_for_version(latest):
+        if latest and not latest.endswith("dev") and minor_for_version(latest):
             versions.add(latest)
 
     patches: list[dict[str, Any]] = []
     current_news = (ROOT / "NEWS").read_text(encoding="utf-8")
     for version in sorted(versions, key=version_sort_key, reverse=True):
+        if version.endswith("dev"):
+            continue
         minor = minor_for_version(version)
         if not minor or minor not in by_minor:
             continue
@@ -424,6 +426,8 @@ def compatibility_conflicts(data: dict[str, Any]) -> list[str]:
             minimum = dependency.get("minimum")
             if not minimum:
                 continue
+            feature_complete = dependency.get("feature_complete") or minimum
+            has_feature_complete_version = False
             statuses: list[str] = []
             for item in versions:
                 if item.get("lifecycle") == "development" and series.get("lifecycle") != "development":
@@ -431,19 +435,25 @@ def compatibility_conflicts(data: dict[str, Any]) -> list[str]:
                 version = item.get("version")
                 if not version:
                     continue
+                meets_feature_complete = version_at_least(version, feature_complete)
+                has_feature_complete_version |= meets_feature_complete
                 status = edge_status.get((minor, version))
                 if not status:
-                    if version_at_least(version, dependency.get("feature_complete") or minimum):
+                    if meets_feature_complete:
                         status = "supported"
                     elif version_at_least(version, minimum):
                         status = "feature-limited"
                     else:
                         status = "unsupported"
                 statuses.append(status)
-            if statuses and "supported" not in statuses:
+            acceptable_statuses = {"supported"}
+            if not has_feature_complete_version:
+                acceptable_statuses.add("feature-limited")
+            if statuses and acceptable_statuses.isdisjoint(statuses):
                 errors.append(
                     f"compatibility_edges.{dimension}: PostGIS {minor} has dependency minimum "
-                    f"{minimum} but no resolved supported version; statuses={','.join(sorted(set(statuses)))}"
+                    f"{minimum} but no resolved {' or '.join(sorted(acceptable_statuses))} version; "
+                    f"statuses={','.join(sorted(set(statuses)))}"
                 )
 
     return errors
@@ -640,9 +650,10 @@ def validate_rendered(data: dict[str, Any]) -> list[str]:
             errors.append(f"compatibility_edges.{dimension}: rendered cells must not use lifecycle status historical")
     patch_versions = {patch.get("version") for patch in data.get("patch_releases", [])}
     for series in data.get("postgis_series", []):
-        if series.get("latest") and series["latest"] not in patch_versions:
+        latest = series.get("latest")
+        if latest and not latest.endswith("dev") and latest not in patch_versions:
             errors.append(
-                f"postgis_series.{series.get('minor')}: latest {series['latest']} "
+                f"postgis_series.{series.get('minor')}: latest {latest} "
                 "is missing from generated patch releases"
             )
     return errors
