@@ -4,8 +4,9 @@
     <section xml:id="release_notes_3_7_0">
     <title>PostGIS 3.7.0</title>
     <subtitle>2026/10/29</subtitle>
-    <para>This version requires GEOS 3.10+, PostgreSQL 14-19beta3, Proj 6.1+, and libgmp.
-        To take advantage of all postgis extension features, GEOS 3.15+ is needed.
+    <para>This version requires GEOS 3.10+, PostgreSQL 14-19, Proj 6.1+, and libgmp.
+        GEOS 3.15+ enables split, coverage edges and minimum spanning trees.
+        ST_IsSimpleDetail requires GEOS 3.16+.
         To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.
         Python 3 is a new requirement to build the documentation.</para>
 

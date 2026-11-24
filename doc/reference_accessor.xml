@@ -2050,6 +2050,8 @@ The optional <varname>boundaryNodeRule</varname> values are:
                 </para></listitem>
         </itemizedlist>
 
+		<para>Requires GEOS 3.16 or later.</para>
+
 		<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
 
 	  </refsection>
