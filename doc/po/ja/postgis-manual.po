@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-17 07:16+0000\n"
-"PO-Revision-Date: 2026-10-20 02:39+0000\n"
+"PO-Revision-Date: 2026-11-24 02:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -12813,7 +12813,7 @@ msgstr "Availability: 2.3.0 - MULTIPOINT 入力要素への対応が導入され
 #, no-c-format
 msgid ""
 "Availability: 2.0.0 - Support for LineString input elements was introduced"
-msgstr "Availability: 2.0.0 - LINESTRING 入力要素への対応が導入されました"
+msgstr "Availability: 2.0.0 - LINESTRING 入力要素への対応が導入されました。"
 
 #. Tag: para
 #, no-c-format
@@ -19583,8 +19583,7 @@ msgstr ""
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
 "before:"
-msgstr ""
-"これにより道路テーブルが、以前がどんな SRID であっても、4326に変更されます:"
+msgstr "これにより道路テーブルの SRID は、変更前の値に関わらず 4326に変更されます:"
 
 #. Tag: para
 #, no-c-format
@@ -43200,8 +43199,8 @@ msgid ""
 "Valid trajectories are expected as input to spatio-temporal functions like "
 "<xref linkend=\"ST_ClosestPointOfApproach\"/>"
 msgstr ""
-"<xref linkend=\"ST_ClosestPointOfApproach\"/> 等の時空間関数は、妥当なトラ"
-"ジェクトリを入力値として期待します。"
+"<xref linkend=\"ST_ClosestPointOfApproach\"/> などの時空間関数は、妥当な"
+"トラジェクトリを入力値として期待します。"
 
 #. Tag: para
 #, no-c-format
@@ -45144,9 +45143,9 @@ msgid ""
 "link>, Add single-geometry variants of ST_MaxDistance and ST_LongestLine "
 "(Darafei Praliaskouski)"
 msgstr ""
-"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4208\">#4208</"
-"link>, ST_MaxDistance と ST_LongestLine において単一ジオメトリーに対応する形"
-"式を追加しました。"
+"<link xlink:href=\"https://trac.osgeo.org/postgis/ticket/4208\">#4208</link>"
+", ST_MaxDistance と ST_LongestLine において単一ジオメトリーに対応する形式を追"
+"加しました (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #, no-c-format
@@ -48333,9 +48332,9 @@ msgid ""
 "is <link xlink:href=\"http://spatialreference.org/\">http://"
 "spatialreference.org/</link>"
 msgstr ""
-"PostGIS のコアセットに入っていない空間参照系を探すための素晴らしい資料が "
-"<link xlink:href=\"http://spatialreference.org/\">http://"
-"spatialreference.org/</link> にあります。"
+"コアセットに入っていない空間参照系を探すための素晴らしい資料が <link "
+"xlink:href=\"http://spatialreference.org/\">http://spatialreference.org/</"
+"link> にあります。"
 
 #. Tag: para
 #, no-c-format
@@ -50877,8 +50876,8 @@ msgid ""
 "Create new table and populate it with raster(s), <emphasis>this is the "
 "default mode</emphasis>"
 msgstr ""
-"新しいテーブルを生成し、ラスターを入れます。<emphasis>これがデフォルトモード"
-"です</emphasis>。"
+"新しいテーブルを作成し、ラスターを入れます。<emphasis>これは指定しないときの"
+"動作です</emphasis>。"
 
 #. Tag: para
 #, no-c-format
@@ -50888,7 +50887,7 @@ msgstr "既存のテーブルにラスターを追加します。"
 #. Tag: para
 #, no-c-format
 msgid "Drop table, create new one and populate it with raster(s)"
-msgstr "テーブルを削除し、新しいテーブルを生成し、ラスターを入れます。"
+msgstr "テーブルを削除し、新しいテーブルを作成し、ラスターを入れます。"
 
 #. Tag: para
 #, no-c-format
