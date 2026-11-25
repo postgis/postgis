@@ -3,6 +3,8 @@ PostGIS 3.7.1dev
 
 * Bug Fixes *
 
+ - #6159, Avoid negative geography areas when subtracting polygon holes
+     (Sandro Santilli)
  - GH-1178, Avoid NULL dereferences when column-map allocation fails and make
           partial column-map cleanup safe (Maksim Korotkov)
  - #6160, Clarify licensing vector_tile (Bas Couwenberg)
