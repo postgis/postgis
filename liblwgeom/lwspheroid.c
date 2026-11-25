@@ -23,9 +23,13 @@
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
+/*#define POSTGIS_DEBUG_LEVEL 4*/
+
 
 #include "liblwgeom_internal.h"
 #include "lwgeodetic.h"
+
 #include "lwgeom_log.h"
 
 /* In proj4.9, GeographicLib is in special header */
@@ -675,10 +679,28 @@ double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 		/* First, the area of the outer ring */
 		area += ptarray_area_spheroid(poly->rings[0], spheroid);
 
+#if 0
+		/*
+		 * According to https://geographiclib.sourceforge.io/scripts/geod-calc.html
+		 * we can expect a 0.1 m2 per vertex accuracty for areas
+		 */
+		double accuracy = poly->rings[0]->npoints * 0.1;
+		if ( area < accuracy )
+		{
+			lwnotice("Spheroid area of outer ring is below %g accuracy, skipping hole area computation");
+			return area;
+		}
+#endif
+
 		/* Subtract areas of inner rings */
 		for ( i = 1; i < poly->nrings; i++ )
 		{
-			area -=  ptarray_area_spheroid(poly->rings[i], spheroid);
+			area -= ptarray_area_spheroid(poly->rings[i], spheroid);
+			if ( area < 0 )
+			{
+				lwnotice("subtracting area of inner ring %i made the total area negative: %.12g, returning 0", i, area);
+				return 0.0;
+			}
 		}
 		return area;
 	}
