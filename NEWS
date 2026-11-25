@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #6160, Clarify the vector tile format schema license (Bas Couwenberg)
  - GH-836, Correct the ST_Boundary multiline example (Peter Nguyen)
  - Handle allocation failure when creating a geometry string buffer (Maksim Korotkov)
  - Free temporary shapefile codepage strings (Maksim Korotkov)
