@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #6159, Avoid negative geography areas when subtracting polygon holes
+      (Sandro Santilli)
   - #3776, [raster] Preserve distinct integer pixels in ST_DumpAsPolygons
       (Darafei Praliaskouski)
   - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
