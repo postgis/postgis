@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - #6160, Clarify the vector tile format schema license (Bas Couwenberg)
   - GH-1191, [topology] Return SQL NULL for a NULL topology name in
       _RegisterMissingFaces (Bilal Kahraman)
   - GH-1178, Handle allocation failures and partial cleanup in loader column maps
