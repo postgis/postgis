@@ -3,6 +3,8 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - #6159, Avoid negative geography areas when subtracting polygon holes
+      (Sandro Santilli)
   - #3776, [raster] Preserve distinct integer pixels in ST_DumpAsPolygons
       (Darafei Praliaskouski)
   - GT-779, [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
