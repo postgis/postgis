@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: postgis 3.5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-17 07:16+0000\n"
-"PO-Revision-Date: 2026-11-24 06:39+0000\n"
+"PO-Revision-Date: 2026-11-25 01:39+0000\n"
 "Last-Translator: Teramoto Ikuhiro <teramoto.ikuhiro576@naro.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/postgis-"
 "manual/ja/>\n"
@@ -11424,8 +11424,8 @@ msgstr ""
 "入力のバウンディングボックスから拡張したバウンディングボックスを返します。一"
 "つの距離を指定して全ての方向に拡張するものと、方向ごとに距離を指定して拡張す"
 "るものとがあります。倍精度浮動小数点を使います。距離に関するクエリーで使いま"
-"すし、空間インデックスの利点を得るために行うクエリーへのフィルタを追加するた"
-"めに使います。"
+"すし、空間インデックスの利点を得るために行うクエリーへのフィルターを追加する"
+"ために使います。"
 
 #. Tag: para
 #, no-c-format
@@ -12837,7 +12837,7 @@ msgstr "二つの 3次元ポイントから 3次元ラインを生成します�
 #. Tag: para
 #, no-c-format
 msgid "Create a line from two disjoint LineStrings."
-msgstr "二つの接続されていないラインストリングからラインを生成します。"
+msgstr "二つの接続していないラインストリングからラインを生成します。"
 
 #. Tag: para
 #, no-c-format
@@ -24781,8 +24781,8 @@ msgid ""
 "If the geometries have no points in common (i.e. are disjoint) then an empty "
 "atomic geometry of appropriate type is returned."
 msgstr ""
-"ジオメトリーが共通するポイントを持っていない (つまり接続されていない) 場合に"
-"は、適切なタイプの空のジオメトリーが返されます。"
+"ジオメトリーが共通するポイントを持っていない (つまり接続していない) 場合には"
+"、適切なタイプの空のジオメトリーが返されます。"
 
 #. Tag: para
 #, no-c-format
@@ -34529,10 +34529,10 @@ msgid ""
 "the pixel value of that value in the neighborhood position."
 msgstr ""
 "N 次元の数値配列 (行列) で、地図代数コールバック関数に渡すセルを決めるための"
-"フィルタに使われます。0は近隣セル値を NODATA として扱うべきであることを示し、"
-"1はデータとして扱うべきであることをそれぞれ意味します。weight が TRUE に指定"
-"されいる場合には、この配列の値は、近隣セルのピクセル値に対して掛け算を行うた"
-"めの数になります。"
+"フィルターに使われます。0は近隣セル値を NODATA として扱うべきであることを示し"
+"、1はデータとして扱うべきであることをそれぞれ意味します。weight が TRUE に指"
+"定されいる場合には、この配列の値は、近隣セルのピクセル値に対して掛け算を行う"
+"ための数になります。"
 
 #. Tag: para
 #, no-c-format
@@ -37658,10 +37658,10 @@ msgid ""
 "provided, only those pixels with value (not NODATA) are considered in the "
 "test."
 msgstr ""
-"rastA が rastB とインターセクトしない場合には、rastA と rastB は Disjoint で"
-"す。バンド番号が指定されていないか NULL に指定されている場合には、ラスターの"
-"凸包のみを考慮してテストします。バンド番号が指定されている場合には、値を持つ "
-"(NODATA でない) ピクセルについてテストします。"
+"rastA が rastB とインターセクトしない場合には、rastA と rastB は接続していま"
+"せん (disjoint です)。バンド番号が指定されていないか NULL に指定されている場"
+"合には、ラスターの凸包のみを考慮してテストします。バンド番号が指定されている"
+"場合には、値を持つ (NODATA でない) ピクセルについてテストします。"
 
 #. Tag: para
 #, no-c-format
@@ -39007,8 +39007,8 @@ msgid ""
 "Returns <varname>true</varname> if two geometries are disjoint. Geometries "
 "are disjoint if they have no point in common."
 msgstr ""
-"二つのジオメトリーが接続されていない場合に <varname>TRUE</varname> を返しま"
-"す。ジオメトリーに共有点が全くない場合を指します。"
+"二つのジオメトリーが接続していない場合に <varname>TRUE</varname> を返します。"
+"ジオメトリーに共有点が全くない場合を指します。"
 
 #. Tag: para
 #, no-c-format
@@ -39017,8 +39017,8 @@ msgid ""
 "not disjoint. Disjoint implies that <xref linkend=\"ST_Intersects\"/> is "
 "false."
 msgstr ""
-"二つのジオメトリーが他の空間関係が TRUE である場合には接続されていない状況に"
-"はありません。接続されていない場合には <xref linkend=\"ST_Intersects\"/> は "
+"二つのジオメトリーが他の空間関係が TRUE である場合には接続していない状況には"
+"ありません。接続していない場合には <xref linkend=\"ST_Intersects\"/> は "
 "FALSE を返します。"
 
 #. Tag: para
@@ -39571,9 +39571,10 @@ msgid ""
 "&amp;&amp; index call."
 msgstr ""
 "他の名前の付いた空間関係述語の多くと異なり、この関数は自動ではインデックスの"
-"呼び出しを*行いません*。インターセクト*しない*ジオメトリーで TRUE になる関係"
-"があるためです。インターセクションが求められる関係パターンを使用している場合"
-"には、関数呼び出しに&amp;&amp;を取り入れてください。"
+"呼び出しを*行いません*。インターセクト*しない*ジオメトリーで TRUE になる関係 "
+"(「接続しない」など) があるためです。インターセクションが求められる関係"
+"パターンを使用している場合には、関数呼び出しに&amp;&amp;を取り入れてください"
+"。"
 
 #. Tag: para
 #, no-c-format
@@ -39660,8 +39661,8 @@ msgid ""
 "between a LineString and a MultiLineString with a duplicate endpoint "
 "<code>(3 3)</code>:"
 msgstr ""
-"異なる境界ノード規則を使って、端点が重複する LINESTRING と MULTILINESTRING 間"
-"の空間関係を計算します <code>(3 3)</code>:"
+"異なる境界ノード規則を使って、端点 <code>(3 3)</code> が重複する LINESTRING "
+"と MULTILINESTRING 間の空間関係を計算します:"
 
 #. Tag: para
 #, no-c-format
@@ -42884,8 +42885,8 @@ msgid ""
 "present, but that if all files were scanned without a hit a null "
 "transformation is applied you could use:"
 msgstr ""
-"逆に、少なくとも標準的なファイルが確実にあって欲しいけれども、該当が無いまま"
-"全てのファイルが走査された場合に、NULL 変換としたいなら、次が使えます。"
+"逆に、少なくとも標準ファイルが存在することが保証したいものの、該当が無いまま"
+"全てのファイルが走査された場合には NULL 変換としたいなら、次が使えます。"
 
 #. Tag: para
 #, no-c-format
@@ -43640,9 +43641,9 @@ msgid ""
 "point are equivalent to no scaling the corresponding dimension."
 msgstr ""
 "<varname>factor</varname> パラメーターでジオメトリーを取る形式では、2次元、3"
-"次元 (XYZ. XYM)、4次元のポイントで、全ての対応する次元のスケーリングの乗数を"
+"次元 (XYZ, XYM)、4次元のポイントで、全ての対応する次元のスケーリングの乗数を"
 "設定することができます。<varname>factor</varname> ポイントの欠けた次元につい"
-"ては、対応する次元は拡大縮小をしないのと等価になります。"
+"ては、対応する次元の拡大縮小をしないことと等価になります。"
 
 #. Tag: para
 #, no-c-format
@@ -46623,8 +46624,8 @@ msgid ""
 "Example: A CurvePolygon with the shell defined by a CompoundCurve containing "
 "a CircularString and a LineString, and a hole defined by a CircularString"
 msgstr ""
-"例: CIRCULARSTRING と LINESTRING からなる COMPOUNDCURVE で定義される外側リン"
-"グを持ち、CIRCULARSTRING で定義される穴を持つ CURVEPOLYGON"
+"例: CIRCULARSTRING と LINESTRING からなる COMPOUNDCURVE で定義される外側"
+"リングを持ち、CIRCULARSTRING で定義される穴を持つ CURVEPOLYGON。"
 
 #. Tag: title
 #, no-c-format
@@ -49420,10 +49421,10 @@ msgid ""
 "predicates see <xref linkend=\"using-query-indexes\"/>."
 msgstr ""
 "空間インデックスはジオメトリーのバウンディングボックスだけを格納します。空間"
-"クエリーはインデックスは <emphasis role=\"bold\">初期フィルタ</emphasis> とし"
-"て使用して、クエリー条件に一致する可能性のあるジオメトリーを早く求めます。ほ"
-"とんどの空間クエリーでは、空間述語関数を使って特定の空間条件をテストする "
-"<emphasis role=\"bold\">二次フィルタ</emphasis> が必要です。空間述語関数を"
+"クエリーはインデックスは <emphasis role=\"bold\">初期フィルター</emphasis> と"
+"して使用して、クエリー条件に一致する可能性のあるジオメトリーを早く求めます。"
+"ほとんどの空間クエリーでは、空間述語関数を使って特定の空間条件をテストする "
+"<emphasis role=\"bold\">二次フィルター</emphasis> が必要です。空間述語関数を"
 "使ったクエリーの詳細情報については <xref linkend=\"using-query-indexes\"/> を"
 "ご覧下さい。"
 
@@ -49475,9 +49476,9 @@ msgid ""
 "searches are based on attributes, in which case you'll want to build a "
 "normal index on the attribute fields)."
 msgstr ""
-"GIS データテーブルが数千行を超えたら、空間検索の速度向上のためインデックスを"
-"構築したくなるでしょう (これは属性検索でない場合です。属性でしたら通常のイン"
-"デックスを属性フィールドに追加します)。"
+"空間データテーブルが数千行を超えたら、空間検索の速度向上のためインデックスを"
+"構築したくなるでしょう (これは属性検索でない場合です。属性でしたら通常の"
+"インデックスを属性フィールドに追加します)。"
 
 #. Tag: para
 #, no-c-format
@@ -51642,9 +51643,9 @@ msgid ""
 "expensive than keeping the operation in raster space."
 msgstr ""
 "は、ジオメトリーとセル値の組合せとなる <xref linkend=\"geomval\"/> の行を返し"
-"ます。これにより通常のジオメトリーのオーバーレイとフィルタによって逆カバレッ"
-"ジクエリーの答えを出せるようになりますが、多数のセルのポリゴン化は通常はラス"
-"ターで処理を続ける場合よりも計算コストが高くなります。"
+"ます。これにより通常のジオメトリーのオーバーレイとフィルターによって逆"
+"カバレッジクエリーの答えを出せるようになりますが、多数のセルのポリゴン化は通"
+"常はラスターで処理を続ける場合よりも計算コストが高くなります。"
 
 #. Tag: para
 #, no-c-format
