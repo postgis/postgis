@@ -678,7 +678,15 @@ double lwgeom_area_spheroid(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 		/* Subtract areas of inner rings */
 		for ( i = 1; i < poly->nrings; i++ )
 		{
-			area -=  ptarray_area_spheroid(poly->rings[i], spheroid);
+			area -= ptarray_area_spheroid(poly->rings[i], spheroid);
+			if (area < 0)
+			{
+				lwnotice(
+				    "subtracting area of inner ring %i made the total area negative: %.12g, returning 0",
+				    i,
+				    area);
+				return 0.0;
+			}
 		}
 		return area;
 	}
