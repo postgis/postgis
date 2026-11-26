@@ -6,6 +6,7 @@ PostGIS 3.7.1dev
  - GH-1178, Avoid NULL dereferences when column-map allocation fails and make
           partial column-map cleanup safe (Maksim Korotkov)
  - #6160, Clarify licensing vector_tile (Bas Couwenberg)
+ - GH-1187, GH-1184 Raster Hardening (Maksim Korotkov)
 
 
 PostGIS 3.7.0
