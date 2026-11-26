@@ -21,6 +21,7 @@ PostGIS 3.8.0dev
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
           (Darafei Praliaskouski)
+ - #2192, Add a tolerance parameter to ST_Split (Darafei Praliaskouski)
 
 * Bug Fixes *
 
