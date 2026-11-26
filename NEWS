@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #4048, Add public ST_BestSRID geography helper
+          (Darafei Praliaskouski)
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
@@ -235,6 +237,9 @@ To take advantage of all features postgis extension features, GEOS 3.15+ is need
 To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.
 
 These are only changes since 3.7.0beta2.
+
+* Enhancements *
+
 
 * Bug Fixes *
 
