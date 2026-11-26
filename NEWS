@@ -3,6 +3,8 @@ PostGIS 3.8.0dev
 
 * New Features *
 
+ - #4396, ST_3DSlope returns the slope angle of a linear or planar polygonal surface
+          (Darafei Praliaskouski)
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
