@@ -92,6 +92,14 @@ select 'line_interpolate_points', ST_AsText(ST_LineInterpolatePoints('LINESTRING
 
 select 'addMeasure1', ST_AsText(ST_AddMeasure('LINESTRING(0 0, 2 0, 4 0)', 10, 20));
 select 'addMeasure2', ST_AsText(ST_AddMeasure('LINESTRING(0 0, 9 0, 10 0)', 10, 20));
+select 'addMeasure3d1', ST_AsText(ST_3DAddMeasure('LINESTRING(0 0 0, 0 0 1, 0 0 4)', 10, 20));
+select 'addMeasure3d2', ST_AsText(ST_3DAddMeasure('MULTILINESTRING((0 0 0, 0 0 1),(0 0 1, 0 0 4))', 10, 20));
+select 'addMeasure3d2d', ST_AsText(ST_3DAddMeasure('LINESTRING(0 0, 9 0, 10 0)', 10, 20));
+select 'addMeasure3dempty', ST_AsText(ST_3DAddMeasure('LINESTRING EMPTY', 10, 20));
+select 'addMeasure3dzeromline', ST_AsText(ST_3DAddMeasure('MULTILINESTRING((0 0 0, 0 0 0),(1 1 1, 1 1 1))', 10, 20));
+select 'addMeasure3dzeromlineempty1', ST_AsText(ST_3DAddMeasure('MULTILINESTRING Z (EMPTY,(0 0 0, 0 0 0))', 10, 20));
+select 'addMeasure3dzeromlineempty2', ST_AsText(ST_3DAddMeasure('MULTILINESTRING Z ((0 0 0, 0 0 0),EMPTY)', 10, 20));
+select 'addMeasurezeromlineempty', ST_AsText(ST_AddMeasure('MULTILINESTRING(EMPTY,(0 0, 0 0))', 10, 20));
 
 --
 -- ST_InterpolatePoint
