@@ -21,6 +21,8 @@ PostGIS 3.8.0dev
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
           (Darafei Praliaskouski)
+ - #4565, Add geography support for ST_AddMeasure (Darafei Praliaskouski)
+ - #4565, Add geography support for ST_AddMeasure (Darafei Praliaskouski)
 
 * Bug Fixes *
 
