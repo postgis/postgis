@@ -784,8 +784,9 @@ Datum geography_coveredby(PG_FUNCTION_ARGS)
 
 /*
 ** geography_bestsrid(GSERIALIZED *g, GSERIALIZED *g) returns int
-** Utility function. Returns negative SRID numbers that match to the
-** numbers handled in code by the transform(lwgeom, srid) function.
+** Utility function. Returns automagic SRID numbers that match to the
+** numbers handled in code by the transform(lwgeom, srid) function
+** in libpgcommon/lwgeom_transform.c.
 ** UTM, polar stereographic and mercator as fallback. To be used
 ** in wrapping existing geometry functions in SQL to provide access
 ** to them in the geography module.
