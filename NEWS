@@ -91,6 +91,7 @@ PostGIS 3.6.5dev
   free on the error branch (Maksim Korotkov, PostgresPro)
 - GH-1180, [raster] make rtstrdup return NULL
   on allocation failure (Maksim Korotkov, PostgresPro)
+- GH-1184, GH-1187 [raster] Hardening (Maksim Korotkov)
 
 PostGIS 3.6.4
 2026/06/08
