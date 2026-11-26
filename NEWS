@@ -3,6 +3,8 @@ PostGIS 3.8.0dev
 
 * New Features *
 
+ - #5776, ST_3DLineSubstring for substring extraction along 3D line length
+          (Darafei Praliaskouski)
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
@@ -406,6 +408,9 @@ These are only changes since 3.7.0alpha1.
             (Bas Couwenberg)
 
 * Enhancements *
+* New Features *
+
+
 
  - #1986, ST_GeomFromGML support for GML ArcString and curved polygon rings
           (Darafei Praliaskouski)

@@ -19,9 +19,9 @@
  **********************************************************************
  *
  * Copyright (C) 2001-2005 Refractions Research Inc.
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 #include "postgres.h"
 #include "funcapi.h"
@@ -536,9 +536,10 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
  ***********************************************************************/
 
 Datum LWGEOM_line_substring(PG_FUNCTION_ARGS);
+Datum ST_3DLineSubstring(PG_FUNCTION_ARGS);
 
-PG_FUNCTION_INFO_V1(LWGEOM_line_substring);
-Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
+static Datum
+line_substring(PG_FUNCTION_ARGS, int use_3d)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	double from = PG_GETARG_FLOAT8(1);
@@ -550,13 +551,13 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 	if ( from < 0 || from > 1 )
 	{
-		elog(ERROR,"line_interpolate_point: 2nd arg isn't within [0,1]");
+		elog(ERROR, "line_substring: 2nd arg isn't within [0,1]");
 		PG_RETURN_NULL();
 	}
 
 	if ( to < 0 || to > 1 )
 	{
-		elog(ERROR,"line_interpolate_point: 3rd arg isn't within [0,1]");
+		elog(ERROR, "line_substring: 3rd arg isn't within [0,1]");
 		PG_RETURN_NULL();
 	}
 
@@ -580,7 +581,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 		ipa = iline->points;
 
-		opa = ptarray_substring(ipa, from, to, 0);
+		opa = use_3d ? ptarray_substring_3d(ipa, from, to, 0) : ptarray_substring(ipa, from, to, 0);
 
 		if ( opa->npoints == 1 ) /* Point returned */
 			olwgeom = (LWGEOM *)lwpoint_construct(iline->srid, NULL, opa);
@@ -607,32 +608,93 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		}
 
 		/* Calculate the total length of the mline */
-		for ( i = 0; i < iline->ngeoms; i++ )
+		for (i = 0; i < iline->ngeoms; i++)
 		{
-			LWLINE *subline = (LWLINE*)iline->geoms[i];
-			if ( subline->points && subline->points->npoints > 1 )
-				length += ptarray_length_2d(subline->points);
+			LWLINE *subline = (LWLINE *)iline->geoms[i];
+			if (subline->points && subline->points->npoints > 1)
+				length += use_3d ? ptarray_length(subline->points) : ptarray_length_2d(subline->points);
 		}
 
-		geoms = lwalloc(sizeof(LWGEOM*) * iline->ngeoms);
+		/*
+		 * Equal-fraction slices should locate a point even when every member
+		 * has zero arclength.  The normal per-member loop must skip those
+		 * members to avoid division by zero, so handle the collapsed metric
+		 * space before the loop for both 2D and 3D length semantics.
+		 */
+		if (length <= 0.0 && FP_EQUALS(from, to))
+		{
+			int step = FP_EQUALS(from, 1.0) ? -1 : 1;
+			int first = FP_EQUALS(from, 1.0) ? (int)iline->ngeoms - 1 : 0;
+			int past = FP_EQUALS(from, 1.0) ? -1 : (int)iline->ngeoms;
+			int j;
+
+			for (j = first; j != past; j += step)
+			{
+				POINT4D pt;
+				LWLINE *subline = (LWLINE *)iline->geoms[j];
+				if (!subline->points || subline->points->npoints == 0)
+					continue;
+
+				opa = ptarray_construct_empty(
+				    ptarray_has_z(subline->points), ptarray_has_m(subline->points), 1);
+				if (FP_EQUALS(from, 1.0))
+					getPoint4d_p(subline->points, subline->points->npoints - 1, &pt);
+				else
+					getPoint4d_p(subline->points, 0, &pt);
+				ptarray_append_point(opa, &pt, LW_TRUE);
+				olwgeom = (LWGEOM *)lwpoint_construct(iline->srid, NULL, opa);
+				ret = geometry_serialize(olwgeom);
+				lwgeom_free(olwgeom);
+				PG_FREE_IF_COPY(geom, 0);
+				PG_RETURN_POINTER(ret);
+			}
+		}
+
+		geoms = lwalloc(sizeof(LWGEOM *) * iline->ngeoms);
 
 		/* Slice each sub-geometry of the multiline */
-		for ( i = 0; i < iline->ngeoms; i++ )
+		for (i = 0; i < iline->ngeoms; i++)
 		{
 			LWLINE *subline = (LWLINE*)iline->geoms[i];
 			double subfrom = 0.0, subto = 0.0;
+			double subline_length;
 
-			if ( subline->points && subline->points->npoints > 1 )
-				sublength += ptarray_length_2d(subline->points);
+			/*
+			 * Empty or degenerate members have no arclength.  Skip them before
+			 * proportion calculation so boundary fractions at 0 do not try to
+			 * slice a NULL or zero-length point array.
+			 */
+			if (!subline->points || subline->points->npoints <= 1)
+				continue;
+
+			subline_length = use_3d ? ptarray_length(subline->points) : ptarray_length_2d(subline->points);
+			if (subline_length <= 0.0)
+				continue;
+
+			sublength += subline_length;
 
 			/* Calculate proportions for this subline */
 			minprop = maxprop;
 			maxprop = sublength / length;
 
-			/* This subline doesn't reach the lowest proportion requested
-			   or is beyond the highest proporton */
-			if ( from > maxprop || to < minprop )
+			/*
+			 * A non-zero substring intersects a multiline member only when the
+			 * requested open interval overlaps the member interval.  This avoids
+			 * adding a boundary-only POINT from the neighbouring member when the
+			 * range ends exactly at an internal multiline boundary.
+			 *
+			 * Point requests are intentionally assigned to the preceding member at
+			 * internal boundaries so a single boundary point is returned.
+			 */
+			if (FP_EQUALS(from, to))
+			{
+				if (from < minprop || from > maxprop || (FP_EQUALS(from, minprop) && minprop > 0.0))
+					continue;
+			}
+			else if (from >= maxprop || to <= minprop)
+			{
 				continue;
+			}
 
 			if ( from <= minprop )
 				subfrom = 0.0;
@@ -645,8 +707,10 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 			if ( to < maxprop && to >= minprop )
 				subto = (to - minprop) / (maxprop - minprop);
 
-
-			opa = ptarray_substring(subline->points, subfrom, subto, 0);
+			if (use_3d)
+				opa = ptarray_substring_3d(subline->points, subfrom, subto, 0);
+			else
+				opa = ptarray_substring(subline->points, subfrom, subto, 0);
 			if ( opa && opa->npoints > 0 )
 			{
 				if ( opa->npoints == 1 ) /* Point returned */
@@ -664,11 +728,25 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 
 		}
-		/* If we got any points, we need to return a GEOMETRYCOLLECTION */
-		if ( ! homogeneous )
-			type = COLLECTIONTYPE;
+		/*
+		 * A point request at an internal multiline boundary is assigned to one
+		 * member above.  Return that point directly so equal-fraction requests
+		 * keep the documented POINT result instead of a single-item collection.
+		 */
+		if (g == 1 && geoms[0]->type == POINTTYPE)
+		{
+			olwgeom = geoms[0];
+			lwgeom_set_srid(olwgeom, iline->srid);
+			lwfree(geoms);
+		}
+		else
+		{
+			/* If we got any points, we need to return a GEOMETRYCOLLECTION */
+			if (!homogeneous)
+				type = COLLECTIONTYPE;
 
-		olwgeom = (LWGEOM*)lwcollection_construct(type, iline->srid, NULL, g, geoms);
+			olwgeom = (LWGEOM *)lwcollection_construct(type, iline->srid, NULL, g, geoms);
+		}
 	}
 	else
 	{
@@ -683,6 +761,19 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 }
 
+PG_FUNCTION_INFO_V1(LWGEOM_line_substring);
+Datum
+LWGEOM_line_substring(PG_FUNCTION_ARGS)
+{
+	return line_substring(fcinfo, LW_FALSE);
+}
+
+PG_FUNCTION_INFO_V1(ST_3DLineSubstring);
+Datum
+ST_3DLineSubstring(PG_FUNCTION_ARGS)
+{
+	return line_substring(fcinfo, LW_TRUE);
+}
 
 /**********************************************************************
  *
