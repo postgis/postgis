@@ -68,6 +68,7 @@ FUNCTION_CAPABILITY_REQUIREMENTS = (
     )),
     ("sfcgal", (2, 3, 0), re.compile(
         r"\bCG_(?:Generate(?:Flat|Hipped|Gable|Skillion)?Roof|PolygonRepair|"
+        r"IsSimple(?:Detail)?|"
         r"NurbsCurve(?:Interpolate|Approximate|Derivative))\s*\(",
         re.I,
     )),

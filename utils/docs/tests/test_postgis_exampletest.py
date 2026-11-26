@@ -503,6 +503,21 @@ SELECT 'POINT(1 2)', $$LINESTRING(0 0,1 1)$$,
             "role": "auto-requires-sfcgal-2.0.0",
         }], requirements)
 
+    def test_cg_issimple_requires_sfcgal_2_3(self):
+        tester = ExampleTester.__new__(ExampleTester)
+
+        for function in ("CG_IsSimple", "CG_IsSimpleDetail"):
+            with self.subTest(function=function):
+                requirements = tester.inferred_capability_requirements(
+                    f"SELECT {function}('LINESTRING(0 0,2 2,2 0,0 2)'::geometry)"
+                )
+
+                self.assertEqual([{
+                    "name": "sfcgal",
+                    "minimum": (2, 3, 0),
+                    "role": "auto-requires-sfcgal-2.3.0",
+                }], requirements)
+
     def _example_in_chapter(self, chapter_id, roles=""):
         xml = f"""<book xmlns="http://docbook.org/ns/docbook">
   <chapter xml:id="{chapter_id}">
