@@ -13,6 +13,7 @@ skip =
     ./doc/*.sql,
     ./doc/postgis-nospecial.xml,
     ./postgis/*.sql,
+    ./postgis/vector_tile.LICENSE,
     ./raster/rt_pg/*.sql,
     aclocal.m4,
     configure,
