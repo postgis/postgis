@@ -11,10 +11,6 @@
 
 	<!-- We deal only with the reference chapter -->
 	<xsl:template match="/">
-		<xsl:apply-templates select="/book/chapter[@id='reference']" />
-	</xsl:template>
-
-	<xsl:template match="//chapter">
 
       <!-- TODO: use entities or xinclude instead,
            to avoid duplication with postgis_special.xsl.xml
@@ -58,7 +54,7 @@
 						<tbody>
 						<!-- Exclude PostGIS types, management functions, long transaction support, or exceptional functions from consideration  -->
 						<!-- leaving out operators in an effor to try to fit on one page -->
-						<xsl:for-each select="descendant::node()[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions' or @id='Version_Functions')]/refentry">
+						<xsl:for-each select="/book/chapter[contains(@id, 'reference')]/descendant::node()[not(@id='PostGIS_Types' or @id='Management_Functions' or @id='Long_Transactions_Support' or @id='Exceptional_Functions' or @id='Version_Functions')]/refentry">
 							<xsl:sort select="@id"/>
 							<xsl:variable name='comment'>
 								<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>

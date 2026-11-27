@@ -2977,7 +2977,7 @@ CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, to_proj text)
 	RETURNS geometry AS
 	'SELECT @extschema@.postgis_transform_geometry($1, proj4text, $2, 0)
-	FROM spatial_ref_sys WHERE srid=@extschema@.ST_SRID($1);'
+	FROM @extschema@.spatial_ref_sys WHERE srid=@extschema@.ST_SRID($1);'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -2992,7 +2992,7 @@ CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_proj t
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid integer)
 	RETURNS geometry AS
 	'SELECT @extschema@.postgis_transform_geometry($1, $2, proj4text, $3)
-	FROM spatial_ref_sys WHERE srid=$3;'
+	FROM @extschema@.spatial_ref_sys WHERE srid=$3;'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -3880,7 +3880,7 @@ CREATE OR REPLACE FUNCTION ST_SymDifference(geom1 geometry, geom2 geometry, grid
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SymmetricDifference(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS 'SELECT ST_SymDifference(geom1, geom2, -1.0);'
+	AS 'SELECT @extschema@.ST_SymDifference(geom1, geom2, -1.0);'
 	LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)

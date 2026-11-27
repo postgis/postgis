@@ -3,6 +3,68 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #5790, Resolve extension objects in their installed schema (Regina Obe)
+  - Use size_t for geometry and raster serialization size arithmetic (Even Rouault)
+  - Correct additional topology debug formats for 64-bit values (Sandro Santilli)
+  - Fix topology debug formatting for 64-bit counts and IDs (Sandro Santilli)
+  - Correct spelling in the English function reference (Mike Taves)
+  - Avoid an implicit dependency on Abseil in FlatGeobuf (Paul Ramsey)
+  - Report the invalid values supplied to clustering functions (Sandro Santilli)
+  - Remove the obsolete bounding-box KNN operator from the manual (Regina Obe)
+  - Correct street type and unit terminology in the Address Standardizer manual (Mike Taves)
+  - #5778, Include all reference chapters in the function support matrix (Regina Obe)
+  - #5778, Display function names in the 3D and SQL/MM reference links (Regina Obe)
+  - Correct the PAGC regression result for a directional street name (wangdapeng)
+  - Release temporary allocations in the shapefile loader and dumper (Laurențiu Nicola)
+  - Use the SQL argument name k in the ST_ClusterKMeans synopsis (Dan Levy)
+  - Fix the link to the geography performance article (Laurențiu Nicola)
+  - Correct the topology geometry shrinking examples (Sandro Santilli)
+  - #5758, Match the tile bounding box SRID in the ST_AsMVTGeom example (Regina Obe)
+  - #5527, Report invalid composite arguments in ST_FromFlatGeobuf (Paul Ramsey)
+  - #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
+  - Include generated raster upgrades in the hard-upgrade restore list (Sandro Santilli)
+  - #5841, Allow cancellation during raster grid interpolation (Paul Ramsey)
+  - Report nested DocBook paragraphs during documentation validation (Sandro Santilli)
+  - Correct the SQL/MM function list (Sandro Santilli)
+  - Correct the coverage examples in the manual (Martin Davis)
+  - Correct the ST_LargestEmptyCircle example (Regina Obe)
+  - #5632, Handle empty geometries correctly in the 2D GiST index (Paul Ramsey)
+  - Keep ST_AsMARC21 format checks within the format buffer (Even Rouault)
+  - Fix a format truncation warning in the shapefile loader (Sandro Santilli)
+  - Use the correct argument widths in raster WKB diagnostics (Sandro Santilli)
+  - Correct the ST_Touches predicate formula (Martin Davis)
+  - Preserve non-ASCII characters when generating ChangeLog (Sandro Santilli)
+  - Support source whitespace checks from out-of-tree builds (Sandro Santilli)
+  - Read tagged dollar quotes when generating function upgrades (Sandro Santilli)
+  - [tiger_geocoder] Treat address fragments literally during normalization
+    (Darafei Praliaskouski)
+  - Accept rules of the documented maximum length in address_standardizer (Darafei Praliaskouski)
+  - Apply the WKB recursion limit to curve polygon rings (Even Rouault)
+  - #5685, Preserve noding results for lines with one distinct vertex (Sandro Santilli)
+  - #5597, Return a JSON null geometry for records with no geometry value (Paul Ramsey)
+  - Check the projection returned by PROJ (Even Rouault)
+  - #5728, Use portable format specifiers in geometry and topology diagnostics (Sandro Santilli)
+  - Correct the documented default band for raster summary statistics (Martin Davis)
+  - Check the topology backend result when healing edges (Paul Ramsey)
+  - Honor --without-gui during configuration (Chris Mayo)
+  - #2850, GH-1020, Preserve fixed numeric DBF widths and scale in pgsql2shp (Darafei Praliaskouski)
+  - #6012, Free circular string constructor storage and preserve mixed Z/M coordinates (Paul Ramsey)
+  - Return zero azimuth for a due-north geometry segment (Sandro Santilli)
+  - GT-778, [raster] Reject malformed and oversized raster bands before allocation or
+    serialization can wrap (Paul Wouters)
+  - GH-1173, GH-1174, guard raster OOM cleanup paths against NULL dereferences
+    (Maksim Korotkov, Postgres Pro)
+  - Fix geometry input parsing to stop malformed SRID prefixes before the
+    end of the input string (Dennis Tighe, Google)
+  - #6118, GT-769, Reject empty geometry type modifiers before they can read past the
+    input buffer (Egor Ivkov)
+  - GT-771, GH-1175, Guard missing operands before reading node tags in spatial
+    selectivity estimation (Maksim Korotkov)
+  - GT-770, [topology] Report the actual face-update count when edge removal fails
+    (Egor Ivkov)
+  - GT-619, Make interrupt regression tests compare timeout latency to
+    same-machine uninterrupted runtime, avoiding false failures under
+    slow CI load (Darafei Praliaskouski)
   - GH-1160, [topology] Preserve overlay junctions when noding lines
     with GEOS 3.15 and later (Darafei Praliaskouski)
   - [tiger_geocoder] Resolve the fuzzy location helper in the tiger schema

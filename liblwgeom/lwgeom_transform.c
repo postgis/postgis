@@ -297,7 +297,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 
 		if (n_converted != n_points)
 		{
-			lwerror("ptarray_transform: converted (%d) != input (%d)", n_converted, n_points);
+			lwerror("ptarray_transform: converted (%zu) != input (%zu)", n_converted, n_points);
 			return LW_FAILURE;
 		}
 

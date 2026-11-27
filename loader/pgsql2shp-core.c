@@ -59,6 +59,8 @@ static char *nullDBFValue(char fieldType);
 static int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
 static int getTableInfo(SHPDUMPERSTATE *state);
 static int projFileCreate(SHPDUMPERSTATE *state);
+static int numeric_typmod_precision(int typmod);
+static int numeric_typmod_scale(int typmod);
 
 /**
  * @brief Make appropriate formatting of a DBF value based on type.
@@ -82,6 +84,24 @@ core_asprintf(const char* format, ...)
     	exit(-1);
     va_end(ap);
     return value;
+}
+
+static int
+numeric_typmod_precision(int typmod)
+{
+	return ((typmod - 4) >> 16) & 0xffff;
+}
+
+static int
+numeric_typmod_scale(int typmod)
+{
+	int scale = (typmod - 4) & 0x7ff;
+
+	/* PostgreSQL stores numeric scale as an 11-bit signed value. */
+	if (scale & 0x400)
+		scale |= ~0x7ff;
+
+	return scale;
 }
 
 static SHPObject *
@@ -451,6 +471,7 @@ create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 
 	obj = SHPCreateObject(state->outshptype, -1, lwmultilinestring->ngeoms, shpparts, NULL, shppoint, xpts, ypts, zpts, mpts);
 
+	free(shpparts);
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -1315,6 +1336,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	char buf[256];
 	int gidfound = 0, i, j, ret, status;
 	stringbuffer_t sb;
+	char *quoted = NULL;
 
 	/* Open the column map if one was specified */
 	if (state->config->column_map_filename)
@@ -1342,6 +1364,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			PQclear(res);
 			return SHPDUMPERERR;
 		}
+		PQclear(res);
 	}
 	else
 	{
@@ -1601,19 +1624,54 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		}
 
 		/*
-		 * double or numeric types:
+		 * double types:
 		 *    700: float4
 		 *    701: float8
-		 *   1700: numeric
-		 *
-		 *
-		 * TODO: stricter handling of sizes
 		 */
-		else if (pgfieldtype == 700 || pgfieldtype == 701 || pgfieldtype == 1700)
+		else if (pgfieldtype == 700 || pgfieldtype == 701)
 		{
 			dbffieldtype = FTDouble;
 			dbffieldsize = 32;
 			dbffielddecs = 10;
+		}
+
+		/*
+		 * Numeric type (1700). Preserve declared precision and scale
+		 * when PostgreSQL exposes a typmod and DBF can represent it.
+		 */
+		else if (pgfieldtype == 1700)
+		{
+			dbffieldtype = FTDouble;
+			dbffieldsize = 32;
+			dbffielddecs = 10;
+
+			if (pgtypmod >= 0)
+			{
+				int precision = numeric_typmod_precision(pgtypmod);
+				int scale = numeric_typmod_scale(pgtypmod);
+				int integral_digits = precision - scale;
+				int dbfsize;
+
+				if (integral_digits < 1)
+					integral_digits = 1;
+
+				if (scale > 0)
+					dbfsize = 1 + integral_digits + 1 + scale;
+				else
+					dbfsize = 1 + precision - scale;
+
+				/* PostgreSQL can return NaN even for numeric(1,0). */
+				if (dbfsize < 3)
+					dbfsize = 3;
+
+				if (dbfsize <= MAX_DBF_FIELD_SIZE)
+				{
+					dbffieldsize = dbfsize;
+					dbffielddecs = (scale > 0) ? scale : 0;
+					if (dbffielddecs == 0)
+						dbffieldtype = FTInteger;
+				}
+			}
 		}
 
 		/*
@@ -1761,6 +1819,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			if (DBFAddField(state->dbf, dbffieldname, dbffieldtype, dbffieldsize, dbffielddecs) == -1)
 			{
 				snprintf(state->message, SHPDUMPERMSGLEN, _("Error: field %s of type %d could not be created."), dbffieldname, dbffieldtype);
+				free(dbffieldname);
 
 				return SHPDUMPERERR;
 			}
@@ -1773,6 +1832,10 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			state->pgfieldtypmods[state->fieldcount] = pgtypmod;
 
 			state->fieldcount++;
+		}
+		else
+		{
+			free(dbffieldname);
 		}
 	}
 
@@ -1843,15 +1906,16 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			stringbuffer_append(&sb, ",");
 		}
 
-		if (state->config->binary) {
-			stringbuffer_aprintf(&sb,
-			    "%s::text",
-			    quote_identifier(state->pgfieldnames[i]) );
+		quoted = quote_identifier(state->pgfieldnames[i]);
+		if (state->config->binary)
+		{
+			stringbuffer_aprintf(&sb, "%s::text", quoted);
 		}
-		else {
-			stringbuffer_append(&sb,
-			    quote_identifier(state->pgfieldnames[i]) );
+		else
+		{
+			stringbuffer_append(&sb, quoted);
 		}
+		free(quoted);
 	}
 
 	/* If we found a valid geometry/geography column then use it */
@@ -1862,32 +1926,26 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			stringbuffer_append(&sb, ",");
 		}
 
-#ifdef WORDS_BIGENDIAN
+		quoted = quote_identifier(state->geo_col_name);
+#ifndef WORDS_BIGENDIAN
 		if (state->pgis_major_version > 0) {
-			stringbuffer_aprintf(&sb,
-			    "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX",
-			    quote_identifier(state->geo_col_name) );
+			stringbuffer_aprintf(&sb, "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX", quoted);
 		}
 		else
 		{
-			stringbuffer_aprintf(&sb,
-			    "asbinary(%s::geometry, 'XDR') AS _geoX",
-			    quote_identifier(state->geo_col_name) );
+			stringbuffer_aprintf(&sb, "asbinary(%s::geometry, 'XDR') AS _geoX", quoted);
 		}
 #else
 		if (state->pgis_major_version > 0)
 		{
-			stringbuffer_aprintf(&sb,
-			    "ST_AsEWKB(ST_SetSRID(%s::geometry, 0), 'NDR') AS _geoX",
-			    quote_identifier(state->geo_col_name) );
+			stringbuffer_aprintf(&sb, "ST_AsEWKB(ST_SetSRID(%s::geometry, 0), 'NDR') AS _geoX", quoted);
 		}
 		else
 		{
-			stringbuffer_aprintf(&sb,
-			    "asbinary(%s::geometry, 'NDR') AS _geoX",
-			    quote_identifier(state->geo_col_name) );
+			stringbuffer_aprintf(&sb, "asbinary(%s::geometry, 'NDR') AS _geoX", quoted);
 		}
 #endif
+		free(quoted);
 	}
 
 	if (state->schema)
@@ -2206,10 +2264,8 @@ ShpDumperDestroy(SHPDUMPERSTATE *state)
 			PQfinish(state->conn);
 
 		/* Free the query strings */
-		if (state->fetch_query)
-			free(state->fetch_query);
-		if (state->main_scan_query)
-			free(state->main_scan_query);
+		free(state->fetch_query);
+		free(state->main_scan_query);
 
 		/* Free the DBF information fields */
 		if (state->dbffieldnames)
@@ -2219,22 +2275,18 @@ ShpDumperDestroy(SHPDUMPERSTATE *state)
 			free(state->dbffieldnames);
 		}
 
-		if (state->dbffieldtypes)
-			free(state->dbffieldtypes);
-
-		if (state->pgfieldnames)
-			free(state->pgfieldnames);
+		free(state->dbffieldtypes);
+		free(state->pgfieldnames);
+		free(state->pgfieldlens);
+		free(state->pgfieldtypmods);
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);
 
 		/* Free other names */
-		if (state->table)
-			free(state->table);
-		if (state->schema)
-			free(state->schema);
-		if (state->geo_col_name)
-			free(state->geo_col_name);
+		free(state->table);
+		free(state->schema);
+		free(state->geo_col_name);
 
 		/* Free the state itself */
 		free(state);

@@ -68,5 +68,8 @@ select ST_Relate(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 ROLLBACK;
 SELECT _timecheck('relate', '500ms');
 
+DROP FUNCTION _timecheck(text);
 DROP FUNCTION _timecheck(text, interval);
+DROP FUNCTION _timecheck_baseline(text);
+DROP FUNCTION _timecheck_start();
 DROP TABLE _inputs;
