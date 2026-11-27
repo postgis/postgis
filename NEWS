@@ -3,6 +3,8 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - [tiger_geocoder] Treat address fragments literally during normalization
+   (Darafei Praliaskouski)
  - Accept rules of the documented maximum length in address_standardizer (Darafei Praliaskouski)
  - Apply the WKB recursion limit to curve polygon rings (Even Rouault)
  - #5685, Preserve noding results for lines with one distinct vertex (Sandro Santilli)
