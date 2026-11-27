@@ -23,8 +23,7 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
           packer (John Carmack)
- - #2564, Add ST_FromLatLonText to parse latitude/longitude text
-          (Darafei Praliaskouski)
+ - #2564, Add ST_FromLatLonText (Darafei Praliaskouski)
 
 * Bug Fixes *
 
@@ -291,8 +290,6 @@ These are only changes since 3.7.0beta2.
           varints (Darafei Praliaskouski)
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
-
-* Enhancements *
 
 
 PostGIS 3.7.0beta2

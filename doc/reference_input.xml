@@ -383,7 +383,7 @@ FROM ST_GeomFromEWKT('POLYHEDRALSURFACE(
 
 		<para>The latitude and longitude must use the same number of numeric components.  Ambiguous inputs, mixed decimal-degree and DMS inputs, compact undelimited formats such as <varname>DDMMSS</varname>, and values outside the latitude or longitude range raise an error.</para>
 
-		<para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+		<para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
 	  </refsection>
 
 	  <refsection>
