@@ -67,6 +67,34 @@ Available GDAL raster formats:
     </section>
 
     <section>
+      <title>Loading large or many rasters efficiently</title>
+      <para>For many compatible rasters, create the table once with
+      <option>-p</option>, then append files in parallel with
+      <option>-a -Y</option> (COPY). Create a spatial index and analyze the
+      table after loading. With <option>-t auto</option>, each parallel loader
+      chooses a tile size from its own input file. For wide rasters, set
+      <varname>GDAL_CACHEMAX</varname> high enough for the GDAL raster block
+      cache, budgeting for each parallel loader process (plain values below
+      100000 are in MB).</para>
+      <programlisting language="bash"><![CDATA[
+set -e -o pipefail
+raster2pgsql -p -s 4326 -t auto data/first.tif public.rasters |
+  psql -v ON_ERROR_STOP=1 -d gisdb
+find data -name '*.tif' -type f -print0 |
+  parallel -0 --eta --halt soon,fail=1 --jobs 4 \
+    'GDAL_CACHEMAX=512 raster2pgsql -a -Y -s 4326 -t auto {} public.rasters | psql -q -v ON_ERROR_STOP=1 -d gisdb'
+psql -v ON_ERROR_STOP=1 -d gisdb <<'SQL'
+CREATE INDEX rasters_rast_idx ON public.rasters USING gist(ST_ConvexHull(rast));
+ANALYZE public.rasters;
+SQL
+]]></programlisting>
+      <para><option>-l</option> creates a separate table for each overview
+      level; <option>-I</option> also indexes the overview tables.
+      <option>-R</option> registers raster files as out-of-db data. The server
+      must be able to access the files at their paths.</para>
+    </section>
+
+    <section>
       <title>raster2pgsql options</title>
 
     <para>
