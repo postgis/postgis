@@ -9,6 +9,7 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #2599, GH-1081, Raster ST_Sharpen (Darafei Praliaskouski)
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
@@ -289,7 +290,6 @@ These are only changes since 3.7.0beta2.
           varints (Darafei Praliaskouski)
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
-
 
 
 PostGIS 3.7.0beta2
