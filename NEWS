@@ -23,8 +23,11 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
           packer (John Carmack)
+ - #2310, #2311, #2312, GH-1091, Raster focal statistics (Darafei Praliaskouski)
 
 * Bug Fixes *
+
+ - GH-1091, Correct raster mask neighborhood dimensions (Darafei Praliaskouski)
 
  - GT-812, Check named geometry column types in row encoders (Andrew Kroh)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
@@ -289,7 +292,6 @@ These are only changes since 3.7.0beta2.
           varints (Darafei Praliaskouski)
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
-
 
 
 PostGIS 3.7.0beta2
