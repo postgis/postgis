@@ -1817,7 +1817,7 @@ CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integ
 
 -- Availability: 3.0.0
 -- Changed: 3.1.0 - add margin=0.0 parameter
--- Replaces ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry) deprecated in 3.1.0
+-- Replaces ST_TileEnvelope(integer, integer, integer, geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry DEFAULT 'SRID=3857;LINESTRING(-20037508.342789244 -20037508.342789244, 20037508.342789244 20037508.342789244)'::geometry, margin float8 DEFAULT 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_TileEnvelope'
@@ -5300,7 +5300,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromGeoHash(text, integer DEFAULT NULL)
 -- ST_GeomFromGeoHash(geohash text, precision integer)
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, integer DEFAULT NULL)
 	RETURNS geometry
-	AS $$ SELECT CAST(@extschema@.ST_Box2dFromGeoHash($1, $2) AS geometry); $$
+	AS $$ SELECT CAST(@extschema@.ST_Box2dFromGeoHash($1, $2) AS @extschema@.geometry); $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE
 	_COST_LOW;
 
@@ -5622,7 +5622,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''MULTIPOINT''
-	THEN ST_GeomFromText($1, $2)
+	THEN @extschema@.ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE

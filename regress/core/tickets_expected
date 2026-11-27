@@ -459,3 +459,6 @@ ERROR:  Geometry contains invalid coordinates
 #5627|t
 #5604|2|POINT(0 0)|2|POINT(-2 0)
 #5855|Knosesmauet
+makepolygon-null-holes|4
+#6159|t
+#5357|LINESTRING(38.903876 55.336448,38.903875 55.336448)

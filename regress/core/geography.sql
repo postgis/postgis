@@ -124,3 +124,7 @@ select 'dwithin_poly_line_1', ST_DWithin('POLYGON((1 1, 2 2, 3 0, 1 1))'::geogra
 select 'dwithin_poly_poly_1', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 10);
 select 'dwithin_poly_poly_2', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
 select 'dwithin_poly_poly_3', ST_DWithin('POLYGON((1 1, -2 -2, -3 0, 1 1))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
+
+-- Ticket #6076
+SELECT 'ticket_6076_length', round(ST_Length(ST_GeogFromText('GEOMETRYCOLLECTION (POINT (5 5), LINESTRING (0 0, 0 1), POLYGON ((0 0, 0 1, 1 0, 0 0)))'))::numeric, 3);
+SELECT 'ticket_6076_perimeter', round(ST_Perimeter(ST_GeogFromText('GEOMETRYCOLLECTION (POINT (5 5), LINESTRING (0 0, 0 1), POLYGON ((0 0, 0 1, 1 0, 0 0)))'))::numeric, 3);

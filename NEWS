@@ -3,6 +3,59 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - GH-1160, [topology] Preserve overlay junctions when noding lines
+   with GEOS 3.15 and later (Darafei Praliaskouski)
+ - [tiger_geocoder] Resolve the fuzzy location helper in the tiger schema
+   (Regina Obe)
+ - #6160, Clarify the vector tile format schema license (Bas Couwenberg)
+ - GH-836, Correct the ST_Boundary multiline example (Peter Nguyen)
+ - Handle allocation failure when creating a geometry string buffer (Maksim Korotkov)
+ - Free temporary shapefile codepage strings (Maksim Korotkov)
+ - Support GEOS 3.15 overlay output in regressions (Paul Ramsey)
+ - [address_standardizer] Reject out-of-range rule weights (reported by Harsh Raj Singhania; fixed by Darafei Praliaskouski)
+ - [tiger_geocoder] Skip soundex matching for numeric street names (Tag Spilman)
+ - [tiger_geocoder] Resolve the PAGC lookup tables in the tiger schema (Regina Obe)
+ - #2832, GH-995, [raster] Keep single-tile overviews unpadded (Darafei Praliaskouski)
+ - Remove process addresses from public errors and notices (Andrew Kroh)
+ - [topology] Correct the CreateTopoGeom INSERT example (Darafei Praliaskouski)
+ - [raster] Correct the documented ST_BandIsNoData forceChecking default (Darafei Praliaskouski)
+ - #5357, Preserve close points in ST_LineFromEncodedPolyline (Paul Ramsey)
+ - Resolve the ST_GeomFromGeoHash cast in the PostGIS schema (Paul Ramsey)
+ - Release temporary GeoJSON input after parsing (Paul Ramsey)
+ - #6076, Measure only matching components of geography collections (Paul Ramsey)
+ - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
+ - GH-831, Document why ST_Subdivide can change geography boundaries
+     (Nikolai Berkoff)
+ - #6020, Resolve ST_MPointFromText in the PostGIS schema (Paul Ramsey)
+ - GH-1187, [raster] Handle failed raster-to-geometry conversions
+     (Maksim Korotkov)
+ - #6048, [raster] Preserve requested band order in ST_Clip
+     (Darafei Praliaskouski)
+ - Handle a failed point clone during ST_WrapX (Maksim Korotkov)
+ - GH-1169, Handle connection-string allocation failure in the shapefile loader
+     (Svyatoslav Bogdanov)
+ - Initialize output column metadata in pgsql2shp (Maksim Korotkov)
+ - Clear the shapefile loader GUI progress path after freeing it (Maksim Korotkov)
+ - Avoid a use-after-free in the shapefile loader GUI (Maksim Korotkov)
+ - Avoid overlapping memory copies in ST_Simplify (Maksim Korotkov)
+ - #6141, [raster] Initialize the out-of-db flag when loading the raster library
+     (Regina Obe)
+ - GH-1168, Handle an empty MVT aggregate context during serialization
+     (Svyatoslav Bogdanov)
+ - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
+     (John Carmack)
+ - GH-1178, Handle allocation failures and partial cleanup in loader column maps
+     (Maksim Korotkov)
+ - GH-1184, [raster] Check deserialization before reading the band count
+     (Maksim Korotkov)
+ - [raster] Handle allocation failure when copying raster strings
+     (Maksim Korotkov)
+ - #6159, Avoid negative geography areas when subtracting polygon holes
+     (Sandro Santilli)
+ - #3776, [raster] Preserve distinct integer pixels in ST_DumpAsPolygons
+     (Darafei Praliaskouski)
+ - GT-564, Avoid ST_MakePolygon failures with NULL hole array entries
+     (Darafei Praliaskouski)
  - GT-779, [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
    metadata and pixel-read restrictions after upgrade
    (reported by Sarath Kumar, IITM Pravartak Security Team;
