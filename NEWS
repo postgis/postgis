@@ -47,6 +47,8 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6158, GH-1194, [raster] Accept ST_Reskew geotransforms with small nonzero
           determinants (Waniya Badar)
+ - GH-1194, [raster] Stop rejecting or silently zeroing small non-zero scales
+          and skews in ST_Reskew and raster warping (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0rc3
