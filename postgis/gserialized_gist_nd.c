@@ -641,7 +641,8 @@ gserialized_expand(GSERIALIZED *g, double distance)
  * do "real" n-d distance
  */
 PG_FUNCTION_INFO_V1(gserialized_distance_nd);
-Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
+Datum
+gserialized_distance_nd(PG_FUNCTION_ARGS)
 {
 	/* Feature-to-feature distance */
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -737,7 +738,8 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 ** the first is contained by the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_within);
-Datum gserialized_within(PG_FUNCTION_ARGS)
+Datum
+gserialized_within(PG_FUNCTION_ARGS)
 {
 	if (gserialized_datum_predicate(PG_GETARG_DATUM(1), PG_GETARG_DATUM(0), gidx_contains))
 		PG_RETURN_BOOL(true);
@@ -750,7 +752,8 @@ Datum gserialized_within(PG_FUNCTION_ARGS)
 ** the first is contained by the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_within);
-Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_geom_within(PG_FUNCTION_ARGS)
 {
 	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
@@ -765,7 +768,8 @@ Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS)
 ** the first is contained by the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_within);
-Datum gserialized_gidx_gidx_within(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_gidx_within(PG_FUNCTION_ARGS)
 {
 	if (gidx_contains((GIDX *)PG_GETARG_POINTER(1), (GIDX *)PG_GETARG_POINTER(0)))
 		PG_RETURN_BOOL(true);
@@ -778,7 +782,8 @@ Datum gserialized_gidx_gidx_within(PG_FUNCTION_ARGS)
 ** the first contains the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_contains);
-Datum gserialized_contains(PG_FUNCTION_ARGS)
+Datum
+gserialized_contains(PG_FUNCTION_ARGS)
 {
 	if (gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_contains))
 		PG_RETURN_BOOL(true);
@@ -791,7 +796,8 @@ Datum gserialized_contains(PG_FUNCTION_ARGS)
 ** the first contains the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_contains);
-Datum gserialized_gidx_geom_contains(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_geom_contains(PG_FUNCTION_ARGS)
 {
 	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
@@ -806,7 +812,8 @@ Datum gserialized_gidx_geom_contains(PG_FUNCTION_ARGS)
 ** the first contains the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_contains);
-Datum gserialized_gidx_gidx_contains(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_gidx_contains(PG_FUNCTION_ARGS)
 {
 	if (gidx_contains((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)))
 		PG_RETURN_BOOL(true);
@@ -819,7 +826,8 @@ Datum gserialized_gidx_gidx_contains(PG_FUNCTION_ARGS)
 ** the first equals the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_same);
-Datum gserialized_same(PG_FUNCTION_ARGS)
+Datum
+gserialized_same(PG_FUNCTION_ARGS)
 {
 	if (gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_equals))
 		PG_RETURN_BOOL(true);
@@ -828,7 +836,8 @@ Datum gserialized_same(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_same);
-Datum gserialized_gidx_geom_same(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_geom_same(PG_FUNCTION_ARGS)
 {
 	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
@@ -843,7 +852,8 @@ Datum gserialized_gidx_geom_same(PG_FUNCTION_ARGS)
 ** the first equals the second.
 */
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_same);
-Datum gserialized_gidx_gidx_same(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_gidx_same(PG_FUNCTION_ARGS)
 {
 	if (gidx_equals((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)))
 		PG_RETURN_BOOL(true);
@@ -856,7 +866,8 @@ Datum gserialized_gidx_gidx_same(PG_FUNCTION_ARGS)
 ** they overlap and false otherwise.
 */
 PG_FUNCTION_INFO_V1(gserialized_overlaps);
-Datum gserialized_overlaps(PG_FUNCTION_ARGS)
+Datum
+gserialized_overlaps(PG_FUNCTION_ARGS)
 {
 	if (gserialized_datum_predicate(PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), gidx_overlaps))
 		PG_RETURN_BOOL(true);
@@ -868,7 +879,8 @@ Datum gserialized_overlaps(PG_FUNCTION_ARGS)
  * This is the cross-operator for the geographies
  */
 PG_FUNCTION_INFO_V1(gserialized_gidx_geog_overlaps);
-Datum gserialized_gidx_geog_overlaps(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_geog_overlaps(PG_FUNCTION_ARGS)
 {
 	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
@@ -879,7 +891,8 @@ Datum gserialized_gidx_geog_overlaps(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(gserialized_gidx_geom_overlaps);
-Datum gserialized_gidx_geom_overlaps(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_geom_overlaps(PG_FUNCTION_ARGS)
 {
 	GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
 
@@ -890,7 +903,8 @@ Datum gserialized_gidx_geom_overlaps(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_overlaps);
-Datum gserialized_gidx_gidx_overlaps(PG_FUNCTION_ARGS)
+Datum
+gserialized_gidx_gidx_overlaps(PG_FUNCTION_ARGS)
 {
 	if (gidx_overlaps((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)))
 		PG_RETURN_BOOL(true);
@@ -909,7 +923,8 @@ Datum gserialized_gidx_gidx_overlaps(PG_FUNCTION_ARGS)
 ** we pull that out and hand it back.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_compress);
-Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_compress(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry_in = (GISTENTRY *)PG_GETARG_POINTER(0);
 	GISTENTRY *entry_out = NULL;
@@ -1000,7 +1015,8 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 ** Decompress an entry. Unused for geography, so we return.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_decompress);
-Datum gserialized_gist_decompress(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_decompress(PG_FUNCTION_ARGS)
 {
 	POSTGIS_DEBUG(5, "[GIST] 'decompress' function called");
 	/* We don't decompress. Just return the input. */
@@ -1079,7 +1095,8 @@ gserialized_gist_consistent_internal(GIDX *key, GIDX *query, StrategyNumber stra
 ** relationship is, based on the query strategy.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_consistent);
-Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_consistent(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry = (GISTENTRY *)PG_GETARG_POINTER(0);
 	StrategyNumber strategy = (StrategyNumber)PG_GETARG_UINT16(2);
@@ -1172,7 +1189,8 @@ pack_float(const float value, const uint8_t realm)
 ** Calculate the change in volume of the old entry once the new entry is added.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_penalty);
-Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_penalty(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *origentry = (GISTENTRY *)PG_GETARG_POINTER(0);
 	GISTENTRY *newentry = (GISTENTRY *)PG_GETARG_POINTER(1);
@@ -1219,7 +1237,8 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 ** GiST support function. Merge all the boxes in a page into one master box.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_union);
-Datum gserialized_gist_union(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_union(PG_FUNCTION_ARGS)
 {
 	GistEntryVector *entryvec = (GistEntryVector *)PG_GETARG_POINTER(0);
 	int *sizep = (int *)PG_GETARG_POINTER(1); /* Size of the return value */
@@ -1251,7 +1270,8 @@ Datum gserialized_gist_union(PG_FUNCTION_ARGS)
 ** GiST support function. Test equality of keys.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_same);
-Datum gserialized_gist_same(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_same(PG_FUNCTION_ARGS)
 {
 	GIDX *b1 = (GIDX *)PG_GETARG_POINTER(0);
 	GIDX *b2 = (GIDX *)PG_GETARG_POINTER(1);
@@ -1265,7 +1285,8 @@ Datum gserialized_gist_same(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(gserialized_gist_geog_distance);
-Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry = (GISTENTRY *)PG_GETARG_POINTER(0);
 	Datum query_datum = PG_GETARG_DATUM(1);
@@ -1327,7 +1348,8 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 ** Strategy 20 is cpa based distance tests |=|
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_distance);
-Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_distance(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry = (GISTENTRY *)PG_GETARG_POINTER(0);
 	StrategyNumber strategy = (StrategyNumber)PG_GETARG_UINT16(2);
@@ -1579,7 +1601,8 @@ gserialized_gist_picksplit_constructsplit(GIST_SPLITVEC *v,
 ** TODO: Re-evaluate this in light of R*Tree picksplit approaches.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_picksplit);
-Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 {
 
 	GistEntryVector *entryvec = (GistEntryVector *)PG_GETARG_POINTER(0);
@@ -1795,14 +1818,16 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 ** ever used internally. These no-op stubs are used to bind the type.
 */
 PG_FUNCTION_INFO_V1(gidx_in);
-Datum gidx_in(PG_FUNCTION_ARGS)
+Datum
+gidx_in(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED), errmsg("function gidx_in not implemented")));
 	PG_RETURN_POINTER(NULL);
 }
 
 PG_FUNCTION_INFO_V1(gidx_out);
-Datum gidx_out(PG_FUNCTION_ARGS)
+Datum
+gidx_out(PG_FUNCTION_ARGS)
 {
 	GIDX *box = (GIDX *)PG_GETARG_POINTER(0);
 	char *result = gidx_to_string(box);
