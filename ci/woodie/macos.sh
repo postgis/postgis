@@ -135,13 +135,7 @@ psql -XAt -d template1 -c 'SELECT version()'
 # private extension controls; their module paths must also point at this build.
 make -j"${BUILD_JOBS}"
 make install DESTDIR="${INSTALLROOT}"
-python3 - "${EXTENSION_SHARE}/extension" "${EXTENSION_LIB}" <<'PYCONTROLS'
-import pathlib
-import sys
-for script in pathlib.Path(sys.argv[1]).iterdir():
-    if script.suffix in (".control", ".sql"):
-        script.write_text(script.read_text().replace("$libdir", sys.argv[2]))
-PYCONTROLS
+python3 "${SRCDIR}/ci/woodie/relocate-extension-scripts.py" "${EXTENSION_SHARE}/extension" "${EXTENSION_LIB}"
 if make check RUNTESTFLAGS="-v --extension --dumprestore"; then
   :
 else
