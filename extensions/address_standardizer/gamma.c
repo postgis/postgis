@@ -192,7 +192,6 @@ RULES *rules_init( ERR_PARAM *err_p ) {
        rules -> Trie = NULL;
 
        rules_free(rules);
-       FREE_AND_NULL(rules);
 
        return NULL ;
     }

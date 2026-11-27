@@ -1551,7 +1551,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int naturaly = 1;
 	double gt[6] = {0.};
 	const char* pszProjectionRef = NULL;
-	int tilesize = 0;
+	size_t tilesize = 0;
 
 	rt_raster rast = NULL;
 	uint32_t numbands = 0;
@@ -1721,7 +1721,15 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		}
 
 		/* update estimated byte size of 1 pixel */
-		tilesize += rt_pixtype_size(info->bandtype[i]);
+		{
+			int _pixbytes = rt_pixtype_size(info->bandtype[i]);
+			if (_pixbytes < 1) {
+				rterror(_("convert_raster: Invalid pixel type for band %d"), i + 1);
+				GDALClose(hdsSrc);
+				return 0;
+			}
+			tilesize += (size_t)_pixbytes;
+		}
 	}
 
 	/* tile size is "auto" */
@@ -1744,6 +1752,11 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->tile_size[1] = info->dim[1];
 	else
 		info->tile_size[1] = config->tile_size[1];
+	if (info->tile_size[0] < 1 || info->tile_size[1] < 1) {
+		rterror(_("convert_raster: Invalid tile size: %dx%d"), info->tile_size[0], info->tile_size[1]);
+		GDALClose(hdsSrc);
+		return 0;
+	}
 
 	/* number of tiles */
 	if ((uint32_t)info->tile_size[0] != info->dim[0])
@@ -1752,11 +1765,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		ntiles[1] = (info->dim[1] + info->tile_size[1] - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */
-	tilesize *= info->tile_size[0] * info->tile_size[1];
-
-	/* roughly estimate size of one tile and all bands */
-	tilesize *= 1.1;
-	if (tilesize > MAXTILESIZE)
+	if (!rt_util_size_mul(tilesize, (size_t)info->tile_size[0], &tilesize) ||
+	    !rt_util_size_mul(tilesize, (size_t)info->tile_size[1], &tilesize))
+		rtwarn(_("The size of each output tile may exceed 1 GB. Use -t to specify a reasonable tile size"));
+	else if (tilesize > MAXTILESIZE / 1.1 || (tilesize *= 1.1) > MAXTILESIZE)
 		rtwarn(_("The size of each output tile may exceed 1 GB. Use -t to specify a reasonable tile size"));
 
 	/* out-db raster */
@@ -2639,6 +2651,7 @@ main(int argc, char **argv) {
 			config->rt_file_count++;
 			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
+				config->rt_file_count = 0;
 				rterror(_("Could not allocate memory for storing raster files"));
 				rtdealloc_config(config);
 				exit(1);
@@ -2717,6 +2730,7 @@ main(int argc, char **argv) {
 			rtdealloc(config->rt_file[--(config->rt_file_count)]);
 			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
+				config->rt_file_count = 0;
 				rterror(_("Could not reallocate the memory holding raster names"));
 				rtdealloc_config(config);
 				exit(1);

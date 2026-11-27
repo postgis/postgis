@@ -79,6 +79,11 @@
  * and binary representation of it */
 typedef struct rt_raster_serialized_t rt_pgraster;
 
+/* PostgreSQL datums carry the authoritative allocated length. Their first
+ * word is varlena-encoded, so core must not interpret it as raw raster size. */
+#define rt_raster_deserialize(serialized, header_only) \
+	rt_raster_deserialize_pgraster((serialized), VARSIZE_ANY(serialized), (header_only))
+
 /* maximum char length required to hold any double or long long value */
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32

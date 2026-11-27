@@ -104,8 +104,10 @@ endif
 
 # Generate any .sql file from .sql.in files by running them through the SQL pre-processor
 %.sql: %.sql.in
-	$(SQLPP) -I@top_builddir@/postgis -I@top_srcdir@ $< | grep -v '^#' | \
+	$(SQLPP) -I@top_builddir@/postgis -I@top_srcdir@ $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
+	rm -f $@.tmp
 
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
@@ -129,6 +131,8 @@ topology.sql: \
 	sql/query/GetRingEdges.sql.in \
 	sql/query/GetNodeEdges.sql.in \
 	sql/query/GetFaceContainingPoint.sql.in \
+	sql/manage/AddTopoGeometryColumn.sql.in \
+	sql/manage/CreateTopology.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/CopyTopology.sql.in \
 	sql/manage/FindLayer.sql.in \
@@ -175,3 +179,11 @@ install-importer: loader/pgtopo_import | installdir
 
 install-exporter: loader/pgtopo_export | installdir
 	$(LIBTOOL) --mode=install $(INSTALL) $^ "$(DESTDIR)$(bindir)/pgtopo_export"
+
+uninstall: uninstall-importer uninstall-exporter
+
+uninstall-importer:
+	rm -f '$(DESTDIR)$(bindir)/pgtopo_import'
+
+uninstall-exporter:
+	rm -f '$(DESTDIR)$(bindir)/pgtopo_export'

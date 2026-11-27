@@ -1,4 +1,4 @@
-ERROR:  lwgeom_offsetcurve: input is not linear
+ERROR:  lwgeom_offsetcurve: input is not linear (type Point)
 t0|SRID=42;LINESTRING(0 0,10 0)
 t1|SRID=42;LINESTRING(0 10,10 10)
 t2|SRID=42;LINESTRING(0 -10,10 -10)

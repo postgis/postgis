@@ -252,10 +252,19 @@ main(int argc, char **argv)
 		fflush(stderr);
 
 		if (ret == SHPDUMPERERR)
-			exit(1);
+			ret = 1;
+		else
+			ret = 0;
 	}
+	else
+		ret = 0;
 
 	ShpDumperDestroy(state);
 
-	return 0;
+	free(config->conn);
+	free(config->table);
+	free(config->schema);
+	free(config);
+
+	return ret;
 }

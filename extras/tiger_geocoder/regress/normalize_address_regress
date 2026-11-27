@@ -43,3 +43,6 @@
 #1614a|8435 Co Rd 20 SE, ROCHESTER, MN 55904|8435||20|Co Rd|SE||ROCHESTER|MN|55904|t||8435
 #1614b|3208 US Hwy 52, Rochester, MN 55901|3208||52|US Hwy|||Rochester|MN|55901|t||3208
 #1108a|529 Main St, Suite 201, Boston, MA 02129|529||Main|St||Suite 201|Boston|MA|02129|t||529
+street_punctuation|Apt 1) 5 Main|St|Chicago
+place_punctuation|Main|St|Lake (West)
+place_suffix|Lake (West)

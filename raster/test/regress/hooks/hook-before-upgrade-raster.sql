@@ -14,3 +14,10 @@ INSERT INTO upgrade_test_raster(r) VALUES
 
 --SET client_min_messages TO ERROR;
 SELECT AddRasterConstraints('upgrade_test_raster', 'r');
+
+CREATE VIEW upgrade_test_raster_view_st_aspect AS
+SELECT st_aspect(NULL::raster, NULL::int, NULL::raster) AS sig1,
+       st_aspect(NULL::raster) AS sig2;
+
+CREATE VIEW upgrade_test_raster_view_st_mapalgebrafct AS
+SELECT st_mapalgebrafct(NULL::raster, NULL::regprocedure) AS result;

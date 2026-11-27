@@ -56,7 +56,7 @@ check-unit check-regress: all
 check-regress: export POSTGIS_REGRESS_DB ?= postgis_reg-$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION)
 
 check-no-trailing-blanks:
-	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
+	! find $(top_srcdir) -name '*.c' -o -name '*.h' -o -name '*.proto' | \
 		grep -v lwin_wkt_lex.c | \
 		grep -v lwin_wkt_parse | \
 		grep -v lookup3 | \
@@ -179,7 +179,7 @@ config.status: configure
 	./configure
 
 ChangeLog:
-	git log --pretty --numstat --summary | git2cl > ChangeLog
+	git log --pretty --numstat --summary | PERL_UNICODE="IO" git2cl > ChangeLog
 
 raster-post-install-check:
 	$(MAKE) -C raster post-install-check

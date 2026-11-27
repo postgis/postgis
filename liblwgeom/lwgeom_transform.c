@@ -271,6 +271,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		{
 			getPoint4d_p(pa, i, &p);
 			to_rad(&p);
+			ptarray_set_point4d(pa, i, &p);
 		}
 	}
 
@@ -321,7 +322,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 
 		if (n_converted != n_points)
 		{
-			lwerror("ptarray_transform: converted (%d) != input (%d)", n_converted, n_points);
+			lwerror("ptarray_transform: converted (%zu) != input (%zu)", n_converted, n_points);
 			return LW_FAILURE;
 		}
 
@@ -340,6 +341,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		{
 			getPoint4d_p(pa, i, &p);
 			to_dec(&p);
+			ptarray_set_point4d(pa, i, &p);
 		}
 	}
 

@@ -1833,7 +1833,7 @@ done_cell:
 				}
 			}
 
-			//			free(geometry);
+			lwfree(geometry);
 		}
 
 		/* Tidy up everything */

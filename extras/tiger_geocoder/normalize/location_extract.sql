@@ -77,6 +77,7 @@ BEGIN
     tempString := ' ' || tempString;
   END LOOP;
 
+  location := regexp_replace(location, $re$([\\.\+\*\?\[\^\]\$\(\)\{\}=!<>\|:\-])$re$, $re$\\\1$re$, 'g');
   location := replace(location,' ',ws || '+');
   location := substring(fullStreet,'(?i)' || location || '$');
 
