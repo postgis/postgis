@@ -14,3 +14,6 @@ SELECT ST_Width(rast), ST_Height(rast),
 	ST_Value(rast, 1, 1, 2),
 	ST_Value(rast, 1, 2, 2)
 FROM o_2_loadedrast;
+
+-- The average must exclude the NODATA pixel in the final 2x2 source block.
+SELECT ST_Value(rast, 1, 4, 4) FROM o_2_loadedrast;
