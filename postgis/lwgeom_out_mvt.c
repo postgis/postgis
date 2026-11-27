@@ -140,6 +140,9 @@ pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
+	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
+		elog(ERROR, "%s: parameter row cannot be other than a rowtype", __func__);
+
 	if (PG_ARGISNULL(1))
 	{
 		if (PG_ARGISNULL(0))
@@ -176,8 +179,6 @@ pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		ctx = (mvt_agg_context *)PG_GETARG_POINTER(0);
 	}
 
-	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
-		elog(ERROR, "%s: parameter row cannot be other than a rowtype", __func__);
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
 
 	old_context = MemoryContextSwitchTo(ctx->trans_context);

@@ -37,3 +37,4 @@ QI2
 #6147.a|t
 #6147.b|t
 #6147.c|t
+ERROR:  pgis_asflatgeobuf_transfn: parameter row cannot be other than a rowtype

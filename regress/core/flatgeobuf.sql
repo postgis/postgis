@@ -226,3 +226,6 @@ SELECT '#6147.c', ST_AsFlatGeobuf(CASE WHEN id = 1 THEN NULL::fgb_null_row ELSE 
 	(SELECT ST_AsFlatGeobuf(t) FROM fgb_null_row t WHERE id <> 1)
 FROM fgb_null_row t;
 DROP TABLE fgb_null_row;
+
+-- NULL values of a non-row type are still rejected
+SELECT '#6147.d', ST_AsFlatGeobuf(NULL::int);

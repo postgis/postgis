@@ -57,6 +57,9 @@ pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "pgis_asflatgeobuf_transfn: called in non-aggregate context");
 
+	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
+		elog(ERROR, "pgis_asflatgeobuf_transfn: parameter row cannot be other than a rowtype");
+
 	if (PG_ARGISNULL(1))
 	{
 		if (PG_ARGISNULL(0))
@@ -79,8 +82,6 @@ pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 		ctx = (flatgeobuf_agg_ctx *)PG_GETARG_POINTER(0);
 	}
 
-	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
-		elog(ERROR, "pgis_asflatgeobuf_transfn: parameter row cannot be other than a rowtype");
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
 
 	flatgeobuf_agg_transfn(ctx);

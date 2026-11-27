@@ -165,3 +165,4 @@ Ag==
 #6148.a|t
 #6148.b|t
 #6148.c|t
+ERROR:  pgis_asmvt_transfn: parameter row cannot be other than a rowtype

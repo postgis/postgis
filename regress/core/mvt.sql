@@ -785,3 +785,6 @@ SELECT '#6148.c', ST_AsMVT(CASE WHEN id = 1 THEN NULL::mvt_null_row ELSE t END) 
 	(SELECT ST_AsMVT(t) FROM mvt_null_row t WHERE id <> 1)
 FROM mvt_null_row t;
 DROP TABLE mvt_null_row;
+
+-- NULL values of a non-row type are still rejected
+SELECT '#6148.d', ST_AsMVT(NULL::int);
