@@ -1387,15 +1387,13 @@ mvt_ctx_to_tile(mvt_agg_context *ctx)
  * and every value, twice. A tile with unknown fields, which only an unpacked
  * foreign tile could carry, is still packed by protobuf-c.
  */
-typedef struct
-{
+typedef struct {
 	size_t size;
 	size_t tags_size;
 	size_t geometry_size;
 } mvt_feature_size;
 
-typedef struct
-{
+typedef struct {
 	size_t size;
 	mvt_feature_size *features;
 	size_t *values;
@@ -1436,16 +1434,12 @@ mvt_put_fixed(uint8_t *p, uint64_t v, int bytes)
 
 static inline uint64_t
 mvt_zigzag64(int64_t v)
-{
-	return ((uint64_t)v << 1) ^ (uint64_t)(v >> 63);
-}
+{ return ((uint64_t)v << 1) ^ (uint64_t)(v >> 63); }
 
 /* Size of a length-delimited field with a one-byte tag */
 static inline size_t
 mvt_field_size(size_t len)
-{
-	return 1 + mvt_varint_size(len) + len;
-}
+{ return 1 + mvt_varint_size(len) + len; }
 
 static inline size_t
 mvt_packed_size(const uint32_t *v, size_t n)
