@@ -85,7 +85,7 @@ static inline uint32_t c_int(enum mvt_cmd_id id, uint32_t count)
 
 static inline uint32_t p_int(int32_t value)
 {
-	return (value << 1) ^ (value >> 31);
+	return ((uint32_t)value << 1) ^ (value >> 31);
 }
 
 static uint32_t encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
@@ -1076,13 +1076,19 @@ static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 	size_t len;
 	bytea *ba;
 
+	if (!ctx)
+	{
+		ba = palloc(VARHDRSZ);
+		SET_VARSIZE(ba, VARHDRSZ);
+		return ba;
+	}
 	if (!ctx->tile)
 	{
 		ctx->tile = mvt_ctx_to_tile(ctx);
 	}
 
 	/* Zero features => empty bytea output */
-	if (ctx && ctx->layer && ctx->layer->n_features == 0)
+	if (ctx->layer && ctx->layer->n_features == 0)
 	{
 		bytea *ba = palloc(VARHDRSZ);
 		SET_VARSIZE(ba, VARHDRSZ);

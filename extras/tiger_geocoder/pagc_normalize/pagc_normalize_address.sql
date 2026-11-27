@@ -25,9 +25,9 @@ BEGIN
   result.zip := var_parse_rec.zip;
   result.zip4 := NULLIF(var_parse_rec.zipplus,'');
 
- var_rec := standardize_address('pagc_lex'
-       , 'pagc_gaz'
-       , 'pagc_rules'
+ var_rec := standardize_address('tiger.pagc_lex'
+       , 'tiger.pagc_gaz'
+       , 'tiger.pagc_rules'
 , COALESCE(var_parse_rec.address1,''),
    COALESCE(var_parse_rec.city,'') || COALESCE(', ' || var_parse_rec.state, '') || COALESCE(' ' || var_parse_rec.zip,'')  ) ;
 

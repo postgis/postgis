@@ -636,6 +636,12 @@ GEOMETRYCOLLECTION(
             <code>max_vertices</code> must be 5 or more, as 5 points are needed to represent a closed box.
         </para>
 
+        <note><para>
+            When casting a subdivided geometry to geography, the resulting geography may differ from the original.
+            Subdivision adds vertices in planar (geometry) space. If vertices are inserted along the boundary, they will alter the geographical representation, where edges are interpreted as geodesic segments.
+            To minimize distortion, first densify the geography using <xref linkend="ST_Segmentize"/> to add geodesic vertices, then cast to geometry before subdivision.
+        </para></note>
+
         <para> &overlay_gridsize_arg; </para>
 
         <para>Performed by the GEOS module.</para>
