@@ -1534,7 +1534,7 @@ mvt_feature_size_of(const VectorTile__Tile__Feature *f, mvt_feature_size *fs)
 	fs->tags_size = mvt_packed_size(f->tags, f->n_tags);
 	if (f->n_tags)
 		s += mvt_field_size(fs->tags_size);
-	s += 1 + mvt_varint_size((uint64_t)(int64_t)f->type);
+	s += 1 + mvt_varint_size((uint64_t)(int64_t)(int32_t)f->type);
 	fs->geometry_size = mvt_packed_size(f->geometry, f->n_geometry);
 	if (f->n_geometry)
 		s += mvt_field_size(fs->geometry_size);
@@ -1559,7 +1559,7 @@ mvt_put_feature(uint8_t *p, const VectorTile__Tile__Feature *f, const mvt_featur
 			p = mvt_put_varint(p, f->tags[i]);
 	}
 	*p++ = (3 << 3);
-	p = mvt_put_varint(p, (uint64_t)(int64_t)f->type);
+	p = mvt_put_varint(p, (uint64_t)(int64_t)(int32_t)f->type);
 	if (f->n_geometry)
 	{
 		*p++ = (4 << 3) | 2;
