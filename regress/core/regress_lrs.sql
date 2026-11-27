@@ -108,3 +108,7 @@ select '3DinterpolatePoint1', ST_3DInterpolatePoint('LINESTRING ZM (0 0 0 0, 10 
 select '3DinterpolatePoint2', ST_3DInterpolatePoint('LINESTRING ZM (0 0 0 0, 10 0 10 20)', 'POINT Z (5 5 5)');
 select '3DinterpolatePoint3', ST_3DInterpolatePoint('LINESTRING ZM (0 0 0 0, 0 0 10 100)', 'POINT Z (5 5 5)');
 select 'locate_between_empty', ST_AsText(ST_LocateBetween('MULTILINESTRING M EMPTY'::geometry, 1, 1));
+select 'locate_along_empty_mline', ST_AsText(ST_LocateAlong('MULTILINESTRING M EMPTY'::geometry, 1));
+select 'locate_along_empty_line', ST_AsText(ST_LocateAlong('LINESTRING M EMPTY'::geometry, 1));
+select 'locate_between_empty_line', ST_AsText(ST_LocateBetween('LINESTRING M EMPTY'::geometry, 1, 1));
+select 'locate_between_empty_range', ST_AsText(ST_LocateBetween('MULTILINESTRING M EMPTY'::geometry, 1, 2));
