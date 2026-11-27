@@ -142,7 +142,7 @@ lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 			lwnotice("Error wrapping geometry, cleaning up");
 			for (j = 0; j < i; j++)
 			{
-				lwnotice("cleaning geometry %d (%p)", j, wrap_geoms[j]);
+				lwnotice("cleaning geometry %d", j);
 				lwgeom_free(wrap_geoms[j]);
 			}
 			lwfree(wrap_geoms);
@@ -193,6 +193,7 @@ lwgeom_wrapx(const LWGEOM* lwgeom_in, double cutx, double amount)
 	{
 		const LWPOINT *pt = lwgeom_as_lwpoint(lwgeom_clone_deep(lwgeom_in));
 		POINT4D pt4d;
+		if ( ! pt ) return NULL;
 		getPoint4d_p(pt->point, 0, &pt4d);
 
 		LWDEBUGF(2, "POINT X is %g, cutx:%g, amount:%g", pt4d.x, cutx, amount);
