@@ -122,17 +122,20 @@ create_point_empty(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 static SHPObject *
 create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 {
-	SHPObject *obj;
+	SHPObject *obj = NULL;
 	POINT4D p4d;
 
 	double *xpts, *ypts, *zpts, *mpts;
-
 	/* Allocate storage for points */
 	xpts = malloc(sizeof(double));
 	ypts = malloc(sizeof(double));
 	zpts = malloc(sizeof(double));
 	mpts = malloc(sizeof(double));
 
+	if (!xpts || !ypts || !zpts || !mpts)
+	{
+		goto rollback;
+	}
 	/* Grab the point: note getPoint4d will correctly handle
 	the case where the POINTs don't contain Z or M coordinates */
 	p4d = getPoint4d(lwpoint->point, 0);
@@ -145,7 +148,7 @@ create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 	LWDEBUGF(4, "Point: %g %g %g %g", xpts[0], ypts[0], zpts[0], mpts[0]);
 
 	obj = SHPCreateObject(state->outshptype, -1, 0, NULL, NULL, 1, xpts, ypts, zpts, mpts);
-
+	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -157,7 +160,7 @@ create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 static SHPObject *
 create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 {
-	SHPObject *obj;
+	SHPObject *obj = NULL;
 	POINT4D p4d;
 	uint32_t i;
 
@@ -168,6 +171,13 @@ create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 	ypts = malloc(sizeof(double) * lwmultipoint->ngeoms);
 	zpts = malloc(sizeof(double) * lwmultipoint->ngeoms);
 	mpts = malloc(sizeof(double) * lwmultipoint->ngeoms);
+
+	/* malloc(0) may return NULL, so only treat non-NULL as a
+	 * failure when a non-zero amount was actually requested. */
+	if (lwmultipoint->ngeoms > 0 && (!xpts || !ypts || !zpts || !mpts))
+	{
+		goto rollback;
+	}
 
 	/* Grab the points: note getPoint4d will correctly handle
 	the case where the POINTs don't contain Z or M coordinates */
@@ -185,6 +195,7 @@ create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 
 	obj = SHPCreateObject(state->outshptype, -1, 0, NULL, NULL, lwmultipoint->ngeoms, xpts, ypts, zpts, mpts);
 
+	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -196,7 +207,7 @@ create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 static SHPObject *
 create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 {
-	SHPObject *obj;
+	SHPObject *obj = NULL;
 	POINT4D p4d;
 	uint32_t i, j;
 
@@ -216,6 +227,14 @@ create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 	ypts = malloc(sizeof(double) * shppointtotal);
 	zpts = malloc(sizeof(double) * shppointtotal);
 	mpts = malloc(sizeof(double) * shppointtotal);
+
+	/* malloc(0) may return NULL, so only treat non-NULL as a
+	 * failure when a non-zero amount was actually requested. */
+	if ((lwpolygon->nrings > 0 && !shpparts) ||
+	    (shppointtotal > 0 && (!xpts || !ypts || !zpts || !mpts)))
+	{
+		goto rollback;
+	}
 
 	LWDEBUGF(4, "Total number of points: %d", shppointtotal);
 
@@ -281,6 +300,7 @@ create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 	obj = SHPCreateObject(
 	    state->outshptype, -1, lwpolygon->nrings, shpparts, NULL, shppointtotal, xpts, ypts, zpts, mpts);
 
+	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -293,7 +313,7 @@ create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 static SHPObject *
 create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 {
-	SHPObject *obj;
+	SHPObject *obj = NULL;
 	POINT4D p4d;
 	uint32_t i, j, k;
 
@@ -321,6 +341,14 @@ create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 	ypts = malloc(sizeof(double) * shppointtotal);
 	zpts = malloc(sizeof(double) * shppointtotal);
 	mpts = malloc(sizeof(double) * shppointtotal);
+
+	/* malloc(0) may return NULL, so only treat non-NULL as a
+	 * failure when a non-zero amount was actually requested. */
+	if ((shpringtotal > 0 && !shpparts) ||
+	    (shppointtotal > 0 && (!xpts || !ypts || !zpts || !mpts)))
+	{
+		goto rollback;
+	}
 
 	LWDEBUGF(4, "Total number of rings: %d   Total number of points: %d", shpringtotal, shppointtotal);
 
@@ -402,6 +430,7 @@ create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 	obj =
 	    SHPCreateObject(state->outshptype, -1, shpringtotal, shpparts, NULL, shppointtotal, xpts, ypts, zpts, mpts);
 
+	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -414,7 +443,7 @@ create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 static SHPObject *
 create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 {
-	SHPObject *obj;
+	SHPObject *obj = NULL;
 	POINT4D p4d;
 	uint32_t i;
 
@@ -425,6 +454,13 @@ create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 	ypts = malloc(sizeof(double) * lwlinestring->points->npoints);
 	zpts = malloc(sizeof(double) * lwlinestring->points->npoints);
 	mpts = malloc(sizeof(double) * lwlinestring->points->npoints);
+
+	/* malloc(0) may return NULL, so only treat non-NULL as a
+	 * failure when a non-zero amount was actually requested. */
+	if (lwlinestring->points->npoints > 0 && (!xpts || !ypts || !zpts || !mpts))
+	{
+		goto rollback;
+	}
 
 	/* Grab the points: note getPoint4d will correctly handle
 	the case where the POINTs don't contain Z or M coordinates */
@@ -443,6 +479,7 @@ create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 	obj = SHPCreateObject(
 	    state->outshptype, -1, 0, NULL, NULL, lwlinestring->points->npoints, xpts, ypts, zpts, mpts);
 
+	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -454,7 +491,7 @@ create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 static SHPObject *
 create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 {
-	SHPObject *obj;
+	SHPObject *obj = NULL;
 	POINT4D p4d;
 	uint32_t i, j;
 
@@ -476,6 +513,14 @@ create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 	ypts = malloc(sizeof(double) * shppointtotal);
 	zpts = malloc(sizeof(double) * shppointtotal);
 	mpts = malloc(sizeof(double) * shppointtotal);
+
+	/* malloc(0) may return NULL, so only treat non-NULL as a
+	 * failure when a non-zero amount was actually requested. */
+	if ((lwmultilinestring->ngeoms > 0 && !shpparts) ||
+	    (shppointtotal > 0 && (!xpts || !ypts || !zpts || !mpts)))
+	{
+		goto rollback;
+	}
 
 	/* Iterate through each linestring setting up shpparts to point to the beginning of each line */
 	for (i = 0; i < lwmultilinestring->ngeoms; i++)
@@ -508,6 +553,7 @@ create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 	obj = SHPCreateObject(
 	    state->outshptype, -1, lwmultilinestring->ngeoms, shpparts, NULL, shppoint, xpts, ypts, zpts, mpts);
 
+	rollback:
 	free(shpparts);
 	free(xpts);
 	free(ypts);
@@ -563,39 +609,17 @@ static int
 is_clockwise(int num_points, double *x, double *y, double *z)
 {
 	int i;
-	double x_change, y_change, area;
-	double *x_new, *y_new; /* the points, translated to the origin
-				* for safer accuracy */
-
-	x_new = (double *)malloc(sizeof(double) * num_points);
-	y_new = (double *)malloc(sizeof(double) * num_points);
-	area = 0.0;
-	x_change = x[0];
-	y_change = y[0];
-
-	for (i = 0; i < num_points; i++)
-	{
-		x_new[i] = x[i] - x_change;
-		y_new[i] = y[i] - y_change;
-	}
+	double x0 = x[0], y0 = y[0];
+	double area = 0.0;
 
 	for (i = 0; i < num_points - 1; i++)
 	{
-		/* calculate the area	 */
-		area += (x[i] * y[i + 1]) - (y[i] * x[i + 1]);
+		/* calculate the area relative to the first point
+		 * for safer accuracy with large coordinates */
+		area += (x[i] - x0) * (y[i + 1] - y0) - (y[i] - y0) * (x[i + 1] - x0);
 	}
-	if (area > 0)
-	{
-		free(x_new);
-		free(y_new);
-		return 0; /*counter-clockwise */
-	}
-	else
-	{
-		free(x_new);
-		free(y_new);
-		return 1; /*clockwise */
-	}
+
+	return area > 0.0 ? 0 : 1;
 }
 
 static char *
@@ -808,6 +832,11 @@ convert_bytes_to_hex(uint8_t *ewkb, size_t size)
 
 	/* Convert the byte stream to a hex string using liblwgeom's deparse_hex function */
 	hexewkb = malloc(size * 2 + 1);
+	if (!hexewkb)
+	{
+		return NULL;
+	}
+
 	for (i = 0; i < size; ++i)
 		deparse_hex(ewkb[i], &hexewkb[i * 2]);
 	hexewkb[size * 2] = '\0';
@@ -2306,6 +2335,27 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	return ret;
 }
 
+
+/*
+ * Finalize the DBF and SHP output files after a row-processing error.
+ * Unlike ShpDumperCloseTable() this does not generate the projection
+ * file, whose core_asprintf() would exit() the process on out-of-memory
+ * and whose messages could overwrite the recorded error. Closing the
+ * files here only releases resources (no allocation), so the recorded
+ * error is left intact for the caller to report.
+ */
+static void
+ShpDumperCloseTableOnError(SHPDUMPERSTATE *state)
+{
+	PQclear(state->fetchres);
+	state->fetchres = NULL;
+
+	if (state->dbf)
+		DBFClose(state->dbf);
+	if (state->shp)
+		SHPClose(state->shp);
+}
+
 /* Append the next row to the output shapefile */
 int
 ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
@@ -2406,6 +2456,12 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		if (PQgetisnull(state->fetchres, state->curresrow, geocolnum))
 		{
 			obj = SHPCreateSimpleObject(SHPT_NULL, 0, NULL, NULL, NULL);
+			if (obj == NULL)
+			{
+				snprintf(state->message, SHPDUMPERMSGLEN, _("Error: out of memory creating NULL shape for record %d"), state->currow);
+				ShpDumperCloseTableOnError(state);
+				return SHPDUMPERERR;
+			}
 			if (SHPWriteObject(state->shp, -1, obj) == -1)
 			{
 				snprintf(state->message,
@@ -2432,6 +2488,12 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 					/* Input is bytea encoded text field, so it must be unescaped and
 					then converted to hexewkb string */
 					hexewkb_binary = PQunescapeBytea((unsigned char *)val, &hexewkb_len);
+					if (!hexewkb_binary)
+					{
+						snprintf(state->message, SHPDUMPERMSGLEN, _("Error: out of memory unescaping geometry for record %d"), state->currow);
+						ShpDumperCloseTableOnError(state);
+						return SHPDUMPERERR;
+					}
 					hexewkb = convert_bytes_to_hex(hexewkb_binary, hexewkb_len);
 				}
 				else
@@ -2442,6 +2504,12 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 					copy directly to hexewkb */
 					hexewkb_len = PQgetlength(state->fetchres, state->curresrow, geocolnum);
 					hexewkb = malloc(hexewkb_len + 1);
+					if (hexewkb == NULL)
+					{
+						snprintf(state->message, SHPDUMPERMSGLEN, _("Error: out of memory decoding geometry for record %d"), state->currow);
+						ShpDumperCloseTableOnError(state);
+						return SHPDUMPERERR;
+					}
 					strncpy(hexewkb, val, hexewkb_len + 1);
 				}
 			}
@@ -2452,6 +2520,14 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 				/* Input is binary field - must convert to hexewkb string */
 				hexewkb_len = PQgetlength(state->fetchres, state->curresrow, geocolnum);
 				hexewkb = convert_bytes_to_hex((unsigned char *)val, hexewkb_len);
+			}
+
+			if (hexewkb == NULL)
+			{
+				snprintf(state->message, SHPDUMPERMSGLEN, _("Error: out of memory decoding geometry for record %d"), state->currow);
+				ShpDumperCloseTableOnError(state);
+				if (hexewkb_binary) PQfreemem(hexewkb_binary);
+				return SHPDUMPERERR;
 			}
 
 			LWDEBUGF(4, "HexEWKB - length: %lu  value: %s", strlen(hexewkb), hexewkb);
@@ -2465,6 +2541,7 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 					 _("Error parsing HEXEWKB for record %d"),
 					 state->currow);
 				PQclear(state->fetchres);
+				if (hexewkb_binary) PQfreemem(hexewkb_binary);
 				free(hexewkb);
 				return SHPDUMPERERR;
 			}
@@ -2511,8 +2588,24 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 					 _("Unknown WKB type (%d) for record %d"),
 					 lwgeom->type,
 					 state->currow);
-				PQclear(state->fetchres);
+				ShpDumperCloseTableOnError(state);
+				free(hexewkb);
+				if (hexewkb_binary) PQfreemem(hexewkb_binary);
 				SHPDestroyObject(obj);
+				lwgeom_free(lwgeom);
+				return SHPDUMPERERR;
+			}
+
+			if (obj == NULL)
+			{
+				snprintf(state->message,
+					 SHPDUMPERMSGLEN,
+					 _("Error: out of memory creating shape for record %d"),
+					 state->currow);
+				ShpDumperCloseTableOnError(state);
+				free(hexewkb);
+				if (hexewkb_binary) PQfreemem(hexewkb_binary);
+				lwgeom_free(lwgeom);
 				return SHPDUMPERERR;
 			}
 
@@ -2524,6 +2617,8 @@ ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			{
 				snprintf(state->message, SHPDUMPERMSGLEN, _("Error writing shape %d"), state->currow);
 				PQclear(state->fetchres);
+				free(hexewkb);
+				if (hexewkb_binary) PQfreemem(hexewkb_binary);
 				SHPDestroyObject(obj);
 				return SHPDUMPERERR;
 			}
