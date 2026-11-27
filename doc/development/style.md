@@ -70,6 +70,18 @@ to reflow a specific range, or pass `--extensions c,cpp,h` when touching files
 with non-standard suffixes. Validate that the resulting diff stays focused on
 the code you touched.
 
+Commits that only change layout are listed in `.git-blame-ignore-revs`, so
+`git blame` attributes lines to the change that last altered their content.
+Enable it once per clone:
+
+```bash
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
+Keep style-only commits separate from logic changes and add their full SHA to
+`.git-blame-ignore-revs` on master and every stable branch; the file is kept
+identical on all of them.
+
 Macros should be ALL_UPPERCASE.
 Enumerations should be ALL_UPPERCASE.
 

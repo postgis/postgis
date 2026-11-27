@@ -379,7 +379,7 @@ ptarray_to_SFCGAL(const POINTARRAY *pa, int type)
  *          return an empty SFCGAL NURBS curve. The caller is responsible for
  *          deleting the returned geometry with `sfcgal_geometry_delete`.
  */
-static sfcgal_geometry_t*
+static sfcgal_geometry_t *
 lwgeom_nurbs_to_sfcgal_nurbs(const LWNURBSCURVE *nurbs)
 {
 	sfcgal_geometry_t **points;
@@ -396,12 +396,14 @@ lwgeom_nurbs_to_sfcgal_nurbs(const LWNURBSCURVE *nurbs)
 		return sfcgal_nurbs_curve_create();
 
 	/* Create array of SFCGAL points from control points */
-	points = (sfcgal_geometry_t**)lwalloc(sizeof(sfcgal_geometry_t*) * nurbs->points->npoints);
+	points = (sfcgal_geometry_t **)lwalloc(sizeof(sfcgal_geometry_t *) * nurbs->points->npoints);
 
 	for (i = 0; i < nurbs->points->npoints; i++)
 	{
-		if (!getPoint4d_p(nurbs->points, i, &pt)) {
-			for (uint32_t j = 0; j < i; j++) sfcgal_geometry_delete(points[j]);
+		if (!getPoint4d_p(nurbs->points, i, &pt))
+		{
+			for (uint32_t j = 0; j < i; j++)
+				sfcgal_geometry_delete(points[j]);
 			lwfree(points);
 			return NULL;
 		}
@@ -425,21 +427,27 @@ lwgeom_nurbs_to_sfcgal_nurbs(const LWNURBSCURVE *nurbs)
 	if (nurbs->knots && nurbs->nknots > 0)
 	{
 		knots = nurbs->knots;
-		result = sfcgal_nurbs_curve_create_from_full_data(
-			(const sfcgal_geometry_t**)points, weights, nurbs->points->npoints,
-			nurbs->degree, knots, nurbs->nknots);
+		result = sfcgal_nurbs_curve_create_from_full_data((const sfcgal_geometry_t **)points,
+								  weights,
+								  nurbs->points->npoints,
+								  nurbs->degree,
+								  knots,
+								  nurbs->nknots);
 	}
 	else if (weights)
 	{
-		result = sfcgal_nurbs_curve_create_from_points_and_weights(
-			(const sfcgal_geometry_t**)points, weights, nurbs->points->npoints,
-			nurbs->degree, SFCGAL_KNOT_METHOD_UNIFORM);
+		result = sfcgal_nurbs_curve_create_from_points_and_weights((const sfcgal_geometry_t **)points,
+									   weights,
+									   nurbs->points->npoints,
+									   nurbs->degree,
+									   SFCGAL_KNOT_METHOD_UNIFORM);
 	}
 	else
 	{
-		result = sfcgal_nurbs_curve_create_from_points(
-			(const sfcgal_geometry_t**)points, nurbs->points->npoints,
-			nurbs->degree, SFCGAL_KNOT_METHOD_UNIFORM);
+		result = sfcgal_nurbs_curve_create_from_points((const sfcgal_geometry_t **)points,
+							       nurbs->points->npoints,
+							       nurbs->degree,
+							       SFCGAL_KNOT_METHOD_UNIFORM);
 	}
 
 	/* Clean up temporary points */
@@ -468,8 +476,8 @@ lwgeom_nurbs_to_sfcgal_nurbs(const LWNURBSCURVE *nurbs)
  * @return Newly allocated LWNURBSCURVE on success, or NULL if sfcgal_nurbs
  *         is NULL or conversion fails. Caller takes ownership of the result.
  */
-static LWNURBSCURVE*
-sfcgal_nurbs_to_lwgeom_nurbs(const sfcgal_geometry_t* sfcgal_nurbs, int srid)
+static LWNURBSCURVE *
+sfcgal_nurbs_to_lwgeom_nurbs(const sfcgal_geometry_t *sfcgal_nurbs, int srid)
 {
 	size_t num_points, num_knots, i;
 	unsigned int degree;
@@ -514,8 +522,10 @@ sfcgal_nurbs_to_lwgeom_nurbs(const sfcgal_geometry_t* sfcgal_nurbs, int srid)
 
 		point.x = sfcgal_point_x(pt);
 		point.y = sfcgal_point_y(pt);
-		if (has_z) point.z = sfcgal_point_z(pt);
-		if (has_m) point.m = sfcgal_point_m(pt);
+		if (has_z)
+			point.z = sfcgal_point_z(pt);
+		if (has_m)
+			point.m = sfcgal_point_m(pt);
 
 		ptarray_set_point4d(pa, i, &point);
 	}
@@ -523,7 +533,7 @@ sfcgal_nurbs_to_lwgeom_nurbs(const sfcgal_geometry_t* sfcgal_nurbs, int srid)
 	/* Extract weights if rational */
 	if (sfcgal_nurbs_curve_is_rational(sfcgal_nurbs))
 	{
-		weights = (double*)lwalloc(sizeof(double) * num_points);
+		weights = (double *)lwalloc(sizeof(double) * num_points);
 		for (i = 0; i < num_points; i++)
 		{
 			weights[i] = sfcgal_nurbs_curve_weight_n(sfcgal_nurbs, i);
@@ -533,24 +543,27 @@ sfcgal_nurbs_to_lwgeom_nurbs(const sfcgal_geometry_t* sfcgal_nurbs, int srid)
 	/* Extract knot vector */
 	if (num_knots > 0)
 	{
-		knots = (double*)lwalloc(sizeof(double) * num_knots);
+		knots = (double *)lwalloc(sizeof(double) * num_knots);
 		for (i = 0; i < num_knots; i++)
 		{
 			knots[i] = sfcgal_nurbs_curve_knot_n(sfcgal_nurbs, i);
 		}
 	}
 
-	result = lwnurbscurve_construct(srid, NULL, degree, pa, weights, knots,
-		weights ? num_points : 0, num_knots);
+	result = lwnurbscurve_construct(srid, NULL, degree, pa, weights, knots, weights ? num_points : 0, num_knots);
 
-	if (!result) {
-		if (pa) ptarray_free(pa);
+	if (!result)
+	{
+		if (pa)
+			ptarray_free(pa);
 		/* weights/knots freed below */
 	}
 
 	/* Free temporary buffers after constructor deep-copies them */
-	if (weights) lwfree(weights);
-	if (knots) lwfree(knots);
+	if (weights)
+		lwfree(weights);
+	if (knots)
+		lwfree(knots);
 
 	return result;
 }

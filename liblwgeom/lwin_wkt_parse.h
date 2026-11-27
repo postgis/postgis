@@ -36,10 +36,10 @@
    private implementation details that can be changed or removed.  */
 
 #ifndef YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
-# define YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
+#define YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+#define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int wkt_yydebug;
@@ -53,52 +53,51 @@ typedef struct WKT_NURBS_CONTROLPOINTS WKT_NURBS_CONTROLPOINTS;
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    POINT_TOK = 258,               /* POINT_TOK  */
-    LINESTRING_TOK = 259,          /* LINESTRING_TOK  */
-    POLYGON_TOK = 260,             /* POLYGON_TOK  */
-    MPOINT_TOK = 261,              /* MPOINT_TOK  */
-    MLINESTRING_TOK = 262,         /* MLINESTRING_TOK  */
-    MPOLYGON_TOK = 263,            /* MPOLYGON_TOK  */
-    MSURFACE_TOK = 264,            /* MSURFACE_TOK  */
-    MCURVE_TOK = 265,              /* MCURVE_TOK  */
-    CURVEPOLYGON_TOK = 266,        /* CURVEPOLYGON_TOK  */
-    COMPOUNDCURVE_TOK = 267,       /* COMPOUNDCURVE_TOK  */
-    CIRCULARSTRING_TOK = 268,      /* CIRCULARSTRING_TOK  */
-    COLLECTION_TOK = 269,          /* COLLECTION_TOK  */
-    RBRACKET_TOK = 270,            /* RBRACKET_TOK  */
-    LBRACKET_TOK = 271,            /* LBRACKET_TOK  */
-    COMMA_TOK = 272,               /* COMMA_TOK  */
-    EMPTY_TOK = 273,               /* EMPTY_TOK  */
-    SEMICOLON_TOK = 274,           /* SEMICOLON_TOK  */
-    TRIANGLE_TOK = 275,            /* TRIANGLE_TOK  */
-    TIN_TOK = 276,                 /* TIN_TOK  */
-    POLYHEDRALSURFACE_TOK = 277,   /* POLYHEDRALSURFACE_TOK  */
-    NURBSCURVE_TOK = 278,          /* NURBSCURVE_TOK  */
-    DEGREE_TOK = 279,              /* DEGREE_TOK  */
-    CONTROLPOINTS_TOK = 280,       /* CONTROLPOINTS_TOK  */
-    KNOTS_TOK = 281,               /* KNOTS_TOK  */
-    NURBSPOINT_TOK = 282,          /* NURBSPOINT_TOK  */
-    WEIGHTEDPOINT_TOK = 283,       /* WEIGHTEDPOINT_TOK  */
-    WEIGHT_TOK = 284,              /* WEIGHT_TOK  */
-    KNOT_TOK = 285,                /* KNOT_TOK  */
-    DOUBLE_TOK = 286,              /* DOUBLE_TOK  */
-    DIMENSIONALITY_TOK = 287,      /* DIMENSIONALITY_TOK  */
-    SRID_TOK = 288                 /* SRID_TOK  */
-  };
-  typedef enum yytokentype yytoken_kind_t;
+#define YYTOKENTYPE
+enum yytokentype
+{
+	YYEMPTY = -2,
+	YYEOF = 0,                   /* "end of file"  */
+	YYerror = 256,               /* error  */
+	YYUNDEF = 257,               /* "invalid token"  */
+	POINT_TOK = 258,             /* POINT_TOK  */
+	LINESTRING_TOK = 259,        /* LINESTRING_TOK  */
+	POLYGON_TOK = 260,           /* POLYGON_TOK  */
+	MPOINT_TOK = 261,            /* MPOINT_TOK  */
+	MLINESTRING_TOK = 262,       /* MLINESTRING_TOK  */
+	MPOLYGON_TOK = 263,          /* MPOLYGON_TOK  */
+	MSURFACE_TOK = 264,          /* MSURFACE_TOK  */
+	MCURVE_TOK = 265,            /* MCURVE_TOK  */
+	CURVEPOLYGON_TOK = 266,      /* CURVEPOLYGON_TOK  */
+	COMPOUNDCURVE_TOK = 267,     /* COMPOUNDCURVE_TOK  */
+	CIRCULARSTRING_TOK = 268,    /* CIRCULARSTRING_TOK  */
+	COLLECTION_TOK = 269,        /* COLLECTION_TOK  */
+	RBRACKET_TOK = 270,          /* RBRACKET_TOK  */
+	LBRACKET_TOK = 271,          /* LBRACKET_TOK  */
+	COMMA_TOK = 272,             /* COMMA_TOK  */
+	EMPTY_TOK = 273,             /* EMPTY_TOK  */
+	SEMICOLON_TOK = 274,         /* SEMICOLON_TOK  */
+	TRIANGLE_TOK = 275,          /* TRIANGLE_TOK  */
+	TIN_TOK = 276,               /* TIN_TOK  */
+	POLYHEDRALSURFACE_TOK = 277, /* POLYHEDRALSURFACE_TOK  */
+	NURBSCURVE_TOK = 278,        /* NURBSCURVE_TOK  */
+	DEGREE_TOK = 279,            /* DEGREE_TOK  */
+	CONTROLPOINTS_TOK = 280,     /* CONTROLPOINTS_TOK  */
+	KNOTS_TOK = 281,             /* KNOTS_TOK  */
+	NURBSPOINT_TOK = 282,        /* NURBSPOINT_TOK  */
+	WEIGHTEDPOINT_TOK = 283,     /* WEIGHTEDPOINT_TOK  */
+	WEIGHT_TOK = 284,            /* WEIGHT_TOK  */
+	KNOT_TOK = 285,              /* KNOT_TOK  */
+	DOUBLE_TOK = 286,            /* DOUBLE_TOK  */
+	DIMENSIONALITY_TOK = 287,    /* DIMENSIONALITY_TOK  */
+	SRID_TOK = 288               /* SRID_TOK  */
+};
+typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
+#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
+union YYSTYPE {
 #line 266 "lwin_wkt_parse.y"
 
 	int integervalue;
@@ -110,32 +109,28 @@ union YYSTYPE
 	WKT_NURBS_CONTROLPOINTS *nurbscontrolpointsvalue;
 
 #line 113 "lwin_wkt_parse.h"
-
 };
 typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+#define YYSTYPE_IS_TRIVIAL 1
+#define YYSTYPE_IS_DECLARED 1
 #endif
 
 /* Location type.  */
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+#if !defined YYLTYPE && !defined YYLTYPE_IS_DECLARED
 typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
-{
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
+struct YYLTYPE {
+	int first_line;
+	int first_column;
+	int last_line;
+	int last_column;
 };
-# define YYLTYPE_IS_DECLARED 1
-# define YYLTYPE_IS_TRIVIAL 1
+#define YYLTYPE_IS_DECLARED 1
+#define YYLTYPE_IS_TRIVIAL 1
 #endif
-
 
 extern YYSTYPE wkt_yylval;
 extern YYLTYPE wkt_yylloc;
 
-int wkt_yyparse (void);
-
+int wkt_yyparse(void);
 
 #endif /* !YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED  */
