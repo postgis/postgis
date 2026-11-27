@@ -6,8 +6,7 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
- - #3044, GH-1075, [raster] Add raster2pgsql tile origin alignment option
-          (Darafei Praliaskouski)
+ - #3044, GH-1075, raster2pgsql tile origin alignment (Darafei Praliaskouski)
 
 * Enhancements *
 
