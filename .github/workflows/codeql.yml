@@ -62,7 +62,7 @@ jobs:
     - name: Build
       run: |
           ./autogen.sh
-          ./configure
+          ./configure --with-pgconfig=/usr/lib/postgresql/16/bin/pg_config
           make -j$(nproc)
 
     - name: Perform CodeQL Analysis
