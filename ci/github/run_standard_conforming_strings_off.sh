@@ -10,5 +10,5 @@ LDFLAGS_STD="-Wl,-Bsymbolic-functions -Wl,-z,relro"
 /usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile -o '-F' start
 ./autogen.sh
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
-make -j
+make -j"$(sh "ci/parallel-jobs.sh")"
 make check RUNTESTFLAGS="--verbose --after-create-db-script ${PWD}/regress/hooks/standard-conforming-strings-off.sql"
