@@ -24,8 +24,12 @@ symlinks:
 include ../../Makefile
 
 # XML gettext tools
+MSGATTRIB=msgattrib
 PO2XML=po2xml
 
-$(XML_SOURCES): %.xml: %.xml.po
-	$(PO2XML) ../../$@ $< > $@
+$(XML_SOURCES): %.xml: %.xml.po ../../%.xml
+	$(MSGATTRIB) --no-fuzzy -o $@.po.tmp $<
+	$(PO2XML) ../../$@ $@.po.tmp > $@.tmp
+	mv $@.tmp $@
+	rm -f $@.po.tmp
 

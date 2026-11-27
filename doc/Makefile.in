@@ -289,7 +289,7 @@ html: html/postgis$(DOCSUFFIX).html
 html-localized:
 	@for lang in $(translations); do \
     echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-html; \
+    $(MAKE) -C po/$$lang local-html || exit 1; \
   done
 
 html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile images $(XML_INPUTS)
@@ -462,7 +462,7 @@ check-unit: $(CHECK_UNIT_TARGET)
 check-localized:
 	@for lang in $(translations); do \
     echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-check; \
+    $(MAKE) -C po/$$lang local-check || exit 1; \
   done
 
 requirements_not_met_xsltproc:
