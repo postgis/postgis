@@ -430,8 +430,8 @@ RASTER_dumpValues(PG_FUNCTION_ARGS)
 	int call_cntr;
 	int max_calls;
 	int i = 0;
-	int x = 0;
-	int y = 0;
+	uint32_t x = 0;
+	uint32_t y = 0;
 	int z = 0;
 
 	int16 typlen;
@@ -718,7 +718,7 @@ RASTER_dumpValues(PG_FUNCTION_ARGS)
 						PG_FREE_IF_COPY(pgraster, 0);
 						MemoryContextSwitchTo(oldcontext);
 						elog(ERROR,
-						     "RASTER_dumpValues: Could not pixel (%d, %d) of band %d",
+						     "RASTER_dumpValues: Could not pixel (%u, %u) of band %d",
 						     x,
 						     y,
 						     nband);
