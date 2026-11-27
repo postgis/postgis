@@ -1,5 +1,7 @@
 raster_columns
 t
+empty_variadic_constraints_ok
+t
 test_raster_columns|rast|0|1|1|2|2|t|f|1|{8BUI}|{0}|POLYGON((-2 -2,-2 4,4 4,4 -2,-2 -2))
 t
 test_raster_columns|rast|0|||||f|f||||

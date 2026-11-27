@@ -13,6 +13,7 @@
 use warnings;
 use strict;
 use POSIX 'strftime';
+use Text::Balanced qw(extract_bracketed);
 
 eval "exec perl -w $0 $@"
 	if (0);
@@ -39,6 +40,7 @@ my $scriptname = @ARGV ? $ARGV[0] : '-';
 my @aggs = ();
 my @casts = ();
 my @funcs = ();
+my @procs = ();
 my @types = ();
 my %type_funcs = ();
 my @ops = ();
@@ -50,21 +52,86 @@ my @schemas = ();
 
 sub strip_default {
 	my $line = shift;
-	# strip quotes first
-	$line =~ s/'[^']*'//ig;
-	# drop default then
-	$line =~ s/DEFAULT [^,)]*//ig;
-	return $line;
+	my @arguments = ();
+	my $argument = '';
+	my $depth = 0;
+	my $quote = '';
+	my $skip_default = 0;
+
+	for (my $i = 0; $i < length($line); $i++) {
+		my $character = substr($line, $i, 1);
+
+		if ($quote ne '') {
+			$argument .= $character unless $skip_default;
+			if ($quote eq "'" && $character eq "\\" && $i + 1 < length($line)) {
+				$argument .= substr($line, ++$i, 1) unless $skip_default;
+			} elsif ($character eq $quote) {
+				if ($i + 1 < length($line) && substr($line, $i + 1, 1) eq $quote) {
+					$argument .= substr($line, ++$i, 1) unless $skip_default;
+				} else {
+					$quote = '';
+				}
+			}
+		} elsif ($character eq "'" || $character eq '"') {
+			$quote = $character;
+			$argument .= $character unless $skip_default;
+		} elsif ($depth == 0 && substr($line, $i) =~ /^DEFAULT\b/i) {
+			$skip_default = 1;
+			$i += length('DEFAULT') - 1;
+		} elsif ($character eq '(' || $character eq '[') {
+			$depth++;
+			$argument .= $character unless $skip_default;
+		} elsif ($character eq ')' || $character eq ']') {
+			$depth--;
+			$argument .= $character unless $skip_default;
+		} elsif ($character eq ',' && $depth == 0) {
+			push(@arguments, $argument);
+			$argument = '';
+			$skip_default = 0;
+		} else {
+			$argument .= $character unless $skip_default;
+		}
+	}
+	push(@arguments, $argument);
+
+	return join(',', @arguments);
+}
+
+sub read_signature_definition {
+	my $defn = shift;
+	my $complete = 0;
+
+	while (!$complete) {
+		my $open = index($defn, '(');
+		if ($open >= 0) {
+			my ($arguments) = extract_bracketed(substr($defn, $open), '()');
+			if (defined $arguments) {
+				$defn = substr($defn, 0, $open) . $arguments;
+				$complete = 1;
+			}
+		}
+		last if $complete;
+
+		my $next_line = <>;
+		die "Unexpected end of input while reading function/procedure signature\n"
+			unless defined $next_line;
+		$defn .= $next_line;
+	}
+
+	return $defn;
 }
 
 while( my $line = <>)
 {
 	if ($line =~ /^create (or replace )?function/i) {
 		my $defn = $line;
-		while( not $defn =~ /\)/ ) {
-			$defn .= <>;
-		}
+		$defn = read_signature_definition($defn);
 		push (@funcs, $defn)
+	}
+	elsif ($line =~ /^create (or replace )?procedure/i) {
+		my $defn = $line;
+		$defn = read_signature_definition($defn);
+		push (@procs, $defn)
 	}
 	elsif ($line =~ /^create or replace view\s*(\w+)/i) {
 		push (@views, $1);
@@ -304,6 +371,25 @@ foreach my $fn ( @funcs )
 	}
 }
 
+print "-- Register all procedures.\n";
+foreach my $proc ( @procs )
+{
+	if ($proc =~ /.* procedure ([^(]+)\((.*)\)/is ) # can be multiline
+	{
+		my $proc_nm = $1;
+		my $proc_arg = $2;
+
+		$proc_arg =~ s/\-\-.*\n//g;
+		$proc_arg =~ s/\n//g;
+		$proc_arg = strip_default($proc_arg);
+		add_if_not_exists("PROCEDURE $proc_nm ($proc_arg)");
+	}
+	else
+	{
+		die "Couldn't parse PROCEDURE line: $proc\n";
+	}
+}
+
 print "-- Register all types.\n";
 foreach my $type (@types)
 {
@@ -338,6 +424,7 @@ BEGIN
 	FOR rec IN
 		SELECT
 			p.oid,
+			p.prokind,
 			p.proowner,
 			e.extowner,
 			r.rolsuper
@@ -360,7 +447,8 @@ BEGIN
 					rec.oid::regprocedure, rec.proowner::regrole,
 					rec.extowner::regrole;
 			sql := pg_catalog.format(
-				'ALTER FUNCTION %s OWNER TO %I',
+				'ALTER %s %s OWNER TO %I',
+				CASE rec.prokind WHEN 'p' THEN 'PROCEDURE' WHEN 'a' THEN 'AGGREGATE' ELSE 'FUNCTION' END,
 				rec.oid::regprocedure,
 				rec.extowner::regrole
 			);

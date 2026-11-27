@@ -1349,6 +1349,7 @@ add_raster_constraints(const char *schema,
 		       const char *column,
 		       int regular_blocking,
 		       int max_extent,
+		       int commit_between_constraints,
 		       STRINGBUFFER *buffer)
 {
 	char *sql = NULL;
@@ -1383,12 +1384,13 @@ add_raster_constraints(const char *schema,
 	rtdealloc(_tmp);
 
 	sql = rtloader_alloc_sprintf(
-	    "SELECT AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s);",
+	    "CALL AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s,%s);",
 	    (_schema != NULL ? _schema : ""),
 	    _table,
 	    _column,
 	    (regular_blocking ? "TRUE" : "FALSE"),
-	    (max_extent ? "TRUE" : "FALSE"));
+	    (max_extent ? "TRUE" : "FALSE"),
+	    (commit_between_constraints ? "TRUE" : "FALSE"));
 	if (sql == NULL)
 	{
 		rterror(_("add_raster_constraints: Could not allocate memory for AddRasterConstraints statement"));
@@ -2574,6 +2576,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer)
 					    config->raster_column,
 					    config->regular_blocking,
 					    config->max_extent,
+					    !config->transaction,
 					    buffer))
 		{
 			rterror(_("process:rasters: Could not add AddRasterConstraints statement to string buffer"));
@@ -2589,6 +2592,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer)
 							    config->raster_column,
 							    config->regular_blocking,
 							    config->max_extent,
+							    !config->transaction,
 							    buffer))
 				{
 					rterror(_(
