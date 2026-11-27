@@ -1172,7 +1172,7 @@ msgstr ""
 #: reference_operator.xml:791
 #, no-c-format
 msgid "&#61;"
-msgstr "<refname>=</refname>"
+msgstr "&#61;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:793
