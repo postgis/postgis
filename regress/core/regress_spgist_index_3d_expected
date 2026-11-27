@@ -2,3 +2,7 @@
 @>>|4677|Seq Scan|4677|Index Scan
 <<@|4677|Seq Scan|4677|Index Scan
 ~==|199|Seq Scan|199|Index Scan
+3d_empty_op|f|f
+3d_empty_seq|Seq Scan|2|1,2|1
+3d_empty_build|Index Scan|2|1,2|1
+3d_empty_insert|Index Scan|2,3|1,2,3|1
