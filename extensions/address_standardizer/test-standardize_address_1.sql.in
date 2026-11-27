@@ -7,6 +7,27 @@ SELECT '#2978c' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rule
 SELECT '#5299a' AS ticket, * FROM standardize_address('us_lex',  'us_gaz', 'us_rules','1 Timepiece Point','Boston, MA, 02220');
 SELECT '#5299b' AS ticket, * FROM standardize_address('us_lex',  'us_gaz', 'us_rules','50 Gold Piece Drive','Boston, MA, 02020');
 SELECT '#5695a' AS ticket, * FROM standardize_address('us_lex', 'us_gaz', 'us_rules', 'ONE E PIMA ST STE 999, TUCSON, AZ');
+CREATE TEMP TABLE us_lex_id_order AS TABLE us_lex;
+UPDATE us_lex_id_order SET id = -100 WHERE word = 'E' AND token = 18;
+UPDATE us_lex_id_order SET id = -99 WHERE word = 'E' AND token = 22;
+DO $$
+DECLARE
+	std record;
+BEGIN
+	SELECT house_num, predir, name, suftype, unit
+	INTO std
+	FROM standardize_address('us_lex_id_order', 'us_gaz', 'us_rules', 'ONE E PIMA ST STE 999, TUCSON, AZ');
+
+	IF std.house_num IS DISTINCT FROM '1'
+		OR std.predir IS DISTINCT FROM 'EAST'
+		OR std.name IS DISTINCT FROM 'PIMA'
+		OR std.suftype IS DISTINCT FROM 'STREET'
+		OR std.unit IS DISTINCT FROM 'SUITE 999' THEN
+		RAISE EXCEPTION '#5695b got house_num=%, predir=%, name=%, suftype=%, unit=%',
+			std.house_num, std.predir, std.name, std.suftype, std.unit;
+	END IF;
+END
+$$;
 -- CVE: rule with >128 terms must be rejected gracefully, not crash (stack OOB write)
 CREATE TEMP TABLE t_overlong_rule(id serial, rule text);
 INSERT INTO t_overlong_rule(rule) SELECT string_agg('1', ' ') FROM generate_series(1, 130);

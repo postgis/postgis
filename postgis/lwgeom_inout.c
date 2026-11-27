@@ -107,13 +107,15 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	/* Starts with "SRID=" */
 	if( strncasecmp(str,"SRID=",5) == 0 )
 	{
-		/* Roll forward to semi-colon */
+		/* Roll forward to semi-colon, stopping at the NUL terminator so we
+		 * never scan past the end of the input cstring */
 		char *tmp = str;
-		while ( tmp && *tmp != ';' )
+		while (*tmp != '\0' && *tmp != ';')
 			tmp++;
 
-		/* Check next character to see if we have WKB  */
-		if ( tmp && *(tmp+1) == '0' )
+		/* Check next character to see if we have WKB (only if we actually
+		 * found a semi-colon; otherwise *(tmp+1) would read past the NUL) */
+		if (*tmp == ';' && *(tmp + 1) == '0')
 		{
 			/* Null terminate the SRID= string */
 			*tmp = '\0';

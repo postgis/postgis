@@ -48,8 +48,15 @@ distclean: distclean-local
 distclean-local: clean-local
 	rm -f Makefile
 
-check check-unit check-regress:
+check check-regress:
 	@echo "Nothing to check"
+
+check-unit:
+ifeq (@ADDRESS_STANDARDIZER@,address_standardizer)
+	$(MAKE) -C address_standardizer check-unit
+else
+	@echo "Nothing to check"
+endif
 
 postgis_extension_helper.sql: ../libpgcommon/sql/AddToSearchPath.sql.inc
 

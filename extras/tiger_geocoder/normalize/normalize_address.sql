@@ -70,6 +70,8 @@ DECLARE
   tempInt INTEGER;
   rec RECORD;
   ws VARCHAR;
+  regex_special CONSTANT text := $re$([\\.\+\*\?\[\^\]\$\(\)\{\}=!<>\|:\-])$re$;
+  regex_literal CONSTANT text := $re$\\\1$re$;
   rawInput VARCHAR;
   -- is this a highway
   -- (we treat these differently since the road name often comes after the streetType)
@@ -187,11 +189,11 @@ BEGIN
         result.location := tempString;
     END IF;
     IF addressString IS NOT NULL THEN
-      fullStreet := substring(fullStreet, '(?i)' || addressString || ws ||
-          '+(.*),' || ws || '+' || result.location);
+      fullStreet := substring(fullStreet, '(?i)' || regexp_replace(addressString, regex_special, regex_literal, 'g') || ws ||
+          '+(.*),' || ws || '+' || regexp_replace(result.location, regex_special, regex_literal, 'g'));
     ELSE
       fullStreet := substring(fullStreet, '(?i)(.*),' || ws || '+' ||
-          result.location);
+          regexp_replace(result.location, regex_special, regex_literal, 'g'));
     END IF;
   END IF;
 
@@ -206,10 +208,10 @@ BEGIN
   IF result.location IS NULL THEN
     IF addressString IS NOT NULL THEN
       IF state IS NOT NULL THEN
-        fullStreet := substring(fullStreet, '(?i)' || addressString ||
+        fullStreet := substring(fullStreet, '(?i)' || regexp_replace(addressString, regex_special, regex_literal, 'g') ||
             ws || '+(.*?)' || ws || '+' || state);
       ELSE
-        fullStreet := substring(fullStreet, '(?i)' || addressString ||
+        fullStreet := substring(fullStreet, '(?i)' || regexp_replace(addressString, regex_special, regex_literal, 'g') ||
             ws || '+(.*?)');
       END IF;
     ELSE
@@ -242,7 +244,7 @@ BEGIN
     -- If the location was found, remove it from fullStreet
     IF result.location IS NOT NULL THEN
       fullStreet := substring(fullStreet, '(?i)(.*)' || ws || '+' ||
-          result.location);
+          regexp_replace(result.location, regex_special, regex_literal, 'g'));
     END IF;
   END IF;
 
@@ -287,7 +289,7 @@ BEGIN
 
   IF result.location IS NULL THEN
     -- If the internal address is given, the location is everything after it.
-    result.location := trim(substring(fullStreet, result.internal || ws || '+(.*)$'));
+    result.location := trim(substring(fullStreet, regexp_replace(result.internal, regex_special, regex_literal, 'g') || ws || '+(.*)$'));
   END IF;
 
   IF debug_flag THEN
@@ -411,10 +413,10 @@ BEGIN
         IF tempString IS NOT NULL THEN
           IF result.location IS NULL THEN
             result.location := substring(fullStreet, streetType || ws || '+'
-                     || tempString || ws || '+(.*)$');
+                     || regexp_replace(tempString, regex_special, regex_literal, 'g') || ws || '+(.*)$');
           END IF;
           reducedStreet := substring(fullStreet, '(.*)' || ws || '+'
-                        || result.location || '$');
+                        || regexp_replace(result.location, regex_special, regex_literal, 'g') || '$');
           streetType := NULL;
           result.streetTypeAbbrev := NULL;
         ELSE
@@ -431,11 +433,11 @@ BEGIN
         END IF;
 		-- the post direction might be portion of fullStreet after reducedStreet
 		-- reducedStreet: Main  fullStreet: Main St, N or fullStreet: Main St N
-		tempString := trim(regexp_replace(fullStreet,  reducedStreet ||  ws || '+' || streetType,''));
+		tempString := trim(regexp_replace(fullStreet,  regexp_replace(reducedStreet, regex_special, regex_literal, 'g') ||  ws || '+' || streetType,''));
 		IF tempString > '' THEN
 		  tempString := abbrev FROM tiger.direction_lookup WHERE
 			 tempString ILIKE '%' || name || '%'
-			 AND texticregexeq(fullStreet || ' ', '(?i)' || reducedStreet || ws || '+' || streetType || ws || '+(' || name || ')' || ws || '+')
+			 AND texticregexeq(fullStreet || ' ', '(?i)' || regexp_replace(reducedStreet, regex_special, regex_literal, 'g') || ws || '+' || streetType || ws || '+(' || name || ')' || ws || '+')
 			ORDER BY length(name) DESC LIMIT 1;
 		  IF tempString IS NOT NULL THEN
 			result.postDirAbbrev = trim(tempString);
@@ -450,7 +452,7 @@ BEGIN
 		-- The post direction should be at the beginning of the location string
 		-- if there is no internal address
 		reducedStreet := trim(reducedStreet);
-		tempString := trim(regexp_replace(fullStreet,  ws || '+' || reducedStreet ||  ws || '+',''));
+		tempString := trim(regexp_replace(fullStreet,  ws || '+' || regexp_replace(reducedStreet, regex_special, regex_literal, 'g') ||  ws || '+',''));
 		IF tempString > '' THEN
 			tempString := substring(reducedStreet, '(?i)(^' || name
 				|| ')' || ws) FROM tiger.direction_lookup WHERE
@@ -467,7 +469,7 @@ BEGIN
 		  result.streetName := trim(reducedStreet);
 		END IF;
     END IF;
-    IF texticregexeq(result.location, '(?i)' || result.internal || '$') THEN
+    IF texticregexeq(result.location, '(?i)' || regexp_replace(result.internal, regex_special, regex_literal, 'g') || '$') THEN
       -- If the internal address is at the end of the location, then no
       -- location was given.  We still need to look for post direction.
       SELECT INTO rec abbrev,
@@ -499,7 +501,7 @@ BEGIN
         SELECT INTO tempString substring(result.location, '(?i)(^' || name
             || ')' || ws) FROM tiger.direction_lookup WHERE
             result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws)
-	AND NOT  texticregexeq(rawInput, '(?i)(,' || ws || '+' || result.location || ')' || ws)
+	AND NOT  texticregexeq(rawInput, '(?i)(,' || ws || '+' || regexp_replace(result.location, regex_special, regex_literal, 'g') || ')' || ws)
             ORDER BY length(name) desc LIMIT 1;
 
         IF debug_flag THEN
@@ -523,10 +525,10 @@ BEGIN
             RAISE NOTICE '%fullstreet before extract postdir: %', clock_timestamp(), fullStreet;
         END IF;
         SELECT INTO tempString substring(fullStreet, '(?i)' || streetType
-          || ws || '+(' || name || ')' || ws || '+' || result.internal)
+          || ws || '+(' || name || ')' || ws || '+' || regexp_replace(result.internal, regex_special, regex_literal, 'g'))
           FROM tiger.direction_lookup
           WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)'
-          || ws || name || ws || '+' || result.internal) ORDER BY length(name) desc LIMIT 1;
+          || ws || name || ws || '+' || regexp_replace(result.internal, regex_special, regex_literal, 'g')) ORDER BY length(name) desc LIMIT 1;
         IF tempString IS NOT NULL THEN
             postDir := tempString;
             SELECT INTO result.postDirAbbrev abbrev FROM tiger.direction_lookup
@@ -540,7 +542,7 @@ BEGIN
     -- street name is everything before it, without directions.
     IF result.internal IS NOT NULL THEN
       reducedStreet := substring(fullStreet, '(?i)^(.*?)' || ws || '+'
-                    || result.internal);
+                    || regexp_replace(result.internal, regex_special, regex_literal, 'g'));
       tempInt := count(*) FROM tiger.direction_lookup WHERE
           reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)' || ws || name || '$');
       IF tempInt > 0 THEN
@@ -666,7 +668,7 @@ BEGIN
           -- If the location was found, remove it from fullStreet
           IF result.location IS NOT NULL THEN
             fullStreet := substring(fullStreet, '(?i)(.*),' || ws || '+' ||
-                result.location);
+                regexp_replace(result.location, regex_special, regex_literal, 'g'));
           END IF;
         END IF;
 
@@ -684,7 +686,7 @@ BEGIN
             -- The location may still be in the fullStreet, or may
             -- have been removed already
             result.streetName := substring(fullStreet, '^' || preDir || ws
-                       || '+(.*?)(' || ws || '+' || result.location || '|$)');
+                       || '+(.*?)(' || ws || '+' || regexp_replace(result.location, regex_special, regex_literal, 'g') || '|$)');
           ELSE
             result.streetName := substring(fullStreet, '^' || preDir || ws
                        || '+(.*?)' || ws || '*');
@@ -694,7 +696,7 @@ BEGIN
             -- The location may still be in the fullStreet, or may
             -- have been removed already
             result.streetName := substring(fullStreet, '^(.*?)(' || ws
-                       || '+' || result.location || '|$)');
+                       || '+' || regexp_replace(result.location, regex_special, regex_literal, 'g') || '|$)');
           ELSE
             result.streetName := fullStreet;
           END IF;

@@ -3,6 +3,36 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- Qualify the TIGER rate_attributes helper (Darafei Praliaskouski)
+- Avoid an implicit dependency on Abseil in FlatGeobuf (Paul Ramsey)
+- #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
+- [tiger_geocoder] Treat address fragments literally during normalization
+  (Darafei Praliaskouski)
+- #2850, GH-1020, Preserve fixed numeric DBF widths and scale in pgsql2shp (Darafei Praliaskouski)
+- Return zero azimuth for a due-north geometry segment (Sandro Santilli)
+- GH-1173, GH-1174, guard raster OOM cleanup paths against NULL dereferences
+  (Maksim Korotkov, Postgres Pro)
+- GT-778, [raster] Reject malformed and oversized raster bands before allocation
+  or serialization can wrap (Paul Wouters)
+- Fix geometry input parsing to stop malformed SRID prefixes before the
+  end of the input string (Dennis Tighe, Google)
+- #6118, GT-769, Reject empty geometry type modifiers before they can read past the
+  input buffer (Egor Ivkov)
+- GT-771, GH-1175, Guard missing operands before reading node tags in spatial
+  selectivity estimation (Maksim Korotkov)
+- GT-770, [topology] Report the actual face-update count when edge removal fails
+  (Egor Ivkov)
+ - GT-670, Harden extension install and upgrade SQL against
+   attacker-controlled object resolution, and fix address_standardizer scanner
+   and rule-parser bounds checks (reported by Eric Ridge, PlanetScale;
+   fixed by Darafei Praliaskouski)
+ - GT-671, Harden extension install and upgrade SQL against attacker-controlled
+   object resolution in writable schemas
+   (reported by Eric Ridge, PlanetScale;
+   fixed by Darafei Praliaskouski)
+- [address_standardizer] Load lexicon rows by documented tuple order so
+  copied or upgraded lexicon tables do not change parser priority
+  (Darafei Praliaskouski)
 - [tiger_geocoder] Resolve the fuzzy location helper in the tiger schema
   (Regina Obe)
 - GH-836, Correct the ST_Boundary multiline example (Peter Nguyen)

@@ -534,18 +534,18 @@ CreateStd(char *lextab, char *gaztab, char *rultab)
 static int parse_rule(char *buf, int *rule)
 {
     int nr = 0;
-    int *r = rule;
+    int value;
     char *p = buf;
     char *q;
 
 
     while (1) {
-        if (nr >= MAX_RULE_LENGTH) return -1;
-        *r = strtol( p, &q, 10 );
+        value = strtol( p, &q, 10 );
         if (p == q) break;
+        if (nr >= MAX_RULE_LENGTH) return -1;
+        rule[nr] = value;
         p = q;
         nr++;
-        r++;
     }
 
     return nr;
@@ -669,7 +669,16 @@ static int load_lex(LEXICON *lex, char *tab)
             elog(NOTICE, "load_lex: table \"%s\" does not exist", tab);
             return -1;
         }
-        sql = psprintf("select seq, word, stdword, token from %s order by id", safe_tab);
+        /*
+         * The parser treats lexicon definition load order as priority, so the
+         * order this query returns is semantic, not cosmetic.  Ordering by id
+         * made that priority depend on physical row order, which differs
+         * between extension install paths and platforms: with E/SINGLE ahead
+         * of E/DIRECT, "ONE E PIMA" standardizes to house number "1 E" instead
+         * of house number "1" with predirection EAST.  Order by the documented
+         * lexicon columns instead, which are the same everywhere.
+         */
+        sql = psprintf("select seq, word, stdword, token from %s order by word, seq, token, stdword", safe_tab);
     }
 
     /* get the sql for the lexicon records and prepare the query */

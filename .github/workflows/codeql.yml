@@ -39,25 +39,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
-      with:
-        fetch-depth: 50
-
-    - name: Check changed surface
-      id: changed-surface
-      run: |
-        set +e
-        python3 ci/ci_need_suite.py github-ci
-        gate_status=$?
-        set -e
-        if test "${gate_status}" = 78; then
-          echo "skip=true" >> "${GITHUB_OUTPUT}"
-          exit 0
-        fi
-        exit "${gate_status}"
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      if: steps.changed-surface.outputs.skip != 'true'
       uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
@@ -70,7 +54,6 @@ jobs:
         # queries: security-extended,security-and-quality
 
     - name: Install dependencies
-      if: steps.changed-surface.outputs.skip != 'true'
       run: |
           # Match the PGDG PostgreSQL packages preinstalled on GitHub runners.
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
@@ -78,14 +61,12 @@ jobs:
           sudo apt-get install -y g++ autoconf automake libgeos-dev libproj-dev libgdal-dev libjson-c-dev libsfcgal-dev gettext libxml2-dev postgresql-server-dev-18 postgresql-client-18 libprotobuf-c-dev libprotoc-dev protobuf-c-compiler clang
 
     - name: Build
-      if: steps.changed-surface.outputs.skip != 'true'
       run: |
           ./autogen.sh
           ./configure
           make -j$(nproc)
 
     - name: Perform CodeQL Analysis
-      if: steps.changed-surface.outputs.skip != 'true'
       uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"

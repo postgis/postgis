@@ -90,3 +90,92 @@ WHERE probin like '%postgis%';
 --       function names
 --
 ALTER FUNCTION postgis_version() SECURITY DEFINER;
+
+-- An extension update must not call an exact operator from its search path.
+CREATE TABLE public.upgrade_test_operator_calls (
+	called boolean NOT NULL
+);
+
+CREATE FUNCTION public.upgrade_test_integer_array_lt(integer[], integer[])
+RETURNS boolean
+LANGUAGE plpgsql
+VOLATILE
+SECURITY INVOKER
+AS $upgrade_test_operator$
+BEGIN
+	INSERT INTO public.upgrade_test_operator_calls VALUES (true);
+	RETURN false;
+END
+$upgrade_test_operator$;
+
+CREATE OPERATOR public.< (
+	FUNCTION = public.upgrade_test_integer_array_lt,
+	LEFTARG = integer[],
+	RIGHTARG = integer[]
+);
+
+-- A shorter overload must not make identity-helper calls ambiguous.
+CREATE TABLE upgrade_test_identity_helper_call(marker text);
+
+CREATE FUNCTION _postgis_drop_function_by_identity(
+	function_name text,
+	function_arguments text
+)
+RETURNS void
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	INSERT INTO upgrade_test_identity_helper_call VALUES (function_name);
+END;
+$$;
+
+\i :regdir/hooks/issue-009-signature-helper-before.sql
+
+-- Verify generated named-argument guards do not use an exact operator from
+-- the extension schema. The callback only records that it ran.
+CREATE SCHEMA IF NOT EXISTS postgis_upgrade_test_data;
+
+CREATE TABLE postgis_upgrade_test_data.issue004_named_argument_operator_calls (
+	called boolean NOT NULL
+);
+
+CREATE FUNCTION postgis_upgrade_test_data.issue004_named_argument_operator_callback(
+	text[], text[]
+)
+RETURNS boolean
+LANGUAGE plpgsql
+AS $postgis_upgrade_test$
+BEGIN
+	INSERT INTO postgis_upgrade_test_data.issue004_named_argument_operator_calls
+	VALUES (true);
+	RETURN false;
+END
+$postgis_upgrade_test$;
+
+CREATE OPERATOR <> (
+	FUNCTION = postgis_upgrade_test_data.issue004_named_argument_operator_callback,
+	LEFTARG = text[],
+	RIGHTARG = text[]
+);
+
+-- Add the deprecated shape that makes the generated replacement guard run.
+-- PostGIS 3.0 already provides it, with parameter defaults that a
+-- replacement without defaults cannot remove.
+DO $postgis_upgrade_test$
+BEGIN
+	IF pg_catalog.to_regprocedure(
+		'ST_TileEnvelope(integer, integer, integer, geometry)'
+	) IS NULL THEN
+		CREATE FUNCTION ST_TileEnvelope(
+			zoom integer,
+			x integer,
+			y integer,
+			bounds geometry
+		)
+		RETURNS geometry
+		LANGUAGE sql
+		IMMUTABLE STRICT
+		AS 'SELECT bounds';
+	END IF;
+END
+$postgis_upgrade_test$;

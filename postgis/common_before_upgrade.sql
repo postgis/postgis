@@ -35,7 +35,7 @@
 CREATE OR REPLACE FUNCTION _postgis_drop_function_by_identity(
 	function_name text,
 	function_arguments text,
-	deprecated_in_version text DEFAULT 'xxx'
+	deprecated_in_version text
 ) RETURNS void AS $$
 DECLARE
 	sql text;
@@ -86,7 +86,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION _postgis_drop_cast_by_types(
   sourcetype text,
 	targettype text,
-	deprecated_in_version text DEFAULT 'xxx'
+	deprecated_in_version text
 ) RETURNS void AS $$
 DECLARE
 	sql text;
@@ -128,7 +128,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION _postgis_drop_function_by_signature(
   function_signature text,
-  deprecated_in_version text DEFAULT 'xxx'
+  deprecated_in_version text
 ) RETURNS void AS $$
 DECLARE
 	sql text;
@@ -174,7 +174,7 @@ CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_domain_type(
   domain_name text,
 	old_domain_type text,
 	new_domain_type text,
-	deprecated_in_version text DEFAULT 'xxx'
+	deprecated_in_version text
 ) RETURNS void AS $$
 DECLARE
 	detail TEXT;
@@ -218,7 +218,7 @@ CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_user_type_attribute(
 	attr_name text,
 	old_attr_type text,
 	new_attr_type text,
-	deprecated_in_version text DEFAULT 'xxx'
+	deprecated_in_version text
 ) RETURNS void AS $$
 DECLARE
 	sql text;
@@ -331,7 +331,7 @@ CREATE OR REPLACE FUNCTION _postgis_add_column_to_table(
 	data_type text,
 	is_not_null BOOLEAN,
 	default_value text,
-	deprecated_in_version text DEFAULT 'xxx'
+	deprecated_in_version text
 	) RETURNS void
 AS $BODY$
 DECLARE

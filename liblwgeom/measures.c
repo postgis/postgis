@@ -2480,7 +2480,23 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 {
 	if (A->x == B->x && A->y == B->y)
 		return LW_FALSE;
+	/* Avoid rounding a due-north azimuth up to a full revolution. */
+	if (A->x == B->x && isfinite(A->x))
+	{
+		if (A->y < B->y)
+		{
+			*d = 0.0;
+			return LW_TRUE;
+		}
+		if (A->y > B->y)
+		{
+			*d = M_PI;
+			return LW_TRUE;
+		}
+	}
+
 	*d = fmod(2 * M_PI + M_PI / 2 - atan2(B->y - A->y, B->x - A->x), 2 * M_PI);
+
 	return LW_TRUE;
 }
 
