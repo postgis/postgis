@@ -3153,6 +3153,7 @@ CREATE OR REPLACE FUNCTION st_stddev4ma(value double precision[][][], pos intege
 -- Focal-statistics mask helpers
 -----------------------------------------------------------------------
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION _st_focal_mask(
 	fillvalue double precision,
 	innerradius integer,
@@ -3238,6 +3239,7 @@ CREATE OR REPLACE FUNCTION _st_focal_mask(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION _st_focal_callback(operation text)
 	RETURNS regprocedure
 	AS $$
@@ -3263,6 +3265,7 @@ CREATE OR REPLACE FUNCTION _st_focal_callback(operation text)
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_wedge(
 	rast raster, nband integer,
 	innerradius integer, outerradius integer,
@@ -3287,6 +3290,7 @@ CREATE OR REPLACE FUNCTION st_wedge(
 		END
 	$$ LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_annulus(
 	rast raster, nband integer,
 	innerradius integer, outerradius integer,
@@ -3299,6 +3303,7 @@ CREATE OR REPLACE FUNCTION st_annulus(
 		SELECT @extschema@.ST_Wedge($1, $2, $3, $4, 0, 2 * pi(), $5, $6, $7, $8)
 	$$ LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_circle(
 	rast raster, nband integer,
 	radius integer,

@@ -10362,7 +10362,7 @@ WHERE t1.rid = 1
                     <title>Description</title>
                     <para>Applies one of the built-in focal-statistics operations to each pixel using a circular mask centered on that pixel. The supported operations are <code>MAX</code>, <code>MEAN</code>, <code>MIN</code>, <code>RANGE</code>, <code>STDDEV</code>, <code>SUM</code>, and <code>DISTINCT</code>.</para>
                     <para>This is a convenience wrapper around <xref linkend="RT_ST_MapAlgebra"/> using the callback-function variant with a generated mask.</para>
-                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                    <para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
                 </refsection>
 
                 <refsection>
@@ -10413,7 +10413,7 @@ FROM test;
                     <title>Description</title>
                     <para>Applies one of the built-in focal-statistics operations to each pixel using an annulus mask centered on that pixel. Pixels whose distance from the center pixel is between <varname>innerradius</varname> and <varname>outerradius</varname> are included.</para>
                     <para>Supported operations are <code>MAX</code>, <code>MEAN</code>, <code>MIN</code>, <code>RANGE</code>, <code>STDDEV</code>, <code>SUM</code>, and <code>DISTINCT</code>.</para>
-                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                    <para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
                 </refsection>
 
                 <refsection>
@@ -10466,7 +10466,7 @@ FROM test;
                     <title>Description</title>
                     <para>Applies one of the built-in focal-statistics operations to each pixel using a wedge mask centered on that pixel. Angles are in radians, measured clockwise from the positive Y axis. The start angle is inclusive and <varname>thetaend</varname> must be greater than <varname>thetastart</varname>.</para>
                     <para>Supported operations are <code>MAX</code>, <code>MEAN</code>, <code>MIN</code>, <code>RANGE</code>, <code>STDDEV</code>, <code>SUM</code>, and <code>DISTINCT</code>.</para>
-                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                    <para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
                 </refsection>
 
                 <refsection>
