@@ -92,9 +92,9 @@ if ! flock -n 9; then
   exit 1
 fi
 
-LOCALIZED_HTML_JOBS=${LOCALIZED_HTML_JOBS:-$(nproc)}
+LOCALIZED_HTML_JOBS=${LOCALIZED_HTML_JOBS:-$(sh ci/parallel-jobs.sh)}
 case "${LOCALIZED_HTML_JOBS}" in
-  ''|*[!0-9]*|0)
+  ''|*[!0-9]*|0*)
     echo "LOCALIZED_HTML_JOBS must be a positive integer" >&2
     exit 1
     ;;

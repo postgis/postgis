@@ -82,7 +82,8 @@ jobs:
       run: |
           ./autogen.sh
           ./configure
-          make -j$(nproc)
+          jobs=$(sh ci/parallel-jobs.sh)
+          make -j"${jobs}"
 
     - name: Perform CodeQL Analysis
       if: steps.changed-surface.outputs.skip != 'true'

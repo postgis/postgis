@@ -28,6 +28,7 @@ steps:
     image: *test-image
     pull: true
     commands:
+      - sh ci/test-parallel-jobs.sh
       - ./autogen.sh
 
   usan-clang:

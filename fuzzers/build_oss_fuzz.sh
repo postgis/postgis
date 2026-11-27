@@ -36,8 +36,9 @@ POSTGIS_OSS_FUZZ_CONFIGURE_FLAGS=(
 cd "$SRC_DIR"
 ./autogen.sh
 ./configure CC="$CC" CXX="$CXX" "${POSTGIS_OSS_FUZZ_CONFIGURE_FLAGS[@]}"
-make -C liblwgeom -j"$(nproc)" -s
-make -C raster corelib -j"$(nproc)" -s
+jobs=$(sh ci/parallel-jobs.sh)
+make -C liblwgeom -j"${jobs}" -s
+make -C raster corelib -j"${jobs}" -s
 
 bash ./fuzzers/build_google_oss_fuzzers.sh
 bash ./fuzzers/build_seed_corpus.sh
