@@ -111,7 +111,7 @@ GetPROJSRSCache(void)
 		cache = MemoryContextAllocZero(context, sizeof(PROJSRSCache));
 
 		if (!cache)
-			elog(ERROR, "Unable to allocate space for PROJSRSCache in context %p", (void *)context);
+			elog(ERROR, "Unable to allocate space for PROJSRSCache");
 
 		cache->PROJSRSCacheCount = 0;
 		cache->PROJSRSCacheContext = context;

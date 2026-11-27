@@ -106,7 +106,8 @@ PreparedCacheDelete(void *ptr)
 	pghe = GetPrepGeomHashEntry(context);
 
 	if (!pghe)
-		elog(ERROR, "PreparedCacheDelete: Trying to delete non-existent hash entry object with MemoryContext key (%p)", (void *)context);
+		elog(ERROR,
+		     "PreparedCacheDelete: Trying to delete non-existent hash entry object with MemoryContext key");
 
 	POSTGIS_DEBUGF(3, "deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe->geom, pghe->prepared_geom, context);
 
@@ -167,7 +168,7 @@ AddPrepGeomHashEntry(PrepGeomHashEntry pghe)
 	}
 	else
 	{
-		elog(ERROR, "AddPrepGeomHashEntry: This memory context is already in use! (%p)", (void *)pghe.context);
+		elog(ERROR, "AddPrepGeomHashEntry: This memory context is already in use!");
 	}
 }
 
@@ -201,7 +202,9 @@ DeletePrepGeomHashEntry(MemoryContext mcxt)
 
 	if (!he)
 	{
-		elog(ERROR, "DeletePrepGeomHashEntry: There was an error removing the geometry object from this MemoryContext (%p)", (void *)mcxt);
+		elog(
+		    ERROR,
+		    "DeletePrepGeomHashEntry: There was an error removing the geometry object from this MemoryContext");
 	}
 
 	he->prepared_geom = NULL;
@@ -280,7 +283,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
 	if ( ! pghe )
 	{
-		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", (void *)prepcache->context_callback);
+		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context");
 		return LW_FAILURE;
 	}
 
@@ -316,7 +319,7 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
 	if ( ! pghe )
 	{
-		lwpgerror("PrepGeomCacheCleaner failed to find hash entry for context %p", prepcache->context_callback);
+		lwpgerror("PrepGeomCacheCleaner failed to find hash entry for context");
 		return LW_FAILURE;
 	}
 	pghe->geom = 0;

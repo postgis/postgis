@@ -3,6 +3,14 @@ PostGIS 3.7.1dev
 
 * Bug Fixes *
 
+ - Remove process addresses from public errors and notices (Andrew Kroh)
+ - Drop the obsolete ST_TileEnvelope signature on upgrade (Darafei Praliaskouski)
+ - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
+     (John Carmack)
+ - GH-1191, [topology] Return SQL NULL for a NULL topology name in
+     _RegisterMissingFaces (Bilal Kahraman)
+ - #6159, Avoid negative geography areas when subtracting polygon holes
+     (Sandro Santilli)
  - GH-1178, Avoid NULL dereferences when column-map allocation fails and make
           partial column-map cleanup safe (Maksim Korotkov)
  - #6160, Clarify licensing vector_tile (Bas Couwenberg)
