@@ -2,3 +2,9 @@
 ~~ |39682|Seq Scan|39682|Index Scan
 @@ |39682|Seq Scan|39682|Index Scan
 ~~=|480|Seq Scan|480|Index Scan
+nd_empty_build_geom|Index Scan|2|1,2|1
+nd_empty_insert_geom|Index Scan|2,3|1,2,3|1
+nd_empty_build_geog|Index Scan|2|1,2|1
+nd_empty_insert_geog|Index Scan|2,3|1,2,3|1
+nd_nan_geog|1,2,3
+nd_nan_geom|1,2
