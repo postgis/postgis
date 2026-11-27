@@ -23,9 +23,9 @@
  **********************************************************************/
 
 /**
-* @file X3D output routines.
-*
-**********************************************************************/
+ * @file X3D output routines.
+ *
+ **********************************************************************/
 #include <string.h>
 #include "liblwgeom_internal.h"
 #include "stringbuffer.h"
@@ -45,4 +45,4 @@ static int asx3d3_tin_sb(const LWTIN *tin, int precision, int opts, const char *
 
 static int
 asx3d3_collection_sb(const LWCOLLECTION *col, int precision, int opts, const char *defid, stringbuffer_t *sb);
-static int ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, stringbuffer_t *sb );
+static int ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, stringbuffer_t *sb);

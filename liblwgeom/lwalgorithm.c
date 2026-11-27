@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <ctype.h> /* for tolower */
@@ -31,62 +30,55 @@
 int
 p4d_same(const POINT4D *p1, const POINT4D *p2)
 {
-	return p1->x == p2->x
-	    && p1->y == p2->y
-	    && p1->z == p2->z
-	    && p1->m == p2->m;
+	return p1->x == p2->x && p1->y == p2->y && p1->z == p2->z && p1->m == p2->m;
 }
 
 int
 p3d_same(const POINT3D *p1, const POINT3D *p2)
 {
-	return p1->x == p2->x
-	    && p1->y == p2->y
-	    && p1->z == p2->z;
+	return p1->x == p2->x && p1->y == p2->y && p1->z == p2->z;
 }
 
 int
 p3dz_same(const POINT3DZ *p1, const POINT3DZ *p2)
 {
-	return p1->x == p2->x
-	    && p1->y == p2->y
-	    && p1->z == p2->z;
+	return p1->x == p2->x && p1->y == p2->y && p1->z == p2->z;
 }
 
 int
 p2d_same(const POINT2D *p1, const POINT2D *p2)
 {
-	return p1->x == p2->x
-	    && p1->y == p2->y;
+	return p1->x == p2->x && p1->y == p2->y;
 }
 
 /**
-* lw_segment_side()
-*
-* Return -1  if point Q is left of segment P
-* Return  1  if point Q is right of segment P
-* Return  0  if point Q in on segment P
-*/
-int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
+ * lw_segment_side()
+ *
+ * Return -1  if point Q is left of segment P
+ * Return  1  if point Q is right of segment P
+ * Return  0  if point Q in on segment P
+ */
+int
+lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
-	double side = ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
+	double side = ((q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y));
 	return SIGNUM(side);
 }
 
 /**
-* Returns the length of a linear segment
-*/
+ * Returns the length of a linear segment
+ */
 double
 lw_seg_length(const POINT2D *A1, const POINT2D *A2)
 {
-	return sqrt((A1->x-A2->x)*(A1->x-A2->x)+(A1->y-A2->y)*(A1->y-A2->y));
+	return sqrt((A1->x - A2->x) * (A1->x - A2->x) + (A1->y - A2->y) * (A1->y - A2->y));
 }
 
 /**
-* Returns true if P is on the same side of the plane partition
-* defined by A1/A3 as A2 is. Only makes sense if P has already been
-* determined to be on the circle defined by A1/A2/A3.
-*/
+ * Returns true if P is on the same side of the plane partition
+ * defined by A1/A3 as A2 is. Only makes sense if P has already been
+ * determined to be on the circle defined by A1/A2/A3.
+ */
 int
 lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 {
@@ -96,9 +88,9 @@ lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT
 }
 
 /**
-* Returns true if P is between A1/A2. Only makes sense if P has already been
-* deterined to be on the line defined by A1/A2.
-*/
+ * Returns true if P is between A1/A2. Only makes sense if P has already been
+ * deterined to be on the line defined by A1/A2.
+ */
 int
 lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
 {
@@ -107,29 +99,29 @@ lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
 }
 
 int
-lw_pt_on_segment(const POINT2D* A1, const POINT2D* A2, const POINT2D* P)
+lw_pt_on_segment(const POINT2D *A1, const POINT2D *A2, const POINT2D *P)
 {
 	int side = lw_segment_side(A1, A2, P);
-	if (side != 0) return LW_FALSE;
+	if (side != 0)
+		return LW_FALSE;
 	return lw_pt_in_seg(P, A1, A2);
 }
 
 /**
-* Returns true if arc A is actually a point (all vertices are the same) .
-*/
+ * Returns true if arc A is actually a point (all vertices are the same) .
+ */
 int
 lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 {
-	if ( A1->x == A2->x && A2->x == A3->x &&
-	     A1->y == A2->y && A2->y == A3->y )
+	if (A1->x == A2->x && A2->x == A3->x && A1->y == A2->y && A2->y == A3->y)
 		return LW_TRUE;
 	else
 		return LW_FALSE;
 }
 
 /**
-* Returns the length of a circular arc segment
-*/
+ * Returns the length of a circular arc segment
+ */
 double
 lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 {
@@ -139,22 +131,22 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	double a1, a3;
 	double angle;
 
-	if ( lw_arc_is_pt(A1, A2, A3) )
+	if (lw_arc_is_pt(A1, A2, A3))
 		return 0.0;
 
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 
 	/* Co-linear! Return linear distance! */
-	if ( radius_A < 0 )
+	if (radius_A < 0)
 	{
-        double dx = A1->x - A3->x;
-        double dy = A1->y - A3->y;
-		return sqrt(dx*dx + dy*dy);
+		double dx = A1->x - A3->x;
+		double dy = A1->y - A3->y;
+		return sqrt(dx * dx + dy * dy);
 	}
 
 	/* Closed circle! Return the circumference! */
 	circumference_A = M_PI * 2 * radius_A;
-	if ( p2d_same(A1, A3) )
+	if (p2d_same(A1, A3))
 		return circumference_A;
 
 	/* Determine the orientation of the arc */
@@ -162,7 +154,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 
 	/* The side of the A1/A3 line that A2 falls on dictates the sweep
 	   direction from A1 to A3. */
-	if ( a2_side == -1 )
+	if (a2_side == -1)
 		clockwise = LW_TRUE;
 	else
 		clockwise = LW_FALSE;
@@ -172,26 +164,27 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	a3 = atan2(A3->y - C.y, A3->x - C.x);
 
 	/* What's the sweep from A1 to A3? */
-	if ( clockwise )
+	if (clockwise)
 	{
-		if ( a1 > a3 )
+		if (a1 > a3)
 			angle = a1 - a3;
 		else
-			angle = 2*M_PI + a1 - a3;
+			angle = 2 * M_PI + a1 - a3;
 	}
 	else
 	{
-		if ( a3 > a1 )
+		if (a3 > a1)
 			angle = a3 - a1;
 		else
-			angle = 2*M_PI + a3 - a1;
+			angle = 2 * M_PI + a3 - a1;
 	}
 
 	/* Length as proportion of circumference */
-	return circumference_A * (angle / (2*M_PI));
+	return circumference_A * (angle / (2 * M_PI));
 }
 
-int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q)
+int
+lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q)
 {
 	POINT2D C;
 	double radius_A;
@@ -203,28 +196,28 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 	side_A2 = lw_segment_side(A1, A3, A2);
 
 	/* Linear case */
-	if ( radius_A < 0 )
+	if (radius_A < 0)
 		return side_Q;
 
 	d = distance2d_pt_pt(Q, &C);
 
 	/* Q is on the arc boundary */
-	if ( d == radius_A && side_Q == side_A2 )
+	if (d == radius_A && side_Q == side_A2)
 	{
 		return 0;
 	}
 
 	/* Q on A1-A3 line, so its on opposite side to A2 */
-	if ( side_Q == 0 )
+	if (side_Q == 0)
 	{
 		return -1 * side_A2;
 	}
 
 	/*
-	* Q is inside the arc boundary, so it's not on the side we
-	* might think from examining only the end points
-	*/
-	if ( d < radius_A && side_Q == side_A2 )
+	 * Q is inside the arc boundary, so it's not on the side we
+	 * might think from examining only the end points
+	 */
+	if (d < radius_A && side_Q == side_A2)
 	{
 		side_Q *= -1;
 	}
@@ -233,13 +226,13 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 }
 
 /**
-* Determines the center of the circle defined by the three given points.
-* In the event the circle is complete, the midpoint of the segment defined
-* by the first and second points is returned.  If the points are collinear,
-* as determined by equal slopes, then -1.0 is returned.  If the interior
-* point is coincident with either end point, they are taken as collinear.
-* For non-collinear cases, arc radious is returned.
-*/
+ * Determines the center of the circle defined by the three given points.
+ * In the event the circle is complete, the midpoint of the segment defined
+ * by the first and second points is returned.  If the points are collinear,
+ * as determined by equal slopes, then -1.0 is returned.  If the interior
+ * point is coincident with either end point, they are taken as collinear.
+ * For non-collinear cases, arc radious is returned.
+ */
 double
 lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)
 {
@@ -249,11 +242,17 @@ lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *
 
 	c.x = c.y = 0.0;
 
-	LWDEBUGF(2, "lw_arc_center called (%.16f,%.16f), (%.16f,%.16f), (%.16f,%.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
+	LWDEBUGF(2,
+		 "lw_arc_center called (%.16f,%.16f), (%.16f,%.16f), (%.16f,%.16f).",
+		 p1->x,
+		 p1->y,
+		 p2->x,
+		 p2->y,
+		 p3->x,
+		 p3->y);
 
 	/* Closed circle */
-	if (fabs(p1->x - p3->x) < EPSILON_SQLMM &&
-	    fabs(p1->y - p3->y) < EPSILON_SQLMM)
+	if (fabs(p1->x - p3->x) < EPSILON_SQLMM && fabs(p1->y - p3->y) < EPSILON_SQLMM)
 	{
 		cx = p1->x + (p2->x - p1->x) / 2.0;
 		cy = p1->y + (p2->y - p1->y) / 2.0;
@@ -296,32 +295,30 @@ lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *
 static int
 lw_seg_interact(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
-	double minq=FP_MIN(q1->x,q2->x);
-	double maxq=FP_MAX(q1->x,q2->x);
-	double minp=FP_MIN(p1->x,p2->x);
-	double maxp=FP_MAX(p1->x,p2->x);
+	double minq = FP_MIN(q1->x, q2->x);
+	double maxq = FP_MAX(q1->x, q2->x);
+	double minp = FP_MIN(p1->x, p2->x);
+	double maxp = FP_MAX(p1->x, p2->x);
 
-	if (FP_GT(minp,maxq) || FP_LT(maxp,minq))
+	if (FP_GT(minp, maxq) || FP_LT(maxp, minq))
 		return LW_FALSE;
 
-	minq=FP_MIN(q1->y,q2->y);
-	maxq=FP_MAX(q1->y,q2->y);
-	minp=FP_MIN(p1->y,p2->y);
-	maxp=FP_MAX(p1->y,p2->y);
+	minq = FP_MIN(q1->y, q2->y);
+	maxq = FP_MAX(q1->y, q2->y);
+	minp = FP_MIN(p1->y, p2->y);
+	maxp = FP_MAX(p1->y, p2->y);
 
-	if (FP_GT(minp,maxq) || FP_LT(maxp,minq))
+	if (FP_GT(minp, maxq) || FP_LT(maxp, minq))
 		return LW_FALSE;
 
 	return LW_TRUE;
 }
 
 /**
-** @brief returns the kind of #CG_SEGMENT_INTERSECTION_TYPE  behavior of lineseg 1 (constructed from p1 and p2) and lineseg 2 (constructed from q1 and q2)
-**	@param p1 start point of first straight linesegment
-**	@param p2 end point of first straight linesegment
-**	@param q1 start point of second line segment
-**	@param q2 end point of second line segment
-**	@return a #CG_SEGMENT_INTERSECTION_TYPE
+** @brief returns the kind of #CG_SEGMENT_INTERSECTION_TYPE  behavior of lineseg 1 (constructed from p1 and p2) and
+* lineseg 2 (constructed from q1 and q2) *	@param p1 start point of first straight linesegment *	@param p2 end
+* point of first straight linesegment *	@param q1 start point of second line segment *	@param q2 end point of second
+* line segment *	@return a #CG_SEGMENT_INTERSECTION_TYPE
 ** 	Returns one of
 **		SEG_ERROR = -1,
 **		SEG_NO_INTERSECTION = 0,
@@ -329,7 +326,8 @@ lw_seg_interact(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const P
 **		SEG_CROSS_LEFT = 2,
 **		SEG_CROSS_RIGHT = 3,
 */
-int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
+int
+lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
 
 	int pq1, pq2, qp1, qp2;
@@ -341,23 +339,23 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 	}
 
 	/* Are the start and end points of q on the same side of p? */
-	pq1=lw_segment_side(p1,p2,q1);
-	pq2=lw_segment_side(p1,p2,q2);
-	if ((pq1>0 && pq2>0) || (pq1<0 && pq2<0))
+	pq1 = lw_segment_side(p1, p2, q1);
+	pq2 = lw_segment_side(p1, p2, q2);
+	if ((pq1 > 0 && pq2 > 0) || (pq1 < 0 && pq2 < 0))
 	{
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* Are the start and end points of p on the same side of q? */
-	qp1=lw_segment_side(q1,q2,p1);
-	qp2=lw_segment_side(q1,q2,p2);
-	if ( (qp1 > 0.0 && qp2 > 0.0) || (qp1 < 0.0 && qp2 < 0.0) )
+	qp1 = lw_segment_side(q1, q2, p1);
+	qp2 = lw_segment_side(q1, q2, p2);
+	if ((qp1 > 0.0 && qp2 > 0.0) || (qp1 < 0.0 && qp2 < 0.0))
 	{
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* Nobody is on one side or another? Must be colinear. */
-	if ( pq1 == 0.0 && pq2 == 0.0 && qp1 == 0.0 && qp2 == 0.0 )
+	if (pq1 == 0.0 && pq2 == 0.0 && qp1 == 0.0 && qp2 == 0.0)
 	{
 		return SEG_COLINEAR;
 	}
@@ -371,31 +369,31 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 	LWDEBUGF(4, "qp1=%.15g qp2=%.15g", qp1, qp2);
 
 	/* Second point of p or q touches, it's not a crossing. */
-	if ( pq2 == 0 || qp2 == 0 )
+	if (pq2 == 0 || qp2 == 0)
 	{
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* First point of p touches, it's a "crossing". */
-	if ( pq1 == 0 )
+	if (pq1 == 0)
 	{
-		if ( pq2 > 0 )
+		if (pq2 > 0)
 			return SEG_CROSS_RIGHT;
 		else
 			return SEG_CROSS_LEFT;
 	}
 
 	/* First point of q touches, it's a crossing. */
-	if ( qp1 == 0 )
+	if (qp1 == 0)
 	{
-		if ( pq1 < pq2 )
+		if (pq1 < pq2)
 			return SEG_CROSS_RIGHT;
 		else
 			return SEG_CROSS_LEFT;
 	}
 
 	/* The segments cross, what direction is the crossing? */
-	if ( pq1 < pq2 )
+	if (pq1 < pq2)
 		return SEG_CROSS_RIGHT;
 	else
 		return SEG_CROSS_LEFT;
@@ -418,7 +416,8 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 **   LINE_MULTICROSS_END_SAME_FIRST_RIGHT = 3
 **
 */
-int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
+int
+lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 {
 	uint32_t i = 0, j = 0;
 	const POINT2D *p1, *p2, *q1, *q2;
@@ -431,23 +430,22 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	char *geom_ewkt;
 #endif
 
-	pa1 = (POINTARRAY*)l1->points;
-	pa2 = (POINTARRAY*)l2->points;
+	pa1 = (POINTARRAY *)l1->points;
+	pa2 = (POINTARRAY *)l2->points;
 
 	/* One-point lines can't intersect (and shouldn't exist). */
-	if ( pa1->npoints < 2 || pa2->npoints < 2 )
+	if (pa1->npoints < 2 || pa2->npoints < 2)
 		return LINE_NO_CROSS;
 
 	/* Zero length lines don't have a side. */
-	if ( ptarray_length_2d(pa1) == 0 || ptarray_length_2d(pa2) == 0 )
+	if (ptarray_length_2d(pa1) == 0 || ptarray_length_2d(pa2) == 0)
 		return LINE_NO_CROSS;
 
-
 #if POSTGIS_DEBUG_LEVEL >= 4
-	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)l1);
+	geom_ewkt = lwgeom_to_ewkt((LWGEOM *)l1);
 	LWDEBUGF(4, "l1 = %s", geom_ewkt);
 	lwfree(geom_ewkt);
-	geom_ewkt = lwgeom_to_ewkt((LWGEOM*)l2);
+	geom_ewkt = lwgeom_to_ewkt((LWGEOM *)l2);
 	LWDEBUGF(4, "l2 = %s", geom_ewkt);
 	lwfree(geom_ewkt);
 #endif
@@ -455,7 +453,7 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	/* Initialize first point of q */
 	q1 = getPoint2d_cp(pa2, 0);
 
-	for ( i = 1; i < pa2->npoints; i++ )
+	for (i = 1; i < pa2->npoints; i++)
 	{
 
 		/* Update second point of q to next value */
@@ -464,7 +462,7 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 		/* Initialize first point of p */
 		p1 = getPoint2d_cp(pa1, 0);
 
-		for ( j = 1; j < pa1->npoints; j++ )
+		for (j = 1; j < pa1->npoints; j++)
 		{
 
 			/* Update second point of p to next value */
@@ -474,19 +472,19 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 
 			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", this_cross, i, j, p1->x, p1->y, p2->x, p2->y);
 
-			if ( this_cross == SEG_CROSS_LEFT )
+			if (this_cross == SEG_CROSS_LEFT)
 			{
-				LWDEBUG(4,"this_cross == SEG_CROSS_LEFT");
+				LWDEBUG(4, "this_cross == SEG_CROSS_LEFT");
 				cross_left++;
-				if ( ! first_cross )
+				if (!first_cross)
 					first_cross = SEG_CROSS_LEFT;
 			}
 
-			if ( this_cross == SEG_CROSS_RIGHT )
+			if (this_cross == SEG_CROSS_RIGHT)
 			{
-				LWDEBUG(4,"this_cross == SEG_CROSS_RIGHT");
+				LWDEBUG(4, "this_cross == SEG_CROSS_RIGHT");
 				cross_right++;
-				if ( ! first_cross )
+				if (!first_cross)
 					first_cross = SEG_CROSS_RIGHT;
 			}
 
@@ -495,56 +493,49 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 			** segment to next vertex and seeing if the end points straddle
 			** the co-linear segment.
 			*/
-			if ( this_cross == SEG_COLINEAR )
+			if (this_cross == SEG_COLINEAR)
 			{
-				LWDEBUG(4,"this_cross == SEG_COLINEAR");
+				LWDEBUG(4, "this_cross == SEG_COLINEAR");
 				/* TODO: Add logic here and in segment_intersects()
 				continue;
 				*/
 			}
 
-			LWDEBUG(4,"this_cross == SEG_NO_INTERSECTION");
+			LWDEBUG(4, "this_cross == SEG_NO_INTERSECTION");
 
 			/* Turn second point of p into first point */
 			p1 = p2;
-
 		}
 
 		/* Turn second point of q into first point */
 		q1 = q2;
-
 	}
 
 	LWDEBUGF(4, "first_cross=%d, cross_left=%d, cross_right=%d", first_cross, cross_left, cross_right);
 
-	if ( !cross_left && !cross_right )
+	if (!cross_left && !cross_right)
 		return LINE_NO_CROSS;
 
-	if ( !cross_left && cross_right == 1 )
+	if (!cross_left && cross_right == 1)
 		return LINE_CROSS_RIGHT;
 
-	if ( !cross_right && cross_left == 1 )
+	if (!cross_right && cross_left == 1)
 		return LINE_CROSS_LEFT;
 
-	if ( cross_left - cross_right == 1 )
+	if (cross_left - cross_right == 1)
 		return LINE_MULTICROSS_END_LEFT;
 
-	if ( cross_left - cross_right == -1 )
+	if (cross_left - cross_right == -1)
 		return LINE_MULTICROSS_END_RIGHT;
 
-	if ( cross_left - cross_right == 0 && first_cross == SEG_CROSS_LEFT )
+	if (cross_left - cross_right == 0 && first_cross == SEG_CROSS_LEFT)
 		return LINE_MULTICROSS_END_SAME_FIRST_LEFT;
 
-	if ( cross_left - cross_right == 0 && first_cross == SEG_CROSS_RIGHT )
+	if (cross_left - cross_right == 0 && first_cross == SEG_CROSS_RIGHT)
 		return LINE_MULTICROSS_END_SAME_FIRST_RIGHT;
 
 	return LINE_NO_CROSS;
-
 }
-
-
-
-
 
 static char *base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 
@@ -558,10 +549,10 @@ static char *base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 lwvarlena_t *
 geohash_point(double longitude, double latitude, int precision)
 {
-	int is_even=1, i=0;
+	int is_even = 1, i = 0;
 	double lat[2], lon[2], mid;
-	char bits[] = {16,8,4,2,1};
-	int bit=0, ch=0;
+	char bits[] = {16, 8, 4, 2, 1};
+	int bit = 0, ch = 0;
 	lwvarlena_t *v = lwalloc(precision + LWVARHDRSZ);
 	LWSIZE_SET(v->size, precision + LWVARHDRSZ);
 	char *geohash = v->data;
@@ -616,17 +607,17 @@ geohash_point(double longitude, double latitude, int precision)
 	return v;
 }
 
-
 /*
 ** Calculate the geohash, iterating downwards and gaining precision.
 ** From geohash-native.c, (c) 2008 David Troy <dave@roundhousetech.com>
 ** Released under the MIT License.
 */
-unsigned int geohash_point_as_int(POINT2D *pt)
+unsigned int
+geohash_point_as_int(POINT2D *pt)
 {
-	int is_even=1;
+	int is_even = 1;
 	double lat[2], lon[2], mid;
-	int bit=32;
+	int bit = 32;
 	unsigned int ch = 0;
 
 	double longitude = pt->x;
@@ -679,7 +670,8 @@ unsigned int geohash_point_as_int(POINT2D *pt)
 ** of the GeoHash should be used.
 ** It will call `lwerror` if an invalid character is found
 */
-void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
+void
+decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 {
 	bool is_even = 1;
 
@@ -724,7 +716,8 @@ void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
 	}
 }
 
-int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
+int
+lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 {
 	double minx, miny, maxx, maxy;
 	double latmax, latmin, lonmax, lonmin;
@@ -738,7 +731,7 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 	maxx = bbox.xmax;
 	maxy = bbox.ymax;
 
-	if ( minx == maxx && miny == maxy )
+	if (minx == maxx && miny == maxy)
 	{
 		/* It's a point. Doubles have 51 bits of precision.
 		** 2 * 51 / 5 == 20 */
@@ -752,7 +745,7 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 
 	/* Shrink a world bounding box until one of the edges interferes with the
 	** bounds of our rectangle. */
-	while ( 1 )
+	while (1)
 	{
 		double old_lonmin = lonmin;
 		double old_lonmax = lonmax;
@@ -763,15 +756,15 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 		latwidth = latmax - latmin;
 		latmaxadjust = lonmaxadjust = latminadjust = lonminadjust = 0.0;
 
-		if ( minx > lonmin + lonwidth / 2.0 )
+		if (minx > lonmin + lonwidth / 2.0)
 		{
 			lonminadjust = lonwidth / 2.0;
 		}
-		else if ( maxx < lonmax - lonwidth / 2.0 )
+		else if (maxx < lonmax - lonwidth / 2.0)
 		{
 			lonmaxadjust = -1 * lonwidth / 2.0;
 		}
-		if ( lonminadjust || lonmaxadjust )
+		if (lonminadjust || lonmaxadjust)
 		{
 			lonmin += lonminadjust;
 			lonmax += lonmaxadjust;
@@ -787,16 +780,16 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 			break;
 		}
 
-		if ( miny > latmin + latwidth / 2.0 )
+		if (miny > latmin + latwidth / 2.0)
 		{
 			latminadjust = latwidth / 2.0;
 		}
-		else if (maxy < latmax - latwidth / 2.0 )
+		else if (maxy < latmax - latwidth / 2.0)
 		{
 			latmaxadjust = -1 * latwidth / 2.0;
 		}
 		/* Only adjust if adjustments are legal (we haven't crossed any edges). */
-		if ( latminadjust || latmaxadjust )
+		if (latminadjust || latmaxadjust)
 		{
 			latmin += latminadjust;
 			latmax += latmaxadjust;
@@ -825,7 +818,6 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 	return precision > GEOHASH_MAX_DOUBLE_PRECISION_CHARS ? GEOHASH_MAX_DOUBLE_PRECISION_CHARS : precision;
 }
 
-
 /*
 ** Return a geohash string for the geometry. <http://geohash.org>
 ** Where the precision is non-positive, calculate a precision based on the
@@ -844,14 +836,17 @@ lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	gbox_init(&gbox_bounds);
 
 	result = lwgeom_calculate_gbox_cartesian(lwgeom, &gbox);
-	if ( result == LW_FAILURE ) return NULL;
+	if (result == LW_FAILURE)
+		return NULL;
 
 	/* Return error if we are being fed something outside our working bounds */
-	if ( gbox.xmin < -180 || gbox.ymin < -90 || gbox.xmax > 180 || gbox.ymax > 90 )
+	if (gbox.xmin < -180 || gbox.ymin < -90 || gbox.xmax > 180 || gbox.ymax > 90)
 	{
 		lwerror("Geohash requires inputs in decimal degrees, got (%g %g, %g %g).",
-			 gbox.xmin, gbox.ymin,
-			 gbox.xmax, gbox.ymax);
+			gbox.xmin,
+			gbox.ymin,
+			gbox.xmax,
+			gbox.ymax);
 		return NULL;
 	}
 
@@ -860,7 +855,7 @@ lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	lon = gbox.xmin + (gbox.xmax - gbox.xmin) / 2;
 	lat = gbox.ymin + (gbox.ymax - gbox.ymin) / 2;
 
-	if ( precision <= 0 )
+	if (precision <= 0)
 	{
 		precision = lwgeom_geohash_precision(gbox, &gbox_bounds);
 	}
