@@ -182,14 +182,11 @@ test_raster_compute_skewed_raster(void)
 	scale[0] = 0.0001;
 	scale[1] = -0.0001;
 
-	rast = rt_raster_compute_skewed_raster(
-		extent,
-		skew,
-		scale
-	);
+	rast = rt_raster_compute_skewed_raster(extent, skew, scale);
 
 	CU_ASSERT(rast != NULL);
-	if (rast != NULL) {
+	if (rast != NULL)
+	{
 		CU_ASSERT_EQUAL(rt_raster_get_width(rast), 3);
 		CU_ASSERT_EQUAL(rt_raster_get_height(rast), 2);
 		cu_free_raster(rast);
@@ -201,17 +198,13 @@ test_raster_compute_skewed_raster(void)
 	scale[0] = 0.00010000000000000005;
 	scale[1] = -0.00010000000000000005;
 
-	rast = rt_raster_compute_skewed_raster(
-		extent,
-		skew,
-		scale
-	);
+	rast = rt_raster_compute_skewed_raster(extent, skew, scale);
 
 	CU_ASSERT(rast == NULL);
-	if (rast != NULL) {
+	if (rast != NULL)
+	{
 		cu_free_raster(rast);
 	}
-
 }
 
 /* register tests */
