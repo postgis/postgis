@@ -67,7 +67,8 @@ rt_band_reclass(rt_band srcband,
 	int rtn;
 	uint32_t x;
 	uint32_t y;
-	int i;
+	uint32_t i;
+	int e;
 	double or = 0;
 	double ov = 0;
 	double nr = 0;
@@ -254,9 +255,9 @@ rt_band_reclass(rt_band srcband,
 					break;
 				}
 
-				for (i = 0; i < exprcount; i++)
+				for (e = 0; e < exprcount; e++)
 				{
-					expr = exprset[i];
+					expr = exprset[e];
 
 					/* ov matches min and max*/
 					if (FLT_EQ(expr->src.min, ov) && FLT_EQ(expr->src.max, ov))
@@ -287,7 +288,7 @@ rt_band_reclass(rt_band srcband,
 			/* no expression matched, do not continue */
 			if (!do_nv)
 				continue;
-			RASTER_DEBUGF(3, "Using exprset[%d] unless NODATA", i);
+			RASTER_DEBUGF(3, "Using exprset[%d] unless NODATA", e);
 
 			/* converting a value from one range to another range
 			OldRange = (OldMax - OldMin)

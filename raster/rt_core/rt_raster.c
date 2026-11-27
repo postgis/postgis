@@ -538,7 +538,7 @@ rt_raster_generate_new_band(rt_raster raster,
 	uint32_t checkvaluint = 0;
 	double checkvaldouble = 0;
 	float checkvalfloat = 0;
-	int i;
+	size_t i;
 
 	assert(NULL != raster);
 
@@ -3477,8 +3477,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		int nodata = 0;
 		int hasnodata = 0;
 		double nodataval = 0;
-		int x = 0;
-		int y = 0;
+		size_t x = 0;
+		size_t y = 0;
 
 		oldband = rt_raster_get_band(rast, i);
 		if (oldband == NULL)
