@@ -18,8 +18,8 @@
 #include "gserialized2.c" /* for gserialized_peek_gbox_p */
 #include "cu_tester.h"
 
-
-static void test_g2flags_macros(void)
+static void
+test_g2flags_macros(void)
 {
 	uint8_t flags = 0;
 
@@ -70,7 +70,8 @@ static void test_g2flags_macros(void)
 	CU_ASSERT_EQUAL(1, G2FLAGS_GET_VERSION(flags));
 }
 
-static void test_gserialized2_extended_flags(void)
+static void
+test_gserialized2_extended_flags(void)
 {
 	LWGEOM *lwg1, *lwg2;
 	GSERIALIZED *g;
@@ -98,10 +99,10 @@ static void test_gserialized2_extended_flags(void)
 	/* And that when deserialized again, the solid flag is still there */
 	CU_ASSERT_EQUAL(1, FLAGS_GET_SOLID(lwg2->flags));
 	lwgeom_free(lwg2);
-
 }
 
-static void test_gserialized2_srid(void)
+static void
+test_gserialized2_srid(void)
 {
 	GSERIALIZED s;
 	int32_t srid, rv;
@@ -114,7 +115,7 @@ static void test_gserialized2_srid(void)
 	srid = -3005;
 	gserialized2_set_srid(&s, srid);
 	rv = gserialized2_get_srid(&s);
-	//printf("srid=%d rv=%d\n",srid,rv);
+	// printf("srid=%d rv=%d\n",srid,rv);
 	CU_ASSERT_EQUAL(rv, SRID_UNKNOWN);
 
 	srid = SRID_UNKNOWN;
@@ -133,93 +134,94 @@ static void test_gserialized2_srid(void)
 	CU_ASSERT_EQUAL(rv, srid);
 }
 
-static void test_gserialized2_from_lwgeom_size(void)
+static void
+test_gserialized2_from_lwgeom_size(void)
 {
 	LWGEOM *g;
 	size_t size = 0;
 
 	g = lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE);
 	size = gserialized2_from_lwgeom_size(g);
-	CU_ASSERT_EQUAL( size, 32 );
+	CU_ASSERT_EQUAL(size, 32);
 	lwgeom_free(g);
 
 	g = lwgeom_from_wkt("POINT(0 0 0)", LW_PARSER_CHECK_NONE);
 	size = gserialized2_from_lwgeom_size(g);
-	CU_ASSERT_EQUAL( size, 40 );
+	CU_ASSERT_EQUAL(size, 40);
 	lwgeom_free(g);
 
 	g = lwgeom_from_wkt("MULTIPOINT(0 0 0, 1 1 1)", LW_PARSER_CHECK_NONE);
 	size = gserialized2_from_lwgeom_size(g);
-	CU_ASSERT_EQUAL( size, 80 );
+	CU_ASSERT_EQUAL(size, 80);
 	lwgeom_free(g);
 
 	g = lwgeom_from_wkt("LINESTRING(0 0, 1 1)", LW_PARSER_CHECK_NONE);
 	size = gserialized2_from_lwgeom_size(g);
-	CU_ASSERT_EQUAL( size, 48 );
+	CU_ASSERT_EQUAL(size, 48);
 	lwgeom_free(g);
 
 	g = lwgeom_from_wkt("MULTILINESTRING((0 0, 1 1),(0 0, 1 1))", LW_PARSER_CHECK_NONE);
 	size = gserialized2_from_lwgeom_size(g);
-	CU_ASSERT_EQUAL( size, 96 );
+	CU_ASSERT_EQUAL(size, 96);
 	lwgeom_free(g);
 
 	g = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
 	size = gserialized2_from_lwgeom_size(g);
-	CU_ASSERT_EQUAL( size, 104 );
+	CU_ASSERT_EQUAL(size, 104);
 	lwgeom_free(g);
 
-	g = lwgeom_from_wkt("POLYGON((-1 -1, -1 2, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt("POLYGON((-1 -1, -1 2, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))",
+			    LW_PARSER_CHECK_NONE);
 	size = gserialized2_from_lwgeom_size(g);
-	CU_ASSERT_EQUAL( size, 184 );
+	CU_ASSERT_EQUAL(size, 184);
 	lwgeom_free(g);
-
 }
 
-
-static void test_lwgeom_from_gserialized2(void)
+static void
+test_lwgeom_from_gserialized2(void)
 {
 	LWGEOM *geom1, *geom2;
 	GSERIALIZED *g1, *g2;
 	char *in_ewkt, *out_ewkt;
 	size_t i = 0;
 
-	char *ewkt[] =
-	{
-		"POINT EMPTY",
-		"POINT(0 0.2)",
-		"LINESTRING EMPTY",
-		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
-		"MULTIPOINT EMPTY",
-		"MULTIPOINT(0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9)",
-		"MULTIPOINT(0.9 0.9,0.9 0.9,EMPTY,0.9 0.9,0.9 0.9,0.9 0.9)",
-		"SRID=1;MULTILINESTRING EMPTY",
-		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
-		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"POLYGON EMPTY",
-		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
-		"SRID=4326;POLYGON EMPTY",
-		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))",
-		"SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
-		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
-		"SRID=4326;MULTIPOLYGON EMPTY",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
-		"SRID=4326;GEOMETRYCOLLECTION EMPTY",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT EMPTY,MULTIPOLYGON EMPTY)",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 0.2),POINT EMPTY,POINT(0 0.2))",
-		"MULTICURVE((5 5 1 3,3 5 2 2,3 3 3 1,0 3 1 1),CIRCULARSTRING(0 0 0 0,0.26794 1 3 -2,0.5857864 1.414213 1 2))",
-		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
-		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING EMPTY))",
-		"POLYHEDRALSURFACE(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)),((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),((1 0 0,1 1 0,1 1 1,1 0 1,1 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)))",
+	char *ewkt[] = {
+	    "POINT EMPTY",
+	    "POINT(0 0.2)",
+	    "LINESTRING EMPTY",
+	    "LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
+	    "MULTIPOINT EMPTY",
+	    "MULTIPOINT(0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9)",
+	    "MULTIPOINT(0.9 0.9,0.9 0.9,EMPTY,0.9 0.9,0.9 0.9,0.9 0.9)",
+	    "SRID=1;MULTILINESTRING EMPTY",
+	    "SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
+	    "POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
+	    "POLYGON EMPTY",
+	    "SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
+	    "SRID=4326;POLYGON EMPTY",
+	    "SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))",
+	    "SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
+	    "SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
+	    "SRID=4326;MULTIPOLYGON EMPTY",
+	    "SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
+	    "SRID=4326;GEOMETRYCOLLECTION EMPTY",
+	    "SRID=4326;GEOMETRYCOLLECTION(POINT EMPTY,MULTIPOLYGON EMPTY)",
+	    "SRID=4326;GEOMETRYCOLLECTION(POINT(0 0.2),POINT EMPTY,POINT(0 0.2))",
+	    "MULTICURVE((5 5 1 3,3 5 2 2,3 3 3 1,0 3 1 1),CIRCULARSTRING(0 0 0 0,0.26794 1 3 -2,0.5857864 1.414213 1 2))",
+	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
+	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING EMPTY))",
+	    "POLYHEDRALSURFACE(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)),((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),((1 0 0,1 1 0,1 1 1,1 0 1,1 0 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)))",
 	};
 
-	for ( i = 0; i < (sizeof ewkt/sizeof(char*)); i++ )
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
 	{
 		size_t size1, size2;
 
 		in_ewkt = ewkt[i];
 		geom1 = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		lwgeom_add_bbox(geom1);
-		if (geom1->bbox) gbox_float_round(geom1->bbox);
+		if (geom1->bbox)
+			gbox_float_round(geom1->bbox);
 		size1 = gserialized2_from_lwgeom_size(geom1);
 		g1 = gserialized2_from_lwgeom(geom1, &size2);
 		CU_ASSERT_EQUAL(size1, size2);
@@ -263,49 +265,55 @@ static void test_lwgeom_from_gserialized2(void)
 		lwgeom_free(geom1);
 		lwgeom_free(geom2);
 	}
-
 }
 
-
-static void test_gserialized2_is_empty(void)
+static void
+test_gserialized2_is_empty(void)
 {
 	int i = 0;
 	struct gserialized_empty_cases {
 		int ishex;
-		const char* txt;
+		const char *txt;
 		int isempty;
 	};
 
 	struct gserialized_empty_cases cases[] = {
-		{ 0, "POINT EMPTY", 1 },
-		{ 0, "POINT(1 1)", 0 },
-		{ 0, "LINESTRING EMPTY", 1 },
-		{ 0, "MULTILINESTRING EMPTY", 1 },
-		{ 0, "MULTILINESTRING(EMPTY)", 1 },
-		{ 0, "MULTILINESTRING(EMPTY,EMPTY)", 1 },
-		{ 0, "MULTILINESTRING(EMPTY,(0 0,1 1))", 0 },
-		{ 0, "MULTILINESTRING((0 0,1 1),EMPTY)", 0 },
-		{ 0, "MULTILINESTRING(EMPTY,(0 0,1 1),EMPTY)", 0 },
-		{ 0, "MULTILINESTRING(EMPTY,EMPTY,EMPTY)", 1 },
-		{ 0, "MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)", 0 },
-		{ 0, "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY,EMPTY,EMPTY))", 1 },
-		{ 0, "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY),POINT(1 1))", 0 },
-		{ 0, "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY, (0 0)),POINT EMPTY)", 0 },
-		{ 0, "GEOMETRYCOLLECTION(POLYGON EMPTY,POINT EMPTY,MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1 },
-		{ 0, "GEOMETRYCOLLECTION(POLYGON EMPTY,GEOMETRYCOLLECTION(POINT EMPTY),MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1 },
-		{ 1, "0101000000000000000000F87F000000000000F87F", 1 }, /* POINT EMPTY */
-		{ 1, "010200000000000000", 1 }, /* LINESTRING EMPTY */
-		{ 1, "010400000000000000", 1 }, /* MULTIPOINT EMPTY */
-		{ 1, "0105000000020000000102000000020000000000000000000000000000000000000000000000000000000000000000000000010200000000000000", 0 }, /* MULTILINESTRING ((0 0, 0 0), EMPTY) */
-		{ 1, "0105000000020000000102000000000000000102000000020000000000000000000000000000000000000000000000000000000000000000000000", 0 }, /* MULTILINESTRING (EMPTY,(0 0, 0 0)) */
-		{ 1, "010300000000000000", 1 }, /* POLYGON EMPTY */
-		{ 1, "01030000000100000000000000", 1 }, /* POLYGON(EMPTY) */
-		{ 1, "010300000002000000000000000100000000000000000000000000000000000000", 0 }, /* POLYGON(EMPTY, (0 0)) */
-		{ 1, "0107000000030000000102000000000000000103000000020000000000000000000000010200000000000000", 1}, /* GEOMETRYCOLLECTION(LINESTRING EMPTY, POLYGON(EMPTY, EMPTY), LINESTRING EMPTY) */
-		{ 1, NULL, 0 }
-	};
+	    {0, "POINT EMPTY", 1},
+	    {0, "POINT(1 1)", 0},
+	    {0, "LINESTRING EMPTY", 1},
+	    {0, "MULTILINESTRING EMPTY", 1},
+	    {0, "MULTILINESTRING(EMPTY)", 1},
+	    {0, "MULTILINESTRING(EMPTY,EMPTY)", 1},
+	    {0, "MULTILINESTRING(EMPTY,(0 0,1 1))", 0},
+	    {0, "MULTILINESTRING((0 0,1 1),EMPTY)", 0},
+	    {0, "MULTILINESTRING(EMPTY,(0 0,1 1),EMPTY)", 0},
+	    {0, "MULTILINESTRING(EMPTY,EMPTY,EMPTY)", 1},
+	    {0, "MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)", 0},
+	    {0, "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY,EMPTY,EMPTY))", 1},
+	    {0, "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY),POINT(1 1))", 0},
+	    {0, "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY, (0 0)),POINT EMPTY)", 0},
+	    {0, "GEOMETRYCOLLECTION(POLYGON EMPTY,POINT EMPTY,MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1},
+	    {0,
+	     "GEOMETRYCOLLECTION(POLYGON EMPTY,GEOMETRYCOLLECTION(POINT EMPTY),MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)",
+	     1},
+	    {1, "0101000000000000000000F87F000000000000F87F", 1}, /* POINT EMPTY */
+	    {1, "010200000000000000", 1},                         /* LINESTRING EMPTY */
+	    {1, "010400000000000000", 1},                         /* MULTIPOINT EMPTY */
+	    {1,
+	     "0105000000020000000102000000020000000000000000000000000000000000000000000000000000000000000000000000010200000000000000",
+	     0}, /* MULTILINESTRING ((0 0, 0 0), EMPTY) */
+	    {1,
+	     "0105000000020000000102000000000000000102000000020000000000000000000000000000000000000000000000000000000000000000000000",
+	     0},                                  /* MULTILINESTRING (EMPTY,(0 0, 0 0)) */
+	    {1, "010300000000000000", 1},         /* POLYGON EMPTY */
+	    {1, "01030000000100000000000000", 1}, /* POLYGON(EMPTY) */
+	    {1, "010300000002000000000000000100000000000000000000000000000000000000", 0}, /* POLYGON(EMPTY, (0 0)) */
+	    {1,
+	     "0107000000030000000102000000000000000103000000020000000000000000000000010200000000000000",
+	     1}, /* GEOMETRYCOLLECTION(LINESTRING EMPTY, POLYGON(EMPTY, EMPTY), LINESTRING EMPTY) */
+	    {1, NULL, 0}};
 
-	while( cases[i].txt )
+	while (cases[i].txt)
 	{
 		LWGEOM *lw = NULL;
 		if (cases[i].ishex)
@@ -323,53 +331,49 @@ static void test_gserialized2_is_empty(void)
 	}
 }
 
-
-static void test_on_gser2_lwgeom_count_vertices(void)
+static void
+test_on_gser2_lwgeom_count_vertices(void)
 {
 	LWGEOM *lwgeom;
 	GSERIALIZED *g_ser1;
 	size_t ret_size;
 
 	lwgeom = lwgeom_from_wkt("MULTIPOINT(-1 -1,-1 2.5,2 2,2 -1,1 1,2 2,4 5)", LW_PARSER_CHECK_NONE);
-	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
+	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom), 7);
 	g_ser1 = gserialized2_from_lwgeom(lwgeom, &ret_size);
 	lwgeom_free(lwgeom);
 
 	lwgeom = lwgeom_from_gserialized2(g_ser1);
-	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
+	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom), 7);
 	lwgeom_free(lwgeom);
 
 	lwgeom = lwgeom_from_gserialized2(g_ser1);
 
-	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
+	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom), 7);
 	lwgeom_free(lwgeom);
 
 	lwfree(g_ser1);
-
 }
 
-
-static void test_gserialized2_peek_gbox_p_no_box_when_empty(void)
+static void
+test_gserialized2_peek_gbox_p_no_box_when_empty(void)
 {
 	uint32_t i;
 
-	char *ewkt[] =
-	{
-		"POINT EMPTY",
-		"LINESTRING EMPTY",
-		"MULTIPOINT EMPTY",
-		"MULTIPOINT (EMPTY)",
-		"MULTILINESTRING EMPTY",
-		"MULTILINESTRING (EMPTY)"
-	};
+	char *ewkt[] = {"POINT EMPTY",
+			"LINESTRING EMPTY",
+			"MULTIPOINT EMPTY",
+			"MULTIPOINT (EMPTY)",
+			"MULTILINESTRING EMPTY",
+			"MULTILINESTRING (EMPTY)"};
 
-	for ( i = 0; i < (sizeof ewkt/sizeof(char*)); i++ )
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
 	{
-		LWGEOM* geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
+		LWGEOM *geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
 		GBOX box;
 		gbox_init(&box);
 
-		GSERIALIZED* gser = gserialized2_from_lwgeom(geom, NULL);
+		GSERIALIZED *gser = gserialized2_from_lwgeom(geom, NULL);
 
 		CU_ASSERT_FALSE(gserialized2_has_bbox(gser));
 
@@ -380,35 +384,33 @@ static void test_gserialized2_peek_gbox_p_no_box_when_empty(void)
 	}
 }
 
-static void test_gserialized2_peek_gbox_p_gets_correct_box(void)
+static void
+test_gserialized2_peek_gbox_p_gets_correct_box(void)
 {
 	uint32_t i;
 
-	char *ewkt[] =
-	{
-		"POINT (2.2945672355 48.85822923236)",
-		"POINTZ (2.2945672355 48.85822923236 15)",
-		"POINTM (2.2945672355 48.85822923236 12)",
-		"POINT ZM (2.2945672355 48.85822923236 12 2)",
-		"MULTIPOINT ((-76.45402132523 44.225406213532))",
-		"MULTIPOINT Z ((-76.45402132523 44.225406213532 112))",
-		"MULTIPOINT ZM ((-76.45402132523 44.225406213532 112 44))",
-		"LINESTRING (2.2945672355 48.85822923236, -76.45402132523 44.225406213532)",
-		"LINESTRING Z (2.2945672355 48.85822923236 6, -76.45402132523 44.225406213532 8)",
-		"LINESTRING ZM (2.2945672355 48.85822923236 3 2, -76.45402132523 44.225406213532 9 4)",
-		"MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532))",
-		"MULTILINESTRING Z ((2.2945672355 48.85822923236 4, -76.45402132523 44.225406213532 3))"
-	};
+	char *ewkt[] = {"POINT (2.2945672355 48.85822923236)",
+			"POINTZ (2.2945672355 48.85822923236 15)",
+			"POINTM (2.2945672355 48.85822923236 12)",
+			"POINT ZM (2.2945672355 48.85822923236 12 2)",
+			"MULTIPOINT ((-76.45402132523 44.225406213532))",
+			"MULTIPOINT Z ((-76.45402132523 44.225406213532 112))",
+			"MULTIPOINT ZM ((-76.45402132523 44.225406213532 112 44))",
+			"LINESTRING (2.2945672355 48.85822923236, -76.45402132523 44.225406213532)",
+			"LINESTRING Z (2.2945672355 48.85822923236 6, -76.45402132523 44.225406213532 8)",
+			"LINESTRING ZM (2.2945672355 48.85822923236 3 2, -76.45402132523 44.225406213532 9 4)",
+			"MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532))",
+			"MULTILINESTRING Z ((2.2945672355 48.85822923236 4, -76.45402132523 44.225406213532 3))"};
 
-	for ( i = 0; i < (sizeof ewkt/sizeof(char*)); i++ )
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
 	{
-		LWGEOM* geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
+		LWGEOM *geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
 		GBOX box_from_peek;
 		GBOX box_from_lwgeom;
 		gbox_init(&box_from_peek);
 		gbox_init(&box_from_lwgeom);
 
-		GSERIALIZED* gser = gserialized2_from_lwgeom(geom, NULL);
+		GSERIALIZED *gser = gserialized2_from_lwgeom(geom, NULL);
 
 		CU_ASSERT_FALSE(gserialized2_has_bbox(gser));
 
@@ -424,21 +426,20 @@ static void test_gserialized2_peek_gbox_p_gets_correct_box(void)
 	}
 }
 
-static void test_gserialized2_peek_gbox_p_fails_for_unsupported_cases(void)
+static void
+test_gserialized2_peek_gbox_p_fails_for_unsupported_cases(void)
 {
 	uint32_t i;
 
-	char *ewkt[] =
-	{
-		"MULTIPOINT ((-76.45402132523 44.225406213532), (-72 33))",
-		"LINESTRING (2.2945672355 48.85822923236, -76.45402132523 44.225406213532, -72 33)",
-		"MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532, -72 33))",
-		"MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532), (-72 33, -71 32))"
-	};
+	char *ewkt[] = {
+	    "MULTIPOINT ((-76.45402132523 44.225406213532), (-72 33))",
+	    "LINESTRING (2.2945672355 48.85822923236, -76.45402132523 44.225406213532, -72 33)",
+	    "MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532, -72 33))",
+	    "MULTILINESTRING ((2.2945672355 48.85822923236, -76.45402132523 44.225406213532), (-72 33, -71 32))"};
 
-	for ( i = 0; i < (sizeof ewkt/sizeof(char*)); i++ )
+	for (i = 0; i < (sizeof ewkt / sizeof(char *)); i++)
 	{
-		LWGEOM* geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
+		LWGEOM *geom = lwgeom_from_wkt(ewkt[i], LW_PARSER_CHECK_NONE);
 		GBOX box;
 		gbox_init(&box);
 		lwgeom_drop_bbox(geom);
@@ -446,8 +447,8 @@ static void test_gserialized2_peek_gbox_p_fails_for_unsupported_cases(void)
 		/* Construct a GSERIALIZED* that doesn't have a box, so that we can test the
 		 * actual logic of the peek function */
 		size_t expected_size = gserialized2_from_lwgeom_size(geom);
-		GSERIALIZED* gser = lwalloc(expected_size);
-		uint8_t* ptr = (uint8_t*) gser;
+		GSERIALIZED *gser = lwalloc(expected_size);
+		uint8_t *ptr = (uint8_t *)gser;
 
 		LWSIZE_SET(gser->size, expected_size);
 		gserialized2_set_srid(gser, geom->srid);
@@ -643,7 +644,8 @@ test_gserialized2_wkb_roundtrip_float_rounded_box(void)
 ** Used by test harness to register the tests in this file.
 */
 void gserialized2_suite_setup(void);
-void gserialized2_suite_setup(void)
+void
+gserialized2_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("serialization/deserialization v2", NULL, NULL);
 	PG_ADD_TEST(suite, test_g2flags_macros);
