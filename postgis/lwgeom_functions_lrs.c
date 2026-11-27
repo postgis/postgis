@@ -126,8 +126,20 @@ ST_LocateBetween(PG_FUNCTION_ARGS)
 	/* This should be a call to ST_LocateAlong! */
 	if (to == from)
 	{
-		PG_RETURN_DATUM(
-		    DirectFunctionCall3(ST_LocateAlong, PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(3)));
+		LWGEOM *lwout;
+		GSERIALIZED *gout;
+
+		line_in = lwgeom_from_gserialized(geom_in);
+		lwout = lwgeom_locate_along(line_in, from, offset);
+		lwgeom_free(line_in);
+		PG_FREE_IF_COPY(geom_in, 0);
+
+		if (!lwout)
+			PG_RETURN_NULL();
+
+		gout = geometry_serialize(lwout);
+		lwgeom_free(lwout);
+		PG_RETURN_POINTER(gout);
 	}
 
 	line_in = lwgeom_from_gserialized(geom_in);

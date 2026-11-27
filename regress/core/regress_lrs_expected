@@ -50,3 +50,8 @@ interpolatePoint2|3
 3DinterpolatePoint1|10
 3DinterpolatePoint2|10
 3DinterpolatePoint3|50
+locate_between_empty|MULTIPOINT M EMPTY
+locate_along_empty_mline|MULTIPOINT M EMPTY
+locate_along_empty_line|MULTIPOINT M EMPTY
+locate_between_empty_line|MULTIPOINT M EMPTY
+locate_between_empty_range|MULTILINESTRING M EMPTY

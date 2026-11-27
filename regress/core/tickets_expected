@@ -544,3 +544,5 @@ public|test5978|shape|2|4326|POINT
 makepolygon-null-holes|4
 #6110|PASS
 #6159|t
+#6146.a|t
+#6146.b|POINT Z (1 2 3)

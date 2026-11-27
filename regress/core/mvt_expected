@@ -162,3 +162,7 @@ Ag==
 #4399|1|ST_AsMVTGeom|TRIANGLE((0 4096,128 3968,0 3968,0 4096))
 #4399|2|ST_AsMVTGeom|TRIANGLE((0 4096,128 3968,0 3968,0 4096))
 #4399|3|ST_AsMVTGeom|
+#6148.a|t
+#6148.b|t
+#6148.c|t
+ERROR:  pgis_asmvt_transfn: parameter row cannot be other than a rowtype

@@ -152,8 +152,7 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 	LWGEOM *lwg = lwmline_as_lwgeom(lwmline);
 	uint32_t i, j;
 
-	/* Return degenerates upwards */
-	if ((!lwmline) || (lwmline->ngeoms < 1))
+	if (!lwmline)
 		return NULL;
 
 	/* Construct return */

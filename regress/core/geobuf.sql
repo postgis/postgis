@@ -36,3 +36,15 @@ FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
 SELECT '#4916.b', ST_AsGeobuf(NULL::pg_class) over (order by b)
 FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
 	         ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b);
+
+-- NULL rows are skipped by ST_AsGeobuf
+CREATE TEMP TABLE geobuf_null_row (id int, geom geometry);
+INSERT INTO geobuf_null_row VALUES (1, 'POINT(1 1)'), (2, 'POINT(2 2)'), (3, 'POINT(3 3)');
+SELECT 'null_row.a', ST_AsGeobuf(NULL::geobuf_null_row) IS NULL;
+SELECT 'null_row.b', ST_AsGeobuf(CASE WHEN id = 2 THEN NULL::geobuf_null_row ELSE t END) =
+	(SELECT ST_AsGeobuf(t) FROM geobuf_null_row t WHERE id <> 2)
+FROM geobuf_null_row t;
+SELECT 'null_row.c', ST_AsGeobuf(CASE WHEN id = 3 THEN NULL::geobuf_null_row ELSE t END) =
+	(SELECT ST_AsGeobuf(t) FROM geobuf_null_row t WHERE id <> 3)
+FROM geobuf_null_row t;
+DROP TABLE geobuf_null_row;

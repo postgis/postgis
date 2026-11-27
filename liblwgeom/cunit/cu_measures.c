@@ -755,6 +755,25 @@ test_lwgeom_locate_along(void)
 	lwgeom_free(out);
 	ASSERT_STRING_EQUAL(str, "MULTIPOINT M ((55.226131 55.226131 105))");
 	lwfree(str);
+
+	/* An empty multilinestring gives an empty multipoint, like an empty linestring */
+	geom = lwgeom_from_wkt("MULTILINESTRING M EMPTY", LW_PARSER_CHECK_NONE);
+	out = lwgeom_locate_along(geom, measure, 0.0);
+	CU_ASSERT_PTR_NOT_NULL(out);
+	str = lwgeom_to_wkt(out, WKT_ISO, 6, NULL);
+	lwgeom_free(geom);
+	lwgeom_free(out);
+	ASSERT_STRING_EQUAL(str, "MULTIPOINT M EMPTY");
+	lwfree(str);
+
+	geom = lwgeom_from_wkt("LINESTRING M EMPTY", LW_PARSER_CHECK_NONE);
+	out = lwgeom_locate_along(geom, measure, 0.0);
+	CU_ASSERT_PTR_NOT_NULL(out);
+	str = lwgeom_to_wkt(out, WKT_ISO, 6, NULL);
+	lwgeom_free(geom);
+	lwgeom_free(out);
+	ASSERT_STRING_EQUAL(str, "MULTIPOINT M EMPTY");
+	lwfree(str);
 }
 
 static void

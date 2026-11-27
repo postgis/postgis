@@ -57,6 +57,18 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "pgis_asgeobuf_transfn: called in non-aggregate context");
+
+	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
+		elog(ERROR, "pgis_asgeobuf_transfn: parameter row cannot be other than a rowtype");
+
+	/* Null input row => skip it, keeping the current aggregate state */
+	if (PG_ARGISNULL(1))
+	{
+		if (PG_ARGISNULL(0))
+			PG_RETURN_NULL();
+		PG_RETURN_POINTER(PG_GETARG_POINTER(0));
+	}
+
 	oldcontext = MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0)) {
@@ -68,14 +80,6 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 		geobuf_agg_init_context(ctx);
 	} else {
 		ctx = (struct geobuf_agg_context *) PG_GETARG_POINTER(0);
-	}
-
-	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
-		elog(ERROR, "pgis_asgeobuf_transfn: parameter row cannot be other than a rowtype");
-
-	/* Null input tuple => null result */
-	if (PG_ARGISNULL(1)) {
-		PG_RETURN_NULL();
 	}
 
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
