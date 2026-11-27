@@ -43,6 +43,8 @@ PostGIS 3.8.0dev
           (Andrew Kroh)
  - Keep accumulated rows when ST_AsGeobuf() meets a NULL row
           (Darafei Praliaskouski)
+ - #6158, GH-1194, [raster] Accept ST_Reskew geotransforms with small nonzero
+          determinants (Waniya Badar)
 
 
 PostGIS 3.7.0rc3
