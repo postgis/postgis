@@ -69,6 +69,28 @@ SELECT 'scan_seq', qnodes('select * from test where the_geom && ST_MakePoint(0,0
 SELECT 'gist 2d @ idx', qnodes('select * from test_gist_idx_2d where geom @ ST_MakeEnvelope(120,120,140,140)'), count(*) FROM test_gist_idx_2d WHERE geom @ ST_MakeEnvelope(120,120,140,140);
 SELECT 'gist 2d ~ idx', qnodes('select * from test_gist_idx_2d where geom ~ ST_MakePoint(125,125)'), count(*) FROM test_gist_idx_2d WHERE geom ~ ST_MakePoint(125,125);
 
+-- An EMPTY or NaN box is contained by every box. On a multi-page GiST
+-- index, @ must return these rows as a sequential scan does, also when
+-- the query envelope does not touch the other keys on their pages.
+-- One EMPTY and one NaN row among 2000 points:
+CREATE TABLE test_gist_idx_2d_empty AS
+SELECT i AS id, ST_SetSRID(ST_MakePoint(100 + (i % 50) / 50.0, 100 + (i / 50) / 50.0), 4326) AS geom
+FROM generate_series(0, 1999) i;
+INSERT INTO test_gist_idx_2d_empty VALUES
+  (2000, ST_SetSRID('POINT EMPTY'::geometry, 4326)),
+  (2001, ST_SetSRID(ST_MakePoint('NaN', 'NaN'), 4326));
+CREATE INDEX test_gist_idx_2d_empty_gist ON test_gist_idx_2d_empty USING gist (geom);
+SELECT 'gist 2d @ empty far', qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(0,0,1,1,4326)'), count(*) FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(0,0,1,1,4326);
+SELECT 'gist 2d @ empty near', qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(100,100,101,101,4326)'), count(*) FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(100,100,101,101,4326);
+-- 1000 EMPTY and NaN rows, so that some index pages hold only empty keys:
+INSERT INTO test_gist_idx_2d_empty
+SELECT 2001 + i, CASE WHEN i % 2 = 0 THEN ST_SetSRID('POINT EMPTY'::geometry, 4326) ELSE ST_SetSRID(ST_MakePoint('NaN', 'NaN'), 4326) END
+FROM generate_series(1, 998) i;
+REINDEX INDEX test_gist_idx_2d_empty_gist;
+SELECT 'gist 2d @ empty pages far', qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(0,0,1,1,4326)'), count(*) FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(0,0,1,1,4326);
+SELECT 'gist 2d @ empty pages near', qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(100,100,101,101,4326)'), count(*) FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(100,100,101,101,4326);
+DROP TABLE test_gist_idx_2d_empty;
+
 CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
 LANGUAGE 'plpgsql' VOLATILE AS $$
