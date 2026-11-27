@@ -11,6 +11,8 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
+	<!-- Result comments break up the text buffer on older libxslt versions.
+	     The text serializer omits these comments from the generated SQL. -->
 	<xsl:variable name='testversion'>3.7.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
@@ -374,6 +376,7 @@ CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMAR
 	<xsl:template match='db:chapter'>
 <!--Start Test table creation, insert, analyze crash test, drop -->
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset[not(contains(@createtable,'false'))]">
+			<xsl:comment>garden case</xsl:comment>
 			<xsl:variable name='log_label'>table Test <xsl:value-of select="@GeometryType" /></xsl:variable>
 SELECT '<xsl:value-of select="$log_label" />: Start Testing';
 <xsl:variable name='var_sql'>CREATE TABLE pgis_garden (gid serial);
@@ -515,6 +518,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 			<xsl:variable name='fnname'><xsl:value-of select="db:funcdef/db:function"/></xsl:variable>
 			<xsl:variable name='fndef'><xsl:value-of select="." /></xsl:variable>
 			<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+				<xsl:comment>garden case</xsl:comment>
 			<!--Store first garden sql geometry from -->
 					<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
 					<xsl:variable name='geom1type'><xsl:value-of select="@GeometryType"/></xsl:variable>
@@ -522,6 +526,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 					<xsl:variable name='log_label'><xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="$geom1id" /> against other types</xsl:variable>
 		SELECT '<xsl:value-of select="$log_label" />: Start Testing ';
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+			<xsl:comment>garden case</xsl:comment>
 		<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geography')">
 			  INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql)
@@ -623,6 +628,7 @@ SELECT  'Ending <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of s
 <!-- for window functions we need to put in OVER() -->
 	<xsl:when test="($numparamgeoms = '1' or $numparamgeogs = '1')  and not(contains($fnexclude,db:funcdef/db:function))">
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+			<xsl:comment>garden case</xsl:comment>
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing';
 
 	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql)
@@ -642,12 +648,14 @@ COMMIT;
 <!--Functions more than 1 args not already covered this will cross every geometry type with every other -->
 	<xsl:when test="not(contains($fnexclude,db:funcdef/db:function))">
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+			<xsl:comment>garden case</xsl:comment>
 	<!--Store first garden sql geometry from -->
 			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
 			<xsl:variable name='geom1type'><xsl:value-of select="@GeometryType"/></xsl:variable>
 			<xsl:variable name='geom1id'><xsl:value-of select="@ID"/></xsl:variable>
 SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1id" /> against other types';
 				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+					<xsl:comment>garden case</xsl:comment>
 			<xsl:choose>
 			  <xsl:when test="($numparamgeogs > '0' or $numparamgeoms > '0')">
 	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2,  log_start, log_sql)
