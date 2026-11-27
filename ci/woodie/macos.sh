@@ -73,7 +73,8 @@ cleanup() {
 trap cleanup EXIT
 
 export PGHOST PGPORT
-export PGUSER="$(id -un)"
+PGUSER="$(id -un)"
+export PGUSER
 export PGDATABASE=postgres
 export PGIS_REG_TMPDIR
 export PGIS_REG_SHAREDIR="${EXTENSION_SHARE}"

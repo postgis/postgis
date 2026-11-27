@@ -15,9 +15,11 @@ rm -rf /var/lib/apt/lists/*
 export PORTABILITY_TIER=arm64-berrie64-qemu
 export SRCDIR="${CI_WORKSPACE:-$PWD}"
 export BUILDDIR="${SRCDIR}/build/portability-${PORTABILITY_TIER}"
-export PG_MAJOR="$(pg_config --version | awk '{print $2}' | cut -d. -f1)"
+PG_MAJOR="$(pg_config --version | awk '{print $2}' | cut -d. -f1)"
+export PG_MAJOR
 export PATH="/usr/lib/postgresql/${PG_MAJOR}/bin:${PATH}"
-export PGROOT="$(mktemp -d)"
+PGROOT="$(mktemp -d)"
+export PGROOT
 export PGDATA="${PGROOT}/data"
 export PGHOST="${PGROOT}/socket"
 export PGUSER=postgres
