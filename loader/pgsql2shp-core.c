@@ -1177,6 +1177,8 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->dbffieldnames = NULL;
 	state->dbffieldtypes = NULL;
 	state->pgfieldnames = NULL;
+	state->pgfieldlens = NULL;
+	state->pgfieldtypmods = NULL;
 	state->message[0] = '\0';
 	colmap_init(&state->column_map);
 

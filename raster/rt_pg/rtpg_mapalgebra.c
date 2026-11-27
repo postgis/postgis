@@ -3298,7 +3298,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(5) && PG_GETARG_BOOL(5) == TRUE){
 			options_len = options_len + 1;
 			options = (char **) palloc(sizeof(char *) * options_len);
-			options[options_len - 1] = palloc(sizeof(char*) * (strlen("ALL_TOUCHED=TRUE") + 1));
+			options[options_len - 1] = palloc(sizeof(char) * (strlen("ALL_TOUCHED=TRUE") + 1));
 		 	strcpy(options[options_len - 1], "ALL_TOUCHED=TRUE");
 	}
 
@@ -3389,7 +3389,8 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			continue;
 		}
 
-		output_band = rt_raster_get_band(rtn, arg->band[i].nband);
+		/* Output bands are packed in request order. */
+		output_band = rt_raster_get_band(rtn, i);
 
 		if (!mask_band) {
 			continue;
