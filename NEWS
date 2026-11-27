@@ -33,6 +33,15 @@ PostGIS 3.8.0dev
           (John Carmack)
  - GH-1191, [topology] Return SQL NULL for a NULL topology name in
           _RegisterMissingFaces (Bilal Kahraman)
+ - #6146, GT-807, Fix crash in BOX3D_combine() with a NULL box
+          (Alexander Lakhin)
+ - #6147, GT-808, Fix crash in ST_AsFlatGeobuf() with a NULL row
+          (Alexander Lakhin)
+ - #6148, GT-809, Fix crash in ST_AsMVT() with a NULL row (Alexander Lakhin)
+ - GT-813, Return NULL from ST_LocateBetween for an empty multilinestring
+          (Andrew Kroh)
+ - Keep accumulated rows when ST_AsGeobuf() meets a NULL row
+          (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0rc3
