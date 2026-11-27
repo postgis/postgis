@@ -360,6 +360,14 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 		}
 	}
 
+	/*
+	 * EMPTY and NaN keys are the "unknown" GIDX with no dimensions. They go
+	 * to octant 0 and do not take part in the centroid. When all keys are
+	 * like that, keep one unbounded dimension so there is more than one node.
+	 */
+	if (maxdims < 1)
+		maxdims = 1;
+
 	for (dim = 0; dim < maxdims; dim++)
 	{
 		qsort(&lowXs[dim * in->nTuples], count[dim], sizeof(float), compareFloats);
@@ -371,6 +379,13 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 
 	for (dim = 0; dim < maxdims; dim++)
 	{
+		if (count[dim] == 0)
+		{
+			/* No key has this dimension: leave it unbounded, like a padded one */
+			GIDX_SET_MIN(centroid, dim, -1 * FLT_MAX);
+			GIDX_SET_MAX(centroid, dim, FLT_MAX);
+			continue;
+		}
 		median = count[dim] / 2;
 		GIDX_SET_MIN(centroid, dim, lowXs[dim * in->nTuples + median]);
 		GIDX_SET_MAX(centroid, dim, highXs[dim * in->nTuples + median]);
@@ -628,12 +643,16 @@ PGDLLEXPORT Datum gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Is the bounding box valid (non-empty, non-infinite) ?
-	 * If not, return NULL. */
+	/*
+	 * Is the bounding box valid (non-empty, non-infinite) ?
+	 * If not, use the "unknown" GIDX as a key, as the GiST index does.
+	 * SP-GiST does not accept NULL keys from the compress function.
+	 */
 	if (gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), result) == LW_FAILURE)
 	{
 		POSTGIS_DEBUG(4, "[SPGIST] empty geometry!");
-		PG_RETURN_NULL();
+		gidx_set_unknown(result);
+		PG_RETURN_POINTER(gidx_copy(result));
 	}
 
 	POSTGIS_DEBUGF(4, "[SPGIST] got GIDX: %s", gidx_to_string(result));
@@ -645,7 +664,7 @@ PGDLLEXPORT Datum gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 		if (!isfinite(GIDX_GET_MAX(result, i)) || !isfinite(GIDX_GET_MIN(result, i)))
 		{
 			gidx_set_unknown(result);
-			PG_RETURN_POINTER(result);
+			PG_RETURN_POINTER(gidx_copy(result));
 		}
 	}
 
