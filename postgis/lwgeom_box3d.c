@@ -41,7 +41,6 @@
 #include <string.h>
 #include <stdio.h>
 
-
 /**
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
  *
@@ -52,7 +51,8 @@
  */
 
 PG_FUNCTION_INFO_V1(BOX3D_in);
-Datum BOX3D_in(PG_FUNCTION_ARGS)
+Datum
+BOX3D_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
 	int nitems;
@@ -117,7 +117,8 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
  *     "BOX3D(xmin ymin zmin, xmin ymin zmin)"
  */
 PG_FUNCTION_INFO_V1(BOX3D_out);
-Datum BOX3D_out(PG_FUNCTION_ARGS)
+Datum
+BOX3D_out(PG_FUNCTION_ARGS)
 {
 	BOX3D *bbox = (BOX3D *)PG_GETARG_POINTER(0);
 	static const int precision = 15;
@@ -157,7 +158,8 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_to_BOX2D);
-Datum BOX3D_to_BOX2D(PG_FUNCTION_ARGS)
+Datum
+BOX3D_to_BOX2D(PG_FUNCTION_ARGS)
 {
 	BOX3D *in = (BOX3D *)PG_GETARG_POINTER(0);
 	GBOX *out = box3d_to_gbox(in);
@@ -178,7 +180,8 @@ box3d_to_box_p(BOX3D *box, BOX *out)
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_to_BOX);
-Datum BOX3D_to_BOX(PG_FUNCTION_ARGS)
+Datum
+BOX3D_to_BOX(PG_FUNCTION_ARGS)
 {
 	BOX3D *in = (BOX3D *)PG_GETARG_POINTER(0);
 	BOX *box = palloc(sizeof(BOX));
@@ -188,7 +191,8 @@ Datum BOX3D_to_BOX(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_to_LWGEOM);
-Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
+Datum
+BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	POINTARRAY *pa;
@@ -364,7 +368,8 @@ expand_box3d_xyz(BOX3D *box, double dx, double dy, double dz)
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_expand);
-Datum BOX3D_expand(PG_FUNCTION_ARGS)
+Datum
+BOX3D_expand(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	BOX3D *result = (BOX3D *)palloc(sizeof(BOX3D));
@@ -395,7 +400,8 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
  *
  */
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX3D);
-Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
@@ -414,42 +420,48 @@ Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_xmin);
-Datum BOX3D_xmin(PG_FUNCTION_ARGS)
+Datum
+BOX3D_xmin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	PG_RETURN_FLOAT8(Min(box->xmin, box->xmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_ymin);
-Datum BOX3D_ymin(PG_FUNCTION_ARGS)
+Datum
+BOX3D_ymin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	PG_RETURN_FLOAT8(Min(box->ymin, box->ymax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_zmin);
-Datum BOX3D_zmin(PG_FUNCTION_ARGS)
+Datum
+BOX3D_zmin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	PG_RETURN_FLOAT8(Min(box->zmin, box->zmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_xmax);
-Datum BOX3D_xmax(PG_FUNCTION_ARGS)
+Datum
+BOX3D_xmax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	PG_RETURN_FLOAT8(Max(box->xmin, box->xmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_ymax);
-Datum BOX3D_ymax(PG_FUNCTION_ARGS)
+Datum
+BOX3D_ymax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	PG_RETURN_FLOAT8(Max(box->ymin, box->ymax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_zmax);
-Datum BOX3D_zmax(PG_FUNCTION_ARGS)
+Datum
+BOX3D_zmax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	PG_RETURN_FLOAT8(Max(box->zmin, box->zmax));
@@ -461,7 +473,8 @@ Datum BOX3D_zmax(PG_FUNCTION_ARGS)
  * but calculates the box in full from the underlying geometry.
  */
 PG_FUNCTION_INFO_V1(BOX3D_combine);
-Datum BOX3D_combine(PG_FUNCTION_ARGS)
+Datum
+BOX3D_combine(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	GSERIALIZED *geom = PG_ARGISNULL(1) ? NULL : (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -528,7 +541,8 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_combine_BOX3D);
-Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS)
+Datum
+BOX3D_combine_BOX3D(PG_FUNCTION_ARGS)
 {
 	BOX3D *box0 = (BOX3D *)(PG_ARGISNULL(0) ? NULL : PG_GETARG_POINTER(0));
 	BOX3D *box1 = (BOX3D *)(PG_ARGISNULL(1) ? NULL : PG_GETARG_POINTER(1));
@@ -556,7 +570,8 @@ Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_construct);
-Datum BOX3D_construct(PG_FUNCTION_ARGS)
+Datum
+BOX3D_construct(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *min = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *max = PG_GETARG_GSERIALIZED_P(1);
@@ -573,7 +588,8 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (lwgeom_is_empty(minpoint) || lwgeom_is_empty(maxpoint) ){
+	if (lwgeom_is_empty(minpoint) || lwgeom_is_empty(maxpoint))
+	{
 		elog(ERROR, "BOX3D_construct: args can not be empty points");
 		PG_RETURN_NULL();
 	}
@@ -612,7 +628,8 @@ BOX3D_contains_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_contains);
 
-PGDLLEXPORT Datum BOX3D_contains(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_contains(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -629,7 +646,8 @@ BOX3D_contained_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_contained);
 
-PGDLLEXPORT Datum BOX3D_contained(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_contained(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -648,7 +666,8 @@ BOX3D_overlaps_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_overlaps);
 
-PGDLLEXPORT Datum BOX3D_overlaps(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_overlaps(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -667,7 +686,8 @@ BOX3D_same_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_same);
 
-PGDLLEXPORT Datum BOX3D_same(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_same(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -684,7 +704,8 @@ BOX3D_left_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_left);
 
-PGDLLEXPORT Datum BOX3D_left(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_left(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -701,7 +722,8 @@ BOX3D_overleft_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_overleft);
 
-PGDLLEXPORT Datum BOX3D_overleft(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_overleft(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -718,7 +740,8 @@ BOX3D_right_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_right);
 
-PGDLLEXPORT Datum BOX3D_right(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_right(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -735,7 +758,8 @@ BOX3D_overright_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_overright);
 
-PGDLLEXPORT Datum BOX3D_overright(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_overright(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -752,7 +776,8 @@ BOX3D_below_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_below);
 
-PGDLLEXPORT Datum BOX3D_below(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_below(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -769,7 +794,8 @@ BOX3D_overbelow_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_overbelow);
 
-PGDLLEXPORT Datum BOX3D_overbelow(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_overbelow(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -786,7 +812,8 @@ BOX3D_above_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_above);
 
-PGDLLEXPORT Datum BOX3D_above(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_above(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -803,7 +830,8 @@ BOX3D_overabove_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_overabove);
 
-PGDLLEXPORT Datum BOX3D_overabove(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_overabove(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -820,7 +848,8 @@ BOX3D_front_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_front);
 
-PGDLLEXPORT Datum BOX3D_front(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_front(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -837,7 +866,8 @@ BOX3D_overfront_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_overfront);
 
-PGDLLEXPORT Datum BOX3D_overfront(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_overfront(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -854,7 +884,8 @@ BOX3D_back_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_back);
 
-PGDLLEXPORT Datum BOX3D_back(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_back(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -871,7 +902,8 @@ BOX3D_overback_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_overback);
 
-PGDLLEXPORT Datum BOX3D_overback(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_overback(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
@@ -928,7 +960,8 @@ BOX3D_distance_internal(BOX3D *box1, BOX3D *box2)
 
 PG_FUNCTION_INFO_V1(BOX3D_distance);
 
-PGDLLEXPORT Datum BOX3D_distance(PG_FUNCTION_ARGS)
+PGDLLEXPORT Datum
+BOX3D_distance(PG_FUNCTION_ARGS)
 {
 	BOX3D *box1 = PG_GETARG_BOX3D_P(0);
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);

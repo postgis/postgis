@@ -30,9 +30,9 @@
 #include <postgres.h>
 #include <fmgr.h>
 #include <funcapi.h>
-#include <utils/builtins.h> /* for text_to_cstring() */
+#include <utils/builtins.h>  /* for text_to_cstring() */
 #include "utils/lsyscache.h" /* for get_typlenbyvalalign */
-#include "utils/array.h" /* for ArrayType */
+#include "utils/array.h"     /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 
 #include "rtpostgis.h"
@@ -52,7 +52,8 @@ Datum RASTER_band(PG_FUNCTION_ARGS);
  * Make a new raster with no bands
  */
 PG_FUNCTION_INFO_V1(RASTER_makeEmpty);
-Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
+Datum
+RASTER_makeEmpty(PG_FUNCTION_ARGS)
 {
 	uint16 width = 0, height = 0;
 	double ipx = 0, ipy = 0, scalex = 0, scaley = 0, skewx = 0, skewy = 0;
@@ -60,7 +61,8 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
 	rt_pgraster *pgraster = NULL;
 	rt_raster raster;
 
-	if (PG_NARGS() < 9) {
+	if (PG_NARGS() < 9)
+	{
 		elog(ERROR, "RASTER_makeEmpty: ST_MakeEmptyRaster requires 9 args");
 		PG_RETURN_NULL();
 	}
@@ -92,9 +94,17 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(8))
 		srid = PG_GETARG_INT32(8);
 
-	POSTGIS_RT_DEBUGF(4, "%dx%d, ip:%g,%g, scale:%g,%g, skew:%g,%g srid:%d",
-		width, height, ipx, ipy, scalex, scaley,
-		skewx, skewy, srid);
+	POSTGIS_RT_DEBUGF(4,
+			  "%dx%d, ip:%g,%g, scale:%g,%g, skew:%g,%g srid:%d",
+			  width,
+			  height,
+			  ipx,
+			  ipy,
+			  scalex,
+			  scaley,
+			  skewx,
+			  skewy,
+			  srid);
 
 	raster = rt_raster_new(width, height);
 	if (raster == NULL)
@@ -118,7 +128,8 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
  * Add band(s) to the given raster at the given position(s).
  */
 PG_FUNCTION_INFO_V1(RASTER_addBand);
-Datum RASTER_addBand(PG_FUNCTION_ARGS)
+Datum
+RASTER_addBand(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgraster = NULL;
 	rt_pgraster *pgrtn = NULL;
@@ -159,11 +170,12 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 	/* pgraster is null, return null */
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* raster */
 	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
+	if (!raster)
+	{
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_addBand: Could not deserialize raster");
 		PG_RETURN_NULL();
@@ -175,18 +187,19 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 	etype = ARR_ELEMTYPE(array);
 	get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
 
-	deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
-		&nulls, &n);
+	deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &n);
 
-	if (!n) {
+	if (!n)
+	{
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_addBand: Invalid argument for addbandargset");
 		PG_RETURN_NULL();
 	}
 
 	/* allocate addbandarg */
-	arg = (struct addbandarg *) palloc(sizeof(struct addbandarg) * n);
-	if (arg == NULL) {
+	arg = (struct addbandarg *)palloc(sizeof(struct addbandarg) * n);
+	if (arg == NULL)
+	{
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_addBand: Could not allocate memory for addbandarg");
@@ -199,14 +212,17 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 			new band's pixeltype, the new band's initial value and
 			the new band's NODATA value if NOT NULL
 	*/
-	for (i = 0; i < n; i++) {
-		if (nulls[i]) continue;
+	for (i = 0; i < n; i++)
+	{
+		if (nulls[i])
+			continue;
 
 		POSTGIS_RT_DEBUGF(4, "Processing addbandarg at index %d", i);
 
 		/* each element is a tuple */
-		tup = (HeapTupleHeader) DatumGetPointer(e[i]);
-		if (NULL == tup) {
+		tup = (HeapTupleHeader)DatumGetPointer(e[i]);
+		if (NULL == tup)
+		{
 			pfree(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -218,47 +234,64 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 		arg[i].index = 0;
 		arg[i].append = TRUE;
 		tupv = GetAttributeByName(tup, "index", &isnull);
-		if (!isnull) {
+		if (!isnull)
+		{
 			arg[i].index = DatumGetInt32(tupv);
 			arg[i].append = FALSE;
 		}
 
 		/* for now, only check that band index is 1-based */
-		if (!arg[i].append && arg[i].index < 1) {
+		if (!arg[i].append && arg[i].index < 1)
+		{
 			pfree(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBand: Invalid argument for addbandargset. Invalid band index (must be 1-based) for addbandarg of index %d", i);
+			elog(
+			    ERROR,
+			    "RASTER_addBand: Invalid argument for addbandargset. Invalid band index (must be 1-based) for addbandarg of index %d",
+			    i);
 			PG_RETURN_NULL();
 		}
 
 		/* new band pixeltype */
 		arg[i].pixtype = PT_END;
 		tupv = GetAttributeByName(tup, "pixeltype", &isnull);
-		if (isnull) {
+		if (isnull)
+		{
 			pfree(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBand: Invalid argument for addbandargset. Pixel type cannot be NULL for addbandarg of index %d", i);
+			elog(
+			    ERROR,
+			    "RASTER_addBand: Invalid argument for addbandargset. Pixel type cannot be NULL for addbandarg of index %d",
+			    i);
 			PG_RETURN_NULL();
 		}
-		text_pixtype = (text *) DatumGetPointer(tupv);
-		if (text_pixtype == NULL) {
+		text_pixtype = (text *)DatumGetPointer(tupv);
+		if (text_pixtype == NULL)
+		{
 			pfree(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBand: Invalid argument for addbandargset. Pixel type cannot be NULL for addbandarg of index %d", i);
+			elog(
+			    ERROR,
+			    "RASTER_addBand: Invalid argument for addbandargset. Pixel type cannot be NULL for addbandarg of index %d",
+			    i);
 			PG_RETURN_NULL();
 		}
 		char_pixtype = text_to_cstring(text_pixtype);
 
 		arg[i].pixtype = rt_pixtype_index_from_name(char_pixtype);
 		pfree(char_pixtype);
-		if (arg[i].pixtype == PT_END) {
+		if (arg[i].pixtype == PT_END)
+		{
 			pfree(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBand: Invalid argument for addbandargset. Invalid pixel type for addbandarg of index %d", i);
+			elog(
+			    ERROR,
+			    "RASTER_addBand: Invalid argument for addbandargset. Invalid pixel type for addbandarg of index %d",
+			    i);
 			PG_RETURN_NULL();
 		}
 
@@ -272,7 +305,8 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 		arg[i].hasnodata = FALSE;
 		arg[i].nodatavalue = 0;
 		tupv = GetAttributeByName(tup, "nodataval", &isnull);
-		if (!isnull) {
+		if (!isnull)
+		{
 			arg[i].hasnodata = TRUE;
 			arg[i].nodatavalue = DatumGetFloat8(tupv);
 		}
@@ -280,16 +314,24 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 
 	/* add new bands to raster */
 	lastnumbands = rt_raster_get_num_bands(raster);
-	for (i = 0; i < n; i++) {
-		if (nulls[i]) continue;
+	for (i = 0; i < n; i++)
+	{
+		if (nulls[i])
+			continue;
 
 		POSTGIS_RT_DEBUGF(3, "%d bands in old raster", lastnumbands);
 		maxbandindex = lastnumbands + 1;
 
 		/* check that new band's index doesn't exceed maxbandindex */
-		if (!arg[i].append) {
-			if (arg[i].index > maxbandindex) {
-				elog(NOTICE, "Band index for addbandarg of index %d exceeds possible value. Adding band at index %d", i, maxbandindex);
+		if (!arg[i].append)
+		{
+			if (arg[i].index > maxbandindex)
+			{
+				elog(
+				    NOTICE,
+				    "Band index for addbandarg of index %d exceeds possible value. Adding band at index %d",
+				    i,
+				    maxbandindex);
 				arg[i].index = maxbandindex;
 			}
 		}
@@ -297,27 +339,30 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 		else
 			arg[i].index = maxbandindex;
 
-		POSTGIS_RT_DEBUGF(4, "new band (index, pixtype, initialvalue, hasnodata, nodatavalue) = (%d, %s, %f, %s, %f)",
-			arg[i].index,
-			rt_pixtype_name(arg[i].pixtype),
-			arg[i].initialvalue,
-			arg[i].hasnodata ? "TRUE" : "FALSE",
-			arg[i].nodatavalue
-		);
+		POSTGIS_RT_DEBUGF(
+		    4,
+		    "new band (index, pixtype, initialvalue, hasnodata, nodatavalue) = (%d, %s, %f, %s, %f)",
+		    arg[i].index,
+		    rt_pixtype_name(arg[i].pixtype),
+		    arg[i].initialvalue,
+		    arg[i].hasnodata ? "TRUE" : "FALSE",
+		    arg[i].nodatavalue);
 
-		bandindex = rt_raster_generate_new_band(
-			raster,
-			arg[i].pixtype, arg[i].initialvalue,
-			arg[i].hasnodata, arg[i].nodatavalue,
-			arg[i].index - 1
-		);
+		bandindex = rt_raster_generate_new_band(raster,
+							arg[i].pixtype,
+							arg[i].initialvalue,
+							arg[i].hasnodata,
+							arg[i].nodatavalue,
+							arg[i].index - 1);
 
 		numbands = rt_raster_get_num_bands(raster);
-		if (numbands == lastnumbands || bandindex == -1) {
+		if (numbands == lastnumbands || bandindex == -1)
+		{
 			pfree(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBand: Could not add band defined by addbandarg of index %d to raster", i);
+			elog(
+			    ERROR, "RASTER_addBand: Could not add band defined by addbandarg of index %d to raster", i);
 			PG_RETURN_NULL();
 		}
 
@@ -341,7 +386,8 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
  * Add bands from array of rasters to a destination raster
  */
 PG_FUNCTION_INFO_V1(RASTER_addBandRasterArray);
-Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
+Datum
+RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgraster = NULL;
 	rt_pgraster *pgsrc = NULL;
@@ -369,12 +415,14 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	int i = 0;
 
 	/* destination raster */
-	if (!PG_ARGISNULL(0)) {
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	if (!PG_ARGISNULL(0))
+	{
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 		/* raster */
 		raster = rt_raster_deserialize(pgraster, FALSE);
-		if (!raster) {
+		if (!raster)
+		{
 			PG_FREE_IF_COPY(pgraster, 0);
 			elog(ERROR, "RASTER_addBandRasterArray: Could not deserialize destination raster");
 			PG_RETURN_NULL();
@@ -397,9 +445,11 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	/* source rasters' band index, 1-based */
 	if (!PG_ARGISNULL(2))
 		srcnband = PG_GETARG_INT32(2);
-	if (srcnband < 1) {
+	if (srcnband < 1)
+	{
 		elog(NOTICE, "Invalid band index for source rasters (must be 1-based).  Returning original raster");
-		if (raster != NULL) {
+		if (raster != NULL)
+		{
 			rt_raster_destroy(raster);
 			PG_RETURN_POINTER(pgraster);
 		}
@@ -409,13 +459,17 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(4, "srcnband = %d", srcnband);
 
 	/* destination raster's band index, 1-based */
-	if (!PG_ARGISNULL(3)) {
+	if (!PG_ARGISNULL(3))
+	{
 		dstnband = PG_GETARG_INT32(3);
 		appendband = FALSE;
 
-		if (dstnband < 1) {
-			elog(NOTICE, "Invalid band index for destination raster (must be 1-based).  Returning original raster");
-			if (raster != NULL) {
+		if (dstnband < 1)
+		{
+			elog(NOTICE,
+			     "Invalid band index for destination raster (must be 1-based).  Returning original raster");
+			if (raster != NULL)
+			{
 				rt_raster_destroy(raster);
 				PG_RETURN_POINTER(pgraster);
 			}
@@ -427,17 +481,22 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 		appendband = TRUE;
 
 	/* additional processing of dstnband */
-	if (raster != NULL) {
+	if (raster != NULL)
+	{
 		dstnumbands = rt_raster_get_num_bands(raster);
 
-		if (dstnumbands < 1) {
+		if (dstnumbands < 1)
+		{
 			appendband = TRUE;
 			dstnband = 1;
 		}
 		else if (appendband)
 			dstnband = dstnumbands + 1;
-		else if (dstnband > dstnumbands) {
-			elog(NOTICE, "Band index provided for destination raster is greater than the number of bands in the raster.  Bands will be appended");
+		else if (dstnband > dstnumbands)
+		{
+			elog(
+			    NOTICE,
+			    "Band index provided for destination raster is greater than the number of bands in the raster.  Bands will be appended");
 			appendband = TRUE;
 			dstnband = dstnumbands + 1;
 		}
@@ -451,8 +510,7 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	etype = ARR_ELEMTYPE(array);
 	get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
 
-	deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
-		&nulls, &n);
+	deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &n);
 
 	/* decrement srcnband and dstnband by 1, now 0-based */
 	srcnband--;
@@ -460,20 +518,24 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(4, "0-based nband (src, dst) = (%d, %d)", srcnband, dstnband);
 
 	/* time to copy bands */
-	for (i = 0; i < n; i++) {
-		if (nulls[i]) continue;
+	for (i = 0; i < n; i++)
+	{
+		if (nulls[i])
+			continue;
 		src = NULL;
 
-		pgsrc =	(rt_pgraster *) PG_DETOAST_DATUM(e[i]);
+		pgsrc = (rt_pgraster *)PG_DETOAST_DATUM(e[i]);
 		src = rt_raster_deserialize(pgsrc, FALSE);
-		if (src == NULL) {
+		if (src == NULL)
+		{
 			pfree(nulls);
 			pfree(e);
 			if (raster != NULL)
 				rt_raster_destroy(raster);
 			if (pgraster != NULL)
 				PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_addBandRasterArray: Could not deserialize source raster at index %d", i + 1);
+			elog(
+			    ERROR, "RASTER_addBandRasterArray: Could not deserialize source raster at index %d", i + 1);
 			PG_RETURN_NULL();
 		}
 
@@ -481,12 +543,16 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(4, "source raster %d has %d bands", i + 1, srcnumbands);
 
 		/* band index isn't valid */
-		if (srcnband > srcnumbands - 1) {
-			elog(NOTICE, "Invalid band index for source raster at index %d.  Returning original raster", i + 1);
+		if (srcnband > srcnumbands - 1)
+		{
+			elog(NOTICE,
+			     "Invalid band index for source raster at index %d.  Returning original raster",
+			     i + 1);
 			pfree(nulls);
 			pfree(e);
 			rt_raster_destroy(src);
-			if (raster != NULL) {
+			if (raster != NULL)
+			{
 				rt_raster_destroy(raster);
 				PG_RETURN_POINTER(pgraster);
 			}
@@ -495,32 +561,39 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 		}
 
 		/* destination raster is empty, new raster */
-		if (raster == NULL) {
+		if (raster == NULL)
+		{
 			uint32_t srcnbands[1] = {srcnband};
 
 			POSTGIS_RT_DEBUG(4, "empty destination raster, using rt_raster_from_band");
 
 			raster = rt_raster_from_band(src, srcnbands, 1);
 			rt_raster_destroy(src);
-			if (raster == NULL) {
+			if (raster == NULL)
+			{
 				pfree(nulls);
 				pfree(e);
 				if (pgraster != NULL)
 					PG_FREE_IF_COPY(pgraster, 0);
-				elog(ERROR, "RASTER_addBandRasterArray: Could not create raster from source raster at index %d", i + 1);
+				elog(
+				    ERROR,
+				    "RASTER_addBandRasterArray: Could not create raster from source raster at index %d",
+				    i + 1);
 				PG_RETURN_NULL();
 			}
 		}
 		/* copy band */
-		else {
-			rtn = rt_raster_copy_band(
-				raster, src,
-				srcnband, dstnband
-			);
+		else
+		{
+			rtn = rt_raster_copy_band(raster, src, srcnband, dstnband);
 			rt_raster_destroy(src);
 
-			if (rtn == -1 || rt_raster_get_num_bands(raster) == dstnumbands) {
-				elog(NOTICE, "Could not add band from source raster at index %d to destination raster.  Returning original raster", i + 1);
+			if (rtn == -1 || rt_raster_get_num_bands(raster) == dstnumbands)
+			{
+				elog(
+				    NOTICE,
+				    "Could not add band from source raster at index %d to destination raster.  Returning original raster",
+				    i + 1);
 				rt_raster_destroy(raster);
 				pfree(nulls);
 				pfree(e);
@@ -535,7 +608,8 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 		dstnumbands++;
 	}
 
-	if (raster != NULL) {
+	if (raster != NULL)
+	{
 		pgrtn = rt_raster_serialize(raster);
 		rt_raster_destroy(raster);
 		if (pgraster != NULL)
@@ -554,7 +628,8 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
  * Add out-db band to the given raster at the given position
  */
 PG_FUNCTION_INFO_V1(RASTER_addBandOutDB);
-Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
+Datum
+RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgraster = NULL;
 	rt_pgraster *pgrtn = NULL;
@@ -586,12 +661,14 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	int err = 0;
 
 	/* destination raster */
-	if (!PG_ARGISNULL(0)) {
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	if (!PG_ARGISNULL(0))
+	{
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 		/* raster */
 		raster = rt_raster_deserialize(pgraster, FALSE);
-		if (!raster) {
+		if (!raster)
+		{
 			PG_FREE_IF_COPY(pgraster, 0);
 			elog(ERROR, "RASTER_addBandOutDB: Cannot deserialize destination raster");
 			PG_RETURN_NULL();
@@ -607,20 +684,25 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		appendband = TRUE;
 
 	/* outdb file (2) */
-	if (PG_ARGISNULL(2)) {
+	if (PG_ARGISNULL(2))
+	{
 		elog(NOTICE, "Out-db raster file not provided. Returning original raster");
-		if (pgraster != NULL) {
+		if (pgraster != NULL)
+		{
 			rt_raster_destroy(raster);
 			PG_RETURN_POINTER(pgraster);
 		}
 		else
 			PG_RETURN_NULL();
 	}
-	else {
+	else
+	{
 		outdbfile = text_to_cstring(PG_GETARG_TEXT_P(2));
-		if (!strlen(outdbfile)) {
+		if (!strlen(outdbfile))
+		{
 			elog(NOTICE, "Out-db raster file not provided. Returning original raster");
-			if (pgraster != NULL) {
+			if (pgraster != NULL)
+			{
 				rt_raster_destroy(raster);
 				PG_RETURN_POINTER(pgraster);
 			}
@@ -630,7 +712,8 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	}
 
 	/* outdb band index (3) */
-	if (!PG_ARGISNULL(3)) {
+	if (!PG_ARGISNULL(3))
+	{
 		ArrayType *array;
 		Oid etype;
 		Datum *e;
@@ -646,25 +729,29 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		etype = ARR_ELEMTYPE(array);
 		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
 
-		switch (etype) {
-			case INT2OID:
-			case INT4OID:
-				break;
-			default:
-				if (pgraster != NULL) {
-					rt_raster_destroy(raster);
-					PG_FREE_IF_COPY(pgraster, 0);
-				}
-				elog(ERROR, "RASTER_addBandOutDB: Invalid data type for band indexes");
-				PG_RETURN_NULL();
-				break;
+		switch (etype)
+		{
+		case INT2OID:
+		case INT4OID:
+			break;
+		default:
+			if (pgraster != NULL)
+			{
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+			}
+			elog(ERROR, "RASTER_addBandOutDB: Invalid data type for band indexes");
+			PG_RETURN_NULL();
+			break;
 		}
 
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &numsrcnband);
 
 		srcnband = palloc(sizeof(int) * numsrcnband);
-		if (srcnband == NULL) {
-			if (pgraster != NULL) {
+		if (srcnband == NULL)
+		{
+			if (pgraster != NULL)
+			{
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
 			}
@@ -672,24 +759,30 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		for (i = 0, j = 0; i < numsrcnband; i++) {
-			if (nulls[i]) continue;
+		for (i = 0, j = 0; i < numsrcnband; i++)
+		{
+			if (nulls[i])
+				continue;
 
-			switch (etype) {
-				case INT2OID:
-					srcnband[j] = DatumGetInt16(e[i]);
-					break;
-				case INT4OID:
-					srcnband[j] = DatumGetInt32(e[i]);
-					break;
+			switch (etype)
+			{
+			case INT2OID:
+				srcnband[j] = DatumGetInt16(e[i]);
+				break;
+			case INT4OID:
+				srcnband[j] = DatumGetInt32(e[i]);
+				break;
 			}
 			j++;
 		}
 
-		if (j < numsrcnband) {
+		if (j < numsrcnband)
+		{
 			srcnband = repalloc(srcnband, sizeof(int) * j);
-			if (srcnband == NULL) {
-				if (pgraster != NULL) {
+			if (srcnband == NULL)
+			{
+				if (pgraster != NULL)
+				{
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
 				}
@@ -704,7 +797,8 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		allbands = TRUE;
 
 	/* nodataval (4) */
-	if (!PG_ARGISNULL(4)) {
+	if (!PG_ARGISNULL(4))
+	{
 		hasnodata = TRUE;
 		nodataval = PG_GETARG_FLOAT8(4);
 	}
@@ -714,15 +808,22 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	/* validate input */
 
 	/* make sure dstnband is valid */
-	if (raster != NULL) {
+	if (raster != NULL)
+	{
 		numbands = rt_raster_get_num_bands(raster);
-		if (!appendband) {
-			if (dstnband < 1) {
+		if (!appendband)
+		{
+			if (dstnband < 1)
+			{
 				elog(NOTICE, "Invalid band index %d for adding bands. Using band index 1", dstnband);
 				dstnband = 1;
 			}
-			else if (numbands > 0 && dstnband > numbands) {
-				elog(NOTICE, "Invalid band index %d for adding bands. Using band index %d", dstnband, numbands);
+			else if (numbands > 0 && dstnband > numbands)
+			{
+				elog(NOTICE,
+				     "Invalid band index %d for adding bands. Using band index %d",
+				     dstnband,
+				     numbands);
 				dstnband = numbands + 1;
 			}
 		}
@@ -733,8 +834,10 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	/* open outdb raster file */
 	rt_util_gdal_register_all(0);
 	hdsOut = rt_util_gdal_open(outdbfile, GA_ReadOnly, 1);
-	if (hdsOut == NULL) {
-		if (pgraster != NULL) {
+	if (hdsOut == NULL)
+	{
+		if (pgraster != NULL)
+		{
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 		}
@@ -743,7 +846,8 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	}
 
 	/* get offline raster's geotransform */
-	if (GDALGetGeoTransform(hdsOut, ogt) != CE_None) {
+	if (GDALGetGeoTransform(hdsOut, ogt) != CE_None)
+	{
 		ogt[0] = 0;
 		ogt[1] = 1;
 		ogt[2] = 0;
@@ -753,27 +857,32 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	}
 
 	/* raster doesn't exist, create it now */
-	if (raster == NULL) {
+	if (raster == NULL)
+	{
 		raster = rt_raster_new(GDALGetRasterXSize(hdsOut), GDALGetRasterYSize(hdsOut));
-		if (rt_raster_is_empty(raster)) {
+		if (rt_raster_is_empty(raster))
+		{
 			elog(ERROR, "RASTER_addBandOutDB: Cannot create new raster");
 			PG_RETURN_NULL();
 		}
 		rt_raster_set_geotransform_matrix(raster, ogt);
 
-		if (rt_util_gdal_sr_auth_info(hdsOut, &authname, &authcode) == ES_NONE) {
-			if (
-				authname != NULL &&
-				strcmp(authname, "EPSG") == 0 &&
-				authcode != NULL
-			) {
+		if (rt_util_gdal_sr_auth_info(hdsOut, &authname, &authcode) == ES_NONE)
+		{
+			if (authname != NULL && strcmp(authname, "EPSG") == 0 && authcode != NULL)
+			{
 				rt_raster_set_srid(raster, atoi(authcode));
 			}
 			else
-				elog(INFO, "Unknown SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
+				elog(
+				    INFO,
+				    "Unknown SRS auth name and code from out-db file. Defaulting SRID of new raster to %d",
+				    SRID_UNKNOWN);
 		}
 		else
-			elog(INFO, "Cannot get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
+			elog(INFO,
+			     "Cannot get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d",
+			     SRID_UNKNOWN);
 	}
 
 	/* some raster info */
@@ -787,7 +896,8 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	err = rt_raster_same_alignment(raster, _rast, &aligned, NULL);
 	rt_raster_destroy(_rast);
 
-	if (err != ES_NONE) {
+	if (err != ES_NONE)
+	{
 		GDALClose(hdsOut);
 		if (raster != NULL)
 			rt_raster_destroy(raster);
@@ -797,15 +907,18 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		return ES_ERROR;
 	}
 	else if (!aligned)
-		elog(WARNING, "The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
+		elog(WARNING,
+		     "The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
 
 	/* build up srcnband */
-	if (allbands) {
+	if (allbands)
+	{
 		numsrcnband = GDALGetRasterCount(hdsOut);
 		GDALClose(hdsOut);
 
 		srcnband = palloc(sizeof(int) * numsrcnband);
-		if (srcnband == NULL) {
+		if (srcnband == NULL)
+		{
 			if (raster != NULL)
 				rt_raster_destroy(raster);
 			if (pgraster != NULL)
@@ -821,16 +934,14 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		GDALClose(hdsOut);
 
 	/* add band */
-	for (i = 0, j = dstnband - 1; i < numsrcnband; i++, j++) {
+	for (i = 0, j = dstnband - 1; i < numsrcnband; i++, j++)
+	{
 
 		/* create band with path */
-		band = rt_band_new_offline_from_path(
-			width, height,
-			hasnodata, nodataval,
-			srcnband[i], outdbfile,
-			FALSE
-		);
-		if (band == NULL) {
+		band =
+		    rt_band_new_offline_from_path(width, height, hasnodata, nodataval, srcnband[i], outdbfile, FALSE);
+		if (band == NULL)
+		{
 			if (raster != NULL)
 				rt_raster_destroy(raster);
 			if (pgraster != NULL)
@@ -840,7 +951,8 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		}
 
 		/* add band */
-		if (rt_raster_add_band(raster, band, j) < 0) {
+		if (rt_raster_add_band(raster, band, j) < 0)
+		{
 			if (raster != NULL)
 				rt_raster_destroy(raster);
 			if (pgraster != NULL)
@@ -865,7 +977,8 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
  * Copy a band from one raster to another one at the given position.
  */
 PG_FUNCTION_INFO_V1(RASTER_copyBand);
-Datum RASTER_copyBand(PG_FUNCTION_ARGS)
+Datum
+RASTER_copyBand(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgto = NULL;
 	rt_pgraster *pgfrom = NULL;
@@ -879,22 +992,26 @@ Datum RASTER_copyBand(PG_FUNCTION_ARGS)
 	int newbandindex = 0;
 
 	/* Deserialize torast */
-	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 	pgto = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	torast = rt_raster_deserialize(pgto, FALSE);
-	if (!torast) {
+	if (!torast)
+	{
 		PG_FREE_IF_COPY(pgto, 0);
 		elog(ERROR, "RASTER_copyBand: Could not deserialize first raster");
 		PG_RETURN_NULL();
 	}
 
 	/* Deserialize fromrast */
-	if (!PG_ARGISNULL(1)) {
+	if (!PG_ARGISNULL(1))
+	{
 		pgfrom = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 		fromrast = rt_raster_deserialize(pgfrom, FALSE);
-		if (!fromrast) {
+		if (!fromrast)
+		{
 			rt_raster_destroy(torast);
 			PG_FREE_IF_COPY(pgfrom, 1);
 			PG_FREE_IF_COPY(pgto, 0);
@@ -915,16 +1032,14 @@ Datum RASTER_copyBand(PG_FUNCTION_ARGS)
 			toindex = PG_GETARG_INT32(3);
 
 		/* Copy band fromrast torast */
-		newbandindex = rt_raster_copy_band(
-			torast, fromrast,
-			fromband - 1, toindex - 1
-		);
+		newbandindex = rt_raster_copy_band(torast, fromrast, fromband - 1, toindex - 1);
 
 		newtorastnumbands = rt_raster_get_num_bands(torast);
-		if (newtorastnumbands == oldtorastnumbands || newbandindex == -1) {
-			elog(NOTICE, "RASTER_copyBand: Could not add band to raster. "
-				"Returning original raster."
-			);
+		if (newtorastnumbands == oldtorastnumbands || newbandindex == -1)
+		{
+			elog(NOTICE,
+			     "RASTER_copyBand: Could not add band to raster. "
+			     "Returning original raster.");
 		}
 
 		rt_raster_destroy(fromrast);
@@ -935,7 +1050,8 @@ Datum RASTER_copyBand(PG_FUNCTION_ARGS)
 	pgrtn = rt_raster_serialize(torast);
 	rt_raster_destroy(torast);
 	PG_FREE_IF_COPY(pgto, 0);
-	if (!pgrtn) PG_RETURN_NULL();
+	if (!pgrtn)
+		PG_RETURN_NULL();
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
@@ -945,7 +1061,8 @@ Datum RASTER_copyBand(PG_FUNCTION_ARGS)
  * Break up a raster into smaller tiles. SRF function
  */
 PG_FUNCTION_INFO_V1(RASTER_tile);
-Datum RASTER_tile(PG_FUNCTION_ARGS)
+Datum
+RASTER_tile(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
 	int call_cntr;
@@ -983,7 +1100,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 	struct tile_arg_t *arg1 = NULL;
 	struct tile_arg_t *arg2 = NULL;
 
-	if (SRF_IS_FIRSTCALL()) {
+	if (SRF_IS_FIRSTCALL())
+	{
 		MemoryContext oldcontext;
 		rt_pgraster *pgraster = NULL;
 		int numbands;
@@ -1006,26 +1124,26 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/* Get input arguments */
-		if (PG_ARGISNULL(0)) {
+		if (PG_ARGISNULL(0))
+		{
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
 		/* allocate arg1 */
 		arg1 = palloc(sizeof(struct tile_arg_t));
-		if (arg1 == NULL) {
+		if (arg1 == NULL)
+		{
 			MemoryContextSwitchTo(oldcontext);
 			elog(ERROR, "RASTER_tile: Could not allocate memory for arguments");
 			SRF_RETURN_DONE(funcctx);
 		}
 
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 		arg1->raster.raster = rt_raster_deserialize(pgraster, FALSE);
-		if (!arg1->raster.raster) {
-			ereport(ERROR, (
-				errcode(ERRCODE_OUT_OF_MEMORY),
-				errmsg("Could not deserialize raster")
-			));
+		if (!arg1->raster.raster)
+		{
+			ereport(ERROR, (errcode(ERRCODE_OUT_OF_MEMORY), errmsg("Could not deserialize raster")));
 			pfree(arg1);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -1046,7 +1164,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		*/
 
 		/* width (1) */
-		if (PG_ARGISNULL(1)) {
+		if (PG_ARGISNULL(1))
+		{
 			elog(NOTICE, "Width cannot be NULL. Returning NULL");
 			rt_raster_destroy(arg1->raster.raster);
 			pfree(arg1);
@@ -1055,7 +1174,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 		arg1->tile.width = PG_GETARG_INT32(1);
-		if (arg1->tile.width < 1) {
+		if (arg1->tile.width < 1)
+		{
 			elog(NOTICE, "Width must be greater than zero. Returning NULL");
 			rt_raster_destroy(arg1->raster.raster);
 			pfree(arg1);
@@ -1065,7 +1185,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		}
 
 		/* height (2) */
-		if (PG_ARGISNULL(2)) {
+		if (PG_ARGISNULL(2))
+		{
 			elog(NOTICE, "Height cannot be NULL. Returning NULL");
 			rt_raster_destroy(arg1->raster.raster);
 			pfree(arg1);
@@ -1074,7 +1195,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 		arg1->tile.height = PG_GETARG_INT32(2);
-		if (arg1->tile.height < 1) {
+		if (arg1->tile.height < 1)
+		{
 			elog(NOTICE, "Height must be greater than zero. Returning NULL");
 			rt_raster_destroy(arg1->raster.raster);
 			pfree(arg1);
@@ -1084,29 +1206,32 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		}
 
 		/* nband, array (3) */
-		if (numbands && !PG_ARGISNULL(3)) {
+		if (numbands && !PG_ARGISNULL(3))
+		{
 			array = PG_GETARG_ARRAYTYPE_P(3);
 			etype = ARR_ELEMTYPE(array);
 			get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
 
-			switch (etype) {
-				case INT2OID:
-				case INT4OID:
-					break;
-				default:
-					rt_raster_destroy(arg1->raster.raster);
-					pfree(arg1);
-					PG_FREE_IF_COPY(pgraster, 0);
-					MemoryContextSwitchTo(oldcontext);
-					elog(ERROR, "RASTER_tile: Invalid data type for band indexes");
-					SRF_RETURN_DONE(funcctx);
-					break;
+			switch (etype)
+			{
+			case INT2OID:
+			case INT4OID:
+				break;
+			default:
+				rt_raster_destroy(arg1->raster.raster);
+				pfree(arg1);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				elog(ERROR, "RASTER_tile: Invalid data type for band indexes");
+				SRF_RETURN_DONE(funcctx);
+				break;
 			}
 
 			deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &(arg1->numbands));
 
 			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
-			if (arg1->nbands == NULL) {
+			if (arg1->nbands == NULL)
+			{
 				rt_raster_destroy(arg1->raster.raster);
 				pfree(arg1);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -1115,24 +1240,29 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				SRF_RETURN_DONE(funcctx);
 			}
 
-			for (i = 0, j = 0; i < arg1->numbands; i++) {
-				if (nulls[i]) continue;
+			for (i = 0, j = 0; i < arg1->numbands; i++)
+			{
+				if (nulls[i])
+					continue;
 
-				switch (etype) {
-					case INT2OID:
-						arg1->nbands[j] = DatumGetInt16(e[i]) - 1;
-						break;
-					case INT4OID:
-						arg1->nbands[j] = DatumGetInt32(e[i]) - 1;
-						break;
+				switch (etype)
+				{
+				case INT2OID:
+					arg1->nbands[j] = DatumGetInt16(e[i]) - 1;
+					break;
+				case INT4OID:
+					arg1->nbands[j] = DatumGetInt32(e[i]) - 1;
+					break;
 				}
 
 				j++;
 			}
 
-			if (j < arg1->numbands) {
+			if (j < arg1->numbands)
+			{
 				arg1->nbands = repalloc(arg1->nbands, sizeof(int) * j);
-				if (arg1->nbands == NULL) {
+				if (arg1->nbands == NULL)
+				{
 					rt_raster_destroy(arg1->raster.raster);
 					pfree(arg1);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -1145,8 +1275,10 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			}
 
 			/* validate nbands */
-			for (i = 0; i < arg1->numbands; i++) {
-				if (!rt_raster_has_band(arg1->raster.raster, arg1->nbands[i])) {
+			for (i = 0; i < arg1->numbands; i++)
+			{
+				if (!rt_raster_has_band(arg1->raster.raster, arg1->nbands[i]))
+				{
 					elog(NOTICE, "Band at index %d not found in raster", arg1->nbands[i] + 1);
 					rt_raster_destroy(arg1->raster.raster);
 					pfree(arg1->nbands);
@@ -1157,13 +1289,16 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				}
 			}
 		}
-		else {
+		else
+		{
 			arg1->numbands = numbands;
 
-			if (numbands) {
+			if (numbands)
+			{
 				arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 
-				if (arg1->nbands == NULL) {
+				if (arg1->nbands == NULL)
+				{
 					rt_raster_destroy(arg1->raster.raster);
 					pfree(arg1);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -1172,7 +1307,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 				}
 
-				for (i = 0; i < arg1->numbands; i++) {
+				for (i = 0; i < arg1->numbands; i++)
+				{
 					arg1->nbands[i] = i;
 					POSTGIS_RT_DEBUGF(4, "arg1->nbands[%d] = %d", arg1->nbands[i], i);
 				}
@@ -1180,19 +1316,23 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		}
 
 		/* pad (4) and padnodata (5) */
-		if (!PG_ARGISNULL(4)) {
+		if (!PG_ARGISNULL(4))
+		{
 			arg1->pad.pad = PG_GETARG_BOOL(4) ? 1 : 0;
 
-			if (arg1->pad.pad && !PG_ARGISNULL(5)) {
+			if (arg1->pad.pad && !PG_ARGISNULL(5))
+			{
 				arg1->pad.hasnodata = 1;
 				arg1->pad.nodataval = PG_GETARG_FLOAT8(5);
 			}
-			else {
+			else
+			{
 				arg1->pad.hasnodata = 0;
 				arg1->pad.nodataval = 0;
 			}
 		}
-		else {
+		else
+		{
 			arg1->pad.pad = 0;
 			arg1->pad.hasnodata = 0;
 			arg1->pad.nodataval = 0;
@@ -1205,8 +1345,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		rt_raster_get_geotransform_matrix(arg1->raster.raster, arg1->raster.gt);
 
 		/* determine maximum number of tiles from raster */
-		arg1->tile.nx = ceil(arg1->raster.width / (double) arg1->tile.width);
-		arg1->tile.ny = ceil(arg1->raster.height / (double) arg1->tile.height);
+		arg1->tile.nx = ceil(arg1->raster.width / (double)arg1->tile.width);
+		arg1->tile.ny = ceil(arg1->raster.height / (double)arg1->tile.height);
 		POSTGIS_RT_DEBUGF(4, "# of tiles (x, y) = (%d, %d)", arg1->tile.nx, arg1->tile.ny);
 
 		/* Store needed information */
@@ -1226,7 +1366,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 	arg2 = funcctx->user_fctx;
 
 	/* do when there is more left to send */
-	if (call_cntr < max_calls) {
+	if (call_cntr < max_calls)
+	{
 		rt_pgraster *pgtile = NULL;
 		rt_raster tile = NULL;
 		rt_band _band = NULL;
@@ -1264,7 +1405,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(4, "tile (x, y) = (%d, %d)", tx, ty);
 
 		/* edge tile? only important if padding is false */
-		if (!arg2->pad.pad) {
+		if (!arg2->pad.pad)
+		{
 			if (ty + 1 == arg2->tile.ny)
 				ey = 1;
 			if (tx + 1 == arg2->tile.nx)
@@ -1282,7 +1424,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		height = arg2->tile.height;
 
 		/* override user-defined if edge tile (only possible if padding is false */
-		if (ex || ey) {
+		if (ex || ey)
+		{
 			/* right edge */
 			if (ex)
 				width = arg2->raster.width - rx;
@@ -1297,12 +1440,16 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		rt_raster_set_srid(tile, arg2->raster.srid);
 
 		/* upper-left of tile in spatial coordinates */
-		if (rt_raster_cell_to_geopoint(arg2->raster.raster, rx, ry, &ulx, &uly, arg2->raster.gt) != ES_NONE) {
+		if (rt_raster_cell_to_geopoint(arg2->raster.raster, rx, ry, &ulx, &uly, arg2->raster.gt) != ES_NONE)
+		{
 			rt_raster_destroy(tile);
 			rt_raster_destroy(arg2->raster.raster);
-			if (arg2->numbands) pfree(arg2->nbands);
+			if (arg2->numbands)
+				pfree(arg2->nbands);
 			pfree(arg2);
-			elog(ERROR, "RASTER_tile: Could not compute the coordinates of the upper-left corner of the output tile");
+			elog(
+			    ERROR,
+			    "RASTER_tile: Could not compute the coordinates of the upper-left corner of the output tile");
 			SRF_RETURN_DONE(funcctx);
 		}
 		rt_raster_set_offsets(tile, ulx, uly);
@@ -1315,11 +1462,13 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(3, "read line len = %d", len);
 
 		/* copy bands to tile */
-		for (i = 0; i < arg2->numbands; i++) {
+		for (i = 0; i < arg2->numbands; i++)
+		{
 			POSTGIS_RT_DEBUGF(4, "copying band %d to tile %d", arg2->nbands[i], call_cntr);
 
 			_band = rt_raster_get_band(arg2->raster.raster, arg2->nbands[i]);
-			if (_band == NULL) {
+			if (_band == NULL)
+			{
 				int nband = arg2->nbands[i] + 1;
 				rt_raster_destroy(tile);
 				rt_raster_destroy(arg2->raster.raster);
@@ -1333,7 +1482,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			hasnodata = rt_band_get_hasnodata_flag(_band);
 			if (hasnodata)
 				rt_band_get_nodata(_band, &nodataval);
-			else if (arg2->pad.pad && arg2->pad.hasnodata) {
+			else if (arg2->pad.pad && arg2->pad.hasnodata)
+			{
 				hasnodata = 1;
 				nodataval = arg2->pad.nodataval;
 			}
@@ -1341,8 +1491,10 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				nodataval = rt_band_get_min_value(_band);
 
 			/* inline band */
-			if (!rt_band_is_offline(_band)) {
-				if (rt_raster_generate_new_band(tile, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
+			if (!rt_band_is_offline(_band))
+			{
+				if (rt_raster_generate_new_band(tile, pixtype, nodataval, hasnodata, nodataval, i) < 0)
+				{
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
 					pfree(arg2->nbands);
@@ -1351,7 +1503,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 				}
 				band = rt_raster_get_band(tile, i);
-				if (band == NULL) {
+				if (band == NULL)
+				{
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
 					pfree(arg2->nbands);
@@ -1361,22 +1514,27 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				}
 
 				/* if isnodata, set flag and continue */
-				if (rt_band_get_isnodata_flag(_band)) {
+				if (rt_band_get_isnodata_flag(_band))
+				{
 					rt_band_set_isnodata_flag(band, 1);
 					continue;
 				}
 
 				/* copy data */
-				for (j = 0; j < arg2->tile.height; j++) {
+				for (j = 0; j < arg2->tile.height; j++)
+				{
 					k = ry + j;
 
-					if (k >= arg2->raster.height) {
-						POSTGIS_RT_DEBUGF(4, "row %d is beyond extent of source raster. skipping", k);
+					if (k >= arg2->raster.height)
+					{
+						POSTGIS_RT_DEBUGF(
+						    4, "row %d is beyond extent of source raster. skipping", k);
 						continue;
 					}
 
 					POSTGIS_RT_DEBUGF(4, "getting pixel line %d, %d for %d pixels", rx, k, len);
-					if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != ES_NONE) {
+					if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != ES_NONE)
+					{
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
 						pfree(arg2->nbands);
@@ -1385,7 +1543,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 						SRF_RETURN_DONE(funcctx);
 					}
 
-					if (nvals && rt_band_set_pixel_line(band, 0, j, vals, nvals) != ES_NONE) {
+					if (nvals && rt_band_set_pixel_line(band, 0, j, vals, nvals) != ES_NONE)
+					{
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
 						pfree(arg2->nbands);
@@ -1396,18 +1555,16 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				}
 			}
 			/* offline */
-			else {
+			else
+			{
 				uint8_t bandnum = 0;
 				rt_band_get_ext_band_num(_band, &bandnum);
 
 				band = rt_band_new_offline(
-					width, height,
-					pixtype,
-					hasnodata, nodataval,
-					bandnum, rt_band_get_ext_path(_band)
-				);
+				    width, height, pixtype, hasnodata, nodataval, bandnum, rt_band_get_ext_path(_band));
 
-				if (band == NULL) {
+				if (band == NULL)
+				{
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
 					pfree(arg2->nbands);
@@ -1416,7 +1573,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 				}
 
-				if (rt_raster_add_band(tile, band, i) < 0) {
+				if (rt_raster_add_band(tile, band, i) < 0)
+				{
 					rt_band_destroy(band);
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
@@ -1430,9 +1588,11 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 		pgtile = rt_raster_serialize(tile);
 		rt_raster_destroy(tile);
-		if (!pgtile) {
+		if (!pgtile)
+		{
 			rt_raster_destroy(arg2->raster.raster);
-			if (arg2->numbands) pfree(arg2->nbands);
+			if (arg2->numbands)
+				pfree(arg2->nbands);
 			pfree(arg2);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -1441,9 +1601,11 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		SRF_RETURN_NEXT(funcctx, PointerGetDatum(pgtile));
 	}
 	/* do when there is no more left */
-	else {
+	else
+	{
 		rt_raster_destroy(arg2->raster.raster);
-		if (arg2->numbands) pfree(arg2->nbands);
+		if (arg2->numbands)
+			pfree(arg2->nbands);
 		pfree(arg2);
 		SRF_RETURN_DONE(funcctx);
 	}
@@ -1454,7 +1616,8 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
  * second argument is an array of band numbers (1 based)
  */
 PG_FUNCTION_INFO_V1(RASTER_band);
-Datum RASTER_band(PG_FUNCTION_ARGS)
+Datum
+RASTER_band(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgraster;
 	rt_pgraster *pgrast;
@@ -1479,58 +1642,65 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
+	if (!raster)
+	{
 		PG_FREE_IF_COPY(pgraster, 0);
 		elog(ERROR, "RASTER_band: Could not deserialize raster");
 		PG_RETURN_NULL();
 	}
 
 	/* process bandNums */
-	if (PG_ARGISNULL(1)) {
+	if (PG_ARGISNULL(1))
+	{
 		elog(NOTICE, "Band number(s) not provided.  Returning original raster");
 		skip = TRUE;
 	}
-	if (!skip) {
+	if (!skip)
+	{
 		numBands = rt_raster_get_num_bands(raster);
 
 		array = PG_GETARG_ARRAYTYPE_P(1);
 		etype = ARR_ELEMTYPE(array);
 		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
 
-		switch (etype) {
-			case INT2OID:
-			case INT4OID:
-				break;
-			default:
-				rt_raster_destroy(raster);
-				PG_FREE_IF_COPY(pgraster, 0);
-				elog(ERROR, "RASTER_band: Invalid data type for band number(s)");
-				PG_RETURN_NULL();
-				break;
+		switch (etype)
+		{
+		case INT2OID:
+		case INT4OID:
+			break;
+		default:
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			elog(ERROR, "RASTER_band: Invalid data type for band number(s)");
+			PG_RETURN_NULL();
+			break;
 		}
 
-		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
-			&nulls, &n);
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &n);
 
 		bandNums = palloc(sizeof(uint32_t) * n);
-		for (i = 0, j = 0; i < n; i++) {
-			if (nulls[i]) continue;
+		for (i = 0, j = 0; i < n; i++)
+		{
+			if (nulls[i])
+				continue;
 
-			switch (etype) {
-				case INT2OID:
-					idx = (uint32_t) DatumGetInt16(e[i]);
-					break;
-				case INT4OID:
-					idx = (uint32_t) DatumGetInt32(e[i]);
-					break;
+			switch (etype)
+			{
+			case INT2OID:
+				idx = (uint32_t)DatumGetInt16(e[i]);
+				break;
+			case INT4OID:
+				idx = (uint32_t)DatumGetInt32(e[i]);
+				break;
 			}
 
 			POSTGIS_RT_DEBUGF(3, "band idx (before): %d", idx);
-			if (idx > numBands || idx < 1) {
-        		elog(NOTICE, "Invalid band index (must use 1-based). Returning original raster");
+			if (idx > numBands || idx < 1)
+			{
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning original raster");
 				skip = TRUE;
 				break;
 			}
@@ -1540,18 +1710,21 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 			j++;
 		}
 
-		if (skip || j < 1) {
+		if (skip || j < 1)
+		{
 			pfree(bandNums);
 			skip = TRUE;
 		}
 	}
 
-	if (!skip) {
+	if (!skip)
+	{
 		rast = rt_raster_from_band(raster, bandNums, j);
 		pfree(bandNums);
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
-		if (!rast) {
+		if (!rast)
+		{
 			elog(ERROR, "RASTER_band: Could not create new raster");
 			PG_RETURN_NULL();
 		}

@@ -24,19 +24,24 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_gdal_configured() {
+static void
+test_gdal_configured()
+{
 	CU_ASSERT(rt_util_gdal_configured());
 }
 
-static void test_gdal_drivers() {
+static void
+test_gdal_drivers()
+{
 	uint32_t i;
 	uint32_t size;
 	rt_gdaldriver drv = NULL;
 
-	drv = (rt_gdaldriver) rt_raster_gdal_drivers(&size, 1);
+	drv = (rt_gdaldriver)rt_raster_gdal_drivers(&size, 1);
 	CU_ASSERT(drv != NULL);
 
-	for (i = 0; i < size; i++) {
+	for (i = 0; i < size; i++)
+	{
 		CU_ASSERT(strlen(drv[i].short_name));
 		rtdealloc(drv[i].short_name);
 		rtdealloc(drv[i].long_name);
@@ -46,10 +51,14 @@ static void test_gdal_drivers() {
 	rtdealloc(drv);
 }
 
-static void test_gdal_rasterize() {
+static void
+test_gdal_rasterize()
+{
 	rt_raster raster;
-	char srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
-	const char wkb_hex[] = "010300000001000000050000000000000080841ec100000000600122410000000080841ec100000000804f22410000000040e81dc100000000804f22410000000040e81dc100000000600122410000000080841ec10000000060012241";
+	char srs[] =
+	    "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
+	const char wkb_hex[] =
+	    "010300000001000000050000000000000080841ec100000000600122410000000080841ec100000000804f22410000000040e81dc100000000804f22410000000040e81dc100000000600122410000000080841ec10000000060012241";
 	const char *pos = wkb_hex;
 	unsigned char *wkb = NULL;
 	int wkb_len = 0;
@@ -64,28 +73,36 @@ static void test_gdal_rasterize() {
 	uint8_t nodata_mask[] = {1};
 
 	/* hex to byte */
-	wkb_len = (int) ceil(((double) strlen(wkb_hex)) / 2);
-	wkb = (unsigned char *) rtalloc(sizeof(unsigned char) * wkb_len);
-	for (i = 0; i < wkb_len; i++) {
+	wkb_len = (int)ceil(((double)strlen(wkb_hex)) / 2);
+	wkb = (unsigned char *)rtalloc(sizeof(unsigned char) * wkb_len);
+	for (i = 0; i < wkb_len; i++)
+	{
 		int b = 0;
 		sscanf(pos, "%2x", &b);
 		wkb[i] = (unsigned char)b;
 		pos += 2;
 	}
 
-	raster = rt_raster_gdal_rasterize(
-		wkb,
-		wkb_len, srs,
-		1, pixtype,
-		init, value,
-		nodata, nodata_mask,
-		NULL, NULL,
-		&scale_x, &scale_y,
-		NULL, NULL,
-		NULL, NULL,
-		NULL, NULL,
-		NULL
-	);
+	raster = rt_raster_gdal_rasterize(wkb,
+					  wkb_len,
+					  srs,
+					  1,
+					  pixtype,
+					  init,
+					  value,
+					  nodata,
+					  nodata_mask,
+					  NULL,
+					  NULL,
+					  &scale_x,
+					  &scale_y,
+					  NULL,
+					  NULL,
+					  NULL,
+					  NULL,
+					  NULL,
+					  NULL,
+					  NULL);
 
 	CU_ASSERT(raster != NULL);
 	CU_ASSERT_EQUAL(rt_raster_get_width(raster), 100);
@@ -98,7 +115,9 @@ static void test_gdal_rasterize() {
 	cu_free_raster(raster);
 }
 
-static rt_raster fillRasterToPolygonize(int hasnodata, double nodataval) {
+static rt_raster
+fillRasterToPolygonize(int hasnodata, double nodataval)
+{
 	rt_band band = NULL;
 	rt_pixtype pixtype = PT_32BF;
 
@@ -151,7 +170,9 @@ static rt_raster fillRasterToPolygonize(int hasnodata, double nodataval) {
 	return raster;
 }
 
-static void test_gdal_polygonize() {
+static void
+test_gdal_polygonize()
+{
 	int i;
 	rt_raster rt;
 	int nPols = 0;
@@ -159,7 +180,7 @@ static void test_gdal_polygonize() {
 	double total_val = 0;
 	rt_geomval gv = NULL;
 	LWGEOM *gobserved;
-	//char *wkt = NULL;
+	// char *wkt = NULL;
 
 	rt = fillRasterToPolygonize(1, -1.0);
 	CU_ASSERT(rt_raster_has_band(rt, 0));
@@ -167,12 +188,14 @@ static void test_gdal_polygonize() {
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 	CU_ASSERT_DOUBLE_EQUAL(nPols, 4, FLT_EPSILON);
-		total_area = 0; total_val = 0;
-	for (i = 0; i < nPols; i++) {
+	total_area = 0;
+	total_val = 0;
+	for (i = 0; i < nPols; i++)
+	{
 		total_val += gv[i].val;
-		gobserved = (LWGEOM *) gv[i].geom;
+		gobserved = (LWGEOM *)gv[i].geom;
 		total_area += lwgeom_area(gobserved);
-		lwgeom_free((LWGEOM *) gv[i].geom);
+		lwgeom_free((LWGEOM *)gv[i].geom);
 	}
 	printf("total area, total val, nPols  = %f, %f, %i\n", total_area, total_val, nPols);
 	CU_ASSERT_DOUBLE_EQUAL(total_val, 1.8 + 0.0 + 2.8 + 0, FLT_EPSILON);
@@ -190,17 +213,18 @@ static void test_gdal_polygonize() {
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 	CU_ASSERT_DOUBLE_EQUAL(nPols, 4, FLT_EPSILON);
-	total_area = 0; total_val = 0;
-	for (i = 0; i < nPols; i++) {
+	total_area = 0;
+	total_val = 0;
+	for (i = 0; i < nPols; i++)
+	{
 		total_val += gv[i].val;
-		gobserved = (LWGEOM *) gv[i].geom;
+		gobserved = (LWGEOM *)gv[i].geom;
 		total_area += lwgeom_area(gobserved);
-		lwgeom_free((LWGEOM *) gv[i].geom);
+		lwgeom_free((LWGEOM *)gv[i].geom);
 	}
 	printf("total area, total_val, polys = %f, %f, %i\n", total_area, total_val, nPols);
 	CU_ASSERT_DOUBLE_EQUAL(total_val, 4.6, FLT_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(total_area, 81, FLT_EPSILON);
-
 
 	rtdealloc(gv);
 	cu_free_raster(rt);
@@ -214,12 +238,14 @@ static void test_gdal_polygonize() {
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 	CU_ASSERT_DOUBLE_EQUAL(nPols, 4, FLT_EPSILON);
-	total_area = 0; total_val = 0;
-	for (i = 0; i < nPols; i++) {
+	total_area = 0;
+	total_val = 0;
+	for (i = 0; i < nPols; i++)
+	{
 		total_val += gv[i].val;
-		gobserved = (LWGEOM *) gv[i].geom;
+		gobserved = (LWGEOM *)gv[i].geom;
 		total_area += lwgeom_area(gobserved);
-		lwgeom_free((LWGEOM *) gv[i].geom);
+		lwgeom_free((LWGEOM *)gv[i].geom);
 	}
 
 	printf("total area, total_val, polys = %f, %f, %i\n", total_area, total_val, nPols);
@@ -238,12 +264,14 @@ static void test_gdal_polygonize() {
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 
 	CU_ASSERT_DOUBLE_EQUAL(nPols, 2, FLT_EPSILON);
-	total_area = 0; total_val = 0;
-	for (i = 0; i < nPols; i++) {
+	total_area = 0;
+	total_val = 0;
+	for (i = 0; i < nPols; i++)
+	{
 		total_val += gv[i].val;
-		gobserved = (LWGEOM *) gv[i].geom;
+		gobserved = (LWGEOM *)gv[i].geom;
 		total_area += lwgeom_area(gobserved);
-		lwgeom_free((LWGEOM *) gv[i].geom);
+		lwgeom_free((LWGEOM *)gv[i].geom);
 	}
 
 	printf("total area, total_val, polys = %f, %f, %i\n", total_area, total_val, nPols);
@@ -262,12 +290,14 @@ static void test_gdal_polygonize() {
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 
 	CU_ASSERT_DOUBLE_EQUAL(nPols, 4, FLT_EPSILON);
-	total_area = 0; total_val = 0;
-	for (i = 0; i < nPols; i++) {
+	total_area = 0;
+	total_val = 0;
+	for (i = 0; i < nPols; i++)
+	{
 		total_val += gv[i].val;
-		gobserved = (LWGEOM *) gv[i].geom;
+		gobserved = (LWGEOM *)gv[i].geom;
 		total_area += lwgeom_area(gobserved);
-		lwgeom_free((LWGEOM *) gv[i].geom);
+		lwgeom_free((LWGEOM *)gv[i].geom);
 	}
 
 	printf("total area, total_val, polys = %f, %f, %i\n", total_area, total_val, nPols);
@@ -277,7 +307,9 @@ static void test_gdal_polygonize() {
 	cu_free_raster(rt);
 }
 
-static void test_raster_to_gdal() {
+static void
+test_raster_to_gdal()
+{
 	rt_pixtype pixtype = PT_64BF;
 	rt_raster raster = NULL;
 	rt_band band = NULL;
@@ -285,7 +317,8 @@ static void test_raster_to_gdal() {
 	uint32_t width = 100;
 	uint32_t y;
 	uint32_t height = 100;
-	char srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
+	char srs[] =
+	    "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
 
 	uint64_t gdalSize;
 	uint8_t *gdal = NULL;
@@ -299,9 +332,11 @@ static void test_raster_to_gdal() {
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
-			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
+			rt_band_set_pixel(band, x, y, (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
 
@@ -316,7 +351,8 @@ static void test_raster_to_gdal() {
 	fclose(fh);
 	*/
 
-	if (gdal) CPLFree(gdal);
+	if (gdal)
+		CPLFree(gdal);
 
 	cu_free_raster(raster);
 
@@ -329,8 +365,10 @@ static void test_raster_to_gdal() {
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rt_band_set_pixel(band, x, y, x, NULL);
 		}
 	}
@@ -342,7 +380,8 @@ static void test_raster_to_gdal() {
 	/*printf("gdalSize: %d\n", (int) gdalSize);*/
 	CU_ASSERT(gdalSize);
 
-	if (gdal) CPLFree(gdal);
+	if (gdal)
+		CPLFree(gdal);
 
 	gdal = rt_raster_to_gdal(raster, srs, "PCIDSK", NULL, &gdalSize);
 	CU_ASSERT(gdal == NULL);
@@ -350,7 +389,9 @@ static void test_raster_to_gdal() {
 	cu_free_raster(raster);
 }
 
-static void test_gdal_to_raster() {
+static void
+test_gdal_to_raster()
+{
 	rt_pixtype pixtype = PT_64BF;
 	rt_band band = NULL;
 
@@ -375,9 +416,11 @@ static void test_gdal_to_raster() {
 	band = cu_add_band(raster, pixtype, 1, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
-			values[x][y] = (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1);
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
+			values[x][y] = (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1);
 			rt_band_set_pixel(band, x, y, values[x][y], NULL);
 		}
 	}
@@ -396,10 +439,12 @@ static void test_gdal_to_raster() {
 	band = rt_raster_get_band(rast, 0);
 	CU_ASSERT(band != NULL);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
- 			CU_ASSERT_EQUAL(rtn, ES_NONE);
+			CU_ASSERT_EQUAL(rtn, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(value, values[x][y], DBL_EPSILON);
 		}
 	}
@@ -419,8 +464,10 @@ static void test_gdal_to_raster() {
 	CU_ASSERT(band != NULL);
 
 	v = -127;
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			values[x][y] = v++;
 			rt_band_set_pixel(band, x, y, values[x][y], NULL);
 			if (v == 128)
@@ -443,10 +490,12 @@ static void test_gdal_to_raster() {
 	CU_ASSERT(band != NULL);
 	CU_ASSERT_EQUAL(rt_band_get_pixtype(band), PT_16BSI);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
 			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
- 			CU_ASSERT_EQUAL(rtn, ES_NONE);
+			CU_ASSERT_EQUAL(rtn, ES_NONE);
 			CU_ASSERT_DOUBLE_EQUAL(value, values[x][y], 1.);
 		}
 	}
@@ -459,7 +508,9 @@ static void test_gdal_to_raster() {
 	cu_free_raster(raster);
 }
 
-static void test_gdal_warp() {
+static void
+test_gdal_warp()
+{
 	rt_pixtype pixtype = PT_64BF;
 	rt_band band = NULL;
 
@@ -471,9 +522,11 @@ static void test_gdal_warp() {
 	uint32_t height = 100;
 	double value = 0;
 
-	char src_srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
+	char src_srs[] =
+	    "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
 
-	char dst_srs[] = "PROJCS[\"NAD83 / California Albers\",GEOGCS[\"NAD83\",DATUM[\"North_American_Datum_1983\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6269\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4269\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Albers_Conic_Equal_Area\"],PARAMETER[\"standard_parallel_1\",34],PARAMETER[\"standard_parallel_2\",40.5],PARAMETER[\"latitude_of_center\",0],PARAMETER[\"longitude_of_center\",-120],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",-4000000],AUTHORITY[\"EPSG\",\"3310\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+	char dst_srs[] =
+	    "PROJCS[\"NAD83 / California Albers\",GEOGCS[\"NAD83\",DATUM[\"North_American_Datum_1983\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6269\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4269\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Albers_Conic_Equal_Area\"],PARAMETER[\"standard_parallel_1\",34],PARAMETER[\"standard_parallel_2\",40.5],PARAMETER[\"latitude_of_center\",0],PARAMETER[\"longitude_of_center\",-120],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",-4000000],AUTHORITY[\"EPSG\",\"3310\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 
 	raster = rt_raster_new(width, height);
 	CU_ASSERT(raster != NULL); /* or we're out of virtual memory */
@@ -484,22 +537,29 @@ static void test_gdal_warp() {
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
-	for (x = 0; x < width; x++) {
-		for (y = 0; y < height; y++) {
-			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+	for (x = 0; x < width; x++)
+	{
+		for (y = 0; y < height; y++)
+		{
+			rt_band_set_pixel(band, x, y, (((double)x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
 
-	rast = rt_raster_gdal_warp(
-		raster,
-		src_srs, dst_srs,
-		NULL, NULL,
-		NULL, NULL,
-		NULL, NULL,
-		NULL, NULL,
-		NULL, NULL,
-		GRA_NearestNeighbour, -1
-	);
+	rast = rt_raster_gdal_warp(raster,
+				   src_srs,
+				   dst_srs,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   GRA_NearestNeighbour,
+				   -1);
 	CU_ASSERT(rast != NULL);
 	CU_ASSERT_EQUAL(rt_raster_get_width(rast), 122);
 	CU_ASSERT_EQUAL(rt_raster_get_height(rast), 116);
@@ -521,7 +581,8 @@ static void test_gdal_warp() {
 
 /* register tests */
 void gdal_suite_setup(void);
-void gdal_suite_setup(void)
+void
+gdal_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("gdal", NULL, NULL);
 	PG_ADD_TEST(suite, test_gdal_configured);
@@ -532,4 +593,3 @@ void gdal_suite_setup(void)
 	PG_ADD_TEST(suite, test_gdal_to_raster);
 	PG_ADD_TEST(suite, test_gdal_warp);
 }
-

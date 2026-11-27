@@ -23,61 +23,68 @@
 static void
 usage()
 {
-	printf(_( "RELEASE: %s (%s)\n" ),
-		POSTGIS_LIB_VERSION, xstr(POSTGIS_REVISION));
-	printf(_( "USAGE: shp2pgsql [<options>] <shapefile> [[<schema>.]<table>]\n"
-	          "OPTIONS:\n" ));
-	printf(_( "  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
-	          "      Optionally reprojects from given SRID.\n"),
-	          SRID_UNKNOWN);
-	printf(_( " (-d|a|c|p) These are mutually exclusive options:\n"
-	          "     -d  Drops the table, then recreates it and populates\n"
-	          "         it with current shape file data.\n"
-	          "     -a  Appends shape file into current table, must be\n"
-	          "         exactly the same table schema.\n"
-	          "     -c  Creates a new table and populates it, this is the\n"
-	          "         default if you do not specify any options.\n"
-	          "     -p  Prepare mode, only creates the table.\n" ));
-	printf(_( "  -g <geocolumn> Specify the name of the geometry/geography column\n"
-	          "      (mostly useful in append mode).\n" ));
-	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statements).\n" ));
-	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
-	          "      Not compatible with -D.\n" ));
-	printf(_( "  -G  Use geography type (requires lon/lat data or -s to reproject).\n" ));
-	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
-	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
-	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
-	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
-	         "     names to 10 character DBF column names. The content of the file is one or\n"
-	         "     more lines of two names separated by white space and no trailing or\n"
-	         "     leading space. For example:\n"
-	         "         COLUMNNAME DBFFIELD1\n"
-	         "         AVERYLONGCOLUMNNAME DBFFIELD2\n" ));
-	printf(_( "  -S  Generate simple geometries instead of MULTI geometries.\n" ));
-	printf(_( "  -t <dimensionality> Force geometry to be one of '2D', '3DZ', '3DM', or '4D'\n" ));
+	printf(_("RELEASE: %s (%s)\n"), POSTGIS_LIB_VERSION, xstr(POSTGIS_REVISION));
+	printf(
+	    _("USAGE: shp2pgsql [<options>] <shapefile> [[<schema>.]<table>]\n"
+	      "OPTIONS:\n"));
+	printf(_("  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
+		 "      Optionally reprojects from given SRID.\n"),
+	       SRID_UNKNOWN);
+	printf(
+	    _(" (-d|a|c|p) These are mutually exclusive options:\n"
+	      "     -d  Drops the table, then recreates it and populates\n"
+	      "         it with current shape file data.\n"
+	      "     -a  Appends shape file into current table, must be\n"
+	      "         exactly the same table schema.\n"
+	      "     -c  Creates a new table and populates it, this is the\n"
+	      "         default if you do not specify any options.\n"
+	      "     -p  Prepare mode, only creates the table.\n"));
+	printf(
+	    _("  -g <geocolumn> Specify the name of the geometry/geography column\n"
+	      "      (mostly useful in append mode).\n"));
+	printf(_("  -D  Use postgresql dump format (defaults to SQL insert statements).\n"));
+	printf(
+	    _("  -e  Execute each statement individually, do not use a transaction.\n"
+	      "      Not compatible with -D.\n"));
+	printf(_("  -G  Use geography type (requires lon/lat data or -s to reproject).\n"));
+	printf(_("  -k  Keep postgresql identifiers case.\n"));
+	printf(_("  -i  Use int4 type for all integer dbf fields.\n"));
+	printf(_("  -I  Create a spatial index on the geocolumn.\n"));
+	printf(
+	    _("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
+	      "     names to 10 character DBF column names. The content of the file is one or\n"
+	      "     more lines of two names separated by white space and no trailing or\n"
+	      "     leading space. For example:\n"
+	      "         COLUMNNAME DBFFIELD1\n"
+	      "         AVERYLONGCOLUMNNAME DBFFIELD2\n"));
+	printf(_("  -S  Generate simple geometries instead of MULTI geometries.\n"));
+	printf(_("  -t <dimensionality> Force geometry to be one of '2D', '3DZ', '3DM', or '4D'\n"));
 
-	printf(_( "  -w  Output WKT instead of WKB.  Note that this can result in\n"
-	          "      coordinate drift.\n" ));
-	printf(_( "  -W <encoding> Specify the character encoding of Shape's\n"
-	          "      attribute column. (default: \"UTF-8\")\n" ));
-	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
-	printf(_( "  -n  Only import DBF file.\n" ));
-	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n"
-                  "      Note that indexes will still use the default tablespace unless the\n"
-                  "      -X flag is also used.\n"));
-	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
-                  "      This applies to the primary key, and the spatial index if\n"
-                  "      the -I flag is used.\n" ));
-	printf(_( "  -Z  Prevent tables from being analyzed.\n" ));
-	printf(_( "  -?  Display this help screen.\n" ));
-	printf( "\n" );
-	printf(_( "  An argument of `--' disables further option processing.\n" ));
-	printf(_( "  (useful for unusual file names starting with '-')\n" ));
+	printf(
+	    _("  -w  Output WKT instead of WKB.  Note that this can result in\n"
+	      "      coordinate drift.\n"));
+	printf(
+	    _("  -W <encoding> Specify the character encoding of Shape's\n"
+	      "      attribute column. (default: \"UTF-8\")\n"));
+	printf(_("  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n"));
+	printf(_("  -n  Only import DBF file.\n"));
+	printf(
+	    _("  -T <tablespace> Specify the tablespace for the new table.\n"
+	      "      Note that indexes will still use the default tablespace unless the\n"
+	      "      -X flag is also used.\n"));
+	printf(
+	    _("  -X <tablespace> Specify the tablespace for the table's indexes.\n"
+	      "      This applies to the primary key, and the spatial index if\n"
+	      "      the -I flag is used.\n"));
+	printf(_("  -Z  Prevent tables from being analyzed.\n"));
+	printf(_("  -?  Display this help screen.\n"));
+	printf("\n");
+	printf(_("  An argument of `--' disables further option processing.\n"));
+	printf(_("  (useful for unusual file names starting with '-')\n"));
 }
 
-
 int
-main (int argc, char **argv)
+main(int argc, char **argv)
 {
 	SHPLOADERCONFIG *config;
 	SHPLOADERSTATE *state;
@@ -87,9 +94,9 @@ main (int argc, char **argv)
 
 #ifdef ENABLE_NLS
 #ifdef PGSQL_LOCALEDIR
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, PGSQL_LOCALEDIR);
-	textdomain (PACKAGE);
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, PGSQL_LOCALEDIR);
+	textdomain(PACKAGE);
 #endif
 #endif
 
@@ -204,7 +211,9 @@ main (int argc, char **argv)
 				config->null_policy = POLICY_NULL_SKIP;
 				break;
 			default:
-				fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
+				fprintf(
+				    stderr,
+				    "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
 				exit(1);
 			}
 			break;
@@ -214,21 +223,23 @@ main (int argc, char **argv)
 			{
 				config->force_output = FORCE_OUTPUT_2D;
 			}
-			else if (strcasecmp(pgis_optarg, "3DZ") == 0 )
+			else if (strcasecmp(pgis_optarg, "3DZ") == 0)
 			{
 				config->force_output = FORCE_OUTPUT_3DZ;
 			}
-			else if (strcasecmp(pgis_optarg, "3DM") == 0 )
+			else if (strcasecmp(pgis_optarg, "3DM") == 0)
 			{
 				config->force_output = FORCE_OUTPUT_3DM;
 			}
-			else if (strcasecmp(pgis_optarg, "4D") == 0 )
+			else if (strcasecmp(pgis_optarg, "4D") == 0)
 			{
 				config->force_output = FORCE_OUTPUT_4D;
 			}
 			else
 			{
-				fprintf(stderr, "Unsupported output type: %s\nValid output types are 2D, 3DZ, 3DM and 4D\n", pgis_optarg);
+				fprintf(stderr,
+					"Unsupported output type: %s\nValid output types are 2D, 3DZ, 3DM and 4D\n",
+					pgis_optarg);
 				exit(1);
 			}
 			break;
@@ -283,7 +294,7 @@ main (int argc, char **argv)
 		/* OK, this is a schema-qualified table name... */
 		if (chrptr)
 		{
-			if ( chrptr == strptr )
+			if (chrptr == strptr)
 			{
 				/* ".something" ??? */
 				usage();
@@ -293,7 +304,7 @@ main (int argc, char **argv)
 			*chrptr = '\0';
 			/* Copy in the parts */
 			config->schema = strdup(strptr);
-			config->table = strdup(chrptr+1);
+			config->table = strdup(chrptr + 1);
 		}
 		else
 		{
@@ -303,15 +314,15 @@ main (int argc, char **argv)
 
 	/* If the table parameter is not provided, use the shape file name as a proxy value.
 	   Strip out the .shp and the leading path information first. */
-	if ( config->shp_file && config->table == NULL)
+	if (config->shp_file && config->table == NULL)
 	{
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
 
 		/* Remove the extension, if present */
-		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
+		for (ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr--)
 		{
-			if ( *ptr == '.' )
+			if (*ptr == '.')
 			{
 				*ptr = '\0';
 				break;
@@ -319,9 +330,9 @@ main (int argc, char **argv)
 		}
 
 		/* The remaining non-path section is the table name */
-		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
+		for (ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr--)
 		{
-			if ( *ptr == '/' || *ptr == '\\' )
+			if (*ptr == '/' || *ptr == '\\')
 			{
 				ptr++;
 				break;
@@ -331,13 +342,12 @@ main (int argc, char **argv)
 		free(shp_file);
 	}
 
-
 	/* Transform table name to lower case if no quoting specified */
 	if (!config->quoteidentifiers)
 	{
-		if ( config->table )
+		if (config->table)
 			strtolower(config->table);
-		if ( config->schema )
+		if (config->schema)
 			strtolower(config->schema);
 	}
 
@@ -375,7 +385,7 @@ main (int argc, char **argv)
 	free(header);
 
 	/* If we are not in "prepare" mode, go ahead and write out the data. */
-	if ( state->config->opt != 'p' )
+	if (state->config->opt != 'p')
 	{
 
 		/* If in COPY mode, output the COPY statement */
@@ -433,7 +443,6 @@ main (int argc, char **argv)
 		/* If in COPY mode, terminate the COPY statement */
 		if (state->config->dump_format)
 			printf("\\.\n");
-
 	}
 
 	/* Print the footer to stdout */
@@ -448,7 +457,6 @@ main (int argc, char **argv)
 
 	printf("%s", footer);
 	free(footer);
-
 
 	/* Free the state object */
 	ShpLoaderDestroy(state);
