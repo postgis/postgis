@@ -12227,7 +12227,7 @@ FROM rc;
                     <para role="availability" conformance="2.1.0">Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced.</para>
                     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input rasters.  Prior versions of PostGIS assumed the first band.</para>
                     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of all input rasters.</para>
-                    <para role="availability" conformance="3.7.0">Availability: 3.7.0 ST_Union(rast1, rast2, uniontype) variant was introduced.</para>
+                    <para role="availability" conformance="3.8.0">Availability: 3.8.0 ST_Union(rast1, rast2, uniontype) variant was introduced.</para>
                 </refsection>
                 <refsection>
                     <title>Examples</title>

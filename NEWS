@@ -6,7 +6,7 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
- - #2474, [raster] Add two-raster ST_Union variant (Darafei Praliaskouski)
+ - #2474, GH-1083, Two-raster ST_Union (Darafei Praliaskouski)
 
 * Enhancements *
 

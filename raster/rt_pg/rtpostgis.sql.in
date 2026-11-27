@@ -6646,7 +6646,7 @@ CREATE AGGREGATE st_union(raster, text) (
 	FINALFUNC = _st_union_finalfn
 );
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_union(rast1 raster, rast2 raster, uniontype text DEFAULT 'LAST')
 	RETURNS raster
 	AS $$
