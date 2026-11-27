@@ -48,3 +48,5 @@ SELECT 'null_row.c', ST_AsGeobuf(CASE WHEN id = 3 THEN NULL::geobuf_null_row ELS
 	(SELECT ST_AsGeobuf(t) FROM geobuf_null_row t WHERE id <> 3)
 FROM geobuf_null_row t;
 DROP TABLE geobuf_null_row;
+SELECT 'T11', encode(ST_AsGeobuf(q, 'geom'), 'base64')
+    FROM (SELECT 1::bigint AS geom) AS q;

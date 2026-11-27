@@ -229,3 +229,4 @@ DROP TABLE fgb_null_row;
 
 -- NULL values of a non-row type are still rejected
 SELECT '#6147.d', ST_AsFlatGeobuf(NULL::int);
+select 'TG1', ST_AsFlatGeobuf(q, false, 'geom') from (select 1::bigint as geom) q;
