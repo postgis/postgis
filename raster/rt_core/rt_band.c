@@ -31,6 +31,7 @@
 // For stat64()
 #define _LARGEFILE64_SOURCE 1
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "librtcore.h"
