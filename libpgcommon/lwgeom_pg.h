@@ -31,8 +31,6 @@
 #include "varatt.h"
 #endif
 
-
-
 /****************************************************************************************/
 
 typedef enum
@@ -46,8 +44,7 @@ typedef enum
 	POSTGISNSPOID
 } postgisType;
 
-typedef struct
-{
+typedef struct {
 	Oid geometry_oid;
 	Oid geography_oid;
 	Oid box2df_oid;
@@ -105,34 +102,36 @@ void pg_install_lwgeom_handlers(void);
 /* Display a simple message at NOTICE level */
 /* from PgSQL utils/elog.h, LOG is 15, and DEBUG5 is 10 and everything else is in between */
 #define POSTGIS_DEBUG(level, msg) \
-		do { \
-				if (POSTGIS_DEBUG_LEVEL >= level) \
-						ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
-		} while (0);
+	do \
+	{ \
+		if (POSTGIS_DEBUG_LEVEL >= level) \
+			ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), \
+				(errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
+	} while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define POSTGIS_DEBUGF(level, msg, ...) \
-		do { \
-				if (POSTGIS_DEBUG_LEVEL >= level) \
-						ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
-		} while (0);
+	do \
+	{ \
+		if (POSTGIS_DEBUG_LEVEL >= level) \
+			ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), \
+				(errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
+	} while (0);
 
 #else /* POSTGIS_DEBUG_LEVEL */
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
-#define POSTGIS_DEBUG(level, msg) \
-		((void) 0)
+#define POSTGIS_DEBUG(level, msg) ((void)0)
 
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
-#define POSTGIS_DEBUGF(level, msg, ...) \
-		((void) 0)
+#define POSTGIS_DEBUGF(level, msg, ...) ((void)0)
 
 #endif /* POSTGIS_DEBUG_LEVEL */
 
 /*
-* GUC name search functions stolen from PostgreSQL to
-* support searching for already-defined GUC variables
-*/
+ * GUC name search functions stolen from PostgreSQL to
+ * support searching for already-defined GUC variables
+ */
 int postgis_guc_name_compare(const char *namea, const char *nameb);
 int postgis_guc_var_compare(const void *a, const void *b);
 int postgis_guc_find_option(const char *name);
@@ -145,34 +144,37 @@ extern void pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result);
 extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 
 #define PG_PARSER_ERROR(lwg_parser_result) \
-		do { \
-				pg_parser_errhint(&lwg_parser_result); \
-		} while(0);
+	do \
+	{ \
+		pg_parser_errhint(&lwg_parser_result); \
+	} while (0);
 
 /*
  * Standard macro for reporting unparser errors to PostgreSQL
  */
 #define PG_UNPARSER_ERROR(lwg_unparser_result) \
-		do { \
-				pg_unparser_errhint(&lwg_unparser_result); \
-		} while(0);
+	do \
+	{ \
+		pg_unparser_errhint(&lwg_unparser_result); \
+	} while (0);
 
 /* TODO: only cancel the interrupt if inside an outer call ? */
-#define LWGEOM_INIT() { \
-  lwgeom_cancel_interrupt(); \
-}
+#define LWGEOM_INIT() \
+	{ \
+		lwgeom_cancel_interrupt(); \
+	}
 
 /**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
+ * Utility method to call the serialization and then set the
+ * PgSQL varsize header appropriately with the serialized size.
+ */
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 
 /**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
-GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
+ * Utility method to call the serialization and then set the
+ * PgSQL varsize header appropriately with the serialized size.
+ */
+GSERIALIZED *geography_serialize(LWGEOM *lwgeom);
 
 /**
  * Compare SRIDs of two GSERIALIZEDs and print informative error message if they differ.
@@ -185,11 +187,11 @@ void gserialized_error_if_srid_mismatch(const GSERIALIZED *g1, const GSERIALIZED
 void gserialized_error_if_srid_mismatch_reference(const GSERIALIZED *g1, const int32_t srid, const char *funcname);
 
 /**
-* Pull out a gbox bounding box as fast as possible.
-* Tries to read cached box from front of serialized vardata.
-* If no cached box, calculates box from scratch.
-* Fails on empty.
-*/
+ * Pull out a gbox bounding box as fast as possible.
+ * Tries to read cached box from front of serialized vardata.
+ * If no cached box, calculates box from scratch.
+ * Fails on empty.
+ */
 int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
 int gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, lwflags_t *flags, uint8_t *type, int32_t *srid);
 
@@ -263,7 +265,5 @@ Datum CallerFInfoFunctionCall1(PGFunction func, FmgrInfo *flinfo, Oid collation,
 Datum CallerFInfoFunctionCall2(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2);
 #endif
 Datum CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2, Datum arg3);
-
-
 
 #endif /* !defined _LWGEOM_PG_H */
