@@ -23,7 +23,7 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
           packer (John Carmack)
- - #1662, ST_Extent(raster) aggregate (Darafei Praliaskouski)
+ - #1662, GH-1078, ST_Extent(raster) aggregate (Darafei Praliaskouski)
 
 * Bug Fixes *
 
