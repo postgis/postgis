@@ -9,6 +9,9 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #4402, GH-1106, [raster] Allow commits between AddRasterConstraints steps
+          (Darafei Praliaskouski)
+
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
@@ -442,8 +445,6 @@ These are only changes since 3.7.0alpha1.
           signatures and return semantics (Darafei Praliaskouski)
  - #1168, [raster] Support curved geometry inputs in ST_AsRaster
           (Darafei Praliaskouski)
-
-
 
 
 PostGIS 3.6.0
