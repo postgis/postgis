@@ -32,27 +32,32 @@
 #include "lwgeom_log.h"
 #include "liblwgeom.h"
 
-typedef enum					/* type categories for datum_to_json */
+typedef enum /* type categories for datum_to_json */
 {
-	JSONTYPE_NULL,				/* null, so we didn't bother to identify */
-	JSONTYPE_BOOL,				/* boolean (built-in types only) */
-	JSONTYPE_NUMERIC,			/* numeric (ditto) */
-	JSONTYPE_DATE,				/* we use special formatting for datetimes */
+	JSONTYPE_NULL,    /* null, so we didn't bother to identify */
+	JSONTYPE_BOOL,    /* boolean (built-in types only) */
+	JSONTYPE_NUMERIC, /* numeric (ditto) */
+	JSONTYPE_DATE,    /* we use special formatting for datetimes */
 	JSONTYPE_TIMESTAMP,
 	JSONTYPE_TIMESTAMPTZ,
-	JSONTYPE_JSON,				/* JSON itself (and JSONB) */
-	JSONTYPE_ARRAY,				/* array */
-	JSONTYPE_COMPOSITE,			/* composite */
-	JSONTYPE_CAST,				/* something with an explicit cast to JSON */
-	JSONTYPE_OTHER				/* all else */
+	JSONTYPE_JSON,      /* JSON itself (and JSONB) */
+	JSONTYPE_ARRAY,     /* array */
+	JSONTYPE_COMPOSITE, /* composite */
+	JSONTYPE_CAST,      /* something with an explicit cast to JSON */
+	JSONTYPE_OTHER      /* all else */
 } JsonTypeCategory;
 
-static void array_dim_to_json(StringInfo result, int dim, int ndims, int *dims,
-				  Datum *vals, bool *nulls, int *valcount,
-				  JsonTypeCategory tcategory, Oid outfuncoid,
-				  bool use_line_feeds);
-static void array_to_json_internal(Datum array, StringInfo result,
-								   bool use_line_feeds);
+static void array_dim_to_json(StringInfo result,
+			      int dim,
+			      int ndims,
+			      int *dims,
+			      Datum *vals,
+			      bool *nulls,
+			      int *valcount,
+			      JsonTypeCategory tcategory,
+			      Oid outfuncoid,
+			      bool use_line_feeds);
+static void array_to_json_internal(Datum array, StringInfo result, bool use_line_feeds);
 static void composite_to_geojson(FunctionCallInfo fcinfo,
 				 Datum composite,
 				 char *geom_column_name,
@@ -64,17 +69,13 @@ static void composite_to_geojson(FunctionCallInfo fcinfo,
 				 Oid geog_oid);
 
 #if POSTGIS_PGSQL_VERSION < 190
-static void composite_to_json(Datum composite, StringInfo result,
-							  bool use_line_feeds);
+static void composite_to_json(Datum composite, StringInfo result, bool use_line_feeds);
 #endif
 
-static void datum_to_json(Datum val, bool is_null, StringInfo result,
-						  JsonTypeCategory tcategory, Oid outfuncoid,
-						  bool key_scalar);
-static void json_categorize_type(Oid typoid,
-								 JsonTypeCategory *tcategory,
-								 Oid *outfuncoid);
-static char * postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid);
+static void
+datum_to_json(Datum val, bool is_null, StringInfo result, JsonTypeCategory tcategory, Oid outfuncoid, bool key_scalar);
+static void json_categorize_type(Oid typoid, JsonTypeCategory *tcategory, Oid *outfuncoid);
+static char *postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid);
 static int postgis_time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec);
 static int postgis_timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp);
 
@@ -88,13 +89,13 @@ PG_FUNCTION_INFO_V1(ST_AsGeoJsonRow);
 Datum
 ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 {
-	Datum		array = PG_GETARG_DATUM(0);
-	text        *geom_column_text = PG_GETARG_TEXT_P(1);
-	char        *geom_column = PG_ARGISNULL(1) ? "" : text_to_cstring(geom_column_text);
-	int32       maxdecimaldigits = PG_GETARG_INT32(2);
-	bool		do_pretty = PG_GETARG_BOOL(3);
-	text        *id_column_text = PG_GETARG_TEXT_P(4);
-	char        *id_column = PG_ARGISNULL(4) ? "" : text_to_cstring(id_column_text);
+	Datum array = PG_GETARG_DATUM(0);
+	text *geom_column_text = PG_GETARG_TEXT_P(1);
+	char *geom_column = PG_ARGISNULL(1) ? "" : text_to_cstring(geom_column_text);
+	int32 maxdecimaldigits = PG_GETARG_INT32(2);
+	bool do_pretty = PG_GETARG_BOOL(3);
+	text *id_column_text = PG_GETARG_TEXT_P(4);
+	char *id_column = PG_ARGISNULL(4) ? "" : text_to_cstring(id_column_text);
 	StringInfoData result;
 	Oid geom_oid = InvalidOid;
 	Oid geog_oid = InvalidOid;
@@ -111,7 +112,8 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 
 	initStringInfo(&result);
 
-	composite_to_geojson(fcinfo, array, geom_column, id_column, maxdecimaldigits, &result, do_pretty, geom_oid, geog_oid);
+	composite_to_geojson(
+	    fcinfo, array, geom_column, id_column, maxdecimaldigits, &result, do_pretty, geom_oid, geog_oid);
 
 	PG_RETURN_TEXT_P(cstring_to_text_with_len(result.data, result.len));
 }
@@ -131,18 +133,17 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 		     Oid geog_oid)
 {
 	HeapTupleHeader td;
-	Oid			tupType;
-	int32		tupTypmod;
-	TupleDesc	tupdesc;
-	HeapTupleData tmptup,
-			   *tuple;
-	int			i;
-	bool		needsep = false;
+	Oid tupType;
+	int32 tupTypmod;
+	TupleDesc tupdesc;
+	HeapTupleData tmptup, *tuple;
+	int i;
+	bool needsep = false;
 	const char *sep;
-	StringInfo	props = makeStringInfo();
-	StringInfo	id = makeStringInfo();
-	bool		geom_column_found = false;
-	bool		id_column_found = false;
+	StringInfo props = makeStringInfo();
+	StringInfo id = makeStringInfo();
+	bool geom_column_found = false;
+	bool id_column_found = false;
 
 	sep = use_line_feeds ? ",\n " : ", ";
 
@@ -162,14 +163,14 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 
 	for (i = 0; i < tupdesc->natts; i++)
 	{
-		Datum		val;
-		bool		isnull;
-		char	   *attname;
+		Datum val;
+		bool isnull;
+		char *attname;
 		JsonTypeCategory tcategory;
-		Oid			outfuncoid;
+		Oid outfuncoid;
 		Form_pg_attribute att = TupleDescAttr(tupdesc, i);
-		bool        is_geom_column = false;
-		bool        is_id_column = false;
+		bool is_geom_column = false;
+		bool is_id_column = false;
 
 		if (att->attisdropped)
 			continue;
@@ -246,16 +247,14 @@ composite_to_geojson(FunctionCallInfo fcinfo,
 	}
 
 	if (!geom_column_found)
-		ereport(ERROR,
-				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				 errmsg("geometry column is missing")));
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("geometry column is missing")));
 
 	if (id_column_name)
 	{
 		if (!id_column_found)
 			ereport(ERROR,
-					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					 errmsg("Specified id column \"%s\" is missing", id_column_name)));
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				 errmsg("Specified id column \"%s\" is missing", id_column_name)));
 
 		appendStringInfoString(result, ", \"id\": ");
 		appendStringInfo(result, "%s", id->data);
@@ -284,11 +283,9 @@ composite_to_geojson(FunctionCallInfo fcinfo,
  * return the OID of the type->JSON cast function instead.
  */
 static void
-json_categorize_type(Oid typoid,
-					 JsonTypeCategory *tcategory,
-					 Oid *outfuncoid)
+json_categorize_type(Oid typoid, JsonTypeCategory *tcategory, Oid *outfuncoid)
 {
-	bool		typisvarlena;
+	bool typisvarlena;
 
 	/* Look through any domain */
 	typoid = getBaseType(typoid);
@@ -303,76 +300,73 @@ json_categorize_type(Oid typoid,
 
 	switch (typoid)
 	{
-		case BOOLOID:
-			*tcategory = JSONTYPE_BOOL;
-			break;
+	case BOOLOID:
+		*tcategory = JSONTYPE_BOOL;
+		break;
 
-		case INT2OID:
-		case INT4OID:
-		case INT8OID:
-		case FLOAT4OID:
-		case FLOAT8OID:
-		case NUMERICOID:
-			getTypeOutputInfo(typoid, outfuncoid, &typisvarlena);
-			*tcategory = JSONTYPE_NUMERIC;
-			break;
+	case INT2OID:
+	case INT4OID:
+	case INT8OID:
+	case FLOAT4OID:
+	case FLOAT8OID:
+	case NUMERICOID:
+		getTypeOutputInfo(typoid, outfuncoid, &typisvarlena);
+		*tcategory = JSONTYPE_NUMERIC;
+		break;
 
-		case DATEOID:
-			*tcategory = JSONTYPE_DATE;
-			break;
+	case DATEOID:
+		*tcategory = JSONTYPE_DATE;
+		break;
 
-		case TIMESTAMPOID:
-			*tcategory = JSONTYPE_TIMESTAMP;
-			break;
+	case TIMESTAMPOID:
+		*tcategory = JSONTYPE_TIMESTAMP;
+		break;
 
-		case TIMESTAMPTZOID:
-			*tcategory = JSONTYPE_TIMESTAMPTZ;
-			break;
+	case TIMESTAMPTZOID:
+		*tcategory = JSONTYPE_TIMESTAMPTZ;
+		break;
 
-		case JSONOID:
-		case JSONBOID:
-			getTypeOutputInfo(typoid, outfuncoid, &typisvarlena);
-			*tcategory = JSONTYPE_JSON;
-			break;
+	case JSONOID:
+	case JSONBOID:
+		getTypeOutputInfo(typoid, outfuncoid, &typisvarlena);
+		*tcategory = JSONTYPE_JSON;
+		break;
 
-		default:
-			/* Check for arrays and composites */
-			if (OidIsValid(get_element_type(typoid)) || typoid == ANYARRAYOID
-				|| typoid == RECORDARRAYOID)
-				*tcategory = JSONTYPE_ARRAY;
-			else if (type_is_rowtype(typoid))	/* includes RECORDOID */
-				*tcategory = JSONTYPE_COMPOSITE;
-			else
+	default:
+		/* Check for arrays and composites */
+		if (OidIsValid(get_element_type(typoid)) || typoid == ANYARRAYOID || typoid == RECORDARRAYOID)
+			*tcategory = JSONTYPE_ARRAY;
+		else if (type_is_rowtype(typoid)) /* includes RECORDOID */
+			*tcategory = JSONTYPE_COMPOSITE;
+		else
+		{
+			/* It's probably the general case ... */
+			*tcategory = JSONTYPE_OTHER;
+			/* but let's look for a cast to json, if it's not built-in */
+			if (typoid >= FirstNormalObjectId)
 			{
-				/* It's probably the general case ... */
-				*tcategory = JSONTYPE_OTHER;
-				/* but let's look for a cast to json, if it's not built-in */
-				if (typoid >= FirstNormalObjectId)
-				{
-					Oid			castfunc;
-					CoercionPathType ctype;
+				Oid castfunc;
+				CoercionPathType ctype;
 
-					ctype = find_coercion_pathway(JSONOID, typoid,
-												  COERCION_EXPLICIT,
-												  &castfunc);
-					if (ctype == COERCION_PATH_FUNC && OidIsValid(castfunc))
-					{
-						*tcategory = JSONTYPE_CAST;
-						*outfuncoid = castfunc;
-					}
-					else
-					{
-						/* non builtin type with no cast */
-						getTypeOutputInfo(typoid, outfuncoid, &typisvarlena);
-					}
+				ctype = find_coercion_pathway(JSONOID, typoid, COERCION_EXPLICIT, &castfunc);
+				if (ctype == COERCION_PATH_FUNC && OidIsValid(castfunc))
+				{
+					*tcategory = JSONTYPE_CAST;
+					*outfuncoid = castfunc;
 				}
 				else
 				{
-					/* any other builtin type */
+					/* non builtin type with no cast */
 					getTypeOutputInfo(typoid, outfuncoid, &typisvarlena);
 				}
 			}
-			break;
+			else
+			{
+				/* any other builtin type */
+				getTypeOutputInfo(typoid, outfuncoid, &typisvarlena);
+			}
+		}
+		break;
 	}
 }
 
@@ -386,12 +380,10 @@ json_categorize_type(Oid typoid,
  * it's of an acceptable type, and force it to be quoted.
  */
 static void
-datum_to_json(Datum val, bool is_null, StringInfo result,
-			  JsonTypeCategory tcategory, Oid outfuncoid,
-			  bool key_scalar)
+datum_to_json(Datum val, bool is_null, StringInfo result, JsonTypeCategory tcategory, Oid outfuncoid, bool key_scalar)
 {
-	char	   *outputstr;
-	text	   *jsontext;
+	char *outputstr;
+	text *jsontext;
 
 	check_stack_depth();
 
@@ -404,86 +396,80 @@ datum_to_json(Datum val, bool is_null, StringInfo result,
 		return;
 	}
 
-	if (key_scalar &&
-		(tcategory == JSONTYPE_ARRAY ||
-		 tcategory == JSONTYPE_COMPOSITE ||
-		 tcategory == JSONTYPE_JSON ||
-		 tcategory == JSONTYPE_CAST))
+	if (key_scalar && (tcategory == JSONTYPE_ARRAY || tcategory == JSONTYPE_COMPOSITE ||
+			   tcategory == JSONTYPE_JSON || tcategory == JSONTYPE_CAST))
 		ereport(ERROR,
-				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				 errmsg("key value must be scalar, not array, composite, or json")));
+			(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			 errmsg("key value must be scalar, not array, composite, or json")));
 
 	switch (tcategory)
 	{
-		case JSONTYPE_ARRAY:
-			array_to_json_internal(val, result, false);
-			break;
-		case JSONTYPE_COMPOSITE:
-			composite_to_json(val, result, false);
-			break;
-		case JSONTYPE_BOOL:
-			outputstr = DatumGetBool(val) ? "true" : "false";
-			if (key_scalar)
-				escape_json(result, outputstr);
-			else
-				appendStringInfoString(result, outputstr);
-			break;
-		case JSONTYPE_NUMERIC:
-			outputstr = OidOutputFunctionCall(outfuncoid, val);
-
-			/*
-			 * Don't call escape_json for a non-key if it's a valid JSON
-			 * number.
-			 */
-			if (!key_scalar && IsValidJsonNumber(outputstr, strlen(outputstr)))
-				appendStringInfoString(result, outputstr);
-			else
-				escape_json(result, outputstr);
-			pfree(outputstr);
-			break;
-		case JSONTYPE_DATE:
-			{
-				char		buf[MAXDATELEN + 1];
-
-				postgis_JsonEncodeDateTime(buf, val, DATEOID);
-				appendStringInfo(result, "\"%s\"", buf);
-			}
-			break;
-		case JSONTYPE_TIMESTAMP:
-			{
-				char		buf[MAXDATELEN + 1];
-
-				postgis_JsonEncodeDateTime(buf, val, TIMESTAMPOID);
-				appendStringInfo(result, "\"%s\"", buf);
-			}
-			break;
-		case JSONTYPE_TIMESTAMPTZ:
-			{
-				char		buf[MAXDATELEN + 1];
-
-				postgis_JsonEncodeDateTime(buf, val, TIMESTAMPTZOID);
-				appendStringInfo(result, "\"%s\"", buf);
-			}
-			break;
-		case JSONTYPE_JSON:
-			/* JSON and JSONB output will already be escaped */
-			outputstr = OidOutputFunctionCall(outfuncoid, val);
-			appendStringInfoString(result, outputstr);
-			pfree(outputstr);
-			break;
-		case JSONTYPE_CAST:
-			/* outfuncoid refers to a cast function, not an output function */
-			jsontext = DatumGetTextPP(OidFunctionCall1(outfuncoid, val));
-			outputstr = text_to_cstring(jsontext);
-			appendStringInfoString(result, outputstr);
-			pfree(outputstr);
-			pfree(jsontext);
-			break;
-		default:
-			outputstr = OidOutputFunctionCall(outfuncoid, val);
+	case JSONTYPE_ARRAY:
+		array_to_json_internal(val, result, false);
+		break;
+	case JSONTYPE_COMPOSITE:
+		composite_to_json(val, result, false);
+		break;
+	case JSONTYPE_BOOL:
+		outputstr = DatumGetBool(val) ? "true" : "false";
+		if (key_scalar)
 			escape_json(result, outputstr);
-			pfree(outputstr);
-			break;
+		else
+			appendStringInfoString(result, outputstr);
+		break;
+	case JSONTYPE_NUMERIC:
+		outputstr = OidOutputFunctionCall(outfuncoid, val);
+
+		/*
+		 * Don't call escape_json for a non-key if it's a valid JSON
+		 * number.
+		 */
+		if (!key_scalar && IsValidJsonNumber(outputstr, strlen(outputstr)))
+			appendStringInfoString(result, outputstr);
+		else
+			escape_json(result, outputstr);
+		pfree(outputstr);
+		break;
+	case JSONTYPE_DATE: {
+		char buf[MAXDATELEN + 1];
+
+		postgis_JsonEncodeDateTime(buf, val, DATEOID);
+		appendStringInfo(result, "\"%s\"", buf);
+	}
+	break;
+	case JSONTYPE_TIMESTAMP: {
+		char buf[MAXDATELEN + 1];
+
+		postgis_JsonEncodeDateTime(buf, val, TIMESTAMPOID);
+		appendStringInfo(result, "\"%s\"", buf);
+	}
+	break;
+	case JSONTYPE_TIMESTAMPTZ: {
+		char buf[MAXDATELEN + 1];
+
+		postgis_JsonEncodeDateTime(buf, val, TIMESTAMPTZOID);
+		appendStringInfo(result, "\"%s\"", buf);
+	}
+	break;
+	case JSONTYPE_JSON:
+		/* JSON and JSONB output will already be escaped */
+		outputstr = OidOutputFunctionCall(outfuncoid, val);
+		appendStringInfoString(result, outputstr);
+		pfree(outputstr);
+		break;
+	case JSONTYPE_CAST:
+		/* outfuncoid refers to a cast function, not an output function */
+		jsontext = DatumGetTextPP(OidFunctionCall1(outfuncoid, val));
+		outputstr = text_to_cstring(jsontext);
+		appendStringInfoString(result, outputstr);
+		pfree(outputstr);
+		pfree(jsontext);
+		break;
+	default:
+		outputstr = OidOutputFunctionCall(outfuncoid, val);
+		escape_json(result, outputstr);
+		pfree(outputstr);
+		break;
 	}
 }
 
@@ -493,19 +479,19 @@ datum_to_json(Datum val, bool is_null, StringInfo result,
 static void
 array_to_json_internal(Datum array, StringInfo result, bool use_line_feeds)
 {
-	ArrayType  *v = DatumGetArrayTypeP(array);
-	Oid			element_type = ARR_ELEMTYPE(v);
-	int		   *dim;
-	int			ndim;
-	int			nitems;
-	int			count = 0;
-	Datum	   *elements;
-	bool	   *nulls;
-	int16		typlen;
-	bool		typbyval;
-	char		typalign;
+	ArrayType *v = DatumGetArrayTypeP(array);
+	Oid element_type = ARR_ELEMTYPE(v);
+	int *dim;
+	int ndim;
+	int nitems;
+	int count = 0;
+	Datum *elements;
+	bool *nulls;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
 	JsonTypeCategory tcategory;
-	Oid			outfuncoid;
+	Oid outfuncoid;
 
 	ndim = ARR_NDIM(v);
 	dim = ARR_DIMS(v);
@@ -517,18 +503,13 @@ array_to_json_internal(Datum array, StringInfo result, bool use_line_feeds)
 		return;
 	}
 
-	get_typlenbyvalalign(element_type,
-						 &typlen, &typbyval, &typalign);
+	get_typlenbyvalalign(element_type, &typlen, &typbyval, &typalign);
 
-	json_categorize_type(element_type,
-						 &tcategory, &outfuncoid);
+	json_categorize_type(element_type, &tcategory, &outfuncoid);
 
-	deconstruct_array(v, element_type, typlen, typbyval,
-					  typalign, &elements, &nulls,
-					  &nitems);
+	deconstruct_array(v, element_type, typlen, typbyval, typalign, &elements, &nulls, &nitems);
 
-	array_dim_to_json(result, 0, ndim, dim, elements, nulls, &count, tcategory,
-					  outfuncoid, use_line_feeds);
+	array_dim_to_json(result, 0, ndim, dim, elements, nulls, &count, tcategory, outfuncoid, use_line_feeds);
 
 	pfree(elements);
 	pfree(nulls);
@@ -542,13 +523,12 @@ static void
 composite_to_json(Datum composite, StringInfo result, bool use_line_feeds)
 {
 	HeapTupleHeader td;
-	Oid			tupType;
-	int32		tupTypmod;
-	TupleDesc	tupdesc;
-	HeapTupleData tmptup,
-			   *tuple;
-	int			i;
-	bool		needsep = false;
+	Oid tupType;
+	int32 tupTypmod;
+	TupleDesc tupdesc;
+	HeapTupleData tmptup, *tuple;
+	int i;
+	bool needsep = false;
 	const char *sep;
 
 	sep = use_line_feeds ? ",\n " : ",";
@@ -569,11 +549,11 @@ composite_to_json(Datum composite, StringInfo result, bool use_line_feeds)
 
 	for (i = 0; i < tupdesc->natts; i++)
 	{
-		Datum		val;
-		bool		isnull;
-		char	   *attname;
+		Datum val;
+		bool isnull;
+		char *attname;
 		JsonTypeCategory tcategory;
-		Oid			outfuncoid;
+		Oid outfuncoid;
 		Form_pg_attribute att = TupleDescAttr(tupdesc, i);
 
 		if (att->attisdropped)
@@ -611,11 +591,18 @@ composite_to_json(Datum composite, StringInfo result, bool use_line_feeds)
  * ourselves recursively to process the next dimension.
  */
 static void
-array_dim_to_json(StringInfo result, int dim, int ndims, int *dims, Datum *vals,
-				  bool *nulls, int *valcount, JsonTypeCategory tcategory,
-				  Oid outfuncoid, bool use_line_feeds)
+array_dim_to_json(StringInfo result,
+		  int dim,
+		  int ndims,
+		  int *dims,
+		  Datum *vals,
+		  bool *nulls,
+		  int *valcount,
+		  JsonTypeCategory tcategory,
+		  Oid outfuncoid,
+		  bool use_line_feeds)
 {
-	int			i;
+	int i;
 	const char *sep;
 
 	Assert(dim < ndims);
@@ -631,8 +618,7 @@ array_dim_to_json(StringInfo result, int dim, int ndims, int *dims, Datum *vals,
 
 		if (dim + 1 == ndims)
 		{
-			datum_to_json(vals[*valcount], nulls[*valcount], result, tcategory,
-						  outfuncoid, false);
+			datum_to_json(vals[*valcount], nulls[*valcount], result, tcategory, outfuncoid, false);
 			(*valcount)++;
 		}
 		else
@@ -641,8 +627,8 @@ array_dim_to_json(StringInfo result, int dim, int ndims, int *dims, Datum *vals,
 			 * Do we want line feeds on inner dimensions of arrays? For now
 			 * we'll say no.
 			 */
-			array_dim_to_json(result, dim + 1, ndims, dims, vals, nulls,
-							  valcount, tcategory, outfuncoid, false);
+			array_dim_to_json(
+			    result, dim + 1, ndims, dims, vals, nulls, valcount, tcategory, outfuncoid, false);
 		}
 	}
 
@@ -665,7 +651,7 @@ postgis_time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec)
 static int
 postgis_timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp)
 {
-	TimeOffset	trem = time->time;
+	TimeOffset trem = time->time;
 
 	tm->tm_hour = trem / USECS_PER_HOUR;
 	trem -= tm->tm_hour * USECS_PER_HOUR;
@@ -688,90 +674,80 @@ postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid)
 
 	switch (typid)
 	{
-		case DATEOID:
-			{
-				DateADT		date;
-				struct pg_tm tm;
+	case DATEOID: {
+		DateADT date;
+		struct pg_tm tm;
 
-				date = DatumGetDateADT(value);
+		date = DatumGetDateADT(value);
 
-				/* Same as date_out(), but forcing DateStyle */
-				if (DATE_NOT_FINITE(date))
-					EncodeSpecialDate(date, buf);
-				else
-				{
-					j2date(date + POSTGRES_EPOCH_JDATE,
-						   &(tm.tm_year), &(tm.tm_mon), &(tm.tm_mday));
-					EncodeDateOnly(&tm, USE_XSD_DATES, buf);
-				}
-			}
-			break;
-		case TIMEOID:
-			{
-				TimeADT		time = DatumGetTimeADT(value);
-				struct pg_tm tt,
-						   *tm = &tt;
-				fsec_t		fsec;
+		/* Same as date_out(), but forcing DateStyle */
+		if (DATE_NOT_FINITE(date))
+			EncodeSpecialDate(date, buf);
+		else
+		{
+			j2date(date + POSTGRES_EPOCH_JDATE, &(tm.tm_year), &(tm.tm_mon), &(tm.tm_mday));
+			EncodeDateOnly(&tm, USE_XSD_DATES, buf);
+		}
+	}
+	break;
+	case TIMEOID: {
+		TimeADT time = DatumGetTimeADT(value);
+		struct pg_tm tt, *tm = &tt;
+		fsec_t fsec;
 
-				/* Same as time_out(), but forcing DateStyle */
-				postgis_time2tm(time, tm, &fsec);
-				EncodeTimeOnly(tm, fsec, false, 0, USE_XSD_DATES, buf);
-			}
-			break;
-		case TIMETZOID:
-			{
-				TimeTzADT  *time = DatumGetTimeTzADTP(value);
-				struct pg_tm tt,
-						   *tm = &tt;
-				fsec_t		fsec;
-				int			tz;
+		/* Same as time_out(), but forcing DateStyle */
+		postgis_time2tm(time, tm, &fsec);
+		EncodeTimeOnly(tm, fsec, false, 0, USE_XSD_DATES, buf);
+	}
+	break;
+	case TIMETZOID: {
+		TimeTzADT *time = DatumGetTimeTzADTP(value);
+		struct pg_tm tt, *tm = &tt;
+		fsec_t fsec;
+		int tz;
 
-				/* Same as timetz_out(), but forcing DateStyle */
-				postgis_timetz2tm(time, tm, &fsec, &tz);
-				EncodeTimeOnly(tm, fsec, true, tz, USE_XSD_DATES, buf);
-			}
-			break;
-		case TIMESTAMPOID:
-			{
-				Timestamp	timestamp;
-				struct pg_tm tm;
-				fsec_t		fsec;
+		/* Same as timetz_out(), but forcing DateStyle */
+		postgis_timetz2tm(time, tm, &fsec, &tz);
+		EncodeTimeOnly(tm, fsec, true, tz, USE_XSD_DATES, buf);
+	}
+	break;
+	case TIMESTAMPOID: {
+		Timestamp timestamp;
+		struct pg_tm tm;
+		fsec_t fsec;
 
-				timestamp = DatumGetTimestamp(value);
-				/* Same as timestamp_out(), but forcing DateStyle */
-				if (TIMESTAMP_NOT_FINITE(timestamp))
-					EncodeSpecialTimestamp(timestamp, buf);
-				else if (timestamp2tm(timestamp, NULL, &tm, &fsec, NULL, NULL) == 0)
-					EncodeDateTime(&tm, fsec, false, 0, NULL, USE_XSD_DATES, buf);
-				else
-					ereport(ERROR,
-							(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
-							 errmsg("timestamp out of range")));
-			}
-			break;
-		case TIMESTAMPTZOID:
-			{
-				TimestampTz timestamp;
-				struct pg_tm tm;
-				int			tz;
-				fsec_t		fsec;
-				const char *tzn = NULL;
+		timestamp = DatumGetTimestamp(value);
+		/* Same as timestamp_out(), but forcing DateStyle */
+		if (TIMESTAMP_NOT_FINITE(timestamp))
+			EncodeSpecialTimestamp(timestamp, buf);
+		else if (timestamp2tm(timestamp, NULL, &tm, &fsec, NULL, NULL) == 0)
+			EncodeDateTime(&tm, fsec, false, 0, NULL, USE_XSD_DATES, buf);
+		else
+			ereport(ERROR,
+				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE), errmsg("timestamp out of range")));
+	}
+	break;
+	case TIMESTAMPTZOID: {
+		TimestampTz timestamp;
+		struct pg_tm tm;
+		int tz;
+		fsec_t fsec;
+		const char *tzn = NULL;
 
-				timestamp = DatumGetTimestampTz(value);
-				/* Same as timestamptz_out(), but forcing DateStyle */
-				if (TIMESTAMP_NOT_FINITE(timestamp))
-					EncodeSpecialTimestamp(timestamp, buf);
-				else if (timestamp2tm(timestamp, &tz, &tm, &fsec, &tzn, NULL) == 0)
-					EncodeDateTime(&tm, fsec, true, tz, tzn, USE_XSD_DATES, buf);
-				else
-					ereport(ERROR,
-							(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
-							 errmsg("timestamp out of range")));
-			}
-			break;
-		default:
-			elog(ERROR, "unknown jsonb value datetime type oid %d", typid);
-			return NULL;
+		timestamp = DatumGetTimestampTz(value);
+		/* Same as timestamptz_out(), but forcing DateStyle */
+		if (TIMESTAMP_NOT_FINITE(timestamp))
+			EncodeSpecialTimestamp(timestamp, buf);
+		else if (timestamp2tm(timestamp, &tz, &tm, &fsec, &tzn, NULL) == 0)
+			EncodeDateTime(&tm, fsec, true, tz, tzn, USE_XSD_DATES, buf);
+		else
+			ereport(ERROR,
+				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE), errmsg("timestamp out of range")));
+	}
+	break;
+	default:
+		elog(ERROR, "unknown jsonb value datetime type oid %d", typid);
+		return NULL;
 	}
 
 	return buf;

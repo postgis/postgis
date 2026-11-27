@@ -24,7 +24,6 @@
  *
  **********************************************************************/
 
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -233,18 +232,20 @@ ptarray_signed_area_exact(const POINTARRAY *pa, int coordinate_scale)
 int
 ptarray_has_z(const POINTARRAY *pa)
 {
-	if ( ! pa ) return LW_FALSE;
+	if (!pa)
+		return LW_FALSE;
 	return FLAGS_GET_Z(pa->flags);
 }
 
 int
 ptarray_has_m(const POINTARRAY *pa)
 {
-	if ( ! pa ) return LW_FALSE;
+	if (!pa)
+		return LW_FALSE;
 	return FLAGS_GET_M(pa->flags);
 }
 
-POINTARRAY*
+POINTARRAY *
 ptarray_construct(char hasz, char hasm, uint32_t npoints)
 {
 	POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, npoints);
@@ -252,7 +253,7 @@ ptarray_construct(char hasz, char hasm, uint32_t npoints)
 	return pa;
 }
 
-POINTARRAY*
+POINTARRAY *
 ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
@@ -266,7 +267,7 @@ ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 	pa->maxpoints = maxpoints;
 
 	/* Allocate the coordinate array */
-	if ( maxpoints > 0 )
+	if (maxpoints > 0)
 		pa->serialized_pointlist = lwalloc(maxpoints * ptarray_point_size(pa));
 	else
 		pa->serialized_pointlist = NULL;
@@ -275,33 +276,33 @@ ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 }
 
 /*
-* Add a point into a pointarray. Only adds as many dimensions as the
-* pointarray supports.
-*/
+ * Add a point into a pointarray. Only adds as many dimensions as the
+ * pointarray supports.
+ */
 int
 ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 {
 	if (!pa || !p)
 		return LW_FAILURE;
 	size_t point_size = ptarray_point_size(pa);
-	LWDEBUGF(5,"pa = %p; p = %p; where = %d", pa, p, where);
-	LWDEBUGF(5,"pa->npoints = %d; pa->maxpoints = %d", pa->npoints, pa->maxpoints);
+	LWDEBUGF(5, "pa = %p; p = %p; where = %d", pa, p, where);
+	LWDEBUGF(5, "pa->npoints = %d; pa->maxpoints = %d", pa->npoints, pa->maxpoints);
 
-	if ( FLAGS_GET_READONLY(pa->flags) )
+	if (FLAGS_GET_READONLY(pa->flags))
 	{
 		lwerror("ptarray_insert_point: called on read-only point array");
 		return LW_FAILURE;
 	}
 
 	/* Error on invalid offset value */
-	if ( where > pa->npoints )
+	if (where > pa->npoints)
 	{
 		lwerror("ptarray_insert_point: offset out of range (%d)", where);
 		return LW_FAILURE;
 	}
 
 	/* If we have no storage, let's allocate some */
-	if( pa->maxpoints == 0 || ! pa->serialized_pointlist )
+	if (pa->maxpoints == 0 || !pa->serialized_pointlist)
 	{
 		pa->maxpoints = 32;
 		pa->npoints = 0;
@@ -309,25 +310,25 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 	}
 
 	/* Error out if we have a bad situation */
-	if ( pa->npoints > pa->maxpoints )
+	if (pa->npoints > pa->maxpoints)
 	{
 		lwerror("npoints (%d) is greater than maxpoints (%d)", pa->npoints, pa->maxpoints);
 		return LW_FAILURE;
 	}
 
 	/* Check if we have enough storage, add more if necessary */
-	if( pa->npoints == pa->maxpoints )
+	if (pa->npoints == pa->maxpoints)
 	{
 		pa->maxpoints *= 2;
 		pa->serialized_pointlist = lwrealloc(pa->serialized_pointlist, ptarray_point_size(pa) * pa->maxpoints);
 	}
 
 	/* Make space to insert the new point */
-	if( where < pa->npoints )
+	if (where < pa->npoints)
 	{
 		size_t copy_size = point_size * (pa->npoints - where);
-		memmove(getPoint_internal(pa, where+1), getPoint_internal(pa, where), copy_size);
-		LWDEBUGF(5,"copying %zu bytes to start vertex %d from start vertex %d", copy_size, where+1, where);
+		memmove(getPoint_internal(pa, where + 1), getPoint_internal(pa, where), copy_size);
+		LWDEBUGF(5, "copying %zu bytes to start vertex %d from start vertex %d", copy_size, where + 1, where);
 	}
 
 	/* We have one more point */
@@ -335,7 +336,7 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 
 	/* Copy the new point into the gap */
 	ptarray_set_point4d(pa, where, p);
-	LWDEBUGF(5,"copying new point to start vertex %zu", point_size);
+	LWDEBUGF(5, "copying new point to start vertex %zu", point_size);
 
 	return LW_SUCCESS;
 }
@@ -344,23 +345,27 @@ int
 ptarray_append_point(POINTARRAY *pa, const POINT4D *pt, int repeated_points)
 {
 	/* Check for pathology */
-	if( ! pa || ! pt )
+	if (!pa || !pt)
 	{
 		lwerror("ptarray_append_point: null input");
 		return LW_FAILURE;
 	}
 
 	/* Check for duplicate end point */
-	if ( repeated_points == LW_FALSE && pa->npoints > 0 )
+	if (repeated_points == LW_FALSE && pa->npoints > 0)
 	{
 		POINT4D tmp;
-		getPoint4d_p(pa, pa->npoints-1, &tmp);
-		LWDEBUGF(4,"checking for duplicate end point (pt = POINT(%g %g) pa->npoints-q = POINT(%g %g))",pt->x,pt->y,tmp.x,tmp.y);
+		getPoint4d_p(pa, pa->npoints - 1, &tmp);
+		LWDEBUGF(4,
+			 "checking for duplicate end point (pt = POINT(%g %g) pa->npoints-q = POINT(%g %g))",
+			 pt->x,
+			 pt->y,
+			 tmp.x,
+			 tmp.y);
 
 		/* Return LW_SUCCESS and do nothing else if previous point in list is equal to this one */
-		if ( (pt->x == tmp.x) && (pt->y == tmp.y) &&
-		     (FLAGS_GET_Z(pa->flags) ? pt->z == tmp.z : 1) &&
-		     (FLAGS_GET_M(pa->flags) ? pt->m == tmp.m : 1) )
+		if ((pt->x == tmp.x) && (pt->y == tmp.y) && (FLAGS_GET_Z(pa->flags) ? pt->z == tmp.z : 1) &&
+		    (FLAGS_GET_M(pa->flags) ? pt->m == tmp.m : 1))
 		{
 			return LW_SUCCESS;
 		}
@@ -379,7 +384,7 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 	unsigned int ptsize;
 
 	/* Check for pathology */
-	if( ! pa1 || ! pa2 )
+	if (!pa1 || !pa2)
 	{
 		lwerror("ptarray_append_ptarray: null input");
 		return LW_FAILURE;
@@ -387,15 +392,16 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 
 	npoints = pa2->npoints;
 
-	if ( ! npoints ) return LW_SUCCESS; /* nothing more to do */
+	if (!npoints)
+		return LW_SUCCESS; /* nothing more to do */
 
-	if( FLAGS_GET_READONLY(pa1->flags) )
+	if (FLAGS_GET_READONLY(pa1->flags))
 	{
 		lwerror("ptarray_append_ptarray: target pointarray is read-only");
 		return LW_FAILURE;
 	}
 
-	if( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) )
+	if (FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags))
 	{
 		lwerror("ptarray_append_ptarray: appending mixed dimensionality is not allowed");
 		return LW_FAILURE;
@@ -404,19 +410,19 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 	ptsize = ptarray_point_size(pa1);
 
 	/* Check for duplicate end point */
-	if ( pa1->npoints )
+	if (pa1->npoints)
 	{
 		POINT2D tmp1, tmp2;
-		getPoint2d_p(pa1, pa1->npoints-1, &tmp1);
+		getPoint2d_p(pa1, pa1->npoints - 1, &tmp1);
 		getPoint2d_p(pa2, 0, &tmp2);
 
 		/* If the end point and start point are the same, then don't copy start point */
-		if (p2d_same(&tmp1, &tmp2)) {
+		if (p2d_same(&tmp1, &tmp2))
+		{
 			poff = 1;
 			--npoints;
 		}
-		else if ( gap_tolerance == 0 || ( gap_tolerance > 0 &&
-		           distance2d_pt_pt(&tmp1, &tmp2) > gap_tolerance ) )
+		else if (gap_tolerance == 0 || (gap_tolerance > 0 && distance2d_pt_pt(&tmp1, &tmp2) > gap_tolerance))
 		{
 			lwerror("Second line start point too far from first line end point");
 			return LW_FAILURE;
@@ -425,13 +431,13 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 
 	/* Check if we need extra space */
 	ncap = pa1->npoints + npoints;
-	if ( pa1->maxpoints < ncap )
+	if (pa1->maxpoints < ncap)
 	{
-		if ( pa1->maxpoints )
+		if (pa1->maxpoints)
 		{
-			pa1->maxpoints = ncap > pa1->maxpoints*2 ?
-											 ncap : pa1->maxpoints*2;
-			pa1->serialized_pointlist = lwrealloc(pa1->serialized_pointlist, (size_t)ptsize * pa1->maxpoints);
+			pa1->maxpoints = ncap > pa1->maxpoints * 2 ? ncap : pa1->maxpoints * 2;
+			pa1->serialized_pointlist =
+			    lwrealloc(pa1->serialized_pointlist, (size_t)ptsize * pa1->maxpoints);
 		}
 		else
 		{
@@ -440,8 +446,7 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 		}
 	}
 
-	memcpy(getPoint_internal(pa1, pa1->npoints),
-	       getPoint_internal(pa2, poff), (size_t)ptsize * npoints);
+	memcpy(getPoint_internal(pa1, pa1->npoints), getPoint_internal(pa2, poff), (size_t)ptsize * npoints);
 
 	pa1->npoints = ncap;
 
@@ -449,21 +454,21 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 }
 
 /*
-* Add a point into a pointarray. Only adds as many dimensions as the
-* pointarray supports.
-*/
+ * Add a point into a pointarray. Only adds as many dimensions as the
+ * pointarray supports.
+ */
 int
 ptarray_remove_point(POINTARRAY *pa, uint32_t where)
 {
 	/* Check for pathology */
-	if( ! pa )
+	if (!pa)
 	{
 		lwerror("ptarray_remove_point: null input");
 		return LW_FAILURE;
 	}
 
 	/* Error on invalid offset value */
-	if ( where >= pa->npoints )
+	if (where >= pa->npoints)
 	{
 		lwerror("ptarray_remove_point: offset out of range (%d)", where);
 		return LW_FAILURE;
@@ -482,10 +487,11 @@ ptarray_remove_point(POINTARRAY *pa, uint32_t where)
 }
 
 /**
-* Build a new #POINTARRAY, but on top of someone else's ordinate array.
-* Flag as read-only, so that ptarray_free() does not free the serialized_ptlist
-*/
-POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32_t npoints, uint8_t *ptlist)
+ * Build a new #POINTARRAY, but on top of someone else's ordinate array.
+ * Flag as read-only, so that ptarray_free() does not free the serialized_ptlist
+ */
+POINTARRAY *
+ptarray_construct_reference_data(char hasz, char hasm, uint32_t npoints, uint8_t *ptlist)
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	LWDEBUGF(5, "hasz = %d, hasm = %d, npoints = %d, ptlist = %p", hasz, hasm, npoints, ptlist);
@@ -497,8 +503,7 @@ POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32_t npoi
 	return pa;
 }
 
-
-POINTARRAY*
+POINTARRAY *
 ptarray_construct_copy_data(char hasz, char hasm, uint32_t npoints, const uint8_t *ptlist)
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
@@ -507,7 +512,7 @@ ptarray_construct_copy_data(char hasz, char hasm, uint32_t npoints, const uint8_
 	pa->npoints = npoints;
 	pa->maxpoints = npoints;
 
-	if ( npoints > 0 )
+	if (npoints > 0)
 	{
 		pa->serialized_pointlist = lwalloc(ptarray_point_size(pa) * npoints);
 		memcpy(pa->serialized_pointlist, ptlist, ptarray_point_size(pa) * npoints);
@@ -531,7 +536,6 @@ ptarray_free(POINTARRAY *pa)
 	}
 }
 
-
 void
 ptarray_reverse_in_place(POINTARRAY *pa)
 {
@@ -541,7 +545,7 @@ ptarray_reverse_in_place(POINTARRAY *pa)
 	uint32_t last = pa->npoints - 1;
 	uint32_t mid = pa->npoints / 2;
 
-	double *d = (double*)(pa->serialized_pointlist);
+	double *d = (double *)(pa->serialized_pointlist);
 	int j;
 	int ndims = FLAGS_NDIMS(pa->flags);
 	for (i = 0; i < mid; i++)
@@ -549,26 +553,25 @@ ptarray_reverse_in_place(POINTARRAY *pa)
 		for (j = 0; j < ndims; j++)
 		{
 			double buf;
-			buf = d[i*ndims+j];
-			d[i*ndims+j] = d[(last-i)*ndims+j];
-			d[(last-i)*ndims+j] = buf;
+			buf = d[i * ndims + j];
+			d[i * ndims + j] = d[(last - i) * ndims + j];
+			d[(last - i) * ndims + j] = buf;
 		}
 	}
 	return;
 }
 
-
 /**
  * Reverse X and Y axis on a given POINTARRAY
  */
-POINTARRAY*
+POINTARRAY *
 ptarray_flip_coordinates(POINTARRAY *pa)
 {
 	uint32_t i;
 	double d;
 	POINT4D p;
 
-	for (i=0 ; i < pa->npoints ; i++)
+	for (i = 0; i < pa->npoints; i++)
 	{
 		getPoint4d_p(pa, i, &p);
 		d = p.y;
@@ -587,9 +590,9 @@ ptarray_swap_ordinates(POINTARRAY *pa, LWORD o1, LWORD o2)
 	double d, *dp1, *dp2;
 	POINT4D p;
 
-	dp1 = ((double*)&p)+(unsigned)o1;
-	dp2 = ((double*)&p)+(unsigned)o2;
-	for (i=0 ; i < pa->npoints ; i++)
+	dp1 = ((double *)&p) + (unsigned)o1;
+	dp2 = ((double *)&p) + (unsigned)o2;
+	for (i = 0; i < pa->npoints; i++)
 	{
 		getPoint4d_p(pa, i, &p);
 		d = *dp2;
@@ -610,7 +613,7 @@ POINTARRAY *
 ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 {
 	double segdist;
-	POINT4D	p1, p2;
+	POINT4D p1, p2;
 	POINT4D pbuf;
 	POINTARRAY *opa;
 	uint32_t i, j, nseg;
@@ -638,7 +641,7 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 		 * referred to as "type-punned pointer")
 		 * breaks those "strict" rules.
 		 */
-		POINT4D *p1ptr=&p1, *p2ptr=&p2;
+		POINT4D *p1ptr = &p1, *p2ptr = &p2;
 		double segments;
 
 		getPoint4d_p(ipa, i, &p2);
@@ -650,8 +653,7 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 		/* Uses INT32_MAX instead of UINT32_MAX to be safe that it fits */
 		if (segments >= INT32_MAX)
 		{
-			lwnotice("%s:%d - %s: Too many segments required (%e)",
-				__FILE__, __LINE__,__func__, segments);
+			lwnotice("%s:%d - %s: Too many segments required (%e)", __FILE__, __LINE__, __func__, segments);
 			ptarray_free(opa);
 			return NULL;
 		}
@@ -683,20 +685,22 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	uint32_t i;
 	size_t ptsize;
 
-	if ( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) ) return LW_FALSE;
-	LWDEBUG(5,"dimensions are the same");
+	if (FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags))
+		return LW_FALSE;
+	LWDEBUG(5, "dimensions are the same");
 
-	if ( pa1->npoints != pa2->npoints ) return LW_FALSE;
-	LWDEBUG(5,"npoints are the same");
+	if (pa1->npoints != pa2->npoints)
+		return LW_FALSE;
+	LWDEBUG(5, "npoints are the same");
 
 	ptsize = ptarray_point_size(pa1);
 	LWDEBUGF(5, "ptsize = %zu", ptsize);
 
-	for (i=0; i<pa1->npoints; i++)
+	for (i = 0; i < pa1->npoints; i++)
 	{
-		if ( memcmp(getPoint_internal(pa1, i), getPoint_internal(pa2, i), ptsize) )
+		if (memcmp(getPoint_internal(pa1, i), getPoint_internal(pa2, i), ptsize))
 			return LW_FALSE;
-		LWDEBUGF(5,"point #%d is the same",i);
+		LWDEBUGF(5, "point #%d is the same", i);
 	}
 
 	return LW_TRUE;
@@ -707,17 +711,19 @@ ptarray_same2d(const POINTARRAY *pa1, const POINTARRAY *pa2)
 {
 	uint32_t i;
 
-	if ( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) ) return LW_FALSE;
-	LWDEBUG(5,"dimensions are the same");
+	if (FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags))
+		return LW_FALSE;
+	LWDEBUG(5, "dimensions are the same");
 
-	if ( pa1->npoints != pa2->npoints ) return LW_FALSE;
-	LWDEBUG(5,"npoints are the same");
+	if (pa1->npoints != pa2->npoints)
+		return LW_FALSE;
+	LWDEBUG(5, "npoints are the same");
 
-	for (i=0; i<pa1->npoints; i++)
+	for (i = 0; i < pa1->npoints; i++)
 	{
-		if ( memcmp(getPoint_internal(pa1, i), getPoint_internal(pa2, i), sizeof(POINT2D)) )
+		if (memcmp(getPoint_internal(pa1, i), getPoint_internal(pa2, i), sizeof(POINT2D)))
 			return LW_FALSE;
-		LWDEBUGF(5,"point #%d is the same",i);
+		LWDEBUGF(5, "point #%d is the same", i);
 	}
 
 	return LW_TRUE;
@@ -730,46 +736,39 @@ ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 	POINT4D pbuf;
 	size_t ptsize = ptarray_point_size(pa);
 
-	LWDEBUGF(3, "pa %p p %p size %zu where %u",
-	         pa, p, pdims, where);
+	LWDEBUGF(3, "pa %p p %p size %zu where %u", pa, p, pdims, where);
 
-	if ( pdims < 2 || pdims > 4 )
+	if (pdims < 2 || pdims > 4)
 	{
-		lwerror("ptarray_addPoint: point dimension out of range (%zu)",
-		        pdims);
+		lwerror("ptarray_addPoint: point dimension out of range (%zu)", pdims);
 		return NULL;
 	}
 
-	if ( where > pa->npoints )
+	if (where > pa->npoints)
 	{
-		lwerror("ptarray_addPoint: offset out of range (%d)",
-		        where);
+		lwerror("ptarray_addPoint: offset out of range (%d)", where);
 		return NULL;
 	}
 
 	LWDEBUG(3, "called with a point");
 
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0.0;
-	memcpy((uint8_t *)&pbuf, p, pdims*sizeof(double));
+	memcpy((uint8_t *)&pbuf, p, pdims * sizeof(double));
 
 	LWDEBUG(3, "initialized point buffer");
 
-	ret = ptarray_construct(FLAGS_GET_Z(pa->flags),
-	                        FLAGS_GET_M(pa->flags), pa->npoints+1);
+	ret = ptarray_construct(FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags), pa->npoints + 1);
 
-
-	if ( where )
+	if (where)
 	{
-		memcpy(getPoint_internal(ret, 0), getPoint_internal(pa, 0), ptsize*where);
+		memcpy(getPoint_internal(ret, 0), getPoint_internal(pa, 0), ptsize * where);
 	}
 
 	memcpy(getPoint_internal(ret, where), (uint8_t *)&pbuf, ptsize);
 
-	if ( where+1 != ret->npoints )
+	if (where + 1 != ret->npoints)
 	{
-		memcpy(getPoint_internal(ret, where+1),
-		       getPoint_internal(pa, where),
-		       ptsize*(pa->npoints-where));
+		memcpy(getPoint_internal(ret, where + 1), getPoint_internal(pa, where), ptsize * (pa->npoints - where));
 	}
 
 	return ret;
@@ -783,23 +782,23 @@ ptarray_removePoint(POINTARRAY *pa, uint32_t which)
 
 	LWDEBUGF(3, "pa %p which %u", pa, which);
 
-	assert(which <= pa->npoints-1);
+	assert(which <= pa->npoints - 1);
 	assert(pa->npoints >= 3);
 
-	ret = ptarray_construct(FLAGS_GET_Z(pa->flags),
-	                        FLAGS_GET_M(pa->flags), pa->npoints-1);
+	ret = ptarray_construct(FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags), pa->npoints - 1);
 
 	/* copy initial part */
-	if ( which )
+	if (which)
 	{
-		memcpy(getPoint_internal(ret, 0), getPoint_internal(pa, 0), ptsize*which);
+		memcpy(getPoint_internal(ret, 0), getPoint_internal(pa, 0), ptsize * which);
 	}
 
 	/* copy final part */
-	if ( which < pa->npoints-1 )
+	if (which < pa->npoints - 1)
 	{
-		memcpy(getPoint_internal(ret, which), getPoint_internal(pa, which+1),
-		       ptsize*(pa->npoints-which-1));
+		memcpy(getPoint_internal(ret, which),
+		       getPoint_internal(pa, which + 1),
+		       ptsize * (pa->npoints - which - 1));
 	}
 
 	return ret;
@@ -814,24 +813,17 @@ ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2)
 	if (FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags))
 		lwerror("ptarray_cat: Mixed dimension");
 
-	pa = ptarray_construct( FLAGS_GET_Z(pa1->flags),
-	                        FLAGS_GET_M(pa1->flags),
-	                        pa1->npoints + pa2->npoints);
+	pa = ptarray_construct(FLAGS_GET_Z(pa1->flags), FLAGS_GET_M(pa1->flags), pa1->npoints + pa2->npoints);
 
-	memcpy(         getPoint_internal(pa, 0),
-	                getPoint_internal(pa1, 0),
-	                ptsize*(pa1->npoints));
+	memcpy(getPoint_internal(pa, 0), getPoint_internal(pa1, 0), ptsize * (pa1->npoints));
 
-	memcpy(         getPoint_internal(pa, pa1->npoints),
-	                getPoint_internal(pa2, 0),
-	                ptsize*(pa2->npoints));
+	memcpy(getPoint_internal(pa, pa1->npoints), getPoint_internal(pa2, 0), ptsize * (pa2->npoints));
 
 	ptarray_free(pa1);
 	ptarray_free(pa2);
 
 	return pa;
 }
-
 
 /**
  * @brief Deep clone a pointarray (also clones serialized pointlist)
@@ -886,9 +878,9 @@ ptarray_clone(const POINTARRAY *in)
 }
 
 /**
-* Check for ring closure using whatever dimensionality is declared on the
-* pointarray.
-*/
+ * Check for ring closure using whatever dimensionality is declared on the
+ * pointarray.
+ */
 int
 ptarray_is_closed(const POINTARRAY *in)
 {
@@ -897,11 +889,11 @@ ptarray_is_closed(const POINTARRAY *in)
 		lwerror("ptarray_is_closed: called with null point array");
 		return 0;
 	}
-	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+	if (in->npoints <= 1)
+		return in->npoints; /* single-point are closed, empty not closed */
 
-	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), ptarray_point_size(in));
+	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints - 1), ptarray_point_size(in));
 }
-
 
 int
 ptarray_is_closed_2d(const POINTARRAY *in)
@@ -911,9 +903,10 @@ ptarray_is_closed_2d(const POINTARRAY *in)
 		lwerror("ptarray_is_closed_2d: called with null point array");
 		return 0;
 	}
-	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+	if (in->npoints <= 1)
+		return in->npoints; /* single-point are closed, empty not closed */
 
-	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT2D) );
+	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints - 1), sizeof(POINT2D));
 }
 
 int
@@ -924,15 +917,16 @@ ptarray_is_closed_3d(const POINTARRAY *in)
 		lwerror("ptarray_is_closed_3d: called with null point array");
 		return 0;
 	}
-	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+	if (in->npoints <= 1)
+		return in->npoints; /* single-point are closed, empty not closed */
 
-	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT3D) );
+	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints - 1), sizeof(POINT3D));
 }
 
 int
 ptarray_is_closed_z(const POINTARRAY *in)
 {
-	if ( FLAGS_GET_Z(in->flags) )
+	if (FLAGS_GET_Z(in->flags))
 		return ptarray_is_closed_3d(in);
 	else
 		return ptarray_is_closed_2d(in);
@@ -955,7 +949,7 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 	int wn = 0;
 
 	seg1 = getPoint2d_cp(pa, 0);
-	seg2 = getPoint2d_cp(pa, pa->npoints-1);
+	seg2 = getPoint2d_cp(pa, pa->npoints - 1);
 	if (!p2d_same(seg1, seg2))
 		lwerror("ptarray_contains_point called on unclosed ring");
 
@@ -991,30 +985,30 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 		side = lw_segment_side(seg1, seg2, pt);
 
 		/*
-		* A point on the boundary of a ring is not contained.
-		* WAS: if (fabs(side) < 1e-12), see #852
-		*/
+		 * A point on the boundary of a ring is not contained.
+		 * WAS: if (fabs(side) < 1e-12), see #852
+		 */
 		if ((side == 0) && lw_pt_in_seg(pt, seg1, seg2))
 		{
 			return LW_BOUNDARY;
 		}
 
 		/*
-		* If the point is to the left of the line, and it's rising,
-		* then the line is to the right of the point and
-		* circling counter-clockwise, so increment.
-		*/
+		 * If the point is to the left of the line, and it's rising,
+		 * then the line is to the right of the point and
+		 * circling counter-clockwise, so increment.
+		 */
 		if ((side < 0) && (seg1->y <= pt->y) && (pt->y < seg2->y))
 		{
 			wn++;
 		}
 
 		/*
-		* If the point is to the right of the line, and it's falling,
-		* then the line is to the right of the point and circling
-		* clockwise, so decrement.
-		*/
-		else if ( (side > 0) && (seg2->y <= pt->y) && (pt->y < seg1->y) )
+		 * If the point is to the right of the line, and it's falling,
+		 * then the line is to the right of the point and circling
+		 * clockwise, so decrement.
+		 */
+		else if ((side > 0) && (seg2->y <= pt->y) && (pt->y < seg1->y))
 		{
 			wn--;
 		}
@@ -1038,10 +1032,10 @@ ptarray_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on_bo
 	double py = p->y;
 
 	// Iterate through each edge of the polygon
-	for (uint32_t i = 0; i < pa->npoints-1; ++i)
+	for (uint32_t i = 0; i < pa->npoints - 1; ++i)
 	{
-		const POINT2D* p1 = getPoint2d_cp(pa, i);
-		const POINT2D* p2 = getPoint2d_cp(pa, i+1);
+		const POINT2D *p1 = getPoint2d_cp(pa, i);
+		const POINT2D *p2 = getPoint2d_cp(pa, i + 1);
 
 		/* Skip zero-length edges */
 		if (p2d_same(p1, p2))
@@ -1083,7 +1077,6 @@ ptarray_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on_bo
 
 	return intersections;
 }
-
 
 /**
  * @brief Calculates the intersection points of a circle and a horizontal line.
@@ -1142,7 +1135,6 @@ circle_raycast_intersections(const POINT2D *center, double radius, double ray, P
 	return 2;
 }
 
-
 int
 ptarrayarc_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on_boundary)
 {
@@ -1160,12 +1152,12 @@ ptarrayarc_raycast_intersections(const POINTARRAY *pa, const POINT2D *p, int *on
 		lwerror("%s called with even number of points", __func__);
 
 	// Iterate through each arc of the circularstring
-	for (uint32_t i = 1; i < pa->npoints-1; i +=2)
+	for (uint32_t i = 1; i < pa->npoints - 1; i += 2)
 	{
-		const POINT2D* p0 = getPoint2d_cp(pa, i-1);
-		const POINT2D* p1 = getPoint2d_cp(pa, i);
-		const POINT2D* p2 = getPoint2d_cp(pa, i+1);
-		POINT2D center = {0,0};
+		const POINT2D *p0 = getPoint2d_cp(pa, i - 1);
+		const POINT2D *p1 = getPoint2d_cp(pa, i);
+		const POINT2D *p2 = getPoint2d_cp(pa, i + 1);
+		POINT2D center = {0, 0};
 		double radius, d;
 		GBOX gbox;
 
@@ -1239,20 +1231,20 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 	const POINT2D *seg1, *seg2;
 	double ymin, ymax;
 
-	if ( !pa || !pa->npoints )
+	if (!pa || !pa->npoints)
 		lwerror("%s called on empty pointarray", __func__);
 
 	seg1 = getPoint2d_cp(pa, 0);
-	seg2 = getPoint2d_cp(pa, pa->npoints-1);
-	if ( check_closed && ! p2d_same(seg1, seg2) )
+	seg2 = getPoint2d_cp(pa, pa->npoints - 1);
+	if (check_closed && !p2d_same(seg1, seg2))
 		lwerror("%s called on unclosed ring", __func__);
 
-	for ( i=1; i < pa->npoints; i++ )
+	for (i = 1; i < pa->npoints; i++)
 	{
 		seg2 = getPoint2d_cp(pa, i);
 
 		/* Zero length segments are ignored. */
-		if ( seg1->x == seg2->x && seg1->y == seg2->y )
+		if (seg1->x == seg2->x && seg1->y == seg2->y)
 		{
 			seg1 = seg2;
 			continue;
@@ -1262,7 +1254,7 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 		ymax = FP_MAX(seg1->y, seg2->y);
 
 		/* Only test segments in our vertical range */
-		if ( pt->y > ymax || pt->y < ymin )
+		if (pt->y > ymax || pt->y < ymin)
 		{
 			seg1 = seg2;
 			continue;
@@ -1271,30 +1263,30 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 		side = lw_segment_side(seg1, seg2, pt);
 
 		/*
-		* A point on the boundary of a ring is not contained.
-		* WAS: if (fabs(side) < 1e-12), see #852
-		*/
-		if ( (side == 0) && lw_pt_in_seg(pt, seg1, seg2) )
+		 * A point on the boundary of a ring is not contained.
+		 * WAS: if (fabs(side) < 1e-12), see #852
+		 */
+		if ((side == 0) && lw_pt_in_seg(pt, seg1, seg2))
 		{
 			return LW_BOUNDARY;
 		}
 
 		/*
-		* If the point is to the left of the line, and it's rising,
-		* then the line is to the right of the point and
-		* circling counter-clockwise, so increment.
-		*/
-		if ( (side < 0) && (seg1->y <= pt->y) && (pt->y < seg2->y) )
+		 * If the point is to the left of the line, and it's rising,
+		 * then the line is to the right of the point and
+		 * circling counter-clockwise, so increment.
+		 */
+		if ((side < 0) && (seg1->y <= pt->y) && (pt->y < seg2->y))
 		{
 			wn++;
 		}
 
 		/*
-		* If the point is to the right of the line, and it's falling,
-		* then the line is to the right of the point and circling
-		* clockwise, so decrement.
-		*/
-		else if ( (side > 0) && (seg2->y <= pt->y) && (pt->y < seg1->y) )
+		 * If the point is to the right of the line, and it's falling,
+		 * then the line is to the right of the point and circling
+		 * clockwise, so decrement.
+		 */
+		else if ((side > 0) && (seg2->y <= pt->y) && (pt->y < seg1->y))
 		{
 			wn--;
 		}
@@ -1303,7 +1295,7 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 	}
 
 	/* Sent out the winding number for calls that are building on this as a primitive */
-	if ( winding_number )
+	if (winding_number)
 		*winding_number = wn;
 
 	/* Outside */
@@ -1317,13 +1309,13 @@ ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int chec
 }
 
 /**
-* For POINTARRAYs representing CIRCULARSTRINGS. That is, linked triples
-* with each triple being control points of a circular arc. Such
-* POINTARRAYs have an odd number of vertices.
-*
-* Return 1 if the point is inside the POINTARRAY, -1 if it is outside,
-* and 0 if it is on the boundary.
-*/
+ * For POINTARRAYs representing CIRCULARSTRINGS. That is, linked triples
+ * with each triple being control points of a circular arc. Such
+ * POINTARRAYs have an odd number of vertices.
+ *
+ * Return 1 if the point is inside the POINTARRAY, -1 if it is outside,
+ * and 0 if it is on the boundary.
+ */
 
 int
 ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
@@ -1341,10 +1333,10 @@ ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 }
 
 /**
-* Returns the area in cartesian units. Area is negative if ring is oriented CCW,
-* positive if it is oriented CW and zero if the ring is degenerate or flat.
-* http://en.wikipedia.org/wiki/Shoelace_formula
-*/
+ * Returns the area in cartesian units. Area is negative if ring is oriented CCW,
+ * positive if it is oriented CW and zero if the ring is degenerate or flat.
+ * http://en.wikipedia.org/wiki/Shoelace_formula
+ */
 double
 ptarray_signed_area(const POINTARRAY *pa)
 {
@@ -1369,7 +1361,7 @@ ptarray_signed_area(const POINTARRAY *pa)
 	int scaled_cancelled;
 	uint32_t i;
 
-	if (! pa || pa->npoints < 3 )
+	if (!pa || pa->npoints < 3)
 		return 0.0;
 
 	P1 = getPoint2d_cp(pa, 0);
@@ -1404,7 +1396,7 @@ ptarray_signed_area(const POINTARRAY *pa)
 	}
 
 	P2 = getPoint2d_cp(pa, 1);
-	for ( i = 2; i < pa->npoints; i++ )
+	for (i = 2; i < pa->npoints; i++)
 	{
 		double ax, ay, bx, by, axerr, ayerr, bxerr, byerr;
 		double detleft, detright, det, err = 0.0, b;
@@ -1552,11 +1544,13 @@ ptarray_isccw(const POINTARRAY *pa)
 {
 	double area = 0;
 	area = ptarray_signed_area(pa);
-	if ( area > 0 ) return LW_FALSE;
-	else return LW_TRUE;
+	if (area > 0)
+		return LW_FALSE;
+	else
+		return LW_TRUE;
 }
 
-POINTARRAY*
+POINTARRAY *
 ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm, double zval, double mval)
 {
 	/* TODO handle zero-length point arrays */
@@ -1566,12 +1560,12 @@ ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm, double zval, double
 	POINT4D pt;
 	POINTARRAY *pa_out = ptarray_construct_empty(hasz, hasm, pa->npoints);
 
-	for( i = 0; i < pa->npoints; i++ )
+	for (i = 0; i < pa->npoints; i++)
 	{
 		getPoint4d_p(pa, i, &pt);
-		if( hasz && ! in_hasz )
+		if (hasz && !in_hasz)
 			pt.z = zval;
-		if( hasm && ! in_hasm )
+		if (hasm && !in_hasm)
 			pt.m = mval;
 		ptarray_append_point(pa_out, &pt, LW_TRUE);
 	}
@@ -1585,8 +1579,8 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 	POINTARRAY *dpa;
 	POINT4D pt;
 	POINT4D p1, p2;
-	POINT4D *p1ptr=&p1; /* don't break strict-aliasing rule */
-	POINT4D *p2ptr=&p2;
+	POINT4D *p1ptr = &p1; /* don't break strict-aliasing rule */
+	POINT4D *p2ptr = &p2;
 	int nsegs, i;
 	double length, slength, tlength;
 	int state = 0; /* 0=before, 1=inside */
@@ -1600,31 +1594,25 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 	/* Compute total line length */
 	length = ptarray_length_2d(ipa);
 
-
 	LWDEBUGF(3, "Total length: %g", length);
 
-
 	/* Get 'from' and 'to' lengths */
-	from = length*from;
-	to = length*to;
-
+	from = length * from;
+	to = length * to;
 
 	LWDEBUGF(3, "From/To: %g/%g", from, to);
-
 
 	tlength = 0;
 	getPoint4d_p(ipa, 0, &p1);
 	nsegs = ipa->npoints - 1;
-	for ( i = 0; i < nsegs; i++ )
+	for (i = 0; i < nsegs; i++)
 	{
 		double dseg;
 
-		getPoint4d_p(ipa, i+1, &p2);
+		getPoint4d_p(ipa, i + 1, &p2);
 
-
-		LWDEBUGF(3 ,"Segment %d: (%g,%g,%g,%g)-(%g,%g,%g,%g)",
-		         i, p1.x, p1.y, p1.z, p1.m, p2.x, p2.y, p2.z, p2.m);
-
+		LWDEBUGF(
+		    3, "Segment %d: (%g,%g,%g,%g)-(%g,%g,%g,%g)", i, p1.x, p1.y, p1.z, p1.m, p2.x, p2.y, p2.z, p2.m);
 
 		/* Find the length of this segment */
 		slength = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
@@ -1632,12 +1620,12 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 		/*
 		 * We are before requested start.
 		 */
-		if ( state == 0 ) /* before */
+		if (state == 0) /* before */
 		{
 
 			LWDEBUG(3, " Before start");
 
-			if ( fabs ( from - ( tlength + slength ) ) <= tolerance )
+			if (fabs(from - (tlength + slength)) <= tolerance)
 			{
 
 				LWDEBUG(3, "  Second point is our start");
@@ -1646,11 +1634,11 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 				 * Second point is our start
 				 */
 				ptarray_append_point(dpa, &p2, LW_FALSE);
-				state=1; /* we're inside now */
+				state = 1; /* we're inside now */
 				goto END;
 			}
 
-			else if ( fabs(from - tlength) <= tolerance )
+			else if (fabs(from - tlength) <= tolerance)
 			{
 
 				LWDEBUG(3, "  First point is our start");
@@ -1664,16 +1652,17 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 				 * We're inside now, but will check
 				 * 'to' point as well
 				 */
-				state=1;
+				state = 1;
 			}
 
 			/*
 			 * Didn't reach the 'from' point,
 			 * nothing to do
 			 */
-			else if ( from > tlength + slength ) goto END;
+			else if (from > tlength + slength)
+				goto END;
 
-			else  /* tlength < from < tlength+slength */
+			else /* tlength < from < tlength+slength */
 			{
 
 				LWDEBUG(3, "  Seg contains first point");
@@ -1692,11 +1681,11 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 				 * We're inside now, but will check
 				 * 'to' point as well
 				 */
-				state=1;
+				state = 1;
 			}
 		}
 
-		if ( state == 1 ) /* inside */
+		if (state == 1) /* inside */
 		{
 
 			LWDEBUG(3, " Inside");
@@ -1704,7 +1693,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 			/*
 			 * 'to' point is our second point.
 			 */
-			if ( fabs(to - ( tlength + slength ) ) <= tolerance )
+			if (fabs(to - (tlength + slength)) <= tolerance)
 			{
 
 				LWDEBUG(3, " Second point is our end");
@@ -1717,7 +1706,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 			 * 'to' point is our first point.
 			 * (should only happen if 'to' is 0)
 			 */
-			else if ( fabs(to - tlength) <= tolerance )
+			else if (fabs(to - tlength) <= tolerance)
 			{
 
 				LWDEBUG(3, " First point is our end");
@@ -1731,7 +1720,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 			 * Didn't reach the 'end' point,
 			 * just copy second point
 			 */
-			else if ( to > tlength + slength )
+			else if (to > tlength + slength)
 			{
 				ptarray_append_point(dpa, &p2, LW_FALSE);
 				goto END;
@@ -1741,7 +1730,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 			 * 'to' point falls on this segment
 			 * Interpolate and break.
 			 */
-			else if ( to < tlength + slength )
+			else if (to < tlength + slength)
 			{
 
 				LWDEBUG(3, " Seg contains our end");
@@ -1760,8 +1749,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 			}
 		}
 
-
-END:
+	END:
 
 		tlength += slength;
 		memcpy(&p1, &p2, sizeof(POINT4D));
@@ -1781,7 +1769,7 @@ closest_point_on_segment(const POINT4D *p, const POINT4D *A, const POINT4D *B, P
 {
 	double r;
 
-	if (  FP_EQUALS(A->x, B->x) && FP_EQUALS(A->y, B->y) )
+	if (FP_EQUALS(A->x, B->x) && FP_EQUALS(A->y, B->y))
 	{
 		*ret = *A;
 		return;
@@ -1801,34 +1789,35 @@ closest_point_on_segment(const POINT4D *p, const POINT4D *A, const POINT4D *B, P
 	 *	0<r<1 P is interior to AB
 	 *
 	 */
-	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+	r = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y)) /
+	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
 
-	if (r<=0)
+	if (r <= 0)
 	{
 		*ret = *A;
 		return;
 	}
-	if (r>=1)
+	if (r >= 1)
 	{
 		*ret = *B;
 		return;
 	}
 
-	ret->x = A->x + ( (B->x - A->x) * r );
-	ret->y = A->y + ( (B->y - A->y) * r );
-	ret->z = A->z + ( (B->z - A->z) * r );
-	ret->m = A->m + ( (B->m - A->m) * r );
+	ret->x = A->x + ((B->x - A->x) * r);
+	ret->y = A->y + ((B->y - A->y) * r);
+	ret->z = A->z + ((B->z - A->z) * r);
+	ret->m = A->m + ((B->m - A->m) * r);
 }
 
 int
 ptarray_closest_segment_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist)
 {
 	const POINT2D *start = getPoint2d_cp(pa, 0), *end = NULL;
-	uint32_t t, seg=0;
-	double mindist=DBL_MAX;
+	uint32_t t, seg = 0;
+	double mindist = DBL_MAX;
 
 	/* Loop through pointarray looking for nearest segment */
-	for (t=1; t<pa->npoints; t++)
+	for (t = 1; t < pa->npoints; t++)
 	{
 		double dist_sqr;
 		end = getPoint2d_cp(pa, t);
@@ -1837,8 +1826,8 @@ ptarray_closest_segment_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist
 		if (dist_sqr < mindist)
 		{
 			mindist = dist_sqr;
-			seg=t-1;
-			if ( mindist == 0 )
+			seg = t - 1;
+			if (mindist == 0)
 			{
 				LWDEBUG(3, "Breaking on mindist=0");
 				break;
@@ -1848,20 +1837,20 @@ ptarray_closest_segment_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist
 		start = end;
 	}
 
-	if ( dist ) *dist = sqrt(mindist);
+	if (dist)
+		*dist = sqrt(mindist);
 	return seg;
 }
-
 
 int
 ptarray_closest_vertex_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist)
 {
-	uint32_t t, pn=0;
+	uint32_t t, pn = 0;
 	const POINT2D *p;
 	double mindist = DBL_MAX;
 
 	/* Loop through pointarray looking for nearest segment */
-	for (t=0; t<pa->npoints; t++)
+	for (t = 0; t < pa->npoints; t++)
 	{
 		double dist_sqr;
 		p = getPoint2d_cp(pa, t);
@@ -1871,14 +1860,15 @@ ptarray_closest_vertex_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist)
 		{
 			mindist = dist_sqr;
 			pn = t;
-			if ( mindist == 0 )
+			if (mindist == 0)
 			{
 				LWDEBUG(3, "Breaking on mindist=0");
 				break;
 			}
 		}
 	}
-	if ( dist ) *dist = sqrt(mindist);
+	if (dist)
+		*dist = sqrt(mindist);
 	return pn;
 }
 
@@ -1889,10 +1879,10 @@ ptarray_closest_vertex_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist)
 double
 ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistout, POINT4D *proj4d)
 {
-	double mindist=DBL_MAX;
+	double mindist = DBL_MAX;
 	double tlen, plen;
-	uint32_t t, seg=0;
-	POINT4D	start4d, end4d, projtmp;
+	uint32_t t, seg = 0;
+	POINT4D start4d, end4d, projtmp;
 	POINT2D proj, p;
 	const POINT2D *start = NULL, *end = NULL;
 
@@ -1900,15 +1890,16 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	p.x = p4d->x;
 	p.y = p4d->y;
 
-	if ( ! proj4d ) proj4d = &projtmp;
+	if (!proj4d)
+		proj4d = &projtmp;
 
 	/* Check for special cases (length 0 and 1) */
-	if ( pa->npoints <= 1 )
+	if (pa->npoints <= 1)
 	{
-		if ( pa->npoints == 1 )
+		if (pa->npoints == 1)
 		{
 			getPoint4d_p(pa, 0, proj4d);
-			if ( mindistout )
+			if (mindistout)
 				*mindistout = distance2d_pt_pt(&p, getPoint2d_cp(pa, 0));
 		}
 		return 0.0;
@@ -1916,7 +1907,7 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 
 	start = getPoint2d_cp(pa, 0);
 	/* Loop through pointarray looking for nearest segment */
-	for (t=1; t<pa->npoints; t++)
+	for (t = 1; t < pa->npoints; t++)
 	{
 		double dist_sqr;
 		end = getPoint2d_cp(pa, t);
@@ -1925,8 +1916,8 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 		if (dist_sqr < mindist)
 		{
 			mindist = dist_sqr;
-			seg=t-1;
-			if ( mindist == 0 )
+			seg = t - 1;
+			if (mindist == 0)
 			{
 				LWDEBUG(3, "Breaking on mindist=0");
 				break;
@@ -1937,7 +1928,8 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	}
 	mindist = sqrt(mindist);
 
-	if ( mindistout ) *mindistout = mindist;
+	if (mindistout)
+		*mindistout = mindist;
 
 	LWDEBUGF(3, "Closest segment: %d", seg);
 	LWDEBUGF(3, "mindist: %g", mindist);
@@ -1947,7 +1939,7 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	 * point on the closest segment.
 	 */
 	getPoint4d_p(pa, seg, &start4d);
-	getPoint4d_p(pa, seg+1, &end4d);
+	getPoint4d_p(pa, seg + 1, &end4d);
 	closest_point_on_segment(p4d, &start4d, &end4d, proj4d);
 
 	/* Copy 4D values into 2D holder */
@@ -1957,7 +1949,7 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	LWDEBUGF(3, "Closest segment:%d, npoints:%d", seg, pa->npoints);
 
 	/* For robustness, force 1 when closest point == endpoint */
-	if ( (seg >= (pa->npoints-2)) && p2d_same(&proj, end) )
+	if ((seg >= (pa->npoints - 2)) && p2d_same(&proj, end))
 	{
 		return 1.0;
 	}
@@ -1970,23 +1962,24 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 
 	/* Location of any point on a zero-length line is 0 */
 	/* See http://trac.osgeo.org/postgis/ticket/1772#comment:2 */
-	if ( tlen == 0 ) return 0;
+	if (tlen == 0)
+		return 0;
 
-	plen=0;
+	plen = 0;
 	start = getPoint2d_cp(pa, 0);
-	for (t=0; t<seg; t++, start=end)
+	for (t = 0; t < seg; t++, start = end)
 	{
-		end = getPoint2d_cp(pa, t+1);
+		end = getPoint2d_cp(pa, t + 1);
 		plen += distance2d_pt_pt(start, end);
 
 		LWDEBUGF(4, "Segment %d made plen %g", t, plen);
 	}
 
-	plen+=distance2d_pt_pt(&proj, start);
+	plen += distance2d_pt_pt(&proj, start);
 
 	LWDEBUGF(3, "plen %g, tlen %g", plen, tlen);
 
-	return plen/tlen;
+	return plen / tlen;
 }
 
 /**
@@ -2004,15 +1997,16 @@ ptarray_longitude_shift(POINTARRAY *pa)
 	uint32_t i;
 	double x;
 
-	for (i=0; i<pa->npoints; i++)
+	for (i = 0; i < pa->npoints; i++)
 	{
 		memcpy(&x, getPoint_internal(pa, i), sizeof(double));
-		if ( x < 0 ) x+= 360;
-		else if ( x > 180 ) x -= 360;
+		if (x < 0)
+			x += 360;
+		else if (x > 180)
+			x -= 360;
 		memcpy(getPoint_internal(pa, i), &x, sizeof(double));
 	}
 }
-
 
 /*
  * Returns a POINTARRAY with consecutive equal points
@@ -2034,7 +2028,6 @@ ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance)
 	return ptarray_remove_repeated_points_minpoints(in, tolerance, 2);
 }
 
-
 void
 ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32_t min_points)
 {
@@ -2049,7 +2042,8 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 	double dsq = FLT_MAX;
 
 	/* No-op on short inputs */
-	if ( n_points <= min_points ) return;
+	if (n_points <= min_points)
+		return;
 
 	last = getPoint2d_cp(pa, 0);
 	void *p_to = ((char *)last) + pt_size;
@@ -2076,7 +2070,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 			else
 			{
 				/* At tolerance zero, only skip exact dupes */
-				if (memcmp((char*)pt, (char*)last, pt_size) == 0)
+				if (memcmp((char *)pt, (char *)last, pt_size) == 0)
 					continue;
 			}
 
@@ -2087,14 +2081,14 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 			if (last_point && n_points_out > 1 && tolerance > 0.0 && dsq <= tolsq)
 			{
 				n_points_out--;
-				p_to = (char*)p_to - pt_size;
+				p_to = (char *)p_to - pt_size;
 			}
 		}
 
 		/* Compact all remaining values to front of array */
 		memcpy(p_to, pt, pt_size);
 		n_points_out++;
-		p_to = (char*)p_to + pt_size;
+		p_to = (char *)p_to + pt_size;
 		last = pt;
 	}
 	/* Adjust array length */
@@ -2193,10 +2187,7 @@ ptarray_simplify_in_place_tolerance0(POINTARRAY *pa)
 		double dot_ac_ab = ca_x * ba_x + ca_y * ba_y;
 		double s_numerator = ca_x * ba_y - ca_y * ba_x;
 
-		if (p2d_same(kept_pt, next_pt) ||
-			dot_ac_ab < 0.0 ||
-			dot_ac_ab > ab_length_sqr ||
-			s_numerator != 0)
+		if (p2d_same(kept_pt, next_pt) || dot_ac_ab < 0.0 || dot_ac_ab > ab_length_sqr || s_numerator != 0)
 
 		{
 			kept_it++;
@@ -2280,8 +2271,8 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 		/* If there are 2 points remaining, it has to be first and last as
 		 * we added those at the start */
 		memmove(pa->serialized_pointlist + pt_size * kept_it,
-		       pa->serialized_pointlist + pt_size * (pa->npoints - 1),
-		       pt_size);
+			pa->serialized_pointlist + pt_size * (pa->npoints - 1),
+			pt_size);
 	}
 	else if (pa->npoints != keptn) /* We don't need to move any points if we are keeping them all */
 	{
@@ -2305,10 +2296,10 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 /************************************************************************/
 
 /**
-* Find the 2d length of the given #POINTARRAY, using circular
-* arc interpolation between each coordinate triple.
-* Length(A1, A2, A3, A4, A5) = Length(A1, A2, A3)+Length(A3, A4, A5)
-*/
+ * Find the 2d length of the given #POINTARRAY, using circular
+ * arc interpolation between each coordinate triple.
+ * Length(A1, A2, A3, A4, A5) = Length(A1, A2, A3)+Length(A3, A4, A5)
+ */
 double
 ptarray_arc_length_2d(const POINTARRAY *pts)
 {
@@ -2318,14 +2309,14 @@ ptarray_arc_length_2d(const POINTARRAY *pts)
 	const POINT2D *a2;
 	const POINT2D *a3;
 
-	if ( pts->npoints % 2 != 1 )
+	if (pts->npoints % 2 != 1)
 		lwerror("arc point array with even number of points");
 
 	a1 = getPoint2d_cp(pts, 0);
 
-	for ( i=2; i < pts->npoints; i += 2 )
+	for (i = 2; i < pts->npoints; i += 2)
 	{
-		a2 = getPoint2d_cp(pts, i-1);
+		a2 = getPoint2d_cp(pts, i - 1);
 		a3 = getPoint2d_cp(pts, i);
 		dist += lw_arc_length(a1, a2, a3);
 		a1 = a3;
@@ -2334,8 +2325,8 @@ ptarray_arc_length_2d(const POINTARRAY *pts)
 }
 
 /**
-* Find the 2d length of the given #POINTARRAY (even if it's 3d)
-*/
+ * Find the 2d length of the given #POINTARRAY (even if it's 3d)
+ */
 double
 ptarray_length_2d(const POINTARRAY *pts)
 {
@@ -2344,16 +2335,16 @@ ptarray_length_2d(const POINTARRAY *pts)
 	const POINT2D *frm;
 	const POINT2D *to;
 
-	if ( pts->npoints < 2 ) return 0.0;
+	if (pts->npoints < 2)
+		return 0.0;
 
 	frm = getPoint2d_cp(pts, 0);
 
-	for ( i=1; i < pts->npoints; i++ )
+	for (i = 1; i < pts->npoints; i++)
 	{
 		to = getPoint2d_cp(pts, i);
 
-		dist += sqrt( ((frm->x - to->x)*(frm->x - to->x))  +
-		              ((frm->y - to->y)*(frm->y - to->y)) );
+		dist += sqrt(((frm->x - to->x) * (frm->x - to->x)) + ((frm->y - to->y) * (frm->y - to->y)));
 
 		frm = to;
 	}
@@ -2361,9 +2352,9 @@ ptarray_length_2d(const POINTARRAY *pts)
 }
 
 /**
-* Find the 3d/2d length of the given #POINTARRAY
-* (depending on its dimensionality)
-*/
+ * Find the 3d/2d length of the given #POINTARRAY
+ * (depending on its dimensionality)
+ */
 double
 ptarray_length(const POINTARRAY *pts)
 {
@@ -2372,24 +2363,23 @@ ptarray_length(const POINTARRAY *pts)
 	POINT3DZ frm;
 	POINT3DZ to;
 
-	if ( pts->npoints < 2 ) return 0.0;
+	if (pts->npoints < 2)
+		return 0.0;
 
 	/* compute 2d length if 3d is not available */
-	if ( ! FLAGS_GET_Z(pts->flags) ) return ptarray_length_2d(pts);
+	if (!FLAGS_GET_Z(pts->flags))
+		return ptarray_length_2d(pts);
 
 	getPoint3dz_p(pts, 0, &frm);
-	for ( i=1; i < pts->npoints; i++ )
+	for (i = 1; i < pts->npoints; i++)
 	{
 		getPoint3dz_p(pts, i, &to);
-		dist += sqrt( ((frm.x - to.x)*(frm.x - to.x)) +
-		              ((frm.y - to.y)*(frm.y - to.y)) +
-		              ((frm.z - to.z)*(frm.z - to.z)) );
+		dist += sqrt(((frm.x - to.x) * (frm.x - to.x)) + ((frm.y - to.y) * (frm.y - to.y)) +
+			     ((frm.z - to.z) * (frm.z - to.z)));
 		frm = to;
 	}
 	return dist;
 }
-
-
 
 /**
  * Affine transform a pointarray.
@@ -2424,9 +2414,9 @@ ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 }
 
 /**
-* WARNING, make sure you send in only 16-member double arrays
-* or obviously things will go pear-shaped fast.
-*/
+ * WARNING, make sure you send in only 16-member double arrays
+ * or obviously things will go pear-shaped fast.
+ */
 #if 0
 static int gluInvertMatrix(const double *m, double *invOut)
 {
@@ -2568,7 +2558,7 @@ ptarray_scale(POINTARRAY *pa, const POINT4D *fact)
 	uint32_t i;
 	POINT4D p4d;
 	LWDEBUG(3, "ptarray_scale start");
-	for (i=0; i<pa->npoints; i++)
+	for (i = 0; i < pa->npoints; i++)
 	{
 		getPoint4d_p(pa, i, &p4d);
 		p4d.x *= fact->x;
@@ -2585,7 +2575,6 @@ ptarray_startpoint(const POINTARRAY *pa, POINT4D *pt)
 {
 	return getPoint4d_p(pa, 0, pt);
 }
-
 
 /*
  * Stick an array of points to the given gridspec.
@@ -2621,14 +2610,16 @@ ptarray_grid_in_place(POINTARRAY *pa, gridspec *grid)
 		 * We use scale for rounding when gridsize is < 1 and
 		 * gridsize for rounding when scale < 1.
 		 */
-		if (grid->xsize > 0) {
+		if (grid->xsize > 0)
+		{
 			if (grid->xsize < 1)
 				x = rint((x - grid->ipx) * grid->xscale) / grid->xscale + grid->ipx;
 			else
 				x = rint((x - grid->ipx) / grid->xsize) * grid->xsize + grid->ipx;
 		}
 
-		if (grid->ysize > 0) {
+		if (grid->ysize > 0)
+		{
 			if (grid->ysize < 1)
 				y = rint((y - grid->ipy) * grid->yscale) / grid->yscale + grid->ipy;
 			else
@@ -2651,10 +2642,7 @@ ptarray_grid_in_place(POINTARRAY *pa, gridspec *grid)
 		}
 
 		/* Skip duplicates */
-		if (p_out &&
-		    p_out->x == x &&
-		    p_out->y == y &&
-		    (ndims > 2 ? p_out->z == z : 1) &&
+		if (p_out && p_out->x == x && p_out->y == y && (ndims > 2 ? p_out->z == z : 1) &&
 		    (ndims > 3 ? p_out->m == m : 1))
 		{
 			continue;
@@ -2681,15 +2669,14 @@ ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
 	const POINT2D *pt;
 	int n = 0;
 	uint32_t i;
-	for ( i = 0; i < pa->npoints; i++ )
+	for (i = 0; i < pa->npoints; i++)
 	{
 		pt = getPoint2d_cp(pa, i);
-		if ( gbox_contains_point2d(gbox, pt) )
+		if (gbox_contains_point2d(gbox, pt))
 			n++;
 	}
 	return n;
 }
-
 
 /*
  * Reorder the vertices of a closed pointarray so that the
@@ -2706,7 +2693,7 @@ ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
 	uint32_t it;
 	int ptsize;
 
-	if ( ! ptarray_is_closed_2d(pa) )
+	if (!ptarray_is_closed_2d(pa))
 	{
 		lwerror("ptarray_scroll_in_place: input POINTARRAY is not closed");
 		return LW_FAILURE;
@@ -2716,22 +2703,22 @@ ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
 
 	/* Find the point in the array */
 	found = 0;
-	for ( it = 0; it < pa->npoints; ++it )
+	for (it = 0; it < pa->npoints; ++it)
 	{
-		if ( ! memcmp(getPoint_internal(pa, it), pt, ptsize) )
+		if (!memcmp(getPoint_internal(pa, it), pt, ptsize))
 		{
 			found = 1;
 			break;
 		}
 	}
 
-	if ( ! found )
+	if (!found)
 	{
 		lwerror("ptarray_scroll_in_place: input POINTARRAY does not contain the given point");
 		return LW_FAILURE;
 	}
 
-	if ( 0 == it )
+	if (0 == it)
 	{
 		/* Point is already the start/end point, just clone the input */
 		return LW_SUCCESS;
@@ -2742,26 +2729,14 @@ ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
 
 	memset(getPoint_internal(tmp, 0), 0, (size_t)ptsize * pa->npoints);
 	/* Copy the block from found point to last point into the output array */
-	memcpy(
-		getPoint_internal(tmp, 0),
-		getPoint_internal(pa, it),
-		(size_t)ptsize * ( pa->npoints - it )
-	);
+	memcpy(getPoint_internal(tmp, 0), getPoint_internal(pa, it), (size_t)ptsize * (pa->npoints - it));
 
 	/* Copy the block from second point to the found point into the last portion of the
-   * return */
-	memcpy(
-		getPoint_internal(tmp, pa->npoints - it),
-		getPoint_internal(pa, 1),
-		(size_t)ptsize * ( it )
-	);
+	 * return */
+	memcpy(getPoint_internal(tmp, pa->npoints - it), getPoint_internal(pa, 1), (size_t)ptsize * (it));
 
 	/* Copy the resulting pointarray back to source one */
-	memcpy(
-		getPoint_internal(pa, 0),
-		getPoint_internal(tmp, 0),
-		(size_t)ptsize * ( pa->npoints )
-	);
+	memcpy(getPoint_internal(pa, 0), getPoint_internal(tmp, 0), (size_t)ptsize * (pa->npoints));
 
 	ptarray_free(tmp);
 
