@@ -45,7 +45,7 @@
 #include "../raster_config.h"
 #include "../../loader/loader_actions.h"
 
-#define CSEQUAL(a,b) (strcmp(a,b)==0)
+#define CSEQUAL(a, b) (strcmp(a, b) == 0)
 
 /*
 	max length of of "name" data type in PostgreSQL as
@@ -155,7 +155,7 @@ typedef struct raster_loader_config {
 	int copy_statements;
 
 	/** max tiles per copy */
-	uint32_t  max_tiles_per_copy;
+	uint32_t max_tiles_per_copy;
 
 } RTLOADERCFG;
 

@@ -24,7 +24,9 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
-static void test_raster_new(void) {
+static void
+test_raster_new(void)
+{
 	rt_raster raster = NULL;
 
 	raster = rt_raster_new(0, 0);
@@ -40,7 +42,9 @@ static void test_raster_new(void) {
 	cu_free_raster(raster);
 }
 
-static void test_raster_empty(void) {
+static void
+test_raster_empty(void)
+{
 	rt_raster raster = NULL;
 
 	/* check that raster is empty */
@@ -59,7 +63,9 @@ static void test_raster_empty(void) {
 	cu_free_raster(raster);
 }
 
-static void test_raster_metadata(void) {
+static void
+test_raster_metadata(void)
+{
 	rt_raster raster = NULL;
 
 	/* create raster */
@@ -96,7 +102,9 @@ static void test_raster_metadata(void) {
 	cu_free_raster(raster);
 }
 
-static void test_raster_clone(void) {
+static void
+test_raster_clone(void)
+{
 	rt_raster rast1;
 	rt_raster rast2;
 	rt_band band;
@@ -140,8 +148,10 @@ static void test_raster_clone(void) {
 	cu_free_raster(rast1);
 }
 
-static void test_raster_from_band(void) {
-	uint32_t bandNums[] = {1,3};
+static void
+test_raster_from_band(void)
+{
+	uint32_t bandNums[] = {1, 3};
 	int lenBandNums = 2;
 	rt_raster raster;
 	rt_raster rast;
@@ -153,7 +163,8 @@ static void test_raster_from_band(void) {
 	raster = rt_raster_new(xmax, ymax);
 	CU_ASSERT(raster != NULL);
 
-	for (x = 0; x < 5; x++) {
+	for (x = 0; x < 5; x++)
+	{
 		band = cu_add_band(raster, PT_32BUI, 0, 0);
 		CU_ASSERT(band != NULL);
 		rt_band_set_nodata(band, 0, NULL);
@@ -169,11 +180,13 @@ static void test_raster_from_band(void) {
 	cu_free_raster(raster);
 }
 
-static void test_raster_replace_band(void) {
+static void
+test_raster_replace_band(void)
+{
 	rt_raster raster;
 	rt_band band;
 	rt_band rband;
-	void* mem;
+	void *mem;
 	size_t datasize;
 	uint16_t width;
 	uint16_t height;
@@ -224,7 +237,8 @@ test_raster_generate_new_band_size_overflow(void)
 
 /* register tests */
 void raster_basics_suite_setup(void);
-void raster_basics_suite_setup(void)
+void
+raster_basics_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("raster_basics", NULL, NULL);
 	PG_ADD_TEST(suite, test_raster_new);

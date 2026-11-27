@@ -37,7 +37,9 @@
 // helper function for polygon and polyline POINTARRAY's
 // which removes small parts given by dx and dy.
 // ===============================================================================
-static void ptarray_remove_dim_helper(POINTARRAY *points, double mindx, double mindy) {
+static void
+ptarray_remove_dim_helper(POINTARRAY *points, double mindx, double mindy)
+{
 
 	int r;
 	double xmin = 0, ymin = 0, xmax = 0, ymax = 0;
@@ -45,25 +47,32 @@ static void ptarray_remove_dim_helper(POINTARRAY *points, double mindx, double m
 	POINT4D point;
 
 	int npoints = points->npoints;
-	for (r=0; r < npoints; r++) {
+	for (r = 0; r < npoints; r++)
+	{
 
 		getPoint4d_p(points, r, &point);
 
 		x = point.x;
 		y = point.y;
 
-		if (mindx > 0) {
-			if (!r || xmin > x) xmin = x;
-			if (!r || xmax < x) xmax = x;
+		if (mindx > 0)
+		{
+			if (!r || xmin > x)
+				xmin = x;
+			if (!r || xmax < x)
+				xmax = x;
 		}
-		if (mindy > 0) {
-			if (!r || ymin > y) ymin = y;
-			if (!r || ymax < y) ymax = y;
+		if (mindy > 0)
+		{
+			if (!r || ymin > y)
+				ymin = y;
+			if (!r || ymax < y)
+				ymax = y;
 		}
 	}
 
-	if ((mindx > 0 && xmax - xmin < mindx) ||
-		(mindy > 0 && ymax - ymin < mindy)) {
+	if ((mindx > 0 && xmax - xmin < mindx) || (mindy > 0 && ymax - ymin < mindy))
+	{
 		// skip part
 		points->npoints = 0;
 	}
@@ -74,7 +83,9 @@ static void ptarray_remove_dim_helper(POINTARRAY *points, double mindx, double m
 // 2D-(MULTI)POLYGONs and (MULTI)LINESTRINGs are evaluated, others keep untouched.
 // ===============================================================================
 PG_FUNCTION_INFO_V1(ST_RemoveSmallParts);
-Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
+Datum
+ST_RemoveSmallParts(PG_FUNCTION_ARGS)
+{
 
 	double mindx = 0, mindy = 0;
 	unsigned int i, j, iw, jw;
@@ -85,39 +96,44 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 	LWGEOM *geom;
 
 	// geom input check
-	if (PG_GETARG_POINTER(0) == NULL) {
+	if (PG_GETARG_POINTER(0) == NULL)
+	{
 		PG_RETURN_NULL();
 	}
 
 	serialized_in = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
-	if (PG_NARGS() == 3) {
+	if (PG_NARGS() == 3)
+	{
 
-		if (PG_ARGISNULL(1) || PG_ARGISNULL(2)) {
+		if (PG_ARGISNULL(1) || PG_ARGISNULL(2))
+		{
 			// no valid args given, leave untouched
 			PG_RETURN_POINTER(serialized_in);
 		}
 
 		mindx = PG_GETARG_FLOAT8(1);
 		mindy = PG_GETARG_FLOAT8(2);
-		if (mindx <= 0 && mindy <= 0) {
+		if (mindx <= 0 && mindy <= 0)
+		{
 			// nothing to do
 			PG_RETURN_POINTER(serialized_in);
 		}
 
 		// type check (only polygon and line types are supported yet)
 		if (gserialized_get_type(serialized_in) != POLYGONTYPE &&
-			gserialized_get_type(serialized_in) != MULTIPOLYGONTYPE &&
-			gserialized_get_type(serialized_in) != LINETYPE &&
-			gserialized_get_type(serialized_in) != MULTILINETYPE) {
+		    gserialized_get_type(serialized_in) != MULTIPOLYGONTYPE &&
+		    gserialized_get_type(serialized_in) != LINETYPE &&
+		    gserialized_get_type(serialized_in) != MULTILINETYPE)
+		{
 
 			// no (multi)polygon or (multi)linetype, leave untouched
 			PG_RETURN_POINTER(serialized_in);
 		}
-
 	}
 
-	else {
+	else
+	{
 		// unknown params, leave untouched
 		PG_RETURN_POINTER(serialized_in);
 	}
@@ -125,25 +141,30 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 	// deserialize geom and copy coordinates (no clone_deep)
 	geom = lwgeom_from_gserialized(serialized_in);
 
-	if (geom->type == LINETYPE) {
+	if (geom->type == LINETYPE)
+	{
 
-		LWLINE* line = (LWLINE*)geom;
+		LWLINE *line = (LWLINE *)geom;
 		ptarray_remove_dim_helper(line->points, mindx, mindy);
 	}
 
-	if (geom->type == MULTILINETYPE) {
+	if (geom->type == MULTILINETYPE)
+	{
 
-		LWMLINE* mline = (LWMLINE*)geom;
+		LWMLINE *mline = (LWMLINE *)geom;
 		iw = 0;
-		for (i=0; i<mline->ngeoms; i++) {
-			LWLINE* line = mline->geoms[i];
+		for (i = 0; i < mline->ngeoms; i++)
+		{
+			LWLINE *line = mline->geoms[i];
 			ptarray_remove_dim_helper(line->points, mindx, mindy);
 
-			if (line->points->npoints) {
+			if (line->points->npoints)
+			{
 				// keep (reduced) line
 				mline->geoms[iw++] = line;
 			}
-			else {
+			else
+			{
 				// discard current line
 				lwfree(line);
 			}
@@ -151,27 +172,34 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 		mline->ngeoms = iw;
 	}
 
-	if (geom->type == POLYGONTYPE) {
+	if (geom->type == POLYGONTYPE)
+	{
 
-		LWPOLY* polygon = (LWPOLY*)geom;
+		LWPOLY *polygon = (LWPOLY *)geom;
 		iw = 0;
-		for (i=0; i<polygon->nrings; i++) {
+		for (i = 0; i < polygon->nrings; i++)
+		{
 			ptarray_remove_dim_helper(polygon->rings[i], mindx, mindy);
 
-			if (polygon->rings[i]->npoints) {
+			if (polygon->rings[i]->npoints)
+			{
 				// keep (reduced) ring
 				polygon->rings[iw++] = polygon->rings[i];
 			}
-			else {
-				if (!i) {
+			else
+			{
+				if (!i)
+				{
 					// exterior ring too small, free and skip all rings
 					unsigned int k;
-					for (k=0; k<polygon->nrings; k++) {
+					for (k = 0; k < polygon->nrings; k++)
+					{
 						lwfree(polygon->rings[k]);
 					}
 					break;
 				}
-				else {
+				else
+				{
 					// free and remove current interior ring
 					lwfree(polygon->rings[i]);
 				}
@@ -180,31 +208,39 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 		polygon->nrings = iw;
 	}
 
-	if (geom->type == MULTIPOLYGONTYPE) {
+	if (geom->type == MULTIPOLYGONTYPE)
+	{
 
-		LWMPOLY* mpolygon = (LWMPOLY*)geom;
+		LWMPOLY *mpolygon = (LWMPOLY *)geom;
 		jw = 0;
-		for (j=0; j<mpolygon->ngeoms; j++) {
+		for (j = 0; j < mpolygon->ngeoms; j++)
+		{
 
-			LWPOLY* polygon = mpolygon->geoms[j];
+			LWPOLY *polygon = mpolygon->geoms[j];
 			iw = 0;
-			for (i=0; i<polygon->nrings; i++) {
+			for (i = 0; i < polygon->nrings; i++)
+			{
 				ptarray_remove_dim_helper(polygon->rings[i], mindx, mindy);
 
-				if (polygon->rings[i]->npoints) {
+				if (polygon->rings[i]->npoints)
+				{
 					// keep (reduced) ring
 					polygon->rings[iw++] = polygon->rings[i];
 				}
-				else {
-					if (!i) {
+				else
+				{
+					if (!i)
+					{
 						// exterior ring too small, free and skip all rings
 						unsigned int k;
-						for (k=0; k<polygon->nrings; k++) {
+						for (k = 0; k < polygon->nrings; k++)
+						{
 							lwfree(polygon->rings[k]);
 						}
 						break;
 					}
-					else {
+					else
+					{
 						// free and remove current interior ring
 						lwfree(polygon->rings[i]);
 					}
@@ -212,10 +248,12 @@ Datum ST_RemoveSmallParts(PG_FUNCTION_ARGS) {
 			}
 			polygon->nrings = iw;
 
-			if (iw) {
+			if (iw)
+			{
 				mpolygon->geoms[jw++] = polygon;
 			}
-			else {
+			else
+			{
 				// free and remove polygon from multipolygon
 				lwfree(polygon);
 			}

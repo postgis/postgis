@@ -77,7 +77,8 @@ test_geos_noop(void)
 	lwgeom_free(geom_out);
 }
 
-static void test_geos_linemerge(void)
+static void
+test_geos_linemerge(void)
 {
 	char *ewkt;
 	char *out_ewkt;
@@ -87,7 +88,7 @@ static void test_geos_linemerge(void)
 	ewkt = "MULTILINESTRING((0 0, 0 100),(0 -5, 0 0))";
 	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_linemerge(geom1);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *)geom2);
 	ASSERT_STRING_EQUAL(out_ewkt, "LINESTRING(0 -5,0 0,0 100)");
 	lwfree(out_ewkt);
 	lwgeom_free(geom1);
@@ -96,7 +97,7 @@ static void test_geos_linemerge(void)
 	ewkt = "MULTILINESTRING EMPTY";
 	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_linemerge(geom1);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *)geom2);
 	ASSERT_STRING_EQUAL(out_ewkt, "MULTILINESTRING EMPTY");
 	lwfree(out_ewkt);
 	lwgeom_free(geom1);
@@ -106,15 +107,15 @@ static void test_geos_linemerge(void)
 static void
 test_geos_offsetcurve(void)
 {
-	char* ewkt;
-	char* out_ewkt;
-	LWGEOM* geom1;
-	LWGEOM* geom2;
+	char *ewkt;
+	char *out_ewkt;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 
 	ewkt = "MULTILINESTRING((-10 0, -10 100), (0 -5, 0 0))";
 	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_offsetcurve(geom1, 2, 10, 1, 1);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *)geom2);
 	ASSERT_STRING_EQUAL(out_ewkt, "MULTILINESTRING((-12 0,-12 100),(-2 -5,-2 0))");
 	lwfree(out_ewkt);
 	lwgeom_free(geom1);
@@ -126,11 +127,14 @@ test_geos_offsetcurve_crash(void)
 {
 	// Test for Trac #4143. The specific output or lack of output is not important,
 	// we're just testing that we don't crash.
-	LWGEOM* in = lwgeom_from_wkt("LINESTRING(362194.505 5649993.044,362197.451 5649994.125,362194.624 5650001.876,362189.684 5650000.114,362192.542 5649992.324,362194.505 5649993.044)", LW_PARSER_CHECK_NONE);
-	LWGEOM* out = lwgeom_offsetcurve(in, -0.045, 8, 2, 5.0);
+	LWGEOM *in = lwgeom_from_wkt(
+	    "LINESTRING(362194.505 5649993.044,362197.451 5649994.125,362194.624 5650001.876,362189.684 5650000.114,362192.542 5649992.324,362194.505 5649993.044)",
+	    LW_PARSER_CHECK_NONE);
+	LWGEOM *out = lwgeom_offsetcurve(in, -0.045, 8, 2, 5.0);
 
 	lwgeom_free(in);
-	if (out) {
+	if (out)
+	{
 		lwgeom_free(out);
 	}
 }
@@ -138,17 +142,19 @@ test_geos_offsetcurve_crash(void)
 static void
 test_geos_makevalid(void)
 {
-	uint8_t* wkb;
-	char* out_ewkt;
-	LWGEOM* geom1;
-	LWGEOM* geom2;
-	LWGEOM* geom3;
+	uint8_t *wkb;
+	char *out_ewkt;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
+	LWGEOM *geom3;
 
-	wkb = (uint8_t*) "\001\003\000\000\000\001\000\000\000\011\000\000\000b\020X9 }\366@7\211A\340\235I\034A\316\326t18}\366@\306g\347\323\230I\034Ay\351&18}\366@\331\316\367\323\230I\034A\372~j\274\370}\366@\315\314\314LpI\034A\343\245\233\304R}\366@R\270\036\005?I\034A\315\314\314\314Z~\366@\343\245\233\304\007I\034A\004V\016-\242}\366@\252\361\322M\323H\034A\351&1\010\306{\366@H\341z\0247I\034Ab\020X9 }\366@7\211A\340\235I\034A";
+	wkb =
+	    (uint8_t
+		 *)"\001\003\000\000\000\001\000\000\000\011\000\000\000b\020X9 }\366@7\211A\340\235I\034A\316\326t18}\366@\306g\347\323\230I\034Ay\351&18}\366@\331\316\367\323\230I\034A\372~j\274\370}\366@\315\314\314LpI\034A\343\245\233\304R}\366@R\270\036\005?I\034A\315\314\314\314Z~\366@\343\245\233\304\007I\034A\004V\016-\242}\366@\252\361\322M\323H\034A\351&1\010\306{\366@H\341z\0247I\034Ab\020X9 }\366@7\211A\340\235I\034A";
 	geom1 = lwgeom_from_wkb(wkb, 157, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_make_valid(geom1);
-	geom3 = lwgeom_normalize(geom2); //so GEOS 3.9 and 3.10 agree
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
+	geom3 = lwgeom_normalize(geom2); // so GEOS 3.9 and 3.10 agree
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *)geom3);
 
 	ASSERT_STRING_EQUAL(
 	    out_ewkt,
@@ -159,8 +165,8 @@ test_geos_makevalid(void)
 	lwgeom_free(geom3);
 }
 
-
-static void test_geos_subdivide(void)
+static void
+test_geos_subdivide(void)
 {
 	char *ewkt = "LINESTRING(0 0, 10 10)";
 	char *out_ewkt;
@@ -169,14 +175,14 @@ static void test_geos_subdivide(void)
 	LWGEOM *geom2 = lwgeom_segmentize_sphere(geom1, 0.002);
 
 	LWCOLLECTION *geom3 = lwgeom_subdivide(geom2, 80);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *)geom3);
 	// printf("\n--------\n%s\n--------\n", out_ewkt);
 	CU_ASSERT_EQUAL(2, geom3->ngeoms);
 	lwfree(out_ewkt);
 	lwcollection_free(geom3);
 
 	geom3 = lwgeom_subdivide(geom2, 20);
-	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM *)geom3);
 	// printf("\n--------\n%s\n--------\n", out_ewkt);
 	CU_ASSERT_EQUAL(8, geom3->ngeoms);
 	lwfree(out_ewkt);
@@ -190,7 +196,8 @@ static void test_geos_subdivide(void)
 ** Used by test harness to register the tests in this file.
 */
 void geos_suite_setup(void);
-void geos_suite_setup(void)
+void
+geos_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("geos", NULL, NULL);
 	PG_ADD_TEST(suite, test_geos_noop);
