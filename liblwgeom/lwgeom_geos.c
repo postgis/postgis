@@ -1688,7 +1688,7 @@ lwgeom_offsetcurve(const LWGEOM* geom, double size, int quadsegs, int joinStyle,
 
 	if (lwgeom_dimension(geom) != 1)
 	{
-		lwerror("%s: input is not linear", __func__, lwtype_name(geom->type));
+		lwerror("%s: input is not linear (type %s)", __func__, lwtype_name(geom->type));
 		return NULL;
 	}
 
@@ -1782,8 +1782,9 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 		return NULL;
 	}
 
-	/* Gross up our test set a bit to increase odds of getting coverage in one pass */
-	sample_npoints = npoints * bbox_area / area;
+	/* Gross up our test set a bit (but not too much) to increase
+	 * odds of getting coverage in one pass */
+	sample_npoints = npoints * FP_MIN(bbox_area / area, 10000.0);
 
 	/* We're going to generate points using a sample grid as described
 	 * http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html to try and get a more uniform

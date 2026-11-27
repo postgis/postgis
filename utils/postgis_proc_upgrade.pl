@@ -197,7 +197,7 @@ while(<INPUT>)
         while(<INPUT>)
         {
             $def .= $_;
-            $endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /;
+            $endfunc = 1 if /^\s*(\$[^\$]*\$\s*)?LANGUAGE /;
             last if ( $endfunc && /\;/ );
         }
         foreach my $replaced (@replaced_array)
@@ -607,6 +607,8 @@ DO LANGUAGE 'plpgsql'
 DECLARE
     deprecated_functions regprocedure[];
     rec RECORD;
+    procdef RECORD;
+    wrapper_body TEXT;
     sql TEXT;
     detail TEXT;
     hint TEXT;
@@ -677,6 +679,33 @@ BEGIN
             hint = hint || ' and upgrade again';
             RAISE WARNING 'Deprecated function % left behind: %', rec.proc, SQLERRM
             USING DETAIL = detail, HINT = hint;
+
+            -- Avoid retaining a relocated C library solely for a view.
+            SELECT pg_catalog.pg_get_functiondef(p.oid) AS definition,
+                p.pronargs, n.nspname, p.proname
+            INTO procdef
+            FROM pg_catalog.pg_proc p
+            JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+            JOIN pg_catalog.pg_language l ON l.oid = p.prolang
+            WHERE p.oid = rec.proc AND l.lanname = 'c';
+            IF FOUND THEN
+                wrapper_body := pg_catalog.format(
+                    'SELECT %I.%I(%s)', procdef.nspname,
+                    pg_catalog.regexp_replace(procdef.proname, '_deprecated_by_postgis.*', ''),
+                    (SELECT pg_catalog.string_agg('\$' || arg, ',' ORDER BY arg)
+                     FROM pg_catalog.generate_series(1, procdef.pronargs) AS arg)
+                );
+                sql := pg_catalog.regexp_replace(procdef.definition,
+                    'LANGUAGE c', 'LANGUAGE sql');
+                sql := pg_catalog.split_part(sql, pg_catalog.chr(10) || 'AS ', 1)
+                    || pg_catalog.chr(10) || pg_catalog.format('AS %L', wrapper_body);
+                BEGIN
+                    EXECUTE sql;
+                EXCEPTION
+                WHEN OTHERS THEN
+                    RAISE WARNING 'Could not rewrite deprecated function %: %', rec.proc, SQLERRM;
+                END;
+            END IF;
         END;
     END LOOP; --}
 END

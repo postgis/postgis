@@ -479,7 +479,7 @@ MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
             <para>Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or (multi)polygon boundary was introduced.</para>
             <para>Enhanced: 2.5.0 support for splitting a polygon by a multiline was introduced.</para>
 
-            <note><para>To improve the robustness of ST_Split it may be convenient to <xref linkend="ST_Snap"/> the input to the blade in advance using a very low tolerance. Otherwise the internally used coordinate grid may cause tolerance problems, where coordinates of input and blade do not fall onto each other and the input is not being split correctly (see <ulink url="http://trac.osgeo.org/postgis/ticket/2192">#2192</ulink>).</para></note>
+            <note><para>If the input and blade do not intersect due to numerical precision issues, the input may not be split as expected. To avoid this situation, snap the input to the blade first using <xref linkend="ST_Snap"/> with a small tolerance.</para></note>
 
             <note><para>
 When a (Multi)Polygon is passed as as the blade, its linear components

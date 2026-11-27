@@ -9,10 +9,11 @@ steps:
       path: 
         include: ['doc/*', '.woodpecker/*.yaml']
     commands:
+      - apt-get install -y --no-install-recommends gettext
       - export PATH=/usr/lib/postgresql/12/bin:$PATH
       - ./autogen.sh
       - PGVER=12 ./configure
       - make docs
       - make -C doc check
-      - make docs-localized
-      - make -C doc/ check-localized
+      - make -C doc html-localized
+      - make -C doc check-localized

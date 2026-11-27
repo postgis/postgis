@@ -128,6 +128,12 @@ while( my $l = <DUMP> ) {
   next if $l =~ /^\;/;
   my $sigHR = linesignature($l);
   my $sig = $sigHR; $sig =~ s/\s//g;
+  my $normalized = $sigHR;
+  if ( $normalized =~ /^(?:COMMENT )?FUNCTION / ) {
+    # pg_restore may qualify geometry arguments in the archive TOC.
+    $normalized =~ s/\b\w+\.geometry\b/geometry/g;
+  }
+  $normalized =~ s/\s//g;
   $hasTopology = 1 if $sig eq 'SCHEMAtopology';
 
 	if ( not defined ($POSTGIS_SCHEMA) )
@@ -139,7 +145,7 @@ while( my $l = <DUMP> ) {
 		}
 	}
 
-  if ( $skip{$sig} ) {
+  if ( $skip{$sig} || $skip{$normalized} ) {
     print STDERR "SKIP: $sigHR\n" if $DEBUG;
     next
   }
@@ -482,6 +488,16 @@ clamp_srid
 # Here are all the signatures we want to skip.
 #
 __END__
+COMMENT FUNCTION st_clusterkmeans(geom geometry, k integer)
+COMMENT FUNCTION st_subdivide(geom geometry, maxvertices integer)
+FUNCTION pgis_geometry_union_finalfn(internal)
+FUNCTION st_clusterkmeans(geometry, integer)
+FUNCTION st_force3d(geometry)
+FUNCTION st_force3dm(geometry)
+FUNCTION st_force3dz(geometry)
+FUNCTION st_force4d(geometry)
+FUNCTION st_subdivide(geometry, integer)
+FUNCTION st_tileenvelope(integer, integer, integer, geometry)
 AGGREGATE accum(geometry)
 AGGREGATE accum_old(geometry)
 AGGREGATE collect(geometry)

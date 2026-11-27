@@ -4,6 +4,10 @@ SELECT '#2981' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules
 SELECT '#2978a' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10-20 DORRANCE ST PROVIDENCE RI' );
 SELECT '#2978b' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10 20 DORRANCE ST PROVIDENCE RI' );
 SELECT '#2978c' As ticket, * FROM standardize_address('us_lex','us_gaz','us_rules', '10-20 DORRANCE ST, PROVIDENCE, RI');
+\pset format unaligned
+SELECT '#5299a|' || name || '|' || suftype AS result FROM standardize_address('us_lex','us_gaz','us_rules','1 Timepiece Point','Boston, MA, 02220');
+SELECT '#5299b|' || name || '|' || suftype AS result FROM standardize_address('us_lex','us_gaz','us_rules','50 Gold Piece Drive','Boston, MA, 02020');
+\pset format aligned
 -- CVE: rule with >128 terms must be rejected gracefully, not crash (stack OOB write)
 CREATE TEMP TABLE t_overlong_rule(id serial, rule text);
 INSERT INTO t_overlong_rule(rule) SELECT string_agg('1', ' ') FROM generate_series(1, 130);

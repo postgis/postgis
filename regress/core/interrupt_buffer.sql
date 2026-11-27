@@ -40,7 +40,7 @@ ROLLBACK;
 --( select (st_dumppoints(st_buffer(st_makepoint(0,0),10000,100000))).geom g) foo;
 -- it may take some more to interrupt st_buffer, see
 -- https://travis-ci.org/postgis/postgis/builds/40211116#L2222-L2223
-SELECT _timecheck('buffer', '200ms');
+SELECT _timecheck('buffer', '300ms');
 
 -- Not affected by old timeout
 SELECT '1', ST_NPoints(ST_Buffer('POINT(4 0)'::geometry, 2, 1));

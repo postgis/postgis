@@ -200,7 +200,7 @@ static Data__Geometry *encode_point(struct geobuf_agg_context *ctx,
 	if (npoints == 0)
 		return geometry;
 
-	geometry->n_coords = npoints * ctx->dimensions;
+	geometry->n_coords = (size_t)npoints * ctx->dimensions;
 	geometry->coords = encode_coords(ctx, pa, NULL, 1, 0);
 
 	return geometry;
@@ -228,7 +228,7 @@ static Data__Geometry *encode_mpoint(struct geobuf_agg_context *ctx,
 		ptarray_append_point(pa, &pt, 0);
 	}
 
-	geometry->n_coords = ngeoms * ctx->dimensions;
+	geometry->n_coords = (size_t)ngeoms * ctx->dimensions;
 	geometry->coords = encode_coords(ctx, pa, NULL, ngeoms, 0);
 
 	return geometry;
@@ -247,7 +247,7 @@ static Data__Geometry *encode_line(struct geobuf_agg_context *ctx,
 	if (pa->npoints == 0)
 		return geometry;
 
-	geometry->n_coords = pa->npoints * ctx->dimensions;
+	geometry->n_coords = (size_t)pa->npoints * ctx->dimensions;
 	geometry->coords = encode_coords(ctx, pa, NULL, pa->npoints, 0);
 
 	return geometry;
@@ -264,7 +264,7 @@ encode_triangle(struct geobuf_agg_context *ctx, LWTRIANGLE *lwtri)
 		return geometry;
 
 	len = pa->npoints - 1;
-	geometry->n_coords = len * ctx->dimensions;
+	geometry->n_coords = (size_t)len * ctx->dimensions;
 	geometry->coords = encode_coords(ctx, pa, NULL, len, 0);
 
 	return geometry;

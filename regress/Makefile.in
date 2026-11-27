@@ -1,3 +1,5 @@
+POSTGIS_PGSQL_VERSION = @POSTGIS_PGSQL_VERSION@
+
 # **********************************************************************
 # *
 # * PostGIS - Spatial Types for PostgreSQL

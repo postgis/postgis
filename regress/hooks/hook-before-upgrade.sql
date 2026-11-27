@@ -98,3 +98,6 @@ FROM upgrade_test;
 -- the upgrade procedure to replace them all
 UPDATE pg_proc SET probin = probin || '-uninstalled'
 WHERE probin like '%postgis%';
+
+-- Ensure upgrades restore ST_EstimatedExtent to SECURITY INVOKER.
+ALTER FUNCTION ST_EstimatedExtent(text, text) SECURITY DEFINER;

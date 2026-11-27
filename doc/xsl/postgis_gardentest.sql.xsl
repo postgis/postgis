@@ -246,6 +246,10 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		(SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom)
 		</pgis:gset>
 
+		<pgis:gset ID='MULTIPOLYGON with Empty' GeometryType='MULTIPOLYGON'>
+		(SELECT ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326) As the_geom )
+		</pgis:gset>
+
 		<pgis:gset ID="Empty Polygon" GeometryType="POLYGON" createtable="false">
 		(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom)
 		</pgis:gset>

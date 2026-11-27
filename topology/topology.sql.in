@@ -743,23 +743,22 @@ BEGIN
       schema,tbl,col;
   END IF;
 
-  -- Clean up the topology schema
+  -- Clean up the relation table if it exists
   BEGIN
-    -- Cleanup the relation table
     EXECUTE 'DELETE FROM ' || quote_ident(lyrinfo.toponame)
       || '.relation '
          ' WHERE '
          'layer_id = ' || lyrinfo.layer_id;
 
-    -- Drop the sequence for topogeoms in this layer
-    EXECUTE 'DROP SEQUENCE ' || quote_ident(lyrinfo.toponame)
-      || '.topogeo_s_' || lyrinfo.layer_id;
   EXCEPTION
     WHEN UNDEFINED_TABLE THEN
       RAISE NOTICE '%', SQLERRM;
     WHEN OTHERS THEN
       RAISE EXCEPTION 'Got % (%)', SQLERRM, SQLSTATE;
   END;
+
+  EXECUTE 'DROP SEQUENCE IF EXISTS ' || quote_ident(lyrinfo.toponame)
+    || '.topogeo_s_' || lyrinfo.layer_id;
 
   ok = false;
   FOR rec IN SELECT * FROM pg_namespace n, pg_class c, pg_attribute a
@@ -809,7 +808,6 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- hierarchical or primitive, but always assumes primitive.
 --
 -- }{
-DROP FUNCTION IF EXISTS topology.populate_topology_layer();
 CREATE OR REPLACE FUNCTION topology.populate_topology_layer()
 	RETURNS TABLE(schema_name text, table_name text, feature_column text)
 AS
@@ -821,7 +819,7 @@ $$
     replace(c.conname, 'check_topogeom_', '') col,
     --c.consrc src,
     regexp_matches(c.consrc,
-      '\.topology_id = (\d+).*\.layer_id = (\d+).*\.type = (\d+)') inf
+      E'\\.topology_id = (\\d+).*\\.layer_id = (\\d+).*\\.type = (\\d+)') inf
   FROM (SELECT conname, connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 		    FROM pg_constraint) AS c, pg_class r, pg_namespace n
   WHERE c.conname LIKE 'check_topogeom_%'

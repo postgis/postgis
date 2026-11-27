@@ -1,4 +1,3 @@
-
 #!/bin/sh
 
 usage() {
@@ -31,6 +30,7 @@ check_enabled() {
       sed 's|\.sql\>||' > ${TMPDIR}/enabled_tests
 
   find ${bd} -name '*_expected' |
+    sed 's|//|/|g' |
     sed 's|_expected$||' > ${TMPDIR}/available_tests
 
   MISSING=`grep -vwf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`

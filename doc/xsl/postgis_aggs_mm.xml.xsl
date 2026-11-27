@@ -81,7 +81,7 @@
 			<para>The functions given below are PostGIS functions that conform to the SQL/MM 3 standard</para>
 			<note>
 			  <para>SQL-MM defines the default SRID of all geometry constructors as 0.
-			  PostGIS uses a default SRID of -1.</para>
+			  PostGIS uses 0 for an unspecified SRID.</para>
 			</note>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
@@ -312,11 +312,46 @@
 		</sect1>
 
 		<sect1 id="PostGIS_TypeFunctionMatrix">
-			<xsl:variable name='matrix_checkmark'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_checkmark.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
-			<xsl:variable name='matrix_transform'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_transform.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
-			<xsl:variable name='matrix_autocast'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_autocast.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
-			<xsl:variable name='matrix_sfcgal_required'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_sfcgal_required.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
-			<xsl:variable name='matrix_sfcgal_enhanced'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_sfcgal_enhanced.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
+			<xsl:variable name='matrix_checkmark'><![CDATA[
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref='images/matrix_checkmark.png' />
+					</imageobject>
+					<textobject><phrase>[N]</phrase></textobject>
+				</inlinemediaobject>
+			]]></xsl:variable>
+			<xsl:variable name='matrix_transform'><![CDATA[
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref='images/matrix_transform.png' />
+					</imageobject>
+					<textobject><phrase>[T]</phrase></textobject>
+				</inlinemediaobject>
+			]]></xsl:variable>
+			<xsl:variable name='matrix_autocast'><![CDATA[
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref='images/matrix_autocast.png' />
+					</imageobject>
+					<textobject><phrase>[C]</phrase></textobject>
+				</inlinemediaobject>
+			]]></xsl:variable>
+			<xsl:variable name='matrix_sfcgal_required'><![CDATA[
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref='images/matrix_sfcgal_required.png' />
+					</imageobject>
+					<textobject><phrase>[S]</phrase></textobject>
+				</inlinemediaobject>
+			]]></xsl:variable>
+			<xsl:variable name='matrix_sfcgal_enhanced'><![CDATA[
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref='images/matrix_sfcgal_enhanced.png' />
+					</imageobject>
+					<textobject><phrase>[s]</phrase></textobject>
+				</inlinemediaobject>
+			]]></xsl:variable>
 
 			<title>PostGIS Function Support Matrix</title>
 

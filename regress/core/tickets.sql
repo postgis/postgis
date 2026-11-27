@@ -1066,7 +1066,8 @@ FROM (VALUES
 ('MULTILINESTRING((0 0, 1 1), EMPTY)'),
 ('MULTILINESTRING(EMPTY, EMPTY)'),
 (NULL),
-('POLYGON((0 0, 1 0, 1 1, 0 0))'),
+-- GEOS versions disagree on LineMerge for this polygon.
+-- ('POLYGON((0 0, 1 0, 1 1, 0 0))'),
 ('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1))'),
 ('MULTILINESTRING EMPTY'),
 ('MULTILINESTRING((0 0, 0 0))')
@@ -1511,3 +1512,12 @@ RESET client_min_messages;
 
 -- #5357
 SELECT '#5357', ST_AsText(ST_LineFromEncodedPolyline('__nphBgcoeiA?@', 6), 6);
+
+-- #5571: limit sampling-grid allocation for a narrow polygon
+SELECT '#5571', ST_GeneratePoints(
+	'POLYGON((0 0, 1 1, 1 1.000000002, 0 0.000000002, 0 0))', 1, 12345
+) IS NOT NULL;
+
+SELECT '#5597', ST_AsGeoJSON(r.*) from (values (null::geometry)) as r(geom);
+
+SELECT '#5350',  ST_AsSVG(ST_GeomFromText('GEOMETRYCOLLECTION (POINT EMPTY, LINESTRING (0 0, 1 1))',4326), 3, 5 );

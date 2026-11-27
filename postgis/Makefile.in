@@ -216,33 +216,33 @@ $(FLATGEOBUF_LIBPATH):
 PROTOCC=@PROTOCC@
 
 # Generate Mapbox Vector Tile encoder/decoder using protobuf-c compiler
-vector_tile.pb-c.c vector_tile.pb-c.h: vector_tile.proto
+vector_tile.pb-c.c: vector_tile.proto
 	$(PROTOCC) --c_out=. $<
 
 # Generate Geobuf encoder/decoder using protobuf-c compiler
-geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
+geobuf.pb-c.c: geobuf.proto
 	$(PROTOCC) --c_out=. $<
 
 ifeq (@HAVE_PROTOBUF@,yes)
-lwgeom_out_mvt.o: vector_tile.pb-c.h
-mvt.o: vector_tile.pb-c.h
-lwgeom_out_geobuf.o: geobuf.pb-c.h
-geobuf.o: geobuf.pb-c.h
+lwgeom_out_mvt.o mvt.o vector_tile.pb-c.o: vector_tile.pb-c.c
+lwgeom_out_geobuf.o geobuf.o geobuf.pb-c.o: geobuf.pb-c.c
 endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
+	$(SQLPP) -I../libpgcommon $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
+	rm -f $@.tmp
 
 #this is redundant but trying to fold in with extension just hangs
 postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 
-postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql
+postgis_upgrade.sql: retire_before_upgrade.sql postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql retire_after_upgrade.sql
 	echo "BEGIN;" > $@
 	cat $^ >> $@
 	echo "COMMIT;" >> $@

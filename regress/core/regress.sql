@@ -343,3 +343,10 @@ ORDER BY 2;
 SELECT 'UNEXPECTED', postgis_full_version()
 	WHERE postgis_full_version() LIKE '%UNPACKAGED%'
 	   OR postgis_full_version() LIKE '%need upgrade%';
+
+-- Extension entry points for estimated extents run as the caller.
+SELECT 'unexpected estimated extent security', oid::regprocedure
+FROM pg_catalog.pg_proc
+WHERE probin LIKE '%postgis%'
+  AND prosrc = 'gserialized_estimated_extent'
+  AND prosecdef;

@@ -18,7 +18,7 @@
 CREATE OR REPLACE FUNCTION topology.TopologySummary(atopology varchar)
 RETURNS text
 AS
-$$
+$BODY$
 DECLARE
   rec RECORD;
   rec2 RECORD;
@@ -142,14 +142,28 @@ BEGIN
                   || quote_ident(rec.feature_column);
 
         IF n > 0 THEN
-          sql := 'SELECT count(*) FROM ( SELECT topogeo_id FROM '
-            || quote_ident(atopology)
-            || '.relation r WHERE r.layer_id = ' || rec.layer_id
-            || ' EXCEPT SELECT DISTINCT id('
-            || quote_ident(rec.feature_column) || ') FROM '
-            || quote_ident(rec.schema_name) || '.'
-            || quote_ident(rec.table_name) || ') as foo';
+          sql := format(
+            $$
+SELECT count(*) FROM (
+  SELECT topogeo_id
+  FROM %1$I.relation r
+  WHERE r.layer_id = %2$L
+    EXCEPT
+  SELECT DISTINCT id(%3$I)
+  FROM %4$I.%5$I
+  WHERE layer_id(%3$I) = %2$L
+    AND topology_id(%3$I) = %6$L
+) as foo
+            $$,
+            atopology,
+            rec.layer_id,
+            rec.feature_column,
+            rec.schema_name,
+            rec.table_name,
+            var_topology_id
+          );
           BEGIN
+            RAISE DEBUG 'Executing %', sql;
             EXECUTE sql INTO STRICT missing;
             IF missing > 0 THEN
               ret = ret || ' (' || missing || ' missing topogeoms)';
@@ -193,7 +207,7 @@ BEGIN
 
   RETURN ret;
 END
-$$
+$BODY$
 LANGUAGE 'plpgsql' STABLE STRICT;
 
 --} TopologySummary

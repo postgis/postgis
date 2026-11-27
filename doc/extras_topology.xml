@@ -1638,9 +1638,7 @@ Changes the shape of an edge without affecting the topology structure.
                 <para>
 If any arguments are null, the given edge does not exist in
 the <varname>edge</varname> table of the topology schema, the
-<varname>acurve</varname> is not a <varname>LINESTRING</varname>, the
-<varname>anode</varname> and <varname>anothernode</varname> are not the
-start and endpoints of <varname>acurve</varname> or the modification would
+<varname>acurve</varname> is not a <varname>LINESTRING</varname>, or the modification would
 change the underlying topology then an error is thrown.
 		</para>
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
@@ -3209,7 +3207,7 @@ Layer 1, type Polygonal (3), 15 topogeoms
 
         <programlisting>
 -- Shrink all TopoGeometry polygons by 10 meters
-UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
+UPDATE nei_topo SET topo = toTopoGeom(ST_Buffer(topo, -10), clearTopoGeom(topo), 0);
 
 -- Get the no-one-lands left by the above operation
 -- I think GRASS calls this "polygon0 layer"
@@ -3317,7 +3315,7 @@ objects and any dependent object in higher hierarchical levels.
 				<title>Examples</title>
         <programlisting>
 -- Shrink all TopoGeometry polygons by 10 meters
-UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
+UPDATE nei_topo SET topo = toTopoGeom(ST_Buffer(topo, -10), clearTopoGeom(topo), 0);
 				</programlisting>
 			</refsection>
 
@@ -3517,7 +3515,7 @@ Refer to <xref linkend="toTopoGeom" />.
 				</funcsynopsis>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</function></funcdef>
+					<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></funcdef>
 					<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -4014,7 +4012,7 @@ two topogeometries intersect.
           <!-- optionally mention that this function uses indexes if appropriate -->
           <note>
             <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.
-            Also not currently supported for hierarchichal topogeometries (topogeometries composed of other topogeometries).</para>
+            Also not currently supported for hierarchical topogeometries (topogeometries composed of other topogeometries).</para>
           </note>
           <!-- use this format if new function -->
         <para>Availability: 1.1.0 </para>

@@ -12,6 +12,10 @@ local-pdf: symlinks
 local-check: symlinks
 	$(MAKE) check
 
+local-clean:
+	rm -f $(XML_INPUTS)
+	rm -f html xsl
+
 symlinks:
 	rm -f html; ln -s ../../html html
 	rm -f xsl; ln -s ../../xsl xsl
@@ -20,8 +24,12 @@ symlinks:
 include ../../Makefile
 
 # XML gettext tools
+MSGATTRIB=msgattrib
 PO2XML=po2xml
 
-$(XML_SOURCES): %.xml: %.xml.po
-	$(PO2XML) ../../$@ $< > $@
+$(XML_SOURCES): %.xml: %.xml.po ../../%.xml
+	$(MSGATTRIB) --no-fuzzy -o $@.po.tmp $<
+	$(PO2XML) ../../$@ $@.po.tmp > $@.tmp
+	mv $@.tmp $@
+	rm -f $@.po.tmp
 

@@ -2232,7 +2232,10 @@ int
 lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *dl)
 {
 	POINT2D c;
-	double r;
+	double dx = B->x - A->x;
+	double dy = B->y - A->y;
+	double length_squared = dx * dx + dy * dy;
+	double cross, distance, r;
 	/*if start==end, then use pt distance */
 	if ((A->x == B->x) && (A->y == B->y))
 		return lw_dist2d_pt_pt(p, A, dl);
@@ -2252,8 +2255,7 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 	 *	0<r<1 P is interior to AB
 	 */
 
-	r = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y)) /
-	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	r = ((p->x - A->x) * dx + (p->y - A->y) * dy) / length_squared;
 
 	/*This is for finding the maxdistance.
 	the maxdistance have to be between two vertexes, compared to mindistance which can be between two vertexes.*/
@@ -2270,18 +2272,21 @@ lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *
 	if (r >= 1) /*If p projected on the line is outside point B or on point B*/
 		return lw_dist2d_pt_pt(p, B, dl);
 
-	/*If the point p is on the segment this is a more robust way to find out that*/
-	if ((((A->y - p->y) * (B->x - A->x) == (A->x - p->x) * (B->y - A->y))) && (dl->mode == DIST_MIN))
-	{
+	/* Measure the interior distance before rounding the projected coordinates. */
+	cross = (A->y - p->y) * dx - (A->x - p->x) * dy;
+	distance = fabs(cross / length_squared) * sqrt(length_squared);
+	if (cross == 0)
 		lw_dist2d_distpts_set(dl, 0, p, p);
+	else if (distance < dl->distance)
+	{
+		c.x = A->x + r * dx;
+		c.y = A->y + r * dy;
+		if (dl->twisted > 0)
+			lw_dist2d_distpts_set(dl, distance, p, &c);
+		else
+			lw_dist2d_distpts_set(dl, distance, &c, p);
 	}
-
-	/*If the projection of point p on the segment is between A and B
-	then we find that "point on segment" and send it to lw_dist2d_pt_pt*/
-	c.x = A->x + r * (B->x - A->x);
-	c.y = A->y + r * (B->y - A->y);
-
-	return lw_dist2d_pt_pt(p, &c, dl);
+	return LW_TRUE;
 }
 
 /** Compares incoming points and stores the points closest to each other or most far away from each other depending on
@@ -2385,8 +2390,18 @@ distance2d_sqr_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B)
 int
 azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 {
-	if (A->x == B->x && A->y == B->y)
-		return LW_FALSE;
+	if (A->x == B->x)
+	{
+		if (A->y == B->y)
+		{
+			return LW_FALSE;
+		}
+		*d = A->y < B->y ? 0.0 : M_PI;
+		return LW_TRUE;
+	}
+	/* TODO: use M_PI_2 instead of M_PI/2 ? */
 	*d = fmod(2 * M_PI + M_PI / 2 - atan2(B->y - A->y, B->x - A->x), 2 * M_PI);
+
+	/* TODO: convert 2*M_PI to 0 ? */
 	return LW_TRUE;
 }

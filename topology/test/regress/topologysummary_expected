@@ -42,6 +42,16 @@ Topology test (id 1, SRID 10, precision 20)
 0 nodes, 0 edges, 0 faces, 1 topogeoms in 1 layers
 Layer 1, type Puntal (1), 1 topogeoms
  Deploy: test.t.c (1 missing topogeoms)
+--registered_layer_missing_topogeom_in_proper_layer--
+Topology test (id 1, SRID 10, precision 20)
+0 nodes, 0 edges, 0 faces, 1 topogeoms in 1 layers
+Layer 1, type Puntal (1), 1 topogeoms
+ Deploy: test.t.c (1 missing topogeoms)
+--registered_layer_missing_topogeom_in_proper_topo--
+Topology test (id 1, SRID 10, precision 20)
+0 nodes, 0 edges, 0 faces, 1 topogeoms in 1 layers
+Layer 1, type Puntal (1), 1 topogeoms
+ Deploy: test.t.c (1 missing topogeoms)
 --registered_layer--
 Topology test (id 1, SRID 10, precision 20)
 0 nodes, 0 edges, 0 faces, 1 topogeoms in 1 layers

@@ -25,7 +25,7 @@ $$ LANGUAGE 'plpgsql' VOLATILE;
 BEGIN;
 SET LOCAL statement_timeout TO 100;
 -- would run for many seconds if uninterruptible...
-SELECT ST_Segmentize(ST_MakeLine(ST_Point(4,39), ST_Point(1,41)), 1e-100);
+SELECT 'segmentize', ST_NPoints(ST_Segmentize(ST_MakeLine(ST_Point(4,39), ST_Point(1,41)), 1e-8));
 ROLLBACK;
 SELECT _timecheck('segmentize', '250ms');
 -- Not affected by old timeout

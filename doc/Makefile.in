@@ -223,7 +223,8 @@ ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl Makefile postgis-out.xml $(XML_SOURCES)
-	$(XSLTPROC) --novalid ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
+	grep -v '&postgis_aggs_mm;' postgis-out.xml | $(XSLTPROC) --novalid --path $(srcdir) $< - > $@.tmp
+	mv $@.tmp $@
 endif
 
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl $(XML_INPUTS)
@@ -288,7 +289,7 @@ html: html/postgis$(DOCSUFFIX).html
 html-localized:
 	@for lang in $(translations); do \
     echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-html; \
+    $(MAKE) -C po/$$lang local-html || exit 1; \
   done
 
 html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile images $(XML_INPUTS)
@@ -304,16 +305,17 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   echo "       try installing dblatex and then re-run configure"; \
 	   false; \
 	else \
-		$(DBLATEX) -T native -t pdf \
-		   -I "${PWD}/html" \
+		$(DBLATEX) -b xetex -T native -t pdf \
+		   -I "$(CURDIR)/html" \
+		   -I "$(abspath $(srcdir))/html" \
 		   -P doc.collab.show=0 \
-		   -P figure.note="${PWD}/html/images/note" \
-		   -P figure.tip="${PWD}/html/images/tip" \
-		   -P figure.important="${PWD}/html/images/important" \
-		   -P figure.warning="${PWD}/html/images/warning" \
-		   -P figure.caution="${PWD}/html/images/caution" \
+		   -P figure.note="images/note" \
+		   -P figure.tip="images/tip" \
+		   -P figure.important="images/important" \
+		   -P figure.warning="images/warning" \
+		   -P figure.caution="images/caution" \
 		   -P latex.output.revhistory=0 \
-		   -s "${PWD}/texstyle.sty" \
+		   -s "$(abspath $(srcdir))/texstyle.sty" \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
 	fi
 
@@ -323,7 +325,8 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   echo "       try installing dbtoepub"; \
 	   false; \
 	else \
-		$(DBTOEPUB) -c "${PWD}/html/style.css" \
+		(test -d images || ln -s html/images images) && \
+		$(DBTOEPUB) -c "$(CURDIR)/html/style.css" \
 		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub \
 		  $<; \
 	fi
@@ -351,9 +354,13 @@ images-clean:
 	$(MAKE) -C html/image_src images-clean
 
 clean:
+	@for lang in $(translations); do \
+		$(MAKE) -C po/$$lang local-clean || exit 1; \
+	done
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	rm -f *.epub
+	@test ! -L images || rm -f images
 	$(MAKE) -C html/image_src clean
 	rm -f $(XML_GENERATED_SOURCES)
 	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
@@ -420,9 +427,9 @@ uninstall: comments-uninstall
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
 else
-garden:	xsl/postgis_gardentest.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/postgis_gardentest.sql.xsl postgis-out.xml
-	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/raster_gardentest.sql.xsl postgis-out.xml
+garden: $(srcdir)/xsl/postgis_gardentest.sql.xsl $(srcdir)/xsl/raster_gardentest.sql.xsl postgis-out.xml
+	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql --path $(srcdir) $(srcdir)/xsl/postgis_gardentest.sql.xsl postgis-out.xml
+	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql --path $(srcdir) $(srcdir)/xsl/raster_gardentest.sql.xsl postgis-out.xml
 endif
 
 
@@ -455,7 +462,7 @@ check-unit: $(CHECK_UNIT_TARGET)
 check-localized:
 	@for lang in $(translations); do \
     echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-check; \
+    $(MAKE) -C po/$$lang local-check || exit 1; \
   done
 
 requirements_not_met_xsltproc:
@@ -467,16 +474,18 @@ requirements_not_met_xsltproc:
 	@echo
 	@echo "  http://postgis.net/documentation"
 	@echo
+	@false
 
 requirements_not_met_xmllint:
 	@echo
 	@echo "configure was unable to find 'xmllint' which is required"
-	@echo "to test the documentation."
+	@echo "to build the documentation."
 	@echo "Install xmllint and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
 	@echo "  http://postgis.net/documentation"
 	@echo
+	@false
 
 requirements_not_met_xslbase:
 	@echo

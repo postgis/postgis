@@ -564,12 +564,12 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     geometries must not equal either of the source geometries. Otherwise, it
     returns <varname>false</varname>.</para>
 
-    <para>In mathematical terms, this is expressed as:</para>
+    <para>In mathematical terms, this is:</para>
 
     <informalfigure>
     <mediaobject>
       <imageobject>
-      <imagedata fileref="images/st_crosses-math.gif" />
+      <imagedata fileref="images/st_crosses-math.png" />
       </imageobject>
     </mediaobject>
     </informalfigure>
@@ -1596,17 +1596,17 @@ SELECT pat.name AS relationship, pat.val AS pattern,
     <title>Description</title>
 
     <para>Returns <varname>TRUE</varname> if A and B intersect,
-        but their interiors do not intersect.  Equivalently, A and B have at least one point in common,
-        and the common points lie in the intersection of their boundaries.
+    but their interiors do not intersect.  Equivalently, A and B have at least one point in common,
+    and the common points lie in at least one boundary.
     For Point/Point inputs the relationship is always <varname>FALSE</varname>,
-        since points do not have a boundary.</para>
+    since points do not have a boundary.</para>
 
-    <para>In mathematical terms, this relationship is expressed as:</para>
+    <para>In mathematical terms, this relationship is:</para>
 
     <informalfigure>
       <mediaobject>
       <imageobject>
-        <imagedata fileref="images/st_touches-math.gif" />
+        <imagedata fileref="images/st_touches-math.png" />
       </imageobject>
       </mediaobject>
     </informalfigure>
@@ -1642,7 +1642,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
     <refsection>
     <title>Examples</title>
 
-    <para>The <function>ST_Touches</function> predicate returns <varname>TRUE</varname> in all the following illustrations.</para>
+    <para>The <function>ST_Touches</function> predicate returns <varname>TRUE</varname> in the following examples.</para>
     <informaltable>
       <tgroup cols="3">
       <tbody>
@@ -2091,7 +2091,7 @@ ST_DWithin(
 
     <para>&sfs_compliant;</para>
     <para>Availability: 1.5.0 support for geography was introduced</para>
-    <para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+    <para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="https://web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</ulink> for details.</para>
     <para>Enhanced: 2.1.0 support for curved geometries was introduced.</para>
 
         <para>Prior to 1.3, <xref linkend="ST_Expand"/> was commonly used in conjunction with &amp;&amp; and ST_Distance to

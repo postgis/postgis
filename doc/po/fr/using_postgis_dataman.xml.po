@@ -386,7 +386,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:190
+#: using_postgis_dataman.xml:190 using_postgis_dataman.xml:553
 #, no-c-format
 msgid "TRIANGLE ((0 0, 0 9, 9 0, 0 0))"
 msgstr "TRIANGLE ((0 0, 0 9, 9 0, 0 0))"
@@ -1084,12 +1084,6 @@ msgid ""
 "1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 "
 "1, 1 1 1, 0 1 1, 0 0 1)) )"
 msgstr "POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )"
-
-#. Tag: para
-#: using_postgis_dataman.xml:553
-#, no-c-format
-msgid "TRIANGLE ((0 0, 0 9, 9 0, 0 0))"
-msgstr "TRIANGLE ((0 0, 0 9, 9 0, 0 0))"
 
 #. Tag: para
 #: using_postgis_dataman.xml:557

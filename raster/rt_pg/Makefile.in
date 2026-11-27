@@ -113,8 +113,10 @@ endif
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(SQLPP) -I../../postgis/ -I../../ $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
+	rm -f $@.tmp
 
 ../../liblwgeom/.libs/liblwgeom.a:
 	$(MAKE) -C ../../liblwgeom
@@ -137,7 +139,7 @@ $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_revision.h
 rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
 	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
-rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql
+rtpostgis_upgrade.sql: ../../postgis/retire_before_upgrade.sql rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql ../../postgis/retire_after_upgrade.sql
 	echo 'BEGIN;' > $@
 	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
 	echo 'COMMIT;' >> $@

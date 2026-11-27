@@ -169,5 +169,7 @@ check-regress:
 
 maintainer-clean: distclean
 
-check:
+check: check-regress
+
+check-regress:
 	$(MAKE) -C regress check

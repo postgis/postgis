@@ -119,7 +119,7 @@ fi
 
 # Test all available upgrades
 # TODO: protect via some variable ?
-if [ "$PG_VER" < "14"]; then
+if [ "$PG_VER" -lt 14 ]; then
   utils/check_all_upgrades.sh \
           `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
   if [ "$?" != "0" ]; then
