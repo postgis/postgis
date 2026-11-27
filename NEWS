@@ -6,8 +6,7 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
- - #1291, Add ST_MakeCurveLine and ST_MakeCompoundCurve constructors
-          for curve geometries (Darafei Praliaskouski)
+ - #1291, ST_MakeCurveLine and ST_MakeCompoundCurve (Darafei Praliaskouski)
 
 * Enhancements *
 

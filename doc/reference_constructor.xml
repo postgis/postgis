@@ -485,7 +485,7 @@ GROUP BY gps.track_id;</programlisting>
 
             <para>&Z_support;</para>
             <para>&M_support;</para>
-            <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+            <para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
         </refsection>
 
         <refsection>
@@ -539,7 +539,7 @@ SELECT ST_AsText( ST_MakeCurveLine(ARRAY[
 
             <para>&Z_support;</para>
             <para>&M_support;</para>
-            <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+            <para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
         </refsection>
 
         <refsection>
