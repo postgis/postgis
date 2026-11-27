@@ -3606,6 +3606,7 @@ CREATE OR REPLACE FUNCTION st_slope(
 -- ST_EdgeDetect
 -----------------------------------------------------------------------
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION _st_edgedetect4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
@@ -3672,7 +3673,7 @@ CREATE OR REPLACE FUNCTION _st_edgedetect4ma(value double precision[][][], pos i
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_edgedetect(
 	rast raster,
 	nband integer,
@@ -3728,7 +3729,7 @@ CREATE OR REPLACE FUNCTION st_edgedetect(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_edgedetect(
 	rast raster,
 	nband integer DEFAULT 1,
