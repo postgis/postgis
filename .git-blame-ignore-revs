@@ -1,0 +1,330 @@
+# Commits that only change layout (whitespace, indentation, line endings,
+# clang-format/astyle runs). git blame skips them when configured with:
+#
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# This file is kept identical on master and every stable branch, so it lists
+# the formatting commits of all of them.
+
+# 2002-12-05 Paul Ramsey: Formatting change.
+bf1895790be15b4a231d39cdb7f5ae5fec37c382
+# 2004-09-13 Sandro Santilli: indentation fix
+0faa8f459107ed66deee56896dbc68e9531f32f9
+# 2004-09-22 Sandro Santilli: indentation fixes
+03dc6cbb48ef65111b0d64205cace1d18a7f10cd
+# 2008-09-18 Kevin Neufeld: commit to test autobuild process and svn hooks - removed extra tabs from preformatted text
+052355d36780c439f7692a5cb39309b374124f1a
+# 2008-09-18 Kevin Neufeld: commit to test autobuild process and svn hooks - removed extra tabs from preformatted text
+579825e1e55ecb7820c3d5a45055769d51842f83
+# 2008-10-02 Paul Ramsey: Flip format to 'astyle --style=ansi --indent=tab=8' to make upcoming changes more consiste
+4ff12f50e5deb33305f55833d0002003bf55473c
+# 2008-11-10 Paul Ramsey: astyle --style=ansi --indent=tab=8
+01e4a171fe6f62a6247e084d850c114200a39b1c
+# 2008-11-21 Regina Obe: Fix indentation of examples
+5688bc98c136559e9736fc4a2eb5db46a1fe94fc
+# 2009-02-03 Paul Ramsey: astyle this file
+ac805bda91d43ecbaf8531c73d48e84d8dcb4693
+# 2009-02-03 Regina Obe: forgot some spaces
+eef185b4e77b563644a1c614ed7cfb61619512db
+# 2009-02-04 Paul Ramsey: Formating
+50dd669d16dd6716b0d545ff257919382c52f25e
+# 2009-04-15 Paul Ramsey: remove tabs
+cee03c2363a02a53f3b91da555fb45f54ba55bbc
+# 2009-04-15 Paul Ramsey: wee reformatting
+d48d3dff37f45a2e33f5a5bb12f99200c682f259
+# 2009-05-03 Regina Obe: slight mod
+86a6abe7eb4b53ba1b3647120b01ff99a2bd1a69
+# 2009-05-09 Mark Cave-Ayland: Correct erroneus formatting which was causing two comments to be nested and hence generati
+b5615b4fbfdeafd2e99074efdc5318b0d7dfe5b5
+# 2009-06-11 Paul Ramsey: astyle --style=ansi --indent=tab (#133)
+cfb44a749f9eb52960af07a1330b86e49cee05dc
+# 2009-08-28 Regina Obe: improve on st_buildarea code formatting
+aa6fdd01fb1ea92e9eb00817087970f6e6785736
+# 2009-09-29 Paul Ramsey: astyle the work thus far
+cd8e7ff4a75d18ddcfe454feb9dd2c56827e74b9
+# 2009-10-08 Paul Ramsey: Reformat SQL lines with tabs
+a407132d7f36a6df819420706c5a7e2a2b97bebc
+# 2009-11-27 Paul Ramsey: Add newlines at file ends to silence warnings
+1d3a5616a38b9359916c0c45faeda1130290ea75
+# 2010-01-25 Paul Ramsey: Replace soft tabs with hard.
+26a9c2e81ee4c16c8f1a3b3220bd1a7c787dc042
+# 2010-02-01 Paul Ramsey: 1.5 astyle pass
+8cabdcf81fc45f1e593ec367c9465a5e6ba544a3
+# 2010-02-01 Paul Ramsey: Silence 'no-eol' compiler warning.
+0af138172d062b90b1274d8eec99f0541a945793
+# 2010-02-02 Paul Ramsey: Tiny re-format
+efbe46afd6deaac30c1078b2a96ee0bc63b4b6c3
+# 2010-02-02 Paul Ramsey: astyle recent change
+d88a1c0003b01751f04adca4941c7a90d49b7dd8
+# 2010-02-04 Sandro Santilli: Astyle run (a-ha, got you!)
+d1112b13fe4483b04612e29ef290fd16bf1b2da5
+# 2010-02-11 Sandro Santilli: Get style
+762c6d7c696665edd16912f1f2e20880831d130e
+# 2010-02-21 Olivier Courtin: make astyle session
+049a0e262a3f0dddde65173c028c427ce530cbf3
+# 2010-02-21 Sandro Santilli: style...
+098f3f77aa7f8e4089d499a8713add3e18b64f6c
+# 2010-05-04 Regina Obe: fix formatting
+668d36bc61c713373325923a831c3756bd080543
+# 2010-05-20 Regina Obe: minor formatting on ST_Covers
+e2113bf107d0dcfe0e01f4385b5f7f4f6f83cc28
+# 2010-07-29 Nicklas Avén: ugly style fix
+be11fac1a86d2273f1b3afa4d750dcb7ff8aba0e
+# 2010-08-15 Olivier Courtin: Astyle session on whole trunk
+c09ea80cd220498d1d36f2a1b2d40fa843ad9fcd
+# 2010-08-30 Olivier Courtin: Astyle on new files
+240a037ce96b4df9fca671758a1535b0ea8ffdea
+# 2010-09-05 Olivier Courtin: make astyle
+6c1cf6fc37020b810f924908e95499c0833db76c
+# 2010-10-28 Regina Obe: get rid of tabs
+a90237f2f0055550c09bab2e0e695d01fe3e1d5c
+# 2010-12-07 Regina Obe: fix formatting
+0b3ca97ba95af92dc67f4920f00e38b5d3d5367f
+# 2010-12-09 Regina Obe: formatting
+a6b2f13ddbb456315ab8bdf1e1f60d3e5f0a0bc2
+# 2010-12-28 Regina Obe: miscellaneous fixes and indentation
+9be54bfee44c05078f2a988ac5c51aafac4ba305
+# 2011-02-17 Regina Obe: indent a bit better
+ddc6232a7b14ac910e074acb7725ecad3a470ed9
+# 2011-03-23 Pierre Racine: Removed extra spaces
+bb898ea1aa95b7ec441d06e024530a36eafcd40c
+# 2011-04-08 Sandro Santilli: tabs to spaces
+321f14c280e83682d09d013a77386d202d6d0efa
+# 2011-04-15 Regina Obe: change to all line feed
+6e7a9c6be149ac2d0614d24f7950f9e996119079
+# 2011-04-20 Regina Obe: minor indent change
+9a16e0b3a711a05bfd157c57cecbb2074dc15924
+# 2011-05-06 Jorge Arévalo: Trailing spaces removed from raster files.
+f0ebd104a7ef3a2c5e19d17b924f021d92da5d6a
+# 2011-05-13 Regina Obe: apply astyle
+1087b9e1ffdd606354a0a8bcf756ce1894dd1e74
+# 2011-05-13 Regina Obe: apply astyle
+e822af5c694dd85b2aadcee225256be94b83f0c0
+# 2011-05-24 Sandro Santilli: No functional change: tabs to 2 spaces.
+5c65e3e064ac02b5db64ac0cf007af480f8f63dc
+# 2011-09-06 Regina Obe: minor indentation fix
+4ca6eec5a33580673bd8de0af4abf098107025a6
+# 2011-11-20 Sandro Santilli: Better indent for comparing obtained/expected
+9e055f1d2d2edc16f181abfa0a974dfd52ca2939
+# 2011-12-13 Sandro Santilli: tabs to spaces
+83acab6ec3e1c1f3f092cdd810d51c425e12c1d5
+# 2011-12-24 Regina Obe: minor formatting change
+fa638e1ae6ff48a61f0f0a7b6454a7dcf8f30292
+# 2011-12-26 Regina Obe: minor formatting cleanup
+12059dbeae7b2a03ebb98094ebd1889bc4f1ab3a
+# 2012-01-09 Paul Ramsey: Remove whitespace
+16c6ffb9d4f9798e1c761c671f342eb5ad025f45
+# 2012-01-09 Bborie Park: Removed garbage whitespace.
+439e38bf7b0e0a86755f3987ce5d484abe2b750b
+# 2012-02-06 David Zwarg: Whitespace changes to _st_hillshade4ma
+2c528da4556c07efc6292f237cf1f5c4c3c6754e
+# 2012-02-15 Paul Ramsey: Remove fugitive EOL white space
+e15483dfb66637ef39454cda326d9f60e1567560
+# 2012-02-22 Paul Ramsey: Change dos to unix lineends. (#1598)
+57ac13f0ff7d41edbfb078d2005f68f5cff20395
+# 2012-02-22 Paul Ramsey: Really remove the dos linefeeds this time (#1598)
+7922084791dc7458d09f2502de57cd12f6692672
+# 2012-02-27 Paul Ramsey: Try again with line endings, this time using eol-style instead of eol-type (#1605)
+729d1061cbed81d7d1ddf339ff8e948dc742f41d
+# 2012-03-26 Mark Cave-Ayland: Improve readability in the loader by fixing various whitespace issues.
+2effc2c1b37ad5043dbbe7b1f4ae8a738c66cbc2
+# 2012-04-04 Sandro Santilli: Tabs to spaces
+e92b97dcac00569a49fbd4625726d4422754417b
+# 2012-06-29 Bborie Park: Line formatting
+7e424f66d9418102f3d3c6ce1c3556454ac7b605
+# 2012-10-09 Bborie Park: Syntax cleanup
+1727aedb205cc7a7571492e8588c2bcae09a6748
+# 2014-02-23 Sandro Santilli: Strip carriage returns from .travis.yml
+55043d19700e1f415adbff3b0a1b1e4e900d63a8
+# 2014-07-16 Regina Obe: cleanup formatting of code examples
+a374cd5e81e9c18662349234f57296dd29e294c9
+# 2014-10-13 Regina Obe: get rid of windows \r
+ef52eb68b95bbb989cca3c6a64cbf028e1fa1bd7
+# 2015-04-29 Paul Ramsey: Quiet pedantic warnings some
+e3ccbe82410f92d6b23bb15ed521f68cb442efbc
+# 2015-05-26 Paul Ramsey: Formatting
+de144d6edd279cb58ac006c2c1ce11f547ff691d
+# 2015-06-03 Paul Ramsey: whitespace
+648a813cb064aad1a3559d2d6dc8b42cfe4e6cb3
+# 2015-06-29 Sandro Santilli: Style only change
+ba049e92ead984137b234fc78a4e1595d0263465
+# 2015-06-30 Paul Ramsey: format to style guide
+4740d2bdb31f800f3f333d1bec56d3e80e89bf8a
+# 2015-06-30 Paul Ramsey: reformat code to styleguide
+4edb24b68ae55980bd500bad53bcf84df0ddb58c
+# 2015-06-30 Paul Ramsey: reformat to style guide
+7e3a42a6400aa3e7a1844f0779bba940e5b09592
+# 2015-06-30 Paul Ramsey: reformat to style guide
+b98f69a5381ec817932c006f3e5e068ace771d0d
+# 2015-07-07 Paul Ramsey: Formatting
+753b9f5d89c6e959833100ad7f89d4084489edbc
+# 2015-07-20 Sandro Santilli: Indenting only change (and a space in a printf format string)
+e53977774f7fa6490a2bb73220e4b60151166897
+# 2015-09-03 Regina Obe: change to always be linux line feed
+e920c5dbacdd7224472fcc5d6fc2bf8dd518054c
+# 2015-10-15 Sandro Santilli: Minor style change
+0b7d777a9f470d93514a7b6428dc861948ac2521
+# 2016-04-21 Sandro Santilli: Trim trailing whitespaces (as per .editorconfig)
+35ef91baa2bbfb9eb9dc6c934b7f9ee88b2245b2
+# 2016-04-22 Sandro Santilli: Trim trailing whitespaces (as per .editorconfig)
+14197673c412363b79b9f3a1f6190dc98738fdab
+# 2016-04-27 Sandro Santilli: Style only change: remove trailing whitespaces
+f6ed58d1fdc865d55d348212d02c11a10aeb2b30
+# 2016-05-11 Sandro Santilli: style-only commit: remove trailing spaces
+2497d582c715649387e79a499a56037153e56590
+# 2016-05-16 Sandro Santilli: Trim trailing spaces
+f0547a6148afcf19fc295709d056ce8edb24625c
+# 2016-06-15 Sandro Santilli: Style only change: remove trailing spaces
+70e778e5efa8102dc8a0c33e7066df20233b9180
+# 2016-06-15 Sandro Santilli: style only change: remove trailing spaces
+129329aaff6ec7332ed79facb793356055c4661d
+# 2016-06-15 Sandro Santilli: style only change: remove trailing spaces
+2fcc5134b372340c302d396daf691f14d43d1aa8
+# 2016-06-15 Sandro Santilli: style only change: remove trailing spaces
+8272edaf6ce77e18f6b816916586c317a5a20110
+# 2016-06-16 Sandro Santilli: Style only change: remove trailing and tab-leading spaces
+ac7969482490aa10e590f435933abb788b29c0e2
+# 2016-07-04 Sandro Santilli: Style only change: remove trailing spaces
+205c127cee99ac0a5f3b4c8d11e19d8f8baa10a0
+# 2016-07-05 Sandro Santilli: Remove trailing spaces
+7777f616a612022281330357cd9b1632211abb53
+# 2016-08-28 Sandro Santilli: Format as per editorconfig
+8a1e9cba2ef53d123b20d6230cff0bd731facacd
+# 2016-09-07 Sandro Santilli: Style only: remove trailing blankspaces
+6be88e8db8027b6a4b384b2089640e0cadade824
+# 2016-09-12 Sandro Santilli: Remove trailing spaces
+3236551588a14e9df95dd9b0ab67c02f649bed44
+# 2016-11-17 Sandro Santilli: Remove trailing whitespaces
+39dfe6fd5e795cc358482d03adecc54ce2901c22
+# 2016-11-21 Sandro Santilli: Remove trailing blankspaces
+71c96c3c5b6549b5b539744dbc9d30a45b88fcb7
+# 2017-05-27 Regina Obe: replace tabs with spaces from last commit
+c08c6f0b37c3663aca7640f679ecaafe86ed730e
+# 2017-06-13 Sandro Santilli: Style only change: remove trailing blanks
+0930970119b7469972fe5bee9f5b9c8b6df246f3
+# 2017-06-13 Sandro Santilli: Style-only change: remove trailing blanks
+cc11c30104f534024cfeed5ab33ae09d7f740407
+# 2017-06-19 Sandro Santilli: Style only change: remove trailing spaces
+97fb73fc52412705d46cc89aae72ab8cf77f7420
+# 2017-08-06 Sandro Santilli: Formatting
+48e1edc0e08b4796742315abd37c1a355ab4a978
+# 2017-08-22 Sandro Santilli: [style only] remove trailing blanks
+177a8e41f01d659fa69efa64a82c8edb71f2cb27
+# 2017-08-29 Björn Harrtell: ST_AsMVTGeom fix unintentional white space change
+7a1786e0d5195aa74ed71b7ebfb0a8a271526bc3
+# 2017-09-08 Sandro Santilli: Style only: remove trailing blanks
+ac8a209f38872387ede78a91cff26dbac7240295
+# 2017-09-14 Sandro Santilli: Remove trailing blanks
+ca544d0830372e4ea2ed153147870cda0d21db6c
+# 2017-09-17 Sandro Santilli: Remove trailing blanks from .c files
+5778b17e3b05e21267ae7af1d02e25e6899a942c
+# 2017-09-26 Sandro Santilli: Remove trailing blanks
+d61a19066d16ed6d97485dc91fd2dd6cc16916be
+# 2017-09-27 Sandro Santilli: Drop trailing blank from vector_tile.proto
+e63c85987f6b63eb0d5fb4647916af3a8e739756
+# 2017-10-04 Regina Obe: Get rid of trailing spaces
+88e051626d22a041171bfaee4c963e42c1cdb8de
+# 2017-10-07 Paul Ramsey: Change spaces to tabs in indenting
+0f6d2f410576d472a45de0e5e3f7763bd34c995b
+# 2017-10-10 Sandro Santilli: Remove trailing blanks
+68795271a65cb6aafa090de407780f2d3108618b
+# 2017-10-12 Regina Obe: white space cleanup
+f40612290d6d471083cfad225d13e663cf283e6f
+# 2018-01-11 Darafei Praliaskouski: Formatting only before toucing Encoded Polyline logic.
+fdf42e94f63b504e7d66b821d44e68e018cadae9
+# 2018-01-17 Darafei Praliaskouski: Formatting: remove trailing whitespace from .sql files.
+2a738ccf9ad50b4390e2152c0f10ba6a7b911b35
+# 2018-02-28 Sandro Santilli: Fix space-indented astyle call
+50e08323002510e2bf6382ade6a35dbbc265f082
+# 2018-03-20 Nicklas Avén: fix space indention to tab
+62619db52947733b0c319a71d26b1960c53827ad
+# 2018-05-23 Raúl Marín Rodríguez: Remove trailing blank
+ec4eb9125b9d683281c75060a16fb614b34ce927
+# 2018-09-24 Sandro Santilli: Fix indent
+c3fc3089aa3eec51744e0c130da496778f38fbb3
+# 2018-11-07 Paul Ramsey: Honestly, trailing spaces?
+f03d29254471a2e91ed306fe09db09fbec6dfc9f
+# 2018-11-30 Darafei Praliaskouski: [format] clang-format files touched in SFCGAL relayout
+19d0a3594f9c5f8de07a6f94c6ef27ab9ee47bad
+# 2019-01-21 Paul Ramsey: Reformat slightly
+f00d9c6126f966751c6c6fb7ea7acf16a2c010bd
+# 2019-02-12 Raúl Marín Rodríguez: Trailing whitespace
+c72f563bd273e3d00ee5f6ab26a85354eb6988ca
+# 2019-03-29 Paul Ramsey: Formatting :/
+8a408adec90a56c4ced4580cd0ddba43cbefd8a9
+# 2019-07-28 Regina Obe: Get rid of trailing spaces References #4403
+f247f91c36045699a87c4157f2eeeb44f1981740
+# 2019-07-28 Regina Obe: Hoepfully last trailing space References #4403
+12125430b844b52d3f54e8378212b2837dfea798
+# 2019-10-07 Sandro Santilli: Tweak editorconfig for postgis_proc_upgrade.pl and indent it properly
+da1ea27f2045f9c58d232e892cc3de1989815d05
+# 2020-01-15 Regina Obe: Minor code formatting so doesn't have weird break lines in programlisting
+69865c307e1de61a5ab9332e78d708e8a4169b5d
+# 2020-04-27 Regina Obe: Fix indenting
+59179cd84baaef185d48f044ed5fae395e207736
+# 2020-04-27 Raúl Marín: postgis.sql: tabs
+5dbe34cb7b61f748e97712956913cf6230b6f5cf
+# 2020-12-05 Darafei Praliaskouski: clang-format
+d7925ddffb590e2c39561c3d379f23041e572c41
+# 2021-02-08 Regina Obe: Minor formatting
+20f4d1b9165c00c92e8682894961dc4522c354b9
+# 2021-03-02 Sandro Santilli: Indentation
+e259f0eae20c76c72f7a2e3eb572f2f19767b1fd
+# 2021-07-14 Sandro Santilli: Use tabs, not spaces, in the new test
+a4fc3247a71f192231088987eda2f556e9f27ee2
+# 2022-05-08 Björn Harrtell: Fix whitespace
+e9716f59dcd2cfb9f8ff83a08c67dc14ac22f26d
+# 2022-06-16 Loïc Bartoletti: apply astyle
+de6d9c824dda4996ec96893cb132741d9eff5a5f
+# 2022-07-24 Regina Obe: Clean up the formatting of last commit.
+d0b68e84ab91d4966925f0781a953aae26278957
+# 2022-08-29 Robert Coup: doc: reference_srs: convert whitespace
+01bbb2c39f0dbe599d46bb04f77920d7811cb495
+# 2022-09-25 Regina Obe: Fix trailing whitespace.  Closes #5249
+a24b6b71d5c31dfee6d67f2992cbaa289a7029e2
+# 2023-02-15 Martin Davis: Standardize doc use_spheroid formatting
+b347a9a965f2a3efdf50485ec0947aa843381fe6
+# 2024-02-15 Loïc Bartoletti: [style] Apply clang-format on lwgeom_sfcgal.c
+d4f3a60572d0bfcc55e14a438f922c1bdd26f046
+# 2024-08-30 Sandro Santilli: Remove trailing blanks from file
+c99603a93c6d023da50a6366d267bd6288c756c3
+# 2024-09-12 Sandro Santilli: Fix indenting in lwgeom_topo.c
+ddfb090b9cd3c5d6a0b358a8b7a9a84310b27038
+# 2024-11-18 Sandro Santilli: Tabs to spaces in NEWS file
+31a5529dec9ad608fa5a7757cbc2844824d29fd3
+# 2025-08-28 Sandro Santilli: [style] drop trailing blanks
+7dea8919301b12b80e2565cdd153500951461786
+# 2026-03-08 Darafei Praliaskouski: style: clang-format address_standardizer C files
+65b80236d1d857bae32044f287fc740820486c17
+# 2026-05-06 Jean Felder: chrore(doc): Remove trailing whitespaces in reference_accessor
+947f31aa704c7f34ae64ef1190c8c5fba7f343c8
+# 2026-07-11 Darafei Praliaskouski: doc: normalize whitespace in verbatim blocks
+9e880af70a9e4ab6bc59d0b15c1cff5a941be053
+# 2026-07-15 Darafei Praliaskouski: Tidy ST_Polygonize example formatting
+0db89ca07e87149d1bd072151eb9d39be1dd75f1
+# 2026-08-22 Darafei Praliaskouski: Apply clang-format to NULL dereference fixes
+f614226bff6a216e123a9d86a5bceadaa50b90c2
+# 2026-09-08 Darafei Praliaskouski: Apply clang-format to raster cleanup backport
+1a80db4390d138e8b234f2a5cdf59120fbb5a329
+# 2026-09-08 Darafei Praliaskouski: Apply clang-format to raster cleanup backport
+6f84bb491711209b9891a47bac082ed87e52a684
+# 2026-09-08 Darafei Praliaskouski: Apply clang-format to raster cleanup backport
+78c31f0002c09de54cb6e157303f3e3315daa1e4
+# 2026-09-08 Darafei Praliaskouski: Apply clang-format to raster cleanup backport
+d1c7a566b450efa6bdf0d84614ee1e7dd7d23fdd
+# 2026-09-08 Darafei Praliaskouski: Apply clang-format to raster cleanup backport
+e1e3d5b4bca4424816c30e1a9166f4539523ed16
+# 2026-11-27 Darafei Praliaskouski: Format files touched by open pull requests with clang-format
+3eeb10040f1fdabef4abf8aeee36e21d717effe3
+# 2026-11-27 Darafei Praliaskouski: Format files touched by open pull requests with clang-format
+57bb411842e15437fcd39a2e81b9fb16b4a4b13c
+# 2026-11-27 Darafei Praliaskouski: Format files touched by open pull requests with clang-format
+8405eea4a0ab9309afde695b4d364fd96bcc1735
+# 2026-11-27 Darafei Praliaskouski: Format files touched by open pull requests with clang-format
+91ac1209945dce6f3d2750b75d74949140736381
+# 2026-11-27 Darafei Praliaskouski: Format files touched by open pull requests with clang-format
+92876bfd16562cb3cb7143dca9f19dd782d350e5
+# 2026-11-27 Darafei Praliaskouski: Format files touched by open pull requests with clang-format
+b03c0f157285feb6a60248c59b1b7876973e55d9
+# 2026-11-27 Darafei Praliaskouski: Format files touched by open pull requests with clang-format
+e562e3295c343a7080a539668570041d02db0597
