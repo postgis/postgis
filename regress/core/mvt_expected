@@ -141,6 +141,8 @@ D7|POINT(1 4094)
 TU2
 ERROR:  pgis_asmvt_transfn: parameter row cannot be other than a rowtype
 TU3|
+ERROR:  mvt_agg_transfn: Column 'geom' is not of geometry type
+ERROR:  mvt_agg_transfn: Column 'geom' is not of geometry type
 #3922|t
 #4294_Horizontal|LINESTRING(0 10,0 5)
 #4294_Vertical|LINESTRING(0 10,5 10)

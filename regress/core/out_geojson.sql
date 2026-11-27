@@ -44,3 +44,5 @@ SELECT '4695', ST_ASGeoJSON(a.*) FROM
 ) a;
 
 DROP TABLE g;
+SELECT 'gj_named_bigint', ST_AsGeoJSON(q, 'geom') FROM (SELECT 1::bigint AS geom) AS q;
+SELECT 'gj_named_null_text', ST_AsGeoJSON(q, 'geom') FROM (SELECT NULL::text AS geom) AS q;
