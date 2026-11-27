@@ -273,7 +273,6 @@ lw_dist2d_is_collection(const LWGEOM *g)
 	}
 }
 
-
 /* Check for overlapping bboxes */
 static int
 lw_dist2d_check_overlap(const LWGEOM *lwg1, const LWGEOM *lwg2)
@@ -326,7 +325,8 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 		else
 			g1 = (LWGEOM *)lwg1;
 
-		if (!g1) continue;
+		if (!g1)
+			continue;
 
 		if (lwgeom_is_empty(g1))
 			continue;
@@ -345,7 +345,8 @@ lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 			else
 				g2 = (LWGEOM *)lwg2;
 
-			if (!g2) continue;
+			if (!g2)
+				continue;
 
 			if (lw_dist2d_is_collection(g2))
 			{
@@ -393,8 +394,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 
 	switch (t1)
 	{
-	case POINTTYPE:
-	{
+	case POINTTYPE: {
 		dl->twisted = 1;
 		switch (t2)
 		{
@@ -415,8 +415,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case LINETYPE:
-	{
+	case LINETYPE: {
 		dl->twisted = 1;
 		switch (t2)
 		{
@@ -438,8 +437,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case TRIANGLETYPE:
-	{
+	case TRIANGLETYPE: {
 		dl->twisted = 1;
 		switch (t2)
 		{
@@ -462,8 +460,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case CIRCSTRINGTYPE:
-	{
+	case CIRCSTRINGTYPE: {
 		dl->twisted = 1;
 		switch (t2)
 		{
@@ -487,8 +484,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case POLYGONTYPE:
-	{
+	case POLYGONTYPE: {
 		dl->twisted = -1;
 		switch (t2)
 		{
@@ -511,8 +507,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	case CURVEPOLYTYPE:
-	{
+	case CURVEPOLYTYPE: {
 		dl->twisted = -1;
 		switch (t2)
 		{
@@ -534,8 +529,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return LW_FALSE;
 		}
 	}
-	default:
-	{
+	default: {
 		lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t1));
 		return LW_FALSE;
 	}
@@ -543,7 +537,6 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 
 	return LW_FALSE;
 }
-
 
 /** Geometries are distributed for the new faster distance-calculations */
 int
@@ -883,8 +876,7 @@ lw_curvering_getfirstpoint2d_cp(LWGEOM *geom)
 		return getPoint2d_cp(((LWLINE *)geom)->points, 0);
 	case CIRCSTRINGTYPE:
 		return getPoint2d_cp(((LWCIRCSTRING *)geom)->points, 0);
-	case COMPOUNDTYPE:
-	{
+	case COMPOUNDTYPE: {
 		LWCOMPOUND *comp = (LWCOMPOUND *)geom;
 		LWLINE *line = (LWLINE *)(comp->geoms[0]);
 		return getPoint2d_cp(line->points, 0);
@@ -1379,10 +1371,10 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 	/* If not, the closest point is one of the end points of A */
 	if (dist_C_D < radius_C)
 	{
-		double length_A;  /* length of the segment A */
-		POINT2D E, F;     /* points of intersection of edge A and circle(B) */
-		double dist_D_EF; /* distance from D_line to E or F (same distance both ways) */
-		POINT2D D_line;   /* foot of perpendicular from C to the infinite line through A1-A2 */
+		double length_A;      /* length of the segment A */
+		POINT2D E, F;         /* points of intersection of edge A and circle(B) */
+		double dist_D_EF;     /* distance from D_line to E or F (same distance both ways) */
+		POINT2D D_line;       /* foot of perpendicular from C to the infinite line through A1-A2 */
 		double dist_C_D_line; /* distance from C to the infinite line */
 		double t;
 
@@ -1394,8 +1386,7 @@ lw_dist2d_seg_arc(const POINT2D *A1,
 		 * circle-line intersections E and F. Using the clamped endpoint gives wrong
 		 * intersection points when the perpendicular falls outside the segment.
 		 */
-		t = ((C.x - A1->x) * (A2->x - A1->x) + (C.y - A1->y) * (A2->y - A1->y))
-		    / (length_A * length_A);
+		t = ((C.x - A1->x) * (A2->x - A1->x) + (C.y - A1->y) * (A2->y - A1->y)) / (length_A * length_A);
 		D_line.x = A1->x + t * (A2->x - A1->x);
 		D_line.y = A1->y + t * (A2->y - A1->y);
 		dist_C_D_line = sqrt((C.x - D_line.x) * (C.x - D_line.x) + (C.y - D_line.y) * (C.y - D_line.y));
@@ -1557,7 +1548,6 @@ int lw_dist2d_arc_arc_concentric(const POINT2D *A1,
 				 const POINT2D *CENTER,
 				 DISTPTS *dl);
 
-
 /**
  * @brief Calculates the intersection points of a circle and line.
  *
@@ -1579,13 +1569,14 @@ int lw_dist2d_arc_arc_concentric(const POINT2D *A1,
  * @return int
  */
 static int
-lw_dist2d_circle_intersections(
-	const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
-	const POINT2D *center_A,
-	double radius_A,
-	const POINT2D *P,
-	POINT2D *I,
-	uint32_t *ni)
+lw_dist2d_circle_intersections(const POINT2D *A1,
+			       const POINT2D *A2,
+			       const POINT2D *A3,
+			       const POINT2D *center_A,
+			       double radius_A,
+			       const POINT2D *P,
+			       POINT2D *I,
+			       uint32_t *ni)
 {
 	POINT2D R;
 
@@ -1619,7 +1610,6 @@ lw_dist2d_circle_intersections(
 	return 0;
 }
 
-
 /**
  * @brief Calculates the intersection points of two overlapping circles.
  *
@@ -1639,10 +1629,7 @@ lw_dist2d_circle_intersections(
  * the centers are coincident or another error occurs.
  */
 static uint32_t
-lw_dist2d_circle_circle_intersections(
-	const POINT2D *cA, double rA,
-	const POINT2D *cB, double rB,
-	POINT2D *I)
+lw_dist2d_circle_circle_intersections(const POINT2D *cA, double rA, const POINT2D *cB, double rB, POINT2D *I)
 {
 	// Vector from center A to center B
 	double dx = cB->x - cA->x;
@@ -1689,10 +1676,13 @@ lw_dist2d_circle_circle_intersections(
 }
 
 int
-lw_dist2d_arc_arc(
-	const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
-	const POINT2D *B1, const POINT2D *B2, const POINT2D *B3,
-	DISTPTS *dl)
+lw_dist2d_arc_arc(const POINT2D *A1,
+		  const POINT2D *A2,
+		  const POINT2D *A3,
+		  const POINT2D *B1,
+		  const POINT2D *B2,
+		  const POINT2D *B3,
+		  DISTPTS *dl)
 {
 	POINT2D pts_A[16];            /* Points on A that might be the nearest */
 	POINT2D pts_B[16];            /* Points on B that might be the nearest */
@@ -1734,7 +1724,7 @@ lw_dist2d_arc_arc(
 	is_disjoint = (d > (radius_A + radius_B));
 	is_contained = (d < fabs(radius_A - radius_B));
 	is_same_center = p2d_same(&center_A, &center_B);
-	is_overlapping = ! (is_disjoint || is_contained || is_same_center);
+	is_overlapping = !(is_disjoint || is_contained || is_same_center);
 
 	/*
 	 * Prime the array of potential closest points with the
@@ -1756,10 +1746,8 @@ lw_dist2d_arc_arc(
 		/*
 		 * Find the two points the circles intersect at.
 		 */
-		uint32_t npoints = lw_dist2d_circle_circle_intersections(
-			&center_A, radius_A,
-			&center_B, radius_B,
-			intersectionPts);
+		uint32_t npoints =
+		    lw_dist2d_circle_circle_intersections(&center_A, radius_A, &center_B, radius_B, intersectionPts);
 		for (uint32_t i = 0; i < npoints; i++)
 		{
 			/*
@@ -1768,7 +1756,7 @@ lw_dist2d_arc_arc(
 			 * we are done calculating.
 			 */
 			if (lw_pt_in_arc(&intersectionPts[i], A1, A2, A3) &&
-				lw_pt_in_arc(&intersectionPts[i], B1, B2, B3))
+			    lw_pt_in_arc(&intersectionPts[i], B1, B2, B3))
 			{
 				lw_dist2d_distpts_set(dl, 0.0, &intersectionPts[i], &intersectionPts[i]);
 				return LW_TRUE;
@@ -1787,41 +1775,23 @@ lw_dist2d_arc_arc(
 		if (!is_same_center)
 		{
 			/* Add points on A that intersect line from center_A to center_B */
-			lw_dist2d_circle_intersections(
-			    A1, A2, A3,
-			    &center_A, radius_A, &center_B,
-			    pts_A, &ai);
+			lw_dist2d_circle_intersections(A1, A2, A3, &center_A, radius_A, &center_B, pts_A, &ai);
 
 			/* Add points on B that intersect line from center_B to center_A */
-			lw_dist2d_circle_intersections(
-			    B1, B2, B3,
-			    &center_B, radius_B, &center_A,
-			    pts_B, &bi);
+			lw_dist2d_circle_intersections(B1, B2, B3, &center_B, radius_B, &center_A, pts_B, &bi);
 		}
 
 		/* Add points on A that intersect line to B1 */
-		lw_dist2d_circle_intersections(
-		    A1, A2, A3,
-		    &center_A, radius_A, B1,
-		    pts_A, &ai);
+		lw_dist2d_circle_intersections(A1, A2, A3, &center_A, radius_A, B1, pts_A, &ai);
 
 		/* Add points on A that intersect line to B3 */
-		lw_dist2d_circle_intersections(
-		    A1, A2, A3,
-		    &center_A, radius_A, B3,
-		    pts_A, &ai);
+		lw_dist2d_circle_intersections(A1, A2, A3, &center_A, radius_A, B3, pts_A, &ai);
 
 		/* Add points on B that intersect line to A1 */
-		lw_dist2d_circle_intersections(
-		    B1, B2, B3,
-		    &center_B, radius_B, A1,
-		    pts_B, &bi);
+		lw_dist2d_circle_intersections(B1, B2, B3, &center_B, radius_B, A1, pts_B, &bi);
 
 		/* Add points on B that intersect line to A3 */
-		lw_dist2d_circle_intersections(
-		    B1, B2, B3,
-		    &center_B, radius_B, A3,
-		    pts_B, &bi);
+		lw_dist2d_circle_intersections(B1, B2, B3, &center_B, radius_B, A3, pts_B, &bi);
 	}
 
 	/*
@@ -1834,7 +1804,6 @@ lw_dist2d_arc_arc(
 
 	return LW_TRUE;
 }
-
 
 /**
 Finds the shortest distance between two segments.

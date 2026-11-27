@@ -41,7 +41,8 @@
  * Process input parameters and row data into state
  */
 PG_FUNCTION_INFO_V1(pgis_asflatgeobuf_transfn);
-Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 {
 	MemoryContext aggcontext, oldcontext;
 	char *geom_name = NULL;
@@ -57,14 +58,17 @@ Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 		elog(ERROR, "pgis_asflatgeobuf_transfn: called in non-aggregate context");
 	oldcontext = MemoryContextSwitchTo(aggcontext);
 
-	if (PG_ARGISNULL(0)) {
+	if (PG_ARGISNULL(0))
+	{
 		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
 			create_index = PG_GETARG_BOOL(2);
 		if (PG_NARGS() > 3 && !PG_ARGISNULL(3))
 			geom_name = text_to_cstring(PG_GETARG_TEXT_P(3));
 		ctx = flatgeobuf_agg_ctx_init(geom_name, create_index);
-	} else {
-		ctx = (flatgeobuf_agg_ctx *) PG_GETARG_POINTER(0);
+	}
+	else
+	{
+		ctx = (flatgeobuf_agg_ctx *)PG_GETARG_POINTER(0);
 	}
 
 	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
@@ -80,7 +84,8 @@ Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
  * Encode final state to FlatGeobuf
  */
 PG_FUNCTION_INFO_V1(pgis_asflatgeobuf_finalfn);
-Datum pgis_asflatgeobuf_finalfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asflatgeobuf_finalfn(PG_FUNCTION_ARGS)
 {
 	uint8_t *buf;
 	flatgeobuf_agg_ctx *ctx;
@@ -90,7 +95,7 @@ Datum pgis_asflatgeobuf_finalfn(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
-	ctx = (flatgeobuf_agg_ctx *) PG_GETARG_POINTER(0);
+	ctx = (flatgeobuf_agg_ctx *)PG_GETARG_POINTER(0);
 	buf = flatgeobuf_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
 }

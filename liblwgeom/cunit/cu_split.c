@@ -17,7 +17,8 @@
 #include "liblwgeom_internal.h"
 #include "../lwgeom_geos.h"
 
-static void test_lwline_split_by_point_to(void)
+static void
+test_lwline_split_by_point_to(void)
 {
 	LWLINE *line;
 	LWPOINT *point;
@@ -30,45 +31,34 @@ static void test_lwline_split_by_point_to(void)
 	coll = lwmline_construct_empty(SRID_UNKNOWN, 0, 0);
 	CU_ASSERT_EQUAL(coll->ngeoms, 0);
 
-	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(0 0,5 5, 10 0)",
-		LW_PARSER_CHECK_NONE));
+	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(0 0,5 5, 10 0)", LW_PARSER_CHECK_NONE));
 	CU_ASSERT(line != NULL);
 
-	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
-		"POINT(0 0)",
-		LW_PARSER_CHECK_NONE));
+	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE));
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 1);
 	CU_ASSERT_EQUAL(coll->ngeoms, 0);
 	lwpoint_free(point);
 
-	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
-		"POINT(10 0)",
-		LW_PARSER_CHECK_NONE));
+	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(10 0)", LW_PARSER_CHECK_NONE));
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 1);
 	CU_ASSERT_EQUAL(coll->ngeoms, 0);
 	lwpoint_free(point);
 
-	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
-		"POINT(5 0)",
-		LW_PARSER_CHECK_NONE));
+	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(5 0)", LW_PARSER_CHECK_NONE));
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 0);
 	CU_ASSERT_EQUAL(coll->ngeoms, 0);
 	lwpoint_free(point);
 
-	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
-		"POINT(5 5)",
-		LW_PARSER_CHECK_NONE));
+	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(5 5)", LW_PARSER_CHECK_NONE));
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 2);
 	CU_ASSERT_EQUAL(coll->ngeoms, 2);
 	lwpoint_free(point);
 
-	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
-		"POINT(2 2)",
-		LW_PARSER_CHECK_NONE));
+	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(2 2)", LW_PARSER_CHECK_NONE));
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 2);
 	CU_ASSERT_EQUAL(coll->ngeoms, 4);
@@ -76,21 +66,20 @@ static void test_lwline_split_by_point_to(void)
 
 	lwline_free(line);
 
-	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING EMPTY",
-		LW_PARSER_CHECK_NONE));
+	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING EMPTY", LW_PARSER_CHECK_NONE));
 	CU_ASSERT(line != NULL);
-	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
-		"POINT(0 0)", LW_PARSER_CHECK_NONE));
+	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE));
 	CU_ASSERT(point != NULL);
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 0); /* the point is not on the line */
 	lwpoint_free(point);
 	lwline_free(line);
 
-	lwcollection_free((LWCOLLECTION*)coll);
+	lwcollection_free((LWCOLLECTION *)coll);
 }
 
-static void test_lwgeom_split(void)
+static void
+test_lwgeom_split(void)
 {
 	LWGEOM *geom, *blade, *ret, *tmp1, *tmp2;
 	char *wkt, *in_wkt;
@@ -109,7 +98,7 @@ static void test_lwgeom_split(void)
 	lwgeom_free(geom);
 	lwgeom_free(blade);
 
-        /* See #1311 */
+	/* See #1311 */
 	geom = lwgeom_from_wkt("LINESTRING(0 0,10 0,20 4,0 3)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT(geom != NULL);
 	blade = lwgeom_from_wkt("POINT(10 0)", LW_PARSER_CHECK_NONE);
@@ -123,7 +112,7 @@ static void test_lwgeom_split(void)
 	lwgeom_free(geom);
 	lwgeom_free(blade);
 
-  /* See #2528 (1) -- memory leak test, needs valgrind to check */
+	/* See #2528 (1) -- memory leak test, needs valgrind to check */
 	geom = lwgeom_from_wkt("SRID=1;LINESTRING(0 1,10 1)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT(geom != NULL);
 	blade = lwgeom_from_wkt("LINESTRING(7 0,7 3)", LW_PARSER_CHECK_NONE);
@@ -137,7 +126,7 @@ static void test_lwgeom_split(void)
 	lwgeom_free(geom);
 	lwgeom_free(blade);
 
-  /* See #2528 (2) -- memory leak test, needs valgrind to check */
+	/* See #2528 (2) -- memory leak test, needs valgrind to check */
 	geom = lwgeom_from_wkt("SRID=1;POLYGON((0 1, 10 1, 10 10, 0 10, 0 1))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT(geom != NULL);
 	blade = lwgeom_from_wkt("LINESTRING(7 0,7 20)", LW_PARSER_CHECK_NONE);
@@ -160,7 +149,7 @@ static void test_lwgeom_split(void)
 	lwgeom_free(geom);
 	lwgeom_free(blade);
 
-  /* Split line by multiline */
+	/* Split line by multiline */
 	geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	blade = lwgeom_from_wkt("MULTILINESTRING((1 1,1 -1),(2 1,2 -1,3 -1,3 1))", LW_PARSER_CHECK_NONE);
@@ -177,7 +166,7 @@ static void test_lwgeom_split(void)
 	lwgeom_free(geom);
 	lwgeom_free(blade);
 
-  /* Split line by polygon (boundary) */
+	/* Split line by polygon (boundary) */
 	geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	blade = lwgeom_from_wkt("POLYGON((1 -2,1 1,2 1,2 -1,3 -1,3 1,11 1,11 -2,1 -2))", LW_PARSER_CHECK_NONE);
@@ -211,7 +200,7 @@ static void test_lwgeom_split(void)
 	lwgeom_free(geom);
 	lwgeom_free(blade);
 
-  /* Split line by multipolygon (boundary) */
+	/* Split line by multipolygon (boundary) */
 	geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
 	blade = lwgeom_from_wkt("MULTIPOLYGON(((1 -1,1 1,2 1,2 -1,1 -1)),((3 -1,3 1,11 1,11 -1,3 -1)))",
@@ -284,7 +273,8 @@ clean_geos_split_suite(void)
 ** Used by test harness to register the tests in this file.
 */
 void split_suite_setup(void);
-void split_suite_setup(void)
+void
+split_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("split", NULL, clean_geos_split_suite);
 	PG_ADD_TEST(suite, test_lwline_split_by_point_to);
