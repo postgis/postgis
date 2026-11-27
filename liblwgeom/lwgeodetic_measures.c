@@ -46,7 +46,6 @@
 
 /*****************************************************************************/
 
-
 /***********************************************************************
  * ST_LineSubstring for geographies
  ***********************************************************************/
@@ -57,9 +56,7 @@
  * f and p falls on p1,p2 segment
  */
 static void
-interpolate_point4d_spheroid(
-	const POINT4D *p1, const POINT4D *p2, POINT4D *p,
-	const SPHEROID *s, double f)
+interpolate_point4d_spheroid(const POINT4D *p1, const POINT4D *p2, POINT4D *p, const SPHEROID *s, double f)
 
 {
 	GEOGRAPHIC_POINT g, g1, g2;
@@ -69,13 +66,13 @@ interpolate_point4d_spheroid(
 	double dist, dir;
 
 	/* Special sphere case */
-	if ( s == NULL || s->a == s->b )
+	if (s == NULL || s->a == s->b)
 	{
 		/* Calculate distance and direction between g1 and g2 */
 		dist = sphere_distance(&g1, &g2);
 		dir = sphere_direction(&g1, &g2, dist);
 		/* Compute interpolation point */
-		success = sphere_project(&g1, dist*f, dir, &g);
+		success = sphere_project(&g1, dist * f, dir, &g);
 	}
 	/* Spheroid case */
 	else
@@ -84,11 +81,11 @@ interpolate_point4d_spheroid(
 		dist = spheroid_distance(&g1, &g2, s);
 		dir = spheroid_direction(&g1, &g2, s);
 		/* Compute interpolation point */
-		success = spheroid_project(&g1, s, dist*f, dir, &g);
+		success = spheroid_project(&g1, s, dist * f, dir, &g);
 	}
 
 	/* If success, use newly computed lat and lon,
-	* otherwise return precomputed cartesian result */
+	 * otherwise return precomputed cartesian result */
 	if (success == LW_SUCCESS)
 	{
 		p->x = rad2deg(longitude_radians_normalize(g.lon));
@@ -96,16 +93,11 @@ interpolate_point4d_spheroid(
 	}
 }
 
-
 /**
  * @brief Return the part of a line between two fractional locations.
  */
 LWGEOM *
-geography_substring(
-	const LWLINE *lwline,
-	const SPHEROID *s,
-	double from, double to,
-	double tolerance)
+geography_substring(const LWLINE *lwline, const SPHEROID *s, double from, double to, double tolerance)
 {
 	POINTARRAY *dpa;
 	POINTARRAY *ipa = lwline->points;
@@ -119,13 +111,10 @@ geography_substring(
 	uint32_t srid = lwline->srid;
 
 	/*
-	* Create a dynamic pointarray with an initial capacity
-	* equal to full copy of input points
-	*/
-	dpa = ptarray_construct_empty(
-		(char) FLAGS_GET_Z(ipa->flags),
-		(char) FLAGS_GET_M(ipa->flags),
-		ipa->npoints);
+	 * Create a dynamic pointarray with an initial capacity
+	 * equal to full copy of input points
+	 */
+	dpa = ptarray_construct_empty((char)FLAGS_GET_Z(ipa->flags), (char)FLAGS_GET_M(ipa->flags), ipa->npoints);
 
 	/* Compute total line length */
 	length = ptarray_length_spheroid(ipa, s);
@@ -140,12 +129,12 @@ geography_substring(
 	for (i = 0; i < nsegs; i++)
 	{
 		double dseg;
-		getPoint4d_p(ipa, (uint32_t) i+1, &p2);
+		getPoint4d_p(ipa, (uint32_t)i + 1, &p2);
 		geographic_point_init(p2.x, p2.y, &g2);
 
 		/* Find the length of this segment */
 		/* Special sphere case */
-		if ( s->a == s->b )
+		if (s->a == s->b)
 			slength = s->radius * sphere_distance(&g1, &g2);
 		/* Spheroid case */
 		else
@@ -154,7 +143,7 @@ geography_substring(
 		/*  We are before requested start. */
 		if (state == 0) /* before */
 		{
-			if (fabs ( from - ( tlength + slength ) ) <= tolerance)
+			if (fabs(from - (tlength + slength)) <= tolerance)
 			{
 				/* Second point is our start */
 				ptarray_append_point(dpa, &p2, LW_FALSE);
@@ -172,14 +161,14 @@ geography_substring(
 				state = 1;
 			}
 			/*
-			* Didn't reach the 'from' point,
-			* nothing to do
-			*/
+			 * Didn't reach the 'from' point,
+			 * nothing to do
+			 */
 			else if (from > tlength + slength)
 			{
 				goto END;
 			}
-			else  /* tlength < from < tlength+slength */
+			else /* tlength < from < tlength+slength */
 			{
 				/* Our start is between first and second point */
 				dseg = (from - tlength) / slength;
@@ -188,46 +177,46 @@ geography_substring(
 				/* We're inside now, but will check 'to' point as well */
 				state = 1;
 			}
-	    }
+		}
 
-	    if (state == 1) /* inside */
-	    {
+		if (state == 1) /* inside */
+		{
 			/*  'to' point is our second point. */
-			if (fabs(to - ( tlength + slength ) ) <= tolerance )
+			if (fabs(to - (tlength + slength)) <= tolerance)
 			{
 				ptarray_append_point(dpa, &p2, LW_FALSE);
 				break; /* substring complete */
 			}
 			/*
-			* 'to' point is our first point.
-			* (should only happen if 'to' is 0)
-			*/
+			 * 'to' point is our first point.
+			 * (should only happen if 'to' is 0)
+			 */
 			else if (fabs(to - tlength) <= tolerance)
 			{
 				ptarray_append_point(dpa, &p1, LW_FALSE);
 				break; /* substring complete */
 			}
 			/*
-			* Didn't reach the 'end' point,
-			* just copy second point
-			*/
+			 * Didn't reach the 'end' point,
+			 * just copy second point
+			 */
 			else if (to > tlength + slength)
 			{
 				ptarray_append_point(dpa, &p2, LW_FALSE);
 				goto END;
 			}
 			/*
-			* 'to' point falls on this segment
-			* Interpolate and break.
-			*/
-			else if (to < tlength + slength )
+			 * 'to' point falls on this segment
+			 * Interpolate and break.
+			 */
+			else if (to < tlength + slength)
 			{
 				dseg = (to - tlength) / slength;
 				interpolate_point4d_spheroid(&p1, &p2, &pt, s, dseg);
 				ptarray_append_point(dpa, &pt, LW_FALSE);
 				break;
 			}
-	    }
+		}
 
 	END:
 		tlength += slength;
@@ -235,16 +224,17 @@ geography_substring(
 		geographic_point_init(p1.x, p1.y, &g1);
 	}
 
-	if (dpa->npoints <= 1) {
+	if (dpa->npoints <= 1)
+	{
 		lwresult = lwpoint_as_lwgeom(lwpoint_construct(srid, NULL, dpa));
 	}
-	else {
+	else
+	{
 		lwresult = lwline_as_lwgeom(lwline_construct(srid, NULL, dpa));
 	}
 
 	return lwresult;
 }
-
 
 /***********************************************************************
  * Interpolate a point along a geographic line.
@@ -254,9 +244,7 @@ geography_substring(
  * @brief Interpolate a point along a geographic line.
  */
 LWGEOM *
-geography_interpolate_points(
-	const LWLINE *line, double length_fraction,
- 	const SPHEROID *s, char repeat)
+geography_interpolate_points(const LWLINE *line, double length_fraction, const SPHEROID *s, char repeat)
 {
 	POINT4D pt;
 	uint32_t i;
@@ -265,9 +253,9 @@ geography_interpolate_points(
 	double length;
 	double length_fraction_increment = length_fraction;
 	double length_fraction_consumed = 0;
-	char has_z = (char) lwgeom_has_z(lwline_as_lwgeom(line));
-	char has_m = (char) lwgeom_has_m(lwline_as_lwgeom(line));
-	const POINTARRAY* ipa = line->points;
+	char has_z = (char)lwgeom_has_z(lwline_as_lwgeom(line));
+	char has_m = (char)lwgeom_has_m(lwline_as_lwgeom(line));
+	const POINTARRAY *ipa = line->points;
 	POINTARRAY *opa;
 	POINT4D p1, p2;
 	POINT3D q1, q2;
@@ -276,21 +264,21 @@ geography_interpolate_points(
 	uint32_t srid = line->srid;
 
 	/* Empty.InterpolatePoint == Point Empty */
-	if ( lwline_is_empty(line) )
+	if (lwline_is_empty(line))
 	{
 		return lwgeom_clone_deep(lwline_as_lwgeom(line));
 	}
 
 	/*
-	* If distance is one of the two extremes, return the point on that
-	* end rather than doing any computations
-	*/
-	if ( length_fraction == 0.0 || length_fraction == 1.0 )
+	 * If distance is one of the two extremes, return the point on that
+	 * end rather than doing any computations
+	 */
+	if (length_fraction == 0.0 || length_fraction == 1.0)
 	{
-		if ( length_fraction == 0.0 )
+		if (length_fraction == 0.0)
 			getPoint4d_p(ipa, 0, &pt);
 		else
-			getPoint4d_p(ipa, ipa->npoints-1, &pt);
+			getPoint4d_p(ipa, ipa->npoints - 1, &pt);
 
 		opa = ptarray_construct(has_z, has_m, 1);
 		ptarray_set_point4d(opa, 0, &pt);
@@ -299,29 +287,30 @@ geography_interpolate_points(
 
 	/* Interpolate points along the line */
 	length = ptarray_length_spheroid(ipa, s);
-	points_to_interpolate = repeat ? (uint32_t) floor(1 / length_fraction) : 1;
+	points_to_interpolate = repeat ? (uint32_t)floor(1 / length_fraction) : 1;
 	opa = ptarray_construct(has_z, has_m, points_to_interpolate);
 
 	getPoint4d_p(ipa, 0, &p1);
 	geographic_point_init(p1.x, p1.y, &g1);
-	for ( i = 0; i < ipa->npoints - 1 && points_found < points_to_interpolate; i++ )
+	for (i = 0; i < ipa->npoints - 1 && points_found < points_to_interpolate; i++)
 	{
 		double segment_length_frac;
-		getPoint4d_p(ipa, i+1, &p2);
+		getPoint4d_p(ipa, i + 1, &p2);
 		geographic_point_init(p2.x, p2.y, &g2);
 
 		/* Special sphere case */
-		if ( s->a == s->b )
+		if (s->a == s->b)
 			segment_length_frac = s->radius * sphere_distance(&g1, &g2) / length;
 		/* Spheroid case */
 		else
 			segment_length_frac = spheroid_distance(&g1, &g2, s) / length;
 
 		/* If our target distance is before the total length we've seen
-		* so far. create a new point some distance down the current
-		* segment.
-		*/
-		while ( length_fraction < length_fraction_consumed + segment_length_frac && points_found < points_to_interpolate )
+		 * so far. create a new point some distance down the current
+		 * segment.
+		 */
+		while (length_fraction < length_fraction_consumed + segment_length_frac &&
+		       points_found < points_to_interpolate)
 		{
 			geog2cart(&g1, &q1);
 			geog2cart(&g2, &q2);
@@ -338,7 +327,7 @@ geography_interpolate_points(
 	}
 
 	/* Return the last point on the line. This shouldn't happen, but
-	* could if there's some floating point rounding errors. */
+	 * could if there's some floating point rounding errors. */
 	if (points_found < points_to_interpolate)
 	{
 		getPoint4d_p(ipa, ipa->npoints - 1, &pt);
@@ -348,7 +337,9 @@ geography_interpolate_points(
 	if (opa->npoints <= 1)
 	{
 		lwresult = lwpoint_as_lwgeom(lwpoint_construct(srid, NULL, opa));
-	} else {
+	}
+	else
+	{
 		lwresult = lwmpoint_as_lwgeom(lwmpoint_construct(srid, opa));
 	}
 
@@ -359,13 +350,12 @@ geography_interpolate_points(
  * @brief Locate a point along the point array defining a geographic line.
  */
 double
-ptarray_locate_point_spheroid(
-	const POINTARRAY *pa,
-	const POINT4D *p4d,
-	const SPHEROID *s,
-	double tolerance,
-	double *mindistout,
-	POINT4D *proj4d)
+ptarray_locate_point_spheroid(const POINTARRAY *pa,
+			      const POINT4D *p4d,
+			      const SPHEROID *s,
+			      double tolerance,
+			      double *mindistout,
+			      POINT4D *proj4d)
 {
 	GEOGRAPHIC_EDGE e;
 	GEOGRAPHIC_POINT a, b, nearest = {0}; /* make compiler quiet */
@@ -376,32 +366,32 @@ ptarray_locate_point_spheroid(
 	int use_sphere = (s->a == s->b ? 1 : 0);
 	int hasz;
 	double za = 0.0, zb = 0.0;
-	double distance,
-		length,   /* Used for computing lengths */
-		seglength = 0.0,  /* length of the segment where the closest point is located */
-		partlength = 0.0, /* length from the beginning of the point array to the closest point */
-		totlength = 0.0;  /* length of the point array */
+	double distance, length, /* Used for computing lengths */
+	    seglength = 0.0,     /* length of the segment where the closest point is located */
+	    partlength = 0.0,    /* length from the beginning of the point array to the closest point */
+	    totlength = 0.0;     /* length of the point array */
 
 	/* Initialize our point */
 	geographic_point_init(p4d->x, p4d->y, &a);
 
 	/* Handle point/point case here */
-	if ( pa->npoints <= 1)
+	if (pa->npoints <= 1)
 	{
 		double mindist = 0.0;
-		if ( pa->npoints == 1 )
+		if (pa->npoints == 1)
 		{
 			p = getPoint2d_cp(pa, 0);
 			geographic_point_init(p->x, p->y, &b);
 			/* Sphere special case, axes equal */
 			mindist = s->radius * sphere_distance(&a, &b);
 			/* If close or greater than tolerance, get the real answer to be sure */
-			if ( ! use_sphere || mindist > 0.95 * tolerance )
+			if (!use_sphere || mindist > 0.95 * tolerance)
 			{
 				mindist = spheroid_distance(&a, &b, s);
 			}
 		}
-		if ( mindistout ) *mindistout = mindist;
+		if (mindistout)
+			*mindistout = mindist;
 		return 0.0;
 	}
 
@@ -413,7 +403,7 @@ ptarray_locate_point_spheroid(
 	geographic_point_init(p->x, p->y, &(e.start));
 
 	/* Iterate through the edges in our line */
-	for ( i = 1; i < pa->npoints; i++ )
+	for (i = 1; i < pa->npoints; i++)
 	{
 		double d;
 		p = getPoint2d_cp(pa, i);
@@ -421,22 +411,22 @@ ptarray_locate_point_spheroid(
 		/* Get the spherical distance between point and edge */
 		d = s->radius * edge_distance_to_point(&e, &a, &b);
 		/* New shortest distance! Record this distance / location / segment */
-		if ( d < distance )
+		if (d < distance)
 		{
 			distance = d;
 			nearest = b;
 			seg = i - 1;
 		}
-	    /* We've gotten closer than the tolerance... */
-		if ( d < tolerance )
+		/* We've gotten closer than the tolerance... */
+		if (d < tolerance)
 		{
 			/* Working on a sphere? The answer is correct, return */
-			if ( use_sphere )
+			if (use_sphere)
 			{
 				break;
 			}
 			/* Far enough past the tolerance that the spheroid calculation won't change things */
-			else if ( d < tolerance * 0.95 )
+			else if (d < tolerance * 0.95)
 			{
 				break;
 			}
@@ -445,42 +435,43 @@ ptarray_locate_point_spheroid(
 			{
 				d = spheroid_distance(&a, &nearest, s);
 				/* Yes, closer than tolerance, return! */
-				if ( d < tolerance )
+				if (d < tolerance)
 					break;
 			}
 		}
 		e.start = e.end;
 	}
 
-	if ( mindistout ) *mindistout = distance;
+	if (mindistout)
+		*mindistout = distance;
 
 	/* See if we have a third dimension */
-	hasz = (bool) FLAGS_GET_Z(pa->flags);
+	hasz = (bool)FLAGS_GET_Z(pa->flags);
 
 	/* Initialize first point of array */
 	getPoint4d_p(pa, 0, &p1);
 	geographic_point_init(p1.x, p1.y, &a);
-	if ( hasz )
+	if (hasz)
 		za = p1.z;
 
 	/* Loop and sum the length for each segment */
-	for ( i = 1; i < pa->npoints; i++ )
+	for (i = 1; i < pa->npoints; i++)
 	{
 		getPoint4d_p(pa, i, &p1);
 		geographic_point_init(p1.x, p1.y, &b);
-		if ( hasz )
+		if (hasz)
 			zb = p1.z;
 
 		/* Special sphere case */
-		if ( s->a == s->b )
+		if (s->a == s->b)
 			length = s->radius * sphere_distance(&a, &b);
 		/* Spheroid case */
 		else
 			length = spheroid_distance(&a, &b, s);
 
 		/* Add in the vertical displacement if we're in 3D */
-		if ( hasz )
-			length = sqrt( (zb-za)*(zb-za) + length*length );
+		if (hasz)
+			length = sqrt((zb - za) * (zb - za) + length * length);
 
 		/* Add this segment length to the total length */
 		totlength += length;
@@ -511,13 +502,13 @@ ptarray_locate_point_spheroid(
 	geographic_point_init(proj4d->x, proj4d->y, &b);
 
 	/* Special sphere case */
-	if ( s->a == s->b )
+	if (s->a == s->b)
 		length = s->radius * sphere_distance(&a, &b);
 	/* Spheroid case */
 	else
 		length = spheroid_distance(&a, &b, s);
 
-	if ( hasz )
+	if (hasz)
 	{
 		/* Compute Z and M values for closest point */
 		double f = length / seglength;
@@ -527,7 +518,7 @@ ptarray_locate_point_spheroid(
 		/* Add in the vertical displacement if we're in 3D */
 		za = p1.z;
 		zb = proj4d->z;
-		length = sqrt( (zb-za)*(zb-za) + length*length );
+		length = sqrt((zb - za) * (zb - za) + length * length);
 	}
 
 	/* Add this segment length to the total */
@@ -535,24 +526,27 @@ ptarray_locate_point_spheroid(
 
 	/* Location of any point on a zero-length line is 0 */
 	/* See http://trac.osgeo.org/postgis/ticket/1772#comment:2 */
-	if ( partlength == 0 || totlength == 0 )
+	if (partlength == 0 || totlength == 0)
 		return 0.0;
 
 	/* For robustness, force 0 when closest point == startpoint */
 	p = getPoint2d_cp(pa, 0);
-	if ( seg == 0 && p2d_same(&proj, p) )
+	if (seg == 0 && p2d_same(&proj, p))
 		return 0.0;
 
 	/* For robustness, force 1 when closest point == endpoint */
 	p = getPoint2d_cp(pa, pa->npoints - 1);
-	if ( (seg >= (pa->npoints-2)) && p2d_same(&proj, p) )
+	if ((seg >= (pa->npoints - 2)) && p2d_same(&proj, p))
 		return 1.0;
 
 	/* Floating point arithmetic is not reliable, make sure we return values [0,1] */
 	double result = partlength / totlength;
-	if ( result < 0.0 ) {
+	if (result < 0.0)
+	{
 		result = 0.0;
-	} else if ( result > 1.0 ) {
+	}
+	else if (result > 1.0)
+	{
 		result = 1.0;
 	}
 	return result;
