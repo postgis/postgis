@@ -36,6 +36,12 @@ PostGIS 3.8.0dev
    (Bilal Kahraman, Darafei Praliaskouski)
  - GT-884, [raster] Check reclassification bounds before combining range delimiters
           (reported by Sven Klemm, Tiger Data; fixed by Aleksander Alekseev, Darafei Praliaskouski)
+ - GT-868, Guard raster band size calculations against overflow
+          (reported by Paul Wouters; fixed by Darafei Praliaskouski)
+ - GT-868, Quote identifiers when creating tables from FlatGeobuf
+          (reported by code908190; fixed by Ariel Mashraki)
+ - GT-868, Widen intermediate arithmetic for WKB size calculations
+          (reported by wywwzjj; fixed by Even Rouault)
  - GT-868, GT-812, Check named geometry column types in row encoders
           (Andrew Kroh; reported by Sven Klemm, Tiger Data, Dawid Żak, Software Mansion, Aleksander Alekseev)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
