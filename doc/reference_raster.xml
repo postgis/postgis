@@ -13889,7 +13889,7 @@ FROM dummy_rast;</programlisting>
                     <para>An aggregate function that returns a <xref linkend="box2d_type"/> bounding box enclosing a set of rasters.</para>
                     <para>The aggregate uses each raster's convex hull footprint, so skewed and rotated rasters are included by their actual corner coordinates instead of only their unrotated upper-left and lower-right coordinates. The returned <type>box2d</type> does not include an SRID.</para>
 
-                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                    <para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
                 </refsection>
 
                 <refsection>
