@@ -498,6 +498,21 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 				break;
 			}
 
+			/* Unknown keys go to node zero and need a heap recheck. */
+			if (i == 0)
+				continue;
+			/* Non-finite query bounds cannot safely prune any node. */
+			{
+				size_t dim;
+				bool finite = true;
+				for (dim = 0; dim < GIDX_NDIMS(query_gbox_index); dim++)
+					if (!isfinite(GIDX_GET_MIN(query_gbox_index, dim)) ||
+					    !isfinite(GIDX_GET_MAX(query_gbox_index, dim)))
+						finite = false;
+				if (!finite)
+					continue;
+			}
+
 			switch (strategy)
 			{
 			case SPGOverlapStrategyNumber:
@@ -594,6 +609,13 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 			POSTGIS_DEBUG(4, "[SPGIST] null query_gbox_index!");
 			flag = false;
 			break;
+		}
+
+		/* The unknown key represents both EMPTY and non-finite geometries. */
+		if (GIDX_NDIMS(leaf) == 0)
+		{
+			out->recheck = true;
+			continue;
 		}
 
 		switch (strategy)

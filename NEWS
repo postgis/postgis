@@ -28,7 +28,8 @@ PostGIS 3.8.0dev
 
  - GT-837, Keep ND traversal boxes safe across dimensions
    (reported by Sven Klemm, Aleksander Alekseev, Tiger Data; fixed by Aleksander Alekseev, Darafei Praliaskouski)
-
+ - GT-837, GH-1195, GH-1197, GH-1198, Fix SP-GiST index correctness
+   (Bilal Kahraman, Darafei Praliaskouski)
  - GT-812, Check named geometry column types in row encoders (Andrew Kroh)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
  - GH-1183, Handle allocation failures during shape creation (Maksim Korotkov)

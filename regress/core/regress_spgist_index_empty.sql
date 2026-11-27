@@ -106,6 +106,13 @@ ORDER BY op, qid;
 DROP INDEX tbl_empty_idx_spg2d;
 DROP INDEX tbl_empty_only_spg2d;
 
+-- Unknown ND keys must be rechecked against the original geometry.
+CREATE INDEX tbl_empty_idx_spgnd ON tbl_empty_idx USING spgist (g spgist_geometry_ops_nd);
+SELECT 'spgist nd nonfinite', op, qid, idx_vs_seq('tbl_empty_idx', op, q, 'tbl_empty_idx_spgnd')
+FROM (VALUES ('&&&'), ('@@'), ('~~'), ('~~=')) o(op), queries
+ORDER BY op, qid;
+DROP INDEX tbl_empty_idx_spgnd;
+
 -- An EMPTY query next to a real one, on an index that is a single leaf
 -- page, so that the leaf test sees both: nothing matches an EMPTY query.
 CREATE TABLE tbl_empty_small AS

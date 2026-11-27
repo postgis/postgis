@@ -158,6 +158,38 @@ spgist 2d insert|~=|5|same|620|620
 spgist 2d insert|~=|6|same|620|620
 spgist 2d insert|~=|7|same|0|0
 spgist 2d insert|~=|8|same|620|620
+spgist nd nonfinite|&&&|1|same|318|318
+spgist nd nonfinite|&&&|2|same|3700|3700
+spgist nd nonfinite|&&&|3|same|60|60
+spgist nd nonfinite|&&&|4|same|62|62
+spgist nd nonfinite|&&&|5|same|0|0
+spgist nd nonfinite|&&&|6|same|3700|3700
+spgist nd nonfinite|&&&|7|same|180|180
+spgist nd nonfinite|&&&|8|same|173|173
+spgist nd nonfinite|@@|1|same|318|318
+spgist nd nonfinite|@@|2|same|3700|3700
+spgist nd nonfinite|@@|3|same|60|60
+spgist nd nonfinite|@@|4|same|62|62
+spgist nd nonfinite|@@|5|same|0|0
+spgist nd nonfinite|@@|6|same|3700|3700
+spgist nd nonfinite|@@|7|same|180|180
+spgist nd nonfinite|@@|8|same|173|173
+spgist nd nonfinite|~~|1|same|60|60
+spgist nd nonfinite|~~|2|same|60|60
+spgist nd nonfinite|~~|3|same|60|60
+spgist nd nonfinite|~~|4|same|62|62
+spgist nd nonfinite|~~|5|same|0|0
+spgist nd nonfinite|~~|6|same|3700|3700
+spgist nd nonfinite|~~|7|same|180|180
+spgist nd nonfinite|~~|8|same|173|173
+spgist nd nonfinite|~~=|1|same|0|0
+spgist nd nonfinite|~~=|2|same|0|0
+spgist nd nonfinite|~~=|3|same|0|0
+spgist nd nonfinite|~~=|4|same|1|1
+spgist nd nonfinite|~~=|5|same|0|0
+spgist nd nonfinite|~~=|6|same|0|0
+spgist nd nonfinite|~~=|7|same|0|0
+spgist nd nonfinite|~~=|8|same|0|0
 spgist nd two keys|&&&|same|0|0
 spgist nd two keys|@@|same|0|0
 spgist nd two keys|~~|same|0|0
