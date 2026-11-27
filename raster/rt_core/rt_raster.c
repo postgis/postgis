@@ -809,7 +809,7 @@ rt_raster_geopoint_to_rasterpoint(rt_raster raster, double xw, double yw, double
 rt_errorstate
 rt_raster_get_envelope(rt_raster raster, rt_envelope *env)
 {
-	int i;
+	size_t i;
 	int rtn;
 	int set = 0;
 	double _r[2] = {0.};
@@ -3379,8 +3379,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		int nodata = 0;
 		int hasnodata = 0;
 		double nodataval = 0;
-		int x = 0;
-		int y = 0;
+		size_t x = 0;
+		size_t y = 0;
 
 		oldband = rt_raster_get_band(rast, i);
 		if (oldband == NULL)
