@@ -3606,6 +3606,7 @@ CREATE OR REPLACE FUNCTION st_slope(
 -- ST_Sharpen
 -----------------------------------------------------------------------
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION _st_sharpen4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
@@ -3676,7 +3677,7 @@ CREATE OR REPLACE FUNCTION _st_sharpen4ma(value double precision[][][], pos inte
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_sharpen(
 	rast raster,
 	nband integer,
@@ -3757,7 +3758,7 @@ CREATE OR REPLACE FUNCTION st_sharpen(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_sharpen(
 	rast raster,
 	nband integer DEFAULT 1,
@@ -3770,7 +3771,7 @@ CREATE OR REPLACE FUNCTION st_sharpen(
 	AS $$ SELECT @extschema@.ST_sharpen($1, $2, NULL::@extschema@.raster, $3, $4, $5, $6) $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_sharpen(
 	rast raster,
 	method text,

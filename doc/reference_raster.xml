@@ -13071,7 +13071,7 @@ WHERE rid = 2;</programlisting>
 
                     <para>If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma"/> before sharpening. Otherwise, a NODATA center pixel returns NODATA and NODATA neighbors use the center pixel value.</para>
 
-                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                    <para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
                 </refsection>
 
                 <refsection>
