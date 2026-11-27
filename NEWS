@@ -21,6 +21,8 @@ PostGIS 3.8.0dev
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
           (Darafei Praliaskouski)
+ - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
+          packer (John Carmack)
 
 * Bug Fixes *
 
