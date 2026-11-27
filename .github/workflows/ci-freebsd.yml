@@ -66,10 +66,11 @@ jobs:
               /etc/pkg/FreeBSD.conf
             ASSUME_ALWAYS_YES=yes pkg bootstrap -f
             env IGNORE_OSVERSION=yes pkg update -f
+            # Match the PostgreSQL client pulled in by the GDAL package.
             env IGNORE_OSVERSION=yes pkg install -y \
               autoconf automake bison ccache-static cunit docbook \
               gdal geos gmake iconv json-c libtool libxml2 libxslt \
-              pkgconf postgresql17-contrib postgresql17-server \
+              pkgconf postgresql18-contrib postgresql18-server \
               proj protobuf-c sfcgal
             projsync --system-directory --source-id us_noaa
             projsync --system-directory --source-id ch_swisstopo
