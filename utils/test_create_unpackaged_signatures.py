@@ -27,6 +27,10 @@ CREATE OR REPLACE FUNCTION another(
         normalized = " ".join(result.split())
         self.assertIn("'example ( a integer , b text )'", normalized)
         self.assertIn("'another ( a integer , b text )'", normalized)
+        self.assertIn("p.prokind", result)
+        self.assertIn("WHEN 'p' THEN 'PROCEDURE'", result)
+        self.assertIn("WHEN 'a' THEN 'AGGREGATE'", result)
+        self.assertIn("ALTER %s %s OWNER TO %I", result)
 
     def test_incomplete_signature_fails(self):
         result = subprocess.run(

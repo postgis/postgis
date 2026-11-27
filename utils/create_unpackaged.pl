@@ -421,6 +421,7 @@ BEGIN
 	FOR rec IN
 		SELECT
 			p.oid,
+			p.prokind,
 			p.proowner,
 			e.extowner,
 			r.rolsuper
@@ -443,7 +444,8 @@ BEGIN
 					rec.oid::regprocedure, rec.proowner::regrole,
 					rec.extowner::regrole;
 			sql := pg_catalog.format(
-				'ALTER FUNCTION %s OWNER TO %I',
+				'ALTER %s %s OWNER TO %I',
+				CASE rec.prokind WHEN 'p' THEN 'PROCEDURE' WHEN 'a' THEN 'AGGREGATE' ELSE 'FUNCTION' END,
 				rec.oid::regprocedure,
 				rec.extowner::regrole
 			);
