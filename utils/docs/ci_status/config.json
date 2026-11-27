@@ -27,7 +27,8 @@
       "workflow": "ci-freebsd.yml",
       "url": "https://github.com/postgis/postgis/actions/workflows/ci-freebsd.yml",
       "branches": [
-        "master"
+        "master",
+        "stable-3.7"
       ]
     },
     {
@@ -50,7 +51,8 @@
       "workflow": "ci-macos.yml",
       "url": "https://github.com/postgis/postgis/actions/workflows/ci-macos.yml",
       "branches": [
-        "master"
+        "master",
+        "stable-3.7"
       ]
     },
     {
@@ -73,7 +75,8 @@
       "workflow": "msys.yml",
       "url": "https://github.com/postgis/postgis/actions/workflows/msys.yml",
       "branches": [
-        "master"
+        "master",
+        "stable-3.7"
       ]
     },
     {
@@ -83,7 +86,8 @@
       "workflow": "codespell.yml",
       "url": "https://github.com/postgis/postgis/actions/workflows/codespell.yml",
       "branches": [
-        "master"
+        "master",
+        "stable-3.7"
       ]
     },
     {
@@ -93,7 +97,8 @@
       "workflow": "contributor-credits.yml",
       "url": "https://github.com/postgis/postgis/actions/workflows/contributor-credits.yml",
       "branches": [
-        "master"
+        "master",
+        "stable-3.7"
       ]
     },
     {
@@ -104,6 +109,7 @@
       "url": "https://github.com/postgis/postgis/actions/workflows/codeql.yml",
       "branches": [
         "master",
+        "stable-3.7",
         "stable-3.6",
         "stable-3.5"
       ]
@@ -116,6 +122,7 @@
       "web_url": "https://woodie.osgeo.org/repos/30",
       "branches": [
         "master",
+        "stable-3.7",
         "stable-3.6",
         "stable-3.5",
         "stable-3.4",
@@ -143,6 +150,7 @@
       "job_url": "https://winnie.postgis.net/view/PostGIS/job/PostGIS_${version_or_trunk}/",
       "branches": [
         "master",
+        "stable-3.7",
         "stable-3.6",
         "stable-3.5"
       ]
