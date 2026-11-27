@@ -4931,7 +4931,7 @@ WHERE
                 <para>If <varname>curvature</varname> is true, the GDAL viewshed curvature/refraction coefficient is set to 0.85714. The <varname>curvature_coef</varname> overload accepts an explicit coefficient. A coefficient of 0.0 does not adjust for earth curvature.</para>
                 <para>This function uses GDAL's viewshed algorithm, which is intended for projected coordinate reference systems. GDAL does not currently apply special processing for input DEM cells that have a nodata value. The GDAL <varname>GTiff</varname> driver must be enabled in <xref linkend="postgis_gdal_enabled_drivers"/>.</para>
 
-                <para role="availability" conformance="3.7.0">Availability: 3.7.0 - requires GDAL &gt;= 3.1.1.</para>
+                <para role="availability" conformance="3.8.0">Availability: 3.8.0 - requires GDAL &gt;= 3.1.1.</para>
             </refsection>
 
             <refsection>
