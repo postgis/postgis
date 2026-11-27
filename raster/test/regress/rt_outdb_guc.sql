@@ -20,6 +20,31 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE FUNCTION outdb_guc_addband_error(path text)
+RETURNS text
+AS $$
+BEGIN
+	PERFORM ST_AddBand(
+		ST_MakeEmptyRaster(1, 1, 0, 0, 1, -1, 0, 0, 0),
+		1, path, ARRAY[1]::int[]
+	);
+	RETURN 'ok';
+EXCEPTION WHEN OTHERS THEN
+	RETURN SQLERRM;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION outdb_guc_setbandpath_error(rast raster, path text)
+RETURNS text
+AS $$
+BEGIN
+	PERFORM ST_SetBandPath(rast, 1, path, 1, FALSE);
+	RETURN 'ok';
+EXCEPTION WHEN OTHERS THEN
+	RETURN SQLERRM;
+END;
+$$ LANGUAGE plpgsql;
+
 DO $$
 BEGIN
 	PERFORM postgis_raster_lib_version();
@@ -30,6 +55,8 @@ CREATE ROLE outdb_guc_regression_guest;
 GRANT SELECT ON raster_outdb_template TO outdb_guc_regression_guest;
 GRANT EXECUTE ON FUNCTION outdb_guc_can_read_metadata(raster) TO outdb_guc_regression_guest;
 GRANT EXECUTE ON FUNCTION outdb_guc_can_read_pixel(raster) TO outdb_guc_regression_guest;
+GRANT EXECUTE ON FUNCTION outdb_guc_addband_error(text) TO outdb_guc_regression_guest;
+GRANT EXECUTE ON FUNCTION outdb_guc_setbandpath_error(raster, text) TO outdb_guc_regression_guest;
 
 SET postgis.gdal_enabled_drivers = 'GTiff';
 RESET postgis.enable_outdb_rasters;
@@ -48,6 +75,9 @@ SELECT 'off_indb_pixel', (
 		1, 1, 1
 	) = 7
 );
+SELECT 'off_addband_outdb', outdb_guc_addband_error('/nonexistent/path/outdb_guc.tif');
+SELECT 'off_setbandpath', outdb_guc_setbandpath_error(rast, '/nonexistent/path/outdb_guc.tif')
+FROM raster_outdb_template WHERE rid = 1;
 
 RESET ROLE;
 SET postgis.enable_outdb_rasters = true;
@@ -55,6 +85,9 @@ SET ROLE outdb_guc_regression_guest;
 SELECT 'on_metadata', outdb_guc_can_read_metadata(rast)
 FROM raster_outdb_template WHERE rid = 1;
 SELECT 'on_pixel', outdb_guc_can_read_pixel(rast)
+FROM raster_outdb_template WHERE rid = 1;
+SELECT 'on_addband_outdb', outdb_guc_addband_error('/nonexistent/path/outdb_guc.tif');
+SELECT 'on_setbandpath', outdb_guc_setbandpath_error(rast, '/nonexistent/path/outdb_guc.tif')
 FROM raster_outdb_template WHERE rid = 1;
 
 RESET ROLE;
@@ -83,6 +116,10 @@ SET postgis.enable_outdb_rasters = true;
 REVOKE SELECT ON raster_outdb_template FROM outdb_guc_regression_guest;
 REVOKE EXECUTE ON FUNCTION outdb_guc_can_read_metadata(raster) FROM outdb_guc_regression_guest;
 REVOKE EXECUTE ON FUNCTION outdb_guc_can_read_pixel(raster) FROM outdb_guc_regression_guest;
+REVOKE EXECUTE ON FUNCTION outdb_guc_addband_error(text) FROM outdb_guc_regression_guest;
+REVOKE EXECUTE ON FUNCTION outdb_guc_setbandpath_error(raster, text) FROM outdb_guc_regression_guest;
 DROP FUNCTION outdb_guc_can_read_metadata(raster);
 DROP FUNCTION outdb_guc_can_read_pixel(raster);
+DROP FUNCTION outdb_guc_addband_error(text);
+DROP FUNCTION outdb_guc_setbandpath_error(raster, text);
 DROP ROLE outdb_guc_regression_guest;

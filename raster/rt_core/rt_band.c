@@ -39,6 +39,9 @@
 #include "cpl_vsi.h"
 #include "gdal_vrt.h"
 
+/* variable for PostgreSQL GUC: postgis.enable_outdb_rasters */
+bool enable_outdb_rasters = true;
+
 /**
  * Create an in-db rt_band with no data
  *
@@ -369,6 +372,12 @@ rt_band_new_offline_from_path(uint16_t width,
 	GDALDataType gdpixtype;
 	rt_pixtype pt = PT_END;
 
+	if (!enable_outdb_rasters)
+	{
+		rterror("rt_band_new_offline_from_path: Access to offline bands disabled");
+		return NULL;
+	}
+
 	/* open outdb raster file */
 	rt_util_gdal_register_all(0);
 	hdsSrc = rt_util_gdal_open(path, GA_ReadOnly, 1);
@@ -571,9 +580,6 @@ rt_band_get_data(rt_band band)
 	else
 		return band->data.mem;
 }
-
-/* variable for PostgreSQL GUC: postgis.enable_outdb_rasters */
-bool enable_outdb_rasters = true;
 
 /**
  * Load offline band's data.  Loaded data is internally owned

@@ -1275,6 +1275,17 @@ test_band_new_offline_from_path(void)
 	CU_ASSERT_EQUAL(rt_band_get_height(band), height);
 
 	rt_band_destroy(band);
+
+	{
+		extern bool enable_outdb_rasters;
+		bool enabled = enable_outdb_rasters;
+
+		enable_outdb_rasters = false;
+		band = rt_band_new_offline_from_path(width, height, 0, 0, 2, path, FALSE);
+		CU_ASSERT(band == NULL);
+
+		enable_outdb_rasters = enabled;
+	}
 }
 
 /* register tests */

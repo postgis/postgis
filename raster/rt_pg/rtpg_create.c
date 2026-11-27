@@ -36,6 +36,8 @@
 
 #include "rtpostgis.h"
 
+extern bool enable_outdb_rasters;
+
 /* Raster and band creation */
 Datum RASTER_makeEmpty(PG_FUNCTION_ARGS);
 Datum RASTER_addBand(PG_FUNCTION_ARGS);
@@ -828,6 +830,16 @@ RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		}
 		else
 			dstnband = numbands + 1;
+	}
+
+	if (!enable_outdb_rasters)
+	{
+		if (raster != NULL)
+			rt_raster_destroy(raster);
+		if (pgraster != NULL)
+			PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_addBandOutDB: Access to out-db rasters disabled");
+		PG_RETURN_NULL();
 	}
 
 	/* open outdb raster file */
