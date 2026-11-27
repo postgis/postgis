@@ -22,7 +22,6 @@
  *
  **********************************************************************/
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -36,19 +35,17 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-
 Datum LWGEOM_has_arc(PG_FUNCTION_ARGS);
 Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS);
-
-
 
 /*******************************************************************************
  * Begin PG_FUNCTIONs
  ******************************************************************************/
 
 PG_FUNCTION_INFO_V1(LWGEOM_has_arc);
-Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_has_arc(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
@@ -66,7 +63,8 @@ Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
  * TODO: drop, use ST_CurveToLine instead
  */
 PG_FUNCTION_INFO_V1(LWGEOM_curve_segmentize);
-Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	int32 perQuad = PG_GETARG_INT32(1);
@@ -97,7 +95,8 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(ST_CurveToLine);
-Datum ST_CurveToLine(PG_FUNCTION_ARGS)
+Datum
+ST_CurveToLine(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	double tol = PG_GETARG_FLOAT8(1);
@@ -124,7 +123,8 @@ Datum ST_CurveToLine(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_line_desegmentize);
-Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *ret;

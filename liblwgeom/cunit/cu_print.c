@@ -20,9 +20,9 @@
 static void
 test_lwpoint_to_latlon_assert_format(char *point_wkt, const char *format, const char *expected)
 {
-	LWPOINT * test_point = (LWPOINT*)lwgeom_from_wkt(point_wkt, LW_PARSER_CHECK_NONE);
+	LWPOINT *test_point = (LWPOINT *)lwgeom_from_wkt(point_wkt, LW_PARSER_CHECK_NONE);
 	int num_old_failures, num_new_failures;
-	char * actual;
+	char *actual;
 	cu_error_msg_reset();
 	actual = lwpoint_to_latlon(test_point, format);
 	if (0 != strlen(cu_error_msg))
@@ -43,9 +43,9 @@ test_lwpoint_to_latlon_assert_format(char *point_wkt, const char *format, const 
 static void
 test_lwpoint_to_latlon_assert_error(char *point_wkt, const char *format)
 {
-	LWPOINT * test_point = (LWPOINT*)lwgeom_from_wkt(point_wkt, LW_PARSER_CHECK_NONE);
+	LWPOINT *test_point = (LWPOINT *)lwgeom_from_wkt(point_wkt, LW_PARSER_CHECK_NONE);
 	cu_error_msg_reset();
-	char* tmp = lwpoint_to_latlon(test_point, format);
+	char *tmp = lwpoint_to_latlon(test_point, format);
 	lwfree(tmp);
 	if (0 == strlen(cu_error_msg))
 	{
@@ -204,10 +204,8 @@ test_lwpoint_to_latlon_format_orders(void)
 static void
 test_lwpoint_to_latlon_optional_format(void)
 {
-	test_lwpoint_to_latlon_assert_format("POINT(21.9999999 1)",
-		"D-M-S-C", "1-0-0-N 22-0-0-E");
-	test_lwpoint_to_latlon_assert_format("POINT(21.99999999999 1)",
-		"D-M-S-C", "1-0-0-N 22-0-0-E");
+	test_lwpoint_to_latlon_assert_format("POINT(21.9999999 1)", "D-M-S-C", "1-0-0-N 22-0-0-E");
+	test_lwpoint_to_latlon_assert_format("POINT(21.99999999999 1)", "D-M-S-C", "1-0-0-N 22-0-0-E");
 
 	test_lwpoint_to_latlon_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD", "-12.346 -45.455");
 	test_lwpoint_to_latlon_assert_format("POINT(-45.4545 -12.34567)", "DD.DDD C", "12.346 S 45.455 W");
@@ -396,7 +394,7 @@ test_lwprint(void)
 	}
 
 	/* Test regression changes (output that changed in the tests vs 3.0) */
-		/* There is at most 17 significative digits */
+	/* There is at most 17 significative digits */
 	assert_lwprint_equal(-123456789012345.12345678, 20, "-123456789012345.12");
 	assert_lwprint_equal(123456789012345.12345678, 20, "123456789012345.12");
 
@@ -462,7 +460,6 @@ test_lwprint(void)
 	assert_lwprint_equal(-OUT_MIN_DOUBLE, OUT_MAX_DIGITS, "-1e-8");
 	assert_lwprint_equal(nextafter(OUT_MIN_DOUBLE, INFINITY), OUT_MAX_DIGITS, "0.000000010000000000000002");
 	assert_lwprint_equal(nextafter(-OUT_MIN_DOUBLE, -INFINITY), OUT_MAX_DIGITS, "-0.000000010000000000000002");
-
 
 	/* Big numbers that use scientific notation respect the precision parameter */
 	assert_lwprint_equal(9e+300, 0, "9e+300");
@@ -570,7 +567,8 @@ test_lwprint_roundtrip(void)
 ** Callback used by the test harness to register the tests in this file.
 */
 void print_suite_setup(void);
-void print_suite_setup(void)
+void
+print_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("printing", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_default_format);
@@ -581,4 +579,3 @@ void print_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwprint);
 	PG_ADD_TEST(suite, test_lwprint_roundtrip);
 }
-
