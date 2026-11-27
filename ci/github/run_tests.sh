@@ -17,6 +17,7 @@ export CUNIT_VALGRIND_FLAGS="--leak-check=full --error-exitcode=1"
 # Standard build
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
 #bash ./ci/github/logbt --
-make -j"$(sh "ci/parallel-jobs.sh")"
+jobs=$(sh "ci/parallel-jobs.sh")
+make -j"${jobs}"
 #bash ./ci/github/logbt \ --
 make check RUNTESTFLAGS=--verbose

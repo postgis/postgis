@@ -107,9 +107,10 @@ jobs:
 
           brew services start "postgresql@${PG}"
 
-          make -j$(sysctl -n hw.logicalcpu) || { brew services stop "postgresql@${PG}"; exit 1; }
+          jobs=$(sh ci/parallel-jobs.sh)
+          make -j"${jobs}" || { brew services stop "postgresql@${PG}"; exit 1; }
           sudo make install || { brew services stop "postgresql@${PG}"; exit 1; }
-          make -j$(sysctl -n hw.logicalcpu) check RUNTESTFLAGS="-v --extension --dumprestore" || {
+          make -j"${jobs}" check RUNTESTFLAGS="-v --extension --dumprestore" || {
             show_regression_diffs
             brew services stop "postgresql@${PG}"
             exit 1

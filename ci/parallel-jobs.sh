@@ -3,108 +3,127 @@
 # Helper used by PostGIS CI jobs to choose a safe level of parallelism for
 # memory-bound build steps.
 #
-# Woodpecker pipelines were failing with "received oom kill" on small shared
-# agents such as 145045 (capacity 4) and 145144 (capacity 2). An unbounded
-# make -j sizes itself to the host CPU count, while a CI container may have only
-# a fraction of the host memory.
-#
-# The selected job count is bounded by CPU count and by an assumed per-job
-# memory cost. Available memory is treated as the smaller of the cgroup memory
-# limit and /proc/meminfo MemAvailable, when both are available.
+# Use the smaller of the CPU and memory budgets to avoid overcommitting
+# shared runners, especially when the container sees more resources than
+# the job can actually use.
 
 postgis_ci_positive_integer()
 {
 	case "$1" in
-		''|*[!0-9]*|0) return 1 ;;
-		*) return 0 ;;
+		''|0*|*[!0-9]*) return 1 ;;
 	esac
 }
 
 postgis_ci_cpu_count()
 {
-	# CPU limit from host; only a fallback to 1 when detection fails.
-	cpus=$(getconf _NPROCESSORS_ONLN 2>/dev/null || nproc 2>/dev/null || echo 1)
+	# nproc accounts for CPU affinity on Linux. BSD runners may lack it.
+	cpus=$(
+		unset OMP_NUM_THREADS OMP_THREAD_LIMIT
+		nproc 2>/dev/null || getconf _NPROCESSORS_ONLN 2>/dev/null ||
+			sysctl -n hw.ncpu 2>/dev/null) || cpus=1
 	if ! postgis_ci_positive_integer "${cpus}"; then
 		cpus=1
 	fi
 	echo "${cpus}"
 }
 
-postgis_ci_cgroup_memory_kb()
+postgis_ci_cgroup_path()
 {
-	# Read /proc/self/cgroup and keep the last path component for the active
-	# cgroup membership. For unified cgroup v2 containers this is usually the
-	# only relevant hierarchy.
-	cgroup_path=
-	while IFS=: read -r _hierarchy _controllers _path; do
-		cgroup_path=${_path}
+	while IFS=: read -r hierarchy controllers path; do
+		case "$1:${hierarchy}:,${controllers}," in
+			v2:0:,,|cpu:*:*,cpu,*|memory:*:*,memory,*)
+				printf '%s\n' "${path}"
+				return
+				;;
+		esac
 	done < /proc/self/cgroup
+}
 
-	test -n "${cgroup_path}" || return 1
+postgis_ci_cgroup_limits()
+{
+	root=$1
+	path=$2
+	kind=$3
+	# Docker can mount the job's own cgroup as the filesystem root.
+	while :; do
+		dir=${root}${path}
+		case "${kind}" in
+			cpu-v2)
+				test -r "${dir}/cpu.max" &&
+					read -r quota period < "${dir}/cpu.max"
+				;;
+			cpu-v1)
+				test -r "${dir}/cpu.cfs_quota_us" &&
+					read -r quota < "${dir}/cpu.cfs_quota_us" &&
+					read -r period < "${dir}/cpu.cfs_period_us"
+				;;
+			memory-v2|memory-v1)
+				file=memory.max
+				if test "${kind}" = memory-v1; then
+					file=memory.limit_in_bytes
+				fi
+				if test -r "${dir}/${file}" && read -r bytes < "${dir}/${file}" &&
+					postgis_ci_positive_integer "${bytes}"; then
+					echo "$((bytes / 1024))"
+				fi
+				;;
+		esac
+		case "${kind}" in
+			cpu-*)
+				if postgis_ci_positive_integer "${quota:-}" &&
+					postgis_ci_positive_integer "${period:-}"; then
+					jobs=$((quota / period))
+					echo "$((jobs > 0 ? jobs : 1))"
+				fi
+				unset quota period
+				;;
+		esac
+		test -n "${path}" || break
+		path=${path%/*}
+	done
+}
 
-	if test "${POSTGIS_CI_TEST_CGROUP_ROOT:-}" != ""; then
-		cgroup_root=${POSTGIS_CI_TEST_CGROUP_ROOT}
-	else
-		cgroup_root=/sys/fs/cgroup
+postgis_ci_cgroup_budget()
+{
+	test -r /proc/self/cgroup || return 0
+	root=${POSTGIS_CI_TEST_CGROUP_ROOT:-/sys/fs/cgroup}
+	v2=$(postgis_ci_cgroup_path v2)
+	if test -n "${v2}"; then
+		postgis_ci_cgroup_limits "${root}" "${v2%/}" "$1-v2"
 	fi
-
-	# memory.max is cgroup v2 memory limit in bytes. Value "max" means no
-	# explicit cgroup limit was configured, so we can not compute bytes-to-KiB
-	# here and must fall back to other sources.
-	memory_max="${cgroup_root}${cgroup_path}/memory.max"
-	test -r "${memory_max}" || return 1
-
-	memory_bytes=$(cat "${memory_max}")
-	case "${memory_bytes}" in
-		''|max|*[!0-9]*) return 1 ;;
-	esac
-
-	echo $((memory_bytes / 1024))
+	v1=$(postgis_ci_cgroup_path "$1")
+	if test -n "${v1}"; then
+		controller=$1
+		if test "$1" = cpu && test -d "${root}/cpu,cpuacct"; then
+			controller=cpu,cpuacct
+		fi
+		postgis_ci_cgroup_limits "${root}/${controller}" "${v1%/}" "$1-v1"
+	fi
 }
 
 postgis_ci_available_memory_kb()
 {
-	# POSTGIS_CI_MEM_AVAILABLE_KB: manual override for available memory in KiB.
-	# Default: auto-detect the smaller of the cgroup memory limit and
-	# MemAvailable. Set it when CI memory reporting is missing, noisy, or known
-	# to disagree with the worker capacity assigned to the job.
 	if postgis_ci_positive_integer "${POSTGIS_CI_MEM_AVAILABLE_KB:-}"; then
 		echo "${POSTGIS_CI_MEM_AVAILABLE_KB}"
-		return 0
+		return
 	fi
 
-	# Usual path: compare cgroup limit and MemAvailable, then use the smaller
-	# value as the effective budget for CI jobs.
-	cgroup_kb=$(postgis_ci_cgroup_memory_kb 2>/dev/null || true)
-	memavailable_kb=$(awk '/^MemAvailable:/ { print $2; exit }' /proc/meminfo 2>/dev/null || true)
-
-	if postgis_ci_positive_integer "${cgroup_kb}" && postgis_ci_positive_integer "${memavailable_kb}"; then
-		if test "${cgroup_kb}" -lt "${memavailable_kb}"; then
-			echo "${cgroup_kb}"
-		else
-			echo "${memavailable_kb}"
+	postgis_ci_cgroup_budget memory
+	if test -r /proc/meminfo; then
+		awk '/^MemAvailable:/ { print $2; exit }' /proc/meminfo
+	else
+		# macOS and FreeBSD expose physical memory through sysctl.
+		bytes=$(sysctl -n hw.memsize 2>/dev/null || sysctl -n hw.physmem 2>/dev/null)
+		if postgis_ci_positive_integer "${bytes}"; then
+			echo "$((bytes / 1024))"
 		fi
-		return 0
 	fi
-
-	# Fallback when only cgroup memory data is available (container-enforced cap).
-	if postgis_ci_positive_integer "${cgroup_kb}"; then
-		echo "${cgroup_kb}"
-		return 0
-	fi
-
-	# Fallback when cgroup data is missing but host MemAvailable is parseable.
-	if postgis_ci_positive_integer "${memavailable_kb}"; then
-		echo "${memavailable_kb}"
-		return 0
-	fi
-
-	return 1
 }
 
 postgis_ci_parallel_jobs()
 {
-	cpus=$(postgis_ci_cpu_count)
+	cpus=$( { postgis_ci_cpu_count; postgis_ci_cgroup_budget cpu; } |
+		awk 'NR == 1 || $1 < min { min = $1 } END { print min }')
 
 	# POSTGIS_CI_MAX_JOBS: explicit job cap from CI. Default: detected CPU
 	# count. Set it to keep a shared worker below its CPU-based maximum even
@@ -133,8 +152,9 @@ postgis_ci_parallel_jobs()
 		reserve_mb=512
 	fi
 
-	available_kb=$(postgis_ci_available_memory_kb 2>/dev/null || true)
-	if ! postgis_ci_positive_integer "${available_kb}"; then
+	available_kb=$(postgis_ci_available_memory_kb |
+		awk 'NR == 1 || $1 < min { min = $1 } END { print min }')
+	if test -z "${available_kb}"; then
 		echo "${max_jobs}"
 		return 0
 	fi
@@ -156,6 +176,4 @@ postgis_ci_parallel_jobs()
 	echo "${jobs}"
 }
 
-if test "${0##*/}" = "parallel-jobs.sh"; then
-	postgis_ci_parallel_jobs
-fi
+postgis_ci_parallel_jobs

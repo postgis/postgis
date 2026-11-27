@@ -52,9 +52,8 @@ steps:
       - mkdir -p build-docs && cd build-docs
       - ../configure --with-pgconfig=/usr/lib/postgresql/18/bin/pg_config --without-protobuf --without-raster --with-visual-examples
       - make postgis_revision.h
-      - . ../ci/parallel-jobs.sh
-      - export POSTGIS_BUILD_JOBS=$$(postgis_ci_parallel_jobs)
-      - make -j"$${POSTGIS_BUILD_JOBS}" SUBDIRS="deps liblwgeom libpgcommon postgis"
+      - jobs=$$(sh ../ci/parallel-jobs.sh)
+      - make -j"$${jobs}" SUBDIRS="deps liblwgeom libpgcommon postgis"
       - xmllint --version
 
   render-visual-examples:

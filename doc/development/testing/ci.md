@@ -40,31 +40,16 @@ checked against them before publication.
 
 ## Build Parallelism Sizing
 
-The docs pipeline in `.woodpecker/docs.yml` sets job parallelism through:
+Parallel CI builds use `sh ci/parallel-jobs.sh` to print a job count for
+`make -j`. The helper takes the smaller CPU and memory budgets, including
+Linux cgroup limits. It reserves 512 MiB and budgets 1024 MiB per job by
+default, with a minimum of one job. The Woodpecker regression matrix builds
+with `-j1` to avoid races while generating extension files.
 
-```sh
-. ../ci/parallel-jobs.sh
-export POSTGIS_BUILD_JOBS=$$(postgis_ci_parallel_jobs)
-make -j"$${POSTGIS_BUILD_JOBS}" SUBDIRS="deps liblwgeom libpgcommon postgis"
-```
-
-This keeps small shared Woodpecker agents from multiplying memory pressure until
-the server reports `received oom kill`. `postgis_ci_parallel_jobs()` uses the
-following overrides:
-
-- `POSTGIS_CI_MEM_AVAILABLE_KB` sets the available memory (KB) used by scheduling.
-  Default: auto-detected from cgroup `memory.max` and `/proc/meminfo` (the
-  smaller value is used). Set this when CI memory reporting is missing, noisy,
-  or known to disagree with the worker capacity assigned to the job.
-- `POSTGIS_CI_MAX_JOBS` sets the hard upper limit on parallel jobs.
-  Default: detected CPU count, and then clamped to detected CPU count.
-  Set this when CI capacity should be capped regardless of available memory.
-- `POSTGIS_CI_JOB_MEMORY_MB` sets the per-job memory estimate (MB).
-  Default: `1024`. Set this when one job class needs materially more or less
-  memory than the default docs build assumption.
-
-The result is clamped to at least `1`, and if memory detection fails the function
-falls back to the CPU-based maximum.
+Set `POSTGIS_CI_MAX_JOBS` to cap parallel jobs. Set
+`POSTGIS_CI_MEM_AVAILABLE_KB` to override memory detection, or tune
+`POSTGIS_CI_JOB_MEMORY_MB` and `POSTGIS_CI_MEMORY_RESERVE_MB` (both in MiB)
+for a specific workload.
 
 Woodpecker is the CI surface attached to canonical Gitea pull requests. Its
 status contexts are produced from the checked-in `.woodpecker/` workflows, so a

@@ -85,7 +85,6 @@ jobs:
             export CCACHE_STATIC_PREFIX="/usr/local"
             export CCACHE_NOSTATS=1
             export CCACHE_TEMPDIR="/tmp"
-            export MAKEJOBS="-j2"
 
             ccache --max-size="${CCACHE_MAXSIZE}"
 
@@ -107,8 +106,9 @@ jobs:
             service postgresql onestart
             su postgres -c "createuser -s $(whoami)"
 
-            gmake ${MAKEJOBS} || { service postgresql onestop; exit 1; }
-            gmake ${MAKEJOBS} install || { service postgresql onestop; exit 1; }
+            jobs=$(POSTGIS_CI_MAX_JOBS="${POSTGIS_CI_MAX_JOBS:-2}" sh ci/parallel-jobs.sh)
+            gmake -j"${jobs}" || { service postgresql onestop; exit 1; }
+            gmake -j"${jobs}" install || { service postgresql onestop; exit 1; }
             ccache -s
 
             show_regression_diffs() {
@@ -130,7 +130,7 @@ jobs:
               fi
             }
 
-            gmake ${MAKEJOBS} check RUNTESTFLAGS="-v --extension --dumprestore" || {
+            gmake -j"${jobs}" check RUNTESTFLAGS="-v --extension --dumprestore" || {
               show_regression_diffs
               service postgresql onestop
               exit 1

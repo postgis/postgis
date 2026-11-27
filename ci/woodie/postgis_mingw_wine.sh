@@ -5,6 +5,7 @@ set -Eeuo pipefail
 TARGET=${TARGET:-x86_64-w64-mingw32}
 BUILD_DIR=${BUILD_DIR:-.tmp/build-mingw-wine}
 REPO_ROOT=$(pwd)
+jobs=$(sh "${REPO_ROOT}/ci/parallel-jobs.sh")
 TMP_ROOT=${TMP_ROOT:-${REPO_ROOT}/.tmp/mingw-wine}
 PREFIX=${PREFIX:-${TMP_ROOT}/prefix}
 WORKDIR=${WORKDIR:-${TMP_ROOT}/work}
@@ -189,7 +190,7 @@ build_zlib()
 	run_logged "${LOG_DIR}/zlib.configure.log" env CHOST="${TARGET}" CC="${CC}" AR="${AR}" RANLIB="${RANLIB}" ./configure \
 		--static \
 		--prefix="${PREFIX}"
-	run_logged "${LOG_DIR}/zlib.make.log" make -j"$(nproc)"
+	run_logged "${LOG_DIR}/zlib.make.log" make -j"${jobs}"
 	run_logged "${LOG_DIR}/zlib.install.log" make install
 }
 
@@ -211,7 +212,7 @@ build_libjpeg()
 		-DENABLE_STATIC=ON \
 		-DWITH_TURBOJPEG=OFF \
 		-DWITH_JAVA=OFF
-	run_logged "${LOG_DIR}/libjpeg.make.log" cmake --build "${WORKDIR}/build-libjpeg" -j"$(nproc)"
+	run_logged "${LOG_DIR}/libjpeg.make.log" cmake --build "${WORKDIR}/build-libjpeg" -j"${jobs}"
 	run_logged "${LOG_DIR}/libjpeg.install.log" cmake --install "${WORKDIR}/build-libjpeg"
 }
 
@@ -235,7 +236,7 @@ build_libpng()
 		-DPNG_TESTS=OFF \
 		-DZLIB_INCLUDE_DIR="${PREFIX}/include" \
 		-DZLIB_LIBRARY="${PREFIX}/lib/libz.a"
-	run_logged "${LOG_DIR}/libpng.make.log" cmake --build "${WORKDIR}/build-libpng" -j"$(nproc)"
+	run_logged "${LOG_DIR}/libpng.make.log" cmake --build "${WORKDIR}/build-libpng" -j"${jobs}"
 	run_logged "${LOG_DIR}/libpng.install.log" cmake --install "${WORKDIR}/build-libpng"
 }
 
@@ -272,7 +273,7 @@ build_libtiff()
 		-DZLIB_LIBRARY="${PREFIX}/lib/libz.a" \
 		-DJPEG_INCLUDE_DIR="${PREFIX}/include" \
 		-DJPEG_LIBRARY="${PREFIX}/lib/libjpeg.a"
-	run_logged "${LOG_DIR}/libtiff.make.log" cmake --build "${WORKDIR}/build-libtiff" -j"$(nproc)"
+	run_logged "${LOG_DIR}/libtiff.make.log" cmake --build "${WORKDIR}/build-libtiff" -j"${jobs}"
 	run_logged "${LOG_DIR}/libtiff.install.log" cmake --install "${WORKDIR}/build-libtiff"
 	rm -rf "${PREFIX}/lib/cmake/tiff"
 }
@@ -293,7 +294,7 @@ build_libgeotiff()
 			--with-jpeg="${PREFIX}" \
 			--with-zip="${PREFIX}" \
 			--with-proj="${PREFIX}"
-	run_logged "${LOG_DIR}/libgeotiff.make.log" make -j"$(nproc)"
+	run_logged "${LOG_DIR}/libgeotiff.make.log" make -j"${jobs}"
 	run_logged "${LOG_DIR}/libgeotiff.install.log" make install
 }
 
@@ -315,7 +316,7 @@ build_json_c()
 		-DDISABLE_WERROR=ON \
 		-DDISABLE_THREAD_LOCAL_STORAGE=ON \
 		-DBUILD_TESTING=OFF
-	run_logged "${LOG_DIR}/json-c.make.log" cmake --build "${WORKDIR}/build-json-c" -j"$(nproc)"
+	run_logged "${LOG_DIR}/json-c.make.log" cmake --build "${WORKDIR}/build-json-c" -j"${jobs}"
 	run_logged "${LOG_DIR}/json-c.install.log" cmake --install "${WORKDIR}/build-json-c"
 }
 
@@ -328,7 +329,7 @@ build_protobuf_c()
 		--disable-shared \
 		--enable-static \
 		--disable-protoc
-	run_logged "${LOG_DIR}/protobuf-c.make.log" make -j"$(nproc)"
+	run_logged "${LOG_DIR}/protobuf-c.make.log" make -j"${jobs}"
 	run_logged "${LOG_DIR}/protobuf-c.install.log" make install
 }
 
@@ -341,7 +342,7 @@ build_cunit()
 		--prefix="${PREFIX}" \
 		--disable-shared \
 		--enable-static
-	run_logged "${LOG_DIR}/cunit.make.log" make -j"$(nproc)"
+	run_logged "${LOG_DIR}/cunit.make.log" make -j"${jobs}"
 	run_logged "${LOG_DIR}/cunit.install.log" make install
 }
 
@@ -353,7 +354,7 @@ build_libiconv()
 		--prefix="${PREFIX}" \
 		--disable-shared \
 		--enable-static
-	run_logged "${LOG_DIR}/libiconv.make.log" make -j"$(nproc)"
+	run_logged "${LOG_DIR}/libiconv.make.log" make -j"${jobs}"
 	run_logged "${LOG_DIR}/libiconv.install.log" make install
 }
 
@@ -365,7 +366,7 @@ build_gmp()
 		--prefix="${PREFIX}" \
 		--disable-shared \
 		--enable-static
-	run_logged "${LOG_DIR}/gmp.make.log" make -j"$(nproc)"
+	run_logged "${LOG_DIR}/gmp.make.log" make -j"${jobs}"
 	run_logged "${LOG_DIR}/gmp.install.log" make install
 }
 
@@ -385,7 +386,7 @@ build_geos()
 		-DBUILD_SHARED_LIBS=OFF \
 		-DBUILD_TESTING=OFF \
 		-DGEOS_BUILD_DEVELOPER=OFF
-	run_logged "${LOG_DIR}/geos.make.log" cmake --build "${WORKDIR}/build-geos" -j"$(nproc)"
+	run_logged "${LOG_DIR}/geos.make.log" cmake --build "${WORKDIR}/build-geos" -j"${jobs}"
 	run_logged "${LOG_DIR}/geos.install.log" cmake --install "${WORKDIR}/build-geos"
 	cat >"${PREFIX}/bin/${TARGET}-geos-config" <<EOF
 #!/bin/sh
@@ -416,7 +417,7 @@ build_libxml2()
 		--without-modules \
 		--without-ftp \
 		--without-http
-	run_logged "${LOG_DIR}/libxml2.make.log" make -j"$(nproc)"
+	run_logged "${LOG_DIR}/libxml2.make.log" make -j"${jobs}"
 	run_logged "${LOG_DIR}/libxml2.install.log" make install
 }
 
@@ -429,8 +430,8 @@ build_libpq()
 		--without-readline \
 		--with-zlib \
 		--without-icu
-	run_logged "${LOG_DIR}/postgresql.libpq.make.log" make -C src/interfaces/libpq -j"$(nproc)"
-	run_logged "${LOG_DIR}/postgresql.backend.make.log" make -C src/backend libpostgres.a -j"$(nproc)"
+	run_logged "${LOG_DIR}/postgresql.libpq.make.log" make -C src/interfaces/libpq -j"${jobs}"
+	run_logged "${LOG_DIR}/postgresql.backend.make.log" make -C src/backend libpostgres.a -j"${jobs}"
 	run_logged "${LOG_DIR}/postgresql.include.install.log" make -C src/include install
 	run_logged "${LOG_DIR}/postgresql.libpq.install.log" make -C src/interfaces/libpq install
 	cp src/backend/libpostgres.a "${PREFIX}/lib/"
@@ -488,7 +489,7 @@ build_proj()
 		-DENABLE_CURL=OFF \
 		-DENABLE_TIFF=OFF \
 		-DENABLE_IPO=OFF
-	run_logged "${LOG_DIR}/proj.make.log" cmake --build "${WORKDIR}/build-proj" -j"$(nproc)"
+	run_logged "${LOG_DIR}/proj.make.log" cmake --build "${WORKDIR}/build-proj" -j"${jobs}"
 	run_logged "${LOG_DIR}/proj.install.log" cmake --install "${WORKDIR}/build-proj"
 }
 
@@ -544,7 +545,7 @@ build_gdal()
 		-DSQLite3_LIBRARY="${PREFIX}/lib/libsqlite3.a" \
 		-DPROJ_INCLUDE_DIR="${PREFIX}/include" \
 		-DPROJ_LIBRARY="${PREFIX}/lib/libproj.a"
-	run_logged "${LOG_DIR}/gdal.make.log" cmake --build "${WORKDIR}/build-gdal" -j"$(nproc)"
+	run_logged "${LOG_DIR}/gdal.make.log" cmake --build "${WORKDIR}/build-gdal" -j"${jobs}"
 	run_logged "${LOG_DIR}/gdal.install.log" cmake --install "${WORKDIR}/build-gdal"
 	cat >"${PREFIX}/bin/${TARGET}-gdal-config" <<EOF
 #!/bin/sh

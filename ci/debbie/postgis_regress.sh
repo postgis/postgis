@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+ci_dir=$(cd "$(dirname "$0")/.." && pwd)
 ## begin variables passed in by jenkins
 
 # export PG_VER=9.2
@@ -73,7 +74,8 @@ fi
 
 if [ "$MAKE_LOGBT" = "1" ]; then
  echo "Running logbt testing"
- bash ./ci/debbie/logbt -- make -j check RUNTESTFLAGS=--verbose
+ jobs=$(sh "${ci_dir}/parallel-jobs.sh")
+ bash ./ci/debbie/logbt -- make -j"${jobs}" check RUNTESTFLAGS=--verbose
  if [ "$?" != "0" ]; then
   exit $?
  fi

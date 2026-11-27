@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-. $(dirname $0)/winnie_common.sh
+ci_dir=$(cd "$(dirname "$0")/.." && pwd) || exit
+# shellcheck source=ci/winnie/winnie_common.sh
+. "${ci_dir}/winnie/winnie_common.sh"
 
 echo "MSYS2_ARG_CONV_EXCL=$MSYS2_ARG_CONV_EXCL"
 
@@ -102,7 +104,8 @@ LDFLAGS="-Wl,--enable-auto-import -L${PGPATH}/lib -L${LZ4_PATH}/lib -L${PROJECTS
 #patch liblwgeom generated make to get rid of dynamic linking
 #sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
 
-make -j $NPROC
+jobs=$(POSTGIS_CI_MAX_JOBS="${POSTGIS_CI_MAX_JOBS:-${NPROC}}" sh "${ci_dir}/parallel-jobs.sh")
+make -j"${jobs}"
 make install
 
 # don't run tests twice. Only run regular if extension test is not asked for
