@@ -109,3 +109,7 @@ NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL War
 (0,0,5,5,2,-2,0,0,0,1)|(0,0,5,5,2,-2,0,0,0,1)
 t|t|f|NaN|t
 t|t
+0.00001|1e-6|1e-6|1e-9
+0.000001|1e-6|1e-6|1e-9
+0.0000002|1e-6|1e-6|1e-9
+0.0000001|1e-6|1e-6|1e-9

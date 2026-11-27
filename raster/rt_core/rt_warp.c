@@ -523,7 +523,8 @@ rt_raster_gdal_warp(rt_raster raster,
 		_scale[1] = fabs((extent.MaxY - extent.MinY) / ((double)_dim[1]));
 	}
 
-	if (((NULL != scale_x) && (FLT_NEQ(*scale_x, 0.0))) && ((NULL != scale_y) && (FLT_NEQ(*scale_y, 0.0))))
+	if (((NULL != scale_x) && ((!isnan(*scale_x) && *scale_x != 0.0))) &&
+	    ((NULL != scale_y) && ((!isnan(*scale_y) && *scale_y != 0.0))))
 	{
 		_scale[0] = fabs(*scale_x);
 		_scale[1] = fabs(*scale_y);
@@ -541,7 +542,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	}
 
 	/* scale not defined: use suggested */
-	if (FLT_EQ(_scale[0], 0.0) && FLT_EQ(_scale[1], 0.0))
+	if ((_scale[0] == 0.0 || isnan(_scale[0])) && (_scale[1] == 0.0 || isnan(_scale[1])))
 	{
 		_scale[0] = fabs(_gt[1]);
 		_scale[1] = fabs(_gt[5]);
@@ -566,7 +567,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	RASTER_DEBUGF(4, "rt_raster_gdal_warp: Using skew: %f x %f", _skew[0], _skew[1]);
 
 	/* Compute the output grid parameters when skew is requested. */
-	if (FLT_NEQ(_skew[0], 0.0) || FLT_NEQ(_skew[1], 0.0))
+	if ((!isnan(_skew[0]) && _skew[0] != 0.0) || (!isnan(_skew[1]) && _skew[1] != 0.0))
 	{
 		rt_raster skewedrast;
 
@@ -767,7 +768,7 @@ rt_raster_gdal_warp(rt_raster raster,
 			}
 			_gt[0] = _w[0];
 			_gt[1] = *scale_x;
-			if (NULL != skew_x && FLT_NEQ(*skew_x, 0.0))
+			if (NULL != skew_x && (!isnan(*skew_x) && *skew_x != 0.0))
 				_gt[2] = *skew_x;
 		}
 		if (NULL != scale_y && *scale_y > 0)
@@ -781,7 +782,7 @@ rt_raster_gdal_warp(rt_raster raster,
 			}
 			_gt[3] = _w[1];
 			_gt[5] = *scale_y;
-			if (NULL != skew_y && FLT_NEQ(*skew_y, 0.0))
+			if (NULL != skew_y && (!isnan(*skew_y) && *skew_y != 0.0))
 				_gt[4] = *skew_y;
 		}
 	}

@@ -169,6 +169,42 @@ test_raster_compute_skewed_raster(void)
 	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_y_offset(rast), -2.0 / 17.0, 1e-8);
 
 	cu_free_raster(rast);
+	/* Test a small but valid determinant. */
+	extent.MinX = 0;
+	extent.MaxX = 0.0001;
+	extent.MaxY = 0;
+	extent.MinY = -0.0001;
+	extent.UpperLeftX = extent.MinX;
+	extent.UpperLeftY = extent.MaxY;
+
+	skew[0] = 0.0001;
+	skew[1] = 0;
+	scale[0] = 0.0001;
+	scale[1] = -0.0001;
+
+	rast = rt_raster_compute_skewed_raster(extent, skew, scale);
+
+	CU_ASSERT(rast != NULL);
+	if (rast != NULL)
+	{
+		CU_ASSERT_EQUAL(rt_raster_get_width(rast), 3);
+		CU_ASSERT_EQUAL(rt_raster_get_height(rast), 2);
+		cu_free_raster(rast);
+	}
+
+	/* Test a nearly singular geotransform. */
+	skew[0] = 0.0001;
+	skew[1] = -0.0001;
+	scale[0] = 0.00010000000000000005;
+	scale[1] = -0.00010000000000000005;
+
+	rast = rt_raster_compute_skewed_raster(extent, skew, scale);
+
+	CU_ASSERT(rast == NULL);
+	if (rast != NULL)
+	{
+		cu_free_raster(rast);
+	}
 }
 
 /* register tests */

@@ -898,7 +898,7 @@ rt_raster_compute_skewed_raster(rt_envelope extent, double *skew, double *scale)
 	if (scale == NULL || skew == NULL)
 		return NULL;
 
-	if (FLT_EQ(scale[0], 0.0) || FLT_EQ(scale[1], 0.0))
+	if ((scale[0] == 0.0 || isnan(scale[0])) || (scale[1] == 0.0 || isnan(scale[1])))
 	{
 		rterror("rt_raster_compute_skewed_raster: Scale cannot be zero");
 		return NULL;
@@ -910,9 +910,9 @@ rt_raster_compute_skewed_raster(rt_envelope extent, double *skew, double *scale)
 	ky = skew[1];
 	det = sx * syg - kx * ky;
 
-	if (FLT_EQ(det, 0.0))
+	if (!isfinite(det) || fabs(det) <= 4.0 * DBL_EPSILON * (fabs(sx * syg) + fabs(kx * ky)))
 	{
-		rterror("rt_raster_compute_skewed_raster: Degenerate geotransform (determinant is zero)");
+		rterror("rt_raster_compute_skewed_raster: Degenerate or non-finite geotransform determinant");
 		return NULL;
 	}
 

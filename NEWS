@@ -21,6 +21,8 @@ PostGIS 3.8.0dev
           (Andrew Kroh)
  - #1558, GT-419, Document RETURNS TABLE signatures with returned columns
           (Darafei Praliaskouski)
+ - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
+          packer (John Carmack)
 
 * Bug Fixes *
 
@@ -43,6 +45,10 @@ PostGIS 3.8.0dev
           (Andrew Kroh)
  - Keep accumulated rows when ST_AsGeobuf() meets a NULL row
           (Darafei Praliaskouski)
+ - #6158, GH-1194, [raster] Accept ST_Reskew geotransforms with small nonzero
+          determinants (Waniya Badar)
+ - GH-1194, [raster] Stop rejecting or silently zeroing small non-zero scales
+          and skews in ST_Reskew and raster warping (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0rc3

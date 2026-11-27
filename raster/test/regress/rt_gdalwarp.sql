@@ -934,3 +934,15 @@ SELECT
 	ST_Value(mixed_rast, 1, 2, 1) IS NULL = (ST_Value(single_rast, 1, 2, 1) IS NULL) AS mixed_bilinear_matches,
 	ST_BandNoDataValue(mixed_rast, 2) IS NULL AS mixed_bilinear_keeps_no_nodata
 FROM warped;
+
+-- ST_Reskew keeps small non-zero scales and skews instead of rejecting or zeroing them
+SELECT
+	s AS scale,
+	ST_SkewX(ST_Reskew(rast, 1e-6, 1e-6)) AS skewx,
+	ST_SkewY(ST_Reskew(rast, 1e-6, 1e-6)) AS skewy,
+	ST_SkewX(ST_Reskew(rast, 1e-9)) AS tiny_skew
+FROM (
+	SELECT s, ST_AddBand(ST_MakeEmptyRaster(20, 20, 0, 0, s, -s, 0, 0, 4326), '8BUI'::text, 1, 0) AS rast
+	FROM unnest(ARRAY[1e-5, 1e-6, 2e-7, 1e-7]) AS s
+) AS t
+ORDER BY s DESC;
