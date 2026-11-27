@@ -26,6 +26,7 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #2807, GH-1100, [raster] Fix map algebra and grayscale NODATA handling (Darafei Praliaskouski)
  - GT-812, Check named geometry column types in row encoders (Andrew Kroh)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
  - GH-1183, Handle allocation failures during shape creation (Maksim Korotkov)

@@ -608,6 +608,24 @@ CREATE OR REPLACE FUNCTION raster_nmapalgebra_null(
 	AS $$ SELECT NULL::double precision $$
 	LANGUAGE 'sql' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION raster_nmapalgebra_zero(
+	value double precision[][][],
+	pos int[][],
+	VARIADIC userargs text[]
+)
+	RETURNS double precision
+	AS $$ SELECT 0::double precision $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION raster_nmapalgebra_sum(
+	value double precision[][][],
+	pos int[][],
+	VARIADIC userargs text[]
+)
+	RETURNS double precision
+	AS $$ SELECT value[1][1][1] + value[2][1][1] $$
+	LANGUAGE 'sql' IMMUTABLE;
+
 SET client_min_messages TO warning;
 
 WITH src AS (
@@ -639,6 +657,228 @@ SELECT
 		'raster_nmapalgebra_one(double precision[], int[], text[])'::regprocedure
 	), 1, 1)
 FROM src;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 1.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 2.0, NULL
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, rast2,
+		'[rast1.val] + [rast2.val]',
+		'16BUI', 'UNION'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.union-coextensive',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 1.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 1, 0, 1),
+			'16BUI', 2.0, NULL
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, rast2,
+		'[rast1.val] + [rast2.val]',
+		'16BUI', 'UNION'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.union-gap',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 1.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(2, 1, 0, 0, 1),
+			'16BUI', 2.0, NULL
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, rast2,
+		'[rast1.val] + [rast2.val]',
+		'16BUI', 'FIRST'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.first-covered',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(2, 1, 0, 0, 1),
+			'16BUI', 0.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 1.0, NULL
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, rast2,
+		'[rast1.val] + [rast2.val]',
+		'16BUI', 'FIRST',
+		NULL, '[rast1.val]'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.expr-handled-extent-gap',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 0.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 5.0, 5.0
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, rast2,
+		'[rast1.val] + [rast2.val]',
+		'16BUI', 'INTERSECTION',
+		NULL, '[rast1.val]'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.expr-handled-source-nodata',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 0.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 5.0, 5.0
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, 1,
+		rast2, 1,
+		'raster_nmapalgebra_zero(double precision[][][], int[][], text[])'::regprocedure,
+		'16BUI'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.callback-handled-source-nodata',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 0.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 5.0, 5.0
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, 1,
+		rast2, 1,
+		'raster_nmapalgebra_zero(double precision[][][], int[][], text[])'::regprocedure,
+		'16BUI'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.callback-later-band-nodata',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 1.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 2.0, NULL
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, 1,
+		rast2, 2,
+		'[rast1.val] + [rast2.val]',
+		'16BUI', 'INTERSECTION'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.expr-missing-band-nodata',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
+
+WITH src AS (
+	SELECT
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 1.0, NULL
+		) AS rast1,
+		ST_AddBand(
+			ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+			'16BUI', 2.0, NULL
+		) AS rast2
+), alg AS (
+	SELECT ST_MapAlgebra(
+		rast1, 1,
+		rast2, 2,
+		'raster_nmapalgebra_sum(double precision[][][], int[][], text[])'::regprocedure,
+		'16BUI'
+	) AS rast
+	FROM src
+)
+SELECT
+	'#2807.nmap.callback-missing-band-nodata',
+	(ST_BandMetadata(rast, 1)).nodatavalue,
+	(ST_DumpValues(rast)).valarray
+FROM alg;
 
 WITH src AS (
 	SELECT ST_AddBand(
@@ -695,6 +935,8 @@ WHERE rid IN (2);
 
 DROP FUNCTION IF EXISTS raster_nmapalgebra_one(double precision[], int[], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_null(double precision[], int[], text[]);
+DROP FUNCTION IF EXISTS raster_nmapalgebra_zero(double precision[][][], int[][], text[]);
+DROP FUNCTION IF EXISTS raster_nmapalgebra_sum(double precision[][][], int[][], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test_no_userargs(double precision[], int[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test_bad_return(double precision[], int[], text[]);
