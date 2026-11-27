@@ -36,7 +36,8 @@ PostGIS 3.8.0dev
    (Bilal Kahraman, Darafei Praliaskouski)
  - GT-884, [raster] Check reclassification bounds before combining range delimiters
           (reported by Sven Klemm, Tiger Data; fixed by Aleksander Alekseev, Darafei Praliaskouski)
- - GT-812, Check named geometry column types in row encoders (Andrew Kroh)
+ - GT-868, GT-812, Check named geometry column types in row encoders
+          (Andrew Kroh; reported by Sven Klemm, Tiger Data, Dawid Żak, Software Mansion, Aleksander Alekseev)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
  - GT-880, [raster] Free coverage value counts with the PostgreSQL allocator
    (reported by Sven Klemm, Tiger Data;
@@ -51,13 +52,14 @@ PostGIS 3.8.0dev
  - GH-1189, Correct LTO configuration guidance wording (dovkoy)
  - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
           (John Carmack)
- - GH-1191, [topology] Return SQL NULL for a NULL topology name in
-          _RegisterMissingFaces (Bilal Kahraman)
+ - GT-868, GH-1191, [topology] Return SQL NULL for a NULL topology name in
+          _RegisterMissingFaces (Bilal Kahraman; reported by Aleksander Alekseev, Sven Klemm)
  - #6146, GT-807, Fix crash in ST_CombineBBox(box3d, geometry) with a NULL box
           (Alexander Lakhin)
- - #6147, GT-808, Fix crash in ST_AsFlatGeobuf() with a NULL row
-          (Alexander Lakhin)
- - #6148, GT-809, Fix crash in ST_AsMVT() with a NULL row (Alexander Lakhin)
+ - #6147, GT-808, GT-868, Fix crash in ST_AsFlatGeobuf() with a NULL row
+          (Alexander Lakhin; reported by Sven Klemm, Tiger Data)
+ - #6148, GT-809, GT-868, Fix crash in ST_AsMVT() with a NULL row
+          (Alexander Lakhin; reported by Sven Klemm, Tiger Data)
  - GT-813, Fix ST_LocateBetween error on an empty multilinestring with equal
           measures; ST_LocateAlong now returns an empty multipoint for it
           (Andrew Kroh)
