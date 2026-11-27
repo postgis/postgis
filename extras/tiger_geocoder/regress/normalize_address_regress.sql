@@ -97,3 +97,14 @@ SELECT '#1614b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('320
 --internal address prefix sometimes get caught in post dir
 SELECT '#1108a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('529 Main Street, Suite 201, Boston, MA 02129') AS addy;
 --\timing
+
+-- User-provided street and place names are literal text.
+SELECT 'street_punctuation', (addy).streetname, (addy).streettypeabbrev, (addy).location
+FROM (SELECT normalize_address('Apt 1) 5 Main St, Chicago, IL') AS addy) AS a;
+SELECT 'place_punctuation', (addy).streetname, (addy).streettypeabbrev, (addy).location
+FROM (SELECT normalize_address('5 Main St, Lake (West), IL') AS addy) AS a;
+
+BEGIN;
+INSERT INTO tiger.place (statefp, plcidfp, name) VALUES ('17', '1799999', 'Lake (West)');
+SELECT 'place_suffix', tiger.location_extract('5 Main St Lake (West)', 'IL');
+ROLLBACK;

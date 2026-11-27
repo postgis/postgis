@@ -301,12 +301,21 @@ rt_band_duplicate(rt_band band) {
 	/* online */
 	else {
 		uint8_t *data = NULL;
-		data = rtalloc((size_t)rt_pixtype_size(band->pixtype) * band->width * band->height);
+		int pixbytes = rt_pixtype_size(band->pixtype);
+		size_t numval = (size_t)band->width * band->height;
+		size_t datasize;
+
+		if (pixbytes < 1 || (numval != 0 && (size_t)pixbytes > SIZE_MAX / numval)) {
+			rterror("rt_band_duplicate: Raster dimensions are too large for band data");
+			return NULL;
+		}
+		datasize = numval * (size_t)pixbytes;
+		data = rtalloc(datasize);
 		if (data == NULL) {
 			rterror("rt_band_duplicate: Out of memory allocating online band data");
 			return NULL;
 		}
-		memcpy(data, band->data.mem, (size_t)rt_pixtype_size(band->pixtype) * band->width * band->height);
+		memcpy(data, band->data.mem, datasize);
 
 		rtn = rt_band_new_inline(
 			band->width, band->height,
@@ -314,6 +323,11 @@ rt_band_duplicate(rt_band band) {
 			band->hasnodata, band->nodataval,
 			data
 		);
+		if (rtn == NULL) {
+			rterror("rt_band_duplicate: Could not copy band");
+			rtdealloc(data);
+			return NULL;
+		}
 		rt_band_set_ownsdata_flag(rtn, 1); /* we DO own this data!!! */
 	}
 
@@ -872,6 +886,10 @@ rt_band_set_pixel_line(
 
 	pixtype = band->pixtype;
 	size = rt_pixtype_size(pixtype);
+	if (size < 1) {
+		rterror("rt_band_set_pixel_line: Invalid pixel type for band");
+		return ES_ERROR;
+	}
 
 	if (
 		x < 0 || x >= band->width ||
@@ -882,11 +900,11 @@ rt_band_set_pixel_line(
 	}
 
 	data = rt_band_get_data(band);
-	offset = x + (y * band->width);
+	offset = (uint32_t)x + ((uint32_t)y * band->width);
 	RASTER_DEBUGF(4, "offset = %d", offset);
 
 	/* make sure len of values to copy don't exceed end of data */
-	if (len > (band->width * band->height) - offset) {
+	if (len > (size_t)band->width * band->height - offset) {
 		rterror("rt_band_set_pixel_line: Could not apply pixels as values length exceeds end of data");
 		return ES_ERROR;
 	}
@@ -1025,7 +1043,7 @@ rt_band_set_pixel(
 	}
 
 	data = rt_band_get_data(band);
-	offset = x + (y * band->width);
+	offset = (uint32_t)x + ((uint32_t)y * band->width);
 
 	switch (pixtype) {
 		case PT_1BB: {
@@ -1145,7 +1163,7 @@ rt_errorstate rt_band_get_pixel_line(
 	uint8_t *data = NULL;
 	uint32_t offset = 0;
 	uint16_t _nvals = 0;
-	int maxlen = 0;
+	size_t maxlen = 0;
 	uint8_t *ptr = NULL;
 
 	assert(NULL != band);
@@ -1172,18 +1190,22 @@ rt_errorstate rt_band_get_pixel_line(
 	}
 
 	/* +1 for the nodata value */
-	offset = x + (y * band->width);
+	offset = (uint32_t)x + ((uint32_t)y * band->width);
 	RASTER_DEBUGF(4, "offset = %d", offset);
 
 	pixsize = rt_pixtype_size(band->pixtype);
+	if (pixsize < 1) {
+		rterror("rt_band_get_pixel_line: Invalid pixel type for band");
+		return ES_ERROR;
+	}
 	RASTER_DEBUGF(4, "pixsize = %d", pixsize);
 
 	/* cap _nvals so that it doesn't overflow */
 	_nvals = len;
-	maxlen = band->width * band->height;
+	maxlen = (size_t)band->width * band->height;
 
-	if (((int) (offset + _nvals)) > maxlen) {
-		_nvals = maxlen - offset;
+	if ((size_t)offset >= maxlen || _nvals > maxlen - (size_t)offset) {
+		_nvals = (uint16_t)(maxlen - offset);
 		rtwarn("Limiting returning number values to %d", _nvals);
 	}
 	RASTER_DEBUGF(4, "_nvals = %d", _nvals);
@@ -1413,7 +1435,7 @@ rt_band_get_pixel(
 	}
 
 	/* +1 for the nodata value */
-	offset = x + (y * band->width);
+	offset = (uint32_t)x + ((uint32_t)y * band->width);
 
 	pixtype = band->pixtype;
 

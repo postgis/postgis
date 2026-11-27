@@ -19,7 +19,8 @@ jobs:
     #   - https://gh.io/supported-runners-and-hardware-resources
     #   - https://gh.io/using-larger-runners
     # Consider using larger runners for possible analysis time improvements.
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    # Keep the runner aligned with the PGDG package source below.
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-26.04' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       actions: read
@@ -53,6 +54,8 @@ jobs:
 
     - name: Install dependencies
       run: |
+          # Match the PGDG PostgreSQL packages preinstalled on GitHub runners.
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
           sudo apt-get update
           sudo apt-get install -y g++ autoconf automake libgeos-dev libproj-dev libgdal-dev libjson-c-dev gettext libxml2-dev postgresql-server-dev-16 postgresql-client-16 libprotobuf-c-dev libprotoc-dev protobuf-c-compiler clang-19
 

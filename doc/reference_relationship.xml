@@ -2225,7 +2225,7 @@ FROM (VALUES
 
     <para>&sfs_compliant;</para>
     <para role="availability" conformance="1.5.0">Availability: 1.5.0 support for geography was introduced</para>
-    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <link xlink:href="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</link> for details.</para>
+    <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 improved speed for geography. See <link xlink:href="https://web.archive.org/web/20160827203903/http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</link> for details.</para>
     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 support for curved geometries was introduced.</para>
 
         <para>Prior to 1.3, <xref linkend="ST_Expand"/> was commonly used in conjunction with &amp;&amp; and ST_Distance to
