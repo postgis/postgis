@@ -1177,6 +1177,8 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->dbffieldnames = NULL;
 	state->dbffieldtypes = NULL;
 	state->pgfieldnames = NULL;
+	state->pgfieldlens = NULL;
+	state->pgfieldtypmods = NULL;
 	state->message[0] = '\0';
 	colmap_init(&state->column_map);
 
@@ -1414,7 +1416,10 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	if ( getenv("PGCLIENTENCODING") )
 	{
 		char *codepage = encoding2codepage(getenv("PGCLIENTENCODING"));
+		if (!codepage)
+			return SHPDUMPERERR;
 		state->dbf = DBFCreateEx(state->shp_file, codepage);
+		free(codepage);
 	}
 	else
 	{

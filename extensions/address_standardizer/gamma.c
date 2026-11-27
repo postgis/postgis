@@ -338,6 +338,10 @@ int rules_add_rule(RULES *rules, int num, int *rule) {
                   rules -> err_p,
                   7 ) ;
     }
+    if (w < 0 || w >= NUMBER_OF_WEIGHTS)
+    {
+	    RET_ERR2("rules_add_rule: Rule File: Bad Weight %d in Rule #%d\n", w, rules->rule_number, rules->err_p, 7);
+    }
 
     classify_link( rules -> r_p ,
                    o_l ,

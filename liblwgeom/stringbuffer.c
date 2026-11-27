@@ -84,8 +84,11 @@ stringbuffer_create_with_size(size_t size)
 void
 stringbuffer_destroy(stringbuffer_t *s)
 {
-	stringbuffer_release(s);
-	if ( s ) lwfree(s);
+	if ( s )
+	{
+		stringbuffer_release(s);
+		lwfree(s);
+	}
 }
 
 /**
