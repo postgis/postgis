@@ -446,17 +446,8 @@ class CIStatusTest(unittest.TestCase):
         config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
         woodpecker = next(check for check in config["checks"] if check["name"] == "Woodpecker")
 
-        self.assertEqual(
-            [
-                "master",
-                "stable-3.6",
-                "stable-3.5",
-                "stable-3.4",
-                "stable-3.3",
-                "stable-3.2",
-            ],
-            woodpecker["branches"],
-        )
+        supported = [branch["name"] for branch in config["branches"] if not branch["eol"]]
+        self.assertEqual(supported, woodpecker["branches"])
 
     def test_retired_badges_record_current_non_gating_reason(self):
         config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
