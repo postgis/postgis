@@ -33,13 +33,14 @@
 
 #ifdef HAVE_LIBPROTOBUF
 #include "vector_tile.pb-c.h"
-#endif  /* HAVE_LIBPROTOBUF */
+#endif /* HAVE_LIBPROTOBUF */
 
 /**
  * Process input parameters to mvt_geom and returned serialized geometry
  */
 PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
-Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
+Datum
+ST_AsMVTGeom(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "ST_AsMVTGeom: Compiled without protobuf-c support");
@@ -123,7 +124,8 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
  * Process input parameters and row data into state
  */
 PG_FUNCTION_INFO_V1(pgis_asmvt_transfn);
-Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
@@ -138,7 +140,8 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
-	if (PG_ARGISNULL(0)) {
+	if (PG_ARGISNULL(0))
+	{
 		old_context = MemoryContextSwitchTo(aggcontext);
 		ctx = palloc(sizeof(*ctx));
 		ctx->name = "default";
@@ -160,8 +163,10 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(ctx->trans_context);
 		mvt_agg_init_context(ctx);
 		MemoryContextSwitchTo(old_context);
-	} else {
-		ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
+	}
+	else
+	{
+		ctx = (mvt_agg_context *)PG_GETARG_POINTER(0);
 	}
 
 	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
@@ -181,7 +186,8 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
  * Encode final state to Mapbox Vector Tile
  */
 PG_FUNCTION_INFO_V1(pgis_asmvt_finalfn);
-Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
@@ -200,14 +206,15 @@ Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 		PG_RETURN_BYTEA_P(emptybuf);
 	}
 
-	ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
+	ctx = (mvt_agg_context *)PG_GETARG_POINTER(0);
 	buf = mvt_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
 #endif
 }
 
 PG_FUNCTION_INFO_V1(pgis_asmvt_serialfn);
-Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
@@ -226,7 +233,7 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 		PG_RETURN_BYTEA_P(emptybuf);
 	}
 
-	ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
+	ctx = (mvt_agg_context *)PG_GETARG_POINTER(0);
 	result = mvt_ctx_serialize(ctx);
 	if (ctx->trans_context)
 		MemoryContextDelete(ctx->trans_context);
@@ -235,9 +242,9 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 #endif
 }
 
-
 PG_FUNCTION_INFO_V1(pgis_asmvt_deserialfn);
-Datum pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
@@ -258,7 +265,8 @@ Datum pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
 }
 
 PG_FUNCTION_INFO_V1(pgis_asmvt_combinefn);
-Datum pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
+Datum
+pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
 	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
@@ -270,12 +278,11 @@ Datum pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
-	ctx1 = (mvt_agg_context*)PG_GETARG_POINTER(0);
-	ctx2 = (mvt_agg_context*)PG_GETARG_POINTER(1);
+	ctx1 = (mvt_agg_context *)PG_GETARG_POINTER(0);
+	ctx2 = (mvt_agg_context *)PG_GETARG_POINTER(1);
 	oldcontext = MemoryContextSwitchTo(aggcontext);
 	ctx = mvt_ctx_combine(ctx1, ctx2);
 	MemoryContextSwitchTo(oldcontext);
 	PG_RETURN_POINTER(ctx);
 #endif
 }
-

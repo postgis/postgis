@@ -45,7 +45,6 @@
 #include "lwgeom_geos_prepared.h"
 #include "lwgeom_accum.h"
 
-
 /* Prototypes for SQL-bound functions */
 Datum LWGEOM_dwithin(PG_FUNCTION_ARGS);
 Datum relate_full(PG_FUNCTION_ARGS);
@@ -62,15 +61,14 @@ Datum overlaps(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 
-
 /*
  * Utility to quickly check for polygonal geometries
  */
 static inline uint8_t
 is_poly(const GSERIALIZED *g)
 {
-    int type = gserialized_get_type(g);
-    return type == POLYGONTYPE || type == MULTIPOLYGONTYPE;
+	int type = gserialized_get_type(g);
+	return type == POLYGONTYPE || type == MULTIPOLYGONTYPE;
 }
 
 /*
@@ -168,7 +166,8 @@ try_itree_pointlike_pip(FunctionCallInfo fcinfo,
 }
 
 PG_FUNCTION_INFO_V1(ST_Intersects);
-Datum ST_Intersects(PG_FUNCTION_ARGS)
+Datum
+ST_Intersects(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -182,17 +181,16 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.Intersects(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(false);
 
 	/*
 	 * Short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
+		if (gbox_overlaps_2d(&box1, &box2) == LW_FALSE)
 			PG_RETURN_BOOL(false);
 	}
 
@@ -214,12 +212,11 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
-	if ( prep_cache && prep_cache->prepared_geom )
+	if (prep_cache && prep_cache->prepared_geom)
 	{
-		GEOSGeometry *g = prep_cache->gcache.argnum == 1
-			? POSTGIS2GEOS(geom2)
-			: POSTGIS2GEOS(geom1);
-		if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		GEOSGeometry *g = prep_cache->gcache.argnum == 1 ? POSTGIS2GEOS(geom2) : POSTGIS2GEOS(geom1);
+		if (!g)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 		result = GEOSPreparedIntersects(prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -227,7 +224,8 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *g1, *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -239,14 +237,15 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSIntersects");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSIntersects");
 
 	PG_RETURN_BOOL(result);
 }
 
-
 PG_FUNCTION_INFO_V1(ST_Equals);
-Datum ST_Equals(PG_FUNCTION_ARGS)
+Datum
+ST_Equals(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -259,17 +258,16 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* Empty == Empty */
-	if ( gserialized_is_empty(geom1) && gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) && gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(true);
 
 	/*
 	 * Short-circuit: If geom1 and geom2 do not have the same bounding box
 	 * we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( gbox_same_2d_float(&box1, &box2) == LW_FALSE )
+		if (gbox_same_2d_float(&box1, &box2) == LW_FALSE)
 		{
 			PG_RETURN_BOOL(false);
 		}
@@ -279,14 +277,16 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	 * Short-circuit: if geom1 and geom2 are binary-equivalent, we can return
 	 * TRUE.  This is much faster than doing the comparison using GEOS.
 	 */
-	if (VARSIZE(geom1) == VARSIZE(geom2) && !memcmp(geom1, geom2, VARSIZE(geom1))) {
-	    PG_RETURN_BOOL(true);
+	if (VARSIZE(geom1) == VARSIZE(geom2) && !memcmp(geom1, geom2, VARSIZE(geom1)))
+	{
+		PG_RETURN_BOOL(true);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	g1 = POSTGIS2GEOS(geom1);
-	if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+	if (!g1)
+		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 	g2 = POSTGIS2GEOS(geom2);
 	if (!g2)
 	{
@@ -297,15 +297,15 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSEquals");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSEquals");
 
 	PG_RETURN_BOOL(result);
 }
 
-
-
 PG_FUNCTION_INFO_V1(touches);
-Datum touches(PG_FUNCTION_ARGS)
+Datum
+touches(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -318,17 +318,16 @@ Datum touches(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.Touches(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(false);
 
 	/*
 	 * Short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
+		if (gbox_overlaps_2d(&box1, &box2) == LW_FALSE)
 		{
 			PG_RETURN_BOOL(false);
 		}
@@ -337,12 +336,11 @@ Datum touches(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
-	if ( prep_cache && prep_cache->prepared_geom )
+	if (prep_cache && prep_cache->prepared_geom)
 	{
-		GEOSGeometry *g = prep_cache->gcache.argnum == 1
-			? POSTGIS2GEOS(geom2)
-			: POSTGIS2GEOS(geom1);
-		if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		GEOSGeometry *g = prep_cache->gcache.argnum == 1 ? POSTGIS2GEOS(geom2) : POSTGIS2GEOS(geom1);
+		if (!g)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 		result = GEOSPreparedTouches(prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -350,7 +348,8 @@ Datum touches(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *g1, *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -362,14 +361,15 @@ Datum touches(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSTouches");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSTouches");
 
 	PG_RETURN_BOOL(result);
 }
 
-
 PG_FUNCTION_INFO_V1(disjoint);
-Datum disjoint(PG_FUNCTION_ARGS)
+Datum
+disjoint(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -383,17 +383,16 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.Disjoint(Empty) == TRUE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(true);
 
 	/*
 	 * Short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can return TRUE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
+		if (gbox_overlaps_2d(&box1, &box2) == LW_FALSE)
 		{
 			PG_RETURN_BOOL(true);
 		}
@@ -417,12 +416,11 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
-	if ( prep_cache && prep_cache->prepared_geom )
+	if (prep_cache && prep_cache->prepared_geom)
 	{
-		GEOSGeometry *g = prep_cache->gcache.argnum == 1
-			? POSTGIS2GEOS(geom2)
-			: POSTGIS2GEOS(geom1);
-		if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		GEOSGeometry *g = prep_cache->gcache.argnum == 1 ? POSTGIS2GEOS(geom2) : POSTGIS2GEOS(geom1);
+		if (!g)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 		result = GEOSPreparedDisjoint(prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -430,7 +428,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *g1, *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -442,18 +441,18 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSDisjoint");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSDisjoint");
 
 	PG_RETURN_BOOL(result);
 }
-
-
 
 /**
  * ST_Overlaps(geometry, geometry)
  */
 PG_FUNCTION_INFO_V1(overlaps);
-Datum overlaps(PG_FUNCTION_ARGS)
+Datum
+overlaps(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -466,17 +465,16 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.Overlaps(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(false);
 
 	/*
 	 * Short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( ! gbox_overlaps_2d(&box1, &box2) )
+		if (!gbox_overlaps_2d(&box1, &box2))
 		{
 			PG_RETURN_BOOL(false);
 		}
@@ -485,12 +483,11 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
-	if ( prep_cache && prep_cache->prepared_geom )
+	if (prep_cache && prep_cache->prepared_geom)
 	{
-		GEOSGeometry *g = prep_cache->gcache.argnum == 1
-			? POSTGIS2GEOS(geom2)
-			: POSTGIS2GEOS(geom1);
-		if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		GEOSGeometry *g = prep_cache->gcache.argnum == 1 ? POSTGIS2GEOS(geom2) : POSTGIS2GEOS(geom1);
+		if (!g)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 		result = GEOSPreparedOverlaps(prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -498,7 +495,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *g1, *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -510,17 +508,18 @@ Datum overlaps(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSOverlaps");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSOverlaps");
 
 	PG_RETURN_BOOL(result);
 }
-
 
 /**
  * ST_Crosses(geometry, geometry)
  */
 PG_FUNCTION_INFO_V1(crosses);
-Datum crosses(PG_FUNCTION_ARGS)
+Datum
+crosses(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -533,17 +532,16 @@ Datum crosses(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.Crosses(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(false);
 
 	/*
 	 * Short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
+		if (gbox_overlaps_2d(&box1, &box2) == LW_FALSE)
 		{
 			PG_RETURN_BOOL(false);
 		}
@@ -552,12 +550,11 @@ Datum crosses(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
-	if ( prep_cache && prep_cache->prepared_geom )
+	if (prep_cache && prep_cache->prepared_geom)
 	{
-		GEOSGeometry *g = prep_cache->gcache.argnum == 1
-			? POSTGIS2GEOS(geom2)
-			: POSTGIS2GEOS(geom1);
-		if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		GEOSGeometry *g = prep_cache->gcache.argnum == 1 ? POSTGIS2GEOS(geom2) : POSTGIS2GEOS(geom1);
+		if (!g)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 		result = GEOSPreparedCrosses(prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -565,7 +562,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *g1, *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -577,18 +575,18 @@ Datum crosses(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSCrosses");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSCrosses");
 
 	PG_RETURN_BOOL(result);
 }
-
-
 
 /**
  * ST_Contains(geometry, geometry)
  */
 PG_FUNCTION_INFO_V1(contains);
-Datum contains(PG_FUNCTION_ARGS)
+Datum
+contains(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -612,8 +610,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	** Short-circuit 1: if geom2 bounding box is not completely inside
 	** geom1 bounding box we can return FALSE.
 	*/
-	if (gserialized_get_gbox_p(geom1, &box1) &&
-	    gserialized_get_gbox_p(geom2, &box2))
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
 		if (!gbox_contains_2d(&box1, &box2))
 			PG_RETURN_BOOL(false);
@@ -632,41 +629,43 @@ Datum contains(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, NULL);
-	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
+	if (prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1)
 	{
 		g1 = POSTGIS2GEOS(geom2);
 		if (!g1)
 			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 
-		result = GEOSPreparedContains( prep_cache->prepared_geom, g1);
+		result = GEOSPreparedContains(prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
 	}
 	else
 	{
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
 			HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 			GEOSGeom_destroy(g1);
 		}
-		result = GEOSContains( g1, g2);
+		result = GEOSContains(g1, g2);
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSContains");
 
 	PG_RETURN_BOOL(result > 0);
 }
-
 
 /**
  * ST_Within(geometry, geometry)
  */
 PG_FUNCTION_INFO_V1(within);
-Datum within(PG_FUNCTION_ARGS)
+Datum
+within(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -690,8 +689,7 @@ Datum within(PG_FUNCTION_ARGS)
 	** Short-circuit 1: if geom1 bounding box is not completely inside
 	** geom2 bounding box we can return FALSE.
 	*/
-	if (gserialized_get_gbox_p(geom1, &box1) &&
-	    gserialized_get_gbox_p(geom2, &box2))
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
 		if (!gbox_within_2d(&box1, &box2))
 			PG_RETURN_BOOL(false);
@@ -710,7 +708,7 @@ Datum within(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, NULL, shared_geom2);
-	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 2 )
+	if (prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 2)
 	{
 		g1 = POSTGIS2GEOS(geom1);
 		if (!g1)
@@ -722,7 +720,8 @@ Datum within(PG_FUNCTION_ARGS)
 	else
 	{
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -734,7 +733,8 @@ Datum within(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if ( result == 2 ) HANDLE_GEOS_ERROR("GEOSWithin");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSWithin");
 
 	PG_RETURN_BOOL(result > 0);
 }
@@ -743,7 +743,8 @@ Datum within(PG_FUNCTION_ARGS)
  * ST_ContainsProperly(geometry, geometry)
  */
 PG_FUNCTION_INFO_V1(containsproperly);
-Datum containsproperly(PG_FUNCTION_ARGS)
+Datum
+containsproperly(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -756,35 +757,36 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.ContainsProperly(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(false);
 
 	/*
 	 * Short-circuit: if geom2 bounding box is not completely inside
 	 * geom1 bounding box we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( ! gbox_contains_2d(&box1, &box2) )
+		if (!gbox_contains_2d(&box1, &box2))
 			PG_RETURN_BOOL(false);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, 0);
-	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
+	if (prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1)
 	{
 		GEOSGeometry *g = POSTGIS2GEOS(geom2);
-		if (!g) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-		result = GEOSPreparedContainsProperly( prep_cache->prepared_geom, g);
+		if (!g)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		result = GEOSPreparedContainsProperly(prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
 	else
 	{
 		GEOSGeometry *g1, *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -796,11 +798,11 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSContainProperly");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSContainProperly");
 
 	PG_RETURN_BOOL(result);
 }
-
 
 /**
  * ST_Covers(geometry, geometry)
@@ -808,7 +810,8 @@ Datum containsproperly(PG_FUNCTION_ARGS)
  * http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
  */
 PG_FUNCTION_INFO_V1(covers);
-Datum covers(PG_FUNCTION_ARGS)
+Datum
+covers(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -822,7 +825,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 
 	/* A.Covers(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(false);
 
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
@@ -831,10 +834,9 @@ Datum covers(PG_FUNCTION_ARGS)
 	 * Short-circuit 1: if geom2 bounding box is not completely inside
 	 * geom1 bounding box we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( ! gbox_contains_2d(&box1, &box2) )
+		if (!gbox_contains_2d(&box1, &box2))
 		{
 			PG_RETURN_BOOL(false);
 		}
@@ -852,11 +854,12 @@ Datum covers(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, 0);
-	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
+	if (prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1)
 	{
 		GEOSGeometry *g1 = POSTGIS2GEOS(geom2);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-		result = GEOSPreparedCovers( prep_cache->prepared_geom, g1);
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		result = GEOSPreparedCovers(prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
 	}
 	else
@@ -864,23 +867,24 @@ Datum covers(PG_FUNCTION_ARGS)
 		GEOSGeometry *g1, *g2;
 
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
 			GEOSGeom_destroy(g1);
 			HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
 		}
-		result = GEOSRelatePattern( g1, g2, "******FF*" );
+		result = GEOSRelatePattern(g1, g2, "******FF*");
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSCovers");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSCovers");
 
 	PG_RETURN_BOOL(result);
 }
-
 
 /**
  * ST_CoveredBy(geometry, geometry)
@@ -889,7 +893,8 @@ Datum covers(PG_FUNCTION_ARGS)
  * http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
  */
 PG_FUNCTION_INFO_V1(coveredby);
-Datum coveredby(PG_FUNCTION_ARGS)
+Datum
+coveredby(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -905,17 +910,16 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "CoveredBy: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 
 	/* A.CoveredBy(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
+	if (gserialized_is_empty(geom1) || gserialized_is_empty(geom2))
 		PG_RETURN_BOOL(false);
 
 	/*
 	 * Short-circuit 1: if geom1 bounding box is not completely inside
 	 * geom2 bounding box we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	if (gserialized_get_gbox_p(geom1, &box1) && gserialized_get_gbox_p(geom2, &box2))
 	{
-		if ( ! gbox_within_2d(&box1, &box2) )
+		if (!gbox_within_2d(&box1, &box2))
 		{
 			PG_RETURN_BOOL(false);
 		}
@@ -933,18 +937,20 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, 0);
-	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 2)
+	if (prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 2)
 	{
 		GEOSGeometry *g1 = POSTGIS2GEOS(geom2);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-		result = GEOSPreparedCovers( prep_cache->prepared_geom, g1);
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		result = GEOSPreparedCovers(prep_cache->prepared_geom, g1);
 		GEOSGeom_destroy(g1);
 	}
 	else
 	{
 		GEOSGeometry *g1, *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
@@ -958,7 +964,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 	}
 
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSCoveredBy");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSCoveredBy");
 
 	PG_RETURN_BOOL(result);
 }
@@ -999,7 +1006,8 @@ imInvert(char *im, size_t len)
 #endif
 
 PG_FUNCTION_INFO_V1(relate_pattern);
-Datum relate_pattern(PG_FUNCTION_ARGS)
+Datum
+relate_pattern(PG_FUNCTION_ARGS)
 {
 	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
 	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
@@ -1007,8 +1015,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 
 	/* Ensure DE9IM pattern is no more than 9 chars */
-	text *imPtr = DatumGetTextP(DirectFunctionCall2(text_left,
-		PG_GETARG_DATUM(2), Int32GetDatum(9)));
+	text *imPtr = DatumGetTextP(DirectFunctionCall2(text_left, PG_GETARG_DATUM(2), Int32GetDatum(9)));
 	char *im = text_to_cstring(imPtr);
 	int8_t result;
 	size_t im_len = strlen(im);
@@ -1029,7 +1036,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 #if POSTGIS_GEOS_VERSION >= 31300
 	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
-	if ( prep_cache && prep_cache->prepared_geom )
+	if (prep_cache && prep_cache->prepared_geom)
 	{
 		GEOSGeometry *g = NULL;
 		if (prep_cache->gcache.argnum == 1)
@@ -1042,7 +1049,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 			imInvert(im, im_len);
 		}
 
-		if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		if (!g)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 		result = GEOSPreparedRelatePattern(prep_cache->prepared_geom, g, im);
 		GEOSGeom_destroy(g);
 	}
@@ -1051,7 +1059,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	{
 		GEOSGeometry *g1, *g2;
 		g1 = POSTGIS2GEOS(geom1);
-		if (!g1) HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+		if (!g1)
+			HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		g2 = POSTGIS2GEOS(geom2);
 		if (!g2)
 		{
@@ -1064,14 +1073,15 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	}
 
 	pfree(im);
-	if (result == 2) HANDLE_GEOS_ERROR("GEOSRelatePattern");
+	if (result == 2)
+		HANDLE_GEOS_ERROR("GEOSRelatePattern");
 
 	PG_RETURN_BOOL(result);
 }
 
-
 PG_FUNCTION_INFO_V1(relate_full);
-Datum relate_full(PG_FUNCTION_ARGS)
+Datum
+relate_full(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
@@ -1083,7 +1093,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	/* TODO handle empty */
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
-	if ( PG_NARGS() > 2 )
+	if (PG_NARGS() > 2)
 		bnr = PG_GETARG_INT32(2);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -1104,7 +1114,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g2));
 
 	relate_str = GEOSRelateBoundaryNodeRule(g1, g2, bnr);
-	if (!relate_str) {
+	if (!relate_str)
+	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		HANDLE_GEOS_ERROR("GEOSRelate");
@@ -1120,7 +1131,6 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(result);
 }
 
-
 /*
  * ST_DWithin(geom1, geom2, radius) returns boolean
  *
@@ -1135,7 +1145,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
  * machinery.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_dwithin);
-Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
+Datum
+LWGEOM_dwithin(PG_FUNCTION_ARGS)
 {
 
 	double tolerance = PG_GETARG_FLOAT8(2);
@@ -1154,9 +1165,7 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	 * operands is large enough that the win from indexing will exceed
 	 * the loss from GEOS fixed overhead.
 	 */
-	bool use_prepared =
-		(LWSIZE_GET(geom1->size) > small_threshold) ||
-		(LWSIZE_GET(geom2->size) > small_threshold);
+	bool use_prepared = (LWSIZE_GET(geom1->size) > small_threshold) || (LWSIZE_GET(geom2->size) > small_threshold);
 
 	if (tolerance < 0)
 		elog(ERROR, "Tolerance cannot be less than zero");
@@ -1184,9 +1193,11 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 			else
 				g = POSTGIS2GEOS(geom1);
 
-			if (!g) HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+			if (!g)
+				HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 			is_dwithin = GEOSPreparedDistanceWithin(prep_cache->prepared_geom, g, tolerance);
-			if (is_dwithin == 2) HANDLE_GEOS_ERROR("GEOSPreparedDistanceWithin");
+			if (is_dwithin == 2)
+				HANDLE_GEOS_ERROR("GEOSPreparedDistanceWithin");
 			GEOSGeom_destroy(g);
 		}
 	}
