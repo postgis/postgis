@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2001-2003 Refractions Research Inc.
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -119,6 +120,16 @@ create_point_empty(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 	return obj;
 }
 
+static void
+free_shape_arrays(double *x, double *y, double *z, double *m, int *parts)
+{
+	free(x);
+	free(y);
+	free(z);
+	free(m);
+	free(parts);
+}
+
 static SHPObject *
 create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 {
@@ -134,7 +145,8 @@ create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 
 	if (!xpts || !ypts || !zpts || !mpts)
 	{
-		goto rollback;
+		free_shape_arrays(xpts, ypts, zpts, mpts, NULL);
+		return NULL;
 	}
 	/* Grab the point: note getPoint4d will correctly handle
 	the case where the POINTs don't contain Z or M coordinates */
@@ -148,7 +160,6 @@ create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 	LWDEBUGF(4, "Point: %g %g %g %g", xpts[0], ypts[0], zpts[0], mpts[0]);
 
 	obj = SHPCreateObject(state->outshptype, -1, 0, NULL, NULL, 1, xpts, ypts, zpts, mpts);
-	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -176,7 +187,8 @@ create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 	 * failure when a non-zero amount was actually requested. */
 	if (lwmultipoint->ngeoms > 0 && (!xpts || !ypts || !zpts || !mpts))
 	{
-		goto rollback;
+		free_shape_arrays(xpts, ypts, zpts, mpts, NULL);
+		return NULL;
 	}
 
 	/* Grab the points: note getPoint4d will correctly handle
@@ -195,7 +207,6 @@ create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 
 	obj = SHPCreateObject(state->outshptype, -1, 0, NULL, NULL, lwmultipoint->ngeoms, xpts, ypts, zpts, mpts);
 
-	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -233,7 +244,8 @@ create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 	if ((lwpolygon->nrings > 0 && !shpparts) ||
 	    (shppointtotal > 0 && (!xpts || !ypts || !zpts || !mpts)))
 	{
-		goto rollback;
+		free_shape_arrays(xpts, ypts, zpts, mpts, shpparts);
+		return NULL;
 	}
 
 	LWDEBUGF(4, "Total number of points: %d", shppointtotal);
@@ -300,7 +312,6 @@ create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 	obj = SHPCreateObject(
 	    state->outshptype, -1, lwpolygon->nrings, shpparts, NULL, shppointtotal, xpts, ypts, zpts, mpts);
 
-	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -347,7 +358,8 @@ create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 	if ((shpringtotal > 0 && !shpparts) ||
 	    (shppointtotal > 0 && (!xpts || !ypts || !zpts || !mpts)))
 	{
-		goto rollback;
+		free_shape_arrays(xpts, ypts, zpts, mpts, shpparts);
+		return NULL;
 	}
 
 	LWDEBUGF(4, "Total number of rings: %d   Total number of points: %d", shpringtotal, shppointtotal);
@@ -430,7 +442,6 @@ create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 	obj =
 	    SHPCreateObject(state->outshptype, -1, shpringtotal, shpparts, NULL, shppointtotal, xpts, ypts, zpts, mpts);
 
-	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -459,7 +470,8 @@ create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 	 * failure when a non-zero amount was actually requested. */
 	if (lwlinestring->points->npoints > 0 && (!xpts || !ypts || !zpts || !mpts))
 	{
-		goto rollback;
+		free_shape_arrays(xpts, ypts, zpts, mpts, NULL);
+		return NULL;
 	}
 
 	/* Grab the points: note getPoint4d will correctly handle
@@ -479,7 +491,6 @@ create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 	obj = SHPCreateObject(
 	    state->outshptype, -1, 0, NULL, NULL, lwlinestring->points->npoints, xpts, ypts, zpts, mpts);
 
-	rollback:
 	free(xpts);
 	free(ypts);
 	free(zpts);
@@ -519,7 +530,8 @@ create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 	if ((lwmultilinestring->ngeoms > 0 && !shpparts) ||
 	    (shppointtotal > 0 && (!xpts || !ypts || !zpts || !mpts)))
 	{
-		goto rollback;
+		free_shape_arrays(xpts, ypts, zpts, mpts, shpparts);
+		return NULL;
 	}
 
 	/* Iterate through each linestring setting up shpparts to point to the beginning of each line */
@@ -553,7 +565,6 @@ create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 	obj = SHPCreateObject(
 	    state->outshptype, -1, lwmultilinestring->ngeoms, shpparts, NULL, shppoint, xpts, ypts, zpts, mpts);
 
-	rollback:
 	free(shpparts);
 	free(xpts);
 	free(ypts);
