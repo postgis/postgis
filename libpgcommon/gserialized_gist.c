@@ -8,9 +8,8 @@
  *
  **********************************************************************/
 
-
 #include "postgres.h"
-#include "access/gist.h"    /* For GiST */
+#include "access/gist.h" /* For GiST */
 #include "access/itup.h"
 #include "access/skey.h"
 
@@ -18,18 +17,16 @@
 
 /*#define POSTGIS_DEBUG_LEVEL 4*/
 
-#include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom.h" /* For standard geometry types. */
 #include "liblwgeom_internal.h"
-#include "lwgeom_pg.h"       /* For debugging macros. */
+#include "lwgeom_pg.h" /* For debugging macros. */
 #include "gserialized_gist.h"
 
-#define FLAGS_NDIMS_GIDX(f) ( FLAGS_GET_GEODETIC(f) ? 3 : \
-                              FLAGS_GET_M(f) ? 4 : \
-                              FLAGS_GET_Z(f) ? 3 : 2 )
-
+#define FLAGS_NDIMS_GIDX(f) (FLAGS_GET_GEODETIC(f) ? 3 : FLAGS_GET_M(f) ? 4 : FLAGS_GET_Z(f) ? 3 : 2)
 
 /* Generate human readable form for GIDX. */
-char* gidx_to_string(GIDX *a)
+char *
+gidx_to_string(GIDX *a)
 {
 	static const int precision = 12;
 	char tmp[8 + 8 * (OUT_MAX_BYTES_DOUBLE + 1)] = {'G', 'I', 'D', 'X', '(', 0};
@@ -60,55 +57,56 @@ char* gidx_to_string(GIDX *a)
 }
 
 /* Allocates a new GIDX on the heap of the requested dimensionality */
-GIDX* gidx_new(int ndims)
+GIDX *
+gidx_new(int ndims)
 {
 	size_t size = GIDX_SIZE(ndims);
-	GIDX *g = (GIDX*)palloc(size);
-	Assert( (ndims <= GIDX_MAX_DIM) && (size <= GIDX_MAX_SIZE) );
-	POSTGIS_DEBUGF(5,"created new gidx of %d dimensions, size %d", ndims, (int)size);
+	GIDX *g = (GIDX *)palloc(size);
+	Assert((ndims <= GIDX_MAX_DIM) && (size <= GIDX_MAX_SIZE));
+	POSTGIS_DEBUGF(5, "created new gidx of %d dimensions, size %d", ndims, (int)size);
 	SET_VARSIZE(g, size);
 	return g;
 }
 
-
 /* Convert a double-based GBOX into a float-based GIDX,
    ensuring the float box is larger than the double box */
-static int gidx_from_gbox_p(GBOX box, GIDX *a)
+static int
+gidx_from_gbox_p(GBOX box, GIDX *a)
 {
 	int ndims;
 
 	ndims = FLAGS_NDIMS_GIDX(box.flags);
 	SET_VARSIZE(a, VARHDRSZ + ndims * 2 * sizeof(float));
 
-	GIDX_SET_MIN(a,0,next_float_down(box.xmin));
-	GIDX_SET_MAX(a,0,next_float_up(box.xmax));
-	GIDX_SET_MIN(a,1,next_float_down(box.ymin));
-	GIDX_SET_MAX(a,1,next_float_up(box.ymax));
+	GIDX_SET_MIN(a, 0, next_float_down(box.xmin));
+	GIDX_SET_MAX(a, 0, next_float_up(box.xmax));
+	GIDX_SET_MIN(a, 1, next_float_down(box.ymin));
+	GIDX_SET_MAX(a, 1, next_float_up(box.ymax));
 
 	/* Geodetic indexes are always 3d, geocentric x/y/z */
-	if ( FLAGS_GET_GEODETIC(box.flags) )
+	if (FLAGS_GET_GEODETIC(box.flags))
 	{
-		GIDX_SET_MIN(a,2,next_float_down(box.zmin));
-		GIDX_SET_MAX(a,2,next_float_up(box.zmax));
+		GIDX_SET_MIN(a, 2, next_float_down(box.zmin));
+		GIDX_SET_MAX(a, 2, next_float_up(box.zmax));
 	}
 	else
 	{
 		/* Cartesian with Z implies Z is third dimension */
-		if ( FLAGS_GET_Z(box.flags) )
+		if (FLAGS_GET_Z(box.flags))
 		{
-			GIDX_SET_MIN(a,2,next_float_down(box.zmin));
-			GIDX_SET_MAX(a,2,next_float_up(box.zmax));
+			GIDX_SET_MIN(a, 2, next_float_down(box.zmin));
+			GIDX_SET_MAX(a, 2, next_float_up(box.zmax));
 		}
 		/* M is always fourth dimension, we pad if needed */
-		if ( FLAGS_GET_M(box.flags) )
+		if (FLAGS_GET_M(box.flags))
 		{
-			if ( ! FLAGS_GET_Z(box.flags) )
+			if (!FLAGS_GET_Z(box.flags))
 			{
-				GIDX_SET_MIN(a,2,-1*FLT_MAX);
-				GIDX_SET_MAX(a,2,FLT_MAX);
+				GIDX_SET_MIN(a, 2, -1 * FLT_MAX);
+				GIDX_SET_MAX(a, 2, FLT_MAX);
 			}
-			GIDX_SET_MIN(a,3,next_float_down(box.mmin));
-			GIDX_SET_MAX(a,3,next_float_up(box.mmax));
+			GIDX_SET_MIN(a, 3, next_float_down(box.mmin));
+			GIDX_SET_MAX(a, 3, next_float_up(box.mmax));
 		}
 	}
 
@@ -118,32 +116,34 @@ static int gidx_from_gbox_p(GBOX box, GIDX *a)
 }
 
 /* Convert a gidx to a gbox */
-void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
+void
+gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
 {
-	gbox->xmin = (double)GIDX_GET_MIN(a,0);
-	gbox->xmax = (double)GIDX_GET_MAX(a,0);
+	gbox->xmin = (double)GIDX_GET_MIN(a, 0);
+	gbox->xmax = (double)GIDX_GET_MAX(a, 0);
 
-	gbox->ymin = (double)GIDX_GET_MIN(a,1);
-	gbox->ymax = (double)GIDX_GET_MAX(a,1);
+	gbox->ymin = (double)GIDX_GET_MIN(a, 1);
+	gbox->ymax = (double)GIDX_GET_MAX(a, 1);
 
-	if ( FLAGS_GET_Z(flags) ) {
-		gbox->zmin = (double)GIDX_GET_MIN(a,2);
-		gbox->zmax = (double)GIDX_GET_MAX(a,2);
+	if (FLAGS_GET_Z(flags))
+	{
+		gbox->zmin = (double)GIDX_GET_MIN(a, 2);
+		gbox->zmax = (double)GIDX_GET_MAX(a, 2);
 	}
 
-	if ( FLAGS_GET_M(flags) ) {
-		gbox->mmin = (double)GIDX_GET_MIN(a,3);
-		gbox->mmax = (double)GIDX_GET_MAX(a,3);
+	if (FLAGS_GET_M(flags))
+	{
+		gbox->mmin = (double)GIDX_GET_MIN(a, 3);
+		gbox->mmax = (double)GIDX_GET_MAX(a, 3);
 	}
 }
 
-
 /**
-* Peak into a #GSERIALIZED datum to find the bounding box. If the
-* box is there, copy it out and return it. If not, calculate the box from the
-* full object and return the box based on that. If no box is available,
-* return #LW_FAILURE, otherwise #LW_SUCCESS.
-*/
+ * Peak into a #GSERIALIZED datum to find the bounding box. If the
+ * box is there, copy it out and return it. If not, calculate the box from the
+ * full object and return the box based on that. If no box is available,
+ * return #LW_FAILURE, otherwise #LW_SUCCESS.
+ */
 int
 gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 {
@@ -166,20 +166,21 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 		size_t size = gbox_serialized_size(lwflags);
 		size_t ndims, dim;
 		const float *f = gserialized_get_float_box_p(gpart, &ndims);
-		if (!f) return LW_FAILURE;
+		if (!f)
+			return LW_FAILURE;
 		for (dim = 0; dim < ndims; dim++)
 		{
-			GIDX_SET_MIN(gidx, dim, f[2*dim]);
-			GIDX_SET_MAX(gidx, dim, f[2*dim+1]);
+			GIDX_SET_MIN(gidx, dim, f[2 * dim]);
+			GIDX_SET_MAX(gidx, dim, f[2 * dim + 1]);
 		}
 		/* if M is present but Z is not, pad Z and shift M */
-		if (gserialized_has_m(gpart) && ! gserialized_has_z(gpart))
+		if (gserialized_has_m(gpart) && !gserialized_has_z(gpart))
 		{
 			size += 2 * sizeof(float);
-			GIDX_SET_MIN(gidx,3,GIDX_GET_MIN(gidx,2));
-			GIDX_SET_MAX(gidx,3,GIDX_GET_MAX(gidx,2));
-			GIDX_SET_MIN(gidx,2,-1*FLT_MAX);
-			GIDX_SET_MAX(gidx,2,FLT_MAX);
+			GIDX_SET_MIN(gidx, 3, GIDX_GET_MIN(gidx, 2));
+			GIDX_SET_MAX(gidx, 3, GIDX_GET_MAX(gidx, 2));
+			GIDX_SET_MIN(gidx, 2, -1 * FLT_MAX);
+			GIDX_SET_MAX(gidx, 2, FLT_MAX);
 		}
 		SET_VARSIZE(gidx, VARHDRSZ + size);
 	}
@@ -210,6 +211,3 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
 	return LW_SUCCESS;
 }
-
-
-
