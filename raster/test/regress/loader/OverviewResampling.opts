@@ -1,1 +1,1 @@
--l 3 -A average -C
+-l 3 --overview-resampling=average -C

@@ -27,6 +27,7 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GH-999, Avoid raster loader option conflict (Darafei Praliaskouski)
  - GH-999, Honor resampling with source overviews (Darafei Praliaskouski)
  - GH-999, Exclude NODATA from overview averages (Darafei Praliaskouski)
 

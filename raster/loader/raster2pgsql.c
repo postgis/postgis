@@ -494,7 +494,7 @@ usage()
 	      "      the pattern o_<overview factor>_<table>. Created overview is\n"
 	      "      stored in the database and is not affected by -R.\n"));
 	printf(
-	    _("  -A, --overview-resampling <algorithm> Resampling algorithm for\n"
+	    _("  --overview-resampling <algorithm> Resampling algorithm for\n"
 	      "      overviews created with -l. Supported values: near, average.\n"
 	      "      Defaults to near.\n"));
 	printf(_("  -q, --quote Wrap PostgreSQL identifiers in quotes.\n"));
@@ -3035,7 +3035,7 @@ main(int argc, char **argv)
 			}
 		}
 		/* overview resampling algorithm */
-		else if (option_matches(argv[argit], "-A", "--overview-resampling") &&
+		else if (option_matches(argv[argit], "--overview-resampling", "--overview-resampling") &&
 			 (optarg = option_value(argc, argv, &argit, "--overview-resampling")) != NULL)
 		{
 			const char *resampling = optarg;

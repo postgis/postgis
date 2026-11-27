@@ -1,1 +1,1 @@
--l 2 -A average
+-l 2 --overview-resampling average

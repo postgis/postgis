@@ -296,7 +296,7 @@ SQL
                 </varlistentry>
 
                 <varlistentry>
-                    <term><option>-A ALGORITHM</option>, <option>--overview-resampling=ALGORITHM</option></term>
+                    <term><option>--overview-resampling=ALGORITHM</option></term>
                     <listitem>
                         <para>
                             Resampling algorithm to use for overviews created with <option>-l</option>. Supported values are <varname>near</varname> and <varname>average</varname>. The default is <varname>near</varname>.
