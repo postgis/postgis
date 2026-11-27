@@ -186,28 +186,37 @@ initCubeBox(int ndims)
 static CubeGIDX *
 nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint16_t octant)
 {
-	/*
-	 * The box inherited from the parent and this node's centroid need not
-	 * have the same number of dimensions once 2D and 4D geometries share an
-	 * index.  Keep the parent's size so the copy below fits, and only
-	 * constrain the dimensions the two have in common.
-	 */
-	int ndims = Min(GIDX_NDIMS(cube_box->left), GIDX_NDIMS(centroid)), i;
+	int ndims_parent = GIDX_NDIMS(cube_box->left);
+	int ndims_centroid = GIDX_NDIMS(centroid);
+	int ndims = Max(ndims_centroid, ndims_parent), i;
 	CubeGIDX *next_cube_box = (CubeGIDX *)palloc(sizeof(CubeGIDX));
-	GIDX *left = (GIDX *)palloc(VARSIZE(cube_box->left));
-	GIDX *right = (GIDX *)palloc(VARSIZE(cube_box->right));
+	GIDX *left = (GIDX *)palloc(GIDX_SIZE(ndims));
+	GIDX *right = (GIDX *)palloc(GIDX_SIZE(ndims));
 	uint16_t dim = 0x01;
 
-	ndims = Min(ndims, GIDX_NDIMS(cube_box->right));
+	/*
+	 * Keys of different dimensionality share a node, so the centroid may
+	 * have more or fewer dimensions than the parent box. Copy the parent
+	 * dimensions and leave the others unbounded.
+	 */
+	SET_VARSIZE(left, GIDX_SIZE(ndims));
+	SET_VARSIZE(right, GIDX_SIZE(ndims));
+	for (i = 0; i < ndims; i++)
+	{
+		GIDX *src_left = i < ndims_parent ? cube_box->left : NULL;
+		GIDX *src_right = i < ndims_parent ? cube_box->right : NULL;
 
-	memcpy(left, cube_box->left, VARSIZE(cube_box->left));
-	memcpy(right, cube_box->right, VARSIZE(cube_box->right));
+		GIDX_SET_MIN(left, i, src_left ? GIDX_GET_MIN(src_left, i) : -1 * FLT_MAX);
+		GIDX_SET_MAX(left, i, src_left ? GIDX_GET_MAX(src_left, i) : FLT_MAX);
+		GIDX_SET_MIN(right, i, src_right ? GIDX_GET_MIN(src_right, i) : -1 * FLT_MAX);
+		GIDX_SET_MAX(right, i, src_right ? GIDX_GET_MAX(src_right, i) : FLT_MAX);
+	}
 	next_cube_box->left = left;
 	next_cube_box->right = right;
 
-	for (i = 0; i < ndims; i++)
+	for (i = 0; i < ndims_centroid; i++)
 	{
-		if (GIDX_GET_MAX(cube_box->left, i) != FLT_MAX && GIDX_GET_MAX(centroid, i) != FLT_MAX)
+		if (GIDX_GET_MAX(next_cube_box->left, i) != FLT_MAX && GIDX_GET_MAX(centroid, i) != FLT_MAX)
 		{
 			if (octant & dim)
 				GIDX_GET_MIN(next_cube_box->right, i) = GIDX_GET_MAX(centroid, i);
@@ -561,6 +570,7 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 		{
 			POSTGIS_DEBUG(4, "[SPGIST] null query pointer (!?!)");
 			flag = false;
+			break;
 		}
 
 		/* Null box should never make this far. */
@@ -568,6 +578,7 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 		{
 			POSTGIS_DEBUG(4, "[SPGIST] null query_gbox_index!");
 			flag = false;
+			break;
 		}
 
 		switch (strategy)
