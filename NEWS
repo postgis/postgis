@@ -9,8 +9,7 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
- - #2113, [raster] Add raster2pgsql near/average overview resampling option
-          (Darafei Praliaskouski)
+ - #2113, GH-999, Add raster2pgsql overview resampling (Darafei Praliaskouski)
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
@@ -27,6 +26,9 @@ PostGIS 3.8.0dev
           packer (John Carmack)
 
 * Bug Fixes *
+
+ - GH-999, Honor resampling with source overviews (Darafei Praliaskouski)
+ - GH-999, Exclude NODATA from overview averages (Darafei Praliaskouski)
 
  - GT-812, Check named geometry column types in row encoders (Andrew Kroh)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
