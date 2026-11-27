@@ -292,6 +292,7 @@ These are only changes since 3.7.0beta2.
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
 
 
+
 PostGIS 3.7.0beta2
 2026/08/09
 This version requires GEOS 3.10+, PostgreSQL 14-19beta2, Proj 6.1+, libgmp.
