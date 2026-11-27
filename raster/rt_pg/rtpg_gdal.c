@@ -990,7 +990,7 @@ RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(4))
 	{
 		scale[0] = PG_GETARG_FLOAT8(4);
-		if (FLT_NEQ(scale[0], 0.0))
+		if (!isnan(scale[0]) && scale[0] != 0.0)
 			scale_x = &scale[0];
 	}
 
@@ -998,7 +998,7 @@ RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(5))
 	{
 		scale[1] = PG_GETARG_FLOAT8(5);
-		if (FLT_NEQ(scale[1], 0.0))
+		if (!isnan(scale[1]) && scale[1] != 0.0)
 			scale_y = &scale[1];
 	}
 
@@ -1020,7 +1020,7 @@ RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(8))
 	{
 		skew[0] = PG_GETARG_FLOAT8(8);
-		if (FLT_NEQ(skew[0], 0.0))
+		if (!isnan(skew[0]) && skew[0] != 0.0)
 			skew_x = &skew[0];
 	}
 
@@ -1028,7 +1028,7 @@ RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(9))
 	{
 		skew[1] = PG_GETARG_FLOAT8(9);
-		if (FLT_NEQ(skew[1], 0.0))
+		if (!isnan(skew[1]) && skew[1] != 0.0)
 			skew_y = &skew[1];
 	}
 
