@@ -26,6 +26,7 @@ PostGIS 3.8.0dev
           packer (John Carmack)
 
 * Bug Fixes *
+ - GH-1079, Fix restore of the raster edge callback (Darafei Praliaskouski)
 
  - GT-812, Check named geometry column types in row encoders (Andrew Kroh)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
