@@ -9,6 +9,7 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #2600, GH-1079, Raster ST_EdgeDetect (Darafei Praliaskouski)
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
@@ -25,6 +26,7 @@ PostGIS 3.8.0dev
           packer (John Carmack)
 
 * Bug Fixes *
+ - GH-1079, Fix restore of the raster edge callback (Darafei Praliaskouski)
 
  - GT-812, Check named geometry column types in row encoders (Andrew Kroh)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
@@ -289,7 +291,6 @@ These are only changes since 3.7.0beta2.
           varints (Darafei Praliaskouski)
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
-
 
 
 PostGIS 3.7.0beta2
