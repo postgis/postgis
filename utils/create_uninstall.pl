@@ -110,7 +110,10 @@ sub read_signature_definition {
 		my $open = index($defn, '(');
 		if ($open >= 0) {
 			my ($arguments) = extract_bracketed(substr($defn, $open), '()');
-			$complete = defined $arguments;
+			if (defined $arguments) {
+				$defn = substr($defn, 0, $open) . $arguments;
+				$complete = 1;
+			}
 		}
 		last if $complete;
 

@@ -3,6 +3,7 @@
 
 import pathlib
 import subprocess
+import tempfile
 import unittest
 
 SCRIPT = pathlib.Path(__file__).with_name("create_unpackaged.pl")
@@ -31,6 +32,23 @@ CREATE OR REPLACE FUNCTION another(
         self.assertIn("WHEN 'p' THEN 'PROCEDURE'", result)
         self.assertIn("WHEN 'a' THEN 'AGGREGATE'", result)
         self.assertIn("ALTER %s %s OWNER TO %I", result)
+
+    def test_same_line_body_is_not_part_of_signature(self):
+        sql = "CREATE PROCEDURE sample(a int) LANGUAGE SQL AS $$ SELECT greatest(1,2) $$;\n"
+        result = subprocess.run(
+            ["perl", str(SCRIPT), "postgis"], input=sql, text=True,
+            capture_output=True, check=True,
+        ).stdout
+        self.assertIn("'sample (a int)'", result)
+        self.assertNotIn("sample (a int) LANGUAGE", result)
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".sql") as source:
+            source.write(sql)
+            source.flush()
+            uninstall = subprocess.run(
+                ["perl", str(SCRIPT.with_name("create_uninstall.pl")), source.name, "3.8"],
+                text=True, capture_output=True, check=True,
+            ).stdout
+        self.assertIn("DROP PROCEDURE IF EXISTS sample (a int);", uninstall)
 
     def test_incomplete_signature_fails(self):
         result = subprocess.run(
