@@ -2,8 +2,9 @@
   except:
     - main
   before_script:
-    - apt-get update -qq && apt-get install -y
-        bison flex
+    - printf '%s\n' 'deb http://archive.debian.org/debian buster main' 'deb http://archive.debian.org/debian-security buster/updates main' > /etc/apt/sources.list
+    - apt-get -o Acquire::Check-Valid-Until=false update -qq && apt-get install -y
+        bison flex lsb-release
         postgresql-11 postgresql-server-dev-11
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
