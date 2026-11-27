@@ -213,3 +213,16 @@ drop table if exists public.flatgeobuf_qi;
 drop table if exists public.flatgeobuf_mm_long;
 drop table if exists public.flatgeobuf_mm_text;
 drop table if exists public.flatgeobuf_mm_twocols;
+
+-- https://trac.osgeo.org/postgis/ticket/6147
+-- NULL rows are skipped by ST_AsFlatGeobuf
+CREATE TEMP TABLE fgb_null_row (id int, geom geometry);
+INSERT INTO fgb_null_row VALUES (1, 'POINT(1 1)'), (2, 'POINT(2 2)'), (3, 'POINT(3 3)');
+SELECT '#6147.a', ST_AsFlatGeobuf(NULL::fgb_null_row) IS NULL;
+SELECT '#6147.b', ST_AsFlatGeobuf(CASE WHEN id = 2 THEN NULL::fgb_null_row ELSE t END) =
+	(SELECT ST_AsFlatGeobuf(t) FROM fgb_null_row t WHERE id <> 2)
+FROM fgb_null_row t;
+SELECT '#6147.c', ST_AsFlatGeobuf(CASE WHEN id = 1 THEN NULL::fgb_null_row ELSE t END) =
+	(SELECT ST_AsFlatGeobuf(t) FROM fgb_null_row t WHERE id <> 1)
+FROM fgb_null_row t;
+DROP TABLE fgb_null_row;

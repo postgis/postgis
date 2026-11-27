@@ -772,3 +772,16 @@ WITH geom AS (
 	SELECT 3 as id, 'TRIANGLE EMPTY'::geometry geom
 )
 select '#4399', id, 'ST_AsMVTGeom', ST_AsText(ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(0, 0), ST_Point(32, 32))))::text from geom order by id asc;
+
+-- https://trac.osgeo.org/postgis/ticket/6148
+-- NULL rows are skipped by ST_AsMVT
+CREATE TEMP TABLE mvt_null_row (id int, geom geometry);
+INSERT INTO mvt_null_row VALUES (1, 'POINT(1 1)'), (2, 'POINT(2 2)'), (3, 'POINT(3 3)');
+SELECT '#6148.a', ST_AsMVT(NULL::mvt_null_row) = (SELECT ST_AsMVT(t) FROM mvt_null_row t WHERE false);
+SELECT '#6148.b', ST_AsMVT(CASE WHEN id = 2 THEN NULL::mvt_null_row ELSE t END) =
+	(SELECT ST_AsMVT(t) FROM mvt_null_row t WHERE id <> 2)
+FROM mvt_null_row t;
+SELECT '#6148.c', ST_AsMVT(CASE WHEN id = 1 THEN NULL::mvt_null_row ELSE t END) =
+	(SELECT ST_AsMVT(t) FROM mvt_null_row t WHERE id <> 1)
+FROM mvt_null_row t;
+DROP TABLE mvt_null_row;
