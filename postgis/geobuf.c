@@ -25,6 +25,7 @@
 
 #include <math.h>
 #include "geobuf.h"
+#include "catalog/pg_type.h" /* for INT2OID, INT4OID, INT8OID, FLOAT4OID, FLOAT8OID */
 
 #if defined HAVE_LIBPROTOBUF
 
@@ -145,7 +146,7 @@ encode_properties(struct geobuf_agg_context *ctx, Data__Feature *feature)
 	for (i = 0; i < natts; i++)
 	{
 		Data__Value *value;
-		char *type, *string_value;
+		char *string_value;
 		Datum datum;
 		bool isnull;
 		Oid typoid;
@@ -157,31 +158,33 @@ encode_properties(struct geobuf_agg_context *ctx, Data__Feature *feature)
 		value = palloc(sizeof(*value));
 		data__value__init(value);
 
-		type = SPI_gettype(tupdesc, i + 1);
 		datum = GetAttributeByNum(ctx->row, i + 1, &isnull);
 		if (isnull)
 			continue;
 
+		/* Dispatch on the base type OID, not the type name: a domain named
+		 * e.g. "int8" over text would otherwise be read with DatumGetInt64,
+		 * emitting a heap pointer. */
 		typoid = getBaseType(TupleDescAttr(tupdesc, i)->atttypid);
 
-		if (strcmp(type, "int2") == 0)
+		if (typoid == INT2OID)
 		{
 			set_int_value(value, DatumGetInt16(datum));
 		}
-		else if (strcmp(type, "int4") == 0)
+		else if (typoid == INT4OID)
 		{
 			set_int_value(value, DatumGetInt32(datum));
 		}
-		else if (strcmp(type, "int8") == 0)
+		else if (typoid == INT8OID)
 		{
 			set_int_value(value, DatumGetInt64(datum));
 		}
-		else if (strcmp(type, "float4") == 0)
+		else if (typoid == FLOAT4OID)
 		{
 			value->value_type_case = DATA__VALUE__VALUE_TYPE_DOUBLE_VALUE;
 			value->double_value = DatumGetFloat4(datum);
 		}
-		else if (strcmp(type, "float8") == 0)
+		else if (typoid == FLOAT8OID)
 		{
 			value->value_type_case = DATA__VALUE__VALUE_TYPE_DOUBLE_VALUE;
 			value->double_value = DatumGetFloat8(datum);

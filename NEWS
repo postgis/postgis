@@ -30,6 +30,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-941, Encode Geobuf properties using their base type OID
+   (reported by Aleksander Alekseev / Tiger Data; fixed by Aleksander Alekseev / Tiger Data,
+    Darafei Praliaskouski)
  - GT-927, Report the control-point count safely for mismatched
    ST_MakeNurbsCurve weights (Gwen Shapira / Nile)
  - #4502, GT-892, GH-1045, Make ST_SameAlignment symmetric (Darafei Praliaskouski)
