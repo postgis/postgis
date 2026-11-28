@@ -1355,8 +1355,11 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
 		}
 		val = tuple_get_int64(rowdesc, 1, dat);
 		edges[i] = val;
-		POSTGIS_DEBUGF(
-		    1, "Component " UINT64_FORMAT " in ring of edge %" LWTFMT_ELEMID " is edge %d", i, edge, val);
+		POSTGIS_DEBUGF(1,
+			       "Component " UINT64_FORMAT " in ring of edge %" LWTFMT_ELEMID " is edge " INT64_FORMAT,
+			       i,
+			       edge,
+			       val);
 
 		/* For the last entry, check that we returned back to start
 		 * point, or complain about topology being corrupted */
@@ -1380,7 +1383,8 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
 			}
 			nextedge = tuple_get_int64(rowdesc, sidecol, dat);
 			POSTGIS_DEBUGF(1,
-				       "Last component in ring of edge %" LWTFMT_ELEMID " (%d) has next_%s_edge %d",
+				       "Last component in ring of edge %" LWTFMT_ELEMID " (" INT64_FORMAT
+				       ") has next_%s_edge " INT64_FORMAT,
 				       edge,
 				       val,
 				       sidetext,
