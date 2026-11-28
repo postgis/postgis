@@ -9130,7 +9130,7 @@ FROM dummy_rast WHERE rid=2;
                     </para>
                     <note><para>The default behavior is touched=false, which will only select pixels where the center of the pixel is covered by the geometry.</para></note>
 	                <para role="enhanced" conformance="3.5.0">Enhanced: 3.5.0 - touched argument added.</para>
-	                <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 - geometry array variants added.</para>
+	                <para role="enhanced" conformance="3.8.0">Enhanced: 3.8.0 - geometry array variants added.</para>
                     <para role="availability" conformance="2.0.0">Availability: 2.0.0 </para>
 
                     <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 Rewritten in C</para>
