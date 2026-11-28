@@ -210,6 +210,33 @@ static void test_band_stats(void) {
 }
 
 static void
+test_histogram_bin_initialization_bounds(void)
+{
+	rt_bandstats stats = NULL;
+	rt_histogram histogram = NULL;
+	rt_raster raster = rt_raster_new(4, 1);
+	rt_band band = cu_add_band(raster, PT_8BUI, 0, 0);
+	double bin_width[] = {1, 2};
+	uint32_t count = 0;
+
+	CU_ASSERT_PTR_NOT_NULL_FATAL(band);
+	rt_band_set_pixel(band, 0, 0, 1, NULL);
+	rt_band_set_pixel(band, 1, 0, 2, NULL);
+	rt_band_set_pixel(band, 2, 0, 3, NULL);
+	rt_band_set_pixel(band, 3, 0, 4, NULL);
+	stats = rt_band_get_summary_stats(band, 1, 1, 1, NULL, NULL, NULL);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(stats);
+
+	/* Three bins with a repeating two-width pattern leave a partial group. */
+	histogram = rt_band_get_histogram(stats, 3, bin_width, 2, 0, 1, 4, &count);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(histogram);
+	CU_ASSERT_EQUAL(count, 3);
+	rtdealloc(histogram);
+	rtdealloc(stats->values);
+	rtdealloc(stats);
+	cu_free_raster(raster);
+}
+
 test_band_stats_small_sample_wide_raster(void)
 {
 	rt_raster raster = rt_raster_new(10, 1);
@@ -355,6 +382,7 @@ void band_stats_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("band_stats", NULL, NULL);
 	PG_ADD_TEST(suite, test_band_stats);
+	PG_ADD_TEST(suite, test_histogram_bin_initialization_bounds);
 	PG_ADD_TEST(suite, test_band_stats_small_sample_wide_raster);
 	PG_ADD_TEST(suite, test_band_stats_included_nodata);
 	PG_ADD_TEST(suite, test_band_value_count);
