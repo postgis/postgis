@@ -30,6 +30,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #4699, GT-878, [raster] Handle NULL-only MEAN and RANGE unions
+   (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data,
+    Darafei Praliaskouski)
  - GT-876, Skip empty components in relative ST_AsSVG output
    (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data,
    Darafei Praliaskouski)

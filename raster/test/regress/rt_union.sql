@@ -505,3 +505,6 @@ SELECT 'none', ST_Union(r) from ( select null::raster r where false ) f;
 SELECT 'null', ST_Union(null::raster);
 --#4699 crash
 SELECT 'null-1', ST_Union(null::raster,1);
+-- Empty input must not dereference uninitialized MEAN/RANGE working rasters.
+SELECT 'null-mean', ST_Union(NULL::raster, 1, 'MEAN');
+SELECT 'null-range', ST_Union(NULL::raster, 1, 'RANGE');
