@@ -13,6 +13,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -240,19 +241,24 @@ def main() -> int:
         print("SKIP: no upgrade-relevant change (no SQL-visible path or module source changed)")
         return 78
 
-    root = Path(args.work_dir).resolve()
-    root.mkdir(parents=True, exist_ok=True)
     try:
-        base_build = build_tree(merge_base, root, "base")
-        head_build = build_tree(args.head, root, "head")
-        needs_upgrade, reason = compare_symbols(base_build, head_build)
+        # Concurrent CI steps can share both the checkout and PIDs. Allocate
+        # the scratch path atomically so their Git worktrees never overlap.
+        work_dir = Path(args.work_dir).resolve()
+        work_dir.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="run-", dir=work_dir) as scratch:
+            root = Path(scratch)
+            try:
+                base_build = build_tree(merge_base, root, "base")
+                head_build = build_tree(args.head, root, "head")
+                needs_upgrade, reason = compare_symbols(base_build, head_build)
+            finally:
+                for tree in (root / "base" / "src", root / "head" / "src"):
+                    if tree.exists():
+                        run(["git", "worktree", "remove", "--force", str(tree)], check=False)
     except Exception as exc:
         print(f"RUN: symbol comparison failed open: {exc}")
         return 0
-    finally:
-        for tree in (root / "base" / "src", root / "head" / "src"):
-            if tree.exists():
-                run(["git", "worktree", "remove", "--force", str(tree)], check=False)
 
     if needs_upgrade:
         print(f"RUN: {reason}")
