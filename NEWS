@@ -36,6 +36,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #5937, [topology] Fix spurious RemoveUnusedPrimitives warnings on rings
+   (reported by Sandro Santilli; fixed by Darafei Praliaskouski)
  - GT-778, [raster] Guard raster allocation and serialization sizes against
    overflow (Paul Wouters / Aiven, Darafei Praliaskouski)
  - #5772, GT-891, GH-904, [geometry] Order crossings along the second line

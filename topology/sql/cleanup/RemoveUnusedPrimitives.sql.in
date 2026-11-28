@@ -31,7 +31,6 @@ DECLARE
   deletedNodesDeg2 INT := 0;
   sql TEXT;
   rec RECORD;
-  edgeMap JSONB := '{}';
   edge1 BIGINT;
   edge2 BIGINT;
   removedNode BIGINT;
@@ -572,6 +571,7 @@ BEGIN
   -- by only one of them
   sql := format(
     $$
+      CREATE TEMPORARY TABLE heal_candidates AS
       WITH
       unused_connected_nodes_in_bbox AS (
         SELECT
@@ -632,40 +632,52 @@ BEGIN
           )
           GROUP BY n.node_id, r.layer_id, r.topogeo_id
           HAVING count(DISTINCT abs(r.element_id)) != 2
-      ),
-      valid_heals AS (
-        SELECT
-          node_id,
-          edges
-        FROM removable_nodes_of_degree_2_in_bbox
-        WHERE node_id NOT IN (
-          SELECT node_id FROM breaking_heals
-        )
       )
-      SELECT
-        array_agg(node_id) connecting_nodes,
-        edges[1] edge1,
-        edges[2] edge2
-      FROM valid_heals
-      GROUP BY edges
+      SELECT node_id, edges
+      FROM removable_nodes_of_degree_2_in_bbox
+      WHERE node_id NOT IN (SELECT node_id FROM breaking_heals)
     $$,
     topo.name
   );
-  --RAISE DEBUG 'SQL: %', sql;
   RAISE NOTICE 'Removing unneeded nodes of degree 2';
   EXECUTE sql USING bbox, topo.id;
-  FOR rec in EXECUTE sql USING bbox, topo.id
+  ALTER TABLE pg_temp.heal_candidates ADD PRIMARY KEY (node_id);
+
+  -- Bind the topology schema once so the indexed lookups below can reuse
+  -- a plan while seeing the effects of earlier heals.
+  EXECUTE format(
+    'CREATE TEMPORARY VIEW heal_edges AS
+     SELECT edge_id, start_node, end_node FROM %I.edge_data',
+    topo.name
+  );
+
+  FOR rec IN SELECT node_id FROM pg_temp.heal_candidates ORDER BY edges, node_id
   LOOP --{
-    RAISE DEBUG 'edgeMap: %', edgeMap;
-    -- Edges may have changed name
-    edge1 := COALESCE( (edgeMap -> rec.edge1::text)::int, rec.edge1);
-    edge2 := COALESCE( (edgeMap -> rec.edge2::text)::int, rec.edge2);
+    WITH incident_edges AS (
+      SELECT edge_id, start_node, end_node
+      FROM pg_temp.heal_edges
+      WHERE start_node = rec.node_id OR end_node = rec.node_id
+    )
+    SELECT
+      CASE WHEN swap THEN e2.edge_id ELSE e1.edge_id END,
+      CASE WHEN swap THEN e1.edge_id ELSE e2.edge_id END
+    INTO edge1, edge2
+    FROM incident_edges e1
+    JOIN incident_edges e2 ON e1.edge_id < e2.edge_id
+    CROSS JOIN LATERAL (
+      -- Opposite edges with both endpoints in common prefer the end of
+      -- whichever edge is passed first. Preserve a non-candidate end.
+      SELECT CASE WHEN e1.start_node = e2.end_node AND e1.end_node = e2.start_node
+                       AND e2.end_node = rec.node_id
+                  THEN NOT EXISTS (
+                    SELECT FROM pg_temp.heal_candidates WHERE node_id = e1.end_node
+                  )
+                  ELSE false
+             END AS swap
+    ) AS heal_order;
 
-    RAISE DEBUG 'Should heal edges % (now %) and % (now %) bound by nodes %',
-      rec.edge1, edge1, rec.edge2, edge2, rec.connecting_nodes;
-
-    IF edge1 = edge2 THEN
-      -- Nothing to merge here, continue
+    -- An earlier heal can have removed this node or closed its last edge.
+    IF edge1 IS NULL THEN
       CONTINUE;
     END IF;
     ok := false;
@@ -673,25 +685,27 @@ BEGIN
     BEGIN
       -- TODO: replace ST_ModEdgeHeal loop with a faster direct deletion and healing
       removedNode := topology.ST_ModEdgeHeal(topo.name, edge1, edge2);
-      IF NOT removedNode = ANY ( rec.connecting_nodes ) THEN
+      IF removedNode <> rec.node_id AND NOT EXISTS (
+        SELECT FROM pg_temp.heal_candidates WHERE node_id = removedNode
+      ) THEN
         RAISE EXCEPTION 'Healing of edges % and % was reported '
                         'to remove node % while we expected any of % instead',
-                        edge1, edge2, removedNode, rec.connecting_nodes;
+                        edge1, edge2, removedNode, ARRAY[rec.node_id];
       END IF;
       RAISE DEBUG 'Edge % merged into %, dropping node %', edge2, edge1, removedNode;
       ok := 1;
     EXCEPTION WHEN OTHERS
     THEN
-      RAISE WARNING 'Edges % and % joined by node % could not be healed: %', edge1, edge2, rec.connecting_nodes, SQLERRM;
+      RAISE WARNING 'Edges % and % joined by node % could not be healed: %', edge1, edge2, ARRAY[rec.node_id], SQLERRM;
     END;
     IF ok THEN
-      -- edge2 was now renamed to edge1, update map
-      edgeMap := jsonb_set(edgeMap, ARRAY[edge2::text], to_jsonb(edge1));
       deletedNodesDeg2 := deletedNodesDeg2 + 1;
     END IF;
   END LOOP; --}
   RAISE NOTICE 'Removed % unneeded nodes of degree 2', deletedNodesDeg2;
 
+  DROP VIEW pg_temp.heal_edges;
+  DROP TABLE pg_temp.heal_candidates;
   DROP TABLE pg_temp.deleted_edges;
   DROP TABLE pg_temp.merged_faces;
 
