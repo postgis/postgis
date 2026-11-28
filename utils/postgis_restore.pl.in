@@ -166,9 +166,11 @@ foreach my $l ( @toc ) {
 		}
 	}
 
-  if ( $skip{$sig} &&
-       ( !defined($filter_schema) || $schema eq $filter_schema ||
-         $schema eq 'topology' || $schema eq 'pg_catalog' || $schema eq '-' ) ) {
+  # A schema-qualified signature must never match an application object.
+  if ( $skip{"$schema:$sig"} ||
+       ( $skip{$sig} &&
+         ( !defined($filter_schema) || $schema eq $filter_schema ||
+           $schema eq 'topology' || $schema eq 'pg_catalog' || $schema eq '-' ) ) ) {
     print STDERR "SKIP: $sigHR\n" if $DEBUG;
     next
   }
@@ -596,17 +598,18 @@ sub strip_argument_names {
 
 ######################################################################
 # Here are all the signatures we want to skip but we cannot derive
-# from current source
+# from current source. Prefix with "schema:" to restrict a signature
+# to that schema.
 #
 __END__
 ACL SCHEMA topology
 ACL TABLE geography_columns
 ACL TABLE geometry_columns
-ACL TABLE layer
+topology:ACL TABLE layer
 ACL TABLE raster_columns
 ACL TABLE raster_overviews
 ACL TABLE spatial_ref_sys
-ACL TABLE topology
+topology:ACL TABLE topology
 CAST (box2d AS box3d)
 CAST (box2d AS geometry)
 CAST (box3d AS box)
@@ -665,15 +668,15 @@ CAST (path AS geometry)
 CAST (point AS geometry)
 CAST (polygon AS geometry)
 CAST (text AS geometry)
-CONSTRAINT layer layer_pkey
-CONSTRAINT layer layer_schema_name_table_name_feature_column_key
+topology:CONSTRAINT layer layer_pkey
+topology:CONSTRAINT layer layer_schema_name_table_name_feature_column_key
 CONSTRAINT spatial_ref_sys spatial_ref_sys_pkey
-CONSTRAINT topology topology_name_key
-CONSTRAINT topology topology_pkey
-DEFAULT topology id
+topology:CONSTRAINT topology topology_name_key
+topology:CONSTRAINT topology topology_pkey
+topology:DEFAULT topology id
 DOMAIN topoelement
 DOMAIN topoelementarray
-FK CONSTRAINT layer layer_topology_id_fkey
+topology:FK CONSTRAINT layer layer_topology_id_fkey
 FUNCTION jsonb(geometry)
 FUNCTION json(geometry)
 FUNCTION lockrow(text, text, text, text, timestamp without time zone)
@@ -825,7 +828,7 @@ RULE geometry_columns geometry_columns_insert
 RULE geometry_columns geometry_columns_update
 SCHEMA topology
 SEQUENCE BY topology topology_id_seq
-SEQUENCE topology_id_seq
+topology:SEQUENCE topology_id_seq
 SEQUENCE topology topology_id_seq
 SHELLTYPE box2d
 SHELLTYPE box2df
@@ -836,10 +839,10 @@ SHELLTYPE gidx
 SHELLTYPE raster
 SHELLTYPE spheroid
 TABLEDATA spatial_ref_sys
-TABLE layer
+topology:TABLE layer
 TABLE spatial_ref_sys
-TABLE topology
-TRIGGER layer layer_integrity_checks
+topology:TABLE topology
+topology:TRIGGER layer layer_integrity_checks
 VIEW geography_columns
 VIEW geometry_columns
 VIEW raster_columns
