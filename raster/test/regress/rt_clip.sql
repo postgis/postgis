@@ -230,3 +230,11 @@ FROM (
 	SELECT _ST_Clip(rast, ARRAY[3, 1], geom, ARRAY[253, 251], FALSE) AS rast
 	FROM test_rast, test_geom
 ) AS clipped;
+
+-- An empty nodata array must leave source bands' nodata metadata unchanged.
+SELECT 'GT-989', ST_BandNoDataValue(
+	ST_Clip(
+		ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 2, 1, -1, 0, 0, 0), 1, '8BUI', 1, 7),
+		ST_MakeEnvelope(0, 0, 2, 2),
+		ARRAY[]::double precision[]
+	), 1);
