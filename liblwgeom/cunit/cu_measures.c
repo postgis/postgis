@@ -1322,6 +1322,26 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 }
 
 static void
+test_lw_dist2d_ptarrayarc_ptarrayarc_rejects_even_point_count(void)
+{
+	DISTPTS dl;
+	int rv;
+	LWLINE *valid;
+	LWLINE *invalid;
+
+	valid = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0)"));
+	invalid = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2 2, -1 2, 1 2, 2 2)"));
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	cu_error_msg_reset();
+	rv = lw_dist2d_ptarrayarc_ptarrayarc(valid->points, invalid->points, &dl);
+	CU_ASSERT_EQUAL(rv, LW_FAILURE);
+	ASSERT_STRING_EQUAL(cu_error_msg, "lw_dist2d_ptarrayarc_ptarrayarc called with non-arc input");
+
+	lwgeom_free((LWGEOM *)invalid);
+	lwgeom_free((LWGEOM *)valid);
+}
+
+static void
 test_lwgeom_tcpa(void)
 {
 	LWGEOM *g1, *g2;
@@ -1627,6 +1647,7 @@ void measures_suite_setup(void)
 	PG_ADD_TEST(suite, test_lw_arc_length);
 	PG_ADD_TEST(suite, test_lw_dist2d_pt_ptarrayarc);
 	PG_ADD_TEST(suite, test_lw_dist2d_ptarray_ptarrayarc);
+	PG_ADD_TEST(suite, test_lw_dist2d_ptarrayarc_ptarrayarc_rejects_even_point_count);
 	PG_ADD_TEST(suite, test_lwgeom_tcpa);
 	PG_ADD_TEST(suite, test_lwgeom_is_trajectory);
 	PG_ADD_TEST(suite, test_rect_tree_distance_tree);

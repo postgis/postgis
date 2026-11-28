@@ -1315,6 +1315,12 @@ lw_dist2d_ptarrayarc_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DIST
 
 	LWDEBUGF(2, "lw_dist2d_ptarrayarc_ptarrayarc called (points: %d-%d)", pa->npoints, pb->npoints);
 
+	if (pa->npoints % 2 == 0 || pa->npoints < 3 || pb->npoints % 2 == 0 || pb->npoints < 3)
+	{
+		lwerror("lw_dist2d_ptarrayarc_ptarrayarc called with non-arc input");
+		return LW_FALSE;
+	}
+
 	if (dl->mode == DIST_MAX)
 	{
 		lwerror("lw_dist2d_ptarrayarc_ptarrayarc does not currently support DIST_MAX mode");
