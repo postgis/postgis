@@ -294,3 +294,8 @@ ROLLBACK TO SAVEPOINT test;
 RELEASE SAVEPOINT test;
 
 ROLLBACK;
+
+-- A non-raster column must be rejected before raster deserialization.
+CREATE TEMP TABLE valuecount_nonraster (i integer);
+INSERT INTO valuecount_nonraster VALUES (1);
+SELECT * FROM ST_ValueCount('valuecount_nonraster', 'i');
