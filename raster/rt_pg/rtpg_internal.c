@@ -9,6 +9,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,8 +30,59 @@
 #include <ctype.h> /* for isspace */
 #include <postgres.h> /* for palloc */
 #include <executor/spi.h>
+#include <miscadmin.h>
+#include <access/htup_details.h>
+#include <catalog/pg_proc.h>
+#include <utils/acl.h>
+#include <utils/builtins.h>
+#include <utils/lsyscache.h>
+#include <utils/syscache.h>
 
 #include "rtpg_internal.h"
+
+void
+rtpg_assert_callback(const char *caller, Oid proc, Oid expected_return, int nargs, const Oid *expected)
+{
+	HeapTuple tuple;
+	Form_pg_proc form;
+	AclResult aclresult;
+	int i;
+
+#if POSTGIS_PGSQL_VERSION >= 160
+	aclresult = object_aclcheck(ProcedureRelationId, proc, GetUserId(), ACL_EXECUTE);
+#else
+	aclresult = pg_proc_aclcheck(proc, GetUserId(), ACL_EXECUTE);
+#endif
+	if (aclresult != ACLCHECK_OK)
+		aclcheck_error(aclresult, OBJECT_FUNCTION, get_func_name(proc));
+
+	tuple = SearchSysCache1(PROCOID, ObjectIdGetDatum(proc));
+	if (!HeapTupleIsValid(tuple))
+		elog(ERROR, "%s: cache lookup failed for function %u", caller, proc);
+	form = (Form_pg_proc)GETSTRUCT(tuple);
+	if (OidIsValid(expected_return) && form->prorettype != expected_return)
+	{
+		ReleaseSysCache(tuple);
+		elog(ERROR, "%s: Function provided must return %s", caller, format_type_be(expected_return));
+	}
+	if (form->pronargs != nargs)
+	{
+		ReleaseSysCache(tuple);
+		elog(ERROR, "%s: Function provided must have %d input parameters", caller, nargs);
+	}
+	for (i = 0; i < nargs; i++)
+	{
+		if (form->proargtypes.values[i] == expected[i])
+			continue;
+		ReleaseSysCache(tuple);
+		elog(ERROR,
+		     "%s: Parameter %d of the function provided must be of type %s",
+		     caller,
+		     i + 1,
+		     format_type_be(expected[i]));
+	}
+	ReleaseSysCache(tuple);
+}
 
 /* string replacement function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
