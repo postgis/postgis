@@ -37,3 +37,6 @@ gj05|7|{"type": "Feature", "geometry": {"type":"GeometryCollection","geometries"
 4695|{"type": "Feature", "geometry": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:2227"}},"coordinates":[0,1]}, "properties": {"v": 1}}
 ERROR:  composite_to_geojson: Column 'geom' is not of geometry type
 gj_named_null_text|{"type": "Feature", "geometry": null, "properties": {}}
+{"type":"Point","bbox":[1,2,1,2],"coordinates":[1,2]}
+{"type":"LineString","bbox":[1.5,-0.0000001,1e+16,2],"coordinates":[[1.5,-0.0000001],[1e+16,2]]}
+{"type":"LineString","bbox":[1.5,-0.0000001,3.125,1e+16,2,4],"coordinates":[[1.5,-0.0000001,3.125],[1e+16,2,4]]}

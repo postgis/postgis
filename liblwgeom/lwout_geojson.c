@@ -104,42 +104,26 @@ asgeojson_srs(stringbuffer_t *sb, const geojson_opts *opts)
 static void
 asgeojson_bbox(stringbuffer_t *sb, const geojson_opts *opts)
 {
-	/* Unlike the coordinates (printed via ryu), the bbox uses libc %.*f, so an
-	 * unbounded precision would allocate gigabytes. Clamp it; more digits than
-	 * a double can represent are meaningless anyway. */
-	int precision = opts->precision;
-	if (precision < 0)
-		precision = 0;
-	if (precision > OUT_DEFAULT_DECIMAL_DIGITS)
-		precision = OUT_DEFAULT_DECIMAL_DIGITS;
-
 	if (!opts->bbox) return;
-	if (!opts->hasz)
-		stringbuffer_aprintf(sb,
-				     "\"bbox\":[%.*f,%.*f,%.*f,%.*f],",
-				     precision,
-				     opts->bbox->xmin,
-				     precision,
-				     opts->bbox->ymin,
-				     precision,
-				     opts->bbox->xmax,
-				     precision,
-				     opts->bbox->ymax);
-	else
-		stringbuffer_aprintf(sb,
-				     "\"bbox\":[%.*f,%.*f,%.*f,%.*f,%.*f,%.*f],",
-				     precision,
-				     opts->bbox->xmin,
-				     precision,
-				     opts->bbox->ymin,
-				     precision,
-				     opts->bbox->zmin,
-				     precision,
-				     opts->bbox->xmax,
-				     precision,
-				     opts->bbox->ymax,
-				     precision,
-				     opts->bbox->zmax);
+	stringbuffer_append(sb, "\"bbox\":[");
+	stringbuffer_append_double(sb, opts->bbox->xmin, opts->precision);
+	stringbuffer_append_char(sb, ',');
+	stringbuffer_append_double(sb, opts->bbox->ymin, opts->precision);
+	if (opts->hasz)
+	{
+		stringbuffer_append_char(sb, ',');
+		stringbuffer_append_double(sb, opts->bbox->zmin, opts->precision);
+	}
+	stringbuffer_append_char(sb, ',');
+	stringbuffer_append_double(sb, opts->bbox->xmax, opts->precision);
+	stringbuffer_append_char(sb, ',');
+	stringbuffer_append_double(sb, opts->bbox->ymax, opts->precision);
+	if (opts->hasz)
+	{
+		stringbuffer_append_char(sb, ',');
+		stringbuffer_append_double(sb, opts->bbox->zmax, opts->precision);
+	}
+	stringbuffer_append(sb, "],");
 	return;
 }
 
