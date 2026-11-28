@@ -12,6 +12,11 @@ CG_IsValidDetail.invalid_polygon|f|t|t
 CG_Extrude_point|LINESTRING Z (0 0 0,1 0 0)
 CG_Extrude_line|POLYHEDRALSURFACE Z (((0 0 0,1 0 0,1 1 0,0 1 0,0 0 0)))
 CG_Extrude_surface|POLYHEDRALSURFACE Z (((1 1 0,1 0 0,0 1 0,1 1 0)),((0 1 1,1 0 1,1 1 1,0 1 1)),((1 0 0,0 0 0,0 1 0,1 0 0)),((0 1 1,0 0 1,1 0 1,0 1 1)),((1 0 0,1 1 0,1 1 1,1 0 1,1 0 0)),((1 1 0,0 1 0,0 1 1,1 1 1,1 1 0)),((0 1 0,0 0 0,0 0 1,0 1 1,0 1 0)),((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)))
+CG_Extrude #6031 mixed empty|3|2|f|t|3|SRID=4326;POLYHEDRALSURFACE EMPTY
+CG_Extrude #6031 nonempty|3|1|f|BOX3D(1 1 0,29.1 29.1 20.1)
+CG_Extrude #6031 all empty|SRID=4326;GEOMETRYCOLLECTION EMPTY
+CG_Extrude #6031 empty first|3|2|t|f
+ST_Extrude #6031 mixed empty|3|2|4326|t
 CG_ForceLHR|POLYGON((0 0,1 0,1 1,0 1,0 0))
 CG_MinkowskiSum|MULTIPOLYGON(((0 0,1 0,5 0,5 1,4 1,0 1,0 0)))
 CG_ConstrainedDelaunayTriangles|TIN(((4 0,2 2,2 -2,4 0)),((2 2,0 0,2 -2,2 2)))
