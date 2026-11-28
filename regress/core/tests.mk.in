@@ -146,6 +146,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/temporal \
 	$(top_srcdir)/regress/core/temporal_knn \
 	$(top_srcdir)/regress/core/tickets \
+	$(top_srcdir)/regress/core/findextent \
 	$(top_srcdir)/regress/core/triangulatedsurface \
 	$(top_srcdir)/regress/core/twkb \
 	$(top_srcdir)/regress/core/typmod \
