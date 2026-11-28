@@ -160,6 +160,24 @@ select 'E1', id, bool_1, ST_AsText(geom), bool_2 from ST_FromFlatGeobuf(null::fl
 
 select '--- Type mismatch detection ---';
 
+-- The first two output fields are decoded as int4 fid and geometry.
+create type flatgeobuf_bad_fid as (fid text, geom geometry);
+create type flatgeobuf_bad_geom as (fid integer, geom text);
+create domain flatgeobuf_fid_domain as integer;
+create domain flatgeobuf_geom_domain as geometry;
+create type flatgeobuf_domain_fields as (fid flatgeobuf_fid_domain, geom flatgeobuf_geom_domain);
+select 'FM1' from ST_FromFlatGeobuf(null::flatgeobuf_bad_fid, (
+    select ST_AsFlatGeobuf(q) from (select ST_MakePoint(1, 2)) q));
+select 'FM2' from ST_FromFlatGeobuf(null::flatgeobuf_bad_geom, (
+    select ST_AsFlatGeobuf(q) from (select ST_MakePoint(1, 2)) q));
+select 'FM3', fid, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_domain_fields, (
+    select ST_AsFlatGeobuf(q) from (select ST_MakePoint(1, 2)) q));
+drop type flatgeobuf_bad_fid;
+drop type flatgeobuf_bad_geom;
+drop type flatgeobuf_domain_fields;
+drop domain flatgeobuf_fid_domain;
+drop domain flatgeobuf_geom_domain;
+
 -- Setup: a long (bigint) column and a text column in separate tables
 select ST_FromFlatGeobufToTable('public', 'flatgeobuf_mm_long', (select ST_AsFlatGeobuf(q) fgb from (select
     null::geometry, null::bigint as val) q));

@@ -285,11 +285,13 @@ pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		if (getBaseType(TupleDescAttr(tupdesc, 0)->atttypid) != INT4OID)
 			ereport(ERROR,
 				(errcode(ERRCODE_DATATYPE_MISMATCH),
-				 errmsg("flatgeobuf: first column (fid) must be of type integer")));
+				 errmsg("ST_FromFlatGeobuf: first column (feature id) must be integer, not %s",
+					format_type_be(TupleDescAttr(tupdesc, 0)->atttypid))));
 		if (getBaseType(TupleDescAttr(tupdesc, 1)->atttypid) != postgis_oid(GEOMETRYOID))
 			ereport(ERROR,
 				(errcode(ERRCODE_DATATYPE_MISMATCH),
-				 errmsg("flatgeobuf: second column must be of type geometry")));
+				 errmsg("ST_FromFlatGeobuf: second column must be geometry, not %s",
+					format_type_be(TupleDescAttr(tupdesc, 1)->atttypid))));
 
 		for (uint16_t col_i = 0; col_i < ctx->ctx->columns_size; col_i++)
 		{
