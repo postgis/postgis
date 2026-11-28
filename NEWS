@@ -29,28 +29,32 @@ PostGIS 3.8.0dev
 * Bug Fixes *
 
  - GT-885, Keep ST_ClusterKMeans radius splitting safe when squared distances overflow
-   (reported by Sven Klemm, Tiger Data; fixed by Aleksander Alekseev, Darafei Praliaskouski)
+   (reported by Sven Klemm / Tiger Data;
+   fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-837, Keep ND traversal boxes safe across dimensions
-   (reported by Sven Klemm, Aleksander Alekseev, Tiger Data; fixed by Aleksander Alekseev, Darafei Praliaskouski)
+   (reported by Sven Klemm / Tiger Data, Aleksander Alekseev / Tiger Data;
+   fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-837, GH-1195, GH-1197, GH-1198, Fix SP-GiST index correctness
    (Bilal Kahraman, Darafei Praliaskouski)
  - GT-884, [raster] Check reclassification bounds before combining range delimiters
-          (reported by Sven Klemm, Tiger Data; fixed by Aleksander Alekseev, Darafei Praliaskouski)
+          (reported by Sven Klemm / Tiger Data;
+          fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-868, Guard raster band size calculations against overflow
           (reported by Paul Wouters; fixed by Darafei Praliaskouski)
  - GT-868, Quote identifiers when creating tables from FlatGeobuf
-          (reported by code908190; fixed by Ariel Mashraki)
+          (reported by code 666; fixed by Ariel Mashraki)
  - GT-868, Widen intermediate arithmetic for WKB size calculations
           (reported by wywwzjj; fixed by Even Rouault)
  - GT-868, GT-812, Check named geometry column types in row encoders
-          (Andrew Kroh; reported by Sven Klemm, Tiger Data, Dawid Żak, Software Mansion, Aleksander Alekseev)
+          (Andrew Kroh; reported by Sven Klemm / Tiger Data,
+          Dawid Żak / Software Mansion, Aleksander Alekseev / Tiger Data)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
  - GT-880, [raster] Free coverage value counts with the PostgreSQL allocator
-   (reported by Sven Klemm, Tiger Data;
-   fixed by Aleksander Alekseev, Tiger Data, and Darafei Praliaskouski)
+   (reported by Sven Klemm / Tiger Data;
+   fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GH-1183, Handle allocation failures during shape creation (Maksim Korotkov)
  - GT-854, [raster] Keep sampled summary-statistics values within the allocated array
-          (reported by Dawid Żak, Software Mansion; fixed by Darafei Praliaskouski)
+          (reported by Dawid Żak / Software Mansion; fixed by Darafei Praliaskouski)
  - GH-1178, Harden loader column-map allocation checks and partial cleanup
           (Maksim Korotkov)
  - #2299, GH-1084, [raster] Repair SQL argument generation in raster garden tests
@@ -59,13 +63,14 @@ PostGIS 3.8.0dev
  - GH-1181, Avoid undefined signed left shifts in MVT coordinate encoding
           (John Carmack)
  - GT-868, GH-1191, [topology] Return SQL NULL for a NULL topology name in
-          _RegisterMissingFaces (Bilal Kahraman; reported by Aleksander Alekseev, Sven Klemm)
+          _RegisterMissingFaces (Bilal Kahraman;
+          reported by Aleksander Alekseev / Tiger Data, Sven Klemm / Tiger Data)
  - #6146, GT-807, Fix crash in ST_CombineBBox(box3d, geometry) with a NULL box
           (Alexander Lakhin)
  - #6147, GT-808, GT-868, Fix crash in ST_AsFlatGeobuf() with a NULL row
-          (Alexander Lakhin; reported by Sven Klemm, Tiger Data)
+          (Alexander Lakhin; reported by Sven Klemm / Tiger Data)
  - #6148, GT-809, GT-868, Fix crash in ST_AsMVT() with a NULL row
-          (Alexander Lakhin; reported by Sven Klemm, Tiger Data)
+          (Alexander Lakhin; reported by Sven Klemm / Tiger Data)
  - GT-813, Fix ST_LocateBetween error on an empty multilinestring with equal
           measures; ST_LocateAlong now returns an empty multipoint for it
           (Andrew Kroh)
@@ -229,7 +234,7 @@ the docs (or explicitly with `make -C regress visual-examples`).
 
  - [raster] Make postgis.enable_outdb_rasters=off enforce offline-band
           metadata and pixel-read restrictions after upgrade
-          (reported by Sarath Kumar, IITM Pravartak Security Team;
+          (reported by Sarath Kumar / IITM Pravartak Security Team;
           fixed by Darafei Praliaskouski)
  - GH-1175, Guard missing operands before reading node tags in
           spatial selectivity estimation (Maksim Korotkov)
@@ -332,14 +337,14 @@ These are only changes since 3.7.0beta1.
           (Darafei Praliaskouski)
  - GT-671, Harden extension install and upgrade SQL against attacker-controlled
           object resolution in writable schemas
-          (reported by Eric Ridge, PlanetScale;
+          (reported by Eric Ridge / PlanetScale;
           fixed by Darafei Praliaskouski)
  - OSSFuzz 6302177757560832, account for GSERIALIZED float bbox rounding
           in fuzzer round trips (Darafei Praliaskouski)
  - GT-669, Validate FlatGeobuf size-prefixed buffers and variable-length
           property values before decoding
           (reported by Mehmet Ince;
-          reported by Sarath Kumar, IITM Pravartak Security Team;
+          reported by Sarath Kumar / IITM Pravartak Security Team;
           fixed by Darafei Praliaskouski)
  - Stop the extension upgrade script running ANALYZE inside its transaction,
           where it could deadlock with autovacuum (Darafei Praliaskouski)
