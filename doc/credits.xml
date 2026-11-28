@@ -263,6 +263,7 @@
 					<member>Alex Mayrhofer</member>
 					<member>Alexander Lakhin</member>
 					<member>Aleksander Alekseev</member>
+					<member>Zachariah Mithani</member>
 					<member>Andrea Peri</member>
 					<member>Andreas Forø Tollefsen</member>
 					<member>Andreas Neumann</member>
@@ -479,6 +480,7 @@
 			<para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project.
 			      In alphabetical order:
 			<itemizedlist>
+				<listitem><simpara><link xlink:href="https://aplosec.si/">AploSec</link></simpara></listitem>
                 <listitem><simpara><link xlink:href="https://aiven.io">Aiven</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://arrival3d.com">Arrival 3D</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</link></simpara></listitem>

@@ -11,3 +11,5 @@ NOTICE:  Invalid argument for reclassargset. Invalid band index (must use 1-base
 900|-900|900
 NOTICE:  Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index 0 . Returning original raster
 1
+NOTICE:  Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index 0 . Returning original raster
+1
