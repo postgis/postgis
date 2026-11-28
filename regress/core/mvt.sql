@@ -832,3 +832,11 @@ BEGIN
     RAISE EXCEPTION 'MVT accepted rows with different record layouts';
 END;
 $$;
+
+-- Repeated cstring values must not free memory owned by the input tuple.
+SELECT 'cstring ownership', length(ST_AsMVT(q, 'test', 4096, 'geom'))
+FROM (
+	SELECT 'same'::varchar::cstring AS value,
+		ST_AsMVTGeom(ST_Point(g, 1), ST_MakeEnvelope(0, 0, 10, 10, 0), 4096) AS geom
+	FROM generate_series(1, 100) AS g
+) AS q;
