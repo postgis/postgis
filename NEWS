@@ -36,6 +36,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #5284, GT-417, [topology] Import manually renamed TopoGeometry columns
+   (Darafei Praliaskouski)
  - #1764, GT-893, GH-1059, Keep raster2pgsql overviews aligned, including skew
    (Darafei Praliaskouski)
  - GT-936, Bind deprecated SFCGAL wrappers to their installed CG functions

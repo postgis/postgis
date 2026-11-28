@@ -242,10 +242,33 @@ if test "$SKIP_LAYERS" = "no"; then # {
 DO \$BODY\$
 DECLARE
   t topology.topology;
+  layer_table regclass := format('%I.%I', '${schema}', '${table}')::regclass;
+  feature_column name := '${column}';
+  old_constraint name := 'check_topogeom_${column}';
 BEGIN
   SELECT * FROM topology.topology
   WHERE name = '${TOPONAME}'
   INTO STRICT t;
+
+  -- A manual column rename leaves the exported layer and its check
+  -- constraint with the old name. The restored constraint still references
+  -- the column by number, so recover the new name before registering it.
+  IF NOT EXISTS (
+    SELECT FROM pg_catalog.pg_attribute
+    WHERE attrelid = layer_table AND attname = feature_column AND NOT attisdropped
+  ) THEN
+    SELECT a.attname INTO feature_column
+    FROM pg_catalog.pg_constraint c
+    JOIN pg_catalog.pg_attribute a
+      ON a.attrelid = c.conrelid AND c.conkey = ARRAY[a.attnum]
+    WHERE c.conrelid = layer_table AND c.contype = 'c'
+      AND c.conname = old_constraint
+      AND a.atttypid = 'topology.TopoGeometry'::regtype
+      AND NOT a.attisdropped;
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'TopoGeometry column "%" not found in %', '${column}', layer_table;
+    END IF;
+  END IF;
 
   -- Register layer in topology.layer table
   INSERT INTO topology.layer VALUES (
@@ -253,7 +276,7 @@ BEGIN
     ${id},
     '${schema}',
     '${table}',
-    '${column}',
+    feature_column,
     ${typ},
     ${level},
     ${child}
@@ -261,35 +284,26 @@ BEGIN
 
   -- Create and initialize layer's topogeometry sequence
   CREATE SEQUENCE "${TOPONAME}".topogeo_s_${id};
-  PERFORM pg_catalog.setval(
-    '"${TOPONAME}".topogeo_s_${id}',
-    max(id("${column}")),
-    true
-  )
-  FROM "${schema}"."${table}";
+  EXECUTE format(
+    'SELECT pg_catalog.setval(\$1, max(id(%I)), true) FROM %s',
+    feature_column, layer_table
+  ) USING format('%I.topogeo_s_${id}', '${TOPONAME}')::regclass;
 
-  -- drop-constraint (should we not restore them at all instead?)
-  ALTER TABLE "${schema}"."${table}"
-  DROP CONSTRAINT IF EXISTS "check_topogeom_${column}";
+  EXECUTE format('ALTER TABLE %s DROP CONSTRAINT IF EXISTS %I', layer_table, old_constraint);
 
   -- update topology_id
-  UPDATE "${schema}"."${table}"
-  SET "${column}".topology_id = t.id;
+  EXECUTE format('UPDATE %s SET %I.topology_id = \$1', layer_table, feature_column)
+  USING t.id;
 
-  -- re-create constraint (skip this?)
+  -- Recreate the constraint with the new topology ID and column name.
   EXECUTE format(
     \$STATEMENT\$
-      ALTER TABLE "${schema}"."${table}"
-      ADD CONSTRAINT "check_topogeom_${column}"
-      CHECK (
-        topology_id("${column}") = %1\$L
-        AND
-        layer_id("${column}") = ${id}
-        AND
-        type("${column}") = ${typ}
-    )
+      ALTER TABLE %s ADD CONSTRAINT %I CHECK (
+        topology_id(%I) = %L AND layer_id(%I) = ${id} AND type(%I) = ${typ}
+      )
     \$STATEMENT\$,
-    t.id
+    layer_table, 'check_topogeom_' || feature_column,
+    feature_column, t.id, feature_column, feature_column
   );
 END;
 \$BODY\$ LANGUAGE 'plpgsql';
