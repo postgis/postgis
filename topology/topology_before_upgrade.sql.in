@@ -8,6 +8,78 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_domain_type(
+  domain_name text,
+  old_domain_type text,
+  new_domain_type text,
+  deprecated_in_version text
+) RETURNS void AS $$
+DECLARE
+  domain_oid oid;
+  domain_array_oid oid;
+  domain_column record;
+  indirect_carriers text;
+BEGIN
+  SELECT t.oid, t.typarray
+  INTO domain_oid, domain_array_oid
+  FROM pg_catalog.pg_type AS t
+  WHERE t.typnamespace = 'topology'::regnamespace
+    AND t.typname = domain_name
+    AND t.typbasetype IN (old_domain_type::regtype, new_domain_type::regtype);
+
+  IF NOT FOUND THEN
+    RETURN;
+  END IF;
+
+  UPDATE pg_catalog.pg_type
+  SET typbasetype = new_domain_type::regtype,
+      typndims = (pg_catalog.length(new_domain_type) -
+                  pg_catalog.length(pg_catalog.replace(new_domain_type, '[]', ''))) / 2
+  WHERE oid = domain_oid;
+
+  FOR domain_column IN
+    SELECT a.attrelid, a.attname
+    FROM pg_catalog.pg_attribute AS a
+    JOIN pg_catalog.pg_class AS c ON c.oid = a.attrelid
+    WHERE a.atttypid = domain_oid
+      AND a.attnum > 0 AND NOT a.attisdropped
+      AND c.relkind IN ('r', 'p')
+  LOOP
+    EXECUTE pg_catalog.format(
+      'UPDATE ONLY %s SET %I = %I::text::topology.%I',
+      domain_column.attrelid::regclass,
+      domain_column.attname,
+      domain_column.attname,
+      domain_name
+    );
+  END LOOP;
+
+  SELECT pg_catalog.string_agg(carrier, ', ')
+  INTO indirect_carriers
+  FROM (
+    SELECT DISTINCT pg_catalog.format('%s.%I', a.attrelid::regclass, a.attname) AS carrier
+    FROM pg_catalog.pg_attribute AS a
+    JOIN pg_catalog.pg_class AS c ON c.oid = a.attrelid
+    JOIN pg_catalog.pg_type AS t ON t.oid = a.atttypid
+    WHERE a.attnum > 0 AND NOT a.attisdropped
+      AND (a.atttypid = domain_array_oid OR t.typelem = domain_oid
+        OR t.typbasetype = domain_oid
+        OR (c.relkind = 'm' AND a.atttypid = domain_oid)
+        OR (t.typtype = 'c' AND EXISTS (
+          SELECT 1 FROM pg_catalog.pg_attribute AS ca
+          WHERE ca.attrelid = t.typrelid AND ca.atttypid = domain_oid
+            AND ca.attnum > 0 AND NOT ca.attisdropped
+        )))
+  ) AS carriers;
+
+  IF indirect_carriers IS NOT NULL THEN
+    RAISE WARNING 'Topology.% has indirect domain carriers that were not rewritten: %',
+      domain_name, indirect_carriers;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- These are functions where the argument names may have changed  --
 -- so have to be dropped before upgrade can happen for 9.0+ --
 -- argument names changed --
@@ -42,8 +114,6 @@ SELECT _postgis_drop_function_by_signature('topology.CreateTopology(varchar, int
 SELECT _postgis_drop_function_by_signature('topology.CreateTopology(varchar)', '3.6.0');
 -- Upgrade casts, domains, and types from integer to bigint
 SELECT _postgis_drop_cast_by_types('topogeometry', 'integer[]', '3.6.0');
-SELECT _postgis_topology_upgrade_domain_type('topoelement','integer[]','bigint[]','3.6.0');
-SELECT _postgis_topology_upgrade_domain_type('topoelementarray','integer[][]','bigint[][]','3.6.0');
 SELECT _postgis_add_column_to_table('topology.topology'::regclass, 'useslargeids'::name, 'BOOLEAN'::text, true, 'false'::text, '3.6.0'::text);
 
 -- 3.7.0

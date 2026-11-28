@@ -73,6 +73,17 @@ SELECT topology.FixCorruptTopoGeometryColumn(schema_name, table_name, feature_co
 
 -- See https://trac.osgeo.org/postgis/ticket/5102
 SELECT topology.CopyTopology('upgrade_test', 'upgrade_test_copy');
+DO $test$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM upgrade_test.domain_test
+    WHERE a[1] = 1 AND a[2] = 2 AND b[1][1] = 2 AND b[1][2] = 3
+  ) THEN
+    RAISE EXCEPTION 'topoelement domain storage was not rewritten';
+  END IF;
+END
+$test$;
+
 INSERT INTO upgrade_test.domain_test values (
   '{1,2}'::topology.topoelement,
   '{{2,3}}'::topology.topoelementarray

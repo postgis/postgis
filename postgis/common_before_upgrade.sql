@@ -170,49 +170,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_domain_type(
-  domain_name text,
-	old_domain_type text,
-	new_domain_type text,
-	deprecated_in_version text
-) RETURNS void AS $$
-DECLARE
-	detail TEXT;
-	-- We need the base types of the old and new types - if multidimensional (int[][]), we need just one dimension at most
-	old_base_type TEXT := pg_catalog.regexp_replace(old_domain_type, E'(\\[\\])+$', '[]');
-	new_base_type TEXT := pg_catalog.regexp_replace(new_domain_type, E'(\\[\\])+$', '[]');
-	array_dims INT := (SELECT count(*) FROM pg_catalog.regexp_matches (old_domain_type, E'\\[\\]', 'g'));
-BEGIN
-	IF EXISTS (SELECT 1 FROM pg_catalog.pg_type AS t
-		WHERE  typnamespace::regnamespace::text = 'topology'
-		AND typname::text ILIKE domain_name
-		AND typbasetype::regtype::text ILIKE old_base_type
-    AND typndims = array_dims)
-  	THEN
-		BEGIN
-			-- HACK: We need to swap out the base type and number of dimensions
-			UPDATE pg_catalog.pg_type
-			SET typbasetype = new_base_type::regtype::oid, typndims = array_dims
-			WHERE typnamespace::regnamespace::text = 'topology'
-			AND typname::text ILIKE domain_name
-			AND typbasetype::regtype::text ILIKE old_base_type
-			AND typndims = array_dims;
-
-			RAISE INFO 'Upgraded % from % to %', domain_name, old_domain_type, new_domain_type;
-		EXCEPTION
-		WHEN others THEN
-			GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
-			RAISE WARNING 'Could not modify % from % to %, got % (%)',
-				domain_name, old_domain_type, new_domain_type, SQLERRM, SQLSTATE USING DETAIL = detail;
-			RETURN;
-		END;
-	ELSE
-		RAISE DEBUG 'Deprecated domain (topology.% with type %) does not exist', domain_name, old_domain_type;
-		RETURN;
-	END IF;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE OR REPLACE FUNCTION _postgis_topology_upgrade_user_type_attribute(
   type_name text,
 	attr_name text,
