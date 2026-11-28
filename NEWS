@@ -30,6 +30,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-867, [topology] Quote identifiers and apply database search paths safely
+          (reported by Alexander Kukushkin; fixed by Alexander Kukushkin,
+          Darafei Praliaskouski)
  - GT-866, [raster] Reject file-naming options in postgis.gdal_vsi_options
           (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data,
            Darafei Praliaskouski)
