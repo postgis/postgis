@@ -47,7 +47,6 @@ char *escape_copy_string(char *str);
 char *escape_insert_string(char *str);
 
 int GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, int force_multi);
-int GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
 int PIP(Point P, Point *V, int n);
 int FindPolygons(SHPObject *obj, Ring ***Out);
 void ReleasePolygons(Ring **polys, int npolys);
@@ -358,7 +357,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	{
 		snprintf(state->message,
 			 SHPLOADERMSGLEN,
-			 _("We have a Multilinestring with %d parts, can't use -S switch!"),
+			 _("Line has %d parts. The -S switch requires exactly one."),
 			 obj->nParts);
 
 		return SHPLOADERERR;
