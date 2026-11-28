@@ -246,6 +246,14 @@ select st_3ddistance('linestring(0 0,1 1,2 0)'::geometry, 'linestring(0 2 3, 3 2
 --distance with 3d as first point and 2d as second
 select st_3ddistance('linestring(0 0 1,1 1 2,2 0 3)'::geometry, 'linestring(0 2, 3 2)'::geometry);
 
+-- Empty operands return SQL NULL from the 3D closest-point family.
+select 'empty-3dclosestpoint-first', ST_3DClosestPoint('POINT Z EMPTY'::geometry, 'LINESTRING(0 0,1 1)'::geometry) IS NULL;
+select 'empty-3dclosestpoint-second', ST_3DClosestPoint('LINESTRING(0 0,1 1)'::geometry, 'POINT Z EMPTY'::geometry) IS NULL;
+select 'empty-3dshortestline-first', ST_3DShortestLine('POINT Z EMPTY'::geometry, 'LINESTRING(0 0,1 1)'::geometry) IS NULL;
+select 'empty-3dshortestline-second', ST_3DShortestLine('LINESTRING(0 0,1 1)'::geometry, 'POINT Z EMPTY'::geometry) IS NULL;
+select 'empty-3dlongestline-first', ST_3DLongestLine('POINT Z EMPTY'::geometry, 'LINESTRING(0 0,1 1)'::geometry) IS NULL;
+select 'empty-3dlongestline-second', ST_3DLongestLine('LINESTRING(0 0,1 1)'::geometry, 'POINT Z EMPTY'::geometry) IS NULL;
+
 select ST_AsText(ST_3DClosestPoint('POINT(0 0 0)', 'POINT(0 0)'));
 select ST_AsText(ST_3DShortestLine('LINESTRING(2 1, 3 0)', 'LINESTRING(0 0 2, 3 3 -4)'));
 
