@@ -66,12 +66,13 @@ BEGIN
     ELSE
         var_cur_search_path := var_cur_search_path || ', '
                        || quote_ident(a_schema_name);
+        PERFORM pg_catalog.set_config('search_path', var_cur_search_path, false);
         EXECUTE 'ALTER DATABASE ' || quote_ident(current_database())
-                             || ' SET search_path = ' || var_cur_search_path;
+                             || ' SET search_path FROM CURRENT';
         var_result := a_schema_name || ' has been added to end of database search_path ';
     END IF;
 
-    EXECUTE 'SET search_path = ' || var_cur_search_path;
+    PERFORM pg_catalog.set_config('search_path', var_cur_search_path, false);
 
   RETURN var_result;
 END

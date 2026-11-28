@@ -84,6 +84,7 @@ static LWT_BE_DATA be_data;
 struct LWT_BE_TOPOLOGY_T {
 	LWT_BE_DATA *be_data;
 	char *name;
+	const char *quoted_name;
 	int id;
 	int32_t srid;
 	double precision;
@@ -237,6 +238,7 @@ cb_loadTopologyByName(const LWT_BE_DATA *be, const char *name)
 	topo = palloc(sizeof(LWT_BE_TOPOLOGY));
 	topo->be_data = (LWT_BE_DATA *)be; /* const cast.. */
 	topo->name = pstrdup(name);
+	topo->quoted_name = quote_identifier(topo->name);
 	topo->hasZ = 0;
 	topo->usesLargeIDs = false;
 
@@ -321,6 +323,8 @@ cb_topoGetPrecision(const LWT_BE_TOPOLOGY *topo)
 static int
 cb_freeTopology(LWT_BE_TOPOLOGY *topo)
 {
+	if (topo->quoted_name != topo->name)
+		pfree((char *)topo->quoted_name);
 	pfree(topo->name);
 	pfree(topo);
 	return 1;
@@ -1019,7 +1023,7 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *num
 	initStringInfo(sql);
 	appendStringInfoString(sql, "SELECT ");
 	addEdgeFields(sql, fields, 0);
-	appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
+	appendStringInfo(sql, " FROM %s.edge_data", topo->quoted_name);
 	appendStringInfoString(sql, " WHERE edge_id IN (");
 	// add all identifiers here
 	for (i = 0; i < *numelems; ++i)
@@ -1073,7 +1077,7 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *n
 	initStringInfo(sql);
 	appendStringInfoString(sql, "SELECT ");
 	addEdgeFields(sql, fields, 0);
-	appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
+	appendStringInfo(sql, " FROM %s.edge_data", topo->quoted_name);
 	appendStringInfoString(sql, " WHERE start_node IN (");
 	// add all identifiers here
 	for (i = 0; i < *numelems; ++i)
@@ -1157,10 +1161,10 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *n
 	appendStringInfoString(sql, "SELECT ");
 	addEdgeFields(sql, fields, 0);
 	appendStringInfo(sql,
-			 " FROM \"%s\".edge_data"
+			 " FROM %s.edge_data"
 			 " WHERE ( left_face = ANY($1) "
 			 " OR right_face = ANY ($1) )",
-			 topo->name);
+			 topo->quoted_name);
 
 	values[0] = PointerGetDatum(array_ids);
 	argtypes[0] = idarraytype;
@@ -1226,7 +1230,7 @@ cb_getFacesById(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *nu
 	initStringInfo(sql);
 	appendStringInfoString(sql, "SELECT ");
 	addFaceFields(sql, fields);
-	appendStringInfo(sql, " FROM \"%s\".face", topo->name);
+	appendStringInfo(sql, " FROM %s.face", topo->quoted_name);
 	appendStringInfoString(sql, " WHERE face_id IN (");
 	// add all identifiers here
 	for (i = 0; i < *numelems; ++i)
@@ -1284,19 +1288,19 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
 			 "WITH RECURSIVE edgering AS ( "
 			 "SELECT %" LWTFMT_ELEMID
 			 "::int8 as signed_edge_id, edge_id, next_left_edge, next_right_edge "
-			 "FROM \"%s\".edge_data WHERE edge_id = %" LWTFMT_ELEMID
+			 "FROM %s.edge_data WHERE edge_id = %" LWTFMT_ELEMID
 			 "::int8 UNION "
 			 "SELECT CASE WHEN "
 			 "p.signed_edge_id < 0 THEN p.next_right_edge ELSE p.next_left_edge END, "
 			 "e.edge_id, e.next_left_edge, e.next_right_edge "
-			 "FROM \"%s\".edge_data e, edgering p WHERE "
+			 "FROM %s.edge_data e, edgering p WHERE "
 			 "e.edge_id = CASE WHEN p.signed_edge_id < 0 THEN "
 			 "abs(p.next_right_edge) ELSE abs(p.next_left_edge) END ) "
 			 "SELECT * FROM edgering",
 			 edge,
-			 topo->name,
+			 topo->quoted_name,
 			 ABS(edge),
-			 topo->name);
+			 topo->quoted_name);
 	if (limit)
 	{
 		++limit; /* so we know if we hit it */
@@ -1413,7 +1417,7 @@ cb_getNodeById(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *num
 	initStringInfo(sql);
 	appendStringInfoString(sql, "SELECT ");
 	addNodeFields(sql, fields);
-	appendStringInfo(sql, " FROM \"%s\".node", topo->name);
+	appendStringInfo(sql, " FROM %s.node", topo->quoted_name);
 	appendStringInfoString(sql, " WHERE node_id IN (");
 	// add all identifiers here
 	for (i = 0; i < *numelems; ++i)
@@ -1466,7 +1470,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *n
 	initStringInfo(sql);
 	appendStringInfoString(sql, "SELECT ");
 	addNodeFields(sql, fields);
-	appendStringInfo(sql, " FROM \"%s\".node", topo->name);
+	appendStringInfo(sql, " FROM %s.node", topo->quoted_name);
 	appendStringInfoString(sql, " WHERE containing_face IN (");
 	// add all identifiers here
 	for (i = 0; i < *numelems; ++i)
@@ -1539,7 +1543,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 		appendStringInfoString(sql, "SELECT ");
 		addEdgeFields(sql, fields, 0);
 	}
-	appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
+	appendStringInfo(sql, " FROM %s.edge_data", topo->quoted_name);
 	// TODO: use binary cursor here ?
 	hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(pt), WKB_EXTENDED);
 	if (dist)
@@ -1648,7 +1652,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
 			appendStringInfo(sql, "*");
 		}
 	}
-	appendStringInfo(sql, " FROM \"%s\".node", topo->name);
+	appendStringInfo(sql, " FROM %s.node", topo->quoted_name);
 	// TODO: use binary cursor here ?
 	hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(pt), WKB_EXTENDED);
 	if (dist)
@@ -1731,7 +1735,7 @@ cb_insertNodes(const LWT_BE_TOPOLOGY *topo, LWT_ISO_NODE *nodes, uint64_t numele
 	uint64_t i;
 
 	initStringInfo(sql);
-	appendStringInfo(sql, "INSERT INTO \"%s\".node (", topo->name);
+	appendStringInfo(sql, "INSERT INTO %s.node (", topo->quoted_name);
 	addNodeFields(sql, LWT_COL_NODE_ALL);
 	appendStringInfoString(sql, ") VALUES ");
 	for (i = 0; i < numelems; ++i)
@@ -1795,7 +1799,7 @@ cb_insertEdges(const LWT_BE_TOPOLOGY *topo, LWT_ISO_EDGE *edges, uint64_t numele
 
 	initStringInfo(sql);
 	/* NOTE: we insert into "edge", on which an insert rule is defined */
-	appendStringInfo(sql, "INSERT INTO \"%s\".edge_data (", topo->name);
+	appendStringInfo(sql, "INSERT INTO %s.edge_data (", topo->quoted_name);
 	addEdgeFields(sql, LWT_COL_EDGE_ALL, 1);
 	appendStringInfoString(sql, ") VALUES ");
 	for (i = 0; i < numelems; ++i)
@@ -1861,7 +1865,7 @@ cb_insertFaces(const LWT_BE_TOPOLOGY *topo, LWT_ISO_FACE *faces, uint64_t numele
 	int needsFaceIdReturn = 0;
 
 	initStringInfo(sql);
-	appendStringInfo(sql, "INSERT INTO \"%s\".face (", topo->name);
+	appendStringInfo(sql, "INSERT INTO %s.face (", topo->quoted_name);
 	addFaceFields(sql, LWT_COL_FACE_ALL);
 	appendStringInfoString(sql, ") VALUES ");
 	for (i = 0; i < numelems; ++i)
@@ -1931,7 +1935,7 @@ cb_updateEdges(const LWT_BE_TOPOLOGY *topo,
 	StringInfo sql = &sqldata;
 
 	initStringInfo(sql);
-	appendStringInfo(sql, "UPDATE \"%s\".edge_data SET ", topo->name);
+	appendStringInfo(sql, "UPDATE %s.edge_data SET ", topo->quoted_name);
 	addEdgeUpdate(sql, upd_edge, upd_fields, 1, updSet);
 	if (exc_edge || sel_edge)
 		appendStringInfoString(sql, " WHERE ");
@@ -1981,7 +1985,7 @@ cb_updateNodes(const LWT_BE_TOPOLOGY *topo,
 	StringInfo sql = &sqldata;
 
 	initStringInfo(sql);
-	appendStringInfo(sql, "UPDATE \"%s\".node SET ", topo->name);
+	appendStringInfo(sql, "UPDATE %s.node SET ", topo->quoted_name);
 	addNodeUpdate(sql, upd_node, upd_fields, 1, updSet);
 	if (exc_node || sel_node)
 		appendStringInfoString(sql, " WHERE ");
@@ -2051,7 +2055,7 @@ cb_updateNodesById(const LWT_BE_TOPOLOGY *topo, const LWT_ISO_NODE *nodes, uint6
 			appendStringInfoString(sql, ",");
 		addNodeValues(sql, node, LWT_COL_NODE_NODE_ID | fields);
 	}
-	appendStringInfo(sql, " ) UPDATE \"%s\".node n SET ", topo->name);
+	appendStringInfo(sql, " ) UPDATE %s.node n SET ", topo->quoted_name);
 
 	/* TODO: turn the following into a function */
 	if (fields & LWT_COL_NODE_NODE_ID)
@@ -2114,9 +2118,9 @@ cb_updateFacesById(const LWT_BE_TOPOLOGY *topo, const LWT_ISO_FACE *faces, uint6
 		lwfree(hexbox);
 	}
 	appendStringInfo(sql,
-			 ") UPDATE \"%s\".face o SET mbr = i.mbr "
+			 ") UPDATE %s.face o SET mbr = i.mbr "
 			 "FROM newfaces i WHERE o.face_id = i.id",
-			 topo->name);
+			 topo->quoted_name);
 
 	POSTGIS_DEBUGF(1, "cb_updateFacesById query: %s", sql->data);
 
@@ -2166,7 +2170,7 @@ cb_updateEdgesById(const LWT_BE_TOPOLOGY *topo, const LWT_ISO_EDGE *edges, uint6
 			appendStringInfoString(sql, ",");
 		addEdgeValues(sql, edge, fields | LWT_COL_EDGE_EDGE_ID, 0);
 	}
-	appendStringInfo(sql, ") UPDATE \"%s\".edge_data e SET ", topo->name);
+	appendStringInfo(sql, ") UPDATE %s.edge_data e SET ", topo->quoted_name);
 
 	/* TODO: turn the following into a function */
 	if (fields & LWT_COL_EDGE_START_NODE)
@@ -2241,7 +2245,7 @@ cb_deleteEdges(const LWT_BE_TOPOLOGY *topo, const LWT_ISO_EDGE *sel_edge, int se
 	StringInfo sql = &sqldata;
 
 	initStringInfo(sql);
-	appendStringInfo(sql, "DELETE FROM \"%s\".edge_data WHERE ", topo->name);
+	appendStringInfo(sql, "DELETE FROM %s.edge_data WHERE ", topo->quoted_name);
 	addEdgeUpdate(sql, sel_edge, sel_fields, 0, updSel);
 
 	POSTGIS_DEBUGF(1, "cb_deleteEdges: %s", sql->data);
@@ -2283,8 +2287,8 @@ cb_getNextEdgeId(const LWT_BE_TOPOLOGY *topo)
 			 "(POSITION(':' IN column_default)-POSITION('(' IN column_default)-3))"
 			 ") "
 			 "FROM information_schema.columns "
-			 "WHERE table_schema = '%s' AND table_name='edge_data' AND column_name = 'edge_id' \n",
-			 topo->name);
+			 "WHERE table_schema = %s AND table_name='edge_data' AND column_name = 'edge_id' \n",
+			 quote_literal_cstr(topo->name));
 	spi_result = SPI_execute(sql->data, false, 0);
 	MemoryContextSwitchTo(oldcontext); /* switch back */
 	if (spi_result != SPI_OK_SELECT)
@@ -2343,10 +2347,10 @@ cb_updateTopoGeomEdgeSplit(const LWT_BE_TOPOLOGY *topo,
 		appendStringInfoString(sql, "DELETE");
 	}
 	appendStringInfo(sql,
-			 " FROM \"%s\".relation r %s topology.layer l WHERE "
+			 " FROM %s.relation r %s topology.layer l WHERE "
 			 "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
 			 "AND r.element_id IN ( %" LWTFMT_ELEMID ", -%" LWTFMT_ELEMID ") AND r.element_type = 2",
-			 topo->name,
+			 topo->quoted_name,
 			 (new_edge2 == -1 ? "," : "USING"),
 			 topo->id,
 			 split_edge,
@@ -2377,7 +2381,7 @@ cb_updateTopoGeomEdgeSplit(const LWT_BE_TOPOLOGY *topo,
 	if (ntopogeoms)
 	{
 		resetStringInfo(sql);
-		appendStringInfo(sql, "INSERT INTO \"%s\".relation VALUES ", topo->name);
+		appendStringInfo(sql, "INSERT INTO %s.relation VALUES ", topo->quoted_name);
 		for (i = 0; i < ntopogeoms; ++i)
 		{
 			HeapTuple row = SPI_tuptable->vals[i];
@@ -2390,26 +2394,26 @@ cb_updateTopoGeomEdgeSplit(const LWT_BE_TOPOLOGY *topo,
 
 			if (!getNotNullInt64(row, tdesc, 1, &element_id))
 			{
-				cberror(topo->be_data, "unexpected null element_id in \"%s\".relation", topo->name);
+				cberror(topo->be_data, "unexpected null element_id in %s.relation", topo->name);
 				return 0;
 			}
 			negate = (element_id < 0);
 
 			if (!getNotNullInt64(row, tdesc, 2, &topogeo_id))
 			{
-				cberror(topo->be_data, "unexpected null topogeo_id in \"%s\".relation", topo->name);
+				cberror(topo->be_data, "unexpected null topogeo_id in %s.relation", topo->name);
 				return 0;
 			}
 
 			if (!getNotNullInt32(row, tdesc, 3, &layer_id))
 			{
-				cberror(topo->be_data, "unexpected null layer_id in \"%s\".relation", topo->name);
+				cberror(topo->be_data, "unexpected null layer_id in %s.relation", topo->name);
 				return 0;
 			}
 
 			if (!getNotNullInt32(row, tdesc, 4, &element_type))
 			{
-				cberror(topo->be_data, "unexpected null element_type in \"%s\".relation", topo->name);
+				cberror(topo->be_data, "unexpected null element_type in %s.relation", topo->name);
 				return 0;
 			}
 
@@ -2485,10 +2489,10 @@ cb_updateTopoGeomFaceSplit(const LWT_BE_TOPOLOGY *topo,
 		appendStringInfoString(sql, "DELETE");
 	}
 	appendStringInfo(sql,
-			 " FROM \"%s\".relation r %s topology.layer l WHERE "
+			 " FROM %s.relation r %s topology.layer l WHERE "
 			 "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
 			 "AND r.element_id = %" LWTFMT_ELEMID " AND r.element_type = 3",
-			 topo->name,
+			 topo->quoted_name,
 			 (new_face2 == -1 ? "," : "USING"),
 			 topo->id,
 			 split_face);
@@ -2517,7 +2521,7 @@ cb_updateTopoGeomFaceSplit(const LWT_BE_TOPOLOGY *topo,
 	if (ntopogeoms)
 	{
 		resetStringInfo(sql);
-		appendStringInfo(sql, "INSERT INTO \"%s\".relation VALUES ", topo->name);
+		appendStringInfo(sql, "INSERT INTO %s.relation VALUES ", topo->quoted_name);
 		for (i = 0; i < ntopogeoms; ++i)
 		{
 			HeapTuple row = SPI_tuptable->vals[i];
@@ -2530,26 +2534,26 @@ cb_updateTopoGeomFaceSplit(const LWT_BE_TOPOLOGY *topo,
 
 			if (!getNotNullInt64(row, tdesc, 1, &element_id))
 			{
-				cberror(topo->be_data, "unexpected null element_id in \"%s\".relation", topo->name);
+				cberror(topo->be_data, "unexpected null element_id in %s.relation", topo->name);
 				return 0;
 			}
 			negate = (element_id < 0);
 
 			if (!getNotNullInt64(row, tdesc, 2, &topogeo_id))
 			{
-				cberror(topo->be_data, "unexpected null topogeo_id in \"%s\".relation", topo->name);
+				cberror(topo->be_data, "unexpected null topogeo_id in %s.relation", topo->name);
 				return 0;
 			}
 
 			if (!getNotNullInt32(row, tdesc, 3, &layer_id))
 			{
-				cberror(topo->be_data, "unexpected null layer_id in \"%s\".relation", topo->name);
+				cberror(topo->be_data, "unexpected null layer_id in %s.relation", topo->name);
 				return 0;
 			}
 
 			if (!getNotNullInt32(row, tdesc, 4, &element_type))
 			{
-				cberror(topo->be_data, "unexpected null element_type in \"%s\".relation", topo->name);
+				cberror(topo->be_data, "unexpected null element_type in %s.relation", topo->name);
 				return 0;
 			}
 
@@ -2614,11 +2618,11 @@ cb_checkTopoGeomRemEdge(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID rem_edge, LWT_EL
 	appendStringInfo(sql,
 			 "SELECT r.topogeo_id, r.layer_id, "
 			 "l.schema_name, l.table_name, l.feature_column FROM "
-			 "topology.layer l INNER JOIN \"%s\".relation r "
+			 "topology.layer l INNER JOIN %s.relation r "
 			 "ON (l.layer_id = r.layer_id) WHERE l.level = 0 AND "
 			 "l.feature_type IN ( 2, 4 ) AND l.topology_id = %d"
 			 " AND r.element_type = 2 AND r.element_id IN (%" LWTFMT_ELEMID ", -%" LWTFMT_ELEMID ")",
-			 topo->name,
+			 topo->quoted_name,
 			 topo->id,
 			 rem_edge,
 			 rem_edge);
@@ -2681,7 +2685,7 @@ cb_checkTopoGeomRemEdge(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID rem_edge, LWT_EL
 				 "SELECT t.* FROM ( SELECT r.topogeo_id::int8, "
 				 "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
 				 "array_agg(r.element_id::int8) as elems FROM topology.layer l "
-				 " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+				 " INNER JOIN %s.relation r ON (l.layer_id = r.layer_id) "
 				 "WHERE l.level = 0 and l.feature_type IN (3, 4) "
 				 "AND l.topology_id = %d"
 				 " AND r.element_type = 3 AND r.element_id::int8 = ANY (ARRAY[%" LWTFMT_ELEMID
@@ -2690,7 +2694,7 @@ cb_checkTopoGeomRemEdge(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID rem_edge, LWT_EL
 				 "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%" LWTFMT_ELEMID
 				 ",%" LWTFMT_ELEMID "]::int8[]",
 
-				 topo->name,
+				 topo->quoted_name,
 				 topo->id,
 				 face_left,
 				 face_right,
@@ -2763,11 +2767,11 @@ cb_checkTopoGeomRemIsoEdge(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID rem_edge)
 	appendStringInfo(sql,
 			 "SELECT r.topogeo_id, r.layer_id, "
 			 "l.schema_name, l.table_name, l.feature_column FROM "
-			 "topology.layer l INNER JOIN \"%s\".relation r "
+			 "topology.layer l INNER JOIN %s.relation r "
 			 "ON (l.layer_id = r.layer_id) WHERE l.level = 0 AND "
 			 "l.feature_type IN ( 2, 4 ) AND l.topology_id = %d"
 			 " AND r.element_type = 2 AND r.element_id IN (%" LWTFMT_ELEMID ", %" LWTFMT_ELEMID ")",
-			 topo->name,
+			 topo->quoted_name,
 			 topo->id,
 			 rem_edge,
 			 rem_edge);
@@ -2836,7 +2840,7 @@ cb_checkTopoGeomRemNode(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID rem_node, LWT_EL
 			 "SELECT t.* FROM ( SELECT r.topogeo_id::int8, "
 			 "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
 			 "array_agg(abs(r.element_id::int8)) as elems FROM topology.layer l "
-			 " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+			 " INNER JOIN %s.relation r ON (l.layer_id = r.layer_id) "
 			 "WHERE l.level = 0 and l.feature_type in ( 2, 4 ) "
 			 "AND l.topology_id = %d"
 			 " AND r.element_type = 2 AND r.element_id::int8 = ANY (ARRAY[%" LWTFMT_ELEMID
@@ -2844,7 +2848,7 @@ cb_checkTopoGeomRemNode(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID rem_node, LWT_EL
 			 "]::int8[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
 			 "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%" LWTFMT_ELEMID
 			 ",%" LWTFMT_ELEMID "]::int8[] LIMIT 1",
-			 topo->name,
+			 topo->quoted_name,
 			 topo->id,
 			 edge1,
 			 edge1,
@@ -2903,13 +2907,13 @@ cb_checkTopoGeomRemNode(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID rem_node, LWT_EL
 			 "SELECT t.* FROM ( SELECT r.topogeo_id, "
 			 "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
 			 "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
-			 " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+			 " INNER JOIN %s.relation r ON (l.layer_id = r.layer_id) "
 			 "WHERE l.level = 0 and l.feature_type in ( 1, 4 ) "
 			 "AND l.topology_id = %d"
 			 " AND r.element_type = 1 AND r.element_id = %" LWTFMT_ELEMID
 			 " group by r.topogeo_id, r.layer_id, l.schema_name, "
 			 "l.table_name, l.feature_column ) t LIMIT 1",
-			 topo->name,
+			 topo->quoted_name,
 			 topo->id,
 			 rem_node);
 
@@ -2982,13 +2986,13 @@ cb_checkTopoGeomRemIsoNode(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID rem_node)
 			 "SELECT t.* FROM ( SELECT r.topogeo_id, "
 			 "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
 			 "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
-			 " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+			 " INNER JOIN %s.relation r ON (l.layer_id = r.layer_id) "
 			 "WHERE l.level = 0 and l.feature_type in ( 1, 4 ) "
 			 "AND l.topology_id = %d"
 			 " AND r.element_type = 1 AND r.element_id = %" LWTFMT_ELEMID
 			 " group by r.topogeo_id, r.layer_id, l.schema_name, "
 			 "l.table_name, l.feature_column ) t LIMIT 1",
-			 topo->name,
+			 topo->quoted_name,
 			 topo->id,
 			 rem_node);
 
@@ -3054,7 +3058,7 @@ cb_updateTopoGeomFaceHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face1, LWT_ELE
 		initStringInfo(sql);
 		/* this query can be optimized */
 		appendStringInfo(sql,
-				 "DELETE FROM \"%s\".relation r "
+				 "DELETE FROM %s.relation r "
 				 "USING topology.layer l WHERE l.level = 0"
 				 " AND l.feature_type IN (3,4)"
 				 " AND l.topology_id = %d AND l.layer_id = r.layer_id "
@@ -3062,7 +3066,7 @@ cb_updateTopoGeomFaceHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face1, LWT_ELE
 				 " AND r.element_id IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
 				 ")"
 				 " AND r.element_id != %" LWTFMT_ELEMID,
-				 topo->name,
+				 topo->quoted_name,
 				 topo->id,
 				 face1,
 				 face2,
@@ -3086,13 +3090,13 @@ cb_updateTopoGeomFaceHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face1, LWT_ELE
 		initStringInfo(sql);
 		/* delete face1 */
 		appendStringInfo(sql,
-				 "DELETE FROM \"%s\".relation r "
+				 "DELETE FROM %s.relation r "
 				 "USING topology.layer l WHERE l.level = 0"
 				 " AND l.feature_type IN (3,4)"
 				 " AND l.topology_id = %d AND l.layer_id = r.layer_id "
 				 " AND r.element_type = 3"
 				 " AND r.element_id = %" LWTFMT_ELEMID,
-				 topo->name,
+				 topo->quoted_name,
 				 topo->id,
 				 face1);
 		POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 1: %s", sql->data);
@@ -3112,7 +3116,7 @@ cb_updateTopoGeomFaceHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face1, LWT_ELE
 		initStringInfo(sql);
 		/* update face2 to newface */
 		appendStringInfo(sql,
-				 "UPDATE \"%s\".relation r "
+				 "UPDATE %s.relation r "
 				 "SET element_id = %" LWTFMT_ELEMID
 				 " FROM topology.layer l "
 				 "WHERE l.level = 0 AND l.feature_type IN (3,4)"
@@ -3120,7 +3124,7 @@ cb_updateTopoGeomFaceHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face1, LWT_ELE
 				 " AND l.layer_id = r.layer_id"
 				 " AND r.element_type = 3"
 				 " AND r.element_id = %" LWTFMT_ELEMID,
-				 topo->name,
+				 topo->quoted_name,
 				 newface,
 				 topo->id,
 				 face2);
@@ -3158,7 +3162,7 @@ cb_updateTopoGeomEdgeHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge1, LWT_ELE
 		initStringInfo(sql);
 		/* this query can be optimized */
 		appendStringInfo(sql,
-				 "DELETE FROM \"%s\".relation r "
+				 "DELETE FROM %s.relation r "
 				 "USING topology.layer l WHERE l.level = 0"
 				 " AND l.feature_type IN (2,4)"
 				 " AND l.topology_id = %d AND l.layer_id = r.layer_id "
@@ -3167,7 +3171,7 @@ cb_updateTopoGeomEdgeHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge1, LWT_ELE
 				 ", -%" LWTFMT_ELEMID
 				 ")"
 				 " AND r.element_id NOT IN  ( %" LWTFMT_ELEMID ", -%" LWTFMT_ELEMID ")",
-				 topo->name,
+				 topo->quoted_name,
 				 topo->id,
 				 edge1,
 				 edge1,
@@ -3194,13 +3198,13 @@ cb_updateTopoGeomEdgeHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge1, LWT_ELE
 		initStringInfo(sql);
 		/* delete edge1 */
 		appendStringInfo(sql,
-				 "DELETE FROM \"%s\".relation r "
+				 "DELETE FROM %s.relation r "
 				 "USING topology.layer l WHERE l.level = 0"
 				 " AND l.feature_type IN ( 2, 4 )"
 				 " AND l.topology_id = %d AND l.layer_id = r.layer_id "
 				 " AND r.element_type = 2"
 				 " AND r.element_id in (%" LWTFMT_ELEMID ", -%" LWTFMT_ELEMID ")",
-				 topo->name,
+				 topo->quoted_name,
 				 topo->id,
 				 edge2,
 				 edge2);
@@ -3221,14 +3225,14 @@ cb_updateTopoGeomEdgeHeal(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge1, LWT_ELE
 		initStringInfo(sql);
 		/* update edge2 to newedge */
 		appendStringInfo(sql,
-				 "UPDATE \"%s\".relation r "
+				 "UPDATE %s.relation r "
 				 "SET element_id = %" LWTFMT_ELEMID " *(element_id/%" LWTFMT_ELEMID
 				 ") FROM topology.layer l "
 				 "WHERE l.level = 0 AND l.feature_type IN (2,4)"
 				 " AND l.topology_id = %d AND l.layer_id = r.layer_id"
 				 " AND r.element_type = 2"
 				 " AND r.element_id IN ( %" LWTFMT_ELEMID ", -%" LWTFMT_ELEMID ")",
-				 topo->name,
+				 topo->quoted_name,
 				 newedge,
 				 edge1,
 				 topo->id,
@@ -3286,11 +3290,11 @@ cb_getClosestEdge(const LWT_BE_TOPOLOGY *topo, const LWPOINT *pt, uint64_t *nume
 	/* make sure to read edge_id in the subquery without changing the returned fields */
 	addEdgeFields(sql, fields | LWT_COL_EDGE_EDGE_ID, 0);
 	appendStringInfo(sql,
-			 " FROM \"%s\".edge_data"
+			 " FROM %s.edge_data"
 			 " ORDER BY geom <-> $1 ASC"
 			 " FETCH FIRST 1 ROW WITH TIES) AS closest_edges"
 			 " ORDER BY edge_id ASC LIMIT 1",
-			 topo->name);
+			 topo->quoted_name);
 
 	POSTGIS_DEBUGF(1, "cb_getClosestEdge query: %s", sql->data);
 
@@ -3348,10 +3352,10 @@ cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
 	appendStringInfo(sql,
 			 "SELECT ST_BoundingDiagonal(ST_Collect("
 			 "ST_BoundingDiagonal(geom, true)"
-			 "), true) FROM \"%s\".edge_data "
+			 "), true) FROM %s.edge_data "
 			 "WHERE left_face != right_face AND "
 			 "( left_face = %" LWTFMT_ELEMID " OR right_face = %" LWTFMT_ELEMID ")",
-			 topo->name,
+			 topo->quoted_name,
 			 face,
 			 face);
 
@@ -3426,7 +3430,7 @@ cb_deleteFacesById(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t 
 	StringInfo sql = &sqldata;
 
 	initStringInfo(sql);
-	appendStringInfo(sql, "DELETE FROM \"%s\".face WHERE face_id IN (", topo->name);
+	appendStringInfo(sql, "DELETE FROM %s.face WHERE face_id IN (", topo->quoted_name);
 	for (uint64_t i = 0; i < numelems; ++i)
 	{
 		appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i ? "," : ""), ids[i]);
@@ -3462,7 +3466,7 @@ cb_deleteNodesById(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t 
 	StringInfo sql = &sqldata;
 
 	initStringInfo(sql);
-	appendStringInfo(sql, "DELETE FROM \"%s\".node WHERE node_id IN (", topo->name);
+	appendStringInfo(sql, "DELETE FROM %s.node WHERE node_id IN (", topo->quoted_name);
 	for (uint64_t i = 0; i < numelems; ++i)
 	{
 		appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i ? "," : ""), ids[i]);
@@ -3513,7 +3517,7 @@ cb_getNodeWithinBox2D(const LWT_BE_TOPOLOGY *topo, const GBOX *box, uint64_t *nu
 		addNodeFields(sql, fields);
 	}
 	hexbox = _box2d_to_hexwkb(box, topo->srid);
-	appendStringInfo(sql, " FROM \"%s\".node WHERE geom && '%s'::geometry", topo->name, hexbox);
+	appendStringInfo(sql, " FROM %s.node WHERE geom && '%s'::geometry", topo->quoted_name, hexbox);
 	lwfree(hexbox);
 	if (elems_requested == -1)
 	{
@@ -3596,7 +3600,7 @@ cb_getEdgeWithinBox2D(const LWT_BE_TOPOLOGY *topo, const GBOX *box, uint64_t *nu
 		appendStringInfoString(sql, "SELECT ");
 		addEdgeFields(sql, fields, 0);
 	}
-	appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
+	appendStringInfo(sql, " FROM %s.edge_data", topo->quoted_name);
 
 	if (box)
 	{
@@ -3687,7 +3691,7 @@ cb_getFaceWithinBox2D(const LWT_BE_TOPOLOGY *topo, const GBOX *box, uint64_t *nu
 		addFaceFields(sql, fields);
 	}
 	hexbox = _box2d_to_hexwkb(box, topo->srid);
-	appendStringInfo(sql, " FROM \"%s\".face WHERE mbr && '%s'::geometry", topo->name, hexbox);
+	appendStringInfo(sql, " FROM %s.face WHERE mbr && '%s'::geometry", topo->quoted_name, hexbox);
 	lwfree(hexbox);
 	if (elems_requested == -1)
 	{
