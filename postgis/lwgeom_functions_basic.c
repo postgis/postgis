@@ -26,6 +26,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "optimizer/optimizer.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
 #include "utils/elog.h"
@@ -2194,6 +2195,85 @@ LWGEOM_same(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(gserialized_cmp(g1, g2) == 0);
 }
 
+/*
+ * The arguments and result of an envelope a call site built, kept for the next
+ * calls. With bound parameters in a generic plan, an envelope in a target list
+ * is built again for every row. A call site whose arguments use a column skips
+ * the cache, since a column changes from row to row.
+ */
+typedef struct {
+	bool skip;
+	bool hit;
+	double floats[5];
+	int32_t ints[4];
+	uint32_t bounds_size;
+	GSERIALIZED *result;
+	char bounds[512];
+} EnvelopeCache;
+
+/* The envelope cache of this call site, or NULL if it skips the cache */
+static EnvelopeCache *
+envelope_cache(FunctionCallInfo fcinfo)
+{
+	EnvelopeCache *cache;
+
+	if (!fcinfo->flinfo || !fcinfo->flinfo->fn_expr)
+		return NULL;
+	cache = fcinfo->flinfo->fn_extra;
+	if (!cache)
+	{
+		cache = MemoryContextAllocZero(fcinfo->flinfo->fn_mcxt, sizeof(EnvelopeCache));
+		cache->skip = contain_var_clause(fcinfo->flinfo->fn_expr);
+		fcinfo->flinfo->fn_extra = cache;
+	}
+	return cache->skip ? NULL : cache;
+}
+
+static GSERIALIZED *
+envelope_cache_get(EnvelopeCache *cache, const double *floats, const int32_t *ints, const GSERIALIZED *bounds)
+{
+	uint32_t bounds_size = bounds ? VARSIZE(bounds) : 0;
+	GSERIALIZED *copy;
+
+	if (!cache->result || memcmp(cache->floats, floats, sizeof(cache->floats)) ||
+	    memcmp(cache->ints, ints, sizeof(cache->ints)) || cache->bounds_size != bounds_size ||
+	    (bounds_size && memcmp(cache->bounds, bounds, bounds_size)))
+		return NULL;
+	cache->hit = true;
+	copy = palloc(VARSIZE(cache->result));
+	memcpy(copy, cache->result, VARSIZE(cache->result));
+	return copy;
+}
+
+static void
+envelope_cache_put(FunctionCallInfo fcinfo,
+		   EnvelopeCache *cache,
+		   const double *floats,
+		   const int32_t *ints,
+		   const GSERIALIZED *bounds,
+		   const GSERIALIZED *result)
+{
+	uint32_t bounds_size = bounds ? VARSIZE(bounds) : 0;
+
+	/*
+	 * A new envelope replaces the kept one only in an empty cache or right
+	 * after a hit, so arguments that change on every call cost a compare and
+	 * no copy.
+	 */
+	if (bounds_size > sizeof(cache->bounds) || (cache->result && !cache->hit))
+		return;
+	if (cache->result)
+		pfree(cache->result);
+	memcpy(cache->floats, floats, sizeof(cache->floats));
+	memcpy(cache->ints, ints, sizeof(cache->ints));
+	cache->bounds_size = bounds_size;
+	if (bounds_size)
+		memcpy(cache->bounds, bounds, bounds_size);
+	cache->result = MemoryContextAlloc(fcinfo->flinfo->fn_mcxt, VARSIZE(result));
+	memcpy(cache->result, result, VARSIZE(result));
+	cache->hit = false;
+}
+
 PG_FUNCTION_INFO_V1(ST_MakeEnvelope);
 Datum
 ST_MakeEnvelope(PG_FUNCTION_ARGS)
@@ -2202,6 +2282,9 @@ ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	double x1, y1, x2, y2;
 	int32_t srid = SRID_UNKNOWN;
+	EnvelopeCache *cache;
+	double floats[5] = {0};
+	int32_t ints[4] = {0};
 
 	POSTGIS_DEBUG(2, "ST_MakeEnvelope called");
 
@@ -2214,11 +2297,27 @@ ST_MakeEnvelope(PG_FUNCTION_ARGS)
 		srid = PG_GETARG_INT32(4);
 	}
 
+	/* Keep the per-call diagnostic from clamping an invalid SRID. */
+	cache = srid >= SRID_UNKNOWN && srid <= SRID_MAXIMUM ? envelope_cache(fcinfo) : NULL;
+	if (cache)
+	{
+		floats[0] = x1;
+		floats[1] = y1;
+		floats[2] = x2;
+		floats[3] = y2;
+		ints[0] = srid;
+		result = envelope_cache_get(cache, floats, ints, NULL);
+		if (result)
+			PG_RETURN_POINTER(result);
+	}
+
 	poly = lwpoly_construct_envelope(srid, x1, y1, x2, y2);
 
 	result = geometry_serialize(lwpoly_as_lwgeom(poly));
 	lwpoly_free(poly);
 
+	if (cache)
+		envelope_cache_put(fcinfo, cache, floats, ints, NULL, result);
 	PG_RETURN_POINTER(result);
 }
 
@@ -2241,7 +2340,12 @@ ST_TileEnvelope(PG_FUNCTION_ARGS)
 	   srid of the object is EPSG:3857. */
 	int32_t srid;
 	GBOX bbox;
-	LWGEOM *g = NULL;
+	LWGEOM *g;
+	LWPOLY *poly;
+	GSERIALIZED *result;
+	EnvelopeCache *cache = envelope_cache(fcinfo);
+	double floats[5] = {0};
+	int32_t ints[4] = {0};
 
 	POSTGIS_DEBUG(2, "ST_TileEnvelope called");
 
@@ -2250,6 +2354,23 @@ ST_TileEnvelope(PG_FUNCTION_ARGS)
 	y = PG_GETARG_INT32(2);
 
 	bounds = PG_GETARG_GSERIALIZED_P(3);
+	/* The pre-3.1 SQL signature has bounds but no margin. */
+	margin = PG_NARGS() > 4 ? PG_GETARG_FLOAT8(4) : 0;
+
+	if (cache)
+	{
+		floats[0] = margin;
+		ints[0] = zoom;
+		ints[1] = x;
+		ints[2] = y;
+		result = envelope_cache_get(cache, floats, ints, bounds);
+		if (result)
+		{
+			PG_FREE_IF_COPY(bounds, 3);
+			PG_RETURN_POINTER(result);
+		}
+	}
+
 	/*
 	 * We deserialize the geometry and recalculate the bounding box here to get
 	 * 64b floating point precision. The serialized bbox has 32b float is not
@@ -2262,8 +2383,6 @@ ST_TileEnvelope(PG_FUNCTION_ARGS)
 	srid = g->srid;
 	lwgeom_free(g);
 
-	/* Avoid crashing with old signature (old sql code with 3 args, new C code with 4) */
-	margin = PG_NARGS() < 4 ? 0 : PG_GETARG_FLOAT8(4);
 	/* shrinking by more than 50% would eliminate the tile outright */
 	if (margin < -0.5)
 		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);
@@ -2316,7 +2435,13 @@ ST_TileEnvelope(PG_FUNCTION_ARGS)
 	if (x2 > bbox.xmax)
 		x2 = bbox.xmax;
 
-	PG_RETURN_POINTER(geometry_serialize(lwpoly_as_lwgeom(lwpoly_construct_envelope(srid, x1, y1, x2, y2))));
+	poly = lwpoly_construct_envelope(srid, x1, y1, x2, y2);
+	result = geometry_serialize(lwpoly_as_lwgeom(poly));
+	lwpoly_free(poly);
+	if (cache)
+		envelope_cache_put(fcinfo, cache, floats, ints, bounds, result);
+	PG_FREE_IF_COPY(bounds, 3);
+	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(ST_IsCollection);

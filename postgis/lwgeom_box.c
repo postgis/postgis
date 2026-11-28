@@ -28,6 +28,7 @@
 #include "access/gist.h"
 #include "access/itup.h"
 #include "fmgr.h"
+#include "optimizer/optimizer.h"
 #include "utils/elog.h"
 #include "utils/geo_decls.h"
 
@@ -132,11 +133,51 @@ Datum BOX2D_out(PG_FUNCTION_ARGS)
 
 /*convert a GSERIALIZED to BOX2D */
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2D);
+/*
+ * A small geometry a call site boxed, kept for the next calls. A bound
+ * parameter, such as a tile envelope in a generic plan, is cast again for
+ * every row. A call site whose argument uses a column skips the cache, since a
+ * column changes from row to row.
+ */
+typedef struct {
+	bool skip;
+	bool hit;
+	GBOX box;
+	uint32_t size;
+	char data[FLEXIBLE_ARRAY_MEMBER];
+} Box2DCache;
+
+#define BOX2D_CACHE_MAX_SIZE 1024
+
 Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	uint32_t size = VARSIZE(geom);
+	Box2DCache *cache = NULL;
+	LWGEOM *lwgeom;
 	GBOX gbox;
+
+	if (fcinfo->flinfo && fcinfo->flinfo->fn_expr)
+	{
+		cache = fcinfo->flinfo->fn_extra;
+		if (!cache)
+		{
+			cache = MemoryContextAllocZero(fcinfo->flinfo->fn_mcxt,
+						       offsetof(Box2DCache, data) + BOX2D_CACHE_MAX_SIZE);
+			cache->skip = contain_var_clause(fcinfo->flinfo->fn_expr);
+			fcinfo->flinfo->fn_extra = cache;
+		}
+		if (cache->skip)
+			cache = NULL;
+		else if (cache->size == size && memcmp(cache->data, geom, size) == 0)
+		{
+			cache->hit = true;
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_POINTER(gbox_copy(&cache->box));
+		}
+	}
+
+	lwgeom = lwgeom_from_gserialized(geom);
 
 	/* Cannot box empty! */
 	if ( lwgeom_is_empty(lwgeom) )
@@ -149,6 +190,20 @@ Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS)
 	/* Strip out higher dimensions */
 	FLAGS_SET_Z(gbox.flags, 0);
 	FLAGS_SET_M(gbox.flags, 0);
+
+	/*
+	 * A new geometry replaces the kept one only in an empty cache or right
+	 * after a hit, so arguments that change on every call cost a compare and
+	 * no copy.
+	 */
+	if (cache && size <= BOX2D_CACHE_MAX_SIZE && (!cache->size || cache->hit))
+	{
+		cache->box = gbox;
+		cache->size = size;
+		memcpy(cache->data, geom, size);
+	}
+	if (cache)
+		cache->hit = false;
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(gbox_copy(&gbox));

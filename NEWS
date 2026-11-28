@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #6162, GT-957, GH-1199, Cache repeated envelopes and box2d casts
+   (John Carmack, Darafei Praliaskouski)
  - GT-951, Use unsigned indexes in rectangle trees
    (Darafei Praliaskouski)
  - #5958, [raster] Document the VRT loading workflow for tile-set overviews
