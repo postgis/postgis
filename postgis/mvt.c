@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2016-2017 Björn Harrtell <bjorn@wololo.org>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -341,7 +342,8 @@ get_tuple_desc(mvt_agg_context *ctx)
  * untyped geometry column looks like, and it is the ordinary shape of a tile
  * query.
  */
-static void check_tuple_desc(mvt_agg_context *ctx)
+static void
+check_tuple_desc(mvt_agg_context *ctx)
 {
 	if (!pg_rowtype_layout_matches(ctx->column_cache.tuptype,
 				       ctx->column_cache.tuptypmod,

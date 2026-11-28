@@ -8,6 +8,7 @@
  * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2008      Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  * Copyright (C) 2004-2007 Refractions Research Inc.
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -574,7 +575,6 @@ postgis_guc_find_option(const char *name)
 
 	return 1;
 }
-
 
 /*
  * Do two record types describe the same column layout?

@@ -174,25 +174,22 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 	}
 
 /**
- * Utility method to call the serialization and then set the
- * PgSQL varsize header appropriately with the serialized size.
- */
-/**
  * Do two record types describe the same column layout?
  *
  * A record Datum carries a (typeid, typmod) pair that identifies its row type,
  * but two different pairs can still describe the very same columns: the typmod
  * of a transient record type is assigned per RowExpr, and the equality behind
  * it also takes atttypmod and attcollation into account, neither of which says
- * anything about how the tuple is laid out or read. Callers caching a TupleDesc
- * use this to decide whether a later row may be deformed through it.
+ * anything about how the tuple is laid out or read.  Callers that cache a
+ * TupleDesc taken from the first row of a set use this to decide whether a
+ * later row may be deformed through it.
  */
 bool pg_rowtype_layout_matches(Oid typeid1, int32 typmod1, Oid typeid2, int32 typmod2);
 
 /**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
+ * Utility method to call the serialization and then set the
+ * PgSQL varsize header appropriately with the serialized size.
+ */
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 
 /**
