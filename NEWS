@@ -30,6 +30,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-874, [raster] Bound histogram bin initialization for repeating widths
+          (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-873, Reject excessively nested collections before recursive geometry output
    (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-879, [raster] Select a pixel type from an available input band in two-raster map algebra
