@@ -48,13 +48,13 @@ typedef enum
 typedef struct {
 	const POINTARRAY *pa;
 	RECT_NODE_SEG_TYPE seg_type;
-	int seg_num;
+	uint32_t seg_num;
 } RECT_NODE_LEAF;
 
 struct rect_node;
 
 typedef struct {
-	int num_nodes;
+	uint32_t num_nodes;
 	RECT_NODE_RING_TYPE ring_type;
 	struct rect_node *nodes[RECT_NODE_SIZE];
 	int sorted;

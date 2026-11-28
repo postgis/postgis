@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2009-2012 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -66,12 +67,11 @@ rect_node_cmp(const void *pn1, const void *pn2)
 void
 rect_tree_free(RECT_NODE *node)
 {
-	int i;
 	if (!node)
 		return;
 	if (!rect_node_is_leaf(node))
 	{
-		for (i = 0; i < node->i.num_nodes; i++)
+		for (uint32_t i = 0; i < node->i.num_nodes; i++)
 		{
 			rect_tree_free(node->i.nodes[i]);
 			node->i.nodes[i] = NULL;
@@ -314,8 +314,8 @@ rect_tree_ring_contains_point(RECT_NODE *node, const POINT2D *pt, int *on_bounda
 		}
 		else
 		{
-			int i, r = 0;
-			for (i = 0; i < node->i.num_nodes; i++)
+			int r = 0;
+			for (uint32_t i = 0; i < node->i.num_nodes; i++)
 			{
 				r += rect_tree_ring_contains_point(node->i.nodes[i], pt, on_boundary);
 			}
@@ -341,8 +341,8 @@ rect_tree_area_contains_point(RECT_NODE *node, const POINT2D *pt)
 	/* Iterate into area until we find ring heads */
 	if (node->i.ring_type == RECT_NODE_RING_NONE)
 	{
-		int i, sum = 0;
-		for (i = 0; i < node->i.num_nodes; i++)
+		int sum = 0;
+		for (uint32_t i = 0; i < node->i.num_nodes; i++)
 			sum += rect_tree_area_contains_point(node->i.nodes[i], pt);
 		return sum;
 	}
@@ -386,7 +386,7 @@ rect_node_bounds_point(RECT_NODE *node, const POINT2D *pt)
 int
 rect_tree_contains_point(RECT_NODE *node, const POINT2D *pt)
 {
-	int i, c;
+	int c;
 
 	/* Object cannot contain point if bounds don't */
 	if (!rect_node_bounds_point(node, pt))
@@ -401,7 +401,7 @@ rect_tree_contains_point(RECT_NODE *node, const POINT2D *pt)
 	case MULTIPOLYGONTYPE:
 	case MULTISURFACETYPE:
 	case COLLECTIONTYPE: {
-		for (i = 0; i < node->i.num_nodes; i++)
+		for (uint32_t i = 0; i < node->i.num_nodes; i++)
 		{
 			c = rect_tree_contains_point(node->i.nodes[i], pt);
 			if (c)
@@ -436,8 +436,7 @@ rect_tree_is_area(const RECT_NODE *node)
 			return LW_FALSE;
 		else
 		{
-			int i;
-			for (i = 0; i < node->i.num_nodes; i++)
+			for (uint32_t i = 0; i < node->i.num_nodes; i++)
 			{
 				if (rect_tree_is_area(node->i.nodes[i]))
 					return LW_TRUE;
@@ -474,7 +473,7 @@ static RECT_NODE_SEG_TYPE lwgeomTypeArc[] = {
  * Create a new leaf node.
  */
 static RECT_NODE *
-rect_node_leaf_new(const POINTARRAY *pa, int seg_num, int geom_type)
+rect_node_leaf_new(const POINTARRAY *pa, uint32_t seg_num, int geom_type)
 {
 	const POINT2D *p1, *p2, *p3;
 	RECT_NODE *node;
@@ -611,7 +610,7 @@ rect_nodes_merge(RECT_NODE **nodes, uint32_t num_nodes)
 RECT_NODE *
 rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type)
 {
-	int num_edges = 0, i = 0, j = 0;
+	uint32_t num_edges = 0, j = 0;
 	RECT_NODE_SEG_TYPE seg_type = lwgeomTypeArc[geom_type];
 	RECT_NODE **nodes = NULL;
 	RECT_NODE *tree = NULL;
@@ -638,7 +637,7 @@ rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type)
 
 	/* First create a flat list of nodes, one per edge. */
 	nodes = lwalloc(sizeof(RECT_NODE *) * num_edges);
-	for (i = 0; i < num_edges; i++)
+	for (uint32_t i = 0; i < num_edges; i++)
 	{
 		RECT_NODE *node = rect_node_leaf_new(pa, i, geom_type);
 		if (node) /* Not zero length? */
@@ -665,10 +664,9 @@ rect_tree_to_lwgeom(const RECT_NODE *node)
 	}
 	else
 	{
-		int i;
 		LWCOLLECTION *col = lwcollection_construct_empty(COLLECTIONTYPE, 0, 0, 0);
 		lwcollection_add_lwgeom(col, poly);
-		for (i = 0; i < node->i.num_nodes; i++)
+		for (uint32_t i = 0; i < node->i.num_nodes; i++)
 		{
 			lwcollection_add_lwgeom(col, rect_tree_to_lwgeom(node->i.nodes[i]));
 		}
@@ -695,12 +693,11 @@ rect_tree_printf(const RECT_NODE *node, int depth)
 	if (node->type == RECT_NODE_LEAF_TYPE)
 	{
 		printf("%*sseg_type: %d\n", depth, "", node->l.seg_type);
-		printf("%*sseg_num: %d\n", depth, "", node->l.seg_num);
+		printf("%*sseg_num: %u\n", depth, "", node->l.seg_num);
 	}
 	else
 	{
-		int i;
-		for (i = 0; i < node->i.num_nodes; i++)
+		for (uint32_t i = 0; i < node->i.num_nodes; i++)
 		{
 			rect_tree_printf(node->i.nodes[i], depth + 2);
 		}
@@ -913,7 +910,6 @@ rect_node_to_str(const RECT_NODE *n)
 static int
 rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 {
-	int i, j;
 #if POSTGIS_DEBUG_LEVEL >= 4
 	char *n1_str = rect_node_to_str(n1);
 	char *n2_str = rect_node_to_str(n2);
@@ -934,7 +930,7 @@ rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 		}
 		else if (rect_node_is_leaf(n2) && !rect_node_is_leaf(n1))
 		{
-			for (i = 0; i < n1->i.num_nodes; i++)
+			for (uint32_t i = 0; i < n1->i.num_nodes; i++)
 			{
 				if (rect_tree_intersects_tree_recursive(n1->i.nodes[i], n2))
 					return LW_TRUE;
@@ -942,7 +938,7 @@ rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 		}
 		else if (rect_node_is_leaf(n1) && !rect_node_is_leaf(n2))
 		{
-			for (i = 0; i < n2->i.num_nodes; i++)
+			for (uint32_t i = 0; i < n2->i.num_nodes; i++)
 			{
 				if (rect_tree_intersects_tree_recursive(n2->i.nodes[i], n1))
 					return LW_TRUE;
@@ -950,9 +946,9 @@ rect_tree_intersects_tree_recursive(RECT_NODE *n1, RECT_NODE *n2)
 		}
 		else
 		{
-			for (j = 0; j < n1->i.num_nodes; j++)
+			for (uint32_t j = 0; j < n1->i.num_nodes; j++)
 			{
-				for (i = 0; i < n2->i.num_nodes; i++)
+				for (uint32_t i = 0; i < n2->i.num_nodes; i++)
 				{
 					if (rect_tree_intersects_tree_recursive(n2->i.nodes[i], n1->i.nodes[j]))
 						return LW_TRUE;
@@ -1219,14 +1215,13 @@ rect_node_to_p2d(const RECT_NODE *n, POINT2D *pt)
 static void
 rect_tree_node_sort(RECT_NODE *n1, RECT_NODE *n2)
 {
-	int i;
 	RECT_NODE *n;
 	POINT2D c1, c2, c;
 	if (!rect_node_is_leaf(n1) && !n1->i.sorted)
 	{
 		rect_node_to_p2d(n2, &c2);
 		/* Distance of each child from center of other node */
-		for (i = 0; i < n1->i.num_nodes; i++)
+		for (uint32_t i = 0; i < n1->i.num_nodes; i++)
 		{
 			n = n1->i.nodes[i];
 			rect_node_to_p2d(n, &c);
@@ -1240,7 +1235,7 @@ rect_tree_node_sort(RECT_NODE *n1, RECT_NODE *n2)
 	{
 		rect_node_to_p2d(n1, &c1);
 		/* Distance of each child from center of other node */
-		for (i = 0; i < n2->i.num_nodes; i++)
+		for (uint32_t i = 0; i < n2->i.num_nodes; i++)
 		{
 			n = n2->i.nodes[i];
 			rect_node_to_p2d(n, &c);
@@ -1283,12 +1278,11 @@ rect_tree_distance_tree_recursive(RECT_NODE *n1, RECT_NODE *n2, RECT_TREE_DISTAN
 	/* Recurse into nodes */
 	else
 	{
-		int i, j;
 		double d_min = FLT_MAX;
 		rect_tree_node_sort(n1, n2);
 		if (rect_node_is_leaf(n1) && !rect_node_is_leaf(n2))
 		{
-			for (i = 0; i < n2->i.num_nodes; i++)
+			for (uint32_t i = 0; i < n2->i.num_nodes; i++)
 			{
 				min = rect_tree_distance_tree_recursive(n1, n2->i.nodes[i], state);
 				d_min = FP_MIN(d_min, min);
@@ -1296,7 +1290,7 @@ rect_tree_distance_tree_recursive(RECT_NODE *n1, RECT_NODE *n2, RECT_TREE_DISTAN
 		}
 		else if (rect_node_is_leaf(n2) && !rect_node_is_leaf(n1))
 		{
-			for (i = 0; i < n1->i.num_nodes; i++)
+			for (uint32_t i = 0; i < n1->i.num_nodes; i++)
 			{
 				min = rect_tree_distance_tree_recursive(n1->i.nodes[i], n2, state);
 				d_min = FP_MIN(d_min, min);
@@ -1304,9 +1298,9 @@ rect_tree_distance_tree_recursive(RECT_NODE *n1, RECT_NODE *n2, RECT_TREE_DISTAN
 		}
 		else
 		{
-			for (i = 0; i < n1->i.num_nodes; i++)
+			for (uint32_t i = 0; i < n1->i.num_nodes; i++)
 			{
-				for (j = 0; j < n2->i.num_nodes; j++)
+				for (uint32_t j = 0; j < n2->i.num_nodes; j++)
 				{
 					min = rect_tree_distance_tree_recursive(n1->i.nodes[i], n2->i.nodes[j], state);
 					d_min = FP_MIN(d_min, min);
