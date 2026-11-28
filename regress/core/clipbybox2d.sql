@@ -24,3 +24,14 @@ SELECT '8', ST_AsEWKT(ST_ClipByBox2d(g, ST_MakeEnvelope(-20,-20,-10,-10))) FROM 
 SELECT '9', ST_AsEWKT(ST_ClipByBox2D('SRID=4326;POINT(0 0)','BOX3D(-1 -1,1 1)'::box3d::box2d));
 -- See https://trac.osgeo.org/postgis/ticket/4314
 SELECT '10', ST_ClipByBox2D('POLYGON((1410 2055, 1410 2056, 1410 2057, 1410 2055))'::geometry, ST_MakeEnvelope(-8.000000, -8.000000, 2056.000000, 2056.000000));
+-- The input BOX2D datum must remain unchanged after clipping.
+WITH input AS MATERIALIZED (
+  SELECT 'BOX3D(0 0,10 10)'::box3d::box2d AS box
+), before AS (
+  SELECT box, box::text AS box_text FROM input
+), call AS (
+  SELECT box, box_text,
+         ST_ClipByBox2D(ST_MakeEnvelope(0,0,10,10), box) AS result
+  FROM before
+)
+SELECT result::box2d, box::text = box_text FROM call;
