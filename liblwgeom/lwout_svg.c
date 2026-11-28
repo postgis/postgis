@@ -52,6 +52,11 @@ pointArray_svg_rel(stringbuffer_t* sb, const POINTARRAY *pa, int close_ring, int
 	char sx[OUT_DOUBLE_BUFFER_SIZE];
 	char sy[OUT_DOUBLE_BUFFER_SIZE];
 
+	/* Nothing to render for an empty pointarray or an out-of-range start
+	 * (e.g. an empty component or a 1-point compound curve piece) */
+	if (!pa || (uint32_t)start_at_index >= pa->npoints)
+		return;
+
 	if (precision >= 0)
 	{
 		f = pow(10, precision);
@@ -552,11 +557,15 @@ assvg_multiline(stringbuffer_t* sb, const LWMLINE *mline, int relative, int prec
 {
 	const LWLINE *line;
 	uint32_t i;
+	uint32_t emitted = 0;
 
 	for (i = 0; i<mline->ngeoms; i++)
 	{
-		if (i) stringbuffer_append(sb, " ");  /* SVG whitespace Separator */
 		line = mline->geoms[i];
+		if (lwgeom_is_empty((LWGEOM *)line))
+			continue;
+		if (emitted++)
+			stringbuffer_append(sb, " "); /* SVG whitespace Separator */
 		assvg_line(sb, line, relative, precision);
 	}
 }

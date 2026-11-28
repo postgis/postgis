@@ -175,6 +175,9 @@ static void out_svg_test_geoms(void)
 	    "cx=\"0\" cy=\"-1\",cx=\"2\" cy=\"-3\"",
 	    0, 0);
 
+	/* Empty line members are skipped in relative mode. */
+	do_svg_test("MULTILINESTRING((0 1,2 3),EMPTY)", "M 0 -1 l 2 -2", 0, 1);
+
 	/* MultiLine */
 	do_svg_test(
 	    "MULTILINESTRING((0 1,2 3,4 5),(6 7,8 9,10 11))",
