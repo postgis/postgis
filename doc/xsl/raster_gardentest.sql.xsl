@@ -73,8 +73,8 @@
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
 
-	<xsl:variable name='var_logresultsasxml'>INSERT INTO <xsl:value-of select="$var_logtable" />_output(logid, log_output)
-				SELECT logid, query_to_xml(log_sql, false,false,'') As log_output
+	<xsl:variable name='var_logresultsasjsonb'>INSERT INTO <xsl:value-of select="$var_logtable" />_output(logid, log_output)
+				SELECT logid, <xsl:value-of select="$var_logtable" />_query_to_jsonb(log_sql) As log_output
 				    FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC LIMIT 1;</xsl:variable>
 
 	<pgis:gardens>
@@ -160,7 +160,28 @@
 	DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
-CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
+CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output jsonb);
+CREATE OR REPLACE FUNCTION <xsl:value-of select="$var_logtable" />_query_to_jsonb(query text)
+RETURNS jsonb
+LANGUAGE plpgsql
+AS $$
+DECLARE
+	q record;
+	row_json jsonb;
+	result jsonb[] := ARRAY[]::jsonb[];
+BEGIN
+	FOR q IN EXECUTE query LOOP
+		BEGIN
+			row_json := to_jsonb(q);
+		EXCEPTION WHEN OTHERS THEN
+			-- Use native text output when a JSON cast rejects a value.
+			row_json := to_jsonb(q::text);
+		END;
+		result := array_append(result, row_json);
+	END LOOP;
+	RETURN to_jsonb(result);
+END;
+$$;
 			<xsl:apply-templates select="/db:book/db:chapter[@xml:id='RT_reference']" />
 
         </xsl:template>
@@ -273,7 +294,7 @@ COMMIT;
 
 			BEGIN;
 				<!--  log query result to output table -->
-				<xsl:value-of select="$var_logresultsasxml" />
+				<xsl:value-of select="$var_logresultsasjsonb" />
 				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:when>
@@ -287,7 +308,7 @@ COMMIT;
 
 			BEGIN;
 				<!--  log query result to output table -->
-				<xsl:value-of select="$var_logresultsasxml" />
+				<xsl:value-of select="$var_logresultsasjsonb" />
 				<xsl:value-of select="$var_logupdatesql" />
 			COMMIT;
 			</xsl:otherwise>
@@ -357,7 +378,7 @@ INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, 
 
 	BEGIN;
 		<!--  log query result to output table -->
-		<xsl:value-of select="$var_logresultsasxml" />
+		<xsl:value-of select="$var_logresultsasjsonb" />
 		<!-- log completion -->
 		<xsl:value-of select="$var_logupdatesql" />
 	COMMIT;
@@ -389,7 +410,7 @@ SELECT  'Ending <xsl:value-of select="db:funcdef/db:function" />(<xsl:value-of s
 
 		BEGIN;
 		<!--  log query result to output table -->
-		<xsl:value-of select="$var_logresultsasxml" />
+		<xsl:value-of select="$var_logresultsasjsonb" />
 			<!-- log completion -->
 		<xsl:value-of select="$var_logupdatesql" />
 		  COMMIT;
