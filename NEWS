@@ -30,6 +30,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-866, [raster] Reject file-naming options in postgis.gdal_vsi_options
+          (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data,
+           Darafei Praliaskouski)
  - GT-858, Reject mismatched row layouts in ST_AsMVT, ST_AsGeobuf, and ST_AsFlatGeobuf
    (reported by Dawid Żak / Software Mansion;
    fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
