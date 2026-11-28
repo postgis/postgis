@@ -755,7 +755,7 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 
 	/* Recompute a trustworthy bbox from the actual coordinates */
 	if (has_bbox && geom)
-		lwgeom_add_bbox(geom);
+		lwgeom_refresh_bbox(geom);
 
 	return geom;
 }

@@ -73,3 +73,5 @@ select 'Removing of duplicate points POLYGON', encode(st_astwkb('POLYGON((1 1,0.
 
 -- Not removing from multipoint
 select 'Not Removing from MULTIPOINT',encode(st_astwkb('MULTIPOINT(1 1, 2 2, 2 2, 3 1)'::geometry), 'hex');
+-- Ignore an incorrect embedded bbox when decoding a point.
+select ST_AsText(Box2D(ST_GeomFromTWKB(decode('0101280002000202', 'hex'))));
