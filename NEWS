@@ -1,6 +1,9 @@
 PostGIS 3.8.0dev
 2027/xx/xx
 
+ - GT-974, Bound stored spheroid names to their fixed-length datum
+   (reported by Aleksander Alekseev / Tiger Data; fixed by Aleksander Alekseev / Tiger Data)
+
 * New Features *
 
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+

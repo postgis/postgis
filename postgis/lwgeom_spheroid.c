@@ -42,6 +42,9 @@
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 + 1)
 
+/* CREATE TYPE spheroid in postgis.sql.in stores only 65 bytes. */
+#define SPHEROID_NAME_STORED (65 - offsetof(SPHEROID, name))
+
 /* PG-exposed  */
 Datum ellipsoid_in(PG_FUNCTION_ARGS);
 Datum ellipsoid_out(PG_FUNCTION_ARGS);
@@ -87,6 +90,9 @@ ellipsoid_in(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	/* Keep parsing consistent with the bytes retained by PostgreSQL storage. */
+	sphere->name[SPHEROID_NAME_STORED] = '\0';
+
 	sphere->f = 1.0 / rf;
 	sphere->b = sphere->a - (1.0 / rf) * sphere->a;
 	sphere->e_sq = ((sphere->a * sphere->a) - (sphere->b * sphere->b)) / (sphere->a * sphere->a);
@@ -104,7 +110,7 @@ ellipsoid_out(PG_FUNCTION_ARGS)
 	size_t sz = MAX_DIGS_DOUBLE + MAX_DIGS_DOUBLE + 20 + 9 + 2;
 	result = palloc(sz);
 
-	snprintf(result, sz, "SPHEROID(\"%s\",%.15g,%.15g)", sphere->name, sphere->a, 1.0 / sphere->f);
+	snprintf(result, sz, "SPHEROID(\"%.*s\",%.15g,%.15g)", (int) SPHEROID_NAME_STORED, sphere->name, sphere->a, 1.0 / sphere->f);
 
 	PG_RETURN_CSTRING(result);
 }
