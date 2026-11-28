@@ -455,6 +455,8 @@ lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 
 	for (i = 1; i < pa2->npoints; i++)
 	{
+		int segment_first_cross = 0;
+		double segment_first_t = 0.0;
 
 		/* Update second point of q to next value */
 		q2 = getPoint2d_cp(pa2, i);
@@ -476,16 +478,26 @@ lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 			{
 				LWDEBUG(4, "this_cross == SEG_CROSS_LEFT");
 				cross_left++;
-				if (!first_cross)
-					first_cross = SEG_CROSS_LEFT;
 			}
 
 			if (this_cross == SEG_CROSS_RIGHT)
 			{
 				LWDEBUG(4, "this_cross == SEG_CROSS_RIGHT");
 				cross_right++;
-				if (!first_cross)
-					first_cross = SEG_CROSS_RIGHT;
+			}
+
+			/* Crossings on the same q segment need ordering along q. */
+			if (!first_cross && (this_cross == SEG_CROSS_LEFT || this_cross == SEG_CROSS_RIGHT))
+			{
+				const double dx = p2->x - p1->x;
+				const double dy = p2->y - p1->y;
+				const double t = ((p1->x - q1->x) * dy - (p1->y - q1->y) * dx) /
+						 ((q2->x - q1->x) * dy - (q2->y - q1->y) * dx);
+				if (!segment_first_cross || t < segment_first_t)
+				{
+					segment_first_cross = this_cross;
+					segment_first_t = t;
+				}
 			}
 
 			/*
@@ -507,6 +519,8 @@ lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 			p1 = p2;
 		}
 
+		if (!first_cross)
+			first_cross = segment_first_cross;
 		/* Turn second point of q into first point */
 		q1 = q2;
 	}

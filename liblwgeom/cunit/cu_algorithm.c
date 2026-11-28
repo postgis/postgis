@@ -402,6 +402,17 @@ test_lwline_crossing_bugs(void)
 	lwline_free(l2);
 }
 
+/* #5772: crossings at the same position retain encounter order. */
+static void
+test_lwline_crossing_tie(void)
+{
+	LWLINE *p = (LWLINE *)lwgeom_from_wkt("LINESTRING(-1 -1,1 1,1 -1,-1 1)", LW_PARSER_CHECK_NONE);
+	LWLINE *q = (LWLINE *)lwgeom_from_wkt("LINESTRING(0 -2,0 2)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_EQUAL(lwline_crossing_direction(p, q), LINE_MULTICROSS_END_SAME_FIRST_LEFT);
+	lwline_free(p);
+	lwline_free(q);
+}
+
 static void
 test_lwpoint_set_ordinate(void)
 {
@@ -1951,6 +1962,7 @@ algorithms_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwline_crossing_short_lines);
 	PG_ADD_TEST(suite, test_lwline_crossing_long_lines);
 	PG_ADD_TEST(suite, test_lwline_crossing_bugs);
+	PG_ADD_TEST(suite, test_lwline_crossing_tie);
 	PG_ADD_TEST(suite, test_lwpoint_set_ordinate);
 	PG_ADD_TEST(suite, test_lwpoint_get_ordinate);
 	PG_ADD_TEST(suite, test_point_interpolate);
