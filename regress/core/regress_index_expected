@@ -18,6 +18,10 @@ gist 2d @ empty far|Index Scan|2
 gist 2d @ empty near|Index Scan|2002
 gist 2d @ empty pages far|Index Scan|1000
 gist 2d @ empty pages near|Index Scan|3000
+gist 2d @ partial NaN|Index Scan|1
+gist 2d @ partial NaN outside|0
+gist 2d && float limit sorted|Index Scan|5000
+gist 2d && float limit random|Index Scan|5000
 &&|1|5+-5:true
 &&|2|912+-60:true
 &&|3|12505+-500:true

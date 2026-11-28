@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2017-2025 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2017-2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -244,19 +244,13 @@ inline void box2df_validate(BOX2DF *b)
 	return;
 }
 
-bool box2df_overlaps(const BOX2DF *a, const BOX2DF *b)
-{
-	if ( !a || !b || box2df_is_empty(a) || box2df_is_empty(b) )
-		return false;
+static bool
+box2df_bounds_overlap(const BOX2DF *a, const BOX2DF *b)
+{ return !(a->xmin > b->xmax || b->xmin > a->xmax || a->ymin > b->ymax || b->ymin > a->ymax); }
 
-	if ( (a->xmin > b->xmax) || (b->xmin > a->xmax) ||
-	     (a->ymin > b->ymax) || (b->ymin > a->ymax) )
-	{
-		return false;
-	}
-
-	return true;
-}
+bool
+box2df_overlaps(const BOX2DF *a, const BOX2DF *b)
+{ return a && b && !box2df_is_empty(a) && !box2df_is_empty(b) && box2df_bounds_overlap(a, b); }
 
 bool box2df_contains(const BOX2DF *a, const BOX2DF *b)
 {
@@ -1027,7 +1021,9 @@ static inline bool gserialized_gist_consistent_internal_2d(BOX2DF *key, BOX2DF *
 		break;
 	case RTContainedByStrategyNumber:
 	case RTOldContainedByStrategyNumber:
-		retval = (bool) box2df_overlaps(key, query);
+		/* Only prune on a separating bound. NaN bounds cannot rule out
+		 * containment, and a marker may hide EMPTY descendants. */
+		retval = box2df_bounds_overlap(key, query) || box2df_may_have_empty(key);
 		break;
 
 	/* To one side */
@@ -1112,15 +1108,21 @@ Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS)
 	/* Treat leaf node tests different from internal nodes */
 	if (GIST_LEAF(entry))
 	{
-		result = gserialized_gist_consistent_leaf_2d(
-		             (BOX2DF*)DatumGetPointer(entry->key),
-		             &query_gbox_index, strategy);
+		BOX2DF *key = (BOX2DF *)DatumGetPointer(entry->key);
+		if ((strategy == RTContainedByStrategyNumber || strategy == RTOldContainedByStrategyNumber) &&
+		    (box2df_is_empty(key) || box2df_may_have_empty(key)))
+		{
+			/* The leaf bound may be EMPTY or a clamped geometry; recheck the heap tuple. */
+			*recheck = true;
+			result = true;
+		}
+		else
+			result = gserialized_gist_consistent_leaf_2d(key, &query_gbox_index, strategy);
 	}
 	else
 	{
 		result = gserialized_gist_consistent_internal_2d(
-		             (BOX2DF*)DatumGetPointer(entry->key),
-		             &query_gbox_index, strategy);
+		    (BOX2DF *)DatumGetPointer(entry->key), &query_gbox_index, strategy);
 	}
 
 	PG_RETURN_BOOL(result);
@@ -1302,43 +1304,64 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	 */
 	*result = 0;
 
-	if (b1 && b2 && !box2df_is_empty(b1) && !box2df_is_empty(b2))
-		*result = box2df_penalty(b1, b2);
+	if (b1 && b2)
+	{
+		bool may_have_empty1 = box2df_is_empty(b1) || box2df_may_have_empty(b1);
+		bool may_have_empty2 = box2df_is_empty(b2) || box2df_may_have_empty(b2);
+		if (may_have_empty1 && may_have_empty2)
+			*result = 0;
+		else if (may_have_empty1 || may_have_empty2)
+			*result = FLT_MAX;
+		else
+			*result = box2df_penalty(b1, b2);
+	}
 
 	PG_RETURN_POINTER(result);
+}
+
+static BOX2DF *
+box2df_union_entries(const GistEntryVector *entryvec, const OffsetNumber *entries, int count)
+{
+	BOX2DF *bounds = palloc(sizeof(BOX2DF));
+	bool has_empty = false;
+	bool has_bounds = false;
+
+	box2df_set_empty(bounds);
+	for (int i = 0; i < count; i++)
+	{
+		BOX2DF *box = (BOX2DF *)DatumGetPointer(entryvec->vector[entries ? entries[i] : i].key);
+
+		bool is_empty = box2df_is_empty(box);
+
+		has_empty |= is_empty;
+		has_bounds |= !is_empty;
+
+		/* Keep a subtree of only EMPTY entries EMPTY. Mixed subtrees
+		 * need the marker so contained-by scans can reach EMPTY leaves. */
+		if ((has_empty && has_bounds) || box2df_may_have_empty(box))
+		{
+			box2df_set_empty_marker(bounds);
+			break;
+		}
+		if (!is_empty)
+			box2df_merge(bounds, box);
+	}
+	return bounds;
 }
 
 /*
 ** GiST support function. Merge all the boxes in a page into one master box.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_union_2d);
-Datum gserialized_gist_union_2d(PG_FUNCTION_ARGS)
+Datum
+gserialized_gist_union_2d(PG_FUNCTION_ARGS)
 {
-	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
-	int *sizep = (int *) PG_GETARG_POINTER(1); /* Size of the return value */
-	int	numranges, i;
-	BOX2DF *box_cur, *box_union;
-
-	POSTGIS_DEBUG(4, "[GIST] 'union' function called");
-
-	numranges = entryvec->n;
-
-	box_cur = (BOX2DF*) DatumGetPointer(entryvec->vector[0].key);
-
-	box_union = box2df_copy(box_cur);
-
-	for ( i = 1; i < numranges; i++ )
-	{
-		box_cur = (BOX2DF*) DatumGetPointer(entryvec->vector[i].key);
-		box2df_merge(box_union, box_cur);
-	}
+	GistEntryVector *entryvec = (GistEntryVector *)PG_GETARG_POINTER(0);
+	int *sizep = (int *)PG_GETARG_POINTER(1);
+	BOX2DF *box_union = box2df_union_entries(entryvec, NULL, entryvec->n);
 
 	*sizep = sizeof(BOX2DF);
-
-	POSTGIS_DEBUGF(4, "[GIST] 'union', numranges(%i), pageunion %s", numranges, box2df_to_string(box_union));
-
 	PG_RETURN_POINTER(box_union);
-
 }
 
 /*
@@ -1439,6 +1462,13 @@ adjustBox(BOX2DF *b, BOX2DF *addon)
 		b->ymin = addon->ymin;
 }
 
+static void
+box2df_set_split_union(GistEntryVector *entryvec, GIST_SPLITVEC *v)
+{
+	v->spl_ldatum = PointerGetDatum(box2df_union_entries(entryvec, v->spl_left, v->spl_nleft));
+	v->spl_rdatum = PointerGetDatum(box2df_union_entries(entryvec, v->spl_right, v->spl_nright));
+}
+
 /*
  * Trivial split: half of entries will be placed on one page
  * and another half - to another
@@ -1448,8 +1478,6 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 {
 	OffsetNumber i,
 				maxoff;
-	BOX2DF	   *unionL = NULL,
-			   *unionR = NULL;
 	int			nbytes;
 
 	maxoff = entryvec->n - 1;
@@ -1461,43 +1489,19 @@ fallbackSplit(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
-		BOX2DF	   *cur = (BOX2DF *) DatumGetPointer(entryvec->vector[i].key);
-
 		if (i <= (maxoff - FirstOffsetNumber + 1) / 2)
 		{
 			v->spl_left[v->spl_nleft] = i;
-			if (unionL == NULL)
-			{
-				unionL = (BOX2DF *) palloc(sizeof(BOX2DF));
-				*unionL = *cur;
-			}
-			else
-				adjustBox(unionL, cur);
-
 			v->spl_nleft++;
 		}
 		else
 		{
 			v->spl_right[v->spl_nright] = i;
-			if (unionR == NULL)
-			{
-				unionR = (BOX2DF *) palloc(sizeof(BOX2DF));
-				*unionR = *cur;
-			}
-			else
-				adjustBox(unionR, cur);
-
 			v->spl_nright++;
 		}
 	}
 
-	if (v->spl_ldatum_exists)
-		adjustBox(unionL, (BOX2DF *) DatumGetPointer(v->spl_ldatum));
-	v->spl_ldatum = PointerGetDatum(unionL);
-
-	if (v->spl_rdatum_exists)
-		adjustBox(unionR, (BOX2DF *) DatumGetPointer(v->spl_rdatum));
-	v->spl_rdatum = PointerGetDatum(unionR);
+	box2df_set_split_union(entryvec, v);
 
 	v->spl_ldatum_exists = v->spl_rdatum_exists = false;
 }
@@ -2143,8 +2147,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 				PLACE_LEFT(box, commonEntries[i].index);
 		}
 	}
-	v->spl_ldatum = PointerGetDatum(leftBox);
-	v->spl_rdatum = PointerGetDatum(rightBox);
+	/* The axis split bounds can omit EMPTY keys; rebuild them from the final groups. */
+	box2df_set_split_union(entryvec, v);
 
 	POSTGIS_DEBUG(4, "[GIST] 'picksplit' completed");
 

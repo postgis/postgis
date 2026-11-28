@@ -118,19 +118,6 @@ typedef struct
 	BOX2DF right;
 } RectBox;
 
-/**
- * Keys with bounds at float limits may encode EMPTY, so traversal must retain and recheck them.
- */
-static bool
-box2df_may_have_empty(const BOX2DF *box)
-{
-	/*
-	 * A genuine box that reaches +-FLT_MAX is indistinguishable from a
-	 * clamped key. It is only rechecked, which is slower but not wrong.
-	 */
-	return box->xmin <= -FLT_MAX || box->ymin <= -FLT_MAX || box->xmax >= FLT_MAX || box->ymax >= FLT_MAX;
-}
-
 /*
  * Calculate the quadrant
  *
