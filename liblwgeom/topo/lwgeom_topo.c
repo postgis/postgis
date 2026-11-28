@@ -7540,7 +7540,6 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY *topo,
 			{
 				LWGEOM *snapedge;
 				LWLINE *snapline;
-				POINT4D p1, p2;
 
 				LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " does not contain projected point to it", edge_id);
 
@@ -7572,44 +7571,52 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY *topo,
 				}
 #endif
 
-				/*
-				-- Snapping currently snaps the first point below tolerance
-				-- so may possibly move first point. See ticket #1631
-				*/
-				getPoint4d_p(e->geom->points, 0, &p1);
-				getPoint4d_p(snapline->points, 0, &p2);
-				LWDEBUGF(1,
-					 "Edge first point is %g %g, "
-					 "snapline first point is %g %g",
-					 p1.x,
-					 p1.y,
-					 p2.x,
-					 p2.y);
-				if (p1.x != p2.x || p1.y != p2.y)
+				/* Keep the original topology node coordinates and retain the
+				 * snapped vertex for the split. See #1631 and #5797. */
+				const POINTARRAY *original = e->geom->points;
+				POINTARRAY *snapped = snapline->points;
+				for (uint32_t end = 0; end < 2; ++end)
 				{
-					LWDEBUG(1, "Snapping moved first point, re-adding it");
-					if (LW_SUCCESS != ptarray_insert_point(snapline->points, &p1, 0))
+					uint32_t original_index = end ? original->npoints - 1 : 0;
+					uint32_t snapped_index = end ? snapped->npoints - 1 : 0;
+					const POINT2D *before = getPoint2d_cp(original, original_index);
+					const POINT2D *after = getPoint2d_cp(snapped, snapped_index);
+#if POSTGIS_DEBUG_LEVEL > 0
+					const char *position = end ? "last" : "first";
+					LWDEBUGF(1,
+						 "Edge %s point is %g %g, snapline %s point is %g %g",
+						 position,
+						 before->x,
+						 before->y,
+						 position,
+						 after->x,
+						 after->y);
+#endif
+					if (p2d_same(before, after))
+					{
+						LWDEBUGF(1, "Snapping did not move %s point", position);
+						continue;
+					}
+
+					LWDEBUGF(1, "Snapping moved %s point, re-adding it", position);
+					POINT4D endpoint;
+					getPoint4d_p(original, original_index, &endpoint);
+					if (LW_SUCCESS != ptarray_insert_point(snapped, &endpoint, snapped_index + end))
 					{
 						lwgeom_free(prj);
 						lwgeom_free(snapedge);
-						lwerror("GEOS exception on Contains: %s", lwgeom_geos_errmsg);
+						lwerror("Could not preserve snapped edge endpoint");
 						return -1;
 					}
 #if POSTGIS_DEBUG_LEVEL > 0
 					{
 						size_t sz;
-						char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
-						LWDEBUGF(1, "Tweaked snapline became %s", wkt1);
-						lwfree(wkt1);
+						char *wkt = lwgeom_to_wkt(snapedge, WKT_EXTENDED, 15, &sz);
+						LWDEBUGF(1, "Tweaked snapline became %s", wkt);
+						lwfree(wkt);
 					}
 #endif
 				}
-#if POSTGIS_DEBUG_LEVEL > 0
-				else
-				{
-					LWDEBUG(1, "Snapping did not move first point");
-				}
-#endif
 
 				if (-1 == lwt_ChangeEdgeGeom(topo, edge_id, snapline))
 				{
