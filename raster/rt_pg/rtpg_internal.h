@@ -63,6 +63,8 @@ char *
 rtpg_strrstr(const char *s1, const char *s2);
 
 char *rtpg_getSR(int32_t srid);
+
+/* Validate EXECUTE privilege and the callback signature before fmgr calls. */
 void rtpg_assert_callback(const char *caller, Oid proc, Oid expected_return, int nargs, const Oid *expected);
 
 #endif /* RTPG_INTERNAL_H_INCLUDED */

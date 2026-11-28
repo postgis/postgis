@@ -129,3 +129,34 @@ DROP FUNCTION raster_polynomial(pixel FLOAT, VARIADIC args TEXT[]);
 DROP FUNCTION raster_nullage(pixel FLOAT, VARIADIC args TEXT[]);
 DROP FUNCTION raster_x_plus_arg(pixel FLOAT, pos INT[], VARIADIC args TEXT[]);
 DROP FUNCTION raster_y_plus_arg(pixel FLOAT, pos INT[], VARIADIC args TEXT[]);
+
+-- Reject callback parameters that do not match the pixel and argument datums.
+CREATE OR REPLACE FUNCTION raster_bad_callback(pixel bigint, VARIADIC args text[])
+    RETURNS float8 AS $$ SELECT pixel::float8 $$ LANGUAGE sql IMMUTABLE;
+SELECT ST_Value(ST_MapAlgebraFct(
+    ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '64BF'::text, 42::float8, NULL::float8),
+    1, NULL, 'raster_bad_callback(bigint,text[])'::regprocedure), 1, 1);
+DROP FUNCTION raster_bad_callback(bigint, text[]);
+
+
+-- Callback execution requires EXECUTE privilege for the calling role.
+CREATE ROLE raster_callback_denied;
+CREATE FUNCTION raster_denied_callback(pixel float8, VARIADIC args text[])
+    RETURNS float8 AS $$ SELECT pixel $$ LANGUAGE sql IMMUTABLE;
+REVOKE ALL ON FUNCTION raster_denied_callback(float8, text[]) FROM PUBLIC;
+SET ROLE raster_callback_denied;
+SELECT ST_Value(ST_MapAlgebraFct(
+    ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '64BF'::text, 42::float8, NULL::float8),
+    1, NULL, 'raster_denied_callback(float8,text[])'::regprocedure), 1, 1);
+RESET ROLE;
+DROP FUNCTION raster_denied_callback(float8, text[]);
+DROP ROLE raster_callback_denied;
+
+
+-- Return values must match the float8 datum consumed by the wrapper.
+CREATE FUNCTION raster_bad_return_callback(pixel float8, VARIADIC args text[])
+    RETURNS bigint AS $$ SELECT pixel::bigint $$ LANGUAGE sql IMMUTABLE;
+SELECT ST_Value(ST_MapAlgebraFct(
+    ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '64BF'::text, 42::float8, NULL::float8),
+    1, NULL, 'raster_bad_return_callback(float8,text[])'::regprocedure), 1, 1);
+DROP FUNCTION raster_bad_return_callback(float8, text[]);

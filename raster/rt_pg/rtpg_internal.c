@@ -40,13 +40,27 @@
 
 #include "rtpg_internal.h"
 
+/**
+ * Validate a user-supplied raster map algebra callback before invoking it.
+ *
+ * A callback arrives as a regprocedure OID and is called through fmgr. That
+ * path does not perform the SQL executor's EXECUTE privilege check, and a
+ * mismatched signature can make fmgr interpret a Datum as the wrong type
+ * (including dereferencing a by-value pixel as a pointer). Check the current
+ * user's EXECUTE privilege and compare the return and argument types recorded
+ * in pg_proc with the Datums the raster code will pass. fmgr_info is not the
+ * source for this validation: it prepares a call target, but does not establish
+ * the SQL signature expected by these call sites.
+ *
+ * This is called once during setup of each SQL map algebra invocation, before
+ * pixel iteration; it is not called for each pixel.
+ */
 void
 rtpg_assert_callback(const char *caller, Oid proc, Oid expected_return, int nargs, const Oid *expected)
 {
 	HeapTuple tuple;
 	Form_pg_proc form;
 	AclResult aclresult;
-	int i;
 
 #if POSTGIS_PGSQL_VERSION >= 160
 	aclresult = object_aclcheck(ProcedureRelationId, proc, GetUserId(), ACL_EXECUTE);
@@ -58,28 +72,35 @@ rtpg_assert_callback(const char *caller, Oid proc, Oid expected_return, int narg
 
 	tuple = SearchSysCache1(PROCOID, ObjectIdGetDatum(proc));
 	if (!HeapTupleIsValid(tuple))
-		elog(ERROR, "%s: cache lookup failed for function %u", caller, proc);
+		ereport(ERROR,
+			(errcode(ERRCODE_UNDEFINED_FUNCTION),
+			 errmsg("%s: cache lookup failed for function %u", caller, proc)));
 	form = (Form_pg_proc)GETSTRUCT(tuple);
 	if (OidIsValid(expected_return) && form->prorettype != expected_return)
 	{
 		ReleaseSysCache(tuple);
-		elog(ERROR, "%s: Function provided must return %s", caller, format_type_be(expected_return));
+		ereport(ERROR,
+			(errcode(ERRCODE_DATATYPE_MISMATCH),
+			 errmsg("%s: Function provided must return %s", caller, format_type_be(expected_return))));
 	}
 	if (form->pronargs != nargs)
 	{
 		ReleaseSysCache(tuple);
-		elog(ERROR, "%s: Function provided must have %d input parameters", caller, nargs);
+		ereport(ERROR,
+			(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			 errmsg("%s: Function provided must have %d input parameters", caller, nargs)));
 	}
-	for (i = 0; i < nargs; i++)
+	for (int i = 0; i < nargs; i++)
 	{
 		if (form->proargtypes.values[i] == expected[i])
 			continue;
 		ReleaseSysCache(tuple);
-		elog(ERROR,
-		     "%s: Parameter %d of the function provided must be of type %s",
-		     caller,
-		     i + 1,
-		     format_type_be(expected[i]));
+		ereport(ERROR,
+			(errcode(ERRCODE_DATATYPE_MISMATCH),
+			 errmsg("%s: Parameter %d of the function provided must be of type %s",
+				caller,
+				i + 1,
+				format_type_be(expected[i]))));
 	}
 	ReleaseSysCache(tuple);
 }

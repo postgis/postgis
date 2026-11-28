@@ -34,6 +34,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-857, [raster] Validate map-algebra callback signatures and privileges
+   (reported by Sven Klemm / Tiger Data;
+   fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-940, Handle empty rings and patches in X3D output, polyhedral surface
    closedness, curve unstroking and compound curve first points
    (reported by Sven Klemm / Tiger Data;
