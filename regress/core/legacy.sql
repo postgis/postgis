@@ -11,6 +11,13 @@ SET client_min_messages TO WARNING;
 \cd :scriptdir
 \i legacy.sql
 
+-- Both Estimated_Extent overloads must use the caller's privileges.
+SELECT pronargs, prosecdef
+FROM pg_proc
+WHERE proname = 'estimated_extent'
+  AND pronamespace = 'public'::regnamespace
+ORDER BY pronargs;
+
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
 SELECT 'Setting up the data table...';
