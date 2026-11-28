@@ -343,6 +343,9 @@ SELECT g,
 'GEOMETRYCOLLECTION ZM (MULTIPOLYGON ZM (((0 0 5 4,10 0 5 4,10 10 5 4,0 10 5 4,0 0 5 4),(2 2 5 4,2 5 5 4,5 5 5 4,5 2 5 4,2 2 5 4))),POINT ZM (0 0 5 4),MULTILINESTRING ZM ((0 0 5 4, 2 0 5 4),(1 1 5 4, 2 2 5 4)))'
 ::text as g ) as foo;
 
+-- Reject dimension mismatches hidden by nested collections.
+SELECT ST_AsText('GEOMETRYCOLLECTION Z (GEOMETRYCOLLECTION(POINT(0 0 0), LINESTRING(1 1,2 2,3 3,4 4)))'::geometry);
+
 -- CIRCULARSTRING --
 
 SELECT g, -- invalid

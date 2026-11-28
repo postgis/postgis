@@ -102,9 +102,10 @@ static lwflags_t wkt_dimensionality(char *dimensionality)
 static int
 wkt_parser_set_pa_dims(POINTARRAY *pa, int hasz, int hasm)
 {
+	uint32_t ndims = 2 + hasz + hasm;
 	if (!pa)
 		return LW_SUCCESS;
-	if (pa->npoints > 0 && FLAGS_NDIMS(pa->flags) != (uint32_t)(2 + hasz + hasm))
+	if (pa->npoints > 0 && FLAGS_NDIMS(pa->flags) != ndims)
 		return LW_FAILURE;
 	FLAGS_SET_Z(pa->flags, hasz);
 	FLAGS_SET_M(pa->flags, hasm);
