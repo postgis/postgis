@@ -664,3 +664,20 @@ SELECT g,
 -- fall through to the WKT parser, giving a clean parse error
 SELECT 'srid_prefix_ok', ST_AsEWKT(g::geometry) FROM (SELECT 'SRID=4326;POINT(1 2)'::text AS g) x;
 SELECT 'srid_prefix_no_semicolon', ST_AsEWKT(g::geometry) FROM (SELECT 'SRID=1'::text AS g) x;
+
+-- Deep collection nesting is rejected before recursive writers can overflow.
+DO $$
+DECLARE
+  rejected boolean := false;
+BEGIN
+  BEGIN
+    PERFORM ST_AsTWKB(ST_GeomFromText(
+      repeat('GEOMETRYCOLLECTION(', 3500) || 'POINT(0 0)' || repeat(')', 3500)));
+  EXCEPTION WHEN OTHERS THEN
+    rejected := true;
+  END;
+  IF NOT rejected THEN
+    RAISE EXCEPTION 'deeply nested geometry was accepted';
+  END IF;
+END
+$$;
