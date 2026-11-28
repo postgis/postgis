@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2011 Nicklas Avén
- * Copyright 2019 Darafei Praliaskouski
+ * Copyright 2019, 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
