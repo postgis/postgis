@@ -130,10 +130,7 @@ static char *
 lwpoly_summary(LWPOLY *poly, int offset)
 {
 	char tmp[256];
-	/* include offset (indentation) in the size, like lwpoint/lwline_summary;
-	 * otherwise a deep offset truncates the snprintf and the ring-line strcats
-	 * below overrun the buffer. */
-	size_t size = 64*(poly->nrings+1)+128+offset;
+	size_t size = 64 * (poly->nrings + 1) + 128 + offset;
 	char *result;
 	uint32_t i;
 	char *pad="";
