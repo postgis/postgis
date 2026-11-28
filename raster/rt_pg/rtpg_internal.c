@@ -9,6 +9,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,8 +30,80 @@
 #include <ctype.h> /* for isspace */
 #include <postgres.h> /* for palloc */
 #include <executor/spi.h>
+#include <miscadmin.h>
+#include <access/htup_details.h>
+#include <catalog/pg_proc.h>
+#include <utils/acl.h>
+#include <utils/builtins.h>
+#include <utils/lsyscache.h>
+#include <utils/syscache.h>
 
 #include "rtpg_internal.h"
+
+/**
+ * Validate a user-supplied raster map algebra callback before invoking it.
+ *
+ * A callback arrives as a regprocedure OID and is called through fmgr. That
+ * path does not perform the SQL executor's EXECUTE privilege check, and a
+ * mismatched signature can make fmgr interpret a Datum as the wrong type
+ * (including dereferencing a by-value pixel as a pointer). Check the current
+ * user's EXECUTE privilege and compare the return and argument types recorded
+ * in pg_proc with the Datums the raster code will pass. fmgr_info is not the
+ * source for this validation: it prepares a call target, but does not establish
+ * the SQL signature expected by these call sites.
+ *
+ * This is called once during setup of each SQL map algebra invocation, before
+ * pixel iteration; it is not called for each pixel.
+ */
+void
+rtpg_assert_callback(const char *caller, Oid proc, Oid expected_return, int nargs, const Oid *expected)
+{
+	HeapTuple tuple;
+	Form_pg_proc form;
+	AclResult aclresult;
+
+#if POSTGIS_PGSQL_VERSION >= 160
+	aclresult = object_aclcheck(ProcedureRelationId, proc, GetUserId(), ACL_EXECUTE);
+#else
+	aclresult = pg_proc_aclcheck(proc, GetUserId(), ACL_EXECUTE);
+#endif
+	if (aclresult != ACLCHECK_OK)
+		aclcheck_error(aclresult, OBJECT_FUNCTION, get_func_name(proc));
+
+	tuple = SearchSysCache1(PROCOID, ObjectIdGetDatum(proc));
+	if (!HeapTupleIsValid(tuple))
+		ereport(ERROR,
+			(errcode(ERRCODE_UNDEFINED_FUNCTION),
+			 errmsg("%s: cache lookup failed for function %u", caller, proc)));
+	form = (Form_pg_proc)GETSTRUCT(tuple);
+	if (OidIsValid(expected_return) && form->prorettype != expected_return)
+	{
+		ReleaseSysCache(tuple);
+		ereport(ERROR,
+			(errcode(ERRCODE_DATATYPE_MISMATCH),
+			 errmsg("%s: Function provided must return %s", caller, format_type_be(expected_return))));
+	}
+	if (form->pronargs != nargs)
+	{
+		ReleaseSysCache(tuple);
+		ereport(ERROR,
+			(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			 errmsg("%s: Function provided must have %d input parameters", caller, nargs)));
+	}
+	for (int i = 0; i < nargs; i++)
+	{
+		if (form->proargtypes.values[i] == expected[i])
+			continue;
+		ReleaseSysCache(tuple);
+		ereport(ERROR,
+			(errcode(ERRCODE_DATATYPE_MISMATCH),
+			 errmsg("%s: Parameter %d of the function provided must be of type %s",
+				caller,
+				i + 1,
+				format_type_be(expected[i]))));
+	}
+	ReleaseSysCache(tuple);
+}
 
 /* string replacement function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3

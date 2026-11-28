@@ -22,3 +22,6 @@ t
 100|
 116|116
 121|121
+ERROR:  RASTER_mapAlgebraFct: Parameter 1 of the function provided must be of type double precision
+ERROR:  permission denied for function raster_denied_callback
+ERROR:  RASTER_mapAlgebraFct: Function provided must return double precision

@@ -1026,6 +1026,15 @@ RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			    NOTICE,
 			    "Function provided is VOLATILE. Unless required and for best performance, function should be IMMUTABLE or STABLE");
 
+		{
+			const Oid expected[3] = {FLOAT8ARRAYOID, INT4ARRAYOID, TEXTARRAYOID};
+			rtpg_assert_callback("RASTER_nMapAlgebra",
+					     arg->callback.ufc_noid,
+					     InvalidOid,
+					     arg->callback.ufl_info.fn_nargs,
+					     expected);
+		}
+
 		/* prep function call data */
 		InitFunctionCallInfoData(*(arg->callback.ufc_info),
 					 &(arg->callback.ufl_info),
@@ -6160,6 +6169,16 @@ RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 	else
 		k = 2;
 
+	{
+		const Oid expected2[2] = {FLOAT8OID, TEXTARRAYOID};
+		const Oid expected3[3] = {FLOAT8OID, INT4ARRAYOID, TEXTARRAYOID};
+		rtpg_assert_callback("RASTER_mapAlgebraFct",
+				     oid,
+				     FLOAT8OID,
+				     cbinfo.fn_nargs,
+				     cbinfo.fn_nargs == 2 ? expected2 : expected3);
+	}
+
 	if (func_volatile(oid) == 'v')
 	{
 		elog(
@@ -6616,6 +6635,11 @@ RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 
 		elog(ERROR, "RASTER_mapAlgebraFctNgb: Function does not have three input parameters");
 		PG_RETURN_NULL();
+	}
+
+	{
+		const Oid expected[3] = {FLOAT8ARRAYOID, TEXTOID, TEXTARRAYOID};
+		rtpg_assert_callback("RASTER_mapAlgebraFctNgb", oid, FLOAT8OID, cbinfo.fn_nargs, expected);
 	}
 
 	if (func_volatile(oid) == 'v')
@@ -7873,6 +7897,15 @@ RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 
+			{
+				const Oid expected3[3] = {FLOAT8OID, FLOAT8OID, TEXTARRAYOID};
+				const Oid expected4[4] = {FLOAT8OID, FLOAT8OID, INT4ARRAYOID, TEXTARRAYOID};
+				rtpg_assert_callback("RASTER_mapAlgebra2",
+						     ufc_noid,
+						     FLOAT8OID,
+						     ufl_info.fn_nargs,
+						     ufl_info.fn_nargs == 3 ? expected3 : expected4);
+			}
 			if (func_volatile(ufc_noid) == 'v')
 			{
 				elog(
