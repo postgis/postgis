@@ -112,7 +112,7 @@ jobs:
             ccache -s
 
             show_regression_diffs() {
-              local tmpdir="${PGIS_REG_TMPDIR:-/tmp/pgis_reg}"
+              local tmpdir="${PGIS_REG_TMPDIR}"
               local found=0
               for f in "${tmpdir}"/*_diff; do
                 [ -f "${f}" ] || continue
@@ -130,9 +130,18 @@ jobs:
               fi
             }
 
+            ci_tmpdir=
+            if [ -z "${PGIS_REG_TMPDIR:-}" ]; then
+              ci_tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/pgis_reg_XXXXXX") || exit 1
+              chmod 0711 "${ci_tmpdir}" || exit 1
+              export PGIS_REG_TMPDIR="${ci_tmpdir}"
+            fi
             gmake -j"${jobs}" check RUNTESTFLAGS="-v --extension --dumprestore" || {
               show_regression_diffs
               service postgresql onestop
               exit 1
             }
+            if [ -n "${ci_tmpdir}" ]; then
+              rm -rf "${ci_tmpdir}"
+            fi
             service postgresql onestop
