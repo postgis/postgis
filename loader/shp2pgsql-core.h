@@ -244,6 +244,7 @@ int ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader);
 int ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader);
 int ShpLoaderGetRecordCount(SHPLOADERSTATE *state);
 int GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
+int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
 int ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strrecord);
 int ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter);
 void ShpLoaderDestroy(SHPLOADERSTATE *state);

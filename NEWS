@@ -37,6 +37,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-972, [loader] Avoid invalid access to short inner rings in shp2pgsql
+   (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - #5994, GT-964, [geometry] Fix legacy ST_AsGeoJSON row calls after upgrade
    (reported by Paul Ramsey; fixed by Aleksander Alekseev / Tiger Data,
    Darafei Praliaskouski)
@@ -197,8 +199,6 @@ PostGIS 3.8.0dev
 
  - GH-1178, Harden loader column-map allocation checks and partial cleanup
           (Maksim Korotkov)
- - Prevent invalid access when processing a polygon with a one-point inner ring
-   (reported by Aleksander Alekseev / Tiger Data; fixed by Aleksander Alekseev / Tiger Data)
  - #2299, GH-1084, [raster] Repair SQL argument generation in raster garden tests
           (Darafei Praliaskouski)
  - GH-1189, Correct LTO configuration guidance wording (dovkoy)

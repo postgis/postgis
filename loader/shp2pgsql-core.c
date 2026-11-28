@@ -50,7 +50,6 @@ int GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry
 int PIP(Point P, Point *V, int n);
 int FindPolygons(SHPObject *obj, Ring ***Out);
 void ReleasePolygons(Ring **polys, int npolys);
-int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
 static int shp_loader_is_zip_archive(const char *filename);
 
 static int
@@ -644,20 +643,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	/* of which they are within */
 	for (pi = 0; pi < in_index; pi++)
 	{
-		Point pt, pt2;
-		int i;
 		Ring *inner = Inner[pi], *outer = NULL;
-
-		pt.x = inner->list[0].x;
-		pt.y = inner->list[0].y;
-		pt.z = 0.0;
-		pt.m = 0.0;
-
-		/* A one vertex ring has no second point to test */
-		pt2.x = inner->list[inner->n > 1 ? 1 : 0].x;
-		pt2.y = inner->list[inner->n > 1 ? 1 : 0].y;
-		pt2.z = 0.0;
-		pt2.m = 0.0;
 
 		/*
 		 * If we assume that the case of the "big polygon w/o hole
@@ -666,14 +652,14 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		 * will assign the little polygon's hole to the little polygon
 		 * w/o a lot of extra fancy containment logic here
 		 */
-		for (i = out_index - 1; i >= 0; i--)
+		for (int i = out_index - 1; i >= 0; i--)
 		{
-			int in;
+			Ring *candidate = Outer[i];
 
-			in = PIP(pt, Outer[i]->list, Outer[i]->n);
-			if (in || PIP(pt2, Outer[i]->list, Outer[i]->n))
+			if (PIP(inner->list[0], candidate->list, candidate->n) ||
+			    (inner->n > 1 && PIP(inner->list[1], candidate->list, candidate->n)))
 			{
-				outer = Outer[i];
+				outer = candidate;
 				break;
 			}
 		}

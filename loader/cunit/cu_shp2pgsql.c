@@ -13,10 +13,7 @@
 #include "cu_shp2pgsql.h"
 #include "cu_tester.h"
 #include "../shp2pgsql-core.h"
-#include "../shapefil.h"
 #include <string.h>
-
-extern int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
 
 /* Test functions */
 static void test_ShpLoaderSimpleLineParts(void);
@@ -62,8 +59,8 @@ register_shp2pgsql_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_ShpLoaderFIDColumnSQL()", test_ShpLoaderFIDColumnSQL)) ||
 	    (NULL ==
 	     CU_add_test(pSuite, "test_ShpLoaderRejectsInvalidFIDColumn()", test_ShpLoaderRejectsInvalidFIDColumn)) ||
-	    (!CU_add_test(pSuite, "test_ShpLoaderOpenShapeRejectsZip()", test_ShpLoaderOpenShapeRejectsZip)) ||
-	    (!CU_add_test(pSuite, "test_FindPolygonsOnePointInnerRing()", test_FindPolygonsOnePointInnerRing)))
+	    (!CU_add_test(pSuite, "test_FindPolygonsOnePointInnerRing()", test_FindPolygonsOnePointInnerRing)) ||
+	    (NULL == CU_add_test(pSuite, "test_ShpLoaderOpenShapeRejectsZip()", test_ShpLoaderOpenShapeRejectsZip)))
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -93,9 +90,11 @@ test_FindPolygonsOnePointInnerRing(void)
 	object.padfM = m;
 
 	set_loader_config_defaults(&config);
+	config.use_wkt = 1;
 	state = ShpLoaderCreate(&config);
 	CU_ASSERT_EQUAL_FATAL(GeneratePolygonGeometry(state, &object, &geometry), SHPLOADEROK);
-	CU_ASSERT_PTR_NOT_NULL(geometry);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(geometry);
+	CU_ASSERT_STRING_EQUAL(geometry, "MULTIPOLYGON(((0 0,0 10,10 10,10 0),(2 2)))");
 	free(geometry);
 	ShpLoaderDestroy(state);
 	free(config.encoding);
