@@ -30,6 +30,7 @@
 #include <ctype.h> /* for isspace */
 #include <postgres.h> /* for palloc */
 #include <executor/spi.h>
+#include <utils/memutils.h>
 #include <miscadmin.h>
 #include <access/htup_details.h>
 #include <catalog/pg_proc.h>
@@ -468,4 +469,23 @@ LIMIT 1
 	}
 
 	return srs;
+}
+
+void
+rtpg_assert_neighborhood_size(const char *caller, int32_t distancex, int32_t distancey)
+{
+	uint64_t cells;
+
+	if (distancex < 0 || distancey < 0)
+		return;
+	if (distancex > UINT16_MAX || distancey > UINT16_MAX)
+		ereport(ERROR,
+			(errcode(ERRCODE_PROGRAM_LIMIT_EXCEEDED),
+			 errmsg("%s: Distance for X and Y axis must be at most %d", caller, UINT16_MAX)));
+
+	cells = ((uint64_t)distancex * 2 + 1) * ((uint64_t)distancey * 2 + 1);
+	if (cells > MaxAllocSize / sizeof(double))
+		ereport(ERROR,
+			(errcode(ERRCODE_PROGRAM_LIMIT_EXCEEDED),
+			 errmsg("%s: Neighborhood is too large to materialize", caller)));
 }

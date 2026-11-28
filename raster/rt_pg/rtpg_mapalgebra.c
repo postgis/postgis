@@ -748,6 +748,7 @@ RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		elog(ERROR, "RASTER_nMapAlgebra: Distance for X and Y axis must be greater than or equal to zero");
 		PG_RETURN_NULL();
 	}
+	rtpg_assert_neighborhood_size("RASTER_nMapAlgebra", arg->distance[0], arg->distance[1]);
 
 	/* extent type (5) */
 	if (!PG_ARGISNULL(5))
@@ -6762,7 +6763,6 @@ RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 	}
 
 	ngbwidth = PG_GETARG_INT32(3);
-	winwidth = ngbwidth * 2 + 1;
 
 	/* Get the height of the neighborhood */
 	if (PG_ARGISNULL(4) || PG_GETARG_INT32(4) <= 0)
@@ -6788,6 +6788,8 @@ RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 	}
 
 	ngbheight = PG_GETARG_INT32(4);
+	rtpg_assert_neighborhood_size("RASTER_mapAlgebraFctNgb", ngbwidth, ngbheight);
+	winwidth = ngbwidth * 2 + 1;
 	winheight = ngbheight * 2 + 1;
 
 	/* Get the type of NODATA behavior for the neighborhoods. */
