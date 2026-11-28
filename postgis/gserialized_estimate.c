@@ -2200,8 +2200,8 @@ index_has_attr(Oid index_oid, Oid table_oid, int16 table_attnum)
 	if (index_form->indrelid != table_oid)
 		elog(ERROR, "table=%u and index=%u are not related", table_oid, index_oid);
 
-	/* Check if the attnum is in the indkey array */
-	for (int16 i = 0; i < (int16)(index_form->indkey.dim1); i++)
+	/* Only key columns are stored in internal index tuples. */
+	for (int16 i = 0; i < index_form->indnkeyatts; i++)
 	{
 		if (index_form->indkey.values[i] == table_attnum)
 		{
@@ -2333,6 +2333,11 @@ spatial_index_read_extent(Oid idx_oid, int idx_att_num, int key_type)
 		return NULL;
 
 	idx_rel = index_open(idx_oid, AccessShareLock);
+	if (idx_att_num < 1 || idx_att_num > IndexRelationGetNumberOfKeyAttributes(idx_rel))
+	{
+		index_close(idx_rel, AccessShareLock);
+		return NULL;
+	}
 	buffer = ReadBuffer(idx_rel, GIST_ROOT_BLKNO);
 	page = (Page)BufferGetPage(buffer);
 	offset = FirstOffsetNumber;
