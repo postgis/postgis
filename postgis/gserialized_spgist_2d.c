@@ -380,14 +380,14 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 	spgPickSplitIn *in = (spgPickSplitIn *)PG_GETARG_POINTER(0);
 	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
 	BOX2DF *centroid;
-	int median, i;
+	int median;
 	double *lowXs = palloc(sizeof(double) * in->nTuples);
 	double *highXs = palloc(sizeof(double) * in->nTuples);
 	double *lowYs = palloc(sizeof(double) * in->nTuples);
 	double *highYs = palloc(sizeof(double) * in->nTuples);
 
 	/* Calculate median of all 4D coordinates */
-	for (i = 0; i < in->nTuples; i++)
+	for (int i = 0; i < in->nTuples; i++)
 	{
 		BOX2DF *box = (BOX2DF *)DatumGetPointer(in->datums[i]);
 
@@ -424,7 +424,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 	/*
 	 * Assign ranges to corresponding nodes according to quadrants relative to the "centroid" range
 	 */
-	for (i = 0; i < in->nTuples; i++)
+	for (int i = 0; i < in->nTuples; i++)
 	{
 		BOX2DF *box = (BOX2DF *)DatumGetPointer(in->datums[i]);
 		uint8 quadrant = getQuadrant4D(centroid, box);
@@ -450,10 +450,8 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 {
 	spgInnerConsistentIn *in = (spgInnerConsistentIn *)PG_GETARG_POINTER(0);
 	spgInnerConsistentOut *out = (spgInnerConsistentOut *)PG_GETARG_POINTER(1);
-	int i;
 	MemoryContext old_ctx;
 	RectBox *rect_box;
-	uint8 quadrant;
 	BOX2DF *centroid;
 
 	if (in->allTheSame)
@@ -461,7 +459,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 		/* Report that all nodes should be visited */
 		out->nNodes = in->nNodes;
 		out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
-		for (i = 0; i < in->nNodes; i++)
+		for (int i = 0; i < in->nNodes; i++)
 			out->nodeNumbers[i] = i;
 
 		PG_RETURN_VOID();
@@ -490,12 +488,12 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 	 */
 	old_ctx = MemoryContextSwitchTo(in->traversalMemoryContext);
 
-	for (quadrant = 0; quadrant < (uint8)in->nNodes; quadrant++)
+	for (uint8 quadrant = 0; quadrant < (uint8)in->nNodes; quadrant++)
 	{
 		RectBox *next_rect_box = nextRectBox(rect_box, centroid, quadrant);
 		bool flag = true;
 
-		for (i = 0; i < in->nkeys; i++)
+		for (int i = 0; i < in->nkeys; i++)
 		{
 			StrategyNumber strategy = in->scankeys[i].sk_strategy;
 
@@ -635,7 +633,6 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 	BOX2DF *key = (BOX2DF *)DatumGetPointer(in->leafDatum);
 	bool flag = true;
 	bool may_hold_empty;
-	int i;
 
 	/* Quick sanity check on entry key. */
 	if (key == NULL)
@@ -661,7 +658,7 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 	out->leafValue = in->leafDatum;
 
 	/* Perform the required comparison(s) */
-	for (i = 0; i < in->nkeys; i++)
+	for (int i = 0; i < in->nkeys; i++)
 	{
 		StrategyNumber strategy = in->scankeys[i].sk_strategy;
 		Datum query = in->scankeys[i].sk_argument;

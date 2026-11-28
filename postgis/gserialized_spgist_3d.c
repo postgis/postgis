@@ -473,7 +473,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	spgPickSplitIn *in = (spgPickSplitIn *)PG_GETARG_POINTER(0);
 	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
 	BOX3D *centroid;
-	int median, nboxes, i;
+	int median, nboxes;
 	double *lowXs = palloc(sizeof(double) * in->nTuples);
 	double *highXs = palloc(sizeof(double) * in->nTuples);
 	double *lowYs = palloc(sizeof(double) * in->nTuples);
@@ -487,7 +487,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	 * coordinates and always go to octant 0, so they do not take part.
 	 */
 	nboxes = 0;
-	for (i = 0; i < in->nTuples; i++)
+	for (int i = 0; i < in->nTuples; i++)
 	{
 		BOX3D *box_in = DatumGetBox3DP(in->datums[i]);
 
@@ -542,7 +542,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	 * Assign ranges to corresponding nodes according to octants relative to
 	 * the "centroid" range
 	 */
-	for (i = 0; i < in->nTuples; i++)
+	for (int i = 0; i < in->nTuples; i++)
 	{
 		BOX3D* box_in = DatumGetBox3DP(in->datums[i]);
 		uint8 octant = getOctant(centroid, box_in);
@@ -570,10 +570,8 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 {
 	spgInnerConsistentIn *in = (spgInnerConsistentIn *)PG_GETARG_POINTER(0);
 	spgInnerConsistentOut *out = (spgInnerConsistentOut *)PG_GETARG_POINTER(1);
-	int i;
 	MemoryContext old_ctx;
 	CubeBox3D *cube_box;
-	uint8 octant;
 	BOX3D *centroid;
 	int *nodeNumbers;
 	void **traversalValues;
@@ -583,7 +581,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 		/* Report that all nodes should be visited */
 		out->nNodes = in->nNodes;
 		out->nodeNumbers = (int *)palloc(sizeof(int) * in->nNodes);
-		for (i = 0; i < in->nNodes; i++)
+		for (int i = 0; i < in->nNodes; i++)
 			out->nodeNumbers[i] = i;
 
 		PG_RETURN_VOID();
@@ -612,12 +610,12 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 	 */
 	old_ctx = MemoryContextSwitchTo(in->traversalMemoryContext);
 
-	for (octant = 0; octant < (uint8)in->nNodes; octant++)
+	for (uint8 octant = 0; octant < (uint8)in->nNodes; octant++)
 	{
 		CubeBox3D *next_cube_box = nextCubeBox3D(cube_box, centroid, octant);
 		bool flag = true;
 
-		for (i = 0; i < in->nkeys; i++)
+		for (int i = 0; i < in->nkeys; i++)
 		{
 			StrategyNumber strategy = in->scankeys[i].sk_strategy;
 			Datum query = in->scankeys[i].sk_argument;
@@ -718,7 +716,7 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 	/* Pass to the next level only the values that need to be traversed */
 	out->nodeNumbers = (int *)palloc(sizeof(int) * out->nNodes);
 	out->traversalValues = (void **)palloc(sizeof(void *) * out->nNodes);
-	for (i = 0; i < out->nNodes; i++)
+	for (int i = 0; i < out->nNodes; i++)
 	{
 		out->nodeNumbers[i] = nodeNumbers[i];
 		out->traversalValues[i] = traversalValues[i];
@@ -743,7 +741,6 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_3d(PG_FUNCTION_ARGS)
 	spgLeafConsistentOut *out = (spgLeafConsistentOut *)PG_GETARG_POINTER(1);
 	BOX3D *leaf = DatumGetBox3DP(in->leafDatum);
 	bool flag = true;
-	int i;
 
 	/* All tests are exact. */
 	out->recheck = false;
@@ -752,7 +749,7 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_3d(PG_FUNCTION_ARGS)
 	out->leafValue = in->leafDatum;
 
 	/* Perform the required comparison(s) */
-	for (i = 0; i < in->nkeys; i++)
+	for (int i = 0; i < in->nkeys; i++)
 	{
 		StrategyNumber strategy = in->scankeys[i].sk_strategy;
 		Datum query = in->scankeys[i].sk_argument;
