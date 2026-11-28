@@ -34,6 +34,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - Fix a memory leak when unstroking an empty polygon ring
+   (Darafei Praliaskouski)
  - Avoid selectivity crashes for NaN query geometries (Darafei Praliaskouski)
  - GT-857, [raster] Validate map-algebra callback signatures and privileges
    (reported by Sven Klemm / Tiger Data;
