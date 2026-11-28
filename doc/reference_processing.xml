@@ -2289,7 +2289,7 @@ MULTILINESTRING((76 175,101 150),(126 125,126 156.25)))</screen>
         <note><para>This function does not preserve boundaries shared between polygons.  Use <xref linkend="ST_CoverageSimplify"/> if this is required.</para></note>
 
         <para role="availability" conformance="1.2.2">Availability: 1.2.2</para>
-        <para role="enhanced" conformance="3.7.0">Enhanced: 3.7.0 support for geography was introduced.</para>
+        <para role="enhanced" conformance="3.8.0">Enhanced: 3.8.0 support for geography was introduced.</para>
       </refsection>
 
           <refsection>
