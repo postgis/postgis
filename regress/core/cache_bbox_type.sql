@@ -6,7 +6,7 @@ CREATE TRIGGER cache_bbox_type_test_trigger BEFORE INSERT ON cache_bbox_type_tes
 
 DO $$
 BEGIN
-  INSERT INTO cache_bbox_type_test VALUES ('\\x000000000200000000000010');
+  INSERT INTO cache_bbox_type_test VALUES (decode('000000000200000000000010', 'hex'));
   RAISE EXCEPTION 'cache_bbox accepted a non-geometry type';
 EXCEPTION WHEN OTHERS THEN
   IF SQLERRM NOT LIKE 'trigger % requested to apply to a non-geometry field (g)' THEN
