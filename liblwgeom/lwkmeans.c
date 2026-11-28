@@ -70,12 +70,10 @@ improve_structure(POINT4D *objs,
 
 	for (uint32_t cluster = first_cluster_to_split; cluster < k; cluster++)
 	{
-		if (radii[cluster] <= max_radius_sq)
+		if (!isfinite(radii[cluster]) || radii[cluster] <= max_radius_sq)
 			continue;
 
-		/* A split needs a free slot for the new cluster, and there can
-		 * never be more clusters than inputs. Degenerate splits (e.g. from
-		 * non-finite coordinates) could otherwise overflow the arrays. */
+		/* Each split adds one cluster, and arrays are sized to the input. */
 		if (new_k >= n)
 			break;
 
@@ -88,7 +86,9 @@ improve_structure(POINT4D *objs,
 			continue;
 
 		/* run 2-means on the cluster */
-		kmeans(temp_objs, temp_clusters, cluster_size, temp_centers, temp_radii, 2, 0);
+		uint32_t split_k = kmeans(temp_objs, temp_clusters, cluster_size, temp_centers, temp_radii, 2, 0);
+		if (split_k != 2)
+			continue;
 
 		/* replace cluster with split */
 		uint32_t d = 0;

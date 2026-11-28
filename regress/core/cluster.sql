@@ -84,3 +84,6 @@ from (values (null::geometry), ('POINT(1 1)'), ('POINT EMPTY'), ('POINT(0 0)'), 
 
 select 'weight-and-limit-support-1', count(distinct cid) from (select ST_ClusterKMeans(ST_Force2D(geom), 1, 1) over () as cid from (values ('POINT(0 0 0 1)'::geometry), ('POINT(1 0 0 1)'), ('POINT(2 0 0 10000)')) g(geom)) kmeans;
 select 'weight-and-limit-support-2', count(distinct cid) from (select ST_ClusterKMeans(geom, 1, 1) over () as cid from (values ('POINT(0 0 0 1)'::geometry), ('POINT(1 0 0 1)'), ('POINT(2 0 0 10000)')) g(geom)) kmeans;
+
+-- Large finite coordinates overflow squared distances; radius splitting must remain bounded.
+select 'clusterkmeans-large-coordinates', count(*) from (select ST_ClusterKMeans(geom, 1, 0.5) over () as cid from (values ('POINT(0 0)'::geometry), ('POINT(1e155 0)'), ('POINT(-1e155 0)')) g(geom)) kmeans;
