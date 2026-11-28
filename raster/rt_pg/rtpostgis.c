@@ -431,7 +431,6 @@ rt_pg_vsi_load_all_options(void)
 
 #endif /* POSTGIS_GDAL_VERSION < 20300 */
 
-
 /*
  * Some of the options GDAL advertises for its network file systems name a
  * file for libcurl to read or write. They are applied process wide with
@@ -444,8 +443,7 @@ static bool
 rt_pg_vsi_option_is_path(const char *option)
 {
 	static const char *const path_markers[] = {
-		"file", "path", "jar", "bundle", "credentials", "sslcert", "sslkey", NULL
-	};
+	    "file", "path", "jar", "bundle", "credentials", "sslcert", "sslkey", NULL};
 	const char *const *marker;
 
 	/* option_list_parse() has already lowercased the keys */
