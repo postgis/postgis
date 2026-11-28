@@ -699,3 +699,44 @@ DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test_no_userargs(double precision[], int[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test_bad_return(double precision[], int[], text[]);
 DROP TABLE IF EXISTS raster_nmapalgebra_in;
+
+-- Missing first-raster band with a NULL pixel type must use a valid input type.
+SELECT ST_BandPixelType(
+	ST_MapAlgebraExpr(
+		ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+		ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '8BUI'::text, 1, 0),
+		'[rast1]+[rast2]'
+	), 1
+);
+
+-- Two inputs without the requested band return an empty raster safely.
+SELECT ST_NumBands(
+	ST_MapAlgebraExpr(
+		ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+		ST_MakeEmptyRaster(1, 1, 0, 0, 1),
+		'[rast1]+[rast2]'
+	)
+);
+
+-- A truly empty raster is missing its band too; the Fct variant shares the
+-- two-raster implementation with Expr.
+CREATE FUNCTION raster_mapalgebra_empty_input(
+	value1 double precision,
+	value2 double precision,
+	pos int[],
+	VARIADIC userargs text[]
+)
+	RETURNS double precision
+	AS $$ SELECT COALESCE(value1, value2, 0) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+SELECT ST_BandPixelType(
+	ST_MapAlgebraFct(
+		ST_MakeEmptyRaster(0, 0, 0, 0, 1), 1,
+		ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '8BUI'::text, 1, 0), 1,
+		'raster_mapalgebra_empty_input(double precision,double precision,integer[],text[])'::regprocedure,
+		NULL, 'SECOND'
+	), 1
+);
+
+DROP FUNCTION raster_mapalgebra_empty_input(double precision, double precision, integer[], text[]);
