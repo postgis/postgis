@@ -13,6 +13,7 @@
         libcunit1-dev
         libgdal-dev
         libgeos-dev
+        libgmp-dev
         libjson-c-dev
         libproj-dev
         libprotobuf-c1
