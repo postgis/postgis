@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #5958, [raster] Document the VRT loading workflow for tile-set overviews
+   (Darafei Praliaskouski)
  - GT-799, [srs] Allow long custom WKT2 definitions in spatial_ref_sys
           (Darafei Praliaskouski)
  - #5796, GH-986, Build SQL extension bundles without PGXS
