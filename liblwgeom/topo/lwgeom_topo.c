@@ -7387,6 +7387,7 @@ _lwt_SnapEdgeToExistingNode(LWT_TOPOLOGY *topo,
  * @param edges array of ISO edges with all attributes
  * @param num number of items in edges
  * @param point the point of the new node
+ * @param preOverlay restrict splitting to the interior of one off-point edge
  * @param moved if not-null will be set to 0 if the point was added
  *              w/out any snapping or 1 otherwise.
  *
@@ -7399,8 +7400,12 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY *topo,
 			    uint64_t num,
 			    LWPOINT *point,
 			    double tol,
+			    bool preOverlay,
 			    int *moved)
 {
+	if (preOverlay && num != 1)
+		return 0;
+
 	uint64_t i, j;
 	scored_edge *sorted = lwalloc(sizeof(scored_edge) * num);
 	LWT_ISO_EDGE *edges2 = NULL;
@@ -7418,7 +7423,11 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY *topo,
 		/* TODO: use square distance */
 		dist = lwgeom_mindistance2d(lwline_as_lwgeom(edges[i].geom), lwpoint_as_lwgeom(point));
 		LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " distance: %.15g", e->edge_id, dist);
+		/* must be closer than tolerated, unless distance is zero */
 		if (dist && dist >= tol)
+			continue;
+		/* before overlay, an edge the point lies on needs no repair */
+		if (!dist && preOverlay)
 			continue;
 		sorted[j].edge = e;
 		sorted[j++].score = dist;
@@ -7450,6 +7459,18 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY *topo,
 
 	/* project point to closest edge */
 	prj = lwgeom_closest_point(lwline_as_lwgeom(edges[0].geom), lwpoint);
+	if (preOverlay)
+	{
+		const POINTARRAY *pa = edges[0].geom->points;
+		const POINT2D *projected = getPoint2d_cp(lwgeom_as_lwpoint(prj)->point, 0);
+		if (p2d_same(projected, getPoint2d_cp(pa, 0)) ||
+		    p2d_same(projected, getPoint2d_cp(pa, pa->npoints - 1)))
+		{
+			lwgeom_free(prj);
+			lwfree(edges2);
+			return 0;
+		}
+	}
 	if (moved)
 		*moved = lwgeom_same(prj, lwpoint) ? 0 : 1;
 	if (lwgeom_has_z(lwpoint))
@@ -7647,6 +7668,7 @@ _lwt_SplitAllEdgesToNewNode(LWT_TOPOLOGY *topo,
  * @param findFace if non-zero the code will determine which face
  *        contains the given point (unless it is known to be NOT
  *        isolated)
+ * @param preOverlay only repair an off-edge point before the line overlay
  * @param moved if not-null will be set to 0 if the point was added
  *              w/out any snapping or 1 otherwise.
  * @param numSplitEdges if not-null will be set to the number of edges
@@ -7658,6 +7680,7 @@ _lwt_AddPoint(LWT_TOPOLOGY *topo,
 	      double nodeTol,
 	      double edgeTol,
 	      int findFace,
+	      bool preOverlay,
 	      int *moved,
 	      int *numSplitEdges)
 {
@@ -7738,11 +7761,10 @@ _lwt_AddPoint(LWT_TOPOLOGY *topo,
 				mindist = dist;
 			}
 		}
+		_lwt_release_nodes(nodes, num);
 		if (id)
 		{
 			/* found an existing node */
-			if (nodes)
-				_lwt_release_nodes(nodes, num);
 			if (moved)
 				*moved = mindist == 0 ? 0 : 1;
 			return id;
@@ -7766,13 +7788,13 @@ _lwt_AddPoint(LWT_TOPOLOGY *topo,
 	LWDEBUGF(1, "New point is within %.15g units of %" PRIu64 " edges", edgeTol, num);
 	if (num)
 	{
-		id = _lwt_SplitAllEdgesToNewNode(topo, edges, num, lwgeom_as_lwpoint(pt), edgeTol, moved);
+		id = _lwt_SplitAllEdgesToNewNode(topo, edges, num, point, edgeTol, preOverlay, moved);
 		_lwt_release_edges(edges, num);
-		if (numSplitEdges)
+		if (numSplitEdges && (!preOverlay || id > 0))
 			*numSplitEdges = num;
 	}
 
-	if (id == 0)
+	if (id == 0 && !preOverlay)
 	{
 		/* The point is isolated, add it as such */
 		/* TODO: pass 1 as last argument (skipChecks) ? */
@@ -7793,9 +7815,7 @@ _lwt_AddPoint(LWT_TOPOLOGY *topo,
 
 LWT_ELEMID
 lwt_AddPoint(LWT_TOPOLOGY *topo, LWPOINT *point, double tol)
-{
-	return _lwt_AddPoint(topo, point, tol, tol, 1, NULL, NULL);
-}
+{ return _lwt_AddPoint(topo, point, tol, tol, 1, false, NULL, NULL); }
 
 static double
 _lwt_AddLineEndpointRepairTol(LWPOINT *point, int exactNodeSnap)
@@ -7885,7 +7905,7 @@ _lwt_AddLineEdge(LWT_TOPOLOGY *topo,
 	endpoint_edge_tol = _lwt_AddLineEndpointRepairTol(start_point, startExactNodeSnap);
 	endpoint_node_tol = startExactNodeSnap ? 0.0 : endpoint_edge_tol;
 	nid[0] = _lwt_AddPoint(
-	    topo, start_point, endpoint_node_tol, endpoint_edge_tol, handleFaceSplit, &mm, &pointSplitEdges);
+	    topo, start_point, endpoint_node_tol, endpoint_edge_tol, handleFaceSplit, false, &mm, &pointSplitEdges);
 	lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
 	if (nid[0] == -1)
 		return -1; /* lwerror should have been called */
@@ -7909,7 +7929,7 @@ _lwt_AddLineEdge(LWT_TOPOLOGY *topo,
 	endpoint_edge_tol = _lwt_AddLineEndpointRepairTol(end_point, endExactNodeSnap);
 	endpoint_node_tol = endExactNodeSnap ? 0.0 : endpoint_edge_tol;
 	nid[1] = _lwt_AddPoint(
-	    topo, end_point, endpoint_node_tol, endpoint_edge_tol, handleFaceSplit, &mm, &pointSplitEdges);
+	    topo, end_point, endpoint_node_tol, endpoint_edge_tol, handleFaceSplit, false, &mm, &pointSplitEdges);
 	lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
 	if (nid[1] == -1)
 		return -1; /* lwerror should have been called */
@@ -8231,6 +8251,26 @@ _lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int hand
 	if (!noded)
 		return NULL; /* should have called lwerror already */
 	LWDEBUGG(1, noded, "Noded");
+
+	/*
+	 * Inserting a start just off an edge can bend that edge into the line.
+	 * Repair it before overlay so noding sees the resulting intersection.
+	 * Leave exact intersections and isolated starts to the overlay.
+	 */
+	if (!lwgeom_is_empty(noded))
+	{
+		LWPOINT *start = lwline_get_lwpoint(line, 0);
+		double edgeTol = _lwt_AddLineEndpointRepairTol(start, input_tol_was_zero);
+		double nodeTol = input_tol_was_zero ? 0.0 : edgeTol;
+		LWT_ELEMID id =
+		    _lwt_AddPoint(topo, start, nodeTol, edgeTol, handleFaceSplit, true, NULL, &num_new_edges);
+		lwpoint_free(start);
+		if (id < 0)
+		{
+			lwgeom_free(noded);
+			return NULL;
+		}
+	}
 
 	qbox = *lwgeom_get_bbox(lwline_as_lwgeom(line));
 	LWDEBUGF(1, "Line BOX is %.15g %.15g, %.15g %.15g", qbox.xmin, qbox.ymin, qbox.xmax, qbox.ymax);
@@ -8569,7 +8609,7 @@ _lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int hand
 	 */
 	ids = lwalloc(sizeof(LWT_ELEMID) * ngeoms);
 	num = 0;
-	for (i = 0; i < ngeoms; ++i)
+	for (i = 0; i < ngeoms && (maxNewEdges < 0 || num_new_edges <= maxNewEdges); ++i)
 	{
 		int edgeNewEdges;
 		LWT_ELEMID id;
@@ -8622,15 +8662,6 @@ _lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int hand
 			 edgeNewEdges,
 			 num_new_edges);
 
-		if (maxNewEdges >= 0 && num_new_edges > maxNewEdges)
-		{
-			lwgeom_free(noded);
-			lwfree(ids);
-			lwerror("Adding line to topology requires creating more edges than the requested limit of %d",
-				maxNewEdges);
-			return NULL;
-		}
-
 		if (!id)
 		{
 			LWDEBUGF(1, "Component %" PRIu64 " of split line collapsed", i);
@@ -8647,6 +8678,13 @@ _lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int hand
 
 	LWDEBUGG(2, noded, "Noded before free");
 	lwgeom_free(noded);
+	if (maxNewEdges >= 0 && num_new_edges > maxNewEdges)
+	{
+		lwfree(ids);
+		lwerror("Adding line to topology requires creating more edges than the requested limit of %d",
+			maxNewEdges);
+		return NULL;
+	}
 
 	/* TODO: XXX remove duplicated ids if not done before */
 
@@ -8668,9 +8706,7 @@ lwt_AddLineNoFace(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges)
 
 static void
 lwt_LoadPoint(LWT_TOPOLOGY *topo, LWPOINT *point, double tol)
-{
-	_lwt_AddPoint(topo, point, tol, tol, 1, NULL, NULL);
-}
+{ lwt_AddPoint(topo, point, tol); }
 
 static void
 lwt_LoadLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int max_new_edges)

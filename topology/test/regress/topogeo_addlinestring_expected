@@ -245,3 +245,13 @@ t6064.1|t
 t6064.2|t
 t6120.start|1
 t6120.works|t
+#2038.closed.setup|t
+#2038.closed.seed|1
+#2038.closed.insert|2
+#2038.closed.invalid|0
+Topology 't2038_closed' dropped
+#2038.open.setup|t
+#2038.open.seed|1
+#2038.open.insert|2
+#2038.open.invalid|0
+Topology 't2038_open' dropped
