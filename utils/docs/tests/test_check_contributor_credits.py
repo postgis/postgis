@@ -267,13 +267,14 @@ class ContributorCreditValidationTest(unittest.TestCase):
         self.assertEqual([], result.missing)
         self.assertEqual(0, result.git_coauthors)
 
-    def test_non_human_coauthor_name_is_ignored(self):
+    def test_anthropic_model_coauthor_is_ignored(self):
         self.fixture.initial_commit(
             "Alice Example",
             "Bob News",
             message=(
                 "fixture\n\n"
-                "Co-authored-by: Claude Fable 5 <noreply@anthropic.com>"
+                "Co-authored-by: Claude Sonnet 4.6 (1M context) "
+                "<noreply@anthropic.com>"
             ),
         )
         result = validate(self.fixture.repo)

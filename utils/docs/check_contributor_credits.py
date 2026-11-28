@@ -33,6 +33,7 @@ GITHUB_MENTION_RE = re.compile(rf"@({GITHUB_HANDLE_PATTERN})\b")
 NON_ALIAS_CREDIT_SUFFIXES = {("chair",)}
 NON_HUMAN_EMAILS = {
     "no@body.net",
+    "noreply@anthropic.com",
     "noreply-mt-deepl@weblate.org",
     "noreply-mt-weblate@weblate.org",
     "noreply@weblate.org",
