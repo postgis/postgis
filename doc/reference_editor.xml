@@ -355,6 +355,17 @@ Supported bits are:
     1
   );</programlisting>
 <screen role="visual-primary text-primary">LINESTRING(0 0,49.99999999999996 -86.60254037844383,149.99999999999994 -86.6025403784439,200 0)</screen>
+        <para>Use the symmetric flag with the same tolerance and tolerance
+        type when a shared arc is traversed in opposite directions.</para>
+        <programlisting language="sql">WITH input(arc) AS (
+  VALUES ('CIRCULARSTRING(0 0,1 2,3 0)'::geometry)
+)
+SELECT ST_OrderingEquals(
+         ST_CurveToLine(arc, 0.1, 1, 1),
+         ST_Reverse(ST_CurveToLine(ST_Reverse(arc), 0.1, 1, 1))
+       ) AS same_path
+FROM input;</programlisting>
+        <screen>t</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -476,6 +487,9 @@ the given vertex <parameter>point</parameter>.
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
+		<para>For the XY extent of a <type>box3d</type> cast to geometry,
+		use <xref linkend="ST_Envelope"/> because ST_Force2D preserves the
+		geometry type, including PolyhedralSurface.</para>
 	  </refsection>
 
 
@@ -1152,6 +1166,11 @@ FROM data;</programlisting>
 <screen role="visual-primary visual-separate-output psql-expanded">-[ RECORD 1 ]----------
 input_Linear ring at Z=3 | LINESTRING Z (3 3 3,2.414 1.586 3,1 1 3,-0.414 1.586 3,-1 3 3,-0.414 4.414 3,1 5 3,2.414 4.414 3,3 3 3)
 Circular string at Z=3   | CIRCULARSTRING Z (3 3 3,-1 3 3,3 3 3)</screen>
+        <para>Three vertices alone do not give the function enough evidence
+        to recognize an arc. To construct an explicit arc through three known
+        points, use the <varname>CIRCULARSTRING</varname> type.</para>
+<programlisting language="sql">SELECT ST_AsText(ST_LineToCurve('LINESTRING(1 0,0 1,-1 0)'::geometry)) AS result;</programlisting>
+<screen>LINESTRING(1 0,0 1,-1 0)</screen>
     </refsection>
 
 
@@ -1184,6 +1203,8 @@ Circular string at Z=3   | CIRCULARSTRING Z (3 3 3,-1 3 3,3 3 3)</screen>
 
 			<para>Returns the geometry as a MULTI* geometry collection. If the geometry
 				is already a collection, it is returned unchanged.</para>
+			<para>To extract a single geometry type from a GeometryCollection, use
+				<xref linkend="ST_CollectionExtract"/>.</para>
 
 		</refsection>
 
@@ -1314,11 +1335,15 @@ Circular string at Z=3   | CIRCULARSTRING Z (3 3 3,-1 3 3,3 3 3)</screen>
           <refsection>
             <title>Description</title>
 
-            <para>Returns a point projected from a point along a geodesic using a given distance and azimuth (bearing). This is known as the direct geodesic problem.</para>
-            <para>The two-point version uses the path from the first to the second point to implicitly define the azimuth and uses the distance as before.</para>
-            <para>The distance is given in meters.  Negative values are supported.</para>
-            <para>The azimuth (also known as heading or bearing) is given in radians.
-            It is measured clockwise from true north.</para>
+            <para>Projects a point by a given distance and azimuth (bearing).
+            For geography, it follows a geodesic and the distance is in meters.
+            For geometry, it follows a straight line in the coordinate plane
+            and the distance is in the units of the input CRS.</para>
+            <para>The two-point version takes its initial bearing from the first point
+            toward the second and projects from the second point. Negative distances
+            project in the opposite direction.</para>
+            <para>The azimuth is in radians, measured clockwise from true north
+            for geography and clockwise from the positive Y axis for geometry.</para>
             <itemizedlist>
                 <listitem><para>North is azimuth zero (0 degrees)</para></listitem>
                 <listitem><para>East is azimuth &#x03C0;/2 (90 degrees)</para></listitem>
@@ -1334,10 +1359,32 @@ Circular string at Z=3   | CIRCULARSTRING Z (3 3 3,-1 3 3,3 3 3)</screen>
           </refsection>
 
           <refsection>
-            <title>Example: Projected point at 100,000 meters and bearing 45 degrees </title>
+            <title>Examples</title>
+            <para>Project a point 100,000 meters at a bearing of 45 degrees.</para>
 
 <programlisting language="sql">SELECT ST_Project('POINT(0 0)'::geography, 100000, radians(45.0));</programlisting>
 <screen role="visual-primary text-primary"> POINT(0.635231029125537 0.639472334729198)</screen>
+            <para>Project one unit north from the equator.
+            For EPSG:4326 geometry the unit is one degree.
+            For geography the unit is one meter.</para>
+<programlisting language="sql">SELECT ST_Y(ST_Project('SRID=4326;POINT(0 0)'::geometry, 1, 0))
+           AS geometry_latitude,
+       round(ST_Y(ST_Project('POINT(0 0)'::geography, 1, 0)::geometry)::numeric, 10)
+           AS geography_latitude;</programlisting>
+<screen role="text-primary"> geometry_latitude | geography_latitude
+-------------------+--------------------
+                 1 |       0.0000090437
+(1 row)</screen>
+
+            <para>Extend or shorten a line using its endpoints.</para>
+<programlisting language="sql">SELECT ST_AsText(ST_Project('POINT(0 0)'::geometry,
+                           'POINT(2 0)'::geometry, 1)) AS projected_point,
+       ST_AsText(ST_Project('POINT(0 0)'::geometry,
+                           'POINT(2 0)'::geometry, -1)) AS opposite_direction;</programlisting>
+<screen role="text-primary"> projected_point | opposite_direction
+-----------------+--------------------
+ POINT(3 0)      | POINT(1 0)
+(1 row)</screen>
           </refsection>
 
           <refsection>
@@ -1828,6 +1875,9 @@ view       | POLYGON((12 12,12 18,18 18,18 12,12 12))</screen>
 
 		<para>Can be used on any geometry and reverses the order of the vertices.</para>
 
+		<para>Reversing a line preserves the set of points it covers.
+		Use <xref linkend="ST_OrderingEquals"/> to compare the order of its
+		vertices and <xref linkend="ST_Equals"/> to compare the covered points.</para>
 		<para role="enhanced" conformance="2.4.0">Enhanced: 2.4.0 support for curves was introduced.</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
@@ -1845,6 +1895,18 @@ FROM data;</programlisting>
 <screen>      input_line      |    reversed_line
 ----------------------+----------------------
  LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
+(1 row)</screen>
+
+		<para>Compare the shape and the vertex order of a reversed line.</para>
+<programlisting language="sql">WITH data(geom) AS (
+  VALUES ('LINESTRING(0 0,1 0,2 1)'::geometry)
+)
+SELECT ST_Equals(geom, ST_Reverse(geom)) AS same_point_set,
+       ST_OrderingEquals(geom, ST_Reverse(geom)) AS same_vertex_order
+FROM data;</programlisting>
+<screen> same_point_set | same_vertex_order
+----------------+-------------------
+ t              | f
 (1 row)</screen>
 	  </refsection>
 	</refentry>
@@ -1895,6 +1957,11 @@ FROM data;</programlisting>
             It does not lengthen segments shorter than the maximum length.
             </para></note>
 
+            <para>The result retains the input geometry type. To return the
+            individual segments of a geometry as rows, use
+            <xref linkend="ST_DumpSegments"/> on the result. To cut a line at fixed distances
+            measured along the entire line, see the
+            <xref linkend="ST_LineSubstring"/> example.</para>
             <warning><para>For inputs containing long segments,
             specifying a relatively short <varname>max_segment_length</varname>
             can cause a very large number of vertices to be added.
@@ -1931,6 +1998,19 @@ FROM data;</programlisting>
             </para>
 <programlisting language="sql">SELECT ST_Segmentize(('LINESTRING (0 0,60 60)'::geography), 2000000);</programlisting>
 <screen role="visual-primary text-primary">LINESTRING(0 0,4.252632294621186 8.43596525986862,8.69579947419404 16.824093489701564,13.550465473227048 25.107950473646188,19.1066053508691 33.21091076089908,25.779290201459894 41.01711439406505,34.188839517966954 48.337222885886,45.238153936612264 54.84733442373889,60 60)</screen>
+            <para>List the lengths of the resulting segments.</para>
+<programlisting language="sql">WITH input(geom) AS (
+  VALUES ('LINESTRING(0 0,1 0,9 0)'::geometry)
+)
+SELECT segment.path[1] AS segment_no, ST_Length(segment.geom) AS length
+FROM input CROSS JOIN LATERAL ST_DumpSegments(ST_Segmentize(geom, 5)) AS segment
+ORDER BY segment_no;</programlisting>
+<screen> segment_no | length
+------------+--------
+          1 |      1
+          2 |      4
+          3 |      4
+(3 rows)</screen>
 
 		</refsection>
 		<refsection>
@@ -2259,6 +2339,9 @@ UPDATE mytable
   The result geometry is the input geometry with the vertices snapped.
 	If no snapping occurs then the input geometry is returned unchanged.
 		</para>
+		<para>Only vertices of the reference geometry are snap targets.
+		A point near the middle of a reference segment can remain in place.
+		With the inputs reversed, the segment can acquire a vertex at the point.</para>
 		<para>
  Snapping one geometry to another can improve
  robustness for overlay operations by eliminating
@@ -2339,6 +2422,17 @@ FROM (SELECT
     ) As foo;</programlisting>
 <screen role="visual-primary text-primary">LINESTRING(26 125,54 84,101 100)</screen>
 
+		<para>Swapping the inputs changes which vertices can be snapped.</para>
+<programlisting language="sql">WITH data(pt, line) AS (
+  VALUES ('POINT(5 0.1)'::geometry, 'LINESTRING(0 0,10 0)'::geometry)
+)
+SELECT ST_AsText(ST_Snap(pt, line, 0.2)) AS point_to_line,
+       ST_AsText(ST_Snap(line, pt, 0.2)) AS line_to_point
+FROM data;</programlisting>
+<screen> point_to_line |       line_to_point
+---------------+----------------------------
+ POINT(5 0.1)  | LINESTRING(0 0,5 0.1,10 0)
+(1 row)</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->

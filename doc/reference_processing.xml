@@ -538,6 +538,8 @@ FROM noded;
       of the centroid of a C-shaped polygon.
       To construct a point guaranteed to lie in the interior
       of a polygon use <xref linkend="ST_PointOnSurface"/>.
+      For a polygon label positioned as far from the boundary as possible,
+      use the center returned by <xref linkend="ST_MaximumInscribedCircle"/>.
       </para>
 
       <para>New in 2.3.0 : supports <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>

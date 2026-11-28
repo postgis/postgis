@@ -419,6 +419,10 @@ point are equivalent to no scaling the corresponding dimension.
 		<para>&curve_support;</para>
 		<para>&T_support;</para>
 		<para>&M_support;</para>
+		<para>To match the width and height of another geometry, divide
+		its bounding-box dimensions by the corresponding input dimensions
+		and use the resulting ratios as scale factors. The origin controls
+		which point stays fixed during scaling.</para>
 	  </refsection>
 
 
@@ -460,6 +464,14 @@ SELECT ST_Rotate(
          center
        ) AS ellipse
 FROM params;</programlisting>
+		<para>Match a target width of 12 and height of 6 while keeping the
+		lower-left corner of a 4-by-2 input fixed.</para>
+		<programlisting language="sql">SELECT ST_AsText(ST_Scale(
+    ST_MakeEnvelope(10, 20, 14, 22),
+    ST_Point(12.0 / 4, 6.0 / 2),
+    ST_Point(10, 20)
+));</programlisting>
+<screen role="text-primary">POLYGON((10 20,10 26,22 26,22 20,10 20))</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
