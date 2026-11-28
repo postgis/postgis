@@ -73,6 +73,12 @@ improve_structure(POINT4D *objs,
 		if (radii[cluster] <= max_radius_sq)
 			continue;
 
+		/* A split needs a free slot for the new cluster, and there can
+		 * never be more clusters than inputs. Degenerate splits (e.g. from
+		 * non-finite coordinates) could otherwise overflow the arrays. */
+		if (new_k >= n)
+			break;
+
 		/* copy cluster alone */
 		uint32_t cluster_size = 0;
 		for (uint32_t i = 0; i < n; i++)
