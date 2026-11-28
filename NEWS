@@ -30,6 +30,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-875, [raster] Reject non-raster columns in value count queries
+          (reported by Sven Klemm / Tiger Data; fixed by Aleksander
+          Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-872, Reject bounds without a bounding box in postgis_srs_search
           (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data,
           Darafei Praliaskouski)

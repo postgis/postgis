@@ -34,6 +34,7 @@
 #include "utils/lsyscache.h" /* for get_typlenbyvalalign */
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+#include "utils/syscache.h"  /* for GetSysCacheOid2 */
 #include <executor/spi.h>
 #include <funcapi.h> /* for SRF */
 
@@ -1938,6 +1939,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 
 		uint32_t j;
 		int n;
+		Oid raster_type_oid;
 
 		ArrayType *array;
 		Oid etype;
@@ -2041,6 +2043,14 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			if (roundto < 0.) roundto = 0;
 		}
 
+		/* Resolve the raster type in the function's schema. */
+		raster_type_oid = GetSysCacheOid2(TYPENAMENSP,
+						  Anum_pg_type_oid,
+						  PointerGetDatum("raster"),
+						  ObjectIdGetDatum(get_func_namespace(fcinfo->flinfo->fn_oid)));
+		if (!OidIsValid(raster_type_oid))
+			elog(ERROR, "RASTER_valueCountCoverage: raster type is not installed");
+
 		/* iterate through rasters of coverage */
 		/* connect to database */
 		spi_result = SPI_connect();
@@ -2084,6 +2094,19 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		SPI_cursor_fetch(portal, TRUE, 1);
 		while (SPI_processed == 1 && SPI_tuptable != NULL) {
 			tupdesc = SPI_tuptable->tupdesc;
+			if (SPI_gettypeid(tupdesc, 1) != raster_type_oid)
+			{
+				SPI_freetuptable(SPI_tuptable);
+				SPI_cursor_close(portal);
+				SPI_finish();
+				if (NULL != covvcnts)
+					pfree(covvcnts);
+				if (search_values_count)
+					pfree(search_values);
+				MemoryContextSwitchTo(oldcontext);
+				elog(ERROR, "RASTER_valueCountCoverage: Column %s is not of type raster", colname);
+				SRF_RETURN_DONE(funcctx);
+			}
 			tuple = SPI_tuptable->vals[0];
 
 			datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);

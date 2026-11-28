@@ -41,3 +41,4 @@ NOTICE:  Cannot count the values for band at index 1
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
 ERROR:  relation "test1" does not exist at character 20
 ERROR:  column "rast1" does not exist at character 8
+ERROR:  RASTER_valueCountCoverage: Column i is not of type raster
