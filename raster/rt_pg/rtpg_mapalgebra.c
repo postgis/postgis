@@ -4180,7 +4180,7 @@ RASTER_reclass(PG_FUNCTION_ARGS)
 				for (c = 0; c < dash_n; c++)
 				{
 					/* need to handle: (-9999-100 -> "(", "9999", "100" */
-					if (c < 1 && strlen(dash_set[c]) == 1 &&
+					if (c < 1 && c + 1 < dash_n && strlen(dash_set[c]) == 1 &&
 					    (strchr(dash_set[c], '(') != NULL || strchr(dash_set[c], '[') != NULL ||
 					     strchr(dash_set[c], ')') != NULL || strchr(dash_set[c], ']') != NULL))
 					{
