@@ -703,3 +703,22 @@ SELECT 't6120.works', count(*) > 0 FROM topology.TopoGeo_addLinestring('t6120',
   '0102000000050000004313671D53DE34404E64FC3B10545140169A989329DE3440E00C65580F54514010526CDB36DE34406BEE28A10F545140EBE8402451DE344060A52C31105451404313671D53DE34404E64FC3B10545140'
 ,-1);
 ROLLBACK;
+
+-- #2038: inserting the start can move an edge that was disjoint from the input.
+SELECT '#2038.closed.setup', CreateTopology('t2038_closed') > 0;
+SELECT '#2038.closed.seed', count(*) FROM TopoGeo_AddLineString('t2038_closed',
+  'LINESTRING(72.91981 20.95009,72.91082 20.95759)');
+SELECT '#2038.closed.insert', count(*) FROM TopoGeo_AddLineString('t2038_closed',
+  'LINESTRING(72.9123215921439 20.9563372813038,72.9122229474764 20.9564195766326,
+              72.9130010661966 20.9562352183313,72.9123215921439 20.9563372813038)');
+SELECT '#2038.closed.invalid', count(*) FROM ValidateTopology('t2038_closed');
+SELECT DropTopology('t2038_closed');
+
+SELECT '#2038.open.setup', CreateTopology('t2038_open') > 0;
+SELECT '#2038.open.seed', count(*) FROM TopoGeo_AddLineString('t2038_open',
+  'LINESTRING(72.91981 20.95009,72.91082 20.95759)');
+SELECT '#2038.open.insert', count(*) FROM TopoGeo_AddLineString('t2038_open',
+  'LINESTRING(72.9123215921439 20.9563372813038,72.9122229474764 20.9564195766326,
+              72.9130010661966 20.9562352183313)');
+SELECT '#2038.open.invalid', count(*) FROM ValidateTopology('t2038_open');
+SELECT DropTopology('t2038_open');

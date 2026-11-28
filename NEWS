@@ -36,6 +36,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #2038, GT-434, [topology] Node lines against edges moved by start snaps
+   (reported by Wim Nederend; fixed by Darafei Praliaskouski)
  - #5284, GT-417, [topology] Import manually renamed TopoGeometry columns
    (Darafei Praliaskouski)
  - #1764, GT-893, GH-1059, Keep raster2pgsql overviews aligned, including skew
