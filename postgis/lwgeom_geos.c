@@ -1564,6 +1564,7 @@ ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult;
 	GBOX bbox1 = {0};
+	GBOX box2 = {0};
 	GBOX *bbox2;
 	uint8_t type;
 	int32_t srid;
@@ -1575,9 +1576,17 @@ ST_ClipByBox2d(PG_FUNCTION_ARGS)
 		PG_RETURN_DATUM(PG_GETARG_DATUM(geom_idx));
 	}
 
-	/* WARNING: this is really a BOX2DF, use only xmin and ymin fields */
-	bbox2 = (GBOX *)PG_GETARG_POINTER(box2d_idx);
-	bbox2->flags = 0;
+	/* Copy into a local box so we do not mutate the caller's box2d datum in
+	 * place. WARNING: this is really a BOX2DF, use only xmin/xmax/ymin/ymax. */
+	{
+		GBOX *input_box = (GBOX *)PG_GETARG_POINTER(box2d_idx);
+		box2.xmin = input_box->xmin;
+		box2.xmax = input_box->xmax;
+		box2.ymin = input_box->ymin;
+		box2.ymax = input_box->ymax;
+		box2.flags = 0;
+	}
+	bbox2 = &box2;
 
 	/* If bbox1 is strictly contained by bbox2, return input geometry */
 	if (bbox2->xmin < bbox1.xmin && bbox2->xmax > bbox1.xmax && bbox2->ymin < bbox1.ymin &&
