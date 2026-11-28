@@ -604,6 +604,15 @@ DELETE FROM "spatial_ref_sys" WHERE srid = 993309;
 DELETE FROM "spatial_ref_sys" WHERE srid = 993310;
 DELETE FROM "spatial_ref_sys" WHERE srid = 994269;
 
+-- A temporary relation must not shadow the extension's spatial_ref_sys lookup.
+CREATE TEMP TABLE spatial_ref_sys (
+	srid integer, auth_name text, auth_srid integer, proj4text text, srtext text
+);
+INSERT INTO spatial_ref_sys VALUES (4326, 'invalid', 0, 'not a projection', 'not WKT');
+SELECT ST_AsRaster(ST_SetSRID('POINT(0 0)'::geometry, 4326),
+	1.0, 1.0, '8BUI', 1, 0) IS NOT NULL;
+DROP TABLE spatial_ref_sys;
+
 DROP TABLE raster_asraster_geom;
 DROP TABLE raster_asraster_rast;
 DROP TABLE raster_asraster_dst;
