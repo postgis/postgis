@@ -487,6 +487,30 @@ surface_dimension(void)
 	check_solid_st_dimension("TIN(((0 0,0 1,1 0,0 0)))", 2);
 }
 
+void
+polyhedralsurface_empty_patch_is_not_closed(void)
+{
+	LWGEOM **faces = lwalloc(sizeof(LWGEOM *) * 4);
+	LWGEOM *surface;
+	const char *face_wkts[] = {"POLYGON Z ((0 0 0,1 0 0,0 1 0,0 0 0))",
+				   "POLYGON Z ((0 0 0,0 1 0,0 0 1,0 0 0))",
+				   "POLYGON Z ((0 0 0,0 0 1,1 0 0,0 0 0))"};
+
+	for (int i = 0; i < 3; i++)
+	{
+		LWGEOM *face = lwgeom_from_wkt(face_wkts[i], LW_PARSER_CHECK_NONE);
+		CU_ASSERT_PTR_NOT_NULL_FATAL(face);
+		faces[i] = face;
+	}
+	faces[3] = lwpoly_as_lwgeom(lwpoly_construct_empty(SRID_UNKNOWN, 1, 0));
+
+	LWCOLLECTION *col = lwcollection_construct(POLYHEDRALSURFACETYPE, SRID_UNKNOWN, NULL, 4, faces);
+	FLAGS_SET_Z(col->flags, 1);
+	surface = lwcollection_as_lwgeom(col);
+	CU_ASSERT_EQUAL(lwgeom_is_closed(surface), 0);
+	lwgeom_free(surface);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -499,4 +523,5 @@ surface_suite_setup(void)
 	PG_ADD_TEST(suite, tin_parse);
 	PG_ADD_TEST(suite, polyhedralsurface_parse);
 	PG_ADD_TEST(suite, surface_dimension);
+	PG_ADD_TEST(suite, polyhedralsurface_empty_patch_is_not_closed);
 }

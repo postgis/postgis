@@ -1360,6 +1360,11 @@ lwpolygon_unstroke(const LWPOLY *poly)
 	for (i = 0; i < poly->nrings; i++)
 	{
 		geoms[i] = pta_unstroke(poly->rings[i], poly->srid);
+		/* pta_unstroke returns NULL for an empty (0-point) ring; keep it as an
+		 * empty linestring so the reconstructed geometry stays well-formed. */
+		if (!geoms[i])
+			geoms[i] =
+			    lwline_as_lwgeom(lwline_construct(poly->srid, NULL, ptarray_clone_deep(poly->rings[i])));
 		if (geoms[i]->type == CIRCSTRINGTYPE || geoms[i]->type == COMPOUNDTYPE)
 		{
 			hascurve = 1;

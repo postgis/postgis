@@ -883,6 +883,8 @@ lw_curvering_getfirstpoint2d_cp(LWGEOM *geom, POINT2D *scratch)
 		return getPoint2d_cp(((LWCIRCSTRING *)geom)->points, 0);
 	case COMPOUNDTYPE: {
 		LWCOMPOUND *comp = (LWCOMPOUND *)geom;
+		if (comp->ngeoms == 0)
+			lwerror("lw_curvering_getfirstpoint2d_cp: empty compound ring");
 		return lw_curvering_getfirstpoint2d_cp(comp->geoms[0], scratch);
 	}
 	case NURBSCURVETYPE: {

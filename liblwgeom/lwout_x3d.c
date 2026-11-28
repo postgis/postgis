@@ -421,6 +421,8 @@ asx3d3_psurface_sb(const LWPSURFACE *psur, int precision, int opts, const char *
 	for (i = 0; i < psur->ngeoms; i++)
 	{
 		patch = (LWPOLY *)psur->geoms[i];
+		if (patch->nrings == 0)
+			continue; /* skip empty patch; it has no rings */
 		np = patch->rings[0]->npoints - 1;
 		for (k = 0; k < np; k++)
 		{

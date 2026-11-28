@@ -91,6 +91,19 @@ do_x3d3_not_contains(char *in, char *needle, int precision, int option)
 }
 
 static void
+out_x3d3_empty_polyhedral_patch(void)
+{
+	const char *wkb =
+	    "010f0000000200000001030000000000000001030000000100000004000000000000000000000000000000000000000000000000000000000000000000f03f000000000000f03f000000000000f03f00000000000000000000000000000000";
+	LWGEOM *geom = lwgeom_from_hexwkb(wkb, LW_PARSER_CHECK_NONE);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(geom);
+	lwvarlena_t *out = lwgeom_to_x3d3(geom, 15, 0, "");
+	CU_ASSERT_PTR_NOT_NULL_FATAL(out);
+	lwfree(out);
+	lwgeom_free(geom);
+}
+
+static void
 out_x3d3_test_precision(void)
 {
 	/* 0 precision, i.e a round */
@@ -380,4 +393,5 @@ out_x3d_suite_setup(void)
 	PG_ADD_TEST(suite, out_x3d3_test_precision);
 	PG_ADD_TEST(suite, out_x3d3_test_geoms);
 	PG_ADD_TEST(suite, out_x3d3_test_option);
+	PG_ADD_TEST(suite, out_x3d3_empty_polyhedral_patch);
 }

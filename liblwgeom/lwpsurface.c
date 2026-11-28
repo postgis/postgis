@@ -115,6 +115,9 @@ int lwpsurface_is_closed(const LWPSURFACE *psurface)
 	for (i=0, narcs=0 ; i < psurface->ngeoms ; i++)
 	{
 		patch = (LWPOLY *) psurface->geoms[i];
+		/* An empty patch has no rings; such a surface can't be closed */
+		if (patch->nrings == 0)
+			return 0;
 		narcs += patch->rings[0]->npoints - 1;
 	}
 

@@ -298,6 +298,10 @@ cu_noticereporter(const char *fmt, va_list ap)
   fprintf(stderr, "NOTICE: %s\n", buf);
 }
 
+void
+cu_test_restore_error_handlers(void)
+{ lwgeom_set_handlers(0, 0, 0, cu_errorreporter, cu_noticereporter); }
+
 static void
 cu_debuglogger(int level, const char *fmt, va_list ap)
 {
