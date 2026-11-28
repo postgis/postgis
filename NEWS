@@ -36,6 +36,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-936, Bind deprecated SFCGAL wrappers to their installed CG functions
+   (reported by Arunachalam TKS / Microsoft; fixed by Darafei Praliaskouski)
  - Keep GitLab mirror status during API rate limits (Darafei Praliaskouski)
  - Fix a memory leak when unstroking an empty polygon ring
    (Darafei Praliaskouski)

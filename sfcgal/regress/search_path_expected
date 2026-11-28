@@ -1,0 +1,2 @@
+WARNING:  ST_3DIntersection signature was deprecated in 3.5.0. Please use CG_3DIntersection
+t

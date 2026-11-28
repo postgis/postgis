@@ -55,12 +55,13 @@ CREATE OR REPLACE FUNCTION CG_3DIntersection(geom1 geometry, geom2 geometry)
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DIntersection', 'CG_3DIntersection', '3.5.0');
 	SELECT @extschema@.CG_3DIntersection($1, $2);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Intersection(geom1 geometry, geom2 geometry)
@@ -94,12 +95,13 @@ CREATE OR REPLACE FUNCTION CG_3DDifference(geom1 geometry, geom2 geometry)
 -- Availability: 2.2
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DDifference', 'CG_3DDifference', '3.5.0');
 	SELECT @extschema@.CG_3DDifference($1, $2);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Difference(geom1 geometry, geom2 geometry)
@@ -133,12 +135,13 @@ CREATE AGGREGATE ST_3DUnion(geometry) (
 -- Availability: 2.2
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DUnion', 'CG_3DUnion', '3.5.0');
 	SELECT @extschema@.CG_3DUnion($1, $2);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Union(geom1 geometry, geom2 geometry)
@@ -164,12 +167,13 @@ CREATE OR REPLACE FUNCTION CG_Tesselate(geometry)
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_Tesselate(geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_Tesselate', 'CG_Tesselate', '3.5.0');
 	SELECT @extschema@.CG_Tesselate($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Triangulate(geometry)
@@ -188,12 +192,13 @@ CREATE OR REPLACE FUNCTION CG_3DArea(geometry)
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_3DArea(geometry)
-RETURNS FLOAT8 AS $$
+RETURNS FLOAT8
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DArea', 'CG_3DArea', '3.5.0');
 	SELECT @extschema@.CG_3DArea($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Area(geom1 geometry)
@@ -226,12 +231,13 @@ CREATE OR REPLACE FUNCTION CG_Extrude(geometry, float8, float8, float8)
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_Extrude(geometry, float8, float8, float8)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_Extrude', 'CG_Extrude', '3.5.0');
 	SELECT @extschema@.CG_Extrude($1, $2, $3, $4);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_ForceLHR(geometry)
@@ -243,12 +249,13 @@ CREATE OR REPLACE FUNCTION CG_ForceLHR(geometry)
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_ForceLHR(geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_ForceLHR', 'CG_ForceLHR', '3.5.0');
 	SELECT @extschema@.CG_ForceLHR($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Orientation(geometry)
@@ -260,12 +267,13 @@ CREATE OR REPLACE FUNCTION CG_Orientation(geometry)
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_Orientation(geometry)
-RETURNS INT4 AS $$
+RETURNS INT4
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_Orientation', 'CG_Orientation', '3.5.0');
 	SELECT @extschema@.CG_Orientation($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_MinkowskiSum(geometry, geometry)
@@ -277,12 +285,13 @@ CREATE OR REPLACE FUNCTION CG_MinkowskiSum(geometry, geometry)
 -- Availability: 2.1.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_MinkowskiSum(geometry, geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_MinkowskiSum', 'CG_MinkowskiSum', '3.5.0');
 	SELECT @extschema@.CG_MinkowskiSum($1, $2);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_StraightSkeleton(geometry, use_m_as_distance boolean DEFAULT false)
@@ -294,12 +303,13 @@ CREATE OR REPLACE FUNCTION CG_StraightSkeleton(geometry, use_m_as_distance boole
 -- Availability: 2.1.0
 -- Deprecation in 3.1.0
 CREATE OR REPLACE FUNCTION ST_StraightSkeleton(geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_StraightSkeleton', 'CG_StraightSkeleton', '3.1.0');
 	SELECT @extschema@.CG_StraightSkeleton($1, false);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_ApproximateMedialAxis(geometry)
@@ -320,12 +330,13 @@ CREATE OR REPLACE FUNCTION CG_ApproximateMedialAxis(geom geometry, projected boo
 -- Availability: 2.2.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_ApproximateMedialAxis', 'CG_ApproximateMedialAxis', '3.5.0');
 	SELECT @extschema@.CG_ApproximateMedialAxis($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_IsPlanar(geometry)
@@ -367,12 +378,13 @@ CREATE OR REPLACE FUNCTION CG_IsSimpleDetail(geometry)
 -- Availability: 2.2.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_IsPlanar(geometry)
-RETURNS boolean AS $$
+RETURNS boolean
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_IsPlanar', 'CG_IsPlanar', '3.5.0');
 	SELECT @extschema@.CG_IsPlanar($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_Volume(geometry)
@@ -384,12 +396,13 @@ CREATE OR REPLACE FUNCTION CG_Volume(geometry)
 -- Availability: 2.2
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_Volume(geometry)
-RETURNS FLOAT8 AS $$
+RETURNS FLOAT8
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_Volume', 'CG_Volume', '3.5.0');
 	SELECT @extschema@.CG_Volume($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_MakeSolid(geometry)
@@ -401,12 +414,13 @@ CREATE OR REPLACE FUNCTION CG_MakeSolid(geometry)
 -- Availability: 2.2
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_MakeSolid(geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_MakeSolid', 'CG_MakeSolid', '3.5.0');
 	SELECT @extschema@.CG_MakeSolid($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_IsSolid(geometry)
@@ -418,12 +432,13 @@ CREATE OR REPLACE FUNCTION CG_IsSolid(geometry)
 -- Availability: 2.2
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_IsSolid(geometry)
-RETURNS boolean AS $$
+RETURNS boolean
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_IsSolid', 'CG_IsSolid', '3.5.0');
 	SELECT @extschema@.CG_IsSolid($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_ConstrainedDelaunayTriangles(geometry)
@@ -435,12 +450,13 @@ CREATE OR REPLACE FUNCTION CG_ConstrainedDelaunayTriangles(geometry)
 -- Availability: 3.0.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_ConstrainedDelaunayTriangles(geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_ConstrainedDelaunayTriangles', 'CG_ConstrainedDelaunayTriangles', '3.5.0');
 	SELECT @extschema@.CG_ConstrainedDelaunayTriangles($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_3DConvexHull(geometry)
@@ -452,12 +468,13 @@ CREATE OR REPLACE FUNCTION CG_3DConvexHull(geometry)
 -- Availability: 3.3.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_3DConvexHull(geometry)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_3DConvexHull', 'CG_3DConvexHull', '3.5.0');
 	SELECT @extschema@.CG_3DConvexHull($1);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_AlphaShape(g1 geometry, alpha float8 DEFAULT 1.0, allow_holes boolean DEFAULT false)
@@ -469,12 +486,13 @@ CREATE OR REPLACE FUNCTION CG_AlphaShape(g1 geometry, alpha float8 DEFAULT 1.0, 
 -- Availability: 3.3.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_AlphaShape(g1 geometry, alpha float8 DEFAULT 1.0, allow_holes boolean DEFAULT false)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_AlphaShape', 'CG_AlphaShape', '3.5.0');
 	SELECT @extschema@.CG_AlphaShape($1, $2, $3);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_OptimalAlphaShape(g1 geometry, allow_holes boolean DEFAULT false, nb_components int DEFAULT 1)
@@ -486,12 +504,13 @@ CREATE OR REPLACE FUNCTION CG_OptimalAlphaShape(g1 geometry, allow_holes boolean
 -- Availability: 3.3.0
 -- Deprecation in 3.5.0
 CREATE OR REPLACE FUNCTION ST_OptimalAlphaShape(g1 geometry, allow_holes boolean DEFAULT false, nb_components int DEFAULT 1)
-RETURNS geometry AS $$
+RETURNS geometry
+LANGUAGE SQL IMMUTABLE SECURITY INVOKER
+BEGIN ATOMIC
 	SELECT @extschema@._postgis_deprecate(
 		'ST_OptimalAlphaShape', 'CG_OptimalAlphaShape', '3.5.0');
 	SELECT @extschema@.CG_OptimalAlphaShape($1, $2, $3);
-$$
-LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+END;
 
 -- Availability: 3.5.0
 CREATE OR REPLACE FUNCTION CG_YMonotonePartition(g1 geometry)

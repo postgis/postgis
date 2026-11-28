@@ -250,7 +250,7 @@ foreach my $tr (@triggers)
 
 print "-- Drop all functions except " . (keys %type_funcs) . " needed for type definition.\n";
 
-foreach my $fn (@funcs)
+foreach my $fn (reverse @funcs)
 {
 	if ($fn =~ /.* function ([^(]+)\((.*)\)/is ) # can be multiline
 	{

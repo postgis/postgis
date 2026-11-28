@@ -432,11 +432,13 @@ EOF
         my $def .= $_;
         my @replaced_array = parse_replaces($comment);
         my $endfunc = 0;
+        my $atomic_body = 0;
         while(<INPUT>)
         {
             $def .= $_;
             $endfunc = 1 if /^\s*(\$[^\$]*\$\s*)?LANGUAGE /;
-            last if ( $endfunc && /\;/ );
+            $atomic_body = 1 if /^\s*BEGIN ATOMIC\s*$/i;
+            last if ( $endfunc && ( $atomic_body ? /^\s*END\s*;\s*$/i : /\;/ ) );
         }
         foreach my $replaced (@replaced_array)
         {
