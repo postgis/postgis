@@ -179,3 +179,6 @@ ORDER BY i;
 
 -- infinite latlon https://trac.osgeo.org/postgis/ticket/5342
 SELECT '#5342' As ticket, ST_AsLatLonText('0101000020E6100000000000000000F07F000000000000F07F'::geometry);
+
+-- Very large finite coordinates must normalize in bounded time
+SELECT ST_AsLatLonText(ST_SetSRID(ST_MakePoint(1e308,0),4326));
