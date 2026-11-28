@@ -41,6 +41,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #4122, GT-997, GH-1086, [geography] Keep _ST_Expand bounds through I/O
+   (reported by Pavan Deolasee; fixed by Darafei Praliaskouski)
  - GT-993, [raster] Reject out-of-range ST_MakeEmptyRaster dimensions
    (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-989, [raster] Preserve source nodata in ST_Clip with an empty nodata array

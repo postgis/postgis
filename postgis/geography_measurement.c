@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -442,47 +443,110 @@ geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(distance <= tolerance);
 }
 
-/*
-** geography_expand(GSERIALIZED *g) returns *GSERIALIZED
-**
-** warning, this tricky little function does not expand the
-** geometry at all, just re-writes bounding box value to be
-** a bit bigger. only useful when passing the result along to
-** an index operator (&&)
-*/
+/**
+ * Intersect a fixed-axis slice of the unit sphere with the off-axis box.
+ * Work in the quadrant containing both the nearest and farthest corners.
+ * If even that quadrant misses the circle, project the nearer corner onto it.
+ */
+static POINT2D
+pgis_expand_axis_pair(double radius2, double amin, double amax, double bmin, double bmax)
+{
+	POINT2D closest = {fmax(0.0, fmax(amin, -amax)), fmax(0.0, fmax(bmin, -bmax))};
+	POINT2D farthest = {fmax(-amin, amax), fmax(-bmin, bmax)};
+	double closest2 = closest.x * closest.x + closest.y * closest.y;
+	double farthest2 = farthest.x * farthest.x + farthest.y * farthest.y;
+	POINT2D pair;
+
+	if (radius2 < closest2)
+	{
+		double scale = sqrt(radius2 / closest2);
+		pair = (POINT2D){closest.x * scale, closest.y * scale};
+	}
+	else if (radius2 > farthest2)
+	{
+		if (farthest2 > 0.0)
+		{
+			double scale = sqrt(radius2) / sqrt(farthest2);
+			pair = (POINT2D){farthest.x * scale, farthest.y * scale};
+		}
+		else
+			pair = (POINT2D){sqrt(radius2), 0.0};
+	}
+	else
+	{
+		/* Follow the circle from the closest edge until it enters the box. */
+		pair.y = fmin(farthest.y, sqrt(radius2 - closest.x * closest.x));
+		pair.x = sqrt(fmax(0.0, radius2 - pair.y * pair.y));
+	}
+
+	if (-amin > amax)
+		pair.x = -pair.x;
+	if (-bmin > bmax)
+		pair.y = -pair.y;
+	return pair;
+}
+
+/** Build a multipoint whose computed geocentric box encloses the input box on the sphere. */
+static GSERIALIZED *
+pgis_expand_geography_box(const GBOX *box, int32_t srid)
+{
+	const double min[3] = {box->xmin, box->ymin, box->zmin};
+	const double max[3] = {box->xmax, box->ymax, box->zmax};
+	LWGEOM **points = lwalloc(6 * sizeof(*points));
+	LWGEOM *carrier;
+	GSERIALIZED *result;
+
+	for (uint32_t axis = 0; axis < 3; axis++)
+	{
+		uint32_t a = (axis + 1) % 3;
+		uint32_t b = (axis + 2) % 3;
+		double limits[2] = {fmax(-1.0, min[axis]), fmin(1.0, max[axis])};
+
+		for (uint32_t side = 0; side < 2; side++)
+		{
+			double v = limits[side];
+			POINT2D pair = pgis_expand_axis_pair((1.0 - v) * (1.0 + v), min[a], max[a], min[b], max[b]);
+			double cart[3];
+			POINT4D point = {0};
+
+			cart[axis] = v;
+			cart[a] = pair.x;
+			cart[b] = pair.y;
+			point.x = rad2deg(atan2(cart[1], cart[0]));
+			/* Keep the horizontal components accurate near the poles. */
+			point.y = rad2deg(atan2(cart[2], hypot(cart[0], cart[1])));
+			points[2 * axis + side] = lwpoint_as_lwgeom(lwpoint_make(srid, LW_FALSE, LW_FALSE, &point));
+		}
+	}
+
+	carrier = lwcollection_as_lwgeom(lwcollection_construct(MULTIPOINTTYPE, srid, NULL, 6, points));
+	lwgeom_set_geodetic(carrier, true);
+	result = geography_serialize(carrier);
+	lwgeom_free(carrier);
+	return result;
+}
+
+/** Expand the geocentric index bounds, carrying them through geography I/O. */
 PG_FUNCTION_INFO_V1(geography_expand);
 Datum
 geography_expand(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g = NULL;
-	GSERIALIZED *g_out = NULL;
-	double unit_distance, distance;
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	double distance = PG_GETARG_FLOAT8(1);
+	GBOX box = {0};
+	GSERIALIZED *result;
 
-	/* Get a wholly-owned pointer to the geography */
-	g = PG_GETARG_GSERIALIZED_P_COPY(0);
+	/* The 1% margin accounts for the spheroidal distance in the spherical filter. */
+	double unit_distance = 1.01 * distance / WGS84_RADIUS;
 
-	/* Read our distance value and normalize to unit-sphere. */
-	distance = PG_GETARG_FLOAT8(1);
-	/* Magic 1% expansion is to bridge difference between potential */
-	/* spheroidal input distance and fact that expanded box filter is */
-	/* calculated on sphere */
-	unit_distance = 1.01 * distance / WGS84_RADIUS;
-
-	/* Try the expansion */
-	g_out = gserialized_expand(g, unit_distance);
-
-	/* If the expansion fails, the return our input */
-	if (g_out == NULL)
-	{
+	if (!(unit_distance > 0.0) || gserialized_get_gbox_p(g, &box) == LW_FAILURE)
 		PG_RETURN_POINTER(g);
-	}
 
-	if (g_out != g)
-	{
-		pfree(g);
-	}
-
-	PG_RETURN_POINTER(g_out);
+	/* Budget for roundoff when converting the extrema to lon/lat and back. */
+	gbox_expand(&box, unit_distance + 16 * DBL_EPSILON);
+	result = pgis_expand_geography_box(&box, gserialized_get_srid(g));
+	PG_FREE_IF_COPY(g, 0);
+	PG_RETURN_POINTER(result);
 }
 
 /*
