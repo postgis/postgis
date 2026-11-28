@@ -3,6 +3,8 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - #6019, GT-860, Remove generated CUnit files in distclean (Bas Couwenberg, Regina Obe)
+
   - Qualify the TIGER rate_attributes helper (Darafei Praliaskouski)
   - Use current SFCGAL function names in regression tests (Loïc Bartoletti)
   - Correct spelling in the English function reference (Mike Taves)
