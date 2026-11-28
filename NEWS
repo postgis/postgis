@@ -30,6 +30,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #2536, [topology] Mark editable catalog rows in unpackaged upgrade scripts
+   (Darafei Praliaskouski)
  - GT-944, Validate point counts in arc distance inputs
    (reported by Aleksander Alekseev / Tiger Data;
     fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
