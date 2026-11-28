@@ -739,6 +739,18 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 <screen role="text-primary">
 {"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1.000000000,1.000000000,1.000000000,1.000000000],"coordinates":[1,1]}
 </screen>
+
+<para>To write a feature with attributes from projected data, transform
+the geometry in the input row before passing the row to ST_AsGeoJSON.</para>
+<programlisting language="sql">WITH source(id, name, geom) AS (
+  VALUES (1, 'trailhead', ST_Transform(ST_Point(-73, 40, 4326), 3857))
+), features AS (
+  SELECT id, name, ST_Transform(geom, 4326) AS geom
+  FROM source
+)
+SELECT ST_AsGeoJSON(features.*, id_column => 'id') AS feature
+FROM features;</programlisting>
+<screen>{"type": "Feature", "geometry": {"type":"Point","coordinates":[-73,40]}, "id": 1, "properties": {"name": "trailhead"}}</screen>
     </refsection>
   <refsection>
     <title>See Also</title>
