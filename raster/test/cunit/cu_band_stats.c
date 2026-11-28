@@ -377,12 +377,57 @@ test_band_stats_included_nodata(void)
 	cu_free_raster(raster);
 }
 
+static void
+test_quantile_input_bounds(void)
+{
+	const struct {
+		double quantile;
+		int accepted;
+		double value;
+	} cases[] = {{NAN, 0, 0}, {0.0, 1, 2}, {1.0, 1, 4}};
+	rt_raster raster = rt_raster_new(2, 1);
+	rt_band band = cu_add_band(raster, PT_8BUI, 0, 0);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(band);
+	rt_band_set_pixel(band, 0, 0, 2, NULL);
+	rt_band_set_pixel(band, 1, 0, 4, NULL);
+	rt_bandstats stats = rt_band_get_summary_stats(band, 0, 1, 1, NULL, NULL, NULL);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(stats);
+
+	for (uint32_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
+	{
+		double quantile = cases[i].quantile;
+		struct quantile_llist *qlls = NULL;
+		uint32_t qlls_count = 0;
+		uint32_t counts[2] = {0};
+		rt_quantile results[2];
+		results[0] = rt_band_get_quantiles(stats, &quantile, 1, &counts[0]);
+		results[1] = rt_band_get_quantiles_stream(band, 0, 1, 2, &qlls, &qlls_count, &quantile, 1, &counts[1]);
+
+		for (uint32_t j = 0; j < sizeof(results) / sizeof(results[0]); j++)
+		{
+			CU_ASSERT_EQUAL(!!results[j], cases[i].accepted);
+			if (results[j])
+			{
+				CU_ASSERT_EQUAL(counts[j], 1);
+				if (counts[j])
+					CU_ASSERT_DOUBLE_EQUAL(results[j][0].value, cases[i].value, DBL_EPSILON);
+				rtdealloc(results[j]);
+			}
+		}
+		quantile_llist_destroy(&qlls, qlls_count);
+	}
+	rtdealloc(stats->values);
+	rtdealloc(stats);
+	cu_free_raster(raster);
+}
+
 /* register tests */
 void band_stats_suite_setup(void);
 void band_stats_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("band_stats", NULL, NULL);
 	PG_ADD_TEST(suite, test_band_stats);
+	PG_ADD_TEST(suite, test_quantile_input_bounds);
 	PG_ADD_TEST(suite, test_histogram_bin_initialization_bounds);
 	PG_ADD_TEST(suite, test_band_stats_small_sample_wide_raster);
 	PG_ADD_TEST(suite, test_band_stats_included_nodata);
