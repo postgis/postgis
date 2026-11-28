@@ -581,6 +581,16 @@ test_ryu_pow5factor(void)
 	CU_ASSERT_EQUAL(pow5Factor(18446744073709551614ull), 0);
 }
 
+static void
+test_lwgeom_summary_nested_polygon(void)
+{
+	LWGEOM *geom = lwgeom_from_wkt("POLYGON((0 0,1 0,1 1,0 0))", LW_PARSER_CHECK_NONE);
+	char *summary = lwgeom_summary(geom, 512);
+	CU_ASSERT_PTR_NOT_NULL(strstr(summary, "ring 0 has 4 points"));
+	lwfree(summary);
+	lwgeom_free(geom);
+}
+
 /*
 ** Callback used by the test harness to register the tests in this file.
 */
@@ -594,6 +604,7 @@ print_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_optional_format);
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_oddball_formats);
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_bad_formats);
+	PG_ADD_TEST(suite, test_lwgeom_summary_nested_polygon);
 	PG_ADD_TEST(suite, test_lwprint);
 	PG_ADD_TEST(suite, test_lwprint_roundtrip);
 	PG_ADD_TEST(suite, test_ryu_pow5factor);

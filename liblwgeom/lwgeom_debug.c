@@ -130,7 +130,7 @@ static char *
 lwpoly_summary(LWPOLY *poly, int offset)
 {
 	char tmp[256];
-	size_t size = 64*(poly->nrings+1)+128;
+	size_t size = 64 * (poly->nrings + 1) + 128 + offset;
 	char *result;
 	uint32_t i;
 	char *pad="";
