@@ -46,8 +46,9 @@ int main(void)
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 	CU_basic_run_tests();
+	const int failed = CU_get_number_of_failures() != 0;
+	const CU_ErrorCode test_error = CU_get_error();
 	CU_cleanup_registry();
 
-	return CU_get_error();
-
+	return failed || test_error != CUE_SUCCESS;
 }

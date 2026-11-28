@@ -99,7 +99,7 @@ all: cu_tester
 
 # Build and run the unit tester
 check: cu_tester
-	@./cu_tester
+	@cd "$(srcdir)" && "$(abspath ./cu_tester)"
 
 endif
 
