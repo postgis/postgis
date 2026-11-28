@@ -239,6 +239,24 @@ SELECT '#5303', 'clean', topology.RemoveUnusedPrimitives('city_data');
 SELECT '#5303', 'changed', * FROM features.check_changed_features();
 SELECT '#5303', 'invalidity', * FROM topology.ValidateTopology('city_data');
 
+--
+-- See https://trac.osgeo.org/postgis/ticket/5937
+--
+
+SELECT NULL FROM topology.CreateTopology('t5937');
+CREATE TABLE features.t5937_f(id serial primary key);
+SELECT NULL FROM topology.AddTopoGeometryColumn('t5937', 'features', 't5937_f', 'g', 'line');
+SELECT NULL FROM topology.toTopoGeom(ST_ExteriorRing(ST_MakeEnvelope(0,0,10,10)), 't5937', 1);
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937', ST_Point(10,0));
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937', ST_Point(0,10));
+SELECT NULL FROM topology.TopoGeo_AddPoint('t5937', ST_Point(10,10));
+SELECT '#5937', 'clean', topology.RemoveUnusedPrimitives('t5937');
+SELECT '#5937', 'invalidity', * FROM topology.ValidateTopology('t5937');
+SELECT '#5937', 'nodes', count(*) FROM t5937.node;
+SELECT '#5937', 'edges', count(*) FROM t5937.edge;
+SELECT '#5937', 'closed_edges', count(*) FROM t5937.edge WHERE start_node = end_node;
+SELECT NULL FROM topology.DropTopology('t5937');
+DROP TABLE features.t5937_f;
 
 --
 -- Cleanup
