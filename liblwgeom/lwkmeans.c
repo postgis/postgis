@@ -1,6 +1,6 @@
 /*-------------------------------------------------------------------------
  *
- * Copyright (c) 2018-2021, Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (c) 2018-2026, Darafei Praliaskouski <me@komzpa.net>
  * Copyright (c) 2016, Paul Ramsey <pramsey@cleverelephant.ca>
  *
  *------------------------------------------------------------------------*/
