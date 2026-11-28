@@ -29,6 +29,7 @@
 #include <utils/guc.h>
 #include <utils/guc_tables.h>
 #include <utils/fmgroids.h>
+#include <utils/typcache.h>
 #include <catalog/namespace.h>
 #include <catalog/pg_extension.h>
 #include <commands/extension.h>
@@ -572,6 +573,57 @@ postgis_guc_find_option(const char *name)
 		return 0;
 
 	return 1;
+}
+
+
+/*
+ * Do two record types describe the same column layout?
+ *
+ * The cheap test is the (typeid, typmod) pair, and for the overwhelmingly
+ * common case of one row type throughout a set that is all that runs.  It is
+ * however stricter than it looks: a transient record type gets a typmod of
+ * its own per RowExpr, and the comparison that hands them out also looks at
+ * atttypmod and attcollation.  A UNION ALL whose branches differ only in a
+ * column's typmod therefore produces two record typmods for rows that are
+ * physically and semantically identical.
+ *
+ * So on a mismatch compare what actually matters to a caller that deforms a
+ * tuple through a cached descriptor: the number of attributes and, per
+ * attribute, its name, its type and its physical placement.
+ */
+bool
+pg_rowtype_layout_matches(Oid typeid1, int32 typmod1, Oid typeid2, int32 typmod2)
+{
+	TupleDesc tupdesc1, tupdesc2;
+	bool matches = true;
+	int i;
+
+	if (typeid1 == typeid2 && typmod1 == typmod2)
+		return true;
+
+	tupdesc1 = lookup_rowtype_tupdesc(typeid1, typmod1);
+	tupdesc2 = lookup_rowtype_tupdesc(typeid2, typmod2);
+
+	if (tupdesc1->natts != tupdesc2->natts)
+		matches = false;
+
+	for (i = 0; matches && i < tupdesc1->natts; i++)
+	{
+		Form_pg_attribute att1 = TupleDescAttr(tupdesc1, i);
+		Form_pg_attribute att2 = TupleDescAttr(tupdesc2, i);
+
+		/* atttypmod and attcollation are deliberately not compared */
+		if (att1->atttypid != att2->atttypid || att1->attisdropped != att2->attisdropped ||
+		    att1->attlen != att2->attlen || att1->attbyval != att2->attbyval ||
+		    att1->attalign != att2->attalign ||
+		    strncmp(NameStr(att1->attname), NameStr(att2->attname), NAMEDATALEN) != 0)
+			matches = false;
+	}
+
+	ReleaseTupleDesc(tupdesc2);
+	ReleaseTupleDesc(tupdesc1);
+
+	return matches;
 }
 
 /* PgSQL 12+ still lacks 3-argument version of these functions */

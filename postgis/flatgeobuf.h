@@ -48,6 +48,9 @@ typedef struct flatgeobuf_agg_ctx {
 	const char *geom_name;
 	uint32_t geom_index;
 	TupleDesc tupdesc;
+	/* Row type tupdesc was looked up for */
+	Oid tuptype;
+	int32 tuptypmod;
 	HeapTupleHeader row;
 } flatgeobuf_agg_ctx;
 
