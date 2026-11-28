@@ -53,6 +53,11 @@ If a failed run leaves `postgis_reg` behind, drop it before rerunning:
 dropdb postgis_reg
 ```
 
+The regression runner uses a separate `pgis_reg_*` temporary directory for
+each invocation. It removes the directory after a successful run. On failure
+or with `--nodrop`, it prints the path and keeps the files. Set
+`PGIS_REG_TMPDIR` to use a directory of your choice.
+
 When testing against several PostgreSQL installs, put the target PostgreSQL
 client binaries first in `PATH` and set `PGPORT`, `PGUSER`, and `PGHOST`
 explicitly.

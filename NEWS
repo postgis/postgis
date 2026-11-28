@@ -37,6 +37,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-981, GT-213, Avoid sharing regression scratch directories across runs
+   (Rebecca Turner, Darafei Praliaskouski)
  - GT-965, [loader] Quote DBF field names in shp2pgsql SQL
    (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - #5905, GT-954, [geometry] Bound ST_Dump and ST_DumpSegments nesting

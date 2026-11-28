@@ -17,7 +17,7 @@ use File::Basename(dirname,fileparse,basename);
 use File::Temp 'tempdir';
 use Time::HiRes qw(time);
 use File::Copy;
-use File::Path(mkpath);
+use File::Path(mkpath, rmtree);
 use Cwd 'abs_path';
 use Getopt::Long;
 use strict;
@@ -287,13 +287,33 @@ foreach $TEST (@ARGV)
 ##################################################################
 
 my $TMPDIR;
+my $auto_tmpdir;
+my $completed = 0;
+
+# Keep diagnostics even if database setup or a test hook exits early.
+END {
+	if ( defined $auto_tmpdir )
+	{
+		if ( $completed && !$FAIL && !$OPT_NODROP )
+		{
+			rmtree($auto_tmpdir);
+		}
+		else
+		{
+			print "\nRegression files kept in $auto_tmpdir\n";
+		}
+	}
+}
+
 if ( $ENV{'PGIS_REG_TMPDIR'} )
 {
 	$TMPDIR = $ENV{'PGIS_REG_TMPDIR'};
 }
 else
 {
-	$TMPDIR = tempdir( CLEANUP => 0 );
+	$TMPDIR = $auto_tmpdir = tempdir("pgis_reg_XXXXXX", TMPDIR => 1);
+	# Server-side COPY may run as a different user and needs to reach pgis_reg_tmp.
+	chmod 0711, $TMPDIR or die "Cannot set permissions on $TMPDIR: $!\n";
 }
 
 mkpath $TMPDIR; # make sure tmp dir exists
@@ -690,7 +710,7 @@ if ( (! $OPT_NODROP) && $OBJ_COUNT_PRE > 0 )
 print "\nRun tests: $RUN\n";
 print "Failed: $FAIL\n";
 
-if ( $OPT_CLEAN )
+if ( $OPT_CLEAN && !defined $auto_tmpdir )
 {
 	rmtree($TMPDIR);
 }
@@ -708,6 +728,7 @@ else
 $ENV{"LC_ALL"} = $ORIG_LC_ALL;
 $ENV{"LANG"} = $ORIG_LANG;
 
+$completed = 1;
 exit($FAIL);
 
 
@@ -735,13 +756,13 @@ Options:
                        if available.
   --dumprestore   dump and (after upgrade, if --upgrade is given)
                   restore spatially-enabled db before running tests
-  --nodrop        do not drop the regression database on exit
+  --nodrop        keep the regression database and temporary test logs
   --schema        where to install/find PostGIS (relocatable) PostGIS
                   (defaults to "public")
   --raster        load also raster extension
   --topology      load also topology extension
   --sfcgal        use also sfcgal backend
-  --clean         cleanup test logs on exit
+  --clean         remove the directory set by PGIS_REG_TMPDIR after the tests
   --expect        save obtained output as expected
   --extension     load using extensions
   --legacy        load also legacy scripts

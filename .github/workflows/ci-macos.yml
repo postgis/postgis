@@ -83,7 +83,7 @@ jobs:
           export CXXFLAGS="-std=c++17"
 
           show_regression_diffs() {
-            local tmpdir="${PGIS_REG_TMPDIR:-/tmp/pgis_reg}"
+            local tmpdir="${PGIS_REG_TMPDIR}"
             local found=0
             for f in "${tmpdir}"/*_diff; do
               [ -f "${f}" ] || continue
@@ -116,9 +116,18 @@ jobs:
           jobs=$(sh ci/parallel-jobs.sh)
           make -j"${jobs}" || { brew services stop "postgresql@${PG}"; exit 1; }
           sudo make install || { brew services stop "postgresql@${PG}"; exit 1; }
+          ci_tmpdir=
+          if [ -z "${PGIS_REG_TMPDIR:-}" ]; then
+            ci_tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/pgis_reg_XXXXXX") || exit 1
+            chmod 0711 "${ci_tmpdir}" || exit 1
+            export PGIS_REG_TMPDIR="${ci_tmpdir}"
+          fi
           make -j"${jobs}" check RUNTESTFLAGS="-v --extension --dumprestore" || {
             show_regression_diffs
             brew services stop "postgresql@${PG}"
             exit 1
           }
+          if [ -n "${ci_tmpdir}" ]; then
+            rm -rf "${ci_tmpdir}"
+          fi
           brew services stop "postgresql@${PG}"
