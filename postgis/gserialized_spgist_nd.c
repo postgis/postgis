@@ -186,20 +186,37 @@ initCubeBox(int ndims)
 static CubeGIDX *
 nextCubeBox(CubeGIDX *cube_box, GIDX *centroid, uint16_t octant)
 {
-	int ndims = GIDX_NDIMS(centroid), i;
+	int ndims_parent = GIDX_NDIMS(cube_box->left);
+	int ndims_centroid = GIDX_NDIMS(centroid);
+	int ndims = Max(ndims_centroid, ndims_parent), i;
 	CubeGIDX *next_cube_box = (CubeGIDX *)palloc(sizeof(CubeGIDX));
 	GIDX *left = (GIDX *)palloc(GIDX_SIZE(ndims));
 	GIDX *right = (GIDX *)palloc(GIDX_SIZE(ndims));
 	uint16_t dim = 0x01;
 
-	memcpy(left, cube_box->left, VARSIZE(cube_box->left));
-	memcpy(right, cube_box->right, VARSIZE(cube_box->right));
+	/*
+	 * Keys of different dimensionality share a node, so the centroid may
+	 * have more or fewer dimensions than the parent box. Copy the parent
+	 * dimensions and leave the others unbounded.
+	 */
+	SET_VARSIZE(left, GIDX_SIZE(ndims));
+	SET_VARSIZE(right, GIDX_SIZE(ndims));
+	for (i = 0; i < ndims; i++)
+	{
+		GIDX *src_left = i < ndims_parent ? cube_box->left : NULL;
+		GIDX *src_right = i < ndims_parent ? cube_box->right : NULL;
+
+		GIDX_SET_MIN(left, i, src_left ? GIDX_GET_MIN(src_left, i) : -1 * FLT_MAX);
+		GIDX_SET_MAX(left, i, src_left ? GIDX_GET_MAX(src_left, i) : FLT_MAX);
+		GIDX_SET_MIN(right, i, src_right ? GIDX_GET_MIN(src_right, i) : -1 * FLT_MAX);
+		GIDX_SET_MAX(right, i, src_right ? GIDX_GET_MAX(src_right, i) : FLT_MAX);
+	}
 	next_cube_box->left = left;
 	next_cube_box->right = right;
 
-	for (i = 0; i < ndims; i++)
+	for (i = 0; i < ndims_centroid; i++)
 	{
-		if (GIDX_GET_MAX(cube_box->left, i) != FLT_MAX && GIDX_GET_MAX(centroid, i) != FLT_MAX)
+		if (GIDX_GET_MAX(next_cube_box->left, i) != FLT_MAX && GIDX_GET_MAX(centroid, i) != FLT_MAX)
 		{
 			if (octant & dim)
 				GIDX_GET_MIN(next_cube_box->right, i) = GIDX_GET_MAX(centroid, i);
@@ -343,6 +360,14 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 		}
 	}
 
+	/*
+	 * EMPTY and NaN keys are the "unknown" GIDX with no dimensions. They go
+	 * to octant 0 and do not take part in the centroid. When all keys are
+	 * like that, keep one unbounded dimension so there is more than one node.
+	 */
+	if (maxdims < 1)
+		maxdims = 1;
+
 	for (dim = 0; dim < maxdims; dim++)
 	{
 		qsort(&lowXs[dim * in->nTuples], count[dim], sizeof(float), compareFloats);
@@ -354,6 +379,13 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_nd(PG_FUNCTION_ARGS)
 
 	for (dim = 0; dim < maxdims; dim++)
 	{
+		if (count[dim] == 0)
+		{
+			/* No key has this dimension: leave it unbounded, like a padded one */
+			GIDX_SET_MIN(centroid, dim, -1 * FLT_MAX);
+			GIDX_SET_MAX(centroid, dim, FLT_MAX);
+			continue;
+		}
 		median = count[dim] / 2;
 		GIDX_SET_MIN(centroid, dim, lowXs[dim * in->nTuples + median]);
 		GIDX_SET_MAX(centroid, dim, highXs[dim * in->nTuples + median]);
@@ -466,6 +498,21 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_nd(PG_FUNCTION_ARGS)
 				break;
 			}
 
+			/* Unknown keys go to node zero and need a heap recheck. */
+			if (i == 0)
+				continue;
+			/* Non-finite query bounds cannot safely prune any node. */
+			{
+				size_t dim;
+				bool finite = true;
+				for (dim = 0; dim < GIDX_NDIMS(query_gbox_index); dim++)
+					if (!isfinite(GIDX_GET_MIN(query_gbox_index, dim)) ||
+					    !isfinite(GIDX_GET_MAX(query_gbox_index, dim)))
+						finite = false;
+				if (!finite)
+					continue;
+			}
+
 			switch (strategy)
 			{
 			case SPGOverlapStrategyNumber:
@@ -553,6 +600,7 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 		{
 			POSTGIS_DEBUG(4, "[SPGIST] null query pointer (!?!)");
 			flag = false;
+			break;
 		}
 
 		/* Null box should never make this far. */
@@ -560,6 +608,14 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_nd(PG_FUNCTION_ARGS)
 		{
 			POSTGIS_DEBUG(4, "[SPGIST] null query_gbox_index!");
 			flag = false;
+			break;
+		}
+
+		/* The unknown key represents both EMPTY and non-finite geometries. */
+		if (GIDX_NDIMS(leaf) == 0)
+		{
+			out->recheck = true;
+			continue;
 		}
 
 		switch (strategy)
@@ -609,12 +665,16 @@ PGDLLEXPORT Datum gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Is the bounding box valid (non-empty, non-infinite) ?
-	 * If not, return NULL. */
+	/*
+	 * Is the bounding box valid (non-empty, non-infinite) ?
+	 * If not, use the "unknown" GIDX as a key, as the GiST index does.
+	 * SP-GiST does not accept NULL keys from the compress function.
+	 */
 	if (gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), result) == LW_FAILURE)
 	{
 		POSTGIS_DEBUG(4, "[SPGIST] empty geometry!");
-		PG_RETURN_NULL();
+		gidx_set_unknown(result);
+		PG_RETURN_POINTER(gidx_copy(result));
 	}
 
 	POSTGIS_DEBUGF(4, "[SPGIST] got GIDX: %s", gidx_to_string(result));
@@ -626,7 +686,7 @@ PGDLLEXPORT Datum gserialized_spgist_compress_nd(PG_FUNCTION_ARGS)
 		if (!isfinite(GIDX_GET_MAX(result, i)) || !isfinite(GIDX_GET_MIN(result, i)))
 		{
 			gidx_set_unknown(result);
-			PG_RETURN_POINTER(result);
+			PG_RETURN_POINTER(gidx_copy(result));
 		}
 	}
 

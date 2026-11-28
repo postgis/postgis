@@ -128,6 +128,62 @@ where op = '|&>';
 select * from test_spgist_idx_2d;
 
 -------------------------------------------------------------------------------
+-- EMPTY and NaN geometries in a SP-GiST 2D index must behave as in a
+-- sequential scan: an empty box overlaps nothing, is contained by
+-- everything and is the same only as another empty box.
+
+create table tbl_spgist_2d_empty (id int, tag text, g geometry);
+insert into tbl_spgist_2d_empty values
+	(1, 'in',    ST_SetSRID(ST_MakePoint(15, 15), 4326)),
+	(2, 'nan',   ST_SetSRID(ST_MakePoint('NaN', 'NaN'), 4326)),
+	(3, 'empty', ST_SetSRID('POINT EMPTY'::geometry, 4326)),
+	(4, 'edge',  ST_SetSRID(ST_MakePoint(10, 10), 4326)),
+	(5, 'out',   ST_SetSRID(ST_MakePoint(50, 50), 4326));
+create index tbl_spgist_2d_empty_idx on tbl_spgist_2d_empty
+	using spgist (g spgist_geometry_ops_2d);
+analyze tbl_spgist_2d_empty;
+
+set enable_indexscan = on;
+set enable_bitmapscan = off;
+set enable_seqscan = off;
+
+select 'empty_nan_scan', qnodes($q$select * from tbl_spgist_2d_empty where g && ST_MakeEnvelope(10, 10, 20, 20, 4326)$q$);
+select 'empty_nan_&&', coalesce(string_agg(tag, ',' order by tag), '(none)')
+	from tbl_spgist_2d_empty where g && ST_MakeEnvelope(10, 10, 20, 20, 4326);
+select 'empty_nan_&&_far', coalesce(string_agg(tag, ',' order by tag), '(none)')
+	from tbl_spgist_2d_empty where g && ST_MakeEnvelope(0, 0, 1, 1, 4326);
+select 'empty_nan_@', coalesce(string_agg(tag, ',' order by tag), '(none)')
+	from tbl_spgist_2d_empty where g @ ST_MakeEnvelope(10, 10, 20, 20, 4326);
+select 'empty_nan_~=', coalesce(string_agg(tag, ',' order by tag), '(none)')
+	from tbl_spgist_2d_empty where g ~= 'POINT EMPTY'::geometry;
+
+drop table tbl_spgist_2d_empty;
+
+-- The same on an index with inner pages: 1000 rows, 10 EMPTY and
+-- 10 NaN rows among a grid of points. The expected counts are the
+-- sequential scan counts.
+
+create table tbl_spgist_2d_empty_pages (id int, g geometry);
+insert into tbl_spgist_2d_empty_pages select i,
+	case when i % 100 = 0 then 'POINT EMPTY'::geometry
+	     when i % 100 = 50 then ST_MakePoint('NaN', 'NaN')
+	     else ST_MakePoint(i % 40, i / 40) end
+	from generate_series(1, 1000) i;
+create index tbl_spgist_2d_empty_pages_idx on tbl_spgist_2d_empty_pages
+	using spgist (g spgist_geometry_ops_2d);
+analyze tbl_spgist_2d_empty_pages;
+
+select 'empty_nan_pages_scan', qnodes($q$select * from tbl_spgist_2d_empty_pages where g && ST_MakeEnvelope(10, 10, 20, 20)$q$);
+select 'empty_nan_pages_&&', count(*)
+	from tbl_spgist_2d_empty_pages where g && ST_MakeEnvelope(10, 10, 20, 20);
+select 'empty_nan_pages_@', count(*)
+	from tbl_spgist_2d_empty_pages where g @ ST_MakeEnvelope(10, 10, 20, 20);
+select 'empty_nan_pages_~=', count(*)
+	from tbl_spgist_2d_empty_pages where g ~= 'POINT EMPTY'::geometry;
+
+drop table tbl_spgist_2d_empty_pages;
+
+-------------------------------------------------------------------------------
 
 DROP TABLE tbl_geomcollection CASCADE;
 DROP TABLE test_spgist_idx_2d CASCADE;

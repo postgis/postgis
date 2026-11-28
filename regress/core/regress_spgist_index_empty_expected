@@ -1,0 +1,352 @@
+spgist 2d|&&|1|same|247|247
+spgist 2d|&&|2|same|3180|3180
+spgist 2d|&&|3|same|0|0
+spgist 2d|&&|4|same|1|1
+spgist 2d|&&|5|same|0|0
+spgist 2d|&&|6|same|0|0
+spgist 2d|&&|7|same|60|60
+spgist 2d|&&|8|same|0|0
+spgist 2d|&<|1|same|1560|1560
+spgist 2d|&<|2|same|3180|3180
+spgist 2d|&<|3|same|3180|3180
+spgist 2d|&<|4|same|720|720
+spgist 2d|&<|5|same|0|0
+spgist 2d|&<|6|same|0|0
+spgist 2d|&<|7|same|720|720
+spgist 2d|&<|8|same|0|0
+spgist 2d|&<||1|same|1092|1092
+spgist 2d|&<||2|same|3120|3120
+spgist 2d|&<||3|same|3120|3120
+spgist 2d|&<||4|same|832|832
+spgist 2d|&<||5|same|0|0
+spgist 2d|&<||6|same|0|0
+spgist 2d|&<||7|same|0|0
+spgist 2d|&<||8|same|0|0
+spgist 2d|&>|1|same|2700|2700
+spgist 2d|&>|2|same|3180|3180
+spgist 2d|&>|3|same|0|0
+spgist 2d|&>|4|same|2520|2520
+spgist 2d|&>|5|same|0|0
+spgist 2d|&>|6|same|0|0
+spgist 2d|&>|7|same|2520|2520
+spgist 2d|&>|8|same|0|0
+spgist 2d|<<|1|same|480|480
+spgist 2d|<<|2|same|0|0
+spgist 2d|<<|3|same|3180|3180
+spgist 2d|<<|4|same|660|660
+spgist 2d|<<|5|same|0|0
+spgist 2d|<<|6|same|0|0
+spgist 2d|<<|7|same|660|660
+spgist 2d|<<|8|same|0|0
+spgist 2d|<<||1|same|520|520
+spgist 2d|<<||2|same|0|0
+spgist 2d|<<||3|same|3120|3120
+spgist 2d|<<||4|same|780|780
+spgist 2d|<<||5|same|0|0
+spgist 2d|<<||6|same|0|0
+spgist 2d|<<||7|same|0|0
+spgist 2d|<<||8|same|0|0
+spgist 2d|>>|1|same|1620|1620
+spgist 2d|>>|2|same|0|0
+spgist 2d|>>|3|same|0|0
+spgist 2d|>>|4|same|2460|2460
+spgist 2d|>>|5|same|0|0
+spgist 2d|>>|6|same|0|0
+spgist 2d|>>|7|same|2460|2460
+spgist 2d|>>|8|same|0|0
+spgist 2d|@|1|same|667|667
+spgist 2d|@|2|same|3600|3600
+spgist 2d|@|3|same|420|420
+spgist 2d|@|4|same|421|421
+spgist 2d|@|5|same|3600|3600
+spgist 2d|@|6|same|3600|3600
+spgist 2d|@|7|same|480|480
+spgist 2d|@|8|same|473|473
+spgist 2d||&>|1|same|2600|2600
+spgist 2d||&>|2|same|3120|3120
+spgist 2d||&>|3|same|0|0
+spgist 2d||&>|4|same|2340|2340
+spgist 2d||&>|5|same|0|0
+spgist 2d||&>|6|same|0|0
+spgist 2d||&>|7|same|0|0
+spgist 2d||&>|8|same|0|0
+spgist 2d||>>|1|same|2028|2028
+spgist 2d||>>|2|same|0|0
+spgist 2d||>>|3|same|0|0
+spgist 2d||>>|4|same|2288|2288
+spgist 2d||>>|5|same|0|0
+spgist 2d||>>|6|same|0|0
+spgist 2d||>>|7|same|0|0
+spgist 2d||>>|8|same|0|0
+spgist 2d|~|1|same|360|360
+spgist 2d|~|2|same|360|360
+spgist 2d|~|3|same|360|360
+spgist 2d|~|4|same|362|362
+spgist 2d|~|5|same|3600|3600
+spgist 2d|~|6|same|3600|3600
+spgist 2d|~|7|same|480|480
+spgist 2d|~|8|same|3541|3541
+spgist 2d|~=|1|same|0|0
+spgist 2d|~=|2|same|0|0
+spgist 2d|~=|3|same|0|0
+spgist 2d|~=|4|same|1|1
+spgist 2d|~=|5|same|420|420
+spgist 2d|~=|6|same|420|420
+spgist 2d|~=|7|same|0|0
+spgist 2d|~=|8|same|420|420
+spgist 2d only empty|&&|1|same|0|0
+spgist 2d only empty|&&|2|same|1|1
+spgist 2d only empty|&&|3|same|1|1
+spgist 2d only empty|&&|4|same|0|0
+spgist 2d only empty|&&|5|same|0|0
+spgist 2d only empty|&&|6|same|0|0
+spgist 2d only empty|&&|7|same|0|0
+spgist 2d only empty|&&|8|same|0|0
+spgist 2d only empty|@|1|same|1996|1996
+spgist 2d only empty|@|2|same|1997|1997
+spgist 2d only empty|@|3|same|1997|1997
+spgist 2d only empty|@|4|same|1996|1996
+spgist 2d only empty|@|5|same|2000|2000
+spgist 2d only empty|@|6|same|2000|2000
+spgist 2d only empty|@|7|same|1996|1996
+spgist 2d only empty|@|8|same|1996|1996
+spgist 2d only empty|~|1|same|1996|1996
+spgist 2d only empty|~|2|same|1996|1996
+spgist 2d only empty|~|3|same|1996|1996
+spgist 2d only empty|~|4|same|1996|1996
+spgist 2d only empty|~|5|same|2000|2000
+spgist 2d only empty|~|6|same|2000|2000
+spgist 2d only empty|~|7|same|1996|1996
+spgist 2d only empty|~|8|same|2000|2000
+spgist 2d only empty|~=|1|same|0|0
+spgist 2d only empty|~=|2|same|0|0
+spgist 2d only empty|~=|3|same|0|0
+spgist 2d only empty|~=|4|same|0|0
+spgist 2d only empty|~=|5|same|1996|1996
+spgist 2d only empty|~=|6|same|1996|1996
+spgist 2d only empty|~=|7|same|0|0
+spgist 2d only empty|~=|8|same|1996|1996
+spgist 2d insert|&&|1|same|247|247
+spgist 2d insert|&&|2|same|3580|3580
+spgist 2d insert|&&|3|same|0|0
+spgist 2d insert|&&|4|same|1|1
+spgist 2d insert|&&|5|same|0|0
+spgist 2d insert|&&|6|same|0|0
+spgist 2d insert|&&|7|same|60|60
+spgist 2d insert|&&|8|same|0|0
+spgist 2d insert|@|1|same|867|867
+spgist 2d insert|@|2|same|4200|4200
+spgist 2d insert|@|3|same|620|620
+spgist 2d insert|@|4|same|621|621
+spgist 2d insert|@|5|same|4200|4200
+spgist 2d insert|@|6|same|4200|4200
+spgist 2d insert|@|7|same|680|680
+spgist 2d insert|@|8|same|673|673
+spgist 2d insert|~|1|same|560|560
+spgist 2d insert|~|2|same|560|560
+spgist 2d insert|~|3|same|560|560
+spgist 2d insert|~|4|same|562|562
+spgist 2d insert|~|5|same|4200|4200
+spgist 2d insert|~|6|same|4200|4200
+spgist 2d insert|~|7|same|680|680
+spgist 2d insert|~|8|same|4141|4141
+spgist 2d insert|~=|1|same|0|0
+spgist 2d insert|~=|2|same|0|0
+spgist 2d insert|~=|3|same|0|0
+spgist 2d insert|~=|4|same|1|1
+spgist 2d insert|~=|5|same|620|620
+spgist 2d insert|~=|6|same|620|620
+spgist 2d insert|~=|7|same|0|0
+spgist 2d insert|~=|8|same|620|620
+spgist nd nonfinite|&&&|1|same|318|318
+spgist nd nonfinite|&&&|2|same|3700|3700
+spgist nd nonfinite|&&&|3|same|60|60
+spgist nd nonfinite|&&&|4|same|62|62
+spgist nd nonfinite|&&&|5|same|0|0
+spgist nd nonfinite|&&&|6|same|3700|3700
+spgist nd nonfinite|&&&|7|same|180|180
+spgist nd nonfinite|&&&|8|same|173|173
+spgist nd nonfinite|@@|1|same|318|318
+spgist nd nonfinite|@@|2|same|3700|3700
+spgist nd nonfinite|@@|3|same|60|60
+spgist nd nonfinite|@@|4|same|62|62
+spgist nd nonfinite|@@|5|same|0|0
+spgist nd nonfinite|@@|6|same|3700|3700
+spgist nd nonfinite|@@|7|same|180|180
+spgist nd nonfinite|@@|8|same|173|173
+spgist nd nonfinite|~~|1|same|60|60
+spgist nd nonfinite|~~|2|same|60|60
+spgist nd nonfinite|~~|3|same|60|60
+spgist nd nonfinite|~~|4|same|62|62
+spgist nd nonfinite|~~|5|same|0|0
+spgist nd nonfinite|~~|6|same|3700|3700
+spgist nd nonfinite|~~|7|same|180|180
+spgist nd nonfinite|~~|8|same|173|173
+spgist nd nonfinite|~~=|1|same|0|0
+spgist nd nonfinite|~~=|2|same|0|0
+spgist nd nonfinite|~~=|3|same|0|0
+spgist nd nonfinite|~~=|4|same|1|1
+spgist nd nonfinite|~~=|5|same|0|0
+spgist nd nonfinite|~~=|6|same|0|0
+spgist nd nonfinite|~~=|7|same|0|0
+spgist nd nonfinite|~~=|8|same|0|0
+spgist nd two keys|&&&|same|0|0
+spgist nd two keys|@@|same|0|0
+spgist nd two keys|~~|same|0|0
+spgist nd two keys|~~=|same|0|0
+spgist nd mixed dims|&&&|1|same|231|231
+spgist nd mixed dims|&&&|2|same|10099|10099
+spgist nd mixed dims|&&&|3|same|0|0
+spgist nd mixed dims|&&&|4|same|1|1
+spgist nd mixed dims|&&&|9|same|121|121
+spgist nd mixed dims|&&&|10|same|89|89
+spgist nd mixed dims|@@|1|same|231|231
+spgist nd mixed dims|@@|2|same|10099|10099
+spgist nd mixed dims|@@|3|same|0|0
+spgist nd mixed dims|@@|4|same|1|1
+spgist nd mixed dims|@@|9|same|121|121
+spgist nd mixed dims|@@|10|same|89|89
+spgist nd mixed dims|~~|1|same|0|0
+spgist nd mixed dims|~~|2|same|0|0
+spgist nd mixed dims|~~|3|same|0|0
+spgist nd mixed dims|~~|4|same|1|1
+spgist nd mixed dims|~~|9|same|0|0
+spgist nd mixed dims|~~|10|same|0|0
+spgist nd mixed dims|~~=|1|same|0|0
+spgist nd mixed dims|~~=|2|same|0|0
+spgist nd mixed dims|~~=|3|same|0|0
+spgist nd mixed dims|~~=|4|same|1|1
+spgist nd mixed dims|~~=|9|same|0|0
+spgist nd mixed dims|~~=|10|same|0|0
+spgist 2d clamped keys|&&|1|same|1103|1103
+spgist 2d clamped keys|&&|2|same|7200|7200
+spgist 2d clamped keys|&&|4|same|310|310
+spgist 2d clamped keys|&&|5|same|0|0
+spgist 2d clamped keys|&&|6|same|0|0
+spgist 2d clamped keys|&&|7|same|492|492
+spgist 2d clamped keys|&&|8|same|0|0
+spgist 2d clamped keys|&&|11|same|7400|7400
+spgist 2d clamped keys|&&|12|same|445|445
+spgist 2d clamped keys|&&|13|same|200|200
+spgist 2d clamped keys|&&|14|same|7400|7400
+spgist 2d clamped keys|&<|1|same|4300|4300
+spgist 2d clamped keys|&<|2|same|7100|7100
+spgist 2d clamped keys|&<|4|same|2105|2105
+spgist 2d clamped keys|&<|5|same|0|0
+spgist 2d clamped keys|&<|6|same|0|0
+spgist 2d clamped keys|&<|7|same|2105|2105
+spgist 2d clamped keys|&<|8|same|0|0
+spgist 2d clamped keys|&<|11|same|7400|7400
+spgist 2d clamped keys|&<|12|same|726|726
+spgist 2d clamped keys|&<|13|same|7400|7400
+spgist 2d clamped keys|&<|14|same|7400|7400
+spgist 2d clamped keys|&<||1|same|3116|3116
+spgist 2d clamped keys|&<||2|same|7100|7100
+spgist 2d clamped keys|&<||4|same|2382|2382
+spgist 2d clamped keys|&<||5|same|0|0
+spgist 2d clamped keys|&<||6|same|0|0
+spgist 2d clamped keys|&<||7|same|0|0
+spgist 2d clamped keys|&<||8|same|0|0
+spgist 2d clamped keys|&<||11|same|7200|7200
+spgist 2d clamped keys|&<||12|same|934|934
+spgist 2d clamped keys|&<||13|same|934|934
+spgist 2d clamped keys|&<||14|same|7200|7200
+spgist 2d clamped keys|&>|1|same|5620|5620
+spgist 2d clamped keys|&>|2|same|7100|7100
+spgist 2d clamped keys|&>|4|same|4960|4960
+spgist 2d clamped keys|&>|5|same|0|0
+spgist 2d clamped keys|&>|6|same|0|0
+spgist 2d clamped keys|&>|7|same|4960|4960
+spgist 2d clamped keys|&>|8|same|0|0
+spgist 2d clamped keys|&>|11|same|7400|7400
+spgist 2d clamped keys|&>|12|same|7100|7100
+spgist 2d clamped keys|&>|13|same|100|100
+spgist 2d clamped keys|&>|14|same|7400|7400
+spgist 2d clamped keys|<<|1|same|1420|1420
+spgist 2d clamped keys|<<|2|same|100|100
+spgist 2d clamped keys|<<|4|same|2088|2088
+spgist 2d clamped keys|<<|5|same|0|0
+spgist 2d clamped keys|<<|6|same|0|0
+spgist 2d clamped keys|<<|7|same|2088|2088
+spgist 2d clamped keys|<<|8|same|0|0
+spgist 2d clamped keys|<<|11|same|0|0
+spgist 2d clamped keys|<<|12|same|100|100
+spgist 2d clamped keys|<<|13|same|7100|7100
+spgist 2d clamped keys|<<|14|same|0|0
+spgist 2d clamped keys|<<||1|same|1526|1526
+spgist 2d clamped keys|<<||2|same|100|100
+spgist 2d clamped keys|<<||4|same|2239|2239
+spgist 2d clamped keys|<<||5|same|0|0
+spgist 2d clamped keys|<<||6|same|0|0
+spgist 2d clamped keys|<<||7|same|0|0
+spgist 2d clamped keys|<<||8|same|0|0
+spgist 2d clamped keys|<<||11|same|0|0
+spgist 2d clamped keys|<<||12|same|100|100
+spgist 2d clamped keys|<<||13|same|790|790
+spgist 2d clamped keys|<<||14|same|0|0
+spgist 2d clamped keys|>>|1|same|2740|2740
+spgist 2d clamped keys|>>|2|same|100|100
+spgist 2d clamped keys|>>|4|same|4820|4820
+spgist 2d clamped keys|>>|5|same|0|0
+spgist 2d clamped keys|>>|6|same|0|0
+spgist 2d clamped keys|>>|7|same|4820|4820
+spgist 2d clamped keys|>>|8|same|0|0
+spgist 2d clamped keys|>>|11|same|0|0
+spgist 2d clamped keys|>>|12|same|6200|6200
+spgist 2d clamped keys|>>|13|same|0|0
+spgist 2d clamped keys|>>|14|same|0|0
+spgist 2d clamped keys|@|1|same|1330|1330
+spgist 2d clamped keys|@|2|same|7500|7500
+spgist 2d clamped keys|@|4|same|600|600
+spgist 2d clamped keys|@|5|same|8000|8000
+spgist 2d clamped keys|@|6|same|8000|8000
+spgist 2d clamped keys|@|7|same|600|600
+spgist 2d clamped keys|@|8|same|715|715
+spgist 2d clamped keys|@|11|same|8000|8000
+spgist 2d clamped keys|@|12|same|720|720
+spgist 2d clamped keys|@|13|same|600|600
+spgist 2d clamped keys|@|14|same|8000|8000
+spgist 2d clamped keys||&>|1|same|5346|5346
+spgist 2d clamped keys||&>|2|same|7000|7000
+spgist 2d clamped keys||&>|4|same|4633|4633
+spgist 2d clamped keys||&>|5|same|0|0
+spgist 2d clamped keys||&>|6|same|0|0
+spgist 2d clamped keys||&>|7|same|0|0
+spgist 2d clamped keys||&>|8|same|0|0
+spgist 2d clamped keys||&>|11|same|7200|7200
+spgist 2d clamped keys||&>|12|same|7000|7000
+spgist 2d clamped keys||&>|13|same|6082|6082
+spgist 2d clamped keys||&>|14|same|7200|7200
+spgist 2d clamped keys||>>|1|same|3756|3756
+spgist 2d clamped keys||>>|2|same|0|0
+spgist 2d clamped keys||>>|4|same|4490|4490
+spgist 2d clamped keys||>>|5|same|0|0
+spgist 2d clamped keys||>>|6|same|0|0
+spgist 2d clamped keys||>>|7|same|0|0
+spgist 2d clamped keys||>>|8|same|0|0
+spgist 2d clamped keys||>>|11|same|0|0
+spgist 2d clamped keys||>>|12|same|5939|5939
+spgist 2d clamped keys||>>|13|same|5939|5939
+spgist 2d clamped keys||>>|14|same|0|0
+spgist 2d clamped keys|~|1|same|700|700
+spgist 2d clamped keys|~|2|same|500|500
+spgist 2d clamped keys|~|4|same|710|710
+spgist 2d clamped keys|~|5|same|8000|8000
+spgist 2d clamped keys|~|6|same|8000|8000
+spgist 2d clamped keys|~|7|same|1092|1092
+spgist 2d clamped keys|~|8|same|7800|7800
+spgist 2d clamped keys|~|11|same|500|500
+spgist 2d clamped keys|~|12|same|700|700
+spgist 2d clamped keys|~|13|same|600|600
+spgist 2d clamped keys|~|14|same|500|500
+spgist 2d clamped keys|~=|1|same|0|0
+spgist 2d clamped keys|~=|2|same|0|0
+spgist 2d clamped keys|~=|4|same|0|0
+spgist 2d clamped keys|~=|5|same|600|600
+spgist 2d clamped keys|~=|6|same|600|600
+spgist 2d clamped keys|~=|7|same|0|0
+spgist 2d clamped keys|~=|8|same|600|600
+spgist 2d clamped keys|~=|11|same|100|100
+spgist 2d clamped keys|~=|12|same|0|0
+spgist 2d clamped keys|~=|13|same|0|0
+spgist 2d clamped keys|~=|14|same|100|100

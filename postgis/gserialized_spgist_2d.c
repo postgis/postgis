@@ -118,6 +118,19 @@ typedef struct
 	BOX2DF right;
 } RectBox;
 
+/**
+ * Keys with bounds at float limits may encode EMPTY, so traversal must retain and recheck them.
+ */
+static bool
+box2df_may_have_empty(const BOX2DF *box)
+{
+	/*
+	 * A genuine box that reaches +-FLT_MAX is indistinguishable from a
+	 * clamped key. It is only rechecked, which is slower but not wrong.
+	 */
+	return box->xmin <= -FLT_MAX || box->ymin <= -FLT_MAX || box->xmax >= FLT_MAX || box->ymax >= FLT_MAX;
+}
+
 /*
  * Calculate the quadrant
  *
@@ -209,28 +222,62 @@ nextRectBox(RectBox *rect_box, BOX2DF *centroid, uint8 quadrant)
 	return next_rect_box;
 }
 
-/* Can any cube from rect_box overlap with query? */
+/*
+ * Nodes whose bounds reach float limits may hold an EMPTY key and must be retained during traversal.
+ *
+ * Only the strategies for which EMPTY is special need this, i.e. "contained
+ * by" and "same". For all others the node tests compare the ranges with the
+ * query, and a clamped key is a box like any other for them: the node that
+ * holds it has ranges consistent with its clamped coordinates, so the node is
+ * not pruned where the clamped box would not be (a key with NaN only in y
+ * is not EMPTY, its x range and y range stay real or clamped consistently).
+ *
+ * The key is EMPTY, for box2df_is_empty(), when its xmin is NaN. That is an
+ * all-NaN key and a key with NaN in x, and an EMPTY key matches a "contained
+ * by" query wherever its y is, so no test of y may prune it. An old index
+ * holds it as xmin = -FLT_MAX and xmax = FLT_MAX, as the bounding box of a
+ * geometry gets both from its first point. The range of a node starts at
+ * -FLT_MAX and FLT_MAX ("unbounded"), and a step down the tree raises the
+ * lower bound of xmin only into the quadrants where the key is above the
+ * centroid in xmin, and lowers the upper bound of xmax only into those where
+ * it is below. A node can therefore hold such a key exactly while
+ * left.xmin is still -FLT_MAX and right.xmax is still FLT_MAX.
+ * That is 4 of the 16 children of a node, paid only by "contained by" and
+ * "same" queries; a genuine box with a huge x range is found there as well
+ * and is rechecked. A key with NaN in xmin only, and a real xmax, would not
+ * be found; no bounding box computed from geometry has that form, and
+ * REINDEX converts such a key as well.
+ */
+static bool
+mayHoldEmpty(const RectBox *rect_box)
+{ return rect_box->left.xmin <= -FLT_MAX && rect_box->right.xmax >= FLT_MAX; }
+
+/*
+ * Can any cube from rect_box overlap with query?
+ *
+ * The comparisons are written as negations of the "disjoint" tests of
+ * box2df_overlaps(), so that a NaN coordinate in the query does not exclude
+ * anything, exactly as in the leaf test.
+ */
 static bool
 overlap4D(RectBox *rect_box, BOX2DF *query)
 {
-	return (rect_box->left.xmin <= query->xmax && rect_box->right.xmax >= query->xmin) &&
-	       (rect_box->left.ymin <= query->ymax && rect_box->right.ymax >= query->ymin);
+	return !(rect_box->left.xmin > query->xmax || rect_box->right.xmax < query->xmin) &&
+	       !(rect_box->left.ymin > query->ymax || rect_box->right.ymax < query->ymin);
 }
 
-/* Can any cube from rect_box contain query? */
+/* Can any cube from rect_box contain query? Negated like overlap4D(). */
 static bool
 contain4D(RectBox *rect_box, BOX2DF *query)
 {
-	return (rect_box->right.xmax >= query->xmax && rect_box->left.xmin <= query->xmin) &&
-	       (rect_box->right.ymax >= query->ymax && rect_box->left.ymin <= query->ymin);
+	return !(rect_box->right.xmax < query->xmax || rect_box->left.xmin > query->xmin) &&
+	       !(rect_box->right.ymax < query->ymax || rect_box->left.ymin > query->ymin);
 }
 
 /* Can any cube from rect_box be left of query? */
 static bool
 left4D(RectBox *rect_box, BOX2DF *query)
-{
-	return rect_box->right.xmax <= query->xmin;
-}
+{ return rect_box->right.xmax < query->xmin; }
 
 /* Can any cube from rect_box does not extend the right of query? */
 static bool
@@ -242,9 +289,7 @@ overLeft4D(RectBox *rect_box, BOX2DF *query)
 /* Can any cube from rect_box be right of query? */
 static bool
 right4D(RectBox *rect_box, BOX2DF *query)
-{
-	return rect_box->left.xmin >= query->xmax;
-}
+{ return rect_box->left.xmin > query->xmax; }
 
 /* Can any cube from rect_box does not extend the left of query? */
 static bool
@@ -256,9 +301,7 @@ overRight4D(RectBox *rect_box, BOX2DF *query)
 /* Can any cube from rect_box be below of query? */
 static bool
 below4D(RectBox *rect_box, BOX2DF *query)
-{
-	return rect_box->right.ymax <= query->ymin;
-}
+{ return rect_box->right.ymax < query->ymin; }
 
 /* Can any cube from rect_box does not extend above query? */
 static bool
@@ -270,9 +313,7 @@ overBelow4D(RectBox *rect_box, BOX2DF *query)
 /* Can any cube from rect_box be above of query? */
 static bool
 above4D(RectBox *rect_box, BOX2DF *query)
-{
-	return rect_box->left.ymin >= query->ymax;
-}
+{ return rect_box->left.ymin > query->ymax; }
 
 /* Can any cube from rect_box does not extend below of query? */
 static bool
@@ -474,12 +515,44 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 				PG_RETURN_BOOL(false);
 			}
 
+			/*
+			 * The index has to return what the box2df_* tests return for
+			 * the leaf keys. An EMPTY query overlaps and is beside nothing,
+			 * equals only EMPTY keys, and "contains" and "is contained by"
+			 * every box, because comparisons with NaN are false.
+			 */
+			if (box2df_is_empty(&query_gbox_index))
+			{
+				switch (strategy)
+				{
+				case RTContainsStrategyNumber:
+				case RTContainedByStrategyNumber:
+				case RTOldContainedByStrategyNumber:
+					flag = true;
+					break;
+
+				case RTSameStrategyNumber:
+					flag = mayHoldEmpty(next_rect_box);
+					break;
+
+				default:
+					flag = false;
+				}
+
+				if (!flag)
+					break;
+				continue;
+			}
+
 			switch (strategy)
 			{
 			case RTOverlapStrategyNumber:
+				flag = overlap4D(next_rect_box, &query_gbox_index);
+				break;
+
 			case RTContainedByStrategyNumber:
 			case RTOldContainedByStrategyNumber:
-				flag = overlap4D(next_rect_box, &query_gbox_index);
+				flag = overlap4D(next_rect_box, &query_gbox_index) || mayHoldEmpty(next_rect_box);
 				break;
 
 			case RTContainsStrategyNumber:
@@ -561,6 +634,7 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 	spgLeafConsistentOut *out = (spgLeafConsistentOut *)PG_GETARG_POINTER(1);
 	BOX2DF *key = (BOX2DF *)DatumGetPointer(in->leafDatum);
 	bool flag = true;
+	bool may_hold_empty;
 	int i;
 
 	/* Quick sanity check on entry key. */
@@ -570,8 +644,18 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false); /* NULL entry! */
 	}
 
-	/* All tests are exact. */
-	out->recheck = false;
+	/*
+	 * The tests are exact, unless the key can be an EMPTY or NaN key clamped
+	 * by an older version: then it is a world box or has an axis clamped, and
+	 * the box tests below answer for that box, not for the geometry that was
+	 * indexed. Such a key is made a candidate wherever the real answer may
+	 * be true (the strategies that read EMPTY and NaN as "inside" or "equal")
+	 * and the heap tuple is rechecked with the real operator. Candidates
+	 * rather than an exact answer, because the index has lost whether the
+	 * key was clamped or genuinely touches +-FLT_MAX.
+	 */
+	may_hold_empty = box2df_may_have_empty(key);
+	out->recheck = may_hold_empty;
 
 	/* leafDatum is what it is... */
 	out->leafValue = in->leafDatum;
@@ -650,6 +734,28 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 
 		default:
 			elog(ERROR, "unrecognized strategy: %d", strategy);
+		}
+
+		/*
+		 * Contains, contained by and same are the strategies that return true
+		 * for an EMPTY or NaN key where the clamped box says false. The
+		 * others return false for EMPTY keys and the clamped box can only
+		 * give a false positive, which the recheck removes.
+		 */
+		if (may_hold_empty && !flag)
+		{
+			switch (strategy)
+			{
+			case RTContainsStrategyNumber:
+			case RTOldContainsStrategyNumber:
+			case RTContainedByStrategyNumber:
+			case RTOldContainedByStrategyNumber:
+			case RTSameStrategyNumber:
+				flag = true;
+				break;
+			default:
+				break;
+			}
 		}
 
 		/* If any check is failed, we have found our answer. */

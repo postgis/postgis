@@ -10,3 +10,12 @@
 <<||3661|Seq Scan|3661|Index Scan
 |>>|3661|Seq Scan|3661|Index Scan
 |&>|21321|Seq Scan|21321|Index Scan
+empty_nan_scan|Index Scan
+empty_nan_&&|edge,in
+empty_nan_&&_far|(none)
+empty_nan_@|edge,empty,in,nan
+empty_nan_~=|empty,nan
+empty_nan_pages_scan|Index Scan
+empty_nan_pages_&&|117
+empty_nan_pages_@|137
+empty_nan_pages_~=|20

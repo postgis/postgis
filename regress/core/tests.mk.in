@@ -220,7 +220,8 @@ ifeq ($(HAVE_SPGIST),yes)
 	TESTS += \
 		$(top_srcdir)/regress/core/regress_spgist_index_2d \
 		$(top_srcdir)/regress/core/regress_spgist_index_3d \
-		$(top_srcdir)/regress/core/regress_spgist_index_nd
+		$(top_srcdir)/regress/core/regress_spgist_index_nd \
+		$(top_srcdir)/regress/core/regress_spgist_index_empty
 endif
 
 ifeq ($(HAVE_PROTOBUF),yes)

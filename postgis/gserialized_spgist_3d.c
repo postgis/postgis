@@ -76,14 +76,51 @@
 
 #include <float.h>
 
+/*
+ * Get the BOX3D of a geometry datum, or NULL when it has none (EMPTY).
+ * LWGEOM_to_BOX3D() cannot be used through DirectFunctionCall1(), which
+ * raises an error when the called function returns NULL.
+ */
+static BOX3D *
+gserialized_datum_get_box3d(Datum gsdatum)
+{
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	GBOX gbox;
+	BOX3D *result = NULL;
+
+	if (lwgeom_calculate_gbox(lwgeom, &gbox) == LW_SUCCESS)
+	{
+		result = box3d_from_gbox(&gbox);
+		result->srid = lwgeom->srid;
+	}
+
+	lwgeom_free(lwgeom);
+	if ((Pointer)geom != DatumGetPointer(gsdatum))
+		pfree(geom);
+
+	return result;
+}
+
+/* EMPTY geometries are indexed as a box of NaN, which matches nothing */
+static bool
+box3d_has_nan(const BOX3D *box)
+{
+	return isnan(box->xmin) || isnan(box->xmax) || isnan(box->ymin) || isnan(box->ymax) || isnan(box->zmin) ||
+	       isnan(box->zmax);
+}
+
 PG_FUNCTION_INFO_V1(gserialized_overlaps_3d);
 Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
 {
-	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
-	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
-	bool result = BOX3D_overlaps_internal(box1, box2);
-	pfree(box1);
-	pfree(box2);
+	BOX3D *box1 = gserialized_datum_get_box3d(PG_GETARG_DATUM(0));
+	BOX3D *box2 = gserialized_datum_get_box3d(PG_GETARG_DATUM(1));
+	/* An EMPTY geometry has no box and matches nothing */
+	bool result = box1 && box2 && BOX3D_overlaps_internal(box1, box2);
+	if (box1)
+		pfree(box1);
+	if (box2)
+		pfree(box2);
 
 	PG_RETURN_BOOL(result);
 }
@@ -91,11 +128,14 @@ Datum gserialized_overlaps_3d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_contains_3d);
 Datum gserialized_contains_3d(PG_FUNCTION_ARGS)
 {
-	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
-	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
-	bool result = BOX3D_contains_internal(box1, box2);
-	pfree(box1);
-	pfree(box2);
+	BOX3D *box1 = gserialized_datum_get_box3d(PG_GETARG_DATUM(0));
+	BOX3D *box2 = gserialized_datum_get_box3d(PG_GETARG_DATUM(1));
+	/* An EMPTY geometry has no box and matches nothing */
+	bool result = box1 && box2 && BOX3D_contains_internal(box1, box2);
+	if (box1)
+		pfree(box1);
+	if (box2)
+		pfree(box2);
 
 	PG_RETURN_BOOL(result);
 }
@@ -103,11 +143,14 @@ Datum gserialized_contains_3d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_contained_3d);
 Datum gserialized_contained_3d(PG_FUNCTION_ARGS)
 {
-	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
-	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
-	bool result = BOX3D_contained_internal(box1, box2);
-	pfree(box1);
-	pfree(box2);
+	BOX3D *box1 = gserialized_datum_get_box3d(PG_GETARG_DATUM(0));
+	BOX3D *box2 = gserialized_datum_get_box3d(PG_GETARG_DATUM(1));
+	/* An EMPTY geometry has no box and matches nothing */
+	bool result = box1 && box2 && BOX3D_contained_internal(box1, box2);
+	if (box1)
+		pfree(box1);
+	if (box2)
+		pfree(box2);
 
 	PG_RETURN_BOOL(result);
 }
@@ -115,11 +158,14 @@ Datum gserialized_contained_3d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gserialized_same_3d);
 Datum gserialized_same_3d(PG_FUNCTION_ARGS)
 {
-	BOX3D *box1 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
-	BOX3D *box2 = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(1)));
-	bool result = BOX3D_same_internal(box1, box2);
-	pfree(box1);
-	pfree(box2);
+	BOX3D *box1 = gserialized_datum_get_box3d(PG_GETARG_DATUM(0));
+	BOX3D *box2 = gserialized_datum_get_box3d(PG_GETARG_DATUM(1));
+	/* An EMPTY geometry has no box and matches nothing */
+	bool result = box1 && box2 && BOX3D_same_internal(box1, box2);
+	if (box1)
+		pfree(box1);
+	if (box2)
+		pfree(box2);
 
 	PG_RETURN_BOOL(result);
 }
@@ -159,6 +205,10 @@ static uint8
 getOctant(const BOX3D *centroid, const BOX3D *inBox)
 {
 	uint8 octant = 0;
+
+	/* EMPTY keys always go to octant 0 */
+	if (box3d_has_nan(inBox))
+		return 0;
 
 	if (inBox->xmin > centroid->xmin)
 		octant |= 0x20;
@@ -423,7 +473,7 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	spgPickSplitIn *in = (spgPickSplitIn *)PG_GETARG_POINTER(0);
 	spgPickSplitOut *out = (spgPickSplitOut *)PG_GETARG_POINTER(1);
 	BOX3D *centroid;
-	int median, i;
+	int median, nboxes, i;
 	double *lowXs = palloc(sizeof(double) * in->nTuples);
 	double *highXs = palloc(sizeof(double) * in->nTuples);
 	double *lowYs = palloc(sizeof(double) * in->nTuples);
@@ -432,39 +482,51 @@ PGDLLEXPORT Datum gserialized_spgist_picksplit_3d(PG_FUNCTION_ARGS)
 	double *highZs = palloc(sizeof(double) * in->nTuples);
 	int32_t srid = SRID_UNKNOWN;
 
-	/* Calculate median of all 6D coordinates */
+	/*
+	 * Calculate median of all 6D coordinates. EMPTY keys carry no
+	 * coordinates and always go to octant 0, so they do not take part.
+	 */
+	nboxes = 0;
 	for (i = 0; i < in->nTuples; i++)
 	{
-		BOX3D* box_in = DatumGetBox3DP(in->datums[i]);
-		lowXs[i] = box_in->xmin;
-		highXs[i] = box_in->xmax;
-		lowYs[i] = box_in->ymin;
-		highYs[i] = box_in->ymax;
-		lowZs[i] = box_in->zmin;
-		highZs[i] = box_in->zmax;
+		BOX3D *box_in = DatumGetBox3DP(in->datums[i]);
 
 		if (i == 0)
 			srid = box_in->srid;
+
+		if (box3d_has_nan(box_in))
+			continue;
+
+		lowXs[nboxes] = box_in->xmin;
+		highXs[nboxes] = box_in->xmax;
+		lowYs[nboxes] = box_in->ymin;
+		highYs[nboxes] = box_in->ymax;
+		lowZs[nboxes] = box_in->zmin;
+		highZs[nboxes] = box_in->zmax;
+		nboxes++;
 	}
 
-	qsort(lowXs, in->nTuples, sizeof(double), compareDoubles);
-	qsort(highXs, in->nTuples, sizeof(double), compareDoubles);
-	qsort(lowYs, in->nTuples, sizeof(double), compareDoubles);
-	qsort(highYs, in->nTuples, sizeof(double), compareDoubles);
-	qsort(lowZs, in->nTuples, sizeof(double), compareDoubles);
-	qsort(highZs, in->nTuples, sizeof(double), compareDoubles);
-
-	median = in->nTuples / 2;
-
-	centroid = palloc(sizeof(BOX3D));
-
-	centroid->xmin = lowXs[median];
-	centroid->xmax = highXs[median];
-	centroid->ymin = lowYs[median];
-	centroid->ymax = highYs[median];
-	centroid->zmin = lowZs[median];
-	centroid->zmax = highZs[median];
+	centroid = palloc0(sizeof(BOX3D));
 	centroid->srid = srid;
+
+	if (nboxes > 0)
+	{
+		qsort(lowXs, nboxes, sizeof(double), compareDoubles);
+		qsort(highXs, nboxes, sizeof(double), compareDoubles);
+		qsort(lowYs, nboxes, sizeof(double), compareDoubles);
+		qsort(highYs, nboxes, sizeof(double), compareDoubles);
+		qsort(lowZs, nboxes, sizeof(double), compareDoubles);
+		qsort(highZs, nboxes, sizeof(double), compareDoubles);
+
+		median = nboxes / 2;
+
+		centroid->xmin = lowXs[median];
+		centroid->xmax = highXs[median];
+		centroid->ymin = lowYs[median];
+		centroid->ymax = highYs[median];
+		centroid->zmin = lowZs[median];
+		centroid->zmax = highZs[median];
+	}
 
 	/* Fill the output */
 	out->hasPrefix = true;
@@ -559,7 +621,14 @@ PGDLLEXPORT Datum gserialized_spgist_inner_consistent_3d(PG_FUNCTION_ARGS)
 		{
 			StrategyNumber strategy = in->scankeys[i].sk_strategy;
 			Datum query = in->scankeys[i].sk_argument;
-			BOX3D *box = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, query));
+			BOX3D *box = gserialized_datum_get_box3d(query);
+
+			/* An EMPTY query geometry matches nothing */
+			if (!box)
+			{
+				flag = false;
+				break;
+			}
 
 			switch (strategy)
 			{
@@ -687,7 +756,14 @@ PGDLLEXPORT Datum gserialized_spgist_leaf_consistent_3d(PG_FUNCTION_ARGS)
 	{
 		StrategyNumber strategy = in->scankeys[i].sk_strategy;
 		Datum query = in->scankeys[i].sk_argument;
-		BOX3D *box = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, query));
+		BOX3D *box = gserialized_datum_get_box3d(query);
+
+		/* EMPTY keys and EMPTY query geometries match nothing */
+		if (!box || box3d_has_nan(leaf))
+		{
+			flag = false;
+			break;
+		}
 
 		switch (strategy)
 		{
@@ -771,12 +847,17 @@ PG_FUNCTION_INFO_V1(gserialized_spgist_compress_3d);
 
 PGDLLEXPORT Datum gserialized_spgist_compress_3d(PG_FUNCTION_ARGS)
 {
-	BOX3D *result = DatumGetBox3DP(DirectFunctionCall1(LWGEOM_to_BOX3D, PG_GETARG_DATUM(0)));
+	BOX3D *result = gserialized_datum_get_box3d(PG_GETARG_DATUM(0));
 
-	/* Is the bounding box is null */
-	if (result == LW_FAILURE)
+	/*
+	 * An EMPTY geometry has no bounding box. SP-GiST does not accept NULL
+	 * keys from the compress function, so index it as a box of NaN.
+	 */
+	if (!result)
 	{
-		PG_RETURN_NULL();
+		result = palloc0(sizeof(BOX3D));
+		result->xmin = result->xmax = result->ymin = result->ymax = result->zmin = result->zmax = NAN;
+		result->srid = SRID_UNKNOWN;
 	}
 
 	/* Return BOX3D. */
