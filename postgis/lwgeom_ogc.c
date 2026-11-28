@@ -529,18 +529,14 @@ LWGEOM_geometryn_collection_array(PG_FUNCTION_ARGS)
 			SRF_RETURN_NEXT(funcctx, (Datum)0);
 		}
 
-		geom_to_serialize = subgeom;
-		if (subgeom != state->lwgeom)
-		{
-			geom_to_serialize = lwgeom_clone_deep(subgeom);
-			geom_to_serialize->srid = state->lwgeom->srid;
-			if (state->lwgeom->bbox)
-				lwgeom_add_bbox(geom_to_serialize);
-		}
+		/* Serialization can add a bbox, so never mutate cached SRF state. */
+		geom_to_serialize = lwgeom_clone_deep(subgeom);
+		geom_to_serialize->srid = state->lwgeom->srid;
+		if (state->lwgeom->bbox)
+			lwgeom_add_bbox(geom_to_serialize);
 
 		result = geometry_serialize(geom_to_serialize);
-		if (geom_to_serialize != subgeom)
-			lwgeom_free(geom_to_serialize);
+		lwgeom_free(geom_to_serialize);
 		fcinfo->isnull = false;
 		SRF_RETURN_NEXT(funcctx, PointerGetDatum(result));
 	}

@@ -1802,6 +1802,9 @@ FROM ST_GeometryN(
   'GEOMETRYCOLLECTION(POLYGON((0 0,1 0,1 1,0 0)),POLYGON((2 2,3 2,3 3,2 2)))'::geometry,
   ARRAY[2,2]::integer[]
 ) WITH ORDINALITY AS t(g, ord);
+SELECT '#926.geom.unitary.repeat', ord, ST_AsText(g)
+FROM ST_GeometryN(PostGIS_DropBBOX('POLYGON((0 0,1 0,1 1,0 0))'::geometry),
+  ARRAY[1,1]::integer[]) WITH ORDINALITY AS t(g, ord);
 SELECT '#926.point', ord, ST_AsText(g)
 FROM ST_PointN(
   'LINESTRING(0 0,1 1,2 2)'::geometry,
