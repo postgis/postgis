@@ -2879,6 +2879,7 @@ CREATE OR REPLACE FUNCTION _st_convertarray4ma(value double precision[][])
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION _st_blur4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
@@ -2949,6 +2950,7 @@ CREATE OR REPLACE FUNCTION _st_blur4ma(value double precision[][][], pos integer
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_blur(
 	rast raster,
 	nband integer,
@@ -2980,6 +2982,7 @@ CREATE OR REPLACE FUNCTION st_blur(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
 
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION st_blur(
 	rast raster,
 	radius integer,

@@ -13058,7 +13058,7 @@ WHERE rid = 2;</programlisting>
 
                     <para>NODATA pixels are ignored and the Gaussian weights are renormalized for the remaining values. This also prevents darkening along raster edges where the full neighborhood is not available.</para>
 
-                    <para role="availability" conformance="3.7.0">Availability: 3.7.0</para>
+                    <para role="availability" conformance="3.8.0">Availability: 3.8.0</para>
                 </refsection>
 
                 <refsection>

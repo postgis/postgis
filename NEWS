@@ -6,7 +6,7 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
- - #2598, [raster] Add ST_Blur Gaussian convolution filter (Darafei Praliaskouski)
+ - #2598, GH-1044, Add raster ST_Blur (Darafei Praliaskouski)
 
 * Enhancements *
 
