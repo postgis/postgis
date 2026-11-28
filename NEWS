@@ -10,6 +10,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - GT-887, Check contributor credits for duplicates and ordering
+   (Darafei Praliaskouski)
  - #6162, GT-957, GH-1199, Cache repeated envelopes and box2d casts
    (John Carmack, Darafei Praliaskouski)
  - GT-951, Use unsigned indexes in rectangle trees

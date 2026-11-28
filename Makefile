@@ -28,7 +28,7 @@ all install uninstall staged-install clean distclean maintainer-clean test check
 
 # This target must also work before configure, so dedicated CI can audit
 # contributor credits from a clean checkout with full Git history.
-.PHONY: check-contributor-credits
+.PHONY: check-contributor-credits fix-contributor-credits
 check-contributor-credits:
 	@if test ! -e ".git"; then \
 		echo "SKIP: contributor credits require a Git worktree"; \
@@ -36,3 +36,6 @@ check-contributor-credits:
 		python3 -B utils/docs/tests/test_check_contributor_credits.py && \
 		python3 -B utils/docs/check_contributor_credits.py --repo .; \
 	fi
+
+fix-contributor-credits:
+	python3 -B utils/docs/check_contributor_credits.py --repo . --fix

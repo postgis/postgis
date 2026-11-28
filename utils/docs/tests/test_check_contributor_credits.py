@@ -15,6 +15,8 @@ from check_contributor_credits import (
     CreditValidationError,
     news_non_person_attribution_names,
     normalized_name,
+    credit_list_issues,
+    fix_credit_lists,
     split_news_people,
     validate,
 )
@@ -131,6 +133,58 @@ class ContributorCreditValidationTest(unittest.TestCase):
         self.assertEqual([], result.missing)
         self.assertEqual(1, result.git_authors)
         self.assertEqual(1, result.news_contributors)
+
+    def test_credit_duplicate_and_order_are_reported_and_fix_is_idempotent(self):
+        path = self.fixture.repo / "doc" / "credits.xml"
+        path.write_text(
+            '<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">\n'
+            '<section xml:id="credits_other_contributors"><simplelist>\n'
+            '<member>Bob Example</member>\n<member>Alice Example</member>\n'
+            '<member>Bob Example</member>\n</simplelist></section></chapter>\n',
+            encoding="utf-8",
+        )
+        self.assertTrue(any("duplicate person" in issue for issue in credit_list_issues(path)))
+        self.assertTrue(any("out of order" in issue for issue in credit_list_issues(path)))
+        fix_credit_lists(path)
+        fixed = path.read_bytes()
+        self.assertEqual([], credit_list_issues(path))
+        fix_credit_lists(path)
+        self.assertEqual(fixed, path.read_bytes())
+
+    def test_richer_github_alias_is_kept_when_fixing_duplicate_person(self):
+        path = self.fixture.repo / "doc" / "credits.xml"
+        path.write_text(
+            '<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">\n'
+            '<section xml:id="credits_other_contributors"><simplelist>\n'
+            '<member>Alice Example</member>\n'
+            '<member><link xlink:href="https://github.com/alice-handle">@alice-handle</link> (GitHub user: Alice Example)</member>\n'
+            '</simplelist></section></chapter>\n', encoding="utf-8")
+        issues = credit_list_issues(path)
+        duplicate = next(issue for issue in issues if "duplicate person" in issue)
+        self.assertRegex(duplicate, r"lines \d+ and \d+")
+        fix_credit_lists(path)
+        fixed = path.read_text(encoding="utf-8")
+        self.assertIn("https://github.com/alice-handle", fixed)
+        self.assertNotIn("<member>Alice Example</member>", fixed)
+        self.assertEqual([], credit_list_issues(path))
+
+    def test_organization_duplicates_and_order_are_fixed(self):
+        path = self.fixture.repo / "doc" / "credits.xml"
+        path.write_text(
+            '<chapter xmlns="http://docbook.org/ns/docbook">\n'
+            '<section xml:id="credits_other_contributors"><variablelist><varlistentry>\n'
+            '<term>Corporate Sponsors</term><listitem><para><itemizedlist>\n'
+            '<listitem><simpara>Zulu Organization</simpara></listitem>\n'
+            '<listitem><simpara>Alpha Organization</simpara></listitem>\n'
+            '<listitem><simpara>Zulu Organization</simpara></listitem>\n'
+            '</itemizedlist></para></listitem></varlistentry></variablelist></section></chapter>\n',
+            encoding="utf-8",
+        )
+        issues = credit_list_issues(path)
+        self.assertTrue(any("duplicate organization" in issue for issue in issues))
+        self.assertTrue(any("out of order organization" in issue for issue in issues))
+        fix_credit_lists(path)
+        self.assertEqual([], credit_list_issues(path))
 
     def test_missing_git_author_fails(self):
         self.fixture.initial_commit("Bob News")

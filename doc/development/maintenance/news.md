@@ -29,7 +29,8 @@ Use `#NNNN` for Trac, `GH-NNN` for GitHub, and `GT-NNN` for Gitea. Do not use
 bare `#NNNN` for GitHub or Gitea. Keep subsystem tags consistent with nearby
 entries.
 
-Credit authors in the final parentheses. For a reported security fix, use
+Credit authors in the final parentheses, using `Name / Organization` for each
+person with an affiliation. For a reported security fix, use
 `reported by ...; fixed by ...` when the roles differ. If the reporter supplied
 the patch, credit the reporter only. Add missing people to Individual
 Contributors and organizations to Corporate Sponsors.
