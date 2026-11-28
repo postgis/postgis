@@ -5651,7 +5651,7 @@ CREATE OR REPLACE FUNCTION ST_GeometryN(geometry,integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION ST_GeometryN(geometry,integer[])
 	RETURNS SETOF geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_geometryn_collection_array'
@@ -5693,7 +5693,7 @@ CREATE OR REPLACE FUNCTION ST_InteriorRingN(geometry,integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION ST_InteriorRingN(geometry,integer[])
 	RETURNS SETOF geometry
 	AS 'MODULE_PATHNAME','LWGEOM_interiorringn_polygon_array'
@@ -5721,7 +5721,7 @@ CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
--- Availability: 3.7.0
+-- Availability: 3.8.0
 CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer[])
 	RETURNS SETOF geometry
 	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring_array'
