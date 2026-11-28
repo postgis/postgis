@@ -305,6 +305,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 
 	int i;
 	int j;
+	int k;
 	int nband;
 
 	if (arg == NULL || array == NULL)
@@ -345,8 +346,8 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 	*allempty = 0;
 	*noband = 0;
 
-	/* process each element */
-	for (i = 0; i < n; i++)
+	/* Compact non-NULL inputs as they are processed. */
+	for (i = 0, k = 0; i < n; i++)
 	{
 		if (nulls[i])
 		{
@@ -356,11 +357,12 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 
 		POSTGIS_RT_DEBUGF(4, "Processing rastbandarg at index %d", i);
 
-		arg->raster[i] = NULL;
-		arg->isempty[i] = 0;
-		arg->ownsdata[i] = 1;
-		arg->nband[i] = 0;
-		arg->hasband[i] = 0;
+		arg->pgraster[k] = NULL;
+		arg->raster[k] = NULL;
+		arg->isempty[k] = 0;
+		arg->ownsdata[k] = 1;
+		arg->nband[k] = 0;
+		arg->hasband[k] = 0;
 
 		/* each element is a tuple */
 		tup = (HeapTupleHeader)DatumGetPointer(e[i]);
@@ -380,35 +382,36 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 			elog(NOTICE,
 			     "First argument (nband) of rastbandarg at index %d is NULL. Assuming NULL raster",
 			     i);
-			arg->isempty[i] = 1;
-			arg->ownsdata[i] = 0;
+			arg->isempty[k] = 1;
+			arg->ownsdata[k] = 0;
 
 			(*allnull)++;
 			(*allempty)++;
 			(*noband)++;
 
+			k++;
 			continue;
 		}
 
-		arg->pgraster[i] = (rt_pgraster *)PG_DETOAST_DATUM(tupv);
+		arg->pgraster[k] = (rt_pgraster *)PG_DETOAST_DATUM(tupv);
 
 		/* see if this is a copy of an existing pgraster */
-		for (j = 0; j < i; j++)
+		for (j = 0; j < k; j++)
 		{
-			if (!arg->isempty[j] && (arg->pgraster[i] == arg->pgraster[j]))
+			if (!arg->isempty[j] && (arg->pgraster[k] == arg->pgraster[j]))
 			{
 				POSTGIS_RT_DEBUG(4, "raster matching existing same raster found");
-				arg->raster[i] = arg->raster[j];
-				arg->ownsdata[i] = 0;
+				arg->raster[k] = arg->raster[j];
+				arg->ownsdata[k] = 0;
 				break;
 			}
 		}
 
-		if (arg->ownsdata[i])
+		if (arg->ownsdata[k])
 		{
 			POSTGIS_RT_DEBUG(4, "deserializing raster");
-			arg->raster[i] = rt_raster_deserialize(arg->pgraster[i], FALSE);
-			if (arg->raster[i] == NULL)
+			arg->raster[k] = rt_raster_deserialize(arg->pgraster[k], FALSE);
+			if (arg->raster[k] == NULL)
 			{
 				elog(ERROR,
 				     "rtpg_nmapalgebra_rastbandarg_process: Could not deserialize raster at index %d",
@@ -418,12 +421,13 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 		}
 
 		/* is raster empty? */
-		arg->isempty[i] = rt_raster_is_empty(arg->raster[i]);
-		if (arg->isempty[i])
+		arg->isempty[k] = rt_raster_is_empty(arg->raster[k]);
+		if (arg->isempty[k])
 		{
 			(*allempty)++;
 			(*noband)++;
 
+			k++;
 			continue;
 		}
 
@@ -450,13 +454,19 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 			return 0;
 		}
 
-		arg->nband[i] = nband - 1;
-		arg->hasband[i] = rt_raster_has_band(arg->raster[i], arg->nband[i]);
-		if (!arg->hasband[i])
+		arg->nband[k] = nband - 1;
+		arg->hasband[k] = rt_raster_has_band(arg->raster[k], arg->nband[k]);
+		if (!arg->hasband[k])
 		{
 			(*noband)++;
 			POSTGIS_RT_DEBUGF(4, "Band at index %d not found in raster", nband);
 		}
+		k++;
+	}
+	if (!arg->numraster)
+	{
+		elog(ERROR, "rtpg_nmapalgebra_rastbandarg_process: Invalid argument for rastbandarg");
+		return 0;
 	}
 
 	if (arg->numraster < n)
@@ -2211,6 +2221,7 @@ rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array)
 	Datum tupv;
 
 	int i;
+	int k;
 	int nband = 1;
 	char *utypename = NULL;
 	rtpg_union_type utype = UT_LAST;
@@ -2235,8 +2246,8 @@ rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array)
 		return 0;
 	}
 
-	/* process each element */
-	for (i = 0; i < n; i++)
+	/* Compact non-NULL inputs as they are processed. */
+	for (i = 0, k = 0; i < n; i++)
 	{
 		if (nulls[i])
 		{
@@ -2283,16 +2294,22 @@ rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array)
 			utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
 		}
 
-		arg->bandarg[i].uniontype = utype;
-		arg->bandarg[i].nband = nband - 1;
-		arg->bandarg[i].raster = NULL;
+		arg->bandarg[k].uniontype = utype;
+		arg->bandarg[k].nband = nband - 1;
+		arg->bandarg[k].raster = NULL;
 
 		if (utype != UT_MEAN && utype != UT_RANGE)
 		{
-			arg->bandarg[i].numraster = 1;
+			arg->bandarg[k].numraster = 1;
 		}
 		else
-			arg->bandarg[i].numraster = 2;
+			arg->bandarg[k].numraster = 2;
+		k++;
+	}
+	if (!arg->numband)
+	{
+		elog(ERROR, "rtpg_union_unionarg_process: Invalid argument for unionarg");
+		return 0;
 	}
 
 	if (arg->numband < n)
