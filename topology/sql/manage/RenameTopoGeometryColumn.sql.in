@@ -60,9 +60,10 @@ BEGIN
   -- Rename constraints on TopoGeom column
   --
   sql := format(
-    'ALTER TABLE %s RENAME CONSTRAINT '
-    '"check_topogeom_%s" TO "check_topogeom_%s"',
-    layer_table, feature_column, new_name
+    'ALTER TABLE %s RENAME CONSTRAINT %I TO %I',
+    layer_table,
+    'check_topogeom_' || feature_column,
+    'check_topogeom_' || new_name
   );
   EXECUTE sql;
 
