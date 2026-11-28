@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - GT-951, Use unsigned indexes in rectangle trees
+   (Darafei Praliaskouski)
  - #5958, [raster] Document the VRT loading workflow for tile-set overviews
    (Darafei Praliaskouski)
  - GT-799, [srs] Allow long custom WKT2 definitions in spatial_ref_sys

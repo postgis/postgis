@@ -45,25 +45,22 @@ typedef enum
 	RECT_NODE_SEG_CIRCULAR
 } RECT_NODE_SEG_TYPE;
 
-typedef struct
-{
+typedef struct {
 	const POINTARRAY *pa;
 	RECT_NODE_SEG_TYPE seg_type;
-	int seg_num;
+	uint32_t seg_num;
 } RECT_NODE_LEAF;
 
 struct rect_node;
 
-typedef struct
-{
-	int num_nodes;
+typedef struct {
+	uint32_t num_nodes;
 	RECT_NODE_RING_TYPE ring_type;
 	struct rect_node *nodes[RECT_NODE_SIZE];
 	int sorted;
 } RECT_NODE_INTERNAL;
 
-typedef struct rect_node
-{
+typedef struct rect_node {
 	RECT_NODE_TYPE type;
 	unsigned char geom_type;
 	double xmin;
@@ -77,8 +74,7 @@ typedef struct rect_node
 	};
 } RECT_NODE;
 
-typedef struct rect_tree_distance_state
-{
+typedef struct rect_tree_distance_state {
 	double threshold;
 	double min_dist;
 	double max_dist;
@@ -87,28 +83,28 @@ typedef struct rect_tree_distance_state
 } RECT_TREE_DISTANCE_STATE;
 
 /**
-* Create a tree index on top an LWGEOM. Do not free the LWGEOM
-* until the tree is freed.
-*/
-RECT_NODE * rect_tree_from_lwgeom(const LWGEOM *geom);
+ * Create a tree index on top an LWGEOM. Do not free the LWGEOM
+ * until the tree is freed.
+ */
+RECT_NODE *rect_tree_from_lwgeom(const LWGEOM *geom);
 
 /**
-* Test if two RECT_NODE trees intersect one another.
-*/
+ * Test if two RECT_NODE trees intersect one another.
+ */
 int rect_tree_intersects_tree(RECT_NODE *tree1, RECT_NODE *tree2);
 
 /**
-* Return the distance between two RECT_NODE trees.
-*/
+ * Return the distance between two RECT_NODE trees.
+ */
 double rect_tree_distance_tree(RECT_NODE *n1, RECT_NODE *n2, double threshold);
 
 /**
-* Free the rect-tree memory
-*/
+ * Free the rect-tree memory
+ */
 void rect_tree_free(RECT_NODE *node);
 
 int rect_tree_contains_point(RECT_NODE *tree, const POINT2D *pt);
-RECT_NODE * rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type);
-LWGEOM * rect_tree_to_lwgeom(const RECT_NODE *tree);
-char * rect_tree_to_wkt(const RECT_NODE *node);
+RECT_NODE *rect_tree_from_ptarray(const POINTARRAY *pa, int geom_type);
+LWGEOM *rect_tree_to_lwgeom(const RECT_NODE *tree);
+char *rect_tree_to_wkt(const RECT_NODE *node);
 void rect_tree_printf(const RECT_NODE *node, int depth);
