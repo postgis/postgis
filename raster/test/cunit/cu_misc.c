@@ -1,6 +1,7 @@
 /*
  * PostGIS Raster - Raster Types for PostGIS
  *
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  *
@@ -138,16 +139,20 @@ test_util_gdal_open(void)
 
 	/* enabled drivers, no VSICURL */
 	gdal_enabled_drivers = enabled;
+	cu_error_msg_reset();
 	ds = rt_util_gdal_open("/vsicurl/http://127.0.0.1/postgis-test.tif", GA_ReadOnly, 0);
 	CU_ASSERT(ds == NULL);
+	CU_ASSERT_STRING_EQUAL(cu_error_msg, "rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
 
 	CPLSetConfigOption("GDAL_HTTP_TIMEOUT", "1");
 	CPLSetConfigOption("GDAL_HTTP_CONNECTTIMEOUT", "1");
 
 	/* enabled drivers with VSICURL reach GDALOpenEx instead of PostGIS' gate */
 	gdal_enabled_drivers = enabled_vsi;
+	cu_error_msg_reset();
 	ds = rt_util_gdal_open("/vsicurl/http://127.0.0.1:1/postgis-test.tif", GA_ReadOnly, 0);
 	CU_ASSERT(ds == NULL);
+	CU_ASSERT_STRING_NOT_EQUAL(cu_error_msg, "rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
 	if (ds != NULL)
 		GDALClose(ds);
 
