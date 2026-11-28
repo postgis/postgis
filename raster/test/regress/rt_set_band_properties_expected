@@ -1,0 +1,6 @@
+1|11|12
+1|14|t
+1|14|
+NOTICE:  Could not find raster band of index 999 when setting pixel value. Nodata value not set. Returning original raster
+1|3|3
+ERROR:  RASTER_setBandNoDataValues: band and nodatavalue arrays must have the same length

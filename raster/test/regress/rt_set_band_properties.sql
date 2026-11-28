@@ -243,4 +243,49 @@ SELECT
  FROM rt_band_properties_test
 WHERE (b1nodatavalue+1) != st_bandnodatavalue(st_setbandnodatavalue(rast, 1, b1nodatavalue+1),1);
 
+SELECT
+    id,
+    st_bandnodatavalue(rast, 1) AS band1,
+    st_bandnodatavalue(rast, 2) AS band2
+FROM (
+    SELECT
+        id,
+        st_setbandnodatavalue(rast, ARRAY[1, 2], ARRAY[11, 12]::double precision[]) AS rast
+    FROM rt_band_properties_test
+    WHERE id = 1
+) AS foo;
+
+SELECT
+    id,
+    st_bandnodatavalue(rast, 1) AS band1,
+    st_bandnodatavalue(rast, 2) IS NULL AS band2_is_null
+FROM (
+    SELECT
+        id,
+        st_setbandnodatavalue(rast, ARRAY[1, 2], ARRAY[14, NULL]::double precision[]) AS rast
+    FROM rt_band_properties_test
+    WHERE id = 1
+) AS foo;
+
+SELECT
+    id,
+    st_bandnodatavalue(st_setbandnodatavalue(rast, 14), 1) AS band1,
+    st_bandnodatavalue(st_setbandnodatavalue(rast, 14), 2) AS band2
+FROM rt_band_properties_test
+WHERE id = 1;
+
+SELECT
+    id,
+    st_bandnodatavalue(rast, 1) AS band1_before,
+    st_bandnodatavalue(
+        st_setbandnodatavalue(rast, ARRAY[1, 999], ARRAY[15, 16]::double precision[]),
+        1
+    ) AS band1_after_invalid
+FROM rt_band_properties_test
+WHERE id = 1;
+
+SELECT st_setbandnodatavalue(rast, ARRAY[1, 2], ARRAY[10]::double precision[]) IS NULL
+FROM rt_band_properties_test
+WHERE id = 1;
+
 DROP TABLE rt_band_properties_test;
