@@ -40,3 +40,6 @@ gj_named_null_text|{"type": "Feature", "geometry": null, "properties": {}}
 {"type":"Point","bbox":[1,2,1,2],"coordinates":[1,2]}
 {"type":"LineString","bbox":[1.5,-0.0000001,1e+16,2],"coordinates":[[1.5,-0.0000001],[1e+16,2]]}
 {"type":"LineString","bbox":[1.5,-0.0000001,3.125,1e+16,2,4],"coordinates":[[1.5,-0.0000001,3.125],[1e+16,2,4]]}
+gj_id_empty|{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,2]}, "properties": {"id": 1}}
+gj_id_named|{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,2]}, "id": 1, "properties": {}}
+gj_id_null|

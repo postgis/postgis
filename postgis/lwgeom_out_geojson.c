@@ -95,8 +95,7 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 	char *geom_column = PG_ARGISNULL(1) ? "" : text_to_cstring(geom_column_text);
 	int32 maxdecimaldigits = PG_GETARG_INT32(2);
 	bool do_pretty = PG_GETARG_BOOL(3);
-	text *id_column_text = (PG_NARGS() > 4 && !PG_ARGISNULL(4)) ? PG_GETARG_TEXT_P(4) : NULL;
-	char *id_column = id_column_text ? text_to_cstring(id_column_text) : "";
+	char *id_column = "";
 	StringInfoData result;
 	Oid geom_oid = InvalidOid;
 	Oid geog_oid = InvalidOid;
@@ -108,7 +107,11 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 
 	if (strlen(geom_column) == 0)
 		geom_column = NULL;
-	if (strlen(id_column) == 0)
+
+	/* Views preserved during upgrade can still call the four-argument form. */
+	if (PG_NARGS() > 4 && !PG_ARGISNULL(4))
+		id_column = text_to_cstring(PG_GETARG_TEXT_PP(4));
+	if (!*id_column)
 		id_column = NULL;
 
 	initStringInfo(&result);
