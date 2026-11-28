@@ -716,7 +716,9 @@ rt_band_get_quantiles(
 
 	/* check quantiles */
 	for (i = 0; i < quantiles_count; i++) {
-		if (quantiles[i] < 0. || quantiles[i] > 1.) {
+		/* Written to also reject NaN (all comparisons with NaN are false) */
+		if (!(quantiles[i] >= 0. && quantiles[i] <= 1.))
+		{
 			rterror("rt_band_get_quantiles: Quantile value not between 0 and 1");
 			if (init_quantiles) rtdealloc(quantiles);
 			return NULL;
