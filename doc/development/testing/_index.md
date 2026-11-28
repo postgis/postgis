@@ -178,6 +178,8 @@ Other useful targets:
 * [macOS coverage options](macos-coverage-options.md) records why Woodpecker
   cannot cover Darwin by Linux configuration alone, the real Apple-runner
   options, and the current recommendation.
+* [Debugging CI failures](ci-debugging.md) maps forge status contexts to
+  GitHub Actions, Woodie, Jenkins, and OSS-Fuzz logs.
 
 ## Garden Checks
 
