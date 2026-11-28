@@ -41,6 +41,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #6163, GT-1017, Compute ST_Area(geography, false) on the sphere, not on the
+   spheroid scaled to its mean radius (Esteban Zimanyi)
  - GT-992, [raster] Reject oversized raster neighborhood requests
    (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev /
    Tiger Data, Darafei Praliaskouski)
@@ -259,8 +261,6 @@ PostGIS 3.8.0dev
  - GT-854, [raster] Keep sampled summary-statistics values within the allocated array
           (reported by Dawid Żak / Software Mansion; fixed by Darafei Praliaskouski)
 
- - #6163, ST_Area of a geography on the sphere computes on the sphere, not on
-          the spheroid scaled to its mean radius (Esteban Zimanyi)
  - GH-1178, Harden loader column-map allocation checks and partial cleanup
           (Maksim Korotkov)
  - #2299, GH-1084, [raster] Repair SQL argument generation in raster garden tests
