@@ -2182,7 +2182,10 @@ ORDER BY 1;
 sub dump_db
 {
     my $rv;
-    my $DBDUMP = $TMPDIR . '/' . $DB . '.dump';
+    # Exercise restore with a space in the archive path.
+    my $dumpdir = "$TMPDIR/dump files";
+    mkpath $dumpdir;
+    my $DBDUMP = "$dumpdir/$DB.dump";
 
     foreach my $hook (@OPT_HOOK_BEFORE_DUMP)
     {
@@ -2192,7 +2195,7 @@ sub dump_db
 
     print "Dumping database '${DB}'\n";
 
-    $rv = system("pg_dump -Fc -f${DBDUMP} ${DB} >> $REGRESS_LOG 2>&1");
+    $rv = system("pg_dump -Fc -f \"${DBDUMP}\" ${DB} >> $REGRESS_LOG 2>&1");
     if ( $rv ) {
         fail("Could not dump ${DB}", $REGRESS_LOG);
         return undef;
@@ -2220,10 +2223,10 @@ sub restore_db
 
     if ( $ext_dump ) {
         print "Restoring database '${DB}' using pg_restore\n";
-        $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
+        $rv = system("pg_restore -d ${DB} \"${DBDUMP}\" >> $REGRESS_LOG 2>&1");
     } else {
         print "Restoring database '${DB}' using postgis_restore.pl\n";
-        my $cmd = postgis_restore() . " ${DBDUMP} | psql --set ON_ERROR_STOP=1 -X ${DB} >> $REGRESS_LOG 2>&1";
+        my $cmd = postgis_restore() . " \"${DBDUMP}\" | psql --set ON_ERROR_STOP=1 -X ${DB} >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
     }
     if ( $rv ) {
