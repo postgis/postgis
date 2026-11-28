@@ -16,6 +16,12 @@ SELECT
 	END;
 
 -- postgis.gdal_enabled_drivers
+-- File-oriented options are not valid in the process-wide VSI option GUC.
+SET client_min_messages TO error;
+SET postgis.gdal_vsi_options = 'GDAL_HTTP_HEADER_FILE=/tmp/postgis-header';
+SHOW postgis.gdal_vsi_options;
+SET client_min_messages TO warning;
+
 SET client_min_messages TO warning;
 SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
 SELECT count(*) = 0 FROM ST_GDALDrivers();

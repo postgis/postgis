@@ -1,4 +1,5 @@
 invalid_path
+ERROR:  invalid value for parameter "postgis.gdal_vsi_options": "GDAL_HTTP_HEADER_FILE=/tmp/postgis-header"
 t
 DISABLE_ALL
 ENABLE_ALL
