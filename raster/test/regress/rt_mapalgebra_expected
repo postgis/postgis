@@ -358,6 +358,18 @@ NOTICE:  userargs = {}
 ERROR:  RASTER_nMapAlgebraExpr: Expression returned NULL but output raster has no NODATA value
 ERROR:  RASTER_nMapAlgebra: Callback returned NULL but output raster has no NODATA value
 ERROR:  RASTER_nMapAlgebra: Function provided must return a double precision, float, int or smallint
+NOTICE:  value = {{{1}}}
+NOTICE:  pos = [0:1][1:2]={{1,1},{1,1}}
+NOTICE:  userargs = {}
+NOTICE:  value = {{{1}}}
+NOTICE:  pos = [0:1][1:2]={{2,1},{2,1}}
+NOTICE:  userargs = {}
+NOTICE:  value = {{{1}}}
+NOTICE:  pos = [0:1][1:2]={{1,2},{1,2}}
+NOTICE:  userargs = {}
+NOTICE:  value = {{{1}}}
+NOTICE:  pos = [0:1][1:2]={{2,2},{2,2}}
+NOTICE:  userargs = {}
 8BUI
 NOTICE:  The two rasters provided do not have the respectively specified band indices.  Returning no band raster of correct extent
 0

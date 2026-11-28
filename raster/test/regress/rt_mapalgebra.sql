@@ -693,6 +693,13 @@ SELECT
 FROM raster_nmapalgebra_in
 WHERE rid IN (2);
 
+-- A NULL array element before a valid raster must not shift its processing slot.
+SELECT ST_Value(ST_MapAlgebra(
+	ARRAY[NULL, ROW(rast, 1)]::rastbandarg[],
+	'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure
+), 1, 1, 1)
+FROM raster_nmapalgebra_in WHERE rid = 2;
+
 DROP FUNCTION IF EXISTS raster_nmapalgebra_one(double precision[], int[], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_null(double precision[], int[], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);

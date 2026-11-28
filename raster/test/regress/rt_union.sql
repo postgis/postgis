@@ -497,9 +497,6 @@ FROM (
 ) foo
 ORDER BY uniontype, y, x;
 
-DROP TABLE IF EXISTS raster_union_in;
-DROP TABLE IF EXISTS raster_union_out;
-
 -- Some toxic input
 SELECT 'none', ST_Union(r) from ( select null::raster r where false ) f;
 SELECT 'null', ST_Union(null::raster);
@@ -508,3 +505,10 @@ SELECT 'null-1', ST_Union(null::raster,1);
 -- Empty input must not dereference uninitialized MEAN/RANGE working rasters.
 SELECT 'null-mean', ST_Union(NULL::raster, 1, 'MEAN');
 SELECT 'null-range', ST_Union(NULL::raster, 1, 'RANGE');
+
+-- A NULL unionarg before a valid band must not leave the valid argument at a stale index.
+SELECT ST_Metadata(ST_Union(rast, ARRAY[NULL, ROW(1, 'SUM')]::unionarg[]))
+FROM raster_union_in WHERE rid = 1;
+
+DROP TABLE IF EXISTS raster_union_in;
+DROP TABLE IF EXISTS raster_union_out;
