@@ -291,6 +291,37 @@ select '259', (select ST_AsText(ST_TileEnvelope(z, x, y, margin => m), 2)) FROM 
 select '260', (select ST_AsEWKT(ST_TileEnvelope(1, 0, 0, b))) FROM (VALUES ('SRID=3857;LINESTRING(0 0,100 100)'::geometry), ('SRID=3857;LINESTRING(0 0,100 100)'), ('SRID=3857;LINESTRING(0 0,200 200)'), ('SRID=4326;LINESTRING(0 0,200 200)')) AS t(b);
 select '261', (select ST_AsEWKT(ST_MakeEnvelope(0, 0, 1, 1, s))) FROM (VALUES (4326), (4326), (3857)) AS t(s);
 
+-- The legacy C declaration can only be installed by a superuser.
+DO $$
+DECLARE
+  bounds geometry := 'SRID=3857;LINESTRING(0 0,100 100)';
+BEGIN
+  IF (SELECT rolsuper FROM pg_roles WHERE rolname = current_user) THEN
+    EXECUTE format(
+      'CREATE FUNCTION pg_temp.tile_envelope_legacy(int, int, int, geometry)
+       RETURNS geometry AS %L, %L LANGUAGE C IMMUTABLE STRICT',
+      (SELECT probin FROM pg_proc WHERE oid = 'st_tileenvelope(int,int,int,geometry,float8)'::regprocedure),
+      'ST_TileEnvelope');
+    PERFORM set_config('plan_cache_mode', 'force_generic_plan', true);
+    IF (SELECT bool_and(ST_AsEWKT(pg_temp.tile_envelope_legacy(1, 0, 0, bounds))
+            IS NOT DISTINCT FROM ST_AsEWKT(ST_TileEnvelope(1, 0, 0, bounds, 0)))
+        FROM generate_series(1, 2)) IS DISTINCT FROM true THEN
+      RAISE EXCEPTION 'The legacy tile envelope must use zero margin';
+    END IF;
+    DROP FUNCTION pg_temp.tile_envelope_legacy(int, int, int, geometry);
+  END IF;
+END
+$$;
+
+-- Preserve each SRID conversion notice even with a cacheable call site.
+SET plan_cache_mode = force_generic_plan;
+PREPARE envelope_notice(int) AS
+  SELECT '262', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1, $1))
+  FROM generate_series(1, 2);
+EXECUTE envelope_notice(-1);
+DEALLOCATE envelope_notice;
+RESET plan_cache_mode;
+
 -- ST_Hexagon()
 select '300', ST_AsText(ST_Hexagon(10, 0, 0), 5);
 select '301', ST_AsText(ST_Hexagon(10, 1, 1), 5);

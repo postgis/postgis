@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #6162, GT-957, GH-1199, Cache repeated envelopes and box2d casts
+   (John Carmack, Darafei Praliaskouski)
  - GT-951, Use unsigned indexes in rectangle trees
    (Darafei Praliaskouski)
  - #5958, [raster] Document the VRT loading workflow for tile-set overviews
@@ -29,8 +31,6 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
           packer (John Carmack)
- - #6162, GH-1199, Faster ST_TileEnvelope, ST_MakeEnvelope, and box2d casts on
-          repeated arguments (John Carmack)
  - #3472, GT-706, ST_AsX3D can emit collection members without Shape wrappers
           (Darafei Praliaskouski)
 

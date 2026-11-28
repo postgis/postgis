@@ -2282,7 +2282,7 @@ ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	double x1, y1, x2, y2;
 	int32_t srid = SRID_UNKNOWN;
-	EnvelopeCache *cache = envelope_cache(fcinfo);
+	EnvelopeCache *cache;
 	double floats[5] = {0};
 	int32_t ints[4] = {0};
 
@@ -2297,6 +2297,8 @@ ST_MakeEnvelope(PG_FUNCTION_ARGS)
 		srid = PG_GETARG_INT32(4);
 	}
 
+	/* Keep the per-call diagnostic from clamping an invalid SRID. */
+	cache = srid >= SRID_UNKNOWN && srid <= SRID_MAXIMUM ? envelope_cache(fcinfo) : NULL;
 	if (cache)
 	{
 		floats[0] = x1;
@@ -2338,7 +2340,8 @@ ST_TileEnvelope(PG_FUNCTION_ARGS)
 	   srid of the object is EPSG:3857. */
 	int32_t srid;
 	GBOX bbox;
-	LWGEOM *g = NULL;
+	LWGEOM *g;
+	LWPOLY *poly;
 	GSERIALIZED *result;
 	EnvelopeCache *cache = envelope_cache(fcinfo);
 	double floats[5] = {0};
@@ -2351,16 +2354,21 @@ ST_TileEnvelope(PG_FUNCTION_ARGS)
 	y = PG_GETARG_INT32(2);
 
 	bounds = PG_GETARG_GSERIALIZED_P(3);
+	/* The pre-3.1 SQL signature has bounds but no margin. */
+	margin = PG_NARGS() > 4 ? PG_GETARG_FLOAT8(4) : 0;
 
 	if (cache)
 	{
-		floats[0] = PG_NARGS() < 4 ? 0 : PG_GETARG_FLOAT8(4);
+		floats[0] = margin;
 		ints[0] = zoom;
 		ints[1] = x;
 		ints[2] = y;
 		result = envelope_cache_get(cache, floats, ints, bounds);
 		if (result)
+		{
+			PG_FREE_IF_COPY(bounds, 3);
 			PG_RETURN_POINTER(result);
+		}
 	}
 
 	/*
@@ -2375,8 +2383,6 @@ ST_TileEnvelope(PG_FUNCTION_ARGS)
 	srid = g->srid;
 	lwgeom_free(g);
 
-	/* Avoid crashing with old signature (old sql code with 3 args, new C code with 4) */
-	margin = PG_NARGS() < 4 ? 0 : PG_GETARG_FLOAT8(4);
 	/* shrinking by more than 50% would eliminate the tile outright */
 	if (margin < -0.5)
 		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);
@@ -2429,9 +2435,12 @@ ST_TileEnvelope(PG_FUNCTION_ARGS)
 	if (x2 > bbox.xmax)
 		x2 = bbox.xmax;
 
-	result = geometry_serialize(lwpoly_as_lwgeom(lwpoly_construct_envelope(srid, x1, y1, x2, y2)));
+	poly = lwpoly_construct_envelope(srid, x1, y1, x2, y2);
+	result = geometry_serialize(lwpoly_as_lwgeom(poly));
+	lwpoly_free(poly);
 	if (cache)
 		envelope_cache_put(fcinfo, cache, floats, ints, bounds, result);
+	PG_FREE_IF_COPY(bounds, 3);
 	PG_RETURN_POINTER(result);
 }
 

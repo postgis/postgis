@@ -248,6 +248,10 @@ ERROR:  ST_TileEnvelope: Margin must not be less than -50%, margin=-0.510000
 261|SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
 261|SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
 261|SRID=3857;POLYGON((0 0,0 1,1 1,1 0,0 0))
+NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
+NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
+262|0
+262|0
 300|POLYGON((-10 0,-5 -8.66025,5 -8.66025,10 0,5 8.66025,-5 8.66025,-10 0))
 301|POLYGON((5 25.98076,10 17.32051,20 17.32051,25 25.98076,20 34.64102,10 34.64102,5 25.98076))
 302|POLYGON((-25 -8.66025,-20 -17.32051,-10 -17.32051,-5 -8.66025,-10 0,-20 0,-25 -8.66025))
