@@ -178,10 +178,9 @@
     },
     {
       "name": "GitLab mirror",
-      "provider": "disabled",
+      "provider": "gitlab",
       "required": false,
-      "status": "retired",
-      "message": "The GitLab.com mirror badge endpoint still resolves, but mirror jobs fail immediately with ci_quota_exceeded, so release gating uses GitHub Actions, Woodie, and Jenkins."
+      "message": "Optional: the GitLab.com mirror runs amd64 and i386 jobs when its CI quota allows; it provides the only 32-bit coverage and is not release gating."
     },
     {
       "name": "INAF GitLab mirror",
