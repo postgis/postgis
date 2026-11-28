@@ -23,8 +23,7 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #6156, GH-1192, Faster ST_AsMVT tile packing without protobuf-c's generic
           packer (John Carmack)
- - #1764, [raster] Keep raster2pgsql overviews aligned when loading
-          aligned input rasters (Darafei Praliaskouski)
+ - #1764, GH-1059, Keep raster2pgsql overviews aligned (Darafei Praliaskouski)
 
 * Bug Fixes *
 
