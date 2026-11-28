@@ -80,6 +80,15 @@ order by l.layer_id;
 -- TODO: not happy with the 2 signatures (too close)
 select addtopogeometrycolumn('tt','public.feature2','test',null::integer,'GEOMETRY',null); -- should be 1013;
 
+-- Constraint identifiers must quote embedded double quotes in column names.
+CREATE TABLE feature3(id integer);
+DO $$ BEGIN
+  PERFORM addtopogeometrycolumn('tt','public','feature3','g"x','POINT');
+  PERFORM topology.RenameTopoGeometryColumn('feature3'::regclass, 'g"x', 'g"y');
+END $$;
+SELECT conname FROM pg_constraint WHERE conrelid = 'feature3'::regclass AND contype = 'c';
+DROP TABLE feature3;
+
 drop table feature;
 drop table feature2;
 select droptopology('tt');

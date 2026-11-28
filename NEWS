@@ -41,6 +41,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-988, [topology] Quote TopoGeometry constraint identifiers
+   (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - #6063, GT-1002, [upgrade] Keep app tables layer or topology in PostGIS schema
    (reported by Robert Aussem; fixed by Darafei Praliaskouski)
  - #5886, GT-429, GH-971, [topology] Snap line vertices to nearby edges
