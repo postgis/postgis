@@ -35,3 +35,16 @@ SELECT 'M2', ST_AsText(ST_SnapToGrid(st_transform('SRID=4326;POINT(-20 -21.5)'::
 SELECT 'M3', ST_AsText(ST_SnapToGrid(st_transform('SRID=4326;POINT(-30 -21.5)'::geometry, 3857),1));
 SELECT 'M4', ST_AsText(ST_SnapToGrid(st_transform('SRID=4326;POINT(-72.345 41.3)'::geometry, 3857),1));
 SELECT 'M5', ST_AsText(ST_SnapToGrid(st_transform('SRID=4326;POINT(71.999 -42.5)'::geometry, 3857),1));
+
+-- Empty bounds must not dereference a missing bounding box.
+DO $$
+BEGIN
+	PERFORM * FROM postgis_srs_search('POINT EMPTY'::geometry, 'EPSG');
+	RAISE EXCEPTION 'empty bounds were accepted';
+EXCEPTION WHEN OTHERS THEN
+	IF SQLERRM != 'postgis_srs_search: cannot search with an empty bounds geometry' THEN
+		RAISE;
+	END IF;
+	RAISE NOTICE 'empty bounds rejected';
+END
+$$;
