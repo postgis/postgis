@@ -512,6 +512,21 @@ test_unstroke()
 	lwfree(str);
 }
 
+static void
+test_unstroke_empty_polygon_ring(void)
+{
+	POINTARRAY **rings = lwalloc(sizeof(POINTARRAY *));
+	LWPOLY *poly;
+	LWGEOM *out;
+
+	rings[0] = ptarray_construct_empty(LW_FALSE, LW_FALSE, 0);
+	poly = lwpoly_construct(0, NULL, 1, rings);
+	out = lwgeom_unstroke((LWGEOM *)poly);
+	CU_ASSERT_PTR_NOT_NULL(out);
+	lwgeom_free(out);
+	lwgeom_free((LWGEOM *)poly);
+}
+
 /*
 ** Used by the test harness to register the tests in this file.
 */
@@ -522,4 +537,5 @@ lwstroke_suite_setup(void)
 	CU_pSuite suite = CU_add_suite("lwstroke", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwcurve_linearize);
 	PG_ADD_TEST(suite, test_unstroke);
+	PG_ADD_TEST(suite, test_unstroke_empty_polygon_ring);
 }

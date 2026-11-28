@@ -26,6 +26,9 @@ extern char cu_error_msg[];
 /* Resets cu_error_msg back to blank. */
 void cu_error_msg_reset(void);
 
+/* Restore the standard CUnit liblwgeom error and notice callbacks. */
+void cu_test_restore_error_handlers(void);
+
 /* Our internal callback to register Suites with the main tester */
 typedef void (*PG_SuiteSetup)(void);
 

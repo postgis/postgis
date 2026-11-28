@@ -32,6 +32,10 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-940, Handle empty rings and patches in X3D output, polyhedral surface
+   closedness, curve unstroking and compound curve first points
+   (reported by Sven Klemm / Tiger Data;
+    fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-945, Print ST_AsGeoJSON bounding boxes with the coordinate formatter
    (reported by Aleksander Alekseev / Tiger Data;
     fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
