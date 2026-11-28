@@ -1355,8 +1355,11 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
 		}
 		val = tuple_get_int64(rowdesc, 1, dat);
 		edges[i] = val;
-		POSTGIS_DEBUGF(
-		    1, "Component " UINT64_FORMAT " in ring of edge %" LWTFMT_ELEMID " is edge %d", i, edge, val);
+		POSTGIS_DEBUGF(1,
+			       "Component " UINT64_FORMAT " in ring of edge %" LWTFMT_ELEMID " is edge " INT64_FORMAT,
+			       i,
+			       edge,
+			       val);
 
 		/* For the last entry, check that we returned back to start
 		 * point, or complain about topology being corrupted */
@@ -1380,7 +1383,8 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
 			}
 			nextedge = tuple_get_int64(rowdesc, sidecol, dat);
 			POSTGIS_DEBUGF(1,
-				       "Last component in ring of edge %" LWTFMT_ELEMID " (%d) has next_%s_edge %d",
+				       "Last component in ring of edge %" LWTFMT_ELEMID " (" INT64_FORMAT
+				       ") has next_%s_edge " INT64_FORMAT,
 				       edge,
 				       val,
 				       sidetext,
@@ -2387,8 +2391,8 @@ cb_updateTopoGeomEdgeSplit(const LWT_BE_TOPOLOGY *topo,
 			HeapTuple row = SPI_tuptable->vals[i];
 			TupleDesc tdesc = SPI_tuptable->tupdesc;
 			int negate;
-			LWT_ELEMID element_id;
-			LWT_ELEMID topogeo_id;
+			int64 element_id;
+			int64 topogeo_id;
 			int layer_id;
 			int element_type;
 
@@ -2420,7 +2424,7 @@ cb_updateTopoGeomEdgeSplit(const LWT_BE_TOPOLOGY *topo,
 			if (i)
 				appendStringInfoChar(sql, ',');
 			appendStringInfo(sql,
-					 "(%" LWTFMT_ELEMID ",%d,%" LWTFMT_ELEMID ",%d)",
+					 "(" INT64_FORMAT ",%d,%" LWTFMT_ELEMID ",%d)",
 					 topogeo_id,
 					 layer_id,
 					 negate ? -new_edge1 : new_edge1,
@@ -2429,7 +2433,7 @@ cb_updateTopoGeomEdgeSplit(const LWT_BE_TOPOLOGY *topo,
 			{
 				resetStringInfo(sql);
 				appendStringInfo(sql,
-						 ",VALUES (%" LWTFMT_ELEMID ",%d,%" LWTFMT_ELEMID ",%d",
+						 ",VALUES (" INT64_FORMAT ",%d,%" LWTFMT_ELEMID ",%d",
 						 topogeo_id,
 						 layer_id,
 						 negate ? -new_edge2 : new_edge2,
@@ -2527,8 +2531,8 @@ cb_updateTopoGeomFaceSplit(const LWT_BE_TOPOLOGY *topo,
 			HeapTuple row = SPI_tuptable->vals[i];
 			TupleDesc tdesc = SPI_tuptable->tupdesc;
 			int negate;
-			LWT_ELEMID element_id;
-			LWT_ELEMID topogeo_id;
+			int64 element_id;
+			int64 topogeo_id;
 			int layer_id;
 			int element_type;
 
@@ -2560,7 +2564,7 @@ cb_updateTopoGeomFaceSplit(const LWT_BE_TOPOLOGY *topo,
 			if (i)
 				appendStringInfoChar(sql, ',');
 			appendStringInfo(sql,
-					 "(%" LWTFMT_ELEMID ",%d,%" LWTFMT_ELEMID ",%d)",
+					 "(" INT64_FORMAT ",%d,%" LWTFMT_ELEMID ",%d)",
 					 topogeo_id,
 					 layer_id,
 					 negate ? -new_face1 : new_face1,
@@ -2569,7 +2573,7 @@ cb_updateTopoGeomFaceSplit(const LWT_BE_TOPOLOGY *topo,
 			if (new_face2 != -1)
 			{
 				appendStringInfo(sql,
-						 ",(%" LWTFMT_ELEMID ",%d,%" LWTFMT_ELEMID ",%d)",
+						 ",(" INT64_FORMAT ",%d,%" LWTFMT_ELEMID ",%d)",
 						 topogeo_id,
 						 layer_id,
 						 negate ? -new_face2 : new_face2,
