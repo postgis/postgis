@@ -954,6 +954,7 @@ RASTER_setBandNoDataValues(PG_FUNCTION_ARGS)
 	int nodata_count = 0;
 	int i = 0;
 	bool forcechecking = FALSE;
+	bool valid_bands = TRUE;
 
 	/* Deserialize raster */
 	if (PG_ARGISNULL(0))
@@ -1028,7 +1029,8 @@ RASTER_setBandNoDataValues(PG_FUNCTION_ARGS)
 		{
 			elog(NOTICE,
 			     "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
-			goto serialize;
+			valid_bands = FALSE;
+			break;
 		}
 
 		bandindex = DatumGetInt32(band_values[i]);
@@ -1036,7 +1038,8 @@ RASTER_setBandNoDataValues(PG_FUNCTION_ARGS)
 		{
 			elog(NOTICE,
 			     "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
-			goto serialize;
+			valid_bands = FALSE;
+			break;
 		}
 
 		if (!rt_raster_get_band(raster, bandindex - 1))
@@ -1045,11 +1048,12 @@ RASTER_setBandNoDataValues(PG_FUNCTION_ARGS)
 			    NOTICE,
 			    "Could not find raster band of index %d when setting pixel value. Nodata value not set. Returning original raster",
 			    bandindex);
-			goto serialize;
+			valid_bands = FALSE;
+			break;
 		}
 	}
 
-	for (i = 0; i < band_count; i++)
+	for (i = 0; valid_bands && i < band_count; i++)
 	{
 		int32_t bandindex = DatumGetInt32(band_values[i]);
 		double nodata = 0;
@@ -1060,7 +1064,6 @@ RASTER_setBandNoDataValues(PG_FUNCTION_ARGS)
 		rtpg_set_band_nodata_value(raster, bandindex, nodata_nulls[i], nodata, forcechecking);
 	}
 
-serialize:
 	pgrtn = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(nodata_array, 2);
