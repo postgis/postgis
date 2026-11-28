@@ -1263,7 +1263,7 @@ ADD CONSTRAINT geometry_valid_check
   srid       INTEGER NOT NULL PRIMARY KEY,
   auth_name  VARCHAR(256),
   auth_srid  INTEGER,
-  srtext     VARCHAR(2048),
+  srtext     TEXT,
   proj4text  VARCHAR(2048)
 )</programlisting>
 
