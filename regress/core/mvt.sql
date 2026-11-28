@@ -805,6 +805,10 @@ DROP TABLE mvt_null_row;
 -- NULL values of a non-row type are still rejected
 SELECT '#6148.d', ST_AsMVT(NULL::int);
 
+-- Empty points have no encoded geometry commands.
+SELECT 'POINT EMPTY', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'hex')
+FROM (SELECT 'POINT EMPTY'::geometry AS geom) AS q;
+
 -- Reject rows with a different record layout instead of deforming them
 -- through the first row's cached descriptor.
 DO $$

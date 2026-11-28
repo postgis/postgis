@@ -171,3 +171,4 @@ Ag==
 #6148.b|t
 #6148.c|t
 ERROR:  pgis_asmvt_transfn: parameter row cannot be other than a rowtype
+POINT EMPTY|1a0f0a0474657374120218012880207802

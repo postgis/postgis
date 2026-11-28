@@ -221,9 +221,8 @@ static void
 encode_point(struct feature_builder *feature, LWPOINT *point)
 {
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POINT;
-	feature->n_geometry = 3;
 	feature->geometry = palloc(sizeof(*feature->geometry) * 3);
-	encode_ptarray_initial(MVT_POINT, point->point, feature->geometry);
+	feature->n_geometry = encode_ptarray_initial(MVT_POINT, point->point, feature->geometry);
 }
 
 static void
