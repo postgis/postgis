@@ -142,6 +142,36 @@ select 'A1', id, ST_AsText(geom), bool_1, int_1, int_2, smallint_1, bigint_1, fl
     ) q)
 );
 
+select '--- Invalid datetime detection ---';
+select 'DT1' from ST_FromFlatGeobuf(null::flatgeobuf_a1, (
+    select decode(replace(encode(ST_AsFlatGeobuf(q), 'hex'),
+        '323031362d30362d32332030333a34343a35322e3133343132352b3030',
+        '3939393939393939393939393939393939393939393939393939393939'), 'hex')
+    from (select null::geometry, true::boolean as bool_1, 1::integer as int_1,
+        2::integer as int_2, 3::smallint as smallint_1, 4::bigint as bigint_1,
+        1.2::real as float_1, 1.3::double precision as double_1,
+        '2016-06-22 20:44:52.134125-07'::timestamptz as timestamptz_1,
+        'hello'::text as string_1) q));
+
+-- Special timestamps have no broken-down date fields.
+SELECT 'DT-infinity', timestamptz_1 FROM ST_FromFlatGeobuf(NULL::flatgeobuf_a1, (
+    SELECT decode(replace(encode(ST_AsFlatGeobuf(q), 'hex'),
+        '323031362d30362d32332030333a34343a35322e3133343132352b3030',
+        encode(convert_to(rpad('infinity', 29, ' '), 'UTF8'), 'hex')), 'hex')
+    FROM (SELECT NULL::geometry, true::boolean AS bool_1, 1::integer AS int_1,
+        2::integer AS int_2, 3::smallint AS smallint_1, 4::bigint AS bigint_1,
+        1.2::real AS float_1, 1.3::double precision AS double_1,
+        '2016-06-22 20:44:52.134125-07'::timestamptz AS timestamptz_1,
+        'hello'::text AS string_1) q));
+
+DO $$ BEGIN
+    PERFORM ST_AsFlatGeobuf(q) FROM (
+        SELECT ST_MakePoint(0, 0) AS geom, 'infinity'::timestamptz AS ts
+    ) q;
+    RAISE EXCEPTION 'ST_AsFlatGeobuf accepted an infinite timestamp';
+EXCEPTION WHEN SQLSTATE '22008' THEN NULL;
+END $$;
+
 select '--- Exotic roundtrips ---';
 
 -- 2D Point geometry at column index 2
