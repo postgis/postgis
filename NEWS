@@ -62,9 +62,7 @@ PostGIS 3.8.0dev
 
 * Breaking Changes *
 
- - #2630, Recreate five-argument UpdateGeometrySRID during extension upgrade
-          to correct the first argument name from catalogn_name to catalog_name
-          (Darafei Praliaskouski)
+ - GT-591, #2630, Fix UpdateGeometrySRID argument name (Darafei Praliaskouski; Sandro Santilli)
 
 
 PostGIS 3.7.0rc3
@@ -311,9 +309,6 @@ To take advantage of all features postgis extension features, GEOS 3.15+ is need
 To take advantage of all postgis_sfcgal extension features SFCGAL 2.3+ is needed.
 
 These are only changes since 3.7.0beta1.
-
-* Breaking Changes *
-
 
 * Bug Fixes *
 

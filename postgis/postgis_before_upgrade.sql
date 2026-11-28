@@ -49,7 +49,7 @@ SELECT _postgis_drop_function_by_identity
 	'xxx'
 	);
 
--- FUNCTION UpdateGeometrySRID changed the name of the args (http://trac.osgeo.org/postgis/ticket/2630) for 3.7
+-- FUNCTION UpdateGeometrySRID changed the name of the args (http://trac.osgeo.org/postgis/ticket/2630) for 3.8
 -- It changed the parameter `catalogn_name` to `catalog_name`
 -- (catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid_in integer)
 -- Dropping it conditionally since the same signature still exists.
@@ -57,7 +57,7 @@ SELECT _postgis_drop_function_by_identity
 	(
 	'UpdateGeometrySRID',
 	'catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid_in integer',
-	'370'
+	'380'
 	);
 
 
