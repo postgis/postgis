@@ -7406,9 +7406,10 @@ RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		break;
 	}
 
-	/* both rasters do not have specified bands */
-	if ((!_isempty[0] && !rt_raster_has_band(_rast[0], bandindex[0] - 1)) &&
-	    (!_isempty[1] && !rt_raster_has_band(_rast[1], bandindex[1] - 1)))
+	/* neither raster provides the specified band */
+	/* an empty raster never does, so it counts as missing here */
+	if ((_isempty[0] || !rt_raster_has_band(_rast[0], bandindex[0] - 1)) &&
+	    (_isempty[1] || !rt_raster_has_band(_rast[1], bandindex[1] - 1)))
 	{
 		elog(
 		    NOTICE,
@@ -7468,7 +7469,8 @@ RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	/* pixtype is PT_END, get pixtype based upon extent */
 	if (pixtype == PT_END)
 	{
-		if ((extenttype == ET_SECOND && !_isempty[1]) || _isempty[0])
+		if (_band[0] == NULL ||
+		    (_band[1] != NULL && ((extenttype == ET_SECOND && !_isempty[1]) || _isempty[0])))
 			pixtype = rt_band_get_pixtype(_band[1]);
 		else
 			pixtype = rt_band_get_pixtype(_band[0]);
