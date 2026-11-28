@@ -26688,3 +26688,5 @@ trianglezm4326|4326|PolyhedralSurface|3|KO-BKO
 trianglezm4326|4326|Triangle|3|OK-BOK
 trianglezm4326|4326|Tin|3|KO-BKO
 trianglezm4326||COUNT|4|
+borrowed-empty|POINT EMPTY
+borrowed-srid|4326|0
