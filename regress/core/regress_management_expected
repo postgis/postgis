@@ -8,3 +8,6 @@ foreign typmod|1
 foreign after typmod|2|4326|POINT
 foreign constraints|1
 foreign after constraints|2|4326|POINT
+populate geometry metadata|1
+registered geometry metadata|2|4326|POINT
+unrelated type metadata|0
