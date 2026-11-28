@@ -430,6 +430,33 @@ rt_pg_vsi_load_all_options(void)
 
 #endif /* POSTGIS_GDAL_VERSION < 20300 */
 
+
+/*
+ * Some of the options GDAL advertises for its network file systems name a
+ * file for libcurl to read or write. They are applied process wide with
+ * CPLSetConfigOption(), so allowing them here would let any user make the
+ * backend read a local file into an outgoing request, or drop one on disk.
+ * Credential and tuning options, which is what this GUC exists for, are not
+ * affected.
+ */
+static bool
+rt_pg_vsi_option_is_path(const char *option)
+{
+	static const char *const path_markers[] = {
+		"file", "path", "jar", "bundle", "credentials", "sslcert", "sslkey", NULL
+	};
+	const char *const *marker;
+
+	/* option_list_parse() has already lowercased the keys */
+	for (marker = path_markers; *marker; marker++)
+	{
+		if (strstr(option, *marker) != NULL)
+			return true;
+	}
+
+	return false;
+}
+
 static bool
 rt_pg_vsi_check_options(char **newval, void **extra, GucSource source)
 {
@@ -451,7 +478,10 @@ rt_pg_vsi_check_options(char **newval, void **extra, GucSource source)
 	option_list_parse(newoptions, olist);
 	olist_sz = option_list_length(olist);
 	if (olist_sz % 2 != 0)
+	{
+		pfree(newoptions);
 		return false;
+	}
 
 	for (i = 0; i < olist_sz; i += 2)
 	{
@@ -462,7 +492,15 @@ rt_pg_vsi_check_options(char **newval, void **extra, GucSource source)
 			pfree(newoptions);
 			return false;
 		}
+
+		if (rt_pg_vsi_option_is_path(olist[i]))
+		{
+			elog(WARNING, "'%s' names a file and cannot be set here", olist[i]);
+			pfree(newoptions);
+			return false;
+		}
 	}
+	pfree(newoptions);
 	return true;
 }
 
