@@ -1135,6 +1135,13 @@ SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 43
     '\056\120\312\121\300\160\231\323\145\061\041\105\100'
 )::bytea);</programlisting>
 <screen role="visual-skip">0102000020AD10000003000000E44A3D0B42CA51C06EC328081E21454027BF45274BCA51C0F67B629D2A214540957CEC2E50CA51C07099D36531214540</screen>
+		<para>Prefix hexadecimal EWKB with <literal>\x</literal> when passing
+		it as <type>bytea</type>, or cast the unprefixed hexadecimal text
+		directly to <type>geometry</type>.</para>
+		<programlisting language="sql">SELECT ST_AsEWKT(ST_GeomFromEWKB(
+    E'\\x0101000020e6100000000000000000f03f0000000000000040'::bytea
+));</programlisting>
+<screen role="text-primary">SRID=4326;POINT(1 2)</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -1752,7 +1759,12 @@ SELECT ST_AsEWKT(ST_GeomFromGML('
 	  <refsection>
 		<title>Description</title>
 		<para>Constructs a PostGIS geometry from an OGC KML representation.</para>
-		<para>ST_GeomFromKML works only for KML Geometry fragments. It throws an error if you try to use it on a whole KML document.</para>
+		<para>ST_GeomFromKML accepts a KML geometry fragment and returns a geometry
+		with SRID 4326. A <literal>LinearRing</literal> must be part of a
+		<literal>Polygon</literal> fragment. Use a <literal>LineString</literal>
+		for a closed line. Passing a whole KML document raises an error.</para>
+		<para>To compare the result with data in another coordinate reference
+		system, first transform it with <xref linkend="ST_Transform"/>.</para>
 		<para>
 			OGC KML versions supported:
 			<itemizedlist>

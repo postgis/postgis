@@ -247,8 +247,10 @@
       <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for higher coordinate dimensions was introduced.</para>
       <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for specifying endian with geography was introduced.</para>
       <para role="availability" conformance="1.5.0">Availability: 1.5.0 geography support was introduced.</para>
-      <para role="changed" conformance="2.0.0">Changed: 2.0.0 Inputs to this function can not be unknown -- must be geometry.  Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no longer valid and you will get an <code>n ST_AsBinary(unknown)  is not unique error</code>.  Code like that
-      needs to be changed to <code>ST_AsBinary('POINT(1 2)'::geometry);</code>.  If that is not possible, then install <filename>legacy.sql</filename>.</para>
+      <para role="changed" conformance="2.0.0">Changed: 2.0.0 WKT literals require an explicit input type.</para>
+      <para>Cast a WKT literal to <type>geometry</type> or <type>geography</type>
+        before passing it to the function. An untyped literal is ambiguous because both
+        types have an overload.</para>
       <para>&sfs_compliant; s2.1.1.1</para>
       <para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
       <para>&curve_support;</para>
@@ -279,6 +281,13 @@
     'hex'
 ) AS wkb_hex;</programlisting>
 <screen role="text-primary">0101000000e5d022dbf93e2e40dbf97e6abc743540</screen>
+      <para>For geography, the first byte is 1 for little-endian WKB and 0 for big-endian WKB.</para>
+      <programlisting language="sql">SELECT get_byte(ST_AsBinary('POINT(1 2)'::geography, 'NDR'), 0) AS ndr,
+       get_byte(ST_AsBinary('POINT(1 2)'::geography, 'XDR'), 0) AS xdr;</programlisting>
+<screen role="text-primary"> ndr | xdr
+-----+-----
+   1 |   0
+(1 row)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
