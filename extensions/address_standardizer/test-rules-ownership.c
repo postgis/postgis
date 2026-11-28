@@ -8,12 +8,9 @@
 #define RULES_SOURCE_FILE "gamma.c"
 #endif
 
-void *__real_malloc(size_t size);
-void *__real_calloc(size_t count, size_t size);
-void __real_free(void *pointer);
-void *__wrap_malloc(size_t size);
-void *__wrap_calloc(size_t count, size_t size);
-void __wrap_free(void *pointer);
+void *test_malloc(size_t size);
+void *test_calloc(size_t count, size_t size);
+void test_free(void *pointer);
 
 enum { MAX_TRACKED_ALLOCATIONS = 1024 };
 
@@ -54,14 +51,14 @@ track_allocation(void *pointer, size_t size)
 }
 
 void *
-__wrap_malloc(size_t size)
+test_malloc(size_t size)
 {
 	void *pointer;
 
 	allocation_attempts++;
 	if (fail_at_attempt && allocation_attempts == fail_at_attempt)
 		return NULL;
-	pointer = __real_malloc(size);
+	pointer = malloc(size);
 	if (pointer)
 		memset(pointer, 0, size);
 	track_allocation(pointer, size);
@@ -69,20 +66,20 @@ __wrap_malloc(size_t size)
 }
 
 void *
-__wrap_calloc(size_t count, size_t size)
+test_calloc(size_t count, size_t size)
 {
 	void *pointer;
 
 	allocation_attempts++;
 	if (fail_at_attempt && allocation_attempts == fail_at_attempt)
 		return NULL;
-	pointer = __real_calloc(count, size);
+	pointer = calloc(count, size);
 	track_allocation(pointer, count * size);
 	return pointer;
 }
 
 void
-__wrap_free(void *pointer)
+test_free(void *pointer)
 {
 	size_t i;
 
@@ -98,14 +95,21 @@ __wrap_free(void *pointer)
 			active_allocations--;
 			active_bytes -= allocation->size;
 			frees++;
-			__real_free(pointer);
+			free(pointer);
 			return;
 		}
 	}
 	invalid_frees++;
 }
 
+/* Intercept allocations in the included implementation, not the C runtime. */
+#define malloc test_malloc
+#define calloc test_calloc
+#define free test_free
 #include RULES_SOURCE_FILE
+#undef malloc
+#undef calloc
+#undef free
 
 #undef fprintf
 #undef printf
@@ -154,7 +158,7 @@ release_test_leaks(void)
 	{
 		if (tracked[i].active)
 		{
-			__real_free(tracked[i].pointer);
+			free(tracked[i].pointer);
 			tracked[i].active = 0;
 		}
 	}

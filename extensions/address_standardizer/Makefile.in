@@ -206,6 +206,13 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
+# PE linkers may keep unused sections with unresolved backend symbols.
+ifneq ($(findstring mingw,$(shell $(CC) -dumpmachine)),)
+UNIT_TEST_OPT = -O2 -fwhole-program
+else
+UNIT_TEST_OPT = -O0 -fno-lto
+endif
+
 .PHONY: check-unit check-unit-sanitize
 check-unit: test-scanner-bounds test-rule-bounds test-rules-ownership
 	./test-scanner-bounds
@@ -215,22 +222,21 @@ check-unit: test-scanner-bounds test-rule-bounds test-rules-ownership
 
 test-scanner-bounds: $(srcdir)/test-scanner-bounds.c $(srcdir)/standard.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(PG_CPPFLAGS) \
-		-ffunction-sections -fdata-sections \
+		$(UNIT_TEST_OPT) -ffunction-sections -fdata-sections \
 		$(srcdir)/test-scanner-bounds.c \
 		-Wl,--gc-sections -o $@
 
 test-rule-bounds: $(srcdir)/test-rule-bounds.c $(srcdir)/std_pg_hash.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(PG_CPPFLAGS) \
-		-O0 -fno-lto -ffunction-sections -fdata-sections \
+		$(UNIT_TEST_OPT) -ffunction-sections -fdata-sections \
 		$(srcdir)/test-rule-bounds.c \
 		-Wl,--gc-sections -o $@
 
 test-rules-ownership: $(srcdir)/test-rules-ownership.c $(srcdir)/gamma.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(PG_CPPFLAGS) \
-		-O0 -fno-lto -ffunction-sections -fdata-sections \
+		$(UNIT_TEST_OPT) -ffunction-sections -fdata-sections \
 		$(srcdir)/test-rules-ownership.c \
-		-Wl,--gc-sections \
-		-Wl,--wrap=malloc -Wl,--wrap=calloc -Wl,--wrap=free -o $@
+		-Wl,--gc-sections -o $@
 
 check-unit-sanitize: test-scanner-bounds-sanitize
 	env -u LD_PRELOAD ./test-scanner-bounds-sanitize
