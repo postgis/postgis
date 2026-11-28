@@ -303,9 +303,6 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 	bool isnull;
 	Datum tupv;
 
-	int i;
-	int j;
-	int k;
 	int nband;
 
 	if (arg == NULL || array == NULL)
@@ -347,7 +344,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 	*noband = 0;
 
 	/* Compact non-NULL inputs as they are processed. */
-	for (i = 0, k = 0; i < n; i++)
+	for (uint32_t i = 0, k = 0; i < (uint32_t)n; i++)
 	{
 		if (nulls[i])
 		{
@@ -355,7 +352,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 			continue;
 		}
 
-		POSTGIS_RT_DEBUGF(4, "Processing rastbandarg at index %d", i);
+		POSTGIS_RT_DEBUGF(4, "Processing rastbandarg at index %u", i);
 
 		arg->pgraster[k] = NULL;
 		arg->raster[k] = NULL;
@@ -369,7 +366,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 		if (NULL == tup)
 		{
 			elog(ERROR,
-			     "rtpg_nmapalgebra_rastbandarg_process: Invalid argument for rastbandarg at index %d",
+			     "rtpg_nmapalgebra_rastbandarg_process: Invalid argument for rastbandarg at index %u",
 			     i);
 			return 0;
 		}
@@ -380,7 +377,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 		if (isnull)
 		{
 			elog(NOTICE,
-			     "First argument (nband) of rastbandarg at index %d is NULL. Assuming NULL raster",
+			     "First argument (nband) of rastbandarg at index %u is NULL. Assuming NULL raster",
 			     i);
 			arg->isempty[k] = 1;
 			arg->ownsdata[k] = 0;
@@ -396,7 +393,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 		arg->pgraster[k] = (rt_pgraster *)PG_DETOAST_DATUM(tupv);
 
 		/* see if this is a copy of an existing pgraster */
-		for (j = 0; j < k; j++)
+		for (uint32_t j = 0; j < k; j++)
 		{
 			if (!arg->isempty[j] && (arg->pgraster[k] == arg->pgraster[j]))
 			{
@@ -414,7 +411,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 			if (arg->raster[k] == NULL)
 			{
 				elog(ERROR,
-				     "rtpg_nmapalgebra_rastbandarg_process: Could not deserialize raster at index %d",
+				     "rtpg_nmapalgebra_rastbandarg_process: Could not deserialize raster at index %u",
 				     i);
 				return 0;
 			}
@@ -438,7 +435,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 		{
 			nband = 1;
 			elog(NOTICE,
-			     "First argument (nband) of rastbandarg at index %d is NULL. Assuming nband = %d",
+			     "First argument (nband) of rastbandarg at index %u is NULL. Assuming nband = %d",
 			     i,
 			     nband);
 		}
@@ -449,7 +446,7 @@ rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg,
 		{
 			elog(
 			    ERROR,
-			    "rtpg_nmapalgebra_rastbandarg_process: Band number provided for rastbandarg at index %d must be greater than zero (1-based)",
+			    "rtpg_nmapalgebra_rastbandarg_process: Band number provided for rastbandarg at index %u must be greater than zero (1-based)",
 			    i);
 			return 0;
 		}
@@ -2220,8 +2217,6 @@ rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array)
 	bool isnull;
 	Datum tupv;
 
-	int i;
-	int k;
 	int nband = 1;
 	char *utypename = NULL;
 	rtpg_union_type utype = UT_LAST;
@@ -2247,7 +2242,7 @@ rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array)
 	}
 
 	/* Compact non-NULL inputs as they are processed. */
-	for (i = 0, k = 0; i < n; i++)
+	for (uint32_t i = 0, k = 0; i < (uint32_t)n; i++)
 	{
 		if (nulls[i])
 		{
@@ -2255,7 +2250,7 @@ rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array)
 			continue;
 		}
 
-		POSTGIS_RT_DEBUGF(4, "Processing unionarg at index %d", i);
+		POSTGIS_RT_DEBUGF(4, "Processing unionarg at index %u", i);
 
 		/* each element is a tuple */
 		tup = (HeapTupleHeader)DatumGetPointer(e[i]);
