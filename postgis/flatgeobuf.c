@@ -598,13 +598,16 @@ decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, bool *isnull
 				elog(ERROR, "flatgeobuf: decode_properties: datetime length exceeds buffer");
 			buf = palloc0((Size)len + 1);
 			memcpy(buf, (const char *)data + offset, len);
-			ParseDateTime((const char *)buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf);
+			if (ParseDateTime(
+				(const char *)buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf) != 0)
+				elog(ERROR, "flatgeobuf: decode_properties: invalid datetime value");
 
 #if POSTGIS_PGSQL_VERSION >= 160
-			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp, &extra);
+			if (DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp, &extra) != 0)
 #else
-			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp);
+			if (DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp) != 0)
 #endif
+				elog(ERROR, "flatgeobuf: decode_properties: invalid datetime value");
 			tm2timestamp(tm, fsec, &tzp, &dttz);
 			values[ci] = TimestampTzGetDatum(dttz);
 			offset += len;
