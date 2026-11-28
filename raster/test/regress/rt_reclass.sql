@@ -194,3 +194,11 @@ FROM (
 		1, '[-9000-9000]:[-900-900]', '32BF'
 	) AS rast OFFSET 0
 ) AS t;
+
+-- A single opening bound must not read a nonexistent second token.
+SELECT ST_Value(
+  ST_Reclass(
+    ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '8BUI'::text, 1, 0),
+    1, '(:1', '8BUI'
+  ), 1, 1, 1
+);
