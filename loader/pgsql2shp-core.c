@@ -2721,31 +2721,3 @@ ShpDumperDestroy(SHPDUMPERSTATE *state)
 		free(state);
 	}
 }
-
-/*
- * quote_identifier()
- *		Properly double-quote a SQL identifier.
- *  Copied from PostgreSQL pg_upgrade/util.c
- */
-char *
-quote_identifier(const char *s)
-{
-	char *result = malloc(strlen(s) * 2 + 3);
-	char *r = result;
-
-	if (result == NULL)
-		return NULL;
-
-	*r++ = '"';
-	while (*s)
-	{
-		if (*s == '"')
-			*r++ = *s;
-		*r++ = *s;
-		s++;
-	}
-	*r++ = '"';
-	*r++ = '\0';
-
-	return result;
-}

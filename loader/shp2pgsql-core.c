@@ -43,6 +43,8 @@ typedef struct struct_ring {
 #define UTF8_BAD_RESULT 1
 #define UTF8_NO_RESULT 2
 
+#define QUOTED_FIELD_NAME_SIZE (2 * (MAXFIELDNAMELEN - 1) + 3)
+
 char *escape_copy_string(char *str);
 char *escape_insert_string(char *str);
 
@@ -1156,6 +1158,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	SHPObject *obj = NULL;
 	int ret = SHPLOADEROK;
 	char name[MAXFIELDNAMELEN];
+	char quoted[QUOTED_FIELD_NAME_SIZE];
 	DBFFieldType type = FTInvalid;
 	char *utf8str;
 
@@ -1432,9 +1435,10 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	state->widths = malloc(state->num_fields * sizeof(int));
 	state->precisions = malloc(state->num_fields * sizeof(int));
 	state->pgfieldtypes = calloc(state->num_fields, sizeof(char *));
-	state->col_names = calloc((size_t)state->num_fields * (MAXFIELDNAMELEN + 2) +
-				      (state->config->readshape ? strlen(state->geo_col) : 0) + 1,
-				  sizeof(char));
+	/* Each quoted name's terminating byte also allows room for a comma. */
+	state->col_names =
+	    calloc(state->num_fields * sizeof(quoted) + (state->config->readshape ? strlen(state->geo_col) : 0) + 1,
+		   sizeof(char));
 	int fields_allocated = !state->num_fields || (state->field_names && state->types && state->widths &&
 						      state->precisions && state->pgfieldtypes);
 	if (!state->col_names || !fields_allocated)
@@ -1603,18 +1607,10 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		if (!state->pgfieldtypes[j])
 			return ShpLoaderOpenShapeFieldAllocFailure(state);
 
-		strcat(state->col_names, "\"");
-		strcat(state->col_names, name);
-
-		if (state->config->readshape == 1 || j < (state->num_fields - 1))
-		{
-			/* Don't include last comma if its the last field and no geometry field will follow */
-			strcat(state->col_names, "\",");
-		}
-		else
-		{
-			strcat(state->col_names, "\"");
-		}
+		quote_identifier_buf(name, quoted);
+		strcat(state->col_names, quoted);
+		if (state->config->readshape == 1 || j + 1 < state->num_fields)
+			strcat(state->col_names, ",");
 	}
 
 	/* Append the geometry column if required */
@@ -1631,7 +1627,6 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 {
 	stringbuffer_t *sb;
 	char *ret;
-	int j;
 	const char *fid_col;
 	const int use_transaction = state->config->plan.transaction == LOADER_TRANSACTION_ON &&
 				    plan_has_transactional_work(&state->config->plan);
@@ -1697,12 +1692,11 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		}
 
 		/* Generate the field types based upon the shapefile information */
-		for (j = 0; j < state->num_fields; j++)
+		for (int j = 0; j < state->num_fields; j++)
 		{
-			stringbuffer_aprintf(sb, ",\n\"%s\" ", state->field_names[j]);
-
-			/* First output the raw field type string */
-			stringbuffer_aprintf(sb, "%s", state->pgfieldtypes[j]);
+			char quoted[QUOTED_FIELD_NAME_SIZE];
+			quote_identifier_buf(state->field_names[j], quoted);
+			stringbuffer_aprintf(sb, ",\n%s %s", quoted, state->pgfieldtypes[j]);
 
 			/* Some types do have typmods */
 			/* Apply width typmod for varchar if there is positive width **/
