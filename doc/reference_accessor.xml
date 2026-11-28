@@ -114,6 +114,9 @@ FROM
 			resulting boundary can be represented using representational
 			geometry primitives as discussed in the OGC SPEC, section
 			3.12.2.</para>
+		<para>The boundary of a polygon includes its exterior and interior rings.
+		Use <xref linkend="ST_ExteriorRing"/> for the exterior ring alone,
+		or <xref linkend="ST_Envelope"/> for a bounding rectangle.</para>
 		<para>Performed by the GEOS module</para>
 
 		<note> <para>Prior to 2.0.0, this function throws an exception if used with <varname>GEOMETRYCOLLECTION</varname>. From 2.0.0 up it will return NULL instead (unsupported input).</para></note>
@@ -157,6 +160,9 @@ MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),
 <para>This example uses a 3D MultiLineString.</para>
 <programlisting>SELECT ST_Boundary('MULTILINESTRING((1 1 1,0 0 0.5,-1 1 1),(1 1 0.5,0 0 0.5,-1 1 0.5,1 1 0.5) )');</programlisting>
 <screen role="visual-primary text-primary">MULTIPOINT(1 1 1,-1 1 1)</screen>
+		<para>An empty polygon has an empty MultiLineString boundary.</para>
+		<programlisting language="sql">SELECT ST_AsText(ST_Boundary('POLYGON EMPTY'::geometry)) AS boundary;</programlisting>
+		<screen>MULTILINESTRING EMPTY</screen>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -392,7 +398,10 @@ SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
 
 			<para>ST_Dump is useful for expanding geometries. It is the
 			inverse of a <xref linkend="ST_Collect"/> / GROUP BY, in that it creates new rows.
-            For example it can be use to expand MULTIPOLYGONS into POLYGONS.</para>
+            For example it can be used to expand MULTIPOLYGONS into POLYGONS.</para>
+
+			<para>To expand a LineString or polygon ring into vertices or segments,
+			use <xref linkend="ST_DumpPoints"/> or <xref linkend="ST_DumpSegments"/>.</para>
 
 			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para role="availability" conformance="1.0.0">Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
@@ -1007,6 +1016,16 @@ JOIN holes AS h
 <para>End point of a NURBSCurve</para>
 <programlisting>SELECT ST_EndPoint('NURBSCURVE(2, (0 0, 1 1, 2 0))'::geometry);</programlisting>
 <screen role="visual-primary text-primary">POINT(2 0)</screen>
+<para>Use <xref linkend="ST_Dump"/> to get one endpoint per component
+of a MultiLineString.</para>
+<programlisting language="sql"><![CDATA[SELECT part.path, ST_AsText(ST_EndPoint(part.geom)) AS end_point
+FROM ST_Dump('MULTILINESTRING((0 0,1 1),(3 2,4 2))'::geometry) AS part
+ORDER BY part.path;]]></programlisting>
+<screen> path | end_point
+------+------------
+ {1}  | POINT(1 1)
+ {2}  | POINT(4 2)
+(2 rows)</screen>
 	  </refsection>
 
 	  <refsection>
@@ -1204,6 +1223,9 @@ GROUP BY gid;</programlisting>
 			Use <xref linkend="ST_PatchN"/> and <xref linkend="ST_NumPatches"/> to
 			access and count the faces of a TIN or PolyhedralSurface.</para>
 
+		<para>The index follows the member order of the input geometry.
+			If the application needs a spatial ordering, extract the members
+			and sort them by the desired coordinates before selecting one.</para>
 		<note>
 		  <para>Index is 1-based as for OGC specs since version 0.8.0.
 		  Previous versions implemented this as 0-based instead.</para>
@@ -1254,6 +1276,13 @@ ORDER BY id, n;
 <programlisting><![CDATA[SELECT gid, n, ST_GeometryN(geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
 WHERE n <= ST_NumGeometries(geom);]]></programlisting>
+		<para>Read points in their order in the input MultiPoint.</para>
+		<programlisting language="sql">SELECT ST_AsText(ST_GeometryN('MULTIPOINT((3 1),(1 1))', 1)) AS first,
+       ST_AsText(ST_GeometryN('MULTIPOINT((3 1),(1 1))', 2)) AS second;</programlisting>
+<screen>   first    |   second
+------------+------------
+ POINT(3 1) | POINT(1 1)
+(1 row)</screen>
 	  </refsection>
 
 <refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
@@ -1431,7 +1460,9 @@ FROM
 
 		<para>Returns the Nth interior ring (hole) of a POLYGON geometry as a LINESTRING. The index starts at 1. Returns NULL if the geometry is not a polygon or the index is out of range.</para>
 
-		<!-- optionally mention that this function uses indexes if appropriate -->
+		<para>To process every hole of a polygon, use <xref linkend="ST_DumpRings"/>
+		and filter for ring indices greater than zero. This reads the input polygon
+		once and returns each ring as a polygon, so its area can be calculated directly.</para>
 		<note>
 		  <para>This function does not support MULTIPOLYGONs.
           For MULTIPOLYGONs use in conjunction with <xref linkend="ST_GeometryN"/> or <xref linkend="ST_Dump"/> </para>
@@ -1457,6 +1488,20 @@ SELECT geom AS input_polygon,
        ST_InteriorRingN(geom, 1) AS ring
 FROM data;</programlisting>
         <screen role="visual-primary docbook-qa-ignore-wide-lines">POLYGON((21 2,18.320508075688775 -7.999999999999998,11.000000000000002 -15.320508075688771,1 -18,-8.999999999999996 -15.320508075688775,-16.32050807568877 -8.000000000000007,-19 2,-16.320508075688778 11.999999999999995,-9.000000000000009 19.320508075688767,1 22,10.999999999999986 19.32050807568878,18.320508075688767 12.000000000000009,21 2),(11 2,9.660254037844384 7.000000000000004,5.999999999999993 10.66025403784439,1 12,-4.000000000000004 10.660254037844384,-7.660254037844389 6.999999999999997,-9 2,-7.660254037844386 -3.000000000000004,-3.999999999999998 -6.660254037844387,1 -8,6.000000000000001 -6.660254037844386,9.660254037844387 -2.999999999999999,11 2)) | LINESTRING(11 2,9.660254037844384 7.000000000000004,5.999999999999993 10.66025403784439,1 12,-4.000000000000004 10.660254037844384,-7.660254037844389 6.999999999999997,-9 2,-7.660254037844386 -3.000000000000004,-3.999999999999998 -6.660254037844387,1 -8,6.000000000000001 -6.660254037844386,9.660254037844387 -2.999999999999999,11 2)</screen>
+		<para>Return one row per hole with its area.</para>
+		<programlisting language="sql">SELECT rings.path[1] AS hole, ST_Area(rings.geom) AS hole_area
+FROM ST_DumpRings(
+  'POLYGON((0 0,8 0,8 8,0 8,0 0),
+           (1 1,1 2,2 2,2 1,1 1),
+           (4 4,4 6,6 6,6 4,4 4))'::geometry
+) AS rings
+WHERE rings.path[1] > 0
+ORDER BY rings.path[1];</programlisting>
+<screen> hole | hole_area
+------+-----------
+    1 |         1
+    2 |         4
+(2 rows)</screen>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -1596,8 +1641,11 @@ FROM data;</programlisting>
 
 		<para>Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s
 		start and end points are coincident.
-		For Polyhedral Surfaces, reports if the surface is areal (open) or volumetric (closed).</para>
+		For a nonempty MultiLineString, each component must be closed.
+		To test a loop formed by separate lines, first use <xref linkend="ST_LineMerge"/>
+		to stitch the lines and check that it returned one LineString.</para>
 
+		<para>For Polyhedral Surfaces, reports if the surface is areal (open) or volumetric (closed).</para>
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3</para>
 		<note>
@@ -1627,6 +1675,17 @@ FROM data;</programlisting>
 <screen>t</screen>
 <programlisting>SELECT ST_IsClosed('MULTIPOINT((0 0),(1 1))'::geometry);</programlisting>
 <screen>t</screen>
+		<para>These three open components merge into a closed LineString.</para>
+		<programlisting language="sql">WITH input(geom) AS (
+  VALUES ('MULTILINESTRING((0 0,2 0),(2 0,1 2),(1 2,0 0))'::geometry)
+)
+SELECT ST_IsClosed(geom) AS parts_closed,
+       ST_IsClosed(ST_LineMerge(geom)) AS merged_closed
+FROM input;</programlisting>
+<screen> parts_closed | merged_closed
+--------------+---------------
+ f            | t
+(1 row)</screen>
 	  </refsection>
 
 		  <refsection>
@@ -1977,6 +2036,9 @@ FROM (SELECT 'LINESTRING(0 0,0 1,1 0,1 1,0 0)'::geometry AS geom) AS foo;</progr
 			information on the OGC's definition of geometry simplicity and validity, refer
 			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliance of geometries"</link></para>
 
+		<para>Use the <varname>valid</varname> field from <xref linkend="ST_IsValidDetail"/> to check whether a polygon has a
+		valid shell and holes. A polygon can be simple even when one of its
+		holes lies outside the shell.</para>
 		<note>
 			<para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
 			while PostGIS returns NULL.</para>
@@ -1995,6 +2057,18 @@ FROM (SELECT 'LINESTRING(0 0,0 1,1 0,1 1,0 0)'::geometry AS geom) AS foo;</progr
 <screen>f</screen>
 <programlisting>SELECT ST_IsSimple('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)');</programlisting>
 <screen>f</screen>
+		<para>A polygon with a hole outside its shell is simple and invalid.</para>
+		<programlisting language="sql">WITH input(geom) AS (
+  VALUES ('POLYGON((0 0,4 0,4 4,0 4,0 0),
+                    (5 5,5 6,6 6,6 5,5 5))'::geometry)
+)
+SELECT ST_IsSimple(geom) AS simple,
+       (ST_IsValidDetail(geom)).valid AS valid
+FROM input;</programlisting>
+<screen> simple | valid
+--------+-------
+ t      | f
+(1 row)</screen>
 		</refsection>
 
 		<refsection>
@@ -2303,6 +2377,9 @@ ST_NDims('POINTM(1 1 0.5)') As d2pointm;</programlisting>
 
 		<para>If the geometry is a polygon or multi-polygon returns the number of rings.  Unlike NumInteriorRings, it counts
 		the outer rings as well.</para>
+		<para>To count only holes in a MultiPolygon, see the example in
+		<xref linkend="ST_NumInteriorRings"/> that sums the interior rings
+		of its component polygons.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 
@@ -2784,7 +2861,9 @@ FROM ST_GeomFromText('LINESTRING(0 0 0,1 1 1,2 2 2)') AS g
 	  <para>Returns the first point of a <varname>LINESTRING</varname>,
       <varname>CIRCULARLINESTRING</varname>, or <varname>NURBSCURVE</varname> geometry
 	  as a <varname>POINT</varname>.
-	  For other geometries, returns the first point in coordinate order.</para>
+	  For other geometries, returns the first point in coordinate order.
+	  To get the start of each component of a MultiLineString, expand it
+	  with <xref linkend="ST_Dump"/> before calling ST_StartPoint.</para>
 
 	  <para>&sqlmm_compliant; SQL-MM 3: 7.1.3</para>
 	  <para>&Z_support;</para>
@@ -2860,6 +2939,10 @@ ORDER BY e.road_id;</programlisting>
      1 |         1 |       2
      2 |         2 |       3
      3 |         2 |       4</screen>
+<para>Start point of the first component of a MultiLineString.</para>
+<programlisting language="sql">SELECT ST_AsText(ST_StartPoint(geom)) AS first_point
+FROM (VALUES ('MULTILINESTRING((1 2,3 4),(5 6,7 8))'::geometry)) AS input(geom);</programlisting>
+<screen>POINT(1 2)</screen>
 		</refsection>
 
 	<refsection>
