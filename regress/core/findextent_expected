@@ -1,0 +1,4 @@
+NOTICE:  schema "schema"quote" does not exist, skipping
+BOX(1 2,3 4)
+BOX(1 2,3 4)
+NOTICE:  drop cascades to table "table""quote"
