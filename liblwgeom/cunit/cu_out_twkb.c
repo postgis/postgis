@@ -193,7 +193,8 @@ static void test_twkb_out_collection(void)
 	ASSERT_STRING_EQUAL(s,"0710");
 }
 
-static void test_twkb_collection_depth_helper(void)
+static void
+test_twkb_collection_depth_helper(void)
 {
 	LWGEOM *geom = lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE);
 	uint32_t i;
@@ -202,16 +203,14 @@ static void test_twkb_collection_depth_helper(void)
 	{
 		LWGEOM **geoms = lwalloc(sizeof(LWGEOM *));
 		geoms[0] = geom;
-		geom = lwcollection_as_lwgeom(lwcollection_construct(COLLECTIONTYPE,
-			SRID_UNKNOWN, NULL, 1, geoms));
+		geom = lwcollection_as_lwgeom(lwcollection_construct(COLLECTIONTYPE, SRID_UNKNOWN, NULL, 1, geoms));
 	}
 	CU_ASSERT_FALSE(lwgeom_depth_exceeds(geom, LW_PARSER_MAX_DEPTH));
 
 	{
 		LWGEOM **geoms = lwalloc(sizeof(LWGEOM *));
 		geoms[0] = geom;
-		geom = lwcollection_as_lwgeom(lwcollection_construct(COLLECTIONTYPE,
-			SRID_UNKNOWN, NULL, 1, geoms));
+		geom = lwcollection_as_lwgeom(lwcollection_construct(COLLECTIONTYPE, SRID_UNKNOWN, NULL, 1, geoms));
 	}
 	CU_ASSERT_TRUE(lwgeom_depth_exceeds(geom, LW_PARSER_MAX_DEPTH));
 	lwgeom_free(geom);

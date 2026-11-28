@@ -183,10 +183,10 @@ void lwcollection_reserve(LWCOLLECTION *col, uint32_t ngeoms)
 }
 
 /**
-* Return LW_TRUE if geom nests collections more than max_depth levels deep.
-* Bails out as soon as the limit is passed, so the recursion here is bounded
-* by max_depth.
-*/
+ * Return LW_TRUE if geom nests collections more than max_depth levels deep.
+ * Bails out as soon as the limit is passed, so the recursion here is bounded
+ * by max_depth.
+ */
 int
 lwgeom_depth_exceeds(const LWGEOM *geom, uint32_t max_depth)
 {

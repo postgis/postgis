@@ -96,17 +96,17 @@
 #define NO_M_VALUE NO_VALUE
 
 /**
-* Maximum nesting of collections within collections.  Matches the default
-* YYINITDEPTH for WKT.  Recursive readers and writers walk one stack frame
-* per level, so the limit has to be enforced wherever a collection is built.
-*/
+ * Maximum nesting of collections within collections.  Matches the default
+ * YYINITDEPTH for WKT.  Recursive readers and writers walk one stack frame
+ * per level, so the limit has to be enforced wherever a collection is built.
+ */
 #define LW_PARSER_MAX_DEPTH 200
 
 /**
-* Return LW_TRUE if geom nests collections more than max_depth levels deep.
-* Recursion is bounded by max_depth, so this is safe to call on untrusted
-* geometries.
-*/
+ * Return LW_TRUE if geom nests collections more than max_depth levels deep.
+ * Recursion is bounded by max_depth, so this is safe to call on untrusted
+ * geometries.
+ */
 extern int lwgeom_depth_exceeds(const LWGEOM *geom, uint32_t max_depth);
 
 /**
