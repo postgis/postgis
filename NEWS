@@ -30,6 +30,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-944, Validate point counts in arc distance inputs
+   (reported by Aleksander Alekseev / Tiger Data;
+    fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-881, Reject non-geometry columns in the cache_bbox trigger
    (reported by Sven Klemm / Tiger Data;
     fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
