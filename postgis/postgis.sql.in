@@ -1318,7 +1318,7 @@ DECLARE
 	columnname alias for $3;
 	myrec RECORD;
 BEGIN
-	FOR myrec IN EXECUTE 'SELECT @extschema@.ST_Extent("' || columnname || '") As extent FROM "' || schemaname || '"."' || tablename || '"' LOOP
+	FOR myrec IN EXECUTE 'SELECT @extschema@.ST_Extent(' || quote_ident(columnname) || ') As extent FROM ' || quote_ident(schemaname) || '.' || quote_ident(tablename) LOOP
 		return myrec.extent;
 	END LOOP;
 END;
@@ -1338,7 +1338,7 @@ DECLARE
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE 'SELECT @extschema@.ST_Extent("' || columnname || '") As extent FROM "' || tablename || '"' LOOP
+	FOR myrec IN EXECUTE 'SELECT @extschema@.ST_Extent(' || quote_ident(columnname) || ') As extent FROM ' || quote_ident(tablename) LOOP
 		return myrec.extent;
 	END LOOP;
 END;
