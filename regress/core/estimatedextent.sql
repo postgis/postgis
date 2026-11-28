@@ -5,6 +5,19 @@ analyze t;
 select '#877.2', ST_EstimatedExtent('public', 't','g');
 SET client_min_messages TO NOTICE;
 insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
+select '#1689.1', ST_FindExtent('t','g');
+select '#1689.2', ST_FindExtent('public','t','g');
+
+-- Identifiers may contain embedded double quotes.
+CREATE SCHEMA "s""q";
+CREATE TABLE "s""q"."t""q" ("g""q" geometry);
+INSERT INTO "s""q"."t""q" VALUES (ST_GeomFromText('POINT(1 2)'));
+SELECT '#1689.3', ST_FindExtent('s"q', 't"q', 'g"q');
+SET search_path TO "s""q", public;
+SELECT '#1689.4', ST_FindExtent('t"q', 'g"q');
+RESET search_path;
+DROP TABLE "s""q"."t""q";
+DROP SCHEMA "s""q";
 
 -- #877.3
 select '#877.3', round(st_xmin(e.e)::numeric, 5), round(st_xmax(e.e)::numeric, 5),
