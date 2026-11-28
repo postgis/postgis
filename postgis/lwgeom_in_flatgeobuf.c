@@ -217,6 +217,9 @@ pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		funcctx = SRF_FIRSTCALL_INIT();
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
+		/* needed for postgis_oid(GEOMETRYOID) in the schema validation below */
+		postgis_initialize_cache();
+
 		funcctx->max_calls = 0;
 
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)
@@ -274,6 +277,21 @@ pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 					"file has %u columns, target type has %d",
 					ctx->ctx->columns_size,
 					tupdesc->natts - 2)));
+
+		/* Positions 0 (fid) and 1 (geom) are fixed: the decoder writes an int4
+		 * fid into slot 0 and a geometry value into slot 1, so the target type's
+		 * first two columns must match or heap_form_tuple would interpret those
+		 * datums as the wrong (caller-declared) types. */
+		if (getBaseType(TupleDescAttr(tupdesc, 0)->atttypid) != INT4OID)
+			ereport(ERROR,
+				(errcode(ERRCODE_DATATYPE_MISMATCH),
+				 errmsg("ST_FromFlatGeobuf: first column (feature id) must be integer, not %s",
+					format_type_be(TupleDescAttr(tupdesc, 0)->atttypid))));
+		if (getBaseType(TupleDescAttr(tupdesc, 1)->atttypid) != postgis_oid(GEOMETRYOID))
+			ereport(ERROR,
+				(errcode(ERRCODE_DATATYPE_MISMATCH),
+				 errmsg("ST_FromFlatGeobuf: second column must be geometry, not %s",
+					format_type_be(TupleDescAttr(tupdesc, 1)->atttypid))));
 
 		for (uint16_t col_i = 0; col_i < ctx->ctx->columns_size; col_i++)
 		{
