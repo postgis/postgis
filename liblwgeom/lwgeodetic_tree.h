@@ -43,6 +43,7 @@ typedef struct circ_node {
 	POINT2D pt_outside;
 	POINT2D *p1;
 	POINT2D *p2;
+	GBOX *gbox; /* polygons only: bounds for the point-in-polygon pre-check */
 } CIRC_NODE;
 
 void circ_tree_print(const CIRC_NODE *node, int depth);

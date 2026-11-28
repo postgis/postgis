@@ -56,6 +56,8 @@ circ_tree_free(CIRC_NODE *node)
 			circ_tree_free(node->nodes[i]);
 		lwfree(node->nodes);
 	}
+	if (node->gbox)
+		lwfree(node->gbox);
 	lwfree(node);
 }
 
@@ -109,6 +111,7 @@ circ_node_leaf_new(const POINTARRAY *pa, int i)
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
 	node->geom_type = 0;
+	node->gbox = NULL;
 
 	return node;
 }
@@ -129,6 +132,7 @@ circ_node_leaf_point_new(const POINTARRAY *pa)
 	tree->geom_type = POINTTYPE;
 	tree->pt_outside.x = 0.0;
 	tree->pt_outside.y = 0.0;
+	tree->gbox = NULL;
 	return tree;
 }
 
@@ -357,6 +361,7 @@ circ_node_internal_new(CIRC_NODE **c, uint32_t num_nodes)
 	node->geom_type = new_geom_type;
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
+	node->gbox = NULL;
 	return node;
 }
 
@@ -709,6 +714,23 @@ circ_internal_nodes_sort(CIRC_NODE **nodes, uint32_t num_nodes, const CIRC_NODE 
 	return;
 }
 
+/**
+ * A stab line from a distant point can graze a vertex and miscount
+ * crossings (#5895). Reject points outside the polygon's geocentric box
+ * before testing containment.
+ */
+static int
+circ_node_may_contain_point(const CIRC_NODE *node, const POINT2D *pt)
+{
+	GEOGRAPHIC_POINT gp;
+	POINT3D p;
+	if (!node->gbox)
+		return LW_TRUE;
+	geographic_point_init(pt->x, pt->y, &gp);
+	geog2cart(&gp, &p);
+	return gbox_contains_point3d(node->gbox, &p);
+}
+
 /***********************************************************************/
 
 double
@@ -760,7 +782,8 @@ circ_tree_distance_tree_internal(const CIRC_NODE *n1,
 		POINT2D pt;
 		circ_tree_get_point(n2, &pt);
 		LWDEBUGF(4, "n1 is polygon, testing if contains (%.5g,%.5g)", pt.x, pt.y);
-		if (circ_tree_contains_point(n1, &pt, &(n1->pt_outside), 0, NULL))
+		if (circ_node_may_contain_point(n1, &pt) &&
+		    circ_tree_contains_point(n1, &pt, &(n1->pt_outside), 0, NULL))
 		{
 			LWDEBUG(4, "it does");
 			*min_dist = 0.0;
@@ -776,7 +799,8 @@ circ_tree_distance_tree_internal(const CIRC_NODE *n1,
 		POINT2D pt;
 		circ_tree_get_point(n1, &pt);
 		LWDEBUGF(4, "n2 is polygon, testing if contains (%.5g,%.5g)", pt.x, pt.y);
-		if (circ_tree_contains_point(n2, &pt, &(n2->pt_outside), 0, NULL))
+		if (circ_node_may_contain_point(n2, &pt) &&
+		    circ_tree_contains_point(n2, &pt, &(n2->pt_outside), 0, NULL))
 		{
 			LWDEBUG(4, "it does");
 			geographic_point_init(pt.x, pt.y, closest1);
@@ -1022,6 +1046,14 @@ lwpoly_calculate_circ_tree(const LWPOLY *lwpoly)
 	/* selectively when doing distance calculations */
 	node->geom_type = lwgeom_get_type((LWGEOM *)lwpoly);
 	lwpoly_pt_outside(lwpoly, &(node->pt_outside));
+	if (lwpoly->bbox && FLAGS_GET_GEODETIC(lwpoly->bbox->flags))
+		node->gbox = gbox_copy(lwpoly->bbox);
+	else
+	{
+		GBOX gbox = {0};
+		if (lwgeom_calculate_gbox_geodetic((const LWGEOM *)lwpoly, &gbox) == LW_SUCCESS)
+			node->gbox = gbox_copy(&gbox);
+	}
 
 	return node;
 }
