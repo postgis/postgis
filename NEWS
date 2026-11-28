@@ -3,6 +3,8 @@ PostGIS 3.4.7
  
 * Bug Fixes *
 
+  - #5652, GT-863, Build raster upgrade SQL when raster is disabled (Regina Obe)
+
   - #5790, Resolve extension objects in their installed schema (Regina Obe)
   - Use size_t for geometry and raster serialization size arithmetic (Even Rouault)
   - Correct additional topology debug formats for 64-bit values (Sandro Santilli)
