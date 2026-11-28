@@ -141,8 +141,7 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int m
 	thedl.distance = initdistance;
 	thedl.tolerance = 0.0;
 
-	/* Distance to/from an empty geometry is undefined; an empty operand also
-	 * makes create_v_line() return NULL, which was dereferenced below. */
+	/* Empty operands have no closest line to measure. */
 	if (lwgeom_is_empty(lw1) || lwgeom_is_empty(lw2))
 		return (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 
@@ -251,8 +250,7 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int32_t srid, int 
 
 	LWDEBUG(2, "lw_dist3d_distancepoint is called");
 
-	/* Distance to/from an empty geometry is undefined; an empty operand also
-	 * makes create_v_line() return NULL, which was dereferenced below. */
+	/* Empty operands have no closest point to return. */
 	if (lwgeom_is_empty(lw1) || lwgeom_is_empty(lw2))
 		return (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 
