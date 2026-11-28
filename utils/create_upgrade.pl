@@ -345,33 +345,48 @@ while(<INPUT>)
                 if ($old_type ne $new_type)
                 {
                     $type_changed = 1;
+                    my $topology_domain = $schema eq 'topology' &&
+                        ($name eq 'topoelement' || $name eq 'topoelementarray');
+
+                    if ($topology_domain) {
+                        foreach my $c (@constraints) {
+                            my ($ctype, $cname) = @$c;
+                            print "ALTER DOMAIN ${schema}.${name} DROP CONSTRAINT IF EXISTS $cname;\n";
+                        }
+                    }
+
+                    my $upgrade_domain = "_postgis_topology_upgrade_domain_type('${name}', '${old_type}', '${new_type}', '${ver}')";
                     print <<"EOF";
 -- ${schema}.${name}($old_type) -- LastUpdated: ${domain_last_updated}
 -- Updated Domain ${schema}.${name}($new_type)
 -- We cannot drop the old domain, so we modify it
+EOF
+                    if ($topology_domain) {
+                        # Old-width values can survive an earlier topology upgrade.
+                        print "SELECT $upgrade_domain;\n";
+                    } else {
+                        print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_domain_upgrade\$
 BEGIN
 IF $ver > version_from_num
 EOF
-                    print "OR version_from_num IN ( ${missing} )" if ($missing);
-                    print <<"EOF";
+                        print "OR version_from_num IN ( ${missing} )" if ($missing);
+                        print <<"EOF";
     FROM _postgis_upgrade_info()
 THEN
-    PERFORM _postgis_topology_upgrade_domain_type('${name}', '${old_type}', '${new_type}', '${ver}');
+    PERFORM $upgrade_domain;
 END IF;
 END
-\$postgis_domain_upgrade\$;\n
-EOF
-                    foreach my $c (@constraints) {
-                        my ($ctype, $cname, $cdef, $last_updated, $missing, $comment) = @$c;
-
-                        print <<"EOF";
-ALTER DOMAIN ${schema}.${name} DROP CONSTRAINT IF EXISTS $cname;
-ALTER DOMAIN ${schema}.${name} ADD $cdef;\n
+\$postgis_domain_upgrade\$;
 EOF
                     }
-
+                    foreach my $c (@constraints) {
+                        my ($ctype, $cname, $cdef) = @$c;
+                        print "ALTER DOMAIN ${schema}.${name} DROP CONSTRAINT IF EXISTS $cname;\n"
+                            unless $topology_domain;
+                        print "ALTER DOMAIN ${schema}.${name} ADD $cdef;\n\n";
+                    }
                 }
             }
         } elsif ($all_constraints_created_together) {

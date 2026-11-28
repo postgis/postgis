@@ -32,3 +32,5 @@ BEGIN
   END LOOP;
 END;
 $BODY$ LANGUAGE 'plpgsql';
+
+DROP FUNCTION _postgis_topology_upgrade_domain_type(text, text, text, text);

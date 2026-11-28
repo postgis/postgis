@@ -8,10 +8,28 @@ CREATE INDEX upgrade_test_feature_tg_id_idx ON upgrade_test.feature ( id(tg) );
 
 -- Create some TopoGeometry data
 CREATE TABLE upgrade_test.domain_test(a topology.topoelement, b topology.topoelementarray);
+ALTER DOMAIN topology.topoelement DROP CONSTRAINT IF EXISTS dimensions;
+ALTER DOMAIN topology.topoelement DROP CONSTRAINT IF EXISTS type_range;
+ALTER DOMAIN topology.topoelement DROP CONSTRAINT IF EXISTS lower_dimension;
+ALTER DOMAIN topology.topoelementarray DROP CONSTRAINT IF EXISTS type_range;
+-- Reproduce rows written with pre-3.6 integer array storage. The catalog is
+-- restored before upgrade, as it was for databases affected by #6016.
+UPDATE pg_catalog.pg_type
+SET typbasetype = 'integer[]'::regtype
+WHERE oid = 'topology.topoelement'::regtype;
+UPDATE pg_catalog.pg_type
+SET typbasetype = 'integer[]'::regtype
+WHERE oid = 'topology.topoelementarray'::regtype;
 INSERT INTO upgrade_test.domain_test values (
   '{1,2}'::topology.topoelement,
   '{{2,3}}'::topology.topoelementarray
 );
+UPDATE pg_catalog.pg_type
+SET typbasetype = 'bigint[]'::regtype
+WHERE oid = 'topology.topoelement'::regtype;
+UPDATE pg_catalog.pg_type
+SET typbasetype = 'bigint[]'::regtype
+WHERE oid = 'topology.topoelementarray'::regtype;
 
 -- An unqualified pg_get_function_result(regprocedure) call in an upgrade
 -- script can select this exact-match overload instead of the pg_catalog

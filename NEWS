@@ -41,6 +41,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #6016, GT-428, GH-946, [topology] Repair domain storage on upgrade
+   (reported by Patrick Stählin / Aiven; fixed by Darafei Praliaskouski)
  - GT-1012, Reject dimension mismatches in nested WKT collections
    (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev /
    Tiger Data, Darafei Praliaskouski)
