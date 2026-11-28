@@ -35,6 +35,9 @@ NOTICE:  Invalid band index (must use 1-based). Returning NULL
 0
 10
 0
+NOTICE:  All pixels of band have the NODATA value
+NOTICE:  Cannot count the values for band at index 1
+0
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
 ERROR:  relation "test1" does not exist at character 20
 ERROR:  column "rast1" does not exist at character 8

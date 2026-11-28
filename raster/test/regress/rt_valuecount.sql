@@ -274,6 +274,12 @@ SELECT ST_ValueCount('test', 'rast', 1, -1);
 SELECT ST_ValueCount('test', 'rast', 3.1, 0.1);
 SELECT ST_ValueCount('test', 'rast', -9.);
 
+CREATE TEMP TABLE test_valuecount_coverage (rast raster);
+INSERT INTO test_valuecount_coverage VALUES
+	(ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '8BUI'::text, 1, 0)),
+	(ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '8BUI'::text, 2, 2));
+SELECT count(*) FROM ST_ValueCount('test_valuecount_coverage', 'rast', 1, TRUE, ARRAY[1]::double precision[], 0);
+
 SAVEPOINT test;
 SELECT ST_ValueCount('test', 'rast', 2);
 ROLLBACK TO SAVEPOINT test;
