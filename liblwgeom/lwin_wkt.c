@@ -93,6 +93,24 @@ static lwflags_t wkt_dimensionality(char *dimensionality)
 	return flags;
 }
 
+/**
+ * Set the Z/M flags on a pointarray, but only when its stored coordinate
+ * count already matches the requested dimensionality. A ZM tag on an outer
+ * collection must not widen a narrower inner pointarray, or later reads would
+ * run past each vertex (heap over-read / info leak / crash).
+ */
+static int
+wkt_parser_set_pa_dims(POINTARRAY *pa, int hasz, int hasm)
+{
+	uint32_t ndims = 2 + hasz + hasm;
+	if (!pa)
+		return LW_SUCCESS;
+	if (pa->npoints > 0 && FLAGS_NDIMS(pa->flags) != ndims)
+		return LW_FAILURE;
+	FLAGS_SET_Z(pa->flags, hasz);
+	FLAGS_SET_M(pa->flags, hasm);
+	return LW_SUCCESS;
+}
 
 /**
 * Force the dimensionality of a geometry to match the dimensionality
@@ -116,11 +134,8 @@ static int wkt_parser_set_dims(LWGEOM *geom, lwflags_t flags)
 		case POINTTYPE:
 		{
 			LWPOINT *pt = (LWPOINT*)geom;
-			if ( pt->point )
-			{
-				FLAGS_SET_Z(pt->point->flags, hasz);
-				FLAGS_SET_M(pt->point->flags, hasm);
-			}
+			if (LW_FAILURE == wkt_parser_set_pa_dims(pt->point, hasz, hasm))
+				return LW_FAILURE;
 			break;
 		}
 		case TRIANGLETYPE:
@@ -128,41 +143,31 @@ static int wkt_parser_set_dims(LWGEOM *geom, lwflags_t flags)
 		case LINETYPE:
 		{
 			LWLINE *ln = (LWLINE*)geom;
-			if ( ln->points )
-			{
-				FLAGS_SET_Z(ln->points->flags, hasz);
-				FLAGS_SET_M(ln->points->flags, hasm);
-			}
+			if (LW_FAILURE == wkt_parser_set_pa_dims(ln->points, hasz, hasm))
+				return LW_FAILURE;
 			break;
 		}
 		case NURBSCURVETYPE:
 		{
 			LWNURBSCURVE *curve = (LWNURBSCURVE*)geom;
-			if ( curve->points )
-			{
-				FLAGS_SET_Z(curve->points->flags, hasz);
-				FLAGS_SET_M(curve->points->flags, hasm);
-			}
+			if (LW_FAILURE == wkt_parser_set_pa_dims(curve->points, hasz, hasm))
+				return LW_FAILURE;
 			break;
 		}
 		case POLYGONTYPE:
 		{
 			LWPOLY *poly = (LWPOLY*)geom;
 			for ( i = 0; i < poly->nrings; i++ )
-			{
-				if( poly->rings[i] )
-				{
-					FLAGS_SET_Z(poly->rings[i]->flags, hasz);
-					FLAGS_SET_M(poly->rings[i]->flags, hasm);
-				}
-			}
+				if (LW_FAILURE == wkt_parser_set_pa_dims(poly->rings[i], hasz, hasm))
+					return LW_FAILURE;
 			break;
 		}
 		case CURVEPOLYTYPE:
 		{
 			LWCURVEPOLY *poly = (LWCURVEPOLY*)geom;
 			for ( i = 0; i < poly->nrings; i++ )
-				wkt_parser_set_dims(poly->rings[i], flags);
+				if (LW_FAILURE == wkt_parser_set_dims(poly->rings[i], flags))
+					return LW_FAILURE;
 			break;
 		}
 		default:
@@ -171,7 +176,8 @@ static int wkt_parser_set_dims(LWGEOM *geom, lwflags_t flags)
 			{
 				LWCOLLECTION *col = (LWCOLLECTION*)geom;
 				for ( i = 0; i < col->ngeoms; i++ )
-					wkt_parser_set_dims(col->geoms[i], flags);
+					if (LW_FAILURE == wkt_parser_set_dims(col->geoms[i], flags))
+						return LW_FAILURE;
 				return LW_SUCCESS;
 			}
 			else
