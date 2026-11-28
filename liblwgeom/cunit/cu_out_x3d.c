@@ -17,6 +17,7 @@
 
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
+extern lwvarlena_t *lwgeom_to_x3d3(const LWGEOM *geom, int precision, int opts, const char *defid);
 
 static void
 do_x3d3_test(char *in, char *out, int precision, int option)
@@ -172,6 +173,23 @@ out_x3d3_test_geoms(void)
 	    "<IndexedLineSet  coordIndex='0 1 2 -1 3 4 5'><Coordinate point='0 1 0 2 3 0 4 5 0 6 7 0 8 9 0 10 11 0 ' /></IndexedLineSet>",
 	    0,
 	    0);
+
+	/* Empty interior rings must not generate coordinate indices. */
+	{
+		LWGEOM *geom = lwgeom_from_wkt("MULTIPOLYGON(((0 0,1 0,1 1,0 0)))", LW_PARSER_CHECK_NONE);
+		LWCOLLECTION *multi = (LWCOLLECTION *)geom;
+		LWPOLY *poly = (LWPOLY *)multi->geoms[0];
+		poly->rings = lwrealloc(poly->rings, sizeof(POINTARRAY *) * 2);
+		poly->rings[1] = ptarray_construct_empty(LW_FALSE, LW_FALSE, 0);
+		poly->nrings = 2;
+		poly->maxrings = 2;
+		lwvarlena_t *x3d = lwgeom_to_x3d3(geom, 0, 0, "");
+		CU_ASSERT_PTR_NOT_NULL_FATAL(x3d);
+		char *text = (char *)x3d->data;
+		CU_ASSERT_PTR_NOT_NULL_FATAL(strstr(text, "coordIndex='0 1 2 -1 '"));
+		lwfree(x3d);
+		lwgeom_free(geom);
+	}
 
 	/* MultiPolygon */
 	do_x3d3_test(
