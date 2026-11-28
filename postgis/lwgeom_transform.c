@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2001-2003 Refractions Research Inc.
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -718,6 +719,10 @@ Datum postgis_srs_search(PG_FUNCTION_ARGS)
 		GSERIALIZED *gbounds = PG_GETARG_GSERIALIZED_P(0);
 		LWGEOM *bounds = lwgeom_from_gserialized(gbounds);
 		text *auth_name = PG_GETARG_TEXT_P(1);
+
+		lwgeom_add_bbox(bounds);
+		if (!lwgeom_get_bbox(bounds))
+			elog(ERROR, "%s: cannot search with an empty bounds geometry", __func__);
 
 		funcctx = SRF_FIRSTCALL_INIT();
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
