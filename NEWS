@@ -36,6 +36,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #1764, GT-893, GH-1059, Keep raster2pgsql overviews aligned, including skew
+   (Darafei Praliaskouski)
  - GT-936, Bind deprecated SFCGAL wrappers to their installed CG functions
    (reported by Arunachalam TKS / Microsoft; fixed by Darafei Praliaskouski)
  - Keep GitLab mirror status during API rate limits (Darafei Praliaskouski)
