@@ -3181,6 +3181,12 @@ RASTER_union_finalfn(PG_FUNCTION_ARGS)
 	{
 		if (iwr->bandarg[i].uniontype == UT_MEAN || iwr->bandarg[i].uniontype == UT_RANGE)
 		{
+			/* nothing was unioned for this band */
+			if (iwr->bandarg[i].raster[0] == NULL || iwr->bandarg[i].raster[1] == NULL ||
+			    !rt_raster_has_band(iwr->bandarg[i].raster[0], 0) ||
+			    !rt_raster_has_band(iwr->bandarg[i].raster[1], 0))
+				continue;
+
 			/* raster containing the SUM or MAX is at index 1 */
 			_band = rt_raster_get_band(iwr->bandarg[i].raster[1], 0);
 
