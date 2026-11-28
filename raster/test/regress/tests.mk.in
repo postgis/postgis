@@ -140,6 +140,7 @@ RASTER_TEST_LOADER = \
 	$(top_srcdir)/raster/test/regress/loader/LongOptions \
 	$(top_srcdir)/raster/test/regress/loader/LongMaintenance \
 	$(top_srcdir)/raster/test/regress/loader/OverviewAligned \
+	$(top_srcdir)/raster/test/regress/loader/OverviewAlignedSkew \
 	$(top_srcdir)/raster/test/regress/loader/OverviewAlignedFence \
 	$(top_srcdir)/raster/test/regress/loader/OverviewAlignedGrid \
 	$(top_srcdir)/raster/test/regress/loader/OverviewAlignedSourceOverview \

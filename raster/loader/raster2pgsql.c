@@ -1720,6 +1720,8 @@ build_overview(int idx,
 
 	/* adjust scale */
 	gtOv[1] *= factor;
+	gtOv[2] *= factor;
+	gtOv[4] *= factor;
 	gtOv[5] *= factor;
 
 	if (align_to_ref)
