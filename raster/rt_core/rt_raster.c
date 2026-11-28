@@ -529,9 +529,7 @@ rt_raster_generate_new_band(rt_raster raster,
 	rt_band band = NULL;
 	uint16_t width = 0;
 	uint16_t height = 0;
-	size_t numval = 0;
 	size_t datasize = 0;
-	int pixbytes = 0;
 	int oldnumbands = 0;
 	int numbands = 0;
 	void *mem = NULL;
@@ -548,21 +546,16 @@ rt_raster_generate_new_band(rt_raster raster,
 	/* Determine size of memory block to allocate and allocate it */
 	width = rt_raster_get_width(raster);
 	height = rt_raster_get_height(raster);
-	pixbytes = rt_pixtype_size(pixtype);
-	if (pixbytes < 1)
-	{
-		rterror("rt_raster_generate_new_band: Invalid pixel type for band allocation");
+	int pixbytes = rt_pixtype_size_for(__func__, pixtype);
+	/*
+	 * Keep this historical cap even when size_t can represent a larger
+	 * allocation.  Raster serialization stores the byte count in uint32_t,
+	 * so allowing a larger band here only defers rejection to a later path.
+	 */
+	if (!rt_band_data_size(__func__, width, height, pixbytes, UINT32_MAX, &datasize))
 		return -1;
-	}
-	numval = (size_t)width * height;
-	if (numval > UINT32_MAX / (size_t)pixbytes)
-	{
-		rterror("rt_raster_generate_new_band: Raster dimensions are too large for band allocation");
-		return -1;
-	}
-	datasize = numval * (size_t)pixbytes;
 
-	mem = (int *)rtalloc(datasize);
+	mem = rtalloc(datasize);
 	if (!mem)
 	{
 		rterror("rt_raster_generate_new_band: Could not allocate memory for band");
@@ -1571,6 +1564,21 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t can_write)
  * rt_raster_to_gdal_mem()
  ******************************************************************************/
 
+/* GDAL returns block dimensions as signed ints. */
+static int
+rt_gdal_block_buffer_size(const char *caller, int width, int height, size_t pixel_size, size_t *size)
+{
+	size_t pixels;
+	if (width < 1 || height < 1 ||
+	    !rt_util_size_mul(rt_util_size_from_signed(width), rt_util_size_from_signed(height), &pixels) ||
+	    !rt_util_size_mul(pixels, pixel_size, size))
+	{
+		rterror("%s: Invalid or oversized GDAL block size", caller);
+		return 0;
+	}
+	return 1;
+}
+
 /**
  * Return GDAL dataset using GDAL MEM driver from raster.
  *
@@ -1848,19 +1856,27 @@ rt_raster_to_gdal_mem(rt_raster raster,
 			int iXMax, iYMax;
 
 			int x, y, z;
-			uint32_t valueslen = 0;
+			size_t valueslen = 0;
 			int16_t *values = NULL;
 			double value = 0.;
 
 			/* this makes use of GDAL's "natural" blocks */
 			GDALGetBlockSize(band, &nXBlockSize, &nYBlockSize);
+			if (!rt_gdal_block_buffer_size(__func__, nXBlockSize, nYBlockSize, sizeof(*values), &valueslen))
+			{
+				if (allocBandNums)
+					rtdealloc(bandNums);
+				if (allocNodataValues)
+					rtdealloc(excludeNodataValues);
+				GDALClose(ds);
+				return 0;
+			}
 			nXBlocks = (width + nXBlockSize - 1) / nXBlockSize;
 			nYBlocks = (height + nYBlockSize - 1) / nYBlockSize;
 			RASTER_DEBUGF(4, "(nXBlockSize, nYBlockSize) = (%d, %d)", nXBlockSize, nYBlockSize);
 			RASTER_DEBUGF(4, "(nXBlocks, nYBlocks) = (%d, %d)", nXBlocks, nYBlocks);
 
 			/* length is for the desired pixel type */
-			valueslen = rt_pixtype_size(PT_16BSI) * nXBlockSize * nYBlockSize;
 			values = rtalloc(valueslen);
 			if (NULL == values)
 			{
@@ -2032,7 +2048,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds)
 	uint32_t iY;
 
 	uint8_t *values = NULL;
-	uint32_t valueslen = 0;
+	size_t valueslen = 0;
 	uint8_t *ptr = NULL;
 
 	assert(NULL != ds);
@@ -2129,7 +2145,15 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds)
 			rt_raster_destroy(rast);
 			return NULL;
 		}
-		ptlen = rt_pixtype_size(pt);
+		{
+			int _ptlen = rt_pixtype_size_for(__func__, pt);
+			if (_ptlen < 1)
+			{
+				rt_raster_destroy(rast);
+				return NULL;
+			}
+			ptlen = (uint32_t)_ptlen;
+		}
 
 		/* size: width and height */
 		width = GDALGetRasterBandXSize(gdband);
@@ -2154,13 +2178,17 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds)
 
 		/* this makes use of GDAL's "natural" blocks */
 		GDALGetBlockSize(gdband, &nXBlockSize, &nYBlockSize);
+		if (!rt_gdal_block_buffer_size(__func__, nXBlockSize, nYBlockSize, ptlen, &valueslen))
+		{
+			rt_raster_destroy(rast);
+			return NULL;
+		}
 		nXBlocks = (width + nXBlockSize - 1) / nXBlockSize;
 		nYBlocks = (height + nYBlockSize - 1) / nYBlockSize;
 		RASTER_DEBUGF(4, "(nXBlockSize, nYBlockSize) = (%d, %d)", nXBlockSize, nYBlockSize);
 		RASTER_DEBUGF(4, "(nXBlocks, nYBlocks) = (%d, %d)", nXBlocks, nYBlocks);
 
 		/* allocate memory for values */
-		valueslen = ptlen * nXBlockSize * nYBlockSize;
 		values = rtalloc(valueslen);
 		if (values == NULL)
 		{
@@ -2168,7 +2196,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds)
 			rt_raster_destroy(rast);
 			return NULL;
 		}
-		RASTER_DEBUGF(3, "values @ %p of length = %d", values, valueslen);
+		RASTER_DEBUGF(3, "values @ %p of length = %zu", values, valueslen);
 
 		for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++)
 		{
@@ -2390,8 +2418,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	GDALDatasetH _ds = NULL;
 	GDALRasterBandH _band = NULL;
 
-	uint16_t _width = 0;
-	uint16_t _height = 0;
+	uint16_t _width;
+	uint16_t _height;
 
 	RASTER_DEBUG(3, "starting");
 
@@ -3073,13 +3101,11 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		double val = 0;
 		int nodata = 0;
-		int hasnodata = 0;
+		uint32_t hasnodata = 0;
 		double nodataval = 0;
-		int x = 0;
-		int y = 0;
 
 		oldband = rt_raster_get_band(rast, i);
-		if (oldband == NULL)
+		if (!oldband)
 		{
 			rterror("rt_raster_gdal_rasterize: Could not get band %d of output raster", i);
 			_rti_rasterize_arg_destroy(arg);
@@ -3092,24 +3118,34 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			continue;
 
 		/* hasnodata, nodataval */
-		hasnodata = rt_band_get_hasnodata_flag(oldband);
+		hasnodata = rt_band_get_hasnodata_flag(oldband) != 0;
 		if (hasnodata)
 			rt_band_get_nodata(oldband, &nodataval);
 
 		/* allocate data */
-		data = rtalloc((size_t)rt_pixtype_size(arg->pixtype[i]) * _width * _height);
-		if (data == NULL)
 		{
-			rterror("rt_raster_gdal_rasterize: Could not allocate memory for band data");
-			_rti_rasterize_arg_destroy(arg);
-			rt_raster_destroy(rast);
-			return NULL;
+			size_t datasize;
+			int pixbytes = rt_pixtype_size_for(__func__, arg->pixtype[i]);
+			if (!rt_band_data_size(__func__, _width, _height, pixbytes, SIZE_MAX, &datasize))
+			{
+				_rti_rasterize_arg_destroy(arg);
+				rt_raster_destroy(rast);
+				return NULL;
+			}
+			data = rtalloc(datasize);
+			if (!data)
+			{
+				rterror("%s: Could not allocate memory for band data", __func__);
+				_rti_rasterize_arg_destroy(arg);
+				rt_raster_destroy(rast);
+				return NULL;
+			}
+			memset(data, 0, datasize);
 		}
-		memset(data, 0, (size_t)rt_pixtype_size(arg->pixtype[i]) * _width * _height);
 
 		/* create new band of correct type */
 		band = rt_band_new_inline(_width, _height, arg->pixtype[i], hasnodata, nodataval, data);
-		if (band == NULL)
+		if (!band)
 		{
 			rterror("rt_raster_gdal_rasterize: Could not create band");
 			rtdealloc(data);
@@ -3122,9 +3158,9 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		rt_band_set_ownsdata_flag(band, 1);
 
 		/* copy pixel by pixel */
-		for (x = 0; x < _width; x++)
+		for (uint16_t x = 0; x < _width; x++)
 		{
-			for (y = 0; y < _height; y++)
+			for (uint16_t y = 0; y < _height; y++)
 			{
 				err = rt_band_get_pixel(oldband, x, y, &val, &nodata);
 				if (err != ES_NONE)

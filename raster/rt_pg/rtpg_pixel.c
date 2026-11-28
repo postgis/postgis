@@ -2,6 +2,7 @@
  *
  * WKTRaster - Raster Types for PostGIS
  *
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
@@ -23,7 +24,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
  */
 
 #include <postgres.h>
@@ -359,6 +359,22 @@ RASTER_getGeometryValues(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gserialized_from_lwgeom(lwgeom_out, NULL));
 }
 
+/* The buffers and the raster belong to PostgreSQL memory contexts. */
+static size_t
+rtpg_pixel_array_sizes(const char *caller, int width, int height, size_t *values_size, size_t *nodata_size)
+{
+	size_t pixels;
+
+	if (width < 0 || height < 0 ||
+	    !rt_util_size_mul(rt_util_size_from_signed(width), rt_util_size_from_signed(height), &pixels) ||
+	    !rt_util_size_mul(pixels, sizeof(Datum), values_size) ||
+	    !rt_util_size_mul(pixels, sizeof(bool), nodata_size) || !AllocSizeIsValid(*values_size) ||
+	    !AllocSizeIsValid(*nodata_size))
+		elog(ERROR, "%s: Raster dimensions are too large for pixel arrays", caller);
+
+	return pixels;
+}
+
 /* ---------------------------------------------------------------- */
 /*  ST_DumpValues function                                          */
 /* ---------------------------------------------------------------- */
@@ -366,8 +382,8 @@ RASTER_getGeometryValues(PG_FUNCTION_ARGS)
 typedef struct rtpg_dumpvalues_arg_t *rtpg_dumpvalues_arg;
 struct rtpg_dumpvalues_arg_t {
 	int numbands;
-	int rows;
-	int columns;
+	uint16_t rows;
+	uint16_t columns;
 
 	int *nbands; /* 0-based */
 	Datum **values;
@@ -461,6 +477,9 @@ RASTER_dumpValues(PG_FUNCTION_ARGS)
 		int numbands = 0;
 		int j = 0;
 		bool exclude_nodata_value = TRUE;
+		size_t npixels;
+		size_t values_size;
+		size_t nodata_size;
 
 		ArrayType *array;
 		Oid etype;
@@ -636,6 +655,7 @@ RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 		arg1->rows = rt_raster_get_height(raster);
 		arg1->columns = rt_raster_get_width(raster);
+		npixels = rtpg_pixel_array_sizes(__func__, arg1->columns, arg1->rows, &values_size, &nodata_size);
 
 		/* exclude_nodata_value */
 		if (!PG_ARGISNULL(2))
@@ -677,8 +697,8 @@ RASTER_dumpValues(PG_FUNCTION_ARGS)
 			}
 
 			/* allocate memory for values and nodata flags */
-			arg1->values[z] = palloc(sizeof(Datum) * arg1->rows * arg1->columns);
-			arg1->nodata[z] = palloc(sizeof(bool) * arg1->rows * arg1->columns);
+			arg1->values[z] = palloc(values_size);
+			arg1->nodata[z] = palloc(nodata_size);
 			if (arg1->values[z] == NULL || arg1->nodata[z] == NULL)
 			{
 				rtpg_dumpvalues_arg_destroy(arg1);
@@ -688,16 +708,16 @@ RASTER_dumpValues(PG_FUNCTION_ARGS)
 				elog(ERROR, "RASTER_dumpValues: Could not allocate memory for pixel values");
 				SRF_RETURN_DONE(funcctx);
 			}
-			memset(arg1->values[z], 0, sizeof(Datum) * arg1->rows * arg1->columns);
-			memset(arg1->nodata[z], 0, sizeof(bool) * arg1->rows * arg1->columns);
+			memset(arg1->values[z], 0, values_size);
+			memset(arg1->nodata[z], 0, nodata_size);
 
 			i = 0;
 
 			/* shortcut if band is NODATA */
 			if (rt_band_get_isnodata_flag(band))
 			{
-				for (i = (arg1->rows * arg1->columns) - 1; i >= 0; i--)
-					arg1->nodata[z][i] = TRUE;
+				for (uint32_t pi = 0; pi < npixels; pi++)
+					arg1->nodata[z][pi] = TRUE;
 				continue;
 			}
 
@@ -2451,6 +2471,8 @@ RASTER_neighborhood(PG_FUNCTION_ARGS)
 	int16 typlen;
 	bool typbyval;
 	char typalign;
+	size_t values_size;
+	size_t nodata_size;
 
 	/* pgraster is null, return nothing */
 	if (PG_ARGISNULL(0))
@@ -2610,10 +2632,11 @@ RASTER_neighborhood(PG_FUNCTION_ARGS)
 	}
 
 	/* 1D arrays for values and nodata from 2D arrays */
-	value1D = palloc(sizeof(Datum) * dim[0] * dim[1]);
-	nodata1D = palloc(sizeof(bool) * dim[0] * dim[1]);
+	rtpg_pixel_array_sizes(__func__, dim[0], dim[1], &values_size, &nodata_size);
+	value1D = palloc(values_size);
+	nodata1D = palloc(nodata_size);
 
-	if (value1D == NULL || nodata1D == NULL)
+	if (!value1D || !nodata1D)
 	{
 
 		for (i = 0; i < dim[0]; i++)
