@@ -36,6 +36,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-968, Ignore included columns when reading spatial index extents
+   (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - #5937, [topology] Fix spurious RemoveUnusedPrimitives warnings on rings
    (reported by Sandro Santilli; fixed by Darafei Praliaskouski)
  - GT-778, [raster] Guard raster allocation and serialization sizes against

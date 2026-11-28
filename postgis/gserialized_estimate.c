@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2012 (C) Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2025 (C) Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2025-2026 (C) Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -2178,9 +2178,7 @@ gserialized_gist_sel_nd(PG_FUNCTION_ARGS)
 /************************************************************************/
 
 /*
- * Given an index and table column, confirm the
- * index was built on that column, and return the
- * corresponding index attribute for that column.
+ * Return the index attribute number for a table column used as an index key.
  */
 static int16
 index_has_attr(Oid index_oid, Oid table_oid, int16 table_attnum)
@@ -2200,8 +2198,8 @@ index_has_attr(Oid index_oid, Oid table_oid, int16 table_attnum)
 	if (index_form->indrelid != table_oid)
 		elog(ERROR, "table=%u and index=%u are not related", table_oid, index_oid);
 
-	/* Check if the attnum is in the indkey array */
-	for (int16 i = 0; i < (int16)(index_form->indkey.dim1); i++)
+	/* Only key columns are stored in internal index tuples. */
+	for (int16 i = 0; i < index_form->indnkeyatts; i++)
 	{
 		if (index_form->indkey.values[i] == table_attnum)
 		{
