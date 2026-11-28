@@ -1055,6 +1055,10 @@ LWT_ELEMID lwt_AddPoint(LWT_TOPOLOGY *topo, LWPOINT *point, double tol);
  */
 LWT_ELEMID *lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int max_edges);
 
+/* Preserve automatic snapping with a precomputed tolerance. */
+LWT_ELEMID *
+lwt_AddLineWithSnap(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int max_edges, bool automatic);
+
 /**
  * Adds a linestring to the topology without determining generated faces
  *
@@ -1127,6 +1131,9 @@ int lwt_Polygonize(LWT_TOPOLOGY *topo);
  *         will need to free the array using lwfree(), if not null.
  */
 LWT_ELEMID *lwt_AddPolygon(LWT_TOPOLOGY *topo, LWPOLY *poly, double tol, int *nfaces);
+
+/* Preserve automatic snapping with a precomputed tolerance. */
+LWT_ELEMID *lwt_AddPolygonWithSnap(LWT_TOPOLOGY *topo, LWPOLY *poly, double tol, int *nfaces, bool automatic);
 
 /**
  * Load a geometry into the topology

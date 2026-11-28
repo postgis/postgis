@@ -41,6 +41,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #5886, GT-429, GH-971, [topology] Snap line vertices to nearby edges
+   (reported by Sandro Santilli; fixed by Darafei Praliaskouski)
  - GT-999, Reject empty GML curve segments and bound recursive parsing
    (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev /
    Tiger Data, Darafei Praliaskouski)
