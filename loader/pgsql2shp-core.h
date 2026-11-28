@@ -205,4 +205,3 @@ int ShpDumperGetRecordCount(SHPDUMPERSTATE *state);
 int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state);
 int ShpDumperCloseTable(SHPDUMPERSTATE *state);
 void ShpDumperDestroy(SHPDUMPERSTATE *state);
-char *quote_identifier(const char *s);

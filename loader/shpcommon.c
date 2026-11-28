@@ -24,6 +24,27 @@
 #include "shpcommon.h"
 #include "lwgeom_log.h"
 
+/* Properly double-quote a SQL identifier. */
+char *
+quote_identifier(const char *s)
+{
+	char *result = malloc(strlen(s) * 2 + 3);
+	char *r;
+	if (!result)
+		return NULL;
+	r = result;
+	*r++ = '"';
+	while (*s)
+	{
+		if (*s == '"')
+			*r++ = *s;
+		*r++ = *s++;
+	}
+	*r++ = '"';
+	*r = '\0';
+	return result;
+}
+
 typedef struct
 {
     int ldid;

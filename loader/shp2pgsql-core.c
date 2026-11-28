@@ -1432,7 +1432,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	state->widths = malloc(state->num_fields * sizeof(int));
 	state->precisions = malloc(state->num_fields * sizeof(int));
 	state->pgfieldtypes = calloc(state->num_fields, sizeof(char *));
-	state->col_names = calloc((size_t)state->num_fields * (MAXFIELDNAMELEN + 2) +
+	state->col_names = calloc((size_t)state->num_fields * (2 * MAXFIELDNAMELEN + 3) +
 				      (state->config->readshape ? strlen(state->geo_col) : 0) + 1,
 				  sizeof(char));
 	int fields_allocated = !state->num_fields || (state->field_names && state->types && state->widths &&
@@ -1603,18 +1603,16 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		if (!state->pgfieldtypes[j])
 			return ShpLoaderOpenShapeFieldAllocFailure(state);
 
-		strcat(state->col_names, "\"");
-		strcat(state->col_names, name);
-
+		{
+			char *quoted = quote_identifier(name);
+			if (!quoted)
+				return ShpLoaderOpenShapeFieldAllocFailure(state);
+			strcat(state->col_names, quoted);
+			free(quoted);
+		}
+		/* Don't include last comma if its the last field and no geometry field will follow */
 		if (state->config->readshape == 1 || j < (state->num_fields - 1))
-		{
-			/* Don't include last comma if its the last field and no geometry field will follow */
-			strcat(state->col_names, "\",");
-		}
-		else
-		{
-			strcat(state->col_names, "\"");
-		}
+			strcat(state->col_names, ",");
 	}
 
 	/* Append the geometry column if required */
@@ -1699,7 +1697,15 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		/* Generate the field types based upon the shapefile information */
 		for (j = 0; j < state->num_fields; j++)
 		{
-			stringbuffer_aprintf(sb, ",\n\"%s\" ", state->field_names[j]);
+			char *quoted = quote_identifier(state->field_names[j]);
+			if (!quoted)
+			{
+				stringbuffer_destroy(sb);
+				snprintf(state->message, SHPLOADERMSGLEN, "%s", _("Unable to allocate memory"));
+				return SHPLOADERERR;
+			}
+			stringbuffer_aprintf(sb, ",\n%s ", quoted);
+			free(quoted);
 
 			/* First output the raw field type string */
 			stringbuffer_aprintf(sb, "%s", state->pgfieldtypes[j]);
