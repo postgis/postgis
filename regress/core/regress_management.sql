@@ -144,3 +144,26 @@ SELECT 'foreign after typmod', 2, 4326, 'POINT';
 SELECT 'foreign constraints', 1;
 SELECT 'foreign after constraints', 2, 4326, 'POINT';
 \endif
+
+-- Register a geometry column in a schema outside the search path.
+CREATE SCHEMA geometry_metadata;
+CREATE TABLE geometry_metadata.points (geom geometry);
+INSERT INTO geometry_metadata.points VALUES ('SRID=4326;POINT(1 2)');
+SELECT 'populate geometry metadata',
+	populate_geometry_columns('geometry_metadata.points'::regclass);
+SELECT 'registered geometry metadata', coord_dimension, srid, type
+	FROM geometry_columns
+	WHERE f_table_schema = 'geometry_metadata'
+	AND f_table_name = 'points'
+	AND f_geometry_column = 'geom';
+-- A column of an unrelated type does not belong in spatial metadata.
+CREATE TYPE geometry_metadata.geometry AS ENUM ('example');
+CREATE TABLE geometry_metadata.labels (label geometry_metadata.geometry);
+SELECT 'unrelated type metadata', count(*)
+	FROM geometry_columns
+	WHERE f_table_schema = 'geometry_metadata'
+	AND f_table_name = 'labels';
+DROP TABLE geometry_metadata.labels;
+DROP TYPE geometry_metadata.geometry;
+DROP TABLE geometry_metadata.points;
+DROP SCHEMA geometry_metadata;

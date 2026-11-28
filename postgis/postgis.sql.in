@@ -2307,17 +2307,13 @@ BEGIN
 	inserted := 0;
 
 	-- Count the number of geometry columns in all tables and views
-	--
-	-- Match the type by OID, not by name: a column of some other type that
-	-- happens to be called 'geometry' is not ours, and probing it below runs
-	-- whatever cast its owner put between that type and this one.
 	SELECT count(DISTINCT c.oid) INTO probed
 	FROM pg_class c,
 		 pg_attribute a,
 		 pg_namespace n
 	WHERE c.relkind IN('r','v','f', 'p')
-		AND a.attisdropped = false
 		AND a.atttypid = '@extschema@.geometry'::regtype
+		AND a.attisdropped = false
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns' ;
@@ -2331,8 +2327,8 @@ BEGIN
 			 pg_attribute a,
 			 pg_namespace n
 		WHERE c.relkind IN( 'r', 'f', 'p')
-		AND a.attisdropped = false
 		AND a.atttypid = '@extschema@.geometry'::regtype
+		AND a.attisdropped = false
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns'
@@ -2400,8 +2396,8 @@ BEGIN
 			 pg_attribute a,
 			 pg_namespace n
 		WHERE c.relkind IN('r', 'f', 'p')
-		AND a.attisdropped = false
 		AND a.atttypid = '@extschema@.geometry'::regtype
+		AND a.attisdropped = false
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND n.nspname NOT ILIKE 'pg_temp%'
@@ -6666,7 +6662,6 @@ SELECT pg_catalog.current_database()::pg_catalog.varchar(256) AS f_table_catalog
      ) sr ON sr.conrelid OPERATOR(pg_catalog.=) c.oid AND (a.attnum OPERATOR(pg_catalog.=) ANY (sr.conkey))
   WHERE (c.relkind OPERATOR(pg_catalog.=) ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"]))
   AND NOT c.relname OPERATOR(pg_catalog.=) 'raster_columns'::pg_catalog.name
-  -- By OID, not by name: another type called 'geometry' is not ours
   AND a.atttypid OPERATOR(pg_catalog.=) '@extschema@.geometry'::pg_catalog.regtype
   AND NOT pg_catalog.pg_is_other_temp_schema(c.relnamespace)
   -- A stale MVCC snapshot can still see a dropped pg_class row (#6038).

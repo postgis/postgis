@@ -172,10 +172,11 @@ CREATE OR REPLACE VIEW geography_columns AS
 	FROM
 		pg_catalog.pg_class c,
 		pg_catalog.pg_attribute a,
+		pg_catalog.pg_type t,
 		pg_catalog.pg_namespace n
-	-- By OID, not by name: another type called 'geography' is not ours
-	WHERE a.atttypid OPERATOR(pg_catalog.=) '@extschema@.geography'::pg_catalog.regtype
+	WHERE t.typname OPERATOR(pg_catalog.=) 'geography'::pg_catalog.name
 		AND a.attisdropped OPERATOR(pg_catalog.=) false
+		AND a.atttypid OPERATOR(pg_catalog.=) t.oid
 		AND a.attrelid OPERATOR(pg_catalog.=) c.oid
 		AND c.relnamespace OPERATOR(pg_catalog.=) n.oid
 		AND c.relkind OPERATOR(pg_catalog.=) ANY (ARRAY['r'::pg_catalog."char", 'v'::pg_catalog."char", 'm'::pg_catalog."char", 'f'::pg_catalog."char", 'p'::pg_catalog."char"] )
