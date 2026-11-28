@@ -1692,7 +1692,8 @@ FROM (SELECT
     <para role="enhanced" conformance="3.0.0">Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 
     <important>
-      <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+      <para>Do not use this function with invalid geometries. You will get unexpected results.
+      If the result is unexpected, check each input with <xref linkend="ST_IsValidReason"/>.</para>
     </important>
 
     <para>NOTE: this is the "allowable" version that returns a
