@@ -76,14 +76,17 @@ ptarray_signed_area_add_abs_or_infinite(double *sum, double value)
 		*sum = INFINITY;
 }
 
+/* Error-free transforms require every intermediate to round to double.
+ * Volatile stores prevent excess x87 precision from discarding residuals. */
 static inline void
 ptarray_signed_area_two_sum(double a, double b, double *sum, double *err)
 {
-	double bvirt, avirt, bround, around;
+	volatile double bvirt, avirt, bround, around, rounded;
 
-	*sum = a + b;
-	bvirt = *sum - a;
-	avirt = *sum - bvirt;
+	rounded = a + b;
+	*sum = rounded;
+	bvirt = rounded - a;
+	avirt = rounded - bvirt;
 	bround = b - bvirt;
 	around = a - avirt;
 	*err = around + bround;
@@ -133,7 +136,8 @@ ptarray_signed_area_expansion_add(ptarray_signed_area_expansion *expansion, doub
 static inline void
 ptarray_signed_area_expansion_add_product(ptarray_signed_area_expansion *expansion, double a, double b, double sign)
 {
-	double product = a * b;
+	/* The fused residual must use the product rounded to double. */
+	volatile double product = a * b;
 
 	ptarray_signed_area_expansion_add(expansion, sign * product);
 	ptarray_signed_area_expansion_add(expansion, sign * fma(a, b, -product));
@@ -157,11 +161,12 @@ ptarray_signed_area_expansion_sum(ptarray_signed_area_expansion *expansion)
 static inline void
 ptarray_signed_area_two_diff(double a, double b, double *diff, double *err)
 {
-	double bvirt, avirt, bround, around;
+	volatile double bvirt, avirt, bround, around, rounded;
 
-	*diff = a - b;
-	bvirt = a - *diff;
-	avirt = *diff + bvirt;
+	rounded = a - b;
+	*diff = rounded;
+	bvirt = a - rounded;
+	avirt = rounded + bvirt;
 	bround = bvirt - b;
 	around = a - avirt;
 	*err = around + bround;

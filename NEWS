@@ -3,6 +3,8 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- GT-870, Preserve signed-area residuals on 32-bit builds (Darafei Praliaskouski)
+
 - Qualify the TIGER rate_attributes helper (Darafei Praliaskouski)
 - Avoid an implicit dependency on Abseil in FlatGeobuf (Paul Ramsey)
 - #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
