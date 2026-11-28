@@ -223,11 +223,12 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 		}
 
 		if (weight_count != (int)line->points->npoints) {
+			int control_point_count = (int)line->points->npoints;
 			pfree(weights);
 			lwgeom_free(control_geom);
 			ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 				errmsg("Number of weights (%d) must equal number of control points (%d)",
-					weight_count, line->points->npoints)));
+					weight_count, control_point_count)));
 		}
 
 		/* Validate all weights are positive */
