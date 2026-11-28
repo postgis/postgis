@@ -237,3 +237,9 @@ SELECT 'NURBS_ERR_4', ST_MakeNurbsCurve(
     ARRAY[1.0, 1.0, 1.0],
     ARRAY[0.0, 0.0, 1.0, 0.5, 1.0, 1.0]
 );
+
+SELECT 'NURBS_ERR_WEIGHT_COUNT', ST_MakeNurbsCurve(
+    2,
+    'LINESTRING(0 0, 1 1, 2 0)'::geometry,
+    ARRAY[1.0]
+);

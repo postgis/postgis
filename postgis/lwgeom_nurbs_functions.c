@@ -48,7 +48,7 @@ Datum ST_Evaluate(PG_FUNCTION_ARGS);
 Datum ST_NurbsToLineString(PG_FUNCTION_ARGS);
 
 static ArrayType* float8_array_from_double_array(double *values, int count);
-static double* double_array_from_float8_array(ArrayType *array, int *count);
+static double *double_array_from_float8_array(ArrayType *array, uint32_t *count);
 
 /**
  * Convert a C array of doubles into a PostgreSQL float8 ArrayType.
@@ -98,13 +98,14 @@ float8_array_from_double_array(double *values, int count)
  *              (0 if `array` is NULL).
  * @return Pointer to a palloc'd double array, or NULL if `array` is NULL.
  */
-static double*
-double_array_from_float8_array(ArrayType *array, int *count)
+static double *
+double_array_from_float8_array(ArrayType *array, uint32_t *count)
 {
 	bool *nulls;
 	Datum *elems;
 	double *result;
-	int i, nelems;
+	int nelems;
+	uint32_t n;
 
 	if (!array) {
 		*count = 0;
@@ -113,9 +114,11 @@ double_array_from_float8_array(ArrayType *array, int *count)
 
 	deconstruct_array(array, FLOAT8OID, sizeof(float8), FLOAT8PASSBYVAL, 'd',
 		&elems, &nulls, &nelems);
+	n = (uint32_t)nelems;
 
-	result = palloc(sizeof(double) * nelems);
-	for (i = 0; i < nelems; i++) {
+	result = palloc(sizeof(double) * n);
+	for (uint32_t i = 0; i < n; i++)
+	{
 		if (nulls[i]) {
 			pfree(result);
 			ereport(ERROR, (errcode(ERRCODE_NULL_VALUE_NOT_ALLOWED),
@@ -124,7 +127,7 @@ double_array_from_float8_array(ArrayType *array, int *count)
 		result[i] = DatumGetFloat8(elems[i]);
 	}
 
-	*count = nelems;
+	*count = n;
 	pfree(elems);
 	pfree(nulls);
 	return result;
@@ -167,8 +170,8 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	double *weights = NULL;
 	double *knots = NULL;
-	int weight_count = 0, knot_count = 0;
-	int i, expected_knots;
+	uint32_t weight_count = 0, knot_count = 0;
+	uint32_t expected_knots;
 
 	/* Validate required parameters */
 	if (PG_ARGISNULL(0) || PG_ARGISNULL(1)) {
@@ -222,23 +225,28 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 				errmsg("Invalid weights array")));
 		}
 
-		if (weight_count != (int)line->points->npoints) {
+		if (weight_count != line->points->npoints)
+		{
+			uint32_t control_point_count = line->points->npoints;
 			pfree(weights);
 			lwgeom_free(control_geom);
-			ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				errmsg("Number of weights (%d) must equal number of control points (%d)",
-					weight_count, line->points->npoints)));
+			ereport(ERROR,
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				 errmsg("Number of weights (%u) must equal number of control points (%u)",
+					weight_count,
+					control_point_count)));
 		}
 
 		/* Validate all weights are positive */
-		for (i = 0; i < weight_count; i++) {
+		for (uint32_t i = 0; i < weight_count; i++)
+		{
 			if (weights[i] <= 0.0) {
 				double bad_weight = weights[i];
 				pfree(weights);
 				lwgeom_free(control_geom);
-				ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					errmsg("All weights must be positive, got %g at position %d",
-						bad_weight, i)));
+				ereport(ERROR,
+					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+					 errmsg("All weights must be positive, got %g at position %u", bad_weight, i)));
 			}
 		}
 	}
@@ -260,22 +268,31 @@ Datum ST_MakeNurbsCurve(PG_FUNCTION_ARGS)
 			pfree(knots);
 			if (weights) pfree(weights);
 			lwgeom_free(control_geom);
-			ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				errmsg("Knot vector must have %d elements for %d control points and degree %d, got %d",
-					expected_knots, npoints, degree, knot_count)));
+			ereport(ERROR,
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				 errmsg("Knot vector must have %u elements for %u control points and degree %u, got %u",
+					expected_knots,
+					npoints,
+					degree,
+					knot_count)));
 		}
 
 		/* Validate knot vector is non-decreasing */
-		for (i = 1; i < knot_count; i++) {
+		for (uint32_t i = 1; i < knot_count; i++)
+		{
 			if (knots[i] < knots[i-1]) {
 				double prev_knot = knots[i-1];
 				double bad_knot = knots[i];
 				pfree(knots);
 				if (weights) pfree(weights);
 				lwgeom_free(control_geom);
-				ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					errmsg("Knot vector must be non-decreasing, but knot[%d]=%g > knot[%d]=%g",
-						i-1, prev_knot, i, bad_knot)));
+				ereport(ERROR,
+					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+					 errmsg("Knot vector must be non-decreasing, but knot[%u]=%g > knot[%u]=%g",
+						i - 1,
+						prev_knot,
+						i,
+						bad_knot)));
 			}
 		}
 	}
