@@ -50,8 +50,6 @@ NOTICE:  One or both of the geometries is missing z-value. The unknown z-value w
 1
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
 1
-NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
-1
 empty-3dclosestpoint-first|t
 empty-3dclosestpoint-second|t
 empty-3dshortestline-first|t
