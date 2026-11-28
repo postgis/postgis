@@ -1829,6 +1829,13 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 	/* Initialize nd_box. */
 	nd_box_from_gbox(box, &nd_box);
 
+	/* Non-finite query bounds cannot be mapped to histogram cells. */
+	for (d = 0; d < ndims_max; d++)
+	{
+		if (!isfinite(nd_box.min[d]) || !isfinite(nd_box.max[d]))
+			return FALLBACK_ND_SEL;
+	}
+
 	/*
 	 * To return 2D stats on an ND sample, we need to make the
 	 * 2D box cover the full range of the other dimensions in the
