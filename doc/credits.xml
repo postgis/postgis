@@ -252,21 +252,21 @@
 		<listitem>
 			<para>
 				<simplelist type="vert" columns="3">
-					<member>dmyzl</member>
-					<member>fkcheng</member>
-					<member><link xlink:href="https://github.com/wywwzjj">@wywwzjj</link> (GitHub user)</member>
 					<member><link xlink:href="https://github.com/amwps290">@amwps290</link> (GitHub user)</member>
+					<member>code 666</member>
+					<member>dmyzl</member>
 					<member><link xlink:href="https://github.com/dovkoy">dovkoy</link> (GitHub user)</member>
+					<member>fkcheng</member>
 					<member><link xlink:href="https://github.com/kannes">@kannes</link> (GitHub user: Hannes)</member>
 					<member><link xlink:href="https://github.com/sunhm89">@sunhm89</link> (GitHub user)</member>
 					<member><link xlink:href="https://github.com/wewindy">@wewindy</link> (GitHub user: Chen)</member>
+					<member><link xlink:href="https://github.com/wywwzjj">@wywwzjj</link> (GitHub user)</member>
 					<member>Adrien Berchet</member>
+					<member>Aleksander Alekseev</member>
 					<member>Alex Bodnaru</member>
 					<member>Alex Mayrhofer</member>
-					<member>Alexander Lakhin</member>
 					<member>Alexander Kukushkin</member>
-					<member>Aleksander Alekseev</member>
-					<member>Zachariah Mithani</member>
+					<member>Alexander Lakhin</member>
 					<member>Andrea Peri</member>
 					<member>Andreas Forø Tollefsen</member>
 					<member>Andreas Neumann</member>
@@ -278,10 +278,10 @@
 					<member>Antoine Bajolet</member>
 					<member>Ariel Mashraki</member>
 					<member>Arno Renevier</member>
-					<member>Arunachalam TKS</member>
 					<member>Arthur Bazin</member>
 					<member>Arthur Lesuisse</member>
 					<member>Artur Zakirov</member>
+					<member>Arunachalam TKS</member>
 					<member>Ayo Adesugba</member>
 					<member>Barbara Phillipot</member>
 					<member>Baris Ergun</member>
@@ -311,12 +311,12 @@
 					<member>Daniel Nylander</member>
 					<member>Dapeng Wang</member>
 					<member>Daryl Herzmann</member>
-					<member>Dawid Żak</member>
 					<member>Dave Fuhry</member>
 					<member>David G. Johnston</member>
 					<member>David Garnier</member>
 					<member>David Skea</member>
 					<member>David Techer</member>
+					<member>Dawid Żak</member>
                     <member>Dennis Tighe</member>
 					<member>Denys Kovshun</member>
 					<member>Devrim Gündüz</member>
@@ -339,10 +339,10 @@
 					<member>Gerald Fenoy</member>
 					<member>Gino Lucrezi</member>
 					<member>Giovanni Zezza</member>
+					<member>Giuseppe Broccolo</member>
 					<member>Grant Hutchins</member>
 					<member>Greg Troxel</member>
 					<member>Guillaume Lelarge</member>
-					<member>Giuseppe Broccolo</member>
 					<member>Gwen Shapira</member>
 					<member>Han Wang</member>
 					<member>Hannes Janetzek</member>
@@ -366,11 +366,11 @@
 					<member>Joe Conway</member>
 					<member>John Carmack</member>
 					<member>Jonne Savolainen</member>
+					<member>Jörg Habenicht</member>
 					<member>Jorge Gustavo Rocha</member>
 					<member>Jorge Sanz</member>
 					<member>Jose Carlos Martinez Llari</member>
 					<member>Jostein Leira</member>
-					<member>Jörg Habenicht</member>
 					<member>Juan Sebastian Jimenez Aldana</member>
 					<member>Juergen E. Fischer</member>
 					<member>Julien Monticolo</member>
@@ -380,22 +380,21 @@
 					<member>Kris Jurka</member>
 					<member>Kristian Thy</member>
 					<member>Lars Aksel Opsahl</member>
-					<member>Laurențiu Nicola</member>
-					<member>Laurenz Albe</member>
 					<member>Lars Roessiger</member>
+					<member>Laurenz Albe</member>
 					<member>Lauri Kajan</member>
 					<member>Leo Hsu</member>
 					<member>Loic Dachary</member>
 					<member>Louis Descoteaux</member>
+					<member>Lubia Vinhas</member>
 					<member>Luca Delucchi</member>
 					<member>Luca S. Percich</member>
 					<member>Lucas C. Villa Real</member>
 					<member>Ludovic Hirlimann</member>
-					<member>Lubia Vinhas</member>
 					<member>Maksim Korotkov</member>
 					<member>Manuel Morillo</member>
-					<member>Maria Arias de Reyna</member>
 					<member>Marc Ducobu</member>
+					<member>Maria Arias de Reyna</member>
 					<member>Mark Sondheim</member>
 					<member>Markus Schaber</member>
 					<member>Markus Wanner</member>
@@ -406,8 +405,8 @@
 					<member>Maxim Kochetkov</member>
                     <member>Maxim Korotkov</member>
 					<member>Maxime Guillaud</member>
-					<member>Maxime van Noppen</member>
 					<member>Maxime Schoemans</member>
+					<member>Maxime van Noppen</member>
 					<member>Megan Ma</member>
 					<member>Mehmet Ince</member>
 					<member>Michael Fuhr</member>
@@ -417,19 +416,18 @@
 					<member>Nathan Wagner</member>
 					<member>Nathaniel Clay</member>
 					<member>Nicklas Larsson</member>
-					<member>Nitish Ramaraj</member>
 					<member>Nicolas Roelandt</member>
 					<member>Nikita Shulga</member>
 					<member>Nikolai Berkoff</member>
+					<member>Nitish Ramaraj</member>
 					<member>Norman Barker</member>
 					<member>Norman Vine</member>
 					<member>Patricia Tozer</member>
 					<member>Paul Norman</member>
+					<member>Paul Wouters</member>
 					<member>Paulo Cesar Coronado</member>
 					<member>Pavel Seleznev</member>
 					<member>Pawel Ostrowski</member>
-					<member>code 666</member>
-					<member>Paul Wouters</member>
 					<member>Peter Nguyen</member>
 					<member>Pierre Cardinal</member>
 					<member>Qing Liu</member>
@@ -454,9 +452,9 @@
 					<member>Steffen Macke</member>
 					<member>Stepan Kuzmin</member>
 					<member>Stephen Frost</member>
-					<member>Sven Klemm</member>
 					<member>Stephen Woodbridge</member>
 					<member>Steven Ottens</member>
+					<member>Sven Klemm</member>
 					<member>Svyatoslav Bogdanov</member>
 					<member>Talha Rizwan</member>
 					<member>Temuri Doghonadze</member>
@@ -476,6 +474,7 @@
 					<member>Xing Lin</member>
 					<member>Yoichi Kayama</member>
 					<member>Yuri Astrakhan</member>
+					<member>Zachariah Mithani</member>
 					<member>Zuo Chenwei</member>
 				</simplelist>
 			</para>
@@ -489,8 +488,8 @@
 			<para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project.
 			      In alphabetical order:
 			<itemizedlist>
-				<listitem><simpara><link xlink:href="https://aplosec.si/">AploSec</link></simpara></listitem>
                 <listitem><simpara><link xlink:href="https://aiven.io">Aiven</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://aplosec.si/">AploSec</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://arrival3d.com">Arrival 3D</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://artemissecurity.com/">Artemis Security</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</link></simpara></listitem>
@@ -501,25 +500,23 @@
 				<listitem><simpara><link xlink:href="https://www.cadcorp.com">Cadcorp</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.camptocamp.com">Camptocamp</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://carto.com">Carto</link></simpara></listitem>
-                <listitem><simpara><link xlink:href="https://www.crunchydata.com">Crunchy Data</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.boston.gov">City of Boston (DND)</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.hel.fi">City of Helsinki</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://blog.cleverelephant.ca">Clever Elephant Solutions</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.alveo.coop">Cooperativa Alveo</link></simpara></listitem>
+                <listitem><simpara><link xlink:href="https://www.crunchydata.com">Crunchy Data</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="http://www.elecnor-deimos.com">Deimos Space</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.faunalia.eu">Faunalia</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://gov.bc.ca">Geographic Data BC</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.google.com">Google</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.nile.ai/">Nile</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.tigerdata.com">Tiger Data</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.highgo.com">HighGo</link></simpara></listitem>
 				<listitem><simpara>Hunter Systems Group</simpara></listitem>
 				<listitem><simpara><link xlink:href="https://iitmpravartak.org.in/">IITM Pravartak Security Team</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://pti-agriambio.csic.es">INIA-CSIC</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.isciences.com">ISciences, LLC</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.jirotech.com">Jirotech (formerly LISAsoft)</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://koordinates.com">Koordinates</link></simpara></listitem>
                 <listitem><simpara><link xlink:href="https://www.kontur.io">Kontur</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://koordinates.com">Koordinates</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.lidwala.com">Lidwala Consulting Engineers</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="http://www.logicaltracking.com">Logical Tracking &amp; Tracing International AG</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.maponics.com/">Maponics</link></simpara></listitem>
@@ -527,8 +524,8 @@
 				<listitem><simpara><link xlink:href="http://www.mtri.org">Michigan Tech Research Institute</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.microsoft.com">Microsoft</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.nrcan.gc.ca">Natural Resources Canada</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.nile.ai/">Nile</link></simpara></listitem>
 				<listitem><simpara>Norwegian Forest and Landscape Institute</simpara></listitem>
-
 				<listitem><simpara><link xlink:href="https://www.nibio.no/">Norwegian Institute of Bioeconomy Research (NIBIO)</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.osgeo.org">OSGeo</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://oslandia.com">Oslandia</link></simpara></listitem>
@@ -540,13 +537,14 @@
 				<listitem><simpara><link xlink:href="http://www.refractions.net">Refractions Research</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.regione.toscana.it">Regione Toscana - SITA</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.safe.com">Safe Software</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://swmansion.com/">Software Mansion</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.siriusopensource.com/en-us">Sirius Corporation plc</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://swmansion.com/">Software Mansion</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="http://www.uster.ch">Stadt Uster</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.ulaval.ca">Université Laval</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.tigerdata.com">Tiger Data</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.census.gov">U.S. Census Bureau</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://hiu.state.gov">U.S. Department of State (HIU)</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</link></simpara></listitem>
+				<listitem><simpara><link xlink:href="https://www.ulaval.ca">Université Laval</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.zonarsystems.com">Zonar Systems</link></simpara></listitem>
 			</itemizedlist>
 		</para>

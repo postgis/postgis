@@ -129,9 +129,17 @@ reporters and patch authors under `Other Contributors` → `Individual
 Contributors`; keep organizations under `Corporate Sponsors`.
 
 The check compares `doc/credits.xml` with Git authors, co-authors, and
-unreleased `NEWS` attributions after applying `.mailmap`. If it reports a
-missing person, either add that person's canonical display name to
-`doc/credits.xml` or normalize an alias in `.mailmap`.
+unreleased `NEWS` attributions after applying `.mailmap`. It checks that every
+Git author and `NEWS` name is credited, that people and organizations are not
+duplicated, and that the Individual Contributors and Corporate Sponsors lists
+are sorted (the curated GitHub-handle prefix and core-team lists are exempt).
+Run `make check-contributor-credits` to check the current tree. To apply the
+checker’s supported ordering and duplicate fixes, run
+`make fix-contributor-credits`, or
+`python3 utils/docs/check_contributor_credits.py --repo . --fix`.
+
+If it reports a missing person, either add that person's canonical display
+name to `doc/credits.xml` or normalize an alias in `.mailmap`.
 
 Keep `.mailmap` canonical names to person names only. In `NEWS` attribution
 parentheses, comma-separated affiliations such as `Name, Organization` are

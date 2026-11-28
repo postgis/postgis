@@ -90,6 +90,16 @@ def git(repo, *args, input_text=None):
         raise CreditValidationError(f"git {' '.join(args)} failed: {detail.strip()}") from exc
 
 
+# A nickname: a lowercase handle, a GitHub handle entry, or any name with a
+# digit in it (e.g. "code 666"); personal names carry no digits.
+NICK_RE = re.compile(r"^@?[a-z0-9][a-z0-9_.-]*$|\(GitHub user(?:\s*:\s*[^()]*)?\)$|\d")
+
+
+def contributor_order_key(name):
+    """Nicknames and GitHub handles first (easy to spot), then named people."""
+    return (0 if NICK_RE.search(name) else 1, normalized_name(name))
+
+
 def normalized_name(name):
     name = unicodedata.normalize("NFKD", name.strip()).casefold()
     name = "".join(char for char in name if not unicodedata.combining(char))
@@ -211,6 +221,149 @@ def contributor_credit_names(credits_path):
     return credits
 
 
+def credit_list_issues(credits_path):
+    """Return duplicate and ordering errors in the maintained credit lists."""
+    try:
+        root = ET.parse(credits_path).getroot()
+    except (OSError, ET.ParseError) as exc:
+        raise CreditValidationError(f"cannot parse {credits_path}: {exc}") from exc
+
+    issues = []
+    lines = Path(credits_path).read_text(encoding="utf-8").splitlines()
+    line_cursor = 0
+    def line_of(name, start=0):
+        plain = name.split(" (GitHub user", 1)[0].lstrip("@")
+        for number in range(start, len(lines)):
+            if plain and plain in lines[number]:
+                return number + 1
+        return 0
+
+    seen = {}
+    for section in root.findall(".//db:section", DOCBOOK):
+        section_id = section.get(XML_ID, "")
+        if section_id in {"psc", "credits_core_present", "credits_core_past"}:
+            nodes = section.findall(".//db:term", DOCBOOK)
+            kind = "person"
+        elif section_id == "credits_other_contributors":
+            nodes = section.findall(".//db:simplelist/db:member", DOCBOOK)
+            kind = "person"
+        else:
+            continue
+        section_names = []
+        for node in nodes:
+            name = credit_member_text(node)
+            section_names.append(name)
+            current_line = line_of(name, line_cursor)
+            line_cursor = max(line_cursor, current_line)
+            own_keys = set()
+            for key in credit_keys(name):
+                if key in own_keys:
+                    continue
+                own_keys.add(key)
+                if key in seen:
+                    old_name, old_line = seen[key]
+                    issues.append(f"duplicate person {name!r} at lines {old_line} and {current_line}")
+                else:
+                    seen[key] = (name, current_line)
+
+        # PSC and core team lists are deliberately curated, not alphabetical.
+        if section_id == "credits_other_contributors":
+            previous = None
+            for name in section_names:
+                key = contributor_order_key(name)
+                if previous is not None and key < previous[0]:
+                    issues.append(f"out of order {name!r}; should follow {previous[1]!r}")
+                    break
+                previous = (key, name)
+
+    # Sponsor list is a separate alphabetical list of organization names.
+    for entry in root.findall(".//db:varlistentry", DOCBOOK):
+        term = entry.find("db:term", DOCBOOK)
+        if term is None or node_text(term) != "Corporate Sponsors":
+            continue
+        nodes = entry.findall(".//db:itemizedlist/db:listitem/db:simpara", DOCBOOK)
+        previous = None
+        order_found = False
+        org_seen = {}
+        for node in nodes:
+            name = node_text(node)
+            key = normalized_name(name)
+            current_line = line_of(name, line_cursor)
+            line_cursor = max(line_cursor, current_line)
+            if key in org_seen:
+                issues.append(f"duplicate organization {name!r} at lines {org_seen[key]} and {current_line}")
+            else:
+                org_seen[key] = current_line
+            if previous is not None and key < previous[0] and not order_found:
+                issues.append(f"out of order organization {name!r}; should follow {previous[1]!r}")
+                order_found = True
+            previous = (key, name)
+    return issues
+
+
+def fix_credit_lists(credits_path):
+    """Repair the two alphabetical lists without reserializing their XML."""
+    path = Path(credits_path)
+    data = path.read_text(encoding="utf-8")
+    lines = data.splitlines(keepends=True)
+
+    def row_name(row, tag):
+        try:
+            wrapped = ET.fromstring(f'<root xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">{row}</root>')
+        except ET.ParseError as exc:
+            raise CreditValidationError(f"cannot parse credit row: {exc}") from exc
+        node = wrapped.find(f".//db:{tag}", DOCBOOK)
+        return node_text(node) if node is not None else ""
+
+    def repair(start, end, tag, kind):
+        pattern = re.compile(rf"^\s*<{tag}\b.*</{tag}>\s*(?:\r?\n)?$")
+        rows = [(i, line) for i, line in enumerate(lines[start:end], start) if pattern.match(line)]
+        if not rows:
+            return
+        chosen = []
+        for _, row in rows:
+            name = row_name(row, "member" if tag == "member" else "listitem")
+            keys = credit_keys(name) if kind == "person" else {normalized_name(name)}
+            if tag == "member" and any(key in core_people for key in keys):
+                continue
+            match = next((i for i, (old_row, old_keys) in enumerate(chosen) if keys & old_keys), None)
+            if match is None:
+                chosen.append((row, keys))
+            elif row.count("<link") > chosen[match][0].count("<link"):
+                chosen[match] = (row, chosen[match][1] | keys)
+            else:
+                chosen[match] = (chosen[match][0], chosen[match][1] | keys)
+        kept = [item[0] for item in chosen]
+        if tag == "member":
+            kept.sort(key=lambda r: contributor_order_key(row_name(r, "member")))
+        else:
+            kept.sort(key=lambda r: normalized_name(row_name(r, "listitem")))
+        first, last = rows[0][0], rows[-1][0]
+        lines[first:last+1] = kept
+
+    text = "".join(lines)
+    # Fix row groups through byte-preserving line slices.
+    lines = text.splitlines(keepends=True)
+    core_people = set()
+    for section in ET.parse(path).getroot().findall(".//db:section", DOCBOOK):
+        if section.get(XML_ID, "") in {"credits_core_present", "credits_core_past"}:
+            for node in section.findall(".//db:term", DOCBOOK):
+                core_people.update(credit_keys(node_text(node)))
+    other_section = next((i for i, line in enumerate(lines) if 'xml:id="credits_other_contributors"' in line), -1)
+    if other_section >= 0:
+        simple = next((i for i in range(other_section, len(lines)) if "<simplelist" in lines[i]), -1)
+        close = next((i for i in range(simple + 1, len(lines)) if "</simplelist>" in lines[i]), -1)
+        if simple >= 0 and close >= 0:
+            repair(simple + 1, close, "member", "person")
+    sponsor = next((i for i, line in enumerate(lines) if "<term>Corporate Sponsors</term>" in line), -1)
+    if sponsor >= 0:
+        begin = next((i for i in range(sponsor, len(lines)) if "<itemizedlist>" in lines[i]), -1)
+        end = next((i for i in range(begin + 1, len(lines)) if "</itemizedlist>" in lines[i]), -1)
+        if begin >= 0 and end >= 0:
+            repair(begin + 1, end, "listitem", "organization")
+    path.write_text("".join(lines), encoding="utf-8")
+
+
 def add_contributor(contributors, name, source_kind, source_detail):
     key = normalized_name(name)
     if not key:
@@ -297,6 +450,7 @@ def split_news_people(value, non_person_names=None):
         non_person_names = news_non_person_attribution_names(default_credits)
     people = []
     for candidate in NEWS_PERSON_SEPARATOR_RE.split(value):
+        candidate = re.sub(r"^\s*and\s+", "", candidate, flags=re.I)
         candidate = re.sub(
             r"^\s*(?:reported|fixed|patched|implemented)\s+by\s+",
             "",
@@ -438,17 +592,31 @@ def parse_args(argv=None):
         default="HEAD",
         help="Git revision whose reachable history is checked (default: HEAD)",
     )
+    parser.add_argument("--fix", action="store_true", help="remove duplicate entries and sort maintained credit lists in place")
     return parser.parse_args(argv)
 
 
 def main(argv=None):
     args = parse_args(argv)
+    credits_path = args.repo / "doc" / "credits.xml"
+    if args.fix:
+        try:
+            fix_credit_lists(credits_path)
+        except CreditValidationError as exc:
+            print(f"FAIL: {exc}", file=sys.stderr)
+            return 2
     try:
+        list_issues = credit_list_issues(credits_path)
         result = validate(args.repo, args.revision)
     except CreditValidationError as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
 
+    if list_issues:
+        print("FAIL: doc/credits.xml has duplicate or out-of-order entries:", file=sys.stderr)
+        for issue in list_issues:
+            print(f"  - {issue}", file=sys.stderr)
+        return 1
     if result.missing:
         print(
             f"FAIL: doc/credits.xml is missing {len(result.missing)} contributor(s):",
