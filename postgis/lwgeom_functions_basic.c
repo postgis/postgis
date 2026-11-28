@@ -1138,7 +1138,7 @@ PG_FUNCTION_INFO_V1(ST_Scroll);
 Datum
 ST_Scroll(PG_FUNCTION_ARGS)
 {
-	Datum datum_line, datum_point;
+	Datum datum_point;
 	GSERIALIZED *ser_line, *ser_point;
 	LWGEOM *lwgeom_line, *lwgeom_point;
 	LWLINE *line;
@@ -1149,10 +1149,12 @@ ST_Scroll(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "ST_Scroll called.");
 
-	datum_line = PG_GETARG_DATUM(0);
 	datum_point = PG_GETARG_DATUM(1);
 
-	ser_line = ((GSERIALIZED *)PG_DETOAST_DATUM(datum_line));
+	/* Take a copy: ptarray_scroll_in_place() rewrites the point array in place,
+	 * which (deserialization is zero-copy) would otherwise mutate the caller's
+	 * input datum. */
+	ser_line = PG_GETARG_GSERIALIZED_P_COPY(0);
 	lwgeom_line = lwgeom_from_gserialized(ser_line);
 	line = lwgeom_as_lwline(lwgeom_line);
 	if (!line)
