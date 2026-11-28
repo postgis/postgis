@@ -654,6 +654,21 @@ rt_band_get_histogram(
 * rt_band_get_quantiles()
 ******************************************************************************/
 
+static int
+quantiles_are_valid(const double *quantiles, uint32_t count)
+{
+	/* An inclusive range check also rejects NaN. */
+	for (uint32_t i = 0; i < count; i++)
+	{
+		if (!(quantiles[i] >= 0.0 && quantiles[i] <= 1.0))
+		{
+			rterror("Quantile value not between 0 and 1");
+			return 0;
+		}
+	}
+	return 1;
+}
+
 /**
  * Compute the default set of or requested quantiles for a set of data
  * the quantile formula used is same as Excel and R default method
@@ -713,17 +728,9 @@ rt_band_get_quantiles(
 			quantiles[i] = ((double) i) / quantiles_count;
 		quantiles_count++;
 	}
+	else if (quantiles_count > 0 && !quantiles_are_valid(quantiles, quantiles_count))
+		return NULL;
 
-	/* check quantiles */
-	for (i = 0; i < quantiles_count; i++) {
-		/* Written to also reject NaN (all comparisons with NaN are false) */
-		if (!(quantiles[i] >= 0. && quantiles[i] <= 1.))
-		{
-			rterror("rt_band_get_quantiles: Quantile value not between 0 and 1");
-			if (init_quantiles) rtdealloc(quantiles);
-			return NULL;
-		}
-	}
 	quicksort(quantiles, quantiles + quantiles_count - 1);
 
 	/* initialize rt_quantile */
@@ -1081,15 +1088,9 @@ rt_band_get_quantiles_stream(
 				quantiles[i] = ((double) i) / quantiles_count;
 			quantiles_count++;
 		}
+		else if (!quantiles_are_valid(quantiles, quantiles_count))
+			return NULL;
 
-		/* check quantiles */
-		for (i = 0; i < quantiles_count; i++) {
-			if (quantiles[i] < 0. || quantiles[i] > 1.) {
-				rterror("rt_band_get_quantiles_stream: Quantile value not between 0 and 1");
-				if (init_quantiles) rtdealloc(quantiles);
-				return NULL;
-			}
-		}
 		quicksort(quantiles, quantiles + quantiles_count - 1);
 
 		/* initialize linked-list set */
