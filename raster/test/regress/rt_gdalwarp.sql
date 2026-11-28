@@ -912,6 +912,11 @@ SELECT '#2800',
 	round((meta).upperlefty::numeric, 3) AS upperlefty
 FROM meta;
 
+-- Small non-zero scales remain valid when computing output dimensions.
+SELECT '#2800-tiny', ST_Width(ST_Rescale(
+  ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1e-7, -1e-7, 0, 0, 0), 1, '8BUI', 1),
+  5e-8, 5e-8));
+
 -- Mixed nodata/no-nodata bands keep declared nodata without treating no-nodata NaN as invalid
 WITH src AS (
 	SELECT ST_SetValue(

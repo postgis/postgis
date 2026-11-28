@@ -112,7 +112,7 @@ _rti_warp_ceil_dimension(double extent_size, double scale)
 	double pixels;
 	double rounded;
 
-	if (FLT_EQ(scale, 0.0))
+	if (scale == 0.0 || isnan(scale))
 	{
 		rterror("rt_raster_gdal_warp: Scale cannot be zero");
 		return 0;
