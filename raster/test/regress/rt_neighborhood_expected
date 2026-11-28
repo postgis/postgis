@@ -1,4 +1,5 @@
 NOTICE:  table "raster_neighborhood" does not exist, skipping
+t|t
 {{NULL,NULL,NULL},{NULL,NULL,1},{NULL,1,1}}
 {{NULL,NULL,NULL},{NULL,0,1},{NULL,1,1}}
 {{NULL,1,1},{1,1,1},{1,NULL,1}}

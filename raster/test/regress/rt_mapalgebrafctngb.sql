@@ -23,7 +23,28 @@ CREATE OR REPLACE FUNCTION ST_TestRasterNgb(h integer, w integer, val float8)
     $$
     LANGUAGE 'plpgsql';
 
+CREATE OR REPLACE FUNCTION ST_MapAlgebraRejectsOversizedDistance(rast raster, distancex integer, distancey integer)
+    RETURNS boolean AS
+    $$
+    BEGIN
+        PERFORM ST_MapAlgebraFctNgb(
+            rast, 1, NULL, distancex, distancey,
+            'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL
+        );
+        RETURN false;
+    EXCEPTION WHEN PROGRAM_LIMIT_EXCEEDED THEN
+        RETURN true;
+    END;
+    $$
+    LANGUAGE 'plpgsql';
+
 -- Tests
+-- Oversized distances and neighborhoods are rejected before processing pixels.
+SELECT
+  ST_MapAlgebraRejectsOversizedDistance(rast, 65536, 1),
+  ST_MapAlgebraRejectsOversizedDistance(rast, 20000, 20000)
+ FROM ST_TestRasterNgb(3, 3, 1) AS rast;
+
 -- Test NULL Raster. Should be true.
 SELECT ST_MapAlgebraFctNgb(NULL, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL) IS NULL FROM ST_TestRasterNgb(0, 0, -1) rast;
 
@@ -259,3 +280,4 @@ FROM ST_SetValue(ST_SetBandNoDataValue(ST_TestRasterNgb(3, 3, 10), 0), 2, 2, 0) 
 
 DROP FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADIC args text[]);
 DROP FUNCTION ST_TestRasterNgb(h integer, w integer, val float8);
+DROP FUNCTION ST_MapAlgebraRejectsOversizedDistance(rast raster, distancex integer, distancey integer);

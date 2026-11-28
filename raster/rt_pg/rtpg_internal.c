@@ -478,9 +478,13 @@ rtpg_assert_neighborhood_size(const char *caller, int32_t distancex, int32_t dis
 
 	if (distancex < 0 || distancey < 0)
 		return;
+	if (distancex > UINT16_MAX || distancey > UINT16_MAX)
+		ereport(ERROR,
+			(errcode(ERRCODE_PROGRAM_LIMIT_EXCEEDED),
+			 errmsg("%s: Distance for X and Y axis must be at most %d", caller, UINT16_MAX)));
 
 	cells = ((uint64_t)distancex * 2 + 1) * ((uint64_t)distancey * 2 + 1);
-	if (cells > (uint64_t)(MaxAllocSize / sizeof(double)))
+	if (cells > MaxAllocSize / sizeof(double))
 		ereport(ERROR,
 			(errcode(ERRCODE_PROGRAM_LIMIT_EXCEEDED),
 			 errmsg("%s: Neighborhood is too large to materialize", caller)));

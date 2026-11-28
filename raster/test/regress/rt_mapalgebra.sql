@@ -700,6 +700,13 @@ SELECT ST_Value(ST_MapAlgebra(
 ), 1, 1, 1)
 FROM raster_nmapalgebra_in WHERE rid = 2;
 
+SELECT ST_MapAlgebra(
+	ARRAY[ROW(rast, 1)]::rastbandarg[],
+	'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+	'8BUI', 'INTERSECTION', NULL, 65536, 1
+)
+FROM raster_nmapalgebra_in WHERE rid = 2;
+
 DROP FUNCTION IF EXISTS raster_nmapalgebra_one(double precision[], int[], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_null(double precision[], int[], text[]);
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);

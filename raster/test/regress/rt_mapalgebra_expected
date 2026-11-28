@@ -370,6 +370,7 @@ NOTICE:  userargs = {}
 NOTICE:  value = {{{1}}}
 NOTICE:  pos = [0:1][1:2]={{2,2},{2,2}}
 NOTICE:  userargs = {}
+ERROR:  RASTER_nMapAlgebra: Distance for X and Y axis must be at most 65535
 8BUI
 NOTICE:  The two rasters provided do not have the respectively specified band indices.  Returning no band raster of correct extent
 0

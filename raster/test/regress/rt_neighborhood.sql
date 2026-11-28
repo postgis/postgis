@@ -37,6 +37,21 @@ CREATE OR REPLACE FUNCTION make_test_raster()
 SELECT make_test_raster();
 DROP FUNCTION IF EXISTS make_test_raster();
 
+CREATE OR REPLACE FUNCTION test_neighborhood_rejects_oversized_distance(rast raster, distancex integer, distancey integer)
+	RETURNS boolean AS $$
+	BEGIN
+		PERFORM ST_Neighborhood(rast, 1, 1, 1, distancex, distancey, false);
+		RETURN false;
+	EXCEPTION WHEN PROGRAM_LIMIT_EXCEEDED THEN
+		RETURN true;
+	END;
+	$$ LANGUAGE 'plpgsql';
+
+SELECT test_neighborhood_rejects_oversized_distance(rast, 65536, 0),
+	test_neighborhood_rejects_oversized_distance(rast, 20000, 20000)
+FROM raster_neighborhood;
+DROP FUNCTION test_neighborhood_rejects_oversized_distance(raster, integer, integer);
+
 SELECT
 	ST_Neighborhood(rast, 1, 1, 1, 1, 1)
 FROM raster_neighborhood;
