@@ -28,7 +28,7 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
- - Preserve input geometry and box values in ST_Scroll and ST_ClipByBox2D
+ - GT-890, Preserve input geometry and box values in ST_Scroll and ST_ClipByBox2D
    (reported by Aleksander Alekseev / Tiger Data; fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-885, Keep ST_ClusterKMeans radius splitting safe when squared distances overflow
    (reported by Sven Klemm / Tiger Data;
