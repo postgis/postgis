@@ -1374,8 +1374,9 @@ lwpolygon_unstroke(const LWPOLY *poly)
 	{
 		for (i = 0; i < poly->nrings; i++)
 		{
-			lwfree(geoms[i]); /* TODO: should this be lwgeom_free instead ? */
+			lwgeom_free(geoms[i]);
 		}
+		lwfree(geoms);
 		return lwgeom_clone_deep((LWGEOM *)poly);
 	}
 
