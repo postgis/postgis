@@ -202,3 +202,11 @@ SELECT ST_Value(
     1, '(:1', '8BUI'
   ), 1, 1, 1
 );
+
+-- The interval delimiters are removed from the empty lower bound.
+SELECT ST_Value(
+  ST_Reclass(
+    ST_AddBand(ST_MakeEmptyRaster(1, 1, 0, 0, 1), '8BUI'::text, 1, 0),
+    1, '():1', '8BUI'
+  ), 1, 1, 1
+);

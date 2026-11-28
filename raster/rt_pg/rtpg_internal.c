@@ -116,14 +116,17 @@ rtpg_chartrim(const char *input, char *remove) {
 	else if (!*input)
 		return (char *) input;
 
-	/* trim left */
-	while (strchr(remove, *input) != NULL)
+	/* trim left (stop at the terminator: strchr(remove, '\0') matches) */
+	while (*input && strchr(remove, *input) != NULL)
 		input++;
 
-	/* trim right */
+	/* trim right (never step before the start of the string) */
 	ptr = ((char *) input) + strlen(input);
-	while (strchr(remove, *--ptr) != NULL)
+	while (ptr > input && strchr(remove, *(ptr - 1)) != NULL)
+	{
+		ptr--;
 		offset++;
+	}
 
 	rtn = palloc(sizeof(char) * (strlen(input) - offset + 1));
 	if (!rtn) {
