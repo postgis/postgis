@@ -51,6 +51,14 @@ NOTICE:  One or both of the geometries is missing z-value. The unknown z-value w
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
 1
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
+1
+empty-3dclosestpoint-first|t
+empty-3dclosestpoint-second|t
+empty-3dshortestline-first|t
+empty-3dshortestline-second|t
+empty-3dlongestline-first|t
+empty-3dlongestline-second|t
+NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
 POINT Z (0 0 0)
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
 LINESTRING Z (2 1 -1,1.5 1.5 -1)
