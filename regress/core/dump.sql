@@ -190,3 +190,7 @@ SELECT	't12',
 	:schema ST_AsText(( :schema ST_Dump(geom)).geom),
 	:schema ST_AsText(( :schema ST_DumpRings(geom)).geom) FROM data;
 ROLLBACK;
+
+SELECT 't13', path = array_fill(1, ARRAY[32]), ST_AsText(geom)
+FROM ST_Dump(ST_GeomFromText(repeat('GEOMETRYCOLLECTION(', 32) ||
+                             'POINT(0 0)' || repeat(')', 32)));

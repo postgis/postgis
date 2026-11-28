@@ -19,9 +19,9 @@
  **********************************************************************
  *
  * Copyright 2001-2009 Refractions Research Inc.
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
-
 
 #include <math.h>
 #include <float.h>
@@ -35,11 +35,12 @@
 #include "utils/array.h"
 #include "utils/geo_decls.h"
 #include "funcapi.h"
+#include "lib/stringinfo.h"
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
-
+#include "lwgeom_dump.h"
 
 Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS);
@@ -52,11 +53,10 @@ typedef struct GEOMDUMPNODE_T
 }
 GEOMDUMPNODE;
 
-#define MAXDEPTH 32
 typedef struct GEOMDUMPSTATE
 {
 	int stacklen;
-	GEOMDUMPNODE *stack[MAXDEPTH];
+	GEOMDUMPNODE *stack[LWGEOM_DUMP_MAXDEPTH];
 	LWGEOM *root;
 }
 GEOMDUMPSTATE;
@@ -79,9 +79,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	HeapTuple tuple;
 	MemoryContext oldcontext, newcontext;
 	Datum result;
-	char address[256];
-	char *ptr;
-	int i;
+	StringInfoData address;
 	char *values[2];
 
 	if (SRF_IS_FIRSTCALL())
@@ -158,40 +156,10 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		if ( node->idx < lwcoll->ngeoms )
 		{
 			lwgeom = lwcoll->geoms[node->idx];
-			if ( ! lwgeom_is_collection(lwgeom) )
-			{
-				/* write address of current geom (bounded to avoid overrun) */
-				ptr=address;
-				if (ptr < address + sizeof(address) - 1)
-					*ptr++ = '{';
-				for (i=0; i<state->stacklen; i++)
-				{
-					int remaining = (int)(address + sizeof(address) - ptr);
-					int n =
-					    snprintf(ptr, remaining, "%s%d", i ? "," : "", state->stack[i]->idx + 1);
-					if (n < 0 || n >= remaining)
-					{
-						/* would overflow: stop safely */
-						ptr = address + sizeof(address) - 1;
-						break;
-					}
-					ptr += n;
-				}
-				if (ptr < address + sizeof(address) - 1)
-					*ptr++ = '}';
-				*ptr='\0';
-
+			if (!lwgeom_is_collection(lwgeom))
 				break;
-			}
 
-			/*
-			 * It's a collection, increment index
-			 * of current node, push a new one on the
-			 * stack
-			 */
-
-			if (state->stacklen >= MAXDEPTH)
-				elog(ERROR, "Unable to dump overly nested collection.");
+			pgis_check_dump_depth(state->stacklen);
 
 			oldcontext = MemoryContextSwitchTo(newcontext);
 
@@ -211,9 +179,20 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 	lwgeom->srid = state->root->srid;
 
-	values[0] = address;
+	initStringInfo(&address);
+	appendStringInfoChar(&address, '{');
+	for (int i = 0; i < state->stacklen; i++)
+	{
+		if (i)
+			appendStringInfoChar(&address, ',');
+		appendStringInfo(&address, "%u", state->stack[i]->idx + 1);
+	}
+	appendStringInfoChar(&address, '}');
+
+	values[0] = address.data;
 	values[1] = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
 	tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
+	pfree(address.data);
 	result = TupleGetDatum(funcctx->slot, tuple);
 	node->idx++;
 	SRF_RETURN_NEXT(funcctx, result);

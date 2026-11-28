@@ -37,6 +37,10 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #5905, GT-954, [geometry] Bound ST_Dump and ST_DumpSegments nesting
+   and keep complete ST_Dump paths
+   (reported by dmyzl; fixed by Aleksander Alekseev / Tiger Data,
+   Darafei Praliaskouski)
  - GT-972, [loader] Avoid invalid access to short inner rings in shp2pgsql
    (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - #5994, GT-964, [geometry] Fix legacy ST_AsGeoJSON row calls after upgrade

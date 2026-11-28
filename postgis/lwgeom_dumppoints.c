@@ -33,6 +33,7 @@
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
+#include "lwgeom_dump.h"
 
 #include "access/htup_details.h"
 
@@ -52,16 +53,12 @@ struct dumpnode {
 	uint32_t idx; /* which member geom we're working on */
 } ;
 
-/* 32 is the max depth for st_dump, so it seems reasonable
- * to use the same here
- */
-#define MAXDEPTH 32
 struct dumpstate {
 	LWGEOM	*root;
 	int	stacklen; /* collections/geoms on stack */
 	int	pathlen; /* polygon rings and such need extra path info */
-	struct	dumpnode stack[MAXDEPTH];
-	Datum	path[34]; /* two more than max depth, for ring and point */
+	struct dumpnode stack[LWGEOM_DUMP_MAXDEPTH];
+	Datum path[LWGEOM_DUMP_MAXDEPTH + 2]; /* two more than max depth, for ring and point */
 
 	/* used to cache the type attributes for integer arrays */
 	int16	typlen;
@@ -273,8 +270,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 		/* if a collection and we have more geoms */
 		if (node->idx < lwcoll->ngeoms) {
 
-			if(state->stacklen >= MAXDEPTH)
-				elog(ERROR, "Unable to dump overly nested collection");
+			pgis_check_dump_depth(state->stacklen);
 
 			/* push the next geom on the path and the stack */
 			lwgeom = lwcoll->geoms[node->idx++];
@@ -498,8 +494,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 			/* if a collection and we have more geoms */
 			if (node->idx < lwcoll->ngeoms)
 			{
-				if (state->stacklen >= MAXDEPTH)
-					elog(ERROR, "Unable to dump overly nested collection");
+				pgis_check_dump_depth(state->stacklen);
 
 				/* push the next geom on the path and the stack */
 				lwgeom = lwcoll->geoms[node->idx++];
