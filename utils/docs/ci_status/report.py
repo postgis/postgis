@@ -777,7 +777,7 @@ def result_revision_distance(config, result):
     return None, None
 
 
-def gitlab_check(check, branch, timeout):
+def gitlab_check(check, branch, timeout, cached_result=None):
     api_url = check.get("api_url", "https://gitlab.com/api/v4")
     project = urllib.parse.quote(check.get("project", "postgis/postgis"), safe="")
     ref = render_template(check.get("ref", "${branch}"), branch)
@@ -788,7 +788,18 @@ def gitlab_check(check, branch, timeout):
         "sort": "desc",
     })
     url = f"{api_url.rstrip('/')}/projects/{project}/pipelines?{query}"
-    pipelines = http_json(url, timeout=timeout)
+    try:
+        pipelines = http_json(url, timeout=timeout)
+    except urllib.error.HTTPError as exc:
+        if exc.code == 429 and cached_result:
+            result = dict(cached_result)
+            result["cached"] = True
+            result["message"] = (
+                f"{result.get('message') or 'cached GitLab pipeline result'} "
+                "(cached; GitLab API rate limit exceeded)"
+            )
+            return result
+        raise
     if isinstance(pipelines, dict):
         pipelines = pipelines.get("pipelines") or pipelines.get("data") or []
     pipelines = [pipeline for pipeline in pipelines if pipeline.get("ref") == ref]
@@ -1622,6 +1633,8 @@ async def collect_status_async(config, selected_branch=None, include_eol=False, 
         try:
             cached_fallback = cached_current_result(branch, check, cache, cache_heads)
             if check.get("provider") == "github_actions":
+                result = provider(check, branch, timeout, cached_fallback)
+            elif check.get("provider") == "gitlab":
                 result = provider(check, branch, timeout, cached_fallback)
             else:
                 result = provider(check, branch, timeout)

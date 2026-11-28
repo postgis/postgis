@@ -458,8 +458,8 @@ class CIStatusTest(unittest.TestCase):
         checks = {check["name"]: check for check in config["checks"]}
         self.assertIn("api.cirrus-ci.com", checks["Cirrus CI"]["message"])
         self.assertIn("fails TLS", checks["Cirrus CI"]["message"])
-        self.assertIn("ci_quota_exceeded", checks["GitLab mirror"]["message"])
-        self.assertIn("badge endpoint still resolves", checks["GitLab mirror"]["message"])
+        self.assertIn("quota allows", checks["GitLab mirror"]["message"])
+        self.assertIn("only 32-bit coverage", checks["GitLab mirror"]["message"])
         self.assertIn("stale failed mirror results", checks["INAF GitLab mirror"]["message"])
 
     def test_apply_staleness_labels_passed_and_failed_results(self):
@@ -1051,6 +1051,73 @@ class CIStatusTest(unittest.TestCase):
             "https://woodie.example.test/api/repos/30/pipelines/5430",
             http_json.call_args_list[1].args[0],
         )
+
+    def test_gitlab_rate_limit_uses_exact_head_cached_result(self):
+        check_config = {
+            "name": "GitLab mirror",
+            "provider": "gitlab",
+            "required": False,
+            "project": "postgis/postgis",
+            "api_url": "https://gitlab.example.test/api/v4",
+        }
+        branch = {"name": "master", "label": "master"}
+        revision = "b" * 40
+        cached = {
+            "branch": "master",
+            "branch_label": "master",
+            "check": check_config["name"],
+            "provider": "gitlab",
+            "required": False,
+            "status": CI_STATUS.IN_PROGRESS,
+            "revision": revision,
+            "message": "pipeline 42",
+        }
+        error = urllib.error.HTTPError(
+            "https://gitlab.example.test/api/v4/projects/postgis%2Fpostgis/pipelines",
+            429,
+            "too many requests",
+            {"Retry-After": "60"},
+            io.BytesIO(b"{}"),
+        )
+        cache = CI_STATUS.index_status_cache({
+            "generated_at": "2026-11-28T10:00:00+00:00",
+            "branches": [{"name": "master", "checks": [cached]}],
+        })
+        config = {"branches": [branch], "checks": [check_config]}
+        with (
+            mock.patch.object(CI_STATUS, "http_json", side_effect=error),
+            mock.patch.object(CI_STATUS, "resolve_cache_heads", return_value={"master": revision}),
+        ):
+            data = CI_STATUS.collect_status(config, cache=cache)
+
+        result = data["branches"][0]["checks"][0]
+        self.assertEqual(CI_STATUS.IN_PROGRESS, result["status"])
+        self.assertEqual(revision, result["revision"])
+        self.assertTrue(result["cached"])
+        self.assertIn("GitLab API rate limit exceeded", result["message"])
+
+    def test_gitlab_rate_limit_without_cache_is_reported(self):
+        check_config = {
+            "name": "GitLab mirror",
+            "provider": "gitlab",
+            "required": False,
+            "project": "postgis/postgis",
+            "api_url": "https://gitlab.example.test/api/v4",
+        }
+        branch = {"name": "master", "label": "master"}
+        error = urllib.error.HTTPError(
+            "https://gitlab.example.test/api/v4/projects/postgis%2Fpostgis/pipelines",
+            429,
+            "too many requests",
+            {"Retry-After": "60"},
+            io.BytesIO(b"{}"),
+        )
+        with mock.patch.object(CI_STATUS, "http_json", side_effect=error):
+            data = CI_STATUS.collect_status({"branches": [branch], "checks": [check_config]})
+
+        result = data["branches"][0]["checks"][0]
+        self.assertEqual(CI_STATUS.UNKNOWN, result["status"])
+        self.assertIn("HTTP Error 429", result["message"])
 
     def test_woodpecker_failure_names_single_failed_workflow_child_step(self):
         check_config = {
