@@ -145,9 +145,12 @@ psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
 	</para>
 
 	<para>
-	  Before attempting to upgrade PostGIS, it is always worth to backup your
-	  data. If you use the -Fc flag to pg_dump you will always be able to
-	  restore the dump with a HARD UPGRADE.
+	  Before upgrading PostGIS, back up the database with
+	  <command>pg_dump -Fc</command> and verify that you can restore the
+	  backup. PostGIS extension updates do not provide a general downgrade
+	  path. To return to the previous version after an extension update,
+	  restore the pre-upgrade backup in a server with the previous PostGIS
+	  version available.
 	</para>
 
 	<section xml:id="soft_upgrade">
@@ -159,6 +162,26 @@ psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
                 <para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions is fairly painless.</para>
         <para>Use the <xref linkend="PostGIS_Extensions_Upgrade"/> function to upgrade to the latest version you have installed.</para>
         <programlisting language="sql">SELECT postgis_extensions_upgrade();</programlisting>
+
+        <para>Check the extension versions in each database being upgraded.
+          Installing a server package makes a version available. Each
+          database has its own installed extension versions. In this example,
+          the three installed components match the defaults provided by the
+          server package.</para>
+
+<programlisting language="sql"><![CDATA[
+SELECT e.extname, e.extversion AS installed, a.default_version AS available
+FROM pg_extension AS e
+LEFT JOIN pg_available_extensions AS a ON a.name = e.extname
+WHERE e.extname IN ('postgis', 'postgis_raster', 'postgis_topology', 'postgis_sfcgal')
+ORDER BY e.extname;
+]]></programlisting>
+<screen>     extname      | installed | available
+------------------+-----------+-----------
+ postgis          | 3.8.0dev  | 3.8.0dev
+ postgis_raster   | 3.8.0dev  | 3.8.0dev
+ postgis_topology | 3.8.0dev  | 3.8.0dev
+(3 rows)</screen>
 
         <para>If you are upgrading a database that still runs PostGIS 2.5, issue an <command>ALTER EXTENSION</command> followed by <function>postgis_extensions_upgrade()</function> to make sure the legacy <varname>postgis_raster</varname> objects are folded back into the main extension.</para>
         <programlisting language="sql">ALTER EXTENSION postgis UPDATE;
@@ -173,17 +196,26 @@ SELECT postgis_extensions_upgrade();
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
 			<screen>No migration path defined for … to &last_release_version;</screen>
-		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions"/> and then restore your backup on top of this new database.</para>
+        <para>Install a package that supplies the update scripts for the
+          installed extension version and PostgreSQL major version. If
+          a soft upgrade is unavailable, perform a
+          <link linkend="hard_upgrade">hard upgrade</link>.</para>
     <para>If you get a notice message like:</para>
     <screen>Version "&last_release_version;" of extension "postgis" is already installed</screen>
     <para>
-Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
-you're attempting to upgrade from an development version to the next (which
-doesn't get a new version number); in that case you can append "next" to the version
-string, and next time you'll need to drop the "next" suffix again:
-    </para>
-			<programlisting language="sql">ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
-	ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
+The extension version already matches the target. After
+<command>pg_upgrade</command>, <xref linkend="PostGIS_Full_Version"/> can
+still report <literal>procs need upgrade for use with PostgreSQL</literal>.
+The installed SQL definitions came from another PostgreSQL major version.
+Run <xref linkend="PostGIS_Extensions_Upgrade"/> in each affected database
+using the PostGIS package and update scripts for the new server. Recheck
+<function>PostGIS_Full_Version()</function> afterward.</para>
+
+    <para>To refresh SQL definitions when the installed and target PostGIS
+    versions match, <xref linkend="PostGIS_Extensions_Upgrade"/> updates the
+    installed extensions through the intermediate version
+    <literal>ANY</literal> and then updates them to the target version.</para>
+
 			<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
 			picks up the newest latest version during restore.</para></note>
 
@@ -193,6 +225,13 @@ string, and next time you'll need to drop the "next" suffix again:
 	    </note>
 
 	    <programlisting language="sql">DROP EXTENSION postgis_raster;</programlisting>
+
+    <para>When upgrading to PostGIS 3.3 or later using an extension update,
+    PostGIS inserts missing bundled <varname>spatial_ref_sys</varname>
+    entries. An existing row with the same <varname>srid</varname> is
+    kept, including its CRS definition. A database with an edited entry
+    can therefore retain a different definition from a fresh installation
+    of the same version.</para>
 
 		</section>
 
