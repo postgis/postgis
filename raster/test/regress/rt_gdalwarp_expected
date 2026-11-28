@@ -94,6 +94,25 @@ NOTICE:  Values must be provided for both X and Y when specifying the scale.  Re
 5.7|992163|10|11|1|1000.000|-1000.000|0.000|0.000|-500000.000|600991.000|t|t|t
 5.8|992163|10|11|1|1000.000|-1000.000|0.000|0.000|-500000.000|600001.000|t|t|t
 5.9|992163|10|11|1|1000.000|-1000.000|0.000|0.000|-500000.000|600009.000|t|t|t
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+#2924|11|11|1.000|1.000|-5.000|-5.000
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+#2924-grid|11|10|1.000|1.000|-5.500|-5.500|t|t
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+#919-tiny-grid|11|11|-6.99999950|-5.00000000|t
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+grid-half-pixel|0.499999999|9|1
+grid-half-pixel|0.500000001|1|9
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+grid-tight-width|4
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+grid-max-width|65535
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+grid-equivalent-anchor|11|11|-6.75|-5|t
+grid-equivalent-anchor|11|11|-6.75|-5|t
+nondefault-skewed-grid|12|12|94.5|194.5|9
 NOTICE:  The rasters (pixel corner coordinates) are not aligned
 t|f|t
 NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
@@ -106,7 +125,7 @@ NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL War
 4|0|0|500|500|2|-2|0|0|0|1|250000|63750000|255|0|255|255
 NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
 NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
-(0,0,5,5,2,-2,0,0,0,1)|(0,0,5,5,2,-2,0,0,0,1)
+(0,-10,5,5,2,2,-0,0,0,1)|(0,0,5,5,2,-2,0,0,0,1)
 #2800|t|4|4|0.600|0.600|-180.000|87.600
 #2800-tiny|4
 t|t|f|NaN|t
@@ -115,3 +134,15 @@ t|t
 0.000001|1e-6|1e-6|1e-9
 0.0000002|1e-6|1e-6|1e-9
 0.0000001|1e-6|1e-6|1e-9
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+skew-fixed-size|5|5|1|t
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+grid-decimal-scale|10|10
+grid-decimal-scale|65535|2
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+grid-distant-phase|-2|4
+grid-distant-phase|-2|4
+NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
+skew-max-width|65535|2

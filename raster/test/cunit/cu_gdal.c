@@ -621,6 +621,448 @@ test_gdal_warp(void)
 }
 
 static void
+test_gdal_warp_default_upperleft(void)
+{
+	rt_band band = NULL;
+	rt_raster raster = NULL;
+	rt_raster rast = NULL;
+	int width = 10;
+	int height = 10;
+	double ul_x = 0;
+	double ul_y = 0;
+	double value = 0;
+	int converted = 0;
+
+	raster = rt_raster_new(width, height);
+	CU_ASSERT_FATAL(raster != NULL);
+
+	band = cu_add_band(raster, PT_8BUI, 1, 0);
+	CU_ASSERT_FATAL(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_set_pixel(band, 5, 5, 9, &converted), ES_NONE);
+
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &width,
+				   &height,
+				   &ul_x,
+				   &ul_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_width(rast), 10);
+	CU_ASSERT_EQUAL(rt_raster_get_height(rast), 10);
+	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_x_offset(rast), 0, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_y_offset(rast), 0, DBL_EPSILON);
+	band = rt_raster_get_band(rast, 0);
+	CU_ASSERT_FATAL(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 5, 5, &value, NULL), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 9, 0);
+
+	cu_free_raster(rast);
+	cu_free_raster(raster);
+}
+
+static void
+test_gdal_warp_default_signed_scale_skew(void)
+{
+	rt_band band = NULL;
+	rt_band outband = NULL;
+	rt_raster raster = NULL;
+	rt_raster rast = NULL;
+	double scale_x = -1;
+	double scale_y = -1;
+	double skew_x = 1;
+	double skew_y = 0;
+	int valid_pixels = 0;
+	int marker_pixels = 0;
+	int converted = 0;
+
+	raster = rt_raster_new(10, 10);
+	CU_ASSERT_FATAL(raster != NULL);
+	band = cu_add_band(raster, PT_8BUI, 1, 0);
+	CU_ASSERT_FATAL(band != NULL);
+	for (int y = 0; y < 10; y++)
+		for (int x = 0; x < 10; x++)
+			CU_ASSERT_EQUAL(rt_band_set_pixel(band, x, y, 1, &converted), ES_NONE);
+	CU_ASSERT_EQUAL(rt_band_set_pixel(band, 2, 3, 9, &converted), ES_NONE);
+
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   &scale_x,
+				   &scale_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &skew_x,
+				   &skew_y,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	outband = rt_raster_get_band(rast, 0);
+	CU_ASSERT_FATAL(outband != NULL);
+	for (int y = 0; y < rt_raster_get_height(rast); y++)
+		for (int x = 0; x < rt_raster_get_width(rast); x++)
+		{
+			double value = 0;
+			CU_ASSERT_EQUAL(rt_band_get_pixel(outband, x, y, &value, NULL), ES_NONE);
+			if (value != 0)
+				valid_pixels++;
+			if (value == 9)
+				marker_pixels++;
+		}
+	CU_ASSERT_EQUAL(valid_pixels, 100);
+	CU_ASSERT_EQUAL(marker_pixels, 1);
+	{
+		double gt[6] = {0};
+		rt_raster_get_geotransform_matrix(rast, gt);
+		CU_ASSERT_DOUBLE_EQUAL(gt[1], -1, DBL_EPSILON);
+		CU_ASSERT_DOUBLE_EQUAL(gt[2], 1, DBL_EPSILON);
+	}
+
+	cu_free_raster(rast);
+	rast = NULL;
+	valid_pixels = 0;
+	marker_pixels = 0;
+	scale_x = 1;
+	scale_y = 1;
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   &scale_x,
+				   &scale_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &skew_x,
+				   &skew_y,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	outband = rt_raster_get_band(rast, 0);
+	CU_ASSERT_FATAL(outband != NULL);
+	for (int y = 0; y < rt_raster_get_height(rast); y++)
+		for (int x = 0; x < rt_raster_get_width(rast); x++)
+		{
+			double value = 0;
+			CU_ASSERT_EQUAL(rt_band_get_pixel(outband, x, y, &value, NULL), ES_NONE);
+			if (value != 0)
+				valid_pixels++;
+			if (value == 9)
+				marker_pixels++;
+		}
+	CU_ASSERT_EQUAL(valid_pixels, 100);
+	CU_ASSERT_EQUAL(marker_pixels, 1);
+	{
+		double gt[6] = {0};
+		rt_raster_get_geotransform_matrix(rast, gt);
+		CU_ASSERT_DOUBLE_EQUAL(gt[1], 1, DBL_EPSILON);
+		CU_ASSERT_DOUBLE_EQUAL(gt[2], 1, DBL_EPSILON);
+	}
+
+	cu_free_raster(rast);
+	cu_free_raster(raster);
+}
+
+static void
+test_gdal_warp_default_signed_scale_explicit_upperleft(void)
+{
+	rt_band band = NULL;
+	rt_band outband = NULL;
+	rt_raster raster = NULL;
+	rt_raster rast = NULL;
+	double scale_x = -1;
+	double scale_y = -1;
+	double ul_x = 10;
+	double ul_y = 0;
+	double gt[6] = {0};
+	double value = 0;
+	int converted = 0;
+
+	raster = rt_raster_new(10, 10);
+	CU_ASSERT_FATAL(raster != NULL);
+	band = cu_add_band(raster, PT_8BUI, 1, 0);
+	CU_ASSERT_FATAL(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_set_pixel(band, 2, 5, 9, &converted), ES_NONE);
+
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   &scale_x,
+				   &scale_y,
+				   NULL,
+				   NULL,
+				   &ul_x,
+				   &ul_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	rt_raster_get_geotransform_matrix(rast, gt);
+	CU_ASSERT_DOUBLE_EQUAL(gt[0], 10, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(gt[1], -1, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(gt[3], 0, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(gt[5], -1, DBL_EPSILON);
+	outband = rt_raster_get_band(rast, 0);
+	CU_ASSERT_FATAL(outband != NULL);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(outband, 7, 5, &value, NULL), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 9, 0);
+
+	cu_free_raster(rast);
+	cu_free_raster(raster);
+}
+
+static void
+test_gdal_warp_default_skewed_grid_covers_input(void)
+{
+	rt_raster raster = NULL;
+	rt_raster rast = NULL;
+	double scale_x = 1.51;
+	double scale_y = -1;
+	double grid_x = 0;
+	double grid_y = 0.75;
+	double skew_x = -2;
+	double skew_y = 0;
+	double corners[4][2] = {{0, 0}, {10, 0}, {10, -10}, {0, -10}};
+
+	raster = rt_raster_new(10, 10);
+	CU_ASSERT_FATAL(raster != NULL);
+	cu_add_band(raster, PT_8BUI, 1, 0);
+
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   &scale_x,
+				   &scale_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &grid_x,
+				   &grid_y,
+				   &skew_x,
+				   &skew_y,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	for (int i = 0; i < 4; i++)
+	{
+		double cell_x = 0;
+		double cell_y = 0;
+		CU_ASSERT_EQUAL(
+		    rt_raster_geopoint_to_rasterpoint(rast, corners[i][0], corners[i][1], &cell_x, &cell_y, NULL),
+		    ES_NONE);
+		CU_ASSERT(cell_x >= -DBL_EPSILON);
+		CU_ASSERT(cell_y >= -DBL_EPSILON);
+		CU_ASSERT(cell_x <= rt_raster_get_width(rast) + 32 * DBL_EPSILON);
+		CU_ASSERT(cell_y <= rt_raster_get_height(rast) + 32 * DBL_EPSILON);
+	}
+
+	cu_free_raster(rast);
+	rast = NULL;
+	grid_x = 0.0000005;
+	grid_y = 0;
+	skew_x = 1;
+	skew_y = 1;
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &grid_x,
+				   &grid_y,
+				   &skew_x,
+				   &skew_y,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	for (int i = 0; i < 4; i++)
+	{
+		double cell_x = 0;
+		double cell_y = 0;
+		CU_ASSERT_EQUAL(
+		    rt_raster_geopoint_to_rasterpoint(rast, corners[i][0], corners[i][1], &cell_x, &cell_y, NULL),
+		    ES_NONE);
+		CU_ASSERT(cell_x >= -DBL_EPSILON);
+		CU_ASSERT(cell_y >= -DBL_EPSILON);
+		CU_ASSERT(cell_x <= rt_raster_get_width(rast) + DBL_EPSILON);
+		CU_ASSERT(cell_y <= rt_raster_get_height(rast) + DBL_EPSILON);
+	}
+
+	cu_free_raster(rast);
+	cu_free_raster(raster);
+}
+
+static void
+test_gdal_warp_alignment_extent_precision(void)
+{
+	rt_band band = NULL;
+	rt_raster raster = NULL;
+	rt_raster rast = NULL;
+	double scale_x = 0.2;
+	double scale_y = -0.2;
+	double grid_x = 0.2;
+	double grid_y = 0.2;
+	int converted = 0;
+
+	/* Equivalent edge coordinates must not add an unnecessary pixel. */
+	raster = rt_raster_new(10, 10);
+	CU_ASSERT_FATAL(raster != NULL);
+	rt_raster_set_offsets(raster, 0.6, 0.6);
+	band = cu_add_band(raster, PT_8BUI, 1, 0);
+	CU_ASSERT_FATAL(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_set_pixel(band, 9, 9, 9, &converted), ES_NONE);
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   &scale_x,
+				   &scale_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &grid_x,
+				   &grid_y,
+				   NULL,
+				   NULL,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_width(rast), 50);
+	CU_ASSERT_EQUAL(rt_raster_get_height(rast), 50);
+	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_x_offset(rast), 0.6, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rt_raster_get_y_offset(rast), 0.6, DBL_EPSILON);
+	cu_free_raster(rast);
+	cu_free_raster(raster);
+
+	/* A genuine subpixel shift must expand the grid to cover the far edge. */
+	raster = rt_raster_new(10, 10);
+	CU_ASSERT_FATAL(raster != NULL);
+	rt_raster_set_offsets(raster, 1000, 1000);
+	rt_raster_set_scale(raster, 30, -30);
+	band = cu_add_band(raster, PT_8BUI, 1, 0);
+	CU_ASSERT_FATAL(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_set_pixel(band, 9, 9, 9, &converted), ES_NONE);
+	scale_x = 30;
+	scale_y = -30;
+	grid_x = 999.999999;
+	grid_y = 1000;
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   &scale_x,
+				   &scale_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &grid_x,
+				   &grid_y,
+				   NULL,
+				   NULL,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_width(rast), 11);
+	CU_ASSERT_EQUAL(rt_raster_get_height(rast), 10);
+	{
+		double corner_x = 0;
+		double corner_y = 0;
+		double cell_x = 0;
+		double cell_y = 0;
+		CU_ASSERT_EQUAL(rt_raster_cell_to_geopoint(raster, 10, 10, &corner_x, &corner_y, NULL), ES_NONE);
+		CU_ASSERT_EQUAL(rt_raster_geopoint_to_rasterpoint(rast, corner_x, corner_y, &cell_x, &cell_y, NULL),
+				ES_NONE);
+		CU_ASSERT(cell_x <= rt_raster_get_width(rast) + 32 * DBL_EPSILON);
+		CU_ASSERT(cell_y <= rt_raster_get_height(rast) + 32 * DBL_EPSILON);
+	}
+	cu_free_raster(rast);
+	cu_free_raster(raster);
+
+	/* Large projected origins with fine pixels must not grow both dimensions. */
+	raster = rt_raster_new(4, 4);
+	CU_ASSERT_FATAL(raster != NULL);
+	rt_raster_set_offsets(raster, 10000000, 10000000);
+	rt_raster_set_scale(raster, 0.003, -0.003);
+	band = cu_add_band(raster, PT_8BUI, 1, 0);
+	CU_ASSERT_FATAL(band != NULL);
+	scale_x = 0.003;
+	scale_y = -0.003;
+	grid_x = 9999999.997;
+	grid_y = 10000000;
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   &scale_x,
+				   &scale_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &grid_x,
+				   &grid_y,
+				   NULL,
+				   NULL,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT_FATAL(rast != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_width(rast), 4);
+	CU_ASSERT_EQUAL(rt_raster_get_height(rast), 4);
+	cu_free_raster(rast);
+	cu_free_raster(raster);
+
+	/* Grid expansion beyond the raster's 16-bit dimension range must fail. */
+	raster = rt_raster_new(65535, 1);
+	CU_ASSERT_FATAL(raster != NULL);
+	rt_raster_set_offsets(raster, 0.1, 0);
+	band = cu_add_band(raster, PT_8BUI, 1, 0);
+	CU_ASSERT_FATAL(band != NULL);
+	scale_x = 1;
+	scale_y = -1;
+	grid_x = 0.5;
+	grid_y = 0;
+	rast = rt_raster_gdal_warp(raster,
+				   NULL,
+				   NULL,
+				   &scale_x,
+				   &scale_y,
+				   NULL,
+				   NULL,
+				   NULL,
+				   NULL,
+				   &grid_x,
+				   &grid_y,
+				   NULL,
+				   NULL,
+				   GRA_NearestNeighbour,
+				   -1);
+	CU_ASSERT(rast == NULL);
+	if (rast)
+		cu_free_raster(rast);
+	cu_free_raster(raster);
+}
+
+static void
 test_gdal_warp_preserves_data(void)
 {
 	const char *filename = POSTGIS_TOP_SRC_DIR "/raster/test/regress/loader/Projected.tif";
@@ -789,6 +1231,11 @@ gdal_suite_setup(void)
 	PG_ADD_TEST(suite, test_raster_to_gdal);
 	PG_ADD_TEST(suite, test_gdal_to_raster);
 	PG_ADD_TEST(suite, test_gdal_warp);
+	PG_ADD_TEST(suite, test_gdal_warp_default_upperleft);
+	PG_ADD_TEST(suite, test_gdal_warp_default_signed_scale_skew);
+	PG_ADD_TEST(suite, test_gdal_warp_default_signed_scale_explicit_upperleft);
+	PG_ADD_TEST(suite, test_gdal_warp_default_skewed_grid_covers_input);
+	PG_ADD_TEST(suite, test_gdal_warp_alignment_extent_precision);
 	PG_ADD_TEST(suite, test_gdal_warp_preserves_data);
 	PG_ADD_TEST(suite, test_gdal_warp_callback_interrupt);
 	PG_ADD_TEST(suite, test_gdal_to_raster_interrupt);
