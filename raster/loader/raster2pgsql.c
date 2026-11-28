@@ -1521,7 +1521,14 @@ insert_records(const char *schema,
 		if (filename != NULL)
 			fn = strreplace(filename, "'", "''", NULL);
 		if (metadata != NULL)
-			md = strreplace(metadata, "'", "''", NULL);
+		{
+			char *escaped = strreplace(metadata, "\\", "\\\\", NULL);
+			if (escaped != NULL)
+			{
+				md = strreplace(escaped, "'", "''", NULL);
+				rtdealloc(escaped);
+			}
+		}
 		if ((filename != NULL && fn == NULL) || (metadata != NULL && md == NULL))
 		{
 			rterror(_("insert_records: Could not allocate memory for INSERT values"));
@@ -1564,7 +1571,7 @@ insert_records(const char *schema,
 						     (filename != NULL ? ",'" : ""),
 						     (filename != NULL ? fn : ""),
 						     (filename != NULL ? "'" : ""),
-						     (metadata != NULL ? ",'" : ""),
+						     (metadata != NULL ? ",E'" : ""),
 						     (metadata != NULL ? md : ""),
 						     (metadata != NULL ? "'" : ""));
 			rtdealloc(raster_sql);

@@ -8,6 +8,7 @@ PostGIS 3.8.0dev
           (Darafei Praliaskouski)
  - #2189, GH-1062, Add raster2pgsql metadata column (Darafei Praliaskouski)
  - GH-1062, Escape raster2pgsql identifiers (Darafei Praliaskouski)
+ - GH-1062, Preserve backslashes in metadata INSERT output (Darafei Praliaskouski)
 
 * Enhancements *
 
