@@ -328,7 +328,7 @@ test_raster_serializers_reject_oversized_band(void)
 	CU_ASSERT_PTR_NULL(hexwkb);
 	CU_ASSERT_EQUAL(hexwkbsize, 0);
 
-	rt_install_default_allocators();
+	cu_install_raster_handlers();
 	cu_free_raster(raster);
 }
 
@@ -405,7 +405,7 @@ test_raster_readers_destroy_only_initialized_bands(void)
 	CU_ASSERT_TRUE(poisoned_largest_allocation < 1024);
 	for (uint32_t i = 0; i < poisoned_allocation_count; i++)
 		CU_ASSERT_PTR_NULL(poisoned_allocations[i]);
-	rt_install_default_allocators();
+	cu_install_raster_handlers();
 }
 
 static void

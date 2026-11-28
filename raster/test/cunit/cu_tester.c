@@ -20,6 +20,17 @@ char cu_error_msg[MAX_CUNIT_MSG_LENGTH + 1] = {0};
 static void
 cu_error_reporter(const char *fmt, va_list ap);
 
+void
+cu_install_raster_handlers(void)
+{
+	rt_set_handlers(default_rt_allocator,
+			default_rt_reallocator,
+			default_rt_deallocator,
+			cu_error_reporter,
+			default_rt_info_handler,
+			default_rt_warning_handler);
+}
+
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
 extern void pixtype_suite_setup(void);
 extern void raster_basics_suite_setup(void);
@@ -73,15 +84,7 @@ int main(int argc, char *argv[])
 
 	/* install the custom error handler */
 	lwgeom_set_handlers(0, 0, 0, cu_error_reporter, 0);
-
-	rt_set_handlers(
-		default_rt_allocator,
-		default_rt_reallocator,
-		default_rt_deallocator,
-		cu_error_reporter,
-		default_rt_info_handler,
-		default_rt_warning_handler
-	);
+	cu_install_raster_handlers();
 
 	/* initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())

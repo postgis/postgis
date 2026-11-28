@@ -26,6 +26,9 @@ extern char cu_error_msg[];
 /* Resets cu_error_msg back to blank. */
 void cu_error_msg_reset(void);
 
+/* Restore the raster CUnit handlers after a test overrides them. */
+void cu_install_raster_handlers(void);
+
 /* free raster object */
 void cu_free_raster(rt_raster raster);
 

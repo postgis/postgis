@@ -1,6 +1,7 @@
 /*
  * PostGIS Raster - Raster Types for PostGIS
  *
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  *
@@ -115,35 +116,35 @@ static void
 test_util_gdal_open(void)
 {
 	extern char *gdal_enabled_drivers;
-
+	char *saved_drivers = gdal_enabled_drivers;
+	/* The VSICURL gate also covers local VSI paths. */
+	const char *path = "/vsisubfile/0," POSTGIS_TOP_SRC_DIR "/raster/test/regress/loader/testraster.tif";
 	GDALDatasetH ds;
-
-	char *disable_all = GDAL_DISABLE_ALL;
-	char *enabled = "GTiff JPEG PNG";
-	// char *enabled_vsi = "GTiff JPEG PNG VSICURL";
 
 	rt_util_gdal_register_all(1);
 
 	/* all drivers disabled */
-	gdal_enabled_drivers = disable_all;
+	gdal_enabled_drivers = GDAL_DISABLE_ALL;
 	ds = rt_util_gdal_open("/tmp/foo", GA_ReadOnly, 0);
 	CU_ASSERT(ds == NULL);
 
-	/* can't test VSICURL if HTTP driver not found */
-	if (!rt_util_gdal_driver_registered("HTTP"))
-		return;
+	gdal_enabled_drivers = "GTiff";
+	cu_error_msg_reset();
+	ds = rt_util_gdal_open(path, GA_ReadOnly, 0);
+	CU_ASSERT_PTR_NULL(ds);
+	CU_ASSERT_STRING_EQUAL(cu_error_msg, "rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
+	if (ds)
+		GDALClose(ds);
 
-	/* enabled drivers, no VSICURL */
-	gdal_enabled_drivers = enabled;
-	ds = rt_util_gdal_open("/vsicurl/http://download.osgeo.org/gdal/data/gtiff/small_world.tif", GA_ReadOnly, 0);
-	CU_ASSERT(ds == NULL);
+	gdal_enabled_drivers = "GTiff " GDAL_VSICURL;
+	cu_error_msg_reset();
+	ds = rt_util_gdal_open(path, GA_ReadOnly, 0);
+	CU_ASSERT_PTR_NOT_NULL(ds);
+	if (ds)
+		GDALClose(ds);
 
-	/* enabled drivers with VSICURL */
-	/* disabled as we don't want network access as a requirement */
-	// gdal_enabled_drivers = enabled_vsi;
-	// ds = rt_util_gdal_open("/vsicurl/http://download.osgeo.org/gdal/data/gtiff/small_world.tif", GA_ReadOnly, 0);
-	// CU_ASSERT(ds != NULL);
-	// GDALClose(ds);
+	cu_error_msg_reset();
+	gdal_enabled_drivers = saved_drivers;
 }
 
 /* register tests */
