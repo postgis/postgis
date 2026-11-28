@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2010 LISAsoft Pty Ltd
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -15,6 +16,7 @@
 #include <string.h>
 
 /* Test functions */
+static void test_ShpLoaderSimpleLineParts(void);
 void test_ShpLoaderCreate(void);
 void test_ShpLoaderDestroy(void);
 void test_ShpLoaderGetSQLHeader_drop_prepare(void);
@@ -42,6 +44,7 @@ register_shp2pgsql_suite(void)
 	}
 
 	if ((NULL == CU_add_test(pSuite, "test_ShpLoaderCreate()", test_ShpLoaderCreate)) ||
+	    !CU_add_test(pSuite, "test_ShpLoaderSimpleLineParts()", test_ShpLoaderSimpleLineParts) ||
 	    (NULL == CU_add_test(pSuite, "test_ShpLoaderDestroy()", test_ShpLoaderDestroy)) ||
 	    (NULL == CU_add_test(pSuite,
 				 "test_ShpLoaderGetSQLHeader_drop_prepare()",
@@ -271,4 +274,45 @@ test_ShpLoaderOpenShapeRejectsZip(void)
 	CU_ASSERT_EQUAL(ret, SHPLOADERERR);
 	CU_ASSERT_PTR_NULL(strstr(loader_state->message, "does not read .zip archives"));
 	ShpLoaderDestroy(loader_state);
+}
+
+static void
+test_ShpLoaderSimpleLineParts(void)
+{
+	const struct {
+		int parts;
+		int status;
+		const char *message;
+	} cases[] = {
+	    {0, SHPLOADERERR, "Line has 0 parts. The -S switch requires exactly one."},
+	    {1, SHPLOADEROK, ""},
+	    {2, SHPLOADERERR, "Line has 2 parts. The -S switch requires exactly one."},
+	};
+	SHPLOADERCONFIG config = {.simple_geometries = 1, .use_wkt = 1};
+	int starts[] = {0, 2};
+	double x[] = {0, 1, 2, 3};
+	double y[] = {0, 1, 0, 1};
+
+	for (uint32_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
+	{
+		SHPLOADERSTATE state = {.config = &config, .from_srid = SRID_UNKNOWN};
+		SHPObject object = {.nSHPType = SHPT_ARC,
+				    .nParts = cases[i].parts,
+				    .panPartStart = starts,
+				    .nVertices = 2 * cases[i].parts,
+				    .padfX = x,
+				    .padfY = y};
+		char *geometry = NULL;
+
+		CU_ASSERT_EQUAL(GenerateLineStringGeometry(&state, &object, &geometry), cases[i].status);
+		CU_ASSERT_STRING_EQUAL(state.message, cases[i].message);
+		if (cases[i].status == SHPLOADEROK)
+		{
+			CU_ASSERT_PTR_NOT_NULL_FATAL(geometry);
+			CU_ASSERT_STRING_EQUAL(geometry, "LINESTRING(0 0,1 1)");
+		}
+		else
+			CU_ASSERT_PTR_NULL(geometry);
+		free(geometry);
+	}
 }
