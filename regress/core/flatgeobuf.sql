@@ -248,3 +248,27 @@ DROP TABLE fgb_null_row;
 -- NULL values of a non-row type are still rejected
 SELECT '#6147.d', ST_AsFlatGeobuf(NULL::int);
 select 'TG1', ST_AsFlatGeobuf(q, false, 'geom') from (select 1::bigint as geom) q;
+
+-- Reject rows with a different record layout instead of deforming them
+-- through the first row's cached descriptor.
+DO $$
+DECLARE
+    error_message text;
+BEGIN
+    BEGIN
+        PERFORM ST_AsFlatGeobuf(v.r)
+        FROM (
+            SELECT ROW('POINT(0 0)'::geometry, 1::integer) AS r
+            UNION ALL
+            SELECT ROW(1::integer, 'POINT(1 1)'::geometry)
+        ) AS v;
+    EXCEPTION WHEN SQLSTATE 'XX000' THEN
+        GET STACKED DIAGNOSTICS error_message = MESSAGE_TEXT;
+        IF error_message <> 'flatgeobuf_agg_transfn: all rows must share the same column layout' THEN
+            RAISE;
+        END IF;
+        RETURN;
+    END;
+    RAISE EXCEPTION 'FlatGeobuf accepted rows with different record layouts';
+END;
+$$;
