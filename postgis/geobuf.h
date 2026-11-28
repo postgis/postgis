@@ -49,6 +49,9 @@
 struct geobuf_agg_context {
 	char *geom_name;
 	uint32_t geom_index;
+	/* Row type the keys and geom_index above were taken from */
+	Oid tuptype;
+	int32 tuptypmod;
 	HeapTupleHeader row;
 	LWGEOM **lwgeoms;
         Data *data;

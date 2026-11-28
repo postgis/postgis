@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2016-2017 Björn Harrtell <bjorn@wololo.org>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -51,14 +52,36 @@ get_tuple_desc(struct geobuf_agg_context *ctx)
 	return tupdesc;
 }
 
+/*
+ * The key list and geom_index are taken from the first row, but a record
+ * argument can change shape between rows (UNION ALL of differently shaped
+ * ROW()s), which would read a later row's columns as the wrong types.
+ *
+ * Rows whose row types differ only in a column's typmod or collation are the
+ * same layout and are accepted: that is what a UNION ALL of a typed and an
+ * untyped geometry column looks like, and it is the ordinary shape of a tile
+ * query.
+ */
+static void
+check_tuple_desc(struct geobuf_agg_context *ctx)
+{
+	if (!pg_rowtype_layout_matches(
+		ctx->tuptype, ctx->tuptypmod, HeapTupleHeaderGetTypeId(ctx->row), HeapTupleHeaderGetTypMod(ctx->row)))
+		elog(ERROR, "geobuf_agg_transfn: all rows must share the same column layout");
+}
+
 static void
 encode_keys(struct geobuf_agg_context *ctx)
 {
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	uint32_t natts = (uint32_t)tupdesc->natts;
-	char **keys = palloc(natts * sizeof(*keys));
+	char **keys;
 	uint32_t i, k = 0;
 	bool geom_found = false;
+	/* remember the row type the keys and geom_index below are taken from */
+	ctx->tuptype = HeapTupleHeaderGetTypeId(ctx->row);
+	ctx->tuptypmod = HeapTupleHeaderGetTypMod(ctx->row);
+	keys = palloc(natts * sizeof(*keys));
 	for (i = 0; i < natts; i++)
 	{
 		Oid typoid = getBaseType(TupleDescAttr(tupdesc, i)->atttypid);
@@ -634,6 +657,8 @@ geobuf_agg_transfn(struct geobuf_agg_context *ctx)
 	/* inspect row and encode keys assuming static schema */
 	if (fc->n_features == 0)
 		encode_keys(ctx);
+	else
+		check_tuple_desc(ctx);
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
 	if (isnull)

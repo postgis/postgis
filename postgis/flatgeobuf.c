@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2021 Björn Harrtell <bjorn@wololo.org>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -195,6 +196,8 @@ inspect_table(struct flatgeobuf_agg_ctx *ctx)
 
 	columns = palloc(sizeof(flatgeobuf_column *) * natts);
 	ctx->tupdesc = tupdesc;
+	ctx->tuptype = tupType;
+	ctx->tuptypmod = tupTypmod;
 
 	// inspect columns
 	// NOTE: last element will be unused if geom attr is found
@@ -708,6 +711,18 @@ flatgeobuf_agg_transfn(struct flatgeobuf_agg_ctx *ctx)
 
 	if (ctx->ctx->features_count == 0)
 		inspect_table(ctx);
+	/*
+	 * The column layout is cached from the first row, but a record argument
+	 * can change shape between rows (UNION ALL of differently shaped
+	 * ROW()s); reading a later row through it reinterprets its datums.
+	 * Row types that differ only in a column's typmod or collation describe
+	 * the same layout and are accepted.
+	 */
+	else if (!pg_rowtype_layout_matches(ctx->tuptype,
+					    ctx->tuptypmod,
+					    HeapTupleHeaderGetTypeId(ctx->row),
+					    HeapTupleHeaderGetTypMod(ctx->row)))
+		elog(ERROR, "flatgeobuf_agg_transfn: all rows must share the same column layout");
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
 	if (!isnull)

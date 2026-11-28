@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2016-2017 Björn Harrtell <bjorn@wololo.org>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -325,7 +326,30 @@ get_tuple_desc(mvt_agg_context *ctx)
 	Oid tupType = HeapTupleHeaderGetTypeId(ctx->row);
 	int32 tupTypmod = HeapTupleHeaderGetTypMod(ctx->row);
 	TupleDesc tupdesc = lookup_rowtype_tupdesc(tupType, tupTypmod);
+	ctx->column_cache.tuptype = tupType;
+	ctx->column_cache.tuptypmod = tupTypmod;
 	return tupdesc;
+}
+
+/*
+ * The column layout is cached from the first row, but a record argument can
+ * change shape between rows (UNION ALL of differently shaped ROW()s).
+ * Deforming a later row with the first row's descriptor reinterprets its
+ * datums, so refuse the mismatch instead.
+ *
+ * Rows whose row types differ only in a column's typmod or collation are the
+ * same layout and are accepted: that is what a UNION ALL of a typed and an
+ * untyped geometry column looks like, and it is the ordinary shape of a tile
+ * query.
+ */
+static void
+check_tuple_desc(mvt_agg_context *ctx)
+{
+	if (!pg_rowtype_layout_matches(ctx->column_cache.tuptype,
+				       ctx->column_cache.tuptypmod,
+				       HeapTupleHeaderGetTypeId(ctx->row),
+				       HeapTupleHeaderGetTypMod(ctx->row)))
+		elog(ERROR, "mvt_agg_transfn: all rows must share the same column layout");
 }
 
 static uint32_t
@@ -1329,6 +1353,8 @@ mvt_agg_transfn(mvt_agg_context *ctx)
 	/* geom_index is the cached index of the geometry. if missing, it needs to be initialized */
 	if (ctx->geom_index == UINT32_MAX)
 		parse_column_keys(ctx);
+	else
+		check_tuple_desc(ctx);
 
 	/* Get the geometry column */
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);

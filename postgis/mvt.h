@@ -52,6 +52,9 @@ typedef struct mvt_column_cache
     Datum *values;
     bool *nulls;
     TupleDesc tupdesc;
+    /* Row type the cache above was built for */
+    Oid tuptype;
+    int32 tuptypmod;
 } mvt_column_cache;
 
 typedef struct mvt_agg_context
