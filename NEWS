@@ -7,6 +7,9 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
+ - #926, GH-1066, Add array overloads for geometry accessors (Darafei Praliaskouski)
+ - GH-1066, Avoid integer overflow in ST_GeometryN indexing (Darafei Praliaskouski)
+ - GH-1066, Fix repeated ST_GeometryN array results without bbox (Darafei Praliaskouski)
 
 * Enhancements *
 
