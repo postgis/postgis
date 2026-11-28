@@ -369,7 +369,11 @@ encode_properties(flatgeobuf_agg_ctx *ctx)
 			const char *tzn = NULL;
 			TimestampTz timestamp;
 			timestamp = DatumGetTimestampTz(datum);
-			timestamp2tm(timestamp, &tz, &tm, &fsec, &tzn, NULL);
+			if (TIMESTAMP_NOT_FINITE(timestamp) ||
+			    timestamp2tm(timestamp, &tz, &tm, &fsec, &tzn, NULL) != 0)
+				ereport(ERROR,
+					(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+					 errmsg("ST_AsFlatGeobuf: cannot write infinite or out-of-range timestamp")));
 			string_value = palloc(MAXDATELEN + 1);
 			EncodeDateTime(&tm, fsec, true, tz, tzn, USE_ISO_DATES, string_value);
 			len = strlen(string_value);
@@ -583,6 +587,7 @@ decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, bool *isnull
 			int ftype[MAXDATEFIELDS];
 			int dtype;
 			int nf;
+			int rc;
 			struct pg_tm tt, *tm = &tt;
 			fsec_t fsec;
 			int tzp;
@@ -598,16 +603,25 @@ decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, bool *isnull
 				elog(ERROR, "flatgeobuf: decode_properties: datetime length exceeds buffer");
 			buf = palloc0((Size)len + 1);
 			memcpy(buf, (const char *)data + offset, len);
-			ParseDateTime((const char *)buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf);
+			offset += len;
+			while (len > 0 && buf[len - 1] == ' ')
+				buf[--len] = '\0';
+			if (ParseDateTime(
+				(const char *)buf, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf) != 0)
+				ereport(ERROR,
+					(errcode(ERRCODE_INVALID_DATETIME_FORMAT),
+					 errmsg("ST_FromFlatGeobuf: invalid datetime value \"%s\"", buf)));
 
 #if POSTGIS_PGSQL_VERSION >= 160
-			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp, &extra);
+			rc = DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp, &extra);
 #else
-			DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp);
+			rc = DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tzp);
 #endif
-			tm2timestamp(tm, fsec, &tzp, &dttz);
+			if (rc != 0 || dtype != DTK_DATE || tm2timestamp(tm, fsec, &tzp, &dttz) != 0)
+				ereport(ERROR,
+					(errcode(ERRCODE_INVALID_DATETIME_FORMAT),
+					 errmsg("ST_FromFlatGeobuf: invalid datetime value \"%s\"", buf)));
 			values[ci] = TimestampTzGetDatum(dttz);
-			offset += len;
 			break;
 		}
 		// TODO: find out how to handle string to jsonb Datum
