@@ -653,8 +653,9 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		pt.z = 0.0;
 		pt.m = 0.0;
 
-		pt2.x = inner->list[1].x;
-		pt2.y = inner->list[1].y;
+		/* A one vertex ring has no second point to test */
+		pt2.x = inner->list[inner->n > 1 ? 1 : 0].x;
+		pt2.y = inner->list[inner->n > 1 ? 1 : 0].y;
 		pt2.z = 0.0;
 		pt2.m = 0.0;
 
