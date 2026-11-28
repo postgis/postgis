@@ -51,6 +51,8 @@ NOTICE:  drop cascades to 2 other objects
 3.b null|
 4.a box|BOX(-100 -100,100 100)
 4.b box|BOX(-200 -200,200 200)
+GT-968.included_geom|
+GT-968.key_geom|BOX(1 2,1 2)
 #5734.noindex|LINESTRING(-2 -2,12 12)
 #5734.index|LINESTRING(-2 -2,12 12)
 #5734.index_nodata|

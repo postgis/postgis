@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2012 (C) Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2025 (C) Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2025-2026 (C) Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -2178,9 +2178,7 @@ gserialized_gist_sel_nd(PG_FUNCTION_ARGS)
 /************************************************************************/
 
 /*
- * Given an index and table column, confirm the
- * index was built on that column, and return the
- * corresponding index attribute for that column.
+ * Return the index attribute number for a table column used as an index key.
  */
 static int16
 index_has_attr(Oid index_oid, Oid table_oid, int16 table_attnum)
@@ -2333,11 +2331,6 @@ spatial_index_read_extent(Oid idx_oid, int idx_att_num, int key_type)
 		return NULL;
 
 	idx_rel = index_open(idx_oid, AccessShareLock);
-	if (idx_att_num < 1 || idx_att_num > IndexRelationGetNumberOfKeyAttributes(idx_rel))
-	{
-		index_close(idx_rel, AccessShareLock);
-		return NULL;
-	}
 	buffer = ReadBuffer(idx_rel, GIST_ROOT_BLKNO);
 	page = (Page)BufferGetPage(buffer);
 	offset = FirstOffsetNumber;
