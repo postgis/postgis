@@ -9,6 +9,8 @@ PostGIS 3.8.0dev
 
 * Enhancements *
 
+ - #5715, Add configure --without-comments to skip generated SQL comments
+          (Darafei Praliaskouski)
  - #5796, GH-986, Build SQL extension bundles without PGXS
           (Darafei Praliaskouski)
  - #6145, GH-1182, Faster ST_AsMVTGeom on polygons that stay simple inside the tile
@@ -317,6 +319,7 @@ These are only changes since 3.7.0beta2.
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
 
+* Enhancements *
 
 
 PostGIS 3.7.0beta2
