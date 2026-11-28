@@ -123,6 +123,11 @@ step log before changing credits. The workflow runs:
 make check-contributor-credits
 ```
 
+The `Core Contributors Present` and `Core Contributors Past` lists are rosters
+of project committers, not general acknowledgments. Credit non-committer
+reporters and patch authors under `Other Contributors` → `Individual
+Contributors`; keep organizations under `Corporate Sponsors`.
+
 The check compares `doc/credits.xml` with Git authors, co-authors, and
 unreleased `NEWS` attributions after applying `.mailmap`. If it reports a
 missing person, either add that person's canonical display name to
