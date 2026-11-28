@@ -59,3 +59,4 @@ NOTICE:  kmeans_init: there are at least 3 duplicate inputs, number of output cl
 #4071|2|3|4
 weight-and-limit-support-1|1
 weight-and-limit-support-2|2
+clusterkmeans-large-coordinates|3
