@@ -36,6 +36,9 @@ PostGIS 3.8.0dev
    fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-851, Match geometry metadata by type OID
           (reported by Sven Klemm / Tiger Data; fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
+ - GT-935, Normalize large coordinates in ST_AsLatLonText
+          (reported by Nitish Ramaraj / Artemis Security; fixed by Aleksander Alekseev / Tiger Data)
+
  - #3318, GT-596, GH-941, [raster] Fix ST_MapAlgebra mask radius
    (reported by Regina Obe; fixed by Darafei Praliaskouski)
  - GT-890, Preserve input geometry and box values in ST_Scroll and ST_ClipByBox2D
