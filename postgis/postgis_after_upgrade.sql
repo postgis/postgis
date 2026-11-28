@@ -20,7 +20,7 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 -- WKT2 definitions can exceed the former 2048-character limit.
-ALTER TABLE @extschema@.spatial_ref_sys
+ALTER TABLE spatial_ref_sys
 ALTER COLUMN srtext TYPE text;
 
 -- First drop old aggregates
