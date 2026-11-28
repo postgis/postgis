@@ -1042,9 +1042,9 @@ JOIN holes AS h
 			(<varname>MINX</varname>, <varname>MAXY</varname>),
 			(<varname>MAXX</varname>, <varname>MAXY</varname>),
 			(<varname>MAXX</varname>, <varname>MINY</varname>),
-			(<varname>MINX</varname>, <varname>MINY</varname>)). (PostGIS will add a
-			<varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as
-			well).</para>
+			(<varname>MINX</varname>, <varname>MINY</varname>)).
+			The envelope uses XY even when the input has Z. Use
+			<xref linkend="Box3D"/> for XYZ bounds.</para>
 
 			<para>Degenerate cases (vertical lines, points) will return a geometry of
 			lower dimension than <varname>POLYGON</varname>, ie.
@@ -1077,6 +1077,9 @@ SELECT ST_Envelope(ST_Collect(
             ST_Point(20, 80)
             )) As wktenv;</programlisting>
 <screen role="visual-primary text-primary">POLYGON((20 75,20 150,125 150,125 75,20 75))</screen>
+<para>Envelope of a 3D line.</para>
+<programlisting language="sql">SELECT ST_AsEWKT(ST_Envelope('LINESTRING Z (0 0 4,2 3 9)'::geometry)) AS envelope;</programlisting>
+<screen>POLYGON((0 0,0 3,2 3,2 0,0 0))</screen>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
