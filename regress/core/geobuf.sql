@@ -74,3 +74,34 @@ BEGIN
     RAISE EXCEPTION 'Geobuf accepted rows with different record layouts';
 END;
 $$;
+
+-- Domains whose names resemble built-in types must use their base type's
+-- Datum representation when encoding properties.
+CREATE SCHEMA geobuf_test;
+CREATE DOMAIN geobuf_test.int2 AS text;
+CREATE DOMAIN geobuf_test.int4 AS text;
+CREATE DOMAIN geobuf_test.int8 AS text;
+CREATE DOMAIN geobuf_test.float4 AS text;
+CREATE DOMAIN geobuf_test.float8 AS text;
+WITH q AS (
+    SELECT 'POINT(1 1)'::geometry AS geom,
+           'small'::geobuf_test.int2 AS val_int2,
+           'medium'::geobuf_test.int4 AS val_int4,
+           'large'::geobuf_test.int8 AS val_int8,
+           'single'::geobuf_test.float4 AS val_float4,
+           'double'::geobuf_test.float8 AS val_float8
+),
+q_text AS (
+    SELECT geom, val_int2::text AS val_int2, val_int4::text AS val_int4,
+           val_int8::text AS val_int8, val_float4::text AS val_float4,
+           val_float8::text AS val_float8
+    FROM q
+)
+SELECT 'domain_type_dispatch', ST_AsGeobuf(q, 'geom') = ST_AsGeobuf(q_text, 'geom')
+FROM q, q_text;
+DROP DOMAIN geobuf_test.int2;
+DROP DOMAIN geobuf_test.int4;
+DROP DOMAIN geobuf_test.int8;
+DROP DOMAIN geobuf_test.float4;
+DROP DOMAIN geobuf_test.float8;
+DROP SCHEMA geobuf_test;

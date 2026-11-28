@@ -19,3 +19,4 @@ null_row.a|t
 null_row.b|t
 null_row.c|t
 ERROR:  encode_keys: Column 'geom' is not of geometry type
+domain_type_dispatch|t
