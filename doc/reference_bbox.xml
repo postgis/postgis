@@ -138,7 +138,8 @@
 
         <para>Returns the estimated extent of a spatial table as a <xref linkend="box2d_type"/>.
             The current schema is used if not specified.
-            The estimated extent is taken from the geometry column's statistics.
+            PostGIS can read the bounds from a GiST index, whose bounds do not shrink after deletes.
+            Otherwise it estimates the bounds from the column statistics.
             This is usually much faster than computing the exact extent of the table
             using <xref linkend="ST_Extent"/> or <xref linkend="ST_3DExtent"/>.
             </para>
@@ -148,18 +149,9 @@
             statistics for the given table are used and child tables are ignored.
         </para>
 
-        <para>For PostgreSQL &gt;= 8.0.0 statistics are gathered by VACUUM
-        ANALYZE and the result extent will be about 95% of the actual one.
-        For PostgreSQL &lt; 8.0.0 statistics are gathered by running
-        <code>update_geometry_stats()</code> and the result extent is exact.
-        </para>
-
-        <note>
-            <para>
-            In the absence of statistics (empty table or no ANALYZE called) this function
-            returns NULL.  Prior to version 1.5.4 an exception was thrown instead.
-            </para>
-        </note>
+        <para>Run <command>ANALYZE</command> to refresh the column statistics.
+        The estimate has no fixed accuracy guarantee. When PostGIS finds
+        neither usable GiST index bounds nor column statistics, it warns and returns NULL.</para>
 
         <note>
             <para>
@@ -188,6 +180,21 @@
 ---------------------------------------------------------------------
  BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 (1 row)</screen>
+        <para>Get an estimate from an analyzed table and from a GiST index.</para>
+<programlisting language="sql"><![CDATA[BEGIN;
+CREATE TEMP TABLE extent_points (geom geometry(Point));
+INSERT INTO extent_points VALUES ('POINT(1 2)'), ('POINT(3 4)');
+ANALYZE extent_points;
+SELECT ST_EstimatedExtent('extent_points', 'geom') IS NOT NULL AS estimate_available;
+
+CREATE TEMP TABLE indexed_extent_points (geom geometry(Point));
+INSERT INTO indexed_extent_points SELECT geom FROM extent_points;
+CREATE INDEX ON indexed_extent_points USING gist (geom);
+SELECT ST_EstimatedExtent('indexed_extent_points', 'geom') AS index_estimate;
+ROLLBACK;]]></programlisting>
+<screen>t
+
+BOX(1 2,3 4)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -226,7 +233,9 @@
         <title>Description</title>
 
         <para>Returns the exact extent of a geometry column as a <xref linkend="box2d_type"/>.
-        If no schema is specified, the table is resolved using the search path.</para>
+        If no schema is specified, the table is resolved using the search path.
+        Pass the schema, table and column names with the case stored in the
+        catalog. PostgreSQL folds unquoted identifiers to lower case.</para>
 
         <para>This function computes the exact table extent by scanning the table.
         For a faster estimate based on table statistics, use
@@ -399,9 +408,9 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
         </note>
 
         <note>
-          <para>The returned <code>box3d</code> value does not include a SRID.
-            Use <xref linkend="ST_SetSRID"/> to convert it into a geometry with SRID metadata.
-            The SRID is the same as the input geometries.</para>
+          <para>The returned <code>box2d</code> value carries the coordinate bounds.
+            To create a geometry with the SRID of the inputs, cast the box to
+            <type>geometry</type> and assign their SRID with <xref linkend="ST_SetSRID"/>.</para>
         </note>
 
         <para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
@@ -429,6 +438,18 @@ GROUP BY category ORDER BY category;</programlisting>
 <screen role="text-primary"> SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
 794875.8125 2908247.25,739651.875 2908247.25))
         </screen>
+        <para>Cast the extent to geometry and restore the known input SRID.</para>
+<programlisting language="sql"><![CDATA[WITH points(geom) AS (
+  VALUES (ST_Point(10, 20, 4326)), (ST_Point(30, 40, 4326))
+)
+SELECT pg_typeof(ST_Extent(geom)) AS box_type,
+       ST_SRID(ST_Extent(geom)::geometry) AS cast_srid,
+       ST_SRID(ST_SetSRID(ST_Extent(geom)::geometry, 4326)) AS restored_srid
+FROM points;]]></programlisting>
+<screen> box_type | cast_srid | restored_srid
+----------+-----------+---------------
+ box2d    |         0 |          4326
+(1 row)</screen>
       </refsection>
 
       <refsection>
@@ -523,7 +544,8 @@ FROM (SELECT ST_Translate(ST_Force3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x, y), 1
         <title>Description</title>
 
         <para>Creates a <xref linkend="box2d_type"/> defined by two Point
-            geometries.  This is useful for doing range queries.</para>
+            geometries. The result uses the minimum and maximum X and Y
+            values of those points. This is useful for doing range queries.</para>
       </refsection>
 
 
@@ -542,6 +564,9 @@ WHERE geom && ST_SetSRID(
   2163
 );
 ]]></programlisting>
+        <para>Pass the points in reverse corner order to produce the same bounds.</para>
+<programlisting language="sql"><![CDATA[SELECT ST_MakeBox2D(ST_Point(30, 40), ST_Point(10, 20)) AS box;]]></programlisting>
+<screen>BOX(10 20,30 40)</screen>
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
