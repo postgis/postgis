@@ -4,6 +4,7 @@ PostGIS 3.8.0dev
 
 * New Features *
 
+ - #4009, GH-1032, Clip rasters with geometry arrays (Darafei Praliaskouski)
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
