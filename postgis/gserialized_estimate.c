@@ -80,7 +80,6 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 
 #include "utils/builtins.h"
 #include "utils/datum.h"
-#include "utils/snapmgr.h"
 #include "utils/fmgroids.h"
 #include "funcapi.h"
 #include "access/heapam.h"
@@ -2309,11 +2308,26 @@ table_get_spatial_index(Oid table_oid, int16 attnum, int *key_type, int16 *idx_a
 	return InvalidOid;
 }
 
+typedef struct GistExtentPage {
+	BlockNumber block;
+	GistNSN parent_lsn;
+	struct GistExtentPage *next;
+} GistExtentPage;
+
+static GistExtentPage *
+gist_extent_push(GistExtentPage *pending, BlockNumber block, GistNSN parent_lsn)
+{
+	GistExtentPage *item = palloc(sizeof(*item));
+
+	item->block = block;
+	item->parent_lsn = parent_lsn;
+	item->next = pending;
+	return item;
+}
+
 /*
- * Given an index and indexed attribute, look up
- * the keys in the top page of the index, and using
- * the appropriate key type, return a box that is the
- * union of all those keys.
+ * Union the keys in the GiST root. A mixed 2D subtree uses float-limit
+ * bounds as a marker, so read its children to recover the real extent.
  */
 static GBOX *
 spatial_index_read_extent(Oid idx_oid, int idx_att_num, int key_type)
@@ -2322,58 +2336,87 @@ spatial_index_read_extent(Oid idx_oid, int idx_att_num, int key_type)
 	GIDX *bounds_gidx = NULL;
 	GBOX *gbox = NULL;
 	Relation idx_rel;
-	Buffer buffer;
-	Page page;
-	unsigned long offset;
-	unsigned long offset_max;
+	GistExtentPage *pending;
 
 	if (!idx_oid)
 		return NULL;
 
 	idx_rel = index_open(idx_oid, AccessShareLock);
-	buffer = ReadBuffer(idx_rel, GIST_ROOT_BLKNO);
-	page = (Page)BufferGetPage(buffer);
-	offset = FirstOffsetNumber;
-	offset_max = PageGetMaxOffsetNumber(page);
-	while (offset <= offset_max)
+	pending = gist_extent_push(NULL, GIST_ROOT_BLKNO, InvalidXLogRecPtr);
+	while (pending)
 	{
-		ItemId iid = PageGetItemId(page, offset);
-		IndexTuple ituple;
-		if (!iid)
+		GistExtentPage *item = pending;
+		Buffer buffer;
+		Page page;
+		GISTPageOpaque opaque;
+		bool is_leaf;
+		OffsetNumber max_offset;
+		GistNSN page_lsn;
+
+		CHECK_FOR_INTERRUPTS();
+		pending = item->next;
+		buffer = ReadBuffer(idx_rel, item->block);
+		LockBuffer(buffer, GIST_SHARE);
+		gistcheckpage(idx_rel, buffer);
+		page = BufferGetPage(buffer);
+		opaque = GistPageGetOpaque(page);
+
+		/* As in gistScanPage, follow splits newer than the downlink we
+		 * read, including splits whose parent update is still pending. */
+		if (!XLogRecPtrIsInvalid(item->parent_lsn) &&
+		    (GistFollowRight(page) || item->parent_lsn < GistPageGetNSN(page)) &&
+		    BlockNumberIsValid(opaque->rightlink))
+			pending = gist_extent_push(pending, opaque->rightlink, item->parent_lsn);
+		pfree(item);
+
+		if (GistPageIsDeleted(page))
 		{
-			ReleaseBuffer(buffer);
-			index_close(idx_rel, AccessShareLock);
-			return NULL;
+			UnlockReleaseBuffer(buffer);
+			continue;
 		}
-		ituple = (IndexTuple)PageGetItem(page, iid);
-		if (!GistTupleIsInvalid(ituple))
+
+		is_leaf = GistPageIsLeaf(page);
+		max_offset = PageGetMaxOffsetNumber(page);
+		page_lsn = BufferGetLSNAtomic(buffer);
+		for (OffsetNumber offset = FirstOffsetNumber; offset <= max_offset; offset = OffsetNumberNext(offset))
 		{
+			IndexTuple ituple = (IndexTuple)PageGetItem(page, PageGetItemId(page, offset));
 			bool isnull;
-			Datum idx_attr = index_getattr(ituple, idx_att_num, idx_rel->rd_att, &isnull);
-			if (!isnull)
+			Datum idx_attr;
+
+			if (GistTupleIsInvalid(ituple))
+				continue;
+			idx_attr = index_getattr(ituple, idx_att_num, RelationGetDescr(idx_rel), &isnull);
+			if (isnull)
+				continue;
+
+			if (key_type == STATISTIC_KIND_2D)
 			{
-				if (key_type == STATISTIC_KIND_2D)
-				{
-					BOX2DF *b = (BOX2DF *)DatumGetPointer(idx_attr);
-					if (bounds_2df)
-						box2df_merge(bounds_2df, b);
-					else
-						bounds_2df = box2df_copy(b);
-				}
+				BOX2DF *box = (BOX2DF *)DatumGetPointer(idx_attr);
+
+				if (box2df_is_empty(box))
+					continue;
+				if (!is_leaf && box2df_may_have_empty(box))
+					pending = gist_extent_push(
+					    pending, ItemPointerGetBlockNumber(&ituple->t_tid), page_lsn);
+				else if (bounds_2df)
+					box2df_merge(bounds_2df, box);
 				else
-				{
-					GIDX *b = (GIDX *)DatumGetPointer(idx_attr);
-					if (bounds_gidx)
-						gidx_merge(&bounds_gidx, b);
-					else
-						bounds_gidx = gidx_copy(b);
-				}
+					bounds_2df = box2df_copy(box);
+			}
+			else
+			{
+				GIDX *box = (GIDX *)DatumGetPointer(idx_attr);
+
+				if (bounds_gidx)
+					gidx_merge(&bounds_gidx, box);
+				else
+					bounds_gidx = gidx_copy(box);
 			}
 		}
-		offset++;
+		UnlockReleaseBuffer(buffer);
 	}
 
-	ReleaseBuffer(buffer);
 	index_close(idx_rel, AccessShareLock);
 
 	if (key_type == STATISTIC_KIND_2D && bounds_2df)

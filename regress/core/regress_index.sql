@@ -69,6 +69,56 @@ SELECT 'scan_seq', qnodes('select * from test where the_geom && ST_MakePoint(0,0
 SELECT 'gist 2d @ idx', qnodes('select * from test_gist_idx_2d where geom @ ST_MakeEnvelope(120,120,140,140)'), count(*) FROM test_gist_idx_2d WHERE geom @ ST_MakeEnvelope(120,120,140,140);
 SELECT 'gist 2d ~ idx', qnodes('select * from test_gist_idx_2d where geom ~ ST_MakePoint(125,125)'), count(*) FROM test_gist_idx_2d WHERE geom ~ ST_MakePoint(125,125);
 
+-- An EMPTY or NaN box is contained by every box. On a multi-page GiST
+-- index, @ must return these rows as a sequential scan does, also when
+-- the query envelope does not touch the other keys on their pages.
+-- One EMPTY and one NaN row among 2000 points:
+CREATE TABLE test_gist_idx_2d_empty AS
+SELECT i AS id, ST_SetSRID(ST_MakePoint(100 + (i % 50) / 50.0, 100 + (i / 50) / 50.0), 4326) AS geom
+FROM generate_series(0, 1999) i;
+INSERT INTO test_gist_idx_2d_empty VALUES
+  (2000, ST_SetSRID('POINT EMPTY'::geometry, 4326)),
+  (2001, ST_SetSRID(ST_MakePoint('NaN', 'NaN'), 4326));
+CREATE INDEX test_gist_idx_2d_empty_gist ON test_gist_idx_2d_empty USING gist (geom);
+SELECT 'gist 2d @ empty far', qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(0,0,1,1,4326)'), count(*) FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(0,0,1,1,4326);
+SELECT 'gist 2d @ empty near', qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(100,100,101,101,4326)'), count(*) FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(100,100,101,101,4326);
+-- 1000 EMPTY and NaN rows, so that some index pages hold only empty keys:
+INSERT INTO test_gist_idx_2d_empty
+SELECT 2001 + i, CASE WHEN i % 2 = 0 THEN ST_SetSRID('POINT EMPTY'::geometry, 4326) ELSE ST_SetSRID(ST_MakePoint('NaN', 'NaN'), 4326) END
+FROM generate_series(1, 998) i;
+REINDEX INDEX test_gist_idx_2d_empty_gist;
+SELECT 'gist 2d @ empty pages far', qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(0,0,1,1,4326)'), count(*) FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(0,0,1,1,4326);
+SELECT 'gist 2d @ empty pages near', qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(100,100,101,101,4326)'), count(*) FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(100,100,101,101,4326);
+-- Compression gives the NaN axis float-limit bounds. Recheck must
+-- keep the point when its X coordinate is in range and reject it otherwise.
+INSERT INTO test_gist_idx_2d_empty VALUES (3000, ST_SetSRID(ST_MakePoint(10, 'NaN'), 4326));
+SELECT 'gist 2d @ partial NaN',
+       qnodes('select * from test_gist_idx_2d_empty where geom @ ST_MakeEnvelope(9,0,11,1,4326)'),
+       count(*) FILTER (WHERE id = 3000)
+FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(9,0,11,1,4326);
+SELECT 'gist 2d @ partial NaN outside', count(*) FILTER (WHERE id = 3000)
+FROM test_gist_idx_2d_empty WHERE geom @ ST_MakeEnvelope(0,0,1,1,4326);
+DROP TABLE test_gist_idx_2d_empty;
+
+-- Finite geometries outside the float range have clamped GiST leaf bounds.
+-- Their internal keys must remain searchable for overlap queries. Exercise
+-- both sorted index builds and incremental insertion into an existing index.
+CREATE TABLE test_gist_idx_2d_limit_sorted AS
+SELECT i AS id, ST_MakePoint('1e39'::float8, '1e39'::float8) AS geom
+FROM generate_series(1, 5000) i;
+CREATE INDEX test_gist_idx_2d_limit_sorted_gist ON test_gist_idx_2d_limit_sorted USING gist (geom);
+SELECT 'gist 2d && float limit sorted', qnodes('select * from test_gist_idx_2d_limit_sorted where geom && ST_MakePoint(''1e39''::float8, ''1e39''::float8)'), count(*) FROM test_gist_idx_2d_limit_sorted WHERE geom && ST_MakePoint('1e39'::float8, '1e39'::float8);
+DROP TABLE test_gist_idx_2d_limit_sorted;
+
+CREATE TABLE test_gist_idx_2d_limit_random (id int, geom geometry);
+CREATE INDEX test_gist_idx_2d_limit_random_gist ON test_gist_idx_2d_limit_random USING gist (geom);
+INSERT INTO test_gist_idx_2d_limit_random
+SELECT i, ST_MakePoint('1e39'::float8, '1e39'::float8)
+FROM generate_series(1, 5000) i
+ORDER BY (i * 7919) % 5000;
+SELECT 'gist 2d && float limit random', qnodes('select * from test_gist_idx_2d_limit_random where geom && ST_MakePoint(''1e39''::float8, ''1e39''::float8)'), count(*) FROM test_gist_idx_2d_limit_random WHERE geom && ST_MakePoint('1e39'::float8, '1e39'::float8);
+DROP TABLE test_gist_idx_2d_limit_random;
+
 CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
 LANGUAGE 'plpgsql' VOLATILE AS $$

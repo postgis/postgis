@@ -39,6 +39,20 @@ typedef struct
 	float xmin, xmax, ymin, ymax;
 } BOX2DF;
 
+/* A bound at the float limits may be a real clamped geometry or a key with
+ * non-finite coordinates, so callers must treat it conservatively. */
+static inline bool
+box2df_may_have_empty(const BOX2DF *box)
+{ return box->xmin <= -FLT_MAX || box->ymin <= -FLT_MAX || box->xmax >= FLT_MAX || box->ymax >= FLT_MAX; }
+
+/* Mark an internal key that may represent both EMPTY and bounded children. */
+static inline void
+box2df_set_empty_marker(BOX2DF *box)
+{
+	box->xmin = box->ymin = -FLT_MAX;
+	box->xmax = box->ymax = FLT_MAX;
+}
+
 /*********************************************************************************
 ** GIDX support functions.
 **
