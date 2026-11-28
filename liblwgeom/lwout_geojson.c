@@ -105,20 +105,25 @@ static void
 asgeojson_bbox(stringbuffer_t *sb, const geojson_opts *opts)
 {
 	if (!opts->bbox) return;
-	if (!opts->hasz)
-		stringbuffer_aprintf(sb, "\"bbox\":[%.*f,%.*f,%.*f,%.*f],",
-			opts->precision, opts->bbox->xmin,
-			opts->precision, opts->bbox->ymin,
-			opts->precision, opts->bbox->xmax,
-			opts->precision, opts->bbox->ymax);
-	else
-		stringbuffer_aprintf(sb, "\"bbox\":[%.*f,%.*f,%.*f,%.*f,%.*f,%.*f],",
-			opts->precision, opts->bbox->xmin,
-			opts->precision, opts->bbox->ymin,
-			opts->precision, opts->bbox->zmin,
-			opts->precision, opts->bbox->xmax,
-			opts->precision, opts->bbox->ymax,
-			opts->precision, opts->bbox->zmax);
+	stringbuffer_append(sb, "\"bbox\":[");
+	stringbuffer_append_double(sb, opts->bbox->xmin, opts->precision);
+	stringbuffer_append_char(sb, ',');
+	stringbuffer_append_double(sb, opts->bbox->ymin, opts->precision);
+	if (opts->hasz)
+	{
+		stringbuffer_append_char(sb, ',');
+		stringbuffer_append_double(sb, opts->bbox->zmin, opts->precision);
+	}
+	stringbuffer_append_char(sb, ',');
+	stringbuffer_append_double(sb, opts->bbox->xmax, opts->precision);
+	stringbuffer_append_char(sb, ',');
+	stringbuffer_append_double(sb, opts->bbox->ymax, opts->precision);
+	if (opts->hasz)
+	{
+		stringbuffer_append_char(sb, ',');
+		stringbuffer_append_double(sb, opts->bbox->zmax, opts->precision);
+	}
+	stringbuffer_append(sb, "],");
 	return;
 }
 

@@ -46,3 +46,6 @@ SELECT '4695', ST_ASGeoJSON(a.*) FROM
 DROP TABLE g;
 SELECT 'gj_named_bigint', ST_AsGeoJSON(q, 'geom') FROM (SELECT 1::bigint AS geom) AS q;
 SELECT 'gj_named_null_text', ST_AsGeoJSON(q, 'geom') FROM (SELECT NULL::text AS geom) AS q;
+SELECT ST_AsGeoJSON('POINT(1 2)'::geometry, 1000000000, 1);
+SELECT ST_AsGeoJSON('LINESTRING(1.5 -0.0000001, 10000000000000000 2)'::geometry, 7, 1);
+SELECT ST_AsGeoJSON('LINESTRING Z (1.5 -0.0000001 3.125, 10000000000000000 2 4)'::geometry, 7, 1);
