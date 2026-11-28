@@ -1950,3 +1950,14 @@ INSERT INTO t6146 VALUES (NULL);
 SELECT '#6146.a', ST_CombineBBox(CASE WHEN x IS NULL THEN box3d(x) END, NULL::geometry) IS NULL FROM t6146;
 SELECT '#6146.b', ST_AsText(ST_CombineBBox(CASE WHEN x IS NULL THEN box3d(x) END, 'POINT(1 2 3)'::geometry)) FROM t6146;
 DROP TABLE t6146;
+
+-- #5772: order crossings along the second line, split or unsplit.
+WITH lines AS (
+  SELECT 'LINESTRING(-1 -1, 1 -1, 1 1, -1 1)'::geometry AS a,
+         'LINESTRING(0 2, 0 -2)'::geometry AS b,
+         'LINESTRING(0 2, 0 0, 0 -2)'::geometry AS b_split
+)
+SELECT '#5772', ST_LineCrossingDirection(a, b),
+       ST_LineCrossingDirection(a, b_split),
+       ST_LineCrossingDirection(ST_Reverse(a), ST_Reverse(b))
+FROM lines;

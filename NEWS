@@ -36,6 +36,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #5772, GT-891, GH-904, [geometry] Order crossings along the second line
+   in ST_LineCrossingDirection
+   (reported by fkcheng; fixed by Darafei Praliaskouski)
  - #2924, GT-919, GH-957, [raster] Fix warp skew for default rasters
    (reported by Sandro Santilli; fixed by Darafei Praliaskouski)
  - #2038, GT-434, [topology] Node lines against edges moved by start snaps
