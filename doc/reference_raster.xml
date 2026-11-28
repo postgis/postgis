@@ -7249,6 +7249,7 @@ FROM baz</programlisting>
                 <title>Description</title>
 
                 <para>Sets the value that represents no data for the band or bands.  Band 1 is assumed if not specified.  When using the array variant, the <varname>bands</varname> and <varname>nodatavalues</varname> arrays must have the same length. This will affect results from <xref linkend="RT_ST_Polygon"/>, <xref linkend="RT_ST_DumpAsPolygons"/>, and the ST_PixelAs...() functions.</para>
+                <para>Enhanced: 3.8.0 support for multiple bands.</para>
                 </refsection>
 
                 <refsection>
