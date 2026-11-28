@@ -15,6 +15,26 @@ extension library names, or upgrade-sensitive compatibility rules.
 * [SQL upgrade and deprecation](sql-scripting.md) explains SQL metadata
   comments, `Replaces`, and before/after upgrade hooks.
 
+## Standards Compatibility
+
+Treat standards compatibility as part of the public API. When a patch changes
+geometry construction, parsing, output, predicates, or measurements, check its
+behavior against the Simple Features and SQL/MM contracts cited by the affected
+manual entry. Record intentional PostGIS extensions or deviations instead of
+silently presenting them as standard behavior.
+
+Review at least the following surfaces when they apply:
+
+* empty geometry results and distinctions between empty and `NULL`;
+* dimensional semantics, including Z and M preservation or loss;
+* validity and simplicity requirements, and behavior for invalid inputs;
+* precision, rounding, and robustness at the documented boundary; and
+* WKT/WKB compatibility, including EWKT/EWKB extensions and round trips.
+
+Add regression coverage for the standard case and for any intentional PostGIS
+extension. Update the function reference with the relevant OGC/SFS or SQL/MM
+annotation when compatibility changes.
+
 ## Configuration Settings
 
 Treat SQL-visible behavior controlled by PostgreSQL configuration settings as

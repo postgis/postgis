@@ -40,6 +40,13 @@ or pull request when someone takes ownership of it.
 
 ## Indexing And Planner
 
+* Investigate a typed bounding-box or envelope API that can carry SRID and
+  dimensionality without the size and semantics of a polygon. The historical
+  sprint discussion also proposed using casts to this shared box type so
+  extensions such as raster could reuse core spatial indexing rather than
+  defining parallel operator infrastructure. Current `box2d`, `box3d`,
+  geometry-cached boxes, and raster convex-hull indexing cover adjacent cases
+  but not this common typed-box contract.
 * Investigate future geometry index tuple designs. Historical proposals include
   carrying SRID in the index tuple, storing very small geometries directly in
   index entries for possible index-only scans, using compact fixed-size
@@ -104,6 +111,11 @@ or pull request when someone takes ownership of it.
 
 ## 3D And Output Formats
 
+* Investigate 3D-aware geography/cartesian conversion so the internal
+  geodetic-to-cartesian and cartesian-to-geodetic paths have a defined policy
+  for a third coordinate instead of treating geography as a purely surface
+  model. This needs explicit altitude semantics and compatibility rules before
+  changing current geography calculations.
 * Investigate deeper 3D primitive completeness. Current PostGIS supports
   PolyhedralSurface, Triangle, TIN, X3D/GML output, and many SFCGAL-backed 3D
   operations including 3D intersects, distance, area, volume, intersection,
@@ -124,6 +136,13 @@ or pull request when someone takes ownership of it.
   `postgis`, `postgis_raster`, and `postgis_topology` extension control files
   remain `relocatable = false`, while `postgis_sfcgal` is relocatable.
 
+## Developer Tooling
+
+* Define review and update ownership for the repository-owned AI-agent skills
+  under `doc/skills/`, add validation for their maintained-documentation links,
+  and document how generated or provider-specific copies avoid drifting from
+  the repository source.
+
 ## Topology
 
 * Investigate topology-aware shapefile loader and dumper workflows, including
@@ -142,3 +161,8 @@ or pull request when someone takes ownership of it.
   importing E00 coverage/topology data. Current in-tree topology tools focus on
   SQL/topology management and `pgtopo_export` / `pgtopo_import`; OSM, E00, and
   routing-specific import design remains unowned.
+* Investigate a first-class attach/detach workflow for TopoGeometry layers that
+  are copied or imported independently of their user tables. A design would
+  need stable layer identity, ownership and privilege rules, relation-table
+  validation, and explicit behavior when the corresponding feature table is
+  absent or later reattached.
