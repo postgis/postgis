@@ -49,3 +49,31 @@ SELECT 'gj_named_null_text', ST_AsGeoJSON(q, 'geom') FROM (SELECT NULL::text AS 
 SELECT ST_AsGeoJSON('POINT(1 2)'::geometry, 1000000000, 1);
 SELECT ST_AsGeoJSON('LINESTRING(1.5 -0.0000001, 10000000000000000 2)'::geometry, 7, 1);
 SELECT ST_AsGeoJSON('LINESTRING Z (1.5 -0.0000001 3.125, 10000000000000000 2 4)'::geometry, 7, 1);
+SELECT case_name, ST_AsGeoJSON(q, id_column => cases.id_column)
+FROM (SELECT 1 AS id, 'POINT(1 2)'::geometry AS geom) AS q
+CROSS JOIN (VALUES ('gj_id_empty', ''), ('gj_id_named', 'id'), ('gj_id_null', NULL))
+    AS cases(case_name, id_column)
+ORDER BY case_name;
+
+-- Installing the legacy C binding requires a superuser.
+DO $$
+BEGIN
+  IF (SELECT rolsuper FROM pg_roles WHERE rolname = current_user) THEN
+    EXECUTE format(
+      'CREATE FUNCTION pg_temp.st_asgeojson_legacy(record, text, integer, boolean)
+       RETURNS text AS %L, %L LANGUAGE C STRICT',
+      (SELECT probin FROM pg_proc WHERE oid = 'st_asgeojson(record,text,integer,boolean,text)'::regprocedure),
+      'ST_AsGeoJsonRow');
+
+    IF EXISTS (
+      SELECT FROM (SELECT 1 AS id, ST_Point(1, 2) AS geom, ST_Point(3, 4) AS other_geom) AS q
+      CROSS JOIN (VALUES (''), ('other_geom')) AS cases(geom_column)
+      WHERE pg_temp.st_asgeojson_legacy(q, geom_column, 9, false)
+        IS DISTINCT FROM ST_AsGeoJSON(q, geom_column, 9, false, '')
+    ) THEN
+      RAISE EXCEPTION 'Legacy ST_AsGeoJSON must match the current signature without an ID column';
+    END IF;
+    DROP FUNCTION pg_temp.st_asgeojson_legacy(record, text, integer, boolean);
+  END IF;
+END
+$$;

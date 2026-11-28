@@ -37,6 +37,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #5994, GT-964, [geometry] Fix legacy ST_AsGeoJSON row calls after upgrade
+   (reported by Paul Ramsey; fixed by Aleksander Alekseev / Tiger Data,
+   Darafei Praliaskouski)
  - GT-973, [loader] Reject partless lines in shp2pgsql simple mode
    (reported by Sven Klemm / Tiger Data;
    fixed by Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
