@@ -18,6 +18,7 @@
  *
  **********************************************************************
  *
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright 2001-2005 Refractions Research Inc.
  *
  **********************************************************************/
@@ -674,11 +675,9 @@ LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	int32 wanted_index;
 	LWCURVEPOLY *curvepoly = NULL;
 	LWPOLY *poly = NULL;
-	POINTARRAY *ring;
 	LWLINE *line;
 	LWGEOM *lwgeom;
 	GSERIALIZED *result;
-	GBOX *bbox = NULL;
 	int type;
 
 	POSTGIS_DEBUG(2, "LWGEOM_interiorringn_polygon called.");
@@ -718,17 +717,9 @@ LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		ring = poly->rings[wanted_index];
-
-		/* COMPUTE_BBOX==TAINTING */
+		line = lwline_construct(poly->srid, NULL, poly->rings[wanted_index]);
 		if (poly->bbox)
-		{
-			bbox = lwalloc(sizeof(GBOX));
-			ptarray_calculate_gbox_cartesian(ring, bbox);
-		}
-
-		/* This is a LWLINE constructed by interior ring POINTARRAY */
-		line = lwline_construct(poly->srid, bbox, ring);
+			lwgeom_add_bbox(lwline_as_lwgeom(line));
 
 		result = geometry_serialize((LWGEOM *)line);
 		lwline_release(line);

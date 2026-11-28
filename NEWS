@@ -37,6 +37,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-966, [geometry] Fix uninitialised results in ST_ClosestPointOfApproach,
+   ST_LineInterpolatePoints and ST_InteriorRingN bounding boxes
+   (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-974, [geometry] Stop spheroid text output at the stored name
    (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-968, Ignore included columns when reading spatial index extents

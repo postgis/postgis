@@ -18,6 +18,7 @@
  *
  **********************************************************************
  *
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2001-2006 Refractions Research Inc.
  *
@@ -547,7 +548,6 @@ POINTARRAY *
 lwline_interpolate_points(const LWLINE *line, double length_fraction, char repeat)
 {
 	POINT4D pt;
-	uint32_t i;
 	uint32_t points_to_interpolate;
 	uint32_t points_found = 0;
 	double length;
@@ -586,7 +586,7 @@ lwline_interpolate_points(const LWLINE *line, double length_fraction, char repea
 	opa = ptarray_construct(has_z, has_m, points_to_interpolate);
 
 	const POINT2D *p1 = getPoint2d_cp(ipa, 0);
-	for (i = 0; i < ipa->npoints - 1 && points_found < points_to_interpolate; i++)
+	for (uint32_t i = 0; length > 0.0 && i < ipa->npoints - 1 && points_found < points_to_interpolate; i++)
 	{
 		const POINT2D *p2 = getPoint2d_cp(ipa, i + 1);
 		double segment_length_frac = distance2d_pt_pt(p1, p2) / length;
@@ -612,12 +612,12 @@ lwline_interpolate_points(const LWLINE *line, double length_fraction, char repea
 		p1 = p2;
 	}
 
-	/* Return the last point on the line. This shouldn't happen, but
-	 * could if there's some floating point rounding errors. */
+	/* A zero-length line or rounding can leave points to fill at the endpoint. */
 	if (points_found < points_to_interpolate)
 	{
 		getPoint4d_p(ipa, ipa->npoints - 1, &pt);
-		ptarray_set_point4d(opa, points_found, &pt);
+		while (points_found < points_to_interpolate)
+			ptarray_set_point4d(opa, points_found++, &pt);
 	}
 
 	return opa;

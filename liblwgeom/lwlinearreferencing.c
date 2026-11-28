@@ -18,6 +18,7 @@
  *
  **********************************************************************
  *
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2011 Paul Ramsey
  *
@@ -1166,6 +1167,10 @@ static int
 uniq(double *vals, int nvals)
 {
 	int i, last = 0;
+
+	if (nvals < 1)
+		return 0;
+
 	for (i = 1; i < nvals; ++i)
 	{
 		// lwnotice("(I%d):%g", i, vals[i]);
@@ -1213,76 +1218,75 @@ ptarray_locate_along_linear(const POINTARRAY *pa, double m, POINT4D *p, uint32_t
 	return -1; /* not found */
 }
 
-double
-lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
+static int
+lwgeom_cpa_lines(const LWGEOM *g1, const LWGEOM *g2, const LWLINE **l1, const LWLINE **l2)
 {
-	LWLINE *l1, *l2;
-	int i;
-	GBOX gbox1, gbox2;
-	double tmin, tmax;
-	double *mvals;
-	int nmvals = 0;
-	double mintime;
-	double mindist2 = FLT_MAX; /* minimum distance, squared */
-
 	if (!lwgeom_has_m(g1) || !lwgeom_has_m(g2))
 	{
 		lwerror("Both input geometries must have a measure dimension");
-		return -1;
+		return LW_FAILURE;
 	}
 
-	l1 = lwgeom_as_lwline(g1);
-	l2 = lwgeom_as_lwline(g2);
-
-	if (!l1 || !l2)
+	*l1 = lwgeom_as_lwline(g1);
+	*l2 = lwgeom_as_lwline(g2);
+	if (!*l1 || !*l2)
 	{
 		lwerror("Both input geometries must be linestrings");
-		return -1;
+		return LW_FAILURE;
 	}
 
-	if (l1->points->npoints < 2 || l2->points->npoints < 2)
+	if ((*l1)->points->npoints < 2 || (*l2)->points->npoints < 2)
 	{
 		lwerror("Both input lines must have at least 2 points");
-		return -1;
+		return LW_FAILURE;
 	}
+	return LW_SUCCESS;
+}
 
-	/* We use lwgeom_calculate_gbox() instead of lwgeom_get_gbox() */
-	/* because we cannot afford the float rounding inaccuracy when */
-	/* we compare the ranges for overlap below */
-	lwgeom_calculate_gbox(g1, &gbox1);
-	lwgeom_calculate_gbox(g2, &gbox2);
+static double *
+lwline_cpa_mvals(const LWLINE *l1, const LWLINE *l2, double *tmin, int *nmvals)
+{
+	GBOX gbox1 = {0}, gbox2 = {0};
 
-	/*
-	 * Find overlapping M range
-	 * WARNING: may be larger than the real one
-	 */
+	/* Cached boxes may have lost precision through float rounding. */
+	lwgeom_calculate_gbox(lwline_as_lwgeom(l1), &gbox1);
+	lwgeom_calculate_gbox(lwline_as_lwgeom(l2), &gbox2);
+	*tmin = FP_MAX(gbox1.mmin, gbox2.mmin);
+	double tmax = FP_MIN(gbox1.mmax, gbox2.mmax);
+	if (tmax < *tmin)
+		return NULL;
 
-	tmin = FP_MAX(gbox1.mmin, gbox2.mmin);
-	tmax = FP_MIN(gbox1.mmax, gbox2.mmax);
+	double *values = lwalloc(sizeof(double) * (l1->points->npoints + l2->points->npoints));
+	int count = ptarray_collect_mvals(l1->points, *tmin, tmax, values);
+	count += ptarray_collect_mvals(l2->points, *tmin, tmax, values + count);
+	qsort(values, count, sizeof(double), compare_double);
+	*nmvals = uniq(values, count);
 
-	if (tmax < tmin)
+	/* An overlapping box range may still yield no usable measures. */
+	if (!*nmvals)
 	{
-		LWDEBUG(1, "Inputs never exist at the same time");
-		return -2;
+		lwfree(values);
+		return NULL;
 	}
+	return values;
+}
 
-	// lwnotice("Min:%g, Max:%g", tmin, tmax);
+double
+lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
+{
+	const LWLINE *l1, *l2;
+	int i;
+	double tmin;
+	int nmvals;
+	double mintime;
+	double mindist2 = FLT_MAX; /* minimum distance, squared */
 
-	/*
-	 * Collect M values in common time range from inputs
-	 */
+	if (!lwgeom_cpa_lines(g1, g2, &l1, &l2))
+		return -1;
 
-	mvals = lwalloc(sizeof(double) * (l1->points->npoints + l2->points->npoints));
-
-	/* TODO: also clip the lines ? */
-	nmvals = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
-	nmvals += ptarray_collect_mvals(l2->points, tmin, tmax, mvals + nmvals);
-
-	/* Sort values in ascending order */
-	qsort(mvals, nmvals, sizeof(double), compare_double);
-
-	/* Remove duplicated values */
-	nmvals = uniq(mvals, nmvals);
+	double *mvals = lwline_cpa_mvals(l1, l2, &tmin, &nmvals);
+	if (!mvals)
+		return -2;
 
 	if (nmvals < 2)
 	{
@@ -1383,72 +1387,19 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 int
 lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 {
-	LWLINE *l1, *l2;
+	const LWLINE *l1, *l2;
 	int i;
-	GBOX gbox1, gbox2;
-	double tmin, tmax;
-	double *mvals;
-	int nmvals = 0;
+	double tmin;
+	int nmvals;
 	double maxdist2 = maxdist * maxdist;
 	int within = LW_FALSE;
 
-	if (!lwgeom_has_m(g1) || !lwgeom_has_m(g2))
-	{
-		lwerror("Both input geometries must have a measure dimension");
+	if (!lwgeom_cpa_lines(g1, g2, &l1, &l2))
 		return LW_FALSE;
-	}
 
-	l1 = lwgeom_as_lwline(g1);
-	l2 = lwgeom_as_lwline(g2);
-
-	if (!l1 || !l2)
-	{
-		lwerror("Both input geometries must be linestrings");
+	double *mvals = lwline_cpa_mvals(l1, l2, &tmin, &nmvals);
+	if (!mvals)
 		return LW_FALSE;
-	}
-
-	if (l1->points->npoints < 2 || l2->points->npoints < 2)
-	{
-		/* TODO: return distance between these two points */
-		lwerror("Both input lines must have at least 2 points");
-		return LW_FALSE;
-	}
-
-	/* We use lwgeom_calculate_gbox() instead of lwgeom_get_gbox() */
-	/* because we cannot afford the float rounding inaccuracy when */
-	/* we compare the ranges for overlap below */
-	lwgeom_calculate_gbox(g1, &gbox1);
-	lwgeom_calculate_gbox(g2, &gbox2);
-
-	/*
-	 * Find overlapping M range
-	 * WARNING: may be larger than the real one
-	 */
-
-	tmin = FP_MAX(gbox1.mmin, gbox2.mmin);
-	tmax = FP_MIN(gbox1.mmax, gbox2.mmax);
-
-	if (tmax < tmin)
-	{
-		LWDEBUG(1, "Inputs never exist at the same time");
-		return LW_FALSE;
-	}
-
-	/*
-	 * Collect M values in common time range from inputs
-	 */
-
-	mvals = lwalloc(sizeof(double) * (l1->points->npoints + l2->points->npoints));
-
-	/* TODO: also clip the lines ? */
-	nmvals = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
-	nmvals += ptarray_collect_mvals(l2->points, tmin, tmax, mvals + nmvals);
-
-	/* Sort values in ascending order */
-	qsort(mvals, nmvals, sizeof(double), compare_double);
-
-	/* Remove duplicated values */
-	nmvals = uniq(mvals, nmvals);
 
 	if (nmvals < 2)
 	{

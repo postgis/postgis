@@ -32,3 +32,4 @@ cpaw3|2|t
 cpaw3|2.0001|t
 cpaw4|f
 ERROR:  Both input geometries must have a measure dimension
+cpa_nan||f
