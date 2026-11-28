@@ -4,12 +4,11 @@ usage() {
   echo "Usage: $0 [<sourcedir>]"
 }
 
-TMPDIR=/tmp/postgis_check_tests_enabled_$$
-mkdir -p ${TMPDIR}
+TESTS_TMPDIR=$(mktemp -d "${TMPDIR:-/tmp}/postgis_check_tests_enabled.XXXXXX") || exit 1
 
 cleanup() {
-  #echo "Things are in ${TMPDIR}"
-  rm -rf ${TMPDIR}
+  #echo "Things are in ${TESTS_TMPDIR}"
+  rm -rf "${TESTS_TMPDIR}"
 }
 
 trap 'cleanup' EXIT
@@ -27,17 +26,17 @@ check_enabled() {
   grep 'top_srcdir)' ${mk} |
       sed 's|.*top_srcdir)/||;s/ .*$//' |
       sed 's|\\||' |
-      sed 's/\.sql$//' > ${TMPDIR}/enabled_tests
+      sed 's/\.sql$//' > "${TESTS_TMPDIR}/enabled_tests"
 
   #cat ${TMPDIR}/enabled_tests
 
   find ${bd} -name '*_expected' |
     sed 's|//|/|' |
-    sed 's|_expected$||' > ${TMPDIR}/available_tests
+    sed 's|_expected$||' > "${TESTS_TMPDIR}/available_tests"
 
   #cat ${TMPDIR}/available_tests
 
-  MISSING=`grep -vwf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`
+  MISSING=`grep -vwf "${TESTS_TMPDIR}/enabled_tests" "${TESTS_TMPDIR}/available_tests"`
   if test -n "${MISSING}"; then
     (
     echo "The following tests are available but not enabled in:"
