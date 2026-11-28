@@ -89,6 +89,8 @@ geography_centroid(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(1);
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	switch (lwgeom_get_type(lwgeom))
 	{

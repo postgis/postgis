@@ -97,6 +97,8 @@ geography_distance_knn(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
@@ -165,6 +167,8 @@ geography_distance_uncached(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
@@ -225,6 +229,8 @@ geography_distance(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	/* Return NULL on empty arguments. */
 	if (gserialized_is_empty(g1) || gserialized_is_empty(g2))
@@ -294,6 +300,8 @@ geography_dwithin(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	/* Return FALSE on empty arguments. */
 	if (gserialized_is_empty(g1) || gserialized_is_empty(g2))
@@ -367,6 +375,8 @@ geography_distance_tree(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	if (geography_tree_distance(g1, g2, &s, tolerance, &distance) == LW_FAILURE)
 	{
@@ -415,6 +425,8 @@ geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
@@ -603,6 +615,8 @@ geography_area(PG_FUNCTION_ARGS)
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	/* Calculate the area */
 	area = lwgeom_area_spheroid(lwgeom, &s);
@@ -664,6 +678,8 @@ geography_perimeter(PG_FUNCTION_ARGS)
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	/* Calculate the length */
 	length = lwgeom_perimeter_spheroid(lwgeom, &s);
@@ -716,6 +732,8 @@ geography_length(PG_FUNCTION_ARGS)
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	/* Calculate the length */
 	length = lwgeom_length_spheroid(lwgeom, &s);
@@ -1336,6 +1354,8 @@ geography_line_substring(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	lwresult = geography_substring(lwline, &s, from_fraction, to_fraction, FP_TOLERANCE);
 
@@ -1399,6 +1419,8 @@ geography_line_interpolate_point(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	lwresult = geography_interpolate_points(lwline, distance_fraction, &s, repeat);
 
@@ -1546,6 +1568,8 @@ geography_shortestline(PG_FUNCTION_ARGS)
 	/* Set to sphere if requested */
 	if (!use_spheroid)
 		s.a = s.b = s.radius;
+	if (s.a == s.b)
+		s.f = s.e_sq = 0.0;
 
 	line = geography_tree_shortestline(lwgeom1, lwgeom2, FP_TOLERANCE, &s);
 

@@ -72,6 +72,8 @@ ERROR:  geography_line_locate_point: 2nd arg is not a point
 lrs_substr_1|LINESTRING(9.28 23.25,18.97 25.93)
 ticket_6076_length|110574.389
 ticket_6076_perimeter|378793.448
+sphere_area_equator|12364031799
+sphere_area_40n|872084782500
 lrs_sl_1|LINESTRING(25 42.79,25 40)
 #5895.sphere|12370146.652
 #5895.distance|12391246.377
