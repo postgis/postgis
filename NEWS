@@ -38,7 +38,8 @@ PostGIS 3.8.0dev
    (reported by Sven Klemm, Tiger Data;
    fixed by Aleksander Alekseev, Tiger Data, and Darafei Praliaskouski)
  - GH-1183, Handle allocation failures during shape creation (Maksim Korotkov)
-
+ - GT-854, [raster] Keep sampled summary-statistics values within the allocated array
+          (reported by Dawid Żak, Software Mansion; fixed by Darafei Praliaskouski)
  - GH-1178, Harden loader column-map allocation checks and partial cleanup
           (Maksim Korotkov)
  - #2299, GH-1084, [raster] Repair SQL argument generation in raster garden tests

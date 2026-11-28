@@ -127,10 +127,10 @@ rt_band_get_summary_stats(
 
 	uint32_t do_sample = 0;
 	uint32_t sample_size = 0;
+	uint32_t sample_capacity = 0;
 	uint32_t sample_per = 0;
 	uint32_t sample_int = 0;
 	uint32_t i = 0;
-	uint32_t j = 0;
 	double sum = 0;
 	uint32_t k = 0;
 	double M = 0;
@@ -237,9 +237,12 @@ rt_band_get_summary_stats(
 
 	RASTER_DEBUGF(3, "sampling %d of %d available pixels w/ %d per set"
 		, sample_size, (band->width * band->height), sample_per);
+	/* Sampling visits each column independently, so rounding can produce
+	 * more collected values than the rounded total sample_size. */
+	sample_capacity = band->width * sample_per;
 
 	if (inc_vals) {
-		values = rtalloc(sizeof(double) * sample_size);
+		values = rtalloc(sizeof(double) * sample_capacity);
 		if (NULL == values) {
 			rtwarn("Could not allocate memory for values");
 			inc_vals = 0;
@@ -261,7 +264,8 @@ rt_band_get_summary_stats(
 	stats->values = NULL;
 	stats->sorted = 0;
 
-	for (x = 0, j = 0, k = 0; x < band->width; x++) {
+	for (x = 0, k = 0; x < band->width; x++)
+	{
 		y = -1;
 		diff = 0;
 
@@ -278,7 +282,6 @@ rt_band_get_summary_stats(
 
 			rtn = rt_band_get_pixel(band, x, y, &value, &isnodata);
 
-			j++;
 			if (rtn == ES_NONE && (!exclude_nodata_value || (exclude_nodata_value && !isnodata))) {
 
 				/* inc_vals set, collect pixel values */
@@ -338,7 +341,8 @@ rt_band_get_summary_stats(
 	if (k > 0) {
 		if (inc_vals) {
 			/* free unused memory */
-			if (sample_size != k) {
+			if (sample_capacity != k)
+			{
 				values = rtrealloc(values, k * sizeof(double));
 			}
 

@@ -209,6 +209,33 @@ static void test_band_stats(void) {
 	cu_free_raster(raster);
 }
 
+static void
+test_band_stats_small_sample_wide_raster(void)
+{
+	rt_raster raster = rt_raster_new(10, 1);
+	rt_band band;
+	rt_bandstats stats;
+	uint32_t x;
+
+	CU_ASSERT(raster != NULL);
+	band = cu_add_band(raster, PT_8BUI, 0, 0);
+	CU_ASSERT(band != NULL);
+	for (x = 0; x < 10; x++)
+		rt_band_set_pixel(band, x, 0, x + 1, NULL);
+
+	stats = rt_band_get_summary_stats(band, 0, 0.1, 1, NULL, NULL, NULL);
+	CU_ASSERT(stats != NULL);
+	CU_ASSERT_EQUAL(stats->count, 10);
+	CU_ASSERT_EQUAL(stats->values[9], 10);
+
+	if (stats != NULL)
+	{
+		rtdealloc(stats->values);
+		rtdealloc(stats);
+	}
+	cu_free_raster(raster);
+}
+
 static void test_band_value_count(void) {
 	rt_valuecount vcnts = NULL;
 
@@ -328,6 +355,7 @@ void band_stats_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("band_stats", NULL, NULL);
 	PG_ADD_TEST(suite, test_band_stats);
+	PG_ADD_TEST(suite, test_band_stats_small_sample_wide_raster);
 	PG_ADD_TEST(suite, test_band_stats_included_nodata);
 	PG_ADD_TEST(suite, test_band_value_count);
 }
