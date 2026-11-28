@@ -2169,7 +2169,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				if (NULL != covvcnts) free(covvcnts);
+				if (NULL != covvcnts) pfree(covvcnts);
 				if (search_values_count) pfree(search_values);
 
 				MemoryContextSwitchTo(oldcontext);

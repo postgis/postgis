@@ -34,6 +34,9 @@ PostGIS 3.8.0dev
    (Bilal Kahraman, Darafei Praliaskouski)
  - GT-812, Check named geometry column types in row encoders (Andrew Kroh)
  - GT-814, [raster] Respect the enabled GDAL drivers setting (Andrew Kroh)
+ - GT-880, [raster] Free coverage value counts with the PostgreSQL allocator
+   (reported by Sven Klemm, Tiger Data;
+   fixed by Aleksander Alekseev, Tiger Data, and Darafei Praliaskouski)
  - GH-1183, Handle allocation failures during shape creation (Maksim Korotkov)
 
  - GH-1178, Harden loader column-map allocation checks and partial cleanup
