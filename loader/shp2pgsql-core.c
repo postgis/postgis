@@ -5,6 +5,7 @@
  *
  * Copyright (C) 2008 OpenGeo.org
  * Copyright (C) 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -1537,8 +1538,19 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		{
 			if (strcmp(state->field_names[z], name) == 0)
 			{
-				strncat(name, "__", MAXFIELDNAMELEN - 1);
-				snprintf(name + strlen(name), MAXFIELDNAMELEN - 1 - strlen(name), "%i", j);
+				char suffix[MAXFIELDNAMELEN];
+				snprintf(suffix, sizeof(suffix), "__%i", j);
+				const size_t suffix_length = strlen(suffix);
+				const size_t prefix_limit = sizeof(name) - suffix_length - 1;
+				size_t prefix_length = strlen(name);
+				if (prefix_length > prefix_limit)
+				{
+					prefix_length = prefix_limit;
+					/* Drop the whole UTF-8 character if the cut falls inside it. */
+					while (prefix_length > 0 && (name[prefix_length] & 0xc0) == 0x80)
+						prefix_length--;
+				}
+				memcpy(name + prefix_length, suffix, suffix_length + 1);
 				break;
 			}
 		}

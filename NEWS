@@ -43,6 +43,8 @@ PostGIS 3.8.0dev
    (reported by Sandro Santilli; fixed by Darafei Praliaskouski)
  - GT-983, [srs] Resolve GML spatial references from the PostGIS schema
    (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
+ - GT-984, [loader] Bound duplicate mapped field names in shp2pgsql
+   (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - #6063, GT-986, [upgrade] Keep application tables in other schemas when
    postgis_restore skips same-named PostGIS objects
    (reported by Robert Aussem; fixed by Darafei Praliaskouski)

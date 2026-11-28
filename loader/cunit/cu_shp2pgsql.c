@@ -26,6 +26,7 @@ void test_ShpLoaderFIDColumnSQL(void);
 void test_ShpLoaderRejectsInvalidFIDColumn(void);
 void test_ShpLoaderOpenShapeRejectsZip(void);
 void test_FindPolygonsOnePointInnerRing(void);
+static void test_ShpLoaderDuplicateMappedFieldName(void);
 
 SHPLOADERCONFIG *loader_config;
 SHPLOADERSTATE *loader_state;
@@ -60,7 +61,8 @@ register_shp2pgsql_suite(void)
 	    (NULL ==
 	     CU_add_test(pSuite, "test_ShpLoaderRejectsInvalidFIDColumn()", test_ShpLoaderRejectsInvalidFIDColumn)) ||
 	    (!CU_add_test(pSuite, "test_FindPolygonsOnePointInnerRing()", test_FindPolygonsOnePointInnerRing)) ||
-	    (NULL == CU_add_test(pSuite, "test_ShpLoaderOpenShapeRejectsZip()", test_ShpLoaderOpenShapeRejectsZip)))
+	    !CU_add_test(pSuite, "test_ShpLoaderOpenShapeRejectsZip()", test_ShpLoaderOpenShapeRejectsZip) ||
+	    !CU_add_test(pSuite, "test_ShpLoaderDuplicateMappedFieldName()", test_ShpLoaderDuplicateMappedFieldName))
 	{
 		CU_cleanup_registry();
 		return NULL;
@@ -348,5 +350,41 @@ test_ShpLoaderSimpleLineParts(void)
 		else
 			CU_ASSERT_PTR_NULL(geometry);
 		free(geometry);
+	}
+}
+
+static void
+test_ShpLoaderDuplicateMappedFieldName(void)
+{
+	const struct {
+		char *map_file;
+		const char *first_name;
+		const char *second_name;
+	} cases[] = {
+	    {"../../regress/loader/FIDColumn-duplicate.map",
+	     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+	     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa__1"},
+	    {"../../regress/loader/FIDColumn-duplicate-utf8.map",
+	     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\xc3\xa9"
+	     "aa",
+	     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa__1"},
+	};
+
+	for (uint32_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
+	{
+		SHPLOADERCONFIG config;
+		SHPLOADERSTATE *state;
+		set_loader_config_defaults(&config);
+		config.quoteidentifiers = 1;
+		config.readshape = 0;
+		config.shp_file = "../../regress/loader/FIDColumn";
+		config.column_map_filename = cases[i].map_file;
+		state = ShpLoaderCreate(&config);
+		CU_ASSERT_NOT_EQUAL_FATAL(ShpLoaderOpenShape(state), SHPLOADERERR);
+		CU_ASSERT_FATAL(state->num_fields >= 2);
+		CU_ASSERT_STRING_EQUAL(state->field_names[0], cases[i].first_name);
+		CU_ASSERT_STRING_EQUAL(state->field_names[1], cases[i].second_name);
+		ShpLoaderDestroy(state);
+		free(config.encoding);
 	}
 }
