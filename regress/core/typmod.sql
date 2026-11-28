@@ -413,3 +413,10 @@ SELECT * FROM tm.insert_all(:tmpfile);
 
 DROP SCHEMA tm CASCADE;
 
+
+-- A typmod cast must not free an array element owned by the executor.
+SELECT 'borrowed-empty', ST_AsText(x) FROM unnest('{010400000000000000}'::geometry[]::geometry(Point)[]) x;
+
+-- SRID harmonization must not modify an array element owned by the executor.
+WITH a AS (SELECT ARRAY['POINT(1 2)'::geometry] AS g)
+SELECT 'borrowed-srid', ST_SRID((g[1])::geometry(Point,4326)), ST_SRID(g[1]) FROM a;

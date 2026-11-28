@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -142,7 +143,7 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 		bool is_geodetic = gserialized_is_geodetic(gser);
 		LWPOINT *empty_point = lwpoint_construct_empty(geom_srid, geom_z, geom_m);
 		geom_type = POINTTYPE;
-		pfree(gser);
+		/* gser may be owned by the caller (for example an array element). */
 		if ( is_geodetic )
 			gser = geography_serialize(lwpoint_as_lwgeom(empty_point));
 		else
@@ -152,6 +153,10 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	/* Typmod has a preference for SRID, but geometry does not? Harmonize the geometry SRID. */
 	if ( typmod_srid > 0 && geom_srid == 0 )
 	{
+		/* The input datum may be borrowed, so make a writable result first. */
+		GSERIALIZED *copy = palloc(VARSIZE(gser));
+		memcpy(copy, gser, VARSIZE(gser));
+		gser = copy;
 		gserialized_set_srid(gser, typmod_srid);
 		geom_srid = typmod_srid;
 	}
