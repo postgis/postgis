@@ -7,6 +7,7 @@ PostGIS 3.8.0dev
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
+ - #2596, GH-1085, Raster ST_IsVisible (Darafei Praliaskouski)
 
 * Enhancements *
 
@@ -488,7 +489,6 @@ These are only changes since 3.7.0beta2.
           varints (Darafei Praliaskouski)
  - OSSFuzz 4743900859006976, reject encoded polyline coordinate deltas
           that overflow accumulated int32 coordinates (Darafei Praliaskouski)
-
 
 
 PostGIS 3.7.0beta2
