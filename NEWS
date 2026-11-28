@@ -7,6 +7,7 @@ PostGIS 3.8.0dev
           CG_IsSimple and CG_IsSimpleDetail predicates
           (Darafei Praliaskouski)
  - #2598, GH-1044, Add raster ST_Blur (Darafei Praliaskouski)
+ - GH-1044, Stabilize ST_Blur for extreme sigma values (Darafei Praliaskouski)
 
 * Enhancements *
 

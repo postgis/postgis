@@ -134,6 +134,11 @@ SELECT _ST_Blur4ma(
 	VARIADIC ARRAY[NULL]::text[]
 );
 
+SELECT 'st_blur_extreme_sigma',
+	_ST_Blur4ma(ARRAY[[[2,NULL,6]]]::double precision[][][], ARRAY[[1,1],[1,1]]::integer[][], '1e-200'),
+	_ST_Blur4ma(ARRAY[[[2,NULL,6]]]::double precision[][][], ARRAY[[1,1],[1,1]]::integer[][], '0.01'),
+	_ST_Blur4ma(ARRAY[[[2,NULL,6]]]::double precision[][][], ARRAY[[1,1],[1,1]]::integer[][], '1e200');
+
 WITH r AS (
 	SELECT ST_SetValues(
 		ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, NULL),
