@@ -48,6 +48,7 @@ typedef struct shp_connection_state
 /* External shared functions */
 char *escape_connection_string(char *str);
 char *quote_identifier(const char *s);
+void quote_identifier_buf(const char *s, char *r);
 
 /* Column map between pgsql and dbf */
 typedef struct colmap_t {

@@ -24,15 +24,11 @@
 #include "shpcommon.h"
 #include "lwgeom_log.h"
 
-/* Properly double-quote a SQL identifier. */
-char *
-quote_identifier(const char *s)
+/* Quote into a buffer of at least 2 * strlen(s) + 3 bytes.
+ * Adapted from PostgreSQL's pg_upgrade/util.c. */
+void
+quote_identifier_buf(const char *s, char *r)
 {
-	char *result = malloc(strlen(s) * 2 + 3);
-	char *r;
-	if (!result)
-		return NULL;
-	r = result;
 	*r++ = '"';
 	while (*s)
 	{
@@ -42,6 +38,14 @@ quote_identifier(const char *s)
 	}
 	*r++ = '"';
 	*r = '\0';
+}
+
+char *
+quote_identifier(const char *s)
+{
+	char *result = malloc(strlen(s) * 2 + 3);
+	if (result)
+		quote_identifier_buf(s, result);
 	return result;
 }
 
