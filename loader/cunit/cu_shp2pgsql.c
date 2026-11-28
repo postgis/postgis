@@ -25,6 +25,7 @@ void test_ShpLoaderGetSQLFooter_if_not_exists_index_modifier(void);
 void test_ShpLoaderFIDColumnSQL(void);
 void test_ShpLoaderRejectsInvalidFIDColumn(void);
 void test_ShpLoaderOpenShapeRejectsZip(void);
+void test_FindPolygonsOnePointInnerRing(void);
 
 SHPLOADERCONFIG *loader_config;
 SHPLOADERSTATE *loader_state;
@@ -58,12 +59,45 @@ register_shp2pgsql_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_ShpLoaderFIDColumnSQL()", test_ShpLoaderFIDColumnSQL)) ||
 	    (NULL ==
 	     CU_add_test(pSuite, "test_ShpLoaderRejectsInvalidFIDColumn()", test_ShpLoaderRejectsInvalidFIDColumn)) ||
+	    (!CU_add_test(pSuite, "test_FindPolygonsOnePointInnerRing()", test_FindPolygonsOnePointInnerRing)) ||
 	    (NULL == CU_add_test(pSuite, "test_ShpLoaderOpenShapeRejectsZip()", test_ShpLoaderOpenShapeRejectsZip)))
 	{
 		CU_cleanup_registry();
 		return NULL;
 	}
 	return pSuite;
+}
+
+void
+test_FindPolygonsOnePointInnerRing(void)
+{
+	int starts[] = {0, 4};
+	double x[] = {0, 0, 10, 10, 2};
+	double y[] = {0, 10, 10, 0, 2};
+	double z[] = {0, 0, 0, 0, 0};
+	double m[] = {0, 0, 0, 0, 0};
+	SHPObject object = {0};
+	SHPLOADERCONFIG config;
+	SHPLOADERSTATE *state;
+	char *geometry = NULL;
+
+	object.nParts = 2;
+	object.panPartStart = starts;
+	object.nVertices = 5;
+	object.padfX = x;
+	object.padfY = y;
+	object.padfZ = z;
+	object.padfM = m;
+
+	set_loader_config_defaults(&config);
+	config.use_wkt = 1;
+	state = ShpLoaderCreate(&config);
+	CU_ASSERT_EQUAL_FATAL(GeneratePolygonGeometry(state, &object, &geometry), SHPLOADEROK);
+	CU_ASSERT_PTR_NOT_NULL_FATAL(geometry);
+	CU_ASSERT_STRING_EQUAL(geometry, "MULTIPOLYGON(((0 0,0 10,10 10,10 0),(2 2)))");
+	free(geometry);
+	ShpLoaderDestroy(state);
+	free(config.encoding);
 }
 
 /*
