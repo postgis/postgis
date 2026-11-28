@@ -21,3 +21,19 @@ SELECT 'addtosearchpath-install-safe',
 
 DROP FUNCTION topology.AddToSearchPath(text);
 DROP TABLE public.addtosearchpath_overload_marker;
+
+-- DEFAULT is also a valid schema identifier in search_path. Re-parsing it as
+-- an ALTER DATABASE value treats it as the DEFAULT keyword instead.
+SELECT pg_catalog.set_config('search_path', 'default, public', false);
+SELECT pg_catalog.format(
+    'ALTER DATABASE %I SET search_path FROM CURRENT',
+    pg_catalog.current_database()
+) \gexec
+SELECT pg_catalog.rtrim(topology.AddToSearchPath('topology'::varchar));
+SELECT 'addtosearchpath-default-schema',
+       pg_catalog.current_setting('search_path') = 'default, public, topology';
+SELECT pg_catalog.format(
+    'ALTER DATABASE %I SET search_path = "$user", public, topology',
+    pg_catalog.current_database()
+) \gexec
+SELECT pg_catalog.set_config('search_path', '"$user", public, topology', false) IS NOT NULL;

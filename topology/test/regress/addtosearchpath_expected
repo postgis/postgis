@@ -1,1 +1,5 @@
 addtosearchpath-install-safe|t
+default, public
+topology has been added to end of database search_path
+addtosearchpath-default-schema|t
+t

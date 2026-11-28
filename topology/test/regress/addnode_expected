@@ -22,3 +22,7 @@ Topology 'nodes' dropped
 t
 MiX|1
 Topology 'Ul' dropped
+t
+quoted-topology|1
+quoted-topology-c|2
+Topology 'odd"name' dropped

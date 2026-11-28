@@ -42,3 +42,9 @@ SELECT topology.DropTopology('nodes');
 SELECT topology.CreateTopology('Ul') > 0;
 SELECT 'MiX',  topology.addNode('Ul', 'POINT(0 0)');
 SELECT topology.DropTopology('Ul');
+
+-- Topology names are identifiers and may contain a quote.
+SELECT topology.CreateTopology('odd"name') > 0;
+SELECT 'quoted-topology', topology.AddNode('odd"name', 'POINT(0 0)');
+SELECT 'quoted-topology-c', topology.ST_AddIsoNode('odd"name', 0, 'POINT(1 0)');
+SELECT topology.DropTopology('odd"name');
