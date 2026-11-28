@@ -82,6 +82,8 @@ Keep style-only commits separate from logic changes and add their full SHA to
 `.git-blame-ignore-revs` on master and every stable branch; the file is kept
 identical on all of them.
 
+Declare loop counters in the for statement when they are not needed after the loop.
+
 Macros should be ALL_UPPERCASE.
 Enumerations should be ALL_UPPERCASE.
 
