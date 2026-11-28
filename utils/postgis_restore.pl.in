@@ -127,11 +127,24 @@ if(!defined($POSTGIS_TOC)) {
 } else {
   open( DUMP, '<' . $POSTGIS_TOC) || die "$me:\tCannot open TOC file '$POSTGIS_TOC'\n";
 }
+my $filter_schema = $POSTGIS_SCHEMA;
+my @toc = <DUMP>;
+my $srs_data = qr/ TABLE DATA ([^ ]*) spatial_ref_sys /;
+# Keep signature-only filtering when the archive cannot identify one schema.
+if ( !defined($filter_schema) ) {
+  my %srs_schemas;
+  foreach my $l ( @toc ) {
+    next if $l =~ /^\;/;
+    $srs_schemas{$1} = 1 if $l =~ $srs_data;
+  }
+  ($filter_schema) = keys %srs_schemas if keys(%srs_schemas) == 1;
+}
+
 open( MANIFEST, ">$manifest" ) || die "$me:\tCannot open manifest file '$manifest'\n";
-while( my $l = <DUMP> ) {
+foreach my $l ( @toc ) {
 
   next if $l =~ /^\;/;
-  my $sigHR = linesignature($l);
+  my ($sigHR, $schema) = linesignature($l);
   next unless length($sigHR);
   my $sig = $sigHR;
   # always skip associated comments associated to objects,
@@ -145,7 +158,7 @@ while( my $l = <DUMP> ) {
 
 	if ( not defined ($POSTGIS_SCHEMA) )
 	{
-		if ( $l =~ / TABLE DATA ([^ ]*) spatial_ref_sys / )
+		if ( $l =~ $srs_data )
 		{
 			$POSTGIS_SCHEMA = $1;
 			print STDERR "  Setting postgis schema to $POSTGIS_SCHEMA, as found in the dump\n"
@@ -153,7 +166,9 @@ while( my $l = <DUMP> ) {
 		}
 	}
 
-  if ( $skip{$sig} ) {
+  if ( $skip{$sig} &&
+       ( !defined($filter_schema) || $schema eq $filter_schema ||
+         $schema eq 'topology' || $schema eq 'pg_catalog' || $schema eq '-' ) ) {
     print STDERR "SKIP: $sigHR\n" if $DEBUG;
     next
   }
@@ -400,6 +415,7 @@ sub linesignature {
 
   my $line = shift;
   my $sig;
+  my $schema = '-';
 
   $line =~ s/\n$//;
   $line =~ s/\r$//;
@@ -408,15 +424,16 @@ sub linesignature {
   $line =~ s/SHELL TYPE/SHELLTYPE/;
   $line =~ s/PROCEDURAL LANGUAGE/PROCEDURALLANGUAGE/;
   $line =~ s/SEQUENCE SET/SEQUENCE_SET/;
+  $line =~ s/SEQUENCE OWNED BY/SEQUENCE/;
 
-  if( $line =~ /^(\d+)\; (\d+) (\d+) FK (\w+) (\w+) (.*) (\w*)/ ) {
+  if( $line =~ /^(\d+)\; (\d+) (\d+) FK (\w+) (\S+) (.*) (\w*)/ ) {
     $sig = "FK " . $4 . " " . $6;
+    $schema = $5;
   }
   # We strip argument names from function comments
-  elsif ( $line =~ /COMMENT \w+ FUNCTION ([^\(]*)\((.*)\)/ )
+  elsif ( $line =~ /COMMENT (\S+) FUNCTION ([^\(]*)\((.*)\)/ )
   {
-    my $name = $1;
-    my $args = $2;
+    ($schema, my $name, my $args) = ($1, $2, $3);
     my @args = split('\s*,\s*', $args);
 
     # No inout indicator or out parameters for function signatures
@@ -430,8 +447,10 @@ sub linesignature {
   elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) - (\w+) (.*) (\w*)/ ) {
     $sig = $4 . " " . $5 . " " . $6;
   }
-  elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) (\w+) (.*) (\w*)/ ) {
+  elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) (\S+) (.*) (\w*)/ ) {
     $sig = $4 . " " . $6;
+    # Legacy operator-family signatures already include their schema in $sig.
+    $schema = $5 unless $4 eq 'OPERATOR' && $5 eq 'FAMILY';
   }
   elsif( $line =~ /PROCEDURALLANGUAGE.*plpgsql/ ) {
     $sig = "PROCEDURAL LANGUAGE plpgsql";
@@ -448,10 +467,9 @@ sub linesignature {
   }
 
   # Strip schema from signature
-  # TODO: restrict to POSTGIS_SCHEMA
   $sig =~ s/[^\.(, ]*\.//g;
 
-  return $sig;
+  return ($sig, $schema);
 
 }
 
