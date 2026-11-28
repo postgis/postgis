@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2001-2003 Refractions Research Inc.
+ * Copyright (C) 2026 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -33,14 +34,15 @@
 #include "access/itup.h"
 
 #include "fmgr.h"
+#include "mb/pg_wchar.h"
 #include "utils/elog.h"
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-#define SHOW_DIGS_DOUBLE 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 + 1)
+/* CREATE TYPE spheroid in postgis.sql.in stores only 65 bytes. */
+#define SPHEROID_NAME_STORED (65 - offsetof(SPHEROID, name))
 
 /* PG-exposed  */
 Datum ellipsoid_in(PG_FUNCTION_ARGS);
@@ -100,13 +102,11 @@ Datum
 ellipsoid_out(PG_FUNCTION_ARGS)
 {
 	SPHEROID *sphere = (SPHEROID *)PG_GETARG_POINTER(0);
-	char *result;
-	size_t sz = MAX_DIGS_DOUBLE + MAX_DIGS_DOUBLE + 20 + 9 + 2;
-	result = palloc(sz);
+	/* Stored names can end in the middle of a multibyte character. */
+	int name_len = pg_encoding_verifymbstr(GetDatabaseEncoding(), sphere->name, SPHEROID_NAME_STORED);
 
-	snprintf(result, sz, "SPHEROID(\"%s\",%.15g,%.15g)", sphere->name, sphere->a, 1.0 / sphere->f);
-
-	PG_RETURN_CSTRING(result);
+	PG_RETURN_CSTRING(
+	    psprintf("SPHEROID(\"%.*s\",%.15g,%.15g)", name_len, sphere->name, sphere->a, 1.0 / sphere->f));
 }
 
 /*

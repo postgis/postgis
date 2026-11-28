@@ -1,6 +1,7 @@
 PostGIS 3.8.0dev
 2027/xx/xx
 
+
 * New Features *
 
  - #4363, GH-1070, [sfcgal] Add CG_IsValid, CG_IsValidDetail, and SFCGAL 2.3+
@@ -36,6 +37,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - GT-974, [geometry] Stop spheroid text output at the stored name
+   (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-968, Ignore included columns when reading spatial index extents
    (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - #5937, [topology] Fix spurious RemoveUnusedPrimitives warnings on rings
