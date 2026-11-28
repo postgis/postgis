@@ -793,6 +793,116 @@ FROM (
 DROP TABLE raster_gdalwarp_src;
 DROP TABLE raster_gdalwarp_dst;
 
+WITH foo AS MATERIALIZED (
+	SELECT _st_gdalwarp(
+		ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, NULL),
+		'NearestNeighbor', 0.125,
+		NULL, NULL,
+		NULL, NULL,
+		NULL,
+		1, 1
+	) AS rast
+)
+SELECT '#2924',
+	(metadata).width,
+	(metadata).height,
+	round((metadata).skewx::numeric, 3),
+	round((metadata).skewy::numeric, 3),
+	round((metadata).upperleftx::numeric, 3),
+	round((metadata).upperlefty::numeric, 3)
+FROM (
+	SELECT ST_MetaData(rast) AS metadata
+	FROM foo
+) bar;
+
+WITH foo AS MATERIALIZED (
+	SELECT _st_gdalwarp(
+		ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, NULL),
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		2.5, 2.5,
+		1, 1
+	) AS rast
+)
+SELECT '#2924-grid',
+	(metadata).width,
+	(metadata).height,
+	round((metadata).skewx::numeric, 3),
+	round((metadata).skewy::numeric, 3),
+	round((metadata).upperleftx::numeric, 3),
+	round((metadata).upperlefty::numeric, 3),
+	ST_SameAlignment(rast, ST_MakeEmptyRaster(1, 1, 2.5, 2.5, 1, -1, 1, 1, 0)),
+	ST_Covers(ST_ConvexHull(rast), ST_MakeEnvelope(0, -10, 10, 0))
+FROM (
+	SELECT rast, ST_MetaData(rast) AS metadata
+	FROM foo
+) bar;
+
+WITH foo AS MATERIALIZED (
+	SELECT _st_gdalwarp(
+		ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, NULL),
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		0.0000005, 0,
+		1, 1
+	) AS rast
+)
+SELECT '#919-tiny-grid',
+	(metadata).width,
+	(metadata).height,
+	round((metadata).upperleftx::numeric, 8),
+	round((metadata).upperlefty::numeric, 8),
+	ST_SameAlignment(rast, ST_MakeEmptyRaster(1, 1, 0.0000005, 0, 1, -1, 1, 1, 0))
+FROM (
+	SELECT rast, ST_MetaData(rast) AS metadata
+	FROM foo
+) bar;
+
+-- Nearby grids on opposite sides of the half-pixel boundary sample different rows.
+WITH source AS (
+	SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+		'8BUI', 1.0, 0.0), 1, 3, 4, 9) AS rast
+), warped AS MATERIALIZED (
+	SELECT g.y, ST_SnapToGrid(rast, 0, g.y, 1.0, -1.0) AS rast
+	FROM source CROSS JOIN (VALUES (0.499999999), (0.500000001)) AS g(y)
+)
+SELECT 'grid-half-pixel', y, ST_Value(rast, 3, 4), ST_Value(rast, 3, 5)
+FROM warped ORDER BY y;
+
+-- A grid shift can fit inside the last cell of the original covering width.
+SELECT 'grid-tight-width', ST_Width(ST_SnapToGrid(
+	ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), '8BUI', 1.0, 0.0),
+	-1, 0, 3.0, -3.0));
+SELECT 'grid-max-width', ST_Width(ST_SnapToGrid(
+	ST_AddBand(ST_MakeEmptyRaster(65535, 1, 0, 0, 1, -1, 0, 0, 0), '8BUI', 1.0, 0.0),
+	-0.25, 0, 1.00001, -1.0));
+
+-- Grid origins an integer number of skewed columns apart are equivalent.
+WITH source AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0),
+		'8BUI', 1.0, 0.0) AS rast
+), warped AS MATERIALIZED (
+	SELECT g.x, ST_Resample(rast, 1.0::float8, -1.0::float8, g.x, g.y, 1, 1) AS rast
+	FROM source CROSS JOIN (VALUES (0.25, 0.0), (1000000000000000.25, 1000000000000000.0)) AS g(x, y)
+)
+SELECT 'grid-equivalent-anchor', ST_Width(rast), ST_Height(rast), ST_UpperLeftX(rast),
+	ST_UpperLeftY(rast), ST_Covers(ST_ConvexHull(rast), ST_MakeEnvelope(0, -10, 10, 0))
+FROM warped ORDER BY x;
+
+-- A non-default source retains the existing skewed-grid placement.
+WITH warped AS MATERIALIZED (
+	SELECT ST_Resample(
+		ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(5, 5, 100, 200, 2, -2, 0, 0, 0),
+			'8BUI', 1.0, 0.0), 1, 1, 1, 9),
+		1.0::float8, -1.0::float8, 2.5, 2.5, 1, 1
+	) AS rast
+)
+SELECT 'nondefault-skewed-grid', ST_Width(rast), ST_Height(rast),
+	ST_UpperLeftX(rast), ST_UpperLeftY(rast), ST_Value(rast, 6, 1)
+FROM warped;
+
 WITH foo AS (
 	SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 600000, 100, -100, 0, 0, 992163), 1, '16BUI', 1, 0) AS rast UNION ALL
 	SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 600000, 100, -100, 0, 0, 992163), 1, '16BUI', 2, 0) AS rast UNION ALL
@@ -975,3 +1085,39 @@ FROM (
 	FROM unnest(ARRAY[1e-5, 1e-6, 2e-7, 1e-7]) AS s
 ) AS t
 ORDER BY s DESC;
+
+-- A fixed-size skewed output must still cover the default source extent.
+WITH src AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0) AS rast
+), warped AS MATERIALIZED (
+	SELECT rast, ST_Resample(rast, 5, 5, NULL, NULL, 1, 0) AS out
+	FROM src
+)
+SELECT 'skew-fixed-size', ST_Width(out), ST_Height(out), ST_SkewX(out),
+	ST_Covers(ST_ConvexHull(out), ST_ConvexHull(rast))
+FROM warped;
+
+-- Decimal pixel sizes can represent an integral fit, even at maximum width.
+SELECT 'grid-decimal-scale', ST_Width(out), ST_Height(out)
+FROM (VALUES (6, 6), (39321, 1)) AS dims(w, h)
+CROSS JOIN LATERAL ST_SnapToGrid(
+	ST_AddBand(ST_MakeEmptyRaster(w, h, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+	0, 0, 0.6, -0.6
+) AS out
+ORDER BY w;
+
+-- 1e20 and 1 are on the same 3-unit grid.
+SELECT 'grid-distant-phase', ST_UpperLeftX(out), ST_Width(out)
+FROM (VALUES (1::float8), (1e20::float8)) AS anchors(x)
+CROSS JOIN LATERAL ST_SnapToGrid(
+	ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+	x, 0, 3::float8, -3::float8
+) AS out
+ORDER BY x;
+
+-- A shear in Y does not require padding the maximum representable width.
+SELECT 'skew-max-width', ST_Width(out), ST_Height(out)
+FROM ST_Reskew(
+	ST_AddBand(ST_MakeEmptyRaster(65535, 1, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+	0, 1.0 / 65536
+) AS out;

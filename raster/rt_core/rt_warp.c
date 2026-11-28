@@ -73,7 +73,7 @@ _rti_warp_arg_init()
 	_rti_warp_arg arg = NULL;
 
 	arg = rtalloc(sizeof(struct _rti_warp_arg_t));
-	if (arg == NULL)
+	if (!arg)
 	{
 		rterror("_rti_warp_arg_init: Could not allocate memory for _rti_warp_arg");
 		return NULL;
@@ -128,28 +128,104 @@ _rti_warp_ceil_dimension(double extent_size, double scale)
 	return (int)fmax(ceil(pixels), 1);
 }
 
+static bool
+_rti_warp_nonzero(const double *value)
+{ return value && !isnan(*value) && *value != 0.0; }
+
+/*
+ * Bound the source envelope in raster coordinates. For an aligned extent,
+ * reduce the anchor to its fractional cell coordinates to avoid cancellation
+ * when an equivalent grid origin is far from the source. The inverse
+ * helpers in rt_raster.c use double precision and geopoint_to_cell also
+ * rounds each point before we can distinguish lower and upper bounds.
+ */
+static const char *
+_rti_warp_fit_extent(rt_envelope *extent, double gt[6], bool aligned, bool fit_scale, int dim[2])
+{
+	const long double kx = gt[2], ky = gt[4];
+	if (fit_scale)
+	{
+		const long double w = extent->MaxX - extent->MinX, h = extent->MaxY - extent->MinY;
+		const long double area = fabsl((long double)gt[1] * gt[5] - kx * ky);
+		if (w * fabsl(gt[5]) + h * fabsl(kx) > dim[0] * area ||
+		    h * fabsl(gt[1]) + w * fabsl(ky) > dim[1] * area)
+		{
+			/* Allow room for the shear across the full width and height. */
+			gt[1] = (w + dim[1] * fabsl(kx)) / dim[0];
+			gt[5] = -(h + dim[0] * fabsl(ky)) / dim[1];
+		}
+	}
+
+	const long double sx = gt[1], sy = gt[5], det = sx * sy - kx * ky;
+	if (!isfinite(det) || fabsl(det) <= 4 * DBL_EPSILON * (fabsl(sx * sy) + fabsl(kx * ky)))
+		return "Cannot align a singular raster transform";
+
+	/* Take the remainder before division can round away the grid phase. */
+	const long double grid_col = fmodl(gt[0] * sy - gt[3] * kx, det) / det;
+	const long double grid_row = fmodl(gt[3] * sx - gt[0] * ky, det) / det;
+	const long double origin_x = grid_col * sx + grid_row * kx;
+	const long double origin_y = grid_col * ky + grid_row * sy;
+	const long double x[2] = {extent->MinX - origin_x, extent->MaxX - origin_x};
+	const long double y[2] = {extent->MinY - origin_y, extent->MaxY - origin_y};
+	const long double inv_x[2] = {sy, -ky}, inv_y[2] = {-kx, sx};
+	long double lower[2];
+
+	for (uint32_t axis = 0; axis < 2; axis++)
+	{
+		long double min = INFINITY, max = -INFINITY;
+		for (uint32_t i = 0; i < 4; i++)
+		{
+			const long double a = x[i % 2] * inv_x[axis], b = y[i / 2] * inv_y[axis];
+			long double cell = (a + b) / det;
+			const long double nearest = roundl(cell);
+			const long double error =
+			    DBL_EPSILON * fabsl(cell) + 4 * LDBL_EPSILON * (fabsl(a) + fabsl(b)) / fabsl(det);
+			if (fabsl(cell - nearest) <= error)
+				cell = nearest;
+			min = fminl(min, cell);
+			max = fmaxl(max, cell);
+		}
+
+		lower[axis] = aligned ? floorl(min) : min;
+		if (!dim[axis])
+		{
+			const long double span = max - min;
+			/* Keep the historical unaligned padding where it fits. */
+			const long double size =
+			    aligned ? ceill(max) - lower[axis] : (span == UINT16_MAX ? span : floorl(span) + 1);
+			if (!(size >= 1 && size <= UINT16_MAX))
+				return "Aligned raster dimensions exceed the supported range";
+			dim[axis] = size;
+		}
+	}
+
+	extent->UpperLeftX = origin_x + lower[0] * sx + lower[1] * kx;
+	extent->UpperLeftY = origin_y + lower[0] * ky + lower[1] * sy;
+	return NULL;
+}
+
 static void
 _rti_warp_arg_destroy(_rti_warp_arg arg)
 {
 	int i = 0;
 
-	if (arg->dst.ds != NULL)
+	if (arg->dst.ds)
 		GDALClose(arg->dst.ds);
-	if (arg->dst.srs != NULL)
+	if (arg->dst.srs)
 		CPLFree(arg->dst.srs);
 
-	if (arg->dst.drv != NULL && arg->dst.destroy_drv)
+	if (arg->dst.drv && arg->dst.destroy_drv)
 	{
 		GDALDeregisterDriver(arg->dst.drv);
 		GDALDestroyDriver(arg->dst.drv);
 	}
 
-	if (arg->src.ds != NULL)
+	if (arg->src.ds)
 		GDALClose(arg->src.ds);
-	if (arg->src.srs != NULL)
+	if (arg->src.srs)
 		CPLFree(arg->src.srs);
 
-	if (arg->src.drv != NULL && arg->src.destroy_drv)
+	if (arg->src.drv && arg->src.destroy_drv)
 	{
 		GDALDeregisterDriver(arg->src.drv);
 		GDALDestroyDriver(arg->src.drv);
@@ -157,18 +233,18 @@ _rti_warp_arg_destroy(_rti_warp_arg arg)
 
 	if (arg->transform.func == GDALApproxTransform)
 	{
-		if (arg->transform.arg.imgproj != NULL)
+		if (arg->transform.arg.imgproj)
 			GDALDestroyGenImgProjTransformer(arg->transform.arg.imgproj);
 	}
 
-	if (arg->wopts != NULL)
+	if (arg->wopts)
 		GDALDestroyWarpOptions(arg->wopts);
 
-	if (arg->transform.option.len > 0 && arg->transform.option.item != NULL)
+	if (arg->transform.option.len > 0 && arg->transform.option.item)
 	{
 		for (i = 0; i < arg->transform.option.len; i++)
 		{
-			if (arg->transform.option.item[i] != NULL)
+			if (arg->transform.option.item[i])
 				rtdealloc(arg->transform.option.item[i]);
 		}
 		rtdealloc(arg->transform.option.item);
@@ -220,6 +296,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	double nodata = 0.0;
 
 	double _gt[6] = {0};
+	double src_gt[6] = {0};
 	double dst_extent[4];
 	rt_envelope extent;
 
@@ -228,6 +305,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	double _skew[2] = {0};
 	double _scale[2] = {0};
 	int ul_user = 0;
+	int aligned_extent = 0;
 
 	rt_raster rast = NULL;
 	rt_raster nodata_src = NULL;
@@ -245,17 +323,17 @@ rt_raster_gdal_warp(rt_raster raster,
 	int data_pos = 0;
 	int use_init_dest_nodata = 0;
 
-	int subspatial = 0;
+	int default_geotransform = 0;
 
 	RASTER_DEBUG(3, "rt_raster_gdal_warp: starting");
 
-	assert(NULL != raster);
+	assert(raster);
 
 	numBands = rt_raster_get_num_bands(raster);
 	for (i = 0; i < numBands; i++)
 	{
 		rtband = rt_raster_get_band(raster, i);
-		if (NULL == rtband)
+		if (!rtband)
 		{
 			rterror("rt_raster_gdal_warp: Could not get band %d for checking nodata state", i);
 			return NULL;
@@ -270,7 +348,7 @@ rt_raster_gdal_warp(rt_raster raster,
 		data_bands = rtalloc(sizeof(uint32_t) * (numBands - has_nodata_count));
 		group_index = rtalloc(sizeof(int) * numBands);
 		group_has_nodata = rtalloc(sizeof(int) * numBands);
-		if (nodata_bands == NULL || data_bands == NULL || group_index == NULL || group_has_nodata == NULL)
+		if (!nodata_bands || !data_bands || !group_index || !group_has_nodata)
 		{
 			rterror("rt_raster_gdal_warp: Could not allocate mixed nodata band mapping");
 			rtdealloc(nodata_bands);
@@ -299,12 +377,12 @@ rt_raster_gdal_warp(rt_raster raster,
 
 		nodata_src = rt_raster_from_band(raster, nodata_bands, has_nodata_count);
 		data_src = rt_raster_from_band(raster, data_bands, numBands - has_nodata_count);
-		if (nodata_src == NULL || data_src == NULL)
+		if (!nodata_src || !data_src)
 		{
 			rterror("rt_raster_gdal_warp: Could not split mixed nodata raster");
-			if (nodata_src != NULL)
+			if (nodata_src)
 				rt_raster_destroy(nodata_src);
-			if (data_src != NULL)
+			if (data_src)
 				rt_raster_destroy(data_src);
 			rtdealloc(nodata_bands);
 			rtdealloc(data_bands);
@@ -345,12 +423,12 @@ rt_raster_gdal_warp(rt_raster raster,
 						max_err);
 		rt_raster_destroy(nodata_src);
 		rt_raster_destroy(data_src);
-		if (nodata_warp == NULL || data_warp == NULL)
+		if (!nodata_warp || !data_warp)
 		{
 			rterror("rt_raster_gdal_warp: Could not warp mixed nodata raster groups");
-			if (nodata_warp != NULL)
+			if (nodata_warp)
 				rt_raster_destroy(nodata_warp);
-			if (data_warp != NULL)
+			if (data_warp)
 				rt_raster_destroy(data_warp);
 			rtdealloc(nodata_bands);
 			rtdealloc(data_bands);
@@ -360,7 +438,7 @@ rt_raster_gdal_warp(rt_raster raster,
 		}
 
 		rast = rt_raster_clone(nodata_warp, 0);
-		if (rast == NULL)
+		if (!rast)
 		{
 			rterror("rt_raster_gdal_warp: Could not create mixed nodata output raster");
 			rt_raster_destroy(nodata_warp);
@@ -401,7 +479,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	}
 
 	arg = _rti_warp_arg_init();
-	if (arg == NULL)
+	if (!arg)
 	{
 		rterror("rt_raster_gdal_warp: Could not initialize internal variables");
 		return NULL;
@@ -411,14 +489,14 @@ rt_raster_gdal_warp(rt_raster raster,
 		max_err = 0.125;
 
 	/* handle srs */
-	if (src_srs != NULL)
+	if (src_srs)
 	{
-		if (dst_srs != NULL && strcmp(src_srs, dst_srs) != 0)
+		if (dst_srs && strcmp(src_srs, dst_srs) != 0)
 		{
 			RASTER_DEBUG(4, "rt_raster_gdal_warp: Warp includes reprojection");
 			arg->src.srs = rt_util_gdal_convert_sr(src_srs, 0);
 			arg->dst.srs = rt_util_gdal_convert_sr(dst_srs, 0);
-			if (arg->src.srs == NULL || arg->dst.srs == NULL)
+			if (!arg->src.srs || !arg->dst.srs)
 			{
 				rterror("rt_raster_gdal_warp: Could not convert srs values to GDAL accepted format");
 				_rti_warp_arg_destroy(arg);
@@ -426,7 +504,7 @@ rt_raster_gdal_warp(rt_raster raster,
 			}
 		}
 	}
-	else if (dst_srs != NULL)
+	else if (dst_srs)
 	{
 		rterror("rt_raster_gdal_warp: SRS required for input raster if SRS provided for warped raster");
 		_rti_warp_arg_destroy(arg);
@@ -436,37 +514,32 @@ rt_raster_gdal_warp(rt_raster raster,
 	/* load raster into GDAL MEM dataset */
 	arg->src.ds =
 	    rt_raster_to_gdal_mem(raster, arg->src.srs, NULL, NULL, 0, &(arg->src.drv), &(arg->src.destroy_drv));
-	if (NULL == arg->src.ds)
+	if (!arg->src.ds)
 	{
 		rterror("rt_raster_gdal_warp: Could not convert raster to GDAL MEM format");
 		_rti_warp_arg_destroy(arg);
 		return NULL;
 	}
 
-	/* special case: default geotransform raster with no SRS */
-	if (src_srs == NULL && dst_srs == NULL && rt_raster_get_srid(raster) == SRID_UNKNOWN)
+	/*
+	 * Give GDAL the affine transform explicitly for default rasters, which
+	 * dataset-based discovery may treat as ungeoreferenced.
+	 */
+	if (!src_srs && !dst_srs && rt_raster_get_srid(raster) == SRID_UNKNOWN)
 	{
-		double gt[6];
-		rt_raster_get_geotransform_matrix(raster, gt);
-		if (FLT_EQ(gt[0], 0.0) && FLT_EQ(gt[3], 0.0) && FLT_EQ(gt[1], 1.0) && FLT_EQ(gt[5], -1.0) &&
-		    FLT_EQ(gt[2], 0.0) && FLT_EQ(gt[4], 0.0))
-		{
-			double ngt[6] = {166021.4431, 0.1, 0, 10000000.0000, 0, -0.1};
+		rt_raster_get_geotransform_matrix(raster, src_gt);
+		default_geotransform = FLT_EQ(src_gt[0], 0.0) && FLT_EQ(src_gt[3], 0.0) && FLT_EQ(src_gt[1], 1.0) &&
+				       FLT_EQ(src_gt[5], -1.0) && FLT_EQ(src_gt[2], 0.0) && FLT_EQ(src_gt[4], 0.0);
+		if (default_geotransform)
 			rtwarn("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
-			subspatial = 1;
-			GDALSetGeoTransform(arg->src.ds, ngt);
-			GDALFlushCache(arg->src.ds);
-			arg->src.srs = rt_util_gdal_convert_sr("EPSG:32731", 0);
-			arg->dst.srs = rt_util_gdal_convert_sr("EPSG:32731", 0);
-		}
 	}
 
 	/* set transform options */
-	if (arg->src.srs != NULL || arg->dst.srs != NULL)
+	if (arg->src.srs || arg->dst.srs)
 	{
 		arg->transform.option.len = 2;
 		arg->transform.option.item = rtalloc(sizeof(char *) * (arg->transform.option.len + 1));
-		if (NULL == arg->transform.option.item)
+		if (!arg->transform.option.item)
 		{
 			rterror("rt_raster_gdal_warp: Could not allocate memory for transform options");
 			_rti_warp_arg_destroy(arg);
@@ -482,7 +555,7 @@ rt_raster_gdal_warp(rt_raster raster,
 			if (srs)
 				sz += strlen(srs);
 			arg->transform.option.item[i] = (char *)rtalloc(sz);
-			if (NULL == arg->transform.option.item[i])
+			if (!arg->transform.option.item[i])
 			{
 				rterror("rt_raster_gdal_warp: Could not allocate memory for transform options");
 				_rti_warp_arg_destroy(arg);
@@ -495,8 +568,10 @@ rt_raster_gdal_warp(rt_raster raster,
 		arg->transform.option.len = 0;
 
 	/* transformation object for building dst dataset */
-	arg->transform.arg.transform = GDALCreateGenImgProjTransformer2(arg->src.ds, NULL, arg->transform.option.item);
-	if (NULL == arg->transform.arg.transform)
+	arg->transform.arg.transform =
+	    default_geotransform ? GDALCreateGenImgProjTransformer3(NULL, src_gt, NULL, NULL)
+				 : GDALCreateGenImgProjTransformer2(arg->src.ds, NULL, arg->transform.option.item);
+	if (!arg->transform.arg.transform)
 	{
 		rterror("rt_raster_gdal_warp: Could not create GDAL transformation object");
 		_rti_warp_arg_destroy(arg);
@@ -532,37 +607,30 @@ rt_raster_gdal_warp(rt_raster raster,
 	extent.MaxY = dst_extent[3];
 	extent.UpperLeftX = dst_extent[0];
 	extent.UpperLeftY = dst_extent[3];
-
 	/* scale and width/height are mutually exclusive */
-	if (((NULL != scale_x) || (NULL != scale_y)) && ((NULL != width) || (NULL != height)))
+	if ((scale_x || scale_y) && (width || height))
 	{
 		rterror("rt_raster_gdal_warp: Scale X/Y and width/height are mutually exclusive");
 		_rti_warp_arg_destroy(arg);
 		return NULL;
 	}
 
-	if (NULL != width)
+	if (width)
 	{
 		_dim[0] = abs(*width);
-		_scale[0] = fabs((extent.MaxX - extent.MinX) / ((double)_dim[0]));
+		_scale[0] = fabs((extent.MaxX - extent.MinX) / _dim[0]);
 	}
-	if (NULL != height)
+	if (height)
 	{
 		_dim[1] = abs(*height);
-		_scale[1] = fabs((extent.MaxY - extent.MinY) / ((double)_dim[1]));
+		_scale[1] = fabs((extent.MaxY - extent.MinY) / _dim[1]);
 	}
 
-	if (((NULL != scale_x) && ((!isnan(*scale_x) && *scale_x != 0.0))) &&
-	    ((NULL != scale_y) && ((!isnan(*scale_y) && *scale_y != 0.0))))
+	if (_rti_warp_nonzero(scale_x) && _rti_warp_nonzero(scale_y))
 	{
 		_scale[0] = fabs(*scale_x);
 		_scale[1] = fabs(*scale_y);
-		if (subspatial)
-		{
-			_scale[0] /= 10;
-			_scale[1] /= 10;
-		}
-		else if (src_srs == NULL || dst_srs == NULL || strcmp(src_srs, dst_srs) == 0)
+		if (!src_srs || !dst_srs || strcmp(src_srs, dst_srs) == 0)
 		{
 			if (rt_raster_get_envelope(raster, &extent) != ES_NONE)
 			{
@@ -572,7 +640,7 @@ rt_raster_gdal_warp(rt_raster raster,
 			}
 		}
 	}
-	else if (((NULL != scale_x) && (NULL == scale_y)) || ((NULL == scale_x) && (NULL != scale_y)))
+	else if (!scale_x != !scale_y)
 	{
 		rterror("rt_raster_gdal_warp: Both X and Y scale values must be provided");
 		_rti_warp_arg_destroy(arg);
@@ -584,8 +652,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	{
 		_scale[0] = fabs(_gt[1]);
 		_scale[1] = fabs(_gt[5]);
-		if (NULL != src_srs && NULL != dst_srs && strcmp(src_srs, dst_srs) != 0 && NULL == skew_x &&
-		    NULL == skew_y)
+		if (src_srs && dst_srs && strcmp(src_srs, dst_srs) != 0 && !skew_x && !skew_y)
 		{
 			_dim[0] = suggested_dim[0];
 			_dim[1] = suggested_dim[1];
@@ -594,52 +661,61 @@ rt_raster_gdal_warp(rt_raster raster,
 
 	RASTER_DEBUGF(4, "rt_raster_gdal_warp: Using scale: %f x %f", _scale[0], -1 * _scale[1]);
 
-	/* skew */
-	if (NULL != skew_x)
+	/* Preserve the axis convention used by each warp path. */
+	const bool flip[2] = {scale_x && *scale_x < 0.0, scale_y && *scale_y > 0.0};
+	const double *requested_skew[2] = {skew_x, skew_y};
+	for (uint32_t axis = 0; axis < 2; axis++)
 	{
-		_skew[0] = *skew_x;
-		if (NULL != scale_x && *scale_x < 0.)
-			_skew[0] *= -1;
-	}
-	if (NULL != skew_y)
-	{
-		_skew[1] = *skew_y;
-		if (NULL != scale_y && *scale_y > 0)
-			_skew[1] *= -1;
+		if (requested_skew[axis])
+			_skew[axis] = flip[default_geotransform ? 1 - axis : axis] ? -*requested_skew[axis]
+										   : *requested_skew[axis];
 	}
 
 	RASTER_DEBUGF(4, "rt_raster_gdal_warp: Using skew: %f x %f", _skew[0], _skew[1]);
 
-	/* Compute the output grid parameters when skew is requested. */
-	if ((!isnan(_skew[0]) && _skew[0] != 0.0) || (!isnan(_skew[1]) && _skew[1] != 0.0))
+	aligned_extent = default_geotransform && grid_xw && grid_yw && !ul_xw && !ul_yw && !width && !height;
+	const bool skewed = _rti_warp_nonzero(&_skew[0]) || _rti_warp_nonzero(&_skew[1]);
+	if (default_geotransform && (aligned_extent || skewed))
 	{
-		rt_raster skewedrast;
-
-		RASTER_DEBUG(3, "rt_raster_gdal_warp: Computing skewed extent");
-
-		skewedrast = rt_raster_compute_skewed_raster(extent, _skew, _scale);
-		if (skewedrast == NULL)
+		double grid_gt[6] = {aligned_extent ? *grid_xw : 0,
+				     _scale[0],
+				     _skew[0],
+				     aligned_extent ? *grid_yw : 0,
+				     _skew[1],
+				     -_scale[1]};
+		if (rt_raster_get_envelope(raster, &extent) != ES_NONE)
+		{
+			_rti_warp_arg_destroy(arg);
+			return NULL;
+		}
+		const bool fit_scale = _dim[0] && _dim[1] && !grid_xw && !grid_yw && !ul_xw && !ul_yw;
+		const char *error = _rti_warp_fit_extent(&extent, grid_gt, aligned_extent, fit_scale, _dim);
+		if (error)
+		{
+			_rti_warp_arg_destroy(arg);
+			rterror("rt_raster_gdal_warp: %s", error);
+			return NULL;
+		}
+		_scale[0] = grid_gt[1];
+		_scale[1] = -grid_gt[5];
+	}
+	else if (skewed)
+	{
+		rt_raster skewedrast = rt_raster_compute_skewed_raster(extent, _skew, _scale);
+		if (!skewedrast)
 		{
 			rterror("rt_raster_gdal_warp: Could not compute skewed extent");
 			_rti_warp_arg_destroy(arg);
 			return NULL;
 		}
 
-		if (_dim[0] == 0)
+		if (!_dim[0])
 			_dim[0] = rt_raster_get_width(skewedrast);
-		if (_dim[1] == 0)
+		if (!_dim[1])
 			_dim[1] = rt_raster_get_height(skewedrast);
 
 		extent.UpperLeftX = rt_raster_get_x_offset(skewedrast);
 		extent.UpperLeftY = rt_raster_get_y_offset(skewedrast);
-
-		RASTER_DEBUGF(3,
-			      "rt_raster_gdal_warp: Skewed extent: UL=(%f,%f) dim=%dx%d",
-			      extent.UpperLeftX,
-			      extent.UpperLeftY,
-			      _dim[0],
-			      _dim[1]);
-
 		rt_raster_destroy(skewedrast);
 	}
 
@@ -651,16 +727,15 @@ rt_raster_gdal_warp(rt_raster raster,
 
 	/* temporary raster */
 	rast = rt_raster_new(_dim[0], _dim[1]);
-	if (rast == NULL)
+	if (!rast)
 	{
 		rterror("rt_raster_gdal_warp: Out of memory allocating temporary raster");
 		_rti_warp_arg_destroy(arg);
 		return NULL;
 	}
 
-	/* set raster's spatial attributes */
 	rt_raster_set_offsets(rast, extent.UpperLeftX, extent.UpperLeftY);
-	rt_raster_set_scale(rast, _scale[0], -1 * _scale[1]);
+	rt_raster_set_scale(rast, _scale[0], -_scale[1]);
 	rt_raster_set_skews(rast, _skew[0], _skew[1]);
 
 	rt_raster_get_geotransform_matrix(rast, _gt);
@@ -674,14 +749,14 @@ rt_raster_gdal_warp(rt_raster raster,
 		      _gt[5]);
 
 	/* user-defined upper-left corner */
-	if (NULL != ul_xw && NULL != ul_yw)
+	if (ul_xw && ul_yw)
 	{
 		ul_user = 1;
 		rt_raster_set_offsets(rast, *ul_xw, *ul_yw);
 		extent.UpperLeftX = *ul_xw;
 		extent.UpperLeftY = *ul_yw;
 	}
-	else if (((NULL != ul_xw) && (NULL == ul_yw)) || ((NULL == ul_xw) && (NULL != ul_yw)))
+	else if (!ul_xw != !ul_yw)
 	{
 		rterror("rt_raster_gdal_warp: Both X and Y upper-left corner values must be provided");
 		rt_raster_destroy(rast);
@@ -690,10 +765,9 @@ rt_raster_gdal_warp(rt_raster raster,
 	}
 
 	/* alignment only considered if upper-left corner not provided */
-	if (!ul_user && ((NULL != grid_xw) || (NULL != grid_yw)))
+	if (!aligned_extent && !ul_user && (grid_xw || grid_yw))
 	{
-
-		if (((NULL != grid_xw) && (NULL == grid_yw)) || ((NULL == grid_xw) && (NULL != grid_yw)))
+		if (!grid_xw != !grid_yw)
 		{
 			rterror("rt_raster_gdal_warp: Both X and Y alignment values must be provided");
 			rt_raster_destroy(rast);
@@ -707,8 +781,6 @@ rt_raster_gdal_warp(rt_raster raster,
 		{
 			double _r[2] = {0};
 			double _w[2] = {0};
-
-			/* raster is already aligned */
 			if (FLT_EQ(*grid_xw, extent.UpperLeftX) && FLT_EQ(*grid_yw, extent.UpperLeftY))
 			{
 				RASTER_DEBUG(3, "Skipping raster alignment as it is already aligned to grid");
@@ -737,53 +809,37 @@ rt_raster_gdal_warp(rt_raster raster,
 				return NULL;
 			}
 
-			/* shift occurred */
-			if (FLT_NEQ(_w[0], extent.UpperLeftX))
+			const int *requested_dim[2] = {width, height};
+			uint16_t *dim[2] = {&rast->width, &rast->height};
+			double *scale[2] = {&rast->scaleX, &rast->scaleY};
+			const double origin[2] = {extent.UpperLeftX, extent.UpperLeftY};
+			for (uint32_t axis = 0; axis < 2; axis++)
 			{
-				if (NULL == width)
-					rast->width++;
-				else if (NULL == scale_x)
+				if (!FLT_NEQ(_w[axis], origin[axis]))
+					continue;
+				if (!requested_dim[axis])
 				{
-					double _c[2] = {0};
-
-					rt_raster_set_offsets(rast, extent.UpperLeftX, extent.UpperLeftY);
-
-					/* get upper-right corner */
-					if (rt_raster_cell_to_geopoint(
-						rast, rast->width, 0, &(_c[0]), &(_c[1]), NULL) != ES_NONE)
+					if (*dim[axis] == UINT16_MAX)
 					{
-						rterror(
-						    "rt_raster_gdal_warp: Could not compute spatial coordinates for raster pixel");
 						rt_raster_destroy(rast);
 						_rti_warp_arg_destroy(arg);
+						rterror(
+						    "rt_raster_gdal_warp: Aligned raster dimensions exceed the supported range");
 						return NULL;
 					}
-
-					rast->scaleX = fabs((_c[0] - _w[0]) / ((double)rast->width));
+					(*dim[axis])++;
 				}
-			}
-			if (FLT_NEQ(_w[1], extent.UpperLeftY))
-			{
-				if (NULL == height)
-					rast->height++;
-				else if (NULL == scale_y)
+				else
 				{
-					double _c[2] = {0};
-
-					rt_raster_set_offsets(rast, extent.UpperLeftX, extent.UpperLeftY);
-
-					/* get upper-right corner */
-					if (rt_raster_cell_to_geopoint(
-						rast, 0, rast->height, &(_c[0]), &(_c[1]), NULL) != ES_NONE)
-					{
-						rterror(
-						    "rt_raster_gdal_warp: Could not compute spatial coordinates for raster pixel");
-						rt_raster_destroy(rast);
-						_rti_warp_arg_destroy(arg);
-						return NULL;
-					}
-
-					rast->scaleY = -1 * fabs((_c[1] - _w[1]) / ((double)rast->height));
+					/* A fixed dimension implies that the scale is adjustable. */
+					double corner[2];
+					GDALApplyGeoTransform(_gt,
+							      axis == 0 ? *dim[axis] : 0,
+							      axis == 1 ? *dim[axis] : 0,
+							      &corner[0],
+							      &corner[1]);
+					const double adjusted = fabs((corner[axis] - _w[axis]) / *dim[axis]);
+					*scale[axis] = axis == 0 ? adjusted : -adjusted;
 				}
 			}
 
@@ -797,40 +853,36 @@ rt_raster_gdal_warp(rt_raster raster,
 	_dim[1] = rast->height;
 	rt_raster_get_geotransform_matrix(rast, _gt);
 
-	/* handle negative scale-x or positive scale-y (same as original) */
-	if ((NULL != scale_x && *scale_x < 0.) || (NULL != scale_y && *scale_y > 0))
+	const double *requested_scale[2] = {scale_x, scale_y};
+	for (uint32_t axis = 0; axis < 2; axis++)
 	{
-		double _w[2] = {0};
-		if (NULL != scale_x && *scale_x < 0.)
+		if (!flip[axis])
+			continue;
+
+		if (default_geotransform)
 		{
-			if (rt_raster_cell_to_geopoint(rast, rast->width, 0, &(_w[0]), &(_w[1]), NULL) != ES_NONE)
+			/* Reverse the full pixel or line vector. */
+			for (uint32_t offset = 0; offset < 6; offset += 3)
 			{
-				rterror("rt_raster_gdal_warp: Could not compute spatial coordinates for raster pixel");
-				rt_raster_destroy(rast);
-				_rti_warp_arg_destroy(arg);
-				return NULL;
+				double *step = &_gt[offset + axis + 1];
+				if (!ul_user)
+					_gt[offset] += _dim[axis] * *step;
+				*step = -*step;
 			}
-			_gt[0] = _w[0];
-			_gt[1] = *scale_x;
-			if (NULL != skew_x && (!isnan(*skew_x) && *skew_x != 0.0))
-				_gt[2] = *skew_x;
 		}
-		if (NULL != scale_y && *scale_y > 0)
+		else
 		{
-			if (rt_raster_cell_to_geopoint(rast, 0, rast->height, &(_w[0]), &(_w[1]), NULL) != ES_NONE)
-			{
-				rterror("rt_raster_gdal_warp: Could not compute spatial coordinates for raster pixel");
-				rt_raster_destroy(rast);
-				_rti_warp_arg_destroy(arg);
-				return NULL;
-			}
-			_gt[3] = _w[1];
-			_gt[5] = *scale_y;
-			if (NULL != skew_y && (!isnan(*skew_y) && *skew_y != 0.0))
-				_gt[4] = *skew_y;
+			/* Preserve the historical signed-scale placement for georeferenced inputs. */
+			double corner[2];
+			GDALApplyGeoTransform(
+			    _gt, axis == 0 ? _dim[axis] : 0, axis == 1 ? _dim[axis] : 0, &corner[0], &corner[1]);
+			const uint32_t offset = 3 * axis;
+			_gt[offset] = corner[axis];
+			_gt[offset + axis + 1] = *requested_scale[axis];
+			if (_rti_warp_nonzero(requested_skew[axis]))
+				_gt[offset + 2 - axis] = *requested_skew[axis];
 		}
 	}
-
 	rt_raster_destroy(rast);
 	rast = NULL;
 
@@ -860,7 +912,7 @@ rt_raster_gdal_warp(rt_raster raster,
 		arg->dst.destroy_drv = 1;
 	}
 	arg->dst.drv = GDALGetDriverByName("VRT");
-	if (NULL == arg->dst.drv)
+	if (!arg->dst.drv)
 	{
 		rterror("rt_raster_gdal_warp: Could not load the output GDAL VRT driver");
 		_rti_warp_arg_destroy(arg);
@@ -869,7 +921,7 @@ rt_raster_gdal_warp(rt_raster raster,
 
 	/* create dst dataset */
 	arg->dst.ds = GDALCreate(arg->dst.drv, "", _dim[0], _dim[1], 0, GDT_Byte, dst_options);
-	if (NULL == arg->dst.ds)
+	if (!arg->dst.ds)
 	{
 		rterror("rt_raster_gdal_warp: Could not create GDAL VRT dataset");
 		_rti_warp_arg_destroy(arg);
@@ -877,7 +929,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	}
 
 	/* set dst srs */
-	if (arg->dst.srs != NULL)
+	if (arg->dst.srs)
 	{
 		cplerr = GDALSetProjection(arg->dst.ds, arg->dst.srs);
 		if (cplerr != CE_None)
@@ -901,7 +953,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	for (i = 0; i < numBands; i++)
 	{
 		rtband = rt_raster_get_band(raster, i);
-		if (NULL == rtband)
+		if (!rtband)
 		{
 			rterror("rt_raster_gdal_warp: Could not get band %d for adding to VRT dataset", i);
 			_rti_warp_arg_destroy(arg);
@@ -922,7 +974,7 @@ rt_raster_gdal_warp(rt_raster raster,
 		}
 
 		band = GDALGetRasterBand(arg->dst.ds, i + 1);
-		if (NULL == band)
+		if (!band)
 		{
 			rterror("rt_raster_gdal_warp: Could not get GDAL band for additional processing");
 			_rti_warp_arg_destroy(arg);
@@ -940,8 +992,10 @@ rt_raster_gdal_warp(rt_raster raster,
 
 	/* create transformation object */
 	arg->transform.arg.transform = arg->transform.arg.imgproj =
-	    GDALCreateGenImgProjTransformer2(arg->src.ds, arg->dst.ds, arg->transform.option.item);
-	if (NULL == arg->transform.arg.transform)
+	    default_geotransform
+		? GDALCreateGenImgProjTransformer3(NULL, src_gt, NULL, _gt)
+		: GDALCreateGenImgProjTransformer2(arg->src.ds, arg->dst.ds, arg->transform.option.item);
+	if (!arg->transform.arg.transform)
 	{
 		rterror("rt_raster_gdal_warp: Could not create GDAL transformation object");
 		_rti_warp_arg_destroy(arg);
@@ -953,7 +1007,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	{
 		arg->transform.arg.transform = arg->transform.arg.approx =
 		    GDALCreateApproxTransformer(GDALGenImgProjTransform, arg->transform.arg.imgproj, max_err);
-		if (NULL == arg->transform.arg.transform)
+		if (!arg->transform.arg.transform)
 		{
 			rterror("rt_raster_gdal_warp: Could not create GDAL approximate transformation object");
 			_rti_warp_arg_destroy(arg);
@@ -964,7 +1018,7 @@ rt_raster_gdal_warp(rt_raster raster,
 
 	/* warp options */
 	arg->wopts = GDALCreateWarpOptions();
-	if (NULL == arg->wopts)
+	if (!arg->wopts)
 	{
 		rterror("rt_raster_gdal_warp: Could not create GDAL warp options object");
 		_rti_warp_arg_destroy(arg);
@@ -1014,8 +1068,8 @@ rt_raster_gdal_warp(rt_raster raster,
 		arg->wopts->padfDstNoDataReal = (double *)CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfSrcNoDataImag = (double *)CPLMalloc(numBands * sizeof(double));
 		arg->wopts->padfDstNoDataImag = (double *)CPLMalloc(numBands * sizeof(double));
-		if (NULL == arg->wopts->padfSrcNoDataReal || NULL == arg->wopts->padfDstNoDataReal ||
-		    NULL == arg->wopts->padfSrcNoDataImag || NULL == arg->wopts->padfDstNoDataImag)
+		if (!arg->wopts->padfSrcNoDataReal || !arg->wopts->padfDstNoDataReal ||
+		    !arg->wopts->padfSrcNoDataImag || !arg->wopts->padfDstNoDataImag)
 		{
 			rterror("rt_raster_gdal_warp: Out of memory allocating nodata mapping");
 			_rti_warp_arg_destroy(arg);
@@ -1050,23 +1104,12 @@ rt_raster_gdal_warp(rt_raster raster,
 	rast = rt_raster_from_gdal_dataset(arg->dst.ds);
 	_rti_warp_arg_destroy(arg);
 
-	if (NULL == rast)
+	if (!rast)
 	{
 		rterror("rt_raster_gdal_warp: Could not convert warped dataset to raster");
 		return NULL;
 	}
 
-	/* reset spatial info for default-geotransform rasters */
-	if (subspatial)
-	{
-		double gt[6] = {0, 1, 0, 0, 0, -1};
-		gt[1] = _scale[0] * 10;
-		gt[5] = -1 * _scale[1] * 10;
-		rt_raster_set_geotransform_matrix(rast, gt);
-		rt_raster_set_srid(rast, SRID_UNKNOWN);
-	}
-
 	RASTER_DEBUG(3, "rt_raster_gdal_warp: done");
-
 	return rast;
 }

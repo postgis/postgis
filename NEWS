@@ -36,6 +36,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #2924, GT-919, GH-957, [raster] Fix warp skew for default rasters
+   (reported by Sandro Santilli; fixed by Darafei Praliaskouski)
  - #2038, GT-434, [topology] Node lines against edges moved by start snaps
    (reported by Wim Nederend; fixed by Darafei Praliaskouski)
  - #5284, GT-417, [topology] Import manually renamed TopoGeometry columns
