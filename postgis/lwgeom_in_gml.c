@@ -976,6 +976,9 @@ static POINTARRAY* parse_gml_data(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	gmlSrs srs;
 	bool found;
 
+	/* XLink cycles can recurse through pointProperty without parse_gml(). */
+	check_stack_depth();
+
 	pa = NULL;
 
 	for (xa = xnode ; xa != NULL ; xa = xa->next)
