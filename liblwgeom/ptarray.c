@@ -136,7 +136,8 @@ ptarray_signed_area_expansion_add(ptarray_signed_area_expansion *expansion, doub
 static inline void
 ptarray_signed_area_expansion_add_product(ptarray_signed_area_expansion *expansion, double a, double b, double sign)
 {
-	double product = a * b;
+	/* The fused residual must use the product rounded to double. */
+	volatile double product = a * b;
 
 	ptarray_signed_area_expansion_add(expansion, sign * product);
 	ptarray_signed_area_expansion_add(expansion, sign * fma(a, b, -product));
