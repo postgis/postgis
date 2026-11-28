@@ -252,15 +252,13 @@
 		<listitem>
 			<para>
 				<simplelist type="vert" columns="3">
-					<member><link xlink:href="https://github.com/wywwzjj">wywwzjj</link> (GitHub user)</member>
+					<member><link xlink:href="https://github.com/wywwzjj">@wywwzjj</link> (GitHub user)</member>
 					<member><link xlink:href="https://github.com/amwps290">@amwps290</link> (GitHub user)</member>
 					<member><link xlink:href="https://github.com/dovkoy">dovkoy</link> (GitHub user)</member>
 					<member><link xlink:href="https://github.com/kannes">@kannes</link> (GitHub user: Hannes)</member>
 					<member><link xlink:href="https://github.com/sunhm89">@sunhm89</link> (GitHub user)</member>
 					<member><link xlink:href="https://github.com/wewindy">@wewindy</link> (GitHub user: Chen)</member>
 					<member>Adrien Berchet</member>
-					<member>Dawid Żak</member>
-					<member>Aleksander Alekseev</member>
 					<member>Alex Bodnaru</member>
 					<member>Alex Mayrhofer</member>
 					<member>Alexander Lakhin</member>
@@ -450,7 +448,6 @@
 					<member>Sven Klemm</member>
 					<member>Stephen Woodbridge</member>
 					<member>Steven Ottens</member>
-					<member>Sven Klemm</member>
 					<member>Svyatoslav Bogdanov</member>
 					<member>Talha Rizwan</member>
 					<member>Temuri Doghonadze</member>
@@ -531,8 +528,6 @@
 				<listitem><simpara><link xlink:href="https://swmansion.com/">Software Mansion</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.siriusopensource.com/en-us">Sirius Corporation plc</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="http://www.uster.ch">Stadt Uster</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://www.tigerdata.com/">Tiger Data</link></simpara></listitem>
-				<listitem><simpara><link xlink:href="https://swmansion.com/">Software Mansion</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.ucdavis.edu">UC Davis Center for Vectorborne Diseases</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.ulaval.ca">Université Laval</link></simpara></listitem>
 				<listitem><simpara><link xlink:href="https://www.census.gov">U.S. Census Bureau</link></simpara></listitem>
