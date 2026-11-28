@@ -88,6 +88,10 @@ PostGIS 3.8.0dev
  - GT-595, [raster] Honor ST_CreateOverview resampling algorithm (Darafei Praliaskouski)
  - GT-595, [raster] Preserve small nonzero warp scales (Darafei Praliaskouski)
 
+* Breaking Changes *
+
+ - GT-591, #2630, Fix UpdateGeometrySRID argument name (Darafei Praliaskouski; Sandro Santilli)
+
 
 PostGIS 3.7.0rc3
 2026/10/20
