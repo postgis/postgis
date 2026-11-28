@@ -34,8 +34,12 @@
 			<title>Description</title>
 
 			<para>Returns the area of a polygonal geometry.
-			For geometry types a 2D Cartesian (planar) area is computed, with units specified by the SRID.
-			For geography types by default area is determined on a spheroid with units in square meters.
+			For geometry types the result is a 2D Cartesian (planar) area in
+			square units of the coordinate reference system. For example, a
+			geometry in EPSG:4326 yields square degrees. Use an appropriate
+			projected CRS, or cast a longitude and latitude geometry to
+			<type>geography</type> for an area in square meters.
+			For geography types, the default calculation uses a spheroid.
 		  To compute the area using the faster but less accurate spherical model use <varname>ST_Area(geog,false)</varname>.
 		  </para>
 			<para role="enhanced" conformance="2.0.0">Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>

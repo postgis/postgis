@@ -797,6 +797,27 @@ so even calling them "degrees" is inaccurate.</para>
 		what is supported for Geography vs. Geometry.  For a brief listing and description of Geography functions, refer to
 		<xref linkend="PostGIS_GeographyFunctions"/>
 		</para>
+      <para>Longitude and latitude stored as <type>geometry</type> are
+        interpreted in a plane. A straight segment from longitude 179 to
+        -179 travels across that plane through longitude zero. For local
+        data around the antimeridian, a consistent longitude shift can move
+        the seam outside the area of interest. Apply
+        <xref linkend="ST_ShiftLongitude"/> to both inputs. Use
+        <type>geography</type> when the intended operation should treat edges
+        as geodesics.</para>
+
+<programlisting language="sql">WITH data AS (
+    SELECT 'SRID=4326;POLYGON((179 -1,-179 -1,-179 1,179 1,179 -1))'::geometry AS region,
+           'SRID=4326;POINT(-179.5 0)'::geometry AS sample
+)
+SELECT ST_Intersects(region, sample) AS original,
+       ST_Intersects(ST_ShiftLongitude(region),
+                     ST_ShiftLongitude(sample)) AS shifted
+FROM data;</programlisting>
+<screen> original | shifted
+----------+---------
+ f        | t
+(1 row)</screen>
 	</section>
 	<section xml:id="PostGIS_Geography_AdvancedFAQ">
 			<title>Geography Advanced FAQ</title>
@@ -1677,6 +1698,10 @@ SELECT f_table_name, f_geometry_column, srid, type
 	PostGIS/PostgreSQL database: using formatted SQL statements or using the
 	Shapefile loader.</para>
 
+    <para>For formats supported by GDAL, see the
+      <link xlink:href="https://gdal.org/en/stable/drivers/vector/pg.html">GDAL
+      PostgreSQL driver</link>. To import OpenStreetMap data, see the
+      <link xlink:href="https://osm2pgsql.org/doc/manual.html">osm2pgsql manual</link>.</para>
 	<section xml:id="load-data-sql">
 	  <title>Using SQL to Load Data</title>
 
@@ -1706,6 +1731,52 @@ COMMIT;</programlisting>
 	  <para>The SQL file can be loaded into PostgreSQL using <code>psql</code>:</para>
 
 			  <programlisting language="bash">psql -d [database] -f roads.sql</programlisting>
+
+    <para>For a bulk export containing WKT strings, load a text staging
+      column with <command>COPY</command> and parse the geometry when copying
+      into the typed destination. This CSV contains longitude and latitude in
+      WGS 84, so it uses SRID 4326. If a WKT field contains commas, quote it
+      as a CSV field.</para>
+
+<programlisting language="psql">CREATE TEMP TABLE stage_wkt (id integer, wkt text);
+COPY stage_wkt FROM STDIN WITH (FORMAT csv);
+1,POINT(-73 40)
+2,POINT(-72 41)
+\.
+
+CREATE TEMP TABLE places (id integer, geom geometry(Point, 4326));
+INSERT INTO places
+SELECT id, ST_GeomFromText(wkt, 4326)
+FROM stage_wkt;
+
+SELECT id, ST_AsEWKT(geom) AS geom
+FROM places
+ORDER BY id;</programlisting>
+<screen> id |          geom
+----+-------------------------
+  1 | SRID=4326;POINT(-73 40)
+  2 | SRID=4326;POINT(-72 41)
+(2 rows)</screen>
+
+    <para>For a GeoJSON Feature, pass its <literal>geometry</literal> member
+      to <xref linkend="ST_GeomFromGeoJSON"/>. For WGS 84 coordinates,
+      the parsed geometry has SRID 4326 by default. Check its SRID with
+      <xref linkend="ST_SRID"/> and use <xref linkend="ST_Transform"/>
+      when the destination or comparison geometry uses a different coordinate system.</para>
+
+<programlisting language="sql"><![CDATA[WITH incoming(feature) AS (
+  VALUES ('{"type":"Feature","geometry":{"type":"Point","coordinates":[-73,40]},"properties":{}}'::jsonb)
+), parsed AS (
+  SELECT ST_GeomFromGeoJSON(feature->'geometry') AS geom FROM incoming
+)
+SELECT ST_SRID(geom) AS source_srid,
+       ST_Intersects(ST_Transform(geom, 3857),
+                     ST_MakeEnvelope(-8130000, 4860000, -8120000, 4870000, 3857)) AS matches
+FROM parsed;]]></programlisting>
+<screen> source_srid | matches
+-------------+---------
+        4326 | t
+(1 row)</screen>
 	</section>
 
 <section xml:id="shp2pgsql_usage">
@@ -1721,6 +1792,10 @@ COMMIT;</programlisting>
     <filename>.zip</filename> archives directly; unpack the <filename>.shp</filename>,
     <filename>.shx</filename>, and <filename>.dbf</filename> files before loading.
   </para>
+  <para><command>shp2pgsql</command> and <command>pgsql2shp</command> are
+    command-line programs. Enabling the PostGIS extension in a database
+    does not install these programs. If they are missing from your PATH,
+    check whether your distribution provides a separate PostGIS tools package.</para>
   <para>There is also a <filename>shp2pgsql-gui</filename> graphical interface with most
 	of the options as the command-line loader.
     This may be easier to use for one-off non-scripted loading or if you are new to PostGIS.
@@ -2139,6 +2214,15 @@ pgsql2shp [<options>] <database> [<schema>.]<table>
 pgsql2shp [<options>] <database> <query>
 ]]></programlisting>
 
+	  <para>For a query export, <command>pgsql2shp</command> uses the
+	  SRIDs it can resolve in <varname>spatial_ref_sys</varname>. A result
+	  containing SRIDs 0 and 4326 writes a <filename>.prj</filename> for
+	  4326 without a warning. If all SRIDs are unknown, the command warns
+	  that it cannot determine the spatial reference. If two or more known
+	  SRIDs occur, it warns <literal>Mixed set of spatial references</literal>.
+	  In either case it omits the <filename>.prj</filename>. An empty query
+	  result fails with
+	  <literal>ERROR: Could not determine table metadata (empty table)</literal>.</para>
 	  <para>The commandline options are:</para>
 
 	  <variablelist>
