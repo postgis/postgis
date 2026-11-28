@@ -104,6 +104,36 @@ HAVING count(*) &gt; 1;</programlisting>
 <programlisting language="sql" role="requires-external-state">SELECT topology.DropTopology('topo_example');</programlisting>
         </section>
 
+        <section xml:id="Topology_Feature_Layers_Example">
+            <title>Joining Feature Attributes to Topology</title>
+            <para>To find the polygon attributes on either side of an edge,
+              match its <varname>left_face</varname> and <varname>right_face</varname>
+              to the face IDs of your polygon features. The following query uses
+              an existing <varname>parcels</varname> table with a polygon
+              <type>TopoGeometry</type> column registered in
+              <varname>parcel_topo</varname>. It keeps edges without a
+              matching feature, including those beside the universal face (0).</para>
+
+<programlisting language="sql" role="requires-external-state">WITH face_parcels AS (
+    SELECT p.parcel_id, elem[1] AS face_id
+    FROM parcels AS p
+    CROSS JOIN LATERAL topology.GetTopoGeomElements(p.topo) AS g(elem)
+    WHERE elem[2] = 3
+)
+SELECT e.edge_id, l.parcel_id AS left_parcel, r.parcel_id AS right_parcel
+FROM parcel_topo.edge_data AS e
+LEFT JOIN face_parcels AS l ON l.face_id = e.left_face
+LEFT JOIN face_parcels AS r ON r.face_id = e.right_face
+ORDER BY e.edge_id;</programlisting>
+
+            <para>If several parcels share a face, the join returns all
+              matching pairs. To build the polygon features from a mapping of
+              parcel IDs to existing face IDs, group the mapping by parcel
+              and pass <code>topology.TopoElementArray_Agg(ARRAY[face_id, 3])</code>
+              to <xref linkend="CreateTopoGeom"/> for the registered layer.
+              See <xref linkend="TopoElementArray_Agg"/>.</para>
+        </section>
+
         <section xml:id="Topology_PrimitiveTables">
             <title>Topology Primitive Tables</title>
             <para>The core primitives of any topology are stored in the <varname>edge_data</varname>, <varname>node</varname>, and <varname>face</varname> tables that live in the schema created by <xref linkend="CreateTopology"/>.  Each row of <varname>edge_data</varname> represents an oriented edge: it records a directed curve from <varname>start_node</varname> to <varname>end_node</varname> together with the identifier of the face encountered on the left of that direction (<varname>left_face</varname>) and the face encountered on the right (<varname>right_face</varname>).  The same geometric segment may therefore appear twice—once for each orientation—when it belongs to two faces.</para>
@@ -1532,7 +1562,10 @@ ANALYZE themselves, to use updated statistics.
 				The tolerance defaults to 0.
 				</para>
 
-				<para><varname>hasz</varname> defaults to false if not specified. </para>
+				<para>Set <varname>hasz</varname> to true to store Z coordinates.
+				It defaults to false. Connectivity is determined in XY.
+				Edges that cross in XY share a node at the crossing even when
+				their Z coordinates differ.</para>
 
                 <para><varname>topoid</varname> optional explicit identifier (allows deterministic topology id assignment, needs to be unique)</para>
 
@@ -1556,6 +1589,25 @@ ANALYZE themselves, to use updated statistics.
 				<para>Create a topology for Rhode Island called <varname>ri_topo</varname> in spatial reference system State Plane-feet (SRID = 3438)</para>
 <programlisting>SELECT topology.CreateTopology('ri_topo', 3438) AS topoid;</programlisting>
 <screen>2</screen>
+				<para>Add two lines that cross in XY at different heights.
+				The topology has one node at the crossing.</para>
+				<programlisting language="sql">BEGIN;
+DO $$
+BEGIN
+  PERFORM topology.CreateTopology('crossing_demo', 0, 0, true);
+  PERFORM topology.TopoGeo_AddLineString(
+    'crossing_demo', 'LINESTRING Z (0 0 0,2 2 0)'::geometry
+  );
+  PERFORM topology.TopoGeo_AddLineString(
+    'crossing_demo', 'LINESTRING Z (0 2 10,2 0 10)'::geometry
+  );
+END;
+$$;
+SELECT count(*) AS crossing_nodes
+FROM crossing_demo.node
+WHERE ST_X(geom) = 1 AND ST_Y(geom) = 1;
+ROLLBACK;</programlisting>
+<screen>1</screen>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -1691,7 +1743,12 @@ Adds a collection of geometries to a given empty topology and returns a message 
 Adds a collection of geometries to a given empty topology and returns a message detailing success.
                 </para>
 
-				<para>Useful for populating an empty topology.</para>
+				<para>The input is loaded as nodes, edges and faces. To associate
+                existing primitives with a feature row, register its layer with
+                <xref linkend="AddTopoGeometryColumn"/> and use
+                <xref linkend="CreateTopoGeom"/> to create the feature's
+                <varname>TopoGeometry</varname>. Use <xref linkend="toTopoGeom"/>
+                to load individual feature geometries into a registered layer.</para>
 
 
                 <!-- use this format if new function -->
@@ -1723,6 +1780,39 @@ ST_GeomFromText(
 <programlisting>CREATE TABLE ri.roads(gid serial PRIMARY KEY, road_name text);
 
 SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');</programlisting>
+
+        <para>Populate primitives, then associate an existing edge with a road feature.</para>
+<programlisting language="sql"><![CDATA[BEGIN;
+CREATE TEMP TABLE doc_roads (id integer);
+DO $$
+BEGIN
+  PERFORM topology.CreateTopology('doc_road_topo', 3857);
+  PERFORM topology.ST_CreateTopoGeo('doc_road_topo',
+    'SRID=3857;MULTILINESTRING((0 0,10 0))'::geometry);
+  PERFORM topology.AddTopoGeometryColumn('doc_road_topo',
+    pg_my_temp_schema()::regnamespace::text, 'doc_roads', 'topo', 'LINE');
+END;
+$$;
+SELECT (SELECT count(*) FROM doc_road_topo.edge_data) AS edges,
+       (SELECT count(*) FROM doc_road_topo.relation) AS feature_elements;
+
+INSERT INTO doc_roads
+SELECT 1, topology.CreateTopoGeom('doc_road_topo', 2, layer_id,
+                                 '{{1,2}}'::topology.TopoElementArray)
+FROM topology.layer
+WHERE topology_id = topology.GetTopologyID('doc_road_topo')
+  AND table_name = 'doc_roads';
+SELECT id, ST_AsText(topo::geometry) AS road FROM doc_roads;
+ROLLBACK;]]></programlisting>
+<screen> edges | feature_elements
+-------+------------------
+     1 |                0
+(1 row)
+
+ id |            road
+----+-----------------------------
+  1 | MULTILINESTRING((0 0,10 0))
+(1 row)</screen>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -1770,6 +1860,31 @@ An existing edge may be split by the snapped point.
                 <para role="availability" conformance="2.0.0">Availability: 2.0.0</para>
 			</refsection>
 
+			<refsection>
+				<title>Examples</title>
+				<para>Add a point near an edge using a tolerance. The point snaps
+				to the edge and splits it at the snapped location.</para>
+<programlisting language="sql">BEGIN;
+DO $$
+BEGIN
+  PERFORM topology.CreateTopology('split_demo');
+  PERFORM topology.TopoGeo_AddLineString(
+    'split_demo', 'LINESTRING(0 0,10 0)'::geometry
+  );
+  PERFORM topology.TopoGeo_AddPoint('split_demo', 'POINT(4 0.001)'::geometry, 0.01);
+END;
+$$;
+SELECT edge_id, ST_AsText(geom) AS geom
+FROM split_demo.edge_data
+ORDER BY edge_id;
+DO $$ BEGIN PERFORM topology.DropTopology('split_demo'); END $$;
+COMMIT;</programlisting>
+<screen> edge_id |         geom
+---------+----------------------
+       1 | LINESTRING(0 0,4 0)
+       2 | LINESTRING(4 0,10 0)
+(2 rows)</screen>
+			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
@@ -1779,6 +1894,8 @@ An existing edge may be split by the snapped point.
 <xref linkend="TopoGeo_AddPolygon"/>,
 <xref linkend="TopoGeo_LoadGeometry"/>,
 <xref linkend="AddNode"/>,
+<xref linkend="ST_ModEdgeSplit"/>,
+<xref linkend="ST_NewEdgesSplit"/>,
 <xref linkend="CreateTopology"/>
 </para>
 			</refsection>
@@ -2354,6 +2471,11 @@ Changes the shape of an edge without affecting the topology structure.
                 <para>
 Changes the shape of an edge without affecting the topology structure.
 		</para>
+
+                <para>The new line must start at the existing start node and end at
+                the existing end node. Change the positions of interior vertices
+                to reshape the edge. Use <xref linkend="ST_MoveIsoNode"/> to move an
+                isolated node. There is no function to move a connected node.</para>
                 <para>
 If any arguments are null, the given edge does not exist in
 the <varname>edge</varname> table of the topology schema, the
@@ -2391,6 +2513,22 @@ isolated nodes in that face. The new curve must still avoid those nodes.
             26986)
 );</programlisting>
 <screen>Edge 1 changed</screen>
+
+                <para>Reshape an isolated edge while keeping both endpoints in place.</para>
+<programlisting language="sql"><![CDATA[BEGIN;
+DO $$
+BEGIN
+  PERFORM topology.CreateTopology('doc_edge_edit', 3857);
+  PERFORM topology.ST_AddIsoNode('doc_edge_edit', 0, 'SRID=3857;POINT(0 0)');
+  PERFORM topology.ST_AddIsoNode('doc_edge_edit', 0, 'SRID=3857;POINT(10 0)');
+  PERFORM topology.ST_AddIsoEdge('doc_edge_edit', 1, 2, 'SRID=3857;LINESTRING(0 0,10 0)');
+END;
+$$;
+SELECT topology.ST_ChangeEdgeGeom('doc_edge_edit', 1,
+           'SRID=3857;LINESTRING(0 0,5 2,10 0)') AS result;
+ROLLBACK;]]></programlisting>
+<screen>Edge 1 changed</screen>
+
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
@@ -2428,7 +2566,14 @@ Split an edge by creating a new node along an existing edge,
 modifying the original edge and adding a new edge.
 Updates all existing joined edges and relationships accordingly.
 Returns the identifier of the newly added node.
-		</para>
+				</para>
+				<para>The point must be in the interior of the specified edge.
+				A nearby point can raise <literal>SQL/MM Spatial exception - point not on edge</literal>,
+				even when it was computed with <xref linkend="ST_ClosestPoint"/>.
+				To load a nearby point feature into a registered layer, use
+				<xref linkend="toTopoGeom"/> with a tolerance. Snapping can move
+				the edge so that it collides with another edge, for example near
+				a node where two nearly parallel edges meet.</para>
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="1.1">Availability: 1.1 </para>
@@ -2452,6 +2597,7 @@ Returns the identifier of the newly added node.
 				<title>See Also</title>
 				<para>
 				<xref linkend="ST_NewEdgesSplit"/>,
+				<xref linkend="toTopoGeom"/>,
 				<xref linkend="ST_ModEdgeHeal"/>,
 				<xref linkend="ST_NewEdgeHeal"/>,
 				<xref linkend="AddEdge"/>
@@ -2644,6 +2790,11 @@ Updates all existing joined edges and relationships accordingly.
 
                 <para>If the spatial reference system (srid) of the point geometry is not the same as the topology, the <varname>apoint</varname> is not a point geometry, the point is null, the point already exists as a node, the edge does not correspond to an existing edge or the point is not within the edge then an exception is thrown.</para>
 
+
+				<para>To load a nearby point feature into a registered layer, use
+				<xref linkend="toTopoGeom"/> with a tolerance. Snapping can move
+				the edge so that it collides with another edge, for example near
+				a node where two nearly parallel edges meet.</para>
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="1.1">Availability: 1.1 </para>
@@ -3195,6 +3346,11 @@ FROM topology.ST_GetFaceEdges('tt', 1) As t(seq, edge)
                 <title>Description</title>
 
                 <para>Returns the polygon in the given topology with the specified face id. Builds the polygon from the edges making up the face.</para>
+
+                <para>To associate existing faces with a row in a feature table,
+                register the feature column with <xref linkend="AddTopoGeometryColumn"/>
+                and use the face identifiers to build the feature with
+                <xref linkend="CreateTopoGeom"/>.</para>
 
 
                 <!-- use this format if new function -->
