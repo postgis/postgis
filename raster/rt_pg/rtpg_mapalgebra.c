@@ -3256,15 +3256,15 @@ RASTER_union_finalfn(PG_FUNCTION_ARGS)
 				continue;
 		}
 
-		/* first band, _rtn doesn't exist */
-		if (i < 1)
+		/* The first available band creates the result raster. */
+		if (_rtn == NULL)
 		{
 			uint32_t bandNums[1] = {0};
 			_rtn = rt_raster_from_band(_raster, bandNums, 1);
 			status = (_rtn == NULL) ? -1 : 0;
 		}
 		else
-			status = rt_raster_copy_band(_rtn, _raster, 0, i);
+			status = rt_raster_copy_band(_rtn, _raster, 0, rt_raster_get_num_bands(_rtn));
 
 		POSTGIS_RT_DEBUG(4, "destroying source rasters");
 
