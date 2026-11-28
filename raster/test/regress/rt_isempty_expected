@@ -1,1 +1,7 @@
 f
+0|65535
+65535|0
+ERROR:  rt_raster_new: Dimensions requested exceed the maximum (65535 x 65535) permitted for a raster
+ERROR:  rt_raster_new: Dimensions requested exceed the maximum (65535 x 65535) permitted for a raster
+ERROR:  rt_raster_new: Dimensions requested exceed the maximum (65535 x 65535) permitted for a raster
+ERROR:  rt_raster_new: Dimensions requested exceed the maximum (65535 x 65535) permitted for a raster

@@ -31,3 +31,15 @@ VALUES (1, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
 select st_isempty(rast) from empty_raster_test;
 
 DROP TABLE empty_raster_test;
+
+-- Check that valid dimension limits survive construction.
+SELECT ST_Width(rast), ST_Height(rast)
+FROM (VALUES (0, 65535), (65535, 0)) AS dims(width, height)
+CROSS JOIN LATERAL ST_MakeEmptyRaster(width, height, 0, 0, 1) AS rast
+ORDER BY width;
+
+-- Each out-of-range axis must raise the constructor's dimension error.
+SELECT format('SELECT ST_MakeEmptyRaster(%s, %s, 0, 0, 1)', width, height)
+FROM (VALUES (-1, 1), (1, -1), (65536, 1), (1, 65536)) AS dims(width, height)
+ORDER BY width, height
+\gexec

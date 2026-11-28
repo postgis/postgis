@@ -56,7 +56,7 @@ PG_FUNCTION_INFO_V1(RASTER_makeEmpty);
 Datum
 RASTER_makeEmpty(PG_FUNCTION_ARGS)
 {
-	uint16 width = 0, height = 0;
+	int32_t width = 0, height = 0;
 	double ipx = 0, ipy = 0, scalex = 0, scaley = 0, skewx = 0, skewy = 0;
 	int32_t srid = SRID_UNKNOWN;
 	rt_pgraster *pgraster = NULL;
@@ -69,10 +69,10 @@ RASTER_makeEmpty(PG_FUNCTION_ARGS)
 	}
 
 	if (!PG_ARGISNULL(0))
-		width = PG_GETARG_UINT16(0);
+		width = PG_GETARG_INT32(0);
 
 	if (!PG_ARGISNULL(1))
-		height = PG_GETARG_UINT16(1);
+		height = PG_GETARG_INT32(1);
 
 	if (!PG_ARGISNULL(2))
 		ipx = PG_GETARG_FLOAT8(2);
@@ -107,6 +107,7 @@ RASTER_makeEmpty(PG_FUNCTION_ARGS)
 			  skewy,
 			  srid);
 
+	/* Negative int4 values convert to uint32_t values above the raster limit. */
 	raster = rt_raster_new(width, height);
 	if (raster == NULL)
 		PG_RETURN_NULL(); /* error was supposedly printed already */
