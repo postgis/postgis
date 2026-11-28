@@ -41,6 +41,12 @@
 		  uses the desired <link linkend="ST_Distance">distance</link> (<varname>eps</varname>) and density (<varname>minpoints</varname>) parameters to determine each cluster.
 	  </para>
 
+      <para>The distance parameter <varname>eps</varname> uses the
+      coordinate units of the input geometry. To cluster longitude/latitude
+      data in meters, transform the input to a suitable metric projection
+      inside the window function. The original geometry can still be
+      selected for output.</para>
+
 	  <para>
 		  An input geometry is added to a cluster if it is either:
 		  <itemizedlist>
@@ -112,6 +118,28 @@ SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS ids_in_clu
     FROM parcels) sq
 GROUP BY cid;
     </programlisting>
+
+        <para>Cluster in meters and return the original longitude/latitude geometries.</para>
+        <programlisting language="sql">WITH input(id, geom) AS (
+    VALUES (10, ST_Point(0, 0, 4326)),
+           (20, ST_Point(0.001, 0, 4326)),
+           (30, ST_Point(0.01, 0, 4326))
+), clustered AS (
+    SELECT id, geom,
+           ST_ClusterDBSCAN(ST_Transform(geom, 32631), 150, 2)
+               OVER (ORDER BY id) AS cid
+    FROM input
+)
+SELECT id, ST_SRID(geom) AS output_srid, cid
+FROM clustered
+ORDER BY id;</programlisting>
+<screen role="text-primary"> id | output_srid | cid
+----+-------------+-----
+ 10 |        4326 |   0
+ 20 |        4326 |   0
+ 30 |        4326 |
+(3 rows)
+</screen>
     </refsection>
 
     <refsection>
@@ -148,9 +176,12 @@ GROUP BY cid;
 
         <para>An aggregate function that returns an array of GeometryCollections
         partitioning the input geometries into connected clusters that are disjoint.
-        Each geometry in a cluster intersects at least one other geometry in the cluster,
-        and does not intersect any geometry in other clusters.
+        Members of a cluster are connected by intersections, including
+        through other members. A geometry that does not intersect any
+        other input forms a one-member cluster.
         </para>
+        <para>Use <xref linkend="ST_ClusterIntersectingWin"/> to assign
+        a cluster ID to each row and aggregate other columns by that ID.</para>
 
         <para role="availability" conformance="2.2.0">Availability: 2.2.0</para>
       </refsection>
@@ -234,6 +265,26 @@ ORDER BY id;</programlisting>
   3 | LINESTRING(6 6,7 7)            |   1
   4 | LINESTRING(0 0,-1 -1)          |   0
   5 | POLYGON((0 0,4 0,4 4,0 4,0 0)) |   0</screen>
+
+        <para>Group source row IDs by their assigned cluster.</para>
+        <programlisting language="sql">WITH input(id, geom) AS (
+    VALUES (10, 'LINESTRING(0 0,1 0)'::geometry),
+           (20, 'LINESTRING(1 0,2 0)'::geometry),
+           (30, 'POINT(10 0)'::geometry)
+), clustered AS (
+    SELECT id, ST_ClusterIntersectingWin(geom) OVER () AS cid
+    FROM input
+)
+SELECT array_agg(id ORDER BY id) AS member_ids
+FROM clustered
+GROUP BY cid
+ORDER BY min(id);</programlisting>
+<screen role="text-primary"> member_ids
+------------
+ {10,20}
+ {30}
+(2 rows)
+</screen>
       </refsection>
       <refsection>
         <title>See Also</title>
