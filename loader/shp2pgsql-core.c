@@ -354,7 +354,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	FLAGS_SET_Z(dims, state->has_z);
 	FLAGS_SET_M(dims, state->has_m);
 
-	if (state->config->simple_geometries == 1 && obj->nParts > 1)
+	if (state->config->simple_geometries == 1 && obj->nParts != 1)
 	{
 		snprintf(state->message,
 			 SHPLOADERMSGLEN,
