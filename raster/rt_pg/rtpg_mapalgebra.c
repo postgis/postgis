@@ -3703,7 +3703,8 @@ RASTER_clip(PG_FUNCTION_ARGS)
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &k);
 
 		/* it doesn't matter if there are more nodataval */
-		for (int32_t i = 0, j = 0; i < arg->numbands; i++, j++)
+		/* an empty array has no element to cap j to, so skip the loop */
+		for (int32_t i = 0, j = 0; k > 0 && i < arg->numbands; i++, j++)
 		{
 			/* cap j to the last nodataval element */
 			if (j >= k)
