@@ -30,6 +30,7 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #4502, GT-892, GH-1045, Make ST_SameAlignment symmetric (Darafei Praliaskouski)
  - GT-937, ST_AsMVT encodes empty points without extra geometry commands
    (reported by Aleksander Alekseev / Tiger Data; fixed by Aleksander Alekseev / Tiger Data,
     Darafei Praliaskouski)
