@@ -1795,6 +1795,8 @@ FROM ST_GeometryN(
   'GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1),POINT(2 2))'::geometry,
   ARRAY[2,1,2,4,NULL]::integer[]
 ) WITH ORDINALITY AS t(g, ord);
+SELECT '#926.geom.min', g IS NULL
+FROM ST_GeometryN('MULTIPOINT((0 0),(1 1))'::geometry, ARRAY[-2147483648]::integer[]) AS t(g);
 SELECT '#926.geom.repeat', ord, ST_AsText(g)
 FROM ST_GeometryN(
   'GEOMETRYCOLLECTION(POLYGON((0 0,1 0,1 1,0 0)),POLYGON((2 2,3 2,3 3,2 2)))'::geometry,

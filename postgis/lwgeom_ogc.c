@@ -424,10 +424,10 @@ lwgeom_extract_geometry_n(LWGEOM *lwgeom, int32 idx, bool patches_as_geometries)
 	if (!coll)
 		return NULL;
 
-	/* Handle out-of-range index value */
-	idx -= 1;
-	if (idx < 0 || idx >= (int32)coll->ngeoms)
+	/* Handle out-of-range index value before converting to zero-based. */
+	if (idx < 1 || (uint32_t)idx > coll->ngeoms)
 		return NULL;
+	idx -= 1;
 
 	subgeom = coll->geoms[idx];
 	return subgeom;

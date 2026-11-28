@@ -539,6 +539,7 @@ public|test5978|shape|2|4326|POINT
 #926.geom|3|LINESTRING(0 0,1 1)
 #926.geom|4|
 #926.geom|5|
+#926.geom.min|t
 #926.geom.repeat|1|POLYGON((2 2,3 2,3 3,2 2))
 #926.geom.repeat|2|POLYGON((2 2,3 2,3 3,2 2))
 #926.point|1|POINT(0 0)
