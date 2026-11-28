@@ -337,3 +337,11 @@ SELECT
 	'#5782',
 	ST_Distance(a,q) < ST_Distance(b,q)
 FROM inp;
+
+CREATE TEMP TABLE spheroid_names AS
+SELECT id, format('SPHEROID["%s",6378137,298.257222101]', name)::spheroid AS s
+FROM (VALUES (1, 'GRS_1980'),
+             (2, 'ABCDEFGHIJKLMNOPQRS'),
+             (3, 'ABCDEFGHIJKLMNOPé')) AS names(id, name);
+SELECT 'spheroid_name', id, s::text FROM spheroid_names ORDER BY id;
+DROP TABLE spheroid_names;
