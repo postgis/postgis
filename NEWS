@@ -37,6 +37,8 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #3508, GT-388, [topology] Allow isolated edge motion in the universal face
+   (reported by Sandro Santilli; fixed by Darafei Praliaskouski)
  - GT-985, [raster] Reject NaN quantile inputs
    (Aleksander Alekseev / Tiger Data, Darafei Praliaskouski)
  - GT-980, GT-266, [topology] Fix compiler warnings for 64-bit IDs

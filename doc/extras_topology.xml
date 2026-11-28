@@ -2365,7 +2365,8 @@ change the underlying topology then an error is thrown.
 
                 <para>
 If moving the edge from old to new position would hit an obstacle then
-an error is thrown.
+an error is thrown. An isolated edge in the universal face may sweep over
+isolated nodes in that face. The new curve must still avoid those nodes.
 		</para>
 
                 <!-- use this format if new function -->
