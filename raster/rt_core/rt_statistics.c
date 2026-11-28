@@ -549,7 +549,8 @@ rt_band_get_histogram(
 	else
 		tmp = qmax;
 	for (i = 0; i < bin_count;) {
-		for (j = 0; j < bin_width_count && i < bin_count; j++) {
+		for (j = 0; j < bin_width_count && i < bin_count; j++)
+		{
 			bins[i].count = 0;
 			bins->percent = -1;
 

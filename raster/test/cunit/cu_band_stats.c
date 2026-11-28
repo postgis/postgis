@@ -237,6 +237,7 @@ test_histogram_bin_initialization_bounds(void)
 	cu_free_raster(raster);
 }
 
+static void
 test_band_stats_small_sample_wide_raster(void)
 {
 	rt_raster raster = rt_raster_new(10, 1);
