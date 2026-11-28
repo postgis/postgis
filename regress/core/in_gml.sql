@@ -645,7 +645,10 @@ SELECT 'collection_14', ST_SRID(g.g), ST_AsText(g.g, 8) FROM g;
 -- Supported srsName patterns
 SELECT 'srs_1', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_2', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:EPSG:geographicCRS:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+BEGIN;
+CREATE TEMP TABLE spatial_ref_sys (srid integer);
 SELECT 'srs_3', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
+ROLLBACK;
 SELECT 'srs_4', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
 SELECT 'srs_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:x-ogc:def:crs:EPSG:6.6:4326"><gml:pos>1 2</gml:pos></gml:Point>'));
