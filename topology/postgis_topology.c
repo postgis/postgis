@@ -5356,6 +5356,8 @@ TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
 
 	if (SRF_IS_FIRSTCALL())
 	{
+		bool automatic;
+
 		POSTGIS_DEBUG(1, "TopoGeo_AddLinestring first call");
 		funcctx = SRF_FIRSTCALL_INIT();
 		newcontext = funcctx->multi_call_memory_ctx;
@@ -5433,7 +5435,8 @@ TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
 		}
 
 		POSTGIS_DEBUG(1, "Calling lwt_AddLine");
-		elems = lwt_AddLine(topo, ln, tol, &nelems, max_new_edges);
+		automatic = tol == -1 || (PG_NARGS() > 4 && !PG_ARGISNULL(4) && PG_GETARG_BOOL(4));
+		elems = lwt_AddLineWithSnap(topo, ln, tol, &nelems, max_new_edges, automatic);
 		POSTGIS_DEBUG(1, "lwt_AddLine returned");
 		lwgeom_free(lwgeom);
 		PG_FREE_IF_COPY(geom, 1);
@@ -5586,6 +5589,8 @@ TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
 
 	if (SRF_IS_FIRSTCALL())
 	{
+		bool automatic;
+
 		POSTGIS_DEBUG(1, "TopoGeo_AddPolygon first call");
 		funcctx = SRF_FIRSTCALL_INIT();
 		newcontext = funcctx->multi_call_memory_ctx;
@@ -5649,7 +5654,8 @@ TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
 		}
 
 		POSTGIS_DEBUG(1, "Calling lwt_AddPolygon");
-		elems = lwt_AddPolygon(topo, pol, tol, &nelems);
+		automatic = tol == -1 || (PG_NARGS() > 3 && !PG_ARGISNULL(3) && PG_GETARG_BOOL(3));
+		elems = lwt_AddPolygonWithSnap(topo, pol, tol, &nelems, automatic);
 		POSTGIS_DEBUG(1, "lwt_AddPolygon returned");
 		lwgeom_free(lwgeom);
 		PG_FREE_IF_COPY(geom, 1);

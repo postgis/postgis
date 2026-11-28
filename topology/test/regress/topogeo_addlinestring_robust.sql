@@ -183,6 +183,29 @@ SELECT * FROM runTest('#5711',
 
 DROP FUNCTION runTest(text, geometry[], geometry, float8, bool);
 
+-- Ticket #5886: a near miss on the second line must not let a later
+-- node insertion move the first edge past it.
+DO $$
+DECLARE
+  prec float8;
+  tol float8;
+  last_line geometry := 'LINESTRING(22.780038556871617 70.7049816061492, 22.789676156871618 70.7072799361492)';
+BEGIN
+  FOR prec, tol IN SELECT * FROM (VALUES (0.0, -1.0), (0.0, 0.0), (0.0000001, -1.0)) AS cases LOOP
+    PERFORM topology.CreateTopology('t5886', 0, prec);
+    PERFORM topology.TopoGeo_AddLineString('t5886',
+      'LINESTRING(22.780107846871616 70.70515928614921, 22.779899976871615 70.7046262461492)');
+    PERFORM topology.TopoGeo_AddLineString('t5886',
+      'LINESTRING(22.79217056687162 70.70247684614921, 22.779969266871618 70.70480392614921, 22.780038556871617 70.7049816061492, 22.796764346871615 70.7044482361492)');
+    PERFORM topology.TopoGeo_AddLineString('t5886', last_line, tol);
+    IF EXISTS (SELECT FROM topology.ValidateTopology('t5886')) THEN
+      RAISE EXCEPTION '#5886: invalid topology at precision % and tolerance %', prec, tol;
+    END IF;
+    PERFORM topology.DropTopology('t5886');
+  END LOOP;
+END
+$$;
+
 -- Ticket #5859: insert a ring that partly follows an existing edge.
 DO $$
 BEGIN

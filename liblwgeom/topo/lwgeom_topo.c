@@ -6049,7 +6049,13 @@ _lwt_SnapEdgeToExistingNode(LWT_TOPOLOGY *topo,
 	LWDEBUGF(1, "Experimental handling of within-tolerance edge %" LWTFMT_ELEMID, edge->edge_id);
 	LWGEOM *snapE = lwgeom_snap(lwline_as_lwgeom(edge->geom), prj, tol);
 
-	/* TODO: check if an endpoint moved */
+	/* A snap to an endpoint cannot split the edge or move its existing node. */
+	const POINTARRAY *points = lwgeom_as_lwline(snapE)->points;
+	if (p2d_same(pt, getPoint2d_cp(points, 0)) || p2d_same(pt, getPoint2d_cp(points, points->npoints - 1)))
+	{
+		lwgeom_free(snapE);
+		return 0;
+	}
 
 	LWGEOM *splitE = lwgeom_split(snapE, prj);
 	LWDEBUGG(1, splitE, "Split edge");
@@ -8198,8 +8204,76 @@ _lwt_overlay_split_points(const LWGEOM *xset)
 	return lwcollection_as_lwgeom(points);
 }
 
+/*
+ * GEOS Snap uses target vertices. Project remaining vertices to nearby
+ * edge interiors before overlay, so a later node insertion need not bend
+ * an existing edge past them (#5886).
+ */
+static void
+_lwt_snap_line_vertices_to_edges(LWGEOM *line, LWGEOM **nearby, uint64_t numedges, uint64_t numnearby, double tol)
+{
+	LWPOINTITERATOR *it = lwpointiterator_create_rw(line);
+	POINT4D point;
+
+	while (lwpointiterator_peek(it, &point) == LW_SUCCESS)
+	{
+		const POINT2D xy = {point.x, point.y};
+		POINT4D closest = point;
+		double best = tol;
+
+		/* Keep target vertices, including isolated nodes, ahead of interiors. */
+		for (uint64_t i = 0; i < numnearby; i++)
+		{
+			double distance;
+			if (i < numedges)
+				ptarray_closest_vertex_2d(lwgeom_as_lwline(nearby[i])->points, &xy, &distance);
+			else
+				distance = distance2d_pt_pt(&xy, getPoint2d_cp(lwgeom_as_lwpoint(nearby[i])->point, 0));
+			if (distance < tol)
+			{
+				best = 0;
+				break;
+			}
+		}
+
+		for (uint64_t i = 0; i < numedges && best; i++)
+		{
+			const POINTARRAY *points = lwgeom_as_lwline(nearby[i])->points;
+			double distance;
+			int segment = ptarray_closest_segment_2d(points, &xy, &distance);
+			if (distance >= best)
+				continue;
+
+			best = distance;
+			/* An exact intersection already belongs to the overlay. */
+			if (!best)
+			{
+				closest = point;
+				break;
+			}
+
+			POINT4D a, b, projected;
+			getPoint4d_p(points, segment, &a);
+			getPoint4d_p(points, segment + 1, &b);
+			closest_point_on_segment(&point, &a, &b, &projected);
+			closest.x = projected.x;
+			closest.y = projected.y;
+		}
+
+		lwpointiterator_modify_next(it, &closest);
+	}
+
+	lwpointiterator_destroy(it);
+}
+
 static LWT_ELEMID *
-_lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int handleFaceSplit, int maxNewEdges)
+_lwt_AddLine(LWT_TOPOLOGY *topo,
+	     LWLINE *line,
+	     double tol,
+	     int *nedges,
+	     int handleFaceSplit,
+	     int maxNewEdges,
+	     bool automatic)
 {
 	LWGEOM *geomsbuf[1];
 	LWGEOM **geoms;
@@ -8407,6 +8481,10 @@ _lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int hand
 			lwgeom_free(noded);
 			noded = tmp;
 			LWDEBUGG(1, noded, "Elements-snapped");
+
+			/* Run after GEOS Snap to avoid dragging projections to endpoints. */
+			if (automatic && tol && nearbyedgecount)
+				_lwt_snap_line_vertices_to_edges(noded, nearby, nearbyedgecount, nearbycount, tol);
 			if (input_was_closed)
 			{
 				{
@@ -8706,34 +8784,34 @@ _lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int hand
 
 LWT_ELEMID *
 lwt_AddLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int max_new_edges)
-{
-	return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges);
-}
+{ return lwt_AddLineWithSnap(topo, line, tol, nedges, max_new_edges, tol == -1); }
+
+LWT_ELEMID *
+lwt_AddLineWithSnap(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges, int max_new_edges, bool automatic)
+{ return _lwt_AddLine(topo, line, tol, nedges, 1, max_new_edges, automatic); }
 
 LWT_ELEMID *
 lwt_AddLineNoFace(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int *nedges)
-{
-	return _lwt_AddLine(topo, line, tol, nedges, 0, -1);
-}
+{ return _lwt_AddLine(topo, line, tol, nedges, 0, -1, tol == -1); }
 
 static void
 lwt_LoadPoint(LWT_TOPOLOGY *topo, LWPOINT *point, double tol)
 { lwt_AddPoint(topo, point, tol); }
 
 static void
-lwt_LoadLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, int max_new_edges)
+lwt_LoadLine(LWT_TOPOLOGY *topo, LWLINE *line, double tol, bool automatic)
 {
 	LWT_ELEMID *ids;
 	int nedges;
 
 	/* TODO: avoid allocating edge ids */
-	ids = lwt_AddLine(topo, line, tol, &nedges, max_new_edges);
+	ids = lwt_AddLineWithSnap(topo, line, tol, &nedges, -1, automatic);
 	if (nedges > 0)
 		lwfree(ids);
 }
 
 static void
-lwt_LoadPolygon(LWT_TOPOLOGY *topo, const LWPOLY *poly, double tol)
+lwt_LoadPolygon(LWT_TOPOLOGY *topo, const LWPOLY *poly, double tol, bool automatic)
 {
 	uint32_t i;
 
@@ -8746,13 +8824,17 @@ lwt_LoadPolygon(LWT_TOPOLOGY *topo, const LWPOLY *poly, double tol)
 		/* TODO: avoid the clone here */
 		pa = ptarray_clone(poly->rings[i]);
 		line = lwline_construct(topo->srid, NULL, pa);
-		lwt_LoadLine(topo, line, tol, -1);
+		lwt_LoadLine(topo, line, tol, automatic);
 		lwline_free(line);
 	}
 }
 
 LWT_ELEMID *
 lwt_AddPolygon(LWT_TOPOLOGY *topo, LWPOLY *poly, double tol, int *nfaces)
+{ return lwt_AddPolygonWithSnap(topo, poly, tol, nfaces, tol == -1); }
+
+LWT_ELEMID *
+lwt_AddPolygonWithSnap(LWT_TOPOLOGY *topo, LWPOLY *poly, double tol, int *nfaces, bool automatic)
 {
 	*nfaces = -1; /* error condition, by default */
 	int num;
@@ -8776,7 +8858,7 @@ lwt_AddPolygon(LWT_TOPOLOGY *topo, LWPOLY *poly, double tol, int *nfaces)
 		tol = _LWT_MINTOLERANCE(topo, (LWGEOM *)poly);
 	LWDEBUGF(1, "Working tolerance:%.15g", tol);
 
-	lwt_LoadPolygon(topo, poly, tol);
+	lwt_LoadPolygon(topo, poly, tol, automatic);
 
 	/*
 	-- Find faces covered by input polygon
@@ -9256,11 +9338,11 @@ _lwt_LoadGeometryRecursive(LWT_TOPOLOGY *topo, LWGEOM *geom, double tol)
 		return;
 
 	case LINETYPE:
-		lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol, -1);
+		lwt_LoadLine(topo, lwgeom_as_lwline(geom), tol, tol == -1);
 		return;
 
 	case POLYGONTYPE:
-		lwt_LoadPolygon(topo, lwgeom_as_lwpoly(geom), tol);
+		lwt_LoadPolygon(topo, lwgeom_as_lwpoly(geom), tol, tol == -1);
 		return;
 
 	case MULTILINETYPE:

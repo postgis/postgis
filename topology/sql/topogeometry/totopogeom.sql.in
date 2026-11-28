@@ -160,6 +160,7 @@ BEGIN
     RAISE EXCEPTION 'Tolerance must be -1 or >=0';
   END IF;
 
+  -- Keep the whole-input tolerance when inserting the dumped components.
   IF atolerance = -1 THEN
     tolerance := topology._st_mintolerance(topology_info.name, ageom);
   ELSE
@@ -252,10 +253,10 @@ BEGIN
               SELECT topology.topogeo_addPoint(atopology, rec.geom, tolerance)
                 WHERE rec.dims = 0
               UNION ALL
-              SELECT topology.topogeo_addLineString(atopology, rec.geom, tolerance)
+              SELECT topology._topogeo_addLineString(atopology, rec.geom, tolerance, -1, atolerance = -1)
                 WHERE rec.dims = 1
               UNION ALL
-              SELECT topology.topogeo_addPolygon(atopology, rec.geom, tolerance)
+              SELECT topology._topogeo_addPolygon(atopology, rec.geom, tolerance, atolerance = -1)
                 WHERE rec.dims = 2
             ) AS f(primitive)
     LOOP
