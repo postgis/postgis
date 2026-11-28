@@ -3,6 +3,7 @@
 #2532.2|
 NOTICE:  Raster has default geotransform. Adjusting metadata for use of GDAL Warp API
 #2911|0|0|5|5|2|-2|0|0|0|1
+#2800|BOX(-180 88.1568,-178.1568 90)|BOX(-180 87.6,-177.6 90)|BOX(-180 88.1568,-178.1568 90)|4|4
 t
 test_raster_scale_regular|rast||1
 ERROR:  new row for relation "test_raster_scale_regular" violates check constraint "enforce_scaley_rast"

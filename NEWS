@@ -82,6 +82,9 @@ PostGIS 3.8.0dev
           determinants (Waniya Badar)
  - GH-1194, [raster] Stop rejecting or silently zeroing small non-zero scales
           and skews in ST_Reskew and raster warping (Darafei Praliaskouski)
+ - #2800, GT-595, GH-1021, [raster] Preserve ST_Rescale extent (reported by Sandro Santilli; fixed by Darafei Praliaskouski)
+ - GT-595, [raster] Honor ST_CreateOverview resampling algorithm (Darafei Praliaskouski)
+ - GT-595, [raster] Preserve small nonzero warp scales (Darafei Praliaskouski)
 
 
 PostGIS 3.7.0rc3

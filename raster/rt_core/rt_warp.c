@@ -102,6 +102,31 @@ _rti_warp_arg_init()
 	return arg;
 }
 
+/*
+ * Use ceiling semantics so fractional output dimensions cover the source
+ * extent, but keep nearly integral dimensions rounded for compatibility.
+ */
+static int
+_rti_warp_ceil_dimension(double extent_size, double scale)
+{
+	double pixels;
+	double rounded;
+
+	if (scale == 0.0 || isnan(scale))
+	{
+		rterror("rt_raster_gdal_warp: Scale cannot be zero");
+		return 0;
+	}
+
+	pixels = fabs(extent_size) / scale;
+	rounded = floor(pixels + 0.5);
+
+	if (FLT_EQ(pixels, rounded))
+		return (int)fmax(rounded, 1);
+
+	return (int)fmax(ceil(pixels), 1);
+}
+
 static void
 _rti_warp_arg_destroy(_rti_warp_arg arg)
 {
@@ -198,6 +223,7 @@ rt_raster_gdal_warp(rt_raster raster,
 	rt_envelope extent;
 
 	int _dim[2] = {0};
+	int suggested_dim[2] = {0};
 	double _skew[2] = {0};
 	double _scale[2] = {0};
 	int ul_user = 0;
@@ -491,6 +517,8 @@ rt_raster_gdal_warp(rt_raster raster,
 		_rti_warp_arg_destroy(arg);
 		return NULL;
 	}
+	suggested_dim[0] = _dim[0];
+	suggested_dim[1] = _dim[1];
 	GDALDestroyGenImgProjTransformer(arg->transform.arg.transform);
 	arg->transform.arg.transform = NULL;
 
@@ -533,6 +561,15 @@ rt_raster_gdal_warp(rt_raster raster,
 			_scale[0] /= 10;
 			_scale[1] /= 10;
 		}
+		else if (src_srs == NULL || dst_srs == NULL || strcmp(src_srs, dst_srs) == 0)
+		{
+			if (rt_raster_get_envelope(raster, &extent) != ES_NONE)
+			{
+				rterror("rt_raster_gdal_warp: Could not get source raster envelope");
+				_rti_warp_arg_destroy(arg);
+				return NULL;
+			}
+		}
 	}
 	else if (((NULL != scale_x) && (NULL == scale_y)) || ((NULL == scale_x) && (NULL != scale_y)))
 	{
@@ -546,6 +583,12 @@ rt_raster_gdal_warp(rt_raster raster,
 	{
 		_scale[0] = fabs(_gt[1]);
 		_scale[1] = fabs(_gt[5]);
+		if (NULL != src_srs && NULL != dst_srs && strcmp(src_srs, dst_srs) != 0 && NULL == skew_x &&
+		    NULL == skew_y)
+		{
+			_dim[0] = suggested_dim[0];
+			_dim[1] = suggested_dim[1];
+		}
 	}
 
 	RASTER_DEBUGF(4, "rt_raster_gdal_warp: Using scale: %f x %f", _scale[0], -1 * _scale[1]);
@@ -601,9 +644,9 @@ rt_raster_gdal_warp(rt_raster raster,
 
 	/* dimensions not defined, compute from extent */
 	if (!_dim[0])
-		_dim[0] = (int)fmax((fabs(extent.MaxX - extent.MinX) + (_scale[0] / 2.)) / _scale[0], 1);
+		_dim[0] = _rti_warp_ceil_dimension(extent.MaxX - extent.MinX, _scale[0]);
 	if (!_dim[1])
-		_dim[1] = (int)fmax((fabs(extent.MaxY - extent.MinY) + (_scale[1] / 2.)) / _scale[1], 1);
+		_dim[1] = _rti_warp_ceil_dimension(extent.MaxY - extent.MinY, _scale[1]);
 
 	/* temporary raster */
 	rast = rt_raster_new(_dim[0], _dim[1]);

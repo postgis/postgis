@@ -286,6 +286,22 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $$;
 
+-- ST_CreateOverview must forward the requested resampling algorithm.
+CREATE TABLE overview_algo AS SELECT
+  :schema ST_SetValues(
+    :schema ST_AddBand(:schema ST_MakeEmptyRaster(4,4,0,4,1,-1,0,0,0),1,'32BF',0),
+    1,1,1,ARRAY[[0,0,0,0],[0,100,0,0],[0,0,0,0],[0,0,0,0]]::float8[][]
+  ) AS rast;
+SELECT :schema AddRasterConstraints('overview_algo','rast');
+SELECT :schema ST_CreateOverview('overview_algo','rast',2,'NearestNeighbour') IS NOT NULL;
+CREATE TEMP TABLE overview_nearest AS SELECT :schema ST_DumpValues(rast,1) AS v FROM o_2_overview_algo;
+DROP TABLE o_2_overview_algo;
+SELECT :schema ST_CreateOverview('overview_algo','rast',2,'Bilinear') IS NOT NULL;
+SELECT 'overview-algorithm', (SELECT v FROM overview_nearest) IS DISTINCT FROM
+  (SELECT :schema ST_DumpValues(rast,1) FROM o_2_overview_algo);
+DROP TABLE o_2_overview_algo;
+DROP TABLE overview_algo;
+
 -- Reset the session environment
 -- possibly a bit harsh, but we had to set the search_path
 -- and need to reset it back to default.

@@ -27,6 +27,24 @@ WITH data AS ( SELECT '#2911' l, ST_Metadata(ST_Rescale(
 ) SELECT l, (m).* FROM data;
 
 /******************************************************************************
+ #2800
+******************************************************************************/
+WITH src AS (
+	SELECT ST_AddBand(
+		ST_MakeEmptyRaster(256, 256, -180, 90, 0.0072, -0.0072, 0, 0, 4326),
+		1, '8BUI', 1, 0
+	) AS rast
+)
+SELECT
+	'#2800' AS l,
+	box2d(ST_Envelope(rast)) AS orig,
+	box2d(ST_Envelope(ST_Rescale(rast, 0.6, 0.6))) AS rescaled,
+	box2d(ST_Envelope(ST_Resize(rast, 0.0119999999999988, 0.0119999999999988))) AS resized,
+	(ST_Metadata(ST_Rescale(rast, 0.6, 0.6))).width AS rescale_w,
+	(ST_Metadata(ST_Rescale(rast, 0.6, 0.6))).height AS rescale_h
+FROM src;
+
+/******************************************************************************
  #3006
 ******************************************************************************/
 
