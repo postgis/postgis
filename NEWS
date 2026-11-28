@@ -41,6 +41,9 @@ PostGIS 3.8.0dev
 
 * Bug Fixes *
 
+ - #5895, GT-905, GH-908, [geography] Fix false zero distance from polygons
+   to far points (reported by Giovanni Cimolin da Silva;
+   fixed by Darafei Praliaskouski)
  - GT-1001, [upgrade] Fix spaces in postgis_restore paths
    (Darafei Praliaskouski)
  - #4122, GT-997, GH-1086, [geography] Keep _ST_Expand bounds through I/O
