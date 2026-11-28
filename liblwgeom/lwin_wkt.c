@@ -723,6 +723,18 @@ LWGEOM* wkt_parser_collection_new(LWGEOM *geom)
 		return NULL;
 	}
 
+	/*
+	 * The grammar nests one collection per level without going through
+	 * lwcollection_add_lwgeom(), so the depth limit has to be applied here
+	 * too.  Recursive readers and writers cannot walk deeper than this.
+	 */
+	if (lwgeom_depth_exceeds(geom, LW_PARSER_MAX_DEPTH - 1))
+	{
+		lwgeom_free(geom);
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
 	/* Create our geometry array */
 	geoms = lwalloc(sizeof(LWGEOM*) * ngeoms);
 	geoms[0] = geom;
@@ -844,6 +856,20 @@ LWGEOM* wkt_parser_collection_add_geom(LWGEOM *col, LWGEOM *geom)
 	/* Toss error on null geometry input */
 	if( ! (geom && col) )
 	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+
+	/*
+	 * lwcollection_add_lwgeom() enforces the same limit, but it reports it
+	 * with lwerror(), which longjmps straight out of wkt_yyparse() and
+	 * leaks the Bison stack.  Catch it here instead and let the parser
+	 * unwind through its own error path.
+	 */
+	if (lwgeom_depth_exceeds(geom, LW_PARSER_MAX_DEPTH - 1))
+	{
+		lwgeom_free(col);
+		lwgeom_free(geom);
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
 		return NULL;
 	}
