@@ -557,6 +557,27 @@ test_lwline_interpolate_points(void)
 	CU_ASSERT_FALSE(ptarray_has_m(rpa));
 	ptarray_free(rpa);
 
+	LWLINE *stationary =
+	    lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING ZM (1 2 3 4, 1 2 5 6)", LW_PARSER_CHECK_NONE));
+	const struct {
+		char repeat;
+		uint32_t count;
+	} cases[] = {{LW_FALSE, 1}, {LW_TRUE, 4}};
+
+	pta = getPoint4d(stationary->points, 1);
+	for (uint32_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
+	{
+		rpa = lwline_interpolate_points(stationary, 0.25, cases[i].repeat);
+		CU_ASSERT_EQUAL_FATAL(rpa->npoints, cases[i].count);
+		for (uint32_t j = 0; j < rpa->npoints; j++)
+		{
+			ptb = getPoint4d(rpa, j);
+			ASSERT_POINT4D_EQUAL(pta, ptb, eps);
+		}
+		ptarray_free(rpa);
+	}
+	lwline_free(stationary);
+
 	lwgeom_free(lwline_as_lwgeom(line));
 	lwgeom_free(lwline_as_lwgeom(line2d));
 	lwgeom_free(lwline_as_lwgeom(empty_line));

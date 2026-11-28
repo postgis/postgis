@@ -91,3 +91,10 @@ SELECT 'cpaw4', ST_CPAWithin(
 SELECT 'cpaw_invalid', ST_CPAWithin(
        'LINESTRING(0 0 0, 1 0 0)'::geometry
       ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry, 1e16);
+
+WITH inp AS (
+  SELECT 'LINESTRINGM(0 0 NaN, 1 0 NaN)'::geometry AS g1,
+         'LINESTRINGM(0 1 NaN, 1 1 NaN)'::geometry AS g2
+)
+SELECT 'cpa_nan', ST_ClosestPointOfApproach(g1, g2), ST_CPAWithin(g1, g2, 1)
+FROM inp;
