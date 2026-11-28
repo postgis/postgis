@@ -34,6 +34,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/azimuth \
 	$(top_srcdir)/regress/core/bestsrid \
 	$(top_srcdir)/regress/core/binary \
+	$(top_srcdir)/regress/core/cache_bbox_type \
 	$(top_srcdir)/regress/core/boundary \
 	$(top_srcdir)/regress/core/box2d \
 	$(top_srcdir)/regress/core/catmullrom \
