@@ -90,7 +90,7 @@ FROM (
 ) AS subquery;</programlisting>
 	<screen role="text-primary"> sqft_spheroid | sqft_sphere | sqm_spheroid
 ----------------+-------------+--------------
-         928.68 |      926.61 |        86.28</screen>
+         928.68 |      927.19 |        86.28</screen>
 
  <para>If your data is in geography already:</para>
 	 <programlisting language="sql">SELECT ST_Area(geog) / 0.3048 ^ 2 AS sqft,

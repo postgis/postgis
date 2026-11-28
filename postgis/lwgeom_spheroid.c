@@ -265,6 +265,7 @@ LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 		s.radius = PG_GETARG_FLOAT8(2);
 	}
 	s.a = s.b = s.radius;
+	s.f = s.e_sq = 0.0;
 
 	PG_RETURN_DATUM(DirectFunctionCall4(geometry_distance_spheroid,
 					    PG_GETARG_DATUM(0),
